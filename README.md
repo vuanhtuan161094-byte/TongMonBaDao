@@ -1,6 +1,6 @@
 # Tông Môn Tycoon — P0 Simulation Sandbox
 
-Bootstrap candidate for Step 15.
+Step 15 P0 foundation for **Tông Môn Bá Đạo**.
 
 ## Target
 
@@ -23,7 +23,17 @@ RETURN_SECT -> SELL / BUY / HEAL / REST -> EVALUATE
 
 ## P0 verification
 
-Local Windows/Linux with PowerShell and Godot 4.7.2 on PATH:
+### Windows — easiest
+
+Double-click:
+
+```text
+Verify-P0.cmd
+```
+
+The verifier auto-discovers Godot 4.7.2 from PATH, a running Godot process, Downloads/Desktop, or the repository. If needed, set `GODOT_BIN` to the exact executable path.
+
+### PowerShell
 
 ```powershell
 pwsh -File tools/godot/Verify-P0.ps1
@@ -33,15 +43,17 @@ The gate runs:
 
 1. Godot import.
 2. GDScript parse checks.
-3. 20,000-tick invariant scenario.
-4. Save/load resumed simulation.
-5. Same-seed reproducibility.
-6. 8-seed × 12,000-tick benchmark.
-7. Bounded headless runtime smoke.
+3. decision contracts.
+4. economy contracts.
+5. 20,000-tick invariant scenario.
+6. save/load resumed simulation.
+7. same-seed reproducibility.
+8. 8-seed × 12,000-tick benchmark.
+9. bounded headless runtime smoke.
 
 A successful benchmark writes `godot/reports/p0_benchmark.json`.
 
-GitHub Actions runs the same gate on pushes and pull requests to `main` using Godot 4.7.2 and uploads the benchmark report as an artifact.
+The GitHub Actions workflow is currently manual-only because the first two jobs were never assigned a runner. Once GitHub can start the runner, the same P0 gate can be dispatched from Actions.
 
 ## Run the debug sandbox
 
