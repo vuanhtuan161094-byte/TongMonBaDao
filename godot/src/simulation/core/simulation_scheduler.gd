@@ -12,6 +12,7 @@ var cultivation_system := CultivationSystem.new()
 var technique_system := TechniqueSystem.new()
 var cultivation_path_system := CultivationPathSystem.new()
 var combat_skill_system := CombatSkillSystem.new()
+var equipment_system := EquipmentSystem.new()
 var economy_system := EconomySystem.new()
 var combat_system := CombatSystem.new()
 
@@ -56,6 +57,9 @@ func _step_disciple(disciple: DiscipleState) -> void:
         &"EVALUATE":
             if state.sect.techniques_enabled and disciple.region_id == &"sect":
                 technique_system.deposit_special_inventory(state, disciple)
+            if state.sect.equipment_enabled and disciple.region_id == &"sect":
+                equipment_system.deposit_forge_inventory(state, disciple)
+                equipment_system.try_auto_upgrade(state, disciple)
             if state.p1_goal_personality_enabled:
                 goal_system.update_goal(state, disciple)
             var decision := decision_system.evaluate(state, disciple)
@@ -113,6 +117,10 @@ func _step_disciple(disciple: DiscipleState) -> void:
                         var special_loot := technique_system.roll_farm_loot(state, disciple)
                         for item_id in special_loot.keys():
                             loot[str(item_id)] = int(loot.get(str(item_id), 0)) + int(special_loot[item_id])
+                    if state.sect.equipment_enabled:
+                        var forge_loot := equipment_system.forge_loot_for_victory(state, result)
+                        for material_id in forge_loot.keys():
+                            loot[str(material_id)] = int(loot.get(str(material_id), 0)) + int(forge_loot[material_id])
                     disciple.pending_loot = loot
                     disciple.current_action = &"LOOT"
                 "retreat", "defeat":
@@ -131,11 +139,15 @@ func _step_disciple(disciple: DiscipleState) -> void:
             disciple.target_region_id = &""
             if state.sect.techniques_enabled:
                 technique_system.deposit_special_inventory(state, disciple)
+            if state.sect.equipment_enabled:
+                equipment_system.deposit_forge_inventory(state, disciple)
             disciple.current_action = &"EVALUATE"
 
         &"SELL":
             if state.sect.techniques_enabled:
                 technique_system.deposit_special_inventory(state, disciple)
+            if state.sect.equipment_enabled:
+                equipment_system.deposit_forge_inventory(state, disciple)
             var earned := economy_system.sell_inventory(state, disciple)
             disciple.current_action = &"EVALUATE" if earned > 0 else &"HUNT"
 
