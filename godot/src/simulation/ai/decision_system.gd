@@ -23,6 +23,9 @@ func evaluate(state: SimulationState, disciple: DiscipleState) -> Dictionary:
 		"BUY": buy_score
 	}
 
+	if state.p1_goal_personality_enabled:
+		_apply_goal_modifiers(scores, disciple.active_goal)
+
 	var chosen: StringName = &"HUNT"
 	var reason := "Healthy enough to continue autonomous hunting."
 
@@ -52,6 +55,9 @@ func evaluate(state: SimulationState, disciple: DiscipleState) -> Dictionary:
 		elif inventory_count > 0:
 			chosen = &"SELL"
 			reason = "Returned with loot to liquidate."
+		elif state.p1_goal_personality_enabled:
+			chosen = _choose_p1_sect_action(scores, disciple)
+			reason = "P1.1 utility choice shaped by personality goal %s." % str(disciple.active_goal)
 		elif disciple.stamina < 78.0 and disciple.wallet >= EconomySystem.SUPPLY_FEE and buy_score >= 10.0:
 			chosen = &"BUY"
 			reason = "Behavior profile accepts buying recovery supplies."
@@ -61,7 +67,9 @@ func evaluate(state: SimulationState, disciple: DiscipleState) -> Dictionary:
 	var result := {
 		"action": str(chosen),
 		"scores": scores,
-		"reason": reason
+		"reason": reason,
+		"personality_id": str(disciple.personality_id),
+		"active_goal": str(disciple.active_goal)
 	}
 	disciple.last_decision = result.duplicate(true)
 	return result
@@ -77,6 +85,10 @@ func choose_region(state: SimulationState, disciple: DiscipleState) -> StringNam
 		var power_gap: float = maxf(0.0, region.recommended_power - disciple.combat_power)
 		var underpower_penalty: float = power_gap * UNDERPOWER_PENALTY
 		var score: float = region.profit_modifier * 100.0 + risk_adjustment - underpower_penalty
+
+		if state.p1_goal_personality_enabled:
+			score += _goal_region_modifier(disciple.active_goal, region)
+
 		region_scores[str(region.id)] = score
 
 		if score > best_score:
@@ -85,5 +97,62 @@ func choose_region(state: SimulationState, disciple: DiscipleState) -> StringNam
 
 	disciple.last_decision["region_scores"] = region_scores
 	disciple.last_decision["chosen_region"] = str(best_id)
-	disciple.last_decision["region_reason"] = "Profit adjusted by risk tolerance and combat-power gap."
+	if state.p1_goal_personality_enabled:
+		disciple.last_decision["region_reason"] = "Profit, risk tolerance, power gap, and active goal modifier."
+	else:
+		disciple.last_decision["region_reason"] = "Profit adjusted by risk tolerance and combat-power gap."
 	return best_id
+
+func _choose_p1_sect_action(scores: Dictionary, disciple: DiscipleState) -> StringName:
+	var chosen: StringName = &"HUNT"
+	var best_score := float(scores.get("HUNT", 0.0))
+
+	if disciple.stamina < 88.0:
+		var rest_score := float(scores.get("REST", 0.0))
+		if rest_score > best_score:
+			chosen = &"REST"
+			best_score = rest_score
+
+	if disciple.stamina < 78.0 and disciple.wallet >= EconomySystem.SUPPLY_FEE:
+		var buy_score := float(scores.get("BUY", 0.0))
+		if buy_score > best_score:
+			chosen = &"BUY"
+
+	return chosen
+
+func _apply_goal_modifiers(scores: Dictionary, goal: StringName) -> void:
+	match goal:
+		GoalSystem.GOAL_RECOVER:
+			scores["HEAL"] = float(scores["HEAL"]) + 30.0
+			scores["REST"] = float(scores["REST"]) + 40.0
+			scores["BUY"] = float(scores["BUY"]) + 10.0
+			scores["HUNT"] = float(scores["HUNT"]) - 35.0
+		GoalSystem.GOAL_WEALTH:
+			scores["SELL"] = float(scores["SELL"]) + 35.0
+			scores["HUNT"] = float(scores["HUNT"]) + 15.0
+			scores["BUY"] = float(scores["BUY"]) - 15.0
+		GoalSystem.GOAL_GLORY:
+			scores["HUNT"] = float(scores["HUNT"]) + 30.0
+			scores["REST"] = float(scores["REST"]) - 10.0
+		GoalSystem.GOAL_SECURITY:
+			scores["HEAL"] = float(scores["HEAL"]) + 15.0
+			scores["REST"] = float(scores["REST"]) + 20.0
+			scores["HUNT"] = float(scores["HUNT"]) - 15.0
+		GoalSystem.GOAL_PREPARE:
+			scores["BUY"] = float(scores["BUY"]) + 30.0
+			scores["REST"] = float(scores["REST"]) + 10.0
+		GoalSystem.GOAL_GROWTH:
+			scores["HUNT"] = float(scores["HUNT"]) + 10.0
+
+func _goal_region_modifier(goal: StringName, region: RegionState) -> float:
+	match goal:
+		GoalSystem.GOAL_GLORY:
+			return float(region.danger) * 18.0
+		GoalSystem.GOAL_SECURITY, GoalSystem.GOAL_RECOVER:
+			return -float(region.danger) * 22.0
+		GoalSystem.GOAL_WEALTH:
+			return region.profit_modifier * 15.0
+		GoalSystem.GOAL_GROWTH:
+			return float(region.danger) * 6.0
+		_:
+			return 0.0

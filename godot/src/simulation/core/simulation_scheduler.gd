@@ -3,6 +3,7 @@ extends RefCounted
 
 var state: SimulationState
 var rng: GameRng
+var goal_system := GoalSystem.new()
 var decision_system := DecisionSystem.new()
 var economy_system := EconomySystem.new()
 var combat_system := CombatSystem.new()
@@ -32,6 +33,8 @@ func _step_disciple(disciple: DiscipleState) -> void:
             disciple.current_action = &"EVALUATE"
 
         &"EVALUATE":
+            if state.p1_goal_personality_enabled:
+                goal_system.update_goal(state, disciple)
             var decision := decision_system.evaluate(state, disciple)
             disciple.current_action = StringName(decision["action"])
 

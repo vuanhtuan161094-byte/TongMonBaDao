@@ -11,6 +11,9 @@ var regions: Dictionary = {}
 var sect: SectState = SectState.new()
 var initial_total_money: int = 0
 
+# P1.1 is opt-in so the locked P0 baseline remains behavior-identical.
+var p1_goal_personality_enabled: bool = false
+
 func total_money() -> int:
     var total := sect.treasury
     for disciple in disciples.values():
@@ -56,6 +59,7 @@ func to_dict() -> Dictionary:
         "seed": seed,
         "rng_state": str(rng_state),
         "initial_total_money": initial_total_money,
+        "p1_goal_personality_enabled": p1_goal_personality_enabled,
         "sect": sect.to_dict(),
         "disciples": disciple_rows,
         "regions": region_rows
@@ -67,6 +71,7 @@ static func from_dict(data: Dictionary) -> SimulationState:
     state.seed = int(data.get("seed", 1337))
     state.rng_state = int(data.get("rng_state", 0))
     state.initial_total_money = int(data.get("initial_total_money", 0))
+    state.p1_goal_personality_enabled = bool(data.get("p1_goal_personality_enabled", false))
     state.sect = SectState.from_dict(data.get("sect", {}))
 
     for row in data.get("regions", []):

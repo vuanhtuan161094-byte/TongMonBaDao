@@ -7,6 +7,7 @@ Date: 2026-09-30
 Step 13 Technical Architecture & Development Roadmap: LOCKED.
 Step 14 P0 Prototype Specification: LOCKED.
 Step 15 Repository Bootstrap + P0 Foundation: LOCKED / PASS.
+Step 16 P1.1 Goal + Personality: IMPLEMENTED / AWAITING RUNTIME GATE.
 
 ## Architecture locks
 
@@ -18,6 +19,7 @@ Step 15 Repository Bootstrap + P0 Foundation: LOCKED / PASS.
 - Save schema is versioned from P0.
 - Invariants are mandatory.
 - UI is a debug consumer of simulation state only.
+- P0 remains the mandatory regression baseline for P1 work.
 
 ## P0 scope
 
@@ -32,7 +34,7 @@ Step 15 Repository Bootstrap + P0 Foundation: LOCKED / PASS.
 - Save/load.
 - Debug inspector.
 
-## Current verification suite
+## Current P0 verification suite
 
 1. Godot import.
 2. Parse all project/test GDScript.
@@ -46,7 +48,48 @@ Step 15 Repository Bootstrap + P0 Foundation: LOCKED / PASS.
 
 Benchmark telemetry includes total money, treasury range, combat outcomes, sale/recovery activity, per-disciple safe/medium/danger exposure, and ending wallet/HP/stamina. It writes `godot/reports/p0_benchmark.json`.
 
-## Runtime verification evidence — 2026-09-30
+## P1.1 Goal + Personality scope
+
+P1.1 is a minimal vertical slice only. It does not open recruitment, relationships, memory, cultivation realms, bosses, premium currency, or production art.
+
+Implemented design:
+
+- Existing `risk_bias`, `spend_bias`, and `survival_bias` remain the personality behavior vector.
+- Each disciple now has stable `personality_id` metadata.
+- Each disciple has deterministic `active_goal` and `goal_changed_tick` runtime state.
+- New `GoalSystem` forms goals from current HP/stamina/inventory/economy state plus the existing personality vector.
+- Goal values are `RECOVER`, `WEALTH`, `GLORY`, `SECURITY`, `PREPARE`, and `GROWTH`.
+- Goal modifiers feed the existing `DecisionSystem`; no second AI authority was introduced.
+- Hard safety floors remain authoritative before discretionary P1.1 utility choices.
+- Goal modifiers also shape region utility, so different goals can produce measurably different region choices.
+- P1.1 behavior is opt-in through `SimulationState.p1_goal_personality_enabled` and `P1Factory`.
+- `P0Factory` leaves P1.1 disabled so the locked P0 behavior path remains behavior-identical.
+- Personality, active goal, goal-change tick, and the P1.1 feature flag serialize through the existing versioned save path.
+- Old P0/current-version saves that do not contain the new optional fields remain loadable with safe defaults.
+
+P1.1 verification contract:
+
+- full P0 9-stage gate must PASS first;
+- same seed must produce the same personality/goal state and deterministic simulation state;
+- initial P1.1 population must show personality and goal diversity;
+- `GLORY` and `SECURITY` must produce different measurable region utility choices in a neutral probe;
+- save/load must preserve personality + active goal + goal-change tick + P1.1 enable flag;
+- save/load continuation must remain deterministic;
+- simulation invariants must remain green.
+
+Authoritative P1.1 command:
+
+`Sync-P1-1.cmd`
+
+This syncs `main`, runs the complete P0 regression gate, then runs the dedicated P1.1 Goal + Personality contract test.
+
+P1.1 may be marked `LOCKED / PASS` only after a real Godot `4.7.2.stable.official.ed1daf0bf` run ends with both:
+
+`P0 FOUNDATION GATE: PASS`
+
+`P1.1 GOAL + PERSONALITY GATE: PASS`
+
+## Runtime verification evidence — P0 — 2026-09-30
 
 Environment:
 
@@ -95,7 +138,7 @@ Recorded gate evidence:
   - buys: 6,795.
 - 180-frame headless runtime smoke: PASS.
 
-## Static / mirror review patches already applied
+## Static / mirror review patches already applied in P0
 
 - 200 Linh Thạch sect operating reserve for market purchases.
 - SELL falls back to HUNT when market spendable treasury is exhausted, preventing an EVALUATE↔SELL spin loop.
@@ -124,12 +167,12 @@ Two CI attempts were accepted by GitHub but failed before a runner executed any 
 
 Both reported no executed steps and no usable job log. Changing from a third-party Godot setup action to a direct download of the official Godot 4.7.2 binary did not change this behavior. Therefore this remains classified as a runner/prepare-job blocker, not as evidence that the Godot project or P0 tests failed.
 
-The workflow is temporarily `workflow_dispatch` only so normal development pushes do not create misleading red runs. The local authoritative Godot 4.7.2 gate has now completed successfully, so the CI runner issue is no longer a P0 closure blocker.
+The workflow is temporarily `workflow_dispatch` only so normal development pushes do not create misleading red runs. The local authoritative Godot 4.7.2 gate completed successfully, so the CI runner issue is not a P0 closure blocker.
 
 ## Completion status
 
-P0 PASS.
+P0: PASS / LOCKED.
 
-The Godot 4.7.2 authoritative runtime completed the full nine-stage gate successfully on 2026-09-30. P0 foundation is closed and may be treated as the stable baseline for subsequent work.
+P1.1: implementation and dedicated gate are present, but runtime proof is still required before lock.
 
-Next step: open P1 only against the locked P0 baseline and preserve all P0 invariants, deterministic replay behavior, save compatibility expectations, and the nine-stage regression gate.
+Next closure condition: run `Sync-P1-1.cmd` on the local Windows/Godot 4.7.2 environment, fix every regression/P1.1 failure if any, then mark Step 16 `LOCKED / PASS` only with the exact runtime evidence.

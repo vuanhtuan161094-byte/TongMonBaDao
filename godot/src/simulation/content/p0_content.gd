@@ -2,12 +2,12 @@ class_name P0Content
 extends RefCounted
 
 const DISCIPLES := [
-    {"id":"lam_thanh_vu", "name":"Lâm Thanh Vũ", "wallet":120, "combat_power":21.0, "risk_bias":0.82, "spend_bias":0.50, "survival_bias":0.35},
-    {"id":"tran_mac", "name":"Trần Mặc", "wallet":110, "combat_power":19.0, "risk_bias":0.18, "spend_bias":0.30, "survival_bias":0.88},
-    {"id":"bach_nguyet", "name":"Bạch Nguyệt", "wallet":100, "combat_power":20.0, "risk_bias":0.50, "spend_bias":0.48, "survival_bias":0.58},
-    {"id":"lam_an", "name":"Lâm An", "wallet":90, "combat_power":17.0, "risk_bias":0.24, "spend_bias":0.22, "survival_bias":0.72},
-    {"id":"co_truong_phong", "name":"Cố Trường Phong", "wallet":80, "combat_power":24.0, "risk_bias":0.94, "spend_bias":0.58, "survival_bias":0.20},
-    {"id":"trieu_linh_nhi", "name":"Triệu Linh Nhi", "wallet":130, "combat_power":18.5, "risk_bias":0.43, "spend_bias":0.62, "survival_bias":0.84}
+    {"id":"lam_thanh_vu", "name":"Lâm Thanh Vũ", "wallet":120, "combat_power":21.0, "risk_bias":0.82, "spend_bias":0.50, "survival_bias":0.35, "personality_id":"daring"},
+    {"id":"tran_mac", "name":"Trần Mặc", "wallet":110, "combat_power":19.0, "risk_bias":0.18, "spend_bias":0.30, "survival_bias":0.88, "personality_id":"cautious"},
+    {"id":"bach_nguyet", "name":"Bạch Nguyệt", "wallet":100, "combat_power":20.0, "risk_bias":0.50, "spend_bias":0.48, "survival_bias":0.58, "personality_id":"balanced"},
+    {"id":"lam_an", "name":"Lâm An", "wallet":90, "combat_power":17.0, "risk_bias":0.24, "spend_bias":0.22, "survival_bias":0.72, "personality_id":"frugal_guarded"},
+    {"id":"co_truong_phong", "name":"Cố Trường Phong", "wallet":80, "combat_power":24.0, "risk_bias":0.94, "spend_bias":0.58, "survival_bias":0.20, "personality_id":"reckless"},
+    {"id":"trieu_linh_nhi", "name":"Triệu Linh Nhi", "wallet":130, "combat_power":18.5, "risk_bias":0.43, "spend_bias":0.62, "survival_bias":0.84, "personality_id":"prudent"}
 ]
 
 const REGIONS := [

@@ -12,6 +12,12 @@ var risk_bias: float = 0.5
 var spend_bias: float = 0.5
 var survival_bias: float = 0.5
 
+# P1.1 personality + goal state. The three numeric biases remain the
+# behavior vector; personality_id is the stable human-readable archetype.
+var personality_id: StringName = &"balanced"
+var active_goal: StringName = &"GROWTH"
+var goal_changed_tick: int = 0
+
 var current_action: StringName = &"EVALUATE"
 var region_id: StringName = &"sect"
 var target_region_id: StringName = &""
@@ -41,6 +47,9 @@ func _init(definition: Dictionary = {}) -> void:
     risk_bias = float(definition.get("risk_bias", risk_bias))
     spend_bias = float(definition.get("spend_bias", spend_bias))
     survival_bias = float(definition.get("survival_bias", survival_bias))
+    personality_id = StringName(definition.get("personality_id", personality_id))
+    active_goal = StringName(definition.get("active_goal", active_goal))
+    goal_changed_tick = int(definition.get("goal_changed_tick", goal_changed_tick))
 
 func retreat_hp_ratio() -> float:
     return lerpf(0.48, 0.14, clampf(risk_bias, 0.0, 1.0))
@@ -71,6 +80,9 @@ func to_dict() -> Dictionary:
         "risk_bias": risk_bias,
         "spend_bias": spend_bias,
         "survival_bias": survival_bias,
+        "personality_id": str(personality_id),
+        "active_goal": str(active_goal),
+        "goal_changed_tick": goal_changed_tick,
         "current_action": str(current_action),
         "region_id": str(region_id),
         "target_region_id": str(target_region_id),
@@ -88,7 +100,10 @@ static func from_dict(data: Dictionary) -> DiscipleState:
         "combat_power": data.get("combat_power", 18.0),
         "risk_bias": data.get("risk_bias", 0.5),
         "spend_bias": data.get("spend_bias", 0.5),
-        "survival_bias": data.get("survival_bias", 0.5)
+        "survival_bias": data.get("survival_bias", 0.5),
+        "personality_id": data.get("personality_id", "balanced"),
+        "active_goal": data.get("active_goal", "GROWTH"),
+        "goal_changed_tick": data.get("goal_changed_tick", 0)
     })
     disciple.max_hp = float(data.get("max_hp", 100.0))
     disciple.hp = float(data.get("hp", disciple.max_hp))
