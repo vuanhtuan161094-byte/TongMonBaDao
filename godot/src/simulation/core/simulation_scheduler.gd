@@ -26,9 +26,21 @@ func step() -> void:
     if state.sect.needs_enabled:
         needs_system.process_logistics_tick(state)
 
-    for disciple in state.disciples.values():
-        _step_disciple(disciple)
-        disciple.metrics["actions"] = int(disciple.metrics.get("actions", 0)) + 1
+    # P1.5 introduces same-tick dependencies on teammates/leaders. Dictionary
+    # iteration order is not a valid simulation contract across save/load, so
+    # organization-enabled states use a canonical disciple order. Earlier
+    # locked P0-P1.4 paths retain their original iteration behavior exactly.
+    if state.p1_organization_enabled:
+        var disciple_ids: Array = state.disciples.keys()
+        disciple_ids.sort()
+        for raw_id in disciple_ids:
+            var disciple: DiscipleState = state.disciples[raw_id]
+            _step_disciple(disciple)
+            disciple.metrics["actions"] = int(disciple.metrics.get("actions", 0)) + 1
+    else:
+        for disciple in state.disciples.values():
+            _step_disciple(disciple)
+            disciple.metrics["actions"] = int(disciple.metrics.get("actions", 0)) + 1
 
     state.rng_state = rng.snapshot_seed_state()
 
