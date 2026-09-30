@@ -23,6 +23,13 @@ var recruitment_stats: Dictionary = {
     "rejected": 0
 }
 
+# P1.3 keeps a sparse directed social graph. Keys are source id -> target id.
+# Missing edges mean neutral/no meaningful relationship and cost no storage.
+var p1_relationships_enabled: bool = false
+var relationships: Dictionary = {}
+var companion_assignments: Dictionary = {}
+var relationship_event_count: int = 0
+
 func total_money() -> int:
     var total := sect.treasury
     for disciple in disciples.values():
@@ -63,6 +70,35 @@ func validate_invariants() -> Array[String]:
                 errors.append("Recruitment candidate %s has an invalid personality bias." % candidate.id)
                 break
 
+    for raw_source_id in relationships.keys():
+        var source_id := StringName(raw_source_id)
+        if not disciples.has(source_id):
+            errors.append("Relationship source %s is not an active disciple." % source_id)
+            continue
+        var source_map = relationships[raw_source_id]
+        if not (source_map is Dictionary):
+            errors.append("Relationship source %s has invalid storage." % source_id)
+            continue
+        for raw_target_id in source_map.keys():
+            var target_id := StringName(raw_target_id)
+            if source_id == target_id:
+                errors.append("Self relationship is not allowed for %s." % source_id)
+                continue
+            if not disciples.has(target_id):
+                errors.append("Relationship target %s is not an active disciple." % target_id)
+                continue
+            var relation: RelationshipState = source_map[raw_target_id]
+            for value in [relation.affinity, relation.trust, relation.respect]:
+                if value < 0.0 or value > 100.0:
+                    errors.append("Relationship %s -> %s has an out-of-range value." % [source_id, target_id])
+                    break
+
+    for raw_source_id in companion_assignments.keys():
+        var source_id := StringName(raw_source_id)
+        var target_id := StringName(companion_assignments[raw_source_id])
+        if source_id == target_id or not disciples.has(source_id) or not disciples.has(target_id):
+            errors.append("Invalid companion assignment %s -> %s." % [source_id, target_id])
+
     if initial_total_money > 0 and total_money() != initial_total_money:
         errors.append("Money conservation failed: expected %d, got %d" % [initial_total_money, total_money()])
 
@@ -84,6 +120,17 @@ func to_dict() -> Dictionary:
         var candidate: CandidateState = recruitment_candidates[candidate_id]
         candidate_rows.append(candidate.to_dict())
 
+    var relationship_rows: Array = []
+    var source_ids: Array = relationships.keys()
+    source_ids.sort()
+    for raw_source_id in source_ids:
+        var source_map: Dictionary = relationships[raw_source_id]
+        var target_ids: Array = source_map.keys()
+        target_ids.sort()
+        for raw_target_id in target_ids:
+            var relation: RelationshipState = source_map[raw_target_id]
+            relationship_rows.append(relation.to_dict())
+
     return {
         "save_version": SAVE_VERSION,
         "tick": tick,
@@ -95,6 +142,10 @@ func to_dict() -> Dictionary:
         "recruitment_generation_index": recruitment_generation_index,
         "recruitment_stats": recruitment_stats.duplicate(true),
         "recruitment_candidates": candidate_rows,
+        "p1_relationships_enabled": p1_relationships_enabled,
+        "relationships": relationship_rows,
+        "companion_assignments": companion_assignments.duplicate(true),
+        "relationship_event_count": relationship_event_count,
         "sect": sect.to_dict(),
         "disciples": disciple_rows,
         "regions": region_rows
@@ -109,6 +160,8 @@ static func from_dict(data: Dictionary) -> SimulationState:
     state.p1_goal_personality_enabled = bool(data.get("p1_goal_personality_enabled", false))
     state.p1_recruitment_enabled = bool(data.get("p1_recruitment_enabled", false))
     state.recruitment_generation_index = int(data.get("recruitment_generation_index", 0))
+    state.p1_relationships_enabled = bool(data.get("p1_relationships_enabled", false))
+    state.relationship_event_count = int(data.get("relationship_event_count", 0))
     state.sect = SectState.from_dict(data.get("sect", {}))
 
     var saved_recruitment_stats = data.get("recruitment_stats", {})
@@ -128,5 +181,22 @@ static func from_dict(data: Dictionary) -> SimulationState:
         if row is Dictionary:
             var candidate := CandidateState.from_dict(row)
             state.recruitment_candidates[candidate.id] = candidate
+
+    for row in data.get("relationships", []):
+        if row is Dictionary:
+            var relation := RelationshipState.from_dict(row)
+            if relation.source_id == &"" or relation.target_id == &"" or relation.source_id == relation.target_id:
+                continue
+            var source_key := str(relation.source_id)
+            var source_map: Dictionary = state.relationships.get(source_key, {})
+            source_map[str(relation.target_id)] = relation
+            state.relationships[source_key] = source_map
+
+    var saved_companions = data.get("companion_assignments", {})
+    if saved_companions is Dictionary:
+        var keys: Array = saved_companions.keys()
+        keys.sort()
+        for key in keys:
+            state.companion_assignments[str(key)] = str(saved_companions[key])
 
     return state
