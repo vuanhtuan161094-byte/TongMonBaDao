@@ -14,6 +14,13 @@ Invoke-GodotWithTimeout -CommandArgs @(
     "-s", "res://tests/simulation/p2_6_equipment_test.gd"
 ) -TimeoutSeconds 360 -Label "P2.6 forge + autonomous/manual equipment contracts"
 
+Write-Host "[P2.6] Equipment combat-stat consequence contracts"
+Invoke-GodotWithTimeout -CommandArgs @(
+    "--headless",
+    "--path", $Project,
+    "-s", "res://tests/simulation/p2_6_equipment_combat_effects_test.gd"
+) -TimeoutSeconds 180 -Label "P2.6 equipment combat-stat consequence contracts"
+
 Write-Host "[P2.6] Equipment interaction scene smoke"
 Invoke-GodotWithTimeout -CommandArgs @(
     "--headless",
