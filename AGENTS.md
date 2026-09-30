@@ -19,7 +19,8 @@
 - Every runtime state mutation must preserve invariants.
 - Prefer small composition-oriented systems over giant manager scripts.
 - Do not call a change PASS without the active verification gate.
-- The locked P0 behavior path and locked P1.1 behavior path must remain available as regression baselines while later P1 features are added.
+- Locked P0, P1.1, and P1.2 behavior paths remain mandatory regression baselines.
+- New mechanics must have measurable gameplay/simulation impact; do not add story-only state with no behavioral consequence.
 
 ## Required loop
 
@@ -37,10 +38,16 @@ P0 remains a mandatory regression baseline for every P1 change.
 
 P1.1 Goal + Personality remains a mandatory deterministic/save-load regression baseline for later P1 work.
 
-## Active P1.2 gate
+## Locked P1.2 regression gate
 
 `tools/godot/Verify-P1-2.ps1`
 
-The P1.2 verifier runs the complete P0 gate, then the locked P1.1 gate, then the P1.2 recruitment/player-choice contracts and the recruitment interaction-scene smoke test.
+P1.2 Population + Recruitment + Player Choice remains a mandatory deterministic/save-load/player-agency regression baseline for later P1 work.
 
-P1.2 scope is limited to deterministic recruitment candidates, sect population capacity, explicit player accept/reject decisions, save/load persistence, deterministic continuation, and a minimal interaction screen. Do not expand into relationships, memory, cultivation realms, bosses, premium currency, or production art during P1.2.
+## Active P1.3 gate
+
+`tools/godot/Verify-P1-3.ps1`
+
+The P1.3 verifier runs the complete locked P0/P1.1/P1.2 gates first, then the P1.3 relationship/behavior-impact contracts and relationship interaction-scene smoke test.
+
+P1.3 scope is limited to sparse directed relationships, affinity/trust/respect, personality-shaped relationship reactions, relationship-driven region utility, explicit player companion assignment, recruitment integration, save/load persistence, deterministic continuation, and a minimal interaction screen. Do not expand into memory, romance, mentor/disciple hierarchy, factions, betrayal, cultivation realms, bosses, premium currency, or production art during P1.3.
