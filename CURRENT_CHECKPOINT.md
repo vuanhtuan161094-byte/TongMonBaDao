@@ -36,11 +36,13 @@ Step 15 Repository Bootstrap + P0 Foundation: IN PROGRESS.
 
 1. Godot import.
 2. Parse all project/test GDScript.
-3. Single-seed 20,000-tick invariant scenario.
-4. Save/load + resumed simulation.
-5. Same-seed deterministic reproducibility.
-6. Multi-seed benchmark: 8 seeds × 12,000 ticks.
-7. 180-frame headless runtime smoke.
+3. Decision contracts: fixed profile region choices, retreat-risk ordering, broke-injured REST, funded-injured HEAL.
+4. Economy contracts: sell/heal/supply transfer conservation and market operating reserve.
+5. Single-seed 20,000-tick invariant scenario.
+6. Save/load + resumed simulation.
+7. Same-seed deterministic reproducibility.
+8. Multi-seed benchmark: 8 seeds × 12,000 ticks.
+9. 180-frame headless runtime smoke.
 
 Benchmark telemetry includes total money, treasury range, combat outcomes, sale/recovery activity, per-disciple safe/medium/danger exposure, and ending wallet/HP/stamina. It writes `godot/reports/p0_benchmark.json`.
 
@@ -50,17 +52,28 @@ Benchmark telemetry includes total money, treasury range, combat outcomes, sale/
 - SELL falls back to HUNT when market spendable treasury is exhausted, preventing an EVALUATE↔SELL spin loop.
 - Inventory/economy item keys use JSON-stable strings.
 - RNG state serializes as string to preserve exact integer state across JSON.
-- Region definitions now include `recommended_power`.
-- Region selection now combines profit + risk tolerance - underpower penalty; profit alone cannot force every profile into the hardest zone.
+- Region definitions include `recommended_power`.
+- Region selection combines profit + risk tolerance - underpower penalty; profit alone cannot force every profile into the hardest zone.
 - Broke injured disciples use free Rest recovery instead of returning to combat because they cannot afford paid healing.
 - Debug inspector exposes region scores and chosen-region rationale.
 - A non-authoritative mirror simulation was used only as a design sanity check; it does NOT satisfy the Godot runtime gate.
+
+## GitHub Actions runner blocker
+
+Two CI attempts were accepted by GitHub but failed before a runner executed any step:
+
+- run `36663544443`;
+- run `36663692983`.
+
+Both reported no executed steps and no usable job log. Changing from a third-party Godot setup action to a direct download of the official Godot 4.7.2 binary did not change this behavior. Therefore this is treated as a runner/prepare-job blocker, not as evidence that the Godot project or P0 tests failed.
+
+The workflow is temporarily `workflow_dispatch` only so normal development pushes do not create misleading red runs. It remains ready for manual execution once a GitHub-hosted runner can actually start the job.
 
 ## Completion status
 
 NOT P0 PASS yet.
 
-Reason: this ChatGPT execution environment does not expose a Godot 4.7.2 executable, so the runtime gate has not been executed here. Source/structure review and mirror simulation are not substitutes for the Godot gate.
+Reason: no real Godot 4.7.2 runtime has completed the nine-stage verification gate. Source review, mirror simulation, and pre-run CI failures are not substitutes for runtime proof.
 
 Next closure condition:
-run `tools/godot/Verify-P0.ps1` on an environment with Godot 4.7.2 and fix every import/parse/test/runtime failure before marking P0 foundation green.
+run `tools/godot/Verify-P0.ps1` on any environment where Godot 4.7.2 can execute, fix every import/parse/test/runtime failure, then mark P0 green only with the exact gate evidence.
