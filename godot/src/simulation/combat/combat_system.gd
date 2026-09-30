@@ -3,6 +3,7 @@ extends RefCounted
 
 var cultivation_system := CultivationSystem.new()
 var technique_system := TechniqueSystem.new()
+var cultivation_path_system := CultivationPathSystem.new()
 
 func resolve_encounter(state: SimulationState, disciple: DiscipleState, rng: GameRng) -> Dictionary:
     var region: RegionState = state.regions.get(disciple.region_id)
@@ -18,6 +19,12 @@ func resolve_encounter(state: SimulationState, disciple: DiscipleState, rng: Gam
     var monster_power := float(definition.get("power", 10.0))
     var effective_power := cultivation_system.effective_combat_power(state, disciple) if state.sect.cultivation_enabled else disciple.combat_power
     var damage_multiplier := technique_system.incoming_damage_multiplier(state, disciple) if state.sect.techniques_enabled else 1.0
+    if state.sect.cultivation_paths_enabled:
+        if state.sect.techniques_enabled:
+            var active_path := cultivation_path_system.active_technique_path(disciple)
+            var path_effect := cultivation_path_system.technique_effect_multiplier(state, disciple, active_path)
+            damage_multiplier = clampf(1.0 - (1.0 - damage_multiplier) * path_effect, 0.45, 1.0)
+        damage_multiplier *= cultivation_path_system.incoming_damage_multiplier(state, disciple)
     disciple.metrics["combats"] = int(disciple.metrics.get("combats", 0)) + 1
 
     for _round in range(20):
