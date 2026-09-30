@@ -99,6 +99,18 @@ function Resolve-GodotBinary([string]$Explicit, [string]$ExpectedVersion) {
     throw "No working Godot $ExpectedVersion CLI binary found. Set GODOT_BIN to the full Godot executable path if auto-discovery misses it.$details"
 }
 
+function Assert-NoRunningGodot {
+    if (-not ($IsWindows -or $env:OS -eq "Windows_NT")) { return }
+
+    $running = @(Get-Process -ErrorAction SilentlyContinue |
+        Where-Object { $_.ProcessName -like "Godot*" })
+
+    if ($running.Count -eq 0) { return }
+
+    $names = ($running | ForEach-Object { "$($_.ProcessName) (PID $($_.Id))" }) -join ", "
+    throw "Godot is already running: $names. Close all Godot editor/project-manager windows before running Verify-P0.cmd. This avoids the headless import waiting on an editor/project lock."
+}
+
 function Invoke-Godot([string[]]$Args) {
     & $Godot @Args
     if ($LASTEXITCODE -ne 0) {
@@ -107,6 +119,7 @@ function Invoke-Godot([string[]]$Args) {
 }
 
 Write-Host "=== TONG MON TYCOON P0 GATE ==="
+Assert-NoRunningGodot
 $resolvedGodot = Resolve-GodotBinary $GodotBin $ExpectedEngineVersion
 $Godot = [string]$resolvedGodot.Path
 Write-Host "[Godot] $($resolvedGodot.Version)"
