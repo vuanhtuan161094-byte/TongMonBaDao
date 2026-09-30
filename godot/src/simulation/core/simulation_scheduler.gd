@@ -93,7 +93,11 @@ func _step_disciple(disciple: DiscipleState) -> void:
                 disciple.current_action = &"EVALUATE"
 
         &"COMBAT":
+            var base_combat_power := disciple.combat_power
+            if state.sect.equipment_enabled:
+                disciple.combat_power = base_combat_power + equipment_system.combat_power_bonus(state, disciple)
             var result := combat_system.resolve_encounter(state, disciple, rng)
+            disciple.combat_power = base_combat_power
             disciple.stamina = maxf(0.0, disciple.stamina - 10.0)
             var outcome := str(result.get("outcome", "invalid"))
             if state.p1_relationships_enabled:
