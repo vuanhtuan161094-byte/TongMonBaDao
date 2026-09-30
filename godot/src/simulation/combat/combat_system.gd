@@ -12,6 +12,7 @@ var cultivation_system := CultivationSystem.new()
 var technique_system := TechniqueSystem.new()
 var cultivation_path_system := CultivationPathSystem.new()
 var combat_skill_system := CombatSkillSystem.new()
+var equipment_system := EquipmentSystem.new()
 
 func resolve_encounter(state: SimulationState, disciple: DiscipleState, rng: GameRng) -> Dictionary:
     if state.sect.combat_skills_enabled:
@@ -77,7 +78,10 @@ func _resolve_realtime_encounter(state: SimulationState, disciple: DiscipleState
 
     var effective_power := cultivation_system.effective_combat_power(state, disciple) if state.sect.cultivation_enabled else disciple.combat_power
     var incoming_multiplier := _realtime_incoming_multiplier(state, disciple)
-    var style := combat_skill_system.style_profile(state, disciple)
+    var style: Dictionary = combat_skill_system.style_profile(state, disciple)
+    if state.sect.equipment_enabled:
+        incoming_multiplier *= equipment_system.incoming_damage_multiplier(state, disciple)
+        style = equipment_system.apply_style_modifiers(state, disciple, style)
     var trace: Array = []
     var projectiles: Array = []
     var cooldowns: Dictionary = {}
@@ -210,6 +214,13 @@ func _skill_utility(state: SimulationState, disciple: DiscipleState, skill_id: S
     var data := combat_skill_system.definition(skill_id)
     var effect := StringName(data.get("effect", "damage"))
     var multiplier := combat_skill_system.effect_multiplier(state, disciple, skill_id)
+    if state.sect.equipment_enabled:
+        multiplier *= equipment_system.skill_effect_multiplier(
+            state,
+            disciple,
+            StringName(data.get("path", "")),
+            StringName(data.get("element", ""))
+        )
     var damage_ratio := float(data.get("damage_ratio", 0.0))
     var score := damage_ratio * 48.0 * multiplier
     var hp_ratio := disciple.hp / maxf(disciple.max_hp, 1.0)
@@ -275,6 +286,13 @@ func _apply_skill_effect(state: SimulationState, disciple: DiscipleState, rng: G
     var data := combat_skill_system.definition(skill_id)
     var effect := StringName(data.get("effect", "damage"))
     var effect_multiplier := combat_skill_system.effect_multiplier(state, disciple, skill_id)
+    if state.sect.equipment_enabled:
+        effect_multiplier *= equipment_system.skill_effect_multiplier(
+            state,
+            disciple,
+            StringName(data.get("path", "")),
+            StringName(data.get("element", ""))
+        )
     var damage_ratio := float(data.get("damage_ratio", 0.0))
     if effect == CombatSkillSystem.EFFECT_FIRE_COMBO and float(context["time"]) < float(context["burn_until"]):
         damage_ratio *= float(data.get("burning_bonus", 1.0))
