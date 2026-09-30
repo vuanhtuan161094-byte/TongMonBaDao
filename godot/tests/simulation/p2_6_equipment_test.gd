@@ -137,11 +137,11 @@ func _verify_personalized_auto_choice_and_closed_money() -> bool:
     if equipment.equipment_score(state, spell_user, staff) <= equipment.equipment_score(state, spell_user, sword):
         _fail("P2.6 spell-oriented disciple did not prefer the spell-compatible item.")
         return false
-    if equipment.effective_combat_bonus_for_item(sword_user, sword) <= equipment.effective_combat_bonus_for_item(sword_user, staff):
-        _fail("P2.6 path/root compatibility did not make the sword more effective for the sword build.")
+    if equipment.effective_combat_bonus_for_item(sword_user, sword) <= equipment.effective_combat_bonus_for_item(spell_user, sword):
+        _fail("P2.6 the same sword was not more combat-effective for the compatible sword build.")
         return false
-    if equipment.effective_combat_bonus_for_item(spell_user, staff) <= equipment.effective_combat_bonus_for_item(spell_user, sword):
-        _fail("P2.6 path/root compatibility did not make the staff more effective for the spell build.")
+    if equipment.effective_combat_bonus_for_item(spell_user, staff) <= equipment.effective_combat_bonus_for_item(sword_user, staff):
+        _fail("P2.6 the same staff was not more combat-effective for the compatible spell build.")
         return false
 
     var money_before := state.total_money()
