@@ -22,20 +22,23 @@ func chance(probability: float) -> bool:
     return _rng.randf() < clampf(probability, 0.0, 1.0)
 
 func weighted_pick(weights: Dictionary) -> StringName:
+    var keys: Array = weights.keys()
+    keys.sort()
+
     var total := 0.0
-    for value in weights.values():
-        total += maxf(float(value), 0.0)
+    for key in keys:
+        total += maxf(float(weights[key]), 0.0)
     if total <= 0.0:
         return StringName()
 
     var roll := _rng.randf_range(0.0, total)
     var cursor := 0.0
-    for key in weights.keys():
+    for key in keys:
         cursor += maxf(float(weights[key]), 0.0)
         if roll <= cursor:
             return StringName(key)
 
-    return StringName(weights.keys().back())
+    return StringName(keys.back())
 
 func snapshot_seed_state() -> int:
     return _rng.state
