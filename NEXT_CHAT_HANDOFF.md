@@ -31,7 +31,7 @@ Current first failing gate:
 
 P2.2-P2.5 were not reached in the latest cumulative run because P2.1 stopped the chain.
 
-P2.6 is implemented but has not been runtime-reached yet.
+P2.6 is implemented and statically hardened but has not been runtime-reached yet.
 
 Do not call P2.1-P2.6 PASS without real local gate evidence.
 
@@ -67,7 +67,7 @@ Fix the real field/serialization problem; do not weaken equality tests or add to
 
 The player runs the sect rather than puppeting every disciple.
 
-The player controls infrastructure, production, recruitment, priorities, resources and may intervene directly when desired. Disciples otherwise act autonomously from personality, history, relationships, realm, roots, techniques, path history, learned combat skills and equipment.
+The player controls infrastructure, production, recruitment, priorities and resources and may intervene directly when desired. Disciples otherwise act autonomously from personality, history, relationships, realm, roots, techniques, path history, learned combat skills and equipment.
 
 The game may borrow useful operating loops from Evil Hunter Tycoon, but remains a cultivation sect-management game rather than a manual action RPG.
 
@@ -92,7 +92,7 @@ Primary loop:
 
 Disciples score equipment from:
 
-- raw stats;
+- real compatible stats;
 - path depth;
 - active technique path;
 - learned combat skill paths;
@@ -102,7 +102,7 @@ Disciples score equipment from:
 - spend bias and wallet reserve;
 - sect equipment policy.
 
-A higher raw-stat item is not automatically better for every disciple.
+A higher raw-stat item is not automatically better for every disciple. The same item can have different effective combat power on different builds.
 
 ### Player equipment authority
 
@@ -114,6 +114,8 @@ The player can always:
 - unequip to sect storage.
 
 Manual locked slot overrides AI. Micromanagement remains optional.
+
+Unlocked slots are represented canonically by removing the lock key, not persisting `false`; this avoids exact save/load drift.
 
 ### Closed internal money
 
@@ -161,7 +163,9 @@ Quality roll is deterministic from simulation seed + forge index + recipe identi
 - `godot/src/simulation/state/disciple_state.gd`
 - `godot/src/simulation/core/simulation_scheduler.gd`
 - `godot/src/simulation/ai/decision_system.gd`
+- `godot/src/simulation/combat/combat_system.gd`
 - `godot/tests/simulation/p2_6_equipment_test.gd`
+- `godot/tests/simulation/p2_6_equipment_combat_effects_test.gd`
 - `godot/src/presentation/p2_6_equipment.gd`
 - `godot/scenes/p2/p2_6_equipment.tscn`
 - `tools/godot/Verify-P2-6.ps1`
@@ -170,9 +174,11 @@ Quality roll is deterministic from simulation seed + forge index + recipe identi
 
 Only the latest root `.cmd` launchers should remain: `Sync-P2-6.cmd` and `Verify-P2-6.cmd`. Older cumulative PowerShell verifiers remain under `tools/godot`.
 
+Root `.gitignore` ignores root `VERIFY*.txt` and diagnostic `.txt` output so local verification logs do not block `Sync-P2-6.cmd`.
+
 ## Current P2.6 runtime wiring
 
-Definitely implemented:
+Implemented in source:
 
 - combat wins create forge-material loot when P2.6 enabled;
 - returned materials are separated into the sect forge store before ordinary sale;
@@ -180,29 +186,41 @@ Definitely implemented:
 - autonomous equipment buying is build-aware and price-aware;
 - player manual equip / lock / unlock / unequip;
 - purchases conserve total money;
-- equipped combat-power bonus affects real P2.5 encounter power;
-- equipped combat-power bonus affects autonomous region choice;
+- equipment combat power is compatibility-adjusted by path/root/technique/learned skills;
+- equipment combat power affects real P2.5 encounter power;
+- equipment combat power affects autonomous region choice;
+- armor `defense_reduction` multiplies real incoming damage;
+- `move_speed`, `basic_speed`, `basic_range`, `basic_ratio` modify real P2.5 combat style;
+- `skill_effect` modifies real skill utility, hit damage and burn damage based on path/element match;
 - P2.6 state is serialized through existing SaveService v2.
 
-Equipment item schema also has defense reduction, skill-effect, movement/basic-speed/range/basic-ratio fields. These are intentionally NOT yet claimed as fully wired into CombatSystem. Do not describe them as runtime-complete until tests prove actual combat effects.
+All equipment hooks are gated behind `equipment_enabled`, so P2.5 remains behavior-compatible when the feature is off.
 
 ## P2.6 test contract
 
-`godot/tests/simulation/p2_6_equipment_test.gd` is intended to prove:
+`godot/tests/simulation/p2_6_equipment_test.gd` covers the main tycoon/economy/persistence loop:
 
 - P2.5 factory remains equipment-disabled;
 - hunt -> material deposit;
 - deterministic forging;
-- different builds value equipment differently;
+- different builds value and use equipment differently;
 - autonomous purchase works;
 - internal purchase money is conserved;
 - manual lock defeats AI replacement;
-- unlock returns control to AI;
+- unlock returns control to AI canonically;
 - equipment changes region selection;
-- equipment changes a controlled combat outcome;
+- equipment combat power changes controlled combat outcome;
 - save/load exact equality;
 - deterministic post-load continuation;
 - all prior invariants + equipment invariants.
+
+`godot/tests/simulation/p2_6_equipment_combat_effects_test.gd` separately proves real resolver wiring for:
+
+- armor damage reduction;
+- equipment skill-effect damage;
+- weapon basic speed/range behavior.
+
+`tools/godot/Verify-P2-6.ps1` runs both tests before the interaction scene smoke.
 
 ## Deferred
 
@@ -224,8 +242,12 @@ Master/disciple also remains deferred unless the user explicitly selects it late
 
 ## Next action
 
-When the Windows machine is back on and working tree is clean, run:
+When the Windows machine is back on:
 
-`Sync-P2-6.cmd`
+```bat
+cd /d "E:\0.2. TongMonBaDao"
+git pull origin main
+Sync-P2-6.cmd
+```
 
 The cumulative chain will first reproduce/diagnose P2.1. Fix the first failing gate, rerun the same command, and continue sequentially until P2.6 is actually reached and verified.
