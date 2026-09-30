@@ -21,8 +21,8 @@
 - Prefer small composition-oriented systems over giant manager scripts.
 - Do not call a change PASS without the active verification gate.
 - Locked P0, P1.1, P1.2 and P1.3 remain mandatory regression baselines.
-- P1.4, P1.5, P1.6, P2.1, P2.2 and P2.3 may be implemented while the user is away from the Windows machine, but none may be marked PASS without real Godot 4.7.2 runtime evidence.
-- New mechanics must have measurable gameplay/simulation impact; do not add story-only, title-only, rarity-label-only, elemental-label-only or decorative progress state.
+- P1.4, P1.5, P1.6, P2.1, P2.2, P2.3 and P2.4 may be implemented while the user is away from the Windows machine, but none may be marked PASS without real Godot 4.7.2 runtime evidence.
+- New mechanics must have measurable gameplay/simulation impact; do not add story-only, title-only, rarity-label-only, elemental-label-only, class-label-only or decorative progress state.
 
 ## Required loop
 
@@ -42,13 +42,14 @@ read checkpoint -> narrow scope -> patch -> static review -> headless import/par
 - P1.6: `tools/godot/Verify-P1-6.ps1`
 - P2.1: `tools/godot/Verify-P2-1.ps1`
 - P2.2: `tools/godot/Verify-P2-2.ps1`
+- P2.3: `tools/godot/Verify-P2-3.ps1`
 
-## Active P2.3 gate
+## Active P2.4 gate
 
-`tools/godot/Verify-P2-3.ps1`
+`tools/godot/Verify-P2-4.ps1`
 
-P2.3 adds Tàng Kinh Các ownership, in-game spirit-stone gacha, farmed technique fragments/materials, manual crafting/sale/archive choices, personal contribution + spirit-stone learning costs, up to three learned techniques with one active technique, mastery growth during cultivation, material-gated upgrades, technique path/element/role tags, and direct cultivation/breakthrough/combat/defense consequences.
+P2.4 derives Kiếm/Thể/Pháp identity from accumulated use history instead of assigning a fixed class. Cultivation and combat with the active P2.3 technique grow that technique path; switching techniques changes future growth without erasing prior history.
 
-P2.3 elemental roots exist only because they now affect technique compatibility. P2.2 must remain element-free and behavior-stable.
+Path depth must have real consequences: Kiếm affects effective combat power and hunting utility, Thể affects incoming damage and recovery/hunting utility, Pháp affects cultivation gain and cultivation utility, and same-path experience improves the active technique's real effects.
 
-P2.3 must not expand into fixed character classes, simultaneous multi-technique stacking, technique combat skills, master/disciple hierarchy, pills/equipment, premium/real-money gacha, pity/banner systems, secret realms, bosses/factions or combat-team V2.
+P2.4 must preserve P2.3 behavior when disabled and must not expand into master/disciple hierarchy, combat skills/moves, equipment, new profession paths, Dao event trees, pills, secret realms or factions.
