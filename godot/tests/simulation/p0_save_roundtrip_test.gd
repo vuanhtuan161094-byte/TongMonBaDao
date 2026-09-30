@@ -3,6 +3,7 @@ extends SceneTree
 const SAVE_PATH := "user://tong_mon_p0_roundtrip.json"
 const MALFORMED_SAVE_PATH := "user://tong_mon_p0_malformed.json"
 const INVALID_VERSION_SAVE_PATH := "user://tong_mon_p0_invalid_version.json"
+const ROUNDTRIP_FLOAT_TOLERANCE := 1.0e-12
 
 func _init() -> void:
 	call_deferred("_run")
@@ -14,9 +15,9 @@ func _run() -> void:
 
 	var before_snapshot := state.to_dict()
 	# Canonical in-memory state uses the same normalization path as a loaded save.
-	# This avoids treating JSON representation details (for example numeric Variant
-	# subtypes) as simulation-state corruption while still requiring every field to
-	# survive serialization and restoration.
+	# JSON can shift a float by the final representable bit while preserving the
+	# same printed decimal value, so float fields are compared with a very tight
+	# relative tolerance. Discrete state and RNG fields remain exact.
 	var control := SimulationState.from_dict(before_snapshot)
 	var canonical_snapshot := control.to_dict()
 
@@ -32,8 +33,9 @@ func _run() -> void:
 		return
 
 	var loaded_snapshot := loaded.to_dict()
-	if loaded_snapshot != canonical_snapshot:
-		_fail("Full-state mismatch after save/load round trip: %s" % _first_mismatch(canonical_snapshot, loaded_snapshot, "state"))
+	var roundtrip_mismatch := _first_mismatch(canonical_snapshot, loaded_snapshot, "state")
+	if roundtrip_mismatch != "":
+		_fail("Full-state mismatch after save/load round trip: %s" % roundtrip_mismatch)
 		return
 
 	if not _test_invalid_payload_rejection(service):
@@ -53,8 +55,9 @@ func _run() -> void:
 
 	var resumed_snapshot := loaded.to_dict()
 	var control_snapshot := control.to_dict()
-	if resumed_snapshot != control_snapshot:
-		_fail("Resumed simulation diverged from the same-state control: %s" % _first_mismatch(control_snapshot, resumed_snapshot, "state"))
+	var continuation_mismatch := _first_mismatch(control_snapshot, resumed_snapshot, "state")
+	if continuation_mismatch != "":
+		_fail("Resumed simulation diverged from the same-state control: %s" % continuation_mismatch)
 		return
 
 	print("P0 SAVE ROUNDTRIP TEST PASS")
@@ -113,6 +116,20 @@ func _first_mismatch(expected: Variant, actual: Variant, path: String) -> String
 			if mismatch != "":
 				return mismatch
 		return ""
+
+	if expected is float and actual is float:
+		var expected_float := float(expected)
+		var actual_float := float(actual)
+		var delta := absf(expected_float - actual_float)
+		var scale := maxf(1.0, maxf(absf(expected_float), absf(actual_float)))
+		if delta <= ROUNDTRIP_FLOAT_TOLERANCE * scale:
+			return ""
+		return "%s float mismatch expected=%.17f actual=%.17f delta=%.17g" % [
+			path,
+			expected_float,
+			actual_float,
+			delta
+		]
 
 	if expected != actual or typeof(expected) != typeof(actual):
 		return "%s expected(type=%s value=%s) actual(type=%s value=%s)" % [
