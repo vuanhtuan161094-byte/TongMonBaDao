@@ -21,7 +21,7 @@
 - Prefer small composition-oriented systems over giant manager scripts.
 - Do not call a change PASS without the active verification gate.
 - Locked P0, P1.1, P1.2 and P1.3 remain mandatory regression baselines.
-- P1.4, P1.5, P1.6, P2.1, P2.2, P2.3 and P2.4 may be implemented while the user is away from the Windows machine, but none may be marked PASS without real Godot 4.7.2 runtime evidence.
+- P1.4 through P2.5 may be implemented while the user is away from the Windows machine, but none may be marked PASS without real Godot 4.7.2 runtime evidence.
 - New mechanics must have measurable gameplay/simulation impact; do not add story-only, title-only, rarity-label-only, elemental-label-only, class-label-only or decorative progress state.
 
 ## Required loop
@@ -43,13 +43,18 @@ read checkpoint -> narrow scope -> patch -> static review -> headless import/par
 - P2.1: `tools/godot/Verify-P2-1.ps1`
 - P2.2: `tools/godot/Verify-P2-2.ps1`
 - P2.3: `tools/godot/Verify-P2-3.ps1`
+- P2.4: `tools/godot/Verify-P2-4.ps1`
 
-## Active P2.4 gate
+## Active P2.5 gate
 
-`tools/godot/Verify-P2-4.ps1`
+`tools/godot/Verify-P2-5.ps1`
 
-P2.4 derives Kiếm/Thể/Pháp identity from accumulated use history instead of assigning a fixed class. Cultivation and combat with the active P2.3 technique grow that technique path; switching techniques changes future growth without erasing prior history.
+P2.5 adds deterministic real-time autonomous combat when enabled. It models combat time, distance, approach/keep-distance behavior, melee/ranged basics, cast time, cooldown, projectile travel and a deliberately small set of meaningful short-lived effects.
 
-Path depth must have real consequences: Kiếm affects effective combat power and hunting utility, Thể affects incoming damage and recovery/hunting utility, Pháp affects cultivation gain and cultivation utility, and same-path experience improves the active technique's real effects.
+Combat skills are independent from P2.3 cultivation techniques. Technique is the cultivation foundation; realm gates capability; combat skills are separately learned actions. Do not turn one technique into a fixed five-skill class kit.
 
-P2.4 must preserve P2.3 behavior when disabled and must not expand into master/disciple hierarchy, combat skills/moves, equipment, new profession paths, Dao event trees, pills, secret realms or factions.
+Sword/Body/Spell must differ through actual spacing and combat behavior, not only coefficients. Spiritual-root affinity, P2.4 path expertise and compatible active technique may modify combat-skill effectiveness without hard-locking cross-path learning.
+
+P2.5 must preserve the exact P2.4 legacy combat resolver while `combat_skills_enabled == false`.
+
+Keep the phase intentionally bounded. Do not expand into frame-perfect hitboxes, ragdolls, detailed terrain collision, per-pixel projectiles, a universal combat resource, a final skill-slot system, multi-monster combat, real AOE, equipment, master/disciple, formations, bosses/factions or combat-team V2.
