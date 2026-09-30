@@ -1,72 +1,87 @@
-# Tông Môn Tycoon — P0 Simulation Sandbox
+# Tông Môn Bá Đạo — Tông Môn Tycoon
 
-Step 15 P0 foundation for **Tông Môn Bá Đạo**.
+Godot 4.7.2 / GDScript simulation project for an autonomous cultivation-sect management game.
 
-## Target
+## Core direction
 
-- Godot 4.7.2
-- GDScript
-- Portrait debug runtime: 390x844
-- Godot/GDScript is the simulation authority from day one.
-- No JS gameplay bridge.
-- Deterministic seeded simulation.
-- Static definitions are separated from runtime state.
-- P0 scope: 6 disciples, 3 regions, 3 monster species, autonomous hunt/combat/loot/economy/recovery loop.
+The player builds and manages a sect instead of directly puppeting every disciple.
 
-## P0 executable loop
+Disciples act autonomously from personality, goals, relationships, memories, organization, sect resources, cultivation realm, spiritual roots, techniques, accumulated Kiếm/Thể/Pháp path history, learned combat skills and equipment.
 
-EVALUATE -> HUNT -> TRAVEL -> COMBAT -> LOOT -> EVALUATE
+Godot/GDScript is the gameplay authority. The simulation is deterministic and seeded; save/load and invariants are part of every phase contract.
 
-Recovery/economy branches:
+## Implemented stack
 
-RETURN_SECT -> SELL / BUY / HEAL / REST -> EVALUATE
+- P0 — autonomous hunt/combat/loot/economy/recovery foundation.
+- P1.1 — goals + personality.
+- P1.2 — recruitment + player choice.
+- P1.3 — relationships.
+- P1.4 — consequential memory.
+- P1.5 — teams, leadership and roles.
+- P1.6 — sect needs and resource pressure.
+- P2.1 — cultivation, realms and breakthroughs.
+- P2.2 — spiritual-root quality/elements.
+- P2.3 — technique economy, library and mastery.
+- P2.4 — classless Kiếm/Thể/Pháp identity from accumulated path XP.
+- P2.5 — deterministic real-time autonomous combat skills.
+- P2.6 — Luyện Khí / forge / equipment tycoon loop.
 
-## P0 verification
+## P2.6 loop
 
-### Windows — easiest
+`hunt -> forge materials -> Luyện Khí Đường -> equipment -> sect storage/shop -> autonomous purchase or player allocation -> stronger disciple -> harder hunt`
 
-Double-click:
+P2.6 supports:
 
-```text
-Verify-P0.cmd
+- deterministic forging and quality;
+- sect equipment storage/shop;
+- build-aware autonomous equipment purchasing;
+- closed internal money transfer from disciple wallet to sect treasury;
+- manual equip by the player;
+- slot lock to override AI;
+- return-to-auto;
+- path/root/skill compatibility that changes real equipment effectiveness;
+- equipment effects on region choice and P2.5 combat;
+- exact SaveService v2 persistence.
+
+See `docs/P2_6_SPEC.md` for the current contract.
+
+## Runtime status
+
+Real Windows/Godot 4.7.2 evidence currently confirms P0 through P1.6 PASS.
+
+The first unresolved cumulative runtime gate is P2.1 save/load persistence. A dedicated first-difference diagnostic is already chained into `Verify-P2-1.ps1`.
+
+P2.2 through P2.6 are implemented but must not be called PASS until the cumulative runtime gate reaches and verifies them.
+
+See `CURRENT_CHECKPOINT.md` for the authoritative status.
+
+## Windows — authoritative verification
+
+After updating local `main`:
+
+```bat
+cd /d "E:\0.2. TongMonBaDao"
+git pull origin main
+Sync-P2-6.cmd
 ```
 
-The verifier auto-discovers Godot 4.7.2 from PATH, a running Godot process, Downloads/Desktop, or the repository. If needed, set `GODOT_BIN` to the exact executable path.
+`Sync-P2-6.cmd` fast-forwards a clean local `main` and runs the cumulative P0 -> P2.6 verification chain.
 
-### PowerShell
+Direct verification without sync:
 
-```powershell
-pwsh -File tools/godot/Verify-P0.ps1
+```bat
+Verify-P2-6.cmd
 ```
 
-The gate runs:
+Older phase PowerShell verifiers remain under `tools/godot` because the cumulative chain depends on them. Only the latest root `.cmd` launchers are kept.
 
-1. Godot import.
-2. GDScript parse checks.
-3. decision contracts.
-4. economy contracts.
-5. 20,000-tick invariant scenario.
-6. save/load resumed simulation.
-7. same-seed reproducibility.
-8. 8-seed × 12,000-tick benchmark.
-9. bounded headless runtime smoke.
+## Development rules
 
-A successful benchmark writes `godot/reports/p0_benchmark.json`.
+Read in order before changing simulation code:
 
-The GitHub Actions workflow is currently manual-only because the first two jobs were never assigned a runner. Once GitHub can start the runner, the same P0 gate can be dispatched from Actions.
+1. `AGENTS.md`
+2. `CURRENT_CHECKPOINT.md`
+3. `NEXT_CHAT_HANDOFF.md`
+4. the active phase spec under `docs/`
 
-## Run the debug sandbox
-
-```powershell
-godot --path godot
-```
-
-## Skill snapshot
-
-`tools/godot/Vendor-GodotSkills.ps1` downloads the explicitly pinned `vl4dt/godot-skills` snapshot and copies only the selected skills into `/skills`.
-
-See `skills/SOURCE_LOCK.md`.
-
-## Status
-
-Do not call P0 PASS from source inspection or mirror simulation. P0 becomes green only when the Godot runtime gate is green.
+Do not mark a phase PASS from source inspection alone. Runtime evidence must come from the real Godot gate.
