@@ -5,6 +5,7 @@ var state: SimulationState
 var rng: GameRng
 var goal_system := GoalSystem.new()
 var decision_system := DecisionSystem.new()
+var relationship_system := RelationshipSystem.new()
 var economy_system := EconomySystem.new()
 var combat_system := CombatSystem.new()
 
@@ -64,7 +65,10 @@ func _step_disciple(disciple: DiscipleState) -> void:
         &"COMBAT":
             var result := combat_system.resolve_encounter(state, disciple, rng)
             disciple.stamina = maxf(0.0, disciple.stamina - 10.0)
-            match str(result.get("outcome", "invalid")):
+            var outcome := str(result.get("outcome", "invalid"))
+            if state.p1_relationships_enabled:
+                relationship_system.record_local_combat_outcome(state, disciple, outcome)
+            match outcome:
                 "win":
                     disciple.pending_loot = result.get("loot", {}).duplicate(true)
                     disciple.current_action = &"LOOT"
