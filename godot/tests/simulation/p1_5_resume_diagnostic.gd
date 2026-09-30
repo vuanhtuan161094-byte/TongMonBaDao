@@ -27,7 +27,9 @@ func _run() -> void:
         _fail("diagnostic load failed")
         return
 
-    var immediate := _first_difference(state.to_dict(), loaded.to_dict(), "state")
+    var initial_control: Dictionary = state.to_dict()
+    var initial_loaded: Dictionary = loaded.to_dict()
+    var immediate := _first_difference(initial_control, initial_loaded, "state")
     if immediate != "":
         print("P1.5 DIAGNOSTIC: DIFFERENCE EXISTS IMMEDIATELY AFTER LOAD")
         print(immediate)
@@ -42,14 +44,21 @@ func _run() -> void:
     for offset in range(1, CONTINUATION_TICKS + 1):
         control_scheduler.step()
         loaded_scheduler.step()
-        var difference := _first_difference(state.to_dict(), loaded.to_dict(), "state")
-        if difference != "":
-            print("P1.5 DIAGNOSTIC: FIRST DIVERGENCE AT CONTINUATION STEP ", offset, " / TICK ", state.tick)
-            print(difference)
-            print("control_rng=", state.rng_state, " loaded_rng=", loaded.rng_state)
-            _cleanup()
-            quit(3)
-            return
+
+        var control_snapshot: Dictionary = state.to_dict()
+        var loaded_snapshot: Dictionary = loaded.to_dict()
+        if control_snapshot != loaded_snapshot:
+            var difference := _first_difference(control_snapshot, loaded_snapshot, "state")
+            if difference != "":
+                print("P1.5 DIAGNOSTIC: FIRST DIVERGENCE AT CONTINUATION STEP ", offset, " / TICK ", state.tick)
+                print(difference)
+                print("control_rng=", state.rng_state, " loaded_rng=", loaded.rng_state)
+                _cleanup()
+                quit(3)
+                return
+
+        if offset % 100 == 0:
+            print("P1.5 DIAGNOSTIC: checked continuation step ", offset, " / ", CONTINUATION_TICKS)
 
     print("P1.5 DIAGNOSTIC PASS: no divergence across ", CONTINUATION_TICKS, " continuation ticks")
     _cleanup()
