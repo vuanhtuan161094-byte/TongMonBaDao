@@ -1,7 +1,7 @@
 class_name SaveService
 extends RefCounted
 
-const CURRENT_VERSION := 1
+const CURRENT_VERSION := 2
 
 func save_to_path(state: SimulationState, path: String) -> Error:
     var payload := state.to_dict()
@@ -11,8 +11,9 @@ func save_to_path(state: SimulationState, path: String) -> Error:
     if file == null:
         return FileAccess.get_open_error()
 
-    # Preserve simulation floats exactly enough for deterministic resume.
-    file.store_string(JSON.stringify(payload, "", true, true))
+    # JSON decimal parsing can shift a float by one ULP even with full_precision.
+    # Version 2 stores float64 bytes losslessly; runtime state stays unchanged.
+    file.store_string(JSON.stringify(_encode_floats(payload), "", true, true))
     file.close()
     return OK
 
@@ -40,6 +41,9 @@ func load_from_path(path: String) -> SimulationState:
         push_error("SaveService: save version %d is newer than supported %d." % [version, CURRENT_VERSION])
         return null
 
+    if version == 2:
+        data = _decode_floats(data)
+
     data = _migrate(data, version)
     if data.is_empty():
         return null
@@ -58,6 +62,9 @@ func _migrate(data: Dictionary, version: int) -> Dictionary:
             0:
                 migrated["save_version"] = 1
                 current = 1
+            1:
+                migrated["save_version"] = 2
+                current = 2
             _:
                 push_error("SaveService: unknown migration path from version %d." % current)
                 return {}
@@ -80,3 +87,39 @@ func _is_payload_shape_valid(data: Dictionary) -> bool:
         return false
 
     return true
+
+# This tag is reserved by the version-2 wire format, never exposed to state/UI.
+func _encode_floats(value: Variant) -> Variant:
+    if value is float:
+        var bytes := PackedByteArray()
+        bytes.resize(8)
+        bytes.encode_double(0, value)
+        return {"__float64": bytes.hex_encode()}
+    if value is Dictionary:
+        var result: Dictionary = {}
+        for key in value:
+            result[key] = _encode_floats(value[key])
+        return result
+    if value is Array:
+        var result: Array = []
+        for item in value:
+            result.append(_encode_floats(item))
+        return result
+    return value
+
+func _decode_floats(value: Variant) -> Variant:
+    if value is Dictionary:
+        if value.size() == 1 and value.has("__float64"):
+            var bytes := str(value["__float64"]).hex_decode()
+            if bytes.size() == 8:
+                return bytes.decode_double(0)
+        var result: Dictionary = {}
+        for key in value:
+            result[key] = _decode_floats(value[key])
+        return result
+    if value is Array:
+        var result: Array = []
+        for item in value:
+            result.append(_decode_floats(item))
+        return result
+    return value

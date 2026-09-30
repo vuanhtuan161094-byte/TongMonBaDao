@@ -9,6 +9,9 @@ func _init() -> void:
     call_deferred("_run")
 
 func _run() -> void:
+    if not _verify_save_formats():
+        _fail("save format compatibility/lossless regression")
+        return
     var organization := OrganizationSystem.new()
     var state := P15Factory.create_state(TEST_SEED)
     var ids: Array = state.disciples.keys()
@@ -66,10 +69,6 @@ func _run() -> void:
 
 func _first_difference(left: Variant, right: Variant, path: String) -> String:
     if typeof(left) != typeof(right):
-        # JSON round-trip legitimately turns StringName into String in nested UI/debug dictionaries.
-        if (left is StringName and right is String) or (left is String and right is StringName):
-            if str(left) == str(right):
-                return ""
         return "%s type differs: %s vs %s | values=%s vs %s" % [path, type_string(typeof(left)), type_string(typeof(right)), str(left), str(right)]
 
     if left is Dictionary:
@@ -86,6 +85,9 @@ func _first_difference(left: Variant, right: Variant, path: String) -> String:
                 return "%s keys differ: %s vs %s" % [path, str(left_keys[index]), str(right_keys[index])]
             var key_left: Variant = left_keys[index]
             var key_right: Variant = right_keys[index]
+            var key_difference := _first_difference(key_left, key_right, "%s.<key:%s>" % [path, str(key_left)])
+            if key_difference != "":
+                return key_difference
             var child := _first_difference(left_dict[key_left], right_dict[key_right], "%s.%s" % [path, str(key_left)])
             if child != "":
                 return child
@@ -103,8 +105,8 @@ func _first_difference(left: Variant, right: Variant, path: String) -> String:
         return ""
 
     if left is float:
-        if absf(float(left) - float(right)) > 0.000000001:
-            return "%s float differs: %.17g vs %.17g" % [path, float(left), float(right)]
+        if left != right:
+            return "%s float differs: %.17f (float) vs %.17f (float)" % [path, float(left), float(right)]
         return ""
 
     if left != right:
@@ -119,3 +121,35 @@ func _fail(message: String) -> void:
     push_error(message)
     _cleanup()
     quit(1)
+
+func _verify_save_formats() -> bool:
+    var service := SaveService.new()
+    var fixture := P15Factory.create_state(TEST_SEED)
+    var disciple: DiscipleState = fixture.disciples.values()[0]
+    disciple.last_decision = {
+        "nested": [{"positive": 120.48151387023925, "negative": -120.48151387023925}],
+        "zero": 0.0,
+        "fraction": 0.1
+    }
+    if service.save_to_path(fixture, SAVE_PATH) != OK:
+        return false
+    var loaded := service.load_from_path(SAVE_PATH)
+    if loaded == null or _first_difference(fixture.to_dict(), loaded.to_dict(), "fixture") != "":
+        return false
+
+    # Legacy JSON saves retain their existing interpretation, including v0 migration.
+    for version in [0, 1]:
+        var payload := fixture.to_dict()
+        payload["save_version"] = version
+        var raw := JSON.stringify(payload, "", true, true)
+        var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+        if file == null:
+            return false
+        file.store_string(raw)
+        file.close()
+        var expected := SimulationState.from_dict(JSON.parse_string(raw))
+        loaded = service.load_from_path(SAVE_PATH)
+        if loaded == null or _first_difference(expected.to_dict(), loaded.to_dict(), "legacy") != "":
+            return false
+    print("P1.5 SAVE FORMAT PASS: nested float64 exact; legacy v0/v1 readable")
+    return true
