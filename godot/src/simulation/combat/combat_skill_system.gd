@@ -74,7 +74,7 @@ func skill_name(skill_id: StringName) -> String:
 func can_learn_skill(state: SimulationState, disciple: DiscipleState, skill_id: StringName) -> bool:
     if not state.sect.combat_skills_enabled:
         return false
-    var data := definition(skill_id)
+    var data: Dictionary = definition(skill_id)
     if data.is_empty():
         return false
     return disciple.cultivation_stage_index >= int(data.get("min_stage", 0))
@@ -82,7 +82,7 @@ func can_learn_skill(state: SimulationState, disciple: DiscipleState, skill_id: 
 func learn_skill(state: SimulationState, disciple: DiscipleState, skill_id: StringName) -> bool:
     if not can_learn_skill(state, disciple, skill_id):
         return false
-    var key := str(skill_id)
+    var key: String = str(skill_id)
     if bool(disciple.learned_combat_skills.get(key, false)):
         return false
     disciple.learned_combat_skills[key] = true
@@ -96,7 +96,7 @@ func usable_skills(state: SimulationState, disciple: DiscipleState) -> Array[Str
     var keys: Array = disciple.learned_combat_skills.keys()
     keys.sort()
     for raw_id in keys:
-        var skill_id := StringName(raw_id)
+        var skill_id: StringName = StringName(raw_id)
         if bool(disciple.learned_combat_skills.get(str(skill_id), false)) and can_learn_skill(state, disciple, skill_id):
             result.append(skill_id)
     return result
@@ -104,18 +104,18 @@ func usable_skills(state: SimulationState, disciple: DiscipleState) -> Array[Str
 func effect_multiplier(state: SimulationState, disciple: DiscipleState, skill_id: StringName) -> float:
     if not state.sect.combat_skills_enabled:
         return 1.0
-    var data := definition(skill_id)
+    var data: Dictionary = definition(skill_id)
     if data.is_empty():
         return 1.0
-    var multiplier := 1.0
-    var skill_path := StringName(data.get("path", ""))
-    var skill_element := StringName(data.get("element", ""))
+    var multiplier: float = 1.0
+    var skill_path: StringName = StringName(data.get("path", ""))
+    var skill_element: StringName = StringName(data.get("element", ""))
     if state.sect.spiritual_roots_enabled:
         multiplier *= roots.technique_effect_multiplier(disciple, skill_element)
     if state.sect.cultivation_paths_enabled:
         multiplier *= paths.technique_effect_multiplier(state, disciple, skill_path)
     if state.sect.techniques_enabled and disciple.active_technique_id != &"":
-        var technique := TechniqueSystem.TECHNIQUES.get(str(disciple.active_technique_id), {})
+        var technique: Dictionary = TechniqueSystem.TECHNIQUES.get(str(disciple.active_technique_id), {})
         if not technique.is_empty() and str(technique.get("path", "")) == str(skill_path):
             multiplier *= 1.08
             if str(technique.get("element", "")) == str(skill_element):
@@ -123,7 +123,7 @@ func effect_multiplier(state: SimulationState, disciple: DiscipleState, skill_id
     return multiplier
 
 func style_profile(state: SimulationState, disciple: DiscipleState) -> Dictionary:
-    var path := paths.active_technique_path(disciple) if state.sect.cultivation_paths_enabled else &""
+    var path: StringName = paths.active_technique_path(disciple) if state.sect.cultivation_paths_enabled else &""
     match path:
         PATH_SWORD:
             return {"id":"sword", "preferred_distance":1.65, "move_speed":3.10, "basic_range":1.90, "basic_interval":1.10, "basic_ratio":1.00}
@@ -142,10 +142,10 @@ func record_combat_path_experience(state: SimulationState, disciple: DiscipleSta
 
     var counts: Dictionary = {}
     for raw_skill_id in result.get("skills_used", []):
-        var data := definition(StringName(raw_skill_id))
+        var data: Dictionary = definition(StringName(raw_skill_id))
         if data.is_empty():
             continue
-        var path_id := StringName(data.get("path", ""))
+        var path_id: StringName = StringName(data.get("path", ""))
         if not CultivationPathSystem.VALID_PATHS.has(path_id):
             continue
         counts[str(path_id)] = int(counts.get(str(path_id), 0)) + 1
@@ -155,16 +155,16 @@ func record_combat_path_experience(state: SimulationState, disciple: DiscipleSta
 
     var ordered_paths: Array = counts.keys()
     ordered_paths.sort()
-    var dominant_path := StringName(ordered_paths[0])
-    var dominant_count := int(counts[str(dominant_path)])
+    var dominant_path: StringName = StringName(ordered_paths[0])
+    var dominant_count: int = int(counts[str(dominant_path)])
     for raw_path in ordered_paths:
-        var path_id := StringName(raw_path)
-        var count := int(counts[str(path_id)])
+        var path_id: StringName = StringName(raw_path)
+        var count: int = int(counts[str(path_id)])
         if count > dominant_count:
             dominant_path = path_id
             dominant_count = count
 
-    var amount := CultivationPathSystem.COMBAT_WIN_XP if outcome == "win" else CultivationPathSystem.COMBAT_OTHER_XP
+    var amount: float = CultivationPathSystem.COMBAT_WIN_XP if outcome == "win" else CultivationPathSystem.COMBAT_OTHER_XP
     return paths.add_experience(state, disciple, dominant_path, amount)
 
 func validate_invariants(state: SimulationState) -> Array[String]:
@@ -178,7 +178,7 @@ func validate_invariants(state: SimulationState) -> Array[String]:
     for disciple_value in state.disciples.values():
         var disciple: DiscipleState = disciple_value
         for raw_id in disciple.learned_combat_skills.keys():
-            var skill_id := StringName(raw_id)
+            var skill_id: StringName = StringName(raw_id)
             if definition(skill_id).is_empty():
                 errors.append("%s knows missing combat skill %s." % [disciple.display_name, skill_id])
             elif not bool(disciple.learned_combat_skills.get(str(skill_id), false)):
