@@ -68,14 +68,15 @@ func evaluate(state: SimulationState, disciple: DiscipleState) -> Dictionary:
 
 func choose_region(state: SimulationState, disciple: DiscipleState) -> StringName:
     var best_id: StringName = &""
-    var best_score := -1.0e30
+    var best_score: float = -1.0e30
     var region_scores: Dictionary = {}
 
-    for region in state.regions.values():
-        var risk_adjustment := (disciple.risk_bias * 2.0 - 1.0) * float(region.danger) * REGION_RISK_WEIGHT
-        var power_gap := maxf(0.0, region.recommended_power - disciple.combat_power)
-        var underpower_penalty := power_gap * UNDERPOWER_PENALTY
-        var score := region.profit_modifier * 100.0 + risk_adjustment - underpower_penalty
+    for region_value in state.regions.values():
+        var region: RegionState = region_value
+        var risk_adjustment: float = (disciple.risk_bias * 2.0 - 1.0) * float(region.danger) * REGION_RISK_WEIGHT
+        var power_gap: float = maxf(0.0, region.recommended_power - disciple.combat_power)
+        var underpower_penalty: float = power_gap * UNDERPOWER_PENALTY
+        var score: float = region.profit_modifier * 100.0 + risk_adjustment - underpower_penalty
         region_scores[str(region.id)] = score
 
         if score > best_score:
