@@ -137,6 +137,12 @@ func _verify_personalized_auto_choice_and_closed_money() -> bool:
     if equipment.equipment_score(state, spell_user, staff) <= equipment.equipment_score(state, spell_user, sword):
         _fail("P2.6 spell-oriented disciple did not prefer the spell-compatible item.")
         return false
+    if equipment.effective_combat_bonus_for_item(sword_user, sword) <= equipment.effective_combat_bonus_for_item(sword_user, staff):
+        _fail("P2.6 path/root compatibility did not make the sword more effective for the sword build.")
+        return false
+    if equipment.effective_combat_bonus_for_item(spell_user, staff) <= equipment.effective_combat_bonus_for_item(spell_user, sword):
+        _fail("P2.6 path/root compatibility did not make the staff more effective for the spell build.")
+        return false
 
     var money_before := state.total_money()
     if not equipment.try_auto_upgrade(state, sword_user):
@@ -173,6 +179,9 @@ func _verify_manual_equip_lock_and_return_to_auto() -> bool:
 
     if not equipment.return_slot_to_auto(state, actor.id, EquipmentSystem.SLOT_WEAPON):
         _fail("P2.6 player could not return a slot to autonomous equipment control.")
+        return false
+    if actor.locked_equipment_slots.has("weapon"):
+        _fail("P2.6 unlocked slot left a non-canonical false lock entry behind.")
         return false
     if not equipment.try_auto_upgrade(state, actor):
         _fail("P2.6 autonomous equipment did not resume after unlocking the slot.")
