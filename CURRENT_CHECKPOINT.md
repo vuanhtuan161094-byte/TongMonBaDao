@@ -8,9 +8,10 @@ Date: 2026-09-30
 - Step 14 P0 Prototype Specification: LOCKED.
 - Step 15 Repository Bootstrap + P0 Foundation: LOCKED / PASS.
 - Step 16 P1.1 Goal + Personality: LOCKED / PASS.
-- Step 17 P1.2 Population + Recruitment + Player Choice: IMPLEMENTED / AWAITING RUNTIME GATE.
+- Step 17 P1.2 Population + Recruitment + Player Choice: LOCKED / PASS.
 
 Locked baseline before P1.2: `52812fbecb94a787cb9678c3ff999024478f026a`.
+P1.2 implementation commit: `c956182652d14b3136ddad4b871611fe4adcb597`.
 
 ## Architecture locks
 
@@ -93,9 +94,9 @@ P1.1 runtime evidence on Godot `4.7.2.stable.official.ed1daf0bf`:
 - simulation invariants: PASS;
 - final markers: `P1.1 GOAL + PERSONALITY GATE: PASS` and `P1.1 GATE: PASS`.
 
-## Active P1.2 — Population + Recruitment + Player Choice
+## Locked P1.2 — Population + Recruitment + Player Choice
 
-P1.2 is intentionally narrow. It introduces the first direct player influence over individual characters without turning disciples into puppets.
+P1.2 introduces the first direct player influence over individual characters without turning disciples into puppets.
 
 Implemented design:
 
@@ -145,17 +146,43 @@ P1.2 verification contract:
 
 Authoritative command: `Sync-P1-2.cmd`.
 
-Expected successful end markers:
+## Runtime verification evidence — P1.2 — 2026-09-30
+
+Environment:
+
+- Godot `4.7.2.stable.official.ed1daf0bf`.
+- Local authoritative gate: `Sync-P1-2.cmd` → full P0 gate → locked P1.1 gate → P1.2 recruitment/player-choice contracts → recruitment interaction-scene smoke.
+
+Result:
 
 - `P0 FOUNDATION GATE: PASS`
+- `P1.1 GOAL + PERSONALITY TEST PASS`
 - `P1.1 GOAL + PERSONALITY GATE: PASS`
 - `P1.2 RECRUITMENT + PLAYER CHOICE TEST PASS`
 - `P1.2 RECRUITMENT + PLAYER CHOICE GATE: PASS`
 - `P1.2 GATE: PASS`
 
-## P1.2 exclusions
+Recorded P1.2 evidence:
 
-Do not open these systems until P1.2 is locked:
+- seed: 616161;
+- deterministic continuation ticks: 1,200;
+- ending disciples: 8;
+- capacity: 8;
+- accepted: 2;
+- rejected: 1;
+- same-seed candidate generation: PASS;
+- accept/reject player-choice divergence: PASS;
+- capacity blocking: PASS;
+- recruitment money conservation: PASS;
+- accepted recruit personality + active-goal integration: PASS;
+- recruitment save/load persistence: PASS;
+- deterministic continuation after save/load: PASS;
+- recruitment interaction scene smoke: PASS;
+- P0 and P1.1 regressions remained green in the same run.
+
+## P1.2 exclusions retained
+
+P1.2 does not open:
 
 - relationships;
 - memory;
@@ -169,6 +196,6 @@ Do not open these systems until P1.2 is locked:
 
 - P0: PASS / LOCKED.
 - P1.1 Goal + Personality: PASS / LOCKED.
-- P1.2 Population + Recruitment + Player Choice: implementation present, runtime proof required before lock.
+- P1.2 Population + Recruitment + Player Choice: PASS / LOCKED.
 
-Next closure condition: run `Sync-P1-2.cmd` on the local Windows/Godot 4.7.2 environment. If every P0/P1.1 regression and P1.2 contract/scene smoke test passes, record the exact runtime evidence and mark Step 17 `LOCKED / PASS`.
+Next step: open P1.3 only against the locked P0 + P1.1 + P1.2 baseline. The next slice should introduce simple interpersonal relationships while preserving player agency, deterministic simulation, save/load behavior, economy invariants, and all prior gates.
