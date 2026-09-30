@@ -86,7 +86,7 @@ User-approved loop:
 Default:
 
 - disciples autonomously evaluate and buy meaningful upgrades;
-- evaluation considers raw stats, path depth, active technique path, learned combat skills, root element, personality, price, spend bias and sect policy.
+- evaluation considers actual compatible stats, path depth, active technique path, learned combat skills, root element, personality, price, spend bias and sect policy.
 
 Player always retains direct control:
 
@@ -95,7 +95,7 @@ Player always retains direct control:
 - unlock / return slot to auto;
 - unequip back to sect storage.
 
-Manual lock overrides autonomous equipment choice.
+Manual lock overrides autonomous equipment choice. Unlocked slots are canonicalized by removing the lock key rather than persisting `false`, avoiding exact save/load representation drift.
 
 ### Closed internal money
 
@@ -132,28 +132,33 @@ Quality tiers are deterministic from seed + forge index + recipe:
 - Tinh phẩm;
 - Thượng phẩm.
 
-P2.6 is classless: path/element affect suitability, not legality.
+P2.6 is classless: path/element affect suitability and effectiveness, not legality.
 
-### P2.6 real consequences
+### P2.6 real consequences now wired
 
 Implemented connections:
 
 - combat victory can produce forge materials;
 - returning/selling deposits forge materials into the sect forge store before ordinary sale;
-- forging consumes materials and creates a unique item instance;
+- forging consumes materials and creates a unique deterministic item instance;
 - shop purchase transfers money internally without changing total money;
-- equipment combat-power bonus affects P2.5 encounter power;
-- equipment combat-power bonus also affects autonomous region selection, allowing gear progression to change where a disciple is willing to hunt;
-- manual equip + lock/unlock state persists.
+- compatible equipment combat-power bonus affects P2.5 encounter power;
+- equipment power affects autonomous region selection, allowing gear progression to change where a disciple is willing to hunt;
+- `defense_reduction` multiplies real incoming damage in the P2.5 real-time resolver;
+- `move_speed`, `basic_speed`, `basic_range` and `basic_ratio` modify the real P2.5 combat style;
+- `skill_effect` modifies real combat-skill utility/damage and damage-over-time effects according to item path/element compatibility;
+- the same item can provide different effective combat power to different builds;
+- manual equip + lock/unlock state persists canonically.
 
-Equipment schema also includes defense, skill-effect, movement/basic-speed/range/ratio modifiers. These are reserved for continued P2.6 wiring and must not be described as runtime-complete until a real gate proves their CombatSystem integration.
+P2.5 behavior remains unchanged while `equipment_enabled == false`.
 
 ### Verification assets
 
 - spec: `docs/P2_6_SPEC.md`;
 - system: `godot/src/simulation/equipment/equipment_system.gd`;
 - factory: `godot/src/simulation/core/p2_6_factory.gd`;
-- test: `godot/tests/simulation/p2_6_equipment_test.gd`;
+- economy/save/determinism test: `godot/tests/simulation/p2_6_equipment_test.gd`;
+- combat-stat consequence test: `godot/tests/simulation/p2_6_equipment_combat_effects_test.gd`;
 - scene: `godot/scenes/p2/p2_6_equipment.tscn`;
 - presentation: `godot/src/presentation/p2_6_equipment.gd`;
 - verifier: `tools/godot/Verify-P2-6.ps1`;
@@ -162,26 +167,31 @@ Equipment schema also includes defense, skill-effect, movement/basic-speed/range
 
 Only the latest root launchers are kept. Older phase PowerShell verifiers stay under `tools/godot` because cumulative verification depends on them.
 
+Root `.gitignore` ignores local `VERIFY*.txt` and diagnostic `.txt` logs so redirected verification output no longer blocks the sync cleanliness check.
+
 ## P2.6 gate contract
 
-The gate must prove at minimum:
+The cumulative gate must prove at minimum:
 
 1. P2.5 remains equipment-disabled.
 2. Combat victories produce and return forge materials.
 3. Same seed/index/recipe produces deterministic forged quality/stats.
 4. Forging consumes materials and creates unique equipment instances.
-5. Different disciple builds score the same gear differently.
+5. Different disciple builds value and receive different real effectiveness from compatible gear.
 6. Autonomous buying chooses meaningful upgrades.
 7. Internal equipment buying conserves total money.
 8. Manual equip works.
 9. Locked slots cannot be replaced by AI.
-10. Unlocking returns control to AI.
+10. Unlocking returns control to AI without a false lock persistence artifact.
 11. Equipment power changes autonomous region choice.
-12. Equipment power changes controlled combat outcome.
-13. Full P2.6 state survives save/load exactly.
-14. Post-load continuation remains deterministic.
-15. All prior invariants remain green.
-16. P2.6 interaction scene launches on Godot 4.7.2.
+12. Equipment combat power changes controlled combat outcome.
+13. Armor defense reduction changes real incoming damage.
+14. Equipment skill effect changes real combat-skill damage.
+15. Equipment basic speed/range changes real basic-combat behavior.
+16. Full P2.6 state survives save/load exactly.
+17. Post-load continuation remains deterministic.
+18. All prior invariants remain green.
+19. P2.6 interaction scene launches on Godot 4.7.2.
 
 ## Deferred after the vertical slice
 
@@ -201,8 +211,12 @@ Not yet part of P2.6 runtime completion:
 
 ## Next authoritative command
 
-When the Windows machine is available and the working tree is clean:
+When the Windows machine is available:
 
-`Sync-P2-6.cmd`
+```bat
+cd /d "E:\0.2. TongMonBaDao"
+git pull origin main
+Sync-P2-6.cmd
+```
 
 Expected first useful evidence is still the P2.1 persistence diagnostic. Fix the first failing gate, rerun the same cumulative command, and continue until P2.6 is reached.
