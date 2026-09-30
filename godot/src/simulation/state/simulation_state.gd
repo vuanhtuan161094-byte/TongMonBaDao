@@ -36,6 +36,14 @@ var p1_memory_enabled: bool = false
 var memories: Dictionary = {}
 var memory_event_count: int = 0
 
+# P1.5 adds bounded teams, leadership and player-assigned organizational roles.
+# disciple_team_ids provides O(1) team lookup so decisions never scan the whole sect.
+var p1_organization_enabled: bool = false
+var teams: Dictionary = {}
+var disciple_team_ids: Dictionary = {}
+var role_assignments: Dictionary = {}
+var organization_change_count: int = 0
+
 func total_money() -> int:
     var total := sect.treasury
     for disciple in disciples.values():
@@ -131,6 +139,44 @@ func validate_invariants() -> Array[String]:
             if memory.occurrences <= 0:
                 errors.append("Memory %s has invalid occurrence count." % memory.id)
 
+    var seen_team_members: Dictionary = {}
+    for raw_team_id in teams.keys():
+        var team: TeamState = teams[raw_team_id]
+        if team.id == &"":
+            errors.append("Organization contains a team with an empty id.")
+            continue
+        if team.member_ids.size() > OrganizationSystem.MAX_TEAM_SIZE:
+            errors.append("Team %s exceeds the member cap." % team.id)
+        if team.leader_id != &"" and not team.member_ids.has(team.leader_id):
+            errors.append("Team %s leader is not a team member." % team.id)
+        for member_id in team.member_ids:
+            if not disciples.has(member_id):
+                errors.append("Team %s references missing disciple %s." % [team.id, member_id])
+                continue
+            if seen_team_members.has(str(member_id)):
+                errors.append("Disciple %s belongs to multiple teams." % member_id)
+            seen_team_members[str(member_id)] = str(team.id)
+            if str(disciple_team_ids.get(str(member_id), "")) != str(team.id):
+                errors.append("Disciple %s team lookup is inconsistent." % member_id)
+
+    for raw_disciple_id in disciple_team_ids.keys():
+        var disciple_id := StringName(raw_disciple_id)
+        var team_id := str(disciple_team_ids[raw_disciple_id])
+        if not disciples.has(disciple_id):
+            errors.append("Team lookup references missing disciple %s." % disciple_id)
+            continue
+        var team: TeamState = teams.get(team_id)
+        if team == null or not team.member_ids.has(disciple_id):
+            errors.append("Team lookup %s -> %s is inconsistent." % [disciple_id, team_id])
+
+    for raw_disciple_id in role_assignments.keys():
+        var disciple_id := StringName(raw_disciple_id)
+        var role_id := StringName(role_assignments[raw_disciple_id])
+        if not disciples.has(disciple_id):
+            errors.append("Role assignment references missing disciple %s." % disciple_id)
+        elif not OrganizationSystem.VALID_ROLES.has(role_id):
+            errors.append("Disciple %s has invalid role %s." % [disciple_id, role_id])
+
     if initial_total_money > 0 and total_money() != initial_total_money:
         errors.append("Money conservation failed: expected %d, got %d" % [initial_total_money, total_money()])
 
@@ -174,6 +220,13 @@ func to_dict() -> Dictionary:
             var memory: MemoryState = value
             memory_rows.append(memory.to_dict())
 
+    var team_rows: Array = []
+    var team_ids: Array = teams.keys()
+    team_ids.sort()
+    for team_id in team_ids:
+        var team: TeamState = teams[team_id]
+        team_rows.append(team.to_dict())
+
     return {
         "save_version": SAVE_VERSION,
         "tick": tick,
@@ -192,6 +245,11 @@ func to_dict() -> Dictionary:
         "p1_memory_enabled": p1_memory_enabled,
         "memories": memory_rows,
         "memory_event_count": memory_event_count,
+        "p1_organization_enabled": p1_organization_enabled,
+        "teams": team_rows,
+        "disciple_team_ids": disciple_team_ids.duplicate(true),
+        "role_assignments": role_assignments.duplicate(true),
+        "organization_change_count": organization_change_count,
         "sect": sect.to_dict(),
         "disciples": disciple_rows,
         "regions": region_rows
@@ -210,6 +268,8 @@ static func from_dict(data: Dictionary) -> SimulationState:
     state.relationship_event_count = int(data.get("relationship_event_count", 0))
     state.p1_memory_enabled = bool(data.get("p1_memory_enabled", false))
     state.memory_event_count = int(data.get("memory_event_count", 0))
+    state.p1_organization_enabled = bool(data.get("p1_organization_enabled", false))
+    state.organization_change_count = int(data.get("organization_change_count", 0))
     state.sect = SectState.from_dict(data.get("sect", {}))
 
     var saved_recruitment_stats = data.get("recruitment_stats", {})
@@ -256,5 +316,25 @@ static func from_dict(data: Dictionary) -> SimulationState:
             var owner_memories: Array = state.memories.get(owner_key, [])
             owner_memories.append(memory)
             state.memories[owner_key] = owner_memories
+
+    for row in data.get("teams", []):
+        if row is Dictionary:
+            var team := TeamState.from_dict(row)
+            if team.id != &"":
+                state.teams[str(team.id)] = team
+
+    var saved_team_ids = data.get("disciple_team_ids", {})
+    if saved_team_ids is Dictionary:
+        var keys: Array = saved_team_ids.keys()
+        keys.sort()
+        for key in keys:
+            state.disciple_team_ids[str(key)] = str(saved_team_ids[key])
+
+    var saved_roles = data.get("role_assignments", {})
+    if saved_roles is Dictionary:
+        var role_keys: Array = saved_roles.keys()
+        role_keys.sort()
+        for key in role_keys:
+            state.role_assignments[str(key)] = str(saved_roles[key])
 
     return state
