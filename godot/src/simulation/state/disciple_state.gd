@@ -42,6 +42,9 @@ var active_technique_id: StringName = &""
 # P2.4 accumulated path history. No fixed class is stored; identity is derived from this history.
 var cultivation_path_xp: Dictionary = {}
 
+# P2.5 combat skills are independent from cultivation techniques.
+var learned_combat_skills: Dictionary = {}
+
 var current_action: StringName = &"EVALUATE"
 var region_id: StringName = &"sect"
 var target_region_id: StringName = &""
@@ -99,6 +102,7 @@ func _init(definition: Dictionary = {}) -> void:
     learned_techniques = _technique_dictionary(definition.get("learned_techniques", {}))
     active_technique_id = StringName(definition.get("active_technique_id", active_technique_id))
     cultivation_path_xp = _float_dictionary(definition.get("cultivation_path_xp", {}))
+    learned_combat_skills = _bool_dictionary(definition.get("learned_combat_skills", {}))
 
 func retreat_hp_ratio() -> float:
     return lerpf(0.48, 0.14, clampf(risk_bias, 0.0, 1.0))
@@ -159,6 +163,8 @@ func to_dict() -> Dictionary:
         data["active_technique_id"] = str(active_technique_id)
     if not cultivation_path_xp.is_empty():
         data["cultivation_path_xp"] = cultivation_path_xp.duplicate(true)
+    if not learned_combat_skills.is_empty():
+        data["learned_combat_skills"] = learned_combat_skills.duplicate(true)
     return data
 
 static func from_dict(data: Dictionary) -> DiscipleState:
@@ -187,7 +193,8 @@ static func from_dict(data: Dictionary) -> DiscipleState:
         "spirit_stones": data.get("spirit_stones", 0),
         "learned_techniques": data.get("learned_techniques", {}),
         "active_technique_id": data.get("active_technique_id", ""),
-        "cultivation_path_xp": data.get("cultivation_path_xp", {})
+        "cultivation_path_xp": data.get("cultivation_path_xp", {}),
+        "learned_combat_skills": data.get("learned_combat_skills", {})
     })
     disciple.max_hp = float(data.get("max_hp", 100.0))
     disciple.hp = float(data.get("hp", disciple.max_hp))
@@ -225,6 +232,17 @@ static func _float_dictionary(value: Variant) -> Dictionary:
     keys.sort()
     for key in keys:
         normalized[str(key)] = maxf(float(value[key]), 0.0)
+    return normalized
+
+static func _bool_dictionary(value: Variant) -> Dictionary:
+    var normalized: Dictionary = {}
+    if not (value is Dictionary):
+        return normalized
+    var keys: Array = value.keys()
+    keys.sort()
+    for key in keys:
+        if bool(value[key]):
+            normalized[str(key)] = true
     return normalized
 
 static func _string_array(value: Variant) -> Array:
