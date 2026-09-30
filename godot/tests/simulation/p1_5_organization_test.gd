@@ -73,14 +73,20 @@ func _run() -> void:
     if not _organization_states_equivalent(state_a, loaded):
         _fail("P1.5 teams/leaders/roles were not preserved by save/load.")
         return
+    if state_a.to_dict() != loaded.to_dict():
+        _fail("P1.5 canonical persisted state was not preserved immediately after save/load.")
+        return
 
     var control_scheduler := SimulationScheduler.new(state_a)
     var loaded_scheduler := SimulationScheduler.new(loaded)
     control_scheduler.run_ticks(CONTINUATION_TICKS)
     loaded_scheduler.run_ticks(CONTINUATION_TICKS)
 
-    if not _states_equivalent(state_a, loaded):
-        _fail("P1.5 deterministic continuation diverged after save/load.")
+    # Save/load determinism is defined by the canonical persisted simulation
+    # state. This avoids false negatives caused by runtime-only Dictionary key
+    # representation while checking every field that can survive a save.
+    if state_a.to_dict() != loaded.to_dict():
+        _fail("P1.5 canonical persisted state diverged after save/load continuation.")
         return
 
     invariant_errors = loaded.validate_invariants()
