@@ -20,6 +20,17 @@ func to_dict() -> Dictionary:
 static func from_dict(data: Dictionary) -> SectState:
     var state := SectState.new()
     state.treasury = int(data.get("treasury", 1000))
-    state.market_stock = data.get("market_stock", {}).duplicate(true)
-    state.base_prices = data.get("base_prices", state.base_prices).duplicate(true)
+    state.market_stock = _int_dictionary(data.get("market_stock", {}))
+    state.base_prices = _int_dictionary(data.get("base_prices", state.base_prices))
     return state
+
+static func _int_dictionary(value: Variant) -> Dictionary:
+    var normalized: Dictionary = {}
+    if not (value is Dictionary):
+        return normalized
+
+    var keys: Array = value.keys()
+    keys.sort()
+    for key in keys:
+        normalized[str(key)] = int(value[key])
+    return normalized
