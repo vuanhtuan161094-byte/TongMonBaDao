@@ -96,8 +96,26 @@ static func from_dict(data: Dictionary) -> DiscipleState:
     disciple.current_action = StringName(data.get("current_action", "EVALUATE"))
     disciple.region_id = StringName(data.get("region_id", "sect"))
     disciple.target_region_id = StringName(data.get("target_region_id", ""))
-    disciple.inventory = data.get("inventory", {}).duplicate(true)
-    disciple.pending_loot = data.get("pending_loot", {}).duplicate(true)
+    disciple.inventory = _int_dictionary(data.get("inventory", {}))
+    disciple.pending_loot = _int_dictionary(data.get("pending_loot", {}))
     disciple.last_decision = data.get("last_decision", {}).duplicate(true)
-    disciple.metrics = data.get("metrics", disciple.metrics).duplicate(true)
+    if disciple.last_decision.has("action"):
+        disciple.last_decision["action"] = str(disciple.last_decision["action"])
+
+    var saved_metrics = data.get("metrics", {})
+    if saved_metrics is Dictionary:
+        for key in disciple.metrics.keys():
+            disciple.metrics[key] = int(saved_metrics.get(key, disciple.metrics[key]))
+
     return disciple
+
+static func _int_dictionary(value: Variant) -> Dictionary:
+    var normalized: Dictionary = {}
+    if not (value is Dictionary):
+        return normalized
+
+    var keys: Array = value.keys()
+    keys.sort()
+    for key in keys:
+        normalized[str(key)] = int(value[key])
+    return normalized
