@@ -19,7 +19,7 @@
 - Every runtime state mutation must preserve invariants.
 - Prefer small composition-oriented systems over giant manager scripts.
 - Do not call a change PASS without the active verification gate.
-- The locked P0 behavior path must remain available as the regression baseline while P1 features are added.
+- The locked P0 behavior path and locked P1.1 behavior path must remain available as regression baselines while later P1 features are added.
 
 ## Required loop
 
@@ -31,10 +31,16 @@ read checkpoint -> narrow scope -> patch -> static review -> headless import/par
 
 P0 remains a mandatory regression baseline for every P1 change.
 
-## Active P1.1 gate
+## Locked P1.1 regression gate
 
 `tools/godot/Verify-P1-1.ps1`
 
-The P1.1 verifier runs the complete P0 gate first, then the P1.1 Goal + Personality contract test.
+P1.1 Goal + Personality remains a mandatory deterministic/save-load regression baseline for later P1 work.
 
-P1.1 scope is limited to deterministic personality metadata, active goals, goal-shaped utility decisions, save/load persistence, deterministic continuation, and regression proof. Do not expand into recruitment, relationships, memory, cultivation realms, bosses, premium currency, or production art during P1.1.
+## Active P1.2 gate
+
+`tools/godot/Verify-P1-2.ps1`
+
+The P1.2 verifier runs the complete P0 gate, then the locked P1.1 gate, then the P1.2 recruitment/player-choice contracts and the recruitment interaction-scene smoke test.
+
+P1.2 scope is limited to deterministic recruitment candidates, sect population capacity, explicit player accept/reject decisions, save/load persistence, deterministic continuation, and a minimal interaction screen. Do not expand into relationships, memory, cultivation realms, bosses, premium currency, or production art during P1.2.

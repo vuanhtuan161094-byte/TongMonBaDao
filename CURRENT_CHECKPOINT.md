@@ -4,119 +4,52 @@ Date: 2026-09-30
 
 ## Project state
 
-Step 13 Technical Architecture & Development Roadmap: LOCKED.
-Step 14 P0 Prototype Specification: LOCKED.
-Step 15 Repository Bootstrap + P0 Foundation: LOCKED / PASS.
-Step 16 P1.1 Goal + Personality: LOCKED / PASS.
+- Step 13 Technical Architecture & Development Roadmap: LOCKED.
+- Step 14 P0 Prototype Specification: LOCKED.
+- Step 15 Repository Bootstrap + P0 Foundation: LOCKED / PASS.
+- Step 16 P1.1 Goal + Personality: LOCKED / PASS.
+- Step 17 P1.2 Population + Recruitment + Player Choice: IMPLEMENTED / AWAITING RUNTIME GATE.
+
+Locked baseline before P1.2: `52812fbecb94a787cb9678c3ff999024478f026a`.
 
 ## Architecture locks
 
 - Engine: Godot 4.7.2 / GDScript.
 - Godot owns simulation/gameplay authority.
-- No dual JS/Godot gameplay authority.
+- No parallel JavaScript gameplay authority.
 - Simulation is presentation-independent.
-- Seeded RNG is mandatory.
-- Save schema is versioned from P0.
-- Invariants are mandatory.
-- UI is a debug consumer of simulation state only.
-- P0 remains the mandatory regression baseline for P1 work.
+- Randomness must come from seeded simulation RNG.
+- Save schema remains versioned and backward-compatible with missing optional P1 fields.
+- Economy mutations must preserve total money unless an explicit source/sink is declared.
+- Runtime invariants are mandatory.
+- P0 remains the mandatory regression baseline for all P1 work.
+- P1.1 Goal + Personality remains a mandatory regression baseline for later P1 work.
+- New P1 features are opt-in so earlier locked behavior paths remain available.
 
-## P0 scope
+## Locked P0 baseline
 
-- 6 fixed disciple behavior profiles.
-- 3 regions.
-- 3 monster species.
-- 4 loot resources.
-- 11 action names: IDLE, EVALUATE, TRAVEL, HUNT, COMBAT, LOOT, RETURN_SECT, SELL, BUY, HEAL, REST.
-- Tông Môn treasury + disciple wallets.
-- Dynamic buy price bounded to 0.8x–1.2x.
-- Recovery loop.
-- Save/load.
-- Debug inspector.
+P0 includes:
 
-## Current P0 verification suite
+- 6 fixed disciple behavior profiles;
+- 3 regions;
+- 3 monster species;
+- 4 loot resources;
+- autonomous hunt/combat/loot/return/sell/buy/heal/rest loop;
+- sect treasury + disciple wallets;
+- bounded market pricing;
+- save/load;
+- debug inspector.
 
-1. Godot import.
-2. Parse all project/test GDScript.
-3. Decision contracts: fixed profile region choices, retreat-risk ordering, broke-injured REST, funded-injured HEAL.
-4. Economy contracts: sell/heal/supply transfer conservation and market operating reserve.
-5. Single-seed 20,000-tick invariant scenario.
-6. Save/load contract: full-state round trip, malformed/invalid-version rejection, resumed simulation invariants, and deterministic continuation against a same-state control.
-7. Same-seed deterministic reproducibility.
-8. Multi-seed benchmark: 8 seeds × 12,000 ticks.
-9. 180-frame headless runtime smoke.
+Authoritative P0 gate: `tools/godot/Verify-P0.ps1`.
 
-Benchmark telemetry includes total money, treasury range, combat outcomes, sale/recovery activity, per-disciple safe/medium/danger exposure, and ending wallet/HP/stamina. It writes `godot/reports/p0_benchmark.json`.
+P0 runtime evidence on Godot `4.7.2.stable.official.ed1daf0bf`:
 
-## P1.1 Goal + Personality scope
-
-P1.1 is a minimal vertical slice only. It does not open recruitment, relationships, memory, cultivation realms, bosses, premium currency, or production art.
-
-Implemented design:
-
-- Existing `risk_bias`, `spend_bias`, and `survival_bias` remain the personality behavior vector.
-- Each disciple now has stable `personality_id` metadata.
-- Each disciple has deterministic `active_goal` and `goal_changed_tick` runtime state.
-- New `GoalSystem` forms goals from current HP/stamina/inventory/economy state plus the existing personality vector.
-- Goal values are `RECOVER`, `WEALTH`, `GLORY`, `SECURITY`, `PREPARE`, and `GROWTH`.
-- Goal modifiers feed the existing `DecisionSystem`; no second AI authority was introduced.
-- Hard safety floors remain authoritative before discretionary P1.1 utility choices.
-- Goal modifiers also shape region utility, so different goals can produce measurably different region choices.
-- P1.1 behavior is opt-in through `SimulationState.p1_goal_personality_enabled` and `P1Factory`.
-- `P0Factory` leaves P1.1 disabled so the locked P0 behavior path remains behavior-identical.
-- Personality, active goal, goal-change tick, and the P1.1 feature flag serialize through the existing versioned save path.
-- Old P0/current-version saves that do not contain the new optional fields remain loadable with safe defaults.
-
-P1.1 verification contract:
-
-- full P0 9-stage gate must PASS first;
-- same seed must produce the same personality/goal state and deterministic simulation state;
-- initial P1.1 population must show personality and goal diversity;
-- `GLORY` and `SECURITY` must produce different measurable region utility choices in a neutral probe;
-- save/load must preserve personality + active goal + goal-change tick + P1.1 enable flag;
-- save/load continuation must remain deterministic;
-- simulation invariants must remain green.
-
-Authoritative P1.1 command:
-
-`Sync-P1-1.cmd`
-
-This syncs `main`, runs the complete P0 regression gate, then runs the dedicated P1.1 Goal + Personality contract test.
-
-## Runtime verification evidence — P1.1 — 2026-09-30
-
-Environment:
-
-- Godot `4.7.2.stable.official.ed1daf0bf`.
-- Local authoritative gate: `Sync-P1-1.cmd` → full P0 regression gate → dedicated P1.1 Goal + Personality contract test.
-
-Result:
-
-`P0 FOUNDATION GATE: PASS`
-
-`P1.1 GOAL + PERSONALITY TEST PASS`
-
-`P1.1 GOAL + PERSONALITY GATE: PASS`
-
-`P1.1 GATE: PASS`
-
-Recorded P1.1 evidence:
-
-- seed: 515151;
-- ticks: 2,500;
-- personalities represented: 6;
-- initial goals represented: 3;
-- same-seed deterministic contract: PASS;
-- measurable goal-shaped behavior contract: PASS;
-- personality + goal save/load persistence: PASS;
-- deterministic continuation after save/load: PASS;
-- simulation invariants: PASS.
-
-The full P0 regression gate also remained green during the same P1.1 verification run:
-
-- same-seed P0 reproducibility: PASS at seed 515151 / 5,000 ticks;
-- P0 benchmark: 8 × 12,000 = 96,000 ticks;
-- money: 1,630;
+- full 9-stage gate: PASS;
+- 20,000-tick invariant scenario: PASS;
+- save/load + deterministic continuation: PASS;
+- same-seed reproducibility: PASS at seed 515151 / 5,000 ticks;
+- multi-seed benchmark: 8 × 12,000 = 96,000 ticks;
+- total money: 1,630;
 - treasury range: 201..215;
 - combats: 57,347;
 - wins: 38,661;
@@ -126,92 +59,116 @@ The full P0 regression gate also remained green during the same P1.1 verificatio
 - heals: 23,682;
 - rests: 84,325;
 - buys: 6,795;
-- runtime smoke: PASS.
+- runtime smoke: PASS;
+- final markers: `P0 FOUNDATION GATE: PASS` and `P0 GATE: PASS`.
 
-## Runtime verification evidence — P0 — 2026-09-30
+## Locked P1.1 — Goal + Personality
 
-Environment:
+P1.1 adds:
 
-- Windows 10.
-- Godot `4.7.2.stable.official.ed1daf0bf`.
-- Local authoritative gate: `Sync-P0.cmd` → `Verify-P0.cmd` → `tools/godot/Verify-P0.ps1`.
+- stable personality metadata for every disciple;
+- existing `risk_bias`, `spend_bias`, and `survival_bias` remain the behavior vector;
+- deterministic active goals;
+- goal values: `RECOVER`, `WEALTH`, `GLORY`, `SECURITY`, `PREPARE`, `GROWTH`;
+- goal modifiers feed the existing utility/region-decision system;
+- hard safety floors remain authoritative;
+- personality + goal state persists through save/load;
+- P0 behavior remains available through `P0Factory`;
+- P1.1 behavior is enabled through `P1Factory`.
 
-Result: all nine stages completed successfully and ended with:
+Authoritative P1.1 gate: `tools/godot/Verify-P1-1.ps1`.
 
-`P0 FOUNDATION GATE: PASS`
+P1.1 runtime evidence on Godot `4.7.2.stable.official.ed1daf0bf`:
 
-`P0 GATE: PASS`
+- P0 regression gate: PASS;
+- P1.1 Goal + Personality contract: PASS;
+- seed: 515151;
+- total test ticks after continuation: 2,500;
+- personalities represented: 6;
+- initial goals represented: 3;
+- same-seed deterministic behavior: PASS;
+- measurable goal-shaped region choice: PASS;
+- save/load personality + goal persistence: PASS;
+- deterministic continuation after save/load: PASS;
+- simulation invariants: PASS;
+- final markers: `P1.1 GOAL + PERSONALITY GATE: PASS` and `P1.1 GATE: PASS`.
 
-Recorded gate evidence:
+## Active P1.2 — Population + Recruitment + Player Choice
 
-- Decision contracts: PASS.
-- Economy contracts: PASS.
-- 20,000-tick invariant scenario: PASS.
-  - total money: 1,630;
-  - ending treasury: 203;
-  - combats: 11,081;
-  - sales: 3,761;
-  - recovery actions: 23,487;
-  - aggressive-profile danger visits: 1,033;
-  - cautious-profile danger visits: 0.
-- Save/load round trip: PASS.
-  - resumed tick: 3,000;
-  - total money: 1,630;
-  - disciples: 6;
-  - malformed and negative-version fixtures were rejected as intended;
-  - deterministic continuation matched the same-state control after another 2,000 ticks.
-- Same-seed reproducibility: PASS.
-  - seed: 515151;
-  - ticks: 5,000.
-- Multi-seed benchmark: PASS.
-  - 8 runs × 12,000 ticks = 96,000 ticks;
-  - total money remained 1,630;
-  - treasury range: 201..215;
-  - combats: 57,347;
-  - wins: 38,661;
-  - retreats: 18,032;
-  - defeats: 654;
-  - sales: 20,163;
-  - heals: 23,682;
-  - rests: 84,325;
-  - buys: 6,795.
-- 180-frame headless runtime smoke: PASS.
+P1.2 is intentionally narrow. It introduces the first direct player influence over individual characters without turning disciples into puppets.
 
-## Static / mirror review patches already applied in P0
+Implemented design:
 
-- 200 Linh Thạch sect operating reserve for market purchases.
-- SELL falls back to HUNT when market spendable treasury is exhausted, preventing an EVALUATE↔SELL spin loop.
-- Inventory/economy item keys use JSON-stable strings.
-- RNG state serializes as string to preserve exact integer state across JSON.
-- Region definitions include `recommended_power`.
-- Region selection combines profit + risk tolerance - underpower penalty; profit alone cannot force every profile into the hardest zone.
-- Broke injured disciples use free Rest recovery instead of returning to combat because they cannot afford paid healing.
-- Debug inspector exposes region scores and chosen-region rationale.
-- Save loading fails closed for malformed current-version payloads and invalid negative versions instead of silently constructing a default state.
-- Save verification compares the full round-tripped state and requires deterministic continuation to match a same-state control after another 2,000 ticks.
-- Save round-trip float comparison tolerates only representation-level floating-point noise; discrete state remains exact, and continuation must still converge exactly under the deterministic control.
-- `last_decision.action` is stored as a JSON-stable string; runtime converts it back to `StringName` only when executing the action.
-- Weighted RNG iterates canonically sorted keys, so JSON dictionary key-order changes cannot remap the same RNG roll to a different monster.
-- Inventory sales iterate canonically sorted item keys, so a save/load key-order change cannot alter limited-treasury sale behavior.
-- Disciple inventory/pending-loot/metrics and sect market/base-price values are normalized back to integer types after JSON load.
-- Save JSON uses full float precision to preserve HP/stamina/score values closely enough for deterministic continuation.
-- A non-authoritative mirror simulation was used only as a design sanity check; it did NOT substitute for the final Godot runtime gate.
+- `P12Factory` enables P1.1 plus recruitment while leaving P0/P1.1 factories unchanged.
+- Initial P1.2 population remains 6 disciples.
+- Initial sect capacity is 8 disciples.
+- Initial recruitment pool contains 3 candidates.
+- Candidate generation is deterministic from simulation seed + generation index.
+- Each candidate has a stable id, name, combat power, personality id, risk/spend/survival biases, and generation index.
+- Candidate state is separate from disciple runtime state until the player accepts the candidate.
+- Player decision API is explicit: accept or reject.
+- Accepting converts the candidate into a normal `DiscipleState` and immediately feeds the disciple into P1.1 goal formation.
+- New recruits start with 0 personal money so recruitment does not mint currency or violate P0 economy conservation.
+- Recruitment is blocked when sect population reaches capacity.
+- Rejected candidates are removed from the waiting pool.
+- Recruitment statistics track accepted/rejected counts.
+- Candidate pool, generation index, statistics, capacity, and feature flag persist through save/load.
+- A dedicated P1.2 interaction scene allows the player to press `Nhận` or `Từ chối` on real candidates.
+- The original P0 main scene is not replaced.
 
-## GitHub Actions runner blocker
+P1.2 files of interest:
 
-Two CI attempts were accepted by GitHub but failed before a runner executed any step:
+- `docs/P1_2_SPEC.md`;
+- `godot/src/simulation/state/candidate_state.gd`;
+- `godot/src/simulation/recruitment/recruitment_system.gd`;
+- `godot/src/simulation/core/p1_2_factory.gd`;
+- `godot/tests/simulation/p1_2_recruitment_test.gd`;
+- `godot/src/presentation/p1_2_recruitment.gd`;
+- `godot/scenes/p1/p1_2_recruitment.tscn`;
+- `tools/godot/Verify-P1-2.ps1`;
+- `Verify-P1-2.cmd`;
+- `Sync-P1-2.cmd`.
 
-- run `36663544443`;
-- run `36663692983`.
+P1.2 verification contract:
 
-Both reported no executed steps and no usable job log. Changing from a third-party Godot setup action to a direct download of the official Godot 4.7.2 binary did not change this behavior. Therefore this remains classified as a runner/prepare-job blocker, not as evidence that the Godot project or P0 tests failed.
+1. Full P0 gate must PASS.
+2. Locked P1.1 gate must PASS.
+3. Same seed must generate the same candidates.
+4. Same player decisions must generate the same resulting recruitment state.
+5. Accept vs reject must create measurably different population outcomes.
+6. Sect capacity must block excess acceptance.
+7. Recruitment must preserve total-money invariants.
+8. Accepted recruits must carry personality + active-goal behavior into the normal simulation.
+9. Recruitment state must survive save/load.
+10. Simulation continuation after save/load must remain deterministic.
+11. The P1.2 interaction scene must launch successfully in Godot 4.7.2.
 
-The workflow is temporarily `workflow_dispatch` only so normal development pushes do not create misleading red runs. The local authoritative Godot 4.7.2 gate completed successfully, so the CI runner issue is not a P0 closure blocker.
+Authoritative command: `Sync-P1-2.cmd`.
+
+Expected successful end markers:
+
+- `P0 FOUNDATION GATE: PASS`
+- `P1.1 GOAL + PERSONALITY GATE: PASS`
+- `P1.2 RECRUITMENT + PLAYER CHOICE TEST PASS`
+- `P1.2 RECRUITMENT + PLAYER CHOICE GATE: PASS`
+- `P1.2 GATE: PASS`
+
+## P1.2 exclusions
+
+Do not open these systems until P1.2 is locked:
+
+- relationships;
+- memory;
+- mentor/disciple hierarchy;
+- cultivation realms and techniques;
+- complex leaving/death mechanics;
+- recruitment reputation/cost systems;
+- bosses, premium currency, production art.
 
 ## Completion status
 
-P0: PASS / LOCKED.
+- P0: PASS / LOCKED.
+- P1.1 Goal + Personality: PASS / LOCKED.
+- P1.2 Population + Recruitment + Player Choice: implementation present, runtime proof required before lock.
 
-P1.1 Goal + Personality: PASS / LOCKED.
-
-Next step: open P1.2 only against the locked P0 + P1.1 baseline. Any P1.2 change must preserve the full P0 regression gate and the P1.1 Goal + Personality deterministic/save-load contracts.
+Next closure condition: run `Sync-P1-2.cmd` on the local Windows/Godot 4.7.2 environment. If every P0/P1.1 regression and P1.2 contract/scene smoke test passes, record the exact runtime evidence and mark Step 17 `LOCKED / PASS`.
