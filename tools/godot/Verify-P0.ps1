@@ -108,14 +108,7 @@ function Assert-NoRunningGodot {
     if ($running.Count -eq 0) { return }
 
     $names = ($running | ForEach-Object { "$($_.ProcessName) (PID $($_.Id))" }) -join ", "
-    throw "Godot is already running: $names. Close all Godot editor/project-manager windows before running Verify-P0.cmd. This avoids the headless import waiting on an editor/project lock."
-}
-
-function Invoke-Godot([string[]]$Args) {
-    & $Godot @Args
-    if ($LASTEXITCODE -ne 0) {
-        throw "Godot command failed with exit code $LASTEXITCODE : $Godot $($Args -join ' ')"
-    }
+    throw "Godot is already running: $names. Close all Godot editor/project-manager windows before running Verify-P0.cmd. This avoids the headless verifier competing with an editor process."
 }
 
 function Invoke-GodotWithTimeout([string[]]$Args, [int]$TimeoutSeconds, [string]$Label) {
@@ -164,31 +157,34 @@ Write-Host "[1/9] Import"
 Invoke-GodotWithTimeout @("--headless", "--path", $Project, "--import") 120 "Godot import"
 
 Write-Host "[2/9] Parse project scripts"
-$Scripts = Get-ChildItem -Path (Join-Path $Project "src"), (Join-Path $Project "tests") -Recurse -Filter *.gd
+$Scripts = @(Get-ChildItem -Path (Join-Path $Project "src"), (Join-Path $Project "tests") -Recurse -Filter *.gd | Sort-Object FullName)
+$ScriptIndex = 0
 foreach ($Script in $Scripts) {
+    $ScriptIndex += 1
     $Relative = $Script.FullName.Substring($Project.Length + 1).Replace("\", "/")
-    Invoke-Godot @("--headless", "--path", $Project, "--check-only", "--script", "res://$Relative")
+    Write-Host ("  [Parse {0}/{1}] {2}" -f $ScriptIndex, $Scripts.Count, $Relative)
+    Invoke-GodotWithTimeout @("--headless", "--path", $Project, "--check-only", "--script", "res://$Relative") 45 "Parse $Relative"
 }
 
 Write-Host "[3/9] Decision contracts"
-Invoke-Godot @("--headless", "--path", $Project, "-s", "res://tests/simulation/p0_decision_contract_test.gd")
+Invoke-GodotWithTimeout @("--headless", "--path", $Project, "-s", "res://tests/simulation/p0_decision_contract_test.gd") 60 "Decision contracts"
 
 Write-Host "[4/9] Economy contracts"
-Invoke-Godot @("--headless", "--path", $Project, "-s", "res://tests/simulation/p0_economy_contract_test.gd")
+Invoke-GodotWithTimeout @("--headless", "--path", $Project, "-s", "res://tests/simulation/p0_economy_contract_test.gd") 60 "Economy contracts"
 
 Write-Host "[5/9] Deterministic invariant scenario"
-Invoke-Godot @("--headless", "--path", $Project, "-s", "res://tests/simulation/p0_invariant_test.gd")
+Invoke-GodotWithTimeout @("--headless", "--path", $Project, "-s", "res://tests/simulation/p0_invariant_test.gd") 120 "Deterministic invariant scenario"
 
 Write-Host "[6/9] Save/load round trip"
-Invoke-Godot @("--headless", "--path", $Project, "-s", "res://tests/simulation/p0_save_roundtrip_test.gd")
+Invoke-GodotWithTimeout @("--headless", "--path", $Project, "-s", "res://tests/simulation/p0_save_roundtrip_test.gd") 120 "Save/load round trip"
 
 Write-Host "[7/9] Same-seed reproducibility"
-Invoke-Godot @("--headless", "--path", $Project, "-s", "res://tests/simulation/p0_reproducibility_test.gd")
+Invoke-GodotWithTimeout @("--headless", "--path", $Project, "-s", "res://tests/simulation/p0_reproducibility_test.gd") 120 "Same-seed reproducibility"
 
 Write-Host "[8/9] Multi-seed benchmark"
-Invoke-Godot @("--headless", "--path", $Project, "-s", "res://tests/simulation/p0_benchmark_test.gd")
+Invoke-GodotWithTimeout @("--headless", "--path", $Project, "-s", "res://tests/simulation/p0_benchmark_test.gd") 240 "Multi-seed benchmark"
 
 Write-Host "[9/9] Runtime smoke"
-Invoke-Godot @("--headless", "--path", $Project, "--quit-after", "180")
+Invoke-GodotWithTimeout @("--headless", "--path", $Project, "--quit-after", "180") 60 "Runtime smoke"
 
 Write-Host "P0 FOUNDATION GATE: PASS"
