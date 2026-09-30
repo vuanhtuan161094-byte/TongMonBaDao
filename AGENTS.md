@@ -19,35 +19,24 @@
 - Every runtime state mutation must preserve invariants.
 - Prefer small composition-oriented systems over giant manager scripts.
 - Do not call a change PASS without the active verification gate.
-- Locked P0, P1.1, and P1.2 behavior paths remain mandatory regression baselines.
+- Locked P0, P1.1, P1.2, and P1.3 behavior paths remain mandatory regression baselines.
 - New mechanics must have measurable gameplay/simulation impact; do not add story-only state with no behavioral consequence.
 
 ## Required loop
 
 read checkpoint -> narrow scope -> patch -> static review -> headless import/parse -> simulation tests -> runtime smoke -> checkpoint
 
-## Locked P0 regression gate
+## Locked regression gates
 
-`tools/godot/Verify-P0.ps1`
+- P0: `tools/godot/Verify-P0.ps1`
+- P1.1: `tools/godot/Verify-P1-1.ps1`
+- P1.2: `tools/godot/Verify-P1-2.ps1`
+- P1.3: `tools/godot/Verify-P1-3.ps1`
 
-P0 remains a mandatory regression baseline for every P1 change.
+All locked gates remain mandatory for later P1 work.
 
-## Locked P1.1 regression gate
+## Active P1.4 gate
 
-`tools/godot/Verify-P1-1.ps1`
+`tools/godot/Verify-P1-4.ps1`
 
-P1.1 Goal + Personality remains a mandatory deterministic/save-load regression baseline for later P1 work.
-
-## Locked P1.2 regression gate
-
-`tools/godot/Verify-P1-2.ps1`
-
-P1.2 Population + Recruitment + Player Choice remains a mandatory deterministic/save-load/player-agency regression baseline for later P1 work.
-
-## Active P1.3 gate
-
-`tools/godot/Verify-P1-3.ps1`
-
-The P1.3 verifier runs the complete locked P0/P1.1/P1.2 gates first, then the P1.3 relationship/behavior-impact contracts and relationship interaction-scene smoke test.
-
-P1.3 scope is limited to sparse directed relationships, affinity/trust/respect, personality-shaped relationship reactions, relationship-driven region utility, explicit player companion assignment, recruitment integration, save/load persistence, deterministic continuation, and a minimal interaction screen. Do not expand into memory, romance, mentor/disciple hierarchy, factions, betrayal, cultivation realms, bosses, premium currency, or production art during P1.3.
+P1.4 adds bounded consequential memory only. Memory must affect later behavior, remain sparse/bounded, preserve player-created consequences after direct orders are removed, serialize safely, and remain deterministic. Do not expand into romance, marriage, mentor/disciple hierarchy, sworn siblings, factions, betrayal/leaving, internal combat, cultivation realms, bosses, premium currency, or production art during P1.4.
