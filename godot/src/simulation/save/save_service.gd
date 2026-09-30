@@ -32,11 +32,20 @@ func load_from_path(path: String) -> SimulationState:
 
     var data: Dictionary = parsed
     var version := int(data.get("save_version", 0))
+    if version < 0:
+        push_error("SaveService: invalid negative save version %d." % version)
+        return null
     if version > CURRENT_VERSION:
         push_error("SaveService: save version %d is newer than supported %d." % [version, CURRENT_VERSION])
         return null
 
     data = _migrate(data, version)
+    if data.is_empty():
+        return null
+    if not _is_payload_shape_valid(data):
+        push_error("SaveService: malformed save payload for version %d." % CURRENT_VERSION)
+        return null
+
     return SimulationState.from_dict(data)
 
 func _migrate(data: Dictionary, version: int) -> Dictionary:
@@ -53,3 +62,20 @@ func _migrate(data: Dictionary, version: int) -> Dictionary:
                 return {}
 
     return migrated
+
+func _is_payload_shape_valid(data: Dictionary) -> bool:
+    if int(data.get("save_version", 0)) != CURRENT_VERSION:
+        return false
+
+    for key in ["tick", "seed", "rng_state", "initial_total_money", "sect", "disciples", "regions"]:
+        if not data.has(key):
+            return false
+
+    if not (data.get("sect") is Dictionary):
+        return false
+    if not (data.get("disciples") is Array):
+        return false
+    if not (data.get("regions") is Array):
+        return false
+
+    return true
