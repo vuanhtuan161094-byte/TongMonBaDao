@@ -1,7 +1,9 @@
 # NEXT CHAT HANDOFF — Tông Môn Bá Đạo
 
 Date: 2026-09-30
-Current main: `7a29da7d9f3e76f7078d9bb27bb2d726094373e6`
+P2.4 implementation head: `7a29da7d9f3e76f7078d9bb27bb2d726094373e6`
+
+The current `main` may be one or more documentation-only commits ahead of that implementation head. Always inspect live `main` before editing.
 
 ## Read first
 
