@@ -9,6 +9,7 @@ var memory_system := MemorySystem.new()
 var organization_system := OrganizationSystem.new()
 var needs_system := NeedsSystem.new()
 var cultivation_system := CultivationSystem.new()
+var equipment_system := EquipmentSystem.new()
 
 func evaluate(state: SimulationState, disciple: DiscipleState) -> Dictionary:
 	var hp_ratio := disciple.hp / maxf(disciple.max_hp, 1.0)
@@ -94,7 +95,7 @@ func evaluate(state: SimulationState, disciple: DiscipleState) -> Dictionary:
 		result["cultivation_progress"] = disciple.cultivation_progress
 		result["cultivation_required"] = cultivation_system.required_progress(disciple)
 		result["cultivation_directive"] = str(disciple.cultivation_directive)
-		result["effective_combat_power"] = cultivation_system.effective_combat_power(state, disciple)
+		result["effective_combat_power"] = _effective_combat_power(state, disciple)
 	disciple.last_decision = result.duplicate(true)
 	return result
 
@@ -106,7 +107,7 @@ func choose_region(state: SimulationState, disciple: DiscipleState) -> StringNam
 	var memory_scores: Dictionary = {}
 	var organization_scores: Dictionary = {}
 	var needs_scores: Dictionary = {}
-	var effective_power := cultivation_system.effective_combat_power(state, disciple) if state.sect.cultivation_enabled else disciple.combat_power
+	var effective_power: float = _effective_combat_power(state, disciple)
 
 	for region_value in state.regions.values():
 		var region: RegionState = region_value
@@ -144,7 +145,9 @@ func choose_region(state: SimulationState, disciple: DiscipleState) -> StringNam
 	if state.sect.cultivation_enabled:
 		disciple.last_decision["effective_combat_power"] = effective_power
 	disciple.last_decision["chosen_region"] = str(best_id)
-	if state.sect.cultivation_enabled:
+	if state.sect.equipment_enabled:
+		disciple.last_decision["region_reason"] = "Profit, risk, realm power, equipment power, goal, relationships, memory, organization, and sect resources."
+	elif state.sect.cultivation_enabled:
 		disciple.last_decision["region_reason"] = "Profit, risk, effective realm power, goal, relationships, memory, organization, and sect resources."
 	elif state.sect.needs_enabled:
 		disciple.last_decision["region_reason"] = "Profit, risk, power, goal, relationships, memory, organization, and sect resource pressure."
@@ -159,6 +162,12 @@ func choose_region(state: SimulationState, disciple: DiscipleState) -> StringNam
 	else:
 		disciple.last_decision["region_reason"] = "Profit adjusted by risk tolerance and combat-power gap."
 	return best_id
+
+func _effective_combat_power(state: SimulationState, disciple: DiscipleState) -> float:
+	var power: float = cultivation_system.effective_combat_power(state, disciple) if state.sect.cultivation_enabled else disciple.combat_power
+	if state.sect.equipment_enabled:
+		power += equipment_system.combat_power_bonus(state, disciple)
+	return power
 
 func _choose_p2_sect_action(scores: Dictionary, disciple: DiscipleState) -> StringName:
 	var candidates := [&"HUNT", &"CULTIVATE", &"BREAKTHROUGH"]
