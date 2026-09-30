@@ -98,7 +98,11 @@ func _run_demo(path: StringName) -> void:
     actor.max_hp = 180.0
     actor.hp = actor.max_hp
     actor.region_id = &"hac_phong_coc"
-    state.regions[&"hac_phong_coc"].monster_weights = {"hac_lang":1.0}
+    var region: RegionState = state.regions.get(&"hac_phong_coc")
+    if region == null:
+        result_label.text = "Không tìm thấy Hắc Phong Cốc."
+        return
+    region.monster_weights = {"hac_lang":1.0}
     run_index += 1
     var result := combat.resolve_encounter(state, actor, GameRng.new(TEST_SEED + run_index * 101))
     _refresh_ui(result)
@@ -117,7 +121,8 @@ func _refresh_ui(result: Dictionary) -> void:
     skills_label.text = "Công pháp nền: %s\nChiêu đã học độc lập: %s" % [technique_name, ", ".join(usable_names)]
 
     var important: Array[String] = []
-    for event_value in result.get("trace", []):
+    var trace_rows: Array = result.get("trace", [])
+    for event_value in trace_rows:
         var event: Dictionary = event_value
         var event_type := str(event.get("type", ""))
         if event_type in ["cast_start", "projectile_launch", "projectile_hit", "buff", "debuff", "burn_tick", "victory", "defeat", "retreat"]:
@@ -128,9 +133,10 @@ func _refresh_ui(result: Dictionary) -> void:
         if important.size() >= 10:
             break
 
+    var skills_used: Array = result.get("skills_used", [])
     result_label.text = (
         "Kết quả: %s | thời gian %.2fs | cự ly cuối %.2fm | đánh thường %d | dùng chiêu %d\n\n%s"
     ) % [
         str(result.get("outcome", "?")), float(result.get("elapsed", 0.0)), float(result.get("final_distance", 0.0)),
-        int(result.get("basic_attacks", 0)), result.get("skills_used", []).size(), "\n".join(important)
+        int(result.get("basic_attacks", 0)), skills_used.size(), "\n".join(important)
     ]
