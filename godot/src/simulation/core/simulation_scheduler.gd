@@ -9,6 +9,7 @@ var relationship_system := RelationshipSystem.new()
 var memory_system := MemorySystem.new()
 var needs_system := NeedsSystem.new()
 var cultivation_system := CultivationSystem.new()
+var technique_system := TechniqueSystem.new()
 var economy_system := EconomySystem.new()
 var combat_system := CombatSystem.new()
 
@@ -39,6 +40,8 @@ func _step_disciple(disciple: DiscipleState) -> void:
             disciple.current_action = &"EVALUATE"
 
         &"EVALUATE":
+            if state.sect.techniques_enabled and disciple.region_id == &"sect":
+                technique_system.deposit_special_inventory(state, disciple)
             if state.p1_goal_personality_enabled:
                 goal_system.update_goal(state, disciple)
             var decision := decision_system.evaluate(state, disciple)
@@ -83,7 +86,12 @@ func _step_disciple(disciple: DiscipleState) -> void:
                 cultivation_system.add_combat_win_progress(state, disciple)
             match outcome:
                 "win":
-                    disciple.pending_loot = result.get("loot", {}).duplicate(true)
+                    var loot: Dictionary = result.get("loot", {}).duplicate(true)
+                    if state.sect.techniques_enabled:
+                        var special_loot := technique_system.roll_farm_loot(state, disciple)
+                        for item_id in special_loot.keys():
+                            loot[str(item_id)] = int(loot.get(str(item_id), 0)) + int(special_loot[item_id])
+                    disciple.pending_loot = loot
                     disciple.current_action = &"LOOT"
                 "retreat", "defeat":
                     disciple.current_action = &"RETURN_SECT"
@@ -99,9 +107,13 @@ func _step_disciple(disciple: DiscipleState) -> void:
         &"RETURN_SECT":
             disciple.region_id = &"sect"
             disciple.target_region_id = &""
+            if state.sect.techniques_enabled:
+                technique_system.deposit_special_inventory(state, disciple)
             disciple.current_action = &"EVALUATE"
 
         &"SELL":
+            if state.sect.techniques_enabled:
+                technique_system.deposit_special_inventory(state, disciple)
             var earned := economy_system.sell_inventory(state, disciple)
             disciple.current_action = &"EVALUATE" if earned > 0 else &"HUNT"
 
@@ -123,7 +135,9 @@ func _step_disciple(disciple: DiscipleState) -> void:
             disciple.current_action = &"EVALUATE"
 
         &"CULTIVATE":
-            cultivation_system.cultivate(state, disciple)
+            var gained := cultivation_system.cultivate(state, disciple)
+            if gained > 0.0 and state.sect.techniques_enabled:
+                technique_system.train_active_technique(state, disciple)
             disciple.current_action = &"EVALUATE"
 
         &"BREAKTHROUGH":

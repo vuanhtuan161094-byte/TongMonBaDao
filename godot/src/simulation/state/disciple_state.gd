@@ -13,13 +13,12 @@ var risk_bias: float = 0.5
 var spend_bias: float = 0.5
 var survival_bias: float = 0.5
 
-# P1.1 personality + goal state. The three numeric biases remain the
-# behavior vector; personality_id is the stable human-readable archetype.
+# P1.1 personality + goal state.
 var personality_id: StringName = &"balanced"
 var active_goal: StringName = &"GROWTH"
 var goal_changed_tick: int = 0
 
-# P2.1 cultivation state. Defaults are deliberately inert for all P0-P1 factories.
+# P2.1 cultivation state.
 var cultivation_stage_index: int = 0
 var cultivation_progress: float = 0.0
 var cultivation_combat_bonus: float = 0.0
@@ -29,8 +28,16 @@ var breakthrough_failures: int = 0
 var next_breakthrough_tick: int = 0
 var last_breakthrough_outcome: StringName = &""
 
-# P2.2 stays empty until SpiritualRootSystem is enabled.
+# P2.2 quality stays empty until SpiritualRootSystem is enabled.
 var spiritual_root_quality: StringName = &""
+# P2.3 adds elemental affinity only when the technique system is enabled.
+var spiritual_root_elements: Array = []
+
+# P2.3 personal technique economy/progression.
+var contribution_points: int = 0
+var spirit_stones: int = 0
+var learned_techniques: Dictionary = {}
+var active_technique_id: StringName = &""
 
 var current_action: StringName = &"EVALUATE"
 var region_id: StringName = &"sect"
@@ -54,7 +61,11 @@ var metrics: Dictionary = {
     "cultivation_sessions": 0,
     "cultivation_gained": 0,
     "breakthrough_successes": 0,
-    "breakthrough_failures": 0
+    "breakthrough_failures": 0,
+    "techniques_learned": 0,
+    "technique_training_sessions": 0,
+    "technique_upgrades": 0,
+    "special_deposits": 0
 }
 
 func _init(definition: Dictionary = {}) -> void:
@@ -77,6 +88,11 @@ func _init(definition: Dictionary = {}) -> void:
     next_breakthrough_tick = int(definition.get("next_breakthrough_tick", next_breakthrough_tick))
     last_breakthrough_outcome = StringName(definition.get("last_breakthrough_outcome", last_breakthrough_outcome))
     spiritual_root_quality = StringName(definition.get("spiritual_root_quality", spiritual_root_quality))
+    spiritual_root_elements = _string_array(definition.get("spiritual_root_elements", []))
+    contribution_points = int(definition.get("contribution_points", contribution_points))
+    spirit_stones = int(definition.get("spirit_stones", spirit_stones))
+    learned_techniques = _technique_dictionary(definition.get("learned_techniques", {}))
+    active_technique_id = StringName(definition.get("active_technique_id", active_technique_id))
 
 func retreat_hp_ratio() -> float:
     return lerpf(0.48, 0.14, clampf(risk_bias, 0.0, 1.0))
@@ -128,6 +144,13 @@ func to_dict() -> Dictionary:
     }
     if spiritual_root_quality != &"":
         data["spiritual_root_quality"] = str(spiritual_root_quality)
+    if not spiritual_root_elements.is_empty():
+        data["spiritual_root_elements"] = spiritual_root_elements.duplicate()
+    if contribution_points > 0 or spirit_stones > 0 or not learned_techniques.is_empty() or active_technique_id != &"":
+        data["contribution_points"] = contribution_points
+        data["spirit_stones"] = spirit_stones
+        data["learned_techniques"] = learned_techniques.duplicate(true)
+        data["active_technique_id"] = str(active_technique_id)
     return data
 
 static func from_dict(data: Dictionary) -> DiscipleState:
@@ -150,7 +173,12 @@ static func from_dict(data: Dictionary) -> DiscipleState:
         "breakthrough_failures": data.get("breakthrough_failures", 0),
         "next_breakthrough_tick": data.get("next_breakthrough_tick", 0),
         "last_breakthrough_outcome": data.get("last_breakthrough_outcome", ""),
-        "spiritual_root_quality": data.get("spiritual_root_quality", "")
+        "spiritual_root_quality": data.get("spiritual_root_quality", ""),
+        "spiritual_root_elements": data.get("spiritual_root_elements", []),
+        "contribution_points": data.get("contribution_points", 0),
+        "spirit_stones": data.get("spirit_stones", 0),
+        "learned_techniques": data.get("learned_techniques", {}),
+        "active_technique_id": data.get("active_technique_id", "")
     })
     disciple.max_hp = float(data.get("max_hp", 100.0))
     disciple.hp = float(data.get("hp", disciple.max_hp))
@@ -168,16 +196,37 @@ static func from_dict(data: Dictionary) -> DiscipleState:
     if saved_metrics is Dictionary:
         for key in disciple.metrics.keys():
             disciple.metrics[key] = int(saved_metrics.get(key, disciple.metrics[key]))
-
     return disciple
 
 static func _int_dictionary(value: Variant) -> Dictionary:
     var normalized: Dictionary = {}
     if not (value is Dictionary):
         return normalized
-
     var keys: Array = value.keys()
     keys.sort()
     for key in keys:
         normalized[str(key)] = int(value[key])
     return normalized
+
+static func _string_array(value: Variant) -> Array:
+    var result: Array = []
+    if not (value is Array):
+        return result
+    for item in value:
+        result.append(str(item))
+    return result
+
+static func _technique_dictionary(value: Variant) -> Dictionary:
+    var result: Dictionary = {}
+    if not (value is Dictionary):
+        return result
+    var keys: Array = value.keys()
+    keys.sort()
+    for key in keys:
+        var row = value[key]
+        if row is Dictionary:
+            result[str(key)] = {
+                "level": maxi(int(row.get("level", 1)), 1),
+                "xp": maxf(float(row.get("xp", 0.0)), 0.0)
+            }
+    return result

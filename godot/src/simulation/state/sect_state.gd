@@ -11,7 +11,7 @@ var base_prices: Dictionary = {
     "hac_lang_cot": 28
 }
 
-# P1.6 is kept inside sect state so older SimulationState save payloads remain valid.
+# P1.6
 var needs_enabled: bool = false
 var medicine_stock: int = 0
 var supply_stock: int = 0
@@ -27,13 +27,23 @@ var needs_stats: Dictionary = {
     "overcrowded_rests": 0
 }
 
-# P2.1 global switch/counter. Per-disciple cultivation state lives on DiscipleState.
+# P2.1
 var cultivation_enabled: bool = false
 var cultivation_event_count: int = 0
 
-# P2.2 is opt-in. Per-person root quality lives on DiscipleState/CandidateState.
+# P2.2
 var spiritual_roots_enabled: bool = false
 var spiritual_root_event_count: int = 0
+
+# P2.3 sect-owned technique economy.
+var techniques_enabled: bool = false
+var spirit_stones: int = 0
+var technique_library: Dictionary = {}
+var technique_manuals: Dictionary = {}
+var technique_fragments: Dictionary = {}
+var technique_materials: Dictionary = {}
+var technique_gacha_index: int = 0
+var technique_event_count: int = 0
 
 func to_dict() -> Dictionary:
     var data := {
@@ -54,6 +64,15 @@ func to_dict() -> Dictionary:
     if spiritual_roots_enabled or spiritual_root_event_count > 0:
         data["spiritual_roots_enabled"] = spiritual_roots_enabled
         data["spiritual_root_event_count"] = spiritual_root_event_count
+    if techniques_enabled or technique_event_count > 0 or spirit_stones > 0:
+        data["techniques_enabled"] = techniques_enabled
+        data["spirit_stones"] = spirit_stones
+        data["technique_library"] = technique_library.duplicate(true)
+        data["technique_manuals"] = technique_manuals.duplicate(true)
+        data["technique_fragments"] = technique_fragments.duplicate(true)
+        data["technique_materials"] = technique_materials.duplicate(true)
+        data["technique_gacha_index"] = technique_gacha_index
+        data["technique_event_count"] = technique_event_count
     return data
 
 static func from_dict(data: Dictionary) -> SectState:
@@ -72,6 +91,14 @@ static func from_dict(data: Dictionary) -> SectState:
     state.cultivation_event_count = maxi(int(data.get("cultivation_event_count", 0)), 0)
     state.spiritual_roots_enabled = bool(data.get("spiritual_roots_enabled", false))
     state.spiritual_root_event_count = maxi(int(data.get("spiritual_root_event_count", 0)), 0)
+    state.techniques_enabled = bool(data.get("techniques_enabled", false))
+    state.spirit_stones = maxi(int(data.get("spirit_stones", 0)), 0)
+    state.technique_library = _bool_dictionary(data.get("technique_library", {}))
+    state.technique_manuals = _int_dictionary(data.get("technique_manuals", {}))
+    state.technique_fragments = _int_dictionary(data.get("technique_fragments", {}))
+    state.technique_materials = _int_dictionary(data.get("technique_materials", {}))
+    state.technique_gacha_index = maxi(int(data.get("technique_gacha_index", 0)), 0)
+    state.technique_event_count = maxi(int(data.get("technique_event_count", 0)), 0)
 
     var saved_stats = data.get("needs_stats", {})
     if saved_stats is Dictionary:
@@ -83,9 +110,19 @@ static func _int_dictionary(value: Variant) -> Dictionary:
     var normalized: Dictionary = {}
     if not (value is Dictionary):
         return normalized
-
     var keys: Array = value.keys()
     keys.sort()
     for key in keys:
-        normalized[str(key)] = int(value[key])
+        normalized[str(key)] = maxi(int(value[key]), 0)
+    return normalized
+
+static func _bool_dictionary(value: Variant) -> Dictionary:
+    var normalized: Dictionary = {}
+    if not (value is Dictionary):
+        return normalized
+    var keys: Array = value.keys()
+    keys.sort()
+    for key in keys:
+        if bool(value[key]):
+            normalized[str(key)] = true
     return normalized

@@ -19,9 +19,8 @@ const MIN_BREAKTHROUGH_HP_RATIO := 0.75
 const MIN_BREAKTHROUGH_STAMINA := 65.0
 
 var spiritual_root_system := SpiritualRootSystem.new()
+var technique_system := TechniqueSystem.new()
 
-# required = cultivation needed to attempt the next stage.
-# The final stage has required 0 because P2.1 stops at Kim Đan viên mãn.
 const STAGES := [
     {"id":"qi_1", "name":"Luyện Khí tầng 1", "required":500.0, "combat_bonus":0.0, "hp_bonus":0.0, "chance":0.98},
     {"id":"qi_2", "name":"Luyện Khí tầng 2", "required":700.0, "combat_bonus":1.0, "hp_bonus":2.0, "chance":0.97},
@@ -45,13 +44,10 @@ const STAGES := [
 func initialize(state: SimulationState) -> void:
     state.sect.cultivation_enabled = true
     for disciple_value in state.disciples.values():
-        var disciple: DiscipleState = disciple_value
-        _normalize_disciple(disciple)
+        _normalize_disciple(disciple_value)
 
 func set_directive(state: SimulationState, disciple_id: StringName, directive: StringName) -> bool:
-    if not state.sect.cultivation_enabled or not state.disciples.has(disciple_id):
-        return false
-    if not VALID_DIRECTIVES.has(directive):
+    if not state.sect.cultivation_enabled or not state.disciples.has(disciple_id) or not VALID_DIRECTIVES.has(directive):
         return false
     var disciple: DiscipleState = state.disciples[disciple_id]
     disciple.cultivation_directive = directive
@@ -88,8 +84,10 @@ func cultivate(state: SimulationState, disciple: DiscipleState) -> float:
         return 0.0
     if disciple.stamina < CULTIVATE_STAMINA_COST:
         return 0.0
-
-    var gained := add_progress(state, disciple, CULTIVATE_GAIN)
+    var base_gain := CULTIVATE_GAIN
+    if state.sect.techniques_enabled:
+        base_gain *= technique_system.cultivation_gain_multiplier(state, disciple)
+    var gained := add_progress(state, disciple, base_gain)
     disciple.stamina = maxf(0.0, disciple.stamina - CULTIVATE_STAMINA_COST)
     disciple.metrics["cultivation_sessions"] = int(disciple.metrics.get("cultivation_sessions", 0)) + 1
     return gained
@@ -121,10 +119,12 @@ func breakthrough_success_chance(disciple: DiscipleState, state: SimulationState
     var hp_ratio := disciple.hp / maxf(disciple.max_hp, 1.0)
     var hp_bonus := clampf((hp_ratio - MIN_BREAKTHROUGH_HP_RATIO) * 0.08, 0.0, 0.02)
     var stamina_bonus := clampf((disciple.stamina - MIN_BREAKTHROUGH_STAMINA) / 35.0 * 0.02, 0.0, 0.02)
-    var root_modifier := 0.0
+    var modifier := 0.0
     if state != null and state.sect.spiritual_roots_enabled:
-        root_modifier = spiritual_root_system.breakthrough_modifier(disciple.spiritual_root_quality)
-    return clampf(base + hp_bonus + stamina_bonus + root_modifier, 0.45, 0.99)
+        modifier += spiritual_root_system.breakthrough_modifier(disciple.spiritual_root_quality)
+    if state != null and state.sect.techniques_enabled:
+        modifier += technique_system.breakthrough_bonus(state, disciple)
+    return clampf(base + hp_bonus + stamina_bonus + modifier, 0.45, 0.99)
 
 func attempt_breakthrough(state: SimulationState, disciple: DiscipleState, rng: GameRng) -> Dictionary:
     return resolve_breakthrough(state, disciple, rng.randf())
@@ -132,11 +132,9 @@ func attempt_breakthrough(state: SimulationState, disciple: DiscipleState, rng: 
 func resolve_breakthrough(state: SimulationState, disciple: DiscipleState, roll: float) -> Dictionary:
     if not can_breakthrough(state, disciple):
         return {"ok": false, "outcome": "blocked"}
-
     var required := required_progress(disciple)
     var chance := breakthrough_success_chance(disciple, state)
     state.sect.cultivation_event_count += 1
-
     if clampf(roll, 0.0, 1.0) < chance:
         disciple.cultivation_progress = maxf(0.0, disciple.cultivation_progress - required)
         disciple.cultivation_stage_index = mini(disciple.cultivation_stage_index + 1, STAGES.size() - 1)
@@ -147,9 +145,10 @@ func resolve_breakthrough(state: SimulationState, disciple: DiscipleState, roll:
         disciple.metrics["breakthrough_successes"] = int(disciple.metrics.get("breakthrough_successes", 0)) + 1
         return {"ok": true, "outcome": "success", "stage_index": disciple.cultivation_stage_index, "stage_name": stage_name(disciple), "chance": chance}
 
-    disciple.cultivation_progress = maxf(0.0, disciple.cultivation_progress - required * BREAKTHROUGH_FAILURE_PROGRESS_LOSS)
-    disciple.stamina = maxf(0.0, disciple.stamina - BREAKTHROUGH_FAILURE_STAMINA_COST)
-    disciple.hp = maxf(1.0, disciple.hp - disciple.max_hp * BREAKTHROUGH_FAILURE_HP_RATIO)
+    var failure_multiplier := technique_system.breakthrough_failure_multiplier(state, disciple) if state.sect.techniques_enabled else 1.0
+    disciple.cultivation_progress = maxf(0.0, disciple.cultivation_progress - required * BREAKTHROUGH_FAILURE_PROGRESS_LOSS * failure_multiplier)
+    disciple.stamina = maxf(0.0, disciple.stamina - BREAKTHROUGH_FAILURE_STAMINA_COST * failure_multiplier)
+    disciple.hp = maxf(1.0, disciple.hp - disciple.max_hp * BREAKTHROUGH_FAILURE_HP_RATIO * failure_multiplier)
     disciple.breakthrough_failures += 1
     disciple.next_breakthrough_tick = state.tick + BREAKTHROUGH_FAILURE_COOLDOWN
     disciple.last_breakthrough_outcome = &"failure"
@@ -159,15 +158,16 @@ func resolve_breakthrough(state: SimulationState, disciple: DiscipleState, roll:
 func effective_combat_power(state: SimulationState, disciple: DiscipleState) -> float:
     if not state.sect.cultivation_enabled:
         return disciple.combat_power
-    return disciple.combat_power + disciple.cultivation_combat_bonus
+    var power := disciple.combat_power + disciple.cultivation_combat_bonus
+    if state.sect.techniques_enabled:
+        power += technique_system.combat_power_bonus(state, disciple)
+    return power
 
 func apply_action_modifiers(state: SimulationState, disciple: DiscipleState, scores: Dictionary) -> void:
     if not state.sect.cultivation_enabled:
         return
-
     var cultivate_score := 35.0 + (1.0 - clampf(disciple.risk_bias, 0.0, 1.0)) * 22.0 + clampf(disciple.survival_bias, 0.0, 1.0) * 8.0
     var breakthrough_score := -1.0e20
-
     match disciple.active_goal:
         GoalSystem.GOAL_GROWTH:
             cultivate_score += 25.0
@@ -177,7 +177,6 @@ func apply_action_modifiers(state: SimulationState, disciple: DiscipleState, sco
             cultivate_score -= 8.0
         GoalSystem.GOAL_WEALTH:
             cultivate_score -= 10.0
-
     match disciple.cultivation_directive:
         DIRECTIVE_CULTIVATE:
             cultivate_score += 45.0
@@ -187,7 +186,6 @@ func apply_action_modifiers(state: SimulationState, disciple: DiscipleState, sco
             scores["HUNT"] = float(scores.get("HUNT", 0.0)) + 35.0
         _:
             pass
-
     if is_max_stage(disciple):
         cultivate_score = -1.0e20
     elif is_ready(disciple):
@@ -198,7 +196,6 @@ func apply_action_modifiers(state: SimulationState, disciple: DiscipleState, sco
                 breakthrough_score += 20.0
             elif disciple.cultivation_directive == DIRECTIVE_FIELD:
                 breakthrough_score -= 85.0
-
     scores["CULTIVATE"] = cultivate_score
     scores["BREAKTHROUGH"] = breakthrough_score
 
@@ -233,10 +230,7 @@ func _normalize_disciple(disciple: DiscipleState) -> void:
         disciple.cultivation_directive = DIRECTIVE_BALANCED
     _apply_stage_bonus(disciple)
     var required := required_progress(disciple)
-    if required > 0.0:
-        disciple.cultivation_progress = clampf(disciple.cultivation_progress, 0.0, required)
-    else:
-        disciple.cultivation_progress = 0.0
+    disciple.cultivation_progress = clampf(disciple.cultivation_progress, 0.0, required) if required > 0.0 else 0.0
 
 func _apply_stage_bonus(disciple: DiscipleState) -> void:
     var definition := stage_definition(disciple)

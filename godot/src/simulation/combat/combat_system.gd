@@ -2,6 +2,7 @@ class_name CombatSystem
 extends RefCounted
 
 var cultivation_system := CultivationSystem.new()
+var technique_system := TechniqueSystem.new()
 
 func resolve_encounter(state: SimulationState, disciple: DiscipleState, rng: GameRng) -> Dictionary:
     var region: RegionState = state.regions.get(disciple.region_id)
@@ -16,6 +17,7 @@ func resolve_encounter(state: SimulationState, disciple: DiscipleState, rng: Gam
     var monster_hp := float(definition.get("hp", 30.0))
     var monster_power := float(definition.get("power", 10.0))
     var effective_power := cultivation_system.effective_combat_power(state, disciple) if state.sect.cultivation_enabled else disciple.combat_power
+    var damage_multiplier := technique_system.incoming_damage_multiplier(state, disciple) if state.sect.techniques_enabled else 1.0
     disciple.metrics["combats"] = int(disciple.metrics.get("combats", 0)) + 1
 
     for _round in range(20):
@@ -34,7 +36,7 @@ func resolve_encounter(state: SimulationState, disciple: DiscipleState, rng: Gam
                 "loot":definition.get("loot", {}).duplicate(true)
             }
 
-        var taken := monster_power * rng.randf_range(0.65, 1.22)
+        var taken := monster_power * rng.randf_range(0.65, 1.22) * damage_multiplier
         disciple.hp = maxf(0.0, disciple.hp - taken)
 
         if disciple.hp <= 0.0:

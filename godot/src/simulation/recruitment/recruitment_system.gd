@@ -18,7 +18,6 @@ const ARCHETYPES := {
 func ensure_candidate_pool(state: SimulationState, target_count: int = DEFAULT_POOL_SIZE) -> void:
     if not state.p1_recruitment_enabled:
         return
-
     var desired := maxi(target_count, 0)
     while state.recruitment_candidates.size() < desired:
         var candidate := generate_candidate(state)
@@ -48,7 +47,10 @@ func generate_candidate(state: SimulationState) -> CandidateState:
     })
 
     if state.sect.spiritual_roots_enabled:
-        SpiritualRootSystem.new().ensure_candidate_root(state, candidate)
+        var roots := SpiritualRootSystem.new()
+        roots.ensure_candidate_root(state, candidate)
+        if state.sect.techniques_enabled:
+            roots.ensure_candidate_elements(state, candidate)
 
     state.recruitment_generation_index = generation_index
     state.recruitment_candidates[candidate.id] = candidate
@@ -67,7 +69,10 @@ func accept_candidate(state: SimulationState, candidate_id: StringName) -> Dicti
     var candidate: CandidateState = state.recruitment_candidates[candidate_id]
     var disciple := candidate.to_disciple()
     if state.sect.spiritual_roots_enabled:
-        SpiritualRootSystem.new().ensure_disciple_root(state, disciple)
+        var roots := SpiritualRootSystem.new()
+        roots.ensure_disciple_root(state, disciple)
+        if state.sect.techniques_enabled:
+            roots.ensure_disciple_elements(state, disciple)
     state.disciples[disciple.id] = disciple
     state.recruitment_candidates.erase(candidate_id)
     state.recruitment_stats["accepted"] = int(state.recruitment_stats.get("accepted", 0)) + 1
@@ -86,7 +91,6 @@ func reject_candidate(state: SimulationState, candidate_id: StringName) -> Dicti
         return _result(false, "recruitment_disabled")
     if not state.recruitment_candidates.has(candidate_id):
         return _result(false, "candidate_missing")
-
     state.recruitment_candidates.erase(candidate_id)
     state.recruitment_stats["rejected"] = int(state.recruitment_stats.get("rejected", 0)) + 1
     return _result(true, "rejected")

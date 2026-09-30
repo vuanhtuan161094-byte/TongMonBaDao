@@ -9,8 +9,8 @@ var spend_bias: float = 0.5
 var survival_bias: float = 0.5
 var personality_id: StringName = &"balanced"
 var generated_index: int = 0
-# P2.2 is empty/inert until SpiritualRootSystem is enabled.
 var spiritual_root_quality: StringName = &""
+var spiritual_root_elements: Array = []
 
 func _init(definition: Dictionary = {}) -> void:
     id = StringName(definition.get("id", "candidate"))
@@ -22,6 +22,10 @@ func _init(definition: Dictionary = {}) -> void:
     personality_id = StringName(definition.get("personality_id", personality_id))
     generated_index = int(definition.get("generated_index", generated_index))
     spiritual_root_quality = StringName(definition.get("spiritual_root_quality", spiritual_root_quality))
+    var raw_elements = definition.get("spiritual_root_elements", [])
+    if raw_elements is Array:
+        for item in raw_elements:
+            spiritual_root_elements.append(str(item))
 
 func to_dict() -> Dictionary:
     var data := {
@@ -36,6 +40,8 @@ func to_dict() -> Dictionary:
     }
     if spiritual_root_quality != &"":
         data["spiritual_root_quality"] = str(spiritual_root_quality)
+    if not spiritual_root_elements.is_empty():
+        data["spiritual_root_elements"] = spiritual_root_elements.duplicate()
     return data
 
 func to_disciple() -> DiscipleState:
@@ -51,6 +57,8 @@ func to_disciple() -> DiscipleState:
     }
     if spiritual_root_quality != &"":
         definition["spiritual_root_quality"] = str(spiritual_root_quality)
+    if not spiritual_root_elements.is_empty():
+        definition["spiritual_root_elements"] = spiritual_root_elements.duplicate()
     return DiscipleState.new(definition)
 
 static func from_dict(data: Dictionary) -> CandidateState:
