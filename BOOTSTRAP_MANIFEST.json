@@ -1,0 +1,16 @@
+{
+  "project": "Tông Môn Tycoon P0",
+  "generated_at": "2026-09-30",
+  "status": "static candidate",
+  "godot_runtime_verified": false,
+  "reason": "Godot 4.7.2 executable is not installed in the current execution environment.",
+  "static_sanity_exit_code": 0,
+  "static_sanity_output": "STATIC SANITY PASS\nGDScript files: 15",
+  "file_count": 27,
+  "static_review": {
+    "market_operating_reserve": 200,
+    "sell_spin_loop_guard": true,
+    "json_stable_item_keys": true,
+    "exact_rng_state_serialization": true
+  }
+}
