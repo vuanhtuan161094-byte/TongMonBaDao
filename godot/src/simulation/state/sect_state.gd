@@ -45,6 +45,10 @@ var technique_materials: Dictionary = {}
 var technique_gacha_index: int = 0
 var technique_event_count: int = 0
 
+# P2.4 path identity is derived from per-disciple accumulated path XP.
+var cultivation_paths_enabled: bool = false
+var cultivation_path_event_count: int = 0
+
 func to_dict() -> Dictionary:
     var data := {
         "treasury": treasury,
@@ -73,6 +77,9 @@ func to_dict() -> Dictionary:
         data["technique_materials"] = technique_materials.duplicate(true)
         data["technique_gacha_index"] = technique_gacha_index
         data["technique_event_count"] = technique_event_count
+    if cultivation_paths_enabled or cultivation_path_event_count > 0:
+        data["cultivation_paths_enabled"] = cultivation_paths_enabled
+        data["cultivation_path_event_count"] = cultivation_path_event_count
     return data
 
 static func from_dict(data: Dictionary) -> SectState:
@@ -99,6 +106,8 @@ static func from_dict(data: Dictionary) -> SectState:
     state.technique_materials = _int_dictionary(data.get("technique_materials", {}))
     state.technique_gacha_index = maxi(int(data.get("technique_gacha_index", 0)), 0)
     state.technique_event_count = maxi(int(data.get("technique_event_count", 0)), 0)
+    state.cultivation_paths_enabled = bool(data.get("cultivation_paths_enabled", false))
+    state.cultivation_path_event_count = maxi(int(data.get("cultivation_path_event_count", 0)), 0)
 
     var saved_stats = data.get("needs_stats", {})
     if saved_stats is Dictionary:
