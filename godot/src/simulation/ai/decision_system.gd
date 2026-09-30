@@ -7,6 +7,7 @@ const UNDERPOWER_PENALTY := 12.0
 var relationship_system := RelationshipSystem.new()
 var memory_system := MemorySystem.new()
 var organization_system := OrganizationSystem.new()
+var needs_system := NeedsSystem.new()
 
 func evaluate(state: SimulationState, disciple: DiscipleState) -> Dictionary:
 	var hp_ratio := disciple.hp / maxf(disciple.max_hp, 1.0)
@@ -31,6 +32,8 @@ func evaluate(state: SimulationState, disciple: DiscipleState) -> Dictionary:
 		_apply_goal_modifiers(scores, disciple.active_goal)
 	if state.p1_organization_enabled:
 		organization_system.apply_action_role_modifiers(state, disciple, scores)
+	if state.sect.needs_enabled:
+		needs_system.apply_action_modifiers(state, disciple, scores)
 
 	var chosen: StringName = &"HUNT"
 	var reason := "Healthy enough to continue autonomous hunting."
@@ -49,7 +52,10 @@ func evaluate(state: SimulationState, disciple: DiscipleState) -> Dictionary:
 			chosen = &"HUNT"
 	else:
 		if hp_ratio < 0.72:
-			if disciple.wallet >= EconomySystem.HEAL_FEE:
+			if state.sect.needs_enabled and not needs_system.can_heal(state):
+				chosen = &"REST"
+				reason = "Sect medicine stock is empty; paid healing is unavailable."
+			elif disciple.wallet >= EconomySystem.HEAL_FEE:
 				chosen = &"HEAL"
 				reason = "Injured and can afford sect healing."
 			else:
@@ -63,7 +69,9 @@ func evaluate(state: SimulationState, disciple: DiscipleState) -> Dictionary:
 			reason = "Returned with loot to liquidate."
 		elif state.p1_goal_personality_enabled:
 			chosen = _choose_p1_sect_action(scores, disciple)
-			if state.p1_organization_enabled:
+			if state.sect.needs_enabled:
+				reason = "Utility choice shaped by goal, organization, and sect resource pressure."
+			elif state.p1_organization_enabled:
 				reason = "Utility choice shaped by goal plus assigned organizational role."
 			else:
 				reason = "P1.1 utility choice shaped by personality goal %s." % str(disciple.active_goal)
@@ -84,6 +92,10 @@ func evaluate(state: SimulationState, disciple: DiscipleState) -> Dictionary:
 		result["organization_role"] = str(organization_system.role_for_disciple(state, disciple.id))
 		var team := organization_system.team_for_disciple(state, disciple.id)
 		result["team_id"] = str(team.id) if team != null else ""
+	if state.sect.needs_enabled:
+		result["medicine_stock"] = state.sect.medicine_stock
+		result["supply_stock"] = state.sect.supply_stock
+		result["lodging_capacity"] = state.sect.lodging_capacity
 	disciple.last_decision = result.duplicate(true)
 	return result
 
@@ -94,6 +106,7 @@ func choose_region(state: SimulationState, disciple: DiscipleState) -> StringNam
 	var social_scores: Dictionary = {}
 	var memory_scores: Dictionary = {}
 	var organization_scores: Dictionary = {}
+	var needs_scores: Dictionary = {}
 
 	for region_value in state.regions.values():
 		var region: RegionState = region_value
@@ -120,10 +133,16 @@ func choose_region(state: SimulationState, disciple: DiscipleState) -> StringNam
 			organization_modifier = organization_system.region_organization_modifier(state, disciple, region)
 			score += organization_modifier
 
+		var needs_modifier := 0.0
+		if state.sect.needs_enabled:
+			needs_modifier = needs_system.region_need_modifier(state, region)
+			score += needs_modifier
+
 		region_scores[str(region.id)] = score
 		social_scores[str(region.id)] = social_modifier
 		memory_scores[str(region.id)] = memory_modifier
 		organization_scores[str(region.id)] = organization_modifier
+		needs_scores[str(region.id)] = needs_modifier
 
 		if score > best_score:
 			best_score = score
@@ -135,8 +154,12 @@ func choose_region(state: SimulationState, disciple: DiscipleState) -> StringNam
 		disciple.last_decision["memory_region_scores"] = memory_scores
 	if state.p1_organization_enabled:
 		disciple.last_decision["organization_region_scores"] = organization_scores
+	if state.sect.needs_enabled:
+		disciple.last_decision["needs_region_scores"] = needs_scores
 	disciple.last_decision["chosen_region"] = str(best_id)
-	if state.p1_organization_enabled:
+	if state.sect.needs_enabled:
+		disciple.last_decision["region_reason"] = "Profit, risk, power, goal, relationships, memory, organization, and sect resource pressure."
+	elif state.p1_organization_enabled:
 		disciple.last_decision["region_reason"] = "Profit, risk, power, goal, relationships, memory, role, and team leadership."
 	elif state.p1_memory_enabled:
 		disciple.last_decision["region_reason"] = "Profit, risk, power, goal, relationships, and consequential memory."

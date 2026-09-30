@@ -7,6 +7,7 @@ var goal_system := GoalSystem.new()
 var decision_system := DecisionSystem.new()
 var relationship_system := RelationshipSystem.new()
 var memory_system := MemorySystem.new()
+var needs_system := NeedsSystem.new()
 var economy_system := EconomySystem.new()
 var combat_system := CombatSystem.new()
 
@@ -18,6 +19,8 @@ func _init(simulation_state: SimulationState) -> void:
 
 func step() -> void:
     state.tick += 1
+    if state.sect.needs_enabled:
+        needs_system.process_logistics_tick(state)
 
     for disciple in state.disciples.values():
         _step_disciple(disciple)
@@ -43,6 +46,8 @@ func _step_disciple(disciple: DiscipleState) -> void:
         &"HUNT":
             if disciple.region_id == &"sect":
                 disciple.target_region_id = decision_system.choose_region(state, disciple)
+                if state.sect.needs_enabled:
+                    needs_system.prepare_departure(state, disciple)
                 disciple.current_action = &"TRAVEL"
             else:
                 disciple.current_action = &"COMBAT"
@@ -57,10 +62,12 @@ func _step_disciple(disciple: DiscipleState) -> void:
                     disciple.metrics["medium_visits"] = int(disciple.metrics.get("medium_visits", 0)) + 1
                 else:
                     disciple.metrics["safe_visits"] = int(disciple.metrics.get("safe_visits", 0)) + 1
-                disciple.stamina = maxf(0.0, disciple.stamina - 8.0)
+                var travel_cost := needs_system.consume_travel_stamina_cost(state, disciple) if state.sect.needs_enabled else 8.0
+                disciple.stamina = maxf(0.0, disciple.stamina - travel_cost)
                 disciple.current_action = &"COMBAT"
             else:
                 disciple.target_region_id = &""
+                disciple.metrics.erase("p1_6_departure_supplied")
                 disciple.current_action = &"EVALUATE"
 
         &"COMBAT":
@@ -93,8 +100,6 @@ func _step_disciple(disciple: DiscipleState) -> void:
 
         &"SELL":
             var earned := economy_system.sell_inventory(state, disciple)
-            # If the sect market is temporarily out of spendable treasury,
-            # do not spin forever between EVALUATE and SELL.
             disciple.current_action = &"EVALUATE" if earned > 0 else &"HUNT"
 
         &"BUY":
@@ -102,15 +107,19 @@ func _step_disciple(disciple: DiscipleState) -> void:
             disciple.current_action = &"EVALUATE"
 
         &"HEAL":
-            if not economy_system.heal(state, disciple):
+            var healed := needs_system.heal_with_medicine(state, disciple, economy_system) if state.sect.needs_enabled else economy_system.heal(state, disciple)
+            if not healed:
                 disciple.current_action = &"REST"
             else:
                 disciple.current_action = &"EVALUATE"
 
         &"REST":
-            disciple.stamina = minf(100.0, disciple.stamina + 48.0)
-            disciple.hp = minf(disciple.max_hp, disciple.hp + 5.0)
-            disciple.metrics["rests"] = int(disciple.metrics.get("rests", 0)) + 1
+            if state.sect.needs_enabled:
+                needs_system.apply_rest(state, disciple)
+            else:
+                disciple.stamina = minf(100.0, disciple.stamina + 48.0)
+                disciple.hp = minf(disciple.max_hp, disciple.hp + 5.0)
+                disciple.metrics["rests"] = int(disciple.metrics.get("rests", 0)) + 1
             disciple.current_action = &"EVALUATE"
 
         _:

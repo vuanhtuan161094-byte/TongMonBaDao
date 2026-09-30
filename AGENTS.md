@@ -14,14 +14,14 @@
 - Do not introduce a parallel JavaScript gameplay engine.
 - Static content definitions and runtime state stay separated.
 - Simulation code must not depend on presentation/UI nodes.
-- Randomness must flow through a seeded RNG owned by the simulation.
+- Randomness must flow through seeded simulation RNG.
 - Economy transactions must conserve money unless a source/sink is explicitly declared.
 - Every runtime state mutation must preserve invariants.
 - Prefer small composition-oriented systems over giant manager scripts.
 - Do not call a change PASS without the active verification gate.
-- Locked P0, P1.1, P1.2, and P1.3 behavior paths remain mandatory regression baselines.
-- P1.4 and P1.5 may be implemented ahead of local runtime proof, but must remain explicitly AWAITING RUNTIME GATE until a real Godot 4.7.2 run passes.
-- New mechanics must have measurable gameplay/simulation impact; do not add story-only state or title-only organization with no behavioral consequence.
+- Locked P0, P1.1, P1.2 and P1.3 remain mandatory regression baselines.
+- P1.4, P1.5 and P1.6 may be implemented while the user is away from the Windows machine, but none may be marked PASS without real Godot 4.7.2 runtime evidence.
+- New mechanics must have measurable gameplay/simulation impact; do not add story-only, title-only or decorative resource state.
 
 ## Required loop
 
@@ -34,18 +34,13 @@ read checkpoint -> narrow scope -> patch -> static review -> headless import/par
 - P1.2: `tools/godot/Verify-P1-2.ps1`
 - P1.3: `tools/godot/Verify-P1-3.ps1`
 
-All locked gates remain mandatory for later P1 work.
+## Pending gates chained into the active verifier
 
-## Pending P1.4 gate
+- P1.4: `tools/godot/Verify-P1-4.ps1`
+- P1.5: `tools/godot/Verify-P1-5.ps1`
 
-`tools/godot/Verify-P1-4.ps1`
+## Active P1.6 gate
 
-P1.4 adds bounded consequential memory. It remains implemented but unverified until the user returns to the Windows/Godot machine.
+`tools/godot/Verify-P1-6.ps1`
 
-## Active P1.5 gate
-
-`tools/godot/Verify-P1-5.ps1`
-
-The P1.5 verifier chains P0 -> P1.1 -> P1.2 -> P1.3 -> P1.4 before running organization contracts and the P1.5 scene smoke. This allows one future local run to verify both pending P1.4 and P1.5.
-
-P1.5 scope is limited to bounded teams, direct disciple-to-team lookup, team leadership, three consequential roles (hunter/logistics/guard), player team/leader/role assignment, relationship/memory-shaped leadership influence, save/load persistence, deterministic continuation, and a minimal management screen. Do not expand into sect upkeep/needs, buildings, morale, salaries, mentor/disciple hierarchy, romance, factions, betrayal, cultivation realms, bosses, premium currency, or production art during P1.5.
+P1.6 adds bounded sect-level medicine, expedition supplies, lodging capacity, logistics production priority and resource-pressure consequences. Medicine must affect healing availability, supplies must affect expedition behavior/travel cost, lodging pressure must affect recovery, and player allocation must create a measurable tradeoff. Do not expand P1.6 into morale, salaries, building trees, crafting chains, combat-team V2, cultivation realms, romance/factions, premium currency or production art.
