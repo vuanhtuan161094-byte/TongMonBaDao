@@ -11,6 +11,7 @@ var needs_system := NeedsSystem.new()
 var cultivation_system := CultivationSystem.new()
 var technique_system := TechniqueSystem.new()
 var cultivation_path_system := CultivationPathSystem.new()
+var combat_skill_system := CombatSkillSystem.new()
 var economy_system := EconomySystem.new()
 var combat_system := CombatSystem.new()
 
@@ -86,7 +87,12 @@ func _step_disciple(disciple: DiscipleState) -> void:
             if state.sect.cultivation_enabled and outcome == "win":
                 cultivation_system.add_combat_win_progress(state, disciple)
             if state.sect.cultivation_paths_enabled and outcome in ["win", "retreat", "defeat"]:
-                if cultivation_path_system.record_combat(state, disciple, outcome) > 0.0:
+                var path_gain := 0.0
+                if state.sect.combat_skills_enabled:
+                    path_gain = combat_skill_system.record_combat_path_experience(state, disciple, result, outcome)
+                else:
+                    path_gain = cultivation_path_system.record_combat(state, disciple, outcome)
+                if path_gain > 0.0:
                     disciple.metrics["path_combat_events"] = int(disciple.metrics.get("path_combat_events", 0)) + 1
             match outcome:
                 "win":
