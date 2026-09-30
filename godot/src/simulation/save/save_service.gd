@@ -11,7 +11,8 @@ func save_to_path(state: SimulationState, path: String) -> Error:
     if file == null:
         return FileAccess.get_open_error()
 
-    file.store_string(JSON.stringify(payload))
+    # Preserve simulation floats exactly enough for deterministic resume.
+    file.store_string(JSON.stringify(payload, "", true, true))
     file.close()
     return OK
 
