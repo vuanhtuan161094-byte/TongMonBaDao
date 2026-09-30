@@ -6,7 +6,7 @@ Date: 2026-09-30
 
 Step 13 Technical Architecture & Development Roadmap: LOCKED.
 Step 14 P0 Prototype Specification: LOCKED.
-Step 15 Repository Bootstrap + P0 Foundation: IN PROGRESS.
+Step 15 Repository Bootstrap + P0 Foundation: LOCKED / PASS.
 
 ## Architecture locks
 
@@ -46,6 +46,55 @@ Step 15 Repository Bootstrap + P0 Foundation: IN PROGRESS.
 
 Benchmark telemetry includes total money, treasury range, combat outcomes, sale/recovery activity, per-disciple safe/medium/danger exposure, and ending wallet/HP/stamina. It writes `godot/reports/p0_benchmark.json`.
 
+## Runtime verification evidence — 2026-09-30
+
+Environment:
+
+- Windows 10.
+- Godot `4.7.2.stable.official.ed1daf0bf`.
+- Local authoritative gate: `Sync-P0.cmd` → `Verify-P0.cmd` → `tools/godot/Verify-P0.ps1`.
+
+Result: all nine stages completed successfully and ended with:
+
+`P0 FOUNDATION GATE: PASS`
+
+`P0 GATE: PASS`
+
+Recorded gate evidence:
+
+- Decision contracts: PASS.
+- Economy contracts: PASS.
+- 20,000-tick invariant scenario: PASS.
+  - total money: 1,630;
+  - ending treasury: 203;
+  - combats: 11,081;
+  - sales: 3,761;
+  - recovery actions: 23,487;
+  - aggressive-profile danger visits: 1,033;
+  - cautious-profile danger visits: 0.
+- Save/load round trip: PASS.
+  - resumed tick: 3,000;
+  - total money: 1,630;
+  - disciples: 6;
+  - malformed and negative-version fixtures were rejected as intended;
+  - deterministic continuation matched the same-state control after another 2,000 ticks.
+- Same-seed reproducibility: PASS.
+  - seed: 515151;
+  - ticks: 5,000.
+- Multi-seed benchmark: PASS.
+  - 8 runs × 12,000 ticks = 96,000 ticks;
+  - total money remained 1,630;
+  - treasury range: 201..215;
+  - combats: 57,347;
+  - wins: 38,661;
+  - retreats: 18,032;
+  - defeats: 654;
+  - sales: 20,163;
+  - heals: 23,682;
+  - rests: 84,325;
+  - buys: 6,795.
+- 180-frame headless runtime smoke: PASS.
+
 ## Static / mirror review patches already applied
 
 - 200 Linh Thạch sect operating reserve for market purchases.
@@ -58,12 +107,13 @@ Benchmark telemetry includes total money, treasury range, combat outcomes, sale/
 - Debug inspector exposes region scores and chosen-region rationale.
 - Save loading fails closed for malformed current-version payloads and invalid negative versions instead of silently constructing a default state.
 - Save verification compares the full round-tripped state and requires deterministic continuation to match a same-state control after another 2,000 ticks.
+- Save round-trip float comparison tolerates only representation-level floating-point noise; discrete state remains exact, and continuation must still converge exactly under the deterministic control.
 - `last_decision.action` is stored as a JSON-stable string; runtime converts it back to `StringName` only when executing the action.
 - Weighted RNG iterates canonically sorted keys, so JSON dictionary key-order changes cannot remap the same RNG roll to a different monster.
 - Inventory sales iterate canonically sorted item keys, so a save/load key-order change cannot alter limited-treasury sale behavior.
 - Disciple inventory/pending-loot/metrics and sect market/base-price values are normalized back to integer types after JSON load.
 - Save JSON uses full float precision to preserve HP/stamina/score values closely enough for deterministic continuation.
-- A non-authoritative mirror simulation was used only as a design sanity check; it does NOT satisfy the Godot runtime gate.
+- A non-authoritative mirror simulation was used only as a design sanity check; it did NOT substitute for the final Godot runtime gate.
 
 ## GitHub Actions runner blocker
 
@@ -72,15 +122,14 @@ Two CI attempts were accepted by GitHub but failed before a runner executed any 
 - run `36663544443`;
 - run `36663692983`.
 
-Both reported no executed steps and no usable job log. Changing from a third-party Godot setup action to a direct download of the official Godot 4.7.2 binary did not change this behavior. Therefore this is treated as a runner/prepare-job blocker, not as evidence that the Godot project or P0 tests failed.
+Both reported no executed steps and no usable job log. Changing from a third-party Godot setup action to a direct download of the official Godot 4.7.2 binary did not change this behavior. Therefore this remains classified as a runner/prepare-job blocker, not as evidence that the Godot project or P0 tests failed.
 
-The workflow is temporarily `workflow_dispatch` only so normal development pushes do not create misleading red runs. It remains ready for manual execution once a GitHub-hosted runner can actually start the job.
+The workflow is temporarily `workflow_dispatch` only so normal development pushes do not create misleading red runs. The local authoritative Godot 4.7.2 gate has now completed successfully, so the CI runner issue is no longer a P0 closure blocker.
 
 ## Completion status
 
-NOT P0 PASS yet.
+P0 PASS.
 
-Reason: no real Godot 4.7.2 runtime has completed the nine-stage verification gate. Source review, mirror simulation, and pre-run CI failures are not substitutes for runtime proof.
+The Godot 4.7.2 authoritative runtime completed the full nine-stage gate successfully on 2026-09-30. P0 foundation is closed and may be treated as the stable baseline for subsequent work.
 
-Next closure condition:
-run `tools/godot/Verify-P0.ps1` on any environment where Godot 4.7.2 can execute, fix every import/parse/test/runtime failure, then mark P0 green only with the exact gate evidence.
+Next step: open P1 only against the locked P0 baseline and preserve all P0 invariants, deterministic replay behavior, save compatibility expectations, and the nine-stage regression gate.
