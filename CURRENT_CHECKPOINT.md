@@ -56,9 +56,13 @@ Benchmark telemetry includes total money, treasury range, combat outcomes, sale/
 - Region selection combines profit + risk tolerance - underpower penalty; profit alone cannot force every profile into the hardest zone.
 - Broke injured disciples use free Rest recovery instead of returning to combat because they cannot afford paid healing.
 - Debug inspector exposes region scores and chosen-region rationale.
-- Save loading now fails closed for malformed current-version payloads and invalid negative versions instead of silently constructing a default state.
-- Save verification now compares the full round-tripped state and requires deterministic continuation to match a same-state control after another 2,000 ticks.
+- Save loading fails closed for malformed current-version payloads and invalid negative versions instead of silently constructing a default state.
+- Save verification compares the full round-tripped state and requires deterministic continuation to match a same-state control after another 2,000 ticks.
 - `last_decision.action` is stored as a JSON-stable string; runtime converts it back to `StringName` only when executing the action.
+- Weighted RNG iterates canonically sorted keys, so JSON dictionary key-order changes cannot remap the same RNG roll to a different monster.
+- Inventory sales iterate canonically sorted item keys, so a save/load key-order change cannot alter limited-treasury sale behavior.
+- Disciple inventory/pending-loot/metrics and sect market/base-price values are normalized back to integer types after JSON load.
+- Save JSON uses full float precision to preserve HP/stamina/score values closely enough for deterministic continuation.
 - A non-authoritative mirror simulation was used only as a design sanity check; it does NOT satisfy the Godot runtime gate.
 
 ## GitHub Actions runner blocker
