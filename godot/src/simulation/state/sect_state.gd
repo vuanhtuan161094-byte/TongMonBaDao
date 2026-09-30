@@ -53,6 +53,14 @@ var cultivation_path_event_count: int = 0
 var combat_skills_enabled: bool = false
 var combat_skill_event_count: int = 0
 
+# P2.6 sect forge, equipment warehouse/shop and autonomous buying policy.
+var equipment_enabled: bool = false
+var forge_materials: Dictionary = {}
+var equipment_items: Dictionary = {}
+var equipment_forge_index: int = 0
+var equipment_event_count: int = 0
+var equipment_policy: StringName = &"balanced"
+
 func to_dict() -> Dictionary:
     var data := {
         "treasury": treasury,
@@ -87,6 +95,13 @@ func to_dict() -> Dictionary:
     if combat_skills_enabled or combat_skill_event_count > 0:
         data["combat_skills_enabled"] = combat_skills_enabled
         data["combat_skill_event_count"] = combat_skill_event_count
+    if equipment_enabled or equipment_event_count > 0 or equipment_forge_index > 0 or not forge_materials.is_empty() or not equipment_items.is_empty():
+        data["equipment_enabled"] = equipment_enabled
+        data["forge_materials"] = forge_materials.duplicate(true)
+        data["equipment_items"] = equipment_items.duplicate(true)
+        data["equipment_forge_index"] = equipment_forge_index
+        data["equipment_event_count"] = equipment_event_count
+        data["equipment_policy"] = str(equipment_policy)
     return data
 
 static func from_dict(data: Dictionary) -> SectState:
@@ -117,6 +132,13 @@ static func from_dict(data: Dictionary) -> SectState:
     state.cultivation_path_event_count = maxi(int(data.get("cultivation_path_event_count", 0)), 0)
     state.combat_skills_enabled = bool(data.get("combat_skills_enabled", false))
     state.combat_skill_event_count = maxi(int(data.get("combat_skill_event_count", 0)), 0)
+    state.equipment_enabled = bool(data.get("equipment_enabled", false))
+    state.forge_materials = _int_dictionary(data.get("forge_materials", {}))
+    var saved_equipment = data.get("equipment_items", {})
+    state.equipment_items = saved_equipment.duplicate(true) if saved_equipment is Dictionary else {}
+    state.equipment_forge_index = maxi(int(data.get("equipment_forge_index", 0)), 0)
+    state.equipment_event_count = maxi(int(data.get("equipment_event_count", 0)), 0)
+    state.equipment_policy = StringName(data.get("equipment_policy", "balanced"))
 
     var saved_stats = data.get("needs_stats", {})
     if saved_stats is Dictionary:
