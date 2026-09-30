@@ -27,6 +27,8 @@ func _run() -> void:
         return
     if not _verify_manual_equip_lock_and_return_to_auto():
         return
+    if not _verify_equipment_changes_region_choice():
+        return
     if not _verify_equipment_changes_real_combat():
         return
 
@@ -181,9 +183,47 @@ func _verify_manual_equip_lock_and_return_to_auto() -> bool:
         return false
     return true
 
+func _verify_equipment_changes_region_choice() -> bool:
+    var state := P26Factory.create_state(TEST_SEED + 5)
+    var equipment := EquipmentSystem.new()
+    var decisions := DecisionSystem.new()
+    var actor: DiscipleState = state.disciples.get(&"bach_nguyet")
+    state.relationships = {}
+    state.memories = {}
+    state.companion_assignments = {}
+    state.teams = {}
+    state.disciple_team_ids = {}
+    state.role_assignments = {}
+    state.sect.supply_stock = NeedsSystem.SUPPLY_CAP
+    actor.region_id = &"sect"
+    actor.target_region_id = &""
+    actor.combat_power = 14.0
+    actor.risk_bias = 0.50
+    actor.active_goal = GoalSystem.GOAL_PREPARE
+    actor.cultivation_stage_index = 0
+    actor.cultivation_combat_bonus = 0.0
+    actor.cultivation_path_xp = {"sword":0.0, "body":0.0, "spell":0.0}
+    actor.active_technique_id = &""
+
+    var before := decisions.choose_region(state, actor)
+    if before != &"thanh_truc_lam":
+        _fail("P2.6 region-power probe expected the unequipped disciple to choose Thanh Trúc Lâm.")
+        return false
+
+    _seed_forge_materials(state)
+    var sword := equipment.craft(state, &"thanh_thiet_kiem", false)
+    if not equipment.manual_equip(state, actor.id, StringName(sword.get("id", "")), true):
+        _fail("P2.6 region-power probe could not equip the forged sword.")
+        return false
+    var after := decisions.choose_region(state, actor)
+    if after == before:
+        _fail("P2.6 equipment power did not change autonomous region choice.")
+        return false
+    return true
+
 func _verify_equipment_changes_real_combat() -> bool:
-    var weak_state := P26Factory.create_state(TEST_SEED + 5)
-    var strong_state := P26Factory.create_state(TEST_SEED + 5)
+    var weak_state := P26Factory.create_state(TEST_SEED + 6)
+    var strong_state := P26Factory.create_state(TEST_SEED + 6)
     var equipment := EquipmentSystem.new()
     _seed_forge_materials(strong_state)
     var sword := equipment.craft(strong_state, &"thanh_thiet_kiem", false)
@@ -197,8 +237,10 @@ func _verify_equipment_changes_real_combat() -> bool:
         actor.region_id = &"thanh_truc_lam"
         actor.current_action = &"COMBAT"
         actor.learned_combat_skills = {}
-        var region: RegionState = (weak_state if actor == weak else strong_state).regions.get(&"thanh_truc_lam")
-        region.monster_weights = {"truc_thu":1.0}
+    var weak_region: RegionState = weak_state.regions.get(&"thanh_truc_lam")
+    var strong_region: RegionState = strong_state.regions.get(&"thanh_truc_lam")
+    weak_region.monster_weights = {"truc_thu":1.0}
+    strong_region.monster_weights = {"truc_thu":1.0}
     if not equipment.manual_equip(strong_state, strong.id, StringName(sword.get("id", "")), true):
         _fail("P2.6 combat probe could not equip the forged weapon.")
         return false
@@ -233,6 +275,7 @@ func _prepare_buyer(state: SimulationState, disciple_id: StringName, path_id: St
         _:
             actor.learned_techniques["xich_viem_chan_quyet"] = {"level":1, "xp":0.0}
             actor.active_technique_id = &"xich_viem_chan_quyet"
+    state.initial_total_money = state.total_money()
 
 func _seed_forge_materials(state: SimulationState) -> void:
     state.sect.forge_materials = {
