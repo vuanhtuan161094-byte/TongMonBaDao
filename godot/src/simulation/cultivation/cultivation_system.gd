@@ -20,6 +20,7 @@ const MIN_BREAKTHROUGH_STAMINA := 65.0
 
 var spiritual_root_system := SpiritualRootSystem.new()
 var technique_system := TechniqueSystem.new()
+var cultivation_path_system := CultivationPathSystem.new()
 
 const STAGES := [
     {"id":"qi_1", "name":"Luyện Khí tầng 1", "required":500.0, "combat_bonus":0.0, "hp_bonus":0.0, "chance":0.98},
@@ -87,6 +88,10 @@ func cultivate(state: SimulationState, disciple: DiscipleState) -> float:
     var base_gain := CULTIVATE_GAIN
     if state.sect.techniques_enabled:
         base_gain *= technique_system.cultivation_gain_multiplier(state, disciple)
+    if state.sect.cultivation_paths_enabled:
+        base_gain *= cultivation_path_system.cultivation_gain_multiplier(state, disciple)
+        var active_path := cultivation_path_system.active_technique_path(disciple)
+        base_gain *= cultivation_path_system.technique_effect_multiplier(state, disciple, active_path)
     var gained := add_progress(state, disciple, base_gain)
     disciple.stamina = maxf(0.0, disciple.stamina - CULTIVATE_STAMINA_COST)
     disciple.metrics["cultivation_sessions"] = int(disciple.metrics.get("cultivation_sessions", 0)) + 1
@@ -123,7 +128,10 @@ func breakthrough_success_chance(disciple: DiscipleState, state: SimulationState
     if state != null and state.sect.spiritual_roots_enabled:
         modifier += spiritual_root_system.breakthrough_modifier(disciple.spiritual_root_quality)
     if state != null and state.sect.techniques_enabled:
-        modifier += technique_system.breakthrough_bonus(state, disciple)
+        var technique_bonus := technique_system.breakthrough_bonus(state, disciple)
+        if state.sect.cultivation_paths_enabled:
+            technique_bonus *= cultivation_path_system.technique_effect_multiplier(state, disciple, cultivation_path_system.active_technique_path(disciple))
+        modifier += technique_bonus
     return clampf(base + hp_bonus + stamina_bonus + modifier, 0.45, 0.99)
 
 func attempt_breakthrough(state: SimulationState, disciple: DiscipleState, rng: GameRng) -> Dictionary:
@@ -146,6 +154,9 @@ func resolve_breakthrough(state: SimulationState, disciple: DiscipleState, roll:
         return {"ok": true, "outcome": "success", "stage_index": disciple.cultivation_stage_index, "stage_name": stage_name(disciple), "chance": chance}
 
     var failure_multiplier := technique_system.breakthrough_failure_multiplier(state, disciple) if state.sect.techniques_enabled else 1.0
+    if state.sect.cultivation_paths_enabled and state.sect.techniques_enabled:
+        var path_effect := cultivation_path_system.technique_effect_multiplier(state, disciple, cultivation_path_system.active_technique_path(disciple))
+        failure_multiplier = clampf(1.0 - (1.0 - failure_multiplier) * path_effect, 0.35, 1.0)
     disciple.cultivation_progress = maxf(0.0, disciple.cultivation_progress - required * BREAKTHROUGH_FAILURE_PROGRESS_LOSS * failure_multiplier)
     disciple.stamina = maxf(0.0, disciple.stamina - BREAKTHROUGH_FAILURE_STAMINA_COST * failure_multiplier)
     disciple.hp = maxf(1.0, disciple.hp - disciple.max_hp * BREAKTHROUGH_FAILURE_HP_RATIO * failure_multiplier)
@@ -160,7 +171,12 @@ func effective_combat_power(state: SimulationState, disciple: DiscipleState) -> 
         return disciple.combat_power
     var power := disciple.combat_power + disciple.cultivation_combat_bonus
     if state.sect.techniques_enabled:
-        power += technique_system.combat_power_bonus(state, disciple)
+        var technique_bonus := technique_system.combat_power_bonus(state, disciple)
+        if state.sect.cultivation_paths_enabled:
+            technique_bonus *= cultivation_path_system.technique_effect_multiplier(state, disciple, cultivation_path_system.active_technique_path(disciple))
+        power += technique_bonus
+    if state.sect.cultivation_paths_enabled:
+        power += cultivation_path_system.intrinsic_combat_bonus(state, disciple)
     return power
 
 func apply_action_modifiers(state: SimulationState, disciple: DiscipleState, scores: Dictionary) -> void:
@@ -198,6 +214,8 @@ func apply_action_modifiers(state: SimulationState, disciple: DiscipleState, sco
                 breakthrough_score -= 85.0
     scores["CULTIVATE"] = cultivate_score
     scores["BREAKTHROUGH"] = breakthrough_score
+    if state.sect.cultivation_paths_enabled:
+        cultivation_path_system.apply_action_modifiers(state, disciple, scores)
 
 func validate_invariants(state: SimulationState) -> Array[String]:
     var errors: Array[String] = []
