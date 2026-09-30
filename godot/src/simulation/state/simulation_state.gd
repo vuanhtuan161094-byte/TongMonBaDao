@@ -30,6 +30,12 @@ var relationships: Dictionary = {}
 var companion_assignments: Dictionary = {}
 var relationship_event_count: int = 0
 
+# P1.4 stores only meaningful, bounded memories per disciple.
+# Keys are owner id -> Array[MemoryState]. Missing owners have no stored memories.
+var p1_memory_enabled: bool = false
+var memories: Dictionary = {}
+var memory_event_count: int = 0
+
 func total_money() -> int:
     var total := sect.treasury
     for disciple in disciples.values():
@@ -99,6 +105,32 @@ func validate_invariants() -> Array[String]:
         if source_id == target_id or not disciples.has(source_id) or not disciples.has(target_id):
             errors.append("Invalid companion assignment %s -> %s." % [source_id, target_id])
 
+    for raw_owner_id in memories.keys():
+        var owner_id := StringName(raw_owner_id)
+        if not disciples.has(owner_id):
+            errors.append("Memory owner %s is not an active disciple." % owner_id)
+            continue
+        var owner_memories = memories[raw_owner_id]
+        if not (owner_memories is Array):
+            errors.append("Memory owner %s has invalid storage." % owner_id)
+            continue
+        if owner_memories.size() > MemorySystem.MAX_MEMORIES_PER_DISCIPLE:
+            errors.append("Memory owner %s exceeds the memory cap." % owner_id)
+        for value in owner_memories:
+            var memory: MemoryState = value
+            if memory.owner_id != owner_id:
+                errors.append("Memory %s has mismatched owner." % memory.id)
+            if memory.target_id != &"" and not disciples.has(memory.target_id):
+                errors.append("Memory %s references missing target %s." % [memory.id, memory.target_id])
+            if memory.region_id != &"" and not regions.has(memory.region_id):
+                errors.append("Memory %s references missing region %s." % [memory.id, memory.region_id])
+            if memory.valence < -1.0 or memory.valence > 1.0:
+                errors.append("Memory %s has invalid valence." % memory.id)
+            if memory.importance < 0.0 or memory.importance > 100.0:
+                errors.append("Memory %s has invalid importance." % memory.id)
+            if memory.occurrences <= 0:
+                errors.append("Memory %s has invalid occurrence count." % memory.id)
+
     if initial_total_money > 0 and total_money() != initial_total_money:
         errors.append("Money conservation failed: expected %d, got %d" % [initial_total_money, total_money()])
 
@@ -131,6 +163,17 @@ func to_dict() -> Dictionary:
             var relation: RelationshipState = source_map[raw_target_id]
             relationship_rows.append(relation.to_dict())
 
+    var memory_rows: Array = []
+    var memory_owner_ids: Array = memories.keys()
+    memory_owner_ids.sort()
+    for raw_owner_id in memory_owner_ids:
+        var owner_memories: Array = memories[raw_owner_id]
+        var ordered_memories: Array = owner_memories.duplicate()
+        ordered_memories.sort_custom(func(left: MemoryState, right: MemoryState) -> bool: return str(left.id) < str(right.id))
+        for value in ordered_memories:
+            var memory: MemoryState = value
+            memory_rows.append(memory.to_dict())
+
     return {
         "save_version": SAVE_VERSION,
         "tick": tick,
@@ -146,6 +189,9 @@ func to_dict() -> Dictionary:
         "relationships": relationship_rows,
         "companion_assignments": companion_assignments.duplicate(true),
         "relationship_event_count": relationship_event_count,
+        "p1_memory_enabled": p1_memory_enabled,
+        "memories": memory_rows,
+        "memory_event_count": memory_event_count,
         "sect": sect.to_dict(),
         "disciples": disciple_rows,
         "regions": region_rows
@@ -162,6 +208,8 @@ static func from_dict(data: Dictionary) -> SimulationState:
     state.recruitment_generation_index = int(data.get("recruitment_generation_index", 0))
     state.p1_relationships_enabled = bool(data.get("p1_relationships_enabled", false))
     state.relationship_event_count = int(data.get("relationship_event_count", 0))
+    state.p1_memory_enabled = bool(data.get("p1_memory_enabled", false))
+    state.memory_event_count = int(data.get("memory_event_count", 0))
     state.sect = SectState.from_dict(data.get("sect", {}))
 
     var saved_recruitment_stats = data.get("recruitment_stats", {})
@@ -198,5 +246,15 @@ static func from_dict(data: Dictionary) -> SimulationState:
         keys.sort()
         for key in keys:
             state.companion_assignments[str(key)] = str(saved_companions[key])
+
+    for row in data.get("memories", []):
+        if row is Dictionary:
+            var memory := MemoryState.from_dict(row)
+            if memory.owner_id == &"" or memory.event_id == &"":
+                continue
+            var owner_key := str(memory.owner_id)
+            var owner_memories: Array = state.memories.get(owner_key, [])
+            owner_memories.append(memory)
+            state.memories[owner_key] = owner_memories
 
     return state
