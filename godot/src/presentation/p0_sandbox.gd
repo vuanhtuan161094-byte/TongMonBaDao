@@ -48,8 +48,7 @@ func _build_debug_ui() -> void:
     summary_label.add_theme_font_size_override("font_size", 13)
     column.add_child(summary_label)
 
-    var divider := HSeparator.new()
-    column.add_child(divider)
+    column.add_child(HSeparator.new())
 
     for disciple in scheduler.state.disciples.values():
         var button := Button.new()
@@ -77,11 +76,7 @@ func _select_disciple(id: StringName) -> void:
 
 func _refresh_ui() -> void:
     var state := scheduler.state
-    summary_label.text = "Tick %d  |  Tông khố %d  |  Tổng tiền %d" % [
-        state.tick,
-        state.sect.treasury,
-        state.total_money()
-    ]
+    summary_label.text = "Tick %d  |  Tông khố %d  |  Tổng tiền %d" % [state.tick, state.sect.treasury, state.total_money()]
 
     for disciple in state.disciples.values():
         var button: Button = disciple_buttons.get(disciple.id)
@@ -101,9 +96,17 @@ func _refresh_ui() -> void:
 
     var decision: Dictionary = selected.last_decision
     var scores: Dictionary = decision.get("scores", {})
+    var region_scores: Dictionary = decision.get("region_scores", {})
     var region_name := "Tông Môn"
     if selected.region_id != &"sect" and state.regions.has(selected.region_id):
         region_name = state.regions[selected.region_id].display_name
+
+    var target_region := str(decision.get("chosen_region", "-"))
+    var region_score_text := "Thanh Trúc %.1f | Bạch Thạch %.1f | Hắc Phong %.1f" % [
+        float(region_scores.get("thanh_truc_lam", 0.0)),
+        float(region_scores.get("bach_thach_khe", 0.0)),
+        float(region_scores.get("hac_phong_coc", 0.0))
+    ]
 
     inspector_label.text = (
         "%s\n"
@@ -111,13 +114,15 @@ func _refresh_ui() -> void:
         + "Region: %s\n"
         + "HP: %.0f/%.0f  |  Stamina: %.0f\n"
         + "Wallet: %d  |  Inventory: %d\n"
-        + "Risk %.2f  |  Retreat <= %.0f%% HP\n\n"
-        + "Scores\n"
+        + "Power %.1f  |  Risk %.2f  |  Retreat <= %.0f%% HP\n\n"
+        + "Action scores\n"
         + "Hunt %.1f  Heal %.1f  Rest %.1f\n"
         + "Sell %.1f  Buy %.1f\n\n"
+        + "Region decision\n"
+        + "%s\nChosen: %s\n\n"
         + "Reason\n%s\n\n"
         + "Metrics\nCombats %d  Wins %d  Retreats %d\n"
-        + "Danger visits %d  Safe visits %d"
+        + "Danger %d  Medium %d  Safe %d"
     ) % [
         selected.display_name,
         str(selected.current_action),
@@ -127,6 +132,7 @@ func _refresh_ui() -> void:
         selected.stamina,
         selected.wallet,
         selected.inventory_count(),
+        selected.combat_power,
         selected.risk_bias,
         selected.retreat_hp_ratio() * 100.0,
         float(scores.get("HUNT", 0.0)),
@@ -134,10 +140,13 @@ func _refresh_ui() -> void:
         float(scores.get("REST", 0.0)),
         float(scores.get("SELL", 0.0)),
         float(scores.get("BUY", 0.0)),
+        region_score_text,
+        target_region,
         str(decision.get("reason", "Waiting for first evaluation.")),
         int(selected.metrics.get("combats", 0)),
         int(selected.metrics.get("wins", 0)),
         int(selected.metrics.get("retreats", 0)),
         int(selected.metrics.get("danger_visits", 0)),
+        int(selected.metrics.get("medium_visits", 0)),
         int(selected.metrics.get("safe_visits", 0))
     ]

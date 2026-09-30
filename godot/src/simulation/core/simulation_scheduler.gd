@@ -48,7 +48,9 @@ func _step_disciple(disciple: DiscipleState) -> void:
                 var region: RegionState = state.regions[disciple.region_id]
                 if region.danger >= 3:
                     disciple.metrics["danger_visits"] = int(disciple.metrics.get("danger_visits", 0)) + 1
-                if region.danger <= 1:
+                elif region.danger == 2:
+                    disciple.metrics["medium_visits"] = int(disciple.metrics.get("medium_visits", 0)) + 1
+                else:
                     disciple.metrics["safe_visits"] = int(disciple.metrics.get("safe_visits", 0)) + 1
                 disciple.stamina = maxf(0.0, disciple.stamina - 8.0)
                 disciple.current_action = &"COMBAT"

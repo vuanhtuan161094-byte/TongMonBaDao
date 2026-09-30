@@ -9,7 +9,7 @@ P0 telemetry is for simulation validation and balance, not product analytics.
 - total money and sect treasury range;
 - combats, wins, retreats, defeats;
 - sales, heals, rests, buys;
-- per-disciple danger/safe region visits;
+- per-disciple safe / medium / danger region visits;
 - ending wallet, HP and stamina;
 - deterministic replay for fixed seed.
 
@@ -21,7 +21,11 @@ Internal transfers must conserve total money. Sect treasury must not cross the o
 
 ### Behavior diversity
 
-The aggressive profile must show materially greater danger exposure than the cautious profile over multiple fixed seeds. Later profiles should also diverge in spending, recovery, and profitability once those utility branches deepen.
+Region choice is based on profit, individual risk tolerance, and the gap between disciple combat power and region recommended power. High-risk profiles may accept underpowered hunting; cautious profiles should prefer safer regions. This prevents a merely profitable region from becoming the universal choice.
+
+### Recovery safety floor
+
+A disciple below the basic HP threshold uses paid healing if affordable. If not, free Rest recovery takes priority. A broke injured disciple must not repeatedly return to combat simply because it cannot afford healing.
 
 ### Stability
 
@@ -36,4 +40,4 @@ A long run is invalid if any invariant fails, an agent references a missing regi
 
 The multi-seed benchmark writes `godot/reports/p0_benchmark.json`. The reports directory is intentionally ignored by Git.
 
-P0 is not allowed to be declared green from source inspection alone. These scripts must run under Godot 4.7.2.
+P0 is not allowed to be declared green from source inspection or mirror simulation alone. These scripts must run under Godot 4.7.2.

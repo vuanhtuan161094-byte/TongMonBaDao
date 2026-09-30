@@ -1,6 +1,9 @@
 class_name DecisionSystem
 extends RefCounted
 
+const REGION_RISK_WEIGHT := 35.0
+const UNDERPOWER_PENALTY := 12.0
+
 func evaluate(state: SimulationState, disciple: DiscipleState) -> Dictionary:
     var hp_ratio := disciple.hp / maxf(disciple.max_hp, 1.0)
     var stamina_ratio := disciple.stamina / 100.0
@@ -36,16 +39,20 @@ func evaluate(state: SimulationState, disciple: DiscipleState) -> Dictionary:
         else:
             chosen = &"HUNT"
     else:
-        if hp_ratio < 0.72 and disciple.wallet >= 12:
-            chosen = &"HEAL"
-            reason = "Injured and can afford sect healing."
+        if hp_ratio < 0.72:
+            if disciple.wallet >= EconomySystem.HEAL_FEE:
+                chosen = &"HEAL"
+                reason = "Injured and can afford sect healing."
+            else:
+                chosen = &"REST"
+                reason = "Injured but cannot afford paid healing; use free basic recovery."
         elif disciple.stamina < 42.0:
             chosen = &"REST"
             reason = "Stamina below rest threshold."
         elif inventory_count > 0:
             chosen = &"SELL"
             reason = "Returned with loot to liquidate."
-        elif disciple.stamina < 78.0 and disciple.wallet >= 20 and buy_score >= 10.0:
+        elif disciple.stamina < 78.0 and disciple.wallet >= EconomySystem.SUPPLY_FEE and buy_score >= 10.0:
             chosen = &"BUY"
             reason = "Behavior profile accepts buying recovery supplies."
         else:
@@ -62,12 +69,20 @@ func evaluate(state: SimulationState, disciple: DiscipleState) -> Dictionary:
 func choose_region(state: SimulationState, disciple: DiscipleState) -> StringName:
     var best_id: StringName = &""
     var best_score := -1.0e30
+    var region_scores: Dictionary = {}
 
     for region in state.regions.values():
-        var danger_term := float(region.danger) * (110.0 * disciple.risk_bias - 70.0)
-        var score := region.profit_modifier * 100.0 + danger_term
+        var risk_adjustment := (disciple.risk_bias * 2.0 - 1.0) * float(region.danger) * REGION_RISK_WEIGHT
+        var power_gap := maxf(0.0, region.recommended_power - disciple.combat_power)
+        var underpower_penalty := power_gap * UNDERPOWER_PENALTY
+        var score := region.profit_modifier * 100.0 + risk_adjustment - underpower_penalty
+        region_scores[str(region.id)] = score
+
         if score > best_score:
             best_score = score
             best_id = region.id
 
+    disciple.last_decision["region_scores"] = region_scores
+    disciple.last_decision["chosen_region"] = str(best_id)
+    disciple.last_decision["region_reason"] = "Profit adjusted by risk tolerance and combat-power gap."
     return best_id

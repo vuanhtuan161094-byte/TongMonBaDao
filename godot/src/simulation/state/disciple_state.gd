@@ -28,6 +28,7 @@ var metrics: Dictionary = {
     "rests": 0,
     "buys": 0,
     "danger_visits": 0,
+    "medium_visits": 0,
     "safe_visits": 0,
     "actions": 0
 }

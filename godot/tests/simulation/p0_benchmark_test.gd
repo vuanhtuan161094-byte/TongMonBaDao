@@ -65,6 +65,7 @@ func _accumulate_disciple(aggregate: Dictionary, disciple: DiscipleState) -> voi
         aggregate["disciples"][id] = {
             "name": disciple.display_name,
             "danger_visits": 0,
+            "medium_visits": 0,
             "safe_visits": 0,
             "combats": 0,
             "wins": 0,
@@ -77,6 +78,7 @@ func _accumulate_disciple(aggregate: Dictionary, disciple: DiscipleState) -> voi
 
     var row: Dictionary = aggregate["disciples"][id]
     row["danger_visits"] += int(metrics.get("danger_visits", 0))
+    row["medium_visits"] += int(metrics.get("medium_visits", 0))
     row["safe_visits"] += int(metrics.get("safe_visits", 0))
     row["combats"] += int(metrics.get("combats", 0))
     row["wins"] += int(metrics.get("wins", 0))
@@ -139,6 +141,7 @@ func _print_report(aggregate: Dictionary) -> void:
         print(
             row["name"],
             " | danger=", row["danger_visits"],
+            " medium=", row["medium_visits"],
             " safe=", row["safe_visits"],
             " combats=", row["combats"],
             " wins=", row["wins"],

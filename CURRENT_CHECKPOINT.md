@@ -42,20 +42,25 @@ Step 15 Repository Bootstrap + P0 Foundation: IN PROGRESS.
 6. Multi-seed benchmark: 8 seeds × 12,000 ticks.
 7. 180-frame headless runtime smoke.
 
-Benchmark telemetry includes total money, treasury range, combat outcomes, sale/recovery activity, per-disciple safe/danger exposure, and ending wallet/HP/stamina.
+Benchmark telemetry includes total money, treasury range, combat outcomes, sale/recovery activity, per-disciple safe/medium/danger exposure, and ending wallet/HP/stamina. It writes `godot/reports/p0_benchmark.json`.
 
-## Static review patches already applied
+## Static / mirror review patches already applied
 
 - 200 Linh Thạch sect operating reserve for market purchases.
 - SELL falls back to HUNT when market spendable treasury is exhausted, preventing an EVALUATE↔SELL spin loop.
 - Inventory/economy item keys use JSON-stable strings.
 - RNG state serializes as string to preserve exact integer state across JSON.
+- Region definitions now include `recommended_power`.
+- Region selection now combines profit + risk tolerance - underpower penalty; profit alone cannot force every profile into the hardest zone.
+- Broke injured disciples use free Rest recovery instead of returning to combat because they cannot afford paid healing.
+- Debug inspector exposes region scores and chosen-region rationale.
+- A non-authoritative mirror simulation was used only as a design sanity check; it does NOT satisfy the Godot runtime gate.
 
 ## Completion status
 
 NOT P0 PASS yet.
 
-Reason: this ChatGPT execution environment does not expose a Godot 4.7.2 executable, so the runtime gate has not been executed here. Source/structure review is not a substitute for the Godot gate.
+Reason: this ChatGPT execution environment does not expose a Godot 4.7.2 executable, so the runtime gate has not been executed here. Source/structure review and mirror simulation are not substitutes for the Godot gate.
 
 Next closure condition:
 run `tools/godot/Verify-P0.ps1` on an environment with Godot 4.7.2 and fix every import/parse/test/runtime failure before marking P0 foundation green.

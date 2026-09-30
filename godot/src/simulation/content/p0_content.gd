@@ -16,6 +16,7 @@ const REGIONS := [
         "name":"Thanh Trúc Lâm",
         "danger":1,
         "profit_modifier":0.85,
+        "recommended_power":10.0,
         "monster_weights":{"truc_thu":0.65, "thanh_lang":0.30, "hac_lang":0.05}
     },
     {
@@ -23,6 +24,7 @@ const REGIONS := [
         "name":"Bạch Thạch Khê",
         "danger":2,
         "profit_modifier":1.00,
+        "recommended_power":16.0,
         "monster_weights":{"truc_thu":0.25, "thanh_lang":0.60, "hac_lang":0.15}
     },
     {
@@ -30,6 +32,7 @@ const REGIONS := [
         "name":"Hắc Phong Cốc",
         "danger":3,
         "profit_modifier":1.25,
+        "recommended_power":23.0,
         "monster_weights":{"truc_thu":0.10, "thanh_lang":0.45, "hac_lang":0.45}
     }
 ]
