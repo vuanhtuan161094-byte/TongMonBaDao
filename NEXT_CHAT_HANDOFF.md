@@ -1,154 +1,231 @@
 # NEXT CHAT HANDOFF — Tông Môn Bá Đạo
 
-Date: 2026-09-30
-P2.5 implementation started from main head: `7b32f0176b8ed5ba946d26d0423023f8b965efba`
+Date: 2026-10-01
 
-Always inspect live `main` before editing because documentation/static-review commits may be ahead of the first P2.5 implementation commit.
+Always inspect live `main` before editing.
 
 ## Read first
-
-Before changing code, read:
 
 1. `AGENTS.md`
 2. `CURRENT_CHECKPOINT.md`
 3. this file
-4. `docs/P2_5_SPEC.md`
-5. live P2.5 code/tests
+4. `docs/P1_5_PERSISTENCE_RUNTIME_REPORT.md`
+5. `docs/P2_6_SPEC.md`
+6. live P2.1 diagnostic + P2.6 code/tests
 
 ## Runtime status
 
-PASS / LOCKED with real Godot 4.7.2 evidence:
+Real Godot 4.7.2 PASS evidence exists for:
 
 - P0 Foundation
 - P1.1 Goal + Personality
 - P1.2 Recruitment
 - P1.3 Relationships
-
-IMPLEMENTED / AWAITING RUNTIME GATE:
-
-- P1.4 Memory
+- P1.4 Consequential Memory
 - P1.5 Organization
 - P1.6 Sect Needs
-- P2.1 Cultivation + Realms + Breakthrough
-- P2.2 Spiritual Root Quality
-- P2.3 Technique Economy + Tàng Kinh Các + Mastery
-- P2.4 Cultivation Paths / Character Dao Direction
-- P2.5 Combat Skills / Real-time Auto Combat
 
-Never call P1.4–P2.5 PASS until the real Godot gate succeeds. Current authoritative local command is `Sync-P2-5.cmd`.
+Current first failing gate:
+
+- P2.1 FAIL — `cultivation state was not preserved by save/load`.
+
+P2.2-P2.5 were not reached in the latest cumulative run because P2.1 stopped the chain.
+
+P2.6 is implemented but has not been runtime-reached yet.
+
+Do not call P2.1-P2.6 PASS without real local gate evidence.
+
+## P1.5 persistence fix already closed
+
+Do not reopen this unless a regression proves otherwise.
+
+Root cause was one-ULP float64 loss through JSON decimal round-trip inside a nested `last_decision.region_scores` value.
+
+Fix:
+
+- SaveService v2 recursively wraps float64 as exact eight-byte hex;
+- legacy v0/v1 still load;
+- strict immediate save/load equality PASS;
+- 800 continuation ticks PASS;
+- P1.5 organization test PASS.
+
+Fix commit: `c895bdf114c8b11c2f84095c6da517b66f82f5fe`.
+
+## P2.1 blocker workflow
+
+A dedicated diagnostic exists:
+
+`godot/tests/simulation/p2_1_persistence_diagnostic.gd`
+
+`tools/godot/Verify-P2-1.ps1` runs it before the ordinary P2.1 test.
+
+The next cumulative local run should print the exact first persisted-state difference if P2.1 still fails.
+
+Fix the real field/serialization problem; do not weaken equality tests or add tolerance just to make the gate green.
 
 ## Core game philosophy
 
-The player does not puppet every disciple. The player controls the sect, opportunities, investment and strategic direction; disciples act autonomously from state, personality, history, realm, techniques and learned combat skills.
+The player runs the sect rather than puppeting every disciple.
 
-The game should borrow useful operating ideas from games such as Evil Hunter Tycoon while remaining a cultivation management game rather than becoming a manual action RPG.
+The player controls infrastructure, production, recruitment, priorities, resources and may intervene directly when desired. Disciples otherwise act autonomously from personality, history, relationships, realm, roots, techniques, path history, learned combat skills and equipment.
 
-Every mechanic must have measurable simulation/player-decision consequences. No decorative bars, labels or lore-only progression.
+The game may borrow useful operating loops from Evil Hunter Tycoon, but remains a cultivation sect-management game rather than a manual action RPG.
 
-## Current progression stack
+Every mechanic must have measurable simulation/player-decision consequences.
 
-- P2.1: cultivation -> breakthrough -> realm -> combat power + HP consequences.
-- P2.2: root quality affects cultivation/breakthrough; elemental affinity later modifies compatible systems without hard-locking them.
-- P2.3: sect-owned cultivation-technique economy. Max 3 learned techniques, 1 active. Technique has path/element/role and passive cultivation/combat consequences.
-- P2.4: no fixed class. Sword/Body/Spell path identity emerges from actual accumulated usage history and has real consequences.
-- P2.5: combat skills are a separate system from cultivation techniques. Realm gates skill capability. Auto combat now has time, distance, movement, melee/ranged basics, cast times, cooldowns, projectile travel and small real statuses.
+## Progression stack
 
-## Critical design corrections made during P2.5 review
+- P2.1: cultivation -> breakthrough -> realm.
+- P2.2: spiritual-root quality/elements.
+- P2.3: cultivation-technique economy + Tàng Kinh Các + mastery.
+- P2.4: classless Kiếm/Thể/Pháp identity from accumulated path XP.
+- P2.5: independent combat skills + deterministic real-time auto combat.
+- P2.6: forge/equipment tycoon loop.
 
-Do NOT revert these without an explicit user decision:
+## P2.6 user-approved design
 
-1. Combat is not a round/turn system.
-2. Do not implement combat as two static actors exchanging floating damage numbers.
-3. Combat is autonomous real-time simulation on the map; presentation will later animate authoritative simulation events.
-4. A cultivation technique is NOT a fixed five-skill kit.
-5. Technique level must NOT automatically unlock five attached combat moves.
-6. Combat skills are independently learned.
-7. Realm/cultivation stage gates whether a skill is learnable/usable.
-8. Cross-path skills are allowed; affinity/resonance changes effectiveness, not legality.
-9. Do not force a universal Kiếm-thế, Chiến-ý or combat-mana resource on every build.
-10. Do not lock a final skill-slot count in P2.5.
+Primary loop:
 
-## P2.5 implementation shape
+`hunt -> forge materials -> Luyện Khí Đường -> forged item -> sect storage/shop -> autonomous purchase OR player allocation -> equipment changes power -> harder hunt`.
 
-### New system
+### Autonomous equipment
 
-`godot/src/simulation/combat/combat_skill_system.gd`
+Disciples score equipment from:
 
-Initial vertical-slice skills:
+- raw stats;
+- path depth;
+- active technique path;
+- learned combat skill paths;
+- spiritual-root element;
+- personality/risk/survival;
+- price;
+- spend bias and wallet reserve;
+- sect equipment policy.
 
-- Sword: Thanh Phong Trảm, Truy Phong Bộ, Ngự Kiếm Thuật.
-- Body: Chấn Sơn Quyền, Kim Cương Hộ Thể, Bất Động Thân.
-- Spell: Hỏa Cầu, Hàn Sương Ấn, Liệt Diễm.
+A higher raw-stat item is not automatically better for every disciple.
 
-This is not the game's final skill count.
+### Player equipment authority
 
-### New combat resolver
+The player can always:
 
-`CombatSystem.resolve_encounter()` branches only when `state.sect.combat_skills_enabled`.
+- manually equip an item;
+- lock the slot so AI cannot replace it;
+- unlock / return to auto;
+- unequip to sect storage.
 
-- flag off: original P2.4 legacy resolver stays intact;
-- flag on: deterministic 0.25-second internal timeline;
-- scalar combat distance, not full action-game physics;
-- autonomous approach / spell kiting;
-- cast + cooldown;
-- projectiles have travel time;
-- guard/burn/weaken are real temporary effects;
-- bounded event trace returned for future presentation.
+Manual locked slot overrides AI. Micromanagement remains optional.
 
-### Persistence
+### Closed internal money
 
-Persistent:
+An autonomous shop purchase transfers money only:
 
-- P2.5 sect enabled flag + event counter;
-- each disciple's independently learned combat skills.
+`disciple wallet - price -> sect treasury + price`.
 
-Not persistent mid-encounter:
+Total simulation money is unchanged.
 
-- distance;
-- cooldowns;
-- current cast;
-- in-flight projectiles;
-- temporary guard/burn/weaken.
+Manual equipment allocation is not a purchase.
 
-Encounters still resolve synchronously in one simulation action, so mid-combat save is intentionally out of scope.
+Initial forging consumes materials only; no undefined outside money sink has been introduced.
 
-## P2.5 verification assets
+### P2.6 initial content
 
-- spec: `docs/P2_5_SPEC.md`
-- factory: `godot/src/simulation/core/p2_5_factory.gd`
-- test: `godot/tests/simulation/p2_5_combat_skill_test.gd`
-- scene: `godot/scenes/p2/p2_5_combat_skills.tscn`
-- scene script: `godot/src/presentation/p2_5_combat_skills.gd`
-- verifier: `tools/godot/Verify-P2-5.ps1`
-- launcher: `Verify-P2-5.cmd`
-- sync+gate: `Sync-P2-5.cmd`
+Forge materials:
 
-`Verify-P2-5.ps1` chains the entire P2.4 verifier first.
+- Linh Mộc
+- Thanh Thiết
+- Tinh Lang Bì
+- Yêu Đan
 
-## Scope boundary
+Initial recipes:
 
-P2.5 deliberately does NOT include:
+- Thanh Thiết Kiếm — Sword / Metal
+- Huyền Thiết Quyền Sáo — Body / Earth
+- Linh Mộc Pháp Trượng — Spell / Wood
+- Tinh Lang Giáp — armor / Body / Earth
+- Hỏa Vân Ngọc — talisman / Spell / Fire
 
-- frame-perfect weapon collisions or animation-authoritative hitboxes;
-- ragdoll;
-- per-pixel projectile physics;
-- detailed terrain projectile collision;
-- manual dodge action gameplay;
-- multi-monster combat;
-- real AOE before multiple targets exist;
-- equipment/artifacts;
-- pets/formations;
-- bosses/factions/PvP/secret realms;
-- full combat-team V2;
-- final combat skill loadout/slot rules;
-- a separate combat-skill upgrade-material economy.
+Quality:
 
-## Master / Disciple remains deferred
+- Phàm phẩm
+- Tinh phẩm
+- Thượng phẩm
 
-Do NOT automatically implement Master/Disciple next.
+Quality roll is deterministic from simulation seed + forge index + recipe identity.
 
-It was deliberately deferred until combat skills, combat history and other transmissible systems exist strongly enough to make teaching meaningful rather than just a training-percentage modifier.
+## P2.6 files
 
-## Next phase
+- `docs/P2_6_SPEC.md`
+- `godot/src/simulation/equipment/equipment_system.gd`
+- `godot/src/simulation/core/p2_6_factory.gd`
+- `godot/src/simulation/state/sect_state.gd`
+- `godot/src/simulation/state/disciple_state.gd`
+- `godot/src/simulation/core/simulation_scheduler.gd`
+- `godot/src/simulation/ai/decision_system.gd`
+- `godot/tests/simulation/p2_6_equipment_test.gd`
+- `godot/src/presentation/p2_6_equipment.gd`
+- `godot/scenes/p2/p2_6_equipment.tscn`
+- `tools/godot/Verify-P2-6.ps1`
+- `Verify-P2-6.cmd`
+- `Sync-P2-6.cmd`
 
-No phase after P2.5 has been locked yet. First obtain the real `Sync-P2-5.cmd` output, fix any runtime/compiler/test failures, and only then choose the next system with the user.
+Only the latest root `.cmd` launchers should remain: `Sync-P2-6.cmd` and `Verify-P2-6.cmd`. Older cumulative PowerShell verifiers remain under `tools/godot`.
+
+## Current P2.6 runtime wiring
+
+Definitely implemented:
+
+- combat wins create forge-material loot when P2.6 enabled;
+- returned materials are separated into the sect forge store before ordinary sale;
+- forging consumes materials and creates deterministic item instances;
+- autonomous equipment buying is build-aware and price-aware;
+- player manual equip / lock / unlock / unequip;
+- purchases conserve total money;
+- equipped combat-power bonus affects real P2.5 encounter power;
+- equipped combat-power bonus affects autonomous region choice;
+- P2.6 state is serialized through existing SaveService v2.
+
+Equipment item schema also has defense reduction, skill-effect, movement/basic-speed/range/basic-ratio fields. These are intentionally NOT yet claimed as fully wired into CombatSystem. Do not describe them as runtime-complete until tests prove actual combat effects.
+
+## P2.6 test contract
+
+`godot/tests/simulation/p2_6_equipment_test.gd` is intended to prove:
+
+- P2.5 factory remains equipment-disabled;
+- hunt -> material deposit;
+- deterministic forging;
+- different builds value equipment differently;
+- autonomous purchase works;
+- internal purchase money is conserved;
+- manual lock defeats AI replacement;
+- unlock returns control to AI;
+- equipment changes region selection;
+- equipment changes a controlled combat outcome;
+- save/load exact equality;
+- deterministic post-load continuation;
+- all prior invariants + equipment invariants.
+
+## Deferred
+
+Do not expand P2.6 yet into:
+
+- +N enhancement;
+- reroll/large random affix system;
+- set bonuses;
+- forge failure;
+- blacksmith skill progression;
+- durability/repair;
+- auctions;
+- pet equipment;
+- artifact AI;
+- multi-workstation production queues;
+- undefined external money sources/sinks.
+
+Master/disciple also remains deferred unless the user explicitly selects it later.
+
+## Next action
+
+When the Windows machine is back on and working tree is clean, run:
+
+`Sync-P2-6.cmd`
+
+The cumulative chain will first reproduce/diagnose P2.1. Fix the first failing gate, rerun the same command, and continue sequentially until P2.6 is actually reached and verified.
