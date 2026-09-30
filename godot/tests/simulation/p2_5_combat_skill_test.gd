@@ -16,6 +16,8 @@ func _run() -> void:
         return
     if not _verify_realm_gates_learning_without_path_lock():
         return
+    if not _verify_combat_path_follows_used_skill():
+        return
     if not _verify_path_styles_are_distinct():
         return
     if not _verify_affinity_and_path_depth_change_skill_strength():
@@ -110,6 +112,27 @@ func _verify_realm_gates_learning_without_path_lock() -> bool:
         return false
     return true
 
+func _verify_combat_path_follows_used_skill() -> bool:
+    var state := P25Factory.create_state(TEST_SEED + 20)
+    var actor: DiscipleState = state.disciples.get(&"bach_nguyet")
+    actor.learned_techniques["thanh_phong_kiem_quyet"] = {"level":1, "xp":0.0}
+    actor.active_technique_id = &"thanh_phong_kiem_quyet"
+    actor.cultivation_path_xp = {"sword":0.0, "body":0.0, "spell":0.0}
+    skills.learn_skill(state, actor, &"hoa_cau")
+    skills.learn_skill(state, actor, &"thanh_phong_tram")
+    var result := {"skills_used":["hoa_cau", "hoa_cau", "thanh_phong_tram"]}
+    var gained := skills.record_combat_path_experience(state, actor, result, "win")
+    if absf(gained - CultivationPathSystem.COMBAT_WIN_XP) > 0.000001:
+        _fail("P2.5 combat did not preserve the P2.4 total combat path XP award.")
+        return false
+    if absf(float(actor.cultivation_path_xp.get("spell", 0.0)) - CultivationPathSystem.COMBAT_WIN_XP) > 0.000001:
+        _fail("P2.5 combat path XP did not follow the path of the skills actually used most.")
+        return false
+    if float(actor.cultivation_path_xp.get("sword", 0.0)) > 0.000001:
+        _fail("P2.5 incorrectly credited active-technique path over dominant used-skill path.")
+        return false
+    return true
+
 func _verify_path_styles_are_distinct() -> bool:
     var state := P25Factory.create_state(TEST_SEED + 3)
     var actor: DiscipleState = state.disciples.get(&"bach_nguyet")
@@ -167,16 +190,18 @@ func _verify_projectile_has_real_travel_and_burn() -> bool:
     actor.hp = 200.0
     actor.risk_bias = 1.0
     actor.region_id = &"hac_phong_coc"
-    state.regions[&"hac_phong_coc"].monster_weights = {"hac_lang":1.0}
+    var region: RegionState = state.regions.get(&"hac_phong_coc")
+    region.monster_weights = {"hac_lang":1.0}
     if not skills.learn_skill(state, actor, &"hoa_cau"):
         _fail("Could not seed Hỏa Cầu for projectile verification.")
         return false
 
     var result := combat.resolve_encounter(state, actor, GameRng.new(TEST_SEED + 505))
+    var trace_rows: Array = result.get("trace", [])
     var launch_time := -1.0
     var hit_time := -1.0
     var burn_tick_seen := false
-    for event_value in result.get("trace", []):
+    for event_value in trace_rows:
         var event: Dictionary = event_value
         if str(event.get("type", "")) == "projectile_launch" and str(event.get("skill_id", "")) == "hoa_cau" and launch_time < 0.0:
             launch_time = float(event.get("time", -1.0))
@@ -190,7 +215,7 @@ func _verify_projectile_has_real_travel_and_burn() -> bool:
     if not burn_tick_seen:
         _fail("Hỏa Cầu burn did not create real delayed damage.")
         return false
-    if result.get("trace", []).size() > CombatSystem.MAX_TRACE_EVENTS:
+    if trace_rows.size() > CombatSystem.MAX_TRACE_EVENTS:
         _fail("P2.5 combat event trace exceeded its bound.")
         return false
     return true
