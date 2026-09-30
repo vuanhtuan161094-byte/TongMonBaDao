@@ -21,17 +21,29 @@ Recovery/economy branches:
 
 RETURN_SECT -> SELL / BUY / HEAL / REST -> EVALUATE
 
-## Current candidate
+## P0 verification
 
-This package is a **static bootstrap candidate**. The current ChatGPT execution environment does not contain the Godot 4.7.2 executable, so import/parse/runtime gates have not been claimed.
-
-On a machine with Godot 4.7.2:
+Local Windows/Linux with PowerShell and Godot 4.7.2 on PATH:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File tools/godot/Verify-P0.ps1
+pwsh -File tools/godot/Verify-P0.ps1
 ```
 
-To run the debug sandbox:
+The gate runs:
+
+1. Godot import.
+2. GDScript parse checks.
+3. 20,000-tick invariant scenario.
+4. Save/load resumed simulation.
+5. Same-seed reproducibility.
+6. 8-seed × 12,000-tick benchmark.
+7. Bounded headless runtime smoke.
+
+A successful benchmark writes `godot/reports/p0_benchmark.json`.
+
+GitHub Actions runs the same gate on pushes and pull requests to `main` using Godot 4.7.2 and uploads the benchmark report as an artifact.
+
+## Run the debug sandbox
 
 ```powershell
 godot --path godot
@@ -42,3 +54,7 @@ godot --path godot
 `tools/godot/Vendor-GodotSkills.ps1` downloads the explicitly pinned `vl4dt/godot-skills` snapshot and copies only the selected skills into `/skills`.
 
 See `skills/SOURCE_LOCK.md`.
+
+## Status
+
+Do not call P0 PASS from source inspection or mirror simulation. P0 becomes green only when the Godot runtime gate is green.
