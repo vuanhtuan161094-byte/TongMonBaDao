@@ -20,11 +20,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Godot 4.7.2
-        uses: chickensoft-games/setup-godot@v2
-        with:
-          version: 4.7.2
-          use-dotnet: false
+      - name: Install official Godot 4.7.2 binary
+        shell: bash
+        run: |
+          set -euo pipefail
+          GODOT_URL="https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip"
+          GODOT_SHA256="cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4"
+          curl --fail --location --retry 3 --output /tmp/godot.zip "$GODOT_URL"
+          echo "$GODOT_SHA256  /tmp/godot.zip" | sha256sum --check --strict
+          rm -rf /tmp/godot-4.7.2
+          mkdir -p /tmp/godot-4.7.2
+          unzip -q /tmp/godot.zip -d /tmp/godot-4.7.2
+          sudo install -m 0755 /tmp/godot-4.7.2/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
 
       - name: Print Godot version
         run: godot --version
