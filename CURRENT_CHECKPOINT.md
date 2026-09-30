@@ -39,7 +39,7 @@ Step 15 Repository Bootstrap + P0 Foundation: IN PROGRESS.
 3. Decision contracts: fixed profile region choices, retreat-risk ordering, broke-injured REST, funded-injured HEAL.
 4. Economy contracts: sell/heal/supply transfer conservation and market operating reserve.
 5. Single-seed 20,000-tick invariant scenario.
-6. Save/load + resumed simulation.
+6. Save/load contract: full-state round trip, malformed/invalid-version rejection, resumed simulation invariants, and deterministic continuation against a same-state control.
 7. Same-seed deterministic reproducibility.
 8. Multi-seed benchmark: 8 seeds × 12,000 ticks.
 9. 180-frame headless runtime smoke.
@@ -56,6 +56,9 @@ Benchmark telemetry includes total money, treasury range, combat outcomes, sale/
 - Region selection combines profit + risk tolerance - underpower penalty; profit alone cannot force every profile into the hardest zone.
 - Broke injured disciples use free Rest recovery instead of returning to combat because they cannot afford paid healing.
 - Debug inspector exposes region scores and chosen-region rationale.
+- Save loading now fails closed for malformed current-version payloads and invalid negative versions instead of silently constructing a default state.
+- Save verification now compares the full round-tripped state and requires deterministic continuation to match a same-state control after another 2,000 ticks.
+- `last_decision.action` is stored as a JSON-stable string; runtime converts it back to `StringName` only when executing the action.
 - A non-authoritative mirror simulation was used only as a design sanity check; it does NOT satisfy the Godot runtime gate.
 
 ## GitHub Actions runner blocker
