@@ -59,7 +59,7 @@ func evaluate(state: SimulationState, disciple: DiscipleState) -> Dictionary:
             chosen = &"HUNT"
 
     var result := {
-        "action": chosen,
+        "action": str(chosen),
         "scores": scores,
         "reason": reason
     }
