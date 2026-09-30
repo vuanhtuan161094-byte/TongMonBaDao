@@ -96,6 +96,19 @@ P2.5 uses the active technique path only to shape autonomous spacing/basic style
 
 Independent combat skills can still cross these styles.
 
+### Combat path growth
+
+P2.4 combat XP amounts remain unchanged: +4 for a win and +1 for retreat/defeat.
+
+Under P2.5, that combat XP follows what the disciple actually used in the fight:
+
+- count combat skills by their Sword/Body/Spell path;
+- award the encounter's combat path XP to the most-used skill path;
+- ties resolve deterministically by stable path order;
+- if no combat skill was used, fall back to the P2.4 active-technique path rule.
+
+This prevents a disciple from repeatedly casting Spell skills while incorrectly growing Sword history merely because a Sword cultivation technique is active.
+
 ## Resonance and expertise
 
 Combat skill strength is affected by systems that already exist:
@@ -166,17 +179,18 @@ The trace is not persistent state and is not saved mid-combat. It exists so futu
 1. Full P0 through P2.4 gate chain must PASS first.
 2. P24Factory must remain combat-skill-disabled and preserve legacy combat behavior.
 3. P2.5 combat skill learning must obey realm requirements but not path/element hard-locking.
-4. Learned skills and the sect combat-skill flag/counter must survive save/load.
-5. Same-seed P2.5 simulations must remain deterministic.
-6. Sword, Body and Spell must produce measurably different spacing/basic behavior.
-7. Projectile travel time must delay impact rather than act as instant melee damage.
-8. Guard must reduce real incoming damage.
-9. Burn and weaken must alter real combat outcomes.
-10. Fire combo behavior must make `Liệt Diễm` stronger against a burning target.
-11. Spiritual-root affinity and P2.4 path depth must measurably affect a matching combat skill.
-12. Combat traces must remain bounded.
-13. P0/P1/P2.1/P2.2/P2.3/P2.4 invariants must remain green.
-14. P2.5 interaction scene must launch on Godot 4.7.2.
+4. P2.5 combat path XP must follow the dominant path of skills actually used, with P2.4 fallback when no skill is used.
+5. Learned skills and the sect combat-skill flag/counter must survive save/load.
+6. Same-seed P2.5 simulations must remain deterministic.
+7. Sword, Body and Spell must produce measurably different spacing/basic behavior.
+8. Projectile travel time must delay impact rather than act as instant melee damage.
+9. Guard must reduce real incoming damage.
+10. Burn and weaken must alter real combat outcomes.
+11. Fire combo behavior must make `Liệt Diễm` stronger against a burning target.
+12. Spiritual-root affinity and P2.4 path depth must measurably affect a matching combat skill.
+13. Combat traces must remain bounded.
+14. P0/P1/P2.1/P2.2/P2.3/P2.4 invariants must remain green.
+15. P2.5 interaction scene must launch on Godot 4.7.2.
 
 Authoritative command: `Sync-P2-5.cmd`.
 
