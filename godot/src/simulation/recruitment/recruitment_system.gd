@@ -69,6 +69,8 @@ func accept_candidate(state: SimulationState, candidate_id: StringName) -> Dicti
 
     if state.p1_goal_personality_enabled:
         GoalSystem.new().update_goal(state, disciple)
+    if state.p1_relationships_enabled:
+        RelationshipSystem.new().introduce_new_disciple(state, disciple)
 
     var result := _result(true, "accepted")
     result["disciple_id"] = str(disciple.id)
