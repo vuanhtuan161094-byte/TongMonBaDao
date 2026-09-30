@@ -111,6 +111,11 @@ function Assert-NoRunningGodot {
     throw "Godot is already running: $names. Close all Godot editor/project-manager windows before running Verify-P0.cmd. This avoids the headless verifier competing with an editor process."
 }
 
+function Quote-ProcessArgument([string]$Value) {
+    if ($Value -notmatch '[\s"]') { return $Value }
+    return '"' + ($Value -replace '(\\*)"', '$1$1\"' -replace '(\\+)$', '$1$1') + '"'
+}
+
 function Invoke-GodotWithTimeout(
     [string[]]$CommandArgs,
     [int]$TimeoutSeconds,
@@ -120,19 +125,29 @@ function Invoke-GodotWithTimeout(
         throw "$Label received no Godot command arguments."
     }
 
-    $stdoutPath = [System.IO.Path]::GetTempFileName()
-    $stderrPath = [System.IO.Path]::GetTempFileName()
-    try {
-        $argumentLine = ($CommandArgs | ForEach-Object {
-            if ($_ -match '\s') { '"' + ($_ -replace '"', '\"') + '"' } else { $_ }
-        }) -join ' '
+    $argumentLine = ($CommandArgs | ForEach-Object { Quote-ProcessArgument ([string]$_) }) -join ' '
+    if ([string]::IsNullOrWhiteSpace($argumentLine)) {
+        throw "$Label produced an empty Godot argument line."
+    }
 
-        if ([string]::IsNullOrWhiteSpace($argumentLine)) {
-            throw "$Label produced an empty Godot argument line."
+    $startInfo = New-Object System.Diagnostics.ProcessStartInfo
+    $startInfo.FileName = $Godot
+    $startInfo.Arguments = $argumentLine
+    $startInfo.UseShellExecute = $false
+    $startInfo.CreateNoWindow = $true
+    $startInfo.RedirectStandardOutput = $true
+    $startInfo.RedirectStandardError = $true
+
+    $process = New-Object System.Diagnostics.Process
+    $process.StartInfo = $startInfo
+
+    try {
+        if (-not $process.Start()) {
+            throw "$Label failed to start Godot."
         }
 
-        $process = Start-Process -FilePath $Godot -ArgumentList $argumentLine -NoNewWindow -PassThru `
-            -RedirectStandardOutput $stdoutPath -RedirectStandardError $stderrPath
+        $stdoutTask = $process.StandardOutput.ReadToEndAsync()
+        $stderrTask = $process.StandardError.ReadToEndAsync()
 
         if (-not $process.WaitForExit($TimeoutSeconds * 1000)) {
             Write-Host "[TIMEOUT] $Label exceeded ${TimeoutSeconds}s. Killing Godot process tree..."
@@ -142,19 +157,26 @@ function Invoke-GodotWithTimeout(
                 $process.Kill()
             }
             $process.WaitForExit()
-            if (Test-Path $stdoutPath) { Get-Content $stdoutPath | ForEach-Object { Write-Host $_ } }
-            if (Test-Path $stderrPath) { Get-Content $stderrPath | ForEach-Object { Write-Host $_ } }
+            $stdoutTask.Wait()
+            $stderrTask.Wait()
+            if ($stdoutTask.Result) { Write-Host $stdoutTask.Result.TrimEnd() }
+            if ($stderrTask.Result) { Write-Host $stderrTask.Result.TrimEnd() }
             throw "$Label timed out after ${TimeoutSeconds}s. Godot was terminated so the verifier cannot hang indefinitely."
         }
 
-        if (Test-Path $stdoutPath) { Get-Content $stdoutPath | ForEach-Object { Write-Host $_ } }
-        if (Test-Path $stderrPath) { Get-Content $stderrPath | ForEach-Object { Write-Host $_ } }
+        $process.WaitForExit()
+        $stdoutTask.Wait()
+        $stderrTask.Wait()
 
-        if ($process.ExitCode -ne 0) {
-            throw "Godot command failed with exit code $($process.ExitCode) : $Godot $($CommandArgs -join ' ')"
+        if ($stdoutTask.Result) { Write-Host $stdoutTask.Result.TrimEnd() }
+        if ($stderrTask.Result) { Write-Host $stderrTask.Result.TrimEnd() }
+
+        $exitCode = [int]$process.ExitCode
+        if ($exitCode -ne 0) {
+            throw "Godot command failed with exit code $exitCode : $Godot $($CommandArgs -join ' ')"
         }
     } finally {
-        Remove-Item $stdoutPath, $stderrPath -Force -ErrorAction SilentlyContinue
+        $process.Dispose()
     }
 }
 
