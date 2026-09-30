@@ -9,9 +9,10 @@ Date: 2026-09-30
 - Step 15 Repository Bootstrap + P0 Foundation: LOCKED / PASS.
 - Step 16 P1.1 Goal + Personality: LOCKED / PASS.
 - Step 17 P1.2 Population + Recruitment + Player Choice: LOCKED / PASS.
-- Step 18 P1.3 Relationships + Behavioral Impact: IMPLEMENTED / AWAITING RUNTIME GATE.
+- Step 18 P1.3 Relationships + Behavioral Impact: LOCKED / PASS.
 
 Locked baseline before P1.3: `353431b7a8979b79ed904c9e4100fb86e1d1a236`.
+P1.3 implementation checkpoint before runtime lock: `b1cea0d0a3d1d80a598623ab209c97357bfff6ba`.
 
 ## Architecture locks
 
@@ -23,7 +24,7 @@ Locked baseline before P1.3: `353431b7a8979b79ed904c9e4100fb86e1d1a236`.
 - Save schema remains versioned and backward-compatible with missing optional P1 fields.
 - Economy mutations must preserve total money unless an explicit source/sink is declared.
 - Runtime invariants are mandatory.
-- P0, P1.1, and P1.2 remain mandatory regression baselines.
+- P0, P1.1, P1.2, and P1.3 remain mandatory regression baselines for later work.
 - New P1 systems are opt-in so earlier locked paths remain behavior-stable.
 - No new mechanic is accepted as complete if it only creates narrative/state with no measurable simulation or player-decision consequence.
 
@@ -86,7 +87,7 @@ Locked runtime evidence:
 - candidate determinism, capacity blocking, money conservation, save/load and interaction-scene smoke: PASS;
 - P0 and P1.1 regressions remained green in the same run.
 
-## Active P1.3 — Relationships + Behavioral Impact
+## Locked P1.3 — Relationships + Behavioral Impact
 
 P1.3 introduces a sparse directed social graph. A relationship A -> B is independent from B -> A.
 
@@ -116,36 +117,53 @@ P1.3 scale rule:
 - decisions inspect only the acting disciple's existing relationship edges;
 - combat relationship updates inspect only that disciple's existing contacts and cap affected local contacts per outcome.
 
-P1.3 verification contract:
+Authoritative gate: `tools/godot/Verify-P1-3.ps1`.
 
-1. Full locked P0/P1.1/P1.2 gates must PASS first.
-2. Same seed must create the same sparse relationship graph.
-3. Graph must remain sparse rather than materializing every possible directed pair.
-4. Affinity, trust and respect must each have measurable behavioral weight.
-5. The same relationship event must be able to produce different response magnitude because of personality.
-6. A -> B mutation must not implicitly mutate B -> A.
-7. Relationship strength must be able to change a region decision in a controlled probe.
-8. Player companion assignment must measurably change a region decision in a controlled probe, and clearing it must restore the unassigned behavior.
-9. New P1.2 recruits must enter the relationship network.
-10. Relationship state and companion assignment must survive save/load.
-11. Same-seed simulation and continuation after save/load must remain deterministic.
-12. Invariants and economy conservation must remain green.
-13. The P1.3 interaction scene must launch successfully in Godot 4.7.2.
+## Runtime verification evidence — P1.3 — 2026-09-30
 
-Authoritative command: `Sync-P1-3.cmd`.
+Environment:
 
-Expected successful end markers:
+- Godot `4.7.2.stable.official.ed1daf0bf`.
+- Local authoritative gate: `Sync-P1-3.cmd` → full P0 gate → locked P1.1 gate → locked P1.2 gate → P1.3 relationship/behavior-impact contracts → P1.3 interaction-scene smoke.
 
-- `P0 FOUNDATION GATE: PASS`
-- `P1.1 GOAL + PERSONALITY GATE: PASS`
-- `P1.2 RECRUITMENT + PLAYER CHOICE GATE: PASS`
-- `P1.3 RELATIONSHIP + BEHAVIOR IMPACT TEST PASS`
-- `P1.3 RELATIONSHIP + BEHAVIOR IMPACT GATE: PASS`
-- `P1.3 GATE: PASS`
+Result:
 
-## P1.3 exclusions
+- `P0 FOUNDATION GATE: PASS`;
+- `P1.1 GOAL + PERSONALITY TEST PASS`;
+- `P1.1 GOAL + PERSONALITY GATE: PASS`;
+- `P1.2 RECRUITMENT + PLAYER CHOICE TEST PASS`;
+- `P1.2 RECRUITMENT + PLAYER CHOICE GATE: PASS`;
+- `P1.3 RELATIONSHIP + BEHAVIOR IMPACT TEST PASS`;
+- `P1.3 RELATIONSHIP + BEHAVIOR IMPACT GATE: PASS`;
+- `P1.3 GATE: PASS`.
 
-Do not open these systems until P1.3 is locked:
+Recorded P1.3 evidence:
+
+- seed: 717171;
+- deterministic continuation ticks: 2,000;
+- ending disciples: 6;
+- sparse relationship records: 18;
+- relationship events processed: 1,948;
+- active companion assignments in final test state: 1;
+- same-seed sparse relationship graph: PASS;
+- directed A -> B independence: PASS;
+- affinity behavioral weight: PASS;
+- trust behavioral weight: PASS;
+- respect behavioral weight: PASS;
+- personality-shaped relationship response: PASS;
+- relationship strength changing region choice: PASS;
+- player companion assignment changing region choice: PASS;
+- clearing player companion influence restoring unassigned behavior: PASS;
+- P1.2 recruit integration into relationship network: PASS;
+- relationship + companion save/load persistence: PASS;
+- deterministic continuation after save/load: PASS;
+- invariants and economy conservation: PASS;
+- P1.3 relationship interaction scene smoke: PASS;
+- P0, P1.1 and P1.2 regressions remained green in the same run.
+
+## P1.3 exclusions retained
+
+P1.3 does not open:
 
 - long-term memory;
 - romance/marriage;
@@ -162,6 +180,6 @@ Do not open these systems until P1.3 is locked:
 - P0: PASS / LOCKED.
 - P1.1 Goal + Personality: PASS / LOCKED.
 - P1.2 Population + Recruitment + Player Choice: PASS / LOCKED.
-- P1.3 Relationships + Behavioral Impact: IMPLEMENTED / AWAITING RUNTIME GATE.
+- P1.3 Relationships + Behavioral Impact: PASS / LOCKED.
 
-Next closure condition: run `Sync-P1-3.cmd` on the local Windows/Godot 4.7.2 environment. Do not mark P1.3 PASS until all prior regressions, the P1.3 behavior-impact contracts, save/load continuation, invariants and the P1.3 interaction-scene smoke test pass in a real runtime.
+Next step: open P1.4 only against the locked P0 + P1.1 + P1.2 + P1.3 baseline. The next slice may introduce memory, but only if remembered events have measurable consequences on later decisions/relationships and preserve deterministic simulation, save/load, economy invariants and all prior gates.
