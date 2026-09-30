@@ -4,19 +4,18 @@ Date: 2026-09-30
 
 ## Project state
 
-- Step 13 Technical Architecture & Development Roadmap: LOCKED.
-- Step 14 P0 Prototype Specification: LOCKED.
-- Step 15 P0 Foundation: LOCKED / PASS.
-- Step 16 P1.1 Goal + Personality: LOCKED / PASS.
-- Step 17 P1.2 Recruitment + Player Choice: LOCKED / PASS.
-- Step 18 P1.3 Relationships + Behavioral Impact: LOCKED / PASS.
-- Step 19 P1.4 Consequential Memory: IMPLEMENTED / AWAITING RUNTIME GATE.
-- Step 20 P1.5 Organization + Teams + Leadership + Roles: IMPLEMENTED / AWAITING RUNTIME GATE.
-- Step 21 P1.6 Sect Life + Needs + Resource Pressure: IMPLEMENTED / AWAITING RUNTIME GATE.
-- Step 22 P2.1 Cultivation + Realms + Breakthrough: IMPLEMENTED / AWAITING RUNTIME GATE.
-- Step 23 P2.2 Spiritual Root Quality + Long-Term Growth: IMPLEMENTED / AWAITING RUNTIME GATE.
-- Step 24 P2.3 Technique Economy + Library + Mastery: IMPLEMENTED / AWAITING RUNTIME GATE.
-- Step 25 P2.4 Cultivation Paths / Character Dao Direction: IMPLEMENTED / AWAITING RUNTIME GATE.
+- P0 Foundation: LOCKED / PASS.
+- P1.1 Goal + Personality: LOCKED / PASS.
+- P1.2 Recruitment + Player Choice: LOCKED / PASS.
+- P1.3 Relationships + Behavioral Impact: LOCKED / PASS.
+- P1.4 Consequential Memory: IMPLEMENTED / AWAITING RUNTIME GATE.
+- P1.5 Organization + Teams + Leadership + Roles: IMPLEMENTED / AWAITING RUNTIME GATE.
+- P1.6 Sect Life + Needs + Resource Pressure: IMPLEMENTED / AWAITING RUNTIME GATE.
+- P2.1 Cultivation + Realms + Breakthrough: IMPLEMENTED / AWAITING RUNTIME GATE.
+- P2.2 Spiritual Root Quality + Long-Term Growth: IMPLEMENTED / AWAITING RUNTIME GATE.
+- P2.3 Technique Economy + Library + Mastery: IMPLEMENTED / AWAITING RUNTIME GATE.
+- P2.4 Cultivation Paths / Character Dao Direction: IMPLEMENTED / AWAITING RUNTIME GATE.
+- P2.5 Combat Skills / Real-time Auto Combat: IMPLEMENTED / AWAITING RUNTIME GATE.
 
 Locked baseline before the unverified stack: `bbdca12b3f1efd14d31982810859d22f51990ff4` (P1.3 lock).
 
@@ -27,7 +26,8 @@ Implementation checkpoints before later phases:
 - before P2.1: `a4fe78a8f94d774f9351aaf3b02fd78ad1aaee08`;
 - before P2.2: `cc9be52e72b1e787962edaab44319b680805f3b3`;
 - before P2.3: `705a7ff2ac2f6cdc2432edc118e7cb0ff337b79d`;
-- before P2.4: `c3c3cc7f6a3054d8e7ecdf616e630eed9310c6c1`.
+- before P2.4: `c3c3cc7f6a3054d8e7ecdf616e630eed9310c6c1`;
+- before P2.5: `7b32f0176b8ed5ba946d26d0423023f8b965efba`.
 
 ## Architecture locks
 
@@ -35,140 +35,141 @@ Implementation checkpoints before later phases:
 - Godot owns gameplay/simulation authority.
 - Deterministic seeded simulation remains mandatory.
 - Save/load, invariants and P0 money conservation remain mandatory.
+- New phase mechanics stay opt-in so earlier factories remain behavior-compatible.
 - P0–P1.3 are locked regression baselines.
-- P1.4–P2.4 may be implemented while the user is away from the Windows machine, but none may be marked PASS without real local Godot runtime evidence.
-- New systems remain opt-in so earlier factory paths stay behavior-compatible.
-- A mechanic is not complete if it adds only story/title/rarity/element/class/progress without measurable simulation or player-decision consequence.
+- P1.4–P2.5 are not PASS until real local Godot 4.7.2 gate evidence exists.
+- Mechanics must change decisions/outcomes; decorative systems do not count as completion.
 
-## Locked P0–P1.3
+## Carried-forward progression stack
 
-P0, P1.1, P1.2 and P1.3 are PASS / LOCKED with recorded local Godot `4.7.2.stable.official.ed1daf0bf` evidence.
+- P2.1: cultivation -> breakthrough -> realm -> combat/HP consequences.
+- P2.2: root quality changes cultivation and breakthrough; elemental roots later shape technique/skill efficiency.
+- P2.3: sect-owned technique economy, Tàng Kinh Các, manuals, learning/mastery/upgrades, one active cultivation technique, path/element/role metadata.
+- P2.4: no fixed class. Kiếm/Thể/Pháp identity is derived from actual accumulated path XP. Path depth changes combat/defense/cultivation and strengthens matching effects.
 
-## Pending P1.4–P2.3
+## Active P2.5 — Combat Skills / Real-time Auto Combat
 
-Implemented, not runtime-verified. Their existing contracts remain mandatory and are chained into the active verifier.
+### User-approved combat direction
 
-Carried-forward systems:
+Combat must look and behave like actors fighting on the map, not two numbers exchanging damage and not a turn/round battle.
 
-- P1.4 bounded consequential memory;
-- P1.5 teams/leadership/roles;
-- P1.6 medicine/supplies/lodging pressure;
-- P2.1 cultivation/realms/breakthrough;
-- P2.2 root quality and long-term growth;
-- P2.3 Tàng Kinh Các, spirit-stone gacha/farming, fragments, technique learning/mastery/upgrades, path/element/role tags and real technique effects.
+P2.5 therefore uses a deterministic internal real-time timeline while keeping the simulation lightweight:
 
-## Active P2.4 — Cultivation Paths / Character Dao Direction
+- 0.25 s simulation quantum;
+- bounded encounter duration;
+- distance between disciple and monster;
+- approach / keep-distance movement;
+- melee versus ranged basic attacks;
+- independent combat skills;
+- cast time + cooldown;
+- projectile travel time;
+- guard / burn / weaken effects;
+- autonomous skill selection;
+- bounded combat event trace for future animation/presentation.
 
-P2.4 converts P2.3 technique `path` tags into accumulated personal history. It does not assign a fixed class.
+No frame-perfect weapon collision, animation hitbox authority, ragdoll, per-pixel projectile physics, detailed terrain projectile collision or manual action-game dodging.
 
-### Path state
+### Technique, realm and skill are separate
 
-Each disciple stores XP for exactly three initial paths:
+This was explicitly corrected during design review.
 
-- `sword` — Kiếm;
-- `body` — Thể;
-- `spell` — Pháp.
+- Cultivation technique is NOT a fixed combat-skill kit.
+- A technique does NOT automatically grant five moves by technique level.
+- Realm gates whether a combat skill can be learned/used.
+- Combat skills are separately learned actions.
+- Cross-path learning is allowed; compatibility changes effectiveness rather than legality.
+- P2.5 deliberately does not lock the final long-term number of equipped skill slots.
 
-No permanent class/path field exists. Display identity is derived from accumulated XP.
+### Initial skill vertical slice
 
-### How paths grow
+The first library is only enough to prove the architecture and combat differences; it is not a total-game skill count.
 
-The active technique determines which path receives XP:
+Sword:
 
-- successful CULTIVATE action: +10;
-- combat win: +4;
-- combat retreat/defeat: +1.
+- Thanh Phong Trảm;
+- Truy Phong Bộ;
+- Ngự Kiếm Thuật.
 
-Switching active technique changes future path growth but does not erase old history.
+Body:
 
-### Derived identity
+- Chấn Sơn Quyền;
+- Kim Cương Hộ Thể;
+- Bất Động Thân.
 
-- total XP <100: `Chưa định hình`;
-- dominant path >=65%: `<Path> tu`;
-- otherwise if the second path >=25%: `<Path A>–<Path B> song tu`;
-- otherwise dominant path with mixed history.
+Spell:
 
-Examples:
+- Hỏa Cầu;
+- Hàn Sương Ấn;
+- Liệt Diễm.
 
-- 700 Kiếm / 300 Pháp -> Kiếm tu;
-- 600 Kiếm / 400 Pháp -> Kiếm–Pháp song tu.
+Each skill has its own path, element, minimum realm stage, range, cast time, cooldown and real effect.
 
-### Real consequences
+### Combat identity
 
-Full P2.4 depth is reached at 1,200 XP per path and clamps after that for current effects.
+The active cultivation technique can shape default combat spacing without deciding which skills are known:
 
-Shared expertise:
+- Kiếm: fast, close-to-mid range;
+- Thể: shortest range, heavy/contact behavior;
+- Pháp: keeps distance and uses ranged basics.
 
-- matching accumulated path improves the active same-path technique's real effect strength by up to 20%.
+Skill effectiveness can be modified by:
 
-Kiếm:
+- spiritual-root elemental affinity;
+- P2.4 accumulated expertise in the skill path;
+- small active-technique path/element resonance.
 
-- up to +4 effective combat power;
-- up to +18 HUNT utility.
-
-Thể:
-
-- up to 12% intrinsic incoming-damage reduction;
-- up to +5 HUNT utility;
-- up to +5 REST utility.
-
-Pháp:
-
-- up to +12% cultivation gain;
-- up to +18 CULTIVATE utility.
-
-These effects feed existing combat, region power checks, cultivation and autonomous action selection. P2.4 therefore changes decisions/outcomes rather than only displaying a path title.
+There is no global Kiếm-thế / Chiến-ý / combat-mana bar in P2.5. Such resources may exist later only for specific builds where they add meaningful gameplay.
 
 ### Compatibility
 
-- `P23Factory` remains path-disabled;
-- `P24Factory` creates P2.3 first, then enables path tracking;
-- path progression uses no new RNG;
-- P0/P1/P2.1/P2.2/P2.3 behavior remains available when the P2.4 flag is off;
-- P2.3 still allows max 3 learned techniques and only 1 active technique, so P2.4 cannot stack multiple technique paths simultaneously.
+- `P24Factory` remains `combat_skills_enabled == false` and still executes the original 20-exchange legacy resolver unchanged.
+- `P25Factory` creates P2.4 first, then enables the new combat-skill system.
+- learned combat skills serialize only when present;
+- P2.5 sect state serializes only when enabled/events exist;
+- transient in-combat distance/cooldowns/projectiles/statuses are not saved mid-encounter.
 
-### P2.4 verification contract
+### Verification contract
 
-1. Full P0 through P2.3 gate chain must PASS first.
-2. P23Factory must remain path-disabled and unaffected.
-3. Cultivation/combat with a Sword technique must add Sword XP only.
-4. Switching to a Spell technique must add Spell XP while retaining prior Sword XP.
-5. 70/30 history must derive primary identity; 60/40 must derive mixed identity.
-6. Same technique + same current stats must perform better with deep matching path history.
-7. Deep Sword must increase effective combat power.
-8. Deep Body must reduce incoming damage.
-9. Deep Spell must increase cultivation gain.
-10. Path depth must measurably change autonomous action utility.
-11. Save/load must preserve path XP and P2.4 sect state.
-12. Same-seed simulation and post-load continuation must remain deterministic.
-13. All earlier invariants and P0 money conservation must remain green.
-14. P2.4 interaction scene must launch on Godot 4.7.2.
+The P2.5 test/gate checks:
 
-Authoritative command: `Sync-P2-4.cmd`.
+1. P2.4 still enters the legacy resolver and has no P2.5 trace/state leakage.
+2. Realm requirements gate learning while path does not hard-lock learning.
+3. Kiếm/Thể/Pháp have measurably different spacing/basic styles.
+4. Root affinity and P2.4 path depth change skill effectiveness.
+5. Projectile impact occurs after launch rather than instantly.
+6. Hỏa Cầu burn creates delayed real damage.
+7. Guard and weaken create real combat modifiers.
+8. Liệt Diễm is stronger against a burning target.
+9. Combat traces remain bounded.
+10. Learned skills + sect P2.5 state survive save/load.
+11. Same-seed simulation and post-load continuation remain deterministic.
+12. All prior invariants remain green.
+13. P2.5 interaction scene launches on Godot 4.7.2.
 
-Expected final markers include:
+Authoritative command: `Sync-P2-5.cmd`.
 
-- `P2.3 TECHNIQUE ECONOMY + MASTERY CONSEQUENCE GATE: PASS`
-- `P2.4 CULTIVATION PATH + IDENTITY CONSEQUENCE TEST PASS`
-- `P2.4 CULTIVATION PATH + IDENTITY CONSEQUENCE GATE: PASS`
-- `P2.4 GATE: PASS`
+## Explicit P2.5 exclusions
 
-## P2.4 exclusions
+Do not expand this phase into:
 
-P2.4 does not add master/disciple hierarchy, master teaching, combat skills/moves, equipment, special physiques, pills, tribulations, secret realms, bosses/factions, new profession paths, Dao-event trees or combat-team V2.
+- master/disciple;
+- equipment/artifacts;
+- pets/formations;
+- full combat-team V2;
+- multi-monster encounters;
+- real AOE before multi-target combat exists;
+- bosses/factions/PvP/secret realms;
+- frame-perfect hitboxes or action-game physics;
+- a universal combat resource;
+- final skill-slot/loadout rules;
+- separate combat-skill level/material economy.
 
 ## Completion status
 
-- P0: PASS / LOCKED.
-- P1.1: PASS / LOCKED.
-- P1.2: PASS / LOCKED.
-- P1.3: PASS / LOCKED.
-- P1.4: IMPLEMENTED / AWAITING RUNTIME GATE.
-- P1.5: IMPLEMENTED / AWAITING RUNTIME GATE.
-- P1.6: IMPLEMENTED / AWAITING RUNTIME GATE.
-- P2.1: IMPLEMENTED / AWAITING RUNTIME GATE.
-- P2.2: IMPLEMENTED / AWAITING RUNTIME GATE.
-- P2.3: IMPLEMENTED / AWAITING RUNTIME GATE.
-- P2.4: IMPLEMENTED / AWAITING RUNTIME GATE.
+P2.5 code, spec, scene, tests and chained verifier are implemented on `main`, but no real Godot runtime command has been executed in this chat environment.
 
-Runtime verification for P1.4–P2.4 is intentionally deferred until the user returns to the Windows/Godot 4.7.2 machine. Do not mark any pending phase PASS before a real `Sync-P2-4.cmd` run completes successfully.
+Therefore P2.5 status is strictly:
+
+`IMPLEMENTED / AWAITING RUNTIME GATE`
+
+Do not mark P1.4–P2.5 PASS before a real successful `Sync-P2-5.cmd` run on the Windows/Godot 4.7.2 machine.
