@@ -6,6 +6,7 @@ var rng: GameRng
 var goal_system := GoalSystem.new()
 var decision_system := DecisionSystem.new()
 var relationship_system := RelationshipSystem.new()
+var memory_system := MemorySystem.new()
 var economy_system := EconomySystem.new()
 var combat_system := CombatSystem.new()
 
@@ -68,6 +69,8 @@ func _step_disciple(disciple: DiscipleState) -> void:
             var outcome := str(result.get("outcome", "invalid"))
             if state.p1_relationships_enabled:
                 relationship_system.record_local_combat_outcome(state, disciple, outcome)
+            if state.p1_memory_enabled:
+                memory_system.record_combat_outcome(state, disciple, outcome)
             match outcome:
                 "win":
                     disciple.pending_loot = result.get("loot", {}).duplicate(true)
