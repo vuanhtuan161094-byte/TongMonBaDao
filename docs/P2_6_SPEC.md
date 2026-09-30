@@ -93,11 +93,16 @@ P2.6 hỗ trợ đồng thời:
 
 Manual control thắng auto control, nhưng người chơi không bắt buộc micromanage.
 
-## Tác động chiến đấu
+## Tác động gameplay và chiến đấu
 
-Vertical slice đầu tiên nối chỉ số `combat_power` của trang bị vào encounter P2.5 thật. Scheduler chỉ áp bonus trong encounter rồi khôi phục base combat power chính xác, tránh drift float qua nhiều trận.
+Vertical slice đầu tiên nối `combat_power` của trang bị vào hai nơi có hậu quả thật:
 
-Schema item đã chứa các stat dành cho các bước P2.6 tiếp theo như defense reduction, skill effect, move/basic speed, range và basic ratio. Các stat này không được coi là runtime-complete cho tới khi gate tương ứng chứng minh chúng thực sự tác động CombatSystem.
+- **AI chọn vùng săn:** `DecisionSystem` cộng sức mạnh trang bị vào effective power trước khi tính power-gap penalty. Một đệ tử được trang bị tốt có thể tự chuyển từ vùng an toàn sang vùng khó/lợi nhuận cao hơn.
+- **P2.5 encounter:** `SimulationScheduler` chỉ cộng equipment combat power trong lúc resolver chạy rồi khôi phục base combat power chính xác, tránh drift hoặc cộng dồn sai qua nhiều trận.
+
+Như vậy vòng `rèn đồ -> mạnh hơn -> dám săn khó hơn -> có cơ hội lấy nguyên liệu tốt hơn` tồn tại trong simulation, không chỉ trên UI.
+
+Schema item đã chứa các stat dành cho các bước P2.6 tiếp theo như defense reduction, skill effect, move/basic speed, range và basic ratio. Các stat này chưa được coi là runtime-complete cho tới khi gate tương ứng chứng minh chúng thực sự tác động CombatSystem.
 
 ## Save/load và deterministic
 
@@ -128,11 +133,12 @@ Gate phải chứng minh:
 8. Manual equip hoạt động.
 9. Lock slot chặn auto-equip.
 10. Return-to-auto cho phép AI tiếp tục nâng đồ.
-11. Trang bị thay đổi combat outcome có kiểm soát.
-12. Save/load giữ toàn bộ P2.6 state.
-13. Continuation sau load deterministic.
-14. Invariants cũ + EquipmentSystem invariants PASS.
-15. Interaction scene chạy headless trên Godot 4.7.2.
+11. Trang bị thay đổi lựa chọn vùng săn có kiểm soát.
+12. Trang bị thay đổi combat outcome có kiểm soát.
+13. Save/load giữ toàn bộ P2.6 state.
+14. Continuation sau load deterministic.
+15. Invariants cũ + EquipmentSystem invariants PASS.
+16. Interaction scene chạy headless trên Godot 4.7.2.
 
 ## Chưa đưa vào vertical slice
 
@@ -154,4 +160,6 @@ Các phần này chỉ mở sau khi vòng `hunt -> forge -> sell/equip -> combat
 
 `IMPLEMENTED / AWAITING RUNTIME GATE`.
 
-Authoritative local command sau khi P2.1 persistence blocker được xử lý: `Sync-P2-6.cmd`.
+Authoritative local command: `Sync-P2-6.cmd`.
+
+Cumulative runtime hiện vẫn phải vượt blocker P2.1 persistence trước khi có thể đi tới P2.6 gate.
