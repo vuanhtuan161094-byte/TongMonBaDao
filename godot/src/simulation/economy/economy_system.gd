@@ -14,8 +14,10 @@ func market_buy_price(state: SimulationState, item_id: String) -> int:
 func sell_inventory(state: SimulationState, disciple: DiscipleState) -> int:
     var earned := 0
     var sold: Dictionary = {}
+    var item_keys: Array = disciple.inventory.keys()
+    item_keys.sort()
 
-    for item_key in disciple.inventory.keys():
+    for item_key in item_keys:
         var item_id := str(item_key)
         var quantity := int(disciple.inventory[item_key])
         if quantity <= 0:
