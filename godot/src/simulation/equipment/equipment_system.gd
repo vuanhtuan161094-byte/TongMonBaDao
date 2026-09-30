@@ -181,7 +181,7 @@ func equipment_score(state: SimulationState, disciple: DiscipleState, item: Dict
         return 0.0
     var stats: Dictionary = item.get("stats", {})
     var score := 0.0
-    score += float(stats.get("combat_power", 0.0)) * 4.0
+    score += effective_combat_bonus_for_item(disciple, item) * 4.0
     score += float(stats.get("defense_reduction", 0.0)) * 120.0 * (0.75 + clampf(disciple.survival_bias, 0.0, 1.0))
     score += float(stats.get("skill_effect", 0.0)) * 72.0
     score += float(stats.get("basic_speed", 0.0)) * 52.0
@@ -268,7 +268,10 @@ func manual_equip(state: SimulationState, disciple_id: StringName, item_id: Stri
     if not _equip_item(state, disciple, item_id):
         return false
     var slot := str(item.get("slot", ""))
-    disciple.locked_equipment_slots[slot] = lock_slot
+    if lock_slot:
+        disciple.locked_equipment_slots[slot] = true
+    else:
+        disciple.locked_equipment_slots.erase(slot)
     disciple.metrics["manual_equips"] = int(disciple.metrics.get("manual_equips", 0)) + 1
     state.sect.equipment_event_count += 1
     return true
@@ -277,7 +280,10 @@ func set_slot_lock(state: SimulationState, disciple_id: StringName, slot: String
     if not state.sect.equipment_enabled or not state.disciples.has(disciple_id) or not VALID_SLOTS.has(slot):
         return false
     var disciple: DiscipleState = state.disciples[disciple_id]
-    disciple.locked_equipment_slots[str(slot)] = locked
+    if locked:
+        disciple.locked_equipment_slots[str(slot)] = true
+    else:
+        disciple.locked_equipment_slots.erase(str(slot))
     state.sect.equipment_event_count += 1
     return true
 
@@ -296,7 +302,7 @@ func unequip_to_storage(state: SimulationState, disciple_id: StringName, slot: S
     item["owner_id"] = ""
     state.sect.equipment_items[item_id] = item
     disciple.equipped_items.erase(str(slot))
-    disciple.locked_equipment_slots[str(slot)] = false
+    disciple.locked_equipment_slots.erase(str(slot))
     state.sect.equipment_event_count += 1
     return true
 
@@ -309,13 +315,22 @@ func equipped_item(state: SimulationState, disciple: DiscipleState, slot: String
         return {}
     return item
 
+func effective_combat_bonus_for_item(disciple: DiscipleState, item: Dictionary) -> float:
+    if item.is_empty():
+        return 0.0
+    var raw_bonus := float(item.get("stats", {}).get("combat_power", 0.0))
+    if raw_bonus <= 0.0:
+        return 0.0
+    return raw_bonus * _compatibility_multiplier(disciple, item)
+
 func combat_power_bonus(state: SimulationState, disciple: DiscipleState) -> float:
     if not state.sect.equipment_enabled:
         return 0.0
     var total := 0.0
     for slot in VALID_SLOTS:
         var item := equipped_item(state, disciple, slot)
-        total += float(item.get("stats", {}).get("combat_power", 0.0)) if not item.is_empty() else 0.0
+        if not item.is_empty():
+            total += effective_combat_bonus_for_item(disciple, item)
     return total
 
 func incoming_damage_multiplier(state: SimulationState, disciple: DiscipleState) -> float:
@@ -399,6 +414,10 @@ func validate_invariants(state: SimulationState) -> Array[String]:
         var location := StringName(item_dict.get("location", ""))
         if not VALID_SLOTS.has(slot) or not VALID_LOCATIONS.has(location):
             errors.append("Equipment %s has invalid slot/location." % item_id)
+        if not QUALITY_DEFINITIONS.has(str(item_dict.get("quality", ""))):
+            errors.append("Equipment %s has invalid quality." % item_id)
+        if not (item_dict.get("stats", {}) is Dictionary):
+            errors.append("Equipment %s has invalid stats storage." % item_id)
         if int(item_dict.get("price", 0)) <= 0:
             errors.append("Equipment %s has invalid price." % item_id)
         var owner_id := StringName(item_dict.get("owner_id", ""))
@@ -427,9 +446,22 @@ func validate_invariants(state: SimulationState) -> Array[String]:
             if str(item.get("slot", "")) != str(slot) or str(item.get("owner_id", "")) != str(disciple.id) or StringName(item.get("location", "")) != LOCATION_EQUIPPED:
                 errors.append("%s equipment mapping is inconsistent for %s." % [disciple.display_name, slot])
         for raw_slot in disciple.locked_equipment_slots.keys():
-            if not VALID_SLOTS.has(StringName(raw_slot)):
+            if not VALID_SLOTS.has(StringName(raw_slot)) or not bool(disciple.locked_equipment_slots[raw_slot]):
                 errors.append("%s has invalid locked equipment slot %s." % [disciple.display_name, raw_slot])
     return errors
+
+func _compatibility_multiplier(disciple: DiscipleState, item: Dictionary) -> float:
+    var multiplier := 1.0
+    var item_path := StringName(item.get("path", ""))
+    if CultivationPathSystem.VALID_PATHS.has(item_path):
+        multiplier += (paths.depth(disciple, item_path) - 0.5) * 0.20
+        if paths.active_technique_path(disciple) == item_path:
+            multiplier += 0.06
+        multiplier += float(mini(_matching_skill_count(disciple, item_path), 3)) * 0.02
+    var element := str(item.get("element", ""))
+    if element != "":
+        multiplier += 0.08 if disciple.spiritual_root_elements.has(element) else -0.04
+    return clampf(multiplier, 0.80, 1.30)
 
 func _equip_item(state: SimulationState, disciple: DiscipleState, item_id: StringName) -> bool:
     var key := str(item_id)
