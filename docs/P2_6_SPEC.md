@@ -12,8 +12,8 @@ P2.6 không biến game thành hệ micromanagement bắt người chơi mặc t
 
 - `P25Factory` giữ `equipment_enabled == false`.
 - `P26Factory` tạo toàn bộ P2.5 trước rồi mới bật `EquipmentSystem`.
-- P2.6 là opt-in; các factory cũ không đổi hành vi.
-- Trang bị không tạo class cứng. Kiếm/Thể/Pháp và ngũ hành chỉ thay đổi độ phù hợp/giá trị của món đồ.
+- P2.6 là opt-in; các factory cũ không đổi hành vi khi feature tắt.
+- Trang bị không tạo class cứng. Kiếm/Thể/Pháp và ngũ hành thay đổi độ phù hợp và hiệu quả, không khóa quyền sử dụng.
 - Mỗi món là một instance riêng có ID ổn định, phẩm chất, slot, recipe, hướng tu, nguyên tố, stats, giá, vị trí và owner.
 - Phẩm chất rèn được xác định deterministic từ seed + forge index + recipe; không dùng thời gian hệ thống.
 
@@ -34,7 +34,7 @@ Nguồn đầu tiên:
 
 Đệ tử thắng combat mang nguyên liệu về như loot. Khi trở lại tông môn, nguyên liệu P2.6 được chuyển vào kho Luyện Khí trước khi hàng thường được bán.
 
-Rèn tiêu nguyên liệu nhưng vertical slice chưa áp phí tiền bên ngoài. Điều này giữ rõ contract tiền kín; external money sinks chỉ được thêm khi có hệ thống kinh tế ngoài tông môn được định nghĩa rõ.
+Rèn tiêu nguyên liệu nhưng vertical slice chưa áp phí tiền bên ngoài. External money sinks chỉ được thêm khi có hệ thống kinh tế ngoài tông môn được định nghĩa rõ.
 
 Phẩm chất ban đầu:
 
@@ -56,20 +56,20 @@ Phẩm chất ban đầu:
 
 Mỗi đệ tử chấm cùng một món khác nhau. Điểm đánh giá dùng:
 
-- sức mạnh thô của item;
+- sức mạnh thực của item sau hệ số tương thích;
 - phòng thủ;
-- hiệu quả skill;
+- hiệu quả combat skill;
 - tốc/tầm/nhịp đánh;
 - độ sâu Kiếm/Thể/Pháp đã tích lũy;
 - path của công pháp đang dùng;
-- các combat skill đã học;
+- combat skill đã học;
 - linh căn/ngũ hành;
 - risk/survival bias;
 - giá món đồ;
 - spend bias và khoản tiền đệ tử muốn giữ lại;
 - policy tông môn: balanced / combat / frugal.
 
-AI chỉ mua khi món mới vượt món hiện tại đủ rõ và sau giao dịch vẫn còn khoản dự phòng phù hợp tính cách/chính sách.
+Cùng một món có hiệu quả combat khác nhau trên hai đệ tử khác build. AI chỉ mua khi món mới vượt món hiện tại đủ rõ và sau giao dịch vẫn còn khoản dự phòng phù hợp tính cách/chính sách.
 
 ## Tiền kín
 
@@ -79,30 +79,34 @@ Mua trang bị là giao dịch nội bộ:
 
 Tổng tiền toàn simulation không đổi vì giao dịch này.
 
-Rèn bằng nguyên liệu không tự sinh hoặc tự hủy tiền. Các nguồn/sink tiền bên ngoài phải được định nghĩa riêng nếu thêm về sau.
+Manual allocation không phải mua bán. Rèn bằng nguyên liệu không tự sinh hoặc tự hủy tiền.
 
 ## Quyền người chơi
 
 P2.6 hỗ trợ đồng thời:
 
 1. **Auto equipment mặc định** — AI tự mua và thay món tốt hơn.
-2. **Manual equip** — người chơi lấy một món trong kho/shop và cấp trực tiếp cho đệ tử; không phải giao dịch mua.
+2. **Manual equip** — người chơi lấy một món trong kho/shop và cấp trực tiếp cho đệ tử.
 3. **Lock slot** — khi khóa, AI tuyệt đối không thay món trong slot đó.
-4. **Return to auto** — bỏ khóa để trả quyền tối ưu slot lại cho AI.
+4. **Return to auto** — bỏ khóa bằng cách xóa canonical lock entry, trả quyền tối ưu lại cho AI.
 5. **Unequip to storage** — thu hồi món về kho.
 
 Manual control thắng auto control, nhưng người chơi không bắt buộc micromanage.
 
 ## Tác động gameplay và chiến đấu
 
-Vertical slice đầu tiên nối `combat_power` của trang bị vào hai nơi có hậu quả thật:
+P2.6 đã nối các nhóm chỉ số vertical slice vào simulation thật:
 
-- **AI chọn vùng săn:** `DecisionSystem` cộng sức mạnh trang bị vào effective power trước khi tính power-gap penalty. Một đệ tử được trang bị tốt có thể tự chuyển từ vùng an toàn sang vùng khó/lợi nhuận cao hơn.
-- **P2.5 encounter:** `SimulationScheduler` chỉ cộng equipment combat power trong lúc resolver chạy rồi khôi phục base combat power chính xác, tránh drift hoặc cộng dồn sai qua nhiều trận.
+- **Combat power:** cộng theo độ phù hợp path/linh căn/skill/công pháp; ảnh hưởng cả chọn vùng săn và encounter P2.5.
+- **Defense reduction:** giảm damage quái gây ra trong real-time resolver.
+- **Move/basic speed, basic range, basic ratio:** sửa trực tiếp combat style dùng bởi P2.5, nên thay đổi khoảng cách, nhịp và hiệu quả đánh thường.
+- **Skill effect:** nhân hiệu quả combat skill theo path/ngũ hành phù hợp, gồm direct hit và hiệu ứng damage theo thời gian như burn.
 
-Như vậy vòng `rèn đồ -> mạnh hơn -> dám săn khó hơn -> có cơ hội lấy nguyên liệu tốt hơn` tồn tại trong simulation, không chỉ trên UI.
+`SimulationScheduler` chỉ cộng equipment combat power vào `disciple.combat_power` trong lúc resolver chạy rồi khôi phục base power chính xác, tránh drift hoặc cộng dồn sai qua nhiều trận.
 
-Schema item đã chứa các stat dành cho các bước P2.6 tiếp theo như defense reduction, skill effect, move/basic speed, range và basic ratio. Các stat này chưa được coi là runtime-complete cho tới khi gate tương ứng chứng minh chúng thực sự tác động CombatSystem.
+`DecisionSystem` cũng cộng equipment power vào effective power trước khi tính power-gap penalty, nên một đệ tử được trang bị tốt có thể tự chuyển sang vùng khó/lợi nhuận cao hơn.
+
+Như vậy vòng `rèn đồ -> mạnh hơn -> dám săn khó hơn -> lấy nguyên liệu tốt hơn` tồn tại trong simulation, không chỉ trên UI.
 
 ## Save/load và deterministic
 
@@ -115,7 +119,7 @@ Phải lưu chính xác:
 - equipment event count;
 - policy;
 - equipped item per disciple;
-- locked slots;
+- canonical locked slots;
 - item location + owner;
 - float stats qua SaveService v2 lossless format.
 
@@ -127,18 +131,23 @@ Gate phải chứng minh:
 2. Win combat sinh nguyên liệu rèn và đưa được về kho.
 3. Cùng seed/index/recipe cho cùng kết quả rèn.
 4. Rèn tiêu nguyên liệu và tạo item instance.
-5. Hai build khác nhau đánh giá cùng item khác nhau.
+5. Hai build khác nhau đánh giá và nhận hiệu quả khác nhau từ cùng loại gear.
 6. AI mua đúng upgrade có ý nghĩa.
 7. Mua đồ bảo toàn tổng tiền.
 8. Manual equip hoạt động.
 9. Lock slot chặn auto-equip.
-10. Return-to-auto cho phép AI tiếp tục nâng đồ.
+10. Return-to-auto cho phép AI tiếp tục nâng đồ và không để false lock entry gây lệch save/load.
 11. Trang bị thay đổi lựa chọn vùng săn có kiểm soát.
-12. Trang bị thay đổi combat outcome có kiểm soát.
-13. Save/load giữ toàn bộ P2.6 state.
-14. Continuation sau load deterministic.
-15. Invariants cũ + EquipmentSystem invariants PASS.
-16. Interaction scene chạy headless trên Godot 4.7.2.
+12. Combat power trang bị thay đổi combat outcome có kiểm soát.
+13. Armor `defense_reduction` giảm damage thật trong P2.5 resolver.
+14. `skill_effect` tăng damage skill thật.
+15. `basic_speed/basic_range` thay đổi hành vi đánh thường thật.
+16. Save/load giữ toàn bộ P2.6 state chính xác.
+17. Continuation sau load deterministic.
+18. Invariants cũ + EquipmentSystem invariants PASS.
+19. Interaction scene chạy headless trên Godot 4.7.2.
+
+Các contract combat phụ được tách riêng trong `p2_6_equipment_combat_effects_test.gd` để lỗi stat wiring không bị lẫn với lỗi kinh tế/save-load.
 
 ## Chưa đưa vào vertical slice
 
