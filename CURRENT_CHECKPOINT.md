@@ -16,16 +16,18 @@ Date: 2026-09-30
 - Step 22 P2.1 Cultivation + Realms + Breakthrough: IMPLEMENTED / AWAITING RUNTIME GATE.
 - Step 23 P2.2 Spiritual Root Quality + Long-Term Growth: IMPLEMENTED / AWAITING RUNTIME GATE.
 - Step 24 P2.3 Technique Economy + Library + Mastery: IMPLEMENTED / AWAITING RUNTIME GATE.
+- Step 25 P2.4 Cultivation Paths / Character Dao Direction: IMPLEMENTED / AWAITING RUNTIME GATE.
 
 Locked baseline before the unverified stack: `bbdca12b3f1efd14d31982810859d22f51990ff4` (P1.3 lock).
 
-Implementation checkpoints before each pending phase:
+Implementation checkpoints before later phases:
 
 - before P1.5: `b1fc434c6e05cac451b60ab11c4c855476e00842`;
 - before P1.6: `541b67ccc9f847b4c9c44d43ea82317b5668c20e`;
 - before P2.1: `a4fe78a8f94d774f9351aaf3b02fd78ad1aaee08`;
 - before P2.2: `cc9be52e72b1e787962edaab44319b680805f3b3`;
-- before P2.3: `705a7ff2ac2f6cdc2432edc118e7cb0ff337b79d`.
+- before P2.3: `705a7ff2ac2f6cdc2432edc118e7cb0ff337b79d`;
+- before P2.4: `c3c3cc7f6a3054d8e7ecdf616e630eed9310c6c1`.
 
 ## Architecture locks
 
@@ -34,208 +36,126 @@ Implementation checkpoints before each pending phase:
 - Deterministic seeded simulation remains mandatory.
 - Save/load, invariants and P0 money conservation remain mandatory.
 - P0–P1.3 are locked regression baselines.
-- P1.4–P2.3 may be implemented while the user is away from the Windows machine, but none may be marked PASS without real local Godot runtime evidence.
-- New systems remain opt-in so earlier factory paths stay available.
-- A mechanic is not complete if it adds only story/title/rarity/element/progress without measurable simulation or player-decision consequence.
+- P1.4–P2.4 may be implemented while the user is away from the Windows machine, but none may be marked PASS without real local Godot runtime evidence.
+- New systems remain opt-in so earlier factory paths stay behavior-compatible.
+- A mechanic is not complete if it adds only story/title/rarity/element/class/progress without measurable simulation or player-decision consequence.
 
 ## Locked P0–P1.3
 
 P0, P1.1, P1.2 and P1.3 are PASS / LOCKED with recorded local Godot `4.7.2.stable.official.ed1daf0bf` evidence.
 
-## Pending P1.4–P2.2
+## Pending P1.4–P2.3
 
-Implemented, not runtime-verified. Their contracts remain mandatory and are chained into the active verifier.
+Implemented, not runtime-verified. Their existing contracts remain mandatory and are chained into the active verifier.
 
-Key carried-forward consequences:
+Carried-forward systems:
 
 - P1.4 bounded consequential memory;
 - P1.5 teams/leadership/roles;
 - P1.6 medicine/supplies/lodging pressure;
-- P2.1 cultivation/realms/breakthrough with real combat and region-choice consequences;
-- P2.2 root quality changing cultivation rate and breakthrough probability without a hard realm cap.
+- P2.1 cultivation/realms/breakthrough;
+- P2.2 root quality and long-term growth;
+- P2.3 Tàng Kinh Các, spirit-stone gacha/farming, fragments, technique learning/mastery/upgrades, path/element/role tags and real technique effects.
 
-## Active P2.3 — Technique Economy + Library + Mastery
+## Active P2.4 — Cultivation Paths / Character Dao Direction
 
-P2.3 implements the complete first technique loop instead of a decorative technique list.
+P2.4 converts P2.3 technique `path` tags into accumulated personal history. It does not assign a fixed class.
 
-### Ownership model
+### Path state
 
-A complete technique manual and Tàng Kinh Các archive are separate.
+Each disciple stores XP for exactly three initial paths:
 
-- gacha or fragment crafting creates a complete manual;
-- a manual may be sold for sect spirit stones;
-- or one manual may be consumed to permanently archive that technique;
-- archived knowledge is not consumed when disciples learn;
-- only archived techniques can be learned.
+- `sword` — Kiếm;
+- `body` — Thể;
+- `spell` — Pháp.
 
-This preserves the player choice between immediate liquidity and long-term sect capability.
+No permanent class/path field exists. Display identity is derived from accumulated XP.
 
-### In-game spirit-stone economy
+### How paths grow
 
-P2.3 introduces spirit stones separately from P0 money.
+The active technique determines which path receives XP:
 
-- sect spirit stones pay for player gacha;
-- personal spirit stones are farmed by disciples;
-- learning transfers personal spirit stones into the sect pool;
-- gacha is an explicit sect-spirit-stone sink;
-- selling manuals is an explicit external-market spirit-stone source.
+- successful CULTIVATE action: +10;
+- combat win: +4;
+- combat retreat/defeat: +1.
 
-P0 money conservation remains independent and unchanged.
+Switching active technique changes future path growth but does not erase old history.
 
-Initial fresh P2.3 state receives 500 sect spirit stones so the gacha interaction can be exercised.
+### Derived identity
 
-### Gacha
+- total XP <100: `Chưa định hình`;
+- dominant path >=65%: `<Path> tu`;
+- otherwise if the second path >=25%: `<Path A>–<Path B> song tu`;
+- otherwise dominant path with mixed history.
 
-- cost: 100 sect spirit stones;
-- deterministic separate RNG using simulation seed + gacha index;
-- does not consume gameplay/combat/recruitment RNG state;
-- returns one complete manual.
+Examples:
 
-No real-money/premium purchase, pity, banner or timed event system exists in P2.3.
+- 700 Kiếm / 300 Pháp -> Kiếm tu;
+- 600 Kiếm / 400 Pháp -> Kiếm–Pháp song tu.
 
-### Farming
+### Real consequences
 
-After a combat victory, a deterministic P2.3-only RNG stream may generate:
+Full P2.4 depth is reached at 1,200 XP per path and clamps after that for current effects.
 
-- personal spirit stones;
-- Linh Tủy / Huyền Thiết / Yêu Đan;
-- technique fragments.
+Shared expertise:
 
-These travel in the disciple inventory. When the disciple returns to the sect:
+- matching accumulated path improves the active same-path technique's real effect strength by up to 20%.
 
-- spirit stones enter the personal wallet;
-- fragments/materials enter sect stores;
-- submitted fragments/materials award personal Contribution.
+Kiếm:
 
-Special P2.3 loot is removed before ordinary P0 market selling, so it cannot accidentally be sold as a 1-money generic item.
+- up to +4 effective combat power;
+- up to +18 HUNT utility.
 
-### Fragment crafting
+Thể:
 
-Fragment requirements are technique-specific.
+- up to 12% intrinsic incoming-damage reduction;
+- up to +5 HUNT utility;
+- up to +5 REST utility.
 
-Enough fragments may be combined into one complete manual. Crafting consumes the exact fragment requirement.
+Pháp:
 
-The crafted manual can then be archived or sold like a gacha manual.
+- up to +12% cultivation gain;
+- up to +18 CULTIVATE utility.
 
-### Learning
+These effects feed existing combat, region power checks, cultivation and autonomous action selection. P2.4 therefore changes decisions/outcomes rather than only displaying a path title.
 
-A disciple may know at most 3 techniques.
+### Compatibility
 
-Learning requires:
+- `P23Factory` remains path-disabled;
+- `P24Factory` creates P2.3 first, then enables path tracking;
+- path progression uses no new RNG;
+- P0/P1/P2.1/P2.2/P2.3 behavior remains available when the P2.4 flag is off;
+- P2.3 still allows max 3 learned techniques and only 1 active technique, so P2.4 cannot stack multiple technique paths simultaneously.
 
-- technique archived in Tàng Kinh Các;
-- enough personal Contribution;
-- enough personal spirit stones;
-- an available learned-technique slot.
+### P2.4 verification contract
 
-Learning consumes Contribution and transfers the personal spirit-stone fee into sect spirit stones.
+1. Full P0 through P2.3 gate chain must PASS first.
+2. P23Factory must remain path-disabled and unaffected.
+3. Cultivation/combat with a Sword technique must add Sword XP only.
+4. Switching to a Spell technique must add Spell XP while retaining prior Sword XP.
+5. 70/30 history must derive primary identity; 60/40 must derive mixed identity.
+6. Same technique + same current stats must perform better with deep matching path history.
+7. Deep Sword must increase effective combat power.
+8. Deep Body must reduce incoming damage.
+9. Deep Spell must increase cultivation gain.
+10. Path depth must measurably change autonomous action utility.
+11. Save/load must preserve path XP and P2.4 sect state.
+12. Same-seed simulation and post-load continuation must remain deterministic.
+13. All earlier invariants and P0 money conservation must remain green.
+14. P2.4 interaction scene must launch on Godot 4.7.2.
 
-Only one learned technique is active at a time. The player may switch the active technique. This prevents effect stacking while making multiple learned techniques strategically useful.
-
-### Technique mastery and upgrades
-
-During a successful CULTIVATE action:
-
-- cultivation progress is gained through the existing P2.1/P2.2 logic plus active-technique effect;
-- the active technique also gains mastery XP.
-
-Mastery XP stops at the current upgrade threshold.
-
-Technique level cap in P2.3: 5.
-
-Level-up is not automatic. It requires the XP threshold plus sect-owned upgrade materials, and consumes those materials. XP resets after a successful level-up.
-
-### Technique identity
-
-Each technique has four tags from the start:
-
-- rarity: Phàm / Huyền / Địa / Thiên;
-- path: Kiếm / Thể / Pháp;
-- element: Kim / Mộc / Thủy / Hỏa / Thổ;
-- role: growth / offense / defense / stability.
-
-P2.3 does NOT yet give a disciple a fixed class. These tags are stored now so a later cultivation-path phase can infer Kiếm tu/Thể tu/Pháp tu from actual technique history rather than retrofitting technique data.
-
-### Elemental roots
-
-P2.2 quality remains unchanged and still determines long-term cultivation/breakthrough potential.
-
-P2.3 adds elemental affinity only because it now has a measurable interaction with techniques:
-
-- Tạp root: 3 elements;
-- Phàm root: 2 elements;
-- Địa root: 1 element;
-- Thiên root: 1 element.
-
-Element assignment has its own deterministic seed and does not modify root-quality or recruitment RNG.
-
-Matching element increases technique mastery speed and effect strength. Mismatch reduces them but never forbids learning.
-
-P22Factory remains element-free.
-
-### Six initial techniques
-
-- Dưỡng Khí Quyết — Phàm / Pháp / Mộc / growth;
-- Huyền Giáp Công — Huyền / Thể / Thổ / defense;
-- Liệt Chiến Quyết — Huyền / Thể / Hỏa / offense;
-- Thanh Phong Kiếm Quyết — Địa / Kiếm / Kim / offense;
-- Xích Viêm Chân Quyết — Địa / Pháp / Hỏa / offense;
-- Hàn Nguyệt Tâm Pháp — Thiên / Pháp / Thủy / stability.
-
-### Real simulation consequences
-
-Depending on technique, level and affinity, the active technique can change:
-
-- cultivation gain;
-- effective combat power;
-- incoming combat damage;
-- breakthrough probability;
-- breakthrough-failure cultivation/HP/stamina loss.
-
-Effective combat power already feeds region-choice under-power penalties, so technique progression can also change autonomous destination choice.
-
-### Scale contract
-
-- max 3 learned techniques per disciple;
-- one active technique calculation per disciple;
-- O(1) library/manual/fragment/material lookups;
-- O(1) farm reward generation per combat victory;
-- no new N x N structures;
-- gacha only scans the small static technique pool.
-
-### P2.3 verification contract
-
-1. Full P0 through P2.2 gate chain must PASS first.
-2. P22Factory remains technique-off and element-free.
-3. P2.3 elemental roots are deterministic.
-4. Gacha consumes exactly 100 sect spirit stones and does not mutate gameplay RNG/recruitment outcomes.
-5. Gacha produces a tradable manual, not automatic archive access.
-6. Archive consumes one manual and permanently enables teaching.
-7. Spare/farmed manuals can be sold without deleting archived knowledge.
-8. Combat farming produces real special loot; returning deposits it into the correct personal/sect stores.
-9. Fragment crafting consumes the required fragments and produces exactly one manual.
-10. Learning requires archive + contribution + personal spirit stones and transfers the stone fee to the sect.
-11. The 3-technique learning cap is enforced.
-12. Matching elemental affinity measurably improves mastery.
-13. Mastery stops at threshold; upgrade requires/consumes materials and advances one level.
-14. Active techniques measurably affect cultivation, breakthrough, combat power and/or defense according to their data.
-15. Save/load preserves sect technique economy, root elements, learned techniques, active technique, mastery, Contribution and personal spirit stones.
-16. Same-seed continuation remains deterministic.
-17. P0 money conservation and all earlier invariants remain green.
-18. P2.3 interaction scene launches under Godot 4.7.2.
-
-Authoritative command: `Sync-P2-3.cmd`.
+Authoritative command: `Sync-P2-4.cmd`.
 
 Expected final markers include:
 
-- `P2.2 SPIRITUAL ROOT + GROWTH CONSEQUENCE GATE: PASS`
-- `P2.3 TECHNIQUE ECONOMY + MASTERY CONSEQUENCE TEST PASS`
 - `P2.3 TECHNIQUE ECONOMY + MASTERY CONSEQUENCE GATE: PASS`
-- `P2.3 GATE: PASS`
+- `P2.4 CULTIVATION PATH + IDENTITY CONSEQUENCE TEST PASS`
+- `P2.4 CULTIVATION PATH + IDENTITY CONSEQUENCE GATE: PASS`
+- `P2.4 GATE: PASS`
 
-## P2.3 exclusions
+## P2.4 exclusions
 
-P2.3 does not add fixed character classes, multi-technique simultaneous stacking, combat skills/individual moves, master-disciple teaching, pills, equipment, special physiques, tribulations, secret realms, bosses/factions, premium/real-money gacha, pity/banner systems or combat-team V2.
+P2.4 does not add master/disciple hierarchy, master teaching, combat skills/moves, equipment, special physiques, pills, tribulations, secret realms, bosses/factions, new profession paths, Dao-event trees or combat-team V2.
 
 ## Completion status
 
@@ -249,5 +169,6 @@ P2.3 does not add fixed character classes, multi-technique simultaneous stacking
 - P2.1: IMPLEMENTED / AWAITING RUNTIME GATE.
 - P2.2: IMPLEMENTED / AWAITING RUNTIME GATE.
 - P2.3: IMPLEMENTED / AWAITING RUNTIME GATE.
+- P2.4: IMPLEMENTED / AWAITING RUNTIME GATE.
 
-Runtime verification for P1.4–P2.3 is intentionally deferred until the user returns to the Windows/Godot 4.7.2 machine. Do not mark any pending phase PASS before a real `Sync-P2-3.cmd` run completes successfully.
+Runtime verification for P1.4–P2.4 is intentionally deferred until the user returns to the Windows/Godot 4.7.2 machine. Do not mark any pending phase PASS before a real `Sync-P2-4.cmd` run completes successfully.
