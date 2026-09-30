@@ -5,6 +5,7 @@ const REGION_RISK_WEIGHT := 35.0
 const UNDERPOWER_PENALTY := 12.0
 
 var relationship_system := RelationshipSystem.new()
+var memory_system := MemorySystem.new()
 
 func evaluate(state: SimulationState, disciple: DiscipleState) -> Dictionary:
 	var hp_ratio := disciple.hp / maxf(disciple.max_hp, 1.0)
@@ -81,6 +82,7 @@ func choose_region(state: SimulationState, disciple: DiscipleState) -> StringNam
 	var best_score: float = -1.0e30
 	var region_scores: Dictionary = {}
 	var social_scores: Dictionary = {}
+	var memory_scores: Dictionary = {}
 
 	for region_value in state.regions.values():
 		var region: RegionState = region_value
@@ -97,8 +99,14 @@ func choose_region(state: SimulationState, disciple: DiscipleState) -> StringNam
 			social_modifier = relationship_system.region_social_modifier(state, disciple, region.id)
 			score += social_modifier
 
+		var memory_modifier := 0.0
+		if state.p1_memory_enabled:
+			memory_modifier = memory_system.region_memory_modifier(state, disciple, region.id)
+			score += memory_modifier
+
 		region_scores[str(region.id)] = score
 		social_scores[str(region.id)] = social_modifier
+		memory_scores[str(region.id)] = memory_modifier
 
 		if score > best_score:
 			best_score = score
@@ -106,8 +114,12 @@ func choose_region(state: SimulationState, disciple: DiscipleState) -> StringNam
 
 	disciple.last_decision["region_scores"] = region_scores
 	disciple.last_decision["social_region_scores"] = social_scores
+	if state.p1_memory_enabled:
+		disciple.last_decision["memory_region_scores"] = memory_scores
 	disciple.last_decision["chosen_region"] = str(best_id)
-	if state.p1_relationships_enabled:
+	if state.p1_memory_enabled:
+		disciple.last_decision["region_reason"] = "Profit, risk, power, goal, relationships, and consequential memory."
+	elif state.p1_relationships_enabled:
 		disciple.last_decision["region_reason"] = "Profit, risk, power, goal, and sparse relationship influence."
 	elif state.p1_goal_personality_enabled:
 		disciple.last_decision["region_reason"] = "Profit, risk tolerance, power gap, and active goal modifier."
