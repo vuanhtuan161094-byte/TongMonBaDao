@@ -45,6 +45,11 @@ var cultivation_path_xp: Dictionary = {}
 # P2.5 combat skills are independent from cultivation techniques.
 var learned_combat_skills: Dictionary = {}
 
+# P2.6 equipment is slot-based but classless. A locked slot is player-controlled;
+# unlocked slots remain available to autonomous equipment purchasing/upgrading.
+var equipped_items: Dictionary = {}
+var locked_equipment_slots: Dictionary = {}
+
 var current_action: StringName = &"EVALUATE"
 var region_id: StringName = &"sect"
 var target_region_id: StringName = &""
@@ -103,6 +108,8 @@ func _init(definition: Dictionary = {}) -> void:
     active_technique_id = StringName(definition.get("active_technique_id", active_technique_id))
     cultivation_path_xp = _float_dictionary(definition.get("cultivation_path_xp", {}))
     learned_combat_skills = _bool_dictionary(definition.get("learned_combat_skills", {}))
+    equipped_items = _string_dictionary(definition.get("equipped_items", {}))
+    locked_equipment_slots = _bool_dictionary(definition.get("locked_equipment_slots", {}))
 
 func retreat_hp_ratio() -> float:
     return lerpf(0.48, 0.14, clampf(risk_bias, 0.0, 1.0))
@@ -165,6 +172,10 @@ func to_dict() -> Dictionary:
         data["cultivation_path_xp"] = cultivation_path_xp.duplicate(true)
     if not learned_combat_skills.is_empty():
         data["learned_combat_skills"] = learned_combat_skills.duplicate(true)
+    if not equipped_items.is_empty():
+        data["equipped_items"] = equipped_items.duplicate(true)
+    if not locked_equipment_slots.is_empty():
+        data["locked_equipment_slots"] = locked_equipment_slots.duplicate(true)
     return data
 
 static func from_dict(data: Dictionary) -> DiscipleState:
@@ -194,7 +205,9 @@ static func from_dict(data: Dictionary) -> DiscipleState:
         "learned_techniques": data.get("learned_techniques", {}),
         "active_technique_id": data.get("active_technique_id", ""),
         "cultivation_path_xp": data.get("cultivation_path_xp", {}),
-        "learned_combat_skills": data.get("learned_combat_skills", {})
+        "learned_combat_skills": data.get("learned_combat_skills", {}),
+        "equipped_items": data.get("equipped_items", {}),
+        "locked_equipment_slots": data.get("locked_equipment_slots", {})
     })
     disciple.max_hp = float(data.get("max_hp", 100.0))
     disciple.hp = float(data.get("hp", disciple.max_hp))
@@ -210,8 +223,10 @@ static func from_dict(data: Dictionary) -> DiscipleState:
 
     var saved_metrics = data.get("metrics", {})
     if saved_metrics is Dictionary:
-        for key in disciple.metrics.keys():
-            disciple.metrics[key] = int(saved_metrics.get(key, disciple.metrics[key]))
+        var metric_keys: Array = saved_metrics.keys()
+        metric_keys.sort()
+        for key in metric_keys:
+            disciple.metrics[str(key)] = int(saved_metrics[key])
     return disciple
 
 static func _int_dictionary(value: Variant) -> Dictionary:
@@ -243,6 +258,18 @@ static func _bool_dictionary(value: Variant) -> Dictionary:
     for key in keys:
         if bool(value[key]):
             normalized[str(key)] = true
+    return normalized
+
+static func _string_dictionary(value: Variant) -> Dictionary:
+    var normalized: Dictionary = {}
+    if not (value is Dictionary):
+        return normalized
+    var keys: Array = value.keys()
+    keys.sort()
+    for key in keys:
+        var text := str(value[key])
+        if text != "":
+            normalized[str(key)] = text
     return normalized
 
 static func _string_array(value: Variant) -> Array:
