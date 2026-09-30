@@ -10,6 +10,7 @@ var memory_system := MemorySystem.new()
 var needs_system := NeedsSystem.new()
 var cultivation_system := CultivationSystem.new()
 var technique_system := TechniqueSystem.new()
+var cultivation_path_system := CultivationPathSystem.new()
 var economy_system := EconomySystem.new()
 var combat_system := CombatSystem.new()
 
@@ -84,6 +85,9 @@ func _step_disciple(disciple: DiscipleState) -> void:
                 memory_system.record_combat_outcome(state, disciple, outcome)
             if state.sect.cultivation_enabled and outcome == "win":
                 cultivation_system.add_combat_win_progress(state, disciple)
+            if state.sect.cultivation_paths_enabled and outcome in ["win", "retreat", "defeat"]:
+                if cultivation_path_system.record_combat(state, disciple, outcome) > 0.0:
+                    disciple.metrics["path_combat_events"] = int(disciple.metrics.get("path_combat_events", 0)) + 1
             match outcome:
                 "win":
                     var loot: Dictionary = result.get("loot", {}).duplicate(true)
@@ -138,6 +142,9 @@ func _step_disciple(disciple: DiscipleState) -> void:
             var gained := cultivation_system.cultivate(state, disciple)
             if gained > 0.0 and state.sect.techniques_enabled:
                 technique_system.train_active_technique(state, disciple)
+            if gained > 0.0 and state.sect.cultivation_paths_enabled:
+                if cultivation_path_system.record_cultivation(state, disciple) > 0.0:
+                    disciple.metrics["path_cultivation_events"] = int(disciple.metrics.get("path_cultivation_events", 0)) + 1
             disciple.current_action = &"EVALUATE"
 
         &"BREAKTHROUGH":
