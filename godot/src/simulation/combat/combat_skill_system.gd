@@ -134,6 +134,39 @@ func style_profile(state: SimulationState, disciple: DiscipleState) -> Dictionar
         _:
             return {"id":"balanced", "preferred_distance":1.60, "move_speed":2.70, "basic_range":1.75, "basic_interval":1.35, "basic_ratio":1.00}
 
+func record_combat_path_experience(state: SimulationState, disciple: DiscipleState, result: Dictionary, outcome: String) -> float:
+    if not state.sect.combat_skills_enabled or not state.sect.cultivation_paths_enabled:
+        return 0.0
+    if outcome not in ["win", "retreat", "defeat"]:
+        return 0.0
+
+    var counts: Dictionary = {}
+    for raw_skill_id in result.get("skills_used", []):
+        var data := definition(StringName(raw_skill_id))
+        if data.is_empty():
+            continue
+        var path_id := StringName(data.get("path", ""))
+        if not CultivationPathSystem.VALID_PATHS.has(path_id):
+            continue
+        counts[str(path_id)] = int(counts.get(str(path_id), 0)) + 1
+
+    if counts.is_empty():
+        return paths.record_combat(state, disciple, outcome)
+
+    var ordered_paths: Array = counts.keys()
+    ordered_paths.sort()
+    var dominant_path := StringName(ordered_paths[0])
+    var dominant_count := int(counts[str(dominant_path)])
+    for raw_path in ordered_paths:
+        var path_id := StringName(raw_path)
+        var count := int(counts[str(path_id)])
+        if count > dominant_count:
+            dominant_path = path_id
+            dominant_count = count
+
+    var amount := CultivationPathSystem.COMBAT_WIN_XP if outcome == "win" else CultivationPathSystem.COMBAT_OTHER_XP
+    return paths.add_experience(state, disciple, dominant_path, amount)
+
 func validate_invariants(state: SimulationState) -> Array[String]:
     var errors: Array[String] = []
     if not state.sect.combat_skills_enabled:
