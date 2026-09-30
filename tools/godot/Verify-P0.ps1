@@ -111,13 +111,25 @@ function Assert-NoRunningGodot {
     throw "Godot is already running: $names. Close all Godot editor/project-manager windows before running Verify-P0.cmd. This avoids the headless verifier competing with an editor process."
 }
 
-function Invoke-GodotWithTimeout([string[]]$Args, [int]$TimeoutSeconds, [string]$Label) {
+function Invoke-GodotWithTimeout(
+    [string[]]$CommandArgs,
+    [int]$TimeoutSeconds,
+    [string]$Label
+) {
+    if ($null -eq $CommandArgs -or $CommandArgs.Count -eq 0) {
+        throw "$Label received no Godot command arguments."
+    }
+
     $stdoutPath = [System.IO.Path]::GetTempFileName()
     $stderrPath = [System.IO.Path]::GetTempFileName()
     try {
-        $argumentLine = ($Args | ForEach-Object {
+        $argumentLine = ($CommandArgs | ForEach-Object {
             if ($_ -match '\s') { '"' + ($_ -replace '"', '\"') + '"' } else { $_ }
         }) -join ' '
+
+        if ([string]::IsNullOrWhiteSpace($argumentLine)) {
+            throw "$Label produced an empty Godot argument line."
+        }
 
         $process = Start-Process -FilePath $Godot -ArgumentList $argumentLine -NoNewWindow -PassThru `
             -RedirectStandardOutput $stdoutPath -RedirectStandardError $stderrPath
@@ -139,7 +151,7 @@ function Invoke-GodotWithTimeout([string[]]$Args, [int]$TimeoutSeconds, [string]
         if (Test-Path $stderrPath) { Get-Content $stderrPath | ForEach-Object { Write-Host $_ } }
 
         if ($process.ExitCode -ne 0) {
-            throw "Godot command failed with exit code $($process.ExitCode) : $Godot $($Args -join ' ')"
+            throw "Godot command failed with exit code $($process.ExitCode) : $Godot $($CommandArgs -join ' ')"
         }
     } finally {
         Remove-Item $stdoutPath, $stderrPath -Force -ErrorAction SilentlyContinue
@@ -154,7 +166,7 @@ Write-Host "[Godot] $($resolvedGodot.Version)"
 Write-Host "[Godot] $Godot"
 
 Write-Host "[1/9] Import"
-Invoke-GodotWithTimeout @("--headless", "--path", $Project, "--import") 120 "Godot import"
+Invoke-GodotWithTimeout -CommandArgs @("--headless", "--path", $Project, "--import") -TimeoutSeconds 120 -Label "Godot import"
 
 Write-Host "[2/9] Parse project scripts"
 $Scripts = @(Get-ChildItem -Path (Join-Path $Project "src"), (Join-Path $Project "tests") -Recurse -Filter *.gd | Sort-Object FullName)
@@ -163,28 +175,28 @@ foreach ($Script in $Scripts) {
     $ScriptIndex += 1
     $Relative = $Script.FullName.Substring($Project.Length + 1).Replace("\", "/")
     Write-Host ("  [Parse {0}/{1}] {2}" -f $ScriptIndex, $Scripts.Count, $Relative)
-    Invoke-GodotWithTimeout @("--headless", "--path", $Project, "--check-only", "--script", "res://$Relative") 45 "Parse $Relative"
+    Invoke-GodotWithTimeout -CommandArgs @("--headless", "--path", $Project, "--check-only", "--script", "res://$Relative") -TimeoutSeconds 45 -Label "Parse $Relative"
 }
 
 Write-Host "[3/9] Decision contracts"
-Invoke-GodotWithTimeout @("--headless", "--path", $Project, "-s", "res://tests/simulation/p0_decision_contract_test.gd") 60 "Decision contracts"
+Invoke-GodotWithTimeout -CommandArgs @("--headless", "--path", $Project, "-s", "res://tests/simulation/p0_decision_contract_test.gd") -TimeoutSeconds 60 -Label "Decision contracts"
 
 Write-Host "[4/9] Economy contracts"
-Invoke-GodotWithTimeout @("--headless", "--path", $Project, "-s", "res://tests/simulation/p0_economy_contract_test.gd") 60 "Economy contracts"
+Invoke-GodotWithTimeout -CommandArgs @("--headless", "--path", $Project, "-s", "res://tests/simulation/p0_economy_contract_test.gd") -TimeoutSeconds 60 -Label "Economy contracts"
 
 Write-Host "[5/9] Deterministic invariant scenario"
-Invoke-GodotWithTimeout @("--headless", "--path", $Project, "-s", "res://tests/simulation/p0_invariant_test.gd") 120 "Deterministic invariant scenario"
+Invoke-GodotWithTimeout -CommandArgs @("--headless", "--path", $Project, "-s", "res://tests/simulation/p0_invariant_test.gd") -TimeoutSeconds 120 -Label "Deterministic invariant scenario"
 
 Write-Host "[6/9] Save/load round trip"
-Invoke-GodotWithTimeout @("--headless", "--path", $Project, "-s", "res://tests/simulation/p0_save_roundtrip_test.gd") 120 "Save/load round trip"
+Invoke-GodotWithTimeout -CommandArgs @("--headless", "--path", $Project, "-s", "res://tests/simulation/p0_save_roundtrip_test.gd") -TimeoutSeconds 120 -Label "Save/load round trip"
 
 Write-Host "[7/9] Same-seed reproducibility"
-Invoke-GodotWithTimeout @("--headless", "--path", $Project, "-s", "res://tests/simulation/p0_reproducibility_test.gd") 120 "Same-seed reproducibility"
+Invoke-GodotWithTimeout -CommandArgs @("--headless", "--path", $Project, "-s", "res://tests/simulation/p0_reproducibility_test.gd") -TimeoutSeconds 120 -Label "Same-seed reproducibility"
 
 Write-Host "[8/9] Multi-seed benchmark"
-Invoke-GodotWithTimeout @("--headless", "--path", $Project, "-s", "res://tests/simulation/p0_benchmark_test.gd") 240 "Multi-seed benchmark"
+Invoke-GodotWithTimeout -CommandArgs @("--headless", "--path", $Project, "-s", "res://tests/simulation/p0_benchmark_test.gd") -TimeoutSeconds 240 -Label "Multi-seed benchmark"
 
 Write-Host "[9/9] Runtime smoke"
-Invoke-GodotWithTimeout @("--headless", "--path", $Project, "--quit-after", "180") 60 "Runtime smoke"
+Invoke-GodotWithTimeout -CommandArgs @("--headless", "--path", $Project, "--quit-after", "180") -TimeoutSeconds 60 -Label "Runtime smoke"
 
 Write-Host "P0 FOUNDATION GATE: PASS"
