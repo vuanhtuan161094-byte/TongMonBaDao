@@ -125,7 +125,7 @@ func apply_action_role_modifiers(state: SimulationState, disciple: DiscipleState
             scores["REST"] = float(scores.get("REST", 0.0)) - 5.0
         ROLE_LOGISTICS:
             scores["HUNT"] = float(scores.get("HUNT", 0.0)) - 16.0
-            scores["BUY"] = float(scores.get("BUY", 0.0)) + 32.0
+            scores["BUY"] = float(scores.get("BUY", 0.0)) + 40.0
             scores["SELL"] = float(scores.get("SELL", 0.0)) + 18.0
             scores["REST"] = float(scores.get("REST", 0.0)) + 10.0
         ROLE_GUARD:
