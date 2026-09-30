@@ -39,6 +39,9 @@ var spirit_stones: int = 0
 var learned_techniques: Dictionary = {}
 var active_technique_id: StringName = &""
 
+# P2.4 accumulated path history. No fixed class is stored; identity is derived from this history.
+var cultivation_path_xp: Dictionary = {}
+
 var current_action: StringName = &"EVALUATE"
 var region_id: StringName = &"sect"
 var target_region_id: StringName = &""
@@ -65,7 +68,9 @@ var metrics: Dictionary = {
     "techniques_learned": 0,
     "technique_training_sessions": 0,
     "technique_upgrades": 0,
-    "special_deposits": 0
+    "special_deposits": 0,
+    "path_cultivation_events": 0,
+    "path_combat_events": 0
 }
 
 func _init(definition: Dictionary = {}) -> void:
@@ -93,6 +98,7 @@ func _init(definition: Dictionary = {}) -> void:
     spirit_stones = int(definition.get("spirit_stones", spirit_stones))
     learned_techniques = _technique_dictionary(definition.get("learned_techniques", {}))
     active_technique_id = StringName(definition.get("active_technique_id", active_technique_id))
+    cultivation_path_xp = _float_dictionary(definition.get("cultivation_path_xp", {}))
 
 func retreat_hp_ratio() -> float:
     return lerpf(0.48, 0.14, clampf(risk_bias, 0.0, 1.0))
@@ -151,6 +157,8 @@ func to_dict() -> Dictionary:
         data["spirit_stones"] = spirit_stones
         data["learned_techniques"] = learned_techniques.duplicate(true)
         data["active_technique_id"] = str(active_technique_id)
+    if not cultivation_path_xp.is_empty():
+        data["cultivation_path_xp"] = cultivation_path_xp.duplicate(true)
     return data
 
 static func from_dict(data: Dictionary) -> DiscipleState:
@@ -178,7 +186,8 @@ static func from_dict(data: Dictionary) -> DiscipleState:
         "contribution_points": data.get("contribution_points", 0),
         "spirit_stones": data.get("spirit_stones", 0),
         "learned_techniques": data.get("learned_techniques", {}),
-        "active_technique_id": data.get("active_technique_id", "")
+        "active_technique_id": data.get("active_technique_id", ""),
+        "cultivation_path_xp": data.get("cultivation_path_xp", {})
     })
     disciple.max_hp = float(data.get("max_hp", 100.0))
     disciple.hp = float(data.get("hp", disciple.max_hp))
@@ -206,6 +215,16 @@ static func _int_dictionary(value: Variant) -> Dictionary:
     keys.sort()
     for key in keys:
         normalized[str(key)] = int(value[key])
+    return normalized
+
+static func _float_dictionary(value: Variant) -> Dictionary:
+    var normalized: Dictionary = {}
+    if not (value is Dictionary):
+        return normalized
+    var keys: Array = value.keys()
+    keys.sort()
+    for key in keys:
+        normalized[str(key)] = maxf(float(value[key]), 0.0)
     return normalized
 
 static func _string_array(value: Variant) -> Array:
