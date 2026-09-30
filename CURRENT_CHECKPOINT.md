@@ -9,9 +9,9 @@ Date: 2026-09-30
 - Step 15 Repository Bootstrap + P0 Foundation: LOCKED / PASS.
 - Step 16 P1.1 Goal + Personality: LOCKED / PASS.
 - Step 17 P1.2 Population + Recruitment + Player Choice: LOCKED / PASS.
+- Step 18 P1.3 Relationships + Behavioral Impact: IMPLEMENTED / AWAITING RUNTIME GATE.
 
-Locked baseline before P1.2: `52812fbecb94a787cb9678c3ff999024478f026a`.
-P1.2 implementation commit: `c956182652d14b3136ddad4b871611fe4adcb597`.
+Locked baseline before P1.3: `353431b7a8979b79ed904c9e4100fb86e1d1a236`.
 
 ## Architecture locks
 
@@ -23,33 +23,21 @@ P1.2 implementation commit: `c956182652d14b3136ddad4b871611fe4adcb597`.
 - Save schema remains versioned and backward-compatible with missing optional P1 fields.
 - Economy mutations must preserve total money unless an explicit source/sink is declared.
 - Runtime invariants are mandatory.
-- P0 remains the mandatory regression baseline for all P1 work.
-- P1.1 Goal + Personality remains a mandatory regression baseline for later P1 work.
-- New P1 features are opt-in so earlier locked behavior paths remain available.
+- P0, P1.1, and P1.2 remain mandatory regression baselines.
+- New P1 systems are opt-in so earlier locked paths remain behavior-stable.
+- No new mechanic is accepted as complete if it only creates narrative/state with no measurable simulation or player-decision consequence.
 
 ## Locked P0 baseline
 
-P0 includes:
-
-- 6 fixed disciple behavior profiles;
-- 3 regions;
-- 3 monster species;
-- 4 loot resources;
-- autonomous hunt/combat/loot/return/sell/buy/heal/rest loop;
-- sect treasury + disciple wallets;
-- bounded market pricing;
-- save/load;
-- debug inspector.
+P0 provides the autonomous hunt/combat/loot/return/sell/buy/heal/rest loop, 6 fixed disciples, 3 regions, economy conservation, seeded RNG, save/load, deterministic continuation, invariants, benchmark and runtime smoke.
 
 Authoritative P0 gate: `tools/godot/Verify-P0.ps1`.
 
-P0 runtime evidence on Godot `4.7.2.stable.official.ed1daf0bf`:
+Latest locked runtime evidence on Godot `4.7.2.stable.official.ed1daf0bf`:
 
-- full 9-stage gate: PASS;
-- 20,000-tick invariant scenario: PASS;
-- save/load + deterministic continuation: PASS;
-- same-seed reproducibility: PASS at seed 515151 / 5,000 ticks;
-- multi-seed benchmark: 8 × 12,000 = 96,000 ticks;
+- `P0 FOUNDATION GATE: PASS`;
+- same-seed reproducibility: seed 515151 / 5,000 ticks;
+- benchmark: 8 x 12,000 = 96,000 ticks;
 - total money: 1,630;
 - treasury range: 201..215;
 - combats: 57,347;
@@ -60,136 +48,113 @@ P0 runtime evidence on Godot `4.7.2.stable.official.ed1daf0bf`:
 - heals: 23,682;
 - rests: 84,325;
 - buys: 6,795;
-- runtime smoke: PASS;
-- final markers: `P0 FOUNDATION GATE: PASS` and `P0 GATE: PASS`.
+- runtime smoke: PASS.
 
 ## Locked P1.1 — Goal + Personality
 
-P1.1 adds:
+P1.1 adds stable personality metadata, deterministic active goals, goal-shaped action/region utility, save/load persistence and deterministic continuation while preserving the P0 path.
 
-- stable personality metadata for every disciple;
-- existing `risk_bias`, `spend_bias`, and `survival_bias` remain the behavior vector;
-- deterministic active goals;
-- goal values: `RECOVER`, `WEALTH`, `GLORY`, `SECURITY`, `PREPARE`, `GROWTH`;
-- goal modifiers feed the existing utility/region-decision system;
-- hard safety floors remain authoritative;
-- personality + goal state persists through save/load;
-- P0 behavior remains available through `P0Factory`;
-- P1.1 behavior is enabled through `P1Factory`.
+Authoritative gate: `tools/godot/Verify-P1-1.ps1`.
 
-Authoritative P1.1 gate: `tools/godot/Verify-P1-1.ps1`.
+Locked runtime evidence:
 
-P1.1 runtime evidence on Godot `4.7.2.stable.official.ed1daf0bf`:
-
-- P0 regression gate: PASS;
-- P1.1 Goal + Personality contract: PASS;
+- `P1.1 GOAL + PERSONALITY TEST PASS`;
+- `P1.1 GOAL + PERSONALITY GATE: PASS`;
 - seed: 515151;
-- total test ticks after continuation: 2,500;
+- total test ticks: 2,500;
 - personalities represented: 6;
 - initial goals represented: 3;
-- same-seed deterministic behavior: PASS;
-- measurable goal-shaped region choice: PASS;
-- save/load personality + goal persistence: PASS;
-- deterministic continuation after save/load: PASS;
-- simulation invariants: PASS;
-- final markers: `P1.1 GOAL + PERSONALITY GATE: PASS` and `P1.1 GATE: PASS`.
+- measurable goal-shaped behavior: PASS;
+- save/load and deterministic continuation: PASS.
 
 ## Locked P1.2 — Population + Recruitment + Player Choice
 
-P1.2 introduces the first direct player influence over individual characters without turning disciples into puppets.
+P1.2 adds deterministic recruitment candidates, sect capacity, explicit player accept/reject decisions, new-recruit integration into P1.1, save/load persistence, deterministic continuation and a minimal recruitment interaction screen.
+
+Authoritative gate: `tools/godot/Verify-P1-2.ps1`.
+
+Locked runtime evidence:
+
+- `P1.2 RECRUITMENT + PLAYER CHOICE TEST PASS`;
+- `P1.2 RECRUITMENT + PLAYER CHOICE GATE: PASS`;
+- `P1.2 GATE: PASS`;
+- seed: 616161;
+- deterministic continuation ticks: 1,200;
+- ending disciples: 8 / capacity 8;
+- accepted: 2;
+- rejected: 1;
+- candidate determinism, capacity blocking, money conservation, save/load and interaction-scene smoke: PASS;
+- P0 and P1.1 regressions remained green in the same run.
+
+## Active P1.3 — Relationships + Behavioral Impact
+
+P1.3 introduces a sparse directed social graph. A relationship A -> B is independent from B -> A.
 
 Implemented design:
 
-- `P12Factory` enables P1.1 plus recruitment while leaving P0/P1.1 factories unchanged.
-- Initial P1.2 population remains 6 disciples.
-- Initial sect capacity is 8 disciples.
-- Initial recruitment pool contains 3 candidates.
-- Candidate generation is deterministic from simulation seed + generation index.
-- Each candidate has a stable id, name, combat power, personality id, risk/spend/survival biases, and generation index.
-- Candidate state is separate from disciple runtime state until the player accepts the candidate.
-- Player decision API is explicit: accept or reject.
-- Accepting converts the candidate into a normal `DiscipleState` and immediately feeds the disciple into P1.1 goal formation.
-- New recruits start with 0 personal money so recruitment does not mint currency or violate P0 economy conservation.
-- Recruitment is blocked when sect population reaches capacity.
-- Rejected candidates are removed from the waiting pool.
-- Recruitment statistics track accepted/rejected counts.
-- Candidate pool, generation index, statistics, capacity, and feature flag persist through save/load.
-- A dedicated P1.2 interaction scene allows the player to press `Nhận` or `Từ chối` on real candidates.
-- The original P0 main scene is not replaced.
+- Each meaningful relationship stores three values from 0..100 with neutral 50: affinity, trust, respect.
+- Missing relationships are neutral and consume no relation record.
+- Initial network is sparse: each disciple starts with only a small number of meaningful contacts rather than N x N edges.
+- Relationship response is personality-shaped: survival bias affects trust response and risk bias affects positive respect response.
+- Relationship events update the three values and record interaction count, last event and event tick.
+- When related disciples are in the same hunting region, combat outcomes can update their relationship state.
+- Relationship values have direct behavior impact through region utility.
+- Region social utility reads only the acting disciple's outgoing sparse edges; it does not scan every possible pair in the sect.
+- Positive relationships can pull a disciple toward a region occupied/targeted by known contacts; negative relationships can reduce that region's score.
+- Player agency is explicit through companion assignment. Assigning a companion adds a stronger social weight to the selected person's region without directly rewriting the disciple's feelings/personality.
+- Clearing the companion assignment removes that extra player influence.
+- Affinity/trust/respect all contribute to the behavioral score at 30% / 45% / 25% respectively.
+- P1.2 recruits are inserted into the sparse relationship network when P1.3 is enabled.
+- Relationship graph, companion assignments, event counters and feature flag serialize through save/load.
+- `P13Factory` enables P1.1 + P1.2 + P1.3 while older factories remain unchanged.
+- A dedicated P1.3 screen exposes relationship values and lets the player assign/clear a companion while showing social region scores.
 
-P1.2 files of interest:
+P1.3 scale rule:
 
-- `docs/P1_2_SPEC.md`;
-- `godot/src/simulation/state/candidate_state.gd`;
-- `godot/src/simulation/recruitment/recruitment_system.gd`;
-- `godot/src/simulation/core/p1_2_factory.gd`;
-- `godot/tests/simulation/p1_2_recruitment_test.gd`;
-- `godot/src/presentation/p1_2_recruitment.gd`;
-- `godot/scenes/p1/p1_2_recruitment.tscn`;
-- `tools/godot/Verify-P1-2.ps1`;
-- `Verify-P1-2.cmd`;
-- `Sync-P1-2.cmd`.
+- no mandatory full 120 x 119 graph;
+- no global relationship scan per simulation tick;
+- decisions inspect only the acting disciple's existing relationship edges;
+- combat relationship updates inspect only that disciple's existing contacts and cap affected local contacts per outcome.
 
-P1.2 verification contract:
+P1.3 verification contract:
 
-1. Full P0 gate must PASS.
-2. Locked P1.1 gate must PASS.
-3. Same seed must generate the same candidates.
-4. Same player decisions must generate the same resulting recruitment state.
-5. Accept vs reject must create measurably different population outcomes.
-6. Sect capacity must block excess acceptance.
-7. Recruitment must preserve total-money invariants.
-8. Accepted recruits must carry personality + active-goal behavior into the normal simulation.
-9. Recruitment state must survive save/load.
-10. Simulation continuation after save/load must remain deterministic.
-11. The P1.2 interaction scene must launch successfully in Godot 4.7.2.
+1. Full locked P0/P1.1/P1.2 gates must PASS first.
+2. Same seed must create the same sparse relationship graph.
+3. Graph must remain sparse rather than materializing every possible directed pair.
+4. Affinity, trust and respect must each have measurable behavioral weight.
+5. The same relationship event must be able to produce different response magnitude because of personality.
+6. A -> B mutation must not implicitly mutate B -> A.
+7. Relationship strength must be able to change a region decision in a controlled probe.
+8. Player companion assignment must measurably change a region decision in a controlled probe, and clearing it must restore the unassigned behavior.
+9. New P1.2 recruits must enter the relationship network.
+10. Relationship state and companion assignment must survive save/load.
+11. Same-seed simulation and continuation after save/load must remain deterministic.
+12. Invariants and economy conservation must remain green.
+13. The P1.3 interaction scene must launch successfully in Godot 4.7.2.
 
-Authoritative command: `Sync-P1-2.cmd`.
+Authoritative command: `Sync-P1-3.cmd`.
 
-## Runtime verification evidence — P1.2 — 2026-09-30
-
-Environment:
-
-- Godot `4.7.2.stable.official.ed1daf0bf`.
-- Local authoritative gate: `Sync-P1-2.cmd` → full P0 gate → locked P1.1 gate → P1.2 recruitment/player-choice contracts → recruitment interaction-scene smoke.
-
-Result:
+Expected successful end markers:
 
 - `P0 FOUNDATION GATE: PASS`
-- `P1.1 GOAL + PERSONALITY TEST PASS`
 - `P1.1 GOAL + PERSONALITY GATE: PASS`
-- `P1.2 RECRUITMENT + PLAYER CHOICE TEST PASS`
 - `P1.2 RECRUITMENT + PLAYER CHOICE GATE: PASS`
-- `P1.2 GATE: PASS`
+- `P1.3 RELATIONSHIP + BEHAVIOR IMPACT TEST PASS`
+- `P1.3 RELATIONSHIP + BEHAVIOR IMPACT GATE: PASS`
+- `P1.3 GATE: PASS`
 
-Recorded P1.2 evidence:
+## P1.3 exclusions
 
-- seed: 616161;
-- deterministic continuation ticks: 1,200;
-- ending disciples: 8;
-- capacity: 8;
-- accepted: 2;
-- rejected: 1;
-- same-seed candidate generation: PASS;
-- accept/reject player-choice divergence: PASS;
-- capacity blocking: PASS;
-- recruitment money conservation: PASS;
-- accepted recruit personality + active-goal integration: PASS;
-- recruitment save/load persistence: PASS;
-- deterministic continuation after save/load: PASS;
-- recruitment interaction scene smoke: PASS;
-- P0 and P1.1 regressions remained green in the same run.
+Do not open these systems until P1.3 is locked:
 
-## P1.2 exclusions retained
-
-P1.2 does not open:
-
-- relationships;
-- memory;
+- long-term memory;
+- romance/marriage;
 - mentor/disciple hierarchy;
-- cultivation realms and techniques;
-- complex leaving/death mechanics;
-- recruitment reputation/cost systems;
+- sworn siblings;
+- factions;
+- betrayal/leaving mechanics;
+- internal combat;
+- cultivation realms/techniques;
 - bosses, premium currency, production art.
 
 ## Completion status
@@ -197,5 +162,6 @@ P1.2 does not open:
 - P0: PASS / LOCKED.
 - P1.1 Goal + Personality: PASS / LOCKED.
 - P1.2 Population + Recruitment + Player Choice: PASS / LOCKED.
+- P1.3 Relationships + Behavioral Impact: IMPLEMENTED / AWAITING RUNTIME GATE.
 
-Next step: open P1.3 only against the locked P0 + P1.1 + P1.2 baseline. The next slice should introduce simple interpersonal relationships while preserving player agency, deterministic simulation, save/load behavior, economy invariants, and all prior gates.
+Next closure condition: run `Sync-P1-3.cmd` on the local Windows/Godot 4.7.2 environment. Do not mark P1.3 PASS until all prior regressions, the P1.3 behavior-impact contracts, save/load continuation, invariants and the P1.3 interaction-scene smoke test pass in a real runtime.
