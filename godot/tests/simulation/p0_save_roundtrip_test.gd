@@ -108,7 +108,7 @@ func _first_mismatch(expected: Variant, actual: Variant, path: String) -> String
 		var actual_array: Array = actual
 		if expected_array.size() != actual_array.size():
 			return "%s size expected=%d actual=%d" % [path, expected_array.size(), actual_array.size()]
-		for index in expected_array.size():
+		for index in range(expected_array.size()):
 			var mismatch := _first_mismatch(expected_array[index], actual_array[index], "%s[%d]" % [path, index])
 			if mismatch != "":
 				return mismatch
