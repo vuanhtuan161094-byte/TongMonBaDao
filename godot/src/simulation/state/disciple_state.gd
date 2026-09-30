@@ -7,6 +7,7 @@ var max_hp: float = 100.0
 var hp: float = 100.0
 var stamina: float = 100.0
 var wallet: int = 100
+# Base/intrinsic combat power. P2.1 realm power is stored separately so older paths remain stable.
 var combat_power: float = 18.0
 var risk_bias: float = 0.5
 var spend_bias: float = 0.5
@@ -17,6 +18,16 @@ var survival_bias: float = 0.5
 var personality_id: StringName = &"balanced"
 var active_goal: StringName = &"GROWTH"
 var goal_changed_tick: int = 0
+
+# P2.1 cultivation state. Defaults are deliberately inert for all P0-P1 factories.
+var cultivation_stage_index: int = 0
+var cultivation_progress: float = 0.0
+var cultivation_combat_bonus: float = 0.0
+var cultivation_hp_bonus: float = 0.0
+var cultivation_directive: StringName = &"balanced"
+var breakthrough_failures: int = 0
+var next_breakthrough_tick: int = 0
+var last_breakthrough_outcome: StringName = &""
 
 var current_action: StringName = &"EVALUATE"
 var region_id: StringName = &"sect"
@@ -36,7 +47,11 @@ var metrics: Dictionary = {
     "danger_visits": 0,
     "medium_visits": 0,
     "safe_visits": 0,
-    "actions": 0
+    "actions": 0,
+    "cultivation_sessions": 0,
+    "cultivation_gained": 0,
+    "breakthrough_successes": 0,
+    "breakthrough_failures": 0
 }
 
 func _init(definition: Dictionary = {}) -> void:
@@ -50,6 +65,14 @@ func _init(definition: Dictionary = {}) -> void:
     personality_id = StringName(definition.get("personality_id", personality_id))
     active_goal = StringName(definition.get("active_goal", active_goal))
     goal_changed_tick = int(definition.get("goal_changed_tick", goal_changed_tick))
+    cultivation_stage_index = int(definition.get("cultivation_stage_index", cultivation_stage_index))
+    cultivation_progress = float(definition.get("cultivation_progress", cultivation_progress))
+    cultivation_combat_bonus = float(definition.get("cultivation_combat_bonus", cultivation_combat_bonus))
+    cultivation_hp_bonus = float(definition.get("cultivation_hp_bonus", cultivation_hp_bonus))
+    cultivation_directive = StringName(definition.get("cultivation_directive", cultivation_directive))
+    breakthrough_failures = int(definition.get("breakthrough_failures", breakthrough_failures))
+    next_breakthrough_tick = int(definition.get("next_breakthrough_tick", next_breakthrough_tick))
+    last_breakthrough_outcome = StringName(definition.get("last_breakthrough_outcome", last_breakthrough_outcome))
 
 func retreat_hp_ratio() -> float:
     return lerpf(0.48, 0.14, clampf(risk_bias, 0.0, 1.0))
@@ -83,6 +106,14 @@ func to_dict() -> Dictionary:
         "personality_id": str(personality_id),
         "active_goal": str(active_goal),
         "goal_changed_tick": goal_changed_tick,
+        "cultivation_stage_index": cultivation_stage_index,
+        "cultivation_progress": cultivation_progress,
+        "cultivation_combat_bonus": cultivation_combat_bonus,
+        "cultivation_hp_bonus": cultivation_hp_bonus,
+        "cultivation_directive": str(cultivation_directive),
+        "breakthrough_failures": breakthrough_failures,
+        "next_breakthrough_tick": next_breakthrough_tick,
+        "last_breakthrough_outcome": str(last_breakthrough_outcome),
         "current_action": str(current_action),
         "region_id": str(region_id),
         "target_region_id": str(target_region_id),
@@ -103,7 +134,15 @@ static func from_dict(data: Dictionary) -> DiscipleState:
         "survival_bias": data.get("survival_bias", 0.5),
         "personality_id": data.get("personality_id", "balanced"),
         "active_goal": data.get("active_goal", "GROWTH"),
-        "goal_changed_tick": data.get("goal_changed_tick", 0)
+        "goal_changed_tick": data.get("goal_changed_tick", 0),
+        "cultivation_stage_index": data.get("cultivation_stage_index", 0),
+        "cultivation_progress": data.get("cultivation_progress", 0.0),
+        "cultivation_combat_bonus": data.get("cultivation_combat_bonus", 0.0),
+        "cultivation_hp_bonus": data.get("cultivation_hp_bonus", 0.0),
+        "cultivation_directive": data.get("cultivation_directive", "balanced"),
+        "breakthrough_failures": data.get("breakthrough_failures", 0),
+        "next_breakthrough_tick": data.get("next_breakthrough_tick", 0),
+        "last_breakthrough_outcome": data.get("last_breakthrough_outcome", "")
     })
     disciple.max_hp = float(data.get("max_hp", 100.0))
     disciple.hp = float(data.get("hp", disciple.max_hp))

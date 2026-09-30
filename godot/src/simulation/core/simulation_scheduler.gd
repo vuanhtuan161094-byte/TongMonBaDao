@@ -8,6 +8,7 @@ var decision_system := DecisionSystem.new()
 var relationship_system := RelationshipSystem.new()
 var memory_system := MemorySystem.new()
 var needs_system := NeedsSystem.new()
+var cultivation_system := CultivationSystem.new()
 var economy_system := EconomySystem.new()
 var combat_system := CombatSystem.new()
 
@@ -78,6 +79,8 @@ func _step_disciple(disciple: DiscipleState) -> void:
                 relationship_system.record_local_combat_outcome(state, disciple, outcome)
             if state.p1_memory_enabled:
                 memory_system.record_combat_outcome(state, disciple, outcome)
+            if state.sect.cultivation_enabled and outcome == "win":
+                cultivation_system.add_combat_win_progress(state, disciple)
             match outcome:
                 "win":
                     disciple.pending_loot = result.get("loot", {}).duplicate(true)
@@ -108,10 +111,7 @@ func _step_disciple(disciple: DiscipleState) -> void:
 
         &"HEAL":
             var healed := needs_system.heal_with_medicine(state, disciple, economy_system) if state.sect.needs_enabled else economy_system.heal(state, disciple)
-            if not healed:
-                disciple.current_action = &"REST"
-            else:
-                disciple.current_action = &"EVALUATE"
+            disciple.current_action = &"EVALUATE" if healed else &"REST"
 
         &"REST":
             if state.sect.needs_enabled:
@@ -120,6 +120,14 @@ func _step_disciple(disciple: DiscipleState) -> void:
                 disciple.stamina = minf(100.0, disciple.stamina + 48.0)
                 disciple.hp = minf(disciple.max_hp, disciple.hp + 5.0)
                 disciple.metrics["rests"] = int(disciple.metrics.get("rests", 0)) + 1
+            disciple.current_action = &"EVALUATE"
+
+        &"CULTIVATE":
+            cultivation_system.cultivate(state, disciple)
+            disciple.current_action = &"EVALUATE"
+
+        &"BREAKTHROUGH":
+            cultivation_system.attempt_breakthrough(state, disciple, rng)
             disciple.current_action = &"EVALUATE"
 
         _:

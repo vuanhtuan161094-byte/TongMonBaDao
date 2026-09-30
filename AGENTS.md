@@ -20,8 +20,8 @@
 - Prefer small composition-oriented systems over giant manager scripts.
 - Do not call a change PASS without the active verification gate.
 - Locked P0, P1.1, P1.2 and P1.3 remain mandatory regression baselines.
-- P1.4, P1.5 and P1.6 may be implemented while the user is away from the Windows machine, but none may be marked PASS without real Godot 4.7.2 runtime evidence.
-- New mechanics must have measurable gameplay/simulation impact; do not add story-only, title-only or decorative resource state.
+- P1.4, P1.5, P1.6 and P2.1 may be implemented while the user is away from the Windows machine, but none may be marked PASS without real Godot 4.7.2 runtime evidence.
+- New mechanics must have measurable gameplay/simulation impact; do not add story-only, title-only, realm-name-only or decorative progress state.
 
 ## Required loop
 
@@ -38,9 +38,12 @@ read checkpoint -> narrow scope -> patch -> static review -> headless import/par
 
 - P1.4: `tools/godot/Verify-P1-4.ps1`
 - P1.5: `tools/godot/Verify-P1-5.ps1`
+- P1.6: `tools/godot/Verify-P1-6.ps1`
 
-## Active P1.6 gate
+## Active P2.1 gate
 
-`tools/godot/Verify-P1-6.ps1`
+`tools/godot/Verify-P2-1.ps1`
 
-P1.6 adds bounded sect-level medicine, expedition supplies, lodging capacity, logistics production priority and resource-pressure consequences. Medicine must affect healing availability, supplies must affect expedition behavior/travel cost, lodging pressure must affect recovery, and player allocation must create a measurable tradeoff. Do not expand P1.6 into morale, salaries, building trees, crafting chains, combat-team V2, cultivation realms, romance/factions, premium currency or production art.
+P2.1 adds cultivation progress, Luyện Khí/Trúc Cơ/Kim Đan stages, autonomous CULTIVATE/BREAKTHROUGH actions, player cultivation priorities, stage-dependent breakthrough risk, realm combat-power/HP bonuses and direct behavior/combat consequences. The old `combat_power` field remains base power so earlier factories stay behavior-stable.
+
+P2.1 must not expand into spiritual roots, aptitude ratings, techniques, pills, tribulations, master/disciple hierarchy, realm skills, secret realms, bosses/factions or combat-team V2.

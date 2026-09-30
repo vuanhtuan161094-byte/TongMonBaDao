@@ -27,6 +27,10 @@ var needs_stats: Dictionary = {
     "overcrowded_rests": 0
 }
 
+# P2.1 global switch/counter. Per-disciple cultivation state lives on DiscipleState.
+var cultivation_enabled: bool = false
+var cultivation_event_count: int = 0
+
 func to_dict() -> Dictionary:
     return {
         "treasury": treasury,
@@ -39,7 +43,9 @@ func to_dict() -> Dictionary:
         "lodging_capacity": lodging_capacity,
         "needs_priority": str(needs_priority),
         "needs_event_count": needs_event_count,
-        "needs_stats": needs_stats.duplicate(true)
+        "needs_stats": needs_stats.duplicate(true),
+        "cultivation_enabled": cultivation_enabled,
+        "cultivation_event_count": cultivation_event_count
     }
 
 static func from_dict(data: Dictionary) -> SectState:
@@ -54,6 +60,8 @@ static func from_dict(data: Dictionary) -> SectState:
     state.lodging_capacity = maxi(int(data.get("lodging_capacity", state.disciple_capacity)), 1)
     state.needs_priority = StringName(data.get("needs_priority", "balanced"))
     state.needs_event_count = maxi(int(data.get("needs_event_count", 0)), 0)
+    state.cultivation_enabled = bool(data.get("cultivation_enabled", false))
+    state.cultivation_event_count = maxi(int(data.get("cultivation_event_count", 0)), 0)
 
     var saved_stats = data.get("needs_stats", {})
     if saved_stats is Dictionary:
