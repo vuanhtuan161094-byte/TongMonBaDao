@@ -12,39 +12,22 @@ func _run() -> void:
     var scheduler := SimulationScheduler.new(state)
     scheduler.run_ticks(1000)
 
-    var before_money := state.total_money()
-    var before_tick := state.tick
-    var before_count := state.disciples.size()
+    var before_snapshot := state.to_dict()
+    var control := SimulationState.from_dict(before_snapshot)
 
     var service := SaveService.new()
     var error := service.save_to_path(state, SAVE_PATH)
     if error != OK:
-        push_error("Save failed with error %d." % error)
-        _cleanup()
-        quit(1)
+        _fail("Save failed with error %d." % error)
         return
 
     var loaded := service.load_from_path(SAVE_PATH)
     if loaded == null:
-        push_error("Load returned null.")
-        _cleanup()
-        quit(1)
+        _fail("Load returned null.")
         return
 
-    if loaded.tick != before_tick:
-        push_error("Tick mismatch after save/load.")
-        _cleanup()
-        quit(1)
-        return
-    if loaded.disciples.size() != before_count:
-        push_error("Disciple count mismatch after save/load.")
-        _cleanup()
-        quit(1)
-        return
-    if loaded.total_money() != before_money:
-        push_error("Money mismatch after save/load.")
-        _cleanup()
-        quit(1)
+    if loaded.to_dict() != before_snapshot:
+        _fail("Full-state mismatch after save/load round trip.")
         return
 
     if not _test_invalid_payload_rejection(service):
@@ -53,13 +36,17 @@ func _run() -> void:
         return
 
     var resumed := SimulationScheduler.new(loaded)
+    var control_scheduler := SimulationScheduler.new(control)
     resumed.run_ticks(2000)
+    control_scheduler.run_ticks(2000)
 
     var errors := loaded.validate_invariants()
     if not errors.is_empty():
-        push_error("Loaded simulation violated invariants: %s" % " | ".join(errors))
-        _cleanup()
-        quit(1)
+        _fail("Loaded simulation violated invariants: %s" % " | ".join(errors))
+        return
+
+    if loaded.to_dict() != control.to_dict():
+        _fail("Resumed simulation diverged from the same-state control; RNG/state restoration is not exact.")
         return
 
     print("P0 SAVE ROUNDTRIP TEST PASS")
@@ -91,6 +78,11 @@ func _write_raw(path: String, raw: String) -> bool:
     file.store_string(raw)
     file.close()
     return true
+
+func _fail(message: String) -> void:
+    push_error(message)
+    _cleanup()
+    quit(1)
 
 func _cleanup() -> void:
     for path in [SAVE_PATH, MALFORMED_SAVE_PATH, INVALID_VERSION_SAVE_PATH]:
