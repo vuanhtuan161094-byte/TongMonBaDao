@@ -9,6 +9,8 @@ var spend_bias: float = 0.5
 var survival_bias: float = 0.5
 var personality_id: StringName = &"balanced"
 var generated_index: int = 0
+# P2.2 is empty/inert until SpiritualRootSystem is enabled.
+var spiritual_root_quality: StringName = &""
 
 func _init(definition: Dictionary = {}) -> void:
     id = StringName(definition.get("id", "candidate"))
@@ -19,9 +21,10 @@ func _init(definition: Dictionary = {}) -> void:
     survival_bias = float(definition.get("survival_bias", survival_bias))
     personality_id = StringName(definition.get("personality_id", personality_id))
     generated_index = int(definition.get("generated_index", generated_index))
+    spiritual_root_quality = StringName(definition.get("spiritual_root_quality", spiritual_root_quality))
 
 func to_dict() -> Dictionary:
-    return {
+    var data := {
         "id": str(id),
         "name": display_name,
         "combat_power": combat_power,
@@ -31,9 +34,12 @@ func to_dict() -> Dictionary:
         "personality_id": str(personality_id),
         "generated_index": generated_index
     }
+    if spiritual_root_quality != &"":
+        data["spiritual_root_quality"] = str(spiritual_root_quality)
+    return data
 
 func to_disciple() -> DiscipleState:
-    return DiscipleState.new({
+    var definition := {
         "id": str(id),
         "name": display_name,
         "wallet": 0,
@@ -42,7 +48,10 @@ func to_disciple() -> DiscipleState:
         "spend_bias": spend_bias,
         "survival_bias": survival_bias,
         "personality_id": str(personality_id)
-    })
+    }
+    if spiritual_root_quality != &"":
+        definition["spiritual_root_quality"] = str(spiritual_root_quality)
+    return DiscipleState.new(definition)
 
 static func from_dict(data: Dictionary) -> CandidateState:
     return CandidateState.new(data)

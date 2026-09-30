@@ -20,8 +20,8 @@
 - Prefer small composition-oriented systems over giant manager scripts.
 - Do not call a change PASS without the active verification gate.
 - Locked P0, P1.1, P1.2 and P1.3 remain mandatory regression baselines.
-- P1.4, P1.5, P1.6 and P2.1 may be implemented while the user is away from the Windows machine, but none may be marked PASS without real Godot 4.7.2 runtime evidence.
-- New mechanics must have measurable gameplay/simulation impact; do not add story-only, title-only, realm-name-only or decorative progress state.
+- P1.4, P1.5, P1.6, P2.1 and P2.2 may be implemented while the user is away from the Windows machine, but none may be marked PASS without real Godot 4.7.2 runtime evidence.
+- New mechanics must have measurable gameplay/simulation impact; do not add story-only, title-only, rarity-label-only or decorative progress state.
 
 ## Required loop
 
@@ -39,11 +39,12 @@ read checkpoint -> narrow scope -> patch -> static review -> headless import/par
 - P1.4: `tools/godot/Verify-P1-4.ps1`
 - P1.5: `tools/godot/Verify-P1-5.ps1`
 - P1.6: `tools/godot/Verify-P1-6.ps1`
+- P2.1: `tools/godot/Verify-P2-1.ps1`
 
-## Active P2.1 gate
+## Active P2.2 gate
 
-`tools/godot/Verify-P2-1.ps1`
+`tools/godot/Verify-P2-2.ps1`
 
-P2.1 adds cultivation progress, Luyện Khí/Trúc Cơ/Kim Đan stages, autonomous CULTIVATE/BREAKTHROUGH actions, player cultivation priorities, stage-dependent breakthrough risk, realm combat-power/HP bonuses and direct behavior/combat consequences. The old `combat_power` field remains base power so earlier factories stay behavior-stable.
+P2.2 adds spiritual-root quality only. Root quality must measurably change cultivation growth and breakthrough probability, remain deterministic, preserve the legacy recruitment RNG stream, survive recruitment/save-load, and create a real current-strength-vs-long-term-potential player tradeoff.
 
-P2.1 must not expand into spiritual roots, aptitude ratings, techniques, pills, tribulations, master/disciple hierarchy, realm skills, secret realms, bosses/factions or combat-team V2.
+P2.2 must not add elemental roots, techniques, pills, special physiques, hard realm caps, master/disciple hierarchy, tribulations, secret realms, bosses/factions or combat-team V2.

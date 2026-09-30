@@ -14,11 +14,16 @@ Date: 2026-09-30
 - Step 20 P1.5 Organization + Teams + Leadership + Roles: IMPLEMENTED / AWAITING RUNTIME GATE.
 - Step 21 P1.6 Sect Life + Needs + Resource Pressure: IMPLEMENTED / AWAITING RUNTIME GATE.
 - Step 22 P2.1 Cultivation + Realms + Breakthrough: IMPLEMENTED / AWAITING RUNTIME GATE.
+- Step 23 P2.2 Spiritual Root Quality + Long-Term Growth: IMPLEMENTED / AWAITING RUNTIME GATE.
 
 Locked baseline before the unverified stack: `bbdca12b3f1efd14d31982810859d22f51990ff4` (P1.3 lock).
-P1.4 implementation checkpoint before P1.5: `b1fc434c6e05cac451b60ab11c4c855476e00842`.
-P1.5 implementation checkpoint before P1.6: `541b67ccc9f847b4c9c44d43ea82317b5668c20e`.
-P1.6 implementation checkpoint before P2.1: `a4fe78a8f94d774f9351aaf3b02fd78ad1aaee08`.
+
+Implementation checkpoints:
+
+- before P1.5: `b1fc434c6e05cac451b60ab11c4c855476e00842`;
+- before P1.6: `541b67ccc9f847b4c9c44d43ea82317b5668c20e`;
+- before P2.1: `a4fe78a8f94d774f9351aaf3b02fd78ad1aaee08`;
+- before P2.2: `cc9be52e72b1e787962edaab44319b680805f3b3`.
 
 ## Architecture locks
 
@@ -27,9 +32,9 @@ P1.6 implementation checkpoint before P2.1: `a4fe78a8f94d774f9351aaf3b02fd78ad1a
 - Seeded deterministic simulation remains mandatory.
 - Save/load, invariants and economy conservation remain mandatory.
 - P0, P1.1, P1.2 and P1.3 are locked regression baselines.
-- P1.4–P2.1 may be implemented while the user is away from the Windows machine, but none may be marked PASS without real Godot runtime evidence.
+- P1.4–P2.2 may be implemented while the user is away from the Windows machine, but none may be marked PASS without real local Godot runtime evidence.
 - New systems remain opt-in so earlier behavior paths stay available.
-- No mechanic is complete if it only adds narrative, title, realm name, bar or resource state without measurable consequence.
+- No mechanic is complete if it only adds narrative, title, rarity label, bar or state without measurable gameplay/simulation consequence.
 
 ## Locked P0–P1.3
 
@@ -51,7 +56,7 @@ Implemented, not runtime-verified.
 
 Key consequences:
 
-- bounded memories only, maximum 24 per disciple;
+- bounded memories, maximum 24 per disciple;
 - repeated experiences consolidate;
 - place/social memories change later decisions;
 - personality shapes memory strength;
@@ -80,145 +85,131 @@ Key consequences:
 - logistics priority changes medicine/supply production;
 - player can spend supplies to expand lodging.
 
-## Active P2.1 — Cultivation + Realms + Breakthrough
+## Pending P2.1 — Cultivation + Realms + Breakthrough
 
-P2.1 adds the first cultivation progression loop. It is invalid unless progression changes later behavior and combat.
+Implemented, not runtime-verified.
 
-### Cultivation progression
+Key consequences:
 
-Each disciple now stores:
+- autonomous CULTIVATE and BREAKTHROUGH actions;
+- Luyện Khí 1–9, Trúc Cơ and Kim Đan stages;
+- cultivation progress from deliberate cultivation and smaller combat-victory gains;
+- player cultivation directive: balanced / cultivate / field;
+- breakthrough success/failure has measurable consequences;
+- realm increases max HP and effective combat power;
+- effective realm power changes region choice and combat outcome;
+- `combat_power` remains base power so older paths stay stable.
 
-- cultivation stage index;
-- cultivation progress;
-- realm combat bonus;
-- realm HP bonus;
-- player directive (`balanced`, `cultivate`, `field`);
-- breakthrough failure count;
-- retry tick;
-- latest breakthrough outcome.
+## Active P2.2 — Spiritual Root Quality + Long-Term Growth
 
-The old `combat_power` value remains base/intrinsic power. Realm power is additive only when P2.1 is enabled, preserving old factories.
+P2.2 explains long-term growth differences between disciples without adding decorative elemental labels.
 
-### Realms in P2.1
+### Root qualities
 
-- Luyện Khí tầng 1–9;
-- Trúc Cơ sơ/trung/hậu/viên mãn;
-- Kim Đan sơ/trung/hậu/viên mãn.
+Four qualities exist:
 
-The realm table is data-driven and can later be extended upward without replacing the progression model.
+- `mixed` — Tạp linh căn: 0.75x cultivation, -8 percentage points breakthrough;
+- `ordinary` — Phàm linh căn: 1.00x cultivation, no breakthrough modifier;
+- `earth` — Địa linh căn: 1.20x cultivation, +5 percentage points breakthrough;
+- `heaven` — Thiên linh căn: 1.45x cultivation, +10 percentage points breakthrough.
 
-### Cultivation sources
+Generation weights are 45 / 38 / 14 / 3 respectively.
 
-Sect cultivation:
+### No hard realm cap
 
-- +8 cultivation per `CULTIVATE` action;
-- costs 12 stamina;
-- progress stops at the current breakthrough threshold.
+Root quality never forbids a realm.
 
-Combat victory:
+Tạp linh căn may still reach Trúc Cơ/Kim Đan and later realms. Its disadvantage is slower cultivation and worse breakthrough probability, not an artificial maximum realm.
 
-- +2 cultivation;
-- field experience therefore contributes slowly but does not replace deliberate cultivation.
+### Deterministic generation
 
-### Player agency
+Root generation uses a separate seed derived from simulation seed + stable id + candidate generation index.
 
-The player chooses a directive, not a realm:
+It does not consume RecruitmentSystem's legacy RNG stream.
 
-- `balanced`;
-- `cultivate` — raises cultivation utility and reduces hunting preference;
-- `field` — raises hunting utility and lowers cultivation preference.
+Therefore enabling P2.2 must not change candidate name, base combat power, personality biases or generation order.
 
-Personality remains consequential: cautious/survival-oriented disciples value cultivation more than reckless disciples under otherwise similar conditions.
+`P22Factory` creates the complete P2.1 state first, then enables root quality and assigns deterministic roots to current disciples/candidates.
 
-### Breakthrough conditions
+Future candidates also receive roots through the separate root generator.
 
-A breakthrough requires:
+### Cultivation consequence
 
-- threshold reached;
-- not at P2.1 maximum stage;
-- retry cooldown completed;
-- HP >= 75%;
-- stamina >= 65.
+When roots are enabled:
 
-Success chance is stage-dependent with a small condition bonus.
+`actual cultivation gain = P2.1 gain × root multiplier`
 
-Success:
+For one base CULTIVATE action:
 
-- advances exactly one stage;
-- consumes current threshold progress;
-- updates realm combat bonus;
-- updates max HP bonus;
-- consumes stamina;
-- creates a short cooldown.
+- Tạp = 6;
+- Phàm = 8;
+- Địa = 9.6;
+- Thiên = 11.6.
 
-Failure:
+The same multiplier applies to other cultivation-progress sources, including combat-victory progress.
 
-- stage is unchanged;
-- loses 20% of the required cultivation amount;
-- loses 18% max HP;
-- consumes 40 stamina;
-- blocks another attempt for 90 ticks;
-- increments failure state.
+P2.1 behavior remains unchanged when roots are disabled.
 
-### Direct behavioral consequence
+### Breakthrough consequence
 
-When P2.1 is enabled:
+Root modifier is added to the P2.1 stage/condition success probability before final clamping.
 
-`effective combat power = base combat_power + realm combat bonus`
+Root quality does not bypass threshold, HP, stamina or cooldown requirements and does not change P2.1 failure consequences.
 
-Effective power is used by:
+### Recruitment consequence
 
-- combat damage;
-- region under-power penalty.
+The P2.2 recruitment screen exposes:
 
-Therefore realm progression can directly change both combat outcome and which region an autonomous disciple considers viable/profitable.
+- current combat power;
+- root quality;
+- cultivation multiplier;
+- breakthrough modifier.
 
-P2.1 adds two autonomous actions:
+The player chooses between current usefulness and long-term potential. P2.2 intentionally does not collapse this into a single generated score.
 
-- `CULTIVATE`;
-- `BREAKTHROUGH`.
+Accepted candidates preserve their root and immediately use it in the real cultivation system.
 
 ### Scale contract
 
-- O(1) stage lookup per disciple;
-- no cultivation relationship graph;
-- no population-wide realm scan;
-- one directive stored on each disciple;
-- no change to the sparse relationship/memory scale rules.
+- one root-quality value per disciple/candidate;
+- O(1) multiplier/chance lookup;
+- no N x N structure;
+- no population scan during cultivation or breakthrough;
+- root generation only occurs when a disciple/candidate needs a root.
 
-### P2.1 verification contract
+### P2.2 verification contract
 
-1. Full P0 through P1.6 gate chain must PASS first.
-2. Same-seed P2.1 state and continuation must remain deterministic.
-3. `cultivate` directive must change a controlled action to CULTIVATE.
-4. `field` directive must change the same controlled action back to HUNT.
-5. Personality must measurably change cultivation utility.
-6. CULTIVATE must add progress and consume stamina.
-7. Combat victory must add a smaller cultivation gain.
-8. Controlled breakthrough success must advance one stage and increase realm power/HP.
-9. Controlled failure must preserve stage and cause cultivation/HP/stamina loss + cooldown.
-10. Realm power must change a controlled region decision.
-11. Realm power must change a controlled combat outcome.
-12. Save/load must preserve all cultivation state and directives.
-13. Deterministic continuation, money conservation and all prior invariants must remain green.
-14. P2.1 interaction scene must launch on Godot 4.7.2.
+1. Full P0 through P2.1 gate chain must PASS first.
+2. P21Factory must remain root-disabled and keep base +8 cultivation.
+3. Same seed must generate identical disciple/candidate roots.
+4. Tạp must yield exactly 6 from one base-8 cultivation action.
+5. Thiên must yield exactly 11.6 from the same action.
+6. Equal-current-power disciples with different roots must diverge in long-term cultivation growth.
+7. Root quality must measurably change breakthrough probability.
+8. Tạp root must have no hard realm cap and must reach Trúc Cơ under controlled successes.
+9. Root generation must not alter legacy candidate fields/RNG results.
+10. Future P2.2 candidates must receive deterministic roots.
+11. Accepted candidates must preserve root quality and receive its real growth effect.
+12. Save/load must preserve root flag/counter and all disciple/candidate roots.
+13. Same-seed continuation after save/load must remain deterministic.
+14. Money, needs, cultivation and root invariants must remain green.
+15. P2.2 recruitment/root scene must launch on Godot 4.7.2.
 
-Authoritative command: `Sync-P2-1.cmd`.
-
-This command intentionally chains every earlier gate, including the still-unverified P1.4/P1.5/P1.6 stack.
+Authoritative command: `Sync-P2-2.cmd`.
 
 Expected successful final markers include:
 
 - `P1.4 MEMORY + CONSEQUENCE GATE: PASS`
 - `P1.5 ORGANIZATION + PLAYER MANAGEMENT GATE: PASS`
 - `P1.6 SECT NEEDS + RESOURCE CONSEQUENCE GATE: PASS`
-- `P2.1 CULTIVATION + BREAKTHROUGH CONSEQUENCE TEST PASS`
 - `P2.1 CULTIVATION + BREAKTHROUGH CONSEQUENCE GATE: PASS`
-- `P2.1 GATE: PASS`
+- `P2.2 SPIRITUAL ROOT + GROWTH CONSEQUENCE TEST PASS`
+- `P2.2 SPIRITUAL ROOT + GROWTH CONSEQUENCE GATE: PASS`
+- `P2.2 GATE: PASS`
 
-## P2.1 exclusions
+## P2.2 exclusions
 
-P2.1 does not add spiritual roots, aptitude ratings, cultivation techniques, pills/elixirs, tribulations, master/disciple hierarchy, realm skills, equipment scaling, secret realms, bosses/factions or combat-team V2.
+P2.2 does not add elemental roots, cultivation techniques, skills, pills/elixirs, special physiques, hard realm caps, master/disciple hierarchy, tribulations, secret realms, bosses/factions, equipment scaling or combat-team V2.
 
 ## Completion status
 
@@ -230,5 +221,6 @@ P2.1 does not add spiritual roots, aptitude ratings, cultivation techniques, pil
 - P1.5: IMPLEMENTED / AWAITING RUNTIME GATE.
 - P1.6: IMPLEMENTED / AWAITING RUNTIME GATE.
 - P2.1: IMPLEMENTED / AWAITING RUNTIME GATE.
+- P2.2: IMPLEMENTED / AWAITING RUNTIME GATE.
 
-Runtime verification for P1.4–P2.1 is intentionally deferred until the user returns to the Windows/Godot 4.7.2 machine. Do not mark any pending phase PASS before a real `Sync-P2-1.cmd` run completes successfully.
+Runtime verification for P1.4–P2.2 is intentionally deferred until the user returns to the Windows/Godot 4.7.2 machine. Do not mark any pending phase PASS before a real `Sync-P2-2.cmd` run completes successfully.

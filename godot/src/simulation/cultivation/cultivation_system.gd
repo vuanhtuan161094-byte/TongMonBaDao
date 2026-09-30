@@ -18,6 +18,8 @@ const BREAKTHROUGH_SUCCESS_COOLDOWN := 20
 const MIN_BREAKTHROUGH_HP_RATIO := 0.75
 const MIN_BREAKTHROUGH_STAMINA := 65.0
 
+var spiritual_root_system := SpiritualRootSystem.new()
+
 # required = cultivation needed to attempt the next stage.
 # The final stage has required 0 because P2.1 stops at Kim Đan viên mãn.
 const STAGES := [
@@ -101,14 +103,17 @@ func add_progress(state: SimulationState, disciple: DiscipleState, amount: float
     if not state.sect.cultivation_enabled or amount <= 0.0 or is_max_stage(disciple):
         return 0.0
     var required := required_progress(disciple)
+    var effective_amount := amount
+    if state.sect.spiritual_roots_enabled:
+        effective_amount *= spiritual_root_system.cultivation_multiplier(disciple.spiritual_root_quality)
     var before := disciple.cultivation_progress
-    disciple.cultivation_progress = minf(required, before + amount)
+    disciple.cultivation_progress = minf(required, before + effective_amount)
     var gained := disciple.cultivation_progress - before
     if gained > 0.0:
         disciple.metrics["cultivation_gained"] = int(disciple.metrics.get("cultivation_gained", 0)) + int(round(gained))
     return gained
 
-func breakthrough_success_chance(disciple: DiscipleState) -> float:
+func breakthrough_success_chance(disciple: DiscipleState, state: SimulationState = null) -> float:
     var definition := stage_definition(disciple)
     var base := float(definition.get("chance", 0.0))
     if base <= 0.0:
@@ -116,7 +121,10 @@ func breakthrough_success_chance(disciple: DiscipleState) -> float:
     var hp_ratio := disciple.hp / maxf(disciple.max_hp, 1.0)
     var hp_bonus := clampf((hp_ratio - MIN_BREAKTHROUGH_HP_RATIO) * 0.08, 0.0, 0.02)
     var stamina_bonus := clampf((disciple.stamina - MIN_BREAKTHROUGH_STAMINA) / 35.0 * 0.02, 0.0, 0.02)
-    return clampf(base + hp_bonus + stamina_bonus, 0.45, 0.99)
+    var root_modifier := 0.0
+    if state != null and state.sect.spiritual_roots_enabled:
+        root_modifier = spiritual_root_system.breakthrough_modifier(disciple.spiritual_root_quality)
+    return clampf(base + hp_bonus + stamina_bonus + root_modifier, 0.45, 0.99)
 
 func attempt_breakthrough(state: SimulationState, disciple: DiscipleState, rng: GameRng) -> Dictionary:
     return resolve_breakthrough(state, disciple, rng.randf())
@@ -126,7 +134,7 @@ func resolve_breakthrough(state: SimulationState, disciple: DiscipleState, roll:
         return {"ok": false, "outcome": "blocked"}
 
     var required := required_progress(disciple)
-    var chance := breakthrough_success_chance(disciple)
+    var chance := breakthrough_success_chance(disciple, state)
     state.sect.cultivation_event_count += 1
 
     if clampf(roll, 0.0, 1.0) < chance:

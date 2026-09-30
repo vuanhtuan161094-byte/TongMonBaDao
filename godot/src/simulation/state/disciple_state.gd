@@ -29,6 +29,9 @@ var breakthrough_failures: int = 0
 var next_breakthrough_tick: int = 0
 var last_breakthrough_outcome: StringName = &""
 
+# P2.2 stays empty until SpiritualRootSystem is enabled.
+var spiritual_root_quality: StringName = &""
+
 var current_action: StringName = &"EVALUATE"
 var region_id: StringName = &"sect"
 var target_region_id: StringName = &""
@@ -73,6 +76,7 @@ func _init(definition: Dictionary = {}) -> void:
     breakthrough_failures = int(definition.get("breakthrough_failures", breakthrough_failures))
     next_breakthrough_tick = int(definition.get("next_breakthrough_tick", next_breakthrough_tick))
     last_breakthrough_outcome = StringName(definition.get("last_breakthrough_outcome", last_breakthrough_outcome))
+    spiritual_root_quality = StringName(definition.get("spiritual_root_quality", spiritual_root_quality))
 
 func retreat_hp_ratio() -> float:
     return lerpf(0.48, 0.14, clampf(risk_bias, 0.0, 1.0))
@@ -92,7 +96,7 @@ func clear_inventory() -> void:
     inventory.clear()
 
 func to_dict() -> Dictionary:
-    return {
+    var data := {
         "id": str(id),
         "name": display_name,
         "max_hp": max_hp,
@@ -122,6 +126,9 @@ func to_dict() -> Dictionary:
         "last_decision": last_decision.duplicate(true),
         "metrics": metrics.duplicate(true)
     }
+    if spiritual_root_quality != &"":
+        data["spiritual_root_quality"] = str(spiritual_root_quality)
+    return data
 
 static func from_dict(data: Dictionary) -> DiscipleState:
     var disciple := DiscipleState.new({
@@ -142,7 +149,8 @@ static func from_dict(data: Dictionary) -> DiscipleState:
         "cultivation_directive": data.get("cultivation_directive", "balanced"),
         "breakthrough_failures": data.get("breakthrough_failures", 0),
         "next_breakthrough_tick": data.get("next_breakthrough_tick", 0),
-        "last_breakthrough_outcome": data.get("last_breakthrough_outcome", "")
+        "last_breakthrough_outcome": data.get("last_breakthrough_outcome", ""),
+        "spiritual_root_quality": data.get("spiritual_root_quality", "")
     })
     disciple.max_hp = float(data.get("max_hp", 100.0))
     disciple.hp = float(data.get("hp", disciple.max_hp))

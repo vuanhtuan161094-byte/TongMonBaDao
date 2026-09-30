@@ -47,6 +47,9 @@ func generate_candidate(state: SimulationState) -> CandidateState:
         "generated_index": generation_index
     })
 
+    if state.sect.spiritual_roots_enabled:
+        SpiritualRootSystem.new().ensure_candidate_root(state, candidate)
+
     state.recruitment_generation_index = generation_index
     state.recruitment_candidates[candidate.id] = candidate
     return candidate
@@ -63,6 +66,8 @@ func accept_candidate(state: SimulationState, candidate_id: StringName) -> Dicti
 
     var candidate: CandidateState = state.recruitment_candidates[candidate_id]
     var disciple := candidate.to_disciple()
+    if state.sect.spiritual_roots_enabled:
+        SpiritualRootSystem.new().ensure_disciple_root(state, disciple)
     state.disciples[disciple.id] = disciple
     state.recruitment_candidates.erase(candidate_id)
     state.recruitment_stats["accepted"] = int(state.recruitment_stats.get("accepted", 0)) + 1

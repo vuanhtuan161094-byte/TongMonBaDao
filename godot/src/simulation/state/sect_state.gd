@@ -31,8 +31,12 @@ var needs_stats: Dictionary = {
 var cultivation_enabled: bool = false
 var cultivation_event_count: int = 0
 
+# P2.2 is opt-in. Per-person root quality lives on DiscipleState/CandidateState.
+var spiritual_roots_enabled: bool = false
+var spiritual_root_event_count: int = 0
+
 func to_dict() -> Dictionary:
-    return {
+    var data := {
         "treasury": treasury,
         "disciple_capacity": disciple_capacity,
         "market_stock": market_stock.duplicate(true),
@@ -47,6 +51,10 @@ func to_dict() -> Dictionary:
         "cultivation_enabled": cultivation_enabled,
         "cultivation_event_count": cultivation_event_count
     }
+    if spiritual_roots_enabled or spiritual_root_event_count > 0:
+        data["spiritual_roots_enabled"] = spiritual_roots_enabled
+        data["spiritual_root_event_count"] = spiritual_root_event_count
+    return data
 
 static func from_dict(data: Dictionary) -> SectState:
     var state := SectState.new()
@@ -62,6 +70,8 @@ static func from_dict(data: Dictionary) -> SectState:
     state.needs_event_count = maxi(int(data.get("needs_event_count", 0)), 0)
     state.cultivation_enabled = bool(data.get("cultivation_enabled", false))
     state.cultivation_event_count = maxi(int(data.get("cultivation_event_count", 0)), 0)
+    state.spiritual_roots_enabled = bool(data.get("spiritual_roots_enabled", false))
+    state.spiritual_root_event_count = maxi(int(data.get("spiritual_root_event_count", 0)), 0)
 
     var saved_stats = data.get("needs_stats", {})
     if saved_stats is Dictionary:
