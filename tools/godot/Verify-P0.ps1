@@ -118,6 +118,41 @@ function Invoke-Godot([string[]]$Args) {
     }
 }
 
+function Invoke-GodotWithTimeout([string[]]$Args, [int]$TimeoutSeconds, [string]$Label) {
+    $stdoutPath = [System.IO.Path]::GetTempFileName()
+    $stderrPath = [System.IO.Path]::GetTempFileName()
+    try {
+        $argumentLine = ($Args | ForEach-Object {
+            if ($_ -match '\s') { '"' + ($_ -replace '"', '\"') + '"' } else { $_ }
+        }) -join ' '
+
+        $process = Start-Process -FilePath $Godot -ArgumentList $argumentLine -NoNewWindow -PassThru `
+            -RedirectStandardOutput $stdoutPath -RedirectStandardError $stderrPath
+
+        if (-not $process.WaitForExit($TimeoutSeconds * 1000)) {
+            Write-Host "[TIMEOUT] $Label exceeded ${TimeoutSeconds}s. Killing Godot process tree..."
+            if ($IsWindows -or $env:OS -eq "Windows_NT") {
+                & taskkill.exe /PID $process.Id /T /F 2>$null | Out-Null
+            } else {
+                $process.Kill()
+            }
+            $process.WaitForExit()
+            if (Test-Path $stdoutPath) { Get-Content $stdoutPath | ForEach-Object { Write-Host $_ } }
+            if (Test-Path $stderrPath) { Get-Content $stderrPath | ForEach-Object { Write-Host $_ } }
+            throw "$Label timed out after ${TimeoutSeconds}s. Godot was terminated so the verifier cannot hang indefinitely."
+        }
+
+        if (Test-Path $stdoutPath) { Get-Content $stdoutPath | ForEach-Object { Write-Host $_ } }
+        if (Test-Path $stderrPath) { Get-Content $stderrPath | ForEach-Object { Write-Host $_ } }
+
+        if ($process.ExitCode -ne 0) {
+            throw "Godot command failed with exit code $($process.ExitCode) : $Godot $($Args -join ' ')"
+        }
+    } finally {
+        Remove-Item $stdoutPath, $stderrPath -Force -ErrorAction SilentlyContinue
+    }
+}
+
 Write-Host "=== TONG MON TYCOON P0 GATE ==="
 Assert-NoRunningGodot
 $resolvedGodot = Resolve-GodotBinary $GodotBin $ExpectedEngineVersion
@@ -126,7 +161,7 @@ Write-Host "[Godot] $($resolvedGodot.Version)"
 Write-Host "[Godot] $Godot"
 
 Write-Host "[1/9] Import"
-Invoke-Godot @("--headless", "--path", $Project, "--import")
+Invoke-GodotWithTimeout @("--headless", "--path", $Project, "--import") 120 "Godot import"
 
 Write-Host "[2/9] Parse project scripts"
 $Scripts = Get-ChildItem -Path (Join-Path $Project "src"), (Join-Path $Project "tests") -Recurse -Filter *.gd
