@@ -7,7 +7,7 @@ Date: 2026-09-30
 Step 13 Technical Architecture & Development Roadmap: LOCKED.
 Step 14 P0 Prototype Specification: LOCKED.
 Step 15 Repository Bootstrap + P0 Foundation: LOCKED / PASS.
-Step 16 P1.1 Goal + Personality: IMPLEMENTED / AWAITING RUNTIME GATE.
+Step 16 P1.1 Goal + Personality: LOCKED / PASS.
 
 ## Architecture locks
 
@@ -83,11 +83,50 @@ Authoritative P1.1 command:
 
 This syncs `main`, runs the complete P0 regression gate, then runs the dedicated P1.1 Goal + Personality contract test.
 
-P1.1 may be marked `LOCKED / PASS` only after a real Godot `4.7.2.stable.official.ed1daf0bf` run ends with both:
+## Runtime verification evidence — P1.1 — 2026-09-30
+
+Environment:
+
+- Godot `4.7.2.stable.official.ed1daf0bf`.
+- Local authoritative gate: `Sync-P1-1.cmd` → full P0 regression gate → dedicated P1.1 Goal + Personality contract test.
+
+Result:
 
 `P0 FOUNDATION GATE: PASS`
 
+`P1.1 GOAL + PERSONALITY TEST PASS`
+
 `P1.1 GOAL + PERSONALITY GATE: PASS`
+
+`P1.1 GATE: PASS`
+
+Recorded P1.1 evidence:
+
+- seed: 515151;
+- ticks: 2,500;
+- personalities represented: 6;
+- initial goals represented: 3;
+- same-seed deterministic contract: PASS;
+- measurable goal-shaped behavior contract: PASS;
+- personality + goal save/load persistence: PASS;
+- deterministic continuation after save/load: PASS;
+- simulation invariants: PASS.
+
+The full P0 regression gate also remained green during the same P1.1 verification run:
+
+- same-seed P0 reproducibility: PASS at seed 515151 / 5,000 ticks;
+- P0 benchmark: 8 × 12,000 = 96,000 ticks;
+- money: 1,630;
+- treasury range: 201..215;
+- combats: 57,347;
+- wins: 38,661;
+- retreats: 18,032;
+- defeats: 654;
+- sales: 20,163;
+- heals: 23,682;
+- rests: 84,325;
+- buys: 6,795;
+- runtime smoke: PASS.
 
 ## Runtime verification evidence — P0 — 2026-09-30
 
@@ -173,6 +212,6 @@ The workflow is temporarily `workflow_dispatch` only so normal development pushe
 
 P0: PASS / LOCKED.
 
-P1.1: implementation and dedicated gate are present, but runtime proof is still required before lock.
+P1.1 Goal + Personality: PASS / LOCKED.
 
-Next closure condition: run `Sync-P1-1.cmd` on the local Windows/Godot 4.7.2 environment, fix every regression/P1.1 failure if any, then mark Step 16 `LOCKED / PASS` only with the exact runtime evidence.
+Next step: open P1.2 only against the locked P0 + P1.1 baseline. Any P1.2 change must preserve the full P0 regression gate and the P1.1 Goal + Personality deterministic/save-load contracts.
