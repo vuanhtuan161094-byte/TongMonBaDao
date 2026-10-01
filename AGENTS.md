@@ -20,23 +20,24 @@
 - Every runtime mutation must preserve invariants.
 - New mechanics need measurable simulation/gameplay consequences; labels alone do not count.
 - Never call a phase PASS without its real cumulative Godot gate.
-- Do not weaken exact persistence/determinism tests to make a gate pass.
+- Never weaken exact persistence/determinism tests just to make a gate pass.
+- New phases must be opt-in when changing locked behavior.
 
 ## Runtime baseline
 
-Real Windows + Godot 4.7.2 evidence confirms **P0 through P2.7 PASS**.
+Real Windows + Godot 4.7.2 evidence confirms **P0 through P2.8 PASS**.
 
-P2.7 is LOCKED. Do not reopen it without new regression evidence.
+P2.8 is LOCKED. Do not reopen P0-P2.8 without new regression evidence.
 
 Active phase:
 
-**P2.8 — Disciple Generation V2 + Phẩm chất + Recruitment Sources**
+**P2.9 — Đặc Chất + Khuyết Điểm + Ẩn/Thức tỉnh**
 
 Status: **IMPLEMENTED / AWAITING REAL GODOT 4.7.2 RUNTIME GATE**.
 
 Authoritative root launcher:
 
-- `Sync-P2-8.cmd`
+- `Sync-P2-9.cmd`
 
 Historical phase verifiers remain under `tools/godot` and are called cumulatively.
 
@@ -48,7 +49,7 @@ read checkpoint -> narrow scope -> patch -> static review -> headless parse -> s
 
 The player is the **Tông Chủ**, not an invisible city-builder cursor.
 
-The player controls infrastructure, recruitment, policies, investment, assignments and strategic intervention. Disciples are autonomous people who live, work, cultivate, hunt, recover, consume, form relationships and create stories.
+The player controls infrastructure, recruitment, policy, investment, assignments and strategic intervention. Disciples are autonomous people who live, work, cultivate, hunt, recover, consume, form relationships and create stories.
 
 Primary operating rhythm: **Evil Hunter Tycoon**.
 
@@ -79,186 +80,211 @@ A disciple conceptually separates:
 
 Do not collapse Spiritual Root, Bloodline, Physique, Destiny, traits/quirks and personality into one semantic system.
 
-### Innate does not mean forever frozen
+Innate does not mean permanently frozen. Rare transformation/refinement/awakening may alter innate foundation, while ordinary training changes learned progression.
 
-Ordinary training changes learned progression. Rare transformation/refinement/awakening may alter innate foundation.
+Hidden identity is generated once and persisted. Reveal never rerolls it.
 
-Hidden identity is generated once and persisted. Future reveal must never reroll it.
+## Locked P2.7 workforce contract
 
-## P2.7 locked contract
+Keep separate:
 
-P2.7 keeps separate:
-
-- `sect_rank` — status/authority schema;
-- `profession_xp` — learned profession mastery;
-- profession talent/traits — innate aptitude;
+- `sect_rank` — authority/status;
+- profession talent — innate aptitude;
+- `profession_xp` — learned mastery;
 - `work_group_id` — production group;
 - P1.5 combat/adventure team + role.
 
-Workforce authority order:
+Authority order:
 
 1. survival emergency;
 2. direct Sect Master command;
-3. deterministic schedule;
+3. schedule;
 4. personal/group work priority;
 5. normal Goal/Decision autonomy.
 
-Active real profession loops:
+Real vertical-slice loops:
 
-- Mining -> real Thanh Thiết into P2.6 forge storage;
-- Forging -> real forge-support point consumed by a P2.6 craft.
+- Mining -> Thanh Thiết into P2.6 storage;
+- Forging -> forge-support point consumed by a P2.6 craft.
 
-Do not convert profession into fixed character class.
-
-## P2.8 active contract
+## Locked P2.8 identity contract
 
 Read:
 
 - `docs/DISCIPLE_GENERATION_CANON.md`
 - `docs/DISCIPLE_LIFESPAN_CANON.md`
-- `docs/P1_P2_6_CANON_AUDIT.md`
 - `docs/P2_8_DISCIPLE_GENERATION_V2_SPEC.md`
-- `CURRENT_CHECKPOINT.md`
 
-### Feature gate
+### Generator
 
-P2.8 is opt-in through:
+All ordinary/gacha/fate candidates use `DiscipleGeneratorV2`.
 
-- `SectState.disciple_generation_v2_enabled`.
+Source types:
 
-When false, legacy P1.2/P2.2/P2.7 behavior and serialized shape must remain unchanged.
+- ordinary;
+- gacha / Chiêu Hiền;
+- fate / Nhân Duyên.
 
-### One generator for all recruitment sources
+Source changes distribution only, not schema.
 
-Active P2.8 source types:
+### Six permanent dimensions
 
-- ordinary recruitment;
-- Chiêu Hiền / gacha;
-- Nhân Duyên / fate encounter.
+Internal range `0..1`:
 
-All use `DiscipleGeneratorV2`.
+- aptitude — Tư Chất;
+- constitution — Căn Cốt;
+- fortune — Cơ Duyên;
+- comprehension — Thông Tuệ;
+- charisma — Mị Lực;
+- potential — Tiềm Lực.
 
-Source changes distribution/guarantees only; it must not change the character schema.
-
-Chiêu Hiền consumes:
-
-- `disciple_recruitment_tokens`.
-
-Do not reuse P2.3 technique gacha resources.
-
-### Six permanent foundation dimensions
-
-Canonical internal range: `0.0..1.0`; UI may display `0..100`.
-
-- `aptitude` — Tư Chất;
-- `constitution` — Căn Cốt;
-- `fortune` — Cơ Duyên;
-- `comprehension` — Thông Tuệ;
-- `charisma` — Mị Lực;
-- `potential` — Tiềm Lực.
-
-P2.7 `comprehension` is reused. Do not add a duplicate Thông Tuệ field.
+`comprehension` reuses P2.7. Do not create another Thông Tuệ field.
 
 Current real consequences:
 
-- Tư Chất -> cultivation gain when P2.8 is enabled;
-- Thông Tuệ -> existing P2.7 work learning/productivity.
-
-Do not invent fake consequences for the other dimensions yet.
+- Tư Chất -> cultivation gain;
+- Thông Tuệ -> workforce learning/productivity.
 
 ### Phẩm chất
 
-Mandatory and promotable tiers:
+Mandatory promotable tiers:
 
-1. Phàm Thường;
-2. Xuất Chúng;
-3. Thiên Kiêu;
-4. Tuyệt Luân;
-5. Nghịch Thiên.
+- Phàm Thường
+- Xuất Chúng
+- Thiên Kiêu
+- Tuyệt Luân
+- Nghịch Thiên
 
-Quality derives only from permanent foundation.
+Quality derives from permanent foundation only.
 
-It must not directly include:
+It must not directly count current realm, combat power, gear, sect rank, profession XP or temporary buffs.
 
-- current realm;
-- combat power;
-- equipment;
-- sect rank;
-- profession XP;
-- temporary buffs/resources.
+Quality is a fast summary, not the only value score.
 
-Quality is a fast summary, not a universal value score. A lower-quality disciple can be the better specialist.
-
-### Spiritual Root V2 bridge
+### Spiritual Root bridge
 
 Keep separate:
 
 - `spiritual_root_purity`;
 - `spiritual_root_elements`.
 
-Element count must not be rigidly derived from root quality/purity.
-
-For compatibility, P2.8 purity maps into existing P2.2 quality buckets so the locked P2.2/P2.3 consequence code remains usable.
+Element count is independent from purity. P2.2 quality buckets remain only as compatibility consequence buckets.
 
 ### Age/lifespan schema
 
-P2.8 stores:
+P2.8 stores age/base/max lifespan but does not run active aging/death.
 
-- `age`;
-- `base_lifespan`;
-- `max_lifespan`.
+Future lifespan canon:
 
-Active death/aging is deferred.
+- major-realm breakthrough is the primary lifespan increase;
+- longevity pills/treasures/inheritances can add lifespan;
+- repeating one cheap pill cannot grant infinite life;
+- injury/curses/forbidden techniques may later reduce lifespan.
 
-Future canonical lifespan rules:
+### Acceptance
 
-- major realm breakthrough is the primary lifespan increase;
-- longevity pills/treasures/inheritances may add lifespan;
-- repeated use of the same cheap longevity pill must have diminishing/limited effect;
-- forbidden techniques/injury/curses may later reduce lifespan.
+Candidate -> disciple preserves generated identity exactly and keeps the same character id.
 
-### Candidate acceptance identity lock
+## Active P2.9 contract
 
-Candidate -> disciple must preserve generated identity exactly.
+Read:
 
-P2.7 must not see an intentionally empty V2 trait list and reroll extra traits.
+- `docs/P2_9_TRAITS_REVEAL_SPEC.md`
+- `CURRENT_CHECKPOINT.md`
 
-### Combat power order
+### Feature gate
 
-P2.8 generates foundation first.
+`SectState.disciple_traits_enabled`.
 
-Intrinsic combat power is derived from foundation. Realm contribution remains in P2.1 `cultivation_combat_bonus`; do not double-count realm power.
+When false, P0-P2.8 behavior and serialized shape must remain unchanged.
 
-## P2.8 gate
+### Trait profile authority
 
-Must prove:
+Profiles live in:
 
-1. P2.7 remains V2-disabled and legacy recruitment unchanged;
-2. same seed/source/index -> identical complete profile;
-3. all three sources use one schema;
-4. six dimensions persist exactly;
-5. quality ignores temporary/current progression;
-6. permanent foundation can promote quality;
-7. lower quality can outperform higher quality for a specific profession;
-8. root purity and element count are independent;
-9. combat power is derived after foundation and uses P2.1 realm bonus separately;
-10. Tư Chất changes real cultivation gain;
-11. gacha consumes exactly one recruitment token;
-12. fate recruitment creates a complete profile;
-13. acceptance preserves identity exactly;
-14. exact save/load + deterministic continuation pass;
-15. P0-P2.7 regression chain remains green;
-16. P2.8 scene smoke passes.
+- `SectState.disciple_trait_profiles[character_id]`.
 
-## Deferred until P2.8 runtime green
+Schema:
 
-- full traits/quirks and hidden reveal events;
-- root refinement/mutation;
-- Bloodline;
-- Physique;
-- injury/medical;
-- loyalty + stipend/reward;
-- expanded sect rank/authority;
-- master-disciple/teaching;
-- Destiny/awakening;
-- active aging/death/inheritance.
+- `initialized`;
+- `visible`;
+- `latent`;
+- `revealed`.
+
+Empty visible list is a valid initialized profile. Never treat empty as “not generated”.
+
+Candidate and accepted disciple keep the same id, so acceptance must preserve the exact profile.
+
+Rejected candidates must not leave orphan profiles.
+
+### Visible trait slice
+
+Positive:
+
+- `steady_meridians` — cultivation gain bonus;
+- `diligent_worker` — work speed / learning bonus;
+- `fearless` — combat-power bonus.
+
+Negative:
+
+- `fragile_meridians` — cultivation penalty;
+- `careless_worker` — work-speed penalty;
+- `timid` — combat-power penalty.
+
+Traits are not decorative. Every active trait in this slice has a measurable simulation consequence.
+
+### Latent/reveal slice
+
+- `battle_instinct` — reveal after 3 combats;
+- `craftsman_eye` — reveal after 2 work completions;
+- `meditative_insight` — reveal after 3 cultivation sessions.
+
+Latent IDs are generated and persisted before reveal.
+
+Reveal only moves semantic visibility by adding an existing latent ID to `revealed`; it must never reroll or replace `latent`.
+
+### Runtime hooks
+
+- cultivation traits: `CultivationSystem.add_progress()`;
+- combat traits: `CultivationSystem.effective_combat_power()`;
+- workforce traits: `WorkforceSystem.perform_work()` path via work-speed/learning multipliers;
+- reveal checks: `SimulationScheduler` after activity ticks;
+- recruitment lifecycle: `RecruitmentSystem`.
+
+### P2.9 anti-patterns
+
+- roll hidden trait at reveal time;
+- reroll because visible list is empty;
+- duplicate profession talent and general trait semantics without reason;
+- trait labels with no real consequence;
+- trait effects active while feature gate is off;
+- making Phẩm chất absorb all trait meaning;
+- turning every trait into a raw combat stat.
+
+## Verification chain
+
+Current active verifier:
+
+- `tools/godot/Verify-P2-9.ps1`
+
+It re-runs P0-P2.8 first, then:
+
+1. P2.9 persistence diagnostic;
+2. trait/reveal consequence contracts;
+3. P2.9 scene smoke.
+
+Do not claim PASS without final `P2.9 GATE: PASS` from real Godot 4.7.2.
+
+## After P2.9 runtime green
+
+Preferred dependency order:
+
+1. spiritual-root refinement / rare mutation;
+2. Bloodline;
+3. Physique;
+4. injury/medical;
+5. loyalty + stipend/reward;
+6. sect rank/authority expansion;
+7. master-disciple/teaching;
+8. Destiny/awakening;
+9. active lifespan/aging/death/inheritance after pacing is proven.
