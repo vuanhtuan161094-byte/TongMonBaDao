@@ -44,6 +44,8 @@ func generate_candidate(state: SimulationState, source: StringName = DiscipleGen
             RootRefinementSystem.new().ensure_candidate_profile(state, candidate_v2)
         if state.sect.bloodlines_enabled:
             BloodlineSystem.new().ensure_candidate_profile(state, candidate_v2)
+        if state.sect.physiques_enabled:
+            PhysiqueSystem.new().ensure_candidate_profile(state, candidate_v2)
         return candidate_v2
 
     if source != DiscipleGeneratorV2.SOURCE_ORDINARY:
@@ -129,6 +131,8 @@ func accept_candidate(state: SimulationState, candidate_id: StringName) -> Dicti
         RootRefinementSystem.new().ensure_disciple_profile(state, disciple)
     if state.sect.bloodlines_enabled:
         BloodlineSystem.new().ensure_disciple_profile(state, disciple)
+    if state.sect.physiques_enabled:
+        PhysiqueSystem.new().ensure_disciple_profile(state, disciple)
     state.disciples[disciple.id] = disciple
     state.recruitment_candidates.erase(candidate_id)
     state.recruitment_stats["accepted"] = int(state.recruitment_stats.get("accepted", 0)) + 1
@@ -153,6 +157,8 @@ func reject_candidate(state: SimulationState, candidate_id: StringName) -> Dicti
         RootRefinementSystem.new().remove_profile(state, candidate_id)
     if state.sect.bloodlines_enabled:
         BloodlineSystem.new().remove_profile(state, candidate_id)
+    if state.sect.physiques_enabled:
+        PhysiqueSystem.new().remove_profile(state, candidate_id)
     state.recruitment_candidates.erase(candidate_id)
     state.recruitment_stats["rejected"] = int(state.recruitment_stats.get("rejected", 0)) + 1
     return _result(true, "rejected")
