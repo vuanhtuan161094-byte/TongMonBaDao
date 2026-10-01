@@ -316,9 +316,9 @@ func validate_invariants(state: SimulationState) -> Array[String]:
         for progress_id in disciple.work_progress.keys():
             if not VALID_PROFESSIONS.has(StringName(progress_id)) or float(disciple.work_progress[progress_id]) < 0.0:
                 errors.append("%s has invalid work progress." % disciple.display_name)
-        for trait in disciple.profession_traits:
-            if not PROFESSION_TRAITS.has(str(trait)):
-                errors.append("%s has invalid profession trait %s." % [disciple.display_name, trait])
+        for trait_id in disciple.profession_traits:
+            if not PROFESSION_TRAITS.has(str(trait_id)):
+                errors.append("%s has invalid profession trait %s." % [disciple.display_name, trait_id])
         if not disciple.direct_command.is_empty():
             var kind := StringName(disciple.direct_command.get("kind", ""))
             if not VALID_COMMANDS.has(kind):
