@@ -109,6 +109,8 @@ func add_progress(state: SimulationState, disciple: DiscipleState, amount: float
     var effective_amount := amount
     if state.sect.spiritual_roots_enabled:
         effective_amount *= spiritual_root_system.cultivation_multiplier(disciple.spiritual_root_quality)
+    if state.sect.disciple_generation_v2_enabled and disciple.profile_seed > 0:
+        effective_amount *= lerpf(0.82, 1.22, clampf(disciple.aptitude, 0.0, 1.0))
     var before := disciple.cultivation_progress
     disciple.cultivation_progress = minf(required, before + effective_amount)
     var gained := disciple.cultivation_progress - before
