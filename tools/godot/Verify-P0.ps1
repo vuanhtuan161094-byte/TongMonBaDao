@@ -219,6 +219,6 @@ Write-Host "[8/9] Multi-seed benchmark"
 Invoke-GodotWithTimeout -CommandArgs @("--headless", "--path", $Project, "-s", "res://tests/simulation/p0_benchmark_test.gd") -TimeoutSeconds 240 -Label "Multi-seed benchmark"
 
 Write-Host "[9/9] Runtime smoke"
-Invoke-GodotWithTimeout -CommandArgs @("--headless", "--path", $Project, "--quit-after", "180") -TimeoutSeconds 60 -Label "Runtime smoke"
+Invoke-GodotWithTimeout -CommandArgs @("--headless", "--path", $Project, "--quit-after", "180", "res://scenes/p0/p0_sandbox.tscn") -TimeoutSeconds 60 -Label "P0 sandbox runtime smoke"
 
 Write-Host "P0 FOUNDATION GATE: PASS"
