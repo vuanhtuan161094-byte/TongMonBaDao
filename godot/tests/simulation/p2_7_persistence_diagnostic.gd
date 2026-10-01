@@ -14,6 +14,9 @@ func _run() -> void:
     workforce.issue_command(state, &"bach_nguyet", WorkforceSystem.COMMAND_WORK, "mining", 30)
     SimulationScheduler.new(state).run_ticks(RUN_TICKS)
 
+    # Save one still-active direct command so kind/target/tick types are part of the exact round-trip contract.
+    workforce.issue_command(state, &"bach_nguyet", WorkforceSystem.COMMAND_HOLD, "", 50)
+
     var service := SaveService.new()
     if service.save_to_path(state, SAVE_PATH) != OK:
         push_error("P2.7 PERSISTENCE DIAGNOSTIC: save failed")
