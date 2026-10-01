@@ -73,7 +73,7 @@ func generate_candidate(state: SimulationState, source: StringName = DiscipleGen
     state.recruitment_candidates[candidate.id] = candidate
     return candidate
 
-func chiêu_hiền_candidate(state: SimulationState) -> Dictionary:
+func gacha_candidate(state: SimulationState) -> Dictionary:
     if not state.p1_recruitment_enabled or not state.sect.disciple_generation_v2_enabled:
         return _result(false, "generation_v2_disabled")
     if state.sect.disciple_recruitment_tokens <= 0:
