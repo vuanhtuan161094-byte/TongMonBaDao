@@ -117,7 +117,7 @@ func _refresh() -> void:
     elif bool(profile.get("transformed", false)):
         transform_text = "\nThể chất này được cải tạo từ Phàm Thể."
 
-    detail_label.text = "Công: +%.2f\nThủ: %.1f%% giảm sát thương\nTu luyện: %+.1f%%\nĐột phá: %+.2f điểm %%\nHồi phục: %+.1f%%\nThiên hướng XP — Kiếm %+.1f%% | Thể %+.1f%% | Pháp %+.1f%%\nYêu Đan: %d | Linh Tủy: %d%s" % [
+    detail_label.text = "Công: +%.2f\nThủ: %.1f%% giảm sát thương\nTu luyện: %.1f%%\nĐột phá: %.2f điểm phần trăm\nHồi phục: %.1f%%\nThiên hướng XP — Kiếm %.1f%% | Thể %.1f%% | Pháp %.1f%%\nYêu Đan: %d | Linh Tủy: %d%s" % [
         float(stats.get("attack_bonus", 0.0)),
         defense_pct,
         cultivation_pct,
