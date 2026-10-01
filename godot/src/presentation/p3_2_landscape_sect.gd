@@ -580,7 +580,7 @@ func _physique_tab_text(disciple: DiscipleState) -> String:
     var recovery_pct := (float(stats.get("recovery_multiplier", 1.0)) - 1.0) * 100.0
     return (
         "Thể Chất: %s\nTôi thể: %d/%d · Đã cải thể: %s\n\n"
-        + "Công +%.1f · Giảm sát thương %.1f%%\nTu luyện %+.1f%% · Đột phá %+.1f%% · Hồi phục %+.1f%%\n"
+        + "Công +%.1f · Giảm sát thương %.1f%%\nTu luyện %.1f%% · Đột phá %.1f%% · Hồi phục %.1f%%\n"
         + "Kiếm đạo XP x%.2f · Thể đạo XP x%.2f · Pháp đạo XP x%.2f\n\n"
         + "Yêu Đan: %d · Linh Tủy: %d\n%s"
     ) % [
