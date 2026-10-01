@@ -123,36 +123,45 @@ func to_disciple() -> DiscipleState:
         "risk_bias": risk_bias,
         "spend_bias": spend_bias,
         "survival_bias": survival_bias,
-        "personality_id": str(personality_id),
-        "spiritual_root_quality": str(spiritual_root_quality),
-        "spiritual_root_elements": spiritual_root_elements.duplicate(),
-        "comprehension": comprehension,
-        "profession_traits": profession_traits.duplicate(),
-        "sect_rank": "outer",
-        "profile_seed": profile_seed,
-        "recruitment_source": str(recruitment_source),
-        "race_id": str(race_id),
-        "sex_id": str(sex_id),
-        "origin_id": str(origin_id),
-        "aptitude": aptitude,
-        "constitution": constitution,
-        "fortune": fortune,
-        "charisma": charisma,
-        "potential": potential,
-        "disciple_quality": str(disciple_quality),
-        "spiritual_root_purity": spiritual_root_purity,
-        "age": age,
-        "base_lifespan": base_lifespan,
-        "max_lifespan": max_lifespan,
-        "latent_identity_seed": latent_identity_seed,
-        "cultivation_stage_index": cultivation_stage_index,
-        "cultivation_progress": cultivation_progress,
-        "cultivation_combat_bonus": cultivation_combat_bonus,
-        "cultivation_hp_bonus": cultivation_hp_bonus
+        "personality_id": str(personality_id)
     }
+    if spiritual_root_quality != &"":
+        definition["spiritual_root_quality"] = str(spiritual_root_quality)
+    if not spiritual_root_elements.is_empty():
+        definition["spiritual_root_elements"] = spiritual_root_elements.duplicate()
+    if comprehension > 0.0 or not profession_traits.is_empty():
+        definition["comprehension"] = comprehension
+        definition["profession_traits"] = profession_traits.duplicate()
+        definition["sect_rank"] = "outer"
+
+    if profile_seed > 0 or recruitment_source != &"":
+        definition["profile_seed"] = profile_seed
+        definition["recruitment_source"] = str(recruitment_source)
+        definition["race_id"] = str(race_id)
+        definition["sex_id"] = str(sex_id)
+        definition["origin_id"] = str(origin_id)
+        definition["aptitude"] = aptitude
+        definition["constitution"] = constitution
+        definition["fortune"] = fortune
+        definition["comprehension"] = comprehension
+        definition["charisma"] = charisma
+        definition["potential"] = potential
+        definition["disciple_quality"] = str(disciple_quality)
+        definition["spiritual_root_purity"] = spiritual_root_purity
+        definition["age"] = age
+        definition["base_lifespan"] = base_lifespan
+        definition["max_lifespan"] = max_lifespan
+        definition["latent_identity_seed"] = latent_identity_seed
+        definition["cultivation_stage_index"] = cultivation_stage_index
+        definition["cultivation_progress"] = cultivation_progress
+        definition["cultivation_combat_bonus"] = cultivation_combat_bonus
+        definition["cultivation_hp_bonus"] = cultivation_hp_bonus
+        definition["sect_rank"] = "outer"
+
     var disciple := DiscipleState.new(definition)
-    disciple.max_hp = 100.0 + cultivation_hp_bonus
-    disciple.hp = disciple.max_hp
+    if profile_seed > 0 or recruitment_source != &"":
+        disciple.max_hp = 100.0 + cultivation_hp_bonus
+        disciple.hp = disciple.max_hp
     return disciple
 
 static func from_dict(data: Dictionary) -> CandidateState:
