@@ -15,13 +15,14 @@
 - Static definitions and runtime state remain separated.
 - Simulation code must not depend on presentation/UI nodes.
 - Randomness must flow through deterministic seeded streams.
-- Existing P0 money conservation must remain intact unless a source/sink is explicitly declared.
+- Existing P0 money conservation remains intact unless a source/sink is explicit.
 - P2.3 spirit-stone economy stays separate from P0 money.
 - Every runtime mutation must preserve invariants.
-- New mechanics need measurable simulation/gameplay consequences; labels alone do not count.
+- New mechanics need measurable gameplay consequences; labels alone do not count.
 - Never call a phase PASS without its real cumulative Godot gate.
 - Never weaken exact persistence/determinism tests just to make a gate pass.
 - New phases must be opt-in when changing locked behavior.
+- Hidden identity is generated once and persisted. Reveal never rerolls it.
 
 ## Runtime baseline
 
@@ -29,17 +30,16 @@ Real Windows + Godot 4.7.2 evidence confirms **P0 through P2.8 PASS**.
 
 P2.8 is LOCKED. Do not reopen P0-P2.8 without new regression evidence.
 
-Active phase:
+Not yet runtime-confirmed:
 
-**P2.9 — Đặc Chất + Khuyết Điểm + Ẩn/Thức tỉnh**
+- P2.9 Traits + Hidden Reveal: IMPLEMENTED / AWAITING GATE.
+- P2.10 Spiritual Root Refinement + Mutation: IMPLEMENTED / AWAITING GATE.
 
-Status: **IMPLEMENTED / AWAITING REAL GODOT 4.7.2 RUNTIME GATE**.
+Authoritative current launcher:
 
-Authoritative root launcher:
+- `Sync-P2-10.cmd`
 
-- `Sync-P2-9.cmd`
-
-Historical phase verifiers remain under `tools/godot` and are called cumulatively.
+It runs the cumulative P0 -> P2.9 chain before P2.10. Do not require the user to run P2.9 separately.
 
 ## Required loop
 
@@ -47,21 +47,11 @@ read checkpoint -> narrow scope -> patch -> static review -> headless parse -> s
 
 ## Core game identity
 
-The player is the **Tông Chủ**, not an invisible city-builder cursor.
+The player is the **Tông Chủ**.
 
 The player controls infrastructure, recruitment, policy, investment, assignments and strategic intervention. Disciples are autonomous people who live, work, cultivate, hunt, recover, consume, form relationships and create stories.
 
-Primary operating rhythm: **Evil Hunter Tycoon**.
-
-Reference specialization:
-
-- `最强祖师` -> multidimensional disciple identity, promotable quality, traits/quirks, production value, loyalty/injury/profile ideas;
-- `The Lost Village` -> work assignment, groups and schedule;
-- `Amazing Cultivation Simulator` -> work priorities and later mentor/inner-disciple opportunity cost;
-- `鬼谷八荒` -> sect rank, elders/halls and delegation;
-- `Sect Master / 宗门经理人` -> expedition -> warehouse -> production -> disciple growth loop;
-- `修仙家族模拟器` -> later bulk rules, stipends/loyalty and lineage;
-- RimWorld/ONI -> scalable roster priorities/templates.
+Primary operating rhythm: **Evil Hunter Tycoon**, with much deeper individual disciples.
 
 Routine one-by-one micromanagement must remain optional at scale.
 
@@ -69,7 +59,7 @@ Routine one-by-one micromanagement must remain optional at scale.
 
 Normal disciples are deterministic procedural individuals, not hand-authored one by one.
 
-A disciple conceptually separates:
+Keep separate:
 
 1. innate foundation;
 2. learned progression;
@@ -78,21 +68,19 @@ A disciple conceptually separates:
 5. living state;
 6. organization/social state.
 
-Do not collapse Spiritual Root, Bloodline, Physique, Destiny, traits/quirks and personality into one semantic system.
+Do not collapse Spiritual Root, Bloodline, Physique, Destiny, traits/quirks and personality into one system.
 
 Innate does not mean permanently frozen. Rare transformation/refinement/awakening may alter innate foundation, while ordinary training changes learned progression.
-
-Hidden identity is generated once and persisted. Reveal never rerolls it.
 
 ## Locked P2.7 workforce contract
 
 Keep separate:
 
-- `sect_rank` — authority/status;
-- profession talent — innate aptitude;
-- `profession_xp` — learned mastery;
-- `work_group_id` — production group;
-- P1.5 combat/adventure team + role.
+- sect rank/status;
+- innate profession talent;
+- learned profession XP;
+- work group;
+- combat/adventure team + role.
 
 Authority order:
 
@@ -100,12 +88,12 @@ Authority order:
 2. direct Sect Master command;
 3. schedule;
 4. personal/group work priority;
-5. normal Goal/Decision autonomy.
+5. normal autonomy.
 
-Real vertical-slice loops:
+Real loops:
 
-- Mining -> Thanh Thiết into P2.6 storage;
-- Forging -> forge-support point consumed by a P2.6 craft.
+- Mining -> real Thanh Thiết;
+- Forging -> real support point consumed by P2.6 craft.
 
 ## Locked P2.8 identity contract
 
@@ -115,21 +103,7 @@ Read:
 - `docs/DISCIPLE_LIFESPAN_CANON.md`
 - `docs/P2_8_DISCIPLE_GENERATION_V2_SPEC.md`
 
-### Generator
-
-All ordinary/gacha/fate candidates use `DiscipleGeneratorV2`.
-
-Source types:
-
-- ordinary;
-- gacha / Chiêu Hiền;
-- fate / Nhân Duyên.
-
-Source changes distribution only, not schema.
-
 ### Six permanent dimensions
-
-Internal range `0..1`:
 
 - aptitude — Tư Chất;
 - constitution — Căn Cốt;
@@ -139,11 +113,6 @@ Internal range `0..1`:
 - potential — Tiềm Lực.
 
 `comprehension` reuses P2.7. Do not create another Thông Tuệ field.
-
-Current real consequences:
-
-- Tư Chất -> cultivation gain;
-- Thông Tuệ -> workforce learning/productivity.
 
 ### Phẩm chất
 
@@ -155,50 +124,34 @@ Mandatory promotable tiers:
 - Tuyệt Luân
 - Nghịch Thiên
 
-Quality derives from permanent foundation only.
+Quality derives from permanent foundation only. It is a fast summary, not the only value score.
 
-It must not directly count current realm, combat power, gear, sect rank, profession XP or temporary buffs.
+### Recruitment
 
-Quality is a fast summary, not the only value score.
+Ordinary / Chiêu Hiền / Nhân Duyên all use one deterministic `DiscipleGeneratorV2` schema.
 
-### Spiritual Root bridge
+### Spiritual Root V2
 
 Keep separate:
 
 - `spiritual_root_purity`;
 - `spiritual_root_elements`.
 
-Element count is independent from purity. P2.2 quality buckets remain only as compatibility consequence buckets.
+Element count is independent from purity.
 
-### Age/lifespan schema
+### Lifespan schema
 
-P2.8 stores age/base/max lifespan but does not run active aging/death.
+P2.8 stores age/base/max lifespan. Active aging/death remains deferred.
 
-Future lifespan canon:
+Future canon: major-realm breakthrough is the primary lifespan increase; longevity pills/treasures can help; one cheap pill cannot create infinite life.
 
-- major-realm breakthrough is the primary lifespan increase;
-- longevity pills/treasures/inheritances can add lifespan;
-- repeating one cheap pill cannot grant infinite life;
-- injury/curses/forbidden techniques may later reduce lifespan.
+## P2.9 implemented contract — traits and hidden reveal
 
-### Acceptance
+Read `docs/P2_9_TRAITS_REVEAL_SPEC.md`.
 
-Candidate -> disciple preserves generated identity exactly and keeps the same character id.
+Feature gate:
 
-## Active P2.9 contract
-
-Read:
-
-- `docs/P2_9_TRAITS_REVEAL_SPEC.md`
-- `CURRENT_CHECKPOINT.md`
-
-### Feature gate
-
-`SectState.disciple_traits_enabled`.
-
-When false, P0-P2.8 behavior and serialized shape must remain unchanged.
-
-### Trait profile authority
+- `SectState.disciple_traits_enabled`.
 
 Profiles live in:
 
@@ -206,85 +159,134 @@ Profiles live in:
 
 Schema:
 
-- `initialized`;
-- `visible`;
-- `latent`;
-- `revealed`.
+- initialized;
+- visible;
+- latent;
+- revealed.
 
-Empty visible list is a valid initialized profile. Never treat empty as “not generated”.
+Empty visible is a valid initialized profile and must never trigger a reroll.
 
-Candidate and accepted disciple keep the same id, so acceptance must preserve the exact profile.
+Current real consequences:
 
-Rejected candidates must not leave orphan profiles.
+- Kinh Mạch Ổn Định / Kinh Mạch Yếu -> cultivation;
+- Cần Mẫn / Cẩu Thả -> workforce;
+- Gan Dạ / Nhát Chiến -> effective combat power;
+- Bản Năng Chiến Đấu / Nhãn Lực Luyện Khí / Ngộ Tĩnh -> latent, history-triggered reveal with real consequences.
 
-### Visible trait slice
+Acceptance preserves profile; rejection removes orphan state.
 
-Positive:
+P2.9 is NOT runtime PASS yet.
 
-- `steady_meridians` — cultivation gain bonus;
-- `diligent_worker` — work speed / learning bonus;
-- `fearless` — combat-power bonus.
+## P2.10 implemented contract — spiritual-root refinement
 
-Negative:
+Read:
 
-- `fragile_meridians` — cultivation penalty;
-- `careless_worker` — work-speed penalty;
-- `timid` — combat-power penalty.
+- `docs/P2_10_SPIRITUAL_ROOT_REFINEMENT_SPEC.md`
+- `CURRENT_CHECKPOINT.md`
 
-Traits are not decorative. Every active trait in this slice has a measurable simulation consequence.
+Feature gate:
 
-### Latent/reveal slice
+- `SectState.spiritual_root_refinement_enabled`.
 
-- `battle_instinct` — reveal after 3 combats;
-- `craftsman_eye` — reveal after 2 work completions;
-- `meditative_insight` — reveal after 3 cultivation sessions.
+Storage:
 
-Latent IDs are generated and persisted before reveal.
+- `SectState.spiritual_root_profiles[character_id]`.
 
-Reveal only moves semantic visibility by adding an existing latent ID to `revealed`; it must never reroll or replace `latent`.
+Profile schema:
 
-### Runtime hooks
+- initialized;
+- refinement_count;
+- latent_mutation;
+- revealed_mutation.
 
-- cultivation traits: `CultivationSystem.add_progress()`;
-- combat traits: `CultivationSystem.effective_combat_power()`;
-- workforce traits: `WorkforceSystem.perform_work()` path via work-speed/learning multipliers;
-- reveal checks: `SimulationScheduler` after activity ticks;
-- recruitment lifecycle: `RecruitmentSystem`.
+### Real resource loop
 
-### P2.9 anti-patterns
+P2.10 consumes the existing P2.3 `linh_tuy` material.
 
-- roll hidden trait at reveal time;
-- reroll because visible list is empty;
-- duplicate profession talent and general trait semantics without reason;
-- trait labels with no real consequence;
-- trait effects active while feature gate is off;
-- making Phẩm chất absorb all trait meaning;
-- turning every trait into a raw combat stat.
+Do not add a disconnected root-refinement currency.
 
-## Verification chain
+Player tradeoff:
 
-Current active verifier:
+`Linh Tủy -> upgrade technique` versus `Linh Tủy -> refine spiritual root`.
 
-- `tools/godot/Verify-P2-9.ps1`
+### Refinement rule
 
-It re-runs P0-P2.8 first, then:
+Ordinary refinement:
 
-1. P2.9 persistence diagnostic;
-2. trait/reveal consequence contracts;
-3. P2.9 scene smoke.
+- increases purity;
+- consumes exactly one Linh Tủy;
+- uses diminishing returns;
+- receives a Tiềm Lực contribution;
+- does not alter the root element list;
+- caps routine purity below absolute perfection.
 
-Do not claim PASS without final `P2.9 GATE: PASS` from real Godot 4.7.2.
+Compatibility thresholds:
 
-## After P2.9 runtime green
+- `<0.48` Mixed;
+- `0.48..<0.65` Ordinary;
+- `0.65..<0.82` Earth;
+- `>=0.82` Heaven.
 
-Preferred dependency order:
+The bridge keeps locked P2.2/P2.3 consequences usable.
 
-1. spiritual-root refinement / rare mutation;
-2. Bloodline;
-3. Physique;
+### Specialization/flexibility
+
+- fewer elements -> stronger specialization on one matching element;
+- more elements -> broader compatibility;
+- multi-root is not automatically bad;
+- purity remains independent from element count.
+
+### Latent mutation
+
+Current vertical-slice mutations:
+
+- Canh Kim Dị Căn;
+- Thanh Mộc Dị Căn;
+- Hàn Thủy Dị Căn;
+- Xích Viêm Dị Căn;
+- Hậu Thổ Dị Căn.
+
+Mutation is generated before reveal from deterministic identity.
+
+Reveal currently requires:
+
+- at least 3 refinements;
+- purity >= 0.72;
+- pre-existing latent mutation.
+
+Reveal never rerolls latent identity and has measurable cultivation/breakthrough/matching-element consequences.
+
+Acceptance preserves root profile; rejection removes it.
+
+P2.10 is NOT runtime PASS yet.
+
+## Current verification chain
+
+Use:
+
+- `tools/godot/Verify-P2-10.ps1`
+- `Sync-P2-10.cmd`
+
+It must run P0 -> P2.9 first, then:
+
+1. P2.10 persistence diagnostic;
+2. root refinement/mutation consequence contracts;
+3. P2.10 scene smoke.
+
+Never claim P2.9 or P2.10 PASS without real Godot 4.7.2 output.
+
+## After cumulative P2.10 green
+
+Preferred order:
+
+1. Bloodline;
+2. Physique;
+3. first visible living-sect map/building/disciple movement slice;
 4. injury/medical;
 5. loyalty + stipend/reward;
 6. sect rank/authority expansion;
 7. master-disciple/teaching;
 8. Destiny/awakening;
 9. active lifespan/aging/death/inheritance after pacing is proven.
+
+Do not build every backend identity layer before returning to visible gameplay.
