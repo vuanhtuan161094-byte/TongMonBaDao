@@ -51,6 +51,8 @@ func generate_candidate(state: SimulationState) -> CandidateState:
         roots.ensure_candidate_root(state, candidate)
         if state.sect.techniques_enabled:
             roots.ensure_candidate_elements(state, candidate)
+    if state.sect.workforce_enabled:
+        WorkforceSystem.new().ensure_candidate_profile(state, candidate)
 
     state.recruitment_generation_index = generation_index
     state.recruitment_candidates[candidate.id] = candidate
@@ -73,6 +75,8 @@ func accept_candidate(state: SimulationState, candidate_id: StringName) -> Dicti
         roots.ensure_disciple_root(state, disciple)
         if state.sect.techniques_enabled:
             roots.ensure_disciple_elements(state, disciple)
+    if state.sect.workforce_enabled:
+        WorkforceSystem.new().ensure_disciple_profile(state, disciple)
     state.disciples[disciple.id] = disciple
     state.recruitment_candidates.erase(candidate_id)
     state.recruitment_stats["accepted"] = int(state.recruitment_stats.get("accepted", 0)) + 1
