@@ -13,6 +13,7 @@ var technique_system := TechniqueSystem.new()
 var cultivation_path_system := CultivationPathSystem.new()
 var combat_skill_system := CombatSkillSystem.new()
 var equipment_system := EquipmentSystem.new()
+var workforce_system := WorkforceSystem.new()
 var economy_system := EconomySystem.new()
 var combat_system := CombatSystem.new()
 
@@ -62,12 +63,24 @@ func _step_disciple(disciple: DiscipleState) -> void:
                 equipment_system.try_auto_upgrade(state, disciple)
             if state.p1_goal_personality_enabled:
                 goal_system.update_goal(state, disciple)
+            if state.sect.workforce_enabled:
+                var workforce_action := workforce_system.next_action(state, disciple)
+                if workforce_action != &"":
+                    disciple.last_decision["workforce_action"] = str(workforce_action)
+                    disciple.current_action = workforce_action
+                    return
             var decision := decision_system.evaluate(state, disciple)
             disciple.current_action = StringName(decision["action"])
 
         &"HUNT":
             if disciple.region_id == &"sect":
-                disciple.target_region_id = decision_system.choose_region(state, disciple)
+                var direct_region := &""
+                if state.sect.workforce_enabled and workforce_system.command_kind(disciple) == WorkforceSystem.COMMAND_HUNT_REGION:
+                    direct_region = workforce_system.command_target(disciple)
+                if direct_region != &"" and state.regions.has(direct_region):
+                    disciple.target_region_id = direct_region
+                else:
+                    disciple.target_region_id = decision_system.choose_region(state, disciple)
                 if state.sect.needs_enabled:
                     needs_system.prepare_departure(state, disciple)
                 disciple.current_action = &"TRAVEL"
@@ -110,6 +123,8 @@ func _step_disciple(disciple: DiscipleState) -> void:
                     path_gain = cultivation_path_system.record_combat(state, disciple, outcome)
                 if path_gain > 0.0:
                     disciple.metrics["path_combat_events"] = int(disciple.metrics.get("path_combat_events", 0)) + 1
+            if state.sect.workforce_enabled:
+                workforce_system.notify_action_completed(state, disciple, &"COMBAT")
             match outcome:
                 "win":
                     var loot: Dictionary = result.get("loot", {}).duplicate(true)
@@ -141,6 +156,8 @@ func _step_disciple(disciple: DiscipleState) -> void:
                 technique_system.deposit_special_inventory(state, disciple)
             if state.sect.equipment_enabled:
                 equipment_system.deposit_forge_inventory(state, disciple)
+            if state.sect.workforce_enabled:
+                workforce_system.notify_action_completed(state, disciple, &"RETURN_SECT")
             disciple.current_action = &"EVALUATE"
 
         &"SELL":
@@ -166,6 +183,8 @@ func _step_disciple(disciple: DiscipleState) -> void:
                 disciple.stamina = minf(100.0, disciple.stamina + 48.0)
                 disciple.hp = minf(disciple.max_hp, disciple.hp + 5.0)
                 disciple.metrics["rests"] = int(disciple.metrics.get("rests", 0)) + 1
+            if state.sect.workforce_enabled:
+                workforce_system.notify_action_completed(state, disciple, &"REST")
             disciple.current_action = &"EVALUATE"
 
         &"CULTIVATE":
@@ -175,6 +194,20 @@ func _step_disciple(disciple: DiscipleState) -> void:
             if gained > 0.0 and state.sect.cultivation_paths_enabled:
                 if cultivation_path_system.record_cultivation(state, disciple) > 0.0:
                     disciple.metrics["path_cultivation_events"] = int(disciple.metrics.get("path_cultivation_events", 0)) + 1
+            if state.sect.workforce_enabled:
+                workforce_system.notify_action_completed(state, disciple, &"CULTIVATE")
+            disciple.current_action = &"EVALUATE"
+
+        &"WORK_MINING":
+            workforce_system.perform_work(state, disciple, WorkforceSystem.PROF_MINING)
+            disciple.current_action = &"EVALUATE"
+
+        &"WORK_FORGING":
+            workforce_system.perform_work(state, disciple, WorkforceSystem.PROF_FORGING)
+            disciple.current_action = &"EVALUATE"
+
+        &"HOLD":
+            disciple.stamina = minf(100.0, disciple.stamina + 2.0)
             disciple.current_action = &"EVALUATE"
 
         &"BREAKTHROUGH":
