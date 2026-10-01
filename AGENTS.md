@@ -46,24 +46,27 @@ Latest confirmed final line:
 
 - `P2.12 GATE: PASS`
 
-## Active phase
+## Active presentation work
 
-**P3.1 — Mobile ngang + Tông Môn Sống V1**
+**P3.1 — Mobile ngang + Tông Môn Sống V1** remains the lower presentation base and is implemented but still awaiting its first real cumulative Godot gate.
 
-Status: **IMPLEMENTED FIRST SLICE / AWAITING REAL GODOT 4.7.2 CUMULATIVE GATE**.
+**P3.2 Camera Interaction Slice — Zoom + Pan + Focus** is now implemented on top of P3.1 and also awaits real Godot evidence.
+
+This is **not full P3.2 PASS**. Production art/animation/UI replacement is still pending.
 
 Read in this order:
 
 1. `docs/DISCIPLE_MASTER_SCHEMA.md` when character data is touched;
 2. `docs/P3_1_LANDSCAPE_SECT_SHELL_SPEC.md`;
-3. `CURRENT_CHECKPOINT.md`;
-4. live P3.1 code/tests.
+3. `docs/P3_2_UI_ART_PRODUCTION_SPEC.md`;
+4. `CURRENT_CHECKPOINT.md`;
+5. live P3.1/P3.2 code and tests.
 
-Authoritative launcher:
+Authoritative launcher for the current implemented slice:
 
-- `Sync-P3-1.cmd`
+- `Sync-P3-2-Camera.cmd`
 
-It reruns P0-P2.12 before the P3.1 contracts and scene smoke.
+It reruns P0-P2.12, then P3.1 contracts/scene smoke, then P3.2 camera contracts/scene smoke. If P3.1 fails, P3.2 camera verification does not continue.
 
 ## Required loop
 
@@ -77,9 +80,9 @@ The player controls infrastructure, recruitment, policy, investment, assignments
 
 Routine one-by-one micromanagement must remain optional at scale.
 
-## Presentation target — canonical from P3.1
+## Presentation target — canonical from P3
 
-The game is now designed for **mobile landscape**, not portrait.
+The game is designed for **mobile landscape**, not portrait.
 
 Base logical resolution:
 
@@ -127,6 +130,28 @@ P3.1 is presentation over the existing simulation.
 - `HUNT`, `TRAVEL`, `COMBAT`, `LOOT`, `RETURN_SECT` -> Tông Môn Đại Môn;
 - `HOLD` -> sân trung tâm;
 - `EVALUATE`, `IDLE` keep the previous visible destination so actors do not visually snap every short decision tick.
+
+## P3.2 camera contract
+
+Camera is presentation-only and must never mutate simulation.
+
+- map world may scale/pan;
+- HUD/task rail/menu/popup never scale with the map;
+- mobile pinch zoom;
+- one-finger pan on free map area;
+- desktop wheel + left-drag fallback for testing;
+- double-tap/double-click on free map area zooms toward that point;
+- fallback buttons `+`, `−`, `Toàn` remain fixed on HUD;
+- zoom range `0.75x` to `1.80x`;
+- default `1.00x`;
+- focus target `1.35x`;
+- pinch/wheel anchor must remain stable;
+- pan is clamped so the sect cannot be dragged completely off-screen;
+- popup-open state blocks map gestures.
+
+Current main scene:
+
+- `res://scenes/p3/p3_2_landscape_sect.tscn`
 
 ## Canonical disciple philosophy
 
@@ -194,25 +219,28 @@ Cultivation-story humor is allowed but the game is not a meme game. Humor must c
 
 Use:
 
-- `tools/godot/Verify-P3-1.ps1`
-- `Sync-P3-1.cmd`
+- `tools/godot/Verify-P3-2-Camera.ps1`
+- `Sync-P3-2-Camera.cmd`
 
-The P3.1 gate must prove:
+The current cumulative gate must prove:
 
-- cumulative P0-P2.12 remains green;
-- project settings are landscape 1280×720;
-- P3.1 is project main scene while P0 smoke remains pinned to P0 sandbox;
-- action-to-destination mapping is deterministic;
-- mapping does not mutate simulation state;
-- real direct command reaches the intended mapped action/destination;
-- P3.1 scene loads and runs headless.
+- P0-P2.12 remain green;
+- P3.1 landscape shell contracts remain green;
+- P3.1 base scene loads headless;
+- P3.2 is the active main presentation scene;
+- camera zoom is clamped to 0.75x–1.80x;
+- zoom preserves anchor position;
+- pan cannot move the entire map off-screen;
+- focus transform centers an unclamped target;
+- reset restores canonical overview;
+- P3.2 zoomable scene loads and runs headless.
 
-Never claim P3.1 PASS without final real Godot 4.7.2 output.
+Never claim P3.1 or P3.2 camera PASS without final real Godot 4.7.2 output.
 
-## After P3.1 runtime green
+## After camera runtime green
 
-1. P3.2 production art/animation/UI polish while preserving the landscape hierarchy;
-2. P3.3 visible building production, assignment and upgrades;
+1. production art/animation/UI replacement while preserving the landscape hierarchy and camera behavior;
+2. visible building production, assignment and upgrades;
 3. injury/medical;
 4. loyalty + stipend/reward;
 5. sect rank/authority;
