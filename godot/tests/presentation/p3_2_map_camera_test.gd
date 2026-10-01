@@ -8,11 +8,17 @@ func _run() -> void:
         return
     if not _verify_zoom_limits():
         return
+    if not _verify_map_hit_region():
+        return
+    if not _verify_coordinate_round_trip():
+        return
     if not _verify_zoom_keeps_anchor_stable():
         return
     if not _verify_pan_is_clamped():
         return
     if not _verify_focus_centers_target():
+        return
+    if not _verify_focus_handles_edge_target():
         return
     if not _verify_reset_contract():
         return
@@ -36,13 +42,31 @@ func _verify_zoom_limits() -> bool:
         return _fail("P3.2 camera changed an in-range zoom.")
     return true
 
+func _verify_map_hit_region() -> bool:
+    var inside := SectMapCamera.VIEW_RECT.position + SectMapCamera.VIEW_RECT.size * 0.5
+    if not SectMapCamera.is_map_screen_point(inside):
+        return _fail("P3.2 camera rejected a point inside the map viewport.")
+    if SectMapCamera.is_map_screen_point(Vector2(30.0, 30.0)):
+        return _fail("P3.2 camera accepted a point inside fixed HUD as map input.")
+    return true
+
+func _verify_coordinate_round_trip() -> bool:
+    var world_point := Vector2(742.5, 318.25)
+    var map_position := Vector2(-184.0, -72.0)
+    var zoom := 1.42
+    var screen_point := SectMapCamera.world_to_screen(world_point, map_position, zoom)
+    var recovered := SectMapCamera.screen_to_world(screen_point, map_position, zoom)
+    if world_point.distance_to(recovered) > 0.0001:
+        return _fail("P3.2 screen/world camera conversion is not reversible.")
+    return true
+
 func _verify_zoom_keeps_anchor_stable() -> bool:
     var anchor := Vector2(700.0, 350.0)
     var result := SectMapCamera.zoom_around_screen_point(Vector2.ZERO, 1.0, 1.2, anchor)
     var zoom := float(result["zoom"])
     var position: Vector2 = result["position"]
-    var world_anchor_before := anchor
-    var world_anchor_after := (anchor - position) / zoom
+    var world_anchor_before := SectMapCamera.screen_to_world(anchor, Vector2.ZERO, 1.0)
+    var world_anchor_after := SectMapCamera.screen_to_world(anchor, position, zoom)
     if world_anchor_before.distance_to(world_anchor_after) > 0.001:
         return _fail("P3.2 pinch/wheel zoom does not preserve the screen anchor.")
     return true
@@ -63,10 +87,22 @@ func _verify_focus_centers_target() -> bool:
     var result := SectMapCamera.focus_transform(world_target, SectMapCamera.FOCUS_ZOOM)
     var zoom := float(result["zoom"])
     var position: Vector2 = result["position"]
-    var screen_target := position + world_target * zoom
+    var screen_target := SectMapCamera.world_to_screen(world_target, position, zoom)
     var expected_center := SectMapCamera.VIEW_RECT.position + SectMapCamera.VIEW_RECT.size * 0.5
     if screen_target.distance_to(expected_center) > 0.001:
         return _fail("P3.2 focus transform did not center an unclamped target.")
+    return true
+
+func _verify_focus_handles_edge_target() -> bool:
+    var world_target := Vector2(1220.0, 570.0)
+    var result := SectMapCamera.focus_transform(world_target, SectMapCamera.FOCUS_ZOOM)
+    var zoom := float(result["zoom"])
+    var position: Vector2 = result["position"]
+    if position != SectMapCamera.clamp_position(position, zoom):
+        return _fail("P3.2 edge focus escaped camera bounds.")
+    var screen_target := SectMapCamera.world_to_screen(world_target, position, zoom)
+    if not Rect2(Vector2.ZERO, SectMapCamera.WORLD_SIZE).has_point(screen_target):
+        return _fail("P3.2 edge focus moved the selected target outside the game viewport.")
     return true
 
 func _verify_reset_contract() -> bool:
