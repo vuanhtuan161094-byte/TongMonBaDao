@@ -8,12 +8,15 @@ func _init() -> void:
     call_deferred("_run")
 
 func _run() -> void:
-    var script := load("res://src/presentation/p3_2_landscape_sect.gd")
-    if script == null:
-        _fail("P3.2 disciple UI script could not be loaded.")
+    var packed_scene := load("res://scenes/p3/p3_2_landscape_sect.tscn") as PackedScene
+    if packed_scene == null:
+        _fail("P3.2 disciple UI scene could not be loaded.")
         return
 
-    ui = script.new()
+    ui = packed_scene.instantiate() as Control
+    if ui == null:
+        _fail("P3.2 disciple UI scene could not be instantiated.")
+        return
     root.add_child(ui)
     await process_frame
 
