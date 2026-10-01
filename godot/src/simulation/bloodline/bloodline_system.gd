@@ -155,6 +155,9 @@ func refine_bloodline(state: SimulationState, disciple_id: StringName) -> Dictio
         "refinement_count":int(profile["refinement_count"])
     }
 
+# Core-stat advantages. Bloodline is allowed to directly strengthen combat,
+# defense, cultivation and recovery. Signature mechanics are layered on top;
+# they are not a substitute for the bloodline being innately powerful.
 func combat_power_bonus(state: SimulationState, disciple: DiscipleState) -> float:
     if not _active(state, disciple):
         return 0.0
@@ -162,35 +165,81 @@ func combat_power_bonus(state: SimulationState, disciple: DiscipleState) -> floa
     var p := purity(state, disciple.id)
     match id:
         BLOODLINE_TRUE_DRAGON:
+            return 2.5 + p * 7.5
+        BLOODLINE_PHOENIX:
             return 1.5 + p * 4.5
         BLOODLINE_WHITE_TIGER:
-            return 2.0 + p * 6.0
+            return 3.0 + p * 10.0
+        BLOODLINE_BLACK_TORTOISE:
+            return 1.0 + p * 3.0
+        BLOODLINE_TAOTIE_REMNANT:
+            return 2.0 + p * 5.5
         _:
             return 0.0
+
+func cultivation_gain_multiplier(state: SimulationState, disciple: DiscipleState) -> float:
+    if not _active(state, disciple):
+        return 1.0
+    var p := purity(state, disciple.id)
+    match bloodline_id(state, disciple.id):
+        BLOODLINE_TRUE_DRAGON:
+            return 1.03 + p * 0.10
+        BLOODLINE_PHOENIX:
+            return 1.02 + p * 0.07
+        BLOODLINE_WHITE_TIGER:
+            return 1.00 + p * 0.025
+        BLOODLINE_BLACK_TORTOISE:
+            return 1.01 + p * 0.035
+        BLOODLINE_TAOTIE_REMNANT:
+            return 1.02 + p * 0.05
+        _:
+            return 1.0
 
 func breakthrough_bonus(state: SimulationState, disciple: DiscipleState) -> float:
     if not _active(state, disciple):
         return 0.0
-    if bloodline_id(state, disciple.id) != BLOODLINE_TRUE_DRAGON:
-        return 0.0
-    return 0.008 + purity(state, disciple.id) * 0.025
+    var p := purity(state, disciple.id)
+    match bloodline_id(state, disciple.id):
+        BLOODLINE_TRUE_DRAGON:
+            return 0.010 + p * 0.030
+        BLOODLINE_PHOENIX:
+            return 0.004 + p * 0.010
+        _:
+            return 0.0
 
 func incoming_damage_multiplier(state: SimulationState, disciple: DiscipleState) -> float:
     if not _active(state, disciple):
         return 1.0
-    if bloodline_id(state, disciple.id) != BLOODLINE_BLACK_TORTOISE:
-        return 1.0
-    return clampf(0.94 - purity(state, disciple.id) * 0.18, 0.72, 1.0)
+    var p := purity(state, disciple.id)
+    match bloodline_id(state, disciple.id):
+        BLOODLINE_TRUE_DRAGON:
+            return clampf(0.98 - p * 0.08, 0.86, 1.0)
+        BLOODLINE_PHOENIX:
+            return clampf(0.99 - p * 0.04, 0.93, 1.0)
+        BLOODLINE_WHITE_TIGER:
+            return 1.0
+        BLOODLINE_BLACK_TORTOISE:
+            return clampf(0.90 - p * 0.24, 0.65, 1.0)
+        BLOODLINE_TAOTIE_REMNANT:
+            return clampf(0.97 - p * 0.07, 0.87, 1.0)
+        _:
+            return 1.0
 
 func rest_recovery_multiplier(state: SimulationState, disciple: DiscipleState) -> float:
     if not _active(state, disciple):
         return 1.0
     var p := purity(state, disciple.id)
     match bloodline_id(state, disciple.id):
+        BLOODLINE_TRUE_DRAGON:
+            return 1.05 + p * 0.12
         BLOODLINE_PHOENIX:
-            return 1.15 + p * 0.35
+            return 1.20 + p * 0.50
+        BLOODLINE_WHITE_TIGER:
+            return 1.0
+        BLOODLINE_BLACK_TORTOISE:
+            return 1.08 + p * 0.15
         BLOODLINE_TAOTIE_REMNANT:
-            return 1.20 + p * 0.30
+            return 1.20 + p * 0.40
         _:
             return 1.0
 
@@ -198,6 +247,26 @@ func extra_departure_supply_cost(state: SimulationState, disciple: DiscipleState
     if not _active(state, disciple):
         return 0
     return 1 if bloodline_id(state, disciple.id) == BLOODLINE_TAOTIE_REMNANT else 0
+
+func stat_profile(state: SimulationState, disciple: DiscipleState) -> Dictionary:
+    if not _active(state, disciple):
+        return {
+            "combat_power_bonus":0.0,
+            "damage_reduction_pct":0.0,
+            "cultivation_bonus_pct":0.0,
+            "breakthrough_bonus_pct":0.0,
+            "recovery_bonus_pct":0.0,
+            "extra_departure_supply":0
+        }
+    var damage_multiplier := incoming_damage_multiplier(state, disciple)
+    return {
+        "combat_power_bonus":combat_power_bonus(state, disciple),
+        "damage_reduction_pct":maxf(0.0, (1.0 - damage_multiplier) * 100.0),
+        "cultivation_bonus_pct":maxf(0.0, (cultivation_gain_multiplier(state, disciple) - 1.0) * 100.0),
+        "breakthrough_bonus_pct":maxf(0.0, breakthrough_bonus(state, disciple) * 100.0),
+        "recovery_bonus_pct":maxf(0.0, (rest_recovery_multiplier(state, disciple) - 1.0) * 100.0),
+        "extra_departure_supply":extra_departure_supply_cost(state, disciple)
+    }
 
 func validate_invariants(state: SimulationState) -> Array[String]:
     var errors: Array[String] = []
