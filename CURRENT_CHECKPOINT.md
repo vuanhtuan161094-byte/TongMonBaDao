@@ -138,14 +138,29 @@ Profile schema:
 
 Candidate and accepted disciple keep the same character id, so profile identity is preserved. Rejected candidates remove orphan bloodline state.
 
+### Bloodline core-stat rule — canonical
+
+A special awakened bloodline must be innately strong before its special gimmick/tradeoff is considered.
+
+Every special bloodline in the current slice must have:
+
+1. at least one direct **Công or Thủ** advantage;
+2. at least two real beneficial axes among Công / Thủ / Tu luyện / Đột phá / Hồi phục;
+3. bonuses that scale upward with bloodline purity;
+4. signature mechanics layered on top rather than replacing real stats.
+
+Do not reduce a bloodline to flavor such as “eats more”, “rests faster”, or a single novelty modifier.
+
 ### Bloodlines in the vertical slice
 
-- `true_dragon` — Chân Long Huyết: combat power + breakthrough bonus.
-- `phoenix` — Phượng Hoàng Huyết: stronger rest recovery.
-- `white_tiger` — Bạch Hổ Huyết: strong combat-power bonus.
-- `black_tortoise` — Huyền Vũ Huyết: lower incoming combat damage.
-- `taotie_remnant` — Thao Thiết Tàn Huyết: stronger recovery but consumes one extra real Supply on departure when stock exists.
+- `true_dragon` — **Chân Long Huyết**: Công + Thủ + tốc tu + đột phá + hồi phục nền. Generalist high-grade lineage.
+- `phoenix` — **Phượng Hoàng Huyết**: Công + Thủ nhẹ + tốc tu + đột phá nhẹ + hồi phục rất cao. Not merely a healing passive.
+- `white_tiger` — **Bạch Hổ Huyết**: Công cao nhất + tốc tu nhỏ. Pure slaughter/offense identity.
+- `black_tortoise` — **Huyền Vũ Huyết**: Thủ cao nhất + Công nền + tốc tu + hồi phục. Not merely one damage-reduction passive.
+- `taotie_remnant` — **Thao Thiết Tàn Huyết**: Công + Thủ + tốc tu + hồi phục cao; consumes one extra real Supply on departure as a tradeoff/humor mechanic.
 - `none` is a valid and common result.
+
+Current runtime formulas live in `BloodlineSystem`; `stat_profile()` exposes player-facing values for UI/tests.
 
 ### Reveal
 
@@ -178,7 +193,17 @@ Post-awakening bloodline refinement:
 - uses Tiềm Lực;
 - has diminishing returns;
 - current normal cap 0.95;
-- absolute 100% remains reserved for later major fate/inheritance mechanics.
+- absolute 100% remains reserved for later major fate/inheritance mechanics;
+- higher purity must strengthen real core stats, not only the displayed purity number.
+
+### Current real consequence hooks
+
+- `CultivationSystem.effective_combat_power()` reads bloodline Công.
+- `CombatSystem` incoming-damage calculation reads bloodline Thủ.
+- `CultivationSystem.add_progress()` reads bloodline cultivation multiplier.
+- `CultivationSystem.breakthrough_success_chance()` reads bloodline breakthrough bonus.
+- `NeedsSystem.apply_rest()` reads bloodline recovery multiplier.
+- `NeedsSystem.prepare_departure()` applies Thao Thiết extra Supply tradeoff.
 
 ## Xianxia flavor/humor canon
 
@@ -198,7 +223,7 @@ Humor must come from real simulation causes/consequences, not standalone meme te
 
 P2.11 first concrete humorous mechanic:
 
-- awakened Thao Thiết Tàn Huyết consumes an extra real Supply on departure but recovers faster.
+- awakened Thao Thiết Tàn Huyết consumes an extra real Supply on departure, but it already has meaningful Công/Thủ/Tu luyện/Hồi phục advantages. The appetite is a tradeoff, not the bloodline's whole identity.
 
 ## P2.11 verification assets
 
@@ -212,7 +237,7 @@ P2.11 first concrete humorous mechanic:
 - `Verify-P2-11.cmd`
 - `Sync-P2-11.cmd`
 
-P2.11 verifier reruns P0-P2.10 first and must prove persistence, deterministic profiles, no reroll, reveal, awakening resource cost, combat/breakthrough/defense/recovery/supply consequences, refinement, recruitment lifecycle and scene smoke.
+P2.11 verifier reruns P0-P2.10 first and must prove persistence, deterministic profiles, no reroll, reveal, awakening resource cost, core stat advantages, combat/breakthrough/defense/cultivation/recovery/supply consequences, refinement, recruitment lifecycle and scene smoke.
 
 ## Next authoritative local command
 
