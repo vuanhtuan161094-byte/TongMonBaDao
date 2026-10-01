@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Tong Mon Ba Dao"
-run/main_scene="res://scenes/p3/p3_1_landscape_sect.tscn"
+run/main_scene="res://scenes/p3/p3_2_landscape_sect.tscn"
 config/features=PackedStringArray("4.7")
 
 [display]
