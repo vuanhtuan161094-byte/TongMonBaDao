@@ -105,6 +105,8 @@ func _verify_purity_changes_cultivation_and_breakthrough() -> bool:
     var high_gain := cultivation.add_progress(state, high, 10.0)
     if high_gain <= low_gain:
         return _fail("P2.10 higher root purity did not improve real cultivation gain.")
+    low.cultivation_stage_index = 8
+    high.cultivation_stage_index = 8
     low.hp = low.max_hp
     high.hp = high.max_hp
     low.stamina = 100.0
