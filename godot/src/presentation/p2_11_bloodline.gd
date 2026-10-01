@@ -157,14 +157,27 @@ func _refresh() -> void:
         int(state.sect.technique_materials.get(BloodlineSystem.MATERIAL_ID, 0))
     ]
 
+    var stat_text := ""
+    if awakened and state.disciples.has(selected_id):
+        var disciple: DiscipleState = state.disciples[selected_id]
+        var stats := bloodlines.stat_profile(state, disciple)
+        stat_text = "\n\nƯu thế huyết mạch:\n+ Công: +%.1f chiến lực\n+ Thủ: giảm %.1f%% sát thương\n+ Tu luyện: +%.1f%%\n+ Đột phá: +%.1f điểm %%\n+ Hồi phục: +%.1f%%" % [
+            float(stats.get("combat_power_bonus", 0.0)),
+            float(stats.get("damage_reduction_pct", 0.0)),
+            float(stats.get("cultivation_bonus_pct", 0.0)),
+            float(stats.get("breakthrough_bonus_pct", 0.0)),
+            float(stats.get("recovery_bonus_pct", 0.0))
+        ]
+
     var flavor := ""
     if lineage_id == BloodlineSystem.BLOODLINE_TAOTIE_REMNANT and awakened:
-        flavor = "\n\nThao Thiết tàn huyết: hồi phục mạnh, nhưng khi xuất môn sẽ ăn thêm 1 phần vật tư nếu kho còn."
+        flavor = "\n\nĐặc tính Thao Thiết: khi xuất môn ăn thêm 1 phần vật tư nếu kho còn. Đây là cái giá cho bộ Công/Thủ/Tu luyện/Hồi phục cao hơn người thường."
 
-    detail_label.text = "Độ thuần: %d%%\nĐã phát hiện: %s\nĐã thức tỉnh: %s\nSố lần luyện huyết: %d%s" % [
+    detail_label.text = "Độ thuần: %d%%\nĐã phát hiện: %s\nĐã thức tỉnh: %s\nSố lần luyện huyết: %d%s%s" % [
         int(round(float(profile.get("purity", 0.0)) * 100.0)),
         "Có" if revealed else "Chưa",
         "Có" if awakened else "Chưa",
         int(profile.get("refinement_count", 0)),
+        stat_text,
         flavor
     ]
