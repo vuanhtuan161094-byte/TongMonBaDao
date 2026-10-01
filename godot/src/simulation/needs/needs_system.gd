@@ -15,6 +15,7 @@ const UNSUPPLIED_TRAVEL_STAMINA_COST := 13.0
 const MIN_REST_MULTIPLIER := 0.45
 
 var bloodline_system := BloodlineSystem.new()
+var physique_system := PhysiqueSystem.new()
 
 func initialize(state: SimulationState, medicine: int = 18, supplies: int = 24, lodging: int = 6) -> void:
     state.sect.needs_enabled = true
@@ -112,6 +113,8 @@ func apply_rest(state: SimulationState, disciple: DiscipleState) -> float:
     var multiplier := lodging_multiplier
     if state.sect.bloodlines_enabled:
         multiplier *= bloodline_system.rest_recovery_multiplier(state, disciple)
+    if state.sect.physiques_enabled:
+        multiplier *= physique_system.recovery_multiplier(state, disciple)
     disciple.stamina = minf(100.0, disciple.stamina + 48.0 * multiplier)
     disciple.hp = minf(disciple.max_hp, disciple.hp + 5.0 * multiplier)
     disciple.metrics["rests"] = int(disciple.metrics.get("rests", 0)) + 1
