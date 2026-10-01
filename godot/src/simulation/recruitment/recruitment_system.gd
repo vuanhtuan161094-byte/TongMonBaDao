@@ -115,7 +115,7 @@ func accept_candidate(state: SimulationState, candidate_id: StringName) -> Dicti
         roots.ensure_disciple_root(state, disciple)
         if state.sect.techniques_enabled:
             roots.ensure_disciple_elements(state, disciple)
-    if state.sect.workforce_enabled:
+    if state.sect.workforce_enabled and (not state.sect.disciple_generation_v2_enabled or disciple.profile_seed <= 0):
         WorkforceSystem.new().ensure_disciple_profile(state, disciple)
     state.disciples[disciple.id] = disciple
     state.recruitment_candidates.erase(candidate_id)
