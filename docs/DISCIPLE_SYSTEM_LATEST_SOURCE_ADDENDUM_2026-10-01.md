@@ -24,7 +24,7 @@ Chuẩn hóa cho game mình:
 
 - P2.7 chỉ kích hoạt `comprehension`/Thông Tuệ vì đang có consequence nghề thật.
 - Không thêm các trục khác cho đến khi mỗi trục có consequence gameplay cụ thể.
-- Không dùng tổng sáu thuộc tính làm một `overall score` để AI hoặc player chỉ nhìn một con số.
+- Có thể có một lớp **Phẩm chất đệ tử** để người chơi nhìn nhanh giá trị/tiềm năng tổng thể, nhưng gameplay/AI bên dưới vẫn đọc từng thuộc tính, trait, linh căn, nghề, cảnh giới, build và trạng thái thật.
 
 ## 2. Thương tích là một layer đời sống riêng, không chỉ HP thấp
 
@@ -112,10 +112,10 @@ Mỗi trait phải thay đổi một trong các thứ:
 
 Video/ảnh cho thấy Thiên Mệnh mở thành nhiều hiệu ứng theo tầng/nâng bậc, ví dụ thay đổi phản kích, nhận hiệu ứng, tăng sát thương vật lý hoặc tạo cơ chế đặc biệt.
 
-Game mình không nên sao chép cây nâng gacha. Nhưng có thể học kiến trúc:
+Game mình có thể học cả cấu trúc **hiếm + nâng bậc + mở hiệu ứng**, nhưng không để Thiên Mệnh thay thế toàn bộ identity đệ tử:
 
 - một số đệ tử có `destiny_id` hiếm;
-- destiny mở các modifier/quy tắc đặc biệt theo mốc trưởng thành;
+- destiny mở các modifier/quy tắc đặc biệt theo mốc trưởng thành hoặc tài nguyên đầu tư;
 - không được chỉ cộng `combat_power`;
 - phải tương tác với P2.4 path, P2.5 skill hoặc social/workforce về sau.
 
@@ -159,7 +159,90 @@ P2.5 đã có realtime deterministic combat nên không chuyển sang turn-based
 
 Chỉ thêm từng mechanic khi có bài test consequence rõ.
 
-## 9. Hướng phase sau P2.7
+## 9. Phẩm chất đệ tử là hệ thật và có thể đề thăng
+
+Điều chỉnh quan trọng theo định hướng người dùng:
+
+**Game phải có Phẩm chất đệ tử.** Đây là một lớp progression/rarity dễ hiểu cho người chơi và là động lực sưu tầm, tuyển người, nuôi người và nâng người.
+
+Phẩm chất không phải chỉ là màu sinh ra một lần rồi khóa vĩnh viễn. Nó phải có khả năng **đề thăng** thông qua điều kiện/tài nguyên phù hợp.
+
+Mô hình đề xuất:
+
+- phẩm chất ban đầu được sinh ra từ nguồn tuyển/gacha/cơ duyên và tiềm năng nền;
+- phẩm chất quyết định một số trần/tốc độ tăng trưởng/khả năng mở tiềm năng hoặc bonus nền;
+- phẩm chất có thể tăng khi đạt đủ điều kiện như cảnh giới, tiềm lực, cơ duyên, tài nguyên hiếm, thành tựu, thiên mệnh hoặc nghi thức tông môn;
+- đề thăng phẩm chất không được tự động biến mọi chỉ số thành giống nhau: hai đệ tử cùng phẩm chất vẫn khác nhau vì linh căn, nghề, trait, personality, build và lịch sử trưởng thành;
+- đệ tử phẩm thấp vẫn có thể đáng giữ nếu có nghề/trait phù hợp, nhưng người chơi vẫn có lý do rất rõ để săn/tuyển/nuôi đệ tử phẩm cao.
+
+Có thể dùng tier tương tự:
+
+`Bình thường -> Xuất chúng -> Kiêu ngạo -> Tuyệt luân -> Nghịch thiên`
+
+Tên tier cuối cùng sẽ chốt theo phong cách game sau; không bắt buộc sao chép nguyên nguồn.
+
+AI không được đơn giản hóa thành `phẩm chất cao = luôn tốt hơn trong mọi việc`. Phẩm chất là một trục quan trọng, không phải trục duy nhất.
+
+## 10. Tuyển đệ tử phải có nhiều con đường, bao gồm gacha
+
+Điều chỉnh quan trọng: **game mình có gacha đệ tử**. Không loại bỏ gacha.
+
+Các nguồn đệ tử nên cùng tồn tại để tạo nhiều kiểu chơi:
+
+1. **Tuyển mộ thường** — ứng viên đến tông môn / chiêu mộ tại khu vực.
+2. **Gacha/Chiêu Hiền** — tiêu tài nguyên/tín vật/linh thạch hoặc vé để gọi một lượt ứng viên, có xác suất phẩm chất/thiên phú hiếm.
+3. **Nhân duyên/Cơ duyên** — gặp người đặc biệt qua sự kiện, expedition, cứu người, bí cảnh, quan hệ.
+4. **Nhiệm vụ/Thế lực** — thu nhận đệ tử do nhiệm vụ, ngoại giao, quy phục hoặc chiến tích.
+5. **Sư đồ/truyền thừa về sau** — hậu bối, người được tiến cử, đệ tử của trưởng lão.
+
+Gacha nên tạo **niềm vui tuyển người**, nhưng không được làm các nguồn khác vô nghĩa.
+
+Một lượt gacha tốt không chỉ là “ra màu cao”, mà có thể thú vị vì tổ hợp:
+
+- phẩm chất;
+- linh căn;
+- thiên phú nghề;
+- personality;
+- trait tốt/xấu;
+- destiny hiếm;
+- cơ duyên đặc biệt;
+- build tiềm năng.
+
+Nhờ vậy có trường hợp:
+
+- đệ tử phẩm cao nhưng trait xấu, không hợp nhu cầu hiện tại;
+- đệ tử phẩm trung bình nhưng Luyện Khí kỳ tài, cực đáng giữ;
+- đệ tử phẩm thấp có cơ duyên/Thiên Mệnh cho phép nuôi lên mạnh về sau.
+
+Đây mới tạo loop săn người + nuôi người có chiều sâu.
+
+## 11. Phẩm chất và các chỉ số chi tiết phải phục vụ hai tầng UI khác nhau
+
+Tầng nhìn nhanh:
+
+- tên;
+- phẩm chất/màu;
+- cảnh giới;
+- linh căn nổi bật;
+- nghề nổi bật;
+- 1-2 trait chính;
+- trạng thái hiện tại.
+
+Tầng chi tiết:
+
+- sáu thuộc tính nền;
+- profession XP;
+- trait/quirk;
+- destiny;
+- combat build;
+- trang bị/công pháp/pháp bảo;
+- loyalty/injury;
+- quan hệ;
+- lịch sử progression.
+
+Như vậy người mới vẫn hiểu nhanh “ai ngon”, nhưng người chơi sâu vẫn có lý do soi từng đệ tử.
+
+## 12. Hướng phase sau P2.7
 
 Không khóa số phase cứng, nhưng thứ tự kiến trúc nên là:
 
@@ -168,16 +251,18 @@ Không khóa số phase cứng, nhưng thứ tự kiến trúc nên là:
 3. Injury/medical state nối P1.6.
 4. Loyalty + stipend + reward/discipline nối economy.
 5. Sect rank/position/authority.
-6. Master-disciple/teaching.
-7. Events/fortune/charisma.
-8. Lifespan/death/inheritance khi pacing đã đủ ổn.
-9. Artifact/destiny sâu hơn nếu combat/build cần.
+6. **Disciple quality + quality promotion + expanded recruitment/gacha/cơ duyên**, nếu chưa được tách thành phase riêng sớm hơn.
+7. Master-disciple/teaching.
+8. Events/fortune/charisma.
+9. Lifespan/death/inheritance khi pacing đã đủ ổn.
+10. Artifact/destiny sâu hơn nếu combat/build cần.
 
-## 10. Design target cuối
+## 13. Design target cuối
 
 Mục tiêu không phải tạo một roster đầy số liệu. Mục tiêu là khi nhìn một đệ tử, player hiểu:
 
 - người này sinh ra có gì;
+- **phẩm chất hiện tại là gì và còn có thể đề thăng không**;
 - hiện đã học được gì;
 - giỏi việc gì;
 - đang làm gì;
@@ -185,4 +270,8 @@ Mục tiêu không phải tạo một roster đầy số liệu. Mục tiêu là
 - vì sao họ có giá trị với tông môn;
 - Tông Chủ có thể can thiệp ở đâu.
 
-Game phải giữ nhịp đơn giản kiểu Evil Hunter Tycoon ở tầng vận hành, nhưng chiều sâu cá nhân phải đủ để một đệ tử yếu chiến đấu vẫn có thể trở thành nhân vật quan trọng vì nghề, quan hệ, trung thành, thiên phú hoặc vai trò tổ chức.
+Game phải giữ nhịp đơn giản kiểu Evil Hunter Tycoon ở tầng vận hành, nhưng chiều sâu cá nhân phải đủ để tạo ba niềm vui đồng thời:
+
+1. **săn/tuyển/gacha được đệ tử ngon**;
+2. **nuôi một đệ tử bình thường thành người rất mạnh hoặc rất hữu dụng**;
+3. **quản đúng người vào đúng vai trò trong tông môn**.
