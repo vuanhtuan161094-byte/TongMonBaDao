@@ -32,6 +32,8 @@ const TRAIT_DILIGENT := "diligent"
 const TRAIT_LAZY := "lazy"
 const PROFESSION_TRAITS := [TRAIT_FORGE, TRAIT_MINER, TRAIT_DILIGENT, TRAIT_LAZY]
 
+var trait_system := TraitSystem.new()
+
 func initialize(state: SimulationState) -> void:
     if not state.sect.equipment_enabled:
         return
@@ -235,7 +237,7 @@ func perform_work(state: SimulationState, disciple: DiscipleState, profession_id
     if duration <= 0.0:
         return {"ok":false, "completed":false}
 
-    var speed := _work_speed(disciple, profession_id)
+    var speed := _work_speed(state, disciple, profession_id)
     var key := str(profession_id)
     var progress := float(disciple.work_progress.get(key, 0.0)) + speed
     disciple.work_progress[key] = progress
@@ -247,7 +249,7 @@ func perform_work(state: SimulationState, disciple: DiscipleState, profession_id
         return result
 
     disciple.work_progress[key] = maxf(progress - duration, 0.0)
-    var xp_gain := BASE_WORK_XP * _learning_multiplier(disciple, profession_id)
+    var xp_gain := BASE_WORK_XP * _learning_multiplier(state, disciple, profession_id)
     disciple.profession_xp[key] = profession_xp(disciple, profession_id) + xp_gain
     disciple.metrics["work_completions"] = int(disciple.metrics.get("work_completions", 0)) + 1
     state.sect.workforce_event_count += 1
@@ -377,7 +379,7 @@ func _work_duration(profession_id: StringName) -> float:
         _:
             return 0.0
 
-func _work_speed(disciple: DiscipleState, profession_id: StringName) -> float:
+func _work_speed(state: SimulationState, disciple: DiscipleState, profession_id: StringName) -> float:
     var level := profession_level(disciple, profession_id)
     var speed := 1.0 + float(level) * 0.08
     speed *= lerpf(0.90, 1.18, clampf(disciple.comprehension, 0.0, 1.0))
@@ -387,12 +389,16 @@ func _work_speed(disciple: DiscipleState, profession_id: StringName) -> float:
         speed *= 1.08
     if disciple.profession_traits.has(TRAIT_LAZY):
         speed *= 0.88
+    if state.sect.disciple_traits_enabled:
+        speed *= trait_system.work_speed_multiplier(state, disciple)
     return maxf(speed, 0.25)
 
-func _learning_multiplier(disciple: DiscipleState, profession_id: StringName) -> float:
+func _learning_multiplier(state: SimulationState, disciple: DiscipleState, profession_id: StringName) -> float:
     var multiplier := lerpf(0.75, 1.35, clampf(disciple.comprehension, 0.0, 1.0))
     if _has_profession_trait(disciple, profession_id):
         multiplier *= 1.25
+    if state.sect.disciple_traits_enabled:
+        multiplier *= trait_system.profession_learning_multiplier(state, disciple)
     return multiplier
 
 func _has_profession_trait(disciple: DiscipleState, profession_id: StringName) -> bool:
