@@ -240,7 +240,8 @@ func _verify_overlap_stacks_with_bloodline() -> bool:
     var physique_only := _probe_disciple("stack_physique")
     var bloodline_only := _probe_disciple("stack_bloodline")
     var combined := _probe_disciple("stack_combined")
-    for actor in [physique_only, bloodline_only, combined]:
+    var actors: Array[DiscipleState] = [physique_only, bloodline_only, combined]
+    for actor in actors:
         state.disciples[actor.id] = actor
         actor.spiritual_root_elements = ["fire"]
 
