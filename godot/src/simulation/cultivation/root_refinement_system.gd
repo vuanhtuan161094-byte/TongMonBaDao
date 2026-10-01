@@ -118,13 +118,19 @@ func refine_disciple(state: SimulationState, disciple_id: StringName) -> Diction
         "mutation_revealed":str(mutation_result)
     }
 
-func cultivation_multiplier(disciple: DiscipleState) -> float:
+func cultivation_multiplier(state: SimulationState, disciple: DiscipleState) -> float:
     var purity := clampf(disciple.spiritual_root_purity, 0.0, 1.0)
-    return lerpf(0.76, 1.48, purity)
+    var result := lerpf(0.76, 1.48, purity)
+    if revealed_mutation(state, disciple.id) != &"":
+        result *= 1.04
+    return result
 
-func breakthrough_modifier(disciple: DiscipleState) -> float:
+func breakthrough_modifier(state: SimulationState, disciple: DiscipleState) -> float:
     var purity := clampf(disciple.spiritual_root_purity, 0.0, 1.0)
-    return lerpf(-0.08, 0.10, purity)
+    var result := lerpf(-0.08, 0.10, purity)
+    if revealed_mutation(state, disciple.id) != &"":
+        result += 0.015
+    return result
 
 func technique_mastery_multiplier(state: SimulationState, disciple: DiscipleState, element: StringName) -> float:
     if element == &"":
