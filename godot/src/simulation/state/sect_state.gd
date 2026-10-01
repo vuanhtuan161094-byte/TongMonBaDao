@@ -61,6 +61,13 @@ var equipment_forge_index: int = 0
 var equipment_event_count: int = 0
 var equipment_policy: StringName = &"balanced"
 
+# P2.7 disciple workforce/schedule/group policy.
+var workforce_enabled: bool = false
+var work_policy: StringName = &"balanced"
+var work_groups: Dictionary = {}
+var forge_support_points: int = 0
+var workforce_event_count: int = 0
+
 func to_dict() -> Dictionary:
     var data := {
         "treasury": treasury,
@@ -102,6 +109,12 @@ func to_dict() -> Dictionary:
         data["equipment_forge_index"] = equipment_forge_index
         data["equipment_event_count"] = equipment_event_count
         data["equipment_policy"] = str(equipment_policy)
+    if workforce_enabled or workforce_event_count > 0 or forge_support_points > 0 or not work_groups.is_empty():
+        data["workforce_enabled"] = workforce_enabled
+        data["work_policy"] = str(work_policy)
+        data["work_groups"] = work_groups.duplicate(true)
+        data["forge_support_points"] = forge_support_points
+        data["workforce_event_count"] = workforce_event_count
     return data
 
 static func from_dict(data: Dictionary) -> SectState:
@@ -138,6 +151,11 @@ static func from_dict(data: Dictionary) -> SectState:
     state.equipment_forge_index = maxi(int(data.get("equipment_forge_index", 0)), 0)
     state.equipment_event_count = maxi(int(data.get("equipment_event_count", 0)), 0)
     state.equipment_policy = StringName(data.get("equipment_policy", "balanced"))
+    state.workforce_enabled = bool(data.get("workforce_enabled", false))
+    state.work_policy = StringName(data.get("work_policy", "balanced"))
+    state.work_groups = _work_group_dictionary(data.get("work_groups", {}))
+    state.forge_support_points = maxi(int(data.get("forge_support_points", 0)), 0)
+    state.workforce_event_count = maxi(int(data.get("workforce_event_count", 0)), 0)
 
     var saved_stats = data.get("needs_stats", {})
     if saved_stats is Dictionary:
@@ -200,4 +218,27 @@ static func _float_dictionary(value: Variant) -> Dictionary:
     keys.sort()
     for key in keys:
         normalized[str(key)] = float(value[key])
+    return normalized
+
+static func _work_group_dictionary(value: Variant) -> Dictionary:
+    var normalized: Dictionary = {}
+    if not (value is Dictionary):
+        return normalized
+    var keys: Array = value.keys()
+    keys.sort()
+    for raw_key in keys:
+        var raw_group = value[raw_key]
+        if not (raw_group is Dictionary):
+            continue
+        var priorities: Dictionary = {}
+        var raw_priorities = raw_group.get("priorities", {})
+        if raw_priorities is Dictionary:
+            var priority_keys: Array = raw_priorities.keys()
+            priority_keys.sort()
+            for priority_key in priority_keys:
+                priorities[str(priority_key)] = clampi(int(raw_priorities[priority_key]), 0, 4)
+        normalized[str(raw_key)] = {
+            "name": str(raw_group.get("name", raw_key)),
+            "priorities": priorities
+        }
     return normalized
