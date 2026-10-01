@@ -88,6 +88,11 @@ var bloodlines_enabled: bool = false
 var bloodline_profiles: Dictionary = {}
 var bloodline_event_count: int = 0
 
+# P2.12 deterministic physique identity, tempering and transformation. Fully opt-in.
+var physiques_enabled: bool = false
+var physique_profiles: Dictionary = {}
+var physique_event_count: int = 0
+
 func to_dict() -> Dictionary:
     var data := {
         "treasury": treasury,
@@ -151,6 +156,10 @@ func to_dict() -> Dictionary:
         data["bloodlines_enabled"] = bloodlines_enabled
         data["bloodline_profiles"] = bloodline_profiles.duplicate(true)
         data["bloodline_event_count"] = bloodline_event_count
+    if physiques_enabled or physique_event_count > 0 or not physique_profiles.is_empty():
+        data["physiques_enabled"] = physiques_enabled
+        data["physique_profiles"] = physique_profiles.duplicate(true)
+        data["physique_event_count"] = physique_event_count
     return data
 
 static func from_dict(data: Dictionary) -> SectState:
@@ -204,6 +213,9 @@ static func from_dict(data: Dictionary) -> SectState:
     state.bloodlines_enabled = bool(data.get("bloodlines_enabled", false))
     state.bloodline_profiles = _bloodline_profile_dictionary(data.get("bloodline_profiles", {}))
     state.bloodline_event_count = maxi(int(data.get("bloodline_event_count", 0)), 0)
+    state.physiques_enabled = bool(data.get("physiques_enabled", false))
+    state.physique_profiles = _physique_profile_dictionary(data.get("physique_profiles", {}))
+    state.physique_event_count = maxi(int(data.get("physique_event_count", 0)), 0)
 
     var saved_stats = data.get("needs_stats", {})
     if saved_stats is Dictionary:
@@ -344,6 +356,26 @@ static func _bloodline_profile_dictionary(value: Variant) -> Dictionary:
             "revealed": bool(raw_profile.get("revealed", false)),
             "awakened": bool(raw_profile.get("awakened", false)),
             "refinement_count": maxi(int(raw_profile.get("refinement_count", 0)), 0)
+        }
+    return normalized
+
+static func _physique_profile_dictionary(value: Variant) -> Dictionary:
+    var normalized: Dictionary = {}
+    if not (value is Dictionary):
+        return normalized
+    var keys: Array = value.keys()
+    keys.sort()
+    for raw_key in keys:
+        var raw_profile = value[raw_key]
+        if not (raw_profile is Dictionary):
+            continue
+        normalized[str(raw_key)] = {
+            "initialized": bool(raw_profile.get("initialized", false)),
+            "physique_id": str(raw_profile.get("physique_id", "ordinary_body")),
+            "initial_physique_id": str(raw_profile.get("initial_physique_id", raw_profile.get("physique_id", "ordinary_body"))),
+            "temper_level": clampi(int(raw_profile.get("temper_level", 0)), 0, 5),
+            "transformed": bool(raw_profile.get("transformed", false)),
+            "latent_transformation": str(raw_profile.get("latent_transformation", ""))
         }
     return normalized
 
