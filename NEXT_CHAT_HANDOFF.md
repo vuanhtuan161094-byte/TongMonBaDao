@@ -16,7 +16,7 @@ Real Windows + Godot 4.7.2 cumulative gate is green through P2.6:
 - P2.5 Realtime Combat + Independent Skills: PASS
 - P2.6 Forge + Equipment Tycoon: LOCKED / PASS
 
-P2.7 is now **IMPLEMENTED / AWAITING RUNTIME GATE**.
+P2.7 is **IMPLEMENTED / AWAITING RUNTIME GATE**.
 
 Do not call P2.7 PASS until the real local cumulative gate succeeds.
 
@@ -24,14 +24,19 @@ Do not call P2.7 PASS until the real local cumulative gate succeeds.
 
 1. `AGENTS.md`
 2. `CURRENT_CHECKPOINT.md`
-3. `docs/GAMEPLAY_REFERENCE_SYNTHESIS.md`
-4. `docs/DISCIPLE_SYSTEM_DEEP_RESEARCH.md`
-5. `docs/DISCIPLE_SYSTEM_LATEST_SOURCE_ADDENDUM_2026-10-01.md`
-6. `docs/DISCIPLE_GENERATION_CANON.md`
-7. `docs/P2_7_DISCIPLE_LIFE_WORKFORCE_SPEC.md`
-8. this file
+3. `docs/P1_P2_6_CANON_AUDIT.md`
+4. `docs/GAMEPLAY_REFERENCE_SYNTHESIS.md`
+5. `docs/DISCIPLE_SYSTEM_DEEP_RESEARCH.md`
+6. `docs/DISCIPLE_SYSTEM_LATEST_SOURCE_ADDENDUM_2026-10-01.md`
+7. `docs/DISCIPLE_GENERATION_CANON.md`
+8. `docs/DISCIPLE_LIFESPAN_CANON.md`
+9. `docs/P2_7_DISCIPLE_LIFE_WORKFORCE_SPEC.md`
+10. `docs/P2_8_DISCIPLE_GENERATION_V2_SPEC.md`
+11. this file
 
 `docs/DISCIPLE_GENERATION_CANON.md` is the authoritative source for future random/procedural disciple identity. It supersedes older discussion that rejected disciple quality or gacha outright.
+
+`docs/P1_P2_6_CANON_AUDIT.md` is the authoritative compatibility audit. Do not rewrite already-passing phases merely to fit the new disciple canon.
 
 ## Core game identity
 
@@ -50,6 +55,22 @@ Reference responsibilities:
 - `Sect Master / 宗门经理人` -> expedition -> warehouse -> production -> disciple growth loop;
 - `修仙家族模拟器` -> later rule-based bulk assignment, stipend/loyalty and lineage ideas;
 - RimWorld/ONI -> scalable priority/template management.
+
+## P1.1-P2.6 canon audit result
+
+No locked phase needs to be rebuilt.
+
+Required future refactors:
+
+- P1.2 Recruitment V2 must generate innate foundation first and derive current combat power later; the old direct `combat_power` roll remains only for legacy mode.
+- P2.2 Spiritual Root V2 must separate root purity/quality from element count; legacy quality->element-count behavior remains only for legacy mode.
+
+Safe semantic corrections already applied:
+
+- P1.5 `role_assignments` is legacy save storage for **combat/adventure role only**; new code should use `combat_role_*` APIs.
+- P1.6 legacy logistics reads through the combat-role API, not raw role storage.
+- P2.7 `sect_rank`, `profession_xp`, `work_group_id` remain separate from P1.5 combat role.
+- P2.6 `talisman` remains an equipment accessory slot and is not the future Pháp Bảo system.
 
 ## Canonical future disciple generation
 
@@ -132,16 +153,26 @@ Profession talent and profession mastery are different:
 
 A natural-born forging genius may still start at forging level 0.
 
+### Lifespan rule
+
+Each future disciple has age and max lifespan.
+
+- major realm breakthrough is the main lifespan extension;
+- longevity pills/treasures/inheritance/bloodline/physique/destiny can extend it;
+- repeated same low-grade longevity pill has diminishing returns/caps;
+- forbidden arts/curses/foundation damage may reduce lifespan;
+- death/succession is not activated until pacing is proven.
+
 ## P2.7 architecture implemented
 
-P2.7 adds a separate workforce authority layer. Do not merge it into P1.5 `role_assignments`.
+P2.7 adds a separate workforce authority layer. Do not merge it into P1.5 combat-role storage.
 
 Distinct concepts:
 
 1. `sect_rank` — sect status schema;
 2. `profession_xp` / workforce specialization;
 3. `work_group_id` / production group;
-4. P1.5 combat/adventure team and role.
+4. P1.5 combat/adventure team and combat role.
 
 A disciple can be `Outer + Forging specialist + Forge Hall worker + Hunt-team member` simultaneously.
 
@@ -232,24 +263,6 @@ P2.7 candidates currently receive deterministic:
 
 This is only an interim subset of the future procedural generator described in `docs/DISCIPLE_GENERATION_CANON.md`.
 
-## Files
-
-- `godot/src/simulation/workforce/workforce_system.gd`
-- `godot/src/simulation/core/p2_7_factory.gd`
-- `godot/src/simulation/state/disciple_state.gd`
-- `godot/src/simulation/state/candidate_state.gd`
-- `godot/src/simulation/state/sect_state.gd`
-- `godot/src/simulation/recruitment/recruitment_system.gd`
-- `godot/src/simulation/core/simulation_scheduler.gd`
-- `godot/src/simulation/equipment/equipment_system.gd`
-- `godot/tests/simulation/p2_7_persistence_diagnostic.gd`
-- `godot/tests/simulation/p2_7_workforce_test.gd`
-- `godot/src/presentation/p2_7_workforce.gd`
-- `godot/scenes/p2/p2_7_workforce.tscn`
-- `tools/godot/Verify-P2-7.ps1`
-- `Verify-P2-7.cmd`
-- `Sync-P2-7.cmd`
-
 ## P2.7 gate intent
 
 The gate must prove:
@@ -279,21 +292,16 @@ If it fails, fix the first failing gate and rerun the same cumulative command. D
 
 ## Root launcher note
 
-The new P2.7 root launchers exist. An attempted GitHub deletion of the old P2.6 root launcher pair was blocked by the tool safety layer, so do not assume the old pair is absent until verified/cleaned safely. The P2.7 pair is the authoritative pair going forward.
+The P2.7 root launchers are authoritative. Old P2.6 launchers may still exist at root until safely cleaned; do not use them for current verification.
 
 ## After P2.7 runtime green
 
-Next architecture priority is no longer "add random jobs". It is:
+Implement `docs/P2_8_DISCIPLE_GENERATION_V2_SPEC.md` first.
 
-1. procedural disciple generator v2;
-2. six base dimensions + promotable disciple quality;
-3. multiple recruitment sources including ordinary recruitment + gacha + fate encounters;
-4. traits/quirks + hidden reveal framework;
-5. spiritual-root refinement on P2.2;
-6. bloodline + physique;
-7. injury/medical;
-8. loyalty/stipend/rewards;
-9. sect rank/authority;
-10. master-disciple/teaching;
-11. rare destiny/awakening systems;
-12. lifespan/death/inheritance only after pacing is proven.
+Required order:
+
+1. generator V2 + six dimensions + quality + age/lifespan schema;
+2. ordinary recruitment + disciple gacha + fate-source interface;
+3. root purity/quality decoupled from element count;
+4. derived starting combat power instead of raw identity roll;
+5. then traits/quirks/hidden reveal, bloodline/physique and later life systems in separate consequence-driven phases.
