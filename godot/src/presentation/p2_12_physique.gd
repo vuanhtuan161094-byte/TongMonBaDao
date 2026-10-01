@@ -95,6 +95,7 @@ func _refresh() -> void:
 
     var profile := physiques.profile_for(state, disciple.id)
     var id := StringName(profile.get("physique_id", "ordinary_body"))
+    var grade := StringName(profile.get("physique_grade", "mortal_body"))
     var stats := physiques.stat_profile(state, disciple)
     var defense_pct := (1.0 - float(stats.get("incoming_damage_multiplier", 1.0))) * 100.0
     var cultivation_pct := (float(stats.get("cultivation_multiplier", 1.0)) - 1.0) * 100.0
@@ -106,16 +107,16 @@ func _refresh() -> void:
 
     summary_label.text = "%s | Thể chất: %s | Tôi thể: %d/%d" % [
         disciple.display_name,
-        physiques.physique_name(id),
+        physiques.display_physique(state, disciple.id),
         int(profile.get("temper_level", 0)),
         PhysiqueSystem.MAX_TEMPER_LEVEL
     ]
 
-    var transform_text := ""
+    var transform_text := "\nCấp bậc: %s" % physiques.grade_name(grade)
     if id == PhysiqueSystem.PHYSIQUE_ORDINARY:
-        transform_text = "\nPhàm Thể có đường cải thể đã khóa từ seed. Cần Tôi thể >= 3; mục tiêu vẫn ẩn cho tới khi cải thể."
+        transform_text += "\nThân thể thường có đường cải thể đã khóa từ seed. Cần Tôi thể >= 3; mục tiêu vẫn ẩn cho tới khi cải thể."
     elif bool(profile.get("transformed", false)):
-        transform_text = "\nThể chất này được cải tạo từ Phàm Thể."
+        transform_text += "\nThể chất này được cải tạo từ thân thể thường."
 
     detail_label.text = "Công: +%.2f\nThủ: %.1f%% giảm sát thương\nTu luyện: %.1f%%\nĐột phá: %.2f điểm phần trăm\nHồi phục: %.1f%%\nThiên hướng XP — Kiếm %.1f%% | Thể %.1f%% | Pháp %.1f%%\nYêu Đan: %d | Linh Tủy: %d%s" % [
         float(stats.get("attack_bonus", 0.0)),
