@@ -19,6 +19,7 @@ const MIN_BREAKTHROUGH_HP_RATIO := 0.75
 const MIN_BREAKTHROUGH_STAMINA := 65.0
 
 var spiritual_root_system := SpiritualRootSystem.new()
+var root_refinement_system := RootRefinementSystem.new()
 var technique_system := TechniqueSystem.new()
 var cultivation_path_system := CultivationPathSystem.new()
 var trait_system := TraitSystem.new()
@@ -109,7 +110,10 @@ func add_progress(state: SimulationState, disciple: DiscipleState, amount: float
     var required := required_progress(disciple)
     var effective_amount := amount
     if state.sect.spiritual_roots_enabled:
-        effective_amount *= spiritual_root_system.cultivation_multiplier(disciple.spiritual_root_quality)
+        if state.sect.spiritual_root_refinement_enabled and disciple.profile_seed > 0:
+            effective_amount *= root_refinement_system.cultivation_multiplier(state, disciple)
+        else:
+            effective_amount *= spiritual_root_system.cultivation_multiplier(disciple.spiritual_root_quality)
     if state.sect.disciple_generation_v2_enabled and disciple.profile_seed > 0:
         effective_amount *= lerpf(0.82, 1.22, clampf(disciple.aptitude, 0.0, 1.0))
     if state.sect.disciple_traits_enabled:
@@ -131,7 +135,10 @@ func breakthrough_success_chance(disciple: DiscipleState, state: SimulationState
     var stamina_bonus := clampf((disciple.stamina - MIN_BREAKTHROUGH_STAMINA) / 35.0 * 0.02, 0.0, 0.02)
     var modifier := 0.0
     if state != null and state.sect.spiritual_roots_enabled:
-        modifier += spiritual_root_system.breakthrough_modifier(disciple.spiritual_root_quality)
+        if state.sect.spiritual_root_refinement_enabled and disciple.profile_seed > 0:
+            modifier += root_refinement_system.breakthrough_modifier(state, disciple)
+        else:
+            modifier += spiritual_root_system.breakthrough_modifier(disciple.spiritual_root_quality)
     if state != null and state.sect.techniques_enabled:
         var technique_bonus := technique_system.breakthrough_bonus(state, disciple)
         if state.sect.cultivation_paths_enabled:
