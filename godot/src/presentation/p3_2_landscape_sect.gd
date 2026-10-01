@@ -2,18 +2,28 @@ extends "res://src/presentation/p3_1_landscape_sect.gd"
 
 const ZOOM_STEP := 1.12
 const CAMERA_TWEEN_SECONDS := 0.22
+const FOCUS_MARKER_SIZE := Vector2(82.0, 82.0)
 
 var map_zoom: float = SectMapCamera.DEFAULT_ZOOM
 var touch_points: Dictionary = {}
 var last_pinch_distance: float = 0.0
 var mouse_panning := false
 var camera_tween: Tween
+var focus_marker_tween: Tween
 var zoom_readout: Label
+var focus_target_button: Button
+var focus_marker: Panel
+var focused_world_point := Vector2.ZERO
+var focused_kind: StringName = &""
+var focused_id: StringName = &""
+var focused_label := ""
+var has_focus_target := false
 
 func _ready() -> void:
     super._ready()
     popup_layer.z_index = 100
     _reset_camera(false)
+    _build_focus_marker()
     _build_camera_controls()
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -33,10 +43,19 @@ func _unhandled_input(event: InputEvent) -> void:
     if event is InputEventMouseMotion:
         _handle_mouse_motion(event as InputEventMouseMotion)
 
+func _build_focus_marker() -> void:
+    focus_marker = Panel.new()
+    focus_marker.size = FOCUS_MARKER_SIZE
+    focus_marker.visible = false
+    focus_marker.z_index = 80
+    focus_marker.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    focus_marker.add_theme_stylebox_override("panel", _style(Color(1.0, 1.0, 1.0, 0.02), GOLD, 3, 41))
+    map_layer.add_child(focus_marker)
+
 func _build_camera_controls() -> void:
     var panel := Panel.new()
-    panel.position = Vector2(1204, 184)
-    panel.size = Vector2(60, 184)
+    panel.position = Vector2(1204, 150)
+    panel.size = Vector2(60, 252)
     panel.z_index = 20
     panel.mouse_filter = Control.MOUSE_FILTER_STOP
     panel.add_theme_stylebox_override("panel", _style(Color(0.91, 0.86, 0.72, 0.92), INK, 2, 14))
@@ -69,14 +88,35 @@ func _build_camera_controls() -> void:
     minus.pressed.connect(_zoom_out)
     panel.add_child(minus)
 
+    focus_target_button = Button.new()
+    focus_target_button.text = "Mục"
+    focus_target_button.position = Vector2(8, 134)
+    focus_target_button.size = Vector2(44, 40)
+    focus_target_button.add_theme_font_size_override("font_size", 11)
+    focus_target_button.tooltip_text = "Tới mục tiêu đang chọn"
+    focus_target_button.disabled = true
+    focus_target_button.pressed.connect(_focus_current_target)
+    panel.add_child(focus_target_button)
+
     var reset := Button.new()
     reset.text = "Toàn"
-    reset.position = Vector2(8, 134)
+    reset.position = Vector2(8, 184)
     reset.size = Vector2(44, 40)
     reset.add_theme_font_size_override("font_size", 11)
     reset.tooltip_text = "Về toàn cảnh"
     reset.pressed.connect(_reset_camera.bind(true))
     panel.add_child(reset)
+
+    var selected := Label.new()
+    selected.name = "SelectedTargetLabel"
+    selected.text = ""
+    selected.position = Vector2(-156, 228)
+    selected.size = Vector2(208, 20)
+    selected.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+    selected.add_theme_font_size_override("font_size", 10)
+    selected.add_theme_color_override("font_color", Color(0.16, 0.16, 0.13, 0.74))
+    selected.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    panel.add_child(selected)
 
     var hint := Label.new()
     hint.text = "Chụm 2 ngón: zoom  •  Kéo: di chuyển  •  Chạm đúp: phóng nhanh"
@@ -90,10 +130,11 @@ func _build_camera_controls() -> void:
     add_child(hint)
 
     _refresh_zoom_readout()
+    _refresh_focus_readout()
 
 func _handle_screen_touch(touch: InputEventScreenTouch) -> void:
     if touch.pressed:
-        if not SectMapCamera.VIEW_RECT.has_point(touch.position):
+        if not SectMapCamera.is_map_screen_point(touch.position):
             return
         touch_points[touch.index] = touch.position
         if touch.double_tap:
@@ -131,13 +172,13 @@ func _handle_screen_drag(drag: InputEventScreenDrag) -> void:
 
 func _handle_mouse_button(mouse: InputEventMouseButton) -> void:
     if mouse.button_index == MOUSE_BUTTON_WHEEL_UP and mouse.pressed:
-        if SectMapCamera.VIEW_RECT.has_point(mouse.position):
+        if SectMapCamera.is_map_screen_point(mouse.position):
             _zoom_at(mouse.position, map_zoom * ZOOM_STEP, false)
             get_viewport().set_input_as_handled()
         return
 
     if mouse.button_index == MOUSE_BUTTON_WHEEL_DOWN and mouse.pressed:
-        if SectMapCamera.VIEW_RECT.has_point(mouse.position):
+        if SectMapCamera.is_map_screen_point(mouse.position):
             _zoom_at(mouse.position, map_zoom / ZOOM_STEP, false)
             get_viewport().set_input_as_handled()
         return
@@ -146,7 +187,7 @@ func _handle_mouse_button(mouse: InputEventMouseButton) -> void:
         return
 
     if mouse.pressed:
-        if not SectMapCamera.VIEW_RECT.has_point(mouse.position):
+        if not SectMapCamera.is_map_screen_point(mouse.position):
             return
         if mouse.double_click:
             _zoom_at(mouse.position, maxf(map_zoom, SectMapCamera.FOCUS_ZOOM), true)
@@ -180,11 +221,73 @@ func _pan_camera(delta: Vector2) -> void:
     var next_position := SectMapCamera.pan_position(map_layer.position, delta, map_zoom)
     _apply_camera(map_zoom, next_position, false)
 
-func _focus_world_point(world_point: Vector2) -> void:
-    var target_zoom := maxf(map_zoom, SectMapCamera.FOCUS_ZOOM)
+func _focus_world_point(world_point: Vector2, requested_zoom: float = SectMapCamera.FOCUS_ZOOM) -> void:
+    var target_zoom := maxf(map_zoom, requested_zoom)
     var transform := SectMapCamera.focus_transform(world_point, target_zoom)
     var target_position: Vector2 = transform["position"]
     _apply_camera(float(transform["zoom"]), target_position, true)
+
+func _focus_current_target() -> void:
+    if not has_focus_target:
+        return
+    if focused_kind == &"disciple":
+        _refresh_focused_disciple_point()
+    _focus_world_point(focused_world_point)
+    _pulse_focus_marker()
+
+func _set_focus_target(world_point: Vector2, kind: StringName, target_id: StringName, label: String, focus_now: bool) -> void:
+    focused_world_point = world_point
+    focused_kind = kind
+    focused_id = target_id
+    focused_label = label
+    has_focus_target = true
+    _position_focus_marker(world_point)
+    if focus_target_button != null:
+        focus_target_button.disabled = false
+    _refresh_focus_readout()
+    if focus_now:
+        _focus_world_point(world_point)
+    _pulse_focus_marker()
+
+func _position_focus_marker(world_point: Vector2) -> void:
+    if focus_marker == null:
+        return
+    focus_marker.position = world_point - FOCUS_MARKER_SIZE * 0.5
+    focus_marker.visible = true
+
+func _pulse_focus_marker() -> void:
+    if focus_marker == null or not focus_marker.visible:
+        return
+    if focus_marker_tween != null and focus_marker_tween.is_valid():
+        focus_marker_tween.kill()
+    focus_marker.modulate = Color(1.0, 1.0, 1.0, 0.45)
+    focus_marker_tween = create_tween()
+    focus_marker_tween.set_loops(2)
+    focus_marker_tween.tween_property(focus_marker, "modulate", Color(1.0, 1.0, 1.0, 1.0), 0.14)
+    focus_marker_tween.tween_property(focus_marker, "modulate", Color(1.0, 1.0, 1.0, 0.45), 0.14)
+
+func _refresh_focused_disciple_point() -> void:
+    if focused_id == &"":
+        return
+    var key := str(focused_id)
+    if not actor_nodes.has(key):
+        return
+    var actor: Control = actor_nodes[key]
+    focused_world_point = actor.position + actor.size * 0.5
+    _position_focus_marker(focused_world_point)
+
+func _refresh_focus_readout() -> void:
+    var selected_label := get_node_or_null("Panel/SelectedTargetLabel") as Label
+    if selected_label == null:
+        for child in get_children():
+            if child is Panel:
+                var candidate := child.get_node_or_null("SelectedTargetLabel") as Label
+                if candidate != null:
+                    selected_label = candidate
+                    break
+    if selected_label == null:
+        return
+    selected_label.text = focused_label if has_focus_target else ""
 
 func _reset_camera(animate: bool = true) -> void:
     var transform := SectMapCamera.reset_transform()
@@ -245,3 +348,21 @@ func _clear_pointer_state() -> void:
     touch_points.clear()
     last_pinch_distance = 0.0
     mouse_panning = false
+
+func _open_building(destination: StringName) -> void:
+    var point := SectMapPresentation.position_for_destination(destination)
+    _set_focus_target(point, &"building", destination, _building_name(destination), true)
+    super._open_building(destination)
+
+func _open_disciple(disciple_id: StringName) -> void:
+    if actor_nodes.has(str(disciple_id)) and state.disciples.has(disciple_id):
+        var actor: Control = actor_nodes[str(disciple_id)]
+        var disciple: DiscipleState = state.disciples[disciple_id]
+        var point := actor.position + actor.size * 0.5
+        _set_focus_target(point, &"disciple", disciple_id, disciple.display_name, true)
+    super._open_disciple(disciple_id)
+
+func _sync_actor_positions() -> void:
+    super._sync_actor_positions()
+    if focused_kind == &"disciple":
+        _refresh_focused_disciple_point()
