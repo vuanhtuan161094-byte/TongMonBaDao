@@ -1,4 +1,4 @@
-# AGENTS.md — Tông Môn Tycoon AI Development Contract
+# AGENTS.md — Tông Môn Bá Đạo AI Development Contract
 
 ## Authority order
 
@@ -8,256 +8,257 @@
 4. active phase spec under `docs/`;
 5. older discussion only for historical context.
 
-## Non-negotiable rules
+## Non-negotiable engineering rules
 
 - Godot/GDScript is the simulation authority.
-- Do not introduce a parallel JavaScript gameplay engine.
-- Static content definitions and runtime state stay separated.
+- Do not introduce a parallel gameplay engine.
+- Static definitions and runtime state remain separated.
 - Simulation code must not depend on presentation/UI nodes.
 - Randomness must flow through deterministic seeded streams.
-- Economy transactions must conserve P0 money unless a source/sink is explicitly declared.
-- P2.3 spirit-stone sources/sinks must remain explicit and separate from P0 money conservation.
-- Every runtime state mutation must preserve invariants.
-- Prefer small composition-oriented systems over giant manager scripts.
-- Do not call a change PASS without the active verification gate.
-- New mechanics must have measurable gameplay/simulation impact; decorative labels alone do not count.
+- Existing P0 money conservation must remain intact unless a source/sink is explicitly declared.
+- P2.3 spirit-stone economy stays separate from P0 money.
+- Every runtime mutation must preserve invariants.
+- New mechanics need measurable simulation/gameplay consequences; labels alone do not count.
+- Never call a phase PASS without its real cumulative Godot gate.
+- Do not weaken exact persistence/determinism tests to make a gate pass.
 
 ## Runtime baseline
 
-Real Godot 4.7.2 cumulative runtime evidence confirms **P0 through P2.6 PASS**.
+Real Windows + Godot 4.7.2 evidence confirms **P0 through P2.7 PASS**.
 
-P2.6 is LOCKED. Do not weaken or bypass its contracts.
+P2.7 is LOCKED. Do not reopen it without new regression evidence.
 
-P2.7 is **IMPLEMENTED / AWAITING RUNTIME GATE**. Do not call it PASS until the cumulative Godot 4.7.2 gate reaches and passes it.
+Active phase:
+
+**P2.8 — Disciple Generation V2 + Phẩm chất + Recruitment Sources**
+
+Status: **IMPLEMENTED / AWAITING REAL GODOT 4.7.2 RUNTIME GATE**.
+
+Authoritative root launcher:
+
+- `Sync-P2-8.cmd`
+
+Historical phase verifiers remain under `tools/godot` and are called cumulatively.
 
 ## Required loop
 
-read checkpoint -> narrow scope -> patch -> static review -> headless import/parse -> simulation tests -> runtime smoke -> checkpoint
+read checkpoint -> narrow scope -> patch -> static review -> headless parse -> simulation tests -> scene smoke -> checkpoint
 
-## Cumulative verification chain
+## Core game identity
 
-- P0: `tools/godot/Verify-P0.ps1`
-- P1.1: `tools/godot/Verify-P1-1.ps1`
-- P1.2: `tools/godot/Verify-P1-2.ps1`
-- P1.3: `tools/godot/Verify-P1-3.ps1`
-- P1.4: `tools/godot/Verify-P1-4.ps1`
-- P1.5: `tools/godot/Verify-P1-5.ps1`
-- P1.6: `tools/godot/Verify-P1-6.ps1`
-- P2.1: `tools/godot/Verify-P2-1.ps1`
-- P2.2: `tools/godot/Verify-P2-2.ps1`
-- P2.3: `tools/godot/Verify-P2-3.ps1`
-- P2.4: `tools/godot/Verify-P2-4.ps1`
-- P2.5: `tools/godot/Verify-P2-5.ps1`
-- P2.6: `tools/godot/Verify-P2-6.ps1`
-- P2.7: `tools/godot/Verify-P2-7.ps1`
+The player is the **Tông Chủ**, not an invisible city-builder cursor.
 
-Latest authoritative launcher: `Sync-P2-7.cmd`.
-
-## Core character philosophy
-
-The player is the Sect Master, not an invisible city-builder cursor.
-
-The player sets infrastructure, recruitment, assignments, policies, investment and strategic direction, and can intervene directly when appropriate. Disciples remain autonomous people inside the sect rather than puppets.
-
-Do not introduce a fixed character class system. Sword/Body/Spell identity is emergent from cultivation/path history and compatible systems.
-
-A disciple can be valuable through combat, cultivation, crafting, production, logistics, social/administrative duties and later teaching/lineage systems.
-
-## Reference-game hierarchy
+The player controls infrastructure, recruitment, policies, investment, assignments and strategic intervention. Disciples are autonomous people who live, work, cultivate, hunt, recover, consume, form relationships and create stories.
 
 Primary operating rhythm: **Evil Hunter Tycoon**.
 
-Use it for autonomous characters, sect economy, hunt -> material -> production -> consumption loops, and temporary direct one-character commands from the Sect Master.
+Reference specialization:
 
-Use other references only for their strongest domain:
+- `最强祖师` -> multidimensional disciple identity, promotable quality, traits/quirks, production value, loyalty/injury/profile ideas;
+- `The Lost Village` -> work assignment, groups and schedule;
+- `Amazing Cultivation Simulator` -> work priorities and later mentor/inner-disciple opportunity cost;
+- `鬼谷八荒` -> sect rank, elders/halls and delegation;
+- `Sect Master / 宗门经理人` -> expedition -> warehouse -> production -> disciple growth loop;
+- `修仙家族模拟器` -> later bulk rules, stipends/loyalty and lineage;
+- RimWorld/ONI -> scalable roster priorities/templates.
 
-- `最强祖师`: multidimensional disciple value, quality progression, traits/quirks, production specialization, loyalty/injury/reference UI;
-- `The Lost Village`: work assignment, group priorities and work/cultivation/recovery scheduling;
-- `Amazing Cultivation Simulator`: work priorities and later mentor/inner-disciple opportunity-cost ideas;
-- `鬼谷八荒`: sect rank, elders/halls and delegated task authority;
-- `Sect Master / 宗门经理人`: expedition -> warehouse -> production -> disciple build economy loop;
-- `修仙家族模拟器`: later bulk assignment rules, stipend/loyalty and lineage ideas;
-- RimWorld/ONI: scalable priorities/templates for large autonomous rosters.
+Routine one-by-one micromanagement must remain optional at scale.
 
-Read:
+## Canonical disciple philosophy
 
-- `docs/GAMEPLAY_REFERENCE_SYNTHESIS.md`
-- `docs/DISCIPLE_SYSTEM_DEEP_RESEARCH.md`
-- `docs/DISCIPLE_SYSTEM_LATEST_SOURCE_ADDENDUM_2026-10-01.md`
-- `docs/DISCIPLE_GENERATION_CANON.md`
-- `docs/DISCIPLE_LIFESPAN_CANON.md`
-- `docs/P1_P2_6_CANON_AUDIT.md`
-- `docs/P2_7_DISCIPLE_LIFE_WORKFORCE_SPEC.md`
-- `docs/P2_8_DISCIPLE_GENERATION_V2_SPEC.md`
+Normal disciples are deterministic procedural individuals, not hand-authored one by one.
 
-`docs/DISCIPLE_GENERATION_CANON.md` is the canonical rule for future procedural disciple generation and supersedes older discussion that rejected quality/gacha outright.
-
-`docs/P1_P2_6_CANON_AUDIT.md` locks what is kept versus refactored from the already-passing stack. Do not rewrite P1-P2.6 merely to fit later canon; use opt-in V2/composition unless the audit explicitly requires a semantic correction.
-
-## Canonical procedural-disciple rules
-
-Normal future disciples are **procedurally generated deterministic individuals**, not hand-authored one by one.
-
-Recruitment sources may include:
-
-- ordinary recruitment;
-- Chiêu Hiền / gacha;
-- Nhân Duyên / Cơ Duyên events;
-- recommendation;
-- story/world events.
-
-All sources use one deterministic generator with different source distributions/rules.
-
-Every generated disciple conceptually separates:
+A disciple conceptually separates:
 
 1. innate foundation;
 2. learned progression;
 3. awakening/realization;
-4. acquired items/knowledge;
+4. acquired world assets;
 5. living state;
 6. organization/social state.
 
-### Phẩm chất is mandatory
+Do not collapse Spiritual Root, Bloodline, Physique, Destiny, traits/quirks and personality into one semantic system.
 
-Disciple quality is a fast-reading summary of permanent foundation/potential and **can be promoted**.
+### Innate does not mean forever frozen
 
-Working tiers:
+Ordinary training changes learned progression. Rare transformation/refinement/awakening may alter innate foundation.
 
-- Phàm Thường;
-- Xuất Chúng;
-- Thiên Kiêu;
-- Tuyệt Luân;
-- Nghịch Thiên.
+Hidden identity is generated once and persisted. Future reveal must never reroll it.
 
-Quality must not include temporary equipment, rank, current realm, temporary buffs or current profession level.
+## P2.7 locked contract
 
-Quality is allowed as a roster/gacha summary but must **not become the only AI/player value score**. A lower-quality disciple may be more valuable for a specific profession/build because of roots, bloodline, physique, destiny, profession talent, personality or history.
+P2.7 keeps separate:
 
-### Innate vs learned must stay separate
+- `sect_rank` — status/authority schema;
+- `profession_xp` — learned profession mastery;
+- profession talent/traits — innate aptitude;
+- `work_group_id` — production group;
+- P1.5 combat/adventure team + role.
 
-Examples:
-
-- profession talent = innate/trait;
-- profession XP/level = learned by doing;
-- spiritual root/bloodline/physique = primarily innate but may be refined/awakened through rare transformations;
-- cultivation realm/technique mastery/path XP = learned progression;
-- equipment/artifacts/manuals = acquired from the world;
-- loyalty/injury/stamina/mood = living state.
-
-Do not let ordinary repetitive training silently reroll innate identity.
-
-### Hidden information
-
-Latent bloodline/physique/destiny/traits may be generated at creation and revealed later. Reveal must not reroll the hidden state.
-
-### Bloodline / Physique / Destiny
-
-These are separate concepts:
-
-- bloodline = lineage/inherited source + purity/awakening;
-- physique = body configuration, innate or transformed;
-- destiny = rare rule-changing identity/milestone system;
-- spiritual root = elemental cultivation compatibility;
-- traits/quirks = smaller positive/negative consequences;
-- personality = behavioral decision bias.
-
-Do not merge them into one `traits` list semantically even if storage composition is shared internally.
-
-## P1.1-P2.6 post-canon audit locks
-
-- P1.1 Goal/Personality: keep; later traits/alignment/lifespan layer on top.
-- P1.2 Recruitment: keep accept/reject/pool flow; V2 must generate foundation before deriving combat power.
-- P1.3 Relationships: keep directed affinity/trust/respect; later Charisma/lineage hooks compose in.
-- P1.4 Memory: keep; add future life-event types instead of replacing it.
-- P1.5 `role_assignments`: legacy save storage means **combat/adventure roles only**. Use `combat_role_*` APIs for new code; never store sect rank or profession there.
-- P1.6 Needs: keep; injury/medical/workforce logistics extend it later.
-- P2.1 Cultivation: keep; V2 can add aptitude/lifespan/injury hooks while feature-gated.
-- P2.2 Spiritual Roots: legacy behavior stays locked; V2 separates root purity/quality from element count.
-- P2.3 Techniques: keep; technique gacha is separate from disciple gacha.
-- P2.4 Paths: keep emergent path identity; innate traits may bias but never class-lock.
-- P2.5 Combat: keep realtime deterministic resolver; bloodline/physique/destiny/artifact effects compose later.
-- P2.6 Equipment: keep. `talisman` is an equipment accessory slot, not the future Pháp Bảo system.
-
-## P2.6 locked contract — Forge + Equipment Tycoon
-
-Required loop:
-
-`hunt -> forge materials -> sect forge -> storage/shop -> autonomous purchase or player allocation -> stronger disciple -> harder hunt`
-
-Locked behavior:
-
-- autonomous equipment is default;
-- player may manually equip;
-- player may lock/unlock equipment slots;
-- internal purchase conserves total money;
-- item quality/identity is deterministic;
-- nested equipment state survives exact save/load;
-- equipment changes real region choice and combat consequences;
-- compatibility changes actual effectiveness, not legality.
-
-P2.7 hooks into P2.6 only when `workforce_enabled == true`. P2.6 behavior must remain unchanged when workforce is off.
-
-## Active P2.7 contract — Disciple Life + Workforce + Sect Assignment
-
-P2.7 must keep these concepts separate:
-
-1. `sect_rank` — status/authority schema;
-2. `profession_xp` + workforce specialization;
-3. `work_group_id` — production group/department;
-4. P1.5 combat/adventure team and role.
-
-Do not overload one `role` field.
-
-### Workforce authority order
+Workforce authority order:
 
 1. survival emergency;
 2. direct Sect Master command;
-3. deterministic schedule phase;
+3. deterministic schedule;
 4. personal/group work priority;
-5. existing GoalSystem/DecisionSystem autonomy.
+5. normal Goal/Decision autonomy.
 
-Direct commands must complete/expire and return the disciple to autonomy.
+Active real profession loops:
 
-### P2.7 vertical slice
+- Mining -> real Thanh Thiết into P2.6 forge storage;
+- Forging -> real forge-support point consumed by a P2.6 craft.
 
-Only two professions have active gameplay:
+Do not convert profession into fixed character class.
 
-- **Mining** -> real Thanh Thiết into P2.6 forge storage, mining XP, higher-level yield;
-- **Forging** -> real forge-support points, forging XP, next P2.6 craft gets +5% stat multiplier when support is consumed.
+## P2.8 active contract
 
-Other profession IDs may exist as schema but do not count as completed systems.
+Read:
 
-### Schedule
+- `docs/DISCIPLE_GENERATION_CANON.md`
+- `docs/DISCIPLE_LIFESPAN_CANON.md`
+- `docs/P1_P2_6_CANON_AUDIT.md`
+- `docs/P2_8_DISCIPLE_GENERATION_V2_SPEC.md`
+- `CURRENT_CHECKPOINT.md`
 
-A deterministic 20-tick schedule reserves time for:
+### Feature gate
 
-- work;
-- cultivation;
-- recovery.
+P2.8 is opt-in through:
 
-Policies: balanced / production_push / cultivation_focus.
+- `SectState.disciple_generation_v2_enabled`.
 
-Assigned work must not permanently suppress cultivation/recovery.
+When false, legacy P1.2/P2.2/P2.7 behavior and serialized shape must remain unchanged.
 
-### Recruitment
+### One generator for all recruitment sources
 
-Current P2.7 candidates gain deterministic comprehension and up to two profession traits. This is an interim subset of the future generator, not the final disciple-generation model.
+Active P2.8 source types:
 
-### Persistence
+- ordinary recruitment;
+- Chiêu Hiền / gacha;
+- Nhân Duyên / fate encounter.
 
-P2.7 workforce state must survive exact SaveService v2 round-trip and deterministic continuation. `p2_7_persistence_diagnostic.gd` is the first-difference diagnostic.
+All use `DiscipleGeneratorV2`.
 
-### P2.7 anti-patterns
+Source changes distribution/guarantees only; it must not change the character schema.
 
-- fixed profession classes;
-- one hard-coded DecisionSystem branch per future profession;
-- work forever with no cultivation/recovery;
-- candidate value only by combat power or only by quality;
-- repetitive one-by-one mandatory micromanagement;
-- decorative aptitude/trait labels without consequences;
-- AI replacing an active direct Sect Master command;
-- expanding the full future disciple generator before the workforce gate is green.
+Chiêu Hiền consumes:
 
-## Next phase after P2.7 runtime green
+- `disciple_recruitment_tokens`.
 
-Implement `docs/P2_8_DISCIPLE_GENERATION_V2_SPEC.md` as an opt-in V2 layer. Do not start it before P2.7 is runtime green.
+Do not reuse P2.3 technique gacha resources.
+
+### Six permanent foundation dimensions
+
+Canonical internal range: `0.0..1.0`; UI may display `0..100`.
+
+- `aptitude` — Tư Chất;
+- `constitution` — Căn Cốt;
+- `fortune` — Cơ Duyên;
+- `comprehension` — Thông Tuệ;
+- `charisma` — Mị Lực;
+- `potential` — Tiềm Lực.
+
+P2.7 `comprehension` is reused. Do not add a duplicate Thông Tuệ field.
+
+Current real consequences:
+
+- Tư Chất -> cultivation gain when P2.8 is enabled;
+- Thông Tuệ -> existing P2.7 work learning/productivity.
+
+Do not invent fake consequences for the other dimensions yet.
+
+### Phẩm chất
+
+Mandatory and promotable tiers:
+
+1. Phàm Thường;
+2. Xuất Chúng;
+3. Thiên Kiêu;
+4. Tuyệt Luân;
+5. Nghịch Thiên.
+
+Quality derives only from permanent foundation.
+
+It must not directly include:
+
+- current realm;
+- combat power;
+- equipment;
+- sect rank;
+- profession XP;
+- temporary buffs/resources.
+
+Quality is a fast summary, not a universal value score. A lower-quality disciple can be the better specialist.
+
+### Spiritual Root V2 bridge
+
+Keep separate:
+
+- `spiritual_root_purity`;
+- `spiritual_root_elements`.
+
+Element count must not be rigidly derived from root quality/purity.
+
+For compatibility, P2.8 purity maps into existing P2.2 quality buckets so the locked P2.2/P2.3 consequence code remains usable.
+
+### Age/lifespan schema
+
+P2.8 stores:
+
+- `age`;
+- `base_lifespan`;
+- `max_lifespan`.
+
+Active death/aging is deferred.
+
+Future canonical lifespan rules:
+
+- major realm breakthrough is the primary lifespan increase;
+- longevity pills/treasures/inheritances may add lifespan;
+- repeated use of the same cheap longevity pill must have diminishing/limited effect;
+- forbidden techniques/injury/curses may later reduce lifespan.
+
+### Candidate acceptance identity lock
+
+Candidate -> disciple must preserve generated identity exactly.
+
+P2.7 must not see an intentionally empty V2 trait list and reroll extra traits.
+
+### Combat power order
+
+P2.8 generates foundation first.
+
+Intrinsic combat power is derived from foundation. Realm contribution remains in P2.1 `cultivation_combat_bonus`; do not double-count realm power.
+
+## P2.8 gate
+
+Must prove:
+
+1. P2.7 remains V2-disabled and legacy recruitment unchanged;
+2. same seed/source/index -> identical complete profile;
+3. all three sources use one schema;
+4. six dimensions persist exactly;
+5. quality ignores temporary/current progression;
+6. permanent foundation can promote quality;
+7. lower quality can outperform higher quality for a specific profession;
+8. root purity and element count are independent;
+9. combat power is derived after foundation and uses P2.1 realm bonus separately;
+10. Tư Chất changes real cultivation gain;
+11. gacha consumes exactly one recruitment token;
+12. fate recruitment creates a complete profile;
+13. acceptance preserves identity exactly;
+14. exact save/load + deterministic continuation pass;
+15. P0-P2.7 regression chain remains green;
+16. P2.8 scene smoke passes.
+
+## Deferred until P2.8 runtime green
+
+- full traits/quirks and hidden reveal events;
+- root refinement/mutation;
+- Bloodline;
+- Physique;
+- injury/medical;
+- loyalty + stipend/reward;
+- expanded sect rank/authority;
+- master-disciple/teaching;
+- Destiny/awakening;
+- active aging/death/inheritance.
