@@ -23,6 +23,7 @@ var root_refinement_system := RootRefinementSystem.new()
 var technique_system := TechniqueSystem.new()
 var cultivation_path_system := CultivationPathSystem.new()
 var trait_system := TraitSystem.new()
+var bloodline_system := BloodlineSystem.new()
 
 const STAGES := [
     {"id":"qi_1", "name":"Luyện Khí tầng 1", "required":500.0, "combat_bonus":0.0, "hp_bonus":0.0, "chance":0.98},
@@ -144,6 +145,8 @@ func breakthrough_success_chance(disciple: DiscipleState, state: SimulationState
         if state.sect.cultivation_paths_enabled:
             technique_bonus *= cultivation_path_system.technique_effect_multiplier(state, disciple, cultivation_path_system.active_technique_path(disciple))
         modifier += technique_bonus
+    if state != null and state.sect.bloodlines_enabled:
+        modifier += bloodline_system.breakthrough_bonus(state, disciple)
     return clampf(base + hp_bonus + stamina_bonus + modifier, 0.45, 0.99)
 
 func attempt_breakthrough(state: SimulationState, disciple: DiscipleState, rng: GameRng) -> Dictionary:
@@ -191,6 +194,8 @@ func effective_combat_power(state: SimulationState, disciple: DiscipleState) -> 
         power += cultivation_path_system.intrinsic_combat_bonus(state, disciple)
     if state.sect.disciple_traits_enabled:
         power += trait_system.combat_power_bonus(state, disciple)
+    if state.sect.bloodlines_enabled:
+        power += bloodline_system.combat_power_bonus(state, disciple)
     return power
 
 func apply_action_modifiers(state: SimulationState, disciple: DiscipleState, scores: Dictionary) -> void:
