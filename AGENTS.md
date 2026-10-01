@@ -71,7 +71,7 @@ Use it for autonomous characters, sect economy, hunt -> material -> production -
 
 Use other references only for their strongest domain:
 
-- `最强祖师`: multidimensional disciple value, traits/quirks, production specialization;
+- `最强祖师`: multidimensional disciple value, quality progression, traits/quirks, production specialization, loyalty/injury/reference UI;
 - `The Lost Village`: work assignment, group priorities and work/cultivation/recovery scheduling;
 - `Amazing Cultivation Simulator`: work priorities and later mentor/inner-disciple opportunity-cost ideas;
 - `鬼谷八荒`: sect rank, elders/halls and delegated task authority;
@@ -83,7 +83,80 @@ Read:
 
 - `docs/GAMEPLAY_REFERENCE_SYNTHESIS.md`
 - `docs/DISCIPLE_SYSTEM_DEEP_RESEARCH.md`
+- `docs/DISCIPLE_SYSTEM_LATEST_SOURCE_ADDENDUM_2026-10-01.md`
+- `docs/DISCIPLE_GENERATION_CANON.md`
 - `docs/P2_7_DISCIPLE_LIFE_WORKFORCE_SPEC.md`
+
+`docs/DISCIPLE_GENERATION_CANON.md` is the canonical rule for future procedural disciple generation and supersedes older discussion that rejected quality/gacha outright.
+
+## Canonical procedural-disciple rules
+
+Normal future disciples are **procedurally generated deterministic individuals**, not hand-authored one by one.
+
+Recruitment sources may include:
+
+- ordinary recruitment;
+- Chiêu Hiền / gacha;
+- Nhân Duyên / Cơ Duyên events;
+- recommendation;
+- story/world events.
+
+All sources use one deterministic generator with different source distributions/rules.
+
+Every generated disciple conceptually separates:
+
+1. innate foundation;
+2. learned progression;
+3. awakening/realization;
+4. acquired items/knowledge;
+5. living state;
+6. organization/social state.
+
+### Phẩm chất is mandatory
+
+Disciple quality is a fast-reading summary of permanent foundation/potential and **can be promoted**.
+
+Working tiers:
+
+- Phàm Thường;
+- Xuất Chúng;
+- Thiên Kiêu;
+- Tuyệt Luân;
+- Nghịch Thiên.
+
+Quality must not include temporary equipment, rank, current realm, temporary buffs or current profession level.
+
+Quality is allowed as a roster/gacha summary but must **not become the only AI/player value score**. A lower-quality disciple may be more valuable for a specific profession/build because of roots, bloodline, physique, destiny, profession talent, personality or history.
+
+### Innate vs learned must stay separate
+
+Examples:
+
+- profession talent = innate/trait;
+- profession XP/level = learned by doing;
+- spiritual root/bloodline/physique = primarily innate but may be refined/awakened through rare transformations;
+- cultivation realm/technique mastery/path XP = learned progression;
+- equipment/artifacts/manuals = acquired from the world;
+- loyalty/injury/stamina/mood = living state.
+
+Do not let ordinary repetitive training silently reroll innate identity.
+
+### Hidden information
+
+Latent bloodline/physique/destiny/traits may be generated at creation and revealed later. Reveal must not reroll the hidden state.
+
+### Bloodline / Physique / Destiny
+
+These are separate concepts:
+
+- bloodline = lineage/inherited source + purity/awakening;
+- physique = body configuration, innate or transformed;
+- destiny = rare rule-changing identity/milestone system;
+- spiritual root = elemental cultivation compatibility;
+- traits/quirks = smaller positive/negative consequences;
+- personality = behavioral decision bias.
+
+Do not merge them into one `traits` list semantically even if storage composition is shared internally.
 
 ## P2.6 locked contract — Forge + Equipment Tycoon
 
@@ -148,7 +221,7 @@ Assigned work must not permanently suppress cultivation/recovery.
 
 ### Recruitment
 
-Workforce-aware candidates gain deterministic comprehension and up to two profession traits. Do not collapse candidate value into one overall score.
+Current P2.7 candidates gain deterministic comprehension and up to two profession traits. This is an interim subset of the future generator, not the final disciple-generation model.
 
 ### Persistence
 
@@ -159,8 +232,8 @@ P2.7 workforce state must survive exact SaveService v2 round-trip and determinis
 - fixed profession classes;
 - one hard-coded DecisionSystem branch per future profession;
 - work forever with no cultivation/recovery;
-- candidate value only by combat power;
+- candidate value only by combat power or only by quality;
 - repetitive one-by-one mandatory micromanagement;
 - decorative aptitude/trait labels without consequences;
 - AI replacing an active direct Sect Master command;
-- expanding into loyalty/lifespan/master-disciple before the workforce gate is green.
+- expanding the full future disciple generator before the workforce gate is green.
