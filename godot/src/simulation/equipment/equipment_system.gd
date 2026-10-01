@@ -150,6 +150,10 @@ func craft(state: SimulationState, recipe_id: StringName, list_for_sale: bool = 
     var quality_id := _roll_quality(state.seed, state.sect.equipment_forge_index, str(recipe_id))
     var quality: Dictionary = QUALITY_DEFINITIONS[str(quality_id)]
     var stat_multiplier := float(quality.get("stat_multiplier", 1.0))
+    if state.sect.workforce_enabled and state.sect.forge_support_points > 0:
+        state.sect.forge_support_points -= 1
+        state.sect.workforce_event_count += 1
+        stat_multiplier *= 1.05
     var stats := _scaled_stats(data.get("stats", {}), stat_multiplier)
     var item_id := "equip_%06d" % state.sect.equipment_forge_index
     var price := maxi(1, int(round(float(data.get("base_price", 1)) * float(quality.get("price_multiplier", 1.0)))))
