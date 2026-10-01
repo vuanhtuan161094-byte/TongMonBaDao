@@ -11,6 +11,7 @@ var mouse_panning := false
 var camera_tween: Tween
 var focus_marker_tween: Tween
 var zoom_readout: Label
+var focus_readout: Label
 var focus_target_button: Button
 var focus_marker: Panel
 var focused_world_point := Vector2.ZERO
@@ -18,6 +19,9 @@ var focused_kind: StringName = &""
 var focused_id: StringName = &""
 var focused_label := ""
 var has_focus_target := false
+var tab_status_text := ""
+var technique_system := TechniqueSystem.new()
+var equipment_system := EquipmentSystem.new()
 
 func _ready() -> void:
     super._ready()
@@ -107,16 +111,15 @@ func _build_camera_controls() -> void:
     reset.pressed.connect(_reset_camera.bind(true))
     panel.add_child(reset)
 
-    var selected := Label.new()
-    selected.name = "SelectedTargetLabel"
-    selected.text = ""
-    selected.position = Vector2(-156, 228)
-    selected.size = Vector2(208, 20)
-    selected.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-    selected.add_theme_font_size_override("font_size", 10)
-    selected.add_theme_color_override("font_color", Color(0.16, 0.16, 0.13, 0.74))
-    selected.mouse_filter = Control.MOUSE_FILTER_IGNORE
-    panel.add_child(selected)
+    focus_readout = Label.new()
+    focus_readout.text = ""
+    focus_readout.position = Vector2(-156, 228)
+    focus_readout.size = Vector2(208, 20)
+    focus_readout.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+    focus_readout.add_theme_font_size_override("font_size", 10)
+    focus_readout.add_theme_color_override("font_color", Color(0.16, 0.16, 0.13, 0.74))
+    focus_readout.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    panel.add_child(focus_readout)
 
     var hint := Label.new()
     hint.text = "Chụm 2 ngón: zoom  •  Kéo: di chuyển  •  Chạm đúp: phóng nhanh"
@@ -277,17 +280,8 @@ func _refresh_focused_disciple_point() -> void:
     _position_focus_marker(focused_world_point)
 
 func _refresh_focus_readout() -> void:
-    var selected_label := get_node_or_null("Panel/SelectedTargetLabel") as Label
-    if selected_label == null:
-        for child in get_children():
-            if child is Panel:
-                var candidate := child.get_node_or_null("SelectedTargetLabel") as Label
-                if candidate != null:
-                    selected_label = candidate
-                    break
-    if selected_label == null:
-        return
-    selected_label.text = focused_label if has_focus_target else ""
+    if focus_readout != null:
+        focus_readout.text = focused_label if has_focus_target else ""
 
 func _reset_camera(animate: bool = true) -> void:
     var transform := SectMapCamera.reset_transform()
@@ -366,3 +360,266 @@ func _sync_actor_positions() -> void:
     super._sync_actor_positions()
     if focused_kind == &"disciple":
         _refresh_focused_disciple_point()
+
+func _tab_notice(tab_name: String) -> void:
+    _open_disciple_tab(tab_name)
+
+func _open_disciple_tab(tab_name: String) -> void:
+    if selected_id == &"" or not state.disciples.has(selected_id):
+        return
+    var disciple: DiscipleState = state.disciples[selected_id]
+    _clear_popup()
+    _add_dim()
+
+    var panel := Panel.new()
+    panel.position = Vector2(110, 82)
+    panel.size = Vector2(1060, 548)
+    panel.add_theme_stylebox_override("panel", _style(PAPER_LIGHT, INK, 3, 18))
+    popup_layer.add_child(panel)
+
+    var title := _label(panel, "%s · %s" % [disciple.display_name, tab_name], Vector2(24, 16), Vector2(720, 38), 24)
+    title.add_theme_color_override("font_color", CINNABAR.darkened(0.18))
+
+    var back := Button.new()
+    back.text = "← Hồ sơ"
+    back.position = Vector2(820, 14)
+    back.size = Vector2(140, 38)
+    back.add_theme_stylebox_override("normal", _style(Color(0.88, 0.82, 0.67, 1.0), INK, 1, 8))
+    back.pressed.connect(Callable(self, "_open_disciple").bind(selected_id))
+    panel.add_child(back)
+
+    var close := Button.new()
+    close.text = "×"
+    close.position = Vector2(1008, 14)
+    close.size = Vector2(36, 34)
+    close.add_theme_font_size_override("font_size", 22)
+    close.add_theme_stylebox_override("normal", _style(Color(0.76, 0.70, 0.58, 1.0), INK, 1, 16))
+    close.pressed.connect(_clear_popup)
+    panel.add_child(close)
+
+    var content_panel := Panel.new()
+    content_panel.position = Vector2(24, 68)
+    content_panel.size = Vector2(1012, 370)
+    content_panel.add_theme_stylebox_override("panel", _style(Color(0.93, 0.89, 0.78, 0.72), Color(0.50, 0.42, 0.30, 1.0), 1, 10))
+    panel.add_child(content_panel)
+
+    var content := _label(content_panel, _disciple_tab_text(tab_name, disciple), Vector2(20, 16), Vector2(972, 330), 15)
+    content.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    content.add_theme_color_override("font_color", INK)
+
+    if tab_name == "Huyết Mạch":
+        _add_tab_action_button(panel, "Thức tỉnh", Vector2(26, 450), "bloodline_awaken")
+        _add_tab_action_button(panel, "Luyện huyết", Vector2(148, 450), "bloodline_refine")
+    elif tab_name == "Thể Chất":
+        _add_tab_action_button(panel, "Tôi thể", Vector2(26, 450), "physique_temper")
+        _add_tab_action_button(panel, "Cải thể", Vector2(148, 450), "physique_transform")
+
+    var tab_names := ["Thuộc tính", "Công pháp", "Trang bị", "Huyết Mạch", "Thể Chất", "Quan hệ"]
+    for index in range(tab_names.size()):
+        var tab := Button.new()
+        tab.text = tab_names[index]
+        tab.position = Vector2(300 + index * 122, 486)
+        tab.size = Vector2(114, 36)
+        tab.add_theme_font_size_override("font_size", 12)
+        var active := tab_names[index] == tab_name
+        tab.add_theme_stylebox_override("normal", _style(Color(0.97, 0.88, 0.64, 1.0) if active else Color(0.88, 0.82, 0.67, 1.0), GOLD if active else Color(0.45, 0.37, 0.25, 1.0), 2 if active else 1, 6))
+        tab.pressed.connect(Callable(self, "_open_disciple_tab").bind(str(tab_names[index])))
+        panel.add_child(tab)
+
+func _add_tab_action_button(parent: Control, text: String, pos: Vector2, action: String) -> void:
+    var button := Button.new()
+    button.text = text
+    button.position = pos
+    button.size = Vector2(112, 40)
+    button.add_theme_font_size_override("font_size", 13)
+    button.add_theme_stylebox_override("normal", _style(CINNABAR, PAPER_LIGHT, 2, 8))
+    button.pressed.connect(Callable(self, "_disciple_tab_action").bind(action))
+    parent.add_child(button)
+
+func _disciple_tab_action(action: String) -> void:
+    if selected_id == &"" or not state.disciples.has(selected_id):
+        return
+    var result: Dictionary = {}
+    var tab_name := "Thuộc tính"
+    match action:
+        "bloodline_awaken":
+            result = bloodlines.awaken_bloodline(state, selected_id)
+            tab_name = "Huyết Mạch"
+        "bloodline_refine":
+            result = bloodlines.refine_bloodline(state, selected_id)
+            tab_name = "Huyết Mạch"
+        "physique_temper":
+            result = physiques.temper_body(state, selected_id)
+            tab_name = "Thể Chất"
+        "physique_transform":
+            result = physiques.transform_body(state, selected_id)
+            tab_name = "Thể Chất"
+        _:
+            return
+    tab_status_text = _action_result_text(result)
+    _open_disciple_tab(tab_name)
+
+func _action_result_text(result: Dictionary) -> String:
+    if result.is_empty():
+        return "Không có thay đổi."
+    var ok := bool(result.get("ok", false))
+    var reason := str(result.get("reason", ""))
+    return "%s · %s" % ["Thành công" if ok else "Chưa thể thực hiện", reason]
+
+func _disciple_tab_text(tab_name: String, disciple: DiscipleState) -> String:
+    match tab_name:
+        "Thuộc tính":
+            return _attributes_tab_text(disciple)
+        "Công pháp":
+            return _technique_tab_text(disciple)
+        "Trang bị":
+            return _equipment_tab_text(disciple)
+        "Huyết Mạch":
+            return _bloodline_tab_text(disciple)
+        "Thể Chất":
+            return _physique_tab_text(disciple)
+        "Quan hệ":
+            return _relationship_tab_text(disciple)
+        _:
+            return "Chưa có dữ liệu."
+
+func _attributes_tab_text(disciple: DiscipleState) -> String:
+    var required := cultivation.required_progress(disciple)
+    var progress_text := "Đã viên mãn" if required <= 0.0 else "%.0f / %.0f" % [disciple.cultivation_progress, required]
+    var chance := cultivation.breakthrough_success_chance(disciple, state) * 100.0
+    var power := cultivation.effective_combat_power(state, disciple)
+    var path_lines := [
+        "Kiếm %.1f" % float(disciple.cultivation_path_xp.get("sword", 0.0)),
+        "Thể %.1f" % float(disciple.cultivation_path_xp.get("body", 0.0)),
+        "Pháp %.1f" % float(disciple.cultivation_path_xp.get("spell", 0.0))
+    ]
+    return (
+        "Cảnh giới: %s\nTu vi: %s\nChiến lực hiệu dụng: %.1f\nXác suất đột phá hiện tại: %.1f%%\n"
+        + "HP %.0f/%.0f · Thể lực %.0f/100 · Ví %d\n\n"
+        + "Tư Chất %s · Căn Cốt %s · Cơ Duyên %s\nThông Tuệ %s · Mị Lực %s · Tiềm Lực %s\n\n"
+        + "Tích lũy đường tu: %s\nHành động hiện tại: %s\n%s"
+    ) % [
+        cultivation.stage_name(disciple), progress_text, power, chance,
+        disciple.hp, disciple.max_hp, disciple.stamina, disciple.wallet,
+        _score(disciple.aptitude), _score(disciple.constitution), _score(disciple.fortune),
+        _score(disciple.comprehension), _score(disciple.charisma), _score(disciple.potential),
+        " · ".join(path_lines), SectMapPresentation.action_label(disciple.current_action),
+        tab_status_text
+    ]
+
+func _technique_tab_text(disciple: DiscipleState) -> String:
+    var lines: Array[String] = []
+    var ids: Array = disciple.learned_techniques.keys()
+    ids.sort()
+    for raw_id in ids:
+        var technique_id := StringName(raw_id)
+        var mastery: Dictionary = disciple.learned_techniques[raw_id]
+        lines.append("• %s · Lv%d · XP %.1f%s" % [
+            technique_system.technique_name(technique_id),
+            int(mastery.get("level", 1)),
+            float(mastery.get("xp", 0.0)),
+            " · ĐANG DÙNG" if disciple.active_technique_id == technique_id else ""
+        ])
+    if lines.is_empty():
+        lines.append("• Chưa học công pháp")
+    return "Công pháp đã học: %d/%d\nCống hiến: %d · Linh thạch cá nhân: %d\n\n%s\n\nCông pháp đang dùng ảnh hưởng trực tiếp tu luyện/chiến đấu theo P2.3–P2.5." % [
+        disciple.learned_techniques.size(), TechniqueSystem.MAX_LEARNED_TECHNIQUES,
+        disciple.contribution_points, disciple.spirit_stones, "\n".join(lines)
+    ]
+
+func _equipment_tab_text(disciple: DiscipleState) -> String:
+    var lines: Array[String] = []
+    for slot in EquipmentSystem.VALID_SLOTS:
+        var item := equipment_system.equipped_item(state, disciple, slot)
+        var slot_name := _equipment_slot_name(slot)
+        if item.is_empty():
+            lines.append("• %s: Chưa trang bị" % slot_name)
+            continue
+        var locked := bool(disciple.locked_equipment_slots.get(str(slot), false))
+        lines.append("• %s: %s · %s · %s" % [
+            slot_name,
+            str(item.get("name", "?")),
+            equipment_system.quality_name(StringName(item.get("quality", "pham"))),
+            "Đã khóa" if locked else "Tự động"
+        ])
+    var equip_power := equipment_system.combat_power_bonus(state, disciple)
+    var damage_reduction := (1.0 - equipment_system.incoming_damage_multiplier(state, disciple)) * 100.0
+    return "Trang bị hiện tại:\n%s\n\nĐóng góp chiến lực: +%.1f\nGiảm sát thương từ trang bị: %.1f%%\nVí cá nhân: %d\n\nSlot không khóa vẫn được AI tự mua/nâng; slot khóa do Tông Chủ kiểm soát." % [
+        "\n".join(lines), equip_power, damage_reduction, disciple.wallet
+    ]
+
+func _bloodline_tab_text(disciple: DiscipleState) -> String:
+    var profile := bloodlines.profile_for(state, disciple.id)
+    if profile.is_empty():
+        return "Chưa có hồ sơ Huyết Mạch."
+    if not bool(profile.get("revealed", false)):
+        return "Huyết Mạch: Chưa xác định\n\nDanh tính ẩn đã được cố định từ lúc sinh; giao diện không tiết lộ trước khi đủ điều kiện phát hiện."
+    var id := StringName(profile.get("bloodline_id", "none"))
+    var awakened := bool(profile.get("awakened", false))
+    var stats := bloodlines.stat_profile(state, disciple)
+    var status := "Đã thức tỉnh" if awakened else "Chưa thức tỉnh"
+    return (
+        "Huyết Mạch: %s\nĐộ thuần: %.1f%% · %s · Luyện huyết %d lần\n\n"
+        + "Công +%.1f · Giảm sát thương %.1f%%\nTu luyện +%.1f%% · Đột phá +%.1f%% · Hồi phục +%.1f%%\n"
+        + "Tiêu hao thêm khi xuất môn: %d\n\nYêu Đan trong tông: %d\n%s"
+    ) % [
+        bloodlines.bloodline_name(id), float(profile.get("purity", 0.0)) * 100.0, status, int(profile.get("refinement_count", 0)),
+        float(stats.get("combat_power_bonus", 0.0)), float(stats.get("damage_reduction_pct", 0.0)),
+        float(stats.get("cultivation_bonus_pct", 0.0)), float(stats.get("breakthrough_bonus_pct", 0.0)), float(stats.get("recovery_bonus_pct", 0.0)),
+        int(stats.get("extra_departure_supply", 0)), int(state.sect.technique_materials.get("yeu_dan", 0)), tab_status_text
+    ]
+
+func _physique_tab_text(disciple: DiscipleState) -> String:
+    var profile := physiques.profile_for(state, disciple.id)
+    if profile.is_empty():
+        return "Chưa có hồ sơ Thể Chất."
+    var stats := physiques.stat_profile(state, disciple)
+    var defense := (1.0 - float(stats.get("incoming_damage_multiplier", 1.0))) * 100.0
+    var cultivate_pct := (float(stats.get("cultivation_multiplier", 1.0)) - 1.0) * 100.0
+    var breakthrough_pct := float(stats.get("breakthrough_bonus", 0.0)) * 100.0
+    var recovery_pct := (float(stats.get("recovery_multiplier", 1.0)) - 1.0) * 100.0
+    return (
+        "Thể Chất: %s\nTôi thể: %d/%d · Đã cải thể: %s\n\n"
+        + "Công +%.1f · Giảm sát thương %.1f%%\nTu luyện %+.1f%% · Đột phá %+.1f%% · Hồi phục %+.1f%%\n"
+        + "Kiếm đạo XP x%.2f · Thể đạo XP x%.2f · Pháp đạo XP x%.2f\n\n"
+        + "Yêu Đan: %d · Linh Tủy: %d\n%s"
+    ) % [
+        physiques.display_physique(state, disciple.id), int(profile.get("temper_level", 0)), PhysiqueSystem.MAX_TEMPER_LEVEL,
+        "Có" if bool(profile.get("transformed", false)) else "Không",
+        float(stats.get("attack_bonus", 0.0)), defense, cultivate_pct, breakthrough_pct, recovery_pct,
+        float(stats.get("sword_xp_multiplier", 1.0)), float(stats.get("body_xp_multiplier", 1.0)), float(stats.get("spell_xp_multiplier", 1.0)),
+        int(state.sect.technique_materials.get("yeu_dan", 0)), int(state.sect.technique_materials.get("linh_tuy", 0)), tab_status_text
+    ]
+
+func _relationship_tab_text(disciple: DiscipleState) -> String:
+    var lines: Array[String] = []
+    var raw_map = state.relationships.get(str(disciple.id), {})
+    if raw_map is Dictionary:
+        var target_ids: Array = raw_map.keys()
+        target_ids.sort()
+        for raw_target in target_ids:
+            var relation: RelationshipState = raw_map[raw_target]
+            var target_id := StringName(raw_target)
+            var target_name := str(target_id)
+            if state.disciples.has(target_id):
+                var target: DiscipleState = state.disciples[target_id]
+                target_name = target.display_name
+            lines.append("• %s · Thân %.0f · Tin %.0f · Kính %.0f · Tương tác %d" % [
+                target_name, relation.affinity, relation.trust, relation.respect, relation.interactions
+            ])
+    if lines.is_empty():
+        lines.append("• Chưa có quan hệ đáng kể được lưu")
+    var companion := str(state.companion_assignments.get(str(disciple.id), ""))
+    if companion != "" and state.disciples.has(StringName(companion)):
+        var companion_disciple: DiscipleState = state.disciples[StringName(companion)]
+        companion = companion_disciple.display_name
+    else:
+        companion = "Chưa phân"
+    return "Đồng hành ưu tiên: %s\n\n%s\n\nQuan hệ là state thật của P1.3; hành vi và ký ức tiếp tục thay đổi các giá trị này." % [companion, "\n".join(lines)]
+
+func _equipment_slot_name(slot: StringName) -> String:
+    match slot:
+        EquipmentSystem.SLOT_WEAPON: return "Vũ khí"
+        EquipmentSystem.SLOT_ARMOR: return "Giáp"
+        EquipmentSystem.SLOT_TALISMAN: return "Phụ kiện"
+        _: return str(slot)
