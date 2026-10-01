@@ -217,9 +217,7 @@ static func from_dict(data: Dictionary) -> DiscipleState:
     disciple.target_region_id = StringName(data.get("target_region_id", ""))
     disciple.inventory = _int_dictionary(data.get("inventory", {}))
     disciple.pending_loot = _int_dictionary(data.get("pending_loot", {}))
-    disciple.last_decision = data.get("last_decision", {}).duplicate(true)
-    if disciple.last_decision.has("action"):
-        disciple.last_decision["action"] = str(disciple.last_decision["action"])
+    disciple.last_decision = _decision_dictionary(data.get("last_decision", {}))
 
     var saved_metrics = data.get("metrics", {})
     if saved_metrics is Dictionary:
@@ -228,6 +226,20 @@ static func from_dict(data: Dictionary) -> DiscipleState:
         for key in metric_keys:
             disciple.metrics[str(key)] = int(saved_metrics[key])
     return disciple
+
+static func _decision_dictionary(value: Variant) -> Dictionary:
+    var normalized: Dictionary = {}
+    if not (value is Dictionary):
+        return normalized
+    normalized = value.duplicate(true)
+    if normalized.has("action"):
+        normalized["action"] = str(normalized["action"])
+    # JSON parses ordinary numeric literals as floating point. These snapshot fields
+    # are integer sect resources at runtime, so restore their canonical types.
+    for key in ["medicine_stock", "supply_stock", "lodging_capacity"]:
+        if normalized.has(key):
+            normalized[key] = int(normalized[key])
+    return normalized
 
 static func _int_dictionary(value: Variant) -> Dictionary:
     var normalized: Dictionary = {}
