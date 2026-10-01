@@ -73,6 +73,11 @@ var disciple_generation_v2_enabled: bool = false
 var disciple_recruitment_tokens: int = 0
 var disciple_generation_event_count: int = 0
 
+# P2.9 deterministic visible/latent/revealed trait profiles. Fully opt-in.
+var disciple_traits_enabled: bool = false
+var disciple_trait_profiles: Dictionary = {}
+var disciple_trait_event_count: int = 0
+
 func to_dict() -> Dictionary:
     var data := {
         "treasury": treasury,
@@ -124,6 +129,10 @@ func to_dict() -> Dictionary:
         data["disciple_generation_v2_enabled"] = disciple_generation_v2_enabled
         data["disciple_recruitment_tokens"] = disciple_recruitment_tokens
         data["disciple_generation_event_count"] = disciple_generation_event_count
+    if disciple_traits_enabled or disciple_trait_event_count > 0 or not disciple_trait_profiles.is_empty():
+        data["disciple_traits_enabled"] = disciple_traits_enabled
+        data["disciple_trait_profiles"] = disciple_trait_profiles.duplicate(true)
+        data["disciple_trait_event_count"] = disciple_trait_event_count
     return data
 
 static func from_dict(data: Dictionary) -> SectState:
@@ -168,6 +177,9 @@ static func from_dict(data: Dictionary) -> SectState:
     state.disciple_generation_v2_enabled = bool(data.get("disciple_generation_v2_enabled", false))
     state.disciple_recruitment_tokens = maxi(int(data.get("disciple_recruitment_tokens", 0)), 0)
     state.disciple_generation_event_count = maxi(int(data.get("disciple_generation_event_count", 0)), 0)
+    state.disciple_traits_enabled = bool(data.get("disciple_traits_enabled", false))
+    state.disciple_trait_profiles = _trait_profile_dictionary(data.get("disciple_trait_profiles", {}))
+    state.disciple_trait_event_count = maxi(int(data.get("disciple_trait_event_count", 0)), 0)
 
     var saved_stats = data.get("needs_stats", {})
     if saved_stats is Dictionary:
@@ -254,3 +266,32 @@ static func _work_group_dictionary(value: Variant) -> Dictionary:
             "priorities": priorities
         }
     return normalized
+
+static func _trait_profile_dictionary(value: Variant) -> Dictionary:
+    var normalized: Dictionary = {}
+    if not (value is Dictionary):
+        return normalized
+    var keys: Array = value.keys()
+    keys.sort()
+    for raw_key in keys:
+        var raw_profile = value[raw_key]
+        if not (raw_profile is Dictionary):
+            continue
+        normalized[str(raw_key)] = {
+            "initialized": bool(raw_profile.get("initialized", false)),
+            "visible": _string_array(raw_profile.get("visible", [])),
+            "latent": _string_array(raw_profile.get("latent", [])),
+            "revealed": _string_array(raw_profile.get("revealed", []))
+        }
+    return normalized
+
+static func _string_array(value: Variant) -> Array:
+    var result: Array = []
+    if not (value is Array):
+        return result
+    for item in value:
+        var text := str(item)
+        if text != "" and not result.has(text):
+            result.append(text)
+    result.sort()
+    return result
