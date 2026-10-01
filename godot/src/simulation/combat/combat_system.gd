@@ -30,6 +30,8 @@ func resolve_encounter(state: SimulationState, disciple: DiscipleState, rng: Gam
     var monster_hp := float(definition.get("hp", 30.0))
     var monster_power := float(definition.get("power", 10.0))
     var effective_power := cultivation_system.effective_combat_power(state, disciple) if state.sect.cultivation_enabled else disciple.combat_power
+    if state.sect.equipment_enabled:
+        effective_power += equipment_system.combat_power_bonus(state, disciple)
     var damage_multiplier := technique_system.incoming_damage_multiplier(state, disciple) if state.sect.techniques_enabled else 1.0
     if state.sect.cultivation_paths_enabled:
         if state.sect.techniques_enabled:
@@ -77,6 +79,8 @@ func _resolve_realtime_encounter(state: SimulationState, disciple: DiscipleState
         return {"outcome":"invalid", "loot":{}, "trace":[]}
 
     var effective_power := cultivation_system.effective_combat_power(state, disciple) if state.sect.cultivation_enabled else disciple.combat_power
+    if state.sect.equipment_enabled:
+        effective_power += equipment_system.combat_power_bonus(state, disciple)
     var incoming_multiplier := _realtime_incoming_multiplier(state, disciple)
     var style: Dictionary = combat_skill_system.style_profile(state, disciple)
     if state.sect.equipment_enabled:
