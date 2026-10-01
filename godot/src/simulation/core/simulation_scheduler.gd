@@ -14,6 +14,7 @@ var cultivation_path_system := CultivationPathSystem.new()
 var combat_skill_system := CombatSkillSystem.new()
 var equipment_system := EquipmentSystem.new()
 var workforce_system := WorkforceSystem.new()
+var trait_system := TraitSystem.new()
 var economy_system := EconomySystem.new()
 var combat_system := CombatSystem.new()
 
@@ -39,10 +40,14 @@ func step() -> void:
             var disciple: DiscipleState = state.disciples[raw_id]
             _step_disciple(disciple)
             disciple.metrics["actions"] = int(disciple.metrics.get("actions", 0)) + 1
+            if state.sect.disciple_traits_enabled:
+                trait_system.process_reveals(state, disciple)
     else:
         for disciple in state.disciples.values():
             _step_disciple(disciple)
             disciple.metrics["actions"] = int(disciple.metrics.get("actions", 0)) + 1
+            if state.sect.disciple_traits_enabled:
+                trait_system.process_reveals(state, disciple)
 
     state.rng_state = rng.snapshot_seed_state()
 
