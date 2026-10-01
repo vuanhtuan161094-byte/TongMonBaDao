@@ -42,16 +42,94 @@ Primary operating rhythm: **Evil Hunter Tycoon**.
 
 Reference specializations:
 
-- `最强祖师` -> multidimensional disciple value, traits, production specialization;
+- `最强祖师` -> multidimensional disciple identity, quality progression, traits, production specialization, loyalty/injury/profile reference;
 - `The Lost Village` -> work assignment, group priority and work/cultivation/recovery schedule;
 - `鬼谷八荒` -> sect rank and later delegation/hall authority;
 - `Sect Master / 宗门经理人` -> expedition -> warehouse -> production -> disciple build loop.
 
-Research docs:
+Research/canon docs:
 
 - `docs/GAMEPLAY_REFERENCE_SYNTHESIS.md`
 - `docs/DISCIPLE_SYSTEM_DEEP_RESEARCH.md`
+- `docs/DISCIPLE_SYSTEM_LATEST_SOURCE_ADDENDUM_2026-10-01.md`
+- `docs/DISCIPLE_GENERATION_CANON.md`
 - `docs/P2_7_DISCIPLE_LIFE_WORKFORCE_SPEC.md`
+
+`docs/DISCIPLE_GENERATION_CANON.md` is the authoritative post-P2.7 design lock for random/procedural disciples.
+
+## Canonical future disciple model
+
+Future ordinary disciples are deterministic procedural individuals, not hand-authored one by one.
+
+Recruitment may come from:
+
+- ordinary recruitment;
+- Chiêu Hiền / gacha;
+- Nhân Duyên / Cơ Duyên encounters;
+- recommendations;
+- story/world events.
+
+One seeded generator must create the complete individual once and persist it without rerolling on reload or reveal.
+
+### Attribute origin categories
+
+1. **Innate** — race, sex, six base dimensions, initial spiritual roots, hidden/visible bloodline, hidden/visible physique, core personality, innate traits, possible destiny.
+2. **Nearly fixed identity** — character ID, origin/history and generated profile seed.
+3. **Learned progression** — realm, body cultivation, techniques, path XP, combat skills, profession XP, relationships/experience.
+4. **Awakened/realized** — hidden bloodline/physique/destiny, rare mutations, Dao/intent later.
+5. **Acquired from the world** — equipment, artifacts, manuals, pills, inheritances, treasures.
+6. **Living state** — HP, stamina, injury, loyalty, mood later, location, work, commands and organization state.
+
+Innate does **not** mean permanently frozen: roots/bloodline/physique/foundation may improve through rare transformation/refinement, while ordinary training should affect learned systems instead.
+
+### Six base dimensions
+
+Canonical meanings:
+
+- Tư Chất -> cultivation efficiency;
+- Căn Cốt -> body cultivation/physical potential;
+- Cơ Duyên -> event/opportunity fortune;
+- Thông Tuệ -> learning/profession/understanding;
+- Mị Lực -> social/recruitment/diplomacy later;
+- Tiềm Lực -> long-term permanent-growth ceiling.
+
+P2.7 `comprehension` is the current operational subset corresponding to Thông Tuệ.
+
+### Phẩm chất is mandatory and promotable
+
+Working tiers:
+
+- Phàm Thường;
+- Xuất Chúng;
+- Thiên Kiêu;
+- Tuyệt Luân;
+- Nghịch Thiên.
+
+Quality is a fast roster/gacha summary of permanent foundation/potential. It can rise when permanent foundation crosses the next threshold.
+
+Quality must not directly count temporary equipment, sect rank, current realm, profession XP or temporary buffs.
+
+Quality is not the only value score. Lower-quality disciples can be uniquely valuable because of spiritual roots, bloodline, physique, destiny, profession talent, personality or history.
+
+### Separate rare identity layers
+
+Do not merge these semantically:
+
+- spiritual root = elemental cultivation compatibility/purity;
+- bloodline = inherited lineage + purity/awakening;
+- physique = body configuration, innate or transformed;
+- destiny = rare rule-changing identity/milestone progression;
+- traits/quirks = smaller positive/negative consequences;
+- personality = behavioral decision tendencies.
+
+Hidden bloodline/physique/destiny/traits may be generated at creation and revealed later. Reveal must never reroll them.
+
+### Profession talent vs profession mastery
+
+- profession talent = innate trait/aptitude;
+- profession XP/level = learned by actually working.
+
+This distinction is mandatory so disciples have a believable life history.
 
 ## P2.7 implemented architecture
 
@@ -134,12 +212,12 @@ Emergency survival remains above routine commands. A completed/expired command r
 
 ### Recruitment
 
-P2.7 candidates gain deterministic:
+P2.7 candidates currently gain deterministic:
 
 - comprehension;
 - 0-2 profession traits.
 
-This creates non-combat recruitment value without an overall-score shortcut.
+This is an interim implementation only. It must later migrate into the full procedural generator rather than becoming a parallel recruitment model.
 
 ## Persistence and determinism
 
@@ -188,16 +266,23 @@ A dedicated first-difference diagnostic exists:
 13. All prior invariants and P0-P2.6 gates remain green.
 14. P2.7 interaction scene launches headless.
 
-## Deferred after P2.7 vertical slice
+## After P2.7 runtime green
 
-- elder/hall-master delegation AI;
-- salaries/stipends and loyalty;
-- master-disciple relationships;
-- lifespan/death/succession;
-- marriage/dual cultivation;
-- active alchemy/herbalism/logistics loops;
-- full spatial building/pathfinding workforce simulation;
-- advanced equipment enhancement/reroll systems.
+Implementation dependency is now:
+
+1. procedural disciple generator v2 + six dimensions + promotable quality;
+2. ordinary recruitment + Chiêu Hiền/gacha + Nhân Duyên source interface;
+3. traits/quirks + hidden reveal framework;
+4. spiritual-root refinement;
+5. bloodline + physique;
+6. injury/medical;
+7. loyalty + stipend/reward;
+8. sect rank/authority;
+9. master-disciple/teaching;
+10. rare destiny/awakening;
+11. lifespan/death/inheritance after pacing is proven.
+
+Do not build this entire stack before the P2.7 runtime gate is green.
 
 ## Next authoritative local command
 
