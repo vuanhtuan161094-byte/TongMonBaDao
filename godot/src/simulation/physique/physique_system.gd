@@ -26,12 +26,61 @@ const SPECIAL_PHYSIQUES := [
 ]
 
 const PHYSIQUE_NAMES := {
-    "ordinary_body": "Phàm Thể",
+    "ordinary_body": "",
     "sword_bone": "Kiếm Cốt",
     "diamond_overlord_body": "Kim Cương Bá Thể",
     "cold_yin_body": "Hàn Âm Thể",
     "fire_spirit_body": "Hỏa Linh Thể",
     "pure_dao_body": "Vô Cấu Đạo Thể"
+}
+
+# P2.12 physique grade is independent from physique type.
+# A named physique answers "what kind of body is this?" while the grade answers
+# "how strong is this body's innate foundation?".
+const GRADE_MORTAL := &"mortal_body"
+const GRADE_SPIRIT := &"spirit_body"
+const GRADE_MYSTIC := &"mystic_body"
+const GRADE_SAINT := &"saint_body"
+const GRADE_DIVINE := &"divine_body"
+const VALID_GRADES := [GRADE_MORTAL, GRADE_SPIRIT, GRADE_MYSTIC, GRADE_SAINT, GRADE_DIVINE]
+const GRADE_NAMES := {
+    "mortal_body": "Phàm Thể",
+    "spirit_body": "Linh Thể",
+    "mystic_body": "Huyền Thể",
+    "saint_body": "Thánh Thể",
+    "divine_body": "Thần Thể"
+}
+const GRADE_STAT_SCALE := {
+    "mortal_body": 0.85,
+    "spirit_body": 1.00,
+    "mystic_body": 1.20,
+    "saint_body": 1.45,
+    "divine_body": 1.80
+}
+# Explicit source distributions. These are conditional only on the grade roll;
+# physique type still has its separate special-physique chance below.
+const GRADE_RATES := {
+    "ordinary": {
+        "mortal_body": 0.58,
+        "spirit_body": 0.27,
+        "mystic_body": 0.11,
+        "saint_body": 0.035,
+        "divine_body": 0.005
+    },
+    "gacha": {
+        "mortal_body": 0.40,
+        "spirit_body": 0.32,
+        "mystic_body": 0.19,
+        "saint_body": 0.07,
+        "divine_body": 0.02
+    },
+    "fate": {
+        "mortal_body": 0.28,
+        "spirit_body": 0.31,
+        "mystic_body": 0.24,
+        "saint_body": 0.13,
+        "divine_body": 0.04
+    }
 }
 
 const PROFILE_SEED_OFFSET := 413557
@@ -82,6 +131,23 @@ func physique_id(state: SimulationState, character_id: StringName) -> StringName
 func physique_name(id: StringName) -> String:
     return str(PHYSIQUE_NAMES.get(str(id), str(id)))
 
+func physique_grade(state: SimulationState, character_id: StringName) -> StringName:
+    return StringName(profile_for(state, character_id).get("physique_grade", "mortal_body"))
+
+func grade_name(grade_id: StringName) -> String:
+    return str(GRADE_NAMES.get(str(grade_id), str(grade_id)))
+
+func display_physique(state: SimulationState, character_id: StringName) -> String:
+    var id := physique_id(state, character_id)
+    var grade := physique_grade(state, character_id)
+    if id == PHYSIQUE_ORDINARY:
+        return grade_name(grade)
+    return "%s · %s" % [physique_name(id), grade_name(grade)]
+
+func grade_rates_for_source(source: StringName) -> Dictionary:
+    var rates: Dictionary = GRADE_RATES.get(str(source), GRADE_RATES["ordinary"])
+    return rates.duplicate(true)
+
 func temper_level(state: SimulationState, character_id: StringName) -> int:
     return clampi(int(profile_for(state, character_id).get("temper_level", 0)), 0, MAX_TEMPER_LEVEL)
 
@@ -107,7 +173,8 @@ func temper_body(state: SimulationState, disciple_id: StringName) -> Dictionary:
         "ok":true,
         "reason":"tempered",
         "temper_level":int(profile["temper_level"]),
-        "physique_id":str(profile.get("physique_id", "ordinary_body"))
+        "physique_id":str(profile.get("physique_id", "ordinary_body")),
+        "physique_grade":str(profile.get("physique_grade", "mortal_body"))
     }
 
 func can_transform(state: SimulationState, disciple_id: StringName) -> bool:
@@ -154,6 +221,7 @@ func transform_body(state: SimulationState, disciple_id: StringName) -> Dictiona
         "reason":"transformed",
         "physique_id":str(target),
         "physique_name":physique_name(target),
+        "physique_grade":str(profile.get("physique_grade", "mortal_body")),
         "temper_level":int(profile.get("temper_level", 0))
     }
 
@@ -175,6 +243,7 @@ func stat_profile(state: SimulationState, disciple: DiscipleState) -> Dictionary
         return neutral
 
     var id := StringName(profile.get("physique_id", "ordinary_body"))
+    var grade := StringName(profile.get("physique_grade", "mortal_body"))
     var level := clampi(int(profile.get("temper_level", 0)), 0, MAX_TEMPER_LEVEL)
     var scale := 1.0 + float(level) * 0.08
     var has_water := disciple.spiritual_root_elements.has("water")
@@ -243,6 +312,7 @@ func stat_profile(state: SimulationState, disciple: DiscipleState) -> Dictionary
             neutral["spell_xp_multiplier"] = 1.0 + 0.18 * scale
         _:
             pass
+    _apply_grade_scale(neutral, grade)
     return neutral
 
 func combat_power_bonus(state: SimulationState, disciple: DiscipleState) -> float:
@@ -291,6 +361,9 @@ func validate_invariants(state: SimulationState) -> Array[String]:
         var id := StringName(profile.get("physique_id", "ordinary_body"))
         if not VALID_PHYSIQUES.has(id):
             errors.append("Physique profile %s has invalid physique id %s." % [owner_id, id])
+        var grade := StringName(profile.get("physique_grade", "mortal_body"))
+        if not VALID_GRADES.has(grade):
+            errors.append("Physique profile %s has invalid physique grade %s." % [owner_id, grade])
         var initial_id := StringName(profile.get("initial_physique_id", "ordinary_body"))
         if not VALID_PHYSIQUES.has(initial_id):
             errors.append("Physique profile %s has invalid initial physique id." % owner_id)
@@ -309,6 +382,9 @@ func validate_invariants(state: SimulationState) -> Array[String]:
 func _ensure_profile(state: SimulationState, character_id: String, latent_seed: int, source: StringName) -> Dictionary:
     var existing = state.sect.physique_profiles.get(character_id, {})
     if existing is Dictionary and bool(existing.get("initialized", false)):
+        if not existing.has("physique_grade"):
+            existing["physique_grade"] = str(GRADE_MORTAL)
+            state.sect.physique_profiles[character_id] = existing
         return existing
 
     var seed_value := latent_seed if latent_seed > 0 else _stable_hash(character_id)
@@ -323,6 +399,7 @@ func _ensure_profile(state: SimulationState, character_id: String, latent_seed: 
     if rng.randf_range(0.0, 1.0) < special_chance:
         id = _roll_innate_physique(rng, source)
 
+    var grade := _roll_grade(rng, source)
     var latent := ""
     if id == PHYSIQUE_ORDINARY:
         latent = str(_roll_latent_transformation(rng, source))
@@ -330,6 +407,7 @@ func _ensure_profile(state: SimulationState, character_id: String, latent_seed: 
     var profile := {
         "initialized":true,
         "physique_id":str(id),
+        "physique_grade":str(grade),
         "initial_physique_id":str(id),
         "temper_level":0,
         "transformed":false,
@@ -338,6 +416,16 @@ func _ensure_profile(state: SimulationState, character_id: String, latent_seed: 
     state.sect.physique_profiles[character_id] = profile
     state.sect.physique_event_count += 1
     return profile
+
+func _roll_grade(rng: GameRng, source: StringName) -> StringName:
+    var rates := grade_rates_for_source(source)
+    var roll := rng.randf_range(0.0, 1.0)
+    var cumulative := 0.0
+    for grade_id in VALID_GRADES:
+        cumulative += float(rates.get(str(grade_id), 0.0))
+        if roll <= cumulative + 0.000001:
+            return grade_id
+    return GRADE_MORTAL
 
 func _roll_innate_physique(rng: GameRng, source: StringName) -> StringName:
     var roll := rng.randf_range(0.0, 100.0)
@@ -375,6 +463,29 @@ func _roll_latent_transformation(rng: GameRng, source: StringName) -> StringName
             return PHYSIQUE_COLD_YIN
         _:
             return PHYSIQUE_FIRE_SPIRIT
+
+func _apply_grade_scale(stats: Dictionary, grade: StringName) -> void:
+    var scale := float(GRADE_STAT_SCALE.get(str(grade), 0.85))
+    stats["attack_bonus"] = float(stats.get("attack_bonus", 0.0)) * scale
+
+    var incoming := float(stats.get("incoming_damage_multiplier", 1.0))
+    if incoming < 1.0:
+        stats["incoming_damage_multiplier"] = clampf(1.0 - (1.0 - incoming) * scale, 0.55, 1.0)
+
+    var cultivation := float(stats.get("cultivation_multiplier", 1.0))
+    if cultivation > 1.0:
+        stats["cultivation_multiplier"] = 1.0 + (cultivation - 1.0) * scale
+
+    stats["breakthrough_bonus"] = maxf(float(stats.get("breakthrough_bonus", 0.0)), 0.0) * scale
+
+    var recovery := float(stats.get("recovery_multiplier", 1.0))
+    if recovery > 1.0:
+        stats["recovery_multiplier"] = 1.0 + (recovery - 1.0) * scale
+
+    for key in ["sword_xp_multiplier", "body_xp_multiplier", "spell_xp_multiplier"]:
+        var multiplier := float(stats.get(key, 1.0))
+        if multiplier > 1.0:
+            stats[key] = 1.0 + (multiplier - 1.0) * scale
 
 func _consume_material(state: SimulationState, material_id: String, quantity: int) -> void:
     var next_amount := int(state.sect.technique_materials.get(material_id, 0)) - quantity
