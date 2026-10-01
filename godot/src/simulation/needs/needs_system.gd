@@ -14,6 +14,8 @@ const SUPPLIED_TRAVEL_STAMINA_COST := 7.0
 const UNSUPPLIED_TRAVEL_STAMINA_COST := 13.0
 const MIN_REST_MULTIPLIER := 0.45
 
+var bloodline_system := BloodlineSystem.new()
+
 func initialize(state: SimulationState, medicine: int = 18, supplies: int = 24, lodging: int = 6) -> void:
     state.sect.needs_enabled = true
     state.sect.medicine_stock = clampi(medicine, 0, MEDICINE_CAP)
@@ -79,6 +81,13 @@ func prepare_departure(state: SimulationState, disciple: DiscipleState) -> bool:
         state.sect.supply_stock -= 1
         state.sect.needs_stats["supplies_used"] = int(state.sect.needs_stats.get("supplies_used", 0)) + 1
         disciple.metrics["p1_6_departure_supplied"] = 1
+        if state.sect.bloodlines_enabled:
+            var extra_cost := bloodline_system.extra_departure_supply_cost(state, disciple)
+            var extra_used := mini(extra_cost, state.sect.supply_stock)
+            if extra_used > 0:
+                state.sect.supply_stock -= extra_used
+                state.sect.needs_stats["supplies_used"] = int(state.sect.needs_stats.get("supplies_used", 0)) + extra_used
+                disciple.metrics["bloodline_extra_supplies"] = int(disciple.metrics.get("bloodline_extra_supplies", 0)) + extra_used
     else:
         disciple.metrics["p1_6_departure_supplied"] = 0
     state.sect.needs_event_count += 1
@@ -99,11 +108,14 @@ func rest_recovery_multiplier(state: SimulationState) -> float:
     return clampf(ratio, MIN_REST_MULTIPLIER, 1.0)
 
 func apply_rest(state: SimulationState, disciple: DiscipleState) -> float:
-    var multiplier := rest_recovery_multiplier(state)
+    var lodging_multiplier := rest_recovery_multiplier(state)
+    var multiplier := lodging_multiplier
+    if state.sect.bloodlines_enabled:
+        multiplier *= bloodline_system.rest_recovery_multiplier(state, disciple)
     disciple.stamina = minf(100.0, disciple.stamina + 48.0 * multiplier)
     disciple.hp = minf(disciple.max_hp, disciple.hp + 5.0 * multiplier)
     disciple.metrics["rests"] = int(disciple.metrics.get("rests", 0)) + 1
-    if state.sect.needs_enabled and multiplier < 0.999999:
+    if state.sect.needs_enabled and lodging_multiplier < 0.999999:
         state.sect.needs_stats["overcrowded_rests"] = int(state.sect.needs_stats.get("overcrowded_rests", 0)) + 1
         state.sect.needs_event_count += 1
     return multiplier
