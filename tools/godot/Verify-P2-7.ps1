@@ -7,6 +7,13 @@ $ErrorActionPreference = "Stop"
 # P2.7 builds on the locked P2.6 stack and intentionally re-runs all earlier gates first.
 . (Join-Path $PSScriptRoot "Verify-P2-6.ps1") -GodotBin $GodotBin
 
+Write-Host "[P2.7] Persistence diagnostic"
+Invoke-GodotWithTimeout -CommandArgs @(
+    "--headless",
+    "--path", $Project,
+    "-s", "res://tests/simulation/p2_7_persistence_diagnostic.gd"
+) -TimeoutSeconds 240 -Label "P2.7 persistence diagnostic"
+
 Write-Host "[P2.7] Disciple life + workforce contracts"
 Invoke-GodotWithTimeout -CommandArgs @(
     "--headless",
