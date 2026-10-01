@@ -3,10 +3,11 @@
 ## Authority order
 
 1. current user instruction;
-2. `CURRENT_CHECKPOINT.md`;
-3. live code + tests;
-4. active phase spec under `docs/`;
-5. older discussion only for historical context.
+2. `docs/DISCIPLE_MASTER_SCHEMA.md` for any disciple/character model question;
+3. `CURRENT_CHECKPOINT.md`;
+4. live code + tests;
+5. active phase spec under `docs/`;
+6. older discussion only for historical context.
 
 ## Non-negotiable engineering rules
 
@@ -23,6 +24,7 @@
 - Never weaken exact persistence/determinism tests just to make a gate pass.
 - New phases must be opt-in when changing locked behavior.
 - Hidden identity is generated once and persisted. Reveal/transformation never rerolls it.
+- **Before implementing or changing any disciple subsystem, reconcile it against `docs/DISCIPLE_MASTER_SCHEMA.md`. If design changes, update the master first, then the subsystem.**
 
 ## Global mechanic-consequence rule
 
@@ -54,7 +56,7 @@ It reruns P0-P2.11 before the P2.12 diagnostic/contracts/scene smoke.
 
 ## Required loop
 
-read checkpoint -> narrow scope -> patch -> static review -> headless parse -> simulation tests -> scene smoke -> checkpoint
+read master schema -> read checkpoint -> narrow scope -> patch -> static review -> headless parse -> simulation tests -> scene smoke -> checkpoint
 
 ## Core game identity
 
@@ -67,6 +69,8 @@ Primary operating rhythm: **Evil Hunter Tycoon**, with much deeper individual di
 Routine one-by-one micromanagement must remain optional at scale.
 
 ## Canonical disciple philosophy
+
+`docs/DISCIPLE_MASTER_SCHEMA.md` is authoritative for the complete character model.
 
 Normal disciples are deterministic procedural individuals, not hand-authored one by one.
 
@@ -129,10 +133,11 @@ Awakening/refinement consumes real Yêu Đan. Higher purity strengthens real eff
 
 ## Active P2.12 Physique contract
 
-Read:
+Read in this order:
 
-- `docs/P2_12_PHYSIQUE_SPEC.md`
-- `CURRENT_CHECKPOINT.md`
+1. `docs/DISCIPLE_MASTER_SCHEMA.md`
+2. `docs/P2_12_PHYSIQUE_SPEC.md`
+3. `CURRENT_CHECKPOINT.md`
 
 Feature gate:
 
@@ -226,6 +231,15 @@ Real hooks:
 - PhysiqueSystem -> grade scales real benefits.
 
 **Bloodline + Physique overlap must stack.** Do not introduce exclusivity because two systems modify the same stat.
+
+## Gacha separation — canonical
+
+There are two distinct gacha concepts:
+
+1. **Chiêu Hiền / disciple gacha** -> rolls a complete person using the master schema.
+2. **Kỳ Vật / Truyền Thừa gacha** -> rolls transformation/acquisition items such as Huyết Tinh, Đạo Thai, Bản Nguyên, rare manuals/artifacts.
+
+Item gacha may explicitly grant/refine Bloodline/Physique/etc. It must not silently reroll innate identity.
 
 ## Xianxia humor/flavor contract
 
