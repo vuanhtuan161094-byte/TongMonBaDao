@@ -24,7 +24,7 @@
 - Never weaken exact persistence/determinism tests just to make a gate pass.
 - New phases must be opt-in when changing locked behavior.
 - Hidden identity is generated once and persisted. Reveal/transformation never rerolls it.
-- **Before implementing or changing any disciple subsystem, reconcile it against `docs/DISCIPLE_MASTER_SCHEMA.md`. If design changes, update the master first, then the subsystem.**
+- Before changing any disciple subsystem, reconcile it against `docs/DISCIPLE_MASTER_SCHEMA.md`. If design changes, update the master first, then the subsystem.
 
 ## Global mechanic-consequence rule
 
@@ -38,25 +38,36 @@ Every new-system gate must test the actual consequence, not just a field or UI l
 
 ## Runtime baseline
 
-Real Windows + Godot 4.7.2 evidence confirms **P0 through P2.11 PASS**.
+Real Windows + Godot 4.7.2 evidence confirms **P0 through P2.12 PASS**.
 
-P0-P2.11 are locked runtime-green baselines. Do not reopen them without new regression evidence.
+P0-P2.12 are locked runtime-green baselines. Do not reopen them without new regression evidence.
 
-Active phase:
+Latest confirmed final line:
 
-**P2.12 — Thể Chất + Cấp Bậc + Tôi Thể + Cải Thể**
+- `P2.12 GATE: PASS`
 
-Status: **IMPLEMENTED / AWAITING REAL GODOT 4.7.2 CUMULATIVE GATE**.
+## Active phase
+
+**P3.1 — Mobile ngang + Tông Môn Sống V1**
+
+Status: **IMPLEMENTED FIRST SLICE / AWAITING REAL GODOT 4.7.2 CUMULATIVE GATE**.
+
+Read in this order:
+
+1. `docs/DISCIPLE_MASTER_SCHEMA.md` when character data is touched;
+2. `docs/P3_1_LANDSCAPE_SECT_SHELL_SPEC.md`;
+3. `CURRENT_CHECKPOINT.md`;
+4. live P3.1 code/tests.
 
 Authoritative launcher:
 
-- `Sync-P2-12.cmd`
+- `Sync-P3-1.cmd`
 
-It reruns P0-P2.11 before the P2.12 diagnostic/contracts/scene smoke.
+It reruns P0-P2.12 before the P3.1 contracts and scene smoke.
 
 ## Required loop
 
-read master schema -> read checkpoint -> narrow scope -> patch -> static review -> headless parse -> simulation tests -> scene smoke -> checkpoint
+read master/checkpoint/spec -> narrow scope -> patch -> static review -> headless parse -> cumulative tests -> scene smoke -> checkpoint
 
 ## Core game identity
 
@@ -64,15 +75,62 @@ The player is the **Tông Chủ**.
 
 The player controls infrastructure, recruitment, policy, investment, assignments and strategic intervention. Disciples are autonomous people who live, work, cultivate, hunt, recover, consume, form relationships and create stories.
 
-Primary operating rhythm: **Evil Hunter Tycoon**, with much deeper individual disciples.
-
 Routine one-by-one micromanagement must remain optional at scale.
+
+## Presentation target — canonical from P3.1
+
+The game is now designed for **mobile landscape**, not portrait.
+
+Base logical resolution:
+
+- `1280 × 720`;
+- `canvas_items` stretch;
+- `expand` aspect;
+- handheld landscape orientation.
+
+Primary UI/UX structural reference: **Ta Làm Tông Sư Trong Tiên Môn**.
+
+Use the reference for information hierarchy and interaction rhythm:
+
+- sect map dominates the screen;
+- thin resource/status bar at top;
+- chapter/task rail at left;
+- compact edge/floating actions;
+- buildings are tapped directly on the map;
+- parchment/scroll-style overlays preserve map context;
+- disciple screen uses vertical roster + large character area + details + lower tabs.
+
+Do **not** copy third-party art, logo, icons, text, exact map or proprietary assets. Tông Môn Bá Đạo must use original visual assets while keeping the interaction skeleton close.
+
+Avoid modern SaaS/dashboard styling on the core game screen.
+
+## P3.1 authority contract
+
+P3.1 is presentation over the existing simulation.
+
+- Map/UI must read the actual `SimulationState`.
+- Presentation movement must never mutate simulation region/action authority.
+- Building panels must read actual inventory/economy/workforce data.
+- Disciple action text/position must come from actual `current_action`.
+- Sect Master quick commands must call the existing `WorkforceSystem.issue_command()` API.
+- Survival emergency remains above direct command as locked in P2.7.
+- Do not create duplicate presentation-only economy, jobs or progression.
+
+### Action -> visible destination
+
+- `CULTIVATE`, `BREAKTHROUGH` -> Tu Luyện Đài;
+- `WORK_MINING` -> Khu Khai Khoáng;
+- `WORK_FORGING` -> Luyện Khí Đường;
+- `REST` -> Đệ Tử Xá;
+- `HEAL` -> Dược Phòng;
+- `SELL`, `BUY` -> Kho;
+- `HUNT`, `TRAVEL`, `COMBAT`, `LOOT`, `RETURN_SECT` -> Tông Môn Đại Môn;
+- `HOLD` -> sân trung tâm;
+- `EVALUATE`, `IDLE` keep the previous visible destination so actors do not visually snap every short decision tick.
 
 ## Canonical disciple philosophy
 
 `docs/DISCIPLE_MASTER_SCHEMA.md` is authoritative for the complete character model.
-
-Normal disciples are deterministic procedural individuals, not hand-authored one by one.
 
 Keep separate:
 
@@ -85,189 +143,80 @@ Keep separate:
 
 Do not collapse Spiritual Root, Bloodline, Physique, Destiny, traits/quirks and personality into one system.
 
-Innate does not mean permanently frozen. Rare transformation/refinement/awakening may alter foundation, while ordinary training changes learned progression.
+## Locked character summary through P2.12
 
-## Locked character foundation through P2.11
+### Foundation and quality
 
-### P2.8 procedural identity
+Six dimensions:
 
-Six permanent dimensions:
+- Tư Chất;
+- Căn Cốt;
+- Cơ Duyên;
+- Thông Tuệ;
+- Mị Lực;
+- Tiềm Lực.
 
-- aptitude — Tư Chất;
-- constitution — Căn Cốt;
-- fortune — Cơ Duyên;
-- comprehension — Thông Tuệ;
-- charisma — Mị Lực;
-- potential — Tiềm Lực.
+Disciple quality is derived:
 
-Promotable quality:
+`Phàm Thường -> Xuất Chúng -> Thiên Kiêu -> Tuyệt Luân -> Nghịch Thiên`.
 
-- Phàm Thường
-- Xuất Chúng
-- Thiên Kiêu
-- Tuyệt Luân
-- Nghịch Thiên
+### Spiritual Root
 
-Ordinary / Chiêu Hiền / Nhân Duyên share one deterministic generator.
+Element/count and purity are separate. Refinement uses real Linh Tủy, does not ordinarily alter element list, and latent mutation is deterministic before reveal.
 
-### P2.9 traits
+### Bloodline
 
-Positive/negative/latent traits must have real cultivation/work/combat consequences. Empty visible traits is a valid initialized result.
+Bloodline is independent. Special awakened bloodlines have real core stat value before gimmicks. Reveal/awakening never rerolls identity. Refinement uses real resources. Bloodline effects can stack with other systems.
 
-### P2.10 roots
+### Physique
 
-Purity and element count are independent. Refinement consumes real Linh Tủy, preserves elements, changes real cultivation/breakthrough/technique effects and can reveal a pre-generated mutation.
+Physique has two independent axes:
 
-### P2.11 bloodline
+- grade: `Phàm Thể -> Linh Thể -> Huyền Thể -> Thánh Thể -> Thần Thể`;
+- named type: none / Kiếm Cốt / Kim Cương Bá Thể / Hàn Âm Thể / Hỏa Linh Thể / Vô Cấu Đạo Thể.
 
-Special awakened bloodlines have real core stats before gimmicks:
+Display unnamed type as only the grade. Display named type as e.g. `Kiếm Cốt · Huyền Thể`.
 
-- Chân Long: Công + Thủ + Tu + Đột phá + Hồi;
-- Phượng Hoàng: Công + Thủ + Tu + Đột phá nhẹ + Hồi rất cao;
-- Bạch Hổ: Công cao nhất + Tu nhỏ;
-- Huyền Vũ: Thủ cao nhất + Công + Tu + Hồi;
-- Thao Thiết: Công + Thủ + Tu + Hồi; extra Supply is only a tradeoff;
-- none remains valid/common.
-
-Awakening/refinement consumes real Yêu Đan. Higher purity strengthens real effects.
-
-## Active P2.12 Physique contract
-
-Read in this order:
-
-1. `docs/DISCIPLE_MASTER_SCHEMA.md`
-2. `docs/P2_12_PHYSIQUE_SPEC.md`
-3. `CURRENT_CHECKPOINT.md`
-
-Feature gate:
-
-- `SectState.physiques_enabled`.
-
-Profiles live in:
-
-- `SectState.physique_profiles[character_id]`.
-
-Schema:
-
-- initialized;
-- physique_id;
-- physique_grade;
-- initial_physique_id;
-- temper_level;
-- transformed;
-- latent_transformation.
-
-Candidate -> disciple preserves exact type + grade profile. Reject removes orphan profile.
-
-### Physique type vs grade
-
-Physique **type** and **grade** are separate axes.
-
-Grade hierarchy is canonical:
-
-1. Phàm Thể;
-2. Linh Thể;
-3. Huyền Thể;
-4. Thánh Thể;
-5. Thần Thể.
-
-Player display:
-
-- unnamed ordinary type -> only grade, e.g. `Linh Thể`;
-- special type -> `Kiếm Cốt · Huyền Thể`, `Hỏa Linh Thể · Thánh Thể`, etc.
-
-Never duplicate labels like `Phàm Thể · Phàm Thể`.
-
-Current grade probabilities:
-
-- ordinary: 58 / 27 / 11 / 3.5 / 0.5%;
-- gacha: 40 / 32 / 19 / 7 / 2%;
-- fate: 28 / 31 / 24 / 13 / 4%;
-- order is Phàm / Linh / Huyền / Thánh / Thần.
-
-Grade scales real positive effects:
-
-- Phàm 0.85x;
-- Linh 1.00x;
-- Huyền 1.20x;
-- Thánh 1.45x;
-- Thần 1.80x.
-
-High grade must be a real mechanical advantage, not color/text only.
-
-Current physique types:
-
-- unnamed ordinary body — temperable, deterministic future transformation route;
-- Kiếm Cốt — Công/Tu/Đột phá + Sword XP, slight recovery drawback;
-- Kim Cương Bá Thể — high Công/Thủ/Hồi + Body XP, slower cultivation drawback;
-- Hàn Âm Thể — strong with Water root, real mismatch penalty without it;
-- Hỏa Linh Thể — strong Công/Tu/Đột phá/Spell XP with Fire root;
-- Vô Cấu Đạo Thể — rare all-rounder.
-
-Tempering:
-
-- consumes 1 real Yêu Đan;
-- max vertical-slice level 5;
-- must improve real effects;
-- must not reroll type or grade.
-
-Transformation:
-
-- only from unnamed ordinary type;
-- requires temper >= 3;
-- consumes 2 real Linh Tủy;
-- uses pre-generated latent target;
-- never rerolls;
-- preserves temper level and physique grade.
-
-Do not automatically turn routine tempering into guaranteed grade promotion. Grade promotion later must be a separate high-value mechanic with rare costs/conditions.
-
-Real hooks:
-
-- CultivationSystem -> Công/Tu/Đột phá;
-- CombatSystem -> Thủ;
-- NeedsSystem -> Hồi/penalty;
-- CultivationPathSystem -> Sword/Body/Spell XP affinity;
-- PhysiqueSystem -> grade scales real benefits.
-
-**Bloodline + Physique overlap must stack.** Do not introduce exclusivity because two systems modify the same stat.
+Tempering improves real effects without rerolling type/grade. Transformation uses the pre-generated latent target and preserves grade. Routine tempering does not automatically promote grade.
 
 ## Gacha separation — canonical
 
-There are two distinct gacha concepts:
-
 1. **Chiêu Hiền / disciple gacha** -> rolls a complete person using the master schema.
-2. **Kỳ Vật / Truyền Thừa gacha** -> rolls transformation/acquisition items such as Huyết Tinh, Đạo Thai, Bản Nguyên, rare manuals/artifacts.
+2. **Kỳ Vật / Truyền Thừa gacha** -> future item banner for Huyết Tinh, Đạo Thai, Bản Nguyên, manuals, artifacts and other transformative/acquired items.
 
-Item gacha may explicitly grant/refine Bloodline/Physique/etc. It must not silently reroll innate identity.
+Item gacha may grant/refine Bloodline/Physique/etc according to explicit rules, but must never silently reroll or overwrite incompatible innate identity.
 
-## Xianxia humor/flavor contract
+## Xianxia humor/flavor
 
-The game may be funny in a cultivation-story way, but it is not a meme game.
-
-Examples: khẩu nghiệp, fake Thiên Mệnh Chi Tử confidence, furnace explosions, odd manuals, gluttony, greed, gossip, badly timed breakthroughs and mismatched equipment.
-
-Humor must come from real simulation causes/consequences. Do not spam joke text.
+Cultivation-story humor is allowed but the game is not a meme game. Humor must come from real simulation causes/consequences and cannot replace the core value of a mechanic.
 
 ## Current verification chain
 
 Use:
 
-- `tools/godot/Verify-P2-12.ps1`
-- `Sync-P2-12.cmd`
+- `tools/godot/Verify-P3-1.ps1`
+- `Sync-P3-1.cmd`
 
-It must prove cumulative P0-P2.11 regressions first, then P2.12 persistence, deterministic type+grade profiles, grade probability tables, real grade scaling, advantages/drawbacks, elemental synergy, tempering/transformation resource costs and grade preservation, Bloodline+Physique stacking, recruitment lifecycle and scene smoke.
+The P3.1 gate must prove:
 
-Never claim P2.12 PASS without final real Godot 4.7.2 output.
+- cumulative P0-P2.12 remains green;
+- project settings are landscape 1280×720;
+- P3.1 is project main scene while P0 smoke remains pinned to P0 sandbox;
+- action-to-destination mapping is deterministic;
+- mapping does not mutate simulation state;
+- real direct command reaches the intended mapped action/destination;
+- P3.1 scene loads and runs headless.
 
-## After P2.12 runtime green
+Never claim P3.1 PASS without final real Godot 4.7.2 output.
 
-Pause backend identity expansion and build the first **visible living sect** slice:
+## After P3.1 runtime green
 
-- compact sect map;
-- real buildings/destinations;
-- disciples physically move between work/rest/cultivation/sect gate;
-- state/action visible on the map;
-- simulation remains authoritative.
-
-Then continue injury/medical, loyalty/stipend, rank/authority, master-disciple, Destiny, and eventually active lifespan/death/inheritance after pacing is proven.
+1. P3.2 production art/animation/UI polish while preserving the landscape hierarchy;
+2. P3.3 visible building production, assignment and upgrades;
+3. injury/medical;
+4. loyalty + stipend/reward;
+5. sect rank/authority;
+6. master-disciple/teaching;
+7. Destiny;
+8. item/transmission gacha;
+9. active lifespan/death/inheritance after pacing is proven.
