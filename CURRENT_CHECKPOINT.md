@@ -28,11 +28,8 @@ Locked chain:
 - P2.11 Bloodline + Awakening + Purity: LOCKED / PASS.
 - **P2.12 Physique + Grades + Tempering + Transformation: LOCKED / PASS.**
 
-Latest authoritative user runtime evidence on 2026-10-01 ended with:
+Latest authoritative user runtime evidence ended with:
 
-- `P2.11 PERSISTENCE DIAGNOSTIC PASS: immediate canonical state identical`
-- `P2.11 BLOODLINE + AWAKENING TEST PASS`
-- `P2.11 BLOODLINE + AWAKENING GATE: PASS`
 - `P2.12 PERSISTENCE DIAGNOSTIC PASS: immediate canonical state identical`
 - `P2.12 PHYSIQUE + GRADES + TEMPERING + TRANSFORMATION TEST PASS`
 - `P2.12 PHYSIQUE + TEMPERING + TRANSFORMATION GATE: PASS`
@@ -40,44 +37,24 @@ Latest authoritative user runtime evidence on 2026-10-01 ended with:
 
 Do not reopen P0-P2.12 without new regression evidence.
 
-## Canonical character authority
+## Character authority
 
-Read **`docs/DISCIPLE_MASTER_SCHEMA.md` first** for any future character-system change.
+Read `docs/DISCIPLE_MASTER_SCHEMA.md` first before changing any character subsystem.
 
-It is the master contract for:
+The master schema decides:
 
-- what a character has;
-- what is rolled at generation;
-- what is derived rather than rolled;
+- what a character owns;
+- what is rolled once at generation;
+- what is derived instead of rolled;
 - what is nearly fixed identity;
-- what can progress normally;
-- what can only change through rare transformation/awakening/item/event mechanics.
+- what grows through ordinary training;
+- what only changes through rare awakening/transformation/item/event mechanics.
 
-Phase specs may only deepen one slice of that master schema; they may not invent a conflicting character model.
+Hidden identity is generated once and persisted. Reveal/awakening/transformation must not reroll it.
 
-## Core game identity
+### Foundation summary
 
-The player is the **Tông Chủ**. Disciples are autonomous people, not puppets.
-
-Operating loop remains:
-
-`hunt/work -> warehouse -> production/investment -> disciple growth -> harder content`
-
-The player controls infrastructure, recruitment, policy, investment, assignments and temporary direct intervention. Routine one-by-one micromanagement must remain optional at scale.
-
-## Global mechanic-consequence rule
-
-Every gameplay feature must have concrete consequences. It may affect Công, Thủ, HP, cultivation speed, breakthrough, recovery, production, XP, economy, AI behavior, risk, cooldown, movement or other measurable outputs.
-
-**Do not fear overlap.** Linh căn, Huyết Mạch, Thể Chất, Đặc Chất, Công pháp, Trang bị, Thiên Mệnh, buildings and ranks may affect the same stat when logically justified.
-
-Systems differ by source, acquisition, progression, conditions, costs, tradeoffs and signature rules — not by artificially reserving one stat for one system.
-
-Rare/valuable mechanics must be useful before their gimmick or drawback. Gates test real consequences, not labels.
-
-## Locked character foundation through P2.12
-
-### Six foundation dimensions
+Six permanent foundation dimensions:
 
 - Tư Chất / aptitude;
 - Căn Cốt / constitution;
@@ -90,30 +67,18 @@ Disciple quality is derived mainly from these:
 
 `Phàm Thường -> Xuất Chúng -> Thiên Kiêu -> Tuyệt Luân -> Nghịch Thiên`.
 
-### Spiritual Root
-
-Root elements/count and purity are separate. Refinement consumes real Linh Tủy, raises purity, preserves ordinary element list and may reveal a deterministic latent mutation.
-
 ### Bloodline
 
-Bloodline is its own axis:
-
-- roll whether special bloodline exists;
-- roll type if it exists;
-- roll starting purity;
-- reveal and awakening do not reroll identity;
-- post-awakening effects are real and can overlap with other systems.
-
-Current types include Chân Long, Phượng Hoàng, Bạch Hổ, Huyền Vũ and Thao Thiết Tàn Huyết.
+Bloodline is independent from other identity systems. It rolls existence/type/purity once; reveal does not reroll. Awakening/refinement use real resources and effects can overlap with other systems.
 
 ### Physique
 
-Physique has **two independent axes**:
+Physique has two independent axes:
 
 1. grade: `Phàm Thể -> Linh Thể -> Huyền Thể -> Thánh Thể -> Thần Thể`;
-2. named special type: none / Kiếm Cốt / Kim Cương Bá Thể / Hàn Âm Thể / Hỏa Linh Thể / Vô Cấu Đạo Thể.
+2. named type: none / Kiếm Cốt / Kim Cương Bá Thể / Hàn Âm Thể / Hỏa Linh Thể / Vô Cấu Đạo Thể.
 
-Current grade rates:
+Current grade probabilities:
 
 | Grade | Ordinary | Chiêu Hiền | Nhân Duyên |
 | --- | ---: | ---: | ---: |
@@ -123,88 +88,171 @@ Current grade rates:
 | Thánh Thể | 3.5% | 7% | 13% |
 | Thần Thể | 0.5% | 2% | 4% |
 
-Named special-type chance remains separate:
+Named-special chance is separate: ordinary 15%, Chiêu Hiền 28%, Nhân Duyên 40%.
 
-- ordinary 15%;
-- Chiêu Hiền 28%;
-- Nhân Duyên 40%.
+Unnamed type displays only grade. Named type displays e.g. `Kiếm Cốt · Huyền Thể`.
 
-Display:
+Tempering uses one Yêu Đan and does not reroll type/grade. Transformation uses the pre-generated latent target and preserves grade. Routine tempering does not automatically promote grade.
 
-- unnamed type -> only grade, e.g. `Linh Thể`;
-- named type -> e.g. `Kiếm Cốt · Huyền Thể`.
+## Global mechanic-consequence rule
 
-Tempering consumes one Yêu Đan and improves real effects without rerolling type/grade. Transformation from unnamed body uses the deterministic latent target and preserves grade. Routine tempering does not automatically promote physique grade.
+Every named feature must change real play. Valid overlap includes Công, Thủ, HP, cultivation, breakthrough, recovery, profession/mastery, production, economy, AI behavior, risk, movement, cooldown and similar concrete outputs.
 
-## Active presentation work
+**Do not fear overlap.** Systems differ through source, acquisition, progression, cost, conditions, tradeoffs and signature rules — not because each system owns an exclusive stat.
 
-# **P3.1 — Mobile ngang + Tông Môn Sống V1**
+Rare mechanics must be useful before their gimmick/drawback. UI labels without real consequences do not count.
 
-Status: **IMPLEMENTED FIRST SLICE / AWAITING REAL GODOT 4.7.2 CUMULATIVE GATE**.
+## Core product identity
 
-P3.1 remains the base landscape/living-sect contract. It has not yet received real local runtime evidence.
+The player is the **Tông Chủ**. Disciples are autonomous people, not puppets.
 
-Read:
+Operating rhythm:
 
-- `docs/P3_1_LANDSCAPE_SECT_SHELL_SPEC.md`
-- `docs/DISCIPLE_MASTER_SCHEMA.md`
-- this checkpoint.
+`hunt/work -> warehouse -> production/investment -> disciple growth -> harder content`
 
-### P3.1 contract already implemented
+The player controls infrastructure, recruitment, policy, investment, assignment and temporary strategic intervention. Routine one-by-one micromanagement must remain optional at scale.
 
-- 1280×720 landscape + `canvas_items` + `expand`;
-- map-dominant hierarchy;
-- real simulation action -> visible building destination mapping;
-- disciple movement tween toward current-action destination;
-- building popup reads real resources/work state;
-- disciple popup exposes roster/current state/direct orders;
-- direct orders call existing `WorkforceSystem.issue_command()`;
-- no parallel gameplay state.
+## Presentation canon
 
-P0 runtime smoke remains explicitly pinned to its P0 scene, so advancing the project main scene does not alter the P0 contract.
+The product is now **mobile landscape**, base logical resolution **1280×720**.
 
-# **P3.2 Camera Interaction Slice — Zoom + Pan + Focus**
+Primary structural UX reference: **Ta Làm Tông Sư Trong Tiên Môn**.
+
+Use the reference for information hierarchy and interaction rhythm only:
+
+- sect map dominates the screen;
+- thin top resource/status bar;
+- chapter/task rail at left;
+- compact edge/floating actions;
+- buildings are tapped directly on the map;
+- parchment/scroll overlays preserve map context;
+- disciple screen uses vertical roster + large character area + detail panel + lower tabs.
+
+Do not copy proprietary art, text, icons, logo, map or exact pixels. Use original Tông Môn Bá Đạo assets.
+
+## P3.1 — Mobile ngang + Tông Môn Sống V1
 
 Status: **IMPLEMENTED / AWAITING REAL GODOT 4.7.2 CUMULATIVE GATE**.
 
-This is only the camera/interaction slice of P3.2. **Do not call full P3.2 PASS.** Production art/animation/UI replacement remains future work.
+P3.1 is the base presentation layer:
 
-Read:
+- landscape shell;
+- real action -> visible destination mapping;
+- disciples visibly move between work/rest/cultivation/gate destinations;
+- building popup reads real state;
+- disciple popup reads real state;
+- Sect Master quick orders call `WorkforceSystem.issue_command()`;
+- no parallel gameplay engine.
 
-- `docs/P3_2_UI_ART_PRODUCTION_SPEC.md`;
-- `godot/src/presentation/p3/sect_map_camera.gd`;
-- `godot/src/presentation/p3_2_landscape_sect.gd`.
+P3.1 is not yet runtime-confirmed locally.
 
-### Camera contract now implemented
+## P3.2 — Camera + map selection + real disciple tabs
 
-- map only zooms; HUD/task rail/menu/popup do not scale;
+Status: **IMPLEMENTED CURRENT SLICE / AWAITING REAL GODOT 4.7.2 CUMULATIVE GATE**.
+
+This is not full P3.2 art production yet. Current implementation adds interaction on top of P3.1 while preserving simulation authority.
+
+### Camera interaction
+
+Files:
+
+- `godot/src/presentation/p3/sect_map_camera.gd`
+- `godot/src/presentation/p3_2_landscape_sect.gd`
+- `godot/scenes/p3/p3_2_landscape_sect.tscn`
+
+Contract:
+
+- only the map layer zooms/pans; HUD/popups stay fixed;
 - mobile pinch zoom;
-- one-finger map pan on empty/unhandled map area;
-- desktop wheel zoom + left-drag pan for testing;
-- double-tap/double-click on free map area zooms toward that point;
-- fixed fallback controls `+`, `−`, `Toàn`;
-- zoom limits `0.75x -> 1.80x`;
+- one-finger pan on map;
+- desktop wheel zoom + left-drag pan for local testing;
+- double-tap/double-click quick zoom;
+- fallback buttons `+`, `−`, `Mục`, `Toàn`;
+- zoom range `0.75x -> 1.80x`;
 - default `1.00x`;
-- focus zoom target `1.35x`;
-- zoom preserves the pinch/wheel screen anchor;
-- pan is clamped so the map cannot be dragged completely away;
-- popups block camera gestures;
-- camera is presentation-only and never mutates simulation state.
+- target focus `1.35x` minimum;
+- zoom preserves pointer/pinch anchor;
+- camera clamps so the whole sect cannot be dragged away;
+- camera gestures are blocked while a popup is open;
+- screen/world coordinate helpers are deterministic and presentation-only.
 
-The project main scene has advanced to:
+### Real map target focus
 
-- `res://scenes/p3/p3_2_landscape_sect.tscn`
+Tapping a building or disciple now:
 
-P3.1 verifier was adjusted only so its lower-layer shell contract remains testable after main-scene advancement; it still directly smokes the P3.1 scene.
+1. stores that entity as the current map focus;
+2. moves camera focus toward it;
+3. displays a gold selection marker/pulse;
+4. opens the existing popup;
+5. keeps a `Mục` button so the player can return to that selected target after panning away.
 
-### P3.2 camera verification assets
+For disciples, the selection marker follows their latest visible actor position, but the camera does **not** forcibly auto-follow every movement tick.
+
+### Disciple management tabs are now real
+
+The old tab placeholder notice has been replaced in P3.2.
+
+Current live tabs:
+
+- `Thuộc tính`;
+- `Công pháp`;
+- `Trang bị`;
+- `Huyết Mạch`;
+- `Thể Chất`;
+- `Quan hệ`.
+
+They read the same `SimulationState` used by gameplay.
+
+`Thuộc tính` shows realm, cultivation progress, combat/cultivation information, HP/stamina/wallet, six foundation values, path XP and current action.
+
+`Công pháp` shows learned techniques, level/mastery, active technique, contribution and personal spirit stones.
+
+`Trang bị` shows weapon/armor/accessory slots, item quality, auto-vs-locked control and real equipment effects.
+
+`Huyết Mạch`:
+
+- never exposes latent hidden identity before reveal;
+- shows type/purity/awakening/refinement and real stat effects after reveal;
+- buttons `Thức tỉnh` / `Luyện huyết` call the real `BloodlineSystem` and consume real resources.
+
+`Thể Chất`:
+
+- shows actual type + grade + temper level + transformed status;
+- shows real Công/Thủ/Tu/Đột phá/Hồi/path-XP effects;
+- buttons `Tôi thể` / `Cải thể` call the real `PhysiqueSystem` and consume real resources.
+
+`Quan hệ` reads actual affinity/trust/respect/interactions and companion assignment from P1.3 state.
+
+No duplicate UI-only Bloodline, Physique, equipment or relationship data was added.
+
+### P3.2 tests/verifier
 
 - `godot/tests/presentation/p3_2_map_camera_test.gd`
-- `tools/godot/Verify-P3-2-Camera.ps1`
-- `Verify-P3-2-Camera.cmd`
-- `Sync-P3-2-Camera.cmd`
+  - zoom limits;
+  - HUD/map hit region;
+  - screen/world coordinate round-trip;
+  - anchored zoom;
+  - pan clamp;
+  - normal/edge focus;
+  - reset.
 
-The P3.2 camera verifier first runs the complete P3.1 cumulative chain. If P3.1 fails, camera verification never proceeds.
+- `godot/tests/presentation/p3_2_disciple_ui_test.gd`
+  - real scene instantiation;
+  - real stage/foundation text;
+  - hidden Bloodline does not leak;
+  - real Physique profile is displayed;
+  - Tôi thể UI path mutates real profile and consumes Yêu Đan;
+  - Thức tỉnh UI path mutates real Bloodline and consumes Yêu Đan;
+  - Công pháp/Trang bị/Quan hệ tabs read real state;
+  - tab popup hierarchy builds.
+
+Verifier:
+
+- `tools/godot/Verify-P3-2-Camera.ps1`;
+- `Verify-P3-2-Camera.cmd`;
+- `Sync-P3-2-Camera.cmd`.
+
+The P3.2 verifier always reruns the full P3.1 cumulative chain first.
 
 ## Next authoritative local command
 
@@ -215,26 +263,28 @@ cd /d "E:\0.2. TongMonBaDao"
 Sync-P3-2-Camera.cmd
 ```
 
-Expected successful tail includes:
+A successful tail should include:
 
 - `P3.1 LANDSCAPE SECT SHELL TEST PASS`
 - `P3.1 LANDSCAPE SECT SHELL GATE: PASS`
 - `P3.2 MAP CAMERA TEST PASS`
-- `P3.2 CAMERA INTERACTION GATE: PASS`
-- final `P3.2 CAMERA GATE: PASS`
+- `P3.2 DISCIPLE UI INTEGRATION TEST PASS`
+- `P3.2 CAMERA + DISCIPLE UI GATE: PASS`
+- final `P3.2 INTERACTION GATE: PASS`
 
-Do not call P3.1 or P3.2 camera PASS until this real Godot 4.7.2 output is supplied.
+Do **not** call P3.1 or P3.2 PASS until the real Windows/Godot output reaches this gate.
 
 If it fails, fix the first real parser/diagnostic/assertion failure only.
 
-## Planned order after camera slice runtime green
+## Next development order after this interaction gate is green
 
-1. production art/animation/UI replacement while preserving the landscape hierarchy and camera behavior;
-2. visible building/production assignment/upgrades;
-3. injury/medical;
-4. loyalty + stipend/reward;
-5. sect rank/authority expansion;
-6. master-disciple/teaching;
-7. Destiny/awakening;
-8. item/transmission gacha that can grant or improve Bloodline/Physique according to the master schema;
-9. active age/lifespan/death/inheritance after simulation-year pacing is proven.
+1. replace placeholders with original production map/building/actor/UI assets while preserving current interaction hierarchy;
+2. bind actor animation to actual simulation state;
+3. richer visible building production/assignment/upgrades;
+4. injury/medical;
+5. loyalty + stipend/reward;
+6. sect rank/authority expansion;
+7. master-disciple/teaching;
+8. Destiny/awakening;
+9. Kỳ Vật/Truyền Thừa item gacha;
+10. active age/lifespan/death/inheritance after simulation-year pacing is proven.
