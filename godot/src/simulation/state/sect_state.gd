@@ -372,6 +372,7 @@ static func _physique_profile_dictionary(value: Variant) -> Dictionary:
         normalized[str(raw_key)] = {
             "initialized": bool(raw_profile.get("initialized", false)),
             "physique_id": str(raw_profile.get("physique_id", "ordinary_body")),
+            "physique_grade": str(raw_profile.get("physique_grade", "mortal_body")),
             "initial_physique_id": str(raw_profile.get("initial_physique_id", raw_profile.get("physique_id", "ordinary_body"))),
             "temper_level": clampi(int(raw_profile.get("temper_level", 0)), 0, 5),
             "transformed": bool(raw_profile.get("transformed", false)),
