@@ -112,9 +112,15 @@ func process_logistics_tick(state: SimulationState) -> void:
     if not state.sect.needs_enabled or state.tick <= 0 or state.tick % LOGISTICS_INTERVAL != 0:
         return
 
+    # P1.6 legacy logistics production is keyed from the P1.5 combat/adventure
+    # role. Use the semantic accessor instead of treating role storage as a
+    # profession system; P2.7+ workforce logistics remains a separate concept.
+    var organization := OrganizationSystem.new()
     var logistics_count := 0
-    for raw_role in state.role_assignments.values():
-        if StringName(raw_role) == OrganizationSystem.ROLE_LOGISTICS:
+    var disciple_ids: Array = state.disciples.keys()
+    disciple_ids.sort()
+    for raw_id in disciple_ids:
+        if organization.combat_role_for_disciple(state, StringName(raw_id)) == OrganizationSystem.ROLE_LOGISTICS:
             logistics_count += 1
     if logistics_count <= 0:
         return
