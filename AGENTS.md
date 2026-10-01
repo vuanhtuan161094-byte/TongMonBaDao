@@ -19,6 +19,11 @@
 - P2.3 spirit-stone/material economy stays separate from P0 money.
 - Every runtime mutation must preserve invariants.
 - New mechanics need measurable gameplay consequences; labels alone do not count.
+- **Every gameplay system must state clearly what it changes in actual play: stats, probabilities, costs, timings, AI priorities, resources, access, risk, output, or concrete rules. Flavor-only mechanics do not count.**
+- **Do not avoid overlapping effects just to make systems look different.** Spiritual Root, Bloodline, Physique, Traits, Techniques, Equipment, Destiny, buildings, professions and other systems may all affect the same output such as Công, Thủ, HP, tốc tu, đột phá, hồi phục, sản lượng or cost when that overlap is logical.
+- Systems remain distinct through **source, acquisition, progression, constraints, tradeoffs, timing and signature rules**, not by forcing each system to own a unique stat.
+- A rare/valuable mechanic must provide a meaningful advantage before optional flavor, comedy or drawback is considered. Do not let a gimmick replace the mechanic's core value.
+- Tests for new systems should verify at least one real consequence path, and important/rare systems should generally verify multiple consequence axes where appropriate.
 - Never call a phase PASS without its real cumulative Godot gate.
 - Never weaken exact persistence/determinism tests just to make a gate pass.
 - New phases must be opt-in when changing locked behavior.
@@ -166,11 +171,11 @@ Candidate -> disciple preserves the same profile because the id is unchanged. Re
 
 Current bloodlines:
 
-- Chân Long Huyết — combat + breakthrough;
-- Phượng Hoàng Huyết — rest recovery;
-- Bạch Hổ Huyết — strong combat;
-- Huyền Vũ Huyết — incoming damage reduction;
-- Thao Thiết Tàn Huyết — stronger recovery but extra real Supply cost on departure;
+- Chân Long Huyết — Công + Thủ + tốc tu + đột phá + hồi phục nền;
+- Phượng Hoàng Huyết — Công + Thủ nhẹ + tốc tu + đột phá nhẹ + hồi phục rất cao;
+- Bạch Hổ Huyết — Công cao nhất + tốc tu nhỏ;
+- Huyền Vũ Huyết — Thủ cao nhất + Công nền + tốc tu + hồi phục;
+- Thao Thiết Tàn Huyết — Công + Thủ + tốc tu + hồi phục cao, extra real Supply cost on departure is only a tradeoff/flavor mechanic;
 - no special bloodline is a valid common result.
 
 Reveal uses pre-existing identity and life-history thresholds. Reveal must never awaken automatically.
@@ -207,7 +212,7 @@ Humor must come from real simulation causes and consequences.
 
 P2.11 concrete example:
 
-- awakened Thao Thiết Tàn Huyết consumes one extra real Supply when departing if stock exists, while recovering faster.
+- awakened Thao Thiết Tàn Huyết consumes one extra real Supply when departing if stock exists, while already having meaningful combat/defense/cultivation/recovery advantages.
 
 Do not spam joke text and do not use modern Internet memes as the main world voice.
 
@@ -218,7 +223,7 @@ Use:
 - `tools/godot/Verify-P2-11.ps1`
 - `Sync-P2-11.cmd`
 
-It must prove cumulative P0-P2.10 regressions first, then P2.11 persistence, deterministic generation, no reroll, reveal, awakening resource cost, real combat/defense/recovery/supply consequences, refinement, recruitment lifecycle and scene smoke.
+It must prove cumulative P0-P2.10 regressions first, then P2.11 persistence, deterministic generation, no reroll, reveal, awakening resource cost, real combat/defense/cultivation/recovery/supply consequences, refinement, recruitment lifecycle and scene smoke.
 
 Never claim P2.11 PASS without final real Godot 4.7.2 output.
 
