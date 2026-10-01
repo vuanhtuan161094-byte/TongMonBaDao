@@ -50,6 +50,16 @@ var learned_combat_skills: Dictionary = {}
 var equipped_items: Dictionary = {}
 var locked_equipment_slots: Dictionary = {}
 
+# P2.7 disciple life/workforce. These stay empty/zero until WorkforceSystem is enabled.
+var comprehension: float = 0.0
+var sect_rank: StringName = &""
+var profession_xp: Dictionary = {}
+var profession_traits: Array = []
+var work_preferences: Dictionary = {}
+var work_group_id: StringName = &""
+var direct_command: Dictionary = {}
+var work_progress: Dictionary = {}
+
 var current_action: StringName = &"EVALUATE"
 var region_id: StringName = &"sect"
 var target_region_id: StringName = &""
@@ -110,6 +120,14 @@ func _init(definition: Dictionary = {}) -> void:
     learned_combat_skills = _bool_dictionary(definition.get("learned_combat_skills", {}))
     equipped_items = _string_dictionary(definition.get("equipped_items", {}))
     locked_equipment_slots = _bool_dictionary(definition.get("locked_equipment_slots", {}))
+    comprehension = maxf(float(definition.get("comprehension", comprehension)), 0.0)
+    sect_rank = StringName(definition.get("sect_rank", sect_rank))
+    profession_xp = _float_dictionary(definition.get("profession_xp", {}))
+    profession_traits = _string_array(definition.get("profession_traits", []))
+    work_preferences = _int_dictionary(definition.get("work_preferences", {}))
+    work_group_id = StringName(definition.get("work_group_id", work_group_id))
+    direct_command = _command_dictionary(definition.get("direct_command", {}))
+    work_progress = _float_dictionary(definition.get("work_progress", {}))
 
 func retreat_hp_ratio() -> float:
     return lerpf(0.48, 0.14, clampf(risk_bias, 0.0, 1.0))
@@ -176,6 +194,15 @@ func to_dict() -> Dictionary:
         data["equipped_items"] = equipped_items.duplicate(true)
     if not locked_equipment_slots.is_empty():
         data["locked_equipment_slots"] = locked_equipment_slots.duplicate(true)
+    if comprehension > 0.0 or sect_rank != &"" or not profession_xp.is_empty() or not profession_traits.is_empty() or not work_preferences.is_empty() or work_group_id != &"" or not direct_command.is_empty() or not work_progress.is_empty():
+        data["comprehension"] = comprehension
+        data["sect_rank"] = str(sect_rank)
+        data["profession_xp"] = profession_xp.duplicate(true)
+        data["profession_traits"] = profession_traits.duplicate()
+        data["work_preferences"] = work_preferences.duplicate(true)
+        data["work_group_id"] = str(work_group_id)
+        data["direct_command"] = direct_command.duplicate(true)
+        data["work_progress"] = work_progress.duplicate(true)
     return data
 
 static func from_dict(data: Dictionary) -> DiscipleState:
@@ -207,7 +234,15 @@ static func from_dict(data: Dictionary) -> DiscipleState:
         "cultivation_path_xp": data.get("cultivation_path_xp", {}),
         "learned_combat_skills": data.get("learned_combat_skills", {}),
         "equipped_items": data.get("equipped_items", {}),
-        "locked_equipment_slots": data.get("locked_equipment_slots", {})
+        "locked_equipment_slots": data.get("locked_equipment_slots", {}),
+        "comprehension": data.get("comprehension", 0.0),
+        "sect_rank": data.get("sect_rank", ""),
+        "profession_xp": data.get("profession_xp", {}),
+        "profession_traits": data.get("profession_traits", []),
+        "work_preferences": data.get("work_preferences", {}),
+        "work_group_id": data.get("work_group_id", ""),
+        "direct_command": data.get("direct_command", {}),
+        "work_progress": data.get("work_progress", {})
     })
     disciple.max_hp = float(data.get("max_hp", 100.0))
     disciple.hp = float(data.get("hp", disciple.max_hp))
@@ -234,11 +269,21 @@ static func _decision_dictionary(value: Variant) -> Dictionary:
     normalized = value.duplicate(true)
     if normalized.has("action"):
         normalized["action"] = str(normalized["action"])
-    # JSON parses ordinary numeric literals as floating point. These snapshot fields
-    # are integer sect resources at runtime, so restore their canonical types.
     for key in ["medicine_stock", "supply_stock", "lodging_capacity"]:
         if normalized.has(key):
             normalized[key] = int(normalized[key])
+    return normalized
+
+static func _command_dictionary(value: Variant) -> Dictionary:
+    var normalized: Dictionary = {}
+    if not (value is Dictionary):
+        return normalized
+    if value.is_empty():
+        return normalized
+    normalized["kind"] = str(value.get("kind", ""))
+    normalized["target"] = str(value.get("target", ""))
+    normalized["issued_tick"] = int(value.get("issued_tick", 0))
+    normalized["expires_tick"] = int(value.get("expires_tick", 0))
     return normalized
 
 static func _int_dictionary(value: Variant) -> Dictionary:
