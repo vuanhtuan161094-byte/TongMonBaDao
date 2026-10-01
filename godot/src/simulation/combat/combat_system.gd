@@ -14,6 +14,7 @@ var cultivation_path_system := CultivationPathSystem.new()
 var combat_skill_system := CombatSkillSystem.new()
 var equipment_system := EquipmentSystem.new()
 var bloodline_system := BloodlineSystem.new()
+var physique_system := PhysiqueSystem.new()
 
 func resolve_encounter(state: SimulationState, disciple: DiscipleState, rng: GameRng) -> Dictionary:
     if state.sect.combat_skills_enabled:
@@ -42,6 +43,8 @@ func resolve_encounter(state: SimulationState, disciple: DiscipleState, rng: Gam
         damage_multiplier *= cultivation_path_system.incoming_damage_multiplier(state, disciple)
     if state.sect.bloodlines_enabled:
         damage_multiplier *= bloodline_system.incoming_damage_multiplier(state, disciple)
+    if state.sect.physiques_enabled:
+        damage_multiplier *= physique_system.incoming_damage_multiplier(state, disciple)
     disciple.metrics["combats"] = int(disciple.metrics.get("combats", 0)) + 1
 
     for _round in range(20):
@@ -347,6 +350,8 @@ func _realtime_incoming_multiplier(state: SimulationState, disciple: DiscipleSta
         damage_multiplier *= cultivation_path_system.incoming_damage_multiplier(state, disciple)
     if state.sect.bloodlines_enabled:
         damage_multiplier *= bloodline_system.incoming_damage_multiplier(state, disciple)
+    if state.sect.physiques_enabled:
+        damage_multiplier *= physique_system.incoming_damage_multiplier(state, disciple)
     return damage_multiplier
 
 func _realtime_victory(disciple: DiscipleState, species_id: StringName, definition: Dictionary, context: Dictionary, trace: Array, style: Dictionary) -> Dictionary:
