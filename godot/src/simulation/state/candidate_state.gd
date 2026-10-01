@@ -12,6 +12,10 @@ var generated_index: int = 0
 var spiritual_root_quality: StringName = &""
 var spiritual_root_elements: Array = []
 
+# P2.7 non-combat value. Empty/zero until workforce is enabled.
+var comprehension: float = 0.0
+var profession_traits: Array = []
+
 func _init(definition: Dictionary = {}) -> void:
     id = StringName(definition.get("id", "candidate"))
     display_name = str(definition.get("name", id))
@@ -26,6 +30,12 @@ func _init(definition: Dictionary = {}) -> void:
     if raw_elements is Array:
         for item in raw_elements:
             spiritual_root_elements.append(str(item))
+    comprehension = maxf(float(definition.get("comprehension", comprehension)), 0.0)
+    var raw_traits = definition.get("profession_traits", [])
+    if raw_traits is Array:
+        for item in raw_traits:
+            profession_traits.append(str(item))
+    profession_traits.sort()
 
 func to_dict() -> Dictionary:
     var data := {
@@ -42,6 +52,9 @@ func to_dict() -> Dictionary:
         data["spiritual_root_quality"] = str(spiritual_root_quality)
     if not spiritual_root_elements.is_empty():
         data["spiritual_root_elements"] = spiritual_root_elements.duplicate()
+    if comprehension > 0.0 or not profession_traits.is_empty():
+        data["comprehension"] = comprehension
+        data["profession_traits"] = profession_traits.duplicate()
     return data
 
 func to_disciple() -> DiscipleState:
@@ -59,6 +72,10 @@ func to_disciple() -> DiscipleState:
         definition["spiritual_root_quality"] = str(spiritual_root_quality)
     if not spiritual_root_elements.is_empty():
         definition["spiritual_root_elements"] = spiritual_root_elements.duplicate()
+    if comprehension > 0.0 or not profession_traits.is_empty():
+        definition["comprehension"] = comprehension
+        definition["profession_traits"] = profession_traits.duplicate()
+        definition["sect_rank"] = "outer"
     return DiscipleState.new(definition)
 
 static func from_dict(data: Dictionary) -> CandidateState:
