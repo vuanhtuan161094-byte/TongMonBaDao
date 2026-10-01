@@ -24,6 +24,7 @@ var technique_system := TechniqueSystem.new()
 var cultivation_path_system := CultivationPathSystem.new()
 var trait_system := TraitSystem.new()
 var bloodline_system := BloodlineSystem.new()
+var physique_system := PhysiqueSystem.new()
 
 const STAGES := [
     {"id":"qi_1", "name":"Luyện Khí tầng 1", "required":500.0, "combat_bonus":0.0, "hp_bonus":0.0, "chance":0.98},
@@ -121,6 +122,8 @@ func add_progress(state: SimulationState, disciple: DiscipleState, amount: float
         effective_amount *= trait_system.cultivation_gain_multiplier(state, disciple)
     if state.sect.bloodlines_enabled:
         effective_amount *= bloodline_system.cultivation_gain_multiplier(state, disciple)
+    if state.sect.physiques_enabled:
+        effective_amount *= physique_system.cultivation_multiplier(state, disciple)
     var before := disciple.cultivation_progress
     disciple.cultivation_progress = minf(required, before + effective_amount)
     var gained := disciple.cultivation_progress - before
@@ -149,6 +152,8 @@ func breakthrough_success_chance(disciple: DiscipleState, state: SimulationState
         modifier += technique_bonus
     if state != null and state.sect.bloodlines_enabled:
         modifier += bloodline_system.breakthrough_bonus(state, disciple)
+    if state != null and state.sect.physiques_enabled:
+        modifier += physique_system.breakthrough_bonus(state, disciple)
     return clampf(base + hp_bonus + stamina_bonus + modifier, 0.45, 0.99)
 
 func attempt_breakthrough(state: SimulationState, disciple: DiscipleState, rng: GameRng) -> Dictionary:
@@ -198,6 +203,8 @@ func effective_combat_power(state: SimulationState, disciple: DiscipleState) -> 
         power += trait_system.combat_power_bonus(state, disciple)
     if state.sect.bloodlines_enabled:
         power += bloodline_system.combat_power_bonus(state, disciple)
+    if state.sect.physiques_enabled:
+        power += physique_system.combat_power_bonus(state, disciple)
     return power
 
 func apply_action_modifiers(state: SimulationState, disciple: DiscipleState, scores: Dictionary) -> void:
