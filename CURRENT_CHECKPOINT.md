@@ -63,6 +63,41 @@ Character depth is much greater: procedural identity, quality, roots, traits, bl
 
 Routine one-by-one micromanagement must remain optional at scale.
 
+## Global mechanic-consequence rule — canonical
+
+This applies to **all gameplay systems**, not only character identity systems.
+
+Every feature must answer clearly: **what does this actually change in play?** Valid consequence axes include:
+
+- Công / damage / combat power;
+- Thủ / HP / resistance / damage reduction;
+- tốc độ tu luyện / nghề / mastery;
+- xác suất đột phá / thành công / thất bại;
+- hồi phục / stamina / injury handling;
+- sản lượng / thời gian sản xuất / chất lượng;
+- tài nguyên tiêu hao / thu nhập / giá / upkeep;
+- AI priority / behavior / access / permission;
+- risk / event chance / discovery / loot;
+- range / cooldown / movement / targeting / other concrete combat rules.
+
+**Do not fear overlap.** Linh căn, Huyết mạch, Thể chất, Đặc chất, Công pháp, Trang bị, Thiên Mệnh, công trình, chức vị and other systems may affect the same outputs when logically justified.
+
+Systems are differentiated by:
+
+- where the effect comes from;
+- how it is obtained;
+- how it progresses;
+- what it costs;
+- when it applies;
+- constraints/tradeoffs;
+- signature rules.
+
+They are **not** differentiated by artificially forbidding two systems from both giving Công/Thủ/Tốc tu/etc.
+
+Flavor, humor and drawbacks are secondary layers. A rare/valuable mechanic must first have meaningful player value. A gimmick such as “ăn nhiều”, “nổ lò”, “hay hóng chuyện” may enrich a system, but cannot replace its core advantage/consequence.
+
+New-system gates should test real consequences, not merely existence of fields/text labels.
+
 ## Canonical disciple rules already locked
 
 ### P2.8 identity
