@@ -2,7 +2,7 @@
 
 Date: 2026-10-01
 
-## Runtime-confirmed state
+## Runtime-confirmed baseline
 
 Real Windows + Godot 4.7.2 cumulative evidence confirms:
 
@@ -20,155 +20,191 @@ Real Windows + Godot 4.7.2 cumulative evidence confirms:
 - P2.5 Combat Skills / Real-time Auto Combat: PASS.
 - P2.6 Forge + Equipment Tycoon: LOCKED / PASS.
 
-Latest cumulative P2.6 evidence:
+P2.6 final runtime evidence included persistence diagnostic, forge/equipment contracts, combat-stat consequence contracts and interaction scene smoke.
 
-- P2.5 realtime combat + independent skills: PASS.
-- P2.6 persistence diagnostic: PASS.
-- P2.6 forge + autonomous/manual equipment contracts: PASS.
-- P2.6 equipment combat-stat consequences: PASS.
-- P2.6 interaction scene smoke: PASS.
-- Final `P2.6 FORGE + EQUIPMENT TYCOON GATE: PASS`.
-
-## Persistence fixes carried forward
-
-- SaveService v2 losslessly stores float64 values through exact byte encoding.
-- P2.1 decision snapshot integer fields are canonicalized after load.
-- P2.6 nested equipment instances are canonicalized after load: integer price, float stats, stable string identity/location/owner fields.
-- P2.6 immediate canonical save/load equality passes.
-
-## Architecture locks
-
-- Godot 4.7.2 / GDScript is gameplay authority.
-- Deterministic seeded simulation is mandatory.
-- Save/load exactness, invariants and explicit economy sources/sinks remain mandatory.
-- No fixed character class. Sword/Body/Spell identity comes from actual cultivation/path history and compatible systems.
-- Player is the sect master: manages the sect and may intervene directly, while disciples remain autonomous by default.
-- New mechanics must have measurable simulation/player-decision consequences.
-
-## Progression stack locked through P2.6
-
-- P2.1: cultivation -> breakthrough -> realm -> combat/HP.
-- P2.2: spiritual roots -> growth/compatibility.
-- P2.3: technique economy + library + mastery.
-- P2.4: emergent Sword/Body/Spell path identity.
-- P2.5: independent combat skills + deterministic realtime auto combat.
-- P2.6: hunt materials -> forge -> equipment storage/shop -> autonomous purchase or player allocation -> harder hunting/combat.
-
-## P2.6 locked behavior
-
-Player/AI authority:
-
-- autonomous equipment is default;
-- disciples evaluate gear from build compatibility, personality and price;
-- player can manually equip;
-- player can lock a slot against AI replacement;
-- unlock returns the slot to autonomous management;
-- manual allocation is not a purchase.
-
-Economy:
-
-`disciple wallet - price -> sect treasury + price`
-
-Internal equipment purchases conserve total simulation money.
-
-Real consequences:
-
-- combat wins can generate forge materials;
-- forged items are deterministic instances;
-- equipment power changes autonomous region choice and real combat power;
-- armor changes real incoming damage;
-- speed/range/basic-ratio change real attack behavior;
-- skill-effect stats modify real combat skills;
-- compatibility changes actual effectiveness, not only UI scoring.
-
-## Post-P2.6 gameplay reference lock
-
-Primary gameplay rhythm stays closest to **Evil Hunter Tycoon**:
-
-- characters move/live/fight autonomously;
-- player manages sect infrastructure, resources, production, assignments and preparation;
-- player can call one disciple and issue a direct temporary order;
-- hunt/expedition rewards feed production and disciple growth;
-- disciple personal economy and sect economy interact.
-
-Other reference responsibilities are explicitly separated:
-
-- **最强祖师** -> personality/traits + multidimensional disciple value + production specialization;
-- **The Lost Village** -> work assignment, group/position preference, life/work/cultivation scheduling;
-- **鬼谷八荒** -> sect rank, delegation, elders/hall authority, task departments;
-- **Sect Master / 宗门经理人** -> autonomous expedition -> warehouse -> production -> disciple build -> harder expedition economy loop.
-
-Research synthesis is stored in:
-
-- `docs/GAMEPLAY_REFERENCE_SYNTHESIS.md`
-
-## Required architecture correction before/inside P2.7
-
-The current P1.5 `role_assignments` semantic (`hunter / logistics / guard`) must not be expanded to also mean sect rank or profession.
-
-Three concepts must be separate:
-
-1. **Sect rank / authority** — outer, inner, core, deacon, elder, hall master...
-2. **Profession / work specialization** — forging, alchemy, herbalism, mining, logistics...
-3. **Combat/adventure role** — existing team role behavior or future tactical role.
-
-A disciple may simultaneously be:
-
-`Inner disciple + Forging specialist + Hunt-team member`.
-
-Do not build P2.7 on one overloaded `role` field.
-
-## P2.7 design candidate
-
-Working title:
+## Active phase
 
 **P2.7 — Disciple Life + Workforce + Sect Assignment**
 
-Design spec:
+Status: **IMPLEMENTED / AWAITING REAL GODOT 4.7.2 RUNTIME GATE**.
 
+Do not call P2.7 PASS until `Sync-P2-7.cmd` reaches the final P2.7 gate successfully on the Windows machine.
+
+## Core product direction
+
+Primary operating rhythm: **Evil Hunter Tycoon**.
+
+- disciples move/live/work/fight autonomously;
+- player is the Sect Master and manages infrastructure, production, policy, assignments and preparation;
+- player can directly command a specific disciple when needed;
+- routine micromanagement must remain optional;
+- hunt/expedition/work rewards feed sect production, disciple growth and harder content.
+
+Reference specializations:
+
+- `最强祖师` -> multidimensional disciple value, traits, production specialization;
+- `The Lost Village` -> work assignment, group priority and work/cultivation/recovery schedule;
+- `鬼谷八荒` -> sect rank and later delegation/hall authority;
+- `Sect Master / 宗门经理人` -> expedition -> warehouse -> production -> disciple build loop.
+
+Research docs:
+
+- `docs/GAMEPLAY_REFERENCE_SYNTHESIS.md`
+- `docs/DISCIPLE_SYSTEM_DEEP_RESEARCH.md`
 - `docs/P2_7_DISCIPLE_LIFE_WORKFORCE_SPEC.md`
 
-Core target:
+## P2.7 implemented architecture
 
-`personal aptitude + profession XP + work priorities + schedule + group assignment + direct Sect Master command + autonomous fallback`.
+Three concepts remain separate:
 
-The first implementation should stay narrow and prove only a few real loops instead of adding many decorative professions.
+1. `sect_rank` — sect status/authority schema;
+2. `profession_xp` + workforce state — production specialization;
+3. P1.5 combat/adventure roles — team behavior.
 
-Recommended vertical slice:
+Do not merge these into one `role` field.
 
-- Mining -> produces real Thanh Thiết into the P2.6 forge store;
-- Forging work -> creates a real deterministic production consequence for P2.6;
-- profession XP -> repeated work makes a disciple measurably better;
-- work schedule -> cannot permanently suppress cultivation/recovery;
-- direct Sect Master command -> temporarily overrides autonomy, then returns control;
-- group work defaults -> scale beyond six disciples;
-- personal override -> beats group default.
+### Disciple workforce state
 
-## Current-code audit relevant to P2.7
+P2.7 adds opt-in state for:
 
-### Keep
+- comprehension / learning aptitude;
+- profession XP;
+- profession traits;
+- personal work priorities;
+- work group;
+- work progress;
+- direct Sect Master command;
+- sect-rank schema.
 
-- `GoalSystem` survival/personality goals as a personal-goal layer.
-- `DecisionSystem` as the top-level action arbitrator.
-- P1.5 combat teams and leadership.
-- P1.6 needs/recovery pressure.
-- P2.1-P2.6 cultivation/build/equipment consequences.
+P2.6 disciples remain behavior-compatible because these mechanics activate only when `workforce_enabled == true`.
 
-### Refactor/extend
+### Workforce groups
 
-- Recruitment currently differentiates candidates mostly by combat power + three personality biases; add non-combat aptitude/traits so low-combat disciples can still be valuable.
-- Organization roles currently conflate generic activity roles; separate combat role from sect rank and workforce group.
-- Decision logic must not gain one hard-coded branch per future profession; add a workforce/task authority layer.
-- Direct player orders should be represented as persistent deterministic command state with completion/timeout, not one-off UI hacks.
+Initial groups:
 
-## Deferred beyond initial P2.7
+- `mining_crew` — Đội Khai Khoáng;
+- `forge_hall` — Luyện Khí Đường.
 
-- full elder/hall-master AI delegation;
+Group priorities provide scalable defaults. Personal priorities override group defaults.
+
+### Schedule
+
+P2.7 uses a deterministic 20-tick schedule with:
+
+- work;
+- cultivation;
+- recovery.
+
+Policies:
+
+- balanced;
+- production_push;
+- cultivation_focus.
+
+Assigned work cannot occupy 100% of time by default.
+
+### Direct Sect Master command
+
+Persistent deterministic commands:
+
+- WORK_PROFESSION;
+- CULTIVATE;
+- HUNT_REGION;
+- RETURN_SECT;
+- REST;
+- HOLD_AT_SECT.
+
+Emergency survival remains above routine commands. A completed/expired command returns the disciple to normal autonomy.
+
+### Real work consequences
+
+**Mining**
+
+- work completion increases mining XP;
+- produces real `Thanh Thiết` in the P2.6 forge-material store;
+- profession level/comprehension/traits affect productivity;
+- experienced miner can yield more than a novice.
+
+**Forging**
+
+- work completion increases forging XP;
+- creates forge support points;
+- when P2.7 is enabled, a P2.6 craft can consume one support point for a real +5% stat multiplier on that item;
+- P2.6 crafting remains unchanged while workforce is disabled.
+
+### Recruitment
+
+P2.7 candidates gain deterministic:
+
+- comprehension;
+- 0-2 profession traits.
+
+This creates non-combat recruitment value without an overall-score shortcut.
+
+## Persistence and determinism
+
+P2.7 state is serialized through SaveService v2.
+
+Canonical persistence covers:
+
+- workforce flag/policy/groups;
+- forge support points/counters;
+- comprehension;
+- profession XP/traits;
+- work priorities/group/progress;
+- direct commands with integer ticks;
+- sect-rank schema.
+
+A dedicated first-difference diagnostic exists:
+
+- `godot/tests/simulation/p2_7_persistence_diagnostic.gd`
+
+## P2.7 verification assets
+
+- `godot/src/simulation/workforce/workforce_system.gd`
+- `godot/src/simulation/core/p2_7_factory.gd`
+- `godot/tests/simulation/p2_7_persistence_diagnostic.gd`
+- `godot/tests/simulation/p2_7_workforce_test.gd`
+- `godot/src/presentation/p2_7_workforce.gd`
+- `godot/scenes/p2/p2_7_workforce.tscn`
+- `tools/godot/Verify-P2-7.ps1`
+- `Verify-P2-7.cmd`
+- `Sync-P2-7.cmd`
+
+## P2.7 gate must prove
+
+1. P2.6 remains workforce-disabled.
+2. Same seed produces the same workforce profiles.
+3. Mining produces real Thanh Thiết.
+4. Work raises profession XP.
+5. Experienced miner outperforms novice miner.
+6. Schedule reserves work/cultivation/recovery.
+7. Direct Sect Master command overrides routine assignment.
+8. Completed command returns to autonomy.
+9. Forging support changes a real P2.6 craft.
+10. Recruitment has deterministic non-combat aptitude.
+11. Save/load exact equality passes.
+12. Post-load continuation remains deterministic.
+13. All prior invariants and P0-P2.6 gates remain green.
+14. P2.7 interaction scene launches headless.
+
+## Deferred after P2.7 vertical slice
+
+- elder/hall-master delegation AI;
+- salaries/stipends and loyalty;
 - master-disciple relationships;
-- marriage/dual cultivation;
 - lifespan/death/succession;
-- sect politics;
-- salaries/stipends;
-- many production professions;
+- marriage/dual cultivation;
+- active alchemy/herbalism/logistics loops;
 - full spatial building/pathfinding workforce simulation;
-- enhancement +N and advanced equipment reroll systems.
+- advanced equipment enhancement/reroll systems.
+
+## Next authoritative local command
+
+```bat
+cd /d "E:\0.2. TongMonBaDao"
+git pull origin main
+Sync-P2-7.cmd
+```
+
+If the chain fails, fix the first failing gate only, rerun the same command, and do not weaken exact persistence/determinism contracts.
