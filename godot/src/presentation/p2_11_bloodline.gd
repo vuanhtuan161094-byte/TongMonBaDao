@@ -29,9 +29,9 @@ func _ensure_special_candidate() -> void:
         var fate_result := recruitment.fate_candidate(state)
         if not bool(fate_result.get("ok", false)):
             continue
-        var candidate_id := StringName(fate_result.get("candidate_id", ""))
-        if bloodlines.bloodline_id(state, candidate_id) != BloodlineSystem.BLOODLINE_NONE:
-            selected_id = candidate_id
+        var generated_id := StringName(fate_result.get("candidate_id", ""))
+        if bloodlines.bloodline_id(state, generated_id) != BloodlineSystem.BLOODLINE_NONE:
+            selected_id = generated_id
             return
 
     candidate_ids = state.recruitment_candidates.keys()
