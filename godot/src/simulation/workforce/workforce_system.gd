@@ -97,8 +97,7 @@ func set_work_preference(state: SimulationState, disciple_id: StringName, profes
     if not state.sect.workforce_enabled or not state.disciples.has(disciple_id) or not VALID_PROFESSIONS.has(profession_id):
         return false
     var disciple: DiscipleState = state.disciples[disciple_id]
-    var value := clampi(priority, 0, 4)
-    disciple.work_preferences[str(profession_id)] = value
+    disciple.work_preferences[str(profession_id)] = clampi(priority, 0, 4)
     state.sect.workforce_event_count += 1
     return true
 
@@ -165,7 +164,6 @@ func next_action(state: SimulationState, disciple: DiscipleState) -> StringName:
 
     _expire_command_if_needed(state, disciple)
 
-    # Survival remains above player routine orders. DecisionSystem handles the exact recovery choice.
     var hp_ratio := disciple.hp / maxf(disciple.max_hp, 1.0)
     if hp_ratio < 0.72 or disciple.stamina < 42.0:
         return &""
@@ -258,10 +256,10 @@ func perform_work(state: SimulationState, disciple: DiscipleState, profession_id
 
     match profession_id:
         PROF_MINING:
-            var yield := 1 + int(profession_level(disciple, profession_id) >= 3)
-            state.sect.forge_materials["thanh_thiet"] = int(state.sect.forge_materials.get("thanh_thiet", 0)) + yield
+            var produced := 1 + int(profession_level(disciple, profession_id) >= 3)
+            state.sect.forge_materials["thanh_thiet"] = int(state.sect.forge_materials.get("thanh_thiet", 0)) + produced
             disciple.metrics["mining_completions"] = int(disciple.metrics.get("mining_completions", 0)) + 1
-            result["produced"] = yield
+            result["produced"] = produced
         PROF_FORGING:
             var support := 1 + int(profession_level(disciple, profession_id) >= 4)
             state.sect.forge_support_points += support
@@ -311,6 +309,16 @@ func validate_invariants(state: SimulationState) -> Array[String]:
         for profession_id in disciple.profession_xp.keys():
             if not VALID_PROFESSIONS.has(StringName(profession_id)) or float(disciple.profession_xp[profession_id]) < 0.0:
                 errors.append("%s has invalid profession XP." % disciple.display_name)
+        for preference_id in disciple.work_preferences.keys():
+            var preference := int(disciple.work_preferences[preference_id])
+            if not VALID_PROFESSIONS.has(StringName(preference_id)) or preference < 0 or preference > 4:
+                errors.append("%s has invalid work preference." % disciple.display_name)
+        for progress_id in disciple.work_progress.keys():
+            if not VALID_PROFESSIONS.has(StringName(progress_id)) or float(disciple.work_progress[progress_id]) < 0.0:
+                errors.append("%s has invalid work progress." % disciple.display_name)
+        for trait in disciple.profession_traits:
+            if not PROFESSION_TRAITS.has(str(trait)):
+                errors.append("%s has invalid profession trait %s." % [disciple.display_name, trait])
         if not disciple.direct_command.is_empty():
             var kind := StringName(disciple.direct_command.get("kind", ""))
             if not VALID_COMMANDS.has(kind):
