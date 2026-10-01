@@ -119,6 +119,8 @@ func add_progress(state: SimulationState, disciple: DiscipleState, amount: float
         effective_amount *= lerpf(0.82, 1.22, clampf(disciple.aptitude, 0.0, 1.0))
     if state.sect.disciple_traits_enabled:
         effective_amount *= trait_system.cultivation_gain_multiplier(state, disciple)
+    if state.sect.bloodlines_enabled:
+        effective_amount *= bloodline_system.cultivation_gain_multiplier(state, disciple)
     var before := disciple.cultivation_progress
     disciple.cultivation_progress = minf(required, before + effective_amount)
     var gained := disciple.cultivation_progress - before
