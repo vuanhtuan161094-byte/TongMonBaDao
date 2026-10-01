@@ -85,9 +85,14 @@ Read:
 - `docs/DISCIPLE_SYSTEM_DEEP_RESEARCH.md`
 - `docs/DISCIPLE_SYSTEM_LATEST_SOURCE_ADDENDUM_2026-10-01.md`
 - `docs/DISCIPLE_GENERATION_CANON.md`
+- `docs/DISCIPLE_LIFESPAN_CANON.md`
+- `docs/P1_P2_6_CANON_AUDIT.md`
 - `docs/P2_7_DISCIPLE_LIFE_WORKFORCE_SPEC.md`
+- `docs/P2_8_DISCIPLE_GENERATION_V2_SPEC.md`
 
 `docs/DISCIPLE_GENERATION_CANON.md` is the canonical rule for future procedural disciple generation and supersedes older discussion that rejected quality/gacha outright.
+
+`docs/P1_P2_6_CANON_AUDIT.md` locks what is kept versus refactored from the already-passing stack. Do not rewrite P1-P2.6 merely to fit later canon; use opt-in V2/composition unless the audit explicitly requires a semantic correction.
 
 ## Canonical procedural-disciple rules
 
@@ -157,6 +162,21 @@ These are separate concepts:
 - personality = behavioral decision bias.
 
 Do not merge them into one `traits` list semantically even if storage composition is shared internally.
+
+## P1.1-P2.6 post-canon audit locks
+
+- P1.1 Goal/Personality: keep; later traits/alignment/lifespan layer on top.
+- P1.2 Recruitment: keep accept/reject/pool flow; V2 must generate foundation before deriving combat power.
+- P1.3 Relationships: keep directed affinity/trust/respect; later Charisma/lineage hooks compose in.
+- P1.4 Memory: keep; add future life-event types instead of replacing it.
+- P1.5 `role_assignments`: legacy save storage means **combat/adventure roles only**. Use `combat_role_*` APIs for new code; never store sect rank or profession there.
+- P1.6 Needs: keep; injury/medical/workforce logistics extend it later.
+- P2.1 Cultivation: keep; V2 can add aptitude/lifespan/injury hooks while feature-gated.
+- P2.2 Spiritual Roots: legacy behavior stays locked; V2 separates root purity/quality from element count.
+- P2.3 Techniques: keep; technique gacha is separate from disciple gacha.
+- P2.4 Paths: keep emergent path identity; innate traits may bias but never class-lock.
+- P2.5 Combat: keep realtime deterministic resolver; bloodline/physique/destiny/artifact effects compose later.
+- P2.6 Equipment: keep. `talisman` is an equipment accessory slot, not the future Pháp Bảo system.
 
 ## P2.6 locked contract — Forge + Equipment Tycoon
 
@@ -237,3 +257,7 @@ P2.7 workforce state must survive exact SaveService v2 round-trip and determinis
 - decorative aptitude/trait labels without consequences;
 - AI replacing an active direct Sect Master command;
 - expanding the full future disciple generator before the workforce gate is green.
+
+## Next phase after P2.7 runtime green
+
+Implement `docs/P2_8_DISCIPLE_GENERATION_V2_SPEC.md` as an opt-in V2 layer. Do not start it before P2.7 is runtime green.
