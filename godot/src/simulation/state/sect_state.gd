@@ -78,6 +78,11 @@ var disciple_traits_enabled: bool = false
 var disciple_trait_profiles: Dictionary = {}
 var disciple_trait_event_count: int = 0
 
+# P2.10 spiritual-root refinement + deterministic latent mutation. Fully opt-in.
+var spiritual_root_refinement_enabled: bool = false
+var spiritual_root_profiles: Dictionary = {}
+var spiritual_root_refinement_event_count: int = 0
+
 func to_dict() -> Dictionary:
     var data := {
         "treasury": treasury,
@@ -133,6 +138,10 @@ func to_dict() -> Dictionary:
         data["disciple_traits_enabled"] = disciple_traits_enabled
         data["disciple_trait_profiles"] = disciple_trait_profiles.duplicate(true)
         data["disciple_trait_event_count"] = disciple_trait_event_count
+    if spiritual_root_refinement_enabled or spiritual_root_refinement_event_count > 0 or not spiritual_root_profiles.is_empty():
+        data["spiritual_root_refinement_enabled"] = spiritual_root_refinement_enabled
+        data["spiritual_root_profiles"] = spiritual_root_profiles.duplicate(true)
+        data["spiritual_root_refinement_event_count"] = spiritual_root_refinement_event_count
     return data
 
 static func from_dict(data: Dictionary) -> SectState:
@@ -180,6 +189,9 @@ static func from_dict(data: Dictionary) -> SectState:
     state.disciple_traits_enabled = bool(data.get("disciple_traits_enabled", false))
     state.disciple_trait_profiles = _trait_profile_dictionary(data.get("disciple_trait_profiles", {}))
     state.disciple_trait_event_count = maxi(int(data.get("disciple_trait_event_count", 0)), 0)
+    state.spiritual_root_refinement_enabled = bool(data.get("spiritual_root_refinement_enabled", false))
+    state.spiritual_root_profiles = _root_profile_dictionary(data.get("spiritual_root_profiles", {}))
+    state.spiritual_root_refinement_event_count = maxi(int(data.get("spiritual_root_refinement_event_count", 0)), 0)
 
     var saved_stats = data.get("needs_stats", {})
     if saved_stats is Dictionary:
@@ -282,6 +294,24 @@ static func _trait_profile_dictionary(value: Variant) -> Dictionary:
             "visible": _string_array(raw_profile.get("visible", [])),
             "latent": _string_array(raw_profile.get("latent", [])),
             "revealed": _string_array(raw_profile.get("revealed", []))
+        }
+    return normalized
+
+static func _root_profile_dictionary(value: Variant) -> Dictionary:
+    var normalized: Dictionary = {}
+    if not (value is Dictionary):
+        return normalized
+    var keys: Array = value.keys()
+    keys.sort()
+    for raw_key in keys:
+        var raw_profile = value[raw_key]
+        if not (raw_profile is Dictionary):
+            continue
+        normalized[str(raw_key)] = {
+            "initialized": bool(raw_profile.get("initialized", false)),
+            "refinement_count": maxi(int(raw_profile.get("refinement_count", 0)), 0),
+            "latent_mutation": str(raw_profile.get("latent_mutation", "none")),
+            "revealed_mutation": str(raw_profile.get("revealed_mutation", ""))
         }
     return normalized
 
