@@ -6,7 +6,7 @@ Always inspect live `main` before editing.
 
 ## Runtime status
 
-Real Windows + Godot 4.7.2 cumulative gate is green through **P2.8**.
+Real Windows + Godot 4.7.2 cumulative gate is green through **P2.10**.
 
 Locked PASS chain:
 
@@ -23,252 +23,190 @@ Locked PASS chain:
 - P2.4 Cultivation Paths
 - P2.5 Realtime Combat + Independent Skills
 - P2.6 Forge + Equipment Tycoon
-- P2.7 Disciple Life + Workforce + Sect Assignment
+- P2.7 Disciple Life + Workforce
 - P2.8 Disciple Generation V2 + Phẩm chất + Recruitment Sources
+- P2.9 Traits + Hidden Reveal
+- P2.10 Spiritual Root Refinement + Mutation
 
-Latest authoritative user runtime line:
+Authoritative latest user runtime evidence on 2026-10-01 ended with:
 
-`P2.8 GATE: PASS`
+- `P2.9 TRAITS + HIDDEN REVEAL GATE: PASS`
+- `P2.10 PERSISTENCE DIAGNOSTIC PASS: immediate canonical state identical`
+- `P2.10 SPIRITUAL ROOT REFINEMENT + MUTATION TEST PASS`
+- `P2.10 SPIRITUAL ROOT REFINEMENT + MUTATION GATE: PASS`
+- `P2.10 GATE: PASS`
 
-Do not reopen P0-P2.8 without new regression evidence.
+Do not reopen P0-P2.10 without new regression evidence.
 
-## Implemented / awaiting runtime
+## Active phase
 
-- **P2.9 — Traits + Hidden Reveal**: IMPLEMENTED / NOT PASS YET.
-- **P2.10 — Spiritual Root Refinement + Mutation**: IMPLEMENTED / NOT PASS YET.
+**P2.11 — Huyết Mạch + Thức Tỉnh + Độ Thuần**
 
-The user currently has no computer available, so P2.9 was not run before P2.10 implementation continued. P2.10 is isolated behind its own feature gate and verifier.
+Status: **IMPLEMENTED / AWAITING REAL GODOT 4.7.2 CUMULATIVE GATE**.
 
-Never claim P2.9 or P2.10 PASS until real Godot 4.7.2 output is supplied.
+Never call it PASS before a successful `Sync-P2-11.cmd` run.
 
 ## Read first
 
 1. `AGENTS.md`
 2. `CURRENT_CHECKPOINT.md`
-3. `docs/DISCIPLE_GENERATION_CANON.md`
-4. `docs/DISCIPLE_LIFESPAN_CANON.md`
-5. `docs/P2_9_TRAITS_REVEAL_SPEC.md`
+3. `docs/P2_11_BLOODLINE_SPEC.md`
+4. `docs/XIANXIA_FLAVOR_CANON.md`
+5. `docs/DISCIPLE_GENERATION_CANON.md`
 6. `docs/P2_10_SPIRITUAL_ROOT_REFINEMENT_SPEC.md`
 7. this file
 
-## Core product identity
+## Core product direction
 
-Primary operating rhythm: **Evil Hunter Tycoon**, with much deeper individual disciples.
+Primary operating rhythm is Evil Hunter Tycoon-like, but individual disciples are much deeper.
 
-The player is Tông Chủ. Disciples autonomously live, cultivate, work, hunt, recover, spend and form relationships. The player manages infrastructure, policy, production, recruitment, assignments, investment and temporary direct intervention.
+The player is Tông Chủ. Disciples autonomously live, cultivate, work, hunt, recover, consume and form relationships. The player controls recruitment, infrastructure, policy, production, assignment, investment and temporary direct intervention.
 
-Large rosters must not require mandatory one-by-one micromanagement.
+Normal disciples are deterministic procedural individuals. Hidden identity is generated once and persisted. Reveal never rerolls it.
 
-## Locked P2.8 disciple identity
+Keep Spiritual Root, Bloodline, Physique, Destiny, traits/quirks and personality separate.
 
-Every V2 candidate is one deterministic procedural individual.
+## Locked P2.8-P2.10 rules
 
-Core identity includes:
+P2.8:
 
-- source/profile seed;
-- race/sex/origin;
-- six permanent dimensions;
+- six permanent foundation dimensions;
 - promotable quality;
-- personality/biases;
-- spiritual-root purity + independent element list;
-- profession talent subset;
-- latent identity seed;
+- ordinary/gacha/fate share one generator;
 - age/base/max lifespan schema;
-- starting cultivation state;
-- intrinsic combat power derived after identity.
+- root purity and root element count are separate.
 
-Six dimensions:
+P2.9:
 
-- aptitude — Tư Chất;
-- constitution — Căn Cốt;
-- fortune — Cơ Duyên;
-- comprehension — Thông Tuệ;
-- charisma — Mị Lực;
-- potential — Tiềm Lực.
+- visible positive/negative traits have real consequences;
+- latent traits reveal from lived history;
+- empty visible list is a valid locked result.
 
-Quality tiers:
+P2.10:
 
-- Phàm Thường
-- Xuất Chúng
-- Thiên Kiêu
-- Tuyệt Luân
-- Nghịch Thiên
+- root refinement consumes real `Linh Tủy`;
+- purity increases with diminishing returns;
+- ordinary refinement preserves element list;
+- fewer elements specialize harder, more elements give flexibility;
+- latent root mutation is generated before reveal and cannot reroll.
 
-Recruitment sources share one generator:
+## P2.11 implementation
 
-- ordinary;
-- Chiêu Hiền / gacha;
-- Nhân Duyên / fate.
+### Main files
 
-Candidate -> disciple keeps the same identity and id.
-
-## P2.9 summary
-
-Feature gate:
-
-- `SectState.disciple_traits_enabled`.
-
-Profiles:
-
-- `SectState.disciple_trait_profiles[character_id]`.
-
-Schema:
-
-- initialized;
-- visible;
-- latent;
-- revealed.
-
-Visible slice with real consequences:
-
-- Kinh Mạch Ổn Định / Kinh Mạch Yếu -> cultivation;
-- Cần Mẫn / Cẩu Thả -> workforce;
-- Gan Dạ / Nhát Chiến -> effective combat power.
-
-Latent slice:
-
-- Bản Năng Chiến Đấu -> combat-history reveal;
-- Nhãn Lực Luyện Khí -> work-history reveal;
-- Ngộ Tĩnh -> cultivation-history reveal.
-
-Reveal never rerolls latent identity.
-
-Important main files:
-
-- `godot/src/simulation/traits/trait_system.gd`
-- `godot/src/simulation/core/p2_9_factory.gd`
-- `godot/tests/simulation/p2_9_traits_test.gd`
-- `tools/godot/Verify-P2-9.ps1`
-
-## P2.10 summary
-
-Feature gate:
-
-- `SectState.spiritual_root_refinement_enabled`.
-
-Profiles:
-
-- `SectState.spiritual_root_profiles[character_id]`.
-
-Schema:
-
-- initialized;
-- refinement_count;
-- latent_mutation;
-- revealed_mutation.
-
-### Real resource loop
-
-P2.10 consumes the existing P2.3 material:
-
-- `linh_tuy` — Linh Tủy.
-
-No new disconnected currency.
-
-Player choice:
-
-`Linh Tủy -> upgrade technique` OR `Linh Tủy -> refine spiritual root`.
-
-### Refinement
-
-Ordinary refinement:
-
-- consumes exactly one Linh Tủy;
-- raises purity;
-- receives a Tiềm Lực contribution;
-- has diminishing returns;
-- does not change the element list;
-- caps routine purity at 0.98.
-
-Purity compatibility thresholds:
-
-- `<0.48` Mixed;
-- `0.48..<0.65` Ordinary;
-- `0.65..<0.82` Earth;
-- `>=0.82` Heaven.
-
-Crossing the bridge feeds existing P2.2/P2.3 consequence code.
-
-Continuous P2.10 purity also changes real cultivation gain and breakthrough chance.
-
-### Specialization vs flexibility
-
-- fewer root elements -> stronger matching-element specialization;
-- more root elements -> wider compatibility;
-- multi-root is not inherently bad;
-- purity stays independent from element count.
-
-### Latent mutation
-
-Vertical-slice mutations:
-
-- Canh Kim Dị Căn;
-- Thanh Mộc Dị Căn;
-- Hàn Thủy Dị Căn;
-- Xích Viêm Dị Căn;
-- Hậu Thổ Dị Căn.
-
-Mutation is chosen deterministically before reveal from existing root elements.
-
-Current reveal condition:
-
-- refinement count >= 3;
-- purity >= 0.72;
-- latent mutation is not `none`.
-
-Reveal copies the stored latent mutation; no reroll.
-
-A revealed mutation has measurable cultivation/breakthrough and matching-element consequences.
-
-### Recruitment lifecycle
-
-New P2.10 candidates receive root profiles when generated.
-
-Acceptance preserves profile. Rejection deletes the orphan root profile.
-
-### Main P2.10 files
-
-- `docs/P2_10_SPIRITUAL_ROOT_REFINEMENT_SPEC.md`
-- `godot/src/simulation/cultivation/root_refinement_system.gd`
-- `godot/src/simulation/cultivation/spiritual_root_system.gd`
-- `godot/src/simulation/cultivation/cultivation_system.gd`
-- `godot/src/simulation/core/p2_10_factory.gd`
-- `godot/src/simulation/recruitment/recruitment_system.gd`
+- `docs/P2_11_BLOODLINE_SPEC.md`
+- `docs/XIANXIA_FLAVOR_CANON.md`
+- `godot/src/simulation/bloodline/bloodline_system.gd`
+- `godot/src/simulation/core/p2_11_factory.gd`
 - `godot/src/simulation/state/sect_state.gd`
-- `godot/tests/simulation/p2_10_persistence_diagnostic.gd`
-- `godot/tests/simulation/p2_10_root_refinement_test.gd`
-- `godot/src/presentation/p2_10_root_refinement.gd`
-- `godot/scenes/p2/p2_10_root_refinement.tscn`
-- `tools/godot/Verify-P2-10.ps1`
-- `Verify-P2-10.cmd`
-- `Sync-P2-10.cmd`
+- `godot/src/simulation/recruitment/recruitment_system.gd`
+- `godot/src/simulation/cultivation/cultivation_system.gd`
+- `godot/src/simulation/combat/combat_system.gd`
+- `godot/src/simulation/needs/needs_system.gd`
+- `godot/src/simulation/core/simulation_scheduler.gd`
+- `godot/tests/simulation/p2_11_persistence_diagnostic.gd`
+- `godot/tests/simulation/p2_11_bloodline_test.gd`
+- `godot/src/presentation/p2_11_bloodline.gd`
+- `godot/scenes/p2/p2_11_bloodline.tscn`
+- `tools/godot/Verify-P2-11.ps1`
+- `Verify-P2-11.cmd`
+- `Sync-P2-11.cmd`
 
-## Current local command
+### Feature gate and storage
 
-When the user has a Windows machine again, run only:
+- `SectState.bloodlines_enabled`
+- `SectState.bloodline_profiles[character_id]`
+
+Profile:
+
+- initialized
+- bloodline_id
+- purity
+- revealed
+- awakened
+- refinement_count
+
+Candidate -> disciple keeps same id/profile. Rejected candidates remove orphan profile.
+
+### Bloodlines
+
+- Chân Long Huyết — combat + breakthrough.
+- Phượng Hoàng Huyết — rest recovery.
+- Bạch Hổ Huyết — strong combat.
+- Huyền Vũ Huyết — incoming damage reduction.
+- Thao Thiết Tàn Huyết — strong recovery but one extra real Supply cost when departing if stock exists.
+- no special bloodline is valid/common.
+
+Special bloodline identity and purity exist before reveal. Recruitment source changes distribution only.
+
+### Reveal thresholds
+
+- Chân Long: 3 combats.
+- Phượng Hoàng: 1 defeat + 1 rest.
+- Bạch Hổ: 3 wins.
+- Huyền Vũ: 2 retreats.
+- Thao Thiết: 3 rests.
+
+Some profiles may already be detected at recruitment depending on deterministic seed/source.
+
+### Awakening and refinement
+
+Awakening requires revealed special bloodline and consumes one existing P2.3 `Yêu Đan`.
+
+Effects are inactive before awakening.
+
+Post-awakening refinement consumes Yêu Đan, raises purity with Tiềm Lực + diminishing returns, routine cap 0.95.
+
+## Xianxia humor/flavor
+
+The user explicitly wants familiar funny cultivation-story situations.
+
+Read `docs/XIANXIA_FLAVOR_CANON.md`.
+
+Allowed examples include khẩu nghiệp, fake self-declared Thiên Mệnh Chi Tử, furnace explosions, odd/fake manuals, misunderstood fate items, gluttony/greed/gossip and badly timed breakthroughs.
+
+Humor must come from real simulation consequences and must not turn the game into a meme game.
+
+P2.11 first real humorous mechanic: awakened Thao Thiết Tàn Huyết eats one extra departure Supply but recovers faster.
+
+## P2.11 gate intent
+
+Cumulative verifier must prove:
+
+- P2.10 remains bloodline-disabled;
+- same seed -> same profiles;
+- no-special-bloodline is stable and never rerolls;
+- reveal preserves id/purity and does not auto-awaken;
+- dormant bloodline has no effect;
+- awakening consumes exactly one Yêu Đan;
+- Chân Long/Bạch Hổ affect combat;
+- Chân Long affects breakthrough;
+- Huyền Vũ reduces real incoming damage multiplier;
+- Phượng Hoàng improves real rest recovery;
+- Thao Thiết improves recovery and consumes one extra real Supply;
+- refinement increases purity with diminishing returns;
+- candidate acceptance preserves profile and rejection removes it;
+- exact save/load + deterministic continuation;
+- P0-P2.10 regressions stay green;
+- P2.11 scene smoke passes.
+
+## Next local command
 
 ```bat
 cd /d "E:\0.2. TongMonBaDao"
 git pull origin main
-Sync-P2-10.cmd
+Sync-P2-11.cmd
 ```
 
-This automatically runs the entire P0 -> P2.9 chain before P2.10.
+If it fails, use the first real parser/diagnostic/assertion failure rather than later dependency cascades.
 
-If it fails, fix the first real parser error / first P2.9 or P2.10 diagnostic/assertion. Ignore later dependency-cascade errors until the first root error is fixed.
+## After P2.11 runtime green
 
-## After cumulative P2.10 green
-
-Planned order:
-
-1. Bloodline;
-2. Physique;
-3. first visible living-sect map/building/disciple movement slice;
-4. injury/medical;
-5. loyalty + stipend/reward;
-6. sect rank/authority expansion;
-7. master-disciple/teaching;
-8. Destiny/awakening;
-9. active lifespan/aging/death/inheritance after pacing is proven.
-
-Do not keep adding backend identity systems indefinitely before returning to visible gameplay.
+1. P2.12 Physique;
+2. then stop stacking identity systems temporarily and build the first visible living-sect map/building/disciple-movement slice;
+3. injury/medical;
+4. loyalty + stipend/reward;
+5. sect rank/authority;
+6. master-disciple;
+7. Destiny;
+8. active aging/lifespan/death/inheritance later.
