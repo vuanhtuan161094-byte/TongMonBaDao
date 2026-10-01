@@ -12,6 +12,7 @@ var zoom_readout: Label
 
 func _ready() -> void:
     super._ready()
+    popup_layer.z_index = 100
     _reset_camera(false)
     _build_camera_controls()
 
@@ -36,6 +37,7 @@ func _build_camera_controls() -> void:
     var panel := Panel.new()
     panel.position = Vector2(1204, 184)
     panel.size = Vector2(60, 184)
+    panel.z_index = 20
     panel.mouse_filter = Control.MOUSE_FILTER_STOP
     panel.add_theme_stylebox_override("panel", _style(Color(0.91, 0.86, 0.72, 0.92), INK, 2, 14))
     add_child(panel)
@@ -80,6 +82,7 @@ func _build_camera_controls() -> void:
     hint.text = "Chụm 2 ngón: zoom  •  Kéo: di chuyển  •  Chạm đúp: phóng nhanh"
     hint.position = Vector2(704, 606)
     hint.size = Vector2(480, 26)
+    hint.z_index = 20
     hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
     hint.add_theme_font_size_override("font_size", 11)
     hint.add_theme_color_override("font_color", Color(0.16, 0.16, 0.13, 0.74))
@@ -170,7 +173,8 @@ func _zoom_out() -> void:
 
 func _zoom_at(screen_point: Vector2, requested_zoom: float, animate: bool) -> void:
     var transform := SectMapCamera.zoom_around_screen_point(map_layer.position, map_zoom, requested_zoom, screen_point)
-    _apply_camera(float(transform["zoom"]), Vector2(transform["position"]), animate)
+    var target_position: Vector2 = transform["position"]
+    _apply_camera(float(transform["zoom"]), target_position, animate)
 
 func _pan_camera(delta: Vector2) -> void:
     var next_position := SectMapCamera.pan_position(map_layer.position, delta, map_zoom)
@@ -179,11 +183,13 @@ func _pan_camera(delta: Vector2) -> void:
 func _focus_world_point(world_point: Vector2) -> void:
     var target_zoom := maxf(map_zoom, SectMapCamera.FOCUS_ZOOM)
     var transform := SectMapCamera.focus_transform(world_point, target_zoom)
-    _apply_camera(float(transform["zoom"]), Vector2(transform["position"]), true)
+    var target_position: Vector2 = transform["position"]
+    _apply_camera(float(transform["zoom"]), target_position, true)
 
 func _reset_camera(animate: bool = true) -> void:
     var transform := SectMapCamera.reset_transform()
-    _apply_camera(float(transform["zoom"]), Vector2(transform["position"]), animate)
+    var target_position: Vector2 = transform["position"]
+    _apply_camera(float(transform["zoom"]), target_position, animate)
 
 func _apply_camera(zoom: float, position: Vector2, animate: bool) -> void:
     map_zoom = SectMapCamera.clamp_zoom(zoom)
@@ -216,14 +222,18 @@ func _refresh_pinch_baseline() -> void:
         return
     var pair := _first_two_touch_points()
     if pair.size() >= 2:
-        last_pinch_distance = Vector2(pair[0]).distance_to(Vector2(pair[1]))
+        var point_a: Vector2 = pair[0]
+        var point_b: Vector2 = pair[1]
+        last_pinch_distance = point_a.distance_to(point_b)
 
 func _first_two_touch_points() -> Array:
     var keys: Array = touch_points.keys()
     keys.sort()
     if keys.size() < 2:
         return []
-    return [Vector2(touch_points[keys[0]]), Vector2(touch_points[keys[1]])]
+    var point_a: Vector2 = touch_points[keys[0]]
+    var point_b: Vector2 = touch_points[keys[1]]
+    return [point_a, point_b]
 
 func _camera_center() -> Vector2:
     return SectMapCamera.VIEW_RECT.position + SectMapCamera.VIEW_RECT.size * 0.5
