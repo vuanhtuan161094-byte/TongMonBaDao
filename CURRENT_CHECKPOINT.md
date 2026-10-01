@@ -41,7 +41,7 @@ Do not reopen P0-P2.11 without new regression evidence.
 
 ## Active phase
 
-**P2.12 — Thể Chất + Tôi Thể + Cải Thể**
+**P2.12 — Thể Chất + Cấp Bậc + Tôi Thể + Cải Thể**
 
 Status: **IMPLEMENTED / AWAITING REAL GODOT 4.7.2 CUMULATIVE GATE**.
 
@@ -149,21 +149,80 @@ Profile schema:
 
 - `initialized`;
 - `physique_id`;
+- `physique_grade`;
 - `initial_physique_id`;
 - `temper_level`;
 - `transformed`;
 - `latent_transformation`.
 
-Candidate -> disciple preserves the exact profile. Reject removes orphan profile.
+Candidate -> disciple preserves the exact type + grade profile. Reject removes orphan profile.
 
-### Current physiques
+### Physique has two independent axes
 
-- **Phàm Thể** — no dead end; tempering gives small general gains and every V2 ordinary body has one deterministic transformation route.
+**Type** describes the body's mechanic:
+
+- no special named physique;
+- Kiếm Cốt;
+- Kim Cương Bá Thể;
+- Hàn Âm Thể;
+- Hỏa Linh Thể;
+- Vô Cấu Đạo Thể.
+
+**Grade** describes how powerful the body's innate foundation is:
+
+1. **Phàm Thể**;
+2. **Linh Thể**;
+3. **Huyền Thể**;
+4. **Thánh Thể**;
+5. **Thần Thể**.
+
+Display contract:
+
+- unnamed ordinary type -> show only grade, e.g. `Linh Thể`;
+- special type -> show `Kiếm Cốt · Huyền Thể`, `Hỏa Linh Thể · Thánh Thể`, etc.
+
+Do not display duplicated labels such as `Phàm Thể · Phàm Thể`.
+
+### Grade recruitment probabilities
+
+| Grade | Ordinary | Chiêu Hiền | Nhân Duyên |
+| --- | ---: | ---: | ---: |
+| Phàm Thể | 58% | 40% | 28% |
+| Linh Thể | 27% | 32% | 31% |
+| Huyền Thể | 11% | 19% | 24% |
+| Thánh Thể | 3.5% | 7% | 13% |
+| Thần Thể | 0.5% | 2% | 4% |
+
+Each source distribution sums to 100%. Thần Thể remains possible from ordinary recruitment but is much rarer than gacha/fate.
+
+Current positive-effect scaling by grade:
+
+- Phàm Thể: 0.85x;
+- Linh Thể: 1.00x;
+- Huyền Thể: 1.20x;
+- Thánh Thể: 1.45x;
+- Thần Thể: 1.80x.
+
+The grade strengthens real benefits, not only text/color. Current drawbacks do not become harsher merely because grade is higher.
+
+### Current physique types
+
+- **Unnamed ordinary body** — no dead end; tempering gives small general gains and every V2 ordinary body has one deterministic transformation route.
 - **Kiếm Cốt** — Công + tốc tu + đột phá nhẹ + strong Sword XP; small recovery drawback before high tempering.
 - **Kim Cương Bá Thể** — Công + very high Thủ + recovery + Body XP; real slower cultivation drawback.
 - **Hàn Âm Thể** — strong Thủ/Tu/Đột phá/Hồi/Spell XP when paired with Water root; real cultivation/recovery penalty when mismatched.
 - **Hỏa Linh Thể** — high Công/Tu/Đột phá/Spell XP when paired with Fire root; much weaker without Fire root.
 - **Vô Cấu Đạo Thể** — rare all-rounder with Công/Thủ/Tu/Đột phá/Hồi and all three path XP bonuses.
+
+### Type recruitment probability
+
+Special named physique chance remains separate from grade roll:
+
+- ordinary: 15%;
+- gacha: 28%;
+- fate: 40%.
+
+Type and grade are deterministic from the same character identity seed but are separate rolls. A common-looking body can still have a high grade; a named special type can exist at a low grade.
 
 ### Tempering
 
@@ -172,18 +231,27 @@ Candidate -> disciple preserves the exact profile. Reject removes orphan profile
 - consumes exactly 1 existing Yêu Đan;
 - raises temper level up to 5;
 - raises real physique consequences;
+- does not reroll type or grade;
 - no new disconnected currency.
 
 ### Transformation
 
 `transform_body()`:
 
-- requires current Phàm Thể;
+- requires current unnamed ordinary type;
 - requires temper level >= 3;
 - consumes exactly 2 existing Linh Tủy;
 - transforms into the pre-generated `latent_transformation` target;
 - never rerolls at transformation time;
-- preserves temper level and records `transformed = true`.
+- preserves temper level;
+- preserves physique grade;
+- records `transformed = true`.
+
+### Grade promotion later
+
+Do **not** automatically promote Phàm -> Linh -> Huyền -> Thánh -> Thần just by pressing temper five times.
+
+Physique grade is a major foundation layer. A future promotion action must require rare treasure/material + appropriate progression conditions. P2.12 already provides the grade schema, probability, persistence and stat scaling, but does not trivialize Thần Thể through routine tempering.
 
 ### Real consequence hooks
 
@@ -193,10 +261,11 @@ Candidate -> disciple preserves the exact profile. Reject removes orphan profile
 - `CultivationSystem.breakthrough_success_chance()` reads Physique breakthrough bonus.
 - `NeedsSystem.apply_rest()` reads Physique recovery bonus/penalty.
 - `CultivationPathSystem.add_experience()` reads Sword/Body/Spell XP affinity.
+- `PhysiqueSystem` scales positive effects using physique grade.
 
 ### Overlap rule — explicitly tested
 
-Bloodline + Physique are allowed to modify the same stats and **must stack**. A Chân Long + Hỏa Linh Thể disciple receives both valid Công/Tu sources. Do not add exclusivity merely because two systems affect the same output.
+Bloodline + Physique are allowed to modify the same stats and **must stack**. A Chân Long + Hỏa Linh Thể · Thánh Thể disciple receives all valid Công/Tu sources. Do not add exclusivity merely because systems affect the same output.
 
 ## Xianxia flavor/humor canon
 
@@ -216,7 +285,7 @@ Cultivation-story humor is allowed but must come from real simulation causes/con
 - `Verify-P2-12.cmd`
 - `Sync-P2-12.cmd`
 
-P2.12 verifier reruns P0-P2.11 first and must prove persistence, deterministic profiles, no reroll, real stat value, real drawbacks, elemental synergy, tempering cost, transformation cost/identity, Bloodline+Physique stacking, recruitment lifecycle and scene smoke.
+P2.12 verifier reruns P0-P2.11 first and must prove persistence, deterministic type+grade profiles, grade probabilities, real grade scaling, no reroll, real stat value, real drawbacks, elemental synergy, tempering cost, transformation cost/identity/grade preservation, Bloodline+Physique stacking, recruitment lifecycle and scene smoke.
 
 ## Next authoritative local command
 
