@@ -16,20 +16,21 @@
 - Simulation code must not depend on presentation/UI nodes.
 - Randomness must flow through deterministic seeded streams.
 - Economy transactions must conserve P0 money unless a source/sink is explicitly declared.
-- P2.3 spirit-stone sources/sinks must be explicit and must not contaminate P0 money conservation.
+- P2.3 spirit-stone sources/sinks must remain explicit and separate from P0 money conservation.
 - Every runtime state mutation must preserve invariants.
 - Prefer small composition-oriented systems over giant manager scripts.
 - Do not call a change PASS without the active verification gate.
-- Locked P0, P1.1, P1.2 and P1.3 remain mandatory regression baselines.
-- Real runtime evidence currently confirms P0 through P1.6; P2.1 is the first active persistence blocker.
-- P2.2 through P2.6 may be implemented while the user is away from the Windows machine, but none may be marked PASS until the cumulative Godot 4.7.2 gate actually reaches and passes them.
-- New mechanics must have measurable gameplay/simulation impact; do not add story-only, title-only, rarity-label-only, elemental-label-only, class-label-only or decorative progress state.
+- New mechanics must have measurable gameplay/simulation impact; decorative labels alone do not count.
+
+## Runtime baseline
+
+Real Godot 4.7.2 cumulative runtime evidence confirms **P0 through P2.6 PASS**.
+
+P2.6 is LOCKED. Do not weaken or bypass its contracts when designing later phases.
 
 ## Required loop
 
 read checkpoint -> narrow scope -> patch -> static review -> headless import/parse -> simulation tests -> runtime smoke -> checkpoint
-
-If the Windows/Godot runtime machine is unavailable, complete the read/narrow/patch/static-review/checkpoint portion honestly and leave runtime status as awaiting gate.
 
 ## Cumulative verification chain
 
@@ -47,76 +48,46 @@ If the Windows/Godot runtime machine is unavailable, complete the read/narrow/pa
 - P2.5: `tools/godot/Verify-P2-5.ps1`
 - P2.6: `tools/godot/Verify-P2-6.ps1`
 
-Authoritative local launcher: `Sync-P2-6.cmd`.
+Latest authoritative launcher: `Sync-P2-6.cmd` until a later phase replaces it.
+
+## Core character philosophy
+
+The player is the sect master, not an invisible city-builder cursor.
+
+The player sets infrastructure, recruitment, assignments, policies, investment and strategic direction, and can intervene directly when appropriate. Disciples should remain autonomous people inside the sect rather than puppets.
+
+Do not introduce a fixed character class system. Sword/Body/Spell identity is emergent from cultivation/path history and compatible systems.
+
+A disciple should be able to be valuable in different ways: combat, production, crafting, alchemy, farming, logistics, commerce, recruitment, teaching or other sect duties as later systems are introduced.
 
 ## P2.5 combat contract carried forward
 
-P2.5 adds deterministic real-time autonomous combat when `combat_skills_enabled` is enabled. It models combat time, distance, approach/keep-distance behavior, melee/ranged basics, cast time, cooldown, projectile travel and a deliberately small set of meaningful short-lived effects.
+- deterministic real-time autonomous combat;
+- distance/movement, melee/ranged basics, cast time, cooldown, projectile travel and temporary effects;
+- combat skills are independent from cultivation techniques;
+- cross-path learning remains legal;
+- P2.5 behavior remains unchanged when later feature flags are off.
 
-Combat skills remain independent from P2.3 cultivation techniques. Technique is the cultivation foundation; realm gates capability; combat skills are separately learned actions. Do not turn one technique into a fixed five-skill class kit.
+## P2.6 locked contract — Forge + Equipment Tycoon
 
-Sword/Body/Spell differ through actual spacing and combat behavior, not only coefficients. Spiritual-root affinity, P2.4 path expertise and compatible active technique may modify combat-skill effectiveness without hard-locking cross-path learning.
+Required loop:
 
-P2.5 must preserve the exact P2.4 legacy resolver while `combat_skills_enabled == false`.
+`hunt -> forge materials -> sect forge -> storage/shop -> autonomous purchase or player allocation -> stronger disciple -> harder hunt`
 
-## Active P2.6 contract — Forge + Equipment Tycoon
+Locked behavior:
 
-P2.6 is enabled only by `P26Factory` / `equipment_enabled` and must leave P2.5 behavior unchanged when the flag is false.
+- autonomous equipment is default;
+- player may manually equip;
+- player may lock a slot against AI replacement;
+- unlock returns to autonomous management;
+- internal purchase conserves total money;
+- item quality/identity is deterministic;
+- nested equipment state survives exact save/load;
+- equipment changes real region choice and combat consequences;
+- compatibility changes actual effectiveness, not legality.
 
-The required economic/gameplay loop is:
+## Next phase rule
 
-`hunt -> forge materials -> sect forge -> equipment storage/shop -> autonomous purchase or player allocation -> stronger disciple -> harder hunt`.
+P2.7 is not yet locked.
 
-### Equipment authority
-
-- Autonomous equipment is the default.
-- A disciple evaluates gear from real build state, including path history, active technique, learned skill paths, root element, personality and price sensitivity.
-- The player may manually equip an item at any time.
-- A player-locked slot cannot be replaced by AI.
-- Unlocking a slot returns it to autonomous management.
-- No fixed Sword/Body/Spell class lock is allowed; compatibility changes value/effectiveness, not legality.
-
-### Economy
-
-Internal purchase must conserve P0 money:
-
-`disciple wallet - price -> sect treasury + price`.
-
-Manual equipment allocation is not a purchase.
-
-Do not introduce an undeclared external money source/sink. The first forge slice consumes explicit materials only.
-
-### Determinism and persistence
-
-- Forge quality must come from deterministic seeded state, never wall-clock time.
-- Equipment item IDs and forge sequence must be stable.
-- Equipment instances, locations, owners, policies, equipped slots and lock states must survive SaveService v2 exact round-trip.
-- Same-seed forging and post-load continuation must remain deterministic.
-
-### Required real consequences
-
-At minimum P2.6 must prove that equipment can:
-
-- change autonomous purchase choice;
-- change autonomous region choice through effective power;
-- change a controlled real combat outcome;
-- preserve internal money during purchases.
-
-Do not count a rarity label or visual equipment panel as completion by itself.
-
-## P2.6 bounded scope
-
-Do not expand the current vertical slice into the following until the base loop passes runtime:
-
-- +N enhancement;
-- large random-affix/reroll economy;
-- set bonuses;
-- forge failure;
-- blacksmith skill progression;
-- durability/repair;
-- auction house;
-- pet equipment;
-- autonomous artifact AI;
-- multi-workstation crafting queues;
-- undefined external money sources/sinks;
-- master/disciple unless explicitly selected later by the user.
+Before coding P2.7, use the user's requested gameplay research into sect-management games plus Evil Hunter Tycoon to design how individual disciples are developed, specialized and assigned to duties. Agree that model with the user first.
