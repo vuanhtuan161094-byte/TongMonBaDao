@@ -42,7 +42,7 @@ P0-P2.11 are locked runtime-green baselines. Do not reopen them without new regr
 
 Active phase:
 
-**P2.12 — Thể Chất + Tôi Thể + Cải Thể**
+**P2.12 — Thể Chất + Cấp Bậc + Tôi Thể + Cải Thể**
 
 Status: **IMPLEMENTED / AWAITING REAL GODOT 4.7.2 CUMULATIVE GATE**.
 
@@ -146,16 +146,53 @@ Schema:
 
 - initialized;
 - physique_id;
+- physique_grade;
 - initial_physique_id;
 - temper_level;
 - transformed;
 - latent_transformation.
 
-Candidate -> disciple preserves exact profile. Reject removes orphan profile.
+Candidate -> disciple preserves exact type + grade profile. Reject removes orphan profile.
 
-Current physiques:
+### Physique type vs grade
 
-- Phàm Thể — temperable, has deterministic future transformation route;
+Physique **type** and **grade** are separate axes.
+
+Grade hierarchy is canonical:
+
+1. Phàm Thể;
+2. Linh Thể;
+3. Huyền Thể;
+4. Thánh Thể;
+5. Thần Thể.
+
+Player display:
+
+- unnamed ordinary type -> only grade, e.g. `Linh Thể`;
+- special type -> `Kiếm Cốt · Huyền Thể`, `Hỏa Linh Thể · Thánh Thể`, etc.
+
+Never duplicate labels like `Phàm Thể · Phàm Thể`.
+
+Current grade probabilities:
+
+- ordinary: 58 / 27 / 11 / 3.5 / 0.5%;
+- gacha: 40 / 32 / 19 / 7 / 2%;
+- fate: 28 / 31 / 24 / 13 / 4%;
+- order is Phàm / Linh / Huyền / Thánh / Thần.
+
+Grade scales real positive effects:
+
+- Phàm 0.85x;
+- Linh 1.00x;
+- Huyền 1.20x;
+- Thánh 1.45x;
+- Thần 1.80x.
+
+High grade must be a real mechanical advantage, not color/text only.
+
+Current physique types:
+
+- unnamed ordinary body — temperable, deterministic future transformation route;
 - Kiếm Cốt — Công/Tu/Đột phá + Sword XP, slight recovery drawback;
 - Kim Cương Bá Thể — high Công/Thủ/Hồi + Body XP, slower cultivation drawback;
 - Hàn Âm Thể — strong with Water root, real mismatch penalty without it;
@@ -166,23 +203,27 @@ Tempering:
 
 - consumes 1 real Yêu Đan;
 - max vertical-slice level 5;
-- must improve real effects.
+- must improve real effects;
+- must not reroll type or grade.
 
 Transformation:
 
-- only from Phàm Thể;
+- only from unnamed ordinary type;
 - requires temper >= 3;
 - consumes 2 real Linh Tủy;
 - uses pre-generated latent target;
 - never rerolls;
-- preserves temper level.
+- preserves temper level and physique grade.
+
+Do not automatically turn routine tempering into guaranteed grade promotion. Grade promotion later must be a separate high-value mechanic with rare costs/conditions.
 
 Real hooks:
 
 - CultivationSystem -> Công/Tu/Đột phá;
 - CombatSystem -> Thủ;
 - NeedsSystem -> Hồi/penalty;
-- CultivationPathSystem -> Sword/Body/Spell XP affinity.
+- CultivationPathSystem -> Sword/Body/Spell XP affinity;
+- PhysiqueSystem -> grade scales real benefits.
 
 **Bloodline + Physique overlap must stack.** Do not introduce exclusivity because two systems modify the same stat.
 
@@ -201,7 +242,7 @@ Use:
 - `tools/godot/Verify-P2-12.ps1`
 - `Sync-P2-12.cmd`
 
-It must prove cumulative P0-P2.11 regressions first, then P2.12 persistence, deterministic profiles, real advantages/drawbacks, elemental synergy, tempering/transformation resource costs, Bloodline+Physique stacking, recruitment lifecycle and scene smoke.
+It must prove cumulative P0-P2.11 regressions first, then P2.12 persistence, deterministic type+grade profiles, grade probability tables, real grade scaling, advantages/drawbacks, elemental synergy, tempering/transformation resource costs and grade preservation, Bloodline+Physique stacking, recruitment lifecycle and scene smoke.
 
 Never claim P2.12 PASS without final real Godot 4.7.2 output.
 
