@@ -6,172 +6,168 @@ Always inspect live `main` before editing.
 
 ## Runtime status
 
-Real Windows + Godot 4.7.2 cumulative gate is green through **P2.11**.
+Real Windows + Godot 4.7.2 cumulative gate is green through **P2.12**.
 
-Locked PASS chain:
-
-- P0 Foundation
-- P1.1 Goal + Personality
-- P1.2 Recruitment + Player Choice
-- P1.3 Relationships
-- P1.4 Consequential Memory
-- P1.5 Organization + Combat Roles
-- P1.6 Needs + Resource Pressure
-- P2.1 Cultivation
-- P2.2 Spiritual Roots
-- P2.3 Technique Economy
-- P2.4 Cultivation Paths
-- P2.5 Realtime Combat + Independent Skills
-- P2.6 Forge + Equipment Tycoon
-- P2.7 Disciple Life + Workforce
-- P2.8 Disciple Generation V2 + Phẩm chất + Recruitment Sources
-- P2.9 Traits + Hidden Reveal
-- P2.10 Spiritual Root Refinement + Mutation
-- P2.11 Bloodline + Awakening + Purity
-
-Latest authoritative user runtime evidence ended with:
+Latest authoritative user evidence ended with:
 
 - `P2.11 PERSISTENCE DIAGNOSTIC PASS: immediate canonical state identical`
 - `P2.11 BLOODLINE + AWAKENING TEST PASS`
 - `P2.11 BLOODLINE + AWAKENING GATE: PASS`
-- `P2.11 GATE: PASS`
+- `P2.12 PERSISTENCE DIAGNOSTIC PASS: immediate canonical state identical`
+- `P2.12 PHYSIQUE + GRADES + TEMPERING + TRANSFORMATION TEST PASS`
+- `P2.12 PHYSIQUE + TEMPERING + TRANSFORMATION GATE: PASS`
+- final `P2.12 GATE: PASS`
 
-Do not reopen P0-P2.11 without new regression evidence.
+Do not reopen P0-P2.12 without new regression evidence.
+
+## Character authority
+
+Read `docs/DISCIPLE_MASTER_SCHEMA.md` before any character-system work. It is the master schema for what is random, derived, nearly fixed, trainable, awakenable/transformable or acquired.
+
+Key locked principles:
+
+- six foundation dimensions;
+- disciple quality derived from foundation;
+- roots/Huyết Mạch/Thể Chất/traits/Destiny remain separate axes;
+- reveal/awakening/transformation never rerolls pre-generated hidden identity;
+- systems may overlap on Công/Thủ/Tu/etc when logical;
+- every rare system needs real gameplay value before gimmicks.
+
+P2.12 Physique is now locked/pass:
+
+- grade: Phàm -> Linh -> Huyền -> Thánh -> Thần;
+- named type separate: none / Kiếm Cốt / Kim Cương Bá Thể / Hàn Âm / Hỏa Linh / Vô Cấu;
+- tempering uses Yêu Đan;
+- transformation uses deterministic latent target + Linh Tủy;
+- HM + TC bonuses stack.
+
+## Product presentation direction changed
+
+The game is now **mobile landscape**, base logical resolution `1280×720`.
+
+Primary structural UI/UX reference is **Ta Làm Tông Sư Trong Tiên Môn**:
+
+- sect map dominates screen;
+- thin top resource bar;
+- chapter/task rail at left;
+- compact edge/floating actions;
+- tap buildings directly;
+- parchment/scroll overlays over map;
+- disciple UI = vertical roster + large character + right detail + bottom tabs.
+
+Do not copy third-party art/logo/icon/text/exact map. Use original art with closely matching interaction hierarchy.
 
 ## Active phase
 
-**P2.12 — Thể Chất + Tôi Thể + Cải Thể**
+**P3.1 — Mobile ngang + Tông Môn Sống V1**
 
-Status: **IMPLEMENTED / AWAITING REAL GODOT 4.7.2 CUMULATIVE GATE**.
+Status: **IMPLEMENTED FIRST SLICE / AWAITING REAL GODOT 4.7.2 CUMULATIVE GATE**.
 
-Never call it PASS before a successful `Sync-P2-12.cmd` run.
-
-## Read first
+Read first:
 
 1. `AGENTS.md`
 2. `CURRENT_CHECKPOINT.md`
-3. `docs/P2_12_PHYSIQUE_SPEC.md`
-4. `docs/P2_11_BLOODLINE_SPEC.md`
-5. `docs/XIANXIA_FLAVOR_CANON.md`
-6. this file
+3. `docs/P3_1_LANDSCAPE_SECT_SHELL_SPEC.md`
+4. `docs/DISCIPLE_MASTER_SCHEMA.md`
+5. this file
 
-## Global design rule from the user
+## P3.1 implementation
 
-Every system must have a clear real mechanism. **Do not fear stat overlap.** Linh căn, Huyết Mạch, Thể Chất, Đặc Chất, Công pháp, Trang bị, Thiên Mệnh, buildings and positions may all affect Công/Thủ/HP/Tu/Đột phá/etc when logically justified.
+### Project target
 
-Systems differ by acquisition, progression, cost, conditions, tradeoffs and signature rules — not by forbidding overlap.
+`godot/project.godot` now uses:
 
-Flavor/humor drawbacks are secondary. A rare system must first be genuinely useful.
+- main scene `res://scenes/p3/p3_1_landscape_sect.tscn`;
+- 1280×720 viewport + desktop override;
+- handheld landscape orientation;
+- `canvas_items` + `expand`.
 
-## Core product direction
-
-Primary operating rhythm is Evil Hunter Tycoon-like, but individual disciples are much deeper.
-
-The player is Tông Chủ. Disciples autonomously live, cultivate, work, hunt, recover, consume and form relationships. The player controls recruitment, infrastructure, policy, production, assignment, investment and temporary direct intervention.
-
-Normal disciples are deterministic procedural individuals. Hidden/latent identity is generated once and persisted. Reveal/transformation never rerolls it.
-
-## P2.12 implementation
+P0 runtime smoke is explicitly pinned to `res://scenes/p0/p0_sandbox.tscn`, so later main-scene changes do not change P0's runtime smoke target.
 
 ### Main files
 
-- `docs/P2_12_PHYSIQUE_SPEC.md`
-- `godot/src/simulation/physique/physique_system.gd`
-- `godot/src/simulation/core/p2_12_factory.gd`
-- `godot/src/simulation/state/sect_state.gd`
-- `godot/src/simulation/recruitment/recruitment_system.gd`
-- `godot/src/simulation/cultivation/cultivation_system.gd`
-- `godot/src/simulation/cultivation/cultivation_path_system.gd`
-- `godot/src/simulation/combat/combat_system.gd`
-- `godot/src/simulation/needs/needs_system.gd`
-- `godot/tests/simulation/p2_12_persistence_diagnostic.gd`
-- `godot/tests/simulation/p2_12_physique_test.gd`
-- `godot/src/presentation/p2_12_physique.gd`
-- `godot/scenes/p2/p2_12_physique.tscn`
-- `tools/godot/Verify-P2-12.ps1`
-- `Verify-P2-12.cmd`
-- `Sync-P2-12.cmd`
+- `docs/P3_1_LANDSCAPE_SECT_SHELL_SPEC.md`
+- `godot/src/presentation/p3/sect_map_presentation.gd`
+- `godot/src/presentation/p3_1_landscape_sect.gd`
+- `godot/scenes/p3/p3_1_landscape_sect.tscn`
+- `godot/tests/presentation/p3_1_landscape_shell_test.gd`
+- `tools/godot/Verify-P3-1.ps1`
+- `Verify-P3-1.cmd`
+- `Sync-P3-1.cmd`
 
-### Feature gate/storage
+### Visible shell
 
-- `SectState.physiques_enabled`
-- `SectState.physique_profiles[character_id]`
+Code-generated placeholder map currently has:
 
-Profile:
+- Tông Môn Đại Điện;
+- Đệ Tử Xá;
+- Tu Luyện Đài;
+- Kho;
+- Luyện Khí Đường;
+- Dược Phòng;
+- Khu Khai Khoáng;
+- Tông Môn Đại Môn;
+- central courtyard/path/river treatment.
 
-- initialized
-- physique_id
-- initial_physique_id
-- temper_level
-- transformed
-- latent_transformation
+Top bar reads actual treasury/spirit-stone/material state. Left task rail observes real actions/resources. Bottom nav opens disciple/warehouse/building/world/task surfaces.
 
-Candidate -> disciple preserves profile. Rejected candidates remove profile.
+Building popup reads actual simulation/economy/workforce data.
 
-### Current physiques
+Disciple popup has:
 
-- Phàm Thể — small gains from tempering and deterministic future transformation route.
-- Kiếm Cốt — Công/Tu/Đột phá + Sword XP, slight recovery drawback.
-- Kim Cương Bá Thể — strong Công/Thủ/Hồi + Body XP, real slower cultivation drawback.
-- Hàn Âm Thể — strong Water-root synergy; real cultivation/recovery mismatch penalty without Water root.
-- Hỏa Linh Thể — strong Fire-root Công/Tu/Đột phá/Spell XP synergy.
-- Vô Cấu Đạo Thể — rare all-rounder.
+- left roster;
+- central large placeholder portrait;
+- right details;
+- lower tabs;
+- real HP/stamina/action;
+- V2 quality/foundation/root/HM/TC when available;
+- legacy founder fields show `—` instead of invented data;
+- real quick direct commands through `WorkforceSystem.issue_command()`.
 
-### Tempering/transformation
+### Visible movement authority
 
-- `temper_body()` consumes 1 real Yêu Đan, max level 5, and strengthens real effects.
-- Phàm Thể at temper >= 3 can `transform_body()` using 2 real Linh Tủy.
-- transformation target is pre-generated in `latent_transformation` and never rerolls.
-- temper level survives transformation.
+`SectMapPresentation` maps real `current_action` to map destinations:
 
-### Real consequence hooks
+- CULTIVATE/BREAKTHROUGH -> Tu Luyện Đài;
+- WORK_MINING -> mine;
+- WORK_FORGING -> forge;
+- REST -> residence;
+- HEAL -> medicine;
+- SELL/BUY -> warehouse;
+- HUNT/TRAVEL/COMBAT/LOOT/RETURN_SECT -> gate;
+- HOLD -> courtyard;
+- EVALUATE/IDLE preserve previous visible destination.
 
-- CultivationSystem: Physique Công/Tu/Đột phá.
-- CombatSystem: Physique Thủ.
-- NeedsSystem: Physique Hồi/penalty.
-- CultivationPathSystem: Physique Sword/Body/Spell XP affinity.
+Movement is presentation tweening only and must never mutate simulation authority.
 
-### Required overlap
+P3.1 demo accepts two V2 candidates in its own fresh P2.12 demo state so modern schema fields can be shown alongside the six legacy founders. This is presentation/demo setup, not a migration of locked founders.
 
-Bloodline + Physique effects stack. P2.12 test explicitly proves combined Công/Tu exceeds either source alone.
+## Verification
 
-## P2.12 gate intent
-
-Cumulative verifier must prove:
-
-- P2.11 remains physique-disabled;
-- same seed -> exact same physique profiles;
-- Phàm Thể is stable and has pre-generated transformation target;
-- every special physique has real value and direct Công/Thủ;
-- tempering consumes exactly 1 Yêu Đan and changes real stats;
-- transformation consumes exactly 2 Linh Tủy and uses the old latent target;
-- Kiếm Cốt path advantage + recovery drawback;
-- Kim Cương Bá Thể defense + slow-cultivation drawback;
-- Hàn Âm/Thủy and Hỏa Linh/Hỏa synergies are real;
-- Bloodline + Physique overlap stacks;
-- recruitment profile lifecycle is correct;
-- exact save/load + deterministic continuation;
-- P0-P2.11 regressions stay green;
-- scene smoke passes.
-
-## Next local command
+Run:
 
 ```bat
 cd /d "E:\0.2. TongMonBaDao"
 git pull origin main
-Sync-P2-12.cmd
+Sync-P3-1.cmd
 ```
 
-If it fails, use the first real parser/diagnostic/assertion failure rather than later dependency cascades.
+Expected final lines:
 
-## After P2.12 runtime green
+- `P3.1 LANDSCAPE SECT SHELL TEST PASS`
+- `P3.1 LANDSCAPE SECT SHELL GATE: PASS`
+- `P3.1 GATE: PASS`
 
-Stop adding backend identity layers temporarily. Build the first **visible living sect** slice:
+If it fails, inspect/fix the first real parser/diagnostic/assertion failure only. Do not weaken locked regression tests.
 
-- compact sect map;
-- real buildings/destinations;
-- disciples walk between work/rest/cultivation/sect gate;
-- their current state/action is visible;
-- simulation remains authoritative.
+## After P3.1 runtime green
 
-Then continue injury/medical, loyalty/stipend, sect rank/authority, master-disciple, Destiny and later active lifespan/death/inheritance.
+1. P3.2 production art/animation/UI polish while retaining landscape hierarchy;
+2. P3.3 real visible building assignment/production/upgrades;
+3. injury/medical;
+4. loyalty/stipend/reward;
+5. sect rank/authority;
+6. master-disciple;
+7. Destiny;
+8. item/transmission gacha for HM/TC/other acquired transformations;
+9. active age/lifespan/death/inheritance after time pacing is proven.
