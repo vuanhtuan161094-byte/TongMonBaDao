@@ -24,8 +24,23 @@ func ensure_candidate_pool(state: SimulationState, target_count: int = DEFAULT_P
         if candidate == null:
             return
 
-func generate_candidate(state: SimulationState) -> CandidateState:
+func generate_candidate(state: SimulationState, source: StringName = DiscipleGeneratorV2.SOURCE_ORDINARY) -> CandidateState:
     if not state.p1_recruitment_enabled:
+        return null
+
+    if state.sect.disciple_generation_v2_enabled:
+        if not DiscipleGeneratorV2.VALID_SOURCES.has(source):
+            return null
+        var generation_index_v2 := state.recruitment_generation_index + 1
+        var candidate_v2 := DiscipleGeneratorV2.new().generate_candidate(state, source, generation_index_v2)
+        if candidate_v2 == null:
+            return null
+        state.recruitment_generation_index = generation_index_v2
+        state.recruitment_candidates[candidate_v2.id] = candidate_v2
+        state.sect.disciple_generation_event_count += 1
+        return candidate_v2
+
+    if source != DiscipleGeneratorV2.SOURCE_ORDINARY:
         return null
 
     var generation_index := state.recruitment_generation_index + 1
@@ -57,6 +72,31 @@ func generate_candidate(state: SimulationState) -> CandidateState:
     state.recruitment_generation_index = generation_index
     state.recruitment_candidates[candidate.id] = candidate
     return candidate
+
+func chiêu_hiền_candidate(state: SimulationState) -> Dictionary:
+    if not state.p1_recruitment_enabled or not state.sect.disciple_generation_v2_enabled:
+        return _result(false, "generation_v2_disabled")
+    if state.sect.disciple_recruitment_tokens <= 0:
+        return _result(false, "not_enough_recruitment_tokens")
+    state.sect.disciple_recruitment_tokens -= 1
+    var candidate := generate_candidate(state, DiscipleGeneratorV2.SOURCE_GACHA)
+    if candidate == null:
+        state.sect.disciple_recruitment_tokens += 1
+        return _result(false, "generation_failed")
+    var result := _result(true, "gacha")
+    result["candidate_id"] = str(candidate.id)
+    result["remaining_tokens"] = state.sect.disciple_recruitment_tokens
+    return result
+
+func fate_candidate(state: SimulationState) -> Dictionary:
+    if not state.p1_recruitment_enabled or not state.sect.disciple_generation_v2_enabled:
+        return _result(false, "generation_v2_disabled")
+    var candidate := generate_candidate(state, DiscipleGeneratorV2.SOURCE_FATE)
+    if candidate == null:
+        return _result(false, "generation_failed")
+    var result := _result(true, "fate")
+    result["candidate_id"] = str(candidate.id)
+    return result
 
 func accept_candidate(state: SimulationState, candidate_id: StringName) -> Dictionary:
     if not state.p1_recruitment_enabled:
