@@ -11,6 +11,8 @@ func _run() -> void:
         return
     if not _verify_profiles_are_deterministic_and_ordinary_is_stable():
         return
+    if not _verify_grade_schema_probabilities_and_scaling():
+        return
     if not _verify_special_physiques_have_real_value():
         return
     if not _verify_tempering_and_transformation_use_real_resources():
@@ -30,7 +32,7 @@ func _run() -> void:
     if not _verify_persistence_and_continuation():
         return
 
-    print("P2.12 PHYSIQUE + TEMPERING + TRANSFORMATION TEST PASS")
+    print("P2.12 PHYSIQUE + GRADES + TEMPERING + TRANSFORMATION TEST PASS")
     quit(0)
 
 func _verify_p2_11_gate_unchanged() -> bool:
@@ -55,17 +57,76 @@ func _verify_profiles_are_deterministic_and_ordinary_is_stable() -> bool:
     for index in range(20, 140):
         var candidate := generator.generate_candidate(probe_state, DiscipleGeneratorV2.SOURCE_ORDINARY, index)
         var first := system.ensure_candidate_profile(probe_state, candidate).duplicate(true)
+        var grade := StringName(first.get("physique_grade", ""))
+        if not PhysiqueSystem.VALID_GRADES.has(grade):
+            return _fail("P2.12 generated candidate has no valid physique grade.")
         if StringName(first.get("physique_id", "ordinary_body")) == PhysiqueSystem.PHYSIQUE_ORDINARY:
             var second := system.ensure_candidate_profile(probe_state, candidate).duplicate(true)
             if first != second:
-                return _fail("P2.12 Phàm Thể result was rerolled.")
+                return _fail("P2.12 ordinary-body result was rerolled.")
             var latent := StringName(first.get("latent_transformation", ""))
             if not PhysiqueSystem.SPECIAL_PHYSIQUES.has(latent):
-                return _fail("P2.12 Phàm Thể lacks a deterministic future transformation route.")
+                return _fail("P2.12 ordinary body lacks a deterministic future transformation route.")
             found_ordinary = true
             break
     if not found_ordinary:
-        return _fail("P2.12 deterministic sample could not produce a valid Phàm Thể candidate.")
+        return _fail("P2.12 deterministic sample could not produce a valid ordinary-body candidate.")
+    return true
+
+func _verify_grade_schema_probabilities_and_scaling() -> bool:
+    var system := PhysiqueSystem.new()
+    var sources := [
+        DiscipleGeneratorV2.SOURCE_ORDINARY,
+        DiscipleGeneratorV2.SOURCE_GACHA,
+        DiscipleGeneratorV2.SOURCE_FATE
+    ]
+    for source_value in sources:
+        var source := StringName(source_value)
+        var rates := system.grade_rates_for_source(source)
+        var total := 0.0
+        for grade_value in PhysiqueSystem.VALID_GRADES:
+            var grade := StringName(grade_value)
+            if not rates.has(str(grade)):
+                return _fail("P2.12 source %s is missing grade rate %s." % [source, grade])
+            var rate := float(rates.get(str(grade), -1.0))
+            if rate < 0.0:
+                return _fail("P2.12 source %s has negative physique-grade probability." % source)
+            total += rate
+        if absf(total - 1.0) > 0.000001:
+            return _fail("P2.12 source %s physique-grade probabilities do not sum to 1." % source)
+
+    var ordinary_divine := float(system.grade_rates_for_source(DiscipleGeneratorV2.SOURCE_ORDINARY).get("divine_body", 0.0))
+    var gacha_divine := float(system.grade_rates_for_source(DiscipleGeneratorV2.SOURCE_GACHA).get("divine_body", 0.0))
+    var fate_divine := float(system.grade_rates_for_source(DiscipleGeneratorV2.SOURCE_FATE).get("divine_body", 0.0))
+    if not (ordinary_divine < gacha_divine and gacha_divine < fate_divine):
+        return _fail("P2.12 Thần Thể probability must increase ordinary -> gacha -> fate.")
+
+    var state := P212Factory.create_state(TEST_SEED + 31)
+    var mortal := _probe_disciple("grade_mortal")
+    var divine := _probe_disciple("grade_divine")
+    mortal.spiritual_root_elements = ["fire"]
+    divine.spiritual_root_elements = ["fire"]
+    state.disciples[mortal.id] = mortal
+    state.disciples[divine.id] = divine
+    _neutralize_bloodline(state, mortal.id)
+    _neutralize_bloodline(state, divine.id)
+    _set_physique(state, mortal.id, PhysiqueSystem.PHYSIQUE_FIRE_SPIRIT, 2, false, "", PhysiqueSystem.GRADE_MORTAL)
+    _set_physique(state, divine.id, PhysiqueSystem.PHYSIQUE_FIRE_SPIRIT, 2, false, "", PhysiqueSystem.GRADE_DIVINE)
+    var mortal_stats := system.stat_profile(state, mortal)
+    var divine_stats := system.stat_profile(state, divine)
+    if float(divine_stats.get("attack_bonus", 0.0)) <= float(mortal_stats.get("attack_bonus", 0.0)):
+        return _fail("P2.12 Thần Thể grade does not increase real Công versus same-type Phàm Thể.")
+    if float(divine_stats.get("cultivation_multiplier", 1.0)) <= float(mortal_stats.get("cultivation_multiplier", 1.0)):
+        return _fail("P2.12 Thần Thể grade does not increase real cultivation versus same-type Phàm Thể.")
+    if system.display_physique(state, divine.id) != "Hỏa Linh Thể · Thần Thể":
+        return _fail("P2.12 special physique + grade display contract is incorrect.")
+
+    var generic := _probe_disciple("generic_spirit_body")
+    state.disciples[generic.id] = generic
+    _neutralize_bloodline(state, generic.id)
+    _set_physique(state, generic.id, PhysiqueSystem.PHYSIQUE_ORDINARY, 0, false, PhysiqueSystem.PHYSIQUE_SWORD_BONE, PhysiqueSystem.GRADE_SPIRIT)
+    if system.display_physique(state, generic.id) != "Linh Thể":
+        return _fail("P2.12 unnamed ordinary physique should display only its grade, not duplicate body labels.")
     return true
 
 func _verify_special_physiques_have_real_value() -> bool:
@@ -116,6 +177,7 @@ func _verify_tempering_and_transformation_use_real_resources() -> bool:
     state.sect.technique_materials[PhysiqueSystem.TRANSFORM_MATERIAL_ID] = 5
     var system := PhysiqueSystem.new()
     var before_stats := system.stat_profile(state, actor)
+    var grade_before := system.physique_grade(state, actor.id)
     var yao_before := int(state.sect.technique_materials.get(PhysiqueSystem.TEMPER_MATERIAL_ID, 0))
     var temper_result := system.temper_body(state, actor.id)
     if not bool(temper_result.get("ok", false)):
@@ -126,7 +188,7 @@ func _verify_tempering_and_transformation_use_real_resources() -> bool:
         return _fail("P2.12 tempering did not increase temper level.")
     var after_stats := system.stat_profile(state, actor)
     if float(after_stats.get("attack_bonus", 0.0)) <= float(before_stats.get("attack_bonus", 0.0)):
-        return _fail("P2.12 tempering increased a number but not real Phàm Thể stats.")
+        return _fail("P2.12 tempering increased a number but not real body stats.")
 
     var latent_before := StringName(system.profile_for(state, actor.id).get("latent_transformation", ""))
     var linh_tuy_before := int(state.sect.technique_materials.get(PhysiqueSystem.TRANSFORM_MATERIAL_ID, 0))
@@ -138,6 +200,8 @@ func _verify_tempering_and_transformation_use_real_resources() -> bool:
     var profile := system.profile_for(state, actor.id)
     if StringName(profile.get("physique_id", "")) != latent_before:
         return _fail("P2.12 transformation rerolled the pre-generated target.")
+    if system.physique_grade(state, actor.id) != grade_before:
+        return _fail("P2.12 transformation unexpectedly rerolled physique grade.")
     if not bool(profile.get("transformed", false)):
         return _fail("P2.12 transformed body did not record its history.")
     return true
@@ -285,7 +349,7 @@ func _verify_recruitment_profile_lifecycle() -> bool:
     if not bool(RecruitmentSystem.new().accept_candidate(state, accepted_id).get("ok", false)):
         return _fail("P2.12 could not accept candidate.")
     if system.profile_for(state, accepted_id) != accepted_profile:
-        return _fail("P2.12 candidate -> disciple acceptance changed physique identity.")
+        return _fail("P2.12 candidate -> disciple acceptance changed physique identity/grade.")
     if not bool(RecruitmentSystem.new().reject_candidate(state, rejected_id).get("ok", false)):
         return _fail("P2.12 could not reject candidate.")
     if not system.profile_for(state, rejected_id).is_empty():
@@ -297,7 +361,7 @@ func _verify_persistence_and_continuation() -> bool:
     var actor := _accept_first_candidate(state_a)
     if actor == null:
         return _fail("P2.12 persistence probe could not accept candidate.")
-    _set_physique(state_a, actor.id, PhysiqueSystem.PHYSIQUE_ORDINARY, 2, false, PhysiqueSystem.PHYSIQUE_DIAMOND_OVERLORD)
+    _set_physique(state_a, actor.id, PhysiqueSystem.PHYSIQUE_ORDINARY, 2, false, PhysiqueSystem.PHYSIQUE_DIAMOND_OVERLORD, PhysiqueSystem.GRADE_MYSTIC)
     state_a.sect.technique_materials[PhysiqueSystem.TEMPER_MATERIAL_ID] = 5
     state_a.sect.technique_materials[PhysiqueSystem.TRANSFORM_MATERIAL_ID] = 5
     var system := PhysiqueSystem.new()
@@ -312,6 +376,8 @@ func _verify_persistence_and_continuation() -> bool:
         return _fail("P2.12 save did not restore physique feature state.")
     if state_a.to_dict() != loaded.to_dict():
         return _fail("P2.12 exact save/load state diverged.")
+    if system.physique_grade(loaded, actor.id) != PhysiqueSystem.GRADE_MYSTIC:
+        return _fail("P2.12 save/load did not preserve Huyền Thể grade.")
 
     SimulationScheduler.new(state_a).run_ticks(80)
     SimulationScheduler.new(loaded).run_ticks(80)
@@ -358,10 +424,11 @@ func _probe_disciple(id_text: String) -> DiscipleState:
         "cultivation_path_xp":{"sword":0.0, "body":0.0, "spell":0.0}
     })
 
-func _set_physique(state: SimulationState, character_id: StringName, id: StringName, level: int, transformed: bool, latent: StringName) -> void:
+func _set_physique(state: SimulationState, character_id: StringName, id: StringName, level: int, transformed: bool, latent: StringName, grade: StringName = PhysiqueSystem.GRADE_MORTAL) -> void:
     state.sect.physique_profiles[str(character_id)] = {
         "initialized":true,
         "physique_id":str(id),
+        "physique_grade":str(grade),
         "initial_physique_id":str(PhysiqueSystem.PHYSIQUE_ORDINARY) if transformed else str(id),
         "temper_level":level,
         "transformed":transformed,
