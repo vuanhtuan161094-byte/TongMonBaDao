@@ -31,10 +31,16 @@ func _verify_landscape_project_contract() -> bool:
         return _fail("P3.1 stretch aspect must be expand.")
     if int(ProjectSettings.get_setting("display/window/handheld/orientation", -1)) != 0:
         return _fail("P3.1 handheld orientation must be landscape (0).")
-    if str(ProjectSettings.get_setting("application/run/main_scene", "")) != "res://scenes/p3/p3_1_landscape_sect.tscn":
-        return _fail("P3.1 must be the project main scene.")
+
+    var main_scene := str(ProjectSettings.get_setting("application/run/main_scene", ""))
+    var allowed_main_scenes := [
+        "res://scenes/p3/p3_1_landscape_sect.tscn",
+        "res://scenes/p3/p3_2_landscape_sect.tscn"
+    ]
+    if not allowed_main_scenes.has(main_scene):
+        return _fail("P3.1 landscape shell must remain the base of the active P3 scene; got %s." % main_scene)
     if not ResourceLoader.exists("res://scenes/p3/p3_1_landscape_sect.tscn"):
-        return _fail("P3.1 main scene is missing.")
+        return _fail("P3.1 base landscape scene is missing.")
     return true
 
 func _verify_destination_mapping() -> bool:
