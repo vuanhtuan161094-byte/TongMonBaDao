@@ -134,8 +134,7 @@ static func from_dict(data: Dictionary) -> SectState:
     state.combat_skill_event_count = maxi(int(data.get("combat_skill_event_count", 0)), 0)
     state.equipment_enabled = bool(data.get("equipment_enabled", false))
     state.forge_materials = _int_dictionary(data.get("forge_materials", {}))
-    var saved_equipment = data.get("equipment_items", {})
-    state.equipment_items = saved_equipment.duplicate(true) if saved_equipment is Dictionary else {}
+    state.equipment_items = _equipment_dictionary(data.get("equipment_items", {}))
     state.equipment_forge_index = maxi(int(data.get("equipment_forge_index", 0)), 0)
     state.equipment_event_count = maxi(int(data.get("equipment_event_count", 0)), 0)
     state.equipment_policy = StringName(data.get("equipment_policy", "balanced"))
@@ -165,4 +164,40 @@ static func _bool_dictionary(value: Variant) -> Dictionary:
     for key in keys:
         if bool(value[key]):
             normalized[str(key)] = true
+    return normalized
+
+static func _equipment_dictionary(value: Variant) -> Dictionary:
+    var normalized: Dictionary = {}
+    if not (value is Dictionary):
+        return normalized
+    var keys: Array = value.keys()
+    keys.sort()
+    for raw_key in keys:
+        var raw_item = value[raw_key]
+        if not (raw_item is Dictionary):
+            continue
+        var item_id := str(raw_key)
+        var item: Dictionary = raw_item.duplicate(true)
+        item["id"] = str(item.get("id", item_id))
+        item["recipe_id"] = str(item.get("recipe_id", ""))
+        item["name"] = str(item.get("name", ""))
+        item["slot"] = str(item.get("slot", ""))
+        item["quality"] = str(item.get("quality", ""))
+        item["path"] = str(item.get("path", ""))
+        item["element"] = str(item.get("element", ""))
+        item["price"] = maxi(int(item.get("price", 0)), 0)
+        item["location"] = str(item.get("location", ""))
+        item["owner_id"] = str(item.get("owner_id", ""))
+        item["stats"] = _float_dictionary(item.get("stats", {}))
+        normalized[item_id] = item
+    return normalized
+
+static func _float_dictionary(value: Variant) -> Dictionary:
+    var normalized: Dictionary = {}
+    if not (value is Dictionary):
+        return normalized
+    var keys: Array = value.keys()
+    keys.sort()
+    for key in keys:
+        normalized[str(key)] = float(value[key])
     return normalized
