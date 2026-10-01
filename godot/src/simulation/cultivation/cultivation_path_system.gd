@@ -20,6 +20,8 @@ const PATH_NAMES := {
     "spell": "Pháp"
 }
 
+var physique_system := PhysiqueSystem.new()
+
 func initialize(state: SimulationState) -> void:
     if not state.sect.techniques_enabled:
         return
@@ -30,11 +32,14 @@ func initialize(state: SimulationState) -> void:
 func add_experience(state: SimulationState, disciple: DiscipleState, path_id: StringName, amount: float) -> float:
     if not state.sect.cultivation_paths_enabled or not VALID_PATHS.has(path_id) or amount <= 0.0:
         return 0.0
+    var effective_amount := amount
+    if state.sect.physiques_enabled:
+        effective_amount *= physique_system.path_xp_multiplier(state, disciple, path_id)
     var key := str(path_id)
     var before := float(disciple.cultivation_path_xp.get(key, 0.0))
-    disciple.cultivation_path_xp[key] = before + amount
+    disciple.cultivation_path_xp[key] = before + effective_amount
     state.sect.cultivation_path_event_count += 1
-    return amount
+    return effective_amount
 
 func record_cultivation(state: SimulationState, disciple: DiscipleState) -> float:
     var path_id := active_technique_path(disciple)
