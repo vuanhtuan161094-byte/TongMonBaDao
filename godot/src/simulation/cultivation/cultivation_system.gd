@@ -21,6 +21,7 @@ const MIN_BREAKTHROUGH_STAMINA := 65.0
 var spiritual_root_system := SpiritualRootSystem.new()
 var technique_system := TechniqueSystem.new()
 var cultivation_path_system := CultivationPathSystem.new()
+var trait_system := TraitSystem.new()
 
 const STAGES := [
     {"id":"qi_1", "name":"Luyện Khí tầng 1", "required":500.0, "combat_bonus":0.0, "hp_bonus":0.0, "chance":0.98},
@@ -111,6 +112,8 @@ func add_progress(state: SimulationState, disciple: DiscipleState, amount: float
         effective_amount *= spiritual_root_system.cultivation_multiplier(disciple.spiritual_root_quality)
     if state.sect.disciple_generation_v2_enabled and disciple.profile_seed > 0:
         effective_amount *= lerpf(0.82, 1.22, clampf(disciple.aptitude, 0.0, 1.0))
+    if state.sect.disciple_traits_enabled:
+        effective_amount *= trait_system.cultivation_gain_multiplier(state, disciple)
     var before := disciple.cultivation_progress
     disciple.cultivation_progress = minf(required, before + effective_amount)
     var gained := disciple.cultivation_progress - before
@@ -179,6 +182,8 @@ func effective_combat_power(state: SimulationState, disciple: DiscipleState) -> 
         power += technique_bonus
     if state.sect.cultivation_paths_enabled:
         power += cultivation_path_system.intrinsic_combat_bonus(state, disciple)
+    if state.sect.disciple_traits_enabled:
+        power += trait_system.combat_power_bonus(state, disciple)
     return power
 
 func apply_action_modifiers(state: SimulationState, disciple: DiscipleState, scores: Dictionary) -> void:
