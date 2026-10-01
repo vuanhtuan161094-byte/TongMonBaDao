@@ -68,6 +68,11 @@ var work_groups: Dictionary = {}
 var forge_support_points: int = 0
 var workforce_event_count: int = 0
 
+# P2.8 procedural disciple identity/recruitment. Fully opt-in.
+var disciple_generation_v2_enabled: bool = false
+var disciple_recruitment_tokens: int = 0
+var disciple_generation_event_count: int = 0
+
 func to_dict() -> Dictionary:
     var data := {
         "treasury": treasury,
@@ -115,6 +120,10 @@ func to_dict() -> Dictionary:
         data["work_groups"] = work_groups.duplicate(true)
         data["forge_support_points"] = forge_support_points
         data["workforce_event_count"] = workforce_event_count
+    if disciple_generation_v2_enabled or disciple_recruitment_tokens > 0 or disciple_generation_event_count > 0:
+        data["disciple_generation_v2_enabled"] = disciple_generation_v2_enabled
+        data["disciple_recruitment_tokens"] = disciple_recruitment_tokens
+        data["disciple_generation_event_count"] = disciple_generation_event_count
     return data
 
 static func from_dict(data: Dictionary) -> SectState:
@@ -156,6 +165,9 @@ static func from_dict(data: Dictionary) -> SectState:
     state.work_groups = _work_group_dictionary(data.get("work_groups", {}))
     state.forge_support_points = maxi(int(data.get("forge_support_points", 0)), 0)
     state.workforce_event_count = maxi(int(data.get("workforce_event_count", 0)), 0)
+    state.disciple_generation_v2_enabled = bool(data.get("disciple_generation_v2_enabled", false))
+    state.disciple_recruitment_tokens = maxi(int(data.get("disciple_recruitment_tokens", 0)), 0)
+    state.disciple_generation_event_count = maxi(int(data.get("disciple_generation_event_count", 0)), 0)
 
     var saved_stats = data.get("needs_stats", {})
     if saved_stats is Dictionary:
