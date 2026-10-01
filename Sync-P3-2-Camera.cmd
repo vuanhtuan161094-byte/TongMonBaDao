@@ -3,7 +3,7 @@ setlocal EnableExtensions
 cd /d "%~dp0"
 
 echo ================================================
-echo   TONG MON BA DAO - SYNC + P3.2 CAMERA VERIFY
+echo   TONG MON BA DAO - SYNC + P3.2 INTERACTION
 echo ================================================
 echo.
 
@@ -42,7 +42,7 @@ echo [2/3] Updating local main with fast-forward only...
 git pull --ff-only origin main
 if errorlevel 1 goto :gitfail
 
-echo [3/3] Running cumulative P0-P3.1 plus P3.2 camera verification...
+echo [3/3] Running cumulative P0-P3.1 plus P3.2 camera and disciple UI verification...
 call "%~dp0Verify-P3-2-Camera.cmd"
 set "VERIFY_EXIT=%ERRORLEVEL%"
 if not "%VERIFY_EXIT%"=="0" exit /b %VERIFY_EXIT%
@@ -56,6 +56,6 @@ goto :fail
 
 :fail
 echo.
-echo SYNC + P3.2 CAMERA: STOPPED
+echo SYNC + P3.2 INTERACTION: STOPPED
 pause
 exit /b 1
