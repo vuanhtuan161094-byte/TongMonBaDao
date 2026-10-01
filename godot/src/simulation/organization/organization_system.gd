@@ -3,6 +3,9 @@ extends RefCounted
 
 const MAX_TEAM_SIZE := 6
 
+# P1.5 roles are combat/adventure behavior roles only. They are NOT sect rank,
+# profession, work group, hall position or later administrative authority.
+# The legacy storage key remains `role_assignments` for save compatibility.
 const ROLE_HUNTER := &"hunter"
 const ROLE_LOGISTICS := &"logistics"
 const ROLE_GUARD := &"guard"
@@ -93,7 +96,7 @@ func assign_leader(state: SimulationState, team_id: StringName, disciple_id: Str
     state.organization_change_count += 1
     return true
 
-func assign_role(state: SimulationState, disciple_id: StringName, role_id: StringName) -> bool:
+func assign_combat_role(state: SimulationState, disciple_id: StringName, role_id: StringName) -> bool:
     if not state.p1_organization_enabled or not state.disciples.has(disciple_id):
         return false
     if not VALID_ROLES.has(role_id):
@@ -102,9 +105,17 @@ func assign_role(state: SimulationState, disciple_id: StringName, role_id: Strin
     state.organization_change_count += 1
     return true
 
-func clear_role(state: SimulationState, disciple_id: StringName) -> void:
+# Legacy P1.5 API retained for tests/saves/callers. New systems should use
+# combat-role naming so later profession/rank state cannot be confused with it.
+func assign_role(state: SimulationState, disciple_id: StringName, role_id: StringName) -> bool:
+    return assign_combat_role(state, disciple_id, role_id)
+
+func clear_combat_role(state: SimulationState, disciple_id: StringName) -> void:
     if state.role_assignments.erase(str(disciple_id)):
         state.organization_change_count += 1
+
+func clear_role(state: SimulationState, disciple_id: StringName) -> void:
+    clear_combat_role(state, disciple_id)
 
 func team_for_disciple(state: SimulationState, disciple_id: StringName) -> TeamState:
     var team_id := str(state.disciple_team_ids.get(str(disciple_id), ""))
@@ -112,14 +123,17 @@ func team_for_disciple(state: SimulationState, disciple_id: StringName) -> TeamS
         return null
     return state.teams.get(team_id)
 
-func role_for_disciple(state: SimulationState, disciple_id: StringName) -> StringName:
+func combat_role_for_disciple(state: SimulationState, disciple_id: StringName) -> StringName:
     return StringName(state.role_assignments.get(str(disciple_id), ""))
+
+func role_for_disciple(state: SimulationState, disciple_id: StringName) -> StringName:
+    return combat_role_for_disciple(state, disciple_id)
 
 func apply_action_role_modifiers(state: SimulationState, disciple: DiscipleState, scores: Dictionary) -> void:
     if not state.p1_organization_enabled:
         return
 
-    match role_for_disciple(state, disciple.id):
+    match combat_role_for_disciple(state, disciple.id):
         ROLE_HUNTER:
             scores["HUNT"] = float(scores.get("HUNT", 0.0)) + 18.0
             scores["REST"] = float(scores.get("REST", 0.0)) - 5.0
@@ -144,7 +158,7 @@ func region_organization_modifier(state: SimulationState, disciple: DiscipleStat
     return clampf(modifier, -40.0, 50.0)
 
 func _role_region_modifier(state: SimulationState, disciple: DiscipleState, region: RegionState) -> float:
-    match role_for_disciple(state, disciple.id):
+    match combat_role_for_disciple(state, disciple.id):
         ROLE_HUNTER:
             return float(region.danger) * 5.0 + region.profit_modifier * 8.0
         ROLE_LOGISTICS:
@@ -186,7 +200,7 @@ func _guard_support_modifier(state: SimulationState, disciple: DiscipleState, re
     for member_id in team.member_ids:
         if member_id == disciple.id:
             continue
-        if role_for_disciple(state, member_id) != ROLE_GUARD:
+        if combat_role_for_disciple(state, member_id) != ROLE_GUARD:
             continue
         var guard: DiscipleState = state.disciples.get(member_id)
         if guard == null:
