@@ -4,6 +4,8 @@ func _init() -> void:
     call_deferred("_run")
 
 func _run() -> void:
+    if not _verify_active_scene_contract():
+        return
     if not _verify_zoom_limits():
         return
     if not _verify_zoom_keeps_anchor_stable():
@@ -17,6 +19,13 @@ func _run() -> void:
 
     print("P3.2 MAP CAMERA TEST PASS")
     quit(0)
+
+func _verify_active_scene_contract() -> bool:
+    if str(ProjectSettings.get_setting("application/run/main_scene", "")) != "res://scenes/p3/p3_2_landscape_sect.tscn":
+        return _fail("P3.2 zoomable landscape scene must be the project main scene.")
+    if not ResourceLoader.exists("res://scenes/p3/p3_2_landscape_sect.tscn"):
+        return _fail("P3.2 zoomable landscape scene is missing.")
+    return true
 
 func _verify_zoom_limits() -> bool:
     if absf(SectMapCamera.clamp_zoom(0.1) - SectMapCamera.MIN_ZOOM) > 0.000001:
