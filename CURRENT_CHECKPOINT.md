@@ -136,11 +136,13 @@ Display:
 
 Tempering consumes one Yêu Đan and improves real effects without rerolling type/grade. Transformation from unnamed body uses the deterministic latent target and preserves grade. Routine tempering does not automatically promote physique grade.
 
-## Active phase
+## Active presentation work
 
 # **P3.1 — Mobile ngang + Tông Môn Sống V1**
 
 Status: **IMPLEMENTED FIRST SLICE / AWAITING REAL GODOT 4.7.2 CUMULATIVE GATE**.
+
+P3.1 remains the base landscape/living-sect contract. It has not yet received real local runtime evidence.
 
 Read:
 
@@ -148,70 +150,87 @@ Read:
 - `docs/DISCIPLE_MASTER_SCHEMA.md`
 - this checkpoint.
 
-### Presentation target
+### P3.1 contract already implemented
 
-The product presentation target is now **mobile landscape**, base logical resolution **1280×720**.
+- 1280×720 landscape + `canvas_items` + `expand`;
+- map-dominant hierarchy;
+- real simulation action -> visible building destination mapping;
+- disciple movement tween toward current-action destination;
+- building popup reads real resources/work state;
+- disciple popup exposes roster/current state/direct orders;
+- direct orders call existing `WorkforceSystem.issue_command()`;
+- no parallel gameplay state.
 
-The UX reference is **Ta Làm Tông Sư Trong Tiên Môn** at the structural level:
+P0 runtime smoke remains explicitly pinned to its P0 scene, so advancing the project main scene does not alter the P0 contract.
 
-- map dominates the screen;
-- thin top resource bar;
-- chapter/task rail on the left;
-- edge/floating action buttons;
-- buildings are tapped directly on the map;
-- parchment/scroll-like popups stay over the map;
-- disciple management uses vertical roster + large character area + detail panel + lower tabs.
+# **P3.2 Camera Interaction Slice — Zoom + Pan + Focus**
 
-Do not copy third-party assets, text, logo, icons or exact map art. Use original art while keeping the interaction hierarchy close.
+Status: **IMPLEMENTED / AWAITING REAL GODOT 4.7.2 CUMULATIVE GATE**.
 
-### P3.1 implementation now in repo
+This is only the camera/interaction slice of P3.2. **Do not call full P3.2 PASS.** Production art/animation/UI replacement remains future work.
 
-- `godot/project.godot` targets 1280×720 landscape, `canvas_items`, `expand`;
-- main scene is `res://scenes/p3/p3_1_landscape_sect.tscn`;
-- `SectMapPresentation` maps real simulation actions to visible destinations;
-- map has Đại Điện, Đệ Tử Xá, Tu Luyện Đài, Kho, Luyện Khí Đường, Dược Phòng, Khai Khoáng and Đại Môn placeholders;
-- disciple avatars move by presentation tween toward the destination implied by `current_action`;
-- `EVALUATE/IDLE` preserve the prior visible destination instead of snapping back every tick;
-- building popup reads actual simulation resources/work state;
-- disciple popup exposes roster, V2 identity where available and real direct-order buttons;
-- direct orders call the existing `WorkforceSystem.issue_command()` authority;
-- two V2 candidates are accepted only in the P3.1 demo presentation state so the modern character schema is visible alongside legacy founders;
-- no parallel gameplay engine/state was added.
+Read:
 
-P0 runtime smoke was pinned explicitly to `res://scenes/p0/p0_sandbox.tscn` so changing the project main scene does not make the P0 gate depend on later presentation code.
+- `docs/P3_2_UI_ART_PRODUCTION_SPEC.md`;
+- `godot/src/presentation/p3/sect_map_camera.gd`;
+- `godot/src/presentation/p3_2_landscape_sect.gd`.
 
-### P3.1 verification assets
+### Camera contract now implemented
 
-- `godot/src/presentation/p3/sect_map_presentation.gd`
-- `godot/src/presentation/p3_1_landscape_sect.gd`
-- `godot/scenes/p3/p3_1_landscape_sect.tscn`
-- `godot/tests/presentation/p3_1_landscape_shell_test.gd`
-- `tools/godot/Verify-P3-1.ps1`
-- `Verify-P3-1.cmd`
-- `Sync-P3-1.cmd`
+- map only zooms; HUD/task rail/menu/popup do not scale;
+- mobile pinch zoom;
+- one-finger map pan on empty/unhandled map area;
+- desktop wheel zoom + left-drag pan for testing;
+- double-tap/double-click on free map area zooms toward that point;
+- fixed fallback controls `+`, `−`, `Toàn`;
+- zoom limits `0.75x -> 1.80x`;
+- default `1.00x`;
+- focus zoom target `1.35x`;
+- zoom preserves the pinch/wheel screen anchor;
+- pan is clamped so the map cannot be dragged completely away;
+- popups block camera gestures;
+- camera is presentation-only and never mutates simulation state.
 
-Cumulative gate reruns P0-P2.12 first, then checks landscape project settings, deterministic action-to-map mapping, presentation-only behavior, real direct-command integration and P3.1 scene smoke.
+The project main scene has advanced to:
+
+- `res://scenes/p3/p3_2_landscape_sect.tscn`
+
+P3.1 verifier was adjusted only so its lower-layer shell contract remains testable after main-scene advancement; it still directly smokes the P3.1 scene.
+
+### P3.2 camera verification assets
+
+- `godot/tests/presentation/p3_2_map_camera_test.gd`
+- `tools/godot/Verify-P3-2-Camera.ps1`
+- `Verify-P3-2-Camera.cmd`
+- `Sync-P3-2-Camera.cmd`
+
+The P3.2 camera verifier first runs the complete P3.1 cumulative chain. If P3.1 fails, camera verification never proceeds.
 
 ## Next authoritative local command
 
+When the Windows machine is available:
+
 ```bat
 cd /d "E:\0.2. TongMonBaDao"
-git pull origin main
-Sync-P3-1.cmd
+Sync-P3-2-Camera.cmd
 ```
 
-Do not call P3.1 PASS until final real Godot 4.7.2 output reaches:
+Expected successful tail includes:
 
 - `P3.1 LANDSCAPE SECT SHELL TEST PASS`
 - `P3.1 LANDSCAPE SECT SHELL GATE: PASS`
-- final `P3.1 GATE: PASS`
+- `P3.2 MAP CAMERA TEST PASS`
+- `P3.2 CAMERA INTERACTION GATE: PASS`
+- final `P3.2 CAMERA GATE: PASS`
 
-If it fails, fix the first real parser/diagnostic/assertion failure only and rerun the same command.
+Do not call P3.1 or P3.2 camera PASS until this real Godot 4.7.2 output is supplied.
 
-## Planned order after P3.1 runtime green
+If it fails, fix the first real parser/diagnostic/assertion failure only.
 
-1. P3.2 production art/animation/UI polish while preserving the locked landscape hierarchy;
-2. P3.3 visible building/production assignment/upgrades;
+## Planned order after camera slice runtime green
+
+1. production art/animation/UI replacement while preserving the landscape hierarchy and camera behavior;
+2. visible building/production assignment/upgrades;
 3. injury/medical;
 4. loyalty + stipend/reward;
 5. sect rank/authority expansion;
