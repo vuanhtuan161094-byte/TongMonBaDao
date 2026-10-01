@@ -50,7 +50,7 @@ var learned_combat_skills: Dictionary = {}
 var equipped_items: Dictionary = {}
 var locked_equipment_slots: Dictionary = {}
 
-# P2.7 disciple life/workforce. These stay empty/zero until WorkforceSystem is enabled.
+# P2.7 disciple life/workforce. P2.8 adopts comprehension as canonical Thông Tuệ.
 var comprehension: float = 0.0
 var sect_rank: StringName = &""
 var profession_xp: Dictionary = {}
@@ -59,6 +59,24 @@ var work_preferences: Dictionary = {}
 var work_group_id: StringName = &""
 var direct_command: Dictionary = {}
 var work_progress: Dictionary = {}
+
+# P2.8 procedural identity. Empty/zero for all legacy disciples.
+var profile_seed: int = 0
+var recruitment_source: StringName = &""
+var race_id: StringName = &""
+var sex_id: StringName = &""
+var origin_id: StringName = &""
+var aptitude: float = 0.0
+var constitution: float = 0.0
+var fortune: float = 0.0
+var charisma: float = 0.0
+var potential: float = 0.0
+var disciple_quality: StringName = &""
+var spiritual_root_purity: float = 0.0
+var age: int = 0
+var base_lifespan: int = 0
+var max_lifespan: int = 0
+var latent_identity_seed: int = 0
 
 var current_action: StringName = &"EVALUATE"
 var region_id: StringName = &"sect"
@@ -128,6 +146,23 @@ func _init(definition: Dictionary = {}) -> void:
     work_group_id = StringName(definition.get("work_group_id", work_group_id))
     direct_command = _command_dictionary(definition.get("direct_command", {}))
     work_progress = _float_dictionary(definition.get("work_progress", {}))
+
+    profile_seed = int(definition.get("profile_seed", 0))
+    recruitment_source = StringName(definition.get("recruitment_source", ""))
+    race_id = StringName(definition.get("race_id", ""))
+    sex_id = StringName(definition.get("sex_id", ""))
+    origin_id = StringName(definition.get("origin_id", ""))
+    aptitude = maxf(float(definition.get("aptitude", 0.0)), 0.0)
+    constitution = maxf(float(definition.get("constitution", 0.0)), 0.0)
+    fortune = maxf(float(definition.get("fortune", 0.0)), 0.0)
+    charisma = maxf(float(definition.get("charisma", 0.0)), 0.0)
+    potential = maxf(float(definition.get("potential", 0.0)), 0.0)
+    disciple_quality = StringName(definition.get("disciple_quality", ""))
+    spiritual_root_purity = maxf(float(definition.get("spiritual_root_purity", 0.0)), 0.0)
+    age = maxi(int(definition.get("age", 0)), 0)
+    base_lifespan = maxi(int(definition.get("base_lifespan", 0)), 0)
+    max_lifespan = maxi(int(definition.get("max_lifespan", 0)), 0)
+    latent_identity_seed = int(definition.get("latent_identity_seed", 0))
 
 func retreat_hp_ratio() -> float:
     return lerpf(0.48, 0.14, clampf(risk_bias, 0.0, 1.0))
@@ -203,6 +238,23 @@ func to_dict() -> Dictionary:
         data["work_group_id"] = str(work_group_id)
         data["direct_command"] = direct_command.duplicate(true)
         data["work_progress"] = work_progress.duplicate(true)
+    if profile_seed > 0 or recruitment_source != &"":
+        data["profile_seed"] = profile_seed
+        data["recruitment_source"] = str(recruitment_source)
+        data["race_id"] = str(race_id)
+        data["sex_id"] = str(sex_id)
+        data["origin_id"] = str(origin_id)
+        data["aptitude"] = aptitude
+        data["constitution"] = constitution
+        data["fortune"] = fortune
+        data["charisma"] = charisma
+        data["potential"] = potential
+        data["disciple_quality"] = str(disciple_quality)
+        data["spiritual_root_purity"] = spiritual_root_purity
+        data["age"] = age
+        data["base_lifespan"] = base_lifespan
+        data["max_lifespan"] = max_lifespan
+        data["latent_identity_seed"] = latent_identity_seed
     return data
 
 static func from_dict(data: Dictionary) -> DiscipleState:
@@ -242,7 +294,23 @@ static func from_dict(data: Dictionary) -> DiscipleState:
         "work_preferences": data.get("work_preferences", {}),
         "work_group_id": data.get("work_group_id", ""),
         "direct_command": data.get("direct_command", {}),
-        "work_progress": data.get("work_progress", {})
+        "work_progress": data.get("work_progress", {}),
+        "profile_seed": data.get("profile_seed", 0),
+        "recruitment_source": data.get("recruitment_source", ""),
+        "race_id": data.get("race_id", ""),
+        "sex_id": data.get("sex_id", ""),
+        "origin_id": data.get("origin_id", ""),
+        "aptitude": data.get("aptitude", 0.0),
+        "constitution": data.get("constitution", 0.0),
+        "fortune": data.get("fortune", 0.0),
+        "charisma": data.get("charisma", 0.0),
+        "potential": data.get("potential", 0.0),
+        "disciple_quality": data.get("disciple_quality", ""),
+        "spiritual_root_purity": data.get("spiritual_root_purity", 0.0),
+        "age": data.get("age", 0),
+        "base_lifespan": data.get("base_lifespan", 0),
+        "max_lifespan": data.get("max_lifespan", 0),
+        "latent_identity_seed": data.get("latent_identity_seed", 0)
     })
     disciple.max_hp = float(data.get("max_hp", 100.0))
     disciple.hp = float(data.get("hp", disciple.max_hp))
