@@ -7,6 +7,13 @@ $ErrorActionPreference = "Stop"
 # P2.6 builds on P2.5 and intentionally re-runs every earlier gate first.
 . (Join-Path $PSScriptRoot "Verify-P2-5.ps1") -GodotBin $GodotBin
 
+Write-Host "[P2.6] Persistence diagnostic"
+Invoke-GodotWithTimeout -CommandArgs @(
+    "--headless",
+    "--path", $Project,
+    "-s", "res://tests/simulation/p2_6_persistence_diagnostic.gd"
+) -TimeoutSeconds 240 -Label "P2.6 persistence diagnostic"
+
 Write-Host "[P2.6] Forge + autonomous/manual equipment contracts"
 Invoke-GodotWithTimeout -CommandArgs @(
     "--headless",
