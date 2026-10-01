@@ -12,10 +12,19 @@ const FOCUS_ZOOM := 1.35
 static func clamp_zoom(value: float) -> float:
     return clampf(value, MIN_ZOOM, MAX_ZOOM)
 
+static func is_map_screen_point(screen_point: Vector2) -> bool:
+    return VIEW_RECT.has_point(screen_point)
+
+static func world_to_screen(world_point: Vector2, map_position: Vector2, zoom: float) -> Vector2:
+    return map_position + world_point * clamp_zoom(zoom)
+
+static func screen_to_world(screen_point: Vector2, map_position: Vector2, zoom: float) -> Vector2:
+    return (screen_point - map_position) / maxf(clamp_zoom(zoom), 0.000001)
+
 static func zoom_around_screen_point(current_position: Vector2, old_zoom: float, requested_zoom: float, screen_anchor: Vector2) -> Dictionary:
     var from_zoom := clamp_zoom(old_zoom)
     var to_zoom := clamp_zoom(requested_zoom)
-    var world_anchor := (screen_anchor - current_position) / maxf(from_zoom, 0.000001)
+    var world_anchor := screen_to_world(screen_anchor, current_position, from_zoom)
     var candidate_position := screen_anchor - world_anchor * to_zoom
     return {
         "zoom": to_zoom,
