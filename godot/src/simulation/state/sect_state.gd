@@ -83,6 +83,11 @@ var spiritual_root_refinement_enabled: bool = false
 var spiritual_root_profiles: Dictionary = {}
 var spiritual_root_refinement_event_count: int = 0
 
+# P2.11 deterministic bloodline identity, reveal, awakening and purity. Fully opt-in.
+var bloodlines_enabled: bool = false
+var bloodline_profiles: Dictionary = {}
+var bloodline_event_count: int = 0
+
 func to_dict() -> Dictionary:
     var data := {
         "treasury": treasury,
@@ -142,6 +147,10 @@ func to_dict() -> Dictionary:
         data["spiritual_root_refinement_enabled"] = spiritual_root_refinement_enabled
         data["spiritual_root_profiles"] = spiritual_root_profiles.duplicate(true)
         data["spiritual_root_refinement_event_count"] = spiritual_root_refinement_event_count
+    if bloodlines_enabled or bloodline_event_count > 0 or not bloodline_profiles.is_empty():
+        data["bloodlines_enabled"] = bloodlines_enabled
+        data["bloodline_profiles"] = bloodline_profiles.duplicate(true)
+        data["bloodline_event_count"] = bloodline_event_count
     return data
 
 static func from_dict(data: Dictionary) -> SectState:
@@ -192,6 +201,9 @@ static func from_dict(data: Dictionary) -> SectState:
     state.spiritual_root_refinement_enabled = bool(data.get("spiritual_root_refinement_enabled", false))
     state.spiritual_root_profiles = _root_profile_dictionary(data.get("spiritual_root_profiles", {}))
     state.spiritual_root_refinement_event_count = maxi(int(data.get("spiritual_root_refinement_event_count", 0)), 0)
+    state.bloodlines_enabled = bool(data.get("bloodlines_enabled", false))
+    state.bloodline_profiles = _bloodline_profile_dictionary(data.get("bloodline_profiles", {}))
+    state.bloodline_event_count = maxi(int(data.get("bloodline_event_count", 0)), 0)
 
     var saved_stats = data.get("needs_stats", {})
     if saved_stats is Dictionary:
@@ -312,6 +324,26 @@ static func _root_profile_dictionary(value: Variant) -> Dictionary:
             "refinement_count": maxi(int(raw_profile.get("refinement_count", 0)), 0),
             "latent_mutation": str(raw_profile.get("latent_mutation", "none")),
             "revealed_mutation": str(raw_profile.get("revealed_mutation", ""))
+        }
+    return normalized
+
+static func _bloodline_profile_dictionary(value: Variant) -> Dictionary:
+    var normalized: Dictionary = {}
+    if not (value is Dictionary):
+        return normalized
+    var keys: Array = value.keys()
+    keys.sort()
+    for raw_key in keys:
+        var raw_profile = value[raw_key]
+        if not (raw_profile is Dictionary):
+            continue
+        normalized[str(raw_key)] = {
+            "initialized": bool(raw_profile.get("initialized", false)),
+            "bloodline_id": str(raw_profile.get("bloodline_id", "none")),
+            "purity": clampf(float(raw_profile.get("purity", 0.0)), 0.0, 1.0),
+            "revealed": bool(raw_profile.get("revealed", false)),
+            "awakened": bool(raw_profile.get("awakened", false)),
+            "refinement_count": maxi(int(raw_profile.get("refinement_count", 0)), 0)
         }
     return normalized
 
