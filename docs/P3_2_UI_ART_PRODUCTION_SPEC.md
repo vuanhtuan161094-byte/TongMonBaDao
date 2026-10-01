@@ -120,6 +120,33 @@ Công trình/đệ tử có thể hiện:
 
 Bubble phải bấm được để đi thẳng tới hành động liên quan.
 
+## 2.4. Camera map — zoom, pan, focus
+
+Camera chỉ tác động lên **map world**. HUD, task rail, menu, popup và các lớp UI phải giữ nguyên kích thước/vị trí khi zoom.
+
+Canonical interaction:
+
+- mobile: pinch 2 ngón để zoom;
+- mobile: kéo 1 ngón trên vùng map trống để pan;
+- desktop/test: wheel chuột để zoom, kéo chuột trái trên map trống để pan;
+- double-tap/double-click vào công trình hoặc đệ tử: camera focus mềm vào mục tiêu;
+- nút `+`, `−`, `Toàn cảnh` là fallback cho accessibility/test và không thay thế gesture.
+
+Giới hạn zoom vertical slice:
+
+- min `0.75x`;
+- default `1.00x`;
+- max `1.80x`;
+- focus target mặc định khoảng `1.35x`.
+
+Camera phải clamp để không thể kéo toàn bộ tông môn ra khỏi vùng nhìn thấy.
+
+Zoom phải giữ điểm pinch/wheel ổn định trên màn hình thay vì luôn phóng quanh góc trái.
+
+Double-tap focus không mở một simulation state mới và không teleport đệ tử. Đây chỉ là presentation camera.
+
+Khi popup đang mở, map gesture bị khóa để tránh pan/zoom ngoài ý muốn.
+
 ---
 
 # 3. Màn Đệ Tử — cấu trúc chuẩn
@@ -333,7 +360,8 @@ P3.2 chỉ được gọi PASS khi:
 7. disciple screen có roster/showcase/details/tabs đúng hierarchy;
 8. direct-order vẫn gọi existing authority;
 9. safe-area/aspect ratio smoke tối thiểu 16:9 và 19.5:9;
-10. P0-P3.1 cumulative regression vẫn green.
+10. map camera hỗ trợ pinch/pan/focus trong khoảng 0.75x–1.80x và không làm HUD phóng theo;
+11. P0-P3.1 cumulative regression vẫn green.
 
 ---
 
