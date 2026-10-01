@@ -85,7 +85,9 @@ func _build_shell() -> void:
 
     popup_layer = Control.new()
     popup_layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-    popup_layer.mouse_filter = Control.MOUSE_FILTER_PASS
+    # The empty overlay must never steal map taps. Children (dim/panels/buttons)
+    # still receive their own events when a popup exists.
+    popup_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
     add_child(popup_layer)
 
 func _build_map_decoration() -> void:
@@ -129,12 +131,14 @@ func _build_buildings() -> void:
     for data in buildings:
         var button := Button.new()
         button.text = str(data["name"])
-        button.position = Vector2(data["pos"])
-        button.size = Vector2(data["size"])
+        var building_position: Vector2 = data["pos"]
+        var building_size: Vector2 = data["size"]
+        var fill: Color = data["color"]
+        button.position = building_position
+        button.size = building_size
         button.add_theme_font_size_override("font_size", 15)
         button.add_theme_color_override("font_color", PAPER_LIGHT)
         button.add_theme_color_override("font_hover_color", Color.WHITE)
-        var fill := Color(data["color"])
         button.add_theme_stylebox_override("normal", _style(fill, INK, 2, 12))
         button.add_theme_stylebox_override("hover", _style(fill.lightened(0.10), GOLD, 3, 12))
         button.add_theme_stylebox_override("pressed", _style(fill.darkened(0.10), GOLD, 3, 12))
@@ -625,7 +629,7 @@ func _count_outside() -> int:
 
 func _actor_offset(index: int) -> Vector2:
     var col := index % 3
-    var row := (index / 3) % 2
+    var row := int(floor(float(index) / 3.0)) % 2
     return Vector2(float(col - 1) * 28.0, float(row) * 34.0)
 
 func _element_name(element: String) -> String:
