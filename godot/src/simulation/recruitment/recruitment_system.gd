@@ -38,6 +38,8 @@ func generate_candidate(state: SimulationState, source: StringName = DiscipleGen
         state.recruitment_generation_index = generation_index_v2
         state.recruitment_candidates[candidate_v2.id] = candidate_v2
         state.sect.disciple_generation_event_count += 1
+        if state.sect.disciple_traits_enabled:
+            TraitSystem.new().ensure_candidate_profile(state, candidate_v2)
         return candidate_v2
 
     if source != DiscipleGeneratorV2.SOURCE_ORDINARY:
@@ -117,6 +119,8 @@ func accept_candidate(state: SimulationState, candidate_id: StringName) -> Dicti
             roots.ensure_disciple_elements(state, disciple)
     if state.sect.workforce_enabled and (not state.sect.disciple_generation_v2_enabled or disciple.profile_seed <= 0):
         WorkforceSystem.new().ensure_disciple_profile(state, disciple)
+    if state.sect.disciple_traits_enabled:
+        TraitSystem.new().ensure_disciple_profile(state, disciple)
     state.disciples[disciple.id] = disciple
     state.recruitment_candidates.erase(candidate_id)
     state.recruitment_stats["accepted"] = int(state.recruitment_stats.get("accepted", 0)) + 1
@@ -135,6 +139,8 @@ func reject_candidate(state: SimulationState, candidate_id: StringName) -> Dicti
         return _result(false, "recruitment_disabled")
     if not state.recruitment_candidates.has(candidate_id):
         return _result(false, "candidate_missing")
+    if state.sect.disciple_traits_enabled:
+        TraitSystem.new().remove_profile(state, candidate_id)
     state.recruitment_candidates.erase(candidate_id)
     state.recruitment_stats["rejected"] = int(state.recruitment_stats.get("rejected", 0)) + 1
     return _result(true, "rejected")
