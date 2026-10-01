@@ -19,33 +19,38 @@
 - P2.3 spirit-stone/material economy stays separate from P0 money.
 - Every runtime mutation must preserve invariants.
 - New mechanics need measurable gameplay consequences; labels alone do not count.
-- **Every gameplay system must state clearly what it changes in actual play: stats, probabilities, costs, timings, AI priorities, resources, access, risk, output, or concrete rules. Flavor-only mechanics do not count.**
-- **Do not avoid overlapping effects just to make systems look different.** Spiritual Root, Bloodline, Physique, Traits, Techniques, Equipment, Destiny, buildings, professions and other systems may all affect the same output such as Công, Thủ, HP, tốc tu, đột phá, hồi phục, sản lượng or cost when that overlap is logical.
-- Systems remain distinct through **source, acquisition, progression, constraints, tradeoffs, timing and signature rules**, not by forcing each system to own a unique stat.
-- A rare/valuable mechanic must provide a meaningful advantage before optional flavor, comedy or drawback is considered. Do not let a gimmick replace the mechanic's core value.
-- Tests for new systems should verify at least one real consequence path, and important/rare systems should generally verify multiple consequence axes where appropriate.
 - Never call a phase PASS without its real cumulative Godot gate.
 - Never weaken exact persistence/determinism tests just to make a gate pass.
 - New phases must be opt-in when changing locked behavior.
-- Hidden identity is generated once and persisted. Reveal never rerolls it.
+- Hidden identity is generated once and persisted. Reveal/transformation never rerolls it.
+
+## Global mechanic-consequence rule
+
+**Do not fear overlap.** Different systems may all modify Công, Thủ, HP, cultivation speed, breakthrough, recovery, production, XP, risk, movement, cooldowns or other concrete outputs when logically justified.
+
+Systems are differentiated by source, acquisition, progression, cost, conditions, tradeoffs and signature rules — not by forcing each system to own a unique stat.
+
+A rare/valuable feature must first provide meaningful player value. Humor, flavor and drawbacks are secondary layers and cannot replace its main benefit.
+
+Every new-system gate must test the actual consequence, not just a field or UI label.
 
 ## Runtime baseline
 
-Real Windows + Godot 4.7.2 evidence confirms **P0 through P2.10 PASS**.
+Real Windows + Godot 4.7.2 evidence confirms **P0 through P2.11 PASS**.
 
-P2.9 and P2.10 are now LOCKED runtime-green baselines. Do not reopen P0-P2.10 without new regression evidence.
+P0-P2.11 are locked runtime-green baselines. Do not reopen them without new regression evidence.
 
 Active phase:
 
-**P2.11 — Huyết Mạch + Thức Tỉnh + Độ Thuần**
+**P2.12 — Thể Chất + Tôi Thể + Cải Thể**
 
 Status: **IMPLEMENTED / AWAITING REAL GODOT 4.7.2 CUMULATIVE GATE**.
 
 Authoritative launcher:
 
-- `Sync-P2-11.cmd`
+- `Sync-P2-12.cmd`
 
-It reruns P0-P2.10 before the P2.11 diagnostic/contracts/scene smoke.
+It reruns P0-P2.11 before the P2.12 diagnostic/contracts/scene smoke.
 
 ## Required loop
 
@@ -69,33 +74,16 @@ Keep separate:
 
 1. innate foundation;
 2. learned progression;
-3. awakening/realization;
+3. awakening/realization/transformation;
 4. acquired world assets;
 5. living state;
 6. organization/social state.
 
 Do not collapse Spiritual Root, Bloodline, Physique, Destiny, traits/quirks and personality into one system.
 
-Innate does not mean permanently frozen. Rare transformation/refinement/awakening may alter innate foundation, while ordinary training changes learned progression.
+Innate does not mean permanently frozen. Rare transformation/refinement/awakening may alter foundation, while ordinary training changes learned progression.
 
-## Locked systems through P2.10
-
-### P2.7 workforce
-
-Keep sect rank, profession talent, profession XP, work group and combat/adventure role separate.
-
-Authority order:
-
-1. survival emergency;
-2. direct Sect Master command;
-3. schedule;
-4. personal/group work priority;
-5. normal autonomy.
-
-Real loops:
-
-- Mining -> Thanh Thiết;
-- Forging -> support consumed by P2.6 craft.
+## Locked character foundation through P2.11
 
 ### P2.8 procedural identity
 
@@ -118,126 +106,113 @@ Promotable quality:
 
 Ordinary / Chiêu Hiền / Nhân Duyên share one deterministic generator.
 
-Spiritual-root purity and root element count are separate axes.
-
 ### P2.9 traits
 
-Visible positive/negative traits have real cultivation/work/combat consequences.
+Positive/negative/latent traits must have real cultivation/work/combat consequences. Empty visible traits is a valid initialized result.
 
-Latent traits are generated before reveal and reveal only from lived history. Empty visible list is a valid initialized result.
+### P2.10 roots
 
-### P2.10 root refinement
+Purity and element count are independent. Refinement consumes real Linh Tủy, preserves elements, changes real cultivation/breakthrough/technique effects and can reveal a pre-generated mutation.
 
-Consumes real `Linh Tủy`.
+### P2.11 bloodline
 
-Ordinary refinement:
+Special awakened bloodlines have real core stats before gimmicks:
 
-- increases purity;
-- preserves element list;
-- has diminishing returns;
-- receives Tiềm Lực contribution;
-- changes real cultivation/breakthrough/matching-technique consequences.
+- Chân Long: Công + Thủ + Tu + Đột phá + Hồi;
+- Phượng Hoàng: Công + Thủ + Tu + Đột phá nhẹ + Hồi rất cao;
+- Bạch Hổ: Công cao nhất + Tu nhỏ;
+- Huyền Vũ: Thủ cao nhất + Công + Tu + Hồi;
+- Thao Thiết: Công + Thủ + Tu + Hồi; extra Supply is only a tradeoff;
+- none remains valid/common.
 
-Fewer elements specialize harder; more elements give broader compatibility.
+Awakening/refinement consumes real Yêu Đan. Higher purity strengthens real effects.
 
-Latent root mutation is pre-generated and reveal never rerolls it.
-
-## Active P2.11 bloodline contract
+## Active P2.12 Physique contract
 
 Read:
 
-- `docs/P2_11_BLOODLINE_SPEC.md`
-- `docs/XIANXIA_FLAVOR_CANON.md`
+- `docs/P2_12_PHYSIQUE_SPEC.md`
 - `CURRENT_CHECKPOINT.md`
 
 Feature gate:
 
-- `SectState.bloodlines_enabled`.
+- `SectState.physiques_enabled`.
 
 Profiles live in:
 
-- `SectState.bloodline_profiles[character_id]`.
+- `SectState.physique_profiles[character_id]`.
 
 Schema:
 
 - initialized;
-- bloodline_id;
-- purity;
-- revealed;
-- awakened;
-- refinement_count.
+- physique_id;
+- initial_physique_id;
+- temper_level;
+- transformed;
+- latent_transformation.
 
-Candidate -> disciple preserves the same profile because the id is unchanged. Rejected candidates remove orphan profiles.
+Candidate -> disciple preserves exact profile. Reject removes orphan profile.
 
-Current bloodlines:
+Current physiques:
 
-- Chân Long Huyết — Công + Thủ + tốc tu + đột phá + hồi phục nền;
-- Phượng Hoàng Huyết — Công + Thủ nhẹ + tốc tu + đột phá nhẹ + hồi phục rất cao;
-- Bạch Hổ Huyết — Công cao nhất + tốc tu nhỏ;
-- Huyền Vũ Huyết — Thủ cao nhất + Công nền + tốc tu + hồi phục;
-- Thao Thiết Tàn Huyết — Công + Thủ + tốc tu + hồi phục cao, extra real Supply cost on departure is only a tradeoff/flavor mechanic;
-- no special bloodline is a valid common result.
+- Phàm Thể — temperable, has deterministic future transformation route;
+- Kiếm Cốt — Công/Tu/Đột phá + Sword XP, slight recovery drawback;
+- Kim Cương Bá Thể — high Công/Thủ/Hồi + Body XP, slower cultivation drawback;
+- Hàn Âm Thể — strong with Water root, real mismatch penalty without it;
+- Hỏa Linh Thể — strong Công/Tu/Đột phá/Spell XP with Fire root;
+- Vô Cấu Đạo Thể — rare all-rounder.
 
-Reveal uses pre-existing identity and life-history thresholds. Reveal must never awaken automatically.
+Tempering:
 
-Awakening:
+- consumes 1 real Yêu Đan;
+- max vertical-slice level 5;
+- must improve real effects.
 
-- requires a revealed special bloodline;
-- consumes one real P2.3 `Yêu Đan`;
-- activates gameplay effects.
+Transformation:
 
-Post-awakening refinement:
+- only from Phàm Thể;
+- requires temper >= 3;
+- consumes 2 real Linh Tủy;
+- uses pre-generated latent target;
+- never rerolls;
+- preserves temper level.
 
-- consumes one Yêu Đan;
-- raises purity with diminishing returns;
-- Tiềm Lực contributes;
-- routine cap is 0.95;
-- 100% is reserved for later major fate/inheritance mechanics.
+Real hooks:
+
+- CultivationSystem -> Công/Tu/Đột phá;
+- CombatSystem -> Thủ;
+- NeedsSystem -> Hồi/penalty;
+- CultivationPathSystem -> Sword/Body/Spell XP affinity.
+
+**Bloodline + Physique overlap must stack.** Do not introduce exclusivity because two systems modify the same stat.
 
 ## Xianxia humor/flavor contract
 
 The game may be funny in a cultivation-story way, but it is not a meme game.
 
-Allowed examples:
+Examples: khẩu nghiệp, fake Thiên Mệnh Chi Tử confidence, furnace explosions, odd manuals, gluttony, greed, gossip, badly timed breakthroughs and mismatched equipment.
 
-- khẩu nghiệp / gây chuyện;
-- falsely believing oneself to be Thiên Mệnh Chi Tử;
-- alchemy/forge explosions;
-- fake/odd manuals and misunderstood opportunities;
-- gluttony/greed/gossip;
-- badly timed breakthroughs;
-- excellent gear on a wildly unsuitable disciple.
-
-Humor must come from real simulation causes and consequences.
-
-P2.11 concrete example:
-
-- awakened Thao Thiết Tàn Huyết consumes one extra real Supply when departing if stock exists, while already having meaningful combat/defense/cultivation/recovery advantages.
-
-Do not spam joke text and do not use modern Internet memes as the main world voice.
+Humor must come from real simulation causes/consequences. Do not spam joke text.
 
 ## Current verification chain
 
 Use:
 
-- `tools/godot/Verify-P2-11.ps1`
-- `Sync-P2-11.cmd`
+- `tools/godot/Verify-P2-12.ps1`
+- `Sync-P2-12.cmd`
 
-It must prove cumulative P0-P2.10 regressions first, then P2.11 persistence, deterministic generation, no reroll, reveal, awakening resource cost, real combat/defense/cultivation/recovery/supply consequences, refinement, recruitment lifecycle and scene smoke.
+It must prove cumulative P0-P2.11 regressions first, then P2.12 persistence, deterministic profiles, real advantages/drawbacks, elemental synergy, tempering/transformation resource costs, Bloodline+Physique stacking, recruitment lifecycle and scene smoke.
 
-Never claim P2.11 PASS without final real Godot 4.7.2 output.
+Never claim P2.12 PASS without final real Godot 4.7.2 output.
 
-## After P2.11 runtime green
+## After P2.12 runtime green
 
-Preferred order:
+Pause backend identity expansion and build the first **visible living sect** slice:
 
-1. P2.12 Physique;
-2. first visible living-sect map/building/disciple movement slice;
-3. injury/medical;
-4. loyalty + stipend/reward;
-5. sect rank/authority expansion;
-6. master-disciple/teaching;
-7. Destiny/awakening;
-8. active lifespan/aging/death/inheritance after pacing is proven.
+- compact sect map;
+- real buildings/destinations;
+- disciples physically move between work/rest/cultivation/sect gate;
+- state/action visible on the map;
+- simulation remains authoritative.
 
-Do not keep stacking backend identity systems forever before returning to visible gameplay.
+Then continue injury/medical, loyalty/stipend, rank/authority, master-disciple, Destiny, and eventually active lifespan/death/inheritance after pacing is proven.
