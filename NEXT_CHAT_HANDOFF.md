@@ -16,7 +16,9 @@ Real Windows + Godot 4.7.2 cumulative gate is green through P2.6:
 - P2.5 Realtime Combat + Independent Skills: PASS
 - P2.6 Forge + Equipment Tycoon: LOCKED / PASS
 
-P2.6 final evidence included persistence diagnostic, forge/equipment contracts, equipment combat-stat consequence contracts and interaction scene smoke.
+P2.7 is now **IMPLEMENTED / AWAITING RUNTIME GATE**.
+
+Do not call P2.7 PASS until the real local cumulative gate succeeds.
 
 ## Read first
 
@@ -29,201 +31,180 @@ P2.6 final evidence included persistence diagnostic, forge/equipment contracts, 
 
 ## Core game identity
 
-The player is the sect master, not an invisible city-builder cursor.
-
-The player controls sect infrastructure, recruitment, policy, resource allocation, production and direct interventions when desired. Disciples should still feel like people who live inside the sect: they cultivate, work, hunt, recover, form relationships and make autonomous choices according to their own state.
-
-Direct control is allowed where it makes sense for a sect master, but routine micromanagement should not be mandatory.
-
-## Reference hierarchy now agreed
-
 Primary operating rhythm: **Evil Hunter Tycoon**.
 
-Use it for:
+The player is the Sect Master. Disciples should autonomously live, cultivate, work, hunt, recover, buy/use equipment and form stories. The player manages infrastructure, policy, production, assignments and preparation and may directly command a specific disciple when needed.
 
-- autonomous characters moving/living/fighting;
-- town/sect economy;
-- production/service facilities;
-- individual direct commands from the Chief/Sect Master;
-- hunt -> materials -> production -> character consumption/growth loop.
+Routine micromanagement must remain optional.
 
-Use the other games for narrower problems:
+Reference responsibilities:
 
-- **最强祖师** -> multidimensional disciple identity, traits/quirks, production professions and progression, low-combat disciples still useful;
-- **The Lost Village** -> work assignment, group/position preferences, work/cultivation/recovery scheduling and its micromanagement pitfalls;
-- **Amazing Cultivation Simulator** -> work priorities, schedule, mood/needs, inner-vs-outer opportunity cost, master-disciple effects, hall-master competence;
-- **鬼谷八荒** -> sect rank, elders, halls/departments, delegation and task authority;
-- **Sect Master / 宗门经理人** -> autonomous expedition -> warehouse -> production -> disciple build -> harder expedition and personal-spirit-stone economy;
-- **修仙家族模拟器** -> condition-based automatic workforce assignment, stipend/loyalty economy, master-disciple and inheritance hooks;
-- **我要当掌门** -> individual schedule and the rule that cultivation time must produce real progression;
-- **RimWorld / Oxygen Not Included** -> scalable work priorities, per-character/group templates and task sub-priority for 50-100 autonomous agents.
+- `最强祖师` -> multidimensional disciple value, traits/quirks and production specialization;
+- `The Lost Village` -> work priorities, groups and work/cultivation/recovery schedule;
+- `Amazing Cultivation Simulator` -> work priorities, schedule and later mentor/inner-disciple opportunity cost;
+- `鬼谷八荒` -> later sect rank/delegation/hall authority;
+- `Sect Master / 宗门经理人` -> expedition -> warehouse -> production -> disciple growth loop;
+- `修仙家族模拟器` -> later rule-based bulk assignment, stipend/loyalty and lineage ideas;
+- RimWorld/ONI -> scalable priority/template management.
 
-Do not copy fixed classes, gacha rarity logic, spreadsheet modifier bloat or grind structures just because a reference game has them.
+## P2.7 architecture implemented
 
-## Important observations from the user-provided 最强祖师 video
+P2.7 adds a separate workforce authority layer. Do not merge it into P1.5 `role_assignments`.
 
-The disciple profile visibly separates:
+Distinct concepts:
 
-- race, alignment, gender, lifespan, injury and loyalty;
-- six base dimensions: aptitude/constitution/fortune/intelligence/charisma/potential;
-- positive and negative traits/quirks, destiny and spiritual roots;
-- eight separate production proficiencies: cultivation/farming, alchemy, commerce, talismans, forging, formations, husbandry and spirit-gathering;
-- equipment;
-- cultivation techniques/skills;
-- artifacts;
-- destiny progression;
-- spiritual-root progression;
-- detailed combat stats.
+1. `sect_rank` — sect status schema;
+2. `profession_xp` / workforce specialization;
+3. `work_group_id` / production group;
+4. P1.5 combat/adventure team and role.
 
-Design lesson: disciple life, production, cultivation and combat are independent axes. Do not collapse them into one class or overall score.
+A disciple can be `Outer + Forging specialist + Forge Hall worker + Hunt-team member` simultaneously.
 
-## Architecture correction required before/inside P2.7
+## P2.7 runtime state
 
-P1.5 currently has `role_assignments` with `hunter / logistics / guard`.
+Per disciple:
 
-Do NOT add sect rank or production profession into this same semantic bucket.
+- comprehension;
+- profession XP;
+- profession traits;
+- personal work priorities;
+- work group;
+- work progress;
+- direct Sect Master command;
+- sect-rank schema.
 
-Must separate:
+Sect:
 
-1. `sect_rank` — outer / inner / core / deacon / elder / hall master / ...
-2. `profession_xp` and work specialization — forging / alchemy / herbalism / mining / logistics / ...
-3. `work_group` / department assignment — forge hall / herb garden / mining group / ...
-4. combat/adventure team + combat role — existing team behavior or future tactical role.
+- workforce feature flag;
+- work policy;
+- work groups;
+- forge support points;
+- workforce event count.
 
-A disciple can simultaneously be:
+Persistence is canonicalized in `DiscipleState` and `SectState` and uses SaveService v2 lossless floats.
 
-`Inner disciple + Forging specialist + Forge Hall member + Hunt-team member`.
+## P2.7 authority order
 
-## Seven-layer disciple model
+Current runtime arbitration:
 
-Future disciple state should conceptually separate:
-
-1. identity/living state — HP, stamina, injury, later age/lifespan/mood/loyalty;
-2. innate potential — personality, roots, later comprehension/constitution/fortune/charisma;
-3. learned history — realm, technique mastery, Sword/Body/Spell XP, combat skills, profession XP;
-4. traits/quirks — real behavioral/output consequences;
-5. organization — sect rank, work group, combat team/role;
-6. social identity — existing relationships/memories, later master-disciple/lineage;
-7. current authority/intent — emergency, direct Sect Master command, schedule, assignment priority, personal goal.
-
-## Authority order candidate
-
-Use one reusable arbitration order rather than hard-coding each profession into DecisionSystem:
-
-1. critical survival/emergency;
+1. survival emergency;
 2. direct Sect Master command;
-3. mandatory sect duty/event;
-4. schedule block;
-5. personal/group work priority;
-6. personal goal/personality;
-7. free autonomous fallback.
+3. schedule phase;
+4. personal/group work priority;
+5. existing GoalSystem/DecisionSystem autonomy.
 
-Direct commands are temporary overrides. They must complete/expire and return the disciple to autonomy.
+Mandatory event duty is deferred.
 
-## P2.7 design candidate
+## P2.7 schedule
 
-Working title:
+Deterministic 20-tick cycle with work/cultivation/recovery phases.
 
-**P2.7 — Disciple Life + Workforce + Sect Assignment**
+Policies:
 
-Do not reduce it to “add several jobs”. It must establish one reusable authority model for later alchemy, fields, warehouse, commerce, halls, elders and master-disciple systems.
+- balanced;
+- production_push;
+- cultivation_focus.
 
-Core model:
+This deliberately prevents an assigned worker from working forever and never cultivating/recovering.
 
-`personal aptitude + profession XP + work priorities + schedule + group assignment + direct Sect Master command + autonomous fallback`.
+## P2.7 direct commands
 
-### Suggested first vertical slice
+Persistent deterministic commands:
 
-- Mining task -> produces real Thanh Thiết into P2.6 forge storage.
-- Forging work -> creates a real deterministic effect on P2.6 production.
-- Repeated work -> profession XP -> measurable improved work efficiency.
-- Schedule -> work cannot permanently suppress cultivation/recovery.
-- Direct Sect Master command -> temporary override -> completion/expiry -> return to autonomy.
-- Group assignment -> scalable defaults for many disciples.
-- Personal override -> wins over group default.
-- Candidate generation -> weak fighter can still be rationally valuable because of comprehension/profession talent.
+- WORK_PROFESSION;
+- CULTIVATE;
+- HUNT_REGION;
+- RETURN_SECT;
+- REST;
+- HOLD_AT_SECT.
+
+Commands have issued/expiry ticks and target. Completed/expired commands return the disciple to autonomy.
+
+## P2.7 real profession loops
+
+Only two professions have active gameplay in the vertical slice.
+
+### Mining
+
+- produces real Thanh Thiết into P2.6 `forge_materials`;
+- raises mining XP;
+- profession level/comprehension/traits change work speed;
+- experienced miner can produce more yield than novice.
+
+### Forging
+
+- raises forging XP;
+- produces `forge_support_points`;
+- when workforce is enabled, `EquipmentSystem.craft()` consumes one point for +5% stat multiplier on the next real P2.6 craft;
+- P2.6 behavior is unchanged while workforce is disabled.
 
 ## Recruitment update
 
-Current recruitment mainly differentiates candidates by combat power + risk/spend/survival personality biases.
+P2.7 candidates now receive deterministic:
 
-P2.7 should add enough non-combat information that the user can rationally recruit a weak fighter because they are valuable to the sect.
+- comprehension;
+- 0-2 profession traits.
 
-Candidate preview target:
+This is the first step toward weak-combat but high-value production disciples. Do not add an overall score.
 
-- current combat potential;
-- personality;
-- spiritual root;
-- comprehension/learning aptitude;
-- 0-2 profession traits;
-- optional flaw/quirk.
+## Files
 
-Do not collapse this into one overall score.
+- `godot/src/simulation/workforce/workforce_system.gd`
+- `godot/src/simulation/core/p2_7_factory.gd`
+- `godot/src/simulation/state/disciple_state.gd`
+- `godot/src/simulation/state/candidate_state.gd`
+- `godot/src/simulation/state/sect_state.gd`
+- `godot/src/simulation/recruitment/recruitment_system.gd`
+- `godot/src/simulation/core/simulation_scheduler.gd`
+- `godot/src/simulation/equipment/equipment_system.gd`
+- `godot/tests/simulation/p2_7_persistence_diagnostic.gd`
+- `godot/tests/simulation/p2_7_workforce_test.gd`
+- `godot/src/presentation/p2_7_workforce.gd`
+- `godot/scenes/p2/p2_7_workforce.tscn`
+- `tools/godot/Verify-P2-7.ps1`
+- `Verify-P2-7.cmd`
+- `Sync-P2-7.cmd`
 
-## Future systems after workforce is stable
+## P2.7 gate intent
 
-Do NOT put these all into P2.7. They are research-backed candidates for later phases:
+The gate must prove:
 
-### Sect rank + contribution + promotion
+- P2.6 stays workforce-disabled;
+- same seed gives same workforce profiles;
+- mining produces real Thanh Thiết;
+- work raises profession XP;
+- experienced miner outperforms novice;
+- schedule contains work/cultivation/recovery;
+- direct Tông Chủ command overrides then releases control;
+- forging support changes a real P2.6 craft;
+- recruitment has deterministic non-combat aptitude;
+- exact save/load and continuation remain deterministic;
+- prior gates and invariants remain green;
+- P2.7 scene smoke passes.
 
-- outer / inner / core / deacon / elder / hall master;
-- contribution and privileges/duties;
-- promotion chosen by Sect Master.
+## Authoritative next command
 
-### Mood + loyalty + stipend economy
+```bat
+cd /d "E:\0.2. TongMonBaDao"
+git pull origin main
+Sync-P2-7.cmd
+```
 
-Strongly supported by ACS and 修仙家族模拟器.
+If it fails, fix the first failing gate and rerun the same cumulative command. Do not weaken exact tests.
 
-Potential internal loop:
+## Root launcher note
 
-`sect treasury -> stipend/reward -> disciple wallet -> sect shops/services -> sect treasury`.
+The new P2.7 root launchers exist. An attempted GitHub deletion of the old P2.6 root launcher pair was blocked by the tool safety layer, so do not assume the old pair is absent until verified/cleaned safely. The P2.7 pair is the authoritative pair going forward.
 
-This preserves internal money conservation while making rank/loyalty/economy meaningful.
+## Deferred after P2.7 vertical slice
 
-### Master-disciple + teaching
+Do not expand until P2.7 is runtime green:
 
-Supported by ACS and 修仙家族模拟器:
-
-- mentor improves cultivation;
-- same technique/path gives stronger bonus;
-- mentor may help breakthroughs and transmit knowledge;
-- teaching should consume mentor time.
-
-### Lifespan/death/inheritance
-
-Potentially very strong for generational stories, succession and training replacements, but only activate after pacing has been proven appropriate for this mobile/idle game.
-
-## Current systems to preserve
-
-- GoalSystem survival/personality layer.
-- DecisionSystem top-level arbitration concept.
-- P1.5 teams and leadership.
-- P1.6 recovery/resource pressure.
-- P2.1-P2.6 cultivation/build/equipment consequences.
-- all P2.6 persistence/determinism/economy contracts.
-
-## Systems to refactor/extend
-
-- `OrganizationSystem`: separate combat role from workforce group and sect rank.
-- `DecisionSystem`: do not add one hard-coded branch per profession; integrate a workforce/task authority layer.
-- `RecruitmentSystem`: add non-combat aptitude and profession-relevant traits.
-- add persistent deterministic direct-command state rather than implementing commands as UI-only side effects.
-- design priority/group APIs for bulk management from the start.
-
-## Anti-patterns to avoid
-
-- one overloaded `role` field;
-- fixed profession classes;
-- one overall/rarity score deciding disciple value;
-- assigned work that makes disciples work forever and never cultivate/recover;
-- adding 10+ professions before two professions have real consequences;
-- making player click each disciple for repetitive routine management;
-- decorative aptitude/trait labels without measurable effects;
-- AI replacing an active direct Sect Master order;
-- activating loyalty + lifespan + master-disciple + workforce in one phase and blowing scope.
-
-## Status
-
-P2.7 is **DESIGN CANDIDATE / NOT IMPLEMENTED**.
-
-Deep disciple research is now recorded in the repository. Future chats should read `docs/DISCIPLE_SYSTEM_DEEP_RESEARCH.md` before changing P2.7 scope.
+- elder/hall-master delegation AI;
+- salary/stipend + loyalty;
+- master-disciple system;
+- lifespan/death/succession;
+- marriage/dual cultivation;
+- active alchemy/herbalism/logistics loops;
+- full spatial production/pathfinding;
+- advanced equipment enhancement/reroll.
