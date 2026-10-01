@@ -40,7 +40,7 @@ func _verify_zoom_keeps_anchor_stable() -> bool:
     var anchor := Vector2(700.0, 350.0)
     var result := SectMapCamera.zoom_around_screen_point(Vector2.ZERO, 1.0, 1.2, anchor)
     var zoom := float(result["zoom"])
-    var position := Vector2(result["position"])
+    var position: Vector2 = result["position"]
     var world_anchor_before := anchor
     var world_anchor_after := (anchor - position) / zoom
     if world_anchor_before.distance_to(world_anchor_after) > 0.001:
@@ -62,7 +62,7 @@ func _verify_focus_centers_target() -> bool:
     var world_target := Vector2(700.0, 360.0)
     var result := SectMapCamera.focus_transform(world_target, SectMapCamera.FOCUS_ZOOM)
     var zoom := float(result["zoom"])
-    var position := Vector2(result["position"])
+    var position: Vector2 = result["position"]
     var screen_target := position + world_target * zoom
     var expected_center := SectMapCamera.VIEW_RECT.position + SectMapCamera.VIEW_RECT.size * 0.5
     if screen_target.distance_to(expected_center) > 0.001:
@@ -73,7 +73,8 @@ func _verify_reset_contract() -> bool:
     var result := SectMapCamera.reset_transform()
     if absf(float(result["zoom"]) - SectMapCamera.DEFAULT_ZOOM) > 0.000001:
         return _fail("P3.2 reset did not restore default zoom.")
-    if Vector2(result["position"]) != SectMapCamera.clamp_position(Vector2.ZERO, SectMapCamera.DEFAULT_ZOOM):
+    var reset_position: Vector2 = result["position"]
+    if reset_position != SectMapCamera.clamp_position(Vector2.ZERO, SectMapCamera.DEFAULT_ZOOM):
         return _fail("P3.2 reset did not restore canonical map position.")
     return true
 
