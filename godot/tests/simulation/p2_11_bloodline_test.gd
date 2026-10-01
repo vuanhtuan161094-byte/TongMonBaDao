@@ -17,6 +17,8 @@ func _run() -> void:
         return
     if not _verify_awakening_consumes_real_resource_and_has_consequence():
         return
+    if not _verify_all_special_bloodlines_have_real_core_advantages():
+        return
     if not _verify_huyen_vu_defense():
         return
     if not _verify_phuong_hoang_recovery():
@@ -124,6 +126,33 @@ func _verify_awakening_consumes_real_resource_and_has_consequence() -> bool:
         return _fail("P2.11 awakened Chân Long has no real breakthrough consequence.")
     return true
 
+func _verify_all_special_bloodlines_have_real_core_advantages() -> bool:
+    var state := P211Factory.create_state(TEST_SEED + 50)
+    var system := BloodlineSystem.new()
+    var ids := [
+        BloodlineSystem.BLOODLINE_TRUE_DRAGON,
+        BloodlineSystem.BLOODLINE_PHOENIX,
+        BloodlineSystem.BLOODLINE_WHITE_TIGER,
+        BloodlineSystem.BLOODLINE_BLACK_TORTOISE,
+        BloodlineSystem.BLOODLINE_TAOTIE_REMNANT
+    ]
+    for index in range(ids.size()):
+        var actor := _probe_disciple("core_stats_%d" % index)
+        state.disciples[actor.id] = actor
+        _set_profile(state, actor.id, ids[index], 0.50, true, true, 0)
+        var stats := system.stat_profile(state, actor)
+        var attack := float(stats.get("combat_power_bonus", 0.0))
+        var defense := float(stats.get("damage_reduction_pct", 0.0))
+        if attack <= 0.0 and defense <= 0.0:
+            return _fail("P2.11 special bloodline %s has no real attack/defense advantage." % str(ids[index]))
+        var advantageous_axes := 0
+        for key in ["combat_power_bonus", "damage_reduction_pct", "cultivation_bonus_pct", "breakthrough_bonus_pct", "recovery_bonus_pct"]:
+            if float(stats.get(key, 0.0)) > 0.000001:
+                advantageous_axes += 1
+        if advantageous_axes < 2:
+            return _fail("P2.11 special bloodline %s has fewer than two real beneficial stat axes." % str(ids[index]))
+    return true
+
 func _verify_huyen_vu_defense() -> bool:
     var state := P211Factory.create_state(TEST_SEED + 6)
     var neutral := _probe_disciple("defense_neutral")
@@ -190,6 +219,8 @@ func _verify_taotie_tradeoff() -> bool:
     needs.apply_rest(state, taotie)
     if taotie.stamina - taotie_before <= neutral.stamina - neutral_before:
         return _fail("P2.11 Thao Thiết pays extra supplies but gets no recovery benefit.")
+    if BloodlineSystem.new().combat_power_bonus(state, taotie) <= 0.0:
+        return _fail("P2.11 Thao Thiết tradeoff exists but the bloodline has no core combat advantage.")
     return true
 
 func _verify_refinement_and_diminishing_returns() -> bool:
@@ -206,6 +237,7 @@ func _verify_refinement_and_diminishing_returns() -> bool:
     var system := BloodlineSystem.new()
     var low_before := system.purity(state, low.id)
     var high_before := system.purity(state, high.id)
+    var low_power_before := system.combat_power_bonus(state, low)
     var low_result := system.refine_bloodline(state, low.id)
     var high_result := system.refine_bloodline(state, high.id)
     if not bool(low_result.get("ok", false)) or not bool(high_result.get("ok", false)):
@@ -216,6 +248,8 @@ func _verify_refinement_and_diminishing_returns() -> bool:
         return _fail("P2.11 bloodline refinement did not increase purity.")
     if low_gain <= high_gain:
         return _fail("P2.11 bloodline refinement has no diminishing returns at high purity.")
+    if system.combat_power_bonus(state, low) <= low_power_before:
+        return _fail("P2.11 higher bloodline purity did not strengthen a real core stat.")
     return true
 
 func _verify_recruitment_profile_lifecycle() -> bool:
