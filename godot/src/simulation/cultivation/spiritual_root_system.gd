@@ -97,6 +97,16 @@ func quality_for_identity(base_seed: int, stable_id: String, salt: int = 0) -> S
             return quality
     return QUALITY_ORDINARY
 
+func quality_for_purity(purity: float) -> StringName:
+    var value := clampf(purity, 0.0, 1.0)
+    if value >= 0.82:
+        return QUALITY_HEAVEN
+    if value >= 0.65:
+        return QUALITY_EARTH
+    if value >= 0.48:
+        return QUALITY_ORDINARY
+    return QUALITY_MIXED
+
 func elements_for_identity(base_seed: int, stable_id: String, salt: int, quality: StringName) -> Array:
     var rng := GameRng.new(_element_seed(base_seed, stable_id, salt))
     var pool: Array = []
