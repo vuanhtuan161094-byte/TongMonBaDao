@@ -3,7 +3,7 @@ setlocal
 cd /d "%~dp0"
 
 echo ================================================
-echo   TONG MON BA DAO - P3.2 CAMERA VERIFICATION
+echo   TONG MON BA DAO - P3.2 INTERACTION VERIFY
 echo ================================================
 echo.
 
@@ -12,9 +12,9 @@ set "EXIT_CODE=%ERRORLEVEL%"
 
 echo.
 if "%EXIT_CODE%"=="0" (
-    echo P3.2 CAMERA GATE: PASS
+    echo P3.2 INTERACTION GATE: PASS
 ) else (
-    echo P3.2 CAMERA GATE: FAIL ^(exit %EXIT_CODE%^)
+    echo P3.2 INTERACTION GATE: FAIL ^(exit %EXIT_CODE%^)
 )
 
 echo.
