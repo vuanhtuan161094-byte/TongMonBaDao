@@ -81,10 +81,7 @@ function Resolve-QuickGodot([string]$Explicit, [string]$ExpectedVersion) {
         Write-Host "[Godot] Probing $candidate"
         $global:LASTEXITCODE = 0
         try {
-            # Keep this identical in spirit to the already-proven P0 resolver.
-            # On the user's Windows install the ProcessStartInfo-based --version
-            # probe can remain alive even though the same executable works for
-            # real headless gates. Direct invocation has already been proven.
+            # Same direct-invocation approach as the already proven P0 resolver.
             $output = @(& $candidate --version 2>&1)
             $exitCode = $LASTEXITCODE
             $version = ""
@@ -108,13 +105,30 @@ function Resolve-QuickGodot([string]$Explicit, [string]$ExpectedVersion) {
     throw "No working Godot $ExpectedVersion CLI found. Set GODOT_BIN only if auto-discovery still misses it.$details"
 }
 
-function Invoke-QuickGodot([string[]]$Args, [int]$TimeoutSeconds, [string]$Label) {
+function Quote-ProcessArgument([string]$Value) {
+    if ($Value -notmatch '[\s"]') { return $Value }
+    return '"' + ($Value -replace '(\\*)"', '$1$1\"' -replace '(\\+)$', '$1$1') + '"'
+}
+
+function Invoke-QuickGodot(
+    [string[]]$CommandArgs,
+    [int]$TimeoutSeconds,
+    [string]$Label
+) {
+    if ($null -eq $CommandArgs -or $CommandArgs.Count -eq 0) {
+        throw "$Label received no Godot command arguments."
+    }
+
+    $argumentLine = ($CommandArgs | ForEach-Object { Quote-ProcessArgument ([string]$_) }) -join ' '
+    if ([string]::IsNullOrWhiteSpace($argumentLine)) {
+        throw "$Label produced an empty Godot argument line."
+    }
+
+    Write-Host "[Godot command] $Godot $argumentLine"
+
     $psi = New-Object System.Diagnostics.ProcessStartInfo
-    $psi.FileName = $script:Godot
-    $psi.Arguments = (($Args | ForEach-Object {
-        $v = [string]$_
-        if ($v -match '[\s"]') { '"' + ($v -replace '"','\"') + '"' } else { $v }
-    }) -join ' ')
+    $psi.FileName = $Godot
+    $psi.Arguments = $argumentLine
     $psi.UseShellExecute = $false
     $psi.CreateNoWindow = $true
     $psi.RedirectStandardOutput = $true
@@ -127,10 +141,19 @@ function Invoke-QuickGodot([string[]]$Args, [int]$TimeoutSeconds, [string]$Label
         $stdout = $process.StandardOutput.ReadToEndAsync()
         $stderr = $process.StandardError.ReadToEndAsync()
         if (-not $process.WaitForExit($TimeoutSeconds * 1000)) {
-            if ($env:OS -eq "Windows_NT") { & taskkill.exe /PID $process.Id /T /F 2>$null | Out-Null } else { $process.Kill() }
+            Write-Host "[TIMEOUT] $Label exceeded ${TimeoutSeconds}s. Killing Godot process tree..."
+            if ($IsWindows -or $env:OS -eq "Windows_NT") {
+                & taskkill.exe /PID $process.Id /T /F 2>$null | Out-Null
+            } else {
+                $process.Kill()
+            }
             $process.WaitForExit()
+            $stdout.Wait(); $stderr.Wait()
+            if ($stdout.Result) { Write-Host $stdout.Result.TrimEnd() }
+            if ($stderr.Result) { Write-Host $stderr.Result.TrimEnd() }
             throw "$Label timed out after ${TimeoutSeconds}s."
         }
+        $process.WaitForExit()
         $stdout.Wait(); $stderr.Wait()
         if ($stdout.Result) { Write-Host $stdout.Result.TrimEnd() }
         if ($stderr.Result) { Write-Host $stderr.Result.TrimEnd() }
@@ -147,15 +170,15 @@ Write-Host "[Godot] $($resolvedGodot.Version)"
 Write-Host "[Godot] $Godot"
 
 Write-Host "[1/4] Importing new/changed Stage A assets"
-Invoke-QuickGodot @("--headless", "--path", $Project, "--import") 120 "Stage A import"
+Invoke-QuickGodot -CommandArgs @("--headless", "--path", $Project, "--import") -TimeoutSeconds 120 -Label "Stage A import"
 
 Write-Host "[2/4] Character Creator shared-rig contract"
-Invoke-QuickGodot @("--headless", "--path", $Project, "-s", "res://tests/presentation/p3_2_modular_actor_contract_test.gd") 120 "Character Creator shared-rig contract"
+Invoke-QuickGodot -CommandArgs @("--headless", "--path", $Project, "-s", "res://tests/presentation/p3_2_modular_actor_contract_test.gd") -TimeoutSeconds 120 -Label "Character Creator shared-rig contract"
 
 Write-Host "[3/4] Female Stage A down/front asset contract"
-Invoke-QuickGodot @("--headless", "--path", $Project, "-s", "res://tests/presentation/p3_2_female_stage_a_down_contract_test.gd") 120 "Female Stage A down asset contract"
+Invoke-QuickGodot -CommandArgs @("--headless", "--path", $Project, "-s", "res://tests/presentation/p3_2_female_stage_a_down_contract_test.gd") -TimeoutSeconds 120 -Label "Female Stage A down asset contract"
 
 Write-Host "[4/4] Female Stage A down/front sandbox smoke"
-Invoke-QuickGodot @("--headless", "--path", $Project, "--quit-after", "120", "res://scenes/p3/p3_2_female_stage_a_down_sandbox.tscn") 90 "Female Stage A down sandbox smoke"
+Invoke-QuickGodot -CommandArgs @("--headless", "--path", $Project, "--quit-after", "120", "res://scenes/p3/p3_2_female_stage_a_down_sandbox.tscn") -TimeoutSeconds 90 -Label "Female Stage A down sandbox smoke"
 
 Write-Host "P3.2 FEMALE STAGE A FAST CHECK: PASS"
