@@ -414,14 +414,14 @@ func _open_disciple_tab(tab_name: String) -> void:
         _add_tab_action_button(panel, "Tôi thể", Vector2(26, 450), "physique_temper")
         _add_tab_action_button(panel, "Cải thể", Vector2(148, 450), "physique_transform")
 
-    var tab_names := ["Thuộc tính", "Công pháp", "Trang bị", "Huyết Mạch", "Thể Chất", "Quan hệ"]
+    var tab_names: Array[String] = ["Thuộc tính", "Công pháp", "Trang bị", "Huyết Mạch", "Thể Chất", "Quan hệ"]
     for index in range(tab_names.size()):
         var tab := Button.new()
         tab.text = tab_names[index]
         tab.position = Vector2(300 + index * 122, 486)
         tab.size = Vector2(114, 36)
         tab.add_theme_font_size_override("font_size", 12)
-        var active := tab_names[index] == tab_name
+        var active: bool = tab_names[index] == tab_name
         tab.add_theme_stylebox_override("normal", _style(Color(0.97, 0.88, 0.64, 1.0) if active else Color(0.88, 0.82, 0.67, 1.0), GOLD if active else Color(0.45, 0.37, 0.25, 1.0), 2 if active else 1, 6))
         tab.pressed.connect(Callable(self, "_open_disciple_tab").bind(str(tab_names[index])))
         panel.add_child(tab)
