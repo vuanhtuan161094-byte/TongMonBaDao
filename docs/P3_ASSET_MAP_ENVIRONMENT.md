@@ -2,12 +2,19 @@
 
 Date: 2026-10-03
 Status: CANONICAL MAP-ENVIRONMENT CONTRACT
+Source availability: MIXED — HISTORICAL PATH PACK UNRECOVERED / OTHER SETS PRODUCTION PENDING
 
 ## 0. Phạm vi
 
 Authority cho terrain, đường, nước, cây, đá, bridge, deco, khoảng sân và cách ghép map quanh building.
 
-Đọc sau `P3_PRESENTATION_MASTER.md` trước mọi map mockup/generation.
+Đọc theo thứ tự:
+
+1. `P3_PRESENTATION_MASTER.md`;
+2. `P3_ART_BIBLE.md`;
+3. `P3_ASSET_REGISTRY.json`;
+4. `P3_SOURCE_RECOVERY_MANIFEST.md`;
+5. file này.
 
 ---
 
@@ -60,18 +67,22 @@ Không bake toàn bộ thành một background duy nhất nếu điều đó c�
 
 ---
 
-# 4. Existing production notes
+# 4. Source inventory hiện tại
 
-Pipeline trước đã chốt:
+Registry hiện tách bốn nhóm:
 
-- base terrain;
-- path overlay trong suốt;
-- water/stream;
-- 8 building;
-- deco;
-- character/FX.
+| Asset ID | Trạng thái source | Evidence class | Nghĩa |
+|---|---|---|---|
+| `environment.terrain_base` | missing | S4 | design đã khóa nhưng chưa xác nhận exact approved source |
+| `environment.path_grid128` | missing | S3 | từng có historical pack/atlas grid 128 nhưng exact bytes chưa phục hồi |
+| `environment.water_stream` | missing | S4 | production source chưa tồn tại/canonical |
+| `environment.deco_vegetation` | missing | S4 | production set chưa tồn tại/canonical |
 
-Một dirt-path pack từng được chuẩn bị theo grid 128 với nhiều PNG/atlas. Khi source binary được tập trung lại, phải đăng ký vào manifest thay vì regenerate từ đầu.
+Quy tắc:
+
+- `path_grid128` phải ưu tiên **phục hồi trước khi regenerate**;
+- terrain/water/deco là S4 nên có thể sản xuất mới sau plan + user approval;
+- không được gọi S4 là “asset thất lạc”; nó đơn giản là production chưa hoàn tất.
 
 ---
 
@@ -123,11 +134,17 @@ Mockup map production phải thể hiện tông môn đang vận hành:
 
 # 9. Status / next
 
-Current: environment style/pipeline đã có hướng duyệt nhưng asset binary chưa được tập trung thành một canonical pack trong GitHub.
+Current:
+
+- environment design contract: locked;
+- historical path pack: source recovery required (S3);
+- terrain/water/deco: production pending (S4);
+- exact runtime environment pack: chưa có.
 
 Next:
 
-1. inventory lại terrain/path/deco source đã duyệt;
-2. lập manifest file cụ thể;
-3. dùng chính source đó khi làm mockup/runtime map production;
-4. chỉ generate phần thiếu, không remake phần đã có.
+1. tìm lại historical grid-128 path pack nếu còn trong local/history;
+2. nếu phục hồi được, user xác nhận + ghi checksum/locator;
+3. với terrain/water/deco, trình plan rồi mới production;
+4. ingest approved masters vào `source_art/p3/environment/...` sau khi LFS workflow được Windows xác minh;
+5. runtime exports nằm dưới `godot/assets/p3/...`.
