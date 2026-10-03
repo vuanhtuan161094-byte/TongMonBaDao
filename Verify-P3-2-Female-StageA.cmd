@@ -9,8 +9,9 @@ echo.
 echo FAST P3.2 check only:
 echo - import changed Stage A assets
 echo - Character Creator shared-rig contract
-echo - Stage A asset contract
-echo - Stage A sandbox smoke
+echo - down/front regression contract
+echo - authored DOWN / RIGHT / UP asset contract
+echo - authored direction sandbox smoke
 echo.
 echo It does NOT rerun P0-P2.12 on every art/pivot iteration.
 echo Full cumulative verification is a separate final gate.
@@ -21,9 +22,9 @@ set "EXIT_CODE=%ERRORLEVEL%"
 
 echo.
 if "%EXIT_CODE%"=="0" (
-    echo FEMALE STAGE A DOWN FAST CHECK: PASS
+    echo FEMALE STAGE A 3-DIRECTION FAST CHECK: PASS
 ) else (
-    echo FEMALE STAGE A DOWN FAST CHECK: FAIL ^(exit %EXIT_CODE%^)
+    echo FEMALE STAGE A 3-DIRECTION FAST CHECK: FAIL ^(exit %EXIT_CODE%^)
 )
 
 echo.
