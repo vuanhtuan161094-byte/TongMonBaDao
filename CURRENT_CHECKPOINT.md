@@ -101,36 +101,33 @@ Current proof pack contains 14 registered runtime components:
 
 This is a pivot-lock diagnostic, not final polished character art.
 
-## Real failure observed on 2026-10-03
+## Real failures observed on 2026-10-03
 
-The first Windows Stage A run failed before asset verification because the old directly tracked binary ZIP was corrupted during text-only connector transport:
+1. Old directly tracked binary ZIP failed with `End of Central Directory record could not be found.` The following 14-missing-PNG error was only downstream of extraction failure, not a rig failure.
+2. The first sync launcher self-updated while running and produced stray CMD commands (`gin`, `]`). The launcher now bootstraps through a temporary copy before `git pull`.
+3. FAST verification then failed before tests because its first Godot resolver missed the already-proven Windows Godot install. The resolver now probes candidates with explicit version/exit diagnostics and includes the repository drive root.
+4. After the installer successfully reconstructed the Stage A PNGs, the next sync was blocked by `?? godot/assets/`. Those files are installer-generated runtime proof assets, so `.gitignore` now ignores only the exact Stage A generated PNG patterns, not the whole asset tree.
 
-```text
-End of Central Directory record could not be found.
-```
-
-Because extraction failed, the following Stage A test correctly reported all 14 PNGs missing. That missing-asset error was downstream of packaging; it was not evidence of a Godot rig failure.
-
-Stage A therefore remains **NOT PASS**.
+None of these failures reached or disproved the Stage A rig/asset contract itself. Stage A remains **NOT PASS** until the real FAST check runs green.
 
 ## Packaging fix
 
 Direct binary ZIP tracking through the text connector is retired.
 
-The runtime pack is now stored as verified Base64 text chunks under `tools/assets/`. The canonical ZIP represented by those chunks has SHA-256:
+The runtime pack is stored as verified Base64 text chunks under `tools/assets/`. The canonical ZIP represented by those chunks has SHA-256:
 
 `0c23ed5ee12cf5ec838e0a87b00f33122f6a196bd3812ecf96de2d99086fcc7c`
 
-`Install-P3-2-Female-StageA.cmd` now:
+`Install-P3-2-Female-StageA.cmd`:
 
 1. concatenates the tracked text chunks in fixed order;
 2. decodes them to a temporary ZIP;
 3. verifies the SHA-256 above;
 4. only then extracts the 14 PNGs;
-5. stops immediately if rebuild/checksum/extraction fails;
+5. stops immediately on rebuild/checksum/extraction failure;
 6. runs the FAST Stage A verifier after successful installation.
 
-The corrupted direct binary pack and obsolete intermediate pack files are no longer authoritative.
+The corrupted direct binary pack is no longer authoritative.
 
 ---
 
@@ -140,9 +137,7 @@ Normal art/pivot iteration must **not** rerun P0-P2.12 every time.
 
 ## FAST — normal Stage A iteration
 
-Use:
-
-`Verify-P3-2-Female-StageA.cmd`
+Use `Verify-P3-2-Female-StageA.cmd`.
 
 It runs only:
 
@@ -157,27 +152,31 @@ Expected final line:
 
 ## FULL — final acceptance only
 
-Use only after the real art/pivots look correct:
-
-`Verify-P3-2-Female-StageA-Full.cmd`
-
-That launcher reruns the full cumulative chain before the Stage A checks. Only this later final gate is allowed to lock Stage A as a regression-safe milestone.
+Use `Verify-P3-2-Female-StageA-Full.cmd` only after the real art/pivots look correct. It reruns the full cumulative chain before Stage A checks. Only this later final gate may lock Stage A as a regression-safe milestone.
 
 ---
 
 # Next authoritative Windows action
 
-From repo root run the same launcher again:
+Because the current local checkout was blocked by the newly generated untracked Stage A PNGs before it could fetch the new ignore rule, bootstrap once with:
+
+```bat
+cd /d "E:\0.2. TongMonBaDao"
+git pull --ff-only origin main
+git status --short
+```
+
+After the updated `.gitignore` arrives, the installer-generated Stage A PNGs should no longer appear as `?? godot/assets/`. If status is otherwise clean, run:
 
 ```bat
 Sync-P3-2-Female-StageA.cmd
 ```
 
-It now performs:
+It performs:
 
 `fetch/pull -> rebuild verified Stage A pack -> SHA-256 check -> extract 14 PNGs -> FAST P3.2 Stage A check`.
 
-There should be no P0-P2.12 cumulative spam in this normal FAST iteration.
+There should be no P0-P2.12 cumulative spam in normal FAST iteration.
 
 If it fails, fix the first real error only. Do not weaken tests.
 
