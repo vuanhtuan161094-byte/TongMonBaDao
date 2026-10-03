@@ -19,7 +19,8 @@ func _run() -> void:
     actor = ModularDiscipleActor.new()
     root.add_child(actor)
 
-    for direction in FemaleStageAAssetLoader.AUTHORED_DIRECTIONS:
+    for raw_direction in FemaleStageAAssetLoader.AUTHORED_DIRECTIONS:
+        var direction := StringName(raw_direction)
         var components := FemaleStageAAssetLoader.components_for_direction(direction)
         if components.size() != 14:
             _fail("Stage A %s component count must remain 14, got %d." % [str(direction), components.size()])
