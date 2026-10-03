@@ -105,8 +105,9 @@ This is a pivot-lock diagnostic, not final polished character art.
 
 1. Old directly tracked binary ZIP failed with `End of Central Directory record could not be found.` The following 14-missing-PNG error was only downstream of extraction failure, not a rig failure.
 2. The first sync launcher self-updated while running and produced stray CMD commands (`gin`, `]`). The launcher now bootstraps through a temporary copy before `git pull`.
-3. FAST verification then failed before tests because its first Godot resolver missed the already-proven Windows Godot install. The resolver now probes candidates with explicit version/exit diagnostics and includes the repository drive root.
-4. After the installer successfully reconstructed the Stage A PNGs, the next sync was blocked by `?? godot/assets/`. Those files are installer-generated runtime proof assets, so `.gitignore` now ignores only the exact Stage A generated PNG patterns, not the whole asset tree.
+3. FAST verification then failed before tests because its first Godot resolver missed the already-proven Windows Godot install. Resolver now uses the same direct `--version` invocation style as the proven P0 gate and includes the repository drive root.
+4. After the installer successfully reconstructed the Stage A PNGs, a later sync was blocked by `?? godot/assets/`. `.gitignore` now ignores only the exact installer-generated Stage A PNG patterns, not the whole asset tree.
+5. The first FAST run that successfully resolved Godot reached `[1/4] Importing new/changed Stage A assets`, but Godot opened interactively and appeared to hang. Static review found the FAST process wrapper used a parameter named `$Args` and positional array binding. `$args` is a PowerShell automatic variable and this wrapper differed from the already-proven P0 invocation pattern. The wrapper is now replaced by the P0-style `CommandArgs` pattern with named parameters and explicit command logging before every Godot launch.
 
 None of these failures reached or disproved the Stage A rig/asset contract itself. Stage A remains **NOT PASS** until the real FAST check runs green.
 
@@ -158,23 +159,20 @@ Use `Verify-P3-2-Female-StageA-Full.cmd` only after the real art/pivots look cor
 
 # Next authoritative Windows action
 
-Because the current local checkout was blocked by the newly generated untracked Stage A PNGs before it could fetch the new ignore rule, bootstrap once with:
+Close any Godot window/process left from the failed interactive import attempt. Then run:
 
 ```bat
 cd /d "E:\0.2. TongMonBaDao"
-git pull --ff-only origin main
-git status --short
-```
-
-After the updated `.gitignore` arrives, the installer-generated Stage A PNGs should no longer appear as `?? godot/assets/`. If status is otherwise clean, run:
-
-```bat
 Sync-P3-2-Female-StageA.cmd
 ```
 
-It performs:
+The sync launcher pulls the latest FAST wrapper automatically. The next run should print the exact command before import, for example:
 
-`fetch/pull -> rebuild verified Stage A pack -> SHA-256 check -> extract 14 PNGs -> FAST P3.2 Stage A check`.
+```text
+[Godot command] E:\Godot_v4.7.2-stable_win64_console.exe --headless --path "E:\0.2. TongMonBaDao\godot" --import
+```
+
+If that exact headless command still opens an editor window or does not exit, preserve/send the command line plus the first subsequent output; do not wait indefinitely. The wrapper has a 120-second timeout and kills its spawned process tree on timeout.
 
 There should be no P0-P2.12 cumulative spam in normal FAST iteration.
 
