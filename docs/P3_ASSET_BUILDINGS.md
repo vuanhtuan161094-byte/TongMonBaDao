@@ -2,12 +2,19 @@
 
 Date: 2026-10-03
 Status: CANONICAL BUILDING ART CONTRACT
+Source availability: VISUAL APPROVED / EXACT SOURCE BYTES NOT YET RECOVERED
 
 ## 0. Phạm vi
 
 File này là authority presentation cho **toàn bộ công trình nhìn thấy trên map Tông Môn**.
 
-Trước mọi mockup/map art/building generation phải đọc file này sau `P3_PRESENTATION_MASTER.md`.
+Trước mọi mockup/map art/building generation phải đọc:
+
+1. `P3_PRESENTATION_MASTER.md`;
+2. `P3_ART_BIBLE.md`;
+3. `P3_ASSET_REGISTRY.json`;
+4. `P3_SOURCE_RECOVERY_MANIFEST.md`;
+5. file này.
 
 Nếu mockup cần công trình đã có asset duyệt, **không được tự thiết kế lại công trình đó**.
 
@@ -47,13 +54,36 @@ Sau đó production tiếp tục chốt thêm:
 - Khu Khai Khoáng;
 - Tông Môn Đại Môn.
 
-Các ảnh duyệt này là **visual authority thực tế**, dù binary/reference image hiện chưa được track trực tiếp trong GitHub repo.
+Các ảnh duyệt này là **visual authority thực tế**.
 
-Khi công cụ tạo ảnh cho phép reference image, phải đưa asset đã duyệt tương ứng vào generation/edit request. Không thay bằng mô tả chữ nếu source image đang có sẵn trong conversation/library.
+Tuy nhiên, audit ngày 2026-10-03 xác nhận:
+
+- `source_art/` trong live repo chưa có building binary nào;
+- repo không có canonical building pack;
+- Library/conversation search hiện chưa phục hồi được exact bytes của 8 ảnh duyệt;
+- vì vậy 8 building được registry đánh dấu `source_status=missing`, `source_evidence_class=S3`.
+
+Điều này **không hủy visual approval**. Nó chỉ có nghĩa source bytes cần phục hồi.
+
+Không được generate một ảnh giống phong cách rồi đổi nhãn thành “source đã duyệt trước đây”.
 
 ---
 
-# 3. Style lock của building family
+# 3. Rule khi exact source chưa phục hồi
+
+Cho tới khi exact source được tìm lại:
+
+- mockup composition được phép dùng placeholder/silhouette/khối kiến trúc theo đúng identity và footprint contract;
+- nếu source ảnh đã duyệt xuất hiện lại trong conversation/library, phải dùng chính ảnh đó làm reference;
+- không redesign Đại Điện/Kho/Dược Phòng/... chỉ vì model có thể tạo bản đẹp khác;
+- không gọi generated lookalike là canonical historical source;
+- khi source thật được phục hồi, ghi filename/path + SHA-256 vào registry/recovery manifest trước khi ingest.
+
+Recovery priority của 8 building là **P0 trước Mockup V3 production**.
+
+---
+
+# 4. Style lock của building family
 
 Bắt buộc giữ:
 
@@ -75,7 +105,7 @@ Tất cả building phải nhìn như **cùng một game, cùng một artist fam
 
 ---
 
-# 4. Registration / footprint consistency
+# 5. Registration / footprint consistency
 
 Khi làm hoặc sửa asset:
 
@@ -87,11 +117,11 @@ Khi làm hoặc sửa asset:
 - không đổi perspective từng building;
 - building quan trọng có thể lớn hơn nhưng không được phá tỷ lệ thế giới.
 
-Nếu mockup chỉ cần composition, phải reuse footprint/silhouette hiện có thay vì generate palace mới.
+Nếu mockup chỉ cần composition, phải reuse footprint/silhouette authority thay vì generate palace mới.
 
 ---
 
-# 5. Identity từng công trình
+# 6. Identity từng công trình
 
 ## Tông Môn Đại Điện
 
@@ -145,7 +175,7 @@ Nếu mockup chỉ cần composition, phải reuse footprint/silhouette hiện c
 
 ---
 
-# 6. Building states cần production
+# 7. Building states cần production
 
 Mỗi building về lâu dài cần:
 
@@ -160,7 +190,7 @@ Selected state không được thay toàn bộ hình building; ưu tiên glow/ou
 
 ---
 
-# 7. Mockup rule
+# 8. Mockup rule
 
 Khi dựng mockup UI/UX:
 
@@ -175,17 +205,19 @@ Mockup mới **không có quyền redesign** Đại Điện, Kho, Dược Phòng
 
 ---
 
-# 8. Status / next
+# 9. Status / next
 
-Status hiện tại:
+Current:
 
-- building visual family: **đã có asset/reference được user duyệt**;
-- GitHub: chưa có binary canonical pack đáng tin cậy;
-- MD này giữ visual contract cho tới khi approved building pack được đưa vào asset storage chính thức.
+- building visual family: **approved**;
+- exact canonical binary source: **not recovered**;
+- registry: 8 building = `S3 / missing source / visual approved`;
+- runtime integration: chưa làm.
 
-Next production step khi có source binary tập trung:
+Next:
 
-1. lập manifest `building_id -> approved source file`;
-2. chuẩn hóa tên file;
-3. kiểm cùng camera/scale/alpha;
-4. tạo selected/highlight/shadow/VFX states mà không redraw base tùy tiện.
+1. phục hồi exact source của 8 building nếu còn trong lịch sử/local machine;
+2. user xác nhận candidate source nếu cần;
+3. ghi checksum/locator;
+4. sau khi Windows xác minh LFS workflow, ingest source master vào `source_art/p3/buildings/...`;
+5. chuẩn hóa runtime export và states mà không redraw base tùy tiện.
