@@ -1,0 +1,41 @@
+name: P3 Presentation Audit
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'docs/P3_*.md'
+      - 'docs/P3_ASSET_REGISTRY.json'
+      - 'docs/decisions/**'
+      - 'source_art/**'
+      - 'tools/validate_p3_presentation.py'
+      - '.github/workflows/p3-presentation-audit.yml'
+  pull_request:
+    paths:
+      - 'docs/P3_*.md'
+      - 'docs/P3_ASSET_REGISTRY.json'
+      - 'docs/decisions/**'
+      - 'source_art/**'
+      - 'tools/validate_p3_presentation.py'
+      - '.github/workflows/p3-presentation-audit.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  presentation-audit:
+    name: P3 docs + asset registry integrity
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Python 3
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Validate P3 presentation authority and registry
+        run: python tools/validate_p3_presentation.py
