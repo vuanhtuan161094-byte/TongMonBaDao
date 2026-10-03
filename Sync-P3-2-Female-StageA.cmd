@@ -1,6 +1,34 @@
 @echo off
 setlocal EnableExtensions
-cd /d "%~dp0"
+
+rem Bootstrap through a temporary copy so git pull can safely update this launcher
+rem without changing the batch file that cmd.exe is currently reading.
+if /I "%~1"=="--temp-runner" goto :runner
+
+set "TEMP_RUNNER=%TEMP%\TongMonBaDao_Sync_P3_2_Female_StageA_%RANDOM%_%RANDOM%.cmd"
+copy /y "%~f0" "%TEMP_RUNNER%" >nul
+if errorlevel 1 (
+    echo [ERROR] Could not create temporary sync runner.
+    pause
+    exit /b 1
+)
+
+call "%TEMP_RUNNER%" --temp-runner "%~dp0"
+set "EXIT_CODE=%ERRORLEVEL%"
+del /q "%TEMP_RUNNER%" >nul 2>nul
+exit /b %EXIT_CODE%
+
+:runner
+set "REPO_ROOT=%~2"
+if not defined REPO_ROOT (
+    echo [ERROR] Repository root was not passed to temporary sync runner.
+    goto :fail
+)
+cd /d "%REPO_ROOT%"
+if errorlevel 1 (
+    echo [ERROR] Could not enter repository root: %REPO_ROOT%
+    goto :fail
+)
 
 echo ========================================================
 echo   TONG MON BA DAO - SYNC + FEMALE STAGE A FAST CHECK
@@ -43,7 +71,7 @@ git pull --ff-only origin main
 if errorlevel 1 goto :gitfail
 
 echo [3/3] Installing Stage A assets and running FAST P3.2 verification...
-call "%~dp0Install-P3-2-Female-StageA.cmd"
+call "%REPO_ROOT%Install-P3-2-Female-StageA.cmd"
 exit /b %ERRORLEVEL%
 
 :gitfail
