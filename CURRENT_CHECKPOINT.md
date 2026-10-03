@@ -4,7 +4,7 @@ Date: 2026-10-03
 
 ## Runtime-confirmed baseline
 
-Real Windows + Godot 4.7.2 cumulative evidence now confirms:
+Real Windows + Godot 4.7.2 cumulative evidence confirms:
 
 - P0-P2.12: PASS;
 - P3.1 mobile landscape + living sect shell: PASS;
@@ -25,7 +25,7 @@ CHARACTER CREATOR V1 SCAFFOLD GATE: PASS
 
 Do not reopen these locked runtime contracts without new regression evidence.
 
-Important distinction: the **Character Creator scaffold is runtime-green**, but the production character-art vertical slice is not done. No real female cutout set, shared idle/walk AnimationLibrary, tint-mask art proof or live-map integration has been accepted yet.
+Important distinction: the Character Creator scaffold is runtime-green; the production character-art vertical slice is not yet PASS.
 
 ---
 
@@ -76,6 +76,10 @@ Asset plan:
 
 `docs/P3_2_ASSET_MANIFEST.md`
 
+Female production contract:
+
+`docs/P3_2_FEMALE_NORMAL_V1_ASSET_PRODUCTION.md`
+
 Canonical direction:
 
 **modular appearance + shared 2D rig/animation**.
@@ -115,81 +119,105 @@ Architecture proven by the real gate:
 - mirror-safe left may reuse right playback while public facing remains left;
 - presentation actor does not mutate `DiscipleState`.
 
-Current scaffold files:
-
-- `godot/src/presentation/p3/disciple_actor_visual_catalog.gd`;
-- `godot/src/presentation/p3/modular_disciple_actor.gd`;
-- `godot/tests/presentation/p3_2_modular_actor_contract_test.gd`;
-- `tools/godot/Verify-P3-2-Character-Creator.ps1`;
-- `Verify-P3-2-Character-Creator.cmd`.
-
-`Verify-P3-2-Character-Creator.cmd` is now the authoritative Character Creator regression launcher: it reruns the cumulative P3.2 chain and then the shared-rig contract test.
-
 The modular rig is still deliberately **not wired into the live sect map**. Appearance persistence is also still not wired into locked `DiscipleState`/generator.
 
 ---
 
-# Character Creator production vertical slice — ACTIVE
+# female_normal_v1 production contract — LOCKED
 
-First production proof is **female_normal_v1 only**.
-
-Target minimum:
-
-- 1 body;
-- 2 faces;
-- 3 hairs;
-- 2 outfits;
-- 2 weapons;
-- 1 horn/head accessory;
-- several hair/outfit tint presets;
-- shared idle + walk, public 4 directions;
-- at least 6 visual combinations sharing the same rig and AnimationLibrary.
-
-Acceptance proof must show:
-
-- common foot registration;
-- no face/hair drift;
-- outfit limbs stay aligned to the rig;
-- weapon front/back works by direction;
-- tint masks do not color skin/face/metal accidentally;
-- mirror does not break z-order or handedness assumptions;
-- all six combinations share motion rather than duplicate animations;
-- actor remains readable at map zoom 0.75 / 1.0 / 1.35.
-
-Do not mass-produce art before this female proof is accepted.
-
-## female_normal_v1 asset production contract — LOCKED
-
-Detailed checklist + naming authority:
+Detailed naming/export authority:
 
 `docs/P3_2_FEMALE_NORMAL_V1_ASSET_PRODUCTION.md`
 
-The contract is based on the two user-supplied female reference images from 2026-10-03 and locks:
+Locked rules include:
 
-- mature-chibi style target and silhouette priorities;
-- authored runtime directions: `down`=front, `right`=side, `up`=back;
-- public `left` remains mirror-from-right for mirror-safe V1 variants;
-- every runtime cutout is full-canvas `128×128` PNG with foot registration `(64,104)` and no auto-crop;
+- `down` = authored front;
+- `right` = authored right-facing side;
+- `up` = authored back;
+- `left` = mirror from `right` while mirror-safe;
+- every runtime cutout is full-canvas `128×128` RGBA PNG;
+- foot registration remains `(64,104)`;
+- no auto-crop/recenter per piece;
 - runtime naming pattern `<variant>_<direction>_<piece>.png`;
-- tint-mask naming `<variant>_<direction>_<piece>_tint_mask.png`;
-- anatomical `l/r` means character-left/character-right, never screen-left/screen-right;
-- exact piece sets for `body_01`, `face_01..02`, `hair_01..03`, `outfit_01..02`, `horn_01`, `weapon_01..02`;
-- Stage A pivot-lock -> Stage B shared motion -> Stage C modular variants -> Stage D map-scale proof.
-
-The existing scaffold bone rest positions are still a starting point, not final art pivots. Exact practical pivots may be tuned only after Stage A real art is attached, while keeping bone IDs/hierarchy and the `(64,104)` registration contract stable.
+- anatomical `l/r` means character-left/character-right;
+- exact practical pivots may be tuned only from real art while keeping bone IDs/hierarchy and `(64,104)` stable.
 
 ---
 
-# Next development order
+# Stage A — DOWN/FRONT PIVOT-LOCK PACK
 
-1. execute **Stage A — Pivot-lock sample** from `docs/P3_2_FEMALE_NORMAL_V1_ASSET_PRODUCTION.md` using the approved two-image reference direction;
-2. create the baseline `body_01 + face_01 + hair_01 + outfit_01 + horn_01` master art for `down/right/up`;
-3. export full-canvas named cutouts and attach them to the existing shared rig;
-4. lock exact practical head/shoulder/hip/hand/foot pivots from the real art;
+Status: **ART PACK + ISOLATED LOADER/TEST/SANDBOX IMPLEMENTED / AWAITING REAL GODOT 4.7.2 GATE**.
+
+The approved turnaround was normalized to a real `128×128` down/front master with baseline `(64,104)`. A pivot-lock extraction pack was created from that master.
+
+Current Stage A down/front pack contains 14 runtime PNG components:
+
+- body: `head`, `torso`, `arm_l`, `arm_r`, `leg_l`, `leg_r`;
+- face: `face_01_down`;
+- hair: `hair_01_down_back`, `hair_01_down_front`;
+- outfit: `torso`, `arm_l`, `arm_r`, `skirt`;
+- head accessory: `horn_01_down`.
+
+All PNGs are `128×128` and share the same registration transform. The extraction composite covers about 98.8% of the approved master silhouette; this is a **pivot-lock proof diagnostic**, not a final-art quality claim.
+
+Tracked binary pack:
+
+`tools/assets/female_normal_v1_stageA_repo_pack.zip`
+
+The pack extracts into:
+
+`godot/assets/p3/character_creator/parts/female_normal_v1/...`
+
+New isolated Stage A files:
+
+- `godot/src/presentation/p3/female_stage_a_asset_loader.gd`;
+- `godot/tests/presentation/p3_2_female_stage_a_down_contract_test.gd`;
+- `godot/src/presentation/p3/female_stage_a_down_sandbox.gd`;
+- `godot/scenes/p3/p3_2_female_stage_a_down_sandbox.tscn`;
+- `tools/godot/Verify-P3-2-Female-StageA.ps1`;
+- `Verify-P3-2-Female-StageA.cmd`;
+- `Install-P3-2-Female-StageA.cmd`.
+
+The Stage A verifier is intentionally isolated and first reruns the already-green Character Creator cumulative chain. It then verifies all required PNGs exist, are exactly `128×128`, attach all 14 components to `ModularDiscipleActor`, replace placeholder mode, preserve down facing, and smoke-load the visual sandbox.
+
+No Stage A PASS may be claimed until the user's real Windows/Godot output says so.
+
+---
+
+# Next authoritative Windows action
+
+From:
+
+```bat
+cd /d "E:\0.2. TongMonBaDao"
+```
+
+first update local `main`, then run:
+
+```bat
+Install-P3-2-Female-StageA.cmd
+```
+
+The installer uses the tracked ZIP under `tools\assets`, extracts the 14 PNGs into the correct `godot/assets/...` tree, then automatically runs:
+
+```bat
+Verify-P3-2-Female-StageA.cmd
+```
+
+If the gate fails, fix the **first real parser/import/runtime/assertion failure only**. Do not weaken tests.
+
+---
+
+# Development order after Stage A down gate is green
+
+1. inspect the real down/front sandbox at zoom `0.75 / 1.0 / 1.35`;
+2. tune practical bone rest positions only where the real art proves misalignment;
+3. lock the down/front pivots;
+4. repeat the same registered asset process for authored `right` and `up` views;
 5. author the shared idle + walk `AnimationLibrary`;
 6. add `face_02`, `hair_02/03`, `outfit_02`, `weapon_01/02` and tint masks;
 7. create a sandbox proving at least 6 combinations on the same shared rig;
-8. run a real Godot gate for that visual slice;
+8. run a real Godot visual-slice gate;
 9. only then integrate `ModularDiscipleActor` into the live sect map;
 10. add backward-compatible `appearance_profile` persistence with no P2.8 RNG-stream change;
 11. only then expand to `male_normal_v1`, more actions and larger asset volume.
