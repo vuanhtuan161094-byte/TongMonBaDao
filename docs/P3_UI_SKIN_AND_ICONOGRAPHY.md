@@ -2,10 +2,19 @@
 
 Date: 2026-10-03
 Status: CANONICAL VISUAL UI CONTRACT
+Source availability: V3 MOOD APPROVED / EXACT V3 IMAGE NOT INGESTED / PRODUCTION UI SET PENDING
 
 ## 0. Phạm vi
 
 Authority cho panel, frame, button, tab, resource chip, notification dot, icon family, typography mood và các lớp UI bám mép màn hình.
+
+Đọc theo thứ tự:
+
+1. `P3_PRESENTATION_MASTER.md`;
+2. `P3_ART_BIBLE.md`;
+3. `P3_ASSET_REGISTRY.json`;
+4. `P3_SOURCE_RECOVERY_MANIFEST.md`;
+5. file này.
 
 ---
 
@@ -29,7 +38,27 @@ User ngày 2026-10-03 thích asset/UI mood của mockup V3 hơn V1/V2: sáng, ha
 
 ---
 
-# 2. Panel hierarchy
+# 2. Source status hiện tại
+
+## `ui.main_map.v3_mood`
+
+- visual mood: **approved**;
+- exact generated image source: chưa được ingest vào repo/source_art và chưa có persistent locator xác minh;
+- registry: `source_status=missing`, `source_evidence_class=S3`;
+- vai trò: mood/layout reference, **không phải runtime UI pack**.
+
+Nếu exact V3 image được phục hồi, ghi locator/checksum trước khi ingest. Không generate một lookalike mới rồi gọi đó là “V3 cũ”.
+
+## `ui.skin.production_set`
+
+- design/style: approved;
+- exact production source: chưa sản xuất;
+- registry: `source_status=missing`, `source_evidence_class=S4`, `visual=pending`;
+- được phép sản xuất mới sau plan + user approval.
+
+---
+
+# 3. Panel hierarchy
 
 Các panel cần family thống nhất:
 
@@ -45,7 +74,7 @@ Không dùng 5 style border khác nhau trên cùng màn.
 
 ---
 
-# 3. Buttons
+# 4. Buttons
 
 Tối thiểu:
 
@@ -62,7 +91,7 @@ Primary action dùng cinnabar/amber warm accent; selected/navigation không đư
 
 ---
 
-# 4. Tabs
+# 5. Tabs
 
 - normal: parchment/jade muted;
 - selected: gold/ivory/highlight rõ;
@@ -74,7 +103,7 @@ Không nhồi 10 tab cùng hàng nếu width không đủ; cho scroll/paging.
 
 ---
 
-# 5. Resource chips
+# 6. Resource chips
 
 Top HUD resource chip:
 
@@ -86,7 +115,7 @@ Top HUD resource chip:
 
 ---
 
-# 6. Notification language
+# 7. Notification language
 
 Red dot chỉ cho:
 
@@ -100,7 +129,7 @@ World bubble dùng icon/action cue tách khỏi UI notification dot.
 
 ---
 
-# 7. Icon family
+# 8. Icon family
 
 Icon phải:
 
@@ -114,7 +143,7 @@ Không copy icon từ reference game.
 
 ---
 
-# 8. Text / typography behavior
+# 9. Text / typography behavior
 
 - tiêu đề ngắn, trọng lượng rõ;
 - body text không quá nhỏ;
@@ -125,7 +154,7 @@ Không copy icon từ reference game.
 
 ---
 
-# 9. Mockup generation rule
+# 10. Mockup generation rule
 
 Trước mỗi mockup mới:
 
@@ -133,13 +162,14 @@ Trước mỗi mockup mới:
 - vị trí HUD/task/nav;
 - số resource visible;
 - quick card hay deep overlay;
+- asset/reference nào là source thật, asset nào chỉ là S3 historical authority, asset nào là S4 production pending;
 - không để image model tự phát minh theme UI mới.
 
 Nếu mockup chỉ test layout, không cần redesign icon/panel đã có canon.
 
 ---
 
-# 10. Production checklist
+# 11. Production checklist
 
 Cần production assets cuối:
 
@@ -156,3 +186,5 @@ Cần production assets cuối:
 - tooltip;
 - scroll/rail;
 - bottom nav selected/unselected.
+
+Mỗi asset sau khi user duyệt phải được cập nhật vào registry và recovery/source manifest trước khi coi là canonical production source.
