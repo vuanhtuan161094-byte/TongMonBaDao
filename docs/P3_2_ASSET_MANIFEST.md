@@ -7,6 +7,8 @@ Mục tiêu: chuẩn bị đủ danh sách asset trước khi vẽ/generate đ�
 
 **Character actor rule mới nhất:** bỏ hướng sản xuất 6 bộ nhân vật hoàn chỉnh có animation riêng. Map actor dùng `Character Creator = modular appearance + shared 2D rig/animation` theo `P3_2_MODULAR_ACTOR_SPEC.md`.
 
+**Production checklist + naming contract chi tiết cho vertical slice nữ:** `docs/P3_2_FEMALE_NORMAL_V1_ASSET_PRODUCTION.md`. Tài liệu này là authority cho direction mapping, full-canvas export, piece IDs, file naming, tint-mask naming, mirror-safe rule và thứ tự Stage A→D của `female_normal_v1`.
+
 ---
 
 # 1. Map environment — batch A
