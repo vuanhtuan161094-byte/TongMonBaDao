@@ -2,8 +2,8 @@
 """Static validator for the P3 presentation authority/asset registry.
 
 No third-party dependencies. Intended to run locally and in GitHub Actions.
-This validator checks documentation/registry integrity only; it never claims
-Godot runtime PASS.
+This validator checks documentation/registry/source-evidence integrity only;
+it never claims Godot runtime PASS.
 """
 
 from __future__ import annotations
@@ -17,12 +17,16 @@ ROOT = Path(__file__).resolve().parents[1]
 REGISTRY_PATH = ROOT / "docs" / "P3_ASSET_REGISTRY.json"
 MASTER_PATH = ROOT / "docs" / "P3_PRESENTATION_MASTER.md"
 ART_BIBLE_PATH = ROOT / "docs" / "P3_ART_BIBLE.md"
+RECOVERY_PATH = ROOT / "docs" / "P3_SOURCE_RECOVERY_MANIFEST.md"
 
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9_.-]*$")
+SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
+SOURCE_EVIDENCE_CLASSES = {"S0", "S1", "S2", "S3", "S4"}
 
 REQUIRED_MASTER_REFS = (
     "P3_ART_BIBLE.md",
     "P3_ASSET_REGISTRY.json",
+    "P3_SOURCE_RECOVERY_MANIFEST.md",
     "P3_ASSET_BUILDINGS.md",
     "P3_ASSET_MAP_ENVIRONMENT.md",
     "P3_UX_MAIN_MAP.md",
@@ -37,6 +41,7 @@ REQUIRED_ASSET_KEYS = (
     "authority_doc",
     "design_status",
     "source_status",
+    "source_evidence_class",
     "visual_status",
     "runtime_status",
     "runtime_management",
@@ -67,6 +72,10 @@ def main() -> int:
 
     if registry.get("schema_version") != 1:
         fail("registry.schema_version must be 1", errors)
+
+    recovery_ref = registry.get("source_recovery_manifest")
+    if recovery_ref != "docs/P3_SOURCE_RECOVERY_MANIFEST.md":
+        fail("registry.source_recovery_manifest must point to docs/P3_SOURCE_RECOVERY_MANIFEST.md", errors)
 
     axes = registry.get("status_axes")
     if not isinstance(axes, dict):
@@ -131,6 +140,14 @@ def main() -> int:
                     errors,
                 )
 
+        evidence_class = asset.get("source_evidence_class")
+        if evidence_class not in SOURCE_EVIDENCE_CLASSES:
+            fail(
+                f"{prefix}.source_evidence_class={evidence_class!r} must be one of "
+                f"{sorted(SOURCE_EVIDENCE_CLASSES)!r}",
+                errors,
+            )
+
         visual_status = asset.get("visual_status")
         if visual_status == "approved":
             if not asset.get("approved_on"):
@@ -149,9 +166,6 @@ def main() -> int:
             fail(f"{prefix}.runtime_paths must be an array", errors)
             runtime_paths = []
 
-        # Only repo-managed runtime files are statically required to exist.
-        # External diagnostic packs are intentionally allowed while the current
-        # Character Creator proof is transported outside GitHub.
         if runtime_management == "repo" and runtime_status in {
             "runtime_green",
             "runtime_locked",
@@ -164,9 +178,35 @@ def main() -> int:
 
         source_status = asset.get("source_status")
         if source_status == "repo_source":
+            if evidence_class != "S0":
+                fail(f"{prefix} repo_source must use source evidence class S0", errors)
             source_path = asset.get("source_path")
             if not isinstance(source_path, str) or not rel_exists(source_path):
                 fail(f"{prefix} repo_source requires an existing source_path", errors)
+
+        elif source_status == "external_pack":
+            if evidence_class != "S1":
+                fail(f"{prefix} external_pack must use source evidence class S1", errors)
+            if not isinstance(asset.get("source_ref"), str) or not asset.get("source_ref"):
+                fail(f"{prefix} external_pack requires source_ref", errors)
+            source_size = asset.get("source_size_bytes")
+            if not isinstance(source_size, int) or source_size <= 0:
+                fail(f"{prefix} external_pack requires positive source_size_bytes", errors)
+            source_sha = asset.get("source_sha256")
+            if not isinstance(source_sha, str) or not SHA256_RE.fullmatch(source_sha):
+                fail(f"{prefix} external_pack requires lowercase 64-char source_sha256", errors)
+
+        elif source_status == "external_reference":
+            if evidence_class != "S2":
+                fail(f"{prefix} external_reference must use source evidence class S2", errors)
+            if not isinstance(asset.get("source_ref"), str) or not asset.get("source_ref"):
+                fail(f"{prefix} external_reference requires an exact persistent source_ref", errors)
+
+        elif source_status == "missing":
+            if evidence_class not in {"S3", "S4"}:
+                fail(f"{prefix} missing source must use S3 or S4 evidence class", errors)
+            if not isinstance(asset.get("recovery_action"), str) or not asset.get("recovery_action"):
+                fail(f"{prefix} missing source requires recovery_action", errors)
 
     if not MASTER_PATH.is_file():
         fail("missing docs/P3_PRESENTATION_MASTER.md", errors)
@@ -179,6 +219,9 @@ def main() -> int:
     if not ART_BIBLE_PATH.is_file():
         fail("missing docs/P3_ART_BIBLE.md", errors)
 
+    if not RECOVERY_PATH.is_file():
+        fail("missing docs/P3_SOURCE_RECOVERY_MANIFEST.md", errors)
+
     if errors:
         print("P3 PRESENTATION STATIC AUDIT: FAIL")
         for error in errors:
@@ -189,7 +232,7 @@ def main() -> int:
     print(f"assets={len(assets)} unique_ids={len(seen_ids)} categories={len(categories)}")
     for category in sorted(categories):
         print(f" - {category}: {categories[category]}")
-    print("NOTE: This is a docs/registry integrity check, not a Godot runtime gate.")
+    print("NOTE: This is a docs/registry/source-evidence check, not a Godot runtime gate.")
     return 0
 
 
