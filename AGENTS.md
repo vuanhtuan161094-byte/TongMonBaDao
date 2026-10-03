@@ -35,39 +35,47 @@ A rare/valuable feature must first have meaningful gameplay value. Flavor/humor/
 
 ## Runtime baseline
 
-Real Windows + Godot 4.7.2 evidence confirms **P0 through P2.12 PASS**.
+Real Windows + Godot 4.7.2 evidence confirms:
 
-P0-P2.12 are locked runtime-green baselines. Do not reopen them without new regression evidence.
+- P0-P2.12: PASS;
+- P3.1 landscape/living-sect shell: PASS;
+- P3.2 camera + map selection + real disciple tabs interaction slice: PASS;
+- P3.2 Character Creator V1 shared-rig scaffold: PASS.
 
-Latest confirmed final line:
+These are locked runtime-green baselines. Do not reopen them without new regression evidence.
 
-- `P2.12 GATE: PASS`
+Latest confirmed Character Creator tail includes:
+
+- `P3.2 CHARACTER CREATOR SHARED RIG CONTRACT TEST PASS`
+- `P3.2 CHARACTER CREATOR SCAFFOLD GATE: PASS`
+- `CHARACTER CREATOR V1 SCAFFOLD GATE: PASS`
+
+Important: scaffold PASS does **not** mean full P3.2 production art or the female visual vertical slice is complete.
 
 ## Active presentation work
 
-P3.1 and the current P3.2 interaction slice are implemented but **not yet runtime-confirmed on the user's Windows/Godot machine**.
+Current active task is the **female_normal_v1 production visual proof** on top of the runtime-green Character Creator scaffold.
 
-Never call either PASS before the cumulative local gate returns green.
+Regression launchers:
 
-Current authoritative launcher:
+- `Sync-P3-2-Camera.cmd` — locked P3.1/P3.2 interaction chain;
+- `Verify-P3-2-Character-Creator.cmd` — reruns the cumulative P3.2 chain, then the shared-rig Character Creator contract.
 
-- `Sync-P3-2-Camera.cmd`
-
-Despite the historical filename, this launcher now verifies both P3.2 map-camera interaction and integrated real disciple tabs.
-
-Read in this order:
+Read before P3/character work in this order:
 
 1. `CURRENT_CHECKPOINT.md`;
-2. `docs/P3_1_LANDSCAPE_SECT_SHELL_SPEC.md`;
-3. `docs/P3_2_UI_ART_PRODUCTION_SPEC.md`;
-4. live P3 code/tests;
-5. `docs/DISCIPLE_MASTER_SCHEMA.md` whenever character data/mechanics are touched.
+2. `NEXT_CHAT_HANDOFF.md`;
+3. `docs/DISCIPLE_MASTER_SCHEMA.md`;
+4. `docs/P3_2_MODULAR_ACTOR_SPEC.md`;
+5. `docs/P3_1_LANDSCAPE_SECT_SHELL_SPEC.md`;
+6. `docs/P3_2_UI_ART_PRODUCTION_SPEC.md`;
+7. live P3 code/tests.
 
 ## Required development loop
 
 read authority -> narrow scope -> patch -> static review -> cumulative headless tests -> scene smoke -> checkpoint
 
-If local Godot is unavailable, presentation code may continue cautiously, but do not claim runtime PASS. Avoid risky simulation rewrites while the presentation gate is unconfirmed.
+If local Godot is unavailable, presentation code may continue cautiously, but do not claim runtime PASS without real evidence. Never weaken tests to manufacture green.
 
 ## Core game identity
 
@@ -128,7 +136,7 @@ Action -> visible destination:
 - `HOLD` -> sân trung tâm;
 - `EVALUATE`, `IDLE` preserve the previous visible destination.
 
-## P3.2 interaction contract — current
+## P3.2 interaction contract — locked runtime green
 
 ### Camera
 
@@ -159,9 +167,7 @@ Disciple marker follows the actor's latest visible position, but camera must not
 
 ### Disciple tabs
 
-P3.2 tab buttons must expose real systems, not placeholder text.
-
-Current tabs:
+Current real-system tabs:
 
 - Thuộc tính;
 - Công pháp;
@@ -172,16 +178,50 @@ Current tabs:
 
 Rules:
 
-- hidden Bloodline must display `Chưa xác định` and never leak latent type/purity;
-- Bloodline buttons invoke real `BloodlineSystem` actions and real resource costs;
-- Physique buttons invoke real `PhysiqueSystem` actions and real resource costs;
+- hidden Bloodline displays `Chưa xác định` and never leaks latent type/purity;
+- Bloodline buttons invoke real `BloodlineSystem` actions and costs;
+- Physique buttons invoke real `PhysiqueSystem` actions and costs;
 - equipment display reads real item ownership/slot locks;
 - relationship display reads actual P1.3 state;
-- no tab may invent a parallel value just for presentation.
+- no tab invents parallel values for presentation.
+
+## Character Creator V1 contract — locked scaffold
+
+Canonical architecture is **modular appearance + shared 2D rig/animation**.
+
+Map actor and profile artwork are separate pipelines.
+
+Initial rig IDs:
+
+- `female_normal_v1`;
+- `male_normal_v1`.
+
+Canonical registration:
+
+- source canvas `128×128`;
+- source foot anchor `(64,104)`;
+- map display scale `0.68` at zoom 1.0;
+- actor box `88×92`.
+
+Canonical bones:
+
+`root, pelvis, torso, head, arm_l, arm_r, hand_weapon, leg_l, leg_r`.
+
+Canonical render layers:
+
+`shadow -> aura -> hair_back -> weapon_back -> body -> outfit -> face -> hair_front -> head_accessory -> weapon_front -> accessory`.
+
+One rig uses one `AnimationPlayer`/shared `AnimationLibrary` driving `Bone2D` transforms. Do not return to 11 synchronized `AnimatedSprite2D` timelines.
+
+Public directions remain `down/right/up/left`; mirror-safe left may reuse right playback without changing public facing.
+
+Appearance is presentation identity only. Existing disciple `sex_id` cannot be silently overridden. Appearance work must not mutate simulation state or alter P2.8 RNG consumption/order.
+
+The shared-rig scaffold is runtime-green, but it remains isolated from the live map until the production visual proof is accepted.
 
 ## Canonical disciple philosophy
 
-`docs/DISCIPLE_MASTER_SCHEMA.md` is authoritative for the complete character model.
+`docs/DISCIPLE_MASTER_SCHEMA.md` remains authoritative for the complete character model.
 
 Keep separate:
 
@@ -221,46 +261,15 @@ Bloodline + Physique and other logical stat sources are allowed to stack.
 
 Item gacha may grant/refine Bloodline/Physique/etc under explicit rules, but must never silently reroll or overwrite incompatible identity.
 
-## Current verification chain
+## Current next production order
 
-Use:
-
-- `Sync-P3-2-Camera.cmd`.
-
-It must rerun P0-P2.12 and P3.1 before P3.2.
-
-Current P3.2 checks include:
-
-- map camera math and clamp contracts;
-- active P3.2 main scene;
-- screen/world coordinate round-trip;
-- real scene instantiation;
-- real disciple tab data;
-- hidden Bloodline non-leak;
-- real Tôi thể resource/action path;
-- real Bloodline awakening resource/action path;
-- Công pháp/Trang bị/Quan hệ state reads;
-- P3.2 scene smoke.
-
-Expected successful tail:
-
-- `P3.1 LANDSCAPE SECT SHELL TEST PASS`
-- `P3.1 LANDSCAPE SECT SHELL GATE: PASS`
-- `P3.2 MAP CAMERA TEST PASS`
-- `P3.2 DISCIPLE UI INTEGRATION TEST PASS`
-- `P3.2 CAMERA + DISCIPLE UI GATE: PASS`
-- `P3.2 INTERACTION GATE: PASS`
-
-Do not claim P3.1/P3.2 PASS until real local output proves it.
-
-## After current interaction gate is green
-
-1. production art/animation/UI replacement while preserving current hierarchy and interactions;
-2. visible building production/assignment/upgrades;
-3. injury/medical;
-4. loyalty + stipend/reward;
-5. sect rank/authority;
-6. master-disciple/teaching;
-7. Destiny;
-8. item/transmission gacha;
-9. active lifespan/death/inheritance after pacing is proven.
+1. one real `female_normal_v1` reference sample on the locked 128×128 registration;
+2. lock practical rig pivots from that real art;
+3. shared idle + walk AnimationLibrary;
+4. first coarse cutout body/outfit + face/hair/weapon/horn;
+5. tint-mask shader/presets;
+6. sandbox with at least six combinations on one rig;
+7. real Godot visual-slice gate;
+8. integrate `ModularDiscipleActor` into live sect map;
+9. backward-compatible `appearance_profile` persistence;
+10. only then expand male rig, action set and asset volume.
