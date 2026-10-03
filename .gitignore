@@ -25,3 +25,25 @@
 /godot/assets/p3/character_creator/parts/female_normal_v1/head_accessory/horn_01/horn_01_down.png
 /godot/assets/p3/character_creator/parts/female_normal_v1/head_accessory/horn_01/horn_01_right.png
 /godot/assets/p3/character_creator/parts/female_normal_v1/head_accessory/horn_01/horn_01_up.png
+
+# Godot writes a .png.import sidecar beside each locally reconstructed Stage A
+# texture. These are generated import metadata for the same proof assets, not
+# source art. Ignore only the exact Stage A sidecar patterns as well.
+/godot/assets/p3/character_creator/parts/female_normal_v1/body/body_01/body_01_down_*.png.import
+/godot/assets/p3/character_creator/parts/female_normal_v1/body/body_01/body_01_right_*.png.import
+/godot/assets/p3/character_creator/parts/female_normal_v1/body/body_01/body_01_up_*.png.import
+/godot/assets/p3/character_creator/parts/female_normal_v1/face/face_01/face_01_down.png.import
+/godot/assets/p3/character_creator/parts/female_normal_v1/face/face_01/face_01_right.png.import
+/godot/assets/p3/character_creator/parts/female_normal_v1/face/face_01/face_01_up.png.import
+/godot/assets/p3/character_creator/parts/female_normal_v1/hair/hair_01/hair_01_down_back.png.import
+/godot/assets/p3/character_creator/parts/female_normal_v1/hair/hair_01/hair_01_down_front.png.import
+/godot/assets/p3/character_creator/parts/female_normal_v1/hair/hair_01/hair_01_right_back.png.import
+/godot/assets/p3/character_creator/parts/female_normal_v1/hair/hair_01/hair_01_right_front.png.import
+/godot/assets/p3/character_creator/parts/female_normal_v1/hair/hair_01/hair_01_up_back.png.import
+/godot/assets/p3/character_creator/parts/female_normal_v1/hair/hair_01/hair_01_up_front.png.import
+/godot/assets/p3/character_creator/parts/female_normal_v1/outfit/outfit_01/outfit_01_down_*.png.import
+/godot/assets/p3/character_creator/parts/female_normal_v1/outfit/outfit_01/outfit_01_right_*.png.import
+/godot/assets/p3/character_creator/parts/female_normal_v1/outfit/outfit_01/outfit_01_up_*.png.import
+/godot/assets/p3/character_creator/parts/female_normal_v1/head_accessory/horn_01/horn_01_down.png.import
+/godot/assets/p3/character_creator/parts/female_normal_v1/head_accessory/horn_01/horn_01_right.png.import
+/godot/assets/p3/character_creator/parts/female_normal_v1/head_accessory/horn_01/horn_01_up.png.import
