@@ -25,11 +25,15 @@ Godot: 4.7.2 stable.
 3. `NEXT_CHAT_HANDOFF.md`;
 4. `docs/DISCIPLE_MASTER_SCHEMA.md`;
 5. `docs/P3_PRESENTATION_MASTER.md` for any UI/UX/art/mockup task;
-6. relevant presentation item MD (`P3_ASSET_BUILDINGS.md`, `P3_ASSET_MAP_ENVIRONMENT.md`, `P3_UX_MAIN_MAP.md`, `P3_UX_DISCIPLE_SCREEN.md`, `P3_UI_SKIN_AND_ICONOGRAPHY.md`);
-7. `docs/P3_2_MODULAR_ACTOR_SPEC.md`;
-8. `docs/P3_2_FEMALE_NORMAL_V1_ASSET_PRODUCTION.md`;
-9. related P3 specs;
-10. live P3 code/tests.
+6. `docs/P3_ART_BIBLE.md`;
+7. `docs/P3_ASSET_REGISTRY.json`;
+8. relevant presentation item MD (`P3_ASSET_BUILDINGS.md`, `P3_ASSET_MAP_ENVIRONMENT.md`, `P3_UX_MAIN_MAP.md`, `P3_UX_DISCIPLE_SCREEN.md`, `P3_UI_SKIN_AND_ICONOGRAPHY.md`);
+9. `docs/P3_2_MODULAR_ACTOR_SPEC.md`;
+10. `docs/P3_2_FEMALE_NORMAL_V1_ASSET_PRODUCTION.md`;
+11. related P3 specs;
+12. live P3 code/tests.
+
+For a major long-lived pipeline/architecture change, also inspect `docs/decisions/` before changing direction.
 
 ## Presentation workflow — LOCKED 2026-10-03
 
@@ -38,17 +42,31 @@ User explicitly requires a **plan before every image generation/edit/mockup**. D
 Workflow:
 
 1. read `docs/P3_PRESENTATION_MASTER.md`;
-2. read the relevant item MD;
-3. inspect/reuse previously approved source assets;
-4. present a concise plan covering goal, composition, inherited approved assets, locked elements, allowed changes, dimensions/style and differences from previous version;
-5. generate only after user approves that plan;
-6. after user accepts a visual, update the item MD so the decision is recoverable from repo.
+2. read `docs/P3_ART_BIBLE.md`;
+3. read the relevant item MD;
+4. inspect `docs/P3_ASSET_REGISTRY.json` and reuse previously approved source assets;
+5. present a concise plan covering goal, composition, inherited approved assets, locked elements, allowed changes, dimensions/style and differences from previous version;
+6. generate only after user approves that plan;
+7. after user accepts a visual, update the item MD + registry so the decision/evidence is recoverable from repo.
 
 Existing approved building art must be treated as visual authority. The approved building family predates this handoff and includes Tông Môn Đại Điện, Phòng Ốc/Đệ Tử Xá, Luyện Khí Đường, Kho and later Tu Luyện Đài, Dược Phòng, Khu Khai Khoáng, Tông Môn Đại Môn. Style: hand-painted 2D mobile, light isometric/top-down, pastel/ink-wash, clear silhouettes, simple slightly cute forms, shared camera/scale/footprint. **Do not redesign these buildings in a new mockup just because the image model can invent alternatives.**
 
-The live GitHub repo does not currently contain a reliable tracked binary pack for those approved building images, so their approved status is recorded in `docs/P3_ASSET_BUILDINGS.md`; when source images are available in chat/library, use them directly as references. Do not silently substitute newly generated architecture.
+The live GitHub repo does not currently contain a reliable tracked binary pack for those approved building images, so their approved status is recorded in `docs/P3_ASSET_BUILDINGS.md` and `docs/P3_ASSET_REGISTRY.json`; when source images are available in chat/library, use them directly as references. Do not silently substitute newly generated architecture.
 
 User also prefers the brighter hand-painted/parchment mood of the 2026-10-03 V3 map mockup over the earlier darker/heavier mockups. This affects UI/map mood, not the identity of already-approved building assets.
+
+### Presentation static audit
+
+- `tools/validate_p3_presentation.py` checks registry/doc integrity only;
+- `.github/workflows/p3-presentation-audit.yml` runs it automatically when P3 docs/registry/source-art workflow changes;
+- static audit PASS is **never** a substitute for a real Godot runtime gate.
+
+### Decision records
+
+- `docs/decisions/0001-use-p3-presentation-authority-workflow.md` — accepted;
+- `docs/decisions/0002-adopt-git-lfs-for-production-art.md` — proposed only.
+
+Do not enable Git LFS for production art until the planned Windows verification is performed. `source_art/` is reserved as the future editable-master root outside `godot/` so Godot does not import source masters.
 
 ## Runtime-confirmed baseline
 
