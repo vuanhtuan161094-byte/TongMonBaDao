@@ -4,7 +4,7 @@ Date: 2026-10-03
 
 ## Runtime-confirmed baseline
 
-Real Windows + Godot 4.7.2 cumulative evidence confirms **P0 through P2.12 PASS**.
+Real Windows + Godot 4.7.2 cumulative evidence now confirms **P0 through P2.12 PASS, P3.1 PASS, and the P3.2 camera/map-selection/disciple-tabs interaction slice PASS**.
 
 Locked chain:
 
@@ -27,8 +27,25 @@ Locked chain:
 - P2.10 Spiritual Root Refinement + Mutation: LOCKED / PASS.
 - P2.11 Bloodline + Awakening + Purity: LOCKED / PASS.
 - P2.12 Physique + Grades + Tempering + Transformation: LOCKED / PASS.
+- P3.1 Mobile landscape + living sect shell: PASS.
+- P3.2 camera + map target selection + real disciple tabs interaction slice: PASS.
 
-Latest authoritative runtime evidence ended with the final `P2.12 GATE: PASS` chain. Do not reopen P0-P2.12 without new regression evidence.
+Latest authoritative real Windows/Godot evidence on 2026-10-03 ended with:
+
+```text
+P3.1 LANDSCAPE SECT SHELL TEST PASS
+P3.1 LANDSCAPE SECT SHELL GATE: PASS
+P3.2 MAP CAMERA TEST PASS
+P3.2 DISCIPLE UI INTEGRATION TEST PASS
+P3.2 CAMERA + DISCIPLE UI GATE: PASS
+P3.2 INTERACTION GATE: PASS
+```
+
+The parser fix immediately before this green run was commit `d5ee8e8148642738cfc9c03a7797ba67e829e80b` (`Fix P3.2 tab active type inference on Godot 4.7.2`).
+
+Do not reopen P0-P3.2 interaction contracts without new regression evidence.
+
+Important distinction: this confirms the **P3.2 interaction slice**, not the full production-art definition of done. Production buildings, environment art, UI skin and final map actors are still future work.
 
 ---
 
@@ -66,9 +83,9 @@ The player is the **Tông Chủ**. Disciples are autonomous people. Player influ
 
 # P3.1 — Mobile ngang + Tông Môn Sống V1
 
-Status: **IMPLEMENTED / AWAITING REAL GODOT 4.7.2 CUMULATIVE GATE**.
+Status: **RUNTIME PASS on real Windows Godot 4.7.2**.
 
-Implemented presentation base includes:
+Confirmed presentation base includes:
 
 - landscape shell;
 - real action -> visible map destination mapping;
@@ -77,19 +94,17 @@ Implemented presentation base includes:
 - quick Sect Master orders call real workforce systems;
 - no parallel gameplay engine.
 
-P3.1 is not yet runtime-confirmed on the user's current Windows gate run.
-
 ---
 
-# P3.2 — Camera + map selection + real disciple tabs
+# P3.2 interaction slice — Camera + map selection + real disciple tabs
 
-Status: **IMPLEMENTED / AWAITING REAL GODOT 4.7.2 CUMULATIVE GATE**.
+Status: **RUNTIME PASS on real Windows Godot 4.7.2**.
 
 Current main scene:
 
 `res://scenes/p3/p3_2_landscape_sect.tscn`
 
-Implemented:
+Runtime-green interaction includes:
 
 - map-only zoom/pan while HUD/popups remain fixed;
 - pinch zoom + one-finger pan;
@@ -102,17 +117,13 @@ Implemented:
 - Bloodline/Physique action buttons use real systems/resources;
 - hidden identity remains hidden where required.
 
-Authoritative pending launcher:
-
-`Sync-P3-2-Camera.cmd`
-
-Do **not** call P3.1/P3.2 PASS until real Windows/Godot output reaches the cumulative gate.
+`Sync-P3-2-Camera.cmd` remains the cumulative regression launcher for this locked interaction baseline.
 
 ---
 
 # CHARACTER CREATOR V1 + FEMALE NORMAL RIG V1
 
-Status: **DESIGN LOCKED + SAFE ISOLATED SCAFFOLD IMPLEMENTED / NOT YET RUN ON REAL GODOT**.
+Status: **DESIGN LOCKED + SAFE ISOLATED SCAFFOLD IMPLEMENTED / REAL CHARACTER CREATOR GATE STILL PENDING**.
 
 Canonical spec:
 
@@ -121,14 +132,6 @@ Canonical spec:
 Asset plan:
 
 `docs/P3_2_ASSET_MANIFEST.md`
-
-## New production direction
-
-Retired:
-
-- one complete spritesheet/video animation set per disciple;
-- six complete map-actor families with duplicated animations;
-- arbitrary Grok part-splitting before a rig contract exists.
 
 Canonical direction:
 
@@ -147,18 +150,10 @@ Map actor style:
 - low micro-detail;
 - avoid glossy AI hero-art.
 
-## Rig V1
-
 Initial rig IDs:
 
 - `female_normal_v1`;
 - `male_normal_v1`.
-
-Future only after proof:
-
-- `female_heavy_v1`;
-- `male_heavy_v1`;
-- special body types.
 
 Canonical source registration:
 
@@ -176,26 +171,9 @@ Canonical render layers back-to-front:
 
 `shadow -> aura -> hair_back -> weapon_back -> body -> outfit -> face -> hair_front -> head_accessory -> weapon_front -> accessory`.
 
-Body/Outfit are single creator choices but may internally use coarse cutouts for head/torso/arms/legs. Do not fragment creator choices into eyes/fingers/shoes.
+One rig uses one `AnimationPlayer`/shared `AnimationLibrary` driving `Bone2D` transforms. Public directions remain `down / right / up / left`; mirror-right-for-left is allowed when mirror-safe.
 
-## Shared animation
-
-One rig uses one `AnimationPlayer`/shared `AnimationLibrary` driving `Bone2D` transforms.
-
-Public directions remain:
-
-`down / right / up / left`.
-
-V1 may mirror right motion for left when mirror-safe. Public facing still stays `left`; asymmetric assets may later provide authored-left.
-
-Required first motion proof:
-
-- idle 4 public directions;
-- walk 4 public directions.
-
-Cultivate/work/combat/mining/forging/heal/rest follow only after the first rig proof.
-
-## Current scaffold files
+Current scaffold files:
 
 - `godot/src/presentation/p3/disciple_actor_visual_catalog.gd`;
 - `godot/src/presentation/p3/modular_disciple_actor.gd`;
@@ -203,53 +181,13 @@ Cultivate/work/combat/mining/forging/heal/rest follow only after the first rig p
 - `tools/godot/Verify-P3-2-Character-Creator.ps1`;
 - `Verify-P3-2-Character-Creator.cmd`.
 
-`ModularDiscipleActor` now scaffolds:
+The new rig is still deliberately **not wired into the live P3.2 map scene**. Its isolated runtime gate must go green first.
 
-- `Skeleton2D`;
-- canonical `Bone2D` hierarchy;
-- one `AnimationPlayer`;
-- deterministic default appearance profile from persisted identity;
-- left-mirror playback rule;
-- registered full-canvas texture attachment helpers;
-- safe placeholder behavior when production art is missing.
-
-The old synchronized `AnimatedSprite2D/SpriteFrames` layer architecture is retired for this scaffold.
-
-## Important isolation rule
-
-The new rig is deliberately **not yet wired into the live P3.2 map scene** and its test is not added to `Sync-P3-2-Camera.cmd`.
-
-Reason: P3.1/P3.2 camera/UI still await real runtime evidence. Do not destabilize that pending gate before seeing the actual Windows result.
-
-## Appearance persistence target
-
-Target schema is documented as `appearance_profile` containing:
-
-- schema version;
-- rig/body/face/hair/outfit/head accessory/weapon/accessory/aura IDs;
-- hair/outfit tint RGB hex.
-
-Rules:
-
-- appearance is presentation identity only;
-- default appearance may be derived deterministically from `profile_seed + sex_id`;
-- existing disciple `sex_id` cannot be silently overridden by cosmetic UI;
-- equipment visuals must eventually respect real equipped items/skin rules;
-- appearance must not affect combat/cultivation/economy state.
-
-Persistence is **not yet wired into locked DiscipleState/generator**. Add it only after real P3.2 + Character Creator parser/runtime checks, using a backward-compatible contract that does not consume or reorder the P2.8 RNG stream.
-
-## Tint rule
-
-Hair/outfit production uses base texture + tint mask/shader. Do not globally modulate multicolor art and accidentally tint skin/face/metal.
-
-## Weapon rule
-
-One weapon variant can use `back`, `front`, or split render passes attached to `hand_weapon`. Direction changes presentation only; it must never equip a fake gameplay item.
+Appearance persistence is also still deliberately **not wired into locked DiscipleState/generator**. When added, it must be backward-compatible and must not consume or reorder the P2.8 RNG stream.
 
 ---
 
-# Character Creator vertical slice
+# Character Creator vertical slice target
 
 First proof is **female_normal_v1 only**:
 
@@ -263,47 +201,34 @@ First proof is **female_normal_v1 only**:
 - shared idle + walk;
 - at least 6 combinations simultaneously using the same rig/AnimationLibrary.
 
-Acceptance proof:
-
-- common foot anchor;
-- no face/hair drift;
-- outfit limbs stay aligned;
-- weapon back/front works by direction;
-- tint does not color skin/face;
-- mirror does not break z-order;
-- all combinations share motion;
-- actor remains readable at map zoom 0.75 / 1.0 / 1.35.
+Acceptance proof checks common foot registration, hair/face alignment, outfit limb alignment, weapon front/back, tint masks, mirror behavior, shared motion and readability at map zoom 0.75 / 1.0 / 1.35.
 
 Do not mass-produce character art before this proof.
 
 ---
 
-# Next authoritative Windows order
+# Next authoritative Windows action
 
-First:
+Now that `Sync-P3-2-Camera.cmd` is green, run:
 
 ```bat
 cd /d "E:\0.2. TongMonBaDao"
-Sync-P3-2-Camera.cmd
-```
-
-If that cumulative P3.2 gate is green, then:
-
-```bat
 Verify-P3-2-Character-Creator.cmd
 ```
 
-The Character Creator verifier reruns the existing P3.2 cumulative chain first, then executes the isolated shared-rig contract test.
+This verifier intentionally reruns the existing P3.2 cumulative regression chain first, then executes:
 
-Do not claim PASS before real output.
+`res://tests/presentation/p3_2_modular_actor_contract_test.gd`
 
-If a gate fails: fix the **first real parser/diagnostic/assertion failure only**. Do not weaken tests.
+Do not call Character Creator V1 PASS until the real Windows output says so.
+
+If it fails: fix the **first real parser/diagnostic/assertion failure only**. Do not weaken tests.
 
 ---
 
-# Next development order after runtime green
+# Next development order after Character Creator runtime green
 
-1. resolve any real parser/runtime failure from the pending gates;
+1. resolve any real parser/runtime issue from the isolated Character Creator gate;
 2. use one real `female_normal_v1` art sample to lock exact pivot positions;
 3. author shared idle + walk `AnimationLibrary`;
 4. build first coarse cutout body/outfit bundle + face/hair/weapon/horn;
