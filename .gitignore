@@ -5,7 +5,7 @@
 /*DIAGNOSTIC*.txt
 
 # P3.2 female_normal_v1 Stage A runtime PNGs are reconstructed locally from
-# the tracked verified Base64 pack. Keep only these exact generated proof files
+# the validated diagnostic ZIP. Keep only these exact generated proof files
 # out of git status without hiding unrelated/future character art.
 /godot/assets/p3/character_creator/parts/female_normal_v1/body/body_01/body_01_down_*.png
 /godot/assets/p3/character_creator/parts/female_normal_v1/body/body_01/body_01_right_*.png
@@ -25,6 +25,10 @@
 /godot/assets/p3/character_creator/parts/female_normal_v1/head_accessory/horn_01/horn_01_down.png
 /godot/assets/p3/character_creator/parts/female_normal_v1/head_accessory/horn_01/horn_01_right.png
 /godot/assets/p3/character_creator/parts/female_normal_v1/head_accessory/horn_01/horn_01_up.png
+
+# Optional local copy of the validated diagnostic ZIP. The installer also finds
+# it automatically in Downloads/Desktop and checks SHA-256 before extraction.
+/female_normal_v1_stageA_runtime_pack_v2_quant*.zip
 
 # Godot writes a .png.import sidecar beside each locally reconstructed Stage A
 # texture. These are generated import metadata for the same proof assets, not
