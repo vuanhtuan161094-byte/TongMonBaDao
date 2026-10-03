@@ -189,9 +189,12 @@ static func normalize_appearance_profile(raw_profile: Variant, disciple: Discipl
         return normalized
     var raw: Dictionary = raw_profile
 
-    var requested_rig := StringName(raw.get("rig_id", normalized["rig_id"]))
-    if RIG_IDS.has(requested_rig):
-        normalized["rig_id"] = str(requested_rig)
+    # An existing disciple's canonical sex/body family is not a cosmetic override.
+    # Only creation flows without a DiscipleState may select another valid rig directly.
+    if disciple == null:
+        var requested_rig := StringName(raw.get("rig_id", normalized["rig_id"]))
+        if RIG_IDS.has(requested_rig):
+            normalized["rig_id"] = str(requested_rig)
 
     for key in ["body_id", "face_id", "hair_id", "outfit_id", "head_accessory_id", "weapon_id", "accessory_id", "aura_id"]:
         if raw.has(key):
@@ -262,7 +265,8 @@ static func _normalize_hex_color(value: String, fallback: String) -> String:
     var text := value.strip_edges().trim_prefix("#").to_lower()
     if text.length() != 6:
         return fallback
-    for character in text:
-        if not str(character) in "0123456789abcdef":
+    for index in range(text.length()):
+        var character := text.substr(index, 1)
+        if "0123456789abcdef".find(character) < 0:
             return fallback
     return text
