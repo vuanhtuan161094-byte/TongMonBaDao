@@ -8,9 +8,9 @@ Always fetch/inspect live `main` before editing.
 
 - Code directly through the GitHub connector.
 - Do not use Codex or Work.
-- Do not ask the user to repeat anything already in repo/spec/handoff.
-- Explain meaningful progress clearly in Vietnamese; user is non-technical.
-- Never claim a runtime phase PASS without real Godot 4.7.2 output from the user's Windows machine.
+- Do not ask the user to repeat repo/spec context.
+- Explain progress clearly in Vietnamese; user is non-technical.
+- Never claim runtime PASS without real Godot 4.7.2 output from the user's Windows machine.
 - Never use destructive local git instructions (`reset --hard`, `git clean`, deleting user files, etc.).
 
 Repo: `vuanhtuan161094-byte/TongMonBaDao`
@@ -18,7 +18,7 @@ Branch: `main`
 Local: `E:\0.2. TongMonBaDao`
 Godot: 4.7.2 stable console.
 
-## Required read order before character/P3 work
+## Required read order before P3/character work
 
 1. `AGENTS.md`;
 2. `CURRENT_CHECKPOINT.md`;
@@ -27,140 +27,146 @@ Godot: 4.7.2 stable console.
 5. `docs/P3_2_MODULAR_ACTOR_SPEC.md`;
 6. `docs/P3_2_FEMALE_NORMAL_V1_ASSET_PRODUCTION.md`;
 7. related P3 specs;
-8. then inspect live code/tests before editing.
+8. live code/tests.
 
 ## Runtime-confirmed baseline
 
 Real Windows + Godot 4.7.2 confirms:
 
 - P0-P2.12: PASS;
-- P3.1 landscape shell: PASS;
-- P3.2 camera + map target selection + real disciple tabs interaction slice: PASS;
-- P3.2 Character Creator V1 shared-rig scaffold: PASS.
+- P3.1: PASS;
+- P3.2 camera/map-selection/real disciple tabs interaction slice: PASS;
+- P3.2 Character Creator shared-rig scaffold: PASS.
 
-Authoritative Character Creator output ended with:
+Production `female_normal_v1` visual slice is **NOT PASS yet**.
 
-```text
-P3.2 MAP CAMERA TEST PASS
-P3.2 DISCIPLE UI INTEGRATION TEST PASS
-P3.2 CAMERA + DISCIPLE UI GATE: PASS
-P3.2 CHARACTER CREATOR SHARED RIG CONTRACT TEST PASS
-P3.2 CHARACTER CREATOR SCAFFOLD GATE: PASS
-CHARACTER CREATOR V1 SCAFFOLD GATE: PASS
-```
-
-Do not reopen those contracts without new regression evidence.
-
-The production visual slice is **not** PASS yet.
-
-## Character Creator V1 locked architecture
+## Character Creator locked architecture
 
 - modular appearance + shared 2D rig/animation;
-- map actor and profile portrait are separate pipelines;
 - source canvas `128×128`;
 - foot anchor `(64,104)`;
-- display scale `0.68` at map zoom 1.0;
+- map scale `0.68` at zoom 1.0;
 - bones: `root, pelvis, torso, head, arm_l, arm_r, hand_weapon, leg_l, leg_r`;
 - render order: `shadow -> aura -> hair_back -> weapon_back -> body -> outfit -> face -> hair_front -> head_accessory -> weapon_front -> accessory`;
 - one `Skeleton2D` + one shared `AnimationPlayer`/`AnimationLibrary`;
-- public directions `down/right/up/left`;
-- mirror-safe left may reuse right playback;
-- presentation must not mutate `DiscipleState` or P2.8 RNG.
+- directions `down/right/up/left`;
+- mirror-safe left may reuse right;
+- presentation may not mutate `DiscipleState` or P2.8 RNG.
 
-## Female production contract
-
-Authority:
-
-`docs/P3_2_FEMALE_NORMAL_V1_ASSET_PRODUCTION.md`
-
-Locked rules:
+Female runtime views:
 
 - `down` = front;
-- `right` = authored right-facing side;
+- `right` = right-facing side;
 - `up` = back;
-- `left` = mirror-right while mirror-safe;
-- every runtime cutout is full-canvas `128×128` RGBA PNG;
-- foot registration `(64,104)`;
-- no auto-crop/recenter;
-- anatomical `l/r` means the character's own left/right;
-- 3/4 views are design reference only, not runtime directions.
+- `left` = mirror-right while mirror-safe.
 
-## CURRENT ACTIVE STATE — Stage A down/front pivot-lock
+## Current active task — Stage A down/front pivot-lock
 
-A real down/front pivot-lock pack has now been produced from the approved turnaround, not from the discarded sheet-mockup workflow.
+14 registered runtime components exist conceptually for the proof:
 
-Tracked asset source pack:
+- body: head/torso/arm_l/arm_r/leg_l/leg_r;
+- face_01_down;
+- hair back/front;
+- outfit torso/arm_l/arm_r/skirt;
+- horn_01_down.
 
-`tools/assets/female_normal_v1_stageA_repo_pack.zip`
+The proof is diagnostic art for pivot-lock, not final polished production art.
 
-It contains 14 real `128×128` down/front runtime PNG components plus proof/manifest files. Runtime components are:
-
-- body: `head`, `torso`, `arm_l`, `arm_r`, `leg_l`, `leg_r`;
-- `face_01_down`;
-- `hair_01_down_back`, `hair_01_down_front`;
-- outfit: `torso`, `arm_l`, `arm_r`, `skirt`;
-- `horn_01_down`.
-
-The extraction composite covers about 98.8% of the approved master silhouette. This is a pivot-lock diagnostic, not a final polished-art claim. Hidden anatomy under costume is intentionally conservative until pivot proof is accepted.
-
-Isolated Stage A implementation on `main`:
+Relevant implementation:
 
 - `godot/src/presentation/p3/female_stage_a_asset_loader.gd`;
 - `godot/tests/presentation/p3_2_female_stage_a_down_contract_test.gd`;
 - `godot/src/presentation/p3/female_stage_a_down_sandbox.gd`;
 - `godot/scenes/p3/p3_2_female_stage_a_down_sandbox.tscn`;
-- `tools/godot/Verify-P3-2-Female-StageA.ps1`;
+- `Install-P3-2-Female-StageA.cmd`;
+- `Sync-P3-2-Female-StageA.cmd`;
 - `Verify-P3-2-Female-StageA.cmd`;
-- `Install-P3-2-Female-StageA.cmd`.
+- `Verify-P3-2-Female-StageA-Full.cmd`.
 
-The Stage A verifier is NOT part of the cumulative gate yet. It first reruns the already-green Character Creator cumulative verifier, then checks Stage A PNG existence/size/component attachment and sandbox smoke.
+The live sect map remains untouched.
 
-The live sect map is still untouched.
+## Important real failure + fix
 
-## NEXT WINDOWS ACTION
+First real Windows Stage A run failed during the old asset installer:
 
-At local repo root:
+`End of Central Directory record could not be found.`
 
-```bat
-cd /d "E:\0.2. TongMonBaDao"
-```
+Cause: a binary ZIP committed through the text-only GitHub connector was corrupted. The subsequent 14-missing-PNG error was only a consequence of extraction never occurring. It did not prove a rig/Godot failure.
 
-Update local `main`, then run:
+Stage A remains NOT PASS.
 
-```bat
-Install-P3-2-Female-StageA.cmd
-```
+Direct binary pack transport is retired.
 
-The installer reads the tracked pack from:
+The runtime ZIP is now represented by verified Base64 text chunks under `tools/assets/`. The chunks currently used by the installer were checked against the locally generated canonical Base64 using Git blob SHA values and match bit-for-bit. The decoded ZIP must additionally match SHA-256:
 
-`tools\assets\female_normal_v1_stageA_repo_pack.zip`
+`0c23ed5ee12cf5ec838e0a87b00f33122f6a196bd3812ecf96de2d99086fcc7c`
 
-It extracts into the correct `godot/assets/...` tree and automatically calls:
+Installer behavior:
+
+1. concatenate fixed text chunks;
+2. Base64-decode temporary ZIP;
+3. SHA-256 verify;
+4. extract 14 PNGs only if hash is exact;
+5. stop on any packaging error;
+6. run FAST Stage A verification.
+
+## Test scope policy — important
+
+User correctly questioned why an art iteration reran the whole project.
+
+Normal Stage A work is now **FAST P3.2 only**:
 
 `Verify-P3-2-Female-StageA.cmd`
 
-Expected final green lines, if no parser/import/pivot-contract issue appears:
+It runs:
 
-```text
-P3.2 FEMALE STAGE A DOWN ASSET CONTRACT TEST PASS
-P3.2 FEMALE STAGE A DOWN PIVOT-LOCK GATE: PASS
-FEMALE STAGE A DOWN PIVOT-LOCK GATE: PASS
+1. changed-asset import;
+2. P3.2 shared-rig contract;
+3. Stage A down/front asset contract;
+4. Stage A sandbox smoke.
+
+It does **not** rerun P0-P2.12 each time.
+
+Final regression acceptance is separate:
+
+`Verify-P3-2-Female-StageA-Full.cmd`
+
+Only use FULL after the visible art/pivots have been accepted. FULL reruns the cumulative chain first.
+
+## NEXT WINDOWS ACTION
+
+The user already has `Sync-P3-2-Female-StageA.cmd` locally. Run the same command again:
+
+```bat
+cd /d "E:\0.2. TongMonBaDao"
+Sync-P3-2-Female-StageA.cmd
 ```
 
-Do not claim Stage A PASS until the user's real Windows output shows it.
+The launcher will pull the fixed `main`, rebuild/check/install the asset pack, then run only the FAST P3.2 check.
 
-If it fails: fix the **first real parser/import/runtime/assertion failure only**. Never weaken tests.
+Expected fast green tail:
 
-## After Stage A down gate is green
+```text
+P3.2 CHARACTER CREATOR SHARED RIG CONTRACT TEST PASS
+P3.2 FEMALE STAGE A DOWN ASSET CONTRACT TEST PASS
+P3.2 FEMALE STAGE A FAST CHECK: PASS
+FEMALE STAGE A DOWN FAST CHECK: PASS
+```
 
-1. inspect real sandbox at zoom `0.75 / 1.0 / 1.35`;
-2. tune practical bone rest positions only where real art proves misalignment;
+Do not call Stage A final PASS from this fast check alone. After FAST green, visually inspect the sandbox/pivots first, then use the FULL cumulative gate when ready to lock the milestone.
+
+If any command fails, fix the first real error only; do not weaken tests.
+
+## After FAST green
+
+1. inspect down/front at zoom `0.75 / 1.0 / 1.35`;
+2. tune bone rest positions only if real art proves mismatch;
 3. lock down/front pivots;
-4. repeat registered asset production for authored `right` and `up`;
-5. author shared idle + walk `AnimationLibrary`;
+4. produce authored right/up views;
+5. shared idle + walk;
 6. add face/hair/outfit/weapon variants + tint masks;
-7. build six-combination sandbox;
-8. run real visual-slice gate;
-9. only then integrate `ModularDiscipleActor` into live map;
-10. add backward-compatible `appearance_profile` persistence;
-11. then expand male rig and art volume.
+7. six-combination same-rig proof;
+8. FULL cumulative visual-slice gate;
+9. only then live-map integration;
+10. appearance persistence;
+11. male rig/art expansion.
