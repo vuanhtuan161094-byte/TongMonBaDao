@@ -16,7 +16,7 @@ Always fetch/inspect live `main` before editing.
 Repo: `vuanhtuan161094-byte/TongMonBaDao`
 Branch: `main`
 Local: `E:\0.2. TongMonBaDao`
-Godot: 4.7.2 stable console.
+Godot: 4.7.2 stable.
 
 ## Required read order before P3/character work
 
@@ -27,7 +27,7 @@ Godot: 4.7.2 stable console.
 5. `docs/P3_2_MODULAR_ACTOR_SPEC.md`;
 6. `docs/P3_2_FEMALE_NORMAL_V1_ASSET_PRODUCTION.md`;
 7. related P3 specs;
-8. live code/tests.
+8. live P3 code/tests.
 
 ## Runtime-confirmed baseline
 
@@ -36,9 +36,19 @@ Real Windows + Godot 4.7.2 confirms:
 - P0-P2.12: PASS;
 - P3.1: PASS;
 - P3.2 camera/map-selection/real disciple tabs interaction slice: PASS;
-- P3.2 Character Creator shared-rig scaffold: PASS.
+- P3.2 Character Creator shared-rig scaffold: PASS;
+- P3.2 `female_normal_v1` Stage A FAST check: PASS.
 
-Production `female_normal_v1` visual slice is **NOT PASS yet**.
+Real FAST tail:
+
+```text
+P3.2 CHARACTER CREATOR SHARED RIG CONTRACT TEST PASS
+P3.2 FEMALE STAGE A DOWN ASSET CONTRACT TEST PASS
+P3.2 FEMALE STAGE A FAST CHECK: PASS
+FEMALE STAGE A DOWN FAST CHECK: PASS
+```
+
+Do **not** call the Stage A final milestone PASS yet. Visible pivot quality has not been accepted and FULL cumulative verification has not been run for the visual proof.
 
 ## Character Creator locked architecture
 
@@ -53,24 +63,15 @@ Production `female_normal_v1` visual slice is **NOT PASS yet**.
 - mirror-safe left may reuse right;
 - presentation may not mutate `DiscipleState` or P2.8 RNG.
 
-Female runtime views:
+## Current active task — Stage A down/front visual pivot review
 
-- `down` = front;
-- `right` = right-facing side;
-- `up` = back;
-- `left` = mirror-right while mirror-safe.
-
-## Current active task — Stage A down/front pivot-lock
-
-14 registered runtime components exist conceptually for the proof:
+The FAST-green proof contains 14 registered runtime components:
 
 - body: head/torso/arm_l/arm_r/leg_l/leg_r;
 - face_01_down;
 - hair back/front;
 - outfit torso/arm_l/arm_r/skirt;
 - horn_01_down.
-
-The proof is diagnostic art for pivot-lock, not final polished production art.
 
 Relevant implementation:
 
@@ -81,92 +82,42 @@ Relevant implementation:
 - `Install-P3-2-Female-StageA.cmd`;
 - `Sync-P3-2-Female-StageA.cmd`;
 - `Verify-P3-2-Female-StageA.cmd`;
-- `Verify-P3-2-Female-StageA-Full.cmd`.
+- `Verify-P3-2-Female-StageA-Full.cmd`;
+- `Preview-P3-2-Female-StageA.cmd`.
 
 The live sect map remains untouched.
 
-## Important real failure + fix
-
-First real Windows Stage A run failed during the old asset installer:
-
-`End of Central Directory record could not be found.`
-
-Cause: a binary ZIP committed through the text-only GitHub connector was corrupted. The subsequent 14-missing-PNG error was only a consequence of extraction never occurring. It did not prove a rig/Godot failure.
-
-Stage A remains NOT PASS.
-
-Direct binary pack transport is retired.
-
-The runtime ZIP is now represented by verified Base64 text chunks under `tools/assets/`. The chunks currently used by the installer were checked against the locally generated canonical Base64 using Git blob SHA values and match bit-for-bit. The decoded ZIP must additionally match SHA-256:
-
-`0c23ed5ee12cf5ec838e0a87b00f33122f6a196bd3812ecf96de2d99086fcc7c`
-
-Installer behavior:
-
-1. concatenate fixed text chunks;
-2. Base64-decode temporary ZIP;
-3. SHA-256 verify;
-4. extract 14 PNGs only if hash is exact;
-5. stop on any packaging error;
-6. run FAST Stage A verification.
-
-## Test scope policy — important
-
-User correctly questioned why an art iteration reran the whole project.
-
-Normal Stage A work is now **FAST P3.2 only**:
-
-`Verify-P3-2-Female-StageA.cmd`
-
-It runs:
-
-1. changed-asset import;
-2. P3.2 shared-rig contract;
-3. Stage A down/front asset contract;
-4. Stage A sandbox smoke.
-
-It does **not** rerun P0-P2.12 each time.
-
-Final regression acceptance is separate:
-
-`Verify-P3-2-Female-StageA-Full.cmd`
-
-Only use FULL after the visible art/pivots have been accepted. FULL reruns the cumulative chain first.
-
 ## NEXT WINDOWS ACTION
 
-The user already has `Sync-P3-2-Female-StageA.cmd` locally. Run the same command again:
+Pull the latest main through the normal sync launcher if needed, then close any other Godot window and run:
 
 ```bat
 cd /d "E:\0.2. TongMonBaDao"
-Sync-P3-2-Female-StageA.cmd
+Preview-P3-2-Female-StageA.cmd
 ```
 
-The launcher will pull the fixed `main`, rebuild/check/install the asset pack, then run only the FAST P3.2 check.
+The preview opens the same Stage A sandbox that already passed headless smoke and shows the down/front actor at `0.75x`, `1.00x`, `1.35x` simultaneously.
 
-Expected fast green tail:
+Ask the user to send a screenshot of that preview or describe visible defects. Review specifically:
 
-```text
-P3.2 CHARACTER CREATOR SHARED RIG CONTRACT TEST PASS
-P3.2 FEMALE STAGE A DOWN ASSET CONTRACT TEST PASS
-P3.2 FEMALE STAGE A FAST CHECK: PASS
-FEMALE STAGE A DOWN FAST CHECK: PASS
-```
+- head/face/hair/horn registration;
+- shoulder/arm attachment;
+- torso/outfit/skirt seams;
+- leg/foot coherence and common ground level;
+- silhouette/readability at 0.75x.
 
-Do not call Stage A final PASS from this fast check alone. After FAST green, visually inspect the sandbox/pivots first, then use the FULL cumulative gate when ready to lock the milestone.
+Do not adjust pivots from old estimates. Tune only where the real preview proves mismatch.
 
-If any command fails, fix the first real error only; do not weaken tests.
+## After visual review
 
-## After FAST green
-
-1. inspect down/front at zoom `0.75 / 1.0 / 1.35`;
-2. tune bone rest positions only if real art proves mismatch;
-3. lock down/front pivots;
-4. produce authored right/up views;
+1. fix only evidenced pivot/art registration issues;
+2. rerun FAST after any GDScript/pivot change;
+3. lock down/front pivots once visually accepted;
+4. produce authored `right` and `up` views;
 5. shared idle + walk;
 6. add face/hair/outfit/weapon variants + tint masks;
 7. six-combination same-rig proof;
-8. FULL cumulative visual-slice gate;
+8. run FULL cumulative visual-slice gate;
 9. only then live-map integration;
 10. appearance persistence;
 11. male rig/art expansion.
