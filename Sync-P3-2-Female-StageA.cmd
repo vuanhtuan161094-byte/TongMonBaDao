@@ -3,8 +3,8 @@ setlocal EnableExtensions
 cd /d "%~dp0"
 
 echo ========================================================
-echo   TONG MON BA DAO - SYNC + FEMALE STAGE A
- echo ========================================================
+echo   TONG MON BA DAO - SYNC + FEMALE STAGE A FAST CHECK
+echo ========================================================
 echo.
 
 where git >nul 2>nul
@@ -42,7 +42,7 @@ echo [2/3] Updating local main with fast-forward only...
 git pull --ff-only origin main
 if errorlevel 1 goto :gitfail
 
-echo [3/3] Installing tracked Stage A assets and running verification...
+echo [3/3] Installing Stage A assets and running FAST P3.2 verification...
 call "%~dp0Install-P3-2-Female-StageA.cmd"
 exit /b %ERRORLEVEL%
 
