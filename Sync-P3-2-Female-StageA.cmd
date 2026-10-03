@@ -53,12 +53,13 @@ if /I not "%BRANCH%"=="main" (
     goto :fail
 )
 
-rem Stage A proof PNGs are generated locally from the tracked verified Base64 pack.
-rem They are safe to overwrite/rebuild and must not deadlock sync before a newer
-rem .gitignore is pulled. Every other tracked/untracked change still blocks sync.
+rem Stage A proof PNGs and their Godot .png.import sidecars are generated locally
+rem from the tracked verified Base64 pack. They are safe to overwrite/rebuild and
+rem must not deadlock sync before a newer .gitignore is pulled. Every other
+rem tracked/untracked change still blocks sync.
 powershell.exe -NoProfile -ExecutionPolicy Bypass -Command ^
   "$lines=@(& git status --porcelain=v1 --untracked-files=all);" ^
-  "$allowed='^\?\? godot/assets/p3/character_creator/parts/female_normal_v1/(body/body_01/body_01_(down|right|up)_.+\.png|face/face_01/face_01_(down|right|up)\.png|hair/hair_01/hair_01_(down|right|up)_(back|front)\.png|outfit/outfit_01/outfit_01_(down|right|up)_.+\.png|head_accessory/horn_01/horn_01_(down|right|up)\.png)$';" ^
+  "$allowed='^\?\? godot/assets/p3/character_creator/parts/female_normal_v1/(body/body_01/body_01_(down|right|up)_.+\.png(?:\.import)?|face/face_01/face_01_(down|right|up)\.png(?:\.import)?|hair/hair_01/hair_01_(down|right|up)_(back|front)\.png(?:\.import)?|outfit/outfit_01/outfit_01_(down|right|up)_.+\.png(?:\.import)?|head_accessory/horn_01/horn_01_(down|right|up)\.png(?:\.import)?)$';" ^
   "$dirty=@($lines | Where-Object { $_ -notmatch $allowed });" ^
   "if($dirty.Count -gt 0){Write-Host '[STOP] Local changes detected. Sync was NOT performed to avoid overwriting your work.'; Write-Host ''; $dirty | ForEach-Object { Write-Host $_ }; exit 2}; exit 0"
 set "DIRTY_EXIT=%ERRORLEVEL%"
