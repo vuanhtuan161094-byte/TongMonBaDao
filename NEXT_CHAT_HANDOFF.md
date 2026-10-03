@@ -37,9 +37,9 @@ Real Windows + Godot 4.7.2 confirms:
 - P3.1: PASS;
 - P3.2 camera/map-selection/real disciple tabs interaction slice: PASS;
 - P3.2 Character Creator shared-rig scaffold: PASS;
-- P3.2 `female_normal_v1` Stage A FAST check: PASS.
+- `female_normal_v1` Stage A DOWN/FRONT FAST: PASS.
 
-Real FAST tail:
+Real down/front FAST tail:
 
 ```text
 P3.2 CHARACTER CREATOR SHARED RIG CONTRACT TEST PASS
@@ -48,76 +48,101 @@ P3.2 FEMALE STAGE A FAST CHECK: PASS
 FEMALE STAGE A DOWN FAST CHECK: PASS
 ```
 
-Do **not** call the Stage A final milestone PASS yet. Visible pivot quality has not been accepted and FULL cumulative verification has not been run for the visual proof.
+Stage A final milestone is still **NOT final PASS** because the new three-direction proof has not yet passed its Windows FAST gate/visual review and FULL cumulative acceptance remains later.
 
-## Character Creator locked architecture
+## Down/front visual review — accepted
 
-- modular appearance + shared 2D rig/animation;
-- source canvas `128×128`;
-- foot anchor `(64,104)`;
-- map scale `0.68` at zoom 1.0;
-- bones: `root, pelvis, torso, head, arm_l, arm_r, hand_weapon, leg_l, leg_r`;
-- render order: `shadow -> aura -> hair_back -> weapon_back -> body -> outfit -> face -> hair_front -> head_accessory -> weapon_front -> accessory`;
-- one `Skeleton2D` + one shared `AnimationPlayer`/`AnimationLibrary`;
-- directions `down/right/up/left`;
-- mirror-safe left may reuse right;
-- presentation may not mutate `DiscipleState` or P2.8 RNG.
+User supplied a real preview screenshot showing down/front at `0.75x`, `1.00x`, `1.35x`.
 
-## Current active task — Stage A down/front visual pivot review
+Accepted observations:
 
-The FAST-green proof contains 14 registered runtime components:
+- head/face/hair/horns coherent;
+- arms/shoulders do not split from torso;
+- no major outfit/skirt seam;
+- legs/feet share ground registration;
+- silhouette readable at 0.75x.
 
-- body: head/torso/arm_l/arm_r/leg_l/leg_r;
-- face_01_down;
-- hair back/front;
-- outfit torso/arm_l/arm_r/skirt;
-- horn_01_down.
+Dark hair + skirt merge somewhat at 0.75x, but this is future art contrast/simplification work, not a pivot defect.
+
+**No bone rest positions were changed. Down/front practical pivots are visually locked.**
+
+## Current active task — authored RIGHT + UP proof
+
+Stage A diagnostic assets now include the three authored directions:
+
+- `down` = front;
+- `right` = authored side;
+- `up` = authored back;
+- `left` remains mirror-right while mirror-safe.
+
+Each direction has 14 full-canvas `128×128` pieces, total **42 PNGs**. Foot anchor remains `(64,104)`.
+
+`up` face layer is intentionally transparent to prevent front-face leakage.
+
+New authoritative diagnostic runtime pack is four tracked Base64 chunks:
+
+- `female_normal_v1_stageA_v2q_01.b64`;
+- `female_normal_v1_stageA_v2q_02.b64`;
+- `female_normal_v1_stageA_v2q_03.b64`;
+- `female_normal_v1_stageA_v2q_04.b64`.
+
+Decoded ZIP SHA-256:
+
+`6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca`
+
+Local static inspection confirmed the ZIP contains exactly the 42 loader-expected paths. Real Windows installer SHA verification is still pending.
 
 Relevant implementation:
 
-- `godot/src/presentation/p3/female_stage_a_asset_loader.gd`;
-- `godot/tests/presentation/p3_2_female_stage_a_down_contract_test.gd`;
-- `godot/src/presentation/p3/female_stage_a_down_sandbox.gd`;
-- `godot/scenes/p3/p3_2_female_stage_a_down_sandbox.tscn`;
-- `Install-P3-2-Female-StageA.cmd`;
-- `Sync-P3-2-Female-StageA.cmd`;
-- `Verify-P3-2-Female-StageA.cmd`;
-- `Verify-P3-2-Female-StageA-Full.cmd`;
-- `Preview-P3-2-Female-StageA.cmd`.
+- `Install-P3-2-Female-StageA.cmd` — rebuilds 4 chunks, checks SHA, installs 42 PNGs;
+- `godot/src/presentation/p3/female_stage_a_asset_loader.gd` — down/right/up loaders;
+- `godot/tests/presentation/p3_2_female_stage_a_down_contract_test.gd` — locked down regression;
+- `godot/tests/presentation/p3_2_female_stage_a_directions_contract_test.gd` — 3-direction contract;
+- `godot/src/presentation/p3/female_stage_a_directions_sandbox.gd`;
+- `godot/scenes/p3/p3_2_female_stage_a_directions_sandbox.tscn`;
+- `Preview-P3-2-Female-Directions.cmd`;
+- `Verify-P3-2-Female-StageA.cmd` — 5-step P3.2-only FAST gate;
+- `Verify-P3-2-Female-StageA-Full.cmd` / PS1 — updated for directions, but do not run yet.
 
-The live sect map remains untouched.
+Live sect map remains untouched.
 
 ## NEXT WINDOWS ACTION
 
-Pull the latest main through the normal sync launcher if needed, then close any other Godot window and run:
+Close all Godot windows, then run:
 
 ```bat
 cd /d "E:\0.2. TongMonBaDao"
-Preview-P3-2-Female-StageA.cmd
+Sync-P3-2-Female-StageA.cmd
 ```
 
-The preview opens the same Stage A sandbox that already passed headless smoke and shows the down/front actor at `0.75x`, `1.00x`, `1.35x` simultaneously.
+Expected new green tail:
 
-Ask the user to send a screenshot of that preview or describe visible defects. Review specifically:
+```text
+P3.2 CHARACTER CREATOR SHARED RIG CONTRACT TEST PASS
+P3.2 FEMALE STAGE A DOWN ASSET CONTRACT TEST PASS
+P3.2 FEMALE STAGE A 3-DIRECTION ASSET CONTRACT TEST PASS
+P3.2 FEMALE STAGE A 3-DIRECTION FAST CHECK: PASS
+FEMALE STAGE A 3-DIRECTION FAST CHECK: PASS
+```
 
-- head/face/hair/horn registration;
-- shoulder/arm attachment;
-- torso/outfit/skirt seams;
-- leg/foot coherence and common ground level;
-- silhouette/readability at 0.75x.
+If FAST is green, run:
 
-Do not adjust pivots from old estimates. Tune only where the real preview proves mismatch.
+```bat
+Preview-P3-2-Female-Directions.cmd
+```
 
-## After visual review
+Ask for a screenshot. Inspect front/side/back consistency, head/horn/hair root, shoulder/hip position, common feet/ground, right-side identity, no face leak in back view, and readability at 0.75x.
 
-1. fix only evidenced pivot/art registration issues;
-2. rerun FAST after any GDScript/pivot change;
-3. lock down/front pivots once visually accepted;
-4. produce authored `right` and `up` views;
-5. shared idle + walk;
-6. add face/hair/outfit/weapon variants + tint masks;
-7. six-combination same-rig proof;
-8. run FULL cumulative visual-slice gate;
-9. only then live-map integration;
-10. appearance persistence;
-11. male rig/art expansion.
+Do not tune pivots unless the real preview proves a mismatch.
+
+## After three-direction visual acceptance
+
+1. lock down/right/up registration;
+2. shared idle + walk public 4 directions, left mirror-right while safe;
+3. add face/hair/outfit/weapon variants;
+4. tint masks/presets;
+5. six-combination same-rig proof;
+6. FULL cumulative visual-slice gate;
+7. only then live-map integration;
+8. appearance persistence;
+9. male rig/art expansion.
