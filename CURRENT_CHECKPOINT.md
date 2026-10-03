@@ -134,12 +134,39 @@ FEMALE STAGE A 3-DIRECTION FAST CHECK: PASS
 
 ---
 
+# Sync guard note — generated Stage A PNGs
+
+A real Windows attempt to run the new three-direction sync stopped before fetch with:
+
+```text
+[STOP] Local changes detected.
+?? godot/assets/
+```
+
+Cause: the local checkout still had an older `.gitignore`, while the installer-generated `right/up` PNGs already existed. This created a bootstrap deadlock: generated assets blocked the pull that would bring the new ignore rules.
+
+Live `main` now has two protections:
+
+1. `.gitignore` ignores only the exact generated Stage A `down/right/up` proof PNG patterns;
+2. `Sync-P3-2-Female-StageA.cmd` independently allows only those exact untracked generated Stage A PNG paths through its dirty-worktree guard, while still blocking all other changes.
+
+The sync-guard fix is commit `7a8839bb3c6a9557e3e652c80619d2421f21c107`.
+
+One manual `git pull --ff-only origin main` is required on a checkout still using the older launcher to break this bootstrap loop. No reset/clean/delete is required.
+
+---
+
 # Next authoritative Windows action
 
-Close every Godot editor/project-manager window, then run:
+With all Godot windows closed, from repo root run once:
 
 ```bat
-cd /d "E:\0.2. TongMonBaDao"
+git pull --ff-only origin main
+```
+
+Then run normally:
+
+```bat
 Sync-P3-2-Female-StageA.cmd
 ```
 
