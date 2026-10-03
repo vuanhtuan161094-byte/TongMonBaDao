@@ -26,6 +26,18 @@ function Add-GodotWithConsoleSibling([System.Collections.Generic.List[string]]$C
     Add-GodotCandidate $Candidates $Path
 }
 
+function Assert-NoRunningGodot {
+    if (-not ($IsWindows -or $env:OS -eq "Windows_NT")) { return }
+
+    $running = @(Get-Process -ErrorAction SilentlyContinue |
+        Where-Object { $_.ProcessName -like "Godot*" })
+
+    if ($running.Count -eq 0) { return }
+
+    $names = ($running | ForEach-Object { "$($_.ProcessName) (PID $($_.Id))" }) -join ", "
+    throw "Godot is already running: $names. Close all Godot editor/project-manager windows before running the Stage A FAST check. This avoids the headless import competing for the project/import cache."
+}
+
 function Resolve-QuickGodot([string]$Explicit, [string]$ExpectedVersion) {
     $candidates = New-Object "System.Collections.Generic.List[string]"
 
@@ -163,9 +175,10 @@ function Invoke-QuickGodot(
     }
 }
 
+Write-Host "=== P3.2 FEMALE STAGE A FAST CHECK ==="
+Assert-NoRunningGodot
 $resolvedGodot = Resolve-QuickGodot $GodotBin $ExpectedVersion
 $Godot = [string]$resolvedGodot.Path
-Write-Host "=== P3.2 FEMALE STAGE A FAST CHECK ==="
 Write-Host "[Godot] $($resolvedGodot.Version)"
 Write-Host "[Godot] $Godot"
 
