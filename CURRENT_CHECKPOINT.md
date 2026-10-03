@@ -1,6 +1,6 @@
 # CURRENT CHECKPOINT
 
-Date: 2026-10-01
+Date: 2026-10-03
 
 ## Runtime-confirmed baseline
 
@@ -26,265 +26,289 @@ Locked chain:
 - P2.9 Traits + Quirks + Hidden Reveal: LOCKED / PASS.
 - P2.10 Spiritual Root Refinement + Mutation: LOCKED / PASS.
 - P2.11 Bloodline + Awakening + Purity: LOCKED / PASS.
-- **P2.12 Physique + Grades + Tempering + Transformation: LOCKED / PASS.**
+- P2.12 Physique + Grades + Tempering + Transformation: LOCKED / PASS.
 
-Latest authoritative user runtime evidence ended with:
+Latest authoritative runtime evidence ended with the final `P2.12 GATE: PASS` chain. Do not reopen P0-P2.12 without new regression evidence.
 
-- `P2.12 PERSISTENCE DIAGNOSTIC PASS: immediate canonical state identical`
-- `P2.12 PHYSIQUE + GRADES + TEMPERING + TRANSFORMATION TEST PASS`
-- `P2.12 PHYSIQUE + TEMPERING + TRANSFORMATION GATE: PASS`
-- final `P2.12 GATE: PASS`
+---
 
-Do not reopen P0-P2.12 without new regression evidence.
+# Character authority
 
-## Character authority
+Read `docs/DISCIPLE_MASTER_SCHEMA.md` before changing character gameplay systems.
 
-Read `docs/DISCIPLE_MASTER_SCHEMA.md` first before changing any character subsystem.
+Locked principles:
 
-The master schema decides:
+- six foundation dimensions: Tư Chất / Căn Cốt / Cơ Duyên / Thông Tuệ / Mị Lực / Tiềm Lực;
+- disciple quality is derived rather than separately rolled;
+- Linh căn / Huyết Mạch / Thể Chất / traits / Destiny are separate axes;
+- hidden identity is generated once and persisted;
+- reveal/awakening/transformation never rerolls hidden identity;
+- systems may overlap on real effects when logical;
+- named mechanics require real consequences, not UI-only flavor;
+- presentation must never create parallel gameplay authority.
 
-- what a character owns;
-- what is rolled once at generation;
-- what is derived instead of rolled;
-- what is nearly fixed identity;
-- what grows through ordinary training;
-- what only changes through rare awakening/transformation/item/event mechanics.
+The player is the **Tông Chủ**. Disciples are autonomous people. Player influence is through infrastructure, recruitment, policy, investment, assignment and strategic intervention rather than routine puppet-style micromanagement.
 
-Hidden identity is generated once and persisted. Reveal/awakening/transformation must not reroll it.
+---
 
-### Foundation summary
+# Presentation canon
 
-Six permanent foundation dimensions:
+- mobile landscape;
+- base logical resolution `1280×720`;
+- map-first sect management;
+- thin edge HUD rather than desktop dashboard;
+- direct building/disciple tap;
+- parchment overlays preserve map context;
+- disciple screen uses left roster + central character + right detail + lower tabs;
+- UX structure may learn from `Ta Làm Tông Sư Trong Tiên Môn`, but production art/text/icons/map must be original.
 
-- Tư Chất / aptitude;
-- Căn Cốt / constitution;
-- Cơ Duyên / fortune;
-- Thông Tuệ / comprehension;
-- Mị Lực / charisma;
-- Tiềm Lực / potential.
+---
 
-Disciple quality is derived mainly from these:
-
-`Phàm Thường -> Xuất Chúng -> Thiên Kiêu -> Tuyệt Luân -> Nghịch Thiên`.
-
-### Bloodline
-
-Bloodline is independent from other identity systems. It rolls existence/type/purity once; reveal does not reroll. Awakening/refinement use real resources and effects can overlap with other systems.
-
-### Physique
-
-Physique has two independent axes:
-
-1. grade: `Phàm Thể -> Linh Thể -> Huyền Thể -> Thánh Thể -> Thần Thể`;
-2. named type: none / Kiếm Cốt / Kim Cương Bá Thể / Hàn Âm Thể / Hỏa Linh Thể / Vô Cấu Đạo Thể.
-
-Current grade probabilities:
-
-| Grade | Ordinary | Chiêu Hiền | Nhân Duyên |
-| --- | ---: | ---: | ---: |
-| Phàm Thể | 58% | 40% | 28% |
-| Linh Thể | 27% | 32% | 31% |
-| Huyền Thể | 11% | 19% | 24% |
-| Thánh Thể | 3.5% | 7% | 13% |
-| Thần Thể | 0.5% | 2% | 4% |
-
-Named-special chance is separate: ordinary 15%, Chiêu Hiền 28%, Nhân Duyên 40%.
-
-Unnamed type displays only grade. Named type displays e.g. `Kiếm Cốt · Huyền Thể`.
-
-Tempering uses one Yêu Đan and does not reroll type/grade. Transformation uses the pre-generated latent target and preserves grade. Routine tempering does not automatically promote grade.
-
-## Global mechanic-consequence rule
-
-Every named feature must change real play. Valid overlap includes Công, Thủ, HP, cultivation, breakthrough, recovery, profession/mastery, production, economy, AI behavior, risk, movement, cooldown and similar concrete outputs.
-
-**Do not fear overlap.** Systems differ through source, acquisition, progression, cost, conditions, tradeoffs and signature rules — not because each system owns an exclusive stat.
-
-Rare mechanics must be useful before their gimmick/drawback. UI labels without real consequences do not count.
-
-## Core product identity
-
-The player is the **Tông Chủ**. Disciples are autonomous people, not puppets.
-
-Operating rhythm:
-
-`hunt/work -> warehouse -> production/investment -> disciple growth -> harder content`
-
-The player controls infrastructure, recruitment, policy, investment, assignment and temporary strategic intervention. Routine one-by-one micromanagement must remain optional at scale.
-
-## Presentation canon
-
-The product is now **mobile landscape**, base logical resolution **1280×720**.
-
-Primary structural UX reference: **Ta Làm Tông Sư Trong Tiên Môn**.
-
-Use the reference for information hierarchy and interaction rhythm only:
-
-- sect map dominates the screen;
-- thin top resource/status bar;
-- chapter/task rail at left;
-- compact edge/floating actions;
-- buildings are tapped directly on the map;
-- parchment/scroll overlays preserve map context;
-- disciple screen uses vertical roster + large character area + detail panel + lower tabs.
-
-Do not copy proprietary art, text, icons, logo, map or exact pixels. Use original Tông Môn Bá Đạo assets.
-
-## P3.1 — Mobile ngang + Tông Môn Sống V1
+# P3.1 — Mobile ngang + Tông Môn Sống V1
 
 Status: **IMPLEMENTED / AWAITING REAL GODOT 4.7.2 CUMULATIVE GATE**.
 
-P3.1 is the base presentation layer:
+Implemented presentation base includes:
 
 - landscape shell;
-- real action -> visible destination mapping;
-- disciples visibly move between work/rest/cultivation/gate destinations;
-- building popup reads real state;
-- disciple popup reads real state;
-- Sect Master quick orders call `WorkforceSystem.issue_command()`;
+- real action -> visible map destination mapping;
+- visible disciple movement between work/rest/cultivation/gate destinations;
+- building/disciple popup reads real state;
+- quick Sect Master orders call real workforce systems;
 - no parallel gameplay engine.
 
-P3.1 is not yet runtime-confirmed locally.
+P3.1 is not yet runtime-confirmed on the user's current Windows gate run.
 
-## P3.2 — Camera + map selection + real disciple tabs
+---
 
-Status: **IMPLEMENTED CURRENT SLICE / AWAITING REAL GODOT 4.7.2 CUMULATIVE GATE**.
+# P3.2 — Camera + map selection + real disciple tabs
 
-This is not full P3.2 art production yet. Current implementation adds interaction on top of P3.1 while preserving simulation authority.
+Status: **IMPLEMENTED / AWAITING REAL GODOT 4.7.2 CUMULATIVE GATE**.
 
-### Camera interaction
+Current main scene:
 
-Files:
+`res://scenes/p3/p3_2_landscape_sect.tscn`
 
-- `godot/src/presentation/p3/sect_map_camera.gd`
-- `godot/src/presentation/p3_2_landscape_sect.gd`
-- `godot/scenes/p3/p3_2_landscape_sect.tscn`
+Implemented:
 
-Contract:
-
-- only the map layer zooms/pans; HUD/popups stay fixed;
-- mobile pinch zoom;
-- one-finger pan on map;
-- desktop wheel zoom + left-drag pan for local testing;
+- map-only zoom/pan while HUD/popups remain fixed;
+- pinch zoom + one-finger pan;
+- desktop wheel zoom + drag pan;
 - double-tap/double-click quick zoom;
-- fallback buttons `+`, `−`, `Mục`, `Toàn`;
-- zoom range `0.75x -> 1.80x`;
-- default `1.00x`;
-- target focus `1.35x` minimum;
-- zoom preserves pointer/pinch anchor;
-- camera clamps so the whole sect cannot be dragged away;
-- camera gestures are blocked while a popup is open;
-- screen/world coordinate helpers are deterministic and presentation-only.
+- camera clamp and anchored zoom;
+- building/disciple focus + gold selection marker;
+- focus target button;
+- tabs reading the same real `SimulationState`: Thuộc tính / Công pháp / Trang bị / Huyết Mạch / Thể Chất / Quan hệ;
+- Bloodline/Physique action buttons use real systems/resources;
+- hidden identity remains hidden where required.
 
-### Real map target focus
+Authoritative pending launcher:
 
-Tapping a building or disciple now:
+`Sync-P3-2-Camera.cmd`
 
-1. stores that entity as the current map focus;
-2. moves camera focus toward it;
-3. displays a gold selection marker/pulse;
-4. opens the existing popup;
-5. keeps a `Mục` button so the player can return to that selected target after panning away.
+Do **not** call P3.1/P3.2 PASS until real Windows/Godot output reaches the cumulative gate.
 
-For disciples, the selection marker follows their latest visible actor position, but the camera does **not** forcibly auto-follow every movement tick.
+---
 
-### Disciple management tabs are now real
+# CHARACTER CREATOR V1 + FEMALE NORMAL RIG V1
 
-The old tab placeholder notice has been replaced in P3.2.
+Status: **DESIGN LOCKED + SAFE ISOLATED SCAFFOLD IMPLEMENTED / NOT YET RUN ON REAL GODOT**.
 
-Current live tabs:
+Canonical spec:
 
-- `Thuộc tính`;
-- `Công pháp`;
-- `Trang bị`;
-- `Huyết Mạch`;
-- `Thể Chất`;
-- `Quan hệ`.
+`docs/P3_2_MODULAR_ACTOR_SPEC.md`
 
-They read the same `SimulationState` used by gameplay.
+Asset plan:
 
-`Thuộc tính` shows realm, cultivation progress, combat/cultivation information, HP/stamina/wallet, six foundation values, path XP and current action.
+`docs/P3_2_ASSET_MANIFEST.md`
 
-`Công pháp` shows learned techniques, level/mastery, active technique, contribution and personal spirit stones.
+## New production direction
 
-`Trang bị` shows weapon/armor/accessory slots, item quality, auto-vs-locked control and real equipment effects.
+Retired:
 
-`Huyết Mạch`:
+- one complete spritesheet/video animation set per disciple;
+- six complete map-actor families with duplicated animations;
+- arbitrary Grok part-splitting before a rig contract exists.
 
-- never exposes latent hidden identity before reveal;
-- shows type/purity/awakening/refinement and real stat effects after reveal;
-- buttons `Thức tỉnh` / `Luyện huyết` call the real `BloodlineSystem` and consume real resources.
+Canonical direction:
 
-`Thể Chất`:
+**Character Creator = modular appearance + shared 2D rig/animation.**
 
-- shows actual type + grade + temper level + transformed status;
-- shows real Công/Thủ/Tu/Đột phá/Hồi/path-XP effects;
-- buttons `Tôi thể` / `Cải thể` call the real `PhysiqueSystem` and consume real resources.
+Map actor and profile portrait are separate pipelines.
 
-`Quan hệ` reads actual affinity/trust/respect/interactions and companion assignment from P1.3 state.
+Map actor style:
 
-No duplicate UI-only Bloodline, Physique, equipment or relationship data was added.
+- mature chibi;
+- large head + compact body;
+- cute but not childlike;
+- female may be lightly/tastefully sexy where appropriate;
+- xianxia/mobile 2D;
+- clear silhouette;
+- low micro-detail;
+- avoid glossy AI hero-art.
 
-### P3.2 tests/verifier
+## Rig V1
 
-- `godot/tests/presentation/p3_2_map_camera_test.gd`
-  - zoom limits;
-  - HUD/map hit region;
-  - screen/world coordinate round-trip;
-  - anchored zoom;
-  - pan clamp;
-  - normal/edge focus;
-  - reset.
+Initial rig IDs:
 
-- `godot/tests/presentation/p3_2_disciple_ui_test.gd`
-  - real scene instantiation;
-  - real stage/foundation text;
-  - hidden Bloodline does not leak;
-  - real Physique profile is displayed;
-  - Tôi thể UI path mutates real profile and consumes Yêu Đan;
-  - Thức tỉnh UI path mutates real Bloodline and consumes Yêu Đan;
-  - Công pháp/Trang bị/Quan hệ tabs read real state;
-  - tab popup hierarchy builds.
+- `female_normal_v1`;
+- `male_normal_v1`.
 
-Verifier:
+Future only after proof:
 
-- `tools/godot/Verify-P3-2-Camera.ps1`;
-- `Verify-P3-2-Camera.cmd`;
-- `Sync-P3-2-Camera.cmd`.
+- `female_heavy_v1`;
+- `male_heavy_v1`;
+- special body types.
 
-The P3.2 verifier always reruns the full P3.1 cumulative chain first.
+Canonical source registration:
 
-## Next authoritative local command
+- `128×128` canvas;
+- foot anchor `(64,104)`;
+- source-to-map scale `0.68` at map zoom 1.0;
+- actor scaffold box `88×92`;
+- visual body target about `64–70` logical px.
 
-When the Windows machine is available:
+Canonical internal bones:
+
+`root, pelvis, torso, head, arm_l, arm_r, hand_weapon, leg_l, leg_r`.
+
+Canonical render layers back-to-front:
+
+`shadow -> aura -> hair_back -> weapon_back -> body -> outfit -> face -> hair_front -> head_accessory -> weapon_front -> accessory`.
+
+Body/Outfit are single creator choices but may internally use coarse cutouts for head/torso/arms/legs. Do not fragment creator choices into eyes/fingers/shoes.
+
+## Shared animation
+
+One rig uses one `AnimationPlayer`/shared `AnimationLibrary` driving `Bone2D` transforms.
+
+Public directions remain:
+
+`down / right / up / left`.
+
+V1 may mirror right motion for left when mirror-safe. Public facing still stays `left`; asymmetric assets may later provide authored-left.
+
+Required first motion proof:
+
+- idle 4 public directions;
+- walk 4 public directions.
+
+Cultivate/work/combat/mining/forging/heal/rest follow only after the first rig proof.
+
+## Current scaffold files
+
+- `godot/src/presentation/p3/disciple_actor_visual_catalog.gd`;
+- `godot/src/presentation/p3/modular_disciple_actor.gd`;
+- `godot/tests/presentation/p3_2_modular_actor_contract_test.gd`;
+- `tools/godot/Verify-P3-2-Character-Creator.ps1`;
+- `Verify-P3-2-Character-Creator.cmd`.
+
+`ModularDiscipleActor` now scaffolds:
+
+- `Skeleton2D`;
+- canonical `Bone2D` hierarchy;
+- one `AnimationPlayer`;
+- deterministic default appearance profile from persisted identity;
+- left-mirror playback rule;
+- registered full-canvas texture attachment helpers;
+- safe placeholder behavior when production art is missing.
+
+The old synchronized `AnimatedSprite2D/SpriteFrames` layer architecture is retired for this scaffold.
+
+## Important isolation rule
+
+The new rig is deliberately **not yet wired into the live P3.2 map scene** and its test is not added to `Sync-P3-2-Camera.cmd`.
+
+Reason: P3.1/P3.2 camera/UI still await real runtime evidence. Do not destabilize that pending gate before seeing the actual Windows result.
+
+## Appearance persistence target
+
+Target schema is documented as `appearance_profile` containing:
+
+- schema version;
+- rig/body/face/hair/outfit/head accessory/weapon/accessory/aura IDs;
+- hair/outfit tint RGB hex.
+
+Rules:
+
+- appearance is presentation identity only;
+- default appearance may be derived deterministically from `profile_seed + sex_id`;
+- existing disciple `sex_id` cannot be silently overridden by cosmetic UI;
+- equipment visuals must eventually respect real equipped items/skin rules;
+- appearance must not affect combat/cultivation/economy state.
+
+Persistence is **not yet wired into locked DiscipleState/generator**. Add it only after real P3.2 + Character Creator parser/runtime checks, using a backward-compatible contract that does not consume or reorder the P2.8 RNG stream.
+
+## Tint rule
+
+Hair/outfit production uses base texture + tint mask/shader. Do not globally modulate multicolor art and accidentally tint skin/face/metal.
+
+## Weapon rule
+
+One weapon variant can use `back`, `front`, or split render passes attached to `hand_weapon`. Direction changes presentation only; it must never equip a fake gameplay item.
+
+---
+
+# Character Creator vertical slice
+
+First proof is **female_normal_v1 only**:
+
+- 1 body;
+- at least 2 faces;
+- 3 hairs;
+- 2 outfits;
+- 2 weapons;
+- 1 horn/head accessory;
+- several hair/outfit tint presets;
+- shared idle + walk;
+- at least 6 combinations simultaneously using the same rig/AnimationLibrary.
+
+Acceptance proof:
+
+- common foot anchor;
+- no face/hair drift;
+- outfit limbs stay aligned;
+- weapon back/front works by direction;
+- tint does not color skin/face;
+- mirror does not break z-order;
+- all combinations share motion;
+- actor remains readable at map zoom 0.75 / 1.0 / 1.35.
+
+Do not mass-produce character art before this proof.
+
+---
+
+# Next authoritative Windows order
+
+First:
 
 ```bat
 cd /d "E:\0.2. TongMonBaDao"
 Sync-P3-2-Camera.cmd
 ```
 
-A successful tail should include:
+If that cumulative P3.2 gate is green, then:
 
-- `P3.1 LANDSCAPE SECT SHELL TEST PASS`
-- `P3.1 LANDSCAPE SECT SHELL GATE: PASS`
-- `P3.2 MAP CAMERA TEST PASS`
-- `P3.2 DISCIPLE UI INTEGRATION TEST PASS`
-- `P3.2 CAMERA + DISCIPLE UI GATE: PASS`
-- final `P3.2 INTERACTION GATE: PASS`
+```bat
+Verify-P3-2-Character-Creator.cmd
+```
 
-Do **not** call P3.1 or P3.2 PASS until the real Windows/Godot output reaches this gate.
+The Character Creator verifier reruns the existing P3.2 cumulative chain first, then executes the isolated shared-rig contract test.
 
-If it fails, fix the first real parser/diagnostic/assertion failure only.
+Do not claim PASS before real output.
 
-## Next development order after this interaction gate is green
+If a gate fails: fix the **first real parser/diagnostic/assertion failure only**. Do not weaken tests.
 
-1. replace placeholders with original production map/building/actor/UI assets while preserving current interaction hierarchy;
-2. bind actor animation to actual simulation state;
-3. richer visible building production/assignment/upgrades;
-4. injury/medical;
-5. loyalty + stipend/reward;
-6. sect rank/authority expansion;
-7. master-disciple/teaching;
-8. Destiny/awakening;
-9. Kỳ Vật/Truyền Thừa item gacha;
-10. active age/lifespan/death/inheritance after simulation-year pacing is proven.
+---
+
+# Next development order after runtime green
+
+1. resolve any real parser/runtime failure from the pending gates;
+2. use one real `female_normal_v1` art sample to lock exact pivot positions;
+3. author shared idle + walk `AnimationLibrary`;
+4. build first coarse cutout body/outfit bundle + face/hair/weapon/horn;
+5. build tint-mask shader/presets;
+6. create a sandbox showing at least 6 combinations on one shared rig;
+7. only then integrate `ModularDiscipleActor` into the live sect map;
+8. add backward-compatible `appearance_profile` persistence contract;
+9. only then expand to `male_normal_v1` and larger asset volume.
