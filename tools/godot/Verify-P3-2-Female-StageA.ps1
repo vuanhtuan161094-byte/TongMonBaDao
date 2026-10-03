@@ -26,41 +26,6 @@ function Add-GodotWithConsoleSibling([System.Collections.Generic.List[string]]$C
     Add-GodotCandidate $Candidates $Path
 }
 
-function Probe-GodotVersion([string]$Candidate, [string]$ExpectedVersion) {
-    $psi = New-Object System.Diagnostics.ProcessStartInfo
-    $psi.FileName = $Candidate
-    $psi.Arguments = "--version"
-    $psi.UseShellExecute = $false
-    $psi.CreateNoWindow = $true
-    $psi.RedirectStandardOutput = $true
-    $psi.RedirectStandardError = $true
-
-    $process = New-Object System.Diagnostics.Process
-    $process.StartInfo = $psi
-    try {
-        if (-not $process.Start()) {
-            return [pscustomobject]@{ Ok = $false; Version = ""; Detail = "failed to start" }
-        }
-        if (-not $process.WaitForExit(10000)) {
-            try { $process.Kill() } catch { }
-            return [pscustomobject]@{ Ok = $false; Version = ""; Detail = "version probe timed out" }
-        }
-        $stdout = $process.StandardOutput.ReadToEnd().Trim()
-        $stderr = $process.StandardError.ReadToEnd().Trim()
-        $version = if (-not [string]::IsNullOrWhiteSpace($stdout)) { ($stdout -split "`r?`n")[0].Trim() } elseif (-not [string]::IsNullOrWhiteSpace($stderr)) { ($stderr -split "`r?`n")[0].Trim() } else { "" }
-        $exitCode = [int]$process.ExitCode
-        $expectedPattern = "^" + [regex]::Escape($ExpectedVersion)
-        if ($exitCode -eq 0 -and $version -match $expectedPattern) {
-            return [pscustomobject]@{ Ok = $true; Version = $version; Detail = "exit=0" }
-        }
-        return [pscustomobject]@{ Ok = $false; Version = $version; Detail = "exit=$exitCode" }
-    } catch {
-        return [pscustomobject]@{ Ok = $false; Version = ""; Detail = $_.Exception.Message }
-    } finally {
-        $process.Dispose()
-    }
-}
-
 function Resolve-QuickGodot([string]$Explicit, [string]$ExpectedVersion) {
     $candidates = New-Object "System.Collections.Generic.List[string]"
 
@@ -110,13 +75,29 @@ function Resolve-QuickGodot([string]$Explicit, [string]$ExpectedVersion) {
     }
 
     $failures = New-Object "System.Collections.Generic.List[string]"
+    $expectedPattern = "^" + [regex]::Escape($ExpectedVersion)
+
     foreach ($candidate in $candidates) {
         Write-Host "[Godot] Probing $candidate"
-        $probe = Probe-GodotVersion $candidate $ExpectedVersion
-        if ($probe.Ok) {
-            return [pscustomobject]@{ Path = $candidate; Version = $probe.Version }
+        $global:LASTEXITCODE = 0
+        try {
+            # Keep this identical in spirit to the already-proven P0 resolver.
+            # On the user's Windows install the ProcessStartInfo-based --version
+            # probe can remain alive even though the same executable works for
+            # real headless gates. Direct invocation has already been proven.
+            $output = @(& $candidate --version 2>&1)
+            $exitCode = $LASTEXITCODE
+            $version = ""
+            if ($output.Count -gt 0 -and $null -ne $output[0]) {
+                $version = ([string]$output[0]).Trim()
+            }
+            if ($exitCode -eq 0 -and $version -match $expectedPattern) {
+                return [pscustomobject]@{ Path = $candidate; Version = $version }
+            }
+            $failures.Add("$candidate => exit=$exitCode version='$version'")
+        } catch {
+            $failures.Add("$candidate => $($_.Exception.Message)")
         }
-        $failures.Add("$candidate => $($probe.Detail) version='$($probe.Version)'")
     }
 
     $details = if ($failures.Count -gt 0) {
