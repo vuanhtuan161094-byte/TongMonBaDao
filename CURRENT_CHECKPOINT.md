@@ -4,24 +4,24 @@ Date: 2026-10-03
 
 ## Runtime-confirmed baseline
 
-Real Windows + Godot 4.7.2 cumulative evidence confirms:
+Real Windows + Godot 4.7.2 evidence confirms:
 
 - P0-P2.12: PASS;
 - P3.1 mobile landscape + living sect shell: PASS;
 - P3.2 camera + map target selection + real disciple tabs interaction slice: PASS;
-- P3.2 Character Creator V1 shared-rig scaffold: PASS.
+- P3.2 Character Creator V1 shared-rig scaffold: PASS;
+- P3.2 `female_normal_v1` Stage A **FAST** check: PASS.
 
-Latest locked Character Creator tail:
+Latest real Stage A FAST tail supplied by the user:
 
 ```text
 P3.2 CHARACTER CREATOR SHARED RIG CONTRACT TEST PASS
-P3.2 CHARACTER CREATOR SCAFFOLD GATE: PASS
-CHARACTER CREATOR V1 SCAFFOLD GATE: PASS
+P3.2 FEMALE STAGE A DOWN ASSET CONTRACT TEST PASS
+P3.2 FEMALE STAGE A FAST CHECK: PASS
+FEMALE STAGE A DOWN FAST CHECK: PASS
 ```
 
-Do not reopen those locked contracts without new regression evidence.
-
-**The production female visual slice is NOT PASS yet.**
+Important distinction: the production female visual slice / Stage A final milestone is **NOT final PASS yet**. FAST proves packaging/import/shared-rig/asset-contract/sandbox-smoke only. Visible pivot quality must still be inspected, then the separate FULL cumulative gate must pass before locking the milestone.
 
 ---
 
@@ -66,30 +66,13 @@ Locked render order:
 
 `shadow -> aura -> hair_back -> weapon_back -> body -> outfit -> face -> hair_front -> head_accessory -> weapon_front -> accessory`.
 
-The real scaffold gate already proved `Skeleton2D + 9 Bone2D + one AnimationPlayer`, deterministic appearance normalization, safe fallback, direction/mirror mapping and presentation read-only behavior.
-
-The modular actor is still intentionally isolated from the live sect map. Appearance persistence is also not wired into `DiscipleState` yet.
+The shared-rig scaffold is still intentionally isolated from the live sect map. Appearance persistence is not wired into `DiscipleState` yet.
 
 ---
 
-# female_normal_v1 production contract — locked
+# female_normal_v1 Stage A — DOWN/FRONT pivot-lock proof
 
-- `down` = authored front;
-- `right` = authored right-facing side;
-- `up` = authored back;
-- `left` = mirror from `right` while mirror-safe;
-- every runtime cutout is full-canvas `128×128` RGBA;
-- foot registration stays `(64,104)`;
-- no crop/recenter per piece;
-- runtime naming `<variant>_<direction>_<piece>.png`;
-- anatomical `l/r` means character-left/character-right;
-- practical bone rest positions may only be tuned after real art proves a pivot mismatch; bone IDs/hierarchy and foot anchor remain stable.
-
----
-
-# Stage A — DOWN/FRONT pivot-lock proof
-
-Status: **IMPLEMENTED / REAL WINDOWS FAST CHECK PENDING**.
+Status: **FAST GREEN / VISUAL PIVOT REVIEW PENDING**.
 
 Current proof pack contains 14 registered runtime components:
 
@@ -99,97 +82,54 @@ Current proof pack contains 14 registered runtime components:
 - outfit: `torso`, `arm_l`, `arm_r`, `skirt`;
 - head accessory: `horn_01_down`.
 
-This is a pivot-lock diagnostic, not final polished character art.
+These are pivot-lock diagnostic assets, not final polished production art.
 
-## Real failures observed on 2026-10-03
+FAST verifier now runs only:
 
-1. Old directly tracked binary ZIP failed with `End of Central Directory record could not be found.` The following 14-missing-PNG error was only downstream of extraction failure, not a rig failure.
-2. The first sync launcher self-updated while running and produced stray CMD commands (`gin`, `]`). The launcher now bootstraps through a temporary copy before `git pull`.
-3. FAST verification then failed before tests because its first Godot resolver missed the already-proven Windows Godot install. Resolver now uses the same direct `--version` invocation style as the proven P0 gate and includes the repository drive root.
-4. After the installer successfully reconstructed the Stage A PNGs, a later sync was blocked by `?? godot/assets/`. `.gitignore` now ignores only the exact installer-generated Stage A PNG patterns, not the whole asset tree.
-5. The first FAST run that successfully resolved Godot reached `[1/4] Importing new/changed Stage A assets`, but Godot opened interactively and appeared to hang. Static review found the FAST process wrapper used a parameter named `$Args` and positional array binding. `$args` is a PowerShell automatic variable and this wrapper differed from the already-proven P0 invocation pattern. The wrapper is now replaced by the P0-style `CommandArgs` pattern with named parameters and explicit command logging before every Godot launch.
-
-None of these failures reached or disproved the Stage A rig/asset contract itself. Stage A remains **NOT PASS** until the real FAST check runs green.
-
-## Packaging fix
-
-Direct binary ZIP tracking through the text connector is retired.
-
-The runtime pack is stored as verified Base64 text chunks under `tools/assets/`. The canonical ZIP represented by those chunks has SHA-256:
-
-`0c23ed5ee12cf5ec838e0a87b00f33122f6a196bd3812ecf96de2d99086fcc7c`
-
-`Install-P3-2-Female-StageA.cmd`:
-
-1. concatenates the tracked text chunks in fixed order;
-2. decodes them to a temporary ZIP;
-3. verifies the SHA-256 above;
-4. only then extracts the 14 PNGs;
-5. stops immediately on rebuild/checksum/extraction failure;
-6. runs the FAST Stage A verifier after successful installation.
-
-The corrupted direct binary pack is no longer authoritative.
-
----
-
-# Stage A verification policy
-
-Normal art/pivot iteration must **not** rerun P0-P2.12 every time.
-
-## FAST — normal Stage A iteration
-
-Use `Verify-P3-2-Female-StageA.cmd`.
-
-It runs only:
-
-1. Godot import for changed assets;
+1. import changed Stage A assets;
 2. P3.2 Character Creator shared-rig contract;
 3. P3.2 Stage A down/front asset contract;
 4. Stage A sandbox smoke.
 
-Expected final line:
+It does **not** rerun P0-P2.12 on each art/pivot iteration.
 
-`FEMALE STAGE A DOWN FAST CHECK: PASS`
+The verified Base64 runtime pack decodes to ZIP SHA-256:
 
-## FULL — final acceptance only
+`0c23ed5ee12cf5ec838e0a87b00f33122f6a196bd3812ecf96de2d99086fcc7c`
 
-Use `Verify-P3-2-Female-StageA-Full.cmd` only after the real art/pivots look correct. It reruns the full cumulative chain before Stage A checks. Only this later final gate may lock Stage A as a regression-safe milestone.
-
----
-
-# Next authoritative Windows action
-
-Close any Godot window/process left from the failed interactive import attempt. Then run:
-
-```bat
-cd /d "E:\0.2. TongMonBaDao"
-Sync-P3-2-Female-StageA.cmd
-```
-
-The sync launcher pulls the latest FAST wrapper automatically. The next run should print the exact command before import, for example:
-
-```text
-[Godot command] E:\Godot_v4.7.2-stable_win64_console.exe --headless --path "E:\0.2. TongMonBaDao\godot" --import
-```
-
-If that exact headless command still opens an editor window or does not exit, preserve/send the command line plus the first subsequent output; do not wait indefinitely. The wrapper has a 120-second timeout and kills its spawned process tree on timeout.
-
-There should be no P0-P2.12 cumulative spam in normal FAST iteration.
-
-If it fails, fix the first real error only. Do not weaken tests.
+Packaging/tooling issues encountered earlier (corrupt direct ZIP, launcher self-update, generated asset git noise, Godot discovery/import wrapper) have been fixed and are no longer the active blocker.
 
 ---
 
-# Development order after FAST Stage A is green
+# Next authoritative action — visual pivot review
 
-1. visually inspect down/front sandbox at zoom `0.75 / 1.0 / 1.35`;
-2. tune practical bone rest positions only where the real art proves misalignment;
-3. lock down/front pivots;
-4. repeat registered asset process for authored `right` and `up` views;
-5. author shared idle + walk `AnimationLibrary`;
-6. add `face_02`, `hair_02/03`, `outfit_02`, `weapon_01/02` and tint masks;
-7. prove at least 6 combinations on the same shared rig;
-8. run the FULL cumulative visual-slice gate;
-9. only then integrate `ModularDiscipleActor` into the live sect map;
-10. add backward-compatible `appearance_profile` persistence without changing P2.8 RNG;
-11. then expand to `male_normal_v1`, more actions and larger asset volume.
+A visual launcher now exists:
+
+`Preview-P3-2-Female-StageA.cmd`
+
+It opens the same FAST-green sandbox visually with the down/front actor shown at:
+
+- `0.75x`;
+- `1.00x`;
+- `1.35x`.
+
+Inspect:
+
+- face/hair/horns remain one coherent head;
+- shoulders/arms do not split from torso;
+- outfit/skirt has no broken seams;
+- legs/feet remain coherent and share ground registration;
+- silhouette is still readable at `0.75x`.
+
+Do **not** tune bone rest positions from estimates. Change practical pivots only if this real preview visibly proves misalignment.
+
+After visual review:
+
+1. if misaligned: tune only the affected practical bone rest positions, rerun FAST, review again;
+2. if visually acceptable: lock down/front pivots;
+3. produce authored `right` and `up` views on the same registration;
+4. then shared idle + walk AnimationLibrary;
+5. then add face/hair/outfit/weapon variants + tint masks and six-combination proof;
+6. only after visible proof is accepted run `Verify-P3-2-Female-StageA-Full.cmd`;
+7. only FULL cumulative green may lock Stage A as a regression-safe milestone;
+8. live-map integration and appearance persistence remain later work.
