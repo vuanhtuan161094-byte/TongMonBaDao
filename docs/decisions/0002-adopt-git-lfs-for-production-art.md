@@ -68,6 +68,16 @@ Initial LFS candidates should be selective, for example editable masters (`*.psd
 
 Do **not** run history-rewriting `git lfs migrate --everything` as part of this adoption unless explicitly reviewed later.
 
+## Godot import metadata rule
+
+When a runtime image becomes a **repo-managed production asset** under `godot/assets/...`:
+
+- track the source runtime image itself;
+- commit its generated `<asset>.import` sidecar because it stores the import configuration;
+- do not commit the generated `.godot/` cache/imported directory.
+
+The current Stage A proof is a deliberate exception: its PNGs are locally reconstructed diagnostic assets and therefore both those generated PNGs and their `.png.import` sidecars are ignored. **Do not copy that exception into the final production asset pipeline.**
+
 ## Acceptance before status becomes accepted
 
 On the user's Windows machine:
@@ -85,6 +95,7 @@ On the user's Windows machine:
 - binary source art becomes versionable and recoverable;
 - approved-source registry entries can point to actual repo paths;
 - base64/ZIP-through-text workarounds are retired for production art;
+- production runtime `.import` settings become reproducible rather than machine-local accidents;
 - GitHub connector remains responsible for text/code, not binary transport.
 
 ## Links
