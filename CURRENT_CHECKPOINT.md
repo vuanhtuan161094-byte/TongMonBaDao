@@ -21,7 +21,7 @@ P3.2 FEMALE STAGE A FAST CHECK: PASS
 FEMALE STAGE A DOWN FAST CHECK: PASS
 ```
 
-The production female visual slice / Stage A final milestone is **NOT final PASS yet**. Do not run or claim the FULL cumulative milestone until the authored direction proof and later visual slice work are accepted.
+The production female visual slice / Stage A final milestone is **NOT final PASS yet**. The authored right/up proof has not yet completed its Windows FAST + visual review, and FULL cumulative acceptance remains later.
 
 ---
 
@@ -44,67 +44,45 @@ Appearance remains presentation-only and must not mutate `DiscipleState`, stats,
 
 # Stage A down/front — visual pivot accepted
 
-The user opened the real visual preview after the down/front FAST gate passed and supplied a screenshot showing the same actor at `0.75x`, `1.00x`, `1.35x`.
+The user opened the real preview after the down/front FAST gate passed and supplied a screenshot at `0.75x`, `1.00x`, `1.35x`.
 
-Visual review result on 2026-10-03:
+Accepted visual observations:
 
-- face/hair/horns remain a coherent head;
+- face/hair/horns remain coherent;
 - shoulders/arms do not visibly split from torso;
-- outfit/skirt has no major broken seam;
-- legs/feet remain coherent on the same ground registration;
-- silhouette remains readable at `0.75x`;
-- dark hair + dark skirt merge somewhat at `0.75x`, but this is an art contrast/simplification issue for later polish, **not** evidence of a pivot mismatch.
+- no major outfit/skirt seam;
+- legs/feet share the same ground registration;
+- silhouette remains readable at `0.75x`.
 
-Therefore the practical **down/front pivot-lock is visually accepted** and the current bone rest positions remain unchanged. Do not retune bones from old estimates.
+Dark hair + skirt merge somewhat at `0.75x`, but this is future art contrast/simplification work, not evidence of a pivot mismatch.
 
-This does **not** mean polished production art is finished.
+Therefore **down/front practical pivots are visually locked** and current bone rest positions remain unchanged.
 
 ---
 
 # Stage A authored directions — implementation ready, Windows gate pending
 
-The diagnostic proof has now been expanded from down/front only to the three authored V1 directions:
+Diagnostic proof now supports authored:
 
 - `down` = front;
-- `right` = authored right-facing side;
-- `up` = authored back;
-- `left` remains intentionally unauthored and will mirror `right` while mirror-safe.
+- `right` = side;
+- `up` = back;
+- `left` remains mirror-right while mirror-safe.
 
-Each authored direction contains 14 registered `128×128` runtime components:
+Each authored direction has 14 registered `128×128` components, total **42 PNGs**. `up` face is intentionally transparent to prevent front-face leakage.
 
-- body: `head`, `torso`, `arm_l`, `arm_r`, `leg_l`, `leg_r`;
-- face;
-- hair back/front;
-- outfit torso/arm_l/arm_r/skirt;
-- horn.
+Relevant implementation:
 
-Total generated Stage A runtime proof files: **42 PNGs**.
-
-For `up`, the face layer is intentionally transparent so no front-face detail can leak through the back view.
-
-The new verified runtime pack is stored as four Base64 text chunks:
-
-- `tools/assets/female_normal_v1_stageA_v2q_01.b64`;
-- `tools/assets/female_normal_v1_stageA_v2q_02.b64`;
-- `tools/assets/female_normal_v1_stageA_v2q_03.b64`;
-- `tools/assets/female_normal_v1_stageA_v2q_04.b64`.
-
-Decoded ZIP SHA-256:
-
-`6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca`
-
-Local static pack inspection confirms exactly **42/42 expected paths** are present. The Windows installer must still reconstruct this pack and verify the same SHA before extraction.
-
-Relevant new/updated implementation:
-
-- `Install-P3-2-Female-StageA.cmd` — installs verified 42-file pack;
-- `godot/src/presentation/p3/female_stage_a_asset_loader.gd` — `down/right/up` authored loading;
-- `godot/tests/presentation/p3_2_female_stage_a_directions_contract_test.gd` — three-direction registration/attachment contract;
+- `godot/src/presentation/p3/female_stage_a_asset_loader.gd`;
+- `godot/tests/presentation/p3_2_female_stage_a_down_contract_test.gd`;
+- `godot/tests/presentation/p3_2_female_stage_a_directions_contract_test.gd`;
 - `godot/src/presentation/p3/female_stage_a_directions_sandbox.gd`;
 - `godot/scenes/p3/p3_2_female_stage_a_directions_sandbox.tscn`;
-- `Preview-P3-2-Female-Directions.cmd`.
+- `Preview-P3-2-Female-Directions.cmd`;
+- `Verify-P3-2-Female-StageA.cmd` — 5-step P3.2-only FAST gate;
+- `Verify-P3-2-Female-StageA-Full.cmd` — final acceptance only; **do not run yet**.
 
-No live sect-map integration has been made.
+Live sect-map integration remains untouched.
 
 ---
 
@@ -112,7 +90,7 @@ No live sect-map integration has been made.
 
 Normal art/pivot iteration remains **P3.2 FAST only** and does not rerun P0-P2.12.
 
-`Verify-P3-2-Female-StageA.cmd` now runs:
+FAST runs:
 
 1. import changed Stage A assets;
 2. Character Creator shared-rig contract;
@@ -120,7 +98,7 @@ Normal art/pivot iteration remains **P3.2 FAST only** and does not rerun P0-P2.1
 4. authored `down/right/up` asset contract;
 5. authored-direction sandbox smoke.
 
-Expected new green tail includes:
+Expected green tail:
 
 ```text
 P3.2 CHARACTER CREATOR SHARED RIG CONTRACT TEST PASS
@@ -130,59 +108,69 @@ P3.2 FEMALE STAGE A 3-DIRECTION FAST CHECK: PASS
 FEMALE STAGE A 3-DIRECTION FAST CHECK: PASS
 ```
 
-`Verify-P3-2-Female-StageA-Full.cmd` remains final-acceptance-only and has been extended to cover the three authored directions. **Do not run FULL yet.**
-
 ---
 
-# Sync guard note — generated Stage A PNGs
+# Binary asset transport — current authoritative method
 
-A real Windows attempt to run the new three-direction sync stopped before fetch with:
+The previous tracked 4-part Base64 v2 transport is **retired**.
+
+Real Windows failure:
 
 ```text
-[STOP] Local changes detected.
-?? godot/assets/
+Exception calling "FromBase64String" ... "Invalid length for a Base-64 char array or string."
 ```
 
-Cause: the local checkout still had an older `.gitignore`, while the installer-generated `right/up` PNGs already existed. This created a bootstrap deadlock: generated assets blocked the pull that would bring the new ignore rules.
+Static comparison against the canonical local ZIP proved the tracked 4 chunks were incomplete by 1,793 Base64 characters. This was a transport/tooling defect, not a Godot, rig, registration, or art failure.
 
-Live `main` now has two protections:
+The malformed `female_normal_v1_stageA_v2q_*.b64` files and experimental replacement chunks were removed from live `main` so they cannot be reused accidentally.
 
-1. `.gitignore` ignores only the exact generated Stage A `down/right/up` proof PNG patterns;
-2. `Sync-P3-2-Female-StageA.cmd` independently allows only those exact untracked generated Stage A PNG paths through its dirty-worktree guard, while still blocking all other changes.
+Authoritative diagnostic binary pack now is:
 
-The sync-guard fix is commit `7a8839bb3c6a9557e3e652c80619d2421f21c107`.
+`female_normal_v1_stageA_runtime_pack_v2_quant.zip`
 
-One manual `git pull --ff-only origin main` is required on a checkout still using the older launcher to break this bootstrap loop. No reset/clean/delete is required.
+Properties:
+
+- 42 Stage A PNGs (`down/right/up`);
+- ZIP size: 44,838 bytes;
+- SHA-256: `6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca`.
+
+`Install-P3-2-Female-StageA.cmd` now searches for this ZIP in:
+
+- `STAGE_A_PACK` env path if explicitly supplied;
+- repo root;
+- user `Downloads`;
+- user `Desktop`;
+- duplicate browser-download names matching `female_normal_v1_stageA_runtime_pack_v2_quant*.zip`.
+
+It computes SHA-256 first and extracts only a matching pack. A wrong/corrupt ZIP is rejected.
+
+`.gitignore` continues to ignore only the exact generated Stage A PNGs, their `.png.import` sidecars, and an optional repo-root copy of this diagnostic ZIP. It does not hide unrelated asset work.
 
 ---
 
 # Next authoritative Windows action
 
-With all Godot windows closed, from repo root run once:
-
-```bat
-git pull --ff-only origin main
-```
-
-Then run normally:
+1. Download `female_normal_v1_stageA_runtime_pack_v2_quant.zip` and leave it in `Downloads` (no need to extract manually).
+2. Close all Godot windows.
+3. From repo root run:
 
 ```bat
 Sync-P3-2-Female-StageA.cmd
 ```
 
-The sync launcher should:
+The launcher should:
 
-`fetch/pull -> rebuild 4 Base64 chunks -> verify SHA-256 -> install 42 PNGs -> run 5-step P3.2 FAST gate`.
+`fetch/pull -> locate ZIP -> verify SHA-256 -> install 42 PNGs -> run 5-step P3.2 FAST gate`.
 
-If FAST is green, visually open:
+If FAST is green, run:
 
 ```bat
 Preview-P3-2-Female-Directions.cmd
 ```
 
-The preview shows `down/right/up` at `0.75x` and `1.35x`. Review identity/proportions, horn/hair roots, shoulder/hip continuity, common foot registration, right-side readability, back-view face leakage and 0.75x silhouette.
+Review front/side/back identity, horn/hair roots, shoulder/hip continuity, common foot registration, right-side readability, back-view face leakage and the `0.75x` silhouette.
 
-Only tune practical pivots if that real preview proves a mismatch.
+Only tune practical pivots if the real preview proves a mismatch.
 
 ---
 
