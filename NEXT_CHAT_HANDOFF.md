@@ -106,12 +106,38 @@ Relevant implementation:
 
 Live sect map remains untouched.
 
-## NEXT WINDOWS ACTION
+## Important sync bootstrap issue + fix
 
-Close all Godot windows, then run:
+A Windows run of `Sync-P3-2-Female-StageA.cmd` stopped before fetch with:
+
+```text
+[STOP] Local changes detected.
+?? godot/assets/
+```
+
+Cause: the local checkout still used the old down-only `.gitignore`, while the newly generated right/up PNGs already existed. Those generated files therefore blocked the pull that would have brought the updated ignore rules.
+
+Live `main` now protects against this in two ways:
+
+1. `.gitignore` ignores the exact generated down/right/up Stage A proof PNG patterns only;
+2. `Sync-P3-2-Female-StageA.cmd` independently permits only those exact untracked generated Stage A PNG paths through the dirty-worktree guard; all other local changes still stop sync.
+
+Sync guard fix commit: `7a8839bb3c6a9557e3e652c80619d2421f21c107`.
+
+A checkout still on the old launcher needs one manual non-destructive bootstrap pull:
 
 ```bat
 cd /d "E:\0.2. TongMonBaDao"
+git pull --ff-only origin main
+```
+
+Do not reset/clean/delete anything.
+
+## NEXT WINDOWS ACTION
+
+With Godot closed, run the one-time bootstrap pull above, then:
+
+```bat
 Sync-P3-2-Female-StageA.cmd
 ```
 
