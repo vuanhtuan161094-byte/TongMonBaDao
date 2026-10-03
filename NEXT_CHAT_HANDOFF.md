@@ -25,8 +25,9 @@ Godot: 4.7.2 stable console.
 3. `NEXT_CHAT_HANDOFF.md`;
 4. `docs/DISCIPLE_MASTER_SCHEMA.md`;
 5. `docs/P3_2_MODULAR_ACTOR_SPEC.md`;
-6. related P3 specs;
-7. then inspect live code/tests before editing.
+6. `docs/P3_2_FEMALE_NORMAL_V1_ASSET_PRODUCTION.md` for current female art work;
+7. related P3 specs;
+8. then inspect live code/tests before editing.
 
 ## Runtime-confirmed baseline
 
@@ -113,6 +114,8 @@ Canonical render layers:
 
 `shadow -> aura -> hair_back -> weapon_back -> body -> outfit -> face -> hair_front -> head_accessory -> weapon_front -> accessory`.
 
+One rig uses one `AnimationPlayer`/shared `AnimationLibrary` driving `Bone2D` transforms. Public directions remain `down/right/up/left`. V1 may mirror right motion for left when mirror-safe.
+
 Real Godot gate proved:
 
 - exactly the shared coarse rig contract;
@@ -128,56 +131,80 @@ Current scaffold files:
 
 - `docs/P3_2_MODULAR_ACTOR_SPEC.md`;
 - `docs/P3_2_ASSET_MANIFEST.md`;
+- `docs/P3_2_FEMALE_NORMAL_V1_ASSET_PRODUCTION.md`;
 - `godot/src/presentation/p3/disciple_actor_visual_catalog.gd`;
 - `godot/src/presentation/p3/modular_disciple_actor.gd`;
 - `godot/tests/presentation/p3_2_modular_actor_contract_test.gd`;
 - `tools/godot/Verify-P3-2-Character-Creator.ps1`;
 - `Verify-P3-2-Character-Creator.cmd`.
 
-`Verify-P3-2-Character-Creator.cmd` is now the authoritative Character Creator regression launcher. It reruns the existing cumulative P3.2 gate first, then the shared-rig contract test.
+`Verify-P3-2-Character-Creator.cmd` is the authoritative Character Creator regression launcher. It reruns the existing cumulative P3.2 gate first, then the shared-rig contract test.
 
 Important: `ModularDiscipleActor` is still intentionally isolated and not yet integrated into the live sect map.
 
 Appearance persistence is still intentionally not wired into `DiscipleState`/generator. Add only after the production visual proof, with a backward-compatible contract and no RNG-stream change.
 
-## NEXT ACTIVE WORK — female_normal_v1 production proof
+## female_normal_v1 reference + production contract — NEW LOCK
 
-Do not mass-produce art yet.
+User supplied two female reference images on 2026-10-03:
 
-First proof must use `female_normal_v1` only:
+- a multi-view turnaround-style image used for front/side/back continuity, hair length, horns, dress silhouette and back view;
+- a front-view mature-chibi image used for preferred face/head/body proportion and tasteful feminine styling.
 
-- 1 body;
-- 2 faces;
-- 3 hairs;
-- 2 outfits;
-- 2 weapons;
-- 1 horn/head accessory;
-- several hair/outfit tint presets;
-- shared idle + walk, public 4 directions;
-- at least 6 visual combinations sharing one rig/AnimationLibrary.
+Do not generate a random new style instead of these references.
 
-Acceptance checks:
+Detailed production authority:
 
-- common foot registration;
-- no face/hair drift;
-- outfit limbs align to bones;
-- weapon front/back works by direction;
-- tint masks do not affect skin/face/metal unintentionally;
-- mirror behavior does not break z-order/handedness;
-- all combinations share the same motion library;
-- readable at zoom 0.75 / 1.0 / 1.35.
+`docs/P3_2_FEMALE_NORMAL_V1_ASSET_PRODUCTION.md`
 
-## Next development order
+Locked asset rules:
 
-1. create or approve **one real `female_normal_v1` art sample** on the locked `128×128` canvas;
-2. lock exact practical rig pivots from that real art sample;
-3. author the shared idle + walk `AnimationLibrary`;
-4. build first coarse cutout body/outfit bundle + face/hair/weapon/horn;
-5. create tint-mask shader/presets;
-6. create sandbox proving 6 combinations on the same rig;
-7. run a real Godot visual-slice gate;
-8. only then integrate `ModularDiscipleActor` into the live map;
-9. add backward-compatible `appearance_profile` persistence;
-10. then expand to `male_normal_v1`, more actions and larger art volume.
+- `down` = authored front;
+- `right` = authored right-facing side;
+- `up` = authored back;
+- `left` = mirror from `right` while mirror-safe;
+- runtime cutouts are full-canvas `128×128` RGBA PNG;
+- foot anchor remains `(64,104)`;
+- no auto-crop/recenter per piece;
+- no chroma green in runtime PNG;
+- file pattern `<variant>_<direction>_<piece>.png`;
+- tint mask pattern `<variant>_<direction>_<piece>_tint_mask.png`;
+- anatomical `l/r` always means the character's own left/right;
+- 3/4 views are design references only, not runtime directions;
+- artist should build layered master views and batch-export pieces rather than redraw every runtime PNG separately.
 
-Do not call the production visual slice PASS until the real art/animation proof is visible and its real Godot gate is green.
+Piece contracts are now locked for:
+
+- `body_01`: `head/torso/arm_l/arm_r/leg_l/leg_r`;
+- `face_01..02`: `main`, front + side; hidden on back;
+- `hair_01..03`: `back/front`;
+- `outfit_01..02`: `torso/arm_l/arm_r/leg_l/leg_r/drape_back/drape_front`;
+- `horn_01`: `main` head accessory;
+- `weapon_01..02`: `main` or explicit split back/front only when required.
+
+The existing scaffold rest positions are only starting pivots. Do not overwrite bone IDs/hierarchy or `(64,104)` registration. Exact practical pivots are tuned only after the real Stage A baseline art is attached.
+
+## NEXT ACTIVE WORK — Stage A pivot-lock sample
+
+Do not mass-produce variants yet.
+
+Build one baseline appearance only:
+
+- `body_01`;
+- `face_01`;
+- `hair_01`;
+- `outfit_01`;
+- `horn_01`;
+- authored views `down/right/up`.
+
+Then export with the locked naming/registration contract, attach to `ModularDiscipleActor`, inspect alignment, and lock practical pivots from the real art.
+
+After Stage A:
+
+1. shared idle/walk motion proof;
+2. then add face/hair/outfit/weapon variants + tint masks;
+3. then six-combination sandbox;
+4. then real visual-slice Godot gate;
+5. only then live-map integration and appearance persistence.
+
+Do not call the production visual slice PASS until real art/animation is visible and its real Godot gate is green.
