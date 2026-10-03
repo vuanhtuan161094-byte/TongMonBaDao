@@ -13,6 +13,7 @@ Nó không thay `P3_ASSET_REGISTRY.json`, Art Bible hay MD hạng mục.
 
 - `P3_ASSET_REGISTRY.json` = trạng thái máy đọc được.
 - file này = inventory/phục hồi source dễ đọc cho người và AI.
+- `P3_SOURCE_RECOVERY_LOG.md` = lịch sử đã tìm ở đâu / kết quả gì để không lặp search mù.
 - MD hạng mục = art/UX contract chi tiết.
 
 Không được coi `visual approved` đồng nghĩa với `source file đã được bảo quản`.
@@ -37,6 +38,14 @@ Nếu source được phục hồi/ingest, cập nhật class lên S2/S1/S0 tư�
 
 ## A. Công trình — visual đã duyệt, source bytes cần phục hồi
 
+Historical conversation locator đã phục hồi:
+
+- project conversation group `Tông Môn Bá Đạo`;
+- khoảng **2026-10-01 22:00 UTC**;
+- user xác nhận bộ building family, sau đó khóa đủ 8 building canonical.
+
+Không có exact image ID/filename/URL/attachment/checksum trong recovered context. Git history cũng không chứa building source bytes.
+
 | Asset ID | Tên | Visual | Source class | Exact source hiện có? | Hành động |
 |---|---|---|---|---|---|
 | `building.sect_main_hall` | Tông Môn Đại Điện | Approved | S3 | Không | Phục hồi đúng ảnh đã duyệt; sau đó ingest |
@@ -57,7 +66,7 @@ Nếu source được phục hồi/ingest, cập nhật class lên S2/S1/S0 tư�
 | Asset ID | Hạng mục | Trạng thái | Source class | Ghi chú |
 |---|---|---|---|---|
 | `environment.terrain_base` | Base terrain | Design approved | S4 | Pipeline đã khóa, chưa xác nhận exact approved source bytes |
-| `environment.path_grid128` | Dirt/stone path grid 128 | Historical production existed | S3 | Từng có pack/atlas, nhưng exact file chưa phục hồi |
+| `environment.path_grid128` | Dirt/stone path grid 128 | Historical production existed | S3 | Từng có pack/atlas, nhưng exact file và exact chat locator chưa phục hồi |
 | `environment.water_stream` | Water/stream | Design approved | S4 | Chưa có canonical exact source trong repo |
 | `environment.deco_vegetation` | Trees/rocks/deco | Design approved | S4 | Chưa có canonical production set |
 
@@ -67,9 +76,17 @@ Nếu source được phục hồi/ingest, cập nhật class lên S2/S1/S0 tư�
 
 ## C. UI / UX visual source
 
+V3 conversation locator đã phục hồi ở current project chat:
+
+- khoảng **2026-10-03 11:42–11:46 UTC**;
+- plan V3 được user duyệt trước generation;
+- sau generation, user xác nhận thích asset/mood này hơn bản trước.
+
+Exact image ID/file locator hiện chưa durable/recover được.
+
 | Asset ID | Hạng mục | Visual | Source class | Hành động |
 |---|---|---|---|---|
-| `ui.main_map.v3_mood` | V3 main-map mood reference | Approved mood | S3 | Exact generated image chưa được ingest/locator bền vững; giữ mood authority, không coi nó là runtime UI pack |
+| `ui.main_map.v3_mood` | V3 main-map mood reference | Approved mood | S3 | Exact generated image chưa được ingest; giữ conversation locator + written mood authority |
 | `ui.skin.production_set` | Panel/button/tab/icon runtime family | Pending | S4 | Sản xuất mới theo `P3_UI_SKIN_AND_ICONOGRAPHY.md` sau plan |
 
 V3 chỉ là **mood/layout reference**, không thay building source và không phải bộ runtime 9-slice/icon hoàn chỉnh.
@@ -95,9 +112,9 @@ Không phải mọi source thiếu đều cần phục hồi ngay.
 
 ### P0 — cần trước Mockup V3 production
 
-1. 8 building approved sources;
-2. V3 mood reference exact image nếu còn recover được;
-3. historical path grid 128 pack nếu còn recover được.
+1. 8 building approved sources — historical conversation locator đã có, exact bytes còn thiếu;
+2. V3 mood reference exact image — conversation locator đã có, exact bytes còn thiếu;
+3. historical path grid 128 pack — exact locator/bytes còn thiếu.
 
 ### P1 — cần trước runtime art production rộng
 
@@ -123,6 +140,8 @@ Khi tìm thấy candidate source:
 6. runtime export vào `godot/assets/p3/...` và giữ import metadata theo Godot production policy.
 
 Không overwrite lịch sử bằng regenerated lookalike.
+
+Chi tiết search/recovery attempt xem `docs/P3_SOURCE_RECOVERY_LOG.md`.
 
 ---
 
