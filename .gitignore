@@ -3,3 +3,13 @@
 /VERIFY*.txt
 /*_DIAGNOSTIC.txt
 /*DIAGNOSTIC*.txt
+
+# P3.2 female_normal_v1 Stage A runtime PNGs are reconstructed locally from
+# the tracked verified Base64 pack. Keep the exact generated proof files out of
+# git status without hiding unrelated/future character art.
+/godot/assets/p3/character_creator/parts/female_normal_v1/body/body_01/body_01_down_*.png
+/godot/assets/p3/character_creator/parts/female_normal_v1/face/face_01/face_01_down.png
+/godot/assets/p3/character_creator/parts/female_normal_v1/hair/hair_01/hair_01_down_back.png
+/godot/assets/p3/character_creator/parts/female_normal_v1/hair/hair_01/hair_01_down_front.png
+/godot/assets/p3/character_creator/parts/female_normal_v1/outfit/outfit_01/outfit_01_down_*.png
+/godot/assets/p3/character_creator/parts/female_normal_v1/head_accessory/horn_01/horn_01_down.png
