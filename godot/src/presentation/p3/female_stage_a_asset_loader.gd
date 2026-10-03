@@ -114,7 +114,8 @@ static func apply_direction(actor: ModularDiscipleActor, direction: StringName) 
         result["invalid"].append("direction:%s" % str(direction))
         return result
 
-    for layer_name in LAYERS_TO_CLEAR:
+    for raw_layer_name in LAYERS_TO_CLEAR:
+        var layer_name := StringName(raw_layer_name)
         actor.clear_layer_components(layer_name)
 
     var components := components_for_direction(direction)
