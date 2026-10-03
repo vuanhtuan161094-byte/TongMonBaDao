@@ -2,6 +2,8 @@
   "schema_version": 1,
   "updated": "2026-10-03",
   "purpose": "Machine-readable presentation asset status. Detail lives in authority docs; this file tracks identity, ownership, evidence and runtime state without duplicating art specs.",
+  "static_validator": "tools/validate_p3_presentation.py",
+  "static_audit_is_not_runtime_gate": true,
   "status_axes": {
     "design_status": ["planned", "approved", "superseded"],
     "source_status": ["missing", "external_reference", "external_pack", "repo_source", "superseded"],
