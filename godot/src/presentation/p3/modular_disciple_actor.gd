@@ -231,8 +231,10 @@ func _build_bone_hierarchy() -> void:
             parent_node = bones[str(parent_id)] as Bone2D
         var bone := Bone2D.new()
         bone.name = _pascal_case(str(bone_id))
+        bone.set_autocalculate_length_and_angle(false)
         bone.position = DiscipleActorVisualCatalog.bone_rest_position(bone_id)
         parent_node.add_child(bone)
+        bone.rest = bone.transform
         bones[str(bone_id)] = bone
 
 func _emit_actor_pressed() -> void:
@@ -247,7 +249,7 @@ func _play_shared_animation() -> void:
     var animation := _best_available_animation()
     if animation == &"":
         return
-    if animation_player.current_animation != str(animation) or not animation_player.is_playing():
+    if animation_player.current_animation != animation or not animation_player.is_playing():
         animation_player.play(animation)
 
 func _best_available_animation() -> StringName:
