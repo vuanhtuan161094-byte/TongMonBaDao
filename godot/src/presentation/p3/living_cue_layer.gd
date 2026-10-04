@@ -13,7 +13,7 @@ var cue_by_key: Dictionary = {}
 func _ready() -> void:
     mouse_filter = Control.MOUSE_FILTER_IGNORE
     clip_contents = false
-    z_index = 95
+    z_index = 50
 
 func show_cues(cues: Array[Dictionary], anchor_positions: Dictionary) -> void:
     var wanted: Dictionary = {}
@@ -84,7 +84,8 @@ func _place_button(button: Button, cue: Dictionary, anchor: Vector2) -> void:
 func _on_cue_pressed(key: String) -> void:
     if not cue_by_key.has(key):
         return
-    cue_pressed.emit((cue_by_key[key] as Dictionary).duplicate(true))
+    var cue: Dictionary = cue_by_key[key]
+    cue_pressed.emit(cue.duplicate(true))
 
 func _severity_modulate(severity: int) -> Color:
     match severity:
