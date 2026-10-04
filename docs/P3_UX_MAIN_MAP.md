@@ -1,7 +1,7 @@
 # P3 — MAIN MAP UI/UX AUTHORITY
 
-Date: 2026-10-03
-Status: CANONICAL MAIN-MAP UX CONTRACT
+Date: 2026-10-04
+Status: CANONICAL MAIN-MAP UX CONTRACT — V3.1/V3.2 LOCKED
 
 ## 0. Mục tiêu
 
@@ -9,11 +9,15 @@ Authority cho màn Tông Môn/home screen 1280×720.
 
 Reference ngoài chỉ dùng để học hierarchy/nhịp thao tác. Asset/text/map phải là của Tông Môn Bá Đạo.
 
-Các video user gửi ngày 2026-10-03 củng cố quyết định: **map-first, HUD mỏng, deep screens tách lớp, không sidebar nặng thường trực**.
+User đã chốt flow V3 ngày 2026-10-04:
+
+`Main Map V3.1 -> tap disciple -> right summary panel V3.2 -> Xem chi tiết -> Disciple Deep Screen V3.3`.
+
+Map-first vẫn là nguyên tắc gốc. Panel phải **không mở mặc định**; nó chỉ xuất hiện khi người chơi chọn một đệ tử.
 
 ---
 
-# 1. Visual hierarchy
+# 1. Visual hierarchy — V3.1 idle
 
 Ở trạng thái bình thường:
 
@@ -22,7 +26,10 @@ Các video user gửi ngày 2026-10-03 củng cố quyết định: **map-first,
 - task rail trái mỏng và thu gọn được;
 - bottom/edge navigation gọn;
 - bubble/status nằm trực tiếp trên world target;
-- không có detail sidebar lớn mở mặc định.
+- không có detail sidebar lớn mở mặc định;
+- terrain sáng, thoáng, có negative space;
+- công trình tương đối nhỏ hơn màn hình, không dồn thành city-builder đặc;
+- NPC/bubble tạo cảm giác tông môn đang sống.
 
 Map phải là thứ mắt nhìn vào đầu tiên.
 
@@ -54,6 +61,8 @@ Không:
 - bấm task có thể focus target phù hợp;
 - không chiếm nửa màn hình dọc.
 
+**Vai trò canonical:** bên trái = nhiệm vụ / việc cần làm. Không dùng bên trái làm disciple detail panel.
+
 ---
 
 # 4. Building labels
@@ -69,40 +78,65 @@ Mục tiêu là giảm clutter và giữ map tự nhiên.
 
 ---
 
-# 5. Tap building flow
+# 5. Tap building flow — chưa visual-lock
 
-Canonical:
+Target hiện tại:
 
-`tap building -> camera focus nhẹ + selected marker -> compact quick popup -> action/deep detail nếu cần`
+`tap building -> camera focus nhẹ + selected marker -> contextual summary -> Quản lý/Chi tiết nếu hệ sâu`
 
-Quick popup chỉ nên có:
-
-- tên/cấp;
-- trạng thái chính;
-- worker/output/input quan trọng;
-- 1–2 action chính;
-- nút mở chi tiết nếu hệ sâu.
-
-Không mở giant panel ngay cho mọi tap thường.
+Chi tiết panel/popup công trình sẽ được khóa ở bước UX kế tiếp. Không lấy disciple panel rồi áp máy móc cho building trước khi user duyệt.
 
 ---
 
-# 6. Tap disciple flow
+# 6. Tap disciple flow — V3.2 LOCKED
 
 Canonical:
 
-`tap disciple -> focus + selection ring -> compact identity/action card`
+`tap disciple -> focus nhẹ + selection ring -> right vertical summary panel`
 
-Quick card chỉ hiện:
+Không dùng floating tooltip/card nhỏ giữa map nữa.
 
-- tên;
-- cảnh giới;
-- action/location;
-- HP/stamina hoặc alert nếu cần;
-- 1–2 quick command;
-- nút `Chi tiết` mở màn Đệ Tử đầy đủ.
+### Vị trí
 
-Không nhét 6 tab + full stats vào sidebar map.
+- panel neo **bên phải**;
+- từ dưới top HUD xuống gần bottom navigation;
+- target width khoảng **280–320 px** ở logical 1280×720;
+- map vẫn hoạt động/nhìn thấy ở phần còn lại;
+- panel không scale cùng camera map.
+
+### Nội dung theo thứ tự
+
+1. tên + portrait/profile;
+2. phẩm chất/tag/chức phận cần thiết;
+3. cảnh giới;
+4. **HP**;
+5. **Thể lực**;
+6. **Tu vi / tiến độ cảnh giới**;
+7. **Công việc hiện tại**;
+8. **Trạng thái** — ví dụ Làm việc / Nghỉ / Tu luyện / Bị thương;
+9. **Vị trí hiện tại** — ví dụ Dược Phòng;
+10. thuộc tính chiến đấu/chính cần đọc nhanh;
+11. 3–4 icon kỹ năng/công pháp đang dùng hoặc slot khóa;
+12. cue nhỏ cho Huyết Mạch/Thể Chất chỉ khi thông tin đã được phát hiện;
+13. action theo ngữ cảnh;
+14. nút **Xem chi tiết**.
+
+Panel là **operational summary**, không phải full character sheet.
+
+### Interaction
+
+- tap đệ tử khác -> panel đổi sang người mới ngay;
+- selected actor vẫn có selection ring trên map;
+- tap vùng trống hoặc X -> đóng panel, trả full map;
+- camera không auto-follow actor liên tục;
+- `Xem chi tiết` -> mở V3.3;
+- đóng V3.3 -> quay về map và giữ selected disciple/panel nếu context còn hợp lệ.
+
+### Hidden data
+
+- latent Bloodline/Physique/trait không được leak;
+- chưa phát hiện -> `Chưa xác định` hoặc không hiện cue;
+- không dùng màu/icon vô tình tiết lộ hidden type.
 
 ---
 
@@ -113,27 +147,30 @@ Các hệ sâu như:
 - hồ sơ đệ tử;
 - công pháp;
 - trang bị;
+- Huyết Mạch;
+- Thể Chất;
+- Quan hệ;
 - inventory chi tiết;
 - nhiệm vụ/sổ tay lớn;
 - upgrade tree;
 
-được phép dùng parchment overlay gần full-screen và dim map phía sau.
+dùng parchment overlay/page riêng.
 
-Routine management vẫn ưu tiên popup nhỏ để giữ world context.
+V3.2 không chứa 6 tab. Sáu tab thuộc V3.3.
 
 ---
 
 # 8. Bottom/edge navigation
 
-Target 4–5 entry thường trực, không nhồi mọi hệ thống:
+Target 5 entry thường trực:
 
-- Tông Môn/Home;
+- Tông Môn;
 - Đệ Tử;
-- Công Trình hoặc Xây Dựng;
-- Nhiệm Vụ / Sổ;
-- Thế Giới / Bản Đồ.
+- Xây Dựng/Công Trình;
+- Nhiệm Vụ;
+- Thế Giới/Bản Đồ.
 
-Kho/Chiêu Hiền/Kỳ Vật có thể là contextual/secondary entry tùy phase, không bắt buộc tất cả nằm trên dock.
+Kho/Chiêu Hiền/Kỳ Vật có thể là contextual/secondary entry tùy phase.
 
 ---
 
@@ -146,9 +183,9 @@ Map phải có cảm giác tự vận hành:
 - speech/event bubble tiết chế;
 - production-ready/upgrade alert;
 - heal/rest/breakthrough warning;
-- một số ambient activity tại building.
+- ambient activity tại building.
 
-Không spam red dot hoặc bubble trên mọi object.
+Baseline V3.1: khoảng 8–12 actor visible và chỉ 1–3 bubble/action cue nổi bật cùng lúc.
 
 ---
 
@@ -162,23 +199,24 @@ Giữ locked runtime contract:
 - pinch/wheel anchored zoom;
 - one-finger/mouse drag pan;
 - camera chỉ transform map;
-- HUD/popup không scale theo map;
+- HUD/panel không scale theo map;
 - focus target không auto-follow liên tục.
 
 ---
 
-# 11. Main-map style
-
-UI/map mood user hiện thích:
+# 11. Main-map style — V3.1 locked direction
 
 - hand-painted xianxia mobile;
+- sáng, thoáng, hơi thủy mặc;
+- terrain nhạt hơn và có negative space;
+- công trình không phóng quá lớn;
 - giấy ngà, ink line, jade muted, bronze/gold accent;
-- sáng, dễ đọc, có hơi thở đời sống;
-- không dark-heavy toàn màn;
-- không SaaS;
-- không glossy fantasy UI.
+- NPC nhỏ nhưng readable;
+- không dark-heavy;
+- không palace fantasy glossy;
+- không SaaS/dashboard.
 
-Công trình phải theo `P3_ASSET_BUILDINGS.md`, không theo kiến trúc ngẫu nhiên của mockup.
+Công trình canonical theo `P3_ASSET_BUILDINGS.md`; mockup không có quyền thay thiết kế building đã duyệt.
 
 ---
 
@@ -187,14 +225,16 @@ Công trình phải theo `P3_ASSET_BUILDINGS.md`, không theo kiến trúc ngẫ
 Test tối thiểu:
 
 1. pan/zoom map bằng touch/mouse;
-2. tap 3 building khác nhau;
-3. tap actor đang di chuyển;
-4. focus target rồi pan đi, dùng nút focus quay lại;
-5. open/close compact popup;
-6. open deep disciple screen rồi quay lại map;
-7. task rail collapse/expand;
-8. đọc resource/top bar ở 1280×720;
-9. kiểm hit target mobile;
-10. kiểm map còn nhìn thấy đủ khi popup mở.
+2. tap actor đang di chuyển -> panel phải mở;
+3. HP/stamina/tu vi đọc được ở 1280×720;
+4. công việc/trạng thái/vị trí phản ánh runtime thật;
+5. tap actor khác -> panel đổi đúng người;
+6. focus target rồi pan đi, dùng focus quay lại;
+7. X/blank tap đóng panel;
+8. `Xem chi tiết` mở V3.3;
+9. đóng V3.3 quay lại đúng map context;
+10. task rail collapse/expand;
+11. kiểm hit target mobile;
+12. kiểm map còn đủ diện tích chơi khi panel phải mở.
 
-Đánh giá theo số thao tác + độ che map, không chỉ theo ảnh đẹp.
+Đánh giá theo số thao tác + độ che map + khả năng đọc trạng thái, không chỉ theo ảnh đẹp.
