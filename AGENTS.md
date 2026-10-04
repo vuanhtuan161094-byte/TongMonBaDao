@@ -20,7 +20,9 @@
 - P2.3 spirit-stone/material economy stays separate from P0 money.
 - Every runtime mutation must preserve invariants.
 - New mechanics need measurable gameplay consequences; labels alone do not count.
-- Never call a phase PASS without its real cumulative Godot gate.
+- Never call a phase PASS without its real final/cumulative Godot gate.
+- During active iteration, use a **FAST gate by default**: parse only changed/adjacent scripts, run the active phase contract, and run the smallest relevant scene smoke. Do **not** rerun locked cumulative baselines after every small patch.
+- Run a **FULL cumulative gate only** when preparing to lock a phase PASS, when a change crosses into a previously locked subsystem, or when regression evidence specifically points into that baseline.
 - Never weaken persistence/determinism/contract tests merely to make a gate pass.
 - `Sync-Main.cmd` is the single stable Windows sync entrypoint. Do not create or instruct phase-specific `Sync-*.cmd` launchers as the primary workflow. For a new gate, add/update only its `Verify-*.cmd`, then instruct `Sync-Main.cmd Verify-<gate>.cmd`. This avoids the bootstrap problem where a newly created sync launcher does not yet exist on local. `Sync-Main.cmd` blocks tracked/staged local edits, but untracked files only produce a warning; it never deletes them, and Git itself must refuse any pull that would overwrite an untracked path.
 - Hidden identity is generated once and persisted. Reveal/awakening/transformation never rerolls it.
@@ -73,6 +75,9 @@ Character Creator remains a supporting anti-clone/presentation system. Minimum c
 
 Regression launchers:
 
+- `Verify-P3-6A-Playable-Slice.cmd` — FAST active-slice verifier; default during P3.6A iteration;
+- `Verify-P3-6A-Playable-Slice-Full.cmd` — FULL cumulative verifier; final/cross-baseline use only;
+
 - `Sync-P3-2-Camera.cmd` — locked P3.1/P3.2 interaction chain;
 - `Verify-P3-2-Character-Creator.cmd` — reruns the cumulative P3.2 chain, then the shared-rig Character Creator contract.
 
@@ -91,7 +96,7 @@ Read before P3/character work in this order:
 
 ## Required development loop
 
-read authority -> narrow scope -> patch -> static review -> cumulative headless tests -> scene smoke -> checkpoint
+read authority -> narrow scope -> patch -> static review -> FAST targeted gate -> scene smoke -> checkpoint; FULL cumulative gate only for final phase lock or justified cross-baseline regression
 
 If local Godot is unavailable, presentation code may continue cautiously, but do not claim runtime PASS without real evidence. Never weaken tests to manufacture green.
 
