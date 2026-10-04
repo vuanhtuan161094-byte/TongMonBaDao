@@ -47,6 +47,9 @@ func _run() -> void:
     var selection_ok := _verify_selection_is_bounded_and_deterministic()
     if not selection_ok:
         return
+    var identity_ok := _verify_hidden_identity_does_not_change_cues(target)
+    if not identity_ok:
+        return
     var tracker_ok := _verify_transient_tracker(target)
     if not tracker_ok:
         return
@@ -167,6 +170,21 @@ func _verify_selection_is_bounded_and_deterministic() -> bool:
         if targets.has(target_key):
             return _fail("More than one primary cue was selected for the same target.")
         targets[target_key] = true
+    return true
+
+func _verify_hidden_identity_does_not_change_cues(disciple: DiscipleState) -> bool:
+    _normalize_disciple_for_state_test(disciple)
+    disciple.stamina = 20.0
+    var before := _keys(resolver.resolve_state_cues(state, cultivation, equipment))
+
+    disciple.latent_identity_seed += 99991
+    disciple.profile_seed += 77
+    disciple.sex_id = &"p3_5_hidden_test"
+    disciple.profession_traits = ["forge_talent", "miner_instinct", "diligent"]
+    var after := _keys(resolver.resolve_state_cues(state, cultivation, equipment))
+
+    if before != after:
+        return _fail("Hidden identity/trait fields changed living-cue output.")
     return true
 
 func _verify_transient_tracker(disciple: DiscipleState) -> bool:
