@@ -138,7 +138,7 @@ Accepted:
 
 Dark hair + skirt merging at `0.75x` is future art contrast work, not a pivot defect. **No bone rest positions were changed.**
 
-## Current active task — P3.6 real gameplay-loop playtest
+## Current active task — P3.6A playable vertical slice / productization
 
 Three-direction Stage A is now runtime-green and visually accepted:
 
@@ -197,20 +197,24 @@ P3.5 first real Windows attempt failed during GDScript parse because `LivingCueT
 
 ## NEXT WINDOWS ACTION
 
-P3.5 is **REAL PASS** on Windows Godot 4.7.2.
+Do **not** ask the user to run P3.6 playtest again yet.
 
-User supplied:
+Real user video on 2026-10-05 proved the current main scene is still a QA/debug shell rather than a player-ready game surface.
 
-- `P3.5 LIVING CUE CORE TEST PASS`;
-- `P3.5 LIVING CUE MAP INTEGRATION TEST PASS`;
-- `P3.5 LIVING SECT CUES GATE: PASS`;
-- `P3.5 LIVING SECT CUES: PASS`.
+P3.6 status: **BLOCKED / NOT READY**.
 
-Next run:
+Next task: implement `docs/P3_6A_PLAYABLE_VERTICAL_SLICE_SPEC.md`.
 
-`Sync-Main.cmd Preview-P3-6-Sect-Master-Loop.cmd`
+Priority order inside P3.6A:
 
-This opens the real main scene for a 5–10 minute P3.6 product-loop playtest. Do not claim P3.6 accepted until user reports the live interaction result.
+1. remove all player-visible P3.x/internal/debug copy;
+2. remove/hide the P3.1 demo checklist from normal play;
+3. make building/disciple panels concise and player-facing;
+4. replace debug building rectangles/letter markers with an approved/player-readable visual solution using the locked presentation workflow;
+5. make the already-existing autonomous loop and consequences visually understandable;
+6. preserve all P3.3/P3.4/P3.5 runtime-green behavior.
+
+Only after a real Windows visual/video check of P3.6A should the 5–10 minute P3.6 playtest resume.
 
 ## P3.4 — REAL PASS / LOCKED
 
