@@ -16,7 +16,7 @@ Real Windows + Godot 4.7.2 evidence confirms:
 - P3.3 disciple operational flow (right summary -> real quick orders -> 6-tab deep screen -> context restore): **REAL PASS** on Windows Godot 4.7.2. Contract test + live scene smoke + cumulative P3.2 baseline all green.
 - P3.4 building management: **REAL PASS / LOCKED** on Windows Godot 4.7.2. P3.4A read-only panel, P3.4B people management and P3.4C real system actions all green.
 - P3.5 living sect cues: **REAL PASS / LOCKED** on Windows Godot 4.7.2. Core resolver/tracker, live-map routing and scene smoke all green; max 3 cues.
-- P3.6 Sect Master gameplay loop: design locked, but **REAL PLAYTEST BLOCKED / NOT READY** after user video review. The current live scene is still a QA/debug shell. P3.6A playable vertical slice/productization is the next task.
+- P3.6 Sect Master gameplay loop: design locked; product playtest remains blocked until **P3.6A** is accepted. P3.6A player-facing productization is **IMPLEMENTED ON MAIN / RUNTIME + VISUAL REVIEW PENDING**.
 
 Latest real 3-direction FAST tail supplied by the user:
 
@@ -181,13 +181,29 @@ P3.5 first Windows attempt exposed a `seed()` naming collision; it was fixed by 
 
 P3.2, P3.3, full P3.4 and P3.5 are **REAL PASS / LOCKED**.
 
-P3.6 manual gameplay-loop acceptance is **BLOCKED / NOT READY** based on the user's real Windows video on 2026-10-05.
+P3.6A playable vertical slice is now **IMPLEMENTED ON MAIN / RUNTIME + VISUAL REVIEW PENDING**.
 
-Observed blocker: the live scene is technically functional but still reads as a QA/debug shell (placeholder building boxes/letter markers, internal P3.x wording, demo checklist, documentation-like operation panels). It is not a valid player-facing 5–10 minute game build.
+Run:
 
-Next phase is **P3.6A — Playable Vertical Slice / Productization**, authority: `docs/P3_6A_PLAYABLE_VERTICAL_SLICE_SPEC.md`.
+`Sync-Main.cmd Verify-P3-6A-Playable-Slice.cmd`
 
-Do not ask the user to run the P3.6 playtest again until P3.6A has a real Windows visual acceptance.
+This cumulative gate verifies:
+
+- full P3.5/P3.4/P3.3 baseline;
+- demo task/checklist is absent from normal play;
+- bottom navigation exposes only usable entries;
+- all 8 buildings use player-readable map tokens with real hit targets;
+- no P3/P2/P1/internal debug copy leaks into building/disciple player surfaces;
+- real Sect Master command still advances simulation and updates visible actor destination;
+- live scene smoke.
+
+If gate is green, run:
+
+`Preview-P3-6A-Playable-Slice.cmd`
+
+and review the real scene visually. Do not resume the P3.6 5–10 minute loop playtest until the user accepts that P3.6A now looks/reads like a playable game surface.
+
+No production art was generated in this pass. Procedural building silhouettes are temporary runtime stand-ins and do not replace approved building art authority.
 
 # Current development priority — functionality first
 
