@@ -108,18 +108,19 @@ Real Windows + Godot 4.7.2 confirms:
 - P3.1: PASS;
 - P3.2 camera/map-selection/real disciple tabs: PASS;
 - P3.2 Character Creator shared-rig scaffold: PASS;
-- `female_normal_v1` Stage A DOWN/FRONT FAST: PASS.
+- `female_normal_v1` Stage A 3-DIRECTION FAST (down/right/up): PASS; real visual preview accepted.
 
-Real down/front tail:
+Real three-direction tail:
 
 ```text
 P3.2 CHARACTER CREATOR SHARED RIG CONTRACT TEST PASS
 P3.2 FEMALE STAGE A DOWN ASSET CONTRACT TEST PASS
-P3.2 FEMALE STAGE A FAST CHECK: PASS
-FEMALE STAGE A DOWN FAST CHECK: PASS
+P3.2 FEMALE STAGE A 3-DIRECTION ASSET CONTRACT TEST PASS
+P3.2 FEMALE STAGE A 3-DIRECTION FAST CHECK: PASS
+FEMALE STAGE A 3-DIRECTION FAST CHECK: PASS
 ```
 
-Stage A final milestone remains **NOT PASS**. Three-direction FAST + visual review are pending, then later motion/variants/tints/six-combo proof and FULL cumulative acceptance.
+User supplied the real front/side/back preview and accepted the visual proof. Stage A final milestone remains **NOT FULL PASS**; shared motion, variants/tints/six-combo proof and FULL cumulative acceptance are still pending.
 
 ## Down/front visual review — accepted
 
@@ -135,37 +136,24 @@ Accepted:
 
 Dark hair + skirt merging at `0.75x` is future art contrast work, not a pivot defect. **No bone rest positions were changed.**
 
-## Current active task — authored RIGHT + UP proof
+## Current active task — shared idle + walk motion proof
 
-Stage A loader/test/sandbox support:
+Three-direction Stage A is now runtime-green and visually accepted:
 
 - `down` = front;
 - `right` = authored side;
 - `up` = authored back;
 - `left` = mirror-right while safe.
 
-Each authored direction has 14 full-canvas `128×128` components, total **42 PNGs**. Foot anchor remains `(64,104)`. `up` face is transparent to prevent face leakage.
+The real Windows FAST gate passed on Godot 4.7.2, then the user reviewed the real preview at map scales. No practical-pivot change is required from this proof.
 
-FAST is still P3.2-only:
+Next target is one shared AnimationLibrary providing:
+- idle down/right/up/left;
+- walk down/right/up/left;
+- left mirrored from right while mirror-safe;
+- no per-disciple animation timelines.
 
-1. import;
-2. shared-rig contract;
-3. down regression;
-4. 3-direction contract;
-5. 3-direction sandbox smoke.
-
-Relevant files:
-
-- `godot/src/presentation/p3/female_stage_a_asset_loader.gd`;
-- `godot/tests/presentation/p3_2_female_stage_a_down_contract_test.gd`;
-- `godot/tests/presentation/p3_2_female_stage_a_directions_contract_test.gd`;
-- `godot/src/presentation/p3/female_stage_a_directions_sandbox.gd`;
-- `godot/scenes/p3/p3_2_female_stage_a_directions_sandbox.tscn`;
-- `Verify-P3-2-Female-StageA.cmd`;
-- `Verify-P3-2-Female-StageA-Full.cmd` — do not run yet;
-- `Preview-P3-2-Female-Directions.cmd`.
-
-Live sect map remains untouched.
+Live sect map remains untouched until the focused motion proof is green.
 
 ## Binary transport issue — resolved design, Windows run pending
 
@@ -193,35 +181,15 @@ Current authoritative diagnostic pack is an external one-time ZIP:
 
 ## NEXT WINDOWS ACTION
 
-1. User already has/was given the ChatGPT download link for `female_normal_v1_stageA_runtime_pack_v2_quant.zip`.
-2. Leave it in Windows `Downloads`; no manual extraction needed.
-3. Close all Godot windows.
-4. Run:
+Do **not** run `Verify-P3-2-Female-StageA-Full.cmd` yet.
 
-```bat
-cd /d "E:\0.2. TongMonBaDao"
-Sync-P3-2-Female-StageA.cmd
-```
+Implement shared idle + walk first, then provide a focused Windows launcher that:
+1. runs the shared-rig regression;
+2. runs the new motion contract;
+3. smoke-opens the motion sandbox;
+4. lets the user preview all four public directions.
 
-Sync should pull live main, installer should find the downloaded ZIP, print its SHA, install 42 PNGs, then run the five FAST P3.2 steps.
-
-Expected green tail:
-
-```text
-P3.2 CHARACTER CREATOR SHARED RIG CONTRACT TEST PASS
-P3.2 FEMALE STAGE A DOWN ASSET CONTRACT TEST PASS
-P3.2 FEMALE STAGE A 3-DIRECTION ASSET CONTRACT TEST PASS
-P3.2 FEMALE STAGE A 3-DIRECTION FAST CHECK: PASS
-FEMALE STAGE A 3-DIRECTION FAST CHECK: PASS
-```
-
-If green, run:
-
-```bat
-Preview-P3-2-Female-Directions.cmd
-```
-
-Ask for screenshot. Inspect front/side/back identity, horn/hair roots, shoulder/hip continuity, common foot registration, side readability, no back-face leakage, and `0.75x` silhouette.
+Only after motion is visually accepted should the work move to variants/tints/six-combo proof.
 
 ## UX playtest priority when machine is available
 
