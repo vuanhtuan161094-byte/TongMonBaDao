@@ -6,6 +6,7 @@ const CRITICAL_LIFETIME_MS := 4000
 
 var snapshots: Dictionary = {}
 var active_events: Dictionary = {}
+var observation_now_msec: int = 0
 
 func seed(state: SimulationState) -> void:
     snapshots.clear()
@@ -17,6 +18,7 @@ func seed(state: SimulationState) -> void:
         snapshots[str(disciple.id)] = _snapshot(disciple)
 
 func observe(state: SimulationState, now_msec: int) -> Array[Dictionary]:
+    observation_now_msec = now_msec
     if snapshots.is_empty():
         seed(state)
         return []
@@ -150,7 +152,7 @@ func _emit_event(
         "semantic_group": semantic_group,
         "event": true,
         "stable_key": stable_key,
-        "expires_at_msec": Time.get_ticks_msec() + lifetime_ms
+        "expires_at_msec": observation_now_msec + lifetime_ms
     }
 
 func _expire(now_msec: int) -> void:
