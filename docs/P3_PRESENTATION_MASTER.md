@@ -51,6 +51,7 @@ Nếu quyết định làm thay đổi architecture/pipeline lâu dài, tạo AD
 | V3 core UX flow | `P3_UX_FLOW_V3.md` | V3.1 -> V3.2 right panel -> V3.3 deep screen USER APPROVED |
 | P3.3 disciple operational implementation | `P3_3_DISCIPLE_OPERATIONAL_FLOW_SPEC.md` | Implemented on main; real Godot gate pending |
 | P3.4 building management | `P3_4_BUILDING_MANAGEMENT_SPEC.md` | Design locked; wait for P3.2 live-map + P3.3 Windows gates before implementation |
+| P3.5 living sect cues | `P3_5_LIVING_SECT_CUES_SPEC.md` | Design locked; implement after P3.4 runtime green |
 | Main map UX | `P3_UX_MAIN_MAP.md` | V3.1/V3.2 locked |
 | Building interaction UX | `P3_UX_BUILDING_INTERACTION.md` | Building right-panel + deep management design USER APPROVED |
 
