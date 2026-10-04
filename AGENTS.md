@@ -22,6 +22,7 @@
 - New mechanics need measurable gameplay consequences; labels alone do not count.
 - Never call a phase PASS without its real cumulative Godot gate.
 - Never weaken persistence/determinism/contract tests merely to make a gate pass.
+- Any newly added Windows verification gate must also ship with a root `Sync-*.cmd` launcher that safely checks branch/dirty state, `git fetch`, `git pull --ff-only`, then runs the verifier. When instructing the user, prefer the sync launcher over a raw `Verify-*.cmd` so a newly added file cannot be missing from local.
 - Hidden identity is generated once and persisted. Reveal/awakening/transformation never rerolls it.
 - Before changing a disciple subsystem, reconcile the change against `docs/DISCIPLE_MASTER_SCHEMA.md`; if design changes, update the master first.
 
