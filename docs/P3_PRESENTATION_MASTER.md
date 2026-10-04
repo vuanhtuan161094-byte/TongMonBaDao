@@ -50,7 +50,7 @@ Nếu quyết định làm thay đổi architecture/pipeline lâu dài, tạo AD
 | Tổng thể P3/UI hierarchy | `P3_2_UI_ART_PRODUCTION_SPEC.md`, `P3_REFERENCE_UI_AUDIT.md` | Đã khóa structure |
 | V3 core UX flow | `P3_UX_FLOW_V3.md` | V3.1 -> V3.2 right panel -> V3.3 deep screen USER APPROVED |
 | P3.3 disciple operational implementation | `P3_3_DISCIPLE_OPERATIONAL_FLOW_SPEC.md` | Implemented on main; real Godot gate pending |
-| P3.4 building management | `P3_4_BUILDING_MANAGEMENT_SPEC.md` | P3.4A implemented/runtime pending; P3.4B/C not implemented |
+| P3.4 building management | `P3_4_BUILDING_MANAGEMENT_SPEC.md` | P3.4A real PASS; P3.4B next; P3.4C not implemented |
 | P3.5 living sect cues | `P3_5_LIVING_SECT_CUES_SPEC.md` | Design locked; implement after P3.4 runtime green |
 | P3.6 Sect Master gameplay loop | `P3_6_SECT_MASTER_GAMEPLAY_LOOP_SPEC.md` | Product-loop design locked; cross-phase acceptance authority |
 | Main map UX | `P3_UX_MAIN_MAP.md` | V3.1/V3.2 locked |
