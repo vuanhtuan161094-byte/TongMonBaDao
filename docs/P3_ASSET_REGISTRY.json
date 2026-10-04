@@ -1,15 +1,37 @@
 {
   "schema_version": 1,
-  "updated": "2026-10-03",
+  "updated": "2026-10-04",
   "purpose": "Machine-readable presentation asset status. Detail lives in authority docs; this file tracks identity, source availability, visual evidence and runtime state without duplicating art specs.",
   "static_validator": "tools/validate_p3_presentation.py",
   "source_recovery_manifest": "docs/P3_SOURCE_RECOVERY_MANIFEST.md",
   "static_audit_is_not_runtime_gate": true,
   "status_axes": {
-    "design_status": ["planned", "approved", "superseded"],
-    "source_status": ["missing", "external_reference", "external_pack", "repo_source", "superseded"],
-    "visual_status": ["pending", "approved", "rejected", "superseded"],
-    "runtime_status": ["not_applicable", "not_integrated", "runtime_pending", "runtime_green", "runtime_locked", "superseded"]
+    "design_status": [
+      "planned",
+      "approved",
+      "superseded"
+    ],
+    "source_status": [
+      "missing",
+      "external_reference",
+      "external_pack",
+      "repo_source",
+      "superseded"
+    ],
+    "visual_status": [
+      "pending",
+      "approved",
+      "rejected",
+      "superseded"
+    ],
+    "runtime_status": [
+      "not_applicable",
+      "not_integrated",
+      "runtime_pending",
+      "runtime_green",
+      "runtime_locked",
+      "superseded"
+    ]
   },
   "assets": [
     {
@@ -291,6 +313,54 @@
       "source_size_bytes": 44838,
       "source_sha256": "6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca",
       "runtime_management": "external_diagnostic_pack",
+      "runtime_paths": []
+    },
+    {
+      "id": "ui.ux.v3_1_main_map",
+      "category": "ui_reference",
+      "display_name": "V3.1 Main Map approved UX direction",
+      "authority_doc": "docs/P3_UX_MAIN_MAP.md",
+      "design_status": "approved",
+      "source_status": "missing",
+      "source_evidence_class": "S3",
+      "visual_status": "approved",
+      "runtime_status": "not_integrated",
+      "approved_on": "2026-10-04",
+      "approval_evidence": "User approved V3.1 main-map direction: map-first, brighter/airier ink-wash terrain, smaller relative buildings, more negative space and living NPC/world cues.",
+      "recovery_action": "Recover/ingest the exact approved mockup image if available; written UX authority remains canonical until then.",
+      "runtime_management": "reference_only",
+      "runtime_paths": []
+    },
+    {
+      "id": "ui.ux.v3_2_disciple_right_panel",
+      "category": "ui_reference",
+      "display_name": "V3.2 Disciple right summary panel",
+      "authority_doc": "docs/P3_UX_MAIN_MAP.md",
+      "design_status": "approved",
+      "source_status": "missing",
+      "source_evidence_class": "S3",
+      "visual_status": "approved",
+      "runtime_status": "not_integrated",
+      "approved_on": "2026-10-04",
+      "approval_evidence": "User explicitly approved the long right-side disciple summary panel with HP, stamina, cultivation progress, current work, status, location, key stats, skills and Xem chi tiết.",
+      "recovery_action": "Recover/ingest the exact approved V3.2 mockup if available; do not revert to the superseded floating quick-card layout.",
+      "runtime_management": "reference_only",
+      "runtime_paths": []
+    },
+    {
+      "id": "ui.ux.v3_3_disciple_deep_screen",
+      "category": "ui_reference",
+      "display_name": "V3.3 Disciple deep screen",
+      "authority_doc": "docs/P3_UX_DISCIPLE_SCREEN.md",
+      "design_status": "approved",
+      "source_status": "missing",
+      "source_evidence_class": "S3",
+      "visual_status": "approved",
+      "runtime_status": "not_integrated",
+      "approved_on": "2026-10-04",
+      "approval_evidence": "User approved V3.3 deep disciple screen after V3.2: left roster, large character showcase, detailed content with six real tabs and continuity of HP/stamina/cultivation/work/status/location.",
+      "recovery_action": "Recover/ingest the exact approved V3.3 mockup if available; use docs/P3_UX_FLOW_V3.md as canonical behavior authority.",
+      "runtime_management": "reference_only",
       "runtime_paths": []
     }
   ]
