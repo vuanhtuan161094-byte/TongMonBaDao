@@ -1,7 +1,7 @@
 # P3.6A — PLAYABLE VERTICAL SLICE / BIẾN DEBUG SHELL THÀNH GAME CÓ THỂ CHƠI
 
 Date: 2026-10-05
-Status: IMPLEMENTED ON MAIN / RUNTIME + REAL VISUAL REVIEW PENDING
+Status: REAL RUNTIME PASS / REAL VISUAL REVIEW PENDING
 
 ## 0.1. Implemented slice
 
@@ -23,10 +23,22 @@ Implemented on `main`:
 
 Important: the procedural building silhouettes are **temporary runtime presentation**, not replacement approved production building art. Existing approved building visual authority/source status remains unchanged.
 
-P3.6A is **not PASS** until:
+Runtime gate status: **PASS** on real Windows Godot 4.7.2. The user supplied `P3.6A PLAYABLE SLICE TEST PASS`, `P3.6A PLAYABLE VERTICAL SLICE GATE: PASS`, and `P3.6A PLAYABLE VERTICAL SLICE: PASS`.
 
-1. real Windows Godot 4.7.2 cumulative gate is green;
-2. user reviews the real preview/video and confirms the scene now reads as a game rather than a QA board.
+P3.6A final product acceptance still requires the user to review the real preview/video and confirm the scene now reads as a game rather than a QA board.
+
+---
+
+## 0.2. FAST verification policy
+
+During P3.6A iteration:
+
+- `Verify-P3-6A-Playable-Slice.cmd` is the default FAST verifier;
+- it checks changed P3.6A scripts, the P3.6A contract, and live scene smoke only;
+- `Verify-P3-6A-Playable-Slice-Full.cmd` preserves the cumulative P3.3–P3.5 chain;
+- FULL is for final phase lock or justified cross-baseline regression only.
+
+The FULL cumulative gate already passed in the current runtime acceptance cycle.
 
 ---
 
