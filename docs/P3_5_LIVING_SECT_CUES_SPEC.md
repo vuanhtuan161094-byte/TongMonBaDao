@@ -1,7 +1,7 @@
 # P3.5 — LIVING SECT CUES / TÔNG MÔN SỐNG TRÊN MAP
 
 Date: 2026-10-04  
-Status: DESIGN LOCKED; IMPLEMENTED ON MAIN / RUNTIME PENDING
+Status: REAL PASS / LOCKED ON WINDOWS GODOT 4.7.2
 
 ## Runtime implementation status
 
@@ -33,7 +33,7 @@ Files:
 - `Verify-P3-5-Living-Cues.cmd`;
 - `tools/godot/Verify-P3-5-Living-Cues.ps1`.
 
-P3.5 is **not PASS** until the real Windows Godot 4.7.2 cumulative gate is green.
+P3.5 is **REAL PASS** on Windows Godot 4.7.2: core resolver/tracker, live-map integration and scene smoke are green.
 
 ---
 
