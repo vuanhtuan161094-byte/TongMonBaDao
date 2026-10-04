@@ -3,7 +3,7 @@ setlocal
 cd /d "%~dp0"
 
 echo ========================================================
-echo   TONG MON BA DAO - FEMALE STAGE A FAST CHECK
+echo   TONG MON BA DAO - FEMALE STAGE A + MOTION FAST CHECK
 echo ========================================================
 echo.
 echo FAST P3.2 check only:
@@ -12,6 +12,8 @@ echo - Character Creator shared-rig contract
 echo - down/front regression contract
 echo - authored DOWN / RIGHT / UP asset contract
 echo - authored direction sandbox smoke
+echo - shared IDLE/WALK motion contract
+echo - shared motion sandbox smoke
 echo.
 echo It does NOT rerun P0-P2.12 on every art/pivot iteration.
 echo Full cumulative verification is a separate final gate.
@@ -22,9 +24,9 @@ set "EXIT_CODE=%ERRORLEVEL%"
 
 echo.
 if "%EXIT_CODE%"=="0" (
-    echo FEMALE STAGE A 3-DIRECTION FAST CHECK: PASS
+    echo FEMALE STAGE A + SHARED MOTION FAST CHECK: PASS
 ) else (
-    echo FEMALE STAGE A 3-DIRECTION FAST CHECK: FAIL ^(exit %EXIT_CODE%^)
+    echo FEMALE STAGE A + SHARED MOTION FAST CHECK: FAIL ^(exit %EXIT_CODE%^)
 )
 
 echo.
