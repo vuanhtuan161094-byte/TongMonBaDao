@@ -138,7 +138,7 @@ Accepted:
 
 Dark hair + skirt merging at `0.75x` is future art contrast work, not a pivot defect. **No bone rest positions were changed.**
 
-## Current active task — P3.3 disciple operational flow (runtime pending)
+## Current active task — P3.4A read-only building operation panel
 
 Three-direction Stage A is now runtime-green and visually accepted:
 
@@ -192,21 +192,16 @@ Current authoritative diagnostic pack is an external one-time ZIP:
 
 ## NEXT WINDOWS ACTION
 
-P3.2 live modular female map integration is now **REAL PASS** on Windows Godot 4.7.2.
+P3.3 is now **REAL PASS** on Windows Godot 4.7.2.
 
-User supplied the successful `[8/8]` tail on 2026-10-04:
+User supplied on 2026-10-04:
 
-- `P3.2 LIVE MODULAR FEMALE MAP INTEGRATION TEST PASS`;
-- `P3.2 LIVE MODULAR FEMALE MAP INTEGRATION FAST CHECK: PASS`;
-- `FEMALE STAGE A + SHARED MOTION FAST CHECK: PASS`.
+- `P3.3 DISCIPLE OPERATIONAL FLOW TEST PASS`;
+- `P3.3 DISCIPLE OPERATIONAL FLOW GATE: PASS`;
+- `P3.3 DISCIPLE OPERATIONAL FLOW: PASS`;
+- cumulative P3.1/P3.2 camera + disciple UI baselines also passed.
 
-Next command:
-
-`Sync-P3-3-Disciple-Flow.cmd`
-
-If it fails, fix P3.3 only and rerun that gate. If it passes, lock P3.3 and move to P3.4 runtime implementation.
-
-Do **not** run the FULL female cosmetic gate yet.
+Current code task: implement P3.4A read-only building operation panel, then run its safe sync launcher. Do not implement P3.4B/C or P3.5 until P3.4A is runtime-green.
 
 ## P3.4 DESIGN LOCKED — DO NOT IMPLEMENT YET
 
@@ -225,7 +220,7 @@ Locked direction:
 - Forge may expose real `EquipmentSystem.craft()`;
 - no building level/queue/upgrade system invented in presentation.
 
-P3.4 design is already locked, but runtime implementation must wait for the P3.2 live modular map `[8/8]` evidence and P3.3 Windows gate.
+P3.4 prerequisites are now green. Implement P3.4 incrementally: A read-only panel -> gate, then B people management -> gate, then C real building/system actions -> gate.
 
 ## P3.5 DESIGN LOCKED — IMPLEMENT AFTER P3.4 GREEN
 
