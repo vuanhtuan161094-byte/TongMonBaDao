@@ -138,7 +138,7 @@ Accepted:
 
 Dark hair + skirt merging at `0.75x` is future art contrast work, not a pivot defect. **No bone rest positions were changed.**
 
-## Current active task — P3.6A playable vertical slice / productization
+## Current active task — P3.6A playable vertical slice (runtime + visual review pending)
 
 Three-direction Stage A is now runtime-green and visually accepted:
 
@@ -197,24 +197,26 @@ P3.5 first real Windows attempt failed during GDScript parse because `LivingCueT
 
 ## NEXT WINDOWS ACTION
 
-Do **not** ask the user to run P3.6 playtest again yet.
+P3.6A productization is implemented on `main` and **RUNTIME + REAL VISUAL REVIEW PENDING**.
 
-Real user video on 2026-10-05 proved the current main scene is still a QA/debug shell rather than a player-ready game surface.
+Run:
 
-P3.6 status: **BLOCKED / NOT READY**.
+`Sync-Main.cmd Verify-P3-6A-Playable-Slice.cmd`
 
-Next task: implement `docs/P3_6A_PLAYABLE_VERTICAL_SLICE_SPEC.md`.
+Expected final lines include:
 
-Priority order inside P3.6A:
+- `P3.5 LIVING SECT CUES: PASS`;
+- `P3.6A PLAYABLE SLICE TEST PASS`;
+- `P3.6A PLAYABLE VERTICAL SLICE GATE: PASS`;
+- `P3.6A PLAYABLE VERTICAL SLICE: PASS`.
 
-1. remove all player-visible P3.x/internal/debug copy;
-2. remove/hide the P3.1 demo checklist from normal play;
-3. make building/disciple panels concise and player-facing;
-4. replace debug building rectangles/letter markers with an approved/player-readable visual solution using the locked presentation workflow;
-5. make the already-existing autonomous loop and consequences visually understandable;
-6. preserve all P3.3/P3.4/P3.5 runtime-green behavior.
+If green, then run:
 
-Only after a real Windows visual/video check of P3.6A should the 5–10 minute P3.6 playtest resume.
+`Preview-P3-6A-Playable-Slice.cmd`
+
+Ask the user for a screenshot/video or direct visual judgment. P3.6A is not accepted until the real scene no longer feels like a QA/debug board.
+
+Do not generate new building/environment art without the locked plan -> explicit OK -> generation workflow. The current code-drawn building silhouettes are temporary and preserve approved art authority.
 
 ## P3.4 — REAL PASS / LOCKED
 
