@@ -307,13 +307,16 @@
       "design_status": "approved",
       "source_status": "external_pack",
       "source_evidence_class": "S1",
-      "visual_status": "pending",
-      "runtime_status": "runtime_pending",
+      "visual_status": "approved",
+      "runtime_status": "runtime_green",
       "source_ref": "female_normal_v1_stageA_runtime_pack_v2_quant.zip",
       "source_size_bytes": 44838,
       "source_sha256": "6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca",
       "runtime_management": "external_diagnostic_pack",
-      "runtime_paths": []
+      "runtime_paths": [],
+      "approved_on": "2026-10-04",
+      "approval_evidence": "User reviewed the real Godot front/side/back Stage A preview on 2026-10-04 and accepted identity, registration, side readability, back-view face hiding, and 0.75x silhouette.",
+      "runtime_evidence": "P3.2 FEMALE STAGE A 3-DIRECTION FAST CHECK: PASS on Windows Godot 4.7.2; shared-rig, down regression, 3-direction asset contract and sandbox smoke all passed."
     },
     {
       "id": "ui.ux.v3_1_main_map",
