@@ -133,9 +133,28 @@ func _verify_no_fake_heal() -> bool:
     var controls := ui.get("building_management_container") as VBoxContainer
     if controls == null:
         return _fail("Medicine Hall management container is missing.")
-    if controls.get_child_count() != 0:
-        return _fail("Medicine Hall exposed people actions even though COMMAND_HEAL does not exist.")
+
+    # P3.4C legitimately adds NeedsSystem priority controls here.
+    # P3.4B's invariant is narrower: there must still be no fabricated
+    # disciple HEAL/direct-order action because WorkforceSystem has no
+    # COMMAND_HEAL authority.
+    var buttons: Array[Button] = []
+    _collect_buttons(controls, buttons)
+    for button in buttons:
+        var button_name := str(button.name).to_lower()
+        var button_text := button.text.to_lower()
+        if button_name.contains("heal") or button_text.contains("heal") or button_text.contains("trị thương"):
+            return _fail("Medicine Hall exposed a fake HEAL/direct-treatment action.")
+        if button_name.begins_with("order_") and (button_text.contains("thuốc") or button_text.contains("trị")):
+            return _fail("Medicine Hall exposed a fabricated disciple treatment order.")
+
     return true
+
+func _collect_buttons(node: Node, result: Array[Button]) -> void:
+    for child in node.get_children():
+        if child is Button:
+            result.append(child as Button)
+        _collect_buttons(child, result)
 
 func _management_controls_present() -> bool:
     var controls := ui.get("building_management_container") as VBoxContainer
