@@ -52,9 +52,19 @@ Latest confirmed Character Creator tail includes:
 
 Important: scaffold PASS does **not** mean full P3.2 production art or the female visual vertical slice is complete.
 
-## Active presentation work
+## Active presentation / gameplay work
 
-Current active task is the **female_normal_v1 production visual proof** on top of the runtime-green Character Creator scaffold.
+Current user priority is **functionality-first living-sect management**, not character-art micro-detail.
+
+Immediate runtime order:
+
+1. obtain the still-missing P3.2 live modular female map `[8/8]` Windows evidence;
+2. run/fix/lock P3.3 disciple operational flow;
+3. implement/runtime-lock P3.4 building management;
+4. implement/runtime-lock P3.5 living-sect cues;
+5. judge the result against the P3.6 Sect Master gameplay-loop contract.
+
+Character Creator remains a supporting anti-clone/presentation system. Minimum cosmetic variants can be completed later and must not block P3.3–P3.6 functional work.
 
 Regression launchers:
 
@@ -69,7 +79,10 @@ Read before P3/character work in this order:
 4. `docs/P3_2_MODULAR_ACTOR_SPEC.md`;
 5. `docs/P3_1_LANDSCAPE_SECT_SHELL_SPEC.md`;
 6. `docs/P3_2_UI_ART_PRODUCTION_SPEC.md`;
-7. live P3 code/tests.
+7. `docs/P3_4_BUILDING_MANAGEMENT_SPEC.md`;
+8. `docs/P3_5_LIVING_SECT_CUES_SPEC.md`;
+9. `docs/P3_6_SECT_MASTER_GAMEPLAY_LOOP_SPEC.md`;
+10. live P3 code/tests.
 
 ## Required development loop
 
@@ -263,13 +276,12 @@ Item gacha may grant/refine Bloodline/Physique/etc under explicit rules, but mus
 
 ## Current next production order
 
-1. one real `female_normal_v1` reference sample on the locked 128×128 registration;
-2. lock practical rig pivots from that real art;
-3. shared idle + walk AnimationLibrary;
-4. first coarse cutout body/outfit + face/hair/weapon/horn;
-5. tint-mask shader/presets;
-6. sandbox with at least six combinations on one rig;
-7. real Godot visual-slice gate;
-8. integrate `ModularDiscipleActor` into live sect map;
-9. backward-compatible `appearance_profile` persistence;
-10. only then expand male rig, action set and asset volume.
+1. missing real Windows P3.2 live modular map `[8/8]` evidence;
+2. P3.3 disciple operational flow gate;
+3. P3.4 building management runtime;
+4. P3.5 living-sect cues runtime;
+5. P3.6 real gameplay-loop playtest;
+6. minimum cosmetic variants needed to avoid obvious clones;
+7. six-combo/full female visual acceptance when functional map-management is stable;
+8. backward-compatible `appearance_profile` persistence;
+9. only then expand male rig, action set and asset volume.
