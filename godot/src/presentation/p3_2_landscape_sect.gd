@@ -22,9 +22,14 @@ var has_focus_target := false
 var tab_status_text := ""
 var technique_system := TechniqueSystem.new()
 var equipment_system := EquipmentSystem.new()
+var female_motion_library: AnimationLibrary
+var modular_live_actor_ids: Dictionary = {}
 
 func _ready() -> void:
     super._ready()
+    female_motion_library = FemaleNormalV1MotionLibrary.build()
+    _install_modular_live_actors()
+    _sync_actor_positions()
     popup_layer.z_index = 100
     _reset_camera(false)
     _build_focus_marker()
@@ -357,9 +362,100 @@ func _open_disciple(disciple_id: StringName) -> void:
     super._open_disciple(disciple_id)
 
 func _sync_actor_positions() -> void:
-    super._sync_actor_positions()
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    for index in range(ids.size()):
+        var disciple_id := StringName(ids[index])
+        var key := str(disciple_id)
+        if not actor_nodes.has(key):
+            continue
+
+        var disciple: DiscipleState = state.disciples[disciple_id]
+        var previous := StringName(actor_destinations.get(key, str(SectMapPresentation.DEST_COURTYARD)))
+        var destination := SectMapPresentation.destination_for_action(disciple.current_action, previous)
+        actor_destinations[key] = str(destination)
+
+        var actor: Control = actor_nodes[key] as Control
+        var world_foot := SectMapPresentation.position_for_destination(destination) + _actor_offset(index)
+        var target := world_foot - _actor_anchor_offset(actor)
+        var delta := target - actor.position
+
+        if actor is ModularDiscipleActor:
+            var modular := actor as ModularDiscipleActor
+            if delta.length() > 1.0:
+                var direction := DiscipleActorVisualCatalog.direction_for_delta(delta, modular.facing)
+                if direction != modular.facing:
+                    FemaleStageAAssetLoader.apply_public_direction(modular, direction)
+                modular.play_walk_for_delta(delta)
+            else:
+                modular.sync_action(disciple.current_action)
+
+        if delta.length() > 1.0:
+            var tween := create_tween()
+            tween.set_trans(Tween.TRANS_QUAD)
+            tween.set_ease(Tween.EASE_IN_OUT)
+            tween.tween_property(actor, "position", target, 0.32)
+
+        if actor_status_labels.has(key):
+            var status := actor_status_labels[key] as Label
+            if is_instance_valid(status):
+                status.text = SectMapPresentation.action_label(disciple.current_action)
+
     if focused_kind == &"disciple":
         _refresh_focused_disciple_point()
+
+func _actor_anchor_offset(actor: Control) -> Vector2:
+    if actor is ModularDiscipleActor:
+        return DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
+    return Vector2(30.0, 30.0)
+
+func _stage_a_live_assets_ready() -> bool:
+    return (
+        FemaleStageAAssetLoader.assets_available(&"down")
+        and FemaleStageAAssetLoader.assets_available(&"right")
+        and FemaleStageAAssetLoader.assets_available(&"up")
+    )
+
+func _install_modular_live_actors() -> void:
+    modular_live_actor_ids.clear()
+    if female_motion_library == null or not _stage_a_live_assets_ready():
+        return
+
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    for index in range(ids.size()):
+        var disciple_id := StringName(ids[index])
+        var key := str(disciple_id)
+        var disciple: DiscipleState = state.disciples[disciple_id]
+        if DiscipleActorVisualCatalog.rig_for_disciple(disciple) != DiscipleActorVisualCatalog.RIG_FEMALE_NORMAL_V1:
+            continue
+        if actor_nodes.has(key) and actor_nodes[key] is ModularDiscipleActor:
+            modular_live_actor_ids[key] = true
+            continue
+
+        var old_actor: Control = actor_nodes.get(key) as Control
+        if old_actor != null and is_instance_valid(old_actor):
+            if old_actor.get_parent() != null:
+                old_actor.get_parent().remove_child(old_actor)
+            old_actor.queue_free()
+
+        var destination := StringName(actor_destinations.get(key, str(_initial_destination(disciple))))
+        actor_destinations[key] = str(destination)
+
+        var actor := ModularDiscipleActor.new()
+        actor.name = "ModularDisciple_%s" % key
+        actor.configure(disciple)
+        actor.set_animation_library(female_motion_library)
+        FemaleStageAAssetLoader.apply_public_direction(actor, &"down")
+        actor.sync_action(disciple.current_action)
+        actor.actor_pressed.connect(Callable(self, "_open_disciple").bind())
+        var world_foot := SectMapPresentation.position_for_destination(destination) + _actor_offset(index)
+        actor.position = world_foot - DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
+        map_layer.add_child(actor)
+
+        actor_nodes[key] = actor
+        actor_status_labels[key] = actor.status_label
+        modular_live_actor_ids[key] = true
 
 func _tab_notice(tab_name: String) -> void:
     _open_disciple_tab(tab_name)
