@@ -13,7 +13,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -Command ^
   "if($env:STAGE_A_PACK -and (Test-Path -LiteralPath $env:STAGE_A_PACK -PathType Leaf)){$candidates.Add((Resolve-Path -LiteralPath $env:STAGE_A_PACK).Path)};" ^
   "$exact=@((Join-Path $repo '%PACK_NAME%'),(Join-Path $env:USERPROFILE 'Downloads\%PACK_NAME%'),(Join-Path $env:USERPROFILE 'Desktop\%PACK_NAME%'));" ^
   "foreach($p in $exact){if(Test-Path -LiteralPath $p -PathType Leaf){$r=(Resolve-Path -LiteralPath $p).Path;if(-not $candidates.Contains($r)){$candidates.Add($r)}}};" ^
-  "foreach($root in @((Join-Path $env:USERPROFILE 'Downloads'),(Join-Path $env:USERPROFILE 'Desktop'))){if(Test-Path -LiteralPath $root){Get-ChildItem -LiteralPath $root -Filter 'female_normal_v1_stageA_runtime_pack_v2_quant*.zip' -File -ErrorAction SilentlyContinue ^| Sort-Object LastWriteTime -Descending ^| ForEach-Object {if(-not $candidates.Contains($_.FullName)){$candidates.Add($_.FullName)}}}};" ^
+  "foreach($root in @((Join-Path $env:USERPROFILE 'Downloads'),(Join-Path $env:USERPROFILE 'Desktop'))){if(Test-Path -LiteralPath $root){$found=@(Get-ChildItem -LiteralPath $root -Filter 'female_normal_v1_stageA_runtime_pack_v2_quant*.zip' -File -ErrorAction SilentlyContinue);foreach($f in $found){if(-not $candidates.Contains($f.FullName)){$candidates.Add($f.FullName)}}}};" ^
   "$selected=$null;" ^
   "foreach($p in $candidates){try{$h=(Get-FileHash -Algorithm SHA256 -LiteralPath $p).Hash.ToLowerInvariant();Write-Host ('[Stage A pack] '+$p+' SHA256='+$h);if($h -eq $expected){$selected=$p;break}}catch{}};" ^
   "if(-not $selected){throw ('Validated Stage A pack not found. Download %PACK_NAME% and leave it in Downloads, Desktop, or the repo root. Expected SHA256: '+$expected)};" ^
