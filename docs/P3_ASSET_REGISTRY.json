@@ -374,17 +374,36 @@
       "design_status": "approved",
       "source_status": "repo_source",
       "source_evidence_class": "S0",
-      "visual_status": "pending",
+      "visual_status": "approved",
       "runtime_status": "runtime_green",
       "approved_on": "2026-10-04",
       "runtime_evidence": "Real Windows Godot 4.7.2: P3.2 FEMALE SHARED IDLE WALK MOTION CONTRACT TEST PASS and P3.2 FEMALE SHARED IDLE WALK FAST CHECK: PASS.",
-      "approval_evidence": "Static motion sandbox screenshot confirms all DOWN/RIGHT/UP/LEFT idle+walk proof slots render; LEFT mirrors RIGHT. Motion-quality visual acceptance still requires a short video.",
+      "approval_evidence": "User supplied an 11.6-second real Windows motion video on 2026-10-04. V1 idle/walk accepted: restrained idle, stable cadence, no obvious anchor jump or severe shoulder/hip tear, hair/horns stay attached, and LEFT mirrors RIGHT cleanly. Secondary hair/skirt motion remains future polish.",
       "runtime_management": "repo_source",
       "runtime_paths": [
         "godot/src/presentation/p3/female_normal_v1_motion_library.gd",
         "godot/tests/presentation/p3_2_female_motion_contract_test.gd",
         "godot/src/presentation/p3/female_motion_sandbox.gd",
         "godot/scenes/p3/p3_2_female_motion_sandbox.tscn"
+      ]
+    },
+    {
+      "id": "actor.female_normal_v1.live_map_integration",
+      "category": "map_actor_integration",
+      "display_name": "female_normal_v1 live P3.2 map integration",
+      "authority_doc": "docs/P3_2_MODULAR_ACTOR_SPEC.md",
+      "design_status": "approved",
+      "source_status": "repo_source",
+      "source_evidence_class": "S0",
+      "visual_status": "pending",
+      "runtime_status": "runtime_pending",
+      "approved_on": "2026-10-04",
+      "approval_evidence": "Implementation added after shared motion visual acceptance; real live-map Windows playtest pending.",
+      "runtime_management": "repo_source",
+      "runtime_paths": [
+        "godot/src/presentation/p3_2_landscape_sect.gd",
+        "godot/tests/presentation/p3_2_live_modular_map_test.gd",
+        "Preview-P3-2-Live-Modular-Map.cmd"
       ]
     }
   ]
