@@ -422,6 +422,12 @@ func _open_notice(title_text: String, body: String) -> void:
     super._open_notice(title_text, body)
 
 func _bottom_action(action: String) -> void:
+    if action == "home":
+        _clear_popup()
+        _close_disciple_summary(true)
+        _close_building_operation_panel(true)
+        _reset_camera(true)
+        return
     if action == "disciples":
         var ids: Array = state.disciples.keys()
         ids.sort()
@@ -565,7 +571,7 @@ func _build_building_operation_panel() -> void:
     building_operation_title = _label(building_operation_panel, "", Vector2(18, 14), Vector2(350, 34), 22)
     building_operation_title.add_theme_color_override("font_color", CINNABAR.darkened(0.18))
 
-    var subtitle := _label(building_operation_panel, "Tình hình hiện tại · dữ liệu simulation thật", Vector2(18, 48), Vector2(350, 22), 11)
+    var subtitle := _label(building_operation_panel, "Tình hình vận hành", Vector2(18, 48), Vector2(350, 22), 11)
     subtitle.add_theme_color_override("font_color", Color(0.22, 0.20, 0.16, 0.72))
 
     var close := Button.new()
@@ -678,28 +684,28 @@ func _rebuild_building_management_controls() -> void:
             _build_direct_order_management(WorkforceSystem.COMMAND_REST, "", "Gọi nghỉ", false)
             _build_lodging_expansion_control()
         SectMapPresentation.DEST_MEDICINE:
-            _build_needs_priority_controls("ƯU TIÊN HẬU CẦN · P3.4C")
+            _build_needs_priority_controls("ƯU TIÊN HẬU CẦN")
         SectMapPresentation.DEST_GATE:
             _build_direct_order_management(WorkforceSystem.COMMAND_RETURN_SECT, "", "Triệu hồi", true)
         _:
             pass
 
 func _build_main_hall_policy_controls() -> void:
-    _add_management_section_label("CHÍNH SÁCH LAO ĐỘNG · P3.4C")
+    _add_management_section_label("CHÍNH SÁCH LAO ĐỘNG")
     _add_policy_button_row([
         {"label":"Cân bằng", "value":WorkforceSystem.POLICY_BALANCED},
         {"label":"Sản xuất", "value":WorkforceSystem.POLICY_PRODUCTION},
         {"label":"Tu luyện", "value":WorkforceSystem.POLICY_CULTIVATION}
     ], state.sect.work_policy, "_set_work_policy_from_building")
 
-    _add_management_section_label("ƯU TIÊN HẬU CẦN · P3.4C")
+    _add_management_section_label("ƯU TIÊN HẬU CẦN")
     _add_policy_button_row([
         {"label":"Cân bằng", "value":NeedsSystem.PRIORITY_BALANCED},
         {"label":"Thuốc", "value":NeedsSystem.PRIORITY_MEDICINE},
         {"label":"Vật tư", "value":NeedsSystem.PRIORITY_SUPPLIES}
     ], state.sect.needs_priority, "_set_needs_priority_from_building")
 
-    _add_management_section_label("CHÍNH SÁCH TRANG BỊ · P3.4C")
+    _add_management_section_label("CHÍNH SÁCH TRANG BỊ")
     _add_policy_button_row([
         {"label":"Cân bằng", "value":EquipmentSystem.POLICY_BALANCED},
         {"label":"Chiến đấu", "value":EquipmentSystem.POLICY_COMBAT},
@@ -731,7 +737,7 @@ func _add_policy_button_row(options: Array, current_value: StringName, handler_n
         row.add_child(button)
 
 func _build_lodging_expansion_control() -> void:
-    _add_management_section_label("MỞ RỘNG CHỖ Ở · P3.4C")
+    _add_management_section_label("MỞ RỘNG CHỖ Ở")
     var row := HBoxContainer.new()
     row.custom_minimum_size = Vector2(384, 38)
     row.add_theme_constant_override("separation", 8)
@@ -753,7 +759,7 @@ func _build_lodging_expansion_control() -> void:
     row.add_child(button)
 
 func _build_forge_craft_controls() -> void:
-    _add_management_section_label("LUYỆN CHẾ TRANG BỊ · P3.4C")
+    _add_management_section_label("LUYỆN CHẾ TRANG BỊ")
     var recipe_ids: Array = EquipmentSystem.RECIPES.keys()
     recipe_ids.sort()
     for raw_id in recipe_ids:
@@ -848,7 +854,7 @@ func _craft_from_building(recipe_id: StringName) -> void:
     _refresh_building_operation_content()
 
 func _build_work_management(profession_id: StringName, group_id: StringName, group_label: String, order_label: String) -> void:
-    _add_management_section_label("QUẢN LÝ NGƯỜI · P3.4B")
+    _add_management_section_label("PHÂN CÔNG")
     var ids: Array = state.disciples.keys()
     ids.sort()
     for raw_id in ids:
@@ -881,7 +887,7 @@ func _build_work_management(profession_id: StringName, group_id: StringName, gro
         row.add_child(order_button)
 
 func _build_direct_order_management(kind: StringName, target: String, button_text: String, outside_only: bool) -> void:
-    _add_management_section_label("LỆNH TÔNG CHỦ · P3.4B")
+    _add_management_section_label("LỆNH TÔNG CHỦ")
     var ids: Array = state.disciples.keys()
     ids.sort()
     var added := 0
@@ -978,7 +984,7 @@ func _main_hall_operation_text() -> String:
         + "Lao động: %s\n"
         + "Hậu cần: %s\n"
         + "Trang bị: %s\n\n"
-        + "P3.4C: dùng các nút bên dưới để đổi chính sách thật của tông môn."
+        + "Chọn một hướng ưu tiên để điều chỉnh cách tông môn tự vận hành."
     ) % [
         state.disciples.size(), state.sect.disciple_capacity,
         state.sect.treasury, state.sect.spirit_stones,
@@ -1007,7 +1013,7 @@ func _mine_operation_text() -> String:
         + "Đang khai khoáng: %d\n"
         + "Thành viên đội: %d\n\n"
         + "NHÂN SỰ\n%s\n\n"
-        + "P3.4B: dùng các nút bên dưới để phân đội dài hạn hoặc gọi khai khoáng ngay."
+        + "Phân người vào đội để duy trì khai khoáng lâu dài, hoặc ra lệnh làm ngay khi cần."
     ) % [
         int(state.sect.forge_materials.get("thanh_thiet", 0)),
         _count_action(&"WORK_MINING"),
@@ -1041,9 +1047,9 @@ func _forge_operation_text() -> String:
         + "Thanh Thiết: %d · Linh Mộc: %d\n"
         + "Tinh Lang Bì: %d · Yêu Đan: %d\n"
         + "Điểm hỗ trợ rèn: %d\n"
-        + "Recipe đủ nguyên liệu: %d / %d\n\n"
+        + "Công thức có thể luyện: %d / %d\n\n"
         + "NHÂN SỰ\n%s\n\n"
-        + "P3.4B quản lý người; P3.4C luyện chế trang bị thật bằng các nút bên dưới."
+        + "Phân người phụ trách luyện khí và chế tạo trang bị khi đủ nguyên liệu."
     ) % [
         int(state.sect.forge_materials.get("thanh_thiet", 0)),
         int(state.sect.forge_materials.get("linh_moc", 0)),
@@ -1084,7 +1090,7 @@ func _cultivation_operation_text() -> String:
         "Đang tu luyện/phá cảnh: %d\n"
         + "Đủ điều kiện đột phá: %d\n\n"
         + "ĐỆ TỬ LIÊN QUAN\n%s\n\n"
-        + "P3.4B: có thể gọi tu luyện bên dưới; không có nút đột phá giả."
+        + "Có thể gọi đệ tử tới tu luyện; đột phá do chính đệ tử thực hiện khi đủ điều kiện."
     ) % [active_count, ready_count, "\n".join(lines)]
 
 func _residence_operation_text() -> String:
@@ -1099,7 +1105,7 @@ func _residence_operation_text() -> String:
         + "Vật tư: %d\n"
         + "Đang nghỉ: %d\n\n"
         + "ĐỆ TỬ ĐANG NGHỈ\n%s\n\n"
-        + "P3.4B gọi nghỉ; P3.4C mở rộng chỗ ở thật bằng NeedsSystem."
+        + "Gọi đệ tử về nghỉ hoặc mở rộng chỗ ở khi tông môn quá tải."
     ) % [
         population, state.sect.lodging_capacity,
         "QUÁ TẢI" if overloaded else "Ổn định",
@@ -1130,7 +1136,7 @@ func _medicine_operation_text() -> String:
         + "Ưu tiên hậu cần: %s\n"
         + "Đã dùng thuốc: %d · Đã sản xuất: %d\n\n"
         + "NGƯỜI CẦN CHÚ Ý\n%s\n\n"
-        + "Không có COMMAND_HEAL giả. P3.4C chỉ đổi priority hậu cần thật bằng NeedsSystem."
+        + "Điều chỉnh ưu tiên hậu cần để cân bằng thuốc và vật tư theo tình hình hiện tại."
     ) % [
         state.sect.medicine_stock, NeedsSystem.MEDICINE_CAP,
         state.sect.supply_stock, NeedsSystem.SUPPLY_CAP,
@@ -1162,7 +1168,7 @@ func _warehouse_operation_text() -> String:
         + "Tinh Lang Bì: %d · Yêu Đan: %d\n\n"
         + "TRANG BỊ\n"
         + "Trong kho: %d · Đang bán: %d · Đã trang bị: %d\n\n"
-        + "Kho hiện không có capacity authority; P3.4A không bịa cảnh báo kho đầy."
+        + "Trang bị và vật tư được tổng hợp tại đây."
     ) % [
         state.sect.treasury, state.sect.spirit_stones,
         state.sect.medicine_stock, state.sect.supply_stock,
@@ -1198,7 +1204,7 @@ func _gate_operation_text() -> String:
         + "Trong luồng săn/di chuyển/chiến đấu: %d\n"
         + "Vật tư tông môn: %d\n\n"
         + "TÌNH HÌNH XUẤT MÔN\n%s\n\n"
-        + "P3.4B: có thể triệu hồi đệ tử bằng command thật bên dưới."
+        + "Có thể triệu hồi đệ tử đang ở ngoài tông khi tình hình không an toàn."
     ) % [
         _count_outside(),
         _count_actions([&"HUNT", &"TRAVEL", &"COMBAT", &"LOOT", &"RETURN_SECT"]),
@@ -1728,8 +1734,50 @@ func _action_result_text(result: Dictionary) -> String:
     if result.is_empty():
         return "Không có thay đổi."
     var ok := bool(result.get("ok", false))
-    var reason := str(result.get("reason", ""))
-    return "%s · %s" % ["Thành công" if ok else "Chưa thể thực hiện", reason]
+    var reason := _player_reason_text(str(result.get("reason", "")))
+    return "%s%s" % [
+        "Thành công" if ok else "Chưa thể thực hiện",
+        "" if reason == "" else " · %s" % reason
+    ]
+
+func _player_reason_text(reason: String) -> String:
+    match reason:
+        "bloodlines_disabled_or_disciple_missing", "physiques_disabled_or_disciple_missing":
+            return "Không tìm thấy đệ tử."
+        "profile_missing":
+            return "Chưa có hồ sơ phù hợp."
+        "no_special_bloodline":
+            return "Không có huyết mạch đặc biệt để thức tỉnh."
+        "bloodline_hidden":
+            return "Huyết mạch vẫn chưa được phát hiện."
+        "already_awakened":
+            return "Huyết mạch đã thức tỉnh."
+        "bloodline_not_awakened":
+            return "Cần thức tỉnh huyết mạch trước."
+        "max_purity":
+            return "Độ thuần đã đạt giới hạn."
+        "yao_core_missing":
+            return "Không đủ Yêu Đan."
+        "max_temper_level":
+            return "Tôi thể đã đạt giới hạn."
+        "already_special_physique":
+            return "Đã có thể chất đặc biệt."
+        "temper_level_too_low":
+            return "Cần tôi thể thêm trước khi cải thể."
+        "transformation_target_missing":
+            return "Chưa có hướng cải thể phù hợp."
+        "spirit_essence_missing":
+            return "Không đủ Linh Tủy."
+        "awakened":
+            return "Huyết mạch đã thức tỉnh."
+        "refined":
+            return "Độ thuần huyết mạch đã tăng."
+        "tempered":
+            return "Tôi thể thành công."
+        "transformed":
+            return "Cải thể thành công."
+        _:
+            return ""
 
 func _disciple_tab_text(tab_name: String, disciple: DiscipleState) -> String:
     match tab_name:
@@ -1787,7 +1835,7 @@ func _technique_tab_text(disciple: DiscipleState) -> String:
         ])
     if lines.is_empty():
         lines.append("• Chưa học công pháp")
-    return "Công pháp đã học: %d/%d\nCống hiến: %d · Linh thạch cá nhân: %d\n\n%s\n\nCông pháp đang dùng ảnh hưởng trực tiếp tu luyện/chiến đấu theo P2.3–P2.5." % [
+    return "Công pháp đã học: %d/%d\nCống hiến: %d · Linh thạch cá nhân: %d\n\n%s\n\nCông pháp đang dùng ảnh hưởng trực tiếp tới tu luyện và chiến đấu." % [
         disciple.learned_techniques.size(), TechniqueSystem.MAX_LEARNED_TECHNIQUES,
         disciple.contribution_points, disciple.spirit_stones, "\n".join(lines)
     ]
@@ -1809,7 +1857,7 @@ func _equipment_tab_text(disciple: DiscipleState) -> String:
         ])
     var equip_power := equipment_system.combat_power_bonus(state, disciple)
     var damage_reduction := (1.0 - equipment_system.incoming_damage_multiplier(state, disciple)) * 100.0
-    return "Trang bị hiện tại:\n%s\n\nĐóng góp chiến lực: +%.1f\nGiảm sát thương từ trang bị: %.1f%%\nVí cá nhân: %d\n\nSlot không khóa vẫn được AI tự mua/nâng; slot khóa do Tông Chủ kiểm soát." % [
+    return "Trang bị hiện tại:\n%s\n\nĐóng góp chiến lực: +%.1f\nGiảm sát thương từ trang bị: %.1f%%\nVí cá nhân: %d\n\nVị trí không khóa được tự động thay trang bị phù hợp hơn; vị trí đã khóa giữ theo quyết định của Tông Chủ." % [
         "\n".join(lines), equip_power, damage_reduction, disciple.wallet
     ]
 
@@ -1818,7 +1866,7 @@ func _bloodline_tab_text(disciple: DiscipleState) -> String:
     if profile.is_empty():
         return "Chưa có hồ sơ Huyết Mạch."
     if not bool(profile.get("revealed", false)):
-        return "Huyết Mạch: Chưa xác định\n\nDanh tính ẩn đã được cố định từ lúc sinh; giao diện không tiết lộ trước khi đủ điều kiện phát hiện."
+        return "Huyết Mạch: Chưa xác định\n\nChưa đủ điều kiện để nhận biết huyết mạch của đệ tử này."
     var id := StringName(profile.get("bloodline_id", "none"))
     var awakened := bool(profile.get("awakened", false))
     var stats := bloodlines.stat_profile(state, disciple)
@@ -1880,7 +1928,7 @@ func _relationship_tab_text(disciple: DiscipleState) -> String:
         companion = companion_disciple.display_name
     else:
         companion = "Chưa phân"
-    return "Đồng hành ưu tiên: %s\n\n%s\n\nQuan hệ là state thật của P1.3; hành vi và ký ức tiếp tục thay đổi các giá trị này." % [companion, "\n".join(lines)]
+    return "Đồng hành ưu tiên: %s\n\n%s\n\nQuan hệ thay đổi theo những lần đồng hành, chiến đấu và sinh hoạt cùng nhau." % [companion, "\n".join(lines)]
 
 func _equipment_slot_name(slot: StringName) -> String:
     match slot:
