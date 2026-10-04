@@ -178,7 +178,7 @@ P3.2 live modular map and P3.3 disciple operational flow are **REAL PASS / LOCKE
 
 Run:
 
-`Sync-P3-4A-Building-Panel.cmd`
+`Sync-Main.cmd Verify-P3-4A-Building-Panel.cmd`
 
 This launcher safely syncs `main` and verifies:
 
