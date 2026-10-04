@@ -12,6 +12,7 @@ Real Windows + Godot 4.7.2 evidence confirms:
 - P3.2 Character Creator V1 shared-rig scaffold: PASS;
 - P3.2 `female_normal_v1` Stage A **3-DIRECTION FAST** check: PASS (down/right/up) with user visual review accepted.
 - P3.2 `female_normal_v1` shared **IDLE + WALK FAST** check: PASS on real Windows Godot 4.7.2; user video visual review accepted.
+- P3.2 live modular female map integration: **REAL PASS** on Windows Godot 4.7.2. `[8/8]` printed `P3.2 LIVE MODULAR FEMALE MAP INTEGRATION TEST PASS` and the final live-map FAST PASS lines.
 - P3.3 disciple operational flow (right summary -> real quick orders -> 6-tab deep screen -> context restore): **IMPLEMENTED ON MAIN, RUNTIME PENDING**. Do not call PASS until the dedicated Windows gate is green.
 - P3.4 building management: **DESIGN LOCKED ONLY** in `docs/P3_4_BUILDING_MANAGEMENT_SPEC.md`; do not implement runtime until P3.2 live-map `[8/8]` and P3.3 Windows gate are green.
 - P3.5 living sect cues: **DESIGN LOCKED ONLY** in `docs/P3_5_LIVING_SECT_CUES_SPEC.md`; implement only after P3.4 runtime green. Cues are derived from real state/events and route to real panels; no random/fake speech system.
@@ -173,22 +174,22 @@ The user supplied an 11.6-second real Windows motion video. Review accepted the 
 
 # Next authoritative Windows action
 
-**Do not run FULL yet.**
+The missing P3.2 live modular map evidence is now **LOCKED REAL PASS**.
 
-Run in this order:
+Next run:
 
-1. `Verify-P3-2-Female-StageA.cmd`
-   - required missing evidence: `P3.2 LIVE MODULAR FEMALE MAP INTEGRATION TEST PASS`;
-   - this locks the already-implemented modular female actor on the real map.
-2. If step 1 is green, run `Verify-P3-3-Disciple-Flow.cmd`
-   - verifies map tap -> right operational summary;
-   - real `WorkforceSystem` quick orders;
-   - `Xem chi tiết` -> six real tabs;
-   - roster switch + Back context restoration;
-   - bottom-nav direct deep entry -> clean map.
-3. Then visually playtest the real map: select moving disciples, issue orders, watch them move to simulation-derived destinations, switch disciples, pan/zoom, open buildings, enter/leave deep profile.
+1. `Verify-P3-3-Disciple-Flow.cmd`
+   - verifies tap disciple -> fixed right operational summary;
+   - reads real runtime HP/stamina/cultivation/action/location;
+   - quick orders use real `WorkforceSystem`;
+   - `Xem chi tiết` opens the six real tabs;
+   - roster switch + Back restore correct map context;
+   - direct bottom-nav deep entry returns to clean map;
+   - cumulative P3.2 camera/tab baseline remains green.
+2. If P3.3 is green, visually playtest the real map flow once.
+3. Then implement P3.4 building management from the already-locked spec.
 
-P3.3 is already implemented in code but remains **runtime pending** until this Windows evidence exists. Character cosmetic variants are not a blocker for this gate.
+Do not run the FULL female cosmetic gate yet. Character cosmetic variants are not a blocker.
 
 # Current development priority — functionality first
 
@@ -196,7 +197,7 @@ User explicitly deprioritized micro-detail on the small map actor. Character Cre
 
 Order:
 
-1. obtain the missing live modular female map `[8/8]` Windows evidence;
+1. P3.2 live modular female map `[8/8]`: **REAL PASS / LOCKED**;
 2. run/fix/lock P3.3 disciple operational flow;
 3. P3.4 building interaction/management: real workers, inputs, outputs, assignment/management actions;
 4. P3.5 living-sect cues: fatigue/heal/breakthrough/material/finished-work signals from real state;
