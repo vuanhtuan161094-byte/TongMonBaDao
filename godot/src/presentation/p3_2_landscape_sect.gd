@@ -37,6 +37,9 @@ var summary_feedback := ""
 var building_operation_panel: Panel
 var building_operation_title: Label
 var building_operation_body: Label
+var building_operation_content: VBoxContainer
+var building_management_container: VBoxContainer
+var building_management_feedback := ""
 var selected_building: StringName = &""
 var deep_restore_summary := false
 var screen_pointer_dragged := false
@@ -575,13 +578,25 @@ func _build_building_operation_panel() -> void:
     scroll.size = Vector2(412, 442)
     building_operation_panel.add_child(scroll)
 
+    building_operation_content = VBoxContainer.new()
+    building_operation_content.name = "BuildingOperationContent"
+    building_operation_content.custom_minimum_size = Vector2(384, 0)
+    building_operation_content.add_theme_constant_override("separation", 10)
+    scroll.add_child(building_operation_content)
+
     building_operation_body = Label.new()
     building_operation_body.name = "BuildingOperationBody"
     building_operation_body.custom_minimum_size = Vector2(384, 420)
     building_operation_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     building_operation_body.add_theme_font_size_override("font_size", 13)
     building_operation_body.add_theme_color_override("font_color", INK)
-    scroll.add_child(building_operation_body)
+    building_operation_content.add_child(building_operation_body)
+
+    building_management_container = VBoxContainer.new()
+    building_management_container.name = "BuildingManagementControls"
+    building_management_container.custom_minimum_size = Vector2(384, 0)
+    building_management_container.add_theme_constant_override("separation", 7)
+    building_operation_content.add_child(building_management_container)
 
 func _building_operation_is_open() -> bool:
     return building_operation_panel != null and is_instance_valid(building_operation_panel) and building_operation_panel.visible
@@ -606,6 +621,7 @@ func _hide_building_operation_panel() -> void:
 
 func _close_building_operation_panel(clear_selection: bool = true) -> void:
     _hide_building_operation_panel()
+    building_management_feedback = ""
     if not clear_selection:
         return
     selected_building = &""
@@ -624,7 +640,148 @@ func _refresh_building_operation_content() -> void:
     if not _building_operation_is_open() or selected_building == &"":
         return
     building_operation_title.text = _building_name(selected_building)
-    building_operation_body.text = _building_operation_text(selected_building)
+    var feedback := ""
+    if building_management_feedback != "":
+        feedback = "\n\n%s" % building_management_feedback
+    building_operation_body.text = _building_operation_text(selected_building) + feedback
+    _rebuild_building_management_controls()
+
+func _rebuild_building_management_controls() -> void:
+    if building_management_container == null:
+        return
+    for child in building_management_container.get_children():
+        building_management_container.remove_child(child)
+        child.queue_free()
+
+    match selected_building:
+        SectMapPresentation.DEST_MINE:
+            _build_work_management(WorkforceSystem.PROF_MINING, &"mining_crew", "Đội Khai Khoáng", "Khai khoáng")
+        SectMapPresentation.DEST_FORGE:
+            _build_work_management(WorkforceSystem.PROF_FORGING, &"forge_hall", "Luyện Khí Đường", "Luyện khí")
+        SectMapPresentation.DEST_CULTIVATION:
+            _build_direct_order_management(WorkforceSystem.COMMAND_CULTIVATE, "", "Gọi tu luyện", false)
+        SectMapPresentation.DEST_RESIDENCE:
+            _build_direct_order_management(WorkforceSystem.COMMAND_REST, "", "Gọi nghỉ", false)
+        SectMapPresentation.DEST_GATE:
+            _build_direct_order_management(WorkforceSystem.COMMAND_RETURN_SECT, "", "Triệu hồi", true)
+        _:
+            pass
+
+func _build_work_management(profession_id: StringName, group_id: StringName, group_label: String, order_label: String) -> void:
+    _add_management_section_label("QUẢN LÝ NGƯỜI · P3.4B")
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    for raw_id in ids:
+        var disciple: DiscipleState = state.disciples[raw_id]
+        var row := _new_management_row(disciple)
+        var in_group := disciple.work_group_id == group_id
+
+        var group_button := Button.new()
+        group_button.name = "Group_%s_%s" % [str(group_id), str(disciple.id)]
+        group_button.text = "Rút đội" if in_group else "Phân đội"
+        group_button.custom_minimum_size = Vector2(70, 34)
+        group_button.add_theme_font_size_override("font_size", 11)
+        if in_group:
+            group_button.pressed.connect(Callable(self, "_assign_building_group").bind(disciple.id, &"", "Đã rút %s khỏi %s." % [disciple.display_name, group_label]))
+        else:
+            group_button.pressed.connect(Callable(self, "_assign_building_group").bind(disciple.id, group_id, "Đã phân %s vào %s." % [disciple.display_name, group_label]))
+        row.add_child(group_button)
+
+        var order_button := Button.new()
+        order_button.name = "Work_%s_%s" % [str(profession_id), str(disciple.id)]
+        order_button.text = order_label
+        order_button.custom_minimum_size = Vector2(82, 34)
+        order_button.add_theme_font_size_override("font_size", 11)
+        order_button.pressed.connect(Callable(self, "_issue_building_order").bind(
+            disciple.id,
+            WorkforceSystem.COMMAND_WORK,
+            str(profession_id),
+            "Đã ra lệnh %s: %s." % [order_label.to_lower(), disciple.display_name]
+        ))
+        row.add_child(order_button)
+
+func _build_direct_order_management(kind: StringName, target: String, button_text: String, outside_only: bool) -> void:
+    _add_management_section_label("LỆNH TÔNG CHỦ · P3.4B")
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    var added := 0
+    for raw_id in ids:
+        var disciple: DiscipleState = state.disciples[raw_id]
+        if outside_only and disciple.region_id == &"sect" and not SectMapPresentation.is_outside_flow(disciple.current_action):
+            continue
+        var row := _new_management_row(disciple)
+        var order_button := Button.new()
+        order_button.name = "Order_%s_%s" % [str(kind), str(disciple.id)]
+        order_button.text = button_text
+        order_button.custom_minimum_size = Vector2(94, 34)
+        order_button.add_theme_font_size_override("font_size", 11)
+        order_button.pressed.connect(Callable(self, "_issue_building_order").bind(
+            disciple.id,
+            kind,
+            target,
+            "%s: %s." % [button_text, disciple.display_name]
+        ))
+        row.add_child(order_button)
+        added += 1
+
+    if added == 0:
+        var empty := Label.new()
+        empty.text = "Không có đệ tử phù hợp để ra lệnh tại đây."
+        empty.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+        empty.add_theme_font_size_override("font_size", 12)
+        building_management_container.add_child(empty)
+
+func _add_management_section_label(text: String) -> void:
+    var label := Label.new()
+    label.text = text
+    label.add_theme_font_size_override("font_size", 12)
+    label.add_theme_color_override("font_color", CINNABAR.darkened(0.12))
+    building_management_container.add_child(label)
+
+func _new_management_row(disciple: DiscipleState) -> HBoxContainer:
+    var row := HBoxContainer.new()
+    row.name = "Person_%s" % str(disciple.id)
+    row.custom_minimum_size = Vector2(384, 38)
+    row.add_theme_constant_override("separation", 6)
+    building_management_container.add_child(row)
+
+    var name := Label.new()
+    name.text = "%s · TL %.0f" % [disciple.display_name, disciple.stamina]
+    name.custom_minimum_size = Vector2(190, 34)
+    name.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+    name.add_theme_font_size_override("font_size", 11)
+    row.add_child(name)
+    return row
+
+func _assign_building_group(disciple_id: StringName, group_id: StringName, success_text: String) -> void:
+    if not state.disciples.has(disciple_id):
+        return
+    var before_action: StringName = state.disciples[disciple_id].current_action
+    var before_region: StringName = state.disciples[disciple_id].region_id
+    var ok := workforce.assign_group(state, disciple_id, group_id)
+    if ok:
+        building_management_feedback = success_text
+        var disciple: DiscipleState = state.disciples[disciple_id]
+        assert(disciple.current_action == before_action)
+        assert(disciple.region_id == before_region)
+    else:
+        building_management_feedback = "Không thể đổi phân công lúc này."
+    _refresh_building_operation_content()
+
+func _issue_building_order(disciple_id: StringName, kind: StringName, target: String, success_text: String) -> void:
+    if not state.disciples.has(disciple_id):
+        return
+    var disciple: DiscipleState = state.disciples[disciple_id]
+    var before_action := disciple.current_action
+    var before_region := disciple.region_id
+    var ok := workforce.issue_command(state, disciple_id, kind, target, 40)
+    if ok:
+        building_management_feedback = success_text
+        assert(disciple.current_action == before_action)
+        assert(disciple.region_id == before_region)
+    else:
+        building_management_feedback = "Không thể ra lệnh lúc này."
+    _refresh_building_operation_content()
 
 func _building_operation_text(destination: StringName) -> String:
     match destination:
@@ -686,7 +843,7 @@ func _mine_operation_text() -> String:
         + "Đang khai khoáng: %d\n"
         + "Thành viên đội: %d\n\n"
         + "NHÂN SỰ\n%s\n\n"
-        + "P3.4B sẽ mở phân đội và gọi khai khoáng bằng WorkforceSystem thật."
+        + "P3.4B: dùng các nút bên dưới để phân đội dài hạn hoặc gọi khai khoáng ngay."
     ) % [
         int(state.sect.forge_materials.get("thanh_thiet", 0)),
         _count_action(&"WORK_MINING"),
@@ -722,7 +879,7 @@ func _forge_operation_text() -> String:
         + "Điểm hỗ trợ rèn: %d\n"
         + "Recipe đủ nguyên liệu: %d / %d\n\n"
         + "NHÂN SỰ\n%s\n\n"
-        + "P3.4B mở quản lý người; P3.4C mới mở craft thật."
+        + "P3.4B: quản lý người bằng các nút bên dưới. P3.4C mới mở craft thật."
     ) % [
         int(state.sect.forge_materials.get("thanh_thiet", 0)),
         int(state.sect.forge_materials.get("linh_moc", 0)),
@@ -763,7 +920,7 @@ func _cultivation_operation_text() -> String:
         "Đang tu luyện/phá cảnh: %d\n"
         + "Đủ điều kiện đột phá: %d\n\n"
         + "ĐỆ TỬ LIÊN QUAN\n%s\n\n"
-        + "P3.4B sẽ mở lệnh Tu luyện; không có nút đột phá giả."
+        + "P3.4B: có thể gọi tu luyện bên dưới; không có nút đột phá giả."
     ) % [active_count, ready_count, "\n".join(lines)]
 
 func _residence_operation_text() -> String:
@@ -778,7 +935,7 @@ func _residence_operation_text() -> String:
         + "Vật tư: %d\n"
         + "Đang nghỉ: %d\n\n"
         + "ĐỆ TỬ ĐANG NGHỈ\n%s\n\n"
-        + "P3.4B mở lệnh Nghỉ; P3.4C mới mở rộng chỗ ở bằng NeedsSystem."
+        + "P3.4B: có thể gọi nghỉ bên dưới; P3.4C mới mở rộng chỗ ở bằng NeedsSystem."
     ) % [
         population, state.sect.lodging_capacity,
         "QUÁ TẢI" if overloaded else "Ổn định",
@@ -877,7 +1034,7 @@ func _gate_operation_text() -> String:
         + "Trong luồng săn/di chuyển/chiến đấu: %d\n"
         + "Vật tư tông môn: %d\n\n"
         + "TÌNH HÌNH XUẤT MÔN\n%s\n\n"
-        + "P3.4B sẽ mở Triệu hồi/Về tông bằng command thật."
+        + "P3.4B: có thể triệu hồi đệ tử bằng command thật bên dưới."
     ) % [
         _count_outside(),
         _count_actions([&"HUNT", &"TRAVEL", &"COMBAT", &"LOOT", &"RETURN_SECT"]),
