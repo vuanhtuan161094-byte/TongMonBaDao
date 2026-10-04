@@ -22,6 +22,7 @@ var has_focus_target := false
 var tab_status_text := ""
 var technique_system := TechniqueSystem.new()
 var equipment_system := EquipmentSystem.new()
+var needs_system := NeedsSystem.new()
 var female_motion_library: AnimationLibrary
 var modular_live_actor_ids: Dictionary = {}
 
@@ -654,18 +655,187 @@ func _rebuild_building_management_controls() -> void:
         child.queue_free()
 
     match selected_building:
+        SectMapPresentation.DEST_MAIN_HALL:
+            _build_main_hall_policy_controls()
         SectMapPresentation.DEST_MINE:
             _build_work_management(WorkforceSystem.PROF_MINING, &"mining_crew", "Đội Khai Khoáng", "Khai khoáng")
         SectMapPresentation.DEST_FORGE:
             _build_work_management(WorkforceSystem.PROF_FORGING, &"forge_hall", "Luyện Khí Đường", "Luyện khí")
+            _build_forge_craft_controls()
         SectMapPresentation.DEST_CULTIVATION:
             _build_direct_order_management(WorkforceSystem.COMMAND_CULTIVATE, "", "Gọi tu luyện", false)
         SectMapPresentation.DEST_RESIDENCE:
             _build_direct_order_management(WorkforceSystem.COMMAND_REST, "", "Gọi nghỉ", false)
+            _build_lodging_expansion_control()
+        SectMapPresentation.DEST_MEDICINE:
+            _build_needs_priority_controls("ƯU TIÊN HẬU CẦN · P3.4C")
         SectMapPresentation.DEST_GATE:
             _build_direct_order_management(WorkforceSystem.COMMAND_RETURN_SECT, "", "Triệu hồi", true)
         _:
             pass
+
+func _build_main_hall_policy_controls() -> void:
+    _add_management_section_label("CHÍNH SÁCH LAO ĐỘNG · P3.4C")
+    _add_policy_button_row([
+        {"label":"Cân bằng", "value":WorkforceSystem.POLICY_BALANCED},
+        {"label":"Sản xuất", "value":WorkforceSystem.POLICY_PRODUCTION},
+        {"label":"Tu luyện", "value":WorkforceSystem.POLICY_CULTIVATION}
+    ], state.sect.work_policy, "_set_work_policy_from_building")
+
+    _add_management_section_label("ƯU TIÊN HẬU CẦN · P3.4C")
+    _add_policy_button_row([
+        {"label":"Cân bằng", "value":NeedsSystem.PRIORITY_BALANCED},
+        {"label":"Thuốc", "value":NeedsSystem.PRIORITY_MEDICINE},
+        {"label":"Vật tư", "value":NeedsSystem.PRIORITY_SUPPLIES}
+    ], state.sect.needs_priority, "_set_needs_priority_from_building")
+
+    _add_management_section_label("CHÍNH SÁCH TRANG BỊ · P3.4C")
+    _add_policy_button_row([
+        {"label":"Cân bằng", "value":EquipmentSystem.POLICY_BALANCED},
+        {"label":"Chiến đấu", "value":EquipmentSystem.POLICY_COMBAT},
+        {"label":"Tiết kiệm", "value":EquipmentSystem.POLICY_FRUGAL}
+    ], state.sect.equipment_policy, "_set_equipment_policy_from_building")
+
+func _build_needs_priority_controls(title: String) -> void:
+    _add_management_section_label(title)
+    _add_policy_button_row([
+        {"label":"Cân bằng", "value":NeedsSystem.PRIORITY_BALANCED},
+        {"label":"Ưu tiên thuốc", "value":NeedsSystem.PRIORITY_MEDICINE},
+        {"label":"Ưu tiên vật tư", "value":NeedsSystem.PRIORITY_SUPPLIES}
+    ], state.sect.needs_priority, "_set_needs_priority_from_building")
+
+func _add_policy_button_row(options: Array, current_value: StringName, handler_name: String) -> void:
+    var row := HBoxContainer.new()
+    row.custom_minimum_size = Vector2(384, 36)
+    row.add_theme_constant_override("separation", 5)
+    building_management_container.add_child(row)
+
+    for option_value in options:
+        var option: Dictionary = option_value
+        var value := StringName(option.get("value", ""))
+        var button := Button.new()
+        button.text = "%s%s" % [str(option.get("label", value)), " ✓" if value == current_value else ""]
+        button.custom_minimum_size = Vector2(118, 34)
+        button.add_theme_font_size_override("font_size", 10)
+        button.pressed.connect(Callable(self, handler_name).bind(value))
+        row.add_child(button)
+
+func _build_lodging_expansion_control() -> void:
+    _add_management_section_label("MỞ RỘNG CHỖ Ở · P3.4C")
+    var row := HBoxContainer.new()
+    row.custom_minimum_size = Vector2(384, 38)
+    row.add_theme_constant_override("separation", 8)
+    building_management_container.add_child(row)
+
+    var info := Label.new()
+    info.text = "Hiện %d chỗ · Vật tư %d" % [state.sect.lodging_capacity, state.sect.supply_stock]
+    info.custom_minimum_size = Vector2(236, 34)
+    info.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+    info.add_theme_font_size_override("font_size", 11)
+    row.add_child(info)
+
+    var button := Button.new()
+    button.name = "ExpandLodging"
+    button.text = "+1 chỗ · -%d" % NeedsSystem.LODGING_EXPANSION_COST_PER_SLOT
+    button.custom_minimum_size = Vector2(136, 34)
+    button.add_theme_font_size_override("font_size", 10)
+    button.pressed.connect(_expand_lodging_from_building)
+    row.add_child(button)
+
+func _build_forge_craft_controls() -> void:
+    _add_management_section_label("LUYỆN CHẾ TRANG BỊ · P3.4C")
+    var recipe_ids: Array = EquipmentSystem.RECIPES.keys()
+    recipe_ids.sort()
+    for raw_id in recipe_ids:
+        var recipe_id := StringName(raw_id)
+        var data := equipment_system.recipe(recipe_id)
+        if data.is_empty():
+            continue
+
+        var row := VBoxContainer.new()
+        row.custom_minimum_size = Vector2(384, 0)
+        row.add_theme_constant_override("separation", 3)
+        building_management_container.add_child(row)
+
+        var top := HBoxContainer.new()
+        top.custom_minimum_size = Vector2(384, 36)
+        top.add_theme_constant_override("separation", 6)
+        row.add_child(top)
+
+        var name := Label.new()
+        name.text = str(data.get("name", recipe_id))
+        name.custom_minimum_size = Vector2(244, 34)
+        name.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+        name.add_theme_font_size_override("font_size", 11)
+        top.add_child(name)
+
+        var craft := Button.new()
+        craft.name = "Craft_%s" % str(recipe_id)
+        craft.text = "Luyện vào kho"
+        craft.custom_minimum_size = Vector2(128, 34)
+        craft.add_theme_font_size_override("font_size", 10)
+        craft.pressed.connect(Callable(self, "_craft_from_building").bind(recipe_id))
+        top.add_child(craft)
+
+        var materials := Label.new()
+        materials.text = _recipe_material_status(recipe_id)
+        materials.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+        materials.add_theme_font_size_override("font_size", 10)
+        materials.add_theme_color_override("font_color", Color(0.24, 0.22, 0.18, 0.76))
+        row.add_child(materials)
+
+func _recipe_material_status(recipe_id: StringName) -> String:
+    var data := equipment_system.recipe(recipe_id)
+    if data.is_empty():
+        return "Recipe không tồn tại."
+    var materials: Dictionary = data.get("materials", {})
+    var ids: Array = materials.keys()
+    ids.sort()
+    var parts: Array[String] = []
+    var missing: Array[String] = []
+    for raw_id in ids:
+        var material_id := StringName(raw_id)
+        var need := int(materials[raw_id])
+        var have := int(state.sect.forge_materials.get(str(material_id), 0))
+        parts.append("%s %d/%d" % [equipment_system.material_name(material_id), have, need])
+        if have < need:
+            missing.append(equipment_system.material_name(material_id))
+    var suffix := " · Đủ nguyên liệu" if missing.is_empty() else " · Thiếu: %s" % ", ".join(missing)
+    return "Nguyên liệu: %s%s" % [" · ".join(parts), suffix]
+
+func _set_work_policy_from_building(policy: StringName) -> void:
+    var ok := workforce.set_work_policy(state, policy)
+    building_management_feedback = "Đã đổi chính sách lao động: %s." % _work_policy_label(policy) if ok else "Không thể đổi chính sách lao động."
+    _refresh_building_operation_content()
+
+func _set_needs_priority_from_building(priority: StringName) -> void:
+    var ok := needs_system.set_priority(state, priority)
+    building_management_feedback = "Đã đổi ưu tiên hậu cần: %s." % _needs_priority_label(priority) if ok else "Không thể đổi ưu tiên hậu cần."
+    _refresh_building_operation_content()
+
+func _set_equipment_policy_from_building(policy: StringName) -> void:
+    var ok := equipment_system.set_policy(state, policy)
+    building_management_feedback = "Đã đổi chính sách trang bị: %s." % _equipment_policy_label(policy) if ok else "Không thể đổi chính sách trang bị."
+    _refresh_building_operation_content()
+
+func _expand_lodging_from_building() -> void:
+    var ok := needs_system.expand_lodging(state, 1)
+    if ok:
+        building_management_feedback = "Đã mở rộng +1 chỗ nghỉ, tốn %d vật tư." % NeedsSystem.LODGING_EXPANSION_COST_PER_SLOT
+    else:
+        building_management_feedback = "Không đủ %d vật tư để mở rộng +1 chỗ." % NeedsSystem.LODGING_EXPANSION_COST_PER_SLOT
+    _refresh_building_operation_content()
+
+func _craft_from_building(recipe_id: StringName) -> void:
+    var item := equipment_system.craft(state, recipe_id, false)
+    if item.is_empty():
+        building_management_feedback = "Không đủ nguyên liệu: %s" % _recipe_material_status(recipe_id)
+    else:
+        building_management_feedback = "Đã luyện chế %s · %s vào Kho Tông Môn." % [
+            str(item.get("name", recipe_id)),
+            equipment_system.quality_name(StringName(item.get("quality", "pham")))
+        ]
+    _refresh_building_operation_content()
 
 func _build_work_management(profession_id: StringName, group_id: StringName, group_label: String, order_label: String) -> void:
     _add_management_section_label("QUẢN LÝ NGƯỜI · P3.4B")
@@ -798,7 +968,7 @@ func _main_hall_operation_text() -> String:
         + "Lao động: %s\n"
         + "Hậu cần: %s\n"
         + "Trang bị: %s\n\n"
-        + "P3.4A chỉ đọc authority thật. Điều chỉnh chính sách sẽ mở ở P3.4C."
+        + "P3.4C: dùng các nút bên dưới để đổi chính sách thật của tông môn."
     ) % [
         state.disciples.size(), state.sect.disciple_capacity,
         state.sect.treasury, state.sect.spirit_stones,
@@ -863,7 +1033,7 @@ func _forge_operation_text() -> String:
         + "Điểm hỗ trợ rèn: %d\n"
         + "Recipe đủ nguyên liệu: %d / %d\n\n"
         + "NHÂN SỰ\n%s\n\n"
-        + "P3.4B: quản lý người bằng các nút bên dưới. P3.4C mới mở craft thật."
+        + "P3.4B quản lý người; P3.4C luyện chế trang bị thật bằng các nút bên dưới."
     ) % [
         int(state.sect.forge_materials.get("thanh_thiet", 0)),
         int(state.sect.forge_materials.get("linh_moc", 0)),
@@ -919,7 +1089,7 @@ func _residence_operation_text() -> String:
         + "Vật tư: %d\n"
         + "Đang nghỉ: %d\n\n"
         + "ĐỆ TỬ ĐANG NGHỈ\n%s\n\n"
-        + "P3.4B: có thể gọi nghỉ bên dưới; P3.4C mới mở rộng chỗ ở bằng NeedsSystem."
+        + "P3.4B gọi nghỉ; P3.4C mở rộng chỗ ở thật bằng NeedsSystem."
     ) % [
         population, state.sect.lodging_capacity,
         "QUÁ TẢI" if overloaded else "Ổn định",
@@ -950,7 +1120,7 @@ func _medicine_operation_text() -> String:
         + "Ưu tiên hậu cần: %s\n"
         + "Đã dùng thuốc: %d · Đã sản xuất: %d\n\n"
         + "NGƯỜI CẦN CHÚ Ý\n%s\n\n"
-        + "P3.4A không tạo COMMAND_HEAL giả. P3.4C chỉ đổi priority hậu cần thật."
+        + "Không có COMMAND_HEAL giả. P3.4C chỉ đổi priority hậu cần thật bằng NeedsSystem."
     ) % [
         state.sect.medicine_stock, NeedsSystem.MEDICINE_CAP,
         state.sect.supply_stock, NeedsSystem.SUPPLY_CAP,
