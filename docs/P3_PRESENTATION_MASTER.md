@@ -50,6 +50,7 @@ Nếu quyết định làm thay đổi architecture/pipeline lâu dài, tạo AD
 | Tổng thể P3/UI hierarchy | `P3_2_UI_ART_PRODUCTION_SPEC.md`, `P3_REFERENCE_UI_AUDIT.md` | Đã khóa structure |
 | V3 core UX flow | `P3_UX_FLOW_V3.md` | V3.1 -> V3.2 right panel -> V3.3 deep screen USER APPROVED |
 | Main map UX | `P3_UX_MAIN_MAP.md` | V3.1/V3.2 locked |
+| Building interaction UX | `P3_UX_BUILDING_INTERACTION.md` | Building right-panel + deep management design USER APPROVED |
 
 | Công trình | `P3_ASSET_BUILDINGS.md` | Visual family approved; exact source bytes cần phục hồi |
 | Map/terrain/environment | `P3_ASSET_MAP_ENVIRONMENT.md` | Design contract locked; source availability mixed |
