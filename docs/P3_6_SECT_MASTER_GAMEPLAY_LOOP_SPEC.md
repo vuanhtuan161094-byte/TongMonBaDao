@@ -1,8 +1,8 @@
 # P3.6 — SECT MASTER GAMEPLAY LOOP / VÒNG LẶP QUẢN LÝ TÔNG CHỦ
 
 Date: 2026-10-04  
-Status: DESIGN LOCKED / PRODUCT-LOOP AUTHORITY / REAL PLAYTEST PENDING  
-Runtime note: P3.4 and P3.5 are now real Windows Godot 4.7.2 PASS. P3.6 itself requires a real 5–10 minute live-map product playtest; it is not a headless gate.
+Status: DESIGN LOCKED / PRODUCT-LOOP AUTHORITY / PLAYTEST BLOCKED UNTIL P3.6A  
+Runtime note: P3.4 and P3.5 are real Windows Godot 4.7.2 PASS. A real user video on 2026-10-05 showed the live scene is still a QA/debug shell, so P3.6 product playtest is blocked until `P3_6A_PLAYABLE_VERTICAL_SLICE_SPEC.md` is completed and visually accepted.
 
 ## 0. Mục tiêu
 
