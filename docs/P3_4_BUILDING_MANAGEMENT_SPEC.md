@@ -1,7 +1,7 @@
 # P3.4 — BUILDING MANAGEMENT / QUẢN LÝ CÔNG TRÌNH
 
 Date: 2026-10-04  
-Status: DESIGN LOCKED; P3.4A IMPLEMENTED / RUNTIME PENDING; P3.4B/C NOT IMPLEMENTED
+Status: DESIGN LOCKED; P3.4A REAL PASS; P3.4B IMPLEMENTATION NEXT; P3.4C NOT IMPLEMENTED
 
 ## P3.4A runtime status
 
@@ -16,9 +16,9 @@ Implemented on `main`:
   - `Verify-P3-4A-Building-Panel.cmd`;
   - `Sync-P3-4A-Building-Panel.cmd`.
 
-P3.4A is **not PASS** until real Windows Godot 4.7.2 gate is green.
+P3.4A is **REAL PASS** on Windows Godot 4.7.2.
 
-P3.4B people management and P3.4C real system actions remain blocked until P3.4A passes.
+P3.4B people management is now unblocked. P3.4C remains blocked until P3.4B passes.
 
 ---
 
