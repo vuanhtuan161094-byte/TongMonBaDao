@@ -1,7 +1,7 @@
 # P3 — MAIN MAP V3 COMPOSITION / WIREFRAME SPEC
 
 Date: 2026-10-03
-Status: CANONICAL PRE-MOCKUP COMPOSITION SPEC
+Status: CANONICAL V3 COMPOSITION SPEC — V3.1/V3.2/V3.3 VISUAL FLOW LOCKED
 Canvas: `1280 × 720` landscape
 
 ## 0. Mục đích
@@ -311,4 +311,4 @@ State A chỉ được visual-accept khi:
 - không art tự phát minh thay approved building family;
 - ở 1280×720 vẫn đọc được hierarchy.
 
-Sau State A mới review State B/C, không gộp cả ba thành một screenshot rối.
+V3.1/V3.2/V3.3 đã được user chốt về UX direction ngày 2026-10-04. Mockup approval vẫn không phải runtime PASS. Building State C còn cần bước UX riêng trước khi visual-lock.
