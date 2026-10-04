@@ -138,7 +138,7 @@ Accepted:
 
 Dark hair + skirt merging at `0.75x` is future art contrast work, not a pivot defect. **No bone rest positions were changed.**
 
-## Current active task — P3.4C real building/system actions
+## Current active task — P3.4C real building/system actions (runtime pending)
 
 Three-direction Stage A is now runtime-green and visually accepted:
 
@@ -192,15 +192,19 @@ Current authoritative diagnostic pack is an external one-time ZIP:
 
 ## NEXT WINDOWS ACTION
 
-P3.4B is **REAL PASS** on Windows Godot 4.7.2.
+P3.4C is implemented on `main` and **RUNTIME PENDING**.
 
-User supplied:
+Run:
 
-- `P3.4B BUILDING PEOPLE MANAGEMENT TEST PASS`;
-- `P3.4B BUILDING PEOPLE MANAGEMENT GATE: PASS`;
-- `P3.4B BUILDING PEOPLE MANAGEMENT: PASS`.
+`Sync-Main.cmd Verify-P3-4C-Building-Actions.cmd`
 
-Current code task: implement P3.4C only. Then run the dedicated verifier via stable `Sync-Main.cmd`.
+Expected final lines:
+
+- `P3.4C BUILDING SYSTEM ACTIONS TEST PASS`;
+- `P3.4C BUILDING SYSTEM ACTIONS GATE: PASS`;
+- `P3.4C BUILDING SYSTEM ACTIONS: PASS`.
+
+If it fails, patch only P3.4C and rerun the same stable command. If green, lock full P3.4 and begin P3.5 runtime.
 
 ## P3.4 DESIGN LOCKED — DO NOT IMPLEMENT YET
 
