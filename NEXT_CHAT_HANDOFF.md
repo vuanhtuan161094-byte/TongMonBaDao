@@ -138,7 +138,7 @@ Accepted:
 
 Dark hair + skirt merging at `0.75x` is future art contrast work, not a pivot defect. **No bone rest positions were changed.**
 
-## Current active task — P3.5 living-sect cues (runtime pending)
+## Current active task — P3.6 real gameplay-loop playtest
 
 Three-direction Stage A is now runtime-green and visually accepted:
 
@@ -197,20 +197,20 @@ P3.5 first real Windows attempt failed during GDScript parse because `LivingCueT
 
 ## NEXT WINDOWS ACTION
 
-P3.5 is implemented on `main` and **RUNTIME PENDING**.
+P3.5 is **REAL PASS** on Windows Godot 4.7.2.
 
-Run:
-
-`Sync-Main.cmd Verify-P3-5-Living-Cues.cmd`
-
-Expected final lines include:
+User supplied:
 
 - `P3.5 LIVING CUE CORE TEST PASS`;
 - `P3.5 LIVING CUE MAP INTEGRATION TEST PASS`;
 - `P3.5 LIVING SECT CUES GATE: PASS`;
 - `P3.5 LIVING SECT CUES: PASS`.
 
-If it fails, patch only the exact P3.5 failure and rerun the same stable command. If green, lock P3.5 and move to the P3.6 gameplay-loop playtest, not another mechanic phase.
+Next run:
+
+`Sync-Main.cmd Preview-P3-6-Sect-Master-Loop.cmd`
+
+This opens the real main scene for a 5–10 minute P3.6 product-loop playtest. Do not claim P3.6 accepted until user reports the live interaction result.
 
 ## P3.4 — REAL PASS / LOCKED
 
