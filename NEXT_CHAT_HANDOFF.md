@@ -138,7 +138,7 @@ Accepted:
 
 Dark hair + skirt merging at `0.75x` is future art contrast work, not a pivot defect. **No bone rest positions were changed.**
 
-## Current active task — P3.4A read-only building operation panel
+## Current active task — P3.4A read-only building operation panel (runtime pending)
 
 Three-direction Stage A is now runtime-green and visually accepted:
 
@@ -192,16 +192,21 @@ Current authoritative diagnostic pack is an external one-time ZIP:
 
 ## NEXT WINDOWS ACTION
 
-P3.3 is now **REAL PASS** on Windows Godot 4.7.2.
+P3.4A is implemented on `main` and **RUNTIME PENDING**.
 
-User supplied on 2026-10-04:
+Run only:
 
-- `P3.3 DISCIPLE OPERATIONAL FLOW TEST PASS`;
-- `P3.3 DISCIPLE OPERATIONAL FLOW GATE: PASS`;
-- `P3.3 DISCIPLE OPERATIONAL FLOW: PASS`;
-- cumulative P3.1/P3.2 camera + disciple UI baselines also passed.
+`Sync-P3-4A-Building-Panel.cmd`
 
-Current code task: implement P3.4A read-only building operation panel, then run its safe sync launcher. Do not implement P3.4B/C or P3.5 until P3.4A is runtime-green.
+The sync launcher is authoritative; do not tell the user to run a newly added raw Verify launcher directly.
+
+Expected final lines include:
+
+- `P3.4A BUILDING OPERATION PANEL TEST PASS`;
+- `P3.4A BUILDING OPERATION PANEL GATE: PASS`;
+- `P3.4A BUILDING OPERATION PANEL: PASS`.
+
+If it fails, patch only P3.4A and rerun the same Sync launcher. If green, lock P3.4A then implement P3.4B people management.
 
 ## P3.4 DESIGN LOCKED — DO NOT IMPLEMENT YET
 
