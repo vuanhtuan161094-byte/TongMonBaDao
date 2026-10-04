@@ -172,6 +172,9 @@ FEMALE STAGE A + SHARED MOTION FAST CHECK: PASS
 
 The user supplied an 11.6-second real Windows motion video. Review accepted the current V1 motion: idle breathing is restrained, walk cadence is stable, there is no obvious anchor jump or severe shoulder/hip tearing, hair/horns remain attached, and LEFT mirrors RIGHT cleanly. Motion is intentionally simple/stiff at this stage; long-hair secondary motion is future polish, not a blocker for map integration.
 
+
+P3.4C first real Windows attempt reached the cumulative P3.4B regression and failed because the old Medicine Hall test incorrectly required zero controls. P3.4C legitimately adds real NeedsSystem priority controls. The regression was corrected in commit `7c4ce83c13d8e6e7ce7e2cef6e53e3472f0375b6` to forbid only fabricated HEAL/direct-treatment actions. P3.4C itself remains runtime pending until rerun.
+
 # Next authoritative Windows action
 
 P3.2 live modular map, P3.3 disciple flow, P3.4A and P3.4B are **REAL PASS / LOCKED**.
