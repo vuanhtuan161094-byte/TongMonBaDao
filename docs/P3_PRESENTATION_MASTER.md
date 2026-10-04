@@ -1,6 +1,6 @@
 # P3 — PRESENTATION MASTER / AUTHORITY INDEX
 
-Date: 2026-10-03
+Date: 2026-10-04
 Status: CANONICAL ROUTER FOR UI/UX + VISUAL ASSETS
 
 ## 0. Mục đích
@@ -48,11 +48,13 @@ Nếu quyết định làm thay đổi architecture/pipeline lâu dài, tạo AD
 | Asset/status index | `P3_ASSET_REGISTRY.json` | Machine-readable canonical registry |
 | Source availability / recovery | `P3_SOURCE_RECOVERY_MANIFEST.md` | Canonical source inventory |
 | Tổng thể P3/UI hierarchy | `P3_2_UI_ART_PRODUCTION_SPEC.md`, `P3_REFERENCE_UI_AUDIT.md` | Đã khóa structure |
-| Main map UX | `P3_UX_MAIN_MAP.md` | Canon đang hoạt động |
+| V3 core UX flow | `P3_UX_FLOW_V3.md` | V3.1 -> V3.2 right panel -> V3.3 deep screen USER APPROVED |
+| Main map UX | `P3_UX_MAIN_MAP.md` | V3.1/V3.2 locked |
+
 | Công trình | `P3_ASSET_BUILDINGS.md` | Visual family approved; exact source bytes cần phục hồi |
 | Map/terrain/environment | `P3_ASSET_MAP_ENVIRONMENT.md` | Design contract locked; source availability mixed |
 | Đệ tử map actor | `P3_2_MODULAR_ACTOR_SPEC.md`, `P3_2_FEMALE_NORMAL_V1_ASSET_PRODUCTION.md` | female proof đang làm |
-| Màn Đệ Tử | `P3_UX_DISCIPLE_SCREEN.md` | Structure đã khóa, visual polish tiếp tục |
+| Màn Đệ Tử | `P3_UX_DISCIPLE_SCREEN.md` | V3.3 locked; 6 real tabs |
 | UI skin/icon | `P3_UI_SKIN_AND_ICONOGRAPHY.md` | Style canon locked; runtime asset family pending |
 | Asset manifest kỹ thuật cũ | `P3_2_ASSET_MANIFEST.md` | Inventory/checklist; không thay registry/authority mới |
 | Decision history | `docs/decisions/` | Append-only rationale for major decisions |
@@ -157,14 +159,15 @@ Ví dụ hợp lệ:
 
 Canonical interaction order:
 
-`map -> edge HUD -> actionable bubble -> compact quick panel -> deep overlay/page`
+`map V3.1 -> tap disciple -> right summary panel V3.2 -> Xem chi tiết -> deep disciple screen V3.3`
 
 Map phải giữ cảm giác chiếm khoảng 85–90% thị giác khi không có deep overlay.
 
 Không dùng:
 
 - fixed sidebar lớn thường trực;
-- panel đệ tử chiếm nửa màn hình ở trạng thái map bình thường;
+- panel đệ tử mở mặc định ở trạng thái map bình thường;
+- floating disciple quick-card cũ thay cho V3.2 right summary panel;
 - label tên trên mọi công trình mọi lúc;
 - quá nhiều icon/menu thường trực;
 - text dày trên NPC.
