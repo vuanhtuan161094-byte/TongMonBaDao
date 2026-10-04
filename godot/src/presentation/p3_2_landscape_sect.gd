@@ -33,6 +33,7 @@ var disciple_summary_name: Label
 var disciple_summary_meta: Label
 var disciple_summary_body: Label
 var summary_feedback := ""
+var deep_restore_summary := false
 var screen_pointer_dragged := false
 var mouse_pointer_dragged := false
 
@@ -379,6 +380,8 @@ func _clear_pointer_state() -> void:
     touch_points.clear()
     last_pinch_distance = 0.0
     mouse_panning = false
+    screen_pointer_dragged = false
+    mouse_pointer_dragged = false
 
 func _open_building(destination: StringName) -> void:
     _close_disciple_summary(true)
@@ -397,6 +400,7 @@ func _bottom_action(action: String) -> void:
         if ids.is_empty():
             return
         var target_id := selected_id if selected_id != &"" and state.disciples.has(selected_id) else StringName(ids[0])
+        deep_restore_summary = false
         _open_disciple_deep_screen(target_id, "Thuộc tính")
         return
     super._bottom_action(action)
@@ -461,6 +465,7 @@ func _sync_actor_positions() -> void:
 
     if focused_kind == &"disciple":
         _refresh_focused_disciple_point()
+    _refresh_disciple_summary_content()
 
 func _actor_anchor_offset(actor: Control) -> Vector2:
     if actor is ModularDiscipleActor:
@@ -725,6 +730,7 @@ func _issue_summary_order(kind: StringName, target: String, label: String) -> vo
 func _open_selected_disciple_detail() -> void:
     if selected_id == &"" or not state.disciples.has(selected_id):
         return
+    deep_restore_summary = true
     _open_disciple_deep_screen(selected_id, "Thuộc tính")
 
 func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thuộc tính") -> void:
@@ -864,10 +870,22 @@ func _deep_status_text(disciple: DiscipleState) -> String:
 
 func _return_to_disciple_summary() -> void:
     _clear_popup()
-    if selected_id != &"" and state.disciples.has(selected_id):
+    if deep_restore_summary and selected_id != &"" and state.disciples.has(selected_id):
+        _restore_selected_focus_marker()
         _show_disciple_summary()
         return
     _close_disciple_summary(true)
+
+func _restore_selected_focus_marker() -> void:
+    if selected_id == &"" or not state.disciples.has(selected_id):
+        return
+    var key := str(selected_id)
+    if not actor_nodes.has(key):
+        return
+    var actor: Control = actor_nodes[key] as Control
+    var disciple: DiscipleState = state.disciples[selected_id]
+    var point := actor.position + actor.size * 0.5
+    _set_focus_target(point, &"disciple", selected_id, disciple.display_name, false)
 
 func _tab_notice(tab_name: String) -> void:
     _open_disciple_tab(tab_name)
