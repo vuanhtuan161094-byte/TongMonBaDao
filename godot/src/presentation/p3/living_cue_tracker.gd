@@ -8,7 +8,7 @@ var snapshots: Dictionary = {}
 var active_events: Dictionary = {}
 var observation_now_msec: int = 0
 
-func seed(state: SimulationState) -> void:
+func seed_from_state(state: SimulationState) -> void:
     snapshots.clear()
     active_events.clear()
     var ids: Array = state.disciples.keys()
@@ -20,7 +20,7 @@ func seed(state: SimulationState) -> void:
 func observe(state: SimulationState, now_msec: int) -> Array[Dictionary]:
     observation_now_msec = now_msec
     if snapshots.is_empty():
-        seed(state)
+        seed_from_state(state)
         return []
 
     _expire(now_msec)
