@@ -91,29 +91,130 @@ func _build_shell() -> void:
 
 func _build_map_decoration() -> void:
     var inner := Panel.new()
+    inner.name = "SectTerrainBase"
     inner.position = Vector2(250, 78)
     inner.size = Vector2(1012, 558)
-    inner.add_theme_stylebox_override("panel", _style(Color(0.76, 0.80, 0.63, 1.0), Color(0.24, 0.31, 0.20, 1.0), 2, 26))
+    inner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    inner.add_theme_stylebox_override("panel", _style(Color(0.76, 0.80, 0.63, 1.0), Color(0.24, 0.31, 0.20, 0.78), 2, 30))
     map_layer.add_child(inner)
 
-    var river := ColorRect.new()
-    river.color = Color(0.40, 0.68, 0.70, 0.70)
-    river.position = Vector2(270, 398)
-    river.size = Vector2(950, 52)
-    river.rotation = -0.035
+    var earth_patch := Polygon2D.new()
+    earth_patch.polygon = PackedVector2Array([
+        Vector2(278, 110), Vector2(520, 92), Vector2(662, 154), Vector2(610, 278),
+        Vector2(394, 298), Vector2(282, 226)
+    ])
+    earth_patch.color = Color(0.72, 0.72, 0.54, 0.42)
+    map_layer.add_child(earth_patch)
+
+    var stone_patch := Polygon2D.new()
+    stone_patch.polygon = PackedVector2Array([
+        Vector2(862, 102), Vector2(1188, 112), Vector2(1218, 284), Vector2(1090, 340),
+        Vector2(882, 286), Vector2(820, 178)
+    ])
+    stone_patch.color = Color(0.68, 0.73, 0.62, 0.35)
+    map_layer.add_child(stone_patch)
+
+    var river := Line2D.new()
+    river.name = "SectStream"
+    river.points = PackedVector2Array([
+        Vector2(268, 430), Vector2(404, 414), Vector2(540, 424), Vector2(686, 452),
+        Vector2(820, 446), Vector2(972, 424), Vector2(1215, 440)
+    ])
+    river.width = 46.0
+    river.default_color = Color(0.40, 0.68, 0.70, 0.68)
+    river.antialiased = true
     map_layer.add_child(river)
 
-    var path_h := ColorRect.new()
-    path_h.color = Color(0.76, 0.68, 0.51, 0.78)
-    path_h.position = Vector2(395, 316)
-    path_h.size = Vector2(730, 24)
-    map_layer.add_child(path_h)
+    var river_light := Line2D.new()
+    river_light.points = river.points
+    river_light.width = 12.0
+    river_light.default_color = Color(0.72, 0.88, 0.84, 0.38)
+    river_light.antialiased = true
+    map_layer.add_child(river_light)
 
-    var path_v := ColorRect.new()
-    path_v.color = Color(0.76, 0.68, 0.51, 0.78)
-    path_v.position = Vector2(680, 190)
-    path_v.size = Vector2(22, 350)
-    map_layer.add_child(path_v)
+    _add_map_path(PackedVector2Array([
+        Vector2(1120, 520), Vector2(1005, 430), Vector2(790, 365), Vector2(690, 330), Vector2(620, 210)
+    ]))
+    _add_map_path(PackedVector2Array([
+        Vector2(690, 330), Vector2(510, 385), Vector2(356, 365)
+    ]))
+    _add_map_path(PackedVector2Array([
+        Vector2(690, 330), Vector2(815, 505)
+    ]))
+    _add_map_path(PackedVector2Array([
+        Vector2(790, 365), Vector2(912, 220)
+    ]))
+    _add_map_path(PackedVector2Array([
+        Vector2(790, 365), Vector2(1005, 385)
+    ]))
+    _add_map_path(PackedVector2Array([
+        Vector2(620, 210), Vector2(690, 330), Vector2(540, 485)
+    ]))
+
+    var courtyard := Panel.new()
+    courtyard.position = Vector2(644, 294)
+    courtyard.size = Vector2(94, 70)
+    courtyard.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    courtyard.add_theme_stylebox_override("panel", _style(Color(0.82, 0.76, 0.60, 0.86), Color(0.50, 0.43, 0.30, 0.65), 2, 34))
+    map_layer.add_child(courtyard)
+
+    for tree_pos in [
+        Vector2(278, 126), Vector2(330, 150), Vector2(388, 118), Vector2(1162, 152),
+        Vector2(1120, 210), Vector2(1180, 300), Vector2(302, 540), Vector2(366, 574),
+        Vector2(1010, 566), Vector2(1160, 574), Vector2(904, 590)
+    ]:
+        _add_map_tree(tree_pos)
+
+    for rock_pos in [
+        Vector2(286, 278), Vector2(334, 258), Vector2(1185, 380),
+        Vector2(440, 590), Vector2(1080, 594), Vector2(742, 592)
+    ]:
+        _add_map_rock(rock_pos)
+
+func _add_map_path(points: PackedVector2Array) -> void:
+    var path := Line2D.new()
+    path.points = points
+    path.width = 20.0
+    path.default_color = Color(0.75, 0.67, 0.50, 0.80)
+    path.antialiased = true
+    map_layer.add_child(path)
+
+    var center := Line2D.new()
+    center.points = points
+    center.width = 4.0
+    center.default_color = Color(0.84, 0.78, 0.62, 0.42)
+    center.antialiased = true
+    map_layer.add_child(center)
+
+func _add_map_tree(pos: Vector2) -> void:
+    var trunk := ColorRect.new()
+    trunk.position = pos + Vector2(13, 24)
+    trunk.size = Vector2(7, 18)
+    trunk.color = Color(0.38, 0.29, 0.19, 0.90)
+    trunk.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    map_layer.add_child(trunk)
+
+    var crown := Panel.new()
+    crown.position = pos
+    crown.size = Vector2(34, 34)
+    crown.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    crown.add_theme_stylebox_override("panel", _style(Color(0.29, 0.48, 0.31, 0.94), Color(0.20, 0.36, 0.24, 0.72), 1, 18))
+    map_layer.add_child(crown)
+
+    var crown_small := Panel.new()
+    crown_small.position = pos + Vector2(18, 8)
+    crown_small.size = Vector2(25, 25)
+    crown_small.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    crown_small.add_theme_stylebox_override("panel", _style(Color(0.36, 0.55, 0.36, 0.90), Color(0.22, 0.38, 0.25, 0.60), 1, 14))
+    map_layer.add_child(crown_small)
+
+func _add_map_rock(pos: Vector2) -> void:
+    var rock := Panel.new()
+    rock.position = pos
+    rock.size = Vector2(30, 20)
+    rock.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    rock.add_theme_stylebox_override("panel", _style(Color(0.48, 0.50, 0.45, 0.78), Color(0.34, 0.36, 0.32, 0.60), 1, 12))
+    map_layer.add_child(rock)
 
 func _build_buildings() -> void:
     var buildings := [
