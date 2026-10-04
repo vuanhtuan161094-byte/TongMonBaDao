@@ -12,7 +12,7 @@ Always fetch/inspect live `main` before editing.
 - Explain progress clearly in Vietnamese; user is non-technical.
 - Never claim runtime PASS without real Godot 4.7.2 output from the user's Windows machine.
 - Never use destructive local git instructions (`reset --hard`, `git clean`, deleting user files, etc.).
-- Stable Windows workflow: use root `Sync-Main.cmd` for all future syncs. For a gate run `Sync-Main.cmd Verify-<gate>.cmd`. Do not rely on newly created phase-specific Sync launchers because they may not exist on local before the sync.
+- Stable Windows workflow: use root `Sync-Main.cmd` for all future syncs. For a gate run `Sync-Main.cmd Verify-<gate>.cmd`. Do not rely on newly created phase-specific Sync launchers because they may not exist on local before the sync. Untracked local files are warning-only; tracked/staged edits still stop sync.
 
 Repo: `vuanhtuan161094-byte/TongMonBaDao`
 Branch: `main`
