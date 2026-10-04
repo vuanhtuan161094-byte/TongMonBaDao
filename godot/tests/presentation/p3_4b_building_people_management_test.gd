@@ -34,17 +34,23 @@ func _run() -> void:
     var disciple_id := StringName(ids[0])
     var disciple: DiscipleState = state.disciples[disciple_id]
 
-    if not await _verify_mine_flow(disciple):
+    var mine_ok: bool = await _verify_mine_flow(disciple)
+    if not mine_ok:
         return
-    if not await _verify_forge_flow(disciple):
+    var forge_ok: bool = await _verify_forge_flow(disciple)
+    if not forge_ok:
         return
-    if not await _verify_direct_order_flow(disciple, SectMapPresentation.DEST_CULTIVATION, WorkforceSystem.COMMAND_CULTIVATE, "", "Cultivation"):
+    var cultivate_ok: bool = await _verify_direct_order_flow(disciple, SectMapPresentation.DEST_CULTIVATION, WorkforceSystem.COMMAND_CULTIVATE, "", "Cultivation")
+    if not cultivate_ok:
         return
-    if not await _verify_direct_order_flow(disciple, SectMapPresentation.DEST_RESIDENCE, WorkforceSystem.COMMAND_REST, "", "Residence"):
+    var rest_ok: bool = await _verify_direct_order_flow(disciple, SectMapPresentation.DEST_RESIDENCE, WorkforceSystem.COMMAND_REST, "", "Residence")
+    if not rest_ok:
         return
-    if not await _verify_direct_order_flow(disciple, SectMapPresentation.DEST_GATE, WorkforceSystem.COMMAND_RETURN_SECT, "", "Gate"):
+    var return_ok: bool = await _verify_direct_order_flow(disciple, SectMapPresentation.DEST_GATE, WorkforceSystem.COMMAND_RETURN_SECT, "", "Gate")
+    if not return_ok:
         return
-    if not await _verify_no_fake_heal():
+    var heal_ok: bool = await _verify_no_fake_heal()
+    if not heal_ok:
         return
 
     print("P3.4B BUILDING PEOPLE MANAGEMENT TEST PASS")
