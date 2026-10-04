@@ -138,7 +138,7 @@ Accepted:
 
 Dark hair + skirt merging at `0.75x` is future art contrast work, not a pivot defect. **No bone rest positions were changed.**
 
-## Current active task — P3.6A playable vertical slice (runtime + visual review pending)
+## Current active task — P3.6A playable vertical slice (runtime PASS / visual review pending)
 
 Three-direction Stage A is now runtime-green and visually accepted:
 
@@ -195,30 +195,32 @@ P3.4C first real Windows attempt reached the cumulative P3.4B regression and fai
 
 P3.5 first real Windows attempt failed during GDScript parse because `LivingCueTracker.seed(state)` collided with Godot's built-in `seed(int)`. The tracker method and all callers were renamed to `seed_from_state(state)`; P3.5 remains runtime pending until rerun.
 
-P3.6A first Windows gate reached disciple deep-tab cleanup and failed because `_clear_popup()` only queued old popup nodes for deletion; reopening another tab in the same frame caused Godot to auto-rename the new node (`DiscipleDeepScreen2`). Production popup lifecycle was fixed to detach children immediately before `queue_free()`. P3.6A remains runtime pending until rerun.
+P3.6A first Windows gate exposed a popup lifecycle bug (`DiscipleDeepScreen2`); it was fixed. The subsequent FULL cumulative rerun passed the P3.6A contract and live scene smoke.
 
 ## NEXT WINDOWS ACTION
 
-P3.6A productization is implemented on `main` and **RUNTIME + REAL VISUAL REVIEW PENDING**.
+P3.6A runtime is **REAL PASS** on Windows Godot 4.7.2.
 
-Run:
+User supplied:
 
-`Sync-Main.cmd Verify-P3-6A-Playable-Slice.cmd`
-
-Expected final lines include:
-
-- `P3.5 LIVING SECT CUES: PASS`;
 - `P3.6A PLAYABLE SLICE TEST PASS`;
 - `P3.6A PLAYABLE VERTICAL SLICE GATE: PASS`;
 - `P3.6A PLAYABLE VERTICAL SLICE: PASS`.
 
-If green, then run:
+Do not ask for another gate run now.
+
+Next:
 
 `Preview-P3-6A-Playable-Slice.cmd`
 
-Ask the user for a screenshot/video or direct visual judgment. P3.6A is not accepted until the real scene no longer feels like a QA/debug board.
+Need real screenshot/video or direct user visual judgment. P3.6A final product acceptance remains pending until the live scene no longer feels like a QA/debug board.
 
-Do not generate new building/environment art without the locked plan -> explicit OK -> generation workflow. The current code-drawn building silhouettes are temporary and preserve approved art authority.
+Testing policy now locked:
+
+- FAST by default while iterating;
+- FULL cumulative only at final phase lock or when a change actually crosses a locked baseline;
+- `Verify-P3-6A-Playable-Slice.cmd` is FAST;
+- `Verify-P3-6A-Playable-Slice-Full.cmd` preserves the cumulative chain.
 
 ## P3.4 — REAL PASS / LOCKED
 
