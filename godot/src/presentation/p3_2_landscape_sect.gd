@@ -23,6 +23,10 @@ var tab_status_text := ""
 var technique_system := TechniqueSystem.new()
 var equipment_system := EquipmentSystem.new()
 var needs_system := NeedsSystem.new()
+var living_cue_resolver := LivingCueResolver.new()
+var living_cue_tracker := LivingCueTracker.new()
+var living_cue_layer: LivingCueLayer
+var visible_living_cues: Array[Dictionary] = []
 var female_motion_library: AnimationLibrary
 var modular_live_actor_ids: Dictionary = {}
 
@@ -57,6 +61,9 @@ func _ready() -> void:
     _build_camera_controls()
     _build_disciple_summary_panel()
     _build_building_operation_panel()
+    _build_living_cue_layer()
+    living_cue_tracker.seed(state)
+    _refresh_living_cues()
 
 func _unhandled_input(event: InputEvent) -> void:
     if _popup_is_open():
@@ -290,6 +297,7 @@ func _focus_current_target() -> void:
         _refresh_focused_disciple_point()
     _refresh_disciple_summary_content()
     _refresh_building_operation_content()
+    _refresh_living_cues()
     _focus_world_point(focused_world_point)
     _pulse_focus_marker()
 
@@ -1235,6 +1243,75 @@ func _equipment_policy_label(policy: StringName) -> String:
         EquipmentSystem.POLICY_COMBAT: return "Chiến đấu"
         EquipmentSystem.POLICY_FRUGAL: return "Tiết kiệm"
         _: return "Cân bằng"
+
+func _process(_delta: float) -> void:
+    _refresh_living_cue_positions()
+
+func _build_living_cue_layer() -> void:
+    living_cue_layer = LivingCueLayer.new()
+    living_cue_layer.name = "LivingCueLayer"
+    living_cue_layer.position = Vector2.ZERO
+    living_cue_layer.size = SectMapCamera.WORLD_SIZE
+    living_cue_layer.cue_pressed.connect(_on_living_cue_pressed)
+    map_layer.add_child(living_cue_layer)
+
+func _refresh_living_cues() -> void:
+    if living_cue_layer == null or not is_instance_valid(living_cue_layer):
+        return
+
+    var candidates := living_cue_resolver.resolve_state_cues(state, cultivation, equipment_system)
+    var events := living_cue_tracker.observe(state, Time.get_ticks_msec())
+    candidates.append_array(events)
+
+    var candidate_anchors := _living_cue_anchor_positions(candidates)
+    var camera_center := SectMapCamera.VIEW_RECT.position + SectMapCamera.VIEW_RECT.size * 0.5
+    for cue_value in candidates:
+        var cue: Dictionary = cue_value
+        var key := str(cue.get("stable_key", ""))
+        var anchor := Vector2(candidate_anchors.get(key, Vector2.ZERO))
+        var screen_point := SectMapCamera.world_to_screen(anchor, map_layer.position, map_zoom)
+        cue["in_view"] = SectMapCamera.VIEW_RECT.has_point(screen_point)
+        cue["distance_to_camera"] = screen_point.distance_to(camera_center)
+
+    visible_living_cues = living_cue_resolver.select_visible(candidates, 3)
+    living_cue_layer.show_cues(visible_living_cues, _living_cue_anchor_positions(visible_living_cues))
+
+func _refresh_living_cue_positions() -> void:
+    if living_cue_layer == null or not is_instance_valid(living_cue_layer) or visible_living_cues.is_empty():
+        return
+    living_cue_layer.refresh_positions(visible_living_cues, _living_cue_anchor_positions(visible_living_cues))
+
+func _living_cue_anchor_positions(cues: Array[Dictionary]) -> Dictionary:
+    var positions: Dictionary = {}
+    for cue_value in cues:
+        var cue: Dictionary = cue_value
+        var key := str(cue.get("stable_key", ""))
+        if key == "":
+            continue
+
+        var target_kind := StringName(cue.get("target_kind", ""))
+        var target_id := StringName(cue.get("target_id", ""))
+        if target_kind == LivingCueResolver.TARGET_DISCIPLE:
+            var actor_key := str(target_id)
+            if actor_nodes.has(actor_key):
+                var actor := actor_nodes[actor_key] as Control
+                if actor != null and is_instance_valid(actor):
+                    positions[key] = actor.position + actor.size * 0.5
+                    continue
+        elif target_kind == LivingCueResolver.TARGET_BUILDING:
+            positions[key] = SectMapPresentation.position_for_destination(target_id)
+            continue
+
+        positions[key] = SectMapPresentation.position_for_destination(SectMapPresentation.DEST_COURTYARD)
+    return positions
+
+func _on_living_cue_pressed(cue: Dictionary) -> void:
+    var target_kind := StringName(cue.get("target_kind", ""))
+    var target_id := StringName(cue.get("target_id", ""))
+    if target_kind == LivingCueResolver.TARGET_DISCIPLE:
+        _open_disciple(target_id)
+    elif target_kind == LivingCueResolver.TARGET_BUILDING:
+        _open_building(target_id)
 
 func _build_disciple_summary_panel() -> void:
     disciple_summary_panel = Panel.new()
