@@ -14,7 +14,7 @@ Real Windows + Godot 4.7.2 evidence confirms:
 - P3.2 `female_normal_v1` shared **IDLE + WALK FAST** check: PASS on real Windows Godot 4.7.2; user video visual review accepted.
 - P3.2 live modular female map integration: **REAL PASS** on Windows Godot 4.7.2. `[8/8]` printed `P3.2 LIVE MODULAR FEMALE MAP INTEGRATION TEST PASS` and the final live-map FAST PASS lines.
 - P3.3 disciple operational flow (right summary -> real quick orders -> 6-tab deep screen -> context restore): **REAL PASS** on Windows Godot 4.7.2. Contract test + live scene smoke + cumulative P3.2 baseline all green.
-- P3.4 building management: design locked. **P3.4A REAL PASS**; **P3.4B people management REAL PASS** on Windows Godot 4.7.2; P3.4C real building/system actions is next.
+- P3.4 building management: design locked. **P3.4A REAL PASS**; **P3.4B REAL PASS**; **P3.4C real building/system actions IMPLEMENTED ON MAIN / RUNTIME PENDING**.
 - P3.5 living sect cues: **DESIGN LOCKED ONLY** in `docs/P3_5_LIVING_SECT_CUES_SPEC.md`; implement only after P3.4 runtime green. Cues are derived from real state/events and route to real panels; no random/fake speech system.
 - P3.6 Sect Master gameplay loop: **DESIGN LOCKED** in `docs/P3_6_SECT_MASTER_GAMEPLAY_LOOP_SPEC.md`; this is a cross-phase product/UX acceptance contract, not a runtime PASS. Core rhythm = policy -> long-term assignment -> optional direct intervention -> observe real consequence.
 
@@ -176,16 +176,22 @@ The user supplied an 11.6-second real Windows motion video. Review accepted the 
 
 P3.2 live modular map, P3.3 disciple flow, P3.4A and P3.4B are **REAL PASS / LOCKED**.
 
-Current implementation slice is **P3.4C — real building/system actions**:
+Run:
 
-- Main Hall: real workforce / needs / equipment policies;
-- Residence: real `NeedsSystem.expand_lodging(state, 1)`;
-- Medicine Hall: real `NeedsSystem.set_priority()`;
-- Forge: real `EquipmentSystem.craft()` with material deduction + real item creation;
-- Warehouse remains read-only in this baseline unless a compact item-move control proves necessary;
-- no fake queue, building level or HEAL command.
+`Sync-Main.cmd Verify-P3-4C-Building-Actions.cmd`
 
-After P3.4C lands, run its verifier through stable `Sync-Main.cmd`.
+This verifies:
+
+- cumulative P3.4B/P3.4A/P3.3 baseline;
+- Main Hall real workforce/needs/equipment policy mutations;
+- Residence real lodging expansion cost + capacity;
+- Medicine Hall real priority change;
+- Forge real material/support consumption + real storage item creation;
+- missing-material craft failure without fake item;
+- Warehouse remains read-only baseline;
+- live scene smoke.
+
+If green, lock full P3.4 and move to P3.5 living-sect cues.
 
 # Current development priority — functionality first
 
