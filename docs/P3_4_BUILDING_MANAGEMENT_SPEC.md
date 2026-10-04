@@ -1,7 +1,7 @@
 # P3.4 — BUILDING MANAGEMENT / QUẢN LÝ CÔNG TRÌNH
 
 Date: 2026-10-04  
-Status: DESIGN LOCKED; P3.4A REAL PASS; P3.4B REAL PASS; P3.4C IMPLEMENTED / RUNTIME PENDING
+Status: REAL PASS / LOCKED ON WINDOWS GODOT 4.7.2
 
 ## P3.4A runtime status
 
@@ -66,7 +66,7 @@ Dedicated contract/gate:
 - `Verify-P3-4C-Building-Actions.cmd`;
 - `tools/godot/Verify-P3-4C-Building-Actions.ps1`.
 
-P3.4C is **not PASS** until real Windows Godot 4.7.2 gate is green.
+P3.4C is **REAL PASS** on Windows Godot 4.7.2. Full P3.4 is locked.
 
 ---
 
