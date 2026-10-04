@@ -80,7 +80,6 @@ func _build_shell() -> void:
     _build_map_decoration()
     _build_buildings()
     _build_top_bar()
-    _build_task_rail()
     _build_bottom_bar()
 
     popup_layer = Control.new()
@@ -118,43 +117,136 @@ func _build_map_decoration() -> void:
 
 func _build_buildings() -> void:
     var buildings := [
-        {"id":"main_hall", "name":"Tông Môn\nĐại Điện", "pos":Vector2(565, 118), "size":Vector2(150, 92), "color":Color(0.44, 0.31, 0.18, 1.0)},
-        {"id":"residence", "name":"Đệ Tử Xá", "pos":Vector2(860, 150), "size":Vector2(132, 76), "color":Color(0.48, 0.39, 0.25, 1.0)},
-        {"id":"cultivation", "name":"Tu Luyện Đài", "pos":Vector2(725, 300), "size":Vector2(140, 80), "color":Color(0.32, 0.45, 0.41, 1.0)},
-        {"id":"warehouse", "name":"Kho", "pos":Vector2(962, 340), "size":Vector2(112, 74), "color":Color(0.47, 0.35, 0.20, 1.0)},
-        {"id":"forge", "name":"Luyện Khí\nĐường", "pos":Vector2(480, 447), "size":Vector2(130, 86), "color":Color(0.50, 0.28, 0.17, 1.0)},
-        {"id":"medicine", "name":"Dược Phòng", "pos":Vector2(760, 480), "size":Vector2(126, 76), "color":Color(0.35, 0.49, 0.29, 1.0)},
-        {"id":"mine", "name":"Khai Khoáng", "pos":Vector2(300, 318), "size":Vector2(116, 82), "color":Color(0.39, 0.36, 0.31, 1.0)},
-        {"id":"gate", "name":"Tông Môn\nĐại Môn", "pos":Vector2(1080, 470), "size":Vector2(140, 88), "color":Color(0.36, 0.29, 0.20, 1.0)}
+        {"id":"main_hall", "name":"Đại Điện", "pos":Vector2(548, 112), "size":Vector2(184, 112), "body":Color(0.48, 0.34, 0.22, 1.0), "roof":Color(0.22, 0.32, 0.29, 1.0), "kind":"hall"},
+        {"id":"residence", "name":"Đệ Tử Xá", "pos":Vector2(848, 142), "size":Vector2(158, 96), "body":Color(0.53, 0.43, 0.29, 1.0), "roof":Color(0.28, 0.38, 0.34, 1.0), "kind":"residence"},
+        {"id":"cultivation", "name":"Tu Luyện Đài", "pos":Vector2(715, 288), "size":Vector2(160, 104), "body":Color(0.35, 0.50, 0.45, 1.0), "roof":Color(0.68, 0.61, 0.40, 1.0), "kind":"platform"},
+        {"id":"warehouse", "name":"Kho", "pos":Vector2(952, 332), "size":Vector2(132, 92), "body":Color(0.52, 0.39, 0.24, 1.0), "roof":Color(0.26, 0.34, 0.31, 1.0), "kind":"warehouse"},
+        {"id":"forge", "name":"Luyện Khí Đường", "pos":Vector2(466, 432), "size":Vector2(158, 112), "body":Color(0.56, 0.31, 0.20, 1.0), "roof":Color(0.30, 0.29, 0.27, 1.0), "kind":"forge"},
+        {"id":"medicine", "name":"Dược Phòng", "pos":Vector2(748, 466), "size":Vector2(152, 100), "body":Color(0.40, 0.55, 0.34, 1.0), "roof":Color(0.24, 0.38, 0.31, 1.0), "kind":"medicine"},
+        {"id":"mine", "name":"Khai Khoáng", "pos":Vector2(288, 304), "size":Vector2(142, 108), "body":Color(0.43, 0.40, 0.35, 1.0), "roof":Color(0.23, 0.24, 0.23, 1.0), "kind":"mine"},
+        {"id":"gate", "name":"Đại Môn", "pos":Vector2(1068, 454), "size":Vector2(164, 116), "body":Color(0.47, 0.34, 0.23, 1.0), "roof":Color(0.24, 0.31, 0.28, 1.0), "kind":"gate"}
     ]
 
-    for data in buildings:
-        var button := Button.new()
-        button.text = str(data["name"])
-        var building_position: Vector2 = data["pos"]
-        var building_size: Vector2 = data["size"]
-        var fill: Color = data["color"]
-        button.position = building_position
-        button.size = building_size
-        button.add_theme_font_size_override("font_size", 15)
-        button.add_theme_color_override("font_color", PAPER_LIGHT)
-        button.add_theme_color_override("font_hover_color", Color.WHITE)
-        button.add_theme_stylebox_override("normal", _style(fill, INK, 2, 12))
-        button.add_theme_stylebox_override("hover", _style(fill.lightened(0.10), GOLD, 3, 12))
-        button.add_theme_stylebox_override("pressed", _style(fill.darkened(0.10), GOLD, 3, 12))
-        var destination := StringName(data["id"])
-        button.pressed.connect(Callable(self, "_open_building").bind(destination))
-        map_layer.add_child(button)
+    for data_value in buildings:
+        var data: Dictionary = data_value
+        _build_playable_building_token(data)
 
-    var build_button := Button.new()
-    build_button.text = "+\nXây dựng"
-    build_button.position = Vector2(1184, 565)
-    build_button.size = Vector2(78, 68)
-    build_button.add_theme_font_size_override("font_size", 13)
-    build_button.add_theme_stylebox_override("normal", _style(CINNABAR, PAPER_LIGHT, 2, 24))
-    build_button.add_theme_stylebox_override("hover", _style(CINNABAR.lightened(0.08), GOLD, 3, 24))
-    build_button.pressed.connect(Callable(self, "_open_notice").bind("Xây dựng", "P3.1 khóa khung tương tác. Danh sách xây/nâng công trình sẽ nối ở P3.3."))
-    map_layer.add_child(build_button)
+func _build_playable_building_token(data: Dictionary) -> void:
+    var holder := Control.new()
+    var destination := StringName(data.get("id", ""))
+    holder.name = "BuildingToken_%s" % str(destination)
+    holder.position = Vector2(data.get("pos", Vector2.ZERO))
+    holder.size = Vector2(data.get("size", Vector2(140, 96)))
+    holder.mouse_filter = Control.MOUSE_FILTER_PASS
+    map_layer.add_child(holder)
+
+    var body: Color = data.get("body", Color(0.5, 0.4, 0.3, 1.0))
+    var roof: Color = data.get("roof", Color(0.25, 0.32, 0.28, 1.0))
+    var kind := str(data.get("kind", "hall"))
+    var w := holder.size.x
+    var h := holder.size.y
+
+    var shadow := Panel.new()
+    shadow.position = Vector2(8, h * 0.32 + 8)
+    shadow.size = Vector2(w - 16, h * 0.54)
+    shadow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    shadow.add_theme_stylebox_override("panel", _style(Color(0.10, 0.12, 0.10, 0.18), Color.TRANSPARENT, 0, 22))
+    holder.add_child(shadow)
+
+    match kind:
+        "platform":
+            var ring := Panel.new()
+            ring.position = Vector2(w * 0.16, 8)
+            ring.size = Vector2(w * 0.68, h * 0.68)
+            ring.mouse_filter = Control.MOUSE_FILTER_IGNORE
+            ring.add_theme_stylebox_override("panel", _style(body, GOLD.darkened(0.12), 3, 44))
+            holder.add_child(ring)
+            var core := Panel.new()
+            core.position = Vector2(w * 0.34, 25)
+            core.size = Vector2(w * 0.32, h * 0.32)
+            core.mouse_filter = Control.MOUSE_FILTER_IGNORE
+            core.add_theme_stylebox_override("panel", _style(Color(0.82, 0.78, 0.57, 0.92), JADE_DARK, 2, 28))
+            holder.add_child(core)
+        "mine":
+            var rock := Panel.new()
+            rock.position = Vector2(12, 10)
+            rock.size = Vector2(w - 24, h * 0.68)
+            rock.mouse_filter = Control.MOUSE_FILTER_IGNORE
+            rock.add_theme_stylebox_override("panel", _style(body, Color(0.22, 0.22, 0.20, 1.0), 3, 38))
+            holder.add_child(rock)
+            var mouth := Panel.new()
+            mouth.position = Vector2(w * 0.31, h * 0.30)
+            mouth.size = Vector2(w * 0.38, h * 0.40)
+            mouth.mouse_filter = Control.MOUSE_FILTER_IGNORE
+            mouth.add_theme_stylebox_override("panel", _style(Color(0.11, 0.12, 0.11, 1.0), Color(0.28, 0.25, 0.20, 1.0), 2, 24))
+            holder.add_child(mouth)
+        "gate":
+            _add_building_block(holder, Vector2(18, 22), Vector2(26, h * 0.60), body, 8)
+            _add_building_block(holder, Vector2(w - 44, 22), Vector2(26, h * 0.60), body, 8)
+            _add_building_block(holder, Vector2(9, 14), Vector2(w - 18, 24), roof, 10)
+            _add_building_block(holder, Vector2(30, 2), Vector2(w - 60, 19), roof.lightened(0.06), 9)
+        _:
+            var base := Panel.new()
+            base.position = Vector2(12, h * 0.34)
+            base.size = Vector2(w - 24, h * 0.48)
+            base.mouse_filter = Control.MOUSE_FILTER_IGNORE
+            base.add_theme_stylebox_override("panel", _style(body, body.darkened(0.38), 2, 12))
+            holder.add_child(base)
+
+            var roof_panel := Panel.new()
+            roof_panel.position = Vector2(3, h * 0.18)
+            roof_panel.size = Vector2(w - 6, h * 0.30)
+            roof_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+            roof_panel.add_theme_stylebox_override("panel", _style(roof, roof.darkened(0.35), 2, 18))
+            holder.add_child(roof_panel)
+
+            if kind == "residence":
+                _add_building_block(holder, Vector2(28, 8), Vector2(42, 24), roof.lightened(0.05), 10)
+                _add_building_block(holder, Vector2(w - 70, 12), Vector2(42, 22), roof.lightened(0.05), 10)
+            elif kind == "warehouse":
+                _add_building_block(holder, Vector2(24, h * 0.56), Vector2(28, 24), Color(0.63, 0.48, 0.27, 1.0), 4)
+                _add_building_block(holder, Vector2(55, h * 0.53), Vector2(30, 27), Color(0.69, 0.52, 0.29, 1.0), 4)
+            elif kind == "forge":
+                _add_building_block(holder, Vector2(w - 38, 2), Vector2(20, 40), Color(0.31, 0.27, 0.24, 1.0), 5)
+                _add_building_block(holder, Vector2(25, h * 0.59), Vector2(24, 17), Color(0.83, 0.42, 0.18, 1.0), 8)
+            elif kind == "medicine":
+                _add_building_block(holder, Vector2(22, h * 0.66), Vector2(22, 11), Color(0.29, 0.48, 0.25, 1.0), 6)
+                _add_building_block(holder, Vector2(50, h * 0.66), Vector2(22, 11), Color(0.33, 0.55, 0.28, 1.0), 6)
+                _add_building_block(holder, Vector2(78, h * 0.66), Vector2(22, 11), Color(0.27, 0.45, 0.24, 1.0), 6)
+
+    var name_plate := Label.new()
+    name_plate.text = str(data.get("name", destination))
+    name_plate.position = Vector2(4, h - 25)
+    name_plate.size = Vector2(w - 8, 24)
+    name_plate.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    name_plate.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+    name_plate.add_theme_font_size_override("font_size", 13)
+    name_plate.add_theme_color_override("font_color", INK)
+    name_plate.add_theme_color_override("font_shadow_color", PAPER_LIGHT)
+    name_plate.add_theme_constant_override("shadow_offset_x", 1)
+    name_plate.add_theme_constant_override("shadow_offset_y", 1)
+    name_plate.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    holder.add_child(name_plate)
+
+    var hit := Button.new()
+    hit.name = "BuildingHit_%s" % str(destination)
+    hit.position = Vector2.ZERO
+    hit.size = holder.size
+    hit.text = ""
+    hit.tooltip_text = str(data.get("name", destination))
+    hit.add_theme_stylebox_override("normal", _style(Color(1, 1, 1, 0.01), Color(1, 1, 1, 0.0), 0, 14))
+    hit.add_theme_stylebox_override("hover", _style(Color(1, 0.92, 0.60, 0.07), GOLD, 3, 14))
+    hit.add_theme_stylebox_override("pressed", _style(Color(1, 0.85, 0.45, 0.10), GOLD, 3, 14))
+    hit.pressed.connect(Callable(self, "_open_building").bind(destination))
+    holder.add_child(hit)
+
+func _add_building_block(parent: Control, pos: Vector2, block_size: Vector2, fill: Color, radius: int) -> void:
+    var block := Panel.new()
+    block.position = pos
+    block.size = block_size
+    block.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    block.add_theme_stylebox_override("panel", _style(fill, fill.darkened(0.35), 1, radius))
+    parent.add_child(block)
 
 func _build_top_bar() -> void:
     var top := Panel.new()
@@ -178,34 +270,26 @@ func _build_top_bar() -> void:
     resource_label.add_theme_color_override("font_color", PAPER_LIGHT)
 
 func _build_task_rail() -> void:
-    var rail := Panel.new()
-    rail.position = Vector2(16, 92)
-    rail.size = Vector2(236, 235)
-    rail.add_theme_stylebox_override("panel", _style(PAPER, INK, 2, 14))
-    add_child(rail)
+    # P3.6A: the old proof checklist is intentionally hidden from normal play.
+    task_label = null
 
-    var title := _label(rail, "Chương 1 · Khai tông lập phái", Vector2(14, 12), Vector2(208, 30), 16)
-    title.add_theme_color_override("font_color", CINNABAR.darkened(0.18))
-
-    task_label = _label(rail, "", Vector2(14, 48), Vector2(208, 170), 14)
-    task_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-    task_label.add_theme_color_override("font_color", INK)
 
 func _build_bottom_bar() -> void:
     var bottom := Panel.new()
+    bottom.name = "PlayerBottomBar"
     bottom.position = Vector2(0, 642)
     bottom.size = Vector2(1280, 78)
     bottom.add_theme_stylebox_override("panel", _style(Color(0.88, 0.82, 0.66, 0.98), INK, 2, 0))
     add_child(bottom)
 
     var entries := [
-        {"text":"Đệ Tử", "x":365, "action":"disciples"},
-        {"text":"Kho", "x":485, "action":"warehouse"},
-        {"text":"Công Trình", "x":605, "action":"buildings"},
-        {"text":"Thế Giới", "x":735, "action":"world"},
-        {"text":"Nhiệm Vụ", "x":855, "action":"tasks"}
+        {"text":"Tông Môn", "x":425, "action":"home"},
+        {"text":"Đệ Tử", "x":545, "action":"disciples"},
+        {"text":"Kho", "x":665, "action":"warehouse"},
+        {"text":"Thế Giới", "x":785, "action":"world"}
     ]
-    for entry in entries:
+    for entry_value in entries:
+        var entry: Dictionary = entry_value
         var button := Button.new()
         button.text = str(entry["text"])
         button.position = Vector2(float(entry["x"]), 14)
@@ -217,8 +301,11 @@ func _build_bottom_bar() -> void:
         button.pressed.connect(Callable(self, "_bottom_action").bind(str(entry["action"])))
         bottom.add_child(button)
 
+
 func _bottom_action(action: String) -> void:
     match action:
+        "home":
+            _clear_popup()
         "disciples":
             var ids: Array = state.disciples.keys()
             ids.sort()
@@ -226,12 +313,9 @@ func _bottom_action(action: String) -> void:
                 _open_disciple(StringName(ids[0]))
         "warehouse":
             _open_building(SectMapPresentation.DEST_WAREHOUSE)
-        "buildings":
-            _open_notice("Công trình", "Chạm trực tiếp từng công trình trên bản đồ để xem trạng thái thật. P3.3 sẽ thêm xây/nâng/phân người hàng loạt.")
         "world":
             _open_building(SectMapPresentation.DEST_GATE)
-        "tasks":
-            _open_notice("Nhiệm vụ", _task_text())
+
 
 func _spawn_all_disciples() -> void:
     var ids: Array = state.disciples.keys()
@@ -308,7 +392,8 @@ func _refresh_top_bar() -> void:
     ]
 
 func _refresh_tasks() -> void:
-    task_label.text = _task_text()
+    if task_label != null:
+        task_label.text = _task_text()
 
 func _task_text() -> String:
     var has_iron := int(state.sect.forge_materials.get("thanh_thiet", 0)) > 0
@@ -379,7 +464,7 @@ func _building_name(destination: StringName) -> String:
 func _building_detail(destination: StringName) -> String:
     match destination:
         SectMapPresentation.DEST_MAIN_HALL:
-            return "Đệ tử: %d/%d\nChính sách lao động: %s\nNgân khố: %d\n\nĐây là trung tâm quản trị tông môn. P3.1 chỉ đọc state thật; chức năng thăng cấp đại điện sẽ mở ở vòng công trình." % [state.disciples.size(), state.sect.disciple_capacity, str(state.sect.work_policy), state.sect.treasury]
+            return "Đệ tử: %d/%d\nChính sách lao động: %s\nNgân khố: %d\n\nTrung tâm điều hành các chính sách của tông môn." % [state.disciples.size(), state.sect.disciple_capacity, str(state.sect.work_policy), state.sect.treasury]
         SectMapPresentation.DEST_WAREHOUSE:
             return "Thanh Thiết: %d\nLinh Mộc: %d\nYêu Đan: %d\nLinh Tủy: %d\nLinh Thạch: %d\n\nSố liệu lấy trực tiếp từ kho/economy hiện tại." % [
                 int(state.sect.forge_materials.get("thanh_thiet", 0)),
@@ -568,7 +653,7 @@ func _issue_order(kind: StringName, target: String) -> void:
     _open_disciple(selected_id)
 
 func _tab_notice(tab_name: String) -> void:
-    _open_notice(tab_name, "P3.1 đã khóa vị trí tab và hierarchy giống UX tham chiếu. Nội dung sâu của tab này sẽ dùng các hệ simulation hiện có trong các pass kế tiếp.")
+    _open_notice(tab_name, "Mục này chưa có nội dung quản lý riêng.")
 
 func _open_notice(title_text: String, body: String) -> void:
     _clear_popup()
