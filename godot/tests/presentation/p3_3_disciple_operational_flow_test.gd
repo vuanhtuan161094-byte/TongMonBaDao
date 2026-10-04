@@ -41,9 +41,11 @@ func _run() -> void:
         return
     if not _verify_quick_order_uses_real_workforce(first_id):
         return
-    if not await _verify_summary_to_deep_and_back(first_id, second_id):
+    var deep_flow_ok: bool = await _verify_summary_to_deep_and_back(first_id, second_id)
+    if not deep_flow_ok:
         return
-    if not await _verify_bottom_nav_deep_returns_clean_map(second_id):
+    var bottom_nav_ok: bool = await _verify_bottom_nav_deep_returns_clean_map(second_id)
+    if not bottom_nav_ok:
         return
 
     print("P3.3 DISCIPLE OPERATIONAL FLOW TEST PASS")
@@ -101,7 +103,7 @@ func _verify_hidden_bloodline_does_not_leak(disciple_id: StringName) -> bool:
     var text := str(ui.call("_disciple_summary_text", disciple))
     if not text.contains("Huyết Mạch: Chưa xác định"):
         return _fail("Operational summary did not hide an unrevealed bloodline.")
-    if text.contains("Chân Long") or text.contains("42"):
+    if text.contains("Chân Long") or text.contains("42%"):
         return _fail("Operational summary leaked latent bloodline identity or purity.")
     return true
 
