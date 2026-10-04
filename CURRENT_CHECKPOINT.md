@@ -15,7 +15,7 @@ Real Windows + Godot 4.7.2 evidence confirms:
 - P3.2 live modular female map integration: **REAL PASS** on Windows Godot 4.7.2. `[8/8]` printed `P3.2 LIVE MODULAR FEMALE MAP INTEGRATION TEST PASS` and the final live-map FAST PASS lines.
 - P3.3 disciple operational flow (right summary -> real quick orders -> 6-tab deep screen -> context restore): **REAL PASS** on Windows Godot 4.7.2. Contract test + live scene smoke + cumulative P3.2 baseline all green.
 - P3.4 building management: **REAL PASS / LOCKED** on Windows Godot 4.7.2. P3.4A read-only panel, P3.4B people management and P3.4C real system actions all green.
-- P3.5 living sect cues: design locked and **IMPLEMENTATION UNBLOCKED** after full P3.4 real PASS.
+- P3.5 living sect cues: **IMPLEMENTED ON MAIN / RUNTIME PENDING**. Pure resolver + transient tracker + world cue layer route to real P3.3/P3.4 contexts; max 3 cues.
 - P3.6 Sect Master gameplay loop: **DESIGN LOCKED** in `docs/P3_6_SECT_MASTER_GAMEPLAY_LOOP_SPEC.md`; this is a cross-phase product/UX acceptance contract, not a runtime PASS. Core rhythm = policy -> long-term assignment -> optional direct intervention -> observe real consequence.
 
 Latest real 3-direction FAST tail supplied by the user:
@@ -177,24 +177,26 @@ P3.4C first real Windows attempt reached the cumulative P3.4B regression and fai
 
 # Next authoritative Windows action
 
-P3.2 live modular map, P3.3 disciple flow, P3.4A and P3.4B are **REAL PASS / LOCKED**.
+P3.2, P3.3 and full P3.4 are **REAL PASS / LOCKED**.
 
 Run:
 
-`Sync-Main.cmd Verify-P3-4C-Building-Actions.cmd`
+`Sync-Main.cmd Verify-P3-5-Living-Cues.cmd`
 
-This verifies:
+The cumulative P3.5 gate verifies:
 
-- cumulative P3.4B/P3.4A/P3.3 baseline;
-- Main Hall real workforce/needs/equipment policy mutations;
-- Residence real lodging expansion cost + capacity;
-- Medicine Hall real priority change;
-- Forge real material/support consumption + real storage item creation;
-- missing-material craft failure without fake item;
-- Warehouse remains read-only baseline;
+- full P3.4C/P3.4B/P3.4A/P3.3 baseline;
+- resolver does not mutate SimulationState;
+- real HP/stamina/breakthrough/personal-retreat conditions;
+- medicine/lodging/mine/forge building conditions;
+- max 3 deterministic primary cues;
+- transient mining/forging/breakthrough/heal events without repeated metric-trigger spam;
+- hidden identity/trait fields do not alter cue output;
+- live cue layer is attached to the transformed map and follows actor movement;
+- cue tap routes to real P3.3/P3.4 context without gameplay mutation;
 - live scene smoke.
 
-If green, lock full P3.4 and move to P3.5 living-sect cues.
+If green, lock P3.5 and perform the P3.6 5–10 minute gameplay-loop playtest before adding more mechanics.
 
 # Current development priority — functionality first
 
