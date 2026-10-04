@@ -495,6 +495,8 @@ func _sync_actor_positions() -> void:
     if focused_kind == &"disciple":
         _refresh_focused_disciple_point()
     _refresh_disciple_summary_content()
+    _refresh_building_operation_content()
+    _refresh_living_cues()
 
 func _actor_anchor_offset(actor: Control) -> Vector2:
     if actor is ModularDiscipleActor:
