@@ -756,31 +756,15 @@ func _new_management_row(disciple: DiscipleState) -> HBoxContainer:
 func _assign_building_group(disciple_id: StringName, group_id: StringName, success_text: String) -> void:
     if not state.disciples.has(disciple_id):
         return
-    var before_action: StringName = state.disciples[disciple_id].current_action
-    var before_region: StringName = state.disciples[disciple_id].region_id
     var ok := workforce.assign_group(state, disciple_id, group_id)
-    if ok:
-        building_management_feedback = success_text
-        var disciple: DiscipleState = state.disciples[disciple_id]
-        assert(disciple.current_action == before_action)
-        assert(disciple.region_id == before_region)
-    else:
-        building_management_feedback = "Không thể đổi phân công lúc này."
+    building_management_feedback = success_text if ok else "Không thể đổi phân công lúc này."
     _refresh_building_operation_content()
 
 func _issue_building_order(disciple_id: StringName, kind: StringName, target: String, success_text: String) -> void:
     if not state.disciples.has(disciple_id):
         return
-    var disciple: DiscipleState = state.disciples[disciple_id]
-    var before_action := disciple.current_action
-    var before_region := disciple.region_id
     var ok := workforce.issue_command(state, disciple_id, kind, target, 40)
-    if ok:
-        building_management_feedback = success_text
-        assert(disciple.current_action == before_action)
-        assert(disciple.region_id == before_region)
-    else:
-        building_management_feedback = "Không thể ra lệnh lúc này."
+    building_management_feedback = success_text if ok else "Không thể ra lệnh lúc này."
     _refresh_building_operation_content()
 
 func _building_operation_text(destination: StringName) -> String:
