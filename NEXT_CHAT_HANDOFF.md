@@ -191,26 +191,21 @@ Current authoritative diagnostic pack is an external one-time ZIP:
 
 ## NEXT WINDOWS ACTION
 
-Do **not** run `Verify-P3-2-Female-StageA-Full.cmd` yet.
+P3.2 live modular female map integration is now **REAL PASS** on Windows Godot 4.7.2.
 
-Run exactly in this order:
+User supplied the successful `[8/8]` tail on 2026-10-04:
 
-1. `Verify-P3-2-Female-StageA.cmd`
-   - obtain the still-missing real line `P3.2 LIVE MODULAR FEMALE MAP INTEGRATION TEST PASS`;
-   - do not infer PASS from the previous preview video.
-2. If green, run `Verify-P3-3-Disciple-Flow.cmd`.
-3. Then playtest:
-   - tap a moving disciple -> fixed right summary;
-   - HP/stamina/cultivation/action/location update from real state;
-   - quick orders Tu luyện/Nghỉ/Về tông/Khai khoáng/Luyện khí;
-   - watch simulation action eventually drive the map destination;
-   - `Xem chi tiết` -> six real tabs;
-   - change disciple in roster;
-   - Back restores the right panel only when V3.3 was entered from that panel;
-   - direct bottom-nav `Đệ Tử` -> Back returns to clean map;
-   - pan/zoom/building taps remain usable.
+- `P3.2 LIVE MODULAR FEMALE MAP INTEGRATION TEST PASS`;
+- `P3.2 LIVE MODULAR FEMALE MAP INTEGRATION FAST CHECK: PASS`;
+- `FEMALE STAGE A + SHARED MOTION FAST CHECK: PASS`.
 
-P3.3 implementation is on `main` and documented in `docs/P3_3_DISCIPLE_OPERATIONAL_FLOW_SPEC.md`, but it is **RUNTIME PENDING**, not PASS.
+Next command:
+
+`Verify-P3-3-Disciple-Flow.cmd`
+
+If it fails, fix P3.3 only and rerun that gate. If it passes, lock P3.3 and move to P3.4 runtime implementation.
+
+Do **not** run the FULL female cosmetic gate yet.
 
 ## P3.4 DESIGN LOCKED — DO NOT IMPLEMENT YET
 
@@ -282,7 +277,7 @@ Map actors are small, so do not spend disproportionate time on face/hair micro-d
 
 Current order:
 
-1. get the missing `[8/8]` live modular actor evidence;
+1. P3.2 live modular actor `[8/8]`: **REAL PASS / LOCKED**;
 2. run/fix `Verify-P3-3-Disciple-Flow.cmd`;
 3. move to P3.4 building management/interactions using real simulation state;
 4. then P3.5 living-sect status/action cues;
