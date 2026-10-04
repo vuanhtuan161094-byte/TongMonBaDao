@@ -15,7 +15,7 @@ Real Windows + Godot 4.7.2 evidence confirms:
 - P3.2 live modular female map integration: **REAL PASS** on Windows Godot 4.7.2. `[8/8]` printed `P3.2 LIVE MODULAR FEMALE MAP INTEGRATION TEST PASS` and the final live-map FAST PASS lines.
 - P3.3 disciple operational flow (right summary -> real quick orders -> 6-tab deep screen -> context restore): **REAL PASS** on Windows Godot 4.7.2. Contract test + live scene smoke + cumulative P3.2 baseline all green.
 - P3.4 building management: **REAL PASS / LOCKED** on Windows Godot 4.7.2. P3.4A read-only panel, P3.4B people management and P3.4C real system actions all green.
-- P3.5 living sect cues: **IMPLEMENTED ON MAIN / RUNTIME PENDING**. Pure resolver + transient tracker + world cue layer route to real P3.3/P3.4 contexts; max 3 cues.
+- P3.5 living sect cues: **REAL PASS / LOCKED** on Windows Godot 4.7.2. Core resolver/tracker, live-map routing and scene smoke all green; max 3 cues.
 - P3.6 Sect Master gameplay loop: **DESIGN LOCKED** in `docs/P3_6_SECT_MASTER_GAMEPLAY_LOOP_SPEC.md`; this is a cross-phase product/UX acceptance contract, not a runtime PASS. Core rhythm = policy -> long-term assignment -> optional direct intervention -> observe real consequence.
 
 Latest real 3-direction FAST tail supplied by the user:
@@ -175,30 +175,29 @@ The user supplied an 11.6-second real Windows motion video. Review accepted the 
 
 P3.4C first real Windows attempt reached the cumulative P3.4B regression and failed because the old Medicine Hall test incorrectly required zero controls. P3.4C legitimately adds real NeedsSystem priority controls. The regression was corrected in commit `7c4ce83c13d8e6e7ce7e2cef6e53e3472f0375b6` to forbid only fabricated HEAL/direct-treatment actions. P3.4C itself remains runtime pending until rerun.
 
-P3.5 first real Windows attempt failed during GDScript parse because `LivingCueTracker.seed(state)` collided with Godot's built-in `seed(int)`. The tracker method and all callers were renamed to `seed_from_state(state)`; P3.5 remains runtime pending until rerun.
+P3.5 first Windows attempt exposed a `seed()` naming collision; it was fixed by renaming to `seed_from_state()`. The rerun then passed core, live-map integration and scene smoke.
 
 # Next authoritative Windows action
 
-P3.2, P3.3 and full P3.4 are **REAL PASS / LOCKED**.
+P3.2, P3.3, full P3.4 and P3.5 are **REAL PASS / LOCKED**.
+
+Next action is the **P3.6 real gameplay-loop playtest** on the live main scene.
 
 Run:
 
-`Sync-Main.cmd Verify-P3-5-Living-Cues.cmd`
+`Sync-Main.cmd Preview-P3-6-Sect-Master-Loop.cmd`
 
-The cumulative P3.5 gate verifies:
+P3.6 is manual product acceptance, not a headless runtime gate. During 5–10 minutes verify:
 
-- full P3.4C/P3.4B/P3.4A/P3.3 baseline;
-- resolver does not mutate SimulationState;
-- real HP/stamina/breakthrough/personal-retreat conditions;
-- medicine/lodging/mine/forge building conditions;
-- max 3 deterministic primary cues;
-- transient mining/forging/breakthrough/heal events without repeated metric-trigger spam;
-- hidden identity/trait fields do not alter cue output;
-- live cue layer is attached to the transformed map and follows actor movement;
-- cue tap routes to real P3.3/P3.4 context without gameplay mutation;
-- live scene smoke.
+- the map explains the current sect state within ~10 seconds;
+- important cue -> useful action takes <=3 taps;
+- actors keep operating if the player does nothing for 1–2 minutes;
+- policy/group/direct order produces visible consequence on the map/state;
+- routine management does not require opening every building or commanding every disciple;
+- attention stays <=3 cues and does not become notification cleanup;
+- the session feels like managing a sect, not clicking chores.
 
-If green, lock P3.5 and perform the P3.6 5–10 minute gameplay-loop playtest before adding more mechanics.
+Do not add new mechanics until this playtest identifies a concrete loop bottleneck.
 
 # Current development priority — functionality first
 
