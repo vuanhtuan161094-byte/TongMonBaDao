@@ -25,13 +25,28 @@ if /I not "%BRANCH%"=="main" (
     goto :fail
 )
 
-set "DIRTY="
-for /f "delims=" %%S in ('git status --porcelain') do set "DIRTY=1"
-if defined DIRTY (
-    echo [STOP] Local changes detected. Sync was NOT performed to avoid overwriting your work.
+git diff --quiet
+if errorlevel 1 (
+    echo [STOP] Tracked local changes detected. Sync was NOT performed to avoid overwriting your work.
     echo.
-    git status --short
+    git status --short --untracked-files=no
     goto :fail
+)
+
+git diff --cached --quiet
+if errorlevel 1 (
+    echo [STOP] Staged local changes detected. Sync was NOT performed to avoid overwriting your work.
+    echo.
+    git status --short --untracked-files=no
+    goto :fail
+)
+
+set "UNTRACKED="
+for /f "delims=" %%S in ('git ls-files --others --exclude-standard') do set "UNTRACKED=1"
+if defined UNTRACKED (
+    echo [WARN] Untracked local files exist. They will not be deleted or overwritten by this launcher.
+    git status --short
+    echo.
 )
 
 echo [1/2] Fetching origin/main...
