@@ -14,6 +14,7 @@ echo - authored DOWN / RIGHT / UP asset contract
 echo - authored direction sandbox smoke
 echo - shared IDLE/WALK motion contract
 echo - shared motion sandbox smoke
+echo - live modular female map integration
 echo.
 echo It does NOT rerun P0-P2.12 on every art/pivot iteration.
 echo Full cumulative verification is a separate final gate.
