@@ -231,6 +231,24 @@ Locked direction:
 
 P3.4 design is already locked, but runtime implementation must wait for the P3.2 live modular map `[8/8]` evidence and P3.3 Windows gate.
 
+## P3.5 DESIGN LOCKED — IMPLEMENT AFTER P3.4 GREEN
+
+`docs/P3_5_LIVING_SECT_CUES_SPEC.md` is canonical.
+
+Locked behavior:
+
+- max 3 visible cues;
+- deterministic priority S0 Critical -> S1 Actionable -> S2 Operational -> S3 Info;
+- disciple cues: Bị thương (<72% HP), Mệt (<42 stamina), Có thể đột phá, Nguy hiểm ngoài tông (personal retreat threshold or stamina <=22);
+- building cues: Hết thuốc only when someone actually needs healing, Quá tải lodging, Mine/Forge Thiếu người, Forge Thiếu vật liệu, Gate danger aggregation;
+- transient cues derive from real metric/state changes: work completion, breakthrough result, heal/return events;
+- tap disciple cue -> P3.3 context;
+- tap building cue -> P3.4 context;
+- no random speech, fake emotions, fake production event, auto-fix action or hidden identity leak;
+- presentation may keep unsaved transient snapshots/cooldowns only for dedupe/event animation.
+
+Do not implement P3.5 before P3.4 is runtime-green because cues must route to working management actions.
+
 ## FUNCTIONALITY-FIRST PRIORITY — USER DECISION 2026-10-04
 
 Map actors are small, so do not spend disproportionate time on face/hair micro-detail. Character Creator is now a supporting anti-clone system, not the main development blocker.
