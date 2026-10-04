@@ -175,6 +175,8 @@ The user supplied an 11.6-second real Windows motion video. Review accepted the 
 
 P3.4C first real Windows attempt reached the cumulative P3.4B regression and failed because the old Medicine Hall test incorrectly required zero controls. P3.4C legitimately adds real NeedsSystem priority controls. The regression was corrected in commit `7c4ce83c13d8e6e7ce7e2cef6e53e3472f0375b6` to forbid only fabricated HEAL/direct-treatment actions. P3.4C itself remains runtime pending until rerun.
 
+P3.5 first real Windows attempt failed during GDScript parse because `LivingCueTracker.seed(state)` collided with Godot's built-in `seed(int)`. The tracker method and all callers were renamed to `seed_from_state(state)`; P3.5 remains runtime pending until rerun.
+
 # Next authoritative Windows action
 
 P3.2, P3.3 and full P3.4 are **REAL PASS / LOCKED**.
