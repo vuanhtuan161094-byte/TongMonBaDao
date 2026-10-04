@@ -16,7 +16,7 @@ Real Windows + Godot 4.7.2 evidence confirms:
 - P3.3 disciple operational flow (right summary -> real quick orders -> 6-tab deep screen -> context restore): **REAL PASS** on Windows Godot 4.7.2. Contract test + live scene smoke + cumulative P3.2 baseline all green.
 - P3.4 building management: **REAL PASS / LOCKED** on Windows Godot 4.7.2. P3.4A read-only panel, P3.4B people management and P3.4C real system actions all green.
 - P3.5 living sect cues: **REAL PASS / LOCKED** on Windows Godot 4.7.2. Core resolver/tracker, live-map routing and scene smoke all green; max 3 cues.
-- P3.6 Sect Master gameplay loop: **DESIGN LOCKED** in `docs/P3_6_SECT_MASTER_GAMEPLAY_LOOP_SPEC.md`; this is a cross-phase product/UX acceptance contract, not a runtime PASS. Core rhythm = policy -> long-term assignment -> optional direct intervention -> observe real consequence.
+- P3.6 Sect Master gameplay loop: design locked, but **REAL PLAYTEST BLOCKED / NOT READY** after user video review. The current live scene is still a QA/debug shell. P3.6A playable vertical slice/productization is the next task.
 
 Latest real 3-direction FAST tail supplied by the user:
 
@@ -177,27 +177,17 @@ P3.4C first real Windows attempt reached the cumulative P3.4B regression and fai
 
 P3.5 first Windows attempt exposed a `seed()` naming collision; it was fixed by renaming to `seed_from_state()`. The rerun then passed core, live-map integration and scene smoke.
 
-# Next authoritative Windows action
+# Next authoritative action
 
 P3.2, P3.3, full P3.4 and P3.5 are **REAL PASS / LOCKED**.
 
-Next action is the **P3.6 real gameplay-loop playtest** on the live main scene.
+P3.6 manual gameplay-loop acceptance is **BLOCKED / NOT READY** based on the user's real Windows video on 2026-10-05.
 
-Run:
+Observed blocker: the live scene is technically functional but still reads as a QA/debug shell (placeholder building boxes/letter markers, internal P3.x wording, demo checklist, documentation-like operation panels). It is not a valid player-facing 5–10 minute game build.
 
-`Sync-Main.cmd Preview-P3-6-Sect-Master-Loop.cmd`
+Next phase is **P3.6A — Playable Vertical Slice / Productization**, authority: `docs/P3_6A_PLAYABLE_VERTICAL_SLICE_SPEC.md`.
 
-P3.6 is manual product acceptance, not a headless runtime gate. During 5–10 minutes verify:
-
-- the map explains the current sect state within ~10 seconds;
-- important cue -> useful action takes <=3 taps;
-- actors keep operating if the player does nothing for 1–2 minutes;
-- policy/group/direct order produces visible consequence on the map/state;
-- routine management does not require opening every building or commanding every disciple;
-- attention stays <=3 cues and does not become notification cleanup;
-- the session feels like managing a sect, not clicking chores.
-
-Do not add new mechanics until this playtest identifies a concrete loop bottleneck.
+Do not ask the user to run the P3.6 playtest again until P3.6A has a real Windows visual acceptance.
 
 # Current development priority — functionality first
 
@@ -209,7 +199,7 @@ Order:
 2. P3.3 disciple operational flow: **REAL PASS / LOCKED**;
 3. P3.4 building interaction/management: real workers, inputs, outputs, assignment/management actions;
 4. P3.5 living-sect cues: fatigue/heal/breakthrough/material/finished-work signals from real state;
-5. P3.6 gameplay-loop playtest: verify 5–10 minute management rhythm, low micromanagement, visible consequences;
+5. P3.6A productize the live map into a genuinely playable slice; only then resume the P3.6 5–10 minute playtest;
 6. add only the minimum face/hair/outfit/weapon/tint variants needed to make disciples visually distinguishable;
 7. six-combo proof + FULL female visual gate later, after core management interaction is stable;
 8. appearance persistence;
