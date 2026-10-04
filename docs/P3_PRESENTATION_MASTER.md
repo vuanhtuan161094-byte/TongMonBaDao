@@ -269,4 +269,4 @@ Không được dùng static audit này để thay thế FAST/FULL Godot gate.
 
 ## P3.6A playable vertical slice status
 
-Real user video on 2026-10-05 showed that the live main scene still reads as a QA/debug shell despite P3.3/P3.4/P3.5 being runtime-green. Productization authority: `P3_6A_PLAYABLE_VERTICAL_SLICE_SPEC.md`. P3.6 manual product-loop playtest is blocked until P3.6A visual acceptance.
+Real user video on 2026-10-05 showed that the live main scene still reads as a QA/debug shell despite P3.3/P3.4/P3.5 being runtime-green. Productization authority: `P3_6A_PLAYABLE_VERTICAL_SLICE_SPEC.md`. P3.6 manual product-loop playtest is blocked until P3.6A visual acceptance. P3.6A code productization is now implemented on main; runtime and real visual review are pending. Its procedural building silhouettes are temporary stand-ins only and do not supersede approved building art.
