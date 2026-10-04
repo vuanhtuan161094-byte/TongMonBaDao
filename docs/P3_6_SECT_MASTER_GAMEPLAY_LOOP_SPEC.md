@@ -1,8 +1,8 @@
 # P3.6 — SECT MASTER GAMEPLAY LOOP / VÒNG LẶP QUẢN LÝ TÔNG CHỦ
 
 Date: 2026-10-04  
-Status: DESIGN LOCKED / PRODUCT-LOOP AUTHORITY  
-Runtime note: this is a cross-phase gameplay/UX contract, not evidence that P3.4/P3.5 runtime is green.
+Status: DESIGN LOCKED / PRODUCT-LOOP AUTHORITY / REAL PLAYTEST PENDING  
+Runtime note: P3.4 and P3.5 are now real Windows Godot 4.7.2 PASS. P3.6 itself requires a real 5–10 minute live-map product playtest; it is not a headless gate.
 
 ## 0. Mục tiêu
 
