@@ -175,26 +175,33 @@ function Invoke-QuickGodot(
     }
 }
 
-Write-Host "=== P3.2 FEMALE STAGE A THREE-DIRECTION FAST CHECK ==="
+Write-Host "=== P3.2 FEMALE STAGE A + SHARED MOTION FAST CHECK ==="
 Assert-NoRunningGodot
 $resolvedGodot = Resolve-QuickGodot $GodotBin $ExpectedVersion
 $Godot = [string]$resolvedGodot.Path
 Write-Host "[Godot] $($resolvedGodot.Version)"
 Write-Host "[Godot] $Godot"
 
-Write-Host "[1/5] Importing new/changed Stage A assets"
+Write-Host "[1/7] Importing new/changed Stage A assets"
 Invoke-QuickGodot -CommandArgs @("--headless", "--path", $Project, "--import") -TimeoutSeconds 120 -Label "Stage A import"
 
-Write-Host "[2/5] Character Creator shared-rig contract"
+Write-Host "[2/7] Character Creator shared-rig contract"
 Invoke-QuickGodot -CommandArgs @("--headless", "--path", $Project, "-s", "res://tests/presentation/p3_2_modular_actor_contract_test.gd") -TimeoutSeconds 120 -Label "Character Creator shared-rig contract"
 
-Write-Host "[3/5] Female Stage A down/front regression contract"
+Write-Host "[3/7] Female Stage A down/front regression contract"
 Invoke-QuickGodot -CommandArgs @("--headless", "--path", $Project, "-s", "res://tests/presentation/p3_2_female_stage_a_down_contract_test.gd") -TimeoutSeconds 120 -Label "Female Stage A down regression contract"
 
-Write-Host "[4/5] Female Stage A authored down/right/up asset contract"
+Write-Host "[4/7] Female Stage A authored down/right/up asset contract"
 Invoke-QuickGodot -CommandArgs @("--headless", "--path", $Project, "-s", "res://tests/presentation/p3_2_female_stage_a_directions_contract_test.gd") -TimeoutSeconds 120 -Label "Female Stage A three-direction asset contract"
 
-Write-Host "[5/5] Female Stage A authored direction sandbox smoke"
+Write-Host "[5/7] Female Stage A authored direction sandbox smoke"
 Invoke-QuickGodot -CommandArgs @("--headless", "--path", $Project, "--quit-after", "120", "res://scenes/p3/p3_2_female_stage_a_directions_sandbox.tscn") -TimeoutSeconds 90 -Label "Female Stage A direction sandbox smoke"
 
+Write-Host "[6/7] Female shared idle/walk motion contract"
+Invoke-QuickGodot -CommandArgs @("--headless", "--path", $Project, "-s", "res://tests/presentation/p3_2_female_motion_contract_test.gd") -TimeoutSeconds 120 -Label "Female shared idle walk motion contract"
+
+Write-Host "[7/7] Female shared motion sandbox smoke"
+Invoke-QuickGodot -CommandArgs @("--headless", "--path", $Project, "--quit-after", "120", "res://scenes/p3/p3_2_female_motion_sandbox.tscn") -TimeoutSeconds 90 -Label "Female shared motion sandbox smoke"
+
 Write-Host "P3.2 FEMALE STAGE A 3-DIRECTION FAST CHECK: PASS"
+Write-Host "P3.2 FEMALE SHARED IDLE WALK FAST CHECK: PASS"
