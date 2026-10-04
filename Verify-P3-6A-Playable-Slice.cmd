@@ -1,0 +1,32 @@
+@echo off
+setlocal
+cd /d "%~dp0"
+
+echo ========================================================
+echo   TONG MON BA DAO - P3.6A PLAYABLE VERTICAL SLICE
+echo ========================================================
+echo.
+echo Checks:
+echo - cumulative P3.5 / P3.4 / P3.3 runtime baseline
+echo - old demo task rail is removed from normal play
+echo - bottom bar exposes only real usable entries
+echo - 8 buildings have player-readable map tokens and real hit targets
+echo - no P3/P2/P1/internal debug wording leaks into player-facing surfaces
+echo - all building panels use player-facing copy
+echo - disciple summary/deep tabs use player-facing copy
+echo - a real Sect Master order advances simulation and moves visible destination
+echo.
+
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0tools\godot\Verify-P3-6A-Playable-Slice.ps1" %*
+set "EXIT_CODE=%ERRORLEVEL%"
+
+echo.
+if "%EXIT_CODE%"=="0" (
+    echo P3.6A PLAYABLE VERTICAL SLICE: PASS
+) else (
+    echo P3.6A PLAYABLE VERTICAL SLICE: FAIL ^(exit %EXIT_CODE%^)
+)
+
+echo.
+pause
+exit /b %EXIT_CODE%
