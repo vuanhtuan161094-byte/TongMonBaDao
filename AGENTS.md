@@ -43,6 +43,8 @@ Real Windows + Godot 4.7.2 evidence confirms:
 - P3.2 camera + map selection + real disciple tabs interaction slice: PASS;
 - P3.2 Character Creator V1 shared-rig scaffold: PASS.
 - P3.2 live modular female map integration: PASS (`[8/8]` real Windows Godot 4.7.2 evidence, 2026-10-04).
+- P3.3 disciple operational flow: PASS on real Windows Godot 4.7.2.
+- P3.4 building management A/B/C: PASS on real Windows Godot 4.7.2.
 
 These are locked runtime-green baselines. Do not reopen them without new regression evidence.
 
@@ -279,9 +281,9 @@ Item gacha may grant/refine Bloodline/Physique/etc under explicit rules, but mus
 ## Current next production order
 
 1. P3.2 live modular map `[8/8]` real PASS / locked;
-2. P3.3 disciple operational flow gate;
-3. P3.4 building management runtime;
-4. P3.5 living-sect cues runtime;
+2. P3.3 disciple operational flow: real PASS / locked;
+3. P3.4 building management: real PASS / locked;
+4. P3.5 living-sect cues: implemented / runtime pending;
 5. P3.6 real gameplay-loop playtest;
 6. minimum cosmetic variants needed to avoid obvious clones;
 7. six-combo/full female visual acceptance when functional map-management is stable;
