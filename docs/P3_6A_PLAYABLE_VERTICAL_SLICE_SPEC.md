@@ -1,7 +1,34 @@
 # P3.6A — PLAYABLE VERTICAL SLICE / BIẾN DEBUG SHELL THÀNH GAME CÓ THỂ CHƠI
 
 Date: 2026-10-05
-Status: DESIGN LOCKED FROM REAL USER VIDEO / IMPLEMENTATION NEXT
+Status: IMPLEMENTED ON MAIN / RUNTIME + REAL VISUAL REVIEW PENDING
+
+## 0.1. Implemented slice
+
+Implemented on `main`:
+
+- normal player build no longer creates the P3.1 proof/task checklist;
+- bottom navigation now exposes only usable entries: Tông Môn / Đệ Tử / Kho / Thế Giới;
+- eight map buildings use procedural player-readable silhouettes with distinct functional shapes and real hit targets;
+- all P3.4 operation panels were rewritten to remove player-visible P3.x/internal system wording;
+- disciple deep surfaces remove P1/P2/internal reason-code language;
+- bloodline/physique action result codes are translated into player-facing Vietnamese;
+- stable home action closes operation context and returns to the map;
+- dedicated cumulative verifier:
+  - `godot/tests/presentation/p3_6a_playable_slice_test.gd`;
+  - `Verify-P3-6A-Playable-Slice.cmd`;
+  - `tools/godot/Verify-P3-6A-Playable-Slice.ps1`;
+- real preview:
+  - `Preview-P3-6A-Playable-Slice.cmd`.
+
+Important: the procedural building silhouettes are **temporary runtime presentation**, not replacement approved production building art. Existing approved building visual authority/source status remains unchanged.
+
+P3.6A is **not PASS** until:
+
+1. real Windows Godot 4.7.2 cumulative gate is green;
+2. user reviews the real preview/video and confirms the scene now reads as a game rather than a QA board.
+
+---
 
 ## 0. Trigger
 
