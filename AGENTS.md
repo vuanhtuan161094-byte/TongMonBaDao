@@ -67,7 +67,7 @@ Immediate runtime order:
 2. P3.3 disciple operational flow: real PASS / locked;
 3. P3.4 building management: real PASS / locked;
 4. P3.5 living-sect cues: real PASS / locked;
-5. judge the result against the P3.6 Sect Master gameplay-loop contract.
+5. P3.6 gameplay-loop playtest is blocked until P3.6A productizes the debug shell into a playable vertical slice; then judge against the P3.6 contract.
 
 Character Creator remains a supporting anti-clone/presentation system. Minimum cosmetic variants can be completed later and must not block P3.3–P3.6 functional work.
 
@@ -285,7 +285,7 @@ Item gacha may grant/refine Bloodline/Physique/etc under explicit rules, but mus
 2. P3.3 disciple operational flow: real PASS / locked;
 3. P3.4 building management: real PASS / locked;
 4. P3.5 living-sect cues: real PASS / locked;
-5. P3.6 real gameplay-loop playtest;
+5. P3.6A playable vertical slice/productization, then P3.6 real gameplay-loop playtest;
 6. minimum cosmetic variants needed to avoid obvious clones;
 7. six-combo/full female visual acceptance when functional map-management is stable;
 8. backward-compatible `appearance_profile` persistence;
