@@ -137,7 +137,7 @@ Accepted:
 
 Dark hair + skirt merging at `0.75x` is future art contrast work, not a pivot defect. **No bone rest positions were changed.**
 
-## Current active task — live modular actor map integration
+## Current active task — P3.3 disciple operational flow (runtime pending)
 
 Three-direction Stage A is now runtime-green and visually accepted:
 
@@ -212,23 +212,18 @@ Run exactly in this order:
 
 P3.3 implementation is on `main` and documented in `docs/P3_3_DISCIPLE_OPERATIONAL_FLOW_SPEC.md`, but it is **RUNTIME PENDING**, not PASS.
 
-## UX playtest priority when machine is available
+## FUNCTIONALITY-FIRST PRIORITY — USER DECISION 2026-10-04
 
-Do not wait for every cosmetic variant before testing UX. After three-direction visual acceptance:
+Map actors are small, so do not spend disproportionate time on face/hair micro-detail. Character Creator is now a supporting anti-clone system, not the main development blocker.
 
-1. shared idle + walk public 4 directions;
-2. integrate modular actor into the live sect map in a safe/controlled step;
-3. run a real main-map UI/UX playtest (pan/zoom, tap actor/building, quick popup, disciple deep screen, HUD/task rail/mobile hit targets);
-4. then continue broad cosmetic asset volume.
+Current order:
 
-## After three-direction visual acceptance
+1. get the missing `[8/8]` live modular actor evidence;
+2. run/fix `Verify-P3-3-Disciple-Flow.cmd`;
+3. move to P3.4 building management/interactions using real simulation state;
+4. then P3.5 living-sect status/action cues;
+5. later add a minimal set of face/hair/outfit/weapon/tints and six combos;
+6. FULL female visual gate only after the visible functional slice is stable;
+7. male rig remains later.
 
-1. lock `down/right/up` registration;
-2. shared idle + walk public 4 directions;
-3. early live-map UX integration/playtest;
-4. add face/hair/outfit/weapon variants;
-5. tint masks/presets;
-6. six-combination same-rig proof;
-7. FULL cumulative visual-slice gate;
-8. appearance persistence;
-9. male rig/art expansion.
+Do not return to broad cosmetic production before P3.3/P3.4 functional work unless the user explicitly changes priority.
