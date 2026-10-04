@@ -209,7 +209,7 @@ Cả ba state dùng cùng family:
 ## Visual/UX locked
 User đã duyệt direction V3.1, V3.2 và V3.3 ngày 2026-10-04.
 
-## Runtime implementation — IMPLEMENTED ON MAIN / CHƯA ĐƯỢC GỌI PASS
+## Runtime implementation — REAL PASS ON WINDOWS GODOT 4.7.2
 
 Implementation authority: `docs/P3_3_DISCIPLE_OPERATIONAL_FLOW_SPEC.md`.
 
