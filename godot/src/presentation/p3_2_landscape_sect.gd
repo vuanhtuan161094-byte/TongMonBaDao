@@ -25,6 +25,17 @@ var equipment_system := EquipmentSystem.new()
 var female_motion_library: AnimationLibrary
 var modular_live_actor_ids: Dictionary = {}
 
+var camera_controls_panel: Panel
+var camera_hint: Label
+var disciple_summary_panel: Panel
+var disciple_summary_initial: Label
+var disciple_summary_name: Label
+var disciple_summary_meta: Label
+var disciple_summary_body: Label
+var summary_feedback := ""
+var screen_pointer_dragged := false
+var mouse_pointer_dragged := false
+
 func _ready() -> void:
     super._ready()
     female_motion_library = FemaleNormalV1MotionLibrary.build()
@@ -34,6 +45,7 @@ func _ready() -> void:
     _reset_camera(false)
     _build_focus_marker()
     _build_camera_controls()
+    _build_disciple_summary_panel()
 
 func _unhandled_input(event: InputEvent) -> void:
     if _popup_is_open():
@@ -63,6 +75,7 @@ func _build_focus_marker() -> void:
 
 func _build_camera_controls() -> void:
     var panel := Panel.new()
+    camera_controls_panel = panel
     panel.position = Vector2(1204, 150)
     panel.size = Vector2(60, 252)
     panel.z_index = 20
@@ -127,6 +140,7 @@ func _build_camera_controls() -> void:
     panel.add_child(focus_readout)
 
     var hint := Label.new()
+    camera_hint = hint
     hint.text = "Chụm 2 ngón: zoom  •  Kéo: di chuyển  •  Chạm đúp: phóng nhanh"
     hint.position = Vector2(704, 606)
     hint.size = Vector2(480, 26)
@@ -144,15 +158,23 @@ func _handle_screen_touch(touch: InputEventScreenTouch) -> void:
     if touch.pressed:
         if not SectMapCamera.is_map_screen_point(touch.position):
             return
+        if touch_points.is_empty():
+            screen_pointer_dragged = false
+        else:
+            screen_pointer_dragged = true
         touch_points[touch.index] = touch.position
         if touch.double_tap:
+            screen_pointer_dragged = true
             _zoom_at(touch.position, maxf(map_zoom, SectMapCamera.FOCUS_ZOOM), true)
             get_viewport().set_input_as_handled()
         _refresh_pinch_baseline()
         return
 
+    var was_single_pointer := touch_points.size() == 1 and touch_points.has(touch.index)
     touch_points.erase(touch.index)
     _refresh_pinch_baseline()
+    if was_single_pointer and not screen_pointer_dragged and _disciple_summary_is_open():
+        _close_disciple_summary(true)
 
 func _handle_screen_drag(drag: InputEventScreenDrag) -> void:
     if not touch_points.has(drag.index):
@@ -175,6 +197,8 @@ func _handle_screen_drag(drag: InputEventScreenDrag) -> void:
         get_viewport().set_input_as_handled()
         return
 
+    if drag.relative.length() > 2.0:
+        screen_pointer_dragged = true
     _pan_camera(drag.relative)
     get_viewport().set_input_as_handled()
 
@@ -197,13 +221,18 @@ func _handle_mouse_button(mouse: InputEventMouseButton) -> void:
     if mouse.pressed:
         if not SectMapCamera.is_map_screen_point(mouse.position):
             return
+        mouse_pointer_dragged = false
         if mouse.double_click:
+            mouse_pointer_dragged = true
             _zoom_at(mouse.position, maxf(map_zoom, SectMapCamera.FOCUS_ZOOM), true)
             get_viewport().set_input_as_handled()
             return
         mouse_panning = true
     else:
+        var should_close_summary := mouse_panning and not mouse_pointer_dragged and _disciple_summary_is_open()
         mouse_panning = false
+        if should_close_summary:
+            _close_disciple_summary(true)
 
 func _handle_mouse_motion(motion: InputEventMouseMotion) -> void:
     if not mouse_panning:
@@ -211,6 +240,8 @@ func _handle_mouse_motion(motion: InputEventMouseMotion) -> void:
     if (motion.button_mask & MOUSE_BUTTON_MASK_LEFT) == 0:
         mouse_panning = false
         return
+    if motion.relative.length() > 2.0:
+        mouse_pointer_dragged = true
     _pan_camera(motion.relative)
     get_viewport().set_input_as_handled()
 
@@ -240,6 +271,7 @@ func _focus_current_target() -> void:
         return
     if focused_kind == &"disciple":
         _refresh_focused_disciple_point()
+    _refresh_disciple_summary_content()
     _focus_world_point(focused_world_point)
     _pulse_focus_marker()
 
@@ -349,17 +381,43 @@ func _clear_pointer_state() -> void:
     mouse_panning = false
 
 func _open_building(destination: StringName) -> void:
+    _close_disciple_summary(true)
     var point := SectMapPresentation.position_for_destination(destination)
     _set_focus_target(point, &"building", destination, _building_name(destination), true)
     super._open_building(destination)
 
+func _open_notice(title_text: String, body: String) -> void:
+    _close_disciple_summary(true)
+    super._open_notice(title_text, body)
+
+func _bottom_action(action: String) -> void:
+    if action == "disciples":
+        var ids: Array = state.disciples.keys()
+        ids.sort()
+        if ids.is_empty():
+            return
+        var target_id := selected_id if selected_id != &"" and state.disciples.has(selected_id) else StringName(ids[0])
+        _open_disciple_deep_screen(target_id, "Thuộc tính")
+        return
+    super._bottom_action(action)
+
 func _open_disciple(disciple_id: StringName) -> void:
-    if actor_nodes.has(str(disciple_id)) and state.disciples.has(disciple_id):
-        var actor: Control = actor_nodes[str(disciple_id)]
+    if not state.disciples.has(disciple_id):
+        return
+    selected_id = disciple_id
+    opened_disciple_profile = true
+    summary_feedback = ""
+    _refresh_tasks()
+    _clear_popup()
+
+    var key := str(disciple_id)
+    if actor_nodes.has(key):
+        var actor: Control = actor_nodes[key] as Control
         var disciple: DiscipleState = state.disciples[disciple_id]
         var point := actor.position + actor.size * 0.5
         _set_focus_target(point, &"disciple", disciple_id, disciple.display_name, true)
-    super._open_disciple(disciple_id)
+
+    _show_disciple_summary()
 
 func _sync_actor_positions() -> void:
     var ids: Array = state.disciples.keys()
@@ -457,70 +515,367 @@ func _install_modular_live_actors() -> void:
         actor_status_labels[key] = actor.status_label
         modular_live_actor_ids[key] = true
 
+func _build_disciple_summary_panel() -> void:
+    disciple_summary_panel = Panel.new()
+    disciple_summary_panel.name = "DiscipleSummaryPanel"
+    disciple_summary_panel.position = Vector2(956, 80)
+    disciple_summary_panel.size = Vector2(308, 552)
+    disciple_summary_panel.z_index = 60
+    disciple_summary_panel.visible = false
+    disciple_summary_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+    disciple_summary_panel.add_theme_stylebox_override("panel", _style(PAPER_LIGHT, INK, 3, 14))
+    add_child(disciple_summary_panel)
+
+    disciple_summary_initial = _label(disciple_summary_panel, "?", Vector2(16, 16), Vector2(56, 56), 32)
+    disciple_summary_initial.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    disciple_summary_initial.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+    disciple_summary_initial.add_theme_color_override("font_color", JADE_DARK)
+
+    disciple_summary_name = _label(disciple_summary_panel, "", Vector2(82, 14), Vector2(172, 30), 20)
+    disciple_summary_name.add_theme_color_override("font_color", INK)
+
+    disciple_summary_meta = _label(disciple_summary_panel, "", Vector2(82, 44), Vector2(176, 34), 12)
+    disciple_summary_meta.add_theme_color_override("font_color", CINNABAR.darkened(0.12))
+
+    var close := Button.new()
+    close.name = "CloseSummary"
+    close.text = "×"
+    close.position = Vector2(262, 12)
+    close.size = Vector2(34, 34)
+    close.add_theme_font_size_override("font_size", 20)
+    close.add_theme_stylebox_override("normal", _style(Color(0.86, 0.80, 0.66, 1.0), INK, 1, 16))
+    close.pressed.connect(Callable(self, "_close_disciple_summary").bind(true))
+    disciple_summary_panel.add_child(close)
+
+    var separator := HSeparator.new()
+    separator.position = Vector2(14, 82)
+    separator.size = Vector2(280, 2)
+    disciple_summary_panel.add_child(separator)
+
+    disciple_summary_body = _label(disciple_summary_panel, "", Vector2(16, 94), Vector2(276, 294), 13)
+    disciple_summary_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    disciple_summary_body.add_theme_color_override("font_color", INK)
+
+    _add_summary_order_button("Tu luyện", Vector2(16, 398), Vector2(88, 38), WorkforceSystem.COMMAND_CULTIVATE)
+    _add_summary_order_button("Nghỉ", Vector2(110, 398), Vector2(82, 38), WorkforceSystem.COMMAND_REST)
+    _add_summary_order_button("Về tông", Vector2(198, 398), Vector2(94, 38), WorkforceSystem.COMMAND_RETURN_SECT)
+    _add_summary_order_button("Khai khoáng", Vector2(16, 442), Vector2(132, 38), WorkforceSystem.COMMAND_WORK, str(WorkforceSystem.PROF_MINING))
+    _add_summary_order_button("Luyện khí", Vector2(160, 442), Vector2(132, 38), WorkforceSystem.COMMAND_WORK, str(WorkforceSystem.PROF_FORGING))
+
+    var detail := Button.new()
+    detail.name = "OpenDiscipleDetail"
+    detail.text = "Xem chi tiết"
+    detail.position = Vector2(16, 494)
+    detail.size = Vector2(276, 42)
+    detail.add_theme_font_size_override("font_size", 14)
+    detail.add_theme_stylebox_override("normal", _style(CINNABAR, PAPER_LIGHT, 2, 9))
+    detail.add_theme_stylebox_override("hover", _style(CINNABAR.lightened(0.08), GOLD, 3, 9))
+    detail.pressed.connect(_open_selected_disciple_detail)
+    disciple_summary_panel.add_child(detail)
+
+func _add_summary_order_button(text: String, pos: Vector2, button_size: Vector2, kind: StringName, target: String = "") -> void:
+    var button := Button.new()
+    button.text = text
+    button.position = pos
+    button.size = button_size
+    button.add_theme_font_size_override("font_size", 12)
+    button.add_theme_stylebox_override("normal", _style(Color(0.88, 0.82, 0.67, 1.0), Color(0.45, 0.37, 0.25, 1.0), 1, 7))
+    button.add_theme_stylebox_override("hover", _style(Color(0.97, 0.88, 0.64, 1.0), GOLD, 2, 7))
+    button.pressed.connect(Callable(self, "_issue_summary_order").bind(kind, target, text))
+    disciple_summary_panel.add_child(button)
+
+func _disciple_summary_is_open() -> bool:
+    return disciple_summary_panel != null and is_instance_valid(disciple_summary_panel) and disciple_summary_panel.visible
+
+func _show_disciple_summary() -> void:
+    if disciple_summary_panel == null or selected_id == &"" or not state.disciples.has(selected_id):
+        return
+    disciple_summary_panel.visible = true
+    if camera_controls_panel != null:
+        camera_controls_panel.visible = false
+    if camera_hint != null:
+        camera_hint.visible = false
+    _refresh_disciple_summary_content()
+
+func _hide_disciple_summary() -> void:
+    if disciple_summary_panel != null:
+        disciple_summary_panel.visible = false
+    if camera_controls_panel != null:
+        camera_controls_panel.visible = true
+    if camera_hint != null:
+        camera_hint.visible = true
+
+func _close_disciple_summary(clear_selection: bool = true) -> void:
+    _hide_disciple_summary()
+    summary_feedback = ""
+    if not clear_selection:
+        return
+    selected_id = &""
+    if focused_kind == &"disciple":
+        focused_kind = &""
+        focused_id = &""
+        focused_label = ""
+        has_focus_target = false
+        if focus_marker != null:
+            focus_marker.visible = false
+        if focus_target_button != null:
+            focus_target_button.disabled = true
+        _refresh_focus_readout()
+
+func _refresh_disciple_summary_content() -> void:
+    if not _disciple_summary_is_open() or selected_id == &"" or not state.disciples.has(selected_id):
+        return
+    var disciple: DiscipleState = state.disciples[selected_id]
+    disciple_summary_initial.text = disciple.display_name.substr(0, 1)
+    disciple_summary_name.text = disciple.display_name
+
+    var quality := "—"
+    if disciple.disciple_quality != &"":
+        quality = generator.quality_name(disciple.disciple_quality)
+    disciple_summary_meta.text = "%s · %s" % [quality, cultivation.stage_name(disciple)]
+    disciple_summary_body.text = _disciple_summary_text(disciple)
+
+func _disciple_summary_text(disciple: DiscipleState) -> String:
+    var required := cultivation.required_progress(disciple)
+    var cultivation_text := "Đã viên mãn" if required <= 0.0 else "%.0f / %.0f" % [disciple.cultivation_progress, required]
+    var destination := StringName(actor_destinations.get(str(disciple.id), str(SectMapPresentation.DEST_COURTYARD)))
+    var power := cultivation.effective_combat_power(state, disciple)
+
+    var technique_text := "Chưa chọn"
+    if disciple.active_technique_id != &"":
+        technique_text = technique_system.technique_name(disciple.active_technique_id)
+
+    var bloodline_text := "—"
+    var bloodline_profile := bloodlines.profile_for(state, disciple.id)
+    if not bloodline_profile.is_empty():
+        if bool(bloodline_profile.get("revealed", false)):
+            var bloodline_id := StringName(bloodline_profile.get("bloodline_id", "none"))
+            bloodline_text = bloodlines.bloodline_name(bloodline_id)
+        else:
+            bloodline_text = "Chưa xác định"
+
+    var physique_text := "—"
+    var physique_profile := physiques.profile_for(state, disciple.id)
+    if not physique_profile.is_empty():
+        physique_text = physiques.display_physique(state, disciple.id)
+
+    var command_text := _direct_command_label(disciple)
+    var feedback := ""
+    if summary_feedback != "":
+        feedback = "\n%s" % summary_feedback
+
+    return (
+        "HP %.0f/%.0f  ·  Thể lực %.0f/100\n"
+        + "Tu vi: %s\n"
+        + "Đang làm: %s\n"
+        + "Vị trí: %s\n"
+        + "Nhóm việc: %s\n\n"
+        + "Chiến lực: %.1f\n"
+        + "Công pháp: %s\n"
+        + "Huyết Mạch: %s\n"
+        + "Thể Chất: %s\n\n"
+        + "Lệnh Tông Chủ: %s%s"
+    ) % [
+        disciple.hp, disciple.max_hp, disciple.stamina,
+        cultivation_text,
+        SectMapPresentation.action_label(disciple.current_action),
+        _building_name(destination),
+        _work_group_label(disciple),
+        power,
+        technique_text,
+        bloodline_text,
+        physique_text,
+        command_text,
+        feedback
+    ]
+
+func _work_group_label(disciple: DiscipleState) -> String:
+    match disciple.work_group_id:
+        &"mining_crew": return "Đội Khai Khoáng"
+        &"forge_hall": return "Luyện Khí Đường"
+        &"": return "Chưa phân"
+        _: return str(disciple.work_group_id)
+
+func _direct_command_label(disciple: DiscipleState) -> String:
+    if disciple.direct_command.is_empty():
+        return "Không"
+    var kind := StringName(disciple.direct_command.get("kind", ""))
+    var target := StringName(disciple.direct_command.get("target", ""))
+    match kind:
+        WorkforceSystem.COMMAND_CULTIVATE: return "Tu luyện"
+        WorkforceSystem.COMMAND_REST: return "Nghỉ"
+        WorkforceSystem.COMMAND_RETURN_SECT: return "Về tông"
+        WorkforceSystem.COMMAND_HOLD: return "Giữ tại tông"
+        WorkforceSystem.COMMAND_WORK:
+            if target == WorkforceSystem.PROF_MINING:
+                return "Khai khoáng"
+            if target == WorkforceSystem.PROF_FORGING:
+                return "Luyện khí"
+            return "Làm nghề"
+        WorkforceSystem.COMMAND_HUNT_REGION: return "Xuất môn"
+        _: return str(kind)
+
+func _issue_summary_order(kind: StringName, target: String, label: String) -> void:
+    if selected_id == &"" or not state.disciples.has(selected_id):
+        return
+    var ok := workforce.issue_command(state, selected_id, kind, target, 40)
+    summary_feedback = "Đã ra lệnh: %s" % label if ok else "Không thể ra lệnh lúc này."
+    _refresh_disciple_summary_content()
+
+func _open_selected_disciple_detail() -> void:
+    if selected_id == &"" or not state.disciples.has(selected_id):
+        return
+    _open_disciple_deep_screen(selected_id, "Thuộc tính")
+
+func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thuộc tính") -> void:
+    if not state.disciples.has(disciple_id):
+        return
+    selected_id = disciple_id
+    opened_disciple_profile = true
+    tab_status_text = "" if tab_name != "Huyết Mạch" and tab_name != "Thể Chất" else tab_status_text
+    _refresh_tasks()
+    _hide_disciple_summary()
+    _clear_popup()
+    _add_dim()
+
+    var panel := Panel.new()
+    panel.name = "DiscipleDeepScreen"
+    panel.position = Vector2(48, 82)
+    panel.size = Vector2(1184, 548)
+    panel.add_theme_stylebox_override("panel", _style(PAPER_LIGHT, INK, 3, 18))
+    popup_layer.add_child(panel)
+
+    var title := _label(panel, "Hồ sơ đệ tử", Vector2(20, 12), Vector2(220, 34), 23)
+    title.add_theme_color_override("font_color", CINNABAR.darkened(0.18))
+
+    var back := Button.new()
+    back.name = "BackToMapContext"
+    back.text = "← Trở lại bản đồ"
+    back.position = Vector2(936, 12)
+    back.size = Vector2(184, 38)
+    back.add_theme_stylebox_override("normal", _style(Color(0.88, 0.82, 0.67, 1.0), INK, 1, 8))
+    back.pressed.connect(_return_to_disciple_summary)
+    panel.add_child(back)
+
+    var close := Button.new()
+    close.text = "×"
+    close.position = Vector2(1128, 12)
+    close.size = Vector2(36, 34)
+    close.add_theme_font_size_override("font_size", 22)
+    close.add_theme_stylebox_override("normal", _style(Color(0.76, 0.70, 0.58, 1.0), INK, 1, 16))
+    close.pressed.connect(_return_to_disciple_summary)
+    panel.add_child(close)
+
+    var roster_panel := Panel.new()
+    roster_panel.position = Vector2(18, 58)
+    roster_panel.size = Vector2(184, 464)
+    roster_panel.add_theme_stylebox_override("panel", _style(Color(0.86, 0.80, 0.66, 1.0), Color(0.40, 0.31, 0.20, 1.0), 2, 10))
+    panel.add_child(roster_panel)
+
+    var scroll := ScrollContainer.new()
+    scroll.position = Vector2(8, 8)
+    scroll.size = Vector2(168, 448)
+    roster_panel.add_child(scroll)
+
+    var roster := VBoxContainer.new()
+    roster.custom_minimum_size = Vector2(150, 0)
+    roster.add_theme_constant_override("separation", 6)
+    scroll.add_child(roster)
+
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    for raw_id in ids:
+        var id := StringName(raw_id)
+        var roster_disciple: DiscipleState = state.disciples[id]
+        var entry := Button.new()
+        entry.text = roster_disciple.display_name
+        entry.custom_minimum_size = Vector2(148, 44)
+        entry.add_theme_font_size_override("font_size", 13)
+        var is_selected := id == selected_id
+        entry.add_theme_stylebox_override("normal", _style(Color(0.97, 0.90, 0.70, 1.0) if is_selected else Color(0.91, 0.86, 0.72, 1.0), GOLD if is_selected else Color(0.45, 0.37, 0.25, 1.0), 2 if is_selected else 1, 8))
+        entry.pressed.connect(Callable(self, "_open_disciple_deep_screen").bind(id, tab_name))
+        roster.add_child(entry)
+
+    var disciple: DiscipleState = state.disciples[selected_id]
+
+    var showcase := Panel.new()
+    showcase.position = Vector2(220, 58)
+    showcase.size = Vector2(300, 394)
+    showcase.add_theme_stylebox_override("panel", _style(Color(0.76, 0.84, 0.72, 1.0), Color(0.31, 0.40, 0.28, 1.0), 2, 80))
+    panel.add_child(showcase)
+
+    var initial := _label(showcase, disciple.display_name.substr(0, 1), Vector2(70, 66), Vector2(160, 150), 86)
+    initial.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    initial.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+    initial.add_theme_color_override("font_color", JADE_DARK)
+
+    var center_name := _label(showcase, disciple.display_name, Vector2(20, 232), Vector2(260, 32), 22)
+    center_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    center_name.add_theme_color_override("font_color", INK)
+
+    var center_status := _label(showcase, _deep_status_text(disciple), Vector2(22, 272), Vector2(256, 108), 13)
+    center_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    center_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    center_status.add_theme_color_override("font_color", INK)
+
+    var content_panel := Panel.new()
+    content_panel.position = Vector2(538, 58)
+    content_panel.size = Vector2(626, 394)
+    content_panel.add_theme_stylebox_override("panel", _style(Color(0.93, 0.89, 0.78, 0.76), Color(0.50, 0.42, 0.30, 1.0), 1, 10))
+    panel.add_child(content_panel)
+
+    var tab_title := _label(content_panel, tab_name, Vector2(18, 12), Vector2(360, 30), 20)
+    tab_title.add_theme_color_override("font_color", CINNABAR.darkened(0.18))
+
+    var content := _label(content_panel, _disciple_tab_text(tab_name, disciple), Vector2(18, 52), Vector2(590, 286), 14)
+    content.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    content.add_theme_color_override("font_color", INK)
+
+    if tab_name == "Huyết Mạch":
+        _add_tab_action_button(content_panel, "Thức tỉnh", Vector2(18, 344), "bloodline_awaken")
+        _add_tab_action_button(content_panel, "Luyện huyết", Vector2(140, 344), "bloodline_refine")
+    elif tab_name == "Thể Chất":
+        _add_tab_action_button(content_panel, "Tôi thể", Vector2(18, 344), "physique_temper")
+        _add_tab_action_button(content_panel, "Cải thể", Vector2(140, 344), "physique_transform")
+
+    var tab_names: Array[String] = ["Thuộc tính", "Công pháp", "Trang bị", "Huyết Mạch", "Thể Chất", "Quan hệ"]
+    for index in range(tab_names.size()):
+        var tab := Button.new()
+        tab.text = tab_names[index]
+        tab.position = Vector2(220 + index * 154, 470)
+        tab.size = Vector2(144, 42)
+        tab.add_theme_font_size_override("font_size", 12)
+        var active := tab_names[index] == tab_name
+        tab.add_theme_stylebox_override("normal", _style(Color(0.97, 0.88, 0.64, 1.0) if active else Color(0.88, 0.82, 0.67, 1.0), GOLD if active else Color(0.45, 0.37, 0.25, 1.0), 2 if active else 1, 7))
+        tab.pressed.connect(Callable(self, "_open_disciple_deep_screen").bind(selected_id, str(tab_names[index])))
+        panel.add_child(tab)
+
+func _deep_status_text(disciple: DiscipleState) -> String:
+    var required := cultivation.required_progress(disciple)
+    var progress_text := "Đã viên mãn" if required <= 0.0 else "%.0f / %.0f" % [disciple.cultivation_progress, required]
+    var destination := StringName(actor_destinations.get(str(disciple.id), str(SectMapPresentation.DEST_COURTYARD)))
+    return "%s\nHP %.0f/%.0f · Thể lực %.0f/100\nTu vi %s\n%s · %s" % [
+        cultivation.stage_name(disciple),
+        disciple.hp, disciple.max_hp, disciple.stamina,
+        progress_text,
+        SectMapPresentation.action_label(disciple.current_action),
+        _building_name(destination)
+    ]
+
+func _return_to_disciple_summary() -> void:
+    _clear_popup()
+    if selected_id != &"" and state.disciples.has(selected_id):
+        _show_disciple_summary()
+        return
+    _close_disciple_summary(true)
+
 func _tab_notice(tab_name: String) -> void:
     _open_disciple_tab(tab_name)
 
 func _open_disciple_tab(tab_name: String) -> void:
     if selected_id == &"" or not state.disciples.has(selected_id):
         return
-    var disciple: DiscipleState = state.disciples[selected_id]
-    _clear_popup()
-    _add_dim()
-
-    var panel := Panel.new()
-    panel.position = Vector2(110, 82)
-    panel.size = Vector2(1060, 548)
-    panel.add_theme_stylebox_override("panel", _style(PAPER_LIGHT, INK, 3, 18))
-    popup_layer.add_child(panel)
-
-    var title := _label(panel, "%s · %s" % [disciple.display_name, tab_name], Vector2(24, 16), Vector2(720, 38), 24)
-    title.add_theme_color_override("font_color", CINNABAR.darkened(0.18))
-
-    var back := Button.new()
-    back.text = "← Hồ sơ"
-    back.position = Vector2(820, 14)
-    back.size = Vector2(140, 38)
-    back.add_theme_stylebox_override("normal", _style(Color(0.88, 0.82, 0.67, 1.0), INK, 1, 8))
-    back.pressed.connect(Callable(self, "_open_disciple").bind(selected_id))
-    panel.add_child(back)
-
-    var close := Button.new()
-    close.text = "×"
-    close.position = Vector2(1008, 14)
-    close.size = Vector2(36, 34)
-    close.add_theme_font_size_override("font_size", 22)
-    close.add_theme_stylebox_override("normal", _style(Color(0.76, 0.70, 0.58, 1.0), INK, 1, 16))
-    close.pressed.connect(_clear_popup)
-    panel.add_child(close)
-
-    var content_panel := Panel.new()
-    content_panel.position = Vector2(24, 68)
-    content_panel.size = Vector2(1012, 370)
-    content_panel.add_theme_stylebox_override("panel", _style(Color(0.93, 0.89, 0.78, 0.72), Color(0.50, 0.42, 0.30, 1.0), 1, 10))
-    panel.add_child(content_panel)
-
-    var content := _label(content_panel, _disciple_tab_text(tab_name, disciple), Vector2(20, 16), Vector2(972, 330), 15)
-    content.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-    content.add_theme_color_override("font_color", INK)
-
-    if tab_name == "Huyết Mạch":
-        _add_tab_action_button(panel, "Thức tỉnh", Vector2(26, 450), "bloodline_awaken")
-        _add_tab_action_button(panel, "Luyện huyết", Vector2(148, 450), "bloodline_refine")
-    elif tab_name == "Thể Chất":
-        _add_tab_action_button(panel, "Tôi thể", Vector2(26, 450), "physique_temper")
-        _add_tab_action_button(panel, "Cải thể", Vector2(148, 450), "physique_transform")
-
-    var tab_names: Array[String] = ["Thuộc tính", "Công pháp", "Trang bị", "Huyết Mạch", "Thể Chất", "Quan hệ"]
-    for index in range(tab_names.size()):
-        var tab := Button.new()
-        tab.text = tab_names[index]
-        tab.position = Vector2(300 + index * 122, 486)
-        tab.size = Vector2(114, 36)
-        tab.add_theme_font_size_override("font_size", 12)
-        var active: bool = tab_names[index] == tab_name
-        tab.add_theme_stylebox_override("normal", _style(Color(0.97, 0.88, 0.64, 1.0) if active else Color(0.88, 0.82, 0.67, 1.0), GOLD if active else Color(0.45, 0.37, 0.25, 1.0), 2 if active else 1, 6))
-        tab.pressed.connect(Callable(self, "_open_disciple_tab").bind(str(tab_names[index])))
-        panel.add_child(tab)
+    _open_disciple_deep_screen(selected_id, tab_name)
 
 func _add_tab_action_button(parent: Control, text: String, pos: Vector2, action: String) -> void:
     var button := Button.new()
