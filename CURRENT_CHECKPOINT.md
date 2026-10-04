@@ -12,6 +12,7 @@ Real Windows + Godot 4.7.2 evidence confirms:
 - P3.2 Character Creator V1 shared-rig scaffold: PASS;
 - P3.2 `female_normal_v1` Stage A **3-DIRECTION FAST** check: PASS (down/right/up) with user visual review accepted.
 - P3.2 `female_normal_v1` shared **IDLE + WALK FAST** check: PASS on real Windows Godot 4.7.2; user video visual review accepted.
+- P3.3 disciple operational flow (right summary -> real quick orders -> 6-tab deep screen -> context restore): **IMPLEMENTED ON MAIN, RUNTIME PENDING**. Do not call PASS until the dedicated Windows gate is green.
 
 Latest real 3-direction FAST tail supplied by the user:
 
@@ -171,7 +172,20 @@ The user supplied an 11.6-second real Windows motion video. Review accepted the 
 
 **Do not run FULL yet.**
 
-Live-map integration code is now implemented on `main` but **not runtime-green yet**. Run the updated FAST gate; it now includes an eighth live-map modular integration test. If green, open `Preview-P3-2-Live-Modular-Map.cmd` and verify real-map movement, direction swaps, actor selection, zoom/pan and building taps.
+Run in this order:
+
+1. `Verify-P3-2-Female-StageA.cmd`
+   - required missing evidence: `P3.2 LIVE MODULAR FEMALE MAP INTEGRATION TEST PASS`;
+   - this locks the already-implemented modular female actor on the real map.
+2. If step 1 is green, run `Verify-P3-3-Disciple-Flow.cmd`
+   - verifies map tap -> right operational summary;
+   - real `WorkforceSystem` quick orders;
+   - `Xem chi tiết` -> six real tabs;
+   - roster switch + Back context restoration;
+   - bottom-nav direct deep entry -> clean map.
+3. Then visually playtest the real map: select moving disciples, issue orders, watch them move to simulation-derived destinations, switch disciples, pan/zoom, open buildings, enter/leave deep profile.
+
+P3.3 is already implemented in code but remains **runtime pending** until this Windows evidence exists. Character cosmetic variants are not a blocker for this gate.
 
 # Development order after three-direction visual acceptance
 
