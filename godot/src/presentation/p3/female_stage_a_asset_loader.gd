@@ -101,6 +101,15 @@ static func apply_right(actor: ModularDiscipleActor) -> Dictionary:
 static func apply_up(actor: ModularDiscipleActor) -> Dictionary:
     return apply_direction(actor, &"up")
 
+static func apply_public_direction(actor: ModularDiscipleActor, direction: StringName) -> Dictionary:
+    if direction == &"left":
+        var result := apply_direction(actor, &"right")
+        if actor != null:
+            actor.facing = &"left"
+            actor.set_left_mirror_enabled(true)
+        return result
+    return apply_direction(actor, direction)
+
 static func apply_direction(actor: ModularDiscipleActor, direction: StringName) -> Dictionary:
     var result := {
         "applied": 0,
