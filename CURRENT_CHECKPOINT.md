@@ -16,7 +16,7 @@ Real Windows + Godot 4.7.2 evidence confirms:
 - P3.3 disciple operational flow (right summary -> real quick orders -> 6-tab deep screen -> context restore): **REAL PASS** on Windows Godot 4.7.2. Contract test + live scene smoke + cumulative P3.2 baseline all green.
 - P3.4 building management: **REAL PASS / LOCKED** on Windows Godot 4.7.2. P3.4A read-only panel, P3.4B people management and P3.4C real system actions all green.
 - P3.5 living sect cues: **REAL PASS / LOCKED** on Windows Godot 4.7.2. Core resolver/tracker, live-map routing and scene smoke all green; max 3 cues.
-- P3.6 Sect Master gameplay loop: design locked; product playtest remains blocked until **P3.6A** is accepted. P3.6A player-facing productization is **IMPLEMENTED ON MAIN / RUNTIME + VISUAL REVIEW PENDING**.
+- P3.6 Sect Master gameplay loop: design locked; product playtest remains blocked until **P3.6A visual acceptance**. P3.6A player-facing productization is **REAL RUNTIME PASS / VISUAL REVIEW PENDING** on Windows Godot 4.7.2.
 
 Latest real 3-direction FAST tail supplied by the user:
 
@@ -177,35 +177,27 @@ P3.4C first real Windows attempt reached the cumulative P3.4B regression and fai
 
 P3.5 first Windows attempt exposed a `seed()` naming collision; it was fixed by renaming to `seed_from_state()`. The rerun then passed core, live-map integration and scene smoke.
 
-P3.6A first Windows gate reached disciple deep-tab cleanup and failed because `_clear_popup()` only queued old popup nodes for deletion; reopening another tab in the same frame caused Godot to auto-rename the new node (`DiscipleDeepScreen2`). Production popup lifecycle was fixed to detach children immediately before `queue_free()`. P3.6A remains runtime pending until rerun.
+P3.6A first Windows gate exposed a popup lifecycle bug (`DiscipleDeepScreen2`); `_clear_popup()` was fixed to detach children immediately before `queue_free()`. The subsequent FULL cumulative rerun passed P3.6A contract + live scene smoke.
 
 # Next authoritative action
 
-P3.2, P3.3, full P3.4 and P3.5 are **REAL PASS / LOCKED**.
+P3.2, P3.3, full P3.4, P3.5 and **P3.6A runtime** are REAL PASS / LOCKED.
 
-P3.6A playable vertical slice is now **IMPLEMENTED ON MAIN / RUNTIME + VISUAL REVIEW PENDING**.
+P3.6A still needs **real visual review only**. Do not ask for another verifier run now.
 
-Run:
-
-`Sync-Main.cmd Verify-P3-6A-Playable-Slice.cmd`
-
-This cumulative gate verifies:
-
-- full P3.5/P3.4/P3.3 baseline;
-- demo task/checklist is absent from normal play;
-- bottom navigation exposes only usable entries;
-- all 8 buildings use player-readable map tokens with real hit targets;
-- no P3/P2/P1/internal debug copy leaks into building/disciple player surfaces;
-- real Sect Master command still advances simulation and updates visible actor destination;
-- live scene smoke.
-
-If gate is green, run:
+Open:
 
 `Preview-P3-6A-Playable-Slice.cmd`
 
-and review the real scene visually. Do not resume the P3.6 5–10 minute loop playtest until the user accepts that P3.6A now looks/reads like a playable game surface.
+and judge whether the live scene now reads as a game rather than a QA/debug board.
 
-No production art was generated in this pass. Procedural building silhouettes are temporary runtime stand-ins and do not replace approved building art authority.
+Verification workflow from now on:
+
+- `Verify-P3-6A-Playable-Slice.cmd` = FAST active-slice check only;
+- `Verify-P3-6A-Playable-Slice-Full.cmd` = FULL cumulative check, final/cross-baseline use only;
+- do not rerun locked P3.3-P3.5 baselines after every small P3.6A patch.
+
+The FULL cumulative gate already passed on Windows Godot 4.7.2 in this cycle, so no further runtime gate is needed before visual preview.
 
 # Current development priority — functionality first
 
