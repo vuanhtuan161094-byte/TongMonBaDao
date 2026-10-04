@@ -193,6 +193,8 @@ Current authoritative diagnostic pack is an external one-time ZIP:
 
 P3.4C first real Windows attempt reached the cumulative P3.4B regression and failed because the old Medicine Hall test incorrectly required zero controls. P3.4C legitimately adds real NeedsSystem priority controls. The regression was corrected in commit `7c4ce83c13d8e6e7ce7e2cef6e53e3472f0375b6` to forbid only fabricated HEAL/direct-treatment actions. P3.4C itself remains runtime pending until rerun.
 
+P3.5 first real Windows attempt failed during GDScript parse because `LivingCueTracker.seed(state)` collided with Godot's built-in `seed(int)`. The tracker method and all callers were renamed to `seed_from_state(state)`; P3.5 remains runtime pending until rerun.
+
 ## NEXT WINDOWS ACTION
 
 P3.5 is implemented on `main` and **RUNTIME PENDING**.
