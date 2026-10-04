@@ -62,7 +62,7 @@ func _ready() -> void:
     _build_disciple_summary_panel()
     _build_building_operation_panel()
     _build_living_cue_layer()
-    living_cue_tracker.seed(state)
+    living_cue_tracker.seed_from_state(state)
     _refresh_living_cues()
 
 func _unhandled_input(event: InputEvent) -> void:
