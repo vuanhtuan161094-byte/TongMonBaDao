@@ -14,6 +14,7 @@ Real Windows + Godot 4.7.2 evidence confirms:
 - P3.2 `female_normal_v1` shared **IDLE + WALK FAST** check: PASS on real Windows Godot 4.7.2; user video visual review accepted.
 - P3.3 disciple operational flow (right summary -> real quick orders -> 6-tab deep screen -> context restore): **IMPLEMENTED ON MAIN, RUNTIME PENDING**. Do not call PASS until the dedicated Windows gate is green.
 - P3.4 building management: **DESIGN LOCKED ONLY** in `docs/P3_4_BUILDING_MANAGEMENT_SPEC.md`; do not implement runtime until P3.2 live-map `[8/8]` and P3.3 Windows gate are green.
+- P3.5 living sect cues: **DESIGN LOCKED ONLY** in `docs/P3_5_LIVING_SECT_CUES_SPEC.md`; implement only after P3.4 runtime green. Cues are derived from real state/events and route to real panels; no random/fake speech system.
 
 Latest real 3-direction FAST tail supplied by the user:
 
