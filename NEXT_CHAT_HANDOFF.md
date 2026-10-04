@@ -195,6 +195,8 @@ P3.4C first real Windows attempt reached the cumulative P3.4B regression and fai
 
 P3.5 first real Windows attempt failed during GDScript parse because `LivingCueTracker.seed(state)` collided with Godot's built-in `seed(int)`. The tracker method and all callers were renamed to `seed_from_state(state)`; P3.5 remains runtime pending until rerun.
 
+P3.6A first Windows gate reached disciple deep-tab cleanup and failed because `_clear_popup()` only queued old popup nodes for deletion; reopening another tab in the same frame caused Godot to auto-rename the new node (`DiscipleDeepScreen2`). Production popup lifecycle was fixed to detach children immediately before `queue_free()`. P3.6A remains runtime pending until rerun.
+
 ## NEXT WINDOWS ACTION
 
 P3.6A productization is implemented on `main` and **RUNTIME + REAL VISUAL REVIEW PENDING**.
