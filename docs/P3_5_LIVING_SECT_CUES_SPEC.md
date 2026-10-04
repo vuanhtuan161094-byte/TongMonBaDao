@@ -1,7 +1,41 @@
 # P3.5 — LIVING SECT CUES / TÔNG MÔN SỐNG TRÊN MAP
 
 Date: 2026-10-04  
-Status: DESIGN LOCKED / IMPLEMENTATION UNBLOCKED AFTER P3.4 REAL PASS
+Status: DESIGN LOCKED; IMPLEMENTED ON MAIN / RUNTIME PENDING
+
+## Runtime implementation status
+
+Implemented on `main`:
+
+- `LivingCueResolver`:
+  - pure/read-only state cue derivation;
+  - real HP/stamina/retreat/breakthrough/workforce/equipment/lodging/medicine conditions;
+  - deterministic primary-cue selection;
+  - max 3 visible cues;
+- `LivingCueTracker`:
+  - presentation-only snapshots;
+  - breakthrough/work/heal/return transient events;
+  - no serialization/gameplay authority;
+- `LivingCueLayer`:
+  - world-space cue buttons under the transformed map;
+  - follows moving actor targets;
+  - cue tap routes only to P3.3/P3.4 contexts;
+- live map integration in `p3_2_landscape_sect.gd`;
+- dedicated core + map-integration tests and cumulative verifier.
+
+Files:
+
+- `godot/src/presentation/p3/living_cue_resolver.gd`;
+- `godot/src/presentation/p3/living_cue_tracker.gd`;
+- `godot/src/presentation/p3/living_cue_layer.gd`;
+- `godot/tests/presentation/p3_5_living_cue_core_test.gd`;
+- `godot/tests/presentation/p3_5_living_cue_map_integration_test.gd`;
+- `Verify-P3-5-Living-Cues.cmd`;
+- `tools/godot/Verify-P3-5-Living-Cues.ps1`.
+
+P3.5 is **not PASS** until the real Windows Godot 4.7.2 cumulative gate is green.
+
+---
 
 ## 0. Mục tiêu
 
