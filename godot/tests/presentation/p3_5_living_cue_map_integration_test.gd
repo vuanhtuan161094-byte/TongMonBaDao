@@ -37,7 +37,7 @@ func _run() -> void:
 
     _force_many_real_cues(first)
     var tracker := ui.get("living_cue_tracker") as LivingCueTracker
-    tracker.seed(state)
+    tracker.seed_from_state(state)
     ui.call("_refresh_living_cues")
     await process_frame
 
@@ -82,7 +82,7 @@ func _run() -> void:
         return
 
     ui.call("_close_building_operation_panel", true)
-    tracker.seed(state)
+    tracker.seed_from_state(state)
     ui.call("_refresh_living_cues")
     await process_frame
     visible = ui.get("visible_living_cues")
