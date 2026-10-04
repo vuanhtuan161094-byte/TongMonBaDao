@@ -61,8 +61,8 @@ Current user priority is **functionality-first living-sect management**, not cha
 Immediate runtime order:
 
 1. P3.2 live modular female map `[8/8]` is real PASS / locked;
-2. run/fix/lock P3.3 disciple operational flow;
-3. implement/runtime-lock P3.4 building management;
+2. P3.3 disciple operational flow: real PASS / locked;
+3. P3.4 building management: real PASS / locked;
 4. implement/runtime-lock P3.5 living-sect cues;
 5. judge the result against the P3.6 Sect Master gameplay-loop contract.
 
