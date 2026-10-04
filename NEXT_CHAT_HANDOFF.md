@@ -190,6 +190,9 @@ Current authoritative diagnostic pack is an external one-time ZIP:
 
 `.gitignore` covers only exact generated Stage A PNGs, `.png.import` sidecars, and an optional repo-root copy of the diagnostic ZIP.
 
+
+P3.4C first real Windows attempt reached the cumulative P3.4B regression and failed because the old Medicine Hall test incorrectly required zero controls. P3.4C legitimately adds real NeedsSystem priority controls. The regression was corrected in commit `7c4ce83c13d8e6e7ce7e2cef6e53e3472f0375b6` to forbid only fabricated HEAL/direct-treatment actions. P3.4C itself remains runtime pending until rerun.
+
 ## NEXT WINDOWS ACTION
 
 P3.4C is implemented on `main` and **RUNTIME PENDING**.
