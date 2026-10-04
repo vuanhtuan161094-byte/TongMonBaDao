@@ -138,7 +138,7 @@ Accepted:
 
 Dark hair + skirt merging at `0.75x` is future art contrast work, not a pivot defect. **No bone rest positions were changed.**
 
-## Current active task — P3.5 living-sect cues
+## Current active task — P3.5 living-sect cues (runtime pending)
 
 Three-direction Stage A is now runtime-green and visually accepted:
 
@@ -195,19 +195,20 @@ P3.4C first real Windows attempt reached the cumulative P3.4B regression and fai
 
 ## NEXT WINDOWS ACTION
 
-P3.4C is implemented on `main` and **RUNTIME PENDING**.
+P3.5 is implemented on `main` and **RUNTIME PENDING**.
 
 Run:
 
-`Sync-Main.cmd Verify-P3-4C-Building-Actions.cmd`
+`Sync-Main.cmd Verify-P3-5-Living-Cues.cmd`
 
-Expected final lines:
+Expected final lines include:
 
-- `P3.4C BUILDING SYSTEM ACTIONS TEST PASS`;
-- `P3.4C BUILDING SYSTEM ACTIONS GATE: PASS`;
-- `P3.4C BUILDING SYSTEM ACTIONS: PASS`.
+- `P3.5 LIVING CUE CORE TEST PASS`;
+- `P3.5 LIVING CUE MAP INTEGRATION TEST PASS`;
+- `P3.5 LIVING SECT CUES GATE: PASS`;
+- `P3.5 LIVING SECT CUES: PASS`.
 
-If it fails, patch only P3.4C and rerun the same stable command. If green, lock full P3.4 and begin P3.5 runtime.
+If it fails, patch only the exact P3.5 failure and rerun the same stable command. If green, lock P3.5 and move to the P3.6 gameplay-loop playtest, not another mechanic phase.
 
 ## P3.4 — REAL PASS / LOCKED
 
