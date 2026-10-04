@@ -177,7 +177,8 @@ func select_visible(candidates: Array[Dictionary], max_count: int = 3) -> Array[
 
     var ordered: Array[Dictionary] = []
     for value in by_target.values():
-        ordered.append((value as Dictionary).duplicate(true))
+        var cue_value: Dictionary = value
+        ordered.append(cue_value.duplicate(true))
     ordered.sort_custom(Callable(self, "_sort_before"))
 
     var result: Array[Dictionary] = []
