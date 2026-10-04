@@ -1,7 +1,7 @@
 # P3.4 — BUILDING MANAGEMENT / QUẢN LÝ CÔNG TRÌNH
 
 Date: 2026-10-04  
-Status: DESIGN LOCKED; P3.4A REAL PASS; P3.4B IMPLEMENTED / RUNTIME PENDING; P3.4C NOT IMPLEMENTED
+Status: DESIGN LOCKED; P3.4A REAL PASS; P3.4B REAL PASS; P3.4C IMPLEMENTATION NEXT
 
 ## P3.4A runtime status
 
@@ -37,7 +37,7 @@ Dedicated verifier:
 - `Verify-P3-4B-Building-People.cmd`;
 - `tools/godot/Verify-P3-4B-Building-People.ps1`.
 
-P3.4C remains blocked until P3.4B real Windows gate passes.
+P3.4B is now REAL PASS. P3.4C is unblocked.
 
 ---
 
