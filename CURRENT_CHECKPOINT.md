@@ -187,14 +187,19 @@ Run in this order:
 
 P3.3 is already implemented in code but remains **runtime pending** until this Windows evidence exists. Character cosmetic variants are not a blocker for this gate.
 
-# Development order after three-direction visual acceptance
+# Current development priority — functionality first
 
-1. lock authored `down/right/up` registration;
-2. author shared `idle + walk` AnimationLibrary for public `down/right/up/left` (`left` mirror-right while safe);
-3. add `face_02`, `hair_02/03`, `outfit_02`, `weapon_01/02`;
-4. add tint masks/presets;
-5. prove at least 6 combinations on the same shared rig/motion;
-6. run the FULL cumulative visual-slice gate only when the visible proof is ready to lock;
-7. only then integrate `ModularDiscipleActor` into the live sect map;
-8. add backward-compatible `appearance_profile` persistence without changing P2.8 RNG;
-9. then expand to `male_normal_v1`, more actions and larger asset volume.
+User explicitly deprioritized micro-detail on the small map actor. Character Creator remains necessary only to avoid obvious clones; it must not block management gameplay.
+
+Order:
+
+1. obtain the missing live modular female map `[8/8]` Windows evidence;
+2. run/fix/lock P3.3 disciple operational flow;
+3. P3.4 building interaction/management: real workers, inputs, outputs, assignment/management actions;
+4. P3.5 living-sect cues: fatigue/heal/breakthrough/material/finished-work signals from real state;
+5. add only the minimum face/hair/outfit/weapon/tint variants needed to make disciples visually distinguishable;
+6. six-combo proof + FULL female visual gate later, after core management interaction is stable;
+7. appearance persistence;
+8. male rig/art expansion later.
+
+Do not let cosmetic production block functional map-management work.
