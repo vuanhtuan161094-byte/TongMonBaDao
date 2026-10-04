@@ -33,6 +33,11 @@ var disciple_summary_name: Label
 var disciple_summary_meta: Label
 var disciple_summary_body: Label
 var summary_feedback := ""
+
+var building_operation_panel: Panel
+var building_operation_title: Label
+var building_operation_body: Label
+var selected_building: StringName = &""
 var deep_restore_summary := false
 var screen_pointer_dragged := false
 var mouse_pointer_dragged := false
@@ -47,6 +52,7 @@ func _ready() -> void:
     _build_focus_marker()
     _build_camera_controls()
     _build_disciple_summary_panel()
+    _build_building_operation_panel()
 
 func _unhandled_input(event: InputEvent) -> void:
     if _popup_is_open():
@@ -174,8 +180,11 @@ func _handle_screen_touch(touch: InputEventScreenTouch) -> void:
     var was_single_pointer := touch_points.size() == 1 and touch_points.has(touch.index)
     touch_points.erase(touch.index)
     _refresh_pinch_baseline()
-    if was_single_pointer and not screen_pointer_dragged and _disciple_summary_is_open():
-        _close_disciple_summary(true)
+    if was_single_pointer and not screen_pointer_dragged:
+        if _disciple_summary_is_open():
+            _close_disciple_summary(true)
+        elif _building_operation_is_open():
+            _close_building_operation_panel(true)
 
 func _handle_screen_drag(drag: InputEventScreenDrag) -> void:
     if not touch_points.has(drag.index):
@@ -231,9 +240,12 @@ func _handle_mouse_button(mouse: InputEventMouseButton) -> void:
         mouse_panning = true
     else:
         var should_close_summary := mouse_panning and not mouse_pointer_dragged and _disciple_summary_is_open()
+        var should_close_building := mouse_panning and not mouse_pointer_dragged and _building_operation_is_open()
         mouse_panning = false
         if should_close_summary:
             _close_disciple_summary(true)
+        elif should_close_building:
+            _close_building_operation_panel(true)
 
 func _handle_mouse_motion(motion: InputEventMouseMotion) -> void:
     if not mouse_panning:
@@ -273,6 +285,7 @@ func _focus_current_target() -> void:
     if focused_kind == &"disciple":
         _refresh_focused_disciple_point()
     _refresh_disciple_summary_content()
+    _refresh_building_operation_content()
     _focus_world_point(focused_world_point)
     _pulse_focus_marker()
 
@@ -385,12 +398,15 @@ func _clear_pointer_state() -> void:
 
 func _open_building(destination: StringName) -> void:
     _close_disciple_summary(true)
+    _clear_popup()
+    selected_building = destination
     var point := SectMapPresentation.position_for_destination(destination)
     _set_focus_target(point, &"building", destination, _building_name(destination), true)
-    super._open_building(destination)
+    _show_building_operation_panel()
 
 func _open_notice(title_text: String, body: String) -> void:
     _close_disciple_summary(true)
+    _close_building_operation_panel(true)
     super._open_notice(title_text, body)
 
 func _bottom_action(action: String) -> void:
@@ -408,6 +424,7 @@ func _bottom_action(action: String) -> void:
 func _open_disciple(disciple_id: StringName) -> void:
     if not state.disciples.has(disciple_id):
         return
+    _close_building_operation_panel(true)
     selected_id = disciple_id
     opened_disciple_profile = true
     summary_feedback = ""
@@ -519,6 +536,392 @@ func _install_modular_live_actors() -> void:
         actor_nodes[key] = actor
         actor_status_labels[key] = actor.status_label
         modular_live_actor_ids[key] = true
+
+func _build_building_operation_panel() -> void:
+    building_operation_panel = Panel.new()
+    building_operation_panel.name = "BuildingOperationPanel"
+    building_operation_panel.position = Vector2(824, 80)
+    building_operation_panel.size = Vector2(440, 552)
+    building_operation_panel.z_index = 60
+    building_operation_panel.visible = false
+    building_operation_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+    building_operation_panel.add_theme_stylebox_override("panel", _style(PAPER_LIGHT, INK, 3, 14))
+    add_child(building_operation_panel)
+
+    building_operation_title = _label(building_operation_panel, "", Vector2(18, 14), Vector2(350, 34), 22)
+    building_operation_title.add_theme_color_override("font_color", CINNABAR.darkened(0.18))
+
+    var subtitle := _label(building_operation_panel, "Tình hình hiện tại · dữ liệu simulation thật", Vector2(18, 48), Vector2(350, 22), 11)
+    subtitle.add_theme_color_override("font_color", Color(0.22, 0.20, 0.16, 0.72))
+
+    var close := Button.new()
+    close.name = "CloseBuildingOperation"
+    close.text = "×"
+    close.position = Vector2(388, 12)
+    close.size = Vector2(36, 34)
+    close.add_theme_font_size_override("font_size", 20)
+    close.add_theme_stylebox_override("normal", _style(Color(0.86, 0.80, 0.66, 1.0), INK, 1, 16))
+    close.pressed.connect(Callable(self, "_close_building_operation_panel").bind(true))
+    building_operation_panel.add_child(close)
+
+    var separator := HSeparator.new()
+    separator.position = Vector2(14, 78)
+    separator.size = Vector2(412, 2)
+    building_operation_panel.add_child(separator)
+
+    var scroll := ScrollContainer.new()
+    scroll.name = "BuildingOperationScroll"
+    scroll.position = Vector2(14, 92)
+    scroll.size = Vector2(412, 442)
+    building_operation_panel.add_child(scroll)
+
+    building_operation_body = Label.new()
+    building_operation_body.name = "BuildingOperationBody"
+    building_operation_body.custom_minimum_size = Vector2(384, 420)
+    building_operation_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    building_operation_body.add_theme_font_size_override("font_size", 13)
+    building_operation_body.add_theme_color_override("font_color", INK)
+    scroll.add_child(building_operation_body)
+
+func _building_operation_is_open() -> bool:
+    return building_operation_panel != null and is_instance_valid(building_operation_panel) and building_operation_panel.visible
+
+func _show_building_operation_panel() -> void:
+    if building_operation_panel == null or selected_building == &"":
+        return
+    building_operation_panel.visible = true
+    if camera_controls_panel != null:
+        camera_controls_panel.visible = false
+    if camera_hint != null:
+        camera_hint.visible = false
+    _refresh_building_operation_content()
+
+func _hide_building_operation_panel() -> void:
+    if building_operation_panel != null:
+        building_operation_panel.visible = false
+    if camera_controls_panel != null and not _disciple_summary_is_open():
+        camera_controls_panel.visible = true
+    if camera_hint != null and not _disciple_summary_is_open():
+        camera_hint.visible = true
+
+func _close_building_operation_panel(clear_selection: bool = true) -> void:
+    _hide_building_operation_panel()
+    if not clear_selection:
+        return
+    selected_building = &""
+    if focused_kind == &"building":
+        focused_kind = &""
+        focused_id = &""
+        focused_label = ""
+        has_focus_target = false
+        if focus_marker != null:
+            focus_marker.visible = false
+        if focus_target_button != null:
+            focus_target_button.disabled = true
+        _refresh_focus_readout()
+
+func _refresh_building_operation_content() -> void:
+    if not _building_operation_is_open() or selected_building == &"":
+        return
+    building_operation_title.text = _building_name(selected_building)
+    building_operation_body.text = _building_operation_text(selected_building)
+
+func _building_operation_text(destination: StringName) -> String:
+    match destination:
+        SectMapPresentation.DEST_MAIN_HALL:
+            return _main_hall_operation_text()
+        SectMapPresentation.DEST_MINE:
+            return _mine_operation_text()
+        SectMapPresentation.DEST_FORGE:
+            return _forge_operation_text()
+        SectMapPresentation.DEST_CULTIVATION:
+            return _cultivation_operation_text()
+        SectMapPresentation.DEST_RESIDENCE:
+            return _residence_operation_text()
+        SectMapPresentation.DEST_MEDICINE:
+            return _medicine_operation_text()
+        SectMapPresentation.DEST_WAREHOUSE:
+            return _warehouse_operation_text()
+        SectMapPresentation.DEST_GATE:
+            return _gate_operation_text()
+        _:
+            return "Sân trung tâm. Không có dữ liệu quản lý riêng."
+
+func _main_hall_operation_text() -> String:
+    return (
+        "TỔNG QUAN\n"
+        + "Đệ tử: %d / %d\n"
+        + "Ngân khố: %d\n"
+        + "Linh Thạch: %d\n\n"
+        + "CHÍNH SÁCH HIỆN TẠI\n"
+        + "Lao động: %s\n"
+        + "Hậu cần: %s\n"
+        + "Trang bị: %s\n\n"
+        + "P3.4A chỉ đọc authority thật. Điều chỉnh chính sách sẽ mở ở P3.4C."
+    ) % [
+        state.disciples.size(), state.sect.disciple_capacity,
+        state.sect.treasury, state.sect.spirit_stones,
+        _work_policy_label(state.sect.work_policy),
+        _needs_priority_label(state.sect.needs_priority),
+        _equipment_policy_label(state.sect.equipment_policy)
+    ]
+
+func _mine_operation_text() -> String:
+    var members := _disciples_in_work_group(&"mining_crew")
+    var lines: Array[String] = []
+    for disciple in members:
+        var level := workforce.profession_level(disciple, WorkforceSystem.PROF_MINING)
+        var progress := float(disciple.work_progress.get(str(WorkforceSystem.PROF_MINING), 0.0))
+        lines.append("• %s · Lv%d · tiến độ %.1f/4 · thể lực %.0f · %s" % [
+            disciple.display_name, level, progress, disciple.stamina,
+            SectMapPresentation.action_label(disciple.current_action)
+        ])
+    if lines.is_empty():
+        lines.append("• Chưa có thành viên Đội Khai Khoáng")
+
+    return (
+        "SẢN XUẤT\n"
+        + "Thanh Thiết: %d\n"
+        + "Đang khai khoáng: %d\n"
+        + "Thành viên đội: %d\n\n"
+        + "NHÂN SỰ\n%s\n\n"
+        + "P3.4B sẽ mở phân đội và gọi khai khoáng bằng WorkforceSystem thật."
+    ) % [
+        int(state.sect.forge_materials.get("thanh_thiet", 0)),
+        _count_action(&"WORK_MINING"),
+        members.size(),
+        "\n".join(lines)
+    ]
+
+func _forge_operation_text() -> String:
+    var members := _disciples_in_work_group(&"forge_hall")
+    var lines: Array[String] = []
+    for disciple in members:
+        var level := workforce.profession_level(disciple, WorkforceSystem.PROF_FORGING)
+        var progress := float(disciple.work_progress.get(str(WorkforceSystem.PROF_FORGING), 0.0))
+        lines.append("• %s · Lv%d · tiến độ %.1f/5 · thể lực %.0f · %s" % [
+            disciple.display_name, level, progress, disciple.stamina,
+            SectMapPresentation.action_label(disciple.current_action)
+        ])
+    if lines.is_empty():
+        lines.append("• Chưa có thành viên Luyện Khí Đường")
+
+    var craftable := 0
+    var recipe_ids: Array = EquipmentSystem.RECIPES.keys()
+    recipe_ids.sort()
+    for raw_id in recipe_ids:
+        if equipment_system.can_craft(state, StringName(raw_id)):
+            craftable += 1
+
+    return (
+        "VẬT LIỆU\n"
+        + "Thanh Thiết: %d · Linh Mộc: %d\n"
+        + "Tinh Lang Bì: %d · Yêu Đan: %d\n"
+        + "Điểm hỗ trợ rèn: %d\n"
+        + "Recipe đủ nguyên liệu: %d / %d\n\n"
+        + "NHÂN SỰ\n%s\n\n"
+        + "P3.4B mở quản lý người; P3.4C mới mở craft thật."
+    ) % [
+        int(state.sect.forge_materials.get("thanh_thiet", 0)),
+        int(state.sect.forge_materials.get("linh_moc", 0)),
+        int(state.sect.forge_materials.get("tinh_lang_bi", 0)),
+        int(state.sect.forge_materials.get("yeu_dan", 0)),
+        state.sect.forge_support_points,
+        craftable, recipe_ids.size(),
+        "\n".join(lines)
+    ]
+
+func _cultivation_operation_text() -> String:
+    var lines: Array[String] = []
+    var ready_count := 0
+    var active_count := 0
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    for raw_id in ids:
+        var disciple: DiscipleState = state.disciples[raw_id]
+        if disciple.current_action in [&"CULTIVATE", &"BREAKTHROUGH"]:
+            active_count += 1
+        var required := cultivation.required_progress(disciple)
+        var progress_text := "Viên mãn" if required <= 0.0 else "%.0f/%.0f" % [disciple.cultivation_progress, required]
+        var ready := cultivation.can_breakthrough(state, disciple)
+        if ready:
+            ready_count += 1
+        if disciple.current_action in [&"CULTIVATE", &"BREAKTHROUGH"] or ready:
+            lines.append("• %s · %s · %s · thể lực %.0f%s" % [
+                disciple.display_name,
+                cultivation.stage_name(disciple),
+                progress_text,
+                disciple.stamina,
+                " · CÓ THỂ ĐỘT PHÁ" if ready else ""
+            ])
+    if lines.is_empty():
+        lines.append("• Chưa có ai đang tu luyện hoặc đủ điều kiện đột phá")
+
+    return (
+        "Đang tu luyện/phá cảnh: %d\n"
+        + "Đủ điều kiện đột phá: %d\n\n"
+        + "ĐỆ TỬ LIÊN QUAN\n%s\n\n"
+        + "P3.4B sẽ mở lệnh Tu luyện; không có nút đột phá giả."
+    ) % [active_count, ready_count, "\n".join(lines)]
+
+func _residence_operation_text() -> String:
+    var population := state.disciples.size()
+    var overloaded := population > state.sect.lodging_capacity
+    var recovery_pct := NeedsSystem.new().rest_recovery_multiplier(state) * 100.0
+    var rest_lines := _action_disciple_lines([&"REST"])
+    return (
+        "Sức chứa: %d / %d\n"
+        + "Tình trạng: %s\n"
+        + "Hệ số hồi phục hiện tại: %.0f%%\n"
+        + "Vật tư: %d\n"
+        + "Đang nghỉ: %d\n\n"
+        + "ĐỆ TỬ ĐANG NGHỈ\n%s\n\n"
+        + "P3.4B mở lệnh Nghỉ; P3.4C mới mở rộng chỗ ở bằng NeedsSystem."
+    ) % [
+        population, state.sect.lodging_capacity,
+        "QUÁ TẢI" if overloaded else "Ổn định",
+        recovery_pct, state.sect.supply_stock,
+        _count_action(&"REST"),
+        rest_lines
+    ]
+
+func _medicine_operation_text() -> String:
+    var injured: Array[String] = []
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    for raw_id in ids:
+        var disciple: DiscipleState = state.disciples[raw_id]
+        var ratio := disciple.hp / maxf(disciple.max_hp, 1.0)
+        if ratio < 0.72:
+            injured.append("• %s · HP %.0f/%.0f · %s" % [
+                disciple.display_name, disciple.hp, disciple.max_hp,
+                SectMapPresentation.action_label(disciple.current_action)
+            ])
+    if injured.is_empty():
+        injured.append("• Không có đệ tử dưới ngưỡng HP 72%")
+
+    return (
+        "Thuốc: %d / %d\n"
+        + "Vật tư: %d / %d\n"
+        + "Đang trị thương: %d\n"
+        + "Ưu tiên hậu cần: %s\n"
+        + "Đã dùng thuốc: %d · Đã sản xuất: %d\n\n"
+        + "NGƯỜI CẦN CHÚ Ý\n%s\n\n"
+        + "P3.4A không tạo COMMAND_HEAL giả. P3.4C chỉ đổi priority hậu cần thật."
+    ) % [
+        state.sect.medicine_stock, NeedsSystem.MEDICINE_CAP,
+        state.sect.supply_stock, NeedsSystem.SUPPLY_CAP,
+        _count_action(&"HEAL"),
+        _needs_priority_label(state.sect.needs_priority),
+        int(state.sect.needs_stats.get("medicine_used", 0)),
+        int(state.sect.needs_stats.get("medicine_produced", 0)),
+        "\n".join(injured)
+    ]
+
+func _warehouse_operation_text() -> String:
+    var storage_count := 0
+    var shop_count := 0
+    var equipped_count := 0
+    for item_value in state.sect.equipment_items.values():
+        var item: Dictionary = item_value
+        match StringName(item.get("location", "")):
+            EquipmentSystem.LOCATION_STORAGE: storage_count += 1
+            EquipmentSystem.LOCATION_SHOP: shop_count += 1
+            EquipmentSystem.LOCATION_EQUIPPED: equipped_count += 1
+
+    return (
+        "TIỀN TỆ\n"
+        + "Ngân khố: %d · Linh Thạch: %d\n\n"
+        + "SINH HOẠT\n"
+        + "Thuốc: %d · Vật tư: %d\n\n"
+        + "VẬT LIỆU LUYỆN KHÍ\n"
+        + "Thanh Thiết: %d · Linh Mộc: %d\n"
+        + "Tinh Lang Bì: %d · Yêu Đan: %d\n\n"
+        + "TRANG BỊ\n"
+        + "Trong kho: %d · Đang bán: %d · Đã trang bị: %d\n\n"
+        + "Kho hiện không có capacity authority; P3.4A không bịa cảnh báo kho đầy."
+    ) % [
+        state.sect.treasury, state.sect.spirit_stones,
+        state.sect.medicine_stock, state.sect.supply_stock,
+        int(state.sect.forge_materials.get("thanh_thiet", 0)),
+        int(state.sect.forge_materials.get("linh_moc", 0)),
+        int(state.sect.forge_materials.get("tinh_lang_bi", 0)),
+        int(state.sect.forge_materials.get("yeu_dan", 0)),
+        storage_count, shop_count, equipped_count
+    ]
+
+func _gate_operation_text() -> String:
+    var outside: Array[String] = []
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    for raw_id in ids:
+        var disciple: DiscipleState = state.disciples[raw_id]
+        if disciple.region_id == &"sect" and not SectMapPresentation.is_outside_flow(disciple.current_action):
+            continue
+        var location := str(disciple.region_id)
+        if disciple.region_id == &"sect":
+            location = "Đại Môn"
+        outside.append("• %s · %s · %s · HP %.0f/%.0f · TL %.0f" % [
+            disciple.display_name,
+            SectMapPresentation.action_label(disciple.current_action),
+            location,
+            disciple.hp, disciple.max_hp, disciple.stamina
+        ])
+    if outside.is_empty():
+        outside.append("• Không có đệ tử trong luồng xuất môn")
+
+    return (
+        "Đệ tử ngoài tông: %d\n"
+        + "Trong luồng săn/di chuyển/chiến đấu: %d\n"
+        + "Vật tư tông môn: %d\n\n"
+        + "TÌNH HÌNH XUẤT MÔN\n%s\n\n"
+        + "P3.4B sẽ mở Triệu hồi/Về tông bằng command thật."
+    ) % [
+        _count_outside(),
+        _count_actions([&"HUNT", &"TRAVEL", &"COMBAT", &"LOOT", &"RETURN_SECT"]),
+        state.sect.supply_stock,
+        "\n".join(outside)
+    ]
+
+func _disciples_in_work_group(group_id: StringName) -> Array[DiscipleState]:
+    var result: Array[DiscipleState] = []
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    for raw_id in ids:
+        var disciple: DiscipleState = state.disciples[raw_id]
+        if disciple.work_group_id == group_id:
+            result.append(disciple)
+    return result
+
+func _action_disciple_lines(actions: Array) -> String:
+    var lines: Array[String] = []
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    for raw_id in ids:
+        var disciple: DiscipleState = state.disciples[raw_id]
+        if actions.has(disciple.current_action):
+            lines.append("• %s · HP %.0f/%.0f · thể lực %.0f" % [
+                disciple.display_name, disciple.hp, disciple.max_hp, disciple.stamina
+            ])
+    return "• Không có" if lines.is_empty() else "\n".join(lines)
+
+func _work_policy_label(policy: StringName) -> String:
+    match policy:
+        WorkforceSystem.POLICY_PRODUCTION: return "Ưu tiên sản xuất"
+        WorkforceSystem.POLICY_CULTIVATION: return "Ưu tiên tu luyện"
+        _: return "Cân bằng"
+
+func _needs_priority_label(priority: StringName) -> String:
+    match priority:
+        NeedsSystem.PRIORITY_MEDICINE: return "Ưu tiên thuốc"
+        NeedsSystem.PRIORITY_SUPPLIES: return "Ưu tiên vật tư"
+        _: return "Cân bằng"
+
+func _equipment_policy_label(policy: StringName) -> String:
+    match policy:
+        EquipmentSystem.POLICY_COMBAT: return "Chiến đấu"
+        EquipmentSystem.POLICY_FRUGAL: return "Tiết kiệm"
+        _: return "Cân bằng"
 
 func _build_disciple_summary_panel() -> void:
     disciple_summary_panel = Panel.new()
