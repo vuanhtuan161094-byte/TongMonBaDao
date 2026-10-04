@@ -11,6 +11,7 @@ Real Windows + Godot 4.7.2 evidence confirms:
 - P3.2 camera + map target selection + real disciple tabs interaction slice: PASS;
 - P3.2 Character Creator V1 shared-rig scaffold: PASS;
 - P3.2 `female_normal_v1` Stage A **3-DIRECTION FAST** check: PASS (down/right/up) with user visual review accepted.
+- P3.2 `female_normal_v1` shared **IDLE + WALK FAST** check: PASS on real Windows Godot 4.7.2; static preview structure confirmed, motion-quality visual review still pending video.
 
 Latest real 3-direction FAST tail supplied by the user:
 
@@ -24,7 +25,7 @@ FEMALE STAGE A 3-DIRECTION FAST CHECK: PASS
 
 User also supplied the real direction-preview screenshot. Visual review accepted front/side/back identity, common ground registration, readable 0.75x silhouette, and no front-face leakage in the back view.
 
-The production female visual slice / Stage A final milestone is **NOT final PASS yet**. Three-direction FAST + visual review are now locked; shared idle/walk, variants/tints/six-combo proof and the FULL cumulative acceptance remain later.
+The production female visual slice / Stage A final milestone is **NOT final PASS yet**. Three-direction FAST + visual review are locked. Shared idle/walk runtime contract and sandbox smoke now PASS on real Windows Godot 4.7.2, but motion-quality visual review still needs a short video; variants/tints/six-combo proof and the FULL cumulative acceptance remain later.
 
 ---
 
@@ -153,16 +154,27 @@ It computes SHA-256 first and extracts only a matching pack. A wrong/corrupt ZIP
 
 ---
 
+# Shared idle + walk — Windows FAST PASS, visual motion review pending
+
+Real Windows Godot 4.7.2 evidence supplied by the user:
+
+```text
+P3.2 FEMALE SHARED IDLE WALK MOTION CONTRACT TEST PASS
+P3.2 FEMALE STAGE A 3-DIRECTION FAST CHECK: PASS
+P3.2 FEMALE SHARED IDLE WALK FAST CHECK: PASS
+FEMALE STAGE A + SHARED MOTION FAST CHECK: PASS
+```
+
+The user also opened the real motion sandbox. The static frame confirms all eight proof slots render, LEFT is mirrored from RIGHT, and no direction is missing. A still image cannot prove foot sliding, cadence, excessive bob, or seam tearing during motion, so **motion visual acceptance is still pending a short video**.
+
 # Next authoritative Windows action
 
-Three-direction Stage A is now locked. **Do not run FULL yet.**
+**Do not run FULL yet.**
 
-Next implementation target:
-
-1. author shared `idle + walk` AnimationLibrary for public `down/right/up/left`;
-2. keep `left` mirror-right while mirror-safe;
-3. add a focused FAST motion gate + preview;
-4. only after motion proof continue variants/tints/six-combo work.
+1. capture a 5–10 second video of `Preview-P3-2-Female-Motion.cmd`;
+2. visually inspect idle subtlety, walk cadence, foot sliding, shoulder/hip seams, hair/horn attachment, and mirrored LEFT;
+3. if visually accepted, lock shared idle/walk;
+4. then continue to early live-map integration/playtest before broad cosmetic variants.
 
 # Development order after three-direction visual acceptance
 
