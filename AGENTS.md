@@ -41,6 +41,7 @@ Real Windows + Godot 4.7.2 evidence confirms:
 - P3.1 landscape/living-sect shell: PASS;
 - P3.2 camera + map selection + real disciple tabs interaction slice: PASS;
 - P3.2 Character Creator V1 shared-rig scaffold: PASS.
+- P3.2 live modular female map integration: PASS (`[8/8]` real Windows Godot 4.7.2 evidence, 2026-10-04).
 
 These are locked runtime-green baselines. Do not reopen them without new regression evidence.
 
@@ -58,7 +59,7 @@ Current user priority is **functionality-first living-sect management**, not cha
 
 Immediate runtime order:
 
-1. obtain the still-missing P3.2 live modular female map `[8/8]` Windows evidence;
+1. P3.2 live modular female map `[8/8]` is real PASS / locked;
 2. run/fix/lock P3.3 disciple operational flow;
 3. implement/runtime-lock P3.4 building management;
 4. implement/runtime-lock P3.5 living-sect cues;
@@ -276,7 +277,7 @@ Item gacha may grant/refine Bloodline/Physique/etc under explicit rules, but mus
 
 ## Current next production order
 
-1. missing real Windows P3.2 live modular map `[8/8]` evidence;
+1. P3.2 live modular map `[8/8]` real PASS / locked;
 2. P3.3 disciple operational flow gate;
 3. P3.4 building management runtime;
 4. P3.5 living-sect cues runtime;
