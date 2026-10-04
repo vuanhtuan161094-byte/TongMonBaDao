@@ -249,6 +249,33 @@ Locked behavior:
 
 Do not implement P3.5 before P3.4 is runtime-green because cues must route to working management actions.
 
+## P3.6 GAMEPLAY LOOP DESIGN LOCKED
+
+`docs/P3_6_SECT_MASTER_GAMEPLAY_LOOP_SPEC.md` is canonical for the management rhythm.
+
+Core player-control ladder:
+
+1. sect-wide policy — broad, infrequent;
+2. long-term assignment/group/role — structural;
+3. direct Sect Master order — short-lived exception;
+4. survival emergency remains above direct command.
+
+Canonical 5–10 minute rhythm:
+
+`scan map/cues -> resolve only meaningful exceptions -> make 1–3 strategic decisions -> invest if useful -> watch real consequences -> let the sect continue autonomously`.
+
+Acceptance principles:
+
+- 0–3 meaningful problems in a normal session, not alert spam;
+- no mandatory click-every-building/collect loop;
+- routine actions ~1–3 taps;
+- map remains the primary place to understand consequence;
+- player can ignore deep profiles during routine management;
+- game continues sensibly when player does nothing for a while;
+- no fake work generated just to increase session length.
+
+P3.6 is a product-loop contract, **not** a separate runtime system or PASS. After P3.4/P3.5 green, do a real gameplay-loop playtest against this spec before adding more mechanics.
+
 ## FUNCTIONALITY-FIRST PRIORITY — USER DECISION 2026-10-04
 
 Map actors are small, so do not spend disproportionate time on face/hair micro-detail. Character Creator is now a supporting anti-clone system, not the main development blocker.
@@ -259,8 +286,9 @@ Current order:
 2. run/fix `Verify-P3-3-Disciple-Flow.cmd`;
 3. move to P3.4 building management/interactions using real simulation state;
 4. then P3.5 living-sect status/action cues;
-5. later add a minimal set of face/hair/outfit/weapon/tints and six combos;
-6. FULL female visual gate only after the visible functional slice is stable;
-7. male rig remains later.
+5. run P3.6 real 5–10 minute management-loop playtest;
+6. later add a minimal set of face/hair/outfit/weapon/tints and six combos;
+7. FULL female visual gate only after the visible functional slice is stable;
+8. male rig remains later.
 
 Do not return to broad cosmetic production before P3.3/P3.4 functional work unless the user explicitly changes priority.
