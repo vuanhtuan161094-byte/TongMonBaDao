@@ -806,6 +806,7 @@ func _clear_popup() -> void:
     if popup_layer == null:
         return
     for child in popup_layer.get_children():
+        popup_layer.remove_child(child)
         child.queue_free()
 
 func _count_action(action: StringName) -> int:
