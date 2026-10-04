@@ -1,6 +1,6 @@
 # NEXT CHAT HANDOFF — Tông Môn Bá Đạo
 
-Date: 2026-10-03
+Date: 2026-10-04
 
 Always fetch/inspect live `main` before editing.
 
@@ -27,11 +27,12 @@ Godot: 4.7.2 stable.
 5. `docs/P3_PRESENTATION_MASTER.md` for any UI/UX/art/mockup task;
 6. `docs/P3_ART_BIBLE.md`;
 7. `docs/P3_ASSET_REGISTRY.json`;
-8. relevant presentation item MD (`P3_ASSET_BUILDINGS.md`, `P3_ASSET_MAP_ENVIRONMENT.md`, `P3_UX_MAIN_MAP.md`, `P3_UX_DISCIPLE_SCREEN.md`, `P3_UI_SKIN_AND_ICONOGRAPHY.md`);
-9. `docs/P3_2_MODULAR_ACTOR_SPEC.md`;
-10. `docs/P3_2_FEMALE_NORMAL_V1_ASSET_PRODUCTION.md`;
-11. related P3 specs;
-12. live P3 code/tests.
+8. `docs/P3_UX_FLOW_V3.md` for core map/disciple interaction work;
+9. relevant presentation item MD (`P3_ASSET_BUILDINGS.md`, `P3_ASSET_MAP_ENVIRONMENT.md`, `P3_UX_MAIN_MAP.md`, `P3_UX_DISCIPLE_SCREEN.md`, `P3_UI_SKIN_AND_ICONOGRAPHY.md`);
+10. `docs/P3_2_MODULAR_ACTOR_SPEC.md`;
+11. `docs/P3_2_FEMALE_NORMAL_V1_ASSET_PRODUCTION.md`;
+12. related P3 specs;
+13. live P3 code/tests.
 
 For a major long-lived pipeline/architecture change, also inspect `docs/decisions/` before changing direction.
 
@@ -67,6 +68,37 @@ User also prefers the brighter hand-painted/parchment mood of the 2026-10-03 V3 
 - `docs/decisions/0002-adopt-git-lfs-for-production-art.md` — proposed only.
 
 Do not enable Git LFS for production art until the planned Windows verification is performed. `source_art/` is reserved as the future editable-master root outside `godot/` so Godot does not import source masters.
+
+## UX V3 — USER APPROVED 2026-10-04
+
+Canonical flow is now:
+
+`V3.1 Main Map -> tap disciple -> V3.2 right vertical summary panel -> Xem chi tiết -> V3.3 disciple deep screen -> Back restores map context`.
+
+Read `docs/P3_UX_FLOW_V3.md` before changing this flow.
+
+Locked V3.2 behavior:
+
+- panel is on the **right**, not left and not a floating tooltip;
+- approx 280–320 px wide at 1280×720;
+- map remains visible;
+- shows portrait/name, realm, HP, stamina, cultivation progress, current work, status, location, key stats, skill/technique cues, contextual action and `Xem chi tiết`;
+- tap another disciple switches panel;
+- X/blank tap closes;
+- hidden Bloodline/Physique/traits must not leak.
+
+Locked V3.3 behavior:
+
+- left vertical disciple roster;
+- large center character showcase;
+- detailed right content;
+- exactly six current real tabs: Thuộc tính / Công pháp / Trang bị / Huyết Mạch / Thể Chất / Quan hệ;
+- preserve semantic continuity for HP/stamina/cultivation/work/status/location;
+- Back should restore selected disciple + V3.2 panel when still valid.
+
+Registry records V3.1/V3.2/V3.3 as visual-approved but source-missing S3 and runtime not integrated. **Do not call them runtime PASS.**
+
+Next UX design step after documentation lock: **building selection/management interaction**. Plan it with user before any new mockup/image.
 
 ## Runtime-confirmed baseline
 
