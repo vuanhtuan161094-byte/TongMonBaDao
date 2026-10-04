@@ -15,6 +15,7 @@ Real Windows + Godot 4.7.2 evidence confirms:
 - P3.3 disciple operational flow (right summary -> real quick orders -> 6-tab deep screen -> context restore): **IMPLEMENTED ON MAIN, RUNTIME PENDING**. Do not call PASS until the dedicated Windows gate is green.
 - P3.4 building management: **DESIGN LOCKED ONLY** in `docs/P3_4_BUILDING_MANAGEMENT_SPEC.md`; do not implement runtime until P3.2 live-map `[8/8]` and P3.3 Windows gate are green.
 - P3.5 living sect cues: **DESIGN LOCKED ONLY** in `docs/P3_5_LIVING_SECT_CUES_SPEC.md`; implement only after P3.4 runtime green. Cues are derived from real state/events and route to real panels; no random/fake speech system.
+- P3.6 Sect Master gameplay loop: **DESIGN LOCKED** in `docs/P3_6_SECT_MASTER_GAMEPLAY_LOOP_SPEC.md`; this is a cross-phase product/UX acceptance contract, not a runtime PASS. Core rhythm = policy -> long-term assignment -> optional direct intervention -> observe real consequence.
 
 Latest real 3-direction FAST tail supplied by the user:
 
@@ -199,9 +200,10 @@ Order:
 2. run/fix/lock P3.3 disciple operational flow;
 3. P3.4 building interaction/management: real workers, inputs, outputs, assignment/management actions;
 4. P3.5 living-sect cues: fatigue/heal/breakthrough/material/finished-work signals from real state;
-5. add only the minimum face/hair/outfit/weapon/tint variants needed to make disciples visually distinguishable;
-6. six-combo proof + FULL female visual gate later, after core management interaction is stable;
-7. appearance persistence;
-8. male rig/art expansion later.
+5. P3.6 gameplay-loop playtest: verify 5–10 minute management rhythm, low micromanagement, visible consequences;
+6. add only the minimum face/hair/outfit/weapon/tint variants needed to make disciples visually distinguishable;
+7. six-combo proof + FULL female visual gate later, after core management interaction is stable;
+8. appearance persistence;
+9. male rig/art expansion later.
 
 Do not let cosmetic production block functional map-management work.
