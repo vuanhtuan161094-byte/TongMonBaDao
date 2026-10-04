@@ -177,6 +177,8 @@ P3.4C first real Windows attempt reached the cumulative P3.4B regression and fai
 
 P3.5 first Windows attempt exposed a `seed()` naming collision; it was fixed by renaming to `seed_from_state()`. The rerun then passed core, live-map integration and scene smoke.
 
+P3.6A first Windows gate reached disciple deep-tab cleanup and failed because `_clear_popup()` only queued old popup nodes for deletion; reopening another tab in the same frame caused Godot to auto-rename the new node (`DiscipleDeepScreen2`). Production popup lifecycle was fixed to detach children immediately before `queue_free()`. P3.6A remains runtime pending until rerun.
+
 # Next authoritative action
 
 P3.2, P3.3, full P3.4 and P3.5 are **REAL PASS / LOCKED**.
