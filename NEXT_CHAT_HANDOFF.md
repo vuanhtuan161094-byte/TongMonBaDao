@@ -12,7 +12,7 @@ Always fetch/inspect live `main` before editing.
 - Explain progress clearly in Vietnamese; user is non-technical.
 - Never claim runtime PASS without real Godot 4.7.2 output from the user's Windows machine.
 - Never use destructive local git instructions (`reset --hard`, `git clean`, deleting user files, etc.).
-- For every newly added Windows gate, add/use a root `Sync-*.cmd` wrapper. Tell the user to run the sync wrapper, not a newly created raw `Verify-*.cmd`, because local may not have fetched the new launcher yet.
+- Stable Windows workflow: use root `Sync-Main.cmd` for all future syncs. For a gate run `Sync-Main.cmd Verify-<gate>.cmd`. Do not rely on newly created phase-specific Sync launchers because they may not exist on local before the sync.
 
 Repo: `vuanhtuan161094-byte/TongMonBaDao`
 Branch: `main`
@@ -196,7 +196,7 @@ P3.4A is implemented on `main` and **RUNTIME PENDING**.
 
 Run only:
 
-`Sync-P3-4A-Building-Panel.cmd`
+`Sync-Main.cmd Verify-P3-4A-Building-Panel.cmd`
 
 The sync launcher is authoritative; do not tell the user to run a newly added raw Verify launcher directly.
 
