@@ -174,18 +174,20 @@ Kho/Chiêu Hiền/Kỳ Vật có thể là contextual/secondary entry tùy phase
 
 ---
 
-# 9. World-life cues
+# 9. World-life cues — P3.5 DESIGN LOCKED
 
-Map phải có cảm giác tự vận hành:
+Authority chi tiết: `P3_5_LIVING_SECT_CUES_SPEC.md`.
+
+Map phải có cảm giác tự vận hành, nhưng cue phải phản ánh state/event thật:
 
 - actor đi giữa destination thật;
-- icon action nhỏ;
-- speech/event bubble tiết chế;
-- production-ready/upgrade alert;
-- heal/rest/breakthrough warning;
-- ambient activity tại building.
+- cue ngắn cho bị thương/mệt/đột phá/nguy hiểm;
+- building cue cho thiếu người/hết thuốc/quá tải/thiếu vật liệu;
+- event cue ngắn cho hoàn thành việc/đột phá/trị thương;
+- tap cue route tới đúng P3.3/P3.4 context;
+- không random speech để giả “thế giới sống”.
 
-Baseline V3.1: khoảng 8–12 actor visible và chỉ 1–3 bubble/action cue nổi bật cùng lúc.
+Baseline: khoảng 8–12 actor visible và tối đa **3 cue nổi bật** cùng lúc; mỗi target giữ một primary cue theo severity/deterministic priority.
 
 ---
 
