@@ -109,6 +109,7 @@ Real Windows + Godot 4.7.2 confirms:
 - P3.2 camera/map-selection/real disciple tabs: PASS;
 - P3.2 Character Creator shared-rig scaffold: PASS;
 - `female_normal_v1` Stage A 3-DIRECTION FAST (down/right/up): PASS; real visual preview accepted.
+- `female_normal_v1` shared IDLE/WALK FAST: PASS on real Windows Godot 4.7.2; motion-quality visual review pending short video.
 
 Real three-direction tail:
 
@@ -136,7 +137,7 @@ Accepted:
 
 Dark hair + skirt merging at `0.75x` is future art contrast work, not a pivot defect. **No bone rest positions were changed.**
 
-## Current active task — shared idle + walk motion proof
+## Current active task — shared idle + walk visual motion review
 
 Three-direction Stage A is now runtime-green and visually accepted:
 
@@ -147,13 +148,22 @@ Three-direction Stage A is now runtime-green and visually accepted:
 
 The real Windows FAST gate passed on Godot 4.7.2, then the user reviewed the real preview at map scales. No practical-pivot change is required from this proof.
 
-Next target is one shared AnimationLibrary providing:
+One shared AnimationLibrary is now implemented and runtime-green for:
 - idle down/right/up/left;
 - walk down/right/up/left;
 - left mirrored from right while mirror-safe;
 - no per-disciple animation timelines.
 
-Live sect map remains untouched until the focused motion proof is green.
+Real Windows FAST tail:
+
+```text
+P3.2 FEMALE SHARED IDLE WALK MOTION CONTRACT TEST PASS
+P3.2 FEMALE STAGE A 3-DIRECTION FAST CHECK: PASS
+P3.2 FEMALE SHARED IDLE WALK FAST CHECK: PASS
+FEMALE STAGE A + SHARED MOTION FAST CHECK: PASS
+```
+
+User opened the motion sandbox and supplied a still screenshot. Static structure is correct, but a still cannot prove motion quality. Ask for a 5–10 second video before declaring visual motion acceptance.
 
 ## Binary transport issue — resolved design, Windows run pending
 
@@ -183,13 +193,10 @@ Current authoritative diagnostic pack is an external one-time ZIP:
 
 Do **not** run `Verify-P3-2-Female-StageA-Full.cmd` yet.
 
-Implement shared idle + walk first, then provide a focused Windows launcher that:
-1. runs the shared-rig regression;
-2. runs the new motion contract;
-3. smoke-opens the motion sandbox;
-4. lets the user preview all four public directions.
-
-Only after motion is visually accepted should the work move to variants/tints/six-combo proof.
+1. User should record 5–10 seconds of `Preview-P3-2-Female-Motion.cmd`.
+2. Review idle breathing, walk cadence, foot sliding, shoulder/hip continuity, hair/horn attachment, and LEFT mirror.
+3. If visually accepted, lock shared idle/walk and proceed to early live-map integration/playtest.
+4. Cosmetic variants/tints/six-combo proof follows after that.
 
 ## UX playtest priority when machine is available
 
