@@ -466,7 +466,7 @@ func _building_detail(destination: StringName) -> String:
         SectMapPresentation.DEST_MAIN_HALL:
             return "Đệ tử: %d/%d\nChính sách lao động: %s\nNgân khố: %d\n\nTrung tâm điều hành các chính sách của tông môn." % [state.disciples.size(), state.sect.disciple_capacity, str(state.sect.work_policy), state.sect.treasury]
         SectMapPresentation.DEST_WAREHOUSE:
-            return "Thanh Thiết: %d\nLinh Mộc: %d\nYêu Đan: %d\nLinh Tủy: %d\nLinh Thạch: %d\n\nSố liệu lấy trực tiếp từ kho/economy hiện tại." % [
+            return "Thanh Thiết: %d\nLinh Mộc: %d\nYêu Đan: %d\nLinh Tủy: %d\nLinh Thạch: %d\n\nTài nguyên đang có trong tông môn." % [
                 int(state.sect.forge_materials.get("thanh_thiet", 0)),
                 int(state.sect.forge_materials.get("linh_moc", 0)),
                 int(state.sect.technique_materials.get("yeu_dan", 0)),
@@ -474,17 +474,17 @@ func _building_detail(destination: StringName) -> String:
                 state.sect.spirit_stones
             ]
         SectMapPresentation.DEST_FORGE:
-            return "Đệ tử đang luyện khí: %d\nĐiểm hỗ trợ rèn: %d\nThanh Thiết trong kho: %d\n\nĐệ tử WORK_FORGING trên simulation sẽ di chuyển tới đây." % [_count_action(&"WORK_FORGING"), state.sect.forge_support_points, int(state.sect.forge_materials.get("thanh_thiet", 0))]
+            return "Đệ tử đang luyện khí: %d\nĐiểm hỗ trợ rèn: %d\nThanh Thiết trong kho: %d\n\nNgười phụ trách luyện khí sẽ làm việc tại đây." % [_count_action(&"WORK_FORGING"), state.sect.forge_support_points, int(state.sect.forge_materials.get("thanh_thiet", 0))]
         SectMapPresentation.DEST_MINE:
-            return "Đệ tử đang khai khoáng: %d\nThanh Thiết trong kho: %d\n\nHoàn thành chu kỳ khai khoáng thật sẽ cộng Thanh Thiết vào economy P2.7/P2.6." % [_count_action(&"WORK_MINING"), int(state.sect.forge_materials.get("thanh_thiet", 0))]
+            return "Đệ tử đang khai khoáng: %d\nThanh Thiết trong kho: %d\n\nMỗi chu kỳ khai khoáng hoàn thành sẽ đưa Thanh Thiết về kho." % [_count_action(&"WORK_MINING"), int(state.sect.forge_materials.get("thanh_thiet", 0))]
         SectMapPresentation.DEST_CULTIVATION:
-            return "Đang tu luyện/phá cảnh: %d\n\nTu vi, Linh căn, Huyết Mạch, Thể Chất và các multiplier hiện tại vẫn do simulation P2 quyết định." % [_count_actions([&"CULTIVATE", &"BREAKTHROUGH"])]
+            return "Đang tu luyện/phá cảnh: %d\n\nĐệ tử tới đây để tu luyện và chuẩn bị phá cảnh khi đủ điều kiện." % [_count_actions([&"CULTIVATE", &"BREAKTHROUGH"])]
         SectMapPresentation.DEST_RESIDENCE:
-            return "Đệ tử đang nghỉ: %d\nSức chứa chỗ ở: %d\n\nREST thật sẽ hồi thể lực/HP theo NeedsSystem." % [_count_action(&"REST"), state.sect.lodging_capacity]
+            return "Đệ tử đang nghỉ: %d\nSức chứa chỗ ở: %d\n\nNghỉ ngơi giúp hồi thể lực và một phần thương thế." % [_count_action(&"REST"), state.sect.lodging_capacity]
         SectMapPresentation.DEST_MEDICINE:
-            return "Đệ tử đang trị thương: %d\nDược liệu/thuốc dự trữ: %d\n\nHEAL thật tiếp tục dùng economy/NeedsSystem hiện tại." % [_count_action(&"HEAL"), state.sect.medicine_stock]
+            return "Đệ tử đang trị thương: %d\nThuốc dự trữ: %d\n\nDược Phòng hỗ trợ hồi phục khi tông môn còn thuốc." % [_count_action(&"HEAL"), state.sect.medicine_stock]
         SectMapPresentation.DEST_GATE:
-            return "Đệ tử ngoài tông: %d\nĐang trong luồng săn/di chuyển/chiến đấu: %d\n\nKhi xuất môn, avatar đi về Đại Môn; combat vẫn do P2.5 xử lý." % [_count_outside(), _count_actions([&"HUNT", &"TRAVEL", &"COMBAT", &"LOOT", &"RETURN_SECT"])]
+            return "Đệ tử ngoài tông: %d\nĐang săn/di chuyển/chiến đấu: %d\n\nĐại Môn là nơi theo dõi người đang xuất môn và triệu hồi họ khi cần." % [_count_outside(), _count_actions([&"HUNT", &"TRAVEL", &"COMBAT", &"LOOT", &"RETURN_SECT"])]
         _:
             return "Sân trung tâm — nơi avatar giữ vị trí khi chờ lệnh."
 
@@ -611,9 +611,7 @@ func _disciple_detail(disciple: DiscipleState) -> String:
         physique_text = physiques.display_physique(state, disciple.id)
         physique_text += " · Tôi thể %d/%d" % [physiques.temper_level(state, disciple.id), PhysiqueSystem.MAX_TEMPER_LEVEL]
 
-    var command_text := "Không"
-    if not disciple.direct_command.is_empty():
-        command_text = "%s %s" % [str(disciple.direct_command.get("kind", "")), str(disciple.direct_command.get("target", ""))]
+    var command_text := _player_command_text(disciple)
 
     return "Phẩm chất: %s\nCảnh giới: %s\nHP: %.0f/%.0f    Thể lực: %.0f/100\n\nLinh căn: %s\nHuyết mạch: %s\nThể chất: %s\n\nTư Chất: %s    Căn Cốt: %s\nCơ Duyên: %s    Thông Tuệ: %s\nMị Lực: %s    Tiềm Lực: %s\n\nĐang làm: %s\nNhóm việc: %s\nLệnh Tông Chủ: %s" % [
         quality,
@@ -634,6 +632,25 @@ func _disciple_detail(disciple: DiscipleState) -> String:
         str(disciple.work_group_id) if disciple.work_group_id != &"" else "—",
         command_text
     ]
+
+func _player_command_text(disciple: DiscipleState) -> String:
+    if disciple.direct_command.is_empty():
+        return "Không"
+    var kind := StringName(disciple.direct_command.get("kind", ""))
+    var target := StringName(disciple.direct_command.get("target", ""))
+    match kind:
+        WorkforceSystem.COMMAND_CULTIVATE: return "Tu luyện"
+        WorkforceSystem.COMMAND_REST: return "Nghỉ"
+        WorkforceSystem.COMMAND_RETURN_SECT: return "Về tông"
+        WorkforceSystem.COMMAND_HOLD: return "Ở lại tông"
+        WorkforceSystem.COMMAND_WORK:
+            if target == WorkforceSystem.PROF_MINING:
+                return "Khai khoáng"
+            if target == WorkforceSystem.PROF_FORGING:
+                return "Luyện khí"
+            return "Làm việc"
+        WorkforceSystem.COMMAND_HUNT_REGION: return "Xuất môn"
+        _: return "Đang chờ thực hiện"
 
 func _add_quick_order_button(parent: Control, text: String, pos: Vector2, kind: StringName, target: String = "") -> void:
     var button := Button.new()
