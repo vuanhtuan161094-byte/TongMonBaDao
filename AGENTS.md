@@ -22,7 +22,7 @@
 - New mechanics need measurable gameplay consequences; labels alone do not count.
 - Never call a phase PASS without its real cumulative Godot gate.
 - Never weaken persistence/determinism/contract tests merely to make a gate pass.
-- `Sync-Main.cmd` is the single stable Windows sync entrypoint. Do not create or instruct phase-specific `Sync-*.cmd` launchers as the primary workflow. For a new gate, add/update only its `Verify-*.cmd`, then instruct `Sync-Main.cmd Verify-<gate>.cmd`. This avoids the bootstrap problem where a newly created sync launcher does not yet exist on local.
+- `Sync-Main.cmd` is the single stable Windows sync entrypoint. Do not create or instruct phase-specific `Sync-*.cmd` launchers as the primary workflow. For a new gate, add/update only its `Verify-*.cmd`, then instruct `Sync-Main.cmd Verify-<gate>.cmd`. This avoids the bootstrap problem where a newly created sync launcher does not yet exist on local. `Sync-Main.cmd` blocks tracked/staged local edits, but untracked files only produce a warning; it never deletes them, and Git itself must refuse any pull that would overwrite an untracked path.
 - Hidden identity is generated once and persisted. Reveal/awakening/transformation never rerolls it.
 - Before changing a disciple subsystem, reconcile the change against `docs/DISCIPLE_MASTER_SCHEMA.md`; if design changes, update the master first.
 
