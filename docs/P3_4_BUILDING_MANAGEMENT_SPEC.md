@@ -1,7 +1,7 @@
 # P3.4 — BUILDING MANAGEMENT / QUẢN LÝ CÔNG TRÌNH
 
 Date: 2026-10-04  
-Status: DESIGN LOCKED; P3.4A REAL PASS; P3.4B IMPLEMENTATION NEXT; P3.4C NOT IMPLEMENTED
+Status: DESIGN LOCKED; P3.4A REAL PASS; P3.4B IMPLEMENTED / RUNTIME PENDING; P3.4C NOT IMPLEMENTED
 
 ## P3.4A runtime status
 
@@ -18,7 +18,26 @@ Implemented on `main`:
 
 P3.4A is **REAL PASS** on Windows Godot 4.7.2.
 
-P3.4B people management is now unblocked. P3.4C remains blocked until P3.4B passes.
+P3.4B people management is now **implemented on main / runtime pending**.
+
+Implemented P3.4B actions:
+
+- Mine: assign/remove from `mining_crew` + immediate mining command;
+- Forge: assign/remove from `forge_hall` + immediate forging command;
+- Cultivation: direct cultivate command;
+- Residence: direct rest command;
+- Gate: direct return-sect command;
+- Medicine Hall: still no fake HEAL command.
+
+Presentation does not directly mutate `current_action` or `region_id`.
+
+Dedicated verifier:
+
+- `godot/tests/presentation/p3_4b_building_people_management_test.gd`;
+- `Verify-P3-4B-Building-People.cmd`;
+- `tools/godot/Verify-P3-4B-Building-People.ps1`.
+
+P3.4C remains blocked until P3.4B real Windows gate passes.
 
 ---
 
