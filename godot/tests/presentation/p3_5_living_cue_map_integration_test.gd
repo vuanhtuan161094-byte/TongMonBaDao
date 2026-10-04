@@ -41,7 +41,7 @@ func _run() -> void:
     ui.call("_refresh_living_cues")
     await process_frame
 
-    var visible: Array[Dictionary] = ui.get("visible_living_cues")
+    var visible: Array = ui.get("visible_living_cues")
     if visible.is_empty():
         _fail("P3.5 live map rendered no cues under forced real conditions.")
         return
