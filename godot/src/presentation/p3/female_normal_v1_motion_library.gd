@@ -56,6 +56,16 @@ static func _build_idle(direction: StringName) -> Animation:
         [half, 0.010],
         [IDLE_LENGTH, -0.010]
     ])
+    # Idle explicitly owns the leg channels so switching from WALK cannot leave
+    # a leg frozen at the previous walk-cycle angle.
+    _add_track(animation, _bone_property_path(&"leg_l", "rotation"), [
+        [0.0, 0.0],
+        [IDLE_LENGTH, 0.0]
+    ])
+    _add_track(animation, _bone_property_path(&"leg_r", "rotation"), [
+        [0.0, 0.0],
+        [IDLE_LENGTH, 0.0]
+    ])
     return animation
 
 static func _build_walk(direction: StringName) -> Animation:
