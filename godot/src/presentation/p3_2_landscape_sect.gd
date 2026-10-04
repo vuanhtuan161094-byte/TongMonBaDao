@@ -669,7 +669,8 @@ func _main_hall_operation_text() -> String:
 func _mine_operation_text() -> String:
     var members := _disciples_in_work_group(&"mining_crew")
     var lines: Array[String] = []
-    for disciple in members:
+    for disciple_value in members:
+        var disciple: DiscipleState = disciple_value
         var level := workforce.profession_level(disciple, WorkforceSystem.PROF_MINING)
         var progress := float(disciple.work_progress.get(str(WorkforceSystem.PROF_MINING), 0.0))
         lines.append("• %s · Lv%d · tiến độ %.1f/4 · thể lực %.0f · %s" % [
@@ -696,7 +697,8 @@ func _mine_operation_text() -> String:
 func _forge_operation_text() -> String:
     var members := _disciples_in_work_group(&"forge_hall")
     var lines: Array[String] = []
-    for disciple in members:
+    for disciple_value in members:
+        var disciple: DiscipleState = disciple_value
         var level := workforce.profession_level(disciple, WorkforceSystem.PROF_FORGING)
         var progress := float(disciple.work_progress.get(str(WorkforceSystem.PROF_FORGING), 0.0))
         lines.append("• %s · Lv%d · tiến độ %.1f/5 · thể lực %.0f · %s" % [
