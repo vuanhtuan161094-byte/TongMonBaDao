@@ -194,7 +194,7 @@ func _verify_transient_tracker(disciple: DiscipleState) -> bool:
     disciple.metrics["breakthrough_successes"] = 0
     disciple.metrics["breakthrough_failures"] = 0
     disciple.metrics["heals"] = 0
-    tracker.seed(state)
+    tracker.seed_from_state(state)
 
     disciple.metrics["mining_completions"] = 1
     var events := tracker.observe(state, 1000)
