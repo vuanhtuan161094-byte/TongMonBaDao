@@ -1,6 +1,6 @@
 # CURRENT CHECKPOINT
 
-Date: 2026-10-03
+Date: 2026-10-04
 
 ## Runtime-confirmed baseline
 
@@ -10,18 +10,21 @@ Real Windows + Godot 4.7.2 evidence confirms:
 - P3.1 mobile landscape + living sect shell: PASS;
 - P3.2 camera + map target selection + real disciple tabs interaction slice: PASS;
 - P3.2 Character Creator V1 shared-rig scaffold: PASS;
-- P3.2 `female_normal_v1` Stage A **DOWN/FRONT FAST** check: PASS.
+- P3.2 `female_normal_v1` Stage A **3-DIRECTION FAST** check: PASS (down/right/up) with user visual review accepted.
 
-Latest real down/front FAST tail supplied by the user:
+Latest real 3-direction FAST tail supplied by the user:
 
 ```text
 P3.2 CHARACTER CREATOR SHARED RIG CONTRACT TEST PASS
 P3.2 FEMALE STAGE A DOWN ASSET CONTRACT TEST PASS
-P3.2 FEMALE STAGE A FAST CHECK: PASS
-FEMALE STAGE A DOWN FAST CHECK: PASS
+P3.2 FEMALE STAGE A 3-DIRECTION ASSET CONTRACT TEST PASS
+P3.2 FEMALE STAGE A 3-DIRECTION FAST CHECK: PASS
+FEMALE STAGE A 3-DIRECTION FAST CHECK: PASS
 ```
 
-The production female visual slice / Stage A final milestone is **NOT final PASS yet**. The authored right/up proof has not yet completed its Windows FAST + visual review, and FULL cumulative acceptance remains later.
+User also supplied the real direction-preview screenshot. Visual review accepted front/side/back identity, common ground registration, readable 0.75x silhouette, and no front-face leakage in the back view.
+
+The production female visual slice / Stage A final milestone is **NOT final PASS yet**. Three-direction FAST + visual review are now locked; shared idle/walk, variants/tints/six-combo proof and the FULL cumulative acceptance remain later.
 
 ---
 
@@ -60,7 +63,7 @@ Therefore **down/front practical pivots are visually locked** and current bone r
 
 ---
 
-# Stage A authored directions — implementation ready, Windows gate pending
+# Stage A authored directions — Windows FAST + visual review PASS
 
 Diagnostic proof now supports authored:
 
@@ -83,6 +86,8 @@ Relevant implementation:
 - `Verify-P3-2-Female-StageA-Full.cmd` — final acceptance only; **do not run yet**.
 
 Live sect-map integration remains untouched.
+
+Real Windows Godot 4.7.2 FAST gate passed on 2026-10-04. The user then opened `Preview-P3-2-Female-Directions.cmd`; front/side/back were visually accepted. No pivot/rest-position retune is needed from this proof.
 
 ---
 
@@ -150,29 +155,14 @@ It computes SHA-256 first and extracts only a matching pack. A wrong/corrupt ZIP
 
 # Next authoritative Windows action
 
-1. Download `female_normal_v1_stageA_runtime_pack_v2_quant.zip` and leave it in `Downloads` (no need to extract manually).
-2. Close all Godot windows.
-3. From repo root run:
+Three-direction Stage A is now locked. **Do not run FULL yet.**
 
-```bat
-Sync-P3-2-Female-StageA.cmd
-```
+Next implementation target:
 
-The launcher should:
-
-`fetch/pull -> locate ZIP -> verify SHA-256 -> install 42 PNGs -> run 5-step P3.2 FAST gate`.
-
-If FAST is green, run:
-
-```bat
-Preview-P3-2-Female-Directions.cmd
-```
-
-Review front/side/back identity, horn/hair roots, shoulder/hip continuity, common foot registration, right-side readability, back-view face leakage and the `0.75x` silhouette.
-
-Only tune practical pivots if the real preview proves a mismatch.
-
----
+1. author shared `idle + walk` AnimationLibrary for public `down/right/up/left`;
+2. keep `left` mirror-right while mirror-safe;
+3. add a focused FAST motion gate + preview;
+4. only after motion proof continue variants/tints/six-combo work.
 
 # Development order after three-direction visual acceptance
 
