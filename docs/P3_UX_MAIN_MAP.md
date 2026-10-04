@@ -33,6 +33,8 @@ Map-first vẫn là nguyên tắc gốc. Panel phải **không mở mặc địn
 
 Map phải là thứ mắt nhìn vào đầu tiên.
 
+Gameplay-loop authority: `P3_6_SECT_MASTER_GAMEPLAY_LOOP_SPEC.md`. Main map must support the rhythm `nhìn -> hiểu -> can thiệp ít nhưng có ý nghĩa -> quan sát hậu quả`, not a menu-collection checklist.
+
 ---
 
 # 2. Top bar
