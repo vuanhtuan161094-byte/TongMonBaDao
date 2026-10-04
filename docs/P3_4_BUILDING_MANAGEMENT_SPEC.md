@@ -1,7 +1,26 @@
 # P3.4 — BUILDING MANAGEMENT / QUẢN LÝ CÔNG TRÌNH
 
 Date: 2026-10-04  
-Status: DESIGN LOCKED / IMPLEMENT ONLY AFTER P3.2 LIVE-MAP [8/8] + P3.3 WINDOWS GATE GREEN
+Status: DESIGN LOCKED; P3.4A IMPLEMENTED / RUNTIME PENDING; P3.4B/C NOT IMPLEMENTED
+
+## P3.4A runtime status
+
+Implemented on `main`:
+
+- fixed right-side Building Operation Panel;
+- all 8 canonical buildings read real SimulationState;
+- no routine dim/modal popup;
+- building switching and building -> disciple context switch;
+- dedicated contract test + safe sync launcher:
+  - `godot/tests/presentation/p3_4a_building_operation_panel_test.gd`;
+  - `Verify-P3-4A-Building-Panel.cmd`;
+  - `Sync-P3-4A-Building-Panel.cmd`.
+
+P3.4A is **not PASS** until real Windows Godot 4.7.2 gate is green.
+
+P3.4B people management and P3.4C real system actions remain blocked until P3.4A passes.
+
+---
 
 ## 0. Mục tiêu
 
