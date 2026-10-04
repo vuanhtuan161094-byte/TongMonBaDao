@@ -52,12 +52,11 @@ func _run() -> void:
         _fail("Chosen disciple disappeared from live actor registry.")
         return
 
-    var actor := actor_nodes[key]
-    if not (actor is ModularDiscipleActor):
+    var modular := actor_nodes[key] as ModularDiscipleActor
+    if modular == null:
         _fail("Female disciple was not upgraded to ModularDiscipleActor on the live map.")
         return
 
-    var modular := actor as ModularDiscipleActor
     if not modular.production_body_active():
         _fail("Live modular actor did not attach the real Stage A production body.")
         return
