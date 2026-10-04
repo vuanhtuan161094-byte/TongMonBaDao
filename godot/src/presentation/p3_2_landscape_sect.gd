@@ -448,7 +448,7 @@ func _install_modular_live_actors() -> void:
         actor.set_animation_library(female_motion_library)
         FemaleStageAAssetLoader.apply_public_direction(actor, &"down")
         actor.sync_action(disciple.current_action)
-        actor.actor_pressed.connect(Callable(self, "_open_disciple").bind())
+        actor.actor_pressed.connect(Callable(self, "_open_disciple"))
         var world_foot := SectMapPresentation.position_for_destination(destination) + _actor_offset(index)
         actor.position = world_foot - DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
         map_layer.add_child(actor)
