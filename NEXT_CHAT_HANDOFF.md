@@ -138,7 +138,7 @@ Accepted:
 
 Dark hair + skirt merging at `0.75x` is future art contrast work, not a pivot defect. **No bone rest positions were changed.**
 
-## Current active task — P3.4C real building/system actions (runtime pending)
+## Current active task — P3.5 living-sect cues
 
 Three-direction Stage A is now runtime-green and visually accepted:
 
@@ -209,7 +209,7 @@ Expected final lines:
 
 If it fails, patch only P3.4C and rerun the same stable command. If green, lock full P3.4 and begin P3.5 runtime.
 
-## P3.4 DESIGN LOCKED — DO NOT IMPLEMENT YET
+## P3.4 — REAL PASS / LOCKED
 
 `docs/P3_4_BUILDING_MANAGEMENT_SPEC.md` is now canonical for the next functional phase.
 
