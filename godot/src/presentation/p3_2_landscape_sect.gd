@@ -399,7 +399,7 @@ func _bottom_action(action: String) -> void:
         ids.sort()
         if ids.is_empty():
             return
-        var target_id := selected_id if selected_id != &"" and state.disciples.has(selected_id) else StringName(ids[0])
+        var target_id: StringName = selected_id if selected_id != &"" and state.disciples.has(selected_id) else StringName(ids[0])
         deep_restore_summary = false
         _open_disciple_deep_screen(target_id, "Thuộc tính")
         return
@@ -616,6 +616,7 @@ func _close_disciple_summary(clear_selection: bool = true) -> void:
     if not clear_selection:
         return
     selected_id = &""
+    deep_restore_summary = false
     if focused_kind == &"disciple":
         focused_kind = &""
         focused_id = &""
