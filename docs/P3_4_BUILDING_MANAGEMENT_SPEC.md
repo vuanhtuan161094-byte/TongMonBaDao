@@ -1,7 +1,7 @@
 # P3.4 — BUILDING MANAGEMENT / QUẢN LÝ CÔNG TRÌNH
 
 Date: 2026-10-04  
-Status: DESIGN LOCKED; P3.4A REAL PASS; P3.4B REAL PASS; P3.4C IMPLEMENTATION NEXT
+Status: DESIGN LOCKED; P3.4A REAL PASS; P3.4B REAL PASS; P3.4C IMPLEMENTED / RUNTIME PENDING
 
 ## P3.4A runtime status
 
@@ -38,6 +38,35 @@ Dedicated verifier:
 - `tools/godot/Verify-P3-4B-Building-People.ps1`.
 
 P3.4B is now REAL PASS. P3.4C is unblocked.
+
+---
+
+## P3.4C runtime status
+
+Implemented on `main`:
+
+- Đại Điện:
+  - `WorkforceSystem.set_work_policy()`;
+  - `NeedsSystem.set_priority()`;
+  - `EquipmentSystem.set_policy()`;
+- Đệ Tử Xá:
+  - `NeedsSystem.expand_lodging(state, 1)`;
+- Dược Phòng:
+  - real needs priority only; still no fake `COMMAND_HEAL`;
+- Luyện Khí Đường:
+  - five real recipes;
+  - material status shown explicitly;
+  - `EquipmentSystem.craft(state, recipe_id, false)`;
+  - crafted item goes to real storage;
+- Kho remains read-only in the P3.4C baseline.
+
+Dedicated contract/gate:
+
+- `godot/tests/presentation/p3_4c_building_system_actions_test.gd`;
+- `Verify-P3-4C-Building-Actions.cmd`;
+- `tools/godot/Verify-P3-4C-Building-Actions.ps1`.
+
+P3.4C is **not PASS** until real Windows Godot 4.7.2 gate is green.
 
 ---
 
