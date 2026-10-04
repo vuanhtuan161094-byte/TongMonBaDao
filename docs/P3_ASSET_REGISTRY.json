@@ -365,6 +365,27 @@
       "recovery_action": "Recover/ingest the exact approved V3.3 mockup if available; use docs/P3_UX_FLOW_V3.md as canonical behavior authority.",
       "runtime_management": "reference_only",
       "runtime_paths": []
+    },
+    {
+      "id": "actor.female_normal_v1.motion.idle_walk",
+      "category": "map_actor_motion",
+      "display_name": "female_normal_v1 shared idle + walk motion",
+      "authority_doc": "docs/P3_2_FEMALE_NORMAL_V1_ASSET_PRODUCTION.md",
+      "design_status": "approved",
+      "source_status": "repo_source",
+      "source_evidence_class": "S0",
+      "visual_status": "pending",
+      "runtime_status": "runtime_green",
+      "approved_on": "2026-10-04",
+      "runtime_evidence": "Real Windows Godot 4.7.2: P3.2 FEMALE SHARED IDLE WALK MOTION CONTRACT TEST PASS and P3.2 FEMALE SHARED IDLE WALK FAST CHECK: PASS.",
+      "approval_evidence": "Static motion sandbox screenshot confirms all DOWN/RIGHT/UP/LEFT idle+walk proof slots render; LEFT mirrors RIGHT. Motion-quality visual acceptance still requires a short video.",
+      "runtime_management": "repo_source",
+      "runtime_paths": [
+        "godot/src/presentation/p3/female_normal_v1_motion_library.gd",
+        "godot/tests/presentation/p3_2_female_motion_contract_test.gd",
+        "godot/src/presentation/p3/female_motion_sandbox.gd",
+        "godot/scenes/p3/p3_2_female_motion_sandbox.tscn"
+      ]
     }
   ]
 }
