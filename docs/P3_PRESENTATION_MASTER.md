@@ -49,6 +49,7 @@ Nếu quyết định làm thay đổi architecture/pipeline lâu dài, tạo AD
 | Source availability / recovery | `P3_SOURCE_RECOVERY_MANIFEST.md` | Canonical source inventory |
 | Tổng thể P3/UI hierarchy | `P3_2_UI_ART_PRODUCTION_SPEC.md`, `P3_REFERENCE_UI_AUDIT.md` | Đã khóa structure |
 | V3 core UX flow | `P3_UX_FLOW_V3.md` | V3.1 -> V3.2 right panel -> V3.3 deep screen USER APPROVED |
+| P3.3 disciple operational implementation | `P3_3_DISCIPLE_OPERATIONAL_FLOW_SPEC.md` | Implemented on main; real Godot gate pending |
 | Main map UX | `P3_UX_MAIN_MAP.md` | V3.1/V3.2 locked |
 | Building interaction UX | `P3_UX_BUILDING_INTERACTION.md` | Building right-panel + deep management design USER APPROVED |
 
