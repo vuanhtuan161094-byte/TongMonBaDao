@@ -343,12 +343,17 @@
       "source_status": "missing",
       "source_evidence_class": "S3",
       "visual_status": "approved",
-      "runtime_status": "not_integrated",
+      "runtime_status": "runtime_pending",
       "approved_on": "2026-10-04",
       "approval_evidence": "User explicitly approved the long right-side disciple summary panel with HP, stamina, cultivation progress, current work, status, location, key stats, skills and Xem chi tiết.",
       "recovery_action": "Recover/ingest the exact approved V3.2 mockup if available; do not revert to the superseded floating quick-card layout.",
-      "runtime_management": "reference_only",
-      "runtime_paths": []
+      "runtime_management": "repo_source",
+      "runtime_paths": [
+        "godot/src/presentation/p3_2_landscape_sect.gd",
+        "godot/tests/presentation/p3_3_disciple_operational_flow_test.gd",
+        "Verify-P3-3-Disciple-Flow.cmd",
+        "tools/godot/Verify-P3-3-Disciple-Flow.ps1"
+      ]
     },
     {
       "id": "ui.ux.v3_3_disciple_deep_screen",
@@ -359,12 +364,17 @@
       "source_status": "missing",
       "source_evidence_class": "S3",
       "visual_status": "approved",
-      "runtime_status": "not_integrated",
+      "runtime_status": "runtime_pending",
       "approved_on": "2026-10-04",
       "approval_evidence": "User approved V3.3 deep disciple screen after V3.2: left roster, large character showcase, detailed content with six real tabs and continuity of HP/stamina/cultivation/work/status/location.",
       "recovery_action": "Recover/ingest the exact approved V3.3 mockup if available; use docs/P3_UX_FLOW_V3.md as canonical behavior authority.",
-      "runtime_management": "reference_only",
-      "runtime_paths": []
+      "runtime_management": "repo_source",
+      "runtime_paths": [
+        "godot/src/presentation/p3_2_landscape_sect.gd",
+        "godot/tests/presentation/p3_3_disciple_operational_flow_test.gd",
+        "Verify-P3-3-Disciple-Flow.cmd",
+        "tools/godot/Verify-P3-3-Disciple-Flow.ps1"
+      ]
     },
     {
       "id": "actor.female_normal_v1.motion.idle_walk",
