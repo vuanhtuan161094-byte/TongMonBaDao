@@ -135,8 +135,10 @@ func _build_playable_building_token(data: Dictionary) -> void:
     var holder := Control.new()
     var destination := StringName(data.get("id", ""))
     holder.name = "BuildingToken_%s" % str(destination)
-    holder.position = Vector2(data.get("pos", Vector2.ZERO))
-    holder.size = Vector2(data.get("size", Vector2(140, 96)))
+    var holder_position: Vector2 = data.get("pos", Vector2.ZERO)
+    var holder_size: Vector2 = data.get("size", Vector2(140, 96))
+    holder.position = holder_position
+    holder.size = holder_size
     holder.mouse_filter = Control.MOUSE_FILTER_PASS
     map_layer.add_child(holder)
 
