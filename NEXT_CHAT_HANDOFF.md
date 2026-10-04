@@ -12,6 +12,7 @@ Always fetch/inspect live `main` before editing.
 - Explain progress clearly in Vietnamese; user is non-technical.
 - Never claim runtime PASS without real Godot 4.7.2 output from the user's Windows machine.
 - Never use destructive local git instructions (`reset --hard`, `git clean`, deleting user files, etc.).
+- For every newly added Windows gate, add/use a root `Sync-*.cmd` wrapper. Tell the user to run the sync wrapper, not a newly created raw `Verify-*.cmd`, because local may not have fetched the new launcher yet.
 
 Repo: `vuanhtuan161094-byte/TongMonBaDao`
 Branch: `main`
@@ -201,7 +202,7 @@ User supplied the successful `[8/8]` tail on 2026-10-04:
 
 Next command:
 
-`Verify-P3-3-Disciple-Flow.cmd`
+`Sync-P3-3-Disciple-Flow.cmd`
 
 If it fails, fix P3.3 only and rerun that gate. If it passes, lock P3.3 and move to P3.4 runtime implementation.
 
