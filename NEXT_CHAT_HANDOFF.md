@@ -109,7 +109,7 @@ Real Windows + Godot 4.7.2 confirms:
 - P3.2 camera/map-selection/real disciple tabs: PASS;
 - P3.2 Character Creator shared-rig scaffold: PASS;
 - `female_normal_v1` Stage A 3-DIRECTION FAST (down/right/up): PASS; real visual preview accepted.
-- `female_normal_v1` shared IDLE/WALK FAST: PASS on real Windows Godot 4.7.2; motion-quality visual review pending short video.
+- `female_normal_v1` shared IDLE/WALK FAST: PASS on real Windows Godot 4.7.2; user motion video accepted.
 
 Real three-direction tail:
 
@@ -137,7 +137,7 @@ Accepted:
 
 Dark hair + skirt merging at `0.75x` is future art contrast work, not a pivot defect. **No bone rest positions were changed.**
 
-## Current active task — shared idle + walk visual motion review
+## Current active task — live modular actor map integration
 
 Three-direction Stage A is now runtime-green and visually accepted:
 
@@ -163,7 +163,7 @@ P3.2 FEMALE SHARED IDLE WALK FAST CHECK: PASS
 FEMALE STAGE A + SHARED MOTION FAST CHECK: PASS
 ```
 
-User opened the motion sandbox and supplied a still screenshot. Static structure is correct, but a still cannot prove motion quality. Ask for a 5–10 second video before declaring visual motion acceptance.
+User supplied an 11.6-second real motion video. Current V1 idle/walk visual motion is accepted: restrained idle, stable cadence, no obvious anchor jump or severe seam tear, hair/horns stay attached, LEFT mirror is clean. Secondary hair/skirt dynamics remain future polish.
 
 ## Binary transport issue — resolved design, Windows run pending
 
@@ -193,10 +193,10 @@ Current authoritative diagnostic pack is an external one-time ZIP:
 
 Do **not** run `Verify-P3-2-Female-StageA-Full.cmd` yet.
 
-1. User should record 5–10 seconds of `Preview-P3-2-Female-Motion.cmd`.
-2. Review idle breathing, walk cadence, foot sliding, shoulder/hip continuity, hair/horn attachment, and LEFT mirror.
-3. If visually accepted, lock shared idle/walk and proceed to early live-map integration/playtest.
-4. Cosmetic variants/tints/six-combo proof follows after that.
+Live-map integration has been implemented in `p3_2_landscape_sect.gd` with graceful fallback when the external Stage A pack is absent. The updated FAST gate adds:
+`P3.2 LIVE MODULAR FEMALE MAP INTEGRATION TEST PASS`.
+
+Run the updated FAST gate, then open `Preview-P3-2-Live-Modular-Map.cmd` and review movement between real simulation destinations, direction texture swaps, idle resume, actor selection, zoom/pan and building taps. Do not call live-map integration PASS until real Windows evidence is supplied.
 
 ## UX playtest priority when machine is available
 
