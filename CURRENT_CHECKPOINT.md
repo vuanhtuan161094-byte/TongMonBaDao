@@ -14,7 +14,7 @@ Real Windows + Godot 4.7.2 evidence confirms:
 - P3.2 `female_normal_v1` shared **IDLE + WALK FAST** check: PASS on real Windows Godot 4.7.2; user video visual review accepted.
 - P3.2 live modular female map integration: **REAL PASS** on Windows Godot 4.7.2. `[8/8]` printed `P3.2 LIVE MODULAR FEMALE MAP INTEGRATION TEST PASS` and the final live-map FAST PASS lines.
 - P3.3 disciple operational flow (right summary -> real quick orders -> 6-tab deep screen -> context restore): **REAL PASS** on Windows Godot 4.7.2. Contract test + live scene smoke + cumulative P3.2 baseline all green.
-- P3.4 building management: design locked. **P3.4A read-only Building Operation Panel IMPLEMENTED ON MAIN / RUNTIME PENDING**; P3.4B/C not implemented.
+- P3.4 building management: design locked. **P3.4A read-only Building Operation Panel REAL PASS** on Windows Godot 4.7.2; P3.4B people management is next; P3.4C not implemented.
 - P3.5 living sect cues: **DESIGN LOCKED ONLY** in `docs/P3_5_LIVING_SECT_CUES_SPEC.md`; implement only after P3.4 runtime green. Cues are derived from real state/events and route to real panels; no random/fake speech system.
 - P3.6 Sect Master gameplay loop: **DESIGN LOCKED** in `docs/P3_6_SECT_MASTER_GAMEPLAY_LOOP_SPEC.md`; this is a cross-phase product/UX acceptance contract, not a runtime PASS. Core rhythm = policy -> long-term assignment -> optional direct intervention -> observe real consequence.
 
@@ -174,23 +174,19 @@ The user supplied an 11.6-second real Windows motion video. Review accepted the 
 
 # Next authoritative Windows action
 
-P3.2 live modular map and P3.3 disciple operational flow are **REAL PASS / LOCKED**.
+P3.2 live modular map, P3.3 disciple flow and P3.4A building panel are **REAL PASS / LOCKED**.
 
-Run:
+Current implementation slice is **P3.4B — people management**:
 
-`Sync-Main.cmd Verify-P3-4A-Building-Panel.cmd`
+- Mine/Forge long-term group assignment via `WorkforceSystem.assign_group()`;
+- Mine/Forge immediate work orders via `WorkforceSystem.issue_command(COMMAND_WORK,...)`;
+- Cultivation direct cultivate;
+- Residence direct rest;
+- Gate direct return-sect;
+- no direct mutation of `current_action` / `region_id`;
+- no craft/policy/lodging-expansion yet (P3.4C).
 
-This launcher safely syncs `main` and verifies:
-
-- cumulative P3.3 baseline;
-- all 8 buildings open the fixed right-side operation panel;
-- panel reads real SimulationState;
-- no routine dim/modal popup;
-- read-only building UI does not mutate simulation;
-- building -> disciple context switch remains clean;
-- live scene smoke.
-
-If green, lock P3.4A and implement P3.4B people management. Do not implement P3.4C or P3.5 before that.
+After P3.4B lands, run its verifier through stable `Sync-Main.cmd`.
 
 # Current development priority — functionality first
 
