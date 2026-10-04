@@ -212,6 +212,25 @@ Run exactly in this order:
 
 P3.3 implementation is on `main` and documented in `docs/P3_3_DISCIPLE_OPERATIONAL_FLOW_SPEC.md`, but it is **RUNTIME PENDING**, not PASS.
 
+## P3.4 DESIGN LOCKED — DO NOT IMPLEMENT YET
+
+`docs/P3_4_BUILDING_MANAGEMENT_SPEC.md` is now canonical for the next functional phase.
+
+Locked direction:
+
+- tap building -> fixed operation panel, map remains visible;
+- Mine/Forge -> real group assignment + direct work commands;
+- Cultivation -> real cultivate command;
+- Residence -> real rest command + real lodging expansion;
+- Medicine -> real stock/priority only, **no fake HEAL command**;
+- Warehouse -> real grouped resources, no invented capacity;
+- Gate -> real outside-disciple status + return-sect command;
+- Main Hall -> real workforce/needs/equipment policies;
+- Forge may expose real `EquipmentSystem.craft()`;
+- no building level/queue/upgrade system invented in presentation.
+
+P3.4 design is already locked, but runtime implementation must wait for the P3.2 live modular map `[8/8]` evidence and P3.3 Windows gate.
+
 ## FUNCTIONALITY-FIRST PRIORITY — USER DECISION 2026-10-04
 
 Map actors are small, so do not spend disproportionate time on face/hair micro-detail. Character Creator is now a supporting anti-clone system, not the main development blocker.
