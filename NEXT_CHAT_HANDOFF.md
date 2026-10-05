@@ -372,3 +372,18 @@ Important corrections:
 - all disciples gain passive cultivation;
 - integrate the existing six foundation fields rather than inventing a replacement stat block;
 - home AI may self-invest Spirit Stones into Secret Chambers and pills.
+
+
+## LATE CANONICAL CORRECTIONS — 2026-10-05
+
+1. Hunting has no Loot Warehouse and no persistent reward Team Loot Bag.
+   - Items/materials -> main Sect Warehouse immediately.
+   - Tu Vi/Contribution/mastery/personal Spirit Stone share -> disciples immediately.
+   - Team carried inventory is supplies-only.
+
+2. Lifespan expiry does not erase a disciple.
+   - transition to Ma/Hồn;
+   - remains in roster;
+   - Thọ Đan/valid longevity effect may revive;
+   - only Trục xuất removes the disciple;
+   - ghost-specific gameplay remains undefined until a dedicated spec exists.
