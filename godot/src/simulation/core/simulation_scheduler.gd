@@ -18,6 +18,7 @@ var trait_system := TraitSystem.new()
 var bloodline_system := BloodlineSystem.new()
 var economy_system := EconomySystem.new()
 var combat_system := CombatSystem.new()
+var building_system := BuildingSystem.new()
 
 func _init(simulation_state: SimulationState) -> void:
     state = simulation_state
@@ -27,6 +28,8 @@ func _init(simulation_state: SimulationState) -> void:
 
 func step() -> void:
     state.tick += 1
+    if state.p3_7_buildings_enabled:
+        building_system.process_tick(state)
     if state.sect.needs_enabled:
         needs_system.process_logistics_tick(state)
 
