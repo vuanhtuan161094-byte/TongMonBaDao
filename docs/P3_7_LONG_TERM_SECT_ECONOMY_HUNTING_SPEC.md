@@ -1010,3 +1010,43 @@ Linux Godot 4.7.2 FAST and cumulative P0–P2.12 regression gates are green.
 This is **not yet a final PASS** because the real Windows full gate is still required.
 
 Do not broaden implementation until P3.7A1 receives that real Windows gate.
+
+
+---
+
+# 35. P3.7A1 IMPLEMENTATION STATUS — REAL PASS 2026-10-06
+
+The first backend slice is implemented and runtime-green.
+
+Authority added:
+- BuildingState;
+- BuildingSystem;
+- P37Factory opt-in;
+- timed upgrade processing;
+- persistence;
+- deterministic continuation;
+- first real Mine work cycle.
+
+Mine currently proves:
+- worker-slot enforcement;
+- reuse of existing mining_crew;
+- travel -> mining -> haul/deposit timing;
+- movement-speed consequence;
+- existing profession-XP integration;
+- timed upgrade without fake cooldown;
+- real Lv10 milestone component (Tầm Mạch Bàn).
+
+Compatibility:
+- P3.7 disabled states preserve P0–P2 behavior;
+- full Godot 4.7.2 P0–P2.12 cumulative regression is PASS.
+
+Temporary bridge:
+- Linh Mộc/Thanh Thiết currently use existing `sect.forge_materials`;
+- construction Linh Thạch currently uses existing `sect.spirit_stones`;
+- this is not the final unified warehouse.
+
+Presentation:
+- live P3 UI still uses P2.12 authority and must not expose building Lv/upgrade values until explicitly migrated to P37 authority.
+
+Next implementation:
+**P3.7A2 — Spirit Field / Linh Điền backend**, using the same BuildingSystem and a different work lifecycle to prove the framework is generic.
