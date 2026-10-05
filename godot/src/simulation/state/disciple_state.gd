@@ -59,6 +59,8 @@ var work_preferences: Dictionary = {}
 var work_group_id: StringName = &""
 var direct_command: Dictionary = {}
 var work_progress: Dictionary = {}
+# P3.7 detailed work cycle. Empty for every legacy disciple.
+var work_cycle_state: Dictionary = {}
 
 # P2.8 procedural identity. Empty/zero for all legacy disciples.
 var profile_seed: int = 0
@@ -146,6 +148,7 @@ func _init(definition: Dictionary = {}) -> void:
     work_group_id = StringName(definition.get("work_group_id", work_group_id))
     direct_command = _command_dictionary(definition.get("direct_command", {}))
     work_progress = _float_dictionary(definition.get("work_progress", {}))
+    work_cycle_state = _work_cycle_dictionary(definition.get("work_cycle_state", {}))
 
     profile_seed = int(definition.get("profile_seed", 0))
     recruitment_source = StringName(definition.get("recruitment_source", ""))
@@ -229,7 +232,7 @@ func to_dict() -> Dictionary:
         data["equipped_items"] = equipped_items.duplicate(true)
     if not locked_equipment_slots.is_empty():
         data["locked_equipment_slots"] = locked_equipment_slots.duplicate(true)
-    if comprehension > 0.0 or sect_rank != &"" or not profession_xp.is_empty() or not profession_traits.is_empty() or not work_preferences.is_empty() or work_group_id != &"" or not direct_command.is_empty() or not work_progress.is_empty():
+    if comprehension > 0.0 or sect_rank != &"" or not profession_xp.is_empty() or not profession_traits.is_empty() or not work_preferences.is_empty() or work_group_id != &"" or not direct_command.is_empty() or not work_progress.is_empty() or not work_cycle_state.is_empty():
         data["comprehension"] = comprehension
         data["sect_rank"] = str(sect_rank)
         data["profession_xp"] = profession_xp.duplicate(true)
@@ -238,6 +241,8 @@ func to_dict() -> Dictionary:
         data["work_group_id"] = str(work_group_id)
         data["direct_command"] = direct_command.duplicate(true)
         data["work_progress"] = work_progress.duplicate(true)
+        if not work_cycle_state.is_empty():
+            data["work_cycle_state"] = work_cycle_state.duplicate(true)
     if profile_seed > 0 or recruitment_source != &"":
         data["profile_seed"] = profile_seed
         data["recruitment_source"] = str(recruitment_source)
@@ -295,6 +300,7 @@ static func from_dict(data: Dictionary) -> DiscipleState:
         "work_group_id": data.get("work_group_id", ""),
         "direct_command": data.get("direct_command", {}),
         "work_progress": data.get("work_progress", {}),
+        "work_cycle_state": data.get("work_cycle_state", {}),
         "profile_seed": data.get("profile_seed", 0),
         "recruitment_source": data.get("recruitment_source", ""),
         "race_id": data.get("race_id", ""),
@@ -352,6 +358,17 @@ static func _command_dictionary(value: Variant) -> Dictionary:
     normalized["target"] = str(value.get("target", ""))
     normalized["issued_tick"] = int(value.get("issued_tick", 0))
     normalized["expires_tick"] = int(value.get("expires_tick", 0))
+    return normalized
+
+static func _work_cycle_dictionary(value: Variant) -> Dictionary:
+    var normalized: Dictionary = {}
+    if not (value is Dictionary) or value.is_empty():
+        return normalized
+    normalized["profession"] = str(value.get("profession", ""))
+    normalized["building_id"] = str(value.get("building_id", ""))
+    normalized["phase"] = str(value.get("phase", "travel_out"))
+    normalized["progress"] = maxf(float(value.get("progress", 0.0)), 0.0)
+    normalized["carried_units"] = maxi(int(value.get("carried_units", 0)), 0)
     return normalized
 
 static func _int_dictionary(value: Variant) -> Dictionary:
