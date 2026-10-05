@@ -281,8 +281,7 @@ Locked building architecture:
 - Mật Thất follows immediately after the personal Spirit Stone economy exists;
 - Phù Lục, Trận Pháp, Ngự Thú, Tửu, Linh Trù, Hoa, Đấu Giá and advanced facilities are later expansions.
 
-Next design task before code:
-define exact data contracts for resource stacks/Phẩm Lực, building instances, profession EXP curve, warehouse policy, construction resolver and hunting settlement.
+Building implementation has now started. The first concrete backend slice is P3.7A1 Building Authority + Mine; see the latest implementation-status section at the end of this checkpoint.
 
 
 # P3.7 loadout / hunting progression authority — ADDED 2026-10-05
@@ -357,3 +356,37 @@ Locked:
 - crafting, healing, Secret Chamber, repair, travel and related systems use real durations when migrated;
 - true cooldown is reserved for skills/active powers/rare actions;
 - large-population background simulation must preserve timing deterministically.
+
+
+# P3.7A1 Building Authority + Mine backend — IMPLEMENTED / CI GREEN / WINDOWS GATE PENDING
+
+Implemented on live `main`:
+- `BuildingState` runtime authority with stable save/load fields;
+- opt-in `p3_7_buildings_enabled` boundary so P0–P2.12 behavior remains unchanged when disabled;
+- `BuildingSystem` with real Mine instance `mine_001`, Lv.1–100, status and timed upgrade state;
+- Mine workers are derived from the existing `mining_crew`; BuildingState does not duplicate workforce ownership;
+- Lv.1 Mine has 2 active worker slots; worker capacity scales at five-level boundaries;
+- upgrade consumes real current stores: Linh Mộc + Thanh Thiết bridge + sect Spirit Stones; it does not touch P0 `treasury/wallet`;
+- upgrade is timed; level changes only at construction completion and there is no fake post-upgrade cooldown;
+- milestone Lv.10 requires and consumes real `Tầm Mạch Bàn`; undefined later milestone components remain blocked instead of being faked;
+- mining uses a real backend cycle: travel_out -> mining -> haul_back -> deposit to canonical main Sect Warehouse bridge;
+- movement speed from the existing combat/equipment authority changes mining cycle time;
+- Căn Cốt contributes to hauling efficiency;
+- Mining profession XP is granted only when a full batch is completed/deposited;
+- Mine production/upgrade metrics persist;
+- mid-upgrade and mid-work-cycle state save/load exactly and deterministic continuation is covered.
+
+Verification evidence:
+- P3.7A1 FAST backend CI on official Godot 4.7.2 Linux: PASS;
+- one-time cumulative P0 -> P2.12 + P3.7A1 full regression on official Godot 4.7.2 Linux: PASS;
+- real Windows Godot 4.7.2 full gate: **PENDING**.
+
+Do NOT call P3.7A1 PASS/LOCKED yet.
+
+Real Windows command:
+`Verify-P3-7A1-Building-Authority-Full.cmd`
+
+After real Windows PASS:
+1. mark P3.7A1 locked;
+2. implement P3.7A2 Linh Điền on the same authority;
+3. do not create a second building/workforce/resource engine.
