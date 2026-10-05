@@ -26,5 +26,5 @@ if "%EXIT_CODE%"=="0" (
 )
 
 echo.
-pause
+if /I not "%P3_AUTO_PREVIEW%"=="1" pause
 exit /b %EXIT_CODE%
