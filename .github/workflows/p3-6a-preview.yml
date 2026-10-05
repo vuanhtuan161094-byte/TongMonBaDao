@@ -49,31 +49,7 @@ jobs:
           cat .github/assets/p3/female_stage_a/part*.b64 | tr -d '\r\n\t ' | base64 --decode > "$PACK"
           test "$(stat -c%s "$PACK")" -eq 44838
           echo "6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  $PACK" | sha256sum --check --strict
-          test "$(unzip -Z1 "$PACK" | grep -Ec '^godot/assets/p3/character_creator/parts/female_normal_v1/.+\.png        shell: bash
-        run: godot --headless --path godot --import
-
-      - name: Run P3.6A FAST verification
-        shell: pwsh
-        env:
-          GODOT_BIN: /usr/local/bin/godot
-        run: ./tools/godot/Verify-P3-6A-Playable-Slice.ps1
-
-      - name: Capture live P3.6A preview
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p godot/reports
-          xvfb-run -a -s "-screen 0 1280x720x24"             godot --path godot --resolution 1280x720             -s res://tests/presentation/p3_6a_capture_preview.gd
-          test -s godot/reports/p3_6a_preview.png
-
-      - name: Upload P3.6A preview
-        uses: actions/upload-artifact@v4
-        with:
-          name: p3-6a-preview-${{ github.sha }}
-          path: godot/reports/p3_6a_preview.png
-          if-no-files-found: error
-          retention-days: 14
-)" -eq 42
+          test "$(unzip -Z1 "$PACK" | grep -Ec '^godot/assets/p3/character_creator/parts/female_normal_v1/.+\.png$')" -eq 42
           test "$(unzip -Z1 "$PACK" | sed '/\/$/d' | wc -l)" -eq 42
           unzip -q "$PACK" -d .
           test "$(find godot/assets/p3/character_creator/parts/female_normal_v1 -type f -name '*.png' | wc -l)" -eq 42
@@ -93,7 +69,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p godot/reports
-          xvfb-run -a -s "-screen 0 1280x720x24"             godot --path godot --resolution 1280x720             -s res://tests/presentation/p3_6a_capture_preview.gd
+          xvfb-run -a -s "-screen 0 1280x720x24" godot --path godot --resolution 1280x720 -s res://tests/presentation/p3_6a_capture_preview.gd
           test -s godot/reports/p3_6a_preview.png
 
       - name: Upload P3.6A preview
