@@ -95,6 +95,10 @@ Read before P3/character work in this order:
 9. `docs/P3_6_SECT_MASTER_GAMEPLAY_LOOP_SPEC.md`;
 10. live P3 code/tests.
 
+## GitHub CI preview
+
+GitHub CI preview is restored: `.github/workflows/p3-6a-preview.yml` runs Godot 4.7.2, imports the project, runs the P3.6A FAST gate, renders the live scene under Xvfb, captures `1280x720` PNG, and uploads it as an artifact. CI does not currently include the external `female_normal_v1` runtime pack, so map/UI review is authoritative there but actor appearance may fall back to placeholders.
+
 ## Required development loop
 
 read authority -> narrow scope -> patch -> static review -> FAST targeted gate -> scene smoke -> checkpoint; FULL cumulative gate only for final phase lock or justified cross-baseline regression
