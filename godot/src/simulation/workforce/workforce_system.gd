@@ -33,6 +33,7 @@ const TRAIT_LAZY := "lazy"
 const PROFESSION_TRAITS := [TRAIT_FORGE, TRAIT_MINER, TRAIT_DILIGENT, TRAIT_LAZY]
 
 var trait_system := TraitSystem.new()
+var building_system := BuildingSystem.new()
 
 func initialize(state: SimulationState) -> void:
     if not state.sect.equipment_enabled:
@@ -233,6 +234,8 @@ func choose_work_profession(state: SimulationState, disciple: DiscipleState) -> 
 func perform_work(state: SimulationState, disciple: DiscipleState, profession_id: StringName) -> Dictionary:
     if not state.sect.workforce_enabled or disciple.region_id != &"sect" or not VALID_PROFESSIONS.has(profession_id):
         return {"ok":false, "completed":false}
+    if state.p3_7_buildings_enabled and profession_id == PROF_MINING:
+        return _perform_p3_7_mining(state, disciple)
     var duration := _work_duration(profession_id)
     if duration <= 0.0:
         return {"ok":false, "completed":false}
@@ -271,6 +274,28 @@ func perform_work(state: SimulationState, disciple: DiscipleState, profession_id
             pass
 
     if command_kind(disciple) == COMMAND_WORK and command_target(disciple) == profession_id:
+        clear_command(state, disciple)
+    return result
+
+func _perform_p3_7_mining(state: SimulationState, disciple: DiscipleState) -> Dictionary:
+    var result := building_system.perform_mining_step(state, disciple, _work_speed(state, disciple, PROF_MINING))
+    if not bool(result.get("ok", false)):
+        return result
+
+    disciple.stamina = maxf(0.0, disciple.stamina - float(result.get("stamina_cost", 1.0)))
+    disciple.metrics["work_actions"] = int(disciple.metrics.get("work_actions", 0)) + 1
+    if not bool(result.get("completed", false)):
+        return result
+
+    var key := str(PROF_MINING)
+    var xp_gain := BASE_WORK_XP * _learning_multiplier(state, disciple, PROF_MINING)
+    disciple.profession_xp[key] = profession_xp(disciple, PROF_MINING) + xp_gain
+    disciple.metrics["work_completions"] = int(disciple.metrics.get("work_completions", 0)) + 1
+    disciple.metrics["mining_completions"] = int(disciple.metrics.get("mining_completions", 0)) + 1
+    state.sect.workforce_event_count += 1
+    result["xp_gain"] = xp_gain
+
+    if command_kind(disciple) == COMMAND_WORK and command_target(disciple) == PROF_MINING:
         clear_command(state, disciple)
     return result
 
