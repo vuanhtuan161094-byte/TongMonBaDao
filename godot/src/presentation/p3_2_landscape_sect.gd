@@ -481,7 +481,11 @@ func _sync_actor_positions() -> void:
             var modular := actor as ModularDiscipleActor
             if delta.length() > 1.0:
                 var direction := DiscipleActorVisualCatalog.direction_for_delta(delta, modular.facing)
-                if direction != modular.facing:
+                if (
+                    modular.rig_id == DiscipleActorVisualCatalog.RIG_FEMALE_NORMAL_V1
+                    and _stage_a_live_assets_ready()
+                    and direction != modular.facing
+                ):
                     FemaleStageAAssetLoader.apply_public_direction(modular, direction)
                 modular.play_walk_for_delta(delta)
             else:
@@ -518,17 +522,16 @@ func _stage_a_live_assets_ready() -> bool:
 
 func _install_modular_live_actors() -> void:
     modular_live_actor_ids.clear()
-    if female_motion_library == null or not _stage_a_live_assets_ready():
+    if female_motion_library == null:
         return
 
+    var female_assets_ready := _stage_a_live_assets_ready()
     var ids: Array = state.disciples.keys()
     ids.sort()
     for index in range(ids.size()):
         var disciple_id := StringName(ids[index])
         var key := str(disciple_id)
         var disciple: DiscipleState = state.disciples[disciple_id]
-        if DiscipleActorVisualCatalog.rig_for_disciple(disciple) != DiscipleActorVisualCatalog.RIG_FEMALE_NORMAL_V1:
-            continue
         if actor_nodes.has(key) and actor_nodes[key] is ModularDiscipleActor:
             modular_live_actor_ids[key] = true
             continue
@@ -546,7 +549,8 @@ func _install_modular_live_actors() -> void:
         actor.name = "ModularDisciple_%s" % key
         actor.configure(disciple)
         actor.set_animation_library(female_motion_library)
-        FemaleStageAAssetLoader.apply_public_direction(actor, &"down")
+        if actor.rig_id == DiscipleActorVisualCatalog.RIG_FEMALE_NORMAL_V1 and female_assets_ready:
+            FemaleStageAAssetLoader.apply_public_direction(actor, &"down")
         actor.sync_action(disciple.current_action)
         actor.actor_pressed.connect(Callable(self, "_open_disciple"))
         var world_foot := SectMapPresentation.position_for_destination(destination) + _actor_offset(index)
