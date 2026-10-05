@@ -321,3 +321,20 @@ Locked changes:
 - all disciples receive passive cultivation growth;
 - the canonical six foundation fields are integrated by role: Tư Chất, Căn Cốt, Cơ Duyên, Thông Tuệ, Mị Lực, Tiềm Lực;
 - at-home AI may spend personal Spirit Stones on Mật Thất and cultivation pills.
+
+
+# Canonical corrections — 2026-10-05 late update
+
+## Hunting loot
+- REMOVE the earlier Team Loot Bag / Loot Warehouse concept for rewards.
+- Hunting rewards resolve immediately.
+- Item/material loot goes straight to the main Sect Warehouse.
+- Personal Tu Vi, Contribution, mastery/progression and personal Spirit Stone share are granted immediately.
+- Team carried inventory is only outward supplies, not reward storage.
+
+## Lifespan
+- lifespan expiry does NOT delete a disciple;
+- disciple becomes Ma/Hồn and remains in roster/history/relationships;
+- a valid Thọ Đan/longevity revival effect can restore life;
+- only Trục xuất removes the disciple from the sect roster;
+- gameplay capabilities of Ma/Hồn are not yet designed and must not be invented ad hoc.
