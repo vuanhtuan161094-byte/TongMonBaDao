@@ -1785,3 +1785,19 @@ Corrections to earlier building-tree wording:
 - warehouse levels improve automation/routing/reserve/locking rather than storage size;
 - higher facility/profession progression can expose higher-realm-grade resource types;
 - resource identity remains explicit; Phẩm Lực does not replace item names.
+
+
+---
+
+# 43. TIME / SPEED / CONSTRUCTION AUTHORITY
+
+Use:
+`docs/P3_7_TIME_SPEED_COOLDOWN_SPEC.md`
+
+Corrections/extensions:
+- building construction and upgrades are not instant;
+- each upgrade has a real construction-progress state and target level;
+- Mine production is not an abstract instant resource tick: assigned disciples travel to the Mine work point, mine a batch, haul/deposit at the Mine building point, then resources are credited to the main Sect Warehouse;
+- movement speed therefore affects actual production throughput;
+- routine work/crafting/healing/training uses duration;
+- true cooldown is reserved for reusable powers/actions where it makes semantic sense.
