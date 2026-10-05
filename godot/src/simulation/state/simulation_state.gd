@@ -44,6 +44,11 @@ var disciple_team_ids: Dictionary = {}
 var role_assignments: Dictionary = {}
 var organization_change_count: int = 0
 
+# P3.7 building authority is opt-in so every locked P0-P2 baseline remains behavior-identical.
+var p3_7_buildings_enabled: bool = false
+var buildings: Dictionary = {}
+var building_event_count: int = 0
+
 func total_money() -> int:
     var total := sect.treasury
     for disciple in disciples.values():
@@ -227,7 +232,14 @@ func to_dict() -> Dictionary:
         var team: TeamState = teams[team_id]
         team_rows.append(team.to_dict())
 
-    return {
+    var building_rows: Array = []
+    var building_ids: Array = buildings.keys()
+    building_ids.sort()
+    for building_id in building_ids:
+        var building: BuildingState = buildings[building_id]
+        building_rows.append(building.to_dict())
+
+    var data := {
         "save_version": SAVE_VERSION,
         "tick": tick,
         "seed": seed,
@@ -254,6 +266,11 @@ func to_dict() -> Dictionary:
         "disciples": disciple_rows,
         "regions": region_rows
     }
+    if p3_7_buildings_enabled or building_event_count > 0 or not buildings.is_empty():
+        data["p3_7_buildings_enabled"] = p3_7_buildings_enabled
+        data["buildings"] = building_rows
+        data["building_event_count"] = building_event_count
+    return data
 
 static func from_dict(data: Dictionary) -> SimulationState:
     var state := SimulationState.new()
@@ -270,6 +287,8 @@ static func from_dict(data: Dictionary) -> SimulationState:
     state.memory_event_count = int(data.get("memory_event_count", 0))
     state.p1_organization_enabled = bool(data.get("p1_organization_enabled", false))
     state.organization_change_count = int(data.get("organization_change_count", 0))
+    state.p3_7_buildings_enabled = bool(data.get("p3_7_buildings_enabled", false))
+    state.building_event_count = maxi(int(data.get("building_event_count", 0)), 0)
     state.sect = SectState.from_dict(data.get("sect", {}))
 
     var saved_recruitment_stats = data.get("recruitment_stats", {})
@@ -336,5 +355,11 @@ static func from_dict(data: Dictionary) -> SimulationState:
         role_keys.sort()
         for key in role_keys:
             state.role_assignments[str(key)] = str(saved_roles[key])
+
+    for row in data.get("buildings", []):
+        if row is Dictionary:
+            var building := BuildingState.from_dict(row)
+            if building.id != &"":
+                state.buildings[str(building.id)] = building
 
     return state
