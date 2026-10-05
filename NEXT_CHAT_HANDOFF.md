@@ -387,3 +387,18 @@ Important corrections:
    - Thọ Đan/valid longevity effect may revive;
    - only Trục xuất removes the disciple;
    - ghost-specific gameplay remains undefined until a dedicated spec exists.
+
+
+## P3.7 TIME / SPEED / COOLDOWN — CANONICAL
+
+Read:
+`docs/P3_7_TIME_SPEED_COOLDOWN_SPEC.md`
+
+Key rules:
+- attack speed != movement speed != work speed;
+- Mine workers physically travel, mine a batch, haul/deposit through the Mine, then resources enter main Sect Warehouse;
+- movement time counts against productive time;
+- all building construction/upgrades take real time;
+- no universal fake cooldown after upgrade;
+- crafting/treatment/Secret Chamber/travel/repair use duration, not instant clicks;
+- true cooldown remains for skills and real active powers.
