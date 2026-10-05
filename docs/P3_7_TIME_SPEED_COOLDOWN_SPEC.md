@@ -1,6 +1,6 @@
 # P3.7 — TIME, SPEED, WORK CYCLE & COOLDOWN AUTHORITY
 
-Status: CANONICAL DESIGN AUTHORITY / IMPLEMENTATION NOT STARTED  
+Status: CANONICAL DESIGN AUTHORITY / MINE + BUILDING-UPGRADE TIMING IMPLEMENTED IN P3.7A1 / WINDOWS GATE PENDING  
 Date: 2026-10-05
 
 Parents:
@@ -489,3 +489,25 @@ This is required before very large populations.
 12. Crafting/healing/Secret Chamber/travel/repair also require real duration when their P3.7 migrations are implemented.
 13. True cooldown is reserved for reusable powers/actions where a cooldown makes semantic sense.
 14. Background large-scale simulation must preserve the same timing model deterministically.
+
+
+---
+
+# 19. P3.7A1 implemented timing subset
+
+Implemented:
+- timed building upgrades;
+- no instant level application;
+- no fake post-upgrade cooldown;
+- Mine travel/work/haul phases;
+- existing movement-speed authority affects mining throughput;
+- work speed affects mining action duration;
+- Căn Cốt affects hauling;
+- deterministic/saveable work-cycle progress.
+
+Still future:
+- visible map phase animations/routing;
+- timed Linh Điền growth;
+- timed crafting/healing/Secret Chamber/repair migrations;
+- construction-specialist acceleration;
+- background batch simulation for 1,000–3,000 disciples.
