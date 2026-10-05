@@ -1,6 +1,6 @@
 # P3.7 — LONG-TERM SECT ECONOMY, PROFESSIONS & HUNTING SPEC
 
-Status: DESIGN LOCKED IN PRINCIPLE / IMPLEMENTATION NOT STARTED  
+Status: DESIGN LOCKED IN PRINCIPLE / P3.7A1 BUILDING + MINE BACKEND IMPLEMENTED / REAL WINDOWS GATE PENDING  
 Date: 2026-10-05
 
 This document is the canonical authority for the long-term management direction agreed with the user after reviewing the current playable slice and reference gameplay.
@@ -989,3 +989,24 @@ That child spec owns:
 - construction/upgrade duration;
 - crafting/treatment/service duration;
 - large-scale deterministic timing resolution.
+
+
+---
+
+# 35. P3.7A1 implementation status — 2026-10-05
+
+The first backend slice is now implemented:
+- authoritative BuildingState/BuildingSystem;
+- first real Mine instance;
+- timed building upgrade;
+- real current-resource bridge rather than a new parallel warehouse;
+- real worker-slot binding to P2.7 workforce;
+- physical mining timing cycle;
+- movement-speed consequence;
+- milestone component at Mine Lv.10;
+- exact persistence/determinism.
+
+Linux Godot 4.7.2 FAST and cumulative P0–P2.12 regression gates are green.
+This is **not yet a final PASS** because the real Windows full gate is still required.
+
+Do not broaden implementation until P3.7A1 receives that real Windows gate.
