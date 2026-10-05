@@ -166,65 +166,50 @@ FEMALE STAGE A + SHARED MOTION FAST CHECK: PASS
 
 User supplied an 11.6-second real motion video. Current V1 idle/walk visual motion is accepted: restrained idle, stable cadence, no obvious anchor jump or severe seam tear, hair/horns stay attached, LEFT mirror is clean. Secondary hair/skirt dynamics remain future polish.
 
-## Binary transport issue — resolved design, Windows run pending
+## Binary transport — RESOLVED / CI GREEN
 
-The previous four tracked `female_normal_v1_stageA_v2q_*.b64` files were proven incomplete after Windows failed with:
+The canonical pack is now tracked text-safely as fixed-order Base64 parts under `.github/assets/p3/female_stage_a/`.
 
-```text
-Invalid length for a Base-64 char array or string.
-```
+Canonical ZIP:
 
-Canonical source comparison showed the tracked text was missing 1,793 Base64 chars in total. This is a connector/binary-transport tooling defect, not a Godot/art/rig defect.
+- `female_normal_v1_stageA_runtime_pack_v2_quant.zip`;
+- 44,838 bytes;
+- 42 PNGs;
+- SHA-256 `6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca`.
 
-The malformed v2 chunks plus experimental replacement chunks were removed from live `main`.
+Final corruption diagnosis on 2026-10-05 found one payload typo in `part11.b64`: char index 1432 (0-based) was `a`, canonical is `e`. After that repair and the earlier directory repair, a production-clean workflow (no brute/rebuild patching) reconstructs the exact canonical SHA and passes `unzip -t`.
 
-Current authoritative diagnostic pack is an external one-time ZIP:
+`.github/workflows/p3-6a-preview.yml` now performs:
 
-`female_normal_v1_stageA_runtime_pack_v2_quant.zip`
+`checkout -> Godot 4.7.2 -> fixed-order Base64 restore -> size/SHA/42-PNG checks -> import -> P3.6A FAST -> Xvfb 1280x720 capture -> artifact upload`.
 
-- size: 44,838 bytes;
-- exactly 42 Stage A PNGs;
-- SHA-256: `6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca`.
-
-`Install-P3-2-Female-StageA.cmd` now auto-discovers the ZIP in `Downloads`, `Desktop`, repo root, or `STAGE_A_PACK`, including browser duplicate names. It verifies SHA-256 before extraction; wrong/corrupt packs are rejected.
-
-`.gitignore` covers only exact generated Stage A PNGs, `.png.import` sidecars, and an optional repo-root copy of the diagnostic ZIP.
-
-
-P3.4C first real Windows attempt reached the cumulative P3.4B regression and failed because the old Medicine Hall test incorrectly required zero controls. P3.4C legitimately adds real NeedsSystem priority controls. The regression was corrected in commit `7c4ce83c13d8e6e7ce7e2cef6e53e3472f0375b6` to forbid only fabricated HEAL/direct-treatment actions. P3.4C itself remains runtime pending until rerun.
-
-P3.5 first real Windows attempt failed during GDScript parse because `LivingCueTracker.seed(state)` collided with Godot's built-in `seed(int)`. The tracker method and all callers were renamed to `seed_from_state(state)`; P3.5 remains runtime pending until rerun.
-
-P3.6A first Windows gate exposed a popup lifecycle bug (`DiscipleDeepScreen2`); it was fixed. The subsequent FULL cumulative rerun passed the P3.6A contract and live scene smoke.
-
-GitHub CI preview is restored: `.github/workflows/p3-6a-preview.yml` runs Godot 4.7.2, imports the project, runs the P3.6A FAST gate, renders the live scene under Xvfb, captures `1280x720` PNG, and uploads it as an artifact. CI does not currently include the external `female_normal_v1` runtime pack, so map/UI review is authoritative there but actor appearance may fall back to placeholders.
+`Install-P3-2-Female-StageA.cmd` now restores from tracked transport first, with external ZIP only as fallback. `Run-P3-6A-Playable-Slice.cmd` installs in install-only mode before the FAST gate and preview.
 
 ## NEXT WINDOWS ACTION
 
-P3.6A runtime is **REAL PASS** on Windows Godot 4.7.2.
+P3.6A runtime is **REAL PASS** on Windows Godot 4.7.2 and the GitHub actor-pack preview pipeline is green.
 
-User supplied:
+Latest CI visual cleanup:
 
-- `P3.6A PLAYABLE SLICE TEST PASS`;
-- `P3.6A PLAYABLE VERTICAL SLICE GATE: PASS`;
-- `P3.6A PLAYABLE VERTICAL SLICE: PASS`.
+- real female Stage A actors render in the live map;
+- all live disciples now use `ModularDiscipleActor`;
+- rigs without authored art use a neutral humanoid silhouette;
+- legacy letter-circle actor placeholders are blocked by the P3.6A contract;
+- always-on actor status text is hidden from the idle map;
+- actor spacing is wider;
+- building living cues are lifted above actor clusters.
 
-Do not ask for another gate run now.
+Final product visual acceptance is still pending user judgment; do not self-declare PASS.
 
-Convenience runner for future iterations: `Run-P3-6A-Playable-Slice.cmd` runs the FAST gate and automatically opens preview only when green.
+With the Windows machine open, use the canonical single sync entrypoint:
 
-Next:
+`Sync-Main.cmd Run-P3-6A-Playable-Slice.cmd`
 
-`Preview-P3-6A-Playable-Slice.cmd`
+Expected flow:
 
-Need real screenshot/video or direct user visual judgment. P3.6A final product acceptance remains pending until the live scene no longer feels like a QA/debug board.
+`safe fetch/pull -> restore tracked 42-PNG pack + canonical SHA -> P3.6A FAST -> auto-open live preview`.
 
-Testing policy now locked:
-
-- FAST by default while iterating;
-- FULL cumulative only at final phase lock or when a change actually crosses a locked baseline;
-- `Verify-P3-6A-Playable-Slice.cmd` is FAST;
-- `Verify-P3-6A-Playable-Slice-Full.cmd` preserves the cumulative chain.
+No separate `Sync-P3-6A-*.cmd` should be created. No FULL rerun is needed unless a later change crosses a locked baseline.
 
 ## P3.4 — REAL PASS / LOCKED
 
