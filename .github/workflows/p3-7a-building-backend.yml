@@ -1,4 +1,4 @@
-name: P3.7A Building Backend
+name: P3.7A1 Building Backend
 
 on:
   workflow_dispatch:
@@ -11,8 +11,8 @@ on:
       - 'godot/src/simulation/state/disciple_state.gd'
       - 'godot/src/simulation/workforce/workforce_system.gd'
       - 'godot/src/simulation/core/simulation_scheduler.gd'
-      - 'godot/tests/simulation/p3_7a_building_authority_test.gd'
-      - 'tools/godot/Verify-P3-7A-Building-Authority.ps1'
+      - 'godot/tests/simulation/p3_7a1_building_authority_test.gd'
+      - 'tools/godot/Verify-P3-7A1-Building-Authority.ps1'
       - '.github/workflows/p3-7a-building-backend.yml'
 
 permissions:
@@ -20,7 +20,7 @@ permissions:
 
 jobs:
   backend:
-    name: Godot 4.7.2 P3.7A backend
+    name: Godot 4.7.2 P3.7A1 backend
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -41,8 +41,8 @@ jobs:
           sudo install -m 0755 /tmp/godot-4.7.2/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
           godot --version
 
-      - name: Run P3.7A FAST backend verification
+      - name: Run P3.7A1 FAST backend verification
         shell: pwsh
         env:
           GODOT_BIN: /usr/local/bin/godot
-        run: ./tools/godot/Verify-P3-7A-Building-Authority.ps1
+        run: ./tools/godot/Verify-P3-7A1-Building-Authority.ps1
