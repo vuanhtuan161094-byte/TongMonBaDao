@@ -14,7 +14,7 @@ Mỗi đệ tử có tối thiểu:
 - `lifespan_base` — nền bẩm sinh từ chủng tộc/căn cơ;
 - lịch sử các nguồn đã tăng/giảm thọ mệnh để deterministic và tránh cộng trùng.
 
-Đệ tử chết vì đại hạn khi tuổi vượt thọ mệnh tối đa, trừ khi có mechanic đặc biệt hợp lệ cứu họ trước bước kiểm tra đại hạn.
+Đệ tử **không bị xóa khỏi roster khi hết thọ mệnh**. Khi tuổi vượt thọ mệnh tối đa, họ chuyển sang trạng thái **Ma/Hồn** (ghost state). Nhân vật, lịch sử, quan hệ và identity vẫn tồn tại trong Tông Môn. Chỉ hành động **Trục xuất** mới loại nhân vật khỏi roster.
 
 ## 2. Nguồn thọ mệnh
 
@@ -90,9 +90,16 @@ Tổn thọ khác HP và khác thương tích thường.
 
 HP hồi đầy không tự hoàn lại phần thọ mệnh đã mất.
 
-## 4. Đại hạn
+## 4. Đại hạn và trạng thái Ma/Hồn
 
 Khi còn ít thời gian sống, đệ tử bước vào trạng thái `gần đại hạn`.
+
+Khi vượt quá `lifespan_max` mà không được kéo dài thọ mệnh kịp thời:
+- đệ tử chuyển sang trạng thái `ghost` / Ma-Hồn;
+- không bị xóa khỏi Tông Môn;
+- vẫn giữ identity, lịch sử, quan hệ, phẩm chất, nghề, cảnh giới và dữ liệu cá nhân;
+- trạng thái Ma/Hồn không mặc định được phép tiếp tục các hoạt động vật lý bình thường; gameplay riêng của Ma/Hồn sẽ thiết kế sau, không tự bịa trong implementation hiện tại;
+- chỉ `Trục xuất` mới loại nhân vật khỏi roster.
 
 Hệ này phải tạo gameplay chứ không chỉ cảnh báo đỏ.
 
@@ -109,7 +116,20 @@ AI/Tông Chủ có thể ưu tiên:
 
 Tông Chủ vẫn có quyền phớt lờ và bắt người đó tiếp tục làm nhiệm vụ nếu muốn.
 
-## 5. Thứ tự xử lý quan trọng
+## 5. Hồi sinh bằng Thọ Đan / tăng thọ
+
+Ma/Hồn có thể trở lại trạng thái sống nếu sử dụng một Thọ Đan hoặc phương thức hồi sinh hợp lệ có tác dụng tăng thọ đủ để `lifespan_max > age`.
+
+Khi hồi sinh:
+- giữ nguyên identity và lịch sử;
+- giữ nguyên nghề/cảnh giới/quan hệ nếu mechanic hồi sinh không ghi đè;
+- cập nhật `lifespan_max` theo nguồn tăng thọ;
+- thoát trạng thái `ghost`;
+- không tạo một nhân vật mới.
+
+Thọ Đan vì vậy vừa có thể **kéo dài thọ mệnh trước đại hạn**, vừa có thể **hồi sinh Ma/Hồn sau đại hạn** nếu hiệu lực đủ.
+
+## 6. Thứ tự xử lý quan trọng
 
 Nếu một đệ tử vừa đủ điều kiện đột phá đúng thời điểm gần chết vì đại hạn:
 
@@ -121,7 +141,7 @@ Nếu một đệ tử vừa đủ điều kiện đột phá đúng thời đi�
 
 Không dùng random lại kết quả sau load.
 
-## 6. Quan hệ với các hệ khác
+## 7. Quan hệ với các hệ khác
 
 ### P2.1 Cảnh giới
 
@@ -149,7 +169,7 @@ Phẩm chất không bằng tuổi thọ còn lại.
 
 Một đệ tử Nghịch Thiên sắp hết tuổi vẫn là Nghịch Thiên; một đệ tử Phàm Thường uống thọ đan sống lâu không tự tăng phẩm chất.
 
-## 7. Không làm ngay
+## 8. Không làm ngay
 
 P2.7 đang chờ runtime gate và không bị mở rộng scope.
 
@@ -160,7 +180,7 @@ Lifespan/death chỉ triển khai sau khi:
 - recruitment/generation V2 đã có tuổi/thọ nền;
 - save/load cho disciple identity mới ổn định.
 
-## 8. Design target
+## 9. Design target
 
 Mục tiêu cuối là tạo câu chuyện kiểu:
 
@@ -171,3 +191,14 @@ Hoặc:
 > Một đệ tử bình thường được nuôi từ Ngoại môn, tới sát đại hạn mới phá cảnh thành công và sống thêm hàng chục/nhiều năm, sau đó trở thành trưởng lão của tông môn.
 
 Thọ mệnh phải biến thời gian thành tài nguyên chiến lược và tạo lịch sử cá nhân, không chỉ là đồng hồ đếm ngược.
+
+---
+
+## 10. LOCKED OVERRIDE 2026-10-05 — KHÔNG XÓA ĐỆ TỬ VÌ HẾT THỌ
+
+Quy tắc canonical mới:
+1. Hết thọ mệnh -> chuyển thành Ma/Hồn, không xóa roster.
+2. Thọ Đan/phương thức tăng thọ hợp lệ có thể hồi sinh Ma/Hồn.
+3. Nhân vật chỉ biến mất khỏi Tông Môn khi bị Trục xuất.
+4. Combat thất bại vẫn dùng Thương Thế; không dùng combat để xóa nhân vật.
+5. Gameplay riêng của Ma/Hồn (có thể làm gì, dùng công trình nào, chiến đấu hay không) CHƯA khóa và không được tự invent trước khi có spec riêng.
