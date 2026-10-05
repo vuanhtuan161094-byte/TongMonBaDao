@@ -66,7 +66,7 @@ func to_dict() -> Dictionary:
         "metrics": metrics.duplicate(true)
     }
 
-static func from_dict(data: Dictionary) -> BuildingState:
+static func from_dict(data: Dictionary):
     return BuildingState.new(data)
 
 static func _int_array(value: Variant) -> Array[int]:
