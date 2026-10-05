@@ -196,11 +196,21 @@ func _verify_growth_save_load_and_determinism() -> bool:
     if state_a.to_dict() != loaded.to_dict():
         return _fail("P3.7A2 exact save/load diverged during crop growth.")
 
-    SimulationScheduler.new(state_a).run_ticks(40)
-    SimulationScheduler.new(loaded).run_ticks(40)
-    if state_a.to_dict() != loaded.to_dict():
-        var difference := _first_difference(state_a.to_dict(), loaded.to_dict(), "state")
-        return _fail("P3.7A2 deterministic continuation diverged after save/load: %s" % difference)
+    var scheduler_a := SimulationScheduler.new(state_a)
+    var scheduler_b := SimulationScheduler.new(loaded)
+    for continuation_tick in range(40):
+        scheduler_a.step()
+        scheduler_b.step()
+        if state_a.to_dict() != loaded.to_dict():
+            var difference := _first_difference(state_a.to_dict(), loaded.to_dict(), "state")
+            var field_a := buildings.primary_building(state_a, BuildingSystem.TYPE_SPIRIT_FIELD)
+            var field_b := buildings.primary_building(loaded, BuildingSystem.TYPE_SPIRIT_FIELD)
+            return _fail("P3.7A2 deterministic continuation diverged at continuation tick %d: %s | fieldA=%s fieldB=%s" % [
+                continuation_tick + 1,
+                difference,
+                field_a.production_state,
+                field_b.production_state
+            ])
     return _validate(loaded)
 
 func _assign_herbalist(state: SimulationState) -> DiscipleState:
