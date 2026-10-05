@@ -283,3 +283,23 @@ Locked building architecture:
 
 Next design task before code:
 define exact data contracts for resource stacks/Phẩm Lực, building instances, profession EXP curve, warehouse policy, construction resolver and hunting settlement.
+
+
+# P3.7 loadout / hunting progression authority — ADDED 2026-10-05
+
+Canonical child spec:
+`docs/P3_7_DISCIPLE_LOADOUT_HUNTING_PROGRESSION_SPEC.md`
+
+Locked:
+- no full personal RPG inventory at 1,000–3,000 disciple scale;
+- personal loadout target: weapon x1, armor x1, talisman x3, Pháp Bảo x2, Main Technique x1, Auxiliary Techniques x2, small consumable belt;
+- disciple AI autonomously seeks compatible upgrades and avoids tiny churn;
+- explicit item ownership: sect-owned loan vs disciple-owned personal property;
+- sect-owned gear may be reassigned normally;
+- forcibly requisitioning disciple-owned gear requires Contribution compensation;
+- returned hunting loot defaults to sect property and grants Contribution credit to hunters;
+- hunting grants Tu Vi + Contribution + Spirit Stones + loot;
+- hunting cultivation reward scales from the disciple's current-stage Tu Vi requirement and relative monster realm/challenge;
+- target healthy appropriate hunting progression is roughly 10–20× ordinary rear-base work cultivation rate;
+- no permanent death; injury/medicine/durability/downtime are the PvE cost;
+- P2.1's old +2 cultivation/victory is preserved as historical locked baseline until explicit P3.7 migration.
