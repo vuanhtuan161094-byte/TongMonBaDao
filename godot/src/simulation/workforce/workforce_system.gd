@@ -92,6 +92,8 @@ func assign_group(state: SimulationState, disciple_id: StringName, group_id: Str
     if group_id != &"" and not state.sect.work_groups.has(str(group_id)):
         return false
     var disciple: DiscipleState = state.disciples[disciple_id]
+    if state.p3_7_buildings_enabled and disciple.work_group_id == &"mining_crew" and group_id != &"mining_crew":
+        building_system.cancel_work_cycle(state, disciple, true)
     disciple.work_group_id = group_id
     state.sect.workforce_event_count += 1
     return true
@@ -141,6 +143,10 @@ func issue_command(state: SimulationState, disciple_id: StringName, kind: String
     if kind == COMMAND_HUNT_REGION and not state.regions.has(StringName(target)):
         return false
     var disciple: DiscipleState = state.disciples[disciple_id]
+    if state.p3_7_buildings_enabled and not disciple.work_cycle_state.is_empty():
+        var keeps_mining := kind == COMMAND_WORK and StringName(target) == PROF_MINING
+        if not keeps_mining:
+            building_system.cancel_work_cycle(state, disciple, true)
     disciple.direct_command = {
         "kind": str(kind),
         "target": target,
@@ -174,6 +180,9 @@ func next_action(state: SimulationState, disciple: DiscipleState) -> StringName:
     var direct := _direct_command_action(state, disciple)
     if direct != &"":
         return direct
+
+    if state.p3_7_buildings_enabled and StringName(disciple.work_cycle_state.get("profession", "")) == PROF_MINING:
+        return &"WORK_MINING"
 
     if disciple.region_id != &"sect":
         return &""
