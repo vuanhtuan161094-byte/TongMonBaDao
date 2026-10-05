@@ -219,6 +219,10 @@ func _step_disciple(disciple: DiscipleState) -> void:
             workforce_system.perform_work(state, disciple, WorkforceSystem.PROF_FORGING)
             disciple.current_action = &"EVALUATE"
 
+        &"WORK_HERBALISM":
+            workforce_system.perform_work(state, disciple, WorkforceSystem.PROF_HERBALISM)
+            disciple.current_action = &"EVALUATE"
+
         &"HOLD":
             disciple.stamina = minf(100.0, disciple.stamina + 2.0)
             disciple.current_action = &"EVALUATE"
