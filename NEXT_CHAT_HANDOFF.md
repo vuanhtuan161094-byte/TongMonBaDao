@@ -428,3 +428,40 @@ Next action:
 
 Do not call P3.7A1 PASS until that real Windows gate passes.
 After PASS, next implementation slice is **P3.7A2 — Linh Điền backend using the same BuildingSystem framework**.
+
+
+## P3.7A1 BACKEND — REAL GODOT 4.7.2 PASS
+
+Implemented on live `main`:
+- `godot/src/simulation/state/building_state.gd`;
+- `godot/src/simulation/building/building_system.gd`;
+- `godot/src/simulation/core/p3_7_factory.gd`;
+- P3.7 persistence in `SimulationState`;
+- P3.7 physical work-cycle persistence in `DiscipleState`;
+- WorkforceSystem bridge for authoritative Mining;
+- scheduler timed building-upgrade progression.
+
+Mine behavior now real:
+- Lv1–100 authority;
+- active worker slots enforced;
+- uses existing `mining_crew`;
+- travel -> mine batch -> haul/deposit;
+- movement speed affects cycle duration;
+- profession XP remains real existing WorkforceSystem XP;
+- timed construction;
+- no fake post-upgrade cooldown;
+- Lv10 milestone requires/consumes Tầm Mạch Bàn;
+- save/load + deterministic continuation covered by contract test.
+
+Gate:
+- FAST Godot 4.7.2 backend PASS;
+- FULL P0–P2.12 + P3.7A1 cumulative Godot 4.7.2 PASS.
+
+Current limitation/bridge:
+- construction/mining resources still bridge through existing `sect.forge_materials` and `sect.spirit_stones`;
+- this is deliberate compatibility scaffolding, NOT the final unified warehouse;
+- live P3 presentation still uses P212Factory and must not show P3.7 levels/upgrades yet.
+
+NEXT:
+**P3.7A2 Linh Điền backend on the same framework.**
+The purpose is to prove BuildingSystem generalizes to a different production lifecycle (growth/harvest) before wiring UI or expanding to Đại Điện.
