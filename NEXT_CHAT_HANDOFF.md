@@ -321,3 +321,21 @@ major milestones add one building-specific specialty component only.
 Do not implement a hard material Lv.1–Lv.5 ladder and do not return to a simple mine->iron-only economy.
 
 Next: design the full building tree, inputs/outputs/professions/milestones/materials, then implement data authority incrementally.
+
+
+## P3.7 BUILDING TREE IS NOW CANONICAL
+
+Read:
+`docs/P3_7_BUILDING_TREE_SPEC.md`
+
+Key rules:
+- building instance cap Lv.100;
+- scale by more instances/land/teams, not Lv.8000 buildings;
+- routine upgrade = Linh Mộc + Khoáng Liệu + Linh Thạch;
+- milestone = routine cost + one thematic specialty component;
+- upgrade material totals are satisfied by eligible Phẩm Lực, with reserve/lock policy;
+- resource/production facilities support soft processing penalties instead of hard realm locks;
+- milestone mechanics are defined for the main building families;
+- first implementation slice contains 13 core buildings, with Mật Thất immediately after personal economy.
+
+Do not start presentation-first fake levels. Next authority work is the data model/contracts that make these levels, costs, capacities and production real.
