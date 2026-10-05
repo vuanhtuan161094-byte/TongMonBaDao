@@ -21,7 +21,9 @@ const MATERIAL_NAMES := {
     "thanh_thiet": "Thanh Thiết",
     "tinh_lang_bi": "Tinh Lang Bì",
     "yeu_dan": "Yêu Đan",
-    "tam_mach_ban": "Tầm Mạch Bàn"
+    "tam_mach_ban": "Tầm Mạch Bàn",
+    "thanh_linh_thao": "Thanh Linh Thảo",
+    "linh_tuyen_chi_tam": "Linh Tuyền Chi Tâm"
 }
 
 const QUALITY_DEFINITIONS := {
