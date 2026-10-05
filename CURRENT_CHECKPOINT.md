@@ -179,6 +179,8 @@ P3.5 first Windows attempt exposed a `seed()` naming collision; it was fixed by 
 
 P3.6A first Windows gate exposed a popup lifecycle bug (`DiscipleDeepScreen2`); `_clear_popup()` was fixed to detach children immediately before `queue_free()`. The subsequent FULL cumulative rerun passed P3.6A contract + live scene smoke.
 
+GitHub CI preview is restored: `.github/workflows/p3-6a-preview.yml` runs Godot 4.7.2, imports the project, runs the P3.6A FAST gate, renders the live scene under Xvfb, captures `1280x720` PNG, and uploads it as an artifact. CI does not currently include the external `female_normal_v1` runtime pack, so map/UI review is authoritative there but actor appearance may fall back to placeholders.
+
 # Next authoritative action
 
 P3.2, P3.3, full P3.4, P3.5 and **P3.6A runtime** are REAL PASS / LOCKED.
