@@ -46,7 +46,29 @@ jobs:
         run: |
           set -euo pipefail
           PACK="/tmp/female_normal_v1_stageA_runtime_pack_v2_quant.zip"
-          cat .github/assets/p3/female_stage_a/part*.b64 | tr -d '\r\n\t ' | base64 --decode > "$PACK"
+          cat \
+            .github/assets/p3/female_stage_a/part01.b64 \
+            .github/assets/p3/female_stage_a/part02.b64 \
+            .github/assets/p3/female_stage_a/part03.b64 \
+            .github/assets/p3/female_stage_a/part04.b64 \
+            .github/assets/p3/female_stage_a/part05.b64 \
+            .github/assets/p3/female_stage_a/part06.b64 \
+            .github/assets/p3/female_stage_a/part07.b64 \
+            .github/assets/p3/female_stage_a/part08.b64 \
+            .github/assets/p3/female_stage_a/part09.b64 \
+            .github/assets/p3/female_stage_a/part10.b64 \
+            .github/assets/p3/female_stage_a/part11.b64 \
+            .github/assets/p3/female_stage_a/part12.b64 \
+            .github/assets/p3/female_stage_a/part13.b64 \
+            .github/assets/p3/female_stage_a/part14.b64 \
+            .github/assets/p3/female_stage_a/part15a.b64 \
+            .github/assets/p3/female_stage_a/part15b.b64 \
+            .github/assets/p3/female_stage_a/part16.b64 \
+            .github/assets/p3/female_stage_a/part17.b64 \
+            .github/assets/p3/female_stage_a/part18.b64 \
+            .github/assets/p3/female_stage_a/part19.b64 \
+            .github/assets/p3/female_stage_a/part20.b64 \
+            | tr -d '\r\n\t ' | base64 --decode > "$PACK"
           python3 - "$PACK" <<'PY'
           import struct
           import sys
@@ -57,7 +79,7 @@ jobs:
           entries = []
           pos = 0
           while pos < cd_offset:
-              if data[pos:pos + 4] != b"PK\\x03\\x04":
+              if data[pos:pos + 4] != b"PK\x03\x04":
                   raise SystemExit(f"bad local header at {pos}")
               (
                   version_needed, flags, method, mtime, mdate,
@@ -81,7 +103,7 @@ jobs:
           ) in entries:
               central += struct.pack(
                   "<4sHHHHHHIIIHHHHHII",
-                  b"PK\\x01\\x02",
+                  b"PK\x01\x02",
                   0x0314,
                   version_needed,
                   flags,
@@ -106,7 +128,7 @@ jobs:
 
           eocd = struct.pack(
               "<4sHHHHIIH",
-              b"PK\\x05\\x06",
+              b"PK\x05\x06",
               0,
               0,
               len(entries),
