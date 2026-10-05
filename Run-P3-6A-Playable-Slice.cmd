@@ -12,7 +12,9 @@ echo 2. If PASS, open the real preview automatically
 echo 3. If FAIL, stop without opening preview
 echo.
 
+set "P3_AUTO_PREVIEW=1"
 call "%~dp0Verify-P3-6A-Playable-Slice.cmd"
+set "P3_AUTO_PREVIEW="
 set "VERIFY_EXIT=%ERRORLEVEL%"
 
 if not "%VERIFY_EXIT%"=="0" (
