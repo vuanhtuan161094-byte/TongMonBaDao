@@ -17,6 +17,8 @@ func _run() -> void:
         return
     if not _verify_timed_upgrade_and_cost():
         return
+    if not _verify_milestone_requires_real_component():
+        return
     if not _verify_mining_travel_work_haul_cycle():
         return
     if not _verify_movement_speed_affects_mining_throughput():
@@ -88,6 +90,35 @@ func _verify_timed_upgrade_and_cost() -> bool:
     var next_check := buildings.can_start_upgrade(state, mine.id)
     if not bool(next_check.get("ok", false)):
         return _fail("Mine has a fake post-upgrade cooldown; Lv3 should be immediately startable when resources are sufficient.")
+    return _validate(state)
+
+func _verify_milestone_requires_real_component() -> bool:
+    var state := P37Factory.create_state(TEST_SEED + 20)
+    var mine := buildings.primary_building(state, BuildingSystem.TYPE_MINE)
+    mine.level = 9
+    state.sect.forge_materials[BuildingSystem.MATERIAL_WOOD] = 1000
+    state.sect.forge_materials[BuildingSystem.MATERIAL_ORE] = 1000
+    state.sect.spirit_stones = 1000
+    state.sect.forge_materials.erase(BuildingSystem.MATERIAL_TAM_MACH_BAN)
+
+    var blocked := buildings.can_start_upgrade(state, mine.id)
+    if bool(blocked.get("ok", false)) or str(blocked.get("material_id", "")) != BuildingSystem.MATERIAL_TAM_MACH_BAN:
+        return _fail("Mine Lv9 -> Lv10 did not require the real Tầm Mạch Bàn milestone component.")
+
+    state.sect.forge_materials[BuildingSystem.MATERIAL_TAM_MACH_BAN] = 1
+    var started := buildings.start_upgrade(state, mine.id)
+    if not bool(started.get("ok", false)):
+        return _fail("Mine Lv9 -> Lv10 could not start after supplying Tầm Mạch Bàn.")
+    if int(state.sect.forge_materials.get(BuildingSystem.MATERIAL_TAM_MACH_BAN, -1)) != 0:
+        return _fail("Mine milestone upgrade did not consume Tầm Mạch Bàn.")
+
+    var required := int(ceil(mine.upgrade_required_work))
+    for _i in range(required):
+        buildings.process_tick(state)
+    if mine.level != 10 or not mine.unlocked_milestones.has(10):
+        return _fail("Mine Lv10 milestone did not unlock after timed construction.")
+    if buildings.worker_slots(mine) != 4:
+        return _fail("Mine worker slots did not scale at canonical five-level boundaries.")
     return _validate(state)
 
 func _verify_mining_travel_work_haul_cycle() -> bool:
