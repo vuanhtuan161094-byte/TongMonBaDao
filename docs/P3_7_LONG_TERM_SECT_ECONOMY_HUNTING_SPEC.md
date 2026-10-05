@@ -920,3 +920,24 @@ The next design deliverable is no longer the building tree. It is the concrete s
 4. profession EXP curve + milestone data;
 5. construction cost resolver;
 6. hunting loot settlement.
+
+
+---
+
+# 31. Canonical disciple-loadout and hunting-progression child authority
+
+Detailed rules now live in:
+
+`docs/P3_7_DISCIPLE_LOADOUT_HUNTING_PROGRESSION_SPEC.md`
+
+That file owns:
+- scalable personal loadout;
+- multiple talisman / technique / Pháp Bảo slots;
+- sect-owned vs disciple-owned item semantics;
+- autonomous equipment choice;
+- Contribution compensation on personal-item requisition;
+- monster realm/grade reward scaling;
+- hunting cultivation-rate targets;
+- migration constraints from P2.1/P2.3/P2.6.
+
+When overlaps exist, use the newer child spec unless it violates a higher-level locked P3.7 principle.
