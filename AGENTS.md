@@ -97,7 +97,8 @@ Read before P3/character work in this order:
 10. `docs/P3_7_LONG_TERM_SECT_ECONOMY_HUNTING_SPEC.md`;
 11. `docs/P3_7_BUILDING_TREE_SPEC.md`;
 12. `docs/P3_7_DISCIPLE_LOADOUT_HUNTING_PROGRESSION_SPEC.md`;
-13. live P3 code/tests.
+13. `docs/P3_7_RESOURCE_STORAGE_GROWTH_DATA_MODEL_SPEC.md`;
+14. live P3 code/tests.
 
 ## GitHub CI preview
 
@@ -300,7 +301,7 @@ Item gacha may grant/refine Bloodline/Physique/etc under explicit rules, but mus
 3. P3.4 building management: real PASS / locked;
 4. P3.5 living-sect cues: real PASS / locked;
 5. keep P3.6A runtime locked and obtain user visual acceptance from the real Windows preview;
-6. P3.7 building tree is now canonical in `docs/P3_7_BUILDING_TREE_SPEC.md`; before broad implementation, finish the data contracts for resources/Phẩm Lực, warehouse stacks/reserves, building instances, profession EXP, construction resolver and hunting settlement;
+6. P3.7 building tree and resource/storage/growth data direction are canonical; before broad implementation, finish the remaining concrete contracts for building instances, profession EXP, construction resolver and hunting settlement;
 7. implement the P3.7 simulation authority incrementally: resources/Phẩm Lực/professions/buildings -> production -> hunting settlement -> personal economy;
 8. minimum cosmetic variants needed to avoid obvious clones;
 9. six-combo/full female visual acceptance when functional map-management is stable;
