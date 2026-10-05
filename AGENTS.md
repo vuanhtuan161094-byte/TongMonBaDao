@@ -97,7 +97,7 @@ Read before P3/character work in this order:
 
 ## GitHub CI preview
 
-GitHub CI preview is restored: `.github/workflows/p3-6a-preview.yml` runs Godot 4.7.2, imports the project, runs the P3.6A FAST gate, renders the live scene under Xvfb, captures `1280x720` PNG, and uploads it as an artifact. CI does not currently include the external `female_normal_v1` runtime pack, so map/UI review is authoritative there but actor appearance may fall back to placeholders.
+GitHub CI preview is restored: `.github/workflows/p3-6a-preview.yml` rebuilds the canonical female Stage A pack from tracked `.github/assets/p3/female_stage_a/*.b64` parts in fixed order, verifies ZIP size `44,838` bytes and SHA-256 `6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca`, extracts exactly 42 PNGs, imports Godot 4.7.2, runs the P3.6A FAST gate, renders under Xvfb, captures `1280x720` PNG, and uploads it as an artifact. Actor appearance is therefore part of CI preview authority; do not assume female actors are placeholders when this restore step is green.
 
 ## Required development loop
 
