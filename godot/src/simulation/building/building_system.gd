@@ -2,6 +2,7 @@ class_name BuildingSystem
 extends RefCounted
 
 const TYPE_MINE := &"mine"
+const PROF_MINING := &"mining"
 
 const STATUS_ACTIVE := &"active"
 const STATUS_UPGRADING := &"upgrading"
@@ -305,7 +306,7 @@ func validate_invariants(state: SimulationState) -> Array[String]:
         var profession := StringName(disciple.work_cycle_state.get("profession", ""))
         var building_id := str(disciple.work_cycle_state.get("building_id", ""))
         var phase := StringName(disciple.work_cycle_state.get("phase", ""))
-        if profession != WorkforceSystem.PROF_MINING:
+        if profession != PROF_MINING:
             errors.append("%s has unsupported P3.7 work-cycle profession." % disciple.display_name)
         if not state.buildings.has(building_id):
             errors.append("%s references missing work-cycle building." % disciple.display_name)
