@@ -728,3 +728,12 @@ Current P2.1 fixed gains remain untouched until the P3.7 hunting reward authorit
 15. Rear-base work remains valuable through profession, economy, passive cultivation and low risk.
 16. No permanent death; injury/downtime/consumables balance the fast PvE route.
 17. Existing P2.1/P2.3/P2.6 locked baselines are migrated later under explicit P3.7 gates, not silently overwritten.
+
+
+---
+
+# 26. Resource/base-growth authority link
+
+For passive cultivation, six-foundation integration, at-home pill/Mật Thất spending, and resource-stack semantics, use:
+
+`docs/P3_7_RESOURCE_STORAGE_GROWTH_DATA_MODEL_SPEC.md`
