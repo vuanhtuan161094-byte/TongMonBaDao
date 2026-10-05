@@ -338,3 +338,22 @@ Locked changes:
 - a valid Thọ Đan/longevity revival effect can restore life;
 - only Trục xuất removes the disciple from the sect roster;
 - gameplay capabilities of Ma/Hồn are not yet designed and must not be invented ad hoc.
+
+
+# P3.7 time/speed/cooldown authority — ADDED 2026-10-05
+
+Canonical child spec:
+`docs/P3_7_TIME_SPEED_COOLDOWN_SPEC.md`
+
+Locked:
+- basic attack speed, movement speed, cast time, skill cooldown and profession work speed are separate concepts;
+- Mine becomes a real physical work loop: travel -> mine batch -> haul/deposit -> main Sect Warehouse -> repeat;
+- movement speed affects work throughput because commuting/hauling consumes real time;
+- no one-ore return ping-pong; workers mine batches before hauling;
+- building construction and upgrades require real simulation time;
+- new building level/milestone applies only on completion;
+- no generic post-upgrade cooldown; construction time is the pacing cost;
+- ordinary upgrades can keep the old level operating; milestone shutdown is building data;
+- crafting, healing, Secret Chamber, repair, travel and related systems use real durations when migrated;
+- true cooldown is reserved for skills/active powers/rare actions;
+- large-population background simulation must preserve timing deterministically.
