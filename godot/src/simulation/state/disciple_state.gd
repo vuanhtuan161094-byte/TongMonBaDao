@@ -366,6 +366,8 @@ static func _work_cycle_dictionary(value: Variant) -> Dictionary:
         return normalized
     normalized["profession"] = str(value.get("profession", ""))
     normalized["building_id"] = str(value.get("building_id", ""))
+    if value.has("task"):
+        normalized["task"] = str(value.get("task", ""))
     normalized["phase"] = str(value.get("phase", "travel_out"))
     normalized["progress"] = maxf(float(value.get("progress", 0.0)), 0.0)
     normalized["carried_units"] = maxi(int(value.get("carried_units", 0)), 0)
