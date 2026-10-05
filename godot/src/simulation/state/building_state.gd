@@ -17,6 +17,10 @@ var upgrade_required_work: float = 0.0
 var upgrade_progress: float = 0.0
 var unlocked_milestones: Array[int] = []
 
+# Generic building-owned production lifecycle state.
+# Empty means no active production process.
+var production_state: Dictionary = {}
+
 var metrics: Dictionary = {
     "upgrade_completions": 0,
     "production_batches": 0,
@@ -38,6 +42,7 @@ func _init(definition: Dictionary = {}) -> void:
     upgrade_required_work = maxf(float(definition.get("upgrade_required_work", 0.0)), 0.0)
     upgrade_progress = maxf(float(definition.get("upgrade_progress", 0.0)), 0.0)
     unlocked_milestones = _int_array(definition.get("unlocked_milestones", []))
+    production_state = _production_dictionary(definition.get("production_state", {}))
 
     var saved_metrics = definition.get("metrics", {})
     if saved_metrics is Dictionary:
@@ -63,11 +68,29 @@ func to_dict() -> Dictionary:
         "upgrade_required_work": upgrade_required_work,
         "upgrade_progress": upgrade_progress,
         "unlocked_milestones": unlocked_milestones.duplicate(),
+        "production_state": production_state.duplicate(true),
         "metrics": metrics.duplicate(true)
     }
 
 static func from_dict(data: Dictionary):
     return BuildingState.new(data)
+
+static func _production_dictionary(value: Variant) -> Dictionary:
+    if not (value is Dictionary) or value.is_empty():
+        return {}
+    var result: Dictionary = {}
+    var keys: Array = value.keys()
+    keys.sort()
+    for raw_key in keys:
+        var key := str(raw_key)
+        var raw = value[raw_key]
+        if key in ["phase", "resource_id", "planted_by"]:
+            result[key] = str(raw)
+        elif key in ["growth_progress", "growth_required"]:
+            result[key] = maxf(float(raw), 0.0)
+        else:
+            result[key] = raw
+    return result
 
 static func _int_array(value: Variant) -> Array[int]:
     var result: Array[int] = []
