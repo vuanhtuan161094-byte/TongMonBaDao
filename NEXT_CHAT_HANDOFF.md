@@ -291,3 +291,33 @@ Current order:
 8. male rig remains later.
 
 Do not return to broad cosmetic production before P3.3/P3.4 functional work unless the user explicitly changes priority.
+
+
+## P3.7 LONG-TERM ECONOMY / HUNTING — NEW CANONICAL DIRECTION
+
+Read first:
+`docs/P3_7_LONG_TERM_SECT_ECONOMY_HUNTING_SPEC.md`
+
+The user has now explicitly selected the long-term game direction:
+- 1,000–3,000 disciples;
+- roughly 70% hunting/outside / 30% rear-base;
+- auto hunting by teams (standard 5), with solo traits allowed;
+- defeat -> injury/recovery, not permanent death;
+- natural hunting costs: time/stamina/medicine/durability;
+- no full personal inventories at scale;
+- team loot bag while outside -> automatic settlement into sect storage on return;
+- Spirit Stone/Contribution personal economy with policy-driven gear allocation;
+- professions 1–1000+, +1% efficiency each level, increasing EXP curve, permanent levels, specialization milestones;
+- workers still gain passive cultivation and use personal Spirit Stones for Secret Chambers/pills/gear/services;
+- one universal material magnitude: Phẩm Lực;
+- high realm may do low-value work, low realm profession masters may perform difficult work if facility/skill allows;
+- buildings cap around Lv.100 per instance and scale by additional facilities;
+- all Sect Treasures may stack/contribute.
+
+Construction authority:
+normal upgrade = Linh Mộc + Khoáng Liệu + Linh Thạch, with Phẩm Lực-based material fulfillment;
+major milestones add one building-specific specialty component only.
+
+Do not implement a hard material Lv.1–Lv.5 ladder and do not return to a simple mine->iron-only economy.
+
+Next: design the full building tree, inputs/outputs/professions/milestones/materials, then implement data authority incrementally.
