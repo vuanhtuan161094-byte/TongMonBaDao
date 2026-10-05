@@ -29,6 +29,7 @@ var bones: Dictionary = {}
 var visual_components: Dictionary = {}
 var click_button: Button
 var status_label: Label
+var fallback_visual: Control
 var _built := false
 
 func _init() -> void:
@@ -60,6 +61,8 @@ func sync_action(action: StringName) -> void:
     _ensure_built()
     current_clip = DiscipleActorVisualCatalog.action_clip(action)
     status_label.text = SectMapPresentation.action_label(action)
+    if click_button != null:
+        click_button.tooltip_text = "%s · %s" % [display_name, status_label.text] if display_name != "" else status_label.text
     _play_shared_animation()
 
 func play_walk_for_delta(delta: Vector2) -> void:
@@ -197,15 +200,17 @@ func _ensure_built() -> void:
     animation_player.name = "AnimationPlayer"
     visual_root.add_child(animation_player)
 
+    _build_fallback_visual()
+
     click_button = Button.new()
     click_button.name = "ActorButton"
-    click_button.position = Vector2(15.0, 2.0)
-    click_button.size = Vector2(58.0, 70.0)
+    click_button.position = Vector2(12.0, 0.0)
+    click_button.size = Vector2(64.0, 74.0)
     click_button.add_theme_font_size_override("font_size", 20)
     click_button.add_theme_color_override("font_color", PLACEHOLDER_TEXT)
-    click_button.add_theme_stylebox_override("normal", _style(PLACEHOLDER_FILL, PLACEHOLDER_BORDER, 2, 28))
-    click_button.add_theme_stylebox_override("hover", _style(PLACEHOLDER_HOVER, PLACEHOLDER_GOLD, 3, 28))
-    click_button.add_theme_stylebox_override("pressed", _style(PLACEHOLDER_FILL.darkened(0.10), PLACEHOLDER_GOLD, 3, 28))
+    click_button.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
+    click_button.add_theme_stylebox_override("hover", _outline_style(PLACEHOLDER_GOLD, 2, 18))
+    click_button.add_theme_stylebox_override("pressed", _outline_style(PLACEHOLDER_GOLD, 3, 18))
     click_button.pressed.connect(_emit_actor_pressed)
     add_child(click_button)
 
@@ -218,6 +223,7 @@ func _ensure_built() -> void:
     status_label.add_theme_font_size_override("font_size", 10)
     status_label.add_theme_color_override("font_color", STATUS_TEXT)
     status_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    status_label.visible = false
     add_child(status_label)
 
     _apply_mirror()
@@ -287,19 +293,75 @@ func _bone_global_rest_position(bone_id: StringName) -> Vector2:
 func _component_key(layer_name: StringName, component_name: StringName) -> String:
     return "%s:%s" % [str(layer_name), str(component_name)]
 
+func _build_fallback_visual() -> void:
+    fallback_visual = Control.new()
+    fallback_visual.name = "FallbackVisual"
+    fallback_visual.position = Vector2(20.0, 3.0)
+    fallback_visual.size = Vector2(48.0, 68.0)
+    fallback_visual.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    add_child(fallback_visual)
+
+    var shadow := Panel.new()
+    shadow.position = Vector2(6.0, 60.0)
+    shadow.size = Vector2(36.0, 8.0)
+    shadow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    shadow.add_theme_stylebox_override("panel", _style(Color(0.08, 0.10, 0.08, 0.28), Color.TRANSPARENT, 0, 8))
+    fallback_visual.add_child(shadow)
+
+    var leg_l := Panel.new()
+    leg_l.position = Vector2(12.0, 43.0)
+    leg_l.size = Vector2(10.0, 20.0)
+    leg_l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    leg_l.add_theme_stylebox_override("panel", _style(PLACEHOLDER_FILL.darkened(0.12), PLACEHOLDER_BORDER, 1, 5))
+    fallback_visual.add_child(leg_l)
+
+    var leg_r := Panel.new()
+    leg_r.position = Vector2(26.0, 43.0)
+    leg_r.size = Vector2(10.0, 20.0)
+    leg_r.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    leg_r.add_theme_stylebox_override("panel", _style(PLACEHOLDER_FILL.darkened(0.12), PLACEHOLDER_BORDER, 1, 5))
+    fallback_visual.add_child(leg_r)
+
+    var torso := Panel.new()
+    torso.position = Vector2(9.0, 20.0)
+    torso.size = Vector2(30.0, 30.0)
+    torso.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    torso.add_theme_stylebox_override("panel", _style(PLACEHOLDER_FILL, PLACEHOLDER_BORDER, 1, 10))
+    fallback_visual.add_child(torso)
+
+    for x in [2.0, 38.0]:
+        var arm := Panel.new()
+        arm.position = Vector2(x, 23.0)
+        arm.size = Vector2(8.0, 25.0)
+        arm.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        arm.add_theme_stylebox_override("panel", _style(PLACEHOLDER_FILL.darkened(0.05), PLACEHOLDER_BORDER, 1, 5))
+        fallback_visual.add_child(arm)
+
+    var head := Panel.new()
+    head.position = Vector2(14.0, 1.0)
+    head.size = Vector2(20.0, 20.0)
+    head.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    head.add_theme_stylebox_override("panel", _style(PLACEHOLDER_FILL.lightened(0.08), PLACEHOLDER_BORDER, 1, 10))
+    fallback_visual.add_child(head)
+
 func _refresh_placeholder_mode() -> void:
     if click_button == null:
         return
-    if production_body_active():
-        click_button.text = ""
-        click_button.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
-        click_button.add_theme_stylebox_override("hover", StyleBoxEmpty.new())
-        click_button.add_theme_stylebox_override("pressed", StyleBoxEmpty.new())
-        return
-    click_button.text = display_name.substr(0, 1) if display_name != "" else "?"
-    click_button.add_theme_stylebox_override("normal", _style(PLACEHOLDER_FILL, PLACEHOLDER_BORDER, 2, 28))
-    click_button.add_theme_stylebox_override("hover", _style(PLACEHOLDER_HOVER, PLACEHOLDER_GOLD, 3, 28))
-    click_button.add_theme_stylebox_override("pressed", _style(PLACEHOLDER_FILL.darkened(0.10), PLACEHOLDER_GOLD, 3, 28))
+    var has_production_body := production_body_active()
+    if fallback_visual != null:
+        fallback_visual.visible = not has_production_body
+    click_button.text = ""
+    click_button.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
+    click_button.add_theme_stylebox_override("hover", _outline_style(PLACEHOLDER_GOLD, 2, 18))
+    click_button.add_theme_stylebox_override("pressed", _outline_style(PLACEHOLDER_GOLD, 3, 18))
+
+func _outline_style(border: Color, border_width: int, corner_radius: int) -> StyleBoxFlat:
+    var style := StyleBoxFlat.new()
+    style.bg_color = Color.TRANSPARENT
+    style.border_color = border
+    style.set_border_width_all(border_width)
+    style.set_corner_radius_all(corner_radius)
+    return style
 
 func _style(fill: Color, border: Color, border_width: int, corner_radius: int) -> StyleBoxFlat:
     var style := StyleBoxFlat.new()
