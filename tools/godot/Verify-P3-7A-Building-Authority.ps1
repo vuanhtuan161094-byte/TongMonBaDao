@@ -86,6 +86,9 @@ Write-Host "=== P3.7A BUILDING AUTHORITY + MINE FAST GATE ==="
 Write-Host "[Godot] $($resolved.Version)"
 Write-Host "[Mode] FAST - P3.7A backend only"
 
+Write-Host "[0/2] Refresh Godot script-class cache"
+Invoke-FastGodot @("--headless","--path",$Project,"--editor","--quit") "Refresh project script classes"
+
 Write-Host "[1/2] Parse changed/adjacent P3.7A scripts"
 foreach ($script in @(
     "res://src/simulation/state/building_state.gd",
