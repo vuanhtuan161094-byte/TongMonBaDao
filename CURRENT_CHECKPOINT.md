@@ -123,39 +123,31 @@ FEMALE STAGE A 3-DIRECTION FAST CHECK: PASS
 
 # Binary asset transport — current authoritative method
 
-The previous tracked 4-part Base64 v2 transport is **retired**.
+The canonical Stage A pack is now transported in Git as text-safe Base64 parts under:
 
-Real Windows failure:
+`.github/assets/p3/female_stage_a/`
 
-```text
-Exception calling "FromBase64String" ... "Invalid length for a Base-64 char array or string."
-```
+Canonical ZIP properties remain:
 
-Static comparison against the canonical local ZIP proved the tracked 4 chunks were incomplete by 1,793 Base64 characters. This was a transport/tooling defect, not a Godot, rig, registration, or art failure.
-
-The malformed `female_normal_v1_stageA_v2q_*.b64` files and experimental replacement chunks were removed from live `main` so they cannot be reused accidentally.
-
-Authoritative diagnostic binary pack now is:
-
-`female_normal_v1_stageA_runtime_pack_v2_quant.zip`
-
-Properties:
-
+- file: `female_normal_v1_stageA_runtime_pack_v2_quant.zip`;
 - 42 Stage A PNGs (`down/right/up`);
-- ZIP size: 44,838 bytes;
+- ZIP size: **44,838 bytes**;
 - SHA-256: `6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca`.
 
-`Install-P3-2-Female-StageA.cmd` now searches for this ZIP in:
+Transport repair completed on 2026-10-05:
 
-- `STAGE_A_PACK` env path if explicitly supplied;
-- repo root;
-- user `Downloads`;
-- user `Desktop`;
-- duplicate browser-download names matching `female_normal_v1_stageA_runtime_pack_v2_quant*.zip`.
+- central-directory corruption in the unfinished tracked parts was repaired;
+- one remaining Base64 payload corruption was isolated to `part11.b64`, index 1432 (0-based), corrected from `a` to `e`;
+- a clean CI run then rebuilt the ZIP directly from the tracked parts with **no repair logic**, matched the canonical SHA-256, passed `unzip -t`, extracted 42 PNGs, imported Godot and passed P3.6A FAST;
+- the diagnostic brute-force/rebuild code was removed from the production workflow.
 
-It computes SHA-256 first and extracts only a matching pack. A wrong/corrupt ZIP is rejected.
+`Install-P3-2-Female-StageA.cmd` now prefers this tracked transport, verifies the canonical SHA before extraction, and retains the external ZIP search only as a fallback when the tracked transport is unavailable.
 
-`.gitignore` continues to ignore only the exact generated Stage A PNGs, their `.png.import` sidecars, and an optional repo-root copy of this diagnostic ZIP. It does not hide unrelated asset work.
+For the current P3.6A Windows flow, use the repository-wide sync policy:
+
+`Sync-Main.cmd Run-P3-6A-Playable-Slice.cmd`
+
+Do not create a phase-specific `Sync-P3-6A-*.cmd`.
 
 ---
 
@@ -179,27 +171,34 @@ P3.5 first Windows attempt exposed a `seed()` naming collision; it was fixed by 
 
 P3.6A first Windows gate exposed a popup lifecycle bug (`DiscipleDeepScreen2`); `_clear_popup()` was fixed to detach children immediately before `queue_free()`. The subsequent FULL cumulative rerun passed P3.6A contract + live scene smoke.
 
-GitHub CI preview is restored: `.github/workflows/p3-6a-preview.yml` runs Godot 4.7.2, imports the project, runs the P3.6A FAST gate, renders the live scene under Xvfb, captures `1280x720` PNG, and uploads it as an artifact. CI does not currently include the external `female_normal_v1` runtime pack, so map/UI review is authoritative there but actor appearance may fall back to placeholders.
+GitHub CI preview now restores and SHA-verifies the canonical 42-PNG `female_normal_v1` pack before Godot import. Clean CI run #15 passed restore/import/P3.6A FAST/capture/upload and produced the reviewed `1280x720` artifact. The live map now uses real female modular actors where the female rig is authoritative and a neutral humanoid modular fallback for rigs whose art pack is not produced yet; legacy letter-in-circle actors are gated out.
 
 # Next authoritative action
 
-P3.2, P3.3, full P3.4, P3.5 and **P3.6A runtime** are REAL PASS / LOCKED.
+P3.2, P3.3, full P3.4, P3.5 and **P3.6A runtime** remain REAL PASS / LOCKED.
 
-P3.6A still needs **real visual review only**. Do not ask for another verifier run now.
+P3.6A actor-pack CI integration is now green:
 
-Open:
+- tracked Base64 -> canonical ZIP SHA: PASS;
+- 42 PNG extraction: PASS;
+- Godot import: PASS;
+- P3.6A FAST gate: PASS;
+- CI preview capture/upload: PASS;
+- legacy letter-circle actors removed from the live map contract;
+- fixed actor-status text removed from the idle map to reduce overlap;
+- live actor spacing and building cue offsets improved.
 
-`Preview-P3-6A-Playable-Slice.cmd`
+Latest reviewed CI preview is materially cleaner, but **final P3.6A visual acceptance still belongs to the user on the real Windows preview**. Do not self-declare visual PASS.
 
-and judge whether the live scene now reads as a game rather than a QA/debug board.
+With the Windows machine available, run from repo root:
 
-Verification workflow from now on:
+`Sync-Main.cmd Run-P3-6A-Playable-Slice.cmd`
 
-- `Verify-P3-6A-Playable-Slice.cmd` = FAST active-slice check only;
-- `Verify-P3-6A-Playable-Slice-Full.cmd` = FULL cumulative check, final/cross-baseline use only;
-- do not rerun locked P3.3-P3.5 baselines after every small P3.6A patch.
+That performs:
 
-The FULL cumulative gate already passed on Windows Godot 4.7.2 in this cycle, so no further runtime gate is needed before visual preview.
+`safe main sync -> tracked Stage A restore + SHA check -> P3.6A FAST -> real preview on PASS`.
+
+No FULL cumulative rerun is required for this visual review because the FULL gate already passed in this acceptance cycle.
 
 # Current development priority — functionality first
 
