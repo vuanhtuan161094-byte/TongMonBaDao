@@ -96,6 +96,89 @@ jobs:
           if pos != cd_offset or len(entries) != 42:
               raise SystemExit(f"unexpected local archive layout: end={pos}, entries={len(entries)}")
 
+          import base64
+          import binascii
+          import zlib
+
+          target_name = b"godot/assets/p3/character_creator/parts/female_normal_v1/hair/hair_01/hair_01_up_back.png"
+          target = next(e for e in entries if e[-1] == target_name)
+          (
+              target_offset, _version_needed, _flags, _method, _mtime, _mdate,
+              target_crc, target_csize, target_usize, target_name,
+          ) = target
+          target_data_start = target_offset + 30 + len(target_name)
+          target_data_end = target_data_start + target_csize
+          compressed = bytes(data[target_data_start:target_data_end])
+
+          try:
+              current_output = zlib.decompress(compressed, -15)
+              current_crc = binascii.crc32(current_output) & 0xffffffff
+          except zlib.error:
+              current_output = b""
+              current_crc = None
+
+          if current_crc != target_crc:
+              part11_path = ".github/assets/p3/female_stage_a/part11.b64"
+              part11 = "".join(open(part11_path, "r", encoding="ascii").read().split())
+              if len(part11) != 3000:
+                  raise SystemExit(f"unexpected part11 length: {len(part11)}")
+              part11_byte_base = 22500
+              alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+              global_char_start = (target_data_start // 3) * 4
+              global_char_end = ((target_data_end + 2) // 3) * 4
+              local_char_start = max(0, global_char_start - 30000)
+              local_char_end = min(len(part11), global_char_end - 30000)
+              found = None
+
+              for char_index in range(local_char_start, local_char_end):
+                  quartet_start = (char_index // 4) * 4
+                  quartet = part11[quartet_start:quartet_start + 4]
+                  if len(quartet) != 4:
+                      continue
+                  quartet_global_byte = part11_byte_base + (quartet_start // 4) * 3
+                  for replacement in alphabet:
+                      if replacement == part11[char_index]:
+                          continue
+                      mutated = list(quartet)
+                      mutated[char_index - quartet_start] = replacement
+                      try:
+                          new_bytes = base64.b64decode("".join(mutated), validate=True)
+                      except Exception:
+                          continue
+
+                      candidate = bytearray(compressed)
+                      changed = False
+                      for j, value in enumerate(new_bytes):
+                          global_byte = quartet_global_byte + j
+                          if target_data_start <= global_byte < target_data_end:
+                              candidate[global_byte - target_data_start] = value
+                              changed = True
+                      if not changed:
+                          continue
+                      try:
+                          output = zlib.decompress(bytes(candidate), -15)
+                      except zlib.error:
+                          continue
+                      if len(output) == target_usize and (binascii.crc32(output) & 0xffffffff) == target_crc:
+                          found = (char_index, part11[char_index], replacement, bytes(candidate))
+                          break
+                  if found:
+                      break
+
+              if not found:
+                  raise SystemExit(
+                      f"no single Base64-character repair found for {target_name.decode()} "
+                      f"within part11[{local_char_start}:{local_char_end}]"
+                  )
+
+              char_index, old_char, new_char, corrected_compressed = found
+              print(
+                  f"STAGE_A_PART11_REPAIR char_index={char_index} "
+                  f"old={old_char} new={new_char} "
+                  f"global_char_index={30000 + char_index}"
+              )
+              data[target_data_start:target_data_end] = corrected_compressed
+
           central = bytearray()
           for (
               local_offset, version_needed, flags, method, mtime, mdate,
