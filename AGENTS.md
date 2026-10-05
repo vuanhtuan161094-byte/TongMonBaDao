@@ -69,7 +69,8 @@ Immediate runtime order:
 2. P3.3 disciple operational flow: real PASS / locked;
 3. P3.4 building management: real PASS / locked;
 4. P3.5 living-sect cues: real PASS / locked;
-5. P3.6A playable vertical slice is implemented/runtime+visual pending; P3.6 gameplay-loop playtest remains blocked until P3.6A real visual acceptance.
+5. P3.6A playable vertical slice is implemented/runtime-green; final visual acceptance remains user-owned;
+6. long-term direction is now defined by `docs/P3_7_LONG_TERM_SECT_ECONOMY_HUNTING_SPEC.md`: hunting-centric sect economy, 1,000–3,000 disciples, profession growth, autonomous personal economy and low-micro management.
 
 Character Creator remains a supporting anti-clone/presentation system. Minimum cosmetic variants can be completed later and must not block P3.3–P3.6 functional work.
 
@@ -93,7 +94,8 @@ Read before P3/character work in this order:
 7. `docs/P3_4_BUILDING_MANAGEMENT_SPEC.md`;
 8. `docs/P3_5_LIVING_SECT_CUES_SPEC.md`;
 9. `docs/P3_6_SECT_MASTER_GAMEPLAY_LOOP_SPEC.md`;
-10. live P3 code/tests.
+10. `docs/P3_7_LONG_TERM_SECT_ECONOMY_HUNTING_SPEC.md`;
+11. live P3 code/tests.
 
 ## GitHub CI preview
 
@@ -295,8 +297,10 @@ Item gacha may grant/refine Bloodline/Physique/etc under explicit rules, but mus
 2. P3.3 disciple operational flow: real PASS / locked;
 3. P3.4 building management: real PASS / locked;
 4. P3.5 living-sect cues: real PASS / locked;
-5. runtime + visually accept P3.6A playable vertical slice, then P3.6 real gameplay-loop playtest;
-6. minimum cosmetic variants needed to avoid obvious clones;
-7. six-combo/full female visual acceptance when functional map-management is stable;
-8. backward-compatible `appearance_profile` persistence;
-9. only then expand male rig, action set and asset volume.
+5. keep P3.6A runtime locked and obtain user visual acceptance from the real Windows preview;
+6. before broad implementation, finish the canonical P3.7 building tree and resource/construction rules in `docs/P3_7_LONG_TERM_SECT_ECONOMY_HUNTING_SPEC.md`;
+7. implement the P3.7 simulation authority incrementally: resources/Phẩm Lực/professions/buildings -> production -> hunting settlement -> personal economy;
+8. minimum cosmetic variants needed to avoid obvious clones;
+9. six-combo/full female visual acceptance when functional map-management is stable;
+10. backward-compatible `appearance_profile` persistence;
+11. only then expand male rig, action set and asset volume.
