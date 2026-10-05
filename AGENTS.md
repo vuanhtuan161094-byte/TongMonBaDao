@@ -98,7 +98,8 @@ Read before P3/character work in this order:
 11. `docs/P3_7_BUILDING_TREE_SPEC.md`;
 12. `docs/P3_7_DISCIPLE_LOADOUT_HUNTING_PROGRESSION_SPEC.md`;
 13. `docs/P3_7_RESOURCE_STORAGE_GROWTH_DATA_MODEL_SPEC.md`;
-14. live P3 code/tests.
+14. `docs/P3_7_TIME_SPEED_COOLDOWN_SPEC.md`;
+15. live P3 code/tests.
 
 ## GitHub CI preview
 
