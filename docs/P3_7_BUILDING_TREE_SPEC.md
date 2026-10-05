@@ -1828,3 +1828,28 @@ Not implemented yet:
 - multiple Mine instances.
 
 The current `forge_materials` use is an intentional compatibility adapter, not the final warehouse architecture.
+
+
+---
+
+# 44. IMPLEMENTATION STATUS — P3.7A1 REAL PASS
+
+The generic building authority now exists in backend.
+
+First implemented real building: **Mỏ Linh Khoáng**.
+
+Real contracts:
+- Lv1–100 state;
+- worker slots;
+- timed upgrade;
+- milestone tracking;
+- travel/mining/haul cycle;
+- movement-speed effect;
+- profession-XP integration;
+- deterministic persistence;
+- Lv10 Tầm Mạch Bàn milestone.
+
+Do not treat every design entry in this document as implemented merely because Mine is green.
+
+Next implementation target is **Linh Điền** on the same authority.
+Only after Mine + Linh Điền prove the framework should presentation expose the new level/upgrade mechanics.
