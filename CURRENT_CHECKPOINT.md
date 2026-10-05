@@ -303,3 +303,21 @@ Locked:
 - target healthy appropriate hunting progression is roughly 10–20× ordinary rear-base work cultivation rate;
 - no permanent death; injury/medicine/durability/downtime are the PvE cost;
 - P2.1's old +2 cultivation/victory is preserved as historical locked baseline until explicit P3.7 migration.
+
+
+# P3.7 resource/storage/base-growth authority — ADDED 2026-10-05
+
+Canonical child spec:
+`docs/P3_7_RESOURCE_STORAGE_GROWTH_DATA_MODEL_SPEC.md`
+
+Locked changes:
+- different resource items remain distinct and visible; no generic averaged-material stack;
+- resources use realm-grade labels (Phàm/Luyện Khí/Trúc Cơ/Kim Đan/Nguyên Anh/...) plus numeric Phẩm Lực;
+- higher progression gradually reveals new higher-grade material types;
+- raw stackable resources should prefer stable per-item Phẩm Lực so stacks remain clean;
+- commodity stacks may reach millions/billions;
+- there is NO normal warehouse capacity limit;
+- Kho progression is automation/logistics/reserve/lock/routing, not storage expansion;
+- all disciples receive passive cultivation growth;
+- the canonical six foundation fields are integrated by role: Tư Chất, Căn Cốt, Cơ Duyên, Thông Tuệ, Mị Lực, Tiềm Lực;
+- at-home AI may spend personal Spirit Stones on Mật Thất and cultivation pills.
