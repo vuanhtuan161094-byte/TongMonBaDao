@@ -941,3 +941,23 @@ That file owns:
 - migration constraints from P2.1/P2.3/P2.6.
 
 When overlaps exist, use the newer child spec unless it violates a higher-level locked P3.7 principle.
+
+
+---
+
+# 32. Canonical resource/storage/base-growth child authority
+
+Detailed rules now live in:
+
+`docs/P3_7_RESOURCE_STORAGE_GROWTH_DATA_MODEL_SPEC.md`
+
+That child spec supersedes earlier provisional ideas that used warehouse capacity limits or averaged mixed-item Phẩm Lực stacks.
+
+Use the child spec for:
+- resource identity/stacking;
+- realm-grade material labels;
+- Phẩm Lực representation;
+- warehouse semantics;
+- passive cultivation;
+- six-foundation integration;
+- at-home self-investment.
