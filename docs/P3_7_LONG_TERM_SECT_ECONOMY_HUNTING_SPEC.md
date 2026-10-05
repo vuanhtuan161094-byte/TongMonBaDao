@@ -973,3 +973,19 @@ Use `docs/DISCIPLE_LIFESPAN_CANON.md`:
 - expiry of lifespan -> Ma/Hồn state, not roster deletion;
 - valid longevity/revival item may restore life;
 - only expulsion removes the disciple from the sect roster.
+
+
+---
+
+# 34. Canonical time/speed/work-cycle child authority
+
+Detailed timing semantics now live in:
+
+`docs/P3_7_TIME_SPEED_COOLDOWN_SPEC.md`
+
+That child spec owns:
+- distinction between movement/attack/work/cast/cooldown timing;
+- physical Mine work cycle;
+- construction/upgrade duration;
+- crafting/treatment/service duration;
+- large-scale deterministic timing resolution.
