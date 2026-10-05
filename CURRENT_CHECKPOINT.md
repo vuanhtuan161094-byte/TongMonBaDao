@@ -217,3 +217,47 @@ Order:
 9. male rig/art expansion later.
 
 Do not let cosmetic production block functional map-management work.
+
+
+# P3.7 long-term sect economy / hunting direction — DESIGN AUTHORITY ADDED 2026-10-05
+
+Canonical spec:
+
+`docs/P3_7_LONG_TERM_SECT_ECONOMY_HUNTING_SPEC.md`
+
+Locked direction:
+- 1,000–3,000 disciples are supported conceptually; management must be by teams/halls/policies rather than per-disciple micro;
+- hunting/outside activity is the main long-term loop, with a rough 70% outside / 30% rear-base target;
+- standard hunting team is 5; solo-oriented traits may support solo hunting;
+- no permanent disciple death in the current design; defeat creates Thương Thế and recovery downtime;
+- hunting naturally consumes time/stamina/medicine/durability and returns Spirit Stones, materials, items, techniques, treasure fragments and progression;
+- disciples do not have full RPG inventories; temporary team loot bags settle into sect storage on return;
+- personal economy is limited to equipped gear, personal Spirit Stones, Contribution Points and a small consumable allowance;
+- equipment distribution is policy-driven with direct Sect Master override;
+- profession levels may reach 1,000+; every profession level gives +1% profession efficiency, EXP requirements rise with level, profession levels never decay;
+- profession milestone specialization and broad Bách Nghệ Lịch Luyện bonuses are planned;
+- sect members continue gaining passive cultivation while working; focused cultivation is faster, while work also grants profession/economic growth;
+- Secret Chambers are paid services using personal Spirit Stones; disciples choose autonomously according to AI/personality but the Sect Master can intervene;
+- all material magnitude uses one canonical numeric quality measure: **Phẩm Lực**; realm-style labels are presentation only and are not hard content locks;
+- normal building instances target Lv.1–100; long-term scale comes from more facilities rather than infinitely leveled individual buildings;
+- all Sect Treasures may contribute simultaneously; no tiny active-slot cap.
+
+## Construction resource rule
+
+Normal building upgrades use one common construction language:
+
+1. **Linh Mộc** — structural wood/organic construction material;
+2. **Khoáng Liệu** — structural mineral/stone/metal material;
+3. **Linh Thạch** — currency + activation/energy sink.
+
+Material quantity can be satisfied by eligible stock using **Phẩm Lực**, avoiding hard "material tier = building level" recipes.
+
+Only milestone upgrades require one thematic specialty component, e.g.:
+- Spirit Field -> Spirit Soil / Spirit Spring / formation component;
+- Mine -> prospecting/reinforcement component;
+- Alchemy -> furnace core / Fire Essence;
+- Artifact Hall -> furnace core / special metal;
+- Secret Chamber -> Formation Core / spirit-jade;
+- Beast Hall -> Beast Core / taming formation component.
+
+Next design action: finish the canonical building tree before implementing broad P3.7 code.
