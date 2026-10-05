@@ -358,7 +358,7 @@ static func from_dict(data: Dictionary) -> SimulationState:
 
     for row in data.get("buildings", []):
         if row is Dictionary:
-            var building := BuildingState.from_dict(row)
+            var building: BuildingState = BuildingState.from_dict(row)
             if building.id != &"":
                 state.buildings[str(building.id)] = building
 
