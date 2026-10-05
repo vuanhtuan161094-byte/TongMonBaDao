@@ -355,3 +355,20 @@ Important:
 - hunting reward uses current-stage requirement + relative monster realm/grade/challenge, so future realms scale without a fixed XP table;
 - target: appropriate hunting ~10–20× ordinary-work passive cultivation;
 - keep P2.1/P2.3/P2.6 locked until explicit backward-compatible P3.7 migration.
+
+
+## P3.7 RESOURCE / STORAGE / BASE GROWTH — CANONICAL
+
+Read:
+`docs/P3_7_RESOURCE_STORAGE_GROWTH_DATA_MODEL_SPEC.md`
+
+Important corrections:
+- do not use warehouse capacity as a gameplay gate;
+- do not average different material identities into one PL stack;
+- keep distinct resource IDs with realm-grade labels and stable base Phẩm Lực;
+- stacks can be extremely large;
+- warehouse level governs automation/logistics rather than numeric capacity;
+- higher progression introduces new resource types aligned with realm-grade bands;
+- all disciples gain passive cultivation;
+- integrate the existing six foundation fields rather than inventing a replacement stat block;
+- home AI may self-invest Spirit Stones into Secret Chambers and pills.
