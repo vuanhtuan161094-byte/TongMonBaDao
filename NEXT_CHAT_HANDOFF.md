@@ -339,3 +339,19 @@ Key rules:
 - first implementation slice contains 13 core buildings, with Mật Thất immediately after personal economy.
 
 Do not start presentation-first fake levels. Next authority work is the data model/contracts that make these levels, costs, capacities and production real.
+
+
+## P3.7 LOADOUT / HUNTING PROGRESSION — CANONICAL
+
+Read:
+`docs/P3_7_DISCIPLE_LOADOUT_HUNTING_PROGRESSION_SPEC.md`
+
+Important:
+- future personal loadout expands without becoming a personal warehouse;
+- AI equipment selection is default for scale;
+- ownership distinguishes sect-loaned vs disciple-owned gear;
+- personal gear requisition requires Contribution compensation;
+- PvE is now intended as the fastest normal realm-growth path;
+- hunting reward uses current-stage requirement + relative monster realm/grade/challenge, so future realms scale without a fixed XP table;
+- target: appropriate hunting ~10–20× ordinary-work passive cultivation;
+- keep P2.1/P2.3/P2.6 locked until explicit backward-compatible P3.7 migration.
