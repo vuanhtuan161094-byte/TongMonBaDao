@@ -141,6 +141,7 @@ jobs:
           open(path, "wb").write(rebuilt)
           PY
           test "$(stat -c%s "$PACK")" -eq 44838
+          unzip -t "$PACK"
           sha256sum "$PACK"
           echo "6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  $PACK" | sha256sum --check --strict
           test "$(unzip -Z1 "$PACK" | grep -Ec '^godot/assets/p3/character_creator/parts/female_normal_v1/.+\.png$')" -eq 42
