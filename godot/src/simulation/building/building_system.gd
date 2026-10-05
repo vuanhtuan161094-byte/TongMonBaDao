@@ -2,7 +2,10 @@ class_name BuildingSystem
 extends RefCounted
 
 const TYPE_MINE := &"mine"
+const TYPE_SPIRIT_FIELD := &"spirit_field"
+
 const PROF_MINING := &"mining"
+const PROF_HERBALISM := &"herbalism"
 
 const STATUS_ACTIVE := &"active"
 const STATUS_UPGRADING := &"upgrading"
@@ -10,17 +13,25 @@ const VALID_STATUSES := [STATUS_ACTIVE, STATUS_UPGRADING]
 
 const MILESTONE_LEVELS := [10, 20, 30, 50, 75, 100]
 
-# P3.7A intentionally bridges to the already-authoritative P2.6 material store
-# for the first Mine slice. It does not create a second warehouse.
+# P3.7A currently bridges the already-authoritative P2.6 material dictionary
+# instead of creating a second warehouse. Unified warehouse migration comes later.
 const MATERIAL_WOOD := "linh_moc"
 const MATERIAL_ORE := "thanh_thiet"
 const MATERIAL_TAM_MACH_BAN := "tam_mach_ban"
+const MATERIAL_HERB := "thanh_linh_thao"
+const MATERIAL_LINH_TUYEN_HEART := "linh_tuyen_chi_tam"
+
+const SPIRIT_PHASE_GROWING := &"growing"
+const SPIRIT_PHASE_HARVEST_READY := &"harvest_ready"
 
 # Only milestone content that actually exists is allowed to start.
-# Later milestones remain blocked until their real specialty item/content is defined.
+# Later milestones stay blocked until their real component/content is defined.
 const MILESTONE_COMPONENTS := {
     "mine": {
         10: MATERIAL_TAM_MACH_BAN
+    },
+    "spirit_field": {
+        10: MATERIAL_LINH_TUYEN_HEART
     }
 }
 
@@ -40,6 +51,25 @@ const DEFINITIONS := {
         "haul_distance": 6.0,
         "base_work_duration": 4.0,
         "base_batch_units": 2
+    },
+    "spirit_field": {
+        "name": "Linh Điền",
+        "max_level": 100,
+        "worker_group_id": "herbalism_crew",
+        "base_worker_slots": 2,
+        "worker_slot_every": 5,
+        "base_wood_cost": 6,
+        "base_ore_cost": 3,
+        "base_stone_cost": 18,
+        "base_upgrade_work": 8.0,
+        "upgrade_work_per_level": 2.0,
+        "work_distance": 7.0,
+        "haul_distance": 5.0,
+        "base_tend_duration": 3.0,
+        "base_harvest_duration": 3.0,
+        "base_growth_duration": 12.0,
+        "base_batch_units": 3,
+        "resource_id": MATERIAL_HERB
     }
 }
 
@@ -50,9 +80,22 @@ func initialize(state: SimulationState) -> void:
     if not state.sect.workforce_enabled:
         return
     state.p3_7_buildings_enabled = true
-    if state.buildings.is_empty():
+
+    if not state.sect.work_groups.has("herbalism_crew"):
+        state.sect.work_groups["herbalism_crew"] = {
+            "name": "Đội Linh Thực",
+            "priorities": {"herbalism": 3}
+        }
+        state.sect.workforce_event_count += 1
+
+    if primary_building(state, TYPE_MINE) == null:
         var mine := create_building(TYPE_MINE, 1)
         state.buildings[str(mine.id)] = mine
+        state.building_event_count += 1
+
+    if primary_building(state, TYPE_SPIRIT_FIELD) == null:
+        var field := create_building(TYPE_SPIRIT_FIELD, 1)
+        state.buildings[str(field.id)] = field
         state.building_event_count += 1
 
 func create_building(building_type: StringName, instance_index: int = 1) -> BuildingState:
@@ -118,6 +161,19 @@ func can_disciple_work(state: SimulationState, building: BuildingState, disciple
     if disciple.region_id != &"sect":
         return false
     return active_worker_ids(state, building).has(disciple.id)
+
+func work_available(state: SimulationState, profession_id: StringName) -> bool:
+    match profession_id:
+        PROF_MINING:
+            return primary_building(state, TYPE_MINE) != null
+        PROF_HERBALISM:
+            var field := primary_building(state, TYPE_SPIRIT_FIELD)
+            if field == null:
+                return false
+            var phase := StringName(field.production_state.get("phase", ""))
+            return phase == &"" or phase == SPIRIT_PHASE_HARVEST_READY
+        _:
+            return true
 
 func upgrade_cost(building: BuildingState) -> Dictionary:
     if building == null or building.level >= building.max_level:
@@ -208,11 +264,14 @@ func process_tick(state: SimulationState) -> void:
     ids.sort()
     for raw_id in ids:
         var building = state.buildings[raw_id]
-        if not (building is BuildingState) or not building.is_upgrading():
+        if not (building is BuildingState):
             continue
-        building.upgrade_progress += 1.0
-        if building.upgrade_progress + 0.000001 >= building.upgrade_required_work:
-            _complete_upgrade(state, building)
+        if building.is_upgrading():
+            building.upgrade_progress += 1.0
+            if building.upgrade_progress + 0.000001 >= building.upgrade_required_work:
+                _complete_upgrade(state, building)
+        if building.building_type == TYPE_SPIRIT_FIELD:
+            _process_spirit_field_growth(state, building)
 
 func perform_mining_step(state: SimulationState, disciple: DiscipleState, work_speed: float) -> Dictionary:
     var mine := primary_building(state, TYPE_MINE)
@@ -220,9 +279,9 @@ func perform_mining_step(state: SimulationState, disciple: DiscipleState, work_s
         return {"ok": false, "completed": false, "reason": "no_active_mine_slot"}
 
     var cycle := disciple.work_cycle_state.duplicate(true)
-    if str(cycle.get("profession", "")) != "mining" or str(cycle.get("building_id", "")) != str(mine.id):
+    if str(cycle.get("profession", "")) != str(PROF_MINING) or str(cycle.get("building_id", "")) != str(mine.id):
         cycle = {
-            "profession": "mining",
+            "profession": str(PROF_MINING),
             "building_id": str(mine.id),
             "phase": "travel_out",
             "progress": 0.0,
@@ -256,15 +315,13 @@ func perform_mining_step(state: SimulationState, disciple: DiscipleState, work_s
             progress += _movement_speed(state, disciple) * _haul_speed_multiplier(disciple)
             if progress + 0.000001 >= float(definition_for(mine).get("haul_distance", 6.0)):
                 var produced := maxi(int(cycle.get("carried_units", 0)), 1)
-                state.sect.forge_materials[MATERIAL_ORE] = int(state.sect.forge_materials.get(MATERIAL_ORE, 0)) + produced
-                mine.metrics["production_batches"] = int(mine.metrics.get("production_batches", 0)) + 1
-                mine.metrics["units_produced"] = int(mine.metrics.get("units_produced", 0)) + produced
-                state.building_event_count += 1
+                _deposit_resource(state, mine, MATERIAL_ORE, produced)
                 phase = &"complete"
                 progress = 0.0
                 cycle["carried_units"] = 0
                 result["completed"] = true
                 result["produced"] = produced
+                result["resource_id"] = MATERIAL_ORE
                 result["deposited_to"] = "sect_main_warehouse"
         _:
             phase = &"travel_out"
@@ -281,19 +338,118 @@ func perform_mining_step(state: SimulationState, disciple: DiscipleState, work_s
         disciple.work_cycle_state = cycle
     return result
 
+func perform_spirit_field_step(state: SimulationState, disciple: DiscipleState, work_speed: float) -> Dictionary:
+    var field := primary_building(state, TYPE_SPIRIT_FIELD)
+    if field == null or not can_disciple_work(state, field, disciple):
+        return {"ok": false, "completed": false, "reason": "no_active_spirit_field_slot"}
+
+    var production_phase := StringName(field.production_state.get("phase", ""))
+    if production_phase == SPIRIT_PHASE_GROWING:
+        return {"ok": false, "completed": false, "reason": "crop_growing"}
+    if production_phase != &"" and production_phase != SPIRIT_PHASE_HARVEST_READY:
+        return {"ok": false, "completed": false, "reason": "invalid_field_state"}
+
+    var task := &"plant" if production_phase == &"" else &"harvest"
+    var cycle := disciple.work_cycle_state.duplicate(true)
+    if str(cycle.get("profession", "")) != str(PROF_HERBALISM) or str(cycle.get("building_id", "")) != str(field.id) or StringName(cycle.get("task", "")) != task:
+        cycle = {
+            "profession": str(PROF_HERBALISM),
+            "building_id": str(field.id),
+            "task": str(task),
+            "phase": "travel_out",
+            "progress": 0.0,
+            "carried_units": 0
+        }
+
+    var phase := StringName(cycle.get("phase", "travel_out"))
+    var progress := maxf(float(cycle.get("progress", 0.0)), 0.0)
+    var result := {
+        "ok": true,
+        "completed": false,
+        "task": str(task),
+        "phase": str(phase),
+        "building_id": str(field.id),
+        "stamina_cost": 1.0
+    }
+
+    match phase:
+        &"travel_out":
+            progress += _movement_speed(state, disciple)
+            if progress + 0.000001 >= float(definition_for(field).get("work_distance", 7.0)):
+                phase = &"tending" if task == &"plant" else &"harvesting"
+                progress = 0.0
+        &"tending":
+            progress += maxf(work_speed, 0.25)
+            result["stamina_cost"] = 2.0
+            if progress + 0.000001 >= _field_tend_duration(field):
+                field.production_state = {
+                    "phase": str(SPIRIT_PHASE_GROWING),
+                    "resource_id": str(definition_for(field).get("resource_id", MATERIAL_HERB)),
+                    "growth_progress": 0.0,
+                    "growth_required": _field_growth_duration(field),
+                    "planted_by": str(disciple.id)
+                }
+                state.building_event_count += 1
+                result["completed"] = true
+                result["work_kind"] = "planting"
+                result["next_phase"] = "growth"
+        &"harvesting":
+            progress += maxf(work_speed, 0.25)
+            result["stamina_cost"] = 2.5
+            if progress + 0.000001 >= _field_harvest_duration(field):
+                phase = &"haul_back"
+                progress = 0.0
+                cycle["carried_units"] = _field_batch_units(field)
+        &"haul_back":
+            progress += _movement_speed(state, disciple) * _haul_speed_multiplier(disciple)
+            if progress + 0.000001 >= float(definition_for(field).get("haul_distance", 5.0)):
+                var produced := maxi(int(cycle.get("carried_units", 0)), 1)
+                var resource_id := str(field.production_state.get("resource_id", definition_for(field).get("resource_id", MATERIAL_HERB)))
+                _deposit_resource(state, field, resource_id, produced)
+                field.production_state.clear()
+                state.building_event_count += 1
+                phase = &"complete"
+                progress = 0.0
+                cycle["carried_units"] = 0
+                result["completed"] = true
+                result["work_kind"] = "harvest"
+                result["produced"] = produced
+                result["resource_id"] = resource_id
+                result["deposited_to"] = "sect_main_warehouse"
+        _:
+            phase = &"travel_out"
+            progress = 0.0
+            cycle["carried_units"] = 0
+
+    if bool(result.get("completed", false)):
+        disciple.work_cycle_state.clear()
+        return result
+
+    cycle["phase"] = str(phase)
+    cycle["progress"] = progress
+    disciple.work_cycle_state = cycle
+    result["next_phase"] = str(phase)
+    result["progress"] = progress
+    return result
+
 func cancel_work_cycle(state: SimulationState, disciple: DiscipleState, settle_carried: bool = true) -> int:
     if disciple.work_cycle_state.is_empty():
         return 0
+    var profession := StringName(disciple.work_cycle_state.get("profession", ""))
     var deposited := 0
-    if settle_carried and StringName(disciple.work_cycle_state.get("profession", "")) == PROF_MINING:
+    if settle_carried:
         deposited = maxi(int(disciple.work_cycle_state.get("carried_units", 0)), 0)
-        if deposited > 0:
-            state.sect.forge_materials[MATERIAL_ORE] = int(state.sect.forge_materials.get(MATERIAL_ORE, 0)) + deposited
+        if deposited > 0 and profession == PROF_MINING:
             var mine := primary_building(state, TYPE_MINE)
             if mine != null:
-                mine.metrics["production_batches"] = int(mine.metrics.get("production_batches", 0)) + 1
-                mine.metrics["units_produced"] = int(mine.metrics.get("units_produced", 0)) + deposited
-            state.building_event_count += 1
+                _deposit_resource(state, mine, MATERIAL_ORE, deposited)
+        elif deposited > 0 and profession == PROF_HERBALISM:
+            var field := primary_building(state, TYPE_SPIRIT_FIELD)
+            if field != null:
+                var resource_id := str(field.production_state.get("resource_id", definition_for(field).get("resource_id", MATERIAL_HERB)))
+                _deposit_resource(state, field, resource_id, deposited)
+                field.production_state.clear()
+                state.building_event_count += 1
     disciple.work_cycle_state.clear()
     return deposited
 
@@ -343,6 +499,15 @@ func validate_invariants(state: SimulationState) -> Array[String]:
             if not MILESTONE_LEVELS.has(milestone) or milestone > building.level:
                 errors.append("Building %s has invalid milestone %d." % [building.id, milestone])
 
+        if building.building_type == TYPE_SPIRIT_FIELD and not building.production_state.is_empty():
+            var production_phase := StringName(building.production_state.get("phase", ""))
+            if production_phase != SPIRIT_PHASE_GROWING and production_phase != SPIRIT_PHASE_HARVEST_READY:
+                errors.append("Spirit Field %s has invalid production phase." % building.id)
+            var growth_progress := float(building.production_state.get("growth_progress", 0.0))
+            var growth_required := float(building.production_state.get("growth_required", 0.0))
+            if growth_required <= 0.0 or growth_progress < 0.0 or growth_progress > growth_required + 0.001:
+                errors.append("Spirit Field %s has invalid crop-growth progress." % building.id)
+
     for disciple_value in state.disciples.values():
         var disciple: DiscipleState = disciple_value
         if disciple.work_cycle_state.is_empty():
@@ -350,14 +515,16 @@ func validate_invariants(state: SimulationState) -> Array[String]:
         var profession := StringName(disciple.work_cycle_state.get("profession", ""))
         var building_id := str(disciple.work_cycle_state.get("building_id", ""))
         var phase := StringName(disciple.work_cycle_state.get("phase", ""))
-        if profession != PROF_MINING:
+        if profession != PROF_MINING and profession != PROF_HERBALISM:
             errors.append("%s has unsupported P3.7 work-cycle profession." % disciple.display_name)
         if not state.buildings.has(building_id):
             errors.append("%s references missing work-cycle building." % disciple.display_name)
-        if phase not in [&"travel_out", &"mining", &"haul_back"]:
+        if profession == PROF_MINING and not [&"travel_out", &"mining", &"haul_back"].has(phase):
             errors.append("%s has invalid mining work-cycle phase." % disciple.display_name)
+        if profession == PROF_HERBALISM and not [&"travel_out", &"tending", &"harvesting", &"haul_back"].has(phase):
+            errors.append("%s has invalid herbalism work-cycle phase." % disciple.display_name)
         if float(disciple.work_cycle_state.get("progress", 0.0)) < 0.0 or int(disciple.work_cycle_state.get("carried_units", 0)) < 0:
-            errors.append("%s has invalid mining work-cycle progress." % disciple.display_name)
+            errors.append("%s has invalid work-cycle progress." % disciple.display_name)
     return errors
 
 func _complete_upgrade(state: SimulationState, building: BuildingState) -> void:
@@ -371,6 +538,24 @@ func _complete_upgrade(state: SimulationState, building: BuildingState) -> void:
     building.upgrade_required_work = 0.0
     building.upgrade_progress = 0.0
     building.metrics["upgrade_completions"] = int(building.metrics.get("upgrade_completions", 0)) + 1
+    state.building_event_count += 1
+
+func _process_spirit_field_growth(state: SimulationState, field: BuildingState) -> void:
+    if StringName(field.production_state.get("phase", "")) != SPIRIT_PHASE_GROWING:
+        return
+    var required := maxf(float(field.production_state.get("growth_required", 0.0)), 1.0)
+    var progress := minf(float(field.production_state.get("growth_progress", 0.0)) + 1.0, required)
+    field.production_state["growth_progress"] = progress
+    if progress + 0.000001 >= required:
+        field.production_state["phase"] = str(SPIRIT_PHASE_HARVEST_READY)
+        state.building_event_count += 1
+
+func _deposit_resource(state: SimulationState, building: BuildingState, resource_id: String, quantity: int) -> void:
+    if quantity <= 0:
+        return
+    state.sect.forge_materials[resource_id] = int(state.sect.forge_materials.get(resource_id, 0)) + quantity
+    building.metrics["production_batches"] = int(building.metrics.get("production_batches", 0)) + 1
+    building.metrics["units_produced"] = int(building.metrics.get("units_produced", 0)) + quantity
     state.building_event_count += 1
 
 func _movement_speed(state: SimulationState, disciple: DiscipleState) -> float:
@@ -389,6 +574,22 @@ func _mining_duration(mine: BuildingState) -> float:
 func _mining_batch_units(mine: BuildingState) -> int:
     var base := maxi(int(definition_for(mine).get("base_batch_units", 2)), 1)
     return base + int(floor(float(mine.level) / 10.0))
+
+func _field_tend_duration(field: BuildingState) -> float:
+    var base := float(definition_for(field).get("base_tend_duration", 3.0))
+    return maxf(base * maxf(0.55, 1.0 - float(maxi(field.level - 1, 0)) * 0.004), 1.0)
+
+func _field_harvest_duration(field: BuildingState) -> float:
+    var base := float(definition_for(field).get("base_harvest_duration", 3.0))
+    return maxf(base * maxf(0.55, 1.0 - float(maxi(field.level - 1, 0)) * 0.004), 1.0)
+
+func _field_growth_duration(field: BuildingState) -> float:
+    var base := float(definition_for(field).get("base_growth_duration", 12.0))
+    return maxf(base * maxf(0.45, 1.0 - float(maxi(field.level - 1, 0)) * 0.005), 3.0)
+
+func _field_batch_units(field: BuildingState) -> int:
+    var base := maxi(int(definition_for(field).get("base_batch_units", 3)), 1)
+    return base + int(floor(float(field.level) / 10.0))
 
 func _milestone_component(building_type: StringName, target_level: int) -> String:
     var table = MILESTONE_COMPONENTS.get(str(building_type), {})
