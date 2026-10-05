@@ -74,7 +74,6 @@ const DEFINITIONS := {
 }
 
 var equipment := EquipmentSystem.new()
-var combat_skills := CombatSkillSystem.new()
 
 func initialize(state: SimulationState) -> void:
     if not state.sect.workforce_enabled:
@@ -559,9 +558,11 @@ func _deposit_resource(state: SimulationState, building: BuildingState, resource
     state.building_event_count += 1
 
 func _movement_speed(state: SimulationState, disciple: DiscipleState) -> float:
-    var style := combat_skills.style_profile(state, disciple)
-    style = equipment.apply_style_modifiers(state, disciple, style)
-    return maxf(float(style.get("move_speed", 2.7)), 0.5)
+    # World/work movement is a canonical physical speed. Combat path style
+    # controls positioning tactics, not how fast a disciple walks to a job.
+    var movement_profile := {"move_speed": 2.7}
+    movement_profile = equipment.apply_style_modifiers(state, disciple, movement_profile)
+    return maxf(float(movement_profile.get("move_speed", 2.7)), 0.5)
 
 func _haul_speed_multiplier(disciple: DiscipleState) -> float:
     return lerpf(0.82, 1.08, clampf(disciple.constitution, 0.0, 1.0))
