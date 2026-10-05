@@ -305,7 +305,7 @@ The user has now explicitly selected the long-term game direction:
 - defeat -> injury/recovery, not permanent death;
 - natural hunting costs: time/stamina/medicine/durability;
 - no full personal inventories at scale;
-- team loot bag while outside -> automatic settlement into sect storage on return;
+- hunting item/material rewards route directly into the main Sect Warehouse; personal Tu Vi/Contribution/mastery/Spirit-Stone share resolve immediately; team carried inventory is supplies-only;
 - Spirit Stone/Contribution personal economy with policy-driven gear allocation;
 - professions 1–1000+, +1% efficiency each level, increasing EXP curve, permanent levels, specialization milestones;
 - workers still gain passive cultivation and use personal Spirit Stones for Secret Chambers/pills/gear/services;
@@ -320,7 +320,7 @@ major milestones add one building-specific specialty component only.
 
 Do not implement a hard material Lv.1–Lv.5 ladder and do not return to a simple mine->iron-only economy.
 
-Next: design the full building tree, inputs/outputs/professions/milestones/materials, then implement data authority incrementally.
+The building tree is already canonical and P3.7A1 backend implementation has started; use the latest P3.7A1 status below.
 
 
 ## P3.7 BUILDING TREE IS NOW CANONICAL
@@ -402,3 +402,29 @@ Key rules:
 - no universal fake cooldown after upgrade;
 - crafting/treatment/Secret Chamber/travel/repair use duration, not instant clicks;
 - true cooldown remains for skills and real active powers.
+
+
+## P3.7A1 BUILDING AUTHORITY + MINE — IMPLEMENTED, NOT LOCKED YET
+
+Backend now exists on live `main`:
+- BuildingState + BuildingSystem + P37Factory;
+- P3.7 feature flag preserves legacy P0–P2.12 behavior when off;
+- first real building is Mine `mine_001`, Lv.1–100;
+- worker slots reuse real `mining_crew`, no parallel worker list;
+- timed construction/upgrade with real Linh Mộc + Thanh Thiết + sect Spirit-Stone costs;
+- Lv.10 milestone requires real Tầm Mạch Bàn;
+- Mine work is travel -> mine batch -> haul/deposit -> repeat;
+- movement speed affects throughput;
+- XP is awarded on completed batch;
+- save/load + deterministic continuation covered.
+
+Evidence:
+- FAST backend CI Godot 4.7.2 Linux: PASS.
+- cumulative P0–P2.12 + P3.7A1 Linux full regression: PASS.
+- real Windows full gate: **AWAITING**.
+
+Next action:
+`Verify-P3-7A1-Building-Authority-Full.cmd`
+
+Do not call P3.7A1 PASS until that real Windows gate passes.
+After PASS, next implementation slice is **P3.7A2 — Linh Điền backend using the same BuildingSystem framework**.
