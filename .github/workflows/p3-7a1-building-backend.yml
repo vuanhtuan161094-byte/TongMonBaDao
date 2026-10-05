@@ -1,4 +1,4 @@
-name: P3.7A1 Building Backend
+name: P3.7A Building Backend
 
 on:
   workflow_dispatch:
@@ -13,7 +13,9 @@ on:
       - 'godot/src/simulation/core/simulation_scheduler.gd'
       - 'godot/src/simulation/equipment/equipment_system.gd'
       - 'godot/tests/simulation/p3_7a1_building_authority_test.gd'
+      - 'godot/tests/simulation/p3_7a2_spirit_field_test.gd'
       - 'tools/godot/Verify-P3-7A1-Building-Authority.ps1'
+      - 'tools/godot/Verify-P3-7A2-Spirit-Field.ps1'
       - '.github/workflows/p3-7a1-building-backend.yml'
 
 permissions:
@@ -21,7 +23,7 @@ permissions:
 
 jobs:
   p3-7a1-backend:
-    name: Godot 4.7.2 P3.7A1 fast backend gate
+    name: Godot 4.7.2 P3.7A latest fast backend gate
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -45,6 +47,6 @@ jobs:
       - name: Print Godot version
         run: godot --version
 
-      - name: Run P3.7A1 fast backend gate
+      - name: Run latest P3.7A fast backend gate
         shell: pwsh
-        run: ./tools/godot/Verify-P3-7A1-Building-Authority.ps1 -GodotBin /usr/local/bin/godot
+        run: ./tools/godot/Verify-P3-7A2-Spirit-Field.ps1 -GodotBin /usr/local/bin/godot
