@@ -14,6 +14,15 @@ const MILESTONE_LEVELS := [10, 20, 30, 50, 75, 100]
 # for the first Mine slice. It does not create a second warehouse.
 const MATERIAL_WOOD := "linh_moc"
 const MATERIAL_ORE := "thanh_thiet"
+const MATERIAL_TAM_MACH_BAN := "tam_mach_ban"
+
+# Only milestone content that actually exists is allowed to start.
+# Later milestones remain blocked until their real specialty item/content is defined.
+const MILESTONE_COMPONENTS := {
+    "mine": {
+        10: MATERIAL_TAM_MACH_BAN
+    }
+}
 
 const DEFINITIONS := {
     "mine": {
@@ -79,7 +88,7 @@ func worker_slots(building: BuildingState) -> int:
     var every := maxi(int(definition.get("worker_slot_every", 0)), 0)
     if every <= 0:
         return base_slots
-    return base_slots + int(floor(float(maxi(building.level - 1, 0)) / float(every)))
+    return base_slots + int(floor(float(building.level) / float(every)))
 
 func assigned_worker_ids(state: SimulationState, building: BuildingState) -> Array[StringName]:
     var result: Array[StringName] = []
@@ -118,11 +127,16 @@ func upgrade_cost(building: BuildingState) -> Dictionary:
     var factor := 1.0 + 0.15 * level + 0.01 * level * level
     var target_level := building.level + 1
     var milestone_mult := 2.0 if MILESTONE_LEVELS.has(target_level) else 1.0
-    return {
+    var cost := {
         MATERIAL_WOOD: maxi(1, int(ceil(float(definition.get("base_wood_cost", 1)) * factor * milestone_mult))),
         MATERIAL_ORE: maxi(1, int(ceil(float(definition.get("base_ore_cost", 1)) * factor * milestone_mult))),
         "spirit_stones": maxi(1, int(ceil(float(definition.get("base_stone_cost", 1)) * factor * milestone_mult)))
     }
+    if MILESTONE_LEVELS.has(target_level):
+        var component := _milestone_component(building.building_type, target_level)
+        if component != "":
+            cost[component] = 1
+    return cost
 
 func upgrade_required_work(building: BuildingState) -> float:
     var definition := definition_for(building)
@@ -141,12 +155,19 @@ func can_start_upgrade(state: SimulationState, building_id: StringName) -> Dicti
     if building.level >= building.max_level:
         return {"ok": false, "reason": "max_level"}
 
+    var target_level := building.level + 1
+    if MILESTONE_LEVELS.has(target_level) and _milestone_component(building.building_type, target_level) == "":
+        return {"ok": false, "reason": "milestone_component_not_defined", "target_level": target_level}
+
     var cost := upgrade_cost(building)
-    for material_id in [MATERIAL_WOOD, MATERIAL_ORE]:
+    var material_ids: Array = cost.keys()
+    material_ids.erase("spirit_stones")
+    material_ids.sort()
+    for material_id in material_ids:
         var need := int(cost.get(material_id, 0))
-        var have := int(state.sect.forge_materials.get(material_id, 0))
+        var have := int(state.sect.forge_materials.get(str(material_id), 0))
         if have < need:
-            return {"ok": false, "reason": "missing_material", "material_id": material_id, "need": need, "have": have}
+            return {"ok": false, "reason": "missing_material", "material_id": str(material_id), "need": need, "have": have}
     var stone_need := int(cost.get("spirit_stones", 0))
     if state.sect.spirit_stones < stone_need:
         return {"ok": false, "reason": "missing_spirit_stones", "need": stone_need, "have": state.sect.spirit_stones}
@@ -158,8 +179,12 @@ func start_upgrade(state: SimulationState, building_id: StringName) -> Dictionar
         return check
     var building: BuildingState = state.buildings[str(building_id)]
     var cost: Dictionary = check.get("cost", {})
-    state.sect.forge_materials[MATERIAL_WOOD] = int(state.sect.forge_materials.get(MATERIAL_WOOD, 0)) - int(cost.get(MATERIAL_WOOD, 0))
-    state.sect.forge_materials[MATERIAL_ORE] = int(state.sect.forge_materials.get(MATERIAL_ORE, 0)) - int(cost.get(MATERIAL_ORE, 0))
+    var material_ids: Array = cost.keys()
+    material_ids.erase("spirit_stones")
+    material_ids.sort()
+    for raw_material_id in material_ids:
+        var material_id := str(raw_material_id)
+        state.sect.forge_materials[material_id] = int(state.sect.forge_materials.get(material_id, 0)) - int(cost.get(material_id, 0))
     state.sect.spirit_stones -= int(cost.get("spirit_stones", 0))
 
     building.status = STATUS_UPGRADING
@@ -235,7 +260,7 @@ func perform_mining_step(state: SimulationState, disciple: DiscipleState, work_s
                 mine.metrics["production_batches"] = int(mine.metrics.get("production_batches", 0)) + 1
                 mine.metrics["units_produced"] = int(mine.metrics.get("units_produced", 0)) + produced
                 state.building_event_count += 1
-                phase = &"travel_out"
+                phase = &"complete"
                 progress = 0.0
                 cycle["carried_units"] = 0
                 result["completed"] = true
@@ -246,12 +271,31 @@ func perform_mining_step(state: SimulationState, disciple: DiscipleState, work_s
             progress = 0.0
             cycle["carried_units"] = 0
 
-    cycle["phase"] = str(phase)
-    cycle["progress"] = progress
-    disciple.work_cycle_state = cycle
     result["next_phase"] = str(phase)
     result["progress"] = progress
+    if bool(result.get("completed", false)):
+        disciple.work_cycle_state.clear()
+    else:
+        cycle["phase"] = str(phase)
+        cycle["progress"] = progress
+        disciple.work_cycle_state = cycle
     return result
+
+func cancel_work_cycle(state: SimulationState, disciple: DiscipleState, settle_carried: bool = true) -> int:
+    if disciple.work_cycle_state.is_empty():
+        return 0
+    var deposited := 0
+    if settle_carried and StringName(disciple.work_cycle_state.get("profession", "")) == PROF_MINING:
+        deposited = maxi(int(disciple.work_cycle_state.get("carried_units", 0)), 0)
+        if deposited > 0:
+            state.sect.forge_materials[MATERIAL_ORE] = int(state.sect.forge_materials.get(MATERIAL_ORE, 0)) + deposited
+            var mine := primary_building(state, TYPE_MINE)
+            if mine != null:
+                mine.metrics["production_batches"] = int(mine.metrics.get("production_batches", 0)) + 1
+                mine.metrics["units_produced"] = int(mine.metrics.get("units_produced", 0)) + deposited
+            state.building_event_count += 1
+    disciple.work_cycle_state.clear()
+    return deposited
 
 func clear_work_cycle(disciple: DiscipleState, profession_id: StringName = &"") -> void:
     if profession_id == &"" or StringName(disciple.work_cycle_state.get("profession", "")) == profession_id:
@@ -344,4 +388,10 @@ func _mining_duration(mine: BuildingState) -> float:
 
 func _mining_batch_units(mine: BuildingState) -> int:
     var base := maxi(int(definition_for(mine).get("base_batch_units", 2)), 1)
-    return base + int(floor(float(maxi(mine.level - 1, 0)) / 10.0))
+    return base + int(floor(float(mine.level) / 10.0))
+
+func _milestone_component(building_type: StringName, target_level: int) -> String:
+    var table = MILESTONE_COMPONENTS.get(str(building_type), {})
+    if not (table is Dictionary):
+        return ""
+    return str(table.get(target_level, ""))
