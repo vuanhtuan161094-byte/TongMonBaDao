@@ -1,6 +1,6 @@
 # P3.7 — CÂY CÔNG TRÌNH TÔNG MÔN V1
 
-Status: CANONICAL DESIGN AUTHORITY / IMPLEMENTATION NOT STARTED  
+Status: CANONICAL DESIGN AUTHORITY / P3.7A1 MINE BACKEND IMPLEMENTED / REAL WINDOWS GATE PENDING  
 Date: 2026-10-05  
 Parent authority: `docs/P3_7_LONG_TERM_SECT_ECONOMY_HUNTING_SPEC.md`
 
@@ -1801,3 +1801,30 @@ Corrections/extensions:
 - movement speed therefore affects actual production throughput;
 - routine work/crafting/healing/training uses duration;
 - true cooldown is reserved for reusable powers/actions where it makes semantic sense.
+
+
+---
+
+# 44. P3.7A1 IMPLEMENTED SUBSET
+
+Implemented, backend only:
+- common BuildingState lifecycle foundation;
+- timed construction/upgrade lifecycle;
+- Mine `mine_001` Lv.1–100;
+- real worker-slot gate using existing `mining_crew`;
+- real current resource adapter for Linh Mộc / Thanh Thiết / sect Spirit Stones;
+- Mine Lv.10 Tầm Mạch Bàn milestone component;
+- travel -> mine -> haul/deposit work cycle;
+- movement-speed and Căn Cốt hauling consequences;
+- persistence and deterministic continuation.
+
+Not implemented yet:
+- Linh Điền;
+- unified P3.7 resource registry/main warehouse migration;
+- profession Lv.1–1000 migration;
+- construction profession/worker acceleration;
+- higher Mine milestone components beyond content that actually exists;
+- building UI level/upgrade presentation;
+- multiple Mine instances.
+
+The current `forge_materials` use is an intentional compatibility adapter, not the final warehouse architecture.
