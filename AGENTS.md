@@ -76,6 +76,7 @@ Character Creator remains a supporting anti-clone/presentation system. Minimum c
 Regression launchers:
 
 - `Verify-P3-6A-Playable-Slice.cmd` — FAST active-slice verifier; default during P3.6A iteration;
+- `Run-P3-6A-Playable-Slice.cmd` — one-click convenience runner: FAST gate -> auto-open preview on PASS;
 - `Verify-P3-6A-Playable-Slice-Full.cmd` — FULL cumulative verifier; final/cross-baseline use only;
 
 - `Sync-P3-2-Camera.cmd` — locked P3.1/P3.2 interaction chain;
