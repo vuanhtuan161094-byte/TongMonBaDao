@@ -199,7 +199,8 @@ func _verify_growth_save_load_and_determinism() -> bool:
     SimulationScheduler.new(state_a).run_ticks(40)
     SimulationScheduler.new(loaded).run_ticks(40)
     if state_a.to_dict() != loaded.to_dict():
-        return _fail("P3.7A2 deterministic continuation diverged after save/load.")
+        var difference := _first_difference(state_a.to_dict(), loaded.to_dict(), "state")
+        return _fail("P3.7A2 deterministic continuation diverged after save/load: %s" % difference)
     return _validate(loaded)
 
 func _assign_herbalist(state: SimulationState) -> DiscipleState:
@@ -245,6 +246,33 @@ func _validate(state: SimulationState) -> bool:
     if not errors.is_empty():
         return _fail("Invariant failure: %s" % " | ".join(errors))
     return true
+
+func _first_difference(left: Variant, right: Variant, path: String) -> String:
+    if typeof(left) != typeof(right):
+        return "%s type %s != %s" % [path, typeof(left), typeof(right)]
+    if left is Dictionary:
+        var left_keys: Array = left.keys()
+        var right_keys: Array = right.keys()
+        left_keys.sort()
+        right_keys.sort()
+        if left_keys != right_keys:
+            return "%s keys %s != %s" % [path, left_keys, right_keys]
+        for key in left_keys:
+            var nested := _first_difference(left[key], right[key], "%s.%s" % [path, str(key)])
+            if nested != "":
+                return nested
+        return ""
+    if left is Array:
+        if left.size() != right.size():
+            return "%s size %d != %d" % [path, left.size(), right.size()]
+        for index in range(left.size()):
+            var nested := _first_difference(left[index], right[index], "%s[%d]" % [path, index])
+            if nested != "":
+                return nested
+        return ""
+    if left != right:
+        return "%s %s != %s" % [path, str(left), str(right)]
+    return ""
 
 func _cleanup() -> void:
     if FileAccess.file_exists(SAVE_PATH):
