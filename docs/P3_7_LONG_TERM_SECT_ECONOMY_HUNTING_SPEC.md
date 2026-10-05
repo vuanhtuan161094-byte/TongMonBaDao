@@ -138,21 +138,15 @@ A disciple owns only:
 - a very small consumable/loadout allowance;
 - personal state and progression.
 
-A hunting team has a temporary **Team Loot Bag / Hành Nang**.
+Hunting does **not** use a secondary loot warehouse or persistent reward bag.
 
-While outside:
-- loot enters the team bag;
-- bag capacity is finite;
-- bag capacity can later be improved by storage items, spirit beasts, logistics equipment or treasures;
-- full bag may cause automatic return or policy-dependent behavior.
+When an encounter resolves:
+- item/material loot -> main Sect Warehouse immediately;
+- sect Spirit Stone share -> sect economy immediately;
+- personal Spirit Stone share -> participating disciples immediately;
+- Tu Vi / Contribution / combat or hunting progression -> participating disciples immediately.
 
-On return to sect:
-- raw materials -> Sect Warehouse;
-- unassigned equipment/items -> Loot Warehouse;
-- Spirit Stones -> split according to sect policy;
-- participants -> gain Contribution Points and relevant progression.
-
-The player does not sort hundreds of personal bags.
+The team's carried inventory is only an outward **supply loadout** (medicine, pills, talismans, food, emergency items). It is not used to store hunting rewards.
 
 ---
 
@@ -161,7 +155,7 @@ The player does not sort hundreds of personal bags.
 Default concept:
 - most raw material loot is sect property;
 - a configurable share of Spirit Stones becomes personal team income;
-- rare equipment enters sect-controlled loot storage;
+- rare equipment enters the main Sect Warehouse as sect-owned property;
 - hunters receive Contribution Points for bringing valuables home.
 
 Sect policies may later define the split.
@@ -883,7 +877,7 @@ Only after this tree is coherent should the simulation data model be extended.
 3. Profession EXP + disciple passive cultivation.
 4. Spirit Field/Mine/Forest production.
 5. Building upgrade/milestone framework.
-6. Hunter team + Team Loot Bag + settlement.
+6. Hunter team + immediate reward routing to main Sect Warehouse/personal rewards.
 7. Contribution/Spirit Stone personal economy.
 8. Secret Chamber autonomous spending.
 9. Production halls.
@@ -961,3 +955,21 @@ Use the child spec for:
 - passive cultivation;
 - six-foundation integration;
 - at-home self-investment.
+
+
+---
+
+# 33. LOCKED OVERRIDES 2026-10-05
+
+## Hunting loot routing
+- no Loot Warehouse;
+- no persistent Team Loot Bag for rewards;
+- items/materials go directly to main Sect Warehouse when generated;
+- personal Tu Vi, Contribution, mastery and Spirit Stone share are granted immediately;
+- team carried inventory is supplies-only.
+
+## Lifespan persistence
+Use `docs/DISCIPLE_LIFESPAN_CANON.md`:
+- expiry of lifespan -> Ma/Hồn state, not roster deletion;
+- valid longevity/revival item may restore life;
+- only expulsion removes the disciple from the sect roster.
