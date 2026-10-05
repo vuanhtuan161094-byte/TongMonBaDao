@@ -394,15 +394,18 @@ Output:
 - Định Giá hỗ trợ.
 
 ## Cấp thường
-- sức chứa;
 - tốc độ nhập/xuất;
 - tốc độ phân loại;
-- số rule reserve.
+- số rule reserve;
+- tốc độ auto-routing/hậu cần.
+
+**Không có giới hạn sức chứa kho thường.** Commodity stack có thể tăng đến quy mô rất lớn.
 
 ## Milestone
 
 Lv.1:
-- chứa đồ.
+- lưu trữ tài nguyên không giới hạn dung lượng số học thông thường;
+- thao tác kho cơ bản.
 
 Lv.10:
 - auto sort theo nhóm.
@@ -421,7 +424,8 @@ Lv.75:
 
 Lv.100:
 - mạng kho liên kết;
-- nhiều kho hoạt động như một logic inventory đối với UI.
+- nhiều kho hoạt động như một logic inventory đối với UI;
+- routing/hậu cần tự động cấp cao.
 
 ## Specialty
 - Không Gian Thạch;
@@ -513,7 +517,7 @@ Không yêu cầu người chơi bấm tưới/thu hoạch.
 - worker slot;
 - tốc độ tăng trưởng;
 - Ngưỡng Xử Lý PL;
-- tỷ lệ cây phẩm chất tốt.
+- tỷ lệ mở/thu được giống hoặc nguyên liệu thuộc cảnh giới phẩm cao hơn.
 
 ## Milestone
 
@@ -579,7 +583,7 @@ PvE mang về:
 - worker;
 - tỷ lệ khoáng hiếm;
 - Ngưỡng Xử Lý PL;
-- sức chứa cục bộ.
+- khả năng tiếp cận loại khoáng thuộc cảnh giới phẩm cao hơn.
 
 ## Milestone
 
@@ -1766,3 +1770,18 @@ Trước khi implementation P3.7 bắt đầu, phải trả lời được:
 Sau đó mới patch runtime.
 
 Không để presentation đi trước gameplay authority.
+
+
+---
+
+# 42. RESOURCE / STORAGE CORRECTION
+
+The canonical resource/storage rules are now owned by:
+`docs/P3_7_RESOURCE_STORAGE_GROWTH_DATA_MODEL_SPEC.md`
+
+Corrections to earlier building-tree wording:
+- no normal warehouse-capacity ceiling;
+- commodity stacks can become extremely large;
+- warehouse levels improve automation/routing/reserve/locking rather than storage size;
+- higher facility/profession progression can expose higher-realm-grade resource types;
+- resource identity remains explicit; Phẩm Lực does not replace item names.
