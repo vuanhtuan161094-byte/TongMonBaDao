@@ -74,6 +74,9 @@ $Godot = [string]$resolved.Path
 Write-Host "=== P3.7A1 BUILDING AUTHORITY FAST GATE ==="
 Write-Host "[Godot] $($resolved.Version)"
 
+Write-Host "[0/2] Refresh Godot script-class cache"
+Invoke-FastGodot @("--headless","--path",$Project,"--editor","--quit") "Refresh project script classes"
+
 Write-Host "[1/2] Parse changed backend scripts"
 foreach ($script in @(
     "res://src/simulation/state/building_state.gd",
