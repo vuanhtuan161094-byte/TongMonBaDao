@@ -96,7 +96,8 @@ Read before P3/character work in this order:
 9. `docs/P3_6_SECT_MASTER_GAMEPLAY_LOOP_SPEC.md`;
 10. `docs/P3_7_LONG_TERM_SECT_ECONOMY_HUNTING_SPEC.md`;
 11. `docs/P3_7_BUILDING_TREE_SPEC.md`;
-12. live P3 code/tests.
+12. `docs/P3_7_DISCIPLE_LOADOUT_HUNTING_PROGRESSION_SPEC.md`;
+13. live P3 code/tests.
 
 ## GitHub CI preview
 
