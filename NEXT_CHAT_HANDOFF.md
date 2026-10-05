@@ -197,6 +197,8 @@ P3.5 first real Windows attempt failed during GDScript parse because `LivingCueT
 
 P3.6A first Windows gate exposed a popup lifecycle bug (`DiscipleDeepScreen2`); it was fixed. The subsequent FULL cumulative rerun passed the P3.6A contract and live scene smoke.
 
+GitHub CI preview is restored: `.github/workflows/p3-6a-preview.yml` runs Godot 4.7.2, imports the project, runs the P3.6A FAST gate, renders the live scene under Xvfb, captures `1280x720` PNG, and uploads it as an artifact. CI does not currently include the external `female_normal_v1` runtime pack, so map/UI review is authoritative there but actor appearance may fall back to placeholders.
+
 ## NEXT WINDOWS ACTION
 
 P3.6A runtime is **REAL PASS** on Windows Godot 4.7.2.
