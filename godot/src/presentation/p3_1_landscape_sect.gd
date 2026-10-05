@@ -834,9 +834,18 @@ func _count_outside() -> int:
     return count
 
 func _actor_offset(index: int) -> Vector2:
-    var col := index % 3
-    var row := int(floor(float(index) / 3.0)) % 2
-    return Vector2(float(col - 1) * 28.0, float(row) * 34.0)
+    var offsets: Array[Vector2] = [
+        Vector2(-64.0, 10.0),
+        Vector2(64.0, 10.0),
+        Vector2(0.0, -48.0),
+        Vector2(-64.0, -48.0),
+        Vector2(64.0, -48.0),
+        Vector2(-32.0, 54.0),
+        Vector2(32.0, 54.0),
+        Vector2(-92.0, 28.0),
+        Vector2(92.0, 28.0)
+    ]
+    return offsets[index % offsets.size()]
 
 func _element_name(element: String) -> String:
     match element:
