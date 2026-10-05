@@ -261,3 +261,25 @@ Only milestone upgrades require one thematic specialty component, e.g.:
 - Beast Hall -> Beast Core / taming formation component.
 
 Next design action: finish the canonical building tree before implementing broad P3.7 code.
+
+
+# P3.7 building tree authority — ADDED 2026-10-05
+
+Canonical child spec:
+`docs/P3_7_BUILDING_TREE_SPEC.md`
+
+Locked building architecture:
+- normal building instances are Lv.1–100;
+- routine levels raise efficiency/capacity/throughput/processing capability;
+- milestone levels open mechanics rather than only +% stats;
+- long-term scale comes from more facility instances, not infinite building levels;
+- common upgrade language is Linh Mộc + Khoáng Liệu + Linh Thạch;
+- milestone upgrades add only one thematic specialty component;
+- construction material fulfillment is Phẩm Lực-based with warehouse reserve/lock rules;
+- production buildings do not hard-lock material by realm/tier; higher-PL material above facility capability suffers penalties instead;
+- the first authoritative implementation slice is: Đại Điện, Kho, Linh Điền, Mỏ, Đệ Tử Xá, Tu Luyện Đài, Y Quán, Luyện Đan, Luyện Khí, Hậu Cần, Săn Yêu Điện, Phường Thị, Cổng Tông Môn;
+- Mật Thất follows immediately after the personal Spirit Stone economy exists;
+- Phù Lục, Trận Pháp, Ngự Thú, Tửu, Linh Trù, Hoa, Đấu Giá and advanced facilities are later expansions.
+
+Next design task before code:
+define exact data contracts for resource stacks/Phẩm Lực, building instances, profession EXP curve, warehouse policy, construction resolver and hunting settlement.
