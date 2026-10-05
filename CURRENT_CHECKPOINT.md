@@ -390,3 +390,57 @@ After real Windows PASS:
 1. mark P3.7A1 locked;
 2. implement P3.7A2 Linh Điền on the same authority;
 3. do not create a second building/workforce/resource engine.
+
+
+# P3.7A1 BUILDING AUTHORITY + MINE BACKEND — REAL PASS 2026-10-06
+
+Implementation status:
+- backend/simulation only; no P3 presentation migration yet;
+- opt-in via `P37Factory`, built on top of `P212Factory`;
+- legacy P0–P2 behavior remains disabled from P3.7 unless the P3.7 factory/flag is used.
+
+Implemented authority:
+- `BuildingState` with instance identity, type, Lv1–100, status, worker group, timed upgrade state, milestones and metrics;
+- `SimulationState` persistence for P3.7 buildings;
+- disciple `work_cycle_state` persistence for physical work cycles;
+- `BuildingSystem` timed upgrades;
+- scheduler advances construction over real simulation ticks;
+- first real building: **Mỏ Linh Khoáng**;
+- Mine reuses existing `mining_crew` rather than creating a parallel workforce;
+- Lv1 has two active worker slots; assigning more workers than slots does not grant extra production;
+- worker-slot count grows on the canonical five-level cadence;
+- mining cycle is authoritative: travel to work -> mine batch -> haul/deposit -> resource credited to the current main warehouse bridge;
+- movement speed affects travel/haul time;
+- Căn Cốt currently affects hauling speed through a bounded multiplier;
+- Mining profession work speed/learning/traits remain the existing WorkforceSystem authority;
+- completed batch grants real Mining profession XP;
+- work interruption/group reassignment settles already-mined carried units before clearing the cycle;
+- ordinary upgrades consume real Linh Mộc + Thanh Thiết + sect Linh Thạch on start;
+- upgrade level applies only after construction work completes;
+- no generic post-upgrade cooldown;
+- Lv9 -> Lv10 requires a real **Tầm Mạch Bàn** and records milestone 10;
+- higher Mine milestones remain intentionally blocked until their real specialty components/content are defined.
+
+Temporary bridge, NOT final warehouse migration:
+- P3.7A1 uses existing `sect.forge_materials` for Linh Mộc/Thanh Thiết and `sect.spirit_stones` for construction cost;
+- do not create a second warehouse;
+- the later unified resource/warehouse migration must replace this bridge cleanly.
+
+Real Godot 4.7.2 verification:
+- P3.7A1 FAST backend gate: PASS;
+- P3.7A1 full cumulative gate: PASS;
+- cumulative run re-ran P0 -> P2.12 and every locked simulation gate remained PASS;
+- P3.7A1 exact save/load and deterministic continuation PASS.
+
+Persistent gate:
+- `.github/workflows/p3-7a1-building-backend.yml`;
+- `Verify-P3-7A1-Building-Authority.cmd`;
+- `Verify-P3-7A1-Building-Authority-Full.cmd`.
+
+Important:
+- live P3 map still starts from the P2.12 factory and therefore MUST NOT display P3.7 building levels/upgrades yet;
+- P3.4 rule against fake presentation remains in force.
+
+Next backend production step:
+**P3.7A2 — Linh Điền**, using the same BuildingState/BuildingSystem/work-cycle framework to prove the architecture generalizes beyond Mining.
+Do not jump to Đại Điện first and do not redesign the framework in parallel.
