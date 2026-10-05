@@ -4,7 +4,7 @@ extends Control
 signal cue_pressed(cue: Dictionary)
 
 const DISCIPLE_OFFSET := Vector2(-66.0, -82.0)
-const BUILDING_OFFSET := Vector2(-66.0, -58.0)
+const BUILDING_OFFSET := Vector2(-66.0, -88.0)
 const CUE_SIZE := Vector2(132.0, 32.0)
 
 var buttons: Dictionary = {}
