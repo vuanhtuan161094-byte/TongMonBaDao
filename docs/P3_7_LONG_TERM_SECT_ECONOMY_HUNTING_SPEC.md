@@ -892,3 +892,31 @@ Only after this tree is coherent should the simulation data model be extended.
 12. Expand to higher scale.
 
 Godot remains presentation/client; gameplay authority stays in the canonical simulation/runtime architecture.
+
+
+---
+
+# 30. Canonical building-tree child authority
+
+The detailed building tree is now canonical in:
+
+`docs/P3_7_BUILDING_TREE_SPEC.md`
+
+That file owns:
+- building families and dependencies;
+- Lv.1–100 progression rules;
+- worker/capacity scaling;
+- universal construction-cost rule;
+- milestone specialty material rule;
+- per-building milestone mechanics;
+- initial implementation slice.
+
+If this parent spec and the building-tree child spec overlap, use the newer/more specific building-tree rule unless it violates a higher-level locked principle in this parent document.
+
+The next design deliverable is no longer the building tree. It is the concrete simulation data contract for:
+1. resource stacks + Phẩm Lực;
+2. warehouse reserve/lock/auto-consume;
+3. building instance state;
+4. profession EXP curve + milestone data;
+5. construction cost resolver;
+6. hunting loot settlement.
