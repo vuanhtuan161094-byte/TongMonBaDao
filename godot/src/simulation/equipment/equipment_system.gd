@@ -20,7 +20,8 @@ const MATERIAL_NAMES := {
     "linh_moc": "Linh Mộc",
     "thanh_thiet": "Thanh Thiết",
     "tinh_lang_bi": "Tinh Lang Bì",
-    "yeu_dan": "Yêu Đan"
+    "yeu_dan": "Yêu Đan",
+    "tam_mach_ban": "Tầm Mạch Bàn"
 }
 
 const QUALITY_DEFINITIONS := {
