@@ -209,6 +209,8 @@ User supplied:
 
 Do not ask for another gate run now.
 
+Convenience runner for future iterations: `Run-P3-6A-Playable-Slice.cmd` runs the FAST gate and automatically opens preview only when green.
+
 Next:
 
 `Preview-P3-6A-Playable-Slice.cmd`
