@@ -302,8 +302,8 @@ Item gacha may grant/refine Bloodline/Physique/etc under explicit rules, but mus
 3. P3.4 building management: real PASS / locked;
 4. P3.5 living-sect cues: real PASS / locked;
 5. keep P3.6A runtime locked and obtain user visual acceptance from the real Windows preview;
-6. P3.7 building tree and resource/storage/growth data direction are canonical; before broad implementation, finish the remaining concrete contracts for building instances, profession EXP, construction resolver and hunting settlement;
-7. implement the P3.7 simulation authority incrementally: resources/Phẩm Lực/professions/buildings -> production -> hunting settlement -> personal economy;
+6. P3.7A1 Building Authority + first Mine backend slice is implemented on `main`: real BuildingState, Lv.1–100 Mine, worker-slot binding to the existing workforce, timed upgrades, real material/Spirit-Stone costs, Lv.10 Tầm Mạch Bàn milestone, travel -> mining -> haul/deposit cycle, movement-speed consequence, persistence and deterministic continuation. FAST CI and cumulative P0–P2.12 + P3.7A1 Linux Godot 4.7.2 gates are green; **AWAITING REAL WINDOWS FULL GATE, NOT PASS YET**;
+7. next immediate action is `Verify-P3-7A1-Building-Authority-Full.cmd` on the user's real Windows Godot 4.7.2. Only after that passes, lock P3.7A1 and implement P3.7A2 Linh Điền on the same BuildingSystem authority;
 8. minimum cosmetic variants needed to avoid obvious clones;
 9. six-combo/full female visual acceptance when functional map-management is stable;
 10. backward-compatible `appearance_profile` persistence;
