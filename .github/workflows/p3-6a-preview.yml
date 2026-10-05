@@ -47,7 +47,79 @@ jobs:
           set -euo pipefail
           PACK="/tmp/female_normal_v1_stageA_runtime_pack_v2_quant.zip"
           cat .github/assets/p3/female_stage_a/part*.b64 | tr -d '\r\n\t ' | base64 --decode > "$PACK"
+          python3 - "$PACK" <<'PY'
+          import struct
+          import sys
+
+          path = sys.argv[1]
+          data = bytearray(open(path, "rb").read())
+          cd_offset = 38974
+          entries = []
+          pos = 0
+          while pos < cd_offset:
+              if data[pos:pos + 4] != b"PK\\x03\\x04":
+                  raise SystemExit(f"bad local header at {pos}")
+              (
+                  version_needed, flags, method, mtime, mdate,
+                  crc32, compressed_size, uncompressed_size,
+                  name_len, extra_len,
+              ) = struct.unpack_from("<HHHHHIIIHH", data, pos + 4)
+              name = bytes(data[pos + 30:pos + 30 + name_len])
+              entries.append((
+                  pos, version_needed, flags, method, mtime, mdate,
+                  crc32, compressed_size, uncompressed_size, name,
+              ))
+              pos += 30 + name_len + extra_len + compressed_size
+
+          if pos != cd_offset or len(entries) != 42:
+              raise SystemExit(f"unexpected local archive layout: end={pos}, entries={len(entries)}")
+
+          central = bytearray()
+          for (
+              local_offset, version_needed, flags, method, mtime, mdate,
+              crc32, compressed_size, uncompressed_size, name,
+          ) in entries:
+              central += struct.pack(
+                  "<4sHHHHHHIIIHHHHHII",
+                  b"PK\\x01\\x02",
+                  0x0314,
+                  version_needed,
+                  flags,
+                  method,
+                  mtime,
+                  mdate,
+                  crc32,
+                  compressed_size,
+                  uncompressed_size,
+                  len(name),
+                  0,
+                  0,
+                  0,
+                  0,
+                  0x81A40000,
+                  local_offset,
+              )
+              central += name
+
+          if len(central) != 5842:
+              raise SystemExit(f"unexpected central directory size: {len(central)}")
+
+          eocd = struct.pack(
+              "<4sHHHHIIH",
+              b"PK\\x05\\x06",
+              0,
+              0,
+              len(entries),
+              len(entries),
+              len(central),
+              cd_offset,
+              0,
+          )
+          rebuilt = data[:cd_offset] + central + eocd
+          open(path, "wb").write(rebuilt)
+          PY
           test "$(stat -c%s "$PACK")" -eq 44838
+          sha256sum "$PACK"
           echo "6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  $PACK" | sha256sum --check --strict
           test "$(unzip -Z1 "$PACK" | grep -Ec '^godot/assets/p3/character_creator/parts/female_normal_v1/.+\.png$')" -eq 42
           test "$(unzip -Z1 "$PACK" | sed '/\/$/d' | wc -l)" -eq 42
