@@ -304,7 +304,7 @@ Item gacha may grant/refine Bloodline/Physique/etc under explicit rules, but mus
 5. keep P3.6A runtime locked and obtain user visual acceptance from the real Windows preview;
 6. P3.7A1 Building Authority + first Mine backend slice is implemented on `main`: real BuildingState, Lv.1–100 Mine, worker-slot binding to the existing workforce, timed upgrades, real material/Spirit-Stone costs, Lv.10 Tầm Mạch Bàn milestone, travel -> mining -> haul/deposit cycle, movement-speed consequence, persistence and deterministic continuation. FAST CI and cumulative P0–P2.12 + P3.7A1 Linux Godot 4.7.2 gates are green; **AWAITING REAL WINDOWS FULL GATE, NOT PASS YET**;
 7. next immediate action is `Verify-P3-7A1-Building-Authority-Full.cmd` on the user's real Windows Godot 4.7.2. Only after that passes, lock P3.7A1 and implement P3.7A2 Linh Điền on the same BuildingSystem authority;
-8. minimum cosmetic variants needed to avoid obvious clones;
-9. six-combo/full female visual acceptance when functional map-management is stable;
-10. backward-compatible `appearance_profile` persistence;
-11. only then expand male rig, action set and asset volume.
+9. minimum cosmetic variants needed to avoid obvious clones;
+10. six-combo/full female visual acceptance when functional map-management is stable;
+11. backward-compatible `appearance_profile` persistence;
+12. only then expand male rig, action set and asset volume.
