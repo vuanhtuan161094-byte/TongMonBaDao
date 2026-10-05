@@ -92,8 +92,15 @@ func assign_group(state: SimulationState, disciple_id: StringName, group_id: Str
     if group_id != &"" and not state.sect.work_groups.has(str(group_id)):
         return false
     var disciple: DiscipleState = state.disciples[disciple_id]
-    if state.p3_7_buildings_enabled and disciple.work_group_id == &"mining_crew" and group_id != &"mining_crew":
-        building_system.cancel_work_cycle(state, disciple, true)
+    if state.p3_7_buildings_enabled and not disciple.work_cycle_state.is_empty():
+        var cycle_profession := StringName(disciple.work_cycle_state.get("profession", ""))
+        var expected_group := &""
+        if cycle_profession == PROF_MINING:
+            expected_group = &"mining_crew"
+        elif cycle_profession == PROF_HERBALISM:
+            expected_group = &"herbalism_crew"
+        if expected_group != &"" and group_id != expected_group:
+            building_system.cancel_work_cycle(state, disciple, true)
     disciple.work_group_id = group_id
     state.sect.workforce_event_count += 1
     return true
@@ -144,8 +151,9 @@ func issue_command(state: SimulationState, disciple_id: StringName, kind: String
         return false
     var disciple: DiscipleState = state.disciples[disciple_id]
     if state.p3_7_buildings_enabled and not disciple.work_cycle_state.is_empty():
-        var keeps_mining := kind == COMMAND_WORK and StringName(target) == PROF_MINING
-        if not keeps_mining:
+        var cycle_profession := StringName(disciple.work_cycle_state.get("profession", ""))
+        var keeps_current_work := kind == COMMAND_WORK and StringName(target) == cycle_profession
+        if not keeps_current_work:
             building_system.cancel_work_cycle(state, disciple, true)
     disciple.direct_command = {
         "kind": str(kind),
@@ -181,8 +189,12 @@ func next_action(state: SimulationState, disciple: DiscipleState) -> StringName:
     if direct != &"":
         return direct
 
-    if state.p3_7_buildings_enabled and StringName(disciple.work_cycle_state.get("profession", "")) == PROF_MINING:
-        return &"WORK_MINING"
+    if state.p3_7_buildings_enabled:
+        var cycle_profession := StringName(disciple.work_cycle_state.get("profession", ""))
+        if cycle_profession == PROF_MINING:
+            return &"WORK_MINING"
+        if cycle_profession == PROF_HERBALISM:
+            return &"WORK_HERBALISM"
 
     if disciple.region_id != &"sect":
         return &""
@@ -226,9 +238,13 @@ func schedule_phase(state: SimulationState, disciple: DiscipleState) -> StringNa
 
 func choose_work_profession(state: SimulationState, disciple: DiscipleState) -> StringName:
     var candidates := [PROF_MINING, PROF_FORGING]
+    if state.p3_7_buildings_enabled:
+        candidates.append(PROF_HERBALISM)
     var best := &""
     var best_score := -1.0e30
     for profession_id in candidates:
+        if state.p3_7_buildings_enabled and not building_system.work_available(state, profession_id):
+            continue
         var priority := effective_priority(state, disciple, profession_id)
         if priority <= 0:
             continue
@@ -243,8 +259,11 @@ func choose_work_profession(state: SimulationState, disciple: DiscipleState) -> 
 func perform_work(state: SimulationState, disciple: DiscipleState, profession_id: StringName) -> Dictionary:
     if not state.sect.workforce_enabled or disciple.region_id != &"sect" or not VALID_PROFESSIONS.has(profession_id):
         return {"ok":false, "completed":false}
-    if state.p3_7_buildings_enabled and profession_id == PROF_MINING:
-        return _perform_p3_7_mining(state, disciple)
+    if state.p3_7_buildings_enabled:
+        if profession_id == PROF_MINING:
+            return _perform_p3_7_mining(state, disciple)
+        if profession_id == PROF_HERBALISM:
+            return _perform_p3_7_herbalism(state, disciple)
     var duration := _work_duration(profession_id)
     if duration <= 0.0:
         return {"ok":false, "completed":false}
@@ -305,6 +324,28 @@ func _perform_p3_7_mining(state: SimulationState, disciple: DiscipleState) -> Di
     result["xp_gain"] = xp_gain
 
     if command_kind(disciple) == COMMAND_WORK and command_target(disciple) == PROF_MINING:
+        clear_command(state, disciple)
+    return result
+
+func _perform_p3_7_herbalism(state: SimulationState, disciple: DiscipleState) -> Dictionary:
+    var result := building_system.perform_spirit_field_step(state, disciple, _work_speed(state, disciple, PROF_HERBALISM))
+    if not bool(result.get("ok", false)):
+        return result
+
+    disciple.stamina = maxf(0.0, disciple.stamina - float(result.get("stamina_cost", 1.0)))
+    disciple.metrics["work_actions"] = int(disciple.metrics.get("work_actions", 0)) + 1
+    if not bool(result.get("completed", false)):
+        return result
+
+    var key := str(PROF_HERBALISM)
+    var xp_gain := BASE_WORK_XP * _learning_multiplier(state, disciple, PROF_HERBALISM)
+    disciple.profession_xp[key] = profession_xp(disciple, PROF_HERBALISM) + xp_gain
+    disciple.metrics["work_completions"] = int(disciple.metrics.get("work_completions", 0)) + 1
+    disciple.metrics["herbalism_completions"] = int(disciple.metrics.get("herbalism_completions", 0)) + 1
+    state.sect.workforce_event_count += 1
+    result["xp_gain"] = xp_gain
+
+    if command_kind(disciple) == COMMAND_WORK and command_target(disciple) == PROF_HERBALISM:
         clear_command(state, disciple)
     return result
 
@@ -401,6 +442,8 @@ func _profession_action(profession_id: StringName) -> StringName:
             return &"WORK_MINING"
         PROF_FORGING:
             return &"WORK_FORGING"
+        PROF_HERBALISM:
+            return &"WORK_HERBALISM"
         _:
             return &""
 
