@@ -15,6 +15,8 @@ func _run() -> void:
         return
     if not _verify_initial_mine_authority():
         return
+    if not _verify_worker_slot_enforcement():
+        return
     if not _verify_timed_upgrade_and_cost():
         return
     if not _verify_milestone_requires_real_component():
@@ -53,6 +55,42 @@ func _verify_initial_mine_authority() -> bool:
     var active := buildings.active_worker_ids(state, mine)
     if active.size() != 2:
         return _fail("Mine did not bind the expected two active legacy mining workers.")
+    return _validate(state)
+
+func _verify_worker_slot_enforcement() -> bool:
+    var state := P37Factory.create_state(TEST_SEED + 10)
+    var mine := buildings.primary_building(state, BuildingSystem.TYPE_MINE)
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    if ids.size() < 3:
+        return _fail("Worker-slot test needs at least three disciples.")
+
+    var third: DiscipleState = state.disciples[ids[2]]
+    if not workforce.assign_group(state, third.id, &"mining_crew"):
+        return _fail("Could not assign a third disciple to mining_crew.")
+    var assigned := buildings.assigned_worker_ids(state, mine)
+    var active := buildings.active_worker_ids(state, mine)
+    if assigned.size() < 3 or active.size() != 2:
+        return _fail("Mine Lv1 did not enforce two active worker slots.")
+
+    if active.has(third.id):
+        # The deterministic active set is sorted by id; if the third id happens to
+        # sort into the active pair, probe whichever assigned worker is outside.
+        var blocked_id := &""
+        for worker_id in assigned:
+            if not active.has(worker_id):
+                blocked_id = worker_id
+                break
+        if blocked_id == &"":
+            return _fail("Could not identify worker outside Mine slots.")
+        third = state.disciples[blocked_id]
+
+    _normalize_worker(third)
+    var result := workforce.perform_work(state, third, WorkforceSystem.PROF_MINING)
+    if bool(result.get("ok", false)):
+        return _fail("Disciple outside Mine worker slots was allowed to produce mining progress.")
+    if str(result.get("reason", "")) != "no_active_mine_slot":
+        return _fail("Mine worker-slot rejection returned the wrong reason.")
     return _validate(state)
 
 func _verify_timed_upgrade_and_cost() -> bool:
