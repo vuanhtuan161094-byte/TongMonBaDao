@@ -48,6 +48,8 @@ func _run() -> void:
         return
     if not _verify_building_tokens_are_player_readable():
         return
+    if not _verify_actor_tokens_are_player_readable():
+        return
     if not _verify_idle_player_copy_is_clean():
         return
 
@@ -119,6 +121,33 @@ func _verify_building_tokens_are_player_readable() -> bool:
             return _fail("Building token lost its real map interaction: %s" % str(destination))
         if hit.tooltip_text.strip_edges().is_empty():
             return _fail("Building token is not named for the player: %s" % str(destination))
+    return true
+
+func _verify_actor_tokens_are_player_readable() -> bool:
+    var actors: Dictionary = ui.get("actor_nodes")
+    if actors.size() != state.disciples.size():
+        return _fail("Not every live disciple has a map actor.")
+
+    for disciple_id_value in state.disciples.keys():
+        var disciple_id := StringName(disciple_id_value)
+        var key := str(disciple_id)
+        if not actors.has(key):
+            return _fail("Missing map actor for disciple: %s" % key)
+        var actor := actors[key] as Control
+        if not (actor is ModularDiscipleActor):
+            return _fail("Legacy letter-box actor placeholder remains: %s" % key)
+
+        var modular := actor as ModularDiscipleActor
+        if modular.click_button == null or modular.click_button.text.strip_edges() != "":
+            return _fail("Letter-box actor placeholder text remains: %s" % key)
+        if modular.status_label == null or modular.status_label.visible:
+            return _fail("Always-on actor status text still clutters the main map: %s" % key)
+
+        if not modular.production_body_active():
+            var fallback := modular.get_node_or_null("FallbackVisual") as Control
+            if fallback == null or not fallback.visible:
+                return _fail("Unsupported rig has no neutral humanoid fallback: %s" % key)
+
     return true
 
 func _verify_idle_player_copy_is_clean() -> bool:
