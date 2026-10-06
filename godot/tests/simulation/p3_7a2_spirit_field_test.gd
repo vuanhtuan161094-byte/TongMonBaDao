@@ -42,7 +42,7 @@ func _run() -> void:
         return
     if not _verify_save_load_and_deterministic_continuation():
         return
-    if not _verify_legacy_six_foundation_persistence():
+    if not _verify_open_point_six_foundation_persistence():
         return
     print("P3.7A2R SPIRIT FIELD COMPLETION TEST PASS")
     _cleanup()
@@ -256,7 +256,8 @@ func _verify_profession_learning_and_long_term_level() -> bool:
         return false
     _normalize_worker(state, actor)
 
-    actor.comprehension = 0.50
+    actor.comprehension = 0.0
+    FoundationSystem.new().recompute_disciple_quality(actor)
     actor.profession_traits = [str(WorkforceSystem.TRAIT_HERBALIST)]
     actor.profession_trait_grades = {str(WorkforceSystem.TRAIT_HERBALIST): 5}
     var result := workforce.perform_work(state, actor, WorkforceSystem.PROF_HERBALISM)
@@ -404,7 +405,7 @@ func _verify_save_load_and_deterministic_continuation() -> bool:
     _cleanup()
     return _validate(loaded)
 
-func _verify_legacy_six_foundation_persistence() -> bool:
+func _verify_open_point_six_foundation_persistence() -> bool:
     var state := P37Factory.create_state(TEST_SEED + 50)
     var ids: Array = state.disciples.keys()
     ids.sort()
@@ -414,12 +415,13 @@ func _verify_legacy_six_foundation_persistence() -> bool:
     actor.race_id = &""
     actor.sex_id = &""
     actor.origin_id = &""
-    actor.aptitude = 0.41
-    actor.constitution = 0.62
-    actor.fortune = 0.53
-    actor.comprehension = 0.74
-    actor.charisma = 0.36
-    actor.potential = 0.88
+    actor.aptitude = 41.0
+    actor.constitution = 62.0
+    actor.fortune = 53.0
+    actor.comprehension = 74.0
+    actor.charisma = 36.0
+    actor.potential = 88.0
+    FoundationSystem.new().recompute_disciple_quality(actor)
 
     var service := SaveService.new()
     if service.save_to_path(state, SAVE_PATH) != OK:
@@ -429,7 +431,7 @@ func _verify_legacy_six_foundation_persistence() -> bool:
         return _fail("Six-foundation persistence load failed.")
     var restored: DiscipleState = loaded.disciples[actor.id]
     if not is_equal_approx(restored.aptitude, actor.aptitude) or not is_equal_approx(restored.constitution, actor.constitution) or not is_equal_approx(restored.fortune, actor.fortune) or not is_equal_approx(restored.comprehension, actor.comprehension) or not is_equal_approx(restored.charisma, actor.charisma) or not is_equal_approx(restored.potential, actor.potential):
-        return _fail("Legacy disciple lost one or more six-foundation values.")
+        return _fail("Open-point disciple lost one or more six-foundation values.")
     _cleanup()
     return _validate(loaded)
 
@@ -465,10 +467,11 @@ func _first_non_miner(state: SimulationState) -> DiscipleState:
     return null
 
 func _normalize_worker(state: SimulationState, disciple: DiscipleState) -> void:
-    disciple.aptitude = 0.50
-    disciple.comprehension = 0.50
-    disciple.constitution = 0.50
-    disciple.fortune = 0.50
+    disciple.aptitude = 0.0
+    disciple.comprehension = 0.0
+    disciple.constitution = 0.0
+    disciple.fortune = 50.0
+    FoundationSystem.new().recompute_disciple_quality(disciple)
     disciple.profession_xp[str(WorkforceSystem.PROF_HERBALISM)] = 0.0
     # Keep a canonical, unrelated profession talent so P3.7 load migration is
     # intentionally a no-op while Herbalism remains neutral.
