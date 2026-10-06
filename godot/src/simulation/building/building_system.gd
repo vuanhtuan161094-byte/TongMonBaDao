@@ -196,7 +196,9 @@ func guidance_elder_slots(building: BuildingState) -> int:
 func guidance_base_daily_arrivals(building: BuildingState) -> int:
     if building == null or building.building_type != TYPE_GUIDANCE_PLATFORM:
         return 0
-    return 2 + int(floor(float(building.level) / 10.0))
+    # Dẫn Tiên should visibly scale with infrastructure without gating Mị Lực.
+    # Current balance: 5/day at Lv1, +3 every 10 levels, 35/day at Lv100.
+    return 5 + 3 * int(floor(float(building.level) / 10.0))
 
 func spirit_field_speed_factor(field: BuildingState) -> float:
     return 1.0 + 0.005 * float(maxi(field.level - 1, 0))
