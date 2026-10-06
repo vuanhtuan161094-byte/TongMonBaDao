@@ -404,64 +404,42 @@ Key rules:
 - true cooldown remains for skills and real active powers.
 
 
-## P3.7A1 BUILDING AUTHORITY + MINE — IMPLEMENTED, NOT LOCKED YET
+## P3.7A1 + A2 BACKEND — GODOT 4.7.2 CI GREEN
 
-Backend now exists on live `main`:
-- BuildingState + BuildingSystem + P37Factory;
-- P3.7 feature flag preserves legacy P0–P2.12 behavior when off;
-- first real building is Mine `mine_001`, Lv.1–100;
-- worker slots reuse real `mining_crew`, no parallel worker list;
-- timed construction/upgrade with real Linh Mộc + Thanh Thiết + sect Spirit-Stone costs;
-- Lv.10 milestone requires real Tầm Mạch Bàn;
-- Mine work is travel -> mine batch -> haul/deposit -> repeat;
-- movement speed affects throughput;
-- XP is awarded on completed batch;
-- save/load + deterministic continuation covered.
+Backend now has one shared building authority, proven by two different production lifecycles.
 
-Evidence:
-- FAST backend CI Godot 4.7.2 Linux: PASS.
-- cumulative P0–P2.12 + P3.7A1 Linux full regression: PASS.
-- real Windows full gate: **AWAITING**.
+A1 Mine:
+- BuildingState/BuildingSystem/P37Factory;
+- Lv.1–100;
+- real worker slots using mining_crew;
+- timed upgrades;
+- travel -> mine -> haul/deposit;
+- Mining profession XP;
+- Lv.10 Tầm Mạch Bàn;
+- movement speed and Căn Cốt have real work-time consequences.
 
-Next action:
-`Verify-P3-7A1-Building-Authority-Full.cmd`
+A2 Spirit Field:
+- same BuildingSystem, no parallel framework;
+- herbalism_crew;
+- travel -> tend/plant;
+- crop then grows independently in building-owned production_state;
+- worker is free while crop grows;
+- harvest-ready -> travel/harvest -> haul/deposit;
+- Herbalism profession XP;
+- Lv.10 Linh Tuyền Chi Tâm;
+- competing workers are released cleanly when another worker completes the shared crop phase.
 
-Do not call P3.7A1 PASS until that real Windows gate passes.
-After PASS, next implementation slice is **P3.7A2 — Linh Điền backend using the same BuildingSystem framework**.
+Important persistence fix:
+- legacy six-foundation values are now serialized even when profile_seed is zero;
+- this fixed the A2 deterministic save/load divergence.
 
+Verification:
+- A1 fast: PASS;
+- A2 fast: PASS;
+- full P0–P2.12 + A1 + A2 cumulative official Godot 4.7.2 CI: PASS.
 
-## P3.7A1 BACKEND — REAL GODOT 4.7.2 PASS
-
-Implemented on live `main`:
-- `godot/src/simulation/state/building_state.gd`;
-- `godot/src/simulation/building/building_system.gd`;
-- `godot/src/simulation/core/p3_7_factory.gd`;
-- P3.7 persistence in `SimulationState`;
-- P3.7 physical work-cycle persistence in `DiscipleState`;
-- WorkforceSystem bridge for authoritative Mining;
-- scheduler timed building-upgrade progression.
-
-Mine behavior now real:
-- Lv1–100 authority;
-- active worker slots enforced;
-- uses existing `mining_crew`;
-- travel -> mine batch -> haul/deposit;
-- movement speed affects cycle duration;
-- profession XP remains real existing WorkforceSystem XP;
-- timed construction;
-- no fake post-upgrade cooldown;
-- Lv10 milestone requires/consumes Tầm Mạch Bàn;
-- save/load + deterministic continuation covered by contract test.
-
-Gate:
-- FAST Godot 4.7.2 backend PASS;
-- FULL P0–P2.12 + P3.7A1 cumulative Godot 4.7.2 PASS.
-
-Current limitation/bridge:
-- construction/mining resources still bridge through existing `sect.forge_materials` and `sect.spirit_stones`;
-- this is deliberate compatibility scaffolding, NOT the final unified warehouse;
-- live P3 presentation still uses P212Factory and must not show P3.7 levels/upgrades yet.
+Presentation remains unmigrated. Do NOT display fake P3.7 levels/progress from the old P3 map authority.
 
 NEXT:
-**P3.7A2 Linh Điền backend on the same framework.**
-The purpose is to prove BuildingSystem generalizes to a different production lifecycle (growth/harvest) before wiring UI or expanding to Đại Điện.
+**P3.7B1 Resource Registry + canonical Sect Warehouse backend.**
+Replace the temporary forge_materials bridge; do not create a second permanent warehouse/material authority.
