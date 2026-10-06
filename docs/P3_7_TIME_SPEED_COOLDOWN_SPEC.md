@@ -260,7 +260,7 @@ Spirit Field deliberately uses a simpler abstraction than mining:
 
 There are no separate authoritative walking, planting, tending, harvesting or hauling phases.
 
-The worker performs the start-crop action, the relevant speed/rare/yield factors are sampled, and the worker is immediately free. The crop timer then progresses autonomously and deposits resolved output directly into the canonical Sect Warehouse.
+The worker performs the start-crop action and the relevant speed/rare/yield factors are sampled. One active plot then **reserves exactly one disciple until harvest resolves**. The crop timer progresses autonomously: there are still no separate authoritative walking/tending/harvest/haul phases and the passive countdown grants no work Tu Vi. Resolved output deposits directly into the canonical Sect Warehouse.
 
 Presentation may animate farming activity without turning those animations into gameplay timing authority.
 
@@ -499,7 +499,7 @@ This is required before very large populations.
 12. Crafting/healing/Secret Chamber/travel/repair also require real duration when their P3.7 migrations are implemented.
 13. True cooldown is reserved for reusable powers/actions where a cooldown makes semantic sense.
 14. Background large-scale simulation must preserve the same timing model deterministically.
-15. Spirit Field is an explicit exception to detailed workplace phases: one crop uses one authoritative timer and does not retain the worker for passive growth.
+15. Spirit Field is an explicit exception to detailed workplace phases: one crop uses one authoritative timer, reserves one disciple per active plot until harvest, and does not treat the passive countdown as active work.
 
 
 ---
