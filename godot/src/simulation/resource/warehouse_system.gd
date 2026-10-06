@@ -115,8 +115,6 @@ func consume_requirements(state: SimulationState, requirements: Dictionary, igno
         state.sect.warehouse_event_count += 1
     return true
 
-func total_pham_luc(state: SimulationState, resource_id: StringName) -> int:
-    return quantity(state, resource_id) * registry.base_pham_luc(resource_id)
 
 func validate_invariants(state: SimulationState) -> Array[String]:
     var errors := registry.validate_definitions()
