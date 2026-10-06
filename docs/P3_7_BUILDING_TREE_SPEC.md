@@ -1853,3 +1853,29 @@ Do not treat every design entry in this document as implemented merely because M
 
 Next implementation target is **Linh Điền** on the same authority.
 Only after Mine + Linh Điền prove the framework should presentation expose the new level/upgrade mechanics.
+
+
+---
+
+# 45. IMPLEMENTATION STATUS — P3.7A2 LINH ĐIỀN CI GREEN
+
+The generic building framework is now proven by both:
+- Mine: repeated travel/work/haul production;
+- Spirit Field: travel/tend -> independent growth timer -> harvest/haul production.
+
+Spirit Field backend includes:
+- real Lv.1–100 instance;
+- herbalism workforce group;
+- worker slots;
+- timed crop state owned by the building;
+- worker freedom while crops grow;
+- real harvested resource deposit;
+- Herbalism profession XP;
+- Lv.10 Linh Tuyền Chi Tâm milestone;
+- save/load determinism;
+- competing-worker cleanup.
+
+This is sufficient evidence that BuildingSystem is not Mine-specific.
+
+Next backend dependency before broader building expansion:
+**canonical Resource Registry + Sect Warehouse**, replacing the temporary forge-material bridge.
