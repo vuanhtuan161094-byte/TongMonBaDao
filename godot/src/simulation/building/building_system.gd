@@ -13,8 +13,8 @@ const VALID_STATUSES := [STATUS_ACTIVE, STATUS_UPGRADING]
 
 const MILESTONE_LEVELS := [10, 20, 30, 50, 75, 100]
 
-# P3.7A currently bridges the already-authoritative P2.6 material dictionary
-# instead of creating a second warehouse. Unified warehouse migration comes later.
+# Named resources remain explicit. P3.7B uses WarehouseSystem as the sole
+# stackable-resource authority; legacy buckets are fallback-only for old direct states.
 const MATERIAL_WOOD := "linh_moc"
 const MATERIAL_ORE := "thanh_thiet"
 const MATERIAL_TAM_MACH_BAN := "tam_mach_ban"
@@ -74,6 +74,7 @@ const DEFINITIONS := {
 }
 
 var equipment := EquipmentSystem.new()
+var warehouse := WarehouseSystem.new()
 
 func initialize(state: SimulationState) -> void:
     if not state.sect.workforce_enabled:
@@ -220,7 +221,7 @@ func can_start_upgrade(state: SimulationState, building_id: StringName) -> Dicti
     material_ids.sort()
     for material_id in material_ids:
         var need := int(cost.get(material_id, 0))
-        var have := int(state.sect.forge_materials.get(str(material_id), 0))
+        var have := _resource_available(state, StringName(material_id))
         if have < need:
             return {"ok": false, "reason": "missing_material", "material_id": str(material_id), "need": need, "have": have}
     var stone_need := int(cost.get("spirit_stones", 0))
@@ -234,12 +235,10 @@ func start_upgrade(state: SimulationState, building_id: StringName) -> Dictionar
         return check
     var building: BuildingState = state.buildings[str(building_id)]
     var cost: Dictionary = check.get("cost", {})
-    var material_ids: Array = cost.keys()
-    material_ids.erase("spirit_stones")
-    material_ids.sort()
-    for raw_material_id in material_ids:
-        var material_id := str(raw_material_id)
-        state.sect.forge_materials[material_id] = int(state.sect.forge_materials.get(material_id, 0)) - int(cost.get(material_id, 0))
+    var material_requirements := cost.duplicate(true)
+    material_requirements.erase("spirit_stones")
+    if not _consume_resources(state, material_requirements):
+        return {"ok": false, "reason": "materials_changed"}
     state.sect.spirit_stones -= int(cost.get("spirit_stones", 0))
 
     building.status = STATUS_UPGRADING
@@ -567,10 +566,37 @@ func _process_spirit_field_growth(state: SimulationState, field: BuildingState) 
 func _deposit_resource(state: SimulationState, building: BuildingState, resource_id: String, quantity: int) -> void:
     if quantity <= 0:
         return
-    state.sect.forge_materials[resource_id] = int(state.sect.forge_materials.get(resource_id, 0)) + quantity
+    if state.sect.p3_7_resources_enabled:
+        if not warehouse.add(state, StringName(resource_id), quantity):
+            push_error("BuildingSystem: failed to deposit canonical resource %s x%d." % [resource_id, quantity])
+            return
+    else:
+        state.sect.forge_materials[resource_id] = int(state.sect.forge_materials.get(resource_id, 0)) + quantity
     building.metrics["production_batches"] = int(building.metrics.get("production_batches", 0)) + 1
     building.metrics["units_produced"] = int(building.metrics.get("units_produced", 0)) + quantity
     state.building_event_count += 1
+
+func _resource_available(state: SimulationState, resource_id: StringName) -> int:
+    if state.sect.p3_7_resources_enabled:
+        return warehouse.available_quantity(state, resource_id)
+    return maxi(int(state.sect.forge_materials.get(str(resource_id), 0)), 0)
+
+func _consume_resources(state: SimulationState, requirements: Dictionary) -> bool:
+    if state.sect.p3_7_resources_enabled:
+        return warehouse.consume_requirements(state, requirements)
+    var ids: Array = requirements.keys()
+    ids.sort()
+    for raw_id in ids:
+        if int(state.sect.forge_materials.get(str(raw_id), 0)) < int(requirements[raw_id]):
+            return false
+    for raw_id in ids:
+        var key := str(raw_id)
+        var next := int(state.sect.forge_materials.get(key, 0)) - int(requirements[raw_id])
+        if next <= 0:
+            state.sect.forge_materials.erase(key)
+        else:
+            state.sect.forge_materials[key] = next
+    return true
 
 func _movement_speed(state: SimulationState, disciple: DiscipleState) -> float:
     # World/work movement is a canonical physical speed. Combat path style
