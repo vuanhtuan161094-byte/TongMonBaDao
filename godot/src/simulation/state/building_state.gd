@@ -84,14 +84,20 @@ static func _production_dictionary(value: Variant) -> Dictionary:
     for raw_key in keys:
         var key := str(raw_key)
         var raw = value[raw_key]
-        if key in ["phase", "resource_id", "planted_by", "policy_mode", "fixed_crop_id"]:
+        if key in ["phase", "resource_id", "planted_by", "policy_mode", "fixed_crop_id", "main_guide_id"]:
             result[key] = str(raw)
         elif key in ["growth_progress", "growth_required"]:
             result[key] = maxf(float(raw), 0.0)
-        elif key == "plant_sequence":
+        elif key == "snapshot_main_charisma":
+            result[key] = maxf(float(raw), 0.0)
+        elif key in ["plant_sequence", "enhanced_heaven_count", "daily_arrival_target", "daily_arrivals_generated"]:
             result[key] = maxi(int(raw), 0)
+        elif key == "snapshot_day_index":
+            result[key] = int(raw)
         elif key == "priority_weights":
             result[key] = _int_dictionary(raw)
+        elif key == "assistant_guide_ids":
+            result[key] = _string_array(raw)
         elif key == "plots":
             result[key] = _plot_array(raw)
         else:
@@ -132,6 +138,17 @@ static func _int_dictionary(value: Variant) -> Dictionary:
     keys.sort()
     for raw_key in keys:
         result[str(raw_key)] = int(value[raw_key])
+    return result
+
+static func _string_array(value: Variant) -> Array:
+    var result: Array = []
+    if not (value is Array):
+        return result
+    for raw in value:
+        var text := str(raw)
+        if text != "" and not result.has(text):
+            result.append(text)
+    result.sort()
     return result
 
 static func _int_array(value: Variant) -> Array[int]:
