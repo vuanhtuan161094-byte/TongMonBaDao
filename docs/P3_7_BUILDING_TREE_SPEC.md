@@ -1879,3 +1879,21 @@ This is sufficient evidence that BuildingSystem is not Mine-specific.
 
 Next backend dependency before broader building expansion:
 **canonical Resource Registry + Sect Warehouse**, replacing the temporary forge-material bridge.
+
+
+---
+
+# 46. RESOURCE BACKEND STATUS — B1 CI GREEN
+
+The building backend no longer depends on a permanent P3.7 forge-material bridge.
+P3.7 stackable resources are now owned by ResourceRegistry + WarehouseSystem.
+
+Normal upgrade cost selection is the remaining construction mismatch:
+current B1 runtime still consumes exact Linh Mộc/Thanh Thiết quantities.
+
+Next B2 must implement the canonical rule:
+- Wood-family required total Phẩm Lực;
+- Mineral-family required total Phẩm Lực;
+- warehouse lock/reserve honored;
+- low-value eligible stock preferred;
+- milestone specialty component remains exact.
