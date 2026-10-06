@@ -1,6 +1,8 @@
 class_name BloodlineSystem
 extends RefCounted
 
+var warehouse := WarehouseSystem.new()
+
 const BLOODLINE_NONE := &"none"
 const BLOODLINE_TRUE_DRAGON := &"true_dragon"
 const BLOODLINE_PHOENIX := &"phoenix"
@@ -111,7 +113,7 @@ func awaken_bloodline(state: SimulationState, disciple_id: StringName) -> Dictio
         return {"ok":false, "reason":"bloodline_hidden"}
     if bool(profile.get("awakened", false)):
         return {"ok":false, "reason":"already_awakened"}
-    if int(state.sect.technique_materials.get(MATERIAL_ID, 0)) <= 0:
+    if _material_quantity(state, MATERIAL_ID) <= 0:
         return {"ok":false, "reason":"yao_core_missing"}
 
     _consume_material(state, MATERIAL_ID, 1)
@@ -136,7 +138,7 @@ func refine_bloodline(state: SimulationState, disciple_id: StringName) -> Dictio
         return {"ok":false, "reason":"bloodline_not_awakened"}
     if float(profile.get("purity", 0.0)) >= MAX_PURITY - 0.000001:
         return {"ok":false, "reason":"max_purity"}
-    if int(state.sect.technique_materials.get(MATERIAL_ID, 0)) <= 0:
+    if _material_quantity(state, MATERIAL_ID) <= 0:
         return {"ok":false, "reason":"yao_core_missing"}
 
     _consume_material(state, MATERIAL_ID, 1)
@@ -374,7 +376,15 @@ func _refinement_gain(disciple: DiscipleState, current_purity: float) -> float:
     var diminishing := lerpf(1.0, 0.40, clampf(current_purity, 0.0, 1.0))
     return maxf(base * diminishing, 0.008)
 
+func _material_quantity(state: SimulationState, material_id: String) -> int:
+    if state.sect.p3_7_resources_enabled:
+        return warehouse.quantity(state, StringName(material_id))
+    return maxi(int(state.sect.technique_materials.get(material_id, 0)), 0)
+
 func _consume_material(state: SimulationState, material_id: String, quantity: int) -> void:
+    if state.sect.p3_7_resources_enabled:
+        warehouse.consume(state, StringName(material_id), quantity)
+        return
     var next := int(state.sect.technique_materials.get(material_id, 0)) - quantity
     if next <= 0:
         state.sect.technique_materials.erase(material_id)
