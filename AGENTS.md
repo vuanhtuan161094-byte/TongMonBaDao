@@ -49,7 +49,7 @@ Do not use Codex or Work for repository coding unless the user explicitly change
 
 ## 3. One-phase-at-a-time rule
 
-There is exactly one active implementation phase.
+There is at most one active implementation phase.
 
 Do not start a neighboring gameplay phase until the current phase is closed.
 
@@ -211,20 +211,12 @@ Do not reintroduce:
 
 ---
 
-## 10. Current active phase
+## 10. Current phase source
 
-**Repository authority/document cleanup.**
+Do not duplicate current-phase status in AGENTS.
 
-Purpose:
-- remove stale implementation-history text from design specs;
-- remove contradictory old “next phase” instructions;
-- remove obsolete loot-bag/warehouse wording;
-- make checkpoint/handoff concise;
-- leave exactly one queued gameplay phase.
+Read:
+- `CURRENT_CHECKPOINT.md`;
+- `NEXT_CHAT_HANDOFF.md`.
 
-No new gameplay code should be added during this cleanup.
-
-Queued after cleanup:
-**P3.7B2 — Construction Resolver by material family + required Phẩm Lực.**
-
-Do not begin B2 until cleanup is recorded complete in `CURRENT_CHECKPOINT.md`.
+If the checkpoint says no implementation phase is active, do not start the queued next phase without a new user instruction.
