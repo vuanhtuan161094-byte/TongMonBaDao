@@ -240,7 +240,7 @@ func work_available(state: SimulationState, profession_id: StringName, disciple:
             return true
 
 func disciple_has_active_spirit_plot(state: SimulationState, disciple_id: StringName, field: BuildingState = null) -> bool:
-    var fields: Array[BuildingState] = [field] if field != null else _buildings_of_type(state, TYPE_SPIRIT_FIELD)
+    var fields: Array = [field] if field != null else _buildings_of_type(state, TYPE_SPIRIT_FIELD)
     for current_field in fields:
         if current_field == null:
             continue
