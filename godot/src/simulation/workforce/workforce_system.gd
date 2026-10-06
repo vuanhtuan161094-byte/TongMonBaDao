@@ -25,6 +25,8 @@ const SCHEDULE_CYCLE := 20
 const BASE_WORK_XP := 10.0
 const MINING_DURATION := 4.0
 const FORGING_DURATION := 5.0
+const P3_7_XP_LEVEL_SCALE := 24.0
+const ACTIVE_WORK_HOURS_PER_STEP := 1.0 / 60.0
 
 const TRAIT_FORGE := "forge_talent"
 const TRAIT_MINER := "miner_instinct"
@@ -36,6 +38,7 @@ const PROFESSION_TRAITS := [TRAIT_FORGE, TRAIT_MINER, TRAIT_HERBALIST, TRAIT_DIL
 var trait_system := TraitSystem.new()
 var building_system := BuildingSystem.new()
 var profession_modifiers := ProfessionModifierSystem.new()
+var cultivation_system := CultivationSystem.new()
 
 func initialize(state: SimulationState) -> void:
     if not state.sect.equipment_enabled:
@@ -114,6 +117,29 @@ func assign_group(state: SimulationState, disciple_id: StringName, group_id: Str
         if expected_group != &"" and group_id != expected_group:
             building_system.cancel_work_cycle(state, disciple, true)
     disciple.work_group_id = group_id
+    if disciple.worksite_building_id != &"":
+        var assigned = state.buildings.get(str(disciple.worksite_building_id))
+        if not (assigned is BuildingState) or assigned.worker_group_id != group_id:
+            disciple.worksite_building_id = &""
+    state.sect.workforce_event_count += 1
+    return true
+
+func assign_worksite(state: SimulationState, disciple_id: StringName, building_id: StringName) -> bool:
+    if not state.sect.workforce_enabled or not state.disciples.has(disciple_id):
+        return false
+    var disciple: DiscipleState = state.disciples[disciple_id]
+    if building_id == &"":
+        disciple.worksite_building_id = &""
+        if not disciple.work_cycle_state.is_empty():
+            building_system.cancel_work_cycle(state, disciple, true)
+        state.sect.workforce_event_count += 1
+        return true
+    var building = state.buildings.get(str(building_id))
+    if not (building is BuildingState) or building.worker_group_id == &"" or disciple.work_group_id != building.worker_group_id:
+        return false
+    if disciple.worksite_building_id != building_id and not disciple.work_cycle_state.is_empty():
+        building_system.cancel_work_cycle(state, disciple, true)
+    disciple.worksite_building_id = building_id
     state.sect.workforce_event_count += 1
     return true
 
@@ -139,6 +165,7 @@ func profession_xp(disciple: DiscipleState, profession_id: StringName) -> float:
     return maxf(float(disciple.profession_xp.get(str(profession_id), 0.0)), 0.0)
 
 func profession_level(disciple: DiscipleState, profession_id: StringName) -> int:
+    # Locked P2 compatibility curve.
     var xp := profession_xp(disciple, profession_id)
     if xp >= 900.0:
         return 6
@@ -153,6 +180,15 @@ func profession_level(disciple: DiscipleState, profession_id: StringName) -> int
     if xp >= 35.0:
         return 1
     return 0
+
+func p3_7_profession_level(disciple: DiscipleState, profession_id: StringName) -> int:
+    var xp := profession_xp(disciple, profession_id)
+    if xp <= 0.0:
+        return 0
+    return maxi(int(floor(sqrt(xp / P3_7_XP_LEVEL_SCALE))), 0)
+
+func profession_level_for_state(state: SimulationState, disciple: DiscipleState, profession_id: StringName) -> int:
+    return p3_7_profession_level(disciple, profession_id) if state.p3_7_buildings_enabled else profession_level(disciple, profession_id)
 
 func issue_command(state: SimulationState, disciple_id: StringName, kind: StringName, target: String = "", ttl: int = 40) -> bool:
     if not state.sect.workforce_enabled or not state.disciples.has(disciple_id) or not VALID_COMMANDS.has(kind):
@@ -255,12 +291,12 @@ func choose_work_profession(state: SimulationState, disciple: DiscipleState) -> 
     var best := &""
     var best_score := -1.0e30
     for profession_id in candidates:
-        if state.p3_7_buildings_enabled and not building_system.work_available(state, profession_id):
+        if state.p3_7_buildings_enabled and not building_system.work_available(state, profession_id, disciple):
             continue
         var priority := effective_priority(state, disciple, profession_id)
         if priority <= 0:
             continue
-        var score := float(priority) * 100.0 + float(profession_level(disciple, profession_id)) * 3.0
+        var score := float(priority) * 100.0 + float(profession_level_for_state(state, disciple, profession_id)) * 3.0
         if _has_profession_trait(disciple, profession_id):
             score += 8.0
         if score > best_score or (absf(score - best_score) <= 0.000001 and (best == &"" or str(profession_id) < str(best))):
@@ -322,9 +358,10 @@ func _perform_p3_7_mining(state: SimulationState, disciple: DiscipleState) -> Di
     if not bool(result.get("ok", false)):
         return result
 
-    var stamina_cost := float(result.get("stamina_cost", 1.0)) * profession_modifiers.stamina_cost_factor(disciple)
+    var stamina_cost := maxf(float(result.get("stamina_cost", 1.0)), 0.0)
     disciple.stamina = maxf(0.0, disciple.stamina - stamina_cost)
     result["effective_stamina_cost"] = stamina_cost
+    result["work_cultivation_gain"] = _grant_p3_7_work_cultivation(state, disciple, PROF_MINING)
     disciple.metrics["work_actions"] = int(disciple.metrics.get("work_actions", 0)) + 1
     if not bool(result.get("completed", false)):
         return result
@@ -346,15 +383,15 @@ func _perform_p3_7_herbalism(state: SimulationState, disciple: DiscipleState) ->
     if not bool(result.get("ok", false)):
         return result
 
-    var stamina_cost := float(result.get("stamina_cost", 1.0)) * profession_modifiers.stamina_cost_factor(disciple)
-    disciple.stamina = maxf(0.0, disciple.stamina - stamina_cost)
-    result["effective_stamina_cost"] = stamina_cost
+    result["work_cultivation_gain"] = _grant_p3_7_work_cultivation(state, disciple, PROF_HERBALISM)
     disciple.metrics["work_actions"] = int(disciple.metrics.get("work_actions", 0)) + 1
     if not bool(result.get("completed", false)):
         return result
 
     var key := str(PROF_HERBALISM)
-    var xp_gain := BASE_WORK_XP * _learning_multiplier(state, disciple, PROF_HERBALISM)
+    var base_xp := maxf(float(result.get("base_work_xp", BASE_WORK_XP)), 0.0)
+    var field_xp_factor := maxf(float(result.get("field_xp_factor", 1.0)), 0.0)
+    var xp_gain := base_xp * _learning_multiplier(state, disciple, PROF_HERBALISM) * field_xp_factor
     disciple.profession_xp[key] = profession_xp(disciple, PROF_HERBALISM) + xp_gain
     disciple.metrics["work_completions"] = int(disciple.metrics.get("work_completions", 0)) + 1
     disciple.metrics["herbalism_completions"] = int(disciple.metrics.get("herbalism_completions", 0)) + 1
@@ -415,6 +452,12 @@ func validate_invariants(state: SimulationState) -> Array[String]:
             var grade := int(disciple.profession_trait_grades.get(str(trait_id), 1))
             if grade < 1 or grade > 5:
                 errors.append("%s has invalid profession trait grade for %s." % [disciple.display_name, trait_id])
+        if disciple.worksite_building_id != &"":
+            var assigned = state.buildings.get(str(disciple.worksite_building_id))
+            if not (assigned is BuildingState):
+                errors.append("%s references missing worksite %s." % [disciple.display_name, disciple.worksite_building_id])
+            elif assigned.worker_group_id != disciple.work_group_id:
+                errors.append("%s worksite/group assignment is inconsistent." % disciple.display_name)
         if not disciple.direct_command.is_empty():
             var kind := StringName(disciple.direct_command.get("kind", ""))
             if not VALID_COMMANDS.has(kind):
@@ -476,7 +519,7 @@ func _work_duration(profession_id: StringName) -> float:
             return 0.0
 
 func _work_speed(state: SimulationState, disciple: DiscipleState, profession_id: StringName) -> float:
-    var level := profession_level(disciple, profession_id)
+    var level := profession_level_for_state(state, disciple, profession_id)
     if state.p3_7_buildings_enabled:
         return profession_modifiers.total_work_speed_factor(state, disciple, level)
 
@@ -494,7 +537,7 @@ func _work_speed(state: SimulationState, disciple: DiscipleState, profession_id:
 
 func _learning_multiplier(state: SimulationState, disciple: DiscipleState, profession_id: StringName) -> float:
     if state.p3_7_buildings_enabled:
-        return profession_modifiers.profession_xp_factor(disciple, profession_id)
+        return profession_modifiers.total_profession_xp_factor(state, disciple, profession_id)
 
     var multiplier := lerpf(0.75, 1.35, clampf(disciple.comprehension, 0.0, 1.0))
     if _has_profession_trait(disciple, profession_id):
@@ -502,6 +545,16 @@ func _learning_multiplier(state: SimulationState, disciple: DiscipleState, profe
     if state.sect.disciple_traits_enabled:
         multiplier *= trait_system.profession_learning_multiplier(state, disciple)
     return multiplier
+
+func _grant_p3_7_work_cultivation(state: SimulationState, disciple: DiscipleState, profession_id: StringName) -> float:
+    if not state.sect.cultivation_enabled:
+        return 0.0
+    var required := cultivation_system.required_progress(disciple)
+    if required <= 0.0:
+        return 0.0
+    var level := p3_7_profession_level(disciple, profession_id)
+    var raw_gain := required * profession_modifiers.raw_work_cultivation_ratio_per_hour(level) * ACTIVE_WORK_HOURS_PER_STEP
+    return cultivation_system.add_progress(state, disciple, raw_gain)
 
 func _has_profession_trait(disciple: DiscipleState, profession_id: StringName) -> bool:
     if profession_id == PROF_FORGING:
