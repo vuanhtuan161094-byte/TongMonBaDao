@@ -1,6 +1,8 @@
 class_name RootRefinementSystem
 extends RefCounted
 
+var warehouse := WarehouseSystem.new()
+
 const MATERIAL_ID := "linh_tuy"
 const MAX_PURITY := 0.98
 const MUTATION_NONE := &"none"
@@ -78,7 +80,7 @@ func can_refine(state: SimulationState, disciple: DiscipleState) -> bool:
         return false
     if disciple.spiritual_root_purity >= MAX_PURITY - 0.000001:
         return false
-    return int(state.sect.technique_materials.get(MATERIAL_ID, 0)) > 0
+    return _material_quantity(state, MATERIAL_ID) > 0
 
 func refine_disciple(state: SimulationState, disciple_id: StringName) -> Dictionary:
     if not state.disciples.has(disciple_id):
@@ -88,15 +90,14 @@ func refine_disciple(state: SimulationState, disciple_id: StringName) -> Diction
         return {"ok":false, "reason":"refinement_disabled"}
     if disciple.spiritual_root_purity >= MAX_PURITY - 0.000001:
         return {"ok":false, "reason":"max_purity"}
-    if int(state.sect.technique_materials.get(MATERIAL_ID, 0)) <= 0:
+    if _material_quantity(state, MATERIAL_ID) <= 0:
         return {"ok":false, "reason":"linh_tuy_missing"}
 
     var profile := ensure_disciple_profile(state, disciple)
     if profile.is_empty():
         return {"ok":false, "reason":"profile_missing"}
-    state.sect.technique_materials[MATERIAL_ID] = int(state.sect.technique_materials.get(MATERIAL_ID, 0)) - 1
-    if int(state.sect.technique_materials[MATERIAL_ID]) <= 0:
-        state.sect.technique_materials.erase(MATERIAL_ID)
+    if not _consume_material(state, MATERIAL_ID, 1):
+        return {"ok":false, "reason":"linh_tuy_missing"}
 
     var before := clampf(disciple.spiritual_root_purity, 0.0, MAX_PURITY)
     var gain := _refinement_gain(disciple, before)
@@ -241,6 +242,23 @@ func _mutation_for_element(element: StringName) -> StringName:
             return MUTATION_EARTH
         _:
             return MUTATION_NONE
+
+func _material_quantity(state: SimulationState, material_id: String) -> int:
+    if state.sect.p3_7_resources_enabled:
+        return warehouse.quantity(state, StringName(material_id))
+    return maxi(int(state.sect.technique_materials.get(material_id, 0)), 0)
+
+func _consume_material(state: SimulationState, material_id: String, quantity: int) -> bool:
+    if state.sect.p3_7_resources_enabled:
+        return warehouse.consume(state, StringName(material_id), quantity)
+    if int(state.sect.technique_materials.get(material_id, 0)) < quantity:
+        return false
+    var next := int(state.sect.technique_materials.get(material_id, 0)) - quantity
+    if next <= 0:
+        state.sect.technique_materials.erase(material_id)
+    else:
+        state.sect.technique_materials[material_id] = next
+    return true
 
 func _stable_hash(value: String) -> int:
     var result := 17
