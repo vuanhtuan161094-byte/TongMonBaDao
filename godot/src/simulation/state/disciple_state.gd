@@ -76,6 +76,9 @@ var constitution: float = 0.0
 var fortune: float = 0.0
 var charisma: float = 0.0
 var potential: float = 0.0
+# Model 1 = legacy normalized 0..1; model 2 = open uncapped lục-duy points.
+var foundation_model_version: int = 1
+var foundation_birth_values: Dictionary = {}
 var disciple_quality: StringName = &""
 var spiritual_root_purity: float = 0.0
 var age: int = 0
@@ -165,6 +168,8 @@ func _init(definition: Dictionary = {}) -> void:
     fortune = maxf(float(definition.get("fortune", 0.0)), 0.0)
     charisma = maxf(float(definition.get("charisma", 0.0)), 0.0)
     potential = maxf(float(definition.get("potential", 0.0)), 0.0)
+    foundation_model_version = maxi(int(definition.get("foundation_model_version", 1)), 1)
+    foundation_birth_values = _float_dictionary(definition.get("foundation_birth_values", {}))
     disciple_quality = StringName(definition.get("disciple_quality", ""))
     spiritual_root_purity = maxf(float(definition.get("spiritual_root_purity", 0.0)), 0.0)
     age = maxi(int(definition.get("age", 0)), 0)
@@ -251,7 +256,7 @@ func to_dict() -> Dictionary:
         data["work_progress"] = work_progress.duplicate(true)
         if not work_cycle_state.is_empty():
             data["work_cycle_state"] = work_cycle_state.duplicate(true)
-    if profile_seed > 0 or recruitment_source != &"" or race_id != &"" or sex_id != &"" or origin_id != &"" or aptitude > 0.0 or constitution > 0.0 or fortune > 0.0 or charisma > 0.0 or potential > 0.0 or disciple_quality != &"" or spiritual_root_purity > 0.0 or age > 0 or base_lifespan > 0 or max_lifespan > 0 or latent_identity_seed > 0:
+    if profile_seed > 0 or recruitment_source != &"" or race_id != &"" or sex_id != &"" or origin_id != &"" or aptitude > 0.0 or constitution > 0.0 or fortune > 0.0 or charisma > 0.0 or potential > 0.0 or foundation_model_version > 1 or not foundation_birth_values.is_empty() or disciple_quality != &"" or spiritual_root_purity > 0.0 or age > 0 or base_lifespan > 0 or max_lifespan > 0 or latent_identity_seed > 0:
         data["profile_seed"] = profile_seed
         data["recruitment_source"] = str(recruitment_source)
         data["race_id"] = str(race_id)
@@ -262,6 +267,9 @@ func to_dict() -> Dictionary:
         data["fortune"] = fortune
         data["charisma"] = charisma
         data["potential"] = potential
+        data["foundation_model_version"] = foundation_model_version
+        if not foundation_birth_values.is_empty():
+            data["foundation_birth_values"] = foundation_birth_values.duplicate(true)
         data["disciple_quality"] = str(disciple_quality)
         data["spiritual_root_purity"] = spiritual_root_purity
         data["age"] = age
@@ -321,6 +329,8 @@ static func from_dict(data: Dictionary) -> DiscipleState:
         "fortune": data.get("fortune", 0.0),
         "charisma": data.get("charisma", 0.0),
         "potential": data.get("potential", 0.0),
+        "foundation_model_version": data.get("foundation_model_version", 1),
+        "foundation_birth_values": data.get("foundation_birth_values", {}),
         "disciple_quality": data.get("disciple_quality", ""),
         "spiritual_root_purity": data.get("spiritual_root_purity", 0.0),
         "age": data.get("age", 0),
