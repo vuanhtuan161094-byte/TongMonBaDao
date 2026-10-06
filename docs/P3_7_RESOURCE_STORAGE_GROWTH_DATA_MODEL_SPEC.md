@@ -445,12 +445,3 @@ Lower-grade pills may still work on high-realm disciples but become economically
 
 
 ---
-  
-# 16. IMPLEMENTATION STATUS LOCATION
-
-This file defines resource/storage/base-growth mechanics only.
-
-Current runtime status is tracked exclusively in:
-`CURRENT_CHECKPOINT.md`
-
-Do not append implementation diaries, gate logs or “next phase” instructions to this design spec.
