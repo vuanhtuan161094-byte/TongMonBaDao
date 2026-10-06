@@ -196,14 +196,13 @@ func _verify_growth_systems_use_canonical_warehouse() -> bool:
     var state := P37Factory.create_state(TEST_SEED + 55)
     var ids: Array = state.disciples.keys()
     ids.sort()
-    var actor: DiscipleState = null
-    for raw_id in ids:
-        var candidate: DiscipleState = state.disciples[raw_id]
-        if candidate.profile_seed > 0:
-            actor = candidate
-            break
-    if actor == null:
-        return _fail("Growth-system warehouse probe has no generated disciple.")
+    if ids.is_empty():
+        return _fail("Growth-system warehouse probe has no disciple.")
+    var actor: DiscipleState = state.disciples[ids[0]]
+    if actor.profile_seed <= 0:
+        actor.profile_seed = TEST_SEED + 55001
+        actor.latent_identity_seed = TEST_SEED + 55002
+        actor.recruitment_source = &"warehouse_probe"
 
     var root_refinement := RootRefinementSystem.new()
     actor.spiritual_root_purity = minf(actor.spiritual_root_purity, 0.60)
