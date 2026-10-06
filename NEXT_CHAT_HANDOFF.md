@@ -7,7 +7,8 @@ Updated: 2026-10-06
 1. `AGENTS.md`
 2. `docs/GAME_SYSTEM_ARCHITECTURE.md`
 3. `CURRENT_CHECKPOINT.md`
-4. relevant active-phase spec only after the user authorizes a new phase
+4. `docs/DISCIPLE_MASTER_SCHEMA.md`
+5. the active-phase spec only after the user authorizes a new phase
 
 Fetch live `main` before editing.
 
@@ -17,85 +18,101 @@ Fetch live `main` before editing.
 
 **No implementation phase is active.**
 
-P3.7A2R — Linh Điền Completion is closed.
+P3.7C1 — Open-point Lục Duy + Dẫn Tiên Đài is closed.
 
-Official Godot 4.7.2 evidence:
-- focused P3.7 backend gate: GREEN;
-- full cumulative P0 -> P2.12 + P3.7 A1 + A2R + B1: GREEN;
-- closing CI run: P3.7 Backend #48.
+Official Godot 4.7.2 closing evidence:
+- P3.7 Backend run **#67**;
+- run id `37483719618`;
+- job id `112338256594`;
+- tested SHA `a91cb9ba7a3dc775087f5b38e9a3452326f77681`;
+- focused C1 gate: PASS;
+- full cumulative P0 -> P2.12 -> P3.7A1 -> A2R -> B1 -> C1: PASS.
 
-Do not start another gameplay phase automatically.
-
----
-
-## Locked Linh Điền result
-
-Linh Điền now uses:
-
-**start crop -> one timer -> harvest resolves**
-
-No:
-- seed item;
-- backend walking/tending/harvest/haul phases;
-- worker occupancy during crop countdown;
-- Phẩm Lực.
-
-Implemented:
-- Spirit Stone planting cost;
-- no-refund cancel;
-- multiple plots;
-- multiple Spirit Field instances;
-- specific worksite assignment;
-- AUTO_DEMAND / PRIORITY / FIXED policies;
-- canonical warehouse deposit;
-- save/load/determinism;
-- legacy A2 migration.
+Do not call this Windows evidence.
 
 ---
 
-## Locked shared work model
+## Locked six-foundation result
 
-Keep the system simple.
+P3.7 lục duy is now open-point, not normalized 0..1.
 
-One common lục-duy factor:
+Common rules:
+- no hard cap;
+- birth rolls one Total Birth Lục Duy then distributes it;
+- ordinary birth stat envelope ≈ 0.5x–3x the six-stat average;
+- Mệnh Cách may break the birth envelope;
+- after birth, each stat grows independently without that envelope;
+- immutable birth snapshot is persisted;
+- current quality derives from current total and may promote.
 
-**`0.75 + 0.50 × normalized value`**
+Working quality totals:
+- <360 Phàm Thường;
+- 360–599 Xuất Chúng;
+- 600–999 Thiên Kiêu;
+- 1000–1799 Tuyệt Luân;
+- >=1800 Nghịch Thiên.
 
-Primary roles:
-- Tư Chất -> cultivation gain;
-- Căn Cốt -> body training;
-- Cơ Duyên -> rare chance;
-- Thông Tuệ -> profession/skill learning;
-- Mị Lực -> social effects;
-- Tiềm Lực -> long-term permanent growth.
+Starting balance:
+- Tư Chất +0.25% base cultivation/point;
+- Căn Cốt +0.20% body-training XP/point;
+- Thông Tuệ +0.15% learning XP/point;
+- Tiềm Lực +0.05% future Realm+Body stat-growth/point;
+- Cơ Duyên uses Luck Score 0..9999 + stat - difficulty;
+- Mị Lực uses social power and Dẫn Tiên authority.
 
-Do not force all six dimensions into every profession.
-
-Profession level:
-- +1% work speed per level.
-
-Normal trait/physique/bloodline/buff percentages should flow through generic modifier channels.
-Names such as Cần Mẫn/Cẩu Thả must not require private work-formula branches.
-
-Current generic channels:
-- `work_speed`;
-- `profession_xp`;
-- `cultivation_gain`;
-- `body_training_gain`;
-- `rare_chance`;
-- `social_effect`.
-
-Linh Thực Thiên Phú:
-- grade 1–5 -> +5/+10/+15/+20/+25% profession XP.
-
-Passive work Tu Vi:
-- only while an actual work action is being performed;
-- passive crop countdown grants none.
+Fixed +X consumables remain +X.
 
 ---
 
-## Important
+## Locked Dẫn Tiên result
 
-The old PL-based B2 direction is canceled.
+Dẫn Tiên Đài:
+- Lv1–100;
+- 1 Main Guide affects quality;
+- assistants affect arrival quantity only;
+- mortal quality Mị Lực cap = 2,500;
+- at cap, Nghịch Thiên <=5%, Tuyệt Luân <=15%;
+- no quality drops to 0%;
+- current normal rates = 65/25/8/1.8/0.2%;
+- current capped rates = 35/25/20/15/5%;
+- 2,500 effective Main Mị Lực currently gives up to 4 enhanced Nghịch Thiên appearances/day;
+- once that enhanced allowance is consumed, rates revert to normal until the next day;
+- natural normal-rate Nghịch Thiên may still appear;
+- daily snapshot prevents guide-swap reset;
+- current guide slots: Lv1 one slot, up to six at Lv100;
+- assistants: +1 arrival/day per 500 effective Mị Lực, current per-assistant effective cap 2,500;
+- base arrivals: 2 + floor(level/10);
+- Chiêu Mộ Lệnh goes through the same Dẫn Tiên pool/quota.
 
-Wait for the user's next phase decision.
+Do not introduce a second P3.7 gacha probability authority.
+
+Premium currency:
+- repo still has no canonical Tiên Ngọc / Tiên Ngọc Khóa wallet;
+- do not invent one incidentally;
+- when authorized, ordinary premium spending should buy limited Chiêu Mộ Lệnh rather than bypass Dẫn Tiên;
+- special limited banners are a separate future system.
+
+---
+
+## Other locked corrections
+
+Spirit Field:
+- active plot reserves one disciple until harvest;
+- passive crop timer grants no work Tu Vi;
+- worker slots = plot slots;
+- Lv1 4 slots, +1 every 5 levels;
+- canonical warehouse deposit.
+
+Warehouse:
+- one canonical stackable-resource warehouse;
+- no capacity gameplay ceiling;
+- explicit resource IDs/realm/tier/quantity;
+- no Phẩm Lực.
+
+---
+
+## Next
+
+The natural next disciple-design discussion is **Linh Căn V2**.
+
+Do not implement it unless the user explicitly authorizes that phase.
