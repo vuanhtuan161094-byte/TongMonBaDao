@@ -345,11 +345,19 @@ static func _trait_profile_dictionary(value: Variant) -> Dictionary:
         var raw_profile = value[raw_key]
         if not (raw_profile is Dictionary):
             continue
+        var grades: Dictionary = {}
+        var raw_grades = raw_profile.get("grades", {})
+        if raw_grades is Dictionary:
+            var grade_keys: Array = raw_grades.keys()
+            grade_keys.sort()
+            for grade_key in grade_keys:
+                grades[str(grade_key)] = clampi(int(raw_grades[grade_key]), 1, 5)
         normalized[str(raw_key)] = {
             "initialized": bool(raw_profile.get("initialized", false)),
             "visible": _string_array(raw_profile.get("visible", [])),
             "latent": _string_array(raw_profile.get("latent", [])),
-            "revealed": _string_array(raw_profile.get("revealed", []))
+            "revealed": _string_array(raw_profile.get("revealed", [])),
+            "grades": grades
         }
     return normalized
 
