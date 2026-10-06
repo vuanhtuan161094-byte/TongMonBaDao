@@ -46,6 +46,8 @@ func generate_candidate(state: SimulationState, source: StringName = DiscipleGen
             BloodlineSystem.new().ensure_candidate_profile(state, candidate_v2)
         if state.sect.physiques_enabled:
             PhysiqueSystem.new().ensure_candidate_profile(state, candidate_v2)
+        if state.p3_7_buildings_enabled:
+            WorkforceSystem.new().ensure_p3_7_candidate_profile(state, candidate_v2)
         return candidate_v2
 
     if source != DiscipleGeneratorV2.SOURCE_ORDINARY:
