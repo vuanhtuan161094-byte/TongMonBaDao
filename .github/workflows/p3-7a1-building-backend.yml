@@ -6,6 +6,11 @@ on:
     paths:
       - 'godot/src/simulation/state/building_state.gd'
       - 'godot/src/simulation/building/building_system.gd'
+      - 'godot/src/simulation/building/spirit_crop_registry.gd'
+      - 'godot/src/simulation/workforce/character_modifier_system.gd'
+      - 'godot/src/simulation/workforce/profession_modifier_system.gd'
+      - 'godot/src/simulation/traits/trait_system.gd'
+      - 'godot/src/simulation/cultivation/cultivation_system.gd'
       - 'godot/src/simulation/core/p3_7_factory.gd'
       - 'godot/src/simulation/state/simulation_state.gd'
       - 'godot/src/simulation/state/disciple_state.gd'
@@ -35,7 +40,7 @@ jobs:
   p3-7a1-backend:
     name: Godot 4.7.2 P3.7 latest fast backend gate
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
 
     steps:
       - name: Checkout
@@ -60,3 +65,7 @@ jobs:
       - name: Run latest P3.7 fast backend gate
         shell: pwsh
         run: ./tools/godot/Verify-P3-7B1-Warehouse.ps1 -GodotBin /usr/local/bin/godot
+
+      - name: Run P3.7 full cumulative gate
+        shell: pwsh
+        run: ./tools/godot/Verify-P3-7B1-Warehouse-Full.ps1 -GodotBin /usr/local/bin/godot
