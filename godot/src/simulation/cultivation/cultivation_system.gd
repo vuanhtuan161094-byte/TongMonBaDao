@@ -91,12 +91,15 @@ func cultivate(state: SimulationState, disciple: DiscipleState) -> float:
     if disciple.stamina < CULTIVATE_STAMINA_COST:
         return 0.0
     var base_gain := CULTIVATE_GAIN
-    if state.sect.techniques_enabled:
-        base_gain *= technique_system.cultivation_gain_multiplier(state, disciple)
-    if state.sect.cultivation_paths_enabled:
-        base_gain *= cultivation_path_system.cultivation_gain_multiplier(state, disciple)
-        var active_path := cultivation_path_system.active_technique_path(disciple)
-        base_gain *= cultivation_path_system.technique_effect_multiplier(state, disciple, active_path)
+    # P0-P2 keeps its exact legacy multiplicative behavior. P3.7 open-point
+    # foundations use one additive bonus channel inside add_progress().
+    if disciple.foundation_model_version < FoundationSystem.MODEL_OPEN_POINTS:
+        if state.sect.techniques_enabled:
+            base_gain *= technique_system.cultivation_gain_multiplier(state, disciple)
+        if state.sect.cultivation_paths_enabled:
+            base_gain *= cultivation_path_system.cultivation_gain_multiplier(state, disciple)
+            var active_path := cultivation_path_system.active_technique_path(disciple)
+            base_gain *= cultivation_path_system.technique_effect_multiplier(state, disciple, active_path)
     var gained := add_progress(state, disciple, base_gain)
     disciple.stamina = maxf(0.0, disciple.stamina - CULTIVATE_STAMINA_COST)
     disciple.metrics["cultivation_sessions"] = int(disciple.metrics.get("cultivation_sessions", 0)) + 1
@@ -105,12 +108,19 @@ func cultivate(state: SimulationState, disciple: DiscipleState) -> float:
 func add_combat_win_progress(state: SimulationState, disciple: DiscipleState) -> float:
     if not state.sect.cultivation_enabled:
         return 0.0
+    # Combat reward is a fixed +X reward in the open-point model. Tư Chất
+    # improves base/natural cultivation, not explicit fixed rewards.
+    if disciple.foundation_model_version >= FoundationSystem.MODEL_OPEN_POINTS:
+        return add_fixed_progress(state, disciple, COMBAT_WIN_GAIN)
     return add_progress(state, disciple, COMBAT_WIN_GAIN)
 
 func add_progress(state: SimulationState, disciple: DiscipleState, amount: float) -> float:
     if not state.sect.cultivation_enabled or amount <= 0.0 or is_max_stage(disciple):
         return 0.0
-    var required := required_progress(disciple)
+    if disciple.foundation_model_version >= FoundationSystem.MODEL_OPEN_POINTS:
+        return _commit_progress(disciple, amount * _open_point_natural_cultivation_factor(state, disciple))
+
+    # Locked legacy behavior for P0-P2 factories.
     var effective_amount := amount
     if state.sect.spiritual_roots_enabled:
         if state.sect.spiritual_root_refinement_enabled and disciple.profile_seed > 0:
@@ -125,8 +135,44 @@ func add_progress(state: SimulationState, disciple: DiscipleState, amount: float
         effective_amount *= bloodline_system.cultivation_gain_multiplier(state, disciple)
     if state.sect.physiques_enabled:
         effective_amount *= physique_system.cultivation_multiplier(state, disciple)
+    return _commit_progress(disciple, effective_amount)
+
+func add_fixed_progress(state: SimulationState, disciple: DiscipleState, amount: float) -> float:
+    if not state.sect.cultivation_enabled or amount <= 0.0 or is_max_stage(disciple):
+        return 0.0
+    return _commit_progress(disciple, amount)
+
+func _open_point_natural_cultivation_factor(state: SimulationState, disciple: DiscipleState) -> float:
+    # Same-channel percentage bonuses are additive:
+    # final = base * (1 + sum(each_source_multiplier - 1)).
+    var bonus := 0.0
+    if state.sect.spiritual_roots_enabled:
+        var root_factor := spiritual_root_system.cultivation_multiplier(disciple.spiritual_root_quality)
+        if state.sect.spiritual_root_refinement_enabled and disciple.profile_seed > 0:
+            root_factor = root_refinement_system.cultivation_multiplier(state, disciple)
+        bonus += root_factor - 1.0
+    if state.sect.disciple_generation_v2_enabled and disciple.profile_seed > 0:
+        bonus += character_modifiers.foundation_channel_factor(disciple, CharacterModifierSystem.CHANNEL_CULTIVATION_GAIN) - 1.0
+    if state.sect.disciple_traits_enabled:
+        bonus += trait_system.cultivation_gain_multiplier(state, disciple) - 1.0
+    if state.sect.bloodlines_enabled:
+        bonus += bloodline_system.cultivation_gain_multiplier(state, disciple) - 1.0
+    if state.sect.physiques_enabled:
+        bonus += physique_system.cultivation_multiplier(state, disciple) - 1.0
+    if state.sect.techniques_enabled:
+        var technique_bonus := technique_system.cultivation_gain_multiplier(state, disciple) - 1.0
+        if state.sect.cultivation_paths_enabled:
+            var active_path := cultivation_path_system.active_technique_path(disciple)
+            technique_bonus *= cultivation_path_system.technique_effect_multiplier(state, disciple, active_path)
+        bonus += technique_bonus
+    if state.sect.cultivation_paths_enabled:
+        bonus += cultivation_path_system.cultivation_gain_multiplier(state, disciple) - 1.0
+    return maxf(1.0 + bonus, 0.05)
+
+func _commit_progress(disciple: DiscipleState, effective_amount: float) -> float:
+    var required := required_progress(disciple)
     var before := disciple.cultivation_progress
-    disciple.cultivation_progress = minf(required, before + effective_amount)
+    disciple.cultivation_progress = minf(required, before + maxf(effective_amount, 0.0))
     var gained := disciple.cultivation_progress - before
     if gained > 0.0:
         disciple.metrics["cultivation_gained"] = int(disciple.metrics.get("cultivation_gained", 0)) + int(round(gained))
