@@ -79,6 +79,9 @@ var workforce_event_count: int = 0
 var disciple_generation_v2_enabled: bool = false
 var disciple_recruitment_tokens: int = 0
 var disciple_generation_event_count: int = 0
+# P3.7C1 open-point lục duy + Dẫn Tiên recruitment authority.
+var foundation_points_enabled: bool = false
+var guidance_recruitment_enabled: bool = false
 
 # P2.9 deterministic visible/latent/revealed trait profiles. Fully opt-in.
 var disciple_traits_enabled: bool = false
@@ -152,10 +155,12 @@ func to_dict() -> Dictionary:
         data["work_groups"] = work_groups.duplicate(true)
         data["forge_support_points"] = forge_support_points
         data["workforce_event_count"] = workforce_event_count
-    if disciple_generation_v2_enabled or disciple_recruitment_tokens > 0 or disciple_generation_event_count > 0:
+    if disciple_generation_v2_enabled or disciple_recruitment_tokens > 0 or disciple_generation_event_count > 0 or foundation_points_enabled or guidance_recruitment_enabled:
         data["disciple_generation_v2_enabled"] = disciple_generation_v2_enabled
         data["disciple_recruitment_tokens"] = disciple_recruitment_tokens
         data["disciple_generation_event_count"] = disciple_generation_event_count
+        data["foundation_points_enabled"] = foundation_points_enabled
+        data["guidance_recruitment_enabled"] = guidance_recruitment_enabled
     if disciple_traits_enabled or disciple_trait_event_count > 0 or not disciple_trait_profiles.is_empty():
         data["disciple_traits_enabled"] = disciple_traits_enabled
         data["disciple_trait_profiles"] = disciple_trait_profiles.duplicate(true)
@@ -220,6 +225,8 @@ static func from_dict(data: Dictionary) -> SectState:
     state.disciple_generation_v2_enabled = bool(data.get("disciple_generation_v2_enabled", false))
     state.disciple_recruitment_tokens = maxi(int(data.get("disciple_recruitment_tokens", 0)), 0)
     state.disciple_generation_event_count = maxi(int(data.get("disciple_generation_event_count", 0)), 0)
+    state.foundation_points_enabled = bool(data.get("foundation_points_enabled", false))
+    state.guidance_recruitment_enabled = bool(data.get("guidance_recruitment_enabled", false))
     state.disciple_traits_enabled = bool(data.get("disciple_traits_enabled", false))
     state.disciple_trait_profiles = _trait_profile_dictionary(data.get("disciple_trait_profiles", {}))
     state.disciple_trait_event_count = maxi(int(data.get("disciple_trait_event_count", 0)), 0)
