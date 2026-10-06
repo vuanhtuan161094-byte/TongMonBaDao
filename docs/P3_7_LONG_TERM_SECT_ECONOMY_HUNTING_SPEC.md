@@ -1080,3 +1080,22 @@ Official Godot 4.7.2:
 
 Next authority implementation:
 **P3.7B1 Resource Registry + canonical Sect Warehouse.**
+
+
+---
+
+# 37. P3.7B1 CANONICAL WAREHOUSE STATUS — CI GREEN 2026-10-06
+
+P3.7 now has one canonical stackable-resource warehouse.
+
+Resource identity is preserved; different resources are not averaged together.
+Realm grade and stable per-unit Phẩm Lực are registry metadata.
+Legacy forge/technique material buckets are migrated once and cleared for P3.7 states.
+
+Current integrated consumers:
+construction, Mine, Spirit Field, forge, technique upgrading, root refinement, bloodline and physique.
+
+Official Godot 4.7.2 focused + cumulative backend CI are green through B1.
+
+Next:
+**P3.7B2 — Phẩm Lực-based construction material resolver.**
