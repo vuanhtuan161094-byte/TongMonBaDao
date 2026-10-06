@@ -57,10 +57,18 @@ func total_work_speed_factor(state: SimulationState, disciple: DiscipleState, pr
     return maxf(profession_speed_factor(profession_level) * general_work_trait_factor(state, disciple), 0.25)
 
 func profession_xp_factor(disciple: DiscipleState, profession_id: StringName) -> float:
-    return comprehension_xp_factor(disciple) * profession_talent_xp_factor(disciple, profession_id)
+    var comprehension_factor := comprehension_xp_factor(disciple)
+    var talent_factor := profession_talent_xp_factor(disciple, profession_id)
+    if disciple.foundation_model_version >= FoundationSystem.MODEL_OPEN_POINTS:
+        return maxf(1.0 + (comprehension_factor - 1.0) + (talent_factor - 1.0), 0.05)
+    return comprehension_factor * talent_factor
 
 func total_profession_xp_factor(state: SimulationState, disciple: DiscipleState, profession_id: StringName) -> float:
-    return profession_xp_factor(disciple, profession_id) * character_modifiers.trait_factor(state, disciple, CharacterModifierSystem.CHANNEL_PROFESSION_XP)
+    var base_factor := profession_xp_factor(disciple, profession_id)
+    var trait_factor := character_modifiers.trait_factor(state, disciple, CharacterModifierSystem.CHANNEL_PROFESSION_XP)
+    if disciple.foundation_model_version >= FoundationSystem.MODEL_OPEN_POINTS:
+        return maxf(1.0 + (base_factor - 1.0) + (trait_factor - 1.0), 0.05)
+    return base_factor * trait_factor
 
 func rare_event_factor(state: SimulationState, disciple: DiscipleState) -> float:
     return fortune_factor(disciple) * character_modifiers.trait_factor(state, disciple, CharacterModifierSystem.CHANNEL_RARE_CHANCE)
