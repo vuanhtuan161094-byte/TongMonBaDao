@@ -8,85 +8,83 @@ Updated: 2026-10-06
 2. `docs/GAME_SYSTEM_ARCHITECTURE.md`
 3. `CURRENT_CHECKPOINT.md`
 4. this file
-5. only the spec relevant to the active phase
+5. only the spec relevant to the next requested phase
 
 Fetch live `main` before editing.
 
 ---
 
-## Current active phase
+## Current state
 
-**AUTHORITY / DOCUMENT STRUCTURE CLEANUP**
+The authority/document cleanup phase is **COMPLETE / LOCKED**.
 
-Do not implement P3.7B2 yet.
+There is currently **no active implementation phase**.
 
-Purpose:
-- remove stale/contradictory documentation;
-- make design specs design-only;
-- keep progress evidence only in `CURRENT_CHECKPOINT.md`;
-- keep this handoff focused only on the current phase;
-- enforce one-phase-at-a-time development.
+Do not continue coding automatically.
 
 ---
 
-## Cleanup tasks remaining
+## Backend locked through
 
-1. Sanitize `docs/P3_7_LONG_TERM_SECT_ECONOMY_HUNTING_SPEC.md`
-   - remove obsolete pre-implementation “next step/order” sections;
-   - remove A1/A2/B1 implementation diaries;
-   - retain only high-level design + child-authority links + locked corrections.
+### P3.7A1
+Building Authority + Mine.
 
-2. Sanitize `docs/P3_7_BUILDING_TREE_SPEC.md`
-   - remove stale implementation-order/gate/history sections;
-   - remove obsolete Team Loot Bag / Loot Warehouse wording;
-   - retain the building tree and immutable building rules.
+### P3.7A2
+Spirit Field / Linh Điền on the same BuildingSystem.
 
-3. Sanitize `docs/P3_7_RESOURCE_STORAGE_GROWTH_DATA_MODEL_SPEC.md`
-   - update stale status header;
-   - remove implementation-status appendix;
-   - keep resource/storage/base-growth design only.
+### P3.7B1
+Resource Registry + one canonical Sect Warehouse.
 
-4. Sanitize `docs/P3_7_TIME_SPEED_COOLDOWN_SPEC.md`
-   - update stale Windows-pending header;
-   - remove implementation-status appendix;
-   - keep timing semantics only.
+Official Godot 4.7.2 focused and cumulative GitHub CI is green through B1.
 
-5. Sanitize `docs/P3_7_DISCIPLE_LOADOUT_HUNTING_PROGRESSION_SPEC.md`
-   - integrate the no-Loot-Warehouse rule into the main text;
-   - remove “override because older text may conflict” wording once no conflict remains;
-   - keep this system DESIGN LOCKED / not implemented.
-
-6. Search all P3.7 canonical docs for stale phrases:
-   - Team Loot Bag;
-   - Loot Warehouse;
-   - bridge;
-   - Windows pending;
-   - implementation not started when partially implemented;
-   - obsolete NEXT / IMPLEMENT ORDER text.
-
-7. After cleanup:
-   - verify cross-links;
-   - record cleanup complete in `CURRENT_CHECKPOINT.md`;
-   - then and only then activate B2.
+Earlier locked Windows baseline remains P0–P3.6A runtime as recorded in `CURRENT_CHECKPOINT.md`.
 
 ---
 
-## Locked backend state while cleaning
+## Documentation structure now
 
-Do not change gameplay code unless documentation cleanup exposes a real contradiction requiring a minimal correction.
+### Stable architecture / workflow
+`docs/GAME_SYSTEM_ARCHITECTURE.md`
 
-Backend locked through:
-- A1 Building + Mine;
-- A2 Spirit Field;
-- B1 Resource Registry + canonical Sect Warehouse.
+### Current runtime truth
+`CURRENT_CHECKPOINT.md`
 
-Official Godot 4.7.2 focused + cumulative CI is green through B1.
+### Character master
+`docs/DISCIPLE_MASTER_SCHEMA.md`
+
+### P3.7 parent
+`docs/P3_7_LONG_TERM_SECT_ECONOMY_HUNTING_SPEC.md`
+
+### Building design
+`docs/P3_7_BUILDING_TREE_SPEC.md`
+
+### Resource / warehouse / base growth
+`docs/P3_7_RESOURCE_STORAGE_GROWTH_DATA_MODEL_SPEC.md`
+
+### Time / movement / work
+`docs/P3_7_TIME_SPEED_COOLDOWN_SPEC.md`
+
+### Hunting / loadout / progression
+`docs/P3_7_DISCIPLE_LOADOUT_HUNTING_PROGRESSION_SPEC.md`
+
+Design specs must not accumulate progress logs again.
 
 ---
 
-## Queued phase after cleanup
+## Next queued phase — do not start without user instruction
 
 **P3.7B2 — Construction Resolver by material family + required Phẩm Lực**
 
-B2 is not active yet.
-Do not start it until cleanup is closed in the checkpoint.
+When the user explicitly starts B2:
+
+1. fetch live `main`;
+2. read authorities above;
+3. inspect current `ResourceRegistry`, `WarehouseSystem`, `BuildingSystem`;
+4. lock B2 contract before broad edits;
+5. implement B2 only;
+6. focused Godot 4.7.2 gate;
+7. cumulative gate to close B2;
+8. update checkpoint;
+9. stop before B3 unless the user explicitly continues.
+
+No presentation work during B2.
