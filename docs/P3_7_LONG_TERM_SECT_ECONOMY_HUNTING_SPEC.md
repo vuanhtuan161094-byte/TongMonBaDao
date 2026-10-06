@@ -715,7 +715,7 @@ World/combat:
 - Expedition Hall;
 - future mission/intelligence facilities.
 
-The complete building tree is the next design deliverable.
+The canonical detailed building tree is defined in `docs/P3_7_BUILDING_TREE_SPEC.md`.
 
 ---
 
