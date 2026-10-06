@@ -51,7 +51,12 @@ func load_from_path(path: String) -> SimulationState:
         push_error("SaveService: malformed save payload for version %d." % CURRENT_VERSION)
         return null
 
-    return SimulationState.from_dict(data)
+    var state := SimulationState.from_dict(data)
+    # P3.7A saves created before the canonical warehouse existed still contain
+    # forge_materials / technique_materials. Migrate them exactly once on load.
+    if state != null and state.p3_7_buildings_enabled:
+        WarehouseSystem.new().initialize(state)
+    return state
 
 func _migrate(data: Dictionary, version: int) -> Dictionary:
     var current := version
