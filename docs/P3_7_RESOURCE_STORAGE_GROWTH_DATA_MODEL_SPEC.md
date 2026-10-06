@@ -243,14 +243,17 @@ Use the canonical six foundation fields:
 Shared work formulas are owned by:
 `docs/P3_7_PROFESSION_WORK_MODIFIER_SPEC.md`
 
-High-level meaning:
+Canonical P3.7C1 meaning:
 
-- Tư Chất -> cultivation aptitude;
-- Căn Cốt -> endurance/stamina;
-- Cơ Duyên -> rare opportunity weighting;
-- Thông Tuệ -> learning/comprehension;
-- Mị Lực -> social/commercial contexts;
-- Tiềm Lực -> long-term growth identity.
+- Tư Chất -> base cultivation/Tu Vi progression;
+- Căn Cốt -> body-training progression, not generic work stamina;
+- Cơ Duyên -> meaningful luck/outcome checks;
+- Thông Tuệ -> learning/profession/mastery progression;
+- Mị Lực -> social power and Dẫn Tiên recruitment;
+- Tiềm Lực -> long-term Realm + Body stat-growth quality.
+
+The open-point formulas and Dẫn Tiên rules are owned by:
+`docs/P3_7C1_FOUNDATION_DAN_TIEN_SPEC.md`.
 
 Do not multiply all six into every profession.
 
