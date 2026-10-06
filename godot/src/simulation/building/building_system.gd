@@ -388,6 +388,7 @@ func perform_spirit_field_step(state: SimulationState, disciple: DiscipleState, 
                     "growth_required": _field_growth_duration(field),
                     "planted_by": str(disciple.id)
                 }
+                _release_competing_field_cycles(state, field.id, disciple.id)
                 state.building_event_count += 1
                 result["completed"] = true
                 result["work_kind"] = "planting"
@@ -406,6 +407,7 @@ func perform_spirit_field_step(state: SimulationState, disciple: DiscipleState, 
                 var resource_id := str(field.production_state.get("resource_id", definition_for(field).get("resource_id", MATERIAL_HERB)))
                 _deposit_resource(state, field, resource_id, produced)
                 field.production_state.clear()
+                _release_competing_field_cycles(state, field.id, disciple.id)
                 state.building_event_count += 1
                 phase = &"complete"
                 progress = 0.0
@@ -525,6 +527,19 @@ func validate_invariants(state: SimulationState) -> Array[String]:
         if float(disciple.work_cycle_state.get("progress", 0.0)) < 0.0 or int(disciple.work_cycle_state.get("carried_units", 0)) < 0:
             errors.append("%s has invalid work-cycle progress." % disciple.display_name)
     return errors
+
+func _release_competing_field_cycles(state: SimulationState, building_id: StringName, except_disciple_id: StringName = &"") -> void:
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    for raw_id in ids:
+        var worker: DiscipleState = state.disciples[raw_id]
+        if worker.id == except_disciple_id or worker.work_cycle_state.is_empty():
+            continue
+        if StringName(worker.work_cycle_state.get("profession", "")) != PROF_HERBALISM:
+            continue
+        if str(worker.work_cycle_state.get("building_id", "")) != str(building_id):
+            continue
+        worker.work_cycle_state.clear()
 
 func _complete_upgrade(state: SimulationState, building: BuildingState) -> void:
     building.level = clampi(building.upgrade_target_level, 1, building.max_level)
