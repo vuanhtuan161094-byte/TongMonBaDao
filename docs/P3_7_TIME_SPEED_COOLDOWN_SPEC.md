@@ -433,7 +433,7 @@ The player should not manually click every batch.
 
 Craft duration depends on:
 - recipe complexity;
-- material realm grade / Phẩm Lực;
+- material/recipe realm tier and complexity;
 - building capability;
 - profession level;
 - tools/buffs.
