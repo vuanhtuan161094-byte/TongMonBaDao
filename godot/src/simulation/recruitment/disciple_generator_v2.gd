@@ -148,10 +148,14 @@ func quality_for_foundation(aptitude: float, constitution: float, fortune: float
     return QUALITY_COMMON
 
 func recompute_candidate_quality(candidate: CandidateState) -> StringName:
+    if candidate.foundation_model_version >= FoundationSystem.MODEL_OPEN_POINTS:
+        return FoundationSystem.new().recompute_candidate_quality(candidate)
     candidate.disciple_quality = quality_for_foundation(candidate.aptitude, candidate.constitution, candidate.fortune, candidate.comprehension, candidate.charisma, candidate.potential)
     return candidate.disciple_quality
 
 func recompute_disciple_quality(disciple: DiscipleState) -> StringName:
+    if disciple.foundation_model_version >= FoundationSystem.MODEL_OPEN_POINTS:
+        return FoundationSystem.new().recompute_disciple_quality(disciple)
     disciple.disciple_quality = quality_for_foundation(disciple.aptitude, disciple.constitution, disciple.fortune, disciple.comprehension, disciple.charisma, disciple.potential)
     return disciple.disciple_quality
 
@@ -171,6 +175,8 @@ func profession_suitability(candidate: CandidateState, profession_id: StringName
     return score
 
 func validate_candidate(candidate: CandidateState) -> Array[String]:
+    if candidate.foundation_model_version >= FoundationSystem.MODEL_OPEN_POINTS:
+        return FoundationSystem.new().validate_candidate(candidate)
     var errors: Array[String] = []
     if candidate.profile_seed <= 0:
         errors.append("V2 candidate has invalid profile seed.")
