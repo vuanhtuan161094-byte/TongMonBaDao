@@ -27,6 +27,8 @@ func _run() -> void:
         return
     if not _verify_technique_materials_use_canonical_warehouse():
         return
+    if not _verify_growth_systems_use_canonical_warehouse():
+        return
     if not _verify_old_p3_save_auto_migrates_on_load():
         return
     if not _verify_p2_legacy_behavior_stays_isolated():
@@ -188,6 +190,67 @@ func _verify_technique_materials_use_canonical_warehouse() -> bool:
         return _fail("Technique upgrade could not consume canonical warehouse material.")
     if warehouse.quantity(state, TechniqueSystem.MATERIAL_ESSENCE) != before_upgrade - needed:
         return _fail("Technique upgrade consumed wrong canonical material amount.")
+    return _validate(state)
+
+func _verify_growth_systems_use_canonical_warehouse() -> bool:
+    var state := P37Factory.create_state(TEST_SEED + 55)
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    var actor: DiscipleState = null
+    for raw_id in ids:
+        var candidate: DiscipleState = state.disciples[raw_id]
+        if candidate.profile_seed > 0:
+            actor = candidate
+            break
+    if actor == null:
+        return _fail("Growth-system warehouse probe has no generated disciple.")
+
+    var root_refinement := RootRefinementSystem.new()
+    actor.spiritual_root_purity = minf(actor.spiritual_root_purity, 0.60)
+    if warehouse.quantity(state, &"linh_tuy") <= 0:
+        warehouse.add(state, &"linh_tuy", 2)
+    var essence_before := warehouse.quantity(state, &"linh_tuy")
+    var refined := root_refinement.refine_disciple(state, actor.id)
+    if not bool(refined.get("ok", false)):
+        return _fail("Root refinement could not consume canonical Linh Tủy: %s" % str(refined.get("reason", "")))
+    if warehouse.quantity(state, &"linh_tuy") != essence_before - 1:
+        return _fail("Root refinement consumed wrong canonical Linh Tủy amount.")
+
+    var bloodlines := BloodlineSystem.new()
+    state.sect.bloodline_profiles[str(actor.id)] = {
+        "initialized": true,
+        "bloodline_id": str(BloodlineSystem.BLOODLINE_TRUE_DRAGON),
+        "purity": 0.50,
+        "revealed": true,
+        "awakened": false,
+        "refinement_count": 0
+    }
+    if warehouse.quantity(state, &"yeu_dan") <= 0:
+        warehouse.add(state, &"yeu_dan", 2)
+    var core_before := warehouse.quantity(state, &"yeu_dan")
+    var awakened := bloodlines.awaken_bloodline(state, actor.id)
+    if not bool(awakened.get("ok", false)):
+        return _fail("Bloodline awakening could not consume canonical Yêu Đan: %s" % str(awakened.get("reason", "")))
+    if warehouse.quantity(state, &"yeu_dan") != core_before - 1:
+        return _fail("Bloodline awakening consumed wrong canonical Yêu Đan amount.")
+
+    var physiques := PhysiqueSystem.new()
+    var physique_profile := physiques.ensure_disciple_profile(state, actor)
+    if physique_profile.is_empty():
+        return _fail("Physique profile missing in warehouse consumer probe.")
+    physique_profile["temper_level"] = 0
+    state.sect.physique_profiles[str(actor.id)] = physique_profile
+    if warehouse.quantity(state, &"yeu_dan") <= 0:
+        warehouse.add(state, &"yeu_dan", 1)
+    core_before = warehouse.quantity(state, &"yeu_dan")
+    var tempered := physiques.temper_body(state, actor.id)
+    if not bool(tempered.get("ok", false)):
+        return _fail("Physique tempering could not consume canonical Yêu Đan: %s" % str(tempered.get("reason", "")))
+    if warehouse.quantity(state, &"yeu_dan") != core_before - 1:
+        return _fail("Physique tempering consumed wrong canonical Yêu Đan amount.")
+
+    if not state.sect.technique_materials.is_empty():
+        return _fail("Growth systems repopulated legacy technique_materials under P3.7.")
     return _validate(state)
 
 func _verify_old_p3_save_auto_migrates_on_load() -> bool:
