@@ -25,6 +25,7 @@ var cultivation_path_system := CultivationPathSystem.new()
 var trait_system := TraitSystem.new()
 var bloodline_system := BloodlineSystem.new()
 var physique_system := PhysiqueSystem.new()
+var character_modifiers := CharacterModifierSystem.new()
 
 const STAGES := [
     {"id":"qi_1", "name":"Luyện Khí tầng 1", "required":500.0, "combat_bonus":0.0, "hp_bonus":0.0, "chance":0.98},
@@ -117,7 +118,7 @@ func add_progress(state: SimulationState, disciple: DiscipleState, amount: float
         else:
             effective_amount *= spiritual_root_system.cultivation_multiplier(disciple.spiritual_root_quality)
     if state.sect.disciple_generation_v2_enabled and disciple.profile_seed > 0:
-        effective_amount *= lerpf(0.82, 1.22, clampf(disciple.aptitude, 0.0, 1.0))
+        effective_amount *= character_modifiers.foundation_channel_factor(disciple, CharacterModifierSystem.CHANNEL_CULTIVATION_GAIN)
     if state.sect.disciple_traits_enabled:
         effective_amount *= trait_system.cultivation_gain_multiplier(state, disciple)
     if state.sect.bloodlines_enabled:
