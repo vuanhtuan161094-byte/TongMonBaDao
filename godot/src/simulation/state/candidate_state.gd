@@ -15,6 +15,7 @@ var spiritual_root_elements: Array = []
 # P2.7 non-combat value. P2.8 adopts comprehension as canonical Thông Tuệ.
 var comprehension: float = 0.0
 var profession_traits: Array = []
+var profession_trait_grades: Dictionary = {}
 
 # P2.8 procedural identity. Empty/zero for legacy candidates.
 var profile_seed: int = 0
@@ -51,6 +52,10 @@ func _init(definition: Dictionary = {}) -> void:
     spiritual_root_elements = _string_array(definition.get("spiritual_root_elements", []))
     comprehension = maxf(float(definition.get("comprehension", comprehension)), 0.0)
     profession_traits = _string_array(definition.get("profession_traits", []))
+    profession_trait_grades = _int_dictionary(definition.get("profession_trait_grades", {}))
+    for trait_id in profession_traits:
+        if not profession_trait_grades.has(str(trait_id)):
+            profession_trait_grades[str(trait_id)] = 1
 
     profile_seed = int(definition.get("profile_seed", 0))
     recruitment_source = StringName(definition.get("recruitment_source", ""))
@@ -91,6 +96,8 @@ func to_dict() -> Dictionary:
     if comprehension > 0.0 or not profession_traits.is_empty():
         data["comprehension"] = comprehension
         data["profession_traits"] = profession_traits.duplicate()
+        if not profession_trait_grades.is_empty():
+            data["profession_trait_grades"] = profession_trait_grades.duplicate(true)
     if profile_seed > 0 or recruitment_source != &"":
         data["profile_seed"] = profile_seed
         data["recruitment_source"] = str(recruitment_source)
@@ -132,6 +139,8 @@ func to_disciple() -> DiscipleState:
     if comprehension > 0.0 or not profession_traits.is_empty():
         definition["comprehension"] = comprehension
         definition["profession_traits"] = profession_traits.duplicate()
+        if not profession_trait_grades.is_empty():
+            definition["profession_trait_grades"] = profession_trait_grades.duplicate(true)
         definition["sect_rank"] = "outer"
 
     if profile_seed > 0 or recruitment_source != &"":
@@ -166,6 +175,14 @@ func to_disciple() -> DiscipleState:
 
 static func from_dict(data: Dictionary) -> CandidateState:
     return CandidateState.new(data)
+
+static func _int_dictionary(value: Variant) -> Dictionary:
+    var result: Dictionary = {}
+    if not (value is Dictionary):
+        return result
+    for raw_key in value.keys():
+        result[str(raw_key)] = clampi(int(value[raw_key]), 1, 5)
+    return result
 
 static func _string_array(value: Variant) -> Array:
     var result: Array = []
