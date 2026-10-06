@@ -292,7 +292,10 @@ func _normalize_worker(disciple: DiscipleState) -> void:
     disciple.comprehension = 0.60
     disciple.constitution = 0.60
     disciple.profession_xp[str(WorkforceSystem.PROF_MINING)] = 0.0
-    disciple.profession_traits.clear()
+    # Keep the persistence probe in a canonical P3.7 profile state; this test
+    # is about building/work-cycle persistence, not profile migration.
+    disciple.profession_traits = [str(WorkforceSystem.TRAIT_FORGE)]
+    disciple.profession_trait_grades = {str(WorkforceSystem.TRAIT_FORGE): 1}
     disciple.cultivation_path_xp.clear()
     disciple.work_cycle_state.clear()
     disciple.stamina = 100.0
