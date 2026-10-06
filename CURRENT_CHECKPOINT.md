@@ -195,27 +195,82 @@ No gameplay code was added during this cleanup phase.
 
 ## 6. Current implementation phase
 
-**NONE**
+**P3.7A2R — LINH ĐIỀN COMPLETION**
 
-Do not automatically start another gameplay phase.
+Status: **DESIGN LOCKED / RUNTIME REVISION NOT STARTED**
 
-The repository is intentionally at a clean boundary after B1.
+Reason for reopening:
+the old A2 proved that BuildingSystem supports a farming lifecycle, but it did not complete the full Linh Điền gameplay contract.
+
+Canonical authority:
+`docs/P3_7_SPIRIT_FIELD_SPEC.md`
+
+### Locked corrections
+
+Linh Điền backend should focus on:
+- planting/tending time;
+- passive growth time;
+- harvest/processing time;
+- yield;
+- output Phẩm Lực;
+- seed consumption/return;
+- crop policy;
+- multiple plots;
+- multiple field instances;
+- worker/building assignment.
+
+Detailed tile-by-tile travel/haul is NOT required.
+Movement/logistics may be represented as deterministic time overhead.
+
+### Character interaction
+
+No new seventh foundation stat is needed.
+
+Use existing character authority:
+
+- **Tư Chất:** no generic farming bonus;
+- **Căn Cốt:** labor endurance/stamina and modest sustained work efficiency;
+- **Cơ Duyên:** rare crop/mutation/exceptional seed outcomes;
+- **Thông Tuệ:** profession XP / difficult-crop handling;
+- **Mị Lực:** no routine field-production bonus;
+- **Tiềm Lực:** no immediate crop-output multiplier.
+
+Add one missing profession-specific talent:
+- `herbalist_affinity` / Linh Thực Thiên Phú;
+- primary effect: +80% Herbalism XP;
+- only small secondary farming effects.
+
+Spiritual Root/Bloodline/Physique do not provide universal farming multipliers.
+Crop-specific elemental affinity may grant a small positive bonus with no mismatch penalty.
+
+### Boundary
+
+Linh Điền owns:
+- plots;
+- crops;
+- seeds;
+- field policy;
+- field timing;
+- yield/quality;
+- field worker assignment;
+- field milestones.
+
+It does NOT privately reimplement:
+- the global profession 1–1000 progression;
+- universal passive cultivation from work;
+- wages/personal Spirit Stones;
+- generic Contribution rewards.
+
+Those remain shared-system phases.
+
+### Completion requirement
+
+Do not close A2R until the completion gate in `docs/P3_7_SPIRIT_FIELD_SPEC.md` is satisfied.
 
 ---
 
-## 7. Next queued gameplay phase — NOT STARTED
+## 7. Queued phases
 
-**P3.7B2 — Construction Resolver by material family + required Phẩm Lực**
+No other gameplay phase may start while A2R is active.
 
-Queued contract:
-- normal building upgrades require total Construction Wood Phẩm Lực;
-- normal building upgrades require total Construction Mineral Phẩm Lực;
-- Linh Thạch remains the currency input;
-- milestone specialty component remains an exact named item;
-- only eligible resource tags may satisfy a requirement;
-- warehouse reserve/lock must be respected;
-- prefer lower-value/lower-grade eligible stock first;
-- do not consume rare/high-grade stock unnecessarily;
-- no presentation work until backend B2 is locked.
-
-B2 begins only after a new user instruction to start it.
+B2 Construction Resolver is paused behind Linh Điền completion.
