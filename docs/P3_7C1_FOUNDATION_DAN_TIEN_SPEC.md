@@ -334,10 +334,10 @@ Those systems must consume this authority later rather than inventing another lá
 
 Official Godot 4.7.2 GitHub Actions:
 - workflow: `P3.7 Backend`;
-- run: **#67**;
-- run id: `37483719618`;
-- job id: `112338256594`;
-- tested commit: `a91cb9ba7a3dc775087f5b38e9a3452326f77681`;
+- run: **#75**;
+- run id: `37491065054`;
+- job id: `112363619374`;
+- tested commit: `948997f3d101fcd23361cd318ffa130ae97f7e77`;
 - focused P3.7C1 gate: **PASS**;
 - full cumulative P0 -> P2.12 -> P3.7A1 -> A2R -> B1 -> C1: **PASS**.
 
