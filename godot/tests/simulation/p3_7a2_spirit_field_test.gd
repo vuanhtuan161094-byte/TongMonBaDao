@@ -323,6 +323,8 @@ func _verify_milestone_heart_costs_and_fragments() -> bool:
         return _fail("Linh Tuyền fragment conversion remainder is wrong.")
     if warehouse.quantity(state, StringName(BuildingSystem.MATERIAL_LINH_TUYEN_HEART)) != hearts_before + 1:
         return _fail("Linh Tuyền Chi Tâm conversion output is wrong.")
+    field.level = 1
+    buildings.spirit_field_plots(state, field)
     return _validate(state)
 
 func _verify_passive_work_cultivation_only_on_work() -> bool:
