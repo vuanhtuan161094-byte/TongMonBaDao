@@ -61,6 +61,13 @@ var equipment_forge_index: int = 0
 var equipment_event_count: int = 0
 var equipment_policy: StringName = &"balanced"
 
+# P3.7 canonical stackable-resource warehouse. Fully opt-in.
+# When enabled, forge_materials and technique_materials are legacy-empty bridges only.
+var p3_7_resources_enabled: bool = false
+var warehouse_resources: Dictionary = {}
+var warehouse_rules: Dictionary = {}
+var warehouse_event_count: int = 0
+
 # P2.7 disciple workforce/schedule/group policy.
 var workforce_enabled: bool = false
 var work_policy: StringName = &"balanced"
@@ -134,6 +141,11 @@ func to_dict() -> Dictionary:
         data["equipment_forge_index"] = equipment_forge_index
         data["equipment_event_count"] = equipment_event_count
         data["equipment_policy"] = str(equipment_policy)
+    if p3_7_resources_enabled or warehouse_event_count > 0 or not warehouse_resources.is_empty() or not warehouse_rules.is_empty():
+        data["p3_7_resources_enabled"] = p3_7_resources_enabled
+        data["warehouse_resources"] = warehouse_resources.duplicate(true)
+        data["warehouse_rules"] = warehouse_rules.duplicate(true)
+        data["warehouse_event_count"] = warehouse_event_count
     if workforce_enabled or workforce_event_count > 0 or forge_support_points > 0 or not work_groups.is_empty():
         data["workforce_enabled"] = workforce_enabled
         data["work_policy"] = str(work_policy)
@@ -196,6 +208,10 @@ static func from_dict(data: Dictionary) -> SectState:
     state.equipment_forge_index = maxi(int(data.get("equipment_forge_index", 0)), 0)
     state.equipment_event_count = maxi(int(data.get("equipment_event_count", 0)), 0)
     state.equipment_policy = StringName(data.get("equipment_policy", "balanced"))
+    state.p3_7_resources_enabled = bool(data.get("p3_7_resources_enabled", false))
+    state.warehouse_resources = _int_dictionary(data.get("warehouse_resources", {}))
+    state.warehouse_rules = _warehouse_rule_dictionary(data.get("warehouse_rules", {}))
+    state.warehouse_event_count = maxi(int(data.get("warehouse_event_count", 0)), 0)
     state.workforce_enabled = bool(data.get("workforce_enabled", false))
     state.work_policy = StringName(data.get("work_policy", "balanced"))
     state.work_groups = _work_group_dictionary(data.get("work_groups", {}))
@@ -231,6 +247,22 @@ static func _int_dictionary(value: Variant) -> Dictionary:
     keys.sort()
     for key in keys:
         normalized[str(key)] = maxi(int(value[key]), 0)
+    return normalized
+
+static func _warehouse_rule_dictionary(value: Variant) -> Dictionary:
+    var normalized: Dictionary = {}
+    if not (value is Dictionary):
+        return normalized
+    var keys: Array = value.keys()
+    keys.sort()
+    for raw_key in keys:
+        var raw_rule = value[raw_key]
+        if not (raw_rule is Dictionary):
+            continue
+        normalized[str(raw_key)] = {
+            "reserve_min": maxi(int(raw_rule.get("reserve_min", 0)), 0),
+            "locked": bool(raw_rule.get("locked", false))
+        }
     return normalized
 
 static func _bool_dictionary(value: Variant) -> Dictionary:
