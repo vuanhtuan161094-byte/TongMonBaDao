@@ -443,76 +443,53 @@ Not all professions are available at game start.
 
 ---
 
-## 19. Resource model — unified quality system
+## 19. Resource model — explicit identity + realm/tier
 
-Do NOT create separate quality scales such as:
-- Herb Spirit Power;
-- Ore Power;
-- Wood Power;
-- Medicine Power;
-- etc.
-
-Use one universal quality/energy magnitude:
-
-## **Phẩm Lực**
-
-Every raw or crafted material can have a Phẩm Lực value.
+Resources remain distinct item identities.
 
 Examples:
-- Thanh Linh Thảo — Phẩm Lực 37;
-- Huyền Thiết — Phẩm Lực 840;
-- Yêu Đan — Phẩm Lực 2,400.
+- Thanh Linh Thảo;
+- Huyền Thiết;
+- Yêu Đan.
 
-For readability, UI may also show a realm-style descriptor derived from the numeric range, e.g.:
-- Phàm phẩm;
-- Luyện Khí phẩm;
-- Trúc Cơ phẩm;
-- Kim Đan phẩm;
-- Nguyên Anh phẩm;
-- later realms.
+Each resource has:
+- explicit ID/name;
+- family/tags;
+- realm/tier;
+- quantity;
+- source/usage/market data.
 
-The numeric Phẩm Lực is the authoritative continuous quantity.
-The realm-style label is presentation.
+There is no continuous Phẩm Lực value.
 
-This prevents endless hard tiers while preserving cultivation flavor.
+Higher progression unlocks higher-tier resource IDs rather than converting all materials into one hidden power number.
 
 ---
 
-## 20. No hard material-realm lock
+## 20. No hard disciple-realm work lock
 
-A Nascent Soul disciple may farm mundane herbs and should do it extremely well if their profession supports it.
+A high-realm disciple may perform low-tier work.
+A low-realm disciple with strong profession mastery may perform difficult work when the facility/content permits it.
 
-A low-realm disciple with extraordinary profession level may process difficult resources if:
-- profession competence;
-- building capability;
-- tools/support
-are sufficient.
+Do not hard-block normal work simply because the disciple realm is below the resource realm unless lore/physics explicitly requires it.
 
-Do not use:
-"you are not realm X, therefore this work is impossible"
-unless the activity is physically/lore impossible.
-
-Prefer:
-- lower efficiency;
-- lower success;
-- greater time;
-- higher risk;
-- insufficient facility capacity.
+Prefer explicit:
+- required profession level;
+- building level;
+- recipe/crop unlock;
+- more time/cost/risk where appropriate.
 
 ---
 
-## 21. Material consolidation and refinement
+## 21. Material upgrading/refinement
 
-Many low-Phẩm-Lực materials may be refined into fewer higher-value materials.
+Low-tier materials may be processed into higher-tier named resources only through explicit recipes.
 
-This is allowed.
+Example:
+- many Thanh Thiết + cost -> fewer Huyền Thiết;
 
-However:
-- conversion is lossy;
-- repeated refinement increases loss/cost;
-- material type compatibility still matters.
+if such a recipe exists.
 
-Thus thousands of junk items can contribute toward something valuable without creating free infinite value.
+Do not use a generic PL conversion pool.
 
 ---
 
@@ -551,26 +528,23 @@ These three are the universal base.
 
 ---
 
-## 22.2 Phẩm Lực determines how much material is required
+## 22.2 Construction uses explicit quantities
 
-Building requirements are expressed partly as **required construction Phẩm Lực**, not rigid item tiers.
+Building requirements use:
+- explicit resource families/IDs;
+- explicit quantities;
+- Spirit Stones.
 
 Example:
-
-Upgrade needs:
-- 10,000 Mộc construction Phẩm Lực;
-- 14,000 Khoáng construction Phẩm Lực;
+- 120 Linh Mộc;
+- 80 Thanh Thiết;
 - 500 Spirit Stones.
 
-The game can automatically select eligible materials from the warehouse.
+Higher construction tiers may require higher-tier named resources.
 
-Examples:
-- 1,000 weak wood units may meet the same total requirement as fewer rare woods;
-- rare materials are therefore more space/time efficient;
-- players may lock rare resources so auto-construction does not consume them.
+Warehouse reserve/lock rules protect valuable materials.
 
-Do NOT force:
-"Building Lv.27 requires exactly Wood Tier 27."
+Do not convert unlike materials into one hidden construction-power value.
 
 ---
 
@@ -811,8 +785,8 @@ The two halves feed each other.
 14. Secret Chambers consume personal Spirit Stones and strongly accelerate cultivation.
 15. Personal AI spends money according to personality/habits; Sect Master may intervene.
 16. Equipment distribution is policy-driven with manual override.
-17. Raw/crafted material magnitude is unified by Phẩm Lực.
-18. Realm-style material labels are presentation, not hard tier locks.
+17. Resources use explicit IDs, realm/tier and quantity; there is no continuous Phẩm Lực.
+18. Higher progression unlocks higher-tier named resources.
 19. High-realm disciples may do low-value work; low-realm profession masters may perform difficult work if capable.
 20. Buildings use a common construction language and cap around Lv.100 per instance.
 21. Long-term scale comes from more facilities, teams, land and disciples.
@@ -843,7 +817,7 @@ Owns:
 Owns:
 - resource identity;
 - realm-grade metadata;
-- Phẩm Lực;
+- realm/tier + quantity;
 - one canonical Sect Warehouse;
 - stack/reserve/lock semantics;
 - passive cultivation;
@@ -907,7 +881,7 @@ Read `CURRENT_CHECKPOINT.md` for current runtime status.
 ## Warehouse
 - no gameplay storage-capacity ceiling;
 - resource IDs remain distinct;
-- Phẩm Lực does not replace item identity;
+- there is no continuous Phẩm Lực system;
 - P3.7 uses one canonical Sect Warehouse for stackable resources.
 
 ## Phase discipline
