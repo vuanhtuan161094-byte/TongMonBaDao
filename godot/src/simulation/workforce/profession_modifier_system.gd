@@ -76,10 +76,4 @@ func raw_work_cultivation_ratio_per_hour(profession_level: int) -> float:
     return 0.0005 * (1.0 + 0.0005 * float(maxi(profession_level, 0)))
 
 func _general_trait_grade(state: SimulationState, disciple_id: StringName, trait_id: StringName) -> int:
-    var profile = state.sect.disciple_trait_profiles.get(str(disciple_id), {})
-    if not (profile is Dictionary):
-        return 1
-    var grades = profile.get("grades", {})
-    if not (grades is Dictionary):
-        return 1
-    return clampi(int(grades.get(str(trait_id), 1)), GRADE_MIN, GRADE_MAX)
+    return TraitSystem.new().trait_grade(state, disciple_id, trait_id)
