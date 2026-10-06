@@ -78,6 +78,22 @@ const DEFINITIONS := {
         "market_value": 6,
         "tags": ["herb", "alchemy"]
     },
+    "linh_coc": {
+        "name": "Linh Cốc",
+        "family": "crop",
+        "realm_grade": "luyen_khi",
+        "realm_rank": 1,
+        "market_value": 4,
+        "tags": ["spirit_grain", "food"]
+    },
+    "tu_van_thao": {
+        "name": "Tử Vân Thảo",
+        "family": "herb",
+        "realm_grade": "truc_co",
+        "realm_rank": 2,
+        "market_value": 16,
+        "tags": ["herb", "alchemy", "advanced_crop"]
+    },
     "linh_tuyen_chi_tam": {
         "name": "Linh Tuyền Chi Tâm",
         "family": "building_component",
