@@ -239,9 +239,12 @@ func _verify_p2_legacy_behavior_stays_isolated() -> bool:
     ids.sort()
     var actor: DiscipleState = state.disciples[ids[0]]
     actor.region_id = &"sect"
+    var legacy_essence_before := int(state.sect.technique_materials.get(str(TechniqueSystem.MATERIAL_ESSENCE), 0))
     actor.inventory[TechniqueSystem.MATERIAL_PREFIX + str(TechniqueSystem.MATERIAL_ESSENCE)] = 2
-    techniques.deposit_special_inventory(state, actor)
-    if int(state.sect.technique_materials.get(str(TechniqueSystem.MATERIAL_ESSENCE), 0)) != 2:
+    var legacy_deposit := techniques.deposit_special_inventory(state, actor)
+    if int(legacy_deposit.get("materials", 0)) != 2:
+        return _fail("P2 legacy technique deposit did not process the expected material quantity.")
+    if int(state.sect.technique_materials.get(str(TechniqueSystem.MATERIAL_ESSENCE), 0)) != legacy_essence_before + 2:
         return _fail("P2 legacy technique material deposit no longer uses legacy bucket.")
     if not state.sect.warehouse_resources.is_empty():
         return _fail("P2 legacy technique deposit leaked into P3.7 warehouse.")
