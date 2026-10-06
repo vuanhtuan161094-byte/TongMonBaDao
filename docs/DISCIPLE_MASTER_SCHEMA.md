@@ -116,6 +116,18 @@ Sáu trục bẩm sinh:
 - Mị Lực;
 - Tiềm Lực.
 
+Vai trò nền canonical được giữ đơn giản:
+- **Tư Chất** -> hiệu suất nhận Tu Vi;
+- **Căn Cốt** -> hiệu suất Luyện Thể/phát triển thân thể;
+- **Cơ Duyên** -> kết quả may mắn/sự kiện hiếm;
+- **Thông Tuệ** -> học kỹ năng/nghề/mastery;
+- **Mị Lực** -> xã hội/giao tiếp;
+- **Tiềm Lực** -> phát triển vĩnh viễn dài hạn khi authority tương ứng được triển khai.
+
+Một lục duy không cần tác động vào mọi nghề để được coi là hữu dụng.
+
+Các hiệu ứng phần trăm từ Đặc Chất/Huyết Mạch/Thể Chất/trang bị/buff phải ưu tiên đi qua các kênh modifier dùng chung. Tên content mới không phải là lý do để tạo thêm một công thức gameplay mới.
+
 Đây là **foundation**, không phải toàn bộ sức mạnh.
 
 Phẩm chất Đệ tử:
