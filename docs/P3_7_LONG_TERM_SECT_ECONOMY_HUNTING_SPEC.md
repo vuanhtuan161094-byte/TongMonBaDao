@@ -1050,3 +1050,33 @@ Presentation:
 
 Next implementation:
 **P3.7A2 — Spirit Field / Linh Điền backend**, using the same BuildingSystem and a different work lifecycle to prove the framework is generic.
+
+
+---
+
+# 36. P3.7A2 IMPLEMENTATION STATUS — CI GREEN 2026-10-06
+
+Spirit Field / Linh Điền is implemented on the existing BuildingSystem rather than a parallel production engine.
+
+Authoritative lifecycle:
+1. assigned herbalist travels to the field;
+2. tending/planting consumes real work time;
+3. planting completion creates building-owned crop growth state;
+4. crop growth advances over simulation ticks without locking the worker at the field;
+5. harvest-ready state re-opens Herbalism work;
+6. worker travels, harvests, then hauls/deposits the batch;
+7. current bridge deposit is to the same legacy material store used by A1 until P3.7B1 warehouse migration.
+
+Additional guarantees:
+- generic worker-slot enforcement;
+- multiple workers cannot remain stuck in stale crop work cycles after a shared phase completes;
+- Lv.10 requires Linh Tuyền Chi Tâm;
+- save/load exactness and deterministic continuation;
+- legacy six-foundation values persist even when profile_seed is zero.
+
+Official Godot 4.7.2:
+- focused A1 + A2 gate PASS;
+- full P0–P2.12 + A1 + A2 cumulative regression PASS.
+
+Next authority implementation:
+**P3.7B1 Resource Registry + canonical Sect Warehouse.**
