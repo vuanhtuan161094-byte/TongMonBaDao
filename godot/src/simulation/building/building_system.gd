@@ -3,6 +3,7 @@ extends RefCounted
 
 const TYPE_MINE := &"mine"
 const TYPE_SPIRIT_FIELD := &"spirit_field"
+const TYPE_GUIDANCE_PLATFORM := &"dan_tien_dai"
 
 const PROF_MINING := &"mining"
 const PROF_HERBALISM := &"herbalism"
@@ -87,6 +88,19 @@ const DEFINITIONS := {
         "base_growth_duration": 12.0,
         "base_batch_units": 3,
         "resource_id": MATERIAL_HERB
+    },
+    "dan_tien_dai": {
+        "name": "Dẫn Tiên Đài",
+        "max_level": 100,
+        "worker_group_id": "",
+        "base_worker_slots": 0,
+        "worker_slot_every": 0,
+        "base_wood_cost": 5,
+        "base_ore_cost": 4,
+        "base_stone_cost": 24,
+        "base_upgrade_work": 8.0,
+        "upgrade_work_per_level": 2.0,
+        "requires_milestone_component": false
     }
 }
 
@@ -115,6 +129,20 @@ func initialize(state: SimulationState) -> void:
     if primary_building(state, TYPE_SPIRIT_FIELD) == null:
         var field := create_building(TYPE_SPIRIT_FIELD, 1)
         state.buildings[str(field.id)] = field
+        state.building_event_count += 1
+
+    if primary_building(state, TYPE_GUIDANCE_PLATFORM) == null:
+        var guidance := create_building(TYPE_GUIDANCE_PLATFORM, 1)
+        guidance.production_state = {
+            "main_guide_id": "",
+            "assistant_guide_ids": [],
+            "snapshot_day_index": -1,
+            "snapshot_main_charisma": 0.0,
+            "enhanced_heaven_count": 0,
+            "daily_arrival_target": 0,
+            "daily_arrivals_generated": 0
+        }
+        state.buildings[str(guidance.id)] = guidance
         state.building_event_count += 1
 
     for field in _buildings_of_type(state, TYPE_SPIRIT_FIELD):
@@ -159,6 +187,16 @@ func spirit_plot_slots(building: BuildingState) -> int:
     if building == null or building.building_type != TYPE_SPIRIT_FIELD:
         return 0
     return 4 + int(floor(float(building.level) / 5.0))
+
+func guidance_elder_slots(building: BuildingState) -> int:
+    if building == null or building.building_type != TYPE_GUIDANCE_PLATFORM:
+        return 0
+    return clampi(1 + int(floor(float(building.level) / 20.0)), 1, 6)
+
+func guidance_base_daily_arrivals(building: BuildingState) -> int:
+    if building == null or building.building_type != TYPE_GUIDANCE_PLATFORM:
+        return 0
+    return 2 + int(floor(float(building.level) / 10.0))
 
 func spirit_field_speed_factor(field: BuildingState) -> float:
     return 1.0 + 0.005 * float(maxi(field.level - 1, 0))
@@ -337,7 +375,8 @@ func can_start_upgrade(state: SimulationState, building_id: StringName) -> Dicti
         return {"ok": false, "reason": "max_level"}
 
     var target_level := building.level + 1
-    if MILESTONE_LEVELS.has(target_level) and _milestone_component(building.building_type, target_level) == "":
+    var requires_milestone_component := bool(definition_for(building).get("requires_milestone_component", true))
+    if MILESTONE_LEVELS.has(target_level) and requires_milestone_component and _milestone_component(building.building_type, target_level) == "":
         return {"ok": false, "reason": "milestone_component_not_defined", "target_level": target_level}
 
     var cost := upgrade_cost(building)
