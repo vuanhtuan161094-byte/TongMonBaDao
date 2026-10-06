@@ -1,6 +1,6 @@
 # P3.7 — RESOURCE, STORAGE & BASE GROWTH DATA MODEL SPEC
 
-Status: CANONICAL DESIGN AUTHORITY / IMPLEMENTATION NOT STARTED  
+Status: CANONICAL DESIGN AUTHORITY  
 Date: 2026-10-05
 
 Parents:
@@ -445,29 +445,12 @@ Lower-grade pills may still work on high-realm disciples but become economically
 
 
 ---
+  
+# 16. IMPLEMENTATION STATUS LOCATION
 
-# 16. IMPLEMENTATION STATUS — P3.7B1 CANONICAL WAREHOUSE CI GREEN 2026-10-06
+This file defines resource/storage/base-growth mechanics only.
 
-Implemented runtime authority:
-- `ResourceRegistry`;
-- `WarehouseSystem`;
-- persistent `SectState.warehouse_resources`;
-- persistent reserve/lock rules;
-- very large commodity stacks;
-- one-time legacy material migration.
+Current runtime status is tracked exclusively in:
+`CURRENT_CHECKPOINT.md`
 
-P3.7 stackable material consumers now route through WarehouseSystem:
-- BuildingSystem;
-- EquipmentSystem;
-- TechniqueSystem;
-- RootRefinementSystem;
-- BloodlineSystem;
-- PhysiqueSystem.
-
-Legacy P2 states do not enable the warehouse and retain their previous material dictionaries.
-
-Current normal building-upgrade costs still name Linh Mộc/Thanh Thiết directly.
-That is temporary only for B1 compatibility.
-
-Next required implementation:
-**B2 Construction Resolver** converts normal Wood/Mineral requirements into total required Phẩm Lực across eligible resource identities while respecting warehouse reserve/lock rules.
+Do not append implementation diaries, gate logs or “next phase” instructions to this design spec.
