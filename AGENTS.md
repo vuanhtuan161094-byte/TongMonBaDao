@@ -304,8 +304,9 @@ Item gacha may grant/refine Bloodline/Physique/etc under explicit rules, but mus
 5. P3.6A playable runtime remains green; visual acceptance is user-owned and not a blocker for backend P3.7;
 6. P3.7A1 Building Authority + Mine: official Godot 4.7.2 backend CI green;
 7. P3.7A2 Linh Điền on the same BuildingSystem: official Godot 4.7.2 backend CI green, including six-foundation save/load and competing-worker regressions;
-8. **next: P3.7B1 Resource Registry + canonical Sect Warehouse backend**; migrate the temporary `sect.forge_materials` bridge without creating parallel inventory authority;
-9. then migrate Mine/Linh Điền construction and production to the canonical warehouse;
-10. then profession Lv.1–1000+ curve/milestones and additional core buildings;
-11. only after backend authority is real should live P3 presentation expose P3.7 building levels/upgrades/production;
-12. cosmetic/character-creator expansion remains secondary until functional management is stable.
+8. P3.7B1 Resource Registry + canonical Sect Warehouse: official Godot 4.7.2 backend CI green; all P3.7 material consumers now use one warehouse and legacy P2 stays isolated;
+9. **next: P3.7B2 Construction Resolver by material-family Phẩm Lực**, respecting reserve/lock and consuming low-value eligible stock first while milestone specialty items remain exact;
+10. then profession Lv.1–1000+ curve/milestones + higher-realm resource discovery;
+11. then additional core buildings on the proven BuildingSystem/Warehouse authority;
+12. only after backend authority is real should live P3 presentation expose P3.7 building levels/upgrades/production;
+13. cosmetic/character-creator expansion remains secondary until functional management is stable.
