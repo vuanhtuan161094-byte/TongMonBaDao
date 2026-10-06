@@ -7,9 +7,10 @@ Updated: 2026-10-06
 1. `AGENTS.md`
 2. `docs/GAME_SYSTEM_ARCHITECTURE.md`
 3. `CURRENT_CHECKPOINT.md`
-4. `docs/P3_7_SPIRIT_FIELD_SPEC.md`
-5. relevant current code
-6. this file
+4. `docs/P3_7_PROFESSION_WORK_MODIFIER_SPEC.md`
+5. `docs/P3_7_SPIRIT_FIELD_SPEC.md`
+6. current ResourceRegistry / Warehouse / Workforce / Building code
+7. this file
 
 Fetch live `main` before editing.
 
@@ -19,89 +20,66 @@ Fetch live `main` before editing.
 
 **P3.7A2R — LINH ĐIỀN COMPLETION**
 
-Do not work on B2 Construction Resolver or another building until A2R closes.
+Do not start another gameplay phase.
 
 ---
 
-## Why A2 was reopened
+## Locked simplification
 
-Old A2 proved:
-- a field can plant;
-- crops can grow without holding a worker;
-- a worker can harvest;
-- output can reach the canonical warehouse;
-- save/load/determinism can remain green.
+Linh Điền uses one crop timer:
 
-But old A2 was only a lifecycle foundation.
+**start -> countdown -> harvest**
 
-It did NOT provide:
-- real seeds;
-- multiple crop definitions;
-- independent plots;
-- useful parallel workers;
-- multiple-field routing;
-- crop policy;
-- complete field milestones;
-- dynamic yield/quality;
-- a Linh Thực-specific talent.
+No:
+- seed item;
+- separate planting/growth/harvest backend timers;
+- detailed path/haul state;
+- Phẩm Lực.
+
+Starting a plot consumes Sect Spirit Stones.
+Output is explicit resource quantity deposited directly into the main Sect Warehouse.
 
 ---
 
-## Locked new direction
+## Shared work formulas
 
-Do NOT over-model walking/pathfinding.
+Use `docs/P3_7_PROFESSION_WORK_MODIFIER_SPEC.md`.
 
-Farming authority is based on:
-- planting/tending time;
-- passive growth time;
-- harvest/processing time;
-- deterministic logistics overhead if needed;
-- yield;
-- Phẩm Lực;
-- seeds;
-- rare/mutation outcome.
+Key locked numbers:
+- profession level: +1% work speed/level;
+- Cần Mẫn grade 1–5: +5/+10/+15/+20/+25% speed;
+- Cẩu Thả grade 1–5: −5/−10/−15/−20/−25% speed;
+- profession talent grade 1–5: +5/+10/+15/+20/+25% profession XP;
+- Thông Tuệ XP factor: 0.75 + 0.50×Thông Tuệ;
+- Căn Cốt stamina: Base×(1−0.25×Căn Cốt);
+- Cơ Duyên rare chance: Base×(1+2×Cơ Duyên);
+- passive work Tu Vi/hour: R×0.0005×(1+0.0005×profession level), then existing CultivationSystem modifiers.
 
-No mid-haul state is required.
-
----
-
-## Character interaction
-
-The six existing foundation dimensions are sufficient.
-
-Use:
-- Căn Cốt -> endurance/stamina;
-- Cơ Duyên -> rare/mutation/exceptional seed outcomes;
-- Thông Tuệ -> Herbalism learning and difficult crop handling.
-
-Do not invent routine bonuses for:
-- Tư Chất;
-- Mị Lực;
-- Tiềm Lực.
-
-Add:
-- `herbalist_affinity` profession talent;
-- primary effect +80% Herbalism profession XP.
-
-Spiritual Root affinity is crop-specific and positive-only.
-Bloodline/Physique do not automatically buff farming.
+Linh Điền lucky harvest:
+- x4: 0.20% base;
+- x3: 0.80% base;
+- x2: 3.00% base;
+- x1 otherwise;
+- multiply rare bands by Fortune factor and resolve highest first.
 
 ---
 
-## Implementation order inside A2R
+## A2R implementation order
 
-1. CropDefinition/CropRegistry.
-2. Real seed resources and seed consumption.
-3. Replace one-field `production_state` with multiple independent plot states.
-4. Persist plot state.
-5. Add specific worksite/building assignment for Herbalism workers.
-6. Implement field crop policy.
-7. Replace travel/haul phases with planting/growth/harvest timing + optional logistics overhead.
-8. Add yield/Phẩm Lực/seed-return/rare deterministic resolution.
-9. Add `herbalist_affinity` to generation/suitability.
-10. Implement Lv10 real behavior and guard higher milestones honestly.
-11. Focused A2R gate.
-12. Full cumulative gate.
-13. Update checkpoint and STOP.
+1. Remove legacy Phẩm Lực runtime fields/APIs from ResourceRegistry/Warehouse tests and keep B1 green.
+2. Add shared graded work/profession modifier data model with backward-compatible migration.
+3. Add Linh Thực talent to generation/suitability.
+4. Add CropRegistry with simple crop data: cost/time/yield/tier.
+5. Replace old single production_state with multiple plot timers.
+6. Add specific Spirit Field worksite assignment.
+7. Spend Sect Spirit Stones when starting a plot.
+8. Resolve harvest quantity + lucky multiplier directly to canonical Warehouse.
+9. Add AUTO_DEMAND / PRIORITY / FIXED field policy.
+10. Add passive work Tu Vi through shared cultivation authority.
+11. Implement field level/milestone modifiers.
+12. Save/load/determinism tests.
+13. Focused A2R gate.
+14. Full cumulative gate.
+15. Update checkpoint and STOP.
 
-Do not start the next phase automatically.
+Do not begin the next phase automatically.
