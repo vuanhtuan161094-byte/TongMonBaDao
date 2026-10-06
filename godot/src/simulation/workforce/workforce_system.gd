@@ -28,12 +28,14 @@ const FORGING_DURATION := 5.0
 
 const TRAIT_FORGE := "forge_talent"
 const TRAIT_MINER := "miner_instinct"
+const TRAIT_HERBALIST := "herbalist_affinity"
 const TRAIT_DILIGENT := "diligent"
 const TRAIT_LAZY := "lazy"
-const PROFESSION_TRAITS := [TRAIT_FORGE, TRAIT_MINER, TRAIT_DILIGENT, TRAIT_LAZY]
+const PROFESSION_TRAITS := [TRAIT_FORGE, TRAIT_MINER, TRAIT_HERBALIST, TRAIT_DILIGENT, TRAIT_LAZY]
 
 var trait_system := TraitSystem.new()
 var building_system := BuildingSystem.new()
+var profession_modifiers := ProfessionModifierSystem.new()
 
 func initialize(state: SimulationState) -> void:
     if not state.sect.equipment_enabled:
@@ -78,6 +80,16 @@ func ensure_candidate_profile(state: SimulationState, candidate: CandidateState)
         candidate.comprehension = rng.randf_range(0.35, 0.95)
     if candidate.profession_traits.is_empty():
         candidate.profession_traits = _roll_traits(state.seed, str(candidate.id))
+
+func ensure_p3_7_disciple_profile(state: SimulationState, disciple: DiscipleState) -> void:
+    ensure_disciple_profile(state, disciple)
+    _ensure_profession_trait_grades(disciple.profession_traits, disciple.profession_trait_grades)
+    _roll_p3_7_profession_talent_if_needed(state, disciple)
+
+func ensure_p3_7_candidate_profile(state: SimulationState, candidate: CandidateState) -> void:
+    ensure_candidate_profile(state, candidate)
+    _ensure_profession_trait_grades(candidate.profession_traits, candidate.profession_trait_grades)
+    _roll_p3_7_candidate_talent_if_needed(state, candidate)
 
 func set_work_policy(state: SimulationState, policy: StringName) -> bool:
     if not state.sect.workforce_enabled or not VALID_POLICIES.has(policy):
@@ -310,7 +322,9 @@ func _perform_p3_7_mining(state: SimulationState, disciple: DiscipleState) -> Di
     if not bool(result.get("ok", false)):
         return result
 
-    disciple.stamina = maxf(0.0, disciple.stamina - float(result.get("stamina_cost", 1.0)))
+    var stamina_cost := float(result.get("stamina_cost", 1.0)) * profession_modifiers.stamina_cost_factor(disciple)
+    disciple.stamina = maxf(0.0, disciple.stamina - stamina_cost)
+    result["effective_stamina_cost"] = stamina_cost
     disciple.metrics["work_actions"] = int(disciple.metrics.get("work_actions", 0)) + 1
     if not bool(result.get("completed", false)):
         return result
@@ -332,7 +346,9 @@ func _perform_p3_7_herbalism(state: SimulationState, disciple: DiscipleState) ->
     if not bool(result.get("ok", false)):
         return result
 
-    disciple.stamina = maxf(0.0, disciple.stamina - float(result.get("stamina_cost", 1.0)))
+    var stamina_cost := float(result.get("stamina_cost", 1.0)) * profession_modifiers.stamina_cost_factor(disciple)
+    disciple.stamina = maxf(0.0, disciple.stamina - stamina_cost)
+    result["effective_stamina_cost"] = stamina_cost
     disciple.metrics["work_actions"] = int(disciple.metrics.get("work_actions", 0)) + 1
     if not bool(result.get("completed", false)):
         return result
@@ -396,6 +412,9 @@ func validate_invariants(state: SimulationState) -> Array[String]:
         for trait_id in disciple.profession_traits:
             if not PROFESSION_TRAITS.has(str(trait_id)):
                 errors.append("%s has invalid profession trait %s." % [disciple.display_name, trait_id])
+            var grade := int(disciple.profession_trait_grades.get(str(trait_id), 1))
+            if grade < 1 or grade > 5:
+                errors.append("%s has invalid profession trait grade for %s." % [disciple.display_name, trait_id])
         if not disciple.direct_command.is_empty():
             var kind := StringName(disciple.direct_command.get("kind", ""))
             if not VALID_COMMANDS.has(kind):
@@ -458,6 +477,9 @@ func _work_duration(profession_id: StringName) -> float:
 
 func _work_speed(state: SimulationState, disciple: DiscipleState, profession_id: StringName) -> float:
     var level := profession_level(disciple, profession_id)
+    if state.p3_7_buildings_enabled:
+        return profession_modifiers.total_work_speed_factor(state, disciple, level)
+
     var speed := 1.0 + float(level) * 0.08
     speed *= lerpf(0.90, 1.18, clampf(disciple.comprehension, 0.0, 1.0))
     if _has_profession_trait(disciple, profession_id):
@@ -471,6 +493,9 @@ func _work_speed(state: SimulationState, disciple: DiscipleState, profession_id:
     return maxf(speed, 0.25)
 
 func _learning_multiplier(state: SimulationState, disciple: DiscipleState, profession_id: StringName) -> float:
+    if state.p3_7_buildings_enabled:
+        return profession_modifiers.profession_xp_factor(disciple, profession_id)
+
     var multiplier := lerpf(0.75, 1.35, clampf(disciple.comprehension, 0.0, 1.0))
     if _has_profession_trait(disciple, profession_id):
         multiplier *= 1.25
@@ -483,7 +508,51 @@ func _has_profession_trait(disciple: DiscipleState, profession_id: StringName) -
         return disciple.profession_traits.has(TRAIT_FORGE)
     if profession_id == PROF_MINING:
         return disciple.profession_traits.has(TRAIT_MINER)
+    if profession_id == PROF_HERBALISM:
+        return disciple.profession_traits.has(TRAIT_HERBALIST)
     return false
+
+func _ensure_profession_trait_grades(traits: Array, grades: Dictionary) -> void:
+    for trait_id in traits:
+        if not grades.has(str(trait_id)):
+            grades[str(trait_id)] = 1
+
+func _roll_p3_7_profession_talent_if_needed(state: SimulationState, disciple: DiscipleState) -> void:
+    if _has_any_p3_7_profession_talent(disciple.profession_traits):
+        return
+    var source := disciple.recruitment_source
+    var chance := _p3_7_talent_chance(source)
+    var rng := GameRng.new(_profile_seed(state.seed, str(disciple.id), 9371))
+    if rng.randf_range(0.0, 1.0) >= chance:
+        return
+    var pool := [TRAIT_FORGE, TRAIT_MINER, TRAIT_HERBALIST]
+    var trait_id := str(pool[rng.randi_range(0, pool.size() - 1)])
+    disciple.profession_traits.append(trait_id)
+    disciple.profession_traits.sort()
+    disciple.profession_trait_grades[trait_id] = profession_modifiers.roll_grade(rng)
+
+func _roll_p3_7_candidate_talent_if_needed(state: SimulationState, candidate: CandidateState) -> void:
+    if _has_any_p3_7_profession_talent(candidate.profession_traits):
+        return
+    var chance := _p3_7_talent_chance(candidate.recruitment_source)
+    var rng := GameRng.new(_profile_seed(state.seed, str(candidate.id), 9371))
+    if rng.randf_range(0.0, 1.0) >= chance:
+        return
+    var pool := [TRAIT_FORGE, TRAIT_MINER, TRAIT_HERBALIST]
+    var trait_id := str(pool[rng.randi_range(0, pool.size() - 1)])
+    candidate.profession_traits.append(trait_id)
+    candidate.profession_traits.sort()
+    candidate.profession_trait_grades[trait_id] = profession_modifiers.roll_grade(rng)
+
+func _has_any_p3_7_profession_talent(traits: Array) -> bool:
+    return traits.has(TRAIT_FORGE) or traits.has(TRAIT_MINER) or traits.has(TRAIT_HERBALIST)
+
+func _p3_7_talent_chance(source: StringName) -> float:
+    if source == DiscipleGeneratorV2.SOURCE_GACHA:
+        return 0.40
+    if source == DiscipleGeneratorV2.SOURCE_FATE:
+        return 0.50
+    return 0.30
 
 func _expire_command_if_needed(state: SimulationState, disciple: DiscipleState) -> void:
     if disciple.direct_command.is_empty():
