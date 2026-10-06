@@ -220,11 +220,15 @@ Base bands per completed crop:
 
 Actual chance uses:
 
-**Base Chance × Cơ Duyên Factor × generic rare_chance modifiers**
+Current A2R runtime keeps its snapshotted bounded `rare_factor` compatibility path so the locked Spirit Field contract is not silently rewritten inside C1.
 
-Cơ Duyên Factor uses the shared lục-duy curve:
+Canonical new Cơ Duyên authority is now:
 
-**0.75 + 0.50 × Cơ Duyên**
+**Luck Score = RNG(0..9999) + Cơ Duyên - Difficulty**
+
+with result tiers owned by `docs/P3_7C1_FOUNDATION_DAN_TIEN_SPEC.md`.
+
+A future Spirit Field migration may replace the compatibility rare-factor roll with one meaningful Cơ Duyên check at harvest resolution. Do not introduce another uncapped percentage formula.
 
 The relevant rare factor is sampled when the plot starts.
 
