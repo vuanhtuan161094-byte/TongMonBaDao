@@ -492,12 +492,3 @@ This is required before very large populations.
 
 
 ---
-  
-# 19. IMPLEMENTATION STATUS LOCATION
-
-This file defines timing semantics only.
-
-Current runtime status is tracked exclusively in:
-`CURRENT_CHECKPOINT.md`
-
-Do not append phase progress or gate history here.
