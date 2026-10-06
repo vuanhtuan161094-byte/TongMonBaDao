@@ -744,13 +744,3 @@ For passive cultivation, six-foundation integration, at-home pill/Mật Thất s
 
 
 ---
-  
-# 27. STATUS LOCATION
-
-The no-Loot-Warehouse rule is already integrated into the main sections above:
-- ordinary item/material rewards go directly to the main Sect Warehouse;
-- personal progression/economy rewards go directly to participating disciples;
-- carried team inventory is supplies-only.
-
-Implementation status belongs only in:
-`CURRENT_CHECKPOINT.md`
