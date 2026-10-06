@@ -42,33 +42,46 @@ Implemented:
 - worker slots;
 - timed construction/upgrades;
 - milestone state;
-- Mine using existing `mining_crew`;
+- Mine using `mining_crew`;
 - travel -> mine batch -> haul/deposit;
-- movement speed affects travel/haul;
-- Căn Cốt affects hauling;
 - Mining profession XP;
 - Lv.10 Tầm Mạch Bàn milestone;
 - save/load + deterministic continuation.
 
-### P3.7A2 — Spirit Field / Linh Điền
+### P3.7A2R — Spirit Field / Linh Điền Completion
 
-Status: **BACKEND LOCKED — official Godot 4.7.2 CI green**
+Status: **BACKEND LOCKED — official Godot 4.7.2 fast + full cumulative CI green**
 
-Implemented on the same BuildingSystem:
-- `spirit_field_001`;
-- `herbalism_crew`;
-- worker-slot enforcement;
-- travel -> tend/plant;
-- building-owned crop growth;
-- worker is free while crop grows;
-- harvest-ready -> harvest -> haul/deposit;
-- Herbalism profession XP;
-- competing workers release cleanly when shared phase completes;
-- Lv.10 Linh Tuyền Chi Tâm milestone;
-- save/load + deterministic continuation.
-
-Persistence fix discovered during A2:
-- legacy disciples now preserve all six foundation values even when `profile_seed == 0`.
+Canonical simplified runtime:
+- one plot = one authoritative timer: start -> countdown -> harvest resolve;
+- no seed item;
+- no backend walking/tending/harvest/haul phases for Linh Điền;
+- crop start consumes Sect Spirit Stones immediately;
+- cancel has no default refund;
+- multiple independent plots per field;
+- multiple Spirit Field instances;
+- concrete `worksite_building_id` assignment;
+- worker is released immediately after starting a plot;
+- AUTO_DEMAND / PRIORITY / FIXED crop policies;
+- crop registry with explicit output ID, realm/tier, field-level requirement, cost, time and yield;
+- profession level improves cycle speed at +1% per level;
+- generic data-driven `work_speed` and `profession_xp` modifier channels;
+- Cần Mẫn/Cẩu Thả are content data, not hard-coded work formula branches;
+- shared lục-duy factor = `0.75 + 0.50 × normalized value`;
+- Tư Chất -> cultivation gain;
+- Căn Cốt -> body-training authority, not generic profession stamina;
+- Cơ Duyên -> rare chance;
+- Thông Tuệ -> profession/skill learning;
+- Mị Lực -> social-effect authority;
+- Tiềm Lực -> future long-term permanent growth authority;
+- Linh Thực Thiên Phú grade 1–5 -> +5/+10/+15/+20/+25% profession XP;
+- lucky harvest ×4 / ×3 / ×2 uses snapshotted rare factor at crop start;
+- passive work Tu Vi is granted only for actual work action, never passive crop countdown;
+- field-level speed/yield and milestone factors;
+- direct deposit into canonical Sect Warehouse;
+- legacy A2 single-crop state migration;
+- save/load mid-cycle + deterministic continuation;
+- legacy disciple/candidate persistence compatibility preserved.
 
 ### P3.7B1 — Resource Registry + canonical Sect Warehouse
 
@@ -79,7 +92,7 @@ Implemented:
 - explicit resource identity;
 - family/tags;
 - realm grade/rank;
-- legacy `base_pham_luc` metadata exists in current runtime but is DEPRECATED by the 2026-10-06 design simplification and must be removed before A2R closes;
+- **no Phẩm Lực runtime authority**;
 - one canonical P3.7 stackable-resource warehouse;
 - no gameplay capacity ceiling;
 - multi-million stacks;
@@ -105,19 +118,31 @@ P2 behavior remains isolated when P3.7 resource authority is disabled.
 
 ---
 
-## 3. B1 verification evidence
+## 3. Verification evidence
 
 Official Godot 4.7.2 GitHub CI:
 - A1 focused gate: GREEN;
-- A2 focused gate: GREEN;
+- A2R focused gate: GREEN;
 - B1 focused gate: GREEN;
-- Resource Registry contracts: GREEN;
-- 3,000,000-unit stack test: GREEN;
-- reserve/lock tests: GREEN;
-- old P3.7 save migration: GREEN;
-- P2 legacy isolation: GREEN;
-- all current material-consumer contracts: GREEN;
-- cumulative P0 -> P2.12 + A1 + A2 + B1: GREEN.
+- full cumulative P0 -> P2.12 + P3.7 A1 + A2R + B1: GREEN;
+- latest closing run: P3.7 Backend run #48, commit `509a650b97852a306af4a0581fece2359db4615e`.
+
+A2R closing coverage includes:
+- plot timers;
+- Spirit Stone cost / insufficient funds / no-refund cancel;
+- multiple plots and workers;
+- multiple fields and specific worksites;
+- crop policies;
+- generic modifiers;
+- profession learning and long-term profession level;
+- lucky harvest;
+- field levels/milestones;
+- work-only passive Tu Vi;
+- canonical warehouse deposit;
+- legacy field migration;
+- exact save/load;
+- deterministic continuation;
+- locked earlier regression.
 
 Persistent commands:
 - `Verify-P3-7A1-Building-Authority.cmd`;
@@ -127,7 +152,7 @@ Persistent commands:
 - `Verify-P3-7B1-Warehouse.cmd`;
 - `Verify-P3-7B1-Warehouse-Full.cmd`.
 
-Do not describe these P3.7 CI runs as Windows evidence unless the Windows gate is separately run.
+Do not describe GitHub CI evidence as Windows evidence unless a Windows gate is separately run.
 
 ---
 
@@ -137,8 +162,25 @@ Do not describe these P3.7 CI runs as Windows evidence unless the Windows gate i
 - no warehouse capacity gameplay limit;
 - stacks may become extremely large;
 - resources keep distinct IDs;
-- continuous Phẩm Lực is removed from canonical design; resource progression uses explicit ID + realm/tier + quantity;
+- no continuous Phẩm Lực;
+- progression uses explicit ID + realm/tier + quantity;
 - one canonical main Sect Warehouse.
+
+### Shared character/work model
+Keep the six existing foundation dimensions:
+- Tư Chất;
+- Căn Cốt;
+- Cơ Duyên;
+- Thông Tuệ;
+- Mị Lực;
+- Tiềm Lực.
+
+Use one simple common factor:
+**`0.75 + 0.50 × normalized foundation value`**
+
+Each foundation has one primary role instead of being forced into every profession.
+
+Routine percentage content should use generic modifier channels rather than name-specific formula branches.
 
 ### Hunting rewards
 - no Loot Warehouse;
@@ -156,157 +198,39 @@ Do not describe these P3.7 CI runs as Windows evidence unless the Windows gate i
 ### Time
 - movement speed != attack speed != work speed != cast time != cooldown;
 - construction/upgrades take real simulation time;
-- no generic fake cooldown after building upgrade.
-
-### Character foundation
-Use the existing six dimensions:
-- Tư Chất;
-- Căn Cốt;
-- Cơ Duyên;
-- Thông Tuệ;
-- Mị Lực;
-- Tiềm Lực.
-
-Do not create a parallel replacement stat block.
+- passive production timer is not active disciple work.
 
 ---
 
-## 5. Authority / document structure cleanup — COMPLETE
+## 5. Authority / document structure cleanup
 
 Status: **LOCKED 2026-10-06**
 
-Completed:
-- added `docs/GAME_SYSTEM_ARCHITECTURE.md` as the canonical system/layer/phase-discipline authority;
-- simplified `AGENTS.md` to stable operating rules instead of historical progress;
-- rewrote this checkpoint to current truth only;
-- rewrote `NEXT_CHAT_HANDOFF.md` to avoid carrying obsolete phase history;
-- removed stale A1/A2/B1 implementation diaries from P3.7 design specs;
-- removed obsolete pre-implementation “next design / implementation order” sections;
-- removed stale Windows-pending / implementation-not-started labels from design authorities;
-- removed stale P2.12 implementation-status text from `DISCIPLE_MASTER_SCHEMA.md`;
-- replaced obsolete Team Loot Bag building-tree mechanics with supplies/logistics carrying semantics;
-- integrated the no-Loot-Warehouse rule into current design wording;
-- design specs now define mechanics only;
-- runtime/progress status now lives here, not inside every design file.
-
-No gameplay code was added during this cleanup phase.
+Canonical structure:
+- `AGENTS.md` = repository operating contract;
+- `docs/GAME_SYSTEM_ARCHITECTURE.md` = system/layer authority;
+- design specs = mechanics only;
+- this file = implementation truth;
+- `NEXT_CHAT_HANDOFF.md` = continuation instructions only.
 
 ---
 
 ## 6. Current implementation phase
 
-**P3.7A2R — LINH ĐIỀN COMPLETION**
+**NONE — P3.7A2R IS CLOSED.**
 
-Status: **DESIGN REVISED / RUNTIME REVISION NOT STARTED**
+Do not start another gameplay phase without a new explicit user instruction.
 
-Canonical authorities:
-- `docs/P3_7_SPIRIT_FIELD_SPEC.md`;
-- `docs/P3_7_PROFESSION_WORK_MODIFIER_SPEC.md`.
+---
 
-### Simplified Linh Điền contract
+## 7. Queued work
 
-Each plot has one timer only:
+The previous PL-based B2 Construction Resolver is canceled.
 
-**start crop -> countdown -> harvest resolves**
-
-No separate backend phases for:
-- planting;
-- growth;
-- harvesting;
-- hauling.
-
-No seed item.
-
-Starting a crop costs Sect Spirit Stones.
-
-Each crop defines:
-- resource/output ID;
+Any future construction/resource phase must use:
+- explicit resource IDs/families;
 - realm/tier;
-- required field level;
-- Spirit Stone cost;
-- base cycle time;
-- base yield;
-- optional elemental affinity.
+- explicit quantities;
+- no Phẩm Lực.
 
-No crop/output/processing Phẩm Lực.
-
-### Shared disciple/work formulas
-
-All professions must use the same shared rules:
-
-- Profession level: +1% work speed per level.
-- Graded modifier magnitude: 5/10/15/20/25% for grades 1–5.
-- Cần Mẫn: +5..25% work speed.
-- Cẩu Thả: −5..25% work speed.
-- Profession talent: +5..25% profession XP.
-- Thông Tuệ XP factor: `0.75 + 0.50 × Thông Tuệ`.
-- Căn Cốt stamina cost: `Base × (1 − 0.25 × Căn Cốt)`.
-- Cơ Duyên rare-event chance: `BaseChance × (1 + 2 × Cơ Duyên)`, max natural factor ×3.
-- Tư Chất does not affect work output; it continues through cultivation authority.
-- Mị Lực/Tiềm Lực do not affect routine profession production.
-
-### Linh Điền lucky harvest
-
-Per completed crop:
-- ×4 base chance 0.20%;
-- ×3 base chance 0.80%;
-- ×2 base chance 3.00%;
-- ×1 otherwise.
-
-Each rare chance is multiplied by the Cơ Duyên factor.
-Resolve highest multiplier first with one deterministic roll.
-
-### Passive Tu Vi while working
-
-Shared formula:
-
-**Raw Work Tu Vi/hour = Current Stage Requirement × 0.0005 × (1 + 0.0005 × Profession Level)**
-
-Then use the existing cultivation-gain authority so Tư Chất/Linh Căn/Công pháp/Huyết Mạch/Thể Chất continue to matter naturally.
-
-### Linh Điền building numbers
-
-- Lv1 worker slots = 2; +1 every 5 levels.
-- Lv1 plot slots = 4; +1 every 5 levels.
-- Field speed = `1 + 0.005 × (Lv − 1)`.
-- Field yield = `1 + 0.005 × (Lv − 1)`.
-- Lv10 irrigation = additional −10% cycle time + crop policy.
-- Lv20 = +10% routine yield.
-- Lv30 = +10% Linh Thực XP + advanced crops.
-- Lv50 = mutation/rare crop tables.
-- Lv75 = additional −15% cycle time +10% routine yield.
-- Lv100 = additional +20% routine yield +20% Linh Thực XP.
-
-### A2R shared dependency correction
-
-The user removed Phẩm Lực from gameplay.
-
-Before A2R closes:
-- remove legacy `base_pham_luc` / PL APIs from ResourceRegistry/Warehouse tests;
-- update B1 contracts to ID + realm/tier + quantity only;
-- keep B1 focused/cumulative regression green.
-
-### Completion boundary
-
-A2R must implement and gate:
-- simple crop timer;
-- Spirit Stone crop cost;
-- multiple plots;
-- multiple field instances/worksite assignment;
-- crop policy;
-- shared trait/profession formulas;
-- graded Linh Thực talent;
-- lucky harvest;
-- passive work Tu Vi;
-- field-level formulas;
-- canonical warehouse deposit;
-- save/load/determinism;
-- removal of legacy PL runtime authority.
-
-No other gameplay phase may start before A2R closes.
-
-## 7. Queued phases
-
-No other gameplay phase may start while A2R is active.
-
-The previous PL-based B2 Construction Resolver is canceled. Any future construction phase must use explicit resource IDs/families + realm/tier + quantities, never Phẩm Lực.
+No next gameplay phase is authorized yet.
