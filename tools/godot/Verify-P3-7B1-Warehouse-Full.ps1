@@ -17,6 +17,9 @@ foreach ($script in @(
     "res://src/simulation/building/building_system.gd",
     "res://src/simulation/equipment/equipment_system.gd",
     "res://src/simulation/technique/technique_system.gd",
+    "res://src/simulation/cultivation/root_refinement_system.gd",
+    "res://src/simulation/bloodline/bloodline_system.gd",
+    "res://src/simulation/physique/physique_system.gd",
     "res://tests/simulation/p3_7b1_warehouse_test.gd"
 )) {
     Invoke-GodotWithTimeout -CommandArgs @(
