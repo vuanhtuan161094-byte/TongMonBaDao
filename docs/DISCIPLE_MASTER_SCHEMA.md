@@ -357,23 +357,3 @@ Disciple quality, root quality tier, combat power, many UI ratings/suitability s
 15. Trước khi triển khai thêm subsystem nhân vật, cập nhật master schema nếu design thay đổi.
 
 ---
-
-# 13. Trạng thái implementation tại 2026-10-01
-
-Runtime-green through P2.11:
-
-- foundation/quality/recruitment V2;
-- traits;
-- root refinement/mutation;
-- bloodline reveal/awakening/refinement;
-- cultivation/path/technique/combat/equipment/workforce foundations.
-
-P2.12 Physique đang implemented nhưng chưa runtime-lock. P2.12 phải tuân master mới:
-
-- physique grade `Phàm -> Linh -> Huyền -> Thánh -> Thần` là trục riêng;
-- special physique type là trục riêng;
-- grade/type được persisted separately;
-- tempering là progression riêng;
-- transformation/item application không reroll existing hidden identity.
-
-Sau khi P2.12 green, tạm dừng backend identity expansion để build visible living sect trước khi Destiny/lifespan active full.
