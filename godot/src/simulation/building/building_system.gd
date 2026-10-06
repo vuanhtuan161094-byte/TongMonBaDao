@@ -21,8 +21,17 @@ const MATERIAL_TAM_MACH_BAN := "tam_mach_ban"
 const MATERIAL_HERB := "thanh_linh_thao"
 const MATERIAL_LINH_TUYEN_HEART := "linh_tuyen_chi_tam"
 
+# Legacy A2 phase names remain only for old-save migration.
 const SPIRIT_PHASE_GROWING := &"growing"
 const SPIRIT_PHASE_HARVEST_READY := &"harvest_ready"
+
+const FIELD_POLICY_AUTO_DEMAND := &"auto_demand"
+const FIELD_POLICY_PRIORITY := &"priority"
+const FIELD_POLICY_FIXED := &"fixed"
+const VALID_FIELD_POLICIES := [FIELD_POLICY_AUTO_DEMAND, FIELD_POLICY_PRIORITY, FIELD_POLICY_FIXED]
+
+const PLOT_EMPTY := &"empty"
+const PLOT_GROWING := &"growing"
 
 # Only milestone content that actually exists is allowed to start.
 # Later milestones stay blocked until their real component/content is defined.
@@ -75,6 +84,8 @@ const DEFINITIONS := {
 
 var equipment := EquipmentSystem.new()
 var warehouse := WarehouseSystem.new()
+var crop_registry := SpiritCropRegistry.new()
+var profession_modifiers := ProfessionModifierSystem.new()
 
 func initialize(state: SimulationState) -> void:
     if not state.sect.workforce_enabled:
@@ -97,6 +108,9 @@ func initialize(state: SimulationState) -> void:
         var field := create_building(TYPE_SPIRIT_FIELD, 1)
         state.buildings[str(field.id)] = field
         state.building_event_count += 1
+
+    for field in _buildings_of_type(state, TYPE_SPIRIT_FIELD):
+        _ensure_spirit_field_state(state, field)
 
 func create_building(building_type: StringName, instance_index: int = 1) -> BuildingState:
     var definition: Dictionary = DEFINITIONS.get(str(building_type), {})
@@ -133,15 +147,54 @@ func worker_slots(building: BuildingState) -> int:
         return base_slots
     return base_slots + int(floor(float(building.level) / float(every)))
 
+func spirit_plot_slots(building: BuildingState) -> int:
+    if building == null or building.building_type != TYPE_SPIRIT_FIELD:
+        return 0
+    return 4 + int(floor(float(building.level) / 5.0))
+
+func spirit_field_speed_factor(field: BuildingState) -> float:
+    return 1.0 + 0.005 * float(maxi(field.level - 1, 0))
+
+func spirit_field_cycle_time_factor(field: BuildingState) -> float:
+    var factor := 1.0
+    if field.level >= 10:
+        factor *= 0.90
+    if field.level >= 75:
+        factor *= 0.85
+    return factor
+
+func spirit_field_yield_factor(field: BuildingState) -> float:
+    var factor := 1.0 + 0.005 * float(maxi(field.level - 1, 0))
+    if field.level >= 20:
+        factor *= 1.10
+    if field.level >= 75:
+        factor *= 1.10
+    if field.level >= 100:
+        factor *= 1.20
+    return factor
+
+func spirit_field_xp_factor(field: BuildingState) -> float:
+    var factor := 1.0
+    if field.level >= 30:
+        factor *= 1.10
+    if field.level >= 100:
+        factor *= 1.20
+    return factor
+
 func assigned_worker_ids(state: SimulationState, building: BuildingState) -> Array[StringName]:
     var result: Array[StringName] = []
-    if building.worker_group_id == &"":
+    if building == null or building.worker_group_id == &"":
         return result
+    var primary := primary_building(state, building.building_type)
     var ids: Array = state.disciples.keys()
     ids.sort()
     for raw_id in ids:
         var disciple: DiscipleState = state.disciples[raw_id]
-        if disciple.work_group_id == building.worker_group_id:
+        if disciple.work_group_id != building.worker_group_id:
+            continue
+        if disciple.worksite_building_id == building.id:
+            result.append(disciple.id)
+        elif disciple.worksite_building_id == &"" and primary != null and primary.id == building.id:
             result.append(disciple.id)
     return result
 
@@ -162,18 +215,71 @@ func can_disciple_work(state: SimulationState, building: BuildingState, disciple
         return false
     return active_worker_ids(state, building).has(disciple.id)
 
-func work_available(state: SimulationState, profession_id: StringName) -> bool:
+func work_available(state: SimulationState, profession_id: StringName, disciple: DiscipleState = null) -> bool:
     match profession_id:
         PROF_MINING:
-            return primary_building(state, TYPE_MINE) != null
+            var mine := _building_for_disciple(state, TYPE_MINE, disciple)
+            return mine != null and (disciple == null or can_disciple_work(state, mine, disciple))
         PROF_HERBALISM:
-            var field := primary_building(state, TYPE_SPIRIT_FIELD)
-            if field == null:
-                return false
-            var phase := StringName(field.production_state.get("phase", ""))
-            return phase == &"" or phase == SPIRIT_PHASE_HARVEST_READY
+            if disciple != null:
+                var field := _building_for_disciple(state, TYPE_SPIRIT_FIELD, disciple)
+                return field != null and can_disciple_work(state, field, disciple) and _field_has_startable_plot(state, field)
+            for field in _buildings_of_type(state, TYPE_SPIRIT_FIELD):
+                if _field_has_startable_plot(state, field):
+                    return true
+            return false
         _:
             return true
+
+func set_spirit_field_policy(state: SimulationState, field_id: StringName, mode: StringName, fixed_crop_id: StringName = &"", priority_weights: Dictionary = {}) -> bool:
+    if not state.buildings.has(str(field_id)):
+        return false
+    var field: BuildingState = state.buildings[str(field_id)]
+    if field.building_type != TYPE_SPIRIT_FIELD or not VALID_FIELD_POLICIES.has(mode):
+        return false
+    if mode != FIELD_POLICY_AUTO_DEMAND and field.level < 10:
+        return false
+    if mode == FIELD_POLICY_FIXED:
+        if not crop_registry.has(fixed_crop_id) or int(crop_registry.definition(fixed_crop_id).get("required_field_level", 1)) > field.level:
+            return false
+    var data := _ensure_spirit_field_state(state, field)
+    var normalized_weights: Dictionary = {}
+    if mode == FIELD_POLICY_PRIORITY:
+        var keys: Array = priority_weights.keys()
+        keys.sort()
+        for raw_id in keys:
+            var crop_id := StringName(raw_id)
+            var weight := maxi(int(priority_weights[raw_id]), 0)
+            if weight > 0 and crop_registry.has(crop_id) and int(crop_registry.definition(crop_id).get("required_field_level", 1)) <= field.level:
+                normalized_weights[str(crop_id)] = weight
+        if normalized_weights.is_empty():
+            return false
+    data["policy_mode"] = str(mode)
+    data["fixed_crop_id"] = str(fixed_crop_id) if mode == FIELD_POLICY_FIXED else ""
+    data["priority_weights"] = normalized_weights
+    field.production_state = data
+    state.building_event_count += 1
+    return true
+
+func cancel_spirit_plot(state: SimulationState, field_id: StringName, plot_id: StringName) -> bool:
+    if not state.buildings.has(str(field_id)):
+        return false
+    var field: BuildingState = state.buildings[str(field_id)]
+    if field.building_type != TYPE_SPIRIT_FIELD:
+        return false
+    var data := _ensure_spirit_field_state(state, field)
+    var plots: Array = data.get("plots", [])
+    for index in range(plots.size()):
+        if str(plots[index].get("plot_id", "")) != str(plot_id):
+            continue
+        if StringName(plots[index].get("status", "")) != PLOT_GROWING:
+            return false
+        plots[index] = _empty_plot(str(plot_id))
+        data["plots"] = plots
+        field.production_state = data
+        state.building_event_count += 1
+        return true
+    return false
 
 func upgrade_cost(building: BuildingState) -> Dictionary:
     if building == null or building.level >= building.max_level:
@@ -269,10 +375,10 @@ func process_tick(state: SimulationState) -> void:
             if building.upgrade_progress + 0.000001 >= building.upgrade_required_work:
                 _complete_upgrade(state, building)
         if building.building_type == TYPE_SPIRIT_FIELD:
-            _process_spirit_field_growth(state, building)
+            _process_spirit_field_plots(state, building)
 
 func perform_mining_step(state: SimulationState, disciple: DiscipleState, work_speed: float) -> Dictionary:
-    var mine := primary_building(state, TYPE_MINE)
+    var mine := _building_for_disciple(state, TYPE_MINE, disciple)
     if mine == null or not can_disciple_work(state, mine, disciple):
         return {"ok": false, "completed": false, "reason": "no_active_mine_slot"}
 
@@ -337,119 +443,74 @@ func perform_mining_step(state: SimulationState, disciple: DiscipleState, work_s
     return result
 
 func perform_spirit_field_step(state: SimulationState, disciple: DiscipleState, work_speed: float) -> Dictionary:
-    var field := primary_building(state, TYPE_SPIRIT_FIELD)
+    var field := _building_for_disciple(state, TYPE_SPIRIT_FIELD, disciple)
     if field == null or not can_disciple_work(state, field, disciple):
         return {"ok": false, "completed": false, "reason": "no_active_spirit_field_slot"}
 
-    var production_phase := StringName(field.production_state.get("phase", ""))
-    if production_phase == SPIRIT_PHASE_GROWING:
-        return {"ok": false, "completed": false, "reason": "crop_growing"}
-    if production_phase != &"" and production_phase != SPIRIT_PHASE_HARVEST_READY:
-        return {"ok": false, "completed": false, "reason": "invalid_field_state"}
+    var data := _ensure_spirit_field_state(state, field)
+    var plots: Array = data.get("plots", [])
+    var plot_index := _first_empty_plot_index(plots)
+    if plot_index < 0:
+        return {"ok": false, "completed": false, "reason": "no_empty_plot"}
 
-    var task := &"plant" if production_phase == &"" else &"harvest"
-    var cycle := disciple.work_cycle_state.duplicate(true)
-    if str(cycle.get("profession", "")) != str(PROF_HERBALISM) or str(cycle.get("building_id", "")) != str(field.id) or StringName(cycle.get("task", "")) != task:
-        cycle = {
-            "profession": str(PROF_HERBALISM),
-            "building_id": str(field.id),
-            "task": str(task),
-            "phase": "travel_out",
-            "progress": 0.0,
-            "carried_units": 0
-        }
+    var crop_id := _select_crop(state, field, data)
+    if crop_id == &"":
+        return {"ok": false, "completed": false, "reason": "no_affordable_crop"}
 
-    var phase := StringName(cycle.get("phase", "travel_out"))
-    var progress := maxf(float(cycle.get("progress", 0.0)), 0.0)
-    var result := {
-        "ok": true,
-        "completed": false,
-        "task": str(task),
-        "phase": str(phase),
-        "building_id": str(field.id),
-        "stamina_cost": 1.0
+    var plant_cost := crop_registry.cost(crop_id)
+    if state.sect.spirit_stones < plant_cost:
+        return {"ok": false, "completed": false, "reason": "insufficient_spirit_stones"}
+
+    state.sect.spirit_stones -= plant_cost
+    var affinity := _crop_affinity_factor(disciple, crop_id)
+    var total_speed := maxf(work_speed, 0.25) * spirit_field_speed_factor(field) * affinity
+    var duration := maxi(1, int(ceil(float(crop_registry.base_cycle_ticks(crop_id)) * spirit_field_cycle_time_factor(field) / total_speed)))
+    var routine_yield := maxi(1, int(round(float(crop_registry.base_yield(crop_id)) * spirit_field_yield_factor(field))))
+    var rare_factor := profession_modifiers.rare_event_factor(state, disciple)
+    var plot_id := str(plots[plot_index].get("plot_id", "plot_%03d" % [plot_index + 1]))
+
+    plots[plot_index] = {
+        "plot_id": plot_id,
+        "crop_id": str(crop_id),
+        "status": str(PLOT_GROWING),
+        "started_tick": state.tick,
+        "finish_tick": state.tick + duration,
+        "assigned_worker_id": str(disciple.id),
+        "paid_spirit_stones": plant_cost,
+        "routine_yield": routine_yield,
+        "rare_factor": rare_factor
     }
+    data["plots"] = plots
+    data["plant_sequence"] = int(data.get("plant_sequence", 0)) + 1
+    field.production_state = data
+    state.building_event_count += 1
 
-    match phase:
-        &"travel_out":
-            progress += _movement_speed(state, disciple)
-            if progress + 0.000001 >= float(definition_for(field).get("work_distance", 7.0)):
-                phase = &"tending" if task == &"plant" else &"harvesting"
-                progress = 0.0
-        &"tending":
-            progress += maxf(work_speed, 0.25)
-            result["stamina_cost"] = 2.0
-            if progress + 0.000001 >= _field_tend_duration(field):
-                field.production_state = {
-                    "phase": str(SPIRIT_PHASE_GROWING),
-                    "resource_id": str(definition_for(field).get("resource_id", MATERIAL_HERB)),
-                    "growth_progress": 0.0,
-                    "growth_required": _field_growth_duration(field),
-                    "planted_by": str(disciple.id)
-                }
-                _release_competing_field_cycles(state, field.id, disciple.id)
-                state.building_event_count += 1
-                result["completed"] = true
-                result["work_kind"] = "planting"
-                result["next_phase"] = "growth"
-        &"harvesting":
-            progress += maxf(work_speed, 0.25)
-            result["stamina_cost"] = 2.5
-            if progress + 0.000001 >= _field_harvest_duration(field):
-                phase = &"haul_back"
-                progress = 0.0
-                cycle["carried_units"] = _field_batch_units(field)
-        &"haul_back":
-            progress += _movement_speed(state, disciple) * _haul_speed_multiplier(disciple)
-            if progress + 0.000001 >= float(definition_for(field).get("haul_distance", 5.0)):
-                var produced := maxi(int(cycle.get("carried_units", 0)), 1)
-                var resource_id := str(field.production_state.get("resource_id", definition_for(field).get("resource_id", MATERIAL_HERB)))
-                _deposit_resource(state, field, resource_id, produced)
-                field.production_state.clear()
-                _release_competing_field_cycles(state, field.id, disciple.id)
-                state.building_event_count += 1
-                phase = &"complete"
-                progress = 0.0
-                cycle["carried_units"] = 0
-                result["completed"] = true
-                result["work_kind"] = "harvest"
-                result["produced"] = produced
-                result["resource_id"] = resource_id
-                result["deposited_to"] = "sect_main_warehouse"
-        _:
-            phase = &"travel_out"
-            progress = 0.0
-            cycle["carried_units"] = 0
-
-    if bool(result.get("completed", false)):
-        disciple.work_cycle_state.clear()
-        return result
-
-    cycle["phase"] = str(phase)
-    cycle["progress"] = progress
-    disciple.work_cycle_state = cycle
-    result["next_phase"] = str(phase)
-    result["progress"] = progress
-    return result
+    return {
+        "ok": true,
+        "completed": true,
+        "work_kind": "start_crop",
+        "building_id": str(field.id),
+        "plot_id": plot_id,
+        "crop_id": str(crop_id),
+        "finish_tick": state.tick + duration,
+        "paid_spirit_stones": plant_cost,
+        "base_work_xp": crop_registry.base_work_xp(crop_id),
+        "field_xp_factor": spirit_field_xp_factor(field),
+        "stamina_cost": 0.0
+    }
 
 func cancel_work_cycle(state: SimulationState, disciple: DiscipleState, settle_carried: bool = true) -> int:
     if disciple.work_cycle_state.is_empty():
         return 0
     var profession := StringName(disciple.work_cycle_state.get("profession", ""))
     var deposited := 0
-    if settle_carried:
+    if settle_carried and profession == PROF_MINING:
         deposited = maxi(int(disciple.work_cycle_state.get("carried_units", 0)), 0)
-        if deposited > 0 and profession == PROF_MINING:
-            var mine := primary_building(state, TYPE_MINE)
-            if mine != null:
+        if deposited > 0:
+            var building_id := StringName(disciple.work_cycle_state.get("building_id", ""))
+            var mine = state.buildings.get(str(building_id))
+            if mine is BuildingState and mine.building_type == TYPE_MINE:
                 _deposit_resource(state, mine, MATERIAL_ORE, deposited)
-        elif deposited > 0 and profession == PROF_HERBALISM:
-            var field := primary_building(state, TYPE_SPIRIT_FIELD)
-            if field != null:
-                var resource_id := str(field.production_state.get("resource_id", definition_for(field).get("resource_id", MATERIAL_HERB)))
-                _deposit_resource(state, field, resource_id, deposited)
-                field.production_state.clear()
-                state.building_event_count += 1
     disciple.work_cycle_state.clear()
     return deposited
 
@@ -499,14 +560,38 @@ func validate_invariants(state: SimulationState) -> Array[String]:
             if not MILESTONE_LEVELS.has(milestone) or milestone > building.level:
                 errors.append("Building %s has invalid milestone %d." % [building.id, milestone])
 
-        if building.building_type == TYPE_SPIRIT_FIELD and not building.production_state.is_empty():
-            var production_phase := StringName(building.production_state.get("phase", ""))
-            if production_phase != SPIRIT_PHASE_GROWING and production_phase != SPIRIT_PHASE_HARVEST_READY:
-                errors.append("Spirit Field %s has invalid production phase." % building.id)
-            var growth_progress := float(building.production_state.get("growth_progress", 0.0))
-            var growth_required := float(building.production_state.get("growth_required", 0.0))
-            if growth_required <= 0.0 or growth_progress < 0.0 or growth_progress > growth_required + 0.001:
-                errors.append("Spirit Field %s has invalid crop-growth progress." % building.id)
+        if building.building_type == TYPE_SPIRIT_FIELD:
+            var data = building.production_state
+            if not (data is Dictionary) or not data.has("plots"):
+                errors.append("Spirit Field %s has no canonical plot state." % building.id)
+            else:
+                var policy := StringName(data.get("policy_mode", ""))
+                if not VALID_FIELD_POLICIES.has(policy):
+                    errors.append("Spirit Field %s has invalid crop policy." % building.id)
+                var plots = data.get("plots", [])
+                if not (plots is Array) or plots.size() != spirit_plot_slots(building):
+                    errors.append("Spirit Field %s has invalid plot count." % building.id)
+                else:
+                    var seen_plot_ids: Dictionary = {}
+                    for raw_plot in plots:
+                        if not (raw_plot is Dictionary):
+                            errors.append("Spirit Field %s contains invalid plot data." % building.id)
+                            continue
+                        var plot_id := str(raw_plot.get("plot_id", ""))
+                        var plot_status := StringName(raw_plot.get("status", ""))
+                        if plot_id == "" or seen_plot_ids.has(plot_id):
+                            errors.append("Spirit Field %s has invalid/duplicate plot id." % building.id)
+                        seen_plot_ids[plot_id] = true
+                        if plot_status != PLOT_EMPTY and plot_status != PLOT_GROWING:
+                            errors.append("Spirit Field %s plot %s has invalid status." % [building.id, plot_id])
+                        if plot_status == PLOT_GROWING:
+                            var crop_id := StringName(raw_plot.get("crop_id", ""))
+                            if not crop_registry.has(crop_id):
+                                errors.append("Spirit Field %s plot %s has unknown crop." % [building.id, plot_id])
+                            if int(raw_plot.get("finish_tick", 0)) <= int(raw_plot.get("started_tick", -1)):
+                                errors.append("Spirit Field %s plot %s has invalid timer." % [building.id, plot_id])
+                            if int(raw_plot.get("paid_spirit_stones", -1)) < 0:
+                                errors.append("Spirit Field %s plot %s has invalid paid cost." % [building.id, plot_id])
 
     for disciple_value in state.disciples.values():
         var disciple: DiscipleState = disciple_value
@@ -527,19 +612,6 @@ func validate_invariants(state: SimulationState) -> Array[String]:
             errors.append("%s has invalid work-cycle progress." % disciple.display_name)
     return errors
 
-func _release_competing_field_cycles(state: SimulationState, building_id: StringName, except_disciple_id: StringName = &"") -> void:
-    var ids: Array = state.disciples.keys()
-    ids.sort()
-    for raw_id in ids:
-        var worker: DiscipleState = state.disciples[raw_id]
-        if worker.id == except_disciple_id or worker.work_cycle_state.is_empty():
-            continue
-        if StringName(worker.work_cycle_state.get("profession", "")) != PROF_HERBALISM:
-            continue
-        if str(worker.work_cycle_state.get("building_id", "")) != str(building_id):
-            continue
-        worker.work_cycle_state.clear()
-
 func _complete_upgrade(state: SimulationState, building: BuildingState) -> void:
     building.level = clampi(building.upgrade_target_level, 1, building.max_level)
     if MILESTONE_LEVELS.has(building.level) and not building.unlocked_milestones.has(building.level):
@@ -553,15 +625,236 @@ func _complete_upgrade(state: SimulationState, building: BuildingState) -> void:
     building.metrics["upgrade_completions"] = int(building.metrics.get("upgrade_completions", 0)) + 1
     state.building_event_count += 1
 
-func _process_spirit_field_growth(state: SimulationState, field: BuildingState) -> void:
-    if StringName(field.production_state.get("phase", "")) != SPIRIT_PHASE_GROWING:
-        return
-    var required := maxf(float(field.production_state.get("growth_required", 0.0)), 1.0)
-    var progress := minf(float(field.production_state.get("growth_progress", 0.0)) + 1.0, required)
-    field.production_state["growth_progress"] = progress
-    if progress + 0.000001 >= required:
-        field.production_state["phase"] = str(SPIRIT_PHASE_HARVEST_READY)
+func _process_spirit_field_plots(state: SimulationState, field: BuildingState) -> void:
+    var data := _ensure_spirit_field_state(state, field)
+    var plots: Array = data.get("plots", [])
+    var changed := false
+    for index in range(plots.size()):
+        var plot: Dictionary = plots[index]
+        if StringName(plot.get("status", "")) != PLOT_GROWING:
+            continue
+        if state.tick < int(plot.get("finish_tick", state.tick + 1)):
+            continue
+        _resolve_spirit_plot(state, field, plot)
+        plots[index] = _empty_plot(str(plot.get("plot_id", "plot_%03d" % [index + 1])))
+        changed = true
+    if changed:
+        data["plots"] = plots
+        field.production_state = data
         state.building_event_count += 1
+
+func lucky_harvest_multiplier(rare_factor: float, roll: float) -> int:
+    var factor := maxf(rare_factor, 0.0)
+    var value := clampf(roll, 0.0, 0.999999999)
+    var p4 := 0.002 * factor
+    var p3 := 0.008 * factor
+    var p2 := 0.030 * factor
+    if value < p4:
+        return 4
+    if value < p4 + p3:
+        return 3
+    if value < p4 + p3 + p2:
+        return 2
+    return 1
+
+func spirit_field_plots(state: SimulationState, field: BuildingState) -> Array:
+    if field == null or field.building_type != TYPE_SPIRIT_FIELD:
+        return []
+    return Array(_ensure_spirit_field_state(state, field).get("plots", [])).duplicate(true)
+
+func _resolve_spirit_plot(state: SimulationState, field: BuildingState, plot: Dictionary) -> void:
+    var crop_id := StringName(plot.get("crop_id", ""))
+    if not crop_registry.has(crop_id):
+        return
+    var roll := _stable_plot_roll(state.seed, str(field.id), str(plot.get("plot_id", "")), int(plot.get("started_tick", 0)))
+    var lucky := lucky_harvest_multiplier(float(plot.get("rare_factor", 1.0)), roll)
+    var quantity := maxi(int(plot.get("routine_yield", crop_registry.base_yield(crop_id))), 1) * lucky
+    _deposit_resource(state, field, str(crop_registry.output_resource_id(crop_id)), quantity)
+
+func _ensure_spirit_field_state(state: SimulationState, field: BuildingState) -> Dictionary:
+    if field == null or field.building_type != TYPE_SPIRIT_FIELD:
+        return {}
+    var desired_slots := spirit_plot_slots(field)
+    var current = field.production_state
+    if current is Dictionary and current.has("plots"):
+        var data: Dictionary = current.duplicate(true)
+        if not VALID_FIELD_POLICIES.has(StringName(data.get("policy_mode", ""))):
+            data["policy_mode"] = str(FIELD_POLICY_AUTO_DEMAND)
+        data["fixed_crop_id"] = str(data.get("fixed_crop_id", ""))
+        var weights = data.get("priority_weights", {})
+        data["priority_weights"] = weights.duplicate(true) if weights is Dictionary else {}
+        data["plant_sequence"] = maxi(int(data.get("plant_sequence", 0)), 0)
+        var plots: Array = []
+        var raw_plots = data.get("plots", [])
+        if raw_plots is Array:
+            for index in range(raw_plots.size()):
+                plots.append(_normalize_plot(raw_plots[index], index))
+        while plots.size() < desired_slots:
+            plots.append(_empty_plot("plot_%03d" % [plots.size() + 1]))
+        if plots.size() > desired_slots:
+            plots.resize(desired_slots)
+        data["plots"] = plots
+        field.production_state = data
+        return data
+
+    var legacy: Dictionary = current.duplicate(true) if current is Dictionary else {}
+    var migrated := {
+        "policy_mode": str(FIELD_POLICY_AUTO_DEMAND),
+        "fixed_crop_id": "",
+        "priority_weights": {},
+        "plant_sequence": 0,
+        "plots": []
+    }
+    var plots: Array = []
+    for index in range(desired_slots):
+        plots.append(_empty_plot("plot_%03d" % [index + 1]))
+    var legacy_phase := StringName(legacy.get("phase", ""))
+    if legacy_phase == SPIRIT_PHASE_GROWING or legacy_phase == SPIRIT_PHASE_HARVEST_READY:
+        var crop_id := StringName(legacy.get("resource_id", str(SpiritCropRegistry.CROP_THANH_LINH_THAO)))
+        if not crop_registry.has(crop_id):
+            crop_id = SpiritCropRegistry.CROP_THANH_LINH_THAO
+        var progress := maxf(float(legacy.get("growth_progress", 0.0)), 0.0)
+        var required := maxf(float(legacy.get("growth_required", crop_registry.base_cycle_ticks(crop_id))), 1.0)
+        var remaining := 1 if legacy_phase == SPIRIT_PHASE_HARVEST_READY else maxi(1, int(ceil(required - progress)))
+        plots[0] = {
+            "plot_id": "plot_001",
+            "crop_id": str(crop_id),
+            "status": str(PLOT_GROWING),
+            "started_tick": state.tick - int(floor(progress)),
+            "finish_tick": state.tick + remaining,
+            "assigned_worker_id": str(legacy.get("planted_by", "")),
+            "paid_spirit_stones": 0,
+            "routine_yield": crop_registry.base_yield(crop_id),
+            "rare_factor": 1.0
+        }
+    migrated["plots"] = plots
+    field.production_state = migrated
+    state.building_event_count += 1
+    return migrated
+
+func _normalize_plot(value: Variant, index: int) -> Dictionary:
+    if not (value is Dictionary):
+        return _empty_plot("plot_%03d" % [index + 1])
+    var plot_id := str(value.get("plot_id", "plot_%03d" % [index + 1]))
+    var status := StringName(value.get("status", "empty"))
+    if status != PLOT_GROWING:
+        return _empty_plot(plot_id)
+    var crop_id := StringName(value.get("crop_id", ""))
+    if not crop_registry.has(crop_id):
+        return _empty_plot(plot_id)
+    return {
+        "plot_id": plot_id,
+        "crop_id": str(crop_id),
+        "status": str(PLOT_GROWING),
+        "started_tick": int(value.get("started_tick", 0)),
+        "finish_tick": int(value.get("finish_tick", 1)),
+        "assigned_worker_id": str(value.get("assigned_worker_id", "")),
+        "paid_spirit_stones": maxi(int(value.get("paid_spirit_stones", 0)), 0),
+        "routine_yield": maxi(int(value.get("routine_yield", crop_registry.base_yield(crop_id))), 1),
+        "rare_factor": maxf(float(value.get("rare_factor", 1.0)), 0.0)
+    }
+
+func _empty_plot(plot_id: String) -> Dictionary:
+    return {
+        "plot_id": plot_id,
+        "crop_id": "",
+        "status": str(PLOT_EMPTY),
+        "started_tick": -1,
+        "finish_tick": -1,
+        "assigned_worker_id": "",
+        "paid_spirit_stones": 0,
+        "routine_yield": 0,
+        "rare_factor": 1.0
+    }
+
+func _first_empty_plot_index(plots: Array) -> int:
+    for index in range(plots.size()):
+        if plots[index] is Dictionary and StringName(plots[index].get("status", "")) == PLOT_EMPTY:
+            return index
+    return -1
+
+func _field_has_startable_plot(state: SimulationState, field: BuildingState) -> bool:
+    var data := _ensure_spirit_field_state(state, field)
+    if _first_empty_plot_index(data.get("plots", [])) < 0:
+        return false
+    return _select_crop(state, field, data) != &""
+
+func _select_crop(state: SimulationState, field: BuildingState, data: Dictionary) -> StringName:
+    var eligible: Array[StringName] = []
+    for crop_id in crop_registry.eligible_crop_ids(field.level):
+        if state.sect.spirit_stones >= crop_registry.cost(crop_id):
+            eligible.append(crop_id)
+    if eligible.is_empty():
+        return &""
+
+    var mode := StringName(data.get("policy_mode", str(FIELD_POLICY_AUTO_DEMAND)))
+    if mode == FIELD_POLICY_FIXED:
+        var fixed_id := StringName(data.get("fixed_crop_id", ""))
+        return fixed_id if eligible.has(fixed_id) else &""
+
+    if mode == FIELD_POLICY_PRIORITY:
+        var weights = data.get("priority_weights", {})
+        if weights is Dictionary:
+            var total := 0
+            var weighted_ids: Array[StringName] = []
+            for crop_id in eligible:
+                var weight := maxi(int(weights.get(str(crop_id), 0)), 0)
+                if weight > 0:
+                    total += weight
+                    weighted_ids.append(crop_id)
+            if total > 0:
+                weighted_ids.sort_custom(func(a: StringName, b: StringName) -> bool: return str(a) < str(b))
+                var cursor := int(data.get("plant_sequence", 0)) % total
+                var running := 0
+                for crop_id in weighted_ids:
+                    running += maxi(int(weights.get(str(crop_id), 0)), 0)
+                    if cursor < running:
+                        return crop_id
+
+    var best := eligible[0]
+    var best_score := -1.0e30
+    for crop_id in eligible:
+        var target := float(crop_registry.stock_target(crop_id))
+        var quantity := float(warehouse.quantity(state, crop_registry.output_resource_id(crop_id))) if state.sect.p3_7_resources_enabled else 0.0
+        var score := (target - quantity) / maxf(target, 1.0)
+        if score > best_score or (is_equal_approx(score, best_score) and str(crop_id) < str(best)):
+            best_score = score
+            best = crop_id
+    return best
+
+func _crop_affinity_factor(disciple: DiscipleState, crop_id: StringName) -> float:
+    var affinity := crop_registry.affinity_elements(crop_id)
+    if affinity.is_empty():
+        return 1.0
+    for raw_element in disciple.spiritual_root_elements:
+        if affinity.has(str(raw_element)):
+            return 1.05
+    return 1.0
+
+func _stable_plot_roll(seed_value: int, building_id: String, plot_id: String, started_tick: int) -> float:
+    var text := "%d|%s|%s|%d" % [seed_value, building_id, plot_id, started_tick]
+    var value := 17
+    for index in range(text.length()):
+        value = int((value * 131 + text.unicode_at(index)) % 2147483629)
+    return float(value % 1000000) / 1000000.0
+
+func _buildings_of_type(state: SimulationState, building_type: StringName) -> Array[BuildingState]:
+    var result: Array[BuildingState] = []
+    var ids: Array = state.buildings.keys()
+    ids.sort()
+    for raw_id in ids:
+        var building = state.buildings[raw_id]
+        if building is BuildingState and building.building_type == building_type:
+            result.append(building)
+    return result
+
+func _building_for_disciple(state: SimulationState, building_type: StringName, disciple: DiscipleState) -> BuildingState:
+    if disciple != null and disciple.worksite_building_id != &"":
+        var assigned = state.buildings.get(str(disciple.worksite_building_id))
+        if assigned is BuildingState and assigned.building_type == building_type:
+            return assigned
+        return null
+    return primary_building(state, building_type)
 
 func _deposit_resource(state: SimulationState, building: BuildingState, resource_id: String, quantity: int) -> void:
     if quantity <= 0:
@@ -605,8 +898,8 @@ func _movement_speed(state: SimulationState, disciple: DiscipleState) -> float:
     movement_profile = equipment.apply_style_modifiers(state, disciple, movement_profile)
     return maxf(float(movement_profile.get("move_speed", 2.7)), 0.5)
 
-func _haul_speed_multiplier(disciple: DiscipleState) -> float:
-    return lerpf(0.82, 1.08, clampf(disciple.constitution, 0.0, 1.0))
+func _haul_speed_multiplier(_disciple: DiscipleState) -> float:
+    return 1.0
 
 func _mining_duration(mine: BuildingState) -> float:
     var base := float(definition_for(mine).get("base_work_duration", 4.0))
@@ -616,22 +909,6 @@ func _mining_duration(mine: BuildingState) -> float:
 func _mining_batch_units(mine: BuildingState) -> int:
     var base := maxi(int(definition_for(mine).get("base_batch_units", 2)), 1)
     return base + int(floor(float(mine.level) / 10.0))
-
-func _field_tend_duration(field: BuildingState) -> float:
-    var base := float(definition_for(field).get("base_tend_duration", 3.0))
-    return maxf(base * maxf(0.55, 1.0 - float(maxi(field.level - 1, 0)) * 0.004), 1.0)
-
-func _field_harvest_duration(field: BuildingState) -> float:
-    var base := float(definition_for(field).get("base_harvest_duration", 3.0))
-    return maxf(base * maxf(0.55, 1.0 - float(maxi(field.level - 1, 0)) * 0.004), 1.0)
-
-func _field_growth_duration(field: BuildingState) -> float:
-    var base := float(definition_for(field).get("base_growth_duration", 12.0))
-    return maxf(base * maxf(0.45, 1.0 - float(maxi(field.level - 1, 0)) * 0.005), 3.0)
-
-func _field_batch_units(field: BuildingState) -> int:
-    var base := maxi(int(definition_for(field).get("base_batch_units", 3)), 1)
-    return base + int(floor(float(field.level) / 10.0))
 
 func _milestone_component(building_type: StringName, target_level: int) -> String:
     var table = MILESTONE_COMPONENTS.get(str(building_type), {})
