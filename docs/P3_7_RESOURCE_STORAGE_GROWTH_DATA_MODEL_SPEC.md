@@ -1,29 +1,30 @@
 # P3.7 — RESOURCE, STORAGE & BASE GROWTH DATA MODEL SPEC
 
 Status: CANONICAL DESIGN AUTHORITY  
-Date: 2026-10-05
+Updated: 2026-10-06
 
 Parents:
 - `docs/P3_7_LONG_TERM_SECT_ECONOMY_HUNTING_SPEC.md`
 - `docs/P3_7_BUILDING_TREE_SPEC.md`
 - `docs/P3_7_DISCIPLE_LOADOUT_HUNTING_PROGRESSION_SPEC.md`
+- `docs/P3_7_PROFESSION_WORK_MODIFIER_SPEC.md`
 - `docs/DISCIPLE_MASTER_SCHEMA.md`
 
-This spec resolves the data-model decisions needed before implementation:
-- clear distinct resource items;
-- realm-grade resource progression;
-- very large/unlimited sect storage;
-- Phẩm Lực without averaging unlike items together;
-- universal passive cultivation;
+This spec owns:
+- distinct resource identity;
+- realm/tier progression;
+- one large Sect Warehouse;
+- reserve/lock rules;
+- shared passive cultivation direction;
 - six-foundation integration.
+
+There is no Phẩm Lực system.
 
 ---
 
 # 1. Resource items stay distinct
 
-Do NOT merge different item identities into one generic "material power" pool.
-
-The player must be able to see and understand real item identities.
+Do not merge different item identities into one generic material-power pool.
 
 Examples:
 - Phàm Thiết;
@@ -36,248 +37,201 @@ Examples:
 - Yêu Đan;
 - Giao Long Cốt.
 
-Each resource definition has its own:
-- resource_id;
-- display_name;
+Each resource definition has:
+- `resource_id`;
+- display name;
 - family/tags;
-- realm_grade;
-- base_pham_luc;
-- stack_size;
+- realm/tier;
+- stackability;
 - source tags;
 - usage tags;
 - market value;
 - optional special properties.
 
-Do not average unlike item identities together.
+Different resources remain visibly different.
 
 ---
 
-# 2. Realm-grade resource progression
+# 2. Realm/tier progression
 
-Resources use a cultivation-flavored grade ladder for readability and long-term progression.
+Resources use a cultivation-flavored progression ladder.
 
-Example grade order:
+Example:
+1. Phàm;
+2. Luyện Khí;
+3. Trúc Cơ;
+4. Kim Đan;
+5. Nguyên Anh;
+6. later realms appended as content expands.
 
-1. Phàm phẩm;
-2. Luyện Khí phẩm;
-3. Trúc Cơ phẩm;
-4. Kim Đan phẩm;
-5. Nguyên Anh phẩm;
-6. future realms appended from the canonical cultivation realm table.
+Higher progression reveals higher-tier resource IDs.
 
-This grade is a **resource/item grade**, not a hard permission lock.
+Example mineral family:
+- Phàm Thiết;
+- Thanh Thiết — Luyện Khí;
+- Huyền Thiết — Trúc Cơ;
+- higher metals later.
 
-Higher building levels, deeper hunting regions, better professions and harder encounters gradually expose new materials from higher realm grades.
-
-Example metal family:
-
-- Phàm Thiết — Phàm phẩm;
-- Thanh Thiết — Luyện Khí phẩm;
-- Huyền Thiết — Trúc Cơ phẩm;
-- Tử Kim / equivalent — Kim Đan phẩm;
-- future rare metals — later realm grades.
-
-Names are content data and may change. The progression model is locked.
+The tier is readable category data.
+It is not a continuous power number.
 
 ---
 
-# 3. Phẩm Lực is continuous value inside the item system
+# 3. No Phẩm Lực
 
-Phẩm Lực remains canonical, but it is NOT used to hide item identity.
+Remove continuous Phẩm Lực from P3.7 resource gameplay.
 
-For raw stackable resources, prefer a stable/base Phẩm Lực per resource definition rather than random per-unit PL.
+Do not use:
+- base_pham_luc;
+- total_pham_luc;
+- construction PL;
+- processing PL;
+- crop PL;
+- output PL.
+
+Progression uses:
+- explicit resource IDs;
+- realm/tier;
+- quantities;
+- building level;
+- profession level;
+- recipe/crop requirements.
+
+If a stronger material is materially different, create a different resource ID.
 
 Example:
-
-- Phàm Thiết: base PL 1/unit;
-- Thanh Thiết: base PL 8/unit;
-- Huyền Thiết: base PL 40/unit.
-
-Then:
-- 1,000 Thanh Thiết = 8,000 construction PL;
-- 200 Huyền Thiết = 8,000 construction PL.
-
-The items remain visibly different.
-
-Special variants may exist as separate resource definitions instead of creating thousands of mixed-PL sub-stacks.
-
-Example:
+- Thanh Thiết;
 - Huyền Thiết;
-- Tinh Luyện Huyền Thiết;
-- Huyền Thiết Tủy.
+- Tinh Luyện Huyền Thiết.
 
-This keeps stacking and UI understandable.
+This is easier for the player to read and balance.
 
 ---
 
-# 4. No sect warehouse capacity limit
-
-The user explicitly does not want a storage-capacity game.
+# 4. No Sect Warehouse capacity limit
 
 Sect resource storage is logically unbounded for normal stackable resources.
 
-Stacks may reach:
-- millions;
-- billions if long-term progression requires.
+Stacks may reach millions or more.
 
-Implementation must use numeric types safe for very large counts.
+Do not:
+- stop production because storage is full;
+- require warehouse upgrades merely for numeric capacity;
+- split identical resources into many small stacks.
 
-Do NOT stop production because the warehouse is full.
-
-Do NOT require the player to build warehouses merely to increase numeric storage capacity.
+Use a safe integer range.
 
 ---
 
-# 5. Purpose of Warehouse building after removing capacity
+# 5. Warehouse building purpose
 
-Kho Tông Môn remains useful, but not as a capacity gate.
+Kho Tông Môn remains useful for automation rather than storage-space gating.
 
-Its level/function governs:
-
-- sorting/automation;
+Possible functions:
 - reserve rules;
 - protected/locked resources;
-- auto-routing to production;
-- auto-routing to market;
-- auto-restock hunting teams;
-- priority between construction/crafting/market;
-- unique-item/loot handling;
-- processing throughput if simulation needs a logistics rate;
-- reporting/search/filter quality.
+- routing to production;
+- routing to market;
+- supply restock;
+- priority rules;
+- reporting/search/filter;
+- unique-item handling;
+- later multi-location logistics.
 
-Milestones may unlock:
-- reserve rules;
-- protected material lists;
-- automatic low-grade-first consumption;
-- hunting settlement routing;
-- auto-market overflow/surplus;
-- multi-location warehouse network.
-
-Do not reintroduce a hidden capacity ceiling later without explicit user approval.
+Do not add a hidden capacity ceiling without explicit user approval.
 
 ---
 
 # 6. Stack model
 
-For stackable resources, canonical stack key is primarily:
+Canonical commodity stack key:
 
 **resource_id**
 
 A stack stores:
 - quantity;
-- optional metadata only when the whole stack shares that metadata.
+- shared metadata only when needed.
 
-Do not split stacks because of individual unit history.
-
-If two resources meaningfully differ in:
-- realm grade;
-- quality behavior;
-- recipe eligibility;
-- special effect;
-
-they should normally be distinct resource IDs.
-
-This makes "what is this item?" obvious to the player.
+Different realm/tier/material identities use different resource IDs.
 
 ---
 
 # 7. Unique items remain individual
 
-The large-stack rule applies to commodities.
-
-The following normally remain individual instances:
+Normally individual:
 - equipment;
 - Pháp Bảo;
 - Chí Bảo;
-- manuals/unique techniques where identity matters;
-- rare quest/story objects;
-- special boss artifacts;
-- individually rolled crafted items.
+- manuals/unique techniques;
+- story/quest objects;
+- boss artifacts;
+- rolled crafted items.
 
-Their data can contain:
+They may store:
 - unique id;
 - ownership;
-- Phẩm Lực;
 - affixes;
 - durability;
 - history;
-- creator;
-- etc.
+- creator.
+
+They do not use commodity-stack semantics.
 
 ---
 
-# 8. Building material consumption
+# 8. Construction material consumption
 
-Normal construction still consumes:
-- Linh Mộc-family resources;
-- Khoáng-family resources;
-- Spirit Stones.
-
-Requirements may be expressed in required Phẩm Lực by family.
-
-The resolver selects real item stacks.
-
-Example:
-Need 8,000 Khoáng PL.
-
-Eligible stock:
-- Thanh Thiết: 1,500 units × PL8;
-- Huyền Thiết: 200 units × PL40.
-
-Policy can say:
-- consume lowest realm grade first;
-- preserve at least N of named resource;
-- lock rare resources;
-- allow/disallow specific resources.
-
-Thus the system stays flexible without hiding actual items.
-
----
-
-# 9. Higher profession/building progression unlocks higher-grade resources
-
-Progression should gradually expose new resource types.
+Normal construction consumes explicit quantities from allowed material families.
 
 Examples:
-- higher Mining profession + deeper mine -> discovers higher-realm ores;
-- higher Spirit Farming + stronger fields -> can reliably cultivate higher-realm herbs;
-- higher hunting regions -> higher-realm monster parts/cores;
-- higher crafting -> can use those materials efficiently.
+- Linh Mộc-family quantity;
+- Khoáng-family quantity;
+- Spirit Stones;
+- exact milestone specialty item when needed.
 
-This is a soft progression web.
+Requirements are quantity-based.
 
-Do NOT make the rule:
-"profession Lv.100 = exactly Trúc Cơ material".
+Example:
+- 120 Linh Mộc;
+- 80 Thanh Thiết;
+- 500 Linh Thạch.
 
-Profession, building capability, region and resource grade all contribute.
+Higher-level construction may require higher-tier resource IDs explicitly.
+
+Do not convert mixed materials into one hidden power total.
+
+Warehouse reserve/lock rules must be respected.
+
+---
+
+# 9. Higher progression unlocks higher-grade resources
+
+Examples:
+- higher Mining + deeper Mine -> higher-tier ores;
+- higher Linh Thực + stronger fields -> higher-tier crops;
+- higher hunting regions -> stronger monster materials;
+- higher crafting -> recipes using those materials.
+
+Use explicit content unlocks, not continuous PL thresholds.
 
 ---
 
 # 10. Universal passive cultivation
 
-Every disciple has a cultivation gain floor even when not explicitly cultivating.
+Every living disciple passively gains cultivation during ordinary work.
 
-No normal sect activity should freeze realm progression entirely.
+Shared work-cultivation formula is owned by:
+`docs/P3_7_PROFESSION_WORK_MODIFIER_SPEC.md`
 
-The authoritative gain pipeline is:
+Profession-specific systems must not invent separate work-Tu-Vi formulas.
 
-**Base cultivation flow**
-× spiritual-root system
-× technique/path
-× six-foundation contribution
-× bloodline/physique/traits
-× sect-wide buffs
-× activity modifier
-× local building/service modifier
-+ event/combat rewards.
-
-Existing P2 authorities remain intact until the P3.7 migration implementation.
+Focused cultivation, Secret Chamber and hunting remain different activity categories with stronger progression.
 
 ---
 
 # 11. Six-foundation roles
 
-Use the canonical six foundation fields only:
+Use the canonical six foundation fields:
 
 - Tư Chất;
 - Căn Cốt;
@@ -286,130 +240,59 @@ Use the canonical six foundation fields only:
 - Mị Lực;
 - Tiềm Lực.
 
-They are not all direct cultivation multipliers.
+Shared work formulas are owned by:
+`docs/P3_7_PROFESSION_WORK_MODIFIER_SPEC.md`
 
-## 11.1 Tư Chất
-Primary natural learning/cultivation aptitude.
+High-level meaning:
 
-Main effects:
-- baseline cultivation efficiency;
-- learning speed for cultivation-related content.
+- Tư Chất -> cultivation aptitude;
+- Căn Cốt -> endurance/stamina;
+- Cơ Duyên -> rare opportunity weighting;
+- Thông Tuệ -> learning/comprehension;
+- Mị Lực -> social/commercial contexts;
+- Tiềm Lực -> long-term growth identity.
 
-## 11.2 Căn Cốt
-Physical foundation.
-
-Main effects:
-- stamina/endurance;
-- body-training efficiency;
-- HP/physical resilience contribution;
-- work endurance.
-
-May indirectly improve uptime, not raw cultivation speed as strongly as Tư Chất.
-
-## 11.3 Cơ Duyên
-Fortune/opportunity.
-
-Main effects:
-- rare encounter chance;
-- special loot/opportunity weighting;
-- insight event chance;
-- unusual discovery.
-
-Do not make it a flat damage stat.
-
-## 11.4 Thông Tuệ
-Comprehension/intelligence.
-
-Main effects:
-- technique mastery;
-- profession learning/EXP efficiency;
-- combat-skill learning;
-- research/teaching effectiveness.
-
-May slightly help cultivation comprehension, but should not duplicate Tư Chất.
-
-## 11.5 Mị Lực
-Social presence.
-
-Main effects:
-- relationship gain;
-- commerce/social service;
-- team/social interactions;
-- recruiting/teaching influence where appropriate.
-
-Not a raw combat stat.
-
-## 11.6 Tiềm Lực
-Long-term growth potential.
-
-Main effects:
-- scaling of permanent growth opportunities;
-- high-realm/stat-growth efficiency;
-- rare long-term improvement;
-- future breakthrough/growth systems.
-
-Do not use Tiềm Lực as a simple duplicate of Tư Chất.
-
-Exact formulas remain balancing data.
+Do not multiply all six into every profession.
 
 ---
 
-# 12. Base cultivation should be readable in UI
+# 12. Base cultivation UI
 
-The player should see a derived value such as:
+The player should be able to see a derived value such as:
 
 **Tu Vi nền: +120/giờ**
 
-Advanced detail can explain:
-- Linh Căn +X%;
-- Tư Chất +Y%;
-- Công pháp +Z%;
-- Thể Chất/Huyết Mạch;
-- Chí Bảo/Tông Môn;
-- current activity.
+Advanced detail may explain existing cultivation modifiers.
 
-Then activity changes the result.
-
-Example:
-- working -> lower rate but profession/economy rewards;
-- focused cultivation -> higher;
-- Secret Chamber -> much higher at personal Spirit Stone cost;
-- hunting -> passive base + large encounter rewards.
+Work adds only the shared profession-level work-cultivation modifier.
 
 ---
 
 # 13. At-home autonomous self-investment
 
-A disciple at sect may autonomously spend personal Spirit Stones on:
-
+A disciple at the sect may autonomously spend personal Spirit Stones on:
 - Secret Chamber;
 - pills;
 - equipment;
 - talismans;
 - Pháp Bảo;
 - market goods;
-- future auctions/services.
-
-Pill use is allowed as an autonomous progression choice.
+- later auctions/services.
 
 AI choice depends on:
 - personality;
-- current wealth;
+- wealth;
 - realm progress;
 - injury;
 - role;
-- player policy;
+- policy;
 - expected utility.
-
-The Sect Master may override/lock priorities.
 
 ---
 
 # 14. Pill logic
 
-Pills are not only emergency consumables.
-
-They may support:
+Pills may support:
 - direct cultivation gain;
 - cultivation-rate buff;
 - breakthrough;
@@ -417,31 +300,19 @@ They may support:
 - stamina;
 - combat preparation.
 
-An AI disciple may choose to consume cultivation pills at home when:
-- it owns/has access to them;
-- expected value is good;
-- policy allows;
-- no wasteful overdose/realm mismatch rule blocks it.
-
-Lower-grade pills may still work on high-realm disciples but become economically inefficient rather than hard-blocked.
+Lower-tier pills may remain usable at higher realm but become economically inefficient instead of being hard-blocked unless content explicitly requires a restriction.
 
 ---
 
 # 15. Locked decisions
 
-1. Normal resource items remain distinct and visible.
-2. No averaging different resource identities into one stack.
-3. Raw commodity stacks can become extremely large.
-4. No normal sect warehouse capacity cap.
-5. Warehouse progression is automation/logistics, not storage-space expansion.
-6. Resources have realm-grade labels tied to the cultivation progression ladder.
-7. Higher progression reveals new higher-grade material types.
-8. Phẩm Lực remains a numeric comparison/construction/crafting magnitude.
-9. Prefer stable PL per raw resource definition for clean stacking.
-10. Unique gear/artifacts remain individual items.
-11. All disciples have passive cultivation growth.
-12. The canonical six foundation fields influence different growth systems and must not be collapsed into one "talent" stat.
-13. Disciples at home may autonomously spend Spirit Stones on Secret Chambers and pills to accelerate growth.
-
-
----
+1. Resource IDs remain distinct and visible.
+2. Realm/tier replaces continuous Phẩm Lực.
+3. Resource use is quantity-based.
+4. Commodity stacks may become extremely large.
+5. No normal warehouse capacity cap.
+6. Warehouse progression is automation/logistics, not numeric storage.
+7. Higher progression unlocks higher-tier resource IDs.
+8. Unique gear/artifacts remain individual.
+9. All living disciples have passive cultivation growth.
+10. Shared work/foundation formulas come from the profession modifier authority.
