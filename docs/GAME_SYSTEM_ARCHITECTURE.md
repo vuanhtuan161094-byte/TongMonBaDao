@@ -194,7 +194,7 @@ This owns high-level relationships between:
 
 ## 4. One-phase-at-a-time development rule
 
-There is exactly **one active implementation phase**.
+There is **at most one active implementation phase**.
 
 A phase is not complete until all five conditions are met:
 
@@ -273,25 +273,10 @@ Implementation evidence and exact gate status live in `CURRENT_CHECKPOINT.md`.
 
 At any moment:
 
-- `CURRENT_CHECKPOINT.md` names exactly one active phase.
+- `CURRENT_CHECKPOINT.md` names the active phase, or explicitly states that no implementation phase is active.
 - `NEXT_CHAT_HANDOFF.md` explains only how to continue that phase.
 - design specs contain design, not chronological implementation diaries.
 - completed-phase history is not duplicated across every spec.
 - the next phase may be named, but may not be implemented until the current phase is locked.
 
 ---
-
-## 9. Current transition
-
-The repository is currently in a **documentation/authority cleanup transition**.
-
-No new gameplay phase should be implemented until:
-- stale implementation-history sections are removed from P3.7 design specs;
-- current checkpoint/handoff are concise and non-contradictory;
-- obsolete Loot Bag / Loot Warehouse wording is removed where it conflicts with the locked override.
-
-After cleanup is locked, the queued gameplay phase is:
-
-**P3.7B2 — Construction Resolver by material family + required Phẩm Lực.**
-
-B2 is queued, not active, until cleanup is complete.
