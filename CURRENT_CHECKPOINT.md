@@ -79,7 +79,7 @@ Implemented:
 - explicit resource identity;
 - family/tags;
 - realm grade/rank;
-- stable per-unit Phẩm Lực;
+- legacy `base_pham_luc` metadata exists in current runtime but is DEPRECATED by the 2026-10-06 design simplification and must be removed before A2R closes;
 - one canonical P3.7 stackable-resource warehouse;
 - no gameplay capacity ceiling;
 - multi-million stacks;
@@ -137,7 +137,7 @@ Do not describe these P3.7 CI runs as Windows evidence unless the Windows gate i
 - no warehouse capacity gameplay limit;
 - stacks may become extremely large;
 - resources keep distinct IDs;
-- Phẩm Lực does not replace item identity;
+- continuous Phẩm Lực is removed from canonical design; resource progression uses explicit ID + realm/tier + quantity;
 - one canonical main Sect Warehouse.
 
 ### Hunting rewards
@@ -197,80 +197,116 @@ No gameplay code was added during this cleanup phase.
 
 **P3.7A2R — LINH ĐIỀN COMPLETION**
 
-Status: **DESIGN LOCKED / RUNTIME REVISION NOT STARTED**
+Status: **DESIGN REVISED / RUNTIME REVISION NOT STARTED**
 
-Reason for reopening:
-the old A2 proved that BuildingSystem supports a farming lifecycle, but it did not complete the full Linh Điền gameplay contract.
+Canonical authorities:
+- `docs/P3_7_SPIRIT_FIELD_SPEC.md`;
+- `docs/P3_7_PROFESSION_WORK_MODIFIER_SPEC.md`.
 
-Canonical authority:
-`docs/P3_7_SPIRIT_FIELD_SPEC.md`
+### Simplified Linh Điền contract
 
-### Locked corrections
+Each plot has one timer only:
 
-Linh Điền backend should focus on:
-- planting/tending time;
-- passive growth time;
-- harvest/processing time;
-- yield;
-- output Phẩm Lực;
-- seed consumption/return;
-- crop policy;
+**start crop -> countdown -> harvest resolves**
+
+No separate backend phases for:
+- planting;
+- growth;
+- harvesting;
+- hauling.
+
+No seed item.
+
+Starting a crop costs Sect Spirit Stones.
+
+Each crop defines:
+- resource/output ID;
+- realm/tier;
+- required field level;
+- Spirit Stone cost;
+- base cycle time;
+- base yield;
+- optional elemental affinity.
+
+No crop/output/processing Phẩm Lực.
+
+### Shared disciple/work formulas
+
+All professions must use the same shared rules:
+
+- Profession level: +1% work speed per level.
+- Graded modifier magnitude: 5/10/15/20/25% for grades 1–5.
+- Cần Mẫn: +5..25% work speed.
+- Cẩu Thả: −5..25% work speed.
+- Profession talent: +5..25% profession XP.
+- Thông Tuệ XP factor: `0.75 + 0.50 × Thông Tuệ`.
+- Căn Cốt stamina cost: `Base × (1 − 0.25 × Căn Cốt)`.
+- Cơ Duyên rare-event chance: `BaseChance × (1 + 2 × Cơ Duyên)`, max natural factor ×3.
+- Tư Chất does not affect work output; it continues through cultivation authority.
+- Mị Lực/Tiềm Lực do not affect routine profession production.
+
+### Linh Điền lucky harvest
+
+Per completed crop:
+- ×4 base chance 0.20%;
+- ×3 base chance 0.80%;
+- ×2 base chance 3.00%;
+- ×1 otherwise.
+
+Each rare chance is multiplied by the Cơ Duyên factor.
+Resolve highest multiplier first with one deterministic roll.
+
+### Passive Tu Vi while working
+
+Shared formula:
+
+**Raw Work Tu Vi/hour = Current Stage Requirement × 0.0005 × (1 + 0.0005 × Profession Level)**
+
+Then use the existing cultivation-gain authority so Tư Chất/Linh Căn/Công pháp/Huyết Mạch/Thể Chất continue to matter naturally.
+
+### Linh Điền building numbers
+
+- Lv1 worker slots = 2; +1 every 5 levels.
+- Lv1 plot slots = 4; +1 every 5 levels.
+- Field speed = `1 + 0.005 × (Lv − 1)`.
+- Field yield = `1 + 0.005 × (Lv − 1)`.
+- Lv10 irrigation = additional −10% cycle time + crop policy.
+- Lv20 = +10% routine yield.
+- Lv30 = +10% Linh Thực XP + advanced crops.
+- Lv50 = mutation/rare crop tables.
+- Lv75 = additional −15% cycle time +10% routine yield.
+- Lv100 = additional +20% routine yield +20% Linh Thực XP.
+
+### A2R shared dependency correction
+
+The user removed Phẩm Lực from gameplay.
+
+Before A2R closes:
+- remove legacy `base_pham_luc` / PL APIs from ResourceRegistry/Warehouse tests;
+- update B1 contracts to ID + realm/tier + quantity only;
+- keep B1 focused/cumulative regression green.
+
+### Completion boundary
+
+A2R must implement and gate:
+- simple crop timer;
+- Spirit Stone crop cost;
 - multiple plots;
-- multiple field instances;
-- worker/building assignment.
+- multiple field instances/worksite assignment;
+- crop policy;
+- shared trait/profession formulas;
+- graded Linh Thực talent;
+- lucky harvest;
+- passive work Tu Vi;
+- field-level formulas;
+- canonical warehouse deposit;
+- save/load/determinism;
+- removal of legacy PL runtime authority.
 
-Detailed tile-by-tile travel/haul is NOT required.
-Movement/logistics may be represented as deterministic time overhead.
-
-### Character interaction
-
-No new seventh foundation stat is needed.
-
-Use existing character authority:
-
-- **Tư Chất:** no generic farming bonus;
-- **Căn Cốt:** labor endurance/stamina and modest sustained work efficiency;
-- **Cơ Duyên:** rare crop/mutation/exceptional seed outcomes;
-- **Thông Tuệ:** profession XP / difficult-crop handling;
-- **Mị Lực:** no routine field-production bonus;
-- **Tiềm Lực:** no immediate crop-output multiplier.
-
-Add one missing profession-specific talent:
-- `herbalist_affinity` / Linh Thực Thiên Phú;
-- primary effect: +80% Herbalism XP;
-- only small secondary farming effects.
-
-Spiritual Root/Bloodline/Physique do not provide universal farming multipliers.
-Crop-specific elemental affinity may grant a small positive bonus with no mismatch penalty.
-
-### Boundary
-
-Linh Điền owns:
-- plots;
-- crops;
-- seeds;
-- field policy;
-- field timing;
-- yield/quality;
-- field worker assignment;
-- field milestones.
-
-It does NOT privately reimplement:
-- the global profession 1–1000 progression;
-- universal passive cultivation from work;
-- wages/personal Spirit Stones;
-- generic Contribution rewards.
-
-Those remain shared-system phases.
-
-### Completion requirement
-
-Do not close A2R until the completion gate in `docs/P3_7_SPIRIT_FIELD_SPEC.md` is satisfied.
-
----
+No other gameplay phase may start before A2R closes.
 
 ## 7. Queued phases
 
 No other gameplay phase may start while A2R is active.
 
-B2 Construction Resolver is paused behind Linh Điền completion.
+The previous PL-based B2 Construction Resolver is canceled. Any future construction phase must use explicit resource IDs/families + realm/tier + quantities, never Phẩm Lực.
