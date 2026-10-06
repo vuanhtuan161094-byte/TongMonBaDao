@@ -171,37 +171,51 @@ Do not create a parallel replacement stat block.
 
 ---
 
-## 5. Current active phase
+## 5. Authority / document structure cleanup — COMPLETE
 
-**AUTHORITY / DOCUMENT STRUCTURE CLEANUP**
+Status: **LOCKED 2026-10-06**
 
-No new gameplay feature is active right now.
+Completed:
+- added `docs/GAME_SYSTEM_ARCHITECTURE.md` as the canonical system/layer/phase-discipline authority;
+- simplified `AGENTS.md` to stable operating rules instead of historical progress;
+- rewrote this checkpoint to current truth only;
+- rewrote `NEXT_CHAT_HANDOFF.md` to avoid carrying obsolete phase history;
+- removed stale A1/A2/B1 implementation diaries from P3.7 design specs;
+- removed obsolete pre-implementation “next design / implementation order” sections;
+- removed stale Windows-pending / implementation-not-started labels from design authorities;
+- removed stale P2.12 implementation-status text from `DISCIPLE_MASTER_SCHEMA.md`;
+- replaced obsolete Team Loot Bag building-tree mechanics with supplies/logistics carrying semantics;
+- integrated the no-Loot-Warehouse rule into current design wording;
+- design specs now define mechanics only;
+- runtime/progress status now lives here, not inside every design file.
 
-Cleanup scope:
-- simplify `AGENTS.md`;
-- add one canonical system-architecture document;
-- rewrite checkpoint/handoff to current truth only;
-- remove stale implementation diaries from P3.7 design specs;
-- remove obsolete “next phase” instructions;
-- remove contradictory Loot Bag / Loot Warehouse wording.
-
-This cleanup must finish before any B2 code begins.
+No gameplay code was added during this cleanup phase.
 
 ---
 
-## 6. Queued next gameplay phase — NOT STARTED
+## 6. Current implementation phase
+
+**NONE**
+
+Do not automatically start another gameplay phase.
+
+The repository is intentionally at a clean boundary after B1.
+
+---
+
+## 7. Next queued gameplay phase — NOT STARTED
 
 **P3.7B2 — Construction Resolver by material family + required Phẩm Lực**
 
 Queued contract:
-- normal building upgrade asks for total Construction Wood Phẩm Lực;
-- normal building upgrade asks for total Construction Mineral Phẩm Lực;
-- Linh Thạch remains currency input;
-- specialty milestone component remains an exact named item;
+- normal building upgrades require total Construction Wood Phẩm Lực;
+- normal building upgrades require total Construction Mineral Phẩm Lực;
+- Linh Thạch remains the currency input;
+- milestone specialty component remains an exact named item;
 - only eligible resource tags may satisfy a requirement;
-- reserve/lock rules must be respected;
+- warehouse reserve/lock must be respected;
 - prefer lower-value/lower-grade eligible stock first;
 - do not consume rare/high-grade stock unnecessarily;
 - no presentation work until backend B2 is locked.
 
-B2 remains queued until the documentation cleanup phase is explicitly closed.
+B2 begins only after a new user instruction to start it.
