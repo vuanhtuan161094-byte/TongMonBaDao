@@ -53,9 +53,6 @@ func _init(definition: Dictionary = {}) -> void:
     comprehension = maxf(float(definition.get("comprehension", comprehension)), 0.0)
     profession_traits = _string_array(definition.get("profession_traits", []))
     profession_trait_grades = _int_dictionary(definition.get("profession_trait_grades", {}))
-    for trait_id in profession_traits:
-        if not profession_trait_grades.has(str(trait_id)):
-            profession_trait_grades[str(trait_id)] = 1
 
     profile_seed = int(definition.get("profile_seed", 0))
     recruitment_source = StringName(definition.get("recruitment_source", ""))
