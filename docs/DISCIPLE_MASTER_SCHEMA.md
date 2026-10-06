@@ -48,12 +48,12 @@ Reveal/awakening không được reroll identity ẩn.
 | Chủng tộc | random/theo nguồn về sau; hiện Human | Gốc cố định | Chỉ đại biến đổi nếu game có | không đổi bằng training thường |
 | Giới tính | random | Gốc cố định | Không bằng progression thường | identity |
 | Xuất thân | random | Có | Không | lịch sử gốc |
-| Tư Chất | random theo source | Bẩm sinh chính | Có, rất hiếm | cải căn, thiên tài địa bảo, đại cơ duyên |
-| Căn Cốt | random theo source | Bẩm sinh chính | Có, khó | luyện thể cao cấp, cải tạo cơ thể, bảo vật |
-| Cơ Duyên | random theo source | Bẩm sinh chính | Có, nhỏ/hiếm | Thiên Mệnh, khí vận, đại sự kiện |
-| Thông Tuệ | random theo source | Bẩm sinh chính | Có, hiếm | ngộ đạo/cơ duyên/cải tạo thần thức |
-| Mị Lực | random theo source | base ổn định | hiệu quả có thể đổi | danh vọng, thương tích, title, item; base không reroll |
-| Tiềm Lực | random theo source | Bẩm sinh chính | Có, cực hiếm | cải căn/đề thăng/đại cơ duyên |
+| Tư Chất | random theo source | Birth snapshot cố định | Có, không hard cap | đan/vật phẩm cải căn, thiên tài địa bảo, cơ duyên, permanent growth hợp lệ |
+| Căn Cốt | random theo source | Birth snapshot cố định | Có, không hard cap | đan/vật phẩm luyện thể, cải tạo cơ thể, bảo vật, permanent growth hợp lệ |
+| Cơ Duyên | random theo source | Birth snapshot cố định | Có, không hard cap | khí vận, bảo vật, đại sự kiện, permanent growth hợp lệ |
+| Thông Tuệ | random theo source | Birth snapshot cố định | Có, không hard cap | ngộ đạo, vật phẩm, cải tạo thần thức, permanent growth hợp lệ |
+| Mị Lực | random theo source | Birth snapshot cố định | Có, không hard cap | vật phẩm, danh vọng/cơ duyên cải tạo permanent; trạng thái/title có thể buff hiệu dụng riêng |
+| Tiềm Lực | random theo source | Birth snapshot cố định | Có, không hard cap | cải căn, đề thăng, đại cơ duyên, permanent growth hợp lệ |
 | Phẩm chất Đệ tử | derived, không roll riêng | Không | Có thể tăng | tự recompute khi permanent foundation vượt ngưỡng |
 | Personality core | random | Khá ổn định | Có thể biến chuyển lớn | biến cố đời người; không tăng XP thường |
 | Risk/Spend/Survival bias | random quanh personality | mềm | Có thể dịch chuyển có giới hạn | kinh nghiệm sống/sự kiện/chính sách sau này |
@@ -148,6 +148,10 @@ Fixed-value consumable rewards remain fixed:
 - đan +10.000 Tu Vi -> đúng +10.000;
 - sách +X mastery/XP -> đúng +X;
 - lục duy không tự nhân con số cố định đó trừ khi item/content nói rõ.
+
+Các bonus phần trăm cùng tác động lên một progression channel dùng **cộng bonus trên base**, không nhân dây chuyền:
+`final = base × (1 + bonus_A + bonus_B + ...)`.
+Ví dụ Tư Chất, Linh Căn, trait, Công pháp cùng tăng tốc Tu Vi thì các phần bonus được cộng vào một channel trước khi áp lên base. Quy tắc này tránh nổ số khi đệ tử được nuôi rất lâu.
 
 Các hệ số trên là balance constants có thể benchmark; vai trò và open-point architecture là canonical.
 
