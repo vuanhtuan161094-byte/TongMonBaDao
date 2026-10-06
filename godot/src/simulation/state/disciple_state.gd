@@ -55,6 +55,7 @@ var comprehension: float = 0.0
 var sect_rank: StringName = &""
 var profession_xp: Dictionary = {}
 var profession_traits: Array = []
+var profession_trait_grades: Dictionary = {}
 var work_preferences: Dictionary = {}
 var work_group_id: StringName = &""
 var direct_command: Dictionary = {}
@@ -144,6 +145,10 @@ func _init(definition: Dictionary = {}) -> void:
     sect_rank = StringName(definition.get("sect_rank", sect_rank))
     profession_xp = _float_dictionary(definition.get("profession_xp", {}))
     profession_traits = _string_array(definition.get("profession_traits", []))
+    profession_trait_grades = _int_dictionary(definition.get("profession_trait_grades", {}))
+    for trait_id in profession_traits:
+        if not profession_trait_grades.has(str(trait_id)):
+            profession_trait_grades[str(trait_id)] = 1
     work_preferences = _int_dictionary(definition.get("work_preferences", {}))
     work_group_id = StringName(definition.get("work_group_id", work_group_id))
     direct_command = _command_dictionary(definition.get("direct_command", {}))
@@ -237,6 +242,8 @@ func to_dict() -> Dictionary:
         data["sect_rank"] = str(sect_rank)
         data["profession_xp"] = profession_xp.duplicate(true)
         data["profession_traits"] = profession_traits.duplicate()
+        if not profession_trait_grades.is_empty():
+            data["profession_trait_grades"] = profession_trait_grades.duplicate(true)
         data["work_preferences"] = work_preferences.duplicate(true)
         data["work_group_id"] = str(work_group_id)
         data["direct_command"] = direct_command.duplicate(true)
@@ -296,6 +303,7 @@ static func from_dict(data: Dictionary) -> DiscipleState:
         "sect_rank": data.get("sect_rank", ""),
         "profession_xp": data.get("profession_xp", {}),
         "profession_traits": data.get("profession_traits", []),
+        "profession_trait_grades": data.get("profession_trait_grades", {}),
         "work_preferences": data.get("work_preferences", {}),
         "work_group_id": data.get("work_group_id", ""),
         "direct_command": data.get("direct_command", {}),
