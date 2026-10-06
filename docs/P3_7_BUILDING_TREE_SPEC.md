@@ -183,35 +183,30 @@ Dùng cho:
 
 ---
 
-# 6. Phẩm Lực trong xây dựng
+# 6. Tài nguyên xây dựng theo loại + số lượng
 
 Mỗi nguyên liệu có:
-- loại/tag;
-- Phẩm Lực;
+- resource ID;
+- family/tag;
+- realm/tier;
 - số lượng.
 
-Upgrade không yêu cầu:
-> đúng Khoáng Lv.37.
+Upgrade không dùng Phẩm Lực.
 
-Thay vào đó có thể yêu cầu:
+Ví dụ:
+- Linh Mộc x120;
+- Thanh Thiết x80;
+- Linh Thạch x500.
 
-- Linh Mộc: 20.000 PL;
-- Khoáng Liệu: 35.000 PL;
-- Linh Thạch: 800.
+Level/công trình cao hơn có thể yêu cầu resource ID cấp cao hơn.
 
-Hệ thống tự chọn vật liệu đủ điều kiện từ kho.
-
-Người chơi có thể:
+Warehouse rules vẫn có thể:
 - khóa item quý;
 - đặt reserve;
-- cấm auto-consume một nhóm;
-- ưu tiên tiêu hàng Phẩm Lực thấp trước.
+- cấm auto-consume một resource;
+- chọn resource hợp lệ theo family khi recipe cho phép.
 
-Nhiều vật liệu rác có thể bù vật liệu tốt, nhưng:
-- tốn số lượng;
-- chiếm kho;
-- vận chuyển/chế biến lâu hơn;
-- tinh luyện có hao hụt.
+Không quy đổi nhiều loại vật liệu thành một hidden power pool.
 
 ---
 
@@ -228,9 +223,9 @@ Upgrade từ Lv.L -> Lv.L+1 dùng hệ số tăng:
 **F(L) = 1 + 0.15 × L + 0.01 × L²**
 
 Chi phí:
-- Mộc PL = BaseWood × F(L);
-- Khoáng PL = BaseOre × F(L);
-- Linh Thạch = BaseStone × F(L).
+- Linh Mộc quantity = ceil(BaseWood × F(L));
+- Khoáng quantity = ceil(BaseOre × F(L));
+- Linh Thạch = ceil(BaseStone × F(L)).
 
 Milestone upgrade:
 - dùng chi phí thường × 2;
@@ -263,28 +258,24 @@ Mục tiêu:
 
 ---
 
-# 9. Năng lực xử lý Phẩm Lực của công trình
+# 9. Năng lực xử lý theo tier/content
 
-Công trình không hard-lock nguyên liệu theo cảnh giới.
+Công trình sản xuất/chế tạo không dùng Ngưỡng Xử Lý Phẩm Lực.
 
-Mỗi building sản xuất/chế tạo có:
-**Ngưỡng Xử Lý Phẩm Lực**.
+Khả năng xử lý được biểu diễn bằng:
+- building level;
+- profession level;
+- recipe/crop unlock;
+- explicit realm/tier requirement;
+- tool/formation/buff khi content yêu cầu.
 
-Nếu nguyên liệu/sản phẩm nằm dưới ngưỡng:
-- hiệu suất bình thường.
+Nếu content khó hơn capability hiện tại, hệ có thể:
+- tăng thời gian;
+- giảm success;
+- tăng cost;
+- hoặc chưa mở recipe/crop.
 
-Nếu vượt ngưỡng:
-- vẫn có thể thử;
-- thời gian tăng;
-- xác suất thất bại tăng;
-- chất lượng đầu ra giảm;
-- tiêu hao nhiều hơn.
-
-Nghề worker cao, Chí Bảo, công cụ, trận pháp có thể bù.
-
-Như vậy:
-- Nguyên Anh vẫn trồng Phàm Thảo rất giỏi;
-- Luyện Khí nghề Lv.900 vẫn có thể xử lý nguyên liệu cao nếu facility đủ tốt.
+Không dùng một continuous PL threshold.
 
 ---
 
@@ -646,7 +637,7 @@ PvE có thể mang:
 - sản lượng;
 - worker;
 - tỷ lệ cổ mộc;
-- Phẩm Lực gỗ.
+- tier gỗ có thể khai thác.
 
 ## Milestone
 
@@ -671,7 +662,7 @@ Lv.75:
 
 Lv.100:
 - Thánh Lâm;
-- bonus Linh Mộc Phẩm Lực + EXP nghề.
+- bonus sản lượng Linh Mộc + EXP nghề.
 
 ## Specialty
 - Mộc Tâm;
@@ -882,9 +873,9 @@ Lv.100:
 - batch size;
 - speed;
 - success;
-- output PL;
+- output quantity;
 - worker;
-- max comfortable processing PL.
+- recipe/tier capability.
 
 ## Milestone
 
@@ -1711,7 +1702,7 @@ Nếu một building không liên kết được với ít nhất một trong ha
 This building-tree spec defines building mechanics only.
 
 Use:
-- `docs/P3_7_RESOURCE_STORAGE_GROWTH_DATA_MODEL_SPEC.md` for resource identity, Phẩm Lực, warehouse reserve/lock and stack semantics;
+- `docs/P3_7_RESOURCE_STORAGE_GROWTH_DATA_MODEL_SPEC.md` for resource identity, realm/tier, quantity, warehouse reserve/lock and stack semantics;
 - `docs/P3_7_TIME_SPEED_COOLDOWN_SPEC.md` for travel/work/construction/cooldown timing;
 - `docs/P3_7_DISCIPLE_LOADOUT_HUNTING_PROGRESSION_SPEC.md` for hunting/loadout/reward progression;
 - `docs/P3_7_LONG_TERM_SECT_ECONOMY_HUNTING_SPEC.md` for the parent economy relationship.
