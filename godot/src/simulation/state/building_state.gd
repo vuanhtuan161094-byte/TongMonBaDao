@@ -84,12 +84,54 @@ static func _production_dictionary(value: Variant) -> Dictionary:
     for raw_key in keys:
         var key := str(raw_key)
         var raw = value[raw_key]
-        if key in ["phase", "resource_id", "planted_by"]:
+        if key in ["phase", "resource_id", "planted_by", "policy_mode", "fixed_crop_id"]:
             result[key] = str(raw)
         elif key in ["growth_progress", "growth_required"]:
             result[key] = maxf(float(raw), 0.0)
+        elif key == "plant_sequence":
+            result[key] = maxi(int(raw), 0)
+        elif key == "priority_weights":
+            result[key] = _int_dictionary(raw)
+        elif key == "plots":
+            result[key] = _plot_array(raw)
         else:
             result[key] = raw
+    return result
+
+static func _plot_array(value: Variant) -> Array:
+    var result: Array = []
+    if not (value is Array):
+        return result
+    for raw_plot in value:
+        if raw_plot is Dictionary:
+            result.append(_plot_dictionary(raw_plot))
+    return result
+
+static func _plot_dictionary(value: Dictionary) -> Dictionary:
+    var result: Dictionary = {}
+    var keys: Array = value.keys()
+    keys.sort()
+    for raw_key in keys:
+        var key := str(raw_key)
+        var raw = value[raw_key]
+        if key in ["plot_id", "crop_id", "status", "assigned_worker_id"]:
+            result[key] = str(raw)
+        elif key in ["started_tick", "finish_tick", "paid_spirit_stones", "routine_yield"]:
+            result[key] = int(raw)
+        elif key == "rare_factor":
+            result[key] = float(raw)
+        else:
+            result[key] = raw
+    return result
+
+static func _int_dictionary(value: Variant) -> Dictionary:
+    var result: Dictionary = {}
+    if not (value is Dictionary):
+        return result
+    var keys: Array = value.keys()
+    keys.sort()
+    for raw_key in keys:
+        result[str(raw_key)] = int(value[raw_key])
     return result
 
 static func _int_array(value: Variant) -> Array[int]:
