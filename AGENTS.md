@@ -297,14 +297,15 @@ Item gacha may grant/refine Bloodline/Physique/etc under explicit rules, but mus
 
 ## Current next production order
 
-1. P3.2 live modular map `[8/8]` real PASS / locked;
+1. P3.2 live modular map `[8/8]`: real PASS / locked;
 2. P3.3 disciple operational flow: real PASS / locked;
 3. P3.4 building management: real PASS / locked;
 4. P3.5 living-sect cues: real PASS / locked;
-5. keep P3.6A runtime locked and obtain user visual acceptance from the real Windows preview;
-6. P3.7A1 Building Authority + first Mine backend slice is implemented on `main`: real BuildingState, Lv.1–100 Mine, worker-slot binding to the existing workforce, timed upgrades, real material/Spirit-Stone costs, Lv.10 Tầm Mạch Bàn milestone, travel -> mining -> haul/deposit cycle, movement-speed consequence, persistence and deterministic continuation. FAST CI and cumulative P0–P2.12 + P3.7A1 Linux Godot 4.7.2 gates are green; **AWAITING REAL WINDOWS FULL GATE, NOT PASS YET**;
-7. next immediate action is `Verify-P3-7A1-Building-Authority-Full.cmd` on the user's real Windows Godot 4.7.2. Only after that passes, lock P3.7A1 and implement P3.7A2 Linh Điền on the same BuildingSystem authority;
-9. minimum cosmetic variants needed to avoid obvious clones;
-10. six-combo/full female visual acceptance when functional map-management is stable;
-11. backward-compatible `appearance_profile` persistence;
-12. only then expand male rig, action set and asset volume.
+5. P3.6A playable runtime remains green; visual acceptance is user-owned and not a blocker for backend P3.7;
+6. P3.7A1 Building Authority + Mine: official Godot 4.7.2 backend CI green;
+7. P3.7A2 Linh Điền on the same BuildingSystem: official Godot 4.7.2 backend CI green, including six-foundation save/load and competing-worker regressions;
+8. **next: P3.7B1 Resource Registry + canonical Sect Warehouse backend**; migrate the temporary `sect.forge_materials` bridge without creating parallel inventory authority;
+9. then migrate Mine/Linh Điền construction and production to the canonical warehouse;
+10. then profession Lv.1–1000+ curve/milestones and additional core buildings;
+11. only after backend authority is real should live P3 presentation expose P3.7 building levels/upgrades/production;
+12. cosmetic/character-creator expansion remains secondary until functional management is stable.
