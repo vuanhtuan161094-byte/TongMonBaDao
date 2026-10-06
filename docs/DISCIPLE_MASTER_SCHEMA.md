@@ -107,7 +107,7 @@ Reveal/awakening không được reroll identity ẩn.
 
 # 3. Sáu thuộc tính nền và Phẩm chất Đệ tử
 
-Sáu trục bẩm sinh:
+Sáu trục canonical:
 
 - Tư Chất;
 - Căn Cốt;
@@ -116,27 +116,64 @@ Sáu trục bẩm sinh:
 - Mị Lực;
 - Tiềm Lực.
 
-Vai trò nền canonical được giữ đơn giản:
-- **Tư Chất** -> hiệu suất nhận Tu Vi;
-- **Căn Cốt** -> hiệu suất Luyện Thể/phát triển thân thể;
-- **Cơ Duyên** -> kết quả may mắn/sự kiện hiếm;
-- **Thông Tuệ** -> học kỹ năng/nghề/mastery;
-- **Mị Lực** -> xã hội/giao tiếp;
-- **Tiềm Lực** -> phát triển vĩnh viễn dài hạn khi authority tương ứng được triển khai.
+## 3.1. Luật chung P3.7C1
 
-Một lục duy không cần tác động vào mọi nghề để được coi là hữu dụng.
+P3.7 dùng **điểm lục duy mở, không hard cap**.
 
-Các hiệu ứng phần trăm từ Đặc Chất/Huyết Mạch/Thể Chất/trang bị/buff phải ưu tiên đi qua các kênh modifier dùng chung. Tên content mới không phải là lý do để tạo thêm một công thức gameplay mới.
+Khi sinh:
+- roll Tổng Lục Duy Bẩm Sinh;
+- chia tổng đó vào sáu trục;
+- một stat ordinary nằm khoảng `floor(total/12)` đến `floor(total/2)`, tức khoảng 0,5x–3x trung bình sáu stat;
+- Mệnh Cách/content hiếm về sau được phép phá envelope này.
 
-Đây là **foundation**, không phải toàn bộ sức mạnh.
+Sau khi sinh:
+- sáu stat tăng độc lập;
+- không còn giới hạn phân bố;
+- current value có thể lên hàng nghìn/hàng chục nghìn;
+- birth snapshot được lưu vĩnh viễn để giữ lịch sử nhân vật;
+- tăng hậu thiên không được rewrite birth snapshot.
 
-Phẩm chất Đệ tử:
+Legacy P0–P2 factories vẫn có thể dùng normalized values để bảo toàn regression; không tạo một block lục duy song song.
+
+## 3.2. Vai trò
+
+- **Tư Chất** -> tốc độ Tu Vi nền; balance khởi đầu +0,25%/điểm.
+- **Căn Cốt** -> tốc độ Luyện Thể; balance khởi đầu +0,20%/điểm.
+- **Cơ Duyên** -> `RNG 0..9999 + Cơ Duyên - difficulty`; tier 6000/8500/9500/9900.
+- **Thông Tuệ** -> EXP học/nghề/mastery; balance khởi đầu +0,15%/điểm.
+- **Mị Lực** -> social power; Dẫn Tiên có recruitment curve/cap riêng.
+- **Tiềm Lực** -> chất lượng stat growth từ Realm + Luyện Thể; balance khởi đầu +0,05%/điểm khi authority đó được triển khai.
+
+Fixed-value consumable rewards remain fixed:
+- đan +10.000 Tu Vi -> đúng +10.000;
+- sách +X mastery/XP -> đúng +X;
+- lục duy không tự nhân con số cố định đó trừ khi item/content nói rõ.
+
+Các hệ số trên là balance constants có thể benchmark; vai trò và open-point architecture là canonical.
+
+## 3.3. Phẩm chất Đệ tử
+
+Phẩm chất hiện tại:
 
 `Phàm Thường -> Xuất Chúng -> Thiên Kiêu -> Tuyệt Luân -> Nghịch Thiên`
 
-Phẩm chất được SUY RA chủ yếu từ sáu foundation, không roll riêng và không cộng trực tiếp trang bị/cảnh giới/nghề/chức vụ.
+Working total thresholds:
+- <360;
+- 360–599;
+- 600–999;
+- 1.000–1.799;
+- >=1.800.
 
-Permanent foundation có thể tăng cực hiếm nên Phẩm chất Đệ tử có thể đề thăng.
+Phẩm chất:
+- được SUY RA từ tổng current permanent six foundations;
+- có thể đề thăng khi lục duy tăng;
+- không cộng trực tiếp trang bị/cảnh giới/nghề/chức vụ;
+- không thay thế Linh Căn/Huyết Mạch/Thể Chất/Thiên Mệnh.
+
+Nghịch Thiên vẫn có long tail về Tổng Lục Duy; hai người cùng Nghịch Thiên có thể chênh tổng cực lớn.
+
+Chi tiết Dẫn Tiên/quality distribution:
+`docs/P3_7C1_FOUNDATION_DAN_TIEN_SPEC.md`
 
 ---
 
