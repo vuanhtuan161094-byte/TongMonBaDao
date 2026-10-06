@@ -94,6 +94,14 @@ const DEFINITIONS := {
         "market_value": 16,
         "tags": ["herb", "alchemy", "advanced_crop"]
     },
+    "linh_tuyen_chi_tam_manh": {
+        "name": "Mảnh Linh Tuyền Chi Tâm",
+        "family": "building_fragment",
+        "realm_grade": "luyen_khi",
+        "realm_rank": 1,
+        "market_value": 2,
+        "tags": ["spirit_field_milestone_fragment"]
+    },
     "linh_tuyen_chi_tam": {
         "name": "Linh Tuyền Chi Tâm",
         "family": "building_component",

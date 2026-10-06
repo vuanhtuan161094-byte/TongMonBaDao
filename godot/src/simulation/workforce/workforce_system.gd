@@ -233,6 +233,9 @@ func next_action(state: SimulationState, disciple: DiscipleState) -> StringName:
     if hp_ratio < 0.72 or disciple.stamina < 42.0:
         return &""
 
+    if state.p3_7_buildings_enabled and building_system.disciple_has_active_spirit_plot(state, disciple.id):
+        return &""
+
     var direct := _direct_command_action(state, disciple)
     if direct != &"":
         return direct
@@ -307,6 +310,8 @@ func choose_work_profession(state: SimulationState, disciple: DiscipleState) -> 
 func perform_work(state: SimulationState, disciple: DiscipleState, profession_id: StringName) -> Dictionary:
     if not state.sect.workforce_enabled or disciple.region_id != &"sect" or not VALID_PROFESSIONS.has(profession_id):
         return {"ok":false, "completed":false}
+    if state.p3_7_buildings_enabled and building_system.disciple_has_active_spirit_plot(state, disciple.id):
+        return {"ok":false, "completed":false, "reason":"busy_spirit_plot"}
     if state.p3_7_buildings_enabled:
         if profession_id == PROF_MINING:
             return _perform_p3_7_mining(state, disciple)

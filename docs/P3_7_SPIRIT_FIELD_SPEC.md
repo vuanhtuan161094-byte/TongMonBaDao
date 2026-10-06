@@ -67,7 +67,8 @@ rare_factor
 
 The relevant worker and facility factors are sampled when the plot starts.
 
-The worker is immediately free after starting the crop.
+The assigned worker remains reserved by that plot until `finish_tick`.
+There are still no detailed walking/tending/harvest backend phases.
 
 When `finish_tick` is reached:
 - routine yield resolves;
@@ -88,8 +89,11 @@ Worker slots and plot slots are separate.
 How many disciples may operate the field concurrently.
 
 Baseline:
-- Lv1: 2;
+- Lv1: 4;
 - +1 every 5 levels.
+
+There is exactly one worker slot per plot slot.
+A disciple may occupy only one active Spirit Field plot at a time.
 
 ## Plot slots
 
@@ -99,7 +103,7 @@ Baseline:
 - Lv1: 4;
 - +1 every 5 levels.
 
-A worker is not held for the crop timer.
+A plot with an active crop reserves exactly one disciple until harvest resolves.
 
 ---
 
@@ -260,7 +264,8 @@ Talent accelerates learning; it does not directly multiply routine yield.
 Only the actual **start-crop work action** counts as active Linh Thực work in this simplified backend.
 
 Passive crop countdown:
-- does not occupy the worker;
+- keeps that disciple assigned to the plot;
+- does not count as an active work action;
 - does not grant work Tu Vi.
 
 Use the shared work-cultivation authority.
@@ -296,8 +301,9 @@ Plant only the selected crop while:
 # 14. Building-level rules
 
 Baseline:
-- worker slots: 2 at Lv1, +1 every 5 levels;
+- worker slots: 4 at Lv1, +1 every 5 levels;
 - plot slots: 4 at Lv1, +1 every 5 levels;
+- worker slots and plot slots stay 1:1;
 - field speed: +0.5% per level after Lv1;
 - field yield: +0.5% per level after Lv1.
 
@@ -308,25 +314,35 @@ Baseline:
 ## Lv10 — Irrigation + policy
 - unlock PRIORITY/FIXED controls;
 - additional ×0.90 crop cycle time;
-- current milestone component: Linh Tuyền Chi Tâm.
+- requires 1 Linh Tuyền Chi Tâm.
 
 ## Lv20
-- ×1.10 routine yield.
+- ×1.10 routine yield;
+- requires 2 Linh Tuyền Chi Tâm.
 
 ## Lv30
 - ×1.10 Linh Thực XP;
-- advanced crops may unlock by content data.
+- advanced crops may unlock by content data;
+- requires 3 Linh Tuyền Chi Tâm.
 
 ## Lv50
-- rare/mutation crop content may unlock when real content exists.
+- rare/mutation crop content may unlock when real content exists;
+- requires 5 Linh Tuyền Chi Tâm.
 
 ## Lv75
 - additional ×0.85 crop cycle time;
-- ×1.10 routine yield.
+- ×1.10 routine yield;
+- requires 8 Linh Tuyền Chi Tâm.
 
 ## Lv100
 - ×1.20 routine yield;
-- ×1.20 Linh Thực XP.
+- ×1.20 Linh Thực XP;
+- requires 10 Linh Tuyền Chi Tâm.
+
+Linh Tuyền Chi Tâm fragments:
+- each completed plot has a low base 5% chance to obtain 1 Mảnh Linh Tuyền Chi Tâm;
+- the chance is multiplied by the snapshotted Cơ Duyên / rare factor;
+- 100 fragments automatically convert into 1 Linh Tuyền Chi Tâm.
 
 Milestone numeric factors stack multiplicatively.
 
@@ -358,8 +374,8 @@ A2R closes only when runtime evidence covers:
 3. insufficient-funds behavior;
 4. cancel with no default refund;
 5. multiple independent plots;
-6. worker released immediately after starting a plot;
-7. multiple workers;
+6. exactly one reserved disciple per active plot;
+7. disciple released when that plot resolves;
 8. multiple Spirit Field instances;
 9. concrete worksite assignment;
 10. AUTO_DEMAND / PRIORITY / FIXED;

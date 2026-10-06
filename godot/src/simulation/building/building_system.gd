@@ -20,6 +20,9 @@ const MATERIAL_ORE := "thanh_thiet"
 const MATERIAL_TAM_MACH_BAN := "tam_mach_ban"
 const MATERIAL_HERB := "thanh_linh_thao"
 const MATERIAL_LINH_TUYEN_HEART := "linh_tuyen_chi_tam"
+const MATERIAL_LINH_TUYEN_FRAGMENT := "linh_tuyen_chi_tam_manh"
+const LINH_TUYEN_FRAGMENT_PER_HEART := 100
+const LINH_TUYEN_FRAGMENT_BASE_CHANCE := 0.05
 
 # Legacy A2 phase names remain only for old-save migration.
 const SPIRIT_PHASE_GROWING := &"growing"
@@ -33,14 +36,19 @@ const VALID_FIELD_POLICIES := [FIELD_POLICY_AUTO_DEMAND, FIELD_POLICY_PRIORITY, 
 const PLOT_EMPTY := &"empty"
 const PLOT_GROWING := &"growing"
 
-# Only milestone content that actually exists is allowed to start.
-# Later milestones stay blocked until their real component/content is defined.
+# Milestone specialty components. Spirit Field reuses one clear component
+# across all major thresholds, with quantity increasing by milestone level.
 const MILESTONE_COMPONENTS := {
     "mine": {
         10: MATERIAL_TAM_MACH_BAN
     },
     "spirit_field": {
-        10: MATERIAL_LINH_TUYEN_HEART
+        10: MATERIAL_LINH_TUYEN_HEART,
+        20: MATERIAL_LINH_TUYEN_HEART,
+        30: MATERIAL_LINH_TUYEN_HEART,
+        50: MATERIAL_LINH_TUYEN_HEART,
+        75: MATERIAL_LINH_TUYEN_HEART,
+        100: MATERIAL_LINH_TUYEN_HEART
     }
 }
 
@@ -65,7 +73,7 @@ const DEFINITIONS := {
         "name": "Linh Điền",
         "max_level": 100,
         "worker_group_id": "herbalism_crew",
-        "base_worker_slots": 2,
+        "base_worker_slots": 4,
         "worker_slot_every": 5,
         "base_wood_cost": 6,
         "base_ore_cost": 3,
@@ -223,13 +231,24 @@ func work_available(state: SimulationState, profession_id: StringName, disciple:
         PROF_HERBALISM:
             if disciple != null:
                 var field := _building_for_disciple(state, TYPE_SPIRIT_FIELD, disciple)
-                return field != null and can_disciple_work(state, field, disciple) and _field_has_startable_plot(state, field)
+                return field != null and can_disciple_work(state, field, disciple) and not disciple_has_active_spirit_plot(state, disciple.id, field) and _field_has_startable_plot(state, field)
             for field in _buildings_of_type(state, TYPE_SPIRIT_FIELD):
                 if _field_has_startable_plot(state, field):
                     return true
             return false
         _:
             return true
+
+func disciple_has_active_spirit_plot(state: SimulationState, disciple_id: StringName, field: BuildingState = null) -> bool:
+    var fields: Array[BuildingState] = [field] if field != null else _buildings_of_type(state, TYPE_SPIRIT_FIELD)
+    for current_field in fields:
+        if current_field == null:
+            continue
+        var data := _ensure_spirit_field_state(state, current_field)
+        for raw_plot in data.get("plots", []):
+            if raw_plot is Dictionary and StringName(raw_plot.get("status", "")) == PLOT_GROWING and str(raw_plot.get("assigned_worker_id", "")) == str(disciple_id):
+                return true
+    return false
 
 func set_spirit_field_policy(state: SimulationState, field_id: StringName, mode: StringName, fixed_crop_id: StringName = &"", priority_weights: Dictionary = {}) -> bool:
     if not state.buildings.has(str(field_id)):
@@ -297,7 +316,7 @@ func upgrade_cost(building: BuildingState) -> Dictionary:
     if MILESTONE_LEVELS.has(target_level):
         var component := _milestone_component(building.building_type, target_level)
         if component != "":
-            cost[component] = 1
+            cost[component] = _milestone_component_quantity(building.building_type, target_level)
     return cost
 
 func upgrade_required_work(building: BuildingState) -> float:
@@ -446,6 +465,8 @@ func perform_spirit_field_step(state: SimulationState, disciple: DiscipleState, 
     var field := _building_for_disciple(state, TYPE_SPIRIT_FIELD, disciple)
     if field == null or not can_disciple_work(state, field, disciple):
         return {"ok": false, "completed": false, "reason": "no_active_spirit_field_slot"}
+    if disciple_has_active_spirit_plot(state, disciple.id, field):
+        return {"ok": false, "completed": false, "reason": "worker_already_has_plot"}
 
     var data := _ensure_spirit_field_state(state, field)
     var plots: Array = data.get("plots", [])
@@ -670,6 +691,35 @@ func _resolve_spirit_plot(state: SimulationState, field: BuildingState, plot: Di
     var lucky := lucky_harvest_multiplier(float(plot.get("rare_factor", 1.0)), roll)
     var quantity := maxi(int(plot.get("routine_yield", crop_registry.base_yield(crop_id))), 1) * lucky
     _deposit_resource(state, field, str(crop_registry.output_resource_id(crop_id)), quantity)
+
+    var fragment_roll := _stable_plot_roll(state.seed, "%s|linh_tuyen_fragment" % str(field.id), str(plot.get("plot_id", "")), int(plot.get("started_tick", 0)))
+    if linh_tuyen_fragment_drop(float(plot.get("rare_factor", 1.0)), fragment_roll) > 0:
+        _add_linh_tuyen_fragment(state)
+        convert_linh_tuyen_fragments(state)
+
+func linh_tuyen_fragment_drop(rare_factor: float, roll: float) -> int:
+    var chance := clampf(LINH_TUYEN_FRAGMENT_BASE_CHANCE * maxf(rare_factor, 0.0), 0.0, 1.0)
+    return 1 if clampf(roll, 0.0, 0.999999999) < chance else 0
+
+func convert_linh_tuyen_fragments(state: SimulationState) -> int:
+    if not state.sect.p3_7_resources_enabled:
+        return 0
+    var fragment_count := warehouse.quantity(state, StringName(MATERIAL_LINH_TUYEN_FRAGMENT))
+    var hearts := int(floor(float(fragment_count) / float(LINH_TUYEN_FRAGMENT_PER_HEART)))
+    if hearts <= 0:
+        return 0
+    if not warehouse.consume(state, StringName(MATERIAL_LINH_TUYEN_FRAGMENT), hearts * LINH_TUYEN_FRAGMENT_PER_HEART, true):
+        return 0
+    if not warehouse.add(state, StringName(MATERIAL_LINH_TUYEN_HEART), hearts):
+        warehouse.add(state, StringName(MATERIAL_LINH_TUYEN_FRAGMENT), hearts * LINH_TUYEN_FRAGMENT_PER_HEART)
+        return 0
+    return hearts
+
+func _add_linh_tuyen_fragment(state: SimulationState) -> void:
+    if state.sect.p3_7_resources_enabled:
+        warehouse.add(state, StringName(MATERIAL_LINH_TUYEN_FRAGMENT), 1)
+    else:
+        state.sect.forge_materials[MATERIAL_LINH_TUYEN_FRAGMENT] = int(state.sect.forge_materials.get(MATERIAL_LINH_TUYEN_FRAGMENT, 0)) + 1
 
 func _ensure_spirit_field_state(state: SimulationState, field: BuildingState) -> Dictionary:
     if field == null or field.building_type != TYPE_SPIRIT_FIELD:
@@ -915,3 +965,8 @@ func _milestone_component(building_type: StringName, target_level: int) -> Strin
     if not (table is Dictionary):
         return ""
     return str(table.get(target_level, ""))
+
+func _milestone_component_quantity(building_type: StringName, target_level: int) -> int:
+    if building_type == TYPE_SPIRIT_FIELD and MILESTONE_LEVELS.has(target_level):
+        return maxi(int(ceil(float(target_level) / 10.0)), 1)
+    return 1

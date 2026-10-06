@@ -34,6 +34,8 @@ func _run() -> void:
         return
     if not _verify_field_level_and_milestone_numbers():
         return
+    if not _verify_milestone_heart_costs_and_fragments():
+        return
     if not _verify_passive_work_cultivation_only_on_work():
         return
     if not _verify_legacy_field_state_migrates():
@@ -51,8 +53,8 @@ func _verify_authority_and_crop_registry() -> bool:
     var field := buildings.primary_building(state, BuildingSystem.TYPE_SPIRIT_FIELD)
     if field == null or field.level != 1 or field.max_level != 100:
         return _fail("Spirit Field authority is missing or has invalid level bounds.")
-    if field.worker_group_id != &"herbalism_crew" or buildings.worker_slots(field) != 2:
-        return _fail("Spirit Field workforce contract is invalid.")
+    if field.worker_group_id != &"herbalism_crew" or buildings.worker_slots(field) != 4:
+        return _fail("Spirit Field Lv1 must expose four worker slots for four plots.")
     if buildings.spirit_plot_slots(field) != 4:
         return _fail("Spirit Field Lv1 must expose four plots.")
     var plots := buildings.spirit_field_plots(state, field)
@@ -111,7 +113,12 @@ func _verify_simple_timer_cost_and_warehouse_harvest() -> bool:
     if state.sect.spirit_stones != stones_before - crops.cost(crop_id):
         return _fail("Starting a crop did not consume exact Sect Spirit Stones.")
     if not actor.work_cycle_state.is_empty():
-        return _fail("Herbalist was locked in a detailed movement/harvest work cycle.")
+        return _fail("Herbalist entered an obsolete detailed movement/harvest work cycle.")
+    if not buildings.disciple_has_active_spirit_plot(state, actor.id, field):
+        return _fail("Started plot did not reserve exactly one disciple.")
+    var blocked_again := workforce.perform_work(state, actor, WorkforceSystem.PROF_HERBALISM)
+    if bool(blocked_again.get("ok", false)) or str(blocked_again.get("reason", "")) != "busy_spirit_plot":
+        return _fail("One disciple was allowed to occupy more than one Spirit Field plot.")
 
     var plot := _growing_plot(state, field)
     if plot.is_empty() or int(plot.get("finish_tick", 0)) <= state.tick:
@@ -122,6 +129,8 @@ func _verify_simple_timer_cost_and_warehouse_harvest() -> bool:
         return _fail("Completed crop did not deposit directly into canonical warehouse.")
     if not _growing_plot(state, field).is_empty():
         return _fail("Finished plot did not return to empty state.")
+    if buildings.disciple_has_active_spirit_plot(state, actor.id, field):
+        return _fail("Disciple was not released when the assigned plot finished.")
     return _validate(state)
 
 func _verify_insufficient_funds_and_no_refund_cancel() -> bool:
@@ -168,8 +177,8 @@ func _verify_multiple_plots_and_workers() -> bool:
     if growing != 2:
         return _fail("Two workers did not start two independent crop timers.")
     for actor in workers:
-        if not actor.work_cycle_state.is_empty():
-            return _fail("Worker stayed locked after starting a plot.")
+        if not buildings.disciple_has_active_spirit_plot(state, actor.id, field):
+            return _fail("Growing plot did not keep its assigned disciple.")
     return _validate(state)
 
 func _verify_multiple_fields_use_specific_worksites() -> bool:
@@ -268,8 +277,8 @@ func _verify_field_level_and_milestone_numbers() -> bool:
 
     field.level = 20
     buildings.spirit_field_plots(state, field)
-    if buildings.worker_slots(field) != 6 or buildings.spirit_plot_slots(field) != 8:
-        return _fail("Field worker/plot slot scaling is wrong at Lv20.")
+    if buildings.worker_slots(field) != 8 or buildings.spirit_plot_slots(field) != 8:
+        return _fail("Field must keep one worker slot per plot at Lv20.")
     if not is_equal_approx(buildings.spirit_field_speed_factor(field), 1.095):
         return _fail("Field +0.5% speed/level formula is wrong.")
     if not is_equal_approx(buildings.spirit_field_yield_factor(field), 1.095 * 1.10):
@@ -285,6 +294,36 @@ func _verify_field_level_and_milestone_numbers() -> bool:
     if not is_equal_approx(buildings.spirit_field_xp_factor(field), 1.10 * 1.20):
         return _fail("Field Lv30/Lv100 profession-XP milestones are wrong.")
     return true
+
+func _verify_milestone_heart_costs_and_fragments() -> bool:
+    var state := P37Factory.create_state(TEST_SEED + 80)
+    var field := buildings.primary_building(state, BuildingSystem.TYPE_SPIRIT_FIELD)
+    var probes := {
+        9: 1,
+        19: 2,
+        29: 3,
+        49: 5,
+        74: 8,
+        99: 10
+    }
+    for current_level in probes.keys():
+        field.level = int(current_level)
+        var cost := buildings.upgrade_cost(field)
+        if int(cost.get(BuildingSystem.MATERIAL_LINH_TUYEN_HEART, 0)) != int(probes[current_level]):
+            return _fail("Spirit Field milestone Linh Tuyền Chi Tâm quantity is wrong at target Lv%d." % [int(current_level) + 1])
+
+    if buildings.linh_tuyen_fragment_drop(1.0, 0.049) != 1 or buildings.linh_tuyen_fragment_drop(1.0, 0.051) != 0:
+        return _fail("Linh Tuyền fragment base drop chance must be 5%.")
+    if not warehouse.add(state, StringName(BuildingSystem.MATERIAL_LINH_TUYEN_FRAGMENT), 199):
+        return _fail("Could not stage Linh Tuyền fragments.")
+    var hearts_before := warehouse.quantity(state, StringName(BuildingSystem.MATERIAL_LINH_TUYEN_HEART))
+    if buildings.convert_linh_tuyen_fragments(state) != 1:
+        return _fail("100 Linh Tuyền fragments did not convert into one Chi Tâm.")
+    if warehouse.quantity(state, StringName(BuildingSystem.MATERIAL_LINH_TUYEN_FRAGMENT)) != 99:
+        return _fail("Linh Tuyền fragment conversion remainder is wrong.")
+    if warehouse.quantity(state, StringName(BuildingSystem.MATERIAL_LINH_TUYEN_HEART)) != hearts_before + 1:
+        return _fail("Linh Tuyền Chi Tâm conversion output is wrong.")
+    return _validate(state)
 
 func _verify_passive_work_cultivation_only_on_work() -> bool:
     var state := P37Factory.create_state(TEST_SEED + 9)
