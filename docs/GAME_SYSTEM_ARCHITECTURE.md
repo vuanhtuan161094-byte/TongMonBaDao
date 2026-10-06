@@ -164,12 +164,14 @@ Canonical spec:
 
 Owns:
 - profession-level work-speed formula;
-- graded Cần Mẫn/Cẩu Thả magnitude;
+- generic percentage modifier channels for traits/content;
 - graded profession-talent XP bonus;
-- Căn Cốt stamina formula;
-- Cơ Duyên rare-event formula;
-- Thông Tuệ profession-XP formula;
-- passive Tu Vi while working.
+- the shared lục-duy factor curve and one-role mapping;
+- Cơ Duyên rare-event factor;
+- Thông Tuệ profession-XP factor;
+- passive Tu Vi while actually working.
+
+Căn Cốt belongs to body-training/development authority and is not a generic profession stamina or hauling multiplier.
 
 ### Spirit Field authority
 Canonical spec:
