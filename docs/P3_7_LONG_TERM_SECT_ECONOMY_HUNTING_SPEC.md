@@ -1,6 +1,6 @@
 # P3.7 — LONG-TERM SECT ECONOMY, PROFESSIONS & HUNTING SPEC
 
-Status: DESIGN LOCKED IN PRINCIPLE / P3.7A1 BUILDING + MINE BACKEND IMPLEMENTED / REAL WINDOWS GATE PENDING  
+Status: CANONICAL DESIGN AUTHORITY  
 Date: 2026-10-05
 
 This document is the canonical authority for the long-term management direction agreed with the user after reviewing the current playable slice and reference gameplay.
@@ -799,7 +799,7 @@ The two halves feed each other.
 2. The player never manually manages thousands of full inventories.
 3. Team/group/policy automation is mandatory.
 4. Standard hunting team is 5; solo traits can override.
-5. No permanent disciple death in current design; injury is the loss state.
+5. Combat defeat does not permanently delete a disciple; injury is the normal combat loss state. Lifespan expiry follows the separate Ma/Hồn persistence rule.
 6. Hunting consumes natural resources/time/durability/medicine.
 7. Hunting is a primary progression/reward source.
 8. Work also develops the disciple.
@@ -821,281 +821,96 @@ The two halves feed each other.
 
 ---
 
-# 28. NEXT DESIGN STEP — BEFORE IMPLEMENTATION
+# 28. CHILD AUTHORITY MAP
 
-Do not start broad implementation yet.
+This parent spec owns only the high-level long-term sect-economy direction.
 
-The next deliverable must be a **canonical building tree**.
+Use the child specs for concrete subsystem rules:
 
-For every building define:
-1. purpose;
-2. inputs;
-3. outputs;
-4. professions used;
-5. number of workers;
-6. normal upgrade benefits;
-7. milestone unlocks at major levels;
-8. specialty milestone material;
-9. relation to hunting;
-10. relation to disciple autonomous growth;
-11. automation policy;
-12. scaling to multiple copies.
-
-First building set to fully specify:
-- Main Hall;
-- Warehouse;
-- Spirit Field;
-- Mine;
-- Spirit Forest;
-- Disciple Residence;
-- Cultivation Platform;
-- Secret Chamber;
-- Medical Hall;
-- Alchemy Hall;
-- Artifact Hall;
-- Hunter Hall;
-- Market.
-
-Then expand:
-- Talisman;
-- Formation;
-- Spirit Beasts;
-- Brewing;
-- Cooking;
-- logistics;
-- auction;
-- advanced lifestyle facilities.
-
-Only after this tree is coherent should the simulation data model be extended.
-
----
-
-# 29. IMPLEMENTATION ORDER AFTER DESIGN LOCK
-
-1. Data authority: resources / Phẩm Lực / professions / facilities / policies.
-2. Warehouse + construction cost resolver.
-3. Profession EXP + disciple passive cultivation.
-4. Spirit Field/Mine/Forest production.
-5. Building upgrade/milestone framework.
-6. Hunter team + immediate reward routing to main Sect Warehouse/personal rewards.
-7. Contribution/Spirit Stone personal economy.
-8. Secret Chamber autonomous spending.
-9. Production halls.
-10. Market/lifestyle consumption.
-11. Sect Treasures.
-12. Expand to higher scale.
-
-Godot remains presentation/client; gameplay authority stays in the canonical simulation/runtime architecture.
-
-
----
-
-# 30. Canonical building-tree child authority
-
-The detailed building tree is now canonical in:
-
+### Buildings
 `docs/P3_7_BUILDING_TREE_SPEC.md`
 
-That file owns:
-- building families and dependencies;
-- Lv.1–100 progression rules;
-- worker/capacity scaling;
-- universal construction-cost rule;
-- milestone specialty material rule;
-- per-building milestone mechanics;
-- initial implementation slice.
+Owns:
+- building families;
+- Lv.1–100 behavior;
+- worker/capacity rules;
+- milestone mechanics;
+- building dependencies.
 
-If this parent spec and the building-tree child spec overlap, use the newer/more specific building-tree rule unless it violates a higher-level locked principle in this parent document.
-
-The next design deliverable is no longer the building tree. It is the concrete simulation data contract for:
-1. resource stacks + Phẩm Lực;
-2. warehouse reserve/lock/auto-consume;
-3. building instance state;
-4. profession EXP curve + milestone data;
-5. construction cost resolver;
-6. hunting loot settlement.
-
-
----
-
-# 31. Canonical disciple-loadout and hunting-progression child authority
-
-Detailed rules now live in:
-
-`docs/P3_7_DISCIPLE_LOADOUT_HUNTING_PROGRESSION_SPEC.md`
-
-That file owns:
-- scalable personal loadout;
-- multiple talisman / technique / Pháp Bảo slots;
-- sect-owned vs disciple-owned item semantics;
-- autonomous equipment choice;
-- Contribution compensation on personal-item requisition;
-- monster realm/grade reward scaling;
-- hunting cultivation-rate targets;
-- migration constraints from P2.1/P2.3/P2.6.
-
-When overlaps exist, use the newer child spec unless it violates a higher-level locked P3.7 principle.
-
-
----
-
-# 32. Canonical resource/storage/base-growth child authority
-
-Detailed rules now live in:
-
+### Resources / warehouse / base growth
 `docs/P3_7_RESOURCE_STORAGE_GROWTH_DATA_MODEL_SPEC.md`
 
-That child spec supersedes earlier provisional ideas that used warehouse capacity limits or averaged mixed-item Phẩm Lực stacks.
-
-Use the child spec for:
-- resource identity/stacking;
-- realm-grade material labels;
-- Phẩm Lực representation;
-- warehouse semantics;
+Owns:
+- resource identity;
+- realm-grade metadata;
+- Phẩm Lực;
+- one canonical Sect Warehouse;
+- stack/reserve/lock semantics;
 - passive cultivation;
 - six-foundation integration;
-- at-home self-investment.
+- home self-investment.
 
-
----
-
-# 33. LOCKED OVERRIDES 2026-10-05
-
-## Hunting loot routing
-- no Loot Warehouse;
-- no persistent Team Loot Bag for rewards;
-- items/materials go directly to main Sect Warehouse when generated;
-- personal Tu Vi, Contribution, mastery and Spirit Stone share are granted immediately;
-- team carried inventory is supplies-only.
-
-## Lifespan persistence
-Use `docs/DISCIPLE_LIFESPAN_CANON.md`:
-- expiry of lifespan -> Ma/Hồn state, not roster deletion;
-- valid longevity/revival item may restore life;
-- only expulsion removes the disciple from the sect roster.
-
-
----
-
-# 34. Canonical time/speed/work-cycle child authority
-
-Detailed timing semantics now live in:
-
+### Time / movement / work cycle
 `docs/P3_7_TIME_SPEED_COOLDOWN_SPEC.md`
 
-That child spec owns:
-- distinction between movement/attack/work/cast/cooldown timing;
-- physical Mine work cycle;
-- construction/upgrade duration;
-- crafting/treatment/service duration;
-- large-scale deterministic timing resolution.
+Owns:
+- movement speed;
+- attack speed;
+- work speed;
+- cast time;
+- cooldown;
+- construction duration;
+- recovery/downtime;
+- physical work cycles.
 
+### Disciple loadout / hunting progression
+`docs/P3_7_DISCIPLE_LOADOUT_HUNTING_PROGRESSION_SPEC.md`
 
----
+Owns:
+- scalable personal loadout;
+- item ownership;
+- autonomous equipment choice;
+- Contribution;
+- monster realm/reward scaling;
+- hunting cultivation targets.
 
-# 35. P3.7A1 implementation status — 2026-10-05
+### Disciple lifespan
+`docs/DISCIPLE_LIFESPAN_CANON.md`
 
-The first backend slice is now implemented:
-- authoritative BuildingState/BuildingSystem;
-- first real Mine instance;
-- timed building upgrade;
-- real current-resource bridge rather than a new parallel warehouse;
-- real worker-slot binding to P2.7 workforce;
-- physical mining timing cycle;
-- movement-speed consequence;
-- milestone component at Mine Lv.10;
-- exact persistence/determinism.
+Owns:
+- lifespan expiry;
+- Ma/Hồn persistence;
+- longevity/revival effects;
+- roster-removal semantics.
 
-Linux Godot 4.7.2 FAST and cumulative P0–P2.12 regression gates are green.
-This is **not yet a final PASS** because the real Windows full gate is still required.
-
-Do not broaden implementation until P3.7A1 receives that real Windows gate.
-
-
----
-
-# 35. P3.7A1 IMPLEMENTATION STATUS — REAL PASS 2026-10-06
-
-The first backend slice is implemented and runtime-green.
-
-Authority added:
-- BuildingState;
-- BuildingSystem;
-- P37Factory opt-in;
-- timed upgrade processing;
-- persistence;
-- deterministic continuation;
-- first real Mine work cycle.
-
-Mine currently proves:
-- worker-slot enforcement;
-- reuse of existing mining_crew;
-- travel -> mining -> haul/deposit timing;
-- movement-speed consequence;
-- existing profession-XP integration;
-- timed upgrade without fake cooldown;
-- real Lv10 milestone component (Tầm Mạch Bàn).
-
-Compatibility:
-- P3.7 disabled states preserve P0–P2 behavior;
-- full Godot 4.7.2 P0–P2.12 cumulative regression is PASS.
-
-Temporary bridge:
-- Linh Mộc/Thanh Thiết currently use existing `sect.forge_materials`;
-- construction Linh Thạch currently uses existing `sect.spirit_stones`;
-- this is not the final unified warehouse.
-
-Presentation:
-- live P3 UI still uses P2.12 authority and must not expose building Lv/upgrade values until explicitly migrated to P37 authority.
-
-Next implementation:
-**P3.7A2 — Spirit Field / Linh Điền backend**, using the same BuildingSystem and a different work lifecycle to prove the framework is generic.
-
+Implementation progress does **not** belong in this design spec.
+Read `CURRENT_CHECKPOINT.md` for current runtime status.
 
 ---
 
-# 36. P3.7A2 IMPLEMENTATION STATUS — CI GREEN 2026-10-06
+# 29. LOCKED CROSS-SYSTEM CORRECTIONS
 
-Spirit Field / Linh Điền is implemented on the existing BuildingSystem rather than a parallel production engine.
+## Hunting reward routing
+- no Loot Warehouse;
+- no persistent Team Loot Bag for rewards;
+- ordinary item/material rewards go directly to the main Sect Warehouse when generated;
+- personal Tu Vi, Contribution, mastery/progression and personal Spirit Stone share are granted directly to the participating disciple;
+- carried team inventory outside the sect is for supplies/logistics only.
 
-Authoritative lifecycle:
-1. assigned herbalist travels to the field;
-2. tending/planting consumes real work time;
-3. planting completion creates building-owned crop growth state;
-4. crop growth advances over simulation ticks without locking the worker at the field;
-5. harvest-ready state re-opens Herbalism work;
-6. worker travels, harvests, then hauls/deposits the batch;
-7. current bridge deposit is to the same legacy material store used by A1 until P3.7B1 warehouse migration.
+## Lifespan persistence
+- lifespan expiry does not delete the disciple record;
+- the disciple transitions to Ma/Hồn state;
+- roster/history/relationships remain;
+- valid longevity/revival effects may restore life;
+- only expulsion removes the disciple from the sect roster.
 
-Additional guarantees:
-- generic worker-slot enforcement;
-- multiple workers cannot remain stuck in stale crop work cycles after a shared phase completes;
-- Lv.10 requires Linh Tuyền Chi Tâm;
-- save/load exactness and deterministic continuation;
-- legacy six-foundation values persist even when profile_seed is zero.
+## Warehouse
+- no gameplay storage-capacity ceiling;
+- resource IDs remain distinct;
+- Phẩm Lực does not replace item identity;
+- P3.7 uses one canonical Sect Warehouse for stackable resources.
 
-Official Godot 4.7.2:
-- focused A1 + A2 gate PASS;
-- full P0–P2.12 + A1 + A2 cumulative regression PASS.
-
-Next authority implementation:
-**P3.7B1 Resource Registry + canonical Sect Warehouse.**
-
-
----
-
-# 37. P3.7B1 CANONICAL WAREHOUSE STATUS — CI GREEN 2026-10-06
-
-P3.7 now has one canonical stackable-resource warehouse.
-
-Resource identity is preserved; different resources are not averaged together.
-Realm grade and stable per-unit Phẩm Lực are registry metadata.
-Legacy forge/technique material buckets are migrated once and cleared for P3.7 states.
-
-Current integrated consumers:
-construction, Mine, Spirit Field, forge, technique upgrading, root refinement, bloodline and physique.
-
-Official Godot 4.7.2 focused + cumulative backend CI are green through B1.
-
-Next:
-**P3.7B2 — Phẩm Lực-based construction material resolver.**
+## Phase discipline
+- design specs define mechanics;
+- implementation status lives only in `CURRENT_CHECKPOINT.md`;
+- only one gameplay implementation phase may be active at a time.
