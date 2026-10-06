@@ -80,11 +80,16 @@ It is NOT attack speed and NOT movement speed.
 
 Use these terms consistently.
 
-## Travel Time
-Time spent moving from A to B.
+## Travel / Logistics Time
+Time overhead caused by moving between work, storage and service points.
 
-Formula concept:
-**distance / effective movement speed**
+Backend does not require exact path simulation.
+
+It may be represented as:
+- explicit travel time when spatial distance matters;
+- or a deterministic logistics-time component folded into the work action.
+
+Movement speed may modify this overhead when appropriate.
 
 ## Action Duration
 Time actively spent doing the task:
@@ -224,11 +229,12 @@ Disciple contributes:
 
 The map should show the physical loop when the disciple is in visible simulation range:
 
-- walking toward Mine;
-- mining/work animation;
-- walking to deposit point with a haul state;
-- depositing;
-- returning or leaving for rest.
+- moving toward/around a work facility where presentation benefits from it;
+- working;
+- carrying/processing where presentation benefits from it;
+- leaving for another activity or rest.
+
+These visuals do not require one-to-one backend path simulation.
 
 Do not require one actor animation for every resource unit.
 
@@ -243,16 +249,19 @@ Presentation must not create resources itself.
 The framework generalizes.
 
 ## Spirit Field
-- travel to assigned field/work point;
-- tend/plant/grow/harvest work duration;
-- harvest batch;
-- move to deposit point;
-- resource credited to main Sect Warehouse.
+Detailed authority:
+`docs/P3_7_SPIRIT_FIELD_SPEC.md`
 
-Crop growth time is also real duration.
+Backend timing is:
+- planting/tending labor time;
+- passive crop growth time;
+- harvest/processing labor time;
+- optional logistics overhead folded into labor timing.
 
-Worker does not need to stand staring at a plant for the entire growth timer.
-AI can perform other valid farm tasks between required work phases.
+Exact walking/pathfinding is not required for farming authority.
+
+Crop growth remains a real duration.
+The worker is free to perform other valid activities while crops grow.
 
 ## Spirit Forest
 - travel;
