@@ -5,6 +5,7 @@ const SAVE_PATH := "user://p3_7a2_spirit_field_test.json"
 
 var buildings := BuildingSystem.new()
 var workforce := WorkforceSystem.new()
+var warehouse := WarehouseSystem.new()
 
 func _init() -> void:
     call_deferred("_run")
@@ -94,7 +95,7 @@ func _verify_plant_growth_harvest_lifecycle() -> bool:
         return false
     _normalize_worker(actor)
 
-    var herb_before := int(state.sect.forge_materials.get(BuildingSystem.MATERIAL_HERB, 0))
+    var herb_before := warehouse.quantity(state, StringName(BuildingSystem.MATERIAL_HERB))
     var xp_before := workforce.profession_xp(actor, WorkforceSystem.PROF_HERBALISM)
 
     var planted := false
@@ -113,7 +114,7 @@ func _verify_plant_growth_harvest_lifecycle() -> bool:
         return _fail("Planting did not start real building-owned crop growth.")
     if not actor.work_cycle_state.is_empty():
         return _fail("Worker remained trapped in work_cycle after planting.")
-    if int(state.sect.forge_materials.get(BuildingSystem.MATERIAL_HERB, 0)) != herb_before:
+    if warehouse.quantity(state, StringName(BuildingSystem.MATERIAL_HERB)) != herb_before:
         return _fail("Planting incorrectly produced harvest immediately.")
     if workforce.profession_xp(actor, WorkforceSystem.PROF_HERBALISM) <= xp_before:
         return _fail("Planting did not grant real Herbalism profession XP.")
@@ -150,7 +151,7 @@ func _verify_plant_growth_harvest_lifecycle() -> bool:
         return _fail("Spirit Field harvest did not complete in bounded steps.")
     if not field.production_state.is_empty():
         return _fail("Spirit Field did not return to idle after harvest.")
-    if int(state.sect.forge_materials.get(BuildingSystem.MATERIAL_HERB, 0)) <= herb_before:
+    if warehouse.quantity(state, StringName(BuildingSystem.MATERIAL_HERB)) <= herb_before:
         return _fail("Spirit Field harvest produced no real Thanh Linh Thảo.")
     if workforce.profession_xp(actor, WorkforceSystem.PROF_HERBALISM) <= xp_after_planting:
         return _fail("Harvest did not grant real Herbalism profession XP.")
@@ -239,20 +240,21 @@ func _verify_spirit_field_milestone_component() -> bool:
     var state := P37Factory.create_state(TEST_SEED + 3)
     var field := buildings.primary_building(state, BuildingSystem.TYPE_SPIRIT_FIELD)
     field.level = 9
-    state.sect.forge_materials[BuildingSystem.MATERIAL_WOOD] = 1000
-    state.sect.forge_materials[BuildingSystem.MATERIAL_ORE] = 1000
+    warehouse.add(state, StringName(BuildingSystem.MATERIAL_WOOD), 1000)
+    warehouse.add(state, StringName(BuildingSystem.MATERIAL_ORE), 1000)
     state.sect.spirit_stones = 1000
-    state.sect.forge_materials.erase(BuildingSystem.MATERIAL_LINH_TUYEN_HEART)
+    if warehouse.quantity(state, StringName(BuildingSystem.MATERIAL_LINH_TUYEN_HEART)) != 0:
+        return _fail("Spirit Field milestone probe unexpectedly started with Linh Tuyền Chi Tâm.")
 
     var blocked := buildings.can_start_upgrade(state, field.id)
     if bool(blocked.get("ok", false)) or str(blocked.get("material_id", "")) != BuildingSystem.MATERIAL_LINH_TUYEN_HEART:
         return _fail("Spirit Field Lv9 -> Lv10 did not require Linh Tuyền Chi Tâm.")
 
-    state.sect.forge_materials[BuildingSystem.MATERIAL_LINH_TUYEN_HEART] = 1
+    warehouse.add(state, StringName(BuildingSystem.MATERIAL_LINH_TUYEN_HEART), 1)
     var started := buildings.start_upgrade(state, field.id)
     if not bool(started.get("ok", false)):
         return _fail("Spirit Field Lv10 milestone could not start with Linh Tuyền Chi Tâm.")
-    if int(state.sect.forge_materials.get(BuildingSystem.MATERIAL_LINH_TUYEN_HEART, -1)) != 0:
+    if warehouse.quantity(state, StringName(BuildingSystem.MATERIAL_LINH_TUYEN_HEART)) != 0:
         return _fail("Spirit Field milestone did not consume Linh Tuyền Chi Tâm.")
 
     var required := int(ceil(field.upgrade_required_work))
@@ -347,6 +349,7 @@ func _validate(state: SimulationState) -> bool:
     errors.append_array(BloodlineSystem.new().validate_invariants(state))
     errors.append_array(PhysiqueSystem.new().validate_invariants(state))
     errors.append_array(BuildingSystem.new().validate_invariants(state))
+    errors.append_array(WarehouseSystem.new().validate_invariants(state))
     if not errors.is_empty():
         return _fail("Invariant failure: %s" % " | ".join(errors))
     return true
