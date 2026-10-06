@@ -157,6 +157,19 @@ Buildings use:
 - milestones for new mechanics;
 - specialty items only where thematically justified.
 
+### Spirit Field authority
+Canonical spec:
+`docs/P3_7_SPIRIT_FIELD_SPEC.md`
+
+Owns:
+- plots;
+- crops;
+- seeds;
+- crop policy;
+- planting/growth/harvest timing;
+- farming yield/quality;
+- field-specific worker assignment and milestones.
+
 ### Time / movement / work authority
 Canonical spec:
 `docs/P3_7_TIME_SPEED_COOLDOWN_SPEC.md`
