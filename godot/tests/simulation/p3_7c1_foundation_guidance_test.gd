@@ -67,18 +67,18 @@ func _verify_total_budget_generation() -> bool:
     var state := P37Factory.create_state(TEST_SEED + 2)
     var generator := DiscipleGeneratorOpenPoints.new()
     for index in range(1, 81):
-        var quality := DiscipleGeneratorV2.VALID_QUALITIES[index % DiscipleGeneratorV2.VALID_QUALITIES.size()]
+        var quality: StringName = StringName(DiscipleGeneratorV2.VALID_QUALITIES[index % DiscipleGeneratorV2.VALID_QUALITIES.size()])
         var candidate := generator.generate_candidate(state, DiscipleGeneratorV2.SOURCE_ORDINARY, 1000 + index, quality)
         if candidate == null:
             return _fail("Open-point generator returned null.")
         var errors := foundations.validate_candidate(candidate)
         if not errors.is_empty():
             return _fail("Open-point candidate invariant failed: %s" % " | ".join(errors))
-        var total := foundations.total_candidate(candidate)
+        var total: float = foundations.total_candidate(candidate)
         if candidate.disciple_quality != foundations.quality_for_total(total):
             return _fail("Candidate quality is not derived from current total lục duy.")
-        var minimum := floor(total / 12.0)
-        var maximum := floor(total / 2.0)
+        var minimum: float = floor(total / 12.0)
+        var maximum: float = floor(total / 2.0)
         for value in [candidate.aptitude, candidate.constitution, candidate.fortune, candidate.comprehension, candidate.charisma, candidate.potential]:
             if value + 0.000001 < minimum or value - 0.000001 > maximum:
                 return _fail("Birth lục-duy distribution escaped the locked 0.5x..3x-average envelope.")
