@@ -166,10 +166,11 @@ Owns:
 - profession-level work-speed formula;
 - generic percentage modifier channels for traits/content;
 - graded profession-talent XP bonus;
-- the shared lục-duy factor curve and one-role mapping;
-- Cơ Duyên rare-event factor;
-- Thông Tuệ profession-XP factor;
+- work/profession consumers of the canonical lục-duy authority;
 - passive Tu Vi while actually working.
+
+Canonical open-point six-foundation rules, quality derivation, Cơ Duyên checks and Dẫn Tiên recruitment are owned by:
+`docs/P3_7C1_FOUNDATION_DAN_TIEN_SPEC.md`.
 
 Căn Cốt belongs to body-training/development authority and is not a generic profession stamina or hauling multiplier.
 
@@ -291,8 +292,9 @@ Do not reopen locked phases without actual regression evidence.
 
 Completed backend foundation currently consists of:
 - A1: generic BuildingState/BuildingSystem + Mine;
-- A2: Spirit Field on the same building framework;
-- B1: ResourceRegistry + one canonical Sect Warehouse.
+- A2R: Spirit Field on the same building framework;
+- B1: ResourceRegistry + one canonical Sect Warehouse;
+- C1: open-point six-foundation authority + Dẫn Tiên Đài recruitment.
 
 Implementation evidence and exact gate status live in `CURRENT_CHECKPOINT.md`.
 
