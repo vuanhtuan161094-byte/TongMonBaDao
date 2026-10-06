@@ -170,6 +170,7 @@ Parent:
 Children:
 - `docs/P3_7_BUILDING_TREE_SPEC.md`
 - `docs/P3_7_SPIRIT_FIELD_SPEC.md`
+- `docs/P3_7_PROFESSION_WORK_MODIFIER_SPEC.md`
 - `docs/P3_7_RESOURCE_STORAGE_GROWTH_DATA_MODEL_SPEC.md`
 - `docs/P3_7_TIME_SPEED_COOLDOWN_SPEC.md`
 - `docs/P3_7_DISCIPLE_LOADOUT_HUNTING_PROGRESSION_SPEC.md`
@@ -187,7 +188,7 @@ Locked high-level rules:
 - one canonical P3.7 stackable-resource warehouse;
 - no warehouse capacity gameplay ceiling;
 - resource IDs stay distinct;
-- realm grade + stable per-unit Phẩm Lực are metadata;
+- realm/tier + explicit resource quantity are canonical; there is no Phẩm Lực system;
 - building instances cap at Lv.100;
 - normal levels scale numbers; milestones open mechanics;
 - construction/upgrades take real simulation time;
