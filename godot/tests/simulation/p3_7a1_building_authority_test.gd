@@ -289,8 +289,9 @@ func _steps_until_deposit(state: SimulationState, disciple: DiscipleState) -> in
     return -1
 
 func _normalize_worker(disciple: DiscipleState) -> void:
-    disciple.comprehension = 0.60
-    disciple.constitution = 0.60
+    disciple.comprehension = 0.0
+    disciple.constitution = 0.0
+    FoundationSystem.new().recompute_disciple_quality(disciple)
     disciple.profession_xp[str(WorkforceSystem.PROF_MINING)] = 0.0
     # Keep the persistence probe in a canonical P3.7 profile state; this test
     # is about building/work-cycle persistence, not profile migration.
