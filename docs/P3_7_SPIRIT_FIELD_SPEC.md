@@ -17,44 +17,41 @@ Implementation status belongs only in `CURRENT_CHECKPOINT.md`.
 
 # 1. Design goal
 
-Linh Điền must be easy to understand at a glance.
-
-The player needs to know:
+Linh Điền should answer only the useful questions:
 - trồng cây gì;
-- mất bao nhiêu Linh Thạch;
-- bao lâu thu hoạch;
+- tốn bao nhiêu Linh Thạch;
+- bao lâu hoàn thành;
 - thu được bao nhiêu;
-- đệ tử nào làm nhanh/chậm hơn;
-- có cơ hội bội thu hay không.
+- đệ tử nào làm nhanh hơn;
+- có bội thu hay không.
 
-Do not simulate unnecessary agricultural micro-management.
-
----
-
-# 2. One simple crop timer
-
-Each plot uses one authoritative timer:
-
-**start planting -> countdown -> harvest resolves**
-
-There are no separate backend timers for:
-- gieo;
-- chăm;
-- sinh trưởng;
-- thu hoạch;
-- vận chuyển về kho.
-
-All of those are abstracted into one **Crop Cycle Time**.
-
-Presentation may animate planting/watering/harvesting, but animation is not gameplay authority.
+Do not simulate agricultural micro-management that does not create a meaningful player decision.
 
 ---
 
-# 3. Plot model
+# 2. One plot = one timer
 
-Every Linh Điền owns multiple independent plots / luống.
+Canonical lifecycle:
 
-Each plot only needs:
+**start crop -> countdown -> harvest resolves**
+
+There are no separate backend phases for:
+- walking to the field;
+- planting;
+- tending;
+- passive growth worker occupancy;
+- harvesting;
+- hauling.
+
+Presentation may animate these actions, but presentation is not gameplay authority.
+
+---
+
+# 3. Plot state
+
+Each Spirit Field owns multiple independent plots.
+
+Canonical plot data:
 
 ```
 plot_id
@@ -64,14 +61,19 @@ started_tick
 finish_tick
 assigned_worker_id
 paid_spirit_stones
+routine_yield
+rare_factor
 ```
 
+The relevant worker and facility factors are sampled when the plot starts.
+
+The worker is immediately free after starting the crop.
+
 When `finish_tick` is reached:
-- yield resolves;
-- lucky-harvest multiplier resolves;
-- output goes directly to the main Sect Warehouse;
-- plot becomes empty;
-- AI may start another crop according to field policy.
+- routine yield resolves;
+- lucky multiplier resolves;
+- output is deposited directly into the canonical Sect Warehouse;
+- the plot becomes empty.
 
 There is no carried-harvest state.
 
@@ -79,73 +81,68 @@ There is no carried-harvest state.
 
 # 4. Worker slots and plot slots
 
-Worker slots and plots are separate.
+Worker slots and plot slots are separate.
 
 ## Worker slots
 
-How many disciples may actively operate the field at the same time.
+How many disciples may operate the field concurrently.
 
 Baseline:
-- Lv1: 2 workers;
-- +1 worker every 5 building levels.
+- Lv1: 2;
+- +1 every 5 levels.
 
 ## Plot slots
 
-How many crops may grow simultaneously.
+How many crop timers may exist concurrently.
 
 Baseline:
-- Lv1: 4 plots;
-- +1 plot every 5 building levels.
+- Lv1: 4;
+- +1 every 5 levels.
 
-A worker is not locked for the whole crop timer.
-The worker's stats are sampled when starting that plot and determine the plot's final cycle time.
-
-A worker may then start another plot or perform another valid activity.
+A worker is not held for the crop timer.
 
 ---
 
 # 5. Multiple Spirit Fields
 
-Multiple Linh Điền instances must work independently.
+Multiple field instances work independently.
 
-A farming assignment contains:
-- profession = Herbalism / Linh Thực;
-- worksite_id = a specific Spirit Field.
+A disciple may have a concrete:
 
-Do not route all farmers through the first Spirit Field.
+`worksite_building_id`
 
-AI may auto-assign workers according to:
-- worker slots;
-- empty plots;
-- crop policy;
-- current demand.
+For Linh Thực, this identifies the exact Spirit Field instance.
+
+Rules:
+- explicit worksite -> use that field only;
+- empty worksite -> backward-compatible primary-field fallback;
+- a worker assigned to Field B must not silently produce in Field A.
 
 ---
 
 # 6. Crop definition
 
-Every crop has a simple canonical definition.
-
-Minimum fields:
+Minimum crop data:
 
 ```
 crop_id
 display_name
 output_resource_id
-realm_rank
+realm_grade / realm_rank
 required_field_level
 plant_cost_spirit_stones
-base_cycle_time
+base_cycle_ticks
 base_yield
+base_work_xp
 optional_affinity_elements
 tags
 ```
 
-No seed item is required.
+AUTO_DEMAND may also use a simple stock target.
 
-No Phẩm Lực exists in crop production.
-
-Resources remain distinct by resource ID and realm/tier.
+No seed item.
+No Phẩm Lực.
+No crop-specific hidden stamina formula.
 
 ---
 
@@ -157,134 +154,80 @@ Starting a plot immediately consumes:
 
 from Sect Spirit Stones.
 
-No seed inventory is used.
+If insufficient:
+- no plot starts;
+- no partial payment occurs.
 
-If Sect Spirit Stones are insufficient:
-- the plot cannot start;
-- AI tries another affordable eligible crop;
-- otherwise the plot stays empty.
-
-If a planted crop is manually canceled after payment:
-- default V1 refund = 0%;
-- special future policy may change this explicitly.
-
-This prevents free cancel/restart exploitation.
+Manual cancellation:
+- V1 refund = 0%.
 
 ---
 
-# 8. Crop cycle-time formula
+# 8. Cycle time
 
 For crop `c`, worker `d`, field `b`:
 
-**Actual Cycle Time = Base Cycle Time / Total Speed**
+**Actual Cycle Ticks = ceil(Base Cycle × Milestone Time Factor / Total Speed)**
 
 Where:
 
-**Total Speed = Profession Speed × Work Trait × Field Speed × Optional Affinity**
+**Total Speed = Profession Speed × generic work_speed modifiers × Field Speed × Optional Affinity**
 
-## Profession Speed
+Profession Speed:
 
-From shared profession authority:
+**1 + 0.01 × Linh Thực Level**
 
-**1 + 0.01 × Herbalism Level**
+Field Speed:
 
-## Work Trait
+**1 + 0.005 × (Field Level − 1)**
 
-- no work trait -> ×1.00;
-- Cần Mẫn grade 1–5 -> ×1.05 / ×1.10 / ×1.15 / ×1.20 / ×1.25;
-- Cẩu Thả grade 1–5 -> ×0.95 / ×0.90 / ×0.85 / ×0.80 / ×0.75.
+Optional crop/root affinity:
+- matching declared Spiritual Root element -> ×1.05;
+- no mismatch penalty.
 
-## Field Speed
-
-Baseline:
-
-**Field Speed = 1 + 0.005 × (Field Level − 1)**
-
-Examples:
-- Lv1 -> ×1.000;
-- Lv20 -> ×1.095;
-- Lv50 -> ×1.245;
-- Lv100 -> ×1.495.
-
-Milestones may add explicit additional modifiers.
-
-## Optional elemental affinity
-
-If the crop defines elemental affinity and the worker has a matching Spiritual Root element:
-
-**×1.05**
-
-No mismatch penalty.
+Cần Mẫn, Cẩu Thả and future named content affect this only through generic modifier data.
 
 ---
 
-# 9. Yield formula
-
-Routine harvest quantity is deliberately simple.
+# 9. Routine yield
 
 **Routine Yield = round(Base Yield × Field Yield Factor)**
 
-Where:
+Base Field Yield Factor:
 
-**Field Yield Factor = 1 + 0.005 × (Field Level − 1)**
+**1 + 0.005 × (Field Level − 1)**
 
-Examples:
-- Lv1 -> ×1.000;
-- Lv20 -> ×1.095;
-- Lv50 -> ×1.245;
-- Lv100 -> ×1.495.
+Profession level does not multiply routine yield a second time.
 
-Profession level does not also multiply routine yield.
-Profession mastery already improves output/hour by reducing cycle time.
-
-This avoids double-counting profession mastery.
+Cơ Duyên does not increase routine yield.
 
 ---
 
 # 10. Cơ Duyên and lucky harvest
 
-Cơ Duyên does not increase routine yield directly.
-
-Use the shared Fortune formula:
-
-**Luck Factor = 1 + 2 × Cơ Duyên**
-
-For each completed crop, roll one lucky-harvest result from highest multiplier to lowest:
+Base bands per completed crop:
 
 | Result | Base chance |
 |---|---:|
-| ×4 harvest | 0.20% |
-| ×3 harvest | 0.80% |
-| ×2 harvest | 3.00% |
-| ×1 harvest | remainder |
+| ×4 | 0.20% |
+| ×3 | 0.80% |
+| ×2 | 3.00% |
+| ×1 | remainder |
 
-Actual chance for each rare result:
+Actual chance uses:
 
-**Actual Chance = Base Chance × Luck Factor**
+**Base Chance × Cơ Duyên Factor × generic rare_chance modifiers**
 
-Examples:
+Cơ Duyên Factor uses the shared lục-duy curve:
 
-At Cơ Duyên = 0.00:
-- ×4 = 0.20%;
-- ×3 = 0.80%;
-- ×2 = 3.00%.
+**0.75 + 0.50 × Cơ Duyên**
 
-At Cơ Duyên = 0.50:
-- Luck Factor = ×2;
-- ×4 = 0.40%;
-- ×3 = 1.60%;
-- ×2 = 6.00%.
+The relevant rare factor is sampled when the plot starts.
 
-At Cơ Duyên = 1.00:
-- Luck Factor = ×3;
-- ×4 = 0.60%;
-- ×3 = 2.40%;
-- ×2 = 9.00%.
-
-Use one deterministic random roll:
-1. check ×4 band;
-2. then ×3;
-3. then ×2;
+Use one deterministic roll, highest band first:
+1. ×4;
+2. ×3;
+3. ×2;
 4. otherwise ×1.
 
 Final output:
@@ -293,153 +236,66 @@ Final output:
 
 ---
 
-# 11. Character interaction
+# 11. Linh Thực learning
 
-Linh Điền uses the shared profession authority.
-It does not invent a private character-stat formula.
+Profession XP formula:
 
-## Tư Chất
-No farming-production bonus.
+**Linh Thực XP = Base XP × Thông Tuệ Factor × Linh Thực Talent Factor × generic profession_xp modifiers × Field XP Factor**
 
-It affects cultivation absorption through the shared cultivation system.
+Thông Tuệ uses the common lục-duy curve.
 
-## Căn Cốt
-Uses the shared work-stamina rule:
+Linh Thực Thiên Phú grades:
+- grade 1: +5% XP;
+- grade 2: +10%;
+- grade 3: +15%;
+- grade 4: +20%;
+- grade 5: +25%.
 
-**Stamina Cost = Base × (1 − 0.25 × Căn Cốt)**
-
-No direct yield bonus.
-
-## Cơ Duyên
-Uses the lucky-harvest formula in section 10.
-
-## Thông Tuệ
-Uses the shared profession-XP formula.
-
-## Mị Lực
-No ordinary farming bonus.
-
-## Tiềm Lực
-No immediate farming bonus.
+Talent accelerates learning; it does not directly multiply routine yield.
 
 ---
 
-# 12. Linh Thực profession talent
+# 12. Passive Tu Vi while farming
 
-Canonical profession-specific talent:
+Only the actual **start-crop work action** counts as active Linh Thực work in this simplified backend.
 
-**Linh Thực Thiên Phú**
+Passive crop countdown:
+- does not occupy the worker;
+- does not grant work Tu Vi.
 
-Grades:
-- Nhất phẩm: +5% Herbalism XP;
-- Nhị phẩm: +10%;
-- Tam phẩm: +15%;
-- Tứ phẩm: +20%;
-- Ngũ phẩm: +25%.
-
-Talent affects learning, not direct yield.
-
-Generation probabilities are owned by:
-`docs/P3_7_PROFESSION_WORK_MODIFIER_SPEC.md`
+Use the shared work-cultivation authority.
 
 ---
 
-# 13. Profession XP
-
-On starting/completing a valid crop cycle, Linh Thực activity grants profession XP through the shared formula:
-
-**Profession XP = Base XP × (0.75 + 0.50 × Thông Tuệ) × Profession Talent Factor**
-
-Exact Base XP per crop is crop data/balance.
-
-Do not add extra private comprehension or talent formulas inside Linh Điền.
-
----
-
-# 14. Passive Tu Vi while farming
-
-Farming counts as ordinary work.
-
-Use the shared work-cultivation formula:
-
-**Raw Work Tu Vi / hour = Current Stage Requirement × 0.0005 × (1 + 0.0005 × Herbalism Level)**
-
-Then pass the raw gain through the existing cultivation-gain authority.
-
-Therefore:
-- Tư Chất;
-- Spiritual Root;
-- cultivation technique/path;
-- relevant cultivation traits;
-- Bloodline;
-- Physique
-
-continue to affect cultivation naturally.
-
-Linh Điền does not create another Tu Vi formula.
-
----
-
-# 15. Crop policy
-
-The player does not click every plot forever.
-
-Each field has one policy.
+# 13. Crop policy
 
 ## AUTO_DEMAND
+
 Default.
 
-Select an unlocked crop using:
-- warehouse target quantity;
-- downstream demand;
-- affordability;
-- crop priority.
+Select an unlocked, affordable crop from current warehouse stock deficit versus its target.
 
 ## PRIORITY
-Player gives preferred crop weights.
 
-Example:
-- Thanh Linh Thảo 70%;
-- Linh Cốc 30%.
+Available from Lv10.
+
+The player supplies crop weights.
+Selection is deterministic.
 
 ## FIXED
-Only plant the selected crop while affordable.
+
+Available from Lv10.
+
+Plant only the selected crop while:
+- unlocked;
+- eligible;
+- affordable.
 
 ---
 
-# 16. Realm/tier unlocks
+# 14. Building-level rules
 
-Crops are divided by explicit realm/tier.
-
-Examples:
-- Phàm;
-- Luyện Khí;
-- Trúc Cơ;
-- Kim Đan;
-- later realms.
-
-Higher Linh Điền levels/milestones unlock higher crop tiers.
-
-There is no continuous Phẩm Lực number.
-
-A higher-tier crop is a different crop/resource definition with:
-- its own cost;
-- cycle time;
-- yield;
-- unlock requirement.
-
----
-
-# 17. Building-level rules
-
-Ordinary field levels improve:
-- worker slots;
-- plot slots;
-- field speed;
-- field yield;
-- access thresholds where defined.
-
-Baseline numeric rules:
+Baseline:
 - worker slots: 2 at Lv1, +1 every 5 levels;
 - plot slots: 4 at Lv1, +1 every 5 levels;
 - field speed: +0.5% per level after Lv1;
@@ -447,90 +303,78 @@ Baseline numeric rules:
 
 ---
 
-# 18. Milestones
-
-## Lv1
-- starter plots;
-- starter crop pool.
+# 15. Milestones
 
 ## Lv10 — Irrigation + policy
-- unlock crop policy controls;
-- additional −10% crop cycle time after normal formula;
-- current specialty component: Linh Tuyền Chi Tâm.
+- unlock PRIORITY/FIXED controls;
+- additional ×0.90 crop cycle time;
+- current milestone component: Linh Tuyền Chi Tâm.
 
-## Lv20 — Rotation
-- +10% routine yield;
-- unlock next crop-family/tier content as defined.
+## Lv20
+- ×1.10 routine yield.
 
-## Lv30 — Advanced crops
-- unlock advanced medicinal/flower crops;
-- +10% profession XP from Linh Điền work.
+## Lv30
+- ×1.10 Linh Thực XP;
+- advanced crops may unlock by content data.
 
-## Lv50 — Mutation
-- unlock mutation/rare crop event tables;
-- Cơ Duyên uses the shared rare-event formula.
+## Lv50
+- rare/mutation crop content may unlock when real content exists.
 
-## Lv75 — Internal Spirit Spring
-- additional −15% crop cycle time;
-- +10% routine yield.
+## Lv75
+- additional ×0.85 crop cycle time;
+- ×1.10 routine yield.
 
-## Lv100 — Grand Spirit Field
-- additional +20% routine yield;
-- +20% Linh Thực profession XP.
+## Lv100
+- ×1.20 routine yield;
+- ×1.20 Linh Thực XP.
 
-Milestone bonuses stack multiplicatively unless explicitly stated otherwise.
+Milestone numeric factors stack multiplicatively.
 
-Exact milestone specialty item IDs after Lv10 must exist as real content before those milestones are enabled.
+A milestone that requires specialty content must not be enabled without real content.
 
 ---
 
-# 19. No Phẩm Lực
+# 16. Save migration
 
-Linh Điền does not use:
-- crop PL;
-- processing PL;
-- output PL;
-- PL threshold;
-- PL refinement.
+Old A2 saves may contain one shared field state:
+- growing;
+- harvest_ready;
+- growth progress/required;
+- resource ID;
+- planted-by worker.
 
-Crop difficulty/progression is represented by:
-- realm/tier;
-- field-level requirement;
-- Spirit Stone cost;
-- cycle time;
-- base yield.
+A2R migration converts that state once into the first canonical plot and preserves the remaining timer as closely as practical.
 
-This is the canonical simplification.
+New saves persist the multi-plot model directly.
 
 ---
 
-# 20. Completion gate
+# 17. Completion gate
 
-Linh Điền backend is complete only when tests cover:
+A2R closes only when runtime evidence covers:
 
-1. one simple crop timer;
-2. planting cost paid in Sect Spirit Stones;
+1. one timer per plot;
+2. Spirit Stone planting cost;
 3. insufficient-funds behavior;
-4. cancel gives no default refund;
+4. cancel with no default refund;
 5. multiple independent plots;
-6. multiple workers start different plots;
-7. worker is not locked for full crop timer;
-8. multiple Spirit Field instances use separate worksite assignments;
-9. field policy selection;
-10. profession-level cycle-time effect;
-11. graded Cần Mẫn/Cẩu Thả cycle-time effect;
-12. Căn Cốt stamina formula;
-13. graded Linh Thực talent XP effect;
-14. Thông Tuệ XP formula;
-15. Cơ Duyên ×2/×3/×4 lucky-harvest formula;
-16. field-level speed/yield formula;
-17. Lv10 real policy/irrigation behavior;
-18. higher milestone availability is honest;
-19. passive work Tu Vi uses the shared authority;
-20. output deposits directly into canonical warehouse;
-21. save/load mid-cycle;
-22. deterministic continuation;
-23. old P0–P2 baseline remains green;
-24. cumulative P3.7 A1/B1 regression remains green.
+6. worker released immediately after starting a plot;
+7. multiple workers;
+8. multiple Spirit Field instances;
+9. concrete worksite assignment;
+10. AUTO_DEMAND / PRIORITY / FIXED;
+11. profession-level cycle-time effect;
+12. generic graded work modifier effect;
+13. Thông Tuệ profession-XP effect;
+14. graded Linh Thực talent XP;
+15. Cơ Duyên lucky-harvest bands;
+16. field-level speed/yield formulas;
+17. milestone numeric behavior;
+18. passive work Tu Vi only during actual work;
+19. canonical warehouse deposit;
+20. save/load mid-cycle;
+21. deterministic continuation;
+22. legacy A2 migration;
+23. locked earlier gates remain green.
 
-Detailed pathfinding/walking/hauling is not part of this backend completion gate.
+Detailed walking/pathfinding/hauling is explicitly outside Linh Điền backend authority.
