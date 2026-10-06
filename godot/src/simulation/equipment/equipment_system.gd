@@ -66,6 +66,7 @@ const HASH_MODULUS := 2147483629
 
 var paths := CultivationPathSystem.new()
 var combat_skills := CombatSkillSystem.new()
+var warehouse := WarehouseSystem.new()
 
 func initialize(state: SimulationState) -> void:
     if not state.sect.combat_skills_enabled:
@@ -119,7 +120,14 @@ func deposit_forge_inventory(state: SimulationState, disciple: DiscipleState) ->
         var quantity := int(disciple.inventory.get(material_id, 0))
         if quantity <= 0:
             continue
-        state.sect.forge_materials[material_id] = int(state.sect.forge_materials.get(material_id, 0)) + quantity
+        var deposited := false
+        if state.sect.p3_7_resources_enabled:
+            deposited = warehouse.add(state, StringName(material_id), quantity)
+        else:
+            state.sect.forge_materials[material_id] = int(state.sect.forge_materials.get(material_id, 0)) + quantity
+            deposited = true
+        if not deposited:
+            continue
         disciple.inventory.erase(material_id)
         moved += quantity
     if moved > 0:
@@ -133,6 +141,8 @@ func can_craft(state: SimulationState, recipe_id: StringName) -> bool:
     if data.is_empty():
         return false
     var materials: Dictionary = data.get("materials", {})
+    if state.sect.p3_7_resources_enabled:
+        return warehouse.can_consume_requirements(state, materials)
     for raw_id in materials.keys():
         if int(state.sect.forge_materials.get(str(raw_id), 0)) < int(materials[raw_id]):
             return false
@@ -143,11 +153,15 @@ func craft(state: SimulationState, recipe_id: StringName, list_for_sale: bool = 
         return {}
     var data: Dictionary = recipe(recipe_id)
     var materials: Dictionary = data.get("materials", {})
-    var material_ids: Array = materials.keys()
-    material_ids.sort()
-    for raw_id in material_ids:
-        var material_id := str(raw_id)
-        state.sect.forge_materials[material_id] = int(state.sect.forge_materials.get(material_id, 0)) - int(materials[raw_id])
+    if state.sect.p3_7_resources_enabled:
+        if not warehouse.consume_requirements(state, materials):
+            return {}
+    else:
+        var material_ids: Array = materials.keys()
+        material_ids.sort()
+        for raw_id in material_ids:
+            var material_id := str(raw_id)
+            state.sect.forge_materials[material_id] = int(state.sect.forge_materials.get(material_id, 0)) - int(materials[raw_id])
 
     state.sect.equipment_forge_index += 1
     var quality_id := _roll_quality(state.seed, state.sect.equipment_forge_index, str(recipe_id))
@@ -401,9 +415,13 @@ func validate_invariants(state: SimulationState) -> Array[String]:
         errors.append("Equipment policy is invalid.")
     if state.sect.equipment_forge_index < 0 or state.sect.equipment_event_count < 0:
         errors.append("Equipment counters cannot be negative.")
-    for raw_material in state.sect.forge_materials.keys():
-        if not MATERIAL_NAMES.has(str(raw_material)) or int(state.sect.forge_materials[raw_material]) < 0:
-            errors.append("Invalid forge material %s." % raw_material)
+    if state.sect.p3_7_resources_enabled:
+        if not state.sect.forge_materials.is_empty():
+            errors.append("Legacy forge materials must be empty under P3.7 warehouse authority.")
+    else:
+        for raw_material in state.sect.forge_materials.keys():
+            if not MATERIAL_NAMES.has(str(raw_material)) or int(state.sect.forge_materials[raw_material]) < 0:
+                errors.append("Invalid forge material %s." % raw_material)
 
     var equipped_seen: Dictionary = {}
     var item_ids: Array = state.sect.equipment_items.keys()
