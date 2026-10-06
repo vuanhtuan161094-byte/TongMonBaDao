@@ -174,6 +174,7 @@ Children:
 - `docs/P3_7_RESOURCE_STORAGE_GROWTH_DATA_MODEL_SPEC.md`
 - `docs/P3_7_TIME_SPEED_COOLDOWN_SPEC.md`
 - `docs/P3_7_DISCIPLE_LOADOUT_HUNTING_PROGRESSION_SPEC.md`
+- `docs/P3_7C1_FOUNDATION_DAN_TIEN_SPEC.md`
 
 Locked high-level rules:
 - target scale 1,000–3,000 disciples;
@@ -196,12 +197,13 @@ Locked high-level rules:
 
 ---
 
-## 9. P3.7 backend currently locked through B1
+## 9. P3.7 backend currently locked through C1
 
 Backend foundation:
 - P3.7A1 Building Authority + Mine;
-- P3.7A2 Spirit Field;
-- P3.7B1 Resource Registry + canonical Sect Warehouse.
+- P3.7A2R Spirit Field;
+- P3.7B1 Resource Registry + canonical Sect Warehouse;
+- P3.7C1 open-point six-foundation authority + Dẫn Tiên recruitment.
 
 Exact evidence belongs in `CURRENT_CHECKPOINT.md`, not here.
 
