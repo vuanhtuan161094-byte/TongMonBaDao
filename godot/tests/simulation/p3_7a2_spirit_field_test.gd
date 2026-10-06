@@ -18,6 +18,8 @@ func _run() -> void:
         return
     if not _verify_growth_does_not_hold_worker():
         return
+    if not _verify_competing_workers_release_cleanly():
+        return
     if not _verify_spirit_field_milestone_component():
         return
     if not _verify_growth_save_load_and_determinism():
@@ -182,6 +184,55 @@ func _verify_growth_does_not_hold_worker() -> bool:
     buildings.process_tick(state)
     if float(field.production_state.get("growth_progress", 0.0)) <= growth_before:
         return _fail("Crop growth depended on worker standing in the field.")
+    return _validate(state)
+
+func _verify_competing_workers_release_cleanly() -> bool:
+    var state := P37Factory.create_state(TEST_SEED + 21)
+    var field := buildings.primary_building(state, BuildingSystem.TYPE_SPIRIT_FIELD)
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    var workers: Array[DiscipleState] = []
+    for raw_id in ids:
+        var actor: DiscipleState = state.disciples[raw_id]
+        if actor.work_group_id == &"mining_crew":
+            continue
+        if not workforce.assign_group(state, actor.id, &"herbalism_crew"):
+            return _fail("Could not assign competing herbalist.")
+        _normalize_worker(actor)
+        workers.append(actor)
+        if workers.size() == 2:
+            break
+    if workers.size() != 2:
+        return _fail("Competing-worker test needs two herbalists.")
+
+    # Start both workers before either can finish the shared field phase.
+    var first_a := workforce.perform_work(state, workers[0], WorkforceSystem.PROF_HERBALISM)
+    var first_b := workforce.perform_work(state, workers[1], WorkforceSystem.PROF_HERBALISM)
+    if not bool(first_a.get("ok", false)) or not bool(first_b.get("ok", false)):
+        return _fail("Competing herbalists could not enter the shared field work phase.")
+    if workers[0].work_cycle_state.is_empty() or workers[1].work_cycle_state.is_empty():
+        return _fail("Competing herbalists did not both establish initial work cycles.")
+
+    var completed_by := -1
+    for _step in range(24):
+        for worker_index in range(2):
+            var actor := workers[worker_index]
+            if actor.work_cycle_state.is_empty():
+                continue
+            var result := workforce.perform_work(state, actor, WorkforceSystem.PROF_HERBALISM)
+            if bool(result.get("completed", false)):
+                completed_by = worker_index
+                break
+        if completed_by >= 0:
+            break
+    if completed_by < 0:
+        return _fail("Neither competing herbalist completed planting.")
+    if StringName(field.production_state.get("phase", "")) != BuildingSystem.SPIRIT_PHASE_GROWING:
+        return _fail("Competing-worker completion did not start crop growth.")
+
+    for actor in workers:
+        if not actor.work_cycle_state.is_empty():
+            return _fail("A competing herbalist remained trapped in a stale work cycle after planting completed.")
     return _validate(state)
 
 func _verify_spirit_field_milestone_component() -> bool:
