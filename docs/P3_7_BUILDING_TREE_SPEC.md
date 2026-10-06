@@ -1,6 +1,6 @@
 # P3.7 — CÂY CÔNG TRÌNH TÔNG MÔN V1
 
-Status: CANONICAL DESIGN AUTHORITY / P3.7A1 MINE BACKEND IMPLEMENTED / REAL WINDOWS GATE PENDING  
+Status: CANONICAL DESIGN AUTHORITY  
 Date: 2026-10-05  
 Parent authority: `docs/P3_7_LONG_TERM_SECT_ECONOMY_HUNTING_SPEC.md`
 
@@ -432,7 +432,7 @@ Lv.100:
 - Trữ Vật Trận Tâm.
 
 ## PvE
-- nơi team loot bag quyết toán.
+- nhận trực tiếp vật liệu/item hunting reward theo main Sect Warehouse authority.
 
 ---
 
@@ -1330,7 +1330,7 @@ Lv.10:
 - auto feeding.
 
 Lv.20:
-- thú vận tải tăng Team Loot Bag.
+- thú vận tải tăng sức chở supplies/logistics cho đội khi ở ngoài tông môn.
 
 Lv.30:
 - thú chiến.
@@ -1669,7 +1669,7 @@ Không hard-lock tuyệt đối theo thứ tự này; đây là dependency logic
 - phù;
 - formation;
 - thú vận tải;
-- Team Loot Bag/carry capacity;
+- sức chở supplies/logistics cho đội ngoài tông môn;
 - healing;
 - cultivation;
 - market income.
@@ -1706,194 +1706,15 @@ Nếu một building không liên kết được với ít nhất một trong ha
 
 ---
 
-# 39. BỘ CÔNG TRÌNH IMPLEMENT ĐẦU TIÊN
+# 39. CROSS-SYSTEM AUTHORITY
 
-Không implement toàn bộ cây cùng lúc.
-
-Slice đầu tiên nên có authority thật cho:
-
-1. Đại Điện.
-2. Kho.
-3. Linh Điền.
-4. Mỏ.
-5. Đệ Tử Xá.
-6. Tu Luyện Đài.
-7. Y Quán.
-8. Luyện Đan.
-9. Luyện Khí.
-10. Hậu Cần.
-11. Săn Yêu Điện.
-12. Phường Thị.
-13. Cổng Tông Môn.
-
-Mật Thất là ngay sau slice nền vì cần personal Spirit Stone economy.
-
-Linh Lâm/Phù/Trận/Ngự Thú/Tửu/Linh Trù/Hoa/Đấu Giá triển khai sau khi hunting loop đã chạy thật.
-
----
-
-# 40. THỨ TỰ IMPLEMENT AUTHORITY
-
-1. Resource registry + tags + Phẩm Lực.
-2. Warehouse capacity/reserve/lock.
-3. Building instance state: id/type/level/workers/capacity.
-4. Construction cost resolver.
-5. Building upgrade + milestone framework.
-6. Profession EXP and profession efficiency.
-7. Passive cultivation while working.
-8. Linh Điền/Mỏ production.
-9. Y Quán/Luyện Đan/Luyện Khí.
-10. Hậu Cần loadout.
-11. Hunting teams + loot bag + injury.
-12. Loot settlement + Contribution + personal Spirit Stones.
-13. Phường Thị.
-14. Mật Thất autonomous spending.
-15. Expand advanced buildings.
-
----
-
-# 41. GATE THIẾT KẾ TRƯỚC KHI CODE
-
-Trước khi implementation P3.7 bắt đầu, phải trả lời được:
-
-- mỗi resource có tag gì;
-- Phẩm Lực lưu thế nào;
-- stack vật liệu khác PL xử lý ra sao;
-- building instance schema;
-- worker assignment schema;
-- profession EXP curve;
-- construction resolver;
-- milestone unlock schema;
-- warehouse auto-consume policy;
-- hunting loot settlement.
-
-Sau đó mới patch runtime.
-
-Không để presentation đi trước gameplay authority.
-
-
----
-
-# 42. RESOURCE / STORAGE CORRECTION
-
-The canonical resource/storage rules are now owned by:
-`docs/P3_7_RESOURCE_STORAGE_GROWTH_DATA_MODEL_SPEC.md`
-
-Corrections to earlier building-tree wording:
-- no normal warehouse-capacity ceiling;
-- commodity stacks can become extremely large;
-- warehouse levels improve automation/routing/reserve/locking rather than storage size;
-- higher facility/profession progression can expose higher-realm-grade resource types;
-- resource identity remains explicit; Phẩm Lực does not replace item names.
-
-
----
-
-# 43. TIME / SPEED / CONSTRUCTION AUTHORITY
+This building-tree spec defines building mechanics only.
 
 Use:
-`docs/P3_7_TIME_SPEED_COOLDOWN_SPEC.md`
+- `docs/P3_7_RESOURCE_STORAGE_GROWTH_DATA_MODEL_SPEC.md` for resource identity, Phẩm Lực, warehouse reserve/lock and stack semantics;
+- `docs/P3_7_TIME_SPEED_COOLDOWN_SPEC.md` for travel/work/construction/cooldown timing;
+- `docs/P3_7_DISCIPLE_LOADOUT_HUNTING_PROGRESSION_SPEC.md` for hunting/loadout/reward progression;
+- `docs/P3_7_LONG_TERM_SECT_ECONOMY_HUNTING_SPEC.md` for the parent economy relationship.
 
-Corrections/extensions:
-- building construction and upgrades are not instant;
-- each upgrade has a real construction-progress state and target level;
-- Mine production is not an abstract instant resource tick: assigned disciples travel to the Mine work point, mine a batch, haul/deposit at the Mine building point, then resources are credited to the main Sect Warehouse;
-- movement speed therefore affects actual production throughput;
-- routine work/crafting/healing/training uses duration;
-- true cooldown is reserved for reusable powers/actions where it makes semantic sense.
-
-
----
-
-# 44. P3.7A1 IMPLEMENTED SUBSET
-
-Implemented, backend only:
-- common BuildingState lifecycle foundation;
-- timed construction/upgrade lifecycle;
-- Mine `mine_001` Lv.1–100;
-- real worker-slot gate using existing `mining_crew`;
-- real current resource adapter for Linh Mộc / Thanh Thiết / sect Spirit Stones;
-- Mine Lv.10 Tầm Mạch Bàn milestone component;
-- travel -> mine -> haul/deposit work cycle;
-- movement-speed and Căn Cốt hauling consequences;
-- persistence and deterministic continuation.
-
-Not implemented yet:
-- Linh Điền;
-- unified P3.7 resource registry/main warehouse migration;
-- profession Lv.1–1000 migration;
-- construction profession/worker acceleration;
-- higher Mine milestone components beyond content that actually exists;
-- building UI level/upgrade presentation;
-- multiple Mine instances.
-
-The current `forge_materials` use is an intentional compatibility adapter, not the final warehouse architecture.
-
-
----
-
-# 44. IMPLEMENTATION STATUS — P3.7A1 REAL PASS
-
-The generic building authority now exists in backend.
-
-First implemented real building: **Mỏ Linh Khoáng**.
-
-Real contracts:
-- Lv1–100 state;
-- worker slots;
-- timed upgrade;
-- milestone tracking;
-- travel/mining/haul cycle;
-- movement-speed effect;
-- profession-XP integration;
-- deterministic persistence;
-- Lv10 Tầm Mạch Bàn milestone.
-
-Do not treat every design entry in this document as implemented merely because Mine is green.
-
-Next implementation target is **Linh Điền** on the same authority.
-Only after Mine + Linh Điền prove the framework should presentation expose the new level/upgrade mechanics.
-
-
----
-
-# 45. IMPLEMENTATION STATUS — P3.7A2 LINH ĐIỀN CI GREEN
-
-The generic building framework is now proven by both:
-- Mine: repeated travel/work/haul production;
-- Spirit Field: travel/tend -> independent growth timer -> harvest/haul production.
-
-Spirit Field backend includes:
-- real Lv.1–100 instance;
-- herbalism workforce group;
-- worker slots;
-- timed crop state owned by the building;
-- worker freedom while crops grow;
-- real harvested resource deposit;
-- Herbalism profession XP;
-- Lv.10 Linh Tuyền Chi Tâm milestone;
-- save/load determinism;
-- competing-worker cleanup.
-
-This is sufficient evidence that BuildingSystem is not Mine-specific.
-
-Next backend dependency before broader building expansion:
-**canonical Resource Registry + Sect Warehouse**, replacing the temporary forge-material bridge.
-
-
----
-
-# 46. RESOURCE BACKEND STATUS — B1 CI GREEN
-
-The building backend no longer depends on a permanent P3.7 forge-material bridge.
-P3.7 stackable resources are now owned by ResourceRegistry + WarehouseSystem.
-
-Normal upgrade cost selection is the remaining construction mismatch:
-current B1 runtime still consumes exact Linh Mộc/Thanh Thiết quantities.
-
-Next B2 must implement the canonical rule:
-- Wood-family required total Phẩm Lực;
-- Mineral-family required total Phẩm Lực;
-- warehouse lock/reserve honored;
-- low-value eligible stock preferred;
-- milestone specialty component remains exact.
+Implementation order and runtime status do not belong in this file.
+Read `CURRENT_CHECKPOINT.md` for what is actually implemented and which single phase is active.
