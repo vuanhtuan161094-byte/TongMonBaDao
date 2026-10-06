@@ -55,6 +55,11 @@ func load_from_path(path: String) -> SimulationState:
     # P3.7A saves created before the canonical warehouse existed still contain
     # forge_materials / technique_materials. Migrate them exactly once on load.
     if state != null and state.p3_7_buildings_enabled:
+        # P3.7C1 migration is idempotent: old P3.7 saves are upgraded to the
+        # open-point lục-duy model and receive the Dẫn Tiên building/runtime.
+        FoundationSystem.new().enable_open_points(state)
+        state.sect.guidance_recruitment_enabled = true
+        BuildingSystem.new().initialize(state)
         WarehouseSystem.new().initialize(state)
         var workforce := WorkforceSystem.new()
         var disciple_ids: Array = state.disciples.keys()
