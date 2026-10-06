@@ -16,7 +16,7 @@ const DEFINITIONS := {
         "base_cycle_ticks": 12,
         "base_yield": 3,
         "base_work_xp": 10.0,
-        "base_stamina_cost": 2.0,
+        "stock_target": 40,
         "affinity_elements": ["wood", "water"],
         "tags": ["herb", "alchemy"]
     },
@@ -30,7 +30,7 @@ const DEFINITIONS := {
         "base_cycle_ticks": 10,
         "base_yield": 5,
         "base_work_xp": 8.0,
-        "base_stamina_cost": 1.5,
+        "stock_target": 60,
         "affinity_elements": ["earth", "water"],
         "tags": ["spirit_grain", "food"]
     },
@@ -44,7 +44,7 @@ const DEFINITIONS := {
         "base_cycle_ticks": 24,
         "base_yield": 3,
         "base_work_xp": 16.0,
-        "base_stamina_cost": 2.5,
+        "stock_target": 20,
         "affinity_elements": ["wood"],
         "tags": ["herb", "alchemy", "advanced_crop"]
     }
@@ -89,8 +89,8 @@ func base_yield(crop_id: StringName) -> int:
 func base_work_xp(crop_id: StringName) -> float:
     return maxf(float(definition(crop_id).get("base_work_xp", 0.0)), 0.0)
 
-func base_stamina_cost(crop_id: StringName) -> float:
-    return maxf(float(definition(crop_id).get("base_stamina_cost", 0.0)), 0.0)
+func stock_target(crop_id: StringName) -> int:
+    return maxi(int(definition(crop_id).get("stock_target", 1)), 1)
 
 func affinity_elements(crop_id: StringName) -> Array[String]:
     var result: Array[String] = []
@@ -117,4 +117,6 @@ func validate_definitions() -> Array[String]:
             errors.append("Crop %s has invalid Spirit Stone cost." % crop_id)
         if base_cycle_ticks(crop_id) <= 0 or base_yield(crop_id) <= 0:
             errors.append("Crop %s has invalid cycle/yield." % crop_id)
+        if stock_target(crop_id) <= 0:
+            errors.append("Crop %s has invalid stock target." % crop_id)
     return errors
