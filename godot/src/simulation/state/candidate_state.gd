@@ -28,6 +28,8 @@ var constitution: float = 0.0
 var fortune: float = 0.0
 var charisma: float = 0.0
 var potential: float = 0.0
+var foundation_model_version: int = 1
+var foundation_birth_values: Dictionary = {}
 var disciple_quality: StringName = &""
 var spiritual_root_purity: float = 0.0
 var age: int = 0
@@ -64,6 +66,8 @@ func _init(definition: Dictionary = {}) -> void:
     fortune = maxf(float(definition.get("fortune", 0.0)), 0.0)
     charisma = maxf(float(definition.get("charisma", 0.0)), 0.0)
     potential = maxf(float(definition.get("potential", 0.0)), 0.0)
+    foundation_model_version = maxi(int(definition.get("foundation_model_version", 1)), 1)
+    foundation_birth_values = _float_dictionary(definition.get("foundation_birth_values", {}))
     disciple_quality = StringName(definition.get("disciple_quality", ""))
     spiritual_root_purity = maxf(float(definition.get("spiritual_root_purity", 0.0)), 0.0)
     age = maxi(int(definition.get("age", 0)), 0)
@@ -106,6 +110,9 @@ func to_dict() -> Dictionary:
         data["fortune"] = fortune
         data["charisma"] = charisma
         data["potential"] = potential
+        data["foundation_model_version"] = foundation_model_version
+        if not foundation_birth_values.is_empty():
+            data["foundation_birth_values"] = foundation_birth_values.duplicate(true)
         data["disciple_quality"] = str(disciple_quality)
         data["spiritual_root_purity"] = spiritual_root_purity
         data["age"] = age
@@ -152,6 +159,8 @@ func to_disciple() -> DiscipleState:
         definition["comprehension"] = comprehension
         definition["charisma"] = charisma
         definition["potential"] = potential
+        definition["foundation_model_version"] = foundation_model_version
+        definition["foundation_birth_values"] = foundation_birth_values.duplicate(true)
         definition["disciple_quality"] = str(disciple_quality)
         definition["spiritual_root_purity"] = spiritual_root_purity
         definition["age"] = age
@@ -172,6 +181,16 @@ func to_disciple() -> DiscipleState:
 
 static func from_dict(data: Dictionary) -> CandidateState:
     return CandidateState.new(data)
+
+static func _float_dictionary(value: Variant) -> Dictionary:
+    var result: Dictionary = {}
+    if not (value is Dictionary):
+        return result
+    var keys: Array = value.keys()
+    keys.sort()
+    for raw_key in keys:
+        result[str(raw_key)] = maxf(float(value[raw_key]), 0.0)
+    return result
 
 static func _int_dictionary(value: Variant) -> Dictionary:
     var result: Dictionary = {}
