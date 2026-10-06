@@ -92,6 +92,10 @@ Starting conversion:
 Fixed-value Tu Vi consumables are not multiplied by Tư Chất:
 a pill stating +10,000 Tu Vi grants exactly +10,000 Tu Vi.
 
+Same-channel percentage bonuses are additive on the base value, not chained multipliers:
+`final = base × (1 + sum(bonuses))`.
+This applies to the P3.7 open-point cultivation/learning channels so long-lived high-stat disciples do not create accidental multiplier explosions.
+
 ## Căn Cốt
 Primary role: Luyện Thể / body-training progression.
 
@@ -161,9 +165,12 @@ Dẫn Tiên Đài is a real building:
 - Lv1–100;
 - upgrading uses normal building timing/cost authority;
 - current working slot curve: 1 guide at Lv1, +1 at Lv20/40/60/80/100, max 6;
-- current base-arrival curve: `2 + floor(level / 10)` people/day.
+- current base-arrival curve: `5 + 3 × floor(level / 10)` people/day;
+- therefore Lv1 = 5/day and Lv100 = 35/day before guide bonuses.
 
-Exact level/arrival constants are balance data.
+Upgrading currently consumes the shared building resources Linh Mộc + Thanh Thiết + Linh Thạch and real simulation work/time. Major building milestones already use the common higher cost/work multiplier. A dedicated Dẫn Tiên Trận Bàn is reserved as a future milestone component, but C1 deliberately does not enforce an item with no acquisition authority yet.
+
+Exact level/arrival/cost constants remain balance data.
 
 ---
 
@@ -178,10 +185,11 @@ Other assigned guides are assistants:
 - they do not stack quality odds with the Main Guide.
 
 Current assistant rule:
-- each assistant contributes at most 2,500 effective Mị Lực at this mortal Dẫn Tiên Đài;
-- every 500 effective assistant Mị Lực adds +1 arrival/day.
+- assistant Mị Lực is not hard-capped by Dẫn Tiên Đài;
+- every 500 assistant Mị Lực adds +1 arrival/day;
+- extremely high Mị Lực therefore continues to increase throughput.
 
-The Main Guide is deliberately not counted in assistant quantity.
+The Main Guide is deliberately not counted in assistant quantity; their Dẫn Tiên role is quality + daily enhanced-quality allowance.
 
 Daily recruitment parameters are snapshotted for that simulation day so swapping guides cannot reset/duplicate the day's quality advantage.
 
@@ -199,9 +207,9 @@ Normal working distribution:
 | Tuyệt Luân | 1.8% |
 | Nghịch Thiên | 0.2% |
 
-Main-guide Mị Lực shifts the distribution toward the capped mortal-platform maximum.
+Main-guide Mị Lực shifts the distribution toward the mortal-platform quality ceiling.
 
-At 2,500 effective Main-guide Mị Lực:
+At 2,500 Main-guide Mị Lực the quality table reaches its current ceiling:
 
 | Quality | Maximum boosted rate |
 |---|---:|
@@ -213,8 +221,7 @@ At 2,500 effective Main-guide Mị Lực:
 
 No quality is reduced to 0%.
 
-Mortal Dẫn Tiên recruitment quality counts at most 2,500 Mị Lực.
-The disciple's real Mị Lực remains uncapped and may matter to higher social/recruitment content later.
+The **quality percentages** stop improving beyond this table because the user-locked ceiling is 5% Nghịch Thiên / 15% Tuyệt Luân. The disciple's Mị Lực itself is not capped. Mị Lực above 2,500 continues to increase the daily enhanced-Nghịch-Thiên allowance and remains fully available to other social systems.
 
 ---
 
@@ -223,10 +230,14 @@ The disciple's real Mị Lực remains uncapped and may matter to higher social/
 Mị Lực does not provide its boosted quality table forever during one day.
 
 Current working daily enhanced-Nghịch-Thiên allowance:
-- >0–625 effective Mị Lực -> 1;
-- 626–1,250 -> 2;
-- 1,251–1,875 -> 3;
-- 1,876–2,500 -> 4.
+- formula: `ceil(Main Guide Mị Lực / 625)` for positive Mị Lực;
+- 625 -> 1;
+- 1,250 -> 2;
+- 1,875 -> 3;
+- 2,500 -> 4;
+- 5,000 -> 8;
+- 10,000 -> 16;
+- there is no raw-Mị-Lực hard cap on this allowance.
 
 When the boosted pool has produced that many Nghịch Thiên candidates during the day:
 - the entire Dẫn Tiên quality table returns to the normal distribution for the rest of that day;
