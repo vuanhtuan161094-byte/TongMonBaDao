@@ -19,6 +19,8 @@ func _run() -> void:
         return
     if not _verify_foundation_effects_and_overcap_growth():
         return
+    if not _verify_additive_progression_channels():
+        return
     if not _verify_guidance_building_and_roles():
         return
     if not _verify_guidance_quality_cap_and_daily_fallback():
@@ -119,6 +121,46 @@ func _verify_foundation_effects_and_overcap_growth() -> bool:
         return _fail("Permanent foundation growth did not recompute disciple quality.")
     return true
 
+func _verify_additive_progression_channels() -> bool:
+    var state := P37Factory.create_state(TEST_SEED + 30)
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    var actor: DiscipleState = state.disciples[ids[0]]
+    actor.foundation_model_version = FoundationSystem.MODEL_OPEN_POINTS
+    actor.aptitude = 100.0
+    actor.comprehension = 1000.0
+    actor.spiritual_root_quality = SpiritualRootSystem.QUALITY_HEAVEN
+    actor.cultivation_stage_index = 0
+    actor.cultivation_progress = 0.0
+    actor.profile_seed = maxi(actor.profile_seed, 1)
+    state.sect.spiritual_roots_enabled = true
+    state.sect.spiritual_root_refinement_enabled = false
+    state.sect.disciple_generation_v2_enabled = true
+    state.sect.disciple_traits_enabled = false
+    state.sect.bloodlines_enabled = false
+    state.sect.physiques_enabled = false
+    state.sect.techniques_enabled = false
+    state.sect.cultivation_paths_enabled = false
+
+    # Heaven root x1.45 (+45%) + Tư Chất 100 x1.25 (+25%) must be
+    # additive: x1.70, not multiplicative x1.8125.
+    var gained := CultivationSystem.new().add_progress(state, actor, 10.0)
+    if not is_equal_approx(gained, 17.0):
+        return _fail("Open-point cultivation bonuses are not additive on the base channel.")
+
+    actor.cultivation_progress = 0.0
+    var fixed_gain := CultivationSystem.new().add_fixed_progress(state, actor, 10.0)
+    if not is_equal_approx(fixed_gain, 10.0):
+        return _fail("Fixed +X Tu Vi was incorrectly multiplied by lục-duy/modifiers.")
+
+    actor.profession_traits = ["forge_talent"]
+    actor.profession_trait_grades = {"forge_talent": 5}
+    var learning := ProfessionModifierSystem.new().profession_xp_factor(actor, &"forging")
+    # Thông Tuệ 1000 => x2.5 (+150%); grade-5 talent => +25%; total x2.75.
+    if not is_equal_approx(learning, 2.75):
+        return _fail("Open-point learning bonuses are not additive on the base channel.")
+    return true
+
 func _verify_guidance_building_and_roles() -> bool:
     var state := P37Factory.create_state(TEST_SEED + 4)
     var platform := buildings.primary_building(state, BuildingSystem.TYPE_GUIDANCE_PLATFORM)
@@ -130,7 +172,7 @@ func _verify_guidance_building_and_roles() -> bool:
     platform.level = 100
     if buildings.guidance_elder_slots(platform) != 6:
         return _fail("Lv100 Dẫn Tiên Đài must currently expose six guide slots.")
-    if buildings.guidance_base_daily_arrivals(platform) != 12:
+    if buildings.guidance_base_daily_arrivals(platform) != 35:
         return _fail("Lv100 Dẫn Tiên Đài base-arrival curve is wrong.")
 
     var ids: Array = state.disciples.keys()
@@ -144,7 +186,7 @@ func _verify_guidance_building_and_roles() -> bool:
     main.charisma = 2500.0
     a.charisma = 500.0
     b.charisma = 1000.0
-    c.charisma = 2500.0
+    c.charisma = 5000.0
     foundations.recompute_disciple_quality(main)
     foundations.recompute_disciple_quality(a)
     foundations.recompute_disciple_quality(b)
@@ -157,16 +199,17 @@ func _verify_guidance_building_and_roles() -> bool:
     var started := recruitment.begin_guidance_day(state, false)
     if not bool(started.get("ok", false)):
         return _fail("Could not snapshot Dẫn Tiên day.")
-    # Main guide affects quality only. Assistants add 1 + 2 + 5 visitors.
-    if int(started.get("arrival_target", -1)) != 20:
-        return _fail("Dẫn Tiên daily arrivals incorrectly counted main-guide Mị Lực or assistant contribution.")
+    # Main guide affects quality only. Assistants add 1 + 2 + 10 visitors;
+    # assistant Mị Lực is not hard-capped.
+    if int(started.get("arrival_target", -1)) != 48:
+        return _fail("Dẫn Tiên daily arrivals incorrectly capped assistant Mị Lực or counted main-guide Mị Lực.")
     return true
 
 func _verify_guidance_quality_cap_and_daily_fallback() -> bool:
     var max_rates := recruitment.guidance_quality_rates_for_charisma(2500.0)
     var overcap_rates := recruitment.guidance_quality_rates_for_charisma(10000.0)
     if max_rates != overcap_rates:
-        return _fail("Dẫn Tiên quality bonus ignored the 2500 effective-Mị-Lực cap.")
+        return _fail("Dẫn Tiên quality odds exceeded the locked 5%/15% ceiling.")
     if not is_equal_approx(float(max_rates.get("heaven_defying", 0.0)), 0.05):
         return _fail("Dẫn Tiên Nghịch Thiên boosted rate must cap at 5%.")
     if not is_equal_approx(float(max_rates.get("peerless", 0.0)), 0.15):
@@ -178,6 +221,8 @@ func _verify_guidance_quality_cap_and_daily_fallback() -> bool:
         return _fail("Mị Lực 2500 must currently allow four enhanced Nghịch Thiên hits/day.")
     if recruitment.guidance_enhanced_heaven_daily_limit(1000.0) != 2:
         return _fail("Mị Lực 1000 daily enhanced-Nghịch-Thiên limit is wrong.")
+    if recruitment.guidance_enhanced_heaven_daily_limit(10000.0) != 16:
+        return _fail("Mị Lực above 2500 was incorrectly hard-capped in the daily recruitment allowance.")
 
     var state := P37Factory.create_state(TEST_SEED + 5)
     var platform := buildings.primary_building(state, BuildingSystem.TYPE_GUIDANCE_PLATFORM)
