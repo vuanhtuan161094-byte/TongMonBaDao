@@ -148,9 +148,6 @@ func _init(definition: Dictionary = {}) -> void:
     profession_xp = _float_dictionary(definition.get("profession_xp", {}))
     profession_traits = _string_array(definition.get("profession_traits", []))
     profession_trait_grades = _int_dictionary(definition.get("profession_trait_grades", {}))
-    for trait_id in profession_traits:
-        if not profession_trait_grades.has(str(trait_id)):
-            profession_trait_grades[str(trait_id)] = 1
     work_preferences = _int_dictionary(definition.get("work_preferences", {}))
     work_group_id = StringName(definition.get("work_group_id", work_group_id))
     worksite_building_id = StringName(definition.get("worksite_building_id", worksite_building_id))
