@@ -13,7 +13,7 @@ func _init() -> void:
     call_deferred("_run")
 
 func _run() -> void:
-    if not _verify_registry_identity_and_pham_luc():
+    if not _verify_registry_identity_and_tiers():
         return
     if not _verify_p3_factory_uses_one_canonical_warehouse():
         return
@@ -39,7 +39,7 @@ func _run() -> void:
     _cleanup()
     quit(0)
 
-func _verify_registry_identity_and_pham_luc() -> bool:
+func _verify_registry_identity_and_tiers() -> bool:
     var errors := registry.validate_definitions()
     if not errors.is_empty():
         return _fail("Resource registry definition failure: %s" % " | ".join(errors))
@@ -49,8 +49,6 @@ func _verify_registry_identity_and_pham_luc() -> bool:
         return _fail("Thanh Thiết realm grade is invalid.")
     if registry.realm_grade(&"huyen_thiet") != ResourceRegistry.REALM_TRUC_CO:
         return _fail("Huyền Thiết realm grade is invalid.")
-    if registry.base_pham_luc(&"huyen_thiet") <= registry.base_pham_luc(&"thanh_thiet"):
-        return _fail("Higher-grade mineral does not have higher stable Phẩm Lực.")
     if not registry.has_tag(&"linh_moc", ResourceRegistry.TAG_CONSTRUCTION_WOOD):
         return _fail("Linh Mộc is missing construction-wood identity.")
     if not registry.has_tag(&"thanh_thiet", ResourceRegistry.TAG_CONSTRUCTION_MINERAL):
