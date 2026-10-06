@@ -109,24 +109,26 @@ Starting balance constants:
 - Cơ Duyên: `RNG(0..9999) + Cơ Duyên - Difficulty`, tier thresholds 6000/8500/9500/9900;
 - Mị Lực: social-power authority plus Dẫn Tiên-specific recruitment rules.
 
-Fixed-value consumable rewards stay fixed; lục duy does not silently multiply an item that states an exact +X reward.
+P3.7 same-channel percentage bonuses are additive on base rather than chained multipliers:
+`final = base × (1 + sum(bonuses))`.
+Fixed-value rewards remain fixed; lục duy does not silently multiply an item that states an exact +X reward.
 
 Dẫn Tiên Đài:
 - real Lv1–100 building;
 - current guide-slot curve: 1 at Lv1, +1 at Lv20/40/60/80/100, max 6;
 - exactly one Main Guide affects quality odds;
 - assistant guides affect daily arrival quantity only;
-- mortal Dẫn Tiên quality counts at most 2,500 Main-guide Mị Lực;
-- at quality cap: Nghịch Thiên max 5%, Tuyệt Luân max 15%, no quality tier becomes 0%;
+- Main-guide Mị Lực itself is not hard-capped by Dẫn Tiên;
+- the **quality table** reaches its ceiling at 2,500 Main-guide Mị Lực: Nghịch Thiên max 5%, Tuyệt Luân max 15%, no tier becomes 0%;
 - current normal rates: 65 / 25 / 8 / 1.8 / 0.2%;
-- current capped boosted rates: 35 / 25 / 20 / 15 / 5%;
-- current enhanced Nghịch Thiên allowance reaches 4/day at 2,500 effective Mị Lực;
-- once the enhanced allowance is consumed, the whole quality table returns to normal for the rest of that day;
+- current maximum boosted rates: 35 / 25 / 20 / 15 / 5%;
+- enhanced Nghịch Thiên daily allowance = `ceil(Main Guide Mị Lực / 625)` for positive Mị Lực, so 2,500 -> 4/day, 10,000 -> 16/day;
+- once that enhanced allowance is consumed, the whole quality table returns to normal for the rest of that day;
 - normal-rate Nghịch Thiên may still appear;
 - the counter advances on appearance, not acceptance;
 - daily snapshot prevents swapping Main Guide to reset the advantage;
-- assistants currently add +1 arrival/day per 500 effective Mị Lực, capped at 2,500 each;
-- base arrivals currently = `2 + floor(Dẫn Tiên level / 10)`;
+- assistant Mị Lực is uncapped for quantity; each 500 assistant Mị Lực adds +1 arrival/day;
+- base arrivals currently = `5 + 3 × floor(Dẫn Tiên level / 10)`, from 5/day at Lv1 to 35/day at Lv100;
 - Chiêu Mộ Lệnh uses the same Dẫn Tiên daily quality/quota authority.
 
 Premium-currency direction from reference research:
@@ -144,10 +146,10 @@ Old P3.7 saves migrate deterministically to open-point foundations and receive t
 Official Godot 4.7.2 GitHub CI closing evidence:
 
 - workflow: `P3.7 Backend`;
-- run: **#67**;
-- run id: `37483719618`;
-- job id: `112338256594`;
-- tested commit: `a91cb9ba7a3dc775087f5b38e9a3452326f77681`;
+- run: **#75**;
+- run id: `37491065054`;
+- job id: `112363619374`;
+- tested commit: `948997f3d101fcd23361cd318ffa130ae97f7e77`;
 - P3.7C1 focused gate: **PASS**;
 - full cumulative P0 -> P2.12 + P3.7 A1 + A2R + B1 + C1: **PASS**.
 
