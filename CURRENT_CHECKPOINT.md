@@ -439,3 +439,63 @@ Goal:
 - reserve/lock/auto-consume rules;
 - migrate/bridge legacy material dictionaries without breaking P0–P2 gates;
 - make Mine/Linh Điền deposit through the new warehouse authority.
+
+
+# P3.7B1 RESOURCE REGISTRY + CANONICAL SECT WAREHOUSE — OFFICIAL GODOT 4.7.2 CI GREEN 2026-10-06
+
+This section supersedes the earlier temporary `forge_materials` bridge note for P3.7.
+
+Implemented:
+- `ResourceRegistry` is the canonical definition table for stackable P3.7 resources;
+- each resource keeps a real identity: ID, display name, family, realm grade/rank, stable per-unit Phẩm Lực, market value and tags;
+- current registered resources include Linh Mộc, Thanh Thiết, Huyền Thiết, Tinh Lang Bì, Yêu Đan, Linh Tủy, Tầm Mạch Bàn, Thanh Linh Thảo and Linh Tuyền Chi Tâm;
+- `WarehouseSystem` is the one canonical P3.7 stackable-resource authority;
+- commodity stacks support multi-million scale and are bounded below JSON-safe integer precision;
+- warehouse has no gameplay capacity ceiling;
+- per-resource reserve minimum and lock rules are real and persistent;
+- multi-resource consumption is atomic;
+- save/load persists warehouse quantities/rules/event state;
+- old P3.7A saves auto-migrate legacy `forge_materials` + `technique_materials` once, merge overlapping IDs, then clear both legacy buckets;
+- migration is idempotent: loading/initializing again does not duplicate resources.
+
+P3.7 consumers now use the canonical warehouse:
+- BuildingSystem construction/upgrade;
+- Mine production deposit;
+- Spirit Field harvest deposit;
+- Equipment/Luyện Khí material deposit + crafting;
+- Technique material deposit + technique upgrade;
+- Spiritual Root refinement;
+- Bloodline awakening/refinement;
+- Physique tempering/transformation.
+
+Compatibility:
+- when P3.7 resource authority is OFF, locked P2 systems still use their legacy buckets exactly as before;
+- P2.12 seeded Linh Tủy/Yêu Đan behavior is preserved;
+- P3.7 does not maintain duplicate balances in legacy buckets.
+
+Verification:
+- P3.7B1 FAST gate on official Godot 4.7.2 CI: GREEN;
+- Resource Registry identity/realm-grade/Phẩm-Lực contracts: GREEN;
+- 3,000,000-unit stack + reserve/lock contracts: GREEN;
+- old P3.7 save migration: GREEN;
+- P2 legacy isolation: GREEN;
+- construction/forge/technique/root-refinement/bloodline/physique canonical-consumer contracts: GREEN;
+- final cumulative P0 -> P2.12 + P3.7A1 + P3.7A2 + P3.7B1 full gate on official Godot 4.7.2 CI: GREEN.
+
+Persistent gates:
+- `Verify-P3-7B1-Warehouse.cmd`;
+- `Verify-P3-7B1-Warehouse-Full.cmd`.
+
+Per AGENTS policy, do not label this Windows-locked until the Windows final gate is run if that lock evidence is required.
+
+NEXT BACKEND PHASE:
+**P3.7B2 — Construction Resolver by material family + required Phẩm Lực.**
+
+Goal:
+- normal building upgrades stop requiring a hard-coded exact Thanh Thiết/Linh Mộc count;
+- requirement becomes Construction Wood PL + Construction Mineral PL + Linh Thạch;
+- resolver selects eligible real resource stacks;
+- respect reserve/lock rules;
+- prefer lower-grade/lower-PL expendable stock first;
+- never consume unrelated resource families;
+- milestone specialty component remains an exact named item.
