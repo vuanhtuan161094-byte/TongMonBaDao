@@ -21,10 +21,10 @@ Fetch live `main` before editing.
 P3.7C1 — Open-point Lục Duy + Dẫn Tiên Đài is closed.
 
 Official Godot 4.7.2 closing evidence:
-- P3.7 Backend run **#67**;
-- run id `37483719618`;
-- job id `112338256594`;
-- tested SHA `a91cb9ba7a3dc775087f5b38e9a3452326f77681`;
+- P3.7 Backend run **#75**;
+- run id `37491065054`;
+- job id `112363619374`;
+- tested SHA `948997f3d101fcd23361cd318ffa130ae97f7e77`;
 - focused C1 gate: PASS;
 - full cumulative P0 -> P2.12 -> P3.7A1 -> A2R -> B1 -> C1: PASS.
 
@@ -60,6 +60,7 @@ Starting balance:
 - Cơ Duyên uses Luck Score 0..9999 + stat - difficulty;
 - Mị Lực uses social power and Dẫn Tiên authority.
 
+Same-channel percentage bonuses are additive on base, not multiplied in a chain.
 Fixed +X consumables remain +X.
 
 ---
@@ -70,18 +71,18 @@ Dẫn Tiên Đài:
 - Lv1–100;
 - 1 Main Guide affects quality;
 - assistants affect arrival quantity only;
-- mortal quality Mị Lực cap = 2,500;
-- at cap, Nghịch Thiên <=5%, Tuyệt Luân <=15%;
+- Main-guide Mị Lực has no raw hard cap;
+- quality odds themselves reach the current ceiling at 2,500 Mị Lực: Nghịch Thiên <=5%, Tuyệt Luân <=15%;
 - no quality drops to 0%;
 - current normal rates = 65/25/8/1.8/0.2%;
-- current capped rates = 35/25/20/15/5%;
-- 2,500 effective Main Mị Lực currently gives up to 4 enhanced Nghịch Thiên appearances/day;
+- current maximum rates = 35/25/20/15/5%;
+- enhanced Nghịch Thiên allowance = ceil(Main Mị Lực / 625): 2,500 -> 4/day, 10,000 -> 16/day;
 - once that enhanced allowance is consumed, rates revert to normal until the next day;
 - natural normal-rate Nghịch Thiên may still appear;
 - daily snapshot prevents guide-swap reset;
 - current guide slots: Lv1 one slot, up to six at Lv100;
-- assistants: +1 arrival/day per 500 effective Mị Lực, current per-assistant effective cap 2,500;
-- base arrivals: 2 + floor(level/10);
+- assistants: +1 arrival/day per 500 Mị Lực, no Dẫn Tiên hard cap on assistant Mị Lực;
+- base arrivals: 5 + 3 × floor(level/10), Lv1=5 and Lv100=35;
 - Chiêu Mộ Lệnh goes through the same Dẫn Tiên pool/quota.
 
 Do not introduce a second P3.7 gacha probability authority.
