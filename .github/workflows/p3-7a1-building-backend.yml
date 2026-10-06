@@ -14,6 +14,7 @@ on:
       - 'godot/src/simulation/core/p3_7_factory.gd'
       - 'godot/src/simulation/state/simulation_state.gd'
       - 'godot/src/simulation/state/disciple_state.gd'
+      - 'godot/src/simulation/state/candidate_state.gd'
       - 'godot/src/simulation/workforce/workforce_system.gd'
       - 'godot/src/simulation/core/simulation_scheduler.gd'
       - 'godot/src/simulation/equipment/equipment_system.gd'
