@@ -3,6 +3,31 @@ extends RefCounted
 
 const DEFAULT_POOL_SIZE := 3
 
+# P3.7C1 Dẫn Tiên v1 balance. One simulation day = 24 * 60 ticks.
+const GUIDANCE_DAY_TICKS := 1440
+const GUIDANCE_MAIN_CHARM_CAP := 2500.0
+const GUIDANCE_ASSISTANT_CHARM_CAP := 2500.0
+const GUIDANCE_ASSISTANT_VISITOR_STEP := 500.0
+const GUIDANCE_HEAVEN_QUOTA_STEP := 625.0
+const GUIDANCE_HEAVEN_DAILY_LIMIT_MAX := 4
+
+const GUIDANCE_BASE_RATES := {
+    "common": 0.65,
+    "outstanding": 0.25,
+    "prodigy": 0.08,
+    "peerless": 0.018,
+    "heaven_defying": 0.002
+}
+const GUIDANCE_MAX_RATES := {
+    "common": 0.35,
+    "outstanding": 0.25,
+    "prodigy": 0.20,
+    "peerless": 0.15,
+    "heaven_defying": 0.05
+}
+
+var building_system := BuildingSystem.new()
+
 const SURNAMES := ["Lâm", "Trần", "Bạch", "Cố", "Triệu", "Tần", "Mạc", "Tô", "Lý", "Vương", "Đỗ", "Hạ"]
 const GIVEN_NAMES := ["An", "Minh", "Phong", "Nguyệt", "Vũ", "Thanh", "Nhi", "Mặc", "Huyền", "Linh", "Trúc", "Thiên"]
 const ARCHETYPE_IDS := ["daring", "cautious", "balanced", "frugal_guarded", "reckless", "prudent"]
@@ -32,7 +57,11 @@ func generate_candidate(state: SimulationState, source: StringName = DiscipleGen
         if not DiscipleGeneratorV2.VALID_SOURCES.has(source):
             return null
         var generation_index_v2 := state.recruitment_generation_index + 1
-        var candidate_v2 := DiscipleGeneratorV2.new().generate_candidate(state, source, generation_index_v2)
+        var candidate_v2: CandidateState
+        if state.sect.foundation_points_enabled:
+            candidate_v2 = DiscipleGeneratorOpenPoints.new().generate_candidate(state, source, generation_index_v2)
+        else:
+            candidate_v2 = DiscipleGeneratorV2.new().generate_candidate(state, source, generation_index_v2)
         if candidate_v2 == null:
             return null
         state.recruitment_generation_index = generation_index_v2
@@ -173,3 +202,296 @@ func _candidate_seed(base_seed: int, generation_index: int) -> int:
 
 func _result(ok: bool, reason: String) -> Dictionary:
     return {"ok": ok, "reason": reason}
+
+
+# -----------------------------------------------------------------------------
+# P3.7C1 — Dẫn Tiên Đài
+# -----------------------------------------------------------------------------
+
+func process_guidance_tick(state: SimulationState) -> void:
+    if not _guidance_available(state):
+        return
+    var platform := building_system.primary_building(state, BuildingSystem.TYPE_GUIDANCE_PLATFORM)
+    if platform == null:
+        return
+    var data := _guidance_state(platform)
+    var day_index := guidance_day_index(state)
+    if int(data.get("snapshot_day_index", -1)) != day_index:
+        _begin_guidance_day(state, platform, data, day_index, true)
+
+func guidance_day_index(state: SimulationState) -> int:
+    return maxi(int(floor(float(maxi(state.tick, 0)) / float(GUIDANCE_DAY_TICKS))), 0)
+
+func assign_guidance_main(state: SimulationState, disciple_id: StringName) -> Dictionary:
+    if not _guidance_available(state):
+        return _result(false, "guidance_disabled")
+    var platform := building_system.primary_building(state, BuildingSystem.TYPE_GUIDANCE_PLATFORM)
+    if platform == null:
+        return _result(false, "guidance_platform_missing")
+    if disciple_id != &"" and not state.disciples.has(disciple_id):
+        return _result(false, "disciple_missing")
+    var data := _guidance_state(platform)
+    var assistants: Array = data.get("assistant_guide_ids", [])
+    assistants.erase(str(disciple_id))
+    data["assistant_guide_ids"] = assistants
+    data["main_guide_id"] = str(disciple_id)
+    platform.production_state = data
+    state.building_event_count += 1
+    return _result(true, "assigned_main")
+
+func set_guidance_assistants(state: SimulationState, disciple_ids: Array) -> Dictionary:
+    if not _guidance_available(state):
+        return _result(false, "guidance_disabled")
+    var platform := building_system.primary_building(state, BuildingSystem.TYPE_GUIDANCE_PLATFORM)
+    if platform == null:
+        return _result(false, "guidance_platform_missing")
+    var data := _guidance_state(platform)
+    var main_id := str(data.get("main_guide_id", ""))
+    var max_assistants := maxi(building_system.guidance_elder_slots(platform) - 1, 0)
+    var normalized: Array = []
+    for raw_id in disciple_ids:
+        var disciple_id := str(raw_id)
+        if disciple_id == "" or disciple_id == main_id or normalized.has(disciple_id):
+            continue
+        if not state.disciples.has(StringName(disciple_id)):
+            return _result(false, "disciple_missing")
+        if normalized.size() >= max_assistants:
+            return _result(false, "assistant_slots_full")
+        normalized.append(disciple_id)
+    normalized.sort()
+    data["assistant_guide_ids"] = normalized
+    platform.production_state = data
+    state.building_event_count += 1
+    return _result(true, "assigned_assistants")
+
+func guidance_quality_rates_for_charisma(charisma: float) -> Dictionary:
+    var t := clampf(maxf(charisma, 0.0) / GUIDANCE_MAIN_CHARM_CAP, 0.0, 1.0)
+    var rates: Dictionary = {}
+    for quality in DiscipleGeneratorV2.VALID_QUALITIES:
+        var key := str(quality)
+        rates[key] = lerpf(float(GUIDANCE_BASE_RATES[key]), float(GUIDANCE_MAX_RATES[key]), t)
+    return rates
+
+func guidance_base_quality_rates() -> Dictionary:
+    return GUIDANCE_BASE_RATES.duplicate(true)
+
+func guidance_current_quality_rates(state: SimulationState) -> Dictionary:
+    var platform := building_system.primary_building(state, BuildingSystem.TYPE_GUIDANCE_PLATFORM)
+    if platform == null:
+        return guidance_base_quality_rates()
+    var data := _guidance_state(platform)
+    if int(data.get("snapshot_day_index", -1)) != guidance_day_index(state):
+        return guidance_base_quality_rates()
+    if not _guidance_enhanced_active(data):
+        return guidance_base_quality_rates()
+    return guidance_quality_rates_for_charisma(float(data.get("snapshot_main_charisma", 0.0)))
+
+func guidance_enhanced_heaven_daily_limit(charisma: float) -> int:
+    var effective := clampf(charisma, 0.0, GUIDANCE_MAIN_CHARM_CAP)
+    if effective <= 0.0:
+        return 0
+    return mini(GUIDANCE_HEAVEN_DAILY_LIMIT_MAX, maxi(1, int(ceil(effective / GUIDANCE_HEAVEN_QUOTA_STEP))))
+
+func guidance_daily_arrival_target(state: SimulationState) -> int:
+    var platform := building_system.primary_building(state, BuildingSystem.TYPE_GUIDANCE_PLATFORM)
+    if platform == null:
+        return 0
+    var data := _guidance_state(platform)
+    var total := building_system.guidance_base_daily_arrivals(platform)
+    var max_assistants := maxi(building_system.guidance_elder_slots(platform) - 1, 0)
+    var assistants: Array = data.get("assistant_guide_ids", [])
+    for index in range(mini(assistants.size(), max_assistants)):
+        var disciple = state.disciples.get(StringName(str(assistants[index])))
+        if not (disciple is DiscipleState):
+            continue
+        var effective := clampf(disciple.charisma, 0.0, GUIDANCE_ASSISTANT_CHARM_CAP)
+        total += int(floor(effective / GUIDANCE_ASSISTANT_VISITOR_STEP))
+    return maxi(total, 0)
+
+func begin_guidance_day(state: SimulationState, generate_arrivals: bool = true) -> Dictionary:
+    if not _guidance_available(state):
+        return _result(false, "guidance_disabled")
+    var platform := building_system.primary_building(state, BuildingSystem.TYPE_GUIDANCE_PLATFORM)
+    if platform == null:
+        return _result(false, "guidance_platform_missing")
+    var data := _guidance_state(platform)
+    _begin_guidance_day(state, platform, data, guidance_day_index(state), generate_arrivals)
+    var result := _result(true, "day_started")
+    result["arrival_target"] = int(platform.production_state.get("daily_arrival_target", 0))
+    result["arrivals_generated"] = int(platform.production_state.get("daily_arrivals_generated", 0))
+    return result
+
+func guidance_recruit_with_order(state: SimulationState) -> Dictionary:
+    if not _guidance_available(state):
+        return _result(false, "guidance_disabled")
+    if state.sect.disciple_recruitment_tokens <= 0:
+        return _result(false, "not_enough_recruitment_tokens")
+    _ensure_guidance_day_snapshot(state)
+    state.sect.disciple_recruitment_tokens -= 1
+    var candidate := _generate_guidance_candidate(state)
+    if candidate == null:
+        state.sect.disciple_recruitment_tokens += 1
+        return _result(false, "generation_failed")
+    var result := _result(true, "guidance_order")
+    result["candidate_id"] = str(candidate.id)
+    result["quality"] = str(candidate.disciple_quality)
+    result["remaining_tokens"] = state.sect.disciple_recruitment_tokens
+    return result
+
+func guidance_state_snapshot(state: SimulationState) -> Dictionary:
+    var platform := building_system.primary_building(state, BuildingSystem.TYPE_GUIDANCE_PLATFORM)
+    if platform == null:
+        return {}
+    return _guidance_state(platform).duplicate(true)
+
+func validate_guidance_invariants(state: SimulationState) -> Array[String]:
+    var errors: Array[String] = []
+    if not state.sect.guidance_recruitment_enabled:
+        return errors
+    if not state.sect.foundation_points_enabled:
+        errors.append("Dẫn Tiên recruitment requires open-point foundations.")
+    var platform := building_system.primary_building(state, BuildingSystem.TYPE_GUIDANCE_PLATFORM)
+    if platform == null:
+        errors.append("Dẫn Tiên recruitment is enabled without a Dẫn Tiên Đài.")
+        return errors
+    var data := _guidance_state(platform)
+    var main_id := str(data.get("main_guide_id", ""))
+    if main_id != "" and not state.disciples.has(StringName(main_id)):
+        errors.append("Dẫn Tiên main guide references a missing disciple.")
+    var assistants: Array = data.get("assistant_guide_ids", [])
+    if assistants.size() > maxi(building_system.guidance_elder_slots(platform) - 1, 0):
+        errors.append("Dẫn Tiên has more assistant guides than slots.")
+    var seen: Dictionary = {}
+    for raw_id in assistants:
+        var disciple_id := str(raw_id)
+        if disciple_id == "" or disciple_id == main_id or seen.has(disciple_id) or not state.disciples.has(StringName(disciple_id)):
+            errors.append("Dẫn Tiên has an invalid assistant guide assignment.")
+            break
+        seen[disciple_id] = true
+    var count := int(data.get("enhanced_heaven_count", 0))
+    if count < 0 or count > GUIDANCE_HEAVEN_DAILY_LIMIT_MAX:
+        errors.append("Dẫn Tiên enhanced Nghịch Thiên daily counter is invalid.")
+    return errors
+
+func _guidance_available(state: SimulationState) -> bool:
+    return state.p1_recruitment_enabled and state.sect.disciple_generation_v2_enabled and state.sect.guidance_recruitment_enabled and state.p3_7_buildings_enabled
+
+func _guidance_state(platform: BuildingState) -> Dictionary:
+    var raw = platform.production_state
+    var data: Dictionary = raw.duplicate(true) if raw is Dictionary else {}
+    data["main_guide_id"] = str(data.get("main_guide_id", ""))
+    var assistants: Array = []
+    var raw_assistants = data.get("assistant_guide_ids", [])
+    if raw_assistants is Array:
+        for raw_id in raw_assistants:
+            var text_id := str(raw_id)
+            if text_id != "" and not assistants.has(text_id):
+                assistants.append(text_id)
+    assistants.sort()
+    data["assistant_guide_ids"] = assistants
+    data["snapshot_day_index"] = int(data.get("snapshot_day_index", -1))
+    data["snapshot_main_charisma"] = maxf(float(data.get("snapshot_main_charisma", 0.0)), 0.0)
+    data["enhanced_heaven_count"] = maxi(int(data.get("enhanced_heaven_count", 0)), 0)
+    data["daily_arrival_target"] = maxi(int(data.get("daily_arrival_target", 0)), 0)
+    data["daily_arrivals_generated"] = maxi(int(data.get("daily_arrivals_generated", 0)), 0)
+    platform.production_state = data
+    return data
+
+func _guidance_enhanced_active(data: Dictionary) -> bool:
+    var charm := maxf(float(data.get("snapshot_main_charisma", 0.0)), 0.0)
+    var limit := guidance_enhanced_heaven_daily_limit(charm)
+    return limit > 0 and int(data.get("enhanced_heaven_count", 0)) < limit
+
+func _ensure_guidance_day_snapshot(state: SimulationState) -> void:
+    var platform := building_system.primary_building(state, BuildingSystem.TYPE_GUIDANCE_PLATFORM)
+    if platform == null:
+        return
+    var data := _guidance_state(platform)
+    var day_index := guidance_day_index(state)
+    if int(data.get("snapshot_day_index", -1)) != day_index:
+        _begin_guidance_day(state, platform, data, day_index, true)
+
+func _begin_guidance_day(state: SimulationState, platform: BuildingState, data: Dictionary, day_index: int, generate_arrivals: bool) -> void:
+    var main_id := str(data.get("main_guide_id", ""))
+    var main_charisma := 0.0
+    var main = state.disciples.get(StringName(main_id))
+    if main is DiscipleState:
+        main_charisma = clampf(main.charisma, 0.0, GUIDANCE_MAIN_CHARM_CAP)
+
+    data["snapshot_day_index"] = day_index
+    data["snapshot_main_charisma"] = main_charisma
+    data["enhanced_heaven_count"] = 0
+    platform.production_state = data
+    data["daily_arrival_target"] = guidance_daily_arrival_target(state)
+    data["daily_arrivals_generated"] = 0
+    platform.production_state = data
+    state.building_event_count += 1
+
+    if generate_arrivals:
+        var target := int(data.get("daily_arrival_target", 0))
+        for _i in range(target):
+            if _generate_guidance_candidate(state) == null:
+                break
+            data = _guidance_state(platform)
+            data["daily_arrivals_generated"] = int(data.get("daily_arrivals_generated", 0)) + 1
+            platform.production_state = data
+
+func _generate_guidance_candidate(state: SimulationState) -> CandidateState:
+    var platform := building_system.primary_building(state, BuildingSystem.TYPE_GUIDANCE_PLATFORM)
+    if platform == null:
+        return null
+    var data := _guidance_state(platform)
+    var enhanced_active := _guidance_enhanced_active(data)
+    var rates := guidance_quality_rates_for_charisma(float(data.get("snapshot_main_charisma", 0.0))) if enhanced_active else guidance_base_quality_rates()
+    var generation_index := state.recruitment_generation_index + 1
+    var roll := _stable_guidance_roll(state.seed, generation_index, int(data.get("snapshot_day_index", 0)))
+    var quality := _quality_from_rates(rates, roll)
+    var candidate := _generate_open_candidate_with_quality(state, quality)
+    if candidate == null:
+        return null
+    if enhanced_active and quality == DiscipleGeneratorV2.QUALITY_HEAVEN_DEFYING:
+        data = _guidance_state(platform)
+        data["enhanced_heaven_count"] = int(data.get("enhanced_heaven_count", 0)) + 1
+        platform.production_state = data
+    return candidate
+
+func _generate_open_candidate_with_quality(state: SimulationState, quality: StringName) -> CandidateState:
+    var generation_index := state.recruitment_generation_index + 1
+    var candidate := DiscipleGeneratorOpenPoints.new().generate_candidate(
+        state,
+        DiscipleGeneratorV2.SOURCE_ORDINARY,
+        generation_index,
+        quality
+    )
+    if candidate == null:
+        return null
+    state.recruitment_generation_index = generation_index
+    state.recruitment_candidates[candidate.id] = candidate
+    state.sect.disciple_generation_event_count += 1
+    if state.sect.disciple_traits_enabled:
+        TraitSystem.new().ensure_candidate_profile(state, candidate)
+    if state.sect.spiritual_root_refinement_enabled:
+        RootRefinementSystem.new().ensure_candidate_profile(state, candidate)
+    if state.sect.bloodlines_enabled:
+        BloodlineSystem.new().ensure_candidate_profile(state, candidate)
+    if state.sect.physiques_enabled:
+        PhysiqueSystem.new().ensure_candidate_profile(state, candidate)
+    if state.p3_7_buildings_enabled:
+        WorkforceSystem.new().ensure_p3_7_candidate_profile(state, candidate)
+    return candidate
+
+func _quality_from_rates(rates: Dictionary, roll: float) -> StringName:
+    var cursor := clampf(roll, 0.0, 0.999999999)
+    var cumulative := 0.0
+    for quality in DiscipleGeneratorV2.VALID_QUALITIES:
+        cumulative += maxf(float(rates.get(str(quality), 0.0)), 0.0)
+        if cursor < cumulative:
+            return quality
+    return DiscipleGeneratorV2.QUALITY_HEAVEN_DEFYING
+
+func _stable_guidance_roll(seed_value: int, generation_index: int, day_index: int) -> float:
+    var text := "%d|guidance|%d|%d" % [seed_value, generation_index, day_index]
+    var value := 17
+    for index in range(text.length()):
+        value = int((value * 131 + text.unicode_at(index)) % 2147483629)
+    return float(value % 1000000) / 1000000.0
