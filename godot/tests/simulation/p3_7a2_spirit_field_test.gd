@@ -12,6 +12,8 @@ func _init() -> void:
 func _run() -> void:
     if not _verify_spirit_field_authority():
         return
+    if not _verify_legacy_six_foundation_persistence():
+        return
     if not _verify_plant_growth_harvest_lifecycle():
         return
     if not _verify_growth_does_not_hold_worker():
@@ -40,6 +42,47 @@ func _verify_spirit_field_authority() -> bool:
     if not field.production_state.is_empty():
         return _fail("Fresh Spirit Field unexpectedly has active crop state.")
     return _validate(state)
+
+func _verify_legacy_six_foundation_persistence() -> bool:
+    var state := P37Factory.create_state(TEST_SEED + 50)
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    if ids.is_empty():
+        return _fail("Six-foundation persistence test has no disciple.")
+    var actor: DiscipleState = state.disciples[ids[0]]
+    actor.profile_seed = 0
+    actor.recruitment_source = &""
+    actor.race_id = &""
+    actor.sex_id = &""
+    actor.origin_id = &""
+    actor.aptitude = 0.41
+    actor.constitution = 0.62
+    actor.fortune = 0.53
+    actor.comprehension = 0.74
+    actor.charisma = 0.36
+    actor.potential = 0.88
+
+    var service := SaveService.new()
+    if service.save_to_path(state, SAVE_PATH) != OK:
+        return _fail("Six-foundation persistence probe save failed.")
+    var loaded := service.load_from_path(SAVE_PATH)
+    if loaded == null:
+        return _fail("Six-foundation persistence probe load failed.")
+    var restored: DiscipleState = loaded.disciples[actor.id]
+    if not is_equal_approx(restored.aptitude, actor.aptitude):
+        return _fail("Tư Chất was lost for legacy disciple save/load.")
+    if not is_equal_approx(restored.constitution, actor.constitution):
+        return _fail("Căn Cốt was lost for legacy disciple save/load.")
+    if not is_equal_approx(restored.fortune, actor.fortune):
+        return _fail("Cơ Duyên was lost for legacy disciple save/load.")
+    if not is_equal_approx(restored.comprehension, actor.comprehension):
+        return _fail("Thông Tuệ was lost for legacy disciple save/load.")
+    if not is_equal_approx(restored.charisma, actor.charisma):
+        return _fail("Mị Lực was lost for legacy disciple save/load.")
+    if not is_equal_approx(restored.potential, actor.potential):
+        return _fail("Tiềm Lực was lost for legacy disciple save/load.")
+    _cleanup()
+    return _validate(loaded)
 
 func _verify_plant_growth_harvest_lifecycle() -> bool:
     var state := P37Factory.create_state(TEST_SEED + 1)
