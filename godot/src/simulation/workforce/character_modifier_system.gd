@@ -52,4 +52,8 @@ func trait_factor(state: SimulationState, disciple: DiscipleState, channel: Stri
     return trait_system.modifier_factor(state, disciple, channel)
 
 func combined_factor(state: SimulationState, disciple: DiscipleState, channel: StringName) -> float:
-    return foundation_channel_factor(disciple, channel) * trait_factor(state, disciple, channel)
+    var foundation := foundation_channel_factor(disciple, channel)
+    var trait := trait_factor(state, disciple, channel)
+    if disciple.foundation_model_version >= FoundationSystem.MODEL_OPEN_POINTS:
+        return maxf(1.0 + (foundation - 1.0) + (trait - 1.0), 0.05)
+    return foundation * trait
