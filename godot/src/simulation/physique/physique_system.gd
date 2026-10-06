@@ -1,6 +1,8 @@
 class_name PhysiqueSystem
 extends RefCounted
 
+var warehouse := WarehouseSystem.new()
+
 const PHYSIQUE_ORDINARY := &"ordinary_body"
 const PHYSIQUE_SWORD_BONE := &"sword_bone"
 const PHYSIQUE_DIAMOND_OVERLORD := &"diamond_overlord_body"
@@ -161,7 +163,7 @@ func temper_body(state: SimulationState, disciple_id: StringName) -> Dictionary:
     var level := clampi(int(profile.get("temper_level", 0)), 0, MAX_TEMPER_LEVEL)
     if level >= MAX_TEMPER_LEVEL:
         return {"ok":false, "reason":"max_temper_level"}
-    if int(state.sect.technique_materials.get(TEMPER_MATERIAL_ID, 0)) <= 0:
+    if _material_quantity(state, TEMPER_MATERIAL_ID) <= 0:
         return {"ok":false, "reason":"yao_core_missing"}
 
     _consume_material(state, TEMPER_MATERIAL_ID, 1)
@@ -191,7 +193,7 @@ func can_transform(state: SimulationState, disciple_id: StringName) -> bool:
     var target := StringName(profile.get("latent_transformation", ""))
     if not SPECIAL_PHYSIQUES.has(target):
         return false
-    return int(state.sect.technique_materials.get(TRANSFORM_MATERIAL_ID, 0)) >= TRANSFORM_MATERIAL_COST
+    return _material_quantity(state, TRANSFORM_MATERIAL_ID) >= TRANSFORM_MATERIAL_COST
 
 func transform_body(state: SimulationState, disciple_id: StringName) -> Dictionary:
     if not state.sect.physiques_enabled or not state.disciples.has(disciple_id):
@@ -207,7 +209,7 @@ func transform_body(state: SimulationState, disciple_id: StringName) -> Dictiona
     var target := StringName(profile.get("latent_transformation", ""))
     if not SPECIAL_PHYSIQUES.has(target):
         return {"ok":false, "reason":"transformation_target_missing"}
-    if int(state.sect.technique_materials.get(TRANSFORM_MATERIAL_ID, 0)) < TRANSFORM_MATERIAL_COST:
+    if _material_quantity(state, TRANSFORM_MATERIAL_ID) < TRANSFORM_MATERIAL_COST:
         return {"ok":false, "reason":"spirit_essence_missing"}
 
     _consume_material(state, TRANSFORM_MATERIAL_ID, TRANSFORM_MATERIAL_COST)
@@ -487,7 +489,15 @@ func _apply_grade_scale(stats: Dictionary, grade: StringName) -> void:
         if multiplier > 1.0:
             stats[key] = 1.0 + (multiplier - 1.0) * scale
 
+func _material_quantity(state: SimulationState, material_id: String) -> int:
+    if state.sect.p3_7_resources_enabled:
+        return warehouse.quantity(state, StringName(material_id))
+    return maxi(int(state.sect.technique_materials.get(material_id, 0)), 0)
+
 func _consume_material(state: SimulationState, material_id: String, quantity: int) -> void:
+    if state.sect.p3_7_resources_enabled:
+        warehouse.consume(state, StringName(material_id), quantity)
+        return
     var next_amount := int(state.sect.technique_materials.get(material_id, 0)) - quantity
     if next_amount <= 0:
         state.sect.technique_materials.erase(material_id)
