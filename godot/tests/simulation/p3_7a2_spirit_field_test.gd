@@ -429,8 +429,10 @@ func _normalize_worker(state: SimulationState, disciple: DiscipleState) -> void:
     disciple.constitution = 0.50
     disciple.fortune = 0.50
     disciple.profession_xp[str(WorkforceSystem.PROF_HERBALISM)] = 0.0
-    disciple.profession_traits.clear()
-    disciple.profession_trait_grades.clear()
+    # Keep a canonical, unrelated profession talent so P3.7 load migration is
+    # intentionally a no-op while Herbalism remains neutral.
+    disciple.profession_traits = [str(WorkforceSystem.TRAIT_FORGE)]
+    disciple.profession_trait_grades = {str(WorkforceSystem.TRAIT_FORGE): 1}
     disciple.work_cycle_state.clear()
     disciple.stamina = 100.0
     disciple.hp = disciple.max_hp
