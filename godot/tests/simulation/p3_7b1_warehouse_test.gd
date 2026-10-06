@@ -238,6 +238,7 @@ func _verify_p2_legacy_behavior_stays_isolated() -> bool:
     var ids: Array = state.disciples.keys()
     ids.sort()
     var actor: DiscipleState = state.disciples[ids[0]]
+    actor.region_id = &"sect"
     actor.inventory[TechniqueSystem.MATERIAL_PREFIX + str(TechniqueSystem.MATERIAL_ESSENCE)] = 2
     techniques.deposit_special_inventory(state, actor)
     if int(state.sect.technique_materials.get(str(TechniqueSystem.MATERIAL_ESSENCE), 0)) != 2:
