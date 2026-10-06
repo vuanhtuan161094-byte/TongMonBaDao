@@ -5,11 +5,9 @@ const DEFAULT_POOL_SIZE := 3
 
 # P3.7C1 Dẫn Tiên v1 balance. One simulation day = 24 * 60 ticks.
 const GUIDANCE_DAY_TICKS := 1440
-const GUIDANCE_MAIN_CHARM_CAP := 2500.0
-const GUIDANCE_ASSISTANT_CHARM_CAP := 2500.0
+const GUIDANCE_QUALITY_FULL_CHARM := 2500.0
 const GUIDANCE_ASSISTANT_VISITOR_STEP := 500.0
 const GUIDANCE_HEAVEN_QUOTA_STEP := 625.0
-const GUIDANCE_HEAVEN_DAILY_LIMIT_MAX := 4
 
 const GUIDANCE_BASE_RATES := {
     "common": 0.65,
@@ -269,7 +267,10 @@ func set_guidance_assistants(state: SimulationState, disciple_ids: Array) -> Dic
     return _result(true, "assigned_assistants")
 
 func guidance_quality_rates_for_charisma(charisma: float) -> Dictionary:
-    var t := clampf(maxf(charisma, 0.0) / GUIDANCE_MAIN_CHARM_CAP, 0.0, 1.0)
+    # Quality odds themselves have a ceiling chosen by design (5% Nghịch Thiên,
+    # 15% Tuyệt Luân). Mị Lực is not capped: excess still increases the daily
+    # enhanced-Nghịch-Thiên allowance.
+    var t := clampf(maxf(charisma, 0.0) / GUIDANCE_QUALITY_FULL_CHARM, 0.0, 1.0)
     var rates: Dictionary = {}
     for quality in DiscipleGeneratorV2.VALID_QUALITIES:
         var key := str(quality)
@@ -291,10 +292,10 @@ func guidance_current_quality_rates(state: SimulationState) -> Dictionary:
     return guidance_quality_rates_for_charisma(float(data.get("snapshot_main_charisma", 0.0)))
 
 func guidance_enhanced_heaven_daily_limit(charisma: float) -> int:
-    var effective := clampf(charisma, 0.0, GUIDANCE_MAIN_CHARM_CAP)
+    var effective := maxf(charisma, 0.0)
     if effective <= 0.0:
         return 0
-    return mini(GUIDANCE_HEAVEN_DAILY_LIMIT_MAX, maxi(1, int(ceil(effective / GUIDANCE_HEAVEN_QUOTA_STEP))))
+    return maxi(1, int(ceil(effective / GUIDANCE_HEAVEN_QUOTA_STEP)))
 
 func guidance_daily_arrival_target(state: SimulationState) -> int:
     var platform := building_system.primary_building(state, BuildingSystem.TYPE_GUIDANCE_PLATFORM)
@@ -308,7 +309,7 @@ func guidance_daily_arrival_target(state: SimulationState) -> int:
         var disciple = state.disciples.get(StringName(str(assistants[index])))
         if not (disciple is DiscipleState):
             continue
-        var effective := clampf(disciple.charisma, 0.0, GUIDANCE_ASSISTANT_CHARM_CAP)
+        var effective := maxf(disciple.charisma, 0.0)
         total += int(floor(effective / GUIDANCE_ASSISTANT_VISITOR_STEP))
     return maxi(total, 0)
 
@@ -373,7 +374,8 @@ func validate_guidance_invariants(state: SimulationState) -> Array[String]:
             break
         seen[disciple_id] = true
     var count := int(data.get("enhanced_heaven_count", 0))
-    if count < 0 or count > GUIDANCE_HEAVEN_DAILY_LIMIT_MAX:
+    var daily_limit := guidance_enhanced_heaven_daily_limit(float(data.get("snapshot_main_charisma", 0.0)))
+    if count < 0 or count > daily_limit:
         errors.append("Dẫn Tiên enhanced Nghịch Thiên daily counter is invalid.")
     return errors
 
@@ -420,7 +422,7 @@ func _begin_guidance_day(state: SimulationState, platform: BuildingState, data: 
     var main_charisma := 0.0
     var main = state.disciples.get(StringName(main_id))
     if main is DiscipleState:
-        main_charisma = clampf(main.charisma, 0.0, GUIDANCE_MAIN_CHARM_CAP)
+        main_charisma = maxf(main.charisma, 0.0)
 
     data["snapshot_day_index"] = day_index
     data["snapshot_main_charisma"] = main_charisma
