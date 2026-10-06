@@ -138,7 +138,8 @@ Canonical spec:
 P3.7 uses:
 - explicit resource IDs;
 - realm-grade metadata;
-- stable per-unit Phẩm Lực;
+- explicit realm/tier metadata;
+- quantity-based resource use;
 - one canonical Sect Warehouse for stackable resources;
 - very large stacks;
 - reserve/lock policy;
@@ -156,6 +157,19 @@ Buildings use:
 - normal levels for scaling;
 - milestones for new mechanics;
 - specialty items only where thematically justified.
+
+### Shared profession/work authority
+Canonical spec:
+`docs/P3_7_PROFESSION_WORK_MODIFIER_SPEC.md`
+
+Owns:
+- profession-level work-speed formula;
+- graded Cần Mẫn/Cẩu Thả magnitude;
+- graded profession-talent XP bonus;
+- Căn Cốt stamina formula;
+- Cơ Duyên rare-event formula;
+- Thông Tuệ profession-XP formula;
+- passive Tu Vi while working.
 
 ### Spirit Field authority
 Canonical spec:
