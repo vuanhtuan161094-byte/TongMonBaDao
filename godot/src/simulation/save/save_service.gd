@@ -56,6 +56,15 @@ func load_from_path(path: String) -> SimulationState:
     # forge_materials / technique_materials. Migrate them exactly once on load.
     if state != null and state.p3_7_buildings_enabled:
         WarehouseSystem.new().initialize(state)
+        var workforce := WorkforceSystem.new()
+        var disciple_ids: Array = state.disciples.keys()
+        disciple_ids.sort()
+        for raw_id in disciple_ids:
+            workforce.ensure_p3_7_disciple_profile(state, state.disciples[raw_id])
+        var candidate_ids: Array = state.recruitment_candidates.keys()
+        candidate_ids.sort()
+        for raw_id in candidate_ids:
+            workforce.ensure_p3_7_candidate_profile(state, state.recruitment_candidates[raw_id])
     return state
 
 func _migrate(data: Dictionary, version: int) -> Dictionary:
