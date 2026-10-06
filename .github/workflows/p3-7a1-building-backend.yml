@@ -5,6 +5,10 @@ on:
   push:
     paths:
       - 'godot/src/simulation/state/building_state.gd'
+      - 'godot/src/simulation/foundation/foundation_system.gd'
+      - 'godot/src/simulation/recruitment/disciple_generator_open_points.gd'
+      - 'godot/src/simulation/recruitment/disciple_generator_v2.gd'
+      - 'godot/src/simulation/recruitment/recruitment_system.gd'
       - 'godot/src/simulation/building/building_system.gd'
       - 'godot/src/simulation/building/spirit_crop_registry.gd'
       - 'godot/src/simulation/workforce/character_modifier_system.gd'
@@ -29,9 +33,12 @@ on:
       - 'godot/tests/simulation/p3_7a1_building_authority_test.gd'
       - 'godot/tests/simulation/p3_7a2_spirit_field_test.gd'
       - 'godot/tests/simulation/p3_7b1_warehouse_test.gd'
+      - 'godot/tests/simulation/p3_7c1_foundation_guidance_test.gd'
       - 'tools/godot/Verify-P3-7A1-Building-Authority.ps1'
       - 'tools/godot/Verify-P3-7A2-Spirit-Field.ps1'
       - 'tools/godot/Verify-P3-7B1-Warehouse.ps1'
+      - 'tools/godot/Verify-P3-7C1-Foundation-Dan-Tien.ps1'
+      - 'tools/godot/Verify-P3-7C1-Foundation-Dan-Tien-Full.ps1'
       - '.github/workflows/p3-7a1-building-backend.yml'
 
 permissions:
@@ -65,8 +72,8 @@ jobs:
 
       - name: Run latest P3.7 fast backend gate
         shell: pwsh
-        run: ./tools/godot/Verify-P3-7B1-Warehouse.ps1 -GodotBin /usr/local/bin/godot
+        run: ./tools/godot/Verify-P3-7C1-Foundation-Dan-Tien.ps1 -GodotBin /usr/local/bin/godot
 
       - name: Run P3.7 full cumulative gate
         shell: pwsh
-        run: ./tools/godot/Verify-P3-7B1-Warehouse-Full.ps1 -GodotBin /usr/local/bin/godot
+        run: ./tools/godot/Verify-P3-7C1-Foundation-Dan-Tien-Full.ps1 -GodotBin /usr/local/bin/godot
