@@ -35,6 +35,20 @@ const TRAIT_NAMES := {
     "meditative_insight": "Ngộ Tĩnh"
 }
 
+# Percentage effects are data on generic channels. Runtime formulas do not
+# branch on content names such as Cần Mẫn/Cẩu Thả.
+const TRAIT_MODIFIERS := {
+    "steady_meridians": {"cultivation_gain": 0.08},
+    "diligent_worker": {"work_speed_per_grade": 0.05},
+    "fearless": {"combat_power_flat": 1.5},
+    "fragile_meridians": {"cultivation_gain": -0.08},
+    "careless_worker": {"work_speed_per_grade": -0.05},
+    "timid": {"combat_power_flat": -1.0},
+    "battle_instinct": {"combat_power_flat": 2.5},
+    "craftsman_eye": {"work_speed": 0.12, "profession_xp": 0.10},
+    "meditative_insight": {"cultivation_gain": 0.10}
+}
+
 const PROFILE_SEED_OFFSET := 99173
 
 func initialize(state: SimulationState) -> void:
@@ -99,55 +113,48 @@ func trait_grade(state: SimulationState, character_id: StringName, trait_id: Str
         return 1
     return clampi(int(grades.get(str(trait_id), 1)), 1, 5)
 
-func cultivation_gain_multiplier(state: SimulationState, disciple: DiscipleState) -> float:
+func modifier_factor(state: SimulationState, disciple: DiscipleState, channel: StringName) -> float:
     if not state.sect.disciple_traits_enabled:
         return 1.0
-    var active := active_trait_ids(state, disciple)
     var multiplier := 1.0
-    if active.has(str(TRAIT_STEADY_MERIDIANS)):
-        multiplier *= 1.08
-    if active.has(str(TRAIT_FRAGILE_MERIDIANS)):
-        multiplier *= 0.92
-    if active.has(str(TRAIT_MEDITATIVE_INSIGHT)):
-        multiplier *= 1.10
+    var channel_key := str(channel)
+    var grade_key := "%s_per_grade" % channel_key
+    for raw_id in active_trait_ids(state, disciple):
+        var trait_id := StringName(raw_id)
+        var data = TRAIT_MODIFIERS.get(str(trait_id), {})
+        if not (data is Dictionary):
+            continue
+        var delta := float(data.get(channel_key, 0.0))
+        delta += float(data.get(grade_key, 0.0)) * float(trait_grade(state, disciple.id, trait_id))
+        multiplier *= maxf(1.0 + delta, 0.0)
     return multiplier
 
-func work_speed_multiplier(state: SimulationState, disciple: DiscipleState) -> float:
-    if not state.sect.disciple_traits_enabled:
-        return 1.0
-    var active := active_trait_ids(state, disciple)
-    var multiplier := 1.0
-    if active.has(str(TRAIT_DILIGENT_WORKER)):
-        multiplier *= 1.08
-    if active.has(str(TRAIT_CARELESS_WORKER)):
-        multiplier *= 0.90
-    if active.has(str(TRAIT_CRAFTSMAN_EYE)):
-        multiplier *= 1.12
-    return multiplier
-
-func profession_learning_multiplier(state: SimulationState, disciple: DiscipleState) -> float:
-    if not state.sect.disciple_traits_enabled:
-        return 1.0
-    var active := active_trait_ids(state, disciple)
-    var multiplier := 1.0
-    if active.has(str(TRAIT_DILIGENT_WORKER)):
-        multiplier *= 1.08
-    if active.has(str(TRAIT_CRAFTSMAN_EYE)):
-        multiplier *= 1.10
-    return multiplier
-
-func combat_power_bonus(state: SimulationState, disciple: DiscipleState) -> float:
+func flat_modifier(state: SimulationState, disciple: DiscipleState, channel: StringName) -> float:
     if not state.sect.disciple_traits_enabled:
         return 0.0
-    var active := active_trait_ids(state, disciple)
-    var bonus := 0.0
-    if active.has(str(TRAIT_FEARLESS)):
-        bonus += 1.5
-    if active.has(str(TRAIT_TIMID)):
-        bonus -= 1.0
-    if active.has(str(TRAIT_BATTLE_INSTINCT)):
-        bonus += 2.5
-    return bonus
+    var total := 0.0
+    var channel_key := "%s_flat" % str(channel)
+    var grade_key := "%s_flat_per_grade" % str(channel)
+    for raw_id in active_trait_ids(state, disciple):
+        var trait_id := StringName(raw_id)
+        var data = TRAIT_MODIFIERS.get(str(trait_id), {})
+        if not (data is Dictionary):
+            continue
+        total += float(data.get(channel_key, 0.0))
+        total += float(data.get(grade_key, 0.0)) * float(trait_grade(state, disciple.id, trait_id))
+    return total
+
+func cultivation_gain_multiplier(state: SimulationState, disciple: DiscipleState) -> float:
+    return modifier_factor(state, disciple, CharacterModifierSystem.CHANNEL_CULTIVATION_GAIN)
+
+func work_speed_multiplier(state: SimulationState, disciple: DiscipleState) -> float:
+    return modifier_factor(state, disciple, CharacterModifierSystem.CHANNEL_WORK_SPEED)
+
+func profession_learning_multiplier(state: SimulationState, disciple: DiscipleState) -> float:
+    return modifier_factor(state, disciple, CharacterModifierSystem.CHANNEL_PROFESSION_XP)
+
+func combat_power_bonus(state: SimulationState, disciple: DiscipleState) -> float:
+    return flat_modifier(state, disciple, &"combat_power")
 
 func process_reveals(state: SimulationState, disciple: DiscipleState) -> Array:
     var revealed_now: Array = []
