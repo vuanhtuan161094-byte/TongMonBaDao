@@ -58,6 +58,8 @@ var profession_traits: Array = []
 var profession_trait_grades: Dictionary = {}
 var work_preferences: Dictionary = {}
 var work_group_id: StringName = &""
+# P3.7 optional concrete facility assignment. Empty keeps legacy/group fallback.
+var worksite_building_id: StringName = &""
 var direct_command: Dictionary = {}
 var work_progress: Dictionary = {}
 # P3.7 detailed work cycle. Empty for every legacy disciple.
@@ -151,6 +153,7 @@ func _init(definition: Dictionary = {}) -> void:
             profession_trait_grades[str(trait_id)] = 1
     work_preferences = _int_dictionary(definition.get("work_preferences", {}))
     work_group_id = StringName(definition.get("work_group_id", work_group_id))
+    worksite_building_id = StringName(definition.get("worksite_building_id", worksite_building_id))
     direct_command = _command_dictionary(definition.get("direct_command", {}))
     work_progress = _float_dictionary(definition.get("work_progress", {}))
     work_cycle_state = _work_cycle_dictionary(definition.get("work_cycle_state", {}))
@@ -237,7 +240,7 @@ func to_dict() -> Dictionary:
         data["equipped_items"] = equipped_items.duplicate(true)
     if not locked_equipment_slots.is_empty():
         data["locked_equipment_slots"] = locked_equipment_slots.duplicate(true)
-    if comprehension > 0.0 or sect_rank != &"" or not profession_xp.is_empty() or not profession_traits.is_empty() or not work_preferences.is_empty() or work_group_id != &"" or not direct_command.is_empty() or not work_progress.is_empty() or not work_cycle_state.is_empty():
+    if comprehension > 0.0 or sect_rank != &"" or not profession_xp.is_empty() or not profession_traits.is_empty() or not work_preferences.is_empty() or work_group_id != &"" or worksite_building_id != &"" or not direct_command.is_empty() or not work_progress.is_empty() or not work_cycle_state.is_empty():
         data["comprehension"] = comprehension
         data["sect_rank"] = str(sect_rank)
         data["profession_xp"] = profession_xp.duplicate(true)
@@ -246,6 +249,7 @@ func to_dict() -> Dictionary:
             data["profession_trait_grades"] = profession_trait_grades.duplicate(true)
         data["work_preferences"] = work_preferences.duplicate(true)
         data["work_group_id"] = str(work_group_id)
+        data["worksite_building_id"] = str(worksite_building_id)
         data["direct_command"] = direct_command.duplicate(true)
         data["work_progress"] = work_progress.duplicate(true)
         if not work_cycle_state.is_empty():
@@ -306,6 +310,7 @@ static func from_dict(data: Dictionary) -> DiscipleState:
         "profession_trait_grades": data.get("profession_trait_grades", {}),
         "work_preferences": data.get("work_preferences", {}),
         "work_group_id": data.get("work_group_id", ""),
+        "worksite_building_id": data.get("worksite_building_id", ""),
         "direct_command": data.get("direct_command", {}),
         "work_progress": data.get("work_progress", {}),
         "work_cycle_state": data.get("work_cycle_state", {}),
