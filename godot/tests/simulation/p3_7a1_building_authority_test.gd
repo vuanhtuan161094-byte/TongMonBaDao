@@ -6,6 +6,7 @@ const SAVE_PATH := "user://p3_7a1_building_authority_test.json"
 var buildings := BuildingSystem.new()
 var workforce := WorkforceSystem.new()
 var equipment := EquipmentSystem.new()
+var warehouse := WarehouseSystem.new()
 
 func _init() -> void:
     call_deferred("_run")
@@ -37,12 +38,18 @@ func _verify_opt_in_boundary() -> bool:
         return _fail("P2.12 unexpectedly enables P3.7 building authority.")
     if not legacy.buildings.is_empty() or legacy.building_event_count != 0:
         return _fail("P2.12 unexpectedly contains P3.7 building state.")
+    if legacy.sect.p3_7_resources_enabled or not legacy.sect.warehouse_resources.is_empty():
+        return _fail("P2.12 unexpectedly enables P3.7 warehouse authority.")
     return true
 
 func _verify_initial_mine_authority() -> bool:
     var state := P37Factory.create_state(TEST_SEED + 1)
     if not state.p3_7_buildings_enabled:
         return _fail("P3.7 factory did not enable building authority.")
+    if not state.sect.p3_7_resources_enabled:
+        return _fail("P3.7 factory did not enable canonical warehouse authority.")
+    if not state.sect.forge_materials.is_empty() or not state.sect.technique_materials.is_empty():
+        return _fail("P3.7 factory left duplicate legacy material buckets populated.")
     var mine := buildings.primary_building(state, BuildingSystem.TYPE_MINE)
     if mine == null:
         return _fail("P3.7 factory did not create the authoritative Mine.")
@@ -97,8 +104,8 @@ func _verify_timed_upgrade_and_cost() -> bool:
     var state := P37Factory.create_state(TEST_SEED + 2)
     var mine := buildings.primary_building(state, BuildingSystem.TYPE_MINE)
     var cost := buildings.upgrade_cost(mine)
-    var wood_before := int(state.sect.forge_materials.get(BuildingSystem.MATERIAL_WOOD, 0))
-    var ore_before := int(state.sect.forge_materials.get(BuildingSystem.MATERIAL_ORE, 0))
+    var wood_before := warehouse.quantity(state, StringName(BuildingSystem.MATERIAL_WOOD))
+    var ore_before := warehouse.quantity(state, StringName(BuildingSystem.MATERIAL_ORE))
     var stones_before := state.sect.spirit_stones
 
     var started := buildings.start_upgrade(state, mine.id)
@@ -106,9 +113,9 @@ func _verify_timed_upgrade_and_cost() -> bool:
         return _fail("Mine Lv1 -> Lv2 upgrade could not start with seeded resources.")
     if mine.level != 1 or mine.status != BuildingSystem.STATUS_UPGRADING or mine.upgrade_target_level != 2:
         return _fail("Upgrade button applied level immediately instead of entering timed construction.")
-    if int(state.sect.forge_materials.get(BuildingSystem.MATERIAL_WOOD, 0)) != wood_before - int(cost.get(BuildingSystem.MATERIAL_WOOD, 0)):
+    if warehouse.quantity(state, StringName(BuildingSystem.MATERIAL_WOOD)) != wood_before - int(cost.get(BuildingSystem.MATERIAL_WOOD, 0)):
         return _fail("Timed upgrade did not consume the exact Linh Mộc cost.")
-    if int(state.sect.forge_materials.get(BuildingSystem.MATERIAL_ORE, 0)) != ore_before - int(cost.get(BuildingSystem.MATERIAL_ORE, 0)):
+    if warehouse.quantity(state, StringName(BuildingSystem.MATERIAL_ORE)) != ore_before - int(cost.get(BuildingSystem.MATERIAL_ORE, 0)):
         return _fail("Timed upgrade did not consume the exact Khoáng cost.")
     if state.sect.spirit_stones != stones_before - int(cost.get("spirit_stones", 0)):
         return _fail("Timed upgrade did not consume the exact Linh Thạch cost.")
@@ -134,20 +141,21 @@ func _verify_milestone_requires_real_component() -> bool:
     var state := P37Factory.create_state(TEST_SEED + 20)
     var mine := buildings.primary_building(state, BuildingSystem.TYPE_MINE)
     mine.level = 9
-    state.sect.forge_materials[BuildingSystem.MATERIAL_WOOD] = 1000
-    state.sect.forge_materials[BuildingSystem.MATERIAL_ORE] = 1000
+    warehouse.add(state, StringName(BuildingSystem.MATERIAL_WOOD), 1000)
+    warehouse.add(state, StringName(BuildingSystem.MATERIAL_ORE), 1000)
     state.sect.spirit_stones = 1000
-    state.sect.forge_materials.erase(BuildingSystem.MATERIAL_TAM_MACH_BAN)
+    if warehouse.quantity(state, StringName(BuildingSystem.MATERIAL_TAM_MACH_BAN)) != 0:
+        return _fail("Milestone probe unexpectedly started with Tầm Mạch Bàn.")
 
     var blocked := buildings.can_start_upgrade(state, mine.id)
     if bool(blocked.get("ok", false)) or str(blocked.get("material_id", "")) != BuildingSystem.MATERIAL_TAM_MACH_BAN:
         return _fail("Mine Lv9 -> Lv10 did not require the real Tầm Mạch Bàn milestone component.")
 
-    state.sect.forge_materials[BuildingSystem.MATERIAL_TAM_MACH_BAN] = 1
+    warehouse.add(state, StringName(BuildingSystem.MATERIAL_TAM_MACH_BAN), 1)
     var started := buildings.start_upgrade(state, mine.id)
     if not bool(started.get("ok", false)):
         return _fail("Mine Lv9 -> Lv10 could not start after supplying Tầm Mạch Bàn.")
-    if int(state.sect.forge_materials.get(BuildingSystem.MATERIAL_TAM_MACH_BAN, -1)) != 0:
+    if warehouse.quantity(state, StringName(BuildingSystem.MATERIAL_TAM_MACH_BAN)) != 0:
         return _fail("Mine milestone upgrade did not consume Tầm Mạch Bàn.")
 
     var required := int(ceil(mine.upgrade_required_work))
@@ -167,7 +175,7 @@ func _verify_mining_travel_work_haul_cycle() -> bool:
         return _fail("Mine has no active worker for the mining-cycle test.")
     var actor: DiscipleState = state.disciples[workers[0]]
     _normalize_worker(actor)
-    var ore_before := int(state.sect.forge_materials.get(BuildingSystem.MATERIAL_ORE, 0))
+    var ore_before := warehouse.quantity(state, StringName(BuildingSystem.MATERIAL_ORE))
     var xp_before := workforce.profession_xp(actor, WorkforceSystem.PROF_MINING)
     var phases: Dictionary = {}
 
@@ -189,7 +197,7 @@ func _verify_mining_travel_work_haul_cycle() -> bool:
     for required_phase in ["travel_out", "mining", "haul_back"]:
         if not phases.has(required_phase):
             return _fail("Mining cycle never entered phase %s." % required_phase)
-    if int(state.sect.forge_materials.get(BuildingSystem.MATERIAL_ORE, 0)) <= ore_before:
+    if warehouse.quantity(state, StringName(BuildingSystem.MATERIAL_ORE)) <= ore_before:
         return _fail("Mining batch completed without depositing real Thanh Thiết.")
     if workforce.profession_xp(actor, WorkforceSystem.PROF_MINING) <= xp_before:
         return _fail("Mining batch completed without granting real Mining profession XP.")
@@ -305,6 +313,7 @@ func _validate(state: SimulationState) -> bool:
     errors.append_array(BloodlineSystem.new().validate_invariants(state))
     errors.append_array(PhysiqueSystem.new().validate_invariants(state))
     errors.append_array(BuildingSystem.new().validate_invariants(state))
+    errors.append_array(WarehouseSystem.new().validate_invariants(state))
     if not errors.is_empty():
         return _fail("Invariant failure: %s" % " | ".join(errors))
     return true
