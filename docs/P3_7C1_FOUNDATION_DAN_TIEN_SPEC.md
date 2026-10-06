@@ -1,6 +1,6 @@
 # P3.7C1 — LỤC DUY MỞ + DẪN TIÊN ĐÀI
 
-Status: ACTIVE IMPLEMENTATION CONTRACT  
+Status: BACKEND LOCKED — official Godot 4.7.2 fast + full cumulative CI green  
 Date: 2026-10-06
 
 Parents:
@@ -315,3 +315,19 @@ C1 does **not** implement:
 - special named limited banners.
 
 Those systems must consume this authority later rather than inventing another lục-duy model.
+
+
+---
+
+# 13. Closing evidence
+
+Official Godot 4.7.2 GitHub Actions:
+- workflow: `P3.7 Backend`;
+- run: **#67**;
+- run id: `37483719618`;
+- job id: `112338256594`;
+- tested commit: `a91cb9ba7a3dc775087f5b38e9a3452326f77681`;
+- focused P3.7C1 gate: **PASS**;
+- full cumulative P0 -> P2.12 -> P3.7A1 -> A2R -> B1 -> C1: **PASS**.
+
+This is official Godot 4.7.2 CI evidence, not Windows evidence.
