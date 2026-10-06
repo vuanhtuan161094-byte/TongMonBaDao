@@ -90,6 +90,15 @@ func active_trait_ids(state: SimulationState, disciple: DiscipleState) -> Array:
 func trait_name(trait_id: StringName) -> String:
     return str(TRAIT_NAMES.get(str(trait_id), str(trait_id)))
 
+func trait_grade(state: SimulationState, character_id: StringName, trait_id: StringName) -> int:
+    var profile = state.sect.disciple_trait_profiles.get(str(character_id), {})
+    if not (profile is Dictionary):
+        return 1
+    var grades = profile.get("grades", {})
+    if not (grades is Dictionary):
+        return 1
+    return clampi(int(grades.get(str(trait_id), 1)), 1, 5)
+
 func cultivation_gain_multiplier(state: SimulationState, disciple: DiscipleState) -> float:
     if not state.sect.disciple_traits_enabled:
         return 1.0
@@ -189,6 +198,14 @@ func validate_invariants(state: SimulationState) -> Array[String]:
         for revealed_id in revealed:
             if not latent.has(str(revealed_id)):
                 errors.append("Trait profile %s revealed a non-latent trait %s." % [owner_id, revealed_id])
+        var grades = profile.get("grades", {})
+        if not (grades is Dictionary):
+            errors.append("Trait profile %s has invalid grade storage." % owner_id)
+        else:
+            for trait_id in visible + latent:
+                var grade := int(grades.get(str(trait_id), 1))
+                if grade < 1 or grade > 5:
+                    errors.append("Trait profile %s has invalid grade for %s." % [owner_id, trait_id])
     if state.sect.disciple_trait_event_count < 0:
         errors.append("Disciple trait event count cannot be negative.")
     return errors
@@ -196,16 +213,27 @@ func validate_invariants(state: SimulationState) -> Array[String]:
 func _ensure_profile(state: SimulationState, character_id: String, latent_seed: int, source: StringName) -> Dictionary:
     var existing = state.sect.disciple_trait_profiles.get(character_id, {})
     if existing is Dictionary and bool(existing.get("initialized", false)):
+        if not existing.has("grades"):
+            var migrated_grades: Dictionary = {}
+            for trait_id in _string_array(existing.get("visible", [])) + _string_array(existing.get("latent", [])):
+                migrated_grades[str(trait_id)] = 1
+            existing["grades"] = migrated_grades
+            state.sect.disciple_trait_profiles[character_id] = existing
+            state.sect.disciple_trait_event_count += 1
         return existing
     var seed_value := latent_seed if latent_seed > 0 else _stable_hash(character_id)
     var rng := GameRng.new(seed_value + PROFILE_SEED_OFFSET)
     var visible := _roll_visible(rng, source)
     var latent := _roll_latent(rng, source)
+    var grades: Dictionary = {}
+    for trait_id in visible + latent:
+        grades[str(trait_id)] = _roll_grade(rng)
     var profile := {
         "initialized": true,
         "visible": visible,
         "latent": latent,
-        "revealed": []
+        "revealed": [],
+        "grades": grades
     }
     state.sect.disciple_trait_profiles[character_id] = profile
     state.sect.disciple_trait_event_count += 1
@@ -240,6 +268,18 @@ func _roll_latent(rng: GameRng, source: StringName) -> Array:
     if rng.randf_range(0.0, 1.0) >= chance:
         return []
     return [str(LATENT_TRAITS[rng.randi_range(0, LATENT_TRAITS.size() - 1)])]
+
+func _roll_grade(rng: GameRng) -> int:
+    var roll := rng.randf_range(0.0, 1.0)
+    if roll < 0.50:
+        return 1
+    if roll < 0.80:
+        return 2
+    if roll < 0.93:
+        return 3
+    if roll < 0.99:
+        return 4
+    return 5
 
 func _reveal_condition_met(disciple: DiscipleState, trait_id: StringName) -> bool:
     match trait_id:
