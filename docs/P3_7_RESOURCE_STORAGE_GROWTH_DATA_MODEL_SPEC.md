@@ -442,3 +442,32 @@ Lower-grade pills may still work on high-realm disciples but become economically
 11. All disciples have passive cultivation growth.
 12. The canonical six foundation fields influence different growth systems and must not be collapsed into one "talent" stat.
 13. Disciples at home may autonomously spend Spirit Stones on Secret Chambers and pills to accelerate growth.
+
+
+---
+
+# 16. IMPLEMENTATION STATUS — P3.7B1 CANONICAL WAREHOUSE CI GREEN 2026-10-06
+
+Implemented runtime authority:
+- `ResourceRegistry`;
+- `WarehouseSystem`;
+- persistent `SectState.warehouse_resources`;
+- persistent reserve/lock rules;
+- very large commodity stacks;
+- one-time legacy material migration.
+
+P3.7 stackable material consumers now route through WarehouseSystem:
+- BuildingSystem;
+- EquipmentSystem;
+- TechniqueSystem;
+- RootRefinementSystem;
+- BloodlineSystem;
+- PhysiqueSystem.
+
+Legacy P2 states do not enable the warehouse and retain their previous material dictionaries.
+
+Current normal building-upgrade costs still name Linh Mộc/Thanh Thiết directly.
+That is temporary only for B1 compatibility.
+
+Next required implementation:
+**B2 Construction Resolver** converts normal Wood/Mineral requirements into total required Phẩm Lực across eligible resource identities while respecting warehouse reserve/lock rules.
