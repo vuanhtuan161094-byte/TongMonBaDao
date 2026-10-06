@@ -158,6 +158,7 @@ const FARM_SEED_OFFSET := 88069
 const HASH_MODULUS := 2147483629
 
 var roots := SpiritualRootSystem.new()
+var warehouse := WarehouseSystem.new()
 
 func initialize(state: SimulationState) -> void:
     if not state.sect.spiritual_roots_enabled:
@@ -339,11 +340,15 @@ func upgrade_technique(state: SimulationState, disciple: DiscipleState, techniqu
         return _result(false, "mastery_not_ready")
 
     var costs := upgrade_material_cost(technique_id, level)
-    for material_id in costs.keys():
-        if int(state.sect.technique_materials.get(material_id, 0)) < int(costs[material_id]):
+    if state.sect.p3_7_resources_enabled:
+        if not warehouse.consume_requirements(state, costs):
             return _result(false, "materials_missing")
-    for material_id in costs.keys():
-        _add_int(state.sect.technique_materials, str(material_id), -int(costs[material_id]))
+    else:
+        for material_id in costs.keys():
+            if int(state.sect.technique_materials.get(material_id, 0)) < int(costs[material_id]):
+                return _result(false, "materials_missing")
+        for material_id in costs.keys():
+            _add_int(state.sect.technique_materials, str(material_id), -int(costs[material_id]))
 
     mastery["level"] = level + 1
     mastery["xp"] = 0.0
@@ -460,10 +465,16 @@ func deposit_special_inventory(state: SimulationState, disciple: DiscipleState) 
         elif key.begins_with(MATERIAL_PREFIX):
             var material_id := key.substr(MATERIAL_PREFIX.length())
             if VALID_MATERIALS.has(StringName(material_id)):
-                _add_int(state.sect.technique_materials, material_id, quantity)
-                material_gain += quantity
-                contribution_gain += quantity * 2
-                remove_keys.append(raw_key)
+                var deposited := false
+                if state.sect.p3_7_resources_enabled:
+                    deposited = warehouse.add(state, StringName(material_id), quantity)
+                else:
+                    _add_int(state.sect.technique_materials, material_id, quantity)
+                    deposited = true
+                if deposited:
+                    material_gain += quantity
+                    contribution_gain += quantity * 2
+                    remove_keys.append(raw_key)
 
     for key in remove_keys:
         disciple.inventory.erase(key)
@@ -489,9 +500,13 @@ func validate_invariants(state: SimulationState) -> Array[String]:
         for technique_id in bucket.keys():
             if not TECHNIQUES.has(str(technique_id)) or int(bucket[technique_id]) < 0:
                 errors.append("Technique inventory contains an invalid entry %s." % technique_id)
-    for material_id in state.sect.technique_materials.keys():
-        if not VALID_MATERIALS.has(StringName(material_id)) or int(state.sect.technique_materials[material_id]) < 0:
-            errors.append("Technique material inventory contains invalid entry %s." % material_id)
+    if state.sect.p3_7_resources_enabled:
+        if not state.sect.technique_materials.is_empty():
+            errors.append("Legacy technique materials must be empty under P3.7 warehouse authority.")
+    else:
+        for material_id in state.sect.technique_materials.keys():
+            if not VALID_MATERIALS.has(StringName(material_id)) or int(state.sect.technique_materials[material_id]) < 0:
+                errors.append("Technique material inventory contains invalid entry %s." % material_id)
 
     for disciple_value in state.disciples.values():
         var disciple: DiscipleState = disciple_value
