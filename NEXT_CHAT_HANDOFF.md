@@ -443,3 +443,29 @@ Presentation remains unmigrated. Do NOT display fake P3.7 levels/progress from t
 NEXT:
 **P3.7B1 Resource Registry + canonical Sect Warehouse backend.**
 Replace the temporary forge_materials bridge; do not create a second permanent warehouse/material authority.
+
+
+## P3.7B1 CANONICAL RESOURCE WAREHOUSE — CI GREEN
+
+Implemented:
+- ResourceRegistry: explicit item identity + family + realm grade/rank + stable per-unit Phẩm Lực + tags;
+- one WarehouseSystem for P3.7 stackable resources;
+- no warehouse capacity gameplay limit;
+- very large stacks;
+- reserve minimum + lock;
+- atomic multi-resource consumption;
+- exact save/load;
+- automatic migration of A1/A2-era forge_materials + technique_materials into one warehouse without duplication.
+
+All current material consumers are bridged correctly:
+Building, Mine, Linh Điền, Luyện Khí, Công pháp, Tinh luyện Linh Căn, Huyết Mạch, Thể Chất.
+
+P2 legacy remains isolated when P3.7 is disabled.
+
+Evidence:
+- B1 fast official Godot 4.7.2 CI GREEN;
+- full P0–P2.12 + A1 + A2 + B1 official Godot 4.7.2 cumulative CI GREEN.
+
+NEXT:
+**P3.7B2 Construction Resolver — satisfy Wood/Mineral upgrade requirements by total Phẩm Lực, respecting reserve/lock and consuming low-value eligible stock first.**
+Milestone specialty component remains exact-item.
