@@ -41,35 +41,29 @@ Special code is reserved for effects that genuinely change a rule.
 
 ---
 
-# 2. One common lục-duy curve
+# 2. P3.7C1 open-point lục-duy authority
 
-Foundation values remain normalized internally to `0.0 ... 1.0`.
+The old P3.7 normalized common curve `0.75 + 0.50 × value` is retired for P3.7 runtime.
 
-Common factor:
+Canonical open-point roles now come from:
+`docs/P3_7C1_FOUNDATION_DAN_TIEN_SPEC.md`
 
-**Foundation Factor = 0.75 + 0.50 × value**
+Starting balance:
+- Tư Chất -> cultivation gain: +0.25% per point;
+- Căn Cốt -> body-training gain: +0.20% per point;
+- Thông Tuệ -> profession/learning XP: +0.15% per point;
+- Cơ Duyên -> Luck Score check, not an uncapped percentage;
+- Mị Lực -> Social Score / Dẫn Tiên authority, not an uncapped percentage;
+- Tiềm Lực -> future Realm + Body growth: +0.05% per point.
 
-Equivalent UI examples on a 0–100 display:
-- 20 -> ×0.85;
-- 40 -> ×0.95;
-- 50 -> ×1.00;
-- 70 -> ×1.10;
-- 90 -> ×1.20;
-- 100 -> ×1.25.
+P0–P2 factories keep the old normalized model behind their existing feature boundary for regression compatibility.
 
-Exact future minimum generation value is balance data. The intended direction is that characters should not be made useless by a zero-value design.
+During migration of old P3.7 rare/social consumers:
+- bounded compatibility bridges are allowed;
+- new systems must use the canonical Cơ Duyên/Mị Lực checks;
+- do not make 2,500 Cơ Duyên or Mị Lực become a raw +2,500% chance.
 
-Canonical roles:
-- **Tư Chất** -> `cultivation_gain`;
-- **Căn Cốt** -> `body_training_gain`;
-- **Cơ Duyên** -> `rare_chance`;
-- **Thông Tuệ** -> `profession_xp` and skill/mastery learning;
-- **Mị Lực** -> `social_effect`;
-- **Tiềm Lực** -> long-term permanent growth authority when implemented.
-
-Căn Cốt does **not** generically reduce profession stamina cost or increase hauling.
-Tư Chất does **not** generically increase production.
-Mị Lực and Tiềm Lực do **not** generically increase routine production.
+Fixed-value books/pills/items grant their stated amount and are not multiplied by a foundation unless the content explicitly says so.
 
 ---
 
@@ -140,9 +134,11 @@ Grade 1–5:
 
 to profession XP.
 
-Profession XP formula:
+Profession XP formula remains conceptually:
 
-**XP Gain = Base XP × Thông Tuệ Factor × Profession Talent Factor × generic profession_xp modifiers × Facility XP Factor**
+**XP Gain = Base XP × valid learning/work modifiers**
+
+For P3.7 open-point characters, Thông Tuệ contributes its canonical +0.15% learning XP per point. Existing modifier composition may be migrated incrementally, but no second Thông Tuệ curve may be introduced.
 
 Talent is not also a direct routine-yield multiplier.
 
@@ -160,11 +156,13 @@ No generic Tư Chất/Căn Cốt/Cơ Duyên/Mị Lực/Tiềm Lực multiplier b
 
 # 7. Rare events
 
-Canonical formula:
+Canonical new-content rule:
 
-**Rare Chance = Base Chance × Cơ Duyên Factor × generic rare_chance modifiers**
+**Luck Score = RNG(0..9999) + Cơ Duyên - Difficulty**
 
-Cơ Duyên affects lucky/rare outcomes, not routine production.
+Then map the score to the canonical luck tier.
+
+Existing locked content may temporarily use the bounded compatibility bridge until migrated to one meaningful check per outcome. Cơ Duyên affects lucky/rare outcomes, not routine production.
 
 ---
 
