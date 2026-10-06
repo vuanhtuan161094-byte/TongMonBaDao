@@ -115,6 +115,10 @@ func generate_candidate(state: SimulationState, source: StringName = DiscipleGen
 func gacha_candidate(state: SimulationState) -> Dictionary:
     if not state.p1_recruitment_enabled or not state.sect.disciple_generation_v2_enabled:
         return _result(false, "generation_v2_disabled")
+    # P3.7 has one ordinary paid-recruitment authority: Chiêu Mộ Lệnh goes
+    # through Dẫn Tiên instead of silently using the old P2 gacha distribution.
+    if state.sect.guidance_recruitment_enabled:
+        return guidance_recruit_with_order(state)
     if state.sect.disciple_recruitment_tokens <= 0:
         return _result(false, "not_enough_recruitment_tokens")
     state.sect.disciple_recruitment_tokens -= 1
