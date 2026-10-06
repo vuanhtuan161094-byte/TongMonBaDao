@@ -69,7 +69,7 @@ func initialize(state: SimulationState) -> void:
         ensure_candidate_profile(state, state.recruitment_candidates[candidate_id])
 
 func ensure_disciple_profile(state: SimulationState, disciple: DiscipleState) -> void:
-    if disciple.comprehension <= 0.0:
+    if disciple.foundation_model_version < FoundationSystem.MODEL_OPEN_POINTS and disciple.comprehension <= 0.0:
         var rng := GameRng.new(_profile_seed(state.seed, str(disciple.id), 1709))
         disciple.comprehension = rng.randf_range(0.35, 0.95)
     if disciple.sect_rank == &"":
@@ -78,7 +78,7 @@ func ensure_disciple_profile(state: SimulationState, disciple: DiscipleState) ->
         disciple.profession_traits = _roll_traits(state.seed, str(disciple.id))
 
 func ensure_candidate_profile(state: SimulationState, candidate: CandidateState) -> void:
-    if candidate.comprehension <= 0.0:
+    if candidate.foundation_model_version < FoundationSystem.MODEL_OPEN_POINTS and candidate.comprehension <= 0.0:
         var rng := GameRng.new(_profile_seed(state.seed, str(candidate.id), 2713))
         candidate.comprehension = rng.randf_range(0.35, 0.95)
     if candidate.profession_traits.is_empty():
@@ -437,8 +437,11 @@ func validate_invariants(state: SimulationState) -> Array[String]:
         errors.append("Forge support points are negative.")
     for disciple_value in state.disciples.values():
         var disciple: DiscipleState = disciple_value
-        if disciple.comprehension <= 0.0 or disciple.comprehension > 1.0:
-            errors.append("%s has invalid comprehension." % disciple.display_name)
+        if disciple.foundation_model_version >= FoundationSystem.MODEL_OPEN_POINTS:
+            if disciple.comprehension < 0.0:
+                errors.append("%s has invalid open-point comprehension." % disciple.display_name)
+        elif disciple.comprehension <= 0.0 or disciple.comprehension > 1.0:
+            errors.append("%s has invalid legacy comprehension." % disciple.display_name)
         if disciple.work_group_id != &"" and not state.sect.work_groups.has(str(disciple.work_group_id)):
             errors.append("%s references missing work group %s." % [disciple.display_name, disciple.work_group_id])
         for profession_id in disciple.profession_xp.keys():
