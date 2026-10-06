@@ -243,7 +243,7 @@ func to_dict() -> Dictionary:
         data["work_progress"] = work_progress.duplicate(true)
         if not work_cycle_state.is_empty():
             data["work_cycle_state"] = work_cycle_state.duplicate(true)
-    if profile_seed > 0 or recruitment_source != &"":
+    if profile_seed > 0 or recruitment_source != &"" or race_id != &"" or sex_id != &"" or origin_id != &"" or aptitude > 0.0 or constitution > 0.0 or fortune > 0.0 or charisma > 0.0 or potential > 0.0 or disciple_quality != &"" or spiritual_root_purity > 0.0 or age > 0 or base_lifespan > 0 or max_lifespan > 0 or latent_identity_seed > 0:
         data["profile_seed"] = profile_seed
         data["recruitment_source"] = str(recruitment_source)
         data["race_id"] = str(race_id)
