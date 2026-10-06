@@ -7,103 +7,84 @@ Parents:
 - `docs/GAME_SYSTEM_ARCHITECTURE.md`
 - `docs/DISCIPLE_MASTER_SCHEMA.md`
 
-This file owns the shared formulas used by all professions:
-- Mining;
-- Herbalism / Linh Thực;
-- Alchemy;
-- Forging;
-- Logistics;
-- later professions.
-
-A profession-specific building may define its own outputs/events, but must not invent another foundation/trait formula.
+This file owns the small shared formula set used by all professions.
 
 ---
 
-# 1. Foundation values
+# 1. Core rule
 
-All six foundation values are normalized to `0.0 ... 1.0`.
+**Lục duy describes the person. Profession level describes how good that person is at a profession.**
 
-## Tư Chất — Aptitude
+Do not force every foundation stat into every profession.
 
-Primary role:
-- cultivation absorption/progression.
+Normal percentage effects from:
+- Đặc Chất;
+- Huyết Mạch;
+- Thể Chất;
+- equipment;
+- buffs;
+- future content
 
-No generic profession production bonus.
+must use generic modifier channels whenever they are only numeric modifiers.
 
-## Căn Cốt — Constitution
+Current generic channels:
+- `work_speed`;
+- `profession_xp`;
+- `cultivation_gain`;
+- `body_training_gain`;
+- `rare_chance`;
+- `social_effect`.
 
-Primary work role:
-- stamina/endurance.
+A new content name must not require a new gameplay branch merely to add or subtract a percentage.
 
-Global work stamina formula:
-
-**Stamina Cost = Base Stamina Cost × (1 − 0.25 × Căn Cốt)**
-
-Range:
-- Căn Cốt 0.00 -> 100% base stamina cost;
-- Căn Cốt 0.50 -> 87.5%;
-- Căn Cốt 1.00 -> 75%.
-
-Căn Cốt does not directly increase material yield.
-
-## Cơ Duyên — Fortune
-
-Primary work role:
-- profession-specific lucky/rare events.
-
-Global rare-event formula:
-
-**Actual Rare Chance = Base Rare Chance × (1 + 2 × Cơ Duyên)**
-
-Range:
-- Cơ Duyên 0.00 -> ×1.0 base chance;
-- Cơ Duyên 0.50 -> ×2.0 base chance;
-- Cơ Duyên 1.00 -> ×3.0 base chance.
-
-Profession-specific content defines the base event chance.
-Cap only where that event explicitly requires one.
-
-Cơ Duyên does not provide a routine output multiplier.
-
-## Thông Tuệ — Comprehension
-
-Primary work role:
-- profession learning speed.
-
-Global profession-XP comprehension factor:
-
-**Comprehension XP Factor = 0.75 + 0.50 × Thông Tuệ**
-
-Range:
-- 0.00 -> ×0.75;
-- 0.50 -> ×1.00;
-- 1.00 -> ×1.25.
-
-## Mị Lực — Charisma
-
-No generic production bonus.
-
-Social/teaching/commerce professions may define an explicit use later.
-
-## Tiềm Lực — Potential
-
-No immediate work-speed or output multiplier.
-
-Potential remains long-term character-growth identity unless a future shared progression system explicitly uses it.
+Special code is reserved for effects that genuinely change a rule.
 
 ---
 
-# 2. Profession level
+# 2. One common lục-duy curve
 
-Canonical long-term profession range:
-**Lv1–1000+**
+Foundation values remain normalized internally to `0.0 ... 1.0`.
 
-Baseline efficiency rule remains:
+Common factor:
 
-**Profession Speed Factor = 1 + 0.01 × Profession Level**
+**Foundation Factor = 0.75 + 0.50 × value**
+
+Equivalent UI examples on a 0–100 display:
+- 20 -> ×0.85;
+- 40 -> ×0.95;
+- 50 -> ×1.00;
+- 70 -> ×1.10;
+- 90 -> ×1.20;
+- 100 -> ×1.25.
+
+Exact future minimum generation value is balance data. The intended direction is that characters should not be made useless by a zero-value design.
+
+Canonical roles:
+- **Tư Chất** -> `cultivation_gain`;
+- **Căn Cốt** -> `body_training_gain`;
+- **Cơ Duyên** -> `rare_chance`;
+- **Thông Tuệ** -> `profession_xp` and skill/mastery learning;
+- **Mị Lực** -> `social_effect`;
+- **Tiềm Lực** -> long-term permanent growth authority when implemented.
+
+Căn Cốt does **not** generically reduce profession stamina cost or increase hauling.
+Tư Chất does **not** generically increase production.
+Mị Lực and Tiềm Lực do **not** generically increase routine production.
+
+---
+
+# 3. Profession level
+
+P3.7 long-term profession level is derived from accumulated profession XP:
+
+**Level = floor(sqrt(XP / 24))**
+
+Profession throughput:
+
+**Profession Speed Factor = 1 + 0.01 × Level**
 
 Examples:
-- Lv1 -> ×1.01;
+- Lv0 -> ×1.00;
 - Lv10 -> ×1.10;
 - Lv50 -> ×1.50;
 - Lv100 -> ×2.00;
@@ -111,75 +92,38 @@ Examples:
 - Lv1000 -> ×11.00.
 
 Profession level improves throughput by reducing work/cycle time.
-Do not also multiply the same output by the full profession factor; that would double-count mastery.
 
-Profession milestones may add mechanics separately.
+Do not multiply routine output by the same full profession factor again.
 
-The current legacy Lv0–6 runtime must eventually migrate to this shared curve.
-Individual buildings must not create private profession levels.
+Locked P2 factories retain their legacy Lv0–6 behavior for compatibility.
 
 ---
 
-# 3. Graded trait magnitude
+# 4. Graded percentage data
 
-For shared graded work traits/talents:
+Shared grade magnitude:
 
-| Grade | Modifier |
+| Grade | Magnitude |
 |---|---:|
-| Nhất phẩm | 5% |
-| Nhị phẩm | 10% |
-| Tam phẩm | 15% |
-| Tứ phẩm | 20% |
-| Ngũ phẩm | 25% |
+| 1 | 5% |
+| 2 | 10% |
+| 3 | 15% |
+| 4 | 20% |
+| 5 | 25% |
 
-Helper:
+Examples of content data:
+- Cần Mẫn -> `work_speed_per_grade = +5%`;
+- Cẩu Thả -> `work_speed_per_grade = -5%`.
 
-**Grade Bonus = 0.05 × grade**, grade = 1..5.
+Their names are not part of the work formula.
 
-This table is reused instead of hard-coding different arbitrary percentages everywhere.
-
----
-
-# 4. Cần Mẫn
-
-Cần Mẫn is a general work trait.
-
-Effect:
-
-**Work Speed × (1 + Grade Bonus)**
-
-Examples:
-- Nhất phẩm: +5%;
-- Tam phẩm: +15%;
-- Ngũ phẩm: +25%.
-
-Cần Mẫn affects all ordinary professions unless a profession explicitly says the trait is irrelevant.
-
-It does not also multiply output.
+A future trait named differently can use `work_speed +12%`, for example, without modifying Linh Điền or Workforce logic.
 
 ---
 
-# 5. Cẩu Thả
+# 5. Profession talent
 
-Cẩu Thả is the general negative work trait.
-
-Effect:
-
-**Work Speed × (1 − Grade Bonus)**
-
-Examples:
-- Nhất phẩm: −5%;
-- Tam phẩm: −15%;
-- Ngũ phẩm: −25%.
-
-Interpretation:
-mistakes/rework consume more effective time.
-
-Do not additionally subtract the same percentage from output unless a profession has a separate explicit failure mechanic.
-
----
-
-# 6. Profession-specific talent
+Profession-specific talent primarily accelerates learning.
 
 Examples:
 - Khai Khoáng Thiên Phú;
@@ -187,20 +131,76 @@ Examples:
 - Luyện Khí Thiên Phú;
 - Luyện Đan Thiên Phú.
 
-Talent grade uses the shared 5/10/15/20/25 table.
+Grade 1–5:
+- +5%;
+- +10%;
+- +15%;
+- +20%;
+- +25%
 
-Primary effect:
+to profession XP.
 
-**Profession XP × (1 + Grade Bonus)**
+Profession XP formula:
 
-Talent accelerates mastery.
-Profession level then converts that mastery into real long-term throughput.
+**XP Gain = Base XP × Thông Tuệ Factor × Profession Talent Factor × generic profession_xp modifiers × Facility XP Factor**
 
-This avoids multiplying speed, yield and XP simultaneously from one trait.
+Talent is not also a direct routine-yield multiplier.
 
 ---
 
-# 7. Profession-talent occurrence
+# 6. Work speed
+
+Canonical formula:
+
+**Work Speed = Profession Speed × generic work_speed modifiers × optional content affinity × Facility Factor**
+
+No generic Tư Chất/Căn Cốt/Cơ Duyên/Mị Lực/Tiềm Lực multiplier belongs in work speed.
+
+---
+
+# 7. Rare events
+
+Canonical formula:
+
+**Rare Chance = Base Chance × Cơ Duyên Factor × generic rare_chance modifiers**
+
+Cơ Duyên affects lucky/rare outcomes, not routine production.
+
+---
+
+# 8. Passive Tu Vi while actually working
+
+Raw target:
+
+**Raw Work Tu Vi/hour = Current Stage Requirement × 0.0005 × (1 + 0.0005 × Profession Level)**
+
+Only time in which the disciple is actually performing work may grant this.
+
+Autonomous timers do not count:
+- passive crop countdown;
+- waiting;
+- queued production without active disciple work.
+
+The raw amount is passed through existing cultivation gain authority, so Tư Chất and other valid cultivation modifiers apply naturally and only once.
+
+Current P3.7 scheduler normalization:
+- one active work step = `1/60 hour`.
+
+---
+
+# 9. Optional content affinity
+
+No profession gets a universal Spiritual Root bonus.
+
+If a specific crop/recipe/resource declares compatible elements and the disciple has a matching Spiritual Root element:
+
+**Work Speed ×1.05**
+
+No mismatch penalty by default.
+
+---
+
+# 10. Profession-talent generation
 
 Starting generation targets:
 
@@ -209,155 +209,25 @@ Chance to receive one profession-specific talent:
 - gacha/high-quality recruitment: 40%;
 - fate/special recruitment: 50%.
 
-If a profession talent is rolled, choose one eligible profession talent from the current profession pool.
-
-Talent-grade distribution, conditional on having a profession talent:
+Conditional grade distribution:
 
 | Grade | Probability |
 |---|---:|
-| Nhất phẩm | 50% |
-| Nhị phẩm | 30% |
-| Tam phẩm | 13% |
-| Tứ phẩm | 6% |
-| Ngũ phẩm | 1% |
-
-Total = 100%.
-
-The profession pool expands as professions are implemented.
+| 1 | 50% |
+| 2 | 30% |
+| 3 | 13% |
+| 4 | 6% |
+| 5 | 1% |
 
 ---
 
-# 8. Total work-speed formula
+# 11. Compatibility rule
 
-For a normal profession cycle:
+Legacy P2 profession fields and behavior remain available only where required for locked P2 compatibility.
 
-**Work Speed = Profession Speed Factor × General Trait Factor × Optional Content Affinity × Building/Facility Factor**
+P3.7 uses:
+- the long-term profession curve;
+- common lục-duy factors;
+- generic modifier channels.
 
-Where:
-- Profession Speed Factor = `1 + 0.01 × profession level`;
-- General Trait Factor = Cần Mẫn or Cẩu Thả modifier, otherwise 1.0;
-- Optional Content Affinity defaults to 1.0;
-- Building/Facility Factor comes from the relevant building/system.
-
-Do not multiply Tư Chất, Cơ Duyên, Mị Lực and Tiềm Lực into generic work speed.
-
----
-
-# 9. Profession XP formula
-
-For one completed profession action/cycle:
-
-**Profession XP = Base XP × Comprehension XP Factor × Profession Talent Factor**
-
-Where:
-- Comprehension XP Factor = `0.75 + 0.50 × Thông Tuệ`;
-- Profession Talent Factor = `1 + grade bonus`, or 1.0 without talent.
-
-Cần Mẫn/Cẩu Thả affect how quickly actions finish, not XP per completed action.
-
-Therefore Cần Mẫn still gains XP faster over real time because it completes more actions.
-
----
-
-# 10. Universal passive Tu Vi while working
-
-Every living disciple passively absorbs cultivation while doing ordinary work.
-
-Let:
-- `R` = Tu Vi required to complete the disciple's current cultivation stage;
-- `L` = level of the profession currently being performed.
-
-Raw work absorption target:
-
-**Raw Work Tu Vi / hour = R × 0.0005 × (1 + 0.0005 × L)**
-
-Meaning:
-- profession Lv0 -> 0.05% of current-stage requirement/hour before normal cultivation modifiers;
-- Lv100 -> 0.0525%;
-- Lv500 -> 0.0625%;
-- Lv1000 -> 0.075%.
-
-Then pass this raw gain through the existing cultivation-gain authority.
-
-Therefore existing cultivation identity continues to matter naturally:
-- Tư Chất;
-- Spiritual Root;
-- technique/path;
-- relevant cultivation traits;
-- Bloodline;
-- Physique.
-
-Do not create a second farming/mining-specific cultivation formula.
-
-This keeps ordinary work much slower than focused cultivation and hunting.
-
----
-
-# 11. Optional elemental/content affinity
-
-No profession receives a universal Spiritual Root bonus.
-
-A specific crop/recipe/resource may define compatible elements.
-
-If the content explicitly has an affinity and the disciple has a matching Spiritual Root element:
-
-**Content Work Speed ×1.05**
-
-No mismatch penalty by default.
-
-This +5% is intentionally small.
-
----
-
-# 12. Bloodline / Physique
-
-Current Bloodline and special Physique do not automatically buff professions.
-
-A future Bloodline/Physique may define an explicit profession effect, but there is no universal hidden multiplier.
-
-Căn Cốt's shared stamina rule still applies because it is a foundation stat.
-
----
-
-# 13. Profession-specific lucky events
-
-All professions may use the shared Fortune formula:
-
-**Actual Chance = Base Chance × (1 + 2 × Cơ Duyên)**
-
-Examples:
-- Linh Điền: bội thu x2/x3/x4;
-- Mỏ: rare vein / bonus material;
-- Luyện Đan: extra pill / rare inspiration;
-- Luyện Khí: exceptional by-product;
-- Exploration: rare discovery.
-
-The profession owns the event table.
-The foundation formula remains shared.
-
----
-
-# 14. Runtime migration rule
-
-Current runtime has legacy:
-- profession Lv0–6;
-- ungraded profession talents;
-- duplicate work-temperament traits in WorkforceSystem and TraitSystem.
-
-Migration must move toward this canonical model without breaking existing saves.
-
-Do not keep two permanent versions of Cần Mẫn/Cẩu Thả or profession talent.
-
----
-
-# 15. Completion boundary
-
-This shared profession system is not considered fully migrated until:
-- graded profession talents exist;
-- Cần Mẫn/Cẩu Thả use graded magnitude;
-- profession level uses the long-term curve;
-- passive work Tu Vi is shared across professions;
-- legacy duplicate traits are migrated;
-- all implemented professions use these shared formulas.
-
-A profession-specific phase may temporarily bridge the legacy runtime, but must not create another competing formula.
+Do not create another parallel profession formula.
