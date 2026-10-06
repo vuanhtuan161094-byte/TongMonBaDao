@@ -84,6 +84,37 @@ func consume(state: SimulationState, resource_id: StringName, amount: int, ignor
     state.sect.warehouse_event_count += 1
     return true
 
+func can_consume_requirements(state: SimulationState, requirements: Dictionary, ignore_rules: bool = false) -> bool:
+    if not state.sect.p3_7_resources_enabled:
+        return false
+    var ids: Array = requirements.keys()
+    ids.sort()
+    for raw_id in ids:
+        var resource_id := StringName(raw_id)
+        var amount := int(requirements[raw_id])
+        if amount < 0 or not can_consume(state, resource_id, amount, ignore_rules):
+            return false
+    return true
+
+func consume_requirements(state: SimulationState, requirements: Dictionary, ignore_rules: bool = false) -> bool:
+    if not can_consume_requirements(state, requirements, ignore_rules):
+        return false
+    var ids: Array = requirements.keys()
+    ids.sort()
+    for raw_id in ids:
+        var resource_id := StringName(raw_id)
+        var amount := int(requirements[raw_id])
+        if amount <= 0:
+            continue
+        var next := quantity(state, resource_id) - amount
+        if next <= 0:
+            state.sect.warehouse_resources.erase(str(resource_id))
+        else:
+            state.sect.warehouse_resources[str(resource_id)] = next
+    if not ids.is_empty():
+        state.sect.warehouse_event_count += 1
+    return true
+
 func total_pham_luc(state: SimulationState, resource_id: StringName) -> int:
     return quantity(state, resource_id) * registry.base_pham_luc(resource_id)
 
@@ -142,4 +173,7 @@ func _import_legacy_bucket(state: SimulationState, bucket: Dictionary) -> void:
             push_error("WarehouseSystem: cannot migrate unknown legacy resource %s." % resource_id)
             continue
         var current := maxi(int(state.sect.warehouse_resources.get(str(resource_id), 0)), 0)
+        if amount > MAX_SAFE_STACK - current:
+            push_error("WarehouseSystem: legacy migration overflow for %s." % resource_id)
+            continue
         state.sect.warehouse_resources[str(resource_id)] = current + amount
