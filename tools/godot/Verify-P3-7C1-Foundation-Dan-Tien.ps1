@@ -17,6 +17,8 @@ foreach ($script in @(
     "res://src/simulation/state/sect_state.gd",
     "res://src/simulation/building/building_system.gd",
     "res://src/simulation/workforce/character_modifier_system.gd",
+    "res://src/simulation/workforce/profession_modifier_system.gd",
+    "res://src/simulation/cultivation/cultivation_system.gd",
     "res://src/simulation/save/save_service.gd",
     "res://src/simulation/core/p3_7_factory.gd",
     "res://src/simulation/core/simulation_scheduler.gd",
