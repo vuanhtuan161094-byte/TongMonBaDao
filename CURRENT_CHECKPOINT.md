@@ -32,142 +32,57 @@ Do not reopen these phases without actual regression evidence.
 
 ### P3.7A1 — Building Authority + Mine
 
-Status: **BACKEND LOCKED — official Godot 4.7.2 CI green**
+Status: **BACKEND LOCKED**
 
 Implemented:
-- generic `BuildingState`;
-- generic `BuildingSystem`;
-- stable building instance identity;
-- Lv.1–100;
+- generic `BuildingState` / `BuildingSystem`;
+- stable building identity;
+- Lv1–100;
 - worker slots;
-- timed construction/upgrades;
-- milestone state;
-- Mine using `mining_crew`;
-- travel -> mine batch -> haul/deposit;
-- Mining profession XP;
-- Lv.10 Tầm Mạch Bàn milestone;
+- timed upgrades;
+- Mine travel -> work batch -> haul/deposit;
 - save/load + deterministic continuation.
 
 ### P3.7A2R — Spirit Field / Linh Điền Completion
 
-Status: **BACKEND LOCKED — official Godot 4.7.2 fast + full cumulative CI green**
+Status: **BACKEND LOCKED**
 
-Canonical simplified runtime:
-- one plot = one authoritative timer: start -> countdown -> harvest resolve;
+Canonical runtime:
+- one plot = one authoritative timer;
 - no seed item;
-- no backend walking/tending/harvest/haul phases for Linh Điền;
-- crop start consumes Sect Spirit Stones immediately;
+- no detailed backend walking/tending/harvest/haul phases;
+- planting consumes Sect Spirit Stones;
 - cancel has no default refund;
-- multiple independent plots per field;
-- multiple Spirit Field instances;
-- concrete `worksite_building_id` assignment;
-- worker is released immediately after starting a plot;
-- AUTO_DEMAND / PRIORITY / FIXED crop policies;
-- crop registry with explicit output ID, realm/tier, field-level requirement, cost, time and yield;
-- profession level improves cycle speed at +1% per level;
-- generic data-driven `work_speed` and `profession_xp` modifier channels;
-- Cần Mẫn/Cẩu Thả are content data, not hard-coded work formula branches;
-- shared lục-duy factor = `0.75 + 0.50 × normalized value`;
-- Tư Chất -> cultivation gain;
-- Căn Cốt -> body-training authority, not generic profession stamina;
-- Cơ Duyên -> rare chance;
-- Thông Tuệ -> profession/skill learning;
-- Mị Lực -> social-effect authority;
-- Tiềm Lực -> future long-term permanent growth authority;
-- Linh Thực Thiên Phú grade 1–5 -> +5/+10/+15/+20/+25% profession XP;
-- lucky harvest ×4 / ×3 / ×2 uses snapshotted rare factor at crop start;
-- passive work Tu Vi is granted only for actual work action, never passive crop countdown;
-- field-level speed/yield and milestone factors;
-- direct deposit into canonical Sect Warehouse;
-- legacy A2 single-crop state migration;
-- save/load mid-cycle + deterministic continuation;
-- legacy disciple/candidate persistence compatibility preserved.
+- multiple plots and multiple field instances;
+- **one active plot reserves exactly one disciple until harvest resolves**;
+- passive crop countdown grants no work Tu Vi;
+- worker slots = plot slots;
+- Lv1 = 4 slots, +1 every 5 levels;
+- AUTO_DEMAND / PRIORITY / FIXED policies;
+- Thanh Linh Thảo / Linh Cốc / Tử Vân Thảo;
+- lucky harvest and Linh Tuyền Chi Tâm fragment path;
+- direct deposit to canonical Sect Warehouse;
+- save/load + deterministic continuation.
 
 ### P3.7B1 — Resource Registry + canonical Sect Warehouse
 
-Status: **BACKEND LOCKED — official Godot 4.7.2 CI green**
+Status: **BACKEND LOCKED**
 
 Implemented:
-- `ResourceRegistry`;
-- explicit resource identity;
-- family/tags;
-- realm grade/rank;
-- **no Phẩm Lực runtime authority**;
-- one canonical P3.7 stackable-resource warehouse;
-- no gameplay capacity ceiling;
-- multi-million stacks;
-- reserve minimum;
-- resource lock;
-- atomic multi-resource consumption;
-- persistent quantities/rules;
-- one-time migration from old P3.7 `forge_materials` + `technique_materials`;
-- overlapping legacy IDs merge once;
-- legacy P3.7 material buckets are cleared after migration.
+- explicit resource IDs/families/realm grades;
+- no Phẩm Lực;
+- one canonical stackable-resource warehouse;
+- no gameplay storage-capacity ceiling;
+- reserve/lock rules;
+- atomic consumption;
+- legacy P3.7 material migration;
+- building, Mine, Spirit Field, crafting, technique, root, bloodline and physique consumers use canonical storage where migrated.
 
-Current P3.7 consumers using the canonical warehouse:
-- construction/building upgrade;
-- Mine production;
-- Spirit Field harvest;
-- Luyện Khí deposit/crafting;
-- Công pháp material deposit/upgrade;
-- Tinh luyện Linh Căn;
-- Huyết Mạch;
-- Thể Chất.
+### P3.7C1 — Open-point Lục Duy + Dẫn Tiên Đài
 
-P2 behavior remains isolated when P3.7 resource authority is disabled.
+Status: **BACKEND LOCKED — official Godot 4.7.2 fast + full cumulative CI green**
 
----
-
-## 3. Verification evidence
-
-Official Godot 4.7.2 GitHub CI:
-- A1 focused gate: GREEN;
-- A2R focused gate: GREEN;
-- B1 focused gate: GREEN;
-- full cumulative P0 -> P2.12 + P3.7 A1 + A2R + B1: GREEN;
-- latest closing run: P3.7 Backend run #48, commit `509a650b97852a306af4a0581fece2359db4615e`.
-
-A2R closing coverage includes:
-- plot timers;
-- Spirit Stone cost / insufficient funds / no-refund cancel;
-- multiple plots and workers;
-- multiple fields and specific worksites;
-- crop policies;
-- generic modifiers;
-- profession learning and long-term profession level;
-- lucky harvest;
-- field levels/milestones;
-- work-only passive Tu Vi;
-- canonical warehouse deposit;
-- legacy field migration;
-- exact save/load;
-- deterministic continuation;
-- locked earlier regression.
-
-Persistent commands:
-- `Verify-P3-7A1-Building-Authority.cmd`;
-- `Verify-P3-7A1-Building-Authority-Full.cmd`;
-- `Verify-P3-7A2-Spirit-Field.cmd`;
-- `Verify-P3-7A2-Spirit-Field-Full.cmd`;
-- `Verify-P3-7B1-Warehouse.cmd`;
-- `Verify-P3-7B1-Warehouse-Full.cmd`.
-
-Do not describe GitHub CI evidence as Windows evidence unless a Windows gate is separately run.
-
----
-
-## 4. Locked P3.7 design corrections
-
-### Warehouse
-- no warehouse capacity gameplay limit;
-- stacks may become extremely large;
-- resources keep distinct IDs;
-- no continuous Phẩm Lực;
-- progression uses explicit ID + realm/tier + quantity;
-- one canonical main Sect Warehouse.
-
-### Shared character/work model
-Keep the six existing foundation dimensions:
+Canonical six lục duy:
 - Tư Chất;
 - Căn Cốt;
 - Cơ Duyên;
@@ -175,62 +90,112 @@ Keep the six existing foundation dimensions:
 - Mị Lực;
 - Tiềm Lực.
 
-Use one simple common factor:
-**`0.75 + 0.50 × normalized foundation value`**
+Locked architecture:
+- no permanent hard cap;
+- procedural birth first rolls Total Birth Lục Duy;
+- ordinary birth distribution keeps each stat around `floor(total/12)` to `floor(total/2)`;
+- Mệnh Cách/future rare rules may break the birth envelope;
+- after birth, six values grow independently without that envelope;
+- immutable birth snapshot is persisted;
+- current quality derives from current permanent total and may promote through growth;
+- working quality thresholds: <360 / 360–599 / 600–999 / 1000–1799 / >=1800;
+- Nghịch Thiên has a long tail and no hard total cap.
 
-Each foundation has one primary role instead of being forced into every profession.
+Starting balance constants:
+- Tư Chất: +0.25% base cultivation gain / point;
+- Căn Cốt: +0.20% body-training XP / point;
+- Thông Tuệ: +0.15% learning XP / point;
+- Tiềm Lực authority: +0.05% future Realm+Body growth / point;
+- Cơ Duyên: `RNG(0..9999) + Cơ Duyên - Difficulty`, tier thresholds 6000/8500/9500/9900;
+- Mị Lực: social-power authority plus Dẫn Tiên-specific recruitment rules.
 
-Routine percentage content should use generic modifier channels rather than name-specific formula branches.
+Fixed-value consumable rewards stay fixed; lục duy does not silently multiply an item that states an exact +X reward.
 
-### Hunting rewards
-- no Loot Warehouse;
-- no persistent Team Loot Bag for rewards;
-- item/material rewards -> main Sect Warehouse immediately;
-- personal Tu Vi / Contribution / mastery / personal Spirit Stone share -> disciple immediately;
-- carried inventory outside is supplies-only.
+Dẫn Tiên Đài:
+- real Lv1–100 building;
+- current guide-slot curve: 1 at Lv1, +1 at Lv20/40/60/80/100, max 6;
+- exactly one Main Guide affects quality odds;
+- assistant guides affect daily arrival quantity only;
+- mortal Dẫn Tiên quality counts at most 2,500 Main-guide Mị Lực;
+- at quality cap: Nghịch Thiên max 5%, Tuyệt Luân max 15%, no quality tier becomes 0%;
+- current normal rates: 65 / 25 / 8 / 1.8 / 0.2%;
+- current capped boosted rates: 35 / 25 / 20 / 15 / 5%;
+- current enhanced Nghịch Thiên allowance reaches 4/day at 2,500 effective Mị Lực;
+- once the enhanced allowance is consumed, the whole quality table returns to normal for the rest of that day;
+- normal-rate Nghịch Thiên may still appear;
+- the counter advances on appearance, not acceptance;
+- daily snapshot prevents swapping Main Guide to reset the advantage;
+- assistants currently add +1 arrival/day per 500 effective Mị Lực, capped at 2,500 each;
+- base arrivals currently = `2 + floor(Dẫn Tiên level / 10)`;
+- Chiêu Mộ Lệnh uses the same Dẫn Tiên daily quality/quota authority.
 
-### Lifespan
-- lifespan expiry does not delete a disciple;
-- disciple becomes Ma/Hồn and stays in roster/history/relationships;
-- valid longevity/revival effects may restore life;
-- only expulsion removes the disciple from the sect roster.
+Premium-currency direction from reference research:
+- ordinary recruitment premium spending should buy Chiêu Mộ Lệnh through an explicit limited shop when this project has canonical premium-currency authority;
+- C1 does **not** invent Tiên Ngọc / Tiên Ngọc Khóa wallet fields;
+- special limited/named recruitment, if later added, uses a separate explicit token/pool and is outside C1.
 
-### Time
-- movement speed != attack speed != work speed != cast time != cooldown;
-- construction/upgrades take real simulation time;
-- passive production timer is not active disciple work.
+P2 factories remain on the old normalized model for regression compatibility.
+Old P3.7 saves migrate deterministically to open-point foundations and receive the new building authority.
 
 ---
 
-## 5. Authority / document structure cleanup
+## 3. Verification evidence
 
-Status: **LOCKED 2026-10-06**
+Official Godot 4.7.2 GitHub CI closing evidence:
 
-Canonical structure:
-- `AGENTS.md` = repository operating contract;
-- `docs/GAME_SYSTEM_ARCHITECTURE.md` = system/layer authority;
-- design specs = mechanics only;
-- this file = implementation truth;
-- `NEXT_CHAT_HANDOFF.md` = continuation instructions only.
+- workflow: `P3.7 Backend`;
+- run: **#67**;
+- run id: `37483719618`;
+- job id: `112338256594`;
+- tested commit: `a91cb9ba7a3dc775087f5b38e9a3452326f77681`;
+- P3.7C1 focused gate: **PASS**;
+- full cumulative P0 -> P2.12 + P3.7 A1 + A2R + B1 + C1: **PASS**.
+
+The full run explicitly includes:
+- P0–P2.12 gates;
+- P3.7A1 full;
+- P3.7A2R full;
+- P3.7B1 full;
+- P3.7C1 six-foundation + Dẫn Tiên contract.
+
+Persistent C1 commands:
+- `Verify-P3-7C1-Foundation-Dan-Tien.cmd`;
+- `Verify-P3-7C1-Foundation-Dan-Tien-Full.cmd`.
+
+This is GitHub CI evidence on official Godot 4.7.2.
+Do not describe it as Windows evidence.
+
+The separate P3 Presentation Audit is not evidence for C1 and may remain red for unrelated presentation/asset-registry checks. Do not claim all workflows green.
 
 ---
 
-## 6. Current implementation phase
+## 4. Important implementation boundaries
 
-**NONE — P3.7A2R IS CLOSED.**
+C1 does **not** claim the following are finished:
+- final Luyện Thể progression;
+- final ATK/DEF/HP stat migration for Tiềm Lực;
+- migration of every old Cơ Duyên percentage consumer to the new Luck Score;
+- final social/relationship systems;
+- premium-currency wallet/shop;
+- limited named-character banners.
+
+These future systems must consume the C1 authority instead of inventing another lục-duy model.
+
+Current old percentage consumers may use a bounded compatibility bridge where needed to protect earlier locked gameplay.
+
+---
+
+## 5. Current implementation phase
+
+**NONE — P3.7C1 IS CLOSED.**
 
 Do not start another gameplay phase without a new explicit user instruction.
 
 ---
 
-## 7. Queued work
+## 6. Queued design direction
 
-The previous PL-based B2 Construction Resolver is canceled.
+The next disciple-design subject is naturally **Linh Căn V2**, after the completed six-foundation/recruitment foundation.
 
-Any future construction/resource phase must use:
-- explicit resource IDs/families;
-- realm/tier;
-- explicit quantities;
-- no Phẩm Lực.
-
-No next gameplay phase is authorized yet.
+This is a design queue only.
+No Linh Căn implementation phase is authorized yet.
