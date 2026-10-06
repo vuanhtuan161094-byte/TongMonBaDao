@@ -165,17 +165,18 @@ A faster disciple:
 - spends less time walking;
 - therefore spends a larger fraction of the schedule actually mining.
 
-A stronger/better hauler may:
+Explicit hauling/logistics content may:
 - carry a larger batch;
 - need fewer deposit trips.
 
 This creates natural usefulness for:
 - movement speed;
-- Căn Cốt / stamina;
 - profession level;
 - tools;
 - logistics buffs;
 - transport spirit beasts later.
+
+Căn Cốt is not a generic mining/hauling modifier. Its canonical foundation role is body training/development.
 
 Do NOT make workers run back after every single ore unit.
 They mine a batch, then haul/deposit.
@@ -219,9 +220,10 @@ Disciple contributes:
 - Mining profession level;
 - profession talent;
 - Thông Tuệ to learning;
-- Căn Cốt/stamina to sustained work;
 - movement speed to commuting/hauling;
-- traits/tools/buffs.
+- generic work modifiers from traits/tools/buffs.
+
+Stamina may remain a work-state cost where a profession explicitly uses it, but Căn Cốt does not generically modify that cost.
 
 ---
 
@@ -252,16 +254,15 @@ The framework generalizes.
 Detailed authority:
 `docs/P3_7_SPIRIT_FIELD_SPEC.md`
 
-Backend timing is:
-- planting/tending labor time;
-- passive crop growth time;
-- harvest/processing labor time;
-- optional logistics overhead folded into labor timing.
+Spirit Field deliberately uses a simpler abstraction than mining:
 
-Exact walking/pathfinding is not required for farming authority.
+**start crop -> one authoritative countdown -> harvest resolves**
 
-Crop growth remains a real duration.
-The worker is free to perform other valid activities while crops grow.
+There are no separate authoritative walking, planting, tending, harvesting or hauling phases.
+
+The worker performs the start-crop action, the relevant speed/rare/yield factors are sampled, and the worker is immediately free. The crop timer then progresses autonomously and deposits resolved output directly into the canonical Sect Warehouse.
+
+Presentation may animate farming activity without turning those animations into gameplay timing authority.
 
 ## Spirit Forest
 - travel;
@@ -498,6 +499,7 @@ This is required before very large populations.
 12. Crafting/healing/Secret Chamber/travel/repair also require real duration when their P3.7 migrations are implemented.
 13. True cooldown is reserved for reusable powers/actions where a cooldown makes semantic sense.
 14. Background large-scale simulation must preserve the same timing model deterministically.
+15. Spirit Field is an explicit exception to detailed workplace phases: one crop uses one authoritative timer and does not retain the worker for passive growth.
 
 
 ---
