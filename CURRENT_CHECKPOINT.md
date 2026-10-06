@@ -1,501 +1,207 @@
-# CURRENT CHECKPOINT
+# CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
-Date: 2026-10-04
+Updated: 2026-10-06
 
-## Runtime-confirmed baseline
+This file contains **current truth only**.
+It is not a historical changelog.
 
-Real Windows + Godot 4.7.2 evidence confirms:
-
-- P0-P2.12: PASS;
-- P3.1 mobile landscape + living sect shell: PASS;
-- P3.2 camera + map target selection + real disciple tabs interaction slice: PASS;
-- P3.2 Character Creator V1 shared-rig scaffold: PASS;
-- P3.2 `female_normal_v1` Stage A **3-DIRECTION FAST** check: PASS (down/right/up) with user visual review accepted.
-- P3.2 `female_normal_v1` shared **IDLE + WALK FAST** check: PASS on real Windows Godot 4.7.2; user video visual review accepted.
-- P3.2 live modular female map integration: **REAL PASS** on Windows Godot 4.7.2. `[8/8]` printed `P3.2 LIVE MODULAR FEMALE MAP INTEGRATION TEST PASS` and the final live-map FAST PASS lines.
-- P3.3 disciple operational flow (right summary -> real quick orders -> 6-tab deep screen -> context restore): **REAL PASS** on Windows Godot 4.7.2. Contract test + live scene smoke + cumulative P3.2 baseline all green.
-- P3.4 building management: **REAL PASS / LOCKED** on Windows Godot 4.7.2. P3.4A read-only panel, P3.4B people management and P3.4C real system actions all green.
-- P3.5 living sect cues: **REAL PASS / LOCKED** on Windows Godot 4.7.2. Core resolver/tracker, live-map routing and scene smoke all green; max 3 cues.
-- P3.6 Sect Master gameplay loop: design locked; product playtest remains blocked until **P3.6A visual acceptance**. P3.6A player-facing productization is **REAL RUNTIME PASS / VISUAL REVIEW PENDING** on Windows Godot 4.7.2.
-
-Latest real 3-direction FAST tail supplied by the user:
-
-```text
-P3.2 CHARACTER CREATOR SHARED RIG CONTRACT TEST PASS
-P3.2 FEMALE STAGE A DOWN ASSET CONTRACT TEST PASS
-P3.2 FEMALE STAGE A 3-DIRECTION ASSET CONTRACT TEST PASS
-P3.2 FEMALE STAGE A 3-DIRECTION FAST CHECK: PASS
-FEMALE STAGE A 3-DIRECTION FAST CHECK: PASS
-```
-
-User also supplied the real direction-preview screenshot. Visual review accepted front/side/back identity, common ground registration, readable 0.75x silhouette, and no front-face leakage in the back view.
-
-The production female visual slice / Stage A final milestone is **NOT final PASS yet**. Three-direction FAST + visual review are locked. Shared idle/walk runtime contract, sandbox smoke and user video visual review are now accepted. Variants/tints/six-combo proof and the FULL cumulative acceptance remain later.
+Read `docs/GAME_SYSTEM_ARCHITECTURE.md` for system structure and phase discipline.
 
 ---
 
-# Character Creator locked contract
+## 1. Locked earlier baseline
 
-Canonical architecture remains **modular appearance + shared 2D rig/animation**.
+Real Windows Godot 4.7.2 locked baseline:
+- P0–P2.12;
+- P3.1 landscape/living-sect shell;
+- P3.2 map camera/selection + real disciple tabs;
+- P3.2 live modular female map integration;
+- P3.3 disciple operational flow;
+- P3.4 building management;
+- P3.5 living-sect cues;
+- P3.6A runtime slice.
 
-Locked registration:
+P3.6A final visual acceptance remains user-owned.
+It is not a blocker for backend P3.7.
 
-- source canvas `128×128`;
-- foot anchor `(64,104)`;
-- map scale `0.68` at zoom 1.0;
-- actor box `88×92`;
-- bones: `root, pelvis, torso, head, arm_l, arm_r, hand_weapon, leg_l, leg_r`;
-- render order: `shadow -> aura -> hair_back -> weapon_back -> body -> outfit -> face -> hair_front -> head_accessory -> weapon_front -> accessory`.
-
-Appearance remains presentation-only and must not mutate `DiscipleState`, stats, economy, actions, `sex_id`, or P2.8 RNG consumption/order.
-
----
-
-# Stage A down/front — visual pivot accepted
-
-The user opened the real preview after the down/front FAST gate passed and supplied a screenshot at `0.75x`, `1.00x`, `1.35x`.
-
-Accepted visual observations:
-
-- face/hair/horns remain coherent;
-- shoulders/arms do not visibly split from torso;
-- no major outfit/skirt seam;
-- legs/feet share the same ground registration;
-- silhouette remains readable at `0.75x`.
-
-Dark hair + skirt merge somewhat at `0.75x`, but this is future art contrast/simplification work, not evidence of a pivot mismatch.
-
-Therefore **down/front practical pivots are visually locked** and current bone rest positions remain unchanged.
+Do not reopen these phases without actual regression evidence.
 
 ---
 
-# Stage A authored directions — Windows FAST + visual review PASS
+## 2. P3.7 backend foundation completed
 
-Diagnostic proof now supports authored:
+### P3.7A1 — Building Authority + Mine
 
-- `down` = front;
-- `right` = side;
-- `up` = back;
-- `left` remains mirror-right while mirror-safe.
+Status: **BACKEND LOCKED — official Godot 4.7.2 CI green**
 
-Each authored direction has 14 registered `128×128` components, total **42 PNGs**. `up` face is intentionally transparent to prevent front-face leakage.
-
-Relevant implementation:
-
-- `godot/src/presentation/p3/female_stage_a_asset_loader.gd`;
-- `godot/tests/presentation/p3_2_female_stage_a_down_contract_test.gd`;
-- `godot/tests/presentation/p3_2_female_stage_a_directions_contract_test.gd`;
-- `godot/src/presentation/p3/female_stage_a_directions_sandbox.gd`;
-- `godot/scenes/p3/p3_2_female_stage_a_directions_sandbox.tscn`;
-- `Preview-P3-2-Female-Directions.cmd`;
-- `Verify-P3-2-Female-StageA.cmd` — 5-step P3.2-only FAST gate;
-- `Verify-P3-2-Female-StageA-Full.cmd` — final acceptance only; **do not run yet**.
-
-Live sect-map integration remains untouched.
-
-Real Windows Godot 4.7.2 FAST gate passed on 2026-10-04. The user then opened `Preview-P3-2-Female-Directions.cmd`; front/side/back were visually accepted. No pivot/rest-position retune is needed from this proof.
-
----
-
-# FAST verification policy
-
-Normal art/pivot iteration remains **P3.2 FAST only** and does not rerun P0-P2.12.
-
-FAST runs:
-
-1. import changed Stage A assets;
-2. Character Creator shared-rig contract;
-3. locked down/front regression contract;
-4. authored `down/right/up` asset contract;
-5. authored-direction sandbox smoke.
-
-Expected green tail:
-
-```text
-P3.2 CHARACTER CREATOR SHARED RIG CONTRACT TEST PASS
-P3.2 FEMALE STAGE A DOWN ASSET CONTRACT TEST PASS
-P3.2 FEMALE STAGE A 3-DIRECTION ASSET CONTRACT TEST PASS
-P3.2 FEMALE STAGE A 3-DIRECTION FAST CHECK: PASS
-FEMALE STAGE A 3-DIRECTION FAST CHECK: PASS
-```
-
----
-
-# Binary asset transport — current authoritative method
-
-The canonical Stage A pack is now transported in Git as text-safe Base64 parts under:
-
-`.github/assets/p3/female_stage_a/`
-
-Canonical ZIP properties remain:
-
-- file: `female_normal_v1_stageA_runtime_pack_v2_quant.zip`;
-- 42 Stage A PNGs (`down/right/up`);
-- ZIP size: **44,838 bytes**;
-- SHA-256: `6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca`.
-
-Transport repair completed on 2026-10-05:
-
-- central-directory corruption in the unfinished tracked parts was repaired;
-- one remaining Base64 payload corruption was isolated to `part11.b64`, index 1432 (0-based), corrected from `a` to `e`;
-- a clean CI run then rebuilt the ZIP directly from the tracked parts with **no repair logic**, matched the canonical SHA-256, passed `unzip -t`, extracted 42 PNGs, imported Godot and passed P3.6A FAST;
-- the diagnostic brute-force/rebuild code was removed from the production workflow.
-
-`Install-P3-2-Female-StageA.cmd` now prefers this tracked transport, verifies the canonical SHA before extraction, and retains the external ZIP search only as a fallback when the tracked transport is unavailable.
-
-For the current P3.6A Windows flow, use the repository-wide sync policy:
-
-`Sync-Main.cmd Run-P3-6A-Playable-Slice.cmd`
-
-Do not create a phase-specific `Sync-P3-6A-*.cmd`.
-
----
-
-# Shared idle + walk — Windows FAST + visual motion review PASS
-
-Real Windows Godot 4.7.2 evidence supplied by the user:
-
-```text
-P3.2 FEMALE SHARED IDLE WALK MOTION CONTRACT TEST PASS
-P3.2 FEMALE STAGE A 3-DIRECTION FAST CHECK: PASS
-P3.2 FEMALE SHARED IDLE WALK FAST CHECK: PASS
-FEMALE STAGE A + SHARED MOTION FAST CHECK: PASS
-```
-
-The user supplied an 11.6-second real Windows motion video. Review accepted the current V1 motion: idle breathing is restrained, walk cadence is stable, there is no obvious anchor jump or severe shoulder/hip tearing, hair/horns remain attached, and LEFT mirrors RIGHT cleanly. Motion is intentionally simple/stiff at this stage; long-hair secondary motion is future polish, not a blocker for map integration.
-
-
-P3.4C first real Windows attempt reached the cumulative P3.4B regression and failed because the old Medicine Hall test incorrectly required zero controls. P3.4C legitimately adds real NeedsSystem priority controls. The regression was corrected in commit `7c4ce83c13d8e6e7ce7e2cef6e53e3472f0375b6` to forbid only fabricated HEAL/direct-treatment actions. P3.4C itself remains runtime pending until rerun.
-
-P3.5 first Windows attempt exposed a `seed()` naming collision; it was fixed by renaming to `seed_from_state()`. The rerun then passed core, live-map integration and scene smoke.
-
-P3.6A first Windows gate exposed a popup lifecycle bug (`DiscipleDeepScreen2`); `_clear_popup()` was fixed to detach children immediately before `queue_free()`. The subsequent FULL cumulative rerun passed P3.6A contract + live scene smoke.
-
-GitHub CI preview now restores and SHA-verifies the canonical 42-PNG `female_normal_v1` pack before Godot import. Clean CI run #15 passed restore/import/P3.6A FAST/capture/upload and produced the reviewed `1280x720` artifact. The live map now uses real female modular actors where the female rig is authoritative and a neutral humanoid modular fallback for rigs whose art pack is not produced yet; legacy letter-in-circle actors are gated out.
-
-# Next authoritative action
-
-P3.2, P3.3, full P3.4, P3.5 and **P3.6A runtime** remain REAL PASS / LOCKED.
-
-P3.6A actor-pack CI integration is now green:
-
-- tracked Base64 -> canonical ZIP SHA: PASS;
-- 42 PNG extraction: PASS;
-- Godot import: PASS;
-- P3.6A FAST gate: PASS;
-- CI preview capture/upload: PASS;
-- legacy letter-circle actors removed from the live map contract;
-- fixed actor-status text removed from the idle map to reduce overlap;
-- live actor spacing and building cue offsets improved.
-
-Latest reviewed CI preview is materially cleaner, but **final P3.6A visual acceptance still belongs to the user on the real Windows preview**. Do not self-declare visual PASS.
-
-With the Windows machine available, run from repo root:
-
-`Sync-Main.cmd Run-P3-6A-Playable-Slice.cmd`
-
-That performs:
-
-`safe main sync -> tracked Stage A restore + SHA check -> P3.6A FAST -> real preview on PASS`.
-
-No FULL cumulative rerun is required for this visual review because the FULL gate already passed in this acceptance cycle.
-
-# Current development priority — functionality first
-
-User explicitly deprioritized micro-detail on the small map actor. Character Creator remains necessary only to avoid obvious clones; it must not block management gameplay.
-
-Order:
-
-1. P3.2 live modular female map `[8/8]`: **REAL PASS / LOCKED**;
-2. P3.3 disciple operational flow: **REAL PASS / LOCKED**;
-3. P3.4 building interaction/management: real workers, inputs, outputs, assignment/management actions;
-4. P3.5 living-sect cues: fatigue/heal/breakthrough/material/finished-work signals from real state;
-5. P3.6A productize the live map into a genuinely playable slice; only then resume the P3.6 5–10 minute playtest;
-6. add only the minimum face/hair/outfit/weapon/tint variants needed to make disciples visually distinguishable;
-7. six-combo proof + FULL female visual gate later, after core management interaction is stable;
-8. appearance persistence;
-9. male rig/art expansion later.
-
-Do not let cosmetic production block functional map-management work.
-
-
-# P3.7 long-term sect economy / hunting direction — DESIGN AUTHORITY ADDED 2026-10-05
-
-Canonical spec:
-
-`docs/P3_7_LONG_TERM_SECT_ECONOMY_HUNTING_SPEC.md`
-
-Locked direction:
-- 1,000–3,000 disciples are supported conceptually; management must be by teams/halls/policies rather than per-disciple micro;
-- hunting/outside activity is the main long-term loop, with a rough 70% outside / 30% rear-base target;
-- standard hunting team is 5; solo-oriented traits may support solo hunting;
-- no permanent disciple death in the current design; defeat creates Thương Thế and recovery downtime;
-- hunting naturally consumes time/stamina/medicine/durability and returns Spirit Stones, materials, items, techniques, treasure fragments and progression;
-- disciples do not have full RPG inventories; temporary team loot bags settle into sect storage on return;
-- personal economy is limited to equipped gear, personal Spirit Stones, Contribution Points and a small consumable allowance;
-- equipment distribution is policy-driven with direct Sect Master override;
-- profession levels may reach 1,000+; every profession level gives +1% profession efficiency, EXP requirements rise with level, profession levels never decay;
-- profession milestone specialization and broad Bách Nghệ Lịch Luyện bonuses are planned;
-- sect members continue gaining passive cultivation while working; focused cultivation is faster, while work also grants profession/economic growth;
-- Secret Chambers are paid services using personal Spirit Stones; disciples choose autonomously according to AI/personality but the Sect Master can intervene;
-- all material magnitude uses one canonical numeric quality measure: **Phẩm Lực**; realm-style labels are presentation only and are not hard content locks;
-- normal building instances target Lv.1–100; long-term scale comes from more facilities rather than infinitely leveled individual buildings;
-- all Sect Treasures may contribute simultaneously; no tiny active-slot cap.
-
-## Construction resource rule
-
-Normal building upgrades use one common construction language:
-
-1. **Linh Mộc** — structural wood/organic construction material;
-2. **Khoáng Liệu** — structural mineral/stone/metal material;
-3. **Linh Thạch** — currency + activation/energy sink.
-
-Material quantity can be satisfied by eligible stock using **Phẩm Lực**, avoiding hard "material tier = building level" recipes.
-
-Only milestone upgrades require one thematic specialty component, e.g.:
-- Spirit Field -> Spirit Soil / Spirit Spring / formation component;
-- Mine -> prospecting/reinforcement component;
-- Alchemy -> furnace core / Fire Essence;
-- Artifact Hall -> furnace core / special metal;
-- Secret Chamber -> Formation Core / spirit-jade;
-- Beast Hall -> Beast Core / taming formation component.
-
-Next design action: finish the canonical building tree before implementing broad P3.7 code.
-
-
-# P3.7 building tree authority — ADDED 2026-10-05
-
-Canonical child spec:
-`docs/P3_7_BUILDING_TREE_SPEC.md`
-
-Locked building architecture:
-- normal building instances are Lv.1–100;
-- routine levels raise efficiency/capacity/throughput/processing capability;
-- milestone levels open mechanics rather than only +% stats;
-- long-term scale comes from more facility instances, not infinite building levels;
-- common upgrade language is Linh Mộc + Khoáng Liệu + Linh Thạch;
-- milestone upgrades add only one thematic specialty component;
-- construction material fulfillment is Phẩm Lực-based with warehouse reserve/lock rules;
-- production buildings do not hard-lock material by realm/tier; higher-PL material above facility capability suffers penalties instead;
-- the first authoritative implementation slice is: Đại Điện, Kho, Linh Điền, Mỏ, Đệ Tử Xá, Tu Luyện Đài, Y Quán, Luyện Đan, Luyện Khí, Hậu Cần, Săn Yêu Điện, Phường Thị, Cổng Tông Môn;
-- Mật Thất follows immediately after the personal Spirit Stone economy exists;
-- Phù Lục, Trận Pháp, Ngự Thú, Tửu, Linh Trù, Hoa, Đấu Giá and advanced facilities are later expansions.
-
-Building implementation has now started. The first concrete backend slice is P3.7A1 Building Authority + Mine; see the latest implementation-status section at the end of this checkpoint.
-
-
-# P3.7 loadout / hunting progression authority — ADDED 2026-10-05
-
-Canonical child spec:
-`docs/P3_7_DISCIPLE_LOADOUT_HUNTING_PROGRESSION_SPEC.md`
-
-Locked:
-- no full personal RPG inventory at 1,000–3,000 disciple scale;
-- personal loadout target: weapon x1, armor x1, talisman x3, Pháp Bảo x2, Main Technique x1, Auxiliary Techniques x2, small consumable belt;
-- disciple AI autonomously seeks compatible upgrades and avoids tiny churn;
-- explicit item ownership: sect-owned loan vs disciple-owned personal property;
-- sect-owned gear may be reassigned normally;
-- forcibly requisitioning disciple-owned gear requires Contribution compensation;
-- returned hunting loot defaults to sect property and grants Contribution credit to hunters;
-- hunting grants Tu Vi + Contribution + Spirit Stones + loot;
-- hunting cultivation reward scales from the disciple's current-stage Tu Vi requirement and relative monster realm/challenge;
-- target healthy appropriate hunting progression is roughly 10–20× ordinary rear-base work cultivation rate;
-- no permanent death; injury/medicine/durability/downtime are the PvE cost;
-- P2.1's old +2 cultivation/victory is preserved as historical locked baseline until explicit P3.7 migration.
-
-
-# P3.7 resource/storage/base-growth authority — ADDED 2026-10-05
-
-Canonical child spec:
-`docs/P3_7_RESOURCE_STORAGE_GROWTH_DATA_MODEL_SPEC.md`
-
-Locked changes:
-- different resource items remain distinct and visible; no generic averaged-material stack;
-- resources use realm-grade labels (Phàm/Luyện Khí/Trúc Cơ/Kim Đan/Nguyên Anh/...) plus numeric Phẩm Lực;
-- higher progression gradually reveals new higher-grade material types;
-- raw stackable resources should prefer stable per-item Phẩm Lực so stacks remain clean;
-- commodity stacks may reach millions/billions;
-- there is NO normal warehouse capacity limit;
-- Kho progression is automation/logistics/reserve/lock/routing, not storage expansion;
-- all disciples receive passive cultivation growth;
-- the canonical six foundation fields are integrated by role: Tư Chất, Căn Cốt, Cơ Duyên, Thông Tuệ, Mị Lực, Tiềm Lực;
-- at-home AI may spend personal Spirit Stones on Mật Thất and cultivation pills.
-
-
-# Canonical corrections — 2026-10-05 late update
-
-## Hunting loot
-- REMOVE the earlier Team Loot Bag / Loot Warehouse concept for rewards.
-- Hunting rewards resolve immediately.
-- Item/material loot goes straight to the main Sect Warehouse.
-- Personal Tu Vi, Contribution, mastery/progression and personal Spirit Stone share are granted immediately.
-- Team carried inventory is only outward supplies, not reward storage.
-
-## Lifespan
-- lifespan expiry does NOT delete a disciple;
-- disciple becomes Ma/Hồn and remains in roster/history/relationships;
-- a valid Thọ Đan/longevity revival effect can restore life;
-- only Trục xuất removes the disciple from the sect roster;
-- gameplay capabilities of Ma/Hồn are not yet designed and must not be invented ad hoc.
-
-
-# P3.7 time/speed/cooldown authority — ADDED 2026-10-05
-
-Canonical child spec:
-`docs/P3_7_TIME_SPEED_COOLDOWN_SPEC.md`
-
-Locked:
-- basic attack speed, movement speed, cast time, skill cooldown and profession work speed are separate concepts;
-- Mine becomes a real physical work loop: travel -> mine batch -> haul/deposit -> main Sect Warehouse -> repeat;
-- movement speed affects work throughput because commuting/hauling consumes real time;
-- no one-ore return ping-pong; workers mine batches before hauling;
-- building construction and upgrades require real simulation time;
-- new building level/milestone applies only on completion;
-- no generic post-upgrade cooldown; construction time is the pacing cost;
-- ordinary upgrades can keep the old level operating; milestone shutdown is building data;
-- crafting, healing, Secret Chamber, repair, travel and related systems use real durations when migrated;
-- true cooldown is reserved for skills/active powers/rare actions;
-- large-population background simulation must preserve timing deterministically.
-
-
-# P3.7A1 + A2 BUILDING BACKEND — OFFICIAL GODOT 4.7.2 CI GREEN 2026-10-06
-
-Scope:
-- backend/simulation only;
-- live P3 presentation remains on the older authority and MUST NOT fake P3.7 building levels/progress yet;
-- P3.7 is opt-in through `P37Factory`, preserving locked legacy behavior when disabled.
-
-## A1 — Building Authority + Mỏ Linh Khoáng
 Implemented:
-- `BuildingState` with stable instance ID, type, Lv.1–100, status, worker group, upgrade progress, milestones, generic production state and metrics;
-- `BuildingSystem` timed construction/upgrades;
-- worker capacity enforced from existing workforce assignments instead of a second worker list;
-- Mine uses existing `mining_crew`;
-- Mine physical cycle: travel -> mine batch -> haul/deposit -> repeat;
-- world/work movement speed is separate from combat-path style; equipment move-speed modifier still applies;
-- Căn Cốt contributes to hauling efficiency;
-- Mining profession XP is granted on completed deposited batch;
-- assignment/command interruption safely settles already-carried mined units;
-- ordinary upgrade consumes real current Linh Mộc + Thanh Thiết bridge + sect Linh Thạch;
-- Lv.9 -> Lv.10 requires/consumes real Tầm Mạch Bàn;
-- no fake post-upgrade cooldown;
-- save/load and deterministic continuation covered.
+- generic `BuildingState`;
+- generic `BuildingSystem`;
+- stable building instance identity;
+- Lv.1–100;
+- worker slots;
+- timed construction/upgrades;
+- milestone state;
+- Mine using existing `mining_crew`;
+- travel -> mine batch -> haul/deposit;
+- movement speed affects travel/haul;
+- Căn Cốt affects hauling;
+- Mining profession XP;
+- Lv.10 Tầm Mạch Bàn milestone;
+- save/load + deterministic continuation.
 
-## A2 — Linh Điền
-Implemented on the SAME BuildingState/BuildingSystem:
-- real `spirit_field_001`, Lv.1–100;
-- real `herbalism_crew` workforce group;
-- worker slots use the same generic five-level capacity cadence;
-- planting/tending requires worker travel + action time;
-- after planting completes, crop growth is building-owned and advances over simulation ticks WITHOUT trapping a disciple at the field;
-- when mature, field becomes harvest-ready;
-- harvest requires travel + harvest work + haul/deposit;
-- Thanh Linh Thảo deposits into the current main-warehouse bridge;
-- Herbalism profession XP is granted on completed planting/harvest work;
-- two workers may enter the field phase, but when one completes the shared phase competing stale work cycles are released so nobody gets stuck repeatedly working a crop that is already growing/harvested;
-- Lv.9 -> Lv.10 requires/consumes Linh Tuyền Chi Tâm;
-- crop production state persists across save/load.
+### P3.7A2 — Spirit Field / Linh Điền
 
-## Persistence bug fixed while implementing A2
-Legacy disciples could hold non-zero six-foundation data while `profile_seed == 0`.
-Old serialization could omit:
-- Tư Chất;
-- Căn Cốt;
-- Cơ Duyên;
-- Mị Lực;
-- Tiềm Lực.
+Status: **BACKEND LOCKED — official Godot 4.7.2 CI green**
 
-This caused post-load work-speed/haul divergence even though the serialized dictionaries appeared equal.
-`DiscipleState.to_dict()` now persists procedural/six-foundation identity data whenever those fields contain meaningful values, independent of `profile_seed`.
-Regression coverage explicitly checks all six canonical foundation values, including Thông Tuệ.
+Implemented on the same BuildingSystem:
+- `spirit_field_001`;
+- `herbalism_crew`;
+- worker-slot enforcement;
+- travel -> tend/plant;
+- building-owned crop growth;
+- worker is free while crop grows;
+- harvest-ready -> harvest -> haul/deposit;
+- Herbalism profession XP;
+- competing workers release cleanly when shared phase completes;
+- Lv.10 Linh Tuyền Chi Tâm milestone;
+- save/load + deterministic continuation.
 
-## Verification
-Official Godot 4.7.2 CI:
-- P3.7A1 focused backend gate: PASS;
-- P3.7A2 focused backend gate: PASS;
-- P3.7A2 competing-worker regression: PASS;
-- P3.7A2 six-foundation save/load regression: PASS;
-- final cumulative P0 -> P2.12 + P3.7A1 + P3.7A2: PASS.
+Persistence fix discovered during A2:
+- legacy disciples now preserve all six foundation values even when `profile_seed == 0`.
+
+### P3.7B1 — Resource Registry + canonical Sect Warehouse
+
+Status: **BACKEND LOCKED — official Godot 4.7.2 CI green**
+
+Implemented:
+- `ResourceRegistry`;
+- explicit resource identity;
+- family/tags;
+- realm grade/rank;
+- stable per-unit Phẩm Lực;
+- one canonical P3.7 stackable-resource warehouse;
+- no gameplay capacity ceiling;
+- multi-million stacks;
+- reserve minimum;
+- resource lock;
+- atomic multi-resource consumption;
+- persistent quantities/rules;
+- one-time migration from old P3.7 `forge_materials` + `technique_materials`;
+- overlapping legacy IDs merge once;
+- legacy P3.7 material buckets are cleared after migration.
+
+Current P3.7 consumers using the canonical warehouse:
+- construction/building upgrade;
+- Mine production;
+- Spirit Field harvest;
+- Luyện Khí deposit/crafting;
+- Công pháp material deposit/upgrade;
+- Tinh luyện Linh Căn;
+- Huyết Mạch;
+- Thể Chất.
+
+P2 behavior remains isolated when P3.7 resource authority is disabled.
+
+---
+
+## 3. B1 verification evidence
+
+Official Godot 4.7.2 GitHub CI:
+- A1 focused gate: GREEN;
+- A2 focused gate: GREEN;
+- B1 focused gate: GREEN;
+- Resource Registry contracts: GREEN;
+- 3,000,000-unit stack test: GREEN;
+- reserve/lock tests: GREEN;
+- old P3.7 save migration: GREEN;
+- P2 legacy isolation: GREEN;
+- all current material-consumer contracts: GREEN;
+- cumulative P0 -> P2.12 + A1 + A2 + B1: GREEN.
 
 Persistent commands:
 - `Verify-P3-7A1-Building-Authority.cmd`;
 - `Verify-P3-7A1-Building-Authority-Full.cmd`;
 - `Verify-P3-7A2-Spirit-Field.cmd`;
-- `Verify-P3-7A2-Spirit-Field-Full.cmd`.
-
-Current compatibility bridge:
-- P3.7 production/construction resources still temporarily live in legacy `sect.forge_materials`;
-- this is deliberate scaffolding only;
-- do NOT add another parallel material store on top.
-
-NEXT BACKEND PHASE:
-**P3.7B1 — Resource Registry + one canonical Sect Warehouse authority.**
-
-Goal:
-- replace the temporary `forge_materials` bridge for P3.7;
-- preserve resource identity;
-- add realm-grade + stable per-unit Phẩm Lực metadata;
-- unbounded large commodity stacks;
-- reserve/lock/auto-consume rules;
-- migrate/bridge legacy material dictionaries without breaking P0–P2 gates;
-- make Mine/Linh Điền deposit through the new warehouse authority.
-
-
-# P3.7B1 RESOURCE REGISTRY + CANONICAL SECT WAREHOUSE — OFFICIAL GODOT 4.7.2 CI GREEN 2026-10-06
-
-This section supersedes the earlier temporary `forge_materials` bridge note for P3.7.
-
-Implemented:
-- `ResourceRegistry` is the canonical definition table for stackable P3.7 resources;
-- each resource keeps a real identity: ID, display name, family, realm grade/rank, stable per-unit Phẩm Lực, market value and tags;
-- current registered resources include Linh Mộc, Thanh Thiết, Huyền Thiết, Tinh Lang Bì, Yêu Đan, Linh Tủy, Tầm Mạch Bàn, Thanh Linh Thảo and Linh Tuyền Chi Tâm;
-- `WarehouseSystem` is the one canonical P3.7 stackable-resource authority;
-- commodity stacks support multi-million scale and are bounded below JSON-safe integer precision;
-- warehouse has no gameplay capacity ceiling;
-- per-resource reserve minimum and lock rules are real and persistent;
-- multi-resource consumption is atomic;
-- save/load persists warehouse quantities/rules/event state;
-- old P3.7A saves auto-migrate legacy `forge_materials` + `technique_materials` once, merge overlapping IDs, then clear both legacy buckets;
-- migration is idempotent: loading/initializing again does not duplicate resources.
-
-P3.7 consumers now use the canonical warehouse:
-- BuildingSystem construction/upgrade;
-- Mine production deposit;
-- Spirit Field harvest deposit;
-- Equipment/Luyện Khí material deposit + crafting;
-- Technique material deposit + technique upgrade;
-- Spiritual Root refinement;
-- Bloodline awakening/refinement;
-- Physique tempering/transformation.
-
-Compatibility:
-- when P3.7 resource authority is OFF, locked P2 systems still use their legacy buckets exactly as before;
-- P2.12 seeded Linh Tủy/Yêu Đan behavior is preserved;
-- P3.7 does not maintain duplicate balances in legacy buckets.
-
-Verification:
-- P3.7B1 FAST gate on official Godot 4.7.2 CI: GREEN;
-- Resource Registry identity/realm-grade/Phẩm-Lực contracts: GREEN;
-- 3,000,000-unit stack + reserve/lock contracts: GREEN;
-- old P3.7 save migration: GREEN;
-- P2 legacy isolation: GREEN;
-- construction/forge/technique/root-refinement/bloodline/physique canonical-consumer contracts: GREEN;
-- final cumulative P0 -> P2.12 + P3.7A1 + P3.7A2 + P3.7B1 full gate on official Godot 4.7.2 CI: GREEN.
-
-Persistent gates:
+- `Verify-P3-7A2-Spirit-Field-Full.cmd`;
 - `Verify-P3-7B1-Warehouse.cmd`;
 - `Verify-P3-7B1-Warehouse-Full.cmd`.
 
-Per AGENTS policy, do not label this Windows-locked until the Windows final gate is run if that lock evidence is required.
+Do not describe these P3.7 CI runs as Windows evidence unless the Windows gate is separately run.
 
-NEXT BACKEND PHASE:
-**P3.7B2 — Construction Resolver by material family + required Phẩm Lực.**
+---
 
-Goal:
-- normal building upgrades stop requiring a hard-coded exact Thanh Thiết/Linh Mộc count;
-- requirement becomes Construction Wood PL + Construction Mineral PL + Linh Thạch;
-- resolver selects eligible real resource stacks;
-- respect reserve/lock rules;
-- prefer lower-grade/lower-PL expendable stock first;
-- never consume unrelated resource families;
-- milestone specialty component remains an exact named item.
+## 4. Locked P3.7 design corrections
+
+### Warehouse
+- no warehouse capacity gameplay limit;
+- stacks may become extremely large;
+- resources keep distinct IDs;
+- Phẩm Lực does not replace item identity;
+- one canonical main Sect Warehouse.
+
+### Hunting rewards
+- no Loot Warehouse;
+- no persistent Team Loot Bag for rewards;
+- item/material rewards -> main Sect Warehouse immediately;
+- personal Tu Vi / Contribution / mastery / personal Spirit Stone share -> disciple immediately;
+- carried inventory outside is supplies-only.
+
+### Lifespan
+- lifespan expiry does not delete a disciple;
+- disciple becomes Ma/Hồn and stays in roster/history/relationships;
+- valid longevity/revival effects may restore life;
+- only expulsion removes the disciple from the sect roster.
+
+### Time
+- movement speed != attack speed != work speed != cast time != cooldown;
+- construction/upgrades take real simulation time;
+- no generic fake cooldown after building upgrade.
+
+### Character foundation
+Use the existing six dimensions:
+- Tư Chất;
+- Căn Cốt;
+- Cơ Duyên;
+- Thông Tuệ;
+- Mị Lực;
+- Tiềm Lực.
+
+Do not create a parallel replacement stat block.
+
+---
+
+## 5. Current active phase
+
+**AUTHORITY / DOCUMENT STRUCTURE CLEANUP**
+
+No new gameplay feature is active right now.
+
+Cleanup scope:
+- simplify `AGENTS.md`;
+- add one canonical system-architecture document;
+- rewrite checkpoint/handoff to current truth only;
+- remove stale implementation diaries from P3.7 design specs;
+- remove obsolete “next phase” instructions;
+- remove contradictory Loot Bag / Loot Warehouse wording.
+
+This cleanup must finish before any B2 code begins.
+
+---
+
+## 6. Queued next gameplay phase — NOT STARTED
+
+**P3.7B2 — Construction Resolver by material family + required Phẩm Lực**
+
+Queued contract:
+- normal building upgrade asks for total Construction Wood Phẩm Lực;
+- normal building upgrade asks for total Construction Mineral Phẩm Lực;
+- Linh Thạch remains currency input;
+- specialty milestone component remains an exact named item;
+- only eligible resource tags may satisfy a requirement;
+- reserve/lock rules must be respected;
+- prefer lower-value/lower-grade eligible stock first;
+- do not consume rare/high-grade stock unnecessarily;
+- no presentation work until backend B2 is locked.
+
+B2 remains queued until the documentation cleanup phase is explicitly closed.
