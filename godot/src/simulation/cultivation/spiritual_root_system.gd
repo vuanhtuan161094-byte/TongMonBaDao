@@ -1,3 +1,6 @@
+# LEGACY P2 RUNTIME ONLY.
+# Superseded for all new design by docs/SPIRITUAL_ROOT_V2_SPEC.md.
+# Keep temporarily for locked regression + old-save migration; do not extend this model for V2.
 class_name SpiritualRootSystem
 extends RefCounted
 
