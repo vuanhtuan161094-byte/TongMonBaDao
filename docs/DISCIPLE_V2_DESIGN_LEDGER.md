@@ -433,25 +433,52 @@ Do not code Spiritual Root V2 until the user explicitly approves the design.
 
 ---
 
-# 8. Spiritual Root V2 core — DESIGN LOCKED, NOT IMPLEMENTED
+# 8. Spiritual Root V2 — FULL DESIGN LOCKED, NOT IMPLEMENTED
 
 Canonical detailed authority:
 `docs/SPIRITUAL_ROOT_V2_SPEC.md`
 
-Locked core:
-- five base roots Kim/Mộc/Thủy/Hỏa/Thổ;
-- ordinary birth has 1–5 roots at 7% / 18% / 30% / 28% / 17%;
-- element choice is uniform without replacement and independent from Disciple Quality;
-- each owned root has its own integer purity 1–100 and immutable birth snapshot;
-- no one global purity remains authoritative in V2;
-- ordinary refinement targets one existing root, is deterministic +1 and cannot fail;
-- Linh Tủy is the ordinary refinement material; 99->100 also needs Ngũ Hành Bản Nguyên;
-- missing base roots can be added by expensive deterministic major transformation;
-- each root gives matching cultivation/mastery/skill-effect/resistance bonuses plus its base-element permanent passive;
-- perfected-root count (roots at exactly 100) drives Resonance R=1.10/1.25/1.45/1.70/2.00 for 1/2/3/4/5 perfected roots;
-- full 100/100/100/100/100 is intentionally extremely strong;
-- Ngũ Hành combat counter cycle is real combat-core behavior;
-- Burn/Freeze/Guard/Weaken/etc. belong to skills, not automatically to the root element;
-- consumer/resource source/storage/migration requirements are explicitly owned by the detailed spec.
+Locked base-root core:
+- Kim/Mộc/Thủy/Hỏa/Thổ;
+- ordinary root-count rates 7% / 18% / 30% / 28% / 17%;
+- each root has independent purity 1–100 and immutable birth snapshot;
+- base-root buffs affect matching cultivation/mastery/skill effect/resistance;
+- Kim penetration, Mộc Max HP, Thủy attack+cast speed, Hỏa all damage, Thổ Defense;
+- perfected-root Resonance R=1.10/1.25/1.45/1.70/2.00 at 1/2/3/4/5 roots at 100;
+- deterministic Linh-Tủy refinement;
+- expensive deterministic missing-root creation;
+- full five 100 is intentionally extremely strong.
 
-Mutation-root design remains open and must be completed before Spiritual Root V2 implementation is authorized.
+Locked Dị-Linh-Căn core:
+- V1 branches: Kim→Lôi, Mộc→Phong, Thủy→Băng, Hỏa→Dương, Thổ→U Minh;
+- schema allows future additional branches;
+- congenital rate = 0.20% total: 0.19% latent + 0.01% already awakened;
+- ordinary birth has at most one congenital mutation;
+- birth mutation is independent from Disciple Quality/Dẫn Tiên quality;
+- latent identity exists before reveal and never rerolls;
+- reveal at base purity 70;
+- congenital Stage I requires base >=80, Stage II >=90, Stage III =100;
+- a non-latent disciple can acquire a mutation after raising that base root to 100;
+- mutation uses Stage I/II/III, not a second purity meter;
+- matching mutation cultivation/mastery/skill-effect/resistance scale by stage;
+- all owned mutations may be active simultaneously;
+- base-root Resonance does not multiply mutation passive/mechanic values;
+- all five Stage III unlock Ngũ Dị Quy Nhất.
+
+Locked mutation gameplay:
+- Lôi: Lôi direct skill hit may call Thiên Lôi on a 6/5/4s internal cooldown; one proc per cast;
+- Phong: skill creates 5s Phong Thế; next different skill gets 15/25/35% one-cast cooldown reduction; creation ICD 8/7/6s;
+- Băng: one Hàn Ấn per caster-target-cast; 3 stacks trigger Băng Phong/Hàn Trệ; 15s mark life + 6s global refractory;
+- Dương: converts 25/40/60% of the caster's remaining DoT into immediate damage; per-target ICD 8/6/4s;
+- U Minh: once per encounter prevents lethal defeat, restores 15/25/35% Max HP and gives temporary incoming-damage protection;
+- mutation secondary effects do not recursively trigger mutation mechanics by default.
+
+Locked resource rule:
+- five matching Bản Nguyên resources: Lôi/Phong/Băng/Dương/U Minh;
+- primary source = matching elite/boss/secret-realm content;
+- no mutation consumer may ship without a real acquisition source.
+
+Important implementation dependency:
+- design is closed but code is not authorized;
+- mutation combat requires canonical skill tags/cast identity, Crit, Effect Hit/Resistance, source-owned DoT, control refractory, lethal interception and final combat-stat channels;
+- do not invent temporary root-only substitutes.

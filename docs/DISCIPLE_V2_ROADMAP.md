@@ -128,28 +128,34 @@ Mị Lực is the canonical social-power input; individual systems may add resis
 
 This is the preferred order to reduce rework. It is a **queue**, not permission to auto-start code.
 
-## Current: Spiritual Root V2
+## Spiritual Root V2 — DESIGN CLOSED
 
-Base-root authority is now locked in:
+Canonical authority:
 `docs/SPIRITUAL_ROOT_V2_SPEC.md`
 
-Locked:
-- five base elements;
+Full design now locked:
+- five base roots;
 - 1–5 root birth distribution;
-- per-element purity 1–100;
-- root-derived cultivation/mastery/combat buffs;
+- independent purity 1–100;
+- base cultivation/mastery/combat buffs;
 - base-element permanent passives;
 - 1/2/3/4/5 perfected-root Resonance;
 - elemental counter core;
-- deterministic Linh Tủy refinement;
+- deterministic Linh-Tủy refinement;
 - expensive post-birth missing-root creation;
-- storage/resource-source/migration requirements.
+- 0.20% congenital mutation model;
+- Lôi/Phong/Băng/Dương/U Minh V1;
+- Stage I/II/III mutation growth and five matching Bản Nguyên resources;
+- mutation combat timing/proc/AoE/multi-hit/basic-attack/boss/team/AI rules;
+- all five mutations may coexist;
+- full five Stage III -> Ngũ Dị Quy Nhất;
+- persistence/migration/test invariants.
 
-Still to design before implementation:
-- Dị Linh Căn / mutation types, rates, reveal/awakening, combat mechanics and acquisition path;
-- final mutation interaction with the locked base-root model.
+Implementation is **not authorized**.
 
-Do not implement Spiritual Root V2 until the user explicitly authorizes code after mutation design is closed.
+Important dependency:
+mutation combat requires parts of Skills/Combat Stats V2 (advanced element tags, cast/source identity, Crit, Effect Hit/Resistance, source-owned DoT, control refractory, lethal interception and final stat channels).
+When implementation is eventually scheduled, do not fabricate temporary root-only stats. Bring required primitives into the active phase or defer mutation combat activation until the proper combat phase.
 
 ## Then: Mệnh Cách + Traits V2
 

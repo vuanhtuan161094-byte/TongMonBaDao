@@ -206,24 +206,31 @@ These docs are design authorities, not implementation PASS evidence.
 
 ## 7. Disciple V2 design queue
 
-Spiritual Root V2 **base core design is locked, not implemented**.
+Spiritual Root V2 **full design is locked, not implemented**.
 
 Canonical design:
 - `docs/SPIRITUAL_ROOT_V2_SPEC.md`.
 
-Locked design now covers:
-- five base roots;
-- 1–5 root generation rates;
+Locked design covers:
+- five base roots and 1–5 birth distribution;
 - per-element purity 1–100;
 - base cultivation/mastery/combat buffs;
 - element-specific permanent passives;
 - perfected-root Resonance through full five roots;
 - elemental counter core;
-- deterministic refinement;
-- missing-root transformation path;
-- resource-source/storage/migration contract.
+- deterministic refinement and missing-root transformation;
+- 0.20% congenital Dị-Linh-Căn model;
+- Lôi/Phong/Băng/Dương/U Minh V1;
+- Stage I/II/III progression and five matching Bản Nguyên resources;
+- combat mechanic timing/proc/AoE/multi-hit/basic-attack/boss/team/AI rules;
+- full-five Stage III Ngũ Dị Quy Nhất;
+- persistence/resource-source/migration/test contracts.
 
-Next Spiritual Root design subsection:
-**Dị Linh Căn / mutation V2**.
+Important dependency:
+mutation combat requires Skill/Combat V2 primitives that do not all exist in live runtime yet.
+Do not invent temporary root-only Crit/Effect-Hit/DoT/control/stat authority.
 
-No implementation phase is active and no Spiritual Root V2 code is authorized yet.
+**No implementation phase is active and no Spiritual Root V2 gameplay code is authorized yet.**
+
+Next default design subject:
+**Mệnh Cách + Traits V2**, unless the user explicitly chooses another subsystem.

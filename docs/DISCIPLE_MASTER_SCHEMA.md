@@ -77,7 +77,7 @@ Reveal/awakening không được reroll identity ẩn.
 | Linh căn — số hệ/nguyên tố | random 1–5 | birth snapshot cố định | Có thể thêm căn mới cực đắt | đại cải tạo bằng Linh Tủy + Ngũ Hành Bản Nguyên; refine thường KHÔNG đổi hệ |
 | Linh căn — purity từng hệ | random riêng từng căn, 1–100 | birth snapshot cố định | Có | Linh Tủy +1 deterministic; 99->100 cần thêm Ngũ Hành Bản Nguyên; không diminishing gain |
 | Cộng Hưởng Linh Căn | derived từ số căn current đạt 100 | Không | Có | tự recompute; R=1.10/1.25/1.45/1.70/2.00 ở 1/2/3/4/5 căn viên mãn |
-| Biến dị Linh căn | future V2 design | identity ẩn khi áp dụng | reveal/awaken/transform | phải có spec riêng; không reroll |
+| Dị Linh Căn | 0,20% congenital default: 0,19% latent + 0,01% awakened; max 1 congenital ordinary | latent identity cố định từ lúc sinh | Có thể reveal/awaken; người không latent vẫn có thể hậu thiên tạo | Lôi/Phong/Băng/Dương/U Minh V1; Stage I–III; không purity riêng; không reroll; chi tiết `docs/SPIRITUAL_ROOT_V2_SPEC.md` |
 | Profession talent bẩm sinh | random | khá ổn định | có thể thêm trait hiếm sau này | cơ duyên/đào tạo đặc biệt, không thay profession XP |
 | Profession XP | 0/thấp khi sinh | Không | Có | thật sự làm nghề |
 | Work preference | personality/life derived | Không | Có | trải nghiệm/chính sách/assignment |
@@ -220,7 +220,7 @@ Base rules now locked:
 
 Canonical V2 data is per-element root values. The old one-global-purity and legacy root-quality fields become migration/compatibility data after implementation.
 
-Mutation roots remain the next design subsection and are not yet locked.
+Mutation/Dị Linh Căn V2 is now locked in the same authority. V1 uses Lôi/Phong/Băng/Dương/U Minh, rare congenital identity plus deterministic post-birth acquisition/progression, and explicit combat-mechanic dependencies. No Spiritual Root V2 runtime is implemented yet.
 
 ---
 

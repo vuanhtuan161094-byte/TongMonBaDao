@@ -154,35 +154,34 @@ Never copy its assets/text/icons/map.
 
 ---
 
-## SPIRITUAL ROOT V2 — BASE CORE LOCKED, MUTATION NEXT
+## SPIRITUAL ROOT V2 — FULL DESIGN LOCKED
 
 Canonical authority:
 `docs/SPIRITUAL_ROOT_V2_SPEC.md`
 
-Locked base:
-- Kim/Mộc/Thủy/Hỏa/Thổ;
-- ordinary root-count rates 7/18/30/28/17%;
-- each root has independent purity 1–100;
-- deterministic post-birth +1 refinement;
-- Linh Tủy ordinary cost + Ngũ Hành Bản Nguyên for perfection/missing-root transformation;
-- root buffs matching cultivation/mastery/skill effect/resistance;
-- Kim penetration, Mộc Max HP, Thủy attack+cast speed, Hỏa damage, Thổ Defense;
-- perfected-root Resonance R=1.10/1.25/1.45/1.70/2.00 at 1/2/3/4/5 roots at 100;
-- full five 100 is intentionally extremely strong;
-- Ngũ Hành counter is combat-core;
-- skill-specific Burn/Freeze/Guard/etc. stay in skill definitions.
-
-Next design subsection:
-**Dị Linh Căn / mutation V2**.
-
-Must close end-to-end:
-- mutation types and base-root relation;
-- birth/latent rates;
-- reveal/awakening;
-- post-birth transformation;
-- exact buffs/mechanics;
-- resources and acquisition sources;
-- combat/content consumers;
-- persistence/migration.
+Locked:
+- base Kim/Mộc/Thủy/Hỏa/Thổ;
+- root-count rates 7/18/30/28/17%;
+- independent purity 1–100;
+- deterministic refinement and missing-root creation;
+- root buffs/passives + perfected-root Resonance;
+- Ngũ Hành combat matchup;
+- congenital Dị-Căn rate 0.20% total (0.19% latent, 0.01% awakened);
+- Lôi/Phong/Băng/Dương/U Minh Stage I–III;
+- five matching Dị Bản Nguyên resources;
+- Lôi Thiên Lôi timing;
+- Phong Thế timing;
+- Băng Hàn-Ấn/Băng-Phong/Hàn-Trệ timing;
+- Dương Bạo source-owned DoT conversion;
+- U Minh once-per-encounter Minh Mệnh;
+- all five mutations may coexist;
+- full five Stage III -> Ngũ Dị Quy Nhất;
+- proc-loop, AoE, multi-hit, boss, AI, persistence and migration rules.
 
 No Spiritual Root V2 gameplay code is authorized yet.
+
+Implementation dependency:
+do not implement mutation combat with temporary private stats. It requires the relevant Skill/Combat V2 primitives or must wait for that combat phase.
+
+Next design subject in the Disciple V2 queue:
+**Mệnh Cách + Traits V2**, unless the user explicitly chooses another subsystem.
