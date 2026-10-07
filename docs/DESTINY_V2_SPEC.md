@@ -274,6 +274,10 @@ Congenital ownership skips the acquisition recipe for that fate.
 
 This makes each fate feel earned rather than purchased from one generic menu.
 
+When all non-resource prerequisites of a known recipe are met, the UI may show **Mệnh Cơ Đã Thành**.
+
+Mệnh Cơ is only an eligibility flag. It is not an inventory resource and does not grant the Mệnh automatically. It tells the player exactly what resource/item requirement remains.
+
 Every post-birth recipe must declare:
 
 ```
@@ -418,6 +422,20 @@ requires:
 Derived effect is much stronger than any one component and creates a distinct build.
 
 Mệnh Cục is analogous to a set bonus, but lore/gameplay belongs to fate.
+
+## 12.1 Mệnh Cục registry law
+
+Mệnh Cục combinations are explicit content definitions. Do not automatically generate a combo for every pair of Mệnh Cách.
+
+Initial rules:
+- a Mệnh Cục requires 2–4 specific active Mệnh Cách;
+- all registered compatible Mệnh Cục may be active simultaneously;
+- no hard cap on active Mệnh Cục;
+- a Mệnh Cục is derived and cannot be rolled/acquired directly;
+- a Mệnh Cục does not count as an owned Mệnh Cách;
+- in initial V2, one Mệnh Cục cannot be a requirement for another Mệnh Cục.
+
+This avoids combinatorial explosion while still rewarding deliberate collections.
 
 ---
 
