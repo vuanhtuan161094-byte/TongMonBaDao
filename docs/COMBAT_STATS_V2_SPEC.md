@@ -465,21 +465,25 @@ Root-generated resistance and mutation-generated resistance are derived source c
 
 ---
 
-# 10. Outgoing / skill-effect channels are modifiers, not headline stats
+# 10. Specialized combat-effect channels — canonical, but not headline stats
 
-The following are valid canonical modifier channels but are not required as top-level combat-sheet stats:
+The following are canonical modifier channels but are not required as always-visible primary Combat Stats:
 
-- All Damage;
-- Direct Damage;
-- DoT Potency;
-- Skill Effect;
-- Healing Effect;
-- Shield Effect;
-- Control/Debuff Duration;
+- **All Damage**;
+- **Direct Damage**;
+- **Basic Attack Damage**;
+- **DoT Potency**;
+- **Skill Effect**;
+- **Healing Done / Hiệu Quả Trị Liệu**;
+- **Healing Received / Hiệu Quả Nhận Trị Liệu**;
+- **Shield Effect / Hiệu Quả Hộ Thuẫn**;
+- **Control/Debuff Duration**;
 - element-specific damage/effect;
 - path-specific damage/effect;
-- basic-attack damage;
 - skill-specific magnitude.
+
+They are real combat authority.
+They are simply shown contextually rather than cluttering every disciple's primary stat panel.
 
 Example:
 Hỏa Root's "All Damage" goes into outgoing damage modifiers.
@@ -488,7 +492,33 @@ Dương's DoT Potency goes into the DoT modifier channel.
 
 Băng's control-duration contribution goes into control/debuff-duration modifiers.
 
-They should appear in detailed breakdown/filter UI when relevant, not clutter the first combat panel with dozens of always-visible lines.
+A healing skill owns its base heal amount.
+The healer's Healing Done channel modifies that outgoing heal.
+The target's Healing Received channel then modifies the amount actually received.
+
+Starting semantic order:
+`final_heal = base_heal × outgoing_heal_factor × receiving_heal_factor`
+
+Within each side, ordinary percent-add modifiers add on that side's base factor.
+
+Example:
+- base heal = 5,000;
+- healer Healing Done +60% -> 8,000;
+- target Healing Received +25% and one anti-heal effect -50% -> receiving factor = 1 + 0.25 - 0.50 = 0.75;
+- final received heal = 6,000.
+
+A receiving factor cannot go below zero through ordinary arithmetic.
+A true "cannot be healed" state is an explicit rule override, not -1000% hidden arithmetic.
+
+Shielding is separate:
+`final_created_shield = base_shield × shield_effect_factor`
+
+Healing Done does not increase shields.
+Shield Effect does not increase healing.
+
+HP regeneration, Stamina recovery and Injury recovery are contextual recovery channels owned by their respective systems; they are not silently folded into Healing Done.
+
+These specialized channels should appear in detailed breakdown/filter UI when relevant, not clutter the first combat panel with dozens of always-visible lines.
 
 ---
 
@@ -772,8 +802,18 @@ Combat Stats V2 canonical registry is:
 **Elemental**
 - keyed Elemental Resistance map for five base + five advanced elements
 
+**Canonical specialized combat-effect channels**
+- Healing Done
+- Healing Received
+- Shield Effect
+- All Damage / Direct Damage / Basic Attack Damage
+- DoT Potency
+- Skill Effect
+- Control/Debuff Duration
+- element/path/skill-filtered effect channels
+
 Everything else is either:
-- a source/modifier channel;
+- another registered source/modifier channel;
 - an action/skill property;
 - a runtime status;
 - a special triggered mechanic;
