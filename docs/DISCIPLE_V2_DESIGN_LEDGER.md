@@ -478,14 +478,24 @@ Traits V2 is now DESIGN LOCKED, NOT IMPLEMENTED.
 Canonical authority:
 `docs/TRAITS_V2_SPEC.md`
 
-Next default design subject:
-**Mệnh Cách V2**.
+Mệnh Cách V2 is now DESIGN LOCKED, NOT IMPLEMENTED.
+Canonical authority:
+`docs/DESTINY_V2_SPEC.md`
 
-Keep:
-- Mệnh Cách distinct from Trait;
-- Mệnh Cách rarer and more identity-defining;
-- do not make Mệnh Cách merely "Trait but stronger";
-- preserve the one-disciple-forever nurture law.
+Locked highlights:
+- congenital total **0.50% = 0.45% latent + 0.05% revealed**;
+- multiple compatible Mệnh Cách may coexist;
+- no Chủ-Mệnh slot and no lifetime hard cap;
+- no universal Khai/Hóa/Chứng ladder;
+- Mệnh must be high-impact and build-defining;
+- Mệnh Nguyên + explicit per-Mệnh acquisition recipes;
+- significant-history retroactivity;
+- explicit anti-farm laws;
+- Mệnh Cục combinations;
+- favorite disciple may eventually collect many compatible Mệnh.
+
+Next default design subject:
+**Bloodline V2 / Huyết Mạch V2**.
 
 Use:
 - this ledger;
