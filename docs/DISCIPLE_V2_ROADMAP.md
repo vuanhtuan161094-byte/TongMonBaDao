@@ -216,19 +216,19 @@ Locked:
 
 Implementation remains future work.
 
-## Current design subject: Mệnh Cách V2
+## Mệnh Cách V2 — DESIGN CLOSED
 
-Draft authority:
+Canonical authority:
 `docs/DESTINY_V2_SPEC.md`
 
 Status:
-**DESIGN DRAFT — awaiting user review; not implemented; not locked.**
+**DESIGN LOCKED — NOT IMPLEMENTED**
 
 Redesigned proposal:
 - merge old generic Thiên Mệnh terminology into one Mệnh Cách authority;
 - multiple compatible Mệnh Cách may coexist and all are active;
 - no Chủ-Mệnh slot and no lifetime hard cap;
-- congenital rate remains 0.10% for now, max one ordinary birth fate;
+- congenital rate = **0.50% total (0.45% latent + 0.05% revealed)**, max one ordinary birth fate;
 - no generic color/grade;
 - no universal Khai/Hóa/Chứng ladder;
 - each fate is strongly useful immediately after reveal;
@@ -239,7 +239,7 @@ Redesigned proposal:
 - effects are intentionally much stronger and clearer than Traits;
 - long-term favorite disciple may eventually collect many compatible fates.
 
-## Then: Bloodline V2
+## Current design subject: Bloodline V2
 
 Need decide:
 - birth rate;
