@@ -193,31 +193,30 @@ Locked:
 
 Implementation remains future work.
 
-## Current design subject: Traits V2
+## Traits V2 — DESIGN CLOSED
 
-Draft authority:
+Canonical authority:
 `docs/TRAITS_V2_SPEC.md`
 
-Status:
-**DESIGN DRAFT — awaiting user review; not implemented; not locked.**
-
-Current proposal:
-- visible birth / latent birth / acquired / removed state;
-- beneficial / detrimental / tradeoff nature;
-- no universal Trait Grade 1–5;
-- birth-visible count 1–3;
-- 8% ordinary latent Trait target;
-- generation independent from Disciple Quality/Dẫn Tiên quality;
-- explicit conflicts and suppressed latent-conflict handling;
+Locked:
+- birth-visible / latent / acquired / removed-overcome states;
+- Hữu Ích / Bất Lợi / Song Diện;
+- no universal Grade 1–5;
+- ordinary birth-visible count 1/2/3 = 60/32/8%;
+- ordinary latent rate = 8%, max one;
+- visible nature weights = 50/30/20%;
+- independence from Disciple Quality/Dẫn Tiên/Root;
+- explicit conflicts + hidden-latent suppression;
 - no lifetime Trait cap;
-- deterministic reveal, post-birth acquisition and removal;
-- legacy personality/profession/combat-power Trait overlap retired;
-- starter combat/work/cultivation/support/path Trait catalogue.
+- deterministic reveal/acquisition/removal;
+- no generic removal fail chance;
+- Personality/profession talent kept separate;
+- consumer-readiness gating;
+- legacy trait-grade/combat-power authority retired.
 
-Personality is not a Trait.
-Mệnh Cách is not part of this phase.
+Implementation remains future work.
 
-## Then: Mệnh Cách V2
+## Current design subject: Mệnh Cách V2
 
 Need decide:
 - congenital rarity;
