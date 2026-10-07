@@ -474,12 +474,18 @@ No gameplay runtime implementation was added by this design lock.
 
 Spiritual Root V2, Combat Stats V2 and the Disciple Characteristics/Stat Framework V2 are design-closed.
 
+Traits V2 is now DESIGN LOCKED, NOT IMPLEMENTED.
+Canonical authority:
+`docs/TRAITS_V2_SPEC.md`
+
 Next default design subject:
-**Traits V2**.
+**Mệnh Cách V2**.
 
 Keep:
-- Personality separate from Trait;
-- Mệnh Cách separate from Traits V2 and design it afterward.
+- Mệnh Cách distinct from Trait;
+- Mệnh Cách rarer and more identity-defining;
+- do not make Mệnh Cách merely "Trait but stronger";
+- preserve the one-disciple-forever nurture law.
 
 Use:
 - this ledger;
