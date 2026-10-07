@@ -157,6 +157,23 @@ Important dependency:
 mutation combat requires parts of Skills/Combat Stats V2 (advanced element tags, cast/source identity, Crit, Effect Hit/Resistance, source-owned DoT, control refractory, lethal interception and final stat channels).
 When implementation is eventually scheduled, do not fabricate temporary root-only stats. Bring required primitives into the active phase or defer mutation combat activation until the proper combat phase.
 
+## Combat Stats V2 — DESIGN CLOSED
+
+Canonical authority:
+`docs/COMBAT_STATS_V2_SPEC.md`
+
+Locked:
+- core HP/Attack/Defense;
+- four separate realtime timing stats;
+- Crit/Crit Damage/Crit Resistance;
+- Defense Penetration;
+- Effect Hit/Resistance;
+- Damage Reduction;
+- keyed elemental resistance;
+- no generic Speed, Accuracy/Dodge, physical/magical split, universal mana or Combat Power authority.
+
+Implementation remains future work.
+
 ## Current design subject: Disciple Characteristics & Stat Framework V2
 
 Draft authority:
