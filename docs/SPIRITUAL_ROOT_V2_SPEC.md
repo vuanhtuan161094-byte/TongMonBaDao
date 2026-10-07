@@ -585,11 +585,25 @@ V1 branches:
 The data model must allow future additional branches.
 Do not hardcode the schema as if Metal can only ever have Lightning forever.
 
+Canonical Dị-Căn state names:
+- **Tiềm Ẩn** — identity exists but is unrevealed/inactive;
+- **Thức Tỉnh** — first active realm;
+- **Thuế Biến** — deeper mutation realm;
+- **Viên Mãn** — completed mutation realm.
+
+Stable internal enum IDs:
+- `latent`;
+- `awakened`;
+- `metamorphosis`;
+- `perfected`.
+
+Player-facing text must use the Vietnamese cultivation names above rather than Roman numerals.
+
 A mutation:
 - does **not** replace the base root;
 - does **not** remove base compatibility;
 - does **not** have a second purity meter;
-- may progress through Mutation Stage I / II / III;
+- may progress through Thức Tỉnh / Thuế Biến / Viên Mãn;
 - may coexist with mutations on the disciple's other base roots;
 - remains independent from Disciple Quality.
 
@@ -628,7 +642,7 @@ A latent result exists in saved identity before reveal and gives no gameplay eff
 
 The extremely rare already-awakened result starts:
 - revealed;
-- Mutation Stage I;
+- Mutation Thức Tỉnh;
 - with its associated base root at a minimum birth purity of 80.
 
 This minimum is part of the rare birth package, not a post-generation reroll.
@@ -655,6 +669,12 @@ Example conceptual record:
 }
 ```
 
+Canonical `mutation_realm` display mapping:
+- `latent` -> **Tiềm Ẩn**;
+- `awakened` -> **Thức Tỉnh**;
+- `metamorphosis` -> **Thuế Biến**;
+- `perfected` -> **Viên Mãn**.
+
 Canonical `origin` categories:
 - `birth_latent`;
 - `birth_awakened`;
@@ -662,7 +682,7 @@ Canonical `origin` categories:
 
 A latent unrevealed mutation remains stored with:
 - its true mutation id;
-- `stage = 0`;
+- `mutation_realm = "latent"`;
 - `revealed = false`.
 
 Reveal changes visibility only.
@@ -682,17 +702,17 @@ Reveal:
 - no resource cost;
 - no success roll.
 
-Stage I awakening:
+Thức Tỉnh awakening:
 - associated base root >=80;
 - **64 Linh Tủy**;
 - **1 matching Dị Bản Nguyên**.
 
-Stage II:
+Thuế Biến:
 - associated base root >=90;
 - **128 Linh Tủy**;
 - **2 matching Dị Bản Nguyên**.
 
-Stage III:
+Viên Mãn:
 - associated base root =100;
 - **256 Linh Tủy**;
 - **4 matching Dị Bản Nguyên**;
@@ -707,12 +727,12 @@ A favorite disciple may still acquire a mutation later.
 Requirement:
 - associated base root =100.
 
-Create Stage I:
+Create Thức Tỉnh:
 - **256 Linh Tủy**;
 - **3 matching Dị Bản Nguyên**;
 - **1 Ngũ Hành Bản Nguyên**.
 
-Then Stage II/III use the normal costs above.
+Then Thuế Biến/III use the normal costs above.
 
 Therefore congenital mutation saves enormous time/resources but does not create a permanent final ceiling.
 
@@ -748,17 +768,17 @@ It does not create a mutation success percentage because mutation advancement do
 
 ---
 
-# 24. Common Mutation Stage bonuses
+# 24. Common buff theo cảnh giới Dị Căn
 
 Mutation bonuses are additional to the associated base-root bonuses.
 
 They are **not multiplied by base-root Resonance**.
 
-| Stage | matching mutation cultivation | matching mutation mastery | matching mutation skill effect | matching mutation resistance |
+| Cảnh giới | matching mutation cultivation | matching mutation mastery | matching mutation skill effect | matching mutation resistance |
 |---|---:|---:|---:|---:|
-| I | +10% | +10% | +20% | +10% |
-| II | +20% | +20% | +40% | +20% |
-| III | +30% | +30% | +60% | +30% |
+| **Thức Tỉnh** | +10% | +10% | +20% | +10% |
+| **Thuế Biến** | +20% | +20% | +40% | +20% |
+| **Viên Mãn** | +30% | +30% | +60% | +30% |
 
 Example at endgame:
 - full base roots give their own matching-root bonuses;
@@ -778,7 +798,7 @@ Future technique/skill content must distinguish:
 - `advanced_element`: Lôi/Phong/Băng/Dương/U Minh or none;
 - path: Kiếm/Thể/Pháp;
 - effect tags: direct damage / DoT / control / heal / shield / mobility / etc.;
-- mutation-stage requirement where applicable;
+- mutation-yêu cầu cảnh giới Dị Căn where applicable;
 - root-scalable numeric fields.
 
 Example:
@@ -821,13 +841,13 @@ Every mutation mechanic must use a real combat source/cast identity.
 
 # 27. Lôi Linh Căn — locked combat mechanic
 
-Permanent Stage bonuses:
+Buff vĩnh viễn theo cảnh giới:
 
-| Stage | Crit Rate contribution | Crit Damage contribution |
+| Cảnh giới | Crit Rate contribution | Crit Damage contribution |
 |---|---:|---:|
-| I | +5 percentage points | +15% |
-| II | +10 percentage points | +30% |
-| III | +15 percentage points | +50% |
+| **Thức Tỉnh** | +5 percentage points | +15% |
+| **Thuế Biến** | +10 percentage points | +30% |
+| **Viên Mãn** | +15 percentage points | +50% |
 
 These contributions require future canonical Crit/Crit-Damage combat-stat authority.
 Do not invent a root-only private Crit formula.
@@ -842,16 +862,16 @@ When a **Lôi-tagged direct-damage skill** hits and Thiên Lôi is ready:
 - trigger once for that cast;
 - then start the internal cooldown.
 
-| Stage | Internal cooldown | Primary Thiên Lôi damage |
+| Cảnh giới | Internal cooldown | Primary Thiên Lôi damage |
 |---|---:|---:|
-| I | 6s | 30% of the triggering hit |
-| II | 5s | 50% |
-| III | 4s | 80% |
+| **Thức Tỉnh** | 6s | 30% of the triggering hit |
+| **Thuế Biến** | 5s | 50% |
+| **Viên Mãn** | 4s | 80% |
 
 AoE:
 - one cast still triggers at most one primary Thiên Lôi;
-- Stage II may chain to 1 additional nearby target at 70% of Thiên Lôi damage;
-- Stage III may chain to 2 additional nearby targets at 70% then 50%.
+- Thuế Biến may chain to 1 additional nearby target at 70% of Thiên Lôi damage;
+- Viên Mãn may chain to 2 additional nearby targets at 70% then 50%.
 
 Multi-hit:
 - one cast may trigger at most one Thiên Lôi regardless of hit count.
@@ -869,13 +889,13 @@ Thiên Lôi itself:
 
 # 28. Phong Linh Căn — locked combat mechanic
 
-Permanent Stage bonuses:
+Buff vĩnh viễn theo cảnh giới:
 
-| Stage | Movement Speed | Cast Speed |
+| Cảnh giới | Movement Speed | Cast Speed |
 |---|---:|---:|
-| I | +10% | +5% |
-| II | +20% | +10% |
-| III | +30% | +15% |
+| **Thức Tỉnh** | +10% | +5% |
+| **Thuế Biến** | +20% | +10% |
+| **Viên Mãn** | +30% | +15% |
 
 Movement speed remains the canonical movement stat.
 Therefore it may naturally reduce real travel/hauling overhead in systems that already consume Movement Speed.
@@ -891,19 +911,19 @@ When a **Phong-tagged combat skill** is successfully cast and Phong Thế is rea
 The next **different combat skill** used during that window consumes Phong Thế.
 That use receives a one-cast cooldown reduction:
 
-| Stage | Cooldown reduction on the consumed skill |
+| Cảnh giới | Cooldown reduction on the consumed skill |
 |---|---:|
-| I | 15% |
-| II | 25% |
-| III | 35% |
+| **Thức Tỉnh** | 15% |
+| **Thuế Biến** | 25% |
+| **Viên Mãn** | 35% |
 
 Internal cooldown for creating a new Phong Thế:
 
-| Stage | Internal cooldown |
+| Cảnh giới | Internal cooldown |
 |---|---:|
-| I | 8s |
-| II | 7s |
-| III | 6s |
+| **Thức Tỉnh** | 8s |
+| **Thuế Biến** | 7s |
+| **Viên Mãn** | 6s |
 
 Order:
 1. ordinary cooldown modifiers resolve;
@@ -920,13 +940,13 @@ AI should raise the utility of an important/high-cooldown skill while Phong Th�
 
 # 29. Băng Linh Căn — locked combat mechanic
 
-Permanent Stage bonuses:
+Buff vĩnh viễn theo cảnh giới:
 
-| Stage | Effect Hit contribution | debuff/control duration |
+| Cảnh giới | Effect Hit contribution | debuff/control duration |
 |---|---:|---:|
-| I | +10 percentage points | +10% |
-| II | +20 percentage points | +20% |
-| III | +30 percentage points | +30% |
+| **Thức Tỉnh** | +10 percentage points | +10% |
+| **Thuế Biến** | +20 percentage points | +20% |
+| **Viên Mãn** | +30 percentage points | +30% |
 
 Effect Hit requires future canonical status-resolution authority.
 Do not build a Băng-only private status-hit formula.
@@ -949,11 +969,11 @@ Hàn Ấn:
 
 Normal enemy Băng Phong:
 
-| Stage | Freeze duration |
+| Cảnh giới | Freeze duration |
 |---|---:|
-| I | 1.0s |
-| II | 1.5s |
-| III | 2.0s |
+| **Thức Tỉnh** | 1.0s |
+| **Thuế Biến** | 1.5s |
+| **Viên Mãn** | 2.0s |
 
 After Băng Phong, that target enters a **6-second global Băng-Phong refractory state**.
 No caster may add new Hàn Ấn during that refractory window.
@@ -961,11 +981,11 @@ No caster may add new Hàn Ấn during that refractory window.
 Bosses do not become globally immune.
 Instead 3 stacks trigger **Hàn Trệ**:
 
-| Stage | Boss attack interval / cast time | Duration |
+| Cảnh giới | Boss attack interval / cast time | Duration |
 |---|---:|---:|
-| I | ×1.15 | 3s |
-| II | ×1.25 | 4s |
-| III | ×1.35 | 5s |
+| **Thức Tỉnh** | ×1.15 | 3s |
+| **Thuế Biến** | ×1.25 | 4s |
+| **Viên Mãn** | ×1.35 | 5s |
 
 Bosses also receive the same 6-second global refractory window.
 
@@ -975,13 +995,13 @@ AI should increase the utility of a Băng skill when a valid target is at 2 Hàn
 
 # 30. Dương Linh Căn — locked combat mechanic
 
-Permanent Stage bonuses:
+Buff vĩnh viễn theo cảnh giới:
 
-| Stage | All Damage contribution | DoT potency |
+| Cảnh giới | All Damage contribution | DoT potency |
 |---|---:|---:|
-| I | +8% | +15% |
-| II | +16% | +30% |
-| III | +25% | +50% |
+| **Thức Tỉnh** | +8% | +15% |
+| **Thuế Biến** | +16% | +30% |
+| **Viên Mãn** | +25% | +50% |
 
 ## 30.1 Dương Bạo
 
@@ -995,22 +1015,22 @@ Select the caster-owned eligible DoT with the greatest remaining total damage.
 
 Convert the following fraction of its remaining damage into immediate Dương damage:
 
-| Stage | Remaining DoT converted immediately |
+| Cảnh giới | Remaining DoT converted immediately |
 |---|---:|
-| I | 25% |
-| II | 40% |
-| III | 60% |
+| **Thức Tỉnh** | 25% |
+| **Thuế Biến** | 40% |
+| **Viên Mãn** | 60% |
 
 The converted amount is removed from the remaining DoT.
 It is not duplicated.
 
 Per-target internal cooldown:
 
-| Stage | Internal cooldown |
+| Cảnh giới | Internal cooldown |
 |---|---:|
-| I | 8s |
-| II | 6s |
-| III | 4s |
+| **Thức Tỉnh** | 8s |
+| **Thuế Biến** | 6s |
+| **Viên Mãn** | 4s |
 
 AoE:
 - resolves separately per target;
@@ -1036,13 +1056,13 @@ AI should increase Dương-skill utility when a target has a large amount of cas
 
 # 31. U Minh Linh Căn — locked combat mechanic
 
-Permanent Stage bonuses:
+Buff vĩnh viễn theo cảnh giới:
 
-| Stage | Effect Resistance contribution | general Damage Reduction |
+| Cảnh giới | Effect Resistance contribution | general Damage Reduction |
 |---|---:|---:|
-| I | +15 percentage points | +5% |
-| II | +30 percentage points | +10% |
-| III | +45 percentage points | +15% |
+| **Thức Tỉnh** | +15 percentage points | +5% |
+| **Thuế Biến** | +30 percentage points | +10% |
+| **Viên Mãn** | +45 percentage points | +15% |
 
 General Damage Reduction from independent systems composes through the canonical incoming-damage channel rather than being naively added until it reaches 100%.
 
@@ -1055,11 +1075,11 @@ When incoming damage would reduce the disciple to 0 HP or below:
 - set HP to a Stage-dependent fraction of Max HP;
 - activate Minh Hộ.
 
-| Stage | HP after lethal interception | Incoming damage during Minh Hộ | Minh Hộ duration |
+| Cảnh giới | HP after lethal interception | Incoming damage during Minh Hộ | Minh Hộ duration |
 |---|---:|---:|---:|
-| I | 15% Max HP | ×0.65 | 2s |
-| II | 25% Max HP | ×0.50 | 3s |
-| III | 35% Max HP | ×0.35 | 4s |
+| **Thức Tỉnh** | 15% Max HP | ×0.65 | 2s |
+| **Thuế Biến** | 25% Max HP | ×0.50 | 3s |
+| **Viên Mãn** | 35% Max HP | ×0.35 | 4s |
 
 It does not reset from healing, target swaps or leaving melee range.
 It resets only at a new encounter.
@@ -1088,7 +1108,7 @@ Base-root Resonance does not multiply the five Mutation passive/mechanic values.
 
 There is no 1/2/3/4-mutation resonance ladder.
 
-At exactly all five Stage III mutations, unlock:
+At exactly cả năm Dị Căn đều Viên Mãn, unlock:
 
 ## Ngũ Dị Quy Nhất
 
@@ -1235,7 +1255,7 @@ When Spiritual Root V2 is implemented, focused tests must prove at minimum:
 7. congenital ordinary generation creates at most one mutation;
 8. acquired mutation can eventually produce all five mutations on one disciple;
 9. base-root Resonance does not multiply Mutation mechanic/passive values;
-10. full five Stage III derives Ngũ Dị Quy Nhất;
+10. full five Viên Mãn derives Ngũ Dị Quy Nhất;
 11. one cast cannot multi-proc Lôi through AoE/multi-hit;
 12. Phong cannot recursively reset its own creator skill;
 13. Băng refractory prevents permanent control chains;
@@ -1260,7 +1280,7 @@ Spiritual Root V2 design is now closed for:
 - adding missing roots;
 - congenital mutation rarity;
 - Lôi/Phong/Băng/Dương/U Minh V1;
-- mutation Stage I/II/III;
+- mutation Thức Tỉnh/II/III;
 - mutation resources and sources;
 - mutation combat mechanics/timing;
 - full-five mutation endpoint;
