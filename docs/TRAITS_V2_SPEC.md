@@ -610,39 +610,78 @@ Legacy `Nhãn Lực Luyện Khí` should migrate to profession-talent authority 
 
 ---
 
-# 17. Starter Trait catalogue — balance draft
+# 17. Starter Trait catalogue — expanded balance draft
 
 The following is a **starting content target**, not yet locked balance.
 
-## 17.1 Cultivation / learning
+Reference-derived design rule:
+- Trait content should cover learning, cultivation, production, timing, critical, status, defense, support and recovery;
+- do not reduce the catalogue to only "+Attack" and "-Attack";
+- positive/negative/tradeoff identity should sometimes change **role suitability**, not merely total power.
+
+## 17.1 Học tập / lĩnh ngộ
+
+These Traits modify learning/mastery outcomes.
+They do not rewrite permanent Thông Tuệ.
+
+| Trait | Nature | Starting effect |
+|---|---|---|
+| **Ham Học** | Hữu Ích | +10% all valid learning/mastery XP |
+| **Nhất Tâm** | Hữu Ích | +15% technique/skill mastery XP while learning one selected subject at a time; switching subject clears the temporary focus buildup |
+| **Trí Nhớ Sâu** | Hữu Ích | +8% mastery XP; mastery decay, if a future system ever has it, is reduced by 50% |
+| **Suy Diễn** | Song Diện | +15% technique mastery XP; -8% Work Speed while assigned to ordinary production |
+| **Học Nhanh Làm Ẩu** | Song Diện | +15% profession XP; +500 Difficulty on explicit work quality/rare checks |
+| **Chậm Mà Chắc** | Song Diện | -8% learning XP; +10% skill/technique effect once that subject reaches its future mastery threshold |
+| **Tạp Niệm** | Bất Lợi | -10% technique/skill mastery XP |
+| **Khó Tiếp Thu** | Bất Lợi | -12% all valid learning/mastery XP |
+
+Notes:
+- **Nhất Tâm** is a rule-shaped Trait, not a fixed-class lock. The focused subject can change.
+- **Chậm Mà Chắc** only activates its payoff when the owning mastery system has a real threshold; until then it must not ship as fake text.
+- no Trait above changes the stored Thông Tuệ value.
+
+## 17.2 Tu luyện
 
 | Trait | Nature | Starting effect |
 |---|---|---|
 | **Kinh Mạch Ổn Định** | Hữu Ích | +10% natural/base cultivation gain |
 | **Kinh Mạch Mong Manh** | Bất Lợi | -10% natural/base cultivation gain |
 | **Ngộ Tĩnh** | Hữu Ích, latent-eligible | +8% cultivation gain; +10% technique/skill mastery XP |
-| **Tạp Niệm** | Bất Lợi | -10% technique/skill mastery XP |
-| **Ham Học** | Hữu Ích | +10% valid learning/mastery XP |
+| **Tâm Tĩnh Như Thủy** | Hữu Ích | +8% cultivation gain while not carrying a serious Injury or explicit disturbed-mind state |
+| **Nóng Vội Cầu Thành** | Song Diện | +12% cultivation gain; future breakthrough preparation/recovery penalties may apply only when Breakthrough V2 explicitly owns that consumer |
 
 Kinh Mạch Ổn Định and Kinh Mạch Mong Manh conflict.
 
-## 17.2 Work
+Do not activate a breakthrough downside before Breakthrough V2 owns the exact channel.
+
+## 17.3 Lao động / sản xuất
 
 | Trait | Nature | Starting effect |
 |---|---|---|
 | **Cần Mẫn** | Hữu Ích | +10% generic Work Speed |
+| **Cuồng Công** | Song Diện | +15% Work Speed; +20% Stamina cost for explicit stamina-consuming work |
 | **Lười Nhác** | Bất Lợi | -12% generic Work Speed |
 | **Cẩu Thả** | Song Diện | +10% Work Speed; +800 Difficulty on explicit work rare/quality Luck checks |
 | **Tỉ Mỉ** | Song Diện | -5% Work Speed; -600 Difficulty on explicit work rare/quality Luck checks |
+| **Tiết Liệu** | Hữu Ích | -8% ordinary recipe material consumption where the recipe explicitly allows efficiency reduction; never reduces fixed quest/special costs |
+| **Phung Phí** | Bất Lợi | +10% ordinary recipe material consumption; +8% profession XP |
+| **Đa Nhiệm** | Hữu Ích / contextual | +8% Work Speed in explicitly multi-step workshop professions; no bonus to simple field/mine tasks |
+| **Quen Tay** | Hữu Ích | +10% profession XP for the disciple's currently highest profession |
+| **Đổi Nghề Khó** | Bất Lợi | -15% profession XP in professions below the disciple's highest profession level |
 
 Conflicts:
 - Cần Mẫn ↔ Lười Nhác;
-- Cẩu Thả ↔ Tỉ Mỉ.
+- Cẩu Thả ↔ Tỉ Mỉ;
+- Tiết Liệu ↔ Phung Phí.
+
+Production lesson:
+- XP acceleration and actual throughput/material efficiency are separate channels.
+- a Trait that levels a profession faster does not automatically multiply routine output.
 
 Cơ Duyên remains the actual Luck Score attribute.
 Cẩu Thả/Tỉ Mỉ modify task difficulty, not Cơ Duyên itself.
 
-## 17.3 Combat / control
+## 17.4 Combat / control
 
 | Trait | Nature | Starting effect |
 |---|---|---|
@@ -654,8 +693,15 @@ Cẩu Thả/Tỉ Mỉ modify task difficulty, not Cơ Duyên itself.
 | **Huyết Chiến** | Song Diện | +12% All Damage; -20% Healing Received |
 | **Bất Khuất** | Hữu Ích / conditional | while current HP <30%: +10% Damage Reduction |
 | **Tâm Thần Bất Ổn** | Bất Lợi | -10 percentage points Effect Resistance |
+| **Trì Trọng** | Song Diện | -10% Movement Speed; +10 pp Effect Resistance; +5% Damage Reduction |
+| **Thân Pháp Nhẹ Nhàng** | Hữu Ích | +10% Movement Speed |
+| **Phản Ứng Nhanh** | Hữu Ích | +8% Attack Speed and +5% Cast Speed |
+| **Lão Luyện** | Hữu Ích | +8 pp Crit Resistance |
+| **Liều Mạng** | Song Diện | +10% All Damage; +8% incoming damage |
+| **Thừa Thắng Truy Kích** | Hữu Ích / conditional | after personally defeating an enemy, +8% Movement Speed and +8% Attack Speed for 5s; cannot stack, only refresh |
+| **Ổn Trận** | Hữu Ích / contextual | when current HP >=70%, +8 pp Effect Resistance |
 
-## 17.4 Support / recovery
+## 17.5 Support / recovery
 
 | Trait | Nature | Starting effect |
 |---|---|---|
@@ -663,10 +709,16 @@ Cẩu Thả/Tỉ Mỉ modify task difficulty, not Cơ Duyên itself.
 | **Hộ Tâm** | Hữu Ích | +15% Shield Effect |
 | **Hồi Nguyên** | Hữu Ích | +15% Healing Received; +10% Injury Recovery |
 | **Khí Huyết Khó Hợp** | Bất Lợi | -15% Healing Received |
+| **Dược Lý Thông Thạo** | Hữu Ích | +10% Healing Done; +10% medicine/healing profession XP when that profession authority exists |
+| **Thương Binh Kinh Nghiệm** | Hữu Ích | +15% Injury Recovery; treatment AI values wounded allies more strongly |
+| **Cứng Đầu** | Song Diện | +8% Damage Reduction while injured; -15% Healing Received |
+| **Hộ Trì Bản Năng** | Hữu Ích / conditional | +12% Shield Effect when shielding another target; no bonus to self-shield |
 
 Hồi Nguyên and Khí Huyết Khó Hợp conflict.
 
-## 17.5 Path affinity
+Support Traits must use the locked Healing Done / Healing Received / Shield Effect channels rather than one generic "support power".
+
+## 17.6 Đạo lộ / chiến đấu chuyên tinh
 
 These do not create a fixed class.
 
@@ -678,9 +730,42 @@ These do not create a fixed class.
 
 All three may eventually coexist.
 
+Additional path-shaped Traits:
+
+| Trait | Nature | Starting effect |
+|---|---|---|
+| **Kiếm Tâm Ổn Định** | Hữu Ích | +8% Sword skill effect while current HP >=50% |
+| **Cận Chiến Lão Thành** | Hữu Ích | +8% Body skill effect; +5 pp Crit Resistance |
+| **Pháp Ý Liên Miên** | Hữu Ích | +8% Spell skill effect; +8% Cast Speed |
+| **Tạp Tu** | Song Diện | +8% learning XP to the disciple's two lowest path depths; -5% skill effect for the currently highest path |
+
 A disciple is not permanently locked to one path.
+The framework intentionally supports eventual multi-path development.
 
 ---
+
+
+# 17.7 Reference-pattern library — not direct copies
+
+The reference game/community data shows several recurring Trait patterns worth preserving as **design patterns**, not copied content:
+
+1. **speed-for-defense tradeoff**;
+2. **crit-for-accuracy/reliability tradeoff**;
+3. **DoT damage with survivability/lifespan downside**;
+4. **Effect Resistance with offensive downside**;
+5. **healing/support specialization**;
+6. **low-HP conditional power**;
+7. **position/context-dependent benefit**;
+8. **production time vs output tradeoff**;
+9. **profession XP vs material/output tradeoff**;
+10. **resource saving vs speed/output tradeoff**;
+11. **specialization in one path/weapon/tag**;
+12. **learning fast but working poorly**;
+13. **slow learning but stronger completed mastery**;
+14. **activity-earned identity**;
+15. **removable quirk whose value depends on assigned role**.
+
+Trait V2 should keep producing content from these pattern families before inventing new top-level stat systems.
 
 # 18. Why no social Trait catalogue yet
 
