@@ -1,7 +1,7 @@
 # MỆNH CÁCH V2 — TÔNG MÔN BÁ ĐẠO
 
 Date: 2026-10-07
-Status: **DESIGN DRAFT FOR USER REVIEW — NOT IMPLEMENTED — NOT LOCKED**
+Status: **REDESIGN DRAFT FOR USER REVIEW — NOT IMPLEMENTED — NOT LOCKED**
 
 Parents:
 - `docs/GAME_SYSTEM_ARCHITECTURE.md`
@@ -10,648 +10,808 @@ Parents:
 - `docs/COMBAT_STATS_V2_SPEC.md`
 - `docs/TRAITS_V2_SPEC.md`
 
-This document designs the rare **Mệnh Cách / Destiny** layer only.
+This revision explicitly supersedes the earlier "one active Chủ Mệnh + universal Khai/Hóa/Chứng ladder" draft.
 
 No gameplay implementation is authorized by this draft.
 
 ---
 
-# 1. Canonical naming — merge old Thiên Mệnh into Mệnh Cách
+# 1. Core fantasy
 
-The old master schema contains a future layer named **Thiên Mệnh**.
+A Mệnh Cách must make the player say:
 
-V2 direction:
-- there is **one** rare fate/destiny layer;
-- canonical system name is **Mệnh Cách**;
-- old generic `Thiên Mệnh` wording becomes legacy/future-migration terminology rather than a second parallel system.
+> "Con này có Mệnh này, nuôi theo kiểu này sẽ rất khác."
 
-Content may still use names containing "Thiên Mệnh" where lore requires it, but there must not be:
-- Mệnh Cách system;
-- plus a separate Thiên Mệnh system;
-- both doing the same job.
+It must not feel like:
+- Trait +5%;
+- one more rarity color;
+- a long paragraph whose gameplay result is unclear.
 
-This avoids duplicate rarity/fate authorities.
+Canonical direction:
 
----
+**Mệnh Cách = a rare, high-impact law attached to one person's fate.**
 
-# 2. What makes Mệnh Cách different from Trait
-
-Trait:
-- many may coexist;
-- common and uncommon;
-- often numeric/channel-based;
-- may be learned/removed through ordinary long-term development.
-
-Mệnh Cách:
-- extremely rare identity architecture;
-- defines a **fate rule + milestone path**;
-- may alter generation envelopes, encounter/event rules, breakthrough/life-history behavior or special combat rules;
-- grows through **unique major milestones**, not ordinary XP;
-- cannot be reduced to "Trait but +30% instead of +10%".
-
-A Mệnh Cách may still contribute ordinary modifiers where needed, but its identity must contain at least one:
-- rule change;
-- special event rule;
-- milestone interaction;
-- unique state transition;
-- unique content eligibility.
+Each Mệnh Cách must have:
+1. a one-sentence **Luật Mệnh** readable by a normal player;
+2. a strong immediate gameplay consequence;
+3. at least one rule-changing / conditional / progression interaction that Traits normally do not own.
 
 ---
 
-# 3. One active Chủ Mệnh
+# 2. Old Thiên Mệnh terminology
 
-Starting V2 rule:
+The old future label **Thiên Mệnh** and the new Mệnh Cách concept are merged into one system.
 
-A disciple has:
-- zero or one **active Chủ Mệnh**.
+Canonical system name:
+**Mệnh Cách**.
 
-Mệnh Cách types are therefore mutually exclusive as current active destiny.
+Do not build:
+- Mệnh Cách;
+- plus another generic Thiên Mệnh layer.
 
-Reason:
-- destiny should remain a coherent identity rather than becoming a giant pile of rare Traits;
-- this makes a Mệnh Cách narratively readable.
-
-This is **not** a birth ceiling:
-- a person born with none may acquire one later;
-- a person may eventually perform an explicit **Cải Mệnh** to change their Chủ Mệnh;
-- previous Mệnh Cách identity/progress/history is never rerolled or silently deleted.
-
-Long-term endgame may later design:
-- re-attunement to a previously mastered Mệnh Cách;
-- Hợp Mệnh / multiple-fate interaction.
-
-Those are future endgame mechanics and are not required by the initial V2 runtime.
+Individual content names may still contain "Thiên Mệnh", "Thiên Quyến", etc.
 
 ---
 
-# 4. Mệnh Cách state model
+# 3. Multiple Mệnh Cách are allowed
 
-Canonical states:
+A disciple may own **multiple Mệnh Cách simultaneously**.
 
-1. **Không Có**
-2. **Tiềm Mệnh** — identity exists, hidden, inactive.
-3. **Hiển Mệnh** — identity revealed; Core Mệnh effect becomes active.
-4. **Khai Mệnh** — first major Mệnh Kiếp completed.
-5. **Hóa Mệnh** — second major Mệnh Kiếp completed.
-6. **Chứng Mệnh** — third major Mệnh Kiếp completed; full current fate expression.
+There is:
+- no one-active-Chủ-Mệnh slot;
+- no lifetime hard cap.
 
-These are power/progression states, not rarity colors.
+Every revealed, non-sealed compatible Mệnh Cách is active.
 
-There is no generic:
-- Common/Rare/Epic;
-- Grade 1–5;
-- orange/red destiny tier.
+Same Mệnh Cách ID cannot duplicate-stack.
 
-Each Mệnh Cách has its own commonality weight and content identity.
+Practical control comes from:
+- extreme rarity;
+- major content requirements;
+- Mệnh Nguyên cost;
+- explicit conflict rules;
+- unique boss/event conditions;
+- long-term acquisition time.
 
----
-
-# 5. Congenital rarity
-
-Mệnh Cách is intended to be the rarest normal whole-person birth layer.
-
-Starting ordinary congenital rate:
-
-- **99.90%** — no congenital Mệnh Cách;
-- **0.09%** — one latent Mệnh Cách at **Tiềm Mệnh**;
-- **0.01%** — one congenital Mệnh Cách already at **Hiển Mệnh**.
-
-Total congenital Mệnh Cách:
-**0.10% ≈ 1 in 1,000 generated people**.
-
-This is rarer than the locked 0.20% congenital Dị-Linh-Căn rate.
-
-No ordinary birth starts above Hiển Mệnh.
-
-Special story/named/event characters may explicitly override this.
+This intentionally supports the favorite-disciple fantasy:
+with enough years/resources/content, one disciple may become a terrifying collection of compatible fates.
 
 ---
 
-# 6. Independence from normal quality
+# 4. Bản Mệnh is history, not a slot
 
-Normal Mệnh Cách roll is independent from:
+If a Mệnh Cách is congenital, mark it as:
+**Bản Mệnh / Bẩm Sinh**.
+
+This means:
+- the disciple was born with it;
+- it may influence birth finalization if the definition explicitly says so;
+- its birth identity is immutable history.
+
+It does **not** mean only that Mệnh Cách can be active.
+
+Post-birth Mệnh Cách are marked:
+**Hậu Thiên**.
+
+Both may be active together.
+
+---
+
+# 5. Simple state model
+
+Remove the universal:
+Tiềm -> Hiển -> Khai -> Hóa -> Chứng progression.
+
+Canonical state per Mệnh Cách:
+
+- **Tiềm Ẩn** — congenital identity exists, hidden, inactive.
+- **Hiển Lộ** — known and active.
+- **Phong Ấn** — known but temporarily inactive due to explicit conflict/content.
+- **Đã Mất** — only for rare content that explicitly removes a fate; history remains.
+
+Most Mệnh Cách is already fully meaningful once Hiển Lộ.
+
+A specific Mệnh Cách may have its own:
+- evolution;
+- transformation;
+- accumulation counter;
+- upgraded form.
+
+But this is content-specific, never a universal five-stage ladder.
+
+---
+
+# 6. Birth rarity
+
+Starting ordinary congenital target remains intentionally rare:
+
+- 99.90%: no congenital Mệnh Cách;
+- 0.09%: one latent congenital Mệnh Cách;
+- 0.01%: one already-revealed congenital Mệnh Cách.
+
+Total:
+**0.10% ≈ 1 / 1,000 generated people**.
+
+Ordinary birth has at most one congenital Mệnh Cách.
+
+Special named/story/event people may explicitly break that rule.
+
+This low birth rate is acceptable because Mệnh Cách is also a long-term **acquirable collection system**, not birth-only gacha.
+
+---
+
+# 7. Independence from headline quality
+
+Normal congenital Mệnh Cách roll is independent from:
 - Disciple Quality;
-- Dẫn Tiên Main-Guide quality table;
-- Trait generation;
-- Spiritual Root count/purity;
-- congenital Dị-Căn roll;
-- Bloodline/Physique future rolls.
+- Dẫn Tiên quality table;
+- Trait;
+- Root/Dị Root;
+- future Bloodline;
+- future Physique.
 
-Therefore a Phàm Thường may secretly carry a major Mệnh Cách.
+A Phàm Thường may carry a terrifying Mệnh Cách.
 
-Dẫn Tiên quality must not silently multiply Mệnh Cách odds.
+A Nghịch Thiên may have none.
 
-Special recruitment/event content may explicitly guarantee or bias Mệnh Cách, but that is content data.
+Dẫn Tiên Main Guide does not silently boost Mệnh Cách rate.
 
 ---
 
-# 7. Whole-person generation order
+# 8. Birth override is allowed, but explicit
 
-Mệnh Cách identity must be deterministically seeded as part of whole-person generation.
+Some Bản Mệnh may change birth finalization.
 
-For a congenital Mệnh Cách:
+Definition may declare:
+`birth_override`.
 
-1. derive `destiny_seed`;
-2. decide none / latent / revealed;
-3. choose one eligible Mệnh Cách ID by content commonality;
-4. apply explicit **birth package** if that Mệnh Cách owns one;
-5. finalize immutable birth snapshots;
-6. persist hidden identity before candidate presentation.
+Examples:
+- minimum one Lục-Duy dimension;
+- unusual starting age/realm;
+- starting mastery/history;
+- special birth resource.
 
-Important:
-some Mệnh Cách may explicitly break the ordinary Lục-Duy birth envelope.
+Rules:
+- deterministic;
+- happens before immutable birth snapshot is finalized;
+- visible in the Mệnh Cách description once revealed;
+- never rerolls another hidden subsystem;
+- most Mệnh Cách should not need this.
 
-This is allowed only through a declared `birth_override`.
+Mệnh Cách may break ordinary Lục-Duy birth envelope because the master schema already reserves this rare exception.
+
+---
+
+# 9. Mệnh Nguyên
+
+Canonical rare fate resource:
+**Mệnh Nguyên**.
+
+Used for:
+- post-birth acquisition;
+- content-specific Mệnh evolution;
+- future fate transformation/sealing/removal.
+
+It uses the canonical Sect Warehouse.
+
+Starting source direction:
+- destiny-grade Secret Realm first clear: 1 guaranteed;
+- tagged major world-boss first clear: 1 guaranteed;
+- highest-tier meaningful Cơ-Duyên event may award 1;
+- tagged repeat world/boss content: low chance for 1;
+- long-form world/sect fate events: explicit reward.
+
+No Mệnh consumer may ship before real acquisition content exists.
+
+Mệnh Nguyên is not premium-only.
+
+---
+
+# 10. Post-birth acquisition
+
+A disciple may acquire additional Mệnh Cách.
+
+There is no universal "buy any fate for 8 Mệnh Nguyên" button.
+
+Each Mệnh Cách defines a **Cải Mệnh recipe**:
+
+- explicit prerequisite/history;
+- explicit Mệnh Nguyên cost;
+- optional unique item/event/boss requirement.
+
+Once requirements are met:
+- player chooses to perform the acquisition;
+- deterministic success;
+- no reroll;
+- no generic fail chance.
+
+Congenital ownership skips the acquisition recipe for that fate.
+
+This makes each fate feel earned rather than purchased from one generic menu.
+
+---
+
+# 11. Mệnh Cách conflict
+
+Most Mệnh Cách may coexist.
+
+Only genuinely contradictory fate laws conflict.
+
+A definition may declare:
+- explicit incompatible IDs;
+- a conflict group.
+
+If player attempts to acquire a conflicting fate:
+- acquisition is blocked;
+- UI explains why.
+
+A hidden congenital fate must not leak through this check.
+If a newly acquired fate conflicts with a hidden congenital fate:
+- acquisition proceeds;
+- when latent fate reveals, the latent one becomes **Phong Ấn**;
+- no reroll/deletion;
+- future Cải Mệnh content may resolve the conflict.
+
+---
+
+# 12. Mệnh Cục — combination destiny
+
+Multiple Mệnh Cách may unlock a **Mệnh Cục**.
+
+A Mệnh Cục:
+- is derived;
+- cannot be directly rolled or bought;
+- does not count as another owned Mệnh Cách;
+- activates automatically when all required Mệnh Cách are active.
+
+This is one of the main reasons multiple fate ownership matters.
 
 Example:
-a special Mệnh Cách may guarantee a high minimum on one dimension or create an unusual distribution.
 
-It is not a reroll:
-- base generation + explicit override are one deterministic profile-finalization process;
-- final birth values are what enter the immutable birth snapshot.
+**Sát Phá Lang**
+requires:
+- Thất Sát;
+- Phá Quân;
+- Tham Lang.
 
-Most Mệnh Cách should not require a birth override.
+Derived effect is much stronger than any one component and creates a distinct build.
 
----
-
-# 8. No generic Mệnh Cách XP
-
-Mệnh Cách does not level from:
-- killing 1,000 normal monsters;
-- working 1,000 cycles;
-- passive time;
-- ordinary cultivation XP.
-
-Progress comes from **Mệnh Kiếp**.
-
-A Mệnh Kiếp is:
-- a one-time major condition;
-- content-specific;
-- meaningful to that Mệnh Cách;
-- deterministic once completed.
-
-Each Mệnh Cách defines:
-- reveal condition;
-- Khai Mệnh condition;
-- Hóa Mệnh condition;
-- Chứng Mệnh condition.
-
-Repeated trivial actions must not farm Mệnh Cách progression.
+Mệnh Cục is analogous to a set bonus, but lore/gameplay belongs to fate.
 
 ---
 
-# 9. Mệnh Nguyên — universal major fate resource
+# 13. Readability contract
 
-Starting resource design:
+Every Mệnh Cách UI entry has:
 
-**Mệnh Nguyên**
+1. **Name**
+2. **One-line Luật Mệnh**
+3. **Effects** — maximum normal target 2–4 short bullets
+4. **How to acquire** if known
+5. **Conflicts / Mệnh Cục links** if any
 
-Purpose:
-- awaken/advance major fate progression;
-- acquire a Mệnh Cách post-birth;
-- perform future Cải Mệnh.
+Do not require the player to read lore paragraphs to know what it does.
 
-It is a stackable Sect resource and must use the canonical Sect Warehouse when implemented.
+Example UI:
 
-Mệnh Nguyên is deliberately rare.
+**Đại Khí Vãn Thành**  
+*Tu chậm lúc đầu, càng vượt đại cảnh giới càng tăng trưởng khủng.*
 
-Starting acquisition targets:
+- Tu Vi tự nhiên -15%.
+- Mỗi đại cảnh giới đã vượt: +8% tăng trưởng Công/Thủ/HP từ Cảnh Giới + Luyện Thể.
+- Tính cả các đại cảnh giới đã vượt trước khi hậu thiên nhận Mệnh này.
 
-- designated destiny-grade Secret Realm / world-content first clear: **1 guaranteed**;
-- major world boss first clear where content explicitly tags destiny reward: **1 guaranteed**;
-- highest canonical Cơ-Duyên tier event may explicitly award **1**;
-- repeat rare/world boss tagged for destiny: starting target **3%** for 1;
-- special long-form sect/world events may grant 1.
-
-No Mệnh Cách consumer may ship before at least one real Mệnh Nguyên acquisition path ships.
-
-Do not create a premium-only Mệnh Cách resource.
+That is sufficient to understand the build.
 
 ---
 
-# 10. Advancement costs
+# 14. Power standard
 
-Congenital latent:
-- reveal: condition only, no cost;
-- **Hiển Mệnh -> Khai Mệnh**: first Mệnh Kiếp + **1 Mệnh Nguyên**;
-- **Khai Mệnh -> Hóa Mệnh**: second Mệnh Kiếp + **2 Mệnh Nguyên**;
-- **Hóa Mệnh -> Chứng Mệnh**: third Mệnh Kiếp + **4 Mệnh Nguyên**.
+A normal Trait may give:
+- +10% Work Speed;
+- +5 pp Crit;
+- +15% Healing.
 
-No failure chance.
+A Mệnh Cách is allowed to give:
+- +25–40% in a restricted build context;
+- extra casts;
+- cooldown resets;
+- lethal interception;
+- permanent boss-derived growth;
+- Luck tier promotion;
+- altered breakthrough failure law;
+- major resource duplication;
+- retention through death/rebirth.
 
-A congenital already-Hiển Mệnh character skips only the reveal step.
-
-This means congenital Mệnh Cách saves:
-- acquisition cost;
-- discovery uncertainty/time;
-- access to its fate path earlier.
-
-It does not impose a higher final ceiling than a successfully acquired version of the same Mệnh Cách.
-
----
-
-# 11. Acquiring a Mệnh Cách when born without one
-
-A person with no congenital Mệnh Cách may eventually gain one.
-
-Future explicit action:
-**Nghịch Thiên Cải Mệnh**.
-
-Starting requirements:
-- disciple has no active Mệnh Cách;
-- fulfils that Mệnh Cách's entry prerequisite;
-- Sect owns **8 Mệnh Nguyên**;
-- later implementation provides the required fate ritual/content facility.
-
-Result:
-- player chooses one currently eligible Mệnh Cách;
-- it is created directly at **Hiển Mệnh**;
-- no random reroll;
-- birth history remains "born without Mệnh Cách";
-- acquisition is appended to character history.
-
-Then it advances through the same 1 / 2 / 4 Mệnh-Nguyên Mệnh-Kiếp progression.
-
-This preserves:
-- rare birth value;
-- favorite-disciple final access.
+If a proposed Mệnh Cách could be converted into one ordinary Trait line without losing identity, it is probably too weak.
 
 ---
 
-# 12. Cải Mệnh for a person who already has one
+# 15. Starter high-impact Mệnh Cách catalogue
 
-V2 must support explicit future destiny change.
+Numbers below are starting balance targets, not implementation authorization.
 
-Rules:
-- never random overwrite;
-- player chooses from eligible new Mệnh Cách;
-- old Mệnh Cách progress is preserved in history/retired record;
-- current active effects of the old Mệnh Cách stop;
-- exact Cải-Mệnh cost must be greater than first acquisition and is future balance data.
+## 15.1 Đại Khí Vãn Thành — phát triển dài hạn
 
-Starting direction:
-- one active Chủ Mệnh;
-- no simultaneous stacking of full multiple Mệnh Cách in initial V2.
+**Luật Mệnh:** Tu chậm lúc đầu; mỗi đại cảnh giới đã vượt khiến tăng trưởng thân–cảnh giới về sau mạnh hơn vĩnh viễn.
 
-A future endgame Hợp-Mệnh system may revisit coexistence only through explicit design.
+Effects:
+- natural cultivation gain **-15%**;
+- every completed **major realm breakthrough** grants one permanent Hậu-Phát mark;
+- each mark gives **+8% Realm+Luyện-Thể core ATK/DEF/HP growth**;
+- when acquired post-birth, existing completed major-realm history immediately creates the matching marks.
 
----
+No arbitrary mark cap.
+Natural limit comes from actual major realms/content.
 
-# 13. Reveal
+This is intentionally extremely good on a disciple kept for years.
 
-A congenital Tiềm Mệnh has:
-- true `destiny_id` stored from birth;
-- no gameplay effect;
-- no normal UI leakage.
+Consumer-gated:
+final Realm/Luyện Thể growth authority.
 
-Each type defines an event-driven reveal rule.
-
-Reveal:
-- never rerolls;
-- costs no resource for congenital fate;
-- changes Tiềm Mệnh -> Hiển Mệnh;
-- activates Core Mệnh effect.
-
-A future appraisal / Thiên Cơ facility may reveal the already-existing identity early.
-
-It must not generate a new Mệnh Cách on appraisal.
+Acquisition target:
+- complete at least 3 major realm breakthroughs;
+- 8 Mệnh Nguyên.
 
 ---
 
-# 14. Mệnh Cách definition schema
+## 15.2 Hồng Trần Luyện Tâm — breakthrough/failure build
 
-Conceptual static definition:
+**Luật Mệnh:** Đột phá thất bại không còn là mất trắng; mỗi lần thất bại làm lần sau dễ hơn rất nhiều.
 
-```
-{
-  id,
-  name,
-  category,
-  commonality_weight,
+Once Breakthrough V2 is active:
+- breakthrough failure loses **0%** Tu Vi instead of the normal locked 10%;
+- failure bonus to next attempt becomes **+15 percentage points** instead of +5;
+- after 3 consecutive failures on the same breakthrough, the next attempt is guaranteed if all mandatory non-chance requirements are satisfied.
 
-  birth_override?,
+The counter resets after success.
 
-  reveal_rule,
+This is immediately understandable and highly practical.
 
-  core_effects,
-  khai_menh_condition,
-  khai_menh_effects,
-  hoa_menh_condition,
-  hoa_menh_effects,
-  chung_menh_condition,
-  chung_menh_effects,
+Acquisition target:
+- personally fail 3 real breakthrough attempts over life;
+- then complete a special Tâm-Kiếp event;
+- 6 Mệnh Nguyên.
 
-  consumers_required,
-  ai_hints,
-  content_tags
-}
-```
-
-Character save stores:
-- identity/state/progress/history;
-- not copied static effect tables.
+Consumer-gated to Breakthrough V2.
 
 ---
 
-# 15. Starter Mệnh Cách categories
+## 15.3 Phá Quân — vượt cấp chiến
 
-Categories are content organization, not quality tiers:
+**Luật Mệnh:** Càng đánh kẻ mạnh hơn mình, càng hung.
 
-- **Đạo Mệnh** — cultivation/mastery/path law;
-- **Chiến Mệnh** — hunting/combat/adversity law;
-- **Phúc Mệnh** — fortune/event/world opportunity law;
-- **Hộ Mệnh** — protection/team/support law;
-- **Kiếp Mệnh** — suffering/failure/transformation law;
-- **Luân Hồi Mệnh** — death/rebirth/history-continuation law.
+Against encounters at least one explicit danger/realm tier above the disciple:
+- **+25% All Damage**;
+- **+15% Defense Penetration**;
+- first elite/boss defeat by this disciple each encounter reduces all currently-running skill cooldowns by **50% of remaining time**.
 
-A Mệnh Cách may belong to more than one category.
+No Combat Rating comparison.
+Use explicit content danger/realm tier.
 
----
-
-# 16. Starter Mệnh Cách catalogue — design targets
-
-These are initial design targets for architecture review.
-Exact numbers are balance data.
-
-## 16.1 Vạn Pháp Quy Nhất — Đạo Mệnh
-
-Identity:
-learn many paths and turn breadth into synergy.
-
-Core — Hiển Mệnh:
-- learning/mastery of the disciple's currently lowest Kiếm/Thể/Pháp path gets +20%.
-
-Khai Mệnh condition:
-- two paths each reach the future "established" depth threshold.
-
-Khai effect:
-- skills of the lower of those two paths gain +10% Skill Effect.
-
-Hóa condition:
-- all three paths reach established threshold.
-
-Hóa effect:
-- all three path-tagged skills gain +10% Skill Effect;
-- switching active technique between paths does not impose any future ordinary adaptation penalty if such a penalty system exists.
-
-Chứng condition:
-- all three paths reach the future high mastery threshold.
-
-Chứng effect:
-- each combat cast receives an additional +5% Skill Effect for each **other** established path, max +10%.
-
-No fixed class.
-This fate rewards genuinely developing all paths.
-
-Consumer readiness:
-- core can use Path XP;
-- exact established/high thresholds are consumer-gated to Path/Mastery V2.
+Acquisition target:
+- defeat 3 distinct qualifying higher-tier elites/bosses;
+- 8 Mệnh Nguyên.
 
 ---
 
-## 16.2 Thiên Quyến Hồng Phúc — Phúc Mệnh
+## 15.4 Thất Sát — liên sát build
 
-Identity:
-near-miss fortune can become true opportunity.
+**Luật Mệnh:** Mỗi mạng hạ trong trận làm sát khí càng mạnh.
 
-Core:
-once per simulation day, on a **meaningful canonical Luck Score check**, if the final score is within 200 points below the next luck tier, promote it one tier.
+Each personal enemy defeat grants one Sát Ý stack until encounter end:
+- +5% All Damage;
+- +3% Attack Speed;
+- +3% Cast Speed.
 
-Rules:
-- no effect on routine fixed rewards;
-- no per-hit/per-tick luck rolls;
-- only one promotion/day;
-- cannot promote beyond the highest tier.
+Stacks are limited only by actual valid enemies in the encounter.
+Summoned disposable units do not count unless content explicitly marks them as valid.
 
-Khai Mệnh:
-- resolve one highest-tier major fortune event.
+On defeating an elite/boss:
+- immediately gain 3 stacks.
 
-Khai effect:
-- daily near-miss window becomes 300.
+No carryover between encounters.
 
-Hóa Mệnh:
-- resolve three distinct major-fortune event IDs.
-
-Hóa effect:
-- first promoted major event each day may use the promoted tier's reward table normally; no duplicate reward roll.
-
-Chứng Mệnh:
-- complete one destiny-grade fortune storyline.
-
-Chứng effect:
-- once per 30 simulation days, a failed meaningful Luck check may be rerolled once using the same deterministic event seed branch.
-- no reroll chaining.
-
-This changes event law rather than simply adding Cơ Duyên.
+Acquisition target:
+- achieve a designated real kill-streak feat;
+- 6 Mệnh Nguyên.
 
 ---
 
-## 16.3 Phá Quân — Chiến Mệnh
+## 15.5 Tham Lang — tham chiến / hấp thu tài nguyên
 
-Identity:
-stronger when confronting content above the disciple's current standing.
+**Luật Mệnh:** Đánh kẻ mạnh để cướp lợi ích về cho bản thân.
 
-Core:
-against an encounter whose canonical danger/realm tier is at least one tier above the disciple:
-- +10% All Damage.
+On first personal defeat of each unique elite/boss ID:
+- gain one permanent **Tham Lang Ấn**;
+- each Ấn gives **+1% Max HP and +1% All Damage**.
 
-Khai condition:
-- survive and win one such encounter.
+Unique-ID first defeat only.
+Repeating the same boss never grants another mark.
 
-Khai effect:
-- also +5% Damage Reduction in those encounters.
+This creates permanent growth from exploration without per-tick farming.
 
-Hóa condition:
-- defeat three distinct higher-tier boss IDs.
-
-Hóa effect:
-- +10% Movement Speed in qualifying encounters;
-- combat AI raises willingness to commit offensive skills.
-
-Chứng condition:
-- first-clear a designated destiny-grade boss while personally participating.
-
-Chứng effect:
-- once per qualifying encounter, dropping below 30% HP grants 5s:
-  - +15% All Damage;
-  - +10% Damage Reduction.
-- once per encounter, no refresh.
-
-Cannot use Combat Rating as the qualification authority.
-Use explicit encounter danger/realm tier.
+Acquisition target:
+- personally first-kill 5 distinct elites/bosses;
+- 10 Mệnh Nguyên.
 
 ---
 
-## 16.4 Bách Chiết Bất Khuất — Kiếp Mệnh
+## 15.6 Sát Phá Lang — Mệnh Cục
 
-Identity:
-major setbacks become one-time fate milestones.
+Requires active:
+- Thất Sát;
+- Phá Quân;
+- Tham Lang.
 
-Core:
-serious Injury Recovery +15%.
+**Luật Mệnh Cục:** Gặp cường địch càng đánh càng bùng nổ.
 
-Khai condition:
-- fully recover from one serious named injury acquired in real combat.
+Derived effects in qualifying higher-tier encounters:
+- Sát Ý stack values are doubled;
+- personal elite/boss defeat **fully resets the shortest currently-running skill cooldown**;
+- first time HP falls below 30% each encounter: gain **20% Damage Reduction for 5s**.
 
-Khai effect:
-- next serious-injury recovery time -20%.
+Cannot be acquired directly.
 
-Hóa condition:
-- recover from three distinct serious injury types or sources.
-
-Hóa effect:
-- while carrying a serious injury:
-  - +10% Effect Resistance;
-  - +5% Damage Reduction.
-
-Chứng condition:
-- survive a designated major calamity / near-defeat storyline.
-
-Chứng effect:
-- once per 30 simulation days, when a combat defeat would create a new ordinary acquired negative Trait, block that Trait acquisition.
-- does not prevent Injury;
-- does not erase congenital latent Trait;
-- does not block Mệnh-Cách-specific consequences.
-
-The final effect is consumer-gated until acquired-negative-Trait hooks exist.
+This is the target standard for a memorable fate-combination payoff.
 
 ---
 
-## 16.5 Hộ Đạo — Hộ Mệnh
+## 15.7 Thiên Sát Cô Tinh — solo / last-stand
 
-Identity:
-fate expresses through saving allies rather than personal DPS.
+**Luật Mệnh:** Không có đồng đội bên cạnh thì sức chiến đấu tăng vọt.
 
-Core:
-when healing or shielding another target:
-- +15% Healing Done / Shield Effect for that action.
+When entering combat with no allied combatant, or when this disciple becomes the last standing allied combatant:
+- +35% All Damage;
+- +20 pp Crit Chance;
+- +20% Damage Reduction;
+- +20% Movement Speed.
 
-Khai condition:
-- complete a real encounter in which the disciple heals/shields allies for a future minimum meaningful amount.
+When an ally becomes active again, bonus ends immediately.
 
-Khai effect:
-- when an ally first drops below 30% HP each encounter, the disciple's next eligible heal/shield on that ally within 5s gains +20% effect.
+Later Social V2 may add a social cost only if that system needs it.
+Do not ship a fake social penalty now.
 
-Hóa condition:
-- successfully prevent three distinct ally defeats through healing/shielding according to combat event attribution.
-
-Hóa effect:
-- after protecting a low-HP ally, both gain +10% Damage Reduction for 3s.
-
-Chứng condition:
-- complete a designated high-risk team encounter with no ally defeated while this disciple actively supports.
-
-Chứng effect:
-- once per encounter, if an ally would take lethal damage and the disciple is alive and able to act, that hit is reduced so the ally remains at 1 HP;
-- then the disciple is locked out of this effect for the encounter.
-- this is a fate rule, not U Minh ownership;
-- cannot chain with itself.
-
-Exact "able to act" semantics are consumer-gated to final combat action/status authority.
+Acquisition target:
+- solo-clear one designated high-risk encounter;
+- 10 Mệnh Nguyên.
 
 ---
 
-## 16.6 Đại Khí Vãn Thành — Đạo/Kiếp Mệnh
+## 15.8 Gặp Dữ Hóa Lành — survival/event fate
 
-Identity:
-slow early growth, exceptional payoff from overcoming major realm walls.
+**Luật Mệnh:** Tai họa lớn lần đầu thường bị hạ xuống một bậc.
 
-Core:
-- natural cultivation gain -10%;
-- each **major realm breakthrough completed by this character** permanently records one `late_bloom_mark`.
+Combat:
+- first lethal hit each encounter leaves the disciple at **1 HP** instead;
+- cleanse one ordinary control effect;
+- 3s incoming damage ×0.70;
+- once per encounter.
 
-Khai condition:
-- complete the first major realm breakthrough after Hiển Mệnh.
+World/event:
+- once per simulation day, one explicitly tagged **major-negative event outcome** is downgraded by one severity tier;
+- cannot turn a negative event into a jackpot;
+- only content with severity tiers may use it.
 
-Khai effect:
-- each late-bloom mark gives +5% technique/skill mastery XP, max 3 marks.
+If another lethal-intercept effect exists, canonical lethal-intercept priority must resolve one at a time.
 
-Hóa condition:
-- reach 3 marks.
-
-Hóa effect:
-- cultivation penalty is removed;
-- the 3 marks also grant +5% Realm+Body core ATK/DEF/HP growth each for future gains.
-
-Chứng condition:
-- complete a designated high-realm breakthrough after 3 marks.
-
-Chứng effect:
-- all previously earned Realm+Body core growth since Hiển Mệnh is retroactively recalculated as if the 3-mark growth bonus had applied.
-- equipment/fixed additions are not multiplied.
-
-This is strongly consumer-gated to Breakthrough + final Realm/Body growth authority.
+Acquisition target:
+- survive a designated calamity/near-death event;
+- 12 Mệnh Nguyên.
 
 ---
 
-## 16.7 Thiên Đố Anh Tài — Đạo/Kiếp Mệnh
+## 15.9 Thiên Quyến Hồng Phúc — fortune build
 
-Identity:
-extraordinary learning/growth at a real life-cost.
+**Luật Mệnh:** Những lần “suýt đủ may” được Thiên Đạo đẩy lên kết quả tốt hơn.
 
-Core target:
-- +20% cultivation gain;
-- +20% learning/mastery XP;
-- lifespan cost.
+For the first **2 meaningful Luck Score checks per simulation day**:
+- if result is below the next tier by at most **1,000 points**, promote it exactly one tier.
 
-This Mệnh Cách is **future_only / consumer-gated** until Age/Lifespan/Ma-Hồn authority is closed.
+Additionally:
+- first naturally reached highest-tier Luck outcome each 30 simulation days grants **one extra roll on that event's explicit bonus-reward table**, if that event has one.
 
-Do not ship only the positive half.
+No effect on:
+- combat hit rolls;
+- per-tick farming;
+- fixed rewards;
+- events without canonical Luck Score.
 
-Its final design must account for the project's rule that lifespan expiry does not permanently delete the disciple.
+Does not change stored Cơ Duyên.
 
----
-
-## 16.8 Túc Tuệ Chuyển Thế — Luân Hồi Mệnh
-
-Identity:
-past-life knowledge survives death/rebirth transformations.
-
-Core target:
-- special memory/mastery preservation across Ma/Hồn/revival or reincarnation.
-
-This Mệnh Cách is **future_only** until the Ma/Hồn/revival system exists.
-
-It may not fake reincarnation by granting arbitrary mastery at ordinary recruitment.
+Acquisition target:
+- experience 3 distinct highest-tier Cơ-Duyên outcomes;
+- 12 Mệnh Nguyên.
 
 ---
 
-# 17. Why profession-specific fate is limited
+## 15.10 Thôn Thiên — boss-growth fate
 
-Reference games may bind destiny strongly to fixed profession/class.
+**Luật Mệnh:** Giết cường địch để nuốt một phần “thế” của chúng thành tăng trưởng vĩnh viễn.
 
-This project does not use fixed classes.
+First personal defeat of each unique destiny-tagged boss:
+- gain one Thôn-Thiên mark.
 
-Therefore:
-- Mệnh Cách may interact with path/profession tags;
-- but ordinary Mệnh Cách should not say "only Sword class may have this" unless lore/content explicitly requires it.
+Each mark:
+- +2% Realm+Luyện-Thể core ATK/DEF/HP growth;
+- +1% Effect Resistance.
 
-Role emerges from:
-- techniques;
-- equipment;
-- path history;
-- profession history;
-- player/AI choices.
+Unique boss only.
+No repeat farm.
 
----
+This Mệnh Cách may naturally become enormous as the game adds major bosses.
+That is intentional long-term content scaling.
 
-# 18. Why no generic Mệnh Cách color/tier
-
-A generic power rarity encourages:
-- "red fate always better";
-- reroll obsession;
-- one-number evaluation.
-
-Instead:
-- each Mệnh Cách has commonality;
-- every Mệnh Cách has a full Chứng-Mệnh path;
-- balance aims for different rules/roles rather than one strict universal ranking.
-
-Special named/story Mệnh Cách may be stronger or stranger, but this is explicit content.
+Acquisition target:
+- first-clear a designated Thôn-Thiên event/boss;
+- 15 Mệnh Nguyên.
 
 ---
 
-# 19. Persistence target
+## 15.11 Vạn Pháp Quy Nhất — multi-path combat
+
+**Luật Mệnh:** Liên tục đổi Kiếm/Thể/Pháp để lấy sức mạnh từ việc thông nhiều đạo.
+
+Passive:
+- +25% learning/mastery XP to the disciple's currently lowest Kiếm/Thể/Pháp path.
+
+Combat:
+when a combat skill's path differs from the previous combat skill cast by this disciple:
+- +20% Skill Effect for this cast;
+- ordinary resulting cooldown ×0.80.
+
+Alternating back and forth can repeatedly trigger.
+Same-path consecutive casts do not.
+
+This creates an actual multi-path rotation instead of a generic learning buff.
+
+Acquisition target:
+- all three paths have real learned content;
+- each path has at least one mastered skill/technique milestone;
+- 10 Mệnh Nguyên.
+
+---
+
+## 15.12 Kiếm Tiên Chuyển Thế — past-life sword fate
+
+**Luật Mệnh:** Kiếm đạo như ký ức kiếp trước; học nhanh, dùng kiếm vượt chuẩn.
+
+Effects:
+- Sword path/mastery XP +40%;
+- Sword-tagged Skill Effect +25%;
+- first eligible Sword direct-damage skill cast each encounter is guaranteed to Crit;
+- may ignore one future ordinary **learning prerequisite** tied only to Sword-path depth, but may not ignore realm/resource/item prerequisites.
+
+This is deliberately much stronger than the Trait `Kiếm Cảm`.
+
+Birth package if congenital and revealed:
+- starts with a small deterministic Sword-path history/milestone, not a random skill reroll.
+
+Acquisition target:
+- extremely high Sword history/mastery;
+- one specific Sword inheritance event;
+- 15 Mệnh Nguyên.
+
+---
+
+## 15.13 Dược Vương Tại Thế — healer destiny
+
+**Luật Mệnh:** Cứu người càng nguy cấp, trị liệu càng vượt chuẩn.
+
+Effects:
+- Healing Done +30%;
+- Healing Received +20%;
+- when healing an ally below 30% HP:
+  - that heal gains another +30% effect;
+  - remove one ordinary removable debuff/control after the heal;
+- first time each encounter this disciple prevents an ally from falling to 0 HP through healing/shielding:
+  - immediately refresh 50% of the remaining cooldown of the disciple's longest-cooldown eligible support skill.
+
+No fake medicine-crafting bonus until that profession exists.
+
+Acquisition target:
+- meet real healing-history thresholds;
+- complete a medical inheritance/event;
+- 10 Mệnh Nguyên.
+
+---
+
+## 15.14 Tài Tinh Nhập Mệnh — production/economy fate
+
+**Luật Mệnh:** Làm ra đồ quý thì thường được “thêm một phần”.
+
+For explicit work/crafting tasks with a canonical rare/quality Luck check:
+- effective Luck Score for that check +1,500 without changing stored Cơ Duyên.
+
+Once per simulation day:
+- first work result that naturally reaches the task's highest rare/quality tier produces **+100% stackable output quantity** for the eligible product.
+
+Does not duplicate:
+- unique equipment;
+- quest items;
+- first-clear rewards;
+- non-stackable special artifacts.
+
+Acquisition target:
+- produce several distinct highest-tier work outcomes;
+- 8 Mệnh Nguyên.
+
+Consumer-gated where final crafting-quality authority is missing.
+
+---
+
+## 15.15 Bách Kiếp Bất Diệt — adversity growth
+
+**Luật Mệnh:** Mỗi đại kiếp thật sự sống sót làm bản thân khó chết hơn vĩnh viễn.
+
+For each **unique major-calamity event ID** personally survived:
+- gain one Bách-Kiếp mark.
+
+Each mark:
+- +2% Max HP;
+- +1% Damage Reduction.
+
+Only events explicitly tagged `major_calamity` count.
+Repeat of the same event ID gives nothing.
+
+No arbitrary numeric hard cap.
+The natural limit is unique calamity content.
+
+Acquisition target:
+- survive the first major calamity;
+- 10 Mệnh Nguyên.
+
+---
+
+## 15.16 Thiên Đố Anh Tài — huge power for lifespan
+
+**Luật Mệnh:** Tu và học cực nhanh, đổi bằng thọ mệnh.
+
+Target effects:
+- cultivation gain +35%;
+- all valid learning/mastery XP +35%;
+- profession XP +20%;
+- current maximum lifespan ×0.60.
+
+This is **consumer_gated** until final Age/Lifespan/Ma-Hồn rules are closed.
+
+Do not ship only the positive portion.
+
+The large numbers are intentional because the cost must also be real.
+
+---
+
+## 15.17 Túc Tuệ Chuyển Thế — rebirth preservation
+
+**Luật Mệnh:** Chết/luân hồi không làm mất phần lớn kiến thức tích lũy.
+
+Future target:
+- after valid Ma/Hồn/rebirth transformation, preserve 100% technique mastery, profession XP and path XP that ordinary rebirth would otherwise partially lose;
+- additionally retain a defined subset of relationship/memory history.
+
+This is **future_only** until Ma/Hồn/revival has canonical loss rules.
+
+---
+
+## 15.18 Đoạt Mệnh — collect other destinies
+
+**Luật Mệnh:** Hạ kẻ mang Mệnh Cách để rút Mệnh Mảnh, dùng chính số mảnh đó học Mệnh của chúng.
+
+Future rule:
+when personally defeating a valid hostile character/boss that owns a Mệnh Cách:
+- if that fate is eligible for extraction, gain one Mệnh Mảnh for that specific fate;
+- collect 3 matching fragments -> unlock that fate's Cải-Mệnh recipe at **50% normal Mệnh Nguyên cost**.
+
+Does not:
+- steal/delete victim's fate;
+- instantly copy on one kill;
+- work on summoned/farmed duplicate NPCs.
+
+Consumer-gated to future hostile-NPC fate content.
+
+This is a direct long-term multiple-Mệnh collection engine.
+
+---
+
+# 16. Mệnh Cục examples beyond Sát Phá Lang
+
+## Phúc Họa Tương Y
+Requires:
+- Thiên Quyến Hồng Phúc;
+- Gặp Dữ Hóa Lành.
+
+Effect:
+- when the daily negative-event downgrade triggers, the next meaningful Luck Score check that day gets +2,000 effective score.
+- cannot chain itself.
+
+## Vạn Kiếp Hậu Phát
+Requires:
+- Đại Khí Vãn Thành;
+- Bách Kiếp Bất Diệt.
+
+Effect:
+- each Bách-Kiếp mark also gives +2% cultivation gain.
+- each Hậu-Phát mark also gives +1% Healing Received.
+
+This turns two long-life destinies into one extreme veteran build.
+
+## Y Kiếm Song Tuyệt
+Future example requiring:
+- Kiếm Tiên Chuyển Thế;
+- Dược Vương Tại Thế.
+
+Effect target:
+- after casting an eligible support skill on an ally, next Sword skill within 5s gets +25% Skill Effect;
+- after landing an eligible Sword Crit, next heal/shield within 5s gets +25% effect.
+
+This demonstrates that Mệnh Cục may create hybrid builds rather than only vertical power.
+
+---
+
+# 17. Why this is not Trait V2
+
+Trait example:
+**Kiếm Cảm**
+- +12% Sword mastery XP;
+- +8% Sword skill effect.
+
+Mệnh example:
+**Kiếm Tiên Chuyển Thế**
+- +40% Sword mastery;
+- +25% Sword skill effect;
+- first Sword skill guaranteed Crit each encounter;
+- may bypass one Sword-only learning-depth prerequisite.
+
+Mệnh is allowed to be dramatically more defining.
+
+---
+
+# 18. Why this is not Physique / Root / Bloodline
+
+Do not use Mệnh Cách to fake:
+- elemental purity;
+- body constitution;
+- blood species;
+- special organs/body form.
+
+Mệnh Cách describes:
+- fate;
+- history law;
+- event law;
+- exceptional progression law;
+- rule-changing combat/economy/luck behavior.
+
+"Thần Thể" belongs to Physique.
+"Lôi Linh Căn" belongs to Root.
+"Chân Long Huyết" belongs to Bloodline.
+
+"Kiếm Tiên Chuyển Thế" can be Mệnh Cách because it is a past-life destiny, not the body's structure.
+
+---
+
+# 19. Acquisition philosophy
+
+Every Mệnh Cách should answer:
+
+**Sinh ra có thì lời ở đâu?**
+- earlier access;
+- skips difficult prerequisite;
+- may apply a birth package.
+
+**Sinh ra không có thì lấy thế nào?**
+- explicit major feat/event;
+- explicit Mệnh Nguyên cost;
+- deterministic acquisition.
+
+**Nuôi favorite lâu dài có lấy được không?**
+- yes, unless it is explicitly a story-exclusive identity;
+- story-exclusive exceptions must be rare and visible.
+
+This preserves rare birth excitement without disposable-character design.
+
+---
+
+# 20. Persistence target
 
 ```
 destiny_model_version = 2
@@ -659,29 +819,25 @@ destiny_model_version = 2
 destiny_profile = {
   "initialized": true,
 
-  "birth_destiny_id": "none|...",
-  "birth_state": "none|latent|revealed",
+  "birth_destinies": [
+    {
+      "destiny_id": "...",
+      "birth_state": "latent|revealed"
+    }
+  ],
 
-  "active_destiny_id": "none|...",
-  "state": "none|latent|revealed|opened|transformed|proven",
-
-  "milestones": {
-    "reveal": false,
-    "khai": false,
-    "hoa": false,
-    "chung": false
-  },
-
-  "retired_destinies": {
-    "...": {
-      "last_state": "...",
-      "milestones": {...}
+  "owned": {
+    "destiny_id": {
+      "origin": "birth|acquired|story|extracted",
+      "state": "latent|revealed|sealed|lost",
+      "counters": {},
+      "unique_marks": []
     }
   },
 
   "history": [
     {
-      "event": "born|revealed|acquired|khai|hoa|chung|changed",
+      "event": "born|revealed|acquired|sealed|unsealed|lost",
       "destiny_id": "...",
       "source": "...",
       "tick": 0
@@ -690,153 +846,112 @@ destiny_profile = {
 }
 ```
 
-Static definition/effects are registry content, not copied into every save.
+Mệnh Cục is derived and not separately saved as owned identity.
 
-Hidden congenital identity is stored before reveal.
-
-No empty-field reroll.
-
----
-
-# 20. Candidate presentation
-
-Normal recruitment UI:
-- does not show latent Mệnh Cách;
-- does not show "has one hidden destiny";
-- does not leak via eligibility blocking.
-
-Already-Hiển Mệnh birth:
-- shows Mệnh Cách clearly;
-- does not change Disciple Quality label.
-
-Special appraisal content may reveal a stored latent fate.
+Static effect tables remain content registry data.
 
 ---
 
 # 21. Large-roster runtime
 
-For 1,000–3,000 disciples:
+Do not poll all Mệnh Cách every tick.
 
-Do not tick Mệnh Cách logic continuously.
+Event-driven hooks:
+- major breakthrough;
+- encounter start/end;
+- personal defeat/kill;
+- elite/boss first defeat;
+- lethal interception;
+- meaningful Luck Score event;
+- work/crafting rare result;
+- healing attribution;
+- major calamity;
+- rebirth.
 
-Use event hooks:
-- major breakthrough resolved;
-- boss/encounter resolved;
-- serious injury recovered;
-- meaningful luck event resolved;
-- ally lethal intercept point;
-- path mastery milestone;
-- world/secret-realm first clear.
+Unique-ID marks use sparse sets.
 
-Only disciples involved in a relevant event evaluate their fate rules.
-
-No persistent per-disciple destiny timer unless a specific fate truly needs one.
+Background farmers do not run combat-fate logic.
 
 ---
 
-# 22. AI interaction
+# 22. AI
 
-Mệnh Cách may provide AI hints, never a parallel AI brain.
+AI may read revealed Mệnh Cách hints.
 
 Examples:
-- Phá Quân values higher-tier combat more;
-- Hộ Đạo values endangered allies;
-- Vạn Pháp Quy Nhất values developing underused paths.
+- Phá Quân values higher-tier targets;
+- Vạn Pháp Quy Nhất alternates path skills;
+- Dược Vương prioritizes endangered allies;
+- Thiên Sát Cô Tinh may prefer solo assignment.
 
-Player orders may override ordinary AI preference.
+Hidden Mệnh Cách has zero AI influence before reveal.
 
-AI must not reveal hidden Mệnh Cách by changing behavior before reveal.
-
----
-
-# 23. Interaction with other character layers
-
-## Lục Duy
-Mệnh Cách may explicitly alter birth finalization or downstream channels.
-It does not normally rewrite current Lục Duy every tick.
-
-## Trait
-Trait and Mệnh Cách may overlap channels.
-Trait remains the more common many-per-person characteristic layer.
-
-## Spiritual Root
-Mệnh Cách does not replace elements/purity/mutations.
-
-## Bloodline / Physique
-Mệnh Cách may react to them in a specific storyline, but does not own their progression.
-
-## Combat Stats
-Numeric effects use canonical channels.
-
-## Cơ Duyên
-Phúc Mệnh may modify **Luck-check rules**, not silently become "+500 Cơ Duyên".
+Player orders override ordinary preferences.
 
 ---
 
-# 24. Migration direction from old schema
+# 23. Reveal
 
-Old `Thiên Mệnh` future terminology maps to **Mệnh Cách V2**.
+Congenital latent identity:
+- exists before candidate display;
+- no gameplay effect before reveal;
+- no AI effect;
+- no UI hint that a hidden fate exists.
 
-There is no live full old Destiny runtime to preserve as gameplay authority.
+Each fate has its own reveal rule or future appraisal route.
 
-When implementation begins:
-- add explicit V2 initialized marker;
-- existing saves without Destiny data deterministically initialize through migration rules;
-- migration must not reroll already-persisted hidden identity if any older field exists.
-
----
-
-# 25. Required implementation invariants
-
-When implemented, test at minimum:
-
-1. same seed/source/index produces same congenital destiny result;
-2. congenital rate matches 0.10% target over large deterministic samples;
-3. normal Dẫn Tiên quality does not modify destiny rate;
-4. no ordinary birth has more than one Mệnh Cách;
-5. latent identity exists before reveal;
-6. hidden fate has no gameplay/AI effect before reveal;
-7. reveal never rerolls;
-8. appraisal reveals stored identity rather than generates one;
-9. no generic Mệnh Cách XP exists;
-10. Mệnh Kiếp cannot be farmed repeatedly after completion;
-11. advancement consumes exact 1/2/4 Mệnh Nguyên;
-12. post-birth acquisition consumes exact acquisition cost and is player-selected, not random;
-13. acquired fate has same final ceiling as congenital version;
-14. birth history is never rewritten by acquisition/Cải Mệnh;
-15. only one active Chủ Mệnh in initial V2;
-16. retired fate state/history persists;
-17. Mệnh Cách does not alter Disciple Quality directly;
-18. fixed-value consumables remain fixed unless explicit;
-19. numeric effects use canonical channels;
-20. Cơ Duyên rule modification does not rewrite Cơ Duyên;
-21. hidden fate does not leak through UI/AI/conflict eligibility;
-22. consumer-gated effects cannot become active without owning subsystem;
-23. save/load and deterministic continuation preserve fate exactly;
-24. large-roster simulation has no all-disciple per-tick destiny polling;
-25. rule-triggered fate effects cannot recursively self-trigger unless explicitly allowed.
+Reveal only reveals the stored fate.
+Never reroll.
 
 ---
 
-# 26. Proposed decisions for user review
+# 24. Implementation invariants
 
-This draft proposes:
+When eventually implemented:
 
-1. merge old generic Thiên Mệnh terminology into one canonical **Mệnh Cách V2** system;
-2. one active Chủ Mệnh at a time in initial V2;
-3. congenital rate **0.10%** = 0.09% latent + 0.01% already revealed;
-4. normal rate independent from Disciple Quality/Dẫn Tiên/Root/Trait;
-5. no generic quality color or Grade 1–5;
-6. states = none / Tiềm Mệnh / Hiển Mệnh / Khai Mệnh / Hóa Mệnh / Chứng Mệnh;
-7. no generic Mệnh Cách XP;
-8. progress by three unique Mệnh Kiếp milestones;
-9. universal rare resource **Mệnh Nguyên**;
-10. congenital progression costs 1 / 2 / 4 Mệnh Nguyên after reveal;
-11. non-congenital disciple may acquire an eligible chosen Mệnh Cách at Hiển Mệnh for **8 Mệnh Nguyên**;
-12. acquisition and advancement are deterministic, no fail RNG;
-13. same final fate ceiling whether congenital or acquired;
-14. future Cải Mệnh is explicit/player-chosen and preserves old fate history;
-15. starter catalogue begins with Vạn Pháp Quy Nhất, Thiên Quyến Hồng Phúc, Phá Quân, Bách Chiết Bất Khuất, Hộ Đạo, Đại Khí Vãn Thành, plus consumer-gated Thiên Đố Anh Tài and Túc Tuệ Chuyển Thế;
-16. all Mệnh Cách must contain at least one real rule/event/milestone change and cannot be only a larger stat Trait.
+1. same seed/source/index = same congenital fate identity;
+2. normal quality/Dẫn Tiên do not alter fate roll;
+3. ordinary birth max one congenital fate;
+4. latent fate has zero effect before reveal;
+5. reveal never rerolls;
+6. multiple compatible revealed Mệnh Cách are simultaneously active;
+7. there is no one-active-Chủ-Mệnh slot;
+8. no lifetime fate hard cap exists;
+9. same fate ID cannot duplicate-stack;
+10. hidden conflicts do not leak latent identity;
+11. Mệnh Cục derives only from currently active required fates;
+12. removing/sealing one required fate disables its Mệnh Cục immediately;
+13. post-birth acquisition is deterministic after explicit requirements/cost;
+14. no generic fate XP exists;
+15. no universal Khai/Hóa/Chứng ladder exists;
+16. permanent unique-boss/calamity marks cannot be repeat-farmed;
+17. fixed-value rewards/items remain fixed unless the Mệnh specifically owns that rule;
+18. rule effects use canonical combat/work/luck authorities;
+19. future-only/consumer-gated effects cannot activate early;
+20. save/load preserves all owned fates, marks and history exactly;
+21. large-roster runtime does not per-tick poll every fate;
+22. proc/trigger effects cannot recursively self-trigger unless explicitly allowed.
 
-No gameplay implementation is authorized until this design is reviewed and locked.
+---
+
+# 25. Revised design decisions proposed for user review
+
+1. multiple Mệnh Cách may coexist and all compatible revealed fates are active;
+2. no active Chủ-Mệnh slot;
+3. no lifetime hard cap;
+4. Bản Mệnh is birth-history label, not exclusive active slot;
+5. keep congenital rarity target 0.10% for now;
+6. ordinary birth max one congenital fate;
+7. remove generic Khai/Hóa/Chứng progression;
+8. each fate is already strongly useful on reveal;
+9. specific fates may have their own counters/evolution only when meaningful;
+10. Mệnh Cục provides derived bonuses for fate combinations;
+11. each fate must have a one-line understandable law + 2–4 concrete effects;
+12. Mệnh effects are intentionally much stronger than Traits;
+13. Mệnh Nguyên remains universal rare acquisition resource;
+14. every post-birth fate has an explicit feat/event + resource recipe rather than one generic shop;
+15. same fate final effect is not weaker merely because it was acquired later;
+16. long-term favorite disciple may eventually collect many compatible fates;
+17. starter catalogue above is the new power/readability standard.
+
+No gameplay implementation is authorized until the redesigned system is reviewed and locked.
