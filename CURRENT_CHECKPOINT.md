@@ -312,5 +312,27 @@ Locked architecture:
 
 No Mệnh Cách V2 runtime code has been added.
 
+Huyết Mạch V2 is now **LOCKED, NOT IMPLEMENTED**.
+
+Canonical authority:
+`docs/BLOODLINE_V2_SPEC.md`
+
+Locked highlights:
+- ordinary congenital distribution = 98.00% none / 1.60% latent / 0.40% revealed;
+- ordinary birth has at most one congenital special Bloodline;
+- current purity is integer 1–100; birth purity/provenance is preserved;
+- awakened purity >=50 derives Chân Huyết; purity 100 derives Phản Tổ;
+- no universal lifetime Bloodline hard cap;
+- post-birth Ban Huyết / Hoán Huyết / explicit Dung Huyết are supported;
+- deterministic +1 refinement with rising resource cost, no diminishing purity gain;
+- Huyết Tinh / Tổ Huyết / lineage-specific Huyết Nguyên are the V2 resource concepts;
+- five initial lineages: Chân Long / Phượng Hoàng / Bạch Hổ / Huyền Vũ / Thao Thiết Tàn Huyết;
+- effects feed canonical V2 channels/mechanics; legacy `combat_power_bonus` is not V2 authority;
+- inheritance architecture is reserved, but exact parent-child formula is deferred to Family V2;
+- Huyết Mạch Khai Tổ is a future hook only;
+- P2.11 is compatibility-only and must not be extended for new V2 gameplay.
+
+No Huyết Mạch V2 runtime code has been added.
+
 Current design subject:
-**Bloodline V2 / Huyết Mạch V2**.
+**Physique + Luyện Thể V2 / Thể Chất + Luyện Thể V2**.

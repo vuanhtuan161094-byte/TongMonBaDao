@@ -470,7 +470,38 @@ Locked structural rules:
 
 No gameplay runtime implementation was added by this design lock.
 
-# 11. Next-chat carryover
+# 11. Bloodline V2 — DESIGN LOCKED, NOT IMPLEMENTED
+
+Canonical authority:
+`docs/BLOODLINE_V2_SPEC.md`
+
+Locked core:
+- ordinary congenital total = **2.00%**:
+  - 98.00% none;
+  - 1.60% latent;
+  - 0.40% revealed;
+- ordinary birth max one special congenital Bloodline;
+- lineage identity and birth purity are deterministic whole-person identity;
+- purity is integer **1–100**;
+- no universal Bloodline rarity color;
+- no V2 private `combat_power_bonus`;
+- effects use canonical character/combat/recovery channels;
+- states: Tiềm Ẩn / Hiển Lộ / Thức Tỉnh / Phong Ấn / historical fused-replaced;
+- awakened purity >=50 -> **Chân Huyết**;
+- awakened purity 100 -> **Phản Tổ**;
+- deterministic +1 refinement; resource cost rises, gained purity does not diminish;
+- Huyết Tinh + Tổ Huyết + lineage-specific Huyết Nguyên resource model;
+- post-birth Ban Huyết / Hoán Huyết / explicit Dung Huyết;
+- no universal lifetime Bloodline cap, but later grants become exponentially expensive and conflicts/fusions are explicit;
+- five first identities remain Chân Long / Phượng Hoàng / Bạch Hổ / Huyền Vũ / Thao Thiết Tàn Huyết, now redesigned around distinct build identities;
+- significant-history reveal is retroactive;
+- inheritance architecture is reserved but exact parent-child formula waits for Family V2;
+- future Huyết Mạch Khai Tổ is an architecture hook only;
+- P2.11 is compatibility-only until a tested migration replaces it.
+
+No Huyết Mạch V2 runtime code has been added.
+
+# 12. Next-chat carryover
 
 Spiritual Root V2, Combat Stats V2 and the Disciple Characteristics/Stat Framework V2 are design-closed.
 
@@ -494,8 +525,12 @@ Locked highlights:
 - Mệnh Cục combinations;
 - favorite disciple may eventually collect many compatible Mệnh.
 
+Huyết Mạch V2 is now DESIGN LOCKED, NOT IMPLEMENTED.
+Canonical authority:
+`docs/BLOODLINE_V2_SPEC.md`
+
 Next default design subject:
-**Bloodline V2 / Huyết Mạch V2**.
+**Physique + Luyện Thể V2 / Thể Chất + Luyện Thể V2**.
 
 Use:
 - this ledger;
@@ -504,6 +539,9 @@ Use:
 - `docs/SPIRITUAL_ROOT_V2_SPEC.md`;
 - `docs/COMBAT_STATS_V2_SPEC.md`;
 - `docs/DISCIPLE_CHARACTERISTICS_STAT_FRAMEWORK_V2.md`;
-- live trait/personality/consumer code.
+- `docs/TRAITS_V2_SPEC.md`;
+- `docs/DESTINY_V2_SPEC.md`;
+- `docs/BLOODLINE_V2_SPEC.md`;
+- live physique/body-training/cultivation/combat code.
 
 Do not implement any of these V2 design-locked systems without a new explicit implementation instruction.

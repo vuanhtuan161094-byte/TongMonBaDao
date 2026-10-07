@@ -50,10 +50,10 @@ No subsystem may silently introduce a permanent hard cap that contradicts this f
 | Spiritual Root | elements/count/purity/base buffs/resonance/mutation | **FULL V2 DESIGN LOCKED — NOT IMPLEMENTED** |
 | Profession talent | innate learning talent per profession | Existing partial |
 | Traits | visible/negative/latent/acquired traits | Existing partial; needs V2 review |
-| Mệnh Cách / special destiny identity | rare rule-changing identity such as Yêu Nghiệt / Luân Hồi-type concepts | Design needed |
-| Bloodline | presence/type/purity/reveal/awakening | Existing partial; needs V2 review |
+| Mệnh Cách / special destiny identity | rare rule-changing identity such as Yêu Nghiệt / Luân Hồi-type concepts | **FULL V2 DESIGN LOCKED — NOT IMPLEMENTED** |
+| Bloodline | lineage/purity/reveal/awakening/refinement/grant/fusion | **FULL V2 DESIGN LOCKED — NOT IMPLEMENTED** |
 | Physique | body grade + special physique + body progression | Existing partial; needs V2 review |
-| Thiên Mệnh / very rare fate layer | latent rare branch-changing identity | Future design |
+| Thiên Mệnh / very rare fate layer | merged into canonical Mệnh Cách V2 | **MERGED — do not build separately** |
 
 ## B. Personal progression
 
@@ -239,19 +239,31 @@ Redesigned proposal:
 - effects are intentionally much stronger and clearer than Traits;
 - long-term favorite disciple may eventually collect many compatible fates.
 
-## Current design subject: Bloodline V2
+## Bloodline V2 — DESIGN CLOSED
 
-Need decide:
-- birth rate;
-- type;
-- purity;
-- hidden/revealed;
-- awakening;
-- inheritance/refinement;
-- bloodline-granting items;
-- replacement/fusion rules.
+Canonical authority:
+`docs/BLOODLINE_V2_SPEC.md`
 
-## Then: Physique + Luyện Thể V2
+Locked:
+- 2.00% ordinary congenital rate: 1.60% latent + 0.40% revealed;
+- ordinary birth max one congenital special lineage;
+- integer purity 1–100;
+- Chân Huyết at awakened purity >=50;
+- Phản Tổ at awakened purity 100;
+- five redesigned initial lineages with distinct build identities;
+- deterministic +1 refinement with increasing material cost;
+- Huyết Tinh / Tổ Huyết / lineage-specific Huyết Nguyên;
+- no universal lifetime Bloodline cap;
+- Ban Huyết / Hoán Huyết / explicit Dung Huyết;
+- explicit compatibility/conflict data;
+- significant-history retroactive reveal;
+- inheritance architecture reserved while exact family formula is deferred;
+- future founder-created Bloodline hook;
+- P2.11 becomes compatibility/migration only.
+
+Implementation remains future work.
+
+## Current design subject: Physique + Luyện Thể V2
 
 Need decide together because they strongly interact:
 - Phàm/Linh/Huyền/Thánh/Thần body grade;
@@ -330,17 +342,17 @@ Do not reintroduce:
 
 # 6. Next-chat instruction
 
-Spiritual Root V2 design is closed.
+Spiritual Root V2, Combat Stats V2, Characteristic Framework V2, Traits V2, Mệnh Cách V2 and Huyết Mạch V2 are design-closed.
 
 The next default design conversation should start with:
-**Traits V2**
+**Physique + Luyện Thể V2 / Thể Chất + Luyện Thể V2**
 
 Before proposing rules:
 1. read `docs/DISCIPLE_MASTER_SCHEMA.md`;
 2. read `docs/DISCIPLE_V2_DESIGN_LEDGER.md`;
 3. read this roadmap;
-4. preserve `docs/SPIRITUAL_ROOT_V2_SPEC.md` as locked authority;
-5. inspect live trait/personality generation and consumers.
+4. preserve all locked V2 authorities, especially `docs/BLOODLINE_V2_SPEC.md`;
+5. inspect live physique, body-training, cultivation and combat consumers.
 
-Do not reopen Spiritual Root V2 unless a concrete contradiction is discovered or the user explicitly changes it.
-Do not implement Spiritual Root V2 until the user explicitly starts that implementation phase.
+Do not reopen a locked V2 subsystem unless a concrete contradiction is discovered or the user explicitly changes it.
+Do not implement any design-locked V2 subsystem until the user explicitly starts an implementation phase.

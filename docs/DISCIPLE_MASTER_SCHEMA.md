@@ -15,6 +15,7 @@ Companion authorities:
 - `docs/COMBAT_STATS_V2_SPEC.md` — locked derived combat-stat registry and composition rules.
 - `docs/TRAITS_V2_SPEC.md` — locked Trait/Đặc Chất V2 design authority.
 - `docs/DESTINY_V2_SPEC.md` — locked Mệnh Cách V2 authority; multiple compatible owned fates, 0.50% congenital rate, high-impact rules and Mệnh Cục combinations.
+- `docs/BLOODLINE_V2_SPEC.md` — locked Huyết Mạch V2 authority; 2% congenital rate, purity 1–100, Chân Huyết/Phản Tổ, deterministic refinement and post-birth Bloodline transformation.
 
 ## Long-term nurture law
 
@@ -87,11 +88,11 @@ Reveal/awakening không được reroll identity ẩn.
 | Work preference | personality/life derived | Không | Có | trải nghiệm/chính sách/assignment |
 | Đặc Chất visible | random | thường ổn định | có thể thêm/mất nếu event hợp lý | event lớn, tu luyện, thương tích, thành tựu |
 | Đặc Chất latent | random từ seed | cố định trước reveal | reveal | lived-history threshold; không reroll |
-| Huyết Mạch — có/không | random riêng | innate identity | Có thể được ban bằng vật phẩm/cơ duyên | Huyết Tinh/Truyền Thừa/Hoán Huyết sau này |
-| Huyết Mạch — loại | random nếu có | gốc ổn định | Có thể tiến hóa/đổi cực hiếm | tiến hóa huyết mạch, dung/hoán huyết chuyên biệt |
-| Huyết Mạch — độ thuần | random nếu có | Không | Có | Yêu Đan/bloodline essence/refinement |
-| Huyết Mạch — phát hiện | random/điều kiện | Không | Có | lived history -> reveal |
-| Huyết Mạch — thức tỉnh | false/true tùy nguồn đặc biệt sau này | Không | Có | tài nguyên + điều kiện; mới kích hoạt full effect |
+| Huyết Mạch — bẩm sinh | ordinary: 98% none / 1.60% latent / 0.40% revealed; max 1 congenital special Bloodline | birth identity/purity snapshot cố định | Có thể reveal/awaken; hậu thiên có thể thêm nhiều Bloodline | `docs/BLOODLINE_V2_SPEC.md`; không reroll |
+| Huyết Mạch — loại | deterministic nếu có | gốc/provenance cố định | Có thể Ban Huyết / Hoán Huyết / Dung Huyết cực đắt | multiple compatible Bloodlines, no universal lifetime hard cap |
+| Huyết Mạch — độ thuần | integer 1–100 riêng từng Bloodline | birth purity snapshot cố định nếu congenital | Có | Huyết Tinh +1 deterministic; 99->100 cần Tổ Huyết; không diminishing gain |
+| Huyết Mạch — phát hiện | latent/revealed từ birth seed | hidden identity cố định | Có | significant-history reveal; retroactive; không reroll |
+| Huyết Mạch — thức tỉnh | inactive trước awakening | Không | Có | 8 Huyết Tinh + 1 Yêu Đan starting recipe; purity >=50 = Chân Huyết, purity 100 = Phản Tổ |
 | Thể Chất — cấp | random riêng | innate starting tier | Có thể thăng rất hiếm | thiên tài địa bảo/cơ duyên/cải thể; không tăng tự động chỉ vì Tôi thể |
 | Thể Chất — loại đặc biệt | roll riêng, có thể none | innate identity | Có thể được ban/cải tạo | Đạo Thai/Bản Nguyên/vật phẩm/cơ duyên |
 | Thể Chất — Tôi thể | 0 ban đầu | Không | Có | Yêu Đan/tài nguyên, training cơ thể |

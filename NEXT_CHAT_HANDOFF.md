@@ -16,7 +16,8 @@ Updated: 2026-10-07
 10. `docs/DISCIPLE_CHARACTERISTICS_STAT_FRAMEWORK_V2.md`
 11. `docs/TRAITS_V2_SPEC.md`
 12. `docs/DESTINY_V2_SPEC.md`
-13. live character/trait/combat/work code before proposing the next disciple design.
+13. `docs/BLOODLINE_V2_SPEC.md`
+14. live character/trait/bloodline/physique/combat/work code before proposing the next disciple design.
 
 Fetch live `main` before edits.
 Do not ask the user to restate completed lục-duy or Dẫn Tiên decisions.
@@ -238,5 +239,24 @@ Preserve:
 - personal bound Mệnh Mảnh for Đoạt Mệnh;
 - explicit Mệnh Cục registry and Mệnh Phổ direction.
 
+Huyết Mạch V2 is DESIGN LOCKED, NOT IMPLEMENTED.
+Canonical authority:
+`docs/BLOODLINE_V2_SPEC.md`
+
+Preserve:
+- ordinary congenital total 2.00% = 1.60% latent + 0.40% revealed;
+- max one congenital special Bloodline at ordinary birth;
+- multiple compatible Bloodlines may be acquired later; no lifetime universal hard cap;
+- integer purity 1–100;
+- Chân Huyết at awakened purity >=50;
+- Phản Tổ at awakened purity 100;
+- deterministic +1 refinement with rising Huyết Tinh cost;
+- 99->100 additionally needs Tổ Huyết;
+- Ban Huyết starts selected lineage at purity 10, revealed but not awakened;
+- Hoán Huyết and Dung Huyết require explicit history-safe rules/recipes;
+- inheritance formula is deferred to Family V2;
+- no `combat_power_bonus` V2 authority;
+- P2.11 is compatibility-only.
+
 Current design subject:
-**Bloodline V2 / Huyết Mạch V2**.
+**Physique + Luyện Thể V2 / Thể Chất + Luyện Thể V2**.
