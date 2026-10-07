@@ -238,5 +238,16 @@ Legacy-cleanup note:
 - those legacy scripts are not V2 design authority and must not be extended for new Spiritual Root gameplay;
 - dead legacy runtime may be physically removed only inside a tested V2 migration phase.
 
-Next default design subject:
-**Mệnh Cách + Traits V2**, unless the user explicitly chooses another subsystem.
+Current design subject:
+**Disciple Characteristics & Stat Framework V2**.
+
+Draft:
+`docs/DISCIPLE_CHARACTERISTICS_STAT_FRAMEWORK_V2.md`
+
+Status:
+**DESIGN DRAFT — NOT IMPLEMENTED — NOT LOCKED**.
+
+This draft exists to lock stat/characteristic ownership before Trait V2.
+No gameplay runtime code was added for this draft.
+
+After user review/lock, the next design subject is **Traits V2**.
