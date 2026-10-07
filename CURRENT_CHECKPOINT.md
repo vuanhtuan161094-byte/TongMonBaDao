@@ -290,3 +290,11 @@ No Trait V2 runtime code has been added.
 
 Current design subject:
 **Mệnh Cách V2**.
+
+Draft authority:
+`docs/DESTINY_V2_SPEC.md`
+
+Status:
+**DESIGN DRAFT — NOT IMPLEMENTED — NOT LOCKED**.
+
+No Mệnh Cách V2 runtime code has been added.
