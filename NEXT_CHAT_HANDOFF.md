@@ -12,7 +12,8 @@ Updated: 2026-10-07
 6. `docs/DISCIPLE_V2_ROADMAP.md`
 7. `docs/P3_7C1_FOUNDATION_DAN_TIEN_SPEC.md`
 8. `docs/SPIRITUAL_ROOT_V2_SPEC.md`
-9. live Spiritual Root / root-refinement/combat code before proposing implementation.
+9. `docs/DISCIPLE_CHARACTERISTICS_STAT_FRAMEWORK_V2.md`
+10. live character/trait/combat/work code before proposing the next disciple design.
 
 Fetch live `main` before edits.
 Do not ask the user to restate completed lục-duy or Dẫn Tiên decisions.
@@ -189,5 +190,11 @@ Legacy boundary:
 Implementation dependency:
 do not implement mutation combat with temporary private stats. It requires the relevant Skill/Combat V2 primitives or must wait for that combat phase.
 
-Next design subject in the Disciple V2 queue:
-**Mệnh Cách + Traits V2**, unless the user explicitly chooses another subsystem.
+Current design subject:
+**Disciple Characteristics & Stat Framework V2**.
+
+The draft is in:
+`docs/DISCIPLE_CHARACTERISTICS_STAT_FRAMEWORK_V2.md`
+
+It is not locked and not implemented.
+Review it with the user before moving to Traits V2.
