@@ -140,6 +140,34 @@ This low birth rate is acceptable because Mệnh Cách is also a long-term **acq
 
 ---
 
+# 6A. Congenital selection / reveal contract
+
+After the overall 0.10% congenital roll succeeds:
+
+1. build the eligible congenital Mệnh pool;
+2. choose one Mệnh by its definition's `birth_weight`;
+3. 90% of congenital results begin latent, 10% begin revealed, unless content explicitly overrides;
+4. persist the identity before candidate presentation.
+
+`birth_weight` controls relative frequency inside the already-rare congenital pool. It is not a power grade/color.
+
+A latent congenital Mệnh defines one or more deterministic reveal hooks.
+
+Examples:
+- Phá Quân -> first qualifying higher-tier victory;
+- Thất Sát -> first real multi-kill/kill-streak event;
+- Đại Khí Vãn Thành -> first major realm breakthrough;
+- Dược Vương Tại Thế -> first meaningful ally-save event;
+- Tài Tinh Nhập Mệnh -> first highest-tier work-quality outcome.
+
+A future appraisal action may reveal the already-stored Mệnh early.
+
+Latent active effects remain off.
+
+Exception:
+an explicit birth package may already have shaped immutable birth facts before reveal. That historical birth package is not toggled on/off by reveal and does not count as an active hidden modifier.
+
+---
 # 7. Independence from headline quality
 
 Normal congenital Mệnh Cách roll is independent from:
