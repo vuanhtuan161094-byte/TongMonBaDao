@@ -233,12 +233,14 @@ Status:
 
 Review especially:
 - canonical merge of old Thiên Mệnh wording into Mệnh Cách;
-- 0.10% congenital rate;
-- one active Chủ Mệnh;
-- Tiềm/Hiển/Khai/Hóa/Chứng states;
-- Mệnh Kiếp milestone progression;
-- Mệnh Nguyên source/cost loop;
-- post-birth chosen acquisition;
-- starter Mệnh Cách catalogue.
+- multiple compatible Mệnh Cách active simultaneously;
+- no Chủ-Mệnh slot and no lifetime hard cap;
+- 0.10% congenital rate remains provisional;
+- no universal Khai/Hóa/Chứng ladder;
+- each fate is immediately strong/readable on reveal;
+- Mệnh Nguyên source loop;
+- explicit feat/event + resource acquisition recipe per fate;
+- Mệnh Cục combination system;
+- high-impact starter catalogue in the redesigned spec.
 
 Do not collapse Mệnh Cách into Trait.
