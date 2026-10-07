@@ -15,7 +15,8 @@ Updated: 2026-10-07
 9. `docs/COMBAT_STATS_V2_SPEC.md`
 10. `docs/DISCIPLE_CHARACTERISTICS_STAT_FRAMEWORK_V2.md`
 11. `docs/TRAITS_V2_SPEC.md`
-12. live character/trait/combat/work code before proposing the next disciple design.
+12. `docs/DESTINY_V2_SPEC.md`
+13. live character/trait/combat/work code before proposing the next disciple design.
 
 Fetch live `main` before edits.
 Do not ask the user to restate completed lục-duy or Dẫn Tiên decisions.
@@ -224,4 +225,20 @@ Preserve:
 Current design subject:
 **Mệnh Cách V2**.
 
-Do not collapse Mệnh Cách into Trait. It must be rarer and structurally different, not simply a stronger Trait.
+Draft:
+`docs/DESTINY_V2_SPEC.md`
+
+Status:
+**DESIGN DRAFT — NOT IMPLEMENTED — NOT LOCKED**.
+
+Review especially:
+- canonical merge of old Thiên Mệnh wording into Mệnh Cách;
+- 0.10% congenital rate;
+- one active Chủ Mệnh;
+- Tiềm/Hiển/Khai/Hóa/Chứng states;
+- Mệnh Kiếp milestone progression;
+- Mệnh Nguyên source/cost loop;
+- post-birth chosen acquisition;
+- starter Mệnh Cách catalogue.
+
+Do not collapse Mệnh Cách into Trait.
