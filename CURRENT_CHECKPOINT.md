@@ -204,18 +204,26 @@ Canonical design carryover files now exist:
 
 These docs are design authorities, not implementation PASS evidence.
 
-## 7. Queued design direction
+## 7. Disciple V2 design queue
 
-The next disciple-design subject is **Linh Căn V2**.
+Spiritual Root V2 **base core design is locked, not implemented**.
 
-Next chat should design it before coding:
-- base elements / number of roots;
-- purity;
-- elemental compatibility;
-- mutated roots;
-- post-recruitment improvement/transformation;
-- effects on cultivation, techniques and later content;
-- reference comparison with 《最强祖师》 without copying its content/balance blindly.
+Canonical design:
+- `docs/SPIRITUAL_ROOT_V2_SPEC.md`.
 
-This is a design queue only.
-No Linh Căn implementation phase is authorized yet.
+Locked design now covers:
+- five base roots;
+- 1–5 root generation rates;
+- per-element purity 1–100;
+- base cultivation/mastery/combat buffs;
+- element-specific permanent passives;
+- perfected-root Resonance through full five roots;
+- elemental counter core;
+- deterministic refinement;
+- missing-root transformation path;
+- resource-source/storage/migration contract.
+
+Next Spiritual Root design subsection:
+**Dị Linh Căn / mutation V2**.
+
+No implementation phase is active and no Spiritual Root V2 code is authorized yet.

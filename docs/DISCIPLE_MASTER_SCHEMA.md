@@ -74,10 +74,10 @@ Reveal/awakening không được reroll identity ẩn.
 | Personality core | random | Khá ổn định | Có thể biến chuyển lớn | biến cố đời người; không tăng XP thường |
 | Risk/Spend/Survival bias | random quanh personality | mềm | Có thể dịch chuyển có giới hạn | kinh nghiệm sống/sự kiện/chính sách sau này |
 | Active Goal | không phải innate rarity | Không | Thay đổi thường xuyên | hoàn cảnh, ký ức, mục tiêu cá nhân |
-| Linh căn — số hệ/nguyên tố | random | innate ổn định | có thể biến dị/đổi cực hiếm | đại cơ duyên/cải tạo chuyên biệt; refine thường KHÔNG đổi hệ |
-| Linh căn — độ tinh thuần | random | Không | Có | Linh Tủy/refinement; diminishing returns |
-| Phẩm Linh căn | derived từ purity | Không | Có | purity vượt threshold |
-| Biến dị Linh căn | latent random | identity ẩn cố định | reveal/awaken | điều kiện/refinement; không reroll |
+| Linh căn — số hệ/nguyên tố | random 1–5 | birth snapshot cố định | Có thể thêm căn mới cực đắt | đại cải tạo bằng Linh Tủy + Ngũ Hành Bản Nguyên; refine thường KHÔNG đổi hệ |
+| Linh căn — purity từng hệ | random riêng từng căn, 1–100 | birth snapshot cố định | Có | Linh Tủy +1 deterministic; 99->100 cần thêm Ngũ Hành Bản Nguyên; không diminishing gain |
+| Cộng Hưởng Linh Căn | derived từ số căn current đạt 100 | Không | Có | tự recompute; R=1.10/1.25/1.45/1.70/2.00 ở 1/2/3/4/5 căn viên mãn |
+| Biến dị Linh căn | future V2 design | identity ẩn khi áp dụng | reveal/awaken/transform | phải có spec riêng; không reroll |
 | Profession talent bẩm sinh | random | khá ổn định | có thể thêm trait hiếm sau này | cơ duyên/đào tạo đặc biệt, không thay profession XP |
 | Profession XP | 0/thấp khi sinh | Không | Có | thật sự làm nghề |
 | Work preference | personality/life derived | Không | Có | trải nghiệm/chính sách/assignment |
@@ -197,19 +197,30 @@ Chi tiết Dẫn Tiên/quality distribution:
 
 ---
 
-# 4. Linh căn — ba roll độc lập chính
+# 4. Linh Căn V2 — base authority locked
 
-Khi sinh:
+Detailed authority:
+`docs/SPIRITUAL_ROOT_V2_SPEC.md`
 
-1. roll **số hệ/nguyên tố**;
-2. roll **độ tinh thuần**;
-3. roll **latent mutation** nếu hệ P2.10 bật.
+Base rules now locked:
+- five base elements Kim/Mộc/Thủy/Hỏa/Thổ;
+- ordinary birth root count 1–5 at 7% / 18% / 30% / 28% / 17%;
+- root count/element identity is independent from Disciple Quality;
+- each owned root has its own current purity 1–100 plus immutable birth purity;
+- ordinary refinement is deterministic +1 on one existing root;
+- no ordinary refinement failure and no diminishing-gain curve;
+- every root can reach 100;
+- missing roots can eventually be created through expensive major transformation;
+- root buffs affect matching cultivation, matching mastery, matching skill effect and matching resistance;
+- each base root also gives a permanent combat passive;
+- every root at exactly 100 contributes to the perfected-root count;
+- 1/2/3/4/5 perfected roots increase Spiritual Root Resonance, with five perfected roots intentionally extremely strong;
+- elemental counter relationship is combat-core data;
+- concrete Burn/Freeze/Guard/Weaken/etc. mechanics remain owned by skill definitions.
 
-Không dùng luật `đơn linh căn = luôn phẩm cao`.
+Canonical V2 data is per-element root values. The old one-global-purity and legacy root-quality fields become migration/compatibility data after implementation.
 
-Độ tinh thuần tăng được bằng refinement. Refinement thường không đổi số hệ.
-
-Phẩm Linh căn được derived từ purity và thay đổi khi purity vượt ngưỡng.
+Mutation roots remain the next design subsection and are not yet locked.
 
 ---
 

@@ -429,3 +429,29 @@ Use:
 
 Start with design and reference comparison.
 Do not code Spiritual Root V2 until the user explicitly approves the design.
+
+
+---
+
+# 8. Spiritual Root V2 core — DESIGN LOCKED, NOT IMPLEMENTED
+
+Canonical detailed authority:
+`docs/SPIRITUAL_ROOT_V2_SPEC.md`
+
+Locked core:
+- five base roots Kim/Mộc/Thủy/Hỏa/Thổ;
+- ordinary birth has 1–5 roots at 7% / 18% / 30% / 28% / 17%;
+- element choice is uniform without replacement and independent from Disciple Quality;
+- each owned root has its own integer purity 1–100 and immutable birth snapshot;
+- no one global purity remains authoritative in V2;
+- ordinary refinement targets one existing root, is deterministic +1 and cannot fail;
+- Linh Tủy is the ordinary refinement material; 99->100 also needs Ngũ Hành Bản Nguyên;
+- missing base roots can be added by expensive deterministic major transformation;
+- each root gives matching cultivation/mastery/skill-effect/resistance bonuses plus its base-element permanent passive;
+- perfected-root count (roots at exactly 100) drives Resonance R=1.10/1.25/1.45/1.70/2.00 for 1/2/3/4/5 perfected roots;
+- full 100/100/100/100/100 is intentionally extremely strong;
+- Ngũ Hành combat counter cycle is real combat-core behavior;
+- Burn/Freeze/Guard/Weaken/etc. belong to skills, not automatically to the root element;
+- consumer/resource source/storage/migration requirements are explicitly owned by the detailed spec.
+
+Mutation-root design remains open and must be completed before Spiritual Root V2 implementation is authorized.

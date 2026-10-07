@@ -47,7 +47,7 @@ No subsystem may silently introduce a permanent hard cap that contradicts this f
 | Six foundations | Tư Chất, Căn Cốt, Cơ Duyên, Thông Tuệ, Mị Lực, Tiềm Lực | **P3.7C1 locked** |
 | Disciple quality | Derived from current total six foundations | **P3.7C1 locked** |
 | Personality | Core personality + risk/spend/survival tendencies | Existing but still shallow |
-| Spiritual Root | elements/count/purity/mutation | **NEXT DESIGN SUBJECT** |
+| Spiritual Root | elements/count/purity/base buffs/resonance/mutation | **BASE V2 LOCKED; MUTATION NEXT** |
 | Profession talent | innate learning talent per profession | Existing partial |
 | Traits | visible/negative/latent/acquired traits | Existing partial; needs V2 review |
 | Mệnh Cách / special destiny identity | rare rule-changing identity such as Yêu Nghiệt / Luân Hồi-type concepts | Design needed |
@@ -128,19 +128,28 @@ Mị Lực is the canonical social-power input; individual systems may add resis
 
 This is the preferred order to reduce rework. It is a **queue**, not permission to auto-start code.
 
-## Next: Spiritual Root V2
+## Current: Spiritual Root V2
 
-Resolve first:
+Base-root authority is now locked in:
+`docs/SPIRITUAL_ROOT_V2_SPEC.md`
+
+Locked:
 - five base elements;
-- single/multi root meaning;
-- purity;
-- elemental compatibility;
-- mutation roots;
-- what can improve after birth;
-- how Spiritual Root affects cultivation, technique learning/effect, and special content;
-- which parts are innate vs transformable.
+- 1–5 root birth distribution;
+- per-element purity 1–100;
+- root-derived cultivation/mastery/combat buffs;
+- base-element permanent passives;
+- 1/2/3/4/5 perfected-root Resonance;
+- elemental counter core;
+- deterministic Linh Tủy refinement;
+- expensive post-birth missing-root creation;
+- storage/resource-source/migration requirements.
 
-Reference inspiration may include Metal/Wood/Water/Fire/Earth and rare mutations such as Wind/Lightning/Ice/Yang/Nether, but exact game rules must be decided for this project before implementation.
+Still to design before implementation:
+- Dị Linh Căn / mutation types, rates, reveal/awakening, combat mechanics and acquisition path;
+- final mutation interaction with the locked base-root model.
+
+Do not implement Spiritual Root V2 until the user explicitly authorizes code after mutation design is closed.
 
 ## Then: Mệnh Cách + Traits V2
 

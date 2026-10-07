@@ -11,7 +11,8 @@ Updated: 2026-10-07
 5. `docs/DISCIPLE_V2_DESIGN_LEDGER.md`
 6. `docs/DISCIPLE_V2_ROADMAP.md`
 7. `docs/P3_7C1_FOUNDATION_DAN_TIEN_SPEC.md`
-8. live Spiritual Root / root-refinement code before proposing implementation.
+8. `docs/SPIRITUAL_ROOT_V2_SPEC.md`
+9. live Spiritual Root / root-refinement/combat code before proposing implementation.
 
 Fetch live `main` before edits.
 Do not ask the user to restate completed lục-duy or Dẫn Tiên decisions.
@@ -153,27 +154,35 @@ Never copy its assets/text/icons/map.
 
 ---
 
-## NEXT DESIGN SUBJECT — Spiritual Root V2
+## SPIRITUAL ROOT V2 — BASE CORE LOCKED, MUTATION NEXT
 
-Start the next chat here.
+Canonical authority:
+`docs/SPIRITUAL_ROOT_V2_SPEC.md`
 
-Need to design, one decision at a time:
-1. base roots/elements;
-2. number of roots and what single/multi-root actually means;
-3. purity;
-4. cultivation interaction;
-5. technique compatibility/effect;
-6. mutation roots;
-7. post-recruitment refinement/transformation;
-8. permanent improvement resources;
-9. generation rates/distribution;
-10. interaction with lục duy without duplicating Tư Chất/Thông Tuệ.
+Locked base:
+- Kim/Mộc/Thủy/Hỏa/Thổ;
+- ordinary root-count rates 7/18/30/28/17%;
+- each root has independent purity 1–100;
+- deterministic post-birth +1 refinement;
+- Linh Tủy ordinary cost + Ngũ Hành Bản Nguyên for perfection/missing-root transformation;
+- root buffs matching cultivation/mastery/skill effect/resistance;
+- Kim penetration, Mộc Max HP, Thủy attack+cast speed, Hỏa damage, Thổ Defense;
+- perfected-root Resonance R=1.10/1.25/1.45/1.70/2.00 at 1/2/3/4/5 roots at 100;
+- full five 100 is intentionally extremely strong;
+- Ngũ Hành counter is combat-core;
+- skill-specific Burn/Freeze/Guard/etc. stay in skill definitions.
 
-Important reference candidates to examine:
-- Metal / Wood / Water / Fire / Earth;
-- possible rare mutations such as Wind / Lightning / Ice / Yang / Nether.
+Next design subsection:
+**Dị Linh Căn / mutation V2**.
 
-Those exact mutation names/rates/effects are **not yet locked**.
+Must close end-to-end:
+- mutation types and base-root relation;
+- birth/latent rates;
+- reveal/awakening;
+- post-birth transformation;
+- exact buffs/mechanics;
+- resources and acquisition sources;
+- combat/content consumers;
+- persistence/migration.
 
-First discuss and lock the design.
-Do not implement Spiritual Root V2 until the user explicitly authorizes code.
+No Spiritual Root V2 gameplay code is authorized yet.
