@@ -241,6 +241,10 @@ Review especially:
 - Mệnh Nguyên source loop;
 - explicit feat/event + resource acquisition recipe per fate;
 - Mệnh Cục combination system;
-- high-impact starter catalogue in the redesigned spec.
+- high-impact starter catalogue in the redesigned spec;
+- 24 named Mệnh Cách targets + 9 Mệnh Cục examples;
+- significant-history retroactivity and anti-farm attribution;
+- personal bound Mệnh Mảnh for Đoạt Mệnh;
+- explicit reveal/acquisition registry and Mệnh Phổ direction.
 
 Do not collapse Mệnh Cách into Trait.
