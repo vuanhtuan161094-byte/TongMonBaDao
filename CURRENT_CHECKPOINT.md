@@ -232,5 +232,11 @@ Do not invent temporary root-only Crit/Effect-Hit/DoT/control/stat authority.
 
 **No implementation phase is active and no Spiritual Root V2 gameplay code is authorized yet.**
 
+Legacy-cleanup note:
+- `docs/P2_10_SPIRITUAL_ROOT_REFINEMENT_SPEC.md` is now compatibility-only and explicitly superseded by V2;
+- old `spiritual_root_system.gd` / `root_refinement_system.gd` remain temporarily only because locked P2 regressions and old-save migration still consume them;
+- those legacy scripts are not V2 design authority and must not be extended for new Spiritual Root gameplay;
+- dead legacy runtime may be physically removed only inside a tested V2 migration phase.
+
 Next default design subject:
 **Mệnh Cách + Traits V2**, unless the user explicitly chooses another subsystem.
