@@ -222,29 +222,21 @@ Preserve:
 - consumer gating;
 - Personality/profession talent separation.
 
-Current design subject:
-**Mệnh Cách V2**.
-
-Draft:
+Mệnh Cách V2 is DESIGN LOCKED, NOT IMPLEMENTED.
+Canonical authority:
 `docs/DESTINY_V2_SPEC.md`
 
-Status:
-**DESIGN DRAFT — NOT IMPLEMENTED — NOT LOCKED**.
-
-Review especially:
-- canonical merge of old Thiên Mệnh wording into Mệnh Cách;
+Preserve:
+- congenital total **0.50% = 0.45% latent + 0.05% already revealed**;
 - multiple compatible Mệnh Cách active simultaneously;
 - no Chủ-Mệnh slot and no lifetime hard cap;
-- 0.10% congenital rate remains provisional;
 - no universal Khai/Hóa/Chứng ladder;
-- each fate is immediately strong/readable on reveal;
-- Mệnh Nguyên source loop;
+- every Mệnh is immediately strong/readable on reveal;
+- Mệnh Nguyên source + deterministic repeat loop;
 - explicit feat/event + resource acquisition recipe per fate;
-- Mệnh Cục combination system;
-- high-impact starter catalogue in the redesigned spec;
-- 24 named Mệnh Cách targets + 9 Mệnh Cục examples;
 - significant-history retroactivity and anti-farm attribution;
 - personal bound Mệnh Mảnh for Đoạt Mệnh;
-- explicit reveal/acquisition registry and Mệnh Phổ direction.
+- explicit Mệnh Cục registry and Mệnh Phổ direction.
 
-Do not collapse Mệnh Cách into Trait.
+Current design subject:
+**Bloodline V2 / Huyết Mạch V2**.
