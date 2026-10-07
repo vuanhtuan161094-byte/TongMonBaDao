@@ -736,8 +736,12 @@ Only non-zero/relevant element resistances by default, expandable to all.
 Detailed secondary page/breakdown may show:
 - All Damage;
 - DoT Potency;
+- Skill Effect;
+- Healing Done / Hiệu Quả Trị Liệu;
+- Healing Received / Hiệu Quả Nhận Trị Liệu;
+- Shield Effect / Hiệu Quả Hộ Thuẫn;
+- control-duration modifiers;
 - skill/path/element effect bonuses;
-- healing/shield/control-duration modifiers;
 - source-by-source contributions.
 
 ---
@@ -765,7 +769,11 @@ When Combat Stats V2 is implemented, tests must prove at minimum:
 17. elemental matchup remains separate from elemental resistance;
 18. no standard Accuracy/Dodge roll is injected into ordinary direct attacks;
 19. Combat Rating never becomes damage/stat authority;
-20. unknown stat/modifier channel fails validation rather than silently doing nothing.
+20. unknown stat/modifier channel fails validation rather than silently doing nothing;
+21. Healing Done modifies outgoing heal magnitude and does not modify shields;
+22. Healing Received modifies the amount the target receives and is the canonical ordinary anti-heal channel;
+23. Shield Effect modifies created shield magnitude and does not modify healing;
+24. HP regeneration / Stamina recovery / Injury recovery are not silently treated as Healing Done.
 
 ---
 
