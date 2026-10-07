@@ -1061,6 +1061,40 @@ Consumer-gated to Crafting V2 recipe tags and refund authority.
 
 ---
 
+# 15A. Practical reveal / acquisition registry
+
+This table is the initial content contract. Exact thresholds remain balance data, but every row must have a real loop.
+
+| Mệnh Cách | Congenital latent reveal | Post-birth Cải Mệnh recipe | Cost | Readiness |
+|---|---|---|---:|---|
+| Đại Khí Vãn Thành | first major breakthrough | 3+ major breakthroughs | 8 | consumer-gated |
+| Hồng Trần Luyện Tâm | first real breakthrough failure | 3 lifetime failures + Tâm-Kiếp | 6 | consumer-gated |
+| Phá Quân | first higher-tier victory | 3 distinct higher-tier elite/boss victories | 8 | near-ready |
+| Thất Sát | first valid kill streak | designated kill-streak feat | 6 | near-ready |
+| Tham Lang | first unique elite/boss qualifying defeat | 5 distinct qualifying elite/boss defeats | 10 | near-ready |
+| Thiên Sát Cô Tinh | first solo high-risk clear | designated solo clear | 10 | near-ready |
+| Gặp Dữ Hóa Lành | first survived near-lethal/calamity event | survive designated calamity/near-death | 12 | lethal-queue gated |
+| Thiên Quyến Hồng Phúc | first Đại Cơ Duyên result | 3 distinct highest-tier Luck outcomes | 12 | event-table gated |
+| Thôn Thiên | first destiny-tagged boss defeat | designated Thôn-Thiên boss/event | 15 | boss-tag gated |
+| Vạn Pháp Quy Nhất | first real use of all 3 paths | learned/mastered content in all 3 paths | 10 | mastery gated |
+| Kiếm Tiên Chuyển Thế | first Sword mastery milestone | extreme Sword history + inheritance event | 15 | mastery gated |
+| Dược Vương Tại Thế | first meaningful ally save | healing history + medical inheritance | 10 | attribution gated |
+| Tài Tinh Nhập Mệnh | first highest-tier work result | several distinct highest-tier work results | 8 | quality gated |
+| Bách Kiếp Bất Diệt | first major calamity survived | survive first major calamity | 10 | calamity-content gated |
+| Thiên Đố Anh Tài | first lifespan/growth omen | special lifespan fate event | TBD | future-only |
+| Túc Tuệ Chuyển Thế | first reincarnation-memory event | reincarnation inheritance event | TBD | future-only |
+| Đoạt Mệnh | first encounter with extractable hostile fate | designated fate-extraction event | TBD | hostile-fate gated |
+| Hậu Tích Bạc Phát | first meaningful cultivation overflow | historical overflow requirement | 8 | breakthrough gated |
+| Nhất Niệm Sinh Vạn Pháp | first major skill-mastery constellation | 8 mastered combat skills / 2+ paths | 10 | mastery gated |
+| Tụ Bảo Mệnh | first eligible rare-treasure omen | 20 distinct rare resource IDs returned | 8 | expedition-tag gated |
+| Bách Nghệ Quy Tông | third profession reaches Lv100 | 3 professions Lv100 | 8 | profession-ready direction |
+| Tử Vi Đế Mệnh | first major victory while leading | 20 led boss/elite victories + leader event | 12 | team-leader gated |
+| Thiên Cơ Khả Khuy | first Great-Fortune secret-realm event | 10 secret/opportunity IDs + Đại Cơ Duyên | 10 | exploration gated |
+| Thiên Công Khai Vật | first highest-tier master craft | high crafting milestone + several top-tier recipes | 12 | crafting gated |
+
+`Near-ready` means the effect maps cleanly to locked combat/timing channels, but final encounter attribution/content tags still need the implementation phase.
+
+---
 # 16. Mệnh Cục examples beyond Sát Phá Lang
 
 ## Phúc Họa Tương Y
