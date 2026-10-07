@@ -288,27 +288,29 @@ Locked highlights:
 
 No Trait V2 runtime code has been added.
 
-Current design subject:
-**Mệnh Cách V2**.
+Mệnh Cách V2 is now **LOCKED, NOT IMPLEMENTED**.
 
-Draft authority:
+Canonical authority:
 `docs/DESTINY_V2_SPEC.md`
 
-Status:
-**REDESIGN DRAFT — NOT IMPLEMENTED — NOT LOCKED**.
+Locked congenital distribution:
+- 99.50% none;
+- 0.45% latent;
+- 0.05% already revealed;
+- total **0.50% ≈ 1/200 generated people**.
 
-Current redesign explicitly rejects the earlier one-Chủ-Mệnh / universal Khai-Hóa-Chứng model.
-Multiple compatible Mệnh Cách may coexist; each must have a clear high-impact rule and may participate in derived Mệnh Cục combinations.
-
-Current detailed draft now includes:
-- 24 named Mệnh Cách content targets + 9 explicit Mệnh Cục combinations;
-- Mệnh Nguyên source/repeat economy;
-- per-Mệnh reveal/acquisition recipes;
-- significant-history retroactivity for later-acquired Mệnh;
-- boss/calamity anti-farm rules;
-- personal Đoạt-Mệnh fragments;
-- explicit Mệnh Cục registry rules;
-- Mệnh Phổ collection/recipe UI direction;
-- consumer-readiness audit across cultivation/combat/economy/support/exploration/rebirth.
+Locked architecture:
+- multiple compatible Mệnh Cách may coexist;
+- no Chủ-Mệnh slot and no lifetime hard cap;
+- no universal Khai/Hóa/Chứng ladder;
+- Mệnh effects are high-impact and build-defining;
+- Mệnh Nguyên has first-clear + deterministic repeat acquisition;
+- every hậu thiên Mệnh has an explicit feat/event + resource recipe;
+- significant-history retroactivity prevents lost-history traps;
+- explicit anti-farm attribution and personal Đoạt-Mệnh fragments;
+- explicit Mệnh Cục registry and Mệnh Phổ direction.
 
 No Mệnh Cách V2 runtime code has been added.
+
+Current design subject:
+**Bloodline V2 / Huyết Mạch V2**.
