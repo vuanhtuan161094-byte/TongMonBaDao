@@ -295,6 +295,9 @@ Draft authority:
 `docs/DESTINY_V2_SPEC.md`
 
 Status:
-**DESIGN DRAFT — NOT IMPLEMENTED — NOT LOCKED**.
+**REDESIGN DRAFT — NOT IMPLEMENTED — NOT LOCKED**.
+
+Current redesign explicitly rejects the earlier one-Chủ-Mệnh / universal Khai-Hóa-Chứng model.
+Multiple compatible Mệnh Cách may coexist; each must have a clear high-impact rule and may participate in derived Mệnh Cục combinations.
 
 No Mệnh Cách V2 runtime code has been added.
