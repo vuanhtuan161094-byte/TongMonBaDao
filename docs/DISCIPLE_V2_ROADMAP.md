@@ -174,31 +174,50 @@ Locked:
 
 Implementation remains future work.
 
-## Current design subject: Disciple Characteristics & Stat Framework V2
+## Disciple Characteristics & Stat Framework V2 — DESIGN CLOSED
 
-Draft authority:
+Canonical authority:
 `docs/DISCIPLE_CHARACTERISTICS_STAT_FRAMEWORK_V2.md`
 
-Purpose:
-- lock the complete character/stat taxonomy before Trait/Bloodline/Physique add more modifiers;
-- distinguish persistent source data, runtime state, derived channels and contextual outcomes;
-- establish the canonical modifier registry and stacking modes;
-- prevent future parallel Attack/Defense/Work-Speed/etc. authorities.
+Locked:
+- persistent source -> runtime state -> derived channel -> contextual outcome architecture;
+- six Lục Duy remain the only general permanent foundation stat block;
+- Personality is behavioral/AI authority, separate from Trait;
+- learned progression remains subsystem-owned;
+- living state uses HP / Thể Lực / Thương Thế / Tâm Trạng / Trung Thành / Age-Lifespan;
+- Combat Stats V2 plugs into this framework;
+- canonical specialized channels include Healing Done / Healing Received / Shield Effect / DoT / Skill Effect / Control Duration / tagged modifiers;
+- modifier modes and source-breakdown/provenance are mandatory;
+- derived stats may be cached but are not save truth;
+- large-roster simulation computes only needed channels.
 
-Status:
-**DESIGN DRAFT — awaiting user review; not implemented; not locked.**
+Implementation remains future work.
 
-## Then: Traits V2
+## Current design subject: Traits V2
 
-Need separate clearly:
-- personality;
-- visible trait;
-- negative trait;
-- latent trait;
-- acquired trait;
-- rare Mệnh Cách / reincarnation / monster-genius identity.
+Need design separately:
+- visible positive/negative traits;
+- latent traits and reveal;
+- acquired/removable traits;
+- trait rarity/grade if retained;
+- conflicts/exclusions;
+- combat/work/social/AI consumers;
+- rule-changing traits vs ordinary numeric modifiers;
+- deterministic generation/persistence/migration.
 
-Rule-changing effects are preferred over every rare trait merely adding Attack.
+Personality is not a Trait.
+Mệnh Cách is not part of this phase.
+
+## Then: Mệnh Cách V2
+
+Need decide:
+- congenital rarity;
+- hidden/revealed state;
+- generation-envelope exceptions;
+- reincarnation/monster-genius/destiny identities;
+- rule-changing effects;
+- post-birth acquisition/transformation;
+- interaction with Trait without becoming just a rarer Trait.
 
 ## Then: Bloodline V2
 
@@ -294,7 +313,7 @@ Do not reintroduce:
 Spiritual Root V2 design is closed.
 
 The next default design conversation should start with:
-**Mệnh Cách + Traits V2**
+**Traits V2**
 
 Before proposing rules:
 1. read `docs/DISCIPLE_MASTER_SCHEMA.md`;
