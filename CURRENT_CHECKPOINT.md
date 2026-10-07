@@ -273,4 +273,12 @@ No gameplay runtime code was added for this design lock.
 Current design subject:
 **Traits V2**.
 
+Draft authority:
+`docs/TRAITS_V2_SPEC.md`
+
+Status:
+**DESIGN DRAFT — NOT IMPLEMENTED — NOT LOCKED**.
+
+No Trait V2 runtime code has been added.
+
 Mệnh Cách is queued separately after Traits V2.
