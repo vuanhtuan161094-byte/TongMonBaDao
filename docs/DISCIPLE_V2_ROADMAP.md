@@ -252,14 +252,17 @@ Do not reintroduce:
 
 # 6. Next-chat instruction
 
-The next design conversation should start with **Spiritual Root V2**.
+Spiritual Root V2 design is closed.
+
+The next default design conversation should start with:
+**Mệnh Cách + Traits V2**
 
 Before proposing rules:
 1. read `docs/DISCIPLE_MASTER_SCHEMA.md`;
 2. read `docs/DISCIPLE_V2_DESIGN_LEDGER.md`;
 3. read this roadmap;
-4. read `docs/P3_7C1_FOUNDATION_DAN_TIEN_SPEC.md`;
-5. inspect live existing Spiritual Root / root-refinement code;
-6. compare useful ideas from 《最强祖师》 without copying its assets/text/map or blindly importing its balance.
+4. preserve `docs/SPIRITUAL_ROOT_V2_SPEC.md` as locked authority;
+5. inspect live trait/personality generation and consumers.
 
-Do not implement Spiritual Root V2 until the user explicitly locks the design and authorizes code.
+Do not reopen Spiritual Root V2 unless a concrete contradiction is discovered or the user explicitly changes it.
+Do not implement Spiritual Root V2 until the user explicitly starts that implementation phase.
