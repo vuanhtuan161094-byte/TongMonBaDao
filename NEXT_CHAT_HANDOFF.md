@@ -207,16 +207,21 @@ It locks:
 - Healing Done / Healing Received / Shield Effect and other specialized effect channels;
 - future-system ownership boundaries.
 
-Current design subject:
-**Traits V2**.
-
-Draft:
+Traits V2 is DESIGN LOCKED, NOT IMPLEMENTED.
+Canonical authority:
 `docs/TRAITS_V2_SPEC.md`
 
-Status:
-**DESIGN DRAFT — NOT IMPLEMENTED — NOT LOCKED**.
+Preserve:
+- 60/32/8% visible birth count;
+- 8% ordinary latent rate, max one;
+- 50/30/20% Hữu Ích/Song Diện/Bất Lợi;
+- no universal Trait grade;
+- no lifetime Trait cap;
+- deterministic reveal/acquisition/removal;
+- consumer gating;
+- Personality/profession talent separation.
 
-Review the birth distribution, latent rate, no-grade rule, acquisition/removal loop, conflicts and starter Trait catalogue with the user before design lock.
+Current design subject:
+**Mệnh Cách V2**.
 
-Keep Personality separate from Trait.
-Do not fold Mệnh Cách into Traits V2; Mệnh Cách is the following design subject.
+Do not collapse Mệnh Cách into Trait. It must be rarer and structurally different, not simply a stronger Trait.
