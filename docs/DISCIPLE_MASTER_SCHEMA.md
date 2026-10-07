@@ -14,6 +14,7 @@ Companion authorities:
 - `docs/DISCIPLE_CHARACTERISTICS_STAT_FRAMEWORK_V2.md` — locked canonical character/stat-channel ownership before Trait/Bloodline/Physique.
 - `docs/COMBAT_STATS_V2_SPEC.md` — locked derived combat-stat registry and composition rules.
 - `docs/TRAITS_V2_SPEC.md` — locked Trait/Đặc Chất V2 design authority.
+- `docs/DESTINY_V2_SPEC.md` — current Mệnh Cách V2 design draft; proposes replacing the old generic Thiên Mệnh future label with one canonical fate layer.
 
 ## Long-term nurture law
 
