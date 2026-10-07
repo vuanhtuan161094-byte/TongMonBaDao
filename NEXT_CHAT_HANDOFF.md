@@ -1,6 +1,6 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
-Updated: 2026-10-06
+Updated: 2026-10-07
 
 ## Read first
 
@@ -8,112 +8,172 @@ Updated: 2026-10-06
 2. `docs/GAME_SYSTEM_ARCHITECTURE.md`
 3. `CURRENT_CHECKPOINT.md`
 4. `docs/DISCIPLE_MASTER_SCHEMA.md`
-5. the active-phase spec only after the user authorizes a new phase
+5. `docs/DISCIPLE_V2_DESIGN_LEDGER.md`
+6. `docs/DISCIPLE_V2_ROADMAP.md`
+7. `docs/P3_7C1_FOUNDATION_DAN_TIEN_SPEC.md`
+8. live Spiritual Root / root-refinement code before proposing implementation.
 
-Fetch live `main` before editing.
+Fetch live `main` before edits.
+Do not ask the user to restate completed lục-duy or Dẫn Tiên decisions.
 
 ---
 
-## Current status
+## Current implementation status
 
 **No implementation phase is active.**
 
 P3.7C1 — Open-point Lục Duy + Dẫn Tiên Đài is closed.
 
 Official Godot 4.7.2 closing evidence:
-- P3.7 Backend run **#75**;
+- workflow: `P3.7 Backend`;
+- run **#75**;
 - run id `37491065054`;
 - job id `112363619374`;
 - tested SHA `948997f3d101fcd23361cd318ffa130ae97f7e77`;
 - focused C1 gate: PASS;
 - full cumulative P0 -> P2.12 -> P3.7A1 -> A2R -> B1 -> C1: PASS.
 
-Do not call this Windows evidence.
+This is CI evidence, not Windows evidence.
 
 ---
 
-## Locked six-foundation result
+## Completed six-foundation law
 
-P3.7 lục duy is now open-point, not normalized 0..1.
+Canonical lục duy:
+- Tư Chất;
+- Căn Cốt;
+- Cơ Duyên;
+- Thông Tuệ;
+- Mị Lực;
+- Tiềm Lực.
 
-Common rules:
-- no hard cap;
-- birth rolls one Total Birth Lục Duy then distributes it;
-- ordinary birth stat envelope ≈ 0.5x–3x the six-stat average;
-- Mệnh Cách may break the birth envelope;
-- after birth, each stat grows independently without that envelope;
-- immutable birth snapshot is persisted;
-- current quality derives from current total and may promote.
+Locked:
+- no permanent hard cap;
+- birth rolls Total Birth Lục Duy first;
+- ordinary birth distribution ≈ 0.5x–3x six-stat average;
+- rare Mệnh Cách/content may break that birth envelope;
+- after birth values grow independently;
+- immutable birth snapshot is preserved;
+- current Disciple Quality derives from current permanent total and can promote;
+- same-channel percentage bonuses add on base rather than chain-multiply;
+- exact +X items stay exactly +X.
 
-Working quality totals:
-- <360 Phàm Thường;
-- 360–599 Xuất Chúng;
-- 600–999 Thiên Kiêu;
-- 1000–1799 Tuyệt Luân;
-- >=1800 Nghịch Thiên.
+Current balance constants:
+- 1 Tư Chất = +0.25% natural/base cultivation;
+- 1 Căn Cốt = +0.20% body-training XP;
+- 1 Thông Tuệ = +0.15% learning/mastery XP;
+- 1 Tiềm Lực = +0.05% future Realm+Body ATK/DEF/HP growth;
+- for UI readability think per 100 points as **25% / 20% / 15% / 5%**; do not cosmetically round the backend values.
 
-Starting balance:
-- Tư Chất +0.25% base cultivation/point;
-- Căn Cốt +0.20% body-training XP/point;
-- Thông Tuệ +0.15% learning XP/point;
-- Tiềm Lực +0.05% future Realm+Body stat-growth/point;
-- Cơ Duyên uses Luck Score 0..9999 + stat - difficulty;
-- Mị Lực uses social power and Dẫn Tiên authority.
+Cơ Duyên:
+`RNG(0..9999) + Cơ Duyên - difficulty`, tiers 6000/8500/9500/9900.
 
-Same-channel percentage bonuses are additive on base, not multiplied in a chain.
-Fixed +X consumables remain +X.
+Mị Lực:
+general Social Score + Dẫn Tiên-specific authority.
 
 ---
 
-## Locked Dẫn Tiên result
+## Long-term disciple fantasy
+
+This is not a disposable-character game.
+
+The player may keep one disciple forever and eventually make them absurdly strong/full-everything through enough investment.
+
+Therefore:
+- birth changes starting advantage and resource/time cost, not universal final ceiling;
+- every major growth axis should eventually have an explicit permanent improvement route;
+- toolman/specialist strategies are allowed;
+- huge stats should remain meaningfully useful;
+- do not add generic diminishing returns merely to suppress power;
+- content-specific limits are allowed when explicit, but must not become hidden global stat caps.
+
+---
+
+## Dẫn Tiên result to preserve
 
 Dẫn Tiên Đài:
 - Lv1–100;
-- 1 Main Guide affects quality;
-- assistants affect arrival quantity only;
-- Main-guide Mị Lực has no raw hard cap;
-- quality odds themselves reach the current ceiling at 2,500 Mị Lực: Nghịch Thiên <=5%, Tuyệt Luân <=15%;
-- no quality drops to 0%;
-- current normal rates = 65/25/8/1.8/0.2%;
-- current maximum rates = 35/25/20/15/5%;
-- enhanced Nghịch Thiên allowance = ceil(Main Mị Lực / 625): 2,500 -> 4/day, 10,000 -> 16/day;
-- once that enhanced allowance is consumed, rates revert to normal until the next day;
-- natural normal-rate Nghịch Thiên may still appear;
-- daily snapshot prevents guide-swap reset;
-- current guide slots: Lv1 one slot, up to six at Lv100;
-- assistants: +1 arrival/day per 500 Mị Lực, no Dẫn Tiên hard cap on assistant Mị Lực;
-- base arrivals: 5 + 3 × floor(level/10), Lv1=5 and Lv100=35;
-- Chiêu Mộ Lệnh goes through the same Dẫn Tiên pool/quota.
+- one Main Guide affects quality;
+- assistants affect quantity only;
+- quality odds saturate at current table: max Nghịch Thiên 5%, Tuyệt Luân 15%;
+- raw Mị Lực itself is **not capped**;
+- enhanced Nghịch Thiên allowance = `ceil(Main Mị Lực / 625)`;
+- 2,500 -> 4/day; 5,000 -> 8/day; 10,000 -> 16/day;
+- after allowance is consumed, quality rates return to normal until next day;
+- normal-rate Nghịch Thiên may still appear;
+- counter advances on appearance;
+- daily snapshot blocks guide-swap reset;
+- assistants: +1 arrival/day per 500 Mị Lực, no raw Mị Lực cap;
+- base arrivals = `5 + 3 × floor(level/10)`: Lv1=5/day, Lv100=35/day;
+- guide slots = 1 at Lv1, +1 at Lv20/40/60/80/100;
+- Chiêu Mộ Lệnh uses the same pool and daily authority.
 
-Do not introduce a second P3.7 gacha probability authority.
-
-Premium currency:
-- repo still has no canonical Tiên Ngọc / Tiên Ngọc Khóa wallet;
-- do not invent one incidentally;
-- when authorized, ordinary premium spending should buy limited Chiêu Mộ Lệnh rather than bypass Dẫn Tiên;
-- special limited banners are a separate future system.
+Premium-currency direction:
+- no canonical Tiên Ngọc/Tiên Ngọc Khóa wallet yet;
+- future ordinary premium spending should buy limited Chiêu Mộ Lệnh through an explicit shop/rule;
+- it must not bypass Dẫn Tiên odds/allowance;
+- future limited/named banners are separate explicit content.
 
 ---
 
-## Other locked corrections
+## Future rules already agreed but not implemented
 
-Spirit Field:
-- active plot reserves one disciple until harvest;
-- passive crop timer grants no work Tu Vi;
-- worker slots = plot slots;
-- Lv1 4 slots, +1 every 5 levels;
-- canonical warehouse deposit.
+### Pill satiety
+- one satiety system;
+- character has base capacity;
+- resets daily;
+- each pill defines its own satiety cost;
+- no automatic satiety by vague rarity category;
+- fixed-value pill rewards remain fixed.
 
-Warehouse:
-- one canonical stackable-resource warehouse;
-- no capacity gameplay ceiling;
-- explicit resource IDs/realm/tier/quantity;
-- no Phẩm Lực.
+### Breakthrough V2
+- failure loses 10% of the Tu Vi/EXP requirement;
+- each failure adds +5 percentage points to the next attempt;
+- breakthrough pills/items may raise success chance;
+- max 3 breakthrough-boosting pills per attempt.
+
+Do not claim these are already implemented.
 
 ---
 
-## Next
+## Reference lessons to keep from 《最强祖师》
 
-The natural next disciple-design discussion is **Linh Căn V2**.
+Use as inspiration, not copying:
+- six foundations should have genuinely different jobs;
+- quality summarizes the person but does not define all value;
+- high Wisdom/Charm/Fortune specialists can be strategically excellent;
+- character development continues after recruitment;
+- content-specific thresholds are better than global final caps;
+- physiques/traits should change rules, tradeoffs or paths, not all be flat Attack;
+- whole-person generation is more interesting than one rarity roll;
+- five-element roots and mutation-root ideas are worth evaluating next;
+- realtime combat must not blindly copy turn-based speed/balance.
 
-Do not implement it unless the user explicitly authorizes that phase.
+Never copy its assets/text/icons/map.
+
+---
+
+## NEXT DESIGN SUBJECT — Spiritual Root V2
+
+Start the next chat here.
+
+Need to design, one decision at a time:
+1. base roots/elements;
+2. number of roots and what single/multi-root actually means;
+3. purity;
+4. cultivation interaction;
+5. technique compatibility/effect;
+6. mutation roots;
+7. post-recruitment refinement/transformation;
+8. permanent improvement resources;
+9. generation rates/distribution;
+10. interaction with lục duy without duplicating Tư Chất/Thông Tuệ.
+
+Important reference candidates to examine:
+- Metal / Wood / Water / Fire / Earth;
+- possible rare mutations such as Wind / Lightning / Ice / Yang / Nether.
+
+Those exact mutation names/rates/effects are **not yet locked**.
+
+First discuss and lock the design.
+Do not implement Spiritual Root V2 until the user explicitly authorizes code.
