@@ -14,7 +14,8 @@ Updated: 2026-10-07
 8. `docs/SPIRITUAL_ROOT_V2_SPEC.md`
 9. `docs/COMBAT_STATS_V2_SPEC.md`
 10. `docs/DISCIPLE_CHARACTERISTICS_STAT_FRAMEWORK_V2.md`
-11. live character/trait/combat/work code before proposing the next disciple design.
+11. `docs/TRAITS_V2_SPEC.md`
+12. live character/trait/combat/work code before proposing the next disciple design.
 
 Fetch live `main` before edits.
 Do not ask the user to restate completed lục-duy or Dẫn Tiên decisions.
@@ -208,6 +209,14 @@ It locks:
 
 Current design subject:
 **Traits V2**.
+
+Draft:
+`docs/TRAITS_V2_SPEC.md`
+
+Status:
+**DESIGN DRAFT — NOT IMPLEMENTED — NOT LOCKED**.
+
+Review the birth distribution, latent rate, no-grade rule, acquisition/removal loop, conflicts and starter Trait catalogue with the user before design lock.
 
 Keep Personality separate from Trait.
 Do not fold Mệnh Cách into Traits V2; Mệnh Cách is the following design subject.
