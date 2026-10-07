@@ -1279,6 +1279,18 @@ Mệnh Cục is derived and not separately saved as owned identity.
 
 Static effect tables remain content registry data.
 
+## 20.1 Old-save history migration
+
+For saves created before significant-history tracking exists:
+- infer only facts provable from current persisted state;
+- current realm may prove completed earlier realm thresholds;
+- current profession levels may prove profession milestones;
+- do not invent old boss kills, calamity clears or healing saves that were never persisted.
+
+After Mệnh V2 implementation, significant-history tracking runs for all relevant disciples regardless of whether they currently own the matching Mệnh.
+
+This makes future acquisition retroactive without inventing unknown past history.
+
 ---
 
 # 20A. Mệnh Phổ / collection UI
