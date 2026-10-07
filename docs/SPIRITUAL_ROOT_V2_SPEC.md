@@ -1179,7 +1179,7 @@ Overlap is allowed.
 
 A disciple may combine:
 - Thổ 100;
-- U Minh III;
+- U Minh Viên Mãn;
 - defensive Bloodline;
 - defensive Physique;
 - defensive equipment.
