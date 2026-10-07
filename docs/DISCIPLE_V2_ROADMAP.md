@@ -195,15 +195,24 @@ Implementation remains future work.
 
 ## Current design subject: Traits V2
 
-Need design separately:
-- visible positive/negative traits;
-- latent traits and reveal;
-- acquired/removable traits;
-- trait rarity/grade if retained;
-- conflicts/exclusions;
-- combat/work/social/AI consumers;
-- rule-changing traits vs ordinary numeric modifiers;
-- deterministic generation/persistence/migration.
+Draft authority:
+`docs/TRAITS_V2_SPEC.md`
+
+Status:
+**DESIGN DRAFT — awaiting user review; not implemented; not locked.**
+
+Current proposal:
+- visible birth / latent birth / acquired / removed state;
+- beneficial / detrimental / tradeoff nature;
+- no universal Trait Grade 1–5;
+- birth-visible count 1–3;
+- 8% ordinary latent Trait target;
+- generation independent from Disciple Quality/Dẫn Tiên quality;
+- explicit conflicts and suppressed latent-conflict handling;
+- no lifetime Trait cap;
+- deterministic reveal, post-birth acquisition and removal;
+- legacy personality/profession/combat-power Trait overlap retired;
+- starter combat/work/cultivation/support/path Trait catalogue.
 
 Personality is not a Trait.
 Mệnh Cách is not part of this phase.
