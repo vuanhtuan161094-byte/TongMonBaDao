@@ -288,18 +288,30 @@ Locked:
 Implementation remains future work.
 Exact XP/stat/resource curves remain balance work.
 
-## Current design subject: Physique / Thể Chất V2
+## Physique / Thể Chất V2 — BASE DESIGN CLOSED
 
-Design Physique separately from Luyện Thể.
-Do not revive P2.12's `temper_level 0..5` as the body-training progression.
-Need decide:
-- whether old independent Phàm/Linh/Huyền/Thánh/Thần body-grade roll survives;
-- congenital Physique rate;
-- one-core-physique vs multi-active rule;
-- five initial physique identities;
-- post-birth creation/evolution/fusion;
-- Root/Bloodline/Luyện-Thể interactions;
-- expedition effects if any.
+Canonical authority:
+`docs/PHYSIQUE_V2_SPEC.md`
+
+Locked:
+- no V2 physique grade/purity/temper;
+- ordinary congenital = 97.00% none / 2.70% revealed / 0.30% latent;
+- one active Core Physique;
+- 15 weighted base identities;
+- 14 base effect sets use existing canonical channels;
+- Kiếm Cốt identity is locked but effect is blocked by explicit Weapon/Skill dependency and cannot be enabled effectless;
+- deterministic Cải Thể / Tái Tạo / Tiến Hóa / Dung Thể architecture;
+- no generic fusion blender and no predecessor-effect stacking;
+- Physique history/provenance persists;
+- P2.12 is compatibility/migration only.
+
+Open future content:
+- Kiếm Cốt effect after Weapon/Skill V2;
+- exact transformation recipes/resources;
+- exact advanced evolution branches;
+- Dung Thể V1 result roster;
+- per-type latent reveal triggers;
+- runtime implementation.
 
 ## Then: Cultivation + Breakthrough V2
 
@@ -372,15 +384,17 @@ Do not reintroduce:
 Spiritual Root V2, Combat Stats V2, Characteristic Framework V2, Traits V2, Mệnh Cách V2 and Huyết Mạch V2 are design-closed.
 
 The next default design conversation should start with:
-**Physique / Thể Chất V2**
+**Cultivation + Breakthrough V2**
 
 Before proposing rules:
-1. read `docs/DISCIPLE_MASTER_SCHEMA.md`;
-2. read `docs/DISCIPLE_V2_DESIGN_LEDGER.md`;
-3. read this roadmap;
-4. preserve `docs/REALM_LADDER_V2_SPEC.md` and `docs/BODY_CULTIVATION_V2_SPEC.md`;
-5. preserve all other locked V2 authorities;
-6. inspect live P2.12 physique consumers before proposing replacement rules.
+1. preserve all locked Disciple V2 authorities;
+2. read `docs/REALM_LADDER_V2_SPEC.md`;
+3. read current cultivation runtime/specs;
+4. preserve the already-approved breakthrough laws;
+5. do not silently create a weapon/path mastery system while discussing cultivation.
+
+Physique V2 is base-design closed.
+Its Kiếm Cốt effect debt belongs to future Techniques / Skills / Weapon V2 and is explicitly recorded in `docs/PHYSIQUE_V2_SPEC.md`.
 
 Do not reopen a locked V2 subsystem unless a concrete contradiction is discovered or the user explicitly changes it.
 Do not implement any design-locked V2 subsystem until the user explicitly starts an implementation phase.

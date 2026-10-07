@@ -1,3 +1,9 @@
+> **LEGACY / COMPATIBILITY ONLY — SUPERSEDED FOR FUTURE DESIGN**
+>
+> Future Thể Chất authority is `docs/PHYSIQUE_V2_SPEC.md`.
+> Keep this P2.12 contract only for existing regression evidence and old-save migration until an explicit tested V2 implementation replaces it.
+> Do not extend grade / temper_level / latent_transformation / old special-physique rules for new gameplay.
+
 # P2.12 — Thể Chất + Cấp Bậc + Tôi Thể + Cải Thể
 
 Date: 2026-10-01

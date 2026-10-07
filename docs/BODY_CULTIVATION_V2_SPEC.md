@@ -14,7 +14,7 @@ Legacy compatibility source:
 - `godot/src/simulation/physique/physique_system.gd`
 
 This document locks the Luyện Thể core direction and the expedition-only Stamina role.
-It does **not** lock Thể Chất/Physique V2 yet.
+Thể Chất/Physique V2 is now separately locked in `docs/PHYSIQUE_V2_SPEC.md`.
 
 No gameplay implementation is authorized by this design lock.
 
@@ -364,19 +364,22 @@ Do not smuggle map stamina into economy calculations.
 
 ---
 
-# 17. Relationship to future Physique V2
+# 17. Relationship to Physique V2
 
-Physique may later:
-- improve expedition stamina;
-- reduce map cost;
+Canonical authority:
+`docs/PHYSIQUE_V2_SPEC.md`
+
+Physique may explicitly:
+- modify Body Core;
+- reduce named expedition cost components;
 - specialize certain environments;
-- alter Body Core/mechanics.
+- alter canonical combat/effect channels.
 
-But Physique does not own the base expedition system.
+Physique does not own the base expedition system.
 
 Luyện Thể + map recommendation must function for a disciple with no special Physique.
 
-P2.12 `temper_level 0..5` is not future Luyện Thể V2 authority.
+P2.12 `temper_level 0..5` is not V2 authority.
 
 ---
 

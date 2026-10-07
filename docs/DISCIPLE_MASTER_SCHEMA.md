@@ -95,10 +95,9 @@ Reveal/awakening không được reroll identity ẩn.
 | Huyết Mạch — độ thuần | integer 1–100 riêng từng Bloodline | birth purity snapshot cố định nếu congenital | Có | Huyết Tinh +1 deterministic; 99->100 cần Tổ Huyết; không diminishing gain |
 | Huyết Mạch — phát hiện | latent/revealed từ birth seed | hidden identity cố định | Có | significant-history reveal; retroactive; không reroll |
 | Huyết Mạch — thức tỉnh | inactive trước awakening | Không | Có | 8 Huyết Tinh + 1 Yêu Đan starting recipe; purity >=50 = Chân Huyết, purity 100 = Phản Tổ |
-| Thể Chất — cấp | random riêng | innate starting tier | Có thể thăng rất hiếm | thiên tài địa bảo/cơ duyên/cải thể; không tăng tự động chỉ vì Tôi thể |
-| Thể Chất — loại đặc biệt | roll riêng, có thể none | innate identity | Có thể được ban/cải tạo | Đạo Thai/Bản Nguyên/vật phẩm/cơ duyên |
-| Thể Chất — Tôi thể | 0 ban đầu | Không | Có | Yêu Đan/tài nguyên, training cơ thể |
-| Thể Chất — latent transformation | random từ seed nếu applicable | cố định trước transform | transform | đủ điều kiện + tài nguyên; không reroll |
+| Thể Chất — Core Physique | ordinary: 97% none / 2.70% revealed / 0.30% latent special | congenital identity/reveal snapshot cố định | Có thể Cải/Tái Tạo/Tiến Hóa/Dung Thể | một active Core; không grade/purity/temper; `docs/PHYSIQUE_V2_SPEC.md` |
+| Thể Chất — trạng thái phát hiện | latent/revealed nếu congenital special | hidden identity cố định | reveal | significant-history reveal; không reroll; effectless content không được enable |
+| Thể Chất — history/provenance | tạo từ birth + mọi body transformation | append-only | Có | Cải/Tái Tạo/Tiến Hóa/Dung Thể; history không tự cho stat |
 | Thiên Mệnh | latent random cực hiếm | identity ẩn | thức tỉnh/phân nhánh | đại sự kiện/cơ duyên; không XP thường |
 | Tuổi | random theo source | Không | Tăng theo thời gian | simulation time |
 | Thọ mệnh cơ sở | derived từ race/foundation | base ổn định | Không trực tiếp | gốc sinh học |
@@ -106,7 +105,7 @@ Reveal/awakening không được reroll identity ẩn.
 | Cảnh giới | generated starting level | Không | Có | tu luyện + đột phá |
 | Tu vi progress | generated nhỏ | Không | Có | tu luyện, chiến đấu, công pháp, buff hợp lệ |
 | Luyện thể | generated/default | Không | Có | 30 đại cảnh ×10 tầng; Căn Cốt controls natural body-XP speed; see `docs/BODY_CULTIVATION_V2_SPEC.md` |
-| Kiếm/Thể/Pháp path XP | 0/thấp | Không | Có | hành vi thực tế; không có fixed class |
+| Weapon/path mastery (future, if designed) | none by current authority | — | future | not canonical yet; must be explicitly designed before any subsystem consumes it |
 | Công pháp đã học | acquired | Không | Có | học bí tịch, mastery, đổi active |
 | Combat skills | acquired | Không | Có | học/mở khóa |
 | Trang bị | acquired | Không | Có | loot/rèn/mua/equip/lock |
@@ -256,43 +255,29 @@ Sau sinh:
 
 ---
 
-# 6. Thể Chất — hai roll identity + progression
+# 6. Thể Chất V2 — one active Core Physique
 
-**Mọi người đều có CẤP THỂ CHẤT.**
+Canonical authority:
+`docs/PHYSIQUE_V2_SPEC.md`
 
-Cấp canonical:
+Locked:
+- no V2 Phàm/Linh/Huyền/Thánh/Thần physique grade;
+- no Physique purity;
+- no `temper_level 0..5`;
+- ordinary congenital baseline = 97.00% none / 2.70% revealed special / 0.30% latent special;
+- one active Core Physique at a time;
+- 15 base identities with weighted special pool;
+- latent identity exists at birth and reveal never rerolls;
+- no lore-only enabled Physique;
+- Cải Thể / Tái Tạo / Tiến Hóa / Dung Thể are deterministic authored transformations;
+- predecessor/fusion ingredients stop being active effect sources after replacement;
+- body history/provenance is preserved but does not itself grant passive stats.
 
-`Phàm Thể -> Linh Thể -> Huyền Thể -> Thánh Thể -> Thần Thể`
+Kiếm Cốt identity is reserved but its effect is intentionally BLOCKED until Weapon/Skill V2 defines real sword attribution.
+It must not be enabled effectless.
 
-Đây là cấp nền cơ thể, random riêng.
-
-Ngoài ra có roll riêng cho **loại dị thể đặc biệt**:
-
-- none;
-- Kiếm Cốt;
-- Kim Cương Bá Thể;
-- Hàn Âm Thể;
-- Hỏa Linh Thể;
-- Vô Cấu Đạo Thể;
-- và content mở rộng sau này.
-
-Ví dụ hợp lệ:
-
-- `Thánh Thể + không dị thể`;
-- `Phàm Thể + Kiếm Cốt`;
-- `Thần Thể + Hàn Âm Thể`;
-- `Huyền Thể + Vô Cấu Đạo Thể`.
-
-Tên hiển thị nếu có dị thể: `Kiếm Cốt · Huyền Thể`. Nếu không có dị thể: chỉ `Huyền Thể`.
-
-Sau sinh:
-
-- `Tôi thể` là progression riêng, tăng stat thật;
-- Tôi thể **không tự động** biến Phàm -> Linh -> Huyền -> Thánh -> Thần;
-- thăng cấp thể chất cần major resource/cơ duyên riêng;
-- vật phẩm `Đạo Thai/Bản Nguyên` có thể ban loại dị thể cho người chưa có;
-- cùng loại có thể dùng cho nâng cấp/tăng cấp;
-- khác loại không silent overwrite, cần Cải Thể mechanic.
+Luyện Thể remains the universal body-progression ladder.
+Thể Chất is a special body structure/mechanic, not a second body-level progression.
 
 ---
 
@@ -350,7 +335,7 @@ Random bằng deterministic seeded stream:
 - profession talents;
 - traits visible/latent;
 - bloodline presence/type/purity/detected state;
-- physique grade + special type + latent transformation;
+- physique presence/type/reveal state;
 - latent Destiny;
 - age;
 - starting realm/progress.
@@ -388,7 +373,7 @@ Không roll riêng `Thánh Thể character` hay `Chân Long character`.
 
 Ví dụ kết quả là:
 
-`Trần Mặc | Thiên Kiêu | Hỏa-Kim root 78% | Bạch Hổ Huyết 31% | Kiếm Cốt · Huyền Thể | trait ...`
+`Trần Mặc | Thiên Kiêu | Hỏa-Kim root 78% | Bạch Hổ Huyết 31% | Hàn Âm Thể | trait ...`
 
 ## B. Gacha Kỳ Vật / Truyền Thừa
 
@@ -414,7 +399,7 @@ ID, source, origin history, seed, race/sex gốc, latent rolls đã sinh, event 
 
 ### Mostly innate but improvable rarely
 
-Six foundation, root composition, bloodline identity, physique grade/type, Destiny.
+Six foundation, root composition, bloodline identity, congenital/current Core Physique identity and provenance, Destiny.
 
 ### Normal progression
 
@@ -438,12 +423,12 @@ Disciple quality, root quality tier, combat power, many UI ratings/suitability s
 4. Reveal không reroll.
 5. `none`/empty có thể là kết quả hợp lệ, không phải lỗi.
 6. Combat power là derived, không phải identity roll đầu tiên.
-7. Phẩm chất Đệ tử khác Phẩm Linh căn, cấp Thể Chất, Huyết Mạch, quality trang bị.
+7. Phẩm chất Đệ tử khác Linh Căn, Core Physique, Huyết Mạch và quality trang bị.
 8. Huyết Mạch và Thể Chất được phép cùng cộng Công/Thủ/Tu/etc.
-9. Ordinary training không được tự biến innate rare identity thành thứ khác; mutation cần mechanic/resource/event rõ.
+9. Ordinary training không được tự biến innate rare identity thành thứ khác; mutation/transformation cần mechanic/resource/event rõ. Physique uses authored Cải/Tái Tạo/Tiến Hóa/Dung Thể.
 10. Item gacha thay đổi character bằng action explicit, không ghi đè lặng lẽ.
 11. Profession, sect rank, work group và combat role là bốn khái niệm khác nhau.
-12. Không fixed class; Kiếm/Thể/Pháp identity sinh từ path history.
+12. Không fixed class. Current schema does not assume a canonical Kiếm/Thể/Pháp mastery system; any future weapon/path mastery must be explicitly designed before consumers such as Kiếm Cốt may use it.
 13. Mỗi layer phải có gameplay consequence thật khi active.
 14. Exact probabilities là balance data có test phân bố; không dùng lore thay cho xác suất.
 15. Trước khi triển khai thêm subsystem nhân vật, cập nhật master schema nếu design thay đổi.

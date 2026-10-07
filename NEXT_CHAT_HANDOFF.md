@@ -19,7 +19,8 @@ Updated: 2026-10-07
 13. `docs/BLOODLINE_V2_SPEC.md`
 14. `docs/REALM_LADDER_V2_SPEC.md`
 15. `docs/BODY_CULTIVATION_V2_SPEC.md`
-16. live character/trait/bloodline/physique/body-training/map/combat/work code before proposing the next disciple design.
+16. `docs/PHYSIQUE_V2_SPEC.md`
+17. live character/cultivation/combat code before proposing the next disciple design.
 
 Fetch live `main` before edits.
 Do not ask the user to restate completed lục-duy or Dẫn Tiên decisions.
@@ -281,5 +282,21 @@ Preserve:
 - map recommended body floor is soft, not a hard entry gate;
 - daily reset must not double-refill an active expedition.
 
+Physique / Thể Chất V2 base design is DESIGN LOCKED, NOT IMPLEMENTED.
+Canonical authority:
+`docs/PHYSIQUE_V2_SPEC.md`
+
+Preserve:
+- 97.00% none / 2.70% revealed / 0.30% latent congenital baseline;
+- one active Core Physique;
+- no grade/purity/temper;
+- 15 weighted base identities;
+- enabled Physiques must have real measurable effects;
+- Kiếm Cốt is identity-only until Weapon/Skill V2 closes DEP-PHY-01 and must not be enabled effectless;
+- deterministic Cải/Tái Tạo/Tiến Hóa/Dung Thể;
+- successor/fusion result replaces old active effects;
+- transformation history persists without passive-stat stacking;
+- P2.12 is legacy compatibility/migration only.
+
 Current design subject:
-**Thể Chất / Physique V2**.
+**Cultivation + Breakthrough V2**.

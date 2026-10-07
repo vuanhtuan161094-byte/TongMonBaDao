@@ -550,8 +550,25 @@ Locked highlights:
 - map recommendation is soft; undertrained disciples may still enter but stay less time;
 - active expedition cannot exploit daily reset for a second full refill.
 
+Physique / Thể Chất V2 base design is now DESIGN LOCKED, NOT IMPLEMENTED.
+Canonical authority:
+`docs/PHYSIQUE_V2_SPEC.md`
+
+Locked highlights:
+- no grade/purity/temper V2 authority;
+- 97.00% none / 2.70% revealed / 0.30% latent congenital baseline;
+- one active Core Physique;
+- 15 weighted base identities;
+- no lore-only enabled content;
+- 14 base effect sets locked on canonical channels;
+- Kiếm Cốt identity locked, effect explicitly blocked until Weapon/Skill V2 defines sword attribution;
+- deterministic Cải/Tái Tạo/Tiến Hóa/Dung Thể;
+- predecessor/fusion effects do not stack after replacement;
+- persistent Physique history/provenance;
+- explicit dependency registry and P2.12 migration direction.
+
 Next default design subject:
-**Physique / Thể Chất V2**.
+**Cultivation + Breakthrough V2**.
 
 Use:
 - this ledger;
@@ -565,6 +582,7 @@ Use:
 - `docs/BLOODLINE_V2_SPEC.md`;
 - `docs/REALM_LADDER_V2_SPEC.md`;
 - `docs/BODY_CULTIVATION_V2_SPEC.md`;
-- live physique/cultivation/map/combat code.
+- `docs/PHYSIQUE_V2_SPEC.md`;
+- live cultivation/map/combat code.
 
 Do not implement any of these V2 design-locked systems without a new explicit implementation instruction.

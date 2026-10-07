@@ -359,5 +359,24 @@ Locked:
 
 No Realm Ladder V2 or Luyện Thể V2 gameplay code has been added.
 
+Physique / Thể Chất V2 base design is now **DESIGN LOCKED, NOT IMPLEMENTED**.
+
+Canonical authority:
+`docs/PHYSIQUE_V2_SPEC.md`
+
+Locked:
+- no V2 physique grade, purity or `temper_level`;
+- ordinary congenital baseline = 97.00% none / 2.70% revealed special / 0.30% latent special;
+- one active Core Physique;
+- 15 weighted base identities;
+- 14 base effect sets use canonical Combat/Root/Expedition channels;
+- Kiếm Cốt identity is locked but its effect is intentionally BLOCKED until Weapon/Skill V2 defines actual sword attribution; it cannot be enabled effectless;
+- deterministic Cải Thể / Tái Tạo / Tiến Hóa / Dung Thể architecture;
+- no generic fusion blender and no stacking predecessor effects;
+- Physique history/provenance is preserved;
+- P2.12 is compatibility/migration only and must not be extended.
+
+No Physique V2 gameplay code has been added.
+
 Current design subject:
-**Thể Chất / Physique V2**.
+**Cultivation + Breakthrough V2**.
