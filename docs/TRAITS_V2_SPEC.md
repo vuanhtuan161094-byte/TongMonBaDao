@@ -1,7 +1,7 @@
 # TRAITS / ĐẶC CHẤT V2 — TÔNG MÔN BÁ ĐẠO
 
 Date: 2026-10-07
-Status: **DESIGN DRAFT FOR USER REVIEW — NOT IMPLEMENTED — NOT LOCKED**
+Status: **DESIGN LOCKED — NOT IMPLEMENTED**
 
 Parents:
 - `docs/GAME_SYSTEM_ARCHITECTURE.md`
@@ -19,7 +19,7 @@ Related but separate future authorities:
 
 This document designs **Trait / Đặc Chất only**.
 
-No gameplay implementation is authorized by this draft.
+No gameplay implementation is authorized by this design lock.
 
 ---
 
@@ -399,6 +399,16 @@ Triggered Trait mechanics must:
 - avoid recursive self-proc unless explicitly allowed;
 - live only in relevant runtime contexts.
 
+## 9.6 Consumer readiness
+
+Every Trait definition must declare one of:
+
+- `ready` — every required gameplay consumer already has canonical authority;
+- `consumer_gated` — the Trait identity is valid, but one or more effects may not ship until the named owning subsystem exists;
+- `future_only` — design pattern only, not initial shipping content.
+
+UI/runtime must never display or apply an effect that has no real consumer.
+
 ---
 
 # 10. Trait must not mutate permanent Lục Duy
@@ -631,7 +641,7 @@ They do not rewrite permanent Thông Tuệ.
 | **Trí Nhớ Sâu** | Hữu Ích | +8% mastery XP; mastery decay, if a future system ever has it, is reduced by 50% |
 | **Suy Diễn** | Song Diện | +15% technique mastery XP; -8% Work Speed while assigned to ordinary production |
 | **Học Nhanh Làm Ẩu** | Song Diện | +15% profession XP; +500 Difficulty on explicit work quality/rare checks |
-| **Chậm Mà Chắc** | Song Diện | -8% learning XP; +10% skill/technique effect once that subject reaches its future mastery threshold |
+| **Chậm Mà Chắc** | Song Diện, consumer-gated | -8% learning XP; payoff waits for a real mastery-milestone authority |
 | **Tạp Niệm** | Bất Lợi | -10% technique/skill mastery XP |
 | **Khó Tiếp Thu** | Bất Lợi | -12% all valid learning/mastery XP |
 
@@ -648,7 +658,7 @@ Notes:
 | **Kinh Mạch Mong Manh** | Bất Lợi | -10% natural/base cultivation gain |
 | **Ngộ Tĩnh** | Hữu Ích, latent-eligible | +8% cultivation gain; +10% technique/skill mastery XP |
 | **Tâm Tĩnh Như Thủy** | Hữu Ích | +8% cultivation gain while not carrying a serious Injury or explicit disturbed-mind state |
-| **Nóng Vội Cầu Thành** | Song Diện | +12% cultivation gain; future breakthrough preparation/recovery penalties may apply only when Breakthrough V2 explicitly owns that consumer |
+| **Nóng Vội Cầu Thành** | Song Diện, consumer-gated | +12% cultivation gain; downside waits for Breakthrough V2 |
 
 Kinh Mạch Ổn Định and Kinh Mạch Mong Manh conflict.
 
@@ -663,9 +673,9 @@ Do not activate a breakthrough downside before Breakthrough V2 owns the exact ch
 | **Lười Nhác** | Bất Lợi | -12% generic Work Speed |
 | **Cẩu Thả** | Song Diện | +10% Work Speed; +800 Difficulty on explicit work rare/quality Luck checks |
 | **Tỉ Mỉ** | Song Diện | -5% Work Speed; -600 Difficulty on explicit work rare/quality Luck checks |
-| **Tiết Liệu** | Hữu Ích | -8% ordinary recipe material consumption where the recipe explicitly allows efficiency reduction; never reduces fixed quest/special costs |
-| **Phung Phí** | Bất Lợi | +10% ordinary recipe material consumption; +8% profession XP |
-| **Đa Nhiệm** | Hữu Ích / contextual | +8% Work Speed in explicitly multi-step workshop professions; no bonus to simple field/mine tasks |
+| **Tiết Liệu** | Hữu Ích, consumer-gated | material-efficiency effect waits for Crafting V2 integer/rounding authority |
+| **Phung Phí** | Song Diện, consumer-gated | +8% profession XP; material-consumption penalty waits for Crafting V2 |
+| **Đa Nhiệm** | Hữu Ích / contextual, consumer-gated | +8% Work Speed only in professions explicitly tagged multi-step by future profession content |
 | **Quen Tay** | Hữu Ích | +10% profession XP for the disciple's currently highest profession |
 | **Đổi Nghề Khó** | Bất Lợi | -15% profession XP in professions below the disciple's highest profession level |
 
@@ -946,30 +956,46 @@ When implemented, tests must prove at minimum:
 
 ---
 
-# 24. Decisions proposed for user approval
+# 24. Locked decisions
 
-This draft proposes to lock:
+Traits V2 is locked with these rules:
 
-1. Trait is separate from Personality / profession talent / Root / Mệnh Cách / Bloodline / Physique;
-2. origin states = visible birth / latent birth / acquired / removed;
-3. effect nature = beneficial / detrimental / tradeoff;
-4. no universal Trait Grade 1–5;
-5. visible birth count = 1/2/3 at 60/32/8%;
-6. congenital latent rate = 8%, max one at ordinary birth;
-7. visible nature weight = 50% beneficial / 30% tradeoff / 20% detrimental;
-8. normal Trait generation independent from Disciple Quality and Dẫn Tiên quality;
-9. commonality controls frequency, not universal power tier;
-10. explicit conflicts;
-11. hidden-latent conflict becomes revealed-but-suppressed, never rerolled/deleted;
-12. no lifetime Trait cap;
-13. ordinary numeric effects use canonical shared channels;
-14. Trait does not alter permanent Lục Duy directly;
-15. latent reveal is deterministic and event-driven;
-16. post-birth Trait acquisition exists through life experience and targeted training;
-17. ordinary Traits are generally removable/overcome through explicit time/resource cost;
-18. no generic removal fail chance;
-19. birth/current/history are persisted separately;
-20. legacy combat_power-flat/grade/duplicate personality/profession Trait authority is retired;
-21. starter catalogue above is the initial balance target, subject to user tuning before lock.
+1. Trait is separate from Personality / profession talent / Root / Mệnh Cách / Bloodline / Physique.
+2. Origin/state = visible birth / latent birth / acquired / removed-or-overcome.
+3. Effect nature = Hữu Ích / Bất Lợi / Song Diện.
+4. No universal Trait Grade 1–5.
+5. Ordinary visible birth count = 1/2/3 at **60% / 32% / 8%**.
+6. Ordinary congenital latent rate = **8%**, max one latent Trait.
+7. Ordinary visible nature weights = **50% Hữu Ích / 30% Song Diện / 20% Bất Lợi**.
+8. Normal Trait generation is independent from Disciple Quality, Dẫn Tiên quality and Spiritual Root.
+9. Commonality controls frequency, not universal power tier.
+10. Explicit conflicts are canonical.
+11. Hidden latent conflicts do not leak identity; reveal becomes suppressed rather than deleted/rerolled.
+12. No lifetime Trait hard cap.
+13. Same Trait cannot stack duplicate copies.
+14. Ordinary numeric effects use canonical shared channels and filters.
+15. Trait does not directly mutate permanent Lục Duy.
+16. Latent reveal is deterministic and event-driven.
+17. Post-birth Trait acquisition exists through life experience and targeted training.
+18. Ordinary Traits are generally removable/overcome through explicit time + resource cost.
+19. No generic removal fail chance once requirements/cost are met.
+20. Birth/current/history are persisted separately.
+21. Personality-only legacy Traits migrate toward Personality authority.
+22. Profession-talent legacy entries remain profession talent rather than duplicate Trait.
+23. Legacy generic Trait grades and `combat_power_flat` authority are retired for V2.
+24. Trait definitions must declare `ready`, `consumer_gated`, or `future_only`.
+25. Starter catalogue in this spec is the initial content target; exact numeric balance may be benchmark-tuned without reopening the architecture.
+26. Social, Pill Satiety, Lifespan, disease/addiction/environment and other not-yet-owned domains remain intentionally deferred to their owning systems.
 
-After this design is approved, the next design subject is **Mệnh Cách V2**.
+No gameplay runtime code was implemented by this design lock.
+
+# 25. Next design subject
+
+After Traits V2, the next design subject is **Mệnh Cách V2**.
+
+Mệnh Cách must remain distinct from Trait:
+- rarer;
+- more identity-defining;
+- allowed to change generation envelopes or gameplay rules;
+- not merely "Trait but stronger";
+- still constrained by the one-disciple-forever nurture philosophy.
