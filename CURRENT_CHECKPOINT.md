@@ -270,15 +270,23 @@ Locked framework:
 
 No gameplay runtime code was added for this design lock.
 
-Current design subject:
-**Traits V2**.
+Traits V2 is now **LOCKED, NOT IMPLEMENTED**.
 
-Draft authority:
+Canonical authority:
 `docs/TRAITS_V2_SPEC.md`
 
-Status:
-**DESIGN DRAFT — NOT IMPLEMENTED — NOT LOCKED**.
+Locked highlights:
+- ordinary birth-visible Trait count = 1/2/3 at 60/32/8%;
+- ordinary latent Trait rate = 8%, max one;
+- nature weights = 50% Hữu Ích / 30% Song Diện / 20% Bất Lợi;
+- no universal Grade 1–5;
+- no lifetime Trait cap;
+- deterministic reveal/acquisition/removal;
+- no generic removal fail chance;
+- Personality and profession talent are separate;
+- future-system effects must be consumer-gated.
 
 No Trait V2 runtime code has been added.
 
-Mệnh Cách is queued separately after Traits V2.
+Current design subject:
+**Mệnh Cách V2**.
