@@ -218,14 +218,24 @@ Implementation remains future work.
 
 ## Current design subject: Mệnh Cách V2
 
-Need decide:
-- congenital rarity;
-- hidden/revealed state;
-- generation-envelope exceptions;
-- reincarnation/monster-genius/destiny identities;
-- rule-changing effects;
-- post-birth acquisition/transformation;
-- interaction with Trait without becoming just a rarer Trait.
+Draft authority:
+`docs/DESTINY_V2_SPEC.md`
+
+Status:
+**DESIGN DRAFT — awaiting user review; not implemented; not locked.**
+
+Current proposal:
+- merge old generic Thiên Mệnh terminology into one Mệnh Cách authority;
+- one active Chủ Mệnh in initial V2;
+- congenital rate 0.10% = 0.09% latent + 0.01% revealed;
+- no generic color/grade;
+- Tiềm Mệnh -> Hiển Mệnh -> Khai Mệnh -> Hóa Mệnh -> Chứng Mệnh;
+- no ordinary Destiny XP;
+- three unique Mệnh Kiếp milestones;
+- rare canonical Mệnh Nguyên resource;
+- post-birth chosen acquisition for favorite-disciple accessibility;
+- deterministic advancement/no fail RNG;
+- Mệnh Cách must change a rule/event/milestone, not merely be a stronger Trait.
 
 ## Then: Bloodline V2
 
