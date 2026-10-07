@@ -221,9 +221,9 @@ Locked design covers:
 - deterministic refinement and missing-root transformation;
 - 0.20% congenital Dị-Linh-Căn model;
 - Lôi/Phong/Băng/Dương/U Minh V1;
-- Stage I/II/III progression and five matching Bản Nguyên resources;
+- Thức Tỉnh/II/III progression and five matching Bản Nguyên resources;
 - combat mechanic timing/proc/AoE/multi-hit/basic-attack/boss/team/AI rules;
-- full-five Stage III Ngũ Dị Quy Nhất;
+- cả năm Dị Căn Viên Mãn Ngũ Dị Quy Nhất;
 - persistence/resource-source/migration/test contracts.
 
 Important dependency:
