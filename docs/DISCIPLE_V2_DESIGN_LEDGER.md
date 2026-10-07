@@ -364,21 +364,6 @@ Do not roll a rarity first and then treat every other layer as decoration.
 
 ---
 
-# 8. Reference ideas reserved for Spiritual Root V2
-
-Reference-inspired candidates to evaluate next:
-- five base roots: Metal / Wood / Water / Fire / Earth;
-- single vs multi-element composition;
-- purity/quality;
-- mutation roots such as Wind / Lightning / Ice / Yang / Nether;
-- elemental compatibility with techniques;
-- root refinement after recruitment.
-
-None of the exact mutation list, rates, bonuses or interactions above is automatically locked for this project.
-The next chat must design them deliberately.
-
----
-
 # 9. Other future character lessons already identified
 
 ## Combat
@@ -414,25 +399,6 @@ A disciple becomes a sword/body/magic/etc specialist through:
 
 ---
 
-# 10. Next-chat carryover
-
-The next design subject is **Spiritual Root V2**.
-
-The assistant must not ask the user to restate the completed lục-duy/Dẫn Tiên decisions.
-
-Use:
-- this ledger;
-- `docs/DISCIPLE_V2_ROADMAP.md`;
-- `docs/DISCIPLE_MASTER_SCHEMA.md`;
-- `docs/P3_7C1_FOUNDATION_DAN_TIEN_SPEC.md`;
-- live code.
-
-Start with design and reference comparison.
-Do not code Spiritual Root V2 until the user explicitly approves the design.
-
-
----
-
 # 8. Spiritual Root V2 — FULL DESIGN LOCKED, NOT IMPLEMENTED
 
 Canonical detailed authority:
@@ -460,7 +426,7 @@ Locked Dị-Linh-Căn core:
 - congenital Thức Tỉnh requires base >=80, Thuế Biến >=90, Viên Mãn =100;
 - a non-latent disciple can acquire a mutation after raising that base root to 100;
 - mutation uses Thức Tỉnh/Thuế Biến/Viên Mãn, not a second purity meter;
-- matching mutation cultivation/mastery/skill-effect/resistance scale by stage;
+- matching mutation cultivation/mastery/skill-effect/resistance scale by cảnh giới Dị Căn;
 - all owned mutations may be active simultaneously;
 - base-root Resonance does not multiply mutation passive/mechanic values;
 - cả năm Dị Căn Viên Mãn unlock Ngũ Dị Quy Nhất.
@@ -482,3 +448,21 @@ Important implementation dependency:
 - design is closed but code is not authorized;
 - mutation combat requires canonical skill tags/cast identity, Crit, Effect Hit/Resistance, source-owned DoT, control refractory, lethal interception and final combat-stat channels;
 - do not invent temporary root-only substitutes.
+
+
+# 10. Next-chat carryover
+
+Spiritual Root V2 design is closed.
+Do not reopen it without a new explicit user decision or a discovered implementation contradiction.
+
+Next default design subject:
+**Mệnh Cách + Traits V2**.
+
+Use:
+- this ledger;
+- `docs/DISCIPLE_V2_ROADMAP.md`;
+- `docs/DISCIPLE_MASTER_SCHEMA.md`;
+- `docs/SPIRITUAL_ROOT_V2_SPEC.md`;
+- live code.
+
+No Spiritual Root V2 gameplay implementation is authorized yet.
