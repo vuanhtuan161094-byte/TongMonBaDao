@@ -422,10 +422,10 @@ Locked Dị-Linh-Căn core:
 - ordinary birth has at most one congenital mutation;
 - birth mutation is independent from Disciple Quality/Dẫn Tiên quality;
 - latent identity exists before reveal and never rerolls;
-- reveal at base purity 70;
+- reveal at base purity 70; if congenital latent root is already >=70 at birth, it is Hiển Lộ immediately;
 - congenital Thức Tỉnh requires base >=80, Thuế Biến >=90, Viên Mãn =100;
 - a non-latent disciple can acquire a mutation after raising that base root to 100;
-- mutation uses Thức Tỉnh/Thuế Biến/Viên Mãn, not a second purity meter;
+- display states are Tiềm Ẩn / Hiển Lộ, then power realms Thức Tỉnh → Thuế Biến → Viên Mãn; no second purity meter;
 - matching mutation cultivation/mastery/skill-effect/resistance scale by cảnh giới Dị Căn;
 - all owned mutations may be active simultaneously;
 - base-root Resonance does not multiply mutation passive/mechanic values;
