@@ -10,6 +10,7 @@ Parents:
 - `docs/SPIRITUAL_ROOT_V2_SPEC.md`
 - `docs/P3_7_TIME_SPEED_COOLDOWN_SPEC.md`
 - `docs/P3_7_PROFESSION_WORK_MODIFIER_SPEC.md`
+- `docs/COMBAT_STATS_V2_SPEC.md` — locked Combat Stat registry/semantics
 
 Purpose:
 - define what a disciple actually consists of;
@@ -301,105 +302,29 @@ lifespan expiry does not permanently delete the disciple; later Ma/Hồn/revival
 
 ---
 
-# 5. Canonical derived Combat Stat registry
+# 5. Combat Stats V2 — DESIGN LOCKED
 
-These are the initial canonical Combat V2 targets.
+Canonical authority:
+`docs/COMBAT_STATS_V2_SPEC.md`
 
-They are **derived**, not independent birth rolls.
+Locked combat registry:
+- Max HP / Attack / Defense;
+- Movement Speed / Basic Attack Speed / Cast Speed / Cooldown Recovery;
+- Crit Chance / Crit Damage / Crit Resistance;
+- Defense Penetration;
+- Effect Hit / Effect Resistance;
+- Damage Reduction;
+- keyed elemental-resistance map for Kim/Mộc/Thủy/Hỏa/Thổ + Lôi/Phong/Băng/Dương/U Minh.
 
-## 5.1 Core body/combat
+Important exclusions:
+- no one-size-fits-all Speed stat;
+- no normal Accuracy/Dodge;
+- no mandatory Crit-Damage-Reduction stat;
+- no Physical/Magical Attack/Defense split;
+- no universal Mana/Qi bar;
+- no Combat Power authority.
 
-| Stat | Meaning | Stored as final truth? |
-|---|---|---|
-| Max HP | maximum combat health | No |
-| Attack | common offensive power input | No |
-| Defense | common defensive power input | No |
-
-Primary long-term core component:
-`Realm + Luyện Thể growth`.
-
-Tiềm Lực applies to that core growth component only, per locked C1 authority.
-
-Equipment and other fixed sources are added through their own source layer rather than being retroactively multiplied by Tiềm Lực.
-
-Exact final ATK/DEF/HP curves belong to later Combat Stats / Luyện Thể design.
-
-## 5.2 Timing
-
-Canonical separate timing stats:
-- Movement Speed;
-- Basic Attack Speed;
-- Cast Speed;
-- Cooldown Recovery / effective skill cooldown.
-
-They remain distinct.
-
-No generic "Speed" stat.
-
-Movement Speed is reused where physical travel matters in work/logistics.
-
-Work Speed itself is contextual profession output and remains separate.
-
-## 5.3 Critical
-
-Canonical:
-- Crit Chance;
-- Crit Damage.
-
-Crit Chance modifiers that explicitly state percentage points use a percentage-point mode.
-
-Do not convert Lôi's +15 percentage points into an arbitrary multiplicative chance formula.
-
-Anti-Crit/Crit Reduction is **not canonical yet**.
-Add it only if later combat content genuinely needs it.
-
-## 5.4 Defense penetration
-
-Canonical:
-- Defense Penetration.
-
-Whether final implementation uses percentage penetration, flat penetration, or both is deferred to Combat Stats V2.
-
-Do not create multiple penetration stats before the damage formula needs them.
-
-## 5.5 Status application
-
-Canonical:
-- Effect Hit;
-- Effect Resistance.
-
-They are the shared authority for normal debuff/control application when a status uses a hit/resist check.
-
-Not every status must roll.
-A skill may explicitly be guaranteed or use a different rule.
-
-## 5.6 Damage Reduction
-
-Canonical:
-- general Damage Reduction channel.
-
-Independent percentage Damage Reduction sources do not naively add until 100%.
-They compose through the future incoming-damage authority, consistent with Spiritual Root V2.
-
-## 5.7 Elemental/advanced resistances
-
-Use a keyed resistance map/channel, not ten hardcoded member fields.
-
-Keys may include:
-- metal;
-- wood;
-- water;
-- fire;
-- earth;
-- lightning;
-- wind;
-- ice;
-- yang;
-- nether.
-
-Only owned/non-zero values need display.
-
-Final resistance formula/cap belongs to Combat Stats V2.
+Exact final Realm/Luyện Thể ATK/DEF/HP growth curves and Defense mitigation curve remain later implementation/balance work.
 
 ---
 
@@ -959,11 +884,7 @@ This draft proposes to lock:
 4. personality is decision authority, not a synonym for Trait;
 5. Max HP / Attack / Defense are core derived combat stats;
 6. movement / basic attack / cast / cooldown are separate;
-7. Crit Chance / Crit Damage are canonical;
-8. Defense Penetration is canonical;
-9. Effect Hit / Effect Resistance are canonical;
-10. Damage Reduction is canonical;
-11. elemental resistance is a keyed map;
+7. Combat Stats V2 is already separately DESIGN LOCKED in `docs/COMBAT_STATS_V2_SPEC.md`;
 12. effect modifiers use channels + filters/tags;
 13. Stamina is a normalized runtime meter, not an unbounded growth stat;
 14. injury is condition data, not one permanent stat;
