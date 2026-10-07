@@ -254,16 +254,23 @@ The locked registry is:
 
 No gameplay code was implemented for Combat Stats V2.
 
-Current design subject:
-**Disciple Characteristics & Stat Framework V2**.
+Disciple Characteristics & Stat Framework V2 is now **LOCKED, NOT IMPLEMENTED**.
 
-Draft:
+Canonical authority:
 `docs/DISCIPLE_CHARACTERISTICS_STAT_FRAMEWORK_V2.md`
 
-Status:
-**DESIGN DRAFT — NOT IMPLEMENTED — NOT LOCKED**.
+Locked framework:
+- persistent sources / runtime state / derived channels / contextual outcomes are separate;
+- Lục Duy remains the only general permanent foundation-stat block;
+- Personality is separate from Trait;
+- living state = HP / normalized Thể Lực / named Thương Thế / Tâm Trạng / Trung Thành / Age-Lifespan;
+- specialized combat channels include Healing Done / Healing Received / Shield Effect / DoT Potency / Skill Effect / Control Duration and filtered damage/effect channels;
+- derived values require deterministic source breakdown and are not independent save truth;
+- future Trait/Bloodline/Physique/Mệnh Cách/equipment must consume this authority.
 
-This draft exists to lock stat/characteristic ownership before Trait V2.
-No gameplay runtime code was added for this draft.
+No gameplay runtime code was added for this design lock.
 
-After user review/lock, the next design subject is **Traits V2**.
+Current design subject:
+**Traits V2**.
+
+Mệnh Cách is queued separately after Traits V2.
