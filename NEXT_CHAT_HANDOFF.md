@@ -12,8 +12,9 @@ Updated: 2026-10-07
 6. `docs/DISCIPLE_V2_ROADMAP.md`
 7. `docs/P3_7C1_FOUNDATION_DAN_TIEN_SPEC.md`
 8. `docs/SPIRITUAL_ROOT_V2_SPEC.md`
-9. `docs/DISCIPLE_CHARACTERISTICS_STAT_FRAMEWORK_V2.md`
-10. live character/trait/combat/work code before proposing the next disciple design.
+9. `docs/COMBAT_STATS_V2_SPEC.md`
+10. `docs/DISCIPLE_CHARACTERISTICS_STAT_FRAMEWORK_V2.md`
+11. live character/trait/combat/work code before proposing the next disciple design.
 
 Fetch live `main` before edits.
 Do not ask the user to restate completed lục-duy or Dẫn Tiên decisions.
@@ -189,6 +190,10 @@ Legacy boundary:
 
 Implementation dependency:
 do not implement mutation combat with temporary private stats. It requires the relevant Skill/Combat V2 primitives or must wait for that combat phase.
+
+Combat Stats V2 is DESIGN LOCKED, NOT IMPLEMENTED.
+Canonical authority:
+`docs/COMBAT_STATS_V2_SPEC.md`
 
 Current design subject:
 **Disciple Characteristics & Stat Framework V2**.
