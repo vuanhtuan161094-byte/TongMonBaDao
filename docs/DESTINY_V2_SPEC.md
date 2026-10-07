@@ -1,7 +1,7 @@
 # MỆNH CÁCH V2 — TÔNG MÔN BÁ ĐẠO
 
 Date: 2026-10-07
-Status: **REDESIGN DRAFT FOR USER REVIEW — NOT IMPLEMENTED — NOT LOCKED**
+Status: **DESIGN LOCKED — NOT IMPLEMENTED**
 
 Parents:
 - `docs/GAME_SYSTEM_ARCHITECTURE.md`
@@ -12,7 +12,7 @@ Parents:
 
 This revision explicitly supersedes the earlier "one active Chủ Mệnh + universal Khai/Hóa/Chứng ladder" draft.
 
-No gameplay implementation is authorized by this draft.
+No gameplay implementation is authorized by this design lock.
 
 ---
 
@@ -123,14 +123,14 @@ But this is content-specific, never a universal five-stage ladder.
 
 # 6. Birth rarity
 
-Starting ordinary congenital target remains intentionally rare:
+Ordinary congenital Mệnh Cách rate is locked at:
 
-- 99.90%: no congenital Mệnh Cách;
-- 0.09%: one latent congenital Mệnh Cách;
-- 0.01%: one already-revealed congenital Mệnh Cách.
+- **99.50%**: no congenital Mệnh Cách;
+- **0.45%**: one latent congenital Mệnh Cách;
+- **0.05%**: one already-revealed congenital Mệnh Cách.
 
 Total:
-**0.10% ≈ 1 / 1,000 generated people**.
+**0.50% ≈ 1 / 200 generated people**.
 
 Ordinary birth has at most one congenital Mệnh Cách.
 
@@ -142,7 +142,7 @@ This low birth rate is acceptable because Mệnh Cách is also a long-term **acq
 
 # 6A. Congenital selection / reveal contract
 
-After the overall 0.10% congenital roll succeeds:
+After the overall 0.50% congenital roll succeeds:
 
 1. build the eligible congenital Mệnh pool;
 2. choose one Mệnh by its definition's `birth_weight`;
@@ -1463,7 +1463,7 @@ When eventually implemented:
 2. no active Chủ-Mệnh slot;
 3. no lifetime hard cap;
 4. Bản Mệnh is birth-history label, not exclusive active slot;
-5. keep congenital rarity target 0.10% for now;
+5. congenital rarity is locked at **0.50% total = 0.45% latent + 0.05% already revealed**;
 6. ordinary birth max one congenital fate;
 7. remove generic Khai/Hóa/Chứng progression;
 8. each fate is already strongly useful on reveal;
@@ -1483,4 +1483,4 @@ When eventually implemented:
 22. Mệnh Nguyên repeat income uses a deterministic 20-clear Cộng-Hưởng loop instead of pure RNG-only farming;
 23. Mệnh Phổ provides collection/recipe/combo knowledge without leaking hidden congenital identity.
 
-No gameplay implementation is authorized until the redesigned system is reviewed and locked.
+No gameplay implementation was authorized by this design lock.
