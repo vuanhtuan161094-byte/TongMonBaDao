@@ -167,7 +167,7 @@ Locked:
 - root buffs/passives + perfected-root Resonance;
 - Ngũ Hành combat matchup;
 - congenital Dị-Căn rate 0.20% total (0.19% latent, 0.01% awakened);
-- Lôi/Phong/Băng/Dương/U Minh Stage I–III;
+- Lôi/Phong/Băng/Dương/U Minh Thức Tỉnh → Thuế Biến → Viên Mãn;
 - five matching Dị Bản Nguyên resources;
 - Lôi Thiên Lôi timing;
 - Phong Thế timing;
@@ -175,7 +175,7 @@ Locked:
 - Dương Bạo source-owned DoT conversion;
 - U Minh once-per-encounter Minh Mệnh;
 - all five mutations may coexist;
-- full five Stage III -> Ngũ Dị Quy Nhất;
+- cả năm Dị Căn Viên Mãn -> Ngũ Dị Quy Nhất;
 - proc-loop, AoE, multi-hit, boss, AI, persistence and migration rules.
 
 No Spiritual Root V2 gameplay code is authorized yet.
