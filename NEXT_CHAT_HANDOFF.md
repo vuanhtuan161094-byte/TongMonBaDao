@@ -17,7 +17,9 @@ Updated: 2026-10-07
 11. `docs/TRAITS_V2_SPEC.md`
 12. `docs/DESTINY_V2_SPEC.md`
 13. `docs/BLOODLINE_V2_SPEC.md`
-14. live character/trait/bloodline/physique/combat/work code before proposing the next disciple design.
+14. `docs/REALM_LADDER_V2_SPEC.md`
+15. `docs/BODY_CULTIVATION_V2_SPEC.md`
+16. live character/trait/bloodline/physique/body-training/map/combat/work code before proposing the next disciple design.
 
 Fetch live `main` before edits.
 Do not ask the user to restate completed lục-duy or Dẫn Tiên decisions.
@@ -258,5 +260,26 @@ Preserve:
 - no `combat_power_bonus` V2 authority;
 - P2.11 is compatibility-only.
 
+Realm Ladder V2 + Luyện Thể V2 core are DESIGN LOCKED, NOT IMPLEMENTED.
+Canonical authorities:
+- `docs/REALM_LADDER_V2_SPEC.md`;
+- `docs/BODY_CULTIVATION_V2_SPEC.md`.
+
+Preserve:
+- 30 Tu Vi realms ×10 floors;
+- 30 Luyện Thể realms ×10 floors;
+- Nhân Giới / Tiên Giới / Thần Giới = 10 realms each;
+- Tu Vi and Luyện Thể are independent tracks;
+- Căn Cốt +0.20% natural/base body XP per point;
+- Tiềm Lực +0.05% retroactive Realm+Body Core growth per point;
+- Thể Lực is expedition-only, never ordinary sect production;
+- base daily Expedition Stamina = 100;
+- exact normal-map body match ≈18h unbuffed;
+- +1 major body realm ≈×1.20 endurance, smoothly by floors;
+- body-only ordinary duration cap =22h;
+- ordinary final expedition cap after food/pills/buffs =24h;
+- map recommended body floor is soft, not a hard entry gate;
+- daily reset must not double-refill an active expedition.
+
 Current design subject:
-**Physique + Luyện Thể V2 / Thể Chất + Luyện Thể V2**.
+**Thể Chất / Physique V2**.

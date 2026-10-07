@@ -334,5 +334,30 @@ Locked highlights:
 
 No Huyết Mạch V2 runtime code has been added.
 
+Realm Ladder V2 and Luyện Thể V2 core are now **DESIGN LOCKED, NOT IMPLEMENTED**.
+
+Canonical authorities:
+- `docs/REALM_LADDER_V2_SPEC.md`;
+- `docs/BODY_CULTIVATION_V2_SPEC.md`.
+
+Locked:
+- Tu Vi = 30 đại cảnh ×10 tầng = 300 floors;
+- Luyện Thể = 30 đại cảnh ×10 tầng = 300 floors;
+- three macro bands: Nhân Giới / Tiên Giới / Thần Giới;
+- both tracks are independent; row alignment is a content/power-band reference, not a hard equality lock;
+- Căn Cốt remains +0.20% natural/base Luyện Thể XP per point;
+- Tiềm Lực remains +0.05% retroactive Realm+Body ATK/DEF/HP core growth per point;
+- Thể Lực is now explicitly **Expedition Stamina only**;
+- ordinary sect production does not consume or read it;
+- base daily Expedition Stamina = 100;
+- it resets daily without allowing a mid-expedition double-refill exploit;
+- normal-map exact body-floor match targets ~18h unbuffed endurance;
+- +10 body floors ≈ ×1.20 endurance before cap;
+- Luyện Thể alone caps ordinary body endurance at 22h;
+- food/pills/facilities/special effects may bridge toward the ordinary 24h expedition cap;
+- map body recommendation is soft: undertrained disciples may still enter but sustain shorter trips.
+
+No Realm Ladder V2 or Luyện Thể V2 gameplay code has been added.
+
 Current design subject:
-**Physique + Luyện Thể V2 / Thể Chất + Luyện Thể V2**.
+**Thể Chất / Physique V2**.

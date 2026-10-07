@@ -263,16 +263,43 @@ Locked:
 
 Implementation remains future work.
 
-## Current design subject: Physique + Luyện Thể V2
+## Realm Ladder V2 + Luyện Thể V2 core — DESIGN CLOSED
 
-Need decide together because they strongly interact:
-- Phàm/Linh/Huyền/Thánh/Thần body grade;
-- special physique identity;
-- body-training XP;
-- permanent ATK/DEF/HP growth;
-- Căn Cốt speed;
-- Tiềm Lực retroactive growth multiplier;
-- physique transformation resources.
+Canonical authorities:
+- `docs/REALM_LADDER_V2_SPEC.md`;
+- `docs/BODY_CULTIVATION_V2_SPEC.md`.
+
+Locked:
+- Tu Vi 30×10 and Luyện Thể 30×10;
+- 3 macro bands of 10 realms: Nhân / Tiên / Thần;
+- separate 1..300 global-floor coordinates;
+- Luyện Thể Body Core direction = HP > Defense > Attack;
+- Căn Cốt owns natural/base body-XP speed;
+- Tiềm Lực applies retroactively to Realm+Body Core;
+- Thể Lực is external-map expedition endurance only;
+- no ordinary production stamina;
+- daily base 100;
+- normal map exact floor match ~18h;
+- +10 floors ≈×1.20 duration;
+- body-only cap 22h;
+- ordinary final expedition cap 24h after preparation buffs;
+- recommended body floor is a soft endurance target, not a hard map-entry gate.
+
+Implementation remains future work.
+Exact XP/stat/resource curves remain balance work.
+
+## Current design subject: Physique / Thể Chất V2
+
+Design Physique separately from Luyện Thể.
+Do not revive P2.12's `temper_level 0..5` as the body-training progression.
+Need decide:
+- whether old independent Phàm/Linh/Huyền/Thánh/Thần body-grade roll survives;
+- congenital Physique rate;
+- one-core-physique vs multi-active rule;
+- five initial physique identities;
+- post-birth creation/evolution/fusion;
+- Root/Bloodline/Luyện-Thể interactions;
+- expedition effects if any.
 
 ## Then: Cultivation + Breakthrough V2
 
@@ -345,14 +372,15 @@ Do not reintroduce:
 Spiritual Root V2, Combat Stats V2, Characteristic Framework V2, Traits V2, Mệnh Cách V2 and Huyết Mạch V2 are design-closed.
 
 The next default design conversation should start with:
-**Physique + Luyện Thể V2 / Thể Chất + Luyện Thể V2**
+**Physique / Thể Chất V2**
 
 Before proposing rules:
 1. read `docs/DISCIPLE_MASTER_SCHEMA.md`;
 2. read `docs/DISCIPLE_V2_DESIGN_LEDGER.md`;
 3. read this roadmap;
-4. preserve all locked V2 authorities, especially `docs/BLOODLINE_V2_SPEC.md`;
-5. inspect live physique, body-training, cultivation and combat consumers.
+4. preserve `docs/REALM_LADDER_V2_SPEC.md` and `docs/BODY_CULTIVATION_V2_SPEC.md`;
+5. preserve all other locked V2 authorities;
+6. inspect live P2.12 physique consumers before proposing replacement rules.
 
 Do not reopen a locked V2 subsystem unless a concrete contradiction is discovered or the user explicitly changes it.
 Do not implement any design-locked V2 subsystem until the user explicitly starts an implementation phase.

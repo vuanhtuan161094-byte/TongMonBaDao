@@ -529,8 +529,29 @@ Huyết Mạch V2 is now DESIGN LOCKED, NOT IMPLEMENTED.
 Canonical authority:
 `docs/BLOODLINE_V2_SPEC.md`
 
+Realm Ladder V2 + Luyện Thể V2 core are now DESIGN LOCKED, NOT IMPLEMENTED.
+Canonical authorities:
+- `docs/REALM_LADDER_V2_SPEC.md`;
+- `docs/BODY_CULTIVATION_V2_SPEC.md`.
+
+Locked highlights:
+- 30×10 Tu Vi and 30×10 Luyện Thể;
+- Nhân/Tiên/Thần macro bands, 10 realms each;
+- independent 1..300 global floors;
+- Căn Cốt +0.20% natural/base body XP per point;
+- Tiềm Lực +0.05% retroactive Realm+Body Core growth per point;
+- Thể Lực is external-map expedition endurance only;
+- production never consumes/reads it;
+- base daily stamina = 100;
+- exact normal-map body-floor match ≈18h body-only;
+- +10 body floors ≈×1.20 endurance;
+- body-only cap =22h;
+- food/pills/facilities/special effects bridge toward ordinary 24h expedition cap;
+- map recommendation is soft; undertrained disciples may still enter but stay less time;
+- active expedition cannot exploit daily reset for a second full refill.
+
 Next default design subject:
-**Physique + Luyện Thể V2 / Thể Chất + Luyện Thể V2**.
+**Physique / Thể Chất V2**.
 
 Use:
 - this ledger;
@@ -542,6 +563,8 @@ Use:
 - `docs/TRAITS_V2_SPEC.md`;
 - `docs/DESTINY_V2_SPEC.md`;
 - `docs/BLOODLINE_V2_SPEC.md`;
-- live physique/body-training/cultivation/combat code.
+- `docs/REALM_LADDER_V2_SPEC.md`;
+- `docs/BODY_CULTIVATION_V2_SPEC.md`;
+- live physique/cultivation/map/combat code.
 
 Do not implement any of these V2 design-locked systems without a new explicit implementation instruction.

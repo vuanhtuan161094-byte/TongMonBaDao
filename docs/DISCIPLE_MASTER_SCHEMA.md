@@ -16,6 +16,8 @@ Companion authorities:
 - `docs/TRAITS_V2_SPEC.md` — locked Trait/Đặc Chất V2 design authority.
 - `docs/DESTINY_V2_SPEC.md` — locked Mệnh Cách V2 authority; multiple compatible owned fates, 0.50% congenital rate, high-impact rules and Mệnh Cục combinations.
 - `docs/BLOODLINE_V2_SPEC.md` — locked Huyết Mạch V2 authority; 2% congenital rate, purity 1–100, Chân Huyết/Phản Tổ, deterministic refinement and post-birth Bloodline transformation.
+- `docs/REALM_LADDER_V2_SPEC.md` — locked 30×10 Tu Vi + 30×10 Luyện Thể ladder across Nhân/Tiên/Thần Giới.
+- `docs/BODY_CULTIVATION_V2_SPEC.md` — locked Luyện Thể core + expedition-only Thể Lực authority.
 
 ## Long-term nurture law
 
@@ -103,7 +105,7 @@ Reveal/awakening không được reroll identity ẩn.
 | Thọ mệnh tối đa hiện tại | derived | Không | Có | đại cảnh giới, thọ đan, bảo vật, huyết mạch/thể chất/thiên mệnh phù hợp |
 | Cảnh giới | generated starting level | Không | Có | tu luyện + đột phá |
 | Tu vi progress | generated nhỏ | Không | Có | tu luyện, chiến đấu, công pháp, buff hợp lệ |
-| Luyện thể | generated/default | Không | Có | body training/công pháp/thể chất |
+| Luyện thể | generated/default | Không | Có | 30 đại cảnh ×10 tầng; Căn Cốt controls natural body-XP speed; see `docs/BODY_CULTIVATION_V2_SPEC.md` |
 | Kiếm/Thể/Pháp path XP | 0/thấp | Không | Có | hành vi thực tế; không có fixed class |
 | Công pháp đã học | acquired | Không | Có | học bí tịch, mastery, đổi active |
 | Combat skills | acquired | Không | Có | học/mở khóa |
@@ -111,7 +113,7 @@ Reveal/awakening không được reroll identity ẩn.
 | Pháp bảo | acquired | Không | Có | tìm/nhận/truyền thừa; mastery riêng sau này |
 | Inventory | runtime | Không | Có | loot/consume/trade |
 | HP | runtime | Không | Có | combat/heal/rest |
-| Stamina | runtime | Không | Có | action/rest |
+| Thể Lực Viễn Chinh | daily runtime budget | Không | reset daily / map-consumed | ONLY external-map expedition duration; never ordinary sect production; base 100/day |
 | Injury | runtime future | Không | Có | combat/medical; khác HP |
 | Mood | runtime future | Không | Có | sự kiện/quan hệ/life |
 | Loyalty | runtime future | Không | Có | bổng lộc, trọng thương, thưởng phạt, quan hệ |
