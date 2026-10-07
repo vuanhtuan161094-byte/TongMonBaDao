@@ -1,11 +1,27 @@
 # Tông Môn Bá Đạo — MASTER SCHEMA NHÂN VẬT
 
-Date: 2026-10-01
+Date: 2026-10-07
 Status: CANONICAL MASTER CONTRACT
 
 Tài liệu này là nguồn duy nhất để trả lời: một đệ tử có những lớp nào, lớp nào được random, random khi nào, giá trị nào là cố định, giá trị nào phát triển được, và hệ nào được phép biến đổi bằng vật phẩm/cơ duyên.
 
 Mọi phase nhân vật sau P2.8 phải đọc tài liệu này trước. Spec phase chỉ được chi tiết hóa một dòng trong master schema, không được tự tạo một mô hình nhân vật khác.
+
+Companion authorities:
+- `docs/DISCIPLE_V2_DESIGN_LEDGER.md` — locked decisions, provisional constants, future-but-not-implemented rules, reference lessons;
+- `docs/DISCIPLE_V2_ROADMAP.md` — complete disciple-system map and preferred design order;
+- `docs/P3_7C1_FOUNDATION_DAN_TIEN_SPEC.md` — implemented lục-duy + Dẫn Tiên authority.
+
+## Long-term nurture law
+
+The player must be able to keep and develop one disciple for the entire game.
+
+Canonical consequences:
+- weak birth increases required time/resources but does not impose a universal final ceiling;
+- every major growth/power layer should eventually have an explicit improvement/transformation route;
+- immutable birth history is preserved separately from current permanent growth;
+- no system may silently erase months of investment by rerolling hidden identity;
+- rare birth remains valuable because it saves enormous time/resources and can create special combinations.
 
 ---
 
