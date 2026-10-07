@@ -13,6 +13,7 @@ Companion authorities:
 - `docs/P3_7C1_FOUNDATION_DAN_TIEN_SPEC.md` — implemented lục-duy + Dẫn Tiên authority.
 - `docs/DISCIPLE_CHARACTERISTICS_STAT_FRAMEWORK_V2.md` — locked canonical character/stat-channel ownership before Trait/Bloodline/Physique.
 - `docs/COMBAT_STATS_V2_SPEC.md` — locked derived combat-stat registry and composition rules.
+- `docs/TRAITS_V2_SPEC.md` — current Trait/Đặc Chất V2 design draft.
 
 ## Long-term nurture law
 
