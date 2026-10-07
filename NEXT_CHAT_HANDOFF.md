@@ -180,6 +180,12 @@ Locked:
 
 No Spiritual Root V2 gameplay code is authorized yet.
 
+Legacy boundary:
+- `docs/P2_10_SPIRITUAL_ROOT_REFINEMENT_SPEC.md` is compatibility-only and superseded by `docs/SPIRITUAL_ROOT_V2_SPEC.md`;
+- old root runtime files remain only for locked P2 regression and future old-save migration;
+- do not extend the legacy global-purity/old-mutation model;
+- physically remove dead legacy runtime only when a tested Spiritual Root V2 migration phase replaces it.
+
 Implementation dependency:
 do not implement mutation combat with temporary private stats. It requires the relevant Skill/Combat V2 primitives or must wait for that combat phase.
 
