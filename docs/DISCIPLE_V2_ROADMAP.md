@@ -47,7 +47,7 @@ No subsystem may silently introduce a permanent hard cap that contradicts this f
 | Six foundations | Tư Chất, Căn Cốt, Cơ Duyên, Thông Tuệ, Mị Lực, Tiềm Lực | **P3.7C1 locked** |
 | Disciple quality | Derived from current total six foundations | **P3.7C1 locked** |
 | Personality | Core personality + risk/spend/survival tendencies | Existing but still shallow |
-| Spiritual Root | elements/count/purity/base buffs/resonance/mutation | **BASE V2 LOCKED; MUTATION NEXT** |
+| Spiritual Root | elements/count/purity/base buffs/resonance/mutation | **FULL V2 DESIGN LOCKED — NOT IMPLEMENTED** |
 | Profession talent | innate learning talent per profession | Existing partial |
 | Traits | visible/negative/latent/acquired traits | Existing partial; needs V2 review |
 | Mệnh Cách / special destiny identity | rare rule-changing identity such as Yêu Nghiệt / Luân Hồi-type concepts | Design needed |
@@ -145,7 +145,7 @@ Full design now locked:
 - expensive post-birth missing-root creation;
 - 0.20% congenital mutation model;
 - Lôi/Phong/Băng/Dương/U Minh V1;
-- Thức Tỉnh/II/III mutation growth and five matching Bản Nguyên resources;
+- Thức Tỉnh → Thuế Biến → Viên Mãn mutation growth and five matching Bản Nguyên resources;
 - mutation combat timing/proc/AoE/multi-hit/basic-attack/boss/team/AI rules;
 - all five mutations may coexist;
 - cả năm Dị Căn Viên Mãn -> Ngũ Dị Quy Nhất;
