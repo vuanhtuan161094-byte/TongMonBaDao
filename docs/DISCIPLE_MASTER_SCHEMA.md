@@ -197,12 +197,12 @@ Chi tiết Dẫn Tiên/quality distribution:
 
 ---
 
-# 4. Linh Căn V2 — base authority locked
+# 4. Linh Căn V2 — full authority locked
 
 Detailed authority:
 `docs/SPIRITUAL_ROOT_V2_SPEC.md`
 
-Base rules now locked:
+Canonical Linh Căn V2 rules now locked:
 - five base elements Kim/Mộc/Thủy/Hỏa/Thổ;
 - ordinary birth root count 1–5 at 7% / 18% / 30% / 28% / 17%;
 - root count/element identity is independent from Disciple Quality;
