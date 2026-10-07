@@ -232,9 +232,17 @@ Migrate legacy cultivation to the user-approved simple rules while preserving de
 Thong Tuệ must be the common learning/mastery input.
 No fixed class.
 
-## Then: final Combat Stats V2
+## Then: Combat Stats V2 implementation/integration
 
-Replace old shallow `combat_power` authority with real Attack/Defense/HP + secondary stats and derived Combat Rating.
+The registry and semantics are already DESIGN LOCKED in:
+`docs/COMBAT_STATS_V2_SPEC.md`
+
+This later phase is implementation work:
+- replace old shallow `combat_power` authority;
+- connect final Realm/Luyện Thể ATK/DEF/HP curves;
+- implement derived stat calculation/cache;
+- wire skills/equipment/Root/Trait/Bloodline/Physique into canonical channels;
+- derive Combat Rating only as a UI estimate.
 
 ## Then: Profession / life / social expansion
 
