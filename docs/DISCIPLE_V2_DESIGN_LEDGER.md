@@ -457,13 +457,13 @@ Locked Dị-Linh-Căn core:
 - birth mutation is independent from Disciple Quality/Dẫn Tiên quality;
 - latent identity exists before reveal and never rerolls;
 - reveal at base purity 70;
-- congenital Stage I requires base >=80, Stage II >=90, Stage III =100;
+- congenital Thức Tỉnh requires base >=80, Thuế Biến >=90, Viên Mãn =100;
 - a non-latent disciple can acquire a mutation after raising that base root to 100;
-- mutation uses Stage I/II/III, not a second purity meter;
+- mutation uses Thức Tỉnh/Thuế Biến/Viên Mãn, not a second purity meter;
 - matching mutation cultivation/mastery/skill-effect/resistance scale by stage;
 - all owned mutations may be active simultaneously;
 - base-root Resonance does not multiply mutation passive/mechanic values;
-- all five Stage III unlock Ngũ Dị Quy Nhất.
+- cả năm Dị Căn Viên Mãn unlock Ngũ Dị Quy Nhất.
 
 Locked mutation gameplay:
 - Lôi: Lôi direct skill hit may call Thiên Lôi on a 6/5/4s internal cooldown; one proc per cast;
