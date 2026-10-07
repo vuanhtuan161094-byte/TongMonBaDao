@@ -11,6 +11,7 @@ Companion authorities:
 - `docs/DISCIPLE_V2_DESIGN_LEDGER.md` — locked decisions, provisional constants, future-but-not-implemented rules, reference lessons;
 - `docs/DISCIPLE_V2_ROADMAP.md` — complete disciple-system map and preferred design order;
 - `docs/P3_7C1_FOUNDATION_DAN_TIEN_SPEC.md` — implemented lục-duy + Dẫn Tiên authority.
+- `docs/DISCIPLE_CHARACTERISTICS_STAT_FRAMEWORK_V2.md` — current draft for canonical character/stat-channel ownership before Trait V2.
 
 ## Long-term nurture law
 
