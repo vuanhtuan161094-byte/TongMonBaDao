@@ -224,18 +224,20 @@ Draft authority:
 Status:
 **DESIGN DRAFT — awaiting user review; not implemented; not locked.**
 
-Current proposal:
+Redesigned proposal:
 - merge old generic Thiên Mệnh terminology into one Mệnh Cách authority;
-- one active Chủ Mệnh in initial V2;
-- congenital rate 0.10% = 0.09% latent + 0.01% revealed;
+- multiple compatible Mệnh Cách may coexist and all are active;
+- no Chủ-Mệnh slot and no lifetime hard cap;
+- congenital rate remains 0.10% for now, max one ordinary birth fate;
 - no generic color/grade;
-- Tiềm Mệnh -> Hiển Mệnh -> Khai Mệnh -> Hóa Mệnh -> Chứng Mệnh;
-- no ordinary Destiny XP;
-- three unique Mệnh Kiếp milestones;
+- no universal Khai/Hóa/Chứng ladder;
+- each fate is strongly useful immediately after reveal;
+- fate-specific counters/evolution only where meaningful;
 - rare canonical Mệnh Nguyên resource;
-- post-birth chosen acquisition for favorite-disciple accessibility;
-- deterministic advancement/no fail RNG;
-- Mệnh Cách must change a rule/event/milestone, not merely be a stronger Trait.
+- each post-birth fate has an explicit feat/event + resource recipe;
+- Mệnh Cục gives derived bonuses for specific fate combinations;
+- effects are intentionally much stronger and clearer than Traits;
+- long-term favorite disciple may eventually collect many compatible fates.
 
 ## Then: Bloodline V2
 
