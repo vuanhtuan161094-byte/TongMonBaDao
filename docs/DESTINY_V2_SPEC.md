@@ -1448,6 +1448,12 @@ When eventually implemented:
 20. save/load preserves all owned fates, marks and history exactly;
 21. large-roster runtime does not per-tick poll every fate;
 22. proc/trigger effects cannot recursively self-trigger unless explicitly allowed.
+23. significant-history marks are tracked independently from current Mệnh ownership;
+24. retroactive Mệnh only reads persisted/provable history and never invents unknown old events;
+25. personal Mệnh Mảnh belongs to its owning disciple;
+26. the same hostile source cannot repeatedly grant the same personal Mệnh Mảnh;
+27. Mệnh Cục definitions are explicit registry content, not auto-generated pair combinations;
+28. Mệnh Cục cannot satisfy another Mệnh Cục requirement in initial V2.
 
 ---
 
