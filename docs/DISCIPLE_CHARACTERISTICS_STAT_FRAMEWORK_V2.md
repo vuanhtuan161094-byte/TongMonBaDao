@@ -1,7 +1,7 @@
 # DISCIPLE CHARACTERISTICS & STAT FRAMEWORK V2 — TÔNG MÔN BÁ ĐẠO
 
 Date: 2026-10-07
-Status: **DESIGN DRAFT FOR USER REVIEW — NOT IMPLEMENTED — NOT LOCKED**
+Status: **DESIGN LOCKED — NOT IMPLEMENTED**
 
 Parents:
 - `docs/GAME_SYSTEM_ARCHITECTURE.md`
@@ -19,7 +19,7 @@ Purpose:
 - prevent parallel or duplicate stat authorities;
 - keep the model scalable for roughly 1,000–3,000 disciples.
 
-This draft does **not** authorize gameplay implementation.
+This locked framework does **not** authorize gameplay implementation.
 
 ---
 
@@ -335,15 +335,23 @@ Not every useful modifier should become a headline character stat.
 The modifier authority must support effects such as:
 - All Damage;
 - direct-damage bonus;
+- basic-attack damage;
 - DoT potency;
 - skill-effect magnitude;
 - control/debuff duration;
-- healing effect;
-- shield effect;
+- **Healing Done / Hiệu Quả Trị Liệu**;
+- **Healing Received / Hiệu Quả Nhận Trị Liệu**;
+- **Shield Effect / Hiệu Quả Hộ Thuẫn**;
 - incoming damage;
 - elemental damage/resistance;
 - path-specific effect;
 - skill-specific effect.
+
+Healing/Shield semantics are owned by `docs/COMBAT_STATS_V2_SPEC.md`:
+- outgoing healing and receiving healing are separate layers;
+- anti-heal modifies Healing Received;
+- shielding is separate from healing;
+- HP regeneration / Stamina recovery / Injury recovery remain contextual recovery channels, not aliases of Healing Done.
 
 Use **filters/tags** rather than inventing one field per content item.
 
@@ -875,25 +883,49 @@ Character systems modify those through declared channels/tags rather than steali
 
 ---
 
-# 17. Proposed closure decisions for user review
+# 17. Locked closure decisions
 
-This draft proposes to lock:
+The framework is now locked with these rules:
 
 1. no giant single character-stat block;
-2. persistent source -> runtime state -> derived channel -> contextual outcome architecture;
-3. six Lục Duy remain the only general innate foundation stat block;
-4. personality is decision authority, not a synonym for Trait;
-5. Max HP / Attack / Defense are core derived combat stats;
-6. movement / basic attack / cast / cooldown are separate;
-7. Combat Stats V2 is already separately DESIGN LOCKED in `docs/COMBAT_STATS_V2_SPEC.md`;
-12. effect modifiers use channels + filters/tags;
-13. Stamina is a normalized runtime meter, not an unbounded growth stat;
-14. injury is condition data, not one permanent stat;
-15. Mood and Loyalty are separate runtime/social states;
-16. contextual work/social/luck outputs are not persisted as fake universal stats;
+2. canonical architecture is **persistent source -> runtime state -> derived channel -> contextual outcome**;
+3. six Lục Duy remain the only general permanent foundation-stat block;
+4. Personality is behavioral/AI authority and is not synonymous with Trait;
+5. Linh Căn / Dị Căn / Trait / Mệnh Cách / Huyết Mạch / Thể Chất / equipment are source layers, not parallel stat systems;
+6. learned progression remains owned by Tu luyện / Luyện Thể / Công pháp / Kỹ năng / Đạo lộ / Nghề nghiệp;
+7. living-state base consists of current HP, normalized Thể Lực 0–100, named Thương Thế conditions, Tâm Trạng, Trung Thành and Age/Lifespan;
+8. Combat Stats V2 is separately DESIGN LOCKED in `docs/COMBAT_STATS_V2_SPEC.md`;
+9. specialized combat channels include Healing Done, Healing Received, Shield Effect, All/Direct/Basic damage, DoT Potency, Skill Effect and Control/Debuff Duration with optional element/path/skill filters;
+10. normal numeric modifiers must declare Flat / Percent-Add / Percentage-Points / Special-Multiplier / Override semantics;
+11. same-channel ordinary percentages add on base unless a subsystem explicitly owns a different special composition rule;
+12. contextual work/social/luck outputs are not persisted as fake universal stats;
+13. Movement / Attack / Cast / Cooldown / Work Speed remain separate domains;
+14. Stamina is a current-condition meter, not an unbounded progression stat;
+15. injury is condition data and never silently rewrites permanent Lục Duy;
+16. Mood and Loyalty are separate states and are not aliases of Mị Lực or relationships;
 17. no universal Mana, normal Accuracy/Dodge, separate Crit-Damage-Reduction, Block or physical/magical duplicate stat families without an explicit future design change;
-18. derived stats are calculated/cached, not saved as a second authority;
-19. every visible derived number must be explainable by source breakdown;
-20. Trait V2 must be designed against this registry rather than inventing new stat families ad hoc.
+18. derived stats may be cached for performance but are not saved as a second gameplay authority;
+19. every visible derived number must support source breakdown/provenance;
+20. large-roster simulation calculates only the channels needed by the current activity;
+21. unknown modifier channels must fail validation rather than silently doing nothing;
+22. Trait/Bloodline/Physique/Mệnh Cách/equipment must consume this registry instead of inventing ad-hoc duplicate stat families.
 
-Once the user accepts or modifies these decisions, this spec can become **DESIGN LOCKED** and Trait V2 can proceed on top of it.
+---
+
+# 18. What remains for later subsystem design
+
+This framework is closed, but the following are intentionally separate future designs:
+
+- exact Personality V2 axis/content set;
+- Trait V2 catalogue/generation/reveal/acquisition/removal;
+- Mệnh Cách;
+- Bloodline V2;
+- Physique + Luyện Thể V2;
+- final Realm/Luyện Thể ATK/DEF/HP growth curves;
+- final Defense mitigation formula;
+- Mood/Loyalty event tables;
+- Injury catalogue and treatment content.
+
+Those systems must conform to this framework unless the user explicitly revises the authority.
+
+No gameplay runtime code was implemented by this design lock.
