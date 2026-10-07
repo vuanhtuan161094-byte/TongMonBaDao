@@ -537,9 +537,13 @@ Detail view may show:
 - current purity and birth purity;
 - current per-root buffs;
 - perfected-root count and next resonance milestone;
+- any **visible** Dị Linh Căn with its state/realm: Hiển Lộ / Thức Tỉnh / Thuế Biến / Viên Mãn;
 - Linh Tủy / Bản Nguyên cost to next point/milestone;
 - compatible techniques;
 - elemental resistances/passives.
+
+Recruitment/roster UI must never expose **Tiềm Ẩn** before reveal.
+If a congenital latent mutation's parent root is already >=70 at birth, it is generated as visible **Hiển Lộ** and may be shown immediately.
 
 Filters should support:
 - has element;
@@ -547,6 +551,9 @@ Filters should support:
 - perfected element;
 - perfected-root count;
 - full five-root;
+- visible Dị Linh Căn type;
+- Dị-Căn state/realm: Hiển Lộ / Thức Tỉnh / Thuế Biến / Viên Mãn;
+- full five Dị Căn Viên Mãn;
 - compatible with technique/content.
 
 Do not require the player to open every disciple individually.
