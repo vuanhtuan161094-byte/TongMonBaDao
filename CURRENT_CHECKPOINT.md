@@ -238,6 +238,22 @@ Legacy-cleanup note:
 - those legacy scripts are not V2 design authority and must not be extended for new Spiritual Root gameplay;
 - dead legacy runtime may be physically removed only inside a tested V2 migration phase.
 
+Combat Stats V2 design is now **LOCKED, NOT IMPLEMENTED**.
+
+Canonical authority:
+`docs/COMBAT_STATS_V2_SPEC.md`
+
+The locked registry is:
+- Max HP / Attack / Defense;
+- Movement / Basic Attack / Cast / Cooldown Recovery;
+- Crit Chance / Crit Damage / Crit Resistance;
+- Defense Penetration;
+- Effect Hit / Effect Resistance;
+- Damage Reduction;
+- keyed elemental resistances.
+
+No gameplay code was implemented for Combat Stats V2.
+
 Current design subject:
 **Disciple Characteristics & Stat Framework V2**.
 
