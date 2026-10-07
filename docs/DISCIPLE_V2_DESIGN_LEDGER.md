@@ -450,19 +450,44 @@ Important implementation dependency:
 - do not invent temporary root-only substitutes.
 
 
-# 10. Next-chat carryover
+# 10. Characteristic / Combat Stat framework — DESIGN LOCKED, NOT IMPLEMENTED
 
-Spiritual Root V2 design is closed.
-Do not reopen it without a new explicit user decision or a discovered implementation contradiction.
+Canonical authorities:
+- `docs/COMBAT_STATS_V2_SPEC.md`;
+- `docs/DISCIPLE_CHARACTERISTICS_STAT_FRAMEWORK_V2.md`.
+
+Locked structural rules:
+- persistent sources, runtime state, derived channels and contextual outcomes are separate layers;
+- Lục Duy remains the only general permanent foundation-stat block;
+- Personality is behavioral/AI authority and is not Trait;
+- Combat Stats use one canonical registry instead of duplicate subsystem-specific stats;
+- living state uses current HP / normalized Thể Lực / named Thương Thế / Tâm Trạng / Trung Thành / Age-Lifespan;
+- Healing Done, Healing Received and Shield Effect are canonical specialized combat channels;
+- DoT/Skill/Control/element/path modifiers use registered channels + filters;
+- derived values are reconstructible from source data and are not independent save truth;
+- source provenance/breakdown is required;
+- large-roster simulation computes only relevant channels.
+
+No gameplay runtime implementation was added by this design lock.
+
+# 11. Next-chat carryover
+
+Spiritual Root V2, Combat Stats V2 and the Disciple Characteristics/Stat Framework V2 are design-closed.
 
 Next default design subject:
-**Mệnh Cách + Traits V2**.
+**Traits V2**.
+
+Keep:
+- Personality separate from Trait;
+- Mệnh Cách separate from Traits V2 and design it afterward.
 
 Use:
 - this ledger;
 - `docs/DISCIPLE_V2_ROADMAP.md`;
 - `docs/DISCIPLE_MASTER_SCHEMA.md`;
 - `docs/SPIRITUAL_ROOT_V2_SPEC.md`;
-- live code.
+- `docs/COMBAT_STATS_V2_SPEC.md`;
+- `docs/DISCIPLE_CHARACTERISTICS_STAT_FRAMEWORK_V2.md`;
+- live trait/personality/consumer code.
 
-No Spiritual Root V2 gameplay implementation is authorized yet.
+Do not implement any of these V2 design-locked systems without a new explicit implementation instruction.
