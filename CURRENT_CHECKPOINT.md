@@ -1,6 +1,6 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
-Updated: 2026-10-06
+Updated: 2026-10-07
 
 This file contains **current truth only**.
 It is not a historical changelog.
@@ -195,9 +195,27 @@ Do not start another gameplay phase without a new explicit user instruction.
 
 ---
 
-## 6. Queued design direction
+## 6. Disciple V2 design authorities prepared
 
-The next disciple-design subject is naturally **Linh Căn V2**, after the completed six-foundation/recruitment foundation.
+Canonical design carryover files now exist:
+- `docs/DISCIPLE_V2_DESIGN_LEDGER.md` — locked lục-duy/Dẫn Tiên rules, one-disciple-forever nurture law, pill satiety, future breakthrough rule, and distilled lessons from 《最强祖师》;
+- `docs/DISCIPLE_V2_ROADMAP.md` — full disciple subsystem map, dependencies and preferred discussion order;
+- `docs/DISCIPLE_MASTER_SCHEMA.md` — whole-person generation and fixed/update ownership.
+
+These docs are design authorities, not implementation PASS evidence.
+
+## 7. Queued design direction
+
+The next disciple-design subject is **Linh Căn V2**.
+
+Next chat should design it before coding:
+- base elements / number of roots;
+- purity;
+- elemental compatibility;
+- mutated roots;
+- post-recruitment improvement/transformation;
+- effects on cultivation, techniques and later content;
+- reference comparison with 《最强祖师》 without copying its content/balance blindly.
 
 This is a design queue only.
 No Linh Căn implementation phase is authorized yet.
