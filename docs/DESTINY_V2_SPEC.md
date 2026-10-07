@@ -194,16 +194,33 @@ Used for:
 
 It uses the canonical Sect Warehouse.
 
-Starting source direction:
-- destiny-grade Secret Realm first clear: 1 guaranteed;
-- tagged major world-boss first clear: 1 guaranteed;
-- highest-tier meaningful Cơ-Duyên event may award 1;
-- tagged repeat world/boss content: low chance for 1;
-- long-form world/sect fate events: explicit reward.
+Starting source/economy direction:
 
-No Mệnh consumer may ship before real acquisition content exists.
+- destiny-grade Secret Realm first clear: **2 Mệnh Nguyên**;
+- tagged major world-boss first clear: **1 Mệnh Nguyên**;
+- first successful resolution of a unique `major_calamity` content ID: **1 Mệnh Nguyên**;
+- a highest-tier meaningful Cơ-Duyên event may explicitly award **1 Mệnh Nguyên**;
+- long-form world/sect fate events may explicitly award 1–3;
+- eligible repeat destiny-grade clears fill a sect-wide **Mệnh Nguyên Cộng Hưởng** meter by 5% per clear;
+- at 100% meter: grant exactly **1 Mệnh Nguyên** and reset meter to 0%.
 
-Mệnh Nguyên is not premium-only.
+Thus repeat content has a deterministic 20-clear pity loop rather than relying only on low-probability drops.
+
+No Mệnh consumer may ship before at least one real acquisition route above ships.
+
+Mệnh Nguyên:
+- is one canonical stackable resource;
+- has no grade/quality;
+- is not premium-only;
+- cannot be duplicated by ordinary loot/work duplication effects;
+- cannot be multiplied by Tài Tinh/Tụ Bảo-style Mệnh Cách unless a future endgame rule explicitly says so.
+
+Starting post-birth recipe costs should normally sit around **6–15 Mệnh Nguyên**, with the feat/event prerequisite carrying at least as much identity as the currency cost.
+
+The economy target is:
+- congenital Mệnh = enormous early advantage;
+- mid/late game can intentionally build several Mệnh on one favorite;
+- collecting many Mệnh remains a long-term content goal rather than a short shop purchase.
 
 ---
 
@@ -229,6 +246,24 @@ Congenital ownership skips the acquisition recipe for that fate.
 
 This makes each fate feel earned rather than purchased from one generic menu.
 
+Every post-birth recipe must declare:
+
+```
+acquisition = {
+  history_requirements,
+  content_requirements,
+  menh_nguyen_cost,
+  unique_item_requirements,
+  consumer_readiness
+}
+```
+
+Rules:
+- requirements are explicit, never hidden percentages;
+- once requirements are fulfilled, acquisition succeeds deterministically;
+- one recipe may require zero unique items; do not invent a special currency for every Mệnh;
+- `consumer_gated` recipes may be documented but may not ship before the owning subsystem exists.
+
 ---
 
 # 11. Mệnh Cách conflict
@@ -251,6 +286,84 @@ If a newly acquired fate conflicts with a hidden congenital fate:
 - when latent fate reveals, the latent one becomes **Phong Ấn**;
 - no reroll/deletion;
 - future Cải Mệnh content may resolve the conflict.
+
+---
+
+# 11A. Significant life history — retroactive by design
+
+The game must track a compact **significant-history journal** independent from current Mệnh ownership.
+
+Record only notable stable content keys such as:
+- completed major-realm breakthroughs;
+- unique elite/boss definition IDs defeated with qualifying participation;
+- unique major-calamity IDs survived;
+- solo high-risk clears;
+- highest-tier meaningful work/crafting outcomes;
+- major healing/save feats;
+- defeated hostile fate-owner IDs where future content needs them.
+
+Do not record every normal monster/action.
+
+Why:
+a favorite disciple may acquire a Mệnh years later.
+
+If that Mệnh says historical achievements matter, the existing history is evaluated retroactively.
+
+Examples:
+- acquire Đại Khí Vãn Thành after 5 major breakthroughs -> start with 5 Hậu-Phát marks;
+- acquire Tham Lang after qualifying first-defeats of 12 unique elites/bosses -> seed 12 marks;
+- acquire Bách Kiếp Bất Diệt after surviving 3 unique major calamities -> seed 3 marks.
+
+This prevents irreversible "you should have owned the Mệnh earlier" traps.
+
+A Mệnh definition declares:
+- `retroactive_history = true|false`.
+
+Most permanent-history Mệnh should be true.
+
+## 11B. Attribution and anti-farm law
+
+Use stable **content definition IDs**, not runtime instance IDs.
+
+A respawned copy of the same boss does not become a new unique boss.
+
+For long-term boss/calamity marks:
+- final-hit ownership is not required by default;
+- the disciple must be a **qualifying participant** in the encounter and still satisfy that Mệnh's explicit condition;
+- final implementation may use damage/support/tanking attribution, but it must avoid final-hit micromanagement.
+
+Only Mệnh explicitly built around personal kills, such as Thất Sát, uses personal defeat/kill credit.
+
+By default, these do not count:
+- training dummies;
+- disposable summons;
+- cloned encounter instances;
+- scripted sacrificial units;
+- content tagged `no_fate_progress`.
+
+A content definition may explicitly opt in.
+
+## 11C. Trigger safety and stacking
+
+Normal numeric Mệnh modifiers use the already-locked canonical channels.
+
+Special rules must declare trigger guards.
+
+Default:
+- an echo/secondary cast has `is_echo = true`;
+- echo casts cannot create another echo unless explicitly allowed;
+- cooldown-reset effects do not recursively retrigger themselves;
+- one event source cannot award the same permanent unique mark twice;
+- resource-duplication effects never duplicate Mệnh Nguyên, premium/recruitment currency, unique quest items, first-clear rewards or Mệnh Mảnh by default.
+
+Multiple Mệnh may affect the same ordinary numeric channel.
+Their composition follows the channel's canonical law:
+- percent-add where that channel uses percent-add;
+- percentage points where explicitly defined;
+- Damage Reduction / elemental resistance keep their remaining-damage composition.
+
+Lethal-prevention effects from Root/Mệnh/skill require one shared deterministic lethal-interception queue when implemented.
+Only one prevention source is consumed for one lethal event unless a specific rule explicitly chains them.
 
 ---
 
@@ -324,6 +437,26 @@ A Mệnh Cách is allowed to give:
 - retention through death/rebirth.
 
 If a proposed Mệnh Cách could be converted into one ordinary Trait line without losing identity, it is probably too weak.
+
+---
+
+# 14A. Coverage targets
+
+Mệnh Cách content should eventually cover these practical player fantasies:
+
+| Family | What it changes |
+|---|---|
+| **Tu Đạo / Bình Cảnh** | cultivation overflow, breakthrough failure, long-term realm growth |
+| **Chiến Sát** | kill chains, boss hunting, higher-tier fights, skill rotations |
+| **Sinh Tồn / Kiếp** | lethal survival, injuries, unique calamities |
+| **Cơ Duyên / Thám Hiểm** | meaningful Luck checks, rare exploration/treasure rules |
+| **Y/Hộ Đạo** | emergency healing, shielding, ally rescue |
+| **Bách Nghệ / Tài Vận** | profession breadth, production-quality rules, stackable rewards |
+| **Lãnh Đạo / Tông Môn** | team-leader/teaching/sect effects — consumer-gated until owned |
+| **Luân Hồi / Dị Mệnh** | Ma-Hồn, reincarnation, fate extraction — future-only until owned |
+
+Not every family must have equal count.
+The test is whether a real playstyle has a Mệnh worth chasing.
 
 ---
 
@@ -713,6 +846,170 @@ This is a direct long-term multiple-Mệnh collection engine.
 
 ---
 
+## 15.19 Hậu Tích Bạc Phát — bottleneck banking
+
+**Luật Mệnh:** Bị kẹt ở bình cảnh vẫn tu được; Tu Vi dư được giữ lại để bùng sang cảnh giới sau.
+
+While the disciple is at an explicit major-breakthrough gate:
+- eligible natural/activity cultivation that would otherwise be wasted is stored in **Tích Tu**;
+- fixed-value consumables are not auto-banked;
+- Tích Tu cap = **100% of the first cultivation requirement immediately after the successful breakthrough**.
+
+On successful breakthrough:
+- stored Tích Tu is immediately applied to the new realm/stage;
+- excess beyond the defined cap is never created.
+
+Acquisition target:
+- historically reach at least two major breakthrough gates;
+- accumulate a total amount of otherwise-wasted eligible cultivation equal to one major-stage requirement;
+- **8 Mệnh Nguyên**.
+
+Retroactive:
+- the acquisition prerequisite may use history;
+- banked Tu Vi itself starts only after ownership.
+
+Consumer-gated to final Breakthrough/Cultivation V2.
+
+---
+
+## 15.20 Nhất Niệm Sinh Vạn Pháp — skill echo
+
+**Luật Mệnh:** Mỗi trận có một đại chiêu được “niệm lại” thêm lần nữa.
+
+Once per encounter:
+- the first eligible combat skill with base cooldown >=10s creates one **echo cast** 0.25s later;
+- echo uses **60% of the original skill's scalable magnitude**;
+- echo pays no second ordinary cooldown;
+- echo has `is_echo = true`;
+- echo cannot trigger another echo or ordinary on-cast fate recursion.
+
+Status/application rules:
+- effects that explicitly scale with skill magnitude use 60%;
+- guaranteed/unique one-per-cast mechanics require their own opt-in before an echo may repeat them.
+
+Acquisition target:
+- master at least 8 real combat skills across at least 2 paths;
+- complete a spell/technique insight event;
+- **10 Mệnh Nguyên**.
+
+---
+
+## 15.21 Tụ Bảo Mệnh — expedition loot
+
+**Luật Mệnh:** Mỗi chuyến đi săn/thám hiểm, món tài nguyên quý đầu tiên thường thành hai.
+
+Per expedition:
+- first eligible **rare stackable** hunting/exploration drop is doubled;
+- only the stackable quantity is doubled.
+
+Never duplicates:
+- Mệnh Nguyên;
+- Mệnh Mảnh;
+- unique equipment/artifacts;
+- first-clear rewards;
+- quest/story items;
+- premium/recruitment currency.
+
+Acquisition target:
+- bring back at least 20 distinct rare resource IDs from hunting/exploration over life;
+- **8 Mệnh Nguyên**.
+
+This is immediately useful to the hunting-centric sect economy.
+
+---
+
+## 15.22 Bách Nghệ Quy Tông — lifelong profession breadth
+
+**Luật Mệnh:** Càng có nhiều nghề đạt đại sư, học nghề khác và làm việc càng nhanh.
+
+Each unique profession that reaches **Lv100** grants one Bách-Nghệ mark.
+
+Each mark gives:
+- **+5% Profession XP** to all professions;
+- **+3% generic Work Speed**.
+
+One profession can grant only one mark at this threshold.
+Future higher milestone extensions require separate design.
+
+When acquired post-birth:
+- current qualifying professions seed marks retroactively.
+
+Acquisition target:
+- at least 3 professions at Lv100;
+- **8 Mệnh Nguyên**.
+
+Natural ceiling comes from actual profession breadth rather than an arbitrary mark cap.
+
+---
+
+## 15.23 Tử Vi Đế Mệnh — team-leader fate
+
+**Luật Mệnh:** Đứng đầu một đội thì bản thân và cả đội cùng mạnh lên rõ rệt.
+
+When this disciple is the explicitly assigned leader of a hunting/combat team:
+- other active team members gain **+15% Skill Effect**;
+- other active team members gain one **10% Damage Reduction source**;
+- this disciple gains **+5% All Damage and +5% Max HP per other active team member**, evaluated at encounter start.
+
+Standard 5-person team example:
+- leader gets +20% All Damage and +20% Max HP.
+
+If leadership changes, effects recalculate at the next valid encounter boundary.
+
+Acquisition target:
+- lead qualifying teams to 20 boss/elite victories;
+- complete a leadership fate event;
+- **12 Mệnh Nguyên**.
+
+Consumer-gated until a canonical team-leader field/authority exists.
+
+---
+
+## 15.24 Thiên Cơ Khả Khuy — exploration information
+
+**Luật Mệnh:** Đi thám hiểm thì biết trước “độ khó vận” và hướng phần thưởng của đại cơ duyên.
+
+When assigned to an eligible exploration/secret-realm activity:
+- before committing to one meaningful opportunity, UI reveals the canonical **Cơ-Duyên Difficulty**;
+- reveals the top two reward-category tags that the event may produce;
+- once per expedition, may reject one non-combat route event and draw the next deterministic route event.
+
+It does not reveal exact RNG results or hidden story spoilers.
+
+Acquisition target:
+- resolve 10 distinct secret-realm/opportunity IDs;
+- experience one Đại Cơ Duyên tier result;
+- **10 Mệnh Nguyên**.
+
+Consumer-gated to final Exploration/Event V2.
+
+---
+
+## 15.25 Thiên Công Khai Vật — master crafting law
+
+**Luật Mệnh:** Mỗi ngày có một lần rèn/chế tác cấp cao gần như “không tốn vật liệu thường”.
+
+Once per simulation day:
+- the first completed eligible recipe at the disciple's **highest currently unlocked crafting tier** refunds **100% of ordinary stackable base materials** after completion.
+
+Never refunds:
+- unique catalysts;
+- cores/essences explicitly marked non-refundable;
+- Mệnh Nguyên/Mệnh Mảnh;
+- quest/story inputs;
+- premium/recruitment currency.
+
+The item is crafted normally first; refund happens only after successful completion.
+
+Acquisition target:
+- reach a high profession milestone in one crafting profession;
+- personally complete several highest-tier recipes;
+- **12 Mệnh Nguyên**.
+
+Consumer-gated to Crafting V2 recipe tags and refund authority.
+
+---
+
 # 16. Mệnh Cục examples beyond Sát Phá Lang
 
 ## Phúc Họa Tương Y
@@ -745,6 +1042,53 @@ Effect target:
 - after landing an eligible Sword Crit, next heal/shield within 5s gets +25% effect.
 
 This demonstrates that Mệnh Cục may create hybrid builds rather than only vertical power.
+
+## Độc Bộ Thiên Hạ
+Requires:
+- Thiên Sát Cô Tinh;
+- Phá Quân.
+
+In a solo qualifying higher-tier encounter:
+- +20% Cooldown Recovery;
+- first personal elite/boss defeat fully resets the longest currently-running eligible skill cooldown.
+
+## Vạn Pháp Nhất Niệm
+Requires:
+- Vạn Pháp Quy Nhất;
+- Nhất Niệm Sinh Vạn Pháp.
+
+Effect:
+- the once-per-encounter echo uses **100%** magnitude instead of 60%;
+- if the echoed skill's path differs from the previously completed non-echo skill, it also receives Vạn Pháp Quy Nhất's alternating-path bonus;
+- echo still cannot recursively echo.
+
+## Bách Nghệ Sinh Tài
+Requires:
+- Bách Nghệ Quy Tông;
+- Tài Tinh Nhập Mệnh.
+
+Effect:
+- the daily +100% highest-tier stackable-output trigger may activate **twice per day** on two different completed work results;
+- both results must naturally reach their task's highest eligible quality/rare tier.
+
+## Thôn Thiên Đoạt Mệnh
+Requires:
+- Thôn Thiên;
+- Đoạt Mệnh.
+
+Effect:
+- first qualifying defeat of a unique hostile fate-owner/boss that is eligible for both systems grants **2 matching Mệnh Mảnh instead of 1**;
+- still grants at most one Thôn-Thiên mark for that unique boss definition.
+
+## Hậu Tích Thành Khí
+Requires:
+- Đại Khí Vãn Thành;
+- Hậu Tích Bạc Phát.
+
+Effect:
+- Tích Tu cap becomes **150%** of the next-stage first requirement;
+- after successful major breakthrough, the released Tích Tu gains **+20%** before application.
+- this bonus applies only to banked eligible cultivation, not fixed consumables.
 
 ---
 
@@ -852,6 +1196,35 @@ Static effect tables remain content registry data.
 
 ---
 
+# 20A. Mệnh Phổ / collection UI
+
+The sect keeps a **Mệnh Phổ** knowledge view.
+
+It is not a resource and does not grant effects.
+
+It shows:
+- Mệnh Cách the sect has already revealed/encountered;
+- known Cải-Mệnh recipe requirements;
+- known Mệnh Cục combinations;
+- which current disciples own/revealed them.
+
+Unknown Mệnh Cách may remain hidden until:
+- encountered on a disciple/enemy;
+- revealed through story/appraisal;
+- or discovered through explicit world content.
+
+For a known Mệnh Cục:
+- UI may show owned components and missing known components;
+- it must never expose a character's hidden congenital Mệnh Cách.
+
+Character page:
+- show 3 pinned/most relevant active Mệnh first;
+- expandable list shows all active/sealed Mệnh;
+- Mệnh Cục shown in a separate derived section;
+- no UI hard cap is implied by the collapsed view.
+
+---
+
 # 21. Large-roster runtime
 
 Do not poll all Mệnh Cách every tick.
@@ -905,6 +1278,53 @@ Never reroll.
 
 ---
 
+# 23A. Readiness and coverage audit
+
+## Ready by currently locked authority or straightforward event hooks
+- Thất Sát;
+- Phá Quân;
+- Thiên Sát Cô Tinh;
+- Gặp Dữ Hóa Lành combat half, once shared lethal queue exists;
+- Thiên Quyến Hồng Phúc Luck-law half;
+- Vạn Pháp Quy Nhất core rotation;
+- Dược Vương Tại Thế core healing/shield logic;
+- Tụ Bảo Mệnh once expedition reward tags exist.
+
+## Consumer-gated
+- Đại Khí Vãn Thành -> final Realm/Luyện Thể growth;
+- Hồng Trần Luyện Tâm -> Breakthrough V2;
+- Hậu Tích Bạc Phát -> Breakthrough/Cultivation overflow;
+- Tài Tinh Nhập Mệnh -> final work quality authority;
+- Thiên Công Khai Vật -> Crafting V2;
+- Tử Vi Đế Mệnh -> canonical team leader;
+- Thiên Cơ Khả Khuy -> Exploration/Event V2;
+- Thiên Đố Anh Tài -> Age/Lifespan/Ma-Hồn;
+- Đoạt Mệnh -> hostile NPC/boss fate ownership;
+- Túc Tuệ Chuyển Thế -> Ma/Hồn/rebirth.
+
+## Deliberately deferred rather than missing
+- romance/Dao Companion fate laws -> Social/Relationship V2;
+- teacher/master fate laws -> teaching/sư đồ authority;
+- pure elemental destinies -> usually Root/Dị Root;
+- body-form destinies -> usually Physique;
+- race/blood-species destinies -> Bloodline.
+
+Current redesign therefore covers:
+- cultivation/breakthrough;
+- combat offense/solo/higher-tier/skill rotation;
+- survival/calamity;
+- luck/exploration;
+- healing/support;
+- hunting loot;
+- work/profession/crafting;
+- leadership;
+- long-term permanent growth;
+- rebirth/fate collection.
+
+No major current player role lacks a Mệnh design direction.
+
+---
+
 # 24. Implementation invariants
 
 When eventually implemented:
@@ -952,6 +1372,12 @@ When eventually implemented:
 14. every post-birth fate has an explicit feat/event + resource recipe rather than one generic shop;
 15. same fate final effect is not weaker merely because it was acquired later;
 16. long-term favorite disciple may eventually collect many compatible fates;
-17. starter catalogue above is the new power/readability standard.
+17. starter catalogue above is the new power/readability standard;
+18. significant-history tracking allows later-acquired Mệnh to retroactively recognize major realm/boss/calamity/work history where the Mệnh declares it;
+19. unique permanent marks key off stable content definition IDs, not respawn instances;
+20. boss-history Mệnh normally use qualifying participation rather than final-hit micromanagement;
+21. special cast/reset/lethal/resource-duplication rules must use shared trigger guards and exclusion rules;
+22. Mệnh Nguyên repeat income uses a deterministic 20-clear Cộng-Hưởng loop instead of pure RNG-only farming;
+23. Mệnh Phổ provides collection/recipe/combo knowledge without leaking hidden congenital identity.
 
 No gameplay implementation is authorized until the redesigned system is reviewed and locked.
