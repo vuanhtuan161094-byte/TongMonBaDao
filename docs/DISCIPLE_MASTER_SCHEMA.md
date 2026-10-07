@@ -14,7 +14,7 @@ Companion authorities:
 - `docs/DISCIPLE_CHARACTERISTICS_STAT_FRAMEWORK_V2.md` — locked canonical character/stat-channel ownership before Trait/Bloodline/Physique.
 - `docs/COMBAT_STATS_V2_SPEC.md` — locked derived combat-stat registry and composition rules.
 - `docs/TRAITS_V2_SPEC.md` — locked Trait/Đặc Chất V2 design authority.
-- `docs/DESTINY_V2_SPEC.md` — current redesigned Mệnh Cách V2 draft; one canonical fate layer, multiple compatible owned fates, high-impact rules and Mệnh Cục combinations.
+- `docs/DESTINY_V2_SPEC.md` — locked Mệnh Cách V2 authority; multiple compatible owned fates, 0.50% congenital rate, high-impact rules and Mệnh Cục combinations.
 
 ## Long-term nurture law
 
@@ -310,20 +310,25 @@ Acquired trait là ngoại lệ hợp lệ: ví dụ thương tích lớn, độ
 
 ---
 
-# 8. Thiên Mệnh
+# 8. Mệnh Cách V2
 
-Thiên Mệnh là lớp hiếm nhất, chưa active full.
+Canonical authority:
+`docs/DESTINY_V2_SPEC.md`
 
-Canonical target:
+Locked:
+- old generic Thiên Mệnh terminology is merged into one Mệnh Cách system;
+- ordinary congenital total = **0.50%**: 0.45% latent + 0.05% already revealed;
+- ordinary birth has at most one congenital Mệnh Cách;
+- multiple compatible Mệnh Cách may coexist after birth;
+- no Chủ-Mệnh slot and no lifetime hard cap;
+- no universal Khai/Hóa/Chứng ladder;
+- each Mệnh must be high-impact and build-defining, not merely a stronger Trait;
+- hậu thiên acquisition uses explicit feat/event prerequisites + Mệnh Nguyên;
+- significant-history retroactivity preserves favorite-disciple investment;
+- Mệnh Cục is derived from explicit combinations;
+- Mệnh Cách does not directly determine Disciple Quality.
 
-- roll latent lúc sinh hoặc được ban bởi đại cơ duyên đặc biệt;
-- có thể `none`;
-- có tier/branch riêng;
-- reveal/awakening không reroll;
-- có thể thay đổi luật chơi chứ không chỉ +stat;
-- không cộng thẳng vào Phẩm chất Đệ tử.
-
-Chi tiết balance để phase Destiny triển khai sau map/life systems.
+No Mệnh Cách V2 runtime is implemented yet.
 
 ---
 
