@@ -878,13 +878,18 @@ This is **future_only** until Ma/Hồn/revival has canonical loss rules.
 
 Future rule:
 when personally defeating a valid hostile character/boss that owns a Mệnh Cách:
-- if that fate is eligible for extraction, gain one Mệnh Mảnh for that specific fate;
-- collect 3 matching fragments -> unlock that fate's Cải-Mệnh recipe at **50% normal Mệnh Nguyên cost**.
+- if that fate is eligible for extraction, gain one **personal/bound Mệnh Mảnh** for that specific fate;
+- fragments belong to the disciple with Đoạt Mệnh, not the Sect Warehouse;
+- collect 3 matching personal fragments -> unlock that fate's Cải-Mệnh recipe for **this disciple** at **50% normal Mệnh Nguyên cost**.
 
 Does not:
 - steal/delete victim's fate;
 - instantly copy on one kill;
+- allow another disciple to spend the bound fragments;
 - work on summoned/farmed duplicate NPCs.
+
+Each hostile source-character ID can contribute at most one fragment for a given fate to this disciple.
+Reviving/refighting the same source does not create another fragment.
 
 Consumer-gated to future hostile-NPC fate content.
 
