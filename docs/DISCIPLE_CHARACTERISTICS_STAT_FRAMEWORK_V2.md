@@ -678,23 +678,24 @@ This closes the loop without one subsystem rewriting another subsystem's truth.
 
 ---
 
-# 11. What is deliberately NOT canonical yet
+# 11. What remains deliberately outside the canonical framework
 
 Do not create these merely because other RPGs have them:
 
 - generic Mana/MP/Combat Qi bar;
-- Dodge;
-- Accuracy;
-- Anti-Crit;
-- Crit Resistance;
+- normal Accuracy/Dodge;
+- separate Crit-Damage-Reduction stat;
 - Block stat;
 - generic Carry Capacity;
 - generic Perception radius;
 - hunger/thirst/toilet/recreation meters;
-- separate physical/magical Attack unless future damage design requires it;
-- separate physical/magical Defense unless future damage design requires it.
+- separate physical/magical Attack;
+- separate physical/magical Defense.
 
-They may be added later only with a concrete consumer and interaction model.
+Combat Stats V2 **does** canonically include Crit Resistance / Kháng Bạo Kích.
+See `docs/COMBAT_STATS_V2_SPEC.md`.
+
+Excluded systems may be added later only through an explicit design change with a concrete consumer and interaction model.
 
 Guard, Shield, Dash, etc. remain skill/status mechanics unless later design proves they need a permanent stat channel.
 
@@ -890,7 +891,7 @@ This draft proposes to lock:
 14. injury is condition data, not one permanent stat;
 15. Mood and Loyalty are separate runtime/social states;
 16. contextual work/social/luck outputs are not persisted as fake universal stats;
-17. no Mana/Dodge/Accuracy/Anti-Crit/etc. until a real consumer requires them;
+17. no universal Mana, normal Accuracy/Dodge, separate Crit-Damage-Reduction, Block or physical/magical duplicate stat families without an explicit future design change;
 18. derived stats are calculated/cached, not saved as a second authority;
 19. every visible derived number must be explainable by source breakdown;
 20. Trait V2 must be designed against this registry rather than inventing new stat families ad hoc.
