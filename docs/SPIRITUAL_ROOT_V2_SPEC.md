@@ -585,8 +585,9 @@ V1 branches:
 The data model must allow future additional branches.
 Do not hardcode the schema as if Metal can only ever have Lightning forever.
 
-Canonical Dị-Căn state names:
+Canonical Dị-Căn display states:
 - **Tiềm Ẩn** — identity exists but is unrevealed/inactive;
+- **Hiển Lộ** — identity has been revealed but is not yet awakened; this is a discovery state, not a power realm;
 - **Thức Tỉnh** — first active realm;
 - **Thuế Biến** — deeper mutation realm;
 - **Viên Mãn** — completed mutation realm.
@@ -669,9 +670,10 @@ Example conceptual record:
 }
 ```
 
-Canonical `mutation_realm` display mapping:
-- `latent` -> **Tiềm Ẩn**;
-- `awakened` -> **Thức Tỉnh**;
+Canonical display derivation:
+- `mutation_realm = latent` + `revealed = false` -> **Tiềm Ẩn**;
+- `mutation_realm = latent` + `revealed = true` -> **Hiển Lộ**;
+- `mutation_realm = awakened` -> **Thức Tỉnh**;
 - `metamorphosis` -> **Thuế Biến**;
 - `perfected` -> **Viên Mãn**.
 
@@ -698,9 +700,11 @@ Derived combat percentages/timers are not persisted as permanent character truth
 
 Reveal:
 - associated base-root purity reaches **70**;
+- if a congenital latent mutation's associated root is already >=70 at birth, it is **Hiển Lộ immediately when that person's generated profile is finalized**;
 - reveal is deterministic;
 - no resource cost;
-- no success roll.
+- no success roll;
+- Hiển Lộ grants no mutation combat buff until Thức Tỉnh.
 
 Thức Tỉnh awakening:
 - associated base root >=80;
