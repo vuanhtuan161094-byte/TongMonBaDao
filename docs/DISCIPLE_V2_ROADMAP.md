@@ -157,7 +157,21 @@ Important dependency:
 mutation combat requires parts of Skills/Combat Stats V2 (advanced element tags, cast/source identity, Crit, Effect Hit/Resistance, source-owned DoT, control refractory, lethal interception and final stat channels).
 When implementation is eventually scheduled, do not fabricate temporary root-only stats. Bring required primitives into the active phase or defer mutation combat activation until the proper combat phase.
 
-## Then: Mệnh Cách + Traits V2
+## Current design subject: Disciple Characteristics & Stat Framework V2
+
+Draft authority:
+`docs/DISCIPLE_CHARACTERISTICS_STAT_FRAMEWORK_V2.md`
+
+Purpose:
+- lock the complete character/stat taxonomy before Trait/Bloodline/Physique add more modifiers;
+- distinguish persistent source data, runtime state, derived channels and contextual outcomes;
+- establish the canonical modifier registry and stacking modes;
+- prevent future parallel Attack/Defense/Work-Speed/etc. authorities.
+
+Status:
+**DESIGN DRAFT — awaiting user review; not implemented; not locked.**
+
+## Then: Traits V2
 
 Need separate clearly:
 - personality;
