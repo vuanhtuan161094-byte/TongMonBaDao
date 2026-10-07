@@ -145,10 +145,10 @@ Full design now locked:
 - expensive post-birth missing-root creation;
 - 0.20% congenital mutation model;
 - Lôi/Phong/Băng/Dương/U Minh V1;
-- Stage I/II/III mutation growth and five matching Bản Nguyên resources;
+- Thức Tỉnh/II/III mutation growth and five matching Bản Nguyên resources;
 - mutation combat timing/proc/AoE/multi-hit/basic-attack/boss/team/AI rules;
 - all five mutations may coexist;
-- full five Stage III -> Ngũ Dị Quy Nhất;
+- cả năm Dị Căn Viên Mãn -> Ngũ Dị Quy Nhất;
 - persistence/migration/test invariants.
 
 Implementation is **not authorized**.
