@@ -195,11 +195,19 @@ Combat Stats V2 is DESIGN LOCKED, NOT IMPLEMENTED.
 Canonical authority:
 `docs/COMBAT_STATS_V2_SPEC.md`
 
-Current design subject:
-**Disciple Characteristics & Stat Framework V2**.
-
-The draft is in:
+Disciple Characteristics & Stat Framework V2 is DESIGN LOCKED, NOT IMPLEMENTED.
+Canonical authority:
 `docs/DISCIPLE_CHARACTERISTICS_STAT_FRAMEWORK_V2.md`
 
-It is not locked and not implemented.
-Review it with the user before moving to Traits V2.
+It locks:
+- source/state/derived/outcome separation;
+- living-state taxonomy;
+- modifier modes and provenance;
+- Healing Done / Healing Received / Shield Effect and other specialized effect channels;
+- future-system ownership boundaries.
+
+Current design subject:
+**Traits V2**.
+
+Keep Personality separate from Trait.
+Do not fold Mệnh Cách into Traits V2; Mệnh Cách is the following design subject.
