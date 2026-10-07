@@ -608,7 +608,7 @@ A mutation:
 - remains independent from Disciple Quality.
 
 Example:
-`Kim 100 · Lôi III`
+`Kim 100 · Lôi Viên Mãn`
 
 still counts as:
 - Kim 100 for base-root Resonance;
@@ -663,7 +663,7 @@ Example conceptual record:
 ```
 "metal": {
     "mutation_id": "lightning",
-    "stage": 3,
+    "mutation_realm": "perfected",
     "origin": "birth_latent",
     "revealed": true
 }
@@ -732,7 +732,7 @@ Create Thức Tỉnh:
 - **3 matching Dị Bản Nguyên**;
 - **1 Ngũ Hành Bản Nguyên**.
 
-Then Thuế Biến/III use the normal costs above.
+Then **Thuế Biến / Viên Mãn** use the normal costs above.
 
 Therefore congenital mutation saves enormous time/resources but does not create a permanent final ceiling.
 
@@ -782,7 +782,7 @@ They are **not multiplied by base-root Resonance**.
 
 Example at endgame:
 - full base roots give their own matching-root bonuses;
-- Lôi III adds its own Lôi bonuses on top;
+- Lôi Viên Mãn adds its own Lôi bonuses on top;
 - the two contributions share normal additive-channel rules where they affect the same base quantity.
 
 A mutation skill must explicitly declare the mutation tag.
@@ -806,7 +806,7 @@ a Lightning sword skill may be:
 - path = Kiếm;
 - base_element = Kim;
 - advanced_element = Lôi;
-- requires Lôi I+.
+- requires Lôi Thức Tỉnh or higher.
 
 It receives:
 - Kim-root matching contribution;
@@ -1072,7 +1072,7 @@ Minh Mệnh may trigger **once per encounter**.
 
 When incoming damage would reduce the disciple to 0 HP or below:
 - prevent that defeat;
-- set HP to a Stage-dependent fraction of Max HP;
+- set HP to a cảnh-giới-tương-ứng fraction of Max HP;
 - activate Minh Hộ.
 
 | Cảnh giới | HP after lethal interception | Incoming damage during Minh Hộ | Minh Hộ duration |
@@ -1098,11 +1098,11 @@ There is no “choose only one active mutation” rule.
 
 A disciple may eventually reach:
 
-- Lôi III;
-- Phong III;
-- Băng III;
-- Dương III;
-- U Minh III.
+- Lôi Viên Mãn;
+- Phong Viên Mãn;
+- Băng Viên Mãn;
+- Dương Viên Mãn;
+- U Minh Viên Mãn.
 
 Base-root Resonance does not multiply the five Mutation passive/mechanic values.
 
@@ -1134,7 +1134,7 @@ Examples:
 
 Do not persistently tick mutation cooldowns for 1,000–3,000 disciples outside combat.
 
-Permanent save data stores mutation identity/stage/origin/reveal state.
+Permanent save data stores mutation identity/mutation_realm/origin/reveal state.
 Combat-local timers are created when an encounter starts and discarded when it ends.
 
 This preserves large-population scalability.
@@ -1280,7 +1280,7 @@ Spiritual Root V2 design is now closed for:
 - adding missing roots;
 - congenital mutation rarity;
 - Lôi/Phong/Băng/Dương/U Minh V1;
-- mutation Thức Tỉnh/II/III;
+- mutation realms Thức Tỉnh / Thuế Biến / Viên Mãn;
 - mutation resources and sources;
 - mutation combat mechanics/timing;
 - full-five mutation endpoint;
