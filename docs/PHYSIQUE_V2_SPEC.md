@@ -222,7 +222,7 @@ Its 12% roster weight is reserved design data, not permission to ship it effectl
 
 ---
 
-## 8.2 Kim Cương Bá Thể## 8.2 Kim Cương Bá Thể
+## 8.2 Kim Cương Bá Thể
 
 Role:
 - raw body durability and long expedition endurance.
