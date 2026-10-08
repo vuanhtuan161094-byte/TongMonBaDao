@@ -131,8 +131,8 @@ Weak monsters may still drop loot, but cultivation reward should diminish sharpl
 
 With 1,000–3,000 disciples, every disciple must NOT have a full RPG inventory.
 
-A disciple owns only:
-- equipped gear;
+A disciple maintains a small personal/use state, including:
+- currently assigned **Sect-owned** equipped gear;
 - personal Spirit Stones;
 - Contribution Points;
 - a very small consumable/loadout allowance;
@@ -170,7 +170,7 @@ High sect cut:
 - may reduce satisfaction.
 
 High personal share:
-- disciples buy better services/equipment and progress autonomously;
+- disciples buy eligible personal services/pills and progress autonomously; equipment is allocated from Sect-owned stock;
 - sect treasury grows more slowly.
 
 This is intended management gameplay.
@@ -179,18 +179,9 @@ This is intended management gameplay.
 
 ## 8. Equipment distribution
 
-Default: policy-driven automation.
+**All equipment is Sect-owned**, per the newer user decision recorded in `docs/WEAPON_EQUIPMENT_V2_REALM_MAP_SET_MATRIX.md`. No disciple-owned equipment and no payment/Contribution compensation to move a piece from one disciple to another.
 
-Possible rules:
-- hunters have priority;
-- higher combat need has priority;
-- Inner Disciples receive discounts;
-- Direct Disciples receive free allocation;
-- ordinary disciples exchange Contribution Points or Spirit Stones.
-
-The Sect Master may directly grant/lock equipment for important disciples.
-
-Do not require manual equipment management for thousands of disciples.
+Allocation is policy-driven (hunters, roles, team need, rarity/protection, reserve/lock and favorite disciples) with direct Sect Master override. A disciple may request or auto-equip from authorized Sect inventory, not purchase personal gear. Do not require manual equipment management for thousands of disciples.
 
 ---
 
