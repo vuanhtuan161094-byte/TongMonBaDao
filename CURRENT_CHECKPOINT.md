@@ -1,6 +1,6 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
-Updated: 2026-10-07
+Updated: 2026-10-08
 
 This file contains **current truth only**.
 It is not a historical changelog.
@@ -370,7 +370,7 @@ Locked:
 - one active Core Physique;
 - 15 weighted base identities;
 - 14 base effect sets use canonical Combat/Root/Expedition channels;
-- Kiếm Cốt identity is locked but its effect is intentionally BLOCKED until Weapon/Skill V2 defines actual sword attribution; it cannot be enabled effectless;
+- Kiếm Cốt identity is locked; Combat Skills V2 now defines sword style/weapon-requirement separation and cast attribution, but the effect remains BLOCKED until Weapon + Equipment V2 closes the remaining weapon dependency;
 - deterministic Cải Thể / Tái Tạo / Tiến Hóa / Dung Thể architecture;
 - no generic fusion blender and no stacking predecessor effects;
 - Physique history/provenance is preserved;
@@ -378,5 +378,78 @@ Locked:
 
 No Physique V2 gameplay code has been added.
 
+Cultivation + Breakthrough V2 is now **DESIGN LOCKED, NOT IMPLEMENTED**.
+
+Canonical authority:
+`docs/CULTIVATION_BREAKTHROUGH_V2_SPEC.md`
+
+Locked highlights:
+- minor floors auto-advance without RNG;
+- only major-realm gates use breakthrough chance;
+- default failure loses 10% gate requirement;
+- same-gate failure gives +5 percentage points;
+- max 3 breakthrough consumables;
+- no generic HP/Stamina/cooldown consequence;
+- no generic Tư Chất/Căn Cốt/Cơ Duyên/Root/Physique breakthrough chance;
+- auto-breakthrough, Tích Tu/Hậu Tích and special authored breakthrough identities are covered.
+
+No Cultivation/Breakthrough V2 runtime code has been added.
+
+Công Pháp V2 is now **DESIGN LOCKED, NOT IMPLEMENTED**.
+
+Canonical authority:
+`docs/TECHNIQUE_V2_SPEC.md`
+
+Locked highlights:
+- Công Pháp and combat skills are separate;
+- 1 Chủ Tu + 2 Phụ Tu active;
+- learned inactive techniques retain mastery/history but ordinary effects are inactive;
+- Sect transmission through Tàng Kinh Các;
+- five personal mastery milestones;
+- Sect Nghiên Tu separate from personal mastery;
+- authored Diễn Hóa successors/branches;
+- personal discovery + Khắc Lục.
+
+No Công Pháp V2 runtime code has been added.
+
+Chủ Đạo / Cultivation Path V2 is now **DESIGN LOCKED, NOT IMPLEMENTED**.
+
+Canonical authority:
+`docs/CULTIVATION_PATH_V2_SPEC.md`
+
+Locked highlights:
+- Chưa Định Đạo → Kiếm / Thể / Pháp;
+- branches Ngự/Sát/Hộ, Bá/Kim Cương/Huyết, Ngũ Hành/Y Đạo/Huyền Pháp;
+- no class level or generic class-stat growth;
+- Đạo Lịch is history, not a generic stat multiplier;
+- deterministic Định Đạo / Diễn Đạo;
+- switching preserves learned content/mastery/history.
+
+No Chủ Đạo V2 runtime code has been added.
+
+Combat Skills V2 is now **DESIGN LOCKED, NOT IMPLEMENTED**.
+
+Canonical authority:
+`docs/COMBAT_SKILLS_V2_SPEC.md`
+
+Locked highlights:
+- mature loadout = 1 Thường + 4 Active + 6 Combat Passive;
+- slots open gradually through Nhân Giới;
+- three-wave lifecycle = Nhân foundation → Tiên evolution → Thần evolution;
+- named skill-family successors rather than +level feeding;
+- mastery Sơ Học → Nhập Môn → Tiểu Thành → Đại Thành → Viên Mãn;
+- Tu Vi / Luyện Thể / Hybrid skill basis;
+- priority AI 1→4 with per-skill validity;
+- simple distance profiles;
+- cooldown/cast/projectile/ICD separation;
+- explicit stacking and Nhân/Tiên/Thần effect tiers;
+- Ngũ Hành + Tương Sinh cross-class framework;
+- party max 6 / hunting cluster max 30;
+- 0 HP = Bị Hạ;
+- monster/boss use the same combat primitives;
+- Kiếm Tu, Thể Tu and Pháp Tu base languages/branches are design-closed.
+
+No Combat Skills V2 runtime code has been added.
+
 Current design subject:
-**Cultivation + Breakthrough V2**.
+**Weapon + Equipment V2**.
