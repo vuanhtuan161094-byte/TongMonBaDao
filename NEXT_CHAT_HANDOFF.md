@@ -175,3 +175,11 @@ Preferred queue:
 11. implementation dependency plan.
 
 Do not begin implementation just because design is closed.
+
+## Legacy design-document cleanup — 2026-10-08
+
+Superseded legacy design Markdown files for Cultivation/Root/Công Pháp/Path/Combat Skills/Generation/Traits/Bloodline/Physique have been intentionally deleted from the repository.
+
+Legacy runtime code, factories, tests and gates remain until their explicit V2 implementation/migration phases because they still protect regression and old-save compatibility.
+
+Do not recreate or consult deleted legacy design specs as authority.
