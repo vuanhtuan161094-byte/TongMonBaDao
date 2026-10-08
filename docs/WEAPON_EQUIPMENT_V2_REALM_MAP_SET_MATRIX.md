@@ -1,11 +1,11 @@
 # WEAPON + EQUIPMENT V2 — MA TRẬN CẢNH GIỚI, MAP VÀ ĐỒ BỘ
 
 Date: 2026-10-08
-Status: **PARTIAL DESIGN LOCK — REALM/MAP/SET FRAMEWORK; NOT IMPLEMENTED**
-Owner: Weapon + Equipment V2. This file is the specific authority for the locked matrix and set structure.
+Status: **MAP CONTENT PROJECTION; EQUIPMENT/SETS MOVED TO NEW CANONICAL DOCS; NOT IMPLEMENTED**
+Owner: Realm-to-map planning. Gear and set authority moved to `docs/WEAPON_EQUIPMENT_V2_SPEC.md` and `docs/EQUIPMENT_SETS_V2_SPEC.md`.
 Parent authorities: `docs/REALM_LADDER_V2_SPEC.md`, `docs/BODY_CULTIVATION_V2_SPEC.md`, `docs/COMBAT_STATS_V2_SPEC.md`, `docs/COMBAT_SKILLS_V2_SPEC.md`, `docs/P3_7_DISCIPLE_LOADOUT_HUNTING_PROGRESSION_SPEC.md`, `docs/P3_7_RESOURCE_STORAGE_GROWTH_DATA_MODEL_SPEC.md`, `docs/P3_7_BUILDING_TREE_SPEC.md`.
 
-This **does not** close the entire Weapon + Equipment V2 design, add runtime content or authorize gameplay coding. The actual Godot P0 map/content and P2.6 equipment remain compatibility baselines until an explicit implementation/migration phase.
+This document is map-to-equipment planning only. It does not authorize gameplay coding or claim authored map/content availability. The newer gear/set design structure has separate canonical documents. The actual Godot P0 map/content and P2.6 equipment remain compatibility baselines until an explicit implementation/migration phase.
 
 ## 1. Prior map decision vs new extension — do not conflate
 
@@ -17,8 +17,8 @@ This **does not** close the entire Weapon + Equipment V2 design, add runtime con
 - A map's overall roster is not hard-gated by the 30-person cluster limit. Disciples outside active cluster encounters may queue, transit, return or be assigned elsewhere; do not interpret 30 as a per-map cap.
 - Party effects affect the exact party; shared target debuff caps use encounter/global target authority.
 
-**New V2 map-to-realm matrix design:**
-- **30 primary progression maps**, one for each of the 30 Tu Vi realm bands; **each has 10 clusters**, yielding **300 baseline authored clusters**. This is NOT "ten separate maps per realm".
+**Proposed map-to-realm content projection (not independently user-locked):**
+- **Proposed 30 primary progression maps**, one for each of the 30 Tu Vi realm bands; **each has 10 clusters**, yielding **300 proposed, NOT authored/implemented clusters**. This is NOT "ten separate maps per realm".
 - Other event maps, Bí Cảnh, side regions and future expansions may be added without changing this primary grid.
 - Primary map `hunt_rNN` corresponds to realm index NN; cluster `c01..c10` has a recommended Tu Vi floor from that realm's ten floors, not an access lock or fixed-only monster tier.
 - Example: `hunt_r05/c07` recommends Kim Đan tầng 7 (global floor 47). Its monsters may occupy a declared range, and unusual Elite/Boss events can exceed it.
@@ -32,7 +32,7 @@ Columns:
 - Gear tier = canonical `equipment_realm_index` 1..30, aligned to the named **Tu Vi realm band** at the same index.
 - Each primary map `hunt_rNN` contains `c01..c10`.
 - Illustrative materials are **family/content names**, NOT existing `ResourceRegistry` IDs and NOT approval to create a stack of anonymous `material_power`. Exact material IDs/quantities/recipes require content authoring.
-- Every row can generate normal item bases and a full set variant via recipes/Elite/Boss reward definitions. Different ranks change base stats and materials; the 12 quality grades remain separate.
+- Each row is intended to permit gear and suitable selected set pieces through authored recipes/Elite/Boss rewards where such content is later defined. Not every one of 24 sets must drop on every map. Different ranks change base stats and materials; the 12 quality grades remain separate.
 - Boss at cluster 10 is a default specialty/boss opportunity, not the only boss spawn in a map.
 
 | Gear tier | Realm band | Tu Vi realm | Primary map ID (10 clusters) | Thematic crafting-material family (examples, not registered IDs) | Region/monster/Boss theme (authoring seed) |
@@ -92,99 +92,40 @@ Columns:
 
 Roles are an **authoring baseline**, not rigid identical biome layout for 30 maps. A desert, swamp, ocean or void map may change material types, geometry and boss positions as long as 10 genuinely distinct specialties, recommended floors and drops are authored. The 30-active-disciples constraint is per cluster; 6 per party; no forced equal split of 30/6, and no cluster-wide party buffs.
 
-## 4. Gear tier, quality, enhancement, equip legality
+## 4. NEW EQUIPMENT + SET AUTHORITIES — SUPERSEDES OLD RULES
 
-- `equipment_realm_index = 1..30`: determines **base stat scale and appropriate source tier**, aligned with realm index; never make 300 different item base tiers just because each realm contains 10 cultivation floors.
-- `quality_grade = 1..12`: Phàm / Tinh / Thượng / Cực / Linh / Huyền / Địa / Thiên / Vương / Thánh / Đế / Chí Tôn; controls eligible number/range/rarity of affixes and special inscriptions. It does not directly become a character's `DiscipleQuality`.
-- `enhancement = 0..15`: applies to the item's base stat component; never multiplies RealmBodyCore or all unrelated flat source stats.
-- `affixes` / `special_effects` / `true_inscription` are separate explicit channels; the previously discussed provisional cap for Chí Tôn is up to 6 ordinary sub-lines + 2 special effects + 1 Chân Văn, pending final affix-budget balance. Avoid per-hit recursive proc loops.
-- No `Phẩm Lực` or global item quality-point pool.
-- Standard physical equipment and weapon types check **Tu Vi OR Luyện Thể realm index >= item tier**; explicitly spiritual-force-driven items check Tu Vi, explicitly body-technique-driven items check Luyện Thể. Realm floors do not silently impose a second condition.
-- This is a use/equip requirement, **not a profession-work requirement**: a low-realm but highly capable Luyện Khí Sư may forge elevated items if recipe, facility, materials and profession capability permit.
-- `style_tag` != `weapon_requirement`. Gear equipped as sword satisfies an authored `weapon_requirement=sword`; a `style_tag=sword` skill with `weapon_requirement=none` is playable weaponless. No default independent weapon-mastery stat.
-- Different weapon types remain free to equip across Chủ Đạo where requirements permit; skill requirements determine cast eligibility, not global class lock.
+**Current approved gear structure**: `docs/WEAPON_EQUIPMENT_V2_SPEC.md`.
+**Current approved 24-family set matrix**: `docs/EQUIPMENT_SETS_V2_SPEC.md`.
 
-## 5. Set equipment / Đồ Bộ V2 — structure locked
+Old content under this path claiming five ordinary equipment slots, 2/3-only sets, four set positions including Ngọc Bội, Chân Văn Cộng Hưởng, a fixed +15 enhancement maximum, twelve-only set roster or free automatic set procs is **RETIRED**. Do not recover it as alternate authority.
 
-**Active ordinary equip slots**: weapon, armor/giáp, head/mũ, footwear/giày, pendant/ngọc bội (5). The separate later loadout preserves 3 Phù slots + 2 Pháp Bảo slots (10 equipped slots total); 4 consumable belt slots are NOT part of ten. Phù and Pháp Bảo V2 mechanics are their own future authority.
+- Ordinary gear = **10 slots**. 3 Phù + 2 Pháp Bảo + 4 consumable slots remain separate.
+- Quality 1..12; at Chí Tôn max 6 ordinary sub-lines + 2 rare specialized **stat** modifiers + one individual, non-free Chân Văn capacity.
+- Sets use **Mũ/Giáp/Phi Phong/Hộ Uyển/Đai/Giày**, four specified pieces per family, cumulative thresholds 2/3/4, 3+3 both active; no automatic new battle ability or set-level Chân Văn.
+- Realm gear tier 1..30, independent from twelve quality grades and 300 cultivation floors. Exact Attack/Defense/HP item numbers and % ceilings are not approved.
+- Enhancement cap, forging/transmission prices, item quality-roll probabilities, rare effect implementation and materials are design OPEN.
 
-**Set pieces**:
-- By default sets occupy **Giáp + Mũ + Giày + Ngọc Bội**, **not the Weapon slot**. This preserves weapon-style freedom and allows a set to support different Kiếm/Thể/Pháp roles.
-- Every set has an explicit `set_lineage_id` (e.g. Hộ Sơn) and `set_generation` (Nhân/Tiên/Thần). Matching is by owned/equipped item instances with legal slots, not appearance or random shared stats.
-- Default milestones: **2-piece simple stat/role identity**; **3-piece meaningful authored combat mechanic**. No default 4-piece universal bonus. The fourth slot lets the player do **2+2 with two independent sets**, or **3+1 (three-piece set plus free slot)**.
-- Each single item counts for exactly one set; no double-counting. Every member of a two/three-piece set must be **legally equipped and effect-enabled**. Across different generations, pieces do NOT secretly combine into a higher-generation set.
-- All 30 equipment tiers may host set pieces where a recipe/loot pool exists, including early progression; higher tiers have new sets and/or authored successors to old set lineages. There must always be a non-Boss path to basic set progression, plus targeted Elite/Boss/secret-region chase loot.
-- Set effects from an older generation do **not** automatically upgrade to Tiên/Thần effects. An authored successor/upgrade path with explicit materials and conditions is required.
-- Matching set pieces at different item realm tiers within the same generation may activate the family, but any tier-scaled magnitude is bounded by **the minimum contributing gear tier**. This prevents one high-tier piece + cheap low-tier items from faking top-tier set effects.
-- Set effect source is item/loadout-derived only; removing/switching, broken/disabled state, and invalid equip instantly invalidate the bonus. A set is NOT a second passive-skill slot or Pháp Bảo.
-- Party/team auras of the same set family obey **strongest-only**, or an explicitly authored shared encounter cap; 6 disciples must not stack 6 copies into a runaway buff. Reflection/lifesteal/proc effects follow Combat Skills V2 recursion/safety rules.
-- Sources: targeted area/Elite/Boss drop, recipes/blueprint unlock, Luyện Khí Điện forging, authored conversion, and Phường Thị only when that item pool is legitimately available. Loot resolves into canonical sect stock.
+## 5. MAP → LOOT → CRAFT — PLANNING REQUIREMENTS
 
-**Initial candidate set lineages (identity/role proposals; exact unlock thresholds, numeric stats, effects and source pools are NOT yet design-locked):**
-1. Hộ Sơn — HP/Defense -> eligible hit protection.
-2. Truy Phong — Movement -> positioning/cast-use support (NOT turn order).
-3. Sát Tinh — Crit Chance -> bounded Crit Damage/execute window.
-4. Thanh Linh — Healing/Shield -> conditional team rescue.
-5. Huyết Chiến — Attack -> low-HP condition, no self-cost farming.
-6. Phá Cương — Defense Penetration -> punish defense-down targets.
-7. Ngũ Hành — elemental Skill Effect -> named five-element payoff.
-8. Hàn Vân — Effect Hit/Resistance -> cold/control specialization.
-9. Cửu Lôi — Lightning Skill Effect -> bounded secondary hit/ICD.
-10. Tịnh Thần — Effect Resistance -> anti-control/cleanse window.
-11. Thiên Trận — Shield Effect -> strongest-only formation support.
-12. Hỗn Độn — specialized high-gen protection/rule counter, explicit effect tier.
+For any future authored `hunt_rNN/cXX`, define explicitly: recommended realm floor, actual enemies/Elite/Boss, travel/stamina/costs, real ResourceRegistry material IDs, legal item-tier+quality pools, which of the 24 set lineages may drop, blueprints/inscriptions, repeatable core-material paths and optional rare chase content. No phantom per-map material ID or non-existent equipment content.
 
-No set/weapon stat introduces turn-order Speed, ordinary Accuracy/Dodge, global Mana, free Kiếm Ý resource, physical/magical Attack split or independent `combat_power` authority.
+Generic cluster roles c01–c10 above describe a proposal for source distribution, not implemented 300 zones. Any non-mandatory Boss source should have non-Boss access to baseline material progression; named rare variants may use Boss/chase.
 
-## 6. Map -> loot -> craft -> upgrade matrix
+## 6. OWNERSHIP AND EQUIPMENT COMPATIBILITY
 
-For each `hunt_rNN/cXX`, content authoring must specify:
-- `recommended_global_floor = (NN - 1)*10 + XX` as display/soft recommendation;
-- monster rank distribution, elite rate, Boss opportunity, injury risk, travel time, stamina components, supply consumption;
-- explicit `ResourceRegistry` IDs of ore/wood/beast/essence/element materials; no generic aggregated mineral power;
-- item drop pool with `equipment_realm_index` and quality distribution, set pools and blueprint/inscription pools;
-- first-clear/rare loot and deterministic repeat source for materials that are necessary to maintain progression (no impossible recipe/dead end);
-- player-readable specialties; targetable farm/auto policy.
+**100% Sect-owned items**: Sect Warehouse + unique-item registry; disciple is only the equipment assignee. No private gear title, private buying, gear donation, compulsory requisition or Contribution compensation. Old P2.6 `owner_id` means a migration-equipped user, not property title. Gear may be reassigned by Sect policy with locks/reserves. No secondary loot warehouse.
 
-**Minimal source completeness per realm tier**: common gear base; forge ore; organic/beast component; enhancement/repair material; optional set piece/blueprint source; Elite/Boss rare upgrade component. A rare inscription may be obtainable only via named high-end sources, but basic tier advancement must have a repeatable path.
+Old Godot P2.6 weapon/armor/talisman, old quality list and old saves remain compatibility data. **No runtime or UI migration is authorized or claimed by this documentation commit.**
 
-**Upgrade paths**:
-1. Forge a new gear instance from explicit tier recipe; item quality/affixes generated deterministically once from world seed + unique forge/drop index + content ID.
-2. Enhance +0..15 with explicit tier-appropriate inputs; deterministic success; no destruction.
-3. Refine eligible affix magnitude; upgrade rule/cap owned by affix definition.
-4. Reroll selected affix with old/new keep choice; cannot bypass costs, locks or valid affix pools.
-5. Raise quality only through explicit tier-specific recipe; protect history and invested upgrades.
-6. Raise item realm tier through `r -> r+1` with **new-rank resources**, valid facility/profession/recipe and real production time; no arbitrary transmutation from infinite low-rank goods.
-7. Inherit selected paid investment from old to a legitimately better new item through an explicit compatibility, capacity and source-consumption contract; do not duplicate valuable upgrade state.
+## 7. REMAINING DESIGN/IMPLEMENTATION DEBT
 
-**Balancing guardrails**:
-- RealmBodyCore from cultivation/body is independent from equipment base; Tiềm Lực only affects RealmBodyCore.
-- 12 quality grades never permit low-rank equipment to erase arbitrary gaps across the 30 item realm indices.
-- Elemental effects route to canonical elemental keys and defense/resistance/counter pipeline.
-- Ordinary same-channel percentage bonus composes through Combat Stats V2; percent damage reduction and elemental resistance use independent remaining-damage sources.
-- +15 enhancement is a starting **design direction**, not a proven final coefficient. Exact numeric base curves, gear contribution ceilings, 12-quality distribution, set effects, set/drop rates, cost curves and late-game material IDs remain to be benchmarked and designed.
-- No second reward loot warehouse, personal item ownership or per-disciple giant backpack.
+- RealmBodyCore Attack/Defense/HP and final per-tier gear contributions;
+- real crafting and source content for 30 item tiers, 12 quality grades, 24 set families;
+- fully authored individual Chân Văn effects, proc event rules and test coverage;
+- forging/refining/enhancement cap/costs and transfer rules;
+- real mining/forging/alchemy/talisman/profession-quality consumer checks;
+- deterministic auto-equip preserving set thresholds for 1,000–3,000 disciples;
+- legacy equipment+save migration and genuine official Godot 4.7.2 tests.
 
-## 7. Ownership override — explicit newer user decision
+**Only "one map has ten specialty clusters" is treated as prior user-accepted map topology.** The projection **30 primary maps × 10 clusters = 300** is still proposed content planning, NOT a separate explicitly approved count of playable maps.
 
-**ALL equipment/gear is sect-owned.** Disciples are assignees/users, not owners.
-- Loot, crafting and external acquisitions produce individual items in the canonical Sect Warehouse/unique item registry.
-- Set/equipment pieces may be assigned, reassigned, auto-equipped, reserved, locked, sold or dismantled by user policy and explicit commands.
-- No personal gear ownership, gifting semantics, Contribution compensation, forced confiscation economics, disciple spending personal currency to acquire ownership.
-- Personal Spirit Stones/Contribution still exist for other uses and do not determine item title.
-- Unique item `owner_id` in the P2.6 compatibility runtime means **equipped user mapping**, not future V2 property title. Preserve old save IDs/affixes/locations via explicit deterministic migration, without changing locked P2 gates prematurely.
-- Newer decision supersedes conflicting personal-equipment-ownership and mandatory internal gear-buying text from the old P3.7 loadout/economy specs.
-
-## 8. Implementation and balance debt (not locked by this matrix)
-
-- 30x10 actual authored maps, 300 distinct areas, enemy/Elite/Boss content, rates and navigation/visual assets.
-- All exact `ResourceRegistry` IDs and no-gap 30-realm gear/material recipe catalogue, forge station/profession prerequisites.
-- Final 12-grade per-realm affix budget/stat bounds/rare line percentages; exact high-end set identity catalogue (the 12 above are candidates).
-- Full upgrade/refinement/reroll/inheritance prices, durations and deterministic RNG rules, transfer compatibility and UI.
-- Exact body-vs-realm equip-requirement exceptions and broken-item behavior.
-- Equipment-set numeric balance against Realm+Body progression and 1 Thường + 4 Active + 6 Combat Passive.
-- Automated equipment scoring, reserving and protecting sets at 1,000–3,000 disciple scale.
-- Migration of legacy P2.6 three slots, item definitions, combat_power, item user mapping, old talisman -> Phù #1; full Godot 4.7.2 tests.
-- Follow-up authority for Phù + Pháp Bảo V2 remains separate.
-
-This matrix is a **design checkpoint**, not runtime completion. Continue Weapon + Equipment V2 detailed design; do not code without explicit permission.

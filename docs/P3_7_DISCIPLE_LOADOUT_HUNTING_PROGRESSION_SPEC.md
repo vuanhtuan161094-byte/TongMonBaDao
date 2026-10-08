@@ -51,7 +51,7 @@ The team loadout exists for supplies taken **out** (medicine, pills, talismans, 
 
 ## 2.1 Equipment
 
-Weapon V2 ordinary equipment = 1 Weapon + 1 Giáp + 1 Mũ + 1 Giày + 1 Ngọc Bội; separate 3 Phù slots + 2 Pháp Bảo slots = **10 equipped slots**; 4 consumable-belt slots are separate. Sets use non-weapon Giáp/Mũ/Giày/Ngọc Bội with 2/3-piece milestones. This is a meaningful ten-slot loadout, not ten generic body armor slots. See `docs/WEAPON_EQUIPMENT_V2_REALM_MAP_SET_MATRIX.md`.
+**Equipment V2 has 10 ordinary gear slots**: Vũ Khí, Mũ, Giáp, Phi Phong, Hộ Uyển, Thủ Sáo, Đai Lưng, Giày, Ngọc Bội, Nhẫn. Separate 3 Phù + 2 Pháp Bảo = **15 total equipped/active positions**; 4 consumable-belt positions remain separate. Sets use Mũ/Giáp/Phi Phong/Hộ Uyển/Đai/Giày (six eligible), four items each and cumulative 2/3/4 bonuses. Legal 3+3 activates **both** three-piece bonuses. Detailed current authority: `docs/WEAPON_EQUIPMENT_V2_SPEC.md` and `docs/EQUIPMENT_SETS_V2_SPEC.md`.
 
 ## 2.2 Talisman slots
 
@@ -155,7 +155,7 @@ This replaces the obsolete split between Sect-owned/Disciple-owned gear, gift-as
 
 **Every gear instance belongs to the Sect**, whether looted, crafted, externally bought or currently worn by a disciple. Persist item identity, Sect-owned status, `equipped_by` assignee, location, reserve/locks. Assignment is not property title. Sect Master can reassign gear for free; no private gear purchase, gifting title, forced-confiscation economics or Contribution compensation.
 
-Disciples may auto-equip from Sect allocations when policy permits; Sect can sell/salvage unallocated, unlocked items. Legacy P2.6 `owner_id` means equipped-user mapping for migration only. Specific new authority: `docs/WEAPON_EQUIPMENT_V2_REALM_MAP_SET_MATRIX.md`.
+Disciples may auto-equip from Sect allocations when policy permits; Sect can sell/salvage unallocated, unlocked items. Legacy P2.6 `owner_id` means equipped-user mapping for migration only. Specific new authority: `docs/WEAPON_EQUIPMENT_V2_SPEC.md` and `docs/EQUIPMENT_SETS_V2_SPEC.md`.
 
 ---
 

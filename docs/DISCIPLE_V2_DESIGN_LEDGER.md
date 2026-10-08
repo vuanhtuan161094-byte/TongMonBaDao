@@ -675,3 +675,8 @@ Then preferred queue:
 11. implementation dependency plan.
 
 Do not implement any V2 design-locked subsystem without a new explicit implementation instruction.
+
+
+# Weapon + Equipment V2 — USER-APPROVED STRUCTURE (2026-10-08)
+
+Current authority: `docs/WEAPON_EQUIPMENT_V2_SPEC.md` (10 ordinary slots; 12 grades; 6 ordinary stat affixes, 2 rare conditional/stat affixes, 1 inscribable individual Chân Văn maximum; max 2 general lines; allowed cross-system effects; all Sect-owned) and `docs/EQUIPMENT_SETS_V2_SPEC.md` (18 combat+6 work sets, four authored pieces each, six eligible positions, cumulative 2/3/4 stat-channel bonuses, both 3-piece bonuses active at 3+3, Nhân/Tiên/Thần family specialization). Old 5-slot, 2/3-only, Chân Văn Cộng Hưởng, automatic set skills and enhancement +15 as a locked cap are SUPERSEDED. Numerical gear power, percentages, costs, recipes, loot rates, final enhancement cap and genuine runtime implementation are OPEN.

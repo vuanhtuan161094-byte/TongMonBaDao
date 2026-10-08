@@ -24,7 +24,9 @@ Updated: 2026-10-08
 18. `docs/TECHNIQUE_V2_SPEC.md`
 19. `docs/CULTIVATION_PATH_V2_SPEC.md`
 20. `docs/COMBAT_SKILLS_V2_SPEC.md`
-21. `docs/WEAPON_EQUIPMENT_V2_REALM_MAP_SET_MATRIX.md` — newly locked matrix + sets + ownership, design only;
+21. `docs/WEAPON_EQUIPMENT_V2_SPEC.md` — current **10 ordinary slots + 12 grades + 6/2/1 lines + sect-owned**; DESIGN ONLY;
+22. `docs/EQUIPMENT_SETS_V2_SPEC.md` — **24 families, 2/3/4 bonuses and 3+3 coexistence**; DESIGN ONLY;
+23. `docs/WEAPON_EQUIPMENT_V2_REALM_MAP_SET_MATRIX.md` — map/realm source projection only (no older 5-slot/set rules);
 22. current equipment/loadout/crafting code and relevant legacy specs before continuing Weapon + Equipment V2.
 
 Fetch live `main` before edits.
@@ -131,14 +133,20 @@ Do not enable Kiếm Cốt effectless.
 
 This is DESIGN ONLY unless the user explicitly authorizes implementation.
 
-**New partial design lock 2026-10-08:** read `docs/WEAPON_EQUIPMENT_V2_REALM_MAP_SET_MATRIX.md` first. The user-confirmed prior map law is **1 map = 10 specialty clusters**, max 30 active disciples/cluster, party max 6. The new V2 matrix assigns **one primary map per realm across 30 realms**, 10 clusters/map (300 baseline clusters); this is **not ten maps per realm**. Set direction is 2/3 matching non-weapon pieces among armor/head/footwear/pendant; ownership is **100% Sect**, contrary to superseded old P3.7 private-gear language. Matrix only is locked; full Weapon V2 detailed content, recipes, set/affix numeric balance are still open.
+**User-approved Equipment/Set V2 structure 2026-10-08:**
+- **10 ordinary slots** Vũ Khí/Mũ/Giáp/Phi Phong/Hộ Uyển/Thủ Sáo/Đai/Giày/Ngọc Bội/Nhẫn. Separate 3 Phù + 2 Pháp Bảo + 4 consumables. Old five-ordinary = OBSOLETE.
+- 12 quality grades, at Chí Tôn **6 ordinary stat lines + 2 rare special-stat lines + 1 individual Chân Văn slot**. Normal lines do not produce autonomous action; rare special lines are conditional existing-channel stats; Chân Văn alone owns rule/event mechanics. Each ordinary item max two broad general lines, slot-specific pools and valid profession lines.
+- **18 combat + 6 profession sets**, each four positions from Mũ/Giáp/Phi Phong/Hộ Uyển/Đai/Giày. 2/3/4 **cumulative stats**, 3+3 **both** three-piece bonuses active, no Chân Văn Cộng Hưởng, no new ability auto-spawned by a set.
+- Nhân/Tiên/Thần versions keep family role; gear power and specialization rise by tier; Hỗn Độn Thần-only. 100% gear belongs to the Sect; disciples only assigned use.
+- **OPEN**: item numerical power, % caps, enhancement cap, cost, crafting/loot/materials, full Chân Văn registry, actual Godot V2 implementation. Earlier provisional +15 is not approved final.
+- 1 map = 10 specialty clusters accepted; **one primary map per each of 30 realms is still a content proposal requiring separate approval**, NOT a final source gate.
 
 Before proposing:
 1. read current equipment state and legacy authority;
 2. preserve the existing 10-slot direction unless a concrete contradiction appears;
 3. consume Combat Stats V2 channels rather than invent parallel stats;
 4. consume Combat Skills V2 `style_tag` / `weapon_requirement` contract;
-5. close the remaining Weapon half of Kiếm Cốt dependency;
+5. retain weapon equip/style and skill requirement rules, while Kiếm Cốt measurable effect remains OPEN;
 6. preserve canonical warehouse/hunting/crafting authorities;
 7. do not create weapon mastery merely because another game has it.
 

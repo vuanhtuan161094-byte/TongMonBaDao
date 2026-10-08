@@ -65,7 +65,7 @@ No subsystem may silently introduce a permanent hard cap that contradicts this f
 | Combat skills | learned skills / mastery / loadout / AI | **FULL V2 DESIGN LOCKED — NOT IMPLEMENTED** |
 | Path history | active Chủ Đạo / branch / Đạo Lịch | **FULL V2 DESIGN LOCKED — NOT IMPLEMENTED** |
 | Profession XP | herbalism/mining/forging/alchemy/logistics/etc | Existing partial |
-| Equipment | 10-slot equipment/loadout authority | Existing |
+| Equipment | 10 ordinary slots + 3 Phù + 2 Pháp Bảo; 2/3/4 set V2 | **STRUCTURE DESIGN LOCKED — NOT IMPLEMENTED** |
 | Pháp Bảo / inheritance | long-term rare equipment/mastery layer | Future |
 | Permanent consumables | pills, treasures, roots/bloodline/physique/foundation improvement | Needs unified content rules |
 
@@ -392,31 +392,11 @@ Locked:
 
 Implementation remains future work.
 
-## Next design: Weapon + Equipment V2
+## Weapon + Equipment V2 — STRUCTURE DESIGN LOCKED, NOT IMPLEMENTED
 
-This is the next default design subject.
+Canonical `docs/WEAPON_EQUIPMENT_V2_SPEC.md` and `docs/EQUIPMENT_SETS_V2_SPEC.md` replace older 5 ordinary/2–3-only set directions. User-approved 2026-10-08: 10 ordinary slots, 12 grades, max 6 ordinary + 2 rare stat + 1 individual Chân Văn, distinct slot pools, 24 families of four pieces in six eligible positions, cumulative 2/3/4 set bonuses and both 3-piece bonuses for 3+3. Sets use stat identity, do **not** auto-generate any Chân Văn Cộng Hưởng. Work equipment permitted only with real consumer. Ownership fully Sect.
 
-It must consume, not rewrite:
-- Combat Stats V2;
-- Combat Skills V2 style/weapon contracts;
-- the existing 10-slot equipment authority;
-- canonical Resource/Warehouse and hunting/crafting loops.
-
-Primary goals:
-- canonical weapon types;
-- equip legality and weapon requirements;
-- 10-slot V2 equipment model;
-- item grade/realm/quality semantics;
-- main/sub stats and canonical modifier channels;
-- elemental equipment;
-- enhancement/refining/forging direction;
-- set policy if any;
-- durability decision;
-- loot/crafting/trade sources;
-- Nhân/Tiên/Thần equipment progression;
-- close the remaining Weapon half of Kiếm Cốt dependency.
-
-Do not design a separate weapon mastery unless explicitly justified and approved.
+Still OPEN: full numbers/RealmBodyCore, individual Chân Văn catalog, forging/reroll/inheritance, enhancement cap, recipes, loot pools and Godot runtime/tests. 30-main-map projected content count needs separate confirmation.
 
 ## After Weapon + Equipment V2
 
@@ -485,8 +465,7 @@ The following Disciple V2 authorities are design-closed:
 - Chủ Đạo / Đạo Lịch;
 - Combat Skills including Kiếm / Thể / Pháp and Nhân → Tiên → Thần evolution.
 
-The next default design conversation is:
-**Weapon + Equipment V2**
+Weapon + Equipment V2 **design structure was approved and stored**. Continue unfinished forging/balance/Chân Văn details or move to Phù+Pháp Bảo only when user asks.
 
 Before proposing Weapon/Equipment rules:
 1. fetch live `main`;
