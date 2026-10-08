@@ -2,6 +2,9 @@
 
 Date: 2026-09-30
 Status: IMPLEMENTED / AWAITING RUNTIME GATE
+
+> **V2 authority note (2026-10-08):** This file remains historical/runtime compatibility authority for locked P2.1 regression behavior. Future Disciple V2 cultivation and breakthrough design is superseded by `docs/CULTIVATION_BREAKTHROUGH_V2_SPEC.md` together with `docs/REALM_LADDER_V2_SPEC.md`. Do not extend P2.1 breakthrough consequences into new V2 gameplay.
+
 Baseline: P1.6 implementation on `a4fe78a8f94d774f9351aaf3b02fd78ad1aaee08`
 
 ## Goal
