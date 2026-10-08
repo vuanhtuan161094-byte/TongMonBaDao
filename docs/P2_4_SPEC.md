@@ -2,6 +2,9 @@
 
 Status: IMPLEMENTED / AWAITING RUNTIME GATE
 
+> **V2 authority note (2026-10-08):** This file remains historical/runtime compatibility authority for P2.4. Future Chủ Đạo / branch / path-history design is superseded by `docs/CULTIVATION_PATH_V2_SPEC.md`. Legacy bounded path XP and generic path stat bonuses are not V2 authority.
+
+
 ## Purpose
 
 P2.4 turns the `path` tags introduced in P2.3 into accumulated character history. A disciple is not assigned a class. Their path identity emerges from the techniques they actually use while cultivating and fighting.
