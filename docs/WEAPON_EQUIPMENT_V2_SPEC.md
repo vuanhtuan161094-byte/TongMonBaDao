@@ -98,4 +98,6 @@ Default equipment legality is Tu Vi OR Luyện Thể tier for ordinary physical 
 
 **OPEN, NOT LOCKED**: RealmBodyCore Attack/Defense/HP and equipment % values; weapon detailed attack patterns; final named 80+ line pool and roll distributions; forging/refining/quality improvement/inheritance; enhancement cap (**old provisional +15 is not the final lock; +10/+20/+30 also not user-confirmed**); recipes/cost/source percentages; individual Chân Văn catalogue and run-time hooks; Kiếm Cốt measurable effect; 30-map/300-cluster content projection independently.
 
+**FOLLOW-UP 2026-10-09:** The user approved the **sequence** of the unfinished Luyện Khí/upgrade design work in `docs/EQUIPMENT_FORGING_UPGRADE_V2_ROADMAP.md`. First design ONE complete forge-to-warehouse order; exact quality chances, enhancement caps and upgrade recipes are still OPEN. Pháp Bảo and Phù V2 are deferred; do not fold them into this ordinary-gear design.
+
 **NO CODE IMPLEMENTED OR GODOT PASS CLAIMED.** Existing P2.6 `equipment_system.gd` has only weapon/armor/talisman and old qualities; it remains legacy compatibility until an explicit tested V2 migration (save/load + deterministic seed + old-item identity).

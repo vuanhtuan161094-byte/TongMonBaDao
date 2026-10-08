@@ -398,10 +398,12 @@ Canonical `docs/WEAPON_EQUIPMENT_V2_SPEC.md` and `docs/EQUIPMENT_SETS_V2_SPEC.md
 
 Still OPEN: full numbers/RealmBodyCore, individual Chân Văn catalog, forging/reroll/inheritance, enhancement cap, recipes, loot pools and Godot runtime/tests. 30-main-map projected content count needs separate confirmation.
 
+**2026-10-09 approved next DESIGN ORDER (not mechanics lock):** `docs/EQUIPMENT_FORGING_UPGRADE_V2_ROADMAP.md`. Do Luyện Khí forge transaction first, then enhancement, refining/reroll, quality upgrade, realm-tier evolution, inheritance/salvage, individual Chân Văn, loot/material economy, large-roster autoequip. Pháp Bảo V2 + Phù V2 deferred by user until ordinary equipment is completed. This does NOT authorize coding.
+
 ## After Weapon + Equipment V2
 
 Preferred design order:
-1. Pháp Bảo + Phù V2;
+1. Pháp Bảo + Phù V2 — **deferred until user resumes it after ordinary equipment work**;
 2. Profession V2 final consolidation;
 3. Living State V2 — Injury / recovery / age / lifespan consequences;
 4. Mood / Loyalty / Needs;
@@ -465,7 +467,7 @@ The following Disciple V2 authorities are design-closed:
 - Chủ Đạo / Đạo Lịch;
 - Combat Skills including Kiếm / Thể / Pháp and Nhân → Tiên → Thần evolution.
 
-Weapon + Equipment V2 **design structure was approved and stored**. Continue unfinished forging/balance/Chân Văn details or move to Phù+Pháp Bảo only when user asks.
+Weapon + Equipment V2 **design structure was approved and stored**. Next design discussion is the Luyện Khí Điện **forge transaction** per `docs/EQUIPMENT_FORGING_UPGRADE_V2_ROADMAP.md`; then follow the agreed nine-item order. Phù/Pháp Bảo are explicitly deferred. No crafting mechanism or numeric values have been locked by that roadmap.
 
 Before proposing Weapon/Equipment rules:
 1. fetch live `main`;

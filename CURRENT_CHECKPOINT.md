@@ -451,22 +451,18 @@ Locked highlights:
 
 No Combat Skills V2 runtime code has been added.
 
-Weapon + Equipment V2 is **PARTIALLY DESIGN LOCKED, NOT IMPLEMENTED**.
+Weapon + Equipment V2 **STRUCTURE DESIGN LOCKED, NOT IMPLEMENTED**.
 
-Canonical matrix authority:
-`docs/WEAPON_EQUIPMENT_V2_REALM_MAP_SET_MATRIX.md`.
+Current canonical design authorities:
+- `docs/WEAPON_EQUIPMENT_V2_SPEC.md` — 10 ordinary item slots, 12 phẩm, ordinary/rare stat/individual Chân Văn 6+2+1.
+- `docs/EQUIPMENT_SETS_V2_SPEC.md` — 18 combat + 6 work sets, 4 item slots per family, cumulative 2/3/4 and both 3-piece bonuses in 3+3.
+- `docs/WEAPON_EQUIPMENT_V2_REALM_MAP_SET_MATRIX.md` — source/map **planning only**; one map has 10 specialty clusters, but the proposed 30-main-map content count has NOT independently been approved.
 
-Locked matrix/framework:
-- existing map law: one map = ten specialty clusters; up to 30 simultaneously hunting disciples/cluster; max party 6;
-- new 30 primary map-to-realm progression matrix, one primary map per each of the 30 realms, ten clusters each (300 baseline clusters), **not** ten maps per realm;
-- each gear realm tier 1..30 aligns to Realm Ladder V2; 12 item quality labels remain separate, not twelve additional realms;
-- 10-slot direction = 5 ordinary gear (weapon/armor/head/footwear/pendant) + 3 talisman + 2 Pháp Bảo; 4 consumables separate;
-- ordinary armor/head/footwear/pendant set bonuses at 2/3 equipped matching pieces; weapon not required; party aura strongest-only;
-- all equipment belongs to Sect; disciples are assignees; earlier P3.7 personal gear title/Contribution confiscation rules superseded;
-- all 30 actual map assets, unique resource IDs, enemy/loot lists, exact set identities/values, final item balance and gameplay coding remain open.
+The old "5 ordinary + 3 Phù + 2 Pháp Bảo = 10" and 2/3-set-only direction is **RETIRED**. All gear is Sect-owned. No new Godot implementation was made.
 
-Current design subject:
-**Weapon + Equipment V2 continued — detailed affix/forge/set balance and full source availability. No implementation authorized.**.
+Next design work is the **forge-to-upgrade pipeline**, not Pháp Bảo/Phù. Detailed plan authority:
+`docs/EQUIPMENT_FORGING_UPGRADE_V2_ROADMAP.md`.
+Approval covers **discussion order only**, not forge/upgrade mechanics, %, rates, level caps or implementation.
 
 ## Legacy design-document cleanup — 2026-10-08
 
@@ -480,3 +476,7 @@ Do not recreate or consult deleted legacy design specs as authority.
 ## Equipment V2 user-approved structure — 2026-10-08 (DESIGN ONLY)
 
 Canonical: `docs/WEAPON_EQUIPMENT_V2_SPEC.md` and `docs/EQUIPMENT_SETS_V2_SPEC.md`. 10 ordinary slots separate from 3 Phù + 2 Pháp Bảo + 4 consumable positions; 12 grades with max 6 normal stat sub-lines + 2 rare specialized stat lines + one individual Chân Văn; 18 combat and six work sets, four authored pieces each in six eligible set positions, cumulative 2/3/4 stat bonuses, legal 3+3 activates both families; 3-generation set identity; all gear 100% Sect-owned. Sets do **not** generate standalone combat mechanics or a Chân Văn Cộng Hưởng. **No new gameplay runtime, gate or PASS**. Gear numerical values, enhancement cap, crafting/refining costs, loot source probabilities and individual Chân Văn catalog remain OPEN. The 30-map content grid is a proposal, not independently approved.
+
+## Equipment V2 forge/upgrade design queue — 2026-10-09
+
+User approved **design order**, beginning with the Luyện Khí Điện forge transaction, followed by enhancement, refine/reroll, quality upgrading, realm-tier upgrading, inheritance/salvage, individual Chân Văn, sources/economy, and mass auto-equip. See `docs/EQUIPMENT_FORGING_UPGRADE_V2_ROADMAP.md`. Pháp Bảo V2 and Phù V2 postponed. **No new design mechanisms or numerical balances were approved and no new implementation phase has started.**

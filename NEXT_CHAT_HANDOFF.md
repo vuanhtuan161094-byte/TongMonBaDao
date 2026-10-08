@@ -1,6 +1,6 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
-Updated: 2026-10-08
+Updated: 2026-10-09
 
 ## Read first
 
@@ -27,7 +27,8 @@ Updated: 2026-10-08
 21. `docs/WEAPON_EQUIPMENT_V2_SPEC.md` — current **10 ordinary slots + 12 grades + 6/2/1 lines + sect-owned**; DESIGN ONLY;
 22. `docs/EQUIPMENT_SETS_V2_SPEC.md` — **24 families, 2/3/4 bonuses and 3+3 coexistence**; DESIGN ONLY;
 23. `docs/WEAPON_EQUIPMENT_V2_REALM_MAP_SET_MATRIX.md` — map/realm source projection only (no older 5-slot/set rules);
-22. current equipment/loadout/crafting code and relevant legacy specs before continuing Weapon + Equipment V2.
+24. `docs/EQUIPMENT_FORGING_UPGRADE_V2_ROADMAP.md` — approved discussion order; **forge mechanics remain OPEN**;
+25. current equipment/loadout/crafting code and relevant legacy specs before continuing Weapon + Equipment V2.
 
 Fetch live `main` before edits.
 Do not ask the user to restate decisions that exist in these authorities.
@@ -141,6 +142,8 @@ This is DESIGN ONLY unless the user explicitly authorizes implementation.
 - **OPEN**: item numerical power, % caps, enhancement cap, cost, crafting/loot/materials, full Chân Văn registry, actual Godot V2 implementation. Earlier provisional +15 is not approved final.
 - 1 map = 10 specialty clusters accepted; **one primary map per each of 30 realms is still a content proposal requiring separate approval**, NOT a final source gate.
 
+**NEXT USER-APPROVED DESIGN PLAN — 2026-10-09:** finish **ordinary gear crafting/upgrade design** in order: (1) Luyện Khí forge-to-warehouse transaction, (2) enhancement, (3) line value refinement and reroll, (4) quality grade 1..12 upgrades, (5) realm item tier and Nhân→Tiên→Thần upgrades, (6) inheritance/salvage, (7) individual Chân Văn, (8) material/loot economy, (9) scalable auto-equipping. Specific numeric/mechanic choices are NOT yet locked. **Pháp Bảo and Phù DEFERRED**, not the immediate next work. Canonical queue: `docs/EQUIPMENT_FORGING_UPGRADE_V2_ROADMAP.md`. Start by explaining/closing ONE full forge order; do not jump into coding.
+
 Before proposing:
 1. read current equipment state and legacy authority;
 2. preserve the existing 10-slot direction unless a concrete contradiction appears;
@@ -173,7 +176,7 @@ The design should explicitly decide:
 ## Remaining design order after Weapon + Equipment
 
 Preferred queue:
-1. Pháp Bảo + Phù V2;
+1. Pháp Bảo + Phù V2 — **DEFERRED by user; not next until ordinary equipment forging/upgrades are designed**;
 2. Profession V2 final consolidation;
 3. Living State V2 — Injury / recovery / age / lifespan;
 4. Mood / Loyalty / Needs;
