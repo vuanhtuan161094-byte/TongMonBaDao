@@ -437,7 +437,7 @@ Combat Stats implementation remains deferred until the design sweep is complete.
 
 ---
 
-# 4. Recruitment / generation relation to this roadmap# 4. Recruitment / generation relation to this roadmap
+# 4. Recruitment / generation relation to this roadmap
 
 Dẫn Tiên ordinary recruitment is already one whole-person generator authority.
 
