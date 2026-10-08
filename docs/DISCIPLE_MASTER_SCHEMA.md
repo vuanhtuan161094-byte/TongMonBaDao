@@ -105,9 +105,9 @@ Reveal/awakening không được reroll identity ẩn.
 | Cảnh giới | generated starting level | Không | Có | tu luyện + đột phá |
 | Tu vi progress | generated nhỏ | Không | Có | tu luyện, chiến đấu, công pháp, buff hợp lệ |
 | Luyện thể | generated/default | Không | Có | 30 đại cảnh ×10 tầng; Căn Cốt controls natural body-XP speed; see `docs/BODY_CULTIVATION_V2_SPEC.md` |
-| Weapon/path mastery (future, if designed) | none by current authority | — | future | not canonical yet; must be explicitly designed before any subsystem consumes it |
-| Công pháp đã học | acquired | Không | Có | học bí tịch, mastery, đổi active |
-| Combat skills | acquired | Không | Có | học/mở khóa |
+| Chủ Đạo / Đạo Lịch | Chưa Định Đạo / acquired history | Không | Có | Kiếm/Thể/Pháp soft active path + branches + lived history; see `docs/CULTIVATION_PATH_V2_SPEC.md` |\n| Weapon mastery (future, if designed) | none by current authority | — | future | not canonical; do not invent unless Weapon V2 explicitly approves it |
+| Công pháp đã học | acquired | Không | Có | library + mastery; active loadout 1 Chủ Tu + 2 Phụ Tu; see `docs/TECHNIQUE_V2_SPEC.md` |
+| Combat skills | acquired | Không | Có | mastery + family/evolution; mature loadout 1 Thường + 4 Active + 6 Combat Passive; see `docs/COMBAT_SKILLS_V2_SPEC.md` |
 | Trang bị | acquired | Không | Có | loot/rèn/mua/equip/lock |
 | Pháp bảo | acquired | Không | Có | tìm/nhận/truyền thừa; mastery riêng sau này |
 | Inventory | runtime | Không | Có | loot/consume/trade |
@@ -428,7 +428,7 @@ Disciple quality, root quality tier, combat power, many UI ratings/suitability s
 9. Ordinary training không được tự biến innate rare identity thành thứ khác; mutation/transformation cần mechanic/resource/event rõ. Physique uses authored Cải/Tái Tạo/Tiến Hóa/Dung Thể.
 10. Item gacha thay đổi character bằng action explicit, không ghi đè lặng lẽ.
 11. Profession, sect rank, work group và combat role là bốn khái niệm khác nhau.
-12. Không fixed class. Current schema does not assume a canonical Kiếm/Thể/Pháp mastery system; any future weapon/path mastery must be explicitly designed before consumers such as Kiếm Cốt may use it.
+12. Không permanent fixed class. V2 uses one active soft Chủ Đạo (Kiếm/Thể/Pháp) plus branch and Đạo Lịch; switching preserves knowledge/mastery/history. Weapon mastery is still not canonical and must not be invented unless Weapon V2 explicitly approves it.
 13. Mỗi layer phải có gameplay consequence thật khi active.
 14. Exact probabilities là balance data có test phân bố; không dùng lore thay cho xác suất.
 15. Trước khi triển khai thêm subsystem nhân vật, cập nhật master schema nếu design thay đổi.
