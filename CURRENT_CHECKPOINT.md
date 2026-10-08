@@ -451,8 +451,22 @@ Locked highlights:
 
 No Combat Skills V2 runtime code has been added.
 
+Weapon + Equipment V2 is **PARTIALLY DESIGN LOCKED, NOT IMPLEMENTED**.
+
+Canonical matrix authority:
+`docs/WEAPON_EQUIPMENT_V2_REALM_MAP_SET_MATRIX.md`.
+
+Locked matrix/framework:
+- existing map law: one map = ten specialty clusters; up to 30 simultaneously hunting disciples/cluster; max party 6;
+- new 30 primary map-to-realm progression matrix, one primary map per each of the 30 realms, ten clusters each (300 baseline clusters), **not** ten maps per realm;
+- each gear realm tier 1..30 aligns to Realm Ladder V2; 12 item quality labels remain separate, not twelve additional realms;
+- 10-slot direction = 5 ordinary gear (weapon/armor/head/footwear/pendant) + 3 talisman + 2 Pháp Bảo; 4 consumables separate;
+- ordinary armor/head/footwear/pendant set bonuses at 2/3 equipped matching pieces; weapon not required; party aura strongest-only;
+- all equipment belongs to Sect; disciples are assignees; earlier P3.7 personal gear title/Contribution confiscation rules superseded;
+- all 30 actual map assets, unique resource IDs, enemy/loot lists, exact set identities/values, final item balance and gameplay coding remain open.
+
 Current design subject:
-**Weapon + Equipment V2**.
+**Weapon + Equipment V2 continued — detailed affix/forge/set balance and full source availability. No implementation authorized.**.
 
 ## Legacy design-document cleanup — 2026-10-08
 
