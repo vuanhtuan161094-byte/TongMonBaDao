@@ -24,7 +24,8 @@ Updated: 2026-10-08
 18. `docs/TECHNIQUE_V2_SPEC.md`
 19. `docs/CULTIVATION_PATH_V2_SPEC.md`
 20. `docs/COMBAT_SKILLS_V2_SPEC.md`
-21. current equipment/loadout/crafting code and relevant legacy specs before designing Weapon + Equipment V2.
+21. `docs/WEAPON_EQUIPMENT_V2_REALM_MAP_SET_MATRIX.md` — newly locked matrix + sets + ownership, design only;
+22. current equipment/loadout/crafting code and relevant legacy specs before continuing Weapon + Equipment V2.
 
 Fetch live `main` before edits.
 Do not ask the user to restate decisions that exist in these authorities.
