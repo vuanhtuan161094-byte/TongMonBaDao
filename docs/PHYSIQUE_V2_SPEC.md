@@ -184,38 +184,45 @@ Filtered channels may target:
 
 # 8. Fifteen base Physiques
 
-## 8.1 Kiếm Cốt — IDENTITY LOCKED, EFFECT BLOCKED
+## 8.1 Kiếm Cốt — IDENTITY LOCKED, EFFECT STILL BLOCKED
 
 Fantasy:
 - a body/bone structure naturally suited to sword use.
 
 **No numeric or combat effect is locked yet.**
 
+Combat Skills V2 now closes the skill-side representation:
+- `style_tag = sword` is a canonical skill-content direction;
+- `weapon_requirement` is separate from style;
+- cast/source/cast-id/hit-index attribution is part of the shared skill contract;
+- AoE and multi-hit belong to one attributed cast;
+- weaponless sword-style content is allowed when its definition explicitly has no sword weapon requirement.
+
 Do NOT assume:
-- Sword Mastery exists;
-- Kiếm Đạo XP exists;
-- sword skills exist as a canonical tag;
-- +Attack/+Crit/+Penetration is automatically appropriate.
+- a generic Sword Mastery stat exists;
+- Đạo Lịch itself gives free combat stats;
+- every sword-style skill requires a physical sword;
+- +Attack/+Crit/+Penetration is automatically the correct Kiếm Cốt effect.
 
-### Blocking dependency — DEP-PHY-01
+### Remaining blocking dependency — DEP-PHY-01-WEAPON
 
-Before Kiếm Cốt effects can be locked, Techniques/Skills/Weapon V2 must decide:
-1. whether weapons have canonical `weapon_type`;
-2. whether `sword` is a real weapon/skill tag;
-3. whether a skill may inherit a weapon tag;
-4. whether weapon-specific mastery exists at all;
-5. cast/hit/crit attribution for weapon-tagged skills;
-6. AoE and multi-hit attribution for one cast;
-7. how weaponless sword techniques are represented, if they exist.
+Weapon + Equipment V2 must still decide:
+1. canonical `weapon_type` values;
+2. what equipping a sword means;
+3. how skill `weapon_requirement = sword` checks the loadout;
+4. whether equipment can modify sword-style skills through explicit tags;
+5. whether weapon-specific mastery exists at all.
 
 **Activation gate:**
-Kiếm Cốt must not be enabled as a revealed/usable gameplay Physique until DEP-PHY-01 is closed and Kiếm Cốt receives at least one real measurable effect.
+Kiếm Cốt must not be enabled as a revealed/usable gameplay Physique until:
+- Weapon V2 closes the remaining dependency; and
+- Kiếm Cốt receives at least one real measurable authored effect.
 
 Its 12% roster weight is reserved design data, not permission to ship it effectless.
 
 ---
 
-## 8.2 Kim Cương Bá Thể
+## 8.2 Kim Cương Bá Thể## 8.2 Kim Cương Bá Thể
 
 Role:
 - raw body durability and long expedition endurance.
