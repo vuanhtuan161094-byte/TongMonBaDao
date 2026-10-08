@@ -9,8 +9,8 @@ Parents:
 This spec locks the next layer requested by the user:
 - scalable personal loadout without full personal inventories;
 - autonomous equipment selection;
-- sect-owned vs disciple-owned gear;
-- Contribution/Spirit Stone economy around gear;
+- all gear Sect-owned; disciples only receive use assignments, per the newer 2026-10-08 user decision;
+- Contribution/Spirit Stone economy around other services (not private equipment title);
 - hunting cultivation reward scaled by realm/challenge;
 - hunting as the main fast-growth path.
 
@@ -51,13 +51,7 @@ The team loadout exists for supplies taken **out** (medicine, pills, talismans, 
 
 ## 2.1 Equipment
 
-Core equipment:
-- 1 Weapon slot;
-- 1 Armor slot.
-
-Future accessories may be added only if they create meaningful build decisions.
-
-Do not add ten generic RPG body slots just for complexity.
+Weapon V2 ordinary equipment = 1 Weapon + 1 Giáp + 1 Mũ + 1 Giày + 1 Ngọc Bội; separate 3 Phù slots + 2 Pháp Bảo slots = **10 equipped slots**; 4 consumable-belt slots are separate. Sets use non-weapon Giáp/Mũ/Giày/Ngọc Bội with 2/3-piece milestones. This is a meaningful ten-slot loadout, not ten generic body armor slots. See `docs/WEAPON_EQUIPMENT_V2_REALM_MAP_SET_MATRIX.md`.
 
 ## 2.2 Talisman slots
 
@@ -132,13 +126,7 @@ Hậu Cần Điện restocks it from sect supplies according to policy.
 
 Disciples must be able to improve themselves without the player manually equipping 1,000 people.
 
-When at sect and allowed by policy, a disciple may search:
-- Sect Exchange / contribution store;
-- sect sale inventory;
-- Phường Thị;
-- future auction;
-- eligible items in the main Sect Warehouse;
-- items offered directly by the Sect Master.
+When at Sect and authorized by policy, a disciple evaluates eligible Sect-owned items from the canonical Sect Warehouse, respecting reserves, item locks and team priorities. The Sect may acquire items through Phường Thị/auction, but disciples do not personally buy or own gear.
 
 AI evaluates items using an **Expected Utility Score**, not raw PL alone.
 
@@ -151,70 +139,23 @@ Score inputs may include:
 - durability;
 - hunting region;
 - existing item;
-- personality/spending habit;
-- price in Contribution/Spirit Stones.
+- personality/risk/survival profile;
+- Sect allocation priorities and upgrade material cost.
 
 AI should avoid constant churn:
 - only replace an item when improvement exceeds a configurable minimum;
-- do not repeatedly buy tiny +1% upgrades;
+- do not repeatedly switch for tiny +1% upgrades;
 - respect locked/manual slots.
 
 ---
 
-# 4. Item ownership states
+# 4. Equipment ownership — all Sect property
 
-Every equippable item must have an explicit ownership state.
+This replaces the obsolete split between Sect-owned/Disciple-owned gear, gift-as-ownership, forced requisition and Contribution compensation.
 
-## 4.1 Sect-owned
+**Every gear instance belongs to the Sect**, whether looted, crafted, externally bought or currently worn by a disciple. Persist item identity, Sect-owned status, `equipped_by` assignee, location, reserve/locks. Assignment is not property title. Sect Master can reassign gear for free; no private gear purchase, gifting title, forced-confiscation economics or Contribution compensation.
 
-The item belongs to the sect.
-
-It may be:
-- stored;
-- loaned to a disciple;
-- assigned by policy;
-- reassigned by the Sect Master.
-
-Reassigning sect-owned gear is normally free.
-
-This is the default for:
-- crafted gear not yet exchanged;
-- most hunting item loot deposited directly into the main Sect Warehouse;
-- equipment explicitly marked as sect property.
-
-## 4.2 Disciple-owned
-
-An item becomes disciple-owned when the disciple:
-- exchanges Contribution Points for it;
-- buys it with personal Spirit Stones;
-- receives it as an explicit personal gift;
-- receives it through a future personal-ownership reward rule.
-
-Disciple-owned items are not ordinary sect stock.
-
-## 4.3 Requisitioning personal property
-
-The Sect Master may still override ownership.
-
-If a disciple-owned item is forcibly removed and given to another disciple:
-- a **Contribution compensation cost** is incurred;
-- the former owner receives compensation/credit according to the item's exchange value;
-- repeated forced requisition may also reduce mood/loyalty if not covered by a favorable policy or relationship.
-
-This implements the user's rule:
-**normal sect-owned reassignment is ordinary; taking a disciple's personally owned item to give to someone else has a Contribution cost.**
-
-Exact compensation ratio is balancing data.
-
-## 4.4 Gift
-
-The Sect Master may gift an item:
-- free to the recipient;
-- item becomes disciple-owned unless explicitly marked as a sect loan.
-
-This distinction must be visible:
-- **Ban tặng** = personal ownership;
-- **Cấp dùng** = sect-owned loan.
+Disciples may auto-equip from Sect allocations when policy permits; Sect can sell/salvage unallocated, unlocked items. Legacy P2.6 `owner_id` means equipped-user mapping for migration only. Specific new authority: `docs/WEAPON_EQUIPMENT_V2_REALM_MAP_SET_MATRIX.md`.
 
 ---
 
@@ -234,7 +175,7 @@ Sources include:
 Hunting should be a strong Contribution source.
 
 Contribution may be spent/exchanged for:
-- equipment;
+- Sect services/priority where explicitly priced, not personal gear title;
 - pills;
 - techniques/manual access;
 - Pháp Bảo;
@@ -543,19 +484,9 @@ Because loot is deposited immediately, ordinary Contribution does not wait for a
 
 ---
 
-# 18. Contribution and loot ownership interaction
+# 18. Contribution and Sect equipment allocation
 
-When hunting generates an item:
-- item is deposited directly into the main Sect Warehouse as sect property;
-- participating hunter(s) receive Contribution credit immediately;
-- a hunter may later exchange Contribution to claim it personally;
-- Sect Master may directly grant it;
-- auto-equipment policy may loan it as sect property.
-
-This cleanly separates:
-- service reward;
-- item ownership;
-- equipment allocation.
+When hunting generates gear, it enters the canonical Sect Warehouse as Sect property. Hunters receive Contribution for service but never gain personal title to gear. Assignment, reserves, locks, reassignment and salvage are governed by Sect policy and Sect Master commands.
 
 ---
 
@@ -565,8 +496,8 @@ A disciple AI may autonomously do:
 
 1. hunt/work;
 2. gain Contribution and/or personal Spirit Stones;
-3. evaluate equipment/Pháp Bảo/talisman upgrades;
-4. exchange/buy if allowed;
+3. evaluate Sect-owned equipment/Pháp Bảo/talisman allocations;
+4. receive or request eligible Sect gear under policy;
 5. rent Secret Chamber;
 6. buy pills;
 7. return stronger;
@@ -574,8 +505,8 @@ A disciple AI may autonomously do:
 
 Sect Master may:
 - lock a slot;
-- gift an item;
-- lend sect gear;
+- assign or reassign Sect gear;
+- reserve/lock a specific item;
 - forbid categories;
 - set spending caps;
 - set role priorities.
@@ -679,11 +610,10 @@ Current P2.6:
 - one talisman.
 
 Future:
-- weapon;
-- armor;
+- weapon, armor, head, footwear, pendant;
 - 3 talisman slots;
 - 2 Pháp Bảo slots;
-- personal ownership state.
+- **Sect-owned gear only**, with equipped user and reserves/locks.
 
 Old talisman becomes Talisman slot 1.
 
@@ -721,9 +651,9 @@ Current P2.1 fixed gains remain untouched until the P3.7 hunting reward authorit
 4. Techniques: one Main + up to two Auxiliary techniques; learned library may be larger.
 5. Consumables are a small loadout, not storage.
 6. Disciples autonomously seek upgrades compatible with role/build.
-7. Sect Master can gift, loan, lock or override.
-8. Sect-owned items may be reassigned normally.
-9. Disciple-owned items require Contribution compensation when forcibly requisitioned.
+7. Sect Master can assign/reassign, lock/reserve or override loadout gear.
+8. All equipment remains Sect-owned regardless of current wearer.
+9. No personal equipment title, gear purchase, forced confiscation fee or Contribution compensation.
 10. Hunting grants strong Contribution and may directly drop Spirit Stones.
 11. Hunting item/material loot is deposited directly into the main Sect Warehouse; hunter gets Contribution credit immediately.
 12. Hunting cultivation reward scales against the disciple's CURRENT stage requirement.
