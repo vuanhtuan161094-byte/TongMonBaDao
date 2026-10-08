@@ -648,10 +648,18 @@ Kiếm Cốt remains effect-blocked because Weapon + Equipment V2 still needs to
 
 Do not enable Kiếm Cốt effectless.
 
-# 18. Next design subject
+# 18. Weapon + Equipment V2 matrix — PARTIAL DESIGN LOCK (2026-10-08)
+
+Canonical detail: `docs/WEAPON_EQUIPMENT_V2_REALM_MAP_SET_MATRIX.md`.
+
+Locked map law recalled from prior user decision: **one map has 10 clusters**, max 30 concurrently hunting disciples per cluster, max 6 per party; not 10 separate maps per realm. New extension: 30 primary progression maps keyed to 30 realm indices, 10 clusters each (300 baseline authored clusters). Gear uses matching realm index 1..30 and independent 12 quality names, no parallel Phẩm Lực.
+
+10 equipped slots: 5 ordinary (weapon, armor, head, footwear, pendant), 3 Phù and 2 Pháp Bảo; consumable belt is separate. Set bonuses on eligible non-weapon gear: 2-piece + 3-piece, with permitted 2+2 or 3+1 loadout, strongest-only party aura. **All equipment is owned by Sect only**; disciples are users/assignees. No personal gear ownership, compensation or private gear purchase. Actual 300 cluster content, numerical affix/set balance, crafting recipes and gameplay implementation remain open.
+
+# 19. Next design subject
 
 Next default design subject:
-**Weapon + Equipment V2**
+**Weapon + Equipment V2 (continue detailed content/affixes/sets and balance)**
 
 Then preferred queue:
 1. Pháp Bảo + Phù V2;
