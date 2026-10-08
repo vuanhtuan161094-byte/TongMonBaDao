@@ -1,7 +1,7 @@
 # DISCIPLE V2 ROADMAP — TÔNG MÔN BÁ ĐẠO
 
 Status: DESIGN ROADMAP — NOT AN IMPLEMENTATION STATUS LOG  
-Updated: 2026-10-07
+Updated: 2026-10-08
 
 Read with:
 - `docs/DISCIPLE_MASTER_SCHEMA.md`
@@ -59,11 +59,11 @@ No subsystem may silently introduce a permanent hard cap that contradicts this f
 
 | Layer | Purpose | Status |
 |---|---|---|
-| Cultivation / Realm | Tu Vi, realm, breakthrough | Existing legacy; V2 rules partly locked, migration needed later |
+| Cultivation / Realm | Tu Vi, realm, breakthrough | **FULL V2 DESIGN LOCKED — NOT IMPLEMENTED** |
 | Body Training / Luyện Thể | body XP/progression and permanent physical growth | Needs full V2 authority |
-| Technique learning | learn techniques, mastery, active paths | Existing partial |
-| Combat skills | learned skills / mastery | Existing partial |
-| Path history | Kiếm / Thể / Pháp identity from actual progression | Existing partial |
+| Technique learning | learn techniques, mastery, active loadout | **FULL V2 DESIGN LOCKED — NOT IMPLEMENTED** |
+| Combat skills | learned skills / mastery / loadout / AI | **FULL V2 DESIGN LOCKED — NOT IMPLEMENTED** |
+| Path history | active Chủ Đạo / branch / Đạo Lịch | **FULL V2 DESIGN LOCKED — NOT IMPLEMENTED** |
 | Profession XP | herbalism/mining/forging/alchemy/logistics/etc | Existing partial |
 | Equipment | 10-slot equipment/loadout authority | Existing |
 | Pháp Bảo / inheritance | long-term rare equipment/mastery layer | Future |
@@ -313,41 +313,131 @@ Open future content:
 - per-type latent reveal triggers;
 - runtime implementation.
 
-## Then: Cultivation + Breakthrough V2
+## Cultivation + Breakthrough V2 — DESIGN CLOSED
 
-Migrate legacy cultivation to the user-approved simple rules while preserving deterministic runtime.
+Canonical authority:
+`docs/CULTIVATION_BREAKTHROUGH_V2_SPEC.md`
 
-## Then: Techniques / skills / mastery V2
+Locked:
+- 30×10 Tu Vi ladder consumption;
+- minor floors auto-advance without RNG;
+- only major-realm transitions use breakthrough chance;
+- default failure loses 10% gate requirement;
+- same-gate failure gives +5 percentage points next attempt;
+- max 3 breakthrough consumables;
+- auto-breakthrough support;
+- no generic HP/Stamina/cooldown consequence;
+- no generic Tư Chất/Căn Cốt/Cơ Duyên/Root/Physique breakthrough chance;
+- Tích Tu / Hậu Tích, Hồng Trần Luyện Tâm and Đại Khí Vãn Thành contracts.
 
-Thong Tuệ must be the common learning/mastery input.
-No fixed class.
+Implementation remains future work.
 
-## Then: Combat Stats V2 implementation/integration
+## Công Pháp V2 — DESIGN CLOSED
 
-The registry and semantics are already DESIGN LOCKED in:
-`docs/COMBAT_STATS_V2_SPEC.md`
+Canonical authority:
+`docs/TECHNIQUE_V2_SPEC.md`
 
-This later phase is implementation work:
-- replace old shallow `combat_power` authority;
-- connect final Realm/Luyện Thể ATK/DEF/HP curves;
-- implement derived stat calculation/cache;
-- wire skills/equipment/Root/Trait/Bloodline/Physique into canonical channels;
-- derive Combat Rating only as a UI estimate.
+Locked:
+- Công Pháp and Kỹ Năng are separate;
+- 1 Chủ Tu + 2 Phụ Tu active;
+- learned inactive techniques keep mastery/history but ordinary effects are inactive;
+- first archived full manual unlocks Sect transmission;
+- personal mastery Sơ Học → Nhập Môn → Tiểu Thành → Đại Thành → Viên Mãn;
+- Sect Nghiên Tu separate from personal mastery;
+- authored Diễn Hóa successors/branches;
+- personal discovery + Khắc Lục;
+- technique-skill relation = independent / synergy / prerequisite.
 
-## Then: Profession / life / social expansion
+Implementation remains future work.
 
-Finish:
-- profession content breadth;
-- relationships;
-- Dao Companion;
-- sư đồ;
-- loyalty/mood/injury;
-- long-life/Ma-Hồn/revival interaction;
-- large-roster policy tools.
+## Chủ Đạo / Cultivation Path V2 — DESIGN CLOSED
+
+Canonical authority:
+`docs/CULTIVATION_PATH_V2_SPEC.md`
+
+Locked:
+- Chưa Định Đạo → Kiếm / Thể / Pháp;
+- branches Ngự/Sát/Hộ, Bá/Kim Cương/Huyết, Ngũ Hành/Y Đạo/Huyền Pháp;
+- no class level;
+- no generic class-stat growth;
+- Đạo Lịch is lived history, not a generic stat multiplier;
+- deterministic Định Đạo / Diễn Đạo;
+- path/branch switching preserves knowledge/mastery/history;
+- only one active path/branch.
+
+Implementation remains future work.
+
+## Kỹ Năng Chiến Đấu V2 — DESIGN CLOSED
+
+Canonical authority:
+`docs/COMBAT_SKILLS_V2_SPEC.md`
+
+Locked:
+- mature loadout = 1 Thường + 4 Active + 6 Combat Passive;
+- slots open gradually through Nhân Giới;
+- three skill waves: Nhân foundation → Tiên evolution → Thần evolution;
+- skill families use named successors, not +level feeding;
+- mastery has five milestones and valid-use anti-farm;
+- Tu Vi / Luyện Thể / Hybrid skill basis;
+- simple priority AI 1→4 plus per-skill validity;
+- simple combat-distance profiles;
+- cooldown/cast/projectile/ICD separation;
+- explicit buff/debuff/shield stacking;
+- Nhân/Tiên/Thần effect tier for hard control/cleanse/dispel/rule effects;
+- Ngũ Hành + Tương Sinh skill framework;
+- party max 6, cluster max 30;
+- 0 HP = Bị Hạ;
+- monsters/bosses share the same combat primitives;
+- Kiếm/Thể/Pháp base languages and branches are closed.
+
+Implementation remains future work.
+
+## Next design: Weapon + Equipment V2
+
+This is the next default design subject.
+
+It must consume, not rewrite:
+- Combat Stats V2;
+- Combat Skills V2 style/weapon contracts;
+- the existing 10-slot equipment authority;
+- canonical Resource/Warehouse and hunting/crafting loops.
+
+Primary goals:
+- canonical weapon types;
+- equip legality and weapon requirements;
+- 10-slot V2 equipment model;
+- item grade/realm/quality semantics;
+- main/sub stats and canonical modifier channels;
+- elemental equipment;
+- enhancement/refining/forging direction;
+- set policy if any;
+- durability decision;
+- loot/crafting/trade sources;
+- Nhân/Tiên/Thần equipment progression;
+- close the remaining Weapon half of Kiếm Cốt dependency.
+
+Do not design a separate weapon mastery unless explicitly justified and approved.
+
+## After Weapon + Equipment V2
+
+Preferred design order:
+1. Pháp Bảo + Phù V2;
+2. Profession V2 final consolidation;
+3. Living State V2 — Injury / recovery / age / lifespan consequences;
+4. Mood / Loyalty / Needs;
+5. Personality + autonomy + goals/memories;
+6. Relationships / social V2;
+7. Sư đồ / Đạo lữ / organization roles;
+8. Family/inheritance if enabled;
+9. Whole Disciple Generation V2 final assembly;
+10. whole-disciple contradiction/dead-stat audit;
+11. implementation dependency plan.
+
+Combat Stats implementation remains deferred until the design sweep is complete.
 
 ---
 
-# 4. Recruitment / generation relation to this roadmap
+# 4. Recruitment / generation relation to this roadmap# 4. Recruitment / generation relation to this roadmap
 
 Dẫn Tiên ordinary recruitment is already one whole-person generator authority.
 
@@ -381,20 +471,30 @@ Do not reintroduce:
 
 # 6. Next-chat instruction
 
-Spiritual Root V2, Combat Stats V2, Characteristic Framework V2, Traits V2, Mệnh Cách V2 and Huyết Mạch V2 are design-closed.
+The following Disciple V2 authorities are design-closed:
+- Spiritual Root / Dị Linh Căn;
+- Combat Stats;
+- Characteristic Framework;
+- Traits;
+- Mệnh Cách;
+- Bloodline;
+- Realm Ladder + Luyện Thể core;
+- Physique base;
+- Cultivation + Breakthrough;
+- Công Pháp;
+- Chủ Đạo / Đạo Lịch;
+- Combat Skills including Kiếm / Thể / Pháp and Nhân → Tiên → Thần evolution.
 
-The next default design conversation should start with:
-**Cultivation + Breakthrough V2**
+The next default design conversation is:
+**Weapon + Equipment V2**
 
-Before proposing rules:
-1. preserve all locked Disciple V2 authorities;
-2. read `docs/REALM_LADDER_V2_SPEC.md`;
-3. read current cultivation runtime/specs;
-4. preserve the already-approved breakthrough laws;
-5. do not silently create a weapon/path mastery system while discussing cultivation.
+Before proposing Weapon/Equipment rules:
+1. fetch live `main`;
+2. read `AGENTS.md`, `CURRENT_CHECKPOINT.md`, `NEXT_CHAT_HANDOFF.md`;
+3. read this roadmap and the four newly closed authorities;
+4. read current equipment/loadout code/specs;
+5. preserve the existing 10-slot equipment direction unless a concrete contradiction is found;
+6. close the remaining Weapon side of the Kiếm Cốt dependency;
+7. do not implement unless the user explicitly starts an implementation phase.
 
-Physique V2 is base-design closed.
-Its Kiếm Cốt effect debt belongs to future Techniques / Skills / Weapon V2 and is explicitly recorded in `docs/PHYSIQUE_V2_SPEC.md`.
-
-Do not reopen a locked V2 subsystem unless a concrete contradiction is discovered or the user explicitly changes it.
-Do not implement any design-locked V2 subsystem until the user explicitly starts an implementation phase.
+Do not reopen a locked V2 subsystem without a concrete contradiction or explicit user change.
