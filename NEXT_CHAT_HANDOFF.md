@@ -131,6 +131,8 @@ Do not enable Kiếm Cốt effectless.
 
 This is DESIGN ONLY unless the user explicitly authorizes implementation.
 
+**New partial design lock 2026-10-08:** read `docs/WEAPON_EQUIPMENT_V2_REALM_MAP_SET_MATRIX.md` first. The user-confirmed prior map law is **1 map = 10 specialty clusters**, max 30 active disciples/cluster, party max 6. The new V2 matrix assigns **one primary map per realm across 30 realms**, 10 clusters/map (300 baseline clusters); this is **not ten maps per realm**. Set direction is 2/3 matching non-weapon pieces among armor/head/footwear/pendant; ownership is **100% Sect**, contrary to superseded old P3.7 private-gear language. Matrix only is locked; full Weapon V2 detailed content, recipes, set/affix numeric balance are still open.
+
 Before proposing:
 1. read current equipment state and legacy authority;
 2. preserve the existing 10-slot direction unless a concrete contradiction appears;
