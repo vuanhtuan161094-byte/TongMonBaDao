@@ -1128,6 +1128,270 @@ Migration must preserve old learned-skill identity/history where possible.
 
 ---
 
+# 38.1 Deterministic target selection
+
+When several targets are equally valid under a skill rule, selection must be deterministic.
+
+Examples of target selectors:
+- nearest;
+- lowest HP ratio;
+- highest Attack;
+- most relevant removable debuffs;
+- most stacks of an authored mark.
+
+If the selector produces a tie:
+- use stable actor/target ID as the final tie-break by default.
+
+Do not use meaningless random target choice unless randomness is explicitly part of the skill.
+
+---
+
+# 38.2 Projectile resolution
+
+Projectile combat is event-based rather than frame-perfect collision simulation.
+
+Conceptual flow:
+- cast commit;
+- launch event;
+- travel delay;
+- scheduled hit resolution.
+
+A target may:
+- die before impact;
+- receive another effect before impact;
+- move according to simulation rules.
+
+The viewed map must not alter authoritative outcome compared with offscreen simulation.
+
+---
+
+# 38.3 Summon / clone reservation
+
+The skill architecture may reserve a future:
+- summon;
+- clone;
+- pet-owned combat-effect tag.
+
+However Starter Skills V2 does **not** enable general combat summons yet.
+
+Before summons become active, a dedicated contract must define:
+- ownership;
+- HP/lifetime;
+- target selection;
+- kill attribution;
+- proc attribution;
+- reward/mastery attribution;
+- save/runtime behavior;
+- large-roster performance.
+
+Do not hide an unbounded second actor system inside an ordinary skill.
+
+Pháp Thân-style transformations remain a state on the original actor unless future content explicitly says otherwise.
+
+---
+
+# 38.4 Revive guardrails
+
+Ordinary healing cannot revive a Bị-Hạ actor.
+
+A future explicit revive skill may exist, especially high-generation Y Đạo content.
+
+A revive must declare:
+- effect tier;
+- target eligibility;
+- HP restored;
+- cast time;
+- cooldown/encounter limit;
+- interruption behavior;
+- whether it is one-per-caster or one-per-party/encounter.
+
+Default high-level direction:
+- revive is rare;
+- it does not reset the revived actor's cooldowns;
+- multiple Y Đạo disciples must not create an infinite revive loop;
+- it does not imply permanent-death reversal because permanent death is not current combat authority.
+
+---
+
+# 38.5 Representative passive catalogue preserved from design
+
+These names/effects preserve the approved class-design direction.
+Exact numbers remain balance data.
+
+## Kiếm candidates
+
+Static/self families:
+- Kiếm Tâm Sơ Thành → later sword-mind successors;
+- sword-skill effect/mastery identity without creating a separate universal Sword Mastery stat.
+
+Combat-passive candidates:
+- Truy Kích — kill may improve the next meaningful chase/mobility opportunity;
+- Phản Kiếm — eligible close hit may trigger a counter under ICD;
+- Phá Thế — improves pressure against valid weakened-defense states;
+- Kiếm Trận Cộng Minh — party sword synergy, strongest-only rather than sixfold stacking.
+
+## Thể candidates
+
+Static/self families:
+- Thiết Cốt → Huyền Thiết Cốt → Kim Cương Cốt;
+- Khí Huyết Hùng Hậu;
+- Cường Gân Trấn Cốt;
+- Huyết Nhục Tự Sinh.
+
+Combat-passive candidates:
+- Phản Chấn — reflected damage cannot crit/proc/reflect recursively by default;
+- Bất Khuất — low-HP defensive trigger with bounded encounter/ICD behavior;
+- Hộ Chủ — conditional party protection with cooldown;
+- Huyết Khí Cổ Vũ — party aura using strongest-only family rules.
+
+## Pháp candidates
+
+Static/self families:
+- Pháp Mạch Thông Suốt;
+- Tĩnh Tâm Thủ Nhất;
+- Ngũ Hành Tương Hợp.
+
+Combat-passive candidates:
+- Pháp Thuẫn Tự Hộ — low-HP shield trigger;
+- Diệu Thủ Hồi Xuân — effective-heal trigger, not overheal spam;
+- Linh Quang Dư Âm — party-buff follow-up;
+- Ngũ Hành Tương Sinh — personal authored element-chain bonus;
+- Y Tâm Đồng Hành — emergency-support follow-up.
+
+A successor in one passive family replaces the predecessor as active effect source where the family says so.
+
+---
+
+# 38.6 Representative active-family catalogue preserved from design
+
+Names below preserve current authored direction.
+Exact coefficients/cooldowns/realm floors/max-target values are **not locked balance** unless separately specified later.
+
+## Kiếm
+
+Foundational Nhân families:
+- Kiếm Kích — ordinary basic sword action;
+- Thanh Phong Trảm — fast single target;
+- Hoành Tảo Kiếm — early frontal AoE;
+- Ngự Kiếm Dẫn — Tu-Vi-leaning ranged sword action;
+- Phá Giáp Kiếm — shared Defense-debuff setup;
+- Hộ Kiếm Thức — protection;
+- Truy Phong Bộ — optional chase/reposition, not mandatory rotation.
+
+Elemental identities:
+- Kim Phong Thứ — hard-target penetration;
+- Thanh Mộc Kiếm — personal sustain;
+- Lưu Thủy Kiếm — tempo/rotation;
+- Liệt Hỏa Kiếm — Burn pressure;
+- Trấn Sơn Kiếm — suppression/defensive exchange.
+
+Long-form family direction:
+- Nhất Kiếm family — single target / boss;
+- Quần Kiếm family — arc/line/area progression;
+- Ngự Kiếm family — one sword → multiple swords → formation-scale control;
+- Phá Quân family — setup/exploitation of Defense/Shield weakness;
+- Hộ Kiếm family — self/ally/party protection;
+- Phản Kiếm family — counter;
+- Ngũ Hành sword families;
+- Kiếm Trận / Kiếm Vực descendants.
+
+Late generations must add more than raw damage:
+- Tiên: larger geometry, multi-sword/formation/zone effects;
+- Thần: bounded law/rule interaction.
+
+## Thể
+
+Foundational Nhân families:
+- Quyền Cước — basic body action;
+- Chấn Sơn Quyền — heavy single target + stagger;
+- Hoành Tảo Cước — early AoE;
+- Hộ Thể — temporary survival;
+- Thiết Sơn Kháo — optional charge/stagger;
+- Phá Cương Chưởng — hard Defense/guard break;
+- Địa Chấn Cước — local AoE control;
+- Bất Động Thân — strong defense/control resistance with movement tradeoff;
+- Huyết Chiến — real lost-HP risk/reward.
+
+Elemental identities:
+- Kim Cương Chỉ — focused penetration;
+- Thanh Mộc Kình — sustain;
+- Lưu Thủy Kình — flow/redirection/rotation;
+- Liệt Huyết Quyền — Hỏa pressure/Nhiệt Huyết;
+- Trấn Sơn Chưởng — suppression/defense.
+
+Long-form family direction:
+- Trọng Quyền;
+- Chấn Địa;
+- Phá Cương;
+- Kim Cương Hộ Thể;
+- Phản Chấn;
+- Hộ Chủ;
+- Huyết Chiến;
+- Ngũ Hành Thể;
+- Pháp Thân;
+- Chiến Vực/Uy Áp;
+- Thần Lực / late body-law descendants.
+
+Pháp Thân is not a summon by default.
+
+## Pháp
+
+Foundational Nhân families:
+- Linh Khí Đạn — neutral ranged basic;
+- Linh Bạo Thuật — basic AoE;
+- Kim Mang Chỉ — single-target penetration;
+- Hồi Xuân Thuật — heal + Sinh Cơ;
+- Hàn Sương Ấn — Water slow/control foundation;
+- Hỏa Cầu — direct + Burn setup;
+- Liệt Diễm — Hỏa AoE/payoff;
+- Thổ Linh Thuẫn — shield;
+- Định Thân Ấn — control;
+- Suy Linh Chú — debuff;
+- Linh Quang Gia Trì — party buff;
+- Thanh Tâm Chú — cleanse;
+- Tán Linh Chú — enemy-buff dispel;
+- Hộ Mệnh Thuật — emergency support.
+
+Long-form family direction:
+- Kim penetration;
+- Hỏa DoT/burst;
+- Thủy tempo/control;
+- Mộc healing/sustain;
+- Thổ shield/suppression;
+- control/sealing;
+- debuff;
+- cleanse;
+- dispel;
+- party buff;
+- emergency save;
+- Pháp Trận / late local-rule zone.
+
+Băng Dị Căn may branch Water control families into true Ice descendants rather than silently converting every Water spell.
+
+---
+
+# 38.7 Long-form content budget — TARGET, NOT HARD LOCK
+
+For 30 realms, a class should not survive on 10–15 total skill definitions, but it also does not need hundreds of unrelated buttons.
+
+Current content-authoring target per base path:
+- roughly 12–15 major active/passive families;
+- roughly 3–5 authored generations/branches per long-lived family where appropriate;
+- approximately 40–60 active definitions over the full Nhân/Tiên/Thần span;
+- approximately 20–30 passive definitions.
+
+These are planning targets only, not immutable numeric requirements.
+
+A single disciple learns/equips only a subset.
+
+The purpose is to preserve:
+- recognizable skill history;
+- meaningful evolution;
+- sufficient late-game variety;
+- manageable authoring and balancing.
+
+---
+
 # 39. Locked summary
 
 1. 1 Thường + 4 Active + 6 Combat Passive final loadout.
