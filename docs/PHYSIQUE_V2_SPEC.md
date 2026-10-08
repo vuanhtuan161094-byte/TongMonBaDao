@@ -12,12 +12,12 @@ Parents:
 - `docs/REALM_LADDER_V2_SPEC.md`
 - `docs/BODY_CULTIVATION_V2_SPEC.md`
 
-Legacy compatibility source:
-- `docs/P2_12_PHYSIQUE_SPEC.md`
+Legacy runtime compatibility source:
 - `godot/src/simulation/physique/physique_system.gd`
 
-This document supersedes P2.12 as the design authority for future Thể Chất gameplay.
-P2.12 remains regression/save-migration compatibility only until an explicit V2 implementation phase replaces it.
+The old P2.12 design document has been removed.
+This file is the sole design authority for future Thể Chất gameplay.
+Legacy runtime remains only for regression/save migration until an explicit V2 implementation phase replaces it.
 
 No gameplay implementation is authorized by this design lock.
 
