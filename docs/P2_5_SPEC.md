@@ -2,6 +2,9 @@
 
 Status: IMPLEMENTED / AWAITING RUNTIME GATE
 
+> **V2 authority note (2026-10-08):** This file remains historical/runtime compatibility authority for P2.5. Future combat-skill/loadout/mastery/AI design is superseded by `docs/COMBAT_SKILLS_V2_SPEC.md`. The P2.5 starter library and “all learned skills eligible” model are not final V2 authority.
+
+
 ## Purpose
 
 P2.5 replaces the P2.4-era abstract hit-trading loop with a deterministic real-time combat simulation when P2.5 is explicitly enabled.
