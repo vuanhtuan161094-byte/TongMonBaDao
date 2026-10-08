@@ -1,6 +1,6 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
-Updated: 2026-10-07
+Updated: 2026-10-08
 
 ## Read first
 
@@ -20,10 +20,14 @@ Updated: 2026-10-07
 14. `docs/REALM_LADDER_V2_SPEC.md`
 15. `docs/BODY_CULTIVATION_V2_SPEC.md`
 16. `docs/PHYSIQUE_V2_SPEC.md`
-17. live character/cultivation/combat code before proposing the next disciple design.
+17. `docs/CULTIVATION_BREAKTHROUGH_V2_SPEC.md`
+18. `docs/TECHNIQUE_V2_SPEC.md`
+19. `docs/CULTIVATION_PATH_V2_SPEC.md`
+20. `docs/COMBAT_SKILLS_V2_SPEC.md`
+21. current equipment/loadout/crafting code and relevant legacy specs before designing Weapon + Equipment V2.
 
 Fetch live `main` before edits.
-Do not ask the user to restate completed lục-duy or Dẫn Tiên decisions.
+Do not ask the user to restate decisions that exist in these authorities.
 
 ---
 
@@ -31,272 +35,143 @@ Do not ask the user to restate completed lục-duy or Dẫn Tiên decisions.
 
 **No implementation phase is active.**
 
-P3.7C1 — Open-point Lục Duy + Dẫn Tiên Đài is closed.
+The last backend-closed implementation remains:
+P3.7C1 — Open-point Lục Duy + Dẫn Tiên Đài.
 
-Official Godot 4.7.2 closing evidence:
-- workflow: `P3.7 Backend`;
-- run **#75**;
-- run id `37491065054`;
-- job id `112363619374`;
-- tested SHA `948997f3d101fcd23361cd318ffa130ae97f7e77`;
-- focused C1 gate: PASS;
-- full cumulative P0 -> P2.12 -> P3.7A1 -> A2R -> B1 -> C1: PASS.
+Godot 4.7.2 CI closing evidence remains recorded in `CURRENT_CHECKPOINT.md`.
 
-This is CI evidence, not Windows evidence.
+All V2 systems named below are design authorities only unless the checkpoint explicitly says otherwise.
 
 ---
 
-## Completed six-foundation law
+## Disciple V2 design status
 
-Canonical lục duy:
-- Tư Chất;
-- Căn Cốt;
-- Cơ Duyên;
-- Thông Tuệ;
-- Mị Lực;
-- Tiềm Lực.
+Design-closed:
+- Spiritual Root / Ngũ Hành / Dị Linh Căn;
+- Combat Stats;
+- Disciple Characteristic Framework;
+- Traits;
+- Mệnh Cách;
+- Bloodline;
+- Realm Ladder;
+- Luyện Thể core + Expedition Stamina;
+- Physique base;
+- Cultivation + Breakthrough;
+- Công Pháp;
+- Chủ Đạo / Đạo Lịch;
+- Combat Skills;
+- Kiếm Tu / Thể Tu / Pháp Tu combat language;
+- three-wave Nhân → Tiên → Thần skill evolution.
 
-Locked:
-- no permanent hard cap;
-- birth rolls Total Birth Lục Duy first;
-- ordinary birth distribution ≈ 0.5x–3x six-stat average;
-- rare Mệnh Cách/content may break that birth envelope;
-- after birth values grow independently;
-- immutable birth snapshot is preserved;
-- current Disciple Quality derives from current permanent total and can promote;
-- same-channel percentage bonuses add on base rather than chain-multiply;
-- exact +X items stay exactly +X.
-
-Current balance constants:
-- 1 Tư Chất = +0.25% natural/base cultivation;
-- 1 Căn Cốt = +0.20% body-training XP;
-- 1 Thông Tuệ = +0.15% learning/mastery XP;
-- 1 Tiềm Lực = +0.05% future Realm+Body ATK/DEF/HP growth;
-- for UI readability think per 100 points as **25% / 20% / 15% / 5%**; do not cosmetically round the backend values.
-
-Cơ Duyên:
-`RNG(0..9999) + Cơ Duyên - difficulty`, tiers 6000/8500/9500/9900.
-
-Mị Lực:
-general Social Score + Dẫn Tiên-specific authority.
+Do not reopen those systems unless:
+- a concrete contradiction is discovered; or
+- the user explicitly changes a decision.
 
 ---
 
-## Long-term disciple fantasy
+## Key new skill/path laws to preserve
 
-This is not a disposable-character game.
+### Công Pháp
+- 1 Chủ Tu + 2 Phụ Tu active;
+- inactive learned techniques keep mastery/history but ordinary effects are inactive;
+- Tàng Kinh Các transmission is permanent after first archived full manual;
+- personal mastery and Sect Nghiên Tu are separate;
+- Diễn Hóa creates authored named successors.
 
-The player may keep one disciple forever and eventually make them absurdly strong/full-everything through enough investment.
+### Chủ Đạo
+- Chưa Định Đạo → Kiếm / Thể / Pháp;
+- no class level;
+- no generic class-stat growth;
+- Đạo Lịch is lived history, not a free stat multiplier;
+- active branches:
+  - Kiếm: Ngự / Sát / Hộ;
+  - Thể: Bá / Kim Cương / Huyết;
+  - Pháp: Ngũ Hành / Y Đạo / Huyền Pháp;
+- switching preserves learned content/mastery/history.
 
-Therefore:
-- birth changes starting advantage and resource/time cost, not universal final ceiling;
-- every major growth axis should eventually have an explicit permanent improvement route;
-- toolman/specialist strategies are allowed;
-- huge stats should remain meaningfully useful;
-- do not add generic diminishing returns merely to suppress power;
-- content-specific limits are allowed when explicit, but must not become hidden global stat caps.
+### Combat Skills
+- mature loadout = 1 Thường + 4 Active + 6 Combat Passive;
+- static self passives do not require combat slots;
+- triggered/party passives do;
+- Nhân Giới learns/opens the full foundational combat language;
+- Tiên Giới evolves those families;
+- Thần Giới evolves them again with bounded rule-changing effects;
+- skill family successor replaces predecessor as active family source;
+- skill basis = Tu Vi / Luyện Thể / Hybrid;
+- AI = priority 1→4 + skill-specific validity;
+- movement uses simple range profiles;
+- no universal Mana/Rage/Kiếm Ý resource;
+- Ngũ Hành and Tương Sinh are shared skill layers;
+- effect tiers Nhân/Tiên/Thần protect control/cleanse/dispel/rule-changing interactions;
+- party max 6;
+- cluster max 30;
+- 0 HP = Bị Hạ;
+- monsters/bosses share the same combat primitives.
 
----
+### Kiếm Cốt dependency
+Combat Skills V2 has now defined:
+- sword style tag direction;
+- weapon requirement separation;
+- cast/source/hit attribution.
 
-## Dẫn Tiên result to preserve
+Kiếm Cốt is **still blocked** until Weapon + Equipment V2 defines:
+- canonical weapon types;
+- sword equip semantics;
+- weapon-requirement checks;
+- whether any weapon mastery exists.
 
-Dẫn Tiên Đài:
-- Lv1–100;
-- one Main Guide affects quality;
-- assistants affect quantity only;
-- quality odds saturate at current table: max Nghịch Thiên 5%, Tuyệt Luân 15%;
-- raw Mị Lực itself is **not capped**;
-- enhanced Nghịch Thiên allowance = `ceil(Main Mị Lực / 625)`;
-- 2,500 -> 4/day; 5,000 -> 8/day; 10,000 -> 16/day;
-- after allowance is consumed, quality rates return to normal until next day;
-- normal-rate Nghịch Thiên may still appear;
-- counter advances on appearance;
-- daily snapshot blocks guide-swap reset;
-- assistants: +1 arrival/day per 500 Mị Lực, no raw Mị Lực cap;
-- base arrivals = `5 + 3 × floor(level/10)`: Lv1=5/day, Lv100=35/day;
-- guide slots = 1 at Lv1, +1 at Lv20/40/60/80/100;
-- Chiêu Mộ Lệnh uses the same pool and daily authority.
-
-Premium-currency direction:
-- no canonical Tiên Ngọc/Tiên Ngọc Khóa wallet yet;
-- future ordinary premium spending should buy limited Chiêu Mộ Lệnh through an explicit shop/rule;
-- it must not bypass Dẫn Tiên odds/allowance;
-- future limited/named banners are separate explicit content.
-
----
-
-## Future rules already agreed but not implemented
-
-### Pill satiety
-- one satiety system;
-- character has base capacity;
-- resets daily;
-- each pill defines its own satiety cost;
-- no automatic satiety by vague rarity category;
-- fixed-value pill rewards remain fixed.
-
-### Breakthrough V2
-- failure loses 10% of the Tu Vi/EXP requirement;
-- each failure adds +5 percentage points to the next attempt;
-- breakthrough pills/items may raise success chance;
-- max 3 breakthrough-boosting pills per attempt.
-
-Do not claim these are already implemented.
+Do not enable Kiếm Cốt effectless.
 
 ---
 
-## Reference lessons to keep from 《最强祖师》
+## Current design subject
 
-Use as inspiration, not copying:
-- six foundations should have genuinely different jobs;
-- quality summarizes the person but does not define all value;
-- high Wisdom/Charm/Fortune specialists can be strategically excellent;
-- character development continues after recruitment;
-- content-specific thresholds are better than global final caps;
-- physiques/traits should change rules, tradeoffs or paths, not all be flat Attack;
-- whole-person generation is more interesting than one rarity roll;
-- five-element roots and mutation-root ideas are worth evaluating next;
-- realtime combat must not blindly copy turn-based speed/balance.
+# Weapon + Equipment V2
 
-Never copy its assets/text/icons/map.
+This is DESIGN ONLY unless the user explicitly authorizes implementation.
+
+Before proposing:
+1. read current equipment state and legacy authority;
+2. preserve the existing 10-slot direction unless a concrete contradiction appears;
+3. consume Combat Stats V2 channels rather than invent parallel stats;
+4. consume Combat Skills V2 `style_tag` / `weapon_requirement` contract;
+5. close the remaining Weapon half of Kiếm Cốt dependency;
+6. preserve canonical warehouse/hunting/crafting authorities;
+7. do not create weapon mastery merely because another game has it.
+
+The design should explicitly decide:
+- weapon types for Kiếm / Thể / Pháp and weaponless cases;
+- 10 equipment slots and equip legality;
+- grade / realm / rarity / quality semantics;
+- base stats and substats;
+- enhancement / refinement / forging;
+- elemental equipment;
+- set bonuses, if any;
+- durability, keep/remove/reshape;
+- binding/locking/trade;
+- loot/crafting/market sources;
+- Nhân → Tiên → Thần equipment progression;
+- interaction with skill requirements;
+- interaction with Root/Bloodline/Physique/Trait/Mệnh;
+- large-roster auto-equip/template policy;
+- persistence and deterministic generation;
+- migration from current equipment authority.
 
 ---
 
-## SPIRITUAL ROOT V2 — FULL DESIGN LOCKED
+## Remaining design order after Weapon + Equipment
 
-Canonical authority:
-`docs/SPIRITUAL_ROOT_V2_SPEC.md`
+Preferred queue:
+1. Pháp Bảo + Phù V2;
+2. Profession V2 final consolidation;
+3. Living State V2 — Injury / recovery / age / lifespan;
+4. Mood / Loyalty / Needs;
+5. Personality + autonomy + goals/memories;
+6. Relationships / Social V2;
+7. Sư đồ / Đạo lữ / organization roles;
+8. Family/inheritance if enabled;
+9. Whole Disciple Generation V2 final assembly;
+10. whole-disciple contradiction/dead-stat audit;
+11. implementation dependency plan.
 
-Locked:
-- base Kim/Mộc/Thủy/Hỏa/Thổ;
-- root-count rates 7/18/30/28/17%;
-- independent purity 1–100;
-- deterministic refinement and missing-root creation;
-- root buffs/passives + perfected-root Resonance;
-- Ngũ Hành combat matchup;
-- congenital Dị-Căn rate 0.20% total (0.19% latent, 0.01% awakened);
-- Lôi/Phong/Băng/Dương/U Minh Thức Tỉnh → Thuế Biến → Viên Mãn;
-- five matching Dị Bản Nguyên resources;
-- Lôi Thiên Lôi timing;
-- Phong Thế timing;
-- Băng Hàn-Ấn/Băng-Phong/Hàn-Trệ timing;
-- Dương Bạo source-owned DoT conversion;
-- U Minh once-per-encounter Minh Mệnh;
-- all five mutations may coexist;
-- cả năm Dị Căn Viên Mãn -> Ngũ Dị Quy Nhất;
-- proc-loop, AoE, multi-hit, boss, AI, persistence and migration rules.
-
-No Spiritual Root V2 gameplay code is authorized yet.
-
-Legacy boundary:
-- `docs/P2_10_SPIRITUAL_ROOT_REFINEMENT_SPEC.md` is compatibility-only and superseded by `docs/SPIRITUAL_ROOT_V2_SPEC.md`;
-- old root runtime files remain only for locked P2 regression and future old-save migration;
-- do not extend the legacy global-purity/old-mutation model;
-- physically remove dead legacy runtime only when a tested Spiritual Root V2 migration phase replaces it.
-
-Implementation dependency:
-do not implement mutation combat with temporary private stats. It requires the relevant Skill/Combat V2 primitives or must wait for that combat phase.
-
-Combat Stats V2 is DESIGN LOCKED, NOT IMPLEMENTED.
-Canonical authority:
-`docs/COMBAT_STATS_V2_SPEC.md`
-
-Disciple Characteristics & Stat Framework V2 is DESIGN LOCKED, NOT IMPLEMENTED.
-Canonical authority:
-`docs/DISCIPLE_CHARACTERISTICS_STAT_FRAMEWORK_V2.md`
-
-It locks:
-- source/state/derived/outcome separation;
-- living-state taxonomy;
-- modifier modes and provenance;
-- Healing Done / Healing Received / Shield Effect and other specialized effect channels;
-- future-system ownership boundaries.
-
-Traits V2 is DESIGN LOCKED, NOT IMPLEMENTED.
-Canonical authority:
-`docs/TRAITS_V2_SPEC.md`
-
-Preserve:
-- 60/32/8% visible birth count;
-- 8% ordinary latent rate, max one;
-- 50/30/20% Hữu Ích/Song Diện/Bất Lợi;
-- no universal Trait grade;
-- no lifetime Trait cap;
-- deterministic reveal/acquisition/removal;
-- consumer gating;
-- Personality/profession talent separation.
-
-Mệnh Cách V2 is DESIGN LOCKED, NOT IMPLEMENTED.
-Canonical authority:
-`docs/DESTINY_V2_SPEC.md`
-
-Preserve:
-- congenital total **0.50% = 0.45% latent + 0.05% already revealed**;
-- multiple compatible Mệnh Cách active simultaneously;
-- no Chủ-Mệnh slot and no lifetime hard cap;
-- no universal Khai/Hóa/Chứng ladder;
-- every Mệnh is immediately strong/readable on reveal;
-- Mệnh Nguyên source + deterministic repeat loop;
-- explicit feat/event + resource acquisition recipe per fate;
-- significant-history retroactivity and anti-farm attribution;
-- personal bound Mệnh Mảnh for Đoạt Mệnh;
-- explicit Mệnh Cục registry and Mệnh Phổ direction.
-
-Huyết Mạch V2 is DESIGN LOCKED, NOT IMPLEMENTED.
-Canonical authority:
-`docs/BLOODLINE_V2_SPEC.md`
-
-Preserve:
-- ordinary congenital total 2.00% = 1.60% latent + 0.40% revealed;
-- max one congenital special Bloodline at ordinary birth;
-- multiple compatible Bloodlines may be acquired later; no lifetime universal hard cap;
-- integer purity 1–100;
-- Chân Huyết at awakened purity >=50;
-- Phản Tổ at awakened purity 100;
-- deterministic +1 refinement with rising Huyết Tinh cost;
-- 99->100 additionally needs Tổ Huyết;
-- Ban Huyết starts selected lineage at purity 10, revealed but not awakened;
-- Hoán Huyết and Dung Huyết require explicit history-safe rules/recipes;
-- inheritance formula is deferred to Family V2;
-- no `combat_power_bonus` V2 authority;
-- P2.11 is compatibility-only.
-
-Realm Ladder V2 + Luyện Thể V2 core are DESIGN LOCKED, NOT IMPLEMENTED.
-Canonical authorities:
-- `docs/REALM_LADDER_V2_SPEC.md`;
-- `docs/BODY_CULTIVATION_V2_SPEC.md`.
-
-Preserve:
-- 30 Tu Vi realms ×10 floors;
-- 30 Luyện Thể realms ×10 floors;
-- Nhân Giới / Tiên Giới / Thần Giới = 10 realms each;
-- Tu Vi and Luyện Thể are independent tracks;
-- Căn Cốt +0.20% natural/base body XP per point;
-- Tiềm Lực +0.05% retroactive Realm+Body Core growth per point;
-- Thể Lực is expedition-only, never ordinary sect production;
-- base daily Expedition Stamina = 100;
-- exact normal-map body match ≈18h unbuffed;
-- +1 major body realm ≈×1.20 endurance, smoothly by floors;
-- body-only ordinary duration cap =22h;
-- ordinary final expedition cap after food/pills/buffs =24h;
-- map recommended body floor is soft, not a hard entry gate;
-- daily reset must not double-refill an active expedition.
-
-Physique / Thể Chất V2 base design is DESIGN LOCKED, NOT IMPLEMENTED.
-Canonical authority:
-`docs/PHYSIQUE_V2_SPEC.md`
-
-Preserve:
-- 97.00% none / 2.70% revealed / 0.30% latent congenital baseline;
-- one active Core Physique;
-- no grade/purity/temper;
-- 15 weighted base identities;
-- enabled Physiques must have real measurable effects;
-- Kiếm Cốt is identity-only until Weapon/Skill V2 closes DEP-PHY-01 and must not be enabled effectless;
-- deterministic Cải/Tái Tạo/Tiến Hóa/Dung Thể;
-- successor/fusion result replaces old active effects;
-- transformation history persists without passive-stat stacking;
-- P2.12 is legacy compatibility/migration only.
-
-Current design subject:
-**Cultivation + Breakthrough V2**.
+Do not begin implementation just because design is closed.
