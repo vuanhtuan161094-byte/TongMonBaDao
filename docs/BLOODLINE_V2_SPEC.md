@@ -13,12 +13,12 @@ Parents:
 - `docs/TRAITS_V2_SPEC.md`
 - `docs/DESTINY_V2_SPEC.md`
 
-Legacy compatibility source:
-- `docs/P2_11_BLOODLINE_SPEC.md`
+Legacy runtime compatibility source:
 - `godot/src/simulation/bloodline/bloodline_system.gd`
 
-This document supersedes P2.11 as the design authority for future Huyết Mạch gameplay.
-P2.11 remains compatibility-only until a tested V2 migration replaces its runtime.
+The old P2.11 design document has been removed.
+This file is the sole design authority for future Huyết Mạch gameplay.
+Legacy runtime remains only until a tested V2 migration replaces it.
 
 No gameplay implementation is authorized by this design lock.
 
