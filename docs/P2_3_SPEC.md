@@ -2,6 +2,9 @@
 
 Status: IMPLEMENTED / AWAITING RUNTIME GATE
 
+> **V2 authority note (2026-10-08):** This file remains historical/runtime compatibility authority for P2.3. Future Công Pháp design is superseded by `docs/TECHNIQUE_V2_SPEC.md`. In particular, legacy max-3-learned / one-active / level-1–5 rules are not final V2 authority.
+
+
 ## Mục tiêu
 
 P2.3 biến công pháp thành một vòng kinh tế và phát triển nhân vật có hậu quả thật:
