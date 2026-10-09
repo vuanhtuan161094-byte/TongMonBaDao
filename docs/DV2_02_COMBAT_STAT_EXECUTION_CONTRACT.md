@@ -143,3 +143,27 @@ Ví dụ: A có 20% Hút Máu, B có 5% Giảm Hút Máu, gây 1.000 damage sau 
 5. Cumulative Godot 4.7.2 phải có thật trước khi gọi toàn bộ DV2-02 BACKEND LOCKED.
 
 **Không đổi** tỷ lệ sinh đệ tử, nghề nghiệp, Thể Lực Viễn Chinh hoặc Dẫn Tiên trong phase này. Sau DV2-02 mới tiếp tục DV2-03 30×10 và các consumer cần chúng.
+
+## 6. Thuộc tính có điều kiện và quái V2 — DV2-02C
+
+User yêu cầu mở đường xây dựng đa dạng nhưng không phá cân bằng: sát thương lên thủ lĩnh, sát thương theo chủng tộc, liên kích đánh thường và chừa các cơ chế có consumer tương lai.
+
+**Không đổi con số 16 chỉ số chính:** các kênh mới là **nguồn hiệu ứng bối cảnh / hành động**.
+
+| Channel đã có thử nghiệm Godot | Mode | Điều kiện và đầu ra |
+|---|---|---|
+| `damage_vs_boss` | `percent_add` | mục tiêu đúng tier `boss` |
+| `damage_vs_elite` | `percent_add` | mục tiêu đúng tier `elite` |
+| `damage_vs_race/<race>` | `percent_add` | mục tiêu đúng một `race_id`; không cộng mọi giống |
+| `basic_followup_chance` | `percentage_points` | cơ hội duy nhất sau mỗi đòn đánh thường gốc |
+| `basic_followup_damage` | `percent_add` | tăng/giảm hệ số riêng của một đòn liên kích thêm |
+
+**Ví dụ:** Sát thương Boss +15% và sát thương Yêu Thú +10% đánh Hắc Lang Vương (boss, yêu thú) tạo ×1,25 vào một damage packet; không được nhân hai nguồn thành ×1,265 và không nhận buff Elite. Đánh U Hồn (quỷ tộc) không được buff Yêu Thú.
+
+**Liên kích cơ bản:** khi đòn thường chính thành công và quái còn HP, một lần roll theo tỷ lệ thực của đệ tử; nếu thành công tối đa một extra basic hit. Hệ số ban đầu extra hit 60% **PILOT chưa khóa cân bằng**, tự cộng theo `basic_followup_damage`, không được kích hoạt lại liên kích/DoT/skill/proc/hút máu/crit nếu chưa có luật riêng. Không có roll mỗi frame.
+
+**Quái:** `godot/src/simulation/combat/monster_catalogue_v2.gd` định nghĩa 7 loài mẫu, bao gồm 3 ID quái P0 hiện có và Hắc Lang Vương, Nham Giáp Thú, Huyết Lang Đầu Đàn, U Hồn. Quái sử dụng bộ HP/Công/Thủ riêng và `MonsterEncounterV2` cho phép đánh nhau với `DiscipleState.hp` thực, không lấy `combat_power` hoặc `P0Content.MONSTERS.power`.
+
+**Hành vi/phần thưởng/phases chưa triển khai:** field `behavior_id` chỉ là nhãn để nối AI sau này; các species mới `loot_ready=false`, không cấp vật phẩm giả. Boss phase và quái dùng kỹ năng phải dùng nguyên thủy chiến đấu chung, không xây engine thứ hai. **P0/P3.7 đang chạy cũ không đổi.**
+
+Chi tiết nguồn, hướng FUTURE và cân bằng số quái ở `docs/DV2_02_CONTEXT_STATS_MONSTER_FOUNDATION.md` (pilot). DV2-02 chưa kết thúc chỉ vì các bài focused pass.
