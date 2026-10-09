@@ -827,3 +827,9 @@ Everything else is either:
 
 This registry is **DESIGN LOCKED**.
 Implementation remains future work.
+
+## 20. DV2-02 implementation checkpoint — 2026-10-09
+
+**Design authority above remains LOCKED.** The first **DV2-02A calculated-stat kernel** has been committed in `godot/src/simulation/combat/combat_stats_v2.gd`, with real official Godot 4.7.2 focused CI **PASS**: [Actions #37880761726](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37880761726). Its source-by-source contract: `docs/DV2_02_COMBAT_STAT_EXECUTION_CONTRACT.md`.
+
+**Separation:** focused stat/damage-unit tests PASS ≠ gameplay Combat V2 fully integrated. `godot/src/simulation/combat/combat_system.gd` still uses legacy combat-power authority, and real monster/skill/Realm+Body character adapters are not yet V2 migrated. **DV2-02 phase remains ACTIVE/NOT CLOSED**; `CURRENT_CHECKPOINT.md` owns implementation status. No Trait/Root/Bloodline/Physique effect has been fictitiously activated merely because an innate ID was generated.
