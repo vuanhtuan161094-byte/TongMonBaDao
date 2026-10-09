@@ -7,11 +7,12 @@ extends RefCounted
 const ELEMENTS := ["metal","wood","water","fire","earth","lightning","wind","ice","yang","nether"]
 const CORE_CHANNELS := ["max_hp","attack","defense"]
 const RATE_CHANNELS := ["move_speed","attack_speed","cast_speed","cooldown_recovery"]
-const PP_CHANNELS := ["crit_chance","crit_resistance","defense_penetration","effect_hit","effect_resistance"]
+const PP_CHANNELS := ["crit_chance","crit_resistance","defense_penetration","effect_hit","effect_resistance","lifesteal","lifesteal_reduction"]
 const PRIMARY_CHANNELS := [
     "max_hp","attack","defense","move_speed","attack_speed","cast_speed",
     "cooldown_recovery","crit_chance","crit_damage","crit_resistance",
-    "defense_penetration","effect_hit","effect_resistance","damage_reduction"
+    "defense_penetration","effect_hit","effect_resistance","damage_reduction",
+    "lifesteal","lifesteal_reduction"
 ]
 const REALM_BASE := {"max_hp":100.0,"attack":20.0,"defense":12.0}
 const BODY_BASE := {"max_hp":90.0,"attack":3.0,"defense":7.0}
@@ -118,6 +119,10 @@ static func derive(
     stats["effect_hit"] = float(pp.get("effect_hit",0.0))
     stats["effect_resistance"] = float(pp.get("effect_resistance",0.0))
     stats["damage_reduction"] = 1.0 - float(remaining.get("damage_reduction",1.0))
+    # User-locked 2026-10-09: net lifesteal subtracts target reduction as pp.
+    # Do NOT cap at 100%: positive bonuses and counters may exceed 100%.
+    stats["lifesteal"] = maxf(0.0, float(pp.get("lifesteal",0.0)))
+    stats["lifesteal_reduction"] = maxf(0.0, float(pp.get("lifesteal_reduction",0.0)))
 
     var resistances: Dictionary = {}
     for element in ELEMENTS:
@@ -193,4 +198,50 @@ static func resolve_direct_hit(
         "ok":true,"damage":maxf(0.0,damage),"critical":critical,
         "effective_defense":effective_defense,
         "defense_factor":defense_factor,"predefense_damage":before_defense
+    }
+
+
+# These are ordinary universal direct-hit lifesteal rules. A future DoT, proc,
+# reflection or summon packet must explicitly declare its lifesteal eligibility
+# to the owning encounter action; never auto-farm healing on invisible ticks.
+static func effective_lifesteal_rate(attacker_stats: Dictionary, target_stats: Dictionary) -> float:
+    return maxf(
+        0.0,
+        maxf(0.0, float(attacker_stats.get("lifesteal",0.0))) -
+        maxf(0.0, float(target_stats.get("lifesteal_reduction",0.0)))
+    )
+
+# Call once, when an eligible damage result COMMITS to HP, not while previewing
+# damage or evaluating AI. This caps damage by the target's remaining real HP,
+# then caps healing by the attacker's missing HP. No damage = no healing.
+# The calling combat action commits the two *_after fields exactly once.
+static func settle_damage_and_lifesteal(
+    damage_result: Dictionary, attacker_stats: Dictionary, target_stats: Dictionary,
+    attacker_hp: float, attacker_max_hp: float, target_hp: float,
+    lifesteal_eligible: bool = true
+) -> Dictionary:
+    if not bool(damage_result.get("ok",false)):
+        return {"ok":false,"reason":"invalid_damage_result"}
+    if is_nan(attacker_hp) or is_inf(attacker_hp) or is_nan(attacker_max_hp) or is_inf(attacker_max_hp):
+        return {"ok":false,"reason":"invalid_attacker_hp"}
+    if is_nan(target_hp) or is_inf(target_hp):
+        return {"ok":false,"reason":"invalid_target_hp"}
+    var predicted_damage := float(damage_result.get("damage",-1.0))
+    if is_nan(predicted_damage) or is_inf(predicted_damage) or predicted_damage < 0.0:
+        return {"ok":false,"reason":"invalid_damage_value"}
+    if attacker_max_hp <= 0.0 or attacker_hp < 0.0 or attacker_hp > attacker_max_hp or target_hp < 0.0:
+        return {"ok":false,"reason":"invalid_hp_bound"}
+    var actual_damage := minf(predicted_damage,target_hp)
+    var net_rate := effective_lifesteal_rate(attacker_stats,target_stats) if lifesteal_eligible else 0.0
+    var raw_heal := actual_damage * net_rate
+    if is_nan(raw_heal) or is_inf(raw_heal):
+        return {"ok":false,"reason":"nonfinite_lifesteal"}
+    var healed := minf(raw_heal,attacker_max_hp-attacker_hp)
+    return {
+        "ok":true,
+        "actual_damage":actual_damage,
+        "effective_lifesteal":net_rate,
+        "lifesteal_heal":healed,
+        "attacker_hp_after":attacker_hp+healed,
+        "target_hp_after":target_hp-actual_damage
     }
