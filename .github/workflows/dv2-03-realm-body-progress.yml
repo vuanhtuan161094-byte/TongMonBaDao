@@ -7,6 +7,7 @@ on:
       - 'godot/src/simulation/cultivation/disciple_realm_progress_v2.gd'
       - 'godot/src/simulation/cultivation/disciple_training_action_v2.gd'
       - 'godot/src/simulation/cultivation/disciple_tuvi_flow_v2.gd'
+      - 'godot/src/simulation/cultivation/disciple_body_xp_source_v2.gd'
       - 'godot/src/simulation/cultivation/disciple_training_policy_v2.gd'
       - 'godot/src/simulation/cultivation/disciple_training_content_v2.gd'
       - 'godot/src/simulation/core/simulation_scheduler.gd'
@@ -22,6 +23,7 @@ on:
       - 'godot/tests/simulation/dv2_03_training_actions_test.gd'
       - 'godot/tests/simulation/dv2_03_p2_isolation_test.gd'
       - 'godot/tests/simulation/dv2_03_training_policy_test.gd'
+      - 'godot/tests/simulation/dv2_03_body_xp_source_test.gd'
       - '.github/workflows/dv2-03-realm-body-progress.yml'
 
 permissions:
@@ -53,5 +55,7 @@ jobs:
         run: godot --headless --path godot -s res://tests/simulation/dv2_03_training_actions_test.gd
       - name: DV2-03M P2 V2 progression and expedition stamina isolation
         run: godot --headless --path godot -s res://tests/simulation/dv2_03_p2_isolation_test.gd
-      - name: DV2-03D1 autonomous Tu Vi and Body policy
+      - name: DV2-03D1 autonomous Tu Vi policy and Body lock
         run: godot --headless --path godot -s res://tests/simulation/dv2_03_training_policy_test.gd
+      - name: DV2-03 Body EXP source contract
+        run: godot --headless --path godot -s res://tests/simulation/dv2_03_body_xp_source_test.gd
