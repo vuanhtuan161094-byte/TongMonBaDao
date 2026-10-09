@@ -882,3 +882,18 @@ Implementation remains future work.
 ## 21. USER DECISION 2026-10-09 — 16 headline Combat Stats
 
 The user explicitly added **Hút Máu** and **Giảm Hút Máu**; the headline stat count is now **16**, alongside the keyed **10-element resistance map**. §2.7 governs subtraction, post-mitigation actual HP damage, overkill, missing HP, and action eligibility. Source ownership and tests: `docs/DV2_02_COMBAT_STAT_EXECUTION_CONTRACT.md`. Older references to **14** in historical progress logs describe the earlier milestone, not the current Combat Stats authority.
+ 
+## 22. DV2-02C — Contextual attributes + monster metadata (2026-10-09)
+
+**New user direction:** introduce real room for build variety, including bonus damage to bosses, specific monster races and normal-basic followups, **without turning these into more globally rolled headline stats**. The **16 primary Combat Stats + 10 elemental resistance keys stay unchanged**.
+
+Contextual registered channels (actual pilot consumers): `damage_vs_boss`, `damage_vs_elite`, `damage_vs_race/<race_id>`, `basic_followup_chance`, `basic_followup_damage`.
+
+- Damage-vs-tier and damage-vs-race sources use `percent_add`; they apply only if the current action's actual monster target has a matching **exclusive tier** (`normal/elite/boss`) or matching **primary race**. Matching contributions within this contextual damage bucket **add**: +15% boss +10% correct race = ×1.25, not ×1.265; a boss never qualifies for elite bonus simultaneously.
+- `basic_followup_chance` uses `percentage_points` and rolls once per eligible **original basic attack**, not per frame or per skill. The current **pilot** generates at most ONE extra hit with initial coefficient `0.60` of its ordinary basic hit, modified by `basic_followup_damage`; **0.60 is NOT user-locked balance**. Bonus hit never recursively chains another, and has no ordinary crit/lifesteal/skill-proc attribution until a genuine related consumer is authored.
+- No generic resource bar, Accuracy/Dodge, separate physical/magical ATK, or broad race-labeled player-birth stat is introduced.
+- Future-registered directions (not enabled): `damage_vs_shield`, `execute_low_hp`, `control_vs_boss`, `monster_break`, `damage_vs_summon`, `race_ward/<race_id>`, contextual injury/retreat mechanics. An unavailable consumer means no hidden buff and no bypass by raw tag text.
+
+**Monster target metadata/real numbers:** `MonsterCatalogueV2` provides stable species, single primary race, single exclusive tier, primary element, real HP/Attack/Defense snapshot, and an optional future behavior policy; `MonsterEncounterV2` applies those real numbers via **the same CombatStatsV2 direct-hit primitive**, including one limited basic followup. Do not treat old `P0Content.MONSTERS.power` as new-authority damage. The staged adapter DOES NOT yet replace live P0/P3.7 encounters. **No separate MonsterAbilityEngine is permitted:** monster/boss skills must use the shared cast/projectile/status/effect-tier primitives when their consumer becomes ready.
+
+Detailed contract and **pilot monster numbers**: `docs/DV2_02_CONTEXT_STATS_MONSTER_FOUNDATION.md`.
