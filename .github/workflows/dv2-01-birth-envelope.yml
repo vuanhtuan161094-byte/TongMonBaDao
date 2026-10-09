@@ -9,6 +9,10 @@ on:
       - 'godot/src/simulation/state/candidate_state.gd'
       - 'godot/src/simulation/state/disciple_state.gd'
       - 'godot/src/simulation/state/sect_state.gd'
+      - 'godot/src/simulation/recruitment/disciple_birth_catalogue_v2.gd'
+      - 'godot/src/simulation/recruitment/disciple_birth_roll_v2.gd'
+      - 'godot/src/simulation/recruitment/recruitment_system.gd'
+      - 'godot/tests/simulation/dv2_01_birth_distribution_test.gd'
       - 'godot/tests/simulation/dv2_01_birth_envelope_test.gd'
       - '.github/workflows/dv2-01-birth-envelope.yml'
 
@@ -41,5 +45,8 @@ jobs:
       - name: Import classes (headless)
         run: godot --headless --path godot --editor --quit
 
-      - name: Focused DV2-01A birth envelope test
+      - name: Focused DV2-01B complete birth and recruitment test
         run: godot --headless --path godot -s res://tests/simulation/dv2_01_birth_envelope_test.gd
+
+      - name: DV2-01B 20k birth distribution and conflict test
+        run: godot --headless --path godot -s res://tests/simulation/dv2_01_birth_distribution_test.gd
