@@ -43,6 +43,22 @@ func begin(
         var floor_index := int(record.get("floor",0))
         var body_realm := int(record.get("body_realm",0))
         var body_floor := int(record.get("body_floor",0))
+        # A real initialized V2 disciple has ONE authority: their saved
+        # independent track. Never let the map request spoof their realm.
+        if DiscipleRealmProgressV2.valid_profile(living.v2_realm_progress):
+            var canonical := DiscipleRealmProgressV2.current(living)
+            var c: Dictionary = canonical["cultivation"]
+            var b: Dictionary = canonical["body"]
+            for field in ["realm","floor","body_realm","body_floor"]:
+                var actual: int = int(c["realm"]) if field == "realm" else (
+                    int(c["floor"]) if field == "floor" else (
+                        int(b["realm"]) if field == "body_realm" else int(b["floor"])))
+                if record.has(field) and int(record[field]) != actual:
+                    return {"ok":false,"reason":"contradictory_persisted_v2_progress"}
+            realm = int(c["realm"])
+            floor_index = int(c["floor"])
+            body_realm = int(b["realm"])
+            body_floor = int(b["floor"])
         var role := str(record.get("role","frontline"))
         var party_id := str(record.get("party_id","party_0"))
         var position: Vector2 = record.get("position",Vector2(8.0,9.0))
