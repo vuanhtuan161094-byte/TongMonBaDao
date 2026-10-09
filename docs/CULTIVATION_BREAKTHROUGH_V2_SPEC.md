@@ -107,7 +107,7 @@ Canonical source model:
 - fixed injections are not multiplied by Tư Chất or ordinary natural-cultivation-rate bonuses;
 - killing a monster does not directly grant Tu Vi EXP. Monsters may drop Tinh Nguyên and other resources; consuming/assigning Tinh Nguyên is a separate resource decision.
 
-**Display/balance unit is now locked to Tu Vi per simulation minute.** Current P3.7 time semantics already use one scheduler tick as one simulation minute (1440 ticks/day). A runtime may batch/commit simulation minutes at any wall-clock cadence, but equal simulated minutes must produce equal Tu Vi. The numeric production Tu Vi/minute remains OPEN until balance approval.
+**Display/balance unit is now locked to Tu Vi per simulation minute.** Current P3.7 time semantics already use one scheduler tick as one simulation minute (1440 ticks/day). A runtime may batch/commit simulation minutes at any wall-clock cadence, but equal simulated minutes must produce equal Tu Vi. Canonical production baseline is now **1,000 Tu Vi per simulation minute** before Tư Chất and other valid natural bonuses.
 
 All newly generated production V2 disciples start at **Phàm Nhân tầng 1, 0 Tu Vi EXP**. Legacy/dev-save migration may use an explicit compatibility mapping only; it is not a recruitment-generation rule.
 
@@ -117,23 +117,23 @@ Canonical authority:
 - code: `DiscipleProgressionBalanceV2`;
 - both Tu Vi and Luyện Thể use the same 300-floor EXP requirement curve;
 - realm totals r1..r30 are frozen integers:
-  `6000, 7600, 9700, 12300, 15600, 19800, 25200, 32000, 40600, 51600, 65500, 83200, 105600, 134200, 170400, 216400, 274800, 349000, 443200, 562900, 714900, 907900, 1153000, 1464300, 1859700, 2361800, 2999500, 3809400, 4837900, 6144100`;
+  `10000000, 12700000, 16200000, 20500000, 26000000, 33000000, 42000000, 53300000, 67700000, 86000000, 109200000, 138700000, 176000000, 223700000, 284000000, 360700000, 458000000, 581700000, 738700000, 938200000, 1191500000, 1513200000, 1921700000, 2440500000, 3099500000, 3936300000, 4999200000, 6349000000, 8063200000, 10240200000`;
 - floor weights inside each realm are `0.70 / 0.75 / 0.80 / 0.85 / 0.90 / 1.00 / 1.10 / 1.20 / 1.30 / 1.40`, summing to 10.0;
 - floors 1..9 round to nearest 10 EXP; floor 10 receives the exact residual so each realm total stays exact;
-- raw natural Tu Vi baseline = **20 Tu Vi / simulation minute**;
+- raw natural Tu Vi baseline = **1,000 Tu Vi / simulation minute**;
 - Chuyên Tu multiplier = **×2.0** on the same natural source.
 
 Examples:
-- Phàm Nhân total = 6,000 EXP;
-- its 10 floors = `420 / 450 / 480 / 510 / 540 / 600 / 660 / 720 / 780 / 840`;
-- realm 10 total = 51,600;
-- realm 20 total = 562,900;
-- realm 30 total = 6,144,100.
+- Phàm Nhân total = **10,000,000 EXP**;
+- its 10 floors = `700,000 / 750,000 / 800,000 / 850,000 / 900,000 / 1,000,000 / 1,100,000 / 1,200,000 / 1,300,000 / 1,400,000`;
+- realm 10 total = **86,000,000**;
+- realm 20 total = **938,200,000**;
+- realm 30 total = **10,240,200,000**.
 
 Cumulative raw EXP:
-- through realm 10 = 220,400;
-- through realm 20 = 2,625,600;
-- through realm 30 = 28,878,100.
+- through realm 10 = **367,400,000**;
+- through realm 20 = **4,376,300,000**;
+- through realm 30 = **48,130,600,000**.
 
 These are balance authorities, not test fixtures.
 
@@ -396,6 +396,6 @@ No runtime change is authorized by this document alone.
 - **Tu Vi V2 đã code ở** `DiscipleRealmProgressV2` + `DiscipleTuViFlowV2`: 30 đại cảnh ×10 tầng; new production recruit bắt đầu Phàm Nhân tầng 1/0 EXP; mỗi `SimulationScheduler.step()` (1 phút mô phỏng) nhận đúng một natural Tu Vi source nếu authored content hợp lệ; `CULTIVATE` chỉ tăng tốc cùng nguồn bằng Chuyên Tu multiplier. Tư Chất +0,25%/điểm và source cùng channel cộng trên base; EXP `fixed` không nhân buff.
 - **Hàm thử đột phá Tu Vi đã code và PASS test có tham số**: `attempt_cultivation_breakthrough(disciple,rng,gate_required_xp,base_chance,requirements_verified,event_id)`. Tầng 10 đủ EXP, non-chance gate verified, event_id duy nhất; thất bại mất 10% EXP yêu cầu, +5 **điểm phần trăm** xác suất mỗi thất bại cùng cửa, giữ lifetime history; thành công lên đại cảnh sau tầng 1, không gây HP/Thể Lực/hồi chiêu chung. Tại đại cảnh 30 không vượt giới hạn.
 - `auto_breakthrough` **mới là cờ lưu policy**, CHƯA có consumer tự thử trong scheduler, không tự ăn đan hay chi trả nguyên liệu. `Tích Tu`/overflow theo cơ chế đặc biệt không tự cộng vào quỹ chung.
-- **Production balance now locked in code:** Tu Vi 20/phút, Chuyên Tu ×2, shared 300-floor EXP curve and 29 base major-gate chances. **Still not complete gameplay:** consumable/material consumers, automatic breakthrough scheduling, UI and innate-system modifiers remain unconnected. Tuyệt đối **không lấy XP/chance từ `CultivationSystem` P2** để làm dữ liệu V2.
+- **Production balance now locked in code:** Tu Vi 1,000/phút, Chuyên Tu ×2, shared 300-floor EXP curve and 29 base major-gate chances. **Still not complete gameplay:** consumable/material consumers, automatic breakthrough scheduling, UI and innate-system modifiers remain unconnected. Tuyệt đối **không lấy XP/chance từ `CultivationSystem` P2** để làm dữ liệu V2.
 - Lưu/tải `DiscipleState.v2_realm_progress.cultivation` và lịch sử đã code, test JSON roundtrip. Bằng chứng focused Linux Godot 4.7.2: [DV2-03 #37895517181](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37895517181) PASS tại `e96df183`. Full P3.7 PASS gần nhất [#37895357334](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37895357334) ở **SHA cũ hơn** `5296f610`; không có full PASS sau lệnh `request_training`.
 - Nhật ký chi tiết và giới hạn thật: [`DV2_03_TWO_TRACK_PROGRESS_EXECUTION.md`](DV2_03_TWO_TRACK_PROGRESS_EXECUTION.md). Phần này vẫn thuộc **DV2-03 ACTIVE**, không tự nhận CLOSED.
