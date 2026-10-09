@@ -111,6 +111,7 @@ Canonical source model:
 - newly generated production V2 disciples start at **Phàm Thân tầng 1, 0 Luyện Thể EXP**;
 - ordinary sect work, travel, hunting, standing idle and normal combat do not generically grant Luyện Thể EXP;
 - natural/base Luyện Thể EXP exists only while performing an explicit body-training source such as `TRAIN_BODY` or another authored body-training activity;
+- display/balance rate unit for active body training is **Luyện Thể EXP per simulation minute**; the numeric production rate remains OPEN;
 - Căn Cốt (+0.20%/point) and valid body-training modifiers apply to those natural/base body-training sources;
 - pills, medicinal baths, monster materials/essence, events or other content may grant fixed +X Body EXP when explicitly authored;
 - fixed +X Body EXP is not multiplied by Căn Cốt unless that content explicitly declares itself scalable.
