@@ -39,6 +39,14 @@ func _run() -> void:
         _fail("V2 envelope changed P3.7C1 quality, lục duy, root, name, or existing birth RNG.")
         return
 
+    if not DiscipleBirthRollV2.valid_complete_birth(first.v2_birth_profile):
+        _fail("Full generated V2 profile failed strict intake validation.")
+        return
+    var incomplete: Dictionary = first.v2_birth_profile.duplicate(true)
+    incomplete["layers"]["traits"] = {"initialized":false}
+    if DiscipleBirthRollV2.valid_complete_birth(incomplete):
+        _fail("Incomplete V2 birth was incorrectly accepted as whole-person state.")
+        return
     var profile := first.v2_birth_profile
     if not DiscipleBirthCatalogueV2.valid_catalogue():
         _fail("The approved V2 birth catalogue has invalid IDs or conflict pairs.")
