@@ -6,6 +6,34 @@ extends RefCounted
 # Content authority MUST explicitly provide each applicable cost/rate.
 const ACTION_TRACKS := {"CULTIVATE":"cultivation","TRAIN_BODY":"body"}
 
+# Validate the same real EXP operation without changing a floor, XP or action.
+# This rejects bad authored inputs before a player command can be accepted.
+static func _validated_rule(disciple: DiscipleState, track: String, data: Variant) -> Dictionary:
+    if not (data is Dictionary):
+        return {"ok":false,"reason":"missing_authored_training_rules"}
+    var rule: Dictionary = data
+    var action := "CULTIVATE" if track == "cultivation" else "TRAIN_BODY"
+    if str(rule.get("action","")) != action or str(rule.get("authority_id","")).is_empty():
+        return {"ok":false,"reason":"invalid_training_rule_authority"}
+    var raw_rate = rule.get("base_xp_per_action",null)
+    if not (raw_rate is float or raw_rate is int):
+        return {"ok":false,"reason":"missing_training_base_rate"}
+    var rate := float(raw_rate)
+    if is_nan(rate) or is_inf(rate) or rate <= 0.0:
+        return {"ok":false,"reason":"invalid_training_base_rate"}
+    var costs = rule.get("floor_costs",null)
+    if not (costs is Dictionary):
+        return {"ok":false,"reason":"missing_authored_floor_costs"}
+    var sources = rule.get("sources",[])
+    if not (sources is Array):
+        return {"ok":false,"reason":"invalid_training_source_list"}
+    var preview := DiscipleRealmProgressV2.grant_xp(
+        disciple,track,rate,"natural",costs,sources,true
+    )
+    if not bool(preview.get("ok",false)):
+        return {"ok":false,"reason":str(preview.get("reason","invalid_training_preview"))}
+    return {"ok":true,"rate":rate,"costs":costs,"sources":sources}
+
 # One real player-facing command boundary, with NO immediate reward.
 # The 15-second scheduler still owns the actual action result. This does not
 # add a second timer or let commands interrupt hunting/combat/urgent healing.
@@ -22,9 +50,9 @@ static func request_training(state: SimulationState, disciple_id: StringName, tr
     if not [&"EVALUATE",&"IDLE",&"HOLD",&"CULTIVATE",&"TRAIN_BODY"].has(disciple.current_action):
         return {"ok":false,"reason":"training_cannot_interrupt_active_work"}
     var action := "CULTIVATE" if track == "cultivation" else "TRAIN_BODY"
-    var rules = state.sect.v2_training_rules.get(track,{})
-    if not (rules is Dictionary) or str(rules.get("action","")) != action or str(rules.get("authority_id","")).is_empty():
-        return {"ok":false,"reason":"no_authorized_training_activity"}
+    var ready := _validated_rule(disciple,track,state.sect.v2_training_rules.get(track,null))
+    if not bool(ready.get("ok",false)):
+        return {"ok":false,"reason":str(ready.get("reason","invalid_training_rule"))}
     disciple.current_action = StringName(action)
     return {"ok":true,"track":track,"queued_action":action}
 
@@ -46,24 +74,12 @@ static func resolve(state: SimulationState, disciple: DiscipleState, action: Str
     if disciple.region_id != &"sect" or disciple.hp <= 0.0:
         return {"ok":false,"reason":"training_actor_not_available"}
     var track: String = ACTION_TRACKS[action]
-    var training_data = state.sect.v2_training_rules.get(track,null)
-    if not (training_data is Dictionary):
-        return {"ok":false,"reason":"missing_authored_training_rules"}
-    var rule: Dictionary = training_data
-    if str(rule.get("action","")) != action or str(rule.get("authority_id","")).is_empty():
-        return {"ok":false,"reason":"invalid_training_rule_authority"}
-    var configured_rate = rule.get("base_xp_per_action",null)
-    if not (configured_rate is float or configured_rate is int):
-        return {"ok":false,"reason":"missing_training_base_rate"}
-    var rate := float(configured_rate)
-    if is_nan(rate) or is_inf(rate) or rate <= 0.0:
-        return {"ok":false,"reason":"invalid_training_base_rate"}
-    var costs = rule.get("floor_costs",null)
-    if not (costs is Dictionary):
-        return {"ok":false,"reason":"missing_authored_floor_costs"}
-    var source_values = rule.get("sources",[])
-    if not (source_values is Array):
-        return {"ok":false,"reason":"invalid_training_source_list"}
+    var ready := _validated_rule(disciple,track,state.sect.v2_training_rules.get(track,null))
+    if not bool(ready.get("ok",false)):
+        return {"ok":false,"reason":str(ready.get("reason","invalid_training_rule"))}
+    var rate: float = ready["rate"]
+    var costs: Dictionary = ready["costs"]
+    var source_values: Array = ready["sources"]
     if int(disciple.v2_realm_progress.get("last_training_tick",-1)) == state.tick:
         return {"ok":false,"reason":"training_tick_already_awarded"}
     var row: Dictionary = disciple.v2_realm_progress[track]
