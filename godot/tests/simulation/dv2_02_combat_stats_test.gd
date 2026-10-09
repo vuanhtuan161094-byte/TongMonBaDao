@@ -15,8 +15,8 @@ func _run() -> void:
         _fail("1.1 base stat derivation failed.")
         return
     var stats: Dictionary = base["stats"]
-    if stats.size() != 14:
-        _fail("Combat V2 registry must contain exactly fourteen headline stats.")
+    if stats.size() != 16:
+        _fail("Combat V2 registry must contain exactly sixteen headline stats.")
         return
     if not _close(float(stats["max_hp"]),190.0) or not _close(float(stats["attack"]),23.0) or not _close(float(stats["defense"]),19.0):
         _fail("Locked base MaxHP/Attack/Defense differs from 190/23/19.")
@@ -29,6 +29,9 @@ func _run() -> void:
         return
     if base["resistances"].size() != 10:
         _fail("Element resistance map lacks ten registered keys.")
+        return
+    if not _close(float(stats["lifesteal"]),0.0) or not _close(float(stats["lifesteal_reduction"]),0.0):
+        _fail("New Lifesteal and Anti-Lifesteal base rates must both be zero.")
         return
 
     var inputs: Array = [
@@ -48,6 +51,8 @@ func _run() -> void:
         _source("guard_b","damage_reduction","remaining_reduction",0.10),
         _source("fire_root","elemental_resistance/fire","remaining_reduction",0.30),
         _source("fire_gear","elemental_resistance/fire","remaining_reduction",0.20),
+        _source("bloodthirst","lifesteal","percentage_points",0.20),
+        _source("anti_bloodthirst","lifesteal_reduction","percentage_points",0.05),
         _source("forbidden_dormant_trait","attack","percent_add",0.80)
     ]
     inputs[inputs.size()-1]["enabled"] = false
@@ -70,6 +75,9 @@ func _run() -> void:
         return
     if not _close(float(st["damage_reduction"]),0.28):
         _fail("Independent Damage Reduction sources incorrectly stacked additively.")
+        return
+    if not _close(float(st["lifesteal"]),0.20) or not _close(float(st["lifesteal_reduction"]),0.05):
+        _fail("Life steal/Anti-Lifesteal are percentage-point sources, not damage multipliers.")
         return
     if not _close(float(character["resistances"]["fire"]),0.44):
         _fail("Fire elemental resistance sources incorrectly stacked additively.")
@@ -150,6 +158,77 @@ func _run() -> void:
         _fail("Ordinary 100% resistance silently granted full immunity.")
         return
 
+    # New user requirement: 20% Lifesteal minus 5 percentage-point counter
+    # = 15% of ACTUAL HP damage after mitigation and overkill accounting.
+    var lifesteal_attacker: Dictionary = {"attack":100.0,"lifesteal":0.20}
+    var lifesteal_target: Dictionary = {"defense":0.0,"lifesteal_reduction":0.05}
+    var source_hit := CombatStatsV2.resolve_direct_hit(
+        lifesteal_attacker,lifesteal_target,{},1.0,false
+    )
+    var lifesteal := CombatStatsV2.settle_damage_and_lifesteal(
+        source_hit,lifesteal_attacker,lifesteal_target,60.0,120.0,200.0
+    )
+    if not bool(lifesteal.get("ok",false)) or not _close(float(lifesteal["actual_damage"]),100.0):
+        _fail("Eligible direct damage was not committed against current target HP.")
+        return
+    if not _close(float(lifesteal["effective_lifesteal"]),0.15) or not _close(float(lifesteal["lifesteal_heal"]),15.0):
+        _fail("20% lifesteal minus 5pp anti-lifesteal on 100 damage must heal 15.")
+        return
+    if not _close(float(lifesteal["attacker_hp_after"]),75.0) or not _close(float(lifesteal["target_hp_after"]),100.0):
+        _fail("Lifesteal did not update HP results exactly once.")
+        return
+
+    var overkill := CombatStatsV2.settle_damage_and_lifesteal(
+        source_hit,lifesteal_attacker,lifesteal_target,60.0,120.0,20.0
+    )
+    if not _close(float(overkill["actual_damage"]),20.0) or not _close(float(overkill["lifesteal_heal"]),3.0):
+        _fail("Lifesteal was calculated from overkill instead of actual lost target HP.")
+        return
+    var at_max_hp := CombatStatsV2.settle_damage_and_lifesteal(
+        source_hit,lifesteal_attacker,lifesteal_target,120.0,120.0,200.0
+    )
+    if not _close(float(at_max_hp["lifesteal_heal"]),0.0):
+        _fail("Lifesteal healed the attacker above Max HP.")
+        return
+    var limited_heal := CombatStatsV2.settle_damage_and_lifesteal(
+        source_hit,lifesteal_attacker,lifesteal_target,118.0,120.0,200.0
+    )
+    if not _close(float(limited_heal["lifesteal_heal"]),2.0):
+        _fail("Lifesteal failed to cap healing by missing HP.")
+        return
+    var fully_countered := CombatStatsV2.settle_damage_and_lifesteal(
+        source_hit,lifesteal_attacker,{"lifesteal_reduction":0.30},60.0,120.0,200.0
+    )
+    if not _close(float(fully_countered["effective_lifesteal"]),0.0) or not _close(float(fully_countered["lifesteal_heal"]),0.0):
+        _fail("Anti-Lifesteal greater than Lifesteal must reduce net healing to zero.")
+        return
+    if not _close(CombatStatsV2.effective_lifesteal_rate(
+        {"lifesteal":1.5},{"lifesteal_reduction":1.2}),0.30):
+        _fail("Lifesteal/Anti-Lifesteal should not have an invented 100% growth cap.")
+        return
+    var ineligible_hit := CombatStatsV2.settle_damage_and_lifesteal(
+        source_hit,lifesteal_attacker,lifesteal_target,60.0,120.0,200.0,false
+    )
+    if not _close(float(ineligible_hit["actual_damage"]),100.0) or not _close(float(ineligible_hit["lifesteal_heal"]),0.0):
+        _fail("Ineligible reflection/DoT/proc packet must not heal via lifesteal.")
+        return
+    var dodged_hp := CombatStatsV2.settle_damage_and_lifesteal(
+        {"ok":true,"damage":0.0},lifesteal_attacker,lifesteal_target,60.0,120.0,200.0
+    )
+    if not _close(float(dodged_hp["lifesteal_heal"]),0.0):
+        _fail("Zero damage generated lifesteal healing.")
+        return
+    if bool(CombatStatsV2.settle_damage_and_lifesteal(
+        {"ok":false},lifesteal_attacker,lifesteal_target,60.0,120.0,200.0
+    ).get("ok",true)):
+        _fail("Rejected damage packet was nevertheless allowed to heal.")
+        return
+    if bool(CombatStatsV2.derive(1,1,1,1,0.0,[
+        _source("wrong_lifesteal_mode","lifesteal","percent_add",0.2)
+    ]).get("ok",true)):
+        _fail("Lifesteal requires a percentage-points source.")
+        return
+
     var previous := 0.0
     for realm in range(1,31):
         for floor_index in range(1,11):
@@ -158,7 +237,7 @@ func _run() -> void:
                 _fail("300-floor locked Combat Core has a gap/nonfinite/descending Attack.")
                 return
             previous = float(derived["stats"]["attack"])
-    print("DV2-02 FOURTEEN STAT CORE + 10 ELEMENTS + DAMAGE MODEL: PASS")
+    print("DV2-02 SIXTEEN STAT CORE + LIFESTEAL + 10 ELEMENTS: PASS")
     quit(0)
 
 func _fail(msg: String) -> void:
