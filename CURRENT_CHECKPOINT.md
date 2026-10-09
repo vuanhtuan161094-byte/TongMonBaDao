@@ -189,26 +189,31 @@ Current old percentage consumers may use a bounded compatibility bridge where ne
 
 ## 5. Current implementation phase
 
-**DV2-01 — ACTIVE / IN PROGRESS (authorized by user 2026-10-09). NOT CLOSED, NOT PASS.**
+**DV2-01 — ACTIVE / FINAL CUMULATIVE GATE PENDING (as of 2026-10-09). NOT YET CLOSED.**
 
-P3.7C1 remains the most recently **closed** backend phase. The user explicitly instructed implementation in order: base/derived stat design -> combat/production contract -> effects-to-consumer mapping -> phased character birth/runtime.
+The user approved **numeric V1 Realm/Body ATK/DEF/HP and Defense mitigation**, and all 101 Trait + 24 Fate **per-ID birth weights** on 2026-10-09. The previously named `...PROPOSAL.md` documents are now **DESIGN LOCKED** internally. Their combat/work effects are NOT V2 gameplay implementation.
 
-**DV2-01A partial code submitted on `main` (opt-in, OFF for old P0–P3.7 worlds):**
-- `godot/src/simulation/recruitment/disciple_birth_profile_v2.gd`: versioned birth envelope with independently derived per-domain seeds; all unapproved root/trait/fate/etc. layers stay `initialized=false`, NOT fake `none` identities;
-- `CandidateState` / `DiscipleState`: deep-copy envelope through candidate -> disciple and save/load;
-- `SectState.disciple_v2_birth_enabled`: explicit default-false switch, no change to existing C1 quality/foundation RNG;
-- `DiscipleGeneratorOpenPoints`: attaches envelope only for explicitly enabled states;
-- `godot/tests/simulation/dv2_01_birth_envelope_test.gd` and `.github/workflows/dv2-01-birth-envelope.yml`: focused Godot 4.7.2 verification.
+### DV2-01A/B — actual source implemented on `main`
 
-**Gate evidence:** earlier DV2-01A runs failed on nested JSON numeric values (int seeds parsed as float64); corrected by `DiscipleBirthProfileV2.normalize_envelope`. **Focused DV2-01A real RecruitmentSystem accept/save/reload test: Godot 4.7.2 PASS** at code commit `cbe5438d`, [Actions #37876666598](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37876666598). **P3.7 full cumulative backend Godot 4.7.2: PASS** at code commit `22f7d80e`, [Actions #37876520289](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37876520289); later DV2-01 test-only change does not modify those previous locked gameplay scripts. Intermediate failed CI runs are retained as evidence of the diagnosed and fixed defect. **DV2-01 as a complete phase is NOT PASS**; current work is DV2-01A only. **This does not complete DV2-01**: the source-weighted Root/Trait/Fate/Bloodline/Physique birth selection is not implemented, and no V2 combat/production consumers are enabled yet.
+- `SectState.disciple_v2_birth_enabled` default OFF, so P0–P3.7C1 no behavior/odds changes.
+- `DiscipleBirthProfileV2`: version, domain-specific deterministic seeds, stable born snapshot, strict `initialized`/none distinction, JSON nested integer restore and whole-profile completion check.
+- `DiscipleBirthCatalogueV2`: 101 stable ungraded Trait IDs/weights by nature/conflicts, 24 Fate IDs/weights, 5 Bloodlines, 14 eligible Physiques (excluding Kiếm Cốt).
+- `DiscipleBirthRollV2`: 1–5 independent roots/purity; 0.20% mutation incl rare awakened+root >=80; 1–3 visible Traits + 8% latent; 2% Bloodline with 1–100 purity; 3% special Physique; 0.50% congenital Destiny; separate P3.7 profession talent grades. **Kiếm Tiên Chuyển Thế** excluded until complete birth override; **Thương Binh Kinh Nghiệm** is acquired-only and not born.
+- `DiscipleGeneratorOpenPoints`, `RecruitmentSystem`, `CandidateState`, `DiscipleState`: direct ordinary and real Dẫn Tiên recruitment preserve same candidate; accept rejects incomplete V2 profiles; no parallel P2 hidden birth rerolls for V2-enabled candidates; save/load retains all hidden identities. All unimplemented V2 effect consumers remain **inactive** rather than fake.
+- `godot/tests/simulation/dv2_01_birth_envelope_test.gd`, `dv2_01_birth_distribution_test.gd`: real recruitment/Dẫn Tiên equality against P3.7C1, save/load, no duplicate conflict, banned-pool exclusion, 100K seeded distribution.
+- CI workflows: `.github/workflows/dv2-01-birth-envelope.yml`; cumulative P3.7 workflow also watches the newly added V2 birth sources.
 
-**Design/balance supporting documents (numeric proposal, not user-locked):**
-- `docs/DV2_BIRTH_WEIGHTS_TRAIT_FATE_V1_PROPOSAL.md` (provisional weights per ID for 101 Traits and 24 individual Fates; NOT approved or enabled in the generator);
-- `docs/DV2_REALM_BODY_COMBAT_CURVES_V1_PROPOSAL.md` (300 floors, HP/ATK/DEF and numeric Defense, mathematical audit only);
-- `docs/DV2_PRODUCTION_RESULT_CONTRACT_V1.md` (time, XP, quantity, material, quality, rare, transaction semantics);
-- `docs/DISCIPLE_V2_STAT_CAUSAL_CONTRACT.md`, `docs/DISCIPLE_V2_EFFECT_SOURCE_MATRIX.md` (sources/outcomes).
+### Actual Godot evidence
 
-**Next:** verify DV2-01A real Godot 4.7.2 CI focused gate and relevant P3.7 cumulative gate; then finalize approved birth eligibility/weights/overrides without changing existing Dẫn Tiên odds, and complete DV2-01. Do not begin DV2-02 gameplay while DV2-01 remains active.
+**Focused DV2-01B Godot 4.7.2: PASS** at code commit `e697c947`, [Actions #37878652697](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37878652697). Contains full 100,000-seed distribution, real guidance, recruit/save/no-reroll, and strict complete-profile guard.
+
+Latest 100K results: root counts 1..5 = 6,879 / 18,066 / 30,016 / 28,080 / 16,959; visible trait 1/2/3 = 59,903 / 32,200 / 7,897; 7,986 latent traits; 1,969 special bloodlines; 2,994 special physiques; 491 fates; 210 mutations incl 8 awakened.
+
+**P3.7 real Godot 4.7.2 fast regression: PASS; FULL cumulative: PENDING** for [Actions #37878652738](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37878652738) at the same code commit `e697c947`. Do not close this phase until that full run succeeds. Earlier focused parse/JSON errors were diagnosed and repaired, not silently suppressed.
+
+**Remaining after DV2-01 closes:** `DV2-02` canonical derived-stat/modifier engine, applying already-locked Realm/Body HP/ATK/DEF and Defense formula, source breakdown, HP ratio and actual consumer gating. **DV2-02 is NOT ACTIVE yet.** Then DV2-03 progression, etc., one phase at a time.
+
+**Never claim** that generating an innate Root/Trait/Destiny makes their future combat, cultivation, social or production effects executable. Legacy `combat_power`, generic in-sect stamina drain and graded P2 Traits remain migration debts for their owned later phases.
 
 ---
 
