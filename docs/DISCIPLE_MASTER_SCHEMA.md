@@ -53,7 +53,7 @@ Thứ tự canonical:
 10. Thể Chất: cấp cơ thể -> loại dị thể đặc biệt có/không -> latent transformation nếu có;
 11. Thiên Mệnh latent nếu có;
 12. tuổi + thọ mệnh nền;
-13. cảnh giới/tiến độ khởi đầu;
+13. V2 production progression start: Phàm Nhân tầng 1 + Phàm Thân tầng 1, both 0 EXP;
 14. derive HP/combat power/current capability từ các lớp trên.
 
 **Combat power không được roll như identity độc lập.** Nó là kết quả của con người hiện tại.
@@ -103,9 +103,9 @@ Reveal/awakening không được reroll identity ẩn.
 | Tuổi | random theo source | Không | Tăng theo thời gian | simulation time |
 | Thọ mệnh cơ sở | derived từ race/foundation | base ổn định | Không trực tiếp | gốc sinh học |
 | Thọ mệnh tối đa hiện tại | derived | Không | Có | đại cảnh giới, thọ đan, bảo vật, huyết mạch/thể chất/thiên mệnh phù hợp |
-| Cảnh giới | generated starting level | Không | Có | tu luyện + đột phá |
-| Tu vi progress | generated nhỏ | Không | Có | tu luyện, chiến đấu, công pháp, buff hợp lệ |
-| Luyện thể | generated/default | Không | Có | 30 đại cảnh ×10 tầng; Căn Cốt controls natural body-XP speed; see `docs/BODY_CULTIVATION_V2_SPEC.md` |
+| Cảnh giới | **V2 production fixed: Phàm Nhân tầng 1** | Không | Có | passive natural Tu Vi + Chuyên Tu + fixed sources + đột phá |
+| Tu vi progress | **V2 production = 0 EXP** | Không | Có | continuous natural Tu Vi per simulation minute; Chuyên Tu accelerates same source; fixed pills/Tinh Nguyên/content |
+| Luyện thể | **V2 production fixed: Phàm Thân tầng 1, 0 EXP** | Không | Có | explicit body training/content only; Căn Cốt controls natural body-XP speed; see `docs/BODY_CULTIVATION_V2_SPEC.md` |
 | Chủ Đạo / Đạo Lịch | Chưa Định Đạo / acquired history | Không | Có | Kiếm/Thể/Pháp soft active path + branches + lived history; see `docs/CULTIVATION_PATH_V2_SPEC.md` |\n| Weapon mastery (future, if designed) | none by current authority | — | future | not canonical; do not invent unless Weapon V2 explicitly approves it |
 | Công pháp đã học | acquired | Không | Có | library + mastery; active loadout 1 Chủ Tu + 2 Phụ Tu; see `docs/TECHNIQUE_V2_SPEC.md` |
 | Combat skills | acquired | Không | Có | mastery + family/evolution; mature loadout 1 Thường + 4 Active + 6 Combat Passive; see `docs/COMBAT_SKILLS_V2_SPEC.md` |
