@@ -84,8 +84,9 @@ func _run() -> void:
         "expires_tick":state.tick+20
     }
     var unavailable_action := workforce.next_action(state,disciple)
+    var unavailable_result: Dictionary = disciple.last_decision.get("v2_training_result",{})
     if not _assert(unavailable_action==&"" and disciple.direct_command.is_empty() and
-        str(disciple.last_decision.get("v2_training_result",{}).get("reason",""))=="v2_training_not_ready",
+        str(unavailable_result.get("reason",""))=="v2_training_not_ready",
         "Unavailable V2 cultivate command was not rejected/cleared cleanly."):
         return
 
