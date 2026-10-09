@@ -73,6 +73,22 @@ func _run() -> void:
         return
 
     state.sect.cultivation_enabled = true
+    var workforce := WorkforceSystem.new()
+
+    # Compatibility UI command must fail/clear instead of falling into P2 or
+    # sticking forever when V2 authored training content is not ready.
+    state.sect.workforce_enabled = true
+    state.sect.v2_training_enabled = false
+    disciple.direct_command = {
+        "kind":"CULTIVATE","target":"","issued_tick":state.tick,
+        "expires_tick":state.tick+20
+    }
+    var unavailable_action := workforce.next_action(state,disciple)
+    if not _assert(unavailable_action==&"" and disciple.direct_command.is_empty() and
+        str(disciple.last_decision.get("v2_training_result",{}).get("reason",""))=="v2_training_not_ready",
+        "Unavailable V2 cultivate command was not rejected/cleared cleanly."):
+        return
+
     state.sect.v2_training_enabled = true
     var cult_realm := int(disciple.v2_realm_progress["cultivation"]["realm"])
     state.sect.v2_training_rules = {
@@ -104,12 +120,10 @@ func _run() -> void:
 
     # The existing UI/workforce CULTIVATE command may route into V2 when the
     # V2 rule exists, regardless of low expedition stamina.
-    state.sect.workforce_enabled = true
     disciple.direct_command = {
         "kind":"CULTIVATE","target":"","issued_tick":state.tick,
         "expires_tick":state.tick+20
     }
-    var workforce := WorkforceSystem.new()
     if not _assert(workforce.next_action(state,disciple)==&"CULTIVATE",
         "Legacy UI cultivate command did not route to the V2 action owner."):
         return
