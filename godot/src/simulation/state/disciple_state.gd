@@ -87,6 +87,8 @@ var max_lifespan: int = 0
 var latent_identity_seed: int = 0
 # DV2-01 opt-in canonical birth envelope, absent for old saves.
 var v2_birth_profile: Dictionary = {}
+# DV2-03 independently persisted Tu Vi / Luyen The 30x10 tracks; absent in legacy saves.
+var v2_realm_progress: Dictionary = {}
 
 var current_action: StringName = &"EVALUATE"
 var region_id: StringName = &"sect"
@@ -180,6 +182,9 @@ func _init(definition: Dictionary = {}) -> void:
     latent_identity_seed = int(definition.get("latent_identity_seed", 0))
     var raw_v2_birth = definition.get("v2_birth_profile", {})
     v2_birth_profile = DiscipleBirthProfileV2.normalize_envelope(raw_v2_birth)
+    var raw_v2_realm = definition.get("v2_realm_progress", {})
+    if raw_v2_realm is Dictionary:
+        v2_realm_progress = raw_v2_realm.duplicate(true)
 
 func retreat_hp_ratio() -> float:
     return lerpf(0.48, 0.14, clampf(risk_bias, 0.0, 1.0))
@@ -282,6 +287,8 @@ func to_dict() -> Dictionary:
         data["latent_identity_seed"] = latent_identity_seed
     if not v2_birth_profile.is_empty():
         data["v2_birth_profile"] = v2_birth_profile.duplicate(true)
+    if not v2_realm_progress.is_empty():
+        data["v2_realm_progress"] = v2_realm_progress.duplicate(true)
     return data
 
 static func from_dict(data: Dictionary) -> DiscipleState:
@@ -343,7 +350,8 @@ static func from_dict(data: Dictionary) -> DiscipleState:
         "base_lifespan": data.get("base_lifespan", 0),
         "max_lifespan": data.get("max_lifespan", 0),
         "latent_identity_seed": data.get("latent_identity_seed", 0),
-        "v2_birth_profile": data.get("v2_birth_profile", {})
+        "v2_birth_profile": data.get("v2_birth_profile", {}),
+        "v2_realm_progress": data.get("v2_realm_progress", {})
     })
     disciple.max_hp = float(data.get("max_hp", 100.0))
     disciple.hp = float(data.get("hp", disciple.max_hp))
