@@ -131,7 +131,15 @@ static func _validate_actor_and_source(
         return {"ok":false,"reason":"training_profile_not_ready"}
     if disciple.hp <= 0.0:
         return {"ok":false,"reason":"body_xp_actor_not_available"}
-    return validate_source(raw_source)
+    var ready := validate_source(raw_source)
+    if not bool(ready.get("ok",false)):
+        return ready
+    var kind := str(ready["source_kind"])
+    if kind == SOURCE_EXPEDITION and disciple.region_id == &"sect":
+        return {"ok":false,"reason":"expedition_body_source_requires_outside_map"}
+    if kind != SOURCE_EXPEDITION and disciple.region_id != &"sect":
+        return {"ok":false,"reason":"sect_body_source_requires_sect"}
+    return ready
 
 static func _receipt(
     ready: Dictionary, grant: Dictionary, tick: int, preview: bool
