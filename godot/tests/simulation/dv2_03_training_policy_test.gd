@@ -68,7 +68,7 @@ func _run() -> void:
         state,disciple.id,"body_focus"
     )
     if not _assert(not bool(body_policy.get("ok",true)) and
-        str(body_policy.get("reason",""))=="body_training_mechanic_not_locked" and
+        str(body_policy.get("reason",""))=="body_training_consumer_not_ready" and
         DiscipleTrainingPolicyV2.current_policy(disciple)=="balanced",
         "body_focus became active before Luyện Thể training was designed."):
         return
