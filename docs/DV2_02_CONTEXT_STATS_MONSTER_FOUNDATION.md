@@ -65,7 +65,7 @@ Monster DEF = 19 × G(r,f) × species.defense_factor × tier.defense_factor
 
 Pilot tier multipliers (để test, KHÔNG user-locked):
 - **normal:** HP ×1,00; Công ×1,00; Thủ ×1,00;
-- **elite:** HP ×1,80; Công ×1,25; Thủ ×1,20;
+- **elite:** HP ×1,35; Công ×1,10; Thủ ×1,10; (điều chỉnh lần 1 từ kết quả 6v6 thua 16/16)
 - **boss:** HP ×4,00; Công ×1,60; Thủ ×1,35.
 
 Species factors theo từng quái được author, *không gacha mỗi lần đánh*. Map tier phải rõ, không nhân vô hạn damage boss ở nhiều tầng. Ngoại lệ boss theo chapter sau này dùng encounter author riêng; không làm loãng cả thang 30 đại cảnh.
