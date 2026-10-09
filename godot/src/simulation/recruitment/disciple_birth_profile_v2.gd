@@ -7,6 +7,8 @@ extends RefCounted
 const PROFILE_VERSION := 1
 const MODULUS := 2147483629
 const BASE_ROOT_IDS := ["metal","wood","water","fire","earth"]
+const MUTATION_IDS := ["lightning","wind","ice","yang","nether"]
+const PROFESSION_TALENT_IDS := ["forge_talent","miner_instinct","herbalist_affinity"]
 const DOMAINS := [
     "spiritual_root",
     "root_mutation",
@@ -155,7 +157,7 @@ static func valid_complete_birth(value: Variant) -> bool:
 
     var mutation: Dictionary = layers["root_mutation"]
     var mutation_id := str(mutation.get("mutation_id",""))
-    if mutation_id.is_empty():
+    if mutation_id.is_empty() or (mutation_id != "none" and not MUTATION_IDS.has(mutation_id)):
         return false
     if mutation_id != "none":
         var base_element := str(mutation.get("base_element",""))
@@ -163,8 +165,15 @@ static func valid_complete_birth(value: Variant) -> bool:
             return false
 
     var talent: Dictionary = layers["profession_talent"]
-    if not (talent.get("talents",{}) is Dictionary):
+    var talents = talent.get("talents",{})
+    if not (talents is Dictionary):
         return false
+    for talent_id in talents.keys():
+        if not PROFESSION_TALENT_IDS.has(str(talent_id)):
+            return false
+        var grade := int(talents[talent_id])
+        if grade < 1 or grade > 5:
+            return false
 
     var traits: Dictionary = layers["traits"]
     var visible = traits.get("visible",[])
