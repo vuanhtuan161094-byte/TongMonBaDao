@@ -63,8 +63,13 @@ func setup(id: String, party: Array, monsters: Array) -> Dictionary:
             "id":actor_id,"side":"disciple","party_id":party_id,"role":role,"tier":"disciple",
             "race_id":"nhan_toc","position":pos,"stats":stats.duplicate(true),
             "hp":hp,"max_hp":max_hp,"resistances":row.get("resistances",{}).duplicate(true),
-            "range":1.5 if role == "frontline" else (4.8 if role == "healer" else 5.5),
-            "move_speed":2.35 if role == "frontline" else 2.05,
+            "range":float(row.get("basic_range",1.5 if role == "frontline" else (4.8 if role == "healer" else 5.5))),
+            "move_speed":float(row.get("move_speed",2.35 if role == "frontline" else 2.05)),
+            "basic_ratio":float(row.get("basic_ratio",1.0)),
+            "basic_interval":float(row.get("basic_interval",1.6)),
+            "skill_loadout":row.get("skill_loadout",[]).duplicate(true),
+            "skill_factors":row.get("skill_factors",{}).duplicate(true),
+            "skill_ready":{},
             "next_basic":0.0,"next_skill":0.0,"guard_until":-1.0,
             "linked_disciple":row.get("disciple",null)
         })
@@ -131,6 +136,8 @@ func step(viewed_map: bool = false) -> Dictionary:
         if str(actor["role"]) == "frontline" and now >= float(actor["next_skill"]):
             if _guard_frontline(actor):
                 continue
+        if now >= float(actor["next_skill"]) and _try_learned_damage_skill(actor,target):
+            continue
         var distance := (actor["position"] as Vector2).distance_to(target["position"])
         var attack_range := float(actor["range"])
         if distance > attack_range:
@@ -148,9 +155,9 @@ func step(viewed_map: bool = false) -> Dictionary:
                 _cast_mage_aoe(actor,target)
                 continue
         if now >= float(actor["next_basic"]):
-            _deal_direct(actor,target,1.0,"basic",true)
+            _deal_direct(actor,target,float(actor.get("basic_ratio",1.0)),"basic",true)
             var interval := CombatStatsV2.effective_interval(
-                1.65 if str(actor["side"]) == "monster" else 1.6,
+                1.65 if str(actor["side"]) == "monster" else float(actor.get("basic_interval",1.6)),
                 float(actor["stats"].get("attack_speed",0.0))
             )
             actor["next_basic"] = now+maxf(STEP_SECONDS,interval)
@@ -248,7 +255,7 @@ func _guard_frontline(actor: Dictionary) -> bool:
     actions += 1
     return true
 
-func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: String, eligible_lifesteal: bool) -> float:
+func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: String, eligible_lifesteal: bool, damage_element: String = "") -> float:
     if float(attacker["hp"]) <= 0.0 or float(target["hp"]) <= 0.0:
         return 0.0
     var a_stats: Dictionary = attacker["stats"]
@@ -259,7 +266,7 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
         t_stats["damage_reduction"] = 1.0-(1.0-previous_reduction)*0.65
     var crit := rng.chance(CombatStatsV2.effective_crit_chance(a_stats,t_stats))
     var hit := CombatStatsV2.resolve_direct_hit(
-        a_stats,t_stats,target["resistances"],ratio,crit,"",1.0,true
+        a_stats,t_stats,target["resistances"],ratio,crit,damage_element,1.0,true
     )
     if not bool(hit.get("ok",false)):
         return 0.0
@@ -282,6 +289,41 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
         if str(target["side"]) == "disciple":
             downed_disciples += 1
     return actual_damage
+
+# Only ALREADY-LEARNED, authored direct-damage P2 skills can be used.
+# Debuff/Burn/Dash/etc. remain deferred until those specific consumers exist.
+func _try_learned_damage_skill(actor: Dictionary, target: Dictionary) -> bool:
+    var skills: Array = actor.get("skill_loadout",[])
+    var ready: Dictionary = actor.get("skill_ready",{})
+    for raw_id in skills:
+        var skill_id := str(raw_id)
+        var data: Dictionary = CombatSkillSystem.SKILLS.get(skill_id,{})
+        if str(data.get("effect","")) != "damage":
+            continue
+        if now < float(ready.get(skill_id,0.0)):
+            continue
+        if (actor["position"] as Vector2).distance_to(target["position"]) > float(data.get("range",0.0)):
+            continue
+        var caster_id := str(actor["id"])
+        var cast_seconds := maxf(STEP_SECONDS,float(data.get("cast_time",STEP_SECONDS)))
+        var distance := (actor["position"] as Vector2).distance_to(target["position"])
+        var projectile_speed := float(data.get("projectile_speed",0.0))
+        var travel := distance/projectile_speed if projectile_speed > 0.0 else 0.0
+        var ready_at := now+cast_seconds+travel
+        var multiplier := float(actor.get("skill_factors",{}).get(skill_id,1.0))
+        pending_casts.append({
+            "caster":caster_id,"target_id":str(target["id"]),
+            "skill_id":skill_id,"ready":ready_at,
+            "ratio":float(data.get("damage_ratio",0.0))*multiplier,
+            "element":str(data.get("element",""))
+        })
+        ready[skill_id] = now+maxf(STEP_SECONDS,float(data.get("cooldown",0.0)))
+        actor["skill_ready"] = ready
+        _event("skill_cast",{"actor_id":caster_id,"target":target["id"],
+            "skill_id":skill_id,"release_at":ready_at})
+        actions += 1
+        return true
+    return false
 
 func _cast_mage_aoe(actor: Dictionary, target: Dictionary) -> void:
     actor["next_skill"] = now+7.0
@@ -313,6 +355,14 @@ func _release_casts() -> void:
             continue
         var caster: Dictionary = actors.get(str(cast["caster"]),{})
         if caster.is_empty() or float(caster["hp"]) <= 0.0:
+            continue
+        if cast.has("skill_id"):
+            var targeted: Dictionary = actors.get(str(cast["target_id"]),{})
+            if not targeted.is_empty() and float(targeted["hp"]) > 0.0:
+                _event("skill_hit",{"caster":caster["id"],"target":targeted["id"],
+                    "skill_id":cast["skill_id"]})
+                _deal_direct(caster,targeted,float(cast["ratio"]),"learned_skill",true,
+                    str(cast.get("element","")))
             continue
         var selected := _area_targets(str(caster["side"]),cast["center"],float(cast["radius"]),int(cast["maximum"]))
         _event("area_release",{"caster":caster["id"],"target_count":selected.size(),"center":cast["center"]})
