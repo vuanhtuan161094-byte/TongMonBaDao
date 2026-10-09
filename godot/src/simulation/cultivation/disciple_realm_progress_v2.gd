@@ -14,7 +14,7 @@ static func initialize(
     cultivation_realm: int = 1, cultivation_floor: int = 1,
     body_realm: int = 1, body_floor: int = 1
 ) -> Dictionary:
-    if disciple == null or not bool(disciple.v2_birth_profile.get("initialized",false)):
+    if disciple == null or not DiscipleBirthProfileV2.valid_complete_birth(disciple.v2_birth_profile):
         return {"ok":false,"reason":"no_confirmed_v2_birth_identity"}
     if not disciple.v2_realm_progress.is_empty():
         return {"ok":false,"reason":"v2_progress_already_initialized"}
@@ -29,7 +29,8 @@ static func initialize(
 
 static func _track(realm: int, floor_index: int) -> Dictionary:
     return {"realm":realm,"floor":floor_index,"xp":0.0,
-        "gate_failures":0,"lifetime_failures":0}
+        "gate_failures":0,"lifetime_failures":0,
+        "auto_breakthrough":false,"breakthrough_history":[]}
 
 static func valid_coordinates(realm: int, floor_index: int) -> bool:
     return realm >= 1 and realm <= MAX_REALM and floor_index >= 1 and floor_index <= MAX_FLOOR
@@ -47,6 +48,10 @@ static func valid_profile(profile: Dictionary) -> bool:
         if is_nan(xp) or is_inf(xp) or xp < 0.0:
             return false
         if int(row.get("gate_failures",-1)) < 0 or int(row.get("lifetime_failures",-1)) < 0:
+            return false
+        if int(row.get("gate_failures",0)) > int(row.get("lifetime_failures",0)):
+            return false
+        if not (row.get("auto_breakthrough",false) is bool) or not (row.get("breakthrough_history",[]) is Array):
             return false
     return true
 
@@ -139,3 +144,95 @@ static func grant_xp(
         "at_major_gate":floor_index == MAX_FLOOR and xp >= float(costs[MAX_FLOOR]),
         "unapplied_overflow":extra
     }
+
+
+# A user policy flag, persisted independently for cultivation and body.
+# Never auto-roll during grant_xp, preview, UI or offscreen paint.
+static func set_auto_breakthrough(disciple: DiscipleState, track: String, enabled: bool) -> Dictionary:
+    if disciple == null or not valid_profile(disciple.v2_realm_progress) or not TRACKS.has(track):
+        return {"ok":false,"reason":"invalid_track_or_progress"}
+    disciple.v2_realm_progress[track]["auto_breakthrough"] = enabled
+    return {"ok":true,"track":track,"enabled":enabled}
+
+# Tu Vi major breakthrough (floor 10 -> next realm floor 1) obeys locked rules.
+# The owner must provide an AUTHORIZED gate cost and authored BASE chance for
+# this realm. There is deliberately NO fabricated universal 30-realm table.
+# Consumable modifiers, protection, special Fate/Physique and material charges
+# are not silently approximated; caller must satisfy those conditions upstream.
+static func attempt_cultivation_breakthrough(
+    disciple: DiscipleState, rng: GameRng,
+    gate_required_xp: float, base_chance: float,
+    requirements_verified: bool, event_id: String
+) -> Dictionary:
+    if disciple == null or rng == null or not valid_profile(disciple.v2_realm_progress):
+        return {"ok":false,"reason":"v2_realm_profile_not_ready"}
+    if event_id.is_empty() or not requirements_verified:
+        return {"ok":false,"reason":"gate_requirements_not_verified"}
+    if is_nan(gate_required_xp) or is_inf(gate_required_xp) or gate_required_xp <= 0.0:
+        return {"ok":false,"reason":"unapproved_gate_cost"}
+    if is_nan(base_chance) or is_inf(base_chance) or base_chance < 0.0 or base_chance > 1.0:
+        return {"ok":false,"reason":"unapproved_breakthrough_chance"}
+    var p: Dictionary = disciple.v2_realm_progress["cultivation"]
+    var realm := int(p["realm"])
+    if int(p["floor"]) != MAX_FLOOR or realm >= MAX_REALM:
+        return {"ok":false,"reason":"major_gate_not_available"}
+    if float(p["xp"])+0.0000001 < gate_required_xp:
+        return {"ok":false,"reason":"gate_xp_incomplete"}
+    for event in p.get("breakthrough_history",[]):
+        if str(event.get("event_id","")) == event_id:
+            return {"ok":false,"reason":"breakthrough_event_replayed"}
+    var prior_failures := int(p["gate_failures"])
+    var chance := clampf(base_chance+0.05*float(prior_failures),0.0,1.0)
+    var roll := rng.randf()
+    var success := roll < chance
+    var next_state: Dictionary = p.duplicate(true)
+    var history: Array = next_state.get("breakthrough_history",[]).duplicate(true)
+    history.append({"event_id":event_id,"realm":realm,"success":success,
+        "roll":roll,"chance":chance})
+    next_state["breakthrough_history"] = history
+    if success:
+        next_state["realm"] = realm+1
+        next_state["floor"] = 1
+        next_state["xp"] = 0.0
+        next_state["gate_failures"] = 0
+    else:
+        next_state["xp"] = maxf(0.0,float(p["xp"])-0.10*gate_required_xp)
+        next_state["gate_failures"] = prior_failures+1
+        next_state["lifetime_failures"] = int(p["lifetime_failures"])+1
+    disciple.v2_realm_progress["cultivation"] = next_state
+    return {"ok":true,"success":success,"track":"cultivation",
+        "chance":chance,"roll":roll,"event_id":event_id,
+        "realm":int(next_state["realm"]),"floor":int(next_state["floor"]),
+        "xp":float(next_state["xp"]),
+        "same_gate_failures":int(next_state["gate_failures"]),
+        "lifetime_failures":int(next_state["lifetime_failures"])}
+
+# Luyện Thể major gates are INDEPENDENT: its material requirements / chances
+# are not yet user-locked. Only a pre-authorized gate outcome may be committed,
+# never a guessed RNG roll or a Tu Vi breakthrough chance copied to Body.
+static func commit_authorized_body_gate(
+    disciple: DiscipleState, gate_required_xp: float,
+    requirements_verified: bool, event_id: String
+) -> Dictionary:
+    if disciple == null or not valid_profile(disciple.v2_realm_progress):
+        return {"ok":false,"reason":"v2_realm_profile_not_ready"}
+    if event_id.is_empty() or not requirements_verified or is_nan(gate_required_xp) or is_inf(gate_required_xp) or gate_required_xp <= 0.0:
+        return {"ok":false,"reason":"body_gate_content_not_authorized"}
+    var p: Dictionary = disciple.v2_realm_progress["body"]
+    if int(p["floor"]) != MAX_FLOOR or int(p["realm"]) >= MAX_REALM:
+        return {"ok":false,"reason":"body_major_gate_not_available"}
+    if float(p["xp"])+0.0000001 < gate_required_xp:
+        return {"ok":false,"reason":"body_gate_xp_incomplete"}
+    for event in p.get("breakthrough_history",[]):
+        if str(event.get("event_id","")) == event_id:
+            return {"ok":false,"reason":"body_gate_event_replayed"}
+    var updated: Dictionary = p.duplicate(true)
+    updated["breakthrough_history"].append({"event_id":event_id,
+        "realm":int(p["realm"]),"success":true,"kind":"authorized_body_gate"})
+    updated["realm"] = int(p["realm"])+1
+    updated["floor"] = 1
+    updated["xp"] = 0.0
+    updated["gate_failures"] = 0
+    disciple.v2_realm_progress["body"] = updated
+    return {"ok":true,"track":"body","event_id":event_id,
+        "realm":updated["realm"],"floor":1}
