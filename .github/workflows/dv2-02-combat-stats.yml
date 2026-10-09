@@ -1,0 +1,35 @@
+name: DV2-02 Combat Stats
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'godot/src/simulation/combat/combat_stats_v2.gd'
+      - 'godot/tests/simulation/dv2_02_combat_stats_test.gd'
+      - '.github/workflows/dv2-02-combat-stats.yml'
+permissions:
+  contents: read
+jobs:
+  combat-stats:
+    name: Godot 4.7.2 focused Combat Stats V2
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install official Godot 4.7.2 binary
+        shell: bash
+        run: |
+          set -euo pipefail
+          GODOT_URL="https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip"
+          GODOT_SHA256="cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4"
+          curl --fail --location --retry 3 --output /tmp/godot-dv2.zip "$GODOT_URL"
+          echo "$GODOT_SHA256  /tmp/godot-dv2.zip" | sha256sum --check --strict
+          unzip -q /tmp/godot-dv2.zip -d /tmp
+          sudo install -m 0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+      - name: Print Godot version
+        run: godot --version
+      - name: Import classes and parse current project
+        run: godot --headless --path godot --editor --quit
+      - name: DV2-02 canonical Combat Stats 14 channel model
+        run: godot --headless --path godot -s res://tests/simulation/dv2_02_combat_stats_test.gd
