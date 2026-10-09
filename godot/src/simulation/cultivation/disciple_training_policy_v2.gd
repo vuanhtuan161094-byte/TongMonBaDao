@@ -26,6 +26,8 @@ static func set_policy(
 ) -> Dictionary:
     if state == null or not VALID_POLICIES.has(policy):
         return {"ok":false,"reason":"invalid_training_policy"}
+    if policy == POLICY_BODY:
+        return {"ok":false,"reason":"body_training_mechanic_not_locked"}
     if not state.disciples.has(disciple_id):
         return {"ok":false,"reason":"unknown_training_disciple"}
     var disciple: DiscipleState = state.disciples[disciple_id]
@@ -69,10 +71,11 @@ static func choose_auto_action(
             "body_fallback"
         )
     if policy == POLICY_BODY:
-        return _preferred(
-            policy,body,cultivation,"body_focus",
-            "cultivation_fallback"
-        )
+        return {
+            "ok":false,
+            "reason":"body_training_mechanic_not_locked",
+            "policy":policy
+        }
     if policy != POLICY_BALANCED:
         return {"ok":false,"reason":"invalid_training_policy","policy":policy}
 
