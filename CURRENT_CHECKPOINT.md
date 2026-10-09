@@ -229,6 +229,14 @@ Current old percentage consumers may use a bounded compatibility bridge where ne
 
 **Danh sách source trọng yếu:** `godot/src/simulation/cultivation/disciple_realm_progress_v2.gd`, `disciple_training_action_v2.gd`, `godot/src/simulation/state/disciple_state.gd`, `sect_state.gd`, `godot/src/simulation/core/simulation_scheduler.gd`, `godot/src/simulation/combat/hunting_pve_run_v2.gd`, `godot/tests/simulation/dv2_03_realm_body_progress_test.gd`, `dv2_03_training_actions_test.gd`, `.github/workflows/dv2-03-realm-body-progress.yml`.
 
+
+### 5.4 Chuẩn bị lát triển khai tiếp theo — audit 09/10/2026
+
+**DV2-03 vẫn ACTIVE — chưa có code gameplay/gate mới trong lượt chuẩn bị này.** GitHub `main` đã được rà: action `request_training` kiểm tra sơ bộ nhưng không preflight `base_xp_per_action`/`floor_costs`; do đó có thể trả `ok=true` để xếp việc, rồi `resolve` fail-closed ở tick sau. Scheduler `step()` làm chủ cấp EXP, không phải driver wall-clock được chứng thực. Workflow focused của code `e96df183` PASS; FULL P3.7 chỉ có bằng chứng PASS tại `5296f610`. **Không có bằng chứng full same-code SHA hay realtime 15s/offline/Windows V2.**
+
+**Kế hoạch thực thi có thể làm ngay trong cùng DV2-03** (chi tiết đã lưu vào `docs/DV2_03_TWO_TRACK_PROGRESS_EXECUTION.md`): C — EXP production/validator + preflight command; D — driver 15s live, AI policy, save/catch-up không trùng; E — UI hai đường P3.2; F — dữ liệu 29 cổng Tu Vi, Luyện Thể riêng, HP V2 sync; G — focused/full regression và benchmark roster. EXP/chance/item chưa duyệt **không tự đưa vào code**. DV2-02 core giữ nguyên, chưa sang trang bị/kỹ năng/innate/PvE map production.
+
+
 ---
 
 ## 6. Disciple V2 design authorities prepared
