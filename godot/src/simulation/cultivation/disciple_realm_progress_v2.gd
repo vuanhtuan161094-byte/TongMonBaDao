@@ -154,6 +154,9 @@ static func grant_xp(
     var source_bonus := 0.0
     var source_ids: Dictionary = {}
     var ordered: Array = sources.duplicate(true)
+    for entry in ordered:
+        if not (entry is Dictionary):
+            return {"ok":false,"reason":"invalid_xp_source"}
     ordered.sort_custom(func(a,b): return str(a.get("source_id","")) < str(b.get("source_id","")))
     for raw in ordered:
         if not (raw is Dictionary):
