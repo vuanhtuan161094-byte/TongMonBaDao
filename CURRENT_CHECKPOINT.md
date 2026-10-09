@@ -200,7 +200,7 @@ P3.7C1 remains the most recently **closed** backend phase. The user explicitly i
 - `DiscipleGeneratorOpenPoints`: attaches envelope only for explicitly enabled states;
 - `godot/tests/simulation/dv2_01_birth_envelope_test.gd` and `.github/workflows/dv2-01-birth-envelope.yml`: focused Godot 4.7.2 verification.
 
-**Gate history:** first DV2-01A CI failed on nested JSON numeric values (int seeds parsed as float64). A typed load-normalization fix was committed; the latest focused workflow and P3.7 regressions must be examined before reporting PASS. Intermediate failure is recorded, not hidden. **This does not complete DV2-01**: the source-weighted Root/Trait/Fate/Bloodline/Physique birth selection is not implemented, and no V2 combat/production consumers are enabled yet.
+**Gate history:** earlier DV2-01A CI runs failed on nested JSON numeric values (int seeds parsed as float64). Fixed with `DiscipleBirthProfileV2.normalize_envelope`. **Focused DV2-01A Godot 4.7.2 PASS** at commit `22f7d80e` — [Actions run #37876520342](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37876520342). P3.7 latest cumulative workflow at that same code commit is **PENDING** as of this checkpoint edit. Intermediate failures are retained as evidence of the corrected defect. **This does not complete DV2-01**: the source-weighted Root/Trait/Fate/Bloodline/Physique birth selection is not implemented, and no V2 combat/production consumers are enabled yet.
 
 **Design/balance supporting documents (numeric proposal, not user-locked):**
 - `docs/DV2_REALM_BODY_COMBAT_CURVES_V1_PROPOSAL.md` (300 floors, HP/ATK/DEF and numeric Defense, mathematical audit only);
