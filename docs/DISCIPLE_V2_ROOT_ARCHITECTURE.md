@@ -141,7 +141,7 @@ Không có `combat_power` universal V2, không có Mana/Kiếm Ý universal, kh�
 | **M-01** | Mô hình lưu V2 cụ thể | Một hồ sơ canonical trên mỗi ID, phân vùng rõ `identity/birth/permanent/learned/living/organization/history`, từng chuyên ngành có `initialized`/version riêng; phần dict P2 chỉ làm adapter | Nhân vật tồn tại hai bản truth; load/reveal mất dữ liệu |
 | **M-02** | Thứ tự ưu tiên lệnh với sinh tồn/đang làm | Ràng buộc an toàn/bất khả thi trước, hoàn tất hành động không thể ngắt nếu đã bắt đầu, rồi đến lệnh hợp lệ của người chơi, chính sách/tổ chức, mục tiêu và tính cách/AI; có quy tắc hủy/hoãn rõ ràng | Lệnh người chơi bị bỏ qua hoặc cắt ca làm mất tài nguyên |
 | **M-03** | Lưu sự kiện cho 3.000 đệ tử | Event result typed theo hành động; chỉ lưu significant-history và bộ đếm/điều kiện còn sống; log chi tiết dùng vòng đệm giới hạn nếu cần debug/UI | Save tăng vô hạn hoặc điều kiện Mệnh Cách hậu thiên không thể xét |
-| **M-04** | Sinh Trait/Mệnh Cách khi pool per-ID chưa đủ luật | Giữ schema/seed/initialized và tỷ lệ nhóm đã khóa, **chưa chọn tên ID từ danh sách chưa duyệt**; trước code generator V2 phải khóa eligible pools/birth weights, hoặc phê duyệt từng pool tối thiểu có cơ chế thật | Tự chọn trọng số làm thay đổi xác suất; sinh content không có cơ chế |
+| **M-04 — ĐÃ CHỐT** | Trait/Mệnh Cách birth weights | User approved V1 per-ID weights on 2026-10-09 in `docs/DV2_BIRTH_WEIGHTS_TRAIT_FATE_V1_PROPOSAL.md`; V2 generation under default-off flag is implemented and tested. Kiếm Tiên Chuyển Thế excluded pending `birth_override`; consumer-gated effects remain inactive | Birth identities work, real combat/work consumers belong to later phases |
 | **M-05** | Reset dữ liệu thử nghiệm và tương thích | Cho phép reset các world/nhân vật test được chỉ rõ; vẫn giữ lối load/compat để chạy gate baseline khi sửa, không tự xóa file của người dùng | Phá dữ liệu/test và không xác định được regression |
 | **M-06 — ĐÃ CÓ LUẬT V2** | Khi Max HP vĩnh viễn thay đổi | **Giữ nguyên tỷ lệ HP hiện tại**, trừ hiệu ứng explicit healing/damage; luật đã khóa tại `docs/COMBAT_STATS_V2_SPEC.md` | Khi code phải bảo đảm không hồi đầy miễn phí, test theo nhiều nguồn |
 
@@ -151,7 +151,7 @@ Không giải quyết M-04 bằng một bảng ngẫu nhiên chung tự chế; v
 
 **Đã có/đã khóa:** time/world authority P0; P3.7C1 Dẫn Tiên + open-point Lục Duy; phân lớp canonical theo Master Schema/Stat Framework.
 
-**Trước code DV2-01:** duyệt M-01..M-05; giữ nguồn P3.7C1. M-06 chốt trước DV2-02.
+**Current update 2026-10-09:** M-01 canonical versioned birth, M-04 approved weighted pools and M-06 HP-ratio rule are resolved at **their design scope**; DV2-01 code under opt-in test, M-02 action priorities and M-03 long-term event history remain for later action phases. C1 authority preserved.
 
 **DV2-01:** hồ sơ canonical, candidate→disciple, seed domain, birth snapshots, versioned persistence và test no-reroll.
 
