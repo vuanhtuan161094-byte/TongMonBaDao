@@ -192,6 +192,41 @@ func _run() -> void:
         "Both progress tracks, auto policy, and breakthrough history were not saved."):
         return
 
+    # Ordinary natural EXP modifiers from real sources stack additively with
+    # Tu Chat/Can Cot in their own channel. Disabled future effects are inert.
+    var body_bonus: Array = [
+        {"source_id":"approved_training","channel":"body_xp_gain",
+            "mode":"percent_add","value":0.10,"enabled":true},
+        {"source_id":"unimplemented_trait","channel":"body_xp_gain",
+            "mode":"percent_add","value":0.50,"enabled":false}
+    ]
+    var added_body := DiscipleRealmProgressV2.grant_xp(
+        disciple,"body",100.0,"natural",_costs(2),body_bonus
+    )
+    if not _check(bool(added_body.get("ok",false)) and
+        _close(float(added_body["gained"]),130.0) and
+        _close(float(added_body["natural_factor"]),1.30),
+        "Căn Cốt and enabled authored body EXP modifier must add, not multiply."):
+        return
+    var fixed_again := DiscipleRealmProgressV2.grant_xp(
+        disciple,"body",100.0,"fixed",_costs(2),body_bonus
+    )
+    if not _check(bool(fixed_again.get("ok",false)) and
+        _close(float(fixed_again["gained"]),100.0),
+        "Fixed EXP was illegally multiplied by innate/active natural modifiers."):
+        return
+    var before_bad_source := disciple.v2_realm_progress.duplicate(true)
+    var invalid_bonus := DiscipleRealmProgressV2.grant_xp(
+        disciple,"body",100.0,"natural",_costs(2),[
+            {"source_id":"fake","channel":"body_xp_gain","mode":"percent_add",
+                "value":0.2,"condition":"any_boss"}
+        ]
+    )
+    if not _check(not bool(invalid_bonus.get("ok",true)) and
+        disciple.v2_realm_progress == before_bad_source,
+        "Unknown conditional XP source must be rejected atomically."):
+        return
+
     var end_curve := CombatStatsV2.derive(30,10,30,10,disciple.potential)
     if not _check(bool(end_curve.get("ok",false)) and
         DiscipleRealmProgressV2.global_floor(30,10) == 300 and
