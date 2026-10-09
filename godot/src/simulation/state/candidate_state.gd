@@ -36,6 +36,8 @@ var age: int = 0
 var base_lifespan: int = 0
 var max_lifespan: int = 0
 var latent_identity_seed: int = 0
+# DV2-01 opt-in birth envelope. Empty for all historical and P3.7C1 candidates.
+var v2_birth_profile: Dictionary = {}
 var cultivation_stage_index: int = 0
 var cultivation_progress: float = 0.0
 var cultivation_combat_bonus: float = 0.0
@@ -74,6 +76,8 @@ func _init(definition: Dictionary = {}) -> void:
     base_lifespan = maxi(int(definition.get("base_lifespan", 0)), 0)
     max_lifespan = maxi(int(definition.get("max_lifespan", 0)), 0)
     latent_identity_seed = int(definition.get("latent_identity_seed", 0))
+    var raw_v2_birth = definition.get("v2_birth_profile", {})
+    v2_birth_profile = raw_v2_birth.duplicate(true) if raw_v2_birth is Dictionary else {}
     cultivation_stage_index = maxi(int(definition.get("cultivation_stage_index", 0)), 0)
     cultivation_progress = maxf(float(definition.get("cultivation_progress", 0.0)), 0.0)
     cultivation_combat_bonus = maxf(float(definition.get("cultivation_combat_bonus", 0.0)), 0.0)
@@ -123,6 +127,8 @@ func to_dict() -> Dictionary:
         data["cultivation_progress"] = cultivation_progress
         data["cultivation_combat_bonus"] = cultivation_combat_bonus
         data["cultivation_hp_bonus"] = cultivation_hp_bonus
+    if not v2_birth_profile.is_empty():
+        data["v2_birth_profile"] = v2_birth_profile.duplicate(true)
     return data
 
 func to_disciple() -> DiscipleState:
@@ -173,6 +179,8 @@ func to_disciple() -> DiscipleState:
         definition["cultivation_hp_bonus"] = cultivation_hp_bonus
         definition["sect_rank"] = "outer"
 
+    if not v2_birth_profile.is_empty():
+        definition["v2_birth_profile"] = v2_birth_profile.duplicate(true)
     var disciple := DiscipleState.new(definition)
     if profile_seed > 0 or recruitment_source != &"":
         disciple.max_hp = 100.0 + cultivation_hp_bonus
