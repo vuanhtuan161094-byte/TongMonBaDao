@@ -62,6 +62,7 @@ static func initialize(
         "version":VERSION,"initialized":true,
         "last_training_tick":-1,
         "last_passive_tuvi_tick":-1,
+        "last_body_xp_tick":-1,
         "training_policy":DEFAULT_TRAINING_POLICY,
         "cultivation":_track(cultivation_realm,cultivation_floor),
         "body":_track(body_realm,body_floor)
@@ -87,6 +88,8 @@ static func valid_profile(profile: Dictionary) -> bool:
     if int(profile.get("last_training_tick",-1)) < -1:
         return false
     if int(profile.get("last_passive_tuvi_tick",-1)) < -1:
+        return false
+    if int(profile.get("last_body_xp_tick",-1)) < -1:
         return false
     if not TRAINING_POLICIES.has(str(profile.get("training_policy",DEFAULT_TRAINING_POLICY))):
         return false
@@ -117,6 +120,7 @@ static func normalize_profile(input: Variant) -> Dictionary:
     normalized["version"] = int(normalized.get("version",0))
     normalized["last_training_tick"] = int(normalized.get("last_training_tick",-1))
     normalized["last_passive_tuvi_tick"] = int(normalized.get("last_passive_tuvi_tick",-1))
+    normalized["last_body_xp_tick"] = int(normalized.get("last_body_xp_tick",-1))
     normalized["training_policy"] = str(normalized.get("training_policy",DEFAULT_TRAINING_POLICY))
     for track in TRACKS:
         var row = normalized.get(track,{})
