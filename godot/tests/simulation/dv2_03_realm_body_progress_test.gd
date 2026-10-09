@@ -48,17 +48,16 @@ func _run() -> void:
     disciple.constitution = 100.0
     disciple.potential = 100.0
     var recruited := DiscipleRealmProgressV2.current(disciple)
-    var expected_recruit_floor := 10 + candidate.cultivation_stage_index + 1
     if not _check(bool(recruited.get("ok",false)) and
-        int(recruited["cultivation_global_floor"]) == expected_recruit_floor and
+        int(recruited["cultivation_global_floor"]) == 1 and
         int(recruited["body_global_floor"]) == 1 and
+        _close(float(recruited["cultivation"]["xp"]),0.0) and
+        _close(float(recruited["body"]["xp"]),0.0) and
         not bool(DiscipleRealmProgressV2.initialize(disciple).get("ok",true)),
-        "V2 recruitment must create exactly one explicit starting two-track profile."):
+        "V2 recruitment must start exactly once at Phàm Nhân 1 + Phàm Thân 1, 0 EXP."):
         return
 
-    # Normalize this focused arithmetic fixture to the first V2 coordinates.
-    # Recruitment compatibility was asserted above; the remaining test is about
-    # 2x300 progression math, not the recruitment distribution.
+    # Keep the arithmetic fixture explicitly at the canonical production start.
     disciple.v2_realm_progress["cultivation"] = {
         "realm":1,"floor":1,"xp":0.0,"gate_failures":0,"lifetime_failures":0,
         "auto_breakthrough":false,"breakthrough_history":[],"last_training_event_id":""
@@ -174,7 +173,7 @@ func _run() -> void:
         "Re-cultivation did not replenish the gate."):
         return
     var won := DiscipleRealmProgressV2.attempt_cultivation_breakthrough(
-        disciple,rng,1000.0,1.0,true,"attempt_02"
+        disciple,rng,_costs(1),1.0,true,"attempt_02"
     )
     if not _check(bool(won.get("ok",false)) and bool(won["success"]) and
         _close(float(won["chance"]),1.0) and int(won["realm"]) == 2 and
