@@ -110,8 +110,8 @@ Luyện Thể deliberately does **not** mirror passive Tu Vi absorption.
 Canonical source model:
 - newly generated production V2 disciples start at **Phàm Thân tầng 1, 0 Luyện Thể EXP**;
 - ordinary sect work, travel, hunting, standing idle and normal combat do not generically grant Luyện Thể EXP;
-- natural/base Luyện Thể EXP exists only while performing an explicit body-training source such as `TRAIN_BODY` or another authored body-training activity;
-- display/balance rate unit for active body training is **Luyện Thể EXP per simulation minute**; the numeric production rate remains OPEN;
+- natural/base Luyện Thể EXP exists only from an **explicit authored Luyện Thể source**;
+- the concrete training activity model is **OPEN**: no `TRAIN_BODY` action, duration unit, EXP/time rate, facility interaction or body-training schedule is locked yet;
 - Căn Cốt (+0.20%/point) and valid body-training modifiers apply to those natural/base body-training sources;
 - pills, medicinal baths, monster materials/essence, events or other content may grant fixed +X Body EXP when explicitly authored;
 - fixed +X Body EXP is not multiplied by Căn Cốt unless that content explicitly declares itself scalable.
@@ -446,8 +446,8 @@ These require their own design/balance pass.
 ## Trạng thái triển khai Luyện Thể DV2-03 — 09/10/2026 (không thay thiết kế đã khóa)
 
 - **Đã code + focused Godot PASS**: `DiscipleState.v2_realm_progress.body` (30 đại cảnh × 10 tầng; tên đúng ladder), `DiscipleRealmProgressV2.grant_xp(...,"body",...)`, tăng tầng nhỏ tự động theo EXP, `Căn Cốt +0,20%/điểm` cho EXP natural, cộng buff hợp lệ cùng channel và giữ thưởng `fixed` chính xác, dừng ở cửa đại cảnh.
-- **Đã code ở latest source, runtime gate latest chưa xác minh**: `TRAIN_BODY` do `SimulationScheduler.step()` commit theo **Body EXP/phút mô phỏng**; request chỉ xếp lệnh, không cấp ngay và không ngắt COMBAT/việc bận. Passive Tu Vi có dedup riêng nên một phút TRAIN_BODY hợp lệ nhận cả natural Tu Vi + Body EXP; Body không tự tạo Tu Vi nguồn thứ hai. `v2_training_enabled` false + `v2_training_rules` empty mặc định.
+- **Latest code safety state, runtime gate chưa xác minh**: generic Body progression math and Căn Cốt scaling exist, but the concrete Luyện Thể training activity is **BLOCKED / NOT DESIGNED**. The legacy/provisional `TRAIN_BODY` token is fail-closed and cannot grant Body EXP. `v2_training_enabled` remains default-off.
 - **Chưa có quyền coi hoàn thành**: `commit_authorized_body_gate` chỉ là hàm commit sau khi consumer khác đã xác minh EXP/điều kiện; chưa có tỷ lệ thử đột phá, vật liệu, thất bại riêng cho Luyện Thể đã duyệt. Không được sao chép xác suất Tu Vi; không tự rút HP/Thể Lực Viễn Chinh từ hành động TRAIN_BODY.
-- **Chưa triển khai/tích hợp đầy đủ**: 300 yêu cầu EXP & numeric Body EXP/phút chính thức, lịch persistent/offline, màn hình V2, hệ **Thể Lực Viễn Chinh** đúng thiết kế riêng và tiêu hao stamina bản đồ. Các số test như 50 EXP/action và 100 EXP/tầng chỉ là fixture, không phải balance.
+- **Chưa thiết kế/triển khai đầy đủ**: hoạt động Luyện Thể cụ thể, nguồn natural Body EXP, đơn vị/thời lượng, công trình/vật liệu, 300 yêu cầu EXP, major-gate content, lịch persistent/offline, màn hình V2, và tiêu hao **Thể Lực Viễn Chinh** ngoài map. Các số test như 50 EXP/action và 100 EXP/tầng chỉ là fixture, không phải balance.
 - **FOCUSED Godot 4.7.2 Linux PASS** [#37895517181](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37895517181) tại `e96df183`. Full P3.7 PASS được xác minh [#37895357334](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37895357334) tại mã cũ `5296f610`. Không phải Windows PASS hay lệnh V2 UI PASS.
 - Tiến độ kỹ thuật và kiểm thử: [`DV2_03_TWO_TRACK_PROGRESS_EXECUTION.md`](DV2_03_TWO_TRACK_PROGRESS_EXECUTION.md). Các định nghĩa Thể Lực Viễn Chinh bên trên **vẫn là thiết kế**, không hiểu nhầm thành code.
