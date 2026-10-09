@@ -8,6 +8,23 @@ const VERSION := 1
 const TRACKS := ["cultivation","body"]
 const MAX_REALM := 30
 const MAX_FLOOR := 10
+const CULTIVATION_REALM_NAMES := [
+    "Phàm Nhân","Luyện Khí","Trúc Cơ","Tử Phủ","Kim Đan","Nguyên Anh",
+    "Hóa Thần","Luyện Hư","Hợp Thể","Đại Thừa","Nhân Tiên","Địa Tiên",
+    "Thiên Tiên","Chân Tiên","Huyền Tiên","Kim Tiên","Thái Ất Kim Tiên",
+    "Đại La Kim Tiên","Tiên Vương","Tiên Đế","Thần Nhân","Chân Thần",
+    "Thiên Thần","Thần Quân","Thần Vương","Thần Hoàng","Thần Đế",
+    "Thần Tôn","Hỗn Độn Thần","Sáng Thế Chủ"
+]
+const BODY_REALM_NAMES := [
+    "Phàm Thân","Luyện Bì","Luyện Nhục","Dịch Cân","Đoán Cốt",
+    "Thông Mạch","Tôi Tạng","Luyện Huyết","Khai Khiếu","Linh Thân",
+    "Kim Thân","Pháp Thân","Huyền Thân","Thánh Khu","Tiên Khu",
+    "Chân Thân","Bất Hoại","Thái Ất Kim Thân","Đại La Kim Thân",
+    "Đế Thân","Thần Khu","Thần Cốt","Thần Mạch","Thần Tạng",
+    "Thần Tủy","Thần Khiếu","Thần Thể","Bất Diệt Thần Thể",
+    "Hỗn Độn Thần Thể","Sáng Thế Thần Thể"
+]
 
 static func initialize(
     disciple: DiscipleState,
@@ -89,6 +106,15 @@ static func normalize_profile(input: Variant) -> Dictionary:
         return {}
     return normalized
 
+# Read-only labels from the locked 30+30 realm list, not alternative
+# progression or a new realm; tier 10->11/20->21 event content remains
+# separate from the ladder.
+static func realm_name(track: String, realm: int) -> String:
+    if not TRACKS.has(track) or realm < 1 or realm > MAX_REALM:
+        return ""
+    var names: Array = CULTIVATION_REALM_NAMES if track == "cultivation" else BODY_REALM_NAMES
+    return str(names[realm-1])
+
 static func global_floor(realm: int, floor_index: int) -> int:
     if not valid_coordinates(realm,floor_index):
         return 0
@@ -103,7 +129,9 @@ static func current(disciple: DiscipleState) -> Dictionary:
         "cultivation":p["cultivation"].duplicate(true),
         "body":p["body"].duplicate(true),
         "cultivation_global_floor":global_floor(int(p["cultivation"]["realm"]),int(p["cultivation"]["floor"])),
-        "body_global_floor":global_floor(int(p["body"]["realm"]),int(p["body"]["floor"]))
+        "body_global_floor":global_floor(int(p["body"]["realm"]),int(p["body"]["floor"])),
+        "cultivation_name":realm_name("cultivation",int(p["cultivation"]["realm"])),
+        "body_name":realm_name("body",int(p["body"]["realm"]))
     }
 
 static func derive_stats(disciple: DiscipleState, sources: Array = []) -> Dictionary:
