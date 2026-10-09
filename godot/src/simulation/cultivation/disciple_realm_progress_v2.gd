@@ -55,6 +55,40 @@ static func valid_profile(profile: Dictionary) -> bool:
             return false
     return true
 
+# JSON.parse_string converts integral nested fields to floats. Normalize
+# only the schema's integer fields (same as DV2-01 birth normalization);
+# preserve exact progress floats and immutable audit labels.
+static func normalize_profile(input: Variant) -> Dictionary:
+    if not (input is Dictionary) or input.is_empty():
+        return {}
+    var normalized: Dictionary = input.duplicate(true)
+    normalized["version"] = int(normalized.get("version",0))
+    for track in TRACKS:
+        var row = normalized.get(track,{})
+        if not (row is Dictionary):
+            return {}
+        for key in ["realm","floor","gate_failures","lifetime_failures"]:
+            row[key] = int(row.get(key,0))
+        row["auto_breakthrough"] = bool(row.get("auto_breakthrough",false))
+        var raw_history = row.get("breakthrough_history",[])
+        if not (raw_history is Array):
+            return {}
+        for event in raw_history:
+            if not (event is Dictionary):
+                return {}
+            event["realm"] = int(event.get("realm",0))
+            # This is only a display/audit field; the active stream is
+            # GameRng and must remain independent from history serialization.
+            if event.has("roll"):
+                event["roll"] = str(event["roll"])
+            if event.has("chance"):
+                event["chance"] = str(event["chance"])
+        row["breakthrough_history"] = raw_history
+        normalized[track] = row
+    if not valid_profile(normalized):
+        return {}
+    return normalized
+
 static func global_floor(realm: int, floor_index: int) -> int:
     if not valid_coordinates(realm,floor_index):
         return 0
@@ -188,7 +222,9 @@ static func attempt_cultivation_breakthrough(
     var next_state: Dictionary = p.duplicate(true)
     var history: Array = next_state.get("breakthrough_history",[]).duplicate(true)
     history.append({"event_id":event_id,"realm":realm,"success":success,
-        "roll":roll,"chance":chance})
+        # JSON binary floating-point roundtrips may change last bits; these
+        # audit fields are labels, not an RNG authority. Keep exact text.
+        "roll":str(roll),"chance":str(chance)})
     next_state["breakthrough_history"] = history
     if success:
         next_state["realm"] = realm+1
