@@ -12,7 +12,12 @@ static func validate_catalogue(raw: Variant) -> Dictionary:
     if not (raw is Dictionary):
         return {"ok":false,"reason":"invalid_training_catalogue"}
     var catalogue: Dictionary = raw
-    if not (catalogue.get("version",null) is int) or int(catalogue["version"]) != VERSION:
+    # JSON.parse_string may restore a nominal integer version as a float.
+    var raw_version = catalogue.get("version",null)
+    if not (raw_version is int or raw_version is float):
+        return {"ok":false,"reason":"invalid_training_catalogue_version"}
+    var version := float(raw_version)
+    if is_nan(version) or is_inf(version) or version != float(VERSION):
         return {"ok":false,"reason":"invalid_training_catalogue_version"}
     if str(catalogue.get("catalogue_id","")).is_empty():
         return {"ok":false,"reason":"missing_training_catalogue_id"}
