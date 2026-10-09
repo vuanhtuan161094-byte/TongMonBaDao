@@ -160,6 +160,51 @@ func _run() -> void:
             _fail("V2 profession talent grade diverged after legacy P3.7 integration.")
             return
 
+    # Dẫn Tiên is a distinct actual recruitment entry path and must use the
+    # SAME V2 roll/weight rules without shifting the P3.7 guidance/quality RNG.
+    var guidance_v2 := P37Factory.create_state(TEST_SEED + 300)
+    var guidance_old := P37Factory.create_state(TEST_SEED + 300)
+    guidance_v2.sect.disciple_v2_birth_enabled = true
+    guidance_v2.sect.disciple_recruitment_tokens = 1
+    guidance_old.sect.disciple_recruitment_tokens = 1
+    var guidance_recruiter := RecruitmentSystem.new()
+    for guidance_state in [guidance_old, guidance_v2]:
+        var ids: Array = guidance_state.disciples.keys()
+        ids.sort()
+        var guide: DiscipleState = guidance_state.disciples[ids[0]]
+        guide.charisma = 2500.0
+        FoundationSystem.new().recompute_disciple_quality(guide)
+        if not bool(guidance_recruiter.assign_guidance_main(guidance_state,guide.id).get("ok",false)):
+            _fail("Dẫn Tiên guidance-main assignment failed.")
+            return
+        if not bool(guidance_recruiter.begin_guidance_day(guidance_state,false).get("ok",false)):
+            _fail("Dẫn Tiên daily snapshot failed.")
+            return
+    var guidance_normal_result := guidance_recruiter.guidance_recruit_with_order(guidance_old)
+    var guidance_v2_result := guidance_recruiter.guidance_recruit_with_order(guidance_v2)
+    if not bool(guidance_normal_result.get("ok",false)) or not bool(guidance_v2_result.get("ok",false)):
+        _fail("V2 or legacy actual Dẫn Tiên Chiêu Mộ Lệnh failed.")
+        return
+    var guidance_normal_id := StringName(guidance_normal_result.get("candidate_id",""))
+    var guidance_v2_id := StringName(guidance_v2_result.get("candidate_id",""))
+    var old_guide_candidate: CandidateState = guidance_old.recruitment_candidates.get(guidance_normal_id)
+    var new_guide_candidate: CandidateState = guidance_v2.recruitment_candidates.get(guidance_v2_id)
+    if old_guide_candidate == null or new_guide_candidate == null:
+        _fail("Dẫn Tiên lost actual generated candidate.")
+        return
+    var comparable_guide_birth := new_guide_candidate.to_dict()
+    comparable_guide_birth.erase("v2_birth_profile")
+    if old_guide_candidate.to_dict() != comparable_guide_birth:
+        _fail("DV2 birth changed Dẫn Tiên odds, identity, lục duy or legacy talent.")
+        return
+    for layer in DiscipleBirthProfileV2.UNINITIALIZED_LAYERS:
+        if not bool(new_guide_candidate.v2_birth_profile["layers"][layer]["initialized"]):
+            _fail("Actual Dẫn Tiên V2 did not generate layer " + str(layer))
+            return
+    if guidance_v2.sect.disciple_recruitment_tokens != 0:
+        _fail("Dẫn Tiên V2 did not consume the correct Chiêu Mộ Lệnh count.")
+        return
+
     var legacy := P37Factory.create_state(TEST_SEED)
     var legacy_path := "user://dv2_01_baseline_roundtrip.json"
     if SaveService.new().save_to_path(legacy, legacy_path) != OK:
