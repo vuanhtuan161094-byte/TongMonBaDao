@@ -31,19 +31,37 @@ static func save(battle: MapBattleV2) -> Dictionary:
             if event.has(field):
                 event[field] = _encode_vec2(event[field])
         serialized_events.append(event)
-    return {
+    var payload := {
         "ok":true,"version":VERSION,
         "encounter_id":battle.encounter_id,
-        # JSON integers above 2^53 lose RNG bits; encode signed int64 as TEXT.
-        "rng_state":str(battle.rng.snapshot_seed_state()),
+        "rng_state":battle.rng.snapshot_seed_state(),
         "time":battle.now,"active":battle.active,"outcome":battle.outcome,
         "actions":battle.actions,"downed_disciples":battle.downed_disciples,
         "actors":serialized_actors,"casts":serialized_casts,"events":serialized_events
     }
+    # JSON converts integers to floats and rounds float64 values, changing
+    # mid-battle damage and RNG. Godot Variant bytes retain EXACT bit patterns.
+    # Use a versioned base64 payload inside JSON, with object decoding OFF.
+    return {"ok":true,"version":VERSION,"encoding":"godot_variant_b64",
+        "payload":Marshalls.raw_to_base64(var_to_bytes(payload))}
 
 static func load(data: Dictionary) -> Dictionary:
     if not bool(data.get("ok",false)) or int(data.get("version",0)) != VERSION:
         return {"ok":false,"reason":"unsupported_battle_snapshot"}
+    if str(data.get("encoding","")) != "godot_variant_b64" or not (data.get("payload") is String):
+        return {"ok":false,"reason":"invalid_battle_snapshot_encoding"}
+    var encoded: String = data["payload"]
+    if encoded.is_empty() or encoded.length() > 16000000:
+        return {"ok":false,"reason":"invalid_snapshot_size"}
+    var bytes := Marshalls.base64_to_raw(encoded)
+    if bytes.size() < 16 or bytes.size() > 12000000:
+        return {"ok":false,"reason":"invalid_snapshot_binary"}
+    var raw = bytes_to_var(bytes,false)
+    if not (raw is Dictionary) or int(raw.get("version",0)) != VERSION:
+        return {"ok":false,"reason":"invalid_snapshot_payload"}
+    return _restore_payload(raw)
+
+static func _restore_payload(data: Dictionary) -> Dictionary:
     var id := str(data.get("encounter_id",""))
     if id.is_empty() or not (data.get("actors") is Array):
         return {"ok":false,"reason":"missing_encounter_or_actors"}
@@ -133,10 +151,10 @@ static func load(data: Dictionary) -> Dictionary:
                     return {"ok":false,"reason":"invalid_event_position"}
                 event[field] = coord
         battle.events.append(event)
-    var encoded_rng = data.get("rng_state",null)
-    if not (encoded_rng is String) or not (encoded_rng as String).is_valid_int():
-        return {"ok":false,"reason":"invalid_rng_int64_encoding"}
-    battle.rng.restore_seed_state(int(encoded_rng))
+    var saved_rng = data.get("rng_state",null)
+    if not (saved_rng is int):
+        return {"ok":false,"reason":"invalid_rng_state"}
+    battle.rng.restore_seed_state(saved_rng)
     return {"ok":true,"battle":battle}
 
 static func _encode_vec2(value: Vector2) -> Array:
