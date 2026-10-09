@@ -194,7 +194,41 @@ This preserves the existing locked direction used by U Minh and future defensive
 
 ---
 
-## 2.7 Elemental resistance map
+## 2.7 Hút Máu và Giảm Hút Máu — USER LOCKED 2026-10-09
+
+15. **Lifesteal — Hút Máu**
+   - internal target: `lifesteal`;
+   - starting baseline **0%**;
+   - source modifiers use `percentage_points` (e.g. +20% = +0.20);
+   - heals the attacker for a fraction of **actual HP damage dealt**, after defense, elemental effects, Damage Reduction and the defender's remaining HP cap;
+   - healing cannot exceed the attacker's missing HP.
+
+16. **Anti-Lifesteal — Giảm Hút Máu**
+   - internal target: `lifesteal_reduction`;
+   - starting baseline **0%**;
+   - source modifiers use `percentage_points`;
+   - subtracts directly from **the attacker's Lifesteal percentage**, not from dealt damage and not as a multiplicative reduction.
+
+Canonical calculation:
+
+```text
+effective_lifesteal = max(0, attacker_lifesteal - defender_lifesteal_reduction)
+actual_hp_damage   = min(final_eligible_damage, defender_current_hp)
+raw_lifesteal_heal = actual_hp_damage * effective_lifesteal
+real_heal          = min(raw_lifesteal_heal, attacker_max_hp - attacker_current_hp)
+```
+
+- Example: 20% Hút Máu attacking a defender with 5% Giảm Hút Máu leaves **15% Hút Máu**. Actual damage 1,000 heals up to 150 HP.
+- Overkill does not create extra healing; a target with 100 HP cannot supply more than 100 actual damage to this calculation.
+- Hút Máu and Giảm Hút Máu start from 0, are nonnegative after source resolution, and have **no arbitrarily invented 100% numeric upper growth cap**. Reduction can exceed 100% if authored; the net rate still cannot become negative.
+- By default **eligible direct basic/skill hits** may lifesteal. DoT ticks, reflected damage, summon/proc/fixed damage must be explicitly enabled by their owning skill/action to lifesteal. Pure hit-preview/AI utility cannot heal; **one HP-commit event** applies the result once.
+- Healing Done/Healing Received are distinct specialized channels and do **not** automatically amplify lifesteal; lifesteal is not passive regeneration or ordinary medicinal healing.
+- Neither the lifesteal source nor the anti-lifesteal source is a Lục Duy, a birth roll, or a scalar Combat Power.
+- These two replace only the *lifesteal* portion of the old "no universal Lifesteal" decision. Normal universal Block, Reflect and Threat stats remain deferred.
+
+---
+
+## 2.8 Elemental resistance map
 
 15. **Elemental Resistance — Kháng Nguyên Tố / Dị Hệ**
    - internal target: one keyed map/channel, not ten hardcoded character fields.
@@ -592,9 +626,11 @@ A future technique/resource system may add an explicit resource if it has a clos
 
 Do not create one speculatively.
 
-## 12.5 No universal Block / Lifesteal / Reflect / Threat stat
+## 12.5 No universal Block / Reflect / Threat stat
 
 These remain explicit mechanics/channels until enough content proves they deserve a general stat.
+
+**Superseded for Lifesteal only (2026-10-09):** Hút Máu and Giảm Hút Máu are now registered **15th and 16th headline Combat Stats** under §2.7. Do not keep a second separate Lifesteal subsystem.
 
 ## 12.6 No Combat Power as authority
 
@@ -772,6 +808,11 @@ When Combat Stats V2 is implemented, tests must prove at minimum:
 22. Healing Received modifies the amount the target receives and is the canonical ordinary anti-heal channel;
 23. Shield Effect modifies created shield magnitude and does not modify healing;
 24. HP regeneration / Stamina recovery / Injury recovery are not silently treated as Healing Done.
+25. Net Lifesteal is subtraction in percentage points, not multiplication by (1 − Anti-Lifesteal).
+26. Lifesteal uses **actual target HP lost** after mitigation and overkill cap, not raw predicted damage.
+27. Lifesteal healing cannot exceed missing HP; no damage/no eligible hit/no missing HP means zero healing.
+28. Ineligible DoT/proc/reflect/summon/fixed damage does not lifesteal unless content explicitly opts in.
+29. Lifesteal cannot be applied on an AI/preview-only pass, and repeated event commit must not double-heal.
 
 ---
 
@@ -805,6 +846,10 @@ Combat Stats V2 canonical registry is:
 **Incoming defense**
 - Damage Reduction
 
+**HP siphon**
+- Lifesteal (Hút Máu)
+- Anti-Lifesteal (Giảm Hút Máu)
+
 **Elemental**
 - keyed Elemental Resistance map for five base + five advanced elements
 
@@ -833,3 +878,7 @@ Implementation remains future work.
 **Design authority above remains LOCKED.** The first **DV2-02A calculated-stat kernel** has been committed in `godot/src/simulation/combat/combat_stats_v2.gd`, with real official Godot 4.7.2 focused CI **PASS**: [Actions #37880761726](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37880761726). Its source-by-source contract: `docs/DV2_02_COMBAT_STAT_EXECUTION_CONTRACT.md`.
 
 **Separation:** focused stat/damage-unit tests PASS ≠ gameplay Combat V2 fully integrated. `godot/src/simulation/combat/combat_system.gd` still uses legacy combat-power authority, and real monster/skill/Realm+Body character adapters are not yet V2 migrated. **DV2-02 phase remains ACTIVE/NOT CLOSED**; `CURRENT_CHECKPOINT.md` owns implementation status. No Trait/Root/Bloodline/Physique effect has been fictitiously activated merely because an innate ID was generated.
+
+## 21. USER DECISION 2026-10-09 — 16 headline Combat Stats
+
+The user explicitly added **Hút Máu** and **Giảm Hút Máu**; the headline stat count is now **16**, alongside the keyed **10-element resistance map**. §2.7 governs subtraction, post-mitigation actual HP damage, overkill, missing HP, and action eligibility. Source ownership and tests: `docs/DV2_02_COMBAT_STAT_EXECUTION_CONTRACT.md`. Older references to **14** in historical progress logs describe the earlier milestone, not the current Combat Stats authority.
