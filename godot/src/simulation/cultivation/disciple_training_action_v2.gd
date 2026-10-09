@@ -43,7 +43,7 @@ static func request_training(state: SimulationState, disciple_id: StringName, tr
     if not state.disciples.has(disciple_id):
         return {"ok":false,"reason":"unknown_training_disciple"}
     var disciple: DiscipleState = state.disciples[disciple_id]
-    if not DiscipleRealmProgressV2.valid_profile(disciple.v2_realm_progress):
+    if not DiscipleRealmProgressV2.progression_ready(disciple):
         return {"ok":false,"reason":"training_profile_not_ready"}
     if disciple.region_id != &"sect" or disciple.hp <= 0.0:
         return {"ok":false,"reason":"training_disciple_not_present"}
@@ -67,7 +67,7 @@ static func resolve(state: SimulationState, disciple: DiscipleState, action: Str
         return {"ok":false,"reason":"training_action_not_current"}
     if state.tick <= 0:
         return {"ok":false,"reason":"no_committed_simulation_tick"}
-    if not DiscipleRealmProgressV2.valid_profile(disciple.v2_realm_progress):
+    if not DiscipleRealmProgressV2.progression_ready(disciple):
         return {"ok":false,"reason":"v2_disciple_not_initialized"}
     # Cultivation and body training occur at the sect in this first bridge.
     # No expedition stamina / HP drain is invented for Body training.
