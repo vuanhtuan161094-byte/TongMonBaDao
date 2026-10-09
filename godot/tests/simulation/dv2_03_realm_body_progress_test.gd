@@ -212,8 +212,10 @@ func _run() -> void:
         print("V2 PROFILE RESTORED: ",var_to_str(restored.v2_realm_progress))
     if not _check(restored.v2_realm_progress == disciple.v2_realm_progress and
         bool(restored.v2_realm_progress["cultivation"]["auto_breakthrough"]) and
-        int(restored.v2_realm_progress["cultivation"]["lifetime_failures"]) == 1,
-        "Both progress tracks, auto policy, and breakthrough history were not saved."):
+        int(restored.v2_realm_progress["cultivation"]["lifetime_failures"]) == 1 and
+        _close(restored.max_hp,disciple.max_hp) and
+        _close(restored.hp/restored.max_hp,disciple.hp/disciple.max_hp),
+        "Progress, gate history, or ratio-preserving live V2 HP failed save/load."):
         return
 
     # Ordinary natural EXP modifiers from real sources stack additively with
