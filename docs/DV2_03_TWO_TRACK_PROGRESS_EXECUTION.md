@@ -98,3 +98,44 @@ No new maps, new species or speculative XP/chance/reward data in DV2-03.
 - Full P3.7 cumulative MUST be verified for the latest relevant code commit before calling DV2-03 BACKEND LOCKED.
 
 **Still NOT done:** complete authored 300-floor EXP tables and production rates (the real action bridge is implemented but remains **disabled without content**); per-major-realm Tu Vi base breakthrough chance; body-gate material/attempt policies; automatic breakthrough attempts after authored source/condition authorization; AI body-training priority; safe old character migration and V2 HP synchronization; user UI for the new two progression tracks. Keep this phase active unless its narrower core scope and tests are explicitly closed with evidence.
+
+---
+
+## Kế hoạch thực thi còn lại (DV2-03C → DV2-03G) — audit live main 09/10/2026
+
+**Mục đích:** đóng giai đoạn DV2-03 bằng gameplay V2 thực sự chạy được, không coi unit/focused gate hoặc P0 sandbox timer là full realtime. Đây là các **lát công việc thuộc cùng một phase đang ACTIVE**, không mở phase gameplay mới. Audit code trực tiếp trên `main` cho thấy request API chỉ kiểm tra `authority_id`/action trước khi xếp, trong khi `resolve` mới kiểm tra rate/floor costs; `SimulationScheduler.step()` là nơi cấp EXP; scheduler trả nhân vật về `EVALUATE` sau mỗi hành động; UI P3.2 còn dùng lệnh P2.
+
+### C — Production EXP authority + validation trước khi nhận lệnh (LÀM ĐẦU TIÊN)
+
+1. Chuẩn hóa một source/content registry duy nhất cho EXP Tu Vi và EXP Luyện Thể: hai đường × 30 đại cảnh × 10 tầng, `base_xp_per_action` theo nhịp chuẩn, phiên bản dữ liệu và coverage validator; dữ liệu thử `80/50/100` KHÔNG được đem làm game balance.
+2. Chuẩn bị bảng cân bằng có số liệu/đồ thị tăng trưởng để người dùng duyệt trước khi kích hoạt production. Thiếu giá trị đã duyệt thì giữ `v2_training_enabled=false` / fail-closed. Không chuyển `CultivationSystem.STAGES` P2 sang V2.
+3. `request_training` phải chạy cùng preflight validation đầy đủ với `resolve` (nguồn, track, rate, cost của tầng hiện tại đến cổng, trạng thái đệ tử); không trả `ok=true` rồi lặng lẽ từ chối ở tick sau. Giữ nguyên thuộc tính: một lệnh xếp cho tick tới, không thưởng ngay, không chen ngang COMBAT/công việc bận.
+4. Focused gate: cả 600 vị trí được khai báo/kiểm tra, cost thiếu hoặc sai từ chối *trước khi xếp*; EXP tăng tầng nhỏ chuẩn, cố định không nhân lục duy, natural cộng % đúng, không double P2.
+
+### D — Thời gian thực, tiếp diễn tự động và save/offline
+
+1. Tìm và dùng **một driver thời gian chuẩn của live game** để gọi `SimulationScheduler.step()` mỗi **15 giây thực**; không lấy vòng demo `p0_sandbox.gd` khoảng 0,18s làm bằng chứng; không tạo timer riêng cho V2.
+2. Định nghĩa rõ pause/resume, save timestamp/remaining accumulator, offline catch-up, giới hạn xử lý (nếu cần phải được người dùng duyệt), và quyền cấp EXP cho từng tick. Không đếm wall-clock hai lần khi reload/đổi màn. Mỗi tick có ID bất biến/ordering xác định.
+3. AI/assignment trong phạm vi DV2-03: hỗ trợ ưu tiên Tu Vi/Luyện Thể liên tục khi đệ tử rảnh, tôn trọng hunt/combat/work/needs; player có thể chuyển policy mà không cấp EXP tức thì. Không tự gọi `auto_breakthrough` khi chưa có content cổng chính thức.
+4. Gate: giả lập thời gian dài qua đúng driver; kiểm thử save trước/sau tick, thoát/reopen/catch-up, cùng seed cho online/offline cùng kết quả; benchmark 1.000–3.000 đệ tử mà không update UI/render mỗi tick cho toàn roster.
+
+### E — UI thật P3.2 và feedback hành động
+
+1. Nối nút **Tu luyện** và **Rèn thể** vào API V2 cho đệ tử có hồ sơ V2 hợp lệ; giữ P2 UI/command cho legacy (không nâng cấp ngầm).
+2. Hiện đồng thời hai cảnh giới + tầng + EXP/cost + tên đại cảnh + trạng thái cổng; thời gian/gain dự kiến chỉ hiển thị nếu data thực được xác thực. Đưa lý do từ chối thực từ runtime vào UI; nút không được hiện thành công giả.
+3. Hiển thị nguồn tăng chỉ số và HP dựa trên authority sau migrate, không lấy `combat_power` legacy làm Combat Stats V2. Test tương tác/UI headless tối thiểu và acceptance trực quan do người dùng duyệt.
+
+### F — Cổng đột phá production + HP/combat sync
+
+1. Tu Vi: content 29 cổng (base chance, `gate_required_xp`, điều kiện, item nếu có) và consumer xác thực; giữ luật đã khóa: thất bại mất 10% EXP yêu cầu, cộng 5 điểm phần trăm lần sau cùng cổng, ghi lịch sử, không tự mất HP/thể lực/cooldown.
+2. Luyện Thể: author riêng điều kiện/vật liệu/cơ chế xác nhận; không sao chép roll/chance Tu Vi. Nếu chưa được duyệt phải BLOCKED có lý do, không giả đột phá thành công.
+3. Đồng bộ `CombatStatsV2` thành HP authority live an toàn (current/max HP ratio, injury/combat, save/load, old saves), tránh heal miễn phí, hồi đầy HP không có lý do, hoặc cộng chỉ số hai lần khi up tầng.
+4. Test fail/success/pity replay, cổng tự động chỉ hoạt động khi policy và dữ liệu đã đủ, save/load trong các trạng thái cổng, vào trận sau up tầng đúng chỉ số.
+
+### G — Closeout evidence (không tự gọi PASS)
+
+- Focused Godot 4.7.2 phải xanh trên **commit code cuối** cho C/D/E/F; chạy **FULL P0 → P3.7 cumulative trên cùng commit** khi đóng phase; kiểm tra thêm Godot Windows live/visual thực tế khi có máy người dùng.
+- Báo riêng: CI Linux PASS, Windows PASS/UNTESTED, UI acceptance PENDING/ACCEPTED, old-save migration PASS/FAIL, offline replay PASS/FAIL, 1k–3k roster benchmark. Mọi số liệu thời gian phải là số đo, không bịa.
+- Khi đủ evidence, cập nhật `CURRENT_CHECKPOINT.md` trạng thái CLOSED và chỉ khi đó chuyển sang phase 3 (Equipment/Skill/Innate effects). PvE map production mở rộng để phase 4.
+
+**Đường ưu tiên ngay:** C (source EXP chuẩn + request preflight) → D (15s live + auto policy + offline) → E (UI V2) → F (breakthrough + HP migration) → G (cumulative). Chưa có số EXP/xác suất production được duyệt; không bật flag V2 production chỉ để thấy animation/EXP tăng giả.
