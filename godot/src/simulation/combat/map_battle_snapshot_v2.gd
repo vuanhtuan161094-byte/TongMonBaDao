@@ -64,7 +64,7 @@ static func load(data: Dictionary) -> Dictionary:
         return {"ok":false,"reason":"invalid_active_outcome"}
     if not battle.active and not ["win","defeat","timeout_retreat"].has(battle.outcome):
         return {"ok":false,"reason":"invalid_completed_outcome"}
-    if not data.get("casts") is Array or not data.get("events") is Array:
+    if not (data.get("casts") is Array) or not (data.get("events") is Array):
         return {"ok":false,"reason":"missing_cast_or_event_list"}
     var party_sizes: Dictionary = {}
     var disciples := 0
@@ -82,7 +82,7 @@ static func load(data: Dictionary) -> Dictionary:
             return {"ok":false,"reason":"invalid_actor_position"}
         actor["position"] = pos
         var stats: Dictionary = actor.get("stats",{})
-        if stats.is_empty() or not actor.get("resistances",{}) is Dictionary:
+        if stats.is_empty() or not (actor.get("resistances",{}) is Dictionary):
             return {"ok":false,"reason":"missing_stat_snapshot"}
         var max_hp := float(actor.get("max_hp",0.0))
         var hp := float(actor.get("hp",-1.0))
@@ -106,14 +106,14 @@ static func load(data: Dictionary) -> Dictionary:
     if disciples < 1 or disciples > MapBattleV2.MAX_DISCIPLES or monsters < 1 or monsters > MapBattleV2.MAX_MONSTERS:
         return {"ok":false,"reason":"invalid_combat_side_size"}
     for cast_raw in data["casts"]:
-        if not cast_raw is Dictionary:
+        if not (cast_raw is Dictionary):
             return {"ok":false,"reason":"invalid_cast"}
         var cast: Dictionary = cast_raw.duplicate(true)
         if not battle.actors.has(str(cast.get("caster",""))) or float(cast.get("ready",-1.0)) < battle.now:
             return {"ok":false,"reason":"orphan_or_past_due_cast"}
         if cast.has("center"):
             var center = _decode_vec2(cast["center"])
-            if not center is Vector2 or not MapBattleV2.ARENA.has_point(center):
+            if not (center is Vector2) or not MapBattleV2.ARENA.has_point(center):
                 return {"ok":false,"reason":"invalid_telegraph_position"}
             cast["center"] = center
         elif not battle.actors.has(str(cast.get("target_id",""))):
@@ -122,13 +122,13 @@ static func load(data: Dictionary) -> Dictionary:
     if data["events"].size() > MapBattleV2.MAX_EVENTS:
         return {"ok":false,"reason":"event_journal_limit_exceeded"}
     for event_raw in data["events"]:
-        if not event_raw is Dictionary:
+        if not (event_raw is Dictionary):
             return {"ok":false,"reason":"invalid_event"}
         var event: Dictionary = event_raw.duplicate(true)
         for field in ["center","position"]:
             if event.has(field):
                 var coord = _decode_vec2(event[field])
-                if not coord is Vector2:
+                if not (coord is Vector2):
                     return {"ok":false,"reason":"invalid_event_position"}
                 event[field] = coord
         battle.events.append(event)
