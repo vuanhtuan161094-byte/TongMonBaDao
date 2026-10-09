@@ -204,14 +204,30 @@ func _step_disciple(disciple: DiscipleState) -> void:
             disciple.current_action = &"EVALUATE"
 
         &"CULTIVATE":
-            var gained := cultivation_system.cultivate(state, disciple)
-            if gained > 0.0 and state.sect.techniques_enabled:
-                technique_system.train_active_technique(state, disciple)
-            if gained > 0.0 and state.sect.cultivation_paths_enabled:
-                if cultivation_path_system.record_cultivation(state, disciple) > 0.0:
-                    disciple.metrics["path_cultivation_events"] = int(disciple.metrics.get("path_cultivation_events", 0)) + 1
+            if state.sect.v2_training_enabled and DiscipleRealmProgressV2.valid_profile(disciple.v2_realm_progress):
+                # V2 is the sole cultivation EXP owner for this initialized
+                # character. Never award P2 EXP again for the same action.
+                var v2_gain := DiscipleTrainingActionV2.resolve(state, disciple, "CULTIVATE")
+                disciple.last_decision["v2_training_result"] = v2_gain.duplicate(true)
+            else:
+                var gained := cultivation_system.cultivate(state, disciple)
+                if gained > 0.0 and state.sect.techniques_enabled:
+                    technique_system.train_active_technique(state, disciple)
+                if gained > 0.0 and state.sect.cultivation_paths_enabled:
+                    if cultivation_path_system.record_cultivation(state, disciple) > 0.0:
+                        disciple.metrics["path_cultivation_events"] = int(disciple.metrics.get("path_cultivation_events", 0)) + 1
             if state.sect.workforce_enabled:
                 workforce_system.notify_action_completed(state, disciple, &"CULTIVATE")
+            disciple.current_action = &"EVALUATE"
+
+        &"TRAIN_BODY":
+            # Explicit V2 action: ordinary P0-P3.7 never selects this action.
+            # Does not spend expedition stamina or copy Tu Vi XP into Body.
+            if state.sect.v2_training_enabled and DiscipleRealmProgressV2.valid_profile(disciple.v2_realm_progress):
+                var trained := DiscipleTrainingActionV2.resolve(state, disciple, "TRAIN_BODY")
+                disciple.last_decision["v2_body_training_result"] = trained.duplicate(true)
+            if state.sect.workforce_enabled:
+                workforce_system.notify_action_completed(state, disciple, &"TRAIN_BODY")
             disciple.current_action = &"EVALUATE"
 
         &"WORK_MINING":
