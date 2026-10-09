@@ -54,14 +54,15 @@ func _run() -> void:
         "cultivation":{
             "authority_id":"qa-policy-cultivation",
             "action":"CULTIVATE",
-            "base_xp_per_action":10.0,
+            "base_tuvi_per_minute":10.0,
+            "cultivate_multiplier":2.0,
             "floor_costs":_costs([1,2],1000.0),
             "sources":[]
         },
         "body":{
             "authority_id":"qa-policy-body",
             "action":"TRAIN_BODY",
-            "base_xp_per_action":10.0,
+            "base_body_xp_per_minute":10.0,
             "floor_costs":_costs([1,2],1000.0),
             "sources":[]
         }
@@ -72,13 +73,11 @@ func _run() -> void:
     disciple.direct_command.clear()
     disciple.work_cycle_state.clear()
 
-    # Recruitment currently starts cultivation in Luyen Khi while Body starts
-    # Pham Than, so balanced must train the lower 1..300 track.
-    var lower_floor := DiscipleTrainingPolicyV2.choose_auto_action(state,disciple)
-    if not _assert(bool(lower_floor.get("ok",false)) and
-        str(lower_floor.get("track",""))=="body" and
-        str(lower_floor.get("reason",""))=="lower_global_floor",
-        "Balanced policy did not prioritize the lower global track."):
+    # Production V2 recruitment now starts both tracks at global floor 1.
+    var start := DiscipleRealmProgressV2.current(disciple)
+    if not _assert(int(start["cultivation_global_floor"])==1 and
+        int(start["body_global_floor"])==1,
+        "New V2 recruit did not start both progression tracks at floor 1."):
         return
 
     # At equal global floors, balanced compares only authored current-floor
