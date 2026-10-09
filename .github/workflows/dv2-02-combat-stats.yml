@@ -10,6 +10,8 @@ on:
       - 'godot/src/simulation/combat/monster_catalogue_v2.gd'
       - 'godot/src/simulation/combat/monster_encounter_v2.gd'
       - 'godot/src/simulation/combat/map_battle_v2.gd'
+      - 'godot/src/presentation/p3/map_battle_world_layer_v2.gd'
+      - 'godot/scenes/p3/map_battle_world_layer_v2.tscn'
       - 'godot/tests/simulation/dv2_02_combat_stats_test.gd'
       - 'godot/tests/simulation/dv2_02_monster_context_test.gd'
       - 'godot/tests/simulation/dv2_02_group_map_battle_test.gd'
