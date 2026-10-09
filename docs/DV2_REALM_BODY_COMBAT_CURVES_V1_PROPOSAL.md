@@ -2,7 +2,7 @@
 
 Ngày 2026-10-09.
 
-**Status: NUMERIC BALANCE PROPOSAL / FIRST-STEP DESIGN IMPLEMENTATION — NOT YET USER-LOCKED; NO GAMEPLAY CODE; NO GODOT PASS.**
+**Status: NUMERIC V1 DESIGN LOCKED by user's 2026-10-09 approval. NOT YET IMPLEMENTED IN GAMEPLAY; NO COMBAT V2 GODOT PASS.**
 
 Tài liệu này đi **từ cấp độ Tu Vi/Luyện Thể đến chỉ số**, không thiết kế từ Đặc Chất. Những hệ số đề xuất ở đây là để có đường tăng chính xác, kiểm tra được và đưa người dùng duyệt; không sửa ngầm các luật V2 đã khóa trong:
 - `docs/REALM_LADDER_V2_SPEC.md` (30×10 độc lập);
@@ -17,7 +17,7 @@ Mỗi đường tăng có riêng `realm_index = 1..30` và `floor = 1..10`; có 
 
 **Một đệ tử bẩm sinh bình thường bắt đầu ở Tu Vi Phàm Nhân tầng 1, Luyện Thể Phàm Thân tầng 1** *trong ví dụ đường tăng này*; phân bố cảnh giới khởi đầu Dẫn Tiên thực tế vẫn giữ compatibility P3.7C1 cho đến DV2-03.
 
-## B. Cấu trúc công thức NUMERIC V1 — ĐỀ XUẤT
+## B. Cấu trúc công thức NUMERIC V1 — ĐÃ KHÓA
 
 Đặt:
 
@@ -90,7 +90,7 @@ Các số được hiển thị làm tròn **chỉ ở bảng UI**, không làm 
 - Thiên phú nghề, Cơ Duyên, Mị Lực không tự cộng Công/Thủ/HP.
 - Phẩm chất đệ tử từ Lục Duy không tự nhân các chỉ số.
 
-## C. Phòng Ngự V1 — công thức ĐỀ XUẤT có thứ tự pháp lý đã khóa
+## C. Phòng Ngự V1 — công thức ĐÃ KHÓA
 
 **Cấp độ dữ liệu:** chỉ áp dụng cho damage packet có nguồn quy mô Công Kích và được skill định nghĩa là `affected_by_defense`. Fixed/true damage nếu hợp lệ phải được author trực tiếp, không lén cho hưởng.
 
@@ -144,9 +144,9 @@ Kiểm tra toán học bằng JavaScript trên:
 
 Các kiểm tra trên **PASS mức kiểm toán công thức**. Chưa chạy trong Godot, chưa test PvE, không phải BACKEND LOCKED.
 
-## F. Chưa được phê duyệt
+## F. Đã được người dùng phê duyệt 2026-10-09 — CÁC VIỆC VẪN MỞ
 
-**Các hệ số mới** (1.65, 1.03; bảng 100/20/12 và 90/3/7; hằng số K=2×ATK) là **đề xuất cân bằng V1**, chưa được khóa chỉ vì tạo file.
+**ĐÃ KHÓA THIẾT KẾ:** các hệ số (1.65, 1.03; Realm 100/20/12 và Body 90/3/7; DEF divisor K=2×ATK) được người dùng duyệt ngày 2026-10-09. Đây là thẩm quyền cân bằng số V2 để lập trình ở **DV2-02 hoặc đúng phase có gate**; chưa có code chiến đấu V2 nào sử dụng chúng.
 
 Hướng xét duyệt tiếp theo:
 - mức tăng giữa tầng/đột phá có đủ cảm giác mạnh không;
@@ -155,4 +155,4 @@ Hướng xét duyệt tiếp theo:
 - monster/boss stat curve, nhiều cấp độ map, tỉ lệ gặp boss và skill coefficient;
 - con số lớn ở Tiên/Thần ảnh hưởng đọc UI và hiệu năng thế nào.
 
-Nếu người dùng phê duyệt numeric V1, cập nhật authority trong `docs/COMBAT_STATS_V2_SPEC.md`, `docs/REALM_LADDER_V2_SPEC.md` và đăng ký một phase lập trình có Godot focused+cumulative gates; không coi đây là thiết kế Độ Kiếp/EXP/monster đã hoàn thiện.
+Các authority `docs/COMBAT_STATS_V2_SPEC.md` và `docs/REALM_LADDER_V2_SPEC.md` phải tham chiếu bản đã khóa này. Không vì vậy mà mặc nhiên hoàn thành Độ Kiếp/EXP/boss/monster scaling hoặc DV2-02 gameplay.
