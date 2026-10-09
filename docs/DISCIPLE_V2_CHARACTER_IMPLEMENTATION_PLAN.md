@@ -184,3 +184,19 @@ User's implementation go-ahead arrived on 2026-10-09. Current opt-in birth-envel
 No combat curves, production transaction modifiers or numeric proposals have been enabled in runtime. Supporting specs: `docs/DV2_REALM_BODY_COMBAT_CURVES_V1_PROPOSAL.md` and `docs/DV2_PRODUCTION_RESULT_CONTRACT_V1.md`.
 
 **Weighted birth-content prerequisite (not user-locked):** `docs/DV2_BIRTH_WEIGHTS_TRAIT_FATE_V1_PROPOSAL.md` records explicit V1 weights for all 101 Trait designs and 24 personal Fates. Keep them **uninitialized** in current opt-in DV2-01A until eligible IDs, per-ID weights, cross-trait conflicts and special Fate `birth_override` packages receive approval. Focused real-recruit Godot CI #37876666598 PASS; P3.7 full cumulative #37876520289 PASS; **DV2-01 remains open**, with no stat-driven combat/production runtime enabled.
+
+## DV2-01B — FULL INNATE BIRTH IMPLEMENTATION (2026-10-09)
+
+**User LOCKED** the numeric Realm/Body core and Defense V1 in `docs/DV2_REALM_BODY_COMBAT_CURVES_V1_PROPOSAL.md`, plus per-ID Trait (101) and Destiny (24) birth weights in `docs/DV2_BIRTH_WEIGHTS_TRAIT_FATE_V1_PROPOSAL.md`. Both filenames retain their historical suffix but body status is **DESIGN LOCKED**. Combat curve gameplay is **DV2-02**, not DV2-01.
+
+DV2-01B is coded opt-in (`SectState.disciple_v2_birth_enabled`, default **false**), in:
+- `godot/src/simulation/recruitment/disciple_birth_catalogue_v2.gd`: 101 IDs/weights + 24 Fates + conflicts + eligible 14 of 15 Physiques;
+- `godot/src/simulation/recruitment/disciple_birth_roll_v2.gd`: 1..5 Roots/purity, 0.20% mutation, 1..3+8% latent ungraded Traits, 2% Bloodline/purity, 3% Physique, 0.50% Destiny, existing profession talent grade snapshot;
+- `DiscipleGeneratorOpenPoints`, `RecruitmentSystem`: both ordinary and Dẫn Tiên candidate paths use one V2 birth envelope; P2 parallel profile rolls skipped **only when V2 opt-in**; C1 foundation RNG/guidance unchanged;
+- `CandidateState` → `DiscipleState` deep-copy/save/load preserving hidden identity, `initialized=true` + legitimate `none` and nested integer types.
+
+**Explicit gated pool exclusions**: `Kiếm Cốt` type is excluded, remaining 14 types renormalized within eligible weight total 88 while special occurrence remains 3%; `Kiếm Tiên Chuyển Thế` temporarily excluded until numeric `birth_override` is authored; `Thương Binh Kinh Nghiệm` acquired-only, excluded from innate Trait rolls. All V2 born Trait/Destiny/Bloodline/Physique effects are `active=false` until their owning consumer is implemented; identities are real and persistent, effects not faked.
+
+**Focused evidence**: `godot/tests/simulation/dv2_01_birth_envelope_test.gd` and `dv2_01_birth_distribution_test.gd` with 100,000 simulated births, plus real guidance/recruitment and JSON round-trip. [Godot 4.7.2 focused run #37878256401](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37878256401) PASS. Cumulative P3.7 workflow at next latest code commit must be checked before closing phase; checkpoint alone determines PASS/next stage.
+
+**DV2-02 (NEXT PHASE ONLY AFTER DV2-01 CLOSED)**: canonical typed source-to-stat engine, approved numeric Realm/Body ATK/DEF/HP and mitigation, HP ratio, source breakdown; no legacy Combat Power as V2 damage input. Do not start DV2-03 or Trait consumers before this engine is actually implemented and tested.
