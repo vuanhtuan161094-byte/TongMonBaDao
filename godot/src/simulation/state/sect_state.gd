@@ -88,6 +88,8 @@ var disciple_v2_birth_enabled: bool = false
 var v2_pve_enabled: bool = false
 var v2_pve_selected_levels: Dictionary = {}
 var v2_pve_reward_claims: Dictionary = {}
+# DV2-02 explicit opt-in: authoritative active hunt snapshots for save/reload.
+var v2_pve_active_runs: Dictionary = {}
 
 # P2.9 deterministic visible/latent/revealed trait profiles. Fully opt-in.
 var disciple_traits_enabled: bool = false
@@ -169,10 +171,12 @@ func to_dict() -> Dictionary:
         data["guidance_recruitment_enabled"] = guidance_recruitment_enabled
     if disciple_v2_birth_enabled:
         data["disciple_v2_birth_enabled"] = true
-    if v2_pve_enabled or not v2_pve_selected_levels.is_empty() or not v2_pve_reward_claims.is_empty():
+    if v2_pve_enabled or not v2_pve_selected_levels.is_empty() or not v2_pve_reward_claims.is_empty() or not v2_pve_active_runs.is_empty():
         data["v2_pve_enabled"] = v2_pve_enabled
         data["v2_pve_selected_levels"] = v2_pve_selected_levels.duplicate(true)
         data["v2_pve_reward_claims"] = v2_pve_reward_claims.duplicate(true)
+        if not v2_pve_active_runs.is_empty():
+            data["v2_pve_active_runs"] = v2_pve_active_runs.duplicate(true)
     if disciple_traits_enabled or disciple_trait_event_count > 0 or not disciple_trait_profiles.is_empty():
         data["disciple_traits_enabled"] = disciple_traits_enabled
         data["disciple_trait_profiles"] = disciple_trait_profiles.duplicate(true)
@@ -248,6 +252,12 @@ static func from_dict(data: Dictionary) -> SectState:
             if level >= 1 and level <= 5:
                 state.v2_pve_selected_levels[str(region)] = level
     state.v2_pve_reward_claims = _bool_dictionary(data.get("v2_pve_reward_claims", {}))
+    var raw_runs = data.get("v2_pve_active_runs", {})
+    if raw_runs is Dictionary:
+        for encounter_id in raw_runs.keys():
+            var saved = raw_runs[encounter_id]
+            if not str(encounter_id).is_empty() and saved is Dictionary:
+                state.v2_pve_active_runs[str(encounter_id)] = saved.duplicate(true)
     state.disciple_traits_enabled = bool(data.get("disciple_traits_enabled", false))
     state.disciple_trait_profiles = _trait_profile_dictionary(data.get("disciple_trait_profiles", {}))
     state.disciple_trait_event_count = maxi(int(data.get("disciple_trait_event_count", 0)), 0)
