@@ -40,11 +40,16 @@ func setup(id: String, party: Array, monsters: Array) -> Dictionary:
     actions = 0
     downed_disciples = 0
     var entries: Array = []
+    var party_sizes: Dictionary = {}
     for raw in party:
         if not (raw is Dictionary):
             return {"ok":false,"reason":"invalid_party_entry"}
         var row: Dictionary = raw
         var actor_id := str(row.get("id",""))
+        var party_id := str(row.get("party_id","party_0"))
+        party_sizes[party_id] = int(party_sizes.get(party_id,0))+1
+        if party_id.is_empty() or int(party_sizes[party_id]) > 6:
+            return {"ok":false,"reason":"max_six_disciples_per_party"}
         var stats: Dictionary = row.get("stats",{})
         var pos: Vector2 = row.get("position",Vector2(-1.0,-1.0))
         var role := str(row.get("role","frontline"))
@@ -55,7 +60,7 @@ func setup(id: String, party: Array, monsters: Array) -> Dictionary:
         if hp <= 0.0 or max_hp <= 0.0 or hp > max_hp or float(stats.get("attack",0.0)) <= 0.0:
             return {"ok":false,"reason":"invalid_party_hp_or_attack"}
         entries.append({
-            "id":actor_id,"side":"disciple","role":role,"tier":"disciple",
+            "id":actor_id,"side":"disciple","party_id":party_id,"role":role,"tier":"disciple",
             "race_id":"nhan_toc","position":pos,"stats":stats.duplicate(true),
             "hp":hp,"max_hp":max_hp,"resistances":row.get("resistances",{}).duplicate(true),
             "range":1.5 if role == "frontline" else (4.8 if role == "healer" else 5.5),
@@ -76,7 +81,7 @@ func setup(id: String, party: Array, monsters: Array) -> Dictionary:
         if stats.is_empty() or float(stats.get("max_hp",0.0)) <= 0.0 or float(stats.get("attack",0.0)) <= 0.0:
             return {"ok":false,"reason":"invalid_monster_stats"}
         entries.append({
-            "id":actor_id,"side":"monster","role":"monster","tier":tier,
+            "id":actor_id,"side":"monster","party_id":"","role":"monster","tier":tier,
             "race_id":str(row.get("race_id","")),
             "position":position,"stats":stats.duplicate(true),
             "hp":float(row.get("hp",stats["max_hp"])),
@@ -208,6 +213,9 @@ func _heal_ally(actor: Dictionary) -> bool:
     var candidates: Array = []
     for ally in actors.values():
         if str(ally["side"]) != str(actor["side"]) or float(ally["hp"]) <= 0.0:
+            continue
+        # Ordinary party healing is not an encounter-wide buff.
+        if str(ally["party_id"]) != str(actor["party_id"]):
             continue
         if float(ally["hp"])/maxf(1.0,float(ally["max_hp"])) >= 0.65:
             continue
