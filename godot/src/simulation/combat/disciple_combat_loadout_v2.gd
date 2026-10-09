@@ -70,9 +70,13 @@ static func build(
             skill_factors[str(skill_id)] = factor
     learned_damage_skills.sort()
     # Source attribution retained for player breakdown; no hidden gear buff.
+    # Legacy and V2 HP scales differ. Do not mutate persistent DiscipleState.hp
+    # until the V2 max-HP migration commits its own correct ratio authority.
+    var safe_live_link = disciple if is_equal_approx(disciple.max_hp,float(stats["max_hp"])) else null
     return {
         "ok":true,"id":str(disciple.id),"party_id":party_id,
-        "role":role,"position":position,"disciple":disciple,
+        "role":role,"position":position,"disciple":safe_live_link,
+        "origin_disciple_id":str(disciple.id),
         "hp":CombatStatsV2.rescale_current_hp(
             disciple.hp,maxf(0.0001,disciple.max_hp),float(stats["max_hp"])
         ),
