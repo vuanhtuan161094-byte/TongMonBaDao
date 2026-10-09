@@ -172,9 +172,25 @@ func _run() -> void:
         HuntingMapV2.selected_level(state,"hac_phong_coc")==1,
         "Selecting one map difficulty incorrectly modified another map."):
         return
+    # The actual reusable Node Control has five clickable levels; clicking
+    # updates per-map persisted state, not a decorative screenshot.
+    var scene := load("res://scenes/p3/hunting_level_selector_v2.tscn") as PackedScene
+    if not _assert(scene != null,"Difficulty-selector scene is missing."):
+        return
+    var choice := scene.instantiate() as HuntingLevelSelectorV2
+    get_root().add_child(choice)
+    if not _assert(bool(choice.show_region(state,"thanh_truc_lam").get("ok",false)) and
+        choice.buttons.size() == 5,"Map did not display five selectable levels."):
+        return
+    choice.buttons[4].pressed.emit()
+    if not _assert(HuntingMapV2.selected_level(state,"thanh_truc_lam")==4 and
+        HuntingMapV2.selected_level(state,"hac_phong_coc")==1,
+        "Clicking fourth map-level button failed or overwrote other map."):
+        return
+    choice.queue_free()
     var saved := SectState.from_dict(JSON.parse_string(JSON.stringify(state.sect.to_dict())))
     if not _assert(saved.v2_pve_enabled and
-        int(saved.v2_pve_selected_levels["thanh_truc_lam"]) == 2,
+        int(saved.v2_pve_selected_levels["thanh_truc_lam"]) == 4,
         "Chosen five-level region difficulty did not survive JSON save/load."):
         return
     var victory_spawn := HuntingMapV2.spawn("thanh_truc_lam",1,"real_reward_01",901)
