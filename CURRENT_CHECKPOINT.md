@@ -319,6 +319,29 @@ Implemented:
 
 **Still OPEN:** production Tu Vi/minute number, Chuyên Tu multiplier, 600 floor costs, 29 Tu Vi base breakthrough chances, **toàn bộ concrete Luyện Thể training source/activity/time/rate + Body major-gate content**, persistent live runtime/offline catch-up and V2 UI.
 
+
+### 5.9 DV2-03B2 — Luyện Thể typed source contract (CODE PUSHED, GATE UNVERIFIED)
+
+**User lock 09/10/2026:** natural Luyện Thể has three distinct contexts: **Sản xuất / Rèn Thân / Viễn Chinh**. Rèn Thân is per simulation minute and will use a real future training facility with selectable intensity/grade; higher grade may raise EXP and cost. Exact building/content/cost numbers are not part of this slice.
+
+Implemented:
+- NEW `DiscipleBodyXpSourceV2` with source kinds `production`, `body_training`, `expedition`;
+- all natural Body sources reuse the canonical Căn Cốt law (+0.20%/point) and typed `body_xp_gain` modifiers;
+- production requires verified **active physical work**, not passive assignment/countdown;
+- Rèn Thân requires verified training access and proof that the minute's economic cost was committed before EXP can be granted;
+- expedition requires verified active outside-map context; it cannot be claimed while in the sect;
+- production/Rèn Thân are in-sect sources; expedition is outside-map, preventing overlap;
+- **one natural Body source per disciple per simulation minute** via persisted `last_body_xp_tick`;
+- fixed +X Body EXP still uses the existing `fixed` grant path and bypasses Căn Cốt;
+- provisional `TRAIN_BODY` and `body_focus` remain fail-closed as `body_training_consumer_not_ready` until a real facility/cost consumer is connected;
+- new focused test `dv2_03_body_xp_source_test.gd`; workflow updated to watch/run it.
+
+Balance direction only, no numeric table yet: **production < expedition < dedicated Rèn Thân** in normal comparable content. Test rates are fixtures only.
+
+Still deliberately NOT implemented: eligible production-profession list, actual training building/slots, grade count/unlocks, Linh Thạch/material IDs or prices, expedition pressure table, and production Body EXP rates.
+
+**Latest Godot evidence for this slice: MISSING, not FAIL.** Do not call PASS until an official Godot 4.7.2 run for latest code is available.
+
 ### 5.4 Chuẩn bị lát triển khai tiếp theo — audit 09/10/2026
 
 **DV2-03 vẫn ACTIVE — chưa có code gameplay/gate mới trong lượt chuẩn bị này.** GitHub `main` đã được rà: action `request_training` kiểm tra sơ bộ nhưng không preflight `base_xp_per_action`/`floor_costs`; do đó có thể trả `ok=true` để xếp việc, rồi `resolve` fail-closed ở tick sau. Scheduler `step()` làm chủ cấp EXP, không phải driver wall-clock được chứng thực. Workflow focused của code `e96df183` PASS; FULL P3.7 chỉ có bằng chứng PASS tại `5296f610`. **Không có bằng chứng full same-code SHA hay realtime 15s/offline/Windows V2.**
