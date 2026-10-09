@@ -10,7 +10,7 @@ const VERSION := 1
 const WALL_SECONDS_PER_SIMULATION_MINUTE := 60.0
 
 static func initialize(state: SimulationState, now_unix: int) -> Dictionary:
-    if state == null or now_unix < 0:
+    if state == null or now_unix <= 0:
         return {"ok":false,"reason":"invalid_runtime_clock_init"}
     if state.runtime_clock_version != VERSION:
         return {"ok":false,"reason":"unsupported_runtime_clock_version"}
@@ -40,7 +40,7 @@ static func advance_to(
         return {"ok":false,"reason":"invalid_runtime_clock_owner"}
     if state.runtime_clock_version != VERSION:
         return {"ok":false,"reason":"unsupported_runtime_clock_version"}
-    if now_unix < 0:
+    if now_unix <= 0:
         return {"ok":false,"reason":"invalid_wall_time"}
     if max_steps == 0 or max_steps < -1:
         return {"ok":false,"reason":"invalid_runtime_step_limit"}
