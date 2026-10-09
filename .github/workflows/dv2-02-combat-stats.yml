@@ -22,6 +22,7 @@ on:
       - 'godot/tests/simulation/dv2_02_monster_context_test.gd'
       - 'godot/tests/simulation/dv2_02_group_map_battle_test.gd'
       - 'godot/tests/simulation/dv2_02_five_level_pve_test.gd'
+      - 'godot/tests/simulation/dv2_02_five_level_balance_test.gd'
       - '.github/workflows/dv2-02-combat-stats.yml'
 permissions:
   contents: read
@@ -58,3 +59,6 @@ jobs:
 
       - name: DV2-02 five-level map loot and actual equipment/skill effects
         run: godot --headless --path godot -s res://tests/simulation/dv2_02_five_level_pve_test.gd
+
+      - name: DV2-02 five-tier region group challenge balance matrix
+        run: godot --headless --path godot -s res://tests/simulation/dv2_02_five_level_balance_test.gd
