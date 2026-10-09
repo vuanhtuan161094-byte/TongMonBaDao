@@ -234,6 +234,41 @@ func _run() -> void:
        "Healer healed another party through an unapproved cross-party rule."):
         return
 
+    # The *shared* group MapBattle must consume boss/race buffs and exactly one
+    # basic followup, not just the earlier isolated single-target encounter.
+    var contextual_party := _party(2,false)
+    contextual_party[0]["context_sources"] = [
+        {"source_id":"boss_hunt","channel":"damage_vs_boss",
+            "mode":"percent_add","value":0.15},
+        {"source_id":"beast_hunt","channel":"damage_vs_race/yeu_thu",
+            "mode":"percent_add","value":0.10},
+        {"source_id":"double_basic","channel":"basic_followup_chance",
+            "mode":"percentage_points","value":1.0}
+    ]
+    var contextual := MapBattleV2.new(55128)
+    if not _assert(bool(contextual.setup("group_context",contextual_party,
+        _monsters(["hac_lang_vuong"])).get("ok",false)),
+        "Shared group contextual test setup failed."):
+        return
+    var hitter: Dictionary = contextual.actors["disciple_00"]
+    var leader: Dictionary = contextual.actors["mob_00"]
+    var before_context_hp := float(leader["hp"])
+    contextual._deal_direct(hitter,leader,1.0,"basic",true)
+    var strikes: Array = []
+    for event in contextual.events:
+        if str(event["type"]) == "hit":
+            strikes.append(event)
+    if not _assert(strikes.size() == 2 and
+        str(strikes[0]["kind"]) == "basic" and
+        str(strikes[1]["kind"]) == "basic_followup" and
+        float(leader["hp"]) < before_context_hp,
+        "Group battle did not consume boss/race buff and exactly one bonus basic hit."):
+        return
+    if not _assert(not bool(strikes[1].get("critical",true)) and
+        _close(float(strikes[1].get("lifesteal",-1.0)),0.0),
+        "Extra basic hit improperly critically struck or triggered Lifesteal."):
+        return
+
     # Benchmark several seeded matchups. Report actual outcomes, no fake PASS
     # thresholds until gameplay balancing decisions are reviewed by user.
     var scenarios := {
