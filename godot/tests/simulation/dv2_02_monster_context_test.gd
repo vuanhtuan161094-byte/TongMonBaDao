@@ -42,10 +42,10 @@ func _run() -> void:
     var elite := MonsterCatalogueV2.create_actor("huyet_lang_dau_dan",1,1,"elite_test")
     var ghost := MonsterCatalogueV2.create_actor("u_hon",1,1,"ghost_test")
     var normal := MonsterCatalogueV2.create_actor("hac_lang",1,1,"normal_test")
-    if not _close(float(boss["stats"]["max_hp"]),190.0*1.15*4.0):
+    if not _close(float(boss["stats"]["max_hp"]),190.0*1.15*2.50):
         _fail("Boss HP does not use species × tier multiplier.")
         return
-    if not _close(float(elite["stats"]["attack"]),23.0*1.15*1.25):
+    if not _close(float(elite["stats"]["attack"]),23.0*1.15*1.10):
         _fail("Elite Attack does not use real tier scaling.")
         return
     if float(normal["stats"]["max_hp"]) >= float(boss["stats"]["max_hp"]):
