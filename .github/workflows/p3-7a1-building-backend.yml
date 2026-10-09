@@ -32,6 +32,7 @@ on:
       - 'godot/src/simulation/combat/map_battle_v2.gd'
       - 'godot/src/simulation/combat/monster_catalogue_v2.gd'
       - 'godot/src/simulation/combat/hunting_map_v2.gd'
+      - 'godot/src/simulation/combat/hunting_pve_run_v2.gd'
       - 'godot/src/simulation/combat/disciple_combat_loadout_v2.gd'
       - 'godot/src/presentation/p3/hunting_level_selector_v2.gd'
       - 'godot/scenes/p3/hunting_level_selector_v2.tscn'
