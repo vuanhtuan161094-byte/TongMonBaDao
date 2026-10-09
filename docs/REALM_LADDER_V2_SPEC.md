@@ -185,7 +185,7 @@ Map access/viability is governed by actual combat and expedition rules, not a hi
 Still separate/future:
 - exact Tu Vi EXP curve;
 - exact Luyện Thể EXP curve;
-- exact Realm/Body Core ATK/DEF/HP tables;
+- ~~exact Realm/Body Core ATK/DEF/HP tables~~ — **subsequently locked on 2026-10-09** by `docs/DV2_REALM_BODY_COMBAT_CURVES_V1_PROPOSAL.md`: `G(r,f)=1.65^(r-1)*1.03^(f-1)` and Realm/Body base rows. Actual V2 gameplay migration still pending;
 - exact Tu Vi breakthrough chances beyond already approved breakthrough laws;
 - exact Luyện Thể major-breakthrough material recipes;
 - ascension encounter content;
