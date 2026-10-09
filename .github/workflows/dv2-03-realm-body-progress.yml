@@ -1,0 +1,36 @@
+name: DV2-03 Realm Body Progress
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'godot/src/simulation/cultivation/disciple_realm_progress_v2.gd'
+      - 'godot/src/simulation/state/disciple_state.gd'
+      - 'godot/tests/simulation/dv2_03_realm_body_progress_test.gd'
+      - '.github/workflows/dv2-03-realm-body-progress.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  dv2-03:
+    name: Godot 4.7.2 independent cultivation-body growth gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install official Godot 4.7.2
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 -o /tmp/godot.zip "https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip"
+          echo "cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot.zip" | sha256sum --check --strict
+          unzip -q /tmp/godot.zip -d /tmp
+          sudo install -m 0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+      - name: Print Godot version
+        run: godot --version
+      - name: Parse complete Godot project
+        run: godot --headless --path godot --editor --quit
+      - name: DV2-03 dual 30x10 realm progression, breakthrough, save
+        run: godot --headless --path godot -s res://tests/simulation/dv2_03_realm_body_progress_test.gd
