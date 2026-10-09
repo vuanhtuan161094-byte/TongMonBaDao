@@ -96,7 +96,7 @@ Birth snapshots không thay đổi sau khi cải tạo. `disciple_quality` là n
 ### 3.1 Công thức/order đã khóa (không thay đổi)
 
 ```text
-RealmBodyCore = RealmComponent + BodyComponent (exact numeric curves PENDING)
+RealmBodyCore = RealmComponent + BodyComponent (numeric V1 now LOCKED in `docs/DV2_REALM_BODY_COMBAT_CURVES_V1_PROPOSAL.md`)
 core_after_potential = RealmBodyCore × (1 + 0.0005 × current_TiemLuc)
 ATK/DEF/HP_base = core_after_potential + valid unrelated flat bonuses
 derived = resolve typed percentage/context/special/status according to owning channel
@@ -105,16 +105,16 @@ derived = resolve typed percentage/context/special/status according to owning ch
 - Speed: `interval/cast/cooldown = base_time / (1+bonus_rate)`; Di Chuyển = `base_move × (1+bonus)`.
 - Crit: `clamp(crit_chance - target_crit_resistance, 0, 1)`.
 - Ordinary status: `clamp(base_status_chance + EffectHit - EffectResistance, 0, 1)`; guaranteed/immunity là rule explicit.
-- Defense: giảm/thêm DEF của target → attacker penetration → mitigation curve; **curve numeric PENDING**, no negative effective DEF.
+- Defense: giảm/thêm DEF của target → attacker penetration → mitigation curve **đã khóa** `K/(K+DEF_effective)` with `K=2×attacker_ATK` for eligible Attack-scaled damage; no negative effective DEF.
 - Damage Reduction và Elemental Resistance: các nguồn độc lập nhân vào **phần sát thương còn lại**, không cộng thẳng đến 100%.
 - Healing: `base_heal × outgoing_healing_done × incoming_healing_received`; Shield Effect là channel riêng.
 - No normal accuracy/evasion, Mana/MP, physical vs magical duplicate attack, or damage calculation from combat rating.
 
 **HP maximum change:** `docs/SPIRITUAL_ROOT_V2_SPEC.md` already **locks preservation of current HP ratio** when its permanent Root-derived Max HP changes (not a free full heal). This locked specific case must be honored. General cross-source HP-max-change semantics (equipment/physique/bloodline/realm and runtime injury or buffs) still require a single documented rule, exceptions and tests before DV2-02; do not contradict the root-specific law.
 
-**Numeric proposal for user balance review:** `docs/DV2_REALM_BODY_COMBAT_CURVES_V1_PROPOSAL.md`. This is an **unlocked V1 candidate** for 300-floor core and Defense; it does not replace the pending numeric authority or represent active runtime. Production source-to-output/transaction design: `docs/DV2_PRODUCTION_RESULT_CONTRACT_V1.md`.
+**Numeric V1 user-locked on 2026-10-09:** `docs/DV2_REALM_BODY_COMBAT_CURVES_V1_PROPOSAL.md` governs 300-floor Core and Defense. The file name remains historical; gameplay implementation is pending. Production source-to-output/transaction design: `docs/DV2_PRODUCTION_RESULT_CONTRACT_V1.md`.
 
-**Required before actual combat code:** numeric Realm+Body ATK/DEF/HP curve, Defense mitigation curve, baseline move/basic/cast/cooldown values, applicable skill action coefficient definitions. Existing stat contract intentionally does not fabricate these.
+**Required before actual combat code:** implement and test the **already-locked numeric** Realm+Body ATK/DEF/HP and Defense curves, then define baseline move/basic/cast/cooldown values and per-skill action coefficients still open. Existing stat contract intentionally does not fabricate these.
 
 ## 4. Tầng dẫn xuất SẢN XUẤT — mô hình nhiều kết quả, không một Work Power
 
@@ -211,16 +211,16 @@ Full source-by-source matrix: `docs/DISCIPLE_V2_EFFECT_SOURCE_MATRIX.md`.
 
 ## 9. Open decisions — explicit, never silently filled
 
-**Stat/economy numeric balance not yet locked:**
-- Realm+Body HP/ATK/DEF numeric growth curve over 300 floors and Defense mitigation curve;
+**Stat/economy numeric balance still open:**
+- Realm+Body HP/ATK/DEF and Defense numeric V1 have been LOCKED 2026-10-09; only implementation, monster scale and encounter balance remain open;
 - baseline combat timing numbers and specific coefficients/cooldowns not already locked per skill;
 - per-content production quantity, material efficiency, refund/rounding, product quality and exceptional-result tables;
 - derived Max HP permanent-source changes **preserve current HP ratio by default** (already locked in Combat Stats V2; not an open decision). Source-specific healing/damage overrides remain explicit.
-- exact eligible Traits and Mệnh Cách `birth_weight` by ID, per-Trait conflict/readiness, Fate `birth_override` packages.
+- 101 Trait per-ID `commonality_weight` + 24 Destiny `birth_weight` were approved 2026-10-09 in `docs/DV2_BIRTH_WEIGHTS_TRAIT_FATE_V1_PROPOSAL.md`; the special Fate `birth_override` for **Kiếm Tiên Chuyển Thế** remains blocked, with exactly that ID excluded from the eligible pool; work/social effect readiness is a separate phase.
 
-**Required before DV2-01 whole-person birth:** approved trait and destiny eligible birth pool/weights or an explicitly separately authorized minimal pool policy; agreed versioned identity schema and save-dev/reset boundary.
+**DV2-01 birth prerequisite resolved 2026-10-09:** approved per-ID Trait/Destiny weights, explicit exclusion rules and a versioned opt-in birth schema now exist. DV2-01B generates/persists identities without enabling missing combat/work consumers; focused/full Godot gates are recorded by `CURRENT_CHECKPOINT.md`.
 
-**Required before DV2-02/V2 combat:** real RealmBodyCore inputs and Defense curve; actual stat consumer tests.
+**Required before DV2-02/V2 combat:** implement the now-user-locked numeric RealmBodyCore + Defense curve and prove consumers with actual Godot stat/damage tests.
 
 **Required before full V2 production/trait consumer:** per-work-family canonical quantity/consumption/quality contract and no-stamina working implementation.
 
