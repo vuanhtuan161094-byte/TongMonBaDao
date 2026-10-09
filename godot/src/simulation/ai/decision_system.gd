@@ -68,14 +68,20 @@ func evaluate(state: SimulationState, disciple: DiscipleState) -> Dictionary:
 			chosen = &"SELL"
 			reason = "Returned with loot to liquidate."
 		elif owns_v2:
-			# Full Tu Vi/Body autonomous policy is a later DV2-03 slice. Until then
-			# do not manufacture a Body preference or read P2 cultivation state.
-			if disciple.stamina <= 22.0:
+			var auto_training := DiscipleTrainingPolicyV2.choose_auto_action(
+				state,disciple
+			)
+			if bool(auto_training.get("ok",false)):
+				chosen = StringName(auto_training["action"])
+				reason = "V2 autonomous training policy selected %s." % str(auto_training["track"])
+				scores["CULTIVATE"] = 1.0 if chosen == &"CULTIVATE" else 0.0
+				scores["TRAIN_BODY"] = 1.0 if chosen == &"TRAIN_BODY" else 0.0
+			elif disciple.stamina <= 22.0:
 				chosen = &"HOLD"
-				reason = "V2 expedition stamina is low; wait at sect for its own recovery authority."
+				reason = "V2 expedition stamina is too low to leave the sect and no automatic training track is currently available."
 			else:
 				chosen = &"HUNT"
-				reason = "V2 progression is isolated from legacy cultivation; autonomous training policy is not enabled yet."
+				reason = "No automatic V2 training track is currently available."
 		elif state.sect.cultivation_enabled:
 			chosen = _choose_p2_sect_action(scores, disciple)
 			reason = "Utility choice shaped by goal, personality, organization, resources, and legacy cultivation priority."
