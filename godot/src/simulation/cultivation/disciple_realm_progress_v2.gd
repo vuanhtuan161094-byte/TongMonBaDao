@@ -156,6 +156,8 @@ static func derive_stats(disciple: DiscipleState, sources: Array = []) -> Dictio
 # table for ALL ten floors of this specific realm. Absence is BLOCKED, not
 # guessed from HP/ATK/cultivation_stage_index.
 #
+# When dry_run=true the exact same validation/calculation is read-only, so
+# player commands can be rejected BEFORE they are queued.
 # "natural" obeys the user-locked aptitude/constitution bonus; "fixed" bypasses
 # all such bonuses. This adapter does NOT authorize material costs/EXP rates.
 # At floor 10, progression never crosses the major-realm gate automatically.
@@ -163,7 +165,8 @@ static func derive_stats(disciple: DiscipleState, sources: Array = []) -> Dictio
 # consumer exists; it is NOT silently stored as generic Tich Tu.
 static func grant_xp(
     disciple: DiscipleState, track: String, base_amount: float,
-    gain_type: String, floor_costs: Dictionary, sources: Array = []
+    gain_type: String, floor_costs: Dictionary, sources: Array = [],
+    dry_run: bool = false
 ) -> Dictionary:
     if disciple == null or not valid_profile(disciple.v2_realm_progress):
         return {"ok":false,"reason":"v2_realm_profile_not_ready"}
@@ -179,7 +182,10 @@ static func grant_xp(
         var key := "%d:%d" % [realm,f]
         if not floor_costs.has(key):
             return {"ok":false,"reason":"xp_cost_content_not_authorized"}
-        var value := float(floor_costs[key])
+        var raw_cost = floor_costs[key]
+        if not (raw_cost is float or raw_cost is int):
+            return {"ok":false,"reason":"invalid_xp_cost"}
+        var value := float(raw_cost)
         if is_nan(value) or is_inf(value) or value <= 0.0:
             return {"ok":false,"reason":"invalid_xp_cost"}
         costs[f] = value
@@ -203,7 +209,10 @@ static func grant_xp(
         var expected_channel := "cultivation_xp_gain" if track == "cultivation" else "body_xp_gain"
         if str(source.get("channel","")) != expected_channel or str(source.get("mode","")) != "percent_add":
             return {"ok":false,"reason":"unsupported_xp_source_channel"}
-        var value := float(source.get("value",NAN))
+        var raw_value = source.get("value",NAN)
+        if not (raw_value is float or raw_value is int):
+            return {"ok":false,"reason":"nonfinite_xp_source"}
+        var value := float(raw_value)
         if is_nan(value) or is_inf(value):
             return {"ok":false,"reason":"nonfinite_xp_source"}
         if bool(source.get("enabled",true)):
@@ -230,7 +239,8 @@ static func grant_xp(
     var next: Dictionary = old.duplicate(true)
     next["floor"] = floor_index
     next["xp"] = xp
-    disciple.v2_realm_progress[track] = next
+    if not dry_run:
+        disciple.v2_realm_progress[track] = next
     return {
         "ok":true,"track":track,"gained":gained,
         "natural_factor":maxf(0.0,natural_factor),
