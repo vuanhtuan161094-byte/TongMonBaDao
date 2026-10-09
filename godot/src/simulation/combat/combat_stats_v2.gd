@@ -22,6 +22,10 @@ static func valid_source(source: Dictionary) -> bool:
     var mode := str(source.get("mode", ""))
     if source_id.is_empty() or not source.has("value"):
         return false
+    # Conditional/filtered sources belong to their actual runtime consumer.
+    # Applying them globally here would silently over-buff a disciple.
+    if source.has("scope") or source.has("filter") or source.has("condition"):
+        return false
     var value := float(source.get("value", 0.0))
     if is_nan(value) or is_inf(value):
         return false
@@ -35,7 +39,7 @@ static func valid_source(source: Dictionary) -> bool:
         # +50% Crit Damage is +0.50 to its 1.50x multiplier, NOT ×1.50.
         return mode == "multiplier_add"
     if channel == "damage_reduction" or channel.begins_with("elemental_resistance/"):
-        if channel.begins_with("elemental_resistance/") and not ELEMENTS.has(channel.get_slice("/", 1)):
+        if channel.begins_with("elemental_resistance/") and (channel.split("/").size() != 2 or not ELEMENTS.has(channel.get_slice("/", 1))):
             return false
         # Ordinary independent sources cannot silently confer true immunity.
         return mode == "remaining_reduction" and value >= 0.0 and value < 1.0
@@ -54,7 +58,7 @@ static func derive(
         return {"ok":false,"reason":"invalid_potential"}
 
     var ordered: Array = sources.duplicate(true)
-    ordered.sort_custom(func(a, b): return str(a.get("source_id", "")) < str(b.get("source_id", "")))
+    ordered.sort_custom(func(a, b): return (str(a.get("source_id", "")) + ":" + str(a.get("channel", ""))) < (str(b.get("source_id", "")) + ":" + str(b.get("channel", ""))))
     var seen: Dictionary = {}
     var flat: Dictionary = {}
     var pct: Dictionary = {}
