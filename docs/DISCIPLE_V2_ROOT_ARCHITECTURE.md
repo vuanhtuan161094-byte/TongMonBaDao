@@ -143,7 +143,7 @@ Không có `combat_power` universal V2, không có Mana/Kiếm Ý universal, kh�
 | **M-03** | Lưu sự kiện cho 3.000 đệ tử | Event result typed theo hành động; chỉ lưu significant-history và bộ đếm/điều kiện còn sống; log chi tiết dùng vòng đệm giới hạn nếu cần debug/UI | Save tăng vô hạn hoặc điều kiện Mệnh Cách hậu thiên không thể xét |
 | **M-04** | Sinh Trait/Mệnh Cách khi pool per-ID chưa đủ luật | Giữ schema/seed/initialized và tỷ lệ nhóm đã khóa, **chưa chọn tên ID từ danh sách chưa duyệt**; trước code generator V2 phải khóa eligible pools/birth weights, hoặc phê duyệt từng pool tối thiểu có cơ chế thật | Tự chọn trọng số làm thay đổi xác suất; sinh content không có cơ chế |
 | **M-05** | Reset dữ liệu thử nghiệm và tương thích | Cho phép reset các world/nhân vật test được chỉ rõ; vẫn giữ lối load/compat để chạy gate baseline khi sửa, không tự xóa file của người dùng | Phá dữ liệu/test và không xác định được regression |
-| **M-06** | Khi HP tối đa thay đổi | Quy tắc giữ tỷ lệ HP hoặc lượng HP tuyệt đối là quyết định của hiệu ứng/nguồn; trước DV2-02 phải chốt một chuẩn mặc định và ngoại lệ có tag rõ | Thay trang bị/thăng cảnh giới có thể hồi máu hoặc giết người ngoài ý muốn |
+| **M-06 — ĐÃ CÓ LUẬT V2** | Khi Max HP vĩnh viễn thay đổi | **Giữ nguyên tỷ lệ HP hiện tại**, trừ hiệu ứng explicit healing/damage; luật đã khóa tại `docs/COMBAT_STATS_V2_SPEC.md` | Khi code phải bảo đảm không hồi đầy miễn phí, test theo nhiều nguồn |
 
 Không giải quyết M-04 bằng một bảng ngẫu nhiên chung tự chế; việc sinh bẩm sinh hoàn chỉnh phải chờ pool hợp lệ, dù bộ khung nhân vật có thể được triển khai và kiểm thử trước.
 
