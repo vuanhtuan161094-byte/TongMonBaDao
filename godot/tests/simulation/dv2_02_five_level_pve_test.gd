@@ -323,13 +323,33 @@ func _run() -> void:
     if not _assert(not bool(orchestrator.claim().get("ok",true)),
         "Session awarded actual warehouse resources before battle completion."):
         return
+    if not _assert(state.sect.v2_pve_active_runs.has("guided_group_hunt_01"),
+        "Started hunting run was not registered in canonical SectState."):
+        return
     var saved_run := orchestrator.save_state()
     if not _assert(bool(saved_run.get("ok",false)),
         "Whole hunting session could not serialize its selected difficulty and battle."):
         return
-    var restored_run := HuntingPveRunV2.restore_state(
-        state,JSON.parse_string(JSON.stringify(saved_run))
-    )
+    # Every real simulation step updates the active checkpoint, with no
+    # fabricated progress or duplicate player resources.
+    for tick in range(5):
+        if orchestrator.battle.active:
+            orchestrator.advance(false)
+    if not _assert(state.sect.v2_pve_active_runs.has("guided_group_hunt_01") and
+        str(state.sect.v2_pve_active_runs["guided_group_hunt_01"]["battle"]["payload"]) !=
+        str(saved_run["battle"]["payload"]),
+        "Active encounter did not checkpoint actual combat ticks."):
+        return
+    var sect_json := JSON.stringify(state.sect.to_dict())
+    var sect_reloaded := SectState.from_dict(JSON.parse_string(sect_json))
+    if not _assert(sect_reloaded.v2_pve_active_runs.has("guided_group_hunt_01"),
+        "Canonical SectState JSON omitted in-progress group combat checkpoint."):
+        return
+    var saved_from_disk: Dictionary = sect_reloaded.v2_pve_active_runs["guided_group_hunt_01"]
+    if not _assert(saved_from_disk["battle"] is Dictionary,
+        "Active combat payload did not survive actual SectState save/load."):
+        return
+    var restored_run := HuntingPveRunV2.resume_active(state,"guided_group_hunt_01")
     if not _assert(bool(restored_run.get("ok",false)),
         "Authentic persisted hunting session could not be restored: " +
         str(restored_run.get("reason","unknown"))):
@@ -346,6 +366,11 @@ func _run() -> void:
         resolved["summary"] == reloaded_result["summary"],
         "Restarted selected-map hunt diverged from uninterrupted group battle."):
         return
+    var stranger := HuntingPveRunV2.new()
+    if not _assert(not bool(stranger.begin(state,"bach_thach_khe",
+        "guided_group_hunt_01",222,team).get("ok",true)),
+        "A second live encounter reused the first encounter ID."):
+        return
     var actual_claim := orchestrator.claim()
     if not _assert(bool(actual_claim.get("ok",false)) and
         state.sect.v2_pve_reward_claims.has("guided_group_hunt_01") and
@@ -355,6 +380,14 @@ func _run() -> void:
     if not _assert(not bool(resumed_session.claim().get("ok",true)),
         "Reloading a victorious battle bypassed persisted once-only payout."):
         return
+    if not _assert(not state.sect.v2_pve_active_runs.has("guided_group_hunt_01"),
+        "Successfully claimed battle stayed stuck as an active run."):
+        return
+    if not _assert(not bool(HuntingPveRunV2.resume_active(
+        state,"guided_group_hunt_01").get("ok",true)),
+        "Already-paid encounter was incorrectly restored as active."):
+        return
+
     var malformed_run: Dictionary = saved_run.duplicate(true)
     malformed_run["encounter_id"] = "forged_elsewhere"
     if not _assert(not bool(HuntingPveRunV2.restore_state(state,malformed_run).get("ok",true)),
