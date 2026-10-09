@@ -1008,7 +1008,7 @@ Mệnh Cách must remain distinct from Trait:
 
 **Unchanged locked rules:** ordinary 1/2/3 visible Traits = 60/32/8%; one latent = 8%; nature allocation Hữu Ích/Song Diện/Bất Lợi = 50/30/20%; quality-independent birth; conflicts; no universal Trait grade; no effectless active Trait. Birth identity may be stored for an approved gated mechanic, but its effect remains disabled until the real consumer exists.
 
-**Rarity direction approved, exact per-ID weights NOT yet assigned:** weighted selection within each nature group, with provisional commonality weight tiers `phổ biến=10`, `ít gặp=4`, `hiếm=1`. These are encounter weights, never strength/rarity grades. Each specific Trait needs a later user-approved weight and eligibility before final generator activation.
+**Rarity decision updated 2026-10-09:** per-ID `commonality_weight` values 10/4/1 across all 101 named Traits are **USER-APPROVED** in `docs/DV2_BIRTH_WEIGHTS_TRAIT_FATE_V1_PROPOSAL.md`. Weights select identities inside the fixed 50/30/20 nature groups and are NOT an effect strength grade. These are encounter weights, never strength/rarity grades. Each specific Trait needs a later user-approved weight and eligibility before final generator activation.
 
 **Numbers in the tables below are provisional effects for subsequent mechanic-level review**. A concept is not executable until the consuming system, constraints, conflicts, eligibility, nonrecursive triggers, UI disclosure and tests are approved. User's 2026-10-09 sequencing correction: build the ONE-person birth/action/event/result/progression authority first. Do not proceed from a large Trait catalogue directly to ad-hoc callbacks or private stat systems.
 
@@ -1101,6 +1101,6 @@ Nature codes: `H` = hữu ích, `S` = song diện, `B` = bất lợi. For concep
 - Ordinary sect work never consumes Expedition Stamina. Only external expedition time/components can spend it.
 - A successful eligibility+consumer gate must be checked per Trait before entering the enabled birth pool; rejected content must not be substituted with a fake combat-power bonus. Hidden profiles stay redacted until legal reveal.
 - All work/combat/social/exploration Trait hooks should consume shared typed simulation events; do not poll 1,000–3,000 disciples per tick.
-- No per-ID commonality weights, full conflict graph, social mechanics, crafting-quantity rules or other pending mechanics were approved by this design-catalogue decision. Those are dependencies, not invented defaults.
+- **Subsequent 2026-10-09 approval has LOCKED the 101 per-ID birth weights.** Full conflict graph beyond the named explicit pairs, social consumers, crafting-quantity/rounding rules and other pending work mechanisms are still not implemented and cannot be activated without approval. Those are dependencies, not invented defaults.
 
 **Implementation sequence:** origin/world state -> ONE canonical Disciple V2 identity -> valid simulation actions/events -> canonical typed modifiers/outcomes -> only then detailed Trait readiness + individually reviewed rarity tables + runtime activation. Track 'DESIGN ONLY' separately from 'BACKEND TESTED'.
