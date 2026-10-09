@@ -68,6 +68,11 @@ func _run() -> void:
         "auto_breakthrough":false,"breakthrough_history":[],"last_training_event_id":""
     }
     disciple.v2_realm_progress["last_training_tick"] = -1
+    if not _check(bool(DiscipleRealmProgressV2.sync_live_hp(disciple).get("ok",false)),
+        "Focused fixture could not establish canonical V2 live HP."):
+        return
+    disciple.hp = disciple.max_hp * 0.40
+    var hp_ratio_before_growth := disciple.hp / disciple.max_hp
     var first := DiscipleRealmProgressV2.current(disciple)
     if not _check(bool(first.get("ok",false)) and
         int(first["cultivation_global_floor"]) == 1 and
@@ -112,6 +117,10 @@ func _run() -> void:
     var stats := DiscipleRealmProgressV2.derive_stats(disciple)
     if not _check(bool(stats.get("ok",false)),
         "Both persistent realm/body tracks failed to feed CombatStatsV2."):
+        return
+    if not _check(_close(disciple.max_hp,float(stats["stats"]["max_hp"])) and
+        _close(disciple.hp/disciple.max_hp,hp_ratio_before_growth),
+        "Floor growth did not update live V2 Max HP while preserving current HP ratio."):
         return
     var compared := CombatStatsV2.derive(1,3,1,2,disciple.potential)
     if not _check(_close(float(stats["stats"]["max_hp"]),float(compared["stats"]["max_hp"])) and
