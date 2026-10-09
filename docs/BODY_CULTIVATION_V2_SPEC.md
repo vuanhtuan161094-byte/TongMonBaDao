@@ -118,6 +118,58 @@ Canonical source model:
 
 This asymmetry is intentional: **Tu Vi is ambient spiritual absorption; Luyện Thể requires actual tempering.**
 
+## 4.2 Natural Body EXP source contract — USER LOCK 2026-10-09
+
+Luyện Thể has three distinct **natural** source contexts. They share one Căn Cốt formula, but they are not interchangeable gameplay activities.
+
+### A. Production / Sản xuất
+
+- only **active physically demanding production time** may grant natural Body EXP;
+- a job/facility being assigned or passively counting down is not enough;
+- the profession/work consumer must explicitly verify that the current work phase carries body load;
+- this is a **low-rate secondary source**, not a replacement for dedicated Rèn Thân;
+- exact eligible professions and rates remain content work.
+
+### B. Dedicated body training / Rèn Thân
+
+- this is the **primary controllable Luyện Thể source**;
+- gain is normalized as **Luyện Thể EXP per simulation minute**;
+- it requires a real future training-facility/content consumer to verify access/slot and selected training grade;
+- the consumer must successfully commit that minute's cost **before** Body EXP is granted;
+- training grade/intensity may raise both EXP/minute and economic cost;
+- cost direction may use Linh Thạch and/or explicit materials, but the building name, grade count, unlock levels, resource IDs, quantities and formulas are deliberately deferred;
+- Rèn Thân inside the sect does **not** spend Expedition Stamina.
+
+### C. Expedition / Viễn chinh
+
+- only verified active outside-map expedition time may grant natural Body EXP;
+- it is a distinct source from in-sect production and dedicated Rèn Thân;
+- killing a monster does not directly create generic Body EXP;
+- expedition/body-pressure content may author the per-minute base rate later;
+- Expedition Stamina remains the outside-map endurance cost and is not replaced by Body EXP.
+
+### Shared accounting
+
+All three natural sources use:
+
+`effective_body_xp = source_base_body_xp_per_minute × (1 + 0.002 × CanCot + sum(other_body_xp_bonuses))`
+
+Rules:
+- one disciple may receive **at most one natural Body source per simulation minute**;
+- production and dedicated Rèn Thân are in-sect sources; expedition is an outside-map source;
+- buffs such as Dược Dục modify the chosen natural source instead of creating a second generic grant;
+- fixed +X Body EXP remains a separate `fixed` path and is not multiplied by Căn Cốt;
+- source-specific numeric rates are content/balance data and are **not locked yet**.
+
+Normal balance direction is:
+**production < expedition < dedicated Rèn Thân** for comparable progression bands.
+
+This is a balance direction, not a hard-coded multiplier table. Exceptional authored content may differ, but generic production must not become the optimal Body-EXP farm and ordinary low-risk expedition must not obsolete dedicated Rèn Thân.
+
+**Implementation boundary:** `DiscipleBodyXpSourceV2` now owns typed source validation/accounting and one-source-per-minute dedup. No training building, resource cost table, profession eligibility list or expedition pressure table is implemented by this contract.
+
+---
+
 # 5. Thể Lực V2 definition
 
 Player-facing name:
@@ -446,7 +498,7 @@ These require their own design/balance pass.
 ## Trạng thái triển khai Luyện Thể DV2-03 — 09/10/2026 (không thay thiết kế đã khóa)
 
 - **Đã code + focused Godot PASS**: `DiscipleState.v2_realm_progress.body` (30 đại cảnh × 10 tầng; tên đúng ladder), `DiscipleRealmProgressV2.grant_xp(...,"body",...)`, tăng tầng nhỏ tự động theo EXP, `Căn Cốt +0,20%/điểm` cho EXP natural, cộng buff hợp lệ cùng channel và giữ thưởng `fixed` chính xác, dừng ở cửa đại cảnh.
-- **Latest code safety state, runtime gate chưa xác minh**: generic Body progression math and Căn Cốt scaling exist, but the concrete Luyện Thể training activity is **BLOCKED / NOT DESIGNED**. The legacy/provisional `TRAIN_BODY` token is fail-closed and cannot grant Body EXP. `v2_training_enabled` remains default-off.
+- **Latest code safety state, runtime gate chưa xác minh**: generic Body progression + Căn Cốt scaling and the typed source authority (`production` / `body_training` / `expedition`) exist. The real Rèn Thân facility/cost consumer is still **NOT IMPLEMENTED**; provisional `TRAIN_BODY` therefore remains fail-closed and cannot fabricate EXP.
 - **Chưa có quyền coi hoàn thành**: `commit_authorized_body_gate` chỉ là hàm commit sau khi consumer khác đã xác minh EXP/điều kiện; chưa có tỷ lệ thử đột phá, vật liệu, thất bại riêng cho Luyện Thể đã duyệt. Không được sao chép xác suất Tu Vi; không tự rút HP/Thể Lực Viễn Chinh từ hành động TRAIN_BODY.
 - **Chưa thiết kế/triển khai đầy đủ**: hoạt động Luyện Thể cụ thể, nguồn natural Body EXP, đơn vị/thời lượng, công trình/vật liệu, 300 yêu cầu EXP, major-gate content, lịch persistent/offline, màn hình V2, và tiêu hao **Thể Lực Viễn Chinh** ngoài map. Các số test như 50 EXP/action và 100 EXP/tầng chỉ là fixture, không phải balance.
 - **FOCUSED Godot 4.7.2 Linux PASS** [#37895517181](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37895517181) tại `e96df183`. Full P3.7 PASS được xác minh [#37895357334](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37895357334) tại mã cũ `5296f610`. Không phải Windows PASS hay lệnh V2 UI PASS.
