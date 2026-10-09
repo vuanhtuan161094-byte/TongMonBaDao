@@ -297,6 +297,28 @@ New focused test:
 **Next implementation after runtime gate evidence:** D2 persistent clock/runtime owner: 15s wall cadence, saved accumulator/timestamp, pause/resume, backlog-preserving offline catch-up (no dropped-time cap), then benchmark before choosing any performance cap. Daily expedition-stamina reset remains with map runtime per locked Body spec and must not be faked through legacy REST/HOLD.
 
 
+
+### 5.8 DV2-03S — source-model refactor: Tu Vi/phút + 1/1 production start (CODE PUSHED, GATE UNVERIFIED)
+
+**User lock 09/10/2026:** 15 giây không phải balance unit. Display/balance uses **Tu Vi per simulation minute**; active Luyện Thể uses **Body EXP per simulation minute**. Existing P3.7 semantics already define 1440 scheduler ticks/day, therefore one `SimulationScheduler.step()` is one simulation minute. Wall-clock/offline mapping remains a separate runtime concern.
+
+Implemented:
+- NEW `DiscipleTuViFlowV2`: authentic V2 disciples receive exactly one natural Tu Vi source per simulation minute whenever V2 progression content is enabled, regardless of ordinary work/travel/hunt/combat/rest/body training.
+- `CULTIVATE` is now **Chuyên Tu** only: it applies authored `cultivate_multiplier` to the same natural Tu Vi minute. It no longer grants a second direct cultivation EXP event.
+- Training content schema upgraded to version 2: `base_tuvi_per_minute`, `cultivate_multiplier`, `base_body_xp_per_minute`, complete 2×300 `floor_costs`. No production numeric rate/curve was invented.
+- Passive Tu Vi dedup is persisted separately as `last_passive_tuvi_tick`; explicit body training retains its own `last_training_tick`/event. Therefore one `TRAIN_BODY` minute may legitimately gain **passive Tu Vi + Body EXP** without duplicate credit.
+- Authentic V2 ordinary work no longer grants separate work-Tu-Vi. `WorkforceSystem._grant_p3_7_work_cultivation()` returns 0 for V2; legacy path remains unchanged.
+- Every **new production V2 recruit** now initializes at **Phàm Nhân tầng 1 + Phàm Thân tầng 1, both 0 EXP**. Tư Chất/Căn Cốt alter growth after recruitment, not starting level. `initialize_recruited_compat` remains only for pre-lock development-save migration.
+- `DiscipleTuViFlowV2.preview_rate()` exposes `base_tuvi_per_minute`, `effective_tuvi_per_minute`, natural factor and Chuyên Tu multiplier for future UI without mutating progress.
+- Updated focused tests cover 1/1 starts, minute-rate catalogue schema, ordinary passive Tu Vi, Chuyên Tu single-source acceleration, no same-minute passive duplicate, passive Tu Vi + Body EXP coexistence, no work double-credit, save/load dedup, and D1/P2-isolation regression.
+- Focused workflow watches `disciple_tuvi_flow_v2.gd`.
+
+**Tinh Nguyên design status:** user locked monster-dropped Tinh Nguyên as a future **fixed +X Tu Vi** consumable/resource source. Exact resource IDs/grades/drop tables/+X values are **not yet authored**, therefore no fake production Tinh Nguyên content was added in this slice.
+
+**Latest runtime evidence:** **MISSING, not FAIL.** Available connector still returns no push-triggered workflow run/check for the new commits. Previous focused/full runs remain older-code evidence and do not prove DV2-03S. Windows is UNTESTED.
+
+**Still OPEN:** production Tu Vi/minute number, Chuyên Tu multiplier, Body EXP/minute number, 600 floor costs, 29 Tu Vi base breakthrough chances, Body major-gate content, persistent live runtime/offline catch-up and V2 UI.
+
 ### 5.4 Chuẩn bị lát triển khai tiếp theo — audit 09/10/2026
 
 **DV2-03 vẫn ACTIVE — chưa có code gameplay/gate mới trong lượt chuẩn bị này.** GitHub `main` đã được rà: action `request_training` kiểm tra sơ bộ nhưng không preflight `base_xp_per_action`/`floor_costs`; do đó có thể trả `ok=true` để xếp việc, rồi `resolve` fail-closed ở tick sau. Scheduler `step()` làm chủ cấp EXP, không phải driver wall-clock được chứng thực. Workflow focused của code `e96df183` PASS; FULL P3.7 chỉ có bằng chứng PASS tại `5296f610`. **Không có bằng chứng full same-code SHA hay realtime 15s/offline/Windows V2.**
