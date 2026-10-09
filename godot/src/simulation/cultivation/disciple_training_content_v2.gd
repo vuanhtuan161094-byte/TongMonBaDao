@@ -88,6 +88,31 @@ static func build_rules(raw: Variant) -> Dictionary:
             rule["base_tuvi_per_minute"] = float(item["base_tuvi_per_minute"])
             rule["cultivate_multiplier"] = float(item["cultivate_multiplier"])
         else:
-            rule["training_mechanic"] = "unresolved"
+            rule["training_mechanic"] = "typed_source_contract"
         rules[track] = rule
     return {"ok":true,"rules":rules,"catalogue_id":validated["catalogue_id"]}
+
+static func canonical_catalogue() -> Dictionary:
+    var costs := DiscipleProgressionBalanceV2.floor_costs()
+    return {
+        "version":VERSION,
+        "catalogue_id":"dv2-progression-balance-v1",
+        "tracks":{
+            "cultivation":{
+                "authority_id":"dv2-progression-balance-v1",
+                "base_tuvi_per_minute":DiscipleProgressionBalanceV2.BASE_TUVI_PER_MINUTE,
+                "cultivate_multiplier":DiscipleProgressionBalanceV2.CULTIVATE_MULTIPLIER,
+                "floor_costs":costs.duplicate(true)
+            },
+            "body":{
+                "authority_id":"dv2-progression-balance-v1",
+                "floor_costs":costs.duplicate(true)
+            }
+        }
+    }
+
+static func canonical_rules() -> Dictionary:
+    var built := build_rules(canonical_catalogue())
+    if not bool(built.get("ok",false)):
+        return {}
+    return built["rules"].duplicate(true)
