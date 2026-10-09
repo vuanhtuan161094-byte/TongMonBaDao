@@ -130,7 +130,7 @@ func _run() -> void:
     )
     teammate["id"] = "teammate_02"
     teammate["skill_loadout"] = []
-    var mobs := HuntingMapV2.spawn("thanh_truc_lam",1,"pve_skill_action",441)["monsters"]
+    var mobs: Array = HuntingMapV2.spawn("thanh_truc_lam",1,"pve_skill_action",441)["monsters"]
     var session := MapBattleV2.new(441)
     if not _assert(bool(session.setup("pve_skill_action",[equipped,teammate],mobs).get("ok",false)),
         "Loadout-injected real group PvE setup failed."):
