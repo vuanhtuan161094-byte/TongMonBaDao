@@ -83,6 +83,15 @@ func _run() -> void:
         "Realm-1 benchmark times changed unexpectedly."):
         return
 
+    var canonical_catalogue := DiscipleTrainingContentV2.canonical_catalogue()
+    var canonical_built := DiscipleTrainingContentV2.build_rules(canonical_catalogue)
+    if not _assert(bool(canonical_built.get("ok",false)) and
+        _close(float(canonical_built["rules"]["cultivation"]["base_tuvi_per_minute"]),20.0) and
+        _close(float(canonical_built["rules"]["cultivation"]["cultivate_multiplier"]),2.0) and
+        str(canonical_built["rules"]["body"].get("training_mechanic",""))=="typed_source_contract",
+        "Canonical balance cannot round-trip through training content registry."):
+        return
+
     var cultivation_rule := DiscipleProgressionBalanceV2.cultivation_rule()
     var body_rule := DiscipleProgressionBalanceV2.body_progression_rule()
     if not _assert(
