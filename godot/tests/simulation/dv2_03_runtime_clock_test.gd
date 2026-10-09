@@ -75,7 +75,7 @@ func _run() -> void:
         int(first_minute.get("steps_run",-1))==1 and
         state.tick==1 and
         _close(state.runtime_unconsumed_wall_seconds,0.0) and
-        _close(_tuvi(state,disciple_id)-before,20.0),
+        _close(_tuvi(state,disciple_id)-before,1000.0),
         "60 real seconds did not produce exactly one canonical Tu Vi minute."):
         return
 
@@ -186,7 +186,7 @@ func _run() -> void:
     if not _assert(bool(reloaded.get("ok",false)) and
         int(reloaded.get("catch_up_steps",-1))==3 and
         reloaded_owner.state.tick==owner.state.tick+3 and
-        _close(_tuvi(reloaded_owner.state,owner_id)-owner_saved_tuvi,60.0),
+        _close(_tuvi(reloaded_owner.state,owner_id)-owner_saved_tuvi,3000.0),
         "Runtime owner load did not apply exactly the offline minutes."):
         return
 
