@@ -110,6 +110,8 @@ derived = resolve typed percentage/context/special/status according to owning ch
 - Healing: `base_heal × outgoing_healing_done × incoming_healing_received`; Shield Effect là channel riêng.
 - No normal accuracy/evasion, Mana/MP, physical vs magical duplicate attack, or damage calculation from combat rating.
 
+**HP maximum change:** `docs/SPIRITUAL_ROOT_V2_SPEC.md` already **locks preservation of current HP ratio** when its permanent Root-derived Max HP changes (not a free full heal). This locked specific case must be honored. General cross-source HP-max-change semantics (equipment/physique/bloodline/realm and runtime injury or buffs) still require a single documented rule, exceptions and tests before DV2-02; do not contradict the root-specific law.
+
 **Required before actual combat code:** numeric Realm+Body ATK/DEF/HP curve, Defense mitigation curve, baseline move/basic/cast/cooldown values, applicable skill action coefficient definitions. Existing stat contract intentionally does not fabricate these.
 
 ## 4. Tầng dẫn xuất SẢN XUẤT — mô hình nhiều kết quả, không một Work Power
@@ -211,7 +213,7 @@ Full source-by-source matrix: `docs/DISCIPLE_V2_EFFECT_SOURCE_MATRIX.md`.
 - Realm+Body HP/ATK/DEF numeric growth curve over 300 floors and Defense mitigation curve;
 - baseline combat timing numbers and specific coefficients/cooldowns not already locked per skill;
 - per-content production quantity, material efficiency, refund/rounding, product quality and exceptional-result tables;
-- treatment of current HP when a derived Max HP source changes;
+- general treatment of current HP when *other* derived Max HP sources change; Root-derived changes already preserve HP ratio;
 - exact eligible Traits and Mệnh Cách `birth_weight` by ID, per-Trait conflict/readiness, Fate `birth_override` packages.
 
 **Required before DV2-01 whole-person birth:** approved trait and destiny eligible birth pool/weights or an explicitly separately authorized minimal pool policy; agreed versioned identity schema and save-dev/reset boundary.
