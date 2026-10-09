@@ -2,7 +2,7 @@
 
 2026-10-09
 
-**NUMERIC DESIGN PROPOSAL — CHƯA CHỐT TRỌNG SỐ TỪNG ID, CHƯA KÍCH HOẠT V2 SINH NỘI DUNG.** Người dùng đã duyệt **chọn theo trọng số riêng** (Trait, Fate) nhưng chưa duyệt các trọng số chính xác; bảng này được lập đầy đủ để rà nguồn → hiệu ứng → eligibility trước khi mở toàn bộ DV2-01.
+**BẢNG TRỌNG SỐ 10/4/1 VÀ 101 TRAIT + 24 FATE ĐÃ ĐƯỢC NGƯỜI DÙNG DUYỆT 2026-10-09.** Việc bật chọn danh tính từ bảng tại runtime là DV2-01B; những ID bị cấm vì thiếu gói bẩm sinh vẫn phải loại khỏi pool. Hiệu ứng tiếp tục consumer-gated và không có bonus giả. Người dùng đã duyệt **chọn theo trọng số riêng** (Trait, Fate) nhưng chưa duyệt các trọng số chính xác; bảng này được lập đầy đủ để rà nguồn → hiệu ứng → eligibility trước khi mở toàn bộ DV2-01.
 
 Không thay đổi:
 - visible Trait count 1/2/3 = 60/32/8%;
@@ -13,13 +13,13 @@ Không thay đổi:
 
 ## 1. Luật trọng số áp dụng
 
-**Trọng số xuất hiện, KHÔNG phải phẩm cấp và KHÔNG đồng nghĩa sức mạnh.** Mức đề xuất `10` (thường), `4` (ít gặp), `1` (hiếm/độc đáo). Mỗi ID được chọn theo `weight / sum(eligible_weights_of_same_nature)`, **sau** khi nature đã được chọn theo 50/30/20. Nếu một ID không hợp lệ do conflict hay nguồn event chưa sẵn sàng, phải tái tính tổng trên pool hợp lệ và lưu kết quả; không rút lại nature một cách ngầm định. Trường hợp pool nature rỗng là **lỗi dữ liệu/gate** phải kiểm tra, không thay bằng Trait giả.
+**Trọng số xuất hiện đã khóa, KHÔNG phải phẩm cấp và KHÔNG đồng nghĩa sức mạnh.** Mức `10` (thường), `4` (ít gặp), `1` (hiếm/độc đáo). Mỗi ID được chọn theo `weight / sum(eligible_weights_of_same_nature)`, **sau** khi nature đã được chọn theo 50/30/20. Nếu một ID không hợp lệ do conflict hay nguồn event chưa sẵn sàng, phải tái tính tổng trên pool hợp lệ và lưu kết quả; không rút lại nature một cách ngầm định. Trường hợp pool nature rỗng là **lỗi dữ liệu/gate** phải kiểm tra, không thay bằng Trait giả.
 
 **Nature**: H=Hữu Ích, S=Song Diện, B=Bất Lợi.
 
 **Readiness**: Các tên có `consumer_gated` hoặc hệ số mới từ Chapter 26 chỉ là birth-ID direction khi được user chốt; **hiệu ứng** chưa có consumer không được bật. Tên cần kinh nghiệm đời người như `Thương Binh Kinh Nghiệm` nên thiết kế **hậu thiên** (không tự xem sinh 14 tuổi đã từng trải qua chấn thương). `Cuồng Công` và các trait hai mặt thiếu hậu quả thực tế **không được kích hoạt** dù danh tính có thể được lưu sau khi birth eligibility được duyệt.
 
-## 2. Đề xuất 101 Trait theo từng nature
+## 2. Trọng số sinh 101 Đặc Chất đã duyệt theo từng nature
 
 | ID hiển thị | Nguồn | Nature | Trọng số V1 | Lưu ý |
 |---|---|---|---:|---|
@@ -129,7 +129,7 @@ Không thay đổi:
 
 Mốc tỷ lệ ví dụ (chỉ để người dùng dễ hình dung): một Trait nature H, weight 10, nếu pool H chưa lọc có tổng 169, thì xác suất trên **một slot visible** là `50% × 10/169`; không phải `10%` hay `10/101`.
 
-## 3. Phương án 24 Mệnh Cách congenital
+## 3. Trọng số 24 Mệnh Cách congenital đã duyệt
 
 Mệnh Cách chọn trong xác suất tổng 0.50%; weight chỉ là **trọng số có điều kiện bên trong 0.50%**, không làm các Mệnh phổ biến như Trait thường.
 
@@ -160,7 +160,7 @@ Mệnh Cách chọn trong xác suất tổng 0.50%; weight chỉ là **trọng s
 | Thiên Cơ Khả Khuy | 1 | EXPLORATION EVENT GATED |
 | Thiên Công Khai Vật | 1 | CRAFT TRANSACTION GATED |
 
-Tổng birth_weight V1 (nếu cả 24 eligible) = **46**. Một Mệnh weight 1 tương đương `0.50% × 1/46` cơ hội có đúng identity đó lúc sinh **khi pool đầy đủ**, gồm latent và revealed. Khi một số Mệnh bị chặn vì chưa có authority, pool giảm; phải phân phối lại **bên trong phần congenital 0.50%**, không tăng odds có Mệnh của cả nhân vật.
+Tổng birth_weight V1 **trong toàn bộ bảng thiết kế 24 Mệnh** = **46**. Runtime chỉ chọn pool đang eligible: **Kiếm Tiên Chuyển Thế** chưa có `birth_override` đầy đủ nên bị loại tạm thời; tổng eligible hiện = 45. Một Mệnh weight 1 tương đương `0.50% × 1/46` cơ hội có đúng identity đó lúc sinh **khi pool đầy đủ**, gồm latent và revealed. Khi một số Mệnh bị chặn vì chưa có authority, pool giảm; phải phân phối lại **bên trong phần congenital 0.50%**, không tăng odds có Mệnh của cả nhân vật.
 
 **Birth-package riêng:** `Kiếm Tiên Chuyển Thế` congenital revealed cần một `Sword-path` lịch sử khởi đầu deterministic theo `DESTINY_V2_SPEC`. Hiện số mốc/path history **chưa được duyệt**, vì vậy đề xuất `birth_weight=1` không có nghĩa được sinh vào runtime trước khi gói này hoàn tất. `Túc Tuệ Chuyển Thế` và `Đoạt Mệnh` cần hệ Ma/Hồn hoặc quái mang Mệnh có thật; không kích hoạt effect giả.
 
@@ -178,11 +178,11 @@ Những Trait thú vị **được phép cùng tồn tại** nếu không có xu
 
 ## 5. Các cổng duyệt trước khi kích hoạt code DV2-01 full birth
 
-1. User phê duyệt mức 10/4/1 và danh sách weight từng ID; **các số trên CHƯA khóa**.
+1. **ĐÃ DUYỆT** mức 10/4/1 và danh sách weight từng ID. Khi code hoạt động, test đúng những giá trị này, không tự thay bằng commonality mặc định khác.
 2. Từng Trait/Fate phải có unique internal ID, nature, birth/hậu thiên eligibility, conflict set, status `ready / consumer_gated / future_only`, cách lộ và effect package tương ứng.
 3. Bảng độ khó/vật phẩm mà Trait/Fate sửa phải dùng owner có thật; không dùng lore as effect.
 4. V2 generator chỉ đọc các config đã phê duyệt và độc lập seed-domain; giữ nguyên các tỷ lệ Dẫn Tiên/Lục Duy.
 5. Test 100K seed distributions, conflict/latent no-leak, eligible pool empty fail, replay save/load.
 6. Chưa có toàn bộ nội dung hợp lệ thì **giữ V2 birth layer chưa khởi tạo hoặc bật một pool tối thiểu đã được phê duyệt riêng**, không tự roll mặc định đều.
 
-**Status triển khai:** DV2-01A chỉ mới tạo envelope versioned/seed domains (opt-in, thử nghiệm Godot đã có focused PASS); chưa sinh/lưu 101 Trait hoặc 24 Mệnh trong hệ V2. 
+**Status triển khai:** DV2-01A envelope đã PASS Godot 4.7.2. DV2-01B đã viết bộ quay tên Đặc Chất/Mệnh Cách và các bản bẩm sinh khác sau khi trọng số được duyệt; đang chờ focused + distribution + cumulative gates. Một Đặc Chất chỉ có thể nhận hiệu ứng sau khi consumer của nó hiện thực hợp lệ. 
