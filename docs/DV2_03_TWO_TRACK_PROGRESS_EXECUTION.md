@@ -107,14 +107,14 @@ No new maps, new species or speculative XP/chance/reward data in DV2-03.
 
 ### C — Production EXP authority + validation trước khi nhận lệnh (STRUCTURE CODED; NUMERIC BALANCE DEFERRED)
 
-1. Chuẩn hóa một source/content registry duy nhất cho EXP Tu Vi và EXP Luyện Thể: hai đường × 30 đại cảnh × 10 tầng, `base_xp_per_action` theo nhịp chuẩn, phiên bản dữ liệu và coverage validator; dữ liệu thử `80/50/100` KHÔNG được đem làm game balance.
+1. Chuẩn hóa source/content registry duy nhất theo **phút mô phỏng**: Tu Vi dùng `base_tuvi_per_minute` + `cultivate_multiplier`; Luyện Thể dùng `base_body_xp_per_minute`; hai đường vẫn có 30×10 floor-cost coverage. Dữ liệu QA 80/50/100 KHÔNG phải game balance.
 2. Chuẩn bị bảng cân bằng có số liệu/đồ thị tăng trưởng để người dùng duyệt trước khi kích hoạt production. Thiếu giá trị đã duyệt thì giữ `v2_training_enabled=false` / fail-closed. Không chuyển `CultivationSystem.STAGES` P2 sang V2.
 3. `request_training` phải chạy cùng preflight validation đầy đủ với `resolve` (nguồn, track, rate, cost của tầng hiện tại đến cổng, trạng thái đệ tử); không trả `ok=true` rồi lặng lẽ từ chối ở tick sau. Giữ nguyên thuộc tính: một lệnh xếp cho tick tới, không thưởng ngay, không chen ngang COMBAT/công việc bận.
 4. Focused gate: cả 600 vị trí được khai báo/kiểm tra, cost thiếu hoặc sai từ chối *trước khi xếp*; EXP tăng tầng nhỏ chuẩn, cố định không nhân lục duy, natural cộng % đúng, không double P2.
 
 ### D — Thời gian thực, tiếp diễn tự động và save/offline
 
-1. Tìm và dùng **một driver thời gian chuẩn của live game** để gọi `SimulationScheduler.step()` mỗi **15 giây thực**; không lấy vòng demo `p0_sandbox.gd` khoảng 0,18s làm bằng chứng; không tạo timer riêng cho V2.
+1. Tạo/đính vào **một runtime owner persistent** cho live game. `SimulationScheduler.step()` hiện mang semantics **1 phút mô phỏng** (1440 tick/ngày); wall-clock cadence KHÔNG phải balance authority và không được hard-code 15 giây như luật gameplay.
 2. Định nghĩa rõ pause/resume, save timestamp/remaining accumulator, offline catch-up, giới hạn xử lý (nếu cần phải được người dùng duyệt), và quyền cấp EXP cho từng tick. Không đếm wall-clock hai lần khi reload/đổi màn. Mỗi tick có ID bất biến/ordering xác định.
 3. AI/assignment trong phạm vi DV2-03: hỗ trợ ưu tiên Tu Vi/Luyện Thể liên tục khi đệ tử rảnh, tôn trọng hunt/combat/work/needs; player có thể chuyển policy mà không cấp EXP tức thì. Không tự gọi `auto_breakthrough` khi chưa có content cổng chính thức.
 4. Gate: giả lập thời gian dài qua đúng driver; kiểm thử save trước/sau tick, thoát/reopen/catch-up, cùng seed cho online/offline cùng kết quả; benchmark 1.000–3.000 đệ tử mà không update UI/render mỗi tick cho toàn roster.
@@ -154,7 +154,7 @@ No new maps, new species or speculative XP/chance/reward data in DV2-03.
 **No approved production EXP numbers have been applied.** Current 100/80/50 in QA are fixtures only. Even with validated schema, production remains default-OFF. The old focused PASS and previous full P3.7 PASS were at older code commits; the changes listed above require independent Godot 4.7.2 run evidence before being marked PASS.
 ### EXP balance status after DV2-03M
 
-**No production EXP rate/curve is approved.** Earlier illustrative numbers such as `12 EXP/15s`, `0.75h × 1.23^(r−1)` or the derived realm-hour table are **RETIRED exploratory notes and must not be promoted into gameplay**. Balance only after autonomous duty cycle + live/offline time authority are defined and benchmarked against representative disciple foundations.
+**No production EXP rate/curve is approved.** Earlier illustrative numbers such as `12 EXP/15s`, `0.75h × 1.23^(r−1)` or the derived realm-hour table are **RETIRED**. The balance/display unit is now locked to **Tu Vi/phút mô phỏng** and **Luyện Thể EXP/phút mô phỏng**; production numeric rates remain OPEN.
 
 ---
 
@@ -163,10 +163,10 @@ No new maps, new species or speculative XP/chance/reward data in DV2-03.
 **CODE PUSHED; latest Godot runtime gate UNVERIFIED.**
 
 - Authentic V2 identity is centralized through `owns_v2_progression`; progression mutation additionally requires `progression_ready`.
-- V2 recruitment creates the two-track profile immediately. Temporary compatibility preserves the current P3.7 Luyện Khí starting floor for **new current-generator recruits only**; Body starts Phàm Thân tầng 1. This is not the final V2 starting distribution.
+- V2 recruitment creates the two-track profile immediately at the **user-locked production start: Phàm Nhân tầng 1 + Phàm Thân tầng 1, both 0 EXP**. The old P3.7 Luyện Khí compatibility bridge remains only for pre-lock development-save migration.
 - Identity-only pre-DV2-03 V2 saves migrate once through that bridge; a present malformed progression payload fails closed instead of rerolling.
 - Scheduler/AI/workforce/combat cannot read/write P2 cultivation for authentic V2 characters: no P2 combat-win XP, P2 breakthrough, P2 realm combat bonus or P2 cultivate fallback.
-- Work-time Tu Vi goes to the V2 Tu Vi track when authored floor costs exist. In-sect work/rest/hold do not spend/refill expedition stamina.
+- Authentic V2 ordinary work no longer owns a separate Tu Vi reward. Passive natural Tu Vi is resolved once per simulation minute by the cultivation/time authority during work/rest/travel/hunt/combat/etc.; in-sect work/rest/hold still do not spend/refill expedition stamina.
 - V2 live Max HP comes from Realm+Body CombatStatsV2 and preserves current HP ratio on recruit/floor/gate/save-load.
 - Floor-10 cost is the single EXP authority for major gates; no second numeric `gate_required_xp` argument.
 - Strict birth identity validation again checks real Root/Mutation/Profession Talent/Trait/Bloodline/Physique/Destiny structure, while allowing lawful post-birth current-root growth.
@@ -218,5 +218,5 @@ User-approved gameplay authority now supersedes the current action-only EXP brid
 6. Luyện Thể remains non-passive: `TRAIN_BODY` or another explicit body-tempering source is required.
 7. **15s is not a balance law.** The runtime cadence may batch elapsed-time progression but equal elapsed time must yield equal progression online/offline regardless of commit frequency.
 
-Therefore DV2-03D1 policy code is reusable conceptually, but its `CULTIVATE`/scheduler EXP contract must be refactored before the source model can be called implemented.
+**Implementation status:** source-model refactor is now CODE PUSHED. `DiscipleTuViFlowV2` grants exactly one natural Tu Vi source per simulation minute; `CULTIVATE` only applies Chuyên Tu acceleration; `TRAIN_BODY` may simultaneously grant Body EXP in that minute; separate work-Tu-Vi was removed for authentic V2; new recruitment starts 1/1. Latest runtime Godot gate evidence is still UNVERIFIED.
 
