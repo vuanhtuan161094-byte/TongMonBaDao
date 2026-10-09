@@ -59,9 +59,11 @@ func _run() -> void:
     if disciple.v2_birth_profile != profile:
         _fail("Candidate acceptance discarded/changed the birth envelope.")
         return
-    disciple.v2_birth_profile["layers"]["traits"]["initialized"] = false
-    if first.v2_birth_profile != profile:
-        _fail("Copy-through of birth metadata unexpectedly changed candidate identity.")
+    # Explicit initialized+none is different from uninitialized.
+    # Mutation of the recruited disciple must not mutate the original candidate.
+    disciple.v2_birth_profile["layers"]["bloodline"] = {"initialized": true, "value": "none"}
+    if bool(first.v2_birth_profile["layers"]["bloodline"]["initialized"]):
+        _fail("Recruitment copied the birth profile by reference rather than by value.")
         return
     if first.v2_birth_profile["layers"]["traits"].has("value"):
         _fail("Trait identity leaked from an uninitialized pool.")
