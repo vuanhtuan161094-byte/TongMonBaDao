@@ -8,10 +8,16 @@ on:
       - 'godot/src/simulation/cultivation/disciple_training_action_v2.gd'
       - 'godot/src/simulation/cultivation/disciple_training_content_v2.gd'
       - 'godot/src/simulation/core/simulation_scheduler.gd'
+      - 'godot/src/simulation/ai/decision_system.gd'
+      - 'godot/src/simulation/workforce/workforce_system.gd'
+      - 'godot/src/simulation/needs/needs_system.gd'
+      - 'godot/src/simulation/combat/combat_system.gd'
+      - 'godot/src/simulation/recruitment/recruitment_system.gd'
       - 'godot/src/simulation/state/sect_state.gd'
       - 'godot/src/simulation/state/disciple_state.gd'
       - 'godot/tests/simulation/dv2_03_realm_body_progress_test.gd'
       - 'godot/tests/simulation/dv2_03_training_actions_test.gd'
+      - 'godot/tests/simulation/dv2_03_p2_isolation_test.gd'
       - '.github/workflows/dv2-03-realm-body-progress.yml'
 
 permissions:
@@ -39,5 +45,7 @@ jobs:
         run: godot --headless --path godot --editor --quit
       - name: DV2-03 dual 30x10 realm progression, breakthrough, save
         run: godot --headless --path godot -s res://tests/simulation/dv2_03_realm_body_progress_test.gd
-      - name: DV2-03 real cultivate and body 15s scheduler actions
+      - name: DV2-03 real cultivate and body scheduler actions
         run: godot --headless --path godot -s res://tests/simulation/dv2_03_training_actions_test.gd
+      - name: DV2-03M P2 V2 progression and expedition stamina isolation
+        run: godot --headless --path godot -s res://tests/simulation/dv2_03_p2_isolation_test.gd
