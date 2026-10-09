@@ -508,7 +508,8 @@ This is required before very large populations.
 
 ## Liên hệ DV2-03B — nhịp tu luyện/rèn thể (triển khai 09/10/2026)
 
-- `SimulationScheduler.step()` là nơi **DUY NHẤT** quyết định commit EXP của `CULTIVATE` V2 và `TRAIN_BODY` V2 qua `DiscipleTrainingActionV2.resolve`. Không sinh timer thứ hai và không phát hai thưởng EXP cho cùng actor/tick; sự kiện/tick lưu trong `DiscipleState.v2_realm_progress`.
-- `request_training` **chỉ xếp lệnh cho tick tiếp theo**, không thưởng ngay. `SectState.v2_training_enabled=false` và `v2_training_rules={}` mặc định; công thức/tốc độ EXP cần content chính thức. Legacy P0–P3.7 vẫn giữ luồng riêng; không dùng P2 Tu Vi thay V2.
-- **Không được lẫn "real action tested" với real-world clock verified**: focused test dùng `scheduler.step()`, không đo tick thời gian tường thực 15 giây; chưa tích hợp 15s wall-clock/catch-up/offline cho V2. `p0_sandbox.gd` còn riêng một vòng gọi demo `step()` mỗi ~0,18s (không phải runtime chuẩn 15s), và P3.2 nút "Tu luyện" hiện dùng `WorkforceSystem.COMMAND_CULTIVATE`, không gọi API V2.
+- `SimulationScheduler.step()` là authority của **một phút mô phỏng** hiện có. Authentic V2 nhận natural Tu Vi đúng một lần/phút qua `DiscipleTuViFlowV2`, bất kể đang làm việc/đi săn/di chuyển/chiến đấu/rèn thể. `CULTIVATE` chỉ bật hệ số **Chuyên Tu** cho cùng nguồn đó, không phát một khoản EXP thứ hai.
+- `TRAIN_BODY` vẫn là hành động explicit và có thể nhận Body EXP trong cùng phút với passive Tu Vi; hai nguồn có dedup riêng (`last_passive_tuvi_tick` và explicit training event/tick).
+- `request_training` **chỉ xếp lệnh**, không thưởng ngay. `SectState.v2_training_enabled=false` và `v2_training_rules={}` mặc định; production Tu Vi/phút, hệ số Chuyên Tu, Body EXP/phút và floor costs vẫn cần content balance chính thức.
+- **15 giây không còn là đơn vị balance.** Presentation/wall-clock có thể batch nhiều/ít phút mô phỏng theo runtime sau này, nhưng cùng số phút mô phỏng phải cho cùng progression. Offline/catch-up chưa được triển khai ở đây.
 - Godot Linux 4.7.2 focused PASS [#37895517181](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37895517181), không phải đã nghiệm thu trải nghiệm thời gian thực trên Windows. Xem [`DV2_03_TWO_TRACK_PROGRESS_EXECUTION.md`](DV2_03_TWO_TRACK_PROGRESS_EXECUTION.md).
