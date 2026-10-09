@@ -31,6 +31,9 @@ func _monsters(ids: Array, realm: int = 1) -> Array:
         units.append(creature)
     return units
 
+func _close(a: float, b: float) -> bool:
+    return absf(a-b) <= 0.00001
+
 func _assert(condition: bool, message: String) -> bool:
     if not condition:
         push_error(message)
