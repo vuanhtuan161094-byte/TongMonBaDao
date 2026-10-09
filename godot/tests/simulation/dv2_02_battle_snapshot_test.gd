@@ -56,9 +56,9 @@ func _run() -> void:
     # and 2D coordinates; no String-typed Vector2 ambiguity is permitted.
     var json := JSON.stringify(snapshot)
     var parsed: Dictionary = JSON.parse_string(json)
-    if not _assert(parsed is Dictionary and parsed["actors"] is Array and
-        parsed["casts"] is Array and parsed["events"] is Array,
-        "Battle state is not savegame-safe JSON."):
+    if not _assert(parsed is Dictionary and parsed.get("payload") is String and
+        str(parsed.get("encoding","")) == "godot_variant_b64",
+        "Lossless typed battle snapshot did not survive JSON wrapper."):
         return
     var loaded := MapBattleSnapshotV2.load(parsed)
     if not _assert(bool(loaded.get("ok",false)),
@@ -125,17 +125,23 @@ func _run() -> void:
         "Future or unknown combat save version was silently accepted."):
         return
     var bad_hp: Dictionary = parsed.duplicate(true)
-    bad_hp["actors"][0]["hp"] = -100.0
+    var hp_payload: Dictionary = bytes_to_var(Marshalls.base64_to_raw(str(bad_hp["payload"])),false)
+    hp_payload["actors"][0]["hp"] = -100.0
+    bad_hp["payload"] = Marshalls.raw_to_base64(var_to_bytes(hp_payload))
     if not _assert(not bool(MapBattleSnapshotV2.load(bad_hp).get("ok",true)),
         "Invalid negative HP was accepted from corrupted battle save."):
         return
     var bad_id: Dictionary = parsed.duplicate(true)
-    bad_id["actors"][1]["id"] = bad_id["actors"][0]["id"]
+    var id_payload: Dictionary = bytes_to_var(Marshalls.base64_to_raw(str(bad_id["payload"])),false)
+    id_payload["actors"][1]["id"] = id_payload["actors"][0]["id"]
+    bad_id["payload"] = Marshalls.raw_to_base64(var_to_bytes(id_payload))
     if not _assert(not bool(MapBattleSnapshotV2.load(bad_id).get("ok",true)),
         "Duplicate actor identity was accepted from combat save."):
         return
     var bad_outcome: Dictionary = parsed.duplicate(true)
-    bad_outcome["outcome"] = "win"
+    var outcome_payload: Dictionary = bytes_to_var(Marshalls.base64_to_raw(str(bad_outcome["payload"])),false)
+    outcome_payload["outcome"] = "win"
+    bad_outcome["payload"] = Marshalls.raw_to_base64(var_to_bytes(outcome_payload))
     if not _assert(not bool(MapBattleSnapshotV2.load(bad_outcome).get("ok",true)),
         "Active fighting state forged a finished win when loading."):
         return
