@@ -2,9 +2,10 @@ class_name DiscipleTrainingContentV2
 extends RefCounted
 
 # DV2-03C/V2.1: STRICT CONTENT FORMAT, not a production EXP balance table.
-# Tu Vi rate is normalized per simulation minute. Luyện Thể training mechanics
-# and rate are intentionally unresolved; this catalogue only carries its floor
-# costs/authority until the user locks a real body-training source model.
+# Tu Vi rate is normalized per simulation minute. Luyện Thể now has a typed
+# source contract in DiscipleBodyXpSourceV2, but this catalogue deliberately
+# carries only Body floor costs until real production/training/expedition
+# consumers author their own per-minute source rates and verified context.
 const VERSION := 3
 const FLOORS_PER_TRACK := 300
 const RATE_UNIT := "per_simulation_minute"
