@@ -101,7 +101,7 @@ func _run() -> void:
         },
         "body":{
             "authority_id":"qa-v2-isolation-body-costs",
-            "training_mechanic":"unresolved",
+            "training_mechanic":"typed_source_contract",
             "floor_costs":_costs(1,1000.0),"sources":[]
         }
     }
