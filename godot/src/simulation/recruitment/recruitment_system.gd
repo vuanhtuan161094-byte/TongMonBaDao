@@ -54,6 +54,9 @@ func generate_candidate(state: SimulationState, source: StringName = DiscipleGen
     if state.sect.disciple_generation_v2_enabled:
         if not DiscipleGeneratorV2.VALID_SOURCES.has(source):
             return null
+        if state.sect.disciple_v2_birth_enabled and not state.sect.foundation_points_enabled:
+            push_error("DV2-01B requires open-point P3.7C1 foundation authority.")
+            return null
         var generation_index_v2 := state.recruitment_generation_index + 1
         var candidate_v2: CandidateState
         if state.sect.foundation_points_enabled:
@@ -65,16 +68,19 @@ func generate_candidate(state: SimulationState, source: StringName = DiscipleGen
         state.recruitment_generation_index = generation_index_v2
         state.recruitment_candidates[candidate_v2.id] = candidate_v2
         state.sect.disciple_generation_event_count += 1
-        if state.sect.disciple_traits_enabled:
-            TraitSystem.new().ensure_candidate_profile(state, candidate_v2)
-        if state.sect.spiritual_root_refinement_enabled:
-            RootRefinementSystem.new().ensure_candidate_profile(state, candidate_v2)
-        if state.sect.bloodlines_enabled:
-            BloodlineSystem.new().ensure_candidate_profile(state, candidate_v2)
-        if state.sect.physiques_enabled:
-            PhysiqueSystem.new().ensure_candidate_profile(state, candidate_v2)
+        if not state.sect.disciple_v2_birth_enabled:
+            if state.sect.disciple_traits_enabled:
+                TraitSystem.new().ensure_candidate_profile(state, candidate_v2)
+            if state.sect.spiritual_root_refinement_enabled:
+                RootRefinementSystem.new().ensure_candidate_profile(state, candidate_v2)
+            if state.sect.bloodlines_enabled:
+                BloodlineSystem.new().ensure_candidate_profile(state, candidate_v2)
+            if state.sect.physiques_enabled:
+                PhysiqueSystem.new().ensure_candidate_profile(state, candidate_v2)
         if state.p3_7_buildings_enabled:
             WorkforceSystem.new().ensure_p3_7_candidate_profile(state, candidate_v2)
+        if state.sect.disciple_v2_birth_enabled:
+            DiscipleBirthRollV2.sync_profession_talent(candidate_v2.v2_birth_profile, candidate_v2)
         return candidate_v2
 
     if source != DiscipleGeneratorV2.SOURCE_ORDINARY:
@@ -151,21 +157,24 @@ func accept_candidate(state: SimulationState, candidate_id: StringName) -> Dicti
 
     var candidate: CandidateState = state.recruitment_candidates[candidate_id]
     var disciple := candidate.to_disciple()
-    if state.sect.spiritual_roots_enabled:
+    if state.sect.spiritual_roots_enabled and not state.sect.disciple_v2_birth_enabled:
         var roots := SpiritualRootSystem.new()
         roots.ensure_disciple_root(state, disciple)
         if state.sect.techniques_enabled:
             roots.ensure_disciple_elements(state, disciple)
     if state.sect.workforce_enabled and (not state.sect.disciple_generation_v2_enabled or disciple.profile_seed <= 0):
         WorkforceSystem.new().ensure_disciple_profile(state, disciple)
-    if state.sect.disciple_traits_enabled:
-        TraitSystem.new().ensure_disciple_profile(state, disciple)
-    if state.sect.spiritual_root_refinement_enabled:
-        RootRefinementSystem.new().ensure_disciple_profile(state, disciple)
-    if state.sect.bloodlines_enabled:
-        BloodlineSystem.new().ensure_disciple_profile(state, disciple)
-    if state.sect.physiques_enabled:
-        PhysiqueSystem.new().ensure_disciple_profile(state, disciple)
+    # V2 birth identity was selected and stored before recruitment.
+    # Do not reroll parallel P2 Trait/Root/Bloodline/Physique profiles for V2 recruits.
+    if not state.sect.disciple_v2_birth_enabled:
+        if state.sect.disciple_traits_enabled:
+            TraitSystem.new().ensure_disciple_profile(state, disciple)
+        if state.sect.spiritual_root_refinement_enabled:
+            RootRefinementSystem.new().ensure_disciple_profile(state, disciple)
+        if state.sect.bloodlines_enabled:
+            BloodlineSystem.new().ensure_disciple_profile(state, disciple)
+        if state.sect.physiques_enabled:
+            PhysiqueSystem.new().ensure_disciple_profile(state, disciple)
     state.disciples[disciple.id] = disciple
     state.recruitment_candidates.erase(candidate_id)
     state.recruitment_stats["accepted"] = int(state.recruitment_stats.get("accepted", 0)) + 1
@@ -474,16 +483,19 @@ func _generate_open_candidate_with_quality(state: SimulationState, quality: Stri
     state.recruitment_generation_index = generation_index
     state.recruitment_candidates[candidate.id] = candidate
     state.sect.disciple_generation_event_count += 1
-    if state.sect.disciple_traits_enabled:
-        TraitSystem.new().ensure_candidate_profile(state, candidate)
-    if state.sect.spiritual_root_refinement_enabled:
-        RootRefinementSystem.new().ensure_candidate_profile(state, candidate)
-    if state.sect.bloodlines_enabled:
-        BloodlineSystem.new().ensure_candidate_profile(state, candidate)
-    if state.sect.physiques_enabled:
-        PhysiqueSystem.new().ensure_candidate_profile(state, candidate)
+    if not state.sect.disciple_v2_birth_enabled:
+        if state.sect.disciple_traits_enabled:
+            TraitSystem.new().ensure_candidate_profile(state, candidate)
+        if state.sect.spiritual_root_refinement_enabled:
+            RootRefinementSystem.new().ensure_candidate_profile(state, candidate)
+        if state.sect.bloodlines_enabled:
+            BloodlineSystem.new().ensure_candidate_profile(state, candidate)
+        if state.sect.physiques_enabled:
+            PhysiqueSystem.new().ensure_candidate_profile(state, candidate)
     if state.p3_7_buildings_enabled:
         WorkforceSystem.new().ensure_p3_7_candidate_profile(state, candidate)
+    if state.sect.disciple_v2_birth_enabled:
+        DiscipleBirthRollV2.sync_profession_talent(candidate.v2_birth_profile, candidate)
     return candidate
 
 func _quality_from_rates(rates: Dictionary, roll: float) -> StringName:
