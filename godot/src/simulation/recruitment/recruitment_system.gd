@@ -159,14 +159,11 @@ func accept_candidate(state: SimulationState, candidate_id: StringName) -> Dicti
     if state.sect.disciple_v2_birth_enabled and not DiscipleBirthProfileV2.valid_complete_birth(candidate.v2_birth_profile):
         return _result(false, "v2_birth_profile_incomplete")
     var disciple := candidate.to_disciple()
-    # A complete V2 recruit must enter the sect with one valid two-track
-    # progression profile. Preserve the CURRENT generator's authored Luyện Khí
-    # start via the explicit compatibility bridge; never leave V2 birth identity
-    # to fall back into P2 cultivation at runtime.
+    # USER LOCK 2026-10-09: every NEW production V2 disciple starts at
+    # Phàm Nhân tầng 1 + Phàm Thân tầng 1, both 0 EXP. Birth quality/foundations
+    # affect future growth rate, never starting realm/floor.
     if DiscipleRealmProgressV2.owns_v2_progression(disciple):
-        var started := DiscipleRealmProgressV2.initialize_recruited_compat(
-            disciple,candidate.cultivation_stage_index
-        )
+        var started := DiscipleRealmProgressV2.initialize(disciple,1,1,1,1)
         if not bool(started.get("ok",false)):
             return _result(false,str(started.get("reason","v2_progress_initialization_failed")))
     if state.sect.spiritual_roots_enabled and not state.sect.disciple_v2_birth_enabled:
