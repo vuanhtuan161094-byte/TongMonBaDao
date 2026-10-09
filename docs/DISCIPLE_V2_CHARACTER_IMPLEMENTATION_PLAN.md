@@ -14,6 +14,8 @@ A first **vertical slice** is ONE real recruited disciple that progresses, works
 
 ## 0A. User sequencing correction — ROOT FIRST (2026-10-09)
 
+**Root-first audit and pending approval matrix:** `docs/DISCIPLE_V2_ROOT_ARCHITECTURE.md`. This document consolidates existing locked foundations, explicitly marks unresolved M-01..M-06 as proposals (not approved), and must be read before opening DV2-01. It does not supersede subsystem master specs or authorize code.
+
 **Approved design direction, not a code authorization:** stop expanding feature catalogues in isolation. Establish the root gameplay chain first:
 
 1. **World/time/source** — stable world seed, time, recruitment sources, simulation event and content identities; reuse existing authorities, not a duplicate world model.
