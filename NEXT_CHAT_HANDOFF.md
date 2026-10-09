@@ -15,6 +15,8 @@
 - **Chưa có số cân bằng chính thức:** 300 yêu cầu EXP cho mỗi đường, EXP/chu kỳ và bảng 29 base chance, điều kiện/vật liệu body gate. Các giá trị EXP `80/50/100` ở test là **fixture**, tuyệt đối KHÔNG promote lên production.
 - **Chưa kết nối đầy đủ:** V2 character HP live persistence/migration, V2 Equipment 10 ô/12 phẩm, Skills Nhân–Tiên–Thần và Trait/Mệnh/Linh Căn/Huyết Mạch/Thể Chất effects, outside-map live PvE/monster AI. Không coi design-only thành implemented.
 
+**P3 static audit được sửa trong đợt bàn giao:** run [#37897313917](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37897313917) **FAIL** vì hai mục `repo_source` motion/live-map thiếu `source_path`; đã bổ sung **đúng path mã nguồn tồn tại** vào `docs/P3_ASSET_REGISTRY.json`. Run kiểm lại [#37897882946](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37897882946) tại `cb8d5cfe` **PASS**. Đây là kiểm tra tài liệu/registry tĩnh của P3, không phải gate Godot hoặc UI Windows; không cần mở lại thiết kế P3.
+
 ## CI thực tế — KHÔNG ghi PASS nếu không có run
 
 - **Focused DV2-03 PASS:** [Actions #37895517181](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37895517181), code SHA `e96df1832036c1232f9d0db69d1f37450d0265f9`, official **Godot 4.7.2 Linux**, từng bước Parse/2×300 realm test/`dv2_03_training_actions_test.gd` đều **success**. Bao gồm test lệnh `request_training`, chống EXP trùng, lưu/tải và bảo vệ action `COMBAT`.
