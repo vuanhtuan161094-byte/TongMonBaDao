@@ -317,7 +317,7 @@ Locked:
 - Mệnh Cục is derived from explicit combinations;
 - Mệnh Cách does not directly determine Disciple Quality.
 
-No Mệnh Cách V2 runtime is implemented yet.
+**Update 2026-10-09:** Mệnh Cách V2 **congenital identity selection and persistence** are implemented behind default-off V2 birth flag using user-approved `birth_weight` content; its actual Fate effects, hidden reveal/feat logic, Mệnh Cục and post-birth acquisition are **NOT yet implemented**.
 
 ---
 
