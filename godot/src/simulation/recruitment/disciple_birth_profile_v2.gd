@@ -135,15 +135,22 @@ static func valid_complete_birth(value: Variant) -> bool:
 
     var roots: Dictionary = layers["spiritual_root"].get("birth_values",{})
     var current_roots: Dictionary = layers["spiritual_root"].get("current_values",{})
-    if roots.is_empty() or roots.size() > 5 or current_roots.size() != roots.size():
+    if roots.is_empty() or roots.size() > 5 or current_roots.is_empty() or current_roots.size() > 5:
         return false
+    # Birth roots are immutable provenance. Current roots may legitimately add
+    # a new base root later through the V2 refinement/creation system.
     for root_id in roots.keys():
         var id := str(root_id)
         if not BASE_ROOT_IDS.has(id) or not current_roots.has(id):
             return false
         var birth_value := int(roots[root_id])
-        var current_value := int(current_roots[root_id])
-        if birth_value < 1 or birth_value > 100 or current_value < 1 or current_value > 100:
+        if birth_value < 1 or birth_value > 100:
+            return false
+    for current_id in current_roots.keys():
+        if not BASE_ROOT_IDS.has(str(current_id)):
+            return false
+        var current_value := int(current_roots[current_id])
+        if current_value < 1 or current_value > 100:
             return false
 
     var mutation: Dictionary = layers["root_mutation"]
@@ -152,7 +159,7 @@ static func valid_complete_birth(value: Variant) -> bool:
         return false
     if mutation_id != "none":
         var base_element := str(mutation.get("base_element",""))
-        if not BASE_ROOT_IDS.has(base_element) or not roots.has(base_element):
+        if not BASE_ROOT_IDS.has(base_element) or not current_roots.has(base_element):
             return false
 
     var talent: Dictionary = layers["profession_talent"]
