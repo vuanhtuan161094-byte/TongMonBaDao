@@ -2,7 +2,7 @@ extends SceneTree
 
 # Focused distribution and determinism check. Sample rates use independent profile
 # seeds. Do not compare exact RNG counts to theoretical probabilities.
-const SAMPLE_COUNT := 20000
+const SAMPLE_COUNT := 100000
 const COUNT_LIMITS := [1,2,3,4,5]
 const EXPECTED_ROOTS := [0.07,0.18,0.30,0.28,0.17]
 
@@ -133,7 +133,7 @@ func _run() -> void:
     if awakened_mutations > mutations:
         _fail("Impossible awakened count.")
         return
-    print("DV2-01B 20K FULL INNATE BIRTH DISTRIBUTION TEST PASS")
+    print("DV2-01B 100K FULL INNATE BIRTH DISTRIBUTION TEST PASS")
     print("roots=",roots," traits=",trait_counts," latent=",latent_traits,
         " blood=",bloodlines," physique=",physiques," fate=",destiny,
         " mutation=",mutations," awakened=",awakened_mutations)
