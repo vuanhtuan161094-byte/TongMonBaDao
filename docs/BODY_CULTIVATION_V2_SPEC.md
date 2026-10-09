@@ -162,9 +162,9 @@ Rules:
 - source-specific numeric rates are content/balance data and are **not locked yet**.
 
 Canonical raw reference rates are now:
-- physically demanding production: **5 Body EXP/minute**;
-- active expedition: **15 Body EXP/minute**;
-- dedicated Rèn Thân: **30 Body EXP/minute**.
+- physically demanding production: **250 Body EXP/minute**;
+- active expedition: **750 Body EXP/minute**;
+- dedicated Rèn Thân: **1,500 Body EXP/minute**.
 
 Therefore the normal reference ratio is **1 : 3 : 6** (production : expedition : Rèn Thân), before Căn Cốt and valid Body modifiers. Specific authored content may scale from these references, but generic production must not become the optimal Body-EXP farm and ordinary low-risk expedition must not obsolete dedicated Rèn Thân.
 
