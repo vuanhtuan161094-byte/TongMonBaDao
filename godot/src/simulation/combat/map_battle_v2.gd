@@ -302,8 +302,8 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
             downed_disciples += 1
     # Only one nonrecursive bonus hit from a true ordinary basic attack.
     # It cannot lifesteal, crit by default, or proc any further followup.
-    if kind == "basic" and float(target["hp"]) > 0.0 and
-        CombatContextEffectsV2.roll_basic_followup(rng,context,"basic",float(target["hp"])):
+    if (kind == "basic" and float(target["hp"]) > 0.0 and
+        CombatContextEffectsV2.roll_basic_followup(rng,context,"basic",float(target["hp"]))):
         _deal_direct(attacker,target,
             original_ratio*float(context["basic_followup_ratio"]),
             "basic_followup",false,damage_element)
