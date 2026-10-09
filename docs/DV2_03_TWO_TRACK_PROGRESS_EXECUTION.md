@@ -203,3 +203,20 @@ Current main scene is still a presentation/demo runtime:
 - `SaveService` can persist `SimulationState`, but this main scene does not load that persistent state.
 
 Therefore neither existing timer may be relabeled as the canonical 15-second clock. D2 must introduce/attach a persistent runtime owner first, then save wall timestamp + remainder/backlog and use the same scheduler for online/offline ticks. Existing P3.7 `1440 simulation ticks/day` remains the sect-day semantic; **15 seconds is wall-clock cadence**, not a redefinition of game-day length.
+
+---
+
+## Source-model redesign lock — 2026-10-09
+
+User-approved gameplay authority now supersedes the current action-only EXP bridge:
+
+1. **Production V2 recruitment starts 1/1:** Phàm Nhân tầng 1 + Phàm Thân tầng 1, both 0 EXP. The temporary P2 Luyện Khí-floor compatibility bridge is migration/dev-save-only and must be removed from new V2 recruitment.
+2. **Tu Vi is continuously passive:** every eligible disciple gains natural Tu Vi from elapsed simulation time during ordinary life/activity.
+3. Ordinary work/combat/travel/hunting do **not** produce a second generic Tu Vi award. Existing `_grant_p3_7_work_cultivation()` behavior is now implementation debt and must be removed/reworked for authentic V2.
+4. `CULTIVATE` becomes **Chuyên Tu**: acceleration of the same passive natural-Tu-Vi rate, not the existence condition for Tu Vi gain.
+5. Monster combat grants no direct main-track EXP; monsters may drop **Tinh Nguyên**, whose absorption grants fixed +X Tu Vi.
+6. Luyện Thể remains non-passive: `TRAIN_BODY` or another explicit body-tempering source is required.
+7. **15s is not a balance law.** The runtime cadence may batch elapsed-time progression but equal elapsed time must yield equal progression online/offline regardless of commit frequency.
+
+Therefore DV2-03D1 policy code is reusable conceptually, but its `CULTIVATE`/scheduler EXP contract must be refactored before the source model can be called implemented.
+
