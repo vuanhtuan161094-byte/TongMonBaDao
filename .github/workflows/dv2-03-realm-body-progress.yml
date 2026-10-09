@@ -13,6 +13,7 @@ on:
       - 'godot/src/simulation/needs/needs_system.gd'
       - 'godot/src/simulation/combat/combat_system.gd'
       - 'godot/src/simulation/recruitment/recruitment_system.gd'
+      - 'godot/src/simulation/recruitment/disciple_birth_profile_v2.gd'
       - 'godot/src/simulation/state/sect_state.gd'
       - 'godot/src/simulation/state/disciple_state.gd'
       - 'godot/tests/simulation/dv2_03_realm_body_progress_test.gd'
