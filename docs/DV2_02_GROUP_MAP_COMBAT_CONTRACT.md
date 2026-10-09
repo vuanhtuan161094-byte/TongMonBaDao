@@ -67,3 +67,34 @@ Dùng cả thời gian/hạ gục/HP sống sót cho các kiểm thử 100 seed,
 6. Cùng danh sách đệ tử đảo thứ tự đầu vào → cùng thứ tự/hành vi theo stable ID và tọa độ; no double action.
 7. Benchmark nhiều tổ đội cấp tương đương và bất cân bằng, báo winrate/TTK/downed/HP survive; số pilot chưa cố định khi chưa benchmark.
 8. P3.7 cũ vẫn PASS, không bị thay simulator từ trạng thái `COMBAT` cũ trước khi adapter được gated.
+
+## 6. DV2-02D actual code and Godot evidence — 2026-10-09
+
+**Implemented and tested in this slice** (not yet main PvE runtime):
+- `godot/src/simulation/combat/map_battle_v2.gd`: one deterministic shared 2D-map encounter containing **many real combatants** with local positions, range, movement, target selection, normal attacks, a role-based healing action, frontline timed guard, mage AoE (max 3), elite/boss cast warning → delayed AoE (max 3), death/downed, skill cooldown/attack intervals, hit and event journal. Party size **at most 6**, cluster at most 30 participating disciples, monsters at most 40 active. Group functions do not call one separate 1v1 encounter for each character.
+- `godot/src/presentation/p3/map_battle_world_layer_v2.gd` plus `godot/scenes/p3/map_battle_world_layer_v2.tscn`: actual `Node2D` **map-space rendering adapter**, projects actor positions, HP bars, 2D AoE warning. It is a **minimal visual fallback** for content not yet illustrated. Rendering never calls `MapBattleV2.step()`. This scene can be attached to a future outside-region map; it is **not yet connected to the live P3 sect map, nor should an outside hunting battle be shown inside the sect by default**.
+- `godot/tests/simulation/dv2_02_group_map_battle_test.gd`: 4v5 group roles, healing, multi-target mage AoE, 6v5 boss warning/release, positional AoE dodge, Bị Hạ cannot be healed by ordinary heal, 30-member cluster, per-party 6 cap, no cross-party ordinary healing, viewer/offscreen equality, input-order replay, map overlay actor selection/coordinate roundtrip, no RNG/time consumption in rendering, representative 16-seed group balance scenarios.
+- Previous isolated 16-stat, lifesteal, seven-species and target-context tests remain in the same focused workflow.
+
+**Latest focused real Godot 4.7.2 Linux gate PASS**: [Actions #37884662844](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37884662844). Preview/P3.6A import checks [#37884519447](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37884519447) PASS for the 2D scene source.
+
+### 6.1 Empirical balancing (16 seeded runs each; one specific pilot formation, NOT universal win rates)
+
+| Encounter | Wins | Average downed disciples | Average battle time |
+|---|---:|---:|---:|
+| 3 disciples vs 3 regular monsters | 16/16 | 0 | 15.72 sec |
+| 4 disciples vs 5 regular monsters | 16/16 | 1 | 22.02 sec |
+| 6 disciples vs 6 including elite | 16/16 | 2 | 24.03 sec |
+| 6 disciples vs Boss plus 4 guards | 16/16 | 2 | 23.64 sec |
+| **Weak 3 disciples vs Boss plus 4 guards** | **0/16** | — | — |
+| **Six disciples, +1 full major realm vs same Boss** | **16/16** | — | — |
+| **Six disciples without healer vs same Boss** | **16/16** | not yet analyzed | — |
+
+**Iterative changes since initial failed balance:**
+1. Initial Elite/Boss tiers at HP ×1.80/×4.00 and attack ×1.25/×1.60 caused **0/16 wins in both 6v6 elite and 6v5 boss**. These were overtuned.
+2. Pilot monster-tier scales reduced to **Elite HP ×1.35, Attack ×1.10, Defense ×1.10; Boss HP ×2.50, Attack ×1.30, Defense ×1.18**, retaining species factors.
+3. Frontline gets actual temporary **guard for 4 seconds (35% less incoming remaining damage) when below 75% HP, cooldown 9 sec**, and healer gets actual **healing 1.80×Attack every 5 sec** to a living damaged ally of the **same party**. These are **PILOT skill coefficients**, not newly locked permanent universal constants.
+4. Pilot results improved to 3v3 ~0 downed, 4v5 ~1 downed, elite 6v6 ~2 downed, boss 6v5 ~2 downed, with substantial time in combat.
+5. Important caveat: **the no-healer team still wins 16/16** at this particular encounter, so team composition/role importance is **NOT yet fully balanced**. More maps, 30–100+ seeds per formation, equipment variation, skill patterns, spawn volume, injuries, difficulty warnings and retreat evaluation are still required before locking numbers.
+
+**This result is not gameplay PVE BACKEND LOCKED**. Active battle-scene attachment for actual region maps, live group recruitment/formation, obstacle navigation, region spawn schedule, monster ability loadouts, loot/journal/save, full cumulative gate and sprite/VFX production remain pending. Legacy P0/P3.7 battle and rewards remain unchanged.
