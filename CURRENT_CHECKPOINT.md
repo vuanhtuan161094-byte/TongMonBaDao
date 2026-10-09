@@ -189,7 +189,7 @@ Current old percentage consumers may use a bounded compatibility bridge where ne
 
 ## 5. Trạng thái triển khai mới nhất — bàn giao DV2-03 ngày 09/10/2026
 
-**ACTIVE: DV2-03 — TU VI V2 + LUYỆN THỂ V2.** DV2-01 **CLOSED**, DV2-02 **CORE BACKEND LOCKED** trong phạm vi tính chỉ số/chạy thử chiến đấu nhóm (không phải full PvE ngoài bản đồ). **DV2-03 FOCUSED GREEN, CHƯA BACKEND LOCKED FULL GAMEPLAY.** Không bắt đầu trang bị/kỹ năng/thuộc tính bẩm sinh V2 trước khi xác nhận xong phạm vi giai đoạn 2.
+**ACTIVE: DV2-03 — TU VI V2 + LUYỆN THỂ V2.** DV2-01 **CLOSED**, DV2-02 **CORE BACKEND LOCKED** trong phạm vi tính chỉ số/chạy thử chiến đấu nhóm. **Older DV2-03 focused evidence is GREEN, but the latest Tu Vi-source/Luyện Thể-block corrections are GATE UNVERIFIED.** Không bắt đầu subsystem kế tiếp trước khi DV2-03 được khóa đúng phạm vi.
 
 **Lần kiểm tra live main trước bàn giao:** `a3e9b6befee8117c50a797bb35c257acf08d156d` (chỉ là SHA nguồn tại thời điểm kiểm tra, **không phải SHA commit cuối bàn giao**; xem `main` và câu trả lời hoàn tất để lấy HEAD sau các commit tài liệu). **Mã gameplay cuối được thay đổi và kiểm thử focused:** `e96df1832036c1232f9d0db69d1f37450d0265f9`. Tất cả commit tiếp theo cho tới lúc rà soát ban đầu là tài liệu, không thay đổi logic chơi. Không ghi sai SHA code thành SHA HEAD.
 
