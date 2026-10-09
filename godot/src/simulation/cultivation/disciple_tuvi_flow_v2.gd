@@ -48,6 +48,8 @@ static func validate_rule(disciple: DiscipleState, data: Variant) -> Dictionary:
         "ok":true,
         "base_tuvi_per_minute":base_rate,
         "cultivate_multiplier":cultivate_multiplier,
+        "rate":base_rate,
+        "costs":costs,
         "floor_costs":costs,
         "sources":sources
     }
