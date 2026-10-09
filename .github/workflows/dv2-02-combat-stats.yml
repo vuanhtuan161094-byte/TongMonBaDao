@@ -6,7 +6,11 @@ on:
     paths:
       - 'godot/src/simulation/combat/combat_stats_v2.gd'
       - 'godot/src/simulation/combat/combat_system.gd'
+      - 'godot/src/simulation/combat/combat_context_effects_v2.gd'
+      - 'godot/src/simulation/combat/monster_catalogue_v2.gd'
+      - 'godot/src/simulation/combat/monster_encounter_v2.gd'
       - 'godot/tests/simulation/dv2_02_combat_stats_test.gd'
+      - 'godot/tests/simulation/dv2_02_monster_context_test.gd'
       - '.github/workflows/dv2-02-combat-stats.yml'
 permissions:
   contents: read
@@ -34,3 +38,6 @@ jobs:
         run: godot --headless --path godot --editor --quit
       - name: DV2-02 canonical Combat Stats 16 channels and lifesteal
         run: godot --headless --path godot -s res://tests/simulation/dv2_02_combat_stats_test.gd
+
+      - name: DV2-02 real Monster tier race and basic followup test
+        run: godot --headless --path godot -s res://tests/simulation/dv2_02_monster_context_test.gd
