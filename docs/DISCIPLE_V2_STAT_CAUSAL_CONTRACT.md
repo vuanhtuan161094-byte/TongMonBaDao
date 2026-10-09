@@ -71,7 +71,7 @@ Birth snapshots không thay đổi sau khi cải tạo. `disciple_quality` là n
 
 ## 3. Tầng dẫn xuất CHIẾN ĐẤU — registry V2 bắt buộc
 
-**14 chỉ số chính + một map kháng nguyên tố với 10 keys (không phải 10 stats gốc độc lập):**
+**16 chỉ số chính (đã cộng Hút Máu và Giảm Hút Máu theo yêu cầu 2026-10-09) + một map kháng nguyên tố với 10 keys (không phải 10 stats gốc độc lập):**
 
 | Nhóm | `channel` / UI | Nguồn vào chính | Consumer |
 |---|---|---|---|
@@ -89,6 +89,8 @@ Birth snapshots không thay đổi sau khi cải tạo. `disciple_quality` là n
 | Status | `effect_hit` / Chính Xác Hiệu Ứng | default 0pp + pp | Chance áp debuff/control hợp lệ |
 | Status | `effect_resistance` / Kháng Hiệu Ứng | default 0pp + pp | Chance địch áp hiệu ứng lên mình |
 | Defense mitigation | `damage_reduction` / Giảm ST | default 0%; nguồn độc lập giảm phần còn lại | Giảm sát thương đã được xử lý tầng khác |
+| HP siphon | `lifesteal` / Hút Máu | mặc định 0%; cộng/trừ điểm phần trăm; không tự đặt cap 100% | Hồi theo % **HP mục tiêu thực mất** sau phòng thủ/kháng hệ/giảm ST; không hút sát thương dư |
+| HP siphon counter | `lifesteal_reduction` / Giảm Hút Máu | mặc định 0%; cộng/trừ điểm phần trăm | Trừ trực tiếp khỏi tỷ lệ Hút Máu kẻ đánh, `max(0, Hút Máu − Giảm Hút Máu)` |
 | Elemental keyed map | `elemental_resistance[element]` | kim/mộc/thủy/hỏa/thổ/lôi/phong/băng/dương/u-minh; independent remaining-damage sources | Chống sát thương đúng element, tách khỏi Ngũ Hành counter |
 
 **Specialized registered effect channels (không phải headline stats):** `all_damage`, `direct_damage`, `basic_damage`, `dot_potency`, `skill_effect`, `healing_done`, `healing_received`, `shield_effect`, `control_duration`, element/path/skill filters, `injury_recovery`; một số luật đặc biệt là triggered effects với provenance và giới hạn kích hoạt.
@@ -108,6 +110,7 @@ derived = resolve typed percentage/context/special/status according to owning ch
 - Defense: giảm/thêm DEF của target → attacker penetration → mitigation curve **đã khóa** `K/(K+DEF_effective)` with `K=2×attacker_ATK` for eligible Attack-scaled damage; no negative effective DEF.
 - Damage Reduction và Elemental Resistance: các nguồn độc lập nhân vào **phần sát thương còn lại**, không cộng thẳng đến 100%.
 - Healing: `base_heal × outgoing_healing_done × incoming_healing_received`; Shield Effect là channel riêng.
+- Lifesteal: `actual_target_hp_lost × max(0, attacker_lifesteal − defender_lifesteal_reduction)`, heal capped by attacker missing HP, **not** multiplied by Healing Done/Received by default; not activated on mere birth.
 - No normal accuracy/evasion, Mana/MP, physical vs magical duplicate attack, or damage calculation from combat rating.
 
 **HP maximum change:** `docs/SPIRITUAL_ROOT_V2_SPEC.md` already **locks preservation of current HP ratio** when its permanent Root-derived Max HP changes (not a free full heal). This locked specific case must be honored. General cross-source HP-max-change semantics (equipment/physique/bloodline/realm and runtime injury or buffs) still require a single documented rule, exceptions and tests before DV2-02; do not contradict the root-specific law.
