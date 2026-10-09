@@ -47,17 +47,32 @@ func _run() -> void:
     disciple.aptitude = 100.0
     disciple.constitution = 100.0
     disciple.potential = 100.0
-    var begun := DiscipleRealmProgressV2.initialize(disciple)
-    if not _check(bool(begun.get("ok",false)) and
+    var recruited := DiscipleRealmProgressV2.current(disciple)
+    var expected_recruit_floor := 10 + candidate.cultivation_stage_index + 1
+    if not _check(bool(recruited.get("ok",false)) and
+        int(recruited["cultivation_global_floor"]) == expected_recruit_floor and
+        int(recruited["body_global_floor"]) == 1 and
         not bool(DiscipleRealmProgressV2.initialize(disciple).get("ok",true)),
-        "A V2 disciple must have exactly one independent two-track realm profile."):
+        "V2 recruitment must create exactly one explicit starting two-track profile."):
         return
 
+    # Normalize this focused arithmetic fixture to the first V2 coordinates.
+    # Recruitment compatibility was asserted above; the remaining test is about
+    # 2x300 progression math, not the recruitment distribution.
+    disciple.v2_realm_progress["cultivation"] = {
+        "realm":1,"floor":1,"xp":0.0,"gate_failures":0,"lifetime_failures":0,
+        "auto_breakthrough":false,"breakthrough_history":[],"last_training_event_id":""
+    }
+    disciple.v2_realm_progress["body"] = {
+        "realm":1,"floor":1,"xp":0.0,"gate_failures":0,"lifetime_failures":0,
+        "auto_breakthrough":false,"breakthrough_history":[],"last_training_event_id":""
+    }
+    disciple.v2_realm_progress["last_training_tick"] = -1
     var first := DiscipleRealmProgressV2.current(disciple)
     if not _check(bool(first.get("ok",false)) and
         int(first["cultivation_global_floor"]) == 1 and
         int(first["body_global_floor"]) == 1,
-        "Initial V2 realm/body floors were not independent 1/300."):
+        "Focused arithmetic fixture could not normalize independent 1/300 tracks."):
         return
     var before_invalid := disciple.v2_realm_progress.duplicate(true)
     var no_table := DiscipleRealmProgressV2.grant_xp(
@@ -121,12 +136,12 @@ func _run() -> void:
     var old_stamina := disciple.stamina
     var old_hp := disciple.hp
     if not _check(not bool(DiscipleRealmProgressV2.attempt_cultivation_breakthrough(
-        disciple,GameRng.new(91),1000.0,0.5,false,"gate_unapproved"
+        disciple,GameRng.new(91),_costs(1),0.5,false,"gate_unapproved"
     ).get("ok",true)), "Gate must reject unverified content/requirements."):
         return
     var rng := GameRng.new(917)
     var failed := DiscipleRealmProgressV2.attempt_cultivation_breakthrough(
-        disciple,rng,1000.0,0.0,true,"attempt_01"
+        disciple,rng,_costs(1),0.0,true,"attempt_01"
     )
     if not _check(bool(failed.get("ok",false)) and not bool(failed["success"]) and
         _close(float(failed["xp"]),900.0) and
@@ -138,7 +153,7 @@ func _run() -> void:
         "V2 failed breakthrough must not inherit legacy HP/stamina penalties."):
         return
     var not_full := DiscipleRealmProgressV2.attempt_cultivation_breakthrough(
-        disciple,rng,1000.0,1.0,true,"attempt_02"
+        disciple,rng,_costs(1),1.0,true,"attempt_02"
     )
     if not _check(not bool(not_full.get("ok",true)),
         "After failure the disciple must re-cultivate lost gate EXP."):
@@ -168,11 +183,11 @@ func _run() -> void:
     disciple.v2_realm_progress["body"]["floor"] = 10
     disciple.v2_realm_progress["body"]["xp"] = 1000.0
     if not _check(not bool(DiscipleRealmProgressV2.commit_authorized_body_gate(
-        disciple,1000.0,false,"body_gate_bad"
+        disciple,_costs(1),false,"body_gate_bad"
     ).get("ok",true)), "Luyen The gate bypassed authored prerequisite authorization."):
         return
     var body_pass := DiscipleRealmProgressV2.commit_authorized_body_gate(
-        disciple,1000.0,true,"body_gate_01"
+        disciple,_costs(1),true,"body_gate_01"
     )
     if not _check(bool(body_pass.get("ok",false)) and
         int(disciple.v2_realm_progress["body"]["realm"]) == 2 and
