@@ -3,9 +3,10 @@ extends RefCounted
 
 # DV2-03 authoritative progression balance table.
 #
-# The 30 realm totals were authored from a 6,000 starting total with ~1.27
-# realm-to-realm growth, then frozen as explicit integers so gameplay does not
-# depend on floating-point pow()/round() differences at runtime.
+# The 30 realm totals preserve the approved ~1.27 progression shape but use
+# cultivation-scale numbers: realm 1 starts at 10,000,000 EXP. Values are frozen
+# as explicit integers so gameplay does not depend on floating-point pow()/round()
+# differences at runtime.
 #
 # Both Tu Vi and Luyện Thể consume the SAME 300-floor XP requirement curve.
 # Their actual real-time pace differs because their source rates/mechanics differ.
@@ -14,20 +15,20 @@ const VERSION := 1
 const FLOORS_PER_REALM := 10
 const REALM_COUNT := 30
 
-const BASE_TUVI_PER_MINUTE := 20.0
+const BASE_TUVI_PER_MINUTE := 1000.0
 const CULTIVATE_MULTIPLIER := 2.0
 
 # Reference Body rates are balance anchors only. Real consumers still have to
 # prove an eligible source context through DiscipleBodyXpSourceV2.
-const BODY_PRODUCTION_REFERENCE_PER_MINUTE := 5.0
-const BODY_EXPEDITION_REFERENCE_PER_MINUTE := 15.0
-const BODY_TRAINING_REFERENCE_PER_MINUTE := 30.0
+const BODY_PRODUCTION_REFERENCE_PER_MINUTE := 250.0
+const BODY_EXPEDITION_REFERENCE_PER_MINUTE := 750.0
+const BODY_TRAINING_REFERENCE_PER_MINUTE := 1500.0
 
 # Realm totals, r1..r30.
 const REALM_TOTAL_XP := [
-    6000, 7600, 9700, 12300, 15600, 19800, 25200, 32000, 40600, 51600,
-    65500, 83200, 105600, 134200, 170400, 216400, 274800, 349000, 443200, 562900,
-    714900, 907900, 1153000, 1464300, 1859700, 2361800, 2999500, 3809400, 4837900, 6144100
+    10000000, 12700000, 16200000, 20500000, 26000000, 33000000, 42000000, 53300000, 67700000, 86000000,
+    109200000, 138700000, 176000000, 223700000, 284000000, 360700000, 458000000, 581700000, 738700000, 938200000,
+    1191500000, 1513200000, 1921700000, 2440500000, 3099500000, 3936300000, 4999200000, 6349000000, 8063200000, 10240200000
 ]
 
 # Sum = 10.0. Within each realm, later floors are deliberately heavier.
