@@ -41,9 +41,21 @@ func _run() -> void:
     var student: DiscipleState = state.disciples[candidate.id]
     student.aptitude = 100.0
     student.constitution = 100.0
-    if not _assert(bool(DiscipleRealmProgressV2.initialize(student).get("ok",false)),
-        "V2 two-track initial profile cannot be created."):
+    if not _assert(DiscipleRealmProgressV2.progression_ready(student) and
+        not bool(DiscipleRealmProgressV2.initialize(student).get("ok",true)),
+        "Accepted V2 recruit did not receive exactly one two-track profile."):
         return
+    # Keep the historical 100-EXP arithmetic fixture independent of the
+    # recruitment starting-floor compatibility mapping.
+    student.v2_realm_progress["cultivation"] = {
+        "realm":1,"floor":1,"xp":0.0,"gate_failures":0,"lifetime_failures":0,
+        "auto_breakthrough":false,"breakthrough_history":[],"last_training_event_id":""
+    }
+    student.v2_realm_progress["body"] = {
+        "realm":1,"floor":1,"xp":0.0,"gate_failures":0,"lifetime_failures":0,
+        "auto_breakthrough":false,"breakthrough_history":[],"last_training_event_id":""
+    }
+    student.v2_realm_progress["last_training_tick"] = -1
     var old_p2_xp := student.cultivation_progress
     var before := student.v2_realm_progress.duplicate(true)
 
