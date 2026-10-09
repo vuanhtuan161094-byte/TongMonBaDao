@@ -118,3 +118,17 @@ static func valid_envelope(value: Variant) -> bool:
         if not (entry is Dictionary) or not entry.has("initialized"):
             return false
     return true
+
+# The envelope can exist before any content is chosen; a recruited V2 person
+# must instead have each approved birth layer initialized (including legit none).
+static func valid_complete_birth(value: Variant) -> bool:
+    if not valid_envelope(value):
+        return false
+    var layers: Dictionary = value["layers"]
+    for layer_id in UNINITIALIZED_LAYERS:
+        var entry = layers.get(layer_id, {})
+        if not (entry is Dictionary):
+            return false
+        if not bool(entry.get("initialized", false)):
+            return false
+    return true
