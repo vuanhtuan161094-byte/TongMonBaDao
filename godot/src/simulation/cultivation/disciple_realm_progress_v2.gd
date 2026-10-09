@@ -65,7 +65,11 @@ static func initialize(
         "cultivation":_track(cultivation_realm,cultivation_floor),
         "body":_track(body_realm,body_floor)
     }
-    return {"ok":true,"profile":disciple.v2_realm_progress.duplicate(true)}
+    var hp_sync := sync_live_hp(disciple)
+    if not bool(hp_sync.get("ok",false)):
+        disciple.v2_realm_progress = {}
+        return {"ok":false,"reason":"v2_initial_hp_sync_failed"}
+    return {"ok":true,"profile":disciple.v2_realm_progress.duplicate(true),"hp_sync":hp_sync}
 
 static func _track(realm: int, floor_index: int) -> Dictionary:
     return {"realm":realm,"floor":floor_index,"xp":0.0,
@@ -174,6 +178,30 @@ static func derive_stats(disciple: DiscipleState, sources: Array = []) -> Dictio
         disciple.potential,sources
     )
 
+# V2 live HP authority is derived, never an independent level-up reward.
+# Preserve the current HP ratio when Realm/Body/Potential changes so a floor-up
+# cannot become a free heal. Additional max-HP sources may be supplied later by
+# the owning V2 equipment/innate consumers.
+static func sync_live_hp(disciple: DiscipleState, sources: Array = []) -> Dictionary:
+    if not progression_ready(disciple):
+        return {"ok":false,"reason":"v2_realm_profile_not_ready"}
+    var derived := derive_stats(disciple,sources)
+    if not bool(derived.get("ok",false)):
+        return derived
+    var new_max := float(derived["stats"]["max_hp"])
+    if is_nan(new_max) or is_inf(new_max) or new_max <= 0.0:
+        return {"ok":false,"reason":"invalid_v2_max_hp"}
+    var old_max := disciple.max_hp
+    var old_hp := disciple.hp
+    var new_hp := CombatStatsV2.rescale_current_hp(old_hp,old_max,new_max)
+    disciple.max_hp = new_max
+    disciple.hp = new_hp
+    return {
+        "ok":true,"old_max_hp":old_max,"old_hp":old_hp,
+        "max_hp":new_max,"hp":new_hp,
+        "ratio":new_hp/new_max
+    }
+
 # Apply real source EXP only when the caller owns an approved XP requirement
 # table for ALL ten floors of this specific realm. Absence is BLOCKED, not
 # guessed from HP/ATK/cultivation_stage_index.
@@ -262,7 +290,16 @@ static func grant_xp(
     next["floor"] = floor_index
     next["xp"] = xp
     if not dry_run:
+        var old_max_hp := disciple.max_hp
+        var old_hp := disciple.hp
         disciple.v2_realm_progress[track] = next
+        if int(next["realm"]) != int(old["realm"]) or int(next["floor"]) != int(old["floor"]):
+            var hp_sync := sync_live_hp(disciple)
+            if not bool(hp_sync.get("ok",false)):
+                disciple.v2_realm_progress[track] = old
+                disciple.max_hp = old_max_hp
+                disciple.hp = old_hp
+                return {"ok":false,"reason":"v2_hp_sync_failed"}
     return {
         "ok":true,"track":track,"gained":gained,
         "natural_factor":maxf(0.0,natural_factor),
@@ -337,7 +374,16 @@ static func attempt_cultivation_breakthrough(
         next_state["xp"] = maxf(0.0,float(p["xp"])-0.10*gate_required_xp)
         next_state["gate_failures"] = prior_failures+1
         next_state["lifetime_failures"] = int(p["lifetime_failures"])+1
+    var old_max_hp := disciple.max_hp
+    var old_hp := disciple.hp
     disciple.v2_realm_progress["cultivation"] = next_state
+    if success:
+        var hp_sync := sync_live_hp(disciple)
+        if not bool(hp_sync.get("ok",false)):
+            disciple.v2_realm_progress["cultivation"] = p
+            disciple.max_hp = old_max_hp
+            disciple.hp = old_hp
+            return {"ok":false,"reason":"v2_hp_sync_failed"}
     return {"ok":true,"success":success,"track":"cultivation",
         "chance":chance,"roll":roll,"event_id":event_id,
         "realm":int(next_state["realm"]),"floor":int(next_state["floor"]),
@@ -380,6 +426,14 @@ static func commit_authorized_body_gate(
     updated["floor"] = 1
     updated["xp"] = 0.0
     updated["gate_failures"] = 0
+    var old_max_hp := disciple.max_hp
+    var old_hp := disciple.hp
     disciple.v2_realm_progress["body"] = updated
+    var hp_sync := sync_live_hp(disciple)
+    if not bool(hp_sync.get("ok",false)):
+        disciple.v2_realm_progress["body"] = p
+        disciple.max_hp = old_max_hp
+        disciple.hp = old_hp
+        return {"ok":false,"reason":"v2_hp_sync_failed"}
     return {"ok":true,"track":"body","event_id":event_id,
         "realm":updated["realm"],"floor":1}
