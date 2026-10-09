@@ -330,12 +330,11 @@ static func set_auto_breakthrough(disciple: DiscipleState, track: String, enable
     return {"ok":true,"track":track,"enabled":enabled}
 
 # Tu Vi major breakthrough (floor 10 -> next realm floor 1) obeys locked rules.
-# The owner must provide the same AUTHORIZED floor-cost table used by EXP
-# progression plus an authored BASE chance. Floor 10 is therefore the single
-# gate-EXP authority; a second caller-provided numeric gate cost is forbidden.
-# There is deliberately NO fabricated universal 30-realm chance table.
-# Consumable modifiers, protection, special Fate/Physique and material charges
-# are not silently approximated; caller must satisfy those conditions upstream.
+# Low-level adapter: caller provides floor costs + base chance explicitly.
+# Production gameplay should use attempt_canonical_cultivation_breakthrough(),
+# which consumes DiscipleProgressionBalanceV2 + DiscipleBreakthroughBalanceV2.
+# Consumables/protection/special identity effects remain upstream consumers and
+# must not silently rewrite the base chance table.
 static func attempt_cultivation_breakthrough(
     disciple: DiscipleState, rng: GameRng,
     floor_costs: Dictionary, base_chance: float,
@@ -402,9 +401,29 @@ static func attempt_cultivation_breakthrough(
         "same_gate_failures":int(next_state["gate_failures"]),
         "lifetime_failures":int(next_state["lifetime_failures"])}
 
-# Luyện Thể major gates are INDEPENDENT: its material requirements / chances
-# are not yet user-locked. Only a pre-authorized gate outcome may be committed,
-# never a guessed RNG roll or a Tu Vi breakthrough chance copied to Body.
+
+# Production Tu Vi gate. Base chance is owned by the canonical 29-gate table;
+# floor costs come from the canonical 300-floor progression table.
+static func attempt_canonical_cultivation_breakthrough(
+    disciple: DiscipleState, rng: GameRng,
+    requirements_verified: bool, event_id: String
+) -> Dictionary:
+    if not progression_ready(disciple):
+        return {"ok":false,"reason":"v2_realm_profile_not_ready"}
+    var realm := int(disciple.v2_realm_progress["cultivation"]["realm"])
+    var chance := DiscipleBreakthroughBalanceV2.cultivation_base_chance(realm)
+    if chance < 0.0:
+        return {"ok":false,"reason":"canonical_breakthrough_chance_unavailable"}
+    return attempt_cultivation_breakthrough(
+        disciple,rng,DiscipleProgressionBalanceV2.floor_costs(),chance,
+        requirements_verified,event_id
+    )
+
+# Luyện Thể major gates are deterministic by user lock: full floor-10 EXP +
+# externally verified authored Thối Thể requirements -> 100% advance.
+# There is NO Body RNG, pity or generic fail penalty. This low-level function
+# accepts externally verified requirements; production callers should use the
+# canonical wrapper below.
 static func commit_authorized_body_gate(
     disciple: DiscipleState, floor_costs: Dictionary,
     requirements_verified: bool, event_id: String
@@ -448,3 +467,20 @@ static func commit_authorized_body_gate(
         return {"ok":false,"reason":"v2_hp_sync_failed"}
     return {"ok":true,"track":"body","event_id":event_id,
         "realm":updated["realm"],"floor":1}
+
+
+# Production Luyện Thể gate. All 29 gates use deterministic requirements and
+# the canonical floor-cost table. The detailed material/resource package remains
+# owned by future content; this function only requires its verification result.
+static func commit_canonical_body_gate(
+    disciple: DiscipleState, requirements_verified: bool, event_id: String
+) -> Dictionary:
+    if not progression_ready(disciple):
+        return {"ok":false,"reason":"v2_realm_profile_not_ready"}
+    var realm := int(disciple.v2_realm_progress["body"]["realm"])
+    if not DiscipleBreakthroughBalanceV2.body_gate_is_deterministic(realm):
+        return {"ok":false,"reason":"canonical_body_gate_unavailable"}
+    return commit_authorized_body_gate(
+        disciple,DiscipleProgressionBalanceV2.floor_costs(),
+        requirements_verified,event_id
+    )
