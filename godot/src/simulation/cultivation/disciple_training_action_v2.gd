@@ -11,6 +11,12 @@ static func resolve(state: SimulationState, disciple: DiscipleState, action: Str
         return {"ok":false,"reason":"v2_training_not_enabled"}
     if not ACTION_TRACKS.has(action):
         return {"ok":false,"reason":"unsupported_training_action"}
+    if not state.disciples.has(disciple.id) or state.disciples[disciple.id] != disciple:
+        return {"ok":false,"reason":"training_actor_not_owned_by_state"}
+    if disciple.current_action != StringName(action):
+        return {"ok":false,"reason":"training_action_not_current"}
+    if state.tick <= 0:
+        return {"ok":false,"reason":"no_committed_simulation_tick"}
     if not DiscipleRealmProgressV2.valid_profile(disciple.v2_realm_progress):
         return {"ok":false,"reason":"v2_disciple_not_initialized"}
     # Cultivation and body training occur at the sect in this first bridge.
@@ -36,6 +42,8 @@ static func resolve(state: SimulationState, disciple: DiscipleState, action: Str
     var source_values = rule.get("sources",[])
     if not (source_values is Array):
         return {"ok":false,"reason":"invalid_training_source_list"}
+    if int(disciple.v2_realm_progress.get("last_training_tick",-1)) == state.tick:
+        return {"ok":false,"reason":"training_tick_already_awarded"}
     var row: Dictionary = disciple.v2_realm_progress[track]
     var event_id := "%d:%s:%s" % [state.tick,str(disciple.id),action]
     if str(row.get("last_training_event_id","")) == event_id:
@@ -46,6 +54,7 @@ static func resolve(state: SimulationState, disciple: DiscipleState, action: Str
     if not bool(gain.get("ok",false)):
         return gain
     disciple.v2_realm_progress[track]["last_training_event_id"] = event_id
+    disciple.v2_realm_progress["last_training_tick"] = state.tick
     return {
         "ok":true,"event_id":event_id,
         "track":track,"action":action,"tick":state.tick,
