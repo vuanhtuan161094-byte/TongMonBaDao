@@ -701,16 +701,17 @@ This supersedes any earlier implication that ordinary work itself grants a separ
 
 **Luyện Thể**
 - no passive body EXP from merely living/working/travelling/fighting;
-- body EXP requires `TRAIN_BODY` or another explicit authored body-tempering source;
+- body EXP requires an **explicit authored Luyện Thể source**, but the concrete action/activity has NOT been locked yet;
 - Căn Cốt +0.20%/point applies to natural/base body-training EXP;
 - fixed body pills/material rewards remain fixed unless explicitly scalable.
 
 **Time semantics**
 - **15 seconds is NOT a gameplay balance unit.**
-- Display/balance uses **Tu Vi per simulation minute**; active body training uses **Luyện Thể EXP per simulation minute**.
+- Display/balance uses **Tu Vi per simulation minute**.
 - Current P3.7 time semantics already define 1440 simulation ticks/day, so one scheduler step is one simulation minute.
-- Wall-clock cadence may batch these minutes later, but equal simulated minutes must yield identical deterministic progression online/offline.
-- Production numeric Tu Vi/minute, Chuyên Tu multiplier and Body EXP/minute remain OPEN until balance approval.
+- Wall-clock cadence may batch these minutes later, but equal simulated minutes must yield identical deterministic Tu Vi progression online/offline.
+- **No Luyện Thể time unit or TRAIN_BODY activity is locked yet.** Body EXP sources, activity model, rate unit and schedule are the next design work.
+- Production numeric Tu Vi/minute and Chuyên Tu multiplier remain OPEN until balance approval.
 
 Implementation note: current DV2-03 action-based training/work bridge does **not yet fully implement this new source model**. In particular, passive Tu Vi and removal of the separate generic work-Tu-Vi award remain required code migration work.
 
