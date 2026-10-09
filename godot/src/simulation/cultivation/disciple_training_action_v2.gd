@@ -3,7 +3,8 @@ extends RefCounted
 
 # DV2-03 action bridge. Rates are normalized per simulation minute.
 # Tu Vi itself is passive-time owned; CULTIVATE only selects Chuyên Tu.
-# TRAIN_BODY remains an explicit one-minute body-training action.
+# Luyện Thể source/action mechanics are NOT locked yet. TRAIN_BODY is retained
+# only as a fail-closed compatibility token and must not grant Body EXP.
 const ACTION_TRACKS := {"CULTIVATE":"cultivation","TRAIN_BODY":"body"}
 
 # Validate the same real EXP operation without changing a floor, XP or action.
@@ -11,29 +12,9 @@ const ACTION_TRACKS := {"CULTIVATE":"cultivation","TRAIN_BODY":"body"}
 static func _validated_rule(disciple: DiscipleState, track: String, data: Variant) -> Dictionary:
     if track == "cultivation":
         return DiscipleTuViFlowV2.validate_rule(disciple,data)
-    if track != "body" or not (data is Dictionary):
-        return {"ok":false,"reason":"missing_authored_training_rules"}
-    var rule: Dictionary = data
-    if str(rule.get("action","")) != "TRAIN_BODY" or str(rule.get("authority_id","")).is_empty():
-        return {"ok":false,"reason":"invalid_training_rule_authority"}
-    var raw_rate = rule.get("base_body_xp_per_minute",null)
-    if not (raw_rate is float or raw_rate is int):
-        return {"ok":false,"reason":"missing_training_base_rate"}
-    var rate := float(raw_rate)
-    if is_nan(rate) or is_inf(rate) or rate <= 0.0:
-        return {"ok":false,"reason":"invalid_training_base_rate"}
-    var costs = rule.get("floor_costs",null)
-    if not (costs is Dictionary):
-        return {"ok":false,"reason":"missing_authored_floor_costs"}
-    var sources = rule.get("sources",[])
-    if not (sources is Array):
-        return {"ok":false,"reason":"invalid_training_source_list"}
-    var preview := DiscipleRealmProgressV2.grant_xp(
-        disciple,"body",rate,"natural",costs,sources,true
-    )
-    if not bool(preview.get("ok",false)):
-        return {"ok":false,"reason":str(preview.get("reason","invalid_training_preview"))}
-    return {"ok":true,"rate":rate,"costs":costs,"sources":sources}
+    if track == "body":
+        return {"ok":false,"reason":"body_training_mechanic_not_locked"}
+    return {"ok":false,"reason":"unsupported_training_track"}
 
 # Read-only eligibility/ratio surface shared by autonomous policy and UI.
 # It uses the same authored rule validation as the eventual committed action.
@@ -85,7 +66,9 @@ static func request_training(state: SimulationState, disciple_id: StringName, tr
         return {"ok":false,"reason":"training_disciple_not_present"}
     if not [&"EVALUATE",&"IDLE",&"HOLD",&"CULTIVATE",&"TRAIN_BODY"].has(disciple.current_action):
         return {"ok":false,"reason":"training_cannot_interrupt_active_work"}
-    var action := "CULTIVATE" if track == "cultivation" else "TRAIN_BODY"
+    if track == "body":
+        return {"ok":false,"reason":"body_training_mechanic_not_locked"}
+    var action := "CULTIVATE"
     var ready := _validated_rule(disciple,track,state.sect.v2_training_rules.get(track,null))
     if not bool(ready.get("ok",false)):
         return {"ok":false,"reason":str(ready.get("reason","invalid_training_rule"))}
@@ -112,31 +95,4 @@ static func resolve(state: SimulationState, disciple: DiscipleState, action: Str
     var track: String = ACTION_TRACKS[action]
     if track == "cultivation":
         return {"ok":false,"reason":"cultivation_resolves_via_passive_time"}
-    var ready := _validated_rule(disciple,track,state.sect.v2_training_rules.get(track,null))
-    if not bool(ready.get("ok",false)):
-        return {"ok":false,"reason":str(ready.get("reason","invalid_training_rule"))}
-    var rate: float = ready["rate"]
-    var costs: Dictionary = ready["costs"]
-    var source_values: Array = ready["sources"]
-    if int(disciple.v2_realm_progress.get("last_training_tick",-1)) == state.tick:
-        return {"ok":false,"reason":"training_tick_already_awarded"}
-    var row: Dictionary = disciple.v2_realm_progress[track]
-    var event_id := "%d:%s:%s" % [state.tick,str(disciple.id),action]
-    if str(row.get("last_training_event_id","")) == event_id:
-        return {"ok":false,"reason":"training_event_already_awarded"}
-    var gain := DiscipleRealmProgressV2.grant_xp(
-        disciple,track,rate,"natural",costs,source_values
-    )
-    if not bool(gain.get("ok",false)):
-        return gain
-    disciple.v2_realm_progress[track]["last_training_event_id"] = event_id
-    disciple.v2_realm_progress["last_training_tick"] = state.tick
-    return {
-        "ok":true,"event_id":event_id,
-        "track":track,"action":action,"tick":state.tick,
-        "base_body_xp_per_minute":rate,"gained":gain["gained"],
-        "realm":gain["realm"],"floor":gain["floor"],
-        "floors_earned":gain["floors_earned"],
-        "xp":gain["xp"],"at_major_gate":gain["at_major_gate"],
-        "unapplied_overflow":gain["unapplied_overflow"]
-    }
+    return {"ok":false,"reason":"body_training_mechanic_not_locked"}
