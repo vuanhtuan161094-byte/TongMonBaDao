@@ -67,6 +67,15 @@ func run_ticks(count: int) -> void:
         step()
 
 func _step_disciple(disciple: DiscipleState) -> void:
+    # One scheduler step is one simulation minute. Authentic V2 disciples
+    # continuously absorb natural Tu Vi during ordinary life/activity.
+    # CULTIVATE is Chuyên Tu: it accelerates this same source for the minute.
+    if DiscipleRealmProgressV2.owns_v2_progression(disciple) and state.sect.v2_training_enabled:
+        var passive_tuvi := DiscipleTuViFlowV2.resolve_minute(
+            state,disciple,disciple.current_action == &"CULTIVATE"
+        )
+        disciple.last_decision["v2_passive_tuvi_result"] = passive_tuvi.duplicate(true)
+
     match disciple.current_action:
         &"IDLE":
             disciple.current_action = &"EVALUATE"
@@ -207,11 +216,12 @@ func _step_disciple(disciple: DiscipleState) -> void:
 
         &"CULTIVATE":
             if DiscipleRealmProgressV2.owns_v2_progression(disciple):
-                # A V2 person NEVER falls back into P2 cultivation. Missing V2
-                # content/progress is a visible fail-closed result, not legacy XP.
-                var v2_gain := DiscipleTrainingActionV2.resolve(state, disciple, "CULTIVATE") if state.sect.v2_training_enabled else {
-                    "ok":false,"reason":"v2_training_disabled"
-                }
+                # V2 Chuyên Tu never creates a second EXP grant. The minute's
+                # natural Tu Vi was already resolved above with specialized=true.
+                var v2_gain: Dictionary = disciple.last_decision.get(
+                    "v2_passive_tuvi_result",
+                    {"ok":false,"reason":"v2_passive_tuvi_not_resolved"}
+                )
                 disciple.last_decision["v2_training_result"] = v2_gain.duplicate(true)
             else:
                 var gained := cultivation_system.cultivate(state, disciple)
