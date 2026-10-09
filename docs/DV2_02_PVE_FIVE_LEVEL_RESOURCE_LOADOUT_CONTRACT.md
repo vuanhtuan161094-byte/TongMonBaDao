@@ -11,11 +11,15 @@ The canonical P0 RegionState IDs remain `thanh_truc_lam`, `bach_thach_khe`, `hac
 
 | Lựa chọn | Cấp | HP quái (pilot) | ATK | DEF | Số lượng/pool | Sản lượng thường | Hiếm |
 |---|---|---:|---:|---:|---|---:|---|
-| 1 | Ngoại Vi | ×0.75 | ×0.82 | ×0.88 | thường, nhóm nhỏ | 1.00 | mức nền |
-| 2 | Thâm Nhập | ×1.00 | ×1.00 | ×1.00 | thường, nhóm chuẩn | 1.35 | tăng nhẹ |
-| 3 | Hung Địa | ×1.40 | ×1.18 | ×1.12 | có Tinh Anh | 1.80 | tăng vừa |
-| 4 | Hiểm Địa | ×1.95 | ×1.40 | ×1.27 | Tinh Anh + hộ vệ | 2.50 | tăng mạnh |
-| 5 | Tuyệt Địa | ×2.70 | ×1.65 | ×1.45 | Boss + hộ vệ | 3.50 | cao nhất |
+| 1 | Ngoại Vi | ×0.75 | ×0.82 | ×0.88 | Nhóm thường; **Tinh Anh 6% / Boss 1%** | 1.00 | mức nền |
+| 2 | Thâm Nhập | ×1.00 | ×1.00 | ×1.00 | Nhóm thường; **Tinh Anh 14% / Boss 3%** | 1.35 | tăng nhẹ |
+| 3 | Hung Địa | ×1.40 | ×1.18 | ×1.12 | ≥1 Tinh Anh; **Boss 8%** | 1.80 | tăng vừa |
+| 4 | Hiểm Địa | ×1.95 | ×1.40 | ×1.27 | ≥1 Tinh Anh; **Boss 16%** | 2.50 | tăng mạnh |
+| 5 | Tuyệt Địa | ×2.70 | ×1.65 | ×1.45 | **Boss chắc chắn**, ≥2 Tinh Anh | 3.50 | cao nhất |
+
+**Sửa theo yêu cầu người chơi 09/10/2026:** cả 5 cấp **đều có thể xuất hiện quái Thường, Tinh Anh và Thủ Lĩnh**. Cấp 1 KHÔNG cấm Boss; cấp 5 Boss được bảo đảm ở nhóm hiện tại. Các tỷ lệ trên là **pilot theo một lần sinh nhóm/encounter**, không phải tỷ lệ drop, tỷ lệ trúng đòn, mật độ quái toàn bản đồ hay cam kết gặp khi đi săn 1 giờ. Cấp 1/2 nếu xuất hiện Boss thì bỏ roll Tinh Anh trong nhóm đó để tránh một cụm nhỏ mang hai cú sốc khó. Kết quả xuất hiện phải được người chơi nhìn thấy ở map và có cơ hội né/tránh trước khi vào giao chiến; **AI né nhóm Boss hiện chưa triển khai**, nên không được giả vờ đã có.
+
+**Bằng chứng kiểm thử:** Godot 4.7.2 [DV2-02 #37886852624](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37886852624) PASS, 1.300 seed/cấp: cấp 1 thấy 87 nhóm Elite + 14 nhóm Boss; cấp 2 thấy 182 Elite + 37 Boss; cấp 3 thấy 1.300 Elite + 108 Boss; cấp 4 thấy 1.300 Elite + 212 Boss. Đây là mẫu deterministic QA, không phải kiểm chứng cân bằng ngoài thực tế.
 
 Các hệ số này tính **trên monster species/tier stats đã được author**, không lén tăng theo trang bị/tổ đội người chơi sau khi xuất hiện. Cảnh giới quái do khu vực và nội dung xác định, không tự sửa theo người chơi. Ngưỡng cảnh báo đội có thể dự báo, không thay đổi stat kẻ địch.
 
@@ -29,7 +33,7 @@ Các hệ số này tính **trên monster species/tier stats đã được autho
 
 ## Bản đồ, quái và chiến đấu
 
-- Map chọn `region_id` và `difficulty` (1..5) trước khi chọn đội thật ≤6, cụm ≤30. Cảnh giới, phẩm cấp và nguồn quái là tĩnh theo vùng/cấp; khu 3,4,5 tăng khả năng có Elite/Boss, **không gây trận Boss 1v1**.
+- Map chọn `region_id` và `difficulty` (1..5) trước khi chọn đội thật ≤6, cụm ≤30. **Tất cả các cấp đều có xác suất xuất hiện Elite/Boss**, khác nhau về tỷ lệ, thành phần nhóm và chỉ số (cấp 3–5 thường bảo đảm ít nhất một Elite); **không gây trận Boss 1v1**.
 - Spawn đệ tử/quái trong CÙNG `MapBattleV2` với tọa độ, di chuyển, target, basic, buffs/equipment/skill actions, heal, AoE, telegraph, downed. Không tạo 5 con quái giả với từng duel riêng.
 - Các ô quái mới chưa có drops hữu hiệu trong registry được đánh như quái thật nhưng **không phát thưởng vật phẩm giả**.
 - Map không auto-switch độ khó. Khi người chơi chọn cấp thấp vẫn có thể thu gom vật liệu phù hợp để nâng cấp. Level 5 cao hơn về nguyên liệu/hệ số cơ hội hiếm nhưng không tự cho vật phẩm không tồn tại.
