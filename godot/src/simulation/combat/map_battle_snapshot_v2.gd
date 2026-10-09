@@ -34,7 +34,8 @@ static func save(battle: MapBattleV2) -> Dictionary:
     return {
         "ok":true,"version":VERSION,
         "encounter_id":battle.encounter_id,
-        "rng_state":battle.rng.snapshot_seed_state(),
+        # JSON integers above 2^53 lose RNG bits; encode signed int64 as TEXT.
+        "rng_state":str(battle.rng.snapshot_seed_state()),
         "time":battle.now,"active":battle.active,"outcome":battle.outcome,
         "actions":battle.actions,"downed_disciples":battle.downed_disciples,
         "actors":serialized_actors,"casts":serialized_casts,"events":serialized_events
@@ -132,7 +133,10 @@ static func load(data: Dictionary) -> Dictionary:
                     return {"ok":false,"reason":"invalid_event_position"}
                 event[field] = coord
         battle.events.append(event)
-    battle.rng.restore_seed_state(int(data.get("rng_state",0)))
+    var encoded_rng = data.get("rng_state",null)
+    if not (encoded_rng is String) or not (encoded_rng as String).is_valid_int():
+        return {"ok":false,"reason":"invalid_rng_int64_encoding"}
+    battle.rng.restore_seed_state(int(encoded_rng))
     return {"ok":true,"battle":battle}
 
 static func _encode_vec2(value: Vector2) -> Array:
