@@ -232,6 +232,16 @@ Current old percentage consumers may use a bounded compatibility bridge where ne
 **Danh sách source trọng yếu:** `godot/src/simulation/cultivation/disciple_realm_progress_v2.gd`, `disciple_training_action_v2.gd`, `godot/src/simulation/state/disciple_state.gd`, `sect_state.gd`, `godot/src/simulation/core/simulation_scheduler.gd`, `godot/src/simulation/combat/hunting_pve_run_v2.gd`, `godot/tests/simulation/dv2_03_realm_body_progress_test.gd`, `dv2_03_training_actions_test.gd`, `.github/workflows/dv2-03-realm-body-progress.yml`.
 
 
+### 5.5 DV2-03C — EXP preflight + catalogue schema (CODE PUSHED, GATE UNVERIFIED)
+
+- `DiscipleRealmProgressV2.grant_xp(..., dry_run=true)` now supports identical read-only validation/preview. Existing commit path remains the default; invalid cost/source numeric types fail closed.
+- `DiscipleTrainingActionV2.request_training` validates real rate, floor costs and named EXP modifiers *before* changing `current_action`; rejects malformed input rather than returning false-positive success, while `resolve` rechecks on execution.
+- New `DiscipleTrainingContentV2` validates explicitly authored `300 cultivation + 300 body` positive cost entries, rates, version and catalogue identity. `build_rules` is read-only and does not enable production.
+- Focused test file and workflow updated for 600 coverage, JSON version normalization, no-mutation preview, bad-rate/duplicated-buff/missing-floor preflight, and earlier scheduler/save/dedup regression.
+- **CI/latest code status: CHƯA XÁC MINH.** This is code committed to `main`, not a new claim of Godot PASS. Existing CI #37895517181 focused PASS at older source `e96df183`; full P3.7 #37895357334 PASS still older at `5296f610`. No latest full cumulative/Windows evidence. Recheck official Godot 4.7.2 jobs before closing C.
+- Numeric 2×300 EXP/content rates are **not yet approved/activated**; a **comparison-only pacing proposal** was added to `docs/DV2_03_TWO_TRACK_PROGRESS_EXECUTION.md`. Test fixtures `80/50/100` are NOT balance. No change to `SectState.v2_training_enabled=false` default.
+- DV2-03 remains ACTIVE. NEXT: obtain Godot-focused evidence, review/approve EXP pacing, generate and wire 600 production values, then proceed D realtime/AI/offline. Do not start equipment/skills or full-map PvE.
+
 ### 5.4 Chuẩn bị lát triển khai tiếp theo — audit 09/10/2026
 
 **DV2-03 vẫn ACTIVE — chưa có code gameplay/gate mới trong lượt chuẩn bị này.** GitHub `main` đã được rà: action `request_training` kiểm tra sơ bộ nhưng không preflight `base_xp_per_action`/`floor_costs`; do đó có thể trả `ok=true` để xếp việc, rồi `resolve` fail-closed ở tick sau. Scheduler `step()` làm chủ cấp EXP, không phải driver wall-clock được chứng thực. Workflow focused của code `e96df183` PASS; FULL P3.7 chỉ có bằng chứng PASS tại `5296f610`. **Không có bằng chứng full same-code SHA hay realtime 15s/offline/Windows V2.**
