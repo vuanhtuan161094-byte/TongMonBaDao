@@ -140,12 +140,13 @@ func _run() -> void:
     var second_chunk := SimulationRuntimeClockV2.advance_to(
         chunked,chunk_scheduler,1360
     )
+    var chunked_disciple: DiscipleState = chunked.disciples[disciple_id]
     if not _assert(bool(second_chunk.get("ok",false)) and
         int(second_chunk.get("steps_run",-1))==3 and
         int(second_chunk.get("pending_minutes",-1))==0 and
         chunked.tick==offline.tick and
-        chunked.disciples[disciple_id].v2_realm_progress==
-            offline.disciples[disciple_id].v2_realm_progress,
+        chunked_disciple.v2_realm_progress==
+            offline_disciple.v2_realm_progress,
         "Chunked catch-up did not converge to the same state."):
         return
 
@@ -157,6 +158,36 @@ func _run() -> void:
         str(rollback.get("reason",""))=="wall_clock_moved_backwards" and
         chunked.tick==tick_before_rollback,
         "Backwards wall clock mutated simulation progress."):
+        return
+
+    # Runtime owner must catch up before save and again on load without a
+    # presentation-owned second clock.
+    var owner_fixture := _make_state(77221)
+    if not _assert(not owner_fixture.is_empty(),
+        "Could not create runtime-owner fixture."):
+        return
+    var owner_state: SimulationState = owner_fixture["state"]
+    var owner_id := StringName(owner_fixture["disciple_id"])
+    var owner := SimulationRuntimeOwnerV2.new()
+    var attached := owner.attach(owner_state,2000)
+    if not _assert(bool(attached.get("ok",false)),
+        "Runtime owner failed to attach."):
+        return
+    var owner_save := owner.save_to_path(SAVE_PATH,2120)
+    if not _assert(bool(owner_save.get("ok",false)) and
+        int(owner_save.get("steps_run",-1))==2 and
+        owner.state.runtime_last_wall_unix==2120,
+        "Runtime owner did not advance exactly to save time."):
+        return
+    var owner_saved_tuvi := _tuvi(owner.state,owner_id)
+
+    var reloaded_owner := SimulationRuntimeOwnerV2.new()
+    var reloaded := reloaded_owner.load_from_path(SAVE_PATH,2300)
+    if not _assert(bool(reloaded.get("ok",false)) and
+        int(reloaded.get("catch_up_steps",-1))==3 and
+        reloaded_owner.state.tick==owner.state.tick+3 and
+        _close(_tuvi(reloaded_owner.state,owner_id)-owner_saved_tuvi,60.0),
+        "Runtime owner load did not apply exactly the offline minutes."):
         return
 
     print("DV2-03 ONLINE/OFFLINE RUNTIME CLOCK EQUIVALENCE: PASS")
