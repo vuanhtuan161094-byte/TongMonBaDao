@@ -508,8 +508,8 @@ This is required before very large populations.
 
 ## Liên hệ DV2-03B — nhịp tu luyện/rèn thể (triển khai 09/10/2026)
 
-- `SimulationScheduler.step()` là authority của **một phút mô phỏng** hiện có. Authentic V2 nhận natural Tu Vi đúng một lần/phút qua `DiscipleTuViFlowV2`, bất kể đang làm việc/đi săn/di chuyển/chiến đấu/rèn thể. `CULTIVATE` chỉ bật hệ số **Chuyên Tu** cho cùng nguồn đó, không phát một khoản EXP thứ hai.
-- `TRAIN_BODY` vẫn là hành động explicit và có thể nhận Body EXP trong cùng phút với passive Tu Vi; hai nguồn có dedup riêng (`last_passive_tuvi_tick` và explicit training event/tick).
-- `request_training` **chỉ xếp lệnh**, không thưởng ngay. `SectState.v2_training_enabled=false` và `v2_training_rules={}` mặc định; production Tu Vi/phút, hệ số Chuyên Tu, Body EXP/phút và floor costs vẫn cần content balance chính thức.
-- **15 giây không còn là đơn vị balance.** Presentation/wall-clock có thể batch nhiều/ít phút mô phỏng theo runtime sau này, nhưng cùng số phút mô phỏng phải cho cùng progression. Offline/catch-up chưa được triển khai ở đây.
+- `SimulationScheduler.step()` là authority của **một phút mô phỏng** hiện có. Authentic V2 nhận natural Tu Vi đúng một lần/phút qua `DiscipleTuViFlowV2`, bất kể đang làm việc/đi săn/di chuyển/chiến đấu hay ở trạng thái khác. `CULTIVATE` chỉ bật hệ số **Chuyên Tu** cho cùng nguồn đó, không phát một khoản EXP thứ hai.
+- **Luyện Thể time/action contract chưa khóa.** `TRAIN_BODY` hiện chỉ là compatibility token fail-closed và không được phép cấp Body EXP.
+- `request_training` chỉ có authority thật cho Tu Vi/Chuyên Tu ở lát hiện tại. Production Tu Vi/phút, hệ số Chuyên Tu và floor costs vẫn cần balance chính thức.
+- **15 giây không còn là đơn vị balance.** Presentation/wall-clock có thể batch nhiều/ít phút mô phỏng sau này, nhưng cùng số phút mô phỏng phải cho cùng Tu Vi progression. Offline/catch-up chưa được triển khai ở đây.
 - Godot Linux 4.7.2 focused PASS [#37895517181](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37895517181), không phải đã nghiệm thu trải nghiệm thời gian thực trên Windows. Xem [`DV2_03_TWO_TRACK_PROGRESS_EXECUTION.md`](DV2_03_TWO_TRACK_PROGRESS_EXECUTION.md).
