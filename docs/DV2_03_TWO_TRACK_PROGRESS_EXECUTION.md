@@ -21,7 +21,7 @@ Giai đoạn: **DV2-03 ACTIVE — mã lõi/hoạt động theo tick đã PASS fo
 | Lưu/tải EXP, tầng, policy, event và lịch sử | **ĐÃ CODE + FOCUSED PASS** trên `DiscipleState`/`SectState`, test JSON round-trip |
 | Tính lại 16 chỉ số + 10 kháng sau tiến độ | **ĐÃ CODE + FOCUSED PASS** ở `derive_stats`/Hunting V2 proving adapter; **live HP P2 và màn nhân vật chính chưa di trú toàn bộ** |
 | Thời gian thực 15s ngoài game, offline catch-up, AI tự tập luyện | **CHƯA XÁC NHẬN chạy end-to-end**. Scheduler test chạy tick bằng lệnh, không đo 15 giây đồng hồ thật; sandbox cũ còn timer riêng |
-| EXP chuẩn 2×300, 29 tỷ lệ nền Tu Vi, Body gate | **CANONICAL BALANCE CODED:** shared 300-floor curve; Tu Vi 20/min, Chuyên Tu ×2; Body refs 5/15/30; 29 Tu Vi base chances; Body gates deterministic. Exact material packages still OPEN. |
+| EXP chuẩn 2×300, 29 tỷ lệ nền Tu Vi, Body gate | **CANONICAL BALANCE CODED:** shared 300-floor curve; Tu Vi 1,000/min, Chuyên Tu ×2; Body refs 250/750/1,500; 29 Tu Vi base chances; Body gates deterministic. Exact material packages still OPEN. |
 | Windows Godot 4.7.2 cho DV2-03 và chấp nhận UI trực quan | **CHƯA KIỂM THỬ/chưa có bằng chứng** |
 
 **Vấn đề kỹ thuật cần giải quyết:** `request_training` chỉ kiểm tra `authority_id` và loại action trước khi xếp hàng; tính hợp lệ **toàn bộ** tốc độ/cost/sources được kiểm tra khi tick thực hiện. Vì vậy lệnh có thể xếp hàng thành công nhưng tick trả từ chối, **không cộng EXP**. Sự kiện V2 một action/tick là cam kết đã test; đây không phải lịch tự tu luyện liên tục hoặc thực hiện đột phá tự động. Demo P0 `p0_sandbox.gd` gọi `SimulationScheduler.step()` theo khoảng **0,18 giây mô phỏng demo**; tuyệt đối không dùng kết quả đó làm chứng cứ nhịp wall-clock 15s của game V2.
@@ -97,7 +97,7 @@ No new maps, new species or speculative XP/chance/reward data in DV2-03.
 - **FULL cumulative P3.7 PASS được xác minh mới nhất:** [#37895357334](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37895357334) tại `5296f610`; không phải full PASS của mã API command `aa3122a` hay test `e96df183`.
 - Full P3.7 cumulative MUST be verified for the latest relevant code commit before calling DV2-03 BACKEND LOCKED.
 
-**Still NOT done:** approved 300-floor EXP tables/production rates; final V2 starting-realm distribution; 29 Tu Vi base breakthrough chances; Body material/attempt policy; autonomous Tu Vi-vs-Body training policy; real wall-clock/offline catch-up; full V2 UI; complete non-V2 old-character migration and later Equipment/Innate HP sources. **DV2-03M has already implemented authentic-V2 recruitment progress, identity-only old-V2 save migration, P2 isolation and live ratio-preserving V2 HP, but latest runtime gate evidence is still missing.**
+**Still NOT done:** exact Body material packages; real Rèn Thân facility/cost consumer; production/expedition hookups; automatic policy/priority using real Body availability; presentation integration; full V2 UI; complete non-V2 old-character migration and later Equipment/Innate HP sources. **DV2-03M has already implemented authentic-V2 recruitment progress, identity-only old-V2 save migration, P2 isolation and live ratio-preserving V2 HP, but latest runtime gate evidence is still missing.**
 
 ---
 
@@ -107,7 +107,7 @@ No new maps, new species or speculative XP/chance/reward data in DV2-03.
 
 ### C — Production EXP authority + validation trước khi nhận lệnh (STRUCTURE CODED; NUMERIC BALANCE DEFERRED)
 
-1. **DONE in code, gate unverified:** canonical shared 300-floor progression; Tu Vi 20/min + Chuyên Tu ×2; typed Body sources with references 5 production / 15 expedition / 30 Rèn Thân per minute; 29 Tu Vi chances + deterministic Body gates.
+1. **DONE in code, gate unverified:** canonical shared 300-floor progression; Tu Vi 1,000/min + Chuyên Tu ×2; typed Body sources with references 250 production / 750 expedition / 1,500 Rèn Thân per minute; 29 Tu Vi chances + deterministic Body gates.
 2. Chuẩn bị bảng cân bằng có số liệu/đồ thị tăng trưởng để người dùng duyệt trước khi kích hoạt production. Thiếu giá trị đã duyệt thì giữ `v2_training_enabled=false` / fail-closed. Không chuyển `CultivationSystem.STAGES` P2 sang V2.
 3. `request_training` phải chạy cùng preflight validation đầy đủ với `resolve` (nguồn, track, rate, cost của tầng hiện tại đến cổng, trạng thái đệ tử); không trả `ok=true` rồi lặng lẽ từ chối ở tick sau. Giữ nguyên thuộc tính: một lệnh xếp cho tick tới, không thưởng ngay, không chen ngang COMBAT/công việc bận.
 4. Focused gate: cả 600 vị trí được khai báo/kiểm tra, cost thiếu hoặc sai từ chối *trước khi xếp*; EXP tăng tầng nhỏ chuẩn, cố định không nhân lục duy, natural cộng % đúng, không double P2.
@@ -154,7 +154,7 @@ No new maps, new species or speculative XP/chance/reward data in DV2-03.
 **No approved production EXP numbers have been applied.** Current 100/80/50 in QA are fixtures only. Even with validated schema, production remains default-OFF. The old focused PASS and previous full P3.7 PASS were at older code commits; the changes listed above require independent Godot 4.7.2 run evidence before being marked PASS.
 ### EXP balance status after DV2-03M
 
-**Production progression balance is now approved in code.** Earlier illustrative `12 EXP/15s` / `0.75h ×1.23^(r−1)` notes remain RETIRED. Current authority: Tu Vi 20/min, Chuyên Tu ×2; Body references 5/15/30 per minute; shared frozen 300-floor curve in `DiscipleProgressionBalanceV2`.
+**Production progression balance is now approved in code.** Earlier illustrative `12 EXP/15s` / `0.75h ×1.23^(r−1)` notes remain RETIRED. Current authority: Tu Vi 1,000/min, Chuyên Tu ×2; Body references 250/750/1,500 per minute; shared frozen 300-floor curve in `DiscipleProgressionBalanceV2`.
 
 ---
 
@@ -238,7 +238,7 @@ User-approved gameplay authority now supersedes the current action-only EXP brid
 - `last_body_xp_tick` is persisted for deterministic save/load anti-double-credit;
 - `TRAIN_BODY` and `body_focus` remain fail-closed with `body_training_consumer_not_ready` until a real facility/cost consumer exists.
 
-**Canonical reference balance is now locked:** production 5/min, expedition 15/min, dedicated Rèn Thân 30/min before Căn Cốt/modifiers. Profession eligibility, training grades/cost formulas and expedition pressure scaling remain OPEN content.
+**Canonical reference balance is now locked:** production 250/min, expedition 750/min, dedicated Rèn Thân 1,500/min before Căn Cốt/modifiers. Profession eligibility, training grades/cost formulas and expedition pressure scaling remain OPEN content.
 
 Focused test: `godot/tests/simulation/dv2_03_body_xp_source_test.gd`.
 
@@ -250,11 +250,11 @@ Focused test: `godot/tests/simulation/dv2_03_body_xp_source_test.gd`.
 
 Canonical progression:
 - shared Tu Vi + Body 300-floor cost curve in `DiscipleProgressionBalanceV2`;
-- realm totals 6,000 -> 6,144,100 across 30 realms;
+- realm totals 10,000,000 -> 10,240,200,000 across 30 realms;
 - within-realm weights 0.70/0.75/0.80/0.85/0.90/1.00/1.10/1.20/1.30/1.40;
-- cumulative totals through realms 10/20/30 = 220,400 / 2,625,600 / 28,878,100;
-- Tu Vi = 20/minute; Chuyên Tu ×2;
-- Body reference rates = 5 production / 15 expedition / 30 dedicated Rèn Thân per minute.
+- cumulative totals through realms 10/20/30 = 367,400,000 / 4,376,300,000 / 48,130,600,000;
+- Tu Vi = 1,000/minute; Chuyên Tu ×2;
+- Body reference rates = 250 production / 750 expedition / 1,500 dedicated Rèn Thân per minute.
 
 Canonical gates:
 - 29 Tu Vi base chances in `DiscipleBreakthroughBalanceV2`;
