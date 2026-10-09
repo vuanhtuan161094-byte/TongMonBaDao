@@ -90,7 +90,24 @@ func _run() -> void:
             float(resumed_result["disciple_remaining_hp_ratio"])) < 0.000001,
         "Map outcome/health diverged after JSON save and resume."):
         return
-    if not _assert(MapBattleSnapshotV2.save(live) == MapBattleSnapshotV2.save(resumed),
+    var final_live := MapBattleSnapshotV2.save(live)
+    var final_loaded := MapBattleSnapshotV2.save(resumed)
+    if final_live != final_loaded:
+        for key in final_live.keys():
+            if final_live[key] != final_loaded.get(key):
+                if key == "events" or key == "actors":
+                    var one: Array = final_live[key]
+                    var two: Array = final_loaded[key]
+                    print("SNAPSHOT DEBUG key=",key," count=",one.size(),"/",two.size())
+                    for k in range(mini(one.size(),two.size())):
+                        if one[k] != two[k]:
+                            print("SNAPSHOT DEBUG idx=",k," live=",str(one[k]).left(1200),
+                                " restored=",str(two[k]).left(1200))
+                            break
+                else:
+                    print("SNAPSHOT DEBUG key=",key," live=",str(final_live[key]).left(900),
+                        " restored=",str(final_loaded.get(key)).left(900))
+    if not _assert(final_live == final_loaded,
         "Combat event journal, cast ordering or final RNG differs on save/resume."):
         return
     # Replay-safe status and rejection of corrupted or old-format saves.
