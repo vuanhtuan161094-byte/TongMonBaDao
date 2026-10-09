@@ -54,6 +54,14 @@ func _run() -> void:
         return
 
     state.sect.v2_training_enabled = true
+    student.current_action = &"HUNT"
+    state.tick = 1
+    var wrong_action := DiscipleTrainingActionV2.resolve(state,student,"CULTIVATE")
+    if not _assert(not bool(wrong_action.get("ok",true)) and
+        str(wrong_action.get("reason",""))=="training_action_not_current",
+        "Player gained Tu Vi while performing HUNT rather than CULTIVATE."):
+        return
+    state.tick = 0
     state.sect.v2_training_rules = {
         "cultivation":{"authority_id":"qa-authored-tuvi-rate",
             "action":"CULTIVATE","base_xp_per_action":80.0,
@@ -84,11 +92,20 @@ func _run() -> void:
         "V2 cultivate action has no legitimate event receipt."):
         return
     var after_tick := student.v2_realm_progress.duplicate(true)
+    student.current_action = &"CULTIVATE"
     var dupe := DiscipleTrainingActionV2.resolve(state,student,"CULTIVATE")
     if not _assert(not bool(dupe.get("ok",true)) and
+        str(dupe.get("reason",""))=="training_tick_already_awarded" and
         student.v2_realm_progress==after_tick,
         "Training awarded a second EXP grant for the SAME actor/tick/action."):
         return
+    student.current_action = &"TRAIN_BODY"
+    var fake_second_action := DiscipleTrainingActionV2.resolve(state,student,"TRAIN_BODY")
+    if not _assert(not bool(fake_second_action.get("ok",true)) and
+        student.v2_realm_progress==after_tick,
+        "Switching action in the same tick illegally farmed both XP tracks."):
+        return
+    student.current_action = &"EVALUATE"
 
     var stamina_before := student.stamina
     var hp_before := student.hp
