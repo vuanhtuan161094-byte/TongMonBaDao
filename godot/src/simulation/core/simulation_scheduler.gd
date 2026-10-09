@@ -235,11 +235,11 @@ func _step_disciple(disciple: DiscipleState) -> void:
             disciple.current_action = &"EVALUATE"
 
         &"TRAIN_BODY":
-            # Luyện Thể training mechanics are not yet user-locked. Preserve the
+            # Luyện Thể source mechanics are locked, but the real facility/cost consumer is not implemented. Preserve the
             # action token only so stale/dev state fails closed without awarding EXP.
             if DiscipleRealmProgressV2.owns_v2_progression(disciple):
                 disciple.last_decision["v2_body_training_result"] = {
-                    "ok":false,"reason":"body_training_mechanic_not_locked"
+                    "ok":false,"reason":"body_training_consumer_not_ready"
                 }
             if state.sect.workforce_enabled:
                 workforce_system.notify_action_completed(state, disciple, &"TRAIN_BODY")
