@@ -2,38 +2,32 @@
 
 Updated: 2026-10-09
 
-## Read first
+## Read first — mandatory order for character work
 
 1. `AGENTS.md`
 2. `docs/GAME_SYSTEM_ARCHITECTURE.md`
 3. `CURRENT_CHECKPOINT.md`
-4. `docs/DISCIPLE_MASTER_SCHEMA.md`
-5. `docs/DISCIPLE_V2_DESIGN_LEDGER.md`
-6. `docs/DISCIPLE_V2_ROADMAP.md`
-7. `docs/P3_7C1_FOUNDATION_DAN_TIEN_SPEC.md`
-8. `docs/SPIRITUAL_ROOT_V2_SPEC.md`
+4. `docs/DISCIPLE_V2_CHARACTER_IMPLEMENTATION_PLAN.md` — **NEW PRIMARY ACTIVE DESIGN/IMPLEMENTATION ROADMAP, no code yet**
+5. `docs/DISCIPLE_MASTER_SCHEMA.md`
+6. `docs/DISCIPLE_CHARACTERISTICS_STAT_FRAMEWORK_V2.md`
+7. `docs/DISCIPLE_V2_DESIGN_LEDGER.md`
+8. `docs/P3_7C1_FOUNDATION_DAN_TIEN_SPEC.md`
 9. `docs/COMBAT_STATS_V2_SPEC.md`
-10. `docs/DISCIPLE_CHARACTERISTICS_STAT_FRAMEWORK_V2.md`
-11. `docs/TRAITS_V2_SPEC.md`
-12. `docs/DESTINY_V2_SPEC.md`
-13. `docs/BLOODLINE_V2_SPEC.md`
-14. `docs/REALM_LADDER_V2_SPEC.md`
-15. `docs/BODY_CULTIVATION_V2_SPEC.md`
-16. `docs/PHYSIQUE_V2_SPEC.md`
-17. `docs/CULTIVATION_BREAKTHROUGH_V2_SPEC.md`
+10. `docs/REALM_LADDER_V2_SPEC.md`
+11. `docs/BODY_CULTIVATION_V2_SPEC.md`
+12. `docs/CULTIVATION_BREAKTHROUGH_V2_SPEC.md`
+13. `docs/SPIRITUAL_ROOT_V2_SPEC.md`
+14. `docs/TRAITS_V2_SPEC.md`
+15. `docs/DESTINY_V2_SPEC.md`
+16. `docs/BLOODLINE_V2_SPEC.md`
+17. `docs/PHYSIQUE_V2_SPEC.md`
 18. `docs/TECHNIQUE_V2_SPEC.md`
 19. `docs/CULTIVATION_PATH_V2_SPEC.md`
 20. `docs/COMBAT_SKILLS_V2_SPEC.md`
-21. `docs/WEAPON_EQUIPMENT_V2_SPEC.md` — current **10 ordinary slots + 12 grades + 6/2/1 lines + sect-owned**; DESIGN ONLY;
-22. `docs/EQUIPMENT_SETS_V2_SPEC.md` — **24 families, 2/3/4 bonuses and 3+3 coexistence**; DESIGN ONLY;
-23. `docs/WEAPON_EQUIPMENT_V2_REALM_MAP_SET_MATRIX.md` — map/realm source projection only (no older 5-slot/set rules);
-24. `docs/EQUIPMENT_FORGING_UPGRADE_V2_ROADMAP.md` — approved discussion order; **forge mechanics remain OPEN**;
-25. current equipment/loadout/crafting code and relevant legacy specs before continuing Weapon + Equipment V2.
+21. **Live actual code/tests**: P3.7C1, recruitment/candidate/disciple_state, character modifiers, legacy combat, P3.2 tabs.
+22. For compatibility **only**: `docs/WEAPON_EQUIPMENT_V2_SPEC.md` and `docs/EQUIPMENT_SETS_V2_SPEC.md`. Gear-forging roadmap is **deferred**.
 
-Fetch live `main` before edits.
-Do not ask the user to restate decisions that exist in these authorities.
-
----
+Fetch live `main` before all work. Do not ask user to repeat approved design already in repo. Newer user priority: **real V2 characters first; ordinary item forging, Pháp Bảo and Phù later**. 
 
 ## Current implementation status
 
@@ -128,67 +122,24 @@ Do not enable Kiếm Cốt effectless.
 
 ---
 
-## Current design subject
+## CURRENT NEXT-CHAT PRIORITY — COMPLETE A REAL DISCIPLE V2
 
-# Weapon + Equipment V2
+The user **changed priority on 2026-10-09**: finish **disciple generation, complete meaningful attributes, real consumer/effects and one playable character** before further equipment forging/upgrading, Pháp Bảo or Phù design.
 
-This is DESIGN ONLY unless the user explicitly authorizes implementation.
+**Primary work authority:** `docs/DISCIPLE_V2_CHARACTER_IMPLEMENTATION_PLAN.md`.
 
-**User-approved Equipment/Set V2 structure 2026-10-08:**
-- **10 ordinary slots** Vũ Khí/Mũ/Giáp/Phi Phong/Hộ Uyển/Thủ Sáo/Đai/Giày/Ngọc Bội/Nhẫn. Separate 3 Phù + 2 Pháp Bảo + 4 consumables. Old five-ordinary = OBSOLETE.
-- 12 quality grades, at Chí Tôn **6 ordinary stat lines + 2 rare special-stat lines + 1 individual Chân Văn slot**. Normal lines do not produce autonomous action; rare special lines are conditional existing-channel stats; Chân Văn alone owns rule/event mechanics. Each ordinary item max two broad general lines, slot-specific pools and valid profession lines.
-- **18 combat + 6 profession sets**, each four positions from Mũ/Giáp/Phi Phong/Hộ Uyển/Đai/Giày. 2/3/4 **cumulative stats**, 3+3 **both** three-piece bonuses active, no Chân Văn Cộng Hưởng, no new ability auto-spawned by a set.
-- Nhân/Tiên/Thần versions keep family role; gear power and specialization rise by tier; Hỗn Độn Thần-only. 100% gear belongs to the Sect; disciples only assigned use.
-- **OPEN**: item numerical power, % caps, enhancement cap, cost, crafting/loot/materials, full Chân Văn registry, actual Godot V2 implementation. Earlier provisional +15 is not approved final.
-- 1 map = 10 specialty clusters accepted; **one primary map per each of 30 realms is still a content proposal requiring separate approval**, NOT a final source gate.
+Required approach:
+1. Audit live main and canonical V2 specs; produce `DV2-00` field → persisted source → derived channel → actual consumer → UI → test status matrix. Distinguish active C1 (validated) from P2 legacy and V2 design-only.
+2. Prepare the **smallest first implementation slice**, `DV2-01`: deterministic ONE whole-person candidate/recruit, versioned identity persistence and no hidden rerolls. Then shared derived Combat Stats V2/RealmBodyCore and true progression/element/trait/fate/bloodline/physique/skill effects in tracked dependency order.
+3. One recruited disciple must **really cultivate, train body, work and fight**, with stat values used by actual simulation and shown via existing P3.2 real disciple tabs. Any disabled/unimplemented mechanic must be labeled BLOCKED and cannot be shown as active. A real `combat_power` estimate is not the Combat Stats V2 authority.
+4. Preserve P3.7C1 open-point lục-duy/recruitment and current Godot 4.7.2 locked baseline, old saves and deterministic generation. No new parallel stats, reroll-on-load or trait/physique grades resurrected as V2.
+5. Focused Godot 4.7.2 gate for each slice; cumulative regression on cross-cutting changes and release; 1,000–3,000 disciple cache/perf acceptance; UI visual acceptance remains user-owned.
 
-**NEXT USER-APPROVED DESIGN PLAN — 2026-10-09:** finish **ordinary gear crafting/upgrade design** in order: (1) Luyện Khí forge-to-warehouse transaction, (2) enhancement, (3) line value refinement and reroll, (4) quality grade 1..12 upgrades, (5) realm item tier and Nhân→Tiên→Thần upgrades, (6) inheritance/salvage, (7) individual Chân Văn, (8) material/loot economy, (9) scalable auto-equipping. Specific numeric/mechanic choices are NOT yet locked. **Pháp Bảo and Phù DEFERRED**, not the immediate next work. Canonical queue: `docs/EQUIPMENT_FORGING_UPGRADE_V2_ROADMAP.md`. Start by explaining/closing ONE full forge order; do not jump into coding.
+**No active implementation phase**: user's message authorized updating the plan and preparing the handoff, not yet changing gameplay code. Ask only for an explicit go-ahead to start `DV2-01` after audit if not already provided in the new chat; do not create a new numbered P3.x implementation phase without authorization.
 
-Before proposing:
-1. read current equipment state and legacy authority;
-2. preserve the existing 10-slot direction unless a concrete contradiction appears;
-3. consume Combat Stats V2 channels rather than invent parallel stats;
-4. consume Combat Skills V2 `style_tag` / `weapon_requirement` contract;
-5. retain weapon equip/style and skill requirement rules, while Kiếm Cốt measurable effect remains OPEN;
-6. preserve canonical warehouse/hunting/crafting authorities;
-7. do not create weapon mastery merely because another game has it.
+**Locked subsystem context still valid:** `docs/DISCIPLE_V2_ROADMAP.md`/Ledger/Master. Realm/Luyện Thể = 30×10 each, Combat Skills = 1 basic + 4 active + 6 combat passive, Core Physique one active/no grades; Kiếm Cốt effect BLOCKED pending legitimate sword-tag/effect. Root/Bloodline/Destiny/Trait are not all implemented just because docs exist.
 
-The design should explicitly decide:
-- weapon types for Kiếm / Thể / Pháp and weaponless cases;
-- 10 equipment slots and equip legality;
-- grade / realm / rarity / quality semantics;
-- base stats and substats;
-- enhancement / refinement / forging;
-- elemental equipment;
-- set bonuses, if any;
-- durability, keep/remove/reshape;
-- binding/locking/trade;
-- loot/crafting/market sources;
-- Nhân → Tiên → Thần equipment progression;
-- interaction with skill requirements;
-- interaction with Root/Bloodline/Physique/Trait/Mệnh;
-- large-roster auto-equip/template policy;
-- persistence and deterministic generation;
-- migration from current equipment authority.
-
----
-
-## Remaining design order after Weapon + Equipment
-
-Preferred queue:
-1. Pháp Bảo + Phù V2 — **DEFERRED by user; not next until ordinary equipment forging/upgrades are designed**;
-2. Profession V2 final consolidation;
-3. Living State V2 — Injury / recovery / age / lifespan;
-4. Mood / Loyalty / Needs;
-5. Personality + autonomy + goals/memories;
-6. Relationships / Social V2;
-7. Sư đồ / Đạo lữ / organization roles;
-8. Family/inheritance if enabled;
-9. Whole Disciple Generation V2 final assembly;
-10. whole-disciple contradiction/dead-stat audit;
-11. implementation dependency plan.
-
-Do not begin implementation just because design is closed.
+**Deferred without loss:** `docs/EQUIPMENT_FORGING_UPGRADE_V2_ROADMAP.md` remains approved order but **NOT NEXT**. Equipment 10 slots, 12 phẩm, 24 sets remain locked *design*, no forging implementation. Pháp Bảo/Phù later. Mood/Loyalty/social/family expansion only after core character or smallest genuine dependency.
 
 ## Legacy design-document cleanup — 2026-10-08
 

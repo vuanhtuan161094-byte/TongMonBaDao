@@ -1,8 +1,8 @@
 # EQUIPMENT V2 — LỘ TRÌNH LUYỆN KHÍ VÀ NÂNG CẤP TRANG BỊ
 
 Updated: 2026-10-09
-Status: **USER-APPROVED DISCUSSION ORDER / ROADMAP — MECHANICS NOT YET LOCKED; NOT IMPLEMENTED**
-User decision: after Equipment V2 10 ordinary slots, 12 phẩm and 24 set lineages, **finish ordinary equipment forging, upgrade and management design first; defer Pháp Bảo V2 and Phù V2**. This approval locks only this sequence and the design work scope below, **not** a final recipe, numeric chance, cost, enhancement ceiling or code authorization.
+Status: **APPROVED ORDER BUT DEFERRED (2026-10-09) — MECHANICS NOT LOCKED; NOT IMPLEMENTED**
+Historical 2026-10-09 decision approved this nine-part ordinary equipment forge/upgrade **order only**; **subsequent and more recent user instruction on the same date supersedes immediate priority**: complete real Disciple V2 attributes and behavior FIRST, as specified in `docs/DISCIPLE_V2_CHARACTER_IMPLEMENTATION_PLAN.md`. Preserve this forge plan for later; do NOT begin it in the next chat. Pháp Bảo and Phù also stay deferred. This plan does not lock recipes, chances, enhancement ceilings or authorize gameplay code.
 
 Authority:
 - `docs/WEAPON_EQUIPMENT_V2_SPEC.md` — 10 ordinary slots; item realm 1..30; quality 1..12; at Chí Tôn max 6 ordinary stat lines + 2 rare stat-special lines + 1 separate individual Chân Văn.
@@ -28,7 +28,7 @@ Authority:
 
 Work packages 1..9 are planned subjects; do not begin packages 2..9's final balancing before their earlier dependencies are designed. Small dependency discussions inside package 1 are fine. User confirms detailed design separately before it is called locked. This plan is **not a new implementation phase**.
 
-## 2. NEXT DISCUSSION — Order 1: one complete forge cycle
+## 2. ON RESUMPTION ONLY — Order 1: one complete forge cycle
 
 Design the transaction in understandable gameplay terms:
 
@@ -60,7 +60,8 @@ The **first deliverable is the closed forge transaction/rule design**, not code 
 
 ## 4. Roadmap status checklist
 
-- [x] User approved the ORDER of packages 1..9 and deferring Pháp Bảo/Phù.
+- [x] User originally approved ORDER of 1..9 (but newer priority defers the whole forge package).
+- [x] Newer 2026-10-09 directive: **finish a real playable Disciple V2 first**; next chat starts `DV2-00`, not forge.
 - [x] Equipment V2 10-slot / 12-grade / 6+2+1 architecture already design-locked elsewhere.
 - [x] Set V2 24-family / 2+3+4 structure already design-locked elsewhere.
 - [ ] Forge transaction final rules, 12-grade rolls, examples, profession/material/recipe links — **next discussion**.

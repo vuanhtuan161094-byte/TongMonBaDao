@@ -9,7 +9,8 @@ Mọi phase nhân vật sau P2.8 phải đọc tài liệu này trước. Spec p
 
 Companion authorities:
 - `docs/DISCIPLE_V2_DESIGN_LEDGER.md` — locked decisions, provisional constants, future-but-not-implemented rules, reference lessons;
-- `docs/DISCIPLE_V2_ROADMAP.md` — complete disciple-system map and preferred design order;
+- `docs/DISCIPLE_V2_ROADMAP.md` — complete disciple-system map and historical design order;
+- `docs/DISCIPLE_V2_CHARACTER_IMPLEMENTATION_PLAN.md` — **2026-10-09 next priority: working Disciple V2, source-to-consumer tracking, stepwise tests**;
 - `docs/P3_7C1_FOUNDATION_DAN_TIEN_SPEC.md` — implemented lục-duy + Dẫn Tiên authority.
 - `docs/DISCIPLE_CHARACTERISTICS_STAT_FRAMEWORK_V2.md` — locked canonical character/stat-channel ownership before Trait/Bloodline/Physique.
 - `docs/COMBAT_STATS_V2_SPEC.md` — locked derived combat-stat registry and composition rules.

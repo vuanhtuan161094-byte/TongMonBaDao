@@ -477,6 +477,13 @@ Do not recreate or consult deleted legacy design specs as authority.
 
 Canonical: `docs/WEAPON_EQUIPMENT_V2_SPEC.md` and `docs/EQUIPMENT_SETS_V2_SPEC.md`. 10 ordinary slots separate from 3 Phù + 2 Pháp Bảo + 4 consumable positions; 12 grades with max 6 normal stat sub-lines + 2 rare specialized stat lines + one individual Chân Văn; 18 combat and six work sets, four authored pieces each in six eligible set positions, cumulative 2/3/4 stat bonuses, legal 3+3 activates both families; 3-generation set identity; all gear 100% Sect-owned. Sets do **not** generate standalone combat mechanics or a Chân Văn Cộng Hưởng. **No new gameplay runtime, gate or PASS**. Gear numerical values, enhancement cap, crafting/refining costs, loot source probabilities and individual Chân Văn catalog remain OPEN. The 30-map content grid is a proposal, not independently approved.
 
-## Equipment V2 forge/upgrade design queue — 2026-10-09
+## Equipment V2 forge/upgrade design queue — DEFERRED on 2026-10-09
 
-User approved **design order**, beginning with the Luyện Khí Điện forge transaction, followed by enhancement, refine/reroll, quality upgrading, realm-tier upgrading, inheritance/salvage, individual Chân Văn, sources/economy, and mass auto-equip. See `docs/EQUIPMENT_FORGING_UPGRADE_V2_ROADMAP.md`. Pháp Bảo V2 and Phù V2 postponed. **No new design mechanisms or numerical balances were approved and no new implementation phase has started.**
+The previously approved forging/upgrade discussion order remains preserved at `docs/EQUIPMENT_FORGING_UPGRADE_V2_ROADMAP.md` but is **NOT current next-work priority**. User expressly prioritized **a fully functional Disciple V2 character**; Pháp Bảo V2, Phù V2 and additional item design follow later. No forge mechanics/numerical balance/implementation were approved by the plan.
+
+
+## Priority handoff — COMPLETE DISCIPLE V2 (2026-10-09)
+
+New canonical IMPLEMENTATION **PLAN**, NOT gameplay implementation: `docs/DISCIPLE_V2_CHARACTER_IMPLEMENTATION_PLAN.md`. User's priority is **recruit one real whole-person V2 disciple, persist ALL applicable approved visible/hidden identity attributes, derive actual Combat Stats V2 using RealmBodyCore/Tiềm Lực, connect genuine cultivation/work/combat effects, make P3.2 disciple UI read identical authoritative values, and prove deterministic old-save/large-roster tests**. Ordered planning slices `DV2-00` read-only audit → `DV2-01` whole-person birth → derived channels → Realm+Body → Root/Dị → Trait/Destiny → Bloodline/Physique → Techniques/Combat Skills → actual action loop → UI → cumulative/scale gate. Some advanced trigger mechanics depend on common combat event support and must be marked BLOCKED rather than shipped effectless. All earlier equipment/design locks remain; forging, Pháp Bảo, Phù DEFERRED.
+
+**Implementation phase still NONE; last backend PASS still P3.7C1.** No character gameplay code or test gate was changed by this planning commit. Next chat must fetch live main and begin with `DV2-00` audit. Do not relabel existing P2 character tabs as new full V2 PASS.

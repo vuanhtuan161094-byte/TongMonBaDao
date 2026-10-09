@@ -13,6 +13,9 @@ This file answers: **the disciple system still contains what, in what order shou
 
 Current implementation status still belongs only to `CURRENT_CHECKPOINT.md`.
 
+**NEW USER PRIORITY 2026-10-09:** Complete **ACTUAL Disciple V2 identity/attributes/effects** before any more forge/Pháp Bảo/Phù design. Implementation planning and test gates: `docs/DISCIPLE_V2_CHARACTER_IMPLEMENTATION_PLAN.md` (primary). The subsystem sections below record previously design-closed authorities; their narrative design order is **NOT today's implementation sequence**. First next-chat step is the read-only `DV2-00` field/consumer audit; explicit authorization is required before code.
+
+
 ---
 
 # 1. Player fantasy that all disciple work must preserve
@@ -124,7 +127,7 @@ Mị Lực is the canonical social-power input; individual systems may add resis
 
 ---
 
-# 3. Proposed discussion / implementation order
+# 3. Historical subsystem DESIGN discussions — not the new implementation priority
 
 This is the preferred order to reduce rework. It is a **queue**, not permission to auto-start code.
 
@@ -398,9 +401,9 @@ Canonical `docs/WEAPON_EQUIPMENT_V2_SPEC.md` and `docs/EQUIPMENT_SETS_V2_SPEC.md
 
 Still OPEN: full numbers/RealmBodyCore, individual Chân Văn catalog, forging/reroll/inheritance, enhancement cap, recipes, loot pools and Godot runtime/tests. 30-main-map projected content count needs separate confirmation.
 
-**2026-10-09 approved next DESIGN ORDER (not mechanics lock):** `docs/EQUIPMENT_FORGING_UPGRADE_V2_ROADMAP.md`. Do Luyện Khí forge transaction first, then enhancement, refining/reroll, quality upgrade, realm-tier evolution, inheritance/salvage, individual Chân Văn, loot/material economy, large-roster autoequip. Pháp Bảo V2 + Phù V2 deferred by user until ordinary equipment is completed. This does NOT authorize coding.
+**2026-10-09 initial forging-design order was APPROVED THEN DEFERRED by user's newer priority.** Source is still `docs/EQUIPMENT_FORGING_UPGRADE_V2_ROADMAP.md`, but **do not execute its nine stages now**. First finish real character V2 in `docs/DISCIPLE_V2_CHARACTER_IMPLEMENTATION_PLAN.md`. Pháp Bảo and Phù remain later. Neither plan authorizes code by itself.
 
-## After Weapon + Equipment V2
+## Long-term deferred after real Disciple V2 gameplay (not next work)
 
 Preferred design order:
 1. Pháp Bảo + Phù V2 — **deferred until user resumes it after ordinary equipment work**;
@@ -451,31 +454,12 @@ Do not reintroduce:
 
 ---
 
-# 6. Next-chat instruction
+# 6. NEW next-chat instruction — 2026-10-09
 
-The following Disciple V2 authorities are design-closed:
-- Spiritual Root / Dị Linh Căn;
-- Combat Stats;
-- Characteristic Framework;
-- Traits;
-- Mệnh Cách;
-- Bloodline;
-- Realm Ladder + Luyện Thể core;
-- Physique base;
-- Cultivation + Breakthrough;
-- Công Pháp;
-- Chủ Đạo / Đạo Lịch;
-- Combat Skills including Kiếm / Thể / Pháp and Nhân → Tiên → Thần evolution.
+**FIRST:** fetch live `main`; read `AGENTS.md`, `docs/GAME_SYSTEM_ARCHITECTURE.md`, `CURRENT_CHECKPOINT.md`, `NEXT_CHAT_HANDOFF.md`, **`docs/DISCIPLE_V2_CHARACTER_IMPLEMENTATION_PLAN.md`**, `docs/DISCIPLE_MASTER_SCHEMA.md` and system V2 authorities. Inspect actual C1 recruitment, Candidate/DiscipleState, foundation modifiers, CombatSystem and P3.2 tab tests. **Perform DV2-00 read-only status/consumer gap audit.**
 
-Weapon + Equipment V2 **design structure was approved and stored**. Next design discussion is the Luyện Khí Điện **forge transaction** per `docs/EQUIPMENT_FORGING_UPGRADE_V2_ROADMAP.md`; then follow the agreed nine-item order. Phù/Pháp Bảo are explicitly deferred. No crafting mechanism or numeric values have been locked by that roadmap.
+**GOAL:** a real playable Disciple V2 whose innate/hidden attributes persist, whose existing modifiers affect real work/cultivation/body/combat actions, whose UI displays authoritative values and legal reveal state, with deterministic Godot gates and 1k–3k disciple performance testing.
 
-Before proposing Weapon/Equipment rules:
-1. fetch live `main`;
-2. read `AGENTS.md`, `CURRENT_CHECKPOINT.md`, `NEXT_CHAT_HANDOFF.md`;
-3. read this roadmap and the four newly closed authorities;
-4. read current equipment/loadout code/specs;
-5. preserve the existing 10-slot equipment direction unless a concrete contradiction is found;
-6. close the remaining Weapon side of the Kiếm Cốt dependency;
-7. do not implement unless the user explicitly starts an implementation phase.
+**THEN:** scope smallest first implementation slice DV2-01, protect P3.7C1 and old save compatibility, get explicit user authorization to begin gameplay code, implement phase by phase and verify.
 
-Do not reopen a locked V2 subsystem without a concrete contradiction or explicit user change.
+**DO NOT:** continue forging, Pháp Bảo, Phù, 30-map content, generic re-design of closed character specs, fake effect % placeholders or an independent Combat Power character stat. Maintain real test-evidence status; no new full V2 backend PASS exists yet.
