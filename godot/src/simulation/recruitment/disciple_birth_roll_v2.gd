@@ -34,49 +34,6 @@ static func populate(envelope: Dictionary, candidate: CandidateState) -> Diction
     sync_profession_talent(profile, candidate)
     return profile
 
-# Strict intake contract: never accept a partially initialized profile just
-# because its envelope has version/seeds. This also rejects post-toggle old candidates.
-static func valid_complete_birth(profile: Dictionary) -> bool:
-    if not DiscipleBirthProfileV2.valid_envelope(profile):
-        return false
-    var layers: Dictionary = profile["layers"]
-    for layer_id in DiscipleBirthProfileV2.UNINITIALIZED_LAYERS:
-        var row = layers.get(layer_id, {})
-        if not (row is Dictionary) or not bool(row.get("initialized", false)):
-            return false
-    var roots: Dictionary = layers["spiritual_root"].get("birth_values", {})
-    if roots.is_empty() or roots.size() > 5:
-        return false
-    for root_id in roots:
-        if not BASE_ROOTS.has(str(root_id)) or int(roots[root_id]) < 1 or int(roots[root_id]) > 100:
-            return false
-    var traits: Dictionary = layers["traits"]
-    var visible: Array = traits.get("visible", [])
-    var latent: Array = traits.get("latent", [])
-    if visible.size() < 1 or visible.size() > 3 or latent.size() > 1:
-        return false
-    var chosen: Array = []
-    for trait in visible + latent:
-        if not (trait is Dictionary):
-            return false
-        var trait_id := str(trait.get("id", ""))
-        if chosen.has(trait_id) or DiscipleBirthCatalogueV2.conflicts_with(trait_id, chosen):
-            return false
-        if DiscipleBirthCatalogueV2.TRAIT_BIRTH_EXCLUSIONS.has(trait_id):
-            return false
-        if not ["H", "S", "B"].has(str(trait.get("nature", ""))):
-            return false
-        if bool(trait.get("active", true)) or trait.has("grade"):
-            return false
-        chosen.append(trait_id)
-    var physical_id := str(layers["physique"].get("physique_id", ""))
-    if physical_id == "kiem_cot" or physical_id == "":
-        return false
-    var fate_id := str(layers["destiny"].get("destiny_id", ""))
-    if fate_id == "" or DiscipleBirthCatalogueV2.FATE_BIRTH_EXCLUSIONS.has(fate_id):
-        return false
-    return true
-
 static func sync_profession_talent(profile: Dictionary, candidate: CandidateState) -> void:
     if not DiscipleBirthProfileV2.valid_envelope(profile):
         return
