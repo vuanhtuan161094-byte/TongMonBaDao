@@ -34,6 +34,41 @@ static func _validated_rule(disciple: DiscipleState, track: String, data: Varian
         return {"ok":false,"reason":str(preview.get("reason","invalid_training_preview"))}
     return {"ok":true,"rate":rate,"costs":costs,"sources":sources}
 
+# Read-only eligibility/ratio surface shared by autonomous policy and UI.
+# It uses the same authored rule validation as the eventual committed action.
+static func preview_training(state: SimulationState, disciple: DiscipleState, track: String) -> Dictionary:
+    if state == null or disciple == null or not state.sect.v2_training_enabled or not DiscipleRealmProgressV2.TRACKS.has(track):
+        return {"ok":false,"reason":"invalid_or_disabled_training_preview"}
+    if not state.disciples.has(disciple.id) or state.disciples[disciple.id] != disciple:
+        return {"ok":false,"reason":"training_actor_not_owned_by_state"}
+    if not DiscipleRealmProgressV2.progression_ready(disciple):
+        return {"ok":false,"reason":"training_profile_not_ready"}
+    if disciple.region_id != &"sect" or disciple.hp <= 0.0:
+        return {"ok":false,"reason":"training_disciple_not_present"}
+    var ready := _validated_rule(disciple,track,state.sect.v2_training_rules.get(track,null))
+    if not bool(ready.get("ok",false)):
+        return {"ok":false,"reason":str(ready.get("reason","invalid_training_rule"))}
+    var row: Dictionary = disciple.v2_realm_progress[track]
+    var key := "%d:%d" % [int(row["realm"]),int(row["floor"])]
+    var costs: Dictionary = ready["costs"]
+    if not costs.has(key):
+        return {"ok":false,"reason":"xp_cost_content_not_authorized"}
+    var current_cost := float(costs[key])
+    var current_xp := float(row["xp"])
+    if int(row["floor"]) == DiscipleRealmProgressV2.MAX_FLOOR and current_xp+0.0000001 >= current_cost:
+        return {
+            "ok":false,"reason":"major_gate_waiting",
+            "track":track,"current_xp":current_xp,"current_cost":current_cost,
+            "progress_ratio":1.0
+        }
+    return {
+        "ok":true,"track":track,
+        "action":"CULTIVATE" if track=="cultivation" else "TRAIN_BODY",
+        "current_xp":current_xp,"current_cost":current_cost,
+        "progress_ratio":clampf(current_xp/current_cost,0.0,1.0),
+        "global_floor":DiscipleRealmProgressV2.global_floor(int(row["realm"]),int(row["floor"]))
+    }
+
 # One real player-facing command boundary, with NO immediate reward.
 # The 15-second scheduler still owns the actual action result. This does not
 # add a second timer or let commands interrupt hunting/combat/urgent healing.
