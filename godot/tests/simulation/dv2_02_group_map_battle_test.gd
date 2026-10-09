@@ -134,10 +134,21 @@ func _run() -> void:
     var prior_rng := boss_battle.rng.snapshot_seed_state()
     map_view.attach_session(boss_battle)
     map_view.refresh_from_authority()
-    var current: Dictionary = boss_battle.actors["disciple_00"]
+    var picked_id := ""
+    var candidates: Array = boss_battle.actors.keys()
+    candidates.sort()
+    for candidate in candidates:
+        var actor_row: Dictionary = boss_battle.actors[candidate]
+        if str(actor_row["side"]) == "disciple" and float(actor_row["hp"]) > 0.0:
+            picked_id = str(candidate)
+            break
+    if not _assert(not picked_id.is_empty(),
+        "Boss map test has no living disciple to select."):
+        return
+    var current: Dictionary = boss_battle.actors[picked_id]
     var point := map_view.point_on_map(current["position"])
-    if not _assert(map_view.actor_at_map_point(point) == "disciple_00",
-        "Map world actor selection missed authoritative disciple location."):
+    if not _assert(map_view.actor_at_map_point(point) == picked_id,
+        "Map world actor selection missed living disciple location."):
         return
     if not _assert(map_view.logical_from_map(point).distance_to(current["position"]) < 0.001,
         "Node2D visual map transform did not round-trip battle coordinates."):
