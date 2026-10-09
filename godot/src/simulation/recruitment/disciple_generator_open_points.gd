@@ -69,7 +69,7 @@ func generate_candidate(state: SimulationState, source: StringName, generation_i
         "potential": potential
     }
 
-    return CandidateState.new({
+    var candidate := CandidateState.new({
         "id": "candidate_%04d" % generation_index,
         "name": "%s %s" % [surname, given_name],
         "combat_power": intrinsic_power,
@@ -105,6 +105,12 @@ func generate_candidate(state: SimulationState, source: StringName, generation_i
         "cultivation_combat_bonus": cultivation_bonus,
         "cultivation_hp_bonus": hp_bonus
     })
+    if state.sect.disciple_v2_birth_enabled:
+        candidate.v2_birth_profile = DiscipleBirthProfileV2.create_envelope(candidate)
+        if not DiscipleBirthProfileV2.valid_envelope(candidate.v2_birth_profile):
+            push_error("DV2-01: incomplete birth envelope for candidate " + str(candidate.id))
+            return null
+    return candidate
 
 func _roll_source_quality(rng: GameRng, source: StringName) -> StringName:
     var rates := [0.65, 0.25, 0.08, 0.018, 0.002]
