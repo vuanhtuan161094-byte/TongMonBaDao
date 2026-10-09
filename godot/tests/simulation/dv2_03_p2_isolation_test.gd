@@ -50,6 +50,28 @@ func _run() -> void:
         "Recruit compatibility did not preserve the authored Luyện Khí start while keeping Body independent."):
         return
 
+    # Pre-DV2-03 saves with a complete birth identity but no progress migrate
+    # once; a present malformed progress payload must NOT be silently reset.
+    var old_v2_save := disciple.to_dict()
+    old_v2_save.erase("v2_realm_progress")
+    old_v2_save["max_hp"] = 100.0
+    old_v2_save["hp"] = 37.0
+    var migrated_old := DiscipleState.from_dict(old_v2_save)
+    if not _assert(DiscipleRealmProgressV2.progression_ready(migrated_old) and
+        int(migrated_old.v2_realm_progress["cultivation"]["realm"])==2 and
+        int(migrated_old.v2_realm_progress["cultivation"]["floor"])==candidate.cultivation_stage_index+1 and
+        absf(migrated_old.hp/migrated_old.max_hp-0.37)<0.000001,
+        "Old V2 identity-only save did not migrate progression/HP ratio deterministically."):
+        return
+    var corrupt_v2_save := disciple.to_dict()
+    corrupt_v2_save["v2_realm_progress"] = {"version":1,"initialized":true}
+    var corrupt_loaded := DiscipleState.from_dict(corrupt_v2_save)
+    if not _assert(DiscipleRealmProgressV2.owns_v2_progression(corrupt_loaded) and
+        not DiscipleRealmProgressV2.progression_ready(corrupt_loaded) and
+        corrupt_loaded.v2_realm_progress.is_empty(),
+        "Malformed saved V2 progress was silently rerolled instead of failing closed."):
+        return
+
     state.sect.cultivation_enabled = true
     state.sect.v2_training_enabled = true
     var cult_realm := int(disciple.v2_realm_progress["cultivation"]["realm"])
