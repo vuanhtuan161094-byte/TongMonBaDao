@@ -91,6 +91,10 @@ func _run() -> void:
         int(catalogue_ok.get("floors",0))==600,
         "600 floor catalogue was rejected despite complete explicit QA content."):
         return
+    var json_catalogue: Variant = JSON.parse_string(JSON.stringify(complete_tracks))
+    if not _assert(bool(DiscipleTrainingContentV2.validate_catalogue(json_catalogue).get("ok",false)),
+        "Catalogue lost its version or floor costs after JSON roundtrip."):
+        return
     var authored_rules := DiscipleTrainingContentV2.build_rules(complete_tracks)
     if not _assert(bool(authored_rules.get("ok",false)) and
         authored_rules["rules"].has("body") and
@@ -127,6 +131,17 @@ func _run() -> void:
         "Invalid EXP rate accepted as a player training command."):
         return
     state.sect.v2_training_rules["body"]["base_xp_per_action"] = 50.0
+    state.sect.v2_training_rules["body"]["sources"] = [
+        {"source_id":"qa-duplicate","channel":"body_xp_gain","mode":"percent_add","value":0.2},
+        {"source_id":"qa-duplicate","channel":"body_xp_gain","mode":"percent_add","value":0.2}
+    ]
+    var duplicate_source_request := DiscipleTrainingActionV2.request_training(state,student.id,"body")
+    if not _assert(not bool(duplicate_source_request.get("ok",true)) and
+        str(duplicate_source_request.get("reason",""))=="ambiguous_xp_source" and
+        student.current_action == &"EVALUATE",
+        "Repeated XP modifier source was accepted as a player command."):
+        return
+    state.sect.v2_training_rules["body"]["sources"] = []
     # No additional XP when the player merely opens a character panel.
     var read_only := DiscipleRealmProgressV2.current(student)
     if not _assert(read_only["ok"] and student.v2_realm_progress == before,
