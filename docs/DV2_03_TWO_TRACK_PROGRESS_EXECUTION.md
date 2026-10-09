@@ -21,7 +21,7 @@ Giai đoạn: **DV2-03 ACTIVE — mã lõi/hoạt động theo tick đã PASS fo
 | Lưu/tải EXP, tầng, policy, event và lịch sử | **ĐÃ CODE + FOCUSED PASS** trên `DiscipleState`/`SectState`, test JSON round-trip |
 | Tính lại 16 chỉ số + 10 kháng sau tiến độ | **ĐÃ CODE + FOCUSED PASS** ở `derive_stats`/Hunting V2 proving adapter; **live HP P2 và màn nhân vật chính chưa di trú toàn bộ** |
 | Thời gian thực 15s ngoài game, offline catch-up, AI tự tập luyện | **CHƯA XÁC NHẬN chạy end-to-end**. Scheduler test chạy tick bằng lệnh, không đo 15 giây đồng hồ thật; sandbox cũ còn timer riêng |
-| EXP chuẩn 2×300, 29 tỷ lệ nền Tu Vi, vật liệu và điều kiện Luyện Thể | **CHƯA CÓ production balance được duyệt**; các số `80/50/100` trong test là fixture |
+| EXP chuẩn 2×300, 29 tỷ lệ nền Tu Vi, Body gate | **CANONICAL BALANCE CODED:** shared 300-floor curve; Tu Vi 20/min, Chuyên Tu ×2; Body refs 5/15/30; 29 Tu Vi base chances; Body gates deterministic. Exact material packages still OPEN. |
 | Windows Godot 4.7.2 cho DV2-03 và chấp nhận UI trực quan | **CHƯA KIỂM THỬ/chưa có bằng chứng** |
 
 **Vấn đề kỹ thuật cần giải quyết:** `request_training` chỉ kiểm tra `authority_id` và loại action trước khi xếp hàng; tính hợp lệ **toàn bộ** tốc độ/cost/sources được kiểm tra khi tick thực hiện. Vì vậy lệnh có thể xếp hàng thành công nhưng tick trả từ chối, **không cộng EXP**. Sự kiện V2 một action/tick là cam kết đã test; đây không phải lịch tự tu luyện liên tục hoặc thực hiện đột phá tự động. Demo P0 `p0_sandbox.gd` gọi `SimulationScheduler.step()` theo khoảng **0,18 giây mô phỏng demo**; tuyệt đối không dùng kết quả đó làm chứng cứ nhịp wall-clock 15s của game V2.
@@ -59,14 +59,14 @@ No new maps, new species or speculative XP/chance/reward data in DV2-03.
 
 - `SectState.v2_training_enabled` mặc định **false**; `v2_training_rules` mặc định **rỗng**. Cả hai chỉ được lưu khi thực sự cấu hình. P0–P3.7 vẫn hoạt động như trước.
 - `DiscipleTrainingActionV2.resolve` được gọi bởi **SimulationScheduler.step** trong hành động `CULTIVATE` hoặc `TRAIN_BODY`. Trường hợp đệ tử có hồ sơ sinh V2 đầy đủ nhưng chưa khởi tạo tiến độ không nhận lại Tu Vi P2. Mỗi action thực hiện trong **một tick chuẩn của bộ mô phỏng**, không có timer/nguồn EXP thứ hai.
-- Mỗi đường đòi `authority_id` riêng, đúng tên hành động, `base_xp_per_action` dương và `floor_costs` có đủ các tầng từ hiện tại đến tầng 10 của đại cảnh đang ở. Đây là **dữ liệu được cung cấp tường minh**, KHÔNG phải bảng 300 tầng/tốc độ do assistant tự cân. Thiếu một yêu cầu → từ chối nguyên hành động, **không cấp phần thưởng một phần**.
+- Canonical progression authority is now `DiscipleProgressionBalanceV2`. `DiscipleTrainingContentV2.canonical_rules()` exposes the approved Tu Vi rate/multiplier and shared 300-floor cost table; Body source consumers use the same costs. Missing/invalid authority still fails closed atomically.
 - Sau hành động hợp lệ, XP được tính bằng `DiscipleRealmProgressV2.grant_xp`: Tư Chất/Căn Cốt + những nguồn cùng channel đã kích hoạt thật; tăng tầng nhỏ tự động, dừng ở cửa đại cảnh; EXP vượt cửa **không được tự vào Tích Tu**.
 - Quyền hoạt động kiểm tra đối tượng đúng thuộc `SimulationState.disciples`, đúng `current_action`, còn sống, ở tông môn, tick hiện tại lớn hơn 0; cặp `last_training_tick` trên hồ sơ và `last_training_event_id` từng đường được lưu/tải. **Mỗi đệ tử chỉ được nhận một EXP hành động trong một tick**, kể cả giả đổi từ Tu Vi sang Luyện Thể trong cùng tick.
 - `request_training(state, disciple_id, track)` là lệnh người chơi yêu cầu hoạt động **một lần**, không thưởng EXP tức thì và không cắt ngang `COMBAT` hay hoạt động đang bận. Giao diện P3.2 chưa được nối; đây là cầu nối cho lệnh UI.
 - Luyện Thể không ăn XP Tu Vi, không tự trừ Thể Lực Viễn Chinh hoặc gây sát thương. Giai đoạn này chưa có lịch tự ưu tiên Luyện Thể so với nghề khác, thiết bị/công pháp/cơ sở vật chất chưa tự sinh bonus không có nguồn.
 - **Godot 4.7.2 Linux FOCUSED PASS** [DV2-03 #37895517181](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37895517181), code commit `e96df183`; gồm `request_training`, cả bài 2×300 và real scheduler action/dedup test. **Full P3.7 PASS cũ hơn** [#37895357334](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37895357334) tại `5296f610` (trước API lệnh V2), không được gọi full cumulative của code SHA mới nhất.
 
-**Còn thiếu cho gameplay hoàn chỉnh:** người chơi duyệt đường EXP/cost 300 tầng + tốc độ tăng dựa vào thời lượng, ưu tiên rèn thể của AI và giao diện hiển thị, điều kiện/vật phẩm và bảng xác suất đột phá 29 đại cảnh, nhịp tự đột phá, HP V2 lưu thật, chứng minh toàn bộ game trên máy Godot. Cầu nối action đã có nhưng **nếu chưa cung cấp bảng XP và tốc độ hợp lệ thì không được giả vờ nhân vật đang tự lên tầng**.
+**Còn thiếu cho gameplay hoàn chỉnh:** real Rèn Thân facility/cost consumer, production/expedition hookups, exact Body gate material packages, consumable modifiers, auto-breakthrough scheduling, persistent runtime/offline owner, UI and latest Godot evidence. Canonical XP/rates/chances are no longer missing.
 
 ## Major gate
 
@@ -107,7 +107,7 @@ No new maps, new species or speculative XP/chance/reward data in DV2-03.
 
 ### C — Production EXP authority + validation trước khi nhận lệnh (STRUCTURE CODED; NUMERIC BALANCE DEFERRED)
 
-1. Chuẩn hóa Tu Vi theo **phút mô phỏng**: `base_tuvi_per_minute` + `cultivate_multiplier`. Luyện Thể chỉ giữ 30×10 progression/floor-cost structure; **training source/rate/activity còn OPEN** và không có `base_body_xp_per_minute` production contract.
+1. **DONE in code, gate unverified:** canonical shared 300-floor progression; Tu Vi 20/min + Chuyên Tu ×2; typed Body sources with references 5 production / 15 expedition / 30 Rèn Thân per minute; 29 Tu Vi chances + deterministic Body gates.
 2. Chuẩn bị bảng cân bằng có số liệu/đồ thị tăng trưởng để người dùng duyệt trước khi kích hoạt production. Thiếu giá trị đã duyệt thì giữ `v2_training_enabled=false` / fail-closed. Không chuyển `CultivationSystem.STAGES` P2 sang V2.
 3. `request_training` phải chạy cùng preflight validation đầy đủ với `resolve` (nguồn, track, rate, cost của tầng hiện tại đến cổng, trạng thái đệ tử); không trả `ok=true` rồi lặng lẽ từ chối ở tick sau. Giữ nguyên thuộc tính: một lệnh xếp cho tick tới, không thưởng ngay, không chen ngang COMBAT/công việc bận.
 4. Focused gate: cả 600 vị trí được khai báo/kiểm tra, cost thiếu hoặc sai từ chối *trước khi xếp*; EXP tăng tầng nhỏ chuẩn, cố định không nhân lục duy, natural cộng % đúng, không double P2.
@@ -154,7 +154,7 @@ No new maps, new species or speculative XP/chance/reward data in DV2-03.
 **No approved production EXP numbers have been applied.** Current 100/80/50 in QA are fixtures only. Even with validated schema, production remains default-OFF. The old focused PASS and previous full P3.7 PASS were at older code commits; the changes listed above require independent Godot 4.7.2 run evidence before being marked PASS.
 ### EXP balance status after DV2-03M
 
-**No production EXP rate/curve is approved.** Earlier illustrative numbers such as `12 EXP/15s`, `0.75h × 1.23^(r−1)` or the derived realm-hour table are **RETIRED**. The balance/display unit is now locked to **Tu Vi/phút mô phỏng** and **Luyện Thể EXP/phút mô phỏng**; production numeric rates remain OPEN.
+**Production progression balance is now approved in code.** Earlier illustrative `12 EXP/15s` / `0.75h ×1.23^(r−1)` notes remain RETIRED. Current authority: Tu Vi 20/min, Chuyên Tu ×2; Body references 5/15/30 per minute; shared frozen 300-floor curve in `DiscipleProgressionBalanceV2`.
 
 ---
 
@@ -179,7 +179,7 @@ No new maps, new species or speculative XP/chance/reward data in DV2-03.
 **CODE PUSHED / RUNTIME GATE UNVERIFIED.**
 
 - Persisted policy enum still contains `balanced`, `cultivation_focus`, `body_focus`, `manual` for compatibility.
-- **Correction 2026-10-09:** concrete Luyện Thể training is not user-locked. Therefore `body_focus` is currently BLOCKED and cannot be newly selected; `balanced` only selects an actually authorized track (currently Chuyên Tu) rather than fabricating Body training.
+- **Correction/current state:** Luyện Thể source model and rates are now user-locked, but the real facility/slot/cost consumer is still absent. Therefore `body_focus` remains BLOCKED until that consumer exists; balanced may not fabricate a training slot.
 - Earlier lower-floor/lower-ratio/tie logic remains provisional scaffolding for the day when a real Luyện Thể action is approved; it is not current gameplay authority.
 - `manual` disables autonomous selection only; explicit player `request_training` still works.
 - `preview_training` is read-only and reuses the same authored rule validation. A full floor-10 track reports `major_gate_waiting`.
@@ -215,7 +215,7 @@ User-approved gameplay authority now supersedes the current action-only EXP brid
 3. Ordinary work/combat/travel/hunting do **not** produce a second generic Tu Vi award. Existing `_grant_p3_7_work_cultivation()` behavior is now implementation debt and must be removed/reworked for authentic V2.
 4. `CULTIVATE` becomes **Chuyên Tu**: acceleration of the same passive natural-Tu-Vi rate, not the existence condition for Tu Vi gain.
 5. Monster combat grants no direct main-track EXP; monsters may drop **Tinh Nguyên**, whose absorption grants fixed +X Tu Vi.
-6. Luyện Thể remains non-passive, but the **concrete source/activity is still OPEN**. Do not assume `TRAIN_BODY`, per-minute gain, facility, material loop or schedule until designed.
+6. Luyện Thể remains non-passive. Typed natural contexts are now locked as production / dedicated Rèn Thân / expedition; dedicated Rèn Thân is per-minute and cost-gated. Exact facility/content implementation remains separate.
 7. **15s is not a balance law.** The runtime cadence may batch elapsed-time progression but equal elapsed time must yield equal progression online/offline regardless of commit frequency.
 
 **Implementation status:** Tu Vi source-model refactor is CODE PUSHED. `DiscipleTuViFlowV2` grants one natural Tu Vi source per simulation minute; `CULTIVATE` only applies Chuyên Tu acceleration; separate work-Tu-Vi was removed; new recruitment starts 1/1. **Luyện Thể training is intentionally blocked**: provisional `TRAIN_BODY` cannot grant EXP, and body-focus auto policy cannot be activated until design is approved. Latest runtime Godot gate evidence is UNVERIFIED.
@@ -238,7 +238,33 @@ User-approved gameplay authority now supersedes the current action-only EXP brid
 - `last_body_xp_tick` is persisted for deterministic save/load anti-double-credit;
 - `TRAIN_BODY` and `body_focus` remain fail-closed with `body_training_consumer_not_ready` until a real facility/cost consumer exists.
 
-**No numeric balance was invented.** Test rates are fixtures only. The current balance direction is production < expedition < dedicated Rèn Thân; exact rates, profession eligibility, training grades/costs and expedition pressure tables remain OPEN.
+**Canonical reference balance is now locked:** production 5/min, expedition 15/min, dedicated Rèn Thân 30/min before Căn Cốt/modifiers. Profession eligibility, training grades/cost formulas and expedition pressure scaling remain OPEN content.
 
 Focused test: `godot/tests/simulation/dv2_03_body_xp_source_test.gd`.
+
+---
+
+## DV2-03B3 — canonical progression and major gates (2026-10-09)
+
+**CODE PUSHED / RUNTIME GATE UNVERIFIED.**
+
+Canonical progression:
+- shared Tu Vi + Body 300-floor cost curve in `DiscipleProgressionBalanceV2`;
+- realm totals 6,000 -> 6,144,100 across 30 realms;
+- within-realm weights 0.70/0.75/0.80/0.85/0.90/1.00/1.10/1.20/1.30/1.40;
+- cumulative totals through realms 10/20/30 = 220,400 / 2,625,600 / 28,878,100;
+- Tu Vi = 20/minute; Chuyên Tu ×2;
+- Body reference rates = 5 production / 15 expedition / 30 dedicated Rèn Thân per minute.
+
+Canonical gates:
+- 29 Tu Vi base chances in `DiscipleBreakthroughBalanceV2`;
+- same-gate pity +5pp/failure and −10% gate EXP on Tu Vi failure remain;
+- all 29 Body gates deterministic after full gate EXP + verified Thối Thể requirements;
+- no Body RNG/pity/failure loss.
+
+New focused tests:
+- `dv2_03_progression_balance_test.gd`;
+- `dv2_03_breakthrough_balance_test.gd`.
+
+Do not interpret old QA fixtures such as 80/50/100 as production balance.
 
