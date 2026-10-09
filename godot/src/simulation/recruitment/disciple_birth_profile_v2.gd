@@ -55,6 +55,23 @@ static func _derive_domain_seed(profile_seed: int, domain: String) -> int:
         value = (value * 131 + domain.unicode_at(index)) % MODULUS
     return maxi(value, 1)
 
+# Godot JSON.parse_string restores nested numeric values as float64.
+# Convert only the schema's integer fields back to int on load; never reroll them.
+static func normalize_envelope(value: Variant) -> Dictionary:
+    if not (value is Dictionary) or value.is_empty():
+        return {}
+    var normalized: Dictionary = value.duplicate(true)
+    normalized["version"] = int(normalized.get("version", 0))
+    normalized["generation_index"] = int(normalized.get("generation_index", 0))
+    var raw_seeds = normalized.get("domain_seeds", {})
+    if raw_seeds is Dictionary:
+        var seeds: Dictionary = raw_seeds.duplicate(true)
+        for domain in DOMAINS:
+            if seeds.has(domain):
+                seeds[domain] = int(seeds[domain])
+        normalized["domain_seeds"] = seeds
+    return normalized
+
 static func valid_envelope(value: Variant) -> bool:
     if not (value is Dictionary):
         return false
