@@ -135,7 +135,7 @@ func _run() -> void:
         state,student.id,"body"
     )
     if not _assert(not bool(body_request.get("ok",true)) and
-        str(body_request.get("reason",""))=="body_training_mechanic_not_locked" and
+        str(body_request.get("reason",""))=="body_training_consumer_not_ready" and
         student.current_action==&"EVALUATE" and
         _close(float(student.v2_realm_progress["body"]["xp"]),body_before),
         "Player could queue or gain an unapproved Body training action."):
@@ -148,7 +148,7 @@ func _run() -> void:
     var tuvi_before_stale := float(student.v2_realm_progress["cultivation"]["xp"])
     scheduler.step()
     var blocked: Dictionary = student.last_decision.get("v2_body_training_result",{})
-    if not _assert(str(blocked.get("reason",""))=="body_training_mechanic_not_locked" and
+    if not _assert(str(blocked.get("reason",""))=="body_training_consumer_not_ready" and
         _close(float(student.v2_realm_progress["body"]["xp"]),body_before_stale) and
         float(student.v2_realm_progress["cultivation"]["xp"])>tuvi_before_stale,
         "Stale TRAIN_BODY granted Body EXP or incorrectly stopped passive Tu Vi."):
