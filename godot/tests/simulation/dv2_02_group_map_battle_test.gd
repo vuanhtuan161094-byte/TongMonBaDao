@@ -7,7 +7,7 @@ func _party(count: int, with_healer: bool = true, realm: int = 1) -> Array:
     var units: Array = []
     for i in range(count):
         var id := "disciple_%02d" % i
-        var stats := CombatStatsV2.derive(realm,1,realm,1,0.0)["stats"]
+        var stats: Dictionary = CombatStatsV2.derive(realm,1,realm,1,0.0)["stats"]
         var role := "frontline"
         if i % 4 == 1:
             role = "ranged"
