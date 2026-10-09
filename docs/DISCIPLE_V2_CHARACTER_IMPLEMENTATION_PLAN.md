@@ -200,3 +200,11 @@ DV2-01B is coded opt-in (`SectState.disciple_v2_birth_enabled`, default **false*
 **Focused evidence**: `godot/tests/simulation/dv2_01_birth_envelope_test.gd` and `dv2_01_birth_distribution_test.gd` with 100,000 simulated births, plus real guidance/recruitment and JSON round-trip. [Godot 4.7.2 focused run #37878256401](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37878256401) PASS. Cumulative P3.7 workflow at next latest code commit must be checked before closing phase; checkpoint alone determines PASS/next stage.
 
 **DV2-02 (NEXT PHASE ONLY AFTER DV2-01 CLOSED)**: canonical typed source-to-stat engine, approved numeric Realm/Body ATK/DEF/HP and mitigation, HP ratio, source breakdown; no legacy Combat Power as V2 damage input. Do not start DV2-03 or Trait consumers before this engine is actually implemented and tested.
+
+## DV2-02A — FIRST STAT KERNEL, FOCUSED GATE GREEN / PHASE ACTIVE
+
+After DV2-01B real birth+C1 cumulative **PASS** and checkpoint closure on 2026-10-09, the user directed completing the **14 canonical Combat Stats plus 10 elemental resistances**, before production or content-effect activation. See `docs/DV2_02_COMBAT_STAT_EXECUTION_CONTRACT.md`.
+
+Implemented `CombatStatsV2` as a **pure, deterministic derived function**, reading explicit two-track realm indices/floors and current Tiềm Lực, and accepting only registered, unconditional, uniquely attributed source modifiers. Does not rely on legacy combat power, alter C1 recruitment, create a second persisted combat stat authority, or silently apply dormant Traits. Unit-level hit, crit, effect, penetration and independent remaining-damage reduction are testable in Godot.
+
+Focused official Godot 4.7.2 **PASS**: [Actions #37880761726](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37880761726); real encounter integration and permanent/conditional source adapters still required before **DV2-02 can close**. Do not start DV2-03/04/05 just to fake inputs to this calculator. Numeric Realm+Body law was already user-approved and unchanged.
