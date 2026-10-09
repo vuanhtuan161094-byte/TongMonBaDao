@@ -70,6 +70,62 @@ func _run() -> void:
             "action":"TRAIN_BODY","base_xp_per_action":50.0,
             "floor_costs":_costs(1,100.0),"sources":[]}
     }
+    # DV2-03C: structural validation covers every 30x10 floor on both
+    # tracks; these all-100 inputs are QA fixtures, NOT approved balance.
+    var complete_tracks: Dictionary = {
+        "version":1,"catalogue_id":"qa-600-only","tracks":{
+            "cultivation":{"authority_id":"qa-all-tuvi",
+                "base_xp_per_action":80.0,"floor_costs":{}},
+            "body":{"authority_id":"qa-all-body",
+                "base_xp_per_action":50.0,"floor_costs":{}}
+        }
+    }
+    for track_name in ["cultivation","body"]:
+        var all_costs: Dictionary = {}
+        for realm_index in range(1,31):
+            for floor_index in range(1,11):
+                all_costs["%d:%d" % [realm_index,floor_index]] = 100.0
+        complete_tracks["tracks"][track_name]["floor_costs"] = all_costs
+    var catalogue_ok := DiscipleTrainingContentV2.validate_catalogue(complete_tracks)
+    if not _assert(bool(catalogue_ok.get("ok",false)) and
+        int(catalogue_ok.get("floors",0))==600,
+        "600 floor catalogue was rejected despite complete explicit QA content."):
+        return
+    var authored_rules := DiscipleTrainingContentV2.build_rules(complete_tracks)
+    if not _assert(bool(authored_rules.get("ok",false)) and
+        authored_rules["rules"].has("body") and
+        authored_rules["rules"]["body"]["action"]=="TRAIN_BODY",
+        "Two-track catalogue cannot be converted to explicit rules."):
+        return
+    var incomplete: Dictionary = complete_tracks.duplicate(true)
+    incomplete["tracks"]["body"]["floor_costs"].erase("30:10")
+    if not _assert(not bool(DiscipleTrainingContentV2.validate_catalogue(incomplete).get("ok",true)),
+        "Catalogues missing one of 600 levels must fail closed."):
+        return
+    var poisoned: Dictionary = complete_tracks.duplicate(true)
+    poisoned["tracks"]["cultivation"]["floor_costs"]["14:4"] = -1.0
+    if not _assert(not bool(DiscipleTrainingContentV2.validate_catalogue(poisoned).get("ok",true)),
+        "Negative floor EXP cost passed strict validation."):
+        return
+    var preview_before := student.v2_realm_progress.duplicate(true)
+    var dry_gain := DiscipleRealmProgressV2.grant_xp(
+        student,"cultivation",80.0,"natural",
+        state.sect.v2_training_rules["cultivation"]["floor_costs"],[],true
+    )
+    if not _assert(bool(dry_gain.get("ok",false)) and
+        student.v2_realm_progress==preview_before,
+        "Dry-run of canonical XP grant modified character progress."):
+        return
+    var broken_rate: Dictionary = state.sect.v2_training_rules["body"].duplicate(true)
+    broken_rate["base_xp_per_action"] = -50.0
+    state.sect.v2_training_rules["body"] = broken_rate
+    var bad_rate_request := DiscipleTrainingActionV2.request_training(state,student.id,"body")
+    if not _assert(not bool(bad_rate_request.get("ok",true)) and
+        str(bad_rate_request.get("reason",""))=="invalid_training_base_rate" and
+        student.current_action != &"TRAIN_BODY",
+        "Invalid EXP rate accepted as a player training command."):
+        return
+    state.sect.v2_training_rules["body"]["base_xp_per_action"] = 50.0
     # No additional XP when the player merely opens a character panel.
     var read_only := DiscipleRealmProgressV2.current(student)
     if not _assert(read_only["ok"] and student.v2_realm_progress == before,
@@ -161,6 +217,19 @@ func _run() -> void:
         "Unauthorized missing 300-floor XP content cannot award partial experience."):
         return
 
+    # DV2-03C: a bad training request must fail at the command boundary,
+    # BEFORE scheduling the next tick. The former implementation queued it.
+    student.current_action = &"EVALUATE"
+    var queued_before := student.v2_realm_progress.duplicate(true)
+    var missing_cost_request := DiscipleTrainingActionV2.request_training(
+        state,student.id,"cultivation"
+    )
+    if not _assert(not bool(missing_cost_request.get("ok",true)) and
+        str(missing_cost_request.get("reason",""))=="xp_cost_content_not_authorized" and
+        student.current_action == &"EVALUATE" and
+        student.v2_realm_progress==queued_before,
+        "Command accepted missing floor costs, or changed XP/action on failure."):
+        return
     # Save both authored EXP inputs and two independent character tracks.
     var json_state := JSON.stringify(state.sect.to_dict())
     var reloaded_sect := SectState.from_dict(JSON.parse_string(json_state))
@@ -177,5 +246,5 @@ func _run() -> void:
         "Save/load forgot the last granted event ID and can duplicate XP."):
         return
 
-    print("DV2-03 REAL SCHEDULER CULTIVATE/BODY ACTIONS + 15s TICKS + SAVE/DEDUP: PASS")
+    print("DV2-03C EXP 600 CATALOGUE + PREFLIGHT + SCHEDULER + SAVE/DEDUP: PASS")
     quit(0)
