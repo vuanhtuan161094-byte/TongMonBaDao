@@ -1,8 +1,8 @@
 # TÔNG MÔN BÁ ĐẠO — KẾ HOẠCH HOÀN THIỆN ĐỆ TỬ V2: NHÂN VẬT THẬT, THUỘC TÍNH THẬT
 
 Date: 2026-10-09
-Status: **USER-APPROVED PRIORITY / IMPLEMENTATION ROADMAP; NOT IMPLEMENTED; NO ACTIVE PHASE**
-This plan supersedes the **next-work priority** in `docs/EQUIPMENT_FORGING_UPGRADE_V2_ROADMAP.md` but does not delete, amend or re-lock previously approved Equipment V2 / Sets V2 decisions. **Pháp Bảo, Phù, gear forging/enhancement, profession-economic expansion and advanced relationships are deferred.** This plan is NOT blanket permission to implement gameplay code or claim a test PASS. User must explicitly start the first implementation slice.
+Status: **USER-APPROVED ROADMAP; DV2-01 IN PROGRESS; no full V2 implementation PASS**
+This plan supersedes the **next-work priority** in `docs/EQUIPMENT_FORGING_UPGRADE_V2_ROADMAP.md` but does not delete, amend or re-lock previously approved Equipment V2 / Sets V2 decisions. **Pháp Bảo, Phù, gear forging/enhancement, profession-economic expansion and advanced relationships are deferred.** The user **explicitly authorized phased implementation on 2026-10-09**. This authorization does not waive one-phase-at-a-time or focused/cumulative Godot gates; DV2-01 remains active until all required consumers/persistence are complete.
 
 ## 0. Goal — a genuinely playable disciple, not display-only panels
 
@@ -175,3 +175,10 @@ A slice can close only when authored code and actual focused tests pass and docu
 6. **Later gates:** genuine Combat Stats requires Core growth/Defense curve; work/quality modifiers require actual recipe/resource/quality contract; expedition stamina must not be consumed by any in-sect action.
 
 These documents do not authorize speculative new formulas, enable all 101 Traits, or bypass official Godot 4.7.2 CI evidence.
+
+
+## DV2-01A FIRST CODE SLICE — IMPLEMENTED, FOCUSED GATE GREEN, PHASE NOT CLOSED
+
+User's implementation go-ahead arrived on 2026-10-09. Current opt-in birth-envelope code has been pushed: `DiscipleBirthProfileV2`, `CandidateState`, `DiscipleState`, `SectState.disciple_v2_birth_enabled`, `DiscipleGeneratorOpenPoints`. Per-domain seeds are deterministic and independent of P3.7C1 RNG; unapproved Root/Trait/Bloodline/Physique/Destiny selection remains uninitialized, not fake none. First focused CI run #37876520342 **PASS** after typed save/load fix, but latest real RecruitmentSystem accept-path CI and P3.7 cumulative gate still must be checked. `CURRENT_CHECKPOINT.md` owns current progress status.
+
+No combat curves, production transaction modifiers or numeric proposals have been enabled in runtime. Supporting specs: `docs/DV2_REALM_BODY_COMBAT_CURVES_V1_PROPOSAL.md` and `docs/DV2_PRODUCTION_RESULT_CONTRACT_V1.md`.
