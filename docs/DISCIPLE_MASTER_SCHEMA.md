@@ -338,8 +338,9 @@ Random bằng deterministic seeded stream:
 - bloodline presence/type/purity/detected state;
 - physique presence/type/reveal state;
 - latent Destiny;
-- age;
-- starting realm/progress.
+- age.
+
+**Production V2 exception:** starting Tu Vi/Luyện Thể is not random: Phàm Nhân tầng 1 / Phàm Thân tầng 1, both 0 EXP. Legacy/dev-save migration may preserve older coordinates explicitly.
 
 Những giá trị ẩn vẫn được sinh **ngay lúc tạo character**.
 
