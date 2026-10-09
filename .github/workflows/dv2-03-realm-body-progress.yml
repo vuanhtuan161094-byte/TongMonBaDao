@@ -14,6 +14,7 @@ on:
       - 'godot/src/simulation/cultivation/disciple_training_content_v2.gd'
       - 'godot/src/simulation/core/simulation_scheduler.gd'
       - 'godot/src/simulation/core/simulation_runtime_clock_v2.gd'
+      - 'godot/src/simulation/core/simulation_runtime_owner_v2.gd'
       - 'godot/src/simulation/ai/decision_system.gd'
       - 'godot/src/simulation/workforce/workforce_system.gd'
       - 'godot/src/simulation/needs/needs_system.gd'
