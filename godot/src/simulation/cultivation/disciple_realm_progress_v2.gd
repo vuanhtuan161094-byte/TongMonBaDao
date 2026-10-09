@@ -6,6 +6,8 @@ extends RefCounted
 # No invented 300-floor XP price table or major-breakthrough chance.
 const VERSION := 1
 const TRACKS := ["cultivation","body"]
+const TRAINING_POLICIES := ["balanced","cultivation_focus","body_focus","manual"]
+const DEFAULT_TRAINING_POLICY := "balanced"
 const MAX_REALM := 30
 const MAX_FLOOR := 10
 # Temporary recruitment compatibility only. The current P3.7 generator can
@@ -62,6 +64,7 @@ static func initialize(
     disciple.v2_realm_progress = {
         "version":VERSION,"initialized":true,
         "last_training_tick":-1,
+        "training_policy":DEFAULT_TRAINING_POLICY,
         "cultivation":_track(cultivation_realm,cultivation_floor),
         "body":_track(body_realm,body_floor)
     }
@@ -84,6 +87,8 @@ static func valid_profile(profile: Dictionary) -> bool:
     if int(profile.get("version",0)) != VERSION or not bool(profile.get("initialized",false)):
         return false
     if int(profile.get("last_training_tick",-1)) < -1:
+        return false
+    if not TRAINING_POLICIES.has(str(profile.get("training_policy",DEFAULT_TRAINING_POLICY))):
         return false
     for channel in TRACKS:
         var row = profile.get(channel,{})
@@ -111,6 +116,7 @@ static func normalize_profile(input: Variant) -> Dictionary:
     var normalized: Dictionary = input.duplicate(true)
     normalized["version"] = int(normalized.get("version",0))
     normalized["last_training_tick"] = int(normalized.get("last_training_tick",-1))
+    normalized["training_policy"] = str(normalized.get("training_policy",DEFAULT_TRAINING_POLICY))
     for track in TRACKS:
         var row = normalized.get(track,{})
         if not (row is Dictionary):
