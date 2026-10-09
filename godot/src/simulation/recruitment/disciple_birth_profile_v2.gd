@@ -70,6 +70,33 @@ static func normalize_envelope(value: Variant) -> Dictionary:
             if seeds.has(domain):
                 seeds[domain] = int(seeds[domain])
         normalized["domain_seeds"] = seeds
+    var raw_layers = normalized.get("layers", {})
+    if raw_layers is Dictionary:
+        var layers: Dictionary = raw_layers.duplicate(true)
+        var root = layers.get("spiritual_root", {})
+        if root is Dictionary:
+            for field in ["birth_values", "current_values"]:
+                var values = root.get(field, {})
+                if values is Dictionary:
+                    for key in values.keys():
+                        values[key] = int(values[key])
+                    root[field] = values
+            layers["spiritual_root"] = root
+        var bloodline = layers.get("bloodline", {})
+        if bloodline is Dictionary:
+            for field in ["birth_purity", "current_purity"]:
+                if bloodline.has(field):
+                    bloodline[field] = int(bloodline[field])
+            layers["bloodline"] = bloodline
+        var talent = layers.get("profession_talent", {})
+        if talent is Dictionary:
+            var grades = talent.get("talents", {})
+            if grades is Dictionary:
+                for key in grades.keys():
+                    grades[key] = int(grades[key])
+                talent["talents"] = grades
+            layers["profession_talent"] = talent
+        normalized["layers"] = layers
     return normalized
 
 static func valid_envelope(value: Variant) -> bool:
