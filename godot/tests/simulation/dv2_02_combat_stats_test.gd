@@ -128,7 +128,7 @@ func _run() -> void:
         _fail("A non-crit eligible packet was incorrectly critically amplified.")
         return
     var element_hit := CombatStatsV2.resolve_direct_hit(
-        stats,{"defense":0.0,"damage_reduction":0.28},{"fire":0.44},
+        st,{"defense":0.0,"damage_reduction":0.28},{"fire":0.44},
         1.0,false,"fire"
     )
     if not _close(float(element_hit["damage"]),float(st["attack"])*0.56*0.72):
