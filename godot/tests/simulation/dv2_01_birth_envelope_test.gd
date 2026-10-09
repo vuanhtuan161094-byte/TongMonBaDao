@@ -83,6 +83,8 @@ func _run() -> void:
         return
     var restored: DiscipleState = loaded.disciples.get(disciple.id)
     if restored == null or restored.v2_birth_profile != disciple.v2_birth_profile:
+        print("DV2-01 EXPECTED: ", var_to_str(disciple.v2_birth_profile))
+        print("DV2-01 ACTUAL: ", var_to_str(restored.v2_birth_profile) if restored != null else "missing disciple")
         _fail("The same visible/hidden V2 birth metadata was not preserved on load.")
         return
     if not DiscipleBirthProfileV2.valid_envelope(restored.v2_birth_profile):
