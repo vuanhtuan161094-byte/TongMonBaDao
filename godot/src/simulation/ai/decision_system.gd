@@ -15,11 +15,14 @@ func evaluate(state: SimulationState, disciple: DiscipleState) -> Dictionary:
 	var hp_ratio := disciple.hp / maxf(disciple.max_hp, 1.0)
 	var stamina_ratio := disciple.stamina / 100.0
 	var inventory_count := disciple.inventory_count()
+	var owns_v2 := DiscipleRealmProgressV2.owns_v2_progression(disciple)
 
 	var heal_score := (1.0 - hp_ratio) * (0.55 + disciple.survival_bias) * 100.0
-	var rest_score := (1.0 - stamina_ratio) * 100.0
+	# V2 stamina is expedition-only. In-sect rest/buy may still be chosen for
+	# actual HP/resource reasons, but never just to refill this meter.
+	var rest_score := 0.0 if owns_v2 and disciple.region_id == &"sect" else (1.0 - stamina_ratio) * 100.0
 	var sell_score := minf(float(inventory_count) * 22.0, 100.0)
-	var buy_score := disciple.spend_bias * (1.0 - stamina_ratio) * 80.0 if disciple.region_id == &"sect" else 0.0
+	var buy_score := 0.0 if owns_v2 else (disciple.spend_bias * (1.0 - stamina_ratio) * 80.0 if disciple.region_id == &"sect" else 0.0)
 	var hunt_score := (0.35 + stamina_ratio) * (0.55 + disciple.risk_bias * 0.35) * 72.0
 
 	var scores := {"HUNT": hunt_score, "HEAL": heal_score, "REST": rest_score, "SELL": sell_score, "BUY": buy_score}
@@ -29,7 +32,7 @@ func evaluate(state: SimulationState, disciple: DiscipleState) -> Dictionary:
 		organization_system.apply_action_role_modifiers(state, disciple, scores)
 	if state.sect.needs_enabled:
 		needs_system.apply_action_modifiers(state, disciple, scores)
-	if state.sect.cultivation_enabled:
+	if state.sect.cultivation_enabled and not owns_v2:
 		cultivation_system.apply_action_modifiers(state, disciple, scores)
 
 	var chosen: StringName = &"HUNT"
@@ -58,15 +61,24 @@ func evaluate(state: SimulationState, disciple: DiscipleState) -> Dictionary:
 			else:
 				chosen = &"REST"
 				reason = "Injured but cannot afford paid healing; use free basic recovery."
-		elif disciple.stamina < 42.0:
+		elif not owns_v2 and disciple.stamina < 42.0:
 			chosen = &"REST"
-			reason = "Stamina below rest threshold."
+			reason = "Stamina below legacy rest threshold."
 		elif inventory_count > 0:
 			chosen = &"SELL"
 			reason = "Returned with loot to liquidate."
+		elif owns_v2:
+			# Full Tu Vi/Body autonomous policy is a later DV2-03 slice. Until then
+			# do not manufacture a Body preference or read P2 cultivation state.
+			if disciple.stamina <= 22.0:
+				chosen = &"HOLD"
+				reason = "V2 expedition stamina is low; wait at sect for its own recovery authority."
+			else:
+				chosen = &"HUNT"
+				reason = "V2 progression is isolated from legacy cultivation; autonomous training policy is not enabled yet."
 		elif state.sect.cultivation_enabled:
 			chosen = _choose_p2_sect_action(scores, disciple)
-			reason = "Utility choice shaped by goal, personality, organization, resources, and cultivation priority."
+			reason = "Utility choice shaped by goal, personality, organization, resources, and legacy cultivation priority."
 		elif state.p1_goal_personality_enabled:
 			chosen = _choose_p1_sect_action(scores, disciple)
 			if state.sect.needs_enabled:
@@ -90,7 +102,12 @@ func evaluate(state: SimulationState, disciple: DiscipleState) -> Dictionary:
 		result["medicine_stock"] = state.sect.medicine_stock
 		result["supply_stock"] = state.sect.supply_stock
 		result["lodging_capacity"] = state.sect.lodging_capacity
-	if state.sect.cultivation_enabled:
+	if owns_v2:
+		var current_v2 := DiscipleRealmProgressV2.current(disciple)
+		result["v2_progression"] = current_v2.duplicate(true)
+		result["v2_training_enabled"] = state.sect.v2_training_enabled
+		result["effective_combat_power"] = _effective_combat_power(state, disciple)
+	elif state.sect.cultivation_enabled:
 		result["cultivation_stage"] = cultivation_system.stage_name(disciple)
 		result["cultivation_progress"] = disciple.cultivation_progress
 		result["cultivation_required"] = cultivation_system.required_progress(disciple)
@@ -164,7 +181,11 @@ func choose_region(state: SimulationState, disciple: DiscipleState) -> StringNam
 	return best_id
 
 func _effective_combat_power(state: SimulationState, disciple: DiscipleState) -> float:
-	var power: float = cultivation_system.effective_combat_power(state, disciple) if state.sect.cultivation_enabled else disciple.combat_power
+	# Region recommended_power is still a legacy compatibility surface. V2
+	# characters may temporarily use intrinsic/equipment compatibility power,
+	# but must never add a P2 realm bonus to it.
+	var owns_v2 := DiscipleRealmProgressV2.owns_v2_progression(disciple)
+	var power: float = cultivation_system.effective_combat_power(state, disciple) if state.sect.cultivation_enabled and not owns_v2 else disciple.combat_power
 	if state.sect.equipment_enabled:
 		power += equipment_system.combat_power_bonus(state, disciple)
 	return power
