@@ -85,6 +85,8 @@ var age: int = 0
 var base_lifespan: int = 0
 var max_lifespan: int = 0
 var latent_identity_seed: int = 0
+# DV2-01 opt-in canonical birth envelope, absent for old saves.
+var v2_birth_profile: Dictionary = {}
 
 var current_action: StringName = &"EVALUATE"
 var region_id: StringName = &"sect"
@@ -176,6 +178,8 @@ func _init(definition: Dictionary = {}) -> void:
     base_lifespan = maxi(int(definition.get("base_lifespan", 0)), 0)
     max_lifespan = maxi(int(definition.get("max_lifespan", 0)), 0)
     latent_identity_seed = int(definition.get("latent_identity_seed", 0))
+    var raw_v2_birth = definition.get("v2_birth_profile", {})
+    v2_birth_profile = raw_v2_birth.duplicate(true) if raw_v2_birth is Dictionary else {}
 
 func retreat_hp_ratio() -> float:
     return lerpf(0.48, 0.14, clampf(risk_bias, 0.0, 1.0))
@@ -276,6 +280,8 @@ func to_dict() -> Dictionary:
         data["base_lifespan"] = base_lifespan
         data["max_lifespan"] = max_lifespan
         data["latent_identity_seed"] = latent_identity_seed
+    if not v2_birth_profile.is_empty():
+        data["v2_birth_profile"] = v2_birth_profile.duplicate(true)
     return data
 
 static func from_dict(data: Dictionary) -> DiscipleState:
@@ -336,7 +342,8 @@ static func from_dict(data: Dictionary) -> DiscipleState:
         "age": data.get("age", 0),
         "base_lifespan": data.get("base_lifespan", 0),
         "max_lifespan": data.get("max_lifespan", 0),
-        "latent_identity_seed": data.get("latent_identity_seed", 0)
+        "latent_identity_seed": data.get("latent_identity_seed", 0),
+        "v2_birth_profile": data.get("v2_birth_profile", {})
     })
     disciple.max_hp = float(data.get("max_hp", 100.0))
     disciple.hp = float(data.get("hp", disciple.max_hp))
