@@ -213,14 +213,14 @@ Current old percentage consumers may use a bounded compatibility bridge where ne
 - **EXP và tăng tầng:** `DiscipleRealmProgressV2.grant_xp` sử dụng **floor_costs được cung cấp hợp lệ**, tăng tầng nhỏ tự động, chặn đại cảnh tại tầng 10. Tu Vi natural = base × (1 + `0,0025 × Tư Chất` + sources hợp lệ), Luyện Thể natural = base × (1 + `0,0020 × Căn Cốt` + sources hợp lệ). Buff cùng channel cộng theo tỷ lệ, không chain-multiply. EXP `fixed` không nhân các nguồn thường. EXP vượt cổng chỉ báo `unapplied_overflow`, không tự đẩy vào `Tích Tu`.
 - **Tu Vi đại cảnh:** `attempt_cultivation_breakthrough` thử bằng GameRng/EXP yêu cầu/base chance/điều kiện `requirements_verified`/event_id do consumer được duyệt truyền; thất bại mất **10% EXP yêu cầu** và thêm **5 điểm phần trăm** cơ hội lần sau cho cùng cổng, giữ lifetime history; thành công qua đại cảnh sau tầng 1. Không generic trừ HP/thể lực/cooldown. `auto_breakthrough` chỉ là policy lưu, **không tự thử trong scheduler**.
 - **Luyện Thể đại cảnh:** `commit_authorized_body_gate` chỉ commit **khi yêu cầu thực đã được một consumer khác xác minh**; chưa phải hệ vật liệu/xác suất hoặc thất bại thân thể chính thức.
-- **Scheduler V2 hiện tại:** Tu Vi dùng passive source + Chuyên Tu đã được refactor; concrete Luyện Thể training **chưa được thiết kế**. Provisional `TRAIN_BODY` token hiện fail-closed và không được cấp Body EXP. `SectState.v2_training_enabled=false` và rules rỗng theo mặc định.
+- **Scheduler V2 hiện tại:** Tu Vi dùng passive source + Chuyên Tu. Luyện Thể đã có typed source contract (`production/body_training/expedition`) nhưng **consumer thật chưa nối**; provisional `TRAIN_BODY` vẫn fail-closed cho tới khi có facility/slot/cost consumer. `SectState.v2_training_enabled=false` theo mặc định.
 - **Lệnh player:** `DiscipleTrainingActionV2.request_training(state, disciple_id, track)` thực tế xếp action **một lần**, không thưởng tức thì, chặn ngắt `COMBAT`/việc bận và chỉ cho đệ tử được sở hữu, ở tông môn, còn HP. **Đã test API, chưa kết nối UI lệnh V2**: nút “Tu luyện” trên P3.2 hiện là `WorkforceSystem.COMMAND_CULTIVATE` đời cũ.
 - **Chống EXP trùng**: cùng 1 disciple/tick **chỉ một action EXP kể cả đổi track**; `last_training_tick` dùng chung hồ sơ + `last_training_event_id` theo từng đường; validate `state.disciples`, đúng action, tick >0. `DiscipleState/SectState` JSON round-trip giữ 2 profile/tầng/EXP/history/policy/rate/ID; test xác nhận không nhận XP hai lần.
 - **Tính lại chiến đấu:** `DiscipleRealmProgressV2.derive_stats` dùng hai tọa độ đã lưu + Tiềm Lực vào `CombatStatsV2` (16 combat stats + 10 kháng), `HuntingPveRunV2` không cho caller giả realm. **HP legacy P2 chưa được đồng bộ/migrate an toàn**, chủ đệ tử V2 trong các map proving slice chưa được đưa vào live PvE outside map.
 
 ### 5.3 Giới hạn quan trọng, CHƯA code production / CHƯA có bằng chứng
 
-1. **Chưa có balance EXP production:** thiếu yêu cầu EXP cho **300 tầng × 2 đường**, tốc độ EXP natural/chu kỳ và điều kiện điều chỉnh theo thời gian/trải nghiệm. **80, 50, 100 EXP trong test chỉ là fixture**; tuyệt đối không copy thành luật game.
+1. **Balance progression production đã khóa trong latest code:** shared 300-floor curve, Tu Vi 20/phút, Chuyên Tu ×2, Body reference 5/15/30 EXP/phút cho production/expedition/Rèn Thân. Các số 80/50/100 ở test cũ vẫn chỉ là fixture và không phải authority.
 2. **Chưa có dữ liệu 29 lần đột phá Tu Vi:** `base_chance` theo cảnh giới, vật liệu/cấm/đan và verifier đầy đủ. **Luyện Thể** chưa có hệ thử đột phá, nguyên liệu, thất bại riêng; chỉ có authorized commit.
 3. **Chưa có chạy realtime end-to-end**: scheduler test gọi `step()`, **không đo tick đồng hồ thật 15s**, không có chứng cứ catch-up khi thoát/offline hoặc auto-loop liên tục; `p0_sandbox.gd` còn demo step mỗi ~0,18 giây. Không suy diễn từ “test scheduler PASS” sang “realtime V2 đã chơi được”.
 4. **Lệnh V2 chưa nối giao diện P3.2**: mới có API một lần; chưa có policy tự xếp việc rèn thể, UI 2 đường progress/gate, thông báo real-time, hoặc nút đột phá V2. Có thể request trả `ok=true` để xếp hàng nhưng khi `resolve` đến tick gặp `floor_costs` thiếu thì từ chối XP; cần UX báo lý do và kiểm tra trước khi xếp hàng.
@@ -317,7 +317,7 @@ Implemented:
 
 **Latest runtime evidence:** **MISSING, not FAIL.** Available connector still returns no push-triggered workflow run/check for the new commits. Previous focused/full runs remain older-code evidence and do not prove DV2-03S. Windows is UNTESTED.
 
-**Still OPEN:** production Tu Vi/minute number, Chuyên Tu multiplier, 600 floor costs, 29 Tu Vi base breakthrough chances, **toàn bộ concrete Luyện Thể training source/activity/time/rate + Body major-gate content**, persistent live runtime/offline catch-up and V2 UI.
+**Still OPEN:** consumer thật cho Rèn Thân (facility/slot/cost), danh sách nghề nặng, expedition pressure/content scaling, material package cụ thể cho Body gate, consumable modifier cho Tu Vi gate, persistent live runtime/offline catch-up và V2 UI.
 
 
 ### 5.9 DV2-03B2 — Luyện Thể typed source contract (CODE PUSHED, GATE UNVERIFIED)
@@ -341,6 +341,40 @@ Balance direction only, no numeric table yet: **production < expedition < dedica
 Still deliberately NOT implemented: eligible production-profession list, actual training building/slots, grade count/unlocks, Linh Thạch/material IDs or prices, expedition pressure table, and production Body EXP rates.
 
 **Latest Godot evidence for this slice: MISSING, not FAIL.** Do not call PASS until an official Godot 4.7.2 run for latest code is available.
+
+
+### 5.10 DV2-03B3 — canonical progression + 29 major gates (CODE PUSHED, GATE UNVERIFIED)
+
+**Canonical balance now exists in code:**
+- `DiscipleProgressionBalanceV2`;
+- shared Tu Vi/Luyện Thể 300-floor EXP curve;
+- realm totals r1..r30: `6,000` -> `6,144,100`, ~1.27 realm growth, exact integer table frozen;
+- floor weights: `0.70 / 0.75 / 0.80 / 0.85 / 0.90 / 1.00 / 1.10 / 1.20 / 1.30 / 1.40`;
+- Tu Vi base = **20/minute**;
+- Chuyên Tu = **×2.0**;
+- Body reference rates = **5/min production, 15/min expedition, 30/min dedicated Rèn Thân**;
+- cumulative EXP through realms 10/20/30 = **220,400 / 2,625,600 / 28,878,100**.
+
+**Canonical major gates now exist in code:**
+- `DiscipleBreakthroughBalanceV2`;
+- 29 Tu Vi base chances:
+  `100,95,90,85,80,75,70,65,60,50 / 90,85,80,75,70,65,60,55,50,35 / 80,75,70,65,60,55,50,45,35`%;
+- same-gate pity remains +5 percentage points/failure;
+- Tu Vi failure remains −10% floor-10 EXP requirement; no generic HP/Stamina/cooldown penalty;
+- all 29 Luyện Thể gates are deterministic: full floor-10 EXP + externally verified Thối Thể requirements -> 100% next realm;
+- no Body RNG/pity/failure loss.
+
+Production wrappers now use canonical tables:
+- `attempt_canonical_cultivation_breakthrough()`;
+- `commit_canonical_body_gate()`.
+
+Focused tests added:
+- `dv2_03_progression_balance_test.gd`;
+- `dv2_03_breakthrough_balance_test.gd`.
+
+**Not implemented here:** Tu Vi breakthrough pills/material consumers, exact Thối Thể material packages, Rèn Thân building/content, profession eligibility and expedition pressure tables.
+
+**Latest runtime evidence:** MISSING, not FAIL. Do not call latest DV2-03 PASS until official Godot 4.7.2 evidence exists.
 
 ### 5.4 Chuẩn bị lát triển khai tiếp theo — audit 09/10/2026
 
