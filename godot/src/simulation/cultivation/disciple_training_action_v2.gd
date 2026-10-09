@@ -6,6 +6,28 @@ extends RefCounted
 # Content authority MUST explicitly provide each applicable cost/rate.
 const ACTION_TRACKS := {"CULTIVATE":"cultivation","TRAIN_BODY":"body"}
 
+# One real player-facing command boundary, with NO immediate reward.
+# The 15-second scheduler still owns the actual action result. This does not
+# add a second timer or let commands interrupt hunting/combat/urgent healing.
+static func request_training(state: SimulationState, disciple_id: StringName, track: String) -> Dictionary:
+    if state == null or not state.sect.v2_training_enabled or not DiscipleRealmProgressV2.TRACKS.has(track):
+        return {"ok":false,"reason":"invalid_or_disabled_training_request"}
+    if not state.disciples.has(disciple_id):
+        return {"ok":false,"reason":"unknown_training_disciple"}
+    var disciple: DiscipleState = state.disciples[disciple_id]
+    if not DiscipleRealmProgressV2.valid_profile(disciple.v2_realm_progress):
+        return {"ok":false,"reason":"training_profile_not_ready"}
+    if disciple.region_id != &"sect" or disciple.hp <= 0.0:
+        return {"ok":false,"reason":"training_disciple_not_present"}
+    if not [&"EVALUATE",&"IDLE",&"HOLD",&"CULTIVATE",&"TRAIN_BODY"].has(disciple.current_action):
+        return {"ok":false,"reason":"training_cannot_interrupt_active_work"}
+    var action := "CULTIVATE" if track == "cultivation" else "TRAIN_BODY"
+    var rules = state.sect.v2_training_rules.get(track,{})
+    if not (rules is Dictionary) or str(rules.get("action","")) != action or str(rules.get("authority_id","")).is_empty():
+        return {"ok":false,"reason":"no_authorized_training_activity"}
+    disciple.current_action = StringName(action)
+    return {"ok":true,"track":track,"queued_action":action}
+
 static func resolve(state: SimulationState, disciple: DiscipleState, action: String) -> Dictionary:
     if state == null or disciple == null or not state.sect.v2_training_enabled:
         return {"ok":false,"reason":"v2_training_not_enabled"}
