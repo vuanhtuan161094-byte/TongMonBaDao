@@ -513,3 +513,22 @@ This is required before very large populations.
 - `request_training` chỉ có authority thật cho Tu Vi/Chuyên Tu ở lát hiện tại. Production Tu Vi/phút, hệ số Chuyên Tu và floor costs vẫn cần balance chính thức.
 - **15 giây không còn là đơn vị balance.** Presentation/wall-clock có thể batch nhiều/ít phút mô phỏng sau này, nhưng cùng số phút mô phỏng phải cho cùng Tu Vi progression. Offline/catch-up chưa được triển khai ở đây.
 - Godot Linux 4.7.2 focused PASS [#37895517181](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37895517181), không phải đã nghiệm thu trải nghiệm thời gian thực trên Windows. Xem [`DV2_03_TWO_TRACK_PROGRESS_EXECUTION.md`](DV2_03_TWO_TRACK_PROGRESS_EXECUTION.md).
+
+## V2 persistent real-time bridge — USER LOCK / CODE 2026-10-09
+
+Canonical mapping for DV2-03 runtime:
+- **60 real seconds = 1 simulation minute = 1 `SimulationScheduler.step()`**;
+- presentation may poll at any cadence; cadence does not change progression;
+- elapsed wall seconds are accumulated losslessly in `SimulationState.runtime_unconsumed_wall_seconds`;
+- save persists both `runtime_last_wall_unix` and the unconsumed seconds;
+- load/catch-up runs the **same scheduler** as online progression;
+- bounded catch-up may process only N minutes per call, but any remaining whole minutes stay persisted as backlog and are never discarded;
+- backwards system-clock movement grants no progression and does not rewind simulation;
+- old saves without a wall timestamp initialize the clock at first upgraded load and receive no unknowable pre-upgrade offline credit.
+
+Backend authority:
+- `SimulationRuntimeClockV2`;
+- `SimulationRuntimeOwnerV2`.
+
+The current P3.2/P3.1 scene timer (0.55s) remains a presentation/demo loop and is **not yet switched to this owner**.
+
