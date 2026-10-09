@@ -189,9 +189,25 @@ Current old percentage consumers may use a bounded compatibility bridge where ne
 
 ## 5. Current implementation phase
 
-**NONE — P3.7C1 IS CLOSED.**
+**DV2-01 — ACTIVE / IN PROGRESS (authorized by user 2026-10-09). NOT CLOSED, NOT PASS.**
 
-Do not start another gameplay phase without a new explicit user instruction.
+P3.7C1 remains the most recently **closed** backend phase. The user explicitly instructed implementation in order: base/derived stat design -> combat/production contract -> effects-to-consumer mapping -> phased character birth/runtime.
+
+**DV2-01A partial code submitted on `main` (opt-in, OFF for old P0–P3.7 worlds):**
+- `godot/src/simulation/recruitment/disciple_birth_profile_v2.gd`: versioned birth envelope with independently derived per-domain seeds; all unapproved root/trait/fate/etc. layers stay `initialized=false`, NOT fake `none` identities;
+- `CandidateState` / `DiscipleState`: deep-copy envelope through candidate -> disciple and save/load;
+- `SectState.disciple_v2_birth_enabled`: explicit default-false switch, no change to existing C1 quality/foundation RNG;
+- `DiscipleGeneratorOpenPoints`: attaches envelope only for explicitly enabled states;
+- `godot/tests/simulation/dv2_01_birth_envelope_test.gd` and `.github/workflows/dv2-01-birth-envelope.yml`: focused Godot 4.7.2 verification.
+
+**Gate history:** first DV2-01A CI failed on nested JSON numeric values (int seeds parsed as float64). A typed load-normalization fix was committed; the latest focused workflow and P3.7 regressions must be examined before reporting PASS. Intermediate failure is recorded, not hidden. **This does not complete DV2-01**: the source-weighted Root/Trait/Fate/Bloodline/Physique birth selection is not implemented, and no V2 combat/production consumers are enabled yet.
+
+**Design/balance supporting documents (numeric proposal, not user-locked):**
+- `docs/DV2_REALM_BODY_COMBAT_CURVES_V1_PROPOSAL.md` (300 floors, HP/ATK/DEF and numeric Defense, mathematical audit only);
+- `docs/DV2_PRODUCTION_RESULT_CONTRACT_V1.md` (time, XP, quantity, material, quality, rare, transaction semantics);
+- `docs/DISCIPLE_V2_STAT_CAUSAL_CONTRACT.md`, `docs/DISCIPLE_V2_EFFECT_SOURCE_MATRIX.md` (sources/outcomes).
+
+**Next:** verify DV2-01A real Godot 4.7.2 CI focused gate and relevant P3.7 cumulative gate; then finalize approved birth eligibility/weights/overrides without changing existing Dẫn Tiên odds, and complete DV2-01. Do not begin DV2-02 gameplay while DV2-01 remains active.
 
 ---
 
