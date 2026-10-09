@@ -6,6 +6,7 @@ on:
     paths:
       - 'godot/src/simulation/cultivation/disciple_realm_progress_v2.gd'
       - 'godot/src/simulation/cultivation/disciple_training_action_v2.gd'
+      - 'godot/src/simulation/cultivation/disciple_tuvi_flow_v2.gd'
       - 'godot/src/simulation/cultivation/disciple_training_policy_v2.gd'
       - 'godot/src/simulation/cultivation/disciple_training_content_v2.gd'
       - 'godot/src/simulation/core/simulation_scheduler.gd'
