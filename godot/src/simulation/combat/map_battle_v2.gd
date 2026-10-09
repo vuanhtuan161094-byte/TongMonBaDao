@@ -60,7 +60,7 @@ func setup(id: String, party: Array, monsters: Array) -> Dictionary:
             "hp":hp,"max_hp":max_hp,"resistances":row.get("resistances",{}).duplicate(true),
             "range":1.5 if role == "frontline" else (4.8 if role == "healer" else 5.5),
             "move_speed":2.35 if role == "frontline" else 2.05,
-            "next_basic":0.0,"next_skill":0.0,
+            "next_basic":0.0,"next_skill":0.0,"guard_until":-1.0,
             "linked_disciple":row.get("disciple",null)
         })
     for raw in monsters:
@@ -84,7 +84,7 @@ func setup(id: String, party: Array, monsters: Array) -> Dictionary:
             "resistances":row.get("resistances",{}).duplicate(true),
             "range":1.65 if tier == "boss" else 1.50,
             "move_speed":1.9 if tier == "boss" else 2.2,
-            "next_basic":0.0,"next_skill":3.5 if tier == "boss" else 4.0,
+            "next_basic":0.0,"next_skill":3.5 if tier == "boss" else 4.0,"guard_until":-1.0,
             "linked_disciple":null
         })
     entries.sort_custom(func(a,b): return str(a["id"]) < str(b["id"]))
@@ -122,6 +122,9 @@ func step(viewed_map: bool = false) -> Dictionary:
             continue
         if str(actor["role"]) == "healer" and now >= float(actor["next_skill"]):
             if _heal_ally(actor):
+                continue
+        if str(actor["role"]) == "frontline" and now >= float(actor["next_skill"]):
+            if _guard_frontline(actor):
                 continue
         var distance := (actor["position"] as Vector2).distance_to(target["position"])
         var attack_range := float(actor["range"])
@@ -219,11 +222,21 @@ func _heal_ally(actor: Dictionary) -> bool:
         return str(a["id"]) < str(b["id"]) if absf(ar-br)<0.000001 else ar<br
     )
     var target: Dictionary = candidates[0]
-    var healed := minf(float(target["max_hp"])-float(target["hp"]),float(actor["stats"]["attack"])*1.25)
+    var healed := minf(float(target["max_hp"])-float(target["hp"]),float(actor["stats"]["attack"])*1.80)
     target["hp"] = minf(float(target["max_hp"]),float(target["hp"])+healed)
     _sync_linked_hp(target)
-    actor["next_skill"] = now+6.0
+    actor["next_skill"] = now+5.0
     _event("heal",{"caster":actor["id"],"target":target["id"],"amount":healed})
+    actions += 1
+    return true
+
+func _guard_frontline(actor: Dictionary) -> bool:
+    var ratio := float(actor["hp"])/maxf(1.0,float(actor["max_hp"]))
+    if ratio >= 0.75:
+        return false
+    actor["guard_until"] = now+4.0
+    actor["next_skill"] = now+9.0
+    _event("guard",{"actor_id":actor["id"],"until":float(actor["guard_until"])})
     actions += 1
     return true
 
@@ -232,6 +245,10 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
         return 0.0
     var a_stats: Dictionary = attacker["stats"]
     var t_stats: Dictionary = target["stats"]
+    if now < float(target.get("guard_until",-1.0)):
+        t_stats = t_stats.duplicate(true)
+        var previous_reduction := clampf(float(t_stats.get("damage_reduction",0.0)),0.0,1.0)
+        t_stats["damage_reduction"] = 1.0-(1.0-previous_reduction)*0.65
     var crit := rng.chance(CombatStatsV2.effective_crit_chance(a_stats,t_stats))
     var hit := CombatStatsV2.resolve_direct_hit(
         a_stats,t_stats,target["resistances"],ratio,crit,"",1.0,true
