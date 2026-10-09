@@ -183,6 +183,9 @@ func _run() -> void:
     DiscipleRealmProgressV2.set_auto_breakthrough(disciple,"cultivation",true)
     var saved: Dictionary = JSON.parse_string(JSON.stringify(disciple.to_dict()))
     var restored := DiscipleState.from_dict(saved)
+    if restored.v2_realm_progress != disciple.v2_realm_progress:
+        print("V2 PROFILE EXPECTED: ",var_to_str(disciple.v2_realm_progress))
+        print("V2 PROFILE RESTORED: ",var_to_str(restored.v2_realm_progress))
     if not _check(restored.v2_realm_progress == disciple.v2_realm_progress and
         bool(restored.v2_realm_progress["cultivation"]["auto_breakthrough"]) and
         int(restored.v2_realm_progress["cultivation"]["lifetime_failures"]) == 1,
