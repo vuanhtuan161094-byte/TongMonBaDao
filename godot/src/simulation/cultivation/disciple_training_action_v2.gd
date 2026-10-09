@@ -1,21 +1,22 @@
 class_name DiscipleTrainingActionV2
 extends RefCounted
 
-# DV2-03 opt-in bridge for real 15-second simulation actions.
-# No global fabricated XP curve, no chance rolls, no second timer.
-# Content authority MUST explicitly provide each applicable cost/rate.
+# DV2-03 action bridge. Rates are normalized per simulation minute.
+# Tu Vi itself is passive-time owned; CULTIVATE only selects Chuyên Tu.
+# TRAIN_BODY remains an explicit one-minute body-training action.
 const ACTION_TRACKS := {"CULTIVATE":"cultivation","TRAIN_BODY":"body"}
 
 # Validate the same real EXP operation without changing a floor, XP or action.
 # This rejects bad authored inputs before a player command can be accepted.
 static func _validated_rule(disciple: DiscipleState, track: String, data: Variant) -> Dictionary:
-    if not (data is Dictionary):
+    if track == "cultivation":
+        return DiscipleTuViFlowV2.validate_rule(disciple,data)
+    if track != "body" or not (data is Dictionary):
         return {"ok":false,"reason":"missing_authored_training_rules"}
     var rule: Dictionary = data
-    var action := "CULTIVATE" if track == "cultivation" else "TRAIN_BODY"
-    if str(rule.get("action","")) != action or str(rule.get("authority_id","")).is_empty():
+    if str(rule.get("action","")) != "TRAIN_BODY" or str(rule.get("authority_id","")).is_empty():
         return {"ok":false,"reason":"invalid_training_rule_authority"}
-    var raw_rate = rule.get("base_xp_per_action",null)
+    var raw_rate = rule.get("base_body_xp_per_minute",null)
     if not (raw_rate is float or raw_rate is int):
         return {"ok":false,"reason":"missing_training_base_rate"}
     var rate := float(raw_rate)
@@ -28,7 +29,7 @@ static func _validated_rule(disciple: DiscipleState, track: String, data: Varian
     if not (sources is Array):
         return {"ok":false,"reason":"invalid_training_source_list"}
     var preview := DiscipleRealmProgressV2.grant_xp(
-        disciple,track,rate,"natural",costs,sources,true
+        disciple,"body",rate,"natural",costs,sources,true
     )
     if not bool(preview.get("ok",false)):
         return {"ok":false,"reason":str(preview.get("reason","invalid_training_preview"))}
@@ -70,7 +71,7 @@ static func preview_training(state: SimulationState, disciple: DiscipleState, tr
     }
 
 # One real player-facing command boundary, with NO immediate reward.
-# The 15-second scheduler still owns the actual action result. This does not
+# The simulation scheduler still owns the actual elapsed-minute result. This does not
 # add a second timer or let commands interrupt hunting/combat/urgent healing.
 static func request_training(state: SimulationState, disciple_id: StringName, track: String) -> Dictionary:
     if state == null or not state.sect.v2_training_enabled or not DiscipleRealmProgressV2.TRACKS.has(track):
@@ -109,6 +110,8 @@ static func resolve(state: SimulationState, disciple: DiscipleState, action: Str
     if disciple.region_id != &"sect" or disciple.hp <= 0.0:
         return {"ok":false,"reason":"training_actor_not_available"}
     var track: String = ACTION_TRACKS[action]
+    if track == "cultivation":
+        return {"ok":false,"reason":"cultivation_resolves_via_passive_time"}
     var ready := _validated_rule(disciple,track,state.sect.v2_training_rules.get(track,null))
     if not bool(ready.get("ok",false)):
         return {"ok":false,"reason":str(ready.get("reason","invalid_training_rule"))}
@@ -131,7 +134,7 @@ static func resolve(state: SimulationState, disciple: DiscipleState, action: Str
     return {
         "ok":true,"event_id":event_id,
         "track":track,"action":action,"tick":state.tick,
-        "base_xp":rate,"gained":gain["gained"],
+        "base_body_xp_per_minute":rate,"gained":gain["gained"],
         "realm":gain["realm"],"floor":gain["floor"],
         "floors_earned":gain["floors_earned"],
         "xp":gain["xp"],"at_major_gate":gain["at_major_gate"],
