@@ -28,6 +28,11 @@ func _run() -> void:
         DiscipleBirthProfileV2.valid_complete_birth(candidate.v2_birth_profile),
         "Could not generate a complete V2 candidate."):
         return
+    var malformed_birth: Dictionary = candidate.v2_birth_profile.duplicate(true)
+    malformed_birth["layers"]["spiritual_root"]["birth_values"] = {}
+    if not _assert(not DiscipleBirthProfileV2.valid_complete_birth(malformed_birth),
+        "Initialized flags alone incorrectly passed as an authentic V2 birth identity."):
+        return
     state.recruitment_candidates[candidate.id] = candidate
     var accepted := RecruitmentSystem.new().accept_candidate(state,candidate.id)
     if not _assert(bool(accepted.get("ok",false)),
