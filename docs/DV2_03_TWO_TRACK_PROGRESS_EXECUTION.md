@@ -268,3 +268,21 @@ New focused tests:
 
 Do not interpret old QA fixtures such as 80/50/100 as production balance.
 
+---
+
+## DV2-03D2 — persistent runtime clock/backend owner (2026-10-09)
+
+**CODE PUSHED / RUNTIME GATE UNVERIFIED.**
+
+- canonical wall mapping: **60 real seconds = 1 simulation minute**;
+- `SimulationRuntimeClockV2` accumulates elapsed seconds and advances only through `SimulationScheduler.step()`;
+- online and offline therefore share identical progression code;
+- fractional seconds persist across save/load;
+- optional bounded catch-up leaves pending whole minutes in the persisted backlog;
+- backwards wall-clock movement is rejected without progression;
+- `SimulationRuntimeOwnerV2` owns one state + one scheduler and catches up before save / after load;
+- old saves without clock metadata initialize at first upgraded load without speculative historical offline credit;
+- focused test compares one 5-minute offline jump with five one-minute online advances and requires identical V2 progression/RNG state.
+
+**Presentation boundary:** the current P3.1/P3.2 0.55s demo timer is intentionally NOT rewired in this slice. A later presentation integration must consume `SimulationRuntimeOwnerV2` rather than create a second progression clock.
+
