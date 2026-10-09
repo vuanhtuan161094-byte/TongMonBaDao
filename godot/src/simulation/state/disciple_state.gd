@@ -356,6 +356,10 @@ static func from_dict(data: Dictionary) -> DiscipleState:
     disciple.max_hp = float(data.get("max_hp", 100.0))
     disciple.hp = float(data.get("hp", disciple.max_hp))
     disciple.stamina = float(data.get("stamina", 100.0))
+    # On V2 saves, derived Realm+Body HP is the authority. If an older V2 save
+    # carries a legacy max-HP scale, migrate by preserving its saved HP ratio.
+    if DiscipleRealmProgressV2.progression_ready(disciple):
+        DiscipleRealmProgressV2.sync_live_hp(disciple)
     disciple.current_action = StringName(data.get("current_action", "EVALUATE"))
     disciple.region_id = StringName(data.get("region_id", "sect"))
     disciple.target_region_id = StringName(data.get("target_region_id", ""))
