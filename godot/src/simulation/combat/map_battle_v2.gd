@@ -70,6 +70,7 @@ func setup(id: String, party: Array, monsters: Array) -> Dictionary:
             "skill_loadout":row.get("skill_loadout",[]).duplicate(true),
             "skill_factors":row.get("skill_factors",{}).duplicate(true),
             "skill_ready":{},
+            "context_sources":row.get("context_sources",[]).duplicate(true),
             "next_basic":0.0,"next_skill":0.0,"guard_until":-1.0,
             "linked_disciple":row.get("disciple",null)
         })
@@ -95,7 +96,7 @@ func setup(id: String, party: Array, monsters: Array) -> Dictionary:
             "range":1.65 if tier == "boss" else 1.50,
             "move_speed":1.9 if tier == "boss" else 2.2,
             "next_basic":0.0,"next_skill":3.5 if tier == "boss" else 4.0,"guard_until":-1.0,
-            "linked_disciple":null
+            "linked_disciple":null,"context_sources":[]
         })
     entries.sort_custom(func(a,b): return str(a["id"]) < str(b["id"]))
     for actor in entries:
@@ -260,11 +261,22 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
         return 0.0
     var a_stats: Dictionary = attacker["stats"]
     var t_stats: Dictionary = target["stats"]
+    var original_ratio := ratio
+    var context: Dictionary = {"ok":true,"outgoing_damage_factor":1.0,
+        "basic_followup_chance":0.0,"basic_followup_ratio":0.0}
+    if str(attacker["side"]) == "disciple" and str(target["side"]) == "monster":
+        context = CombatContextEffectsV2.resolve_context(
+            attacker.get("context_sources",[]),target,
+            "basic" if kind == "basic" else "skill"
+        )
+        if not bool(context.get("ok",false)):
+            return 0.0
+        ratio *= float(context["outgoing_damage_factor"])
     if now < float(target.get("guard_until",-1.0)):
         t_stats = t_stats.duplicate(true)
         var previous_reduction := clampf(float(t_stats.get("damage_reduction",0.0)),0.0,1.0)
         t_stats["damage_reduction"] = 1.0-(1.0-previous_reduction)*0.65
-    var crit := rng.chance(CombatStatsV2.effective_crit_chance(a_stats,t_stats))
+    var crit := false if kind == "basic_followup" else rng.chance(CombatStatsV2.effective_crit_chance(a_stats,t_stats))
     var hit := CombatStatsV2.resolve_direct_hit(
         a_stats,t_stats,target["resistances"],ratio,crit,damage_element,1.0,true
     )
@@ -288,6 +300,13 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
         _event("downed",{"actor_id":target["id"],"side":target["side"]})
         if str(target["side"]) == "disciple":
             downed_disciples += 1
+    # Only one nonrecursive bonus hit from a true ordinary basic attack.
+    # It cannot lifesteal, crit by default, or proc any further followup.
+    if kind == "basic" and float(target["hp"]) > 0.0 and
+        CombatContextEffectsV2.roll_basic_followup(rng,context,"basic",float(target["hp"])):
+        _deal_direct(attacker,target,
+            original_ratio*float(context["basic_followup_ratio"]),
+            "basic_followup",false,damage_element)
     return actual_damage
 
 # Only ALREADY-LEARNED, authored direct-damage P2 skills can be used.
