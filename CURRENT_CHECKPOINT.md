@@ -270,6 +270,33 @@ New/updated focused tests:
 **NEXT only after runtime gate evidence:** DV2-03 autonomous Tu Vi/Luyện Thể policy and real time/offline loop. Do not resume EXP balance, Equipment/Skills/innate effects or expanded PvE before this migration slice is verified.
 
 
+
+### 5.7 DV2-03D1 — autonomous Tu Vi / Luyện Thể policy (CODE PUSHED, GATE UNVERIFIED)
+
+**Latest gameplay code for D1:** `60e3da63a3329a8b9f37ce57552895dd95fcc454`. Focused test commit `583270cbd95c8c1fe96e0bfc7efa0ffd3c2e103f`; workflow update `db758a56cdb5f9b97f5cfe3b61930380adf4031d`.
+
+Implemented without adding production EXP numbers:
+- Per-disciple persisted policy in `v2_realm_progress.training_policy`: `balanced` (default), `cultivation_focus`, `body_focus`, `manual`.
+- `DiscipleTrainingPolicyV2.set_policy` changes policy only; it grants no EXP and does not force an immediate action.
+- `balanced` has no hidden Tu Vi/Body weighting: lower 1..300 global floor first; if tied, lower authored current-floor progress ratio; exact ties alternate deterministically from simulation tick + stable disciple ID without consuming gameplay RNG.
+- Focus policies are priorities, not deadlocks: if the preferred track is full at a major gate or otherwise unavailable, the other valid track may train.
+- `manual` blocks autonomous training only; explicit `request_training` remains legal.
+- `DiscipleTrainingActionV2.preview_training` is read-only and reuses the same authored rule validation; a full floor-10 gate reports `major_gate_waiting` so AI cannot burn ticks on capped EXP.
+- Workforce cultivate schedule slots now consume the same V2 policy. If workforce owns no action, `DecisionSystem` consumes the same policy; no parallel AI formula.
+- Policy choice only queues `CULTIVATE`/`TRAIN_BODY`; the subsequent `SimulationScheduler.step()` remains the only EXP commit point.
+- Save/load normalization defaults old valid V2 profiles to `balanced` and persists later player policy.
+
+New focused test:
+- `godot/tests/simulation/dv2_03_training_policy_test.gd`: lower-floor/lower-ratio balancing, deterministic tie behavior, focus fallback at full gate, manual mode, no immediate EXP on policy/request, JSON persistence, workforce queue-then-commit, DecisionSystem shared policy.
+- `.github/workflows/dv2-03-realm-body-progress.yml` watches the new policy code/test and runs this fourth DV2-03 gate.
+
+**Runtime evidence:** still **MISSING**, not PASS/FAIL. Current connector exposes no push-triggered run IDs/checks for this private repo; commit workflow/status lookup returns empty. Do not claim Godot 4.7.2 PASS for D1 or the preceding DV2-03M code until an actual run/job is available.
+
+**D2 read-only audit result:** current main scene `p3_2_landscape_sect.tscn` inherits `p3_1_landscape_sect.gd`, which always creates `P212Factory.create_state(DEMO_SEED)` and advances `SimulationScheduler.step()` on a **0.55s presentation timer**. P0 sandbox separately advances at **0.18s**. Neither is the requested 15s live authority. `SaveService` can persist `SimulationState`, but the main scene does not currently load a save/runtime state. Therefore offline/catch-up must be attached to a canonical persistent runtime owner, not patched into either demo timer. Existing P3.7 day semantics are 1440 simulation ticks/day; 15s is wall-clock cadence and must not silently redefine sect-day length.
+
+**Next implementation after runtime gate evidence:** D2 persistent clock/runtime owner: 15s wall cadence, saved accumulator/timestamp, pause/resume, backlog-preserving offline catch-up (no dropped-time cap), then benchmark before choosing any performance cap. Daily expedition-stamina reset remains with map runtime per locked Body spec and must not be faked through legacy REST/HOLD.
+
+
 ### 5.4 Chuẩn bị lát triển khai tiếp theo — audit 09/10/2026
 
 **DV2-03 vẫn ACTIVE — chưa có code gameplay/gate mới trong lượt chuẩn bị này.** GitHub `main` đã được rà: action `request_training` kiểm tra sơ bộ nhưng không preflight `base_xp_per_action`/`floor_costs`; do đó có thể trả `ok=true` để xếp việc, rồi `resolve` fail-closed ở tick sau. Scheduler `step()` làm chủ cấp EXP, không phải driver wall-clock được chứng thực. Workflow focused của code `e96df183` PASS; FULL P3.7 chỉ có bằng chứng PASS tại `5296f610`. **Không có bằng chứng full same-code SHA hay realtime 15s/offline/Windows V2.**
