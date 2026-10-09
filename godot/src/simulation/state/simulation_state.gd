@@ -11,6 +11,13 @@ var regions: Dictionary = {}
 var sect: SectState = SectState.new()
 var initial_total_money: int = 0
 
+# DV2-03 persistent wall-clock bridge.
+# One simulation tick is one simulation minute; elapsed real seconds are
+# accumulated here so online/offline use the exact same scheduler.
+var runtime_clock_version: int = 1
+var runtime_last_wall_unix: int = 0
+var runtime_unconsumed_wall_seconds: float = 0.0
+
 # P1.1 is opt-in so the locked P0 baseline remains behavior-identical.
 var p1_goal_personality_enabled: bool = false
 
@@ -184,6 +191,12 @@ func validate_invariants() -> Array[String]:
 
     if initial_total_money > 0 and total_money() != initial_total_money:
         errors.append("Money conservation failed: expected %d, got %d" % [initial_total_money, total_money()])
+    if runtime_clock_version < 1:
+        errors.append("Runtime clock version is invalid.")
+    if runtime_last_wall_unix < 0:
+        errors.append("Runtime last wall timestamp is negative.")
+    if is_nan(runtime_unconsumed_wall_seconds) or is_inf(runtime_unconsumed_wall_seconds) or runtime_unconsumed_wall_seconds < 0.0:
+        errors.append("Runtime unconsumed wall seconds are invalid.")
 
     return errors
 
@@ -245,6 +258,9 @@ func to_dict() -> Dictionary:
         "seed": seed,
         "rng_state": str(rng_state),
         "initial_total_money": initial_total_money,
+        "runtime_clock_version": runtime_clock_version,
+        "runtime_last_wall_unix": runtime_last_wall_unix,
+        "runtime_unconsumed_wall_seconds": runtime_unconsumed_wall_seconds,
         "p1_goal_personality_enabled": p1_goal_personality_enabled,
         "p1_recruitment_enabled": p1_recruitment_enabled,
         "recruitment_generation_index": recruitment_generation_index,
@@ -278,6 +294,10 @@ static func from_dict(data: Dictionary) -> SimulationState:
     state.seed = int(data.get("seed", 1337))
     state.rng_state = int(data.get("rng_state", 0))
     state.initial_total_money = int(data.get("initial_total_money", 0))
+    state.runtime_clock_version = maxi(int(data.get("runtime_clock_version", 1)), 1)
+    state.runtime_last_wall_unix = maxi(int(data.get("runtime_last_wall_unix", 0)), 0)
+    var raw_runtime_remainder = data.get("runtime_unconsumed_wall_seconds", 0.0)
+    state.runtime_unconsumed_wall_seconds = maxf(float(raw_runtime_remainder), 0.0)
     state.p1_goal_personality_enabled = bool(data.get("p1_goal_personality_enabled", false))
     state.p1_recruitment_enabled = bool(data.get("p1_recruitment_enabled", false))
     state.recruitment_generation_index = int(data.get("recruitment_generation_index", 0))
