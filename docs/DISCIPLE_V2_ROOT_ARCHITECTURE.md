@@ -158,3 +158,17 @@ Không giải quyết M-04 bằng một bảng ngẫu nhiên chung tự chế; v
 **DV2-02 + hành động:** pipeline derived, action result/event và tối thiểu một vòng hành động thật; sau đó chuyển 30×10 tiến trình, root, Trait, fate, bloodline, physique và skill theo dependency, không ngược lại.
 
 **Định nghĩa hoàn thành:** không phải 'đã có 101 tên Trait', mà là cùng một con người được sinh, hành động, tạo kết quả, thay đổi thực sự, lưu/tải ổn định và được UI mô tả trung thực.
+
+## 12. Quyết định V2 2026-10-09 — gốc chỉ số, 3 xung đột và triển khai từ dưới lên
+
+User đã quyết định giải quyết **cả 3 mâu thuẫn theo V2** (quyết định thiết kế, không chứng nhận runtime migration):
+
+1. Stamina/Thể Lực = **Thể Lực Viễn Chinh 100 cơ sở/ngày, only outside-map**; không trừ trong sản xuất, luyện thể, tu luyện hoặc đi lại trong tông môn. Không dùng Thể Lực V2 để chặn Workforce 
+2. Trait V2 **không grade 1..5**, không `combat_power_flat`; riêng **Thiên phú nghề** giữ hệ Grade 1..5 độc lập và tăng XP nghề theo P3.7
+3. Combat V2 sử dụng bộ Combat Stats thật, không lấy `combat_power` legacy làm biến sát thương
+
+**Thiết kế chỉ số gốc và hợp đồng tính toán:** `docs/DISCIPLE_V2_STAT_CAUSAL_CONTRACT.md`.
+
+**Ma trận ánh xạ tất cả 101 Trait, 24 Mệnh cá nhân, 10 Root, 5 Bloodline, 15 Physique:** `docs/DISCIPLE_V2_EFFECT_SOURCE_MATRIX.md`.
+
+**Thứ tự đã được người dùng duyệt:** (1) kiểm kê base/derived/outcomes → (2) thiết kế/hợp đồng combat-production → (3) ánh xạ hiệu ứng và dependency → (4) bắt đầu **một phase gameplay có gate** sau khi các điều kiện tiên quyết của phase được chốt. Hợp đồng không tự tạo công thức ATK/DEF/HP, phẩm chất sản phẩm, trọng số Trait/Fate chưa duyệt. `CURRENT_CHECKPOINT.md` vẫn là nguồn duy nhất quyết định phase có PASS hay chưa.
