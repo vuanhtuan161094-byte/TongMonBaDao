@@ -107,7 +107,7 @@ Canonical source model:
 - fixed injections are not multiplied by Tư Chất or ordinary natural-cultivation-rate bonuses;
 - killing a monster does not directly grant Tu Vi EXP. Monsters may drop Tinh Nguyên and other resources; consuming/assigning Tinh Nguyên is a separate resource decision.
 
-**No 15-second balance law is locked.** Tu Vi must be authored as a rate over elapsed simulation time (or an equivalent normalized time unit). A runtime may batch/commit that rate at a technical cadence, but the cadence itself must not change total earned Tu Vi.
+**Display/balance unit is now locked to Tu Vi per simulation minute.** Current P3.7 time semantics already use one scheduler tick as one simulation minute (1440 ticks/day). A runtime may batch/commit simulation minutes at any wall-clock cadence, but equal simulated minutes must produce equal Tu Vi. The numeric production Tu Vi/minute remains OPEN until balance approval.
 
 All newly generated production V2 disciples start at **Phàm Nhân tầng 1, 0 Tu Vi EXP**. Legacy/dev-save migration may use an explicit compatibility mapping only; it is not a recruitment-generation rule.
 
