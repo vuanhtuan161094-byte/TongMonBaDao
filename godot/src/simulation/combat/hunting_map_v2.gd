@@ -3,12 +3,15 @@ extends RefCounted
 
 # Each existing map has FIVE selectable PvE grades; this is not a global
 # Evil Hunter Tycoon-style difficulty switch. Monster and reward numbers PILOT.
+# Encounter-level rare tier odds, NOT a global exclusion of Elite/Boss.
+# ALL five levels can contain either type. These percentages are PILOT.
+# Boss on L1/L2 displaces optional Elite to avoid unavoidable double-spikes.
 const LEVELS := {
-    1:{"name":"Ngoại Vi","hp":0.75,"attack":0.82,"defense":0.88,"yield":1.00,"rare":0.00,"count":3},
-    2:{"name":"Thâm Nhập","hp":1.00,"attack":1.00,"defense":1.00,"yield":1.35,"rare":0.03,"count":4},
-    3:{"name":"Hung Địa","hp":1.40,"attack":1.18,"defense":1.12,"yield":1.80,"rare":0.08,"count":5},
-    4:{"name":"Hiểm Địa","hp":1.95,"attack":1.40,"defense":1.27,"yield":2.50,"rare":0.16,"count":6},
-    5:{"name":"Tuyệt Địa","hp":2.70,"attack":1.65,"defense":1.45,"yield":3.50,"rare":0.26,"count":7}
+    1:{"name":"Ngoại Vi","hp":0.75,"attack":0.82,"defense":0.88,"yield":1.00,"rare":0.00,"count":3,"elite_chance":0.06,"boss_chance":0.01,"min_elites":0},
+    2:{"name":"Thâm Nhập","hp":1.00,"attack":1.00,"defense":1.00,"yield":1.35,"rare":0.03,"count":4,"elite_chance":0.14,"boss_chance":0.03,"min_elites":0},
+    3:{"name":"Hung Địa","hp":1.40,"attack":1.18,"defense":1.12,"yield":1.80,"rare":0.08,"count":5,"elite_chance":0.30,"boss_chance":0.08,"min_elites":1},
+    4:{"name":"Hiểm Địa","hp":1.95,"attack":1.40,"defense":1.27,"yield":2.50,"rare":0.16,"count":6,"elite_chance":0.65,"boss_chance":0.16,"min_elites":1},
+    5:{"name":"Tuyệt Địa","hp":2.70,"attack":1.65,"defense":1.45,"yield":3.50,"rare":0.26,"count":7,"elite_chance":0.00,"boss_chance":1.00,"min_elites":2}
 }
 const REGION_CONTENT := {
     "thanh_truc_lam":{
@@ -60,7 +63,10 @@ static func overview(region_id: String) -> Dictionary:
             "monster_attack_factor":float(level["attack"]),
             "monster_defense_factor":float(level["defense"]),
             "resource_yield_factor":float(level["yield"]),
-            "rare_drop_chance":float(level["rare"])
+            "rare_drop_chance":float(level["rare"]),
+            "elite_encounter_chance":1.0 if int(level["min_elites"]) > 0 else float(level["elite_chance"]),
+            "boss_encounter_chance":float(level["boss_chance"]),
+            "min_elite_monsters":int(level["min_elites"])
         })
     return {"ok":true,"region_id":region_id,"name":str(data["name"]),"levels":levels,
         "normal_resources":data["resources"].duplicate(true),"rare_resource":data["rare"]}
@@ -73,13 +79,22 @@ static func spawn(region_id: String, level: int, encounter_id: String, seed: int
     var rng := GameRng.new(seed)
     var monsters: Array = []
     var total: int = int(spec["count"])
+    # Rare boss/elite roll is made ONCE per encounter, not per frame or target.
+    # A level-one boss is rare but is NOT forbidden. It occupies one monster
+    # slot in the group; it does not silently spawn an extra 41st actor.
+    var include_boss := rng.chance(float(spec["boss_chance"]))
+    var elite_count := int(spec["min_elites"])
+    if rng.chance(float(spec["elite_chance"])):
+        elite_count += 1
+    if level <= 2 and include_boss:
+        elite_count = 0
     for i in range(total):
         var species_id := str(rng.weighted_pick(content["normal"]))
-        if level == 5 and i == 0:
+        if include_boss and i == 0:
             species_id = str(content["boss"])
-        elif level >= 3 and i == 1:
+        elif elite_count > 0 and i == 1:
             species_id = str(content["elite"])
-        elif level >= 4 and i == 3:
+        elif elite_count > 1 and i == 3:
             species_id = str(content["elite"])
         var instance := MonsterCatalogueV2.create_actor(
             species_id,int(content["realm"]),int(content["floor"]),
@@ -98,7 +113,8 @@ static func spawn(region_id: String, level: int, encounter_id: String, seed: int
         monsters.append(instance)
     return {"ok":true,"encounter_id":encounter_id,"region_id":region_id,"level":level,
         "monsters":monsters,"reward_seed":seed,"resource_factor":float(spec["yield"]),
-        "rare_chance":float(spec["rare"])}
+        "rare_chance":float(spec["rare"]),
+        "has_boss":include_boss,"elite_count":elite_count}
 
 # Preview is completely pure: showing the drop panel does NOT grant items.
 # The reward contract uses only registered P3.7 materials and resolves once
