@@ -711,7 +711,20 @@ This supersedes any earlier implication that ordinary work itself grants a separ
 - Current P3.7 time semantics already define 1440 simulation ticks/day, so one scheduler step is one simulation minute.
 - Wall-clock cadence may batch these minutes later, but equal simulated minutes must yield identical deterministic Tu Vi progression online/offline.
 - **No Luyện Thể time unit or TRAIN_BODY activity is locked yet.** Body EXP sources, activity model, rate unit and schedule are the next design work.
-- Production numeric Tu Vi/minute and Chuyên Tu multiplier remain OPEN until balance approval.
+- Production balance is now locked: **20 Tu Vi/minute**, **Chuyên Tu ×2.0**.
 
 Implementation note: current DV2-03 action-based training/work bridge does **not yet fully implement this new source model**. In particular, passive Tu Vi and removal of the separate generic work-Tu-Vi award remain required code migration work.
+
+# 21. Canonical progression balance — USER LOCK 2026-10-09
+
+- Tu Vi and Luyện Thể share one 300-floor EXP requirement curve.
+- Realm totals r1..r30 are frozen in `DiscipleProgressionBalanceV2`: 6,000 at r1 -> 6,144,100 at r30.
+- Floor weights inside each realm: 0.70 / 0.75 / 0.80 / 0.85 / 0.90 / 1.00 / 1.10 / 1.20 / 1.30 / 1.40.
+- Natural Tu Vi baseline: **20/minute**.
+- Chuyên Tu: **×2.0** on the same natural Tu Vi source.
+- Body natural reference rates: **5/min production, 15/min expedition, 30/min dedicated Rèn Thân**.
+- 29 Tu Vi base gate chances are canonical in `DiscipleBreakthroughBalanceV2`.
+- Tu Vi fail law remains −10% gate EXP +5 percentage-point same-gate pity.
+- All 29 Luyện Thể major gates are deterministic once gate EXP + authored Thối Thể requirements are verified.
+- Exact Body material packages and future Tu Vi consumable modifiers remain content work; they do not alter these base authorities.
 
