@@ -161,15 +161,28 @@ Rules:
 - fixed +X Body EXP remains a separate `fixed` path and is not multiplied by Căn Cốt;
 - source-specific numeric rates are content/balance data and are **not locked yet**.
 
-Normal balance direction is:
-**production < expedition < dedicated Rèn Thân** for comparable progression bands.
+Canonical raw reference rates are now:
+- physically demanding production: **5 Body EXP/minute**;
+- active expedition: **15 Body EXP/minute**;
+- dedicated Rèn Thân: **30 Body EXP/minute**.
 
-This is a balance direction, not a hard-coded multiplier table. Exceptional authored content may differ, but generic production must not become the optimal Body-EXP farm and ordinary low-risk expedition must not obsolete dedicated Rèn Thân.
+Therefore the normal reference ratio is **1 : 3 : 6** (production : expedition : Rèn Thân), before Căn Cốt and valid Body modifiers. Specific authored content may scale from these references, but generic production must not become the optimal Body-EXP farm and ordinary low-risk expedition must not obsolete dedicated Rèn Thân.
 
 **Implementation boundary:** `DiscipleBodyXpSourceV2` now owns typed source validation/accounting and one-source-per-minute dedup. No training building, resource cost table, profession eligibility list or expedition pressure table is implemented by this contract.
 
 ---
 
+## 4.3 Canonical Body progression + major gates — USER LOCK 2026-10-09
+
+- Body uses the same 300-floor XP requirement table as Tu Vi, owned by `DiscipleProgressionBalanceV2`.
+- Minor floors auto-advance on sufficient EXP.
+- Every one of the 29 Body major gates is **deterministic**.
+- Gate rule: floor 10 EXP full + authored Thối Thể requirements verified -> **100% advance to next realm floor 1**.
+- Body gates have **no RNG, no pity, no generic failure EXP loss and no generic failure HP/Stamina penalty**.
+- Detailed material/resource packages remain future content. The core progression contract only receives a verified requirement result.
+- Canonical runtime wrapper: `DiscipleRealmProgressV2.commit_canonical_body_gate()`.
+
+---
 # 5. Thể Lực V2 definition
 
 Player-facing name:
