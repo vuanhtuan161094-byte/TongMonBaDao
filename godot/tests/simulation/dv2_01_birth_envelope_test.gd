@@ -40,11 +40,45 @@ func _run() -> void:
         return
 
     var profile := first.v2_birth_profile
+    if not DiscipleBirthCatalogueV2.valid_catalogue():
+        _fail("The approved V2 birth catalogue has invalid IDs or conflict pairs.")
+        return
     for layer in DiscipleBirthProfileV2.UNINITIALIZED_LAYERS:
         var row: Dictionary = profile["layers"][layer]
-        if bool(row.get("initialized", true)) or row.has("value"):
-            _fail("Unapproved birth layer '" + layer + "' is falsely initialized or selected.")
+        if not bool(row.get("initialized", false)):
+            _fail("Approved V2 birth layer '" + layer + "' was not generated.")
             return
+    var birth_roots: Dictionary = profile["layers"]["spiritual_root"]["birth_values"]
+    if birth_roots.size() < 1 or birth_roots.size() > 5:
+        _fail("V2 root count is out of the 1..5 range.")
+        return
+    for purity in birth_roots.values():
+        if int(purity) < 1 or int(purity) > 100:
+            _fail("V2 root purity left the valid 1..100 range.")
+            return
+    var born_traits: Dictionary = profile["layers"]["traits"]
+    if born_traits["visible"].size() < 1 or born_traits["visible"].size() > 3:
+        _fail("V2 must generate 1..3 visible Traits.")
+        return
+    var all_trait_ids: Array = []
+    for row in born_traits["visible"] + born_traits["latent"]:
+        if row.has("grade") or row.has("level") or bool(row.get("active", true)):
+            _fail("Ungraded V2 Traits may not activate without real consumers.")
+            return
+        var trait_id := str(row["id"])
+        if all_trait_ids.has(trait_id) or DiscipleBirthCatalogueV2.conflicts_with(trait_id, all_trait_ids):
+            _fail("Duplicate or incompatible V2 Traits were born together.")
+            return
+        all_trait_ids.append(trait_id)
+    if born_traits["latent"].size() > 1:
+        _fail("Ordinary V2 birth can have at most one latent Trait.")
+        return
+    if str(profile["layers"]["physique"].get("physique_id", "")) == "kiem_cot":
+        _fail("Kiếm Cốt must not be eligible for birth yet.")
+        return
+    if str(profile["layers"]["destiny"].get("destiny_id", "")) == "kiem_tien_chuyen_the":
+        _fail("Destiny birth override was not specified; identity may not be born.")
+        return
 
     var seeds: Dictionary = profile["domain_seeds"]
     var known: Dictionary = {}
@@ -68,12 +102,13 @@ func _run() -> void:
         return
     # Explicit initialized+none is different from uninitialized.
     # Mutation of the recruited disciple must not mutate the original candidate.
-    disciple.v2_birth_profile["layers"]["bloodline"] = {"initialized": true, "value": "none"}
-    if bool(first.v2_birth_profile["layers"]["bloodline"]["initialized"]):
-        _fail("Recruitment copied the birth profile by reference rather than by value.")
+    var original_bloodline: Dictionary = first.v2_birth_profile["layers"]["bloodline"].duplicate(true)
+    disciple.v2_birth_profile["layers"]["bloodline"] = {"initialized":true,"bloodline_id":"none"}
+    if first.v2_birth_profile["layers"]["bloodline"] != original_bloodline:
+        _fail("Recruitment copied V2 identity by reference.")
         return
-    if first.v2_birth_profile["layers"]["traits"].has("value"):
-        _fail("Trait identity leaked from an uninitialized pool.")
+    if disciple.v2_birth_profile["layers"]["bloodline"] == original_bloodline and str(original_bloodline.get("bloodline_id", "")) != "none":
+        _fail("Test failed to mutate the disciple layer.")
         return
 
     state.disciples[disciple.id] = disciple
@@ -111,7 +146,7 @@ func _run() -> void:
     _cleanup()
     if FileAccess.file_exists(legacy_path):
         DirAccess.remove_absolute(ProjectSettings.globalize_path(legacy_path))
-    print("DV2-01A OPT-IN BIRTH ENVELOPE TEST PASS")
+    print("DV2-01B OPT-IN FULL INNATE BIRTH TEST PASS")
     quit(0)
 
 func _cleanup() -> void:
