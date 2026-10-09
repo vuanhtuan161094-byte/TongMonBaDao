@@ -202,7 +202,14 @@ Current old percentage consumers may use a bounded compatibility bridge where ne
 
 ### DV2-02 — newly ACTIVE by user "làm việc tiếp theo" on 2026-10-09
 
-**Scope:** canonical 14 Combat Stats + 10 elemental resistances derived from already approved RealmBodyCore numeric V1 + Tiềm Lực; explicit typed modifiers with unique provenance, limits, resolution timing (critical/status/Defense/penetration/resistance/reduction) and deterministic focused tests. Combat power is **not** stat/damage authority in V2. Keep existing P0–P3.7 combat behavior until the whole PvE/monster/skill consumer is gated for migration; a stat calculator alone does **not** close DV2-02.
+**Scope:** canonical 14 Combat Stats + 10 elemental resistances derived from already approved RealmBodyCore numeric V1 + Tiềm Lực; typed modifiers, provenance, limits, crit/status/Defense/penetration/resistance/reduction and deterministic focused tests. Combat power is **not** stat/damage authority in V2. Keep existing P0–P3.7 combat behavior until the whole PvE/monster/skill consumer is gated; a stat calculator alone does **not** close DV2-02.
+
+**DV2-02A — first focused code committed and tested:**
+- `godot/src/simulation/combat/combat_stats_v2.gd` computes all 14 V2 primary stat channels + independent remaining-damage resistance map of 10 elements, Realm+Body 30×10 (G=1.65^(r-1)*1.03^(floor-1)), Tiềm Lực +0.05%/pt core-only, deterministic typed source validation and breakdown, HP-ratio scaling and a pure direct-hit resolver. No global Work Power or Combat Power.
+- `godot/tests/simulation/dv2_02_combat_stats_test.gd` exercises base 190/23/19, fixed equipment+potential, time rate channels, 5%/1.50x critical baseline, status pp, special immunity ordering, 20%+10%=28% independent DR and fire resist 30%+20%=44%, defense factor K/(K+DEF), invalid/duplicate channels, no dormant source buff, and monotone 300-floor growth.
+- `.github/workflows/dv2-02-combat-stats.yml` focused real **Godot 4.7.2 Linux CI PASS**, [Actions #37880761726](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37880761726), code commit `691e1216`. Earlier CI failed because the test compared buffed attack expectations against an unbuffed input; corrected before PASS. This is **not** a real Windows gate.
+- Owner and numeric breakdown: `docs/DV2_02_COMBAT_STAT_EXECUTION_CONTRACT.md`.
+- **Still not implemented:** actual V2 progression adapter/canonical two-track disciple state, real monster/boss ATK–DEF–HP, end-to-end skill/encounter integration, conditional source triggers, lazy stat caching/UI, relevant full cumulative regression after those migrations. Legacy P3.7 encounters still use old `combat_power` and are not mislabeled as V2. **DV2-02 remains ACTIVE; do not claim BACKEND LOCKED.**
 
 Canonical:
 - `docs/COMBAT_STATS_V2_SPEC.md`;
