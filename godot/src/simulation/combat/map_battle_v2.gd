@@ -88,6 +88,7 @@ func setup(id: String, party: Array, monsters: Array) -> Dictionary:
             return {"ok":false,"reason":"invalid_monster_stats"}
         entries.append({
             "id":actor_id,"side":"monster","party_id":"","role":"monster","tier":tier,
+            "species_id":str(row.get("species_id","")),
             "race_id":str(row.get("race_id","")),
             "position":position,"stats":stats.duplicate(true),
             "hp":float(row.get("hp",stats["max_hp"])),
