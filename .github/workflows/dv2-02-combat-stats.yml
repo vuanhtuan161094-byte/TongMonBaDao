@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - 'godot/src/simulation/combat/combat_stats_v2.gd'
+      - 'godot/src/simulation/combat/combat_system.gd'
       - 'godot/tests/simulation/dv2_02_combat_stats_test.gd'
       - '.github/workflows/dv2-02-combat-stats.yml'
 permissions:
