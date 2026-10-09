@@ -109,7 +109,7 @@ func generate_candidate(state: SimulationState, source: StringName, generation_i
         candidate.v2_birth_profile = DiscipleBirthRollV2.populate(
             DiscipleBirthProfileV2.create_envelope(candidate), candidate
         )
-        if not DiscipleBirthRollV2.valid_complete_birth(candidate.v2_birth_profile):
+        if not DiscipleBirthProfileV2.valid_complete_birth(candidate.v2_birth_profile):
             push_error("DV2-01B: invalid complete birth profile for " + str(candidate.id))
             return null
     return candidate
