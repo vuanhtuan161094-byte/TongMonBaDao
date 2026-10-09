@@ -236,21 +236,21 @@ Runtime state changes frequently and must not rewrite permanent identity.
 - `max_hp`: derived combat stat;
 - current HP is bounded by current derived Max HP.
 
-## 4.2 Thể Lực
-Use one normalized **0–100 Stamina/Thể Lực meter** by default.
+## 4.2 Thể Lực — V2 EXPEDITION ONLY (USER-LOCKED 2026-10-09)
+Use one normalized **0–100 Thể Lực Viễn Chinh / Expedition Stamina** baseline, with the exact daily budget/reset and exceptional map restore effects owned by `docs/BODY_CULTIVATION_V2_SPEC.md`.
 
 Why normalized:
-- it is a current-condition meter, not a permanent growth axis;
-- long-term progression should improve cost/recovery/efficiency where content says so rather than requiring an unbounded stamina number.
+- it is the duration/endurance budget for an **outside-map expedition**, not permanent Lục Duy or a job-work capacity stat;
+- long-term progression improves explicitly tagged map cost/budget/restore; no generic unbounded work-stamina bar.
 
-Activities may consume stamina:
-- travel;
-- hunting;
-- physical work;
-- special training;
-- other explicit content.
+Only outside-map gameplay may consume it, including:
+- external-map travel, hunting and battle time;
+- map exploration/heavy gathering;
+- explicitly tagged outside-map environment pressure and events.
 
-No every-action stamina drain unless that activity actually needs it.
+**In-sect production, mining, fields, crafting, medicine work, sect travel, cultivation, Luyện Thể training and ordinary in-sect rest may not consume or use this meter as an efficiency modifier.** Sect rest does not silently replenish Expedition Stamina; restoration must follow the map/daily/explicit-restore authority.
+
+Legacy P0–P3.7 `disciple.stamina` usages in workforce/cultivation remain a migration conflict, **not approved V2 semantics**. If later design requires shifts/overwork/rest-breaks, implement a separate named condition/working-time system after user approval instead of repurposing this meter.
 
 ## 4.3 Thương Thế
 Injury is a list of named conditions with:
@@ -502,7 +502,7 @@ One work cycle conceptually consumes:
 - base work duration -> Profession Level + Work Speed modifiers;
 - profession learning -> Thông Tuệ + profession talent + learning modifiers;
 - task-specific resource/recipe inputs;
-- stamina where that profession explicitly consumes it.
+- **no Expedition Stamina input/consumption for in-sect work**; future work-fatigue/shift mechanics require a separately approved state owner.
 
 Output:
 - resource/item/service result;
@@ -555,17 +555,18 @@ Combat must never write permanent Lục Duy merely because damage was dealt.
 
 Input:
 - current HP;
-- stamina;
 - injuries;
 - recovery location/facility;
-- explicit recovery modifiers from Physique/Bloodline/Trait/items.
+- explicit recovery modifiers from Physique/Bloodline/Trait/items;
+- Expedition Stamina **only if** a named, authorized outside-map/daily/refill rule is applicable.
 
 Output:
 - HP recovery;
-- stamina recovery;
 - injury recovery;
-- mood/event consequences.
+- mood/event consequences;
+- Expedition Stamina recovery only through the canonical expedition budget/valid recovery action.
 
+In-sect rest does not automatically recharge expedition duration merely because it heals HP.
 Recovery is stateful downtime, not a fake cooldown.
 
 ## 9.7 Social interaction
@@ -679,7 +680,7 @@ If the disciple suffers a leg injury:
 - it does not permanently lower Căn Cốt or Tư Chất.
 
 After returning:
-- rest/treatment recovers HP, stamina and injury state;
+- rest/treatment recovers HP and eligible injury state; Expedition Stamina changes only through its canonical daily reset or explicit valid outside-map/refill mechanic;
 - later relationship/mood systems may react to victory/defeat/injury.
 
 This closes the loop without one subsystem rewriting another subsystem's truth.
