@@ -167,25 +167,18 @@ Existing locked content may temporarily use the bounded compatibility bridge unt
 
 ---
 
-# 8. Passive Tu Vi while actually working
+# 8. V2 Tu Vi during work — SUPERSEDED 2026-10-09
 
-Raw target:
+The old P3.7 formula `Raw Work Tu Vi/hour = Current Stage Requirement × ...` remains legacy/P2 compatibility only.
 
-**Raw Work Tu Vi/hour = Current Stage Requirement × 0.0005 × (1 + 0.0005 × Profession Level)**
+For an authentic V2 disciple:
+- ordinary work does **not** create a separate Tu Vi reward;
+- the disciple receives the same continuous natural Tu Vi source that every eligible V2 disciple receives each simulation minute;
+- Tư Chất and valid cultivation modifiers are applied once by the V2 cultivation authority;
+- work speed/profession level must not silently multiply that passive Tu Vi source;
+- `_grant_p3_7_work_cultivation()` returns 0 for authentic V2 to prevent double credit.
 
-Only time in which the disciple is actually performing work may grant this.
-
-Autonomous timers do not count:
-- passive crop countdown;
-- waiting;
-- queued production without active disciple work.
-
-The raw amount is passed through existing cultivation gain authority, so Tư Chất and other valid cultivation modifiers apply naturally and only once.
-
-Current P3.7 scheduler normalization:
-- one active work step = `1/60 hour`.
-
----
+This rule applies equally to mining, forging, herbalism and other ordinary jobs unless a future authored effect explicitly grants a separate fixed/reward source.
 
 # 9. Optional content affinity
 
