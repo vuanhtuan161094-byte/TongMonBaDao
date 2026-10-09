@@ -5,8 +5,8 @@ extends RefCounted
 # user-locked encounter balance. This does NOT mutate legacy P0Content.MONSTERS.
 const TIERS := {
     "normal":{"max_hp":1.0,"attack":1.0,"defense":1.0},
-    "elite":{"max_hp":1.80,"attack":1.25,"defense":1.20},
-    "boss":{"max_hp":4.00,"attack":1.60,"defense":1.35}
+    "elite":{"max_hp":1.35,"attack":1.10,"defense":1.10},
+    "boss":{"max_hp":2.50,"attack":1.30,"defense":1.18}
 }
 # Only actual IDs present in the live P0 item registry may be awarded by its
 # legacy loot owner. Newly-authored enemy species deliberately have NO drops yet.
