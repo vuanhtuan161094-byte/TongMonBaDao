@@ -20,8 +20,8 @@ func _run() -> void:
         if not _assert(bool(menu.get("ok",false)) and menu["levels"].size() == 5,
             "Every map must have exactly five distinct difficulty choices."):
             return
-        var last_hp := -1.0
-        var last_attack := -1.0
+        var last_hp_factor := -1.0
+        var last_attack_factor := -1.0
         var last_expected_reward := -1
         for level in range(1,6):
             var spawned := HuntingMapV2.spawn(str(region),level,
@@ -34,12 +34,24 @@ func _run() -> void:
                 "Five-level map monster group has incorrect count."):
                 return
             var first: Dictionary = monsters[0]
-            if not _assert(float(first["stats"]["max_hp"]) > last_hp and
-                float(first["stats"]["attack"]) > last_attack,
-                "Increasing difficulty did not grow real monster HP and Attack."):
+            # The randomly chosen first monster may be a RARE boss even on
+            # Ngoại Vi, so compare *same-species* scaling, not slot-zero HP.
+            var baseline: Dictionary = MonsterCatalogueV2.create_actor(
+                str(first["species_id"]),
+                int(HuntingMapV2.REGION_CONTENT[region]["realm"]),
+                int(HuntingMapV2.REGION_CONTENT[region]["floor"]),"check_baseline"
+            )
+            var hp_factor := float(first["stats"]["max_hp"])/float(baseline["stats"]["max_hp"])
+            var attack_factor := float(first["stats"]["attack"])/float(baseline["stats"]["attack"])
+            if not _assert(_near(hp_factor,float(HuntingMapV2.LEVELS[level]["hp"])) and
+                _near(attack_factor,float(HuntingMapV2.LEVELS[level]["attack"])),
+                "Monster HP/Attack must use per-map tier scaling even for an outer-map boss."):
                 return
-            last_hp = float(first["stats"]["max_hp"])
-            last_attack = float(first["stats"]["attack"])
+            if not _assert(hp_factor > last_hp_factor and attack_factor > last_attack_factor,
+                "Increasing difficulty must grow HP and Attack for the SAME species."):
+                return
+            last_hp_factor = hp_factor
+            last_attack_factor = attack_factor
             var loot: Dictionary = HuntingMapV2.preview_reward(spawned)
             var regular_sum := 0
             for id in loot.keys():
@@ -59,10 +71,54 @@ func _run() -> void:
                     elites += 1
                 elif str(monster["tier"]) == "boss":
                     bosses += 1
-            if not _assert(elites == (1 if level == 3 else (2 if level >= 4 else 0)) and
-                bosses == (1 if level == 5 else 0),
-                "Monster elite/boss composition is inconsistent with map level."):
+            var required_elites := int(HuntingMapV2.LEVELS[level]["min_elites"])
+            # Boss takes the special tier slot on easy levels; it is an
+            # optional *rare encounter*, not forbidden on levels 1–4.
+            if not _assert(elites >= required_elites and
+                elites <= required_elites+1 and bosses <= 1 and
+                (bosses == 1 if level == 5 else true),
+                "Monster Elite/Boss composition is inconsistent with this map level."):
                 return
+            if level <= 2 and bosses == 1 and not _assert(elites == 0,
+                "A rare low-level Boss must replace the optional Elite to avoid a double spike."):
+                return
+    # Regression: EVERY map level may offer both Elite and Boss. Neither
+    # rarity nor the normal-majority criterion is replaced with a guarantee
+    # on Ngoại Vi. 1,300 deterministic seeds sample the real generator.
+    for tier in range(1,5):
+        var seen_elite := 0
+        var seen_boss := 0
+        var seen_normal_only := 0
+        for index in range(1300):
+            var spawn_case := HuntingMapV2.spawn(
+                "thanh_truc_lam",tier,
+                "tier_%d_seed_%d" % [tier,index],120001+index*37
+            )
+            if not _assert(bool(spawn_case.get("ok",false)),
+                "A valid tier's rarity sample could not generate a group."):
+                return
+            var has_elite := false
+            var has_boss := false
+            for creature in spawn_case["monsters"]:
+                if str(creature["tier"]) == "elite":
+                    has_elite = true
+                elif str(creature["tier"]) == "boss":
+                    has_boss = true
+            if has_elite:
+                seen_elite += 1
+            if has_boss:
+                seen_boss += 1
+            if not has_elite and not has_boss:
+                seen_normal_only += 1
+        if not _assert(seen_elite > 0 and seen_boss > 0 and seen_boss < 1300,
+            "Every tier 1–4 must have a possible but non-guaranteed Boss and Elite."):
+            return
+        if tier <= 2 and not _assert(seen_normal_only > 900 and seen_elite < 400 and seen_boss < 150,
+            "Outer zones should remain mostly safe, not always spawn boss/elite."):
+            return
+        print("DV2 ZONE RARITY level=",tier," encounters=1300 elite=",seen_elite,
+            " boss=",seen_boss," no_special=",seen_normal_only)
+
     if not _assert(not bool(HuntingMapV2.spawn("thanh_truc_lam",6,"bad",1).get("ok",true)) and
         not bool(HuntingMapV2.spawn("thanh_truc_lam",0,"bad",1).get("ok",true)),
         "Invalid map difficulty accepted."):
