@@ -78,7 +78,7 @@ func _refresh() -> void:
     headline.text = "%s — chọn độ khó" % str(overview["name"])
     var names: Array = overview["normal_resources"].keys()
     names.sort()
-    var resource_names: Array = []
+    var resource_names: PackedStringArray = PackedStringArray()
     var registry := ResourceRegistry.new()
     for id in names:
         resource_names.append(registry.display_name(StringName(id)))
