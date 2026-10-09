@@ -156,7 +156,7 @@ func accept_candidate(state: SimulationState, candidate_id: StringName) -> Dicti
         return _result(false, "duplicate_disciple_id")
 
     var candidate: CandidateState = state.recruitment_candidates[candidate_id]
-    if state.sect.disciple_v2_birth_enabled and not DiscipleBirthRollV2.valid_complete_birth(candidate.v2_birth_profile):
+    if state.sect.disciple_v2_birth_enabled and not DiscipleBirthProfileV2.valid_complete_birth(candidate.v2_birth_profile):
         return _result(false, "v2_birth_profile_incomplete")
     var disciple := candidate.to_disciple()
     if state.sect.spiritual_roots_enabled and not state.sect.disciple_v2_birth_enabled:
