@@ -376,6 +376,23 @@ Focused tests added:
 
 **Latest runtime evidence:** MISSING, not FAIL. Do not call latest DV2-03 PASS until official Godot 4.7.2 evidence exists.
 
+
+### 5.11 DV2-03D2 — persistent online/offline clock owner (CODE PUSHED, GATE UNVERIFIED)
+
+Implemented:
+- `SimulationState` persists `runtime_clock_version`, `runtime_last_wall_unix`, `runtime_unconsumed_wall_seconds`;
+- `SimulationRuntimeClockV2`: **60 real seconds = 1 simulation minute**, same scheduler for online/offline;
+- sub-minute remainder survives save/load;
+- bounded catch-up preserves unprocessed whole-minute backlog;
+- backwards wall clock grants no progression;
+- `SimulationRuntimeOwnerV2` owns state+scheduler, catches up before save and after load;
+- old saves without timestamp initialize at first upgraded load with no speculative past credit;
+- `dv2_03_runtime_clock_test.gd` compares offline 5-minute jump vs five online one-minute advances and checks identical V2 progression/RNG, chunked catch-up and owner save/load.
+
+**Not connected yet:** P3.1/P3.2 still creates demo state and runs its own 0.55s presentation timer. That timer remains non-production evidence and has not been silently relabeled.
+
+**Latest runtime evidence:** MISSING, not FAIL.
+
 ### 5.4 Chuẩn bị lát triển khai tiếp theo — audit 09/10/2026
 
 **DV2-03 vẫn ACTIVE — chưa có code gameplay/gate mới trong lượt chuẩn bị này.** GitHub `main` đã được rà: action `request_training` kiểm tra sơ bộ nhưng không preflight `base_xp_per_action`/`floor_costs`; do đó có thể trả `ok=true` để xếp việc, rồi `resolve` fail-closed ở tick sau. Scheduler `step()` làm chủ cấp EXP, không phải driver wall-clock được chứng thực. Workflow focused của code `e96df183` PASS; FULL P3.7 chỉ có bằng chứng PASS tại `5296f610`. **Không có bằng chứng full same-code SHA hay realtime 15s/offline/Windows V2.**
