@@ -220,3 +220,25 @@ User-approved gameplay authority now supersedes the current action-only EXP brid
 
 **Implementation status:** Tu Vi source-model refactor is CODE PUSHED. `DiscipleTuViFlowV2` grants one natural Tu Vi source per simulation minute; `CULTIVATE` only applies Chuyên Tu acceleration; separate work-Tu-Vi was removed; new recruitment starts 1/1. **Luyện Thể training is intentionally blocked**: provisional `TRAIN_BODY` cannot grant EXP, and body-focus auto policy cannot be activated until design is approved. Latest runtime Godot gate evidence is UNVERIFIED.
 
+---
+
+## DV2-03B2 — typed Luyện Thể source contract (2026-10-09)
+
+**USER-LOCKED design scope:** Luyện Thể natural EXP has three distinct contexts: **production**, **dedicated Rèn Thân**, **expedition**.
+
+**CODE PUSHED / RUNTIME GATE UNVERIFIED:**
+- new `DiscipleBodyXpSourceV2` validates and commits one natural Body source per simulation minute;
+- all three sources reuse the canonical Căn Cốt +0.20%/point natural-gain law and same-channel modifiers;
+- production requires an owning consumer to prove active physical work;
+- dedicated Rèn Thân requires verified training access plus proof that the current minute's economic cost was committed;
+- expedition requires verified active expedition and an outside-map actor;
+- production/Rèn Thân are sect sources; expedition is outside-map, preventing double classification;
+- one actor/minute cannot receive two natural Body grants;
+- fixed +X Body EXP still bypasses Căn Cốt through the existing `fixed` path;
+- `last_body_xp_tick` is persisted for deterministic save/load anti-double-credit;
+- `TRAIN_BODY` and `body_focus` remain fail-closed with `body_training_consumer_not_ready` until a real facility/cost consumer exists.
+
+**No numeric balance was invented.** Test rates are fixtures only. The current balance direction is production < expedition < dedicated Rèn Thân; exact rates, profession eligibility, training grades/costs and expedition pressure tables remain OPEN.
+
+Focused test: `godot/tests/simulation/dv2_03_body_xp_source_test.gd`.
+
