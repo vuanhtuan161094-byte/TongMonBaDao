@@ -21,7 +21,7 @@ No new maps, new species or speculative XP/chance/reward data in DV2-03.
 
 ## Progress law — true owner
 
-- Global coordinate `(realm−1)×10 + floor` each track 1..300.
+- Global coordinate `(realm−1)×10 + floor` each track 1..300. **All 30 Tu Vi and 30 Luyện Thể realm names come verbatim from `docs/REALM_LADDER_V2_SPEC.md`.** `DiscipleRealmProgressV2.realm_name` and `current` expose the current label from the saved coordinate; Độ Kiếp and Thần Kiếp are gate events, not additional realms.
 - `grant_xp(disciple, track, base_amount, gain_type, floor_costs, sources=[])`: requires **authored positive costs** for the current realm/floors, no fabricated universal 300-floor XP curve.
 - Within one major realm, EXP automatically cascades across minor floors. At floor 10 EXP caps at the approved gate requirement. Surplus is **reported as unapplied overflow**; never silently converted to `Tích Tu`.
 - `natural`: Tư Chất contributes +0.25% per point to Tu Vi, Căn Cốt +0.20% per point to Luyện Thể; active confirmed same-channel percentage source bonuses add on the base. Rejected: duplicate source ID, unknown channel, unhandled scope/condition/filter, nonfinite value. Dormant `enabled=false` is inert.
@@ -54,7 +54,8 @@ No new maps, new species or speculative XP/chance/reward data in DV2-03.
 
 **FOCUSED PASS:** Godot 4.7.2 Linux, `godot/tests/simulation/dv2_03_realm_body_progress_test.gd`: real recruitment, one-time initialization, independent 30×10 coordinates, natural/fixed XP and typed buffs, minor floors, gate fail/pity/re-cultivate/success, HP/stamina unaffected on failure, Body separate authorized gate, JSON normalization, combat stat recomputation and denial of spoofed PvE realm.
 
-- Initial focused [Actions #37893363804](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37893363804) passed including persisted-profile PvE consumer. A later focused run is required after the final XP source test and checkpoint changes.
+- **Latest focused official Godot 4.7.2 Linux PASS** [Actions #37893767560](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37893767560), code commit `57fa72ae882b`: full independent Tu Vi/Body coordinates, XP, gates, save/load, persisted-profile PvE and exact 60 named realms. Earlier green focused [#37893363804](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37893363804) confirms core, now superseded by this newer gate.
+- **Full P3.7 cumulative PASS** [Actions #37893455770](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37893455770) for the tested V2 dual-track runtime preceding the latest 60-name label addition. **Newer full P3.7 run** [#37893767454](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37893767454) is pending/running as of last read; check its result before claiming same-commit cumulative PASS.
 - Full P3.7 cumulative MUST be verified for the latest relevant code commit before calling DV2-03 BACKEND LOCKED.
 
 **Still NOT done:** complete authored 300-floor EXP tables; per-major-realm Tu Vi base breakthrough chance; body-gate material/attempt policies; accurate XP earning driven by training actions in live scheduler; automatic breakthrough attempts after authored source/condition authorization; safe old character migration and V2 HP synchronization; user UI for the new two progression tracks. Keep this phase active unless its narrower core scope and tests are explicitly closed with evidence.
