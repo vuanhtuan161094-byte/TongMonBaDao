@@ -27,7 +27,7 @@ static func set_policy(
     if state == null or not VALID_POLICIES.has(policy):
         return {"ok":false,"reason":"invalid_training_policy"}
     if policy == POLICY_BODY:
-        return {"ok":false,"reason":"body_training_mechanic_not_locked"}
+        return {"ok":false,"reason":"body_training_consumer_not_ready"}
     if not state.disciples.has(disciple_id):
         return {"ok":false,"reason":"unknown_training_disciple"}
     var disciple: DiscipleState = state.disciples[disciple_id]
@@ -73,7 +73,7 @@ static func choose_auto_action(
     if policy == POLICY_BODY:
         return {
             "ok":false,
-            "reason":"body_training_mechanic_not_locked",
+            "reason":"body_training_consumer_not_ready",
             "policy":policy
         }
     if policy != POLICY_BALANCED:
