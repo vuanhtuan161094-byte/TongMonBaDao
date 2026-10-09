@@ -235,13 +235,12 @@ func _step_disciple(disciple: DiscipleState) -> void:
             disciple.current_action = &"EVALUATE"
 
         &"TRAIN_BODY":
-            # Explicit V2 action. A V2 identity without authorized content fails
-            # closed; legacy characters never gain a fabricated Body track.
+            # Luyện Thể training mechanics are not yet user-locked. Preserve the
+            # action token only so stale/dev state fails closed without awarding EXP.
             if DiscipleRealmProgressV2.owns_v2_progression(disciple):
-                var trained := DiscipleTrainingActionV2.resolve(state, disciple, "TRAIN_BODY") if state.sect.v2_training_enabled else {
-                    "ok":false,"reason":"v2_training_disabled"
+                disciple.last_decision["v2_body_training_result"] = {
+                    "ok":false,"reason":"body_training_mechanic_not_locked"
                 }
-                disciple.last_decision["v2_body_training_result"] = trained.duplicate(true)
             if state.sect.workforce_enabled:
                 workforce_system.notify_action_completed(state, disciple, &"TRAIN_BODY")
             disciple.current_action = &"EVALUATE"
