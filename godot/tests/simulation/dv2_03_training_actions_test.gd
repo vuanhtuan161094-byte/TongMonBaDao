@@ -32,7 +32,7 @@ func _rules(price: float = 1000.0) -> Dictionary:
         },
         "body":{
             "authority_id":"qa-body-progress-costs-only",
-            "training_mechanic":"unresolved",
+            "training_mechanic":"typed_source_contract",
             "floor_costs":_costs_all(price),
             "sources":[]
         }
@@ -92,7 +92,7 @@ func _run() -> void:
     var authored := DiscipleTrainingContentV2.build_rules(catalogue)
     if not _assert(bool(authored.get("ok",false)) and
         _close(float(authored["rules"]["cultivation"]["base_tuvi_per_minute"]),80.0) and
-        str(authored["rules"]["body"].get("training_mechanic",""))=="unresolved" and
+        str(authored["rules"]["body"].get("training_mechanic",""))=="typed_source_contract" and
         not authored["rules"]["body"].has("base_body_xp_per_minute") and
         not authored["rules"]["body"].has("action"),
         "Body training was accidentally authored before design lock."):
@@ -172,7 +172,7 @@ func _run() -> void:
         JSON.parse_string(JSON.stringify(student.to_dict()))
     )
     if not _assert(saved_sect.v2_training_enabled and
-        str(saved_sect.v2_training_rules["body"].get("training_mechanic",""))=="unresolved" and
+        str(saved_sect.v2_training_rules["body"].get("training_mechanic",""))=="typed_source_contract" and
         int(saved_student.v2_realm_progress.get("last_passive_tuvi_tick",-1))==state.tick,
         "Tu Vi minute authority or unresolved Body state failed save/load."):
         return
