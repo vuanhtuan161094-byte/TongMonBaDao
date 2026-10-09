@@ -45,7 +45,7 @@ func _run() -> void:
         },
         "body":{
             "authority_id":"qa-body-costs-only",
-            "training_mechanic":"unresolved",
+            "training_mechanic":"typed_source_contract",
             "floor_costs":_costs([1,2],1000.0),
             "sources":[]
         }
