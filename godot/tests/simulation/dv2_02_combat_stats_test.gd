@@ -229,6 +229,45 @@ func _run() -> void:
         _fail("Lifesteal requires a percentage-points source.")
         return
 
+    # Exercise actual DiscipleState HP mutation through CombatSystem without
+    # touching legacy PvE routing. The same hit may not heal/pay twice.
+    var live_attacker := DiscipleState.new({"id":"v2_attacker"})
+    var live_target := DiscipleState.new({"id":"v2_target"})
+    live_attacker.max_hp = 100.0
+    live_attacker.hp = 50.0
+    live_target.max_hp = 100.0
+    live_target.hp = 75.0
+    var encounter: Dictionary = {}
+    var commit := CombatSystem.new().commit_v2_direct_hit(
+        live_attacker,live_target,{"attack":100.0,"lifesteal":0.20},
+        {"defense":0.0,"lifesteal_reduction":0.05}, {},
+        encounter,"v2_live_hit_1"
+    )
+    if not bool(commit.get("ok",false)):
+        _fail("CombatSystem failed to commit actual V2 HP damage and lifesteal.")
+        return
+    if not _close(float(commit["actual_damage"]),75.0) or not _close(float(commit["lifesteal_heal"]),11.25):
+        _fail("V2 live combat must siphon 15% of the defender's actual 75 HP loss.")
+        return
+    if not _close(live_attacker.hp,61.25) or not _close(live_target.hp,0.0):
+        _fail("CombatSystem did not apply V2 hit to real DiscipleState HP correctly.")
+        return
+    var duplicate := CombatSystem.new().commit_v2_direct_hit(
+        live_attacker,live_target,{"attack":100.0,"lifesteal":0.20},
+        {"defense":0.0,"lifesteal_reduction":0.05}, {},
+        encounter,"v2_live_hit_1"
+    )
+    if bool(duplicate.get("ok",true)) or not _close(live_attacker.hp,61.25):
+        _fail("Repeated V2 hit_id was permitted to heal or damage twice.")
+        return
+    var invalid_hit := CombatSystem.new().commit_v2_direct_hit(
+        live_attacker,live_attacker,{"attack":100.0,"lifesteal":0.20},
+        {"defense":0.0}, {},encounter,"self_hit"
+    )
+    if bool(invalid_hit.get("ok",true)) or not _close(live_attacker.hp,61.25):
+        _fail("Self-directed V2 hit corrupted actual HP.")
+        return
+
     var previous := 0.0
     for realm in range(1,31):
         for floor_index in range(1,11):
