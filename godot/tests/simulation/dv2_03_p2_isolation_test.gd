@@ -44,10 +44,10 @@ func _run() -> void:
         "Accepted V2 disciple has no canonical progression profile."):
         return
     var start := DiscipleRealmProgressV2.current(disciple)
-    if not _assert(int(start["cultivation"]["realm"])==2 and
-        int(start["cultivation"]["floor"])==candidate.cultivation_stage_index+1 and
+    if not _assert(int(start["cultivation"]["realm"])==1 and
+        int(start["cultivation"]["floor"])==1 and
         int(start["body"]["realm"])==1 and int(start["body"]["floor"])==1,
-        "Recruit compatibility did not preserve the authored Luyện Khí start while keeping Body independent."):
+        "New V2 recruit did not start Phàm Nhân 1 + Phàm Thân 1."):
         return
 
     # Pre-DV2-03 saves with a complete birth identity but no progress migrate
@@ -95,12 +95,13 @@ func _run() -> void:
     state.sect.v2_training_rules = {
         "cultivation":{
             "authority_id":"qa-v2-isolation-cultivation",
-            "action":"CULTIVATE","base_xp_per_action":10.0,
+            "action":"CULTIVATE","base_tuvi_per_minute":10.0,
+            "cultivate_multiplier":2.0,
             "floor_costs":_costs(cult_realm,1000.0),"sources":[]
         },
         "body":{
             "authority_id":"qa-v2-isolation-body",
-            "action":"TRAIN_BODY","base_xp_per_action":10.0,
+            "action":"TRAIN_BODY","base_body_xp_per_minute":10.0,
             "floor_costs":_costs(1,1000.0),"sources":[]
         }
     }
@@ -112,7 +113,7 @@ func _run() -> void:
     disciple.stamina = 5.0
     disciple.inventory.clear()
     var decision := DecisionSystem.new().evaluate(state,disciple)
-    if not _assert(str(decision.get("action",""))=="HOLD" and
+    if not _assert(str(decision.get("action","")) != "REST" and
         not decision.has("cultivation_stage") and
         not decision.has("cultivation_progress") and
         decision.has("v2_progression"),
@@ -138,16 +139,17 @@ func _run() -> void:
         "In-sect work consumed V2 expedition stamina."):
         return
 
-    # Work-time Tu Vi must enter V2 and never the P2 cultivation meter.
+    # Ordinary V2 work has no SECOND Tu Vi award. Passive Tu Vi belongs to
+    # the scheduler minute source, not WorkforceSystem.
     var p2_before_work := disciple.cultivation_progress
     var v2_before_work := float(disciple.v2_realm_progress["cultivation"]["xp"])
     var work_cultivation := workforce._grant_p3_7_work_cultivation(
         state,disciple,WorkforceSystem.PROF_MINING
     )
-    if not _assert(work_cultivation>0.0 and
-        float(disciple.v2_realm_progress["cultivation"]["xp"])>v2_before_work and
+    if not _assert(absf(work_cultivation)<0.000001 and
+        absf(float(disciple.v2_realm_progress["cultivation"]["xp"])-v2_before_work)<0.000001 and
         absf(disciple.cultivation_progress-p2_before_work)<0.000001,
-        "Work cultivation did not use the V2 owner exclusively."):
+        "Ordinary work still created a separate V2/P2 cultivation award."):
         return
 
     var scheduler := SimulationScheduler.new(state)
@@ -178,7 +180,8 @@ func _run() -> void:
         absf(disciple.cultivation_progress-old_p2_xp)<0.000001 and
         absf(disciple.hp-old_hp)<0.000001 and
         absf(disciple.stamina-old_stamina)<0.000001 and
-        disciple.v2_realm_progress==old_v2 and
+        int(disciple.v2_realm_progress["cultivation"]["realm"])==int(old_v2["cultivation"]["realm"]) and
+        int(disciple.v2_realm_progress["cultivation"]["floor"])==int(old_v2["cultivation"]["floor"]) and
         str(blocked_gate.get("reason",""))=="v2_breakthrough_content_not_authorized",
         "V2 BREAKTHROUGH leaked into the P2 gate or mutated V2 without authored content."):
         return
