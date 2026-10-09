@@ -422,3 +422,14 @@ Not locked yet:
 - map runtime implementation.
 
 These require their own design/balance pass.
+
+---
+
+## Trạng thái triển khai Luyện Thể DV2-03 — 09/10/2026 (không thay thiết kế đã khóa)
+
+- **Đã code + focused Godot PASS**: `DiscipleState.v2_realm_progress.body` (30 đại cảnh × 10 tầng; tên đúng ladder), `DiscipleRealmProgressV2.grant_xp(...,"body",...)`, tăng tầng nhỏ tự động theo EXP, `Căn Cốt +0,20%/điểm` cho EXP natural, cộng buff hợp lệ cùng channel và giữ thưởng `fixed` chính xác, dừng ở cửa đại cảnh.
+- **Đã code + focused PASS**: hành động `TRAIN_BODY` do `SimulationScheduler.step()` commit, `DiscipleTrainingActionV2.request_training(state,id,"body")` xếp lệnh một lần, không cấp EXP ngay, không ngắt `COMBAT` hoặc công việc bận. Đệ tử cần V2 birth + track khởi tạo, ở tông môn và còn HP. **Một actor/tick tối đa một EXP action kể cả đổi Tu Vi↔Luyện Thể**, bằng `last_training_tick` toàn profile cùng `last_training_event_id` từng đường. Policy/rates `v2_training_enabled` false + `v2_training_rules` empty mặc định.
+- **Chưa có quyền coi hoàn thành**: `commit_authorized_body_gate` chỉ là hàm commit sau khi consumer khác đã xác minh EXP/điều kiện; chưa có tỷ lệ thử đột phá, vật liệu, thất bại riêng cho Luyện Thể đã duyệt. Không được sao chép xác suất Tu Vi; không tự rút HP/Thể Lực Viễn Chinh từ hành động TRAIN_BODY.
+- **Chưa triển khai/tích hợp đầy đủ**: 300 yêu cầu EXP & base EXP/action chính thức, ưu tiên AI tự rèn thể, lịch tiếp diễn liên tục/offline, màn hình V2, hệ **Thể Lực Viễn Chinh** đúng thiết kế riêng, tiêu hao stamina bản đồ, tái đồng bộ HP V2. Các số test như 50 EXP/action và 100 EXP/tầng chỉ là fixture, không phải balance.
+- **FOCUSED Godot 4.7.2 Linux PASS** [#37895517181](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37895517181) tại `e96df183`. Full P3.7 PASS được xác minh [#37895357334](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37895357334) tại mã cũ `5296f610`. Không phải Windows PASS hay lệnh V2 UI PASS.
+- Tiến độ kỹ thuật và kiểm thử: [`DV2_03_TWO_TRACK_PROGRESS_EXECUTION.md`](DV2_03_TWO_TRACK_PROGRESS_EXECUTION.md). Các định nghĩa Thể Lực Viễn Chinh bên trên **vẫn là thiết kế**, không hiểu nhầm thành code.
