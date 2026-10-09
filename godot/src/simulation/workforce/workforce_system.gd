@@ -258,8 +258,12 @@ func next_action(state: SimulationState, disciple: DiscipleState) -> StringName:
             return _profession_action(profession)
         &"cultivate":
             if owns_v2:
-                # Autonomous Tu Vi-vs-Body policy is intentionally deferred.
-                # Only an explicit command may select V2 training in this cleanup slice.
+                var auto_training := DiscipleTrainingPolicyV2.choose_auto_action(
+                    state,disciple
+                )
+                if bool(auto_training.get("ok",false)):
+                    disciple.last_decision["v2_auto_training"] = auto_training.duplicate(true)
+                    return StringName(auto_training["action"])
                 return &""
             if state.sect.cultivation_enabled and disciple.stamina >= 55.0:
                 return &"CULTIVATE"
