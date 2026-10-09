@@ -233,5 +233,36 @@ func _run() -> void:
         DiscipleRealmProgressV2.global_floor(31,1) == 0,
         "Both realm tracks must obey the 30x10 ceiling."):
         return
+    # The real map PvE adapter must trust persistent character progression,
+    # never the caller's fabricated 30x10 realm numbers.
+    var choice := HuntingMapV2.choose_level(state,"thanh_truc_lam",1)
+    if not _check(bool(choice.get("ok",false)),
+        "Could not enable a real V2-region proving encounter."):
+        return
+    var member := {
+        "disciple_id":str(disciple.id),"party_id":"v2_party",
+        "role":"frontline","position":Vector2(8.0,9.0)
+    }
+    var authentic := HuntingPveRunV2.new()
+    var started := authentic.begin(state,"thanh_truc_lam",
+        "v2_real_realm_match",91223,[member])
+    if not _check(bool(started.get("ok",false)),
+        "A genuine V2 disciple could not fight with OWN saved dual progress."):
+        return
+    var fighter: Dictionary = authentic.battle.actors[str(disciple.id)]
+    var expected := DiscipleRealmProgressV2.derive_stats(disciple)
+    if not _check(_close(float(fighter["stats"]["max_hp"]),
+        float(expected["stats"]["max_hp"])) and
+        _close(float(fighter["stats"]["attack"]),float(expected["stats"]["attack"])),
+        "Group PvE did not consume stored Tu Vi/Body stat authority."):
+        return
+    var impostor := member.duplicate(true)
+    impostor["realm"] = 30
+    var forbidden := HuntingPveRunV2.new().begin(state,"thanh_truc_lam",
+        "v2_spoofed_realm",111,[impostor])
+    if not _check(not bool(forbidden.get("ok",true)),
+        "A caller forged a high realm over persistent V2 character state."):
+        return
+
     print("DV2-03 2×300 REAL TRACKS + XP SOURCES + BREAKTHROUGH GATES + SAVE: PASS")
     quit(0)
