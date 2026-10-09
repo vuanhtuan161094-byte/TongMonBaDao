@@ -47,7 +47,8 @@ static func initialize(
 static func _track(realm: int, floor_index: int) -> Dictionary:
     return {"realm":realm,"floor":floor_index,"xp":0.0,
         "gate_failures":0,"lifetime_failures":0,
-        "auto_breakthrough":false,"breakthrough_history":[]}
+        "auto_breakthrough":false,"breakthrough_history":[],
+        "last_training_event_id":""}
 
 static func valid_coordinates(realm: int, floor_index: int) -> bool:
     return realm >= 1 and realm <= MAX_REALM and floor_index >= 1 and floor_index <= MAX_FLOOR
@@ -87,6 +88,7 @@ static func normalize_profile(input: Variant) -> Dictionary:
         for key in ["realm","floor","gate_failures","lifetime_failures"]:
             row[key] = int(row.get(key,0))
         row["auto_breakthrough"] = bool(row.get("auto_breakthrough",false))
+        row["last_training_event_id"] = str(row.get("last_training_event_id",""))
         var raw_history = row.get("breakthrough_history",[])
         if not (raw_history is Array):
             return {}
