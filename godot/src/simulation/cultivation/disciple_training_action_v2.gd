@@ -3,7 +3,7 @@ extends RefCounted
 
 # DV2-03 action bridge. Rates are normalized per simulation minute.
 # Tu Vi itself is passive-time owned; CULTIVATE only selects Chuyên Tu.
-# Luyện Thể source/action mechanics are NOT locked yet. TRAIN_BODY is retained
+# Luyện Thể source contract is locked, but its real facility/cost consumer is not ready yet. TRAIN_BODY is retained
 # only as a fail-closed compatibility token and must not grant Body EXP.
 const ACTION_TRACKS := {"CULTIVATE":"cultivation","TRAIN_BODY":"body"}
 
@@ -13,7 +13,7 @@ static func _validated_rule(disciple: DiscipleState, track: String, data: Varian
     if track == "cultivation":
         return DiscipleTuViFlowV2.validate_rule(disciple,data)
     if track == "body":
-        return {"ok":false,"reason":"body_training_mechanic_not_locked"}
+        return {"ok":false,"reason":"body_training_consumer_not_ready"}
     return {"ok":false,"reason":"unsupported_training_track"}
 
 # Read-only eligibility/ratio surface shared by autonomous policy and UI.
@@ -67,7 +67,7 @@ static func request_training(state: SimulationState, disciple_id: StringName, tr
     if not [&"EVALUATE",&"IDLE",&"HOLD",&"CULTIVATE",&"TRAIN_BODY"].has(disciple.current_action):
         return {"ok":false,"reason":"training_cannot_interrupt_active_work"}
     if track == "body":
-        return {"ok":false,"reason":"body_training_mechanic_not_locked"}
+        return {"ok":false,"reason":"body_training_consumer_not_ready"}
     var action := "CULTIVATE"
     var ready := _validated_rule(disciple,track,state.sect.v2_training_rules.get(track,null))
     if not bool(ready.get("ok",false)):
@@ -95,4 +95,4 @@ static func resolve(state: SimulationState, disciple: DiscipleState, action: Str
     var track: String = ACTION_TRACKS[action]
     if track == "cultivation":
         return {"ok":false,"reason":"cultivation_resolves_via_passive_time"}
-    return {"ok":false,"reason":"body_training_mechanic_not_locked"}
+    return {"ok":false,"reason":"body_training_consumer_not_ready"}
