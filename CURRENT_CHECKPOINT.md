@@ -189,7 +189,7 @@ Current old percentage consumers may use a bounded compatibility bridge where ne
 
 ## 5. Current implementation phase
 
-**DV2-01 CLOSED; DV2-02 CORE BACKEND LOCKED (Godot 4.7.2 Linux CI) — DV2-03 TU VI + LUYEN THE V2 IS NEXT.**
+**DV2-01 CLOSED; DV2-02 CORE BACKEND LOCKED; DV2-03 TU VI + LUYEN THE V2 ACTIVE — focused Godot PASS, full completion remains open.**
 
 ### DV2-01 completion evidence
 - **DV2-01B focused birth/recruitment/Dẫn Tiên/100,000 generated profiles:** [Actions #37878652697](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37878652697), successful, GitHub commit `e697c947a`.
@@ -255,12 +255,23 @@ Current old percentage consumers may use a bounded compatibility bridge where ne
 - **SCOPE LOCK**: only canonical stat/conditional-effect calculator, deterministic multi-party in-map encounter **simulation core** and opt-in five-level hunt/warehouse proving consumer are DV2-02 core. **NOT** actual production outside-region map/scheduler/monster AI/VFX/balance or 10-slot Equipment V2, 30×10 persistent character tracks, all 101 Trait effects. Those are user-authorized NEXT STAGES, NOT silently declared shipped. Pilot numbers remain pilot; old P0/P3.7 live combat unchanged. This scoped closeout complies with latest explicit user step order.
 - **NEXT STEP 2: DV2-03 Tu Vi + Luyen The 30×10**. Implement canonical **two independent persistent track states** on each real V2 disciple and connect their current indices to the existing `CombatStatsV2` snapshot. Respect minor-floor auto progression vs major-gate breakthrough, Căn Cốt/Tư Chất rules, no fabricated XP curve, no old legacy `combat_power` as stat authority. After DV2-03 PASS, step 3 is real gear/skills/innate effect consumers; step 4 is comprehensive live-map PvE / monster AI / rebalanced rewards. Read `docs/DV2_02_CORE_CLOSEOUT_AND_NEXT_ORDER.md`.
 
+**DV2-03 ACTIVE — TWO REAL TU VI / LUYEN THE PROGRESS TRACKS (2026-10-09, latest phase progress authority)**
+- `godot/src/simulation/state/disciple_state.gd`: genuine V2-recruited disciples have saved `v2_realm_progress`, legacy P0–P3.7 default empty; no automatic migration from `cultivation_stage_index` or guessed `combat_power`. Godot JSON integer normalization preserves 30×10 indices and same-gate/lifetime breakthrough history.
+- `godot/src/simulation/cultivation/disciple_realm_progress_v2.gd`: **30 realms×10 floors each**, independent `cultivation` and `body`, one-time valid complete V2 birth prerequisite, `current` and `derive_stats` recompute 16 Combat Stats from two canonical tracks. `grant_xp` supports approved per-floor XP costs, automatic minor-floor XP cascade, major gate stop, natural **Tư Chất +0.25%/point** / **Căn Cốt +0.20%/point**, same-channel named authored `percent_add` bonuses; fixed EXP bypasses all ordinary rate bonuses. No fabricated XP requirements. Overflow not silently converted to Tích Tu.
+- `attempt_cultivation_breakthrough` consumes approved gate required EXP/chance and externally verified non-chance prerequisites with stable event ID + explicit `GameRng`. Failure loses **10% gate EXP**, accumulates same-gate failure **+5 percentage points** next attempt and separate lifetime count; requires re-cultivation. Success advances only Tu Vi to next realm floor 1; no generic HP/stamina/cooldown penalty. No legacy Spiritual Root chance bonus or imagined materials. Body has separately `commit_authorized_body_gate` only when its independently authored prerequisites verified; no guessed chance formula.
+- `set_auto_breakthrough` persists player policy only, DOES NOT trigger fake auto-requests before validated scheduler/cost content.
+- `godot/src/simulation/combat/hunting_pve_run_v2.gd` now reads saved REAL V2 Tu Vi + Body coordinates at group-hunt start and **rejects spoofed** caller realm overrides. Old explicit-coordinate pilot fixtures do not initialize V2 profiles.
+- **Godot 4.7.2 Linux focused PASS** [Actions #37893363804](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37893363804) at source commit `522c72d8`: complete V2 recruitment, XP auto floors/bonuses/fixed rewards, independent cultivation/body gate and failures, save/load, actual CombatStats recomputation and PvE realm spoof protection. Earlier CI mistakes fixed (birth profile checks, GDScript normalized integer history, JSON audit float). Subsequent docs/CI only commits not tested as code changes.
+- **Full P3.7 cumulative** [Actions #37893455770](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37893455770) was **RUNNING** as of last verification; check actual latest status before any full PASS claim. Previous baseline full CI was PASS for P3.7 and DV2-02.
+- **NOT yet a closed full DV2-03 gameplay phase**: specific 300-floor XP costs, 29 major-realm base chance rows for Tu Vi, Luyện Thể major-gate material/attempt policy, real 15s action-based EXP accrual, authored source consumers, stable V2→live HP synchronization, and full gameplay migration are **not supplied/locked**. Do not invent prices/probabilities or say these are working. `docs/DV2_03_TWO_TRACK_PROGRESS_EXECUTION.md` is current contract.
+- User 4-step sequence: **(1) DV2-02 core completed → (2) DV2-03 ACTIVE → (3) gear/skills/innate V2 consumers → (4) full outside-map PvE.** Never jump to stage 3 before agreed stage-2 completion scope.
+
 Canonical:
 - `docs/COMBAT_STATS_V2_SPEC.md`;
 - `docs/DV2_REALM_BODY_COMBAT_CURVES_V1_PROPOSAL.md` (**contents USER LOCKED, historical filename retained**);
 - `docs/DISCIPLE_V2_STAT_CAUSAL_CONTRACT.md`.
 
-**Do not implement DV2-03 (realm progression), DV2-05 Trait consumers or production changes ahead of DV2-02.** Those remain later phases.
+**Phase precedence updated:** DV2-02 *core* was closed with real focused + cumulative evidence, so DV2-03 is now authorized and ACTIVE. Do not implement DV2-05 innate consumers or unrelated production/PvE expansion before completing the agreed DV2-03 scope.
 
 ---
 
