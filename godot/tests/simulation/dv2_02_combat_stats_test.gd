@@ -178,6 +178,25 @@ func _run() -> void:
         _fail("Lifesteal did not update HP results exactly once.")
         return
 
+    # Damage through Defense and Damage Reduction must be the base for healing,
+    # never the 100-point raw Attack value.
+    var defended := CombatStatsV2.resolve_direct_hit(
+        lifesteal_attacker,{"defense":200.0,"damage_reduction":0.20,"lifesteal_reduction":0.05},{}
+    )
+    var defended_heal := CombatStatsV2.settle_damage_and_lifesteal(
+        defended,lifesteal_attacker,lifesteal_target,60.0,120.0,200.0
+    )
+    if not _close(float(defended_heal["actual_damage"]),40.0) or not _close(float(defended_heal["lifesteal_heal"]),6.0):
+        _fail("Defense and incoming damage reduction must resolve before Lifesteal.")
+        return
+    var stacking_anti := CombatStatsV2.derive(1,1,1,1,0.0,[
+        _source("one_anti","lifesteal_reduction","percentage_points",0.05),
+        _source("two_anti","lifesteal_reduction","percentage_points",0.10)
+    ])
+    if not bool(stacking_anti.get("ok",false)) or not _close(float(stacking_anti["stats"]["lifesteal_reduction"]),0.15):
+        _fail("Independent Anti-Lifesteal sources must add percentage points.")
+        return
+
     var overkill := CombatStatsV2.settle_damage_and_lifesteal(
         source_hit,lifesteal_attacker,lifesteal_target,60.0,120.0,20.0
     )
