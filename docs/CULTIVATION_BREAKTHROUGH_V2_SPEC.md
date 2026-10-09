@@ -91,6 +91,26 @@ Tư Chất, Root or ordinary cultivation-rate bonuses do not silently multiply f
 
 ---
 
+
+---
+
+## 2.2 Natural Tu Vi source model — USER LOCK 2026-10-09
+
+Natural Tu Vi is **continuous passive absorption for every living V2 disciple**, not an EXP reward that exists only while the current action is `CULTIVATE`.
+
+Canonical source model:
+- every eligible disciple continuously accumulates natural Tu Vi over elapsed simulation time, regardless of ordinary activity such as sect work, travel, hunting or normal combat;
+- ordinary work/combat does **not** create a second generic Tu Vi reward on top of this passive absorption;
+- `CULTIVATE` means **Chuyên Tu**: the disciple gives up other ordinary activity to apply an explicit multiplier/acceleration to the same natural-Tu-Vi source;
+- Tư Chất (+0.25%/point) and other valid natural-cultivation modifiers apply to this natural source;
+- external direct injections such as Tu Vi pills, monster-dropped **Tinh Nguyên** when absorbed, and authored fixed rewards are `fixed` +X Tu Vi unless the content explicitly declares another rule;
+- fixed injections are not multiplied by Tư Chất or ordinary natural-cultivation-rate bonuses;
+- killing a monster does not directly grant Tu Vi EXP. Monsters may drop Tinh Nguyên and other resources; consuming/assigning Tinh Nguyên is a separate resource decision.
+
+**No 15-second balance law is locked.** Tu Vi must be authored as a rate over elapsed simulation time (or an equivalent normalized time unit). A runtime may batch/commit that rate at a technical cadence, but the cadence itself must not change total earned Tu Vi.
+
+All newly generated production V2 disciples start at **Phàm Nhân tầng 1, 0 Tu Vi EXP**. Legacy/dev-save migration may use an explicit compatibility mapping only; it is not a recruitment-generation rule.
+
 # 3. Major-breakthrough chance
 
 Conceptual authority:
