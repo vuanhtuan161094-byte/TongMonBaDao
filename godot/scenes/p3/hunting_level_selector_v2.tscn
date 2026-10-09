@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/presentation/p3/hunting_level_selector_v2.gd" id="1_selector"]
+
+[node name="HuntingLevelSelectorV2" type="Control"]
+custom_minimum_size = Vector2(460, 465)
+offset_right = 460.0
+offset_bottom = 465.0
+script = ExtResource("1_selector")
