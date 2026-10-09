@@ -200,9 +200,10 @@ func _run() -> void:
     disciple.stamina = 100.0
     DiscipleTrainingPolicyV2.set_policy(state,disciple.id,"cultivation_focus")
     var decision := DecisionSystem.new().evaluate(state,disciple)
+    var auto_decision: Dictionary = decision.get("v2_auto_training",{})
     if not _assert(str(decision.get("action",""))=="CULTIVATE" and
         str(decision.get("v2_training_policy",""))=="cultivation_focus" and
-        str(decision.get("v2_auto_training",{}).get("track",""))=="cultivation",
+        str(auto_decision.get("track",""))=="cultivation",
         "DecisionSystem did not consume the canonical V2 training policy."):
         return
 
