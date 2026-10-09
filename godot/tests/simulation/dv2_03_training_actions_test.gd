@@ -31,9 +31,8 @@ func _rules(price: float = 1000.0) -> Dictionary:
             "sources":[]
         },
         "body":{
-            "authority_id":"qa-body-per-minute",
-            "action":"TRAIN_BODY",
-            "base_body_xp_per_minute":50.0,
+            "authority_id":"qa-body-progress-costs-only",
+            "training_mechanic":"unresolved",
             "floor_costs":_costs_all(price),
             "sources":[]
         }
@@ -67,10 +66,11 @@ func _run() -> void:
         "New production V2 recruit must start 1/1 with zero EXP."):
         return
 
-    # New content schema is per simulation minute, not per technical action.
+    # Content v3 locks Tu Vi/minute only. Body still carries progression costs
+    # but deliberately has NO training rate/action contract.
     var catalogue := {
-        "version":2,
-        "catalogue_id":"qa-minute-authority",
+        "version":3,
+        "catalogue_id":"qa-tuvi-minute-body-unresolved",
         "tracks":{
             "cultivation":{
                 "authority_id":"qa-all-tuvi",
@@ -79,8 +79,7 @@ func _run() -> void:
                 "floor_costs":_costs_all(1000.0)
             },
             "body":{
-                "authority_id":"qa-all-body",
-                "base_body_xp_per_minute":50.0,
+                "authority_id":"qa-body-costs-only",
                 "floor_costs":_costs_all(1000.0)
             }
         }
@@ -88,27 +87,22 @@ func _run() -> void:
     var catalogue_ok := DiscipleTrainingContentV2.validate_catalogue(catalogue)
     if not _assert(bool(catalogue_ok.get("ok",false)) and
         int(catalogue_ok.get("floors",0))==600,
-        "Complete per-minute 600-floor catalogue was rejected."):
+        "Complete V3 catalogue was rejected."):
         return
     var authored := DiscipleTrainingContentV2.build_rules(catalogue)
     if not _assert(bool(authored.get("ok",false)) and
         _close(float(authored["rules"]["cultivation"]["base_tuvi_per_minute"]),80.0) and
-        _close(float(authored["rules"]["body"]["base_body_xp_per_minute"]),50.0),
-        "Per-minute content failed to build runtime rules."):
-        return
-    var old_schema := catalogue.duplicate(true)
-    old_schema["tracks"]["cultivation"].erase("base_tuvi_per_minute")
-    old_schema["tracks"]["cultivation"]["base_xp_per_action"] = 80.0
-    if not _assert(not bool(DiscipleTrainingContentV2.validate_catalogue(
-        old_schema).get("ok",true)),
-        "Retired per-action Tu Vi schema still passed validation."):
+        str(authored["rules"]["body"].get("training_mechanic",""))=="unresolved" and
+        not authored["rules"]["body"].has("base_body_xp_per_minute") and
+        not authored["rules"]["body"].has("action"),
+        "Body training was accidentally authored before design lock."):
         return
 
     state.sect.v2_training_enabled = true
     state.sect.v2_training_rules = _rules()
     var scheduler := SimulationScheduler.new(state)
 
-    # Ordinary activity still receives one minute of natural Tu Vi.
+    # Ordinary activity receives one minute of natural Tu Vi.
     student.region_id = &"sect"
     student.current_action = &"HOLD"
     var tuvi_before := float(student.v2_realm_progress["cultivation"]["xp"])
@@ -117,94 +111,60 @@ func _run() -> void:
         _close(float(student.v2_realm_progress["cultivation"]["xp"])-tuvi_before,100.0),
         "Ordinary activity did not receive 80/min × 1.25 Tu Chat = 100 Tu Vi."):
         return
-    var passive: Dictionary = student.last_decision.get("v2_passive_tuvi_result",{})
-    if not _assert(bool(passive.get("ok",false)) and
-        str(passive.get("unit",""))=="tuvi_per_minute" and
-        not bool(passive.get("specialized",true)),
-        "Passive Tu Vi receipt does not expose per-minute authority."):
-        return
 
-    # Chuyên Tu accelerates the SAME passive source; it is not a second grant.
+    # Chuyên Tu accelerates the SAME passive Tu Vi source exactly once.
     student.current_action = &"CULTIVATE"
     var before_special := float(student.v2_realm_progress["cultivation"]["xp"])
     scheduler.step()
-    var specialized_gain := float(student.v2_realm_progress["cultivation"]["xp"])-before_special
-    var cult_receipt: Dictionary = student.last_decision.get("v2_training_result",{})
-    if not _assert(_close(specialized_gain,200.0) and
-        bool(cult_receipt.get("ok",false)) and
-        bool(cult_receipt.get("specialized",false)) and
-        _close(float(cult_receipt.get("gained",0.0)),200.0),
-        "Chuyên Tu did not apply exactly one accelerated passive-minute grant."):
+    var special_delta := float(student.v2_realm_progress["cultivation"]["xp"])-before_special
+    if not _assert(_close(special_delta,200.0),
+        "Chuyên Tu did not produce one accelerated passive-minute grant."):
         return
-    var duplicate_passive := DiscipleTuViFlowV2.resolve_minute(
-        state,student,true
-    )
-    if not _assert(not bool(duplicate_passive.get("ok",true)) and
-        str(duplicate_passive.get("reason",""))=="passive_tuvi_tick_already_awarded",
-        "Same simulation minute could award passive Tu Vi twice."):
-        return
-    student.current_action = &"CULTIVATE"
     var direct_cultivate := DiscipleTrainingActionV2.resolve(
         state,student,"CULTIVATE"
     )
     if not _assert(not bool(direct_cultivate.get("ok",true)) and
         str(direct_cultivate.get("reason",""))=="cultivation_resolves_via_passive_time",
-        "CULTIVATE still owns a second direct EXP grant."):
+        "CULTIVATE still exposes a second direct EXP grant."):
         return
 
-    # A player request changes only the next action. It never grants instantly.
+    # Luyện Thể mechanic is deliberately NOT designed yet.
     student.current_action = &"EVALUATE"
-    var body_before_request := float(student.v2_realm_progress["body"]["xp"])
-    var tuvi_before_request := float(student.v2_realm_progress["cultivation"]["xp"])
-    var requested := DiscipleTrainingActionV2.request_training(
+    var body_before := float(student.v2_realm_progress["body"]["xp"])
+    var body_request := DiscipleTrainingActionV2.request_training(
         state,student.id,"body"
     )
-    if not _assert(bool(requested.get("ok",false)) and
-        student.current_action==&"TRAIN_BODY" and
-        _close(float(student.v2_realm_progress["body"]["xp"]),body_before_request) and
-        _close(float(student.v2_realm_progress["cultivation"]["xp"]),tuvi_before_request),
-        "Body request granted EXP immediately."):
+    if not _assert(not bool(body_request.get("ok",true)) and
+        str(body_request.get("reason",""))=="body_training_mechanic_not_locked" and
+        student.current_action==&"EVALUATE" and
+        _close(float(student.v2_realm_progress["body"]["xp"]),body_before),
+        "Player could queue or gain an unapproved Body training action."):
         return
 
-    # One TRAIN_BODY minute legitimately earns both passive Tu Vi and body EXP.
+    # A stale/dev TRAIN_BODY token must fail closed. Passive Tu Vi still occurs
+    # because Tu Vi absorption is independent of ordinary current activity.
+    student.current_action = &"TRAIN_BODY"
+    var body_before_stale := float(student.v2_realm_progress["body"]["xp"])
+    var tuvi_before_stale := float(student.v2_realm_progress["cultivation"]["xp"])
     scheduler.step()
-    var body_delta := float(student.v2_realm_progress["body"]["xp"])-body_before_request
-    var tuvi_delta := float(student.v2_realm_progress["cultivation"]["xp"])-tuvi_before_request
-    if not _assert(_close(body_delta,60.0) and _close(tuvi_delta,100.0),
-        "TRAIN_BODY minute must earn passive Tu Vi + explicit Body EXP together."):
-        return
-    var body_receipt: Dictionary = student.last_decision.get("v2_body_training_result",{})
-    if not _assert(bool(body_receipt.get("ok",false)) and
-        _close(float(body_receipt.get("gained",0.0)),60.0) and
-        _close(float(body_receipt.get("base_body_xp_per_minute",0.0)),50.0),
-        "Body per-minute receipt is invalid."):
+    var blocked: Dictionary = student.last_decision.get("v2_body_training_result",{})
+    if not _assert(str(blocked.get("reason",""))=="body_training_mechanic_not_locked" and
+        _close(float(student.v2_realm_progress["body"]["xp"]),body_before_stale) and
+        float(student.v2_realm_progress["cultivation"]["xp"])>tuvi_before_stale,
+        "Stale TRAIN_BODY granted Body EXP or incorrectly stopped passive Tu Vi."):
         return
 
-    # Work has no extra generic Tu Vi source; scheduler passive is the only one.
-    state.sect.workforce_enabled = true
-    var workforce := WorkforceSystem.new()
-    var work_extra := workforce._grant_p3_7_work_cultivation(
-        state,student,WorkforceSystem.PROF_MINING
+    # Generic Body progression math remains available to future authorized
+    # sources, but no training source is fabricated here.
+    var direct_body := DiscipleRealmProgressV2.grant_xp(
+        student,"body",100.0,"fixed",_costs_all(1000.0)
     )
-    if not _assert(_close(work_extra,0.0),
-        "V2 work still grants a second generic Tu Vi source."):
+    if not _assert(bool(direct_body.get("ok",false)) and
+        _close(float(direct_body.get("gained",0.0)),100.0),
+        "Generic future Body-source grant API was broken by the training lock."):
         return
 
-    # Bad authored rates fail at the command boundary.
-    var broken: Dictionary = state.sect.v2_training_rules["body"].duplicate(true)
-    broken["base_body_xp_per_minute"] = -1.0
-    state.sect.v2_training_rules["body"] = broken
-    student.current_action = &"EVALUATE"
-    var bad_request := DiscipleTrainingActionV2.request_training(
-        state,student.id,"body"
-    )
-    if not _assert(not bool(bad_request.get("ok",true)) and
-        str(bad_request.get("reason",""))=="invalid_training_base_rate",
-        "Invalid per-minute Body rate passed preflight."):
-        return
-    state.sect.v2_training_rules = _rules()
-
-    # Save/load preserves both minute-rate content and independent dedup markers.
+    # Save/load preserves Tu Vi source dedup and unresolved Body content.
     var saved_sect := SectState.from_dict(
         JSON.parse_string(JSON.stringify(state.sect.to_dict()))
     )
@@ -212,11 +172,10 @@ func _run() -> void:
         JSON.parse_string(JSON.stringify(student.to_dict()))
     )
     if not _assert(saved_sect.v2_training_enabled and
-        _close(float(saved_sect.v2_training_rules["cultivation"]["base_tuvi_per_minute"]),80.0) and
-        int(saved_student.v2_realm_progress.get("last_passive_tuvi_tick",-1))==state.tick and
-        int(saved_student.v2_realm_progress.get("last_training_tick",-1))==state.tick,
-        "Per-minute rules or Tu Vi/Body dedup state failed save/load."):
+        str(saved_sect.v2_training_rules["body"].get("training_mechanic",""))=="unresolved" and
+        int(saved_student.v2_realm_progress.get("last_passive_tuvi_tick",-1))==state.tick,
+        "Tu Vi minute authority or unresolved Body state failed save/load."):
         return
 
-    print("DV2-03 PER-MINUTE PASSIVE TU VI + EXPLICIT BODY TRAINING: PASS")
+    print("DV2-03 TU VI/MINUTE + LUYEN THE TRAINING BLOCK: PASS")
     quit(0)
