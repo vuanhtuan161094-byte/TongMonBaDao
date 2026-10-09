@@ -13,6 +13,7 @@ on:
       - 'godot/src/simulation/cultivation/disciple_training_policy_v2.gd'
       - 'godot/src/simulation/cultivation/disciple_training_content_v2.gd'
       - 'godot/src/simulation/core/simulation_scheduler.gd'
+      - 'godot/src/simulation/core/simulation_runtime_clock_v2.gd'
       - 'godot/src/simulation/ai/decision_system.gd'
       - 'godot/src/simulation/workforce/workforce_system.gd'
       - 'godot/src/simulation/needs/needs_system.gd'
@@ -28,6 +29,7 @@ on:
       - 'godot/tests/simulation/dv2_03_body_xp_source_test.gd'
       - 'godot/tests/simulation/dv2_03_progression_balance_test.gd'
       - 'godot/tests/simulation/dv2_03_breakthrough_balance_test.gd'
+      - 'godot/tests/simulation/dv2_03_runtime_clock_test.gd'
       - '.github/workflows/dv2-03-realm-body-progress.yml'
 
 permissions:
@@ -67,3 +69,5 @@ jobs:
         run: godot --headless --path godot -s res://tests/simulation/dv2_03_progression_balance_test.gd
       - name: DV2-03 canonical 29-gate breakthrough balance
         run: godot --headless --path godot -s res://tests/simulation/dv2_03_breakthrough_balance_test.gd
+      - name: DV2-03 online offline runtime clock equivalence
+        run: godot --headless --path godot -s res://tests/simulation/dv2_03_runtime_clock_test.gd
