@@ -108,14 +108,20 @@ func rest_recovery_multiplier(state: SimulationState) -> float:
     var ratio := float(state.sect.lodging_capacity) / float(population)
     return clampf(ratio, MIN_REST_MULTIPLIER, 1.0)
 
-func apply_rest(state: SimulationState, disciple: DiscipleState) -> float:
+func apply_rest(
+    state: SimulationState, disciple: DiscipleState,
+    recover_stamina: bool = true
+) -> float:
     var lodging_multiplier := rest_recovery_multiplier(state)
     var multiplier := lodging_multiplier
     if state.sect.bloodlines_enabled:
         multiplier *= bloodline_system.rest_recovery_multiplier(state, disciple)
     if state.sect.physiques_enabled:
         multiplier *= physique_system.recovery_multiplier(state, disciple)
-    disciple.stamina = minf(100.0, disciple.stamina + 48.0 * multiplier)
+    # V2 expedition stamina is not an ordinary in-sect rest meter. Legacy
+    # callers keep the historical behavior through the default true argument.
+    if recover_stamina:
+        disciple.stamina = minf(100.0, disciple.stamina + 48.0 * multiplier)
     disciple.hp = minf(disciple.max_hp, disciple.hp + 5.0 * multiplier)
     disciple.metrics["rests"] = int(disciple.metrics.get("rests", 0)) + 1
     if state.sect.needs_enabled and lodging_multiplier < 0.999999:
