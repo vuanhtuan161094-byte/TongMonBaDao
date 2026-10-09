@@ -86,7 +86,7 @@ No new maps, new species or speculative XP/chance/reward data in DV2-03.
 
 - `DiscipleRealmProgressV2.derive_stats` calls **CombatStatsV2.derive** with actual persisted coordinates and real Tiềm Lực, so increases in either track produce recomputed Realm/Body HP/ATK/DEF cores.
 - When an initialized V2 disciple enters `HuntingPveRunV2.begin`, the group combat actor reads the saved two tracks. A client-provided conflicting override fails with `contradictory_persisted_v2_progress`. Legacy P3.7-only test fixtures still require **explicit** V2 coordinates and do not gain profiles magically.
-- The original P2 `DiscipleState.hp/max_hp` are not overwritten from provisional V2 battle HP until a properly authorized HP schema migration.
+- **DV2-03M update:** authentic V2 disciples now use Realm+Body-derived `CombatStatsV2.max_hp` as live `DiscipleState.max_hp`; current HP is rescaled by ratio on recruit/floor/gate/load so progression never grants a free full heal. Equipment/innate max-HP sources remain future source adapters.
 - The full ten-slot Equipment V2 and Nhân/Tiên/Thần skill consumers belong to the next user-approved step, not DV2-03.
 
 ## Gate evidence & remaining constraints
@@ -97,15 +97,15 @@ No new maps, new species or speculative XP/chance/reward data in DV2-03.
 - **FULL cumulative P3.7 PASS được xác minh mới nhất:** [#37895357334](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37895357334) tại `5296f610`; không phải full PASS của mã API command `aa3122a` hay test `e96df183`.
 - Full P3.7 cumulative MUST be verified for the latest relevant code commit before calling DV2-03 BACKEND LOCKED.
 
-**Still NOT done:** complete authored 300-floor EXP tables and production rates (the real action bridge is implemented but remains **disabled without content**); per-major-realm Tu Vi base breakthrough chance; body-gate material/attempt policies; automatic breakthrough attempts after authored source/condition authorization; AI body-training priority; safe old character migration and V2 HP synchronization; user UI for the new two progression tracks. Keep this phase active unless its narrower core scope and tests are explicitly closed with evidence.
+**Still NOT done:** approved 300-floor EXP tables/production rates; final V2 starting-realm distribution; 29 Tu Vi base breakthrough chances; Body material/attempt policy; autonomous Tu Vi-vs-Body training policy; real wall-clock/offline catch-up; full V2 UI; complete non-V2 old-character migration and later Equipment/Innate HP sources. **DV2-03M has already implemented authentic-V2 recruitment progress, identity-only old-V2 save migration, P2 isolation and live ratio-preserving V2 HP, but latest runtime gate evidence is still missing.**
 
 ---
 
 ## Kế hoạch thực thi còn lại (DV2-03C → DV2-03G) — audit live main 09/10/2026
 
-**Mục đích:** đóng giai đoạn DV2-03 bằng gameplay V2 thực sự chạy được, không coi unit/focused gate hoặc P0 sandbox timer là full realtime. Đây là các **lát công việc thuộc cùng một phase đang ACTIVE**, không mở phase gameplay mới. Audit code trực tiếp trên `main` cho thấy request API chỉ kiểm tra `authority_id`/action trước khi xếp, trong khi `resolve` mới kiểm tra rate/floor costs; `SimulationScheduler.step()` là nơi cấp EXP; scheduler trả nhân vật về `EVALUATE` sau mỗi hành động; UI P3.2 còn dùng lệnh P2.
+**Mục đích:** đóng giai đoạn DV2-03 bằng gameplay V2 thực sự chạy được, không coi unit/focused gate hoặc P0 sandbox timer là full realtime. Đây là các **lát công việc thuộc cùng một phase đang ACTIVE**, không mở phase gameplay mới. **Audit cũ về request preflight đã được DV2-03C sửa; audit mới hơn phát hiện P2/V2 authority leakage và được xử lý trong DV2-03M.** `SimulationScheduler.step()` vẫn là nơi commit action; UI P3.2 vẫn chưa phải UI hai-track V2 hoàn chỉnh.
 
-### C — Production EXP authority + validation trước khi nhận lệnh (LÀM ĐẦU TIÊN)
+### C — Production EXP authority + validation trước khi nhận lệnh (STRUCTURE CODED; NUMERIC BALANCE DEFERRED)
 
 1. Chuẩn hóa một source/content registry duy nhất cho EXP Tu Vi và EXP Luyện Thể: hai đường × 30 đại cảnh × 10 tầng, `base_xp_per_action` theo nhịp chuẩn, phiên bản dữ liệu và coverage validator; dữ liệu thử `80/50/100` KHÔNG được đem làm game balance.
 2. Chuẩn bị bảng cân bằng có số liệu/đồ thị tăng trưởng để người dùng duyệt trước khi kích hoạt production. Thiếu giá trị đã duyệt thì giữ `v2_training_enabled=false` / fail-closed. Không chuyển `CultivationSystem.STAGES` P2 sang V2.
@@ -125,11 +125,11 @@ No new maps, new species or speculative XP/chance/reward data in DV2-03.
 2. Hiện đồng thời hai cảnh giới + tầng + EXP/cost + tên đại cảnh + trạng thái cổng; thời gian/gain dự kiến chỉ hiển thị nếu data thực được xác thực. Đưa lý do từ chối thực từ runtime vào UI; nút không được hiện thành công giả.
 3. Hiển thị nguồn tăng chỉ số và HP dựa trên authority sau migrate, không lấy `combat_power` legacy làm Combat Stats V2. Test tương tác/UI headless tối thiểu và acceptance trực quan do người dùng duyệt.
 
-### F — Cổng đột phá production + HP/combat sync
+### F — Cổng đột phá production + remaining combat/source sync
 
 1. Tu Vi: content 29 cổng (base chance, `gate_required_xp`, điều kiện, item nếu có) và consumer xác thực; giữ luật đã khóa: thất bại mất 10% EXP yêu cầu, cộng 5 điểm phần trăm lần sau cùng cổng, ghi lịch sử, không tự mất HP/thể lực/cooldown.
 2. Luyện Thể: author riêng điều kiện/vật liệu/cơ chế xác nhận; không sao chép roll/chance Tu Vi. Nếu chưa được duyệt phải BLOCKED có lý do, không giả đột phá thành công.
-3. Đồng bộ `CombatStatsV2` thành HP authority live an toàn (current/max HP ratio, injury/combat, save/load, old saves), tránh heal miễn phí, hồi đầy HP không có lý do, hoặc cộng chỉ số hai lần khi up tầng.
+3. **HP core migration đã code ở DV2-03M:** Realm+Body-derived Max HP là live V2 authority và giữ current/max ratio qua floor/gate/save-load. F chỉ còn kiểm chứng combat/injury integration và nối các nguồn Max-HP V2 hợp lệ (Equipment/Innate khi phase của chúng mở), không làm lại HP core.
 4. Test fail/success/pity replay, cổng tự động chỉ hoạt động khi policy và dữ liệu đã đủ, save/load trong các trạng thái cổng, vào trận sau up tầng đúng chỉ số.
 
 ### G — Closeout evidence (không tự gọi PASS)
@@ -138,7 +138,7 @@ No new maps, new species or speculative XP/chance/reward data in DV2-03.
 - Báo riêng: CI Linux PASS, Windows PASS/UNTESTED, UI acceptance PENDING/ACCEPTED, old-save migration PASS/FAIL, offline replay PASS/FAIL, 1k–3k roster benchmark. Mọi số liệu thời gian phải là số đo, không bịa.
 - Khi đủ evidence, cập nhật `CURRENT_CHECKPOINT.md` trạng thái CLOSED và chỉ khi đó chuyển sang phase 3 (Equipment/Skill/Innate effects). PvE map production mở rộng để phase 4.
 
-**Đường ưu tiên ngay:** C (source EXP chuẩn + request preflight) → D (15s live + auto policy + offline) → E (UI V2) → F (breakthrough + HP migration) → G (cumulative). Chưa có số EXP/xác suất production được duyệt; không bật flag V2 production chỉ để thấy animation/EXP tăng giả.
+**Đường ưu tiên hiện tại sau audit 09/10:** **M — P2/V2 migration cleanup (CODED, gate unverified)** → **D1 — autonomous policy Tu Vi/Luyện Thể** → **D2 — một clock live + offline/catch-up** → **C-balance — duyệt rồi mới điền EXP production** → **E — UI V2** → **F — breakthrough content + remaining source/combat integration** → **G — focused/full/scale closeout**. Không quay lại các số EXP minh họa cũ trước khi duty-cycle/clock thật được xác định.
 
 
 ---
@@ -152,24 +152,23 @@ No new maps, new species or speculative XP/chance/reward data in DV2-03.
 - `godot/tests/simulation/dv2_03_training_actions_test.gd`: coverage complete/short/bad catalogues, JSON restore, read-only preview, invalid rate/duplicate sources/missing floors rejected before player queue, existing scheduler/save/dedup regression; `.github/workflows/dv2-03-realm-body-progress.yml` watches changed code.
 
 **No approved production EXP numbers have been applied.** Current 100/80/50 in QA are fixtures only. Even with validated schema, production remains default-OFF. The old focused PASS and previous full P3.7 PASS were at older code commits; the changes listed above require independent Godot 4.7.2 run evidence before being marked PASS.
+### EXP balance status after DV2-03M
 
-### Numerical pacing for user review — PROPOSAL ONLY, not a locked source
+**No production EXP rate/curve is approved.** Earlier illustrative numbers such as `12 EXP/15s`, `0.75h × 1.23^(r−1)` or the derived realm-hour table are **RETIRED exploratory notes and must not be promoted into gameplay**. Balance only after autonomous duty cycle + live/offline time authority are defined and benchmarked against representative disciple foundations.
 
-A first *comparative* target that scales smoothly across 30 realms instead of copying P2:
+---
 
-- **Dedicated one-channel baseline:** 12 natural base EXP per committed 15-second action, no bonus; this is a DRAFT content number.
-- **Time to fill all ten floors within realm r before attempting a gate:** Tu Vi `0.75h × 1.23^(r−1)`, Luyện Thể `1.00h × 1.23^(r−1)` at unbuffed continuous 15-second action frequency.
-- **Inside a realm:** positive floor weights `w(f) = 1 + 0.10 × (f−1)` for f=1..10. Allocate the realm EXP budget (time × action rate) across weights; round costs deterministically to integer EXP and retain full 300 entries. EXP floor10 is the gate cost; no breakthrough chance or material invented.
-- **Illustrative unbuffed major realm fill time (rounded):**
+## DV2-03M — P2/V2 authority cleanup (09/10/2026)
 
-| Realm r | Tu Vi | Luyện Thể |
-|---:|---:|---:|
-| 1 | 45 phút | 60 phút |
-| 5 | 1,7 giờ | 2,3 giờ |
-| 10 | 4,8 giờ | 6,4 giờ |
-| 15 | 13,6 giờ | 18,1 giờ |
-| 20 | 38,3 giờ | 51,1 giờ |
-| 25 | 107,8 giờ | 143,8 giờ |
-| 30 | 303,6 giờ | 404,8 giờ |
+**CODE PUSHED; latest Godot runtime gate UNVERIFIED.**
 
-This is **not yet the player's actual time**: a disciple cannot perform Tu Vi and Body actions simultaneously in the same tick; work/rest/hunting, XP buffs, gates and failed breakthrough materially change the schedule. Times are benchmarks for deliberate balancing, *not* guaranteed gameplay. First review growth curve and intended game duration before adding any numeric content to `SectState`.
+- Authentic V2 identity is centralized through `owns_v2_progression`; progression mutation additionally requires `progression_ready`.
+- V2 recruitment creates the two-track profile immediately. Temporary compatibility preserves the current P3.7 Luyện Khí starting floor for **new current-generator recruits only**; Body starts Phàm Thân tầng 1. This is not the final V2 starting distribution.
+- Identity-only pre-DV2-03 V2 saves migrate once through that bridge; a present malformed progression payload fails closed instead of rerolling.
+- Scheduler/AI/workforce/combat cannot read/write P2 cultivation for authentic V2 characters: no P2 combat-win XP, P2 breakthrough, P2 realm combat bonus or P2 cultivate fallback.
+- Work-time Tu Vi goes to the V2 Tu Vi track when authored floor costs exist. In-sect work/rest/hold do not spend/refill expedition stamina.
+- V2 live Max HP comes from Realm+Body CombatStatsV2 and preserves current HP ratio on recruit/floor/gate/save-load.
+- Floor-10 cost is the single EXP authority for major gates; no second numeric `gate_required_xp` argument.
+- Strict birth identity validation again checks real Root/Mutation/Profession Talent/Trait/Bloodline/Physique/Destiny structure, while allowing lawful post-birth current-root growth.
+- New focused isolation test covers the above, but **do not call PASS until official Godot 4.7.2 evidence for the latest code is available**.
+
