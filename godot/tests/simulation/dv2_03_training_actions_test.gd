@@ -109,7 +109,12 @@ func _run() -> void:
 
     var stamina_before := student.stamina
     var hp_before := student.hp
-    student.current_action = &"TRAIN_BODY"
+    var requested := DiscipleTrainingActionV2.request_training(state,student.id,"body")
+    if not _assert(bool(requested.get("ok",false)) and
+        student.current_action == &"TRAIN_BODY" and
+        _close(float(student.v2_realm_progress["body"]["xp"]),0.0),
+        "A requested Body activity must queue a REAL action, not grant instant EXP."):
+        return
     scheduler.step()
     if not _assert(state.tick==2 and
         int(student.v2_realm_progress["body"]["floor"])==1 and
@@ -136,6 +141,13 @@ func _run() -> void:
         "Named body modifier should raise +70 XP; 60+70=>floor 2 with 30 progress."):
         return
 
+    student.current_action = &"COMBAT"
+    if not _assert(not bool(DiscipleTrainingActionV2.request_training(
+        state,student.id,"body").get("ok",true)) and
+        student.current_action == &"COMBAT",
+        "Training command incorrectly interrupted live PvE combat."):
+        return
+    student.current_action = &"EVALUATE"
     var before_invalid := student.v2_realm_progress.duplicate(true)
     var invalid: Dictionary = state.sect.v2_training_rules["cultivation"].duplicate(true)
     invalid["floor_costs"].erase("1:10")
