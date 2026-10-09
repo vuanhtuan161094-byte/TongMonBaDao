@@ -669,7 +669,7 @@ Do not activate a breakthrough downside before Breakthrough V2 owns the exact ch
 | Trait | Nature | Starting effect |
 |---|---|---|
 | **Cần Mẫn** | Hữu Ích | +10% generic Work Speed |
-| **Cuồng Công** | Song Diện | +15% Work Speed; +20% Stamina cost for explicit stamina-consuming work |
+| **Cuồng Công** | Song Diện, **BLOCKED UNTIL REAL DOWNSIDE** | Proposed +15% Work Speed; the prior in-sect Stamina surcharge is **invalid under V2**. A separate work/rest-cycle downside must be designed and approved before enabling. |
 | **Lười Nhác** | Bất Lợi | -12% generic Work Speed |
 | **Cẩu Thả** | Song Diện | +10% Work Speed; +800 Difficulty on explicit work rare/quality Luck checks |
 | **Tỉ Mỉ** | Song Diện | -5% Work Speed; -600 Difficulty on explicit work rare/quality Luck checks |
