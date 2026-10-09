@@ -68,7 +68,10 @@ func _run() -> void:
     if not _assert(resumed.rng.snapshot_seed_state() == before_save_rng and
         absf(resumed.now-live.now)<0.0000001 and
         resumed.pending_casts.size()==live.pending_casts.size(),
-        "Mid-battle restore lost RNG, elapsed time or pending casts."):
+        "Mid-battle restore lost RNG, elapsed time or pending casts. rng_before=%d rng_after=%d time_before=%.8f time_after=%.8f casts_before=%d casts_after=%d" % [
+            before_save_rng,resumed.rng.snapshot_seed_state(),live.now,resumed.now,
+            live.pending_casts.size(),resumed.pending_casts.size()
+        ]):
         return
     for id in live.actors.keys():
         var lhs: Dictionary = live.actors[id]
