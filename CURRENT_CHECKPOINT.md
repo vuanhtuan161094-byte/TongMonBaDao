@@ -220,7 +220,7 @@ Current old percentage consumers may use a bounded compatibility bridge where ne
 
 ### 5.3 Giới hạn quan trọng, CHƯA code production / CHƯA có bằng chứng
 
-1. **Balance progression production đã khóa trong latest code:** shared 300-floor curve, Tu Vi 20/phút, Chuyên Tu ×2, Body reference 5/15/30 EXP/phút cho production/expedition/Rèn Thân. Các số 80/50/100 ở test cũ vẫn chỉ là fixture và không phải authority.
+1. **Balance progression production đã khóa trong latest code:** shared 300-floor curve, Tu Vi 1.000/phút, Chuyên Tu ×2, Body reference 250/750/1.500 EXP/phút cho production/expedition/Rèn Thân. Các số 80/50/100 ở test cũ vẫn chỉ là fixture và không phải authority.
 2. **Chưa có dữ liệu 29 lần đột phá Tu Vi:** `base_chance` theo cảnh giới, vật liệu/cấm/đan và verifier đầy đủ. **Luyện Thể** chưa có hệ thử đột phá, nguyên liệu, thất bại riêng; chỉ có authorized commit.
 3. **Chưa có chạy realtime end-to-end**: scheduler test gọi `step()`, **không đo tick đồng hồ thật 15s**, không có chứng cứ catch-up khi thoát/offline hoặc auto-loop liên tục; `p0_sandbox.gd` còn demo step mỗi ~0,18 giây. Không suy diễn từ “test scheduler PASS” sang “realtime V2 đã chơi được”.
 4. **Lệnh V2 chưa nối giao diện P3.2**: mới có API một lần; chưa có policy tự xếp việc rèn thể, UI 2 đường progress/gate, thông báo real-time, hoặc nút đột phá V2. Có thể request trả `ok=true` để xếp hàng nhưng khi `resolve` đến tick gặp `floor_costs` thiếu thì từ chối XP; cần UX báo lý do và kiểm tra trước khi xếp hàng.
@@ -348,12 +348,12 @@ Still deliberately NOT implemented: eligible production-profession list, actual 
 **Canonical balance now exists in code:**
 - `DiscipleProgressionBalanceV2`;
 - shared Tu Vi/Luyện Thể 300-floor EXP curve;
-- realm totals r1..r30: `6,000` -> `6,144,100`, ~1.27 realm growth, exact integer table frozen;
+- realm totals r1..r30: `10,000,000` -> `10,240,200,000`, ~1.27 realm growth, exact integer table frozen;
 - floor weights: `0.70 / 0.75 / 0.80 / 0.85 / 0.90 / 1.00 / 1.10 / 1.20 / 1.30 / 1.40`;
-- Tu Vi base = **20/minute**;
+- Tu Vi base = **1,000/minute**;
 - Chuyên Tu = **×2.0**;
-- Body reference rates = **5/min production, 15/min expedition, 30/min dedicated Rèn Thân**;
-- cumulative EXP through realms 10/20/30 = **220,400 / 2,625,600 / 28,878,100**.
+- Body reference rates = **250/min production, 750/min expedition, 1,500/min dedicated Rèn Thân**;
+- cumulative EXP through realms 10/20/30 = **367,400,000 / 4,376,300,000 / 48,130,600,000**.
 
 **Canonical major gates now exist in code:**
 - `DiscipleBreakthroughBalanceV2`;
