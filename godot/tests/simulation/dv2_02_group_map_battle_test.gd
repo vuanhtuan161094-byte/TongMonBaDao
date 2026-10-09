@@ -118,6 +118,32 @@ func _run() -> void:
        "Boss fought the group without a warning and delayed AoE release."):
         return
 
+    # Visible outside-region map reads SAME combat actor world positions.
+    # Rendering must not consume RNG or advance battle time.
+    var map_scene := load("res://scenes/p3/map_battle_world_layer_v2.tscn") as PackedScene
+    if not _assert(map_scene != null,"Group map overlay scene is missing."):
+        return
+    var map_view := map_scene.instantiate() as MapBattleWorldLayerV2
+    if not _assert(map_view != null,"Group map overlay script did not load."):
+        return
+    get_root().add_child(map_view)
+    var prior_time := boss_battle.now
+    var prior_rng := boss_battle.rng.snapshot_seed_state()
+    map_view.attach_session(boss_battle)
+    map_view.refresh_from_authority()
+    var current: Dictionary = boss_battle.actors["disciple_00"]
+    var point := map_view.point_on_map(current["position"])
+    if not _assert(map_view.actor_at_map_point(point) == "disciple_00",
+        "Map world actor selection missed authoritative disciple location."):
+        return
+    if not _assert(map_view.logical_from_map(point).distance_to(current["position"]) < 0.001,
+        "Node2D visual map transform did not round-trip battle coordinates."):
+        return
+    if not _assert(_close(prior_time,boss_battle.now) and prior_rng == boss_battle.rng.snapshot_seed_state(),
+        "Viewing map moved combat time or consumed battle RNG."):
+        return
+    map_view.queue_free()
+
     # Geometric counterplay: a monster's announced center can be avoided
     # by moving away during its cast; a target outside radius gets no damage.
     var dodge_test := MapBattleV2.new(9813)
