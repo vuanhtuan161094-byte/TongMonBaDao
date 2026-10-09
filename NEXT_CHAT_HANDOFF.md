@@ -1,46 +1,46 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
-Updated: 2026-10-09
+**Bàn giao: 09/10/2026 — thực trạng đã đối chiếu trực tiếp live `main`.**
 
-## Read first — mandatory order for character work
+**Repo:** `vuanhtuan161094-byte/TongMonBaDao` · **branch:** `main` · **engine:** Godot 4.7.2. **User yêu cầu thao tác bằng GitHub connector trực tiếp; KHÔNG Codex, KHÔNG Work.** Trước mọi sửa đổi phải fetch lại `main` vì SHA sẽ thay đổi sau các commit bàn giao. **SHA code cuối cùng đã qua focused test:** `e96df1832036c1232f9d0db69d1f37450d0265f9`. SHA HEAD cuối của loạt commit tài liệu bàn giao lấy từ `main`, không ghi nhầm thành SHA CI.
 
-1. `AGENTS.md`
-2. `docs/GAME_SYSTEM_ARCHITECTURE.md`
-3. `CURRENT_CHECKPOINT.md`
-4. `docs/DISCIPLE_V2_CHARACTER_IMPLEMENTATION_PLAN.md` — **NEW PRIMARY ACTIVE DESIGN/IMPLEMENTATION ROADMAP, no code yet**
-5. `docs/DISCIPLE_MASTER_SCHEMA.md`
-6. `docs/DISCIPLE_CHARACTERISTICS_STAT_FRAMEWORK_V2.md`
-7. `docs/DISCIPLE_V2_DESIGN_LEDGER.md`
-8. `docs/P3_7C1_FOUNDATION_DAN_TIEN_SPEC.md`
-9. `docs/COMBAT_STATS_V2_SPEC.md`
-10. `docs/REALM_LADDER_V2_SPEC.md`
-11. `docs/BODY_CULTIVATION_V2_SPEC.md`
-12. `docs/CULTIVATION_BREAKTHROUGH_V2_SPEC.md`
-13. `docs/SPIRITUAL_ROOT_V2_SPEC.md`
-14. `docs/TRAITS_V2_SPEC.md`
-15. `docs/DESTINY_V2_SPEC.md`
-16. `docs/BLOODLINE_V2_SPEC.md`
-17. `docs/PHYSIQUE_V2_SPEC.md`
-18. `docs/TECHNIQUE_V2_SPEC.md`
-19. `docs/CULTIVATION_PATH_V2_SPEC.md`
-20. `docs/COMBAT_SKILLS_V2_SPEC.md`
-21. **Live actual code/tests**: P3.7C1, recruitment/candidate/disciple_state, character modifiers, legacy combat, P3.2 tabs.
-22. For compatibility **only**: `docs/WEAPON_EQUIPMENT_V2_SPEC.md` and `docs/EQUIPMENT_SETS_V2_SPEC.md`. Gear-forging roadmap is **deferred**.
+## TRẠNG THÁI HIỆN TẠI — đọc mục này trước, không áp dụng các lịch sử bên dưới
 
-Fetch live `main` before all work. Do not ask user to repeat approved design already in repo. Newer user priority: **real V2 characters first; ordinary item forging, Pháp Bảo and Phù later**. 
+- **Giai đoạn ACTIVE duy nhất: DV2-03 — Tu Vi và Luyện Thể V2.** DV2-01 birth **CLOSED**; DV2-02 combat/group PvE **CORE BACKEND LOCKED** *trong phạm vi stat/encounter proving*, **không phải live PvE hoàn tất**.
+- **Đã CODE và focused Godot 4.7.2 Linux PASS:** hai hồ sơ Tu Vi + Luyện Thể V2 thật và độc lập (mỗi đường 30 đại cảnh × 10 tầng), đúng 60 tên đã khóa; EXP natural Tu Vi +0,25%/Tư Chất và Luyện Thể +0,20%/Căn Cốt, buff nguồn được nhận dạng rõ trên đúng channel; thưởng EXP fixed không nhân; EXP qua đủ tầng nhỏ tự tăng, tầng 10 dừng trước đột phá. `derive_stats` tính lại 16 combat stats + 10 kháng từ hai đường và Tiềm Lực, săn quái V2 không nhận cảnh giới giả.
+- **Đột phá Tu Vi V2 đã CODE ở cấp hàm và focused PASS:** đủ EXP và verified prerequisites, caller cấp base chance, GameRng, event ID; thất bại −10% gate EXP, +5 **điểm %** tỷ lệ lần sau ở cùng gate, ghi 2 bộ đếm; thành công qua đại cảnh mới tầng 1. **Không có bảng 29 base chance/chế độ auto/material consumer production.** `auto_breakthrough` mới là policy lưu. **Body gate chỉ có authorized commit**, chưa có thử/tỷ lệ/vật liệu Luyện Thể V2.
+- **Đã CODE + focused PASS ở scheduler:** `SimulationScheduler.step` xử lý opt-in `CULTIVATE`/ `TRAIN_BODY` qua `DiscipleTrainingActionV2.resolve` (một action trên một tick mô phỏng). `SectState.v2_training_enabled=false` và `v2_training_rules={}` theo mặc định; yêu cầu rule `authority_id`, `base_xp_per_action` và `floor_costs` đầy đủ. Thiếu dữ liệu → không phát EXP, **không lấy EXP `CultivationSystem` cũ thay V2**. Một đệ tử/tick không thể nhận thưởng V2 hai lần, kể cả đổi track; `last_training_tick`/ `last_training_event_id` lưu qua JSON.
+- **Đã CODE + focused PASS ở API lệnh người chơi:** `DiscipleTrainingActionV2.request_training(state, disciple_id, track)` xếp **một lần** activity, không tức thì cộng EXP và không ngắt đánh nhau/việc bận. **Chưa nối API này tới UI P3.2**; nút “Tu luyện” trong scene P3.2 vẫn qua `WorkforceSystem.COMMAND_CULTIVATE` legacy, không có nút Luyện Thể V2 thật.
+- **Giới hạn realtime:** tick trong bài test được gọi bằng `scheduler.step()`; **chưa xác nhận đồng hồ thật 15s, offline catch-up, tự lặp luyện tập, ưu tiên AI rèn thể, HUD, và Windows user runtime**. Sandbox P0 còn demo `step()` mỗi ~0,18 giây; không phải chứng cứ 15s wall-clock của V2.
+- **Chưa có số cân bằng chính thức:** 300 yêu cầu EXP cho mỗi đường, EXP/chu kỳ và bảng 29 base chance, điều kiện/vật liệu body gate. Các giá trị EXP `80/50/100` ở test là **fixture**, tuyệt đối KHÔNG promote lên production.
+- **Chưa kết nối đầy đủ:** V2 character HP live persistence/migration, V2 Equipment 10 ô/12 phẩm, Skills Nhân–Tiên–Thần và Trait/Mệnh/Linh Căn/Huyết Mạch/Thể Chất effects, outside-map live PvE/monster AI. Không coi design-only thành implemented.
 
-## Current implementation status
+## CI thực tế — KHÔNG ghi PASS nếu không có run
 
-**DV2-01 IMPLEMENTATION IS ACTIVE (2026-10-09). DV2-01A opt-in birth envelope is implemented but DV2-01 is NOT closed.**
+- **Focused DV2-03 PASS:** [Actions #37895517181](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37895517181), code SHA `e96df1832036c1232f9d0db69d1f37450d0265f9`, official **Godot 4.7.2 Linux**, từng bước Parse/2×300 realm test/`dv2_03_training_actions_test.gd` đều **success**. Bao gồm test lệnh `request_training`, chống EXP trùng, lưu/tải và bảo vệ action `COMBAT`.
+- **Full cumulative P3.7 PASS có bằng chứng gần nhất:** [Actions #37895357334](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37895357334), code SHA `5296f6106a2fd43d5c1a6f2523854702e9014d63`, fast + full cumulative đều success. **Chạy trước commits lệnh V2 `aa3122a`/test `e96df183`**. Vì vậy **CHƯA có full P3.7 PASS trên cùng source SHA `e96df183`**; đây là MISSING EVIDENCE, không phải FAIL.
+- **Windows Godot gate của DV2-03:** **CHƯA CÓ BẰNG CHỨNG**. Không relabel Linux CI thành Windows PASS.
+- Test references: `godot/tests/simulation/dv2_03_realm_body_progress_test.gd`, `godot/tests/simulation/dv2_03_training_actions_test.gd`; workflow `.github/workflows/dv2-03-realm-body-progress.yml`. Các commit chỉ chứa MD không tự chứng minh đã chạy lại gameplay CI.
 
-The last backend-closed implementation remains:
-P3.7C1 — Open-point Lục Duy + Dẫn Tiên Đài.
+## Thứ tự thực hiện kế tiếp (user đã chốt)
 
-Godot 4.7.2 CI closing evidence remains recorded in `CURRENT_CHECKPOINT.md`.
+1. **Vẫn DV2-03:** chốt hoặc nhận dữ liệu cân bằng 2×300 giá EXP, tốc độ EXP thật từng hoạt động; xác thực 29 chance Tu Vi, tiêu hao/vật liệu/điều kiện body gate. **Không dùng số hệ P2**. Nếu các bảng chưa được duyệt, chỉ hoàn thiện adapter/validator/UX fail-closed và đánh dấu thiếu dữ liệu, không bịa.
+2. Kết nối scheduler vào wall-clock chuẩn game (15s/tick theo thiết kế), offline catch-up và tự ưu tiên tu luyện/rèn thể **không nhân đôi EXP**, kết nối API lệnh trên P3.2 với trạng thái thực, phản hồi từ chối rõ ràng. Sau đó kiểm tra lưu/tải game và sync HP V2.
+3. Chạy focused Godot 4.7.2, **FULL cumulative P3.7 trên cùng SHA code cuối DV2-03**, rồi Windows gate và cập nhật checkpoint nếu có bằng chứng. **Chỉ sau khi DV2-03 đóng** mới mở bước 3.
+4. **Bước 3 (sau DV2-03):** Trang bị V2/12 phẩm/set, Công Pháp & Combat Skills Nhân–Tiên–Thần, Linh Căn, Đặc Chất, Mệnh Cách, Huyết Mạch, Thể Chất vào đúng runtime source/channel. Các phần chưa consumer phải BLOCKED.
+5. **Bước 4 sau bước 3:** live outside-region map group PvE, 5 độ khó mỗi map (kể cả Ngoại Vi vẫn có Boss/Tinh Anh hiếm), AI, né/đỡ AoE, đánh quần công theo tổ đội ≤6 và cụm ≤30, rút lui, drop và cân bằng lại từ đệ tử đủ buff. Không thiết kế thêm quái/map lúc này.
 
-All V2 systems named below are design authorities only unless the checkpoint explicitly says otherwise.
+## File bắt buộc đọc ở chat mới
+
+Theo thứ tự: `AGENTS.md` → `docs/GAME_SYSTEM_ARCHITECTURE.md` → `CURRENT_CHECKPOINT.md` → `NEXT_CHAT_HANDOFF.md` → `docs/DV2_03_TWO_TRACK_PROGRESS_EXECUTION.md` → `docs/DISCIPLE_MASTER_SCHEMA.md` → `docs/REALM_LADDER_V2_SPEC.md` → `docs/CULTIVATION_BREAKTHROUGH_V2_SPEC.md` → `docs/BODY_CULTIVATION_V2_SPEC.md` → `docs/P3_7_TIME_SPEED_COOLDOWN_SPEC.md` → code/test thực.
+
+Nguồn code: `godot/src/simulation/cultivation/disciple_realm_progress_v2.gd`, `disciple_training_action_v2.gd`, `godot/src/simulation/core/simulation_scheduler.gd`, `godot/src/simulation/state/disciple_state.gd`, `sect_state.gd`, `godot/src/simulation/combat/hunting_pve_run_v2.gd`, `godot/src/presentation/p3_2_landscape_sect.gd`.
+
+**Không hỏi lại các luật đã chốt; không Codex/Work; chỉ code GitHub connector, xác minh live main và gate thật.**
 
 ---
+
+## PHỤ LỤC — lịch sử quyết định V2 ở các chat trước (KHÔNG dùng trạng thái ACTIVE/LATEST trong phần dưới làm checkpoint hiện tại)
 
 ## Disciple V2 design status
 
