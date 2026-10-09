@@ -85,4 +85,5 @@ static func roll_basic_followup(
         return false
     if not bool(context.get("ok",false)):
         return false
-    return rng.chance(clampf(float(context.get("basic_followup_chance",0.0)),0.0,1.0))
+    var chance := clampf(float(context.get("basic_followup_chance",0.0)),0.0,1.0)
+    return chance > 0.0 and rng.chance(chance)
