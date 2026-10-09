@@ -184,7 +184,7 @@ func _init(definition: Dictionary = {}) -> void:
     v2_birth_profile = DiscipleBirthProfileV2.normalize_envelope(raw_v2_birth)
     var raw_v2_realm = definition.get("v2_realm_progress", {})
     if raw_v2_realm is Dictionary:
-        v2_realm_progress = raw_v2_realm.duplicate(true)
+        v2_realm_progress = DiscipleRealmProgressV2.normalize_profile(raw_v2_realm)
 
 func retreat_hp_ratio() -> float:
     return lerpf(0.48, 0.14, clampf(risk_bias, 0.0, 1.0))
