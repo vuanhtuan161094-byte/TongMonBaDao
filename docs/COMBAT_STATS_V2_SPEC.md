@@ -13,9 +13,7 @@ Parents:
 
 This spec locks the **Combat Stat registry, meanings, ownership and composition rules**.
 
-It does not yet lock:
-- final Realm/Luyện Thể ATK/DEF/HP growth tables;
-- the exact Defense-to-mitigation curve;
+Its **numeric Realm/Luyện Thể ATK/DEF/HP growth and Defense mitigation** were subsequently **USER-LOCKED on 2026-10-09** in `docs/DV2_REALM_BODY_COMBAT_CURVES_V1_PROPOSAL.md` (filename retained for history, content status now LOCKED). It still does not lock:
 - equipment affix distributions;
 - monster stat curves;
 - encounter balance.
@@ -392,10 +390,10 @@ Băng's locked Effect Hit bonuses use this authority.
 
 # 7. Defense / penetration semantics
 
-The exact Defense mitigation curve is **deferred**.
+The exact Defense mitigation curve was **approved 2026-10-09**: `K=2*max(0, attacker_ATK)`, ordinary mitigation multiplier `K/(K+effective_DEF)` for attack-scaled direct packets; see `docs/DV2_REALM_BODY_COMBAT_CURVES_V1_PROPOSAL.md`. No legacy Combat Power is permitted as a damage input.
 
 Reason:
-ATK/DEF/HP growth tables from Realm + Luyện Thể are not yet finalized, so locking a numeric Defense curve before those scales exist would be premature.
+This was deferred when first authored; **superseded by the approved Realm+Body numerical curve dated 2026-10-09** in `docs/DV2_REALM_BODY_COMBAT_CURVES_V1_PROPOSAL.md`. Actual battle/monster tests and gameplay implementation remain pending.
 
 What is locked now:
 
