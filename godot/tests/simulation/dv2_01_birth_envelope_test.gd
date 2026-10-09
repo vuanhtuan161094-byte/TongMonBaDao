@@ -55,9 +55,16 @@ func _run() -> void:
             return
         known[str(seed_value)] = true
 
-    var disciple := first.to_disciple()
-    if disciple.v2_birth_profile != profile:
-        _fail("Candidate acceptance discarded/changed the birth envelope.")
+    # Verify the REAL RecruitmentSystem accept path, not only CandidateState.to_disciple().
+    state.sect.disciple_capacity = maxi(state.sect.disciple_capacity, state.disciples.size() + 1)
+    state.recruitment_candidates[first.id] = first
+    var accepted: Dictionary = RecruitmentSystem.new().accept_candidate(state, first.id)
+    if not bool(accepted.get("ok", false)):
+        _fail("Real candidate acceptance failed: " + str(accepted.get("reason", "unknown")))
+        return
+    var disciple: DiscipleState = state.disciples.get(first.id)
+    if disciple == null or disciple.v2_birth_profile != profile:
+        _fail("Real recruitment discarded/changed the V2 birth envelope.")
         return
     # Explicit initialized+none is different from uninitialized.
     # Mutation of the recruited disciple must not mutate the original candidate.
