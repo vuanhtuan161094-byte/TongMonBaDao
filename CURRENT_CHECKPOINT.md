@@ -245,7 +245,7 @@ Current old percentage consumers may use a bounded compatibility bridge where ne
 
 ### 5.6 DV2-03M — P2/V2 progression isolation + live HP migration (CODE PUSHED, GATE UNVERIFIED)
 
-**Latest gameplay HEAD for this slice:** `1d9e93d5d2610dbe4db1ea678f3593f5c7b5256c` plus later documentation commits only after this section is written. This slice intentionally fixes migration/runtime authority before EXP balance, autonomous Tu Vi/Body policy, realtime/offline or UI.
+**Latest gameplay HEAD for this slice:** `0267eeb80eda0a506329860da31a0bbfba761797` plus later documentation commits only after this section is written. This slice intentionally fixes migration/runtime authority before EXP balance, autonomous Tu Vi/Body policy, realtime/offline or UI.
 
 Implemented:
 - One V2 identity boundary: `DiscipleRealmProgressV2.owns_v2_progression()`; mutation APIs require authentic complete V2 birth identity + valid V2 realm profile, not a spoofed realm dictionary.
