@@ -16,6 +16,7 @@ func evaluate(state: SimulationState, disciple: DiscipleState) -> Dictionary:
 	var stamina_ratio := disciple.stamina / 100.0
 	var inventory_count := disciple.inventory_count()
 	var owns_v2 := DiscipleRealmProgressV2.owns_v2_progression(disciple)
+	var v2_auto_training: Dictionary = {}
 
 	var heal_score := (1.0 - hp_ratio) * (0.55 + disciple.survival_bias) * 100.0
 	# V2 stamina is expedition-only. In-sect rest/buy may still be chosen for
@@ -72,10 +73,9 @@ func evaluate(state: SimulationState, disciple: DiscipleState) -> Dictionary:
 				state,disciple
 			)
 			if bool(auto_training.get("ok",false)):
+				v2_auto_training = auto_training.duplicate(true)
 				chosen = StringName(auto_training["action"])
 				reason = "V2 autonomous training policy selected %s." % str(auto_training["track"])
-				scores["CULTIVATE"] = 1.0 if chosen == &"CULTIVATE" else 0.0
-				scores["TRAIN_BODY"] = 1.0 if chosen == &"TRAIN_BODY" else 0.0
 			elif disciple.stamina <= 22.0:
 				chosen = &"HOLD"
 				reason = "V2 expedition stamina is too low to leave the sect and no automatic training track is currently available."
@@ -112,6 +112,9 @@ func evaluate(state: SimulationState, disciple: DiscipleState) -> Dictionary:
 		var current_v2 := DiscipleRealmProgressV2.current(disciple)
 		result["v2_progression"] = current_v2.duplicate(true)
 		result["v2_training_enabled"] = state.sect.v2_training_enabled
+		result["v2_training_policy"] = DiscipleTrainingPolicyV2.current_policy(disciple)
+		if not v2_auto_training.is_empty():
+			result["v2_auto_training"] = v2_auto_training.duplicate(true)
 		result["effective_combat_power"] = _effective_combat_power(state, disciple)
 	elif state.sect.cultivation_enabled:
 		result["cultivation_stage"] = cultivation_system.stage_name(disciple)
