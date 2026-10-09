@@ -33,7 +33,7 @@ func _run() -> void:
             "Realm 1 floor cost mismatch at floor %d." % floor_index):
             return
     if not _assert(r1_sum==10000000,
-        "Realm 1 floor costs do not sum to 6,000."):
+        "Realm 1 floor costs do not sum to 10,000,000."):
         return
 
     for realm in range(1,31):
