@@ -203,6 +203,8 @@ Current old percentage consumers may use a bounded compatibility bridge where ne
 | P3.7 FULL trên **cùng SHA `e96df183`** | **Chưa có bằng chứng run đầy đủ** | **CHƯA KIỂM THỬ** (không suy từ full run cũ) |
 | Godot **Windows** trực tiếp/đồ họa P3.2 với V2 | Chưa cung cấp | **CHƯA KIỂM THỬ**, không gọi Windows PASS |
 
+**P3 Presentation Audit ngoài phạm vi DV2-03:** [Actions #37897313917](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37897313917) tại `b3854215` từng **FAIL**: `P3_ASSET_REGISTRY.json` assets[21]/[22] đặt `repo_source` nhưng thiếu `source_path`. Đã đối chiếu và bổ sung **đường dẫn tệp có thật** (`godot/src/presentation/p3/female_normal_v1_motion_library.gd`, `godot/src/presentation/p3_2_landscape_sect.gd`) vào `docs/P3_ASSET_REGISTRY.json`, không sửa gameplay/art. **P3 STATIC AUDIT PASS** [Actions #37897882946](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37897882946) tại `cb8d5cfe66c10e47769bf20d9e62e36eeb0ad18a`. Đây là static registry check, **không phải Godot runtime hay Windows PASS**.
+
 **Không có FAIL chưa xử lý trong các job DV2-03 nêu trên:** chúng thực tế completed/success. Các FAIL thời điểm triển khai trước đó đã sửa (giả birth flag, normalize dữ liệu JSON; lỗi test/ownership). **Chưa có full cumulative cùng SHA mới không phải FAIL, chỉ là chưa có bằng chứng**.
 
 ### 5.2 Cơ chế đã có code và test focused PASS
