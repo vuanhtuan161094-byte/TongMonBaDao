@@ -31,7 +31,9 @@ func resolve_encounter(state: SimulationState, disciple: DiscipleState, rng: Gam
 
     var monster_hp := float(definition.get("hp", 30.0))
     var monster_power := float(definition.get("power", 10.0))
-    var effective_power := cultivation_system.effective_combat_power(state, disciple) if state.sect.cultivation_enabled else disciple.combat_power
+    # Legacy encounter compatibility must not read P2 realm power from a
+    # genuine V2 disciple. Full stat-driven live PvE is a later migration.
+    var effective_power := cultivation_system.effective_combat_power(state, disciple) if state.sect.cultivation_enabled and not DiscipleRealmProgressV2.owns_v2_progression(disciple) else disciple.combat_power
     if state.sect.equipment_enabled:
         effective_power += equipment_system.combat_power_bonus(state, disciple)
     var damage_multiplier := technique_system.incoming_damage_multiplier(state, disciple) if state.sect.techniques_enabled else 1.0
@@ -84,7 +86,9 @@ func _resolve_realtime_encounter(state: SimulationState, disciple: DiscipleState
     if definition.is_empty():
         return {"outcome":"invalid", "loot":{}, "trace":[]}
 
-    var effective_power := cultivation_system.effective_combat_power(state, disciple) if state.sect.cultivation_enabled else disciple.combat_power
+    # Legacy encounter compatibility must not read P2 realm power from a
+    # genuine V2 disciple. Full stat-driven live PvE is a later migration.
+    var effective_power := cultivation_system.effective_combat_power(state, disciple) if state.sect.cultivation_enabled and not DiscipleRealmProgressV2.owns_v2_progression(disciple) else disciple.combat_power
     if state.sect.equipment_enabled:
         effective_power += equipment_system.combat_power_bonus(state, disciple)
     var incoming_multiplier := _realtime_incoming_multiplier(state, disciple)
