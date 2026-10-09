@@ -1,12 +1,12 @@
 class_name DiscipleTrainingContentV2
 extends RefCounted
 
-# DV2-03C: STRICT CONTENT FORMAT, not a production EXP balance table.
-# No rates or costs are invented here. A catalogue can be used only after
-# its complete 2 x 300 floor content is authored, reviewed and supplied.
-const VERSION := 1
+# DV2-03C/V2.1: STRICT CONTENT FORMAT, not a production EXP balance table.
+# Rates are normalized per simulation minute. Runtime/presentation cadence is
+# not balance authority. No numeric rate/cost is invented here.
+const VERSION := 2
 const FLOORS_PER_TRACK := 300
-const TICK_SECONDS := 15
+const RATE_UNIT := "per_simulation_minute"
 
 static func validate_catalogue(raw: Variant) -> Dictionary:
     if not (raw is Dictionary):
@@ -33,12 +33,20 @@ static func validate_catalogue(raw: Variant) -> Dictionary:
         var rule: Dictionary = tracks[track]
         if str(rule.get("authority_id","")).is_empty():
             return {"ok":false,"reason":"missing_training_authority","track":track}
-        var raw_rate = rule.get("base_xp_per_action",null)
+        var rate_key := "base_tuvi_per_minute" if track == "cultivation" else "base_body_xp_per_minute"
+        var raw_rate = rule.get(rate_key,null)
         if not (raw_rate is int or raw_rate is float):
             return {"ok":false,"reason":"missing_training_base_rate","track":track}
         var rate := float(raw_rate)
         if is_nan(rate) or is_inf(rate) or rate <= 0.0:
             return {"ok":false,"reason":"invalid_training_base_rate","track":track}
+        if track == "cultivation":
+            var raw_multiplier = rule.get("cultivate_multiplier",null)
+            if not (raw_multiplier is int or raw_multiplier is float):
+                return {"ok":false,"reason":"missing_cultivate_multiplier","track":track}
+            var cultivate_multiplier := float(raw_multiplier)
+            if is_nan(cultivate_multiplier) or is_inf(cultivate_multiplier) or cultivate_multiplier < 1.0:
+                return {"ok":false,"reason":"invalid_cultivate_multiplier","track":track}
         var raw_costs = rule.get("floor_costs",null)
         if not (raw_costs is Dictionary):
             return {"ok":false,"reason":"missing_authored_floor_costs","track":track}
@@ -69,11 +77,16 @@ static func build_rules(raw: Variant) -> Dictionary:
     var rules: Dictionary = {}
     for track in DiscipleRealmProgressV2.TRACKS:
         var item: Dictionary = tracks[track]
-        rules[track] = {
+        var rule := {
             "authority_id":str(item["authority_id"]),
             "action":"CULTIVATE" if track == "cultivation" else "TRAIN_BODY",
-            "base_xp_per_action":float(item["base_xp_per_action"]),
             "floor_costs":item["floor_costs"].duplicate(true),
             "sources":[]
         }
+        if track == "cultivation":
+            rule["base_tuvi_per_minute"] = float(item["base_tuvi_per_minute"])
+            rule["cultivate_multiplier"] = float(item["cultivate_multiplier"])
+        else:
+            rule["base_body_xp_per_minute"] = float(item["base_body_xp_per_minute"])
+        rules[track] = rule
     return {"ok":true,"rules":rules,"catalogue_id":validated["catalogue_id"]}
