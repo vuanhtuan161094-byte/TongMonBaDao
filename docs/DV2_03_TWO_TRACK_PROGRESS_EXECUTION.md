@@ -1,7 +1,31 @@
 # DV2-03 — Hai tiến độ Tu Vi và Luyện Thể V2 trên đệ tử THẬT
 
 Ngày: 2026-10-09
-Giai đoạn: **ACTIVE — FOCUSED TEST PASS; full gameplay closure NOT YET approved**
+Giai đoạn: **DV2-03 ACTIVE — mã lõi/hoạt động theo tick đã PASS focused Linux Godot 4.7.2; production realtime/UI/balance và cumulative trên SHA code mới nhất vẫn chưa đóng.**
+
+## Bằng chứng mới nhất, 09/10/2026 — nguồn kiểm tra trên live main
+
+**Mã runtime code mới nhất được kiểm thử focused:** `e96df1832036c1232f9d0db69d1f37450d0265f9`; [DV2-03 Actions #37895517181](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37895517181), **completed/success**. Các bước: cài binary Godot **4.7.2 Linux**, parse cả project, chạy `dv2_03_realm_body_progress_test.gd` và `dv2_03_training_actions_test.gd`, **đều success**. Điều này chứng minh test trên engine thật của runner CI, **không phải máy Windows của người chơi**, không tự động chứng minh UI/gameplay ngoài bản đồ.
+
+**FULL P3.7 cumulative gần nhất có chứng cứ:** [Actions #37895357334](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37895357334) tại mã `5296f6106a2fd43d5c1a6f2523854702e9014d63`, **completed/success** (fast + full cumulative). Chạy trước các commit thêm lệnh người chơi `aa3122a`, bài test lệnh `e96df183`. **Chưa có full cumulative PASS ở cùng code SHA `e96df183`**. Những commit tài liệu được push sau mã này không có bằng chứng tự động CI trên chính commit docs.
+
+| Phạm vi | Trạng thái triển khai, không suy rộng |
+|---|---|
+| 30 cảnh giới × 10 tầng **cho từng đường** và tên 60 đại cảnh | **ĐÃ CODE + FOCUSED PASS**; lưu profile riêng `cultivation`/`body` trên đệ tử V2 hợp lệ |
+| Nhận EXP và tăng tầng nhỏ | **ĐÃ CODE + FOCUSED PASS** khi có `floor_costs` và `base_xp_per_action` được khai báo; không tự chốt bảng EXP |
+| Đột phá đại cảnh Tu Vi | **ĐÃ CODE + FOCUSED PASS ở hàm** với chi phí, xác suất, điều kiện truyền hợp lệ; không phải nút đột phá hay lịch auto thật |
+| Đột phá đại cảnh Luyện Thể | **CHỈ CÓ hàm commit khi caller đã xác nhận điều kiện**; tỷ lệ/vật liệu/cách thử production **CHƯA TRIỂN KHAI** |
+| Tick hành động `CULTIVATE`/`TRAIN_BODY` | **ĐÃ CODE + FOCUSED PASS** qua `SimulationScheduler.step()`; V2 riêng, opt-in; nguồn `CultivationSystem` P2 không được dùng thay V2 |
+| Lệnh `request_training` | **ĐÃ CODE + FOCUSED PASS dưới dạng API một lần**; từ chối chen ngang combat; **chưa nối nút UI P3.2 V2** |
+| Chống EXP trùng hai nhánh trong 1 tick | **ĐÃ CODE + FOCUSED PASS**: `last_training_tick` chung ở V2 profile + `last_training_event_id` theo track, kiểm tra owner/action |
+| Lưu/tải EXP, tầng, policy, event và lịch sử | **ĐÃ CODE + FOCUSED PASS** trên `DiscipleState`/`SectState`, test JSON round-trip |
+| Tính lại 16 chỉ số + 10 kháng sau tiến độ | **ĐÃ CODE + FOCUSED PASS** ở `derive_stats`/Hunting V2 proving adapter; **live HP P2 và màn nhân vật chính chưa di trú toàn bộ** |
+| Thời gian thực 15s ngoài game, offline catch-up, AI tự tập luyện | **CHƯA XÁC NHẬN chạy end-to-end**. Scheduler test chạy tick bằng lệnh, không đo 15 giây đồng hồ thật; sandbox cũ còn timer riêng |
+| EXP chuẩn 2×300, 29 tỷ lệ nền Tu Vi, vật liệu và điều kiện Luyện Thể | **CHƯA CÓ production balance được duyệt**; các số `80/50/100` trong test là fixture |
+| Windows Godot 4.7.2 cho DV2-03 và chấp nhận UI trực quan | **CHƯA KIỂM THỬ/chưa có bằng chứng** |
+
+**Vấn đề kỹ thuật cần giải quyết:** `request_training` chỉ kiểm tra `authority_id` và loại action trước khi xếp hàng; tính hợp lệ **toàn bộ** tốc độ/cost/sources được kiểm tra khi tick thực hiện. Vì vậy lệnh có thể xếp hàng thành công nhưng tick trả từ chối, **không cộng EXP**. Sự kiện V2 một action/tick là cam kết đã test; đây không phải lịch tự tu luyện liên tục hoặc thực hiện đột phá tự động. Demo P0 `p0_sandbox.gd` gọi `SimulationScheduler.step()` theo khoảng **0,18 giây mô phỏng demo**; tuyệt đối không dùng kết quả đó làm chứng cứ nhịp wall-clock 15s của game V2.
+
 
 ## Authority and user-approved order
 
@@ -40,7 +64,7 @@ No new maps, new species or speculative XP/chance/reward data in DV2-03.
 - Quyền hoạt động kiểm tra đối tượng đúng thuộc `SimulationState.disciples`, đúng `current_action`, còn sống, ở tông môn, tick hiện tại lớn hơn 0; cặp `last_training_tick` trên hồ sơ và `last_training_event_id` từng đường được lưu/tải. **Mỗi đệ tử chỉ được nhận một EXP hành động trong một tick**, kể cả giả đổi từ Tu Vi sang Luyện Thể trong cùng tick.
 - `request_training(state, disciple_id, track)` là lệnh người chơi yêu cầu hoạt động **một lần**, không thưởng EXP tức thì và không cắt ngang `COMBAT` hay hoạt động đang bận. Giao diện P3.2 chưa được nối; đây là cầu nối cho lệnh UI.
 - Luyện Thể không ăn XP Tu Vi, không tự trừ Thể Lực Viễn Chinh hoặc gây sát thương. Giai đoạn này chưa có lịch tự ưu tiên Luyện Thể so với nghề khác, thiết bị/công pháp/cơ sở vật chất chưa tự sinh bonus không có nguồn.
-- **Godot 4.7.2 Linux PASS** [DV2-03 #37895517181](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37895517181), commit `e96df183`; chạy cùng bài 2×300 gốc và `dv2_03_training_actions_test.gd`: hành động scheduler, policy thiếu, EXP Tu Vi/Luyện Thể độc lập, natural vs fixed, source có danh tính, không lặp, không ngắt chiến đấu, lưu/tải. **Full P3.7 hồi quy PASS ở `5296f610`** [#37895357334](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37895357334), bao gồm chuyển hướng scheduler. Phiên bản opt-in request/test mới hơn đã PASS focused, nhưng chưa có full cumulative trên đúng SHA mới nhất.
+- **Godot 4.7.2 Linux FOCUSED PASS** [DV2-03 #37895517181](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37895517181), code commit `e96df183`; gồm `request_training`, cả bài 2×300 và real scheduler action/dedup test. **Full P3.7 PASS cũ hơn** [#37895357334](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37895357334) tại `5296f610` (trước API lệnh V2), không được gọi full cumulative của code SHA mới nhất.
 
 **Còn thiếu cho gameplay hoàn chỉnh:** người chơi duyệt đường EXP/cost 300 tầng + tốc độ tăng dựa vào thời lượng, ưu tiên rèn thể của AI và giao diện hiển thị, điều kiện/vật phẩm và bảng xác suất đột phá 29 đại cảnh, nhịp tự đột phá, HP V2 lưu thật, chứng minh toàn bộ game trên máy Godot. Cầu nối action đã có nhưng **nếu chưa cung cấp bảng XP và tốc độ hợp lệ thì không được giả vờ nhân vật đang tự lên tầng**.
 
@@ -69,8 +93,8 @@ No new maps, new species or speculative XP/chance/reward data in DV2-03.
 
 **FOCUSED PASS:** Godot 4.7.2 Linux, `godot/tests/simulation/dv2_03_realm_body_progress_test.gd`: real recruitment, one-time initialization, independent 30×10 coordinates, natural/fixed XP and typed buffs, minor floors, gate fail/pity/re-cultivate/success, HP/stamina unaffected on failure, Body separate authorized gate, JSON normalization, combat stat recomputation and denial of spoofed PvE realm.
 
-- **Latest focused official Godot 4.7.2 Linux PASS** [Actions #37893767560](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37893767560), code commit `57fa72ae882b`: full independent Tu Vi/Body coordinates, XP, gates, save/load, persisted-profile PvE and exact 60 named realms. Earlier green focused [#37893363804](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37893363804) confirms core, now superseded by this newer gate.
-- **Full P3.7 cumulative PASS** [Actions #37893455770](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37893455770) for the tested V2 dual-track runtime preceding the latest 60-name label addition. **Newer full P3.7 run** [#37893767454](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37893767454) is pending/running as of last read; check its result before claiming same-commit cumulative PASS.
+- **FOCUSED PASS mới nhất cho DV2-03:** [#37895517181](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37895517181) ở `e96df183` (cùng các bài 2×300, tên 60 cảnh giới, command và tick chống EXP trùng); các gate #37893767560, #37893363804 là bằng chứng lịch sử, không phải latest.
+- **FULL cumulative P3.7 PASS được xác minh mới nhất:** [#37895357334](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37895357334) tại `5296f610`; không phải full PASS của mã API command `aa3122a` hay test `e96df183`.
 - Full P3.7 cumulative MUST be verified for the latest relevant code commit before calling DV2-03 BACKEND LOCKED.
 
 **Still NOT done:** complete authored 300-floor EXP tables and production rates (the real action bridge is implemented but remains **disabled without content**); per-major-realm Tu Vi base breakthrough chance; body-gate material/attempt policies; automatic breakthrough attempts after authored source/condition authorization; AI body-training priority; safe old character migration and V2 HP synchronization; user UI for the new two progression tracks. Keep this phase active unless its narrower core scope and tests are explicitly closed with evidence.
