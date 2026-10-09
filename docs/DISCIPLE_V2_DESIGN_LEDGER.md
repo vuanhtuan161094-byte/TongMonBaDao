@@ -706,9 +706,11 @@ This supersedes any earlier implication that ordinary work itself grants a separ
 - fixed body pills/material rewards remain fixed unless explicitly scalable.
 
 **Time semantics**
-- **15 seconds is NOT a locked gameplay balance unit.**
-- Natural Tu Vi is a rate over elapsed simulation time. A runtime may batch or commit at 15s, 5s, 1m or another technical cadence provided the total over equal elapsed time is identical and deterministic.
-- Offline and online must therefore consume the same elapsed-time/source rules; presentation timer frequency is not progression balance.
+- **15 seconds is NOT a gameplay balance unit.**
+- Display/balance uses **Tu Vi per simulation minute**; active body training uses **Luyện Thể EXP per simulation minute**.
+- Current P3.7 time semantics already define 1440 simulation ticks/day, so one scheduler step is one simulation minute.
+- Wall-clock cadence may batch these minutes later, but equal simulated minutes must yield identical deterministic progression online/offline.
+- Production numeric Tu Vi/minute, Chuyên Tu multiplier and Body EXP/minute remain OPEN until balance approval.
 
 Implementation note: current DV2-03 action-based training/work bridge does **not yet fully implement this new source model**. In particular, passive Tu Vi and removal of the separate generic work-Tu-Vi award remain required code migration work.
 
