@@ -323,16 +323,47 @@ func _run() -> void:
     if not _assert(not bool(orchestrator.claim().get("ok",true)),
         "Session awarded actual warehouse resources before battle completion."):
         return
+    var saved_run := orchestrator.save_state()
+    if not _assert(bool(saved_run.get("ok",false)),
+        "Whole hunting session could not serialize its selected difficulty and battle."):
+        return
+    var restored_run := HuntingPveRunV2.restore_state(
+        state,JSON.parse_string(JSON.stringify(saved_run))
+    )
+    if not _assert(bool(restored_run.get("ok",false)),
+        "Authentic persisted hunting session could not be restored: " +
+        str(restored_run.get("reason","unknown"))):
+        return
+    var resumed_session: HuntingPveRunV2 = restored_run["session"]
+    if not _assert(int(resumed_session.spawn_data["level"]) == 1 and
+        resumed_session.battle.encounter_id == "guided_group_hunt_01",
+        "Restored map had changed its difficulty or encounter identity."):
+        return
     var resolved := orchestrator.finish()
+    var reloaded_result := resumed_session.finish()
     if not _assert(bool(resolved.get("ok",false)) and
-        str(resolved["summary"]["outcome"]) == "win",
-        "Authentic V2 disciples could not finish chosen map hunt."):
+        str(resolved["summary"]["outcome"]) == "win" and
+        resolved["summary"] == reloaded_result["summary"],
+        "Restarted selected-map hunt diverged from uninterrupted group battle."):
         return
     var actual_claim := orchestrator.claim()
     if not _assert(bool(actual_claim.get("ok",false)) and
         state.sect.v2_pve_reward_claims.has("guided_group_hunt_01") and
         not bool(orchestrator.claim().get("ok",true)),
         "Full group hunting lifecycle failed to commit exactly one warehouse reward."):
+        return
+    if not _assert(not bool(resumed_session.claim().get("ok",true)),
+        "Reloading a victorious battle bypassed persisted once-only payout."):
+        return
+    var malformed_run: Dictionary = saved_run.duplicate(true)
+    malformed_run["encounter_id"] = "forged_elsewhere"
+    if not _assert(not bool(HuntingPveRunV2.restore_state(state,malformed_run).get("ok",true)),
+        "Forged hunt encounter ID could alias a genuine battle save."):
+        return
+    var wrong_level: Dictionary = saved_run.duplicate(true)
+    wrong_level["difficulty"] = 5
+    if not _assert(not bool(HuntingPveRunV2.restore_state(state,wrong_level).get("ok",true)),
+        "Changing difficulty in the save re-spawned a different monster reward set."):
         return
     var broken := HuntingPveRunV2.new()
     var no_progress: Array = team.duplicate(true)
