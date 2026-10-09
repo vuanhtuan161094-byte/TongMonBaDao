@@ -497,7 +497,13 @@ func _direct_command_action(state: SimulationState, disciple: DiscipleState) -> 
                 # but never to P2 if V2 content/profile is unavailable.
                 if state.sect.v2_training_enabled and DiscipleRealmProgressV2.progression_ready(disciple):
                     return &"CULTIVATE"
-                return &"HOLD"
+                # Do not leave a rejected compatibility command stuck in an
+                # endless HOLD -> EVALUATE -> HOLD loop.
+                clear_command(state,disciple)
+                disciple.last_decision["v2_training_result"] = {
+                    "ok":false,"reason":"v2_training_not_ready"
+                }
+                return &""
             return &"CULTIVATE"
         COMMAND_HUNT_REGION:
             if disciple.region_id == &"sect":
