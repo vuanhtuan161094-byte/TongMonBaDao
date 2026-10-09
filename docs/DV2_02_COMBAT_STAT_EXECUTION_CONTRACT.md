@@ -1,4 +1,4 @@
-# DV2-02 — HỢP ĐỒNG TRIỂN KHAI 14 CHỈ SỐ CHIẾN ĐẤU V2
+# DV2-02 — HỢP ĐỒNG TRIỂN KHAI 16 CHỈ SỐ CHIẾN ĐẤU V2
 
 Ngày: 2026-10-09.
 **Trạng thái: ĐÃ VIẾT VÀ KIỂM THỬ ĐỘC LẬP BỘ TÍNH; DV2-02 CHƯA ĐÓNG; CHƯA CHUYỂN PvE SANG V2.**
@@ -20,7 +20,7 @@ Tu Vi: đại cảnh 1..30 / tầng 1..10
                                         |
                      × [1 + tổng bonus % CÙNG KÊNH]
                                         |
-         14 chỉ số chính / 10 kháng hệ / breakdown nguồn
+         16 chỉ số chính / 10 kháng hệ / breakdown nguồn
                                         |
                  Hành động kỹ năng/đòn đánh (combat owner)
                                         |
@@ -35,7 +35,7 @@ Tu Vi: đại cảnh 1..30 / tầng 1..10
 - Trang bị +100 Công cộng đúng 100 rồi mới tính % Công hợp lệ.
 - Sát thương giao chiến **không đọc `combat_power`**; mã chiến đấu cũ vẫn sống riêng cho đến lúc có quái/skill V2 chuẩn.
 
-## 2. Danh mục 14 chỉ số chính — giá trị gốc, cộng/trừ, đầu ra
+## 2. Danh mục 16 chỉ số chính — giá trị gốc, cộng/trừ, đầu ra
 
 | Chỉ số | Mã canonical | Mức bắt đầu (không nguồn) | Hiệu ứng được phép | Người dùng kết quả |
 |---|---|---|---|---|
@@ -53,6 +53,8 @@ Tu Vi: đại cảnh 1..30 / tầng 1..10
 | Chính Xác Hiệu Ứng | `effect_hit` | 0 điểm phần trăm | cộng/trừ điểm phần trăm | kiểm tra đóng băng/khống chế/debuff cần kiểm tra |
 | Kháng Hiệu Ứng | `effect_resistance` | 0 điểm phần trăm | cộng/trừ điểm phần trăm | trừ xác suất áp hiệu ứng |
 | Giảm Sát Thương | `damage_reduction` | 0% | các nguồn độc lập nhân lên **phần sát thương còn lại**, không cộng thẳng | hậu phòng ngự và kháng hệ |
+| **Hút Máu** | `lifesteal` | 0% | cộng/trừ **điểm phần trăm**; không tự đặt giới hạn tối đa 100% | hồi HP theo % **sát thương HP thực tế** đã gây, sau giảm sát thương và giới hạn HP của đối thủ |
+| **Giảm Hút Máu** | `lifesteal_reduction` | 0% | cộng/trừ **điểm phần trăm**, không nhân giảm sát thương | trừ trực tiếp Hút Máu của người đánh, rồi chặn tỷ lệ âm |
 
 **10 kháng hệ (không tính là 10 thuộc tính sinh độc lập):**
 `metal, wood, water, fire, earth, lightning, wind, ice, yang, nether` = Kim, Mộc, Thủy, Hỏa, Thổ, Lôi, Phong, Băng, Dương, U Minh.
@@ -64,6 +66,9 @@ Giá trị bắt đầu 0%; hai nguồn kháng Hỏa 30% và 20% cho **kháng hi
 - Effect Hit/Effect Resistance có thể nhận buff/debuff có dấu; **xác suất áp hiệu ứng cuối** mới kẹp 0–100%.
 - Một nguồn Giảm Sát Thương/kháng hệ thường phải `0<=value<1`; miễn nhiễm 100% là **luật riêng**, không phải cộng quá nhiều nguồn.
 - Tốc độ dạng rate không tự tạo kỹ năng có hồi chiêu 0: đầu vào `bonus <= -100%` bị báo không hợp lệ khi tính khoảng thời gian.
+- **Hút Máu hiệu lực = max(0, %HútMáu − %GiảmHútMáu mục tiêu)**. Hai tỷ lệ gốc không âm, **không có cap 100% tự suy diễn**; Hút Máu >100% hợp lệ nếu nội dung thực sự cấp, nhưng HP hồi không vượt phần còn thiếu.
+- Chỉ dùng **sát thương trực tiếp thực sự trừ HP** sau toàn bộ phòng thủ; đòn kết liễu không được hút thêm từ sát thương dư. Kỹ năng gây sát thương DoT/phản đòn/triệu hồi/proc hoặc fixed damage phải khai báo quyền Hút Máu riêng.
+- **Hút Máu không tự nhân Healing Done/Healing Received** và không tự chạy khi xem trước sát thương; commit HP đúng một lần theo hệ combat action.
 - Không có né tránh/chính xác đòn thường, Mana chung, chỉ số tốc độ lượt, chia Công/Thủ vật lý–pháp thuật hay Combat Power làm quyền lực V2.
 
 ## 3. Nhận và xử lý nguồn bonus theo đúng địa chỉ
@@ -108,10 +113,25 @@ Damage_final = Damage_after_DEF × KhắcHệ × (1 − KhángHệ) × (1 − Gi
 
 **Trật tự cuối** do từng loại damage packet xác định: `direct` đủ điều kiện mới qua Phòng Ngự; sát thương cố định/DoT/hồi máu không mặc định dùng công thức đòn trực tiếp. Không dùng công thức này như universal resolver cho mọi hiệu ứng.
 
+## 4A. Hút Máu và Giảm Hút Máu — luật đã khóa ngày 2026-10-09
+
+```text
+HútMáuHiệuLực = max(0, HútMáuAttacker - GiảmHútMáuDefender)
+DamageThực = min(DamageSauPhòngNgựKhángHệGiảmST, HPHiệnTạiDefender)
+MáuHồiThô = DamageThực × HútMáuHiệuLực
+MáuHồiThật = min(MáuHồiThô, MaxHPAttacker - HPHiệnTạiAttacker)
+```
+
+Ví dụ: A có 20% Hút Máu, B có 5% Giảm Hút Máu, gây 1.000 damage sau xử lý phòng thủ. Nếu B có đủ HP thì A được hồi 150 HP (nhưng không vượt HP tối đa). B chỉ còn 100 HP thì lượng hồi thô còn 15 HP. Hút Máu không dùng Công/Chiến Lực thô hoặc **sát thương trước phòng ngự**.
+
+**Code authority:** `CombatStatsV2.effective_lifesteal_rate` và `settle_damage_and_lifesteal` tính toán kết quả HP trong một đòn hợp lệ. Đây chưa phải quyền tự ý chạy xuyên mọi tick chiến đấu cũ. Hệ combat owner phải gọi đúng lúc commit action, và xử lý chống thưởng trùng/restore sau save trong giai đoạn tích hợp encounter.
+
+**Source contract:** hai nguồn đều dùng `percentage_points`. `{"source_id":"huyet_ma","channel":"lifesteal","mode":"percentage_points","value":0.20}` và `{"source_id":"khac_che","channel":"lifesteal_reduction","mode":"percentage_points","value":0.05}`. Các effect chưa có consumer thật vẫn phải `enabled=false`.
+
 ## 5. Kiểm thử và giới hạn phase
 
 **Code hiện có:**
-- `godot/src/simulation/combat/combat_stats_v2.gd` — kernel tính 14 chỉ số + kháng 10 hệ, typed modifier, direct damage packet.
+- `godot/src/simulation/combat/combat_stats_v2.gd` — kernel tính 16 chỉ số + kháng 10 hệ, typed modifier, direct damage packet.
 - `godot/tests/simulation/dv2_02_combat_stats_test.gd` — kiểm tra 14/10, Tiềm Lực+equipment, diễn giải %, stacking, trạng thái, nhịp độ, 300 tầng, nguồn sai/trùng.
 - `.github/workflows/dv2-02-combat-stats.yml` — focused Godot 4.7.2.
 
