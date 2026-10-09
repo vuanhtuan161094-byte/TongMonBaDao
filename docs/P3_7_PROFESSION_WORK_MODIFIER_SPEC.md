@@ -93,25 +93,26 @@ Locked P2 factories retain their legacy Lv0–6 behavior for compatibility.
 
 ---
 
-# 4. Graded percentage data
+# 4. Grade boundary — profession talent versus Trait V2
 
-Shared grade magnitude:
+**User-locked V2 resolution (2026-10-09):** The Grade 1–5 magnitude table below is **valid for Profession Talent / legacy P3.7 compatibility**, **not** a universal `Trait V2 Grade` rule.
 
-| Grade | Magnitude |
+| Profession talent grade | Profession XP magnitude |
 |---|---:|
-| 1 | 5% |
-| 2 | 10% |
-| 3 | 15% |
-| 4 | 20% |
-| 5 | 25% |
+| 1 | +5% |
+| 2 | +10% |
+| 3 | +15% |
+| 4 | +20% |
+| 5 | +25% |
 
-Examples of content data:
-- Cần Mẫn -> `work_speed_per_grade = +5%`;
-- Cẩu Thả -> `work_speed_per_grade = -5%`.
+In the older P3.7 work/trait compatibility model, entries like `Cần Mẫn` and `Cẩu Thả` may have been assigned a per-grade `work_speed` modifier. **That grading is not Trait V2 authority** and must be retired/converted when V2 consumers replace the legacy code. In V2, each ordinary Trait declares its own fixed/conditional numeric effect, typed channel and effect readiness, with **no Trait Grade 1–5**.
 
-Their names are not part of the work formula.
+This is a clear separation:
+- **Profession talent:** identity and Grade 1–5, primarily modifies profession XP.
+- **Trait V2:** ungraded positive/negative/mixed identity with its own real work/learning/behavioral effect.
+- Both may contribute to a work result where their definitions permit it, but one cannot silently convert into the other.
 
-A future trait named differently can use `work_speed +12%`, for example, without modifying Linh Điền or Workforce logic.
+The work formula remains generic: a new approved Trait's `work_speed +12%`, for example, plugs into an existing channel without modifying the Linh Điền or Workforce source code.
 
 ---
 
