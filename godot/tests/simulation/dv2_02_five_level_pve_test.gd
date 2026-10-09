@@ -235,5 +235,55 @@ func _run() -> void:
         HuntingMapV2.spawn("thanh_truc_lam",1,"lost_encounter",902),lost).get("ok",true)),
         "Defeated party received map loot."):
         return
+    # End-to-end V2 lifecycle: stored map selection -> actual owned disciples
+    # with explicit V2 dual progress -> many-vs-many map battle -> warehouse.
+    HuntingMapV2.choose_level(state,"bach_thach_khe",1)
+    var participant_ids: Array = state.disciples.keys()
+    participant_ids.sort()
+    var team: Array = []
+    for i in range(mini(6,participant_ids.size())):
+        team.append({
+            "disciple_id":str(participant_ids[i]),
+            "party_id":"hunting_party_0",
+            "role":"healer" if i == 3 else ("mage" if i == 2 else "frontline"),
+            "position":Vector2(8.0+float(i)*0.3,8.0+float(i%2)*0.45),
+            "realm":2,"floor":1,"body_realm":2,"body_floor":1
+        })
+    if not _assert(team.size() >= 3,"Not enough real P3.7 disciples to form group PvE test."):
+        return
+    var orchestrator := HuntingPveRunV2.new()
+    var launch := orchestrator.begin(state,"bach_thach_khe","guided_group_hunt_01",12771,team)
+    if not _assert(bool(launch.get("ok",false)) and
+        int(launch["party_size"]) == team.size() and
+        int(launch["level"]) == 1,
+        "Selected map did not start a real group hunt with actual disciples."):
+        return
+    var spectator := orchestrator.snapshot()
+    if not _assert(bool(spectator.get("ok",false)) and
+        spectator["possible_rewards"] is Dictionary and
+        int(spectator["summary"]["alive_monsters"]) >= 3,
+        "Group PvE session failed to expose map state/reward preview."):
+        return
+    if not _assert(not bool(orchestrator.claim().get("ok",true)),
+        "Session awarded actual warehouse resources before battle completion."):
+        return
+    var resolved := orchestrator.finish()
+    if not _assert(bool(resolved.get("ok",false)) and
+        str(resolved["summary"]["outcome"]) == "win",
+        "Authentic V2 disciples could not finish chosen map hunt."):
+        return
+    var actual_claim := orchestrator.claim()
+    if not _assert(bool(actual_claim.get("ok",false)) and
+        state.sect.v2_pve_reward_claims.has("guided_group_hunt_01") and
+        not bool(orchestrator.claim().get("ok",true)),
+        "Full group hunting lifecycle failed to commit exactly one warehouse reward."):
+        return
+    var broken := HuntingPveRunV2.new()
+    var no_progress: Array = team.duplicate(true)
+    no_progress[0].erase("body_realm")
+    if not _assert(not bool(broken.begin(state,"bach_thach_khe","invalid_track",123,no_progress).get("ok",true)),
+        "Missing Luyện Thể progression was silently invented from legacy power."):
+        return
+
     print("DV2-02E FIVE DIFFICULTIES + REAL GEAR/SKILLS + PERSISTENT REGISTERED REWARDS: PASS")
     quit(0)
