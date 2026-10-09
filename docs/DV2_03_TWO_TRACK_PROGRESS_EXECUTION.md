@@ -172,3 +172,34 @@ No new maps, new species or speculative XP/chance/reward data in DV2-03.
 - Strict birth identity validation again checks real Root/Mutation/Profession Talent/Trait/Bloodline/Physique/Destiny structure, while allowing lawful post-birth current-root growth.
 - New focused isolation test covers the above, but **do not call PASS until official Godot 4.7.2 evidence for the latest code is available**.
 
+---
+
+## DV2-03D1 — autonomous training policy (09/10/2026)
+
+**CODE PUSHED / RUNTIME GATE UNVERIFIED.**
+
+- Persisted per-disciple policy: `balanced`, `cultivation_focus`, `body_focus`, `manual`; old valid V2 profiles normalize to `balanced`.
+- `balanced` uses no hidden weighting: lower global floor first, then lower current-floor progress ratio; exact ties alternate deterministically from simulation tick + stable disciple ID without consuming `GameRng`.
+- Focus modes are priorities, not hard locks. If the preferred track is full at a major gate or otherwise unavailable, the other trainable track may be selected.
+- `manual` disables autonomous selection only; explicit player `request_training` still works.
+- `preview_training` is read-only and reuses the same authored rule validation. A full floor-10 track reports `major_gate_waiting`.
+- Workforce cultivate schedule slots and `DecisionSystem` share one `DiscipleTrainingPolicyV2`; there is no second AI formula.
+- Policy selection never grants EXP. It only queues `CULTIVATE`/`TRAIN_BODY`; the following `SimulationScheduler.step()` remains the commit authority.
+- Focused test: `godot/tests/simulation/dv2_03_training_policy_test.gd`. Workflow updated to execute it.
+
+Latest gameplay code: `60e3da63a3329a8b9f37ce57552895dd95fcc454`.
+Latest policy test: `583270cbd95c8c1fe96e0bfc7efa0ffd3c2e103f`.
+Workflow update: `db758a56cdb5f9b97f5cfe3b61930380adf4031d`.
+
+No current Godot 4.7.2 run ID/check is discoverable through the available private-repo connector path, therefore **do not call D1 PASS**.
+
+### D2 live-time audit
+
+Current main scene is still a presentation/demo runtime:
+- `p3_2_landscape_sect.tscn` -> `p3_2_landscape_sect.gd` -> parent `p3_1_landscape_sect.gd`;
+- parent creates `P212Factory.create_state(DEMO_SEED)` on every open;
+- it calls `scheduler.step()` from a `Timer` every **0.55s**;
+- P0 sandbox separately uses **0.18s**;
+- `SaveService` can persist `SimulationState`, but this main scene does not load that persistent state.
+
+Therefore neither existing timer may be relabeled as the canonical 15-second clock. D2 must introduce/attach a persistent runtime owner first, then save wall timestamp + remainder/backlog and use the same scheduler for online/offline ticks. Existing P3.7 `1440 simulation ticks/day` remains the sect-day semantic; **15 seconds is wall-clock cadence**, not a redefinition of game-day length.
