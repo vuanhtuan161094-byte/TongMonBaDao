@@ -213,7 +213,7 @@ Current old percentage consumers may use a bounded compatibility bridge where ne
 - **EXP và tăng tầng:** `DiscipleRealmProgressV2.grant_xp` sử dụng **floor_costs được cung cấp hợp lệ**, tăng tầng nhỏ tự động, chặn đại cảnh tại tầng 10. Tu Vi natural = base × (1 + `0,0025 × Tư Chất` + sources hợp lệ), Luyện Thể natural = base × (1 + `0,0020 × Căn Cốt` + sources hợp lệ). Buff cùng channel cộng theo tỷ lệ, không chain-multiply. EXP `fixed` không nhân các nguồn thường. EXP vượt cổng chỉ báo `unapplied_overflow`, không tự đẩy vào `Tích Tu`.
 - **Tu Vi đại cảnh:** `attempt_cultivation_breakthrough` thử bằng GameRng/EXP yêu cầu/base chance/điều kiện `requirements_verified`/event_id do consumer được duyệt truyền; thất bại mất **10% EXP yêu cầu** và thêm **5 điểm phần trăm** cơ hội lần sau cho cùng cổng, giữ lifetime history; thành công qua đại cảnh sau tầng 1. Không generic trừ HP/thể lực/cooldown. `auto_breakthrough` chỉ là policy lưu, **không tự thử trong scheduler**.
 - **Luyện Thể đại cảnh:** `commit_authorized_body_gate` chỉ commit **khi yêu cầu thực đã được một consumer khác xác minh**; chưa phải hệ vật liệu/xác suất hoặc thất bại thân thể chính thức.
-- **Action thật trong scheduler:** `SimulationScheduler.step()` chuyển hướng action `CULTIVATE` và `TRAIN_BODY` của V2 có opt-in tới `DiscipleTrainingActionV2.resolve`, dùng một nguồn tính EXP, không cấp P2 Tu Vi cùng action. `SectState.v2_training_enabled = false` và `v2_training_rules = {}` theo mặc định. Phải khai báo `authority_id`, đúng action, `base_xp_per_action` dương, floor-costs đủ từ tầng hiện tại tới tầng 10; thiếu nguồn → **FAIL-closed, không cộng EXP**. `TRAIN_BODY` không tự trừ HP/Thể Lực Viễn Chinh.
+- **Scheduler V2 hiện tại:** Tu Vi dùng passive source + Chuyên Tu đã được refactor; concrete Luyện Thể training **chưa được thiết kế**. Provisional `TRAIN_BODY` token hiện fail-closed và không được cấp Body EXP. `SectState.v2_training_enabled=false` và rules rỗng theo mặc định.
 - **Lệnh player:** `DiscipleTrainingActionV2.request_training(state, disciple_id, track)` thực tế xếp action **một lần**, không thưởng tức thì, chặn ngắt `COMBAT`/việc bận và chỉ cho đệ tử được sở hữu, ở tông môn, còn HP. **Đã test API, chưa kết nối UI lệnh V2**: nút “Tu luyện” trên P3.2 hiện là `WorkforceSystem.COMMAND_CULTIVATE` đời cũ.
 - **Chống EXP trùng**: cùng 1 disciple/tick **chỉ một action EXP kể cả đổi track**; `last_training_tick` dùng chung hồ sơ + `last_training_event_id` theo từng đường; validate `state.disciples`, đúng action, tick >0. `DiscipleState/SectState` JSON round-trip giữ 2 profile/tầng/EXP/history/policy/rate/ID; test xác nhận không nhận XP hai lần.
 - **Tính lại chiến đấu:** `DiscipleRealmProgressV2.derive_stats` dùng hai tọa độ đã lưu + Tiềm Lực vào `CombatStatsV2` (16 combat stats + 10 kháng), `HuntingPveRunV2` không cho caller giả realm. **HP legacy P2 chưa được đồng bộ/migrate an toàn**, chủ đệ tử V2 trong các map proving slice chưa được đưa vào live PvE outside map.
@@ -276,14 +276,14 @@ New/updated focused tests:
 **Latest gameplay code for D1:** `60e3da63a3329a8b9f37ce57552895dd95fcc454`. Focused test commit `583270cbd95c8c1fe96e0bfc7efa0ffd3c2e103f`; workflow update `db758a56cdb5f9b97f5cfe3b61930380adf4031d`.
 
 Implemented without adding production EXP numbers:
-- Per-disciple persisted policy in `v2_realm_progress.training_policy`: `balanced` (default), `cultivation_focus`, `body_focus`, `manual`.
+- Per-disciple persisted policy enum vẫn có `balanced`, `cultivation_focus`, `body_focus`, `manual` để tương thích; **body_focus hiện BLOCKED** vì chưa khóa hoạt động Luyện Thể.
 - `DiscipleTrainingPolicyV2.set_policy` changes policy only; it grants no EXP and does not force an immediate action.
 - `balanced` has no hidden Tu Vi/Body weighting: lower 1..300 global floor first; if tied, lower authored current-floor progress ratio; exact ties alternate deterministically from simulation tick + stable disciple ID without consuming gameplay RNG.
 - Focus policies are priorities, not deadlocks: if the preferred track is full at a major gate or otherwise unavailable, the other valid track may train.
 - `manual` blocks autonomous training only; explicit `request_training` remains legal.
 - `DiscipleTrainingActionV2.preview_training` is read-only and reuses the same authored rule validation; a full floor-10 gate reports `major_gate_waiting` so AI cannot burn ticks on capped EXP.
 - Workforce cultivate schedule slots now consume the same V2 policy. If workforce owns no action, `DecisionSystem` consumes the same policy; no parallel AI formula.
-- Policy choice only queues `CULTIVATE`/`TRAIN_BODY`; the subsequent `SimulationScheduler.step()` remains the only EXP commit point.
+- Policy chỉ được xếp hành động đã có authority; hiện có thể xếp `CULTIVATE`. `TRAIN_BODY` không phải gameplay authority và fail-closed.
 - Save/load normalization defaults old valid V2 profiles to `balanced` and persists later player policy.
 
 New focused test:
@@ -300,24 +300,24 @@ New focused test:
 
 ### 5.8 DV2-03S — source-model refactor: Tu Vi/phút + 1/1 production start (CODE PUSHED, GATE UNVERIFIED)
 
-**User lock 09/10/2026:** 15 giây không phải balance unit. Display/balance uses **Tu Vi per simulation minute**; active Luyện Thể uses **Body EXP per simulation minute**. Existing P3.7 semantics already define 1440 scheduler ticks/day, therefore one `SimulationScheduler.step()` is one simulation minute. Wall-clock/offline mapping remains a separate runtime concern.
+**User lock 09/10/2026:** 15 giây không phải balance unit. Display/balance uses **Tu Vi per simulation minute**. Existing P3.7 semantics define 1440 scheduler ticks/day, therefore one `SimulationScheduler.step()` is one simulation minute for the current Tu Vi authority. **Luyện Thể action/time unit is NOT locked yet.**
 
 Implemented:
 - NEW `DiscipleTuViFlowV2`: authentic V2 disciples receive exactly one natural Tu Vi source per simulation minute whenever V2 progression content is enabled, regardless of ordinary work/travel/hunt/combat/rest/body training.
 - `CULTIVATE` is now **Chuyên Tu** only: it applies authored `cultivate_multiplier` to the same natural Tu Vi minute. It no longer grants a second direct cultivation EXP event.
-- Training content schema upgraded to version 2: `base_tuvi_per_minute`, `cultivate_multiplier`, `base_body_xp_per_minute`, complete 2×300 `floor_costs`. No production numeric rate/curve was invented.
-- Passive Tu Vi dedup is persisted separately as `last_passive_tuvi_tick`; explicit body training retains its own `last_training_tick`/event. Therefore one `TRAIN_BODY` minute may legitimately gain **passive Tu Vi + Body EXP** without duplicate credit.
+- Training content schema is now version 3: cultivation owns `base_tuvi_per_minute` + `cultivate_multiplier`; Body only carries progression cost authority and `training_mechanic="unresolved"` until Luyện Thể design is approved.
+- Passive Tu Vi dedup persists as `last_passive_tuvi_tick`. Provisional `TRAIN_BODY` cannot grant Body EXP; no Body time/rate authority exists yet.
 - Authentic V2 ordinary work no longer grants separate work-Tu-Vi. `WorkforceSystem._grant_p3_7_work_cultivation()` returns 0 for V2; legacy path remains unchanged.
 - Every **new production V2 recruit** now initializes at **Phàm Nhân tầng 1 + Phàm Thân tầng 1, both 0 EXP**. Tư Chất/Căn Cốt alter growth after recruitment, not starting level. `initialize_recruited_compat` remains only for pre-lock development-save migration.
 - `DiscipleTuViFlowV2.preview_rate()` exposes `base_tuvi_per_minute`, `effective_tuvi_per_minute`, natural factor and Chuyên Tu multiplier for future UI without mutating progress.
-- Updated focused tests cover 1/1 starts, minute-rate catalogue schema, ordinary passive Tu Vi, Chuyên Tu single-source acceleration, no same-minute passive duplicate, passive Tu Vi + Body EXP coexistence, no work double-credit, save/load dedup, and D1/P2-isolation regression.
+- Updated focused tests cover 1/1 starts, Tu Vi minute schema, ordinary passive Tu Vi, Chuyên Tu single-source acceleration, no same-minute passive duplicate, **blocked Body training**, no work double-credit, save/load and P2-isolation regression.
 - Focused workflow watches `disciple_tuvi_flow_v2.gd`.
 
 **Tinh Nguyên design status:** user locked monster-dropped Tinh Nguyên as a future **fixed +X Tu Vi** consumable/resource source. Exact resource IDs/grades/drop tables/+X values are **not yet authored**, therefore no fake production Tinh Nguyên content was added in this slice.
 
 **Latest runtime evidence:** **MISSING, not FAIL.** Available connector still returns no push-triggered workflow run/check for the new commits. Previous focused/full runs remain older-code evidence and do not prove DV2-03S. Windows is UNTESTED.
 
-**Still OPEN:** production Tu Vi/minute number, Chuyên Tu multiplier, Body EXP/minute number, 600 floor costs, 29 Tu Vi base breakthrough chances, Body major-gate content, persistent live runtime/offline catch-up and V2 UI.
+**Still OPEN:** production Tu Vi/minute number, Chuyên Tu multiplier, 600 floor costs, 29 Tu Vi base breakthrough chances, **toàn bộ concrete Luyện Thể training source/activity/time/rate + Body major-gate content**, persistent live runtime/offline catch-up and V2 UI.
 
 ### 5.4 Chuẩn bị lát triển khai tiếp theo — audit 09/10/2026
 
