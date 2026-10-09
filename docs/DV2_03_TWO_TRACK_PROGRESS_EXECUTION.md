@@ -139,3 +139,37 @@ No new maps, new species or speculative XP/chance/reward data in DV2-03.
 - Khi đủ evidence, cập nhật `CURRENT_CHECKPOINT.md` trạng thái CLOSED và chỉ khi đó chuyển sang phase 3 (Equipment/Skill/Innate effects). PvE map production mở rộng để phase 4.
 
 **Đường ưu tiên ngay:** C (source EXP chuẩn + request preflight) → D (15s live + auto policy + offline) → E (UI V2) → F (breakthrough + HP migration) → G (cumulative). Chưa có số EXP/xác suất production được duyệt; không bật flag V2 production chỉ để thấy animation/EXP tăng giả.
+
+
+---
+
+## DV2-03C — code snapshot: EXP preflight và 600-floor catalogue
+
+**Status: CODE PUSHED / LATEST GODOT GATE NOT VERIFIED.** New code:
+- `godot/src/simulation/cultivation/disciple_realm_progress_v2.gd`: `grant_xp(...,dry_run=true)` computes identical validated EXP/floors without changing the disciple; ordinary calls still commit.
+- `godot/src/simulation/cultivation/disciple_training_action_v2.gd`: player `request_training` preflights rate, all costs from current floor through gate, sources and foundation with the same `grant_xp` logic as `resolve`. Invalid calls leave action/EXP intact. Combat interruption and 1 tick/one reward rules preserved.
+- `godot/src/simulation/cultivation/disciple_training_content_v2.gd`: independent complete schema validator, exactly two 30×10 channels = 600 explicit cost cells, finite positive rates/costs, version ID and deterministic builder; building does NOT enable `SectState.v2_training_enabled`.
+- `godot/tests/simulation/dv2_03_training_actions_test.gd`: coverage complete/short/bad catalogues, JSON restore, read-only preview, invalid rate/duplicate sources/missing floors rejected before player queue, existing scheduler/save/dedup regression; `.github/workflows/dv2-03-realm-body-progress.yml` watches changed code.
+
+**No approved production EXP numbers have been applied.** Current 100/80/50 in QA are fixtures only. Even with validated schema, production remains default-OFF. The old focused PASS and previous full P3.7 PASS were at older code commits; the changes listed above require independent Godot 4.7.2 run evidence before being marked PASS.
+
+### Numerical pacing for user review — PROPOSAL ONLY, not a locked source
+
+A first *comparative* target that scales smoothly across 30 realms instead of copying P2:
+
+- **Dedicated one-channel baseline:** 12 natural base EXP per committed 15-second action, no bonus; this is a DRAFT content number.
+- **Time to fill all ten floors within realm r before attempting a gate:** Tu Vi `0.75h × 1.23^(r−1)`, Luyện Thể `1.00h × 1.23^(r−1)` at unbuffed continuous 15-second action frequency.
+- **Inside a realm:** positive floor weights `w(f) = 1 + 0.10 × (f−1)` for f=1..10. Allocate the realm EXP budget (time × action rate) across weights; round costs deterministically to integer EXP and retain full 300 entries. EXP floor10 is the gate cost; no breakthrough chance or material invented.
+- **Illustrative unbuffed major realm fill time (rounded):**
+
+| Realm r | Tu Vi | Luyện Thể |
+|---:|---:|---:|
+| 1 | 45 phút | 60 phút |
+| 5 | 1,7 giờ | 2,3 giờ |
+| 10 | 4,8 giờ | 6,4 giờ |
+| 15 | 13,6 giờ | 18,1 giờ |
+| 20 | 38,3 giờ | 51,1 giờ |
+| 25 | 107,8 giờ | 143,8 giờ |
+| 30 | 303,6 giờ | 404,8 giờ |
+
+This is **not yet the player's actual time**: a disciple cannot perform Tu Vi and Body actions simultaneously in the same tick; work/rest/hunting, XP buffs, gates and failed breakthrough materially change the schedule. Times are benchmarks for deliberate balancing, *not* guaranteed gameplay. First review growth curve and intended game duration before adding any numeric content to `SectState`.
