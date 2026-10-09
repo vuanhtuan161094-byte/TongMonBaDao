@@ -19,7 +19,7 @@ func _party(count: int, with_healer: bool = true, realm: int = 1) -> Array:
         var hp := float(stats["max_hp"])
         if i == 0 and with_healer and count >= 4:
             hp *= 0.45
-        units.append({"id":id,"stats":stats,"role":role,"position":pos,"hp":hp})
+        units.append({"id":id,"party_id":"party_%02d" % int(i/6),"stats":stats,"role":role,"position":pos,"hp":hp})
     return units
 
 func _monsters(ids: Array, realm: int = 1) -> Array:
@@ -164,6 +164,36 @@ func _run() -> void:
         "One battle lost group actors rather than tracking all participants."):
         return
 
+    # A 30-member cluster comprises multiple real parties (six each), not
+    # one illegal 30-member party. Seven in ONE party must be rejected.
+    var illegal_group := _party(7,false)
+    for row in illegal_group:
+        row["party_id"] = "same_party"
+    var invalid_party_battle := MapBattleV2.new(100)
+    if not _assert(not bool(invalid_party_battle.setup("party_7_illegal",illegal_group,
+       _monsters(["truc_thu"])).get("ok",true)), "Illegal seven-member party was admitted."):
+        return
+
+    # Ordinary healer cannot heal a member in another party without an
+    # explicitly authored encounter-wide support skill.
+    var party_heal_test := MapBattleV2.new(442)
+    if not _assert(bool(party_heal_test.setup("party_heal_boundary",_party(12,true),
+       _monsters(["truc_thu","truc_thu"])).get("ok",false)), "Party healing test setup failed."):
+        return
+    var donor: Dictionary = party_heal_test.actors["disciple_03"]
+    var other_party: Dictionary = party_heal_test.actors["disciple_06"]
+    other_party["position"] = donor["position"]
+    other_party["hp"] = 1.0
+    for i in range(6):
+        if i != 3:
+            var same: Dictionary = party_heal_test.actors["disciple_%02d" % i]
+            same["hp"] = float(same["max_hp"])
+    party_heal_test.now = 1.0
+    party_heal_test._heal_ally(donor)
+    if not _assert(float(other_party["hp"]) == 1.0,
+       "Healer healed another party through an unapproved cross-party rule."):
+        return
+
     # Benchmark several seeded matchups. Report actual outcomes, no fake PASS
     # thresholds until gameplay balancing decisions are reviewed by user.
     var scenarios := {
@@ -192,6 +222,34 @@ func _run() -> void:
               " sample=16 win=",victories,
               " downed_avg=",float(total_downed)/16.0,
               " time_avg=",total_time/16.0)
+
+    # Contrast: understrength and unbalanced parties should NOT receive
+    # invisible handicap buffs to force a victory against the boss.
+    var weak_victories := 0
+    var strong_victories := 0
+    var no_healer_victories := 0
+    for seed in range(16):
+        var weak := MapBattleV2.new(22220+seed*13)
+        weak.setup("weak_"+str(seed),_party(3,false),
+            _monsters(["hac_lang_vuong","truc_thu","thanh_lang","hac_lang","truc_thu"]))
+        if weak.run()["outcome"] == "win":
+            weak_victories += 1
+        var overleveled := MapBattleV2.new(22220+seed*13)
+        overleveled.setup("strong_"+str(seed),_party(6,true,2),
+            _monsters(["hac_lang_vuong","truc_thu","thanh_lang","hac_lang","truc_thu"]))
+        if overleveled.run()["outcome"] == "win":
+            strong_victories += 1
+        var without_heal := MapBattleV2.new(22220+seed*13)
+        without_heal.setup("no_healer_"+str(seed),_party(6,false),
+            _monsters(["hac_lang_vuong","truc_thu","thanh_lang","hac_lang","truc_thu"]))
+        if without_heal.run()["outcome"] == "win":
+            no_healer_victories += 1
+    print("DV2 GROUP DIFFICULTY weak_3v5_boss=",weak_victories,
+        "/16 high_realm_6v5_boss=",strong_victories,
+        "/16 no_healer_6v5_boss=",no_healer_victories,"/16")
+    if not _assert(weak_victories < strong_victories,
+        "Monster balancing has hidden player scaling or weak teams outperform stronger groups."):
+        return
 
     print("DV2-02D GROUP MAP COMBAT: MOVEMENT/HEAL/AOE/BOSS/30-ACTOR/REPLAY TEST PASS")
     quit(0)
