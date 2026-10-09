@@ -230,7 +230,8 @@ func next_action(state: SimulationState, disciple: DiscipleState) -> StringName:
     _expire_command_if_needed(state, disciple)
 
     var hp_ratio := disciple.hp / maxf(disciple.max_hp, 1.0)
-    if hp_ratio < 0.72 or disciple.stamina < 42.0:
+    var owns_v2 := DiscipleRealmProgressV2.owns_v2_progression(disciple)
+    if hp_ratio < 0.72 or (not owns_v2 and disciple.stamina < 42.0):
         return &""
 
     if state.p3_7_buildings_enabled and building_system.disciple_has_active_spirit_plot(state, disciple.id):
@@ -256,10 +257,14 @@ func next_action(state: SimulationState, disciple: DiscipleState) -> StringName:
             var profession := choose_work_profession(state, disciple)
             return _profession_action(profession)
         &"cultivate":
+            if owns_v2:
+                # Autonomous Tu Vi-vs-Body policy is intentionally deferred.
+                # Only an explicit command may select V2 training in this cleanup slice.
+                return &""
             if state.sect.cultivation_enabled and disciple.stamina >= 55.0:
                 return &"CULTIVATE"
         &"recovery":
-            if disciple.stamina < 88.0:
+            if not owns_v2 and disciple.stamina < 88.0:
                 return &"REST"
         _:
             pass
@@ -325,7 +330,8 @@ func perform_work(state: SimulationState, disciple: DiscipleState, profession_id
     var key := str(profession_id)
     var progress := float(disciple.work_progress.get(key, 0.0)) + speed
     disciple.work_progress[key] = progress
-    disciple.stamina = maxf(0.0, disciple.stamina - 4.0)
+    if not DiscipleRealmProgressV2.owns_v2_progression(disciple):
+        disciple.stamina = maxf(0.0, disciple.stamina - 4.0)
     disciple.metrics["work_actions"] = int(disciple.metrics.get("work_actions", 0)) + 1
 
     var result := {"ok":true, "completed":false, "profession":key, "progress":progress}
@@ -364,8 +370,12 @@ func _perform_p3_7_mining(state: SimulationState, disciple: DiscipleState) -> Di
         return result
 
     var stamina_cost := maxf(float(result.get("stamina_cost", 1.0)), 0.0)
-    disciple.stamina = maxf(0.0, disciple.stamina - stamina_cost)
-    result["effective_stamina_cost"] = stamina_cost
+    if DiscipleRealmProgressV2.owns_v2_progression(disciple):
+        # Expedition stamina cannot be spent by an in-sect mining shift.
+        result["effective_stamina_cost"] = 0.0
+    else:
+        disciple.stamina = maxf(0.0, disciple.stamina - stamina_cost)
+        result["effective_stamina_cost"] = stamina_cost
     result["work_cultivation_gain"] = _grant_p3_7_work_cultivation(state, disciple, PROF_MINING)
     disciple.metrics["work_actions"] = int(disciple.metrics.get("work_actions", 0)) + 1
     if not bool(result.get("completed", false)):
@@ -482,6 +492,12 @@ func _direct_command_action(state: SimulationState, disciple: DiscipleState) -> 
         COMMAND_CULTIVATE:
             if disciple.region_id != &"sect":
                 return &"RETURN_SECT"
+            if DiscipleRealmProgressV2.owns_v2_progression(disciple):
+                # Old UI command is allowed to route to the V2 action owner,
+                # but never to P2 if V2 content/profile is unavailable.
+                if state.sect.v2_training_enabled and DiscipleRealmProgressV2.progression_ready(disciple):
+                    return &"CULTIVATE"
+                return &"HOLD"
             return &"CULTIVATE"
         COMMAND_HUNT_REGION:
             if disciple.region_id == &"sect":
@@ -555,6 +571,34 @@ func _learning_multiplier(state: SimulationState, disciple: DiscipleState, profe
     return multiplier
 
 func _grant_p3_7_work_cultivation(state: SimulationState, disciple: DiscipleState, profession_id: StringName) -> float:
+    if DiscipleRealmProgressV2.owns_v2_progression(disciple):
+        if not state.sect.v2_training_enabled or not DiscipleRealmProgressV2.progression_ready(disciple):
+            return 0.0
+        var raw_rule = state.sect.v2_training_rules.get("cultivation",null)
+        if not (raw_rule is Dictionary):
+            return 0.0
+        var rule: Dictionary = raw_rule
+        var raw_costs = rule.get("floor_costs",null)
+        if not (raw_costs is Dictionary):
+            return 0.0
+        var costs: Dictionary = raw_costs
+        var current: Dictionary = disciple.v2_realm_progress["cultivation"]
+        var key := "%d:%d" % [int(current["realm"]),int(current["floor"])]
+        if not costs.has(key):
+            return 0.0
+        var raw_required = costs[key]
+        if not (raw_required is int or raw_required is float):
+            return 0.0
+        var required := float(raw_required)
+        if is_nan(required) or is_inf(required) or required <= 0.0:
+            return 0.0
+        var level := p3_7_profession_level(disciple, profession_id)
+        var raw_gain := required * profession_modifiers.raw_work_cultivation_ratio_per_hour(level) * ACTIVE_WORK_HOURS_PER_STEP
+        var gained := DiscipleRealmProgressV2.grant_xp(
+            disciple,"cultivation",raw_gain,"natural",costs,[]
+        )
+        return float(gained.get("gained",0.0)) if bool(gained.get("ok",false)) else 0.0
+
     if not state.sect.cultivation_enabled:
         return 0.0
     var required := cultivation_system.required_progress(disciple)
