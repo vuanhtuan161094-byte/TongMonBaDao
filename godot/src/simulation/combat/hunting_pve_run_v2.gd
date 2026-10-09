@@ -91,3 +91,79 @@ func snapshot() -> Dictionary:
         "encounter_id":str(spawn_data.get("encounter_id","")),
         "summary":battle.summary(),
         "possible_rewards":HuntingMapV2.preview_reward(spawn_data)}
+
+
+# Immutable encounter provenance + active fight snapshot. This does NOT
+# award any loot, advance the simulation or save object references.
+func save_state() -> Dictionary:
+    if battle == null or owner_state == null:
+        return {"ok":false,"reason":"no_hunting_session"}
+    var checkpoint := MapBattleSnapshotV2.save(battle)
+    if not bool(checkpoint.get("ok",false)):
+        return checkpoint
+    return {
+        "ok":true,"version":1,"region_id":region_id,
+        "difficulty":int(spawn_data.get("level",0)),
+        "encounter_id":str(spawn_data.get("encounter_id","")),
+        "reward_seed":int(spawn_data.get("reward_seed",0)),
+        "battle":checkpoint
+    }
+
+# The live character HP owner stays separate until DV2-03's real HP track
+# migration. Rehydrated actors retain their exact battle HP but do not
+# silently overwrite legacy DiscipleState HP or attach unsafe object pointers.
+static func restore_state(state: SimulationState, saved: Dictionary) -> Dictionary:
+    if state == null or not state.sect.p3_7_resources_enabled or not state.sect.v2_pve_enabled:
+        return {"ok":false,"reason":"hunting_v2_not_enabled"}
+    if not bool(saved.get("ok",false)) or int(saved.get("version",0)) != 1:
+        return {"ok":false,"reason":"unsupported_hunt_save"}
+    var region := str(saved.get("region_id",""))
+    var level := int(saved.get("difficulty",0))
+    var id := str(saved.get("encounter_id",""))
+    if id.is_empty() or not HuntingMapV2.valid_choice(region,level) or not state.regions.has(StringName(region)):
+        return {"ok":false,"reason":"unknown_saved_map"}
+    var battle_data = saved.get("battle",{})
+    if not (battle_data is Dictionary):
+        return {"ok":false,"reason":"invalid_saved_battle"}
+    var decoded := MapBattleSnapshotV2.load(battle_data)
+    if not bool(decoded.get("ok",false)):
+        return decoded
+    var resumed: MapBattleV2 = decoded["battle"]
+    if resumed.encounter_id != id:
+        return {"ok":false,"reason":"battle_identity_mismatch"}
+    var spawned := HuntingMapV2.spawn(region,level,id,int(saved.get("reward_seed",0)))
+    if not bool(spawned.get("ok",false)):
+        return spawned
+    var expected: Dictionary = {}
+    for entry in spawned["monsters"]:
+        expected[str(entry["id"])] = entry
+    var seen_monsters := 0
+    var seen_disciples := 0
+    for actor_data in resumed.actors.values():
+        var row: Dictionary = actor_data
+        if str(row["side"]) == "monster":
+            seen_monsters += 1
+            var actor_id := str(row["id"])
+            if not expected.has(actor_id):
+                return {"ok":false,"reason":"unexpected_saved_monster"}
+            var original: Dictionary = expected[actor_id]
+            if str(row.get("species_id","")) != str(original["species_id"]) or \
+                str(row.get("tier","")) != str(original["tier"]) or \
+                str(row.get("race_id","")) != str(original["race_id"]):
+                return {"ok":false,"reason":"monster_provenance_mismatch"}
+            if not is_equal_approx(float(row["max_hp"]),float(original["stats"]["max_hp"])):
+                return {"ok":false,"reason":"monster_stat_content_incompatible"}
+        elif str(row["side"]) == "disciple":
+            seen_disciples += 1
+            if not state.disciples.has(StringName(str(row["id"]))):
+                return {"ok":false,"reason":"unknown_saved_disciple"}
+        else:
+            return {"ok":false,"reason":"unknown_battle_actor"}
+    if seen_monsters != expected.size() or seen_disciples <= 0:
+        return {"ok":false,"reason":"incomplete_saved_combat_roster"}
+    var session := HuntingPveRunV2.new()
+    session.owner_state = state
+    session.region_id = region
+    session.spawn_data = spawned
+    session.battle = resumed
+    return {"ok":true,"session":session}
