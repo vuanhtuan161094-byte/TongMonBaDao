@@ -119,6 +119,7 @@ func _run() -> void:
     var broken_rate: Dictionary = state.sect.v2_training_rules["body"].duplicate(true)
     broken_rate["base_xp_per_action"] = -50.0
     state.sect.v2_training_rules["body"] = broken_rate
+    student.current_action = &"EVALUATE"
     var bad_rate_request := DiscipleTrainingActionV2.request_training(state,student.id,"body")
     if not _assert(not bool(bad_rate_request.get("ok",true)) and
         str(bad_rate_request.get("reason",""))=="invalid_training_base_rate" and
