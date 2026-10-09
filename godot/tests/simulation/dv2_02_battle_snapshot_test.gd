@@ -125,21 +125,21 @@ func _run() -> void:
         "Future or unknown combat save version was silently accepted."):
         return
     var bad_hp: Dictionary = parsed.duplicate(true)
-    var hp_payload: Dictionary = bytes_to_var(Marshalls.base64_to_raw(str(bad_hp["payload"])),false)
+    var hp_payload: Dictionary = bytes_to_var(Marshalls.base64_to_raw(str(bad_hp["payload"])))
     hp_payload["actors"][0]["hp"] = -100.0
     bad_hp["payload"] = Marshalls.raw_to_base64(var_to_bytes(hp_payload))
     if not _assert(not bool(MapBattleSnapshotV2.load(bad_hp).get("ok",true)),
         "Invalid negative HP was accepted from corrupted battle save."):
         return
     var bad_id: Dictionary = parsed.duplicate(true)
-    var id_payload: Dictionary = bytes_to_var(Marshalls.base64_to_raw(str(bad_id["payload"])),false)
+    var id_payload: Dictionary = bytes_to_var(Marshalls.base64_to_raw(str(bad_id["payload"])))
     id_payload["actors"][1]["id"] = id_payload["actors"][0]["id"]
     bad_id["payload"] = Marshalls.raw_to_base64(var_to_bytes(id_payload))
     if not _assert(not bool(MapBattleSnapshotV2.load(bad_id).get("ok",true)),
         "Duplicate actor identity was accepted from combat save."):
         return
     var bad_outcome: Dictionary = parsed.duplicate(true)
-    var outcome_payload: Dictionary = bytes_to_var(Marshalls.base64_to_raw(str(bad_outcome["payload"])),false)
+    var outcome_payload: Dictionary = bytes_to_var(Marshalls.base64_to_raw(str(bad_outcome["payload"])))
     outcome_payload["outcome"] = "win"
     bad_outcome["payload"] = Marshalls.raw_to_base64(var_to_bytes(outcome_payload))
     if not _assert(not bool(MapBattleSnapshotV2.load(bad_outcome).get("ok",true)),
