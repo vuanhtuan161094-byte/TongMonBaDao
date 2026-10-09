@@ -129,7 +129,7 @@ func _step_disciple(disciple: DiscipleState) -> void:
                 relationship_system.record_local_combat_outcome(state, disciple, outcome)
             if state.p1_memory_enabled:
                 memory_system.record_combat_outcome(state, disciple, outcome)
-            if state.sect.cultivation_enabled and outcome == "win":
+            if state.sect.cultivation_enabled and outcome == "win" and not DiscipleRealmProgressV2.owns_v2_progression(disciple):
                 cultivation_system.add_combat_win_progress(state, disciple)
             if state.sect.cultivation_paths_enabled and outcome in ["win", "retreat", "defeat"]:
                 var path_gain := 0.0
@@ -193,10 +193,12 @@ func _step_disciple(disciple: DiscipleState) -> void:
             disciple.current_action = &"EVALUATE" if healed else &"REST"
 
         &"REST":
+            var owns_v2 := DiscipleRealmProgressV2.owns_v2_progression(disciple)
             if state.sect.needs_enabled:
-                needs_system.apply_rest(state, disciple)
+                needs_system.apply_rest(state, disciple, not owns_v2)
             else:
-                disciple.stamina = minf(100.0, disciple.stamina + 48.0)
+                if not owns_v2:
+                    disciple.stamina = minf(100.0, disciple.stamina + 48.0)
                 disciple.hp = minf(disciple.max_hp, disciple.hp + 5.0)
                 disciple.metrics["rests"] = int(disciple.metrics.get("rests", 0)) + 1
             if state.sect.workforce_enabled:
@@ -204,10 +206,12 @@ func _step_disciple(disciple: DiscipleState) -> void:
             disciple.current_action = &"EVALUATE"
 
         &"CULTIVATE":
-            if state.sect.v2_training_enabled and DiscipleBirthProfileV2.valid_complete_birth(disciple.v2_birth_profile):
-                # V2 is the sole cultivation EXP owner for this initialized
-                # character. Never award P2 EXP again for the same action.
-                var v2_gain := DiscipleTrainingActionV2.resolve(state, disciple, "CULTIVATE")
+            if DiscipleRealmProgressV2.owns_v2_progression(disciple):
+                # A V2 person NEVER falls back into P2 cultivation. Missing V2
+                # content/progress is a visible fail-closed result, not legacy XP.
+                var v2_gain := DiscipleTrainingActionV2.resolve(state, disciple, "CULTIVATE") if state.sect.v2_training_enabled else {
+                    "ok":false,"reason":"v2_training_disabled"
+                }
                 disciple.last_decision["v2_training_result"] = v2_gain.duplicate(true)
             else:
                 var gained := cultivation_system.cultivate(state, disciple)
@@ -221,10 +225,12 @@ func _step_disciple(disciple: DiscipleState) -> void:
             disciple.current_action = &"EVALUATE"
 
         &"TRAIN_BODY":
-            # Explicit V2 action: ordinary P0-P3.7 never selects this action.
-            # Does not spend expedition stamina or copy Tu Vi XP into Body.
-            if state.sect.v2_training_enabled and DiscipleBirthProfileV2.valid_complete_birth(disciple.v2_birth_profile):
-                var trained := DiscipleTrainingActionV2.resolve(state, disciple, "TRAIN_BODY")
+            # Explicit V2 action. A V2 identity without authorized content fails
+            # closed; legacy characters never gain a fabricated Body track.
+            if DiscipleRealmProgressV2.owns_v2_progression(disciple):
+                var trained := DiscipleTrainingActionV2.resolve(state, disciple, "TRAIN_BODY") if state.sect.v2_training_enabled else {
+                    "ok":false,"reason":"v2_training_disabled"
+                }
                 disciple.last_decision["v2_body_training_result"] = trained.duplicate(true)
             if state.sect.workforce_enabled:
                 workforce_system.notify_action_completed(state, disciple, &"TRAIN_BODY")
@@ -243,11 +249,17 @@ func _step_disciple(disciple: DiscipleState) -> void:
             disciple.current_action = &"EVALUATE"
 
         &"HOLD":
-            disciple.stamina = minf(100.0, disciple.stamina + 2.0)
+            if not DiscipleRealmProgressV2.owns_v2_progression(disciple):
+                disciple.stamina = minf(100.0, disciple.stamina + 2.0)
             disciple.current_action = &"EVALUATE"
 
         &"BREAKTHROUGH":
-            cultivation_system.attempt_breakthrough(state, disciple, rng)
+            if DiscipleRealmProgressV2.owns_v2_progression(disciple):
+                disciple.last_decision["v2_breakthrough_result"] = {
+                    "ok":false,"reason":"v2_breakthrough_content_not_authorized"
+                }
+            else:
+                cultivation_system.attempt_breakthrough(state, disciple, rng)
             disciple.current_action = &"EVALUATE"
 
         _:
