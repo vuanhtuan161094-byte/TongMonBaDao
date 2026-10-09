@@ -1,0 +1,45 @@
+name: DV2-01 Birth Envelope
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'godot/src/simulation/recruitment/disciple_birth_profile_v2.gd'
+      - 'godot/src/simulation/recruitment/disciple_generator_open_points.gd'
+      - 'godot/src/simulation/state/candidate_state.gd'
+      - 'godot/src/simulation/state/disciple_state.gd'
+      - 'godot/src/simulation/state/sect_state.gd'
+      - 'godot/tests/simulation/dv2_01_birth_envelope_test.gd'
+      - '.github/workflows/dv2-01-birth-envelope.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  dv2-01a:
+    name: Godot 4.7.2 opt-in birth profile focused gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install official Godot 4.7.2 binary
+        shell: bash
+        run: |
+          set -euo pipefail
+          GODOT_URL="https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip"
+          GODOT_SHA256="cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4"
+          curl --fail --location --retry 3 --output /tmp/godot-dv2.zip "$GODOT_URL"
+          echo "$GODOT_SHA256  /tmp/godot-dv2.zip" | sha256sum --check --strict
+          unzip -q /tmp/godot-dv2.zip -d /tmp
+          sudo install -m 0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+
+      - name: Print version
+        run: godot --version
+
+      - name: Import classes (headless)
+        run: godot --headless --path godot --editor --quit
+
+      - name: Focused DV2-01A birth envelope test
+        run: godot --headless --path godot -s res://tests/simulation/dv2_01_birth_envelope_test.gd
