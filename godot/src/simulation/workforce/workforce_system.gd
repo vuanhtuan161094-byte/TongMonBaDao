@@ -582,32 +582,10 @@ func _learning_multiplier(state: SimulationState, disciple: DiscipleState, profe
 
 func _grant_p3_7_work_cultivation(state: SimulationState, disciple: DiscipleState, profession_id: StringName) -> float:
     if DiscipleRealmProgressV2.owns_v2_progression(disciple):
-        if not state.sect.v2_training_enabled or not DiscipleRealmProgressV2.progression_ready(disciple):
-            return 0.0
-        var raw_rule = state.sect.v2_training_rules.get("cultivation",null)
-        if not (raw_rule is Dictionary):
-            return 0.0
-        var rule: Dictionary = raw_rule
-        var raw_costs = rule.get("floor_costs",null)
-        if not (raw_costs is Dictionary):
-            return 0.0
-        var costs: Dictionary = raw_costs
-        var current: Dictionary = disciple.v2_realm_progress["cultivation"]
-        var key := "%d:%d" % [int(current["realm"]),int(current["floor"])]
-        if not costs.has(key):
-            return 0.0
-        var raw_required = costs[key]
-        if not (raw_required is int or raw_required is float):
-            return 0.0
-        var required := float(raw_required)
-        if is_nan(required) or is_inf(required) or required <= 0.0:
-            return 0.0
-        var level := p3_7_profession_level(disciple, profession_id)
-        var raw_gain := required * profession_modifiers.raw_work_cultivation_ratio_per_hour(level) * ACTIVE_WORK_HOURS_PER_STEP
-        var gained := DiscipleRealmProgressV2.grant_xp(
-            disciple,"cultivation",raw_gain,"natural",costs,[]
-        )
-        return float(gained.get("gained",0.0)) if bool(gained.get("ok",false)) else 0.0
+        # USER LOCK 2026-10-09: ordinary work does NOT create a second Tu Vi
+        # source. V2 passive natural Tu Vi is resolved once per simulation minute
+        # by SimulationScheduler regardless of ordinary activity.
+        return 0.0
 
     if not state.sect.cultivation_enabled:
         return 0.0
