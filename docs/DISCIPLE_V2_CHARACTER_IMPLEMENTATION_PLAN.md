@@ -152,3 +152,26 @@ A slice can close only when authored code and actual focused tests pass and docu
 4. 30 primary maps/300 cluster fully authored content — still planning, not an approved implementation gate.
 
 *Status vocabulary strictly follows `docs/GAME_SYSTEM_ARCHITECTURE.md`: DESIGN LOCKED != code; BACKEND LOCKED requires focused+cumulative real Godot 4.7.2 gates; VISUAL ACCEPTED belongs to the user.*
+
+## 0B. STAT-FIRST DESIGN GATE — APPROVED SEQUENCE 2026-10-09
+
+**User approved sequence:** (1) root vs derived stats audit, (2) combat and production stat/result contracts, (3) effects-to-consumers dependency mapping, (4) phased V2 character/birth implementation only with legitimate approved prerequisites. The three conflicts (expedition-only Stamina; ungraded Trait V2 with separate graded profession talent; stat-driven V2 combat rather than `combat_power`) are **resolved for V2 design**, not for legacy runtime yet.
+
+- Root-to-outcome stat/production contract: `docs/DISCIPLE_V2_STAT_CAUSAL_CONTRACT.md`.
+- Source-to-consumer audit (101 Trait + Fate/Root/Bloodline/Physique): `docs/DISCIPLE_V2_EFFECT_SOURCE_MATRIX.md`.
+- Full lifecycle/owner boundary: `docs/DISCIPLE_V2_ROOT_ARCHITECTURE.md`.
+- Do **not** treat chapter-17 Trait content + approved 48 new concepts as a locked per-ID weight table. Mệnh birth-override packages also need legitimate final authored data.
+- Do **not** port old trait grades or the old workforce/sect cultivation stamina drain into V2. Profession Talent 1–5 grade survives as a different system.
+- When implementing, introduce one explicit V2 version flag/phase gate; keep older P0–P3.7 factories/regressions intact until actual checked replacement. Avoid secretly modifying historical save identity.
+- **Existing DV2-01..DV2-10 labels remain implementation sequencing**; stat-first applies to *design dependencies* before gameplay edits. Do not claim any DV2 phase PASS merely from documentation.
+
+### Concrete DV2-01 preparation (not gameplay implementation)
+
+1. Candidate/Disciple shared birth-profile field: canonical `profile_version`, `identity`, immutable `foundation_birth_values`, independent named per-domain seed identity, specialization `initialized` markers and explicit `none`; distinguish birth from acquired/current states.
+2. Candidate acceptance copies profile **unchanged**, preserving hidden rolls and source provenance; reject removes only the rejected candidate.
+3. Keep C1 Dẫn Tiên odds/quota and six-foundation rolls, and age/starting-stage compatibility until DV2-03. No `combat_power` new birth roll for V2.
+4. **Before eligible trait/fate selection code:** lock their per-ID selection weights and special `birth_override` packages, or get user approval for a finite temporary legal pool; never pick equal weights implicitly.
+5. Test same `(world seed, source, generation index)` results; independent streams don't shift C1 foundation/guidance; save/load and reveal never reroll; `initialized=true` + `none` valid; blocked Kiếm Cốt cannot be born as ordinary V2 special.
+6. **Later gates:** genuine Combat Stats requires Core growth/Defense curve; work/quality modifiers require actual recipe/resource/quality contract; expedition stamina must not be consumed by any in-sect action.
+
+These documents do not authorize speculative new formulas, enable all 101 Traits, or bypass official Godot 4.7.2 CI evidence.
