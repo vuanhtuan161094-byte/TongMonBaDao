@@ -189,7 +189,7 @@ Current old percentage consumers may use a bounded compatibility bridge where ne
 
 ## 5. Current implementation phase
 
-**DV2-01 CLOSED: BACKEND LOCKED (Godot 4.7.2 Linux CI) — DV2-02 ACTIVE / IN PROGRESS, NOT YET PASS.**
+**DV2-01 CLOSED; DV2-02 CORE BACKEND LOCKED (Godot 4.7.2 Linux CI) — DV2-03 TU VI + LUYEN THE V2 IS NEXT.**
 
 ### DV2-01 completion evidence
 - **DV2-01B focused birth/recruitment/Dẫn Tiên/100,000 generated profiles:** [Actions #37878652697](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37878652697), successful, GitHub commit `e697c947a`.
@@ -246,6 +246,14 @@ Current old percentage consumers may use a bounded compatibility bridge where ne
 - **Full P3.7 cumulative for latest rarity code:** [Actions #37886852526](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37886852526) **check status before claiming PASS**.
 - The user asked if PvE work is sequenced correctly. **Decision:** PvE is VALID as a **derived-stat and group-action consumer/proving slice** within DV2-02, NOT the next independent giant phase: 30×10 real dual-track Disciple V2 persistence (DV2-03), actual 10-slot Equipment V2 sources, Nhân/Tiên/Thần combat skills and traits/bloodline/physique consumers are still missing. Do not lock universal monster/player balance, "complete PvE", or switch legacy PvE into V2 before those dependencies. The existing active V2 map runner is an isolated opt-in path, not mounted on production outside-region scene/scheduler. Rare boss spawns need **visible avoidance/retreat** before live auto-hunting; not yet implemented.
 - Design correction authority: `docs/DV2_02_PVE_FIVE_LEVEL_RESOURCE_LOADOUT_CONTRACT.md`. Keep **DV2-02 ACTIVE, NOT CLOSED**.
+
+**DV2-02 CORE CLOSEOUT — USER-APPROVED STAGE 1 OF 4, 2026-10-09. THIS IS THE CURRENT IMPLEMENTATION AUTHORITY (supersedes historical PENDING notices above).**
+- **FOCUSED Godot 4.7.2 Linux PASS** [Actions #37890274593](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37890274593), at code commit `bf7fe1f0df6c4932c22f51b921aa4f508d662be1`; tests 16 combat stats, 10 resistances, monster/race/boss/extra basic hit, multi-disciple group map, 5 map difficulty levels and group challenge, real P2 gear/learned skill effect adapters, warehouse once-only rewards.
+- **FULL P3.7 cumulative Godot 4.7.2 Linux PASS** [Actions #37890274702](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37890274702), at the **same exact code commit** `bf7fe1f0df6c4932c22f51b921aa4f508d662be1`; this is real Linux Godot CI, **NOT a Windows machine gate**.
+- NEW stabilized `MapBattleSnapshotV2`: versioned lossless typed Variant/base64 payload in JSON, full actor HP/position/stat/range/timers, pending casts, combat event journal and exact 64-bit RNG state. Direct float64 and RNG int64 JSON conversion was observed to lose precision; corrected. Typed deserialization rejects bad states and never restores object pointers; `dv2_02_battle_snapshot_test.gd` proves **bitwise-equal final game state, event order and RNG** after mid-battle JSON save/resume.
+- NEW `HuntingPveRunV2.save_state/restore_state/resume_active` and `SectState.v2_pve_active_runs`: one authoritative opt-in running encounter checkpoint per ID; persisted on each step/finish; immutable region/difficulty/monster species provenance rechecked on reload; existing claim ledger prevents replaying loot; tests show SectState JSON recovery and duplicate-ID rejection.
+- **SCOPE LOCK**: only canonical stat/conditional-effect calculator, deterministic multi-party in-map encounter **simulation core** and opt-in five-level hunt/warehouse proving consumer are DV2-02 core. **NOT** actual production outside-region map/scheduler/monster AI/VFX/balance or 10-slot Equipment V2, 30×10 persistent character tracks, all 101 Trait effects. Those are user-authorized NEXT STAGES, NOT silently declared shipped. Pilot numbers remain pilot; old P0/P3.7 live combat unchanged. This scoped closeout complies with latest explicit user step order.
+- **NEXT STEP 2: DV2-03 Tu Vi + Luyen The 30×10**. Implement canonical **two independent persistent track states** on each real V2 disciple and connect their current indices to the existing `CombatStatsV2` snapshot. Respect minor-floor auto progression vs major-gate breakthrough, Căn Cốt/Tư Chất rules, no fabricated XP curve, no old legacy `combat_power` as stat authority. After DV2-03 PASS, step 3 is real gear/skills/innate effect consumers; step 4 is comprehensive live-map PvE / monster AI / rebalanced rewards. Read `docs/DV2_02_CORE_CLOSEOUT_AND_NEXT_ORDER.md`.
 
 Canonical:
 - `docs/COMBAT_STATS_V2_SPEC.md`;
