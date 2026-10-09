@@ -999,3 +999,108 @@ Mệnh Cách must remain distinct from Trait:
 - allowed to change generation envelopes or gameplay rules;
 - not merely "Trait but stronger";
 - still constrained by the one-disciple-forever nurture philosophy.
+
+---
+
+# 26. Content expansion approved 2026-10-09 — DESIGN ONLY / ROOT-FIRST IMPLEMENTATION
+
+**Decision:** user approved the previous review direction: keep the existing 53 Chapter-17 Trait concepts and add the 48 concepts below, for **101 target Trait identities**. This is a **design catalogue target, not 101 enabled runtime Traits**. No Godot implementation phase has been authorized by this approval.
+
+**Unchanged locked rules:** ordinary 1/2/3 visible Traits = 60/32/8%; one latent = 8%; nature allocation Hữu Ích/Song Diện/Bất Lợi = 50/30/20%; quality-independent birth; conflicts; no universal Trait grade; no effectless active Trait. Birth identity may be stored for an approved gated mechanic, but its effect remains disabled until the real consumer exists.
+
+**Rarity direction approved, exact per-ID weights NOT yet assigned:** weighted selection within each nature group, with provisional commonality weight tiers `phổ biến=10`, `ít gặp=4`, `hiếm=1`. These are encounter weights, never strength/rarity grades. Each specific Trait needs a later user-approved weight and eligibility before final generator activation.
+
+**Numbers in the tables below are provisional effects for subsequent mechanic-level review**. A concept is not executable until the consuming system, constraints, conflicts, eligibility, nonrecursive triggers, UI disclosure and tests are approved. User's 2026-10-09 sequencing correction: build the ONE-person birth/action/event/result/progression authority first. Do not proceed from a large Trait catalogue directly to ad-hoc callbacks or private stat systems.
+
+Nature codes: `H` = hữu ích, `S` = song diện, `B` = bất lợi. For concepts with no ready canonical consumer, tag them **CONSUMER-GATED / FUTURE-ONLY**, not `ready`.
+
+## 26.1. Sinh hoạt / ăn uống
+
+| Đặc Chất | Loại | Cơ chế dự kiến (chưa khóa hệ số) | Consumer/dependency |
+|---|---|---|---|
+| Tham Ăn | S | Tiêu thụ thêm 20% khẩu phần; +10% hiệu quả hồi phục từ bữa ăn | Food, meal/recovery |
+| Kén Ăn | S | -10% hồi phục từ món thường; +15% từ món cao cấp | Food grades, meal/recovery |
+| Cú Đêm | S | +12% tốc độ công việc ca đêm, -8% ca ngày | Time-of-day and work schedule |
+| Ngủ Nướng | S | Vào ca đầu ngày muộn 30 phút; hồi phục lúc nghỉ +8% | Work schedule and rest |
+| Mê Sạch Sẽ | S | Nơi sạch +10% Work Speed, nơi bẩn -10% | Building cleanliness |
+| Bày Bừa | S | +8% Work Speed; tăng nguy cơ sự cố bảo trì có nguồn sự kiện thật | Maintenance events |
+| Trộm Ăn Vặt | B | Tiêu hao thêm khẩu phần nhỏ qua sự kiện tiêu thụ có nhật ký | Food inventory/events |
+| Mê Ngủ Trưa | S | Tự ưu tiên nghỉ giữa ca; giảm thời gian công việc nhưng hồi phục tốt hơn | Rest and work schedule |
+
+## 26.2. Nghề / kinh tế
+
+| Đặc Chất | Loại | Cơ chế dự kiến (chưa khóa hệ số) | Consumer/dependency |
+|---|---|---|---|
+| Mắt Nhìn Quặng | H | -400 Difficulty cho kiểm tra khoáng hiếm hợp lệ | Mine rare-check |
+| Khứu Giác Linh Thảo | H | -400 Difficulty cho kiểm tra linh thảo hiếm hợp lệ | Spirit Field rare-check |
+| Thích Thử Nghiệm | S | +12% profession XP khi thử công thức mới; giảm độ ổn định thử công thức | Crafting trial/quality |
+| Đếm Từng Đồng | S | Giao dịch giá tốt hơn 3%, thời gian giao dịch +10% | Trade economy and timer |
+| Vừa Làm Vừa Hát | S | +6% tốc độ bản thân; đồng nghiệp trong phạm vi hợp lệ có thể -3% | Co-worker proximity / work |
+| Đổi Việc Như Thay Áo | S | +12% XP ca đầu nghề mới; -8% XP học chuyên sâu | Profession history/milestones |
+| Hay Quên Dụng Cụ | B | Chậm khởi động một số ca do chuẩn bị dụng cụ; chỉ khi có sự kiện hợp lệ | Job setup event |
+| Học Qua Thực Hành | H | Sau sản phẩm chất lượng cao +10% XP nghề cho lần sản xuất | Crafting quality event |
+
+## 26.3. Tu luyện / học
+
+| Đặc Chất | Loại | Cơ chế dự kiến (chưa khóa hệ số) | Consumer/dependency |
+|---|---|---|---|
+| Ngộ Đạo Lúc Quét Sân | H | Hoàn thành ca công việc phù hợp -> +5% Tu Vi tự nhiên ở lần tu luyện tiếp theo trong ngày | Work complete -> cultivation event |
+| Bế Quan Quên Ngày | S | Bế quan liên tục nhận +8% Tu Vi tự nhiên; có xu hướng chậm rời lịch bế quan | Retreat schedule |
+| Học Vẹt | S | +12% XP học công pháp mới, -8% Skill Effect trước Nhập Môn | Technique/skill mastery |
+| Trí Nhớ Cá Vàng | B | Buổi học đầu sau khi đổi chủ đề -15% XP mastery; không xóa tiến độ đã đạt | Learning subject switch |
+| Mê Sưu Tầm Công Pháp | S | +10% XP với công pháp chưa học; phạt đổi chủ đề thường xuyên | Technique library, session history |
+| Nửa Đêm Tỉnh Ngộ | H | +10% learning/mastery XP cho buổi lĩnh ngộ đêm đầu tiên | Time-of-day learning |
+| Sợ Đột Phá | B | Sau thất bại đột phá hợp lệ, 2 buổi tu sau -10% Tu Vi tự nhiên; không đổi tỷ lệ đột phá | Breakthrough outcome + temporary condition |
+| Nghe Giảng Là Buồn Ngủ | S | -10% XP khi học qua truyền giảng; +5% Tu Vi tự nhiên khi tự tu | Teaching vs independent cultivation |
+
+## 26.4. Chiến đấu / hành vi
+
+| Đặc Chất | Loại | Cơ chế dự kiến (chưa khóa hệ số) | Consumer/dependency |
+|---|---|---|---|
+| Nhát Nhưng Chạy Nhanh | S | HP <50%: +20% Movement, -10% sát thương đánh thường | HP contextual combat |
+| Thù Dai | H | Bị địch gây sát thương: +10% sát thương lên đúng địch đó 6s, không cộng dồn | Damage-source attribution |
+| Đánh Hội Đồng | S | +10% sát thương lên địch đang bị đồng đội tấn công; đơn độc -8% | Team target attribution |
+| Chuyên Đánh Lén | S | +15% đòn đầu lên địch chưa nhắm mình; bị tập trung tấn công -8% | Aggro/first strike |
+| Hò Hét Xung Phong | S | Mở trận +3 điểm % Effect Resistance cho đồng đội gần trong 5s; đòn đầu của bản thân chậm 0.4s | Combat opening / allied proximity |
+| Giả Chết Tài Tình | H | Một lần mỗi trận khi HP <15%: giảm ưu tiên bị nhắm trong khoảng ngắn; không hủy sát thương chí mạng đã giải quyết | Threat targeting, once/encounter |
+| Tay Nhanh Hơn Não | S | +15% Basic Attack Speed; +10% cooldown của kỹ năng chủ động | Separate combat speed/cooldown |
+| Vấp Nhưng Không Ngã | H | Lần đầu chịu slow hợp lệ mỗi trận: rút ngắn 20% thời hạn | Status source/duration |
+
+## 26.5. Quan hệ / đời sống tông môn
+
+| Đặc Chất | Loại | Cơ chế dự kiến (chưa khóa hệ số) | Consumer/dependency |
+|---|---|---|---|
+| Lắm Chuyện | S | Truyền thông tin đã biết nhanh hơn; tin xấu có thể gây mất thiện cảm từ tương tác thật | Social info/history |
+| Hay Mách Lẻo | S | Báo cáo vi phạm có thật nhanh hơn; người bị báo có thể giảm thiện cảm | Violations/social relations |
+| Biết Tuốt | S | Chủ động hướng dẫn; lời khuyên đúng tạo XP, sai làm mất thời gian | Advice/teaching validation |
+| Hay Gây Sự | S | Ưu tiên đề nghị tỉ thí; thêm luyện tập nhưng tăng cơ hội mâu thuẫn | Duel/social event |
+| Thích Khoe | S | Thành tựu thật có thể tạo cổ vũ hoặc ganh đua giữa nhân chứng | Witnessed achievements/social |
+| Tốt Bụng Quá Đà | S | Ưu tiên giúp đồng môn bị thương, chậm công việc của mình | Rescue AI/work displacement |
+| Mê Làm Sư Huynh | S | Khi dạy đệ tử ít kinh nghiệm: người học nhận thêm XP; người dạy mất thời gian cá nhân | Teaching/discipleship |
+| Cãi Chày Cãi Cối | B | Kéo dài xử lý bất đồng bằng sự kiện tranh luận thật | Conflict resolution |
+
+## 26.6. Viễn chinh / cơ duyên
+
+| Đặc Chất | Loại | Cơ chế dự kiến (chưa khóa hệ số) | Consumer/dependency |
+|---|---|---|---|
+| Lạc Đường Có Duyên | S | +10% thời gian hoặc expedition stamina đi đường; -300 Difficulty cho lần khám phá kỳ ngộ hợp lệ đầu tiên | Expedition travel/event |
+| Nhặt Gì Cũng Mang | S | Tăng cơ hội phần thưởng thường có nguồn hợp lệ; +10% tiêu hao thể lực vận chuyển ngoài map | Loot source + expedition stamina |
+| Đụng Gì Cũng Mở | S | Tăng cơ hội tương tác vật thể chưa rõ; rủi ro sự kiện bất lợi qua bảng có thật | Exploration interaction/event |
+| Thính Tai | H | Giảm Difficulty kiểm tra phát hiện phục kích/bẫy | Detection event |
+| Xem Bản Đồ Ngược | B | Đường lần đầu có chi phí di chuyển cao; học thuộc đường giảm hoặc xóa phạt | Route familiarity |
+| Đi Đâu Cũng Đánh Dấu | H | Trên đường đã khám phá giảm 10% expedition stamina cost | Explored-route tracking |
+| Sợ Ma | B | Gặp địch có tag u linh/hồn ma: -8% sát thương gây ra | Monster tags |
+| Lì Đòn Khi Lạc Rừng | H | Môi trường rừng khắc nghiệt: -8% thành phần tiêu hao expedition stamina do môi trường | Map environment stamina component |
+
+## 26.7. Audit corrections and activation gates
+
+- `Cuồng Công`: the old drawback `+20% Stamina cost for in-sect work` **contradicts** expedition-only Stamina authority. Do not execute it. Proposed alternative: a real separate work-rest/overwork cycle, requiring explicit approval and an actual schedule/condition owner.
+- `Chậm Mà Chắc`, `Nóng Vội Cầu Thành`, `Tiết Liệu`, `Phung Phí`, `Đa Nhiệm`, and any other half-implemented trade-off must not become silently beneficial without its stated downside; require full legitimate consumer and balance approval before activation.
+- `Trí Nhớ Sâu`: no imaginary mastery decay before mastery-decay authority exists. Existing `+8% mastery XP` can only become active once the legal XP consumer is present.
+- Avoid duplicate authority with personality axes, profession talent, social stats, root/bloodline/physique/fate. Actual social actions need real participants/history, not phantom Mị Lực.
+- Ordinary sect work never consumes Expedition Stamina. Only external expedition time/components can spend it.
+- A successful eligibility+consumer gate must be checked per Trait before entering the enabled birth pool; rejected content must not be substituted with a fake combat-power bonus. Hidden profiles stay redacted until legal reveal.
+- All work/combat/social/exploration Trait hooks should consume shared typed simulation events; do not poll 1,000–3,000 disciples per tick.
+- No per-ID commonality weights, full conflict graph, social mechanics, crafting-quantity rules or other pending mechanics were approved by this design-catalogue decision. Those are dependencies, not invented defaults.
+
+**Implementation sequence:** origin/world state -> ONE canonical Disciple V2 identity -> valid simulation actions/events -> canonical typed modifiers/outcomes -> only then detailed Trait readiness + individually reviewed rarity tables + runtime activation. Track 'DESIGN ONLY' separately from 'BACKEND TESTED'.
