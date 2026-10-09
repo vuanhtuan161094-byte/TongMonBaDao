@@ -84,6 +84,10 @@ var foundation_points_enabled: bool = false
 var guidance_recruitment_enabled: bool = false
 # DV2-01 explicit opt-in: do not modify P0-P3.7C1 births when false.
 var disciple_v2_birth_enabled: bool = false
+# DV2-03 optional actual-action training consumer; no XP rates or floor costs
+# are installed by default. Rules must be explicitly authored and enabled.
+var v2_training_enabled: bool = false
+var v2_training_rules: Dictionary = {}
 # DV2-02E opt-in region hunting difficulty choices, persistent exactly-once claims.
 var v2_pve_enabled: bool = false
 var v2_pve_selected_levels: Dictionary = {}
@@ -171,6 +175,9 @@ func to_dict() -> Dictionary:
         data["guidance_recruitment_enabled"] = guidance_recruitment_enabled
     if disciple_v2_birth_enabled:
         data["disciple_v2_birth_enabled"] = true
+    if v2_training_enabled or not v2_training_rules.is_empty():
+        data["v2_training_enabled"] = v2_training_enabled
+        data["v2_training_rules"] = v2_training_rules.duplicate(true)
     if v2_pve_enabled or not v2_pve_selected_levels.is_empty() or not v2_pve_reward_claims.is_empty() or not v2_pve_active_runs.is_empty():
         data["v2_pve_enabled"] = v2_pve_enabled
         data["v2_pve_selected_levels"] = v2_pve_selected_levels.duplicate(true)
@@ -244,6 +251,10 @@ static func from_dict(data: Dictionary) -> SectState:
     state.foundation_points_enabled = bool(data.get("foundation_points_enabled", false))
     state.guidance_recruitment_enabled = bool(data.get("guidance_recruitment_enabled", false))
     state.disciple_v2_birth_enabled = bool(data.get("disciple_v2_birth_enabled", false))
+    state.v2_training_enabled = bool(data.get("v2_training_enabled", false))
+    var raw_v2_training = data.get("v2_training_rules", {})
+    if raw_v2_training is Dictionary:
+        state.v2_training_rules = raw_v2_training.duplicate(true)
     state.v2_pve_enabled = bool(data.get("v2_pve_enabled", false))
     var raw_levels = data.get("v2_pve_selected_levels", {})
     if raw_levels is Dictionary:
