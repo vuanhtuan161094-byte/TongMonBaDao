@@ -20,6 +20,8 @@ on:
       - 'godot/src/simulation/workforce/profession_modifier_system.gd'
       - 'godot/src/simulation/traits/trait_system.gd'
       - 'godot/src/simulation/cultivation/cultivation_system.gd'
+      - 'godot/src/simulation/cultivation/disciple_realm_progress_v2.gd'
+      - 'godot/tests/simulation/dv2_03_realm_body_progress_test.gd'
       - 'godot/src/simulation/core/p3_7_factory.gd'
       - 'godot/src/simulation/state/simulation_state.gd'
       - 'godot/src/simulation/state/disciple_state.gd'
