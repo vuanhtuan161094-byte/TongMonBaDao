@@ -242,6 +242,34 @@ Current old percentage consumers may use a bounded compatibility bridge where ne
 - Numeric 2×300 EXP/content rates are **not yet approved/activated**; a **comparison-only pacing proposal** was added to `docs/DV2_03_TWO_TRACK_PROGRESS_EXECUTION.md`. Test fixtures `80/50/100` are NOT balance. No change to `SectState.v2_training_enabled=false` default.
 - DV2-03 remains ACTIVE. NEXT: obtain Godot-focused evidence, review/approve EXP pacing, generate and wire 600 production values, then proceed D realtime/AI/offline. Do not start equipment/skills or full-map PvE.
 
+
+### 5.6 DV2-03M — P2/V2 progression isolation + live HP migration (CODE PUSHED, GATE UNVERIFIED)
+
+**Latest gameplay HEAD for this slice:** `1d9e93d5d2610dbe4db1ea678f3593f5c7b5256c` plus later documentation commits only after this section is written. This slice intentionally fixes migration/runtime authority before EXP balance, autonomous Tu Vi/Body policy, realtime/offline or UI.
+
+Implemented:
+- One V2 identity boundary: `DiscipleRealmProgressV2.owns_v2_progression()`; mutation APIs require authentic complete V2 birth identity + valid V2 realm profile, not a spoofed realm dictionary.
+- `valid_complete_birth()` again validates actual Root/Mutation/Trait/Bloodline/Physique/Destiny structure, while permitting lawful post-birth current-root growth/reveal/awakening state changes.
+- Real V2 candidate acceptance creates exactly one two-track realm profile. Temporary **explicit compatibility** maps current P3.7 Luyện Khí stage index 0..8 -> V2 Luyện Khí floor 1..9; Body starts Phàm Thân floor 1. This preserves current new-recruit start semantics only; it is NOT the final V2 starting distribution and does not import P2 EXP/chance tables.
+- Pre-DV2-03 saves with complete V2 birth identity but no realm profile migrate once through the same compatibility bridge. A present malformed V2 progress payload is never silently rerolled/reset.
+- V2 scheduler cannot fall back to P2 cultivate/breakthrough. Legacy combat wins no longer award P2 cultivation to V2; legacy combat compatibility no longer adds P2 realm power to V2 characters.
+- V2 work-time cultivation writes the V2 Tu Vi track using authored current-realm floor costs. In-sect ordinary work/mining, REST and HOLD no longer spend/refill expedition stamina for V2 characters. Legacy characters retain old behavior.
+- Old workforce/UI `COMMAND_CULTIVATE` may route to V2 training when content is ready; if V2 training is unavailable it clears/rejects the compatibility command instead of creating an endless HOLD loop or falling back to P2.
+- `CombatStatsV2` Realm+Body Max HP is now the live V2 HP authority. Recruitment, floor changes, successful major gates and save/load rescale current HP by ratio; no free full heal on progression.
+- Major-gate required EXP now comes from the same authored `floor_costs["realm:10"]` used by floor progression; the second free numeric gate-cost authority was removed for both Tu Vi and Body commit APIs.
+- AI no longer exposes/uses P2 cultivation stage/progress for V2. Full autonomous Tu Vi-vs-Body training policy remains deliberately **NOT implemented** in this cleanup slice.
+
+New/updated focused tests:
+- `dv2_03_realm_body_progress_test.gd`: recruitment-owned progression, one gate-cost authority, live HP ratio on floor/gate and save/load.
+- `dv2_03_training_actions_test.gd`: training uses recruitment-created profile.
+- NEW `dv2_03_p2_isolation_test.gd`: malformed birth rejection, old V2 save migration/corrupt fail-closed, no P2 AI/progress/breakthrough/combat realm bonus, V2 work Tu Vi, no in-sect expedition stamina drain/refill, UI cultivate compatibility routing/rejection.
+- Focused workflow watches AI/workforce/needs/combat/recruitment/birth-validator and runs all three DV2-03 tests.
+
+**Gate status: UNVERIFIED on latest code.** The available GitHub connector can fetch jobs only when a workflow run ID is already known and its commit-run lookup currently exposes PR-triggered runs, not these push-triggered private-repo runs. Therefore no new Godot PASS is claimed. Previous focused #37895517181 and full #37895357334 are older-code evidence only. Windows remains UNTESTED.
+
+**NEXT only after runtime gate evidence:** DV2-03 autonomous Tu Vi/Luyện Thể policy and real time/offline loop. Do not resume EXP balance, Equipment/Skills/innate effects or expanded PvE before this migration slice is verified.
+
+
 ### 5.4 Chuẩn bị lát triển khai tiếp theo — audit 09/10/2026
 
 **DV2-03 vẫn ACTIVE — chưa có code gameplay/gate mới trong lượt chuẩn bị này.** GitHub `main` đã được rà: action `request_training` kiểm tra sơ bộ nhưng không preflight `base_xp_per_action`/`floor_costs`; do đó có thể trả `ok=true` để xếp việc, rồi `resolve` fail-closed ở tick sau. Scheduler `step()` làm chủ cấp EXP, không phải driver wall-clock được chứng thực. Workflow focused của code `e96df183` PASS; FULL P3.7 chỉ có bằng chứng PASS tại `5296f610`. **Không có bằng chứng full same-code SHA hay realtime 15s/offline/Windows V2.**
