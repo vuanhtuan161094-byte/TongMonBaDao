@@ -129,7 +129,7 @@ static func derive_stats(disciple: DiscipleState, sources: Array = []) -> Dictio
 # consumer exists; it is NOT silently stored as generic Tich Tu.
 static func grant_xp(
     disciple: DiscipleState, track: String, base_amount: float,
-    gain_type: String, floor_costs: Dictionary
+    gain_type: String, floor_costs: Dictionary, sources: Array = []
 ) -> Dictionary:
     if disciple == null or not valid_profile(disciple.v2_realm_progress):
         return {"ok":false,"reason":"v2_realm_profile_not_ready"}
@@ -149,13 +149,35 @@ static func grant_xp(
         if is_nan(value) or is_inf(value) or value <= 0.0:
             return {"ok":false,"reason":"invalid_xp_cost"}
         costs[f] = value
+    # Sources must carry a real owner+channel. Enabling Trait/Physique
+    # identity alone cannot silently grant XP without an explicit consumer.
+    var source_bonus := 0.0
+    var source_ids: Dictionary = {}
+    var ordered: Array = sources.duplicate(true)
+    ordered.sort_custom(func(a,b): return str(a.get("source_id","")) < str(b.get("source_id","")))
+    for raw in ordered:
+        if not (raw is Dictionary):
+            return {"ok":false,"reason":"invalid_xp_source"}
+        var source: Dictionary = raw
+        var source_id := str(source.get("source_id",""))
+        if source_id.is_empty() or source_ids.has(source_id) or source.has("scope") or source.has("condition") or source.has("filter"):
+            return {"ok":false,"reason":"ambiguous_xp_source"}
+        source_ids[source_id] = true
+        var expected_channel := "cultivation_xp_gain" if track == "cultivation" else "body_xp_gain"
+        if str(source.get("channel","")) != expected_channel or str(source.get("mode","")) != "percent_add":
+            return {"ok":false,"reason":"unsupported_xp_source_channel"}
+        var value := float(source.get("value",NAN))
+        if is_nan(value) or is_inf(value):
+            return {"ok":false,"reason":"nonfinite_xp_source"}
+        if bool(source.get("enabled",true)):
+            source_bonus += value
     var natural_factor := 1.0
     if gain_type == "natural":
         var relevant := disciple.aptitude if track == "cultivation" else disciple.constitution
         if is_nan(relevant) or is_inf(relevant) or relevant < 0.0:
             return {"ok":false,"reason":"invalid_foundation_attribute"}
-        natural_factor += (0.0025 if track == "cultivation" else 0.0020)*relevant
-    var gained := base_amount*natural_factor
+        natural_factor += (0.0025 if track == "cultivation" else 0.0020)*relevant + source_bonus
+    var gained := base_amount*maxf(0.0,natural_factor)
     if is_nan(gained) or is_inf(gained):
         return {"ok":false,"reason":"nonfinite_xp_gain"}
     var xp := float(old["xp"])+gained
@@ -173,7 +195,9 @@ static func grant_xp(
     next["xp"] = xp
     disciple.v2_realm_progress[track] = next
     return {
-        "ok":true,"track":track,"gained":gained,"floors_earned":floors_earned,
+        "ok":true,"track":track,"gained":gained,
+        "natural_factor":maxf(0.0,natural_factor),
+        "floors_earned":floors_earned,
         "realm":realm,"floor":floor_index,"xp":xp,
         "at_major_gate":floor_index == MAX_FLOOR and xp >= float(costs[MAX_FLOOR]),
         "unapplied_overflow":extra
