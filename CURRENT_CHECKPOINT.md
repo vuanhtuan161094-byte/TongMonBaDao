@@ -202,7 +202,7 @@ Current old percentage consumers may use a bounded compatibility bridge where ne
 
 ### DV2-02 — newly ACTIVE by user "làm việc tiếp theo" on 2026-10-09
 
-**Scope:** canonical 14 Combat Stats + 10 elemental resistances derived from already approved RealmBodyCore numeric V1 + Tiềm Lực; typed modifiers, provenance, limits, crit/status/Defense/penetration/resistance/reduction and deterministic focused tests. Combat power is **not** stat/damage authority in V2. Keep existing P0–P3.7 combat behavior until the whole PvE/monster/skill consumer is gated; a stat calculator alone does **not** close DV2-02.
+**Scope (UPDATED USER DECISION 2026-10-09):** canonical **16 Combat Stats**, including new **Hút Máu** and **Giảm Hút Máu**, plus 10 elemental resistances derived from already approved RealmBodyCore numeric V1 + Tiềm Lực; typed modifiers, provenance, limits, crit/status/Defense/penetration/resistance/reduction and deterministic focused tests. Combat power is **not** stat/damage authority in V2. Keep existing P0–P3.7 combat behavior until the whole PvE/monster/skill consumer is gated; a stat calculator alone does **not** close DV2-02.
 
 **DV2-02A — first focused code committed and tested:**
 - `godot/src/simulation/combat/combat_stats_v2.gd` computes all 14 V2 primary stat channels + independent remaining-damage resistance map of 10 elements, Realm+Body 30×10 (G=1.65^(r-1)*1.03^(floor-1)), Tiềm Lực +0.05%/pt core-only, deterministic typed source validation and breakdown, HP-ratio scaling and a pure direct-hit resolver. No global Work Power or Combat Power.
@@ -210,6 +210,13 @@ Current old percentage consumers may use a bounded compatibility bridge where ne
 - `.github/workflows/dv2-02-combat-stats.yml` focused real **Godot 4.7.2 Linux CI PASS**, [Actions #37880761726](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37880761726), code commit `691e1216`. Earlier CI failed because the test compared buffed attack expectations against an unbuffed input; corrected before PASS. This is **not** a real Windows gate.
 - Owner and numeric breakdown: `docs/DV2_02_COMBAT_STAT_EXECUTION_CONTRACT.md`.
 - **Still not implemented:** actual V2 progression adapter/canonical two-track disciple state, real monster/boss ATK–DEF–HP, end-to-end skill/encounter integration, conditional source triggers, lazy stat caching/UI, relevant full cumulative regression after those migrations. Legacy P3.7 encounters still use old `combat_power` and are not mislabeled as V2. **DV2-02 remains ACTIVE; do not claim BACKEND LOCKED.**
+
+**DV2-02B — Hút Máu và Giảm Hút Máu user-locked, implemented in staged V2 combat API:**
+- Two new **headline stats `lifesteal` / `lifesteal_reduction`**, both default 0 and accept independent `percentage_points` sources; effective rate `max(0, lifesteal - target_lifesteal_reduction)`. No arbitrary 100% upper cap; negative final rate blocked.
+- `CombatStatsV2.settle_damage_and_lifesteal`: heals on **actual target HP lost after all defenses and overkill cap**, never over attacker Max HP. Explicit hit eligibility; no ordinary lifesteal from preview, DoT, reflect, procs or summon damage unless later content permits. Do not automatically apply Healing Done/Received.
+- `CombatSystem.commit_v2_direct_hit`: isolated tested **real DiscipleState HP** update, with per-encounter `hit_id` dedup. **Legacy P0/P3.7 battle routing is unchanged**; not yet a full monster/skills V2 consumer.
+- **Godot 4.7.2 focused PASS**: [Actions #37881952009](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37881952009), includes live disciple hit+heal+idempotence; 16 Combat Stats and 10 resistances, numeric core invariants. Earlier focused stat-only [#37881735064](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37881735064) PASS.
+- **Latest P3.7 fast + full cumulative**: [Actions #37881991189](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37881991189), triggered by V2 `CombatSystem`/stat code changes; check completion before claiming latest regression PASS. DV2-02 remains **ACTIVE**, no full PvE/mob/skill consumer migration yet.
 
 Canonical:
 - `docs/COMBAT_STATS_V2_SPEC.md`;
