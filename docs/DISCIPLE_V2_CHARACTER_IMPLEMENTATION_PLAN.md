@@ -12,6 +12,31 @@ This plan supersedes the **next-work priority** in `docs/EQUIPMENT_FORGING_UPGRA
 
 A first **vertical slice** is ONE real recruited disciple that progresses, works, fights and updates the same derived stats seen in the UI. Extend afterward to all supported character varieties and mass roster scale.
 
+## 0A. User sequencing correction — ROOT FIRST (2026-10-09)
+
+**Approved design direction, not a code authorization:** stop expanding feature catalogues in isolation. Establish the root gameplay chain first:
+
+1. **World/time/source** — stable world seed, time, recruitment sources, simulation event and content identities; reuse existing authorities, not a duplicate world model.
+2. **One person is born** — canonical identity, one-off deterministic per-domain birth rolls, immutable provenance and hidden state, one stored owner per layer; preserve P3.7C1 lục duy/quality/guidance.
+3. **One person acts** — lawful decisions and commands for cultivate, study, work, rest, explore and fight (each activated only when the real existing/new simulation owner is available).
+4. **Action resolves to real event/result** — actor, context, event ID/source and changes to one canonical state; no prose-only effects or ungrounded 'combat power' buffs.
+5. **Growth/history/visibility persist** — derived modifiers consume named recorded sources; changed state is save/load-safe and visible only when legitimately revealed. Those outcomes drive later actions.
+
+This means DV2-01 still starts with the birth/persistence contract, while the shared action/event and modifier architecture must be defined **before** implementing 101 Traits as separate callbacks. Detailed future mechanics get built on these shared primitives, not vice versa. One runnable disciple/action loop is the acceptance target; do not claim all design-only identities have executable effects.
+
+**Decisions from user discussion 2026-10-09:**
+- Current six personality archetypes and three behavioral biases are temporarily retained; full Personality V2 remains deferred.
+- Trait V2 **101 target identity concepts** (the existing 53 + 48 user-approved expansion) recorded in `docs/TRAITS_V2_SPEC.md`; trait-specific commonality weights and complete effect/consumer checks remain pending. Concept approval is not gameplay activation.
+- Fate/Mệnh Cách birth selection will use per-ID weighted eligible content, but exact pool/weights and explicit birth-package data are **not locked**.
+- **Kiếm Cốt stays blocked**; approved direction is to remove it temporarily from ordinary initial birth eligibility and proportionally renormalize other currently eligible Physique types while retaining the overall congenital special-Physique 3% baseline. Do not enable it without its weapon/effect dependencies.
+- Existing starting-realm compatibility is retained temporarily until DV2-03 locks the proper 300-floor starting distribution.
+- User is willing to reset *disposable development/test characters* rather than spend excessive effort perfecting character-to-character legacy migrations. This is not blanket permission to delete user files, alter the locked P0–P3.7C1 baseline, or destroy save compatibility without an explicit later phase-level migration/test decision.
+- Complete approved identities can be born and persisted before a consumer exists, but effects remain inactive/hidden as appropriate; the stricter eligibility rule for Kiếm Cốt and other explicitly forbidden effectless types still applies.
+
+**Approval gate:** do not open DV2-01 gameplay edits until its exact foundation schema/event boundary and unresolved birth-eligibility details are reviewed and the user explicitly authorizes implementation.
+
+---
+
 ## 1. Existing runtime evidence — what can be reused, what must migrate
 
 Read current live code, do not assume every old system is V2:
