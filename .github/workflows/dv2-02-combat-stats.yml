@@ -10,6 +10,7 @@ on:
       - 'godot/src/simulation/combat/monster_catalogue_v2.gd'
       - 'godot/src/simulation/combat/monster_encounter_v2.gd'
       - 'godot/src/simulation/combat/map_battle_v2.gd'
+      - 'godot/src/simulation/combat/map_battle_snapshot_v2.gd'
       - 'godot/src/simulation/combat/hunting_map_v2.gd'
       - 'godot/src/simulation/combat/hunting_pve_run_v2.gd'
       - 'godot/src/simulation/combat/disciple_combat_loadout_v2.gd'
@@ -21,6 +22,7 @@ on:
       - 'godot/tests/simulation/dv2_02_combat_stats_test.gd'
       - 'godot/tests/simulation/dv2_02_monster_context_test.gd'
       - 'godot/tests/simulation/dv2_02_group_map_battle_test.gd'
+      - 'godot/tests/simulation/dv2_02_battle_snapshot_test.gd'
       - 'godot/tests/simulation/dv2_02_five_level_pve_test.gd'
       - 'godot/tests/simulation/dv2_02_five_level_balance_test.gd'
       - '.github/workflows/dv2-02-combat-stats.yml'
@@ -56,6 +58,9 @@ jobs:
 
       - name: DV2-02 group map movement AoE healing and balance benchmark
         run: godot --headless --path godot -s res://tests/simulation/dv2_02_group_map_battle_test.gd
+
+      - name: DV2-02 mid-battle save resume deterministic trace
+        run: godot --headless --path godot -s res://tests/simulation/dv2_02_battle_snapshot_test.gd
 
       - name: DV2-02 five-level map loot and actual equipment/skill effects
         run: godot --headless --path godot -s res://tests/simulation/dv2_02_five_level_pve_test.gd
