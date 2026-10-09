@@ -56,7 +56,7 @@ static func load(data: Dictionary) -> Dictionary:
     var bytes := Marshalls.base64_to_raw(encoded)
     if bytes.size() < 16 or bytes.size() > 12000000:
         return {"ok":false,"reason":"invalid_snapshot_binary"}
-    var raw = bytes_to_var(bytes,false)
+    var raw = bytes_to_var(bytes)
     if not (raw is Dictionary) or int(raw.get("version",0)) != VERSION:
         return {"ok":false,"reason":"invalid_snapshot_payload"}
     return _restore_payload(raw)
