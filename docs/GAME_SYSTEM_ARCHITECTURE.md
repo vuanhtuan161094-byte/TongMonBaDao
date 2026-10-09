@@ -167,7 +167,7 @@ Owns:
 - generic percentage modifier channels for traits/content;
 - graded profession-talent XP bonus;
 - work/profession consumers of the canonical lục-duy authority;
-- passive Tu Vi while actually working.
+- no separate generic work-Tu-Vi award for authentic V2 disciples. V2 passive Tu Vi belongs to cultivation/time authority and continues during ordinary work.
 
 Canonical open-point six-foundation rules, quality derivation, Cơ Duyên checks and Dẫn Tiên recruitment are owned by:
 `docs/P3_7C1_FOUNDATION_DAN_TIEN_SPEC.md`.
