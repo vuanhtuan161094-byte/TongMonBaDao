@@ -24,7 +24,7 @@ func _run() -> void:
         "Canonical progression table must contain exactly 300 floor costs."):
         return
 
-    var expected_r1 := [420,450,480,510,540,600,660,720,780,840]
+    var expected_r1 := [700000,750000,800000,850000,900000,1000000,1100000,1200000,1300000,1400000]
     var r1_sum := 0
     for floor_index in range(1,11):
         var value := int(costs["1:%d" % floor_index])
@@ -32,7 +32,7 @@ func _run() -> void:
         if not _assert(value==int(expected_r1[floor_index-1]),
             "Realm 1 floor cost mismatch at floor %d." % floor_index):
             return
-    if not _assert(r1_sum==6000,
+    if not _assert(r1_sum==10000000,
         "Realm 1 floor costs do not sum to 6,000."):
         return
 
@@ -51,42 +51,42 @@ func _run() -> void:
             return
 
     if not _assert(
-        DiscipleProgressionBalanceV2.realm_total_xp(1)==6000 and
-        DiscipleProgressionBalanceV2.realm_total_xp(10)==51600 and
-        DiscipleProgressionBalanceV2.realm_total_xp(20)==562900 and
-        DiscipleProgressionBalanceV2.realm_total_xp(30)==6144100,
+        DiscipleProgressionBalanceV2.realm_total_xp(1)==10000000 and
+        DiscipleProgressionBalanceV2.realm_total_xp(10)==86000000 and
+        DiscipleProgressionBalanceV2.realm_total_xp(20)==938200000 and
+        DiscipleProgressionBalanceV2.realm_total_xp(30)==10240200000,
         "Selected realm totals changed unexpectedly."):
         return
 
     if not _assert(
-        DiscipleProgressionBalanceV2.cumulative_xp_through_realm(10)==220400 and
-        DiscipleProgressionBalanceV2.cumulative_xp_through_realm(20)==2625600 and
-        DiscipleProgressionBalanceV2.cumulative_xp_through_realm(30)==28878100,
+        DiscipleProgressionBalanceV2.cumulative_xp_through_realm(10)==367400000 and
+        DiscipleProgressionBalanceV2.cumulative_xp_through_realm(20)==4376300000 and
+        DiscipleProgressionBalanceV2.cumulative_xp_through_realm(30)==48130600000,
         "Cumulative progression totals changed unexpectedly."):
         return
 
     if not _assert(
-        _close(DiscipleProgressionBalanceV2.BASE_TUVI_PER_MINUTE,20.0) and
+        _close(DiscipleProgressionBalanceV2.BASE_TUVI_PER_MINUTE,1000.0) and
         _close(DiscipleProgressionBalanceV2.CULTIVATE_MULTIPLIER,2.0) and
-        _close(DiscipleProgressionBalanceV2.BODY_PRODUCTION_REFERENCE_PER_MINUTE,5.0) and
-        _close(DiscipleProgressionBalanceV2.BODY_EXPEDITION_REFERENCE_PER_MINUTE,15.0) and
-        _close(DiscipleProgressionBalanceV2.BODY_TRAINING_REFERENCE_PER_MINUTE,30.0),
+        _close(DiscipleProgressionBalanceV2.BODY_PRODUCTION_REFERENCE_PER_MINUTE,250.0) and
+        _close(DiscipleProgressionBalanceV2.BODY_EXPEDITION_REFERENCE_PER_MINUTE,750.0) and
+        _close(DiscipleProgressionBalanceV2.BODY_TRAINING_REFERENCE_PER_MINUTE,1500.0),
         "Canonical source-rate benchmarks changed unexpectedly."):
         return
 
     # These are raw baseline benchmarks before foundation stats, buffs, gates,
     # pills, Tinh Nguyên, materials or downtime.
     if not _assert(
-        _close(DiscipleProgressionBalanceV2.benchmark_minutes_for_realm(1,20.0),300.0) and
-        _close(DiscipleProgressionBalanceV2.benchmark_minutes_for_realm(1,40.0),150.0) and
-        _close(DiscipleProgressionBalanceV2.benchmark_minutes_for_realm(1,30.0),200.0),
+        _close(DiscipleProgressionBalanceV2.benchmark_minutes_for_realm(1,1000.0),10000.0) and
+        _close(DiscipleProgressionBalanceV2.benchmark_minutes_for_realm(1,2000.0),5000.0) and
+        _close(DiscipleProgressionBalanceV2.benchmark_minutes_for_realm(1,1500.0),6666.666666666667),
         "Realm-1 benchmark times changed unexpectedly."):
         return
 
     var canonical_catalogue := DiscipleTrainingContentV2.canonical_catalogue()
     var canonical_built := DiscipleTrainingContentV2.build_rules(canonical_catalogue)
     if not _assert(bool(canonical_built.get("ok",false)) and
-        _close(float(canonical_built["rules"]["cultivation"]["base_tuvi_per_minute"]),20.0) and
+        _close(float(canonical_built["rules"]["cultivation"]["base_tuvi_per_minute"]),1000.0) and
         _close(float(canonical_built["rules"]["cultivation"]["cultivate_multiplier"]),2.0) and
         str(canonical_built["rules"]["body"].get("training_mechanic",""))=="typed_source_contract",
         "Canonical balance cannot round-trip through training content registry."):
