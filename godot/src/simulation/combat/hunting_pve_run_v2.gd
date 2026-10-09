@@ -17,6 +17,8 @@ func begin(
         return {"ok":false,"reason":"v2_pve_disabled_or_already_started"}
     if party_members.is_empty() or party_members.size() > MapBattleV2.MAX_DISCIPLES:
         return {"ok":false,"reason":"invalid_party_size"}
+    if encounter_id.is_empty() or state.sect.v2_pve_active_runs.has(encounter_id) or state.sect.v2_pve_reward_claims.has(encounter_id):
+        return {"ok":false,"reason":"duplicate_or_empty_encounter_id"}
     var level := HuntingMapV2.selected_level(state,region)
     if not HuntingMapV2.valid_choice(region,level):
         return {"ok":false,"reason":"invalid_map_level"}
@@ -63,25 +65,35 @@ func begin(
     region_id = region
     spawn_data = spawned
     battle = map_battle
+    var stored := _persist_live_state()
+    if not bool(stored.get("ok",false)):
+        return stored
     return {"ok":true,"encounter_id":encounter_id,"region_id":region,
         "level":level,"party_size":actors.size(),"monster_count":spawned["monsters"].size()}
 
 func advance(viewed_map: bool = false) -> Dictionary:
     if battle == null:
         return {"ok":false,"reason":"no_active_session"}
-    return battle.step(viewed_map)
+    var result := battle.step(viewed_map)
+    if bool(result.get("ok",false)):
+        _persist_live_state()
+    return result
 
 func finish(max_steps: int = 400) -> Dictionary:
     if battle == null:
         return {"ok":false,"reason":"no_session"}
     if battle.active:
         battle.run(max_steps,false)
+    _persist_live_state()
     return {"ok":true,"summary":battle.summary()}
 
 func claim() -> Dictionary:
     if battle == null or owner_state == null:
         return {"ok":false,"reason":"no_session"}
-    return HuntingMapV2.claim_reward(owner_state,spawn_data,battle)
+    var result := HuntingMapV2.claim_reward(owner_state,spawn_data,battle)
+    if bool(result.get("ok",false)):
+        owner_state.sect.v2_pve_active_runs.erase(battle.encounter_id)
+    return result
 
 func snapshot() -> Dictionary:
     if battle == null:
@@ -92,6 +104,23 @@ func snapshot() -> Dictionary:
         "summary":battle.summary(),
         "possible_rewards":HuntingMapV2.preview_reward(spawn_data)}
 
+
+func _persist_live_state() -> Dictionary:
+    var saved := save_state()
+    if bool(saved.get("ok",false)):
+        owner_state.sect.v2_pve_active_runs[battle.encounter_id] = saved.duplicate(true)
+    return saved
+
+# Production-facing recovery path: only a snapshot already recorded in the
+# canonical SectState may resume the encounter. Direct restore_state is a
+# validated low-level utility for migration/tests.
+static func resume_active(state: SimulationState, encounter_id: String) -> Dictionary:
+    if state == null or encounter_id.is_empty():
+        return {"ok":false,"reason":"missing_hunt_state"}
+    var saved = state.sect.v2_pve_active_runs.get(encounter_id,null)
+    if not (saved is Dictionary):
+        return {"ok":false,"reason":"no_saved_active_encounter"}
+    return restore_state(state,saved)
 
 # Immutable encounter provenance + active fight snapshot. This does NOT
 # award any loot, advance the simulation or save object references.
