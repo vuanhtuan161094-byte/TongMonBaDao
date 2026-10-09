@@ -204,7 +204,7 @@ func _step_disciple(disciple: DiscipleState) -> void:
             disciple.current_action = &"EVALUATE"
 
         &"CULTIVATE":
-            if state.sect.v2_training_enabled and DiscipleRealmProgressV2.valid_profile(disciple.v2_realm_progress):
+            if state.sect.v2_training_enabled and DiscipleBirthProfileV2.valid_complete_birth(disciple.v2_birth_profile):
                 # V2 is the sole cultivation EXP owner for this initialized
                 # character. Never award P2 EXP again for the same action.
                 var v2_gain := DiscipleTrainingActionV2.resolve(state, disciple, "CULTIVATE")
@@ -223,7 +223,7 @@ func _step_disciple(disciple: DiscipleState) -> void:
         &"TRAIN_BODY":
             # Explicit V2 action: ordinary P0-P3.7 never selects this action.
             # Does not spend expedition stamina or copy Tu Vi XP into Body.
-            if state.sect.v2_training_enabled and DiscipleRealmProgressV2.valid_profile(disciple.v2_realm_progress):
+            if state.sect.v2_training_enabled and DiscipleBirthProfileV2.valid_complete_birth(disciple.v2_birth_profile):
                 var trained := DiscipleTrainingActionV2.resolve(state, disciple, "TRAIN_BODY")
                 disciple.last_decision["v2_body_training_result"] = trained.duplicate(true)
             if state.sect.workforce_enabled:
