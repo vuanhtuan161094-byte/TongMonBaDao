@@ -39,6 +39,7 @@ static func initialize(
         return {"ok":false,"reason":"invalid_starting_realm"}
     disciple.v2_realm_progress = {
         "version":VERSION,"initialized":true,
+        "last_training_tick":-1,
         "cultivation":_track(cultivation_realm,cultivation_floor),
         "body":_track(body_realm,body_floor)
     }
@@ -55,6 +56,8 @@ static func valid_coordinates(realm: int, floor_index: int) -> bool:
 
 static func valid_profile(profile: Dictionary) -> bool:
     if int(profile.get("version",0)) != VERSION or not bool(profile.get("initialized",false)):
+        return false
+    if int(profile.get("last_training_tick",-1)) < -1:
         return false
     for channel in TRACKS:
         var row = profile.get(channel,{})
@@ -81,6 +84,7 @@ static func normalize_profile(input: Variant) -> Dictionary:
         return {}
     var normalized: Dictionary = input.duplicate(true)
     normalized["version"] = int(normalized.get("version",0))
+    normalized["last_training_tick"] = int(normalized.get("last_training_tick",-1))
     for track in TRACKS:
         var row = normalized.get(track,{})
         if not (row is Dictionary):
