@@ -153,7 +153,7 @@ static func global_floor(realm: int, floor_index: int) -> int:
     return (realm-1)*10+floor_index
 
 static func current(disciple: DiscipleState) -> Dictionary:
-    if disciple == null or not valid_profile(disciple.v2_realm_progress):
+    if not progression_ready(disciple):
         return {"ok":false,"reason":"v2_realm_profile_not_ready"}
     var p: Dictionary = disciple.v2_realm_progress
     return {
@@ -218,7 +218,7 @@ static func grant_xp(
     gain_type: String, floor_costs: Dictionary, sources: Array = [],
     dry_run: bool = false
 ) -> Dictionary:
-    if disciple == null or not valid_profile(disciple.v2_realm_progress):
+    if not progression_ready(disciple):
         return {"ok":false,"reason":"v2_realm_profile_not_ready"}
     if not TRACKS.has(track) or not ["natural","fixed"].has(gain_type):
         return {"ok":false,"reason":"invalid_track_or_gain_type"}
@@ -313,7 +313,7 @@ static func grant_xp(
 # A user policy flag, persisted independently for cultivation and body.
 # Never auto-roll during grant_xp, preview, UI or offscreen paint.
 static func set_auto_breakthrough(disciple: DiscipleState, track: String, enabled: bool) -> Dictionary:
-    if disciple == null or not valid_profile(disciple.v2_realm_progress) or not TRACKS.has(track):
+    if not progression_ready(disciple) or not TRACKS.has(track):
         return {"ok":false,"reason":"invalid_track_or_progress"}
     disciple.v2_realm_progress[track]["auto_breakthrough"] = enabled
     return {"ok":true,"track":track,"enabled":enabled}
@@ -330,7 +330,7 @@ static func attempt_cultivation_breakthrough(
     floor_costs: Dictionary, base_chance: float,
     requirements_verified: bool, event_id: String
 ) -> Dictionary:
-    if disciple == null or rng == null or not valid_profile(disciple.v2_realm_progress):
+    if rng == null or not progression_ready(disciple):
         return {"ok":false,"reason":"v2_realm_profile_not_ready"}
     if event_id.is_empty() or not requirements_verified:
         return {"ok":false,"reason":"gate_requirements_not_verified"}
@@ -398,7 +398,7 @@ static func commit_authorized_body_gate(
     disciple: DiscipleState, floor_costs: Dictionary,
     requirements_verified: bool, event_id: String
 ) -> Dictionary:
-    if disciple == null or not valid_profile(disciple.v2_realm_progress):
+    if not progression_ready(disciple):
         return {"ok":false,"reason":"v2_realm_profile_not_ready"}
     if event_id.is_empty() or not requirements_verified:
         return {"ok":false,"reason":"body_gate_content_not_authorized"}
