@@ -107,7 +107,7 @@ No new maps, new species or speculative XP/chance/reward data in DV2-03.
 
 ### C — Production EXP authority + validation trước khi nhận lệnh (STRUCTURE CODED; NUMERIC BALANCE DEFERRED)
 
-1. Chuẩn hóa source/content registry duy nhất theo **phút mô phỏng**: Tu Vi dùng `base_tuvi_per_minute` + `cultivate_multiplier`; Luyện Thể dùng `base_body_xp_per_minute`; hai đường vẫn có 30×10 floor-cost coverage. Dữ liệu QA 80/50/100 KHÔNG phải game balance.
+1. Chuẩn hóa Tu Vi theo **phút mô phỏng**: `base_tuvi_per_minute` + `cultivate_multiplier`. Luyện Thể chỉ giữ 30×10 progression/floor-cost structure; **training source/rate/activity còn OPEN** và không có `base_body_xp_per_minute` production contract.
 2. Chuẩn bị bảng cân bằng có số liệu/đồ thị tăng trưởng để người dùng duyệt trước khi kích hoạt production. Thiếu giá trị đã duyệt thì giữ `v2_training_enabled=false` / fail-closed. Không chuyển `CultivationSystem.STAGES` P2 sang V2.
 3. `request_training` phải chạy cùng preflight validation đầy đủ với `resolve` (nguồn, track, rate, cost của tầng hiện tại đến cổng, trạng thái đệ tử); không trả `ok=true` rồi lặng lẽ từ chối ở tick sau. Giữ nguyên thuộc tính: một lệnh xếp cho tick tới, không thưởng ngay, không chen ngang COMBAT/công việc bận.
 4. Focused gate: cả 600 vị trí được khai báo/kiểm tra, cost thiếu hoặc sai từ chối *trước khi xếp*; EXP tăng tầng nhỏ chuẩn, cố định không nhân lục duy, natural cộng % đúng, không double P2.
@@ -178,13 +178,13 @@ No new maps, new species or speculative XP/chance/reward data in DV2-03.
 
 **CODE PUSHED / RUNTIME GATE UNVERIFIED.**
 
-- Persisted per-disciple policy: `balanced`, `cultivation_focus`, `body_focus`, `manual`; old valid V2 profiles normalize to `balanced`.
-- `balanced` uses no hidden weighting: lower global floor first, then lower current-floor progress ratio; exact ties alternate deterministically from simulation tick + stable disciple ID without consuming `GameRng`.
-- Focus modes are priorities, not hard locks. If the preferred track is full at a major gate or otherwise unavailable, the other trainable track may be selected.
+- Persisted policy enum still contains `balanced`, `cultivation_focus`, `body_focus`, `manual` for compatibility.
+- **Correction 2026-10-09:** concrete Luyện Thể training is not user-locked. Therefore `body_focus` is currently BLOCKED and cannot be newly selected; `balanced` only selects an actually authorized track (currently Chuyên Tu) rather than fabricating Body training.
+- Earlier lower-floor/lower-ratio/tie logic remains provisional scaffolding for the day when a real Luyện Thể action is approved; it is not current gameplay authority.
 - `manual` disables autonomous selection only; explicit player `request_training` still works.
 - `preview_training` is read-only and reuses the same authored rule validation. A full floor-10 track reports `major_gate_waiting`.
 - Workforce cultivate schedule slots and `DecisionSystem` share one `DiscipleTrainingPolicyV2`; there is no second AI formula.
-- Policy selection never grants EXP. It only queues `CULTIVATE`/`TRAIN_BODY`; the following `SimulationScheduler.step()` remains the commit authority.
+- Policy selection never grants EXP. It may queue approved `CULTIVATE`; `TRAIN_BODY` is fail-closed until Luyện Thể training mechanics are designed.
 - Focused test: `godot/tests/simulation/dv2_03_training_policy_test.gd`. Workflow updated to execute it.
 
 Latest gameplay code: `60e3da63a3329a8b9f37ce57552895dd95fcc454`.
@@ -215,8 +215,8 @@ User-approved gameplay authority now supersedes the current action-only EXP brid
 3. Ordinary work/combat/travel/hunting do **not** produce a second generic Tu Vi award. Existing `_grant_p3_7_work_cultivation()` behavior is now implementation debt and must be removed/reworked for authentic V2.
 4. `CULTIVATE` becomes **Chuyên Tu**: acceleration of the same passive natural-Tu-Vi rate, not the existence condition for Tu Vi gain.
 5. Monster combat grants no direct main-track EXP; monsters may drop **Tinh Nguyên**, whose absorption grants fixed +X Tu Vi.
-6. Luyện Thể remains non-passive: `TRAIN_BODY` or another explicit body-tempering source is required.
+6. Luyện Thể remains non-passive, but the **concrete source/activity is still OPEN**. Do not assume `TRAIN_BODY`, per-minute gain, facility, material loop or schedule until designed.
 7. **15s is not a balance law.** The runtime cadence may batch elapsed-time progression but equal elapsed time must yield equal progression online/offline regardless of commit frequency.
 
-**Implementation status:** source-model refactor is now CODE PUSHED. `DiscipleTuViFlowV2` grants exactly one natural Tu Vi source per simulation minute; `CULTIVATE` only applies Chuyên Tu acceleration; `TRAIN_BODY` may simultaneously grant Body EXP in that minute; separate work-Tu-Vi was removed for authentic V2; new recruitment starts 1/1. Latest runtime Godot gate evidence is still UNVERIFIED.
+**Implementation status:** Tu Vi source-model refactor is CODE PUSHED. `DiscipleTuViFlowV2` grants one natural Tu Vi source per simulation minute; `CULTIVATE` only applies Chuyên Tu acceleration; separate work-Tu-Vi was removed; new recruitment starts 1/1. **Luyện Thể training is intentionally blocked**: provisional `TRAIN_BODY` cannot grant EXP, and body-focus auto policy cannot be activated until design is approved. Latest runtime Godot gate evidence is UNVERIFIED.
 
