@@ -227,6 +227,23 @@ func _run() -> void:
         "Unknown conditional XP source must be rejected atomically."):
         return
 
+    var first_labels := DiscipleRealmProgressV2.realm_name("cultivation",1)
+    if not _check(first_labels == "Phàm Nhân" and
+        DiscipleRealmProgressV2.realm_name("cultivation",10) == "Đại Thừa" and
+        DiscipleRealmProgressV2.realm_name("cultivation",30) == "Sáng Thế Chủ" and
+        DiscipleRealmProgressV2.realm_name("body",1) == "Phàm Thân" and
+        DiscipleRealmProgressV2.realm_name("body",10) == "Linh Thân" and
+        DiscipleRealmProgressV2.realm_name("body",30) == "Sáng Thế Thần Thể" and
+        DiscipleRealmProgressV2.realm_name("body",31).is_empty() and
+        DiscipleRealmProgressV2.CULTIVATION_REALM_NAMES.size()==30 and
+        DiscipleRealmProgressV2.BODY_REALM_NAMES.size()==30,
+        "Tu Vi and Luyen The names are not from the exact locked 30-realm ladders."):
+        return
+    var current_labels := DiscipleRealmProgressV2.current(disciple)
+    if not _check(current_labels["cultivation_name"] == "Luyện Khí" and
+        current_labels["body_name"] == "Luyện Bì",
+        "The disciple's visible realm names do not match current persisted levels."):
+        return
     var end_curve := CombatStatsV2.derive(30,10,30,10,disciple.potential)
     if not _check(bool(end_curve.get("ok",false)) and
         DiscipleRealmProgressV2.global_floor(30,10) == 300 and
