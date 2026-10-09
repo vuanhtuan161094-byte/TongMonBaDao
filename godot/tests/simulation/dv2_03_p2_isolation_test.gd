@@ -100,8 +100,8 @@ func _run() -> void:
             "floor_costs":_costs(cult_realm,1000.0),"sources":[]
         },
         "body":{
-            "authority_id":"qa-v2-isolation-body",
-            "action":"TRAIN_BODY","base_body_xp_per_minute":10.0,
+            "authority_id":"qa-v2-isolation-body-costs",
+            "training_mechanic":"unresolved",
             "floor_costs":_costs(1,1000.0),"sources":[]
         }
     }
