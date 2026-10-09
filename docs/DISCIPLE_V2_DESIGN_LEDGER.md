@@ -680,3 +680,35 @@ Do not implement any V2 design-locked subsystem without a new explicit implement
 # Weapon + Equipment V2 — USER-APPROVED STRUCTURE (2026-10-08)
 
 Current authority: `docs/WEAPON_EQUIPMENT_V2_SPEC.md` (10 ordinary slots; 12 grades; 6 ordinary stat affixes, 2 rare conditional/stat affixes, 1 inscribable individual Chân Văn maximum; max 2 general lines; allowed cross-system effects; all Sect-owned) and `docs/EQUIPMENT_SETS_V2_SPEC.md` (18 combat+6 work sets, four authored pieces each, six eligible positions, cumulative 2/3/4 stat-channel bonuses, both 3-piece bonuses active at 3+3, Nhân/Tiên/Thần family specialization). Old 5-slot, 2/3-only, Chân Văn Cộng Hưởng, automatic set skills and enhancement +15 as a locked cap are SUPERSEDED. Numerical gear power, percentages, costs, recipes, loot rates, final enhancement cap and genuine runtime implementation are OPEN.
+
+# 20. Tu Vi / Luyện Thể source model — USER LOCK 2026-10-09
+
+This supersedes any earlier implication that ordinary work itself grants a separate generic Tu Vi reward.
+
+**Starting state**
+- every newly generated production V2 disciple starts at **Phàm Nhân tầng 1 / 0 Tu Vi EXP**;
+- every newly generated production V2 disciple starts at **Phàm Thân tầng 1 / 0 Luyện Thể EXP**;
+- Tư Chất/Căn Cốt affect growth rate after recruitment, not starting realm/floor;
+- legacy/dev-save compatibility mappings are migration-only and must not leak into new production recruitment.
+
+**Tu Vi**
+- every eligible disciple continuously absorbs natural Tu Vi over elapsed simulation time while living/acting normally;
+- work, travel, hunting and normal combat do not add a second generic Tu Vi EXP award;
+- `CULTIVATE` = **Chuyên Tu**, an explicit acceleration/multiplier of the same natural source;
+- Tư Chất +0.25%/point applies to natural Tu Vi;
+- monster kills do not directly grant Tu Vi; monsters may drop **Tinh Nguyên**;
+- absorbing Tinh Nguyên, Tu Vi pills and ordinary authored +X rewards are fixed injections and are not multiplied by Tư Chất unless explicitly marked scalable.
+
+**Luyện Thể**
+- no passive body EXP from merely living/working/travelling/fighting;
+- body EXP requires `TRAIN_BODY` or another explicit authored body-tempering source;
+- Căn Cốt +0.20%/point applies to natural/base body-training EXP;
+- fixed body pills/material rewards remain fixed unless explicitly scalable.
+
+**Time semantics**
+- **15 seconds is NOT a locked gameplay balance unit.**
+- Natural Tu Vi is a rate over elapsed simulation time. A runtime may batch or commit at 15s, 5s, 1m or another technical cadence provided the total over equal elapsed time is identical and deterministic.
+- Offline and online must therefore consume the same elapsed-time/source rules; presentation timer frequency is not progression balance.
+
+Implementation note: current DV2-03 action-based training/work bridge does **not yet fully implement this new source model**. In particular, passive Tu Vi and removal of the separate generic work-Tu-Vi award remain required code migration work.
+
