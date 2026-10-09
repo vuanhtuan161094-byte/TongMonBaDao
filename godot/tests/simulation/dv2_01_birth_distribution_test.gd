@@ -106,7 +106,7 @@ func _run() -> void:
             _fail("Root count %d distribution outside 2pp tolerance: %d" % [i+1,roots[i]])
             return
     for i in range(3):
-        var expected := [0.60,0.32,0.08][i]
+        var expected: float = float([0.60,0.32,0.08][i])
         if not _near(trait_counts[i],SAMPLE_COUNT*expected,0.02*SAMPLE_COUNT):
             _fail("Visible trait-count rate outside 2pp tolerance.")
             return
