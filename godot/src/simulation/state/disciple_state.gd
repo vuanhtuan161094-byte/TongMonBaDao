@@ -179,7 +179,7 @@ func _init(definition: Dictionary = {}) -> void:
     max_lifespan = maxi(int(definition.get("max_lifespan", 0)), 0)
     latent_identity_seed = int(definition.get("latent_identity_seed", 0))
     var raw_v2_birth = definition.get("v2_birth_profile", {})
-    v2_birth_profile = raw_v2_birth.duplicate(true) if raw_v2_birth is Dictionary else {}
+    v2_birth_profile = DiscipleBirthProfileV2.normalize_envelope(raw_v2_birth)
 
 func retreat_hp_ratio() -> float:
     return lerpf(0.48, 0.14, clampf(risk_bias, 0.0, 1.0))
