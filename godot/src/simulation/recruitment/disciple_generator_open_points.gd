@@ -106,9 +106,11 @@ func generate_candidate(state: SimulationState, source: StringName, generation_i
         "cultivation_hp_bonus": hp_bonus
     })
     if state.sect.disciple_v2_birth_enabled:
-        candidate.v2_birth_profile = DiscipleBirthProfileV2.create_envelope(candidate)
+        candidate.v2_birth_profile = DiscipleBirthRollV2.populate(
+            DiscipleBirthProfileV2.create_envelope(candidate), candidate
+        )
         if not DiscipleBirthProfileV2.valid_envelope(candidate.v2_birth_profile):
-            push_error("DV2-01: incomplete birth envelope for candidate " + str(candidate.id))
+            push_error("DV2-01B: invalid complete birth profile for " + str(candidate.id))
             return null
     return candidate
 
