@@ -133,6 +133,33 @@ func _run() -> void:
         _fail("Loaded V2 birth envelope is invalid.")
         return
 
+    # REAL normal recruitment entry point: opt-in candidate must keep the V2 birth
+    # profile while the old P2 per-sect identity maps must not gain another roll.
+    var generated := RecruitmentSystem.new().generate_candidate(state, source)
+    if generated == null or generated.v2_birth_profile.is_empty():
+        _fail("Real V2 RecruitmentSystem generation omitted congenital identity.")
+        return
+    if not DiscipleBirthProfileV2.valid_envelope(generated.v2_birth_profile):
+        _fail("Normal recruitment did not produce a valid V2 birth profile.")
+        return
+    if state.sect.disciple_trait_profiles.has(str(generated.id)):
+        _fail("Normal V2 birth triggered the duplicate P2 Trait roll.")
+        return
+    if state.sect.bloodline_profiles.has(str(generated.id)):
+        _fail("Normal V2 birth triggered the duplicate P2 Bloodline roll.")
+        return
+    if state.sect.physique_profiles.has(str(generated.id)):
+        _fail("Normal V2 birth triggered the duplicate P2 Physique roll.")
+        return
+    var talent_row: Dictionary = generated.v2_birth_profile["layers"]["profession_talent"]["talents"]
+    for talent_id in talent_row.keys():
+        if not WorkforceSystem.PROFESSION_TRAITS.has(str(talent_id)):
+            _fail("Invalid duplicated profession talent in new V2 profile.")
+            return
+        if int(talent_row[talent_id]) != int(generated.profession_trait_grades.get(str(talent_id),1)):
+            _fail("V2 profession talent grade diverged after legacy P3.7 integration.")
+            return
+
     var legacy := P37Factory.create_state(TEST_SEED)
     var legacy_path := "user://dv2_01_baseline_roundtrip.json"
     if SaveService.new().save_to_path(legacy, legacy_path) != OK:
