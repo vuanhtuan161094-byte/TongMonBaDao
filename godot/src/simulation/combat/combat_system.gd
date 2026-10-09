@@ -380,3 +380,45 @@ func _realtime_result(outcome: String, disciple: DiscipleState, context: Diction
 func _trace(trace: Array, event: Dictionary) -> void:
     if trace.size() < MAX_TRACE_EVENTS:
         trace.append(event)
+
+
+# DV2-02 staged integration. A caller that ALREADY resolved a legal V2 skill
+# may commit its actual hit to two real DiscipleState HP meters. Default P0–P3.7
+# encounters remain untouched until canonical monster/skill V2 adapters exist.
+# One hit_id per encounter is committed at most once in this encounter context.
+func commit_v2_direct_hit(
+    attacker: DiscipleState, defender: DiscipleState,
+    attacker_stats: Dictionary, defender_stats: Dictionary,
+    defender_resistances: Dictionary, encounter_context: Dictionary,
+    hit_id: String, skill_ratio: float = 1.0,
+    was_crit: bool = false, element: String = "",
+    elemental_matchup_factor: float = 1.0, can_crit: bool = true,
+    lifesteal_eligible: bool = true
+) -> Dictionary:
+    if attacker == null or defender == null or attacker == defender or hit_id.is_empty():
+        return {"ok":false,"reason":"invalid_v2_hit_actor"}
+    var seen = encounter_context.get("v2_hit_ids", {})
+    if not (seen is Dictionary) or seen.has(hit_id):
+        return {"ok":false,"reason":"duplicate_or_invalid_v2_hit_id"}
+    var hit := CombatStatsV2.resolve_direct_hit(
+        attacker_stats,defender_stats,defender_resistances,skill_ratio,
+        was_crit,element,elemental_matchup_factor,can_crit
+    )
+    if not bool(hit.get("ok",false)):
+        return hit
+    var settled := CombatStatsV2.settle_damage_and_lifesteal(
+        hit,attacker_stats,defender_stats,
+        attacker.hp,attacker.max_hp,defender.hp,lifesteal_eligible
+    )
+    if not bool(settled.get("ok",false)):
+        return settled
+    # HP mutation happens only after successful validation. All other
+    # economy/XP/reward/quest effects remain owned by their action systems.
+    attacker.hp = float(settled["attacker_hp_after"])
+    defender.hp = float(settled["target_hp_after"])
+    seen[hit_id] = true
+    encounter_context["v2_hit_ids"] = seen
+    var result: Dictionary = hit.duplicate(true)
+    result.merge(settled,true)
+    result["hit_id"] = hit_id
+    return result
