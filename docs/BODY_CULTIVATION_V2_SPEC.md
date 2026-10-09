@@ -100,6 +100,23 @@ Exact base XP curve across 300 floors remains balance work.
 
 ---
 
+
+---
+
+## 4.1 Luyện Thể source model — USER LOCK 2026-10-09
+
+Luyện Thể deliberately does **not** mirror passive Tu Vi absorption.
+
+Canonical source model:
+- newly generated production V2 disciples start at **Phàm Thân tầng 1, 0 Luyện Thể EXP**;
+- ordinary sect work, travel, hunting, standing idle and normal combat do not generically grant Luyện Thể EXP;
+- natural/base Luyện Thể EXP exists only while performing an explicit body-training source such as `TRAIN_BODY` or another authored body-training activity;
+- Căn Cốt (+0.20%/point) and valid body-training modifiers apply to those natural/base body-training sources;
+- pills, medicinal baths, monster materials/essence, events or other content may grant fixed +X Body EXP when explicitly authored;
+- fixed +X Body EXP is not multiplied by Căn Cốt unless that content explicitly declares itself scalable.
+
+This asymmetry is intentional: **Tu Vi is ambient spiritual absorption; Luyện Thể requires actual tempering.**
+
 # 5. Thể Lực V2 definition
 
 Player-facing name:
