@@ -7,7 +7,7 @@ static func player_hit(
     attacker: DiscipleState, attacker_stats: Dictionary, monster: Dictionary,
     context_sources: Array, rng: GameRng, hit_id: String,
     attack_kind: String = "basic", skill_ratio: float = 1.0,
-    can_crit: bool = true
+    can_crit: bool = true, damage_element: String = ""
 ) -> Dictionary:
     if attacker == null or hit_id.is_empty() or not bool(monster.get("ok",false)):
         return {"ok":false,"reason":"invalid_actor_or_hit"}
@@ -31,7 +31,7 @@ static func player_hit(
     var primary := CombatStatsV2.resolve_direct_hit(
         attacker_stats,target_stats,resistances,
         skill_ratio*float(contextual["outgoing_damage_factor"]),
-        crit,str(monster.get("element","")),1.0,can_crit
+        crit,damage_element,1.0,can_crit
     )
     if not bool(primary.get("ok",false)):
         return primary
@@ -52,7 +52,7 @@ static func player_hit(
         var extra := CombatStatsV2.resolve_direct_hit(
             attacker_stats,target_stats,resistances,
             skill_ratio*float(contextual["outgoing_damage_factor"])*float(contextual["basic_followup_ratio"]),
-            false,str(monster.get("element","")),1.0,false
+            false,damage_element,1.0,false
         )
         if not bool(extra.get("ok",false)):
             return extra
