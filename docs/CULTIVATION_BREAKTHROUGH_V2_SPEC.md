@@ -111,34 +111,79 @@ Canonical source model:
 
 All newly generated production V2 disciples start at **Phàm Nhân tầng 1, 0 Tu Vi EXP**. Legacy/dev-save migration may use an explicit compatibility mapping only; it is not a recruitment-generation rule.
 
-# 3. Major-breakthrough chance
+## 2.3 Canonical progression balance — USER LOCK 2026-10-09
 
-Conceptual authority:
+Canonical authority:
+- code: `DiscipleProgressionBalanceV2`;
+- both Tu Vi and Luyện Thể use the same 300-floor EXP requirement curve;
+- realm totals r1..r30 are frozen integers:
+  `6000, 7600, 9700, 12300, 15600, 19800, 25200, 32000, 40600, 51600, 65500, 83200, 105600, 134200, 170400, 216400, 274800, 349000, 443200, 562900, 714900, 907900, 1153000, 1464300, 1859700, 2361800, 2999500, 3809400, 4837900, 6144100`;
+- floor weights inside each realm are `0.70 / 0.75 / 0.80 / 0.85 / 0.90 / 1.00 / 1.10 / 1.20 / 1.30 / 1.40`, summing to 10.0;
+- floors 1..9 round to nearest 10 EXP; floor 10 receives the exact residual so each realm total stays exact;
+- raw natural Tu Vi baseline = **20 Tu Vi / simulation minute**;
+- Chuyên Tu multiplier = **×2.0** on the same natural source.
 
-`final_chance = Base Realm Chance + Same-Gate Failure Bonus + Explicit Sources + Consumables`
+Examples:
+- Phàm Nhân total = 6,000 EXP;
+- its 10 floors = `420 / 450 / 480 / 510 / 540 / 600 / 660 / 720 / 780 / 840`;
+- realm 10 total = 51,600;
+- realm 20 total = 562,900;
+- realm 30 total = 6,144,100.
 
-Then clamp to the content-defined valid probability range.
+Cumulative raw EXP:
+- through realm 10 = 220,400;
+- through realm 20 = 2,625,600;
+- through realm 30 = 28,878,100.
 
-The exact base chance per major realm is balance data and is not locked by this architecture.
-
-## 3.1 No silent generic chance sources
-
-The following do **not** generically alter breakthrough chance:
-
-- Tư Chất;
-- Căn Cốt;
-- Cơ Duyên;
-- current HP;
-- Expedition Stamina;
-- Spiritual Root;
-- Physique;
-- generic equipment quality.
-
-A specific authored effect may alter breakthrough chance only when it explicitly says so.
-
-This retires legacy root-quality breakthrough bonuses as V2 authority.
+These are balance authorities, not test fixtures.
 
 ---
+
+# 3. Major-breakthrough chance
+
+Canonical authority:
+- code: `DiscipleBreakthroughBalanceV2`;
+- source realm r uses one authored base chance for r -> r+1;
+- same-gate pity remains **+5 percentage points per prior failure**;
+- failure remains **−10% of floor-10 EXP requirement**, then recultivate;
+- no generic HP/Stamina/cooldown penalty;
+- no generic Tư Chất/Căn Cốt/Linh Căn/current-HP modifier.
+
+Base chance table:
+
+| Gate | Base |
+|---|---:|
+| 1→2 | 100% |
+| 2→3 | 95% |
+| 3→4 | 90% |
+| 4→5 | 85% |
+| 5→6 | 80% |
+| 6→7 | 75% |
+| 7→8 | 70% |
+| 8→9 | 65% |
+| 9→10 | 60% |
+| 10→11 | 50% |
+| 11→12 | 90% |
+| 12→13 | 85% |
+| 13→14 | 80% |
+| 14→15 | 75% |
+| 15→16 | 70% |
+| 16→17 | 65% |
+| 17→18 | 60% |
+| 18→19 | 55% |
+| 19→20 | 50% |
+| 20→21 | 35% |
+| 21→22 | 80% |
+| 22→23 | 75% |
+| 23→24 | 70% |
+| 24→25 | 65% |
+| 25→26 | 60% |
+| 26→27 | 55% |
+| 27→28 | 50% |
+| 28→29 | 45% |
+| 29→30 | 35% |
+
+Consumable/pill/special-identity modifiers are separate future consumers; they do not rewrite this base table.
 
 # 4. Breakthrough failure
 
@@ -351,6 +396,6 @@ No runtime change is authorized by this document alone.
 - **Tu Vi V2 đã code ở** `DiscipleRealmProgressV2` + `DiscipleTuViFlowV2`: 30 đại cảnh ×10 tầng; new production recruit bắt đầu Phàm Nhân tầng 1/0 EXP; mỗi `SimulationScheduler.step()` (1 phút mô phỏng) nhận đúng một natural Tu Vi source nếu authored content hợp lệ; `CULTIVATE` chỉ tăng tốc cùng nguồn bằng Chuyên Tu multiplier. Tư Chất +0,25%/điểm và source cùng channel cộng trên base; EXP `fixed` không nhân buff.
 - **Hàm thử đột phá Tu Vi đã code và PASS test có tham số**: `attempt_cultivation_breakthrough(disciple,rng,gate_required_xp,base_chance,requirements_verified,event_id)`. Tầng 10 đủ EXP, non-chance gate verified, event_id duy nhất; thất bại mất 10% EXP yêu cầu, +5 **điểm phần trăm** xác suất mỗi thất bại cùng cửa, giữ lifetime history; thành công lên đại cảnh sau tầng 1, không gây HP/Thể Lực/hồi chiêu chung. Tại đại cảnh 30 không vượt giới hạn.
 - `auto_breakthrough` **mới là cờ lưu policy**, CHƯA có consumer tự thử trong scheduler, không tự ăn đan hay chi trả nguyên liệu. `Tích Tu`/overflow theo cơ chế đặc biệt không tự cộng vào quỹ chung.
-- **Không phải production breakthrough đã hoàn thành:** numeric Tu Vi/phút, Chuyên Tu multiplier, bảng EXP 300 tầng, 29 tỷ lệ nền đại cảnh, nguyên liệu/đan và gate content, UI điều khiển đột phá, các hiệu ứng Mệnh/Thể Chất/Linh Căn chưa có kết nối đầy đủ. Tuyệt đối **không lấy XP/chance từ `CultivationSystem` P2** để làm dữ liệu V2.
+- **Production balance now locked in code:** Tu Vi 20/phút, Chuyên Tu ×2, shared 300-floor EXP curve and 29 base major-gate chances. **Still not complete gameplay:** consumable/material consumers, automatic breakthrough scheduling, UI and innate-system modifiers remain unconnected. Tuyệt đối **không lấy XP/chance từ `CultivationSystem` P2** để làm dữ liệu V2.
 - Lưu/tải `DiscipleState.v2_realm_progress.cultivation` và lịch sử đã code, test JSON roundtrip. Bằng chứng focused Linux Godot 4.7.2: [DV2-03 #37895517181](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37895517181) PASS tại `e96df183`. Full P3.7 PASS gần nhất [#37895357334](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37895357334) ở **SHA cũ hơn** `5296f610`; không có full PASS sau lệnh `request_training`.
 - Nhật ký chi tiết và giới hạn thật: [`DV2_03_TWO_TRACK_PROGRESS_EXECUTION.md`](DV2_03_TWO_TRACK_PROGRESS_EXECUTION.md). Phần này vẫn thuộc **DV2-03 ACTIVE**, không tự nhận CLOSED.
