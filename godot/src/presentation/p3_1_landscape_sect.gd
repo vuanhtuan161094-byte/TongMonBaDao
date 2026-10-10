@@ -270,6 +270,7 @@ func _build_buildings() -> void:
         {"id":"residence", "name":"Đệ Tử Xá", "pos":Vector2(848, 142), "size":Vector2(158, 96), "body":Color(0.53, 0.43, 0.29, 1.0), "roof":Color(0.28, 0.38, 0.34, 1.0), "kind":"residence"},
         {"id":"ren_than_duong", "name":"Rèn Thân Đường", "pos":Vector2(290, 157), "size":Vector2(174, 112), "body":Color(0.52, 0.42, 0.32, 1.0), "roof":Color(0.35, 0.30, 0.25, 1.0), "kind":"body_training"},
         {"id":"cultivation", "name":"Tu Luyện Đài", "pos":Vector2(715, 288), "size":Vector2(160, 104), "body":Color(0.35, 0.50, 0.45, 1.0), "roof":Color(0.68, 0.61, 0.40, 1.0), "kind":"platform"},
+        {"id":"ren_than_duong", "name":"Rèn Thân Đường", "pos":Vector2(464, 266), "size":Vector2(156, 108), "body":Color(0.51, 0.37, 0.30, 1.0), "roof":Color(0.59, 0.47, 0.29, 1.0), "kind":"training"},
         {"id":"warehouse", "name":"Kho", "pos":Vector2(952, 332), "size":Vector2(132, 92), "body":Color(0.52, 0.39, 0.24, 1.0), "roof":Color(0.26, 0.34, 0.31, 1.0), "kind":"warehouse"},
         {"id":"forge", "name":"Luyện Khí Đường", "pos":Vector2(466, 432), "size":Vector2(158, 112), "body":Color(0.56, 0.31, 0.20, 1.0), "roof":Color(0.30, 0.29, 0.27, 1.0), "kind":"forge"},
         {"id":"medicine", "name":"Dược Phòng", "pos":Vector2(748, 466), "size":Vector2(152, 100), "body":Color(0.40, 0.55, 0.34, 1.0), "roof":Color(0.24, 0.38, 0.31, 1.0), "kind":"medicine"},
@@ -324,6 +325,22 @@ func _build_playable_building_token(data: Dictionary) -> void:
             _add_building_block(holder, Vector2(6, h * 0.18), Vector2(w - 12, h * 0.28), roof, 14)
             _add_building_block(holder, Vector2(32, 10), Vector2(18, 23), GOLD.darkened(0.23), 5)
             _add_building_block(holder, Vector2(w - 50, 10), Vector2(18, 23), GOLD.darkened(0.23), 5)
+        "training":
+            # A dedicated two-station exercise yard, visually distinct from
+            # the single core of the Tu Luyện Đài. The art is procedural.
+            var floor_panel := Panel.new()
+            floor_panel.position = Vector2(12, 22)
+            floor_panel.size = Vector2(w - 24, h * 0.57)
+            floor_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+            floor_panel.add_theme_stylebox_override("panel", _style(body, roof.darkened(0.25), 3, 18))
+            holder.add_child(floor_panel)
+            for station in range(2):
+                var training_pad := Panel.new()
+                training_pad.position = Vector2(28 + station * 61, 35)
+                training_pad.size = Vector2(39, 39)
+                training_pad.mouse_filter = Control.MOUSE_FILTER_IGNORE
+                training_pad.add_theme_stylebox_override("panel", _style(roof, GOLD.darkened(0.18), 2, 18))
+                holder.add_child(training_pad)
         "mine":
             var rock := Panel.new()
             rock.position = Vector2(12, 10)
@@ -641,6 +658,7 @@ func _building_name(destination: StringName) -> String:
         SectMapPresentation.DEST_RESIDENCE: return "Đệ Tử Xá"
         SectMapPresentation.DEST_CULTIVATION: return "Tu Luyện Đài"
         SectMapPresentation.DEST_BODY_TRAINING: return "Rèn Thân Đường"
+        SectMapPresentation.DEST_BODY_TRAINING: return "Rèn Thân Đường"
         SectMapPresentation.DEST_WAREHOUSE: return "Kho Tông Môn"
         SectMapPresentation.DEST_FORGE: return "Luyện Khí Đường"
         SectMapPresentation.DEST_MEDICINE: return "Dược Phòng"
@@ -672,6 +690,16 @@ func _building_detail(destination: StringName) -> String:
             return "Cấp: %d\nChỗ luyện: %d/%d\nLinh Thạch: %d\nMỗi phút: 1 Linh Thạch → 1.500 EXP Luyện Thể nền.\nKhông cấp EXP nếu chưa có lượt huấn luyện thật." % [hall.level, owners.size(), BuildingSystem.new().worker_slots(hall), state.sect.spirit_stones]
         SectMapPresentation.DEST_CULTIVATION:
             return "Đang tu luyện/phá cảnh: %d\n\nĐệ tử tới đây để tu luyện và chuẩn bị phá cảnh khi đủ điều kiện." % [_count_actions([&"CULTIVATE", &"BREAKTHROUGH"])]
+        SectMapPresentation.DEST_BODY_TRAINING:
+            var hall := BuildingSystem.new().primary_building(state, BuildingSystem.TYPE_BODY_TRAINING)
+            if hall == null:
+                return "Rèn Thân Đường chưa sẵn sàng trong thế giới đang tải."
+            var buildings := BuildingSystem.new()
+            return "Cấp %d · Vị trí: %d/%d\nLinh Thạch Tông Môn: %d\nĐang huấn luyện: %d\n\nMỗi phút thực tập hợp lệ: -1 Linh Thạch, +1.500 EXP Luyện Thể nền." % [
+                hall.level, buildings.assigned_worker_ids(state, hall).size(),
+                buildings.worker_slots(hall), state.sect.spirit_stones,
+                _count_action(&"TRAIN_BODY")
+            ]
         SectMapPresentation.DEST_RESIDENCE:
             return "Đệ tử đang nghỉ: %d\nSức chứa chỗ ở: %d\n\nNghỉ ngơi giúp hồi thể lực và một phần thương thế." % [_count_action(&"REST"), state.sect.lodging_capacity]
         SectMapPresentation.DEST_MEDICINE:
