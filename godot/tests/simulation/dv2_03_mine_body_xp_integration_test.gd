@@ -85,6 +85,7 @@ func _run() -> void:
 
     state.tick = 36
     var before_forge := float(disciple.v2_realm_progress["body"]["xp"])
+    disciple.current_action = &"WORK_FORGING"
     var forging := workforce.perform_work(state, disciple, WorkforceSystem.PROF_FORGING)
     if not _require(bool(forging.get("ok", false)) and
         absf(float(disciple.v2_realm_progress["body"]["xp"]) - before_forge) < 0.0001,
