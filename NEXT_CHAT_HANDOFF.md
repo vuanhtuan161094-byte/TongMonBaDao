@@ -4,6 +4,14 @@
 
 **Repo:** `vuanhtuan161094-byte/TongMonBaDao` · **branch:** `main` · **engine:** Godot 4.7.2. **User yêu cầu thao tác bằng GitHub connector trực tiếp; KHÔNG Codex, KHÔNG Work.** Trước mọi sửa đổi phải fetch lại `main` vì SHA sẽ thay đổi sau các commit bàn giao. **SHA latest đã qua DV2-03 focused Step-2 test:** `5ecb3bbeb7d1adc7644a9aecc3b805d0fc6bb3fa`. Các commit sau đó chỉ cập nhật tài liệu/checkpoint; fetch live `main` trước khi sửa tiếp.
 
+## ACTIVE PRIORITY UPDATE — 10/10/2026, DV2-03P1
+
+**DV2-03 is still ACTIVE / NOT CLOSED.** User requested completing Step 1 before Dẫn Tiên/Production P3 UI. We now have a valid real P3.7 Mine `WORK_MINING` Body EXP consumer: 250 base Body EXP/min + canonical Căn Cốt only during a verified active `mining` phase after Mine slot validation; no grant on `travel_out`/`haul_back`, forging, legacy profiles, idle, or passive assignments. The implementation reuses existing `DiscipleBodyXpSourceV2` per-minute dedup and floor costs. **Latest focused official Godot 4.7.2 Linux PASS:** [run #38064309354](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38064309354), test/source SHA `efd4f8005dcdb6bf9c376da75c6c416ef8efe4c4`. Test: `godot/tests/simulation/dv2_03_mine_body_xp_integration_test.gd`. See `CURRENT_CHECKPOINT.md` §5.14.
+
+**Still missing:** dedicated Rèn Thân building/slot/atomic positive cost consumer, user choice of facility/price/slots, full cumulative at changed source, and Windows test. Rèn Thân `TRAIN_BODY`/`body_focus` must remain BLOCKED until that consumer is real and tested. Other physical professions and expedition source cannot be auto-enabled without their own verified contexts. Exact Thối Thể material packages are not authorized and must not be invented. Continue this one active phase first; do not jump to equipment/skills or P3 recruitment UI.
+
+**Authority rule reaffirmed 10/10:** Tông Môn Bá Đạo V2 runtime/gameplay authority outranks reference Unity. Unity is benchmark/pattern/error detection, never copied formulas or mandatory blueprint.
+
 ## TRẠNG THÁI HIỆN TẠI — đọc mục này trước, không áp dụng các lịch sử bên dưới
 
 - **Giai đoạn ACTIVE duy nhất: DV2-03 — Tu Vi và Luyện Thể V2.** DV2-01 birth **CLOSED**; DV2-02 combat/group PvE **CORE BACKEND LOCKED** *trong phạm vi stat/encounter proving*, **không phải live PvE hoàn tất**.
