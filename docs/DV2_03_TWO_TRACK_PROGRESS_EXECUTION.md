@@ -318,6 +318,19 @@ This completes **Step 1 runtime integration**, but does **not** complete DV2-03 
 
 ---
 
+## DV2-03E3.1 — Đóng lỗi chuyển slot / chặn nghề chen ngang (11/10/2026)
+
+**Chốt áp dụng:** Slot Rèn Thân Đường là phân công công việc độc quyền khi còn hiệu lực; tỷ lệ 1.500 EXP nền/phút, một Linh Thạch/phút và đúng 2 slot cấp 1 giữ nguyên. Mỗi đệ tử V2 giữ slot được ưu tiên chính sách luyện thể trước lịch sản xuất nghề, kể cả khi đã có ưu tiên Luyện Khí từ trước. Nếu không đủ Linh Thạch, không phát EXP Luyện Thể tự do; fallback tu luyện hợp lệ hoặc HOLD, không âm ngân khố. Sức khỏe thấp và chỉ thị người chơi được ưu tiên hợp pháp.
+
+- Đổi qua **Chuyên Tu**: validate Tu Vi mới trước → trả chỗ Rèn Thân cũ → xếp `CULTIVATE`, giữ lịch sử chi tiền/EXP trước đó; không để slot ma. Tất cả caller của `DiscipleTrainingActionV2.request_training` được bảo vệ, không riêng UI.
+- Chuyển nghề/lệnh trực tiếp hợp lệ: `WorkforceSystem.issue_command` và `assign_group` giải phóng đúng slot; clear worksite của người đang luyện đồng thời clear group để tránh nhầm fallback primary-building.
+- AI/Workforce: đường `next_action` xử lý slot riêng trước lịch nghề thông thường, nhưng sau kiểm tra HP và lệnh trực tiếp. Không giữ cưỡng chế EXP nếu thiếu phí/không hợp lệ.
+- Test: `dv2_03_e3_1_training_priority_regression_test.gd` bao gồm 2 slot, lệnh invalid, Chuyên Tu, người thứ 3, save/load, chuyển nghề, clear worksite, ưu tiên Luyện Khí từ trước, nhiều phút scheduler/2 đệ tử/6 Linh Thạch, cạn tiền và cần chữa trị. Test UI E3 bổ sung chuyển Chuyên Tu → thay đệ tử thật.
+
+**Godot 4.7.2 Linux focused:** [#38093450321](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38093450321), **PASS** at code `3c7e9a76`. P3.7 FULL [#38093450298](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38093450298) pending verification at document update. Windows visual NOT RUN.
+
+---
+
 ## DV2-03E3 — Rèn Thân Đường clickable + quản lý 2 slot thật (10/10/2026)
 
 **SCOPE CODED:** same active DV2-03; no new phase, no dummy NPC/warehouse/resources. Official map `SectMapPresentation.DEST_BODY_TRAINING` maps to `BuildingSystem.TYPE_BODY_TRAINING`, with independently clickable token and distinct `TRAIN_BODY` actor destination/status. `p3_1_landscape_sect.gd` builds the token; `p3_2_landscape_sect.gd` owns its real management UI.
