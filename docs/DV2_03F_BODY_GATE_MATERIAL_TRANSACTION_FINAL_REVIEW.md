@@ -105,7 +105,7 @@ Mỗi dòng dùng *main × qty / aux × qty*, dấu `-` nghĩa là không có �
 
 ## F. Service và schema đề xuất, chỉ thiết kế — chưa code
 
-**Chủ sở hữu mới cần tạo sau phê duyệt:** `DiscipleBodyGateContentV2` (immutable 29-entry manifest + 19 named resource definitions, trong đó 15 IDs mới), `DiscipleBodyGateTransactionV2` (sole mutation owner), `BodyGateAcquisitionV2` hoặc rõ từng source-owner để tạo receipt thực. Không cho UI hoặc third-party caller tự truyền `requirements_verified=true` đến low-level adapter. Giữ `DiscipleRealmProgressV2` là chủ diễn tiến/HP chính tắc, `WarehouseSystem` là chủ kho.
+**Chủ sở hữu mới cần tạo sau phê duyệt:** `DiscipleBodyGateContentV2` (immutable 29-entry manifest, tham chiếu 19 resource IDs trong registry, trong đó 15 IDs mới), `DiscipleBodyGateTransactionV2` (sole mutation owner), `BodyGateAcquisitionV2` hoặc rõ từng source-owner để tạo receipt thực. Không cho UI hoặc third-party caller tự truyền `requirements_verified=true` đến low-level adapter. Giữ `DiscipleRealmProgressV2` là chủ diễn tiến/HP chính tắc, `WarehouseSystem` là chủ kho.
 
 **Manifest item (logic format):**
 ```text
