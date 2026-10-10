@@ -693,8 +693,6 @@ func _rebuild_building_management_controls() -> void:
             _build_direct_order_management(WorkforceSystem.COMMAND_CULTIVATE, "", "Gọi tu luyện", false)
         SectMapPresentation.DEST_BODY_TRAINING:
             _build_body_training_management()
-        SectMapPresentation.DEST_BODY_TRAINING:
-            _build_body_training_management()
         SectMapPresentation.DEST_RESIDENCE:
             _build_direct_order_management(WorkforceSystem.COMMAND_REST, "", "Gọi nghỉ", false)
             _build_lodging_expansion_control()
@@ -704,100 +702,6 @@ func _rebuild_building_management_controls() -> void:
             _build_direct_order_management(WorkforceSystem.COMMAND_RETURN_SECT, "", "Triệu hồi", true)
         _:
             pass
-
-# DV2-03E3: show the two real building-authorized slots and a bounded
-# candidate list. All commands touch the canonical state, never local UI data.
-func _build_body_training_management() -> void:
-    var hall := BuildingSystem.new().primary_building(state,BuildingSystem.TYPE_BODY_TRAINING)
-    _add_management_section_label("VỊ TRÍ RÈN THÂN")
-    if hall == null:
-        _add_management_section_label("Công trình chưa có trong trạng thái game.")
-        return
-    var buildings := BuildingSystem.new()
-    var occupied := buildings.active_worker_ids(state,hall)
-    var assigned := buildings.assigned_worker_ids(state,hall)
-    for slot_index in range(buildings.worker_slots(hall)):
-        var row := HBoxContainer.new()
-        row.name = "BodyTrainingSlot_%d" % (slot_index + 1)
-        row.custom_minimum_size = Vector2(384,40)
-        building_management_container.add_child(row)
-        var label := Label.new()
-        label.custom_minimum_size = Vector2(254,36)
-        label.add_theme_font_size_override("font_size",12)
-        label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-        row.add_child(label)
-        if slot_index >= occupied.size():
-            label.text = "Slot %d · Trống" % (slot_index + 1)
-            continue
-        var trainee_id: StringName = occupied[slot_index]
-        var trainee: DiscipleState = state.disciples.get(trainee_id)
-        if trainee == null:
-            label.text = "Slot %d · Dữ liệu không hợp lệ" % (slot_index + 1)
-            continue
-        label.text = "Slot %d · %s · %s" % [
-            slot_index + 1,trainee.display_name,
-            "Đang tập" if trainee.current_action == &"TRAIN_BODY" else "Đã phân"
-        ]
-        var release := Button.new()
-        release.name = "BodyTrainingRelease_%s" % str(trainee_id)
-        release.text = "Rời slot"
-        release.custom_minimum_size = Vector2(94,34)
-        release.pressed.connect(Callable(self,"_release_body_training_slot").bind(trainee_id))
-        row.add_child(release)
-    if assigned.size() > occupied.size():
-        _add_management_section_label("Có %d phân công vượt slot cần xử lý." % (assigned.size() - occupied.size()))
-    _add_management_section_label("PHÂN CÔNG ĐỆ TỬ V2")
-    var disciple_ids: Array = state.disciples.keys()
-    disciple_ids.sort()
-    var shown := 0
-    var more := 0
-    for raw_id in disciple_ids:
-        var disciple: DiscipleState = state.disciples[raw_id]
-        if not DiscipleRealmProgressV2.owns_v2_progression(disciple):
-            continue
-        if occupied.has(disciple.id):
-            continue
-        if disciple.region_id != &"sect":
-            continue
-        # Large-roster UI only creates a small bounded set of real controls.
-        # Any remaining character can be selected from the disciple profile.
-        if shown >= 24:
-            more += 1
-            continue
-        var row := HBoxContainer.new()
-        row.name = "BodyTrainingCandidate_%s" % str(disciple.id)
-        row.custom_minimum_size = Vector2(384,38)
-        building_management_container.add_child(row)
-        var name_label := Label.new()
-        name_label.text = disciple.display_name
-        name_label.custom_minimum_size = Vector2(250,34)
-        name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-        name_label.add_theme_font_size_override("font_size",12)
-        row.add_child(name_label)
-        var assign := Button.new()
-        assign.name = "BodyTrainingAssign_%s" % str(disciple.id)
-        assign.text = "Phân vào"
-        assign.custom_minimum_size = Vector2(94,34)
-        assign.pressed.connect(Callable(self,"_assign_body_training_slot").bind(disciple.id))
-        row.add_child(assign)
-        shown += 1
-    if shown == 0:
-        _add_management_section_label("Chưa có đệ tử V2 khả dụng ở tông môn.")
-    elif more > 0:
-        _add_management_section_label("Còn %d đệ tử khác; chọn trong hồ sơ đệ tử." % more)
-
-func _assign_body_training_slot(disciple_id: StringName) -> void:
-    var result := _queue_v2_training("body",disciple_id)
-    building_management_feedback = _v2_training_ui_feedback(result,"body")
-    _refresh_building_operation_content()
-
-func _release_body_training_slot(disciple_id: StringName) -> void:
-    var result := DiscipleBodyTrainingFacilityV2.release_slot(state,disciple_id)
-    building_management_feedback = (
-        "Đã trả vị trí Rèn Thân cho đệ tử." if bool(result.get("ok",false))
-        else _v2_training_ui_feedback(result,"body")
-    )
-    _refresh_building_operation_content()
 
 func _build_main_hall_policy_controls() -> void:
     _add_management_section_label("CHÍNH SÁCH LAO ĐỘNG")
@@ -1206,8 +1110,6 @@ func _building_operation_text(destination: StringName) -> String:
             return _cultivation_operation_text()
         SectMapPresentation.DEST_BODY_TRAINING:
             return _body_training_operation_text()
-        SectMapPresentation.DEST_BODY_TRAINING:
-            return _body_training_operation_text()
         SectMapPresentation.DEST_RESIDENCE:
             return _residence_operation_text()
         SectMapPresentation.DEST_MEDICINE:
@@ -1218,33 +1120,6 @@ func _building_operation_text(destination: StringName) -> String:
             return _gate_operation_text()
         _:
             return "Sân trung tâm. Không có dữ liệu quản lý riêng."
-
-func _body_training_operation_text() -> String:
-    var hall := BuildingSystem.new().primary_building(state,BuildingSystem.TYPE_BODY_TRAINING)
-    if hall == null:
-        return "Rèn Thân Đường chưa có trong dữ liệu runtime. Không thể phân công."
-    var buildings := BuildingSystem.new()
-    var active := buildings.active_worker_ids(state,hall)
-    var assigned := buildings.assigned_worker_ids(state,hall)
-    var active_minutes := 0
-    for raw_id in active:
-        var disciple: DiscipleState = state.disciples.get(raw_id)
-        if disciple != null and disciple.current_action == &"TRAIN_BODY":
-            active_minutes += 1
-    return (
-        "Cấp %d · Trạng thái: %s\n"
-        + "Slot: %d/%d · Đang rèn: %d\n"
-        + "Linh Thạch Tông Môn hiện có: %d\n"
-        + "Chi phí: 1 Linh Thạch/phút thực tập hợp lệ\n"
-        + "Tốc độ: 1.500 EXP Luyện Thể nền/phút (+Căn Cốt)\n"
-        + "Số phút đã trả phí: %d · Linh Thạch đã chi: %d\n\n"
-        + "Bấm Phân vào để đặt slot và xếp lệnh; EXP chỉ tăng sau một phút mô phỏng."
-    ) % [
-        hall.level,str(hall.status),assigned.size(),buildings.worker_slots(hall),
-        active_minutes,state.sect.spirit_stones,
-        int(hall.production_state.get("paid_training_minutes",0)),
-        int(hall.production_state.get("spent_spirit_stones",0))
-    ]
 
 func _main_hall_operation_text() -> String:
     return (
