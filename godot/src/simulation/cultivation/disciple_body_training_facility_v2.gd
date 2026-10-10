@@ -110,12 +110,18 @@ static func _prepare(state: SimulationState, disciple: DiscipleState) -> Diction
         return {"ok":false,"reason":"training_profile_not_ready"}
     if disciple.region_id != &"sect" or disciple.hp <= 0.0:
         return {"ok":false,"reason":"training_actor_not_available"}
-    if BuildingSystem.new().disciple_has_active_spirit_plot(state,disciple.id):
-        return {"ok":false,"reason":"busy_spirit_plot"}
     var building_system := BuildingSystem.new()
     var building := building_system.primary_building(state,BuildingSystem.TYPE_BODY_TRAINING)
     if building == null or building.status != BuildingSystem.STATUS_ACTIVE:
         return {"ok":false,"reason":"body_training_facility_unavailable"}
+    # Important for 1,000-3,000 disciple rosters: the typical non-trainee
+    # fails in O(1), without sorting/scanning the entire roster for slot access.
+    if disciple.work_group_id != building.worker_group_id or (
+        disciple.worksite_building_id != &"" and disciple.worksite_building_id != building.id
+    ):
+        return {"ok":false,"reason":"body_training_slot_not_reserved"}
+    if building_system.disciple_has_active_spirit_plot(state,disciple.id):
+        return {"ok":false,"reason":"busy_spirit_plot"}
     if not building_system.can_disciple_work(state,building,disciple):
         return {"ok":false,"reason":"body_training_slot_not_reserved"}
     if state.sect.spirit_stones < STONE_COST_PER_MINUTE:
