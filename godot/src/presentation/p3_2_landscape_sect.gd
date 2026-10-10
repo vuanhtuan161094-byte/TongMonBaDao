@@ -52,6 +52,8 @@ var mouse_pointer_dragged := false
 
 func _ready() -> void:
     super._ready()
+    if not runtime_ready:
+        return
     female_motion_library = FemaleNormalV1MotionLibrary.build()
     _install_modular_live_actors()
     _sync_actor_positions()
