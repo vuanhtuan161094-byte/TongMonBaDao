@@ -318,6 +318,22 @@ This completes **Step 1 runtime integration**, but does **not** complete DV2-03 
 
 ---
 
+## DV2-03E2 — UI lệnh Chuyên Tu / Rèn Thân Đường thật (10/10/2026)
+
+**Phạm vi:** vẫn thuộc DV2-03; chưa triển khai Dẫn Tiên UI/phase mới. 2 nguồn tiến độ vẫn do runtime V2 làm chủ, còn Unity source chỉ là tham khảo.
+
+- Hồ sơ đệ tử P3.2: tab **Thuộc tính** của authentic V2 có hai nút **Chuyên tu** / **Rèn thân**; legacy P2 không được hiển thị các nút đó.
+- Summary trên bản đồ: lệnh **Tu luyện** của authentic V2 đi qua `DiscipleTrainingActionV2.request_training(..., "cultivation")`, không dùng lệnh P2/Workforce fallback. Shortcut **Rèn thân** chỉ hiển thị cho V2, thay thế shortcut legacy Luyện Khí ở cùng vị trí (legacy vẫn giữ).
+- Một lần nhấn **Rèn thân**: chạy `DiscipleBodyTrainingFacilityV2.reserve_slot` với preflight work/action/treasury/gate, rồi `DiscipleTrainingActionV2.request_training(...,"body")`. Nếu thành công, ghi chính sách `body_focus` và bỏ direct command cũ; nếu từ chối, phản hồi thật từ backend thay vì báo thành công giả.
+- **Không tự trừ 1 Linh Thạch/cộng 1.500 EXP trên UI.** Debit/award thuộc `SimulationScheduler` → `DiscipleBodyTrainingFacilityV2.commit_minute` khi đủ một phút mô phỏng thực.
+- Action UI chỉ nhận authoritative V2 profile; core V2 không fallback P2. Lỗi backend phổ biến được map thành tiếng Việt (hết tài nguyên, hết slot, busy Linh Điền, đang công việc khác, tại major gate, không có công trình). Feedback của lệnh không bị xóa khi tab Thuộc tính rebuild.
+- Focused UI regression thêm đường no-stone denial, slot reservation, queued Body action not instantly paid/rewarded, real paid minute via approved resolver, queued cultivation without instant EXP. Legacy P3.2 UI regression giữ nguyên.
+- **Chưa có:** click Rèn Thân Đường như một building riêng trên sect map; Dẫn Tiên Đài tuyển đệ tử qua giao diện; nội dung 29 bộ Thối Thể và tất cả UI/visual acceptance trên Windows. Không gọi toàn bộ gameplay loop playable khi thiếu các đường này.
+
+**Gate evidence:** CI cho code mới cần xác minh trước khi gọi PASS. Windows Godot 4.7.2 live visual = NOT RUN / PENDING USER.
+
+---
+
 ## DV2-03E1 — Step 2 unified disciple presentation snapshot (2026-10-10)
 
 **IMPLEMENTED / FOCUSED Linux Godot 4.7.2 PASS.**
