@@ -118,6 +118,17 @@ Canonical source model:
 
 This asymmetry is intentional: **Tu Vi is ambient spiritual absorption; Luyện Thể requires actual tempering.**
 
+### Dedicated Rèn Thân Đường V1 — USER LOCK 2026-10-10
+
+The approved implementation uses a **separate Rèn Thân Đường** building, not a shared slot in Tu Luyện Đài.
+- Lv1 has exactly **2 training slots**. Normal building maximum is Lv100; slot scaling, upgrade recipes and higher grades remain unapproved. Do not fabricate upgrade effects.
+- Only an authentic V2 disciple explicitly assigned a real available Rèn Thân Đường slot may use the `TRAIN_BODY` activity. A training policy `body_focus` may select this action only with verified access; if unavailable it may fall back to valid Chuyên Tu without granting fake Body EXP.
+- Each verified active simulation minute costs exactly **1 Sect Spirit Stone**, debited atomically from the existing Sect treasury first. No free trial minute and no debt.
+- Once the minute's cost has been committed, gain the **1,500 base Body EXP/minute** source, then apply the already-locked Căn Cốt +0.20%/point and legitimate named Body modifiers. Natural grants obey the existing one-disciple/one-Body-source-per-minute dedup.
+- A failed prereq, full major gate, insufficient Spirit Stones, occupied/invalid slot, blocked action or duplicate minute causes **no charge and no Body EXP**. An EXP commit failure rolls back the minute charge.
+- Rèn Thân at the sect never spends Expedition Stamina. It never adds a second passive Tu Vi grant: the ambient Tu Vi owner remains unchanged.
+- This initial content uses one grade/rate only. Training intensity tiers, level-based training bonuses, material recipes, Thối Thể gate packages and visual UI are separate future approvals.
+
 ## 4.2 Natural Body EXP source contract — USER LOCK 2026-10-09
 
 Luyện Thể has three distinct **natural** source contexts. They share one Căn Cốt formula, but they are not interchangeable gameplay activities.
