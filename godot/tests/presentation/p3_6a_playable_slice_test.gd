@@ -3,6 +3,7 @@ extends SceneTree
 var ui: Control
 var state: SimulationState
 
+const TEST_SAVE_PATH := "user://p3_6a_playable_slice_test_live.json"
 const BANNED_PLAYER_COPY := [
     "p3.",
     "p2.",
@@ -22,6 +23,9 @@ func _init() -> void:
     call_deferred("_run")
 
 func _run() -> void:
+    _cleanup_live_save()
+    ProjectSettings.set_setting("runtime/live_save_path", TEST_SAVE_PATH)
+
     var packed_scene := load("res://scenes/p3/p3_2_landscape_sect.tscn") as PackedScene
     if packed_scene == null:
         _fail("P3.6A could not load the real main scene.")
@@ -68,6 +72,8 @@ func _run() -> void:
     print("P3.6A PLAYABLE SLICE TEST PASS")
     ui.queue_free()
     await process_frame
+    ui = null
+    _cleanup_live_save()
     quit(0)
 
 func _verify_demo_task_rail_removed() -> bool:
@@ -239,12 +245,20 @@ func _verify_real_order_has_visible_map_consequence() -> bool:
     if StringName(disciple.direct_command.get("kind", "")) != WorkforceSystem.COMMAND_CULTIVATE:
         return _fail("Player quick order no longer reaches the real command authority.")
 
+    var runtime := ui.get("runtime_session") as LiveGameRuntimeV2
+    if runtime == null:
+        return _fail("Main scene has no live runtime session.")
+
     var before_tick := state.tick
-    ui.call("_advance_simulation")
+    var next_wall := state.runtime_last_wall_unix + 60
+    var advanced := runtime.poll(next_wall)
+    if not bool(advanced.get("ok", false)) or int(advanced.get("steps_run", 0)) != 1:
+        return _fail("Live runtime did not advance exactly one simulation minute.")
+    ui.call("_refresh_all")
     await process_frame
 
     if state.tick != before_tick + 1:
-        return _fail("Main scene did not advance the real simulation.")
+        return _fail("Main scene did not reflect the advanced live simulation.")
     if disciple.current_action != &"CULTIVATE":
         return _fail("Real cultivate order did not become visible cultivation action.")
 
@@ -299,9 +313,15 @@ func _stop_all_timers(node: Node) -> void:
     for child in node.get_children():
         _stop_all_timers(child)
 
+func _cleanup_live_save() -> void:
+    if FileAccess.file_exists(TEST_SAVE_PATH):
+        DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_SAVE_PATH))
+    ProjectSettings.set_setting("runtime/live_save_path", LiveGameRuntimeV2.DEFAULT_SAVE_PATH)
+
 func _fail(message: String) -> bool:
     push_error(message)
     if ui != null:
         ui.queue_free()
+    _cleanup_live_save()
     quit(1)
     return false
