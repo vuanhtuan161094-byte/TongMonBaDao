@@ -530,5 +530,5 @@ Backend authority:
 - `SimulationRuntimeClockV2`;
 - `SimulationRuntimeOwnerV2`.
 
-The current P3.2/P3.1 scene timer (0.55s) remains a presentation/demo loop and is **not yet switched to this owner**.
+**2026-10-10 integration update:** P3.1/P3.2 now use `LiveGameRuntimeV2` -> `SimulationRuntimeOwnerV2` as the live state/time owner. The old 0.55s `scheduler.step()` presentation timer has been removed. The scene polls wall time every 1s for presentation responsiveness and autosaves every 15s; neither cadence is a gameplay balance law. Only each completed 60 wall seconds commits one simulation minute.
 
