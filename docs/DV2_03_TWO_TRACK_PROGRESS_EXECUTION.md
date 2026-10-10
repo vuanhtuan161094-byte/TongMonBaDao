@@ -332,6 +332,24 @@ This completes **Step 1 runtime integration**, but does **not** complete DV2-03 
 
 ---
 
+## DV2-03E3 — Rèn Thân Đường playable map + live building panel (10/10/2026)
+
+**Implementation scope:** same active phase DV2-03, no new balance. Real gameplay state remains sole authority. The E3 presentation changes reuse the approved separate `Rèn Thân Đường`, the real treasury `state.sect.spirit_stones`, the existing 2-slot `BuildingSystem` and canonical `DiscipleBodyTrainingFacilityV2`.
+
+- P3.1 procedural map has **one** distinct clickable `ren_than_duong` token. `SectMapPresentation` maps `TRAIN_BODY` to the correct building world position and displays the active-action label.
+- P3.2 building interaction opens the normal `BuildingOperationPanel`; read-model displays **real Lv1, 0–2 assigned slots, current active training actions, live Sect Spirit Stones, 1 stone/minute, canonical 1,500 base Body EXP/minute, persisted paid minutes/spent stones, last scheduler training result when present**.
+- Slot rows show the **actual names** and activity states of the two assigned V2 disciples. The building panel's candidate buttons draw from the **real current V2 disciple roster at the sect**, bounded to 12 rendered candidates for larger rosters. For other disciples use the character profile's V2 training action; no fake roster or mock resources.
+- Assign calls existing `_queue_v2_training("body", disciple_id)`: policy/availability checks → `reserve_slot` → `request_training`. The button **does not charge or award immediately**. Full slots, shortage of stones, blocked work and active Spirit Field plots fail closed with reason.
+- Release uses one canonical `DiscipleBodyTrainingFacilityV2.release_slot`, clears both work-group and worksite (important because the primary-building fallback would otherwise keep counting a ghost slot), stops a queued `TRAIN_BODY` and returns that disciple to **manual** training policy so AI cannot silently re-queue paid training. Release never refunds or charges a finished minute.
+- Source-backed UI refresh after a committed minute reflects remaining stones, paid minutes, source-awarded EXP and canonical actor status; nothing is inferred from the click event.
+- `godot/tests/presentation/dv2_03_p3_body_training_building_ui_test.gd` exercises real Godot P3.2 scene, clicked map hit target, 3 authentic V2 recruits / 2 allowed slots, third denied, real release/reuse, one paid minute, treasury/counters, and state save/restore.
+- **Focused Godot 4.7.2 Linux PASS:** [run #38070169637](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38070169637) at source `b8103b06b9e05af0391ff3e1cd007c07dc8b58df`, including E3 integration test. Full P3.7 cumulative on same source: [#38070169594](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38070169594), status to be rechecked before final acceptance.
+- P3.6A gameplay/preview capture script is not identical to artifact upload: previous P3.6A steps including Godot parse/smoke and capture passed, but GitHub storage **artifact quota** made upload-artifact fail on previous runs. This is not a Windows visual approval.
+- **Windows Godot 4.7.2 / human visual review remain PENDING USER.** Neither preview-artifact retrieval nor Windows PASS is claimed.
+
+**Next within DV2-03:** authorize specific 29 Thối Thể major-gate material rules before any recipe/consumer; do not invent materials or auto-complete gates. Dẫn Tiên playable recruitment and production assignment remain next after closing this phase.
+
+
 ## DV2-03E2 — UI lệnh Chuyên Tu / Rèn Thân Đường thật (10/10/2026)
 
 **Phạm vi:** vẫn thuộc DV2-03; chưa triển khai Dẫn Tiên UI/phase mới. 2 nguồn tiến độ vẫn do runtime V2 làm chủ, còn Unity source chỉ là tham khảo.
