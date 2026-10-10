@@ -327,7 +327,7 @@ This completes **Step 1 runtime integration**, but does **not** complete DV2-03 
 - AI/Workforce: đường `next_action` xử lý slot riêng trước lịch nghề thông thường, nhưng sau kiểm tra HP và lệnh trực tiếp. Không giữ cưỡng chế EXP nếu thiếu phí/không hợp lệ.
 - Test: `dv2_03_e3_1_training_priority_regression_test.gd` bao gồm 2 slot, lệnh invalid, Chuyên Tu, người thứ 3, save/load, chuyển nghề, clear worksite, ưu tiên Luyện Khí từ trước, nhiều phút scheduler/2 đệ tử/6 Linh Thạch, cạn tiền và cần chữa trị. Test UI E3 bổ sung chuyển Chuyên Tu → thay đệ tử thật.
 
-**Godot 4.7.2 Linux focused:** [#38093450321](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38093450321), **PASS** at code `3c7e9a76`. P3.7 FULL [#38093450298](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38093450298) pending verification at document update. Windows visual NOT RUN.
+**Godot 4.7.2 Linux focused:** [#38093450321](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38093450321), **PASS** at code `3c7e9a76`. P3.7 FAST + FULL [#38093450298](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38093450298) **COMPLETED / PASS** at the same gameplay SHA `3c7e9a76` (official Godot 4.7.2 Linux). Windows visual NOT RUN.
 
 ---
 
