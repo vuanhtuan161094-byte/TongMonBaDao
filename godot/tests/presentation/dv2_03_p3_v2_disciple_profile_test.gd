@@ -175,7 +175,7 @@ func _run() -> void:
     var good_progress := disciple.v2_realm_progress.duplicate(true)
     disciple.v2_realm_progress["body"]["realm"] = 99
     var broken_attributes := str(ui.call("_disciple_tab_text","Thuộc tính",disciple))
-    if not broken_attributes.contains("không dùng cảnh giới cũ để thay thế".to_lower()) and not broken_attributes.to_lower().contains("không dùng cảnh giới cũ để thay thế"):
+    if not broken_attributes.to_lower().contains("không dùng cảnh giới cũ để thay thế"):
         _fail("Malformed V2 progression UI did not fail closed.")
         return
     if broken_attributes.contains("987654") or broken_attributes.contains("876543"):
