@@ -1,0 +1,178 @@
+# DV2-03F — Hồ sơ chốt thiết kế nguyên liệu & giao dịch 29 cổng Thối Thể
+
+**Ngày rà soát:** 11/10/2026  
+**Đối chiếu mã:** `main@55e4be5d1dbe267956791cb3db1a923708a5cbad`  
+**Trạng thái:** **PRINCIPLE APPROVED / FINAL REVIEW PENDING** — phê duyệt về nguyên tắc 8 nhóm, 29 công thức, 3 Ấn, nguồn đa tuyến có bảo đảm; **CHƯA ĐƯỢC CHỐT ĐỂ CODE**. Tài liệu này là phương án chốt cuối, không phải luật được triển khai.  
+**Phạm vi:** chỉ Luyện Thể major gates `body.realm=1..29, floor=10`; không thay đổi Tu Vi, EXP, tần suất 60 giây/1 phút mô phỏng, tốc độ EXP, Căn Cốt, Rèn Thân Đường, vật liệu trang bị hay phép bổ trợ.
+
+## A. Luật đã khóa, không cần biểu quyết lại
+
+- Hai đường độc lập: 30 cảnh giới × 10 tầng, Nhân 1–10 / Tiên 11–20 / Thần 21–30; tên/order theo `docs/REALM_LADDER_V2_SPEC.md`.
+- Cổng Luyện Thể tầng 10 dùng giá EXP `DiscipleProgressionBalanceV2.floor_cost(realm,10)`, cùng bảng 300 tầng. Yêu cầu EXP đủ cộng xác minh **toàn bộ** nguyên liệu/Ấn được duyệt ⇒ thành công **100%**. Không RNG, pity, thất bại mất EXP, generic trừ HP/thể lực, yêu cầu Tu Vi phải ngang Luyện Thể.
+- Khi thành công, nhân vật chuyển `body: {realm:r+1,floor:1,xp:0}` bằng `DiscipleRealmProgressV2.commit_canonical_body_gate`, áp dụng `sync_live_hp` theo tỷ lệ HP hiện có; Tu Vi và tài sản cá nhân không đổi. EXP chờ ở gate không tự tạo Tích Tu.
+- Kho duy nhất cho nguyên liệu stackable là `WarehouseSystem` / `SectState.warehouse_resources`, quyền `locked` và `reserve_min` bắt buộc tôn trọng; không đọc/trừ `forge_materials` hoặc `technique_materials` cũ.
+- Rèn Thân Đường Lv1 2 slot, 1 Linh Thạch/phút hợp lệ, 1.500 EXP Luyện Thể nền/phút, +0,20% mỗi Căn Cốt: **KHÔNG thay đổi**. Không tự thêm phụ phí Linh Thạch vào thao tác đột phá.
+
+## B. Đối chiếu khả thi với runtime thực (không nhầm đã có và sẽ làm)
+
+| Đầu vào | Runtime hiện tại | Rủi ro và cách giải quyết **đề xuất** |
+|---|---|---|
+| `thanh_linh_thao` — Thanh Linh Thảo | Đã đăng ký; Linh Điền Lv1, 12 tick/chu kỳ, 3 cây cơ sở/thu hoạch, 4 Linh Thạch/gieo | Nguồn A chính có thể triển khai trên tuyến sản xuất hiện có |
+| `tinh_lang_bi` — Tinh Lang Bì | Đã đăng ký; Bạch Thạch Khê/Hắc Phong Cốc, cơ chế thưởng PvE thực trả vật liệu khi thắng và chống claim trùng | Nguồn A phụ đã có tuyến săn; không đảm bảo chiến thắng/nhận nguyên liệu trước khi triển khai năng lực phù hợp |
+| `tu_van_thao` — Tử Vân Thảo | Đã đăng ký; Linh Điền **Lv30** mới trồng, 24 tick/chu kỳ, 3 cây cơ sở, 14 Linh Thạch/gieo | **RỦI RO CỔ CHAI CỔNG 4**. Bắt buộc có tuyến đảm bảo thứ hai từ **ủy thác nguyên liệu Nhân Giới** khả dụng trước cổng 4; không bắt người chơi phải đạt Linh Điền Lv30 |
+| `linh_tuy` — Linh Tủy | Đã đăng ký; rơi hiếm ở Thanh Trúc Lâm (thông số hiếm theo cấp bản đồ: 0% L1, 3% L2, 8% L3, 16% L4, 26% L5); chưa có hợp đồng cấp hàng bảo đảm | **RỦI RO CỔNG 4–6**. Thêm ủy thác/săn tích lũy đảm bảo, không phụ thuộc duy nhất vào RNG |
+| Nhóm C–H | Chưa có 12 resource IDs tương ứng, crop/mine/drop/map cao giới; 3 bản đồ PvE hiện tại đều Nhân Giới thấp | **KHÔNG THỂ PHÁT HÀNH 29 CỔNG** trước khi có cả material registry + route phát sinh có chứng cứ + UI thấy được nguồn kiếm |
+| `an_nhan_gioi`, `an_tien_gioi`, `an_than_gioi` | Chưa có item IDs, nguồn thưởng, ledger đổi thưởng | Bắt buộc là **vật phẩm tiêu hao stackable, kiếm lặp lại** cho nhiều đệ tử; không dùng cờ thành tựu chỉ thưởng đúng một lần cho cả tài khoản |
+| Giao dịch cổng | `commit_canonical_body_gate(disciple, requirements_verified, event_id)` có EXP check, chống event replay trong lịch sử và HP sync, **chưa có quyền quyết định/trừ kho**; `WarehouseSystem.consume_requirements()` atomic trong phạm vi một dictionary kho nhưng **không gộp với mutation nhân vật** | Cần service giao dịch duy nhất + rollback + claim ledger persisted; tuyệt đối không cho UI truyền `requirements_verified=true` như quyền miễn phí |
+
+Nguồn mới trong cột đề xuất là **CONTENT CẦN TRIỂN KHAI**, không được hiển thị như hiện có. Mọi vật liệu yêu cầu ở cổng `r → r+1` phải có ít nhất một nguồn hiệu lực ở vùng/hoạt động mà đệ tử tại `r` hoặc tổ đội tông môn đang sở hữu thực sự tiếp cận được; không tạo vòng khóa bởi cảnh giới `r+1` hoặc Tu Vi.
+
+## C. ID rõ ràng, giữ 8 nhóm = 16 vật liệu và đúng 3 Ấn
+
+| Nhóm, cổng | Vật liệu chính `main_id` | Vật liệu phụ `aux_id` | Nguồn định hướng |
+|---|---|---|---|
+| A, 1–3 | `thanh_linh_thao` **đã có** | `tinh_lang_bi` **đã có** | Linh Điền Nhân / săn yêu Nhân |
+| B, 4–6 | `tu_van_thao` **đã có** | `linh_tuy` **đã có** | Linh Điền Lv30 **hoặc** ủy thác sớm / săn tích lũy hoặc rơi hiếm |
+| C, 7–10 | `huyet_linh_sam` **MỚI** | `huyet_thu_tinh_huyet` **MỚI** | Dược liệu/hái thuốc Nhân cao / yêu thú Nhân cao |
+| D, 11–14 | `kim_cot_thao` **MỚI** | `linh_thu_cot_ngoc` **MỚI** | Trồng/hái cấp Tiên thấp / tinh anh Tiên thấp |
+| E, 15–17 | `tien_tuy_lien` **MỚI** | `tien_thu_chan_cot` **MỚI** | Dược liệu Tiên giữa / Tiên thú |
+| F, 18–20 | `bat_hoai_tuy_dich` **MỚI** | `dai_la_kim_cot` **MỚI** | Dược liệu/tài nguyên Tiên cao / tinh anh/boss |
+| G, 21–25 | `than_mach_tinh` **MỚI** | `than_thu_cot` **MỚI** | Khai khoáng Thần thấp/giữa / Thần thú |
+| H, 26–29 | `hon_don_tuy_hoa` **MỚI** | `bat_diet_than_cot` **MỚI** | Thần/Hỗn Độn cao / tinh anh/boss Thần cao |
+
+Ba vật phẩm bắt buộc **MỚI** tại đúng ba cổng:
+- Gate 10 (`linh_than→kim_than`): `an_nhan_gioi × 1`.
+- Gate 20 (`de_than→than_khu`): `an_tien_gioi × 1`.
+- Gate 29 (`hon_don_than_the→sang_the_than_the`): `an_than_gioi × 1`.
+
+**Kiểm kê:** 16 vật liệu = 4 ID đang có + **12 ID mới**; cộng **3 ID Ấn mới** ⇒ **15 tài nguyên mới** cần registry + source + tests. Đặt `realm_grade`, `realm_rank`, `family`, `tags`, `market_value` rõ ràng, **không dùng Phẩm Lực chung**. Không đồng nhất các nhóm A–H thành một tiền tệ hoặc đổi bừa khác loại.
+
+## D. Manifest duy nhất: 29 công thức ĐÃ DUYỆT VỀ NGUYÊN TẮC
+
+Mỗi dòng dùng *main × qty / aux × qty*, dấu `-` nghĩa là không có Ấn. Chỉ khi duyệt cuối mới chuyển các dòng thành content data.
+
+| source realm → next | Đường cảnh giới | Nhóm | main_qty | aux_qty | seal |
+|---|---|:---:|---:|---:|---|
+| 1→2 | Phàm Thân → Luyện Bì | A | 12 | 4 | - |
+| 2→3 | Luyện Bì → Luyện Nhục | A | 18 | 5 | - |
+| 3→4 | Luyện Nhục → Dịch Cân | A | 24 | 6 | - |
+| 4→5 | Dịch Cân → Đoán Cốt | B | 12 | 1 | - |
+| 5→6 | Đoán Cốt → Thông Mạch | B | 16 | 2 | - |
+| 6→7 | Thông Mạch → Tôi Tạng | B | 24 | 3 | - |
+| 7→8 | Tôi Tạng → Luyện Huyết | C | 12 | 3 | - |
+| 8→9 | Luyện Huyết → Khai Khiếu | C | 16 | 4 | - |
+| 9→10 | Khai Khiếu → Linh Thân | C | 22 | 6 | - |
+| 10→11 | Linh Thân → Kim Thân | C | 32 | 8 | `an_nhan_gioi × 1` |
+| 11→12 | Kim Thân → Pháp Thân | D | 12 | 3 | - |
+| 12→13 | Pháp Thân → Huyền Thân | D | 16 | 4 | - |
+| 13→14 | Huyền Thân → Thánh Khu | D | 20 | 5 | - |
+| 14→15 | Thánh Khu → Tiên Khu | D | 24 | 6 | - |
+| 15→16 | Tiên Khu → Chân Thân | E | 12 | 3 | - |
+| 16→17 | Chân Thân → Bất Hoại | E | 16 | 4 | - |
+| 17→18 | Bất Hoại → Thái Ất Kim Thân | E | 22 | 6 | - |
+| 18→19 | Thái Ất Kim Thân → Đại La Kim Thân | F | 14 | 4 | - |
+| 19→20 | Đại La Kim Thân → Đế Thân | F | 20 | 6 | - |
+| 20→21 | Đế Thân → Thần Khu | F | 30 | 9 | `an_tien_gioi × 1` |
+| 21→22 | Thần Khu → Thần Cốt | G | 12 | 3 | - |
+| 22→23 | Thần Cốt → Thần Mạch | G | 16 | 4 | - |
+| 23→24 | Thần Mạch → Thần Tạng | G | 20 | 5 | - |
+| 24→25 | Thần Tạng → Thần Tủy | G | 24 | 6 | - |
+| 25→26 | Thần Tủy → Thần Khiếu | G | 30 | 8 | - |
+| 26→27 | Thần Khiếu → Thần Thể | H | 12 | 3 | - |
+| 27→28 | Thần Thể → Bất Diệt Thần Thể | H | 18 | 5 | - |
+| 28→29 | Bất Diệt Thần Thể → Hỗn Độn Thần Thể | H | 24 | 7 | - |
+| 29→30 | Hỗn Độn Thần Thể → Sáng Thế Thần Thể | H | 32 | 10 | `an_than_gioi × 1` |
+
+**Tổng kiểm tra manifest cho một đệ tử đi hết 29 cổng:** **562 đơn vị nguyên liệu chính, 143 đơn vị nguyên liệu phụ, 3 Ấn**, phân bổ theo nhóm A 54/15; B 52/6; C 82/21; D 72/18; E 50/13; F 64/19; G 102/26; H 86/25. Đây là tổng vật phẩm nhiều loại, **không** phải tổng một loại tiền có thể thay thế nhau.
+
+## E. Nguồn kiếm ĐA TUYẾN + BẢO ĐẢM: hợp đồng bắt buộc trước khi phát hành
+
+**E1 — Mỗi ID có ít nhất hai nguồn.** Mỗi vật liệu chính: (a) sản xuất/hái/khoáng sản của đội hậu phương, (b) ủy thác vật liệu đúng cấp hoặc tuyến săn tài nguyên. Mỗi vật liệu phụ: (a) săn đúng bậc và có drop thưởng, (b) ủy thác/điểm đóng góp sự kiện săn **đủ mốc nhận chắc chắn đúng vật phẩm**, không cần drop một boss duy nhất. Nguồn (b) phải nhận được bằng hoạt động lặp lại có receipt và không đòi r+r khác khóa. Nhóm B có ủy thác sớm cho Tử Vân Thảo và Linh Tủy ngay trước cổng 4.
+
+**E2 — Bảo đảm KHÔNG phải tặng miễn phí theo đồng hồ.** Không `add` vật liệu vì người chơi chờ ngoài màn hình. Chỉ tăng kho sau thành tựu **thực đã hoàn thành**: thu hoạch thật, chu kỳ khai khoáng thật, lần săn thắng/claim thành công, hoặc ủy thác hoàn thành/đổi bằng một khoản giao dịch thật. Mỗi receipt nguồn có `source_id + event_id` duy nhất chống farm lại qua reload; progress nguồn riêng, không tạo Phẩm Lực/trung gian có thể thay mọi resource. Hợp đồng này là **new feature content**, chưa được code.
+
+**E3 — Mốc thử để cân bằng, CHƯA KHÓA SỐ:** ưu tiên đạt **1 nguyên liệu chính / khoảng 10–12 phút sản xuất đủ điều kiện**, **1 nguyên liệu phụ / tối đa 4 lần săn/ủy thác hợp lệ có thành công**, áp dụng theo band và lực lượng tông môn. Ví dụ cổng 10 dùng 32 main → khoảng **5,3–6,4 giờ lao động đủ điều kiện** theo 1 luồng; 8 aux → tối đa 32 hoạt động săn hợp lệ theo tuyến bảo đảm. Đây **không phải** dự báo thời gian thật của game khi chưa mô phỏng lịch làm việc/map combat, và không thay số yield crop đã có. Phải test thu nhập thực từ production/quest trước khi triển khai mức này.
+
+**E4 — Ba Ấn bắt buộc, kiếm lặp lại:** mỗi Ấn có hai đường tương đương: 
+1. hoàn thành chiến dịch/boss phù hợp ở band **hiện tại** (chiến thắng + receipt; không tạo khóa sát thương dựa riêng trên Tu Vi), hoặc
+2. hoàn tất chuỗi ủy thác/tích lũy chiến công từ tổ đội rồi đổi lấy **đúng 1 Ấn**. Mốc gợi ý thử: tối đa khoảng **8 lần săn hợp lệ** cho 1 Ấn; phải bổ sung hệ nhiệm vụ/công lao và xác nhận thời gian thực trước khi quyết định số. Có thể sản xuất lại vô hạn số Ấn nếu chiến dịch được thực hiện lại, để không khóa đội hình 1.000–3.000 đệ tử vào reward một lần duy nhất.
+
+**E5 — Gating nguồn:** xác minh `source_realm<=gate_source_realm`, vùng/hoạt động mở bằng combat viability/tổ đội/hạ tầng chứ không bắt Tu Vi và Luyện Thể bằng nhau; không đặt cùng vật liệu ở nguồn chỉ mở sau khi đã dùng chính vật liệu đó để vượt gate. Toàn bộ nguồn C–H chỉ được bật cùng content khu vực/địa điểm tương ứng; cổng không được yêu cầu ID chưa có đường kiếm.
+
+**E6 — Nguồn thuộc tông môn, phân bổ tự động:** săn/thu hoạch thật phát vào **Kho Tông Môn**, không phát item vào túi cá nhân lâu dài. Giữ nguyên `locked/reserve_min`; hệ AI muốn tự đột phá chỉ dùng **available quantity**, không được ăn vật liệu do chưởng môn khóa. Bản quản lý có lọc theo thiếu loại nguyên liệu, số đệ tử đủ EXP và số bộ đủ nguyên liệu; khuyến cáo dự trữ theo số đệ tử đang chờ. Không giới hạn sức chứa kho.
+
+**Hàng rào phát hành:** Nếu 1 trong 29 cổng chưa có **resource definition + source production/loot + deterministic acquisition path + tests**, cổng đó phải báo `content_unavailable`, không gọi gate commit bằng `true` và không tự thay nguyên liệu khác.
+
+## F. Service và schema đề xuất, chỉ thiết kế — chưa code
+
+**Chủ sở hữu mới cần tạo sau phê duyệt:** `DiscipleBodyGateContentV2` (immutable 29-entry manifest + 19 named resource definitions, trong đó 15 IDs mới), `DiscipleBodyGateTransactionV2` (sole mutation owner), `BodyGateAcquisitionV2` hoặc rõ từng source-owner để tạo receipt thực. Không cho UI hoặc third-party caller tự truyền `requirements_verified=true` đến low-level adapter. Giữ `DiscipleRealmProgressV2` là chủ diễn tiến/HP chính tắc, `WarehouseSystem` là chủ kho.
+
+**Manifest item (logic format):**
+```text
+{
+  source_realm: 10,
+  target_realm: 11,
+  main_id: "huyet_linh_sam",
+  main_qty: 32,
+  aux_id: "huyet_thu_tinh_huyet",
+  aux_qty: 8,
+  seal_id: "an_nhan_gioi",
+  seal_qty: 1,
+  required_body_floor: 10,
+  economy_version: "dv2-03f-v1"
+}
+```
+Runtime khẳng định `source_realm` chính là giá trị từ hồ sơ đệ tử. Không cho caller tùy chọn công thức/rate/nguồn gốc. Contract validate đúng 29 rows, continuous 1..29, target=source+1, positive integer quantities, sealed only gate 10/20/29, IDs distinct/registered, source present, EXP từ `DiscipleProgressionBalanceV2`, body deterministic từ `DiscipleBreakthroughBalanceV2`.
+
+**Preview API (pure, không mutate):** `preview_gate(state,disciple_id)` trả `source_realm`, `xp_have/xp_need`, named requirements `qty_need / qty_total / qty_available`, `locked/reserve_min`, `seal`, `content_active`, `can_commit`, and named block reason (`major_gate_not_ready`, `gate_xp_incomplete`, `material_missing`, `material_locked_or_reserved`, `acquisition_source_unavailable`, `body_gate_content_unapproved`). Ngay khi UI hiển thị không trừ vật liệu hay EXP.
+
+**Commit API (sole mutation authority):** `commit_gate(state,disciple_id,request_id)` lấy authoritative target từ actor/manifest; **request_id** là khóa chống nhấn lại, không phải quyền quyết định. Resource costs luôn đi từ manifest bất biến; không nhận `requirements_verified` hay lượng chi phí từ UI; no RNG.
+
+## G. Giao dịch **ALL-OR-NOTHING** trong mô phỏng và save/load
+
+**G1. Tiền điều kiện bắt buộc (không mutate):**
+1. `state` hợp lệ, quyền V2/warehouse enabled, actor thuộc state, V2 identity/progression chuẩn, HP/runtime đủ an toàn, `body.realm` 1..29, `body.floor=10`.
+2. `xp >= floor_cost(realm,10)` chính xác theo canonical curve.
+3. Manifest đã duyệt đúng `economy_version`; 19 resource IDs tồn tại (mới/đã có), tất cả nguồn của dòng đã bật; chỉ Ấn đúng gate 10/20/29.
+4. Kho đủ **available**, sau khi áp dụng `locked` và `reserve_min`; không `ignore_rules=true`, không âm/tràn số lượng; kiểm tra đủ tất cả nguyên liệu + Ấn **trước lần trừ đầu tiên**.
+5. Khóa định danh logic `disciple_id + source_realm` chưa có success receipt; `request_id` chưa bị dùng cho giao dịch khác; `body.breakthrough_history` và ledger không mâu thuẫn. Dùng thứ tự đệ tử/event canonical để không giành vật liệu thiếu theo iteration order ngẫu nhiên.
+
+**G2. Commit trong một scheduler event đồng bộ, không `await` hoặc UI callback xen ngang:**
+1. Ghi ảnh chụp tối thiểu: `disciple.v2_realm_progress.body`, `hp/max_hp`, `sect.warehouse_resources` đối với ID liên quan, `sect.warehouse_event_count`, ledger receipt/event counter.
+2. Gọi canonical `DiscipleRealmProgressV2.commit_canonical_body_gate(disciple,true,event_id)` **chỉ từ service sau khi toàn bộ tiền điều kiện đã được xác minh**; mã tự đối chiếu EXP, hồ sơ, HP sync.
+3. Nếu canonical commit lỗi → **không trừ kho**, giữ nguyên mọi trạng thái.
+4. Nếu canonical thành công, gọi `WarehouseSystem.consume_requirements(state,authoritative_requirements,false)` để trừ **cả gói** sau khi đối chiếu lại; nếu kho lỗi/đổi → phục hồi toàn bộ snapshot actor/HP/kho/event counter, return `transaction_rolled_back`.
+5. Chốt một receipt bất biến trong `SectState.body_gate_claims` (tên trường chỉ là proposal) chứa `disciple_id,source_realm,target_realm,event_id,manifest_version,resource_delta,body_before/after,committed_tick`. Receipt cùng actor + kho là **một phần của cùng SimulationState**, đi qua save/load hiện có; không tách ra tệp lưu riêng. Gắn `breakthrough_history` event_id tương ứng.
+6. Chỉ sau commit thành công mới phát UI/vfx/notification (và cập nhật hiệu ứng chỉ số đã có). Không tạo thêm EXP, thưởng HP, Linh Thạch hay giảm thể lực.
+
+**G3. Lặp lệnh / save/load:** Nhận `request_id` cũ phải khớp cùng actor/cổng và receipt đã persist: trả `already_committed` cùng receipt, **0 vật liệu trừ thêm**, **0 tiến cảnh giới thêm**. Nếu event_id đã có trong lịch sử nhưng kho/ledger không khớp ⇒ lỗi dữ liệu fail-closed, không lấy đồ thêm. Sau restore, một lần nhấn lại/gọi offline trùng không tạo thêm chi phí hay reward. `source_realm` tăng sau thành công, nên gate success của cùng realm không được commit hai lần.
+
+**G4. Biên giới bền vững trên đĩa:** `SaveService.save_to_path` hiện ghi trực tiếp tệp đích (`FileAccess.WRITE`). Tính nhất quán của mutation trong bộ nhớ **không tự bảo đảm** file không bị cắt nếu crash/mất điện khi lưu. Để hứa *disk crash safety*, bước implement phải thêm kiểm thử ghi file tạm + flush/fsync khi API hỗ trợ + replace/rename an toàn trên Windows/Linux + recovery, hoặc explicitly scope save durability khác; **không được tuyên bố chống crash tuyệt đối chỉ từ test serialization JSON**.
+
+**G5. Đua tranh/người dùng bấm nhanh:** Simulation/state mutation single-authority/single-thread trong một tick; nhiều disciple cùng dùng Ấn cuối cùng được phục vụ theo thứ tự ổn định, người sau nhận `material_missing` và giữ nguyên EXP. Nếu tương lai có worker/background dispatch, bắt buộc serialize command hoặc dùng reservation lock. Tất cả nguồn vật liệu/phần thưởng khác nhau phải qua warehouse owner.
+
+## H. UI/AI và nghiệm thu cần có khi được phép code
+
+- Giao diện cổng trong hồ sơ `Luyện Thể`: `Đủ EXP: x/y`, **Loại × cần / hiện có / khả dụng**, `Đang khóa/dự trữ`, tên/đường kiếm cho mỗi loại, tên Ấn và nguồn, nút `Thối Thể` chỉ khả dụng khi preflight thực cho phép.
+- Bấm một lần: hiển thị giao dịch chờ? **Không** tạo pending ảo; xử lý đồng bộ theo state, receipt idempotent; báo thiếu vật phẩm hoặc thành công, theo nguyên nhân thực. Khi thành công chuyển đại cảnh/tầng, giữ thông tin lịch sử cá nhân và HP ratio.
+- Chính sách AI tự đột phá nếu có: chỉ thực hiện khi được bật và có cùng quyền preflight, tôn trọng nguyên liệu khóa/các phân bổ khác; tắt mặc định nếu chưa được duyệt. Không tiêu hàng tông môn chỉ vì một flag UI hoặc timer.
+- Khi nhóm C–H chưa đủ nguồn, UI hiện `Chưa mở nội dung`; tuyệt đối không hiện nút xanh dùng placeholder để qua gate.
+
+### Required regression suite (chỉ là yêu cầu để triển khai)
+
+1. **29/29 manifest rows:** đúng ID, số lượng, source/target, tổng A–H, đúng 3 Ấn.
+2. **Pure preview:** preview liên tục không đổi state/warehouse/progress/save dirty/event counters.
+3. **Happy path:** đầy đủ đúng số → giảm đúng mọi ID, tăng đúng realm+1/floor1, XP gate reset 0, Tu Vi giữ nguyên, tỷ lệ HP giữ nguyên, một receipt.
+4. **All fail states:** thiếu từng 1 item, locked, reserve, thiếu Ấn, thiếu EXP 1 điểm, thiếu content/source, malformed actor, bad realm, no warehouse, unauthorized request, maximum realm30 → **không đổi bất cứ tài nguyên/EXP/HP nào**.
+5. **Atomicity fault injection:** lỗi HP sync/canonical commit/warehouse commit ⇒ rollback nguyên vẹn state (kể cả audit counter), không có partial spend.
+6. **Idempotence:** double-click same request, retry different request at same realm, simultaneous two disciples against one last Ấn, replay load; only one valid spend.
+7. **Save/offline:** persisted receipt + warehouse + body; restore yields exactly-once across process restart; test incomplete save writer/recovery for disk safety separately.
+8. **Acquisition actual source:** A/B hiện có và ủy thác bảo đảm, C–H newly-authored full routes, boss path và alternate Ấn, reward idempotence, access before gate, no invalid resource injection.
+9. **1.000–3.000 roster:** preview read-efficient, không scan toàn bộ đệ tử để mở một gate, batch AI ổn định, ít nhất hai đệ tử tranh nguồn cùng tick.
+10. **Godot official focused + P0→P3.7 full cumulative**, Godot Windows real/visual **PENDING USER**, không tự gọi PASS.
+
+## I. Quyết định cuối cần chốt trước khi lập trình
+
+**Mặc định khuyến nghị cho bản đầu:** giữ đúng 29 công thức ở bảng D; nhóm B có ủy thác sớm cho cả Tử Vân Thảo/Linh Tủy; nhóm C–H phát hành cùng nội dung vùng/nguồn; 3 Ấn là stackable và kiếm lặp lại qua chiến dịch **hoặc** ủy thác; tự động dùng vật liệu của AI **tắt**, cần người chơi cho phép; sink vật liệu không kèm thêm Linh Thạch cổng. Các tốc độ nguồn E3/E4 là **mục tiêu kiểm thử cần duyệt sau khi đo**, không phải công thức đã khóa.
+
+Nếu người chơi đồng ý bản hồ sơ này: cập nhật trạng thái `DESIGN LOCKED` **sau chấp thuận rõ ràng**, rồi mới code từng lát: (1) manifest/registry/test; (2) acquisition guarantee A/B + C–H source contracts/map content theo vùng; (3) gate transaction rollback + ledger + persistence; (4) UI/AI/real Godot focused+full; (5) Windows visual acceptance. Không tự tạo vật phẩm/nguồn loot giả để thử nghiệm production.
