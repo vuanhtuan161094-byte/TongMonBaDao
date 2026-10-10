@@ -2,6 +2,9 @@ extends Control
 
 const DEMO_SEED := 31012026
 const BASE_SIZE := Vector2(1280.0, 720.0)
+const LIVE_SAVE_PATH := LiveGameRuntimeV2.DEFAULT_SAVE_PATH
+const RUNTIME_POLL_SECONDS := 1.0
+const AUTOSAVE_SECONDS := 15.0
 
 const INK := Color(0.12, 0.11, 0.09, 1.0)
 const PAPER := Color(0.91, 0.86, 0.72, 0.98)
@@ -12,7 +15,11 @@ const CINNABAR := Color(0.72, 0.27, 0.15, 1.0)
 const GOLD := Color(0.78, 0.61, 0.25, 1.0)
 
 var state: SimulationState
-var scheduler: SimulationScheduler
+var runtime_session: LiveGameRuntimeV2
+var runtime_ready := false
+var runtime_failure_reason := ""
+var runtime_poll_timer: Timer
+var autosave_timer: Timer
 var workforce := WorkforceSystem.new()
 var bloodlines := BloodlineSystem.new()
 var physiques := PhysiqueSystem.new()
@@ -37,35 +44,69 @@ var opened_disciple_profile := false
 func _ready() -> void:
     set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     custom_minimum_size = BASE_SIZE
-    state = P212Factory.create_state(DEMO_SEED)
-    _prepare_demo_roster()
-    scheduler = SimulationScheduler.new(state)
+
+    runtime_session = LiveGameRuntimeV2.new()
+    var started := runtime_session.start(LIVE_SAVE_PATH, -1, DEMO_SEED)
+    if not bool(started.get("ok", false)):
+        runtime_failure_reason = str(started.get("reason", "live_runtime_start_failed"))
+        push_error("P3 live runtime failed: %s" % runtime_failure_reason)
+        _build_runtime_failure_shell()
+        return
+
+    state = runtime_session.state()
+    runtime_ready = state != null
+    if not runtime_ready:
+        runtime_failure_reason = "live_runtime_state_missing"
+        push_error("P3 live runtime returned no state.")
+        _build_runtime_failure_shell()
+        return
+
     _build_shell()
     _spawn_all_disciples()
     _refresh_all()
+    _start_runtime_timers()
 
-    var timer := Timer.new()
-    timer.wait_time = 0.55
-    timer.one_shot = false
-    timer.autostart = true
-    timer.timeout.connect(_advance_simulation)
-    add_child(timer)
+func _start_runtime_timers() -> void:
+    runtime_poll_timer = Timer.new()
+    runtime_poll_timer.name = "RuntimeWallClockPoll"
+    runtime_poll_timer.wait_time = RUNTIME_POLL_SECONDS
+    runtime_poll_timer.one_shot = false
+    runtime_poll_timer.autostart = true
+    runtime_poll_timer.timeout.connect(_advance_simulation)
+    add_child(runtime_poll_timer)
 
-func _prepare_demo_roster() -> void:
-    # P0 founders are retained exactly. Two V2 candidates are accepted only in this
-    # presentation/demo state so the roster can also demonstrate the modern schema.
-    state.sect.disciple_capacity += 2
-    var candidate_ids: Array = state.recruitment_candidates.keys()
-    candidate_ids.sort()
-    for index in range(mini(2, candidate_ids.size())):
-        var candidate_id := StringName(candidate_ids[index])
-        var result := RecruitmentSystem.new().accept_candidate(state, candidate_id)
-        if not bool(result.get("ok", false)):
-            continue
-        if index == 0:
-            workforce.assign_group(state, candidate_id, &"mining_crew")
-        else:
-            workforce.assign_group(state, candidate_id, &"forge_hall")
+    autosave_timer = Timer.new()
+    autosave_timer.name = "RuntimeAutosave"
+    autosave_timer.wait_time = AUTOSAVE_SECONDS
+    autosave_timer.one_shot = false
+    autosave_timer.autostart = true
+    autosave_timer.timeout.connect(_autosave_runtime)
+    add_child(autosave_timer)
+
+func _build_runtime_failure_shell() -> void:
+    var background := ColorRect.new()
+    background.color = Color(0.10, 0.11, 0.10, 1.0)
+    background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    add_child(background)
+
+    var title := Label.new()
+    title.text = "Không thể tải dữ liệu Tông Môn"
+    title.position = Vector2(260, 250)
+    title.size = Vector2(760, 48)
+    title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    title.add_theme_font_size_override("font_size", 28)
+    title.add_theme_color_override("font_color", Color(0.94, 0.82, 0.47, 1.0))
+    add_child(title)
+
+    var detail := Label.new()
+    detail.text = "Runtime dừng để bảo vệ save. Lý do: %s" % runtime_failure_reason
+    detail.position = Vector2(260, 310)
+    detail.size = Vector2(760, 72)
+    detail.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    detail.add_theme_font_size_override("font_size", 16)
+    detail.add_theme_color_override("font_color", Color(0.92, 0.90, 0.84, 1.0))
+    add_child(detail)
 
 func _build_shell() -> void:
     var background := ColorRect.new()
@@ -464,8 +505,35 @@ func _initial_destination(disciple: DiscipleState) -> StringName:
     return SectMapPresentation.DEST_COURTYARD
 
 func _advance_simulation() -> void:
-    scheduler.step()
-    _refresh_all()
+    if not runtime_ready or runtime_session == null:
+        return
+    var result := runtime_session.poll()
+    if not bool(result.get("ok", false)):
+        push_error("P3 live runtime poll failed: %s" % str(result.get("reason", "unknown")))
+        return
+    if int(result.get("steps_run", 0)) > 0:
+        _refresh_all()
+
+func _autosave_runtime() -> void:
+    if not runtime_ready or runtime_session == null:
+        return
+    var result := runtime_session.save()
+    if not bool(result.get("ok", false)):
+        push_error("P3 live runtime autosave failed: %s" % str(result.get("reason", result.get("error", "unknown"))))
+
+func _exit_tree() -> void:
+    if runtime_ready and runtime_session != null:
+        var result := runtime_session.save()
+        if not bool(result.get("ok", false)):
+            push_error("P3 live runtime exit save failed: %s" % str(result.get("reason", result.get("error", "unknown"))))
+
+func _notification(what: int) -> void:
+    if not runtime_ready or runtime_session == null:
+        return
+    if what == NOTIFICATION_APPLICATION_PAUSED:
+        _autosave_runtime()
+    elif what == NOTIFICATION_APPLICATION_RESUMED:
+        _advance_simulation()
 
 func _refresh_all() -> void:
     _observe_tasks()
