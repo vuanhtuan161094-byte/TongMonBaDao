@@ -170,6 +170,58 @@ func _run() -> void:
         _fail("V2 deep status does not show both canonical tracks.")
         return
 
+    # DV2-03E: Actual two-track V2 buttons must be visible only in the V2
+    # attributes tab, and route to the SAME scheduler-backed action authority.
+    ui.call("_open_disciple_deep_screen",disciple.id,"Thuộc tính")
+    await process_frame
+    deep = (ui.get("popup_layer") as Control).get_node_or_null("DiscipleDeepScreen") as Panel
+    if deep == null or not _has_button_text(deep,"Chuyên tu") or not _has_button_text(deep,"Rèn thân"):
+        _fail("V2 attribute tab did not expose both real training controls.")
+        return
+
+    # No available treasury: no slot assignment, action or fake success.
+    state.sect.spirit_stones = 0
+    disciple.current_action = &"EVALUATE"
+    var before_group := disciple.work_group_id
+    var before_action := disciple.current_action
+    var before_body := float(disciple.v2_realm_progress["body"]["xp"])
+    ui.call("_disciple_tab_action","v2_body_train")
+    if disciple.work_group_id != before_group or disciple.current_action != before_action or (
+        float(disciple.v2_realm_progress["body"]["xp"]) != before_body
+    ) or not str(ui.get("tab_status_text")).contains("Không đủ Linh Thạch"):
+        _fail("UI Rèn Thân gave a free slot/EXP or hid the insufficient-stone denial.")
+        return
+
+    state.sect.spirit_stones = 3 # Explicit QA fixture, never a production reward.
+    ui.call("_disciple_tab_action","v2_body_train")
+    if disciple.current_action != &"TRAIN_BODY" or not str(
+        ui.get("tab_status_text")
+    ).contains("chưa trừ phí/cộng EXP") or state.sect.spirit_stones != 3 or (
+        float(disciple.v2_realm_progress["body"]["xp"]) != before_body
+    ):
+        _fail("UI Rèn Thân did not queue a legitimate no-instant-charge V2 action.")
+        return
+    var facility := BuildingSystem.new().primary_building(state,BuildingSystem.TYPE_BODY_TRAINING)
+    if facility == null or not BuildingSystem.new().active_worker_ids(state,facility).has(disciple.id):
+        _fail("V2 UI Rèn Thân command did not reserve a real facility slot.")
+        return
+    state.tick = maxi(state.tick+1,1)
+    var real_grant := DiscipleTrainingActionV2.resolve(state,disciple,"TRAIN_BODY")
+    if not bool(real_grant.get("ok",false)) or state.sect.spirit_stones != 2 or (
+        float(disciple.v2_realm_progress["body"]["xp"]) <= before_body
+    ):
+        _fail("V2 UI command did not lead to one real paid body training minute.")
+        return
+
+    disciple.current_action = &"EVALUATE"
+    var before_tuvi := float(disciple.v2_realm_progress["cultivation"]["xp"])
+    ui.call("_disciple_tab_action","v2_cultivate")
+    if disciple.current_action != &"CULTIVATE" or (
+        float(disciple.v2_realm_progress["cultivation"]["xp"]) != before_tuvi
+    ) or not str(ui.get("tab_status_text")).contains("EXP chỉ cộng"):
+        _fail("V2 Chuyên Tu UI did not queue the real action without immediate EXP.")
+        return
+
     # Authentic identity + malformed progression must display fail-closed text,
     # not legacy P2 cultivation values.
     var good_progress := disciple.v2_realm_progress.duplicate(true)
