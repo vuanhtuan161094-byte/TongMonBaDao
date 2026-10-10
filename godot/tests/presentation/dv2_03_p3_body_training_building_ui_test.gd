@@ -159,5 +159,22 @@ func _run() -> void:
         int(loaded_hall.production_state.get("paid_training_minutes",0)) == 1,
         "E3 save/load lost real slot/treasury/training accounting."):
         return
+    # E3.1 player-facing transfer must be as safe as the backend API: a
+    # Chuyên Tu command frees C's seat without refunding B's paid minute.
+    var switch := ui.call("_queue_v2_training","cultivation",c.id)
+    if not _check(bool(switch.get("ok",false)) and
+        c.current_action == &"CULTIVATE" and
+        c.work_group_id == &"" and c.worksite_building_id == &"" and
+        BuildingSystem.new().active_worker_ids(state,hall).size() == 1 and
+        state.sect.spirit_stones == 8 and
+        int(hall.production_state.get("paid_training_minutes",0)) == 1,
+        "E3.1 UI Chuyên Tu failed to vacate a paid Body slot safely."):
+        return
+    var reassign := ui.call("_queue_v2_training","body",a.id)
+    if not _check(bool(reassign.get("ok",false)) and
+        BuildingSystem.new().active_worker_ids(state,hall).size() == 2 and
+        state.sect.spirit_stones == 8,
+        "E3.1 freed training place cannot be reused from actual UI."):
+        return
     print("DV2-03E3 REAL RÈN THÂN MAP + TWO-SLOT UI: PASS")
     _finish(true)
