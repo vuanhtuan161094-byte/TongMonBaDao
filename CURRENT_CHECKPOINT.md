@@ -408,7 +408,7 @@ Implemented:
 **Official Godot 4.7.2 Linux evidence:**
 - DV2-03 focused [#38037470018](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38037470018), code SHA `35dd076db146370e6fbadb4cd2d9ee0a9994f642`: **PASS**. Project parse plus all focused progression, action, P2/V2 isolation, policy, Body source, canonical balance/gates, online/offline clock, live save/load and P3 binding steps succeeded.
 - P3.6A Preview [#38037339761](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38037339761), SHA `20ff9686464b09493adc2e4af740a10080d97333`: **PASS** with the live wall-clock contract.
-- P3.7 cumulative run triggered from the same runtime-integration series is tracked separately; do not infer its conclusion until recorded.
+- P3.7 Backend [#38037386848](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38037386848), SHA `150be2aeaf5c7092f594850bdffa2e349f7c03cf`: **PASS** both latest FAST backend gate and **FULL cumulative P0→P3.7 gate** on official Godot 4.7.2 Linux. Commits `20ff968`→`150be2a` after the runtime production code are test-only corrections, so this run exercises the same Step-1 gameplay/runtime implementation.
 - Windows Godot 4.7.2 live/visual gate remains **UNTESTED**.
 
 **Step 1 result:** persistent P3 state + real save/load + wall-clock/offline catch-up is now connected. DV2-03 remains ACTIVE because Rèn Thân/body consumers and V2 UI/profile work are later slices.
