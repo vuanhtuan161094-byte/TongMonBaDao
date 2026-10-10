@@ -4,6 +4,7 @@ extends RefCounted
 const TYPE_MINE := &"mine"
 const TYPE_SPIRIT_FIELD := &"spirit_field"
 const TYPE_GUIDANCE_PLATFORM := &"dan_tien_dai"
+const TYPE_BODY_TRAINING := &"ren_than_duong"
 
 const PROF_MINING := &"mining"
 const PROF_HERBALISM := &"herbalism"
@@ -89,6 +90,14 @@ const DEFINITIONS := {
         "base_batch_units": 3,
         "resource_id": MATERIAL_HERB
     },
+    "ren_than_duong": {
+        "name": "Rèn Thân Đường",
+        "max_level": 100,
+        "worker_group_id": "body_training_crew",
+        "base_worker_slots": 2,
+        "worker_slot_every": 0,
+        "requires_milestone_component": false
+    },
     "dan_tien_dai": {
         "name": "Dẫn Tiên Đài",
         "max_level": 100,
@@ -147,6 +156,25 @@ func initialize(state: SimulationState) -> void:
 
     for field in _buildings_of_type(state, TYPE_SPIRIT_FIELD):
         _ensure_spirit_field_state(state, field)
+
+# Add the selected V2 training facility only in the V2 live runtime, not in
+# older P3.7 factories/test fixtures. Repeat-safe on old loaded live saves.
+func ensure_body_training_facility(state: SimulationState) -> BuildingState:
+    if not state.p3_7_buildings_enabled or not state.sect.workforce_enabled:
+        return null
+    if not state.sect.work_groups.has("body_training_crew"):
+        state.sect.work_groups["body_training_crew"] = {
+            "name": "Đội Rèn Thân",
+            "priorities": {}
+        }
+        state.sect.workforce_event_count += 1
+    var facility := primary_building(state, TYPE_BODY_TRAINING)
+    if facility != null:
+        return facility
+    facility = create_building(TYPE_BODY_TRAINING, 1)
+    state.buildings[str(facility.id)] = facility
+    state.building_event_count += 1
+    return facility
 
 func create_building(building_type: StringName, instance_index: int = 1) -> BuildingState:
     var definition: Dictionary = DEFINITIONS.get(str(building_type), {})
@@ -376,6 +404,9 @@ func can_start_upgrade(state: SimulationState, building_id: StringName) -> Dicti
     if building.level >= building.max_level:
         return {"ok": false, "reason": "max_level"}
 
+    # No unapproved upgrade economy or slot curve for Rèn Thân Đường yet.
+    if building.building_type == TYPE_BODY_TRAINING:
+        return {"ok": false, "reason": "body_training_upgrade_content_pending"}
     var target_level := building.level + 1
     var requires_milestone_component := bool(definition_for(building).get("requires_milestone_component", true))
     if MILESTONE_LEVELS.has(target_level) and requires_milestone_component and _milestone_component(building.building_type, target_level) == "":
