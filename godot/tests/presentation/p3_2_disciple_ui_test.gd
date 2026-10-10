@@ -119,14 +119,15 @@ func _verify_real_physique_action_path() -> bool:
         "transformed":false,
         "latent_transformation":"sword_bone"
     }
-    state.sect.technique_materials["yeu_dan"] = 5
-    var before_material := int(state.sect.technique_materials.get("yeu_dan", 0))
+    if not _ensure_yao_dan(5):
+        return _fail("P3.2 legacy fixture could not provision canonical Yêu Đan.")
+    var before_material := _yao_dan_quantity()
     ui.set("selected_id", disciple.id)
     ui.call("_disciple_tab_action", "physique_temper")
     var profile: Dictionary = state.sect.physique_profiles[str(disciple.id)]
     if int(profile.get("temper_level", 0)) != 1:
         return _fail("P3.2 Tôi thể button path did not mutate the real PhysiqueSystem profile.")
-    if int(state.sect.technique_materials.get("yeu_dan", 0)) != before_material - 1:
+    if _yao_dan_quantity() != before_material - 1:
         return _fail("P3.2 Tôi thể button path did not consume the real Yêu Đan cost.")
     return true
 
@@ -139,18 +140,37 @@ func _verify_real_bloodline_action_path() -> bool:
         "awakened":false,
         "refinement_count":0
     }
-    state.sect.technique_materials["yeu_dan"] = 5
-    var before_material := int(state.sect.technique_materials.get("yeu_dan", 0))
+    if not _ensure_yao_dan(5):
+        return _fail("P3.2 legacy fixture could not provision canonical Yêu Đan.")
+    var before_material := _yao_dan_quantity()
     ui.set("selected_id", disciple.id)
     ui.call("_disciple_tab_action", "bloodline_awaken")
     var profile: Dictionary = state.sect.bloodline_profiles[str(disciple.id)]
     if not bool(profile.get("awakened", false)):
         return _fail("P3.2 Thức tỉnh button path did not invoke the real BloodlineSystem.")
-    if int(state.sect.technique_materials.get("yeu_dan", 0)) != before_material - 1:
+    if _yao_dan_quantity() != before_material - 1:
         return _fail("P3.2 Thức tỉnh button path did not consume the real Yêu Đan cost.")
     var text := str(ui.call("_disciple_tab_text", "Huyết Mạch", disciple))
     if not text.contains("Chân Long Huyết") or not text.contains("Đã thức tỉnh"):
         return _fail("P3.2 Huyết Mạch tab did not refresh from the real awakened state.")
+    return true
+
+func _yao_dan_quantity() -> int:
+    if state.sect.p3_7_resources_enabled:
+        return WarehouseSystem.new().quantity(state, &"yeu_dan")
+    return int(state.sect.technique_materials.get("yeu_dan", 0))
+
+func _ensure_yao_dan(minimum: int) -> bool:
+    if state.sect.p3_7_resources_enabled:
+        var warehouse := WarehouseSystem.new()
+        var current := warehouse.quantity(state, &"yeu_dan")
+        if current < minimum:
+            if not warehouse.add(state, &"yeu_dan", minimum - current):
+                return false
+        return warehouse.quantity(state, &"yeu_dan") >= minimum
+    state.sect.technique_materials["yeu_dan"] = maxi(
+        int(state.sect.technique_materials.get("yeu_dan", 0)), minimum
+    )
     return true
 
 func _verify_real_other_tabs() -> bool:
