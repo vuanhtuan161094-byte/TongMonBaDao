@@ -318,6 +318,20 @@ This completes **Step 1 runtime integration**, but does **not** complete DV2-03 
 
 ---
 
+## DV2-03E3 — Rèn Thân Đường clickable + quản lý 2 slot thật (10/10/2026)
+
+**SCOPE CODED:** same active DV2-03; no new phase, no dummy NPC/warehouse/resources. Official map `SectMapPresentation.DEST_BODY_TRAINING` maps to `BuildingSystem.TYPE_BODY_TRAINING`, with independently clickable token and distinct `TRAIN_BODY` actor destination/status. `p3_1_landscape_sect.gd` builds the token; `p3_2_landscape_sect.gd` owns its real management UI.
+
+**Playable:** on map tap Rèn Thân Đường, its building panel shows canonical building level, actual active/assigned slot count **2 at Lv1**, current Sect Spirit Stones, cost **1 per active simulated minute**, Body reference **1.500 EXP/min before Căn Cốt**, real per-building paid minutes and spent stones from `BuildingState.production_state`, per-disciple `TRAIN_BODY` action and last scheduler result if present. Management rows reflect two `BuildingSystem.active_worker_ids` actual reservations. Player can assign a V2 disciple through existing `DiscipleTrainingActionV2` V2 queue/real reservation, and explicitly release a slot (manual policy, no free refund), freeing it for another disciple. The UI shows up to 12 available V2 candidates in one management slice; larger-roster search/pagination remains future UX, never suggest all 3,000 are visible.
+
+**Truth:** button press reserves/queues only, does not debit or award EXP. SimulationScheduler and the existing Rèn Thân owner debit before EXP on real eligible minute. Failed/full slot, no treasury, bad actor, Linh Điền reservation remain fail-closed. No created phantom Linh Thạch, UI-side EXP or new financial authority. `TRAIN_BODY` maps actor to dedicated Rèn Thân building, separate from Tu Luyện Đài. Save/load persists Rèn Thân group/worksite and already-paid counters. Legacy P2 UI remains separate. The visual token is existing Godot geometry/presentation, **not a newly authored game art asset**.
+
+**Test:** `godot/tests/presentation/dv2_03_p3_body_training_building_ui_test.gd` instantiates the real P3.2 scene using isolated save, verifies clickable building token and mapping, 2 slots, real treasury, 3 authentic recruits, full-slot denial, release/reassign, exactly one paid Body minute and save/load. It is included in `.github/workflows/dv2-03-realm-body-progress.yml`. Latest focused official Godot 4.7.2 Linux [#38070169637](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38070169637) **PASS** at source commit `b8103b06`. Latest P3.7 full [#38070169594](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38070169594) **PENDING at documentation time**; status must be refreshed before final closeout.
+
+**Still open:** authenticated Dẫn Tiên UI/recruit flow, 29 exact Thối Thể material packages and user-approved breakthrough consumer, Rèn Thân upgrades/intensities, P3.6A upload artifact storage quota, real Windows/Godot visual test, and enhanced large-roster candidate selection. No false DV2-03 CLOSED claim.
+
+---
+
 ## DV2-03E2 — UI lệnh Chuyên Tu / Rèn Thân Đường thật (10/10/2026)
 
 **Phạm vi:** vẫn thuộc DV2-03; chưa triển khai Dẫn Tiên UI/phase mới. 2 nguồn tiến độ vẫn do runtime V2 làm chủ, còn Unity source chỉ là tham khảo.
