@@ -4,6 +4,12 @@
 
 **Repo:** `vuanhtuan161094-byte/TongMonBaDao` · **branch:** `main` · **engine:** Godot 4.7.2. **User yêu cầu thao tác bằng GitHub connector trực tiếp; KHÔNG Codex, KHÔNG Work.** Trước mọi sửa đổi phải fetch lại `main` vì SHA sẽ thay đổi sau các commit bàn giao. **Latest DV2-03 gameplay source with focused PASS:** `6e10aca2d105f23f026a216f3404e5f9bbbbdf6d` (includes real paid Rèn Thân + Linh Điền reservation guard + roster fast path). Fetch live `main` before the next edit; docs-only handoff commits may move HEAD.
 
+## LATEST USER-ORDERED IMPLEMENTATION — DV2-03E3.1 (11/10/2026)
+
+**E3.1 code and focused Godot PASS at SHA `3c7e9a7691f549097dd0a67ed50ead8b7be18a4c`:** [official focused #38093450321](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38093450321). The new dedicated multi-tick regression and updated map UI regression PASS. Main changes: valid `request_training("cultivation")` releases old dedicated Body slot only after new preview succeeds; Workforce prevents ordinary forge/mining/herbalism schedule stealing a dedicated Body trainer; valid explicit orders/group changes/worksite vacancy free the slot and set manual policy, invalid commands cannot evict; emergency HP path retains precedence; no fabricated EXP/stone refunds and no changed numerical balance. `CURRENT_CHECKPOINT.md` §5.19 and `docs/DV2_03_TWO_TRACK_PROGRESS_EXECUTION.md` E3.1 describe the invariant.
+
+**Same-source P3.7 FAST/FULL:** [#38093450298](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38093450298) PENDING at this handoff write. Fetch run result before claiming FULL PASS. No Windows test done; **PENDING USER**. Remaining DV2-03 task is to design and user-approve exact 29 Thối Thể packages and safe major-gate consumer, then do implementation/test. UI search/paging for >12 candidates and PC pixel/touch visual acceptance remain separate open work.
+
 ## CURRENT NEXT ACTION — 11/10/2026: DV2-03E3.1 STABILIZATION NEEDED BEFORE DV2-03F
 
 **E3 gameplay/test SHA `b8103b06b9e05af0391ff3e1cd007c07dc8b58df` still PASSED focused [#38070169637](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38070169637) and same-source P3.7 FAST/FULL [#38070169594](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38070169594).** Do not confuse these PASSES with proof of every edge-case. **Windows visual NOT RUN**. On 11/10 audit (no gameplay edits) two untested P1 code-path risks were found and recorded at `CURRENT_CHECKPOINT.md` §5.18:
