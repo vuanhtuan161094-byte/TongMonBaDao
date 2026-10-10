@@ -686,6 +686,8 @@ func _rebuild_building_management_controls() -> void:
             _build_forge_craft_controls()
         SectMapPresentation.DEST_CULTIVATION:
             _build_direct_order_management(WorkforceSystem.COMMAND_CULTIVATE, "", "Gọi tu luyện", false)
+        SectMapPresentation.DEST_BODY_TRAINING:
+            _build_body_training_management()
         SectMapPresentation.DEST_RESIDENCE:
             _build_direct_order_management(WorkforceSystem.COMMAND_REST, "", "Gọi nghỉ", false)
             _build_lodging_expansion_control()
@@ -959,6 +961,138 @@ func _issue_building_order(disciple_id: StringName, kind: StringName, target: St
     building_management_feedback = success_text if ok else "Không thể ra lệnh lúc này."
     _refresh_building_operation_content()
 
+# Display only two actual slots, rather than offering imaginary building
+# capacity or a parallel character roster. Rows are backed by persisted V2
+# worksite assignments and the same runtime that performs paid minutes.
+func _build_body_training_management() -> void:
+    var buildings := BuildingSystem.new()
+    var hall := buildings.primary_building(state,BuildingSystem.TYPE_BODY_TRAINING)
+    if hall == null:
+        _add_management_section_label("Chưa có Rèn Thân Đường trong save hiện tại.")
+        return
+    var slots := buildings.worker_slots(hall)
+    var holders := buildings.active_worker_ids(state,hall)
+    _add_management_section_label("VỊ TRÍ LUYỆN THỂ (%d/%d)" % [holders.size(),slots])
+    for index in range(slots):
+        var row := HBoxContainer.new()
+        row.name = "BodyTrainingSlot_%d" % (index+1)
+        row.custom_minimum_size = Vector2(384,42)
+        building_management_container.add_child(row)
+        var line := Label.new()
+        line.custom_minimum_size = Vector2(252,36)
+        line.add_theme_font_size_override("font_size",12)
+        line.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+        if index >= holders.size():
+            line.text = "Chỗ %d: Trống" % (index+1)
+            row.add_child(line)
+            continue
+        var disciple_id: StringName = holders[index]
+        var disciple: DiscipleState = state.disciples[disciple_id]
+        var phase := "Đang luyện" if disciple.current_action == &"TRAIN_BODY" else "Đã giữ chỗ"
+        line.text = "Chỗ %d: %s · %s" % [index+1,disciple.display_name,phase]
+        line.clip_text = true
+        row.add_child(line)
+        var release := Button.new()
+        release.name = "BodyTrainingRelease_%s" % str(disciple_id)
+        release.text = "Trả chỗ"
+        release.custom_minimum_size = Vector2(112,34)
+        release.pressed.connect(Callable(self,"_release_body_training_from_building").bind(disciple_id))
+        row.add_child(release)
+
+    _add_management_section_label("PHÂN CÔNG ĐỆ TỬ V2")
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    var shown := 0
+    for raw_id in ids:
+        if shown >= 12:
+            break
+        var member: DiscipleState = state.disciples[raw_id]
+        if not DiscipleRealmProgressV2.owns_v2_progression(member):
+            continue
+        if holders.has(member.id):
+            continue
+        if member.region_id != &"sect":
+            continue
+        var row := HBoxContainer.new()
+        row.name = "BodyTrainingCandidate_%s" % str(member.id)
+        row.custom_minimum_size = Vector2(384,40)
+        building_management_container.add_child(row)
+        var label := Label.new()
+        label.text = member.display_name
+        label.custom_minimum_size = Vector2(252,34)
+        label.clip_text = true
+        label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+        label.add_theme_font_size_override("font_size",12)
+        row.add_child(label)
+        var start := Button.new()
+        start.name = "BodyTrainingAssign_%s" % str(member.id)
+        start.text = "Rèn thân"
+        start.custom_minimum_size = Vector2(112,34)
+        start.disabled = holders.size() >= slots or hall.status != BuildingSystem.STATUS_ACTIVE
+        start.pressed.connect(Callable(self,"_start_body_training_from_building").bind(member.id))
+        row.add_child(start)
+        shown += 1
+    if shown == 0:
+        _add_management_section_label("Không có đệ tử V2 rảnh vị trí trong Tông Môn.")
+    elif shown >= 12:
+        _add_management_section_label("Đang hiển thị 12 đệ tử đầu; danh sách lớn sẽ bổ sung lọc/tìm kiếm.")
+
+func _start_body_training_from_building(disciple_id: StringName) -> void:
+    var result := _queue_v2_training("body",disciple_id)
+    building_management_feedback = _v2_training_ui_feedback(result,"body")
+    _refresh_building_operation_content()
+
+func _release_body_training_from_building(disciple_id: StringName) -> void:
+    var result := DiscipleBodyTrainingFacilityV2.release_slot(state,disciple_id)
+    building_management_feedback = (
+        "Đã trả vị trí Rèn Thân; không trừ hoặc hoàn phí phút đã luyện."
+        if bool(result.get("ok",false))
+        else _v2_training_ui_feedback(result,"body")
+    )
+    _refresh_building_operation_content()
+
+func _body_training_operation_text() -> String:
+    var buildings := BuildingSystem.new()
+    var hall := buildings.primary_building(state,BuildingSystem.TYPE_BODY_TRAINING)
+    if hall == null:
+        return "Công trình chưa được khởi tạo trong runtime V2 hiện tại."
+    var holders := buildings.active_worker_ids(state,hall)
+    var running := 0
+    var status_lines: Array[String] = []
+    for disciple_id in holders:
+        if not state.disciples.has(disciple_id):
+            continue
+        var disciple: DiscipleState = state.disciples[disciple_id]
+        if disciple.current_action == &"TRAIN_BODY":
+            running += 1
+        var last: Dictionary = disciple.last_decision.get("v2_body_training_result",{})
+        var evidence := ""
+        if bool(last.get("ok",false)) and last.has("gained"):
+            evidence = " · lượt gần nhất +%.0f EXP" % float(last["gained"])
+        elif last.has("reason"):
+            evidence = " · %s" % _v2_training_ui_feedback(last,"body")
+        status_lines.append("• %s: %s%s" % [
+            disciple.display_name,SectMapPresentation.action_label(disciple.current_action),evidence
+        ])
+    return (
+        "RÈN THÂN ĐƯỜNG · Lv%d\n"
+        + "Vị trí: %d/%d · đang luyện: %d\n"
+        + "Linh Thạch Tông Môn: %d\n"
+        + "Phí: %d Linh Thạch / phút mô phỏng\n"
+        + "EXP nền: %.0f/phút (+0,20%% mỗi điểm Căn Cốt)\n"
+        + "Lượt đã thanh toán: %d · Linh Thạch đã tiêu: %d\n\n"
+        + "ĐỆ TỬ ĐANG PHÂN CÔNG\n%s\n\n"
+        + "Bấm Rèn thân chỉ xếp lệnh; phí/EXP phát sinh khi đủ một phút hợp lệ."
+    ) % [
+        hall.level,holders.size(),buildings.worker_slots(hall),running,
+        state.sect.spirit_stones,
+        DiscipleBodyTrainingFacilityV2.STONE_COST_PER_MINUTE,
+        DiscipleBodyTrainingFacilityV2.BASE_BODY_XP_PER_MINUTE,
+        int(hall.production_state.get("paid_training_minutes",0)),
+        int(hall.production_state.get("spent_spirit_stones",0)),
+        "• Trống" if status_lines.is_empty() else "\n".join(status_lines)
+    ]
+
 func _building_operation_text(destination: StringName) -> String:
     match destination:
         SectMapPresentation.DEST_MAIN_HALL:
@@ -969,6 +1103,8 @@ func _building_operation_text(destination: StringName) -> String:
             return _forge_operation_text()
         SectMapPresentation.DEST_CULTIVATION:
             return _cultivation_operation_text()
+        SectMapPresentation.DEST_BODY_TRAINING:
+            return _body_training_operation_text()
         SectMapPresentation.DEST_RESIDENCE:
             return _residence_operation_text()
         SectMapPresentation.DEST_MEDICINE:
@@ -1711,21 +1847,22 @@ func _issue_summary_order(kind: StringName, target: String, label: String) -> vo
 
 # Player actions use the same V2 command boundary as scheduler/AI. This
 # queues work but never commits XP or economic cost on button press.
-func _queue_v2_training(track: String) -> Dictionary:
-    if selected_id == &"" or not state.disciples.has(selected_id):
+func _queue_v2_training(track: String, disciple_id: StringName = &"") -> Dictionary:
+    var chosen_id := selected_id if disciple_id == &"" else disciple_id
+    if chosen_id == &"" or not state.disciples.has(chosen_id):
         return {"ok":false,"reason":"unknown_training_disciple"}
-    var disciple: DiscipleState = state.disciples[selected_id]
+    var disciple: DiscipleState = state.disciples[chosen_id]
     if not DiscipleRealmProgressV2.owns_v2_progression(disciple):
         return {"ok":false,"reason":"v2_disciple_not_initialized"}
     if track == "body":
-        var slot := DiscipleBodyTrainingFacilityV2.reserve_slot(state,selected_id)
+        var slot := DiscipleBodyTrainingFacilityV2.reserve_slot(state,chosen_id)
         if not bool(slot.get("ok",false)):
             return slot
-    var result := DiscipleTrainingActionV2.request_training(state,selected_id,track)
+    var result := DiscipleTrainingActionV2.request_training(state,chosen_id,track)
     if bool(result.get("ok",false)):
         workforce.clear_command(state,disciple)
         DiscipleTrainingPolicyV2.set_policy(
-            state,selected_id,"body_focus" if track == "body" else "cultivation_focus"
+            state,chosen_id,"body_focus" if track == "body" else "cultivation_focus"
         )
     return result
 
