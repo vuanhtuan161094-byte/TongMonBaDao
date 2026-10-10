@@ -153,7 +153,7 @@ Runtime khẳng định `source_realm` chính là giá trị từ hồ sơ đệ
 ## G. Giao dịch **ALL-OR-NOTHING** trong mô phỏng và save/load
 
 **G1. Tiền điều kiện bắt buộc (không mutate):**
-1. `state` hợp lệ, quyền V2/warehouse enabled, actor thuộc state, V2 identity/progression chuẩn, HP/runtime đủ an toàn, `body.realm` 1..29, `body.floor=10`.
+1. `state` hợp lệ, quyền V2/warehouse enabled, actor thuộc state, V2 identity/progression chuẩn, dữ liệu HP/runtime hợp lệ theo schema **không thêm ngưỡng HP mới**, `body.realm` 1..29, `body.floor=10`.
 2. `xp >= floor_cost(realm,10)` chính xác theo canonical curve.
 3. Manifest đã duyệt đúng `economy_version`; 19 resource IDs tồn tại (mới/đã có), tất cả nguồn của dòng đã bật; chỉ Ấn đúng gate 10/20/29.
 4. Kho đủ **available**, sau khi áp dụng `locked` và `reserve_min`; không `ignore_rules=true`, không âm/tràn số lượng; kiểm tra đủ tất cả nguyên liệu + Ấn **trước lần trừ đầu tiên**.
