@@ -1079,12 +1079,15 @@ func _body_training_operation_text() -> String:
         status_lines.append("• %s: %s%s" % [
             disciple.display_name,SectMapPresentation.action_label(disciple.current_action),evidence
         ])
+    var xp_text := str(int(DiscipleBodyTrainingFacilityV2.BASE_BODY_XP_PER_MINUTE))
+    if xp_text.length() > 3:
+        xp_text = xp_text.insert(xp_text.length() - 3, ".")
     return (
         "RÈN THÂN ĐƯỜNG · Lv%d\n"
         + "Vị trí: %d/%d · đang luyện: %d\n"
         + "Linh Thạch Tông Môn: %d\n"
         + "Phí: %d Linh Thạch / phút mô phỏng\n"
-        + "EXP nền: %.0f/phút (+0,20%% mỗi điểm Căn Cốt)\n"
+        + "EXP nền: %s EXP/phút (+0,20%% mỗi điểm Căn Cốt)\n"
         + "Lượt đã thanh toán: %d · Linh Thạch đã tiêu: %d\n\n"
         + "ĐỆ TỬ ĐANG PHÂN CÔNG\n%s\n\n"
         + "Bấm Rèn thân chỉ xếp lệnh; phí/EXP phát sinh khi đủ một phút hợp lệ."
@@ -1092,7 +1095,7 @@ func _body_training_operation_text() -> String:
         hall.level,holders.size(),buildings.worker_slots(hall),running,
         state.sect.spirit_stones,
         DiscipleBodyTrainingFacilityV2.STONE_COST_PER_MINUTE,
-        DiscipleBodyTrainingFacilityV2.BASE_BODY_XP_PER_MINUTE,
+        xp_text,
         int(hall.production_state.get("paid_training_minutes",0)),
         int(hall.production_state.get("spent_spirit_stones",0)),
         "• Trống" if status_lines.is_empty() else "\n".join(status_lines)
