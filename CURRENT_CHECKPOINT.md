@@ -189,7 +189,7 @@ Current old percentage consumers may use a bounded compatibility bridge where ne
 
 ## 5. Trạng thái triển khai mới nhất — bàn giao DV2-03 ngày 09/10/2026
 
-**ACTIVE: DV2-03 — TU VI V2 + LUYỆN THỂ V2.** DV2-01 **CLOSED**, DV2-02 **CORE BACKEND LOCKED** trong phạm vi tính chỉ số/chạy thử chiến đấu nhóm. **Older DV2-03 focused evidence is GREEN, but the latest Tu Vi-source/Luyện Thể-block corrections are GATE UNVERIFIED.** Không bắt đầu subsystem kế tiếp trước khi DV2-03 được khóa đúng phạm vi.
+**ACTIVE: DV2-03 — TU VI V2 + LUYỆN THỂ V2.** DV2-01 **CLOSED**; DV2-02 **CORE BACKEND LOCKED** trong phạm vi stat/encounter. **Latest DV2-03P2 real Mine Body EXP + paid Rèn Thân Đường + Linh Điền reservation guard focused official Godot 4.7.2 Linux PASS at source `6e10aca2`** (see §5.15). Previous full P3.7 PASS is older-source evidence; latest same-source FULL #38066113295 is PENDING as recorded below. Windows/user visual still untested. Do not open next gameplay phase before closure criteria.
 
 **Lần kiểm tra live main trước bàn giao:** `a3e9b6befee8117c50a797bb35c257acf08d156d` (chỉ là SHA nguồn tại thời điểm kiểm tra, **không phải SHA commit cuối bàn giao**; xem `main` và câu trả lời hoàn tất để lấy HEAD sau các commit tài liệu). **Mã gameplay cuối được thay đổi và kiểm thử focused:** `e96df1832036c1232f9d0db69d1f37450d0265f9`. Tất cả commit tiếp theo cho tới lúc rà soát ban đầu là tài liệu, không thay đổi logic chơi. Không ghi sai SHA code thành SHA HEAD.
 
