@@ -87,6 +87,28 @@ static func release_slot(state: SimulationState, disciple_id: StringName) -> Dic
     state.sect.workforce_event_count += 1
     return {"ok":true,"building_id":str(building.id),"disciple_id":str(disciple_id)}
 
+# Manual release makes a paid facility slot available for another disciple.
+# Cannot release another building/group or an outside/missing character.
+# This never refunds a completed minute and never deducts Sect Spirit Stones.
+static func release_slot(state: SimulationState, disciple_id: StringName) -> Dictionary:
+    if state == null or not state.disciples.has(disciple_id) or not state.p3_7_buildings_enabled:
+        return {"ok":false,"reason":"body_training_disciple_missing"}
+    var disciple: DiscipleState = state.disciples[disciple_id]
+    var facility := BuildingSystem.new().primary_building(state,BuildingSystem.TYPE_BODY_TRAINING)
+    if facility == null or not BuildingSystem.new().active_worker_ids(state,facility).has(disciple_id):
+        return {"ok":false,"reason":"body_training_slot_not_reserved"}
+    disciple.work_group_id = &""
+    disciple.worksite_building_id = &""
+    if disciple.current_action == &"TRAIN_BODY":
+        disciple.current_action = &"EVALUATE"
+    # User explicitly stopped this assignment. Manual mode prevents the AI
+    # from immediately requeueing paid training without a new player action.
+    if DiscipleRealmProgressV2.progression_ready(disciple):
+        DiscipleTrainingPolicyV2.set_policy(state,disciple_id,"manual")
+    state.sect.workforce_event_count += 1
+    return {"ok":true,"released_disciple_id":str(disciple_id),
+        "building_id":str(facility.id)}
+
 # Read-only eligibility and exact Body grant preflight. Never debit or grant.
 static func preview_minute(state: SimulationState, disciple: DiscipleState) -> Dictionary:
     var prepared := _prepare(state, disciple)
