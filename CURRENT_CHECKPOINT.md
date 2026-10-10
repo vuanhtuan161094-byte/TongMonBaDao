@@ -470,6 +470,21 @@ The actual P3.7 mining action now consumes the previously locked `DiscipleBodyXp
 
 **Not yet approved / not implemented:** 29 exact Thối Thể recipes/consumable gate transaction, post-Lv1 building upgrade/intensity, large-roster UI search/pagination, Dẫn Tiên real recruitment UI, Windows visual. DV2-03 remains ACTIVE, never call game playable complete or Windows PASS. See `docs/DV2_03_TWO_TRACK_PROGRESS_EXECUTION.md` §DV2-03E3.
 
+### 5.17 DV2-03E3 — MAP-CLICKABLE RÈN THÂN ĐƯỜNG AND 2-SLOT LIVE UI (10/10/2026)
+
+**DV2-03 remains ACTIVE; E3 is a verified playable UI slice, not complete character/recruitment UI.**
+
+- Previous full P3.7 cumulative [#38068119472](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38068119472) **PASS** at source `ca2f3077`; this was verified before starting E3.
+- The P3.1 map now has one `ren_than_duong` hit target and distinct map destination for `TRAIN_BODY`. P3.2 exposes the real management panel with Lv1 2 slots, persisted occupied/empty status, actual disciple names/active actions, real treasury, 1 stone / 1 simulated minute, 1,500 base Body EXP / minute plus existing Căn Cốt, paid-minute audit counters and scheduler result when available.
+- Real V2 disciple assignment uses current recruitment roster and existing `DiscipleTrainingActionV2`/paid `DiscipleBodyTrainingFacilityV2`, with no UI mint/debit/EXP. A third candidate cannot overbook. Slot release clears BOTH work group and worksite, ends pending `TRAIN_BODY` and switches to manual policy, never refunds paid minutes; freed slot is reusable.
+- UI creates at most 12 candidate rows to keep large rosters bounded. Character profile can select other authentic V2 disciples.
+- **Official Godot 4.7.2 Linux focused PASS:** [DV2-03 E3 #38070169637](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38070169637) at gameplay/test SHA `b8103b06b9e05af0391ff3e1cd007c07dc8b58df`. E3 test opens actual P3.2 scene/map hit, verifies two-slot capacity and refusal, release/reassign, treasury source and paid-minute/save-load.
+- **P3.7 same-source FAST PASS; full cumulative PENDING at checkpoint update:** [#38070169594](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38070169594), SHA `b8103b06`. Fetch and confirm latest full completion before labeling FULL PASS.
+- **P3.6A Godot parse/smoke and in-run image capture passed on previous UI source; workflow failed during optional screenshot upload because GitHub artifact storage quota was exceeded.** Screenshot artifact is not available for current E3, do not claim full preview workflow PASS. No local Windows execution/visual acceptance has happened.
+- All user-approved economy/rate/slots remain unchanged. Exact Thối Thể material packages for 29 Body major gates, post-Lv1 upgrades/intensity, Dẫn Tiên recruitment UI, production-worker UI and Windows validation are **OPEN / NOT CLAIMED**.
+
+See `docs/DV2_03_TWO_TRACK_PROGRESS_EXECUTION.md` §DV2-03E3 for detailed implementation/invariant notes.
+
 ### 5.16 DV2-03E2 — PLAYER-FACING V2 TWO-TRACK TRAINING UI (10/10/2026)
 
 **ACTIVE phase still DV2-03, not CLOSED.** In the main P3.2 Godot disciple profile, authentic V2 can now select **Chuyên tu** or **Rèn thân** from the attributes tab, and the map-side summary uses V2 request/preview for Chuyên Tu and offers the V2 Rèn Thân shortcut instead of the old P2 forge shortcut. P2 legacy behavior remains separate.
