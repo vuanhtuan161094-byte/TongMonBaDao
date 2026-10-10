@@ -222,3 +222,18 @@ User wants depth (sát thương Boss, đúng chủng tộc, Liên Kích thườn
 **Implemented focused only:** `CombatContextEffectsV2`, `MonsterCatalogueV2`, `MonsterEncounterV2`, seven real Monster V2 examples (three existing P0 IDs remain), boss/elite/race correctly filtered damage and ONE limited extra basic hit. Starter extra basic hit coefficient 0.60 and monster species/tier multipliers remain PILOT to tune, not lock. No monster AI/skill phases/live map spawn/new loot ready yet, and no change to legacy PvE path.
 
 **Real Godot 4.7.2 focused PASS:** [Actions #37883140317](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37883140317), including old 16-stat gate and new 7×300 monster/checks on active hit IDs. **DV2-02 not closed**, no DV2-03, no production change. P3.7 cumulative needs fresh evidence if/when replacing live PvE authority.
+
+## 2026-10-10 — Progressive UI integration checkpoint
+
+The full DV2-09 UI closure remains later, but DV2-03 Step 2 has now introduced the shared read-model required by that phase:
+
+- `DisciplePresentationSnapshotV2` is the single read-only presentation snapshot for authentic V2 vs legacy compatibility;
+- current P3.2 disciple surfaces consume canonical dual progression and CombatStatsV2 core for authentic V2;
+- hidden birth identities are redacted and unfinished effects are labeled unavailable rather than implied active;
+- legacy Bloodline/Physique actions are blocked for authentic V2;
+- official focused evidence: [DV2-03 #38038834727](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38038834727) PASS on Godot 4.7.2 Linux.
+
+This is **not DV2-09 CLOSED**: separate full source breakdown UX, real V2 action controls for all later effect systems, mass-roster performance/visual polish and final user visual acceptance remain future work.
+
+**WINDOWS / USER VALIDATION remains PENDING / not run.**
+
