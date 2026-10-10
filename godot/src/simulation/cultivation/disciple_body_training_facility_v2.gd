@@ -60,6 +60,21 @@ static func reserve_slot(state: SimulationState, disciple_id: StringName) -> Dic
     return {"ok":true,"building_id":str(building.id),"reserved_slots":buildings.assigned_worker_ids(state,building).size(),
         "slots":buildings.worker_slots(building)}
 
+# Fast membership check for the canonical dedicated training reservation.
+# This never treats a stale group-only assignment or a different building as a
+# paid training slot; the actual building slot count is still authoritative.
+static func has_reserved_slot(state: SimulationState, disciple: DiscipleState) -> bool:
+    if state == null or disciple == null or not state.p3_7_buildings_enabled:
+        return false
+    var facility := BuildingSystem.new().primary_building(
+        state,BuildingSystem.TYPE_BODY_TRAINING
+    )
+    if facility == null or disciple.work_group_id != facility.worker_group_id:
+        return false
+    if disciple.worksite_building_id != facility.id and disciple.worksite_building_id != &"":
+        return false
+    return BuildingSystem.new().active_worker_ids(state,facility).has(disciple.id)
+
 # Manual release makes a paid facility slot available for another disciple.
 # Cannot release another building/group or an outside/missing character.
 # This never refunds a completed minute and never deducts Sect Spirit Stones.
@@ -68,7 +83,7 @@ static func release_slot(state: SimulationState, disciple_id: StringName) -> Dic
         return {"ok":false,"reason":"body_training_disciple_missing"}
     var disciple: DiscipleState = state.disciples[disciple_id]
     var facility := BuildingSystem.new().primary_building(state,BuildingSystem.TYPE_BODY_TRAINING)
-    if facility == null or not BuildingSystem.new().active_worker_ids(state,facility).has(disciple_id):
+    if facility == null or not has_reserved_slot(state,disciple):
         return {"ok":false,"reason":"body_training_slot_not_reserved"}
     disciple.work_group_id = &""
     disciple.worksite_building_id = &""
