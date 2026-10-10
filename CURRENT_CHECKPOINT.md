@@ -411,7 +411,39 @@ Implemented:
 - P3.7 Backend [#38037386848](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38037386848), SHA `150be2aeaf5c7092f594850bdffa2e349f7c03cf`: **PASS** both latest FAST backend gate and **FULL cumulative P0→P3.7 gate** on official Godot 4.7.2 Linux. Commits `20ff968`→`150be2a` after the runtime production code are test-only corrections, so this run exercises the same Step-1 gameplay/runtime implementation.
 - Windows Godot 4.7.2 live/visual gate remains **UNTESTED**.
 
-**Step 1 result:** persistent P3 state + real save/load + wall-clock/offline catch-up is now connected. DV2-03 remains ACTIVE because Rèn Thân/body consumers and V2 UI/profile work are later slices.
+**Step 1 result:** persistent P3 state + real save/load + wall-clock/offline catch-up is connected. **Step 2 presentation snapshot/profile integration is now also focused PASS; see §5.13.** DV2-03 remains ACTIVE because the real Rèn Thân/body consumer and later effect consumers are still incomplete.
+
+### 5.13 DV2-03E1 — STEP 2 UNIFIED DISCIPLE PRESENTATION SNAPSHOT (FOCUSED PASS)
+
+**Implemented 10/10/2026:**
+- NEW `DisciplePresentationSnapshotV2` is the read-only presentation authority for one disciple;
+- snapshot explicitly separates `authentic_v2` from `legacy_compatibility`;
+- authentic V2 UI reads immutable/current identity, six foundations, Tu Vi + Luyện Thể, live HP/Expedition Stamina, CombatStatsV2 Realm+Body+Potential core, work/profession state, learning/equipment compatibility records and relationships from one normalized surface;
+- hidden latent Trait, unrevealed Root Mutation, Bloodline, Physique and Destiny are redacted; no hidden ID/purity/provenance leaks to UI;
+- authentic V2 with malformed progression **fails closed** and does not fall back to P2 cultivation/combat;
+- authentic V2 Combat snapshot deliberately applies **no Equipment/Trait/Bloodline/Physique sources yet** because their V2 effect consumers are not implemented;
+- P3.2 summary, deep status and tabs Thuộc tính/Công pháp/Trang bị/Huyết Mạch/Thể Chất/Quan hệ now branch through the snapshot;
+- authentic V2 no longer shows or accepts legacy P2 `Thức tỉnh/Luyện huyết/Tôi thể/Cải thể` actions;
+- V2 UI labels Stamina correctly as **Thể lực viễn chinh** and shows both Phàm Nhân/… Tu Vi and Phàm Thân/… Luyện Thể tracks;
+- legacy P3.2 behavior remains explicitly compatibility-only and was regression-tested using a generated P3.7 legacy fixture plus canonical Warehouse resources.
+
+**Official Godot 4.7.2 Linux evidence:**
+- DV2-03 focused [#38038834727](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38038834727), SHA `5ecb3bbeb7d1adc7644a9aecc3b805d0fc6bb3fa`: **PASS**. Project parse and all prior DV2-03 gates plus:
+  - unified disciple presentation snapshot;
+  - authentic V2 disciple profile UI;
+  - legacy P3.2 disciple UI compatibility.
+- P3.6A Preview [#38038282452](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38038282452), production UI SHA `85639c14c5ff699f230e7ae5a713b32e54fca7d5`: **PASS**.
+- P3.6A Preview [#38038535562](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38038535562), test-hygiene SHA `eb620ecbffc33d2fbc8efe2c86eadd3693e804ba`: **PASS** after synthetic-clock exit-save noise cleanup.
+
+**WINDOWS / USER VALIDATION: PENDING — CHƯA CHẠY.**
+- User has not yet run Step 2 on Windows Godot 4.7.2.
+- Therefore **Windows PASS / VISUAL ACCEPTED are NOT claimed**.
+- When the user is at the computer, stable repo checks are:
+  - `Sync-Main.cmd Verify-P3-6A-Playable-Slice.cmd`;
+  - `Preview-P3-6A-Playable-Slice.cmd` for visual inspection.
+- Authentic-V2-specific profile correctness already has Linux headless coverage; final player-facing visual acceptance remains user-owned.
+
+**Step 2 result:** one canonical, non-leaking presentation snapshot now feeds the disciple UI. This does **not** mean Root/Trait/Destiny/Bloodline/Physique/Equipment effects are implemented; inactive identities remain shown honestly as unavailable. DV2-03 remains ACTIVE.
 
 ### 5.4 Chuẩn bị lát triển khai tiếp theo — audit 09/10/2026
 
