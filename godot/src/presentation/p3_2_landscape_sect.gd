@@ -782,7 +782,7 @@ func _build_body_training_management() -> void:
         _add_management_section_label("Còn %d đệ tử khác; chọn trong hồ sơ đệ tử." % more)
 
 func _assign_body_training_slot(disciple_id: StringName) -> void:
-    var result := _request_v2_training_for_disciple(disciple_id,"body")
+    var result := _queue_v2_training("body",disciple_id)
     building_management_feedback = _v2_training_ui_feedback(result,"body")
     _refresh_building_operation_content()
 
