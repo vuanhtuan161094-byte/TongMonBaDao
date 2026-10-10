@@ -63,14 +63,18 @@ func _run() -> void:
         "Balanced policy treated unresolved Luyện Thể as a trainable action."):
         return
 
-    # Body focus is a preserved enum only; player cannot activate it yet.
+    # Policy selection is now legal; without a reserved/paid training
+    # facility, the AI must fall back to lawful Chuyên Tu.
     var body_policy := DiscipleTrainingPolicyV2.set_policy(
         state,disciple.id,"body_focus"
     )
-    if not _assert(not bool(body_policy.get("ok",true)) and
-        str(body_policy.get("reason",""))=="body_training_consumer_not_ready" and
-        DiscipleTrainingPolicyV2.current_policy(disciple)=="balanced",
-        "body_focus became active before Luyện Thể training was designed."):
+    var body_fallback := DiscipleTrainingPolicyV2.choose_auto_action(state,disciple)
+    if not _assert(bool(body_policy.get("ok",false)) and
+        DiscipleTrainingPolicyV2.current_policy(disciple)=="body_focus" and
+        bool(body_fallback.get("ok",false)) and
+        str(body_fallback.get("track",""))=="cultivation" and
+        str(body_fallback.get("reason",""))=="cultivation_fallback",
+        "Body focus did not preserve a safe cultivation fallback without a slot."):
         return
 
     var cultivate_policy := DiscipleTrainingPolicyV2.set_policy(
@@ -108,5 +112,5 @@ func _run() -> void:
         "Training policy did not survive save/load."):
         return
 
-    print("DV2-03D1 CULTIVATION POLICY + BODY TRAINING BLOCK: PASS")
+    print("DV2-03D1 CULTIVATION/BODY POLICY WITH SAFE FALLBACK: PASS")
     quit(0)
