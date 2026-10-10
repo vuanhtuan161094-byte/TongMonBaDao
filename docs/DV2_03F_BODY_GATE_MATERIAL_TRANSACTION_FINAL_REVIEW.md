@@ -103,6 +103,13 @@ Mỗi dòng dùng *main × qty / aux × qty*, dấu `-` nghĩa là không có �
 
 **Hàng rào phát hành:** Nếu 1 trong 29 cổng chưa có **resource definition + source production/loot + deterministic acquisition path + tests**, cổng đó phải báo `content_unavailable`, không gọi gate commit bằng `true` và không tự thay nguyên liệu khác.
 
+## E7. Kiểm tra nhu cầu vật liệu theo dữ liệu live
+
+- A: 54 Thanh Linh Thảo qua ba cổng đầu, tương ứng 18 lần thu hoạch cơ sở (3 cây/lần) và 216 phút mô phỏng với một ô trồng liên tục (12 tick/chu kỳ), cần 72 Linh Thạch gieo trồng. 15 Tinh Lang Bì có thể lấy từ khoảng 8 lượt săn thắng ở Bạch Thạch Khê/Hắc Phong Cốc cấp 1 theo thưởng 2 cái/lượt; thời gian thực tế phụ thuộc sức mạnh.
+- B: 52 Tử Vân Thảo tương ứng 18 lần thu hoạch, 432 phút mô phỏng, 252 Linh Thạch gieo, **nhưng Linh Điền phải đạt Lv30**. Đây là lý do tuyến ủy thác sớm là điều kiện phát hành bắt buộc. 6 Linh Tủy từ roll hiếm 26% cấp 5 có kỳ vọng khoảng 23 trận thắng; ở cấp 2 tỷ lệ 3% tương đương khoảng 200 trận trung bình. Không dùng kỳ vọng RNG làm bảo đảm.
+- Tổng cho một đệ tử đi hết 29 cổng: 562 vật liệu chính, 143 vật liệu phụ và 3 Ấn, thuộc nhiều ID khác nhau. Với 1.000 đệ tử, nhu cầu dài hạn là 562.000 / 143.000 / 3.000; với 3.000 đệ tử là 1.686.000 / 429.000 / 9.000. Đây là nhu cầu tích lũy nhiều năm/cảnh giới, không phải yêu cầu cấp phát đồng thời.
+- Tài nguyên nên tích lũy song song trong giai đoạn luyện EXP. Không biến mốc cung 2–8 giờ đủ điều kiện (chưa cân bằng thật) thành thời gian chờ thêm sau khi đệ tử đủ EXP.
+
 ## F. Service và schema đề xuất, chỉ thiết kế — chưa code
 
 **Chủ sở hữu mới cần tạo sau phê duyệt:** `DiscipleBodyGateContentV2` (immutable 29-entry manifest, tham chiếu 19 resource IDs trong registry, trong đó 15 IDs mới), `DiscipleBodyGateTransactionV2` (sole mutation owner), `BodyGateAcquisitionV2` hoặc rõ từng source-owner để tạo receipt thực. Không cho UI hoặc third-party caller tự truyền `requirements_verified=true` đến low-level adapter. Giữ `DiscipleRealmProgressV2` là chủ diễn tiến/HP chính tắc, `WarehouseSystem` là chủ kho.
