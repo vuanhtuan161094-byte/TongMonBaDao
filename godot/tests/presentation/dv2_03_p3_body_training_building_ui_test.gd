@@ -161,7 +161,7 @@ func _run() -> void:
         return
     # E3.1 player-facing transfer must be as safe as the backend API: a
     # Chuyên Tu command frees C's seat without refunding B's paid minute.
-    var switch := ui.call("_queue_v2_training","cultivation",c.id)
+    var switch: Dictionary = ui.call("_queue_v2_training","cultivation",c.id)
     if not _check(bool(switch.get("ok",false)) and
         c.current_action == &"CULTIVATE" and
         c.work_group_id == &"" and c.worksite_building_id == &"" and
@@ -170,7 +170,7 @@ func _run() -> void:
         int(hall.production_state.get("paid_training_minutes",0)) == 1,
         "E3.1 UI Chuyên Tu failed to vacate a paid Body slot safely."):
         return
-    var reassign := ui.call("_queue_v2_training","body",a.id)
+    var reassign: Dictionary = ui.call("_queue_v2_training","body",a.id)
     if not _check(bool(reassign.get("ok",false)) and
         BuildingSystem.new().active_worker_ids(state,hall).size() == 2 and
         state.sect.spirit_stones == 8,
