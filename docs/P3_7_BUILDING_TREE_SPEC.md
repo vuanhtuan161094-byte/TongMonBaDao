@@ -1680,6 +1680,20 @@ Nếu một building không liên kết được với ít nhất một trong ha
 
 ---
 
+# 37A. RÈN THÂN ĐƯỜNG — LOCK 10/10/2026
+
+Đây là **công trình riêng**, không dùng slot của Tu Luyện Đài và không phải Diễn Võ Trường. Chức năng giai đoạn đầu:
+
+- Lv1: **2 slot** luyện thể chuyên dụng.
+- Một lượt huấn luyện hợp lệ: **1 phút mô phỏng**, tiêu hao **1 Linh Thạch Tông Môn**, trước khi cấp **1.500 EXP Luyện Thể nền**.
+- Người tập phải là đệ tử V2 thực, có phân công/slot hợp lệ, đang ở Tông Môn, còn sống và có chi phí đủ. Khấu trừ kinh tế trước, EXP sau, một nguồn Body EXP/người/phút.
+- Không tiêu hao Thể Lực Viễn Chinh, không thay đổi đường Tu Vi thụ động.
+- Max Lv100 theo khung công trình; **chưa duyệt** hệ số slot sau Lv1, nâng cấp, cấp độ cường độ cao hoặc chi phí vật liệu nên tất cả hiệu ứng nâng cấp vẫn bị khóa.
+
+Công trình là consumer cho nguồn `body_training` đã khóa trong `docs/BODY_CULTIVATION_V2_SPEC.md`. **Không tạo kho mới.**
+
+---
+
 # 38. CÁC QUYẾT ĐỊNH KHÔNG ĐƯỢC PHÁ
 
 1. Không material Lv.1–Lv.5 ladder cứng.
