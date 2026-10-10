@@ -5,6 +5,7 @@ const DEST_COURTYARD := &"courtyard"
 const DEST_MAIN_HALL := &"main_hall"
 const DEST_RESIDENCE := &"residence"
 const DEST_CULTIVATION := &"cultivation"
+const DEST_BODY_TRAINING := &"ren_than_duong"
 const DEST_WAREHOUSE := &"warehouse"
 const DEST_FORGE := &"forge"
 const DEST_MEDICINE := &"medicine"
@@ -16,6 +17,7 @@ const DESTINATION_POSITIONS := {
     "main_hall": Vector2(620.0, 192.0),
     "residence": Vector2(900.0, 212.0),
     "cultivation": Vector2(782.0, 350.0),
+    "ren_than_duong": Vector2(376.0, 220.0),
     "warehouse": Vector2(1005.0, 386.0),
     "forge": Vector2(540.0, 492.0),
     "medicine": Vector2(815.0, 520.0),
@@ -36,6 +38,7 @@ const ACTION_LABELS := {
     "HEAL": "Đang trị thương",
     "REST": "Đang nghỉ",
     "CULTIVATE": "Đang tu luyện",
+    "TRAIN_BODY": "Đang rèn thân",
     "WORK_MINING": "Đang khai khoáng",
     "WORK_FORGING": "Đang luyện khí",
     "HOLD": "Đang chờ lệnh",
@@ -46,6 +49,8 @@ static func destination_for_action(action: StringName, previous: StringName = DE
     match action:
         &"CULTIVATE", &"BREAKTHROUGH":
             return DEST_CULTIVATION
+        &"TRAIN_BODY":
+            return DEST_BODY_TRAINING
         &"WORK_MINING":
             return DEST_MINE
         &"WORK_FORGING":
