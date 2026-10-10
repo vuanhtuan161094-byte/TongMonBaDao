@@ -1,5 +1,7 @@
 extends SceneTree
 
+const TEST_SAVE_PATH := "user://p3_2_disciple_ui_legacy_compat_test.json"
+
 var ui: Control
 var state: SimulationState
 var disciple: DiscipleState
@@ -8,6 +10,9 @@ func _init() -> void:
     call_deferred("_run")
 
 func _run() -> void:
+    _cleanup()
+    ProjectSettings.set_setting("runtime/live_save_path", TEST_SAVE_PATH)
+
     var packed_scene := load("res://scenes/p3/p3_2_landscape_sect.tscn") as PackedScene
     if packed_scene == null:
         _fail("P3.2 disciple UI scene could not be loaded.")
@@ -25,9 +30,9 @@ func _run() -> void:
         _fail("P3.2 disciple UI did not expose the real simulation state.")
         return
 
-    disciple = _first_v2_disciple()
+    disciple = _first_legacy_disciple()
     if disciple == null:
-        _fail("P3.2 disciple UI demo has no V2 disciple for modern profile testing.")
+        _fail("P3.2 disciple UI has no legacy disciple for compatibility testing.")
         return
 
     if not _verify_real_attribute_text():
@@ -45,17 +50,19 @@ func _run() -> void:
     if not _verify_tab_builds_popup():
         return
 
-    print("P3.2 DISCIPLE UI INTEGRATION TEST PASS")
+    print("P3.2 DISCIPLE UI LEGACY COMPATIBILITY TEST PASS")
     ui.queue_free()
     await process_frame
+    ui = null
+    _cleanup()
     quit(0)
 
-func _first_v2_disciple() -> DiscipleState:
+func _first_legacy_disciple() -> DiscipleState:
     var ids: Array = state.disciples.keys()
     ids.sort()
     for raw_id in ids:
         var candidate: DiscipleState = state.disciples[raw_id]
-        if candidate.profile_seed > 0:
+        if not DiscipleRealmProgressV2.owns_v2_progression(candidate):
             return candidate
     return null
 
@@ -166,9 +173,15 @@ func _verify_tab_builds_popup() -> bool:
         return _fail("P3.2 disciple tab did not build its dim + parchment popup hierarchy.")
     return true
 
+func _cleanup() -> void:
+    if FileAccess.file_exists(TEST_SAVE_PATH):
+        DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_SAVE_PATH))
+    ProjectSettings.set_setting("runtime/live_save_path", LiveGameRuntimeV2.DEFAULT_SAVE_PATH)
+
 func _fail(message: String) -> bool:
     push_error(message)
     if ui != null:
         ui.queue_free()
+    _cleanup()
     quit(1)
     return false
