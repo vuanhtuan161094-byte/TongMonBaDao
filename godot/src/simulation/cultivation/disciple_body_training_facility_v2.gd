@@ -28,11 +28,14 @@ static func reserve_slot(state: SimulationState, disciple_id: StringName) -> Dic
     if not already and buildings.assigned_worker_ids(state, building).size() >= buildings.worker_slots(building):
         return {"ok":false,"reason":"body_training_slots_full"}
     if not already:
-        var workforce := WorkforceSystem.new()
-        if not workforce.assign_group(state, disciple_id, building.worker_group_id):
-            return {"ok":false,"reason":"body_training_assignment_rejected"}
-        if not workforce.assign_worksite(state, disciple_id, building.id):
-            return {"ok":false,"reason":"body_training_worksite_rejected"}
+        # Do not depend on WorkforceSystem here: its policy depends on the
+        # training action, so keeping the facility independent avoids a parser
+        # cycle. The same canonical disciple assignment fields own this slot.
+        if not disciple.work_cycle_state.is_empty():
+            buildings.cancel_work_cycle(state,disciple,true)
+        disciple.work_group_id = building.worker_group_id
+        disciple.worksite_building_id = building.id
+        state.sect.workforce_event_count += 1
     return {"ok":true,"building_id":str(building.id),"reserved_slots":buildings.assigned_worker_ids(state,building).size(),
         "slots":buildings.worker_slots(building)}
 
