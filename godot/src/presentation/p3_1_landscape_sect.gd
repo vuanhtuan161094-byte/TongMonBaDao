@@ -3,6 +3,7 @@ extends Control
 const DEMO_SEED := 31012026
 const BASE_SIZE := Vector2(1280.0, 720.0)
 const LIVE_SAVE_PATH := LiveGameRuntimeV2.DEFAULT_SAVE_PATH
+const LIVE_SAVE_PATH_SETTING := "runtime/live_save_path"
 const RUNTIME_POLL_SECONDS := 1.0
 const AUTOSAVE_SECONDS := 15.0
 
@@ -46,7 +47,7 @@ func _ready() -> void:
     custom_minimum_size = BASE_SIZE
 
     runtime_session = LiveGameRuntimeV2.new()
-    var started := runtime_session.start(LIVE_SAVE_PATH, -1, DEMO_SEED)
+    var started := runtime_session.start(_resolved_live_save_path(), -1, DEMO_SEED)
     if not bool(started.get("ok", false)):
         runtime_failure_reason = str(started.get("reason", "live_runtime_start_failed"))
         push_error("P3 live runtime failed: %s" % runtime_failure_reason)
@@ -65,6 +66,12 @@ func _ready() -> void:
     _spawn_all_disciples()
     _refresh_all()
     _start_runtime_timers()
+
+func _resolved_live_save_path() -> String:
+    var configured := str(ProjectSettings.get_setting(
+        LIVE_SAVE_PATH_SETTING,LIVE_SAVE_PATH
+    )).strip_edges()
+    return LIVE_SAVE_PATH if configured.is_empty() else configured
 
 func _start_runtime_timers() -> void:
     runtime_poll_timer = Timer.new()
