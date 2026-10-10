@@ -175,15 +175,17 @@ func _run() -> void:
         hidden_mutation,
         "chan_long_huyet",
         "kim_cuong_ba_the",
-        "pha_quan",
-        "91",
-        "88"
+        "pha_quan"
     ]:
         if serialized.contains(secret):
-            _fail("Snapshot leaked hidden V2 identity/value: " + secret)
+            _fail("Snapshot leaked hidden V2 identity: " + secret)
             return
-    if str(innate["bloodline"].get("status","")) != "unrevealed":
+    var hidden_bloodline_row: Dictionary = innate["bloodline"]
+    if str(hidden_bloodline_row.get("status","")) != "unrevealed":
         _fail("Hidden Bloodline did not collapse to unrevealed.")
+        return
+    if hidden_bloodline_row.has("birth_purity") or hidden_bloodline_row.has("current_purity"):
+        _fail("Hidden Bloodline purity leaked into the snapshot.")
         return
     if str(innate["physique"].get("status","")) != "unrevealed":
         _fail("Hidden Physique did not collapse to unrevealed.")
