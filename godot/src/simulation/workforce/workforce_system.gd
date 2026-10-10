@@ -134,6 +134,16 @@ func assign_worksite(state: SimulationState, disciple_id: StringName, building_i
     if not state.sect.workforce_enabled or not state.disciples.has(disciple_id):
         return false
     var disciple: DiscipleState = state.disciples[disciple_id]
+    # The primary-building fallback counts group-only members as assigned.
+    # Clearing only worksite would therefore leave a hidden Rèn Thân slot.
+    # Use the canonical two-field release for an explicit vacancy request.
+    if DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple):
+        if building_id == &"":
+            return bool(DiscipleBodyTrainingFacilityV2.release_slot(state,disciple_id).get("ok",false))
+        # A second same-group training building is not yet authored; reject
+        # implicit overbook/transfer until the player releases this slot.
+        if building_id != disciple.worksite_building_id:
+            return false
     if building_id == &"":
         disciple.worksite_building_id = &""
         if not disciple.work_cycle_state.is_empty():
