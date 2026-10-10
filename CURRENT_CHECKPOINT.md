@@ -1,6 +1,6 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
-Updated: 2026-10-09
+Updated: 2026-10-11
 
 This file contains **current truth only**.
 It is not a historical changelog.
