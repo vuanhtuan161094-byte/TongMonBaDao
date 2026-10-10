@@ -2,7 +2,7 @@
 
 **Bàn giao cập nhật: 10/10/2026 — thực trạng đã đối chiếu trực tiếp live `main`.**
 
-**Repo:** `vuanhtuan161094-byte/TongMonBaDao` · **branch:** `main` · **engine:** Godot 4.7.2. **User yêu cầu thao tác bằng GitHub connector trực tiếp; KHÔNG Codex, KHÔNG Work.** Trước mọi sửa đổi phải fetch lại `main` vì SHA sẽ thay đổi sau các commit bàn giao. **SHA code cuối cùng đã qua focused test:** `e96df1832036c1232f9d0db69d1f37450d0265f9`. SHA HEAD cuối của loạt commit tài liệu bàn giao lấy từ `main`, không ghi nhầm thành SHA CI.
+**Repo:** `vuanhtuan161094-byte/TongMonBaDao` · **branch:** `main` · **engine:** Godot 4.7.2. **User yêu cầu thao tác bằng GitHub connector trực tiếp; KHÔNG Codex, KHÔNG Work.** Trước mọi sửa đổi phải fetch lại `main` vì SHA sẽ thay đổi sau các commit bàn giao. **SHA code latest đã qua DV2-03 focused test:** `35dd076db146370e6fbadb4cd2d9ee0a9994f642`. Các commit sau đó chỉ cập nhật tài liệu bàn giao; lấy live `main` trước khi sửa tiếp.
 
 ## TRẠNG THÁI HIỆN TẠI — đọc mục này trước, không áp dụng các lịch sử bên dưới
 
