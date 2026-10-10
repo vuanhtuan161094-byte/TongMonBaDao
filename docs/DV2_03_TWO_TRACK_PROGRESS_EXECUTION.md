@@ -316,3 +316,36 @@ Evidence:
 
 This completes **Step 1 runtime integration**, but does **not** complete DV2-03 as a whole. Real Rèn Thân/body consumers and V2 disciple presentation belong to the next planned slices.
 
+---
+
+## DV2-03E1 — Step 2 unified disciple presentation snapshot (2026-10-10)
+
+**IMPLEMENTED / FOCUSED Linux Godot 4.7.2 PASS.**
+
+New presentation authority:
+- `DisciplePresentationSnapshotV2` is a pure read-model over live `SimulationState` + `DiscipleState`;
+- authentic V2 and legacy compatibility are explicit branches;
+- V2 progression always comes from `v2_realm_progress`; malformed V2 data fails closed rather than falling back to P2;
+- V2 combat display comes from `CombatStatsV2` Realm+Body+Potential core only;
+- no dormant/unimplemented innate or equipment effect is silently activated;
+- latent Trait and unrevealed Mutation/Bloodline/Physique/Destiny values are removed from the UI-facing snapshot;
+- presentation build is verified not to mutate simulation state.
+
+P3.2 integration:
+- summary and deep status show both Tu Vi and Luyện Thể for authentic V2;
+- Thuộc tính shows canonical floor EXP/cost, gate status, six foundations, HP/Attack/Defense and Expedition Stamina;
+- Root, visible Trait, Bloodline, Physique and Destiny identity are read from the same V2 birth profile;
+- Công pháp/Trang bị/Quan hệ read normalized snapshot records; V2 compatibility records do not imply unfinished V2 effects;
+- V2 Huyết Mạch/Thể Chất no longer expose P2 mutation buttons/actions;
+- legacy P3.2 branch remains operational and uses canonical P3.7 Warehouse resources in its regression fixture.
+
+Evidence:
+- [DV2-03 #38038834727](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38038834727), SHA `5ecb3bbeb7d1adc7644a9aecc3b805d0fc6bb3fa`: **PASS all focused steps**, including snapshot, authentic V2 profile UI and legacy compatibility.
+- [P3.6A #38038282452](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38038282452), production UI SHA `85639c14c5ff699f230e7ae5a713b32e54fca7d5`: **PASS**.
+- [P3.6A #38038535562](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38038535562): **PASS** after test-only runtime-clock cleanup.
+
+**WINDOWS / USER VALIDATION: PENDING — user has not run Step 2 on Windows.**
+Do not call Windows PASS or VISUAL ACCEPTED until the user actually runs/reviews it. Stable commands when requested: `Sync-Main.cmd Verify-P3-6A-Playable-Slice.cmd`, then `Preview-P3-6A-Playable-Slice.cmd`.
+
+Step 2 is a presentation/read-model closure only. It does not complete V2 innate effect consumers or the real Rèn Thân facility/cost path.
+
