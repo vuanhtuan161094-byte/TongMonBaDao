@@ -1,8 +1,8 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
-**Bàn giao cập nhật: 10/10/2026 — thực trạng đã đối chiếu trực tiếp live `main`.**
+**Bàn giao cập nhật: 11/10/2026 — DV2-03E3.1 backend + focused test đã qua Godot CI; full cumulative theo trạng thái ở mục mới nhất.**
 
-**Repo:** `vuanhtuan161094-byte/TongMonBaDao` · **branch:** `main` · **engine:** Godot 4.7.2. **User yêu cầu thao tác bằng GitHub connector trực tiếp; KHÔNG Codex, KHÔNG Work.** Trước mọi sửa đổi phải fetch lại `main` vì SHA sẽ thay đổi sau các commit bàn giao. **Latest DV2-03 gameplay source with focused PASS:** `6e10aca2d105f23f026a216f3404e5f9bbbbdf6d` (includes real paid Rèn Thân + Linh Điền reservation guard + roster fast path). Fetch live `main` before the next edit; docs-only handoff commits may move HEAD.
+**Repo:** `vuanhtuan161094-byte/TongMonBaDao` · **branch:** `main` · **engine:** Godot 4.7.2. **User yêu cầu thao tác bằng GitHub connector trực tiếp; KHÔNG Codex, KHÔNG Work.** Trước mọi sửa đổi phải fetch lại `main` vì SHA sẽ thay đổi sau các commit bàn giao. **Latest DV2-03E3.1 gameplay/test source with focused PASS:** `3c7e9a7691f549097dd0a67ed50ead8b7be18a4c` (slot-transfer, Workforce exclusive priority, invalid orders, 2-slot multi-minute/no-stone regression). Fetch live `main` before the next edit; docs-only handoff commits may move HEAD.
 
 ## LATEST USER-ORDERED IMPLEMENTATION — DV2-03E3.1 (11/10/2026)
 
