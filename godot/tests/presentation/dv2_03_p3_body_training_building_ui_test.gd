@@ -113,7 +113,7 @@ func _run() -> void:
         "E3 allowed a third training slot or concealed real overcapacity denial."):
         return
 
-    var release_button := controls.get_node_or_null("BodyTrainingRelease_%s" % str(a.id))
+    var release_button := controls.find_child("BodyTrainingRelease_%s" % str(a.id),true,false)
     if not _check(release_button is Button,"E3 did not create real slot-release control."):
         return
     (release_button as Button).pressed.emit()
