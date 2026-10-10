@@ -286,3 +286,32 @@ Do not interpret old QA fixtures such as 80/50/100 as production balance.
 
 **Presentation boundary:** the current P3.1/P3.2 0.55s demo timer is intentionally NOT rewired in this slice. A later presentation integration must consume `SimulationRuntimeOwnerV2` rather than create a second progression clock.
 
+---
+
+## DV2-03D3 — Step 1 live P3 runtime integration (2026-10-10)
+
+**IMPLEMENTED and focused Linux Godot 4.7.2 PASS.**
+
+Live-game ownership:
+- NEW `LiveGameRuntimeV2` is the game-specific bootstrap over `SimulationRuntimeOwnerV2`;
+- missing save -> create current `P37Factory` state, enable authentic future V2 birth + canonical V2 training rules, persist immediately;
+- existing valid save -> load first, then catch up elapsed wall time through the same `SimulationScheduler`;
+- existing corrupt save -> fail closed; do **not** silently replace it with a new game;
+- P3.1/P3.2 no longer create `P212Factory` demo state, no longer append two presentation-only recruited disciples, and no longer own a 0.55s simulation timer;
+- main P3 scene now references exactly the runtime owner's `SimulationState`;
+- wall poll = 1s presentation cadence, autosave = 15s persistence cadence; gameplay remains **60 real seconds = 1 simulation minute**;
+- save on autosave, application pause and scene exit; resume immediately performs wall-clock catch-up;
+- test-only save path can be overridden through `runtime/live_save_path` so headless presentation tests never share production saves.
+
+New gates:
+- `dv2_03_live_runtime_integration_test.gd`: missing-save creation, canonical 1,000 Tu Vi/minute, 59s no-tick, 60s one tick, save/reopen +120s = exactly two offline minutes, no demo-roster mutation, no same-time duplicate, corrupt-save fail-closed;
+- `dv2_03_p3_live_runtime_binding_test.gd`: P3.2 state is runtime-owner state, canonical V2 flags/rules active, old 0.55s timer absent, autosave present, deterministic +60s step and persisted state;
+- P3.6A playable-slice test updated to advance the live runtime by one explicit wall minute instead of using the old test-only “one UI call = one scheduler tick” assumption.
+
+Evidence:
+- **DV2-03 Realm Body Progress #96** — commit `35dd076db146370e6fbadb4cd2d9ee0a9994f642` — official Godot **4.7.2 Linux** — project parse + all DV2-03 focused gates including both new live-runtime tests **PASS**.
+- **P3.6A Preview #24** — commit `20ff9686464b09493adc2e4af740a10080d97333` — official Godot **4.7.2 Linux** — playable slice **PASS** after adopting the real wall-clock contract.
+- Windows/graphics-local acceptance remains **UNTESTED** unless separately run on the user's Windows Godot 4.7.2 environment.
+
+This completes **Step 1 runtime integration**, but does **not** complete DV2-03 as a whole. Real Rèn Thân/body consumers and V2 disciple presentation belong to the next planned slices.
+
