@@ -3,8 +3,7 @@ extends RefCounted
 
 # DV2-03 action bridge. Rates are normalized per simulation minute.
 # Tu Vi itself is passive-time owned; CULTIVATE only selects Chuyên Tu.
-# Luyện Thể source contract is locked, but its real facility/cost consumer is not ready yet. TRAIN_BODY is retained
-# only as a fail-closed compatibility token and must not grant Body EXP.
+# Luyện Thể dedicated Rèn Thân action is owned by the real building/slot/cost consumer.
 const ACTION_TRACKS := {"CULTIVATE":"cultivation","TRAIN_BODY":"body"}
 
 # Validate the same real EXP operation without changing a floor, XP or action.
@@ -14,7 +13,7 @@ static func _validated_rule(disciple: DiscipleState, track: String, data: Varian
         return DiscipleTuViFlowV2.validate_rule(disciple,data)
     if track == "body":
         return {"ok":false,"reason":"body_training_requires_facility_context"}
-    return {"ok":false,"reason":"unsupported_training_track"
+    return {"ok":false,"reason":"unsupported_training_track"}
 
 # Read-only eligibility/ratio surface shared by autonomous policy and UI.
 # It uses the same authored rule validation as the eventual committed action.
