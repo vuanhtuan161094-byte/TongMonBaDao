@@ -50,6 +50,7 @@ func _run() -> void:
     var saw_completed_cycle := false
     for minute in range(1, 36):
         state.tick = minute
+        disciple.current_action = &"WORK_MINING"
         var result := workforce.perform_work(state, disciple, WorkforceSystem.PROF_MINING)
         if not _require(bool(result.get("ok", false)), "Real mine work failed."):
             return
