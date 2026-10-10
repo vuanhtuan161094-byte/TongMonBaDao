@@ -385,7 +385,7 @@ func _perform_p3_7_mining(state: SimulationState, disciple: DiscipleState) -> Di
     # Travel and haul are not active extraction. P3.7 mine ownership/slot
     # checks already succeeded inside perform_mining_step(). Legacy stays on
     # its own progression, with no V2 Body EXP bridge.
-    if state.sect.v2_training_enabled and DiscipleRealmProgressV2.owns_v2_progression(disciple) and str(result.get("phase", "")) == "mining":
+    if state.sect.v2_training_enabled and disciple.current_action == &"WORK_MINING" and DiscipleRealmProgressV2.owns_v2_progression(disciple) and str(result.get("phase", "")) == "mining":
         var body_rule = state.sect.v2_training_rules.get("body", null)
         if body_rule is Dictionary:
             var body_source := {
