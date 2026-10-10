@@ -172,7 +172,6 @@ func _run() -> void:
     var serialized := JSON.stringify(snapshot)
     for secret in [
         "tap_niem",
-        hidden_mutation,
         "chan_long_huyet",
         "kim_cuong_ba_the",
         "pha_quan"
@@ -180,6 +179,13 @@ func _run() -> void:
         if serialized.contains(secret):
             _fail("Snapshot leaked hidden V2 identity: " + secret)
             return
+    var hidden_mutation_row: Dictionary = innate["spiritual_root"]["mutation"]
+    if str(hidden_mutation_row.get("status","")) != "unrevealed":
+        _fail("Hidden Root Mutation did not collapse to unrevealed.")
+        return
+    if hidden_mutation_row.has("id") or hidden_mutation_row.has("base_element") or hidden_mutation_row.has("realm"):
+        _fail("Hidden Root Mutation identity/provenance leaked into the snapshot.")
+        return
     var hidden_bloodline_row: Dictionary = innate["bloodline"]
     if str(hidden_bloodline_row.get("status","")) != "unrevealed":
         _fail("Hidden Bloodline did not collapse to unrevealed.")
@@ -193,10 +199,6 @@ func _run() -> void:
     if str(innate["destiny"].get("status","")) != "unrevealed":
         _fail("Hidden Destiny did not collapse to unrevealed.")
         return
-    if str(innate["spiritual_root"]["mutation"].get("status","")) != "unrevealed":
-        _fail("Hidden Root Mutation did not collapse to unrevealed.")
-        return
-
     # An authentic V2 identity with malformed progression must fail closed in the
     # snapshot. It must not display the legacy P2 stage/combat fallback.
     var malformed := disciple.v2_realm_progress.duplicate(true)
