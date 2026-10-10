@@ -183,7 +183,7 @@ func _run() -> void:
         return
     if not _check(int(disciple.v2_realm_progress["body"]["realm"]) == 1 and
         not bool(DiscipleRealmProgressV2.attempt_cultivation_breakthrough(
-            disciple,rng,1000.0,1.0,true,"attempt_02"
+            disciple,rng,_costs(1),1.0,true,"attempt_02"
         ).get("ok",true)),
         "A Tu Vi breakthrough advanced Body or replayed the same gate."):
         return
