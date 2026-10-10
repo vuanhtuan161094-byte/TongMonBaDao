@@ -18,6 +18,24 @@ static func reserve_slot(state: SimulationState, disciple_id: StringName) -> Dic
         return {"ok":false,"reason":"training_profile_not_ready"}
     if disciple.region_id != &"sect" or disciple.hp <= 0.0:
         return {"ok":false,"reason":"training_actor_not_available"}
+    # Preflight before any reservation mutation; do not hijack ongoing combat,
+    # paid crops, or a disciple already waiting at an unapproved major gate.
+    if not state.sect.v2_training_enabled:
+        return {"ok":false,"reason":"body_training_authority_disabled"}
+    if not [&"EVALUATE",&"IDLE",&"HOLD",&"CULTIVATE",&"TRAIN_BODY"].has(disciple.current_action):
+        return {"ok":false,"reason":"training_cannot_interrupt_active_work"}
+    if state.sect.spirit_stones < STONE_COST_PER_MINUTE:
+        return {"ok":false,"reason":"insufficient_training_spirit_stones"}
+    var rule = state.sect.v2_training_rules.get("body",null)
+    if not (rule is Dictionary) or str(rule.get("training_mechanic","")) != "typed_source_contract":
+        return {"ok":false,"reason":"body_training_rule_not_authorized"}
+    var body: Dictionary = disciple.v2_realm_progress["body"]
+    var costs = rule.get("floor_costs",null)
+    var key := "%d:%d" % [int(body["realm"]),int(body["floor"])]
+    if not (costs is Dictionary) or not costs.has(key):
+        return {"ok":false,"reason":"body_training_cost_curve_missing"}
+    if int(body["floor"]) == DiscipleRealmProgressV2.MAX_FLOOR and float(body["xp"]) >= float(costs[key]):
+        return {"ok":false,"reason":"major_gate_waiting"}
     # One active Spirit Field plot reserves its disciple until harvest resolves.
     if BuildingSystem.new().disciple_has_active_spirit_plot(state,disciple.id):
         return {"ok":false,"reason":"busy_spirit_plot"}
