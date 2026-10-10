@@ -31,6 +31,7 @@ on:
       - 'godot/src/presentation/p3/sect_map_presentation.gd'
       - 'godot/src/presentation/p3_1_landscape_sect.gd'
       - 'godot/tests/simulation/dv2_03_ren_than_duong_integration_test.gd'
+      - 'godot/tests/simulation/dv2_03_e3_1_training_priority_regression_test.gd'
       - 'godot/tests/simulation/dv2_03_realm_body_progress_test.gd'
       - 'godot/src/simulation/core/p3_7_factory.gd'
       - 'godot/src/simulation/state/simulation_state.gd'
