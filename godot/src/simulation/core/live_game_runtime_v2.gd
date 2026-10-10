@@ -106,6 +106,10 @@ func _configure_live_state(live_state: SimulationState) -> Dictionary:
     # Body remains fail-closed because its real consumer is not implemented yet.
     live_state.sect.v2_training_enabled = true
     live_state.sect.v2_training_rules = canonical_rules
+    # Explicit V2-only building migration: preserve legacy P3.7 fixtures and
+    # existing saves, add this owned facility exactly once to live V2 games.
+    if BuildingSystem.new().ensure_body_training_facility(live_state) == null:
+        return {"ok":false,"reason":"body_training_facility_migration_failed"}
 
     return {"ok":true}
 
