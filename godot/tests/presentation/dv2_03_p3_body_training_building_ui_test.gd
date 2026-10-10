@@ -88,7 +88,7 @@ func _run() -> void:
         return
     var body := str(ui.call("_body_training_operation_text"))
     if not _check(body.contains("Vị trí: 0/2") and body.contains("Linh Thạch Tông Môn: 9") and
-        body.contains("EXP nền: 1500/phút") and body.contains("Lượt đã thanh toán: 0"),
+        body.contains("EXP nền: 1.500 EXP/phút") and body.contains("Lượt đã thanh toán: 0"),
         "E3 management summary does not display real slots/treasury/EXP audit."):
         return
     var controls: VBoxContainer = ui.get("building_management_container") as VBoxContainer
