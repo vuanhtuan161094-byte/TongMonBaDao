@@ -13,8 +13,8 @@ static func _validated_rule(disciple: DiscipleState, track: String, data: Varian
     if track == "cultivation":
         return DiscipleTuViFlowV2.validate_rule(disciple,data)
     if track == "body":
-        return {"ok":false,"reason":"body_training_consumer_not_ready"}
-    return {"ok":false,"reason":"unsupported_training_track"}
+        return {"ok":false,"reason":"body_training_requires_facility_context"}
+    return {"ok":false,"reason":"unsupported_training_track"
 
 # Read-only eligibility/ratio surface shared by autonomous policy and UI.
 # It uses the same authored rule validation as the eventual committed action.
@@ -27,12 +27,19 @@ static func preview_training(state: SimulationState, disciple: DiscipleState, tr
         return {"ok":false,"reason":"training_profile_not_ready"}
     if disciple.region_id != &"sect" or disciple.hp <= 0.0:
         return {"ok":false,"reason":"training_disciple_not_present"}
-    var ready := _validated_rule(disciple,track,state.sect.v2_training_rules.get(track,null))
+    var ready := (
+        DiscipleBodyTrainingFacilityV2.preview_minute(state,disciple)
+        if track == "body"
+        else _validated_rule(disciple,track,state.sect.v2_training_rules.get(track,null))
+    )
     if not bool(ready.get("ok",false)):
         return {"ok":false,"reason":str(ready.get("reason","invalid_training_rule"))}
     var row: Dictionary = disciple.v2_realm_progress[track]
     var key := "%d:%d" % [int(row["realm"]),int(row["floor"])]
-    var costs: Dictionary = ready["costs"]
+    var costs: Dictionary = (
+        state.sect.v2_training_rules.get("body",{}).get("floor_costs",{})
+        if track == "body" else ready["costs"]
+    )
     if not costs.has(key):
         return {"ok":false,"reason":"xp_cost_content_not_authorized"}
     var current_cost := float(costs[key])
@@ -66,10 +73,8 @@ static func request_training(state: SimulationState, disciple_id: StringName, tr
         return {"ok":false,"reason":"training_disciple_not_present"}
     if not [&"EVALUATE",&"IDLE",&"HOLD",&"CULTIVATE",&"TRAIN_BODY"].has(disciple.current_action):
         return {"ok":false,"reason":"training_cannot_interrupt_active_work"}
-    if track == "body":
-        return {"ok":false,"reason":"body_training_consumer_not_ready"}
-    var action := "CULTIVATE"
-    var ready := _validated_rule(disciple,track,state.sect.v2_training_rules.get(track,null))
+    var action := "TRAIN_BODY" if track == "body" else "CULTIVATE"
+    var ready := preview_training(state,disciple,track)
     if not bool(ready.get("ok",false)):
         return {"ok":false,"reason":str(ready.get("reason","invalid_training_rule"))}
     disciple.current_action = StringName(action)
@@ -95,4 +100,4 @@ static func resolve(state: SimulationState, disciple: DiscipleState, action: Str
     var track: String = ACTION_TRACKS[action]
     if track == "cultivation":
         return {"ok":false,"reason":"cultivation_resolves_via_passive_time"}
-    return {"ok":false,"reason":"body_training_consumer_not_ready"}
+    return DiscipleBodyTrainingFacilityV2.commit_minute(state,disciple)
