@@ -107,6 +107,12 @@ func assign_group(state: SimulationState, disciple_id: StringName, group_id: Str
     if group_id != &"" and not state.sect.work_groups.has(str(group_id)):
         return false
     var disciple: DiscipleState = state.disciples[disciple_id]
+    # Explicitly assigning a different crew frees the real Body facility slot;
+    # a returned position may be immediately reused by another disciple.
+    if group_id != disciple.work_group_id and DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple):
+        var released := DiscipleBodyTrainingFacilityV2.release_slot(state,disciple_id)
+        if not bool(released.get("ok",false)):
+            return false
     if state.p3_7_buildings_enabled and not disciple.work_cycle_state.is_empty():
         var cycle_profession := StringName(disciple.work_cycle_state.get("profession", ""))
         var expected_group := &""
@@ -198,6 +204,12 @@ func issue_command(state: SimulationState, disciple_id: StringName, kind: String
     if kind == COMMAND_HUNT_REGION and not state.regions.has(StringName(target)):
         return false
     var disciple: DiscipleState = state.disciples[disciple_id]
+    # Any accepted explicit non-Body command transfers the player out of the
+    # dedicated facility. Invalid commands above must NOT evict trainees.
+    if DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple):
+        var released := DiscipleBodyTrainingFacilityV2.release_slot(state,disciple_id)
+        if not bool(released.get("ok",false)):
+            return false
     if state.p3_7_buildings_enabled and not disciple.work_cycle_state.is_empty():
         var cycle_profession := StringName(disciple.work_cycle_state.get("profession", ""))
         var keeps_current_work := kind == COMMAND_WORK and StringName(target) == cycle_profession
@@ -240,6 +252,16 @@ func next_action(state: SimulationState, disciple: DiscipleState) -> StringName:
     var direct := _direct_command_action(state, disciple)
     if direct != &"":
         return direct
+
+    # A dedicated Rèn Thân assignment owns this actor's scheduled occupation.
+    # General profession work preferences must never steal a paid training
+    # minute. Injury/urgent healing and explicit player orders remain upstream.
+    if owns_v2 and DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple):
+        var training := DiscipleTrainingPolicyV2.choose_auto_action(state,disciple)
+        if bool(training.get("ok",false)):
+            disciple.last_decision["v2_auto_training"] = training.duplicate(true)
+            return StringName(training["action"])
+        return &"HOLD"
 
     if state.p3_7_buildings_enabled:
         var cycle_profession := StringName(disciple.work_cycle_state.get("profession", ""))
