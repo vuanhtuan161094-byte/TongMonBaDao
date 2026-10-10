@@ -120,6 +120,10 @@ func _run() -> void:
     if not _assert(_close(special_delta,200.0),
         "Chuyên Tu did not produce one accelerated passive-minute grant."):
         return
+    # The scheduler completes the one-minute action and returns to EVALUATE.
+    # Re-establish the action token only to prove the direct resolver itself
+    # cannot award a second cultivation grant.
+    student.current_action = &"CULTIVATE"
     var direct_cultivate := DiscipleTrainingActionV2.resolve(
         state,student,"CULTIVATE"
     )
