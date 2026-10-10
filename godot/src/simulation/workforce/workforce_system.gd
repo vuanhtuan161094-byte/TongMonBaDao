@@ -381,6 +381,27 @@ func _perform_p3_7_mining(state: SimulationState, disciple: DiscipleState) -> Di
         disciple.stamina = maxf(0.0, disciple.stamina - stamina_cost)
         result["effective_stamina_cost"] = stamina_cost
     result["work_cultivation_gain"] = _grant_p3_7_work_cultivation(state, disciple, PROF_MINING)
+    # DV2-03: only an actual mining-phase minute has verified physical load.
+    # Travel and haul are not active extraction. P3.7 mine ownership/slot
+    # checks already succeeded inside perform_mining_step(). Legacy stays on
+    # its own progression, with no V2 Body EXP bridge.
+    if state.sect.v2_training_enabled and DiscipleRealmProgressV2.owns_v2_progression(disciple) and str(result.get("phase", "")) == "mining":
+        var body_rule = state.sect.v2_training_rules.get("body", null)
+        if body_rule is Dictionary:
+            var body_source := {
+                "source_id": "p3_7_mine_active_extraction:%s" % str(result.get("building_id", "")),
+                "source_kind": DiscipleBodyXpSourceV2.SOURCE_PRODUCTION,
+                "base_body_xp_per_minute": DiscipleProgressionBalanceV2.BODY_PRODUCTION_REFERENCE_PER_MINUTE,
+                "floor_costs": body_rule.get("floor_costs", {}),
+                "modifiers": [],
+                "active_work_verified": true
+            }
+            result["body_xp_result"] = DiscipleBodyXpSourceV2.commit_minute(
+                state, disciple, body_source,
+                "dv2:mine:active:%s:%d" % [str(disciple.id), state.tick]
+            )
+        else:
+            result["body_xp_result"] = {"ok": false, "reason": "missing_authored_body_rule"}
     disciple.metrics["work_actions"] = int(disciple.metrics.get("work_actions", 0)) + 1
     if not bool(result.get("completed", false)):
         return result
