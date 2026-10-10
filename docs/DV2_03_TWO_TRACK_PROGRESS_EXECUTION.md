@@ -311,6 +311,7 @@ New gates:
 Evidence:
 - **DV2-03 Realm Body Progress #96** — commit `35dd076db146370e6fbadb4cd2d9ee0a9994f642` — official Godot **4.7.2 Linux** — project parse + all DV2-03 focused gates including both new live-runtime tests **PASS**.
 - **P3.6A Preview #24** — commit `20ff9686464b09493adc2e4af740a10080d97333` — official Godot **4.7.2 Linux** — playable slice **PASS** after adopting the real wall-clock contract.
+- **P3.7 Backend #151** — run [#38037386848](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38037386848), commit `150be2aeaf5c7092f594850bdffa2e349f7c03cf` — **FAST + FULL cumulative PASS** on official Godot 4.7.2 Linux.
 - Windows/graphics-local acceptance remains **UNTESTED** unless separately run on the user's Windows Godot 4.7.2 environment.
 
 This completes **Step 1 runtime integration**, but does **not** complete DV2-03 as a whole. Real Rèn Thân/body consumers and V2 disciple presentation belong to the next planned slices.
