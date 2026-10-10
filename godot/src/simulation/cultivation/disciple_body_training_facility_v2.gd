@@ -44,11 +44,12 @@ static func preview_minute(state: SimulationState, disciple: DiscipleState) -> D
     var prepared := _prepare(state, disciple)
     if not bool(prepared.get("ok",false)):
         return prepared
-    var source := _source(prepared, false)
-    # Read-only projection is intentionally checked with an internally verified
-    # training context; no transaction receipt is minted by this projection.
-    source["training_cost_committed"] = true
-    var preview := DiscipleBodyXpSourceV2.preview_minute(state,disciple,source)
+    # Read-only progress projection without a fabricated cost receipt.
+    # Only commit_minute() may assert a committed economic transaction.
+    var preview := DiscipleRealmProgressV2.grant_xp(
+        disciple,"body",BASE_BODY_XP_PER_MINUTE,"natural",
+        prepared["floor_costs"],[],true
+    )
     if not bool(preview.get("ok",false)):
         return preview
     return {"ok":true,"track":"body","action":"TRAIN_BODY",
@@ -70,11 +71,11 @@ static func commit_minute(state: SimulationState, disciple: DiscipleState) -> Di
         return {"ok":false,"reason":"body_xp_tick_already_awarded"}
     if state.tick <= 0:
         return {"ok":false,"reason":"no_committed_simulation_tick"}
-    var source := _source(prepared,true)
-    var dry_run := DiscipleBodyXpSourceV2.preview_minute(state,disciple,source)
+    var dry_run := preview_minute(state,disciple)
     if not bool(dry_run.get("ok",false)):
         return dry_run
-    # Preview and commit share the same authoritative source, cost and tick.
+    var source := _source(prepared,true)
+    # Preview and commit share the same authoritative floor-cost/source law.
     if state.sect.spirit_stones < STONE_COST_PER_MINUTE:
         return {"ok":false,"reason":"insufficient_training_spirit_stones"}
     state.sect.spirit_stones -= STONE_COST_PER_MINUTE
