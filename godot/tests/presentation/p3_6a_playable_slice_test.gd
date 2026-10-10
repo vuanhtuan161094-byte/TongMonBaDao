@@ -70,6 +70,9 @@ func _run() -> void:
         return
 
     print("P3.6A PLAYABLE SLICE TEST PASS")
+    # This test advances synthetic wall time by +60s. The runtime has already
+    # been asserted; suppress exit-save so queue_free() does not save backwards.
+    ui.set("runtime_ready", false)
     ui.queue_free()
     await process_frame
     ui = null
