@@ -1435,20 +1435,44 @@ func _close_disciple_summary(clear_selection: bool = true) -> void:
             focus_target_button.disabled = true
         _refresh_focus_readout()
 
+
 func _refresh_disciple_summary_content() -> void:
     if not _disciple_summary_is_open() or selected_id == &"" or not state.disciples.has(selected_id):
         return
     var disciple: DiscipleState = state.disciples[selected_id]
+    var snapshot := _disciple_snapshot(disciple)
     disciple_summary_initial.text = disciple.display_name.substr(0, 1)
     disciple_summary_name.text = disciple.display_name
+    if not bool(snapshot.get("ok", false)):
+        disciple_summary_meta.text = "Dữ liệu chưa sẵn sàng"
+        disciple_summary_body.text = "Không thể đọc hồ sơ đệ tử hiện tại."
+        return
 
-    var quality := "—"
-    if disciple.disciple_quality != &"":
-        quality = generator.quality_name(disciple.disciple_quality)
-    disciple_summary_meta.text = "%s · %s" % [quality, cultivation.stage_name(disciple)]
+    var identity: Dictionary = snapshot["identity"]
+    var quality := str(identity.get("quality_name", "—"))
+    if quality.is_empty():
+        quality = "—"
+    if bool(snapshot.get("authentic_v2", false)):
+        var progression: Dictionary = snapshot["progression"]
+        if bool(progression.get("ready", false)):
+            var tuvi: Dictionary = progression["cultivation"]
+            disciple_summary_meta.text = "%s · %s tầng %d" % [
+                quality, str(tuvi["name"]), int(tuvi["floor"])
+            ]
+        else:
+            disciple_summary_meta.text = "%s · Tiến độ chưa sẵn sàng" % quality
+    else:
+        disciple_summary_meta.text = "%s · %s" % [quality, cultivation.stage_name(disciple)]
     disciple_summary_body.text = _disciple_summary_text(disciple)
 
+
 func _disciple_summary_text(disciple: DiscipleState) -> String:
+    var snapshot := _disciple_snapshot(disciple)
+    if not bool(snapshot.get("ok", false)):
+        return "Không thể đọc hồ sơ đệ tử."
+    if bool(snapshot.get("authentic_v2", false)):
+        return _v2_disciple_summary_text(snapshot)
+
     var required := cultivation.required_progress(disciple)
     var cultivation_text := "Đã viên mãn" if required <= 0.0 else "%.0f / %.0f" % [disciple.cultivation_progress, required]
     var destination := StringName(actor_destinations.get(str(disciple.id), str(SectMapPresentation.DEST_COURTYARD)))
@@ -1501,6 +1525,130 @@ func _disciple_summary_text(disciple: DiscipleState) -> String:
         command_text,
         feedback
     ]
+
+
+func _disciple_snapshot(disciple: DiscipleState) -> Dictionary:
+    return DisciplePresentationSnapshotV2.build(state, disciple)
+
+func _v2_disciple_summary_text(snapshot: Dictionary) -> String:
+    var life: Dictionary = snapshot["life"]
+    var progression: Dictionary = snapshot["progression"]
+    if not bool(progression.get("ready", false)):
+        return (
+            "HP %.0f/%.0f · Thể lực viễn chinh %.0f/100\n"
+            + "Tu Vi/Luyện Thể: dữ liệu chưa sẵn sàng\n"
+            + "Đang làm: %s"
+        ) % [
+            float(life["hp"]), float(life["max_hp"]),
+            float(life["expedition_stamina"]),
+            SectMapPresentation.action_label(StringName(life["current_action"]))
+        ]
+
+    var tuvi: Dictionary = progression["cultivation"]
+    var body: Dictionary = progression["body"]
+    var combat: Dictionary = snapshot["combat"]
+    var atk := 0.0
+    var defense := 0.0
+    if bool(combat.get("ready", false)):
+        var stats: Dictionary = combat["stats"]
+        atk = float(stats.get("attack", 0.0))
+        defense = float(stats.get("defense", 0.0))
+    var innate: Dictionary = snapshot["innate"]
+    var work: Dictionary = snapshot["work"]
+    var destination := StringName(actor_destinations.get(
+        str(snapshot["disciple_id"]), str(SectMapPresentation.DEST_COURTYARD)
+    ))
+    var feedback := ""
+    if summary_feedback != "":
+        feedback = "\n%s" % summary_feedback
+
+    return (
+        "HP %.0f/%.0f · Thể lực viễn chinh %.0f/100\n"
+        + "Tu Vi: %s tầng %d · %.0f/%.0f\n"
+        + "Luyện Thể: %s tầng %d · %.0f/%.0f\n"
+        + "Công %.1f · Thủ %.1f\n"
+        + "Đang làm: %s · %s\n"
+        + "Nhóm việc: %s\n\n"
+        + "Linh Căn: %s\n"
+        + "Đặc Chất: %s\n"
+        + "Huyết Mạch: %s · Thể Chất: %s\n"
+        + "Mệnh Cách: %s\n"
+        + "Lệnh Tông Chủ: %s%s"
+    ) % [
+        float(life["hp"]), float(life["max_hp"]), float(life["expedition_stamina"]),
+        str(tuvi["name"]), int(tuvi["floor"]), float(tuvi["xp"]), float(tuvi["required_xp"]),
+        str(body["name"]), int(body["floor"]), float(body["xp"]), float(body["required_xp"]),
+        atk, defense,
+        SectMapPresentation.action_label(StringName(life["current_action"])),
+        _building_name(destination),
+        _work_group_label_id(StringName(work.get("group_id", ""))),
+        _v2_root_brief(innate),
+        _v2_trait_brief(innate),
+        _v2_identity_brief(innate["bloodline"], "Không"),
+        _v2_identity_brief(innate["physique"], "Không"),
+        _v2_identity_brief(innate["destiny"], "Không"),
+        _direct_command_label_data(work.get("direct_command", {})),
+        feedback
+    ]
+
+func _v2_root_brief(innate: Dictionary) -> String:
+    var root: Dictionary = innate["spiritual_root"]
+    var values: Dictionary = root.get("current_values", {})
+    var ids: Array = values.keys()
+    ids.sort()
+    var parts: Array[String] = []
+    for raw_id in ids:
+        var row: Dictionary = values[raw_id]
+        parts.append("%s %d" % [str(row.get("name", raw_id)), int(row.get("purity", 0))])
+    var mutation: Dictionary = root.get("mutation", {})
+    if str(mutation.get("status", "")) == "revealed":
+        parts.append("Dị Căn %s" % str(mutation.get("name", "?")))
+    return " · ".join(parts) if not parts.is_empty() else "—"
+
+func _v2_trait_brief(innate: Dictionary) -> String:
+    var rows: Array = innate["traits"].get("visible", [])
+    var names: Array[String] = []
+    for raw_row in rows:
+        if raw_row is Dictionary:
+            names.append(str(raw_row.get("name", "?")))
+    return " · ".join(names) if not names.is_empty() else "—"
+
+func _v2_identity_brief(row: Dictionary, none_text: String = "Không") -> String:
+    match str(row.get("status", "none")):
+        "revealed":
+            return str(row.get("name", "?"))
+        "unrevealed":
+            return "Chưa xác định"
+        _:
+            return none_text
+
+func _work_group_label_id(group_id: StringName) -> String:
+    match group_id:
+        &"mining_crew": return "Đội Khai Khoáng"
+        &"forge_hall": return "Luyện Khí Đường"
+        &"": return "Chưa phân"
+        _: return str(group_id)
+
+func _direct_command_label_data(command: Variant) -> String:
+    if not (command is Dictionary) or command.is_empty():
+        return "Không"
+    var kind := StringName(command.get("kind", ""))
+    var target := StringName(command.get("target", ""))
+    match kind:
+        WorkforceSystem.COMMAND_CULTIVATE: return "Tu luyện"
+        WorkforceSystem.COMMAND_REST: return "Nghỉ"
+        WorkforceSystem.COMMAND_RETURN_SECT: return "Về tông"
+        WorkforceSystem.COMMAND_HOLD: return "Giữ tại tông"
+        WorkforceSystem.COMMAND_WORK:
+            if target == WorkforceSystem.PROF_MINING:
+                return "Khai khoáng"
+            if target == WorkforceSystem.PROF_FORGING:
+                return "Luyện khí"
+            if target == WorkforceSystem.PROF_HERBALISM:
+                return "Linh thực"
+            return "Làm nghề"
+        WorkforceSystem.COMMAND_HUNT_REGION: return "Xuất môn"
+        _: return str(kind)
 
 func _work_group_label(disciple: DiscipleState) -> String:
     match disciple.work_group_id:
@@ -1645,12 +1793,15 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
     content.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     content.add_theme_color_override("font_color", INK)
 
-    if tab_name == "Huyết Mạch":
-        _add_tab_action_button(content_panel, "Thức tỉnh", Vector2(18, 344), "bloodline_awaken")
-        _add_tab_action_button(content_panel, "Luyện huyết", Vector2(140, 344), "bloodline_refine")
-    elif tab_name == "Thể Chất":
-        _add_tab_action_button(content_panel, "Tôi thể", Vector2(18, 344), "physique_temper")
-        _add_tab_action_button(content_panel, "Cải thể", Vector2(140, 344), "physique_transform")
+    var profile_snapshot := _disciple_snapshot(disciple)
+    var authentic_v2 := bool(profile_snapshot.get("authentic_v2", false))
+    if not authentic_v2:
+        if tab_name == "Huyết Mạch":
+            _add_tab_action_button(content_panel, "Thức tỉnh", Vector2(18, 344), "bloodline_awaken")
+            _add_tab_action_button(content_panel, "Luyện huyết", Vector2(140, 344), "bloodline_refine")
+        elif tab_name == "Thể Chất":
+            _add_tab_action_button(content_panel, "Tôi thể", Vector2(18, 344), "physique_temper")
+            _add_tab_action_button(content_panel, "Cải thể", Vector2(140, 344), "physique_transform")
 
     var tab_names: Array[String] = ["Thuộc tính", "Công pháp", "Trang bị", "Huyết Mạch", "Thể Chất", "Quan hệ"]
     for index in range(tab_names.size()):
@@ -1664,7 +1815,28 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
         tab.pressed.connect(Callable(self, "_open_disciple_deep_screen").bind(selected_id, str(tab_names[index])))
         panel.add_child(tab)
 
+
 func _deep_status_text(disciple: DiscipleState) -> String:
+    var snapshot := _disciple_snapshot(disciple)
+    if bool(snapshot.get("ok", false)) and bool(snapshot.get("authentic_v2", false)):
+        var life: Dictionary = snapshot["life"]
+        var progression: Dictionary = snapshot["progression"]
+        if not bool(progression.get("ready", false)):
+            return "Tiến độ chưa sẵn sàng\nHP %.0f/%.0f\n%s" % [
+                float(life["hp"]), float(life["max_hp"]),
+                SectMapPresentation.action_label(StringName(life["current_action"]))
+            ]
+        var tuvi: Dictionary = progression["cultivation"]
+        var body: Dictionary = progression["body"]
+        var destination := StringName(actor_destinations.get(str(disciple.id), str(SectMapPresentation.DEST_COURTYARD)))
+        return "%s tầng %d\n%s tầng %d\nHP %.0f/%.0f · Thể lực viễn chinh %.0f/100\n%s · %s" % [
+            str(tuvi["name"]), int(tuvi["floor"]),
+            str(body["name"]), int(body["floor"]),
+            float(life["hp"]), float(life["max_hp"]), float(life["expedition_stamina"]),
+            SectMapPresentation.action_label(StringName(life["current_action"])),
+            _building_name(destination)
+        ]
+
     var required := cultivation.required_progress(disciple)
     var progress_text := "Đã viên mãn" if required <= 0.0 else "%.0f / %.0f" % [disciple.cultivation_progress, required]
     var destination := StringName(actor_destinations.get(str(disciple.id), str(SectMapPresentation.DEST_COURTYARD)))
@@ -1713,9 +1885,18 @@ func _add_tab_action_button(parent: Control, text: String, pos: Vector2, action:
     button.pressed.connect(Callable(self, "_disciple_tab_action").bind(action))
     parent.add_child(button)
 
+
 func _disciple_tab_action(action: String) -> void:
     if selected_id == &"" or not state.disciples.has(selected_id):
         return
+    var disciple: DiscipleState = state.disciples[selected_id]
+    var snapshot := _disciple_snapshot(disciple)
+    var requested_tab := "Huyết Mạch" if action.begins_with("bloodline_") else "Thể Chất"
+    if bool(snapshot.get("ok", false)) and bool(snapshot.get("authentic_v2", false)):
+        tab_status_text = "Cơ chế cũ không áp dụng cho hồ sơ này."
+        _open_disciple_tab(requested_tab)
+        return
+
     var result: Dictionary = {}
     var tab_name := "Thuộc tính"
     match action:
@@ -1802,7 +1983,12 @@ func _disciple_tab_text(tab_name: String, disciple: DiscipleState) -> String:
         _:
             return "Chưa có dữ liệu."
 
+
 func _attributes_tab_text(disciple: DiscipleState) -> String:
+    var snapshot := _disciple_snapshot(disciple)
+    if bool(snapshot.get("ok", false)) and bool(snapshot.get("authentic_v2", false)):
+        return _v2_attributes_tab_text(snapshot)
+
     var required := cultivation.required_progress(disciple)
     var progress_text := "Đã viên mãn" if required <= 0.0 else "%.0f / %.0f" % [disciple.cultivation_progress, required]
     var chance := cultivation.breakthrough_success_chance(disciple, state) * 100.0
@@ -1826,48 +2012,159 @@ func _attributes_tab_text(disciple: DiscipleState) -> String:
         tab_status_text
     ]
 
+
+func _v2_attributes_tab_text(snapshot: Dictionary) -> String:
+    var progression: Dictionary = snapshot["progression"]
+    var life: Dictionary = snapshot["life"]
+    var foundations: Dictionary = snapshot["foundations"]["current"]
+    var innate: Dictionary = snapshot["innate"]
+    if not bool(progression.get("ready", false)):
+        return (
+            "Hồ sơ tiến độ chưa sẵn sàng. Không dùng cảnh giới cũ để thay thế.\n\n"
+            + "HP %.0f/%.0f · Thể lực viễn chinh %.0f/100\n"
+            + "Tư Chất %s · Căn Cốt %s · Cơ Duyên %s\n"
+            + "Thông Tuệ %s · Mị Lực %s · Tiềm Lực %s"
+        ) % [
+            float(life["hp"]), float(life["max_hp"]), float(life["expedition_stamina"]),
+            _score(float(foundations["aptitude"])), _score(float(foundations["constitution"])),
+            _score(float(foundations["fortune"])), _score(float(foundations["comprehension"])),
+            _score(float(foundations["charisma"])), _score(float(foundations["potential"]))
+        ]
+
+    var tuvi: Dictionary = progression["cultivation"]
+    var body: Dictionary = progression["body"]
+    var combat: Dictionary = snapshot["combat"]
+    var stats: Dictionary = combat.get("stats", {})
+    var gate_text := "Chưa tới cổng đại cảnh"
+    if bool(tuvi.get("at_major_gate", false)):
+        gate_text = "Đột phá %.1f%%" % (float(tuvi.get("effective_breakthrough_chance", 0.0)) * 100.0)
+    var body_gate := "Chưa tới cổng đại cảnh"
+    if bool(body.get("at_major_gate", false)):
+        body_gate = "Đủ EXP; cần hoàn tất yêu cầu Thối Thể"
+
+    return (
+        "Tu Vi: %s tầng %d · %.0f / %.0f · %s\n"
+        + "Luyện Thể: %s tầng %d · %.0f / %.0f · %s\n"
+        + "HP %.0f/%.0f · Công %.1f · Thủ %.1f · Thể lực viễn chinh %.0f/100\n\n"
+        + "Tư Chất %s · Căn Cốt %s · Cơ Duyên %s\n"
+        + "Thông Tuệ %s · Mị Lực %s · Tiềm Lực %s\n\n"
+        + "Linh Căn: %s\n"
+        + "Đặc Chất: %s\n"
+        + "Huyết Mạch: %s · Thể Chất: %s · Mệnh Cách: %s\n"
+        + "Hiệu ứng đặc thù bẩm sinh: Chưa khả dụng\n"
+        + "Hành động hiện tại: %s\n%s"
+    ) % [
+        str(tuvi["name"]), int(tuvi["floor"]), float(tuvi["xp"]), float(tuvi["required_xp"]), gate_text,
+        str(body["name"]), int(body["floor"]), float(body["xp"]), float(body["required_xp"]), body_gate,
+        float(life["hp"]), float(life["max_hp"]),
+        float(stats.get("attack", 0.0)), float(stats.get("defense", 0.0)),
+        float(life["expedition_stamina"]),
+        _score(float(foundations["aptitude"])), _score(float(foundations["constitution"])),
+        _score(float(foundations["fortune"])), _score(float(foundations["comprehension"])),
+        _score(float(foundations["charisma"])), _score(float(foundations["potential"])),
+        _v2_root_brief(innate), _v2_trait_brief(innate),
+        _v2_identity_brief(innate["bloodline"], "Không"),
+        _v2_identity_brief(innate["physique"], "Không"),
+        _v2_identity_brief(innate["destiny"], "Không"),
+        SectMapPresentation.action_label(StringName(life["current_action"])),
+        tab_status_text
+    ]
+
+
 func _technique_tab_text(disciple: DiscipleState) -> String:
+    var snapshot := _disciple_snapshot(disciple)
+    if not bool(snapshot.get("ok", false)):
+        return "Không thể đọc dữ liệu Công Pháp."
+    var learning: Dictionary = snapshot["learning"]
+    var learned: Dictionary = learning.get("learned_techniques", {})
+    var active_id := StringName(learning.get("active_technique_id", ""))
     var lines: Array[String] = []
-    var ids: Array = disciple.learned_techniques.keys()
+    var ids: Array = learned.keys()
     ids.sort()
     for raw_id in ids:
         var technique_id := StringName(raw_id)
-        var mastery: Dictionary = disciple.learned_techniques[raw_id]
+        var mastery: Dictionary = learned[raw_id]
         lines.append("• %s · Lv%d · XP %.1f%s" % [
             technique_system.technique_name(technique_id),
             int(mastery.get("level", 1)),
             float(mastery.get("xp", 0.0)),
-            " · ĐANG DÙNG" if disciple.active_technique_id == technique_id else ""
+            " · ĐANG DÙNG" if active_id == technique_id else ""
         ])
     if lines.is_empty():
         lines.append("• Chưa học công pháp")
-    return "Công pháp đã học: %d/%d\nCống hiến: %d · Linh thạch cá nhân: %d\n\n%s\n\nCông pháp đang dùng ảnh hưởng trực tiếp tới tu luyện và chiến đấu." % [
-        disciple.learned_techniques.size(), TechniqueSystem.MAX_LEARNED_TECHNIQUES,
-        disciple.contribution_points, disciple.spirit_stones, "\n".join(lines)
+    var note := ""
+    if bool(snapshot.get("authentic_v2", false)):
+        note = "\n\nCơ chế Công Pháp mới chưa khả dụng; dữ liệu đang lưu chỉ được hiển thị, không tự cộng hiệu ứng mới."
+    var life: Dictionary = snapshot["life"]
+    return "Công pháp đã học: %d/%d\nCống hiến: %d · Linh thạch cá nhân: %d\n\n%s%s" % [
+        learned.size(), TechniqueSystem.MAX_LEARNED_TECHNIQUES,
+        int(life["contribution_points"]), int(life["personal_spirit_stones"]),
+        "\n".join(lines), note
     ]
+
 
 func _equipment_tab_text(disciple: DiscipleState) -> String:
+    var snapshot := _disciple_snapshot(disciple)
+    if not bool(snapshot.get("ok", false)):
+        return "Không thể đọc dữ liệu Trang bị."
+    var equipment: Dictionary = snapshot["equipment"]
+    var by_slot: Dictionary = {}
+    for raw_row in equipment.get("items", []):
+        if raw_row is Dictionary:
+            by_slot[str(raw_row.get("slot", ""))] = raw_row
+
     var lines: Array[String] = []
     for slot in EquipmentSystem.VALID_SLOTS:
-        var item := equipment_system.equipped_item(state, disciple, slot)
+        var slot_key := str(slot)
         var slot_name := _equipment_slot_name(slot)
-        if item.is_empty():
+        if not by_slot.has(slot_key):
             lines.append("• %s: Chưa trang bị" % slot_name)
             continue
-        var locked := bool(disciple.locked_equipment_slots.get(str(slot), false))
+        var row: Dictionary = by_slot[slot_key]
+        var item: Dictionary = row.get("item", {})
         lines.append("• %s: %s · %s · %s" % [
             slot_name,
-            str(item.get("name", "?")),
+            str(item.get("name", row.get("item_id", "?"))),
             equipment_system.quality_name(StringName(item.get("quality", "pham"))),
-            "Đã khóa" if locked else "Tự động"
+            "Đã khóa" if bool(row.get("locked", false)) else "Tự động"
         ])
+    var life: Dictionary = snapshot["life"]
+    if bool(snapshot.get("authentic_v2", false)):
+        return (
+            "Trang bị hiện tại:\n%s\n\n"
+            + "Hệ trang bị hoàn chỉnh chưa khả dụng cho hồ sơ này; các vật phẩm tương thích cũ không được tự tính vào chỉ số chiến đấu mới.\n"
+            + "Ví cá nhân: %d"
+        ) % ["\n".join(lines), int(life["wallet"])]
+
     var equip_power := equipment_system.combat_power_bonus(state, disciple)
     var damage_reduction := (1.0 - equipment_system.incoming_damage_multiplier(state, disciple)) * 100.0
-    return "Trang bị hiện tại:\n%s\n\nĐóng góp chiến lực: +%.1f\nGiảm sát thương từ trang bị: %.1f%%\nVí cá nhân: %d\n\nVị trí không khóa được tự động thay trang bị phù hợp hơn; vị trí đã khóa giữ theo quyết định của Tông Chủ." % [
-        "\n".join(lines), equip_power, damage_reduction, disciple.wallet
+    return "Trang bị hiện tại:\n%s\n\nĐóng góp chiến lực: +%.1f\nGiảm sát thương từ trang bị: %.1f%%\nVí cá nhân: %d" % [
+        "\n".join(lines), equip_power, damage_reduction, int(life["wallet"])
     ]
 
+
 func _bloodline_tab_text(disciple: DiscipleState) -> String:
+    var snapshot := _disciple_snapshot(disciple)
+    if bool(snapshot.get("ok", false)) and bool(snapshot.get("authentic_v2", false)):
+        var bloodline: Dictionary = snapshot["innate"]["bloodline"]
+        match str(bloodline.get("status", "none")):
+            "none":
+                return "Huyết Mạch: Không có huyết mạch đặc biệt.\n\nHiệu ứng đặc thù: Không."
+            "unrevealed":
+                return "Huyết Mạch: Chưa xác định\n\nChưa đủ điều kiện để nhận biết huyết mạch của đệ tử này."
+            "revealed":
+                return (
+                    "Huyết Mạch: %s\n"
+                    + "Độ thuần hiện tại: %d%% · Lúc sinh: %d%%\n"
+                    + "Trạng thái: %s\n\n"
+                    + "Hiệu ứng đặc thù: Chưa khả dụng. Hồ sơ chỉ hiển thị identity đã được xác nhận."
+                ) % [
+                    str(bloodline.get("name", "?")),
+                    int(bloodline.get("current_purity", 0)),
+                    int(bloodline.get("birth_purity", 0)),
+                    "Đã thức tỉnh" if bool(bloodline.get("awakened", false)) else "Chưa thức tỉnh"
+                ]
+
     var profile := bloodlines.profile_for(state, disciple.id)
     if profile.is_empty():
         return "Chưa có hồ sơ Huyết Mạch."
@@ -1888,7 +2185,23 @@ func _bloodline_tab_text(disciple: DiscipleState) -> String:
         int(stats.get("extra_departure_supply", 0)), int(state.sect.technique_materials.get("yeu_dan", 0)), tab_status_text
     ]
 
+
 func _physique_tab_text(disciple: DiscipleState) -> String:
+    var snapshot := _disciple_snapshot(disciple)
+    if bool(snapshot.get("ok", false)) and bool(snapshot.get("authentic_v2", false)):
+        var physique: Dictionary = snapshot["innate"]["physique"]
+        match str(physique.get("status", "none")):
+            "none":
+                return "Thể Chất: Không có thể chất đặc biệt.\n\nHiệu ứng đặc thù: Không."
+            "unrevealed":
+                return "Thể Chất: Chưa xác định\n\nThể chất đặc biệt chưa được nhận biết."
+            "revealed":
+                return (
+                    "Thể Chất: %s\n\n"
+                    + "Đây là Core Physique hiện được ghi nhận.\n"
+                    + "Hiệu ứng đặc thù: Chưa khả dụng; không dùng cơ chế Tôi thể/Cải thể cũ để sửa hồ sơ này."
+                ) % str(physique.get("name", "?"))
+
     var profile := physiques.profile_for(state, disciple.id)
     if profile.is_empty():
         return "Chưa có hồ sơ Thể Chất."
@@ -1910,31 +2223,31 @@ func _physique_tab_text(disciple: DiscipleState) -> String:
         int(state.sect.technique_materials.get("yeu_dan", 0)), int(state.sect.technique_materials.get("linh_tuy", 0)), tab_status_text
     ]
 
+
 func _relationship_tab_text(disciple: DiscipleState) -> String:
+    var snapshot := _disciple_snapshot(disciple)
+    if not bool(snapshot.get("ok", false)):
+        return "Không thể đọc dữ liệu Quan hệ."
+    var relation_data: Dictionary = snapshot["relationships"]
     var lines: Array[String] = []
-    var raw_map = state.relationships.get(str(disciple.id), {})
-    if raw_map is Dictionary:
-        var target_ids: Array = raw_map.keys()
-        target_ids.sort()
-        for raw_target in target_ids:
-            var relation: RelationshipState = raw_map[raw_target]
-            var target_id := StringName(raw_target)
-            var target_name := str(target_id)
-            if state.disciples.has(target_id):
-                var target: DiscipleState = state.disciples[target_id]
-                target_name = target.display_name
-            lines.append("• %s · Thân %.0f · Tin %.0f · Kính %.0f · Tương tác %d" % [
-                target_name, relation.affinity, relation.trust, relation.respect, relation.interactions
-            ])
+    for raw_row in relation_data.get("rows", []):
+        if not (raw_row is Dictionary):
+            continue
+        lines.append("• %s · Thân %.0f · Tin %.0f · Kính %.0f · Tương tác %d" % [
+            str(raw_row.get("target_name", "?")),
+            float(raw_row.get("affinity", 0.0)),
+            float(raw_row.get("trust", 0.0)),
+            float(raw_row.get("respect", 0.0)),
+            int(raw_row.get("interactions", 0))
+        ])
     if lines.is_empty():
         lines.append("• Chưa có quan hệ đáng kể được lưu")
-    var companion := str(state.companion_assignments.get(str(disciple.id), ""))
-    if companion != "" and state.disciples.has(StringName(companion)):
-        var companion_disciple: DiscipleState = state.disciples[StringName(companion)]
-        companion = companion_disciple.display_name
-    else:
+    var companion := str(relation_data.get("companion_name", ""))
+    if companion.is_empty():
         companion = "Chưa phân"
-    return "Đồng hành ưu tiên: %s\n\n%s\n\nQuan hệ thay đổi theo những lần đồng hành, chiến đấu và sinh hoạt cùng nhau." % [companion, "\n".join(lines)]
+    return "Đồng hành ưu tiên: %s\n\n%s\n\nQuan hệ thay đổi theo những lần đồng hành, chiến đấu và sinh hoạt cùng nhau." % [
+        companion, "\n".join(lines)
+    ]
 
 func _equipment_slot_name(slot: StringName) -> String:
     match slot:
