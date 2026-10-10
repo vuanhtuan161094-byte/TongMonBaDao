@@ -18,6 +18,9 @@ static func reserve_slot(state: SimulationState, disciple_id: StringName) -> Dic
         return {"ok":false,"reason":"training_profile_not_ready"}
     if disciple.region_id != &"sect" or disciple.hp <= 0.0:
         return {"ok":false,"reason":"training_actor_not_available"}
+    # One active Spirit Field plot reserves its disciple until harvest resolves.
+    if BuildingSystem.new().disciple_has_active_spirit_plot(state,disciple.id):
+        return {"ok":false,"reason":"busy_spirit_plot"}
     var building := BuildingSystem.new().primary_building(
         state, BuildingSystem.TYPE_BODY_TRAINING
     )
@@ -107,6 +110,8 @@ static func _prepare(state: SimulationState, disciple: DiscipleState) -> Diction
         return {"ok":false,"reason":"training_profile_not_ready"}
     if disciple.region_id != &"sect" or disciple.hp <= 0.0:
         return {"ok":false,"reason":"training_actor_not_available"}
+    if BuildingSystem.new().disciple_has_active_spirit_plot(state,disciple.id):
+        return {"ok":false,"reason":"busy_spirit_plot"}
     var building_system := BuildingSystem.new()
     var building := building_system.primary_building(state,BuildingSystem.TYPE_BODY_TRAINING)
     if building == null or building.status != BuildingSystem.STATUS_ACTIVE:
