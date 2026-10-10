@@ -58,12 +58,36 @@ func _run() -> void:
     quit(0)
 
 func _first_legacy_disciple() -> DiscipleState:
+    # Prefer an already recruited generated legacy disciple because P2 identity
+    # systems require profile_seed > 0. P0 founders intentionally have seed 0.
     var ids: Array = state.disciples.keys()
     ids.sort()
     for raw_id in ids:
-        var candidate: DiscipleState = state.disciples[raw_id]
-        if not DiscipleRealmProgressV2.owns_v2_progression(candidate):
-            return candidate
+        var existing: DiscipleState = state.disciples[raw_id]
+        if existing.profile_seed > 0 and not DiscipleRealmProgressV2.owns_v2_progression(existing):
+            return existing
+
+    # P37Factory creates its initial candidates before LiveGameRuntimeV2 turns
+    # on future V2 birth. Accept one of those preserved legacy candidates so
+    # this compatibility test exercises the same P2 generated-person contract
+    # the old presentation demo used, without reintroducing demo roster logic.
+    var candidate_ids: Array = state.recruitment_candidates.keys()
+    candidate_ids.sort()
+    for raw_id in candidate_ids:
+        var candidate: CandidateState = state.recruitment_candidates[raw_id]
+        if candidate == null or candidate.profile_seed <= 0:
+            continue
+        if not candidate.v2_birth_profile.is_empty():
+            continue
+        state.sect.disciple_capacity = maxi(
+            state.sect.disciple_capacity, state.disciples.size() + 1
+        )
+        var accepted := RecruitmentSystem.new().accept_candidate(state, candidate.id)
+        if not bool(accepted.get("ok", false)):
+            continue
+        var recruited: DiscipleState = state.disciples.get(candidate.id)
+        if recruited != null and not DiscipleRealmProgressV2.owns_v2_progression(recruited):
+            return recruited
     return null
 
 func _verify_real_attribute_text() -> bool:
