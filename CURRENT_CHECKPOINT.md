@@ -462,6 +462,20 @@ The actual P3.7 mining action now consumes the previously locked `DiscipleBodyXp
 
 **Do not open DV2-04/full Equipment/Skill/UI production phases while DV2-03 is active.**
 
+### 5.16 DV2-03E2 — PLAYER-FACING V2 TWO-TRACK TRAINING UI (10/10/2026)
+
+**ACTIVE phase still DV2-03, not CLOSED.** In the main P3.2 Godot disciple profile, authentic V2 can now select **Chuyên tu** or **Rèn thân** from the attributes tab, and the map-side summary uses V2 request/preview for Chuyên Tu and offers the V2 Rèn Thân shortcut instead of the old P2 forge shortcut. P2 legacy behavior remains separate.
+
+The new route is **UI → existing V2 command boundary → SimulationScheduler**; it never mints immediate XP, pays an economic cost on button press or uses P2 cultivation authority. Rèn Thân reservation checks existing runtime's real building/2 slots, no action interruption, same Sect Spirit Stones and major-gate availability before changing work assignment. On successful request only, update persisted policy and clear stale direct command; on rejection show reason, including no Spirit Stone, no building/slot, active Spirit Field plot or busy work. The panel keeps real action feedback through its own redraw. See `docs/DV2_03_TWO_TRACK_PROGRESS_EXECUTION.md` §DV2-03E2.
+
+**Evidence at UI source SHA `ca2f3077d2c2e6d89cb8e11924e7c89fe95e09f9`:**
+- [Focused #38068119502](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38068119502) **PASS** on official Godot 4.7.2 Linux, including updated `dv2_03_p3_v2_disciple_profile_test.gd`. An initial test on earlier UI SHA `1a68f2e9` exposed a real cleared-feedback bug, which has been corrected and verified green; do not cite the earlier failure as latest.
+- [P3.6A #38068119466](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38068119466) **PASS** on same UI SHA.
+- [P3.7 FAST/FULL #38068119472](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38068119472), same UI source, **PENDING at checkpoint update**. Subsequent documentation/workflow commits change HEAD but not gameplay source.
+- **Windows visual/live gate NOT RUN; user currently does not need to open PC.**
+
+**Remaining DV2-03 slices:** Rèn Thân Đường map-clickable UI + 2-slot/treasury panel, exact user-approved Thối Thể materials/requirements, major-gate real content consumer, then full release/Windows validation. Dẫn Tiên recruitment/visible disciple and production UX is the next playable-loop priority **after** DV2-03 is closed; do not assert it exists on UI yet. The locked canonical 29 Tu Vi chances / 29 deterministic Body gates already exist; avoid inventing ingredient recipes.
+
 ### 5.15 DV2-03P2 — RÈN THÂN ĐƯỜNG REAL PAID CONSUMER (FOCUSED PASS, 10/10/2026)
 
 **User choice: A LOCKED.** Dedicated `Rèn Thân Đường`, two Lv1 training slots, one **Sect Spirit Stone per active simulation minute**, 1,500 **base Body EXP/minute** before Căn Cốt. Canonical Tu Vi natural gain continues independently; no in-sect Expedition Stamina spent. Building uses existing P3.7 BuildingState/Workforce assignment and the Sect Spirit Stone wallet; there is no second warehouse or fabricated economy.
