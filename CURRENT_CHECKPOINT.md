@@ -458,9 +458,26 @@ The actual P3.7 mining action now consumes the previously locked `DiscipleBodyXp
 - **Official Godot 4.7.2 Linux focused PASS:** [DV2-03 #38064309354](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38064309354) at `efd4f800`. It includes project parse, all existing DV2-03 focused tests and new `dv2_03_mine_body_xp_integration_test.gd`.
 - **Not yet claimed:** FULL cumulative on this new gameplay SHA; Windows runtime/visual acceptance.
 
-**Open user choices blocking completion of DV2-03:** dedicated Rèn Thân training building vs reuse an existing facility; training slots and *positive per-minute economic cost* (not yet user-approved). Implement one transaction-owning consumer for the approved option only: verify building/slot/active action, atomically commit minute cost first, then grant canonical 1,500 base Body EXP/min. No speculative second warehouse, unpaid EXP, or unsupported body gate material catalogue. Exact 29 Thối Thể resource packages remain deferred/blocked until authored and approved.
+**Superseded by §5.15:** the user approved dedicated Rèn Thân Đường, two Lv1 slots, 1 Sect Spirit Stone/min and 1,500 base Body EXP/min on 10/10/2026. These decisions are now implemented and focused-tested; only the remaining unlocked content/visual gates are open.
 
 **Do not open DV2-04/full Equipment/Skill/UI production phases while DV2-03 is active.**
+
+### 5.15 DV2-03P2 — RÈN THÂN ĐƯỜNG REAL PAID CONSUMER (FOCUSED PASS, 10/10/2026)
+
+**User choice: A LOCKED.** Dedicated `Rèn Thân Đường`, two Lv1 training slots, one **Sect Spirit Stone per active simulation minute**, 1,500 **base Body EXP/minute** before Căn Cốt. Canonical Tu Vi natural gain continues independently; no in-sect Expedition Stamina spent. Building uses existing P3.7 BuildingState/Workforce assignment and the Sect Spirit Stone wallet; there is no second warehouse or fabricated economy.
+
+Implemented on live `main`:
+- `BuildingSystem.TYPE_BODY_TRAINING` and an idempotent `ensure_body_training_facility`, invoked by `LiveGameRuntimeV2` for new and existing live V2 saves. Old P3.7 backend factories are not silently given a new V2 feature.
+- A dedicated `DiscipleBodyTrainingFacilityV2` with explicit `reserve_slot`, real Lv1 two-slot capacity/authorization, read-only EXP/cost preview, fail-closed when busy/upgrading/missing/unavailable/at major gate, one-minute treasury debit **before** `DiscipleBodyXpSourceV2.commit_minute`, exact rollback on commit failure, persisted paid-minute/stone counters, existing per-minute Body dedup and HP stat recalculation.
+- `DiscipleTrainingActionV2` now supports legitimate body `preview_training`/`request_training`/`resolve`. `SimulationScheduler` routes `TRAIN_BODY` through that one consumer. `DiscipleTrainingPolicyV2.body_focus` can select it with a reserved slot/affordable cost; otherwise chooses legitimate Tu Vi fallback.
+- Only an approved basic intensity is active. Building max Lv100 preserves generic identity, but **upgrade recipe / post-Lv1 slot scaling remain BLOCKED** until authored; no arbitrary rates or grade levels added. 29 exact Thối Thể material packages remain unapproved/blocked. Expedition pressure source and other heavy jobs also remain unconnected unless context verified.
+- New integration test `godot/tests/simulation/dv2_03_ren_than_duong_integration_test.gd` checks 2 slots/third rejected, live economic debit and expected Căn Cốt, dedup, player commands, policy selection, scheduler action, save/load and insufficient-stone failure. Mining focused test remains active.
+
+**Latest focused verified:** [DV2-03 official Godot 4.7.2 Linux #38065606703](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38065606703), tested gameplay source commit `73cbd75d9ee67f5df1ab5d526819c8d23dfb575f`, **PASS all DV2-03 focused tests**, including Rèn Thân and live presentation integration.
+
+**Full cumulative required for phase close:** [P3.7 Backend #38065668233](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38065668233), workflow SHA `0be59f861d3a2c5479ec4b4e759c96d831b30f78` (same gameplay code as latest focused), **PENDING at the time of this checkpoint update**. Windows Godot 4.7.2 live/visual gate also **UNTESTED**. Do not mark full PASS or Windows PASS before evidence.
+
+**Next priority:** verify cumulative gate, update status evidence; then implement next user-approved playable disciple/recruitment UI phase while maintaining one phase at a time. The P3 map does not yet expose a dedicated Rèn Thân Đường clickable building or player-facing assignment panel, and full V2 UI closure has not been claimed.
 
 ### 5.4 Chuẩn bị lát triển khai tiếp theo — audit 09/10/2026
 
