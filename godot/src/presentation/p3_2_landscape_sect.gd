@@ -1765,12 +1765,13 @@ func _open_selected_disciple_detail() -> void:
     deep_restore_summary = true
     _open_disciple_deep_screen(selected_id, "Thuộc tính")
 
-func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thuộc tính") -> void:
+func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thuộc tính", preserve_feedback: bool = false) -> void:
     if not state.disciples.has(disciple_id):
         return
     selected_id = disciple_id
     opened_disciple_profile = true
-    tab_status_text = "" if tab_name != "Huyết Mạch" and tab_name != "Thể Chất" else tab_status_text
+    if not preserve_feedback and tab_name != "Huyết Mạch" and tab_name != "Thể Chất":
+        tab_status_text = ""
     _refresh_tasks()
     _hide_disciple_summary()
     _clear_popup()
@@ -1973,7 +1974,9 @@ func _disciple_tab_action(action: String) -> void:
     if action == "v2_cultivate" or action == "v2_body_train":
         var track := "body" if action == "v2_body_train" else "cultivation"
         tab_status_text = _v2_training_ui_feedback(_queue_v2_training(track),track)
-        _open_disciple_tab("Thuộc tính")
+        # Normal tab navigation clears old feedback; this explicit action
+        # refresh must retain the real backend receipt/rejection for the player.
+        _open_disciple_deep_screen(selected_id,"Thuộc tính",true)
         return
     var requested_tab := "Huyết Mạch" if action.begins_with("bloodline_") else "Thể Chất"
     if bool(snapshot.get("ok", false)) and bool(snapshot.get("authentic_v2", false)):
