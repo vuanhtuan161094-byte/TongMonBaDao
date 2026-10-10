@@ -268,6 +268,7 @@ func _build_buildings() -> void:
     var buildings := [
         {"id":"main_hall", "name":"Đại Điện", "pos":Vector2(548, 112), "size":Vector2(184, 112), "body":Color(0.48, 0.34, 0.22, 1.0), "roof":Color(0.22, 0.32, 0.29, 1.0), "kind":"hall"},
         {"id":"residence", "name":"Đệ Tử Xá", "pos":Vector2(848, 142), "size":Vector2(158, 96), "body":Color(0.53, 0.43, 0.29, 1.0), "roof":Color(0.28, 0.38, 0.34, 1.0), "kind":"residence"},
+        {"id":"ren_than_duong", "name":"Rèn Thân Đường", "pos":Vector2(290, 157), "size":Vector2(174, 112), "body":Color(0.52, 0.42, 0.32, 1.0), "roof":Color(0.35, 0.30, 0.25, 1.0), "kind":"body_training"},
         {"id":"cultivation", "name":"Tu Luyện Đài", "pos":Vector2(715, 288), "size":Vector2(160, 104), "body":Color(0.35, 0.50, 0.45, 1.0), "roof":Color(0.68, 0.61, 0.40, 1.0), "kind":"platform"},
         {"id":"warehouse", "name":"Kho", "pos":Vector2(952, 332), "size":Vector2(132, 92), "body":Color(0.52, 0.39, 0.24, 1.0), "roof":Color(0.26, 0.34, 0.31, 1.0), "kind":"warehouse"},
         {"id":"forge", "name":"Luyện Khí Đường", "pos":Vector2(466, 432), "size":Vector2(158, 112), "body":Color(0.56, 0.31, 0.20, 1.0), "roof":Color(0.30, 0.29, 0.27, 1.0), "kind":"forge"},
@@ -318,6 +319,11 @@ func _build_playable_building_token(data: Dictionary) -> void:
             core.mouse_filter = Control.MOUSE_FILTER_IGNORE
             core.add_theme_stylebox_override("panel", _style(Color(0.82, 0.78, 0.57, 0.92), JADE_DARK, 2, 28))
             holder.add_child(core)
+        "body_training":
+            _add_building_block(holder, Vector2(14, h * 0.37), Vector2(w - 28, h * 0.45), body, 10)
+            _add_building_block(holder, Vector2(6, h * 0.18), Vector2(w - 12, h * 0.28), roof, 14)
+            _add_building_block(holder, Vector2(32, 10), Vector2(18, 23), GOLD.darkened(0.23), 5)
+            _add_building_block(holder, Vector2(w - 50, 10), Vector2(18, 23), GOLD.darkened(0.23), 5)
         "mine":
             var rock := Panel.new()
             rock.position = Vector2(12, 10)
@@ -509,6 +515,8 @@ func _initial_destination(disciple: DiscipleState) -> StringName:
         return SectMapPresentation.DEST_MINE
     if disciple.work_group_id == &"forge_hall":
         return SectMapPresentation.DEST_FORGE
+    if disciple.work_group_id == &"body_training_crew":
+        return SectMapPresentation.DEST_BODY_TRAINING
     return SectMapPresentation.DEST_COURTYARD
 
 func _advance_simulation() -> void:
@@ -632,6 +640,7 @@ func _building_name(destination: StringName) -> String:
         SectMapPresentation.DEST_MAIN_HALL: return "Tông Môn Đại Điện"
         SectMapPresentation.DEST_RESIDENCE: return "Đệ Tử Xá"
         SectMapPresentation.DEST_CULTIVATION: return "Tu Luyện Đài"
+        SectMapPresentation.DEST_BODY_TRAINING: return "Rèn Thân Đường"
         SectMapPresentation.DEST_WAREHOUSE: return "Kho Tông Môn"
         SectMapPresentation.DEST_FORGE: return "Luyện Khí Đường"
         SectMapPresentation.DEST_MEDICINE: return "Dược Phòng"
@@ -655,6 +664,12 @@ func _building_detail(destination: StringName) -> String:
             return "Đệ tử đang luyện khí: %d\nĐiểm hỗ trợ rèn: %d\nThanh Thiết trong kho: %d\n\nNgười phụ trách luyện khí sẽ làm việc tại đây." % [_count_action(&"WORK_FORGING"), state.sect.forge_support_points, int(state.sect.forge_materials.get("thanh_thiet", 0))]
         SectMapPresentation.DEST_MINE:
             return "Đệ tử đang khai khoáng: %d\nThanh Thiết trong kho: %d\n\nMỗi chu kỳ khai khoáng hoàn thành sẽ đưa Thanh Thiết về kho." % [_count_action(&"WORK_MINING"), int(state.sect.forge_materials.get("thanh_thiet", 0))]
+        SectMapPresentation.DEST_BODY_TRAINING:
+            var hall := BuildingSystem.new().primary_building(state, BuildingSystem.TYPE_BODY_TRAINING)
+            if hall == null:
+                return "Rèn Thân Đường chưa sẵn sàng."
+            var owners := BuildingSystem.new().active_worker_ids(state, hall)
+            return "Cấp: %d\nChỗ luyện: %d/%d\nLinh Thạch: %d\nMỗi phút: 1 Linh Thạch → 1.500 EXP Luyện Thể nền.\nKhông cấp EXP nếu chưa có lượt huấn luyện thật." % [hall.level, owners.size(), BuildingSystem.new().worker_slots(hall), state.sect.spirit_stones]
         SectMapPresentation.DEST_CULTIVATION:
             return "Đang tu luyện/phá cảnh: %d\n\nĐệ tử tới đây để tu luyện và chuẩn bị phá cảnh khi đủ điều kiện." % [_count_actions([&"CULTIVATE", &"BREAKTHROUGH"])]
         SectMapPresentation.DEST_RESIDENCE:
