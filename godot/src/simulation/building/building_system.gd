@@ -160,7 +160,14 @@ func initialize(state: SimulationState) -> void:
 # Add the selected V2 training facility only in the V2 live runtime, not in
 # older P3.7 factories/test fixtures. Repeat-safe on old loaded live saves.
 func ensure_body_training_facility(state: SimulationState) -> BuildingState:
-    if not state.p3_7_buildings_enabled or not state.sect.workforce_enabled:
+    if not state.p3_7_buildings_enabled:
+        return null
+    # A previously saved building must survive a workforce-disabled
+    # compatibility state without creating any new resources or assignments.
+    var facility := primary_building(state, TYPE_BODY_TRAINING)
+    if facility != null:
+        return facility
+    if not state.sect.workforce_enabled:
         return null
     if not state.sect.work_groups.has("body_training_crew"):
         state.sect.work_groups["body_training_crew"] = {
@@ -168,9 +175,6 @@ func ensure_body_training_facility(state: SimulationState) -> BuildingState:
             "priorities": {}
         }
         state.sect.workforce_event_count += 1
-    var facility := primary_building(state, TYPE_BODY_TRAINING)
-    if facility != null:
-        return facility
     facility = create_building(TYPE_BODY_TRAINING, 1)
     state.buildings[str(facility.id)] = facility
     state.building_event_count += 1
