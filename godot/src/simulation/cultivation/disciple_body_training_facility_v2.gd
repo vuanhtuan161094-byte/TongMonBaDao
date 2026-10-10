@@ -104,7 +104,10 @@ static func release_slot(state: SimulationState, disciple_id: StringName) -> Dic
     # User explicitly stopped this assignment. Manual mode prevents the AI
     # from immediately requeueing paid training without a new player action.
     if DiscipleRealmProgressV2.progression_ready(disciple):
-        DiscipleTrainingPolicyV2.set_policy(state,disciple_id,"manual")
+        # Persist the already-authorized manual enum directly here. Importing
+        # DiscipleTrainingPolicyV2 would create a GDScript compile-time cycle
+        # (TrainingAction -> Facility -> TrainingPolicy -> TrainingAction).
+        disciple.v2_realm_progress["training_policy"] = "manual"
     state.sect.workforce_event_count += 1
     return {"ok":true,"released_disciple_id":str(disciple_id),
         "building_id":str(facility.id)}
