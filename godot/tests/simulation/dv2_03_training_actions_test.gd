@@ -132,27 +132,28 @@ func _run() -> void:
         "CULTIVATE still exposes a second direct EXP grant."):
         return
 
-    # Luyện Thể mechanic is deliberately NOT designed yet.
+    # No real Rèn Thân building exists in the legacy P3.7 factory fixture,
+    # so the player command must fail closed without inventing a slot.
     student.current_action = &"EVALUATE"
     var body_before := float(student.v2_realm_progress["body"]["xp"])
     var body_request := DiscipleTrainingActionV2.request_training(
         state,student.id,"body"
     )
     if not _assert(not bool(body_request.get("ok",true)) and
-        str(body_request.get("reason",""))=="body_training_consumer_not_ready" and
+        str(body_request.get("reason",""))=="body_training_facility_unavailable" and
         student.current_action==&"EVALUATE" and
         _close(float(student.v2_realm_progress["body"]["xp"]),body_before),
-        "Player could queue or gain an unapproved Body training action."):
+        "Body request succeeded without an owned Rèn Thân building."):
         return
 
-    # A stale/dev TRAIN_BODY token must fail closed. Passive Tu Vi still occurs
+    # A stale/dev TRAIN_BODY token without a building must fail closed. Passive Tu Vi still occurs
     # because Tu Vi absorption is independent of ordinary current activity.
     student.current_action = &"TRAIN_BODY"
     var body_before_stale := float(student.v2_realm_progress["body"]["xp"])
     var tuvi_before_stale := float(student.v2_realm_progress["cultivation"]["xp"])
     scheduler.step()
     var blocked: Dictionary = student.last_decision.get("v2_body_training_result",{})
-    if not _assert(str(blocked.get("reason",""))=="body_training_consumer_not_ready" and
+    if not _assert(str(blocked.get("reason",""))=="body_training_facility_unavailable" and
         _close(float(student.v2_realm_progress["body"]["xp"]),body_before_stale) and
         float(student.v2_realm_progress["cultivation"]["xp"])>tuvi_before_stale,
         "Stale TRAIN_BODY granted Body EXP or incorrectly stopped passive Tu Vi."):
@@ -181,5 +182,5 @@ func _run() -> void:
         "Tu Vi minute authority or unresolved Body state failed save/load."):
         return
 
-    print("DV2-03 TU VI/MINUTE + LUYEN THE TRAINING BLOCK: PASS")
+    print("DV2-03 TU VI/MINUTE + BODY FACILITY ABSENCE FAIL-CLOSED: PASS")
     quit(0)
