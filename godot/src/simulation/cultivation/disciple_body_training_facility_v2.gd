@@ -60,33 +60,6 @@ static func reserve_slot(state: SimulationState, disciple_id: StringName) -> Dic
     return {"ok":true,"building_id":str(building.id),"reserved_slots":buildings.assigned_worker_ids(state,building).size(),
         "slots":buildings.worker_slots(building)}
 
-# Explicitly vacate a reserved training place. Removing only the worksite
-# is insufficient: BuildingSystem's legacy primary-building fallback would
-# otherwise count the same worker-group member as still occupying the slot.
-# No EXP, stamina, treasury or work products are changed by this command.
-static func release_slot(state: SimulationState, disciple_id: StringName) -> Dictionary:
-    if state == null or not state.disciples.has(disciple_id):
-        return {"ok":false,"reason":"body_training_disciple_missing"}
-    var disciple: DiscipleState = state.disciples[disciple_id]
-    var building := BuildingSystem.new().primary_building(state,BuildingSystem.TYPE_BODY_TRAINING)
-    if building == null:
-        return {"ok":false,"reason":"body_training_facility_unavailable"}
-    if disciple.work_group_id != building.worker_group_id or (
-        disciple.worksite_building_id != building.id and disciple.worksite_building_id != &""
-    ):
-        return {"ok":false,"reason":"body_training_slot_not_reserved"}
-    disciple.work_group_id = &""
-    disciple.worksite_building_id = &""
-    if disciple.current_action == &"TRAIN_BODY":
-        disciple.current_action = &"EVALUATE"
-    # A released disciple must not auto-queue paid body training anymore.
-    if DiscipleRealmProgressV2.owns_v2_progression(disciple) and (
-        str(disciple.v2_realm_progress.get("training_policy","")) == "body_focus"
-    ):
-        disciple.v2_realm_progress["training_policy"] = "cultivation_focus"
-    state.sect.workforce_event_count += 1
-    return {"ok":true,"building_id":str(building.id),"disciple_id":str(disciple_id)}
-
 # Manual release makes a paid facility slot available for another disciple.
 # Cannot release another building/group or an outside/missing character.
 # This never refunds a completed minute and never deducts Sect Spirit Stones.
