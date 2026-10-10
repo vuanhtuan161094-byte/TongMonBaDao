@@ -131,6 +131,13 @@ func _test_slot_switch_and_commands() -> bool:
         buildings.active_worker_ids(state,hall).size() == 1,
         "Explicit production order did not release the Body slot."):
         return false
+    # Clearing an assigned worksite cannot fall back to group-only primary
+    # membership; it must release BOTH fields of the canonical Rèn Thân slot.
+    if not _check(workforce.assign_worksite(state,c.id,&"") and
+        c.work_group_id == &"" and c.worksite_building_id == &"" and
+        buildings.active_worker_ids(state,hall).is_empty(),
+        "Clearing worksite created a ghost Body slot through primary fallback."):
+        return false
     return true
 
 func _test_scheduler_training_and_shortage() -> bool:
