@@ -15,6 +15,9 @@ on:
       - 'godot/src/simulation/core/simulation_scheduler.gd'
       - 'godot/src/simulation/core/simulation_runtime_clock_v2.gd'
       - 'godot/src/simulation/core/simulation_runtime_owner_v2.gd'
+      - 'godot/src/simulation/core/live_game_runtime_v2.gd'
+      - 'godot/src/presentation/p3_1_landscape_sect.gd'
+      - 'godot/src/presentation/p3_2_landscape_sect.gd'
       - 'godot/src/simulation/ai/decision_system.gd'
       - 'godot/src/simulation/workforce/workforce_system.gd'
       - 'godot/src/simulation/needs/needs_system.gd'
@@ -31,6 +34,8 @@ on:
       - 'godot/tests/simulation/dv2_03_progression_balance_test.gd'
       - 'godot/tests/simulation/dv2_03_breakthrough_balance_test.gd'
       - 'godot/tests/simulation/dv2_03_runtime_clock_test.gd'
+      - 'godot/tests/simulation/dv2_03_live_runtime_integration_test.gd'
+      - 'godot/tests/presentation/dv2_03_p3_live_runtime_binding_test.gd'
       - '.github/workflows/dv2-03-realm-body-progress.yml'
 
 permissions:
@@ -72,3 +77,7 @@ jobs:
         run: godot --headless --path godot -s res://tests/simulation/dv2_03_breakthrough_balance_test.gd
       - name: DV2-03 online offline runtime clock equivalence
         run: godot --headless --path godot -s res://tests/simulation/dv2_03_runtime_clock_test.gd
+      - name: DV2-03 live P3 save load offline runtime
+        run: godot --headless --path godot -s res://tests/simulation/dv2_03_live_runtime_integration_test.gd
+      - name: DV2-03 P3 main scene live runtime binding
+        run: godot --headless --path godot -s res://tests/presentation/dv2_03_p3_live_runtime_binding_test.gd
