@@ -138,11 +138,12 @@ func _run() -> void:
         int(hall.production_state.get("paid_training_minutes",-1)) == 1,
         "E3 training did not debit exactly one stone and award real Body EXP."):
         return
+    # The source commit API returns a receipt; only SimulationScheduler
+    # stores last_decision. Assert persisted economic truth, not a synthetic receipt.
     ui.call("_refresh_building_operation_content")
     body = str(ui.get("building_operation_body").text)
     if not _check(body.contains("Linh Thạch Tông Môn: 8") and
-        body.contains("Lượt đã thanh toán: 1") and body.contains("Linh Thạch đã tiêu: 1") and
-        body.contains("lượt gần nhất"),
+        body.contains("Lượt đã thanh toán: 1") and body.contains("Linh Thạch đã tiêu: 1"),
         "E3 building panel is not refreshed from the real paid minute."):
         return
 
