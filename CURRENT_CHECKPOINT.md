@@ -389,9 +389,29 @@ Implemented:
 - old saves without timestamp initialize at first upgraded load with no speculative past credit;
 - `dv2_03_runtime_clock_test.gd` compares offline 5-minute jump vs five online one-minute advances and checks identical V2 progression/RNG, chunked catch-up and owner save/load.
 
-**Not connected yet:** P3.1/P3.2 still creates demo state and runs its own 0.55s presentation timer. That timer remains non-production evidence and has not been silently relabeled.
+**Superseded 10/10/2026 by §5.12:** the P3 live scene is now connected to the persistent runtime owner and the 0.55s simulation loop has been removed.
 
-**Latest runtime evidence:** MISSING, not FAIL.
+
+### 5.12 DV2-03D3 — STEP 1 LIVE RUNTIME INTEGRATION (FOCUSED PASS)
+
+**Implemented 10/10/2026:**
+- `LiveGameRuntimeV2` is now the live-game bootstrap over `SimulationRuntimeOwnerV2`;
+- new game uses `P37Factory`, enables authentic future V2 recruitment and canonical V2 progression rules, then persists immediately;
+- valid save loads before catch-up; corrupt existing save fails closed without overwrite;
+- P3.1/P3.2 now use the runtime-owned state and no longer create a fresh `P212Factory` demo state;
+- removed presentation-only two-disciple demo recruitment/capacity mutation;
+- removed the old **0.55s = scheduler.step()** main-scene loop;
+- main scene polls wall clock every 1s, autosaves every 15s, saves on pause/exit and catches up on resume; these polling/save cadences do not change the canonical **60 real seconds = 1 simulation minute** rule;
+- test save path is isolated by ProjectSettings override;
+- stale breakthrough test call was corrected to the already-canonical single `floor_costs` authority; no gameplay formula was changed.
+
+**Official Godot 4.7.2 Linux evidence:**
+- DV2-03 focused [#38037470018](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38037470018), code SHA `35dd076db146370e6fbadb4cd2d9ee0a9994f642`: **PASS**. Project parse plus all focused progression, action, P2/V2 isolation, policy, Body source, canonical balance/gates, online/offline clock, live save/load and P3 binding steps succeeded.
+- P3.6A Preview [#38037339761](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38037339761), SHA `20ff9686464b09493adc2e4af740a10080d97333`: **PASS** with the live wall-clock contract.
+- P3.7 cumulative run triggered from the same runtime-integration series is tracked separately; do not infer its conclusion until recorded.
+- Windows Godot 4.7.2 live/visual gate remains **UNTESTED**.
+
+**Step 1 result:** persistent P3 state + real save/load + wall-clock/offline catch-up is now connected. DV2-03 remains ACTIVE because Rèn Thân/body consumers and V2 UI/profile work are later slices.
 
 ### 5.4 Chuẩn bị lát triển khai tiếp theo — audit 09/10/2026
 
