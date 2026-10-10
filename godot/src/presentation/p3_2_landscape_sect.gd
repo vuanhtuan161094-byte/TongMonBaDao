@@ -667,6 +667,11 @@ func _refresh_building_operation_content() -> void:
     if building_management_feedback != "":
         feedback = "\n\n%s" % building_management_feedback
     building_operation_body.text = _building_operation_text(selected_building) + feedback
+    # E3: expose two real assignment rows within the scroll viewport instead
+    # of leaving them permanently below the generic 420px explanation block.
+    building_operation_body.custom_minimum_size.y = (
+        248 if selected_building == SectMapPresentation.DEST_BODY_TRAINING else 420
+    )
     _rebuild_building_management_controls()
 
 func _rebuild_building_management_controls() -> void:
