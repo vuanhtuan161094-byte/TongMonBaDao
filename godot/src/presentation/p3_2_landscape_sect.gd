@@ -1373,6 +1373,18 @@ func _build_disciple_summary_panel() -> void:
     _add_summary_order_button("Về tông", Vector2(198, 398), Vector2(94, 38), WorkforceSystem.COMMAND_RETURN_SECT)
     _add_summary_order_button("Khai khoáng", Vector2(16, 442), Vector2(132, 38), WorkforceSystem.COMMAND_WORK, str(WorkforceSystem.PROF_MINING))
     _add_summary_order_button("Luyện khí", Vector2(160, 442), Vector2(132, 38), WorkforceSystem.COMMAND_WORK, str(WorkforceSystem.PROF_FORGING))
+    # V2 only: a real paid Body-training command replaces the legacy forge
+    # shortcut at the same location. It does not act as a free EXP button.
+    var body_button := Button.new()
+    body_button.name = "SummaryV2BodyTraining"
+    body_button.text = "Rèn thân"
+    body_button.position = Vector2(160, 442)
+    body_button.size = Vector2(132, 38)
+    body_button.add_theme_font_size_override("font_size", 12)
+    body_button.add_theme_stylebox_override("normal", _style(Color(0.88, 0.82, 0.67, 1.0), Color(0.45, 0.37, 0.25, 1.0), 1, 7))
+    body_button.pressed.connect(_issue_v2_summary_body)
+    body_button.visible = false
+    disciple_summary_panel.add_child(body_button)
 
     var detail := Button.new()
     detail.name = "OpenDiscipleDetail"
@@ -1388,6 +1400,8 @@ func _build_disciple_summary_panel() -> void:
 func _add_summary_order_button(text: String, pos: Vector2, button_size: Vector2, kind: StringName, target: String = "") -> void:
     var button := Button.new()
     button.text = text
+    if kind == WorkforceSystem.COMMAND_WORK and target == str(WorkforceSystem.PROF_FORGING):
+        button.name = "SummaryLegacyForge"
     button.position = pos
     button.size = button_size
     button.add_theme_font_size_override("font_size", 12)
@@ -1448,6 +1462,13 @@ func _refresh_disciple_summary_content() -> void:
         disciple_summary_body.text = "Không thể đọc hồ sơ đệ tử hiện tại."
         return
 
+    var authentic_v2 := bool(snapshot.get("authentic_v2", false))
+    var legacy_forge: Button = disciple_summary_panel.get_node_or_null("SummaryLegacyForge")
+    var v2_body: Button = disciple_summary_panel.get_node_or_null("SummaryV2BodyTraining")
+    if legacy_forge != null:
+        legacy_forge.visible = not authentic_v2
+    if v2_body != null:
+        v2_body.visible = authentic_v2
     var identity: Dictionary = snapshot["identity"]
     var quality := str(identity.get("quality_name", "—"))
     if quality.is_empty():
@@ -1679,8 +1700,63 @@ func _direct_command_label(disciple: DiscipleState) -> String:
 func _issue_summary_order(kind: StringName, target: String, label: String) -> void:
     if selected_id == &"" or not state.disciples.has(selected_id):
         return
+    var disciple: DiscipleState = state.disciples[selected_id]
+    if kind == WorkforceSystem.COMMAND_CULTIVATE and DiscipleRealmProgressV2.owns_v2_progression(disciple):
+        summary_feedback = _v2_training_ui_feedback(_queue_v2_training("cultivation"),"cultivation")
+        _refresh_disciple_summary_content()
+        return
     var ok := workforce.issue_command(state, selected_id, kind, target, 40)
     summary_feedback = "Đã ra lệnh: %s" % label if ok else "Không thể ra lệnh lúc này."
+    _refresh_disciple_summary_content()
+
+# Player actions use the same V2 command boundary as scheduler/AI. This
+# queues work but never commits XP or economic cost on button press.
+func _queue_v2_training(track: String) -> Dictionary:
+    if selected_id == &"" or not state.disciples.has(selected_id):
+        return {"ok":false,"reason":"unknown_training_disciple"}
+    var disciple: DiscipleState = state.disciples[selected_id]
+    if not DiscipleRealmProgressV2.owns_v2_progression(disciple):
+        return {"ok":false,"reason":"v2_disciple_not_initialized"}
+    if track == "body":
+        var slot := DiscipleBodyTrainingFacilityV2.reserve_slot(state,selected_id)
+        if not bool(slot.get("ok",false)):
+            return slot
+    var result := DiscipleTrainingActionV2.request_training(state,selected_id,track)
+    if bool(result.get("ok",false)):
+        workforce.clear_command(state,disciple)
+        DiscipleTrainingPolicyV2.set_policy(
+            state,selected_id,"body_focus" if track == "body" else "cultivation_focus"
+        )
+    return result
+
+func _v2_training_ui_feedback(result: Dictionary, track: String) -> String:
+    if bool(result.get("ok",false)):
+        if track == "body":
+            return "Đã xếp Rèn Thân Đường. Mỗi phút hợp lệ tiêu 1 Linh Thạch; chưa trừ phí/cộng EXP."
+        return "Đã xếp Chuyên Tu. EXP chỉ cộng khi mô phỏng chạy đủ phút."
+    var reason := str(result.get("reason","unknown_training_error"))
+    match reason:
+        "body_training_slots_full":
+            return "Rèn Thân Đường đã kín 2 chỗ."
+        "insufficient_training_spirit_stones":
+            return "Không đủ Linh Thạch Tông Môn để Rèn Thân."
+        "body_training_facility_unavailable":
+            return "Rèn Thân Đường chưa sẵn sàng."
+        "body_training_slot_not_reserved":
+            return "Chưa được phân vào vị trí Rèn Thân."
+        "training_cannot_interrupt_active_work", "busy_spirit_plot":
+            return "Đệ tử đang bận; không thể ngắt công việc hoặc ô Linh Điền."
+        "major_gate_waiting":
+            return "Đã tới cổng đại cảnh; cần đột phá trước."
+        "training_disciple_not_present", "training_actor_not_available":
+            return "Đệ tử không đủ điều kiện hoặc không ở Tông Môn."
+        "v2_disciple_not_initialized", "training_profile_not_ready":
+            return "Hồ sơ V2 chưa đủ điều kiện."
+        _:
+            return "Chưa thể thực hiện: %s" % reason
+
+func _issue_v2_summary_body() -> void:
+    summary_feedback = _v2_training_ui_feedback(_queue_v2_training("body"),"body")
     _refresh_disciple_summary_content()
 
 func _open_selected_disciple_detail() -> void:
@@ -1802,6 +1878,9 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
         elif tab_name == "Thể Chất":
             _add_tab_action_button(content_panel, "Tôi thể", Vector2(18, 344), "physique_temper")
             _add_tab_action_button(content_panel, "Cải thể", Vector2(140, 344), "physique_transform")
+    elif tab_name == "Thuộc tính":
+        _add_tab_action_button(content_panel, "Chuyên tu", Vector2(18, 344), "v2_cultivate")
+        _add_tab_action_button(content_panel, "Rèn thân", Vector2(140, 344), "v2_body_train")
 
     var tab_names: Array[String] = ["Thuộc tính", "Công pháp", "Trang bị", "Huyết Mạch", "Thể Chất", "Quan hệ"]
     for index in range(tab_names.size()):
@@ -1891,6 +1970,11 @@ func _disciple_tab_action(action: String) -> void:
         return
     var disciple: DiscipleState = state.disciples[selected_id]
     var snapshot := _disciple_snapshot(disciple)
+    if action == "v2_cultivate" or action == "v2_body_train":
+        var track := "body" if action == "v2_body_train" else "cultivation"
+        tab_status_text = _v2_training_ui_feedback(_queue_v2_training(track),track)
+        _open_disciple_tab("Thuộc tính")
+        return
     var requested_tab := "Huyết Mạch" if action.begins_with("bloodline_") else "Thể Chất"
     if bool(snapshot.get("ok", false)) and bool(snapshot.get("authentic_v2", false)):
         tab_status_text = "Cơ chế cũ không áp dụng cho hồ sơ này."
