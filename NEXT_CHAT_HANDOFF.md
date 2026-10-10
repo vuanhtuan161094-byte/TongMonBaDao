@@ -4,6 +4,16 @@
 
 **Repo:** `vuanhtuan161094-byte/TongMonBaDao` · **branch:** `main` · **engine:** Godot 4.7.2. **User yêu cầu thao tác bằng GitHub connector trực tiếp; KHÔNG Codex, KHÔNG Work.** Trước mọi sửa đổi phải fetch lại `main` vì SHA sẽ thay đổi sau các commit bàn giao. **Latest DV2-03 gameplay source with focused PASS:** `6e10aca2d105f23f026a216f3404e5f9bbbbdf6d` (includes real paid Rèn Thân + Linh Điền reservation guard + roster fast path). Fetch live `main` before the next edit; docs-only handoff commits may move HEAD.
 
+## CURRENT NEXT ACTION — 11/10/2026: DV2-03E3.1 STABILIZATION NEEDED BEFORE DV2-03F
+
+**E3 gameplay/test SHA `b8103b06b9e05af0391ff3e1cd007c07dc8b58df` still PASSED focused [#38070169637](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38070169637) and same-source P3.7 FAST/FULL [#38070169594](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38070169594).** Do not confuse these PASSES with proof of every edge-case. **Windows visual NOT RUN**. On 11/10 audit (no gameplay edits) two untested P1 code-path risks were found and recorded at `CURRENT_CHECKPOINT.md` §5.18:
+1. Switching a training-slot owner to **Chuyên tu** with `_queue_v2_training("cultivation")` does not release reserved group/worksite; occupied slot becomes stale. Fix atomic transfer/release and test 2→1 capacity, third disciple and save/load.
+2. An active `body_focus` trainee with positive forge work_preferences can be picked by Workforce scheduled `work` phases, despite holding Rèn Thân place. Decide/enforce exclusivity of dedicated Rèn Thân and cover schedule cycles without breaking healing/explicit user change/cost fail-closed.
+
+P2 backlog: multi-minute offline depletion test, shortage/paused display, 12-item-only candidate UX and 1,000–3,000 performance, real touch/scroll inspection at 1280×720, P3.6A preview artifact storage quota. Do not make up materials for 29 Thối Thể gates.
+
+**Recommendation: next click = DV2-03E3.1 stabilize above P1 cases and rerun focused + full official Godot; then DV2-03F material design (user approval required).** No request to turn on the user's Windows PC immediately.
+
 ## LATEST ACTIVE UPDATE — DV2-03E3 REAL RÈN THÂN MAP + TWO-SLOT UI (10/10/2026)
 
 **Active phase DV2-03, not CLOSED.** User approved dedicated Rèn Thân Đường Lv1 two slots, 1 Sect Spirit Stone and 1,500 base Body EXP per real simulation minute, and requested playable UI management. This is NOW implemented in canonical P3.1/P3.2: distinct map building token `ren_than_duong`, `TRAIN_BODY` actor destination, click opens P3.2 management showing the real level, slots, current wallet, paid minutes, consumed stones and per-disciple training state. Assign via genuine V2 backend `_queue_v2_training("body", disciple_id)`; release via `DiscipleBodyTrainingFacilityV2.release_slot`, freeing slot and setting manual policy (does not refund already paid minutes). Never award XP on UI click. First 12 eligible V2 roster entries shown; future search/pagination not yet built. No fabricated UI roster, economy or second save owner.
