@@ -112,6 +112,10 @@ func _run() -> void:
         "Persisted P3 state does not match the live runtime state."):
         return
 
+    # Synthetic wall time above is +60s. Disable the scene's exit-save
+    # after the explicit persisted-state assertion so queue_free() does not
+    # intentionally call save() with the runner's earlier real wall time.
+    ui.set("runtime_ready", false)
     ui.queue_free()
     await process_frame
     ui = null
