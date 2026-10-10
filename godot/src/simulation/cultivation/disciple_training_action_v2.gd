@@ -76,6 +76,14 @@ static func request_training(state: SimulationState, disciple_id: StringName, tr
     var ready := preview_training(state,disciple,track)
     if not bool(ready.get("ok",false)):
         return {"ok":false,"reason":str(ready.get("reason","invalid_training_rule"))}
+    # An approved explicit Chuyên Tu command is a transfer, not an
+    # additional job occupying the scarce 2-slot Rèn Thân facility.
+    # Check *after* the new track's preview has succeeded so a refused
+    # cultivation request never evicts the original trainee.
+    if track == "cultivation" and DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple):
+        var released := DiscipleBodyTrainingFacilityV2.release_slot(state,disciple_id)
+        if not bool(released.get("ok",false)):
+            return released
     disciple.current_action = StringName(action)
     return {"ok":true,"track":track,"queued_action":action}
 
