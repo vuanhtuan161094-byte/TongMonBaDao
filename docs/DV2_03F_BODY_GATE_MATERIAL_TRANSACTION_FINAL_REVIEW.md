@@ -89,6 +89,21 @@ Mỗi dòng dùng *main × qty / aux × qty*, dấu `-` nghĩa là không có �
 
 **E1 — Mỗi ID có ít nhất hai nguồn.** Mỗi vật liệu chính: (a) sản xuất/hái/khoáng sản của đội hậu phương, (b) ủy thác vật liệu đúng cấp hoặc tuyến săn tài nguyên. Mỗi vật liệu phụ: (a) săn đúng bậc và có drop thưởng, (b) ủy thác/điểm đóng góp sự kiện săn **đủ mốc nhận chắc chắn đúng vật phẩm**, không cần drop một boss duy nhất. Nguồn (b) phải nhận được bằng hoạt động lặp lại có receipt và không đòi r+r khác khóa. Nhóm B có ủy thác sớm cho Tử Vân Thảo và Linh Tủy ngay trước cổng 4.
 
+**E1.1 — Mốc mở nguồn theo cảnh giới Luyện Thể** (thiết kế đề xuất, không dựa vào Tu Vi):
+
+| Nhóm | Cổng cần | Mốc nguồn mở chậm nhất | Nội dung tối thiểu phải triển khai |
+|---|---|---|---|
+| A | 1–3 | Ngay Phàm Thân 1 | Linh Điền Thanh Linh Thảo; bản đồ có Tinh Lang Bì |
+| B | 4–6 | Trước Dịch Cân tầng 10 | Ủy thác Nhân Giới trả Tử Vân Thảo dù chưa có Linh Điền Lv30, săn tích lũy trả Linh Tủy |
+| C | 7–10 | Trước Tôi Tạng tầng 10 | Thu hái Huyết Linh Sâm, săn Huyết Thú Tinh Huyết tại vùng Nhân cao |
+| D | 11–14 | Trước Kim Thân tầng 10 | Vùng Tiên thấp, cây Kim Cốt Thảo và Linh Thú Cốt Ngọc |
+| E | 15–17 | Trước Tiên Khu tầng 10 | Vùng Tiên giữa, Tiên Tủy Liên và Tiên Thú Chân Cốt |
+| F | 18–20 | Trước Thái Ất Kim Thân tầng 10 | Vùng Tiên cao, Bất Hoại Tủy Dịch và Đại La Kim Cốt |
+| G | 21–25 | Trước Thần Khu tầng 10 | Vùng Thần thấp/giữa, Thần Mạch Tinh và Thần Thú Cốt |
+| H | 26–29 | Trước Thần Khiếu tầng 10 | Vùng Thần cao/Hỗn Độn, Hỗn Độn Tủy Hoa và Bất Diệt Thần Cốt |
+
+Nguồn không tự mở ở cổng nếu chưa tạo được vật liệu khi đang ở **cảnh giới nguồn**. Có thể nhận vật liệu do đệ tử khác trong tông môn kiếm, miễn hoạt động đó thực hiện thành công và kho sở hữu. Một Đệ Tử có Luyện Thể cao, Tu Vi thấp không bị chặn bởi so sánh hai tiến độ.
+
 **E2 — Bảo đảm KHÔNG phải tặng miễn phí theo đồng hồ.** Không `add` vật liệu vì người chơi chờ ngoài màn hình. Chỉ tăng kho sau thành tựu **thực đã hoàn thành**: thu hoạch thật, chu kỳ khai khoáng thật, lần săn thắng/claim thành công, hoặc ủy thác hoàn thành/đổi bằng một khoản giao dịch thật. Mỗi receipt nguồn có `source_id + event_id` duy nhất chống farm lại qua reload; progress nguồn riêng, không tạo Phẩm Lực/trung gian có thể thay mọi resource. Hợp đồng này là **new feature content**, chưa được code.
 
 **E3 — Mốc thử để cân bằng, CHƯA KHÓA SỐ:** ưu tiên đạt **1 nguyên liệu chính / khoảng 10–12 phút sản xuất đủ điều kiện**, **1 nguyên liệu phụ / tối đa 4 lần săn/ủy thác hợp lệ có thành công**, áp dụng theo band và lực lượng tông môn. Ví dụ cổng 10 dùng 32 main → khoảng **5,3–6,4 giờ lao động đủ điều kiện** theo 1 luồng; 8 aux → tối đa 32 hoạt động săn hợp lệ theo tuyến bảo đảm. Đây **không phải** dự báo thời gian thật của game khi chưa mô phỏng lịch làm việc/map combat, và không thay số yield crop đã có. Phải test thu nhập thực từ production/quest trước khi triển khai mức này.
