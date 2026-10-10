@@ -88,7 +88,25 @@ func _first_legacy_disciple() -> DiscipleState:
         var recruited: DiscipleState = state.disciples.get(candidate.id)
         if recruited != null and not DiscipleRealmProgressV2.owns_v2_progression(recruited):
             return recruited
-    return null
+
+    # Live bootstrap is allowed to have no preserved candidate. Build a
+    # compatibility-only generated person in a separate P37 state where V2
+    # birth remains default-off, then attach that disciple to this test state.
+    # This exercises the real open-point generator without changing live runtime
+    # recruitment behavior or recreating presentation demo recruits.
+    var legacy_source := P37Factory.create_state(31012026 + 77)
+    var generated := DiscipleGeneratorOpenPoints.new().generate_candidate(
+        legacy_source, DiscipleGeneratorV2.SOURCE_ORDINARY, 707
+    )
+    if generated == null or generated.profile_seed <= 0 or not generated.v2_birth_profile.is_empty():
+        return null
+    var fixture := generated.to_disciple()
+    fixture.region_id = &"sect"
+    state.sect.disciple_capacity = maxi(
+        state.sect.disciple_capacity, state.disciples.size() + 1
+    )
+    state.disciples[fixture.id] = fixture
+    return fixture
 
 func _verify_real_attribute_text() -> bool:
     var text := str(ui.call("_disciple_tab_text", "Thuộc tính", disciple))
