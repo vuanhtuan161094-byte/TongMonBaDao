@@ -445,6 +445,23 @@ Implemented:
 
 **Step 2 result:** one canonical, non-leaking presentation snapshot now feeds the disciple UI. This does **not** mean Root/Trait/Destiny/Bloodline/Physique/Equipment effects are implemented; inactive identities remain shown honestly as unavailable. DV2-03 remains ACTIVE.
 
+### 5.14 DV2-03P1 — REAL P3.7 ACTIVE MINING BODY EXP (FOCUSED PASS, 10/10/2026)
+
+**Current active implementation phase remains DV2-03, NOT CLOSED.** Source Unity is benchmark only; gameplay authority remains this repository's V2 design and runtime.
+
+The actual P3.7 mining action now consumes the previously locked `DiscipleBodyXpSourceV2` accounting contract:
+- Only an authentic V2 disciple performing the `WORK_MINING` action, with a valid real Mine worker slot and a successfully executed `mining` (extraction) phase, receives the canonical 250 base Body EXP per simulation minute before Căn Cốt (+0.20%/point).
+- `travel_out`, `haul_back`, passive assignments, non-mining professions, legacy/P2 profiles and blocked jobs do NOT earn this Body source.
+- The runtime uses the existing canonical Body floor-cost rule, per-disciple/per-minute dedup and the existing HP-rescale-on-floor implementation. No second Tu Vi reward or expenditure of Expedition Stamina is added. Training sources other than the valid mining action remain unchanged.
+- `WorkforceSystem._perform_p3_7_mining` is the integration owner, using the real result of `BuildingSystem.perform_mining_step`. The focused integration test exercises real Mine phases, worksite assignment, correct source rate/foundation modifier, non-mining exclusion and saved dedup identity.
+- Gameplay latest SHA: `e8f571533846453b7e2f40bab8c5e7f306d6e1fc`; latest focused test/source SHA: `efd4f8005dcdb6bf9c376da75c6c416ef8efe4c4`.
+- **Official Godot 4.7.2 Linux focused PASS:** [DV2-03 #38064309354](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38064309354) at `efd4f800`. It includes project parse, all existing DV2-03 focused tests and new `dv2_03_mine_body_xp_integration_test.gd`.
+- **Not yet claimed:** FULL cumulative on this new gameplay SHA; Windows runtime/visual acceptance.
+
+**Open user choices blocking completion of DV2-03:** dedicated Rèn Thân training building vs reuse an existing facility; training slots and *positive per-minute economic cost* (not yet user-approved). Implement one transaction-owning consumer for the approved option only: verify building/slot/active action, atomically commit minute cost first, then grant canonical 1,500 base Body EXP/min. No speculative second warehouse, unpaid EXP, or unsupported body gate material catalogue. Exact 29 Thối Thể resource packages remain deferred/blocked until authored and approved.
+
+**Do not open DV2-04/full Equipment/Skill/UI production phases while DV2-03 is active.**
+
 ### 5.4 Chuẩn bị lát triển khai tiếp theo — audit 09/10/2026
 
 **DV2-03 vẫn ACTIVE — chưa có code gameplay/gate mới trong lượt chuẩn bị này.** GitHub `main` đã được rà: action `request_training` kiểm tra sơ bộ nhưng không preflight `base_xp_per_action`/`floor_costs`; do đó có thể trả `ok=true` để xếp việc, rồi `resolve` fail-closed ở tick sau. Scheduler `step()` làm chủ cấp EXP, không phải driver wall-clock được chứng thực. Workflow focused của code `e96df183` PASS; FULL P3.7 chỉ có bằng chứng PASS tại `5296f610`. **Không có bằng chứng full same-code SHA hay realtime 15s/offline/Windows V2.**
