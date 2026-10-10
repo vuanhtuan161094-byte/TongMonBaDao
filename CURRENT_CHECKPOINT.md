@@ -470,6 +470,16 @@ The actual P3.7 mining action now consumes the previously locked `DiscipleBodyXp
 
 **Not yet approved / not implemented:** 29 exact Thối Thể recipes/consumable gate transaction, post-Lv1 building upgrade/intensity, large-roster UI search/pagination, Dẫn Tiên real recruitment UI, Windows visual. DV2-03 remains ACTIVE, never call game playable complete or Windows PASS. See `docs/DV2_03_TWO_TRACK_PROGRESS_EXECUTION.md` §DV2-03E3.
 
+### 5.20 DV2-03F — BODY 29-GATE MATERIALS / TRANSACTION DESIGN (PRINCIPLE APPROVED, FINAL REVIEW PENDING — 11/10/2026)
+
+**User approval is IN PRINCIPLE only:** 8 named material groups A–H, 29 per-gate quantities, and 3 repeatably obtainable consumed Seals at gates 10/20/29; deterministic 100% Body gate, no cultivation/body-level equality, multi-route guaranteed supply. **NO code, content registry, loot, new maps, transactions, CI, or Windows gate was changed/run in this design round.** Official focused/full evidence at gameplay SHA `3c7e9a76` remains previous E3.1 evidence.
+
+**Exact final-review document (new canonical proposal, NOT DESIGN LOCKED):** `docs/DV2_03F_BODY_GATE_MATERIAL_TRANSACTION_FINAL_REVIEW.md` (main), 29 rows, 16 material types (4 existing/12 new) + 3 new Seal IDs, all 8 acquisition bands with pre-gate access, staged rollback + persistent idempotency ledger, warehouse lock/reserve handling, XP/HP authority, anti-replay tests, and SaveService direct-write crash-durability caveat. Total 562 main + 143 aux + 3 Seals per complete 29-gate journey (across distinct IDs).
+
+**Verified production bottlenecks:** `tu_van_thao` needs Spirit Field Lv30 but gate 4 needs it; `linh_tuy` is rare chance-only in present Thanh Trúc Lâm L2–L5; present high-realm C–H material sources do not exist. Do not implement all 29 gates without every required legitimate registered source and deterministic guaranteed acquisition, or bypass `WarehouseSystem`. Need explicit user FINAL APPROVAL before authoring gameplay/content or changing EXP. Proposed acquisition throughput bands are balancing hypotheses, not locked rates.
+
+**Next requested decision:** review the document and approve/adjust: (1) early real-quest guaranteed access to both B materials, (2) repeatable two-route Seals, (3) single owner atomically committing Body + canonical warehouse + saved receipt, manual first AI policy, (4) source throughput tuning via real source tests. Then implement only inside DV2-03F and use official Godot focused/full evidence. Windows real visual = PENDING USER.
+
 ### 5.19 DV2-03E3.1 — LOCKED TWO-SLOT TRAINING STABILIZATION (11/10/2026)
 
 **Implement scope — USER ORDER:** fix two P1 defects documented in §5.18 without changing Lv1 two slots, 1 Sect Spirit Stone/simulation minute, 1,500 base Body EXP/minute or other V2 cultivation / Căn Cốt laws.
