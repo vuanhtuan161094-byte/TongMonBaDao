@@ -25,6 +25,8 @@ on:
       - 'godot/src/simulation/cultivation/disciple_training_action_v2.gd'
       - 'godot/src/simulation/cultivation/disciple_training_policy_v2.gd'
       - 'godot/src/simulation/core/live_game_runtime_v2.gd'
+      - 'godot/src/presentation/p3_2_landscape_sect.gd'
+      - 'godot/tests/presentation/dv2_03_p3_v2_disciple_profile_test.gd'
       - 'godot/tests/simulation/dv2_03_ren_than_duong_integration_test.gd'
       - 'godot/tests/simulation/dv2_03_realm_body_progress_test.gd'
       - 'godot/src/simulation/core/p3_7_factory.gd'
