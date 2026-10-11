@@ -825,12 +825,17 @@ func _recipe_material_status(recipe_id: StringName) -> String:
     for raw_id in ids:
         var material_id := StringName(raw_id)
         var need := int(materials[raw_id])
-        var have := int(state.sect.forge_materials.get(str(material_id), 0))
-        parts.append("%s %d/%d" % [equipment_system.material_name(material_id), have, need])
-        if have < need:
+        var total := _warehouse_quantity(material_id)
+        var usable := _warehouse_available(material_id)
+        parts.append("%s tồn %d / dùng %d / cần %d" % [equipment_system.material_name(material_id), total, usable, need])
+        if usable < need:
             missing.append(equipment_system.material_name(material_id))
-    var suffix := " · Đủ nguyên liệu" if missing.is_empty() else " · Thiếu: %s" % ", ".join(missing)
-    return "Nguyên liệu: %s%s" % [" · ".join(parts), suffix]
+    var can_craft := equipment_system.can_craft(state, recipe_id)
+    var suffix := " · Đủ nguyên liệu" if can_craft else (
+        " · Thiếu vật tư dùng được: %s" % ", ".join(missing) if not missing.is_empty()
+        else " · Chưa thể chế tạo"
+    )
+    return "Nguyên liệu (tồn / dùng / cần): %s%s" % [" · ".join(parts), suffix]
 
 func _set_work_policy_from_building(policy: StringName) -> void:
     var ok := workforce.set_work_policy(state, policy)
@@ -1159,13 +1164,13 @@ func _mine_operation_text() -> String:
 
     return (
         "SẢN XUẤT\n"
-        + "Thanh Thiết: %d\n"
+        + "Thanh Thiết tồn (dùng): %s\n"
         + "Đang khai khoáng: %d\n"
         + "Thành viên đội: %d\n\n"
         + "NHÂN SỰ\n%s\n\n"
         + "Phân người vào đội để duy trì khai khoáng lâu dài, hoặc ra lệnh làm ngay khi cần."
     ) % [
-        int(state.sect.forge_materials.get("thanh_thiet", 0)),
+        _warehouse_pair(&"thanh_thiet"),
         _count_action(&"WORK_MINING"),
         members.size(),
         "\n".join(lines)
@@ -1194,17 +1199,17 @@ func _forge_operation_text() -> String:
 
     return (
         "VẬT LIỆU\n"
-        + "Thanh Thiết: %d · Linh Mộc: %d\n"
-        + "Tinh Lang Bì: %d · Yêu Đan: %d\n"
+        + "Tồn (dùng): Thanh Thiết %s · Linh Mộc %s\n"
+        + "Tinh Lang Bì %s · Yêu Đan %s\n"
         + "Điểm hỗ trợ rèn: %d\n"
         + "Công thức có thể luyện: %d / %d\n\n"
         + "NHÂN SỰ\n%s\n\n"
         + "Phân người phụ trách luyện khí và chế tạo trang bị khi đủ nguyên liệu."
     ) % [
-        int(state.sect.forge_materials.get("thanh_thiet", 0)),
-        int(state.sect.forge_materials.get("linh_moc", 0)),
-        int(state.sect.forge_materials.get("tinh_lang_bi", 0)),
-        int(state.sect.forge_materials.get("yeu_dan", 0)),
+        _warehouse_pair(&"thanh_thiet"),
+        _warehouse_pair(&"linh_moc"),
+        _warehouse_pair(&"tinh_lang_bi"),
+        _warehouse_pair(&"yeu_dan"),
         state.sect.forge_support_points,
         craftable, recipe_ids.size(),
         "\n".join(lines)
@@ -1313,19 +1318,19 @@ func _warehouse_operation_text() -> String:
         + "Ngân khố: %d · Linh Thạch: %d\n\n"
         + "SINH HOẠT\n"
         + "Thuốc: %d · Vật tư: %d\n\n"
-        + "VẬT LIỆU LUYỆN KHÍ\n"
-        + "Thanh Thiết: %d · Linh Mộc: %d\n"
-        + "Tinh Lang Bì: %d · Yêu Đan: %d\n\n"
+        + "KHO VẬT LIỆU (tồn / có thể dùng)\n"
+        + "Thanh Thiết: %s · Linh Mộc: %s\n"
+        + "Tinh Lang Bì: %s · Yêu Đan: %s\n\n"
         + "TRANG BỊ\n"
         + "Trong kho: %d · Đang bán: %d · Đã trang bị: %d\n\n"
         + "Trang bị và vật tư được tổng hợp tại đây."
     ) % [
         state.sect.treasury, state.sect.spirit_stones,
         state.sect.medicine_stock, state.sect.supply_stock,
-        int(state.sect.forge_materials.get("thanh_thiet", 0)),
-        int(state.sect.forge_materials.get("linh_moc", 0)),
-        int(state.sect.forge_materials.get("tinh_lang_bi", 0)),
-        int(state.sect.forge_materials.get("yeu_dan", 0)),
+        _warehouse_pair(&"thanh_thiet"),
+        _warehouse_pair(&"linh_moc"),
+        _warehouse_pair(&"tinh_lang_bi"),
+        _warehouse_pair(&"yeu_dan"),
         storage_count, shop_count, equipped_count
     ]
 
@@ -2498,7 +2503,7 @@ func _bloodline_tab_text(disciple: DiscipleState) -> String:
         bloodlines.bloodline_name(id), float(profile.get("purity", 0.0)) * 100.0, status, int(profile.get("refinement_count", 0)),
         float(stats.get("combat_power_bonus", 0.0)), float(stats.get("damage_reduction_pct", 0.0)),
         float(stats.get("cultivation_bonus_pct", 0.0)), float(stats.get("breakthrough_bonus_pct", 0.0)), float(stats.get("recovery_bonus_pct", 0.0)),
-        int(stats.get("extra_departure_supply", 0)), int(state.sect.technique_materials.get("yeu_dan", 0)), tab_status_text
+        int(stats.get("extra_departure_supply", 0)), _warehouse_quantity(&"yeu_dan", true), tab_status_text
     ]
 
 
@@ -2536,7 +2541,7 @@ func _physique_tab_text(disciple: DiscipleState) -> String:
         "Có" if bool(profile.get("transformed", false)) else "Không",
         float(stats.get("attack_bonus", 0.0)), defense, cultivate_pct, breakthrough_pct, recovery_pct,
         float(stats.get("sword_xp_multiplier", 1.0)), float(stats.get("body_xp_multiplier", 1.0)), float(stats.get("spell_xp_multiplier", 1.0)),
-        int(state.sect.technique_materials.get("yeu_dan", 0)), int(state.sect.technique_materials.get("linh_tuy", 0)), tab_status_text
+        _warehouse_quantity(&"yeu_dan", true), _warehouse_quantity(&"linh_tuy", true), tab_status_text
     ]
 
 
