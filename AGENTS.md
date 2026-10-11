@@ -224,3 +224,21 @@ Read:
 - `NEXT_CHAT_HANDOFF.md`.
 
 If the checkpoint says no implementation phase is active, do not start the queued next phase without a new user instruction.
+
+
+---
+
+## 11. One-tap user continuation / prewritten next prompts (USER WORKFLOW RULE 2026-10-11)
+
+The user explicitly prefers **tap-to-continue, not typing/planning the next prompt**. Treat this as a **durable project working rule** for all project chats.
+
+After **every meaningful work packet or decision reply**:
+
+1. Present **2–3 concise, context-specific next choices**, with the recommended/most logical next step first. Do **not** overwhelm with 5–10 choices or ask the user to write their own prompt.
+2. Wherever the chat UI supports it, use actual **clickable options/actions** that submit a **complete ready-made Vietnamese next-turn instruction**. The user should be able to tap one option and automatically issue the precise next request. Do not create a decorative button with no action. Include proper repo, branch, scope, commit/CI/test obligations, exclusion of adjacent phases and Windows `PENDING USER` in any coding-authorization prompt.
+3. If the current channel cannot render active options, provide numbered **copy-ready prompts** with minimal required user effort; never imply a noninteractive markdown label actually sends a command.
+4. Mark **what was verified, what remains blocked, and what needs user approval** before any suggested next step. An option to perform code changes is a **request for authorization**, not permission until the user taps/sends it. Do not choose or execute a coding option on the user's behalf.
+5. **Keep continuity:** after an authorized packet, update `CURRENT_CHECKPOINT.md` + `NEXT_CHAT_HANDOFF.md` (or authoritative existing spec) with concise verified evidence, exact next permitted packet, unresolved decisions, and any Windows-only tasks as **PENDING USER**. Reuse existing MD files; do not spawn redundant handoff plans.
+6. **Minimize cognitive load:** recommend one clear default, allow alternatives such as audit/review or defer, preserve existing locked rules, and never make the user manually reconstruct technical prompts from memory.
+
+This rule governs **conversation workflow**, not game AI/UI. Do not change gameplay, balance or phase scope merely because the user chooses a chat option.
