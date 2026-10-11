@@ -2011,9 +2011,20 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
     var tab_title := _label(content_panel, tab_name, Vector2(18, 12), Vector2(360, 30), 20)
     tab_title.add_theme_color_override("font_color", CINNABAR.darkened(0.18))
 
-    var content := _label(content_panel, _disciple_tab_text(tab_name, disciple), Vector2(18, 52), Vector2(590, 286), 14)
+    # Make attribute/Body requirements readable without overlapping action row.
+    var details_scroll := ScrollContainer.new()
+    details_scroll.name = "DiscipleTabContentScroll"
+    details_scroll.position = Vector2(18, 52)
+    details_scroll.size = Vector2(590, 286)
+    content_panel.add_child(details_scroll)
+    var content := Label.new()
+    content.name = "DiscipleTabContentText"
+    content.text = _disciple_tab_text(tab_name, disciple)
+    content.custom_minimum_size = Vector2(565, 0)
     content.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    content.add_theme_font_size_override("font_size", 14)
     content.add_theme_color_override("font_color", INK)
+    details_scroll.add_child(content)
 
     var profile_snapshot := _disciple_snapshot(disciple)
     var authentic_v2 := bool(profile_snapshot.get("authentic_v2", false))
@@ -2027,6 +2038,18 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
     elif tab_name == "Thuộc tính":
         _add_tab_action_button(content_panel, "Chuyên tu", Vector2(18, 344), "v2_cultivate")
         _add_tab_action_button(content_panel, "Rèn thân", Vector2(140, 344), "v2_body_train")
+        var gate_preview := DiscipleBodyGateTransactionV2.new().preview_gate(state,selected_id)
+        var gate_button := Button.new()
+        gate_button.name = "BodyGateRealCommit"
+        gate_button.text = "Đột phá Luyện Thể"
+        gate_button.position = Vector2(266, 344)
+        gate_button.size = Vector2(175, 40)
+        gate_button.add_theme_font_size_override("font_size", 12)
+        gate_button.add_theme_stylebox_override("normal", _style(CINNABAR, PAPER_LIGHT, 2, 8))
+        gate_button.disabled = not bool(gate_preview.get("can_commit",false))
+        gate_button.tooltip_text = _body_gate_reason(str(gate_preview.get("reason","")))
+        gate_button.pressed.connect(Callable(self, "_disciple_tab_action").bind("v2_body_gate"))
+        content_panel.add_child(gate_button)
 
     var tab_names: Array[String] = ["Thuộc tính", "Công pháp", "Trang bị", "Huyết Mạch", "Thể Chất", "Quan hệ"]
     for index in range(tab_names.size()):
@@ -2116,6 +2139,21 @@ func _disciple_tab_action(action: String) -> void:
         return
     var disciple: DiscipleState = state.disciples[selected_id]
     var snapshot := _disciple_snapshot(disciple)
+    if action == "v2_body_gate":
+        var gate := DiscipleBodyGateTransactionV2.new()
+        var checked := gate.preview_gate(state,selected_id)
+        if not bool(checked.get("can_commit",false)):
+            tab_status_text = _body_gate_reason(str(checked.get("reason","body_gate_denied")))
+        else:
+            var request_id := "ui:body-gate:%s:%d" % [str(selected_id),int(checked["source_realm"])]
+            var applied := gate.commit_gate(state,selected_id,request_id)
+            tab_status_text = "Đột phá Luyện Thể thành công." if bool(applied.get("ok",false)) else _body_gate_reason(str(applied.get("reason","")))
+            if bool(applied.get("ok",false)) and runtime_ready and runtime_session != null:
+                var persisted := runtime_session.save()
+                if not bool(persisted.get("ok",false)):
+                    tab_status_text += " CẢNH BÁO: chưa lưu được tiến độ."
+        _open_disciple_deep_screen(selected_id,"Thuộc tính",true)
+        return
     if action == "v2_cultivate" or action == "v2_body_train":
         var track := "body" if action == "v2_body_train" else "cultivation"
         tab_status_text = _v2_training_ui_feedback(_queue_v2_training(track),track)
@@ -2198,6 +2236,52 @@ func _player_reason_text(reason: String) -> String:
         _:
             return ""
 
+
+# F4 pure V2 read model: one selected disciple, no per-roster scans.
+func _body_gate_preview_text(disciple_id: StringName) -> String:
+    var preview := DiscipleBodyGateTransactionV2.new().preview_gate(state,disciple_id)
+    if not bool(preview.get("ok",false)):
+        return "Đột phá Luyện Thể: " + _body_gate_reason(str(preview.get("reason","")))
+    var lines: Array[String] = []
+    lines.append("ĐỘT PHÁ LUYỆN THỂ %d → %d | EXP %.0f / %.0f" % [
+        int(preview["source_realm"]),int(preview["target_realm"]),
+        float(preview["xp_have"]),float(preview["xp_need"])
+    ])
+    var registry := ResourceRegistry.new()
+    var requirements: Array = preview.get("requirements",[])
+    for data in requirements:
+        var material: Dictionary = data
+        var note := " [KHÓA]" if bool(material["locked"]) else (
+            " [DỰ TRỮ]" if int(material["available"]) < int(material["total"]) else ""
+        )
+        lines.append("• %s: dùng được %d/%d (kho %d)%s" % [
+            registry.display_name(StringName(material["item_id"])),
+            int(material["available"]),int(material["need"]),int(material["total"]),note
+        ])
+    lines.append("Trạng thái: " + (
+        "ĐỦ ĐIỀU KIỆN — có thể đột phá" if bool(preview.get("can_commit",false))
+        else _body_gate_reason(str(preview.get("reason","")))
+    ))
+    if int(preview["source_realm"]) <= 6:
+        lines.append("Nguồn: Linh Điền / săn Thanh Trúc Lâm, Bạch Thạch Khê, Hắc Phong Cốc.")
+    else:
+        lines.append("Nguồn cao giới chưa có — không thể đột phá bằng vật phẩm giả.")
+    return "\n".join(lines)
+
+func _body_gate_reason(reason: String) -> String:
+    match reason:
+        "": return "Sẵn sàng."
+        "content_unavailable": return "Nội dung chưa mở; cần vùng và nguồn vật phẩm thật."
+        "body_major_gate_not_ready": return "Cần đạt tầng 10 Luyện Thể."
+        "body_gate_xp_incomplete": return "Chưa đủ EXP Luyện Thể tầng 10."
+        "body_gate_material_missing": return "Thiếu nguyên liệu tại Kho Tông Môn."
+        "body_gate_material_locked_or_reserved": return "Nguyên liệu đang khóa hoặc được đặt mức dự trữ."
+        "body_gate_disciple_busy": return "Đệ tử đang thực hiện hoạt động khác."
+        "body_gate_disciple_unavailable": return "Đệ tử phải còn sống và ở tông môn."
+        "body_gate_already_committed": return "Đã đột phá cổng này; không trừ trùng."
+        "body_gate_last_realm": return "Đã tới đại cảnh giới cuối."
+        _: return "Không thể đột phá (" + reason + ")."
+
 func _disciple_tab_text(tab_name: String, disciple: DiscipleState) -> String:
     match tab_name:
         "Thuộc tính":
@@ -2219,7 +2303,7 @@ func _disciple_tab_text(tab_name: String, disciple: DiscipleState) -> String:
 func _attributes_tab_text(disciple: DiscipleState) -> String:
     var snapshot := _disciple_snapshot(disciple)
     if bool(snapshot.get("ok", false)) and bool(snapshot.get("authentic_v2", false)):
-        return _v2_attributes_tab_text(snapshot)
+        return _v2_attributes_tab_text(snapshot) + "\n\n" + _body_gate_preview_text(disciple.id)
 
     var required := cultivation.required_progress(disciple)
     var progress_text := "Đã viên mãn" if required <= 0.0 else "%.0f / %.0f" % [disciple.cultivation_progress, required]
