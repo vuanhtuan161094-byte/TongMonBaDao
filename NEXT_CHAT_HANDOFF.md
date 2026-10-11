@@ -6,6 +6,18 @@
 
 
 
+## POST-F7 LIVE-GAP FOLLOW-UP — AUDIT ONLY (2026-10-11)
+
+**Most recent user request:** read live main, AGENTS, current checkpoint, handoff and DV2-03F §S; do NOT redo F0–F7, close parent DV2-03, alter EXP/29 recipe rows, fake C–H/Seals, or demand PC now. GitHub + official CI are assistant-owned; every Windows item remains **PENDING USER**. Work/report in small packets. Post-F7 audit filed in **`CURRENT_CHECKPOINT.md` → `POST-F7 LIVE CODE AUDIT`** (commit `79c1ff2495a5da70c9700d1c7611fa9d026cab06`). `bfbf62c3..a206cc13` was docs-only 6 commits, focused #38121196765 and cumulative FAST/FULL #38121196717 completed SUCCESS on gameplay SHA `bfbf62c3`. This follow-up is documentation only, **no new CI/Godot gameplay claim**.
+
+**Concrete code gap:** `godot/src/presentation/p3_2_landscape_sect.gd` has paid Body gate but no player-facing V2 hunt start. `godot/src/presentation/p3/hunting_level_selector_v2.gd` can store real per-region difficulty but is not mounted in live Sect UI. `godot/src/simulation/combat/hunting_pve_run_v2.gd` provides verified real start/fight/claim/persistence; header admits not installed in legacy scheduler. `godot/src/simulation/core/simulation_scheduler.gd` uses old `CombatSystem.resolve_encounter` for `COMBAT`. Thus old direct `HUNT_REGION` order is **not** proof of V2 material payout or player-started match. **Priority next work packet G1**: connect legitimate V2 region/difficulty/party/start → battle outcome → one-time canonical loot claim → save/resume to live P3.2 UI with scene, denial/replay and official CI tests; auto-hunting remains a separate requirement.
+
+**Economy G2:** `SectState.spirit_stones` default 0; `HuntingMapV2.preview_reward/claim_reward` emits only materials, no Stone credit; paid training costs 1 Stone/min, farm also spends it; Treasury `EconomySystem` is distinct. Design/spec allows hunting Stone rewards but no actual repeatable funding has been proven. Do **not** silently invent Stone rate/split, refill, claim, or convert normal money; first establish production design and conservation tests.
+
+**High realm G3:** Only three authored Nhân hunting regions and current 1..6 Body gates. All 7..29 remain `content_unavailable`. Material/Seal registry IDs and synthetic gate validations are not gameplay content. Require progressively authored high-world zones, bosses, Seal sources, source/demand/time checks before authorizing unlock. **G4/Windows:** natural 10M+ EXP pacing, full player UI route, 1k/3k stress, Windows visual all still unverified. No machine available, preserve USER checkboxes.
+
+**Implementation boundary:** Audit does not authorize gameplay modifications or balance adjustments. If user next instructs implementation, start **G1 only**, report after focused CI before G2; remain in parent DV2-03. No forced next-phase jump.
+
 ## LATEST AUTHORIZED F3–F7 IMPLEMENTATION + HONEST A/B F7 HANDOFF (2026-10-11)
 
 **Live contract precedence:** User on 2026-10-11 at 14:08 ICT explicitly authorized **CODE F3, F4, F5, F6, F7** (the older statements below saying they are unapproved are HISTORICAL). Still **OPTION A**. Preserve 29 exact Body recipes 562/143/3, 8 groups, 3 Seals, EXP, Tu Vi independent, P3.7 canonical warehouse and no fabricated C–H/high-realm maps. **Do NOT start DV2-04 or close DV2-03 automatically**. **CURRENT_CHECKPOINT.md** top checklist is authoritative for status; full detail `docs/DV2_03F_BODY_GATE_MATERIAL_TRANSACTION_FINAL_REVIEW.md` **§S**.
