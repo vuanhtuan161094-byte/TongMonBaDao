@@ -1019,6 +1019,13 @@ func _craft_from_building(recipe_id: StringName) -> void:
 
 func _build_work_management(profession_id: StringName, group_id: StringName, group_label: String, order_label: String) -> void:
     _add_management_section_label("PHÂN CÔNG")
+    var active_mining_ids: Array[StringName] = []
+    if profession_id == WorkforceSystem.PROF_MINING:
+        var building_system := BuildingSystem.new()
+        var mine := building_system.primary_building(state, BuildingSystem.TYPE_MINE)
+        if mine != null:
+            active_mining_ids = building_system.active_worker_ids(state, mine)
+
     var ids: Array = state.disciples.keys()
     ids.sort()
     for raw_id in ids:
@@ -1042,6 +1049,11 @@ func _build_work_management(profession_id: StringName, group_id: StringName, gro
         order_button.text = order_label
         order_button.custom_minimum_size = Vector2(82, 34)
         order_button.add_theme_font_size_override("font_size", 11)
+        if profession_id == WorkforceSystem.PROF_MINING:
+            var has_active_mine_slot := active_mining_ids.has(disciple.id)
+            order_button.disabled = not has_active_mine_slot
+            if not has_active_mine_slot:
+                order_button.tooltip_text = "Cần thuộc một chỗ hoạt động của Mỏ trước khi ra lệnh."
         order_button.pressed.connect(Callable(self, "_issue_building_order").bind(
             disciple.id,
             WorkforceSystem.COMMAND_WORK,
@@ -1319,14 +1331,22 @@ func _main_hall_operation_text() -> String:
 
 func _mine_operation_text() -> String:
     var members := _disciples_in_work_group(&"mining_crew")
+    var building_system := BuildingSystem.new()
+    var mine := building_system.primary_building(state, BuildingSystem.TYPE_MINE)
+    var active_ids: Array[StringName] = []
+    var slots := 0
+    if mine != null:
+        active_ids = building_system.active_worker_ids(state, mine)
+        slots = building_system.worker_slots(mine)
+
     var lines: Array[String] = []
     for disciple_value in members:
         var disciple: DiscipleState = disciple_value
-        var level := workforce.profession_level(disciple, WorkforceSystem.PROF_MINING)
-        var progress := float(disciple.work_progress.get(str(WorkforceSystem.PROF_MINING), 0.0))
-        lines.append("• %s · Lv%d · tiến độ %.1f/4 · thể lực %.0f · %s" % [
-            disciple.display_name, level, progress, disciple.stamina,
-            SectMapPresentation.action_label(disciple.current_action)
+        var level := workforce.profession_level_for_state(state, disciple, WorkforceSystem.PROF_MINING)
+        lines.append("• %s · Lv%d · %s" % [
+            disciple.display_name,
+            level,
+            _mining_member_status(disciple, active_ids.has(disciple.id))
         ])
     if lines.is_empty():
         lines.append("• Chưa có thành viên Đội Khai Khoáng")
@@ -1334,16 +1354,40 @@ func _mine_operation_text() -> String:
     return (
         "SẢN XUẤT\n"
         + "Thanh Thiết tồn (dùng): %s\n"
+        + "Chỗ hoạt động: %d/%d\n"
         + "Đang khai khoáng: %d\n"
         + "Thành viên đội: %d\n\n"
         + "NHÂN SỰ\n%s\n\n"
-        + "Phân người vào đội để duy trì khai khoáng lâu dài, hoặc ra lệnh làm ngay khi cần."
+        + "Chu kỳ thật: đi tới mỏ → khai thác → vận chuyển về kho. Chỉ đệ tử có chỗ hoạt động mới nhận lệnh khai khoáng."
     ) % [
         _warehouse_pair(&"thanh_thiet"),
+        active_ids.size(),
+        slots,
         _count_action(&"WORK_MINING"),
         members.size(),
         "\n".join(lines)
     ]
+
+func _mining_member_status(disciple: DiscipleState, has_active_slot: bool) -> String:
+    if not has_active_slot:
+        return "Chờ chỗ hoạt động"
+    var cycle: Dictionary = disciple.work_cycle_state
+    if StringName(cycle.get("profession", "")) != WorkforceSystem.PROF_MINING:
+        return "Sẵn sàng · %s" % SectMapPresentation.action_label(disciple.current_action)
+
+    var phase := StringName(cycle.get("phase", ""))
+    var progress := maxf(float(cycle.get("progress", 0.0)), 0.0)
+    match phase:
+        &"travel_out":
+            return "Đang tới mỏ · %.1f" % progress
+        &"mining":
+            return "Đang khai thác · %.1f" % progress
+        &"haul_back":
+            return "Vận chuyển về kho · %.1f · mang %d" % [
+                progress, maxi(int(cycle.get("carried_units", 0)), 0)
+            ]
+        _:
+            return "Sẵn sàng · %s" % SectMapPresentation.action_label(disciple.current_action)
 
 func _forge_operation_text() -> String:
     var members := _disciples_in_work_group(&"forge_hall")

@@ -122,6 +122,20 @@ func assign_group(state: SimulationState, disciple_id: StringName, group_id: Str
             expected_group = &"herbalism_crew"
         if expected_group != &"" and group_id != expected_group:
             building_system.cancel_work_cycle(state, disciple, true)
+
+    # O3: leaving the crew that owns an explicit profession command must cancel
+    # that command immediately. Otherwise the actor can loop WORK_* against a
+    # missing building slot until TTL expires after the real work cycle is gone.
+    if command_kind(disciple) == COMMAND_WORK:
+        var commanded_profession := command_target(disciple)
+        var commanded_group := &""
+        if commanded_profession == PROF_MINING:
+            commanded_group = &"mining_crew"
+        elif commanded_profession == PROF_HERBALISM:
+            commanded_group = &"herbalism_crew"
+        if commanded_group != &"" and group_id != commanded_group:
+            clear_command(state, disciple)
+
     disciple.work_group_id = group_id
     if disciple.worksite_building_id != &"":
         var assigned = state.buildings.get(str(disciple.worksite_building_id))
@@ -214,6 +228,18 @@ func issue_command(state: SimulationState, disciple_id: StringName, kind: String
     if kind == COMMAND_HUNT_REGION and not state.regions.has(StringName(target)):
         return false
     var disciple: DiscipleState = state.disciples[disciple_id]
+
+    # O3 fail-closed Mine command boundary: a direct mining order is only real
+    # when this disciple owns one of the authoritative active Mine slots.
+    # Merely belonging to a waiting crew must not create a fake "working" order.
+    if (
+        kind == COMMAND_WORK
+        and state.p3_7_buildings_enabled
+        and StringName(target) == PROF_MINING
+        and not building_system.work_available(state, PROF_MINING, disciple)
+    ):
+        return false
+
     # Any accepted explicit non-Body command transfers the player out of the
     # dedicated facility. Invalid commands above must NOT evict trainees.
     if DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple):
