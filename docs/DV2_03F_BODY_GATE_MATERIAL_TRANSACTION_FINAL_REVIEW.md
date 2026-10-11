@@ -2,7 +2,7 @@
 
 **Ngày rà soát:** 11/10/2026  
 **Đối chiếu mã:** `main@55e4be5d1dbe267956791cb3db1a923708a5cbad`  
-**Trạng thái mới nhất (phương án A, 11/10/2026):** **F01–F12 ĐÃ DUYỆT NGUYÊN TẮC, PHẠM VI ĐƯỢC TINH GIẢN Ở MỤC O**; săn quái/Boss/vùng tài nguyên là nguồn chính, nguồn chống kẹt thật, C–H và ba Ấn chưa có nội dung thì không kích hoạt. Giữ nguyên 29 công thức, EXP, cơ chế cổng; **F05 chỉ PILOT, F07/F10 kiểm chứng phù hợp với phần thực có**. **CHƯA DESIGN LOCKED, CHƯA CODE**. Tài liệu này là phương án chốt cuối, không phải luật được triển khai.  
+**Trạng thái mới nhất (11/10/2026, phương án A):** **F0 focused/full PASS; F1 MANIFEST + 15 ID ĐÃ CÓ CODE, FOCUSED PASS** (xem §Q; cumulative riêng cần xác minh live). F01–F12 vẫn chỉ duyệt về nguyên tắc, phạm vi tinh giản §O. Giữ 29 công thức, EXP và ba Ấn; **CHƯA DESIGN LOCKED**, **F2–F7 CHƯA CHO PHÉP CODE**. F1 chưa tạo rơi đồ/nguồn cao giới/giao dịch cổng; content thiếu tiếp tục fail-closed. Tài liệu này là phương án chốt cuối, không phải luật được triển khai.  
 **Phạm vi:** chỉ Luyện Thể major gates `body.realm=1..29, floor=10`; không thay đổi Tu Vi, EXP, tần suất 60 giây/1 phút mô phỏng, tốc độ EXP, Căn Cốt, Rèn Thân Đường, vật liệu trang bị hay phép bổ trợ.
 
 ## A. Luật đã khóa, không cần biểu quyết lại
@@ -688,4 +688,35 @@ The QA F0 test does **not** pretend the authenticated expedition scheduler exist
 - **User Windows Godot 4.7.2 and visual acceptance remain PENDING**; F0 is a headless runtime audit, not a visible interface acceptance.
 - **F0 focused test implementation/report only**: recorded. F0 can be called `FOCUSED PASS` under the run above, but **NOT DV2-03F or DV2-03 CLOSED, not full 29 material gate playable**.
 - **NEXT authorized action remains NONE**: await an explicit user instruction before F1 (manifest, registry, schema) or additional F0 implementation. If the next user asks for F1, re-fetch main, inspect source/CI and respect the newest F0 audit and §O slim roadmap. No automatic extension to F2–F7.
+
+
+## Q. F1 — STATIC 29 BODY GATE MANIFEST + 15 TYPED RESOURCE IDS (11/10/2026, USER-AUTHORIZED CODE)
+
+> **LATEST IMPLEMENTATION EVIDENCE.** User explicitly authorized only **F1**: exact 29 immutable Body-gate recipe identities/quantities and 12 C–H resources + 3 Seals; preserve EXP and all already-locked mechanics; no loot routes/real high-tier content/F2 transaction/F3–F7. **DESIGN LOCKED remains false**. This section supersedes earlier historical statements asserting "15 new IDs absent" or "F1 code not authorized", but does **not** supersede §D's approved quantitative source.
+
+### Q1. Actual code (F1 only, NO gameplay acquisition/transaction)
+
+- `godot/src/simulation/cultivation/disciple_body_gate_content_v2.gd`: new `DiscipleBodyGateContentV2` class, `VERSION=1`, 29 read-only `recipe(source_realm)` rows from §D, group→explicit ID mapping, exactly three seal identities (realm 10/20/29), pure `all_recipes()`, 19 `material_ids()`, defensive fresh returns, strict `validate_manifest(raw)` and `validate_registry()`. ALL 29 entries return `content_available=false` and `reason=content_unavailable` as F1 **metadata**, not a game-facing gate decision. There is NO authorized `requirements_verified` transaction; F2 must authenticate real access/warehouse/receipts independently.
+- `godot/src/simulation/resource/resource_registry.gd`: unchanged 12 old registry definitions, especially the 4 A/B recipe inputs `thanh_linh_thao`, `tinh_lang_bi`, `tu_van_thao`, `linh_tuy`; appended precisely 12 C–H IDs and 3 consumable Seal IDs:
+  - C: `huyet_linh_sam`, `huyet_thu_tinh_huyet`;
+  - D: `kim_cot_thao`, `linh_thu_cot_ngoc`;
+  - E: `tien_tuy_lien`, `tien_thu_chan_cot`;
+  - F: `bat_hoai_tuy_dich`, `dai_la_kim_cot`;
+  - G: `than_mach_tinh`, `than_thu_cot`;
+  - H: `hon_don_tuy_hoa`, `bat_diet_than_cot`;
+  - Seals: `an_nhan_gioi` (gate 10), `an_tien_gioi` (gate 20), `an_than_gioi` (gate 29).
+  - All 15 include explicit `name/family/realm_grade/realm_rank/market_value/tags`. Rank design metadata: C 7 / D 11 / E 15 / F 18 / G 21 / H 26; seals 10/20/29; grade `nhan/tien/than`. **`market_value=0` is a conservative not-priced marker**, NOT approved auction/sale value or reward yield. Re-evaluate only when a real trading/content consumer is authorized. No global Phẩm Lực.
+- **NO** `godot/src/simulation/combat/hunting_map_v2.gd`, `hunting_pve_run_v2.gd`, `disciple_realm_progress_v2.gd`, `disciple_progression_balance_v2.gd`, `SectState`, `WarehouseSystem`, gameplay UI, existing drop rate or existing source EXP changes. No new `source_id`/loot/pity/boss/zone; no extra wallet, implicit claim, gate debit or realm upgrade. No F2 persisted receipts, F3 guaranteed item acquisition, F4 UI, or F5 balancing changes.
+
+### Q2. Exact manifest and test proof
+
+- `godot/tests/simulation/dv2_03_f1_body_gate_manifest_test.gd`: exact independent 29-row quantities, group and ID pairing, totals **562 main / 143 auxiliary / 3 consumed seals**, eight distinct groups, 19 unique item IDs, 15 new IDs. Seals ONLY at source Body realms 10, 20, 29; no seal at other 26 gates. Out-of-range lookup empty.
+- Negative input checks: omitted row, altered resource identity, floating-point quantity, unexpected `requirements_verified` field, changed version, and wrong raw manifest shape fail validation. Read-only API does not expose a shared mutable recipe. Every gate returns unavailable.
+- Existing P3.7 save JSON round-trip preserves old warehouse/claim state and **does not create** new resources. QA may put a new registered resource and seal into canonical Sect Warehouse and round-trip them, demonstrating storage compatibility, **not live acquisition**. Existing three Nhân region rewards are inspected to confirm none of the new C–H/Seals was added to any real region drop.
+- [Official Godot 4.7.2 DV2-03 focused #38117236823](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38117236823) on gameplay/test+CI source `1e0cf39f9122796c4c64a71d52f76b263d525051`: **COMPLETED/SUCCESS**. The actual step prints **`DV2-03F F1 MANIFEST AND TYPED RESOURCE REGISTRY: PASS; gates=29,main=562,aux=143,seals=3,item_ids=19,new_ids=15`**. Existing focused DV2-03 tests in that same workflow also passed.
+- P3.7 FAST+FULL cumulative: [#38117245351](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38117245351) on source `dec66e794a08a7ef70d9d43869441639b3a7fe06`. Check GitHub live completed status before marking FULL PASS. A historical interim P3.7 run [#38117169945](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38117169945) at **`9cd2d27`** failed because the brand-new F1 file initially had a GDScript continuation parse error at line 119. Fixed in **`5c9e9997`**; later official focused/parse is PASS. Do not confuse that superseded failed SHA with current F1 code quality.
+
+### Q3. Status and PC checklist authority
+
+**F1 implementation + focused CI PASS, cumulative status requires live check.** The new metadata exists in code and is registered, but **29/29 acquisition/gate readiness is still BLOCKED**: no legal Body warehouse transaction F2, no new earned drops from F3 and no C–H/Seal source content. The `content_unavailable` field is not a reason to claim a material route exists. Player's **Windows PC currently unavailable**: Windows native UI and user visual acceptance remain **PENDING USER**, not PASS. See `CURRENT_CHECKPOINT.md` checklist. Next phase implementation **F2 requires another explicit permission**; do not auto-implement it or begin F3–F7.
 
