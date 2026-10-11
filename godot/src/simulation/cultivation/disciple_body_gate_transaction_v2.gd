@@ -10,10 +10,11 @@ const MAX_REQUEST_ID_LENGTH := 128
 
 var warehouse := WarehouseSystem.new()
 
-func _content_ready(_state: SimulationState, recipe: Dictionary) -> bool:
-    # F2 must not create an authorization shortcut. F3 will connect real,
-    # already-earned material source availability here when separately approved.
-    return bool(recipe.get("content_available", false))
+func _content_ready(state: SimulationState, recipe: Dictionary) -> bool:
+    # F3 enables ONLY A/B through authored, registered real PvE/crop routes.
+    # Even warehouse fixtures cannot open C-H or any of the three Seals.
+    var source_realm := int(recipe.get("source_realm",0))
+    return HuntingMapV2.early_body_sources_ready(state,source_realm)
 
 func _after_debit(_state: SimulationState, _disciple: DiscipleState) -> bool:
     # No production failure injection; F2 tests override to exercise rollback.
