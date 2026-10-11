@@ -6,6 +6,15 @@
 
 
 
+## HIGHEST PRIORITY — MOBILE-ONLY USER + F0 VERIFIED PASS + PC CHECKLIST (11/10/2026)
+
+User **CANNOT turn on Windows PC now**. The assistant must **do all GitHub review/code/automated tests on its own when authorized**, and preserve a clearly visible outstanding **USER-WINDOWS** task checklist. **DO NOT ASK FOR A PC RUN DURING F1 OR WHILE USER LACKS PC; DO NOT MISREPORT WINDOWS PASS.**
+
+**Canonical checklist (checkboxes and responsibility):** `CURRENT_CHECKPOINT.md` first **"DV2-03F ACTION + PC HANDOFF CHECKLIST"**. F0 focused [#38105919954](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38105919954) **completed/success**, and FAST+FULL P3.7 [#38105926374](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38105926374) **completed/success**, both Godot 4.7.2 Linux. Windows game UI/native validation is **[ ] PENDING USER / NOT DONE**, to be requested *only when genuinely needed*; future exact Windows steps/commands must be supplied when user has a PC.
+
+**Next code slice:** F1 = 29 manifest + 15 missing IDs (12 C–H and 3 Seals), preserve 4 existing; no new real source/loot/transaction yet. **F1 CODE NOT YET AUTHORIZED**. User's latest message asked what next and requested persistent PC checklist, not a code authorization. Wait for clear `CHO PHÉP CODE DV2-03F F1`; no F2–F7 auto-execution and no DESIGN LOCK. Locked EXP, 29 quantities, 3 Ấn unchanged. F0 audit and verified evidence in `docs/DV2_03F_BODY_GATE_MATERIAL_TRANSACTION_FINAL_REVIEW.md` §P.
+
+
 ## TOP CURRENT STATUS — DV2-03F F0 CODE/TEST AUTHORIZED AND EXECUTED (11/10/2026 09:38 ICT)
 
 **User explicitly authorized F0 ONLY** for audit of genuine runtime, EXP, monster/region loot, evidence and correct F0 tests. The previous section saying `CODE_AUTHORIZED=false` is a historical statement from before this approval; effective state is **`F0.CODE_AUTHORIZED=true`, `F1..F7.CODE_AUTHORIZED=false`, `DV2_03F.DESIGN_LOCKED=false`**. Preserve Option A (monster/boss/region primarily, guaranteed anti-stuck for enabled item gates); do not add IDs, resources, 29 gate consumer, event, high-tier map/Seals or retune EXP.
@@ -14,7 +23,7 @@
 
 **Verified new F0 CI:** [official Godot 4.7.2 Linux DV2-03 focused #38105919954](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38105919954), source/test SHA `3c48bf7f763acf8b2d6cc6e52b25b81356b72de1`, **COMPLETED/SUCCESS**, including dedicated F0 test **PASS**, 29-gate old mathematical test, active mining and two-slot paid training. Actual F0 log: one valid disciple paid minute = **1,557 Body EXP with its own Căn Cốt** and **−1 Sect Stone**; six-actor real won hunt paid **3 Linh Mộc +1 Thanh Thiết to warehouse**, **0 Sect Stones**, replay prevented/persisted. **Three currently authored Nhân regions**, **no Tử Vân Thảo early hunt route**, **Linh Tủy rare-only with 0 chance in L1**; expedition Body 750 reference has **no proved automatic scheduler consumer**. No reliable earned recurring Sect-stone lower bound. No high-realm balanced playtime proof.
 
-**P3.7 cumulative run (same F0/test configs, no extra gameplay edits):** [#38105926374](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38105926374) at `cd52d4b97b673dc116606e0fb6b413aec16119b1`, **FAST completed PASS**, FULL status to recheck live and document precisely before claiming FULL PASS. User Windows Godot remains PENDING USER. Later commits in this turn only add F0 docs/checkpoint and do not modify test/gameplay SHA.
+**P3.7 cumulative run (same F0/test configs, no extra gameplay edits):** [#38105926374](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38105926374) at `cd52d4b97b673dc116606e0fb6b413aec16119b1`, **FAST completed PASS**, FULL verified completed/success; see newest priority/status section above. User Windows Godot remains PENDING USER. Later commits in this turn only add F0 docs/checkpoint and do not modify test/gameplay SHA.
 
 **Next:** Finish documenting actual cumulative result if available; do not automatically begin F1. Ask user separately before any new implementation. DV2-03 remains ACTIVE; F0 focused PASS != F1–F7, != 29/29 materials playable or DESIGN LOCKED.
 
