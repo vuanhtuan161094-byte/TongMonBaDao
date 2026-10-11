@@ -110,6 +110,14 @@ func commit_gate(state: SimulationState, disciple_id: StringName, request_id: St
         var saved: Dictionary = state.sect.v2_body_gate_receipts.get(existing_key,{})
         if str(saved.get("disciple_id","")) != str(disciple_id):
             return {"ok":false,"reason":"body_gate_request_id_conflict"}
+        var current_body = state.disciples[disciple_id].v2_realm_progress.get("body",{})
+        # A later major-gate attempt cannot recycle an earlier realm request.
+        if current_body is Dictionary and (
+            int(current_body.get("realm",0)) > int(saved.get("target_realm",0)) or
+            (int(current_body.get("realm",0)) == int(saved.get("target_realm",0)) and
+                int(current_body.get("floor",0)) == 10)
+        ):
+            return {"ok":false,"reason":"body_gate_request_id_conflict"}
         return {"ok":false,"reason":"body_gate_already_committed",
             "receipt":saved.duplicate(true)}
     var preview := preview_gate(state,disciple_id)
