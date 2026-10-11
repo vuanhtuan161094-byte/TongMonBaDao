@@ -6,13 +6,24 @@
 
 
 
+## LATEST IMPLEMENTATION — DV2-03F F1 MANIFEST/REGISTRY ONLY (11/10/2026 13:07 ICT, USER APPROVED)
+
+**User explicitly approved CODE F1 ONLY** (repeated message did not extend authority). **F1 implemented** on main: `godot/src/simulation/cultivation/disciple_body_gate_content_v2.gd` creates versioned read-only 29-gate data, strict validator and `content_available=false` for ALL 29 rows; `godot/src/simulation/resource/resource_registry.gd` adds 12 C–H items plus `an_nhan_gioi`, `an_tien_gioi`, `an_than_gioi` (15 new IDs, 4 A/B existing intact, 19 exact gate ID set). `godot/tests/simulation/dv2_03_f1_body_gate_manifest_test.gd` tests independently all 29 rows, totals 562/143/3, invalid-manifest fail-closed, old-save compatibility and no real new drops. CI test registered in DV2-03 focused workflow; P3.7 cumulative trigger updated. **NO EXP changes, NO F2 transaction/service, NO real high-tier drops or F3–F7, no active Body gates.** See `docs/DV2_03F_BODY_GATE_MATERIAL_TRANSACTION_FINAL_REVIEW.md` **§Q**; §D exact manifest/§O Option A still authoritative.
+
+**Evidence:** [focused Godot 4.7.2 Linux #38117236823](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38117236823) @ `1e0cf39f9122796c4c64a71d52f76b263d525051` **COMPLETED/SUCCESS** including F1 specific test (29 gates/19 IDs PASS). [P3.7 FAST+FULL #38117245351](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38117245351) @ `dec66e794a08a7ef70d9d43869441639b3a7fe06` **FAST PASS; FULL must be rechecked live before PASS**, because it was in progress at documentation time. Initial early CI #38117169945 failed on a GDScript parse continuation at source SHA `9cd2d27`, fixed at `5c9e9997`; do not hide earlier red run or treat obsolete SHA as current.
+
+**USER PC CHECKLIST:** User currently **cannot turn on Windows PC**, so Windows visual interaction, real Windows native Godot run and future acceptance stay **[ ] PENDING USER**. User does NOT need to do anything now. Assistant must own live GitHub review, official Linux CI and document updates; when a genuine Windows test is needed, give precise commands/steps and continue the explicit checkboxes in `CURRENT_CHECKPOINT.md` (F0/F1 completed, F2..F7 not authorized, Windows pending). DO NOT claim Windows PASS from GitHub Linux.
+
+**NEXT STEP / PERMISSION:** wait for `CODE DV2-03F F2 ONLY` before implementing transaction/receipt/warehouse commit. F2 is **NOT authorized** by F1; F3–F7 also not authorized. `DV2_03F.DESIGN_LOCKED=false`, `DV2-03 ACTIVE`, **29/29 gate material sources NOT playable**.
+
+
 ## HIGHEST PRIORITY — MOBILE-ONLY USER + F0 VERIFIED PASS + PC CHECKLIST (11/10/2026)
 
 User **CANNOT turn on Windows PC now**. The assistant must **do all GitHub review/code/automated tests on its own when authorized**, and preserve a clearly visible outstanding **USER-WINDOWS** task checklist. **DO NOT ASK FOR A PC RUN DURING F1 OR WHILE USER LACKS PC; DO NOT MISREPORT WINDOWS PASS.**
 
 **Canonical checklist (checkboxes and responsibility):** `CURRENT_CHECKPOINT.md` first **"DV2-03F ACTION + PC HANDOFF CHECKLIST"**. F0 focused [#38105919954](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38105919954) **completed/success**, and FAST+FULL P3.7 [#38105926374](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38105926374) **completed/success**, both Godot 4.7.2 Linux. Windows game UI/native validation is **[ ] PENDING USER / NOT DONE**, to be requested *only when genuinely needed*; future exact Windows steps/commands must be supplied when user has a PC.
 
-**Next code slice:** F1 = 29 manifest + 15 missing IDs (12 C–H and 3 Seals), preserve 4 existing; no new real source/loot/transaction yet. **F1 CODE NOT YET AUTHORIZED**. User's latest message asked what next and requested persistent PC checklist, not a code authorization. Wait for clear `CHO PHÉP CODE DV2-03F F1`; no F2–F7 auto-execution and no DESIGN LOCK. Locked EXP, 29 quantities, 3 Ấn unchanged. F0 audit and verified evidence in `docs/DV2_03F_BODY_GATE_MATERIAL_TRANSACTION_FINAL_REVIEW.md` §P.
+**This paragraph describes the earlier pre-F1 checkpoint only.** F1 has subsequently been explicitly authorized and implemented as described by the latest F1 section above. No real loot/transaction was added; F2–F7 remain unauthorized and DESIGN LOCK remains false. Locked EXP, 29 quantities, 3 Ấn unchanged. F0 audit and verified evidence in `docs/DV2_03F_BODY_GATE_MATERIAL_TRANSACTION_FINAL_REVIEW.md` §P.
 
 
 ## TOP CURRENT STATUS — DV2-03F F0 CODE/TEST AUTHORIZED AND EXECUTED (11/10/2026 09:38 ICT)
