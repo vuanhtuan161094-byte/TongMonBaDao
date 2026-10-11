@@ -13,19 +13,21 @@ const LEVELS := {
     4:{"name":"Hiểm Địa","hp":1.95,"attack":1.40,"defense":1.27,"yield":2.50,"rare":0.16,"count":6,"elite_chance":0.65,"boss_chance":0.16,"min_elites":1},
     5:{"name":"Tuyệt Địa","hp":2.70,"attack":1.65,"defense":1.45,"yield":3.50,"rare":0.26,"count":7,"elite_chance":0.00,"boss_chance":1.00,"min_elites":2}
 }
+# F3 A/B source PILOT; numeric payouts are not final locked balance.
+const LINH_TUY_GUARANTEE_WINS := 4
 const REGION_CONTENT := {
     "thanh_truc_lam":{
         "name":"Thanh Trúc Lâm","realm":1,"floor":1,
         "normal":{"truc_thu":0.65,"thanh_lang":0.30,"hac_lang":0.05},
         "elite":"nham_giap_thu","boss":"hac_lang_vuong",
-        "resources":{"linh_moc":3,"thanh_thiet":1},
+        "resources":{"linh_moc":3,"thanh_thiet":1,"thanh_linh_thao":1},
         "rare":"linh_tuy"
     },
     "bach_thach_khe":{
         "name":"Bạch Thạch Khê","realm":1,"floor":3,
         "normal":{"truc_thu":0.25,"thanh_lang":0.60,"hac_lang":0.15},
         "elite":"huyet_lang_dau_dan","boss":"hac_lang_vuong",
-        "resources":{"thanh_thiet":2,"tinh_lang_bi":2},
+        "resources":{"thanh_thiet":2,"tinh_lang_bi":2,"tu_van_thao":2},
         "rare":"huyen_thiet"
     },
     "hac_phong_coc":{
@@ -140,6 +142,37 @@ static func preview_reward(spawn_data: Dictionary) -> Dictionary:
         result[rare_id] = int(result.get(rare_id,0))+1
     return result
 
+# This source contract is derived from actual authored regions, never caller flags.
+static func early_body_sources_ready(state: SimulationState, source_realm: int) -> bool:
+    if state == null or not state.sect.p3_7_resources_enabled or source_realm < 1 or source_realm > 6:
+        return false
+    for location in ["thanh_truc_lam","bach_thach_khe","hac_phong_coc"]:
+        if not state.regions.has(StringName(location)):
+            return false
+    var first: Dictionary = REGION_CONTENT["thanh_truc_lam"]
+    var second: Dictionary = REGION_CONTENT["bach_thach_khe"]
+    var third: Dictionary = REGION_CONTENT["hac_phong_coc"]
+    var registry := ResourceRegistry.new()
+    return (
+        registry.has(&"thanh_linh_thao") and registry.has(&"tinh_lang_bi") and
+        registry.has(&"tu_van_thao") and registry.has(&"linh_tuy") and
+        int(first["resources"].get("thanh_linh_thao",0)) > 0 and
+        int(second["resources"].get("tu_van_thao",0)) > 0 and
+        int(second["resources"].get("tinh_lang_bi",0)) > 0 and
+        int(third["resources"].get("tinh_lang_bi",0)) > 0 and
+        str(first["rare"]) == "linh_tuy" and LINH_TUY_GUARANTEE_WINS > 0
+    )
+
+# This is a PURE estimate of guaranteed EXTRA loot if the encounter is won.
+static func preview_body_guarantee(state: SimulationState, spawn_data: Dictionary) -> Dictionary:
+    if state == null or str(spawn_data.get("region_id","")) != "thanh_truc_lam":
+        return {}
+    var old_wins := clampi(int(state.sect.v2_body_material_progress.get(
+        "linh_tuy_thanh_truc_wins",0)),0,LINH_TUY_GUARANTEE_WINS-1)
+    if old_wins+1 >= LINH_TUY_GUARANTEE_WINS:
+        return {"linh_tuy":1}
+    return {}
+
 static func claim_reward(state: SimulationState, spawn_data: Dictionary, battle: MapBattleV2) -> Dictionary:
     if not state.sect.p3_7_resources_enabled or battle == null or battle.active:
         return {"ok":false,"reason":"not_final_or_warehouse_disabled"}
@@ -151,6 +184,9 @@ static func claim_reward(state: SimulationState, spawn_data: Dictionary, battle:
     if state.sect.v2_pve_reward_claims.has(encounter_id):
         return {"ok":false,"reason":"duplicate_claim"}
     var items := preview_reward(spawn_data)
+    var guaranteed := preview_body_guarantee(state,spawn_data)
+    for item_id in guaranteed.keys():
+        items[item_id] = int(items.get(item_id,0))+int(guaranteed[item_id])
     var registry := ResourceRegistry.new()
     var warehouse := WarehouseSystem.new()
     # Preflight ALL items before mutation: all-or-nothing, no partial payout.
@@ -162,9 +198,20 @@ static func claim_reward(state: SimulationState, spawn_data: Dictionary, battle:
             return {"ok":false,"reason":"warehouse_overflow"}
     var ids: Array = items.keys()
     ids.sort()
+    var old_items := state.sect.warehouse_resources.duplicate(true)
+    var old_events := state.sect.warehouse_event_count
     for item_id in ids:
         if not warehouse.add(state,StringName(item_id),int(items[item_id])):
+            state.sect.warehouse_resources = old_items
+            state.sect.warehouse_event_count = old_events
             return {"ok":false,"reason":"warehouse_commit_failed"}
+    # Counter advances only after the entire real victorious warehouse claim.
+    if str(spawn_data.get("region_id","")) == "thanh_truc_lam":
+        var progress := clampi(int(state.sect.v2_body_material_progress.get(
+            "linh_tuy_thanh_truc_wins",0)),0,LINH_TUY_GUARANTEE_WINS-1)
+        state.sect.v2_body_material_progress["linh_tuy_thanh_truc_wins"] = (
+            (progress+1) % LINH_TUY_GUARANTEE_WINS
+        )
     state.sect.v2_pve_reward_claims[encounter_id] = true
     return {"ok":true,"encounter_id":encounter_id,"region_id":spawn_data["region_id"],
         "level":spawn_data["level"],"items":items}
