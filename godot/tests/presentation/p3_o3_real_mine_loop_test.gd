@@ -56,6 +56,17 @@ func _run() -> void:
         _fail("O3 UI failed to assign the target to a real active Mine slot.")
         return
 
+    # The scheduler owns every disciple. Freeze non-target actors through the
+    # real HOLD command so unrelated hunts/forge-loot deposits cannot contaminate
+    # the ore delta attributed to this isolated Mine cycle.
+    for raw_id in state.disciples.keys():
+        var hold_id := StringName(raw_id)
+        if hold_id == target_id:
+            continue
+        if not workforce.issue_command(state, hold_id, WorkforceSystem.COMMAND_HOLD, "", 300):
+            _fail("O3 could not isolate non-target disciple %s with canonical HOLD." % str(hold_id))
+            return
+
     var work_button := ui.find_child("Work_mining_%s" % str(target_id), true, false) as Button
     if work_button == null or work_button.disabled:
         _fail("O3 active Mine worker does not have an enabled player-facing work command.")
@@ -203,6 +214,9 @@ func _run() -> void:
         return
     if workforce.issue_command(state, target_id, WorkforceSystem.COMMAND_WORK, str(WorkforceSystem.PROF_MINING), 40):
         _fail("O3 backend accepted a mining command without an active Mine slot.")
+        return
+    if not workforce.issue_command(state, target_id, WorkforceSystem.COMMAND_HOLD, "", 100):
+        _fail("O3 could not isolate the withdrawn miner after interruption.")
         return
 
     for _i in range(50):
