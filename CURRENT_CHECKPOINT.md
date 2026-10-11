@@ -8,6 +8,45 @@ It is not a historical changelog.
 Read `docs/GAME_SYSTEM_ARCHITECTURE.md` for system structure and phase discipline.
 
 
+## O8 DESIGN REVIEW — LUYỆN ĐAN NHẬP MÔN (2026-10-12)
+
+**Status: DESIGN READY / CODE NOT AUTHORIZED.** Review source is live `main` after O7 closure. No gameplay code, recipe, resource amount, HP rule, EXP rule or balance value was changed by this review.
+
+**Verified current gap:** `WorkforceSystem.PROF_ALCHEMY = alchemy` already exists in `VALID_PROFESSIONS`, but current scheduler/action mapping does not route Alchemy, no P3.7 Luyện Đan building exists, no alchemy work group exists, no recipe/job authority exists, and no canonical pill resource/consumer exists. Existing `medicine_stock` is a separate P1.6 logistics pool initialized and produced by `NeedsSystem`; it is capped and consumed by `heal_with_medicine()`. O8 must NOT disguise a new pill as `medicine_stock` or create a second Warehouse.
+
+**Building/profession boundary:** add one fresh `alchemy_hall` / **Luyện Đan Điện** Lv1 instance, reuse existing profession `alchemy` / **Luyện Đan**, and add `alchemy_crew`. Do not alias Dược Phòng/Y Quán: Luyện Đan is a manufacturing building; Dược Phòng remains the healing consumer/service. Follow the canonical crafting-building default of 2 workers at Lv1 and +1 slot per 10 levels structurally, but expose no Luyện Đan upgrade spending in O8 until its base coefficients/milestone component economics are explicitly authored.
+
+**Recommended production model: `timed_recipe`, building-owned.** Do not reuse O7 carry-cycle. Each active job belongs to `BuildingState.production_state` and snapshots at minimum `job_id + recipe_id + worker_id + started_tick + finish_tick + inputs + output_resource_id + output_quantity`. The building also persists a monotonic job sequence plus the one allowed O8 recipe policy. At most one active job per active worker; Lv1 can therefore run up to two in parallel if two legal workers and enough inputs exist. Spirit Field remains plot/timer authority and Mine/Linh Lâm remain carry-cycle authority.
+
+**Recommended O8 recipe registry:** introduce a tiny Alchemy recipe registry with exactly one opening recipe:
+- `hoi_xuan_dan` / **Hồi Xuân Đan**;
+- input: `thanh_linh_thao x3`;
+- output: `hoi_xuan_dan x1`;
+- required Luyện Đan level: 1;
+- recommended integration baseline: base **6 simulation ticks** before canonical work-speed reduction;
+- profession XP uses the existing shared Base Work XP / Thông Tuệ / profession-modifier authority;
+- no success RNG, quality roll, rare pill, Yêu Đan, fuel, extra Linh Thạch cost or secondary by-product in O8.
+
+The 3→1 baseline deliberately makes one normal Lv1 Thanh Linh Thảo harvest (base yield 3) fund one pill and keeps provenance readable. The 6-tick duration is an O8 integration baseline only; M3 owns later balance.
+
+**Start/automation transaction:** O8 should expose one standing recipe permission (not a multi-recipe advanced queue). Assigned legal alchemists may start that recipe during normal work scheduling while the permission is enabled. Job start must atomically call canonical Warehouse requirements with reserve/lock respected; if unavailable/locked, create no job, spend nothing and grant no profession XP. Inputs are committed exactly once when the job is created. Profession work speed determines duration, not routine output quantity. A worker with an active alchemy job is reserved until completion and cannot be reassigned. Turning the standing recipe OFF only prevents new jobs; already-paid jobs finish. No cancel/refund mechanic is added in O8. Advanced multi-recipe/reserve-priority queue remains the later Lv10-style feature.
+
+**Completion transaction:** `BuildingSystem.process_tick` resolves due timed-recipe jobs deterministically, deposits exactly the snapshotted output into the one canonical `WarehouseSystem`, increments production metrics and removes the finished job in the same simulation step. Reload mid-job must preserve the original `finish_tick` and input receipt; reload after completion must not replay output. New timed-recipe fields require explicit save normalization without changing old Mine/Forest/Field save shapes.
+
+**Consumable authority:** add stackable canonical resource `hoi_xuan_dan`; recommended tags are pill/healing/alchemy-product, with no market behavior in O8. Add one real simulation consumer under Needs/Dược Phòng authority: a player may use exactly one available Hồi Xuân Đan on an injured in-sect disciple. Recommended opening effect is fixed **+55 HP capped at max HP**, matching the magnitude of the current ordinary heal action but with **no personal-wallet fee and no `medicine_stock` debit** because the pill itself is the paid Sect-owned input chain. Use must respect Warehouse reserve/lock and fail without consumption when target is not injured/eligible. O8 does not replace or auto-route the legacy HEAL/medicine logistics path; migration can be a later packet.
+
+**Talent boundary:** do not add Alchemy to profession-talent generation in O8. Current deterministic P3.7 talent pool only rolls Forge/Miner/Herbalist; adding Alchemy would change recruitment distributions and broaden scope. Alchemy still gains ordinary profession XP through the shared profession system. A proper Alchemy Talent migration can be reviewed separately.
+
+**Player-facing scope:** add a real 1280×720 Luyện Đan Điện destination/panel separate from Dược Phòng. Panel shows active workers/jobs, recipe, remaining time, Thanh Linh Thảo total/available, Hồi Xuân Đan total/available, and standing recipe enable/disable. `WORK_ALCHEMY` maps actors to Luyện Đan Điện. Dược Phòng shows canonical Hồi Xuân Đan stock and a real use button for eligible injured disciples. Presentation never consumes herbs, mints pills or changes HP directly.
+
+**Source benchmark lesson, not authority:** ZQZS AndroidData `UIDanYaoModel` exposes recipe-cost checks, `need_times`, begin-time/pause/batch state and queue records; `UIDanYaoController` sends building/recipe/count requests and later receives start/progress/reward state. This supports the architectural pattern “recipe config + building-owned timed jobs + explicit completion”, but server-side authoritative formulas/final stock behavior remain unknown. No IDs, recipe values, queue limits, Lua code or assets are copied.
+
+**Required O8 acceptance if later authorized:** from a clean P3.2 scene, produce real Thanh Linh Thảo through actual Linh Điền; prove reserve/lock blocks Alchemy start; assign a real alchemist and enable the standing recipe; prove exactly 3 herbs are committed once and no pill appears early; save/reload mid-job with identical finish/input state; deny worker reassignment/duplicate start; finish exactly one pill into canonical Warehouse; reload with no replay; prove Alchemy XP; use the pill through the real Dược Phòng consumer on an injured disciple and verify pill -1, +55 HP, unchanged `medicine_stock`, wallet and treasury; then produce another legal herb batch and prove the standing recipe can start again without another per-batch click. Final O8 closure requires focused Godot 4.7.2 plus O1–O7/DV2/P3.7 cumulative. Windows visual/click/APK remains **PENDING USER**.
+
+**Explicit exclusions:** no O9, no manager system, no multi-recipe queue, no Tu Vi/breakthrough/body pill, no Yêu Đan recipe, no quality/success/rare/explosion system, no market price, no hunter auto-loadout, no medicine-stock migration, no building upgrade economy and no M3 balance.
+
+---
+
 ## O7 CLOSURE — LINH LÂM + GENERIC BUILDING JOB (2026-10-12)
 
 **Authorized packet:** User expressly authorized **CODE O7 ONLY** under the locked Linh Lâm contract. Final gameplay source SHA: `c8fe044c14c55f7988408c2d6498623cc92810c7`. Final CI-only fan-out SHA: `e74e7f5482844254811c3d0f75fa63400b509f23`. O7 is now **CLOSED / FOCUSED PASS / FULL PASS** on official Godot 4.7.2 Linux.
