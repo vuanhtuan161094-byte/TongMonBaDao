@@ -116,11 +116,13 @@ static func validate_registry() -> Dictionary:
         if not registry.has(StringName(item_id)):
             return {"ok": false, "reason": "unregistered_body_gate_resource", "item_id": item_id}
         var definition := registry.definition(StringName(item_id))
-        if str(definition.get("family", "")).is_empty() or
+        if (
+            str(definition.get("family", "")).is_empty() or
             str(definition.get("realm_grade", "")).is_empty() or
             int(definition.get("realm_rank", -1)) < 0 or
             not (definition.get("tags", null) is Array) or
-            not (definition.get("market_value", null) is int):
+            not (definition.get("market_value", null) is int)
+        ):
             return {"ok": false, "reason": "invalid_body_gate_resource_metadata", "item_id": item_id}
     for seal_id in GATE_SEALS.values():
         if not registry.has_tag(StringName(seal_id), &"body_gate_seal"):
