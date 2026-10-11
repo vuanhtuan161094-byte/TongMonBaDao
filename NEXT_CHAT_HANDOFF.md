@@ -4,6 +4,16 @@
 
 **Repo:** `vuanhtuan161094-byte/TongMonBaDao` · **branch:** `main` · **engine:** Godot 4.7.2. **User yêu cầu thao tác bằng GitHub connector trực tiếp; KHÔNG Codex, KHÔNG Work.** Trước mọi sửa đổi phải fetch lại `main` vì SHA sẽ thay đổi sau các commit bàn giao. **Latest DV2-03E3.1 gameplay/test source with focused PASS:** `3c7e9a7691f549097dd0a67ed50ead8b7be18a4c` (slot-transfer, Workforce exclusive priority, invalid orders, 2-slot multi-minute/no-stone regression). Fetch live `main` before the next edit; docs-only handoff commits may move HEAD.
 
+## DV2-03F BƯỚC 3 RESEARCH REVIEW — 11/10/2026, AWAIT USER APPROVAL
+
+Research-only Step 3 is now recorded in `docs/DV2_03F_BODY_GATE_MATERIAL_TRANSACTION_FINAL_REVIEW.md` **section M** (29-row source/access + XP + Sect stone economics + final F01–F12 approval decisions). Source code/testing remains at E3.1 SHA `3c7e9a7691f549097dd0a67ed50ead8b7be18a4c`; GitHub document additions do **not** add gameplay, register IDs, implement sources or validate gates. Latest section-M document commit: `0d946a9e3cab77d58bddf9edcf3c1e4a0ae754fc`. Verify live `main` again before edits.
+
+**Critical new proof:** `DiscipleProgressionBalanceV2` cumulative r1..r29 Body EXP = 37,890,400,000. At unbuffed paid 1,500 EXP/min (60 real seconds/simulation minute), a single actor needs ~48.06 continuous years to enter r30 without other effective sources. Rèn Thân has only 2 slots, 1 stone/min/trainee; expedition source type 750 is **not yet proven an actual automatically operating V2 PvE income stream**. Keep the locked EXP unchanged; do not represent full high-realm progression as economically verified.
+
+**Field Lv30 hidden prerequisite:** upgrading Lv1→Lv30 costs 1,238 linh_moc, 625 thanh_thiet, 3,687 Sect stones, six linh_tuyen_chi_tam (=600 fragments via current 100:1 recipe). 5% base fragment chance => expected 12,000 harvests at factor1, no deterministic time bound. Therefore gate4 must NEVER require Lv30 field/heart. Cohort-funding concern: two paid Rèn slots + 4 full Lv1 plots burn ~4,800 Sect stones/day, while sustainable Sect stone income has no confirmed lower bound; old P0 `treasury` isn't Sect stone. Both B guarantee and genuine earned stone funding need a dedicated pilot.
+
+**Final decisions F01–F12** listed in section M cover quantities, two earned named sources per ID, B early supply, C–H/3 repeatable Seals, optional provisional 3main/30 team-min and 1aux/≤4 wins and 1seal/≤8 wins, nonfree earned Sect Stone revenue, scalable cohort demand, no auto gate by default, atomic source/gate receipts, locked EXP retained, fail-closed release policy, test acceptance. User has **NOT** granted final DESIGN LOCKED or code permission. **Next action:** present decision list and seek explicit approval. No new Godot/Windows test was run in Step 3.
+
 ## LATEST DV2-03F DESIGN CHECKPOINT — 11/10/2026 (AWAIT USER FINAL APPROVAL)
 
 User **approved in principle** 8 material groups, all 29 recipe quantities and 3 consumed repeatable Realm Seals (gates 10/20/29), multi-route guaranteed sources, Body gate deterministic 100%, no Tu Vi=Luyện Thể requirement, and no EXP/balance changes. **Do NOT code until final approval.** Full technical proposal saved in `docs/DV2_03F_BODY_GATE_MATERIAL_TRANSACTION_FINAL_REVIEW.md`. This is **DRAFT FOR FINAL REVIEW**, not a new closed phase.
