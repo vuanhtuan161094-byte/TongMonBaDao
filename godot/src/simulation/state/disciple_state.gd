@@ -414,7 +414,11 @@ static func _work_cycle_dictionary(value: Variant) -> Dictionary:
     if not (value is Dictionary) or value.is_empty():
         return normalized
     normalized["profession"] = str(value.get("profession", ""))
+    if value.has("profession_id"):
+        normalized["profession_id"] = str(value.get("profession_id", value.get("profession", "")))
     normalized["building_id"] = str(value.get("building_id", ""))
+    if value.has("resource_id"):
+        normalized["resource_id"] = str(value.get("resource_id", ""))
     if value.has("task"):
         normalized["task"] = str(value.get("task", ""))
     normalized["phase"] = str(value.get("phase", "travel_out"))
