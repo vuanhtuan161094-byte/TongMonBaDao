@@ -1,10 +1,26 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
-**Bàn giao cập nhật: 11/10/2026 — DV2-03E3.1 backend + focused test đã qua Godot CI; full cumulative theo trạng thái ở mục mới nhất.**
+**Bàn giao cập nhật: 11/10/2026 — O3 real Mine player loop CLOSED; focused + P3.7 FAST/FULL Godot 4.7.2 Linux PASS.**
 
 **Repo:** `vuanhtuan161094-byte/TongMonBaDao` · **branch:** `main` · **engine:** Godot 4.7.2. **User yêu cầu thao tác bằng GitHub connector trực tiếp; KHÔNG Codex, KHÔNG Work.** Trước mọi sửa đổi phải fetch lại `main` vì SHA sẽ thay đổi sau các commit bàn giao. **Latest DV2-03E3.1 gameplay/test source with focused PASS:** `3c7e9a7691f549097dd0a67ed50ead8b7be18a4c` (slot-transfer, Workforce exclusive priority, invalid orders, 2-slot multi-minute/no-stone regression). Fetch live `main` before the next edit; docs-only handoff commits may move HEAD.
 
 
+
+## CURRENT FIRST-PLAYABLE HANDOFF — O3 CLOSED — REAL MINE LOOP GREEN (2026-10-11)
+
+**Priority remains M1 opening gameplay, LANDSCAPE 1280×720.** User authorized **CODE O3 ONLY** and O3 is now closed. Production gameplay SHA: `8f7097e9f39ba34cf8f2b941a9b69a9a1933a2c5`; final focused test SHA: `513ac6bdaed7abd0fed7bb294b0ecf8d26900af1`.
+
+**What O3 now provides:** the live Mine panel uses authoritative P3.7 active slots and cycle state; player mining orders require a real active Mine slot; removing/changing the worker cancels its Mine work-cycle plus matching direct command; waiting members cannot receive fake mining work. The actual production path remains `P3.2 UI → WorkforceSystem → SimulationScheduler → BuildingSystem travel_out/mining/haul_back → WarehouseSystem`; no presentation-side reward exists.
+
+**Verified focused PASS:** [#38145823173](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38145823173), official Godot 4.7.2 Linux, COMPLETED/SUCCESS. Real-scene test uses UI group/work buttons, observes travel/extract/haul, saves/reloads mid-haul with carried ore, completes exactly one Mine batch into canonical Thanh Thiết, verifies Mine/Kho/top-bar equality and post-deposit persistence, interrupts a later cycle with no phantom output, and tests active-slot/waiting denial. Same job passes P3.7A1 Mine backend and P3.6A scene regression.
+
+**Verified cumulative PASS:** [P3.7 #38145660662](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38145660662) FAST + FULL SUCCESS on gameplay SHA `8f7097e9f39ba34cf8f2b941a9b69a9a1933a2c5`; [O1 #38145660367](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38145660367), [O2 #38145660371](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38145660371) and [DV2-03 #38145660368](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38145660368) all SUCCESS. [P3.6A Preview #38145660698](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38145660698) has FAST + capture PASS but overall FAILURE at artifact upload because storage quota is exhausted.
+
+**Historical red evidence:** #38145659655 = invalid workflow YAML path line, fixed in `84ad73c110a6985f74223e6ba228c2d866e7b931`; #38145683502 = test measurement contaminated by unrelated autonomous hunting forge-loot deposits from the global scheduler. Final test isolates unrelated actors through canonical HOLD; production/reward rules were not changed.
+
+**Single next proposed packet, only after new user authorization: CODE O4 ONLY.** Connect the existing authoritative Spirit Field to the 1280×720 P3.2 map/management UI: real worker/plot assignment, crop/policy and Stone cost display, one-time legitimate payment, scheduler/timer growth, canonical harvest, blocked reasons, save/reload and no double plot/harvest. Fresh state already has 500 Sect Spirit Stones, so initial 3/4-Stone crops are affordable without rebalancing. Do **not** implement O5/O6, add free Stones, tune economy, alter EXP/Tu Vi/Luyện Thể/29 recipes, or reopen O1–O3. Windows current click/visual/packaging acceptance remains **PENDING USER**.
+
+---
 
 ## CURRENT FIRST-PLAYABLE HANDOFF — O2 CLOSED — FOCUSED + FULL GREEN (2026-10-11)
 
@@ -18,7 +34,7 @@
 
 **Historical red run:** O2 [#38141471378](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38141471378) failed because its first test tried to accept a pre-V2 candidate after live V2 birth became mandatory. The correction did not weaken the gameplay gate; it made the UI and test honor the canonical V2 candidate rule.
 
-**Single next proposed packet, only after new user authorization: CODE O3 ONLY.** Prove the player-facing Mine loop in the real P3.2 scene: choose/assign a real disciple → actual scheduler/building travel/extract/haul work → canonical Thanh Thiết increases → Mine/Kho/top bar agree → interruption/removal and save/reload do not duplicate output. Do **not** implement O4 Spirit Field, O5 consumer, O6 release rehearsal, rebalance economy, alter EXP/Tu Vi/Luyện Thể/29 formulas, or reopen O1/O2. Windows current click/visual/packaging acceptance stays **PENDING USER** because no PC is available.
+**O3 was subsequently authorized and completed.** See the current O3 handoff above. O4 remains the next unstarted packet and requires explicit user authorization. Windows current click/visual/packaging acceptance stays **PENDING USER** because no PC is available.
 
 ---
 
