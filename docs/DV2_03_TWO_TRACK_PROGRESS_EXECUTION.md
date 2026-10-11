@@ -3,6 +3,19 @@
 Ngày: 2026-10-09
 Giai đoạn: **DV2-03 ACTIVE — mã lõi/hoạt động theo tick đã PASS focused Linux Godot 4.7.2; production realtime/UI/balance và cumulative trên SHA code mới nhất vẫn chưa đóng.**
 
+
+## 2026-10-11 — DV2-03F PHƯƠNG ÁN A / SCOPE CORRECTION (LATEST, DOCS ONLY)
+
+**User decision:** chọn phương án A để **giữ đúng roadmap Đệ Tử V2**, giữ nguyên **29 recipes + 8 groups + 3 Seals + EXP/rates/Body rules**; ưu tiên săn quái/Boss/vùng tài nguyên làm nguồn vật phẩm Thối Thể, chống kẹt bằng **hoạt động thật có giới hạn kết quả**, tinh giản toàn bộ ủy thác riêng/kinh tế cao giới và chưa design các events, Pháp Bảo, đan. **CHƯA CODE, CHƯA DESIGN LOCKED**. Xem `docs/DV2_03F_BODY_GATE_MATERIAL_TRANSACTION_FINAL_REVIEW.md` **mục O** (được ưu tiên hơn mục N trước đó khi khác phạm vi).
+
+**Nghĩa vụ DV2-03F hiện hành:** manifest 29 cổng và 19 ID chuẩn; preview/commit Body gate đúng EXP, tiêu gói nguyên liệu, HP ratio, kho lock/reserve, all-or-nothing, chống double claim, save/load; nối **nguồn kiếm thật A/B** (Tử Vân Thảo trước gate4 không yêu cầu Linh Điền Lv30; Linh Tủy không rare-only) với drop từ actual PvE/region activity; UI mở cổng khả dụng, high-tier thiếu nguồn phải báo `content_unavailable` và không hiện reward giả. **Không có yêu cầu phải xây 12 nhóm C–H?** Không: C–H là **12 ID vật liệu thuộc 6 nhóm C–H** + 3 Ấn đã duyệt tên/công thức, **chưa có source/content**; chỉ metadata trước, triển khai sources khi giai đoạn map tương ứng được chấp thuận. Không được khai báo 29/29 playable trong lát A/B.
+
+**Thứ tự gói dự kiến (chưa cho phép code):** F0 audit/đo nguồn đã có → F1 29 manifests + 15 registered IDs mới → F2 gate atomic transaction → F3 earned hunting/region A/B source + chống kẹt → F4 giao diện cổng → F5 thử nghiệm A/B low-tier F05/F07/F10 thật với dải rộng → F6 focused/full same-SHA → F7 bàn giao trung thực scope; **không triển khai cùng lúc sang DV2-04**. Cân bằng EXP cao giới, full hunting automation, 1k/3k throughput, kỳ ngộ/pháp bảo/đan thuộc DV2-08/10 và các authority sau, không là rào cản cân bằng thấp giới. Nếu các gate cao chưa có nguồn mà quy tắc phase-close còn yêu cầu đủ, giữ DV2-03 ACTIVE và trình quyết định ranh giới closure.
+
+**Evidence:** E3.1 prior official Linux focused/full PASS at gameplay SHA `3c7e9a7691f549097dd0a67ed50ead8b7be18a4c`; phương án A mới chỉ là hợp đồng, không chạy CI/Godot, Windows còn PENDING USER. Các mục lịch sử C/D/E/F/G bên dưới giữ để truy nguyên, không tự ghi đè quyết định mới.
+
+---
+
 ## Bằng chứng mới nhất, 09/10/2026 — nguồn kiểm tra trên live main
 
 **Mã runtime code mới nhất được kiểm thử focused:** `e96df1832036c1232f9d0db69d1f37450d0265f9`; [DV2-03 Actions #37895517181](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/37895517181), **completed/success**. Các bước: cài binary Godot **4.7.2 Linux**, parse cả project, chạy `dv2_03_realm_body_progress_test.gd` và `dv2_03_training_actions_test.gd`, **đều success**. Điều này chứng minh test trên engine thật của runner CI, **không phải máy Windows của người chơi**, không tự động chứng minh UI/gameplay ngoài bản đồ.
