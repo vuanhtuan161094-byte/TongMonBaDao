@@ -2,11 +2,13 @@ class_name BuildingSystem
 extends RefCounted
 
 const TYPE_MINE := &"mine"
+const TYPE_LINH_FOREST := &"linh_forest"
 const TYPE_SPIRIT_FIELD := &"spirit_field"
 const TYPE_GUIDANCE_PLATFORM := &"dan_tien_dai"
 const TYPE_BODY_TRAINING := &"ren_than_duong"
 
 const PROF_MINING := &"mining"
+const PROF_FORESTRY := &"forestry"
 const PROF_HERBALISM := &"herbalism"
 
 const STATUS_ACTIVE := &"active"
@@ -59,6 +61,11 @@ const DEFINITIONS := {
         "name": "Mỏ Linh Khoáng",
         "max_level": 100,
         "worker_group_id": "mining_crew",
+        "profession_id": "mining",
+        "job_model": "carry_cycle",
+        "resource_id": MATERIAL_ORE,
+        "cycle_phases": ["travel_out", "mining", "haul_back"],
+        "cycle_work_phase": "mining",
         "base_worker_slots": 2,
         "worker_slot_every": 5,
         "base_wood_cost": 4,
@@ -71,10 +78,30 @@ const DEFINITIONS := {
         "base_work_duration": 4.0,
         "base_batch_units": 2
     },
+    "linh_forest": {
+        "name": "Linh Lâm",
+        "max_level": 100,
+        "worker_group_id": "forestry_crew",
+        "profession_id": "forestry",
+        "job_model": "carry_cycle",
+        "resource_id": MATERIAL_WOOD,
+        "cycle_phases": ["travel_out", "harvesting", "haul_back"],
+        "cycle_work_phase": "harvesting",
+        "base_worker_slots": 2,
+        "worker_slot_every": 5,
+        "work_distance": 8.0,
+        "haul_distance": 6.0,
+        "base_work_duration": 4.0,
+        "base_batch_units": 2,
+        "upgrade_enabled": false,
+        "requires_milestone_component": false
+    },
     "spirit_field": {
         "name": "Linh Điền",
         "max_level": 100,
         "worker_group_id": "herbalism_crew",
+        "profession_id": "herbalism",
+        "job_model": "plot_timer",
         "base_worker_slots": 4,
         "worker_slot_every": 5,
         "base_wood_cost": 6,
@@ -130,9 +157,21 @@ func initialize(state: SimulationState) -> void:
         }
         state.sect.workforce_event_count += 1
 
+    if not state.sect.work_groups.has("forestry_crew"):
+        state.sect.work_groups["forestry_crew"] = {
+            "name": "Đội Lâm Nghiệp",
+            "priorities": {"forestry": 3}
+        }
+        state.sect.workforce_event_count += 1
+
     if primary_building(state, TYPE_MINE) == null:
         var mine := create_building(TYPE_MINE, 1)
         state.buildings[str(mine.id)] = mine
+        state.building_event_count += 1
+
+    if primary_building(state, TYPE_LINH_FOREST) == null:
+        var forest := create_building(TYPE_LINH_FOREST, 1)
+        state.buildings[str(forest.id)] = forest
         state.building_event_count += 1
 
     if primary_building(state, TYPE_SPIRIT_FIELD) == null:
@@ -295,11 +334,36 @@ func can_disciple_work(state: SimulationState, building: BuildingState, disciple
         return false
     return active_worker_ids(state, building).has(disciple.id)
 
+func building_for_profession(state: SimulationState, profession_id: StringName, disciple: DiscipleState = null) -> BuildingState:
+    var building_type := building_type_for_profession(profession_id)
+    if building_type == &"":
+        return null
+    return _building_for_disciple(state, building_type, disciple)
+
+func building_type_for_profession(profession_id: StringName) -> StringName:
+    var types: Array = DEFINITIONS.keys()
+    types.sort()
+    for raw_type in types:
+        var definition: Dictionary = DEFINITIONS[raw_type]
+        if StringName(definition.get("profession_id", "")) == profession_id:
+            return StringName(raw_type)
+    return &""
+
+func worker_group_for_profession(profession_id: StringName) -> StringName:
+    var building_type := building_type_for_profession(profession_id)
+    if building_type == &"":
+        return &""
+    var definition: Dictionary = DEFINITIONS.get(str(building_type), {})
+    return StringName(definition.get("worker_group_id", ""))
+
+func is_building_profession(profession_id: StringName) -> bool:
+    return building_type_for_profession(profession_id) != &""
+
 func work_available(state: SimulationState, profession_id: StringName, disciple: DiscipleState = null) -> bool:
     match profession_id:
-        PROF_MINING:
-            var mine := _building_for_disciple(state, TYPE_MINE, disciple)
-            return mine != null and (disciple == null or can_disciple_work(state, mine, disciple))
+        PROF_MINING, PROF_FORESTRY:
+            var producer := building_for_profession(state, profession_id, disciple)
+            return producer != null and (disciple == null or can_disciple_work(state, producer, disciple))
         PROF_HERBALISM:
             if disciple != null:
                 var field := _building_for_disciple(state, TYPE_SPIRIT_FIELD, disciple)
@@ -408,7 +472,10 @@ func can_start_upgrade(state: SimulationState, building_id: StringName) -> Dicti
     if building.level >= building.max_level:
         return {"ok": false, "reason": "max_level"}
 
-    # No unapproved upgrade economy or slot curve for Rèn Thân Đường yet.
+    # Do not manufacture upgrade economics for facilities whose coefficients
+    # and milestone content are not yet authored.
+    if not bool(definition_for(building).get("upgrade_enabled", true)):
+        return {"ok": false, "reason": "upgrade_content_pending"}
     if building.building_type == TYPE_BODY_TRAINING:
         return {"ok": false, "reason": "body_training_upgrade_content_pending"}
     var target_level := building.level + 1
@@ -473,59 +540,88 @@ func process_tick(state: SimulationState) -> void:
             _process_spirit_field_plots(state, building)
 
 func perform_mining_step(state: SimulationState, disciple: DiscipleState, work_speed: float) -> Dictionary:
-    var mine := _building_for_disciple(state, TYPE_MINE, disciple)
-    if mine == null or not can_disciple_work(state, mine, disciple):
-        return {"ok": false, "completed": false, "reason": "no_active_mine_slot"}
+    return perform_resource_job_step(state, disciple, work_speed, PROF_MINING)
+
+func perform_forestry_step(state: SimulationState, disciple: DiscipleState, work_speed: float) -> Dictionary:
+    return perform_resource_job_step(state, disciple, work_speed, PROF_FORESTRY)
+
+# Generic carry-cycle producer used by Mine and Linh Lâm. Spirit Field remains
+# plot/timer authority and intentionally does not use this envelope.
+func perform_resource_job_step(state: SimulationState, disciple: DiscipleState, work_speed: float, profession_id: StringName) -> Dictionary:
+    var producer := building_for_profession(state, profession_id, disciple)
+    if producer == null or not can_disciple_work(state, producer, disciple):
+        return {"ok": false, "completed": false, "reason": "no_active_building_slot"}
+
+    var definition := definition_for(producer)
+    if str(definition.get("job_model", "")) != "carry_cycle":
+        return {"ok": false, "completed": false, "reason": "unsupported_job_model"}
+
+    var phases = definition.get("cycle_phases", [])
+    if not (phases is Array) or phases.size() < 3:
+        return {"ok": false, "completed": false, "reason": "invalid_job_definition"}
+    var start_phase := StringName(phases[0])
+    var work_phase := StringName(definition.get("cycle_work_phase", ""))
+    var resource_id := StringName(definition.get("resource_id", ""))
+    if work_phase == &"" or resource_id == &"":
+        return {"ok": false, "completed": false, "reason": "invalid_job_definition"}
 
     var cycle := disciple.work_cycle_state.duplicate(true)
-    if str(cycle.get("profession", "")) != str(PROF_MINING) or str(cycle.get("building_id", "")) != str(mine.id):
+    var cycle_profession := StringName(cycle.get("profession_id", cycle.get("profession", "")))
+    if cycle_profession != profession_id or str(cycle.get("building_id", "")) != str(producer.id):
         cycle = {
-            "profession": str(PROF_MINING),
-            "building_id": str(mine.id),
-            "phase": "travel_out",
+            "profession": str(profession_id),
+            "profession_id": str(profession_id),
+            "building_id": str(producer.id),
+            "resource_id": str(resource_id),
+            "phase": str(start_phase),
             "progress": 0.0,
             "carried_units": 0
         }
+    else:
+        # Normalize old Mine saves forward without renaming their phases.
+        cycle["profession"] = str(profession_id)
+        cycle["profession_id"] = str(profession_id)
+        cycle["resource_id"] = str(resource_id)
 
-    var phase := StringName(cycle.get("phase", "travel_out"))
+    var phase := StringName(cycle.get("phase", str(start_phase)))
     var progress := maxf(float(cycle.get("progress", 0.0)), 0.0)
     var result := {
         "ok": true,
         "completed": false,
         "phase": str(phase),
-        "building_id": str(mine.id),
+        "profession_id": str(profession_id),
+        "building_id": str(producer.id),
+        "resource_id": str(resource_id),
         "stamina_cost": 1.0
     }
 
-    match phase:
-        &"travel_out":
-            progress += _movement_speed(state, disciple)
-            if progress + 0.000001 >= float(definition_for(mine).get("work_distance", 8.0)):
-                phase = &"mining"
-                progress = 0.0
-        &"mining":
-            progress += maxf(work_speed, 0.25)
-            result["stamina_cost"] = 3.0
-            if progress + 0.000001 >= _mining_duration(mine):
-                phase = &"haul_back"
-                progress = 0.0
-                cycle["carried_units"] = _mining_batch_units(mine)
-        &"haul_back":
-            progress += _movement_speed(state, disciple) * _haul_speed_multiplier(disciple)
-            if progress + 0.000001 >= float(definition_for(mine).get("haul_distance", 6.0)):
-                var produced := maxi(int(cycle.get("carried_units", 0)), 1)
-                _deposit_resource(state, mine, MATERIAL_ORE, produced)
-                phase = &"complete"
-                progress = 0.0
-                cycle["carried_units"] = 0
-                result["completed"] = true
-                result["produced"] = produced
-                result["resource_id"] = MATERIAL_ORE
-                result["deposited_to"] = "sect_main_warehouse"
-        _:
-            phase = &"travel_out"
+    if phase == &"travel_out":
+        progress += _movement_speed(state, disciple)
+        if progress + 0.000001 >= float(definition.get("work_distance", 8.0)):
+            phase = work_phase
+            progress = 0.0
+    elif phase == work_phase:
+        progress += maxf(work_speed, 0.25)
+        result["stamina_cost"] = 3.0
+        if progress + 0.000001 >= _resource_job_duration(producer):
+            phase = &"haul_back"
+            progress = 0.0
+            cycle["carried_units"] = _resource_job_batch_units(producer)
+    elif phase == &"haul_back":
+        progress += _movement_speed(state, disciple) * _haul_speed_multiplier(disciple)
+        if progress + 0.000001 >= float(definition.get("haul_distance", 6.0)):
+            var produced := maxi(int(cycle.get("carried_units", 0)), 1)
+            _deposit_resource(state, producer, str(resource_id), produced)
+            phase = &"complete"
             progress = 0.0
             cycle["carried_units"] = 0
+            result["completed"] = true
+            result["produced"] = produced
+            result["deposited_to"] = "sect_main_warehouse"
+    else:
+        phase = start_phase
+        progress = 0.0
+        cycle["carried_units"] = 0
 
     result["next_phase"] = str(phase)
     result["progress"] = progress
@@ -599,15 +695,24 @@ func perform_spirit_field_step(state: SimulationState, disciple: DiscipleState, 
 func cancel_work_cycle(state: SimulationState, disciple: DiscipleState, settle_carried: bool = true) -> int:
     if disciple.work_cycle_state.is_empty():
         return 0
-    var profession := StringName(disciple.work_cycle_state.get("profession", ""))
+    var cycle := disciple.work_cycle_state
+    var profession := StringName(cycle.get("profession_id", cycle.get("profession", "")))
     var deposited := 0
-    if settle_carried and profession == PROF_MINING:
-        deposited = maxi(int(disciple.work_cycle_state.get("carried_units", 0)), 0)
-        if deposited > 0:
-            var building_id := StringName(disciple.work_cycle_state.get("building_id", ""))
-            var mine = state.buildings.get(str(building_id))
-            if mine is BuildingState and mine.building_type == TYPE_MINE:
-                _deposit_resource(state, mine, MATERIAL_ORE, deposited)
+    if settle_carried:
+        var carried := maxi(int(cycle.get("carried_units", 0)), 0)
+        var building_id := StringName(cycle.get("building_id", ""))
+        var producer = state.buildings.get(str(building_id))
+        if carried > 0 and producer is BuildingState:
+            var definition := definition_for(producer)
+            var expected_profession := StringName(definition.get("profession_id", ""))
+            var resource_id := StringName(cycle.get("resource_id", definition.get("resource_id", "")))
+            if (
+                str(definition.get("job_model", "")) == "carry_cycle"
+                and profession == expected_profession
+                and resource_id != &""
+            ):
+                _deposit_resource(state, producer, str(resource_id), carried)
+                deposited = carried
     disciple.work_cycle_state.clear()
     return deposited
 
@@ -694,17 +799,33 @@ func validate_invariants(state: SimulationState) -> Array[String]:
         var disciple: DiscipleState = disciple_value
         if disciple.work_cycle_state.is_empty():
             continue
-        var profession := StringName(disciple.work_cycle_state.get("profession", ""))
+        var profession := StringName(disciple.work_cycle_state.get("profession_id", disciple.work_cycle_state.get("profession", "")))
         var building_id := str(disciple.work_cycle_state.get("building_id", ""))
         var phase := StringName(disciple.work_cycle_state.get("phase", ""))
-        if profession != PROF_MINING and profession != PROF_HERBALISM:
-            errors.append("%s has unsupported P3.7 work-cycle profession." % disciple.display_name)
         if not state.buildings.has(building_id):
             errors.append("%s references missing work-cycle building." % disciple.display_name)
-        if profession == PROF_MINING and not [&"travel_out", &"mining", &"haul_back"].has(phase):
-            errors.append("%s has invalid mining work-cycle phase." % disciple.display_name)
-        if profession == PROF_HERBALISM and not [&"travel_out", &"tending", &"harvesting", &"haul_back"].has(phase):
-            errors.append("%s has invalid herbalism work-cycle phase." % disciple.display_name)
+        else:
+            var cycle_building = state.buildings[building_id]
+            if cycle_building is BuildingState:
+                var cycle_definition := definition_for(cycle_building)
+                var expected_profession := StringName(cycle_definition.get("profession_id", ""))
+                var job_model := str(cycle_definition.get("job_model", ""))
+                if job_model == "carry_cycle":
+                    if profession != expected_profession:
+                        errors.append("%s work-cycle profession/building mismatch." % disciple.display_name)
+                    var valid_phases = cycle_definition.get("cycle_phases", [])
+                    if not (valid_phases is Array) or not valid_phases.has(str(phase)):
+                        errors.append("%s has invalid resource-job phase." % disciple.display_name)
+                    var expected_resource := StringName(cycle_definition.get("resource_id", ""))
+                    var cycle_resource := StringName(disciple.work_cycle_state.get("resource_id", str(expected_resource)))
+                    if expected_resource == &"" or cycle_resource != expected_resource:
+                        errors.append("%s has invalid resource-job output identity." % disciple.display_name)
+                elif profession == PROF_HERBALISM:
+                    # Legacy pre-plot Field cycle compatibility only.
+                    if not [&"travel_out", &"tending", &"harvesting", &"haul_back"].has(phase):
+                        errors.append("%s has invalid herbalism work-cycle phase." % disciple.display_name)
+                else:
+                    errors.append("%s has unsupported P3.7 work-cycle profession." % disciple.display_name)
         if float(disciple.work_cycle_state.get("progress", 0.0)) < 0.0 or int(disciple.work_cycle_state.get("carried_units", 0)) < 0:
             errors.append("%s has invalid work-cycle progress." % disciple.display_name)
     return errors
@@ -1027,14 +1148,21 @@ func _movement_speed(state: SimulationState, disciple: DiscipleState) -> float:
 func _haul_speed_multiplier(_disciple: DiscipleState) -> float:
     return 1.0
 
-func _mining_duration(mine: BuildingState) -> float:
-    var base := float(definition_for(mine).get("base_work_duration", 4.0))
-    var facility_multiplier := maxf(0.50, 1.0 - float(maxi(mine.level - 1, 0)) * 0.005)
+func _resource_job_duration(building: BuildingState) -> float:
+    var base := float(definition_for(building).get("base_work_duration", 4.0))
+    var facility_multiplier := maxf(0.50, 1.0 - float(maxi(building.level - 1, 0)) * 0.005)
     return maxf(base * facility_multiplier, 1.0)
 
+func _resource_job_batch_units(building: BuildingState) -> int:
+    var base := maxi(int(definition_for(building).get("base_batch_units", 2)), 1)
+    return base + int(floor(float(building.level) / 10.0))
+
+# Keep old helper names for regression/debug compatibility.
+func _mining_duration(mine: BuildingState) -> float:
+    return _resource_job_duration(mine)
+
 func _mining_batch_units(mine: BuildingState) -> int:
-    var base := maxi(int(definition_for(mine).get("base_batch_units", 2)), 1)
-    return base + int(floor(float(mine.level) / 10.0))
+    return _resource_job_batch_units(mine)
 
 func _milestone_component(building_type: StringName, target_level: int) -> String:
     var table = MILESTONE_COMPONENTS.get(str(building_type), {})

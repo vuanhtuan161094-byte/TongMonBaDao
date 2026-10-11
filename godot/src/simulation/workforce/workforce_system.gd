@@ -5,8 +5,9 @@ const PROF_FORGING := &"forging"
 const PROF_ALCHEMY := &"alchemy"
 const PROF_HERBALISM := &"herbalism"
 const PROF_MINING := &"mining"
+const PROF_FORESTRY := &"forestry"
 const PROF_LOGISTICS := &"logistics"
-const VALID_PROFESSIONS := [PROF_FORGING, PROF_ALCHEMY, PROF_HERBALISM, PROF_MINING, PROF_LOGISTICS]
+const VALID_PROFESSIONS := [PROF_FORGING, PROF_ALCHEMY, PROF_HERBALISM, PROF_MINING, PROF_FORESTRY, PROF_LOGISTICS]
 
 const COMMAND_WORK := &"WORK_PROFESSION"
 const COMMAND_CULTIVATE := &"CULTIVATE"
@@ -114,12 +115,8 @@ func assign_group(state: SimulationState, disciple_id: StringName, group_id: Str
         if not bool(released.get("ok",false)):
             return false
     if state.p3_7_buildings_enabled and not disciple.work_cycle_state.is_empty():
-        var cycle_profession := StringName(disciple.work_cycle_state.get("profession", ""))
-        var expected_group := &""
-        if cycle_profession == PROF_MINING:
-            expected_group = &"mining_crew"
-        elif cycle_profession == PROF_HERBALISM:
-            expected_group = &"herbalism_crew"
+        var cycle_profession := StringName(disciple.work_cycle_state.get("profession_id", disciple.work_cycle_state.get("profession", "")))
+        var expected_group := building_system.worker_group_for_profession(cycle_profession)
         if expected_group != &"" and group_id != expected_group:
             building_system.cancel_work_cycle(state, disciple, true)
 
@@ -128,11 +125,7 @@ func assign_group(state: SimulationState, disciple_id: StringName, group_id: Str
     # missing building slot until TTL expires after the real work cycle is gone.
     if command_kind(disciple) == COMMAND_WORK:
         var commanded_profession := command_target(disciple)
-        var commanded_group := &""
-        if commanded_profession == PROF_MINING:
-            commanded_group = &"mining_crew"
-        elif commanded_profession == PROF_HERBALISM:
-            commanded_group = &"herbalism_crew"
+        var commanded_group := building_system.worker_group_for_profession(commanded_profession)
         if commanded_group != &"" and group_id != commanded_group:
             clear_command(state, disciple)
 
@@ -236,7 +229,7 @@ func issue_command(state: SimulationState, disciple_id: StringName, kind: String
     if (
         kind == COMMAND_WORK
         and state.p3_7_buildings_enabled
-        and [PROF_MINING, PROF_HERBALISM].has(StringName(target))
+        and building_system.is_building_profession(StringName(target))
         and not building_system.work_available(state, StringName(target), disciple)
     ):
         return false
@@ -301,11 +294,10 @@ func next_action(state: SimulationState, disciple: DiscipleState) -> StringName:
         return &"HOLD"
 
     if state.p3_7_buildings_enabled:
-        var cycle_profession := StringName(disciple.work_cycle_state.get("profession", ""))
-        if cycle_profession == PROF_MINING:
-            return &"WORK_MINING"
-        if cycle_profession == PROF_HERBALISM:
-            return &"WORK_HERBALISM"
+        var cycle_profession := StringName(disciple.work_cycle_state.get("profession_id", disciple.work_cycle_state.get("profession", "")))
+        var cycle_action := _profession_action(cycle_profession)
+        if cycle_action != &"":
+            return cycle_action
 
     if disciple.region_id != &"sect":
         return &""
@@ -359,6 +351,7 @@ func choose_work_profession(state: SimulationState, disciple: DiscipleState) -> 
     var candidates := [PROF_MINING, PROF_FORGING]
     if state.p3_7_buildings_enabled:
         candidates.append(PROF_HERBALISM)
+        candidates.append(PROF_FORESTRY)
     var best := &""
     var best_score := -1.0e30
     for profession_id in candidates:
@@ -383,6 +376,8 @@ func perform_work(state: SimulationState, disciple: DiscipleState, profession_id
     if state.p3_7_buildings_enabled:
         if profession_id == PROF_MINING:
             return _perform_p3_7_mining(state, disciple)
+        if profession_id == PROF_FORESTRY:
+            return _perform_p3_7_forestry(state, disciple)
         if profession_id == PROF_HERBALISM:
             return _perform_p3_7_herbalism(state, disciple)
     var duration := _work_duration(profession_id)
@@ -474,6 +469,36 @@ func _perform_p3_7_mining(state: SimulationState, disciple: DiscipleState) -> Di
     result["xp_gain"] = xp_gain
 
     if command_kind(disciple) == COMMAND_WORK and command_target(disciple) == PROF_MINING:
+        clear_command(state, disciple)
+    return result
+
+func _perform_p3_7_forestry(state: SimulationState, disciple: DiscipleState) -> Dictionary:
+    var result := building_system.perform_forestry_step(
+        state, disciple, _work_speed(state, disciple, PROF_FORESTRY)
+    )
+    if not bool(result.get("ok", false)):
+        return result
+
+    var stamina_cost := maxf(float(result.get("stamina_cost", 1.0)), 0.0)
+    if DiscipleRealmProgressV2.owns_v2_progression(disciple):
+        result["effective_stamina_cost"] = 0.0
+    else:
+        disciple.stamina = maxf(0.0, disciple.stamina - stamina_cost)
+        result["effective_stamina_cost"] = stamina_cost
+    result["work_cultivation_gain"] = _grant_p3_7_work_cultivation(state, disciple, PROF_FORESTRY)
+    disciple.metrics["work_actions"] = int(disciple.metrics.get("work_actions", 0)) + 1
+    if not bool(result.get("completed", false)):
+        return result
+
+    var key := str(PROF_FORESTRY)
+    var xp_gain := BASE_WORK_XP * _learning_multiplier(state, disciple, PROF_FORESTRY)
+    disciple.profession_xp[key] = profession_xp(disciple, PROF_FORESTRY) + xp_gain
+    disciple.metrics["work_completions"] = int(disciple.metrics.get("work_completions", 0)) + 1
+    disciple.metrics["forestry_completions"] = int(disciple.metrics.get("forestry_completions", 0)) + 1
+    state.sect.workforce_event_count += 1
+    result["xp_gain"] = xp_gain
+
+    if command_kind(disciple) == COMMAND_WORK and command_target(disciple) == PROF_FORESTRY:
         clear_command(state, disciple)
     return result
 
@@ -620,6 +645,8 @@ func _profession_action(profession_id: StringName) -> StringName:
             return &"WORK_FORGING"
         PROF_HERBALISM:
             return &"WORK_HERBALISM"
+        PROF_FORESTRY:
+            return &"WORK_FORESTRY"
         _:
             return &""
 

@@ -710,6 +710,8 @@ func _rebuild_building_management_controls() -> void:
         SectMapPresentation.DEST_MINE:
             _build_work_management(WorkforceSystem.PROF_MINING, &"mining_crew", "Đội Khai Khoáng", "Khai khoáng")
             _build_mine_upgrade_control()
+        SectMapPresentation.DEST_LINH_FOREST:
+            _build_work_management(WorkforceSystem.PROF_FORESTRY, &"forestry_crew", "Đội Lâm Nghiệp", "Thu hoạch")
         SectMapPresentation.DEST_SPIRIT_FIELD:
             _build_spirit_field_management()
         SectMapPresentation.DEST_FORGE:
@@ -1124,12 +1126,12 @@ func _craft_from_building(recipe_id: StringName) -> void:
 
 func _build_work_management(profession_id: StringName, group_id: StringName, group_label: String, order_label: String) -> void:
     _add_management_section_label("PHÂN CÔNG")
-    var active_mining_ids: Array[StringName] = []
-    if profession_id == WorkforceSystem.PROF_MINING:
-        var building_system := BuildingSystem.new()
-        var mine := building_system.primary_building(state, BuildingSystem.TYPE_MINE)
-        if mine != null:
-            active_mining_ids = building_system.active_worker_ids(state, mine)
+    var active_building_ids: Array[StringName] = []
+    var building_system := BuildingSystem.new()
+    if building_system.is_building_profession(profession_id):
+        var producer := building_system.building_for_profession(state, profession_id)
+        if producer != null:
+            active_building_ids = building_system.active_worker_ids(state, producer)
 
     var ids: Array = state.disciples.keys()
     ids.sort()
@@ -1154,11 +1156,13 @@ func _build_work_management(profession_id: StringName, group_id: StringName, gro
         order_button.text = order_label
         order_button.custom_minimum_size = Vector2(82, 34)
         order_button.add_theme_font_size_override("font_size", 11)
-        if profession_id == WorkforceSystem.PROF_MINING:
-            var has_active_mine_slot := active_mining_ids.has(disciple.id)
-            order_button.disabled = not has_active_mine_slot
-            if not has_active_mine_slot:
-                order_button.tooltip_text = "Cần thuộc một chỗ hoạt động của Mỏ trước khi ra lệnh."
+        if building_system.is_building_profession(profession_id):
+            var has_active_slot := active_building_ids.has(disciple.id)
+            order_button.disabled = not has_active_slot or not building_system.work_available(state, profession_id, disciple)
+            if not has_active_slot:
+                order_button.tooltip_text = "Cần thuộc một chỗ hoạt động của công trình trước khi ra lệnh."
+            elif order_button.disabled:
+                order_button.tooltip_text = "Công trình hiện chưa thể bắt đầu lượt làm việc mới."
         order_button.pressed.connect(Callable(self, "_issue_building_order").bind(
             disciple.id,
             WorkforceSystem.COMMAND_WORK,
@@ -1493,6 +1497,8 @@ func _building_operation_text(destination: StringName) -> String:
             return _main_hall_operation_text()
         SectMapPresentation.DEST_MINE:
             return _mine_operation_text()
+        SectMapPresentation.DEST_LINH_FOREST:
+            return _linh_forest_operation_text()
         SectMapPresentation.DEST_SPIRIT_FIELD:
             return _spirit_field_operation_text()
         SectMapPresentation.DEST_FORGE:
@@ -1553,6 +1559,71 @@ func _main_hall_operation_text() -> String:
         _needs_priority_label(state.sect.needs_priority),
         _equipment_policy_label(state.sect.equipment_policy)
     ]
+
+func _linh_forest_operation_text() -> String:
+    var members := _disciples_in_work_group(&"forestry_crew")
+    var building_system := BuildingSystem.new()
+    var forest := building_system.primary_building(state, BuildingSystem.TYPE_LINH_FOREST)
+    var active_ids: Array[StringName] = []
+    var slots := 0
+    if forest != null:
+        active_ids = building_system.active_worker_ids(state, forest)
+        slots = building_system.worker_slots(forest)
+
+    var lines: Array[String] = []
+    for disciple_value in members:
+        var disciple: DiscipleState = disciple_value
+        var level := workforce.profession_level_for_state(state, disciple, WorkforceSystem.PROF_FORESTRY)
+        lines.append("• %s · Lv%d · %s" % [
+            disciple.display_name,
+            level,
+            _resource_job_member_status(disciple, WorkforceSystem.PROF_FORESTRY, active_ids.has(disciple.id))
+        ])
+    if lines.is_empty():
+        lines.append("• Chưa có thành viên Đội Lâm Nghiệp")
+
+    return (
+        "SẢN XUẤT\n"
+        + "Linh Lâm Lv%d\n"
+        + "Linh Mộc tồn (dùng): %s\n"
+        + "Chỗ hoạt động: %d/%d\n"
+        + "Đang làm Lâm Nghiệp: %d\n"
+        + "Thành viên đội: %d\n\n"
+        + "NHÂN SỰ\n%s\n\n"
+        + "Chu kỳ thật: đi tới Linh Lâm → thu hoạch → vận chuyển về Kho. Lv1 nền: 2 Linh Mộc mỗi chu kỳ."
+    ) % [
+        0 if forest == null else forest.level,
+        _warehouse_pair(&"linh_moc"),
+        active_ids.size(),
+        slots,
+        _count_action(&"WORK_FORESTRY"),
+        members.size(),
+        "\n".join(lines)
+    ]
+
+func _resource_job_member_status(disciple: DiscipleState, profession_id: StringName, has_active_slot: bool) -> String:
+    if not has_active_slot:
+        return "Chờ chỗ hoạt động"
+    var cycle: Dictionary = disciple.work_cycle_state
+    var cycle_profession := StringName(cycle.get("profession_id", cycle.get("profession", "")))
+    if cycle_profession != profession_id:
+        return "Sẵn sàng · %s" % SectMapPresentation.action_label(disciple.current_action)
+
+    var phase := StringName(cycle.get("phase", ""))
+    var progress := maxf(float(cycle.get("progress", 0.0)), 0.0)
+    match phase:
+        &"travel_out":
+            return "Đang tới công trình · %.1f" % progress
+        &"mining":
+            return "Đang khai thác · %.1f" % progress
+        &"harvesting":
+            return "Đang thu hoạch Linh Mộc · %.1f" % progress
+        &"haul_back":
+            return "Vận chuyển về kho · %.1f · mang %d" % [
+                progress, maxi(int(cycle.get("carried_units", 0)), 0)
+            ]
+        _:
+            return "Sẵn sàng · %s" % SectMapPresentation.action_label(disciple.current_action)
 
 func _mine_operation_text() -> String:
     var members := _disciples_in_work_group(&"mining_crew")
@@ -2322,6 +2393,7 @@ func _v2_identity_brief(row: Dictionary, none_text: String = "Không") -> String
 func _work_group_label_id(group_id: StringName) -> String:
     match group_id:
         &"mining_crew": return "Đội Khai Khoáng"
+        &"forestry_crew": return "Đội Lâm Nghiệp"
         &"forge_hall": return "Luyện Khí Đường"
         &"": return "Chưa phân"
         _: return str(group_id)
