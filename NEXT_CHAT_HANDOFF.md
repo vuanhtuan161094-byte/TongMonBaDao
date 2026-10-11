@@ -1,29 +1,25 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
-**Bàn giao cập nhật: 11/10/2026 — O6 CLOSED; O1–O6 M1 technically playable on official Godot 4.7.2 Linux CI. Windows visual/click/APK PENDING USER.**
+**Bàn giao cập nhật: 12/10/2026 — O7 CLOSED; Linh Lâm + generic Building Job PASS. M1 remains technically playable; M2 next recommended = O8 design review. Windows visual/click/APK PENDING USER.**
 
 
-## M2/O7 DESIGN HANDOFF — LINH LÂM READY FOR APPROVAL (2026-10-12)
+## M2/O7 CLOSED — LINH LÂM + GENERIC BUILDING JOB GREEN (2026-10-12)
 
-**No O7 gameplay code has been authorized or written.** Design review used live `main` `021dea835d3c44f615e034efa1a6a7981b1168a7`.
+**Status:** O7 is **CLOSED / FOCUSED PASS / FULL PASS**. Gameplay source: `c8fe044c14c55f7988408c2d6498623cc92810c7`. Final CI-only compatibility child: `e74e7f5482844254811c3d0f75fa63400b509f23`.
 
-Recommended implementation contract:
-- new building `linh_forest` / display **Linh Lâm**; one fresh Lv1 instance;
-- new profession `forestry` / **Lâm Nghiệp**; group `forestry_crew`;
-- do not alias Mining/Herbalism; do not add Forestry talent-generation probability in O7;
-- reuse persisted `work_cycle_state` as generic Building Job envelope; preserve old Mine phase names/save compatibility;
-- add building-definition profession/output/phase metadata and generic routing/cancel-settlement helpers, while leaving Spirit Field plot authority intact;
-- Forest cycle: travel_out → harvesting → haul_back → canonical `linh_moc` deposit;
-- Lv1 extraction slot default: 2 workers;
-- recommended integration baseline: 2 Linh Mộc per completed Lv1 cycle, with low-complexity Mine-like travel/work/haul timing; M3 owns later numeric tuning;
-- no resin/fruit/mushroom/rare-tree/habitat, no manager system, no new economy mode, no Forest upgrade UI/cost until those coefficients/components are explicitly authored;
-- actual map/panel UI must assign workers and issue a canonical command; UI cannot mint wood;
-- O7 test must reserve starter wood, prove new Forest wood, spend produced wood through an existing consumer, cancel safely, persist/reload mid-cycle, and prove autonomous repeat;
-- closure requires focused Godot 4.7.2 + O1–O6/DV2/P3.7 cumulative; Windows remains PENDING USER.
+**Delivered:** fresh `linh_forest` / Linh Lâm Lv1, `forestry` / Lâm Nghiệp, `forestry_crew`, 2 Lv1 slots, real 1280×720 map token/panel, real assignment/order, `travel_out → harvesting → haul_back`, canonical `linh_moc` deposit, Forestry XP and autonomous group repeat. Integration baseline = 2 Linh Mộc per Lv1 cycle; M3 owns later numeric tuning. No manager system, Forestry talent roll, rare-tree side content or Forest upgrade economy was added.
 
-Source benchmark used only as architecture reference: explicit building↔profession binding, concrete building identity in work AI, and start/complete lifecycle. Reference production formulas remain UNKNOWN and are not authority.
+**Reusable authority proven:** Mine + Linh Lâm share one carry-cycle Building Job implementation with explicit building/profession/resource identity. Mine keeps its old phases and locked rejection contract; Linh Điền remains separate plot/timer authority. `DiscipleState` persists optional `profession_id/resource_id` only when present so new jobs survive save/load without forcing new keys into old cycle shapes.
 
-**Next allowed action requires explicit user approval: CODE O7 ONLY under this contract, or revise the contract first.**
+**Focused evidence:** [O7 #38185038526](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38185038526) SUCCESS. It proves real UI assignment, zero payout before carry, exact carried settlement during haul, mid-haul save/reload, no duplicate deposit, consumption of newly produced wood by existing Forge, Forestry XP, autonomous repeat, canonical Warehouse/UI agreement, O3 Mine regression and P3.6A scene regression.
+
+**Heavy/cumulative evidence:** [P3.7 #38184826746](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38184826746) FAST+FULL SUCCESS and [DV2-03 #38184826744](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38184826744) SUCCESS on gameplay SHA `c8fe044c14c55f7988408c2d6498623cc92810c7`. Final CI-only fan-out: [O1 #38185038485](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38185038485), [O2 #38185038488](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38185038488), [O3 #38185038500](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38185038500), [O4 #38185038567](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38185038567), [O5 #38185038494](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38185038494), [O6 #38185038557](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38185038557), and O7 #38185038526 all SUCCESS.
+
+**Historical red evidence:** first O7 workflow had malformed literal-`\n` paths and was repaired CI-only. Generic routing initially changed the locked Mine rejection reason and was fixed in production rather than weakening the old test. P3.7 then exposed dropped generic identity fields across save/load; the serializer was fixed compatibly. These failures are not relabeled PASS.
+
+**Reference-game boundary:** O7 uses the architectural lesson “building ↔ profession ↔ explicit work lifecycle” from ZQZS only. Reference server production math remains UNKNOWN; no source formula/code/asset was copied.
+
+**Next recommended packet requires explicit approval:** **O8 DESIGN REVIEW first**, not CODE by default. Goal: design a real Linh Điền → Luyện Đan → consumable chain on top of current Warehouse/profession/building authority, determine whether Alchemy should use a carry-cycle, timed recipe queue, or separate production-job model, and identify the smallest refactor that keeps O1–O7 green. Do not add O9, manager system or M3 balance implicitly.
 
 ---
 
@@ -49,7 +45,7 @@ Read-only evidence in `ZQZS-Source-Knowledge`: building definitions carry layout
 
 **Post-M1 design lesson for our independent Godot architecture:** preserve `UI → command → simulation state → completion event → Warehouse`; generalize Mine/Field work state into a reusable building-job lifecycle with explicit `building_id + profession_id + phase + start/finish`; add optional building-manager/policy authority above worker groups for 1k–3k scale; make each producer declare its profession binding rather than bespoke UI logic. O7 Linh Lâm and O8 Luyện Đan are ideal places to prove this framework. Do not copy source code/config values/assets.
 
-**No next code packet is authorized yet.** Recommended next is an **M2/O7 design review** first: define the generic producer contract + Linh Lâm renewable Linh Mộc using current canonical Warehouse and source-inspired lifecycle, then seek explicit CODE O7 authorization. Alternative: deep-audit the source building/manager/road/production UX before M2.
+**O7 was subsequently authorized and closed.** Recommended next is **M2/O8 design review** for Linh Điền → Luyện Đan → consumable using the O7 building/profession/job boundaries. No O8 code is authorized yet.
 
 ---
 
