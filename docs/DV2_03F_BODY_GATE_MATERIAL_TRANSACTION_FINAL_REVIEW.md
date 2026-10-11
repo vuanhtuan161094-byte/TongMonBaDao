@@ -341,3 +341,134 @@ These cases assume **full roster eventually completes all 29 gates within horizo
 5. Separate tests for source receipt replay/save/load, warehouse lock priority, stone starvation/restart, long offline catchup, and durability on abrupt save interruption. **No Windows visual PASS** inferred until user tests on Windows.
 
 **Recommendation now:** keep section D **UNCHANGED**. Preserve **PRINCIPLE APPROVED / FINAL REVIEW PENDING**. Prioritize the B deterministic route, named proper-band C–H fallback, three repeatable Seals, and scalable event/worker economics. Do not implement a source as cosmetic UI, random-only rare, one-time reward or data table without a true actor/team/action/claim. All numeric production/fallback/horizon examples in section L are **PILOT**, not a newly approved item economy.
+
+
+## M. BƯỚC 3 — Final source/gate/EXP/economy audit + approval decisions (11/10/2026)
+
+> **FINAL REVIEW REPORT — NOT DESIGN LOCKED; NO CODE OR GAMEPLAY CHANGES.** Checked live game `main@f5fd0b6502ee2afb35180435de66efa869f0f4fe` and section-D rows parsed programmatically against `DiscipleProgressionBalanceV2.REALM_TOTAL_XP`. Source gameplay/test commit remains `3c7e9a7691f549097dd0a67ed50ead8b7be18a4c`. This section does **NOT** override existing locked EXP, Body/Realm rules, 29 principle-approved quantities, V2 XP rewards or balance.
+
+### M1. Exact ledger audit — ALL 29 gates and real availability
+
+The parser verified source realms 1..29, target=source+1, quantities **562 main + 143 aux**, and Seals **only gates 10/20/29**. Each gate's source-ID pair is fixed by section C. The output below shows exact per-realm total Body EXP in **million**, not only floor-10 EXP; Body breakthrough requires completed 10-floor total, with progress held at gate f10. Paid reference days assume **1,500 Body EXP per valid continuous simulation minute, Căn Cốt=0 and no buffs, no idle, 24h/day**, and are not projected user playtime or authored expedition throughput.
+
+| Gate r→r+1 | Group | Main/Aux qty | Seal | EXP for realm (million) | Pure Rèn Thân 24h days | Actual source/gate state |
+|---:|:---:|---:|:---:|---:|---:|---|
+| 1→2 | A | 12/4 | — | 10,00 | 4,63 | Có 2 đầu vào từ ruộng/săn; **chưa có cổng** |
+| 2→3 | A | 18/5 | — | 12,70 | 5,88 | Có 2 đầu vào từ ruộng/săn; **chưa có cổng** |
+| 3→4 | A | 24/6 | — | 16,20 | 7,50 | Có 2 đầu vào từ ruộng/săn; **chưa có cổng** |
+| 4→5 | B | 12/1 | — | 20,50 | 9,49 | Ruộng Lv30/RNG Linh Tủy; **thiếu bảo đảm** |
+| 5→6 | B | 16/2 | — | 26,00 | 12,04 | Ruộng Lv30/RNG Linh Tủy; **thiếu bảo đảm** |
+| 6→7 | B | 24/3 | — | 33,00 | 15,28 | Ruộng Lv30/RNG Linh Tủy; **thiếu bảo đảm** |
+| 7→8 | C | 12/3 | — | 42,00 | 19,44 | Chưa có 2 ID + 2 nguồn  |
+| 8→9 | C | 16/4 | — | 53,30 | 24,68 | Chưa có 2 ID + 2 nguồn  |
+| 9→10 | C | 22/6 | — | 67,70 | 31,34 | Chưa có 2 ID + 2 nguồn  |
+| 10→11 | C | 32/8 | **Ấn** | 86,00 | 39,81 | Chưa có 2 ID + 2 nguồn + Ấn |
+| 11→12 | D | 12/3 | — | 109,20 | 50,56 | Chưa có 2 ID + 2 nguồn  |
+| 12→13 | D | 16/4 | — | 138,70 | 64,21 | Chưa có 2 ID + 2 nguồn  |
+| 13→14 | D | 20/5 | — | 176,00 | 81,48 | Chưa có 2 ID + 2 nguồn  |
+| 14→15 | D | 24/6 | — | 223,70 | 103,56 | Chưa có 2 ID + 2 nguồn  |
+| 15→16 | E | 12/3 | — | 284,00 | 131,48 | Chưa có 2 ID + 2 nguồn  |
+| 16→17 | E | 16/4 | — | 360,70 | 166,99 | Chưa có 2 ID + 2 nguồn  |
+| 17→18 | E | 22/6 | — | 458,00 | 212,04 | Chưa có 2 ID + 2 nguồn  |
+| 18→19 | F | 14/4 | — | 581,70 | 269,31 | Chưa có 2 ID + 2 nguồn  |
+| 19→20 | F | 20/6 | — | 738,70 | 341,99 | Chưa có 2 ID + 2 nguồn  |
+| 20→21 | F | 30/9 | **Ấn** | 938,20 | 434,35 | Chưa có 2 ID + 2 nguồn + Ấn |
+| 21→22 | G | 12/3 | — | 1.191,50 | 551,62 | Chưa có 2 ID + 2 nguồn  |
+| 22→23 | G | 16/4 | — | 1.513,20 | 700,56 | Chưa có 2 ID + 2 nguồn  |
+| 23→24 | G | 20/5 | — | 1.921,70 | 889,68 | Chưa có 2 ID + 2 nguồn  |
+| 24→25 | G | 24/6 | — | 2.440,50 | 1.129,86 | Chưa có 2 ID + 2 nguồn  |
+| 25→26 | G | 30/8 | — | 3.099,50 | 1.434,95 | Chưa có 2 ID + 2 nguồn  |
+| 26→27 | H | 12/3 | — | 3.936,30 | 1.822,36 | Chưa có 2 ID + 2 nguồn  |
+| 27→28 | H | 18/5 | — | 4.999,20 | 2.314,44 | Chưa có 2 ID + 2 nguồn  |
+| 28→29 | H | 24/7 | — | 6.349,00 | 2.939,35 | Chưa có 2 ID + 2 nguồn  |
+| 29→30 | H | 32/10 | **Ấn** | 8.063,20 | 3.732,96 | Chưa có 2 ID + 2 nguồn + Ấn |
+
+Interpretation:
+- **29/29 recipes are internally coherent** and satisfy monotonic gate identifiers. This is **NOT** 29/29 content sources live, NOT 29/29 implemented transactions, NOT a successful Godot test.
+- A: registered Thanh Linh Thảo and Tinh Lang Bì with feasible physical source mechanisms, assuming enough field staffing/stones and genuine PvE victories; no body gate transaction or second guaranteed route implemented.
+- B: both items registered, but Tử Vân Thảo field **requires Lv30** and Linh Tủy remains unbounded RNG; no accessible guarantee yet. Neither field Lv30 nor RNG may be required to pass gate4.
+- C–H: **all 12 named group IDs missing**, corresponding target regions/contract rewards absent. Gates 7–29 impossible as authored today. Gates 10/20/29 additionally demand three missing Seal IDs. Missing data must fail `content_unavailable` and must not be bypassed by `requirements_verified=true`.
+- Stage coverage: A opens at r1; B guaranteed route must open no later than r4 **before floor10** (prefer earlier so farming overlaps EXP); C by r7 before f10; D by r11; E by r15; F by r18; G by r21; H by r26. Every material/Seal for gate r must be earnable by an eligible current-realm party, independent of `cultivation.realm==body.realm` and never exclusively by r+1 content.
+- **Three Seal terminal checks:** gate10 source is late Nhân (r10) **NOT r11 Tiên**, gate20 source late Tiên (r20) **NOT r21 Thần**, gate29 source late Thần/Hỗn Độn at r29 **NOT r30 Sáng Thế**. Every Seal is **consumable 1/actor**, must be earned repeatedly by actual mission/boss wins (one-time first-clear is not a supply).
+
+### M2. Exact XP-vs-material-vs-money accounting
+
+Canonical `DiscipleProgressionBalanceV2.REALM_TOTAL_XP` begins 10,000,000/r1, ends 10,240,200,000/r30; the 29 Body gates each require completing **r1..r29**, summing exactly **37,890,400,000 Body EXP for one disciple** from r1 f1 until r30 f1 (not r30 f10). Canonical Body source reference rate values: 250 production, 750 expedition, 1,500 paid Rèn Thân EXP per real simulation minute; `grant_xp` applies `1+0.002×Căn Cốt+explicit_valid_body_xp_source_percent_add` to **natural** gains, while fixed EXP is unchanged. The table below ignores all natural bonuses as a **transparent zero-bonus reference**, not a claim that Căn Cốt is zero in real disciples.
+
+| Group | EXP needed (million) | Paid days continuous per actor | Approx stones if exclusively paid Rèn Thân (1/min) | 750/min expedition reference days (NOT proven live automated income) |
+|---|---:|---:|---:|---:|
+| A | 38,90 | 18,01 | 25.933 | 36,02 |
+| B | 79,50 | 36,81 | 53.000 | 73,61 |
+| C | 249,00 | 115,28 | 166.000 | 230,56 |
+| D | 647,60 | 299,81 | 431.733 | 599,63 |
+| E | 1.102,70 | 510,51 | 735.133 | 1.021,02 |
+| F | 2.258,60 | 1.045,65 | 1.505.733 | 2.091,30 |
+| G | 10.166,40 | 4.706,67 | 6.777.600 | 9.413,33 |
+| H | 23.347,70 | 10.809,12 | 15.565.133 | 21.618,24 |
+| **29 gates total** | **37.890,40** | **17.541,85** | **~25.260.267** | **35.083,70** |
+
+**Red-line pacing:** pure Rèn Thân for a single actor r1→r30 requires **~17,542 days = ~48.06 continuous years** at base 1,500/minute with no constitution bonus, non-Rèn sources or other gameplay progression. **This cannot be passed off as a balanced 30-realm playthrough** without real high-level stacking/active-source benchmark evidence. Keep EXP locked: the next release must report real Body income for representative early/mid/high V2 actors and explain the gap, not silently alter realm XP or fabricate expeditions. At the physical **2-slot Lv1 Rèn Thân** capacity, 1,000 disciples finishing just r1 if that were their ONLY XP activity would consume ~6.67 million paid minutes/sect stones and ~6.34 calendar years of aggregate two-slot 24/7 uptime. Hence P3.7 production and validated expedition XP pathways and multiple activities are mandatory to claim meaningful 1k–3k progression; **the currently tested 750 expedition adapter is not a proven continuous V2 scheduler income stream**.
+
+### M3. Real field Lv30 lock and stone source circularity
+
+1. `BuildingSystem.MILESTONE_COMPONENTS` requires **one `linh_tuyen_chi_tam` at target Lv10, two at Lv20 and three at Lv30**, totaling **six hearts**; `convert_linh_tuyen_fragments` converts 100 `linh_tuyen_chi_tam_manh` into each heart.
+2. `BuildingSystem.upgrade_cost` from field Lv1→Lv30, separately summed over all target levels and milestone ×2 factor, requires exactly **1,238 Linh Mộc + 625 Thanh Thiết + 3,687 Sect Linh Thạch + six hearts**; total authored `upgrade_required_work` across this path **1,268 work units** (not claimed actual calendar minutes).
+3. `BuildingSystem.linh_tuyen_fragment_drop`: **5% base chance of one fragment per completed plot** times rare factor. Six hearts require 600 fragments, i.e. **12,000 completed harvests in expectation at rare factor exactly 1** with no other fragment sources. Since RNG can arbitrarily miss, this is **never a guaranteed unlock horizon**. Do not create a B supply that depends on clearing these upgrades.
+4. Lv1 field with four actually occupied plots growing `thanh_linh_thao`: base 3 harvest/plot, 12-minute cycle, 4-stone seed; best steady reference after startup is **1 herb/min, 1⅓ Sect stone/min**. One paid Rèn Thân user takes ~6,667 minutes and ~6,667 Sect stones to reach first gate at constitution=0, whereas producing the gate's **12 herbs** with four plots takes one basic 12-minute cycle and 16 stones plus successful A hunting. **Resource production isn't necessarily limiting for two paid trainees; stone and XP are.** The `AUTO_DEMAND` planting policy does not guarantee all four plots target the herb, so this is an idealized full-staffing upper bound.
+5. Lv30 single field with ten plots: at worker_speed=1, affinity=1, field speed=1.145, time multiplier=0.90, yield multiplier 1.145×1.10, **Tu Vân Thảo** routine output 4/plot/19 minutes, 14 Sect stones/plot/plant. Fully staffed fixed-policy reference: **40 Tử Vân Thảo/19 minutes (~3,032/day), and 140 stones/19 minutes (~10,611 stones/day)** just for this field. This is **post-upgrade theoretical capacity**; it doesn't establish accessible supply before gate4, and 10 workers could be away/resting.
+6. Two Rèn slots concurrently paid full-time: **2×1,440=2,880 stones/day**. Together with full Lv1 four-plot field: **~4,800 stones/day** needed; together with full Lv30 Tử Vân field: **~13,491 stones/day**. Fresh compatible TechniqueSystem initializes **500 Sect stones**, so under full Lv1-field+2-trainer theoretical burn with zero revenue, 500 stones fund only ~150 simulation minutes before exhaustion (not actual starting-state run; other buildings/consumers also spend).
+7. `EconomySystem` P0 treasury/wallet is **not** `SectState.spirit_stones`. `TechniqueSystem.sell_manual` can produce actual Sect stones by selling **owned** manuals, but currently there is **no verified minimum repeatable Sect-stone income per day** to pay the modeled sinks for 1k–3k scale. PVE V2 `HuntingMapV2.preview_reward` awards registered materials, not Sect stones; `ResourceRegistry.market_value` is metadata, not a demonstrated Sect-stone sale operation. Do not call the economy viable until a tested truthful player activity (contract/sale/reward) funds a sustainable positive income loop, respecting stocks and no-cost impossibility.
+
+**Exact conservative resource-only baseline costs per 1 actor:** full A group demands 54 Thanh Linh Thảo = **18 Lv1 harvests and 72 Sect stones for sowing**, ignoring other systems; at two pure paid Body slots this is minuscule next to paid training. Full B 52 Tử Vân Thảo costs **18 base Lv30 harvests and 252 stones** only if planted with *base* yield 3, no boosted output; actual boosted Lv30 yield=4 may reduce number of harvests to 13 and sowing to 182 stones for 52. This field is an additional non-guaranteed mid-term route, not an entry gate dependency.
+
+### M4. Source-side load model — 1k / 3k and cohort contention
+
+**Never treat "full roster 562/143/3 cumulative" as if all actors cross the same gate on one day.** Required per material per day: sum over actual gate-ready cohorts `incoming_gate_count[g/day] * manifest[g].qty`; subtract available warehouse after player reserves and forecast actual eligible-worker/yield/win output. Update counters event-driven; do not scan all 3k actors for every UI paint. Other systems share `linh_tuy` and crops.
+
+**Fallback pilot rates, NOT APPROVED numbers:** 3 named main items / 30 active **producer-team** minutes; 1 named aux per ≤4 qualified, successfully claimed winning engagements; 1 Seal per ≤8 qualifying named campaign wins (separate progress where no overlap authorized). For a complete journey with only fallbacks: `562/3≈188` producer missions (ceiling per group/recipe actually higher due nonfungible types), `143×4=572` qualifying aux wins, `3×8=24` Seal wins, **up to 596 qualifying engagements per actor**, or **596k/1.788m** for 1k/3k. This is **worst-case scheduling scenario without lucky drops, not true minimal production**, since a lucky drop or boss victory can reduce the workload; does not claim an implemented 70% hunter workflow.
+
+| Example cohort for **3,000 total actors** | Exact package stock demand | Pilot workload | Feasibility note |
+|---|---|---|---|
+| 1% roster (30 actors) cross gate1/day | 360 Thanh Linh Thảo + 120 Tinh Lang Bì | 120 field harvests (4 stones each) + at least 60 winning A hunts if actual 2-hide reward each | ~480 stones/day planting; one perfect Lv1 field could supply 360 of its ideal max 1,440 herbs/day, but only if assigned and locked to that crop |
+| 1% roster (30 actors) cross gate4/day | 360 Tử Vân Thảo + 30 Linh Tủy | 120 main-delivery missions = 3,600 active producer-team minutes + ≤120 qualified wins for aux fallback | ~8 eight-hour producer teams at full duty, no field Lv30 dependency; cost/availability of commissions **must** be tested |
+| 1% roster (30 actors) cross gate10/day | 960 Huyết Linh Sâm + 240 Tinh Huyết + 30 Nhân Ấn | 320 main missions = 9,600 active producer-team minutes; ≤960 qualifying aux wins + ≤240 disjoint seal wins | ~20 eight-hour producer teams + **1,200 qualifying winning engagements/day** allocated to C; needs enough capable late-Nhân teams |
+| 10% roster (300 actors) cross gate10/day | 9,600 C main + 2,400 C aux + 300 Nhân Ấn | 3,200 producer missions and ≤12,000 qualifying wins/day | Exceeds the **6,720 wins/day** of the illustrative *whole-sect* 350-team scenario below. Requires longer horizon/other routes/direct drops/not-yet-measured higher throughput |
+
+As an intentionally hypothetical stress envelope only, 70% of 3k = 2,100 hunter actors, six per team → 350 parties, 8 active hours/day, 20 minutes/attempt, 80% victories → **350×24×0.8=6,720 winning team encounters/day** if *all* parties are available and capable of the same source. Real valid tier distribution, team travel, injuries, downtime, stamina, defeat, versioned rewards, mission access, performance and save processing can all lower throughput. **One party victory produces one claim for its party**, not an automatic six independent Seal/item claims. Need live telemetry and world-scheduler integration before treating this as economy balance.
+
+### M5. Source access proof obligations, each category
+
+A (1–3): field with true plot/worker payment and non-RNG true claimed Bạch Thạch/Hắc Phong pelt; second independently guaranteed supply route for BOTH IDs still missing. **No Body gate consumer yet.**
+B (4–6): early proper-band named Tử Vân Thảo ủy thác at r3/r4, accessible without Linh Điền Lv30/Hearts and without paying the very missing Tử Vân Thảo as input; Linh Tủy on Thanh Trúc Lâm difficulties L2–5 random but L1 rare=0%, add guaranteed named claim via enough real wins. No zero-success route and no self-consuming commission input.
+C (7–10): high-Nhân real region, herb producer and named commission plus beast winner and guaranteed aux commission. Gate10 Nhân Seal must be repeatably earned in r10; no first-clear-only claim, no post-Tiên unlock.
+D (11–14): low-Tiên region, Kim Cốt Thảo and Linh Thú Cốt Ngọc each two actual earned routes by r11 floor10.
+E (15–17): mid-Tiên region, Tiên Tủy Liên and Tiên Thú Chân Cốt two repeatable claimed routes by r15.
+F (18–20): high-Tiên region, Bất Hoại Tủy Dịch and Đại La Kim Cốt two routes by r18. Gate20 Tiên Seal reachable before r21/Thần.
+G (21–25): low/mid-Thần mine/region for Thần Mạch Tinh and Thần Thú Cốt, two routes by r21; mining result must deposit registered proper ID, not dummy Thanh Thiết.
+H (26–29): high-Thần/Hỗn Độn region for Hỗn Độn Tủy Hoa and Bất Diệt Thần Cốt, two routes by r26. Gate29 Thần Seal available before r30/Sáng Thế.
+Every route has a specific `source_id + completed_event_id`, persisted progress and safe claim, no passive time-generated reward, no same-actor two Body natural XP grants in one minute, and no use of next-realm eligibility, higher Tu Vi forced equality or material self-reference.
+
+### M6. Proposed **final approval decisions**; still individually OPEN
+
+| ID | Question requiring explicit user approval | Recommended answer (NOT YET LOCKED) |
+|---|---|---|
+| F01 | Are **all 29 exact main/aux quantities, 8 material groups and 3 extra Seal consumptions** still accepted? | **Yes**, unchanged 562/143/3 per complete actor. Do not add a stone fee at Body gates |
+| F02 | What is the core acquisition guarantee? | **Two genuine routes per ID**, one deterministic active-activity fallback, no universal Phẩm Lực/currency, source available before gate, no Tu Vi-body equality |
+| F03 | How to resolve early group B deadlock? | **Early named Tử Vân Thảo commission** accessible before r4f10 with no Lv30 requirement; **Linh Tủy guaranteed after bounded completed wins** at accessible Nhân sites |
+| F04 | What content belongs in C–H and the three Seals? | All **12 new group IDs + 3 new repeatable Seal IDs**, proper-band real regions/source contracts; no first-clear-only required item |
+| F05 | What numbers are authorized to implement initially? | If approved, start **configurable test profile** (3 main/30 active producer-team min; 1 aux/≤4 valid wins; 1 Seal/≤8 valid wins). Keep **PILOT / BALANCE PENDING**, allow adjustment only after measured tests and further user approval |
+| F06 | Must each Ấn be obtained both by boss and by guaranteed campaign, with 1 consumed each time? | Yes, boss win direct claimed Ấn **or** cumulative valid same-band wins; repeatable, exactly-once source rewards, separate campaign receipts |
+| F07 | How will the **Sect Spirit Stones recurring supply** fund fixed paid training and farming? | Require at least one **real, repeatable, idempotent Sect-stone** reward/sale contract before calling sustained economy viable; test 4,800/day Lv1 field+two slots and 13,491/day Lv30 field+two slots against earnings. No artificial timer income, no conversion from P0 treasury |
+| F08 | How should 1k–3k actors be managed? | Named campaign/production assignments by work group, tier cohort gate-demand inventory, batch preview, warehouse `locked/reserve_min`, no per-disciple micromanagement; **AUTO_BODY_GATE off by default** |
+| F09 | Who owns gate/item mutation and save receipts? | Single authoritative Body gate transaction, full preflight, warehouse + actor + HP + receipt all-or-nothing, serialized claims, idempotent retry, disk-crash durability separately verified; source reward receipts equally replay-safe |
+| F10 | Do we claim all high realms economically playable immediately? | **No.** Preserve EXP and all preexisting combat/region locks, run real low/mid/high pacing benchmarks and explicitly document 48-year unbuffed ceiling; do not fake high-tier content or boost locked XP |
+| F11 | How to release if parts C–H aren't built? | Gate/route fails `content_unavailable`; do not claim 29 playable. Stage within **active DV2-03** with proper content production/tests, no next phase until closure |
+| F12 | What evidence must pass before marking complete? | 29 row manifest invariant; all proper-band sources claimed with receipt; stone no-deadlock and sustained funding; 1k/3k time/save throughput; rollback/double-click; Godot official focused+full at changed SHA; Windows visual **PENDING USER** |
+
+**Recommended approval wording:** “Duyệt hợp đồng F01–F04 và F06–F12 về nguyên tắc; F05 cho phép chỉ tiêu PILOT nhưng chưa chốt tốc độ cung; giữ nguyên EXP và mọi khóa trước; chỉ sau khi tôi chấp thuận viết ‘CHO PHÉP CODE DV2-03F’ mới chuyển sang triển khai.” Distinguish *approval of research* from *authority to implement*. This section intentionally keeps previous status `PRINCIPLE APPROVED / FINAL REVIEW PENDING`.
+
+### M7. Hard GO/NO-GO at code/release boundary
+
+**NO-GO before user consent:** No game/asset/resource code changes, no edit to canonical EXP and 29 recipe quantities, no `DESIGN LOCKED` header.
+**NO-GO before playable 29/29 release:** Missing source at any gate, RNG-only required rare, Seal first-clear-only or inaccessible by source realm, circular input, missing Sect-stone recovery, unproven 1k/3k scaling, missing true 750 expedition linkage but pretending it exists, ambiguous warehouse+Body mutation, or replayable claim.
+**Research evidence only:** prior Linux focused/FULL PASS pertains **E3.1 commit 3c7e9a76**, not this Phase-3 economic model or newly authored gates. This turn ran no Godot/Windows tests, only static source auditing and arithmetic.
