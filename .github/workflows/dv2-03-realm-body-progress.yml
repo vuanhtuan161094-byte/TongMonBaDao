@@ -46,6 +46,7 @@ on:
       - 'godot/src/presentation/p3_2_landscape_sect.gd'
       - 'godot/tests/presentation/dv2_03_f4_body_gate_player_command_test.gd'
       - 'godot/tests/simulation/dv2_03_f5_low_tier_economy_audit_test.gd'
+      - 'godot/tests/simulation/dv2_03_f6_real_earned_body_gate_integration_test.gd'
       - 'godot/tests/simulation/dv2_03_mine_body_xp_integration_test.gd'
       - 'godot/tests/simulation/dv2_03_ren_than_duong_integration_test.gd'
       - 'godot/tests/simulation/dv2_03_e3_1_training_priority_regression_test.gd'
@@ -107,6 +108,8 @@ jobs:
         run: godot --headless --path godot -s res://tests/presentation/dv2_03_f4_body_gate_player_command_test.gd
       - name: DV2-03F F5 low-tier legitimate pilot demand audit and known gaps
         run: godot --headless --path godot -s res://tests/simulation/dv2_03_f5_low_tier_economy_audit_test.gd
+      - name: DV2-03F F6 real earned 14 hunt wins, production Body gate, disk replay
+        run: godot --headless --path godot -s res://tests/simulation/dv2_03_f6_real_earned_body_gate_integration_test.gd
       - name: DV2-03 real P3.7 mine active-minute Body XP integration
         run: godot --headless --path godot -s res://tests/simulation/dv2_03_mine_body_xp_integration_test.gd
       - name: DV2-03 Rèn Thân Đường paid two-slot consumer
