@@ -242,3 +242,10 @@ After **every meaningful work packet or decision reply**:
 6. **Minimize cognitive load:** recommend one clear default, allow alternatives such as audit/review or defer, preserve existing locked rules, and never make the user manually reconstruct technical prompts from memory.
 
 This rule governs **conversation workflow**, not game AI/UI. Do not change gameplay, balance or phase scope merely because the user chooses a chat option.
+
+
+## 12. Mobile orientation authority — LANDSCAPE LOCK (USER CORRECTION 2026-10-11)
+
+**Tông Môn Bá Đạo is a LANDSCAPE / màn hình ngang mobile game.** The current Godot landscape base is **1280×720**, as in `godot/project.godot`, `docs/P3_6A_PLAYABLE_VERTICAL_SLICE_SPEC.md` and `docs/P3_REFERENCE_UI_AUDIT.md`; the opening production UI and controls must remain landscape and finger-friendly. Reference `Ta Là Tông Sư` / `最强祖师` for landscape sect-map/workforce and production-panel interaction, not for permission to replace canonical gameplay.
+
+**Never redirect this project to portrait / màn hình dọc or 390×844 as the primary runtime**, and never conflate it with the separate `Tu Tiên Nhàn Dỗi` portrait art/runtime project. If an older note suggests portrait, this latest explicit user correction controls. 1280×720 is the **current design baseline**; final device aspect ratios/responsive layout remain to verify on an actual user device. Keep all UX acceptance at landscape. Changing primary orientation requires explicit new user decision.
