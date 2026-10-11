@@ -7,7 +7,8 @@ on:
       - 'godot/src/presentation/p3/sect_map_presentation.gd'
       - 'godot/src/presentation/p3_1_landscape_sect.gd'
       - 'godot/src/presentation/p3_2_landscape_sect.gd'
-      - 'godot/src/simulation/workforce/workforce_system.gd'\n      - 'godot/tests/presentation/p3_o3_real_mine_loop_test.gd'
+      - 'godot/src/simulation/workforce/workforce_system.gd'
+      - 'godot/tests/presentation/p3_o3_real_mine_loop_test.gd'
       - '.github/workflows/p3-o3-real-mine-loop.yml'
 
 permissions:
