@@ -2,7 +2,7 @@
 
 **Ngày rà soát:** 11/10/2026  
 **Đối chiếu mã:** `main@55e4be5d1dbe267956791cb3db1a923708a5cbad`  
-**Trạng thái:** **PRINCIPLE APPROVED / FINAL REVIEW PENDING** — phê duyệt về nguyên tắc 8 nhóm, 29 công thức, 3 Ấn, nguồn đa tuyến có bảo đảm; **CHƯA ĐƯỢC CHỐT ĐỂ CODE**. Tài liệu này là phương án chốt cuối, không phải luật được triển khai.  
+**Trạng thái:** **F01–F12 PRINCIPLE APPROVED (11/10/2026) / FINAL IMPLEMENTATION CONTRACT READY FOR SEPARATE AUTHORIZATION** — 8 nhóm, 29 công thức, 3 Ấn, nguồn đa tuyến có bảo đảm; **F05 CHỈ PILOT**, F07/F10 cần kiểm chứng thực; **CHƯA DESIGN LOCKED, CHƯA CHO PHÉP CODE**. Tài liệu này là phương án chốt cuối, không phải luật được triển khai.  
 **Phạm vi:** chỉ Luyện Thể major gates `body.realm=1..29, floor=10`; không thay đổi Tu Vi, EXP, tần suất 60 giây/1 phút mô phỏng, tốc độ EXP, Căn Cốt, Rèn Thân Đường, vật liệu trang bị hay phép bổ trợ.
 
 ## A. Luật đã khóa, không cần biểu quyết lại
@@ -448,7 +448,7 @@ G (21–25): low/mid-Thần mine/region for Thần Mạch Tinh and Thần Thú C
 H (26–29): high-Thần/Hỗn Độn region for Hỗn Độn Tủy Hoa and Bất Diệt Thần Cốt, two routes by r26. Gate29 Thần Seal available before r30/Sáng Thế.
 Every route has a specific `source_id + completed_event_id`, persisted progress and safe claim, no passive time-generated reward, no same-actor two Body natural XP grants in one minute, and no use of next-realm eligibility, higher Tu Vi forced equality or material self-reference.
 
-### M6. Proposed **final approval decisions**; still individually OPEN
+### M6. Bảng đề xuất ban đầu trước khi duyệt nguyên tắc — xem quyết định mới nhất ở mục N
 
 | ID | Question requiring explicit user approval | Recommended answer (NOT YET LOCKED) |
 |---|---|---|
@@ -472,3 +472,103 @@ Every route has a specific `source_id + completed_event_id`, persisted progress 
 **NO-GO before user consent:** No game/asset/resource code changes, no edit to canonical EXP and 29 recipe quantities, no `DESIGN LOCKED` header.
 **NO-GO before playable 29/29 release:** Missing source at any gate, RNG-only required rare, Seal first-clear-only or inaccessible by source realm, circular input, missing Sect-stone recovery, unproven 1k/3k scaling, missing true 750 expedition linkage but pretending it exists, ambiguous warehouse+Body mutation, or replayable claim.
 **Research evidence only:** prior Linux focused/FULL PASS pertains **E3.1 commit 3c7e9a76**, not this Phase-3 economic model or newly authored gates. This turn ran no Godot/Windows tests, only static source auditing and arithmetic.
+
+
+## N. HỢP ĐỒNG TRIỂN KHAI CUỐI — F01–F12 PRINCIPLE APPROVED, AWAIT SEPARATE CODE AUTHORIZATION (11/10/2026)
+
+> **Decision and precedence:** User expressly **approved F01–F12 IN PRINCIPLE on 11/10/2026**, confirmed all 29 recipe quantities and existing EXP must remain unchanged; **F05 = PILOT ONLY, no final supply-rate lock; F07 and F10 require REAL VERIFICATION**. User expressly **DID NOT AUTHORIZE CODING** and did not mark DV2-03F `DESIGN LOCKED`. This section supersedes M6's *historical pending-review* decision labels, not its evidence or arithmetic. Work must remain documentation-only until a **new, explicit user command** authorizes coding. The user may later authorize individual implementation slices rather than the entire pipeline. **Current phase remains DV2-03 ACTIVE**.
+
+### N1. Non-negotiable implementation invariants (code must preserve; not a new numerical balance)
+
+- Single gameplay authority: Godot V2 `SimulationState`/`SectState`, `DiscipleRealmProgressV2`, `WarehouseSystem`; UI only reads/previews/issues commands, not direct material/EXP mutation.
+- Existing 30×10 separate Tu Vi/Body realm lists, exact 300-floor XP table and rate/reference sources, 60 real seconds per simulation minute, no Body RNG or HP/stamina failure penalties, no requirement Tu Vi==Body or automatic joint advancement. No changes to Căn Cốt `+0.20% natural Body EXP per point`, first `Rèn Thân Đường` 2 slots or paid 1 Sect Spirit Stone/valid minute + base 1,500 Body EXP/minute.
+- Exact 29 manifest rows section D: source realm 1–29 inclusive, 8 groups A–H, 16 typed materials (4 presently registered +12 new), 3 distinct stackable Seal IDs (all new), Seal quantity 1 only at gates 10/20/29. Full journey 562 main+143 aux+3 seals. A Body gate at source `r:f10` needs completed canonical floor10 XP plus its exact manifest, then succeeds 100%, becomes `r+1:f1, xp=0` with existing HP-ratio rescale; Tu Vi unchanged. **Do not add Body gate Sect-stone surcharge.**
+- One canonical Sect Warehouse, safe available quantity always respects `locked` and `reserve_min`; canonical deterministic ordered command resolution, no universal Phẩm Lực, no personal large loot bags or alternate warehouse; sources award actual registered resource IDs for actual completed work/wins with distinct replay-safe receipts.
+- Each of **19** gate items must have two genuine accessible paths and at least one repeatable deterministic **earned** path. Each source opens strictly no later than the gate's source Body tier; high-level access may use viable sect teammate/team but cannot depend on `body=r+1`, an obligatory equal Tu Vi, RNG-only mandatory loot or a first-clear-only account reward.
+- Existing P3.7/earlier systems, equipment roadmap and all other designed but unimplemented features remain separate; DV2-03F may implement only dependencies necessary for its correct material/quest/Body-gate/stone flow. One active implementation phase at a time. No unapproved named map or gameplay mechanism promoted from reference Unity/ZQZS.
+- Approval means **architecture and invariants** are accepted, not numeric tuning proven. Numeric changes beyond the pilot profile, new recurring Sect Stone reward magnitudes, or a new EXP bonus/economy law **require a separate user balancing decision** even after generic code authorization.
+
+### N2. Authority and proposed owners/contracts (no class created yet)
+
+| Component | Planned sole responsibility | Must NOT do |
+|---|---|---|
+| `DiscipleBodyGateContentV2` (new) | Immutable validated 29-row manifest, lookup by actual saved Body realm and version, 19 resource IDs/checks | Mutate actor/warehouse; fabricate missing source |
+| `BodyGateAcquisitionV2` / delegated true source owners (new) | Real plot/commission/claimed win/campaign **named** payouts; source eligibility, claimed event, progress + idempotent source receipt | Create items from UI preview, idle real time, unearned rewards or display fake amounts |
+| `DiscipleBodyGateTransactionV2` (new) | Pure preview; single-authority `commit_gate(state, disciple_id, request_id)`; authoritative preflight, HP + actor + bundle debit + saved receipt, all-or-nothing/rollback | Accept UI-supplied `requirements_verified`, caller-computed costs, bypass warehouse reserves or invent XP |
+| Existing `DiscipleRealmProgressV2` | Canonical XP/floor/Body-realm commit and HP rescale | Debit warehouse or select recipe |
+| Existing `WarehouseSystem` | Typed material quantities, available/locked/reserve, atomic bundle consume/add | Change Body progression or infer source eligibility |
+| Existing `WorkforceSystem`, `BuildingSystem`, `HuntingPveRunV2`, `SimulationScheduler` | Real occupation, paid production, actual battles/rewards and one simulation-minute schedule; extensions **only where proved needed** | Fake V2 expedition 750/min source or multiple EXP grants per actor/tick |
+| `SectState` + `SaveService` (versioned schema extension if authorized) | Persist source progress/receipt, gate receipts, no-double-claim state and recovery; preserve legacy saves | Treat in-memory rollback as power-loss crash-safe disk persistence |
+| UI/sect-management consumer | Display pure preview and real source links, player assignment/cohort priority/explicit command; default auto gate OFF | Direct debit, hidden auto-gate or impossible route shown as available |
+
+Idempotency: one source/event/item payout exactly once; a gate receipt keyed by actor+source realm and a typed request-id mapping. Exact retry returns `already_committed` without new deduction/advancement; reused request_id for another actor/gate rejects. For 1k–3k roster, a replay-safe **compact persisted receipt strategy** must be tested for save size and offline replay; an unbounded per-tick UI ledger is not acceptable. Compaction must not let old claims be replayed.
+
+### N3. Ordered future implementation work packets — **NONE AUTHORIZED YET**
+
+**Single parent phase DV2-03F; one work packet at a time.** `DONE` requires evidence at the changed gameplay SHA, not source inspection.
+
+| Order | Packet | Planned code scope once separately allowed | Focused exit/GO proof |
+|---:|---|---|---|
+| 0 | **F0 — Baseline/evidence harness** | Establish fresh official Godot 4.7.2 baseline and reproducible non-production profiling for actual income/costs/Body EXP, action ownership, active maps, save/load. Add only test/telemetry hooks explicitly within separately approved coding scope. | Reproduce prior E3.1 focused/full on same source or record exceptions. Verify 60s/min, 2 paid slots, existing farm/mine/encounter, Sect stone provenance, real expedition 750 owner **if one exists**; missing sources marked `UNIMPLEMENTED`. No live balance declaration. |
+| 1 | **F1 — Manifest+typed IDs+schema** | Exact 29 validated entries, register 12 missing group materials and 3 Seal IDs with family/realm grade/rank/tags; versioned receipt/progress schema and migrations, no source payout or public enabled gate. | 29/29 exact quantities/IDs, 562/143/3, distinct Seals 10/20/29, old-save roundtrip, malformed content fails closed. **No player claim of usable gate yet.** |
+| 2 | **F2 — Gate transaction safety** | Pure preview and owner-only commit with full snapshot/rollback, request-id+actor+realm idempotence, warehouse `available` and complete package debit, actor HP/floor state and persisted receipt, explicit content-availability fail closed. | Double-click, two disciples competing for final material/Seal, actor invalid, -1 item, locked/reserve, HP sync fail, fault-injected warehouse fail, save/reload/replay: **zero partial spend**; old V2 Tu Vi/EXP unaffected. Test fixtures may isolate service, but fixture items are **not live acquisition**. |
+| 3 | **F3 — Real A/B material routes + early economic bootstrapping** | Wire existing A planting/actual valid pelt wins; add *second real* named repeatable paths as necessary. Prioritize B proper-band Tử Vân Thảo commission and bounded-win Linh Tủy, independent of field Lv30/Hearts; true source receipt and mission worker reservation. Add/verify one legitimate repeatable **Sect-stone income route** only after separate economy numeric approval. | Body r4:f10 / low Tu Vi / field Lv1 / zero B stock: real earned A/B requirements through jobs/wins/claims, no RNG deadlock; no circular spent input; receipts survive reload; zero-stone recovery path and revenue/cost measurements. If legitimate income insufficient, **F07 BLOCKED**, require user decision, not a fake grant. |
+| 4 | **F4 — Real C–H regional production/hunting and all Seals** | By cohort band C (r7+), D (r11+), E (r15+), F (r18+), G (r21+), H (r26+), implement actual appropriate-level region/worker/profession and two real routes for *each* of 12 named resources. Add repeatable named Ấn Nhân/Tiên/Thần boss campaign + guaranteed proper-band victory-progress alternatives; 1 consumed at gates 10/20/29. Split inside F4 by actual tier without opening another parent phase. | **All 19 IDs** have two valid earned sources; proper-band unlock before every applicable Body gate; 29/29 route accessibility; each Seal repeatable and cannot be claimed by first-clear duplication; winners counted as party claims once, not ×team-member reward. No placeholder map, drop, reward or boss. |
+| 5 | **F5 — Demand planning and management UI/AI** | Sect Warehouse demand computed by real current-gate cohorts, user priority/reserve, named source shortage, reliable batch preview. Connect existing P3.2 Body panel to pure preview and actual player command; manage producer/hunting teams with minimal micro. | No simulated positive UI values, no unrestricted `requirements_verified` caller, 1,000–3,000 roster mixed-stage demand, deterministic sorted priority, no O(roster) expensive scan on **every** per-actor UI refresh. `AUTO_BODY_GATE` defaults OFF; if a later optional auto policy is implemented, opt-in only. |
+| 6 | **F6 — F05/F07/F10 real measurements and unresolved balancing approvals** | Reproducible multi-seed/real-state sim for 1k/3k, genuine exp+stones+resource supply and backlogs; evaluate user-approved **PILOT** profile against actual, record failed coverage. **No silent EXP modification or pilot promotion.** | F05 measured against reachable work and wins; F07 credible positive sustained income under realistic operating mixes, no bootstrap deadlock; F10 low/mid/high Body-realms with locked EXP measured and gap recorded. If blocked, request **separate user balance decision**, do not mark `ECONOMY PASS`. |
+| 7 | **F7 — Integration/closure** | Regression for full 29-gate loop from real sources, workload/save/replay safety and Godot scene/UI; existing P0→P3.7 cumulative workflow. Controlled Windows UI verification requested **only when genuinely needed**. | Official Godot 4.7.2 focused PASS, same-SHA cumulative PASS; 1k/3k memory, time, source-claim ledger/save and offline catch-up acceptable with measured results; Windows actual/visual **PENDING USER** until user runs it. Only then update `CURRENT_CHECKPOINT.md` and consider DV2-03 closure. |
+
+**Dependencies and order**: F0 before any economic conclusion. F1 before F2 and new named resources. F2 can use isolated in-memory test fixtures but **cannot permit live Body advancement until real source content exists**. F3 is prerequisite for claiming gate4 playable; F4 is prerequisite for claiming all 29 gates playable. F07 bootstrap evidence starts F3, and full 24h/long-run load proof re-runs F6. F10 initial low/high rate proof starts F0, full replayed cohort evidence gates F6/closure. Avoid rewriting locked P3.7 modules when a single authoritative adapter suffices.
+
+### N4. **F05 stays PILOT, not a balance contract**
+
+Separate **draft test configuration** (off in public gameplay until authorized and proven):
+- Main fallback: *up to* 3 units of one named item per 30 **actually active, eligible producer-team minutes** after a committed mission. Not a guaranteed live yield for every mine/crop and never passive.
+- Aux fallback: one named item after **≤4 actual successful and uniquely claimed** qualified region wins, without requiring a lucky roll for that item.
+- Seal fallback: one consumed Seal after **≤8 actual successful and uniquely claimed** qualified campaign wins at its source realm, optionally earned directly via true repeatable boss clear.
+- Preserve existing Lv1 crop yields, costs, 60s simulation-minute, Linh Thạch expense, maps and XP. The pilot profile does **not** overwrite existing crop cycle/yield, map win rate or RNG drop probability.
+- For exact rate locks, show completion/progress, average/percentile throughput, active team staffing, natural resource income, other system competition, and 1k/3k load; then obtain **new user approval** for each finalized payout/cap/cost. Failure can prompt economy proposal, not unauthorized numerical changes.
+
+### N5. **F07 mandatory REAL Sect-stone economics proof**
+
+Measure **Sect** `spirit_stones` inflow and outflow using actual committed event receipts—not P0 `treasury`/`wallet`, not `ResourceRegistry.market_value` as if already a sale. Inflow categories must name true owner and qualifying player activity. Costs must include real Rèn Thân slots, actual crop plantings, building upgrade, possible future commission costs, and competing systems; no new gate surcharge.
+
+Minimum reproducible stress cases:
+1. **Empty/no-stone bootstrap**: no paid crops/trainer works, but there must be an actual playable, repeatable, non-self-consuming route that can lawfully restore Sect stone income. Without that proof `F07=FAIL/BLOCKED`; do not mint by clock.
+2. **Lv1 example**: 4 full Thanh Linh Thảo plots + 2 paid Body trainees, theoretical no-bonus burn **~4,800 Sect stones/24 real hours** if constantly active. Compare with **earned** real throughput, worker availability, net stock, completion and stall time over ≥24h simulation after any finite starting stock is exhausted. Not a promise that 4,800 is the target for every roster.
+3. **Lv30 example**: ten eligible Tử Vân Thảo plots at factor=1 worker speed/affinity and 2 paid trainees can burn **~13,491/day** steady theoretical base; field Lv30 itself requires six Linh Tuyền Hearts and field-upgrade costs. Prove route independent of required Body gate4, and monitor actual throughput. Do not assume 12,000 harvests at 5% = guaranteed cap.
+4. **1k and 3k mixed roster**: record earned stone/day, spent stone/day split by owner, backlog days, unserved gate-ready count, active workers, loss/defeat downtime, seed variance, recovery when stock hits zero, season/offline replay, and conservative confidence bounds. **GO criterion**: demonstrable closed-loop real route and sustainable operation for the *selected realistic workload*, not one manually injected balance; net inflow minus consumption nonnegative on sustained representative windows, or an explicit quantified bounded recovery regime accepted by user.
+
+If F07 fails, document which real economy source is missing, design a compatible earned income mechanism within DV2-03F dependency, get separate approval of its numeric payouts, then implement/test. Do not silently create Sect Stone time stipend, convert treasury, or reduce existing Body/crop fees.
+
+### N6. **F10 mandatory REAL Body EXP pacing proof**
+
+- No changes to `DiscipleProgressionBalanceV2` 300-floor costs, `BASE_TUVI_PER_MINUTE`, existing Body source reference rates/1-tick rule, modifiers or fixed EXP; preserve `unapplied_overflow` and gate cap.
+- Benchmark **r1/r4/r7/r10/r11/r15/r20/r21/r26/r29**, representative Căn Cốt/valid source profiles, unbuffed baseline + actual unlocked effects, natural Body EXP for verified **mining active-phase** (250), **paid facility** (1,500), **real V2 expedition** (750 *only after consumer linkage proven*), mixed recovery/offline. No invented passive training or invented bonus.
+- Baseline mathematics already established: sum of realm totals r1..r29 = **37,890,400,000 XP**, ~**17,541.85 continuous 24h days / 48.06 years** at 1,500 XP/minute and no bonus for **one actor**. At exactly two always-paid physical slots, a 1k cohort clearing **only r1** from this source would take about **6.34 calendar years at 24/7 full slot use**, demonstrating that treating those slots as the sole universal progression lane is wrong.
+- Report actual time to next Body gate, realm-group throughput per week/month, slot contention, eligible expedition minutes, activity scheduling, effect of constitutional growth, and 1k/3k active cohorts. Do not substitute raw type-contract reference 750 for a verified end-to-end schedule. If evidence does not support intended 30-realm pacing, mark **F10=BLOCKED/UNVERIFIED** and request separate user decision regarding *additional legitimately owned active sources/activities* before making a high-realm viability claim. Never silently retune locked EXP.
+- F10 evidence can distinguish “technical gate correctness” from “whole-game rate accepted”; all-29 gate tests using seeded test fixtures are technical integrity tests, **not economic or real-time playability proof**.
+
+### N7. No-deadlock, transaction, scale, saving and release gates
+
+- **Gate reachability property for every r=1..29**: let `M_r` be all named recipe IDs (+Seal if applicable). For every `m∈M_r`, at least one validated source with true completion/claim remains available at Body `≤r` (or via accessible genuine teammate) without requiring `r+1`, Tu Vi equality, `m` itself as source prerequisite, RNG-only success, a one-time account reward, or impossible initial Sect Stone funding. If any is false, return `content_unavailable`, do not advance.
+- **Transaction property**: `preview_gate` is 100% pure. `commit_gate` checks full floor-10 EXP, all three named item quantities (2 regular+optional Seal), `available` after reserve/lock, claimant progression and request/receipt replay. In one synchronous simulation transaction, advance Body+HP, consume complete warehouse bundle, write one immutable persisted receipt. If any step fails, **all** state/HP/warehouse/event counters/ledger revert. Two actors requesting the final shared Seal resolve deterministically, only one can win.
+- **Persisted acquisition**: source claims, per-source progress, actual warehouse mutations and gate receipts survive save/load and bounded offline catch-up. Existing `SaveService.save_to_path` writes target path directly; in-memory rollback is not evidence for interrupted-write/crash durability. Crash-safe save strategy and recovery need actual platform-specific tests or an explicit failed gate, never overclaim.
+- **Performance evidence**: 1k/3k actual `SimulationState` actors, mixed cohort source bands, 350-party hypothetical stress not assumed production reality, harvests/commissions/PvE claims, source-progress storage, UI index, repeated claims and 24h+ catch-up. Capture CPU/time/memory/save-size and failure rate at same build; avoid O(3k) scan at each individual panel draw. No invented fixed performance budget is locked before measuring target hardware.
+- **No unconditional auto**: player command is explicit; batch preview allowed; future auto major gate OFF by default. Do not allow a simple `auto_breakthrough` flag to spend Sect resources bypassing transactional preflight.
+- **Godot gates**: parse changed GDScript; focused DV2-03F manifest/source/transaction/scale tests, previous DV2-03E3.1 focused suite, full P0→P3.7 cumulative on official Godot 4.7.2 at same gameplay SHA. Windows native/visual is **PENDING USER** unless user actually runs. A GitHub doc commit is never a gameplay PASS.
+- **No false completion**: during incremental implementation, sources/Seals not yet authored remain disabled/unavailable. Shipping only A/B as a separately labeled vertical slice does **not** mean DV2-03F 29/29 complete; project remains DV2-03 ACTIVE until phase closeout evidence. Never add another implementation phase concurrently.
+
+### N8. Separate permission gate — exact next action
+
+Current explicit authorization state:
+- `F01..F12.PRINCIPLE_APPROVED = true`;
+- `F05.NUMBERS_DESIGN_LOCKED = false`;
+- `F07.EVIDENCE_VERIFIED = false`, `F10.EVIDENCE_VERIFIED = false`;
+- `DV2_03F.DESIGN_LOCKED = false`;
+- `DV2_03F.CODE_AUTHORIZED = false`.
+
+The user may later say **“CHO PHÉP CODE DV2-03F, BẮT ĐẦU F0/F1”** or specify another explicit packet. Only then may that specified coding scope begin. Approval of F01–F12 in this conversation by itself **DOES NOT** trigger work, Codex, Godot test runs or implementation, and does not grant advance authority for F05 final tuning. If F07/F10 empirical results require change of already locked economics or EXP, pause and ask for a separate decision.
+
+**GitHub handoff:** retain this detailed contract here; link from `NEXT_CHAT_HANDOFF.md`. Do not create another parallel “final” manifest or rename these files; section D remains the **single source of 29 recipe quantities**.
+
