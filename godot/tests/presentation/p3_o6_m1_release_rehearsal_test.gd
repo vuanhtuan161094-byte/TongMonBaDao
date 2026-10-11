@@ -161,10 +161,21 @@ func _run() -> void:
     if warehouse.quantity(state, first_output_id) <= first_output_before:
         _fail("O6 first Field harvest did not enter canonical Warehouse.")
         return
-    if not await _open_building_hit(SectMapPresentation.DEST_SPIRIT_FIELD):
-        return
+    # The herbalism group may already have autonomously started the next
+    # legitimate plot while the Mine batches were advancing. If so, let that
+    # currently owned plot finish and withdraw on its exact release tick.
     if buildings.disciple_has_active_spirit_plot(state, recruit_id, field):
-        _fail("O6 expected first Field plot to be released after harvest.")
+        var active_batches := int(field.metrics.get("production_batches", 0))
+        for _i in range(40):
+            scheduler.step()
+            ui.call("_refresh_all")
+            if int(field.metrics.get("production_batches", 0)) > active_batches:
+                break
+        if buildings.disciple_has_active_spirit_plot(state, recruit_id, field):
+            _fail("O6 could not reach a legitimate Field release point before isolation.")
+            return
+
+    if not await _open_building_hit(SectMapPresentation.DEST_SPIRIT_FIELD):
         return
     if not await _press("FieldGroup_%s" % str(recruit_id)):
         return
