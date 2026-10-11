@@ -94,6 +94,16 @@ func _step_disciple(disciple: DiscipleState) -> void:
                     disciple.last_decision["workforce_action"] = str(workforce_action)
                     disciple.current_action = workforce_action
                     return
+                # O4: an active Spirit Field plot reserves its worker until
+                # harvest. Do not fall through to generic AI (hunt/rest/etc.)
+                # while the canonical plot still owns this disciple.
+                if (
+                    state.p3_7_buildings_enabled
+                    and building_system.disciple_has_active_spirit_plot(state, disciple.id)
+                ):
+                    disciple.last_decision["workforce_action"] = "FIELD_RESERVED"
+                    disciple.current_action = &"IDLE"
+                    return
             var decision := decision_system.evaluate(state, disciple)
             disciple.current_action = StringName(decision["action"])
 

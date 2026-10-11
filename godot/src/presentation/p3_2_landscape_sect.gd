@@ -24,6 +24,7 @@ var technique_system := TechniqueSystem.new()
 var equipment_system := EquipmentSystem.new()
 var needs_system := NeedsSystem.new()
 var recruitment_system := RecruitmentSystem.new()
+var spirit_crop_registry := SpiritCropRegistry.new()
 var living_cue_resolver := LivingCueResolver.new()
 var living_cue_tracker := LivingCueTracker.new()
 var living_cue_layer: LivingCueLayer
@@ -690,6 +691,8 @@ func _refresh_building_operation_content() -> void:
         building_operation_body.custom_minimum_size.y = 248
     elif selected_building == SectMapPresentation.DEST_GUIDANCE:
         building_operation_body.custom_minimum_size.y = 150
+    elif selected_building == SectMapPresentation.DEST_SPIRIT_FIELD:
+        building_operation_body.custom_minimum_size.y = 220
     else:
         building_operation_body.custom_minimum_size.y = 420
     _rebuild_building_management_controls()
@@ -706,6 +709,8 @@ func _rebuild_building_management_controls() -> void:
             _build_main_hall_policy_controls()
         SectMapPresentation.DEST_MINE:
             _build_work_management(WorkforceSystem.PROF_MINING, &"mining_crew", "Đội Khai Khoáng", "Khai khoáng")
+        SectMapPresentation.DEST_SPIRIT_FIELD:
+            _build_spirit_field_management()
         SectMapPresentation.DEST_FORGE:
             _build_work_management(WorkforceSystem.PROF_FORGING, &"forge_hall", "Luyện Khí Đường", "Luyện khí")
             _build_forge_craft_controls()
@@ -1062,6 +1067,124 @@ func _build_work_management(profession_id: StringName, group_id: StringName, gro
         ))
         row.add_child(order_button)
 
+func _build_spirit_field_management() -> void:
+    var buildings := BuildingSystem.new()
+    var field := buildings.primary_building(state, BuildingSystem.TYPE_SPIRIT_FIELD)
+    if field == null:
+        _add_management_section_label("LINH ĐIỀN CHƯA SẴN SÀNG")
+        return
+
+    _add_management_section_label("CHÍNH SÁCH CÂY TRỒNG")
+    var policy_row := HBoxContainer.new()
+    policy_row.custom_minimum_size = Vector2(384, 36)
+    policy_row.add_theme_constant_override("separation", 5)
+    building_management_container.add_child(policy_row)
+
+    var auto_button := Button.new()
+    auto_button.name = "FieldPolicy_auto_demand"
+    auto_button.text = "Tự động ✓" if StringName(field.production_state.get("policy_mode", "")) == BuildingSystem.FIELD_POLICY_AUTO_DEMAND else "Tự động"
+    auto_button.custom_minimum_size = Vector2(94, 34)
+    auto_button.add_theme_font_size_override("font_size", 10)
+    auto_button.pressed.connect(Callable(self, "_set_spirit_field_policy_from_ui").bind(
+        field.id, BuildingSystem.FIELD_POLICY_AUTO_DEMAND, &""
+    ))
+    policy_row.add_child(auto_button)
+
+    for crop_id in spirit_crop_registry.eligible_crop_ids(field.level):
+        var fixed := Button.new()
+        fixed.name = "FieldPolicy_fixed_%s" % str(crop_id)
+        fixed.text = "Cố định %s" % spirit_crop_registry.display_name(crop_id)
+        fixed.custom_minimum_size = Vector2(132, 34)
+        fixed.add_theme_font_size_override("font_size", 9)
+        fixed.disabled = field.level < 10
+        if fixed.disabled:
+            fixed.tooltip_text = "Chính sách Cố định mở ở Linh Điền Lv10."
+        fixed.pressed.connect(Callable(self, "_set_spirit_field_policy_from_ui").bind(
+            field.id, BuildingSystem.FIELD_POLICY_FIXED, crop_id
+        ))
+        policy_row.add_child(fixed)
+
+    _add_management_section_label("PHÂN CÔNG & GIEO TRỒNG")
+    var active_ids := buildings.active_worker_ids(state, field)
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    for raw_id in ids:
+        var disciple: DiscipleState = state.disciples[raw_id]
+        var row := _new_management_row(disciple)
+        var in_group := disciple.work_group_id == &"herbalism_crew"
+        var has_plot := buildings.disciple_has_active_spirit_plot(state, disciple.id, field)
+
+        var group_button := Button.new()
+        group_button.name = "FieldGroup_%s" % str(disciple.id)
+        group_button.text = "Rút đội" if in_group else "Phân đội"
+        group_button.custom_minimum_size = Vector2(70, 34)
+        group_button.add_theme_font_size_override("font_size", 11)
+        group_button.disabled = has_plot
+        if has_plot:
+            group_button.tooltip_text = "Ô đang trồng giữ đệ tử tới khi thu hoạch xong."
+        elif in_group:
+            group_button.pressed.connect(Callable(self, "_assign_building_group").bind(
+                disciple.id, &"", "Đã rút %s khỏi Đội Linh Thực." % disciple.display_name
+            ))
+        else:
+            group_button.pressed.connect(Callable(self, "_assign_building_group").bind(
+                disciple.id, &"herbalism_crew", "Đã phân %s vào Đội Linh Thực." % disciple.display_name
+            ))
+        row.add_child(group_button)
+
+        var plant_button := Button.new()
+        plant_button.name = "FieldPlant_%s" % str(disciple.id)
+        plant_button.text = "Gieo trồng"
+        plant_button.custom_minimum_size = Vector2(82, 34)
+        plant_button.add_theme_font_size_override("font_size", 10)
+        var reason := _spirit_field_start_reason(disciple, field, active_ids)
+        plant_button.disabled = reason != ""
+        if plant_button.disabled:
+            plant_button.tooltip_text = reason
+        plant_button.pressed.connect(Callable(self, "_issue_building_order").bind(
+            disciple.id,
+            WorkforceSystem.COMMAND_WORK,
+            str(WorkforceSystem.PROF_HERBALISM),
+            "Đã ra lệnh gieo trồng: %s." % disciple.display_name
+        ))
+        row.add_child(plant_button)
+
+func _set_spirit_field_policy_from_ui(field_id: StringName, mode: StringName, crop_id: StringName) -> void:
+    var ok := BuildingSystem.new().set_spirit_field_policy(state, field_id, mode, crop_id)
+    building_management_feedback = "Đã cập nhật chính sách Linh Điền." if ok else "Không thể đổi chính sách Linh Điền ở cấp hiện tại."
+    _refresh_building_operation_content()
+
+func _spirit_field_start_reason(disciple: DiscipleState, field: BuildingState, active_ids: Array[StringName]) -> String:
+    var buildings := BuildingSystem.new()
+    if disciple.region_id != &"sect":
+        return "Đệ tử phải ở trong tông môn."
+    if disciple.work_group_id != &"herbalism_crew":
+        return "Cần phân vào Đội Linh Thực."
+    if not active_ids.has(disciple.id):
+        return "Không còn chỗ hoạt động tại Linh Điền."
+    if buildings.disciple_has_active_spirit_plot(state, disciple.id, field):
+        return "Đệ tử đã phụ trách một ô đang trồng."
+
+    var has_empty := false
+    for raw_plot in buildings.spirit_field_plots(state, field):
+        if raw_plot is Dictionary and StringName(raw_plot.get("status", "")) == BuildingSystem.PLOT_EMPTY:
+            has_empty = true
+            break
+    if not has_empty:
+        return "Không còn ô Linh Điền trống."
+
+    var eligible := spirit_crop_registry.eligible_crop_ids(field.level)
+    var affordable := false
+    for crop_id in eligible:
+        if state.sect.spirit_stones >= spirit_crop_registry.cost(crop_id):
+            affordable = true
+            break
+    if not affordable:
+        return "Không đủ Linh Thạch cho cây trồng hợp lệ."
+    if not buildings.work_available(state, WorkforceSystem.PROF_HERBALISM, disciple):
+        return "Chính sách hiện tại chưa chọn được cây có thể trồng."
+    return ""
+
 func _build_direct_order_management(kind: StringName, target: String, button_text: String, outside_only: bool) -> void:
     _add_management_section_label("LỆNH TÔNG CHỦ")
     var ids: Array = state.disciples.keys()
@@ -1270,6 +1393,8 @@ func _building_operation_text(destination: StringName) -> String:
             return _main_hall_operation_text()
         SectMapPresentation.DEST_MINE:
             return _mine_operation_text()
+        SectMapPresentation.DEST_SPIRIT_FIELD:
+            return _spirit_field_operation_text()
         SectMapPresentation.DEST_FORGE:
             return _forge_operation_text()
         SectMapPresentation.DEST_CULTIVATION:
@@ -1388,6 +1513,80 @@ func _mining_member_status(disciple: DiscipleState, has_active_slot: bool) -> St
             ]
         _:
             return "Sẵn sàng · %s" % SectMapPresentation.action_label(disciple.current_action)
+
+func _spirit_field_operation_text() -> String:
+    var buildings := BuildingSystem.new()
+    var field := buildings.primary_building(state, BuildingSystem.TYPE_SPIRIT_FIELD)
+    if field == null:
+        return "Linh Điền chưa tồn tại trong trạng thái hiện tại."
+
+    var plots := buildings.spirit_field_plots(state, field)
+    var active_ids := buildings.active_worker_ids(state, field)
+    var growing := 0
+    var plot_lines: Array[String] = []
+    for raw_plot in plots:
+        var plot: Dictionary = raw_plot
+        var plot_id := str(plot.get("plot_id", "?"))
+        if StringName(plot.get("status", "")) != BuildingSystem.PLOT_GROWING:
+            plot_lines.append("• %s · Trống" % plot_id)
+            continue
+        growing += 1
+        var crop_id := StringName(plot.get("crop_id", ""))
+        var worker_id := StringName(plot.get("assigned_worker_id", ""))
+        var worker_name := str(worker_id)
+        if state.disciples.has(worker_id):
+            worker_name = (state.disciples[worker_id] as DiscipleState).display_name
+        var remaining := maxi(int(plot.get("finish_tick", state.tick)) - state.tick, 0)
+        plot_lines.append("• %s · %s · %s · còn %d phút · đã trả %d LT" % [
+            plot_id,
+            spirit_crop_registry.display_name(crop_id),
+            worker_name,
+            remaining,
+            int(plot.get("paid_spirit_stones", 0))
+        ])
+
+    var crop_lines: Array[String] = []
+    for crop_id in spirit_crop_registry.eligible_crop_ids(field.level):
+        crop_lines.append("• %s · phí %d LT · nền %d phút · nền %d" % [
+            spirit_crop_registry.display_name(crop_id),
+            spirit_crop_registry.cost(crop_id),
+            spirit_crop_registry.base_cycle_ticks(crop_id),
+            spirit_crop_registry.base_yield(crop_id)
+        ])
+
+    return (
+        "LINH ĐIỀN Lv%d\n"
+        + "Chính sách: %s\n"
+        + "Linh Thạch Tông Môn: %d\n"
+        + "Worker hoạt động: %d/%d · Ô đang trồng: %d/%d\n\n"
+        + "CÂY HỢP LỆ\n%s\n\n"
+        + "Ô RUỘNG\n%s\n\n"
+        + "KHO THU HOẠCH (tồn / dùng)\n"
+        + "Linh Cốc: %s\nThanh Linh Thảo: %s\nTử Vân Thảo: %s\n\n"
+        + "Lv1–9 dùng AUTO_DEMAND; Cố định/Priority mở từ Lv10 theo authority hiện có."
+    ) % [
+        field.level,
+        _spirit_field_policy_label(field),
+        state.sect.spirit_stones,
+        active_ids.size(), buildings.worker_slots(field),
+        growing, plots.size(),
+        "\n".join(crop_lines),
+        "\n".join(plot_lines),
+        _warehouse_pair(&"linh_coc", true),
+        _warehouse_pair(&"thanh_linh_thao", true),
+        _warehouse_pair(&"tu_van_thao", true)
+    ]
+
+func _spirit_field_policy_label(field: BuildingState) -> String:
+    var mode := StringName(field.production_state.get("policy_mode", str(BuildingSystem.FIELD_POLICY_AUTO_DEMAND)))
+    match mode:
+        BuildingSystem.FIELD_POLICY_FIXED:
+            var crop_id := StringName(field.production_state.get("fixed_crop_id", ""))
+            return "Cố định · %s" % spirit_crop_registry.display_name(crop_id)
+        BuildingSystem.FIELD_POLICY_PRIORITY:
+            return "Ưu tiên theo trọng số"
+        _:
+            return "Tự động theo thiếu hụt"
 
 func _forge_operation_text() -> String:
     var members := _disciples_in_work_group(&"forge_hall")
@@ -1533,7 +1732,9 @@ func _warehouse_operation_text() -> String:
         + "Thuốc: %d · Vật tư: %d\n\n"
         + "KHO VẬT LIỆU (tồn / có thể dùng)\n"
         + "Thanh Thiết: %s · Linh Mộc: %s\n"
-        + "Tinh Lang Bì: %s · Yêu Đan: %s\n\n"
+        + "Tinh Lang Bì: %s · Yêu Đan: %s\n"
+        + "Linh Cốc: %s · Thanh Linh Thảo: %s\n"
+        + "Tử Vân Thảo: %s\n\n"
         + "TRANG BỊ\n"
         + "Trong kho: %d · Đang bán: %d · Đã trang bị: %d\n\n"
         + "Trang bị và vật tư được tổng hợp tại đây."
@@ -1544,6 +1745,9 @@ func _warehouse_operation_text() -> String:
         _warehouse_pair(&"linh_moc"),
         _warehouse_pair(&"tinh_lang_bi"),
         _warehouse_pair(&"yeu_dan"),
+        _warehouse_pair(&"linh_coc", true),
+        _warehouse_pair(&"thanh_linh_thao", true),
+        _warehouse_pair(&"tu_van_thao", true),
         storage_count, shop_count, equipped_count
     ]
 
@@ -2037,6 +2241,7 @@ func _work_group_label(disciple: DiscipleState) -> String:
     match disciple.work_group_id:
         &"mining_crew": return "Đội Khai Khoáng"
         &"forge_hall": return "Luyện Khí Đường"
+        &"herbalism_crew": return "Đội Linh Thực"
         &"": return "Chưa phân"
         _: return str(disciple.work_group_id)
 

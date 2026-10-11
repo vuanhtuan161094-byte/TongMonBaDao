@@ -229,14 +229,15 @@ func issue_command(state: SimulationState, disciple_id: StringName, kind: String
         return false
     var disciple: DiscipleState = state.disciples[disciple_id]
 
-    # O3 fail-closed Mine command boundary: a direct mining order is only real
-    # when this disciple owns one of the authoritative active Mine slots.
-    # Merely belonging to a waiting crew must not create a fake "working" order.
+    # O3/O4 fail-closed production command boundary: a direct Mine/Field
+    # order is only real when the authoritative building can start work for
+    # this disciple now. Waiting slots, occupied plots and unpaid crops are not
+    # allowed to become fake direct commands.
     if (
         kind == COMMAND_WORK
         and state.p3_7_buildings_enabled
-        and StringName(target) == PROF_MINING
-        and not building_system.work_available(state, PROF_MINING, disciple)
+        and [PROF_MINING, PROF_HERBALISM].has(StringName(target))
+        and not building_system.work_available(state, StringName(target), disciple)
     ):
         return false
 

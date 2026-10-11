@@ -275,6 +275,7 @@ func _build_buildings() -> void:
         {"id":"forge", "name":"Luyện Khí Đường", "pos":Vector2(466, 432), "size":Vector2(158, 112), "body":Color(0.56, 0.31, 0.20, 1.0), "roof":Color(0.30, 0.29, 0.27, 1.0), "kind":"forge"},
         {"id":"medicine", "name":"Dược Phòng", "pos":Vector2(748, 466), "size":Vector2(152, 100), "body":Color(0.40, 0.55, 0.34, 1.0), "roof":Color(0.24, 0.38, 0.31, 1.0), "kind":"medicine"},
         {"id":"mine", "name":"Khai Khoáng", "pos":Vector2(288, 304), "size":Vector2(142, 108), "body":Color(0.43, 0.40, 0.35, 1.0), "roof":Color(0.23, 0.24, 0.23, 1.0), "kind":"mine"},
+        {"id":"spirit_field", "name":"Linh Điền", "pos":Vector2(105, 455), "size":Vector2(160, 98), "body":Color(0.43, 0.55, 0.32, 1.0), "roof":Color(0.33, 0.42, 0.25, 1.0), "kind":"field"},
         {"id":"guidance", "name":"Dẫn Tiên Đài", "pos":Vector2(1060, 244), "size":Vector2(150, 94), "body":Color(0.45, 0.57, 0.44, 1.0), "roof":Color(0.69, 0.59, 0.34, 1.0), "kind":"platform"},
         {"id":"gate", "name":"Đại Môn", "pos":Vector2(1068, 454), "size":Vector2(164, 116), "body":Color(0.47, 0.34, 0.23, 1.0), "roof":Color(0.24, 0.31, 0.28, 1.0), "kind":"gate"}
     ]
@@ -326,6 +327,16 @@ func _build_playable_building_token(data: Dictionary) -> void:
             _add_building_block(holder, Vector2(6, h * 0.18), Vector2(w - 12, h * 0.28), roof, 14)
             _add_building_block(holder, Vector2(32, 10), Vector2(18, 23), GOLD.darkened(0.23), 5)
             _add_building_block(holder, Vector2(w - 50, 10), Vector2(18, 23), GOLD.darkened(0.23), 5)
+        "field":
+            _add_building_block(holder, Vector2(8, 14), Vector2(w - 16, h * 0.64), Color(0.39, 0.31, 0.20, 1.0), 10)
+            for row_index in range(4):
+                _add_building_block(
+                    holder,
+                    Vector2(17, 20 + row_index * 13),
+                    Vector2(w - 34, 7),
+                    body.lightened(0.05 * float(row_index)),
+                    4
+                )
         "mine":
             var rock := Panel.new()
             rock.position = Vector2(12, 10)
@@ -666,6 +677,7 @@ func _building_name(destination: StringName) -> String:
         SectMapPresentation.DEST_FORGE: return "Luyện Khí Đường"
         SectMapPresentation.DEST_MEDICINE: return "Dược Phòng"
         SectMapPresentation.DEST_MINE: return "Khu Khai Khoáng"
+        SectMapPresentation.DEST_SPIRIT_FIELD: return "Linh Điền"
         SectMapPresentation.DEST_GUIDANCE: return "Dẫn Tiên Đài"
         SectMapPresentation.DEST_GATE: return "Tông Môn Đại Môn"
         _: return "Sân Tông Môn"
@@ -686,6 +698,22 @@ func _building_detail(destination: StringName) -> String:
             return "Đệ tử đang luyện khí: %d\nĐiểm hỗ trợ rèn: %d\nThanh Thiết tồn (dùng): %s\n\nNgười phụ trách luyện khí sẽ làm việc tại đây." % [_count_action(&"WORK_FORGING"), state.sect.forge_support_points, _warehouse_pair(&"thanh_thiet")]
         SectMapPresentation.DEST_MINE:
             return "Đệ tử đang khai khoáng: %d\nThanh Thiết tồn (dùng): %s\n\nMỗi chu kỳ khai khoáng hoàn thành sẽ đưa Thanh Thiết về kho." % [_count_action(&"WORK_MINING"), _warehouse_pair(&"thanh_thiet")]
+        SectMapPresentation.DEST_SPIRIT_FIELD:
+            var field := BuildingSystem.new().primary_building(state, BuildingSystem.TYPE_SPIRIT_FIELD)
+            if field == null:
+                return "Linh Điền chưa sẵn sàng."
+            var plots := BuildingSystem.new().spirit_field_plots(state, field)
+            var growing := 0
+            for raw_plot in plots:
+                if raw_plot is Dictionary and StringName(raw_plot.get("status", "")) == BuildingSystem.PLOT_GROWING:
+                    growing += 1
+            return "Cấp: %d\nÔ đang trồng: %d/%d\nĐệ tử hoạt động: %d/%d\nLinh Thạch: %d\nThanh Linh Thảo: %s\nLinh Cốc: %s\n\nMỗi ô trừ phí đúng một lần khi bắt đầu và tự thu hoạch vào Kho khi đủ thời gian." % [
+                field.level, growing, plots.size(),
+                BuildingSystem.new().active_worker_ids(state, field).size(), BuildingSystem.new().worker_slots(field),
+                state.sect.spirit_stones,
+                _warehouse_pair(&"thanh_linh_thao", true),
+                _warehouse_pair(&"linh_coc", true)
+            ]
         SectMapPresentation.DEST_GUIDANCE:
             return "Ứng viên đang chờ: %d\nĐệ tử: %d/%d\nChiêu Mộ Lệnh: %d\n\nDẫn Tiên Đài tiếp nhận và sàng lọc ứng viên bằng hệ tuyển mộ hiện có." % [state.recruitment_candidates.size(), state.disciples.size(), state.sect.disciple_capacity, state.sect.disciple_recruitment_tokens]
         SectMapPresentation.DEST_BODY_TRAINING:
