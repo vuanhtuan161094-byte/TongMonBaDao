@@ -550,7 +550,12 @@ func perform_forestry_step(state: SimulationState, disciple: DiscipleState, work
 func perform_resource_job_step(state: SimulationState, disciple: DiscipleState, work_speed: float, profession_id: StringName) -> Dictionary:
     var producer := building_for_profession(state, profession_id, disciple)
     if producer == null or not can_disciple_work(state, producer, disciple):
-        return {"ok": false, "completed": false, "reason": "no_active_building_slot"}
+        var slot_reason := "no_active_building_slot"
+        if profession_id == PROF_MINING:
+            slot_reason = "no_active_mine_slot"
+        elif profession_id == PROF_FORESTRY:
+            slot_reason = "no_active_linh_forest_slot"
+        return {"ok": false, "completed": false, "reason": slot_reason}
 
     var definition := definition_for(producer)
     if str(definition.get("job_model", "")) != "carry_cycle":
