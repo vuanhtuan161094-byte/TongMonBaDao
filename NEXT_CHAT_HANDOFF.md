@@ -1,10 +1,28 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
-**Bàn giao cập nhật: 11/10/2026 — O3 real Mine player loop CLOSED; focused + P3.7 FAST/FULL Godot 4.7.2 Linux PASS.**
+**Bàn giao cập nhật: 11/10/2026 — O4 real Linh Điền player loop CLOSED; focused + P3.7 FAST/FULL Godot 4.7.2 Linux PASS. M1 còn O5 + O6.**
 
 **Repo:** `vuanhtuan161094-byte/TongMonBaDao` · **branch:** `main` · **engine:** Godot 4.7.2. **User yêu cầu thao tác bằng GitHub connector trực tiếp; KHÔNG Codex, KHÔNG Work.** Trước mọi sửa đổi phải fetch lại `main` vì SHA sẽ thay đổi sau các commit bàn giao. **Latest DV2-03E3.1 gameplay/test source with focused PASS:** `3c7e9a7691f549097dd0a67ed50ead8b7be18a4c` (slot-transfer, Workforce exclusive priority, invalid orders, 2-slot multi-minute/no-stone regression). Fetch live `main` before the next edit; docs-only handoff commits may move HEAD.
 
 
+
+## CURRENT FIRST-PLAYABLE HANDOFF — O4 CLOSED — REAL LINH ĐIỀN LOOP GREEN (2026-10-11)
+
+**Priority remains M1 opening gameplay, LANDSCAPE 1280×720.** User authorized **CODE O4 ONLY** and O4 is now closed. Production/test SHA: `45c1870631fdfd680c65357c01cd733f7ddcc332`.
+
+**What O4 now provides:** a real Linh Điền map destination and management panel backed only by `BuildingSystem`/Spirit Field authority; player assigns Đội Linh Thực, sees policy/crop costs/plot timers/output, and issues a canonical Gieo trồng command. Fresh Lv1 has 4 worker/4 plot slots, AUTO_DEMAND crops cost the existing 3/4 Sect Stones, and harvest goes directly to the one canonical Sect Warehouse. Field outputs are visible consistently in Linh Điền and Kho. Direct Field orders fail closed when no slot/plot/currency exists.
+
+**Reservation bug closed:** while a plot is growing, the assigned disciple can no longer fall through to generic autonomous AI and leave to hunt/rest. The canonical plot owns that worker until harvest; UI blocks withdrawing that worker during growth, and harvest automatically releases the reservation.
+
+**Verified focused PASS:** [#38150623606](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38150623606), official Godot 4.7.2 Linux, COMPLETED/SUCCESS. It proves real UI assignment/order, exact one-time Stone charge, canonical plot reservation, duplicate denial, mid-growth disk reload without restart/recharge, timer harvest to canonical Warehouse, exact Field/Kho stock agreement, post-harvest no-duplicate persistence, worker release and zero-Stone denial. Same job passes P3.7A2R backend and P3.6A scene regression.
+
+**Verified cumulative PASS on same SHA:** [P3.7 #38150623654](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38150623654) FAST + FULL SUCCESS; [O1 #38150623598](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38150623598), [O2 #38150623601](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38150623601), [O3 #38150623629](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38150623629) and [DV2-03 #38150623611](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38150623611) all SUCCESS. [P3.6A Preview #38150623602](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38150623602) has FAST + capture PASS; only artifact upload fails because GitHub storage quota is exhausted.
+
+**M1 remainder = exactly two packets:** **O5** prove/use real produced stock in an existing consumer (prefer Mine-produced Thanh Thiết → existing EquipmentSystem craft; include exact debit/shortage/reload, and only exercise building upgrade if already legitimately affordable/authored), then **O6** run the integrated fresh-opening → disciples/recruitment → Mine + Field → real output → real spend → save/restart/autonomous continuation release rehearsal with targeted + FULL regression. O7–O9 are M2 expansion, not M1 blockers.
+
+**Single next proposed packet, only after new user authorization: CODE O5 ONLY.** Do not start O6, M2, rebalance economy, add free currency, alter EXP/Tu Vi/Luyện Thể/29 formulas, or reopen O1–O4. Windows current visual/click/APK acceptance remains **PENDING USER**.
+
+---
 
 ## CURRENT FIRST-PLAYABLE HANDOFF — O3 CLOSED — REAL MINE LOOP GREEN (2026-10-11)
 
@@ -18,7 +36,7 @@
 
 **Historical red evidence:** #38145659655 = invalid workflow YAML path line, fixed in `84ad73c110a6985f74223e6ba228c2d866e7b931`; #38145683502 = test measurement contaminated by unrelated autonomous hunting forge-loot deposits from the global scheduler. Final test isolates unrelated actors through canonical HOLD; production/reward rules were not changed.
 
-**Single next proposed packet, only after new user authorization: CODE O4 ONLY.** Connect the existing authoritative Spirit Field to the 1280×720 P3.2 map/management UI: real worker/plot assignment, crop/policy and Stone cost display, one-time legitimate payment, scheduler/timer growth, canonical harvest, blocked reasons, save/reload and no double plot/harvest. Fresh state already has 500 Sect Spirit Stones, so initial 3/4-Stone crops are affordable without rebalancing. Do **not** implement O5/O6, add free Stones, tune economy, alter EXP/Tu Vi/Luyện Thể/29 recipes, or reopen O1–O3. Windows current click/visual/packaging acceptance remains **PENDING USER**.
+**O4 was subsequently authorized and completed.** See the current O4 handoff above. O5 is the next unstarted M1 packet and requires explicit user authorization; O6 follows only after O5 closes. Windows current click/visual/packaging acceptance remains **PENDING USER**.
 
 ---
 
