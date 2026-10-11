@@ -7,6 +7,29 @@ It is not a historical changelog.
 
 Read `docs/GAME_SYSTEM_ARCHITECTURE.md` for system structure and phase discipline.
 
+
+## O7 DESIGN REVIEW — LINH LÂM + GENERIC BUILDING JOB CONTRACT (2026-10-12)
+
+**Status: DESIGN READY / CODE NOT AUTHORIZED.** Live `main` reviewed at `021dea835d3c44f615e034efa1a6a7981b1168a7`. No gameplay code, resource amount, profession probability, EXP rule or balance value was changed by this review.
+
+**Confirmed gap:** `P3_7_BUILDING_TREE_SPEC.md` canonically includes Linh Lâm and names Lâm Nghiệp / Thu Thập, but runtime currently has no Linh Lâm building type, destination, work group or Forestry profession. Current `WorkforceSystem.VALID_PROFESSIONS` contains forging/alchemy/herbalism/mining/logistics only. O7 must not disguise forestry as Mining or Herbalism.
+
+**Recommended O7 profession boundary:** add exactly one new runtime profession `forestry` = **Lâm Nghiệp**, with one `forestry_crew` work group and one fresh Lv1 `linh_forest` instance. Do **not** add a Forestry profession-talent roll or alter candidate/disciple talent probabilities in O7; the profession can gain ordinary profession XP through existing shared P3.7 learning/work modifiers. “Thu Thập” remains deferred as a distinct future profession/activity rather than a second O7 profession.
+
+**Generic Building Job contract:** reuse the persisted `DiscipleState.work_cycle_state` schema already present: `profession + building_id + optional task + phase + progress + carried_units`. Add explicit `profession_id`, `resource_id` and valid cycle-phase metadata to building definitions so BuildingSystem can resolve profession↔building and settle carried output generically. Preserve Mine’s existing saved phases `travel_out → mining → haul_back`; Linh Lâm uses `travel_out → harvesting → haul_back`. Do not migrate Mine to renamed phase IDs. Spirit Field remains building-owned plot/timer state because its persistent multi-plot process is materially different; it should still expose `profession_id=herbalism` for routing/inspection, not be forced into a disciple carry cycle.
+
+**Scope-safe refactor:** generalize only routing/validation/cancel-settlement and resource-job lifecycle helpers needed by Mine + Linh Lâm. Mine output/timing/yield must remain numerically identical. Mining’s special active-extraction Body XP bridge remains Mining-only. Linh Lâm has no Body XP bridge. Existing Field planting/harvest authority remains untouched.
+
+**O7 Linh Lâm content contract:** one Lv1 renewable producer, canonical output only `linh_moc`, no seed/input item, no resin/fruit/mushroom/rare tree/habitat mechanics yet, no rare event and no new market/economy. Lv1 uses the normal extraction-building slot rule (2 workers at Lv1). Player-facing landscape token/panel assigns `forestry_crew`, issues real Forestry work, shows cycle phase and canonical Linh Mộc stock. Output deposits only through `WarehouseSystem`; presentation never grants wood.
+
+**Balance boundary:** exact new Linh Lâm batch duration/yield are not yet canonical in existing specs. Recommended integration baseline for separate CODE O7 approval is **2 Linh Mộc per completed Lv1 cycle**, using the same low-complexity travel/work/haul envelope as the current Mine rather than introducing a second balance curve. These are O7 integration constants only and remain subject to later M3 economy tuning. O7 should not expose Linh Lâm upgrade spending until its base upgrade coefficients/milestone component policy are explicitly authored; standard Lv1–100/worker-slot hooks remain compatible. O7 acceptance consumes newly produced Linh Mộc through an already-real consumer (prefer existing Forge recipe) rather than inventing Forest-upgrade costs.
+
+**Required O7 acceptance if authorized:** reserve all starter Linh Mộc as QA provenance, produce new wood through actual Linh Lâm UI/scheduler, prove exact Warehouse delta and Forestry XP, spend at least one newly produced wood in an existing canonical consumer, verify cancel-before-carry gives no payout, cancel-during-haul settles carried output exactly once, mid-cycle save/reload preserves job without restart/duplication, and group scheduling autonomously starts another legal cycle. Run focused Godot 4.7.2 plus O1–O6/DV2/P3.7 cumulative. Windows visual/click/APK remains **PENDING USER**.
+
+**Reference-game lesson applied, not copied:** ZQZS client binds buildings to profession IDs, work AI to concrete building/map identity, and start/complete events to actor work state. O7 adopts only this architectural pattern through explicit building↔profession identity and lifecycle state. Building-manager authority is **deferred**, not added as empty speculative state in O7; server production formulas/stock authority in the reference remain unknown.
+
+---
+
 ## O6 CLOSURE — M1 INTEGRATED OPENING / RESTART REHEARSAL (2026-10-11)
 
 **Authorized packet:** User expressly authorized **CODE O6 ONLY**, plus a read-only comparison against `vuanhtuan161094-byte/ZQZS-Source-Knowledge`. Production gameplay source remains O5 SHA `6af3fdd715b3adcb1c3391452c7687cac043b610`; O6 adds acceptance/CI only. Final integrated-test SHA: `2c13e862287c68491ed04f153e5b815fd0de1811`; regression fan-out SHA: `4a7efa51fcaed8453fcb8c08b62239c3ce1c73b4`.

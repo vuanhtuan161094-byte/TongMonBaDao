@@ -2,6 +2,31 @@
 
 **Bàn giao cập nhật: 11/10/2026 — O6 CLOSED; O1–O6 M1 technically playable on official Godot 4.7.2 Linux CI. Windows visual/click/APK PENDING USER.**
 
+
+## M2/O7 DESIGN HANDOFF — LINH LÂM READY FOR APPROVAL (2026-10-12)
+
+**No O7 gameplay code has been authorized or written.** Design review used live `main` `021dea835d3c44f615e034efa1a6a7981b1168a7`.
+
+Recommended implementation contract:
+- new building `linh_forest` / display **Linh Lâm**; one fresh Lv1 instance;
+- new profession `forestry` / **Lâm Nghiệp**; group `forestry_crew`;
+- do not alias Mining/Herbalism; do not add Forestry talent-generation probability in O7;
+- reuse persisted `work_cycle_state` as generic Building Job envelope; preserve old Mine phase names/save compatibility;
+- add building-definition profession/output/phase metadata and generic routing/cancel-settlement helpers, while leaving Spirit Field plot authority intact;
+- Forest cycle: travel_out → harvesting → haul_back → canonical `linh_moc` deposit;
+- Lv1 extraction slot default: 2 workers;
+- recommended integration baseline: 2 Linh Mộc per completed Lv1 cycle, with low-complexity Mine-like travel/work/haul timing; M3 owns later numeric tuning;
+- no resin/fruit/mushroom/rare-tree/habitat, no manager system, no new economy mode, no Forest upgrade UI/cost until those coefficients/components are explicitly authored;
+- actual map/panel UI must assign workers and issue a canonical command; UI cannot mint wood;
+- O7 test must reserve starter wood, prove new Forest wood, spend produced wood through an existing consumer, cancel safely, persist/reload mid-cycle, and prove autonomous repeat;
+- closure requires focused Godot 4.7.2 + O1–O6/DV2/P3.7 cumulative; Windows remains PENDING USER.
+
+Source benchmark used only as architecture reference: explicit building↔profession binding, concrete building identity in work AI, and start/complete lifecycle. Reference production formulas remain UNKNOWN and are not authority.
+
+**Next allowed action requires explicit user approval: CODE O7 ONLY under this contract, or revise the contract first.**
+
+---
+
 **Repo:** `vuanhtuan161094-byte/TongMonBaDao` · **branch:** `main` · **engine:** Godot 4.7.2. **User yêu cầu thao tác bằng GitHub connector trực tiếp; KHÔNG Codex, KHÔNG Work.** Trước mọi sửa đổi phải fetch lại `main` vì SHA sẽ thay đổi sau các commit bàn giao. **Latest DV2-03E3.1 gameplay/test source with focused PASS:** `3c7e9a7691f549097dd0a67ed50ead8b7be18a4c` (slot-transfer, Workforce exclusive priority, invalid orders, 2-slot multi-minute/no-stone regression). Fetch live `main` before the next edit; docs-only handoff commits may move HEAD.
 
 
