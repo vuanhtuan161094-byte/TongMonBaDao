@@ -1,7 +1,34 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
-**Bàn giao cập nhật: 12/10/2026 — O7 CLOSED; Linh Lâm + generic Building Job PASS. M1 remains technically playable; M2 next recommended = O8 design review. Windows visual/click/APK PENDING USER.**
+**Bàn giao cập nhật: 12/10/2026 — O8 DESIGN READY / CODE NOT AUTHORIZED. O7 remains CLOSED/PASS. Windows visual/click/APK PENDING USER.**
 
+
+## M2/O8 DESIGN READY — LUYỆN ĐAN NHẬP MÔN (2026-10-12)
+
+**No O8 gameplay code is authorized yet.** Review used live main after O7 closure plus read-only `ZQZS-Source-Knowledge`.
+
+Recommended contract:
+- add separate `alchemy_hall` / **Luyện Đan Điện** Lv1; reuse existing `WorkforceSystem.PROF_ALCHEMY`; add `alchemy_crew`;
+- do not alias Dược Phòng or legacy `medicine_stock`;
+- use building-owned `timed_recipe` jobs, not O7 carry-cycle and not instant Forge craft;
+- job snapshot: stable job ID, recipe, worker, start/finish tick, committed inputs and deterministic output;
+- Lv1 structural crafting capacity = 2 workers; one active job per worker;
+- exactly one O8 recipe: **Hồi Xuân Đan** = recommended `Thanh Linh Thảo x3 → Hồi Xuân Đan x1`, base 6 simulation ticks before canonical work-speed reduction;
+- job start atomically consumes canonical Warehouse input with reserve/lock respected; no job/no XP on shortage;
+- active worker is reserved; stopping policy prevents new jobs but current paid jobs finish; no cancel/refund in O8;
+- completion deposits exactly once to canonical Warehouse; save/reload mid-job preserves finish tick and cannot double-charge/double-output;
+- one standing recipe permission may auto-repeat when an assigned worker is eligible and inputs exist; no manual click per routine batch, but no advanced multi-recipe queue yet;
+- add canonical stackable `hoi_xuan_dan`;
+- real consumer is Dược Phòng/Needs authority: use one available pill on an injured in-sect disciple for recommended fixed +55 HP capped at max, with no wallet/treasury transfer and no legacy medicine-stock debit;
+- do not add Alchemy profession talent generation in O8; current recruitment trait distribution stays unchanged;
+- UI only projects/commands: separate Luyện Đan token/panel and Dược Phòng pill-use controls;
+- exclude O9, Tu Vi/body/breakthrough pills, Yêu Đan recipe, success/quality/rare RNG, manager system, market, hunter auto-loadout, medicine migration, upgrade economy and M3 balance.
+
+Why this model: current Godot has only the Alchemy enum, not a real Alchemy action/building/recipe/consumer. Current `medicine_stock` is a separate capped logistics authority. ZQZS reference shows recipe cost checks + timed building production state + begin/progress/reward request flow; use that architecture lesson only, not its IDs/formulas/assets/server assumptions.
+
+If CODE O8 is later approved, focused acceptance must prove a real fresh chain **Linh Điền → Thanh Linh Thảo → timed Luyện Đan → Hồi Xuân Đan in Warehouse → Dược Phòng consumption**, plus lock/reserve denial, worker reservation, exact-one input debit, mid-job persistence, no replay, profession XP and standing-policy repeat. Closing O8 requires focused official Godot 4.7.2 plus O1–O7/DV2/P3.7 cumulative. Windows remains **PENDING USER**.
+
+---
 
 ## M2/O7 CLOSED — LINH LÂM + GENERIC BUILDING JOB GREEN (2026-10-12)
 
