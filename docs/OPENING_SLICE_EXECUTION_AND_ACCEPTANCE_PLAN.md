@@ -1,10 +1,72 @@
 # TÔNG MÔN BÁ ĐẠO — KẾ HOẠCH TÍCH HỢP & NGHIỆM THU BẢN CHƠI ĐẦU
 
 Date: 2026-10-11  
-Status: **PROPOSED / PLANNING ONLY — no gameplay coding authorization; no new active phase**  
+Status: **USER-PRIORITIZED DELIVERY PLAN / PLANNING ONLY — M1 FIRST, M2 AFTER; hybrid principle provisional; no gameplay coding authorization; no new active phase**  
 Product authority: `docs/P3_6_SECT_MASTER_GAMEPLAY_LOOP_SPEC.md`, `docs/P3_6A_PLAYABLE_VERTICAL_SLICE_SPEC.md`  
 Technical authority: `AGENTS.md`, `docs/GAME_SYSTEM_ARCHITECTURE.md`, `CURRENT_CHECKPOINT.md`, respective P3.7/Disciple V2 master specs.  
 Implementation phase at planning time: **DV2-03 ACTIVE**, F0–F7 already implemented and Linux focused/FAST/FULL tested at gameplay SHA `bfbf62c3`; neither DV2-03 nor a neighboring phase closes/starts because of this document.
+
+## PRIORITY RESET — PLAYABLE PRODUCTION FIRST (USER DECISION 2026-10-11)
+
+**User instruction:** prioritize a game that **actually plays at its opening stage**, with disciples and **real working production buildings**. **Quantitative economy/balance work comes AFTER this is operable.** AI spending control is **HYBRID IN PRINCIPLE, PROVISIONAL**: Sect Master owns strategy, material permissions/reserves and exceptions; disciples carry out routine authorized jobs and may spend legitimate personal funds on eligible services. The parent decision is now recorded in `docs/P3_7_LONG_TERM_SECT_ECONOMY_HUNTING_SPEC.md §30`. Policy percentages/thresholds are NOT LOCKED or implemented here. The user's go-ahead is to **plan**, not blanket authorization to write all O0–O9 code or auto-close DV2-03.
+
+### What 'balance later' means (hard separation)
+
+- **DEFER:** exact yield rates, Stone income/drop proportions, paid-service prices, resource scarcity curves, ROI, autonomous spending limits, full 1k–3k scale tuning, advanced paths/rare goods, detailed profession modifiers beyond currently locked working logic. No silent new currency, rate, XP, or formula changes.
+- **DO NOT DEFER:** a reasonable legitimate way to *start* the opening producer with initial resources or current sources; consumption cannot make balances negative; inputs/cost are committed once; output really reaches canonical warehouse; no UI fake, infinite freebies or permanent bottleneck; save/reload/determinism must pass. Diagnose first; if actual opening Stone funding is impossible, propose a tiny auditable starter/resource-source rule and obtain user approval **before changing numbers**.
+- **Scope guard:** gameplay implementation must not override `AGENTS.md` one-active-phase gate: DV2-03 remains ACTIVE. This document is an opening integration workstream; user and phase authority must authorize each relevant coding packet. Locked EXP, 29 Body-gate recipes and historical F0–F7 remain unchanged.
+
+### Player-facing milestone split (early feedback before broad expansion)
+
+**M1 — FIRST RUNNABLE OPENING (O0→O6):** one real landscape sect, inspect/select existing disciple; actual recruitment entry; actual Mine and Spirit Field workflows, real warehouse and Luyện Khí consumer, visible timed/profession progression; basic group policy/autonomous work, save/reload and testable resource deltas. This is the minimum first-playable acceptance. No requirement to implement all 8 professions in the reference game. A production action must not require manual pressing every tick. The actual test session should include at least one real choice and one resource/result consequence. Automated Godot 4.7.2 scene tests + cumulative regression are required; **Windows click-through PENDING USER**.
+
+**M2 — OPENING PRODUCTION DEPTH (O7→O9, after M1 working):** add **Linh Lâm** (renewable early Linh Mộc supply) and a deliberately small **Luyện Đan** action (real Linh Điền herb → bounded recipe → consumable stored/used in lawful gameplay) if not already backed by an eligible authority. Neither should appear as a real clickable working producer until its complete input→work→result→consumer contract and test exist. This creates a richer economic loop without trying to build market, talismans, arrays, beast production or all professions simultaneously. The backlog remains explicitly **DESIGN ONLY/DEFERRED** until its turn and separate code authorization. Do not auto-expand scope while doing O0–O6.
+
+**M3 — BALANCE + SCALE (after M1/M2 acceptance, separate later planning):** numeric tuning, recurring income/spending policy budgets, workload simulation 1,000–3,000, wider producer families and polished art/UX. M3 is **NOT** a prerequisite to say M1 works; only ownership/funding integrity and one legitimately repeatable opening loop are prerequisites.
+
+### Opening-production system map — what's real vs unproven
+
+| Gameplay / building | Canonical Godot code present | Player-facing reality | Priority |
+|---|---|---|---|
+| Real disciple & autonomous work | V2 live runtime, DiscipleState, WorkforceSystem/Scheduler, map actors and P3.3 profile present | Opening roster renders, but new recruit spawning/directly selectable acceptance not yet proven | **M1 O0/O2** |
+| Dẫn Tiên Đài / recruiting | BuildingSystem + P3.7C1 RecruitmentSystem candidate/accept/guidance exist | Main map has no Guidance token/panel; use actual constraints, no fake candidates | **M1 O2** |
+| Mỏ Linh Khoáng / mining | Typed BuildingSystem mine; real travel→extract→haul→warehouse | Mine panel/assignment exists, but reads legacy resource bucket and lacks real UI→consumer E2E proof | **M1 O1/O3** |
+| Linh Điền / farming | Multi-plot/farming/crop registry/paid planting/finish/warehouse + focused backend tests | No main-map or P3.2 management entry; fresh Stone affordability is not verified | **M1 O0/O4** |
+| Kho Tông Môn | P3.7 WarehouseSystem canonical stack/reserve/lock | Top bar and many building panels still read legacy materials, misleading balances | **M1 O1** |
+| Luyện Khí Đường / early crafting | Existing P2.6 EquipmentSystem recipe & real P3.7 warehouse debit; workforce forging | Clickable craft button exists, but recipe preview reads legacy material bucket | **M1 O1/O5** |
+| Nâng cấp công trình | P3.7 real BuildingSystem cost/upgrade timer exists for eligible instances | Opening UI button and actual wallet/stone affordability unverified; do not conflate with forge craft | **M1 O5 conditional** |
+| Linh Lâm / renewable Linh Mộc | In `P3_7_BUILDING_TREE_SPEC.md` as proposed producer | No `BuildingSystem.TYPE_LINH_FOREST` authored; must design independent owner, not show fake button | **M2 O7 (DESIGN)** |
+| Luyện Đan / pill making | Workforce profession name in shared system and sector design exist; old medicine logistics may exist | Dedicated P3.7 alchemy building/recipe/claim/consumer NOT verified, do not equate profession enum to actual manufacturing | **M2 O8 (DESIGN)** |
+| Phù Lục, Trận Pháp, linh thú, thương nghiệp etc. | High-level future building/production specs | No verified full production chain; **not M1 or M2 deliverable** | **DEFERRED** |
+
+### Detailed execution sequence and technical deliverables
+
+The existing **O0–O6 table in §C** remains authoritative for detailed M1 actions and per-packet hard PASS. Below **tightens order and adds M2**, not a second competing roadmap:
+
+1. **O0 / FRESH-START TRUTH:** read actual `project.godot` startup scene, factory chain, first roster/candidates, recruitment conditions, treasury/Stone, initial warehouse, inherited save migration, Mine/Spirit Field/Guidance building instances and affordability. Write evidence matrix (actual values, source owner, tests and blockers) into checkpoint. No balance edits. Also identify where appropriate production cost originates. If backend test/CI runs, cite specific commit/run; don't conflate inspection with PASS.
+2. **O1 / ONE WAREHOUSE UI:** replace ALL early visible `forge_materials`/`technique_materials` readouts and recipe requirements with canonical `WarehouseSystem.quantity/available_quantity` under P3.7; keep explicit old-version fallback only. No mirrored inventory. Test scene/top-bar/Kho/Mỏ/Luyện Khí counts and reserve/lock vs spend.
+3. **O2 / ONE REAL DISCIPLE LIFECYCLE:** visible actor/profile and assignment; real Dẫn Tiên entry/panel, candidate accept/reject, roster/actor creation, direct and policy-based workforce integration. Valid role/slot/capacity/blocked denial; save/restart; do not reroll locked innate identity.
+4. **O3 / MINE:** real worker assignment and autonomous work → travel/extract/haul complete → one canonical Thanh Thiết payout, visible progress and outcome. Include interruption, no double output, no button granting resources; production group defaults may continue between commands.
+5. **O4 / FIELD:** place accessible real Linh Điền token/panel; worker and plot occupancy, existing crop/policy display, real cost → per-plot timer → harvested item and release, effects only as currently authored. Test insufficient funds and no duplicated planting/harvest on save/reload. If affordable startup is blocked, formally pause economic cure for specific user review (no arbitrary drop rate).
+6. **O5 / CONSUMER + FIRST DEVELOPMENT:** actual produced ore→existing forge recipe→real equipment in Sect storage, with stock debited once. Also expose an existing eligible building upgrade start/progress/finish **only where real requirements allow**; record BLOCKED separately if Stone supply or inputs missing. Need visible effect and understandable cost, not placeholder Lv button.
+7. **O6 / M1 PLAYER RELEASE GATE:** real main-scene click flow from clean save including two productions, real recruit if available, policy set once, simulated minute advancement using canonical scheduler, one material consumption, restart with remaining timers/warehouse/roster. Focused official Godot 4.7.2 Linux + relevant cumulative FAST/FULL; real 5–10-minute manual session and visual on Windows marked PENDING USER until available. No claim M1 SUCCESS from isolated backend fixtures.
+8. **O7 / LINH LÂM (M2, only after M1):** design exactly ONE Lv1 forest producer with one material `linh_moc`, worker slot and legal forestry profession/assignment mapping, work time, upgrade hooks and deterministic output. Use canonical warehouse and policy. Confirm existing build/tree rules before changing code; no novel economy system. Pass real produced wood→warehouse→upgrade/craft, cancelled work and reload.
+9. **O8 / LUYỆN ĐAN NHẬP MÔN (M2, only after O7):** first verify whether existing `WorkforceSystem.PROF_ALCHEMY` and MedicineSupply have a legitimate crafting owner/consumable; if absent, define one minimal authorized recipe using real field crop, timed worker job, one canonical item output and one legitimate recipient/use (medical/cultivation) without new generic stat or speculative advanced recipe. Respect reserve/lock, shortage, equipment-like ownership policy as appropriate; backend+scene E2E/save.
+10. **O9 / M2 FULL PRODUCTION REHEARSAL:** one fresh-state chain Field→herb→pill/use, Mine→ore→Forge/craft, Forest→wood→build/use, same roster, real work schedule/autonomy, UI readable at landscape resolution, no double-sourcing. Run focused and FULL official CI. Windows acceptance PENDING USER. Mark any unrealized consumer/feature BLOCKED instead of cosmetically checking it green.
+
+**No invented timings in schedule:** O0–O9 are ordered **dependency gates**, not promises of completion dates. A missing owner/lock/affordability blocker takes precedence over adding extra producers. Deliver the first independently playable M1 as soon as tests support it; treat M2 as a separate follow-on request, not a blocker for M1.
+
+### Hybrid spending rollout — no economy refactor before it is needed
+
+- **M1 basic rule:** Tông Chủ selects work groups/policy and takes strategic craft/upgrade decisions; existing real low-tier production work and planting can be automatically performed by eligible assigned disciples under the *existing* cost/slot/warehouse rules. No newly invented permission UI or numeric mode multipliers yet. Sect-owned resource may never be consumed by arbitrary idle AI, and locked/reserved stock cannot be bypassed.
+- **M2 rule (requires its own contract/approval):** introduce bounded routine recipe automation per producer if needed, with policy allowlist, warehouse reserve, budget ceiling and action event/receipt. Exceptional/high-tier spending stays Sect Master-only by default; personal Stone use separate. Expose clear reason for denied spend.
+- **M3 rule:** tune `Cân bằng` default, `Tiết kiệm`, `Ưu tiên phát triển` after observing actual production data. Three modes are **proposed UI/policy concepts** and not implemented just because they are documented.
+
+### Reference-game benchmarking: learn architecture, never borrow values
+
+ZQZS source repo `vuanhtuan161094-byte/ZQZS-Source-Knowledge` `main a9a638b6`. Evidence policy applies; APK vs AndroidData precedence UNKNOWN. Verified AndroidData call sites: `gamesys.home.aimanager:beginWorkAI(dzId,bdId)` validates actor/building then enqueues `eAIType.eWork`; `gamecore.behavior.disciplestatemanager` maps `buildingEvent.planStart/planComplete` to start/stop AI; `gamesys.home.zongmenmodel` reads building `pro_skill_id` and `discipleproskillconfig.buildplant_effects`; `zongmencontrol:reqChangeBuildingManager` dispatches manager change to server request. `DISCIPLE_DEEP_DIVE.md` observes **8 client profession IDs** but these are **not** the M1 feature checklist. Server harvest formulas, authoritative material balances and actual tick result UNKNOWN. Apply the **pattern** only: building shows real worker and state, choice issues an authoritative work command, AI moves/acts, result event changes canonical storage, player sees the same state. Game defines its own recipes/numbers/animations/asset IDs. Tests shall verify source-to-Godot mapping on an actual UI action, not infer behavior from a Lua string or screenshot.
+
+---
 
 ## A. Outcome and scope (latest explicit user priority)
 
