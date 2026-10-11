@@ -22,6 +22,7 @@ var runtime_failure_reason := ""
 var runtime_poll_timer: Timer
 var autosave_timer: Timer
 var workforce := WorkforceSystem.new()
+var warehouse_ui := WarehouseSystem.new()
 var bloodlines := BloodlineSystem.new()
 var physiques := PhysiqueSystem.new()
 var cultivation := CultivationSystem.new()
@@ -564,17 +565,36 @@ func _observe_tasks() -> void:
         if disciple.current_action in [&"CULTIVATE", &"BREAKTHROUGH"]:
             saw_cultivation = true
 
+# Read-only P3.7 UI projection. Legacy fields are consulted only on old/P2 states.
+func _warehouse_quantity(resource_id: StringName, legacy_technique: bool = false) -> int:
+    if state.sect.p3_7_resources_enabled:
+        return warehouse_ui.quantity(state, resource_id)
+    var legacy: Dictionary = state.sect.technique_materials if legacy_technique else state.sect.forge_materials
+    return maxi(int(legacy.get(str(resource_id), 0)), 0)
+
+func _warehouse_available(resource_id: StringName, legacy_technique: bool = false) -> int:
+    if state.sect.p3_7_resources_enabled:
+        return warehouse_ui.available_quantity(state, resource_id)
+    return _warehouse_quantity(resource_id, legacy_technique)
+
+func _warehouse_pair(resource_id: StringName, legacy_technique: bool = false) -> String:
+    return "%d (dùng %d)" % [
+        _warehouse_quantity(resource_id, legacy_technique),
+        _warehouse_available(resource_id, legacy_technique)
+    ]
+
 func _refresh_top_bar() -> void:
     time_label.text = "Năm đầu · Nhịp vận hành %d" % state.tick
-    var iron := int(state.sect.forge_materials.get("thanh_thiet", 0))
-    var yao := int(state.sect.technique_materials.get("yeu_dan", 0))
-    var marrow := int(state.sect.technique_materials.get("linh_tuy", 0))
-    resource_label.text = "Tiền %s   ◆ Linh thạch %s   ▣ Thanh Thiết %s   ◉ Yêu Đan %s   ✦ Linh Tủy %s" % [
+    # Compact total/usable pairs; see Warehouse for the full stock/reserve legend.
+    resource_label.text = "Tiền %s ◆ Linh thạch %s ▣ Thiết %s/%s ◉ Đan %s/%s ✦ Tủy %s/%s" % [
         _compact_number(state.sect.treasury),
         _compact_number(state.sect.spirit_stones),
-        _compact_number(iron),
-        _compact_number(yao),
-        _compact_number(marrow)
+        _compact_number(_warehouse_quantity(&"thanh_thiet")),
+        _compact_number(_warehouse_available(&"thanh_thiet")),
+        _compact_number(_warehouse_quantity(&"yeu_dan", true)),
+        _compact_number(_warehouse_available(&"yeu_dan", true)),
+        _compact_number(_warehouse_quantity(&"linh_tuy", true)),
+        _compact_number(_warehouse_available(&"linh_tuy", true))
     ]
 
 func _refresh_tasks() -> void:
@@ -582,7 +602,7 @@ func _refresh_tasks() -> void:
         task_label.text = _task_text()
 
 func _task_text() -> String:
-    var has_iron := int(state.sect.forge_materials.get("thanh_thiet", 0)) > 0
+    var has_iron := _warehouse_quantity(&"thanh_thiet") > 0
     return "%s Quan sát đệ tử làm việc\n\n%s Có Thanh Thiết trong kho\n\n%s Quan sát đệ tử tu luyện\n\n%s Mở hồ sơ một đệ tử" % [
         _check(saw_work),
         _check(has_iron),
@@ -653,17 +673,17 @@ func _building_detail(destination: StringName) -> String:
         SectMapPresentation.DEST_MAIN_HALL:
             return "Đệ tử: %d/%d\nChính sách lao động: %s\nNgân khố: %d\n\nTrung tâm điều hành các chính sách của tông môn." % [state.disciples.size(), state.sect.disciple_capacity, str(state.sect.work_policy), state.sect.treasury]
         SectMapPresentation.DEST_WAREHOUSE:
-            return "Thanh Thiết: %d\nLinh Mộc: %d\nYêu Đan: %d\nLinh Tủy: %d\nLinh Thạch: %d\n\nTài nguyên đang có trong tông môn." % [
-                int(state.sect.forge_materials.get("thanh_thiet", 0)),
-                int(state.sect.forge_materials.get("linh_moc", 0)),
-                int(state.sect.technique_materials.get("yeu_dan", 0)),
-                int(state.sect.technique_materials.get("linh_tuy", 0)),
+            return "TỒN KHO (số tồn / có thể dùng)\nThanh Thiết: %s\nLinh Mộc: %s\nYêu Đan: %s\nLinh Tủy: %s\nLinh Thạch: %d\n\nDự trữ và khóa không được phép tiêu dùng." % [
+                _warehouse_pair(&"thanh_thiet"),
+                _warehouse_pair(&"linh_moc"),
+                _warehouse_pair(&"yeu_dan", true),
+                _warehouse_pair(&"linh_tuy", true),
                 state.sect.spirit_stones
             ]
         SectMapPresentation.DEST_FORGE:
-            return "Đệ tử đang luyện khí: %d\nĐiểm hỗ trợ rèn: %d\nThanh Thiết trong kho: %d\n\nNgười phụ trách luyện khí sẽ làm việc tại đây." % [_count_action(&"WORK_FORGING"), state.sect.forge_support_points, int(state.sect.forge_materials.get("thanh_thiet", 0))]
+            return "Đệ tử đang luyện khí: %d\nĐiểm hỗ trợ rèn: %d\nThanh Thiết tồn (dùng): %s\n\nNgười phụ trách luyện khí sẽ làm việc tại đây." % [_count_action(&"WORK_FORGING"), state.sect.forge_support_points, _warehouse_pair(&"thanh_thiet")]
         SectMapPresentation.DEST_MINE:
-            return "Đệ tử đang khai khoáng: %d\nThanh Thiết trong kho: %d\n\nMỗi chu kỳ khai khoáng hoàn thành sẽ đưa Thanh Thiết về kho." % [_count_action(&"WORK_MINING"), int(state.sect.forge_materials.get("thanh_thiet", 0))]
+            return "Đệ tử đang khai khoáng: %d\nThanh Thiết tồn (dùng): %s\n\nMỗi chu kỳ khai khoáng hoàn thành sẽ đưa Thanh Thiết về kho." % [_count_action(&"WORK_MINING"), _warehouse_pair(&"thanh_thiet")]
         SectMapPresentation.DEST_BODY_TRAINING:
             var hall := BuildingSystem.new().primary_building(state, BuildingSystem.TYPE_BODY_TRAINING)
             if hall == null:
