@@ -2,7 +2,7 @@
 
 **Ngày rà soát:** 11/10/2026  
 **Đối chiếu mã:** `main@55e4be5d1dbe267956791cb3db1a923708a5cbad`  
-**Trạng thái:** **F01–F12 PRINCIPLE APPROVED (11/10/2026) / FINAL IMPLEMENTATION CONTRACT READY FOR SEPARATE AUTHORIZATION** — 8 nhóm, 29 công thức, 3 Ấn, nguồn đa tuyến có bảo đảm; **F05 CHỈ PILOT**, F07/F10 cần kiểm chứng thực; **CHƯA DESIGN LOCKED, CHƯA CHO PHÉP CODE**. Tài liệu này là phương án chốt cuối, không phải luật được triển khai.  
+**Trạng thái mới nhất (phương án A, 11/10/2026):** **F01–F12 ĐÃ DUYỆT NGUYÊN TẮC, PHẠM VI ĐƯỢC TINH GIẢN Ở MỤC O**; săn quái/Boss/vùng tài nguyên là nguồn chính, nguồn chống kẹt thật, C–H và ba Ấn chưa có nội dung thì không kích hoạt. Giữ nguyên 29 công thức, EXP, cơ chế cổng; **F05 chỉ PILOT, F07/F10 kiểm chứng phù hợp với phần thực có**. **CHƯA DESIGN LOCKED, CHƯA CODE**. Tài liệu này là phương án chốt cuối, không phải luật được triển khai.  
 **Phạm vi:** chỉ Luyện Thể major gates `body.realm=1..29, floor=10`; không thay đổi Tu Vi, EXP, tần suất 60 giây/1 phút mô phỏng, tốc độ EXP, Căn Cốt, Rèn Thân Đường, vật liệu trang bị hay phép bổ trợ.
 
 ## A. Luật đã khóa, không cần biểu quyết lại
@@ -571,4 +571,71 @@ Current explicit authorization state:
 The user may later say **“CHO PHÉP CODE DV2-03F, BẮT ĐẦU F0/F1”** or specify another explicit packet. Only then may that specified coding scope begin. Approval of F01–F12 in this conversation by itself **DOES NOT** trigger work, Codex, Godot test runs or implementation, and does not grant advance authority for F05 final tuning. If F07/F10 empirical results require change of already locked economics or EXP, pause and ask for a separate decision.
 
 **GitHub handoff:** retain this detailed contract here; link from `NEXT_CHAT_HANDOFF.md`. Do not create another parallel “final” manifest or rename these files; section D remains the **single source of 29 recipe quantities**.
+
+
+## O. PHƯƠNG ÁN A — QUAY VỀ ROADMAP ĐỆ TỬ V2, RÚT GỌN PHẠM VI DV2-03F (11/10/2026, LATEST USER DECISION)
+
+> **ƯU TIÊN HIỆN HÀNH — SUPERSEDES OUT-OF-SCOPE REQUIREMENTS IN E, L, M, N.** Người dùng chọn **phương án A** sau khi duyệt F01–F12 về nguyên tắc: tập trung hoàn thiện đệ tử V2 có thể chơi thật; **giữ tuyệt đối 29 công thức/8 nhóm/3 Ấn và bảng EXP, không sửa Tu Vi/Body luật đã khóa**; **săn quái, boss, khám phá/vùng tài nguyên là tuyến cung chính**, có **chống kẹt thực**; ủy thác và kinh tế cao giới phải **tinh giản/hoãn**; nội dung chưa có **không kích hoạt**. Chỉ cập nhật tài liệu. **CHƯA CODE, CHƯA DESIGN LOCKED, không có lệnh khởi động F0–F7**. Bảng công thức duy nhất vẫn là **mục D**. Mục N là hồ sơ phương án đầy đủ trước khi rút gọn, giữ để truy vết; **mục O là thứ tự/ranh giới có hiệu lực mới nhất** khi hai bản khác nhau.
+
+### O1. Kết luận rà soát kế hoạch, tránh đi xa phạm vi
+
+- Roadmap gốc `docs/DISCIPLE_V2_CHARACTER_IMPLEMENTATION_PLAN.md`: DV2-03 hai đường tăng trưởng và cổng; DV2-04 Linh Căn, DV2-05 Trait/Mệnh, DV2-06 Huyết Mạch/Thể Chất, DV2-07 Công Pháp/Chủ Đạo/Kỹ năng, DV2-08 vòng hoạt động trọn vẹn, DV2-09 UI, DV2-10 test 1k–3k. **Không được nén DV2-04..DV2-10 thành các dependency bắt buộc đóng DV2-03F**.
+- P3.7 canonical `docs/P3_7_LONG_TERM_SECT_ECONOMY_HUNTING_SPEC.md` §§3,5,6,27 đã định hướng **săn quái là tuyến thưởng chủ đạo**; reward có thể gồm Linh Thạch, Tu Vi và vật liệu trong tương lai, nhưng **không được coi như reward hiện đã code**.
+- Code live `HuntingMapV2` mới có **Thanh Trúc Lâm/Bạch Thạch Khê/Hắc Phong Cốc**, reward win-claim của `tinh_lang_bi` đã có, `linh_tuy` ở Thanh Trúc là rare roll (L1=0%). `tu_van_thao` chỉ có crop Linh Điền Lv30; hiện chưa có drop sớm. 12 ID C–H và 3 Ấn **chưa được đăng ký / chưa có tuyến thực**. `HuntingPveRunV2` là một session claim, chưa chứng minh scheduler săn tự động ở scale 1k–3k. No false playable claims.
+- 29 recipe costs, EXP/rate/60s per tick, all-or-nothing gate transaction, persisted replay guard, warehouse reservation/locks, independent Tu Vi/Body **vẫn thuộc DV2-03F tối thiểu và phải chính xác**. Không thêm “Phẩm Lực” hoặc vật liệu thay thế chung.
+- **Không chốt được tốc độ 30 cảnh giới khi các event, kỳ ngộ, pháp bảo, công pháp, đan dược và cao cấp map chưa thiết kế**. Con số ~48 năm ở 1.500 EXP/phút unbuffed chỉ là baseline diagnostic, **không là thời gian chơi chuẩn hoặc yêu cầu retune EXP**. Khung cân bằng **khoảng rộng** và điểm mở rộng hợp pháp, không một quota 1000 năm/hoặc target cứng.
+
+### O2. Hợp đồng nguồn cung *săn quái làm chính*, thiết kế tối thiểu
+
+1. **Một cơ chế `earned_source -> item_id -> quantity -> warehouse` có version + vùng/bậc + event claim ID**, dùng lại nơi đã có: quái thường/tinh anh/boss, phần thưởng vùng khám phá/điểm tài nguyên có hoạt động hoàn thành thực. Đăng ký nguồn theo ID và vùng, không viết một engine/ủy thác mới cho từng nguyên liệu. Reward chỉ phát khi actual victorious/completed event, một claim/encounter, lưu chống lặp/khôi phục save. “Monster drop herb” được phép theo gameplay; không ép mọi cây phải trồng được.
+2. **A/B vertical slice là ngưỡng chơi thật đầu tiên**: A tận dụng Thanh Linh Thảo từ Linh Điền hoặc thưởng hoạt động, Tinh Lang Bì qua win-claim hiện hành. B thêm một **nguồn thực mở sớm cho chính `tu_van_thao`** và đường `linh_tuy` có bảo đảm; không đòi Linh Điền Lv30, Linh Tuyền Chi Tâm, Tu Vi ngang Luyện Thể hoặc gate4 đã vượt. Có thể tái sử dụng các vùng Nhân hiện hành **nếu** thử nghiệm cân bằng/viability và quyền truy cập đủ; **không tạo map đã tồn tại bằng lời**.
+3. **Chống kẹt không phải kinh tế ủy thác khổng lồ**: nguyên liệu bắt buộc có đường lấy chắc chắn **sau một số hữu hạn hoạt động thắng/hoàn thành hợp lệ**, ví dụ tích lũy claim đúng vùng/cấp để phát thẳng **chính vật liệu cần**, hoặc một phần thưởng hoàn thành nhiệm vụ thật; số trận/lần nhận, mức rơi và cohort share là **OPEN**. Đồng thời direct random drops vẫn tồn tại để tạo bất ngờ. Có thể tích hợp bộ đếm vào **cùng tuyến săn**, không bắt buộc hai engine/phái đoàn độc lập cho cả 19 ID.
+4. **C–H cùng ba Ấn:** công thức và typed IDs vẫn giữ; thiết kế metadata/source slot không đồng nghĩa đã có quái/boss/vùng. Chỉ mở reward + cổng khi có vùng, quái hoặc nguồn tài nguyên thực với phần thưởng và chống kẹt phù hợp **trước cổng yêu cầu**. Nhân Ấn cần nguồn ở Nhân r10, Tiên Ấn ở Tiên r20, Thần Ấn ở Thần r29; không dựa vào cảnh giới sau, không độc quyền first-clear, Ấn tiêu hao 1/lần. Chưa có nội dung ⇒ hiển thị `content_unavailable`, không vượt cổng, không thưởng giả. Content high-tier sẽ được lấp dần **khi roadmap mở map/gameplay tương ứng**, không là điều kiện để hoàn thành slice A/B.
+5. **Chỉ số tỷ lệ rơi, thời gian, bảo đảm và nguồn EXP/sự kiện mở rộng vẫn chưa LOCK**. F05 lịch sử (3 chính/30 team-min, 1 phụ/≤4 win, 1 Ấn/≤8 win) chỉ là dữ liệu stress-test nếu còn cần, **không bắt buộc cài hoặc áp dụng trong live**. Chọn tỉ lệ riêng từng quái/vùng/cấp ở đúng đợt làm nội dung, thử hành trình hợp lệ và kiểm toán phát thưởng. Các event/pháp bảo/đan sau này gắn qua named modifier/typed source; không viết module sự kiện/pháp bảo trong F.
+
+### O3. Phân loại F01–F12 sau lựa chọn A (không thay manifest)
+
+| Mã | Hiệu lực sau chốt A |
+|---|---|
+| F01 | **GIỮ** đúng section-D 29 recipes, 8 nhóm, 3 Ấn, 562/143/3; không phụ phí |
+| F02 | **CHỈNH CÁCH THỰC HIỆN**: săn/vùng/Boss ưu tiên; direct drop + 1 chống kẹt qua hoạt động thực, **không ép 2 subsystem/ủy thác độc lập per ID** |
+| F03 | **GIỮ ƯU TIÊN SỚM**: `tu_van_thao` + `linh_tuy` có nguồn sớm, không cần field Lv30; không mặc định dựng ủy thác riêng |
+| F04 | **GIỮ DANH TÍNH** 12 ID C–H + 3 Ấn; **HOÃN NỘI DUNG vùng/boss cấp cao chưa có** thay vì xây hết trong F |
+| F05 | **PILOT-ONLY / DEFER tuning**: 3/30, 4/8 không thành live law; tiếp tục để mở tỷ lệ rơi |
+| F06 | **GIỮ NGUYÊN 3 Ấn, kiếm lặp lại**: boss hoặc chiến công vùng đúng giới, nguồn cần trước gate, nhưng phase-map sau mới mở high-tier |
+| F07 | **THU HẸP verification**: đo hiện trạng Linh Thạch và chống thiếu ở loop A/B; không buộc thiết kế hoàn thiện dòng tiền 3k/cao giới ngay trong F. Không giả định P3.7 loot-stones đã live |
+| F08 | **PHÂN KỲ**: batch request/preview và tránh O(roster) mỗi paint trong F; automation hunting 3k, policy phức tạp thuộc DV2-08/10; auto dùng vật liệu vẫn OFF |
+| F09 | **GIỮ CỨNG**: transaction all-or-nothing, một kho, idempotency, saved receipts, rollback |
+| F10 | **THU HẸP verification**: xác minh nguồn EXP/cost **đang hoạt động** và tính mở rộng; không yêu cầu kết luận cân bằng r1→r30 hay thêm bonus chưa có. **Không đổi EXP đã khóa** |
+| F11 | **GIỮ CỨNG**: gate thiếu nội dung = `content_unavailable`; không claim 29/29 playable trước content |
+| F12 | **PHÂN KỲ**: focused+full DV2-03F và basic scale/save; thử 1k–3k gameplay toàn bản, 30 cảnh giới và visual acceptance thuộc DV2-10/map phases, không nói F slice = full product complete |
+
+### O4. Thứ tự **rút gọn** F0–F7 — chỉ PLAN, không lệnh code
+
+| Gói (vẫn thuộc DV2-03) | Thực hiện **khi được cho phép code riêng** | Kiểm tra bắt buộc tại gói |
+|---|---|---|
+| **F0 — xác nhận nền** | So live owner/time/EXP, 3 map/reward, warehouse, tiết kiệm stone, vùng mở, save/reload; ghi nguồn nào ACTIVE/BLOCKED | Evidence ở source SHA mới, không nhận reward giả; nhận diện F07/F10 đang thiếu consumer nào |
+| **F1 — 29 manifest + 19 typed IDs** | Khai báo 29 công thức khóa, 12 C–H IDs, 3 Ấn IDs, version/schema; **không kích hoạt** high-tier | 29/29 exact, old saves an toàn, 562+143+3, high-tier fail-closed |
+| **F2 — gate transaction/receipt** | Preview pure, trừ gói trong warehouse và tăng Body 100% đúng canonical, rollback/idempotent/restart/recovery | 29 fixture gates transactional test (không giả là playable), dual-actor shared last item, reserve/locked, no double payment |
+| **F3 — nguồn rơi A/B + chống kẹt nhỏ** | Gắn typed payouts vào **win-claim** hiện có; thêm A/B nguồn tài nguyên/kết quả săn hợp lệ; chống kẹt B bằng giới hạn hoàn thành thực; không dựng quest economy lớn | Một đệ tử có thể kiếm thật và qua các cổng A/B đã bật; low Tu Vi; no field Lv30; PvE defeated/no-claim/replay an toàn |
+| **F4 — nối giao diện tối thiểu** | P3.2 Body gate preview, “thiếu loại nào, kiếm đâu”, actual Thối Thể command, hiển thị `content_unavailable` cho C–H/3 Ấn chưa live | Không nút giả, không auto-gate, vẫn tôn trọng `reserve_min/locked` |
+| **F5 — smoke số liệu nhỏ, chống nghẽn** | Tỉ lệ rơi và số win bảo đảm A/B dạng PILOT, bằng chứng Linh Thạch thật trong loop đang live, EXP current-source, save/load và đội cơ bản | Không RNG-only gate4, không nguồn kiếm vòng khóa; F07 low-tier record, F10 current-source verified, chưa tuyên bố full balance |
+| **F6 — focused/full tích hợp** | Godot 4.7.2 focused same-code-SHA, full P0→P3.7, một real disciple cultivate→work→hunt/claim→Body gate→fight/save→reload | PASS từng test với run link; không khẳng định DV2-08/09/10 đã DONE |
+| **F7 — đóng phạm vi hẹp, bàn giao** | Ghi rõ phần A/B live vs C–H/3 Ấn **DESIGN/UNAVAILABLE** và các nguồn/kinh tế/events còn thiếu; đề xuất chuyển đúng roadmap | Chỉ đóng lát **DV2-03F A/B** khi test đủ. Đóng toàn bộ DV2-03 vẫn theo `AGENTS.md`/roadmap; không đóng toàn phase nếu known required content còn chặn |
+
+**Lưu ý nghiệm thu:** F1/F2 có thể kiểm tra đủ 29 công thức/giao dịch qua fixture; đó là **technical coverage**, KHÔNG chứng minh người chơi kiếm được nguyên liệu C–H. Nếu DV2-03 yêu cầu đóng 29/29 gate thực trước DV2-04 theo hợp đồng cha, thì giữ DV2-03 ACTIVE và cần user quyết định có **chấp nhận bàn giao F slice fail-closed** để đi tiếp hay không; không tự tuyên bố “CLOSED” để vượt quy tắc một active phase.
+
+### O5. Khoảng cân bằng và event/EXP mở rộng — chỉ giữ chỗ cho sau
+
+- **Ngay bây giờ**: khóa structure/manifest/transaction/valid source, đo A/B ở dải rộng về thời gian, tỷ lệ thắng, drop variance, thiếu item, stone inflow/outflow. Không chốt daily budget cho 3,000 nhân vật cao giới.
+- **Khi nội dung ra đời**: event/kỳ ngộ/bí cảnh/pháp bảo/đan có thể thưởng named items/EXP hoặc typed modifiers qua chủ sở hữu + provenance, điều kiện thật, cap/stacks rõ, cùng receipt chống replay. Không tự thay EXP bảng 300 tầng, cộng EXP hai lần trong một tick hoặc phát thưởng từ UI.
+- **Không có hệ số event được chốt**: các tỉ trọng thường/hiếm/cực hiếm/kỳ ngộ trước đó chỉ là ý tưởng brainstorm, không biến thành nội dung production hoặc ID. “Cảnh cuối sau 1,000 năm” là ví dụ về vùng cân bằng, KHÔNG cam kết gameplay.
+- Nhịp tiến cảnh giới cao và tiêu thụ Linh Thạch 1k/3k sẽ **được đo lại khi những hệ thống thực sự có consumer**; ghi rõ `UNVERIFIED`, không gắn `FAIL` chỉ vì chưa thiết kế tất cả event, và không gắn `PASS` vì chỉ có phép chia EXP nền.
+
+### O6. Quyền triển khai và điều kiện xác nhận
+
+- **User-approved latest direction = A, docs only**; F01–F12 principle approval giữ hiệu lực **trong phạm vi đã tinh giản như O3**; section N's high-tier full-source expansion and full-realm F07/F10 closure requirement **không còn là điều kiện code DV2-03F A/B**.
+- `DV2_03F.DESIGN_LOCKED=false`, `DV2_03F.CODE_AUTHORIZED=false`, `F05.NUMERIC_RATES_LOCKED=false`.
+- Không tạo class, scene, resource, mock loot, CI workflow, test code mới hoặc run Godot trong lượt chỉnh tài liệu này.
+- Chỉ bắt đầu gói F0/F1 hay gói riêng khác sau lệnh code **mới, rõ phạm vi** của người dùng; sau đó luôn xem lại live main, so thay đổi và kiểm chứng focused/cumulative đúng ở gameplay SHA.
 
