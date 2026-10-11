@@ -33,6 +33,8 @@ on:
       - 'godot/tests/simulation/dv2_03_ren_than_duong_integration_test.gd'
       - 'godot/tests/simulation/dv2_03_e3_1_training_priority_regression_test.gd'
       - 'godot/tests/simulation/dv2_03_f0_source_baseline_test.gd'
+      - 'godot/src/simulation/cultivation/disciple_body_gate_content_v2.gd'
+      - 'godot/tests/simulation/dv2_03_f1_body_gate_manifest_test.gd'
       - 'godot/tests/simulation/dv2_03_realm_body_progress_test.gd'
       - 'godot/src/simulation/core/p3_7_factory.gd'
       - 'godot/src/simulation/state/simulation_state.gd'
