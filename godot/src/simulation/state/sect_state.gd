@@ -92,6 +92,9 @@ var v2_training_rules: Dictionary = {}
 var v2_pve_enabled: bool = false
 var v2_pve_selected_levels: Dictionary = {}
 var v2_pve_reward_claims: Dictionary = {}
+# F3 legitimate won-claim counter for an early-Linh-Tủy guarantee.
+# No idle payout, no timer and no separate reward warehouse.
+var v2_body_material_progress: Dictionary = {}
 # DV2-02 explicit opt-in: authoritative active hunt snapshots for save/reload.
 var v2_pve_active_runs: Dictionary = {}
 # DV2-03F/F2: compact, per-disciple/per-major-realm committed Body receipts.
@@ -183,10 +186,12 @@ func to_dict() -> Dictionary:
     if v2_training_enabled or not v2_training_rules.is_empty():
         data["v2_training_enabled"] = v2_training_enabled
         data["v2_training_rules"] = v2_training_rules.duplicate(true)
-    if v2_pve_enabled or not v2_pve_selected_levels.is_empty() or not v2_pve_reward_claims.is_empty() or not v2_pve_active_runs.is_empty():
+    if v2_pve_enabled or not v2_pve_selected_levels.is_empty() or not v2_pve_reward_claims.is_empty() or not v2_pve_active_runs.is_empty() or not v2_body_material_progress.is_empty():
         data["v2_pve_enabled"] = v2_pve_enabled
         data["v2_pve_selected_levels"] = v2_pve_selected_levels.duplicate(true)
         data["v2_pve_reward_claims"] = v2_pve_reward_claims.duplicate(true)
+        if not v2_body_material_progress.is_empty():
+            data["v2_body_material_progress"] = v2_body_material_progress.duplicate(true)
         if not v2_pve_active_runs.is_empty():
             data["v2_pve_active_runs"] = v2_pve_active_runs.duplicate(true)
     if not v2_body_gate_receipts.is_empty():
@@ -270,6 +275,13 @@ static func from_dict(data: Dictionary) -> SectState:
             if level >= 1 and level <= 5:
                 state.v2_pve_selected_levels[str(region)] = level
     state.v2_pve_reward_claims = _bool_dictionary(data.get("v2_pve_reward_claims", {}))
+    # Old saves with no F3 progress load as zero. These counters change only
+    # with a fully successful real PvE win claim.
+    var saved_body_progress = data.get("v2_body_material_progress", {})
+    if saved_body_progress is Dictionary:
+        for raw_key in saved_body_progress.keys():
+            if str(raw_key) == "linh_tuy_thanh_truc_wins":
+                state.v2_body_material_progress[str(raw_key)] = clampi(int(saved_body_progress[raw_key]),0,3)
     var raw_runs = data.get("v2_pve_active_runs", {})
     if raw_runs is Dictionary:
         for encounter_id in raw_runs.keys():
