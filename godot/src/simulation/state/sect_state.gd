@@ -94,6 +94,11 @@ var v2_pve_selected_levels: Dictionary = {}
 var v2_pve_reward_claims: Dictionary = {}
 # DV2-02 explicit opt-in: authoritative active hunt snapshots for save/reload.
 var v2_pve_active_runs: Dictionary = {}
+# DV2-03F/F2: compact, per-disciple/per-major-realm committed Body receipts.
+# The request index is rebuilt from these saved receipts on load (not saved twice).
+# Default empty on every legacy save; no Body gate is enabled by this ledger.
+var v2_body_gate_receipts: Dictionary = {}
+var v2_body_gate_request_index: Dictionary = {}
 
 # P2.9 deterministic visible/latent/revealed trait profiles. Fully opt-in.
 var disciple_traits_enabled: bool = false
@@ -184,6 +189,8 @@ func to_dict() -> Dictionary:
         data["v2_pve_reward_claims"] = v2_pve_reward_claims.duplicate(true)
         if not v2_pve_active_runs.is_empty():
             data["v2_pve_active_runs"] = v2_pve_active_runs.duplicate(true)
+    if not v2_body_gate_receipts.is_empty():
+        data["v2_body_gate_receipts"] = v2_body_gate_receipts.duplicate(true)
     if disciple_traits_enabled or disciple_trait_event_count > 0 or not disciple_trait_profiles.is_empty():
         data["disciple_traits_enabled"] = disciple_traits_enabled
         data["disciple_trait_profiles"] = disciple_trait_profiles.duplicate(true)
@@ -269,6 +276,32 @@ static func from_dict(data: Dictionary) -> SectState:
             var saved = raw_runs[encounter_id]
             if not str(encounter_id).is_empty() and saved is Dictionary:
                 state.v2_pve_active_runs[str(encounter_id)] = saved.duplicate(true)
+    # F2 save migration: old saves have no receipts; rebuild O(1) request lookups
+    # from the single persisted ledger, never write a second persistent copy.
+    var saved_gate_receipts = data.get("v2_body_gate_receipts", {})
+    if saved_gate_receipts is Dictionary:
+        var gate_keys: Array = saved_gate_receipts.keys()
+        gate_keys.sort()
+        for raw_key in gate_keys:
+            var receipt = saved_gate_receipts[raw_key]
+            if not (receipt is Dictionary):
+                continue
+            var key := str(raw_key)
+            var request_id := str(receipt.get("request_id", ""))
+            var actor_id := str(receipt.get("disciple_id", ""))
+            var source_realm := int(receipt.get("source_realm", 0))
+            if request_id.is_empty() or actor_id.is_empty() or source_realm < 1 or source_realm > 29:
+                continue
+            if key != "%s:%d" % [actor_id, source_realm] or state.v2_body_gate_request_index.has(request_id):
+                continue
+            var normalized: Dictionary = receipt.duplicate(true)
+            normalized["version"] = int(normalized.get("version", 0))
+            normalized["source_realm"] = source_realm
+            normalized["target_realm"] = int(normalized.get("target_realm", 0))
+            if int(normalized["version"]) != 1 or int(normalized["target_realm"]) != source_realm + 1:
+                continue
+            state.v2_body_gate_receipts[key] = normalized
+            state.v2_body_gate_request_index[request_id] = key
     state.disciple_traits_enabled = bool(data.get("disciple_traits_enabled", false))
     state.disciple_trait_profiles = _trait_profile_dictionary(data.get("disciple_trait_profiles", {}))
     state.disciple_trait_event_count = maxi(int(data.get("disciple_trait_event_count", 0)), 0)
