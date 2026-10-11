@@ -113,6 +113,43 @@ func _run() -> void:
         state.sect.v2_body_gate_receipts.size()==1,
         "Real earned A materials did not settle to exactly one Body gate."):
         return
+    # Continue authentic wins to cover ALL SIX currently playable A/B gates.
+    # Cumulative pilot-only minimum = 54 Trúc wins + 26 Bạch wins.
+    for i in range(12,54):
+        if not _ensure(_victory(state,party,"thanh_truc_lam",
+            "f6_real_truc_%02d" % i,901),
+            "Missing actual claimed Trúc victory #%d." % i):
+            return
+    for j in range(2,26):
+        if not _ensure(_victory(state,party,"bach_thach_khe",
+            "f6_real_bach_%02d" % j,992),
+            "Missing actual claimed Bạch victory #%d." % j):
+            return
+    if not _ensure(state.sect.v2_pve_reward_claims.size()==80 and
+        warehouse.quantity(state,&"tu_van_thao")>=52 and
+        warehouse.quantity(state,&"linh_tuy")>=6,
+        "Won-claim source did not accumulate enough genuine B resources."):
+        return
+    for realm in range(2,7):
+        disciple.v2_realm_progress["body"]["floor"]=10
+        disciple.v2_realm_progress["body"]["xp"]=float(
+            DiscipleProgressionBalanceV2.floor_cost(realm,10)
+        )
+        var next_preview := gate.preview_gate(state,disciple.id)
+        if not _ensure(bool(next_preview.get("can_commit",false)),
+            "Gate %d->%d not funded by 80 real wins: %s" % [
+                realm,realm+1,str(next_preview)]):
+            return
+        var next_result := gate.commit_gate(state,disciple.id,
+            "f6-real-source-gate%d" % realm)
+        if not _ensure(bool(next_result.get("ok",false)) and
+            int(disciple.v2_realm_progress["body"]["realm"])==realm+1 and
+            disciple.v2_realm_progress["cultivation"]==before_tuvi,
+            "Fully earned B gate failed at realm %d." % realm):
+            return
+    if not _ensure(state.sect.v2_body_gate_receipts.size()==6,
+        "Real A/B six-gate chain receipts were incomplete."):
+        return
     var saver := SaveService.new()
     var path := "user://dv2_03_f6_real_earned_gate_test.json"
     if not _ensure(saver.save_to_path(state,path)==OK,"SaveService save failed."):
@@ -120,10 +157,10 @@ func _run() -> void:
     var restored := saver.load_from_path(path)
     DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
     if not _ensure(restored!=null and
-        restored.sect.v2_pve_reward_claims.size()==14 and
-        restored.sect.v2_body_gate_receipts.size()==1 and
-        int(restored.disciples[disciple.id].v2_realm_progress["body"]["realm"])==2 and
-        str(gate.commit_gate(restored,disciple.id,"f6-real-source-gate1").get("reason",""))==
+        restored.sect.v2_pve_reward_claims.size()==80 and
+        restored.sect.v2_body_gate_receipts.size()==6 and
+        int(restored.disciples[disciple.id].v2_realm_progress["body"]["realm"])==7 and
+        str(gate.commit_gate(restored,disciple.id,"f6-real-source-gate6").get("reason",""))==
             "body_gate_already_committed",
         "Saved hunt rewards or Body payment replay after restart."):
         return
@@ -138,5 +175,5 @@ func _run() -> void:
         "High-tier content was fabricated or saved state invalid."):
         return
     print("DV2-03F F6 REAL EARNED HUNT -> PRODUCTION BODY GATE -> SAVE: PASS; ",
-        "wins=14,paid_body_minute=real,gate_xp_at_10=qa_fixture,high_tier=blocked")
+        "wins=80,body_gates_A_B=6,paid_body_minute=real,gate_xp_at_10=qa_fixture,high_tier=blocked")
     quit(0)
