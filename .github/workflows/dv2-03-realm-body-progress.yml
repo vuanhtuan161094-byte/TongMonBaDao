@@ -63,6 +63,7 @@ on:
       - 'godot/tests/presentation/p3_2_disciple_ui_test.gd'
       - '.github/workflows/dv2-03-realm-body-progress.yml'
 
+      - 'godot/tests/presentation/p3_o6_m1_release_rehearsal_test.gd'
 permissions:
   contents: read
 

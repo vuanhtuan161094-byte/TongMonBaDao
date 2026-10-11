@@ -9,6 +9,7 @@ on:
       - 'godot/tests/presentation/p3_o1_canonical_warehouse_ui_test.gd'
       - '.github/workflows/p3-o1-canonical-warehouse-ui.yml'
 
+      - 'godot/tests/presentation/p3_o6_m1_release_rehearsal_test.gd'
 permissions:
   contents: read
 

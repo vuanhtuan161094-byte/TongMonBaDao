@@ -11,6 +11,7 @@ on:
       - 'godot/tests/presentation/p3_o3_real_mine_loop_test.gd'
       - '.github/workflows/p3-o3-real-mine-loop.yml'
 
+      - 'godot/tests/presentation/p3_o6_m1_release_rehearsal_test.gd'
 permissions:
   contents: read
 
