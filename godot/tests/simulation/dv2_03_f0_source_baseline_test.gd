@@ -91,8 +91,8 @@ func _run() -> void:
         "Repeated training minute charged or granted twice."):
         return
 
-    # The existing PvE content includes three low-tier regions, with no
-    # real early B Tử Vân Thảo drop and no deterministic Linh Tủy guarantee.
+    # Historical F0 found missing early B sources; F3 now requires real earned
+    # win-claim availability and a repeatable milestone. EXP still locked.
     var registry := ResourceRegistry.new()
     var map_ids: Array = HuntingMapV2.REGION_CONTENT.keys()
     map_ids.sort()
@@ -110,10 +110,11 @@ func _run() -> void:
             bool(HuntingMapV2.overview(str(region_id)).get("ok",false)),
             "Existing low-tier region failed content lookup."):
             return
-    if not _assert(early_b_sources==0 and
+    if not _assert(early_b_sources==1 and
         str(HuntingMapV2.REGION_CONTENT["thanh_truc_lam"]["rare"])=="linh_tuy" and
+        HuntingMapV2.LINH_TUY_GUARANTEE_WINS==4 and
         _near(float(HuntingMapV2.LEVELS[1]["rare"]),0.0),
-        "Unexpected early B source or L1 rare-rate changed; update F0 audit before claiming coverage."):
+        "F3 B hunt source, earned milestone or existing rare chance changed."):
         return
 
     # Legitimate real fight -> one earned warehouse settlement. Pure preview,
@@ -187,7 +188,7 @@ func _run() -> void:
         "early_tu_van_drop_source_count":early_b_sources,
         "real_claim_items":claim["items"],
         "hunt_sect_stones_earned":0,
-        "missing_guaranteed_linh_tuy":true,
+        "missing_guaranteed_linh_tuy":false,
         "full_hunting_scheduler_verified":false
     }))
     print("DV2-03F F0 SOURCE BASELINE: PASS")
