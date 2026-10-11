@@ -639,3 +639,53 @@ The user may later say **“CHO PHÉP CODE DV2-03F, BẮT ĐẦU F0/F1”** or s
 - Không tạo class, scene, resource, mock loot, CI workflow, test code mới hoặc run Godot trong lượt chỉnh tài liệu này.
 - Chỉ bắt đầu gói F0/F1 hay gói riêng khác sau lệnh code **mới, rõ phạm vi** của người dùng; sau đó luôn xem lại live main, so thay đổi và kiểm chứng focused/cumulative đúng ở gameplay SHA.
 
+
+## P. DV2-03F / F0 — ACTUAL RUNTIME, BODY EXP AND HUNT LOOT BASELINE EVIDENCE (11/10/2026)
+
+> **AUTHORIZATION:** User explicitly authorized **CODE F0 ONLY** on 11/10/2026 at 09:38 ICT, for baseline inspection/EXP+loot evidence/appropriate F0 tests. This supersedes the prior §O6 **no-code** statement **only for F0**. **F1–F7 are NOT authorized; `DESIGN LOCKED=false`**; 29 recipe rows (section D), 3 Seals, canonical EXP, all earlier Body/Realm rules and live production/loot semantics are untouched. This report records actual F0 verification, not new material availability.
+
+### P1. Exact changed source/test boundary
+
+- Starting branch `main@33f71abcc9404fe888d25a8c5355409a423ad128` (Option A documentation; latest gameplay/test had been E3.1 `3c7e9a7691f549097dd0a67ed50ead8b7be18a4c`).
+- **ONE F0-only new test**: `godot/tests/simulation/dv2_03_f0_source_baseline_test.gd` committed at `677bf152f1bdea9a6fbe5f6bf3abd99046b721b0`. It observes real production consumers, actual cleared hunt, warehouse claims, paid Sect-stone spend, no double claim. Test seed is deterministic; it **does not grant fake gameplay money/resources to pass**.
+- **Two CI wiring edits, no gameplay rules**: `.github/workflows/dv2-03-realm-body-progress.yml` and `.github/workflows/p3-7a1-building-backend.yml`, the latter re-runs existing FAST + FULL cumulative on audit changes. Live main with both CI files at `cd52d4b97b673dc116606e0fb6b413aec16119b1`.
+- No modifications to `godot/src/`, EXP tables, recipe manifest, resource registry, new item IDs, loot production functions, UI, assets or any F1–F7 owner. **No F1 registry, no F2 Body gate transaction, no F3 acquisition changes**.
+
+### P2. Evidence: focused official Godot 4.7.2 PASS on F0 test SHA
+
+**Run [DV2-03 focused #38105919954](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38105919954)**; execution commit `3c48bf7f763acf8b2d6cc6e52b25b81356b72de1` (new F0 test + focused workflow), **completed/success** on official Godot 4.7.2 Linux. The focused job explicitly reports **DV2-03F F0 source baseline: PASS**. Each older DV2-03 focused step in this run completed successfully, including existing active mining Body EXP, the existing paid two-slot Rèn Thân consumer, 30×10/29-gate progression, timing/save and P3.2 UI tests. A passing old 29-gate *math* test does not mean F1/F2 gate-material transaction exists.
+
+Actual `DV2-03F F0 SOURCE BASELINE:` log record (source: job `114371313453`):
+
+| Measured assertion | Actual result / provenance |
+|---|---|
+| All Realm XP r1..r29 required | **37,890,400,000 EXP**, unchanged `DiscipleProgressionBalanceV2.REALM_TOTAL_XP` |
+| Canonical Tu Vi natural source | **1,000/min** baseline; Chuyên Tu `×2` existing functional flow and focused test (a cost/rate authority, not event-balanced completion time) |
+| Body production reference | **250 EXP/min**, real mining-active-phase producer already has separate PASS test; inactive travel/haul yields no Body XP |
+| Body expedition reference | **750 EXP/min in type contract only**, no evidence of a continuous live V2 scheduler awarding active expedition Body XP; **UNVERIFIED**, no invented grant |
+| Body paid Rèn Thân reference | **1,500 EXP/min**, two active physical slots; F0 selected test disciple natural factor gave **1,557 EXP in one committed eligible minute** and charged **exactly 1 Sect Spirit Stone** |
+| Duplicate paid same-minute call | Rejected; did not charge again |
+| P3.7 V2 region content currently authored | **3 Nhân regions**: Thanh Trúc Lâm, Bạch Thạch Khê, Hắc Phong Cốc, 5 grades per region |
+| Early `tu_van_thao` region reward route | **0 actual region entries** (F3 required, not F0) |
+| Existing `linh_tuy` guaranteed route | **None verified**; Thanh Trúc Lâm uses RNG rare roll. Level 1 chance = 0; L2–L5 chances = 0.03/0.08/0.16/0.26 per qualifying spawned encounter preview, **not a bounded-success fallback** |
+| Earned `HuntingMapV2` actual F0 Lv1 fight | Actual six-combatant win (seed 901), `{"linh_moc":3,"thanh_thiet":1}` deposited in canonical warehouse |
+| Hunt rewards Sect Spirit Stones | **0** in tested genuine reward and the currently implemented `preview_reward/claim_reward` material-only pipeline. This is **not** proof that future P3.7 planned hunting stone reward is implemented |
+| Claim replay + save | Unfinished fight denied, preview did not mint, single win claimed exactly once, repeated claim denied, persisted claim after SectState JSON roundtrip |
+
+The QA F0 test does **not** pretend the authenticated expedition scheduler exists; it asserts missing active-context evidence fails. The printed `missing_guaranteed_linh_tuy=true` and `full_hunting_scheduler_verified=false` are truthful F0 classification flags, not CI failures.
+
+### P3. Source ownership audit and F07/F10 boundaries
+
+- `HuntingPveRunV2` is a real **explicit session** (assemble saved disciples, many-vs-many battle, claim after victory), with run snapshots/save. Its file documents it is **not installed in the legacy autonomous scheduler**; a completed manual/explicit hunt **is not proof of hundreds of autonomous parties hunting continuously**.
+- `HuntingMapV2.preview_reward` shows fixed registered material yields and a level-based rare roll; `claim_reward` never calls `sect.spirit_stones +=`. `ResourceRegistry` has 4 already-existing recipe material IDs only (A+B), not the 12 C–H or 3 Seals; no source is activated by F0.
+- `TechniqueSystem.initialize` can seed initial Sect stones **500** in its own enabled setup; `TechniqueSystem.sell_manual` adds stones only by consuming actually owned manuals, and `learn_technique` moves actual disciple personal stones into Sect stones after the real learn eligibility/payment. **Neither establishes a recurring autonomous Sect stone funding lower bound for the F07 sustained farm+Rèn Thân loop**. Current crop planting and paid Rèn each spend Sect stones. F0 only verifies current spend path and item-only hunt income; future F5 A/B income viability remains **UNVERIFIED**.
+- Existing `DiscipleTuViFlowV2` grants one minute source with anti-double-grant at saved `last_passive_tuvi_tick`. Body production-mining and paid training source owners are concrete; expedition `750` is merely a validated typed source without a demonstrated end-to-end autonomous schedule. F10 whole-realm pacing **UNVERIFIED**, not a reason to revise locked EXP.
+- **A/B prerequisites unresolved** for F3: `tu_van_thao` crop needs Lv30 Spirit Field but Body gate4 demands it; rare-only `linh_tuy` drop has no bounded-win guarantee. F0 deliberately does not add new drops, missions, species, area, Ấn or stone income.
+
+### P4. Cumulative, phase and permissions
+
+- [P3.7 FAST+FULL cumulative #38105926374](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38105926374) is triggered at code/test/config commit **`cd52d4b97b673dc116606e0fb6b413aec16119b1`**; record final job status and conclusion using live GitHub workflow data. **Until the run is completed/success, do not label cumulative PASS.**
+- **User Windows Godot 4.7.2 and visual acceptance remain PENDING**; F0 is a headless runtime audit, not a visible interface acceptance.
+- **F0 focused test implementation/report only**: recorded. F0 can be called `FOCUSED PASS` under the run above, but **NOT DV2-03F or DV2-03 CLOSED, not full 29 material gate playable**.
+- **NEXT authorized action remains NONE**: await an explicit user instruction before F1 (manifest, registry, schema) or additional F0 implementation. If the next user asks for F1, re-fetch main, inspect source/CI and respect the newest F0 audit and §O slim roadmap. No automatic extension to F2–F7.
+
