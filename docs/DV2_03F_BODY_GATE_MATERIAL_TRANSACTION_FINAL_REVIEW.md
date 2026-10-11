@@ -684,7 +684,7 @@ The QA F0 test does **not** pretend the authenticated expedition scheduler exist
 
 ### P4. Cumulative, phase and permissions
 
-- [P3.7 FAST+FULL cumulative #38105926374](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38105926374) is triggered at code/test/config commit **`cd52d4b97b673dc116606e0fb6b413aec16119b1`**; record final job status and conclusion using live GitHub workflow data. **Until the run is completed/success, do not label cumulative PASS.**
+- [P3.7 FAST+FULL cumulative #38105926374](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38105926374) at code/test/config SHA **`cd52d4b97b673dc116606e0fb6b413aec16119b1`** is now **COMPLETED/SUCCESS**. Both official Godot 4.7.2 Linux steps **FAST and FULL completed/success**. This is genuine F0 regression evidence, **not** a Windows run and **not** DV2-03F gameplay/content closure. The **up-to-date PC task checklist is in `CURRENT_CHECKPOINT.md`**, and Windows remains **PENDING USER** (user currently has no access to PC).
 - **User Windows Godot 4.7.2 and visual acceptance remain PENDING**; F0 is a headless runtime audit, not a visible interface acceptance.
 - **F0 focused test implementation/report only**: recorded. F0 can be called `FOCUSED PASS` under the run above, but **NOT DV2-03F or DV2-03 CLOSED, not full 29 material gate playable**.
 - **NEXT authorized action remains NONE**: await an explicit user instruction before F1 (manifest, registry, schema) or additional F0 implementation. If the next user asks for F1, re-fetch main, inspect source/CI and respect the newest F0 audit and §O slim roadmap. No automatic extension to F2–F7.
