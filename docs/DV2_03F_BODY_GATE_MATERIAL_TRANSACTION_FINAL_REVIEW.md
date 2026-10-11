@@ -237,3 +237,107 @@ Nếu người chơi đồng ý bản hồ sơ này: cập nhật trạng thái 
 **Đánh giá vận hành:** 29 recipe gồm 562 main + 143 aux + 3 Ấn mỗi đệ tử; tương ứng 1.000–3.000 đệ tử là 562.000–1.686.000 main, 143.000–429.000 aux, 3.000–9.000 Ấn tích lũy cả chặng dài. Mốc thí điểm 8 hoạt động/1 Ấn nếu áp đồng nhất sẽ hàm ý 24.000–72.000 hoạt động đủ điều kiện cho các Ấn toàn roster; đây là **số lượt logic để stress-test thông lượng**, không phải nhịp chơi thật đã đo. Tránh auto-farm đơn vị một cách vô nghĩa; ưu tiên chiến dịch/ủy thác theo lô có output hữu hạn, receipt theo sự kiện, queue ưu tiên cho nhóm đệ tử và preflight riêng từng actor.
 
 **Khuyến nghị bước kế:** giữ nguyên 8 nhóm/29 công thức/3 Ấn ở trạng thái `PRINCIPLE APPROVED / FINAL REVIEW PENDING`. Trước khi duyệt code cần chứng minh tuyến sớm B, ngưỡng cung C–H theo mỗi vùng, cấp phát Ấn lặp lại, và hợp đồng transaction all-or-nothing + receipt + save durability. Mọi nguồn mới nêu trên là **đề xuất**, tuyệt đối không tô thành runtime thực hay `DESIGN LOCKED`.
+
+
+## L. DV2-03F / BƯỚC 2 — Nguồn bảo đảm A–H, 3 Ấn và tải kinh tế 1.000–3.000 đệ tử (11/10/2026)
+
+> **RESEARCH + PILOT ONLY — NOT DESIGN LOCKED, NOT CODE.** Live checked: game main \`28612009172d9605bf0564e317cfe2e6729903ca\`; latest gameplay/test \`3c7e9a7691f549097dd0a67ed50ead8b7be18a4c\`; \`3c7e9a76..28612009\` has only doc changes. All formulas D, Tu Vi, Body EXP, Căn Cốt, 2 training slots, current production mechanics remain unchanged. The suggested throughput parameters below need the user's final approval and real Godot simulation; they are not existing content.
+
+### L1. Current actual production and acquisition code checked
+
+1. \`godot/src/simulation/core/simulation_runtime_clock_v2.gd\`, lines 5–10/74–90: **60 real seconds = one simulation minute/tick**. \`simulation_scheduler.gd\`, lines 30–48: one tick processes buildings first, then disciples in sorted ID order; \`HuntingPveRunV2\` is still an opt-in V2 engagement path, not migrated to the legacy general scheduler.
+2. \`godot/src/simulation/building/spirit_crop_registry.gd\`, lines 8–50: Thanh Linh Thảo Lv1, 12 ticks/3 yield/4 stones per plant, stock_target=40; Tử Vân Thảo Lv30, 24 ticks/3 yield/14 stones per plant, stock_target=20. \`building_system.gd\`, lines 74–92/208–221: **Lv1 field has four plots and four work slots**, +1/5 levels; lines 540–598 start one paid plot with reserved worker; lines 725–775 settle harvest and deposit to main warehouse; lines 908–949 choose crop from fixed/priority/static-stock policy. Crop cycle changes through field level, worker speed, affinity and rare factors, so base numbers are **not** measured player throughput.
+3. \`godot/src/simulation/combat/hunting_map_v2.gd\`, lines 9–37: three low Nhân regions only; Bạch Thạch Khê and Hắc Phong Cốc each give \`tinh_lang_bi\` as normal loot if actual valid victory reward is claimed. Thanh Trúc Lâm has \`linh_tuy\` as rare item; chance by difficulty 0%, 3%, 8%, 16%, 26%. Lines 122–170: \`preview_reward\` is pure, \`claim_reward\` requires true finished victory, checks registered materials and \`v2_pve_reward_claims[encounter_id]\`. No other current deterministic Linh Tủy payout proven.
+4. \`godot/src/simulation/resource/warehouse_system.gd\`, lines 38–45/87–116: \`available_quantity\` obeys lock/reserve; \`consume_requirements\` checks the entire package before changing warehouse. This is **not yet a joint Body+Warehouse transaction**. \`godot/src/simulation/technique/technique_system.gd\`, lines 245–255: selling actual manuals returns Sect Spirit Stones; \`initialize\` sets 500 initial stones in fresh compatible states. This does **not establish** a sustained money-per-day rate. \`linh_tuy\` is also used in technique/material consumers; cannot allocate all stock blindly to Body.
+5. \`godot/src/simulation/workforce/workforce_system.gd\`, lines 248–350: priority, direct commands and work/cultivate schedule; 20-tick shift cycling and active farming only when physically assigned; \`building_system.gd\` lines 459–475 process plots even when UI is closed. Default fixed crop \`stock_target\` is not a genuine 1,000–3,000 disciple gate-demand forecast.
+6. \`godot/src/simulation/cultivation/disciple_progression_balance_v2.gd\`, lines 18–35: canonical Body EXP rates/ref values already fixed; **don't tune them**. For context, the first 10-million-EXP realm alone takes about 6,667 valid minutes at base 1,500 EXP/min for one continuously occupied paid training slot (without Căn Cốt). Two slots are specialization, **not** a throughput source for all 3,000 disciples simultaneously.
+
+### L2. Exact audited 29-row ledger, aggregates, and demand
+
+No change to 29 manifest rows in section D. \`main/aux\` item counts per single disciple progressing through the group's gates:
+
+| Group | Gates | Main ID | Aux ID | 1 disciple main/aux | 1,000 main/aux | 3,000 main/aux |
+|---|---|---|---|---:|---:|---:|
+| A | 1–3 | thanh_linh_thao | tinh_lang_bi | 54/15 | 54,000/15,000 | 162,000/45,000 |
+| B | 4–6 | tu_van_thao | linh_tuy | 52/6 | 52,000/6,000 | 156,000/18,000 |
+| C | 7–10 | huyet_linh_sam | huyet_thu_tinh_huyet | 82/21 | 82,000/21,000 | 246,000/63,000 |
+| D | 11–14 | kim_cot_thao | linh_thu_cot_ngoc | 72/18 | 72,000/18,000 | 216,000/54,000 |
+| E | 15–17 | tien_tuy_lien | tien_thu_chan_cot | 50/13 | 50,000/13,000 | 150,000/39,000 |
+| F | 18–20 | bat_hoai_tuy_dich | dai_la_kim_cot | 64/19 | 64,000/19,000 | 192,000/57,000 |
+| G | 21–25 | than_mach_tinh | than_thu_cot | 102/26 | 102,000/26,000 | 306,000/78,000 |
+| H | 26–29 | hon_don_tuy_hoa | bat_diet_than_cot | 86/25 | 86,000/25,000 | 258,000/75,000 |
+| **Total** | **29** | | | **562/143** | **562,000/143,000** | **1,686,000/429,000** |
+
+Plus \`an_nhan_gioi\` for gate10, \`an_tien_gioi\` for gate20, \`an_than_gioi\` for gate29: **3/1 disciple; 3,000/1k; 9,000/3k**. This is **long-run cumulative demand** assuming every disciple traverses every gate, not an early-game simultaneous inventory objective.
+
+### L3. Concrete **proposed** acquisition contract, by group
+
+**Same underlying two-source requirement per ID**: (a) profession/plot/extraction or appropriate monster win as the flavorful principal path; (b) a repeatable, typed and real-work **ủy thác / campaign point** fallback. Main and auxiliary routes must produce the named registered ID; no universal item-to-any-material currency. A successful source action deposits to the **one canonical Sect Warehouse** and has immutable \`source_id+event_id\` replay protection. Time elapsed with no eligible job/worker/victory can never mint loot. A route must be accessible by a team *at or below* the required source Body realm, with no equality requirement against Tu Vi.
+
+| Group | Must unlock no later than | Main principal route, alternate guaranteed route | Aux principal route, alternate guaranteed route |
+|---|---|---|---|
+| A | From Phàm Thân 1 | **Existing:** Lv1 Thanh Linh Thảo field. **Proposed:** early active herb-gathering commission, deterministic named payout after completed worker cycles | **Existing:** true-victory Bạch Thạch Khê/Hắc Phong Cốc normal Tinh Lang Bì. **Proposed:** repeatable low-Nhân hunting commission for named pelt |
+| B | Before Dịch Cân floor10, preferably beginning of r3/r4 | **Existing but late:** Lv30 Tử Vân Thảo field. **Required new early:** Nhân herb-delivery commission guaranteeing Tử Vân Thảo, no Lv30 farm, no target Body r5, no dependence on \`linh_tuy\` as input | **Existing RNG:** Thanh Trúc Lâm difficulty 2–5 Linh Tủy. **Required new:** four qualifying wins/field patrol completions at an accessible lower-Nhân site guarantee a named Linh Tủy, boss/drop RNG irrelevant |
+| C | Before Tôi Tạng floor10 (r7 gate) | **New:** high-Nhân Huyết Linh Sâm herb/foraging field; repeatable proper-band gathering commission | **New:** high-Nhân blood-beast victories, rare elite bonus; deterministic high-Nhân hunt/commission completed-credit reward for Huyết Thú Tinh Huyết |
+| D | Before Kim Thân floor10 (r11 gate) | **New:** low-Tiên Kim Cốt Thảo planting/foraging; independent low-Tiên supply commission | **New:** low-Tiên spirit-beast/elite loot + proper-band repeatable guaranteed material contract for Linh Thú Cốt Ngọc |
+| E | Before Tiên Khu floor10 (r15 gate) | **New:** mid-Tiên Tiên Tủy Liên habitat/pond gather; mid-Tiên repeatable supply expedition | **New:** mid-Tiên beast/boss loot + guaranteed campaign material progress for Tiên Thú Chân Cốt |
+| F | Before Thái Ất Kim Thân floor10 (r18 gate) | **New:** high-Tiên Bất Hoại Tủy Dịch gathering resource; typed high-Tiên repeatable extraction commission | **New:** high-Tiên elite/boss Đại La Kim Cốt loot + repeatable named hunt-credit route (boss victory is a bonus, not sole gate) |
+| G | Before Thần Khu floor10 (r21 gate) | **New:** low/mid-Thần mining/extraction node producing Thần Mạch Tinh; assigned extraction commission | **New:** Thần thú/elite Thần Thú Cốt loot + same-band guaranteed hunting campaign |
+| H | Before Thần Khiếu floor10 (r26 gate) | **New:** high-Thần/Hỗn Độn special-zone Hỗn Độn Tủy Hoa gathering; repeatable valid anomaly-extraction expedition, not one-off relic | **New:** high-Thần elite/boss Bất Diệt Thần Cốt loot + deterministic proper-band campaign/salvage route accessible at Body r26–29 |
+
+A–B are **existing technical foundation plus newly proposed acquisition content**; C–H have **no registered live consumer/source/regions**. Labels like “low Tiên” and “high Thần” are **content bands to author**, not existing playable region names. No hidden need for \`body.r+1\` to farm material required for r→r+1. An advanced teammate may do the actual work; acquired item remains Sect-owned. Lower-band source missions stay replayable when the sect advances.
+
+**Pilot numerical baseline — needs user approval, not an authorized drop table:**
+- Fallback main material source: one actually assigned **eligible team/producer** completes a 30-simulation-minute mission and returns **3 units of its specifically selected ID** (10 eligible team-minutes/unit). Mission reserves actual workers/teams, requires real prerequisites and completion, may have explicit non-gating common resource costs if later tested. **For B, proposed early Tử Vân Thảo 12 requires four such deliveries = 120 eligible team-minutes**. Entire B 52 needs 18 deliveries = 540 team-minutes if using only fallback. Never treat a timer without active workers as resource production.
+- Fallback aux material: guaranteed **1 specifically targeted aux item within ≤4 completed, winning, appropriate-band encounters**; event-bound progress belongs to the selected region/material, not a universal redeemable stack, no credit for defeat/abandon/reload/reused ID. Random elite/boss/rare items can be bonus. Whether a direct lucky drop resets the 4-win progress must be explicitly settled during final tuning to avoid double rewards; the conservative scale model below assumes only guaranteed payouts and no lucky drops.
+- For A, **do not replace actual field throughput** with slow pilot fallback: at Lv1 four full plots produce **up to 4×3/12 = 1 herb/minute** before startup/schedule limitations, farming boosts or losses. One plot alone produces only 0.25/min. 54 base herbs take 18 harvests (216 minutes one plot) and at least 72 stones; four plots need 5 full 12-minute cycles (~60 minutes for 54+ output if fully staffed/replanted). All 1,000 full A would require 54k items, about 37.5 ideal 24h days through one always-full Lv1 field; 3,000 about 112.5 days. This is **not measured throughput**.
+- Stop or suspend a commission with **no payout/no duplicate** when worker assignment, map eligibility or requisite costs disappear; committed partial progress is saved if allowed by the future mission state machine. Never silently grant a free item when the commission is canceled.
+
+### L4. Three Seals — repeatable, non-account-unique, current-band
+
+| Seal / gate | Principal challenge, replayable | Non-RNG fallback, replayable | Anti-deadlock |
+|---|---|---|---|
+| \`an_nhan_gioi\`, gate10 (Linh Thân→Kim Thân) | **Proposed:** true win of late-Nhân body campaign/boss, payout exactly one consumed seal per qualifying claimed clear | After **at most 8 successful late-Nhân campaign engagements** under a named commission, claim one seal (pilot threshold) | All required engagements playable with Body r10 or a qualified team at that point; never require entry into Tiên/r11 |
+| \`an_tien_gioi\`, gate20 (Đế Thân→Thần Khu) | **Proposed:** true win of late-Tiên repeatable boss campaign | ≤8 successful late-Tiên qualifying engagements for a guaranteed redeemable one-seal reward | No Thần/r21 prerequisite |
+| \`an_than_gioi\`, gate29 (Hỗn Độn Thần Thể→Sáng Thế Thần Thể) | **Proposed:** true win of current late-Thần/Hỗn Độn repeatable boss campaign | ≤8 successful qualifying late-Thần/Hỗn Độn campaigns for a guaranteed one-seal reward | No r30/Sáng Thế prerequisite |
+
+Every Seal remains a stackable item deposited to warehouse, quantity 1 **consumed per disciple** at exactly its special gate. Repeating a boss/campaign generates a new claim only for a **genuinely new** victory. First-clear achievements can be cosmetic/extra rewards, but **cannot be the only source**. A boss should not demand higher Body or Tu Vi levels as a hidden admission condition; battle success still depends on real stats/tactics. The same fight must not be counted twice in both seal paths by duplicate claims; if overlapping credits are allowed, rewards still use explicit distinct receipt IDs.
+
+### L5. Aggregate load and stress test for roster scale
+
+A full journey using **only conservative hunt fallback** would take **143×4 = 572 qualifying successful encounters per disciple** for aux items, plus **3×8 = 24 qualifying successes** if Seal progress is disjoint: at most **596 qualifying victories/one fully advanced disciple**. For 1,000 this is **596,000** logical victories; 3,000 **1,788,000**. These are extreme **all-fallback cumulative upper planning budgets**, not measured PvE battles, not a required playtime and not a drop expectation. Lucky loot, boss-clears, parallel sources and permitted overlapping objectives lower the work.
+
+Scenario with deliberately **hypothetical** assumptions, not live balance: 70% of roster assigned hunting, 6 per party, 8 active hours/party/day, one encounter attempt each 20 minutes, 80% victory rate, one qualifying credit per claimed group victory (not one credit per each of six members). Then ~117/350 hunting parties for 1k/3k, and **~2,246/~6,720 qualifying successful team victories per day**. The all-fallback 596k/1.788m work implies roughly **265–266 active days** of that entire activity at hypothetical saturation. If win rate, participation or time availability fall, actual workload is worse. Because the game isn't yet running continuous 1,000–3,000 party V2 hunting, **do not claim this as playable actual runtime**.
+
+Separate main-production fallback scenario with **3 named units per 30 eligible team-minutes**, **8 productive hours per producer/day** -> **48 main units per producer/day**. For every disciple eventually clearing all groups:
+
+| Roster / target horizon | Avg main required/day | Producers simultaneously needed if ALL main from fallback | Share of 30% rear-base workforce |
+|---|---:|---:|---:|
+| 1,000 / 90 days | 6,245 | 131 | 131 producer teams, staffing TBD |
+| 1,000 / 180 days | 3,123 | 66 | 66 teams, other rear jobs still required |
+| 3,000 / 90 days | 18,734 | 391 | 391 teams, likely overwhelming if each needs 2 workers |
+| 3,000 / 180 days | 9,367 | 196 | 196 teams; if 2 workers/team uses 392/900 nominal rear workers |
+
+These cases assume **full roster eventually completes all 29 gates within horizon** and equal average production across the horizon, which is physically misleading if large proportions cannot earn high-tier EXP/region access yet. Use actual cohorts/gate distribution and multiple crop/mine supply routes before deciding tuning. The field A route already differs from the 3/30 pilot; never silently overwrite field yield/speed.
+
+**Additional money bottleneck:** an always-active Lv1 field full with 4 plots consumes approximately 4×4 stones per 12-minute base cycle = **1.33 Sect Spirit Stones/minute or ~1,920/day**. Two continuously paid Rèn Thân slots consume up to **2 additional Sect stones/minute or 2,880/day**. These are simultaneous theoretical baseline drains, not current play results. Initial Sect stones=500 is not a renewable-rate proof. Source missions using paid costs must never create a no-stones-no-materials deadlock.
+
+### L6. Demand-driven warehouse policy and low-micro workflow (proposed)
+
+- **No new item currency:** material IDs remain exactly 16 + 3 Seals; local campaign progress is nontradable event/contract state, not a fungible Phẩm Lực.
+- **Separate counts:** per resource \`total\`, \`locked\`, \`reserve_min\`, \`available\`, \`committed-to-queued-gates\`, \`shortfall\` displayed without changing \`WarehouseSystem\` semantics. Reservation by \`reserve_min\` belongs to player and is respected.
+- **Demand indexed by cohort:** per current gate (29 buckets) count ready-XP eligible disciples + near-ready; multiply their exact manifest quantities, add explicit user-priority requests. On arrival/completion/material claim/warehouse policy update, recompute affected buckets or incrementally maintain counters. Initial/restore rebuild can be O(roster × constant); opening one disciple panel must not scan all 3,000.
+- **Policy defaults:** player-facing \`MANUAL\` gate expenditure, \`AUTO_GATE_OFF\` for first release, batch preview only. Future auto mode is opt-in, respects reserves/locked, stable priority by explicit queue then ID; each actor must execute independent persisted idempotent gate transaction. One command cannot bulk-pass everyone by a raw counter shortcut.
+- **Anti-idle control:** player picks policy \`target 10/50/100 ready disciples\` or \`maintain next band stock\`; mission/field policy uses deficit and priority rather than static crop \`stock_target=40/20\`. A dynamic target can be \`manual reserve + sum of approved near-term cohort requirements + buffer\` (buffer is tuning, not yet authorized). Do not retroactively mutate old Spirit Field rules just by adding UI; author and test actual consumer if approved.
+- **Source transaction:** \`claim_key=source_kind:region_or_worksite:event_id:resource_id\`, validated against actual completed work/encounter, with named resource payout and durable source receipt in the same \`SimulationState\`. Prevent duplicated source claims even when offline/save-load retries or multiple teams submit same event; never award pre-claim UI preview. For ledger size, store compact immutable IDs/counters and test 1k–3k simulated rosters for memory/save-size/time.
+- **Proof of no cycle:** for each of 29 gates require (1) registered ID, (2) at least one real repeatable claim source, (3) source unlock no later than source realm's gate, (4) reachable team without next realm or Tu Vi equality, (5) nonzero safe economic funding path, (6) fixed-success or bounded-success output of *exact* ID, (7) source simulation test + SaveService receipt round-trip. Fail \`content_unavailable\` otherwise.
+
+### L7. Proposed measurements before final balance approval
+
+1. Baseline Lv1 field single plot / four plots, \`AUTO_DEMAND\` vs \`FIXED\`, real assigned people and 60/600/1,440 ticks; measure exact herb/min, stones/min and idle minutes; verify \`stock_target\` doesn't starve gate inputs.
+2. Named B early guarantee: with **Lv1 field**, Body \`r4,f10\`, independent Tu Vi below r4, enough Body EXP, no B items in warehouse, generate 12 Tử Vân Thảo + 1 Linh Tủy through actual eligible commission/encounter, then gate preview must be completable without Lv30 field or rare luck. No RNG success/failure in Body gate.
+3. C–H each: start at \`r,\` with \`r+1\` unavailable, prove all required ID/Seal obtainable through a real completed contract, region, worker/team and claimed output; no zero-probability low difficulty, no first-clear-only Seal.
+4. Stress: 1k and 3k persistent characters competing for same 19 item IDs; 2 simultaneous gate purchases with only enough stock for 1 must resolve deterministically, respect \`locked/reserve_min\`, never negative and never double consume; 1k+ queue previews event-driven rather than O(roster) per click.
+5. Separate tests for source receipt replay/save/load, warehouse lock priority, stone starvation/restart, long offline catchup, and durability on abrupt save interruption. **No Windows visual PASS** inferred until user tests on Windows.
+
+**Recommendation now:** keep section D **UNCHANGED**. Preserve **PRINCIPLE APPROVED / FINAL REVIEW PENDING**. Prioritize the B deterministic route, named proper-band C–H fallback, three repeatable Seals, and scalable event/worker economics. Do not implement a source as cosmetic UI, random-only rare, one-time reward or data table without a true actor/team/action/claim. All numeric production/fallback/horizon examples in section L are **PILOT**, not a newly approved item economy.
