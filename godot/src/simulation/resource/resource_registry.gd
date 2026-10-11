@@ -109,6 +109,126 @@ const DEFINITIONS := {
         "realm_rank": 2,
         "market_value": 120,
         "tags": ["building_component", "spirit_field_milestone"]
+    },
+    "huyet_linh_sam": {
+        "name": "Huyết Linh Sâm",
+        "family": "herb",
+        "realm_grade": "nhan",
+        "realm_rank": 7,
+        "market_value": 0,
+        "tags": ["body_gate_material", "body_gate_main", "body_gate_c"]
+    },
+    "huyet_thu_tinh_huyet": {
+        "name": "Huyết Thú Tinh Huyết",
+        "family": "beast_material",
+        "realm_grade": "nhan",
+        "realm_rank": 7,
+        "market_value": 0,
+        "tags": ["body_gate_material", "body_gate_aux", "body_gate_c"]
+    },
+    "kim_cot_thao": {
+        "name": "Kim Cốt Thảo",
+        "family": "herb",
+        "realm_grade": "tien",
+        "realm_rank": 11,
+        "market_value": 0,
+        "tags": ["body_gate_material", "body_gate_main", "body_gate_d"]
+    },
+    "linh_thu_cot_ngoc": {
+        "name": "Linh Thú Cốt Ngọc",
+        "family": "beast_material",
+        "realm_grade": "tien",
+        "realm_rank": 11,
+        "market_value": 0,
+        "tags": ["body_gate_material", "body_gate_aux", "body_gate_d"]
+    },
+    "tien_tuy_lien": {
+        "name": "Tiên Tủy Liên",
+        "family": "herb",
+        "realm_grade": "tien",
+        "realm_rank": 15,
+        "market_value": 0,
+        "tags": ["body_gate_material", "body_gate_main", "body_gate_e"]
+    },
+    "tien_thu_chan_cot": {
+        "name": "Tiên Thú Chân Cốt",
+        "family": "beast_material",
+        "realm_grade": "tien",
+        "realm_rank": 15,
+        "market_value": 0,
+        "tags": ["body_gate_material", "body_gate_aux", "body_gate_e"]
+    },
+    "bat_hoai_tuy_dich": {
+        "name": "Bất Hoại Tủy Dịch",
+        "family": "essence",
+        "realm_grade": "tien",
+        "realm_rank": 18,
+        "market_value": 0,
+        "tags": ["body_gate_material", "body_gate_main", "body_gate_f"]
+    },
+    "dai_la_kim_cot": {
+        "name": "Đại La Kim Cốt",
+        "family": "beast_material",
+        "realm_grade": "tien",
+        "realm_rank": 18,
+        "market_value": 0,
+        "tags": ["body_gate_material", "body_gate_aux", "body_gate_f"]
+    },
+    "than_mach_tinh": {
+        "name": "Thần Mạch Tinh",
+        "family": "mineral",
+        "realm_grade": "than",
+        "realm_rank": 21,
+        "market_value": 0,
+        "tags": ["body_gate_material", "body_gate_main", "body_gate_g"]
+    },
+    "than_thu_cot": {
+        "name": "Thần Thú Cốt",
+        "family": "beast_material",
+        "realm_grade": "than",
+        "realm_rank": 21,
+        "market_value": 0,
+        "tags": ["body_gate_material", "body_gate_aux", "body_gate_g"]
+    },
+    "hon_don_tuy_hoa": {
+        "name": "Hỗn Độn Tủy Hoa",
+        "family": "essence",
+        "realm_grade": "than",
+        "realm_rank": 26,
+        "market_value": 0,
+        "tags": ["body_gate_material", "body_gate_main", "body_gate_h"]
+    },
+    "bat_diet_than_cot": {
+        "name": "Bất Diệt Thần Cốt",
+        "family": "beast_material",
+        "realm_grade": "than",
+        "realm_rank": 26,
+        "market_value": 0,
+        "tags": ["body_gate_material", "body_gate_aux", "body_gate_h"]
+    },
+    "an_nhan_gioi": {
+        "name": "Ấn Nhân Giới",
+        "family": "body_gate_seal",
+        "realm_grade": "nhan",
+        "realm_rank": 10,
+        "market_value": 0,
+        "tags": ["body_gate_material", "body_gate_seal", "body_gate_nhan"]
+    },
+    "an_tien_gioi": {
+        "name": "Ấn Tiên Giới",
+        "family": "body_gate_seal",
+        "realm_grade": "tien",
+        "realm_rank": 20,
+        "market_value": 0,
+        "tags": ["body_gate_material", "body_gate_seal", "body_gate_tien"]
+    },
+    "an_than_gioi": {
+        "name": "Ấn Thần Giới",
+        "family": "body_gate_seal",
+        "realm_grade": "than",
+        "realm_rank": 29,
+        "market_value": 0,
+        "tags": ["body_gate_material", "body_gate_seal", "body_gate_than"]
     }
 }
 
