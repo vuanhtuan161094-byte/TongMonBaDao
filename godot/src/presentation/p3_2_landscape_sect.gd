@@ -709,6 +709,7 @@ func _rebuild_building_management_controls() -> void:
             _build_main_hall_policy_controls()
         SectMapPresentation.DEST_MINE:
             _build_work_management(WorkforceSystem.PROF_MINING, &"mining_crew", "Đội Khai Khoáng", "Khai khoáng")
+            _build_mine_upgrade_control()
         SectMapPresentation.DEST_SPIRIT_FIELD:
             _build_spirit_field_management()
         SectMapPresentation.DEST_FORGE:
@@ -922,6 +923,102 @@ func _build_lodging_expansion_control() -> void:
     button.pressed.connect(_expand_lodging_from_building)
     row.add_child(button)
 
+func _build_mine_upgrade_control() -> void:
+    var buildings := BuildingSystem.new()
+    var mine := buildings.primary_building(state, BuildingSystem.TYPE_MINE)
+    _add_management_section_label("NÂNG CẤP MỎ")
+    if mine == null:
+        var missing := Label.new()
+        missing.text = "Mỏ chưa tồn tại trong trạng thái hiện tại."
+        missing.add_theme_font_size_override("font_size", 11)
+        building_management_container.add_child(missing)
+        return
+
+    var row := VBoxContainer.new()
+    row.custom_minimum_size = Vector2(384, 0)
+    row.add_theme_constant_override("separation", 4)
+    building_management_container.add_child(row)
+
+    var info := Label.new()
+    info.name = "MineUpgradeStatus"
+    info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    info.add_theme_font_size_override("font_size", 10)
+    row.add_child(info)
+
+    var button := Button.new()
+    button.name = "Upgrade_mine"
+    button.custom_minimum_size = Vector2(384, 34)
+    button.add_theme_font_size_override("font_size", 10)
+    row.add_child(button)
+
+    if mine.is_upgrading():
+        info.text = "Lv%d → Lv%d · tiến độ %.0f/%.0f" % [
+            mine.level, mine.upgrade_target_level,
+            mine.upgrade_progress, mine.upgrade_required_work
+        ]
+        button.text = "Đang nâng cấp..."
+        button.disabled = true
+        return
+
+    if mine.level >= mine.max_level:
+        info.text = "Mỏ đã đạt Lv%d tối đa." % mine.level
+        button.text = "Đã tối đa"
+        button.disabled = true
+        return
+
+    var cost := buildings.upgrade_cost(mine)
+    var ore_need := int(cost.get(BuildingSystem.MATERIAL_ORE, 0))
+    var wood_need := int(cost.get(BuildingSystem.MATERIAL_WOOD, 0))
+    var stone_need := int(cost.get("spirit_stones", 0))
+    var check := buildings.can_start_upgrade(state, mine.id)
+    info.text = (
+        "Lv%d → Lv%d · Thanh Thiết dùng %d/%d · Linh Mộc dùng %d/%d · Linh Thạch %d/%d · thời gian %.0f phút"
+    ) % [
+        mine.level, mine.level + 1,
+        _warehouse_available(StringName(BuildingSystem.MATERIAL_ORE)), ore_need,
+        _warehouse_available(StringName(BuildingSystem.MATERIAL_WOOD)), wood_need,
+        state.sect.spirit_stones, stone_need,
+        buildings.upgrade_required_work(mine)
+    ]
+    button.text = "Nâng cấp Mỏ lên Lv%d" % (mine.level + 1)
+    button.disabled = not bool(check.get("ok", false))
+    if button.disabled:
+        button.tooltip_text = _building_upgrade_reason(check)
+    button.pressed.connect(Callable(self, "_start_building_upgrade_from_ui").bind(mine.id))
+
+func _start_building_upgrade_from_ui(building_id: StringName) -> void:
+    var buildings := BuildingSystem.new()
+    var result := buildings.start_upgrade(state, building_id)
+    if bool(result.get("ok", false)):
+        building_management_feedback = "Đã bắt đầu nâng cấp Mỏ lên Lv%d; chi phí đã trừ đúng một lần." % int(result.get("target_level", 0))
+    else:
+        building_management_feedback = "Không thể nâng cấp Mỏ: %s" % _building_upgrade_reason(result)
+    _refresh_all()
+    _refresh_building_operation_content()
+
+func _building_upgrade_reason(result: Dictionary) -> String:
+    var reason := str(result.get("reason", ""))
+    match reason:
+        "already_upgrading":
+            return "Đang có lượt nâng cấp."
+        "missing_material":
+            return "Thiếu %s: dùng được %d/%d." % [
+                EquipmentSystem.new().material_name(StringName(result.get("material_id", ""))),
+                int(result.get("have", 0)),
+                int(result.get("need", 0))
+            ]
+        "missing_spirit_stones":
+            return "Thiếu Linh Thạch: %d/%d." % [
+                int(result.get("have", 0)),
+                int(result.get("need", 0))
+            ]
+        "max_level":
+            return "Đã đạt cấp tối đa."
+        "":
+            return "Sẵn sàng."
+        _:
+            return reason
+
 func _build_forge_craft_controls() -> void:
     _add_management_section_label("LUYỆN CHẾ TRANG BỊ")
     var recipe_ids: Array = EquipmentSystem.RECIPES.keys()
@@ -954,6 +1051,9 @@ func _build_forge_craft_controls() -> void:
         craft.text = "Luyện vào kho"
         craft.custom_minimum_size = Vector2(128, 34)
         craft.add_theme_font_size_override("font_size", 10)
+        craft.disabled = not equipment_system.can_craft(state, recipe_id)
+        if craft.disabled:
+            craft.tooltip_text = _recipe_material_status(recipe_id)
         craft.pressed.connect(Callable(self, "_craft_from_building").bind(recipe_id))
         top.add_child(craft)
 
@@ -1476,8 +1576,16 @@ func _mine_operation_text() -> String:
     if lines.is_empty():
         lines.append("• Chưa có thành viên Đội Khai Khoáng")
 
+    var upgrade_text := "Ổn định"
+    if mine != null and mine.is_upgrading():
+        upgrade_text = "Nâng Lv%d→%d · %.0f/%.0f" % [
+            mine.level, mine.upgrade_target_level,
+            mine.upgrade_progress, mine.upgrade_required_work
+        ]
+
     return (
         "SẢN XUẤT\n"
+        + "Mỏ Lv%d · %s\n"
         + "Thanh Thiết tồn (dùng): %s\n"
         + "Chỗ hoạt động: %d/%d\n"
         + "Đang khai khoáng: %d\n"
@@ -1485,6 +1593,8 @@ func _mine_operation_text() -> String:
         + "NHÂN SỰ\n%s\n\n"
         + "Chu kỳ thật: đi tới mỏ → khai thác → vận chuyển về kho. Chỉ đệ tử có chỗ hoạt động mới nhận lệnh khai khoáng."
     ) % [
+        0 if mine == null else mine.level,
+        upgrade_text,
         _warehouse_pair(&"thanh_thiet"),
         active_ids.size(),
         slots,
