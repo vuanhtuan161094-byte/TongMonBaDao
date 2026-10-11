@@ -35,6 +35,9 @@ on:
       - 'godot/tests/simulation/dv2_03_training_policy_test.gd'
       - 'godot/tests/simulation/dv2_03_body_xp_source_test.gd'
       - 'godot/tests/simulation/dv2_03_f0_source_baseline_test.gd'
+      - 'godot/src/simulation/cultivation/disciple_body_gate_content_v2.gd'
+      - 'godot/src/simulation/resource/resource_registry.gd'
+      - 'godot/tests/simulation/dv2_03_f1_body_gate_manifest_test.gd'
       - 'godot/tests/simulation/dv2_03_mine_body_xp_integration_test.gd'
       - 'godot/tests/simulation/dv2_03_ren_than_duong_integration_test.gd'
       - 'godot/tests/simulation/dv2_03_e3_1_training_priority_regression_test.gd'
@@ -86,6 +89,8 @@ jobs:
         run: godot --headless --path godot -s res://tests/simulation/dv2_03_body_xp_source_test.gd
       - name: DV2-03F F0 audited real Body EXP, paid stones, earned map loot baseline
         run: godot --headless --path godot -s res://tests/simulation/dv2_03_f0_source_baseline_test.gd
+      - name: DV2-03F F1 immutable 29 Body recipes and 19 typed material IDs
+        run: godot --headless --path godot -s res://tests/simulation/dv2_03_f1_body_gate_manifest_test.gd
       - name: DV2-03 real P3.7 mine active-minute Body XP integration
         run: godot --headless --path godot -s res://tests/simulation/dv2_03_mine_body_xp_integration_test.gd
       - name: DV2-03 Rèn Thân Đường paid two-slot consumer
