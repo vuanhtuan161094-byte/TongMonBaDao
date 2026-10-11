@@ -1,10 +1,26 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
-**Bàn giao cập nhật: 11/10/2026 — O4 real Linh Điền player loop CLOSED; focused + P3.7 FAST/FULL Godot 4.7.2 Linux PASS. M1 còn O5 + O6.**
+**Bàn giao cập nhật: 11/10/2026 — O5 real produce→spend + Mine upgrade CLOSED; focused + P3.7 FAST/FULL Godot 4.7.2 Linux PASS. M1 chỉ còn O6.**
 
 **Repo:** `vuanhtuan161094-byte/TongMonBaDao` · **branch:** `main` · **engine:** Godot 4.7.2. **User yêu cầu thao tác bằng GitHub connector trực tiếp; KHÔNG Codex, KHÔNG Work.** Trước mọi sửa đổi phải fetch lại `main` vì SHA sẽ thay đổi sau các commit bàn giao. **Latest DV2-03E3.1 gameplay/test source with focused PASS:** `3c7e9a7691f549097dd0a67ed50ead8b7be18a4c` (slot-transfer, Workforce exclusive priority, invalid orders, 2-slot multi-minute/no-stone regression). Fetch live `main` before the next edit; docs-only handoff commits may move HEAD.
 
 
+
+## CURRENT FIRST-PLAYABLE HANDOFF — O5 CLOSED — REAL PRODUCE→SPEND LOOP GREEN (2026-10-11)
+
+**Priority remains M1 opening gameplay, LANDSCAPE 1280×720.** User authorized **CODE O5 ONLY** and O5 is now closed. Production/test SHA: `6af3fdd715b3adcb1c3391452c7687cac043b610`.
+
+**What O5 now provides:** existing Forge crafting is explicitly fail-closed in the UI when canonical `can_craft` is false; the Mine panel now exposes the already-authored timed BuildingSystem upgrade with exact canonical available-material/Stone costs, progress and blocked reasons. Successful upgrade spends through BuildingSystem/Warehouse authority, not presentation.
+
+**Verified produced-resource provenance:** focused [#38151347151](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38151347151) COMPLETED/SUCCESS. Test reserves all 40 starter iron as non-spendable, then uses the real Mine panel/scheduler to produce 10 new ore across five Lv1 batches. Two batches fund a real `Thanh Thiết Kiếm` craft (3 produced iron + 1 wood) through the actual Forge button; reserve and lock denial are tested and immediate retry cannot duplicate the item. Three more batches make exactly seven spendable ore for the authored Mine Lv1→2 upgrade. Actual Mine upgrade UI debits exact ore/wood/Stone once, rejects duplicate start, persists mid-upgrade progress/cost, completes by scheduler timer, and survives final reload. Final iron is exactly the untouched 40 reserved starter units, proving the newly produced 10 ore was the portion consumed by craft+upgrade.
+
+**Verified regressions on same SHA:** [P3.7 #38151347108](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38151347108) FAST + FULL SUCCESS; [O1 #38151347131](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38151347131), [O2 #38151347111](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38151347111), [O3 #38151347045](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38151347045), [O4 #38151347058](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38151347058), [DV2-03 #38151347044](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38151347044) all SUCCESS. [Preview #38151347110](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38151347110) has FAST + capture PASS; only artifact upload fails because storage quota is exhausted.
+
+**M1 remainder = O6 ONLY.** O6 must run one integrated fresh-game rehearsal through actual P3.2 player surfaces: fresh roster → valid Dẫn Tiên recruit → live actor/selectability → Mine production → Linh Điền paid production → canonical Warehouse → real Forge/upgrade spend → save/restart → roster/actor/plots/work/stock/item/building state remains exact and autonomous simulation can continue. Use targeted official Godot 4.7.2 plus cumulative FAST/FULL on the same gameplay SHA. Do not add new economy, recipes, resources, hunting, O7–O9 or balance work.
+
+**Single next proposed packet, only after new user authorization: CODE O6 ONLY.** If O6 passes all technical gates, M1 may be called **technically playable on official Linux CI**, while Windows visual/click/APK acceptance remains **PENDING USER** and must not be relabeled PASS.
+
+---
 
 ## CURRENT FIRST-PLAYABLE HANDOFF — O4 CLOSED — REAL LINH ĐIỀN LOOP GREEN (2026-10-11)
 
@@ -18,9 +34,7 @@
 
 **Verified cumulative PASS on same SHA:** [P3.7 #38150623654](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38150623654) FAST + FULL SUCCESS; [O1 #38150623598](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38150623598), [O2 #38150623601](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38150623601), [O3 #38150623629](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38150623629) and [DV2-03 #38150623611](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38150623611) all SUCCESS. [P3.6A Preview #38150623602](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38150623602) has FAST + capture PASS; only artifact upload fails because GitHub storage quota is exhausted.
 
-**M1 remainder = exactly two packets:** **O5** prove/use real produced stock in an existing consumer (prefer Mine-produced Thanh Thiết → existing EquipmentSystem craft; include exact debit/shortage/reload, and only exercise building upgrade if already legitimately affordable/authored), then **O6** run the integrated fresh-opening → disciples/recruitment → Mine + Field → real output → real spend → save/restart/autonomous continuation release rehearsal with targeted + FULL regression. O7–O9 are M2 expansion, not M1 blockers.
-
-**Single next proposed packet, only after new user authorization: CODE O5 ONLY.** Do not start O6, M2, rebalance economy, add free currency, alter EXP/Tu Vi/Luyện Thể/29 formulas, or reopen O1–O4. Windows current visual/click/APK acceptance remains **PENDING USER**.
+**O5 was subsequently authorized and completed.** See the current O5 handoff above. **M1 now has only O6 remaining**, and O6 requires explicit user authorization. O7–O9 are M2 expansion, not M1 blockers. Windows current visual/click/APK acceptance remains **PENDING USER**.
 
 ---
 
