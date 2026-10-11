@@ -795,7 +795,9 @@ func _build_guidance_recruitment_controls() -> void:
             candidate.charisma,
             candidate.potential
         ]
-        info.custom_minimum_size = Vector2(384, 38)
+        if not _candidate_recruitable(candidate):
+            info.text += "\nHồ sơ cũ: không thể nhận vào runtime V2; có thể từ chối."
+        info.custom_minimum_size = Vector2(384, 50)
         info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
         info.add_theme_font_size_override("font_size", 11)
         card.add_child(info)
@@ -808,7 +810,10 @@ func _build_guidance_recruitment_controls() -> void:
         accept.name = "AcceptCandidate_%s" % str(candidate_id)
         accept.text = "Nhận"
         accept.custom_minimum_size = Vector2(120, 34)
-        accept.disabled = not recruitment_system.can_accept_more(state)
+        accept.disabled = (
+            not recruitment_system.can_accept_more(state)
+            or not _candidate_recruitable(candidate)
+        )
         accept.pressed.connect(Callable(self, "_accept_guidance_candidate").bind(candidate_id))
         actions.add_child(accept)
 
@@ -818,6 +823,13 @@ func _build_guidance_recruitment_controls() -> void:
         reject.custom_minimum_size = Vector2(120, 34)
         reject.pressed.connect(Callable(self, "_reject_guidance_candidate").bind(candidate_id))
         actions.add_child(reject)
+
+func _candidate_recruitable(candidate: CandidateState) -> bool:
+    if candidate == null:
+        return false
+    if state.sect.disciple_v2_birth_enabled:
+        return DiscipleBirthProfileV2.valid_complete_birth(candidate.v2_birth_profile)
+    return true
 
 func _guidance_recruit_with_order() -> void:
     var result := recruitment_system.guidance_recruit_with_order(state)

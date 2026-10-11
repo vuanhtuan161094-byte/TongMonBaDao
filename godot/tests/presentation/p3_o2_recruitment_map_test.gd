@@ -34,16 +34,42 @@ func _run() -> void:
     if candidates.size() < 3:
         _fail("O2 fresh state does not expose the expected real candidate pool.")
         return
-    var first_id := StringName(candidates[0])
-    if ui.find_child("AcceptCandidate_%s" % str(first_id), true, false) == null:
-        _fail("O2 candidate has no player-facing Accept control.")
-        return
-    if ui.find_child("RejectCandidate_%s" % str(first_id), true, false) == null:
+    var first_visible := StringName(candidates[0])
+    if ui.find_child("RejectCandidate_%s" % str(first_visible), true, false) == null:
         _fail("O2 candidate has no player-facing Reject control.")
         return
 
+    # Live runtime enables authentic V2 births after P3.7 factory creation.
+    # Existing pre-V2 waiting candidates remain visible but cannot bypass the
+    # canonical complete-birth gate. Use the real Dẫn Tiên action to obtain an
+    # authentic recruit; this consumes a real Chiêu Mộ Lệnh.
+    var tokens_before := state.sect.disciple_recruitment_tokens
+    var pool_before := state.recruitment_candidates.size()
+    var order_button := ui.find_child("GuidanceRecruitOrder", true, false) as Button
+    if order_button == null or order_button.disabled:
+        _fail("O2 fresh Guidance entry cannot use the real recruitment order.")
+        return
+    order_button.emit_signal("pressed")
+    await process_frame
+    if state.sect.disciple_recruitment_tokens != tokens_before - 1:
+        _fail("O2 Dẫn Tiên action did not consume exactly one Chiêu Mộ Lệnh.")
+        return
+    if state.recruitment_candidates.size() <= pool_before:
+        _fail("O2 Dẫn Tiên action did not produce a real candidate.")
+        return
+
+    var recruitable := _recruitable_candidate_ids()
+    if recruitable.is_empty():
+        _fail("O2 Dẫn Tiên produced no authentic V2 candidate.")
+        return
+    var first_id := StringName(recruitable[0])
+    var accept_first := ui.find_child("AcceptCandidate_%s" % str(first_id), true, false) as Button
+    if accept_first == null or accept_first.disabled:
+        _fail("O2 authentic candidate has no enabled player-facing Accept control.")
+        return
+
     var initial_count := state.disciples.size()
-    ui.call("_accept_guidance_candidate", first_id)
+    accept_first.emit_signal("pressed")
     await process_frame
     if state.disciples.size() != initial_count + 1:
         _fail("O2 valid Accept did not add exactly one disciple.")
@@ -122,10 +148,9 @@ func _run() -> void:
         _fail("O2 invalid candidate ID mutated the roster.")
         return
 
-    var remaining: Array = state.recruitment_candidates.keys()
-    remaining.sort()
+    var remaining := _recruitable_candidate_ids()
     if remaining.size() < 2:
-        _fail("O2 needs two remaining real candidates for capacity/reject denial checks.")
+        _fail("O2 needs two remaining authentic candidates for capacity/reject denial checks.")
         return
     var second_id := StringName(remaining[0])
     var third_id := StringName(remaining[1])
@@ -171,6 +196,16 @@ func _run() -> void:
     await process_frame
     _cleanup_save()
     quit(0)
+
+func _recruitable_candidate_ids() -> Array:
+    var result: Array = []
+    var ids: Array = state.recruitment_candidates.keys()
+    ids.sort()
+    for raw_id in ids:
+        var candidate: CandidateState = state.recruitment_candidates[raw_id]
+        if not state.sect.disciple_v2_birth_enabled or DiscipleBirthProfileV2.valid_complete_birth(candidate.v2_birth_profile):
+            result.append(StringName(raw_id))
+    return result
 
 func _open_scene() -> bool:
     var scene := load("res://scenes/p3/p3_2_landscape_sect.tscn") as PackedScene
