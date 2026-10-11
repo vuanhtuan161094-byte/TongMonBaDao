@@ -15,6 +15,7 @@ Read `docs/GAME_SYSTEM_ARCHITECTURE.md` for system structure and phase disciplin
 
 | Opening acceptance checklist | Status | Owner |
 |---|---|---|
+| [x] Read-only ZQZS source benchmark for early workforce/production | **SOURCE PATTERN CHECKED**, not gameplay PASS: `ZQZS-Source-Knowledge` `main` `a9a638b6`; Lua `aiManager.beginWorkAI`, `disciplestatemanager planStart/planComplete`, `zongmenmodel pro_skill_id` compared with current Godot `WorkforceSystem`/`BuildingSystem`/P3.2 UI. Missing live Spirit Field management entry confirmed; output/production server authority in reference remains UNKNOWN. Details in `NEXT_CHAT_HANDOFF.md` Source-benchmark checkpoint. | ASSISTANT / GitHub |
 | [ ] Real clean start → sect map + visible, selectable disciples | Existing scene and tests; **recheck integrated live opening gate** | ASSISTANT / GitHub + official Godot 4.7.2 CI |
 | [ ] Real player recruitment in opening scene or clearly defined starting-disciple roster | **UI onboarding/entry NOT VERIFIED** | ASSISTANT / GitHub + official CI |
 | [ ] Player assigns actual miners and obtains deposited output | Mine UI/backend exist separately; **integrated scene test required** | ASSISTANT / GitHub + official CI |
