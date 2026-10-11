@@ -143,4 +143,6 @@ Ordering nuance: O1 must precede trusted user-visible mine/forge assertions. O2/
 
 ## E. Current disposition / one next action
 
-**2026-10-11: PLANNING ONLY.** Source comparison complete, real current-scene gaps identified; **O0–O6 unimplemented/unaccepted under this plan**, except already verified older backend/smoke parts stated above. No CI run or gameplay change claimed for creation of this document. **O0 static/factory audit complete; next proposed code packet: O1 canonical stock display**, then O1 canonical warehouse UI truth. User currently cannot use Windows: **PENDING USER**.
+**2026-10-11: M1 EXECUTION CLOSED.** O0 source/factory audit is complete and O1–O6 have been implemented/accepted sequentially. Final O6 integrated fresh-main-scene rehearsal [#38152216814](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38152216814) PASS; same unchanged gameplay source then re-ran O1–O5 + DV2-03 + P3.7 FAST/FULL with all required workflows SUCCESS, including P3.7 [#38152327784](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38152327784). **M1 technically playable on official Godot 4.7.2 Linux CI = PASS.** Windows/mobile visual click-through, screenshot review and packaging/APK acceptance remain **PENDING USER**.
+
+No M2 packet is authorized by this closure. Recommended next decision is M2/O7 design review for a renewable Linh Mộc producer, preferably using a reusable building-job/profession lifecycle before coding. O7–O9 remain expansion; M3 remains numeric balance + 1k–3k optimization.

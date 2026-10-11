@@ -1,10 +1,32 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
-**Bàn giao cập nhật: 11/10/2026 — O5 real produce→spend + Mine upgrade CLOSED; focused + P3.7 FAST/FULL Godot 4.7.2 Linux PASS. M1 chỉ còn O6.**
+**Bàn giao cập nhật: 11/10/2026 — O6 CLOSED; O1–O6 M1 technically playable on official Godot 4.7.2 Linux CI. Windows visual/click/APK PENDING USER.**
 
 **Repo:** `vuanhtuan161094-byte/TongMonBaDao` · **branch:** `main` · **engine:** Godot 4.7.2. **User yêu cầu thao tác bằng GitHub connector trực tiếp; KHÔNG Codex, KHÔNG Work.** Trước mọi sửa đổi phải fetch lại `main` vì SHA sẽ thay đổi sau các commit bàn giao. **Latest DV2-03E3.1 gameplay/test source with focused PASS:** `3c7e9a7691f549097dd0a67ed50ead8b7be18a4c` (slot-transfer, Workforce exclusive priority, invalid orders, 2-slot multi-minute/no-stone regression). Fetch live `main` before the next edit; docs-only handoff commits may move HEAD.
 
 
+
+## CURRENT FIRST-PLAYABLE HANDOFF — O6 CLOSED — M1 TECHNICALLY PLAYABLE (2026-10-11)
+
+**Production gameplay source remains:** `6af3fdd715b3adcb1c3391452c7687cac043b610` (O5). O6 acceptance test final SHA `2c13e862287c68491ed04f153e5b815fd0de1811`; CI fan-out SHA `4a7efa51fcaed8453fcb8c08b62239c3ce1c73b4` changes workflows only.
+
+**O6 integrated PASS:** [#38152216814](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38152216814), official Godot 4.7.2 Linux, COMPLETED/SUCCESS. One real fresh P3.2 session proves Dẫn Tiên order + authentic V2 recruit + exactly one live/selectable actor + recruited Field assignment + real paid crop/harvest + real Mine output + canonical Warehouse + produced-ore Forge craft + produced-ore timed Mine Lv1→2 + active save/restart + exact actor/group/plot/command/stock/item/building restoration + no-click continuation and subsequent autonomous Mine/Field production.
+
+**Required cumulative PASS against unchanged gameplay source:** [O1 #38152327679](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38152327679), [O2 #38152327668](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38152327668), [O3 #38152327663](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38152327663), [O4 #38152327718](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38152327718), [O5 #38152327785](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38152327785), [DV2-03 #38152327667](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38152327667) all SUCCESS; [P3.7 #38152327784](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38152327784) FAST + FULL SUCCESS.
+
+**Historical first O6 run #38152156773:** test-only false assumption: after a legitimate harvest the retained herbalism group autonomously planted the next crop. Test was corrected to accept that valid behavior and withdraw only at a plot-release tick. No gameplay logic was changed to force PASS.
+
+**Release decision:** **M1 technically playable = PASS on official Linux CI.** Do not equate this with visual/product sign-off on the user's device. Windows/mobile click-through, screenshots, packaging/APK and final visual acceptance remain **PENDING USER**.
+
+### ZQZS / Ta Là Tông Sư Tiên Môn benchmark — what to learn, not copy
+
+Read-only evidence in `ZQZS-Source-Knowledge`: building definitions carry layout/manage metadata plus `pro_skill_id`; changing a building manager is a real request/response and updates model/HUD + emits `replaceDisciple`; building `planStart/planComplete` drives `beginWorkAI/endWorkAI`; the work command includes building ID/entity/map ID; profession skill level is read to calculate client building effects. Design placement/path preview is separated from authoritative building changes. Server production timer/quantity/final warehouse authority is **UNKNOWN**.
+
+**Post-M1 design lesson for our independent Godot architecture:** preserve `UI → command → simulation state → completion event → Warehouse`; generalize Mine/Field work state into a reusable building-job lifecycle with explicit `building_id + profession_id + phase + start/finish`; add optional building-manager/policy authority above worker groups for 1k–3k scale; make each producer declare its profession binding rather than bespoke UI logic. O7 Linh Lâm and O8 Luyện Đan are ideal places to prove this framework. Do not copy source code/config values/assets.
+
+**No next code packet is authorized yet.** Recommended next is an **M2/O7 design review** first: define the generic producer contract + Linh Lâm renewable Linh Mộc using current canonical Warehouse and source-inspired lifecycle, then seek explicit CODE O7 authorization. Alternative: deep-audit the source building/manager/road/production UX before M2.
+
+---
 
 ## CURRENT FIRST-PLAYABLE HANDOFF — O5 CLOSED — REAL PRODUCE→SPEND LOOP GREEN (2026-10-11)
 
@@ -16,9 +38,7 @@
 
 **Verified regressions on same SHA:** [P3.7 #38151347108](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38151347108) FAST + FULL SUCCESS; [O1 #38151347131](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38151347131), [O2 #38151347111](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38151347111), [O3 #38151347045](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38151347045), [O4 #38151347058](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38151347058), [DV2-03 #38151347044](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38151347044) all SUCCESS. [Preview #38151347110](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38151347110) has FAST + capture PASS; only artifact upload fails because storage quota is exhausted.
 
-**M1 remainder = O6 ONLY.** O6 must run one integrated fresh-game rehearsal through actual P3.2 player surfaces: fresh roster → valid Dẫn Tiên recruit → live actor/selectability → Mine production → Linh Điền paid production → canonical Warehouse → real Forge/upgrade spend → save/restart → roster/actor/plots/work/stock/item/building state remains exact and autonomous simulation can continue. Use targeted official Godot 4.7.2 plus cumulative FAST/FULL on the same gameplay SHA. Do not add new economy, recipes, resources, hunting, O7–O9 or balance work.
-
-**Single next proposed packet, only after new user authorization: CODE O6 ONLY.** If O6 passes all technical gates, M1 may be called **technically playable on official Linux CI**, while Windows visual/click/APK acceptance remains **PENDING USER** and must not be relabeled PASS.
+**O6 was subsequently authorized and closed; M1 technically playable Linux CI = PASS.** See the current O6 handoff above. No M2 packet is authorized yet; Windows visual/click/APK remains PENDING USER.
 
 ---
 
