@@ -746,3 +746,51 @@ Mặc dù F2 có logic tiêu hao + đột phá hoàn chỉnh, **service producti
 - **Windows Godot 4.7.2 / visual approval: `PENDING USER`**. Người dùng chưa thể mở máy; không yêu cầu họ thao tác ngay. Checklist duy trì trong `CURRENT_CHECKPOINT.md`.
 
 **F2 code/FOCUSED PASS; F3–F7 chưa được phép code.** Chuyển sang mục tiêu vòng chơi A/B chỉ khi người dùng cấp phép gói F3, bao gồm nguồn kiếm Tử Vân Thảo sớm và chống kẹt Linh Tủy trên sự kiện thắng/thu thập thật. Không lắp nền gameplay từ Unity/ZQZS hoặc sáng tác content cao giới.
+
+## S. F3–F7 OPTION A — ACTUAL A/B CONTENT, P3.2 BODY GATE UI, PILOT MEASUREMENT AND HONEST HANDOFF (2026-10-11)
+
+**Authorization:** User explicitly authorized sequential code for **F3, F4, F5, F6 and F7** on 2026-10-11 at 14:08 ICT. This supersedes earlier archived "**NOT AUTHORIZED**" lines for these five packets, **not** EXP, §D exact manifest, §O Option A or `DESIGN_LOCKED=false`. This section contains *latest scoped implementation truth*, not another blueprint. **Parent DV2-03 remains ACTIVE**; no automatic transition to DV2-04. Windows unavailable to user, **PENDING USER**.
+
+### S1. F3 — actual won-claim A/B material rewards and no-RNG deadlock
+
+- **Only three authored Nhân regions** in `godot/src/simulation/combat/hunting_map_v2.gd`, existing real `MapBattleV2` outcome and replay-safe Sect Warehouse claim; no boss/map/high-tier content added. Existing source registry and 29 recipe quantities unchanged. No loot from preview, defeat, mere waiting or repeated claim.
+- **New openly PILOT, not approved-final numeric yields:** Thanh Trúc Lâm: **1 Thanh Linh Thảo per valid won claim** (existing wood/ore intact); Bạch Thạch Khê: **2 Tử Vân Thảo per won claim** (existing ore/Tinh Lang Bì intact). Đợt này thêm nguồn lặp lại Tử Vân Thảo cho B **không phụ thuộc Linh Điền Lv30**. Hiện có rơi Tinh Lang Bì qua Bạch Thạch/Hắc Phong.
+- **Linh Tủy guaranteed:** mỗi **4 Thanh Trúc Lâm won claims** đã settle thực thành công, cộng **1 Linh Tủy bảo đảm** vào phần thưởng; counter `SectState.v2_body_material_progress["linh_tuy_thanh_truc_wins"]` duy trì 0..3, save/load; claim trùng không được tăng; nếu settlement lỗi, không tăng. **Giữ nguyên rơi hiếm** theo cấp vùng (Level 1 vẫn **0% rare**, các cấp khác giữ nguyên), rare nếu rơi vẫn được cộng thêm, không thay thế cơ chế bảo đảm. Không có phần thưởng từ việc đứng chờ. Ngưỡng 4 là PILOT thử nghiệm, **chưa được người dùng khóa cân bằng**.
+- `DiscipleBodyGateTransactionV2._content_ready()` chỉ cho phép nhóm **A/B (source realm 1..6)** khi thật sự có hợp đồng nguồn từ các ba vùng bản đồ đã đăng ký trong `HuntingMapV2.early_body_sources_ready()`. Mọi realm **7..29** fail-closed `content_unavailable`, dù registry C–H/3 Ấn đã có hoặc test seed kho. Không có auto-gate.
+- [F3 actual Godot test](../../godot/tests/simulation/dv2_03_f3_body_material_earned_claim_test.gd): **5 actual victorious battles** (4 Thanh Trúc + 1 Bạch Thạch), real registered claim to warehouse, guaranteed Linh Tủy ≥1, early TuVan ≥2, no payout pre-win, no double-claim, disk SaveService restart. **No fake free item from UI**.
+
+### S2. F4 — live P3.2 selected disciple preview + actual player command
+
+- `godot/src/presentation/p3_2_landscape_sect.gd`: `Thuộc tính` of an authentic V2 disciple renders `ĐỘT PHÁ LUYỆN THỂ`, Body EXP, exact main/aux/Seal names, `need/total/available`, lock and reserve status, a named source hint and `content_unavailable` for absent C–H. Content uses a scrollable region so longer data doesn't overlap bottom actions.
+- Named button **`BodyGateRealCommit`** / "**Đột phá Luyện Thể**": disabled until **pure backend preview `can_commit=true`**. Real action calls **`DiscipleBodyGateTransactionV2.commit_gate(state,selected_id,request_id)`**; no UI-side item/EXP mutation, no caller `requirements_verified`. On success it invokes existing `LiveGameRuntimeV2.save()`, refreshes the V2 tab and reports save error truthfully if any.
+- [F4 real scene regression](../../godot/tests/presentation/dv2_03_f4_body_gate_player_command_test.gd) loads **actual** P3.2 Godot main scene, recruits genuine V2 actor, verifies blocked then funded button, commits in UI, checks warehouse/Body/independent Tu Vi, disk roundtrip and repeat-click prevention. Fixture stock + authored floor10 EXP **only in UI test**; F3 proves the same resource IDs can also be genuinely earned in hunting.
+
+### S3. F5 — measured reachability and explicit non-measured gaps
+
+- [F5 low-tier pilot audit](../../godot/tests/simulation/dv2_03_f5_low_tier_economy_audit_test.gd) validates **A: 54 main/15 aux**, **B: 52 main/6 aux** by exact §D recipes. Given current PILOT outputs, hunting-only input for one full six-gate A/B journey: **54 Thanh Trúc victorious claims** (54 herb; guarantees ≥13 Linh Tủy) + **26 Bạch Thạch victorious claims** (52 Tử Vân, ≥52 pelts) = **80 confirmed victorious claims**; this excludes farming and rare bonus, so is a reproducible **source arithmetic** minimum, not a promise about actual wall-clock minutes, win difficulty, campaign cost or gameplay optimality.
+- **Projected only, NOT 1k/3k simulation:** 80,000 such victories for 1k disciples; 240,000 for 3k; therefore high-scale sustainability and load remain **UNVERIFIED** (DV2-10). Missing verified end-to-end automated PvE scheduler; no earned recurring **Sect Linh Thạch** lower bound from hunts. Rèn Thân actually spends 1 Stone/valid minute, farm sowing costs Stones. **F07 sustained low-tier cash financing stays BLOCKED/UNVERIFIED**, not disguised as PASS. XP 300 floors / rates unchanged; realm1 alone is authored **10,000,000 XP**, not a two-day realm promise.
+- F3 numeric source rates 1/2/4 are **PILOT only**. Any final tuning or recurring Sect Stone reward amount needs a separate balancing decision after gameplay evidence; F5 does not finalize them.
+
+### S4. F6 — actual A/B **six-gate** technical replay regression
+
+- [Official Godot 4.7.2 focused DV2-03 #38121196765](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38121196765) at gameplay+test SHA `bfbf62c39341f71816bea877881b1137e75fdf03`: **COMPLETED/SUCCESS**. Relevant log: `DV2-03F F6 REAL EARNED HUNT -> PRODUCTION BODY GATE -> SAVE: PASS; wins=80,body_gates_A_B=6,paid_body_minute=real,gate_xp_at_10=qa_fixture,high_tier=blocked`. Also **F0, F1, F2, F3, F4 and F5 dedicated steps all succeeded on the same focused run**.
+- [F6 earned-source integration](../../godot/tests/simulation/dv2_03_f6_real_earned_body_gate_integration_test.gd): genuine 6-member combat loads, **80 actual deterministic PvE victorious encounter/claim receipts**, reward warehouse, genuine recruited V2 disciple gets **one real paid Rèn Thân minute** with unchanged EXP/Stone source, then successively consumes actual earned items across **A/B Body gates 1–6**, exactly once per gate. **Floor10 EXP is QA-injected at each gate** (10M XP realm1 would otherwise take real play time), clearly **NOT** end-to-end natural XP pacing evidence. SaveService disk reload preserves 80 claims and 6 independent actor+realm receipts, no replay, C realm7 still unavailable.
+- [P3.7 cumulative FAST+FULL #38121196717](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38121196717) on **the exact same code SHA `bfbf62c3`**: verify final GitHub run completion/conclusion before declaring FULL PASS; FAST and FULL statuses to be recorded explicitly.
+- [P3.6A screenshot capture #38120846305](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38120846305): **actual preview capture step PASS** but whole workflow **FAIL because GitHub Actions artifact storage quota prevented upload**. Do **not** conflate an artifact-upload quota issue with Godot scene parse failure or claim screenshot inspected by user. No user-visible image was delivered.
+
+### S5. F7 handoff and exact remaining checklist
+
+| Slice | Status | Current truth |
+|---|---|---|
+| F3 A/B actual material earnings | **FOCUSED PASS** | Win-claim sources, guaranteed B anti-stuck and saved receipt; PILOT numeric rates |
+| F4 UI Body gate | **FOCUSED PASS** | Live P3.2 preview and real paid command in genuine scene; manual Windows interaction pending |
+| F5 economy arithmetic | **PASS scoped arithmetic; sustained income UNVERIFIED** | 80 victories theoretical, no proven Stone income, no measured game-time or 1k/3k throughput |
+| F6 Linux Godot focused + actual A/B six-gate fixture | **PASS** | Full 80 wins + six correct transactions; floor10 XP test fixture |
+| F6 P3.7 cumulative FAST/FULL | **RECHECK LIVE** | Must see run `completed/success`, don't infer from focused |
+| F7 technical handoff | **RECORDED** | Narrow A/B backend/UI work is in code; **DV2-03 parent NOT CLOSED** |
+| Full mobile-player control of PvE encounters and actual all-source activity scheduling | **NOT VERIFIED / BLOCKER FOR CLAIMING FULL USER-PLAYABLE LOOP** | Hunt claims proved via backend combat owner; no established player-facing PvE dispatch control/auto-scheduler verified in F6 |
+| 12 higher C–H ingredients + 3 Seals genuine sources | **UNAVAILABLE** | 29 manifest fixture coverage DOES NOT prove 29 playable gates |
+| Real end-to-end full realm EXP pacing, Stone funding, 1k/3k scale | **UNVERIFIED** | Preserve locked EXP; defer unsupported full-economy claims |
+| Windows Godot 4.7.2 run, click-through, final visual acceptance | **PENDING USER / NO PC** | Do not ask user to run it now; provide commands and screenshot checklist when they have a PC |
+
+**Explicit next decision boundary:** Do **not** automatically close DV2-03 or start DV2-04. The A/B source/transaction/UI backend now has focused proof, but full user-visible hunting dispatch, sustained economy, higher content and Windows acceptance are separate unresolved outcomes. Report them honestly; ask the user which unresolved dependency to prioritize after reading final CI. All EXP/realm/29 recipe seals remain locked as originally authored.
