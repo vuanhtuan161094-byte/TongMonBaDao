@@ -1,4 +1,5 @@
 name: P3 O4 Real Spirit Field Loop
+# O7 closure rerun: gameplay source unchanged from parent; final O1-O7 compatibility evidence.
 
 on:
   workflow_dispatch:
