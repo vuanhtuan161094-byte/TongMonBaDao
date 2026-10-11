@@ -23,6 +23,7 @@ var tab_status_text := ""
 var technique_system := TechniqueSystem.new()
 var equipment_system := EquipmentSystem.new()
 var needs_system := NeedsSystem.new()
+var recruitment_system := RecruitmentSystem.new()
 var living_cue_resolver := LivingCueResolver.new()
 var living_cue_tracker := LivingCueTracker.new()
 var living_cue_layer: LivingCueLayer
@@ -460,7 +461,24 @@ func _open_disciple(disciple_id: StringName) -> void:
 
     _show_disciple_summary()
 
+func _reconcile_live_actors() -> void:
+    # O2: recruitment mutates the authoritative roster after scene startup.
+    # Materialize only roster IDs that do not already have a live map actor.
+    var needs_install := false
+    for raw_id in state.disciples.keys():
+        var key := str(raw_id)
+        if not actor_nodes.has(key):
+            needs_install = true
+            break
+        var actor := actor_nodes.get(key) as Control
+        if actor == null or not is_instance_valid(actor):
+            needs_install = true
+            break
+    if needs_install:
+        _install_modular_live_actors()
+
 func _sync_actor_positions() -> void:
+    _reconcile_live_actors()
     var ids: Array = state.disciples.keys()
     ids.sort()
     for index in range(ids.size()):
@@ -667,11 +685,13 @@ func _refresh_building_operation_content() -> void:
     if building_management_feedback != "":
         feedback = "\n\n%s" % building_management_feedback
     building_operation_body.text = _building_operation_text(selected_building) + feedback
-    # E3: expose two real assignment rows within the scroll viewport instead
-    # of leaving them permanently below the generic 420px explanation block.
-    building_operation_body.custom_minimum_size.y = (
-        248 if selected_building == SectMapPresentation.DEST_BODY_TRAINING else 420
-    )
+    # Keep actionable controls in view for dense management panels.
+    if selected_building == SectMapPresentation.DEST_BODY_TRAINING:
+        building_operation_body.custom_minimum_size.y = 248
+    elif selected_building == SectMapPresentation.DEST_GUIDANCE:
+        building_operation_body.custom_minimum_size.y = 150
+    else:
+        building_operation_body.custom_minimum_size.y = 420
     _rebuild_building_management_controls()
 
 func _rebuild_building_management_controls() -> void:
@@ -698,6 +718,8 @@ func _rebuild_building_management_controls() -> void:
             _build_lodging_expansion_control()
         SectMapPresentation.DEST_MEDICINE:
             _build_needs_priority_controls("ƯU TIÊN HẬU CẦN")
+        SectMapPresentation.DEST_GUIDANCE:
+            _build_guidance_recruitment_controls()
         SectMapPresentation.DEST_GATE:
             _build_direct_order_management(WorkforceSystem.COMMAND_RETURN_SECT, "", "Triệu hồi", true)
         _:
@@ -732,6 +754,118 @@ func _build_needs_priority_controls(title: String) -> void:
         {"label":"Ưu tiên thuốc", "value":NeedsSystem.PRIORITY_MEDICINE},
         {"label":"Ưu tiên vật tư", "value":NeedsSystem.PRIORITY_SUPPLIES}
     ], state.sect.needs_priority, "_set_needs_priority_from_building")
+
+func _build_guidance_recruitment_controls() -> void:
+    _add_management_section_label("DẪN TIÊN")
+    var order := Button.new()
+    order.name = "GuidanceRecruitOrder"
+    order.text = "Dùng Chiêu Mộ Lệnh (%d)" % state.sect.disciple_recruitment_tokens
+    order.custom_minimum_size = Vector2(384, 36)
+    order.disabled = state.sect.disciple_recruitment_tokens <= 0
+    order.pressed.connect(_guidance_recruit_with_order)
+    building_management_container.add_child(order)
+
+    _add_management_section_label("ỨNG VIÊN ĐANG CHỜ")
+    var ids: Array = state.recruitment_candidates.keys()
+    ids.sort()
+    if ids.is_empty():
+        var empty := Label.new()
+        empty.text = "Hiện chưa có ứng viên chờ xét."
+        empty.add_theme_font_size_override("font_size", 12)
+        building_management_container.add_child(empty)
+        return
+
+    for raw_id in ids:
+        var candidate_id := StringName(raw_id)
+        var candidate: CandidateState = state.recruitment_candidates[candidate_id]
+        var card := VBoxContainer.new()
+        card.name = "RecruitCandidate_%s" % str(candidate_id)
+        card.custom_minimum_size = Vector2(384, 82)
+        card.add_theme_constant_override("separation", 4)
+        building_management_container.add_child(card)
+
+        var info := Label.new()
+        info.text = "%s · %s\nTư %.0f · Cốt %.0f · Duyên %.0f · Tuệ %.0f · Mị %.0f · Tiềm %.0f" % [
+            candidate.display_name,
+            str(DiscipleGeneratorV2.QUALITY_NAMES.get(str(candidate.disciple_quality), str(candidate.disciple_quality))),
+            candidate.aptitude,
+            candidate.constitution,
+            candidate.fortune,
+            candidate.comprehension,
+            candidate.charisma,
+            candidate.potential
+        ]
+        info.custom_minimum_size = Vector2(384, 38)
+        info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+        info.add_theme_font_size_override("font_size", 11)
+        card.add_child(info)
+
+        var actions := HBoxContainer.new()
+        actions.add_theme_constant_override("separation", 8)
+        card.add_child(actions)
+
+        var accept := Button.new()
+        accept.name = "AcceptCandidate_%s" % str(candidate_id)
+        accept.text = "Nhận"
+        accept.custom_minimum_size = Vector2(120, 34)
+        accept.disabled = not recruitment_system.can_accept_more(state)
+        accept.pressed.connect(Callable(self, "_accept_guidance_candidate").bind(candidate_id))
+        actions.add_child(accept)
+
+        var reject := Button.new()
+        reject.name = "RejectCandidate_%s" % str(candidate_id)
+        reject.text = "Từ chối"
+        reject.custom_minimum_size = Vector2(120, 34)
+        reject.pressed.connect(Callable(self, "_reject_guidance_candidate").bind(candidate_id))
+        actions.add_child(reject)
+
+func _guidance_recruit_with_order() -> void:
+    var result := recruitment_system.guidance_recruit_with_order(state)
+    if bool(result.get("ok", false)):
+        building_management_feedback = "Dẫn Tiên Đài đã tiếp nhận thêm một ứng viên."
+    else:
+        building_management_feedback = _recruitment_feedback(str(result.get("reason", "generation_failed")))
+    _refresh_all()
+    _refresh_building_operation_content()
+
+func _accept_guidance_candidate(candidate_id: StringName) -> void:
+    var candidate: CandidateState = state.recruitment_candidates.get(candidate_id)
+    var candidate_name := candidate.display_name if candidate != null else str(candidate_id)
+    var result := recruitment_system.accept_candidate(state, candidate_id)
+    if bool(result.get("ok", false)):
+        building_management_feedback = "Đã nhận %s vào tông môn." % candidate_name
+    else:
+        building_management_feedback = _recruitment_feedback(str(result.get("reason", "accept_failed")))
+    # Refresh immediately so a successful authoritative roster mutation creates
+    # its real map actor without waiting for a wall-clock poll.
+    _refresh_all()
+    _refresh_building_operation_content()
+
+func _reject_guidance_candidate(candidate_id: StringName) -> void:
+    var candidate: CandidateState = state.recruitment_candidates.get(candidate_id)
+    var candidate_name := candidate.display_name if candidate != null else str(candidate_id)
+    var result := recruitment_system.reject_candidate(state, candidate_id)
+    if bool(result.get("ok", false)):
+        building_management_feedback = "Đã từ chối %s." % candidate_name
+    else:
+        building_management_feedback = _recruitment_feedback(str(result.get("reason", "reject_failed")))
+    _refresh_all()
+    _refresh_building_operation_content()
+
+func _recruitment_feedback(reason: String) -> String:
+    match reason:
+        "capacity_full":
+            return "Không thể nhận thêm: Đệ Tử Xá đã đủ chỗ."
+        "candidate_missing":
+            return "Ứng viên này không còn trong danh sách chờ."
+        "not_enough_recruitment_tokens":
+            return "Không còn Chiêu Mộ Lệnh."
+        "guidance_disabled", "recruitment_disabled":
+            return "Dẫn Tiên hiện chưa khả dụng."
+        "v2_birth_profile_incomplete":
+            return "Hồ sơ V2 của ứng viên chưa hợp lệ."
+        _:
+            return "Thao tác tuyển mộ chưa thể thực hiện: %s." % reason
 
 func _add_policy_button_row(options: Array, current_value: StringName, handler_name: String) -> void:
     var row := HBoxContainer.new()
@@ -1124,10 +1258,33 @@ func _building_operation_text(destination: StringName) -> String:
             return _medicine_operation_text()
         SectMapPresentation.DEST_WAREHOUSE:
             return _warehouse_operation_text()
+        SectMapPresentation.DEST_GUIDANCE:
+            return _guidance_operation_text()
         SectMapPresentation.DEST_GATE:
             return _gate_operation_text()
         _:
             return "Sân trung tâm. Không có dữ liệu quản lý riêng."
+
+func _guidance_operation_text() -> String:
+    var platform := BuildingSystem.new().primary_building(state, BuildingSystem.TYPE_GUIDANCE_PLATFORM)
+    if platform == null:
+        return "Dẫn Tiên Đài chưa tồn tại trong trạng thái hiện tại."
+    var snapshot := recruitment_system.guidance_state_snapshot(state)
+    return (
+        "TUYỂN MỘ\n"
+        + "Đệ tử: %d / %d\n"
+        + "Ứng viên đang chờ: %d\n"
+        + "Chiêu Mộ Lệnh: %d\n"
+        + "Mục tiêu tiếp nhận hôm nay: %d · Đã tạo: %d\n\n"
+        + "Nhận hoặc từ chối ứng viên trực tiếp tại đây. Mọi giới hạn sức chứa và hồ sơ V2 do RecruitmentSystem quyết định."
+    ) % [
+        state.disciples.size(),
+        state.sect.disciple_capacity,
+        state.recruitment_candidates.size(),
+        state.sect.disciple_recruitment_tokens,
+        int(snapshot.get("daily_arrival_target", 0)),
+        int(snapshot.get("daily_arrivals_generated", 0))
+    ]
 
 func _main_hall_operation_text() -> String:
     return (

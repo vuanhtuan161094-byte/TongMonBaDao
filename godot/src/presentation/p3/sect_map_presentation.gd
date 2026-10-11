@@ -10,6 +10,7 @@ const DEST_WAREHOUSE := &"warehouse"
 const DEST_FORGE := &"forge"
 const DEST_MEDICINE := &"medicine"
 const DEST_MINE := &"mine"
+const DEST_GUIDANCE := &"guidance"
 const DEST_GATE := &"gate"
 
 const DESTINATION_POSITIONS := {
@@ -22,6 +23,7 @@ const DESTINATION_POSITIONS := {
     "forge": Vector2(540.0, 492.0),
     "medicine": Vector2(815.0, 520.0),
     "mine": Vector2(350.0, 365.0),
+    "guidance": Vector2(1135.0, 292.0),
     "gate": Vector2(1130.0, 515.0)
 }
 

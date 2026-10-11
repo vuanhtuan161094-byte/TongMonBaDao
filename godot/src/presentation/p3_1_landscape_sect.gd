@@ -275,6 +275,7 @@ func _build_buildings() -> void:
         {"id":"forge", "name":"Luyện Khí Đường", "pos":Vector2(466, 432), "size":Vector2(158, 112), "body":Color(0.56, 0.31, 0.20, 1.0), "roof":Color(0.30, 0.29, 0.27, 1.0), "kind":"forge"},
         {"id":"medicine", "name":"Dược Phòng", "pos":Vector2(748, 466), "size":Vector2(152, 100), "body":Color(0.40, 0.55, 0.34, 1.0), "roof":Color(0.24, 0.38, 0.31, 1.0), "kind":"medicine"},
         {"id":"mine", "name":"Khai Khoáng", "pos":Vector2(288, 304), "size":Vector2(142, 108), "body":Color(0.43, 0.40, 0.35, 1.0), "roof":Color(0.23, 0.24, 0.23, 1.0), "kind":"mine"},
+        {"id":"guidance", "name":"Dẫn Tiên Đài", "pos":Vector2(1060, 244), "size":Vector2(150, 94), "body":Color(0.45, 0.57, 0.44, 1.0), "roof":Color(0.69, 0.59, 0.34, 1.0), "kind":"platform"},
         {"id":"gate", "name":"Đại Môn", "pos":Vector2(1068, 454), "size":Vector2(164, 116), "body":Color(0.47, 0.34, 0.23, 1.0), "roof":Color(0.24, 0.31, 0.28, 1.0), "kind":"gate"}
     ]
 
@@ -665,6 +666,7 @@ func _building_name(destination: StringName) -> String:
         SectMapPresentation.DEST_FORGE: return "Luyện Khí Đường"
         SectMapPresentation.DEST_MEDICINE: return "Dược Phòng"
         SectMapPresentation.DEST_MINE: return "Khu Khai Khoáng"
+        SectMapPresentation.DEST_GUIDANCE: return "Dẫn Tiên Đài"
         SectMapPresentation.DEST_GATE: return "Tông Môn Đại Môn"
         _: return "Sân Tông Môn"
 
@@ -684,6 +686,8 @@ func _building_detail(destination: StringName) -> String:
             return "Đệ tử đang luyện khí: %d\nĐiểm hỗ trợ rèn: %d\nThanh Thiết tồn (dùng): %s\n\nNgười phụ trách luyện khí sẽ làm việc tại đây." % [_count_action(&"WORK_FORGING"), state.sect.forge_support_points, _warehouse_pair(&"thanh_thiet")]
         SectMapPresentation.DEST_MINE:
             return "Đệ tử đang khai khoáng: %d\nThanh Thiết tồn (dùng): %s\n\nMỗi chu kỳ khai khoáng hoàn thành sẽ đưa Thanh Thiết về kho." % [_count_action(&"WORK_MINING"), _warehouse_pair(&"thanh_thiet")]
+        SectMapPresentation.DEST_GUIDANCE:
+            return "Ứng viên đang chờ: %d\nĐệ tử: %d/%d\nChiêu Mộ Lệnh: %d\n\nDẫn Tiên Đài tiếp nhận và sàng lọc ứng viên bằng hệ tuyển mộ hiện có." % [state.recruitment_candidates.size(), state.disciples.size(), state.sect.disciple_capacity, state.sect.disciple_recruitment_tokens]
         SectMapPresentation.DEST_BODY_TRAINING:
             var hall := BuildingSystem.new().primary_building(state, BuildingSystem.TYPE_BODY_TRAINING)
             if hall == null:
