@@ -4,6 +4,21 @@ Date: 2026-10-09
 Status: **USER-APPROVED ROADMAP; DV2-01 IN PROGRESS; no full V2 implementation PASS**
 This plan supersedes the **next-work priority** in `docs/EQUIPMENT_FORGING_UPGRADE_V2_ROADMAP.md` but does not delete, amend or re-lock previously approved Equipment V2 / Sets V2 decisions. **Pháp Bảo, Phù, gear forging/enhancement, profession-economic expansion and advanced relationships are deferred.** The user **explicitly authorized phased implementation on 2026-10-09**. This authorization does not waive one-phase-at-a-time or focused/cumulative Godot gates; DV2-01 remains active until all required consumers/persistence are complete.
 
+
+## 2026-10-11 — PHƯƠNG ÁN A ĐÃ CHỌN: DV2-03F TINH GỌN, GIỮ ĐÚNG ROADMAP
+
+**Nguồn quyết định mới nhất:** người dùng chọn A, **chỉ cập nhật tài liệu, chưa cho phép code, chưa DESIGN LOCKED**. Hợp đồng duy nhất có hiệu lực mới nhất cho DV2-03F là `docs/DV2_03F_BODY_GATE_MATERIAL_TRANSACTION_FINAL_REVIEW.md` **mục O**; các đoạn kế hoạch đầy đủ trước đây ở mục N là hồ sơ lịch sử, không dùng để kéo dài phạm vi code F.
+
+- Mục tiêu **DV2-03** không đổi: một đệ tử thật có hai đường Tu Vi/Luyện Thể, tăng EXP qua chủ sở hữu thật, hiển thị và bấm đột phá, tiêu vật liệu từ Sect Warehouse đúng 29 công thức/3 Ấn, save/load không nhân đôi, giữ Tu Vi/Body độc lập. **EXP 300 tầng và toàn bộ luật đang khóa không đổi**.
+- Lát **DV2-03F phương án A**: kiểm tra nền → đăng ký **manifest 29 + 19 ID** (4 đã có, 15 mới) → transaction preview/commit an toàn → **nguồn rơi thật A/B từ săn quái/Boss/vùng tài nguyên và cơ chế bảo đảm có hạn chống kẹt, không ép field Lv30** → UI Thối Thể tối thiểu → focused/full. Các vật liệu C–H và 3 Ấn có ID/công thức nhưng **không được coi là kiếm được/chơi được** cho đến khi có quái/vùng/boss tương ứng và các thử nghiệm thực.
+- **Không mở rộng ngang** sang tất cả hệ thống ủy thác, dòng tiền 1.000–3.000 đệ tử cao giới, toàn bộ 30-map content, thiết kế sự kiện/kỳ ngộ, pháp bảo, đan hoặc đánh giá tốc độ 30 cảnh giới trọn đời khi các nguồn đó chưa có. F05 giữ PILOT không khóa số; F07/F10 kiểm tra trung thực **ngưỡng đang có (nhất là A/B)**, kết quả cao giới ghi `UNVERIFIED`, không làm cớ sửa EXP.
+- **Ưu tiên roadmap sau DV2-03** vẫn là DV2-04 Linh Căn → DV2-05 Đặc Chất/Mệnh → DV2-06 Huyết Mạch/Thể Chất → DV2-07 Công Pháp/Chủ Đạo/Kỹ năng → DV2-08 vòng hành động thật → DV2-09 UI đầy đủ → DV2-10 scale/release; không hoán đổi tùy tiện vì F muốn làm luôn high-tier economy. VFX/event/pháp bảo thuộc đúng các giai đoạn tương lai, có typed modifier/claim owner.
+- **Cổng chuyển phase phải minh bạch**: chỉ có A/B playable không được gọi “29/29 playable” hay DV2-03 CLOSED. Nếu high-tier gate content còn là điều kiện closure cha, giữ `DV2-03 ACTIVE` và trình người dùng quyết định ranh giới release tiếp theo trước khi chuyển DV2-04; không tự miễn `AGENTS.md` one-phase-at-a-time.
+
+**Thứ tự gói đã rút gọn**: F0 baseline → F1 manifest/typed data → F2 atomic transaction → F3 earned A/B drops+anti-stuck → F4 Body gate UI → F5 low-tier pilot economy/EXP checks → F6 focused/full → F7 honest handoff. **Tất cả hiện là kế hoạch, chưa gói nào được cấp quyền code trong lượt này.**
+
+---
+
 ## 0. Goal — a genuinely playable disciple, not display-only panels
 
 **Primary target:** A disciple generated through the existing Dẫn Tiên/recruitment authority must become one canonical person with immutable birth/provenance; persist all approved innate and hidden attributes; derive combat and work/cultivation outputs from the same source pipeline; move/work/cultivate/fight using those values; visibly expose only legitimate information in a real disciple UI; and survive save/load, restart, 1,000–3,000 roster scale, old-save migration and deterministic multi-seed tests.
