@@ -54,10 +54,12 @@ func _run() -> void:
         _fail("Ungained-EXP Body gate should render visible but disabled.")
         return
     var preview := str(ui.call("_disciple_tab_text","Thuộc tính",disciple))
-    if not preview.contains("ĐỘT PHÁ LUYỆN THỂ 1 → 2") or
+    if (
+        not preview.contains("ĐỘT PHÁ LUYỆN THỂ 1 → 2") or
         not preview.contains("Thanh Linh Thảo") or
         not preview.contains("Tinh Lang Bì") or
-        not preview.contains("EXP"):
+        not preview.contains("EXP")
+    ):
         _fail("Body gate preview failed to show actual named materials and EXP.")
         return
     # Isolated UI fixture can stock registered items; F3 separately proves
@@ -66,8 +68,10 @@ func _run() -> void:
     var warehouse := WarehouseSystem.new()
     var herb_id := StringName(cost["main_id"])
     var pelt_id := StringName(cost["aux_id"])
-    if not warehouse.add(state,herb_id,int(cost["main_qty"])) or
-        not warehouse.add(state,pelt_id,int(cost["aux_qty"])):
+    if (
+        not warehouse.add(state,herb_id,int(cost["main_qty"])) or
+        not warehouse.add(state,pelt_id,int(cost["aux_qty"]))
+    ):
         _fail("Cannot fund test-only preview fixture.")
         return
     disciple.v2_realm_progress["body"]["floor"]=10
@@ -88,30 +92,36 @@ func _run() -> void:
         _fail("Eligible Body gate button did not become clickable.")
         return
 
-    var old_tuvi := disciple.v2_realm_progress["cultivation"].duplicate(true)
+    var old_tuvi: Dictionary = disciple.v2_realm_progress["cultivation"].duplicate(true)
     ui.call("_disciple_tab_action","v2_body_gate")
     await process_frame
-    if int(disciple.v2_realm_progress["body"]["realm"])!=2 or
+    if (
+        int(disciple.v2_realm_progress["body"]["realm"])!=2 or
         int(disciple.v2_realm_progress["body"]["floor"])!=1 or
         warehouse.quantity(state,herb_id)!=0 or
         warehouse.quantity(state,pelt_id)!=0 or
-        disciple.v2_realm_progress["cultivation"]!=old_tuvi:
+        disciple.v2_realm_progress["cultivation"]!=old_tuvi
+    ):
         _fail("Actual UI command failed real transaction or changed Tu Vi.")
         return
     if not FileAccess.file_exists(SAVE_PATH):
         _fail("Successful UI gate did not save via live runtime.")
         return
     var loaded := SaveService.new().load_from_path(SAVE_PATH)
-    if loaded==null or not loaded.disciples.has(disciple.id) or
+    if (
+        loaded==null or not loaded.disciples.has(disciple.id) or
         int(loaded.disciples[disciple.id].v2_realm_progress["body"]["realm"])!=2 or
-        loaded.sect.v2_body_gate_receipts.size()!=1:
+        loaded.sect.v2_body_gate_receipts.size()!=1
+    ):
         _fail("UI gate success did not persist progression and receipt.")
         return
     var resources_before := state.sect.warehouse_resources.duplicate(true)
     ui.call("_disciple_tab_action","v2_body_gate")
     await process_frame
-    if resources_before!=state.sect.warehouse_resources or
-        int(disciple.v2_realm_progress["body"]["realm"])!=2:
+    if (
+        resources_before!=state.sect.warehouse_resources or
+        int(disciple.v2_realm_progress["body"]["realm"])!=2
+    ):
         _fail("UI double click illegally spent materials again.")
         return
 
