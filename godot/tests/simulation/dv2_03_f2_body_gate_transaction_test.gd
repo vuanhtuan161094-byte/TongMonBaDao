@@ -133,7 +133,7 @@ func _run() -> void:
         "Failed to release QA reservation."):
         return
     var true_preview := fixture.preview_gate(state,first.id)
-    var count_rows := true_preview.get("requirements",[])
+    var count_rows: Array = true_preview.get("requirements",[])
     if not _check(bool(true_preview.get("can_commit",false)) and
         count_rows.size()==2 and
         int(true_preview["source_realm"])==1 and
@@ -141,7 +141,7 @@ func _run() -> void:
         "Full material package did not produce a read-only ready preview."):
         return
 
-    var before_tuvi := first.v2_realm_progress["cultivation"].duplicate(true)
+    var before_tuvi: Dictionary = first.v2_realm_progress["cultivation"].duplicate(true)
     var ratio := first.hp / first.max_hp
     var first_tx := fixture.commit_gate(state,first.id,"qa-f2-one")
     if not _check(bool(first_tx.get("ok",false)) and
