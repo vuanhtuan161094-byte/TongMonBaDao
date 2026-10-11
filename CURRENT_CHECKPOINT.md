@@ -7,6 +7,9 @@ It is not a historical changelog.
 
 Read `docs/GAME_SYSTEM_ARCHITECTURE.md` for system structure and phase discipline.
 
+**11/10/2026 — DV2-03F DOCUMENTATION-ONLY DECISION (latest):** User has **approved F01–F12 in principle**, **NOT DESIGN LOCKED** and **NOT AUTHORIZED TO CODE**. Exact 29 Body gate quantities and existing XP remain unchanged; F05 rates are only **PILOT**, F07 recurring earned Sect-stone funding and F10 real high-realm Body EXP viability must be empirically verified. Technical implementation contract/order is `docs/DV2_03F_BODY_GATE_MATERIAL_TRANSACTION_FINAL_REVIEW.md` §N; decision handoff is `NEXT_CHAT_HANDOFF.md` top. **DV2-03 remains ACTIVE**. Latest E3.1 actual Godot source SHA with focused/full official Linux PASS remains `3c7e9a7691f549097dd0a67ed50ead8b7be18a4c`. Documentation commits after it do not implement or test DV2-03F and are not new PASS; Windows visual is still PENDING USER.
+
+
 ---
 
 ## 1. Locked earlier baseline
