@@ -2,7 +2,7 @@
 
 **Ngày rà soát:** 11/10/2026  
 **Đối chiếu mã:** `main@55e4be5d1dbe267956791cb3db1a923708a5cbad`  
-**Trạng thái mới nhất (11/10/2026, phương án A):** **F0 focused/full PASS; F1 MANIFEST + 15 ID ĐÃ CÓ CODE, FOCUSED PASS** (xem §Q; cumulative riêng cần xác minh live). F01–F12 vẫn chỉ duyệt về nguyên tắc, phạm vi tinh giản §O. Giữ 29 công thức, EXP và ba Ấn; **CHƯA DESIGN LOCKED**, **F2–F7 CHƯA CHO PHÉP CODE**. F1 chưa tạo rơi đồ/nguồn cao giới/giao dịch cổng; content thiếu tiếp tục fail-closed. Tài liệu này là phương án chốt cuối, không phải luật được triển khai.  
+**Trạng thái mới nhất (11/10/2026, phương án A):** **F0 + F1 PASS**, **F2 atomic transaction ĐÃ CODE, FOCUSED PASS**, P3.7 FAST PASS, FULL đang đối chiếu live (§R). Giữ đúng 29 công thức/EXP/3 Ấn, **CHƯA DESIGN LOCKED**, **F3–F7 CHƯA CHO PHÉP CODE**. Mọi cổng vẫn báo `content_unavailable` trong production vì chưa có nguồn vật phẩm thực F3; không có nút UI F4. Tài liệu này là phương án chốt cuối, không phải luật được triển khai.  
 **Phạm vi:** chỉ Luyện Thể major gates `body.realm=1..29, floor=10`; không thay đổi Tu Vi, EXP, tần suất 60 giây/1 phút mô phỏng, tốc độ EXP, Căn Cốt, Rèn Thân Đường, vật liệu trang bị hay phép bổ trợ.
 
 ## A. Luật đã khóa, không cần biểu quyết lại
@@ -720,3 +720,29 @@ The QA F0 test does **not** pretend the authenticated expedition scheduler exist
 
 **F1 implementation + focused CI PASS, cumulative status requires live check.** The new metadata exists in code and is registered, but **29/29 acquisition/gate readiness is still BLOCKED**: no legal Body warehouse transaction F2, no new earned drops from F3 and no C–H/Seal source content. The `content_unavailable` field is not a reason to claim a material route exists. Player's **Windows PC currently unavailable**: Windows native UI and user visual acceptance remain **PENDING USER**, not PASS. See `CURRENT_CHECKPOINT.md` checklist. Next phase implementation **F2 requires another explicit permission**; do not auto-implement it or begin F3–F7.
 
+## R. DV2-03F / F2 — THỰC THI GIAO DỊCH CỔNG TRÊN KHO THẬT, CHỐNG TRỪ TRÙNG, LƯU/TẢI (11/10/2026)
+
+**Quyền hạn:** Người dùng cho phép **CODE F2 ONLY**. Nguồn rơi F3, UI F4 và gói F5–F7 **chưa được duyệt code**. Không đổi 29 dòng §D, EXP, công thức Ấn, tốc độ Tu Vi, Luật Rèn Thân, thưởng săn, khu vực cao giới. `DV2_03F.DESIGN_LOCKED=false`, `DV2-03 ACTIVE`.
+
+### R1. Chủ hệ thống và thứ tự giao dịch
+
+- **`godot/src/simulation/cultivation/disciple_body_gate_transaction_v2.gd`**: `DiscipleBodyGateTransactionV2` sở hữu `preview_gate(state, disciple_id)` (chỉ đọc) và `commit_gate(state, disciple_id, request_id)` (lệnh đột phá). **Người gọi không được nhập giá, ID item, `requirements_verified` hay `content_available`**. Mỗi lần tự đọc manifest F1 bằng realm Luyện Thể hiện tại và `DiscipleProgressionBalanceV2.floor_cost(realm, 10)`.
+- Kiểm tra nhân vật V2 thật, thuộc simulation, còn HP, ở tông môn và không bận hoạt động không hợp lệ; đủ tầng 10 + EXP; nhóm nguyên liệu A–H đúng công thức và Ấn đúng cổng. Cổng vượt realm29 từ chối; Tu Vi không bị buộc bằng realm Body.
+- Chỉ dùng **`WarehouseSystem.quantity/available_quantity/rule/can_consume_requirements/consume_requirements`**, tôn trọng `locked`, `reserve_min`, không `ignore_rules=true`, không đụng túi đồ hay kho phụ. `preview_gate` trả số đang có, số dùng được, số cần, tình trạng lock/reserve, EXP, lý do thiếu.
+- Trước giao dịch lưu bản sao `warehouse_resources`, `warehouse_event_count`, `v2_realm_progress`, HP/maxHP. Khi kho trừ bundle hợp lệ, gọi **`DiscipleRealmProgressV2.commit_canonical_body_gate`** (EXP chính tắc, 100% success khi đủ điều kiện, đồng bộ tỷ lệ HP). Lỗi sau khi trừ → hoàn nguyên các trạng thái trên; **không ghi receipt khi thất bại**. Thành công trừ đúng một bundle và ghi một receipt.
+- **`godot/src/simulation/state/sect_state.gd`**: chỉ lưu một `v2_body_gate_receipts` compact theo `disciple_id:source_realm` (tối đa 29 bản ghi/đệ tử trong lộ trình hiện tại). `v2_body_gate_request_index` dựng lại từ ledger khi load, không save lần hai; `VERSION=1` receipt. Request ID đã dùng cùng actor/cổng trả `body_gate_already_committed`, không trừ lại; request ID dùng lại với actor khác hoặc gate sau trả `body_gate_request_id_conflict`. Save cũ không có receipt mở với map rỗng.
+- **Giới hạn kỹ thuật trung thực:** transaction là atomic trong **một state mô phỏng tuần tự và một lần save snapshot**. Cơ chế `SaveService` cũ vẫn ghi JSON trực tiếp; F2 không nâng cấp nó thành crash-atomic file replace giữa mất điện. Kiểm thử round-trip là bằng chứng về load/replay, **không phải proof về power-loss recovery của filesystem**.
+
+### R2. Hàng rào không kích hoạt nội dung
+
+Mặc dù F2 có logic tiêu hao + đột phá hoàn chỉnh, **service production đọc `DiscipleBodyGateContentV2.recipe(...)[content_available]=false` ở toàn bộ 29 cổng**; mọi `commit_gate` công khai đều fail closed `content_unavailable` ở trạng thái game hiện tại, kể cả người chơi có đủ vật liệu. **F2 không được tính là 29/29 cổng đã chơi được.** QA dùng **subclass nội bộ chỉ trong file test** override phép kiểm tra availability để bơm kho bằng dữ liệu fixture, mô phỏng giao dịch hợp lệ; không dùng override đó trong runtime production. F3 riêng sẽ phải nối nguồn rơi thật và kiểm chứng nguồn nội dung, F4 riêng mới nối UI.
+
+### R3. Bằng chứng Godot 4.7.2 chính xác
+
+- **Focused workflow:** [DV2-03 #38118632633](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38118632633) tại SHA gameplay+test `8676590de2e499e9689e8548f3583ad704f2c6b0`, **COMPLETED/SUCCESS**. Log: `DV2-03F F2 ATOMIC BODY GATE TRANSACTION: PASS; warehouse=single,requests=dedup,saves=json+disk,rollback=yes,seals=exact`. Chạy cùng suite F0/F1, Tu Vi/Luyện Thể, Rèn Thân, hồi phục và profile UI; all green in focused run.
+- **Test:** `godot/tests/simulation/dv2_03_f2_body_gate_transaction_test.gd`: production fail-closed kể cả EXP+kho đủ; chưa tầng 10, thiếu EXP; reserve/lock chặn, preview không mutate; thành công trừ 2 loại tài nguyên, tu vi không đổi, HP ratio; double-click/actor khác request ID; round-trip JSON `SimulationState` và **disk `SaveService`**; lỗi fault injection sau khi debit hoàn trả toàn bộ; hai disciple tranh bộ vật liệu còn đúng một người thắng; gate10 yêu cầu và dùng đúng 1 `an_nhan_gioi`; invalid actor/id bị từ chối, trạng thái không âm.
+- **Cumulative workflow:** [P3.7 #38118632512](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38118632512) trên **cùng gameplay/test SHA `8676590de2e499e9689e8548f3583ad704f2c6b0`**, FAST **PASS**; FULL **đang chạy khi ghi tài liệu, phải kiểm tra GitHub `completed/success` trước khi gọi FULL PASS**.
+- Run focused trung gian [#38118592396](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38118592396) ban đầu **FAIL** do Godot type inference trong chính test mới (không phải logic EXP/gate), đã chỉnh typed variables trong `8676590d`; run focused cuối đã PASS. Không nhầm FAIL cũ với current.
+- **Windows Godot 4.7.2 / visual approval: `PENDING USER`**. Người dùng chưa thể mở máy; không yêu cầu họ thao tác ngay. Checklist duy trì trong `CURRENT_CHECKPOINT.md`.
+
+**F2 code/FOCUSED PASS; F3–F7 chưa được phép code.** Chuyển sang mục tiêu vòng chơi A/B chỉ khi người dùng cấp phép gói F3, bao gồm nguồn kiếm Tử Vân Thảo sớm và chống kẹt Linh Tủy trên sự kiện thắng/thu thập thật. Không lắp nền gameplay từ Unity/ZQZS hoặc sáng tác content cao giới.
