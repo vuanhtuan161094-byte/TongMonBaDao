@@ -7,6 +7,11 @@ class SourceFixture:
     func _content_ready(_state: SimulationState, _recipe: Dictionary) -> bool:
         return true
 
+class NoSourceFixture:
+    extends DiscipleBodyGateTransactionV2
+    func _content_ready(_state: SimulationState, _recipe: Dictionary) -> bool:
+        return false
+
 class FailedCommitFixture:
     extends SourceFixture
     func _after_debit(_state: SimulationState, _disciple: DiscipleState) -> bool:
@@ -72,7 +77,7 @@ func _run() -> void:
         "Genuine V2 disciples could not be recruited."):
         return
 
-    var locked := DiscipleBodyGateTransactionV2.new()
+    var locked := NoSourceFixture.new()
     var fixture := SourceFixture.new()
     var store := WarehouseSystem.new()
     # Old save defaults: no retroactive gate receipt, no free material.
