@@ -6,7 +6,19 @@
 
 
 
-## LATEST EXECUTION CHECKPOINT — O0 SOURCE AUDIT COMPLETE, O1 NEXT (2026-10-11)
+## CURRENT FIRST-PLAYABLE HANDOFF — O1 CODED + FOCUSED PASS; FULL GATE CHECK (2026-10-11)
+
+**Current priority is STILL opening M1, LANDSCAPE 1280×720.** User authorized **O1 ONLY**. O1 canonical Warehouse UI source is committed on `main`: `godot/src/presentation/p3_1_landscape_sect.gd` and `godot/src/presentation/p3_2_landscape_sect.gd` use shared read-only `WarehouseSystem.quantity/available_quantity` projection with legacy fallback only when P3.7 is off. Topbar/Mine/Forge/Kho/base popups/formula preview/Bloodline/Physique counts are synced; recipe preview respects reserve/lock and matches real `EquipmentSystem.can_craft`. No new warehouse, EXP changes, 29 recipe changes or economic tuning.
+
+**Verified PASS:** [O1 official Godot 4.7.2 Linux focused #38138929016](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38138929016), sha `64fe81943f299fcfc69a62cdd2238a25540b46ac`, COMPLETED/SUCCESS. Test `godot/tests/presentation/p3_o1_canonical_warehouse_ui_test.gd` runs the real landscape main scene: real mining deposit→same UI counts, reserve deny, authentic exact one forge craft/debit, lock deny, disk save/reload with canonical totals/lock/equipment and no duplicate legacy balances. Same workflow existing P3.6A player scene regression PASS. Initial CI configuration errors in #38138844577/#38138894260 were fixed in #38138929016. P3.6A screenshot preview [#38138746807](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38138746807) runtime & capture PASS but artifact upload failed on quota.
+
+**Next verify FULL:** [P3.7 FAST+FULL #38138746766](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38138746766), latest UI-code SHA `dfc4ac91d4e46a774831ae0ce94c8f301beea1d9`, FAST PASS, FULL **in_progress at last check**. If FULL success, update both handoff docs to **O1 CLOSED / FULL PASS** before requesting O2. If FULL fails, fix only O1 before next phase. Focused UI and scene tests run at later commit with same production scripts. Windows native visual/click-through **PENDING USER**; no machine currently. **O2–O9 not authorized by O1 request.** Next when user taps approved option: **CODE O2 ONLY** — real Dẫn Tiên entry, disciple recruit lifecycle and dynamic visible selectable assignable map actor, authoritative gates, save/reload, focused/full Godot evidence; never initiate automatically.
+
+**Do not confuse** prior O0 planning-only status below or old DV2-03 chronology with current execution status. Do not claim opening M1 playable PASS until O2–O6 complete and release gate is actually proven.
+
+---
+
+## HISTORICAL O0 EXECUTION CHECKPOINT (SUPERSEDED BY CURRENT O1 ABOVE)
 
 **One-tap user workflow is a project rule:** `AGENTS.md §11`: every meaningful answer ends with 2–3 **clickable options** (where chat UI supports), each submitting a fully prepared Vietnamese next prompt; recommended next step first; scope/no-scope/CI/Windows handling included; never make user compose command text. Options authorise work **only upon user choosing them**. If buttons cannot be made interactive, provide short copy-ready complete prompts.
 
@@ -14,7 +26,7 @@
 
 **Real barriers:** (1) top bar/Mine/Forge/Kho/recipe previews still read now-empty legacy `forge_materials`/`technique_materials` rather than P3.7 canonical `WarehouseSystem`; this is **first code fix**; (2) no player map/management access to real Field/Guidance; (3) `_spawn_all_disciples` & modular upgrade only on scene-ready and `_sync_actor_positions` skips new IDs, so after recruitment new actor does not materialize dynamically; (4) fresh end-to-end Mine→Warehouse→Forge spend and Field paid plot→Warehouse→save remain untested from player UI. Code authority `godot/project.godot`, `godot/src/presentation/p3_1_landscape_sect.gd`, `p3_2_landscape_sect.gd`, `godot/src/simulation/resource/warehouse_system.gd`.
 
-**Next when authorized = CODE O1 ONLY** from approved-priority planning `docs/OPENING_SLICE_EXECUTION_AND_ACCEPTANCE_PLAN.md`: replace the player-facing legacy stock/recipe projections with canonical WarehouseSystem quantity/available_quantity, old-save fallback only when P3.7 disabled, add/execute actual scene targeted tests and official Godot 4.7.2 CI + regression, update checkpoint. **DO NOT** implement O2–O9, new recruitment/Spirit Field UI, reprice Stones, touch EXP/29 Body-gate content or close DV2-03 in O1. Current Windows machine inaccessible, **PENDING USER**. User can choose O1 button or an alternative review/test button; **O1 is not authorized by completing O0**.
+**Historical O0-only next step (now completed, see O1 above) = CODE O1 ONLY** from approved-priority planning `docs/OPENING_SLICE_EXECUTION_AND_ACCEPTANCE_PLAN.md`: replace the player-facing legacy stock/recipe projections with canonical WarehouseSystem quantity/available_quantity, old-save fallback only when P3.7 disabled, add/execute actual scene targeted tests and official Godot 4.7.2 CI + regression, update checkpoint. **DO NOT** implement O2–O9, new recruitment/Spirit Field UI, reprice Stones, touch EXP/29 Body-gate content or close DV2-03 in O1. Current Windows machine inaccessible, **PENDING USER**. User can choose O1 button or an alternative review/test button; **O1 is not authorized by completing O0**.
 
 ## LATEST USER ORDER — RUNNABLE OPENING PRODUCTION FIRST; ECONOMY BALANCE LATER (2026-10-11)
 
@@ -26,7 +38,7 @@
 
 **Reference Tông Sư Tiên Môn benchmark** repo `vuanhtuan161094-byte/ZQZS-Source-Knowledge` `main a9a638b6`, `SYSTEM_INDEX.md`, `docs/HOME_BUILDING.md`, `docs/PROFESSION_PRODUCTION.md`, `SOURCE_EVIDENCE_POLICY.md`: AndroidData client `aiManager.beginWorkAI` + `planStart/Complete` + building `pro_skill_id` + manager-change request are VERIFIED only as client call patterns; production result server and APK vs AndroidData loader are UNKNOWN. Use Godot independent architecture and existing gameplay authority, do not copy assets/formulas.
 
-**O0 completed at static/source level; NEXT WHEN AUTHORIZED IS O1 canonical UI stock fix**. The original O0 audit checked normal `project.godot` main scene + factory/start seed/save, initial roster, candidates, Stone/initial material affordability, actual three built instances, canonical Warehouse and UI, actor/recruitment lifecycle. Source files/candidate/test statuses and blockers in `CURRENT_CHECKPOINT.md`; report to user with evidence. The current user instruction approved planning, **NOT blanket gameplay coding O1–O9**. Preserve active DV2-03 and completed F0–F7/EXP/29 exact recipes. Keep all new Windows work **PENDING USER**; assistant owns GitHub CI. Avoid redundant MD and status speculation.
+**O0 completed at static/source level; O1 now implemented/focused PASS (see current section).** The original O0 audit checked normal `project.godot` main scene + factory/start seed/save, initial roster, candidates, Stone/initial material affordability, actual three built instances, canonical Warehouse and UI, actor/recruitment lifecycle. Source files/candidate/test statuses and blockers in `CURRENT_CHECKPOINT.md`; report to user with evidence. The current user instruction approved planning, **NOT blanket gameplay coding O1–O9**. Preserve active DV2-03 and completed F0–F7/EXP/29 exact recipes. Keep all new Windows work **PENDING USER**; assistant owns GitHub CI. Avoid redundant MD and status speculation.
 
 ## OPENING PLAN CONTROL / SINGLE NEXT PACKET — 2026-10-11 (LATEST)
 
