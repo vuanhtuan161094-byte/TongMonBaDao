@@ -59,13 +59,14 @@ func _run() -> void:
     if not await _press("Group_forestry_crew_%s" % str(forest_worker_id)):
         return
 
-    var alchemist_id := _first_unassigned()
-    if alchemist_id == &"":
-        _fail("O9 fresh roster has no fourth worker for Alchemy.")
-        return
     if not await _open_building(SectMapPresentation.DEST_SPIRIT_FIELD):
         return
     if not await _press("FieldGroup_%s" % str(field_worker_id)):
+        return
+
+    var alchemist_id := _first_unassigned()
+    if alchemist_id == &"" or alchemist_id == field_worker_id:
+        _fail("O9 fresh roster has no distinct fourth worker for Alchemy.")
         return
     if not await _open_building(SectMapPresentation.DEST_ALCHEMY_HALL):
         return
