@@ -117,7 +117,9 @@ func _load_exact(path: String) -> SimulationState:
         FoundationSystem.new().enable_open_points(state)
         state.sect.guidance_recruitment_enabled = true
         BuildingSystem.new().initialize(state)
-        WarehouseSystem.new().initialize(state)
+        if not WarehouseSystem.new().initialize(state):
+            # Keep the old save intact; a failed migration is not a new game.
+            return null
         var workforce := WorkforceSystem.new()
         var disciple_ids: Array = state.disciples.keys()
         disciple_ids.sort()

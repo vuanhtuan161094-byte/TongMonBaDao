@@ -5,21 +5,46 @@ const MAX_SAFE_STACK := 9000000000000000
 
 var registry := ResourceRegistry.new()
 
-func initialize(state: SimulationState) -> void:
+func initialize(state: SimulationState) -> bool:
     if not state.p3_7_buildings_enabled:
-        return
-    ensure_migrated(state)
+        return true
+    return ensure_migrated(state)
 
-func ensure_migrated(state: SimulationState) -> void:
+func ensure_migrated(state: SimulationState) -> bool:
     if not state.p3_7_buildings_enabled or state.sect.p3_7_resources_enabled:
-        return
+        return true
 
-    state.sect.p3_7_resources_enabled = true
-    _import_legacy_bucket(state, state.sect.forge_materials)
-    _import_legacy_bucket(state, state.sect.technique_materials)
+    # Merge into a private snapshot first. A failed legacy import must never
+    # clear either source bucket or partially update the canonical warehouse.
+    var merged: Dictionary = state.sect.warehouse_resources.duplicate(true)
+    for raw_id in merged.keys():
+        var resource_id := StringName(raw_id)
+        var amount := int(merged[raw_id])
+        if not registry.has(resource_id) or amount < 0 or amount > MAX_SAFE_STACK:
+            return false
+    for bucket in [state.sect.forge_materials, state.sect.technique_materials]:
+        var ids: Array = bucket.keys()
+        ids.sort()
+        for raw_id in ids:
+            var resource_id := StringName(raw_id)
+            var amount := int(bucket[raw_id])
+            if amount < 0:
+                return false
+            if amount == 0:
+                continue
+            if not registry.has(resource_id):
+                return false
+            var current := int(merged.get(str(resource_id), 0))
+            if amount > MAX_SAFE_STACK - current:
+                return false
+            merged[str(resource_id)] = current + amount
+
+    state.sect.warehouse_resources = merged
     state.sect.forge_materials.clear()
     state.sect.technique_materials.clear()
+    state.sect.p3_7_resources_enabled = true
     state.sect.warehouse_event_count += 1
+    return true
 
 func quantity(state: SimulationState, resource_id: StringName) -> int:
     if not state.sect.p3_7_resources_enabled:
@@ -159,19 +184,3 @@ func validate_invariants(state: SimulationState) -> Array[String]:
             errors.append("Warehouse rule %s has negative reserve." % resource_id)
     return errors
 
-func _import_legacy_bucket(state: SimulationState, bucket: Dictionary) -> void:
-    var ids: Array = bucket.keys()
-    ids.sort()
-    for raw_id in ids:
-        var resource_id := StringName(raw_id)
-        var amount := maxi(int(bucket[raw_id]), 0)
-        if amount <= 0:
-            continue
-        if not registry.has(resource_id):
-            push_error("WarehouseSystem: cannot migrate unknown legacy resource %s." % resource_id)
-            continue
-        var current := maxi(int(state.sect.warehouse_resources.get(str(resource_id), 0)), 0)
-        if amount > MAX_SAFE_STACK - current:
-            push_error("WarehouseSystem: legacy migration overflow for %s." % resource_id)
-            continue
-        state.sect.warehouse_resources[str(resource_id)] = current + amount
