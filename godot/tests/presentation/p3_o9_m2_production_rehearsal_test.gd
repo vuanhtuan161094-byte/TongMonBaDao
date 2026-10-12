@@ -160,7 +160,11 @@ func _run() -> void:
             return
         if not await _press("FieldPlant_%s" % str(field_worker_id)):
             return
-        active_plot = _plot_for_worker(field, field_worker_id)
+        for _i in range(8):
+            scheduler.step()
+            active_plot = _plot_for_worker(field, field_worker_id)
+            if not active_plot.is_empty():
+                break
     if active_plot.is_empty():
         _fail("O9 could not arm a real Spirit Field plot for the save boundary.")
         return
