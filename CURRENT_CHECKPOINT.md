@@ -45,6 +45,29 @@ The 3→1 baseline deliberately makes one normal Lv1 Thanh Linh Thảo harvest (
 
 **Explicit exclusions:** no O9, no manager system, no multi-recipe queue, no Tu Vi/breakthrough/body pill, no Yêu Đan recipe, no quality/success/rare/explosion system, no market price, no hunter auto-loadout, no medicine-stock migration, no building upgrade economy and no M3 balance.
 
+### O8 source deep-dive — ZQZS Alchemy benchmark (2026-10-12)
+
+**Reference SHA:** `vuanhtuan161094-byte/ZQZS-Source-Knowledge@a9a638b6049756038ae199fae90e47e2d02829a4`. Read-only benchmark only; no source code/data copied into the game.
+
+**VERIFIED client patterns:**
+- `danfangconfig` separates recipe identity/output, explicit material cost, `need_times`, required Đan Đạo level, profession EXP, unlock condition and output/random tables. Recipe unlock and profession eligibility are distinct gates.
+- `UIDanYaoModel:checkDzProLevel` reads the assigned disciple's **Đan Đạo** level; `getDanFangNeedTime` calculates recipe time using recipe data plus effects tied to the assigned disciple/building context.
+- A Luyện Đan building owns one selected/assigned `dizi_id` in the observed client. The building window exposes/selects/replaces that worker through the building-manager route; the UI displays that disciple's profession level and relevant attributes.
+- Production is building-bound and timed. Start request includes building + recipe + count. Client state persists begin time/count/current recipe; start response triggers production visuals and `beginWorkAI(dizi_id, ubdId)`.
+- The later order system is a **per-building serial recipe queue**. `batchData[ubdId].ddList` stores queued recipe/count records; one current index is active, later records render as “waiting”, and recipe duration × count advances the queue. Queue capacity is config-driven.
+- Completion/reward is a distinct request/response path. Client derives progress from begin time and recipe time, then reward responses update remaining count/order state; work AI ends when reward/production step resolves.
+- The pill/consumable side is generic rather than hardwired into the production window. `UIFuncItemUseModel/UIFuncItemUseWin` identifies healing items by functional type, filters/sorts injured disciples, computes usable count from injury + item stock and sends a disciple-use-item request. This supports separating **production authority** from **consumption authority**.
+- The reference has much broader pill content (cultivation, breakthrough, body, lifespan, injury, traits/attributes, beast pills, quality/random outcomes). Those are evidence of extensibility only, not O8 scope.
+
+**INFERRED / useful lesson:** model recipes as static content definitions; let simulation own timed jobs and committed inputs; expose profession eligibility and resource sufficiency before start; keep production state attached to the producing building; represent finished pills as ordinary inventory/warehouse goods consumed by a generic item-use/medical authority. A future advanced queue can be building-owned rather than disciple-owned.
+
+**UNKNOWN / do not copy:** server-side debit moment, authoritative anti-duplicate transaction, exact reward-stock mutation, final output RNG, failure/explosion authority, server queue constraints, and whether changing the assigned manager during every production state is accepted server-side. Client checks and UI state are not proof of server authority.
+
+**Godot resolution after benchmark:** keep the current O8 recommendation rather than mimic the source literally. Tông Môn Bá Đạo's own canonical building spec already defines Lv1 crafting capacity as **2 workers**, so O8 may keep at most one active timed recipe per active worker. Do not collapse the facility to the source's observed single `dizi_id` manager model. Likewise, routine production in our canonical design should not require clicking each batch, so retain the one standing-recipe permission; the source's manual order/claim UX is not copied. Advanced serial/multi-recipe queue remains later content. The recommended Hồi Xuân Đan → Dược Phòng consumer also remains preferable because our building tree explicitly makes medical facilities consume thuốc/đan; source generic item-use is architecture inspiration, not a reason to bypass our Y Quán/Dược Phòng authority.
+
+**No O8 code was written and no runtime/CI status changed by this benchmark.**
+
+
 ---
 
 ## O7 CLOSURE — LINH LÂM + GENERIC BUILDING JOB (2026-10-12)
