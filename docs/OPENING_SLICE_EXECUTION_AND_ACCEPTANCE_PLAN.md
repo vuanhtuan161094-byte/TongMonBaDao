@@ -1,7 +1,7 @@
 # TÔNG MÔN BÁ ĐẠO — KẾ HOẠCH TÍCH HỢP & NGHIỆM THU BẢN CHƠI ĐẦU
 
 Date: 2026-10-11  
-Status: **USER-PRIORITIZED DELIVERY PLAN / PLANNING ONLY — M1 FIRST, M2 AFTER; hybrid principle provisional; no gameplay coding authorization; no new active phase**  
+Status: **EXECUTION RECORD — M1 O1–O6 CLOSED/PASS; M2 O7–O8 CLOSED/PASS; O9 NEXT DESIGN GATE ONLY; Windows acceptance PENDING USER**  
 Product authority: `docs/P3_6_SECT_MASTER_GAMEPLAY_LOOP_SPEC.md`, `docs/P3_6A_PLAYABLE_VERTICAL_SLICE_SPEC.md`  
 Technical authority: `AGENTS.md`, `docs/GAME_SYSTEM_ARCHITECTURE.md`, `CURRENT_CHECKPOINT.md`, respective P3.7/Disciple V2 master specs.  
 Implementation phase at planning time: **DV2-03 ACTIVE**, F0–F7 already implemented and Linux focused/FAST/FULL tested at gameplay SHA `bfbf62c3`; neither DV2-03 nor a neighboring phase closes/starts because of this document.
@@ -35,8 +35,9 @@ Implementation phase at planning time: **DV2-03 ACTIVE**, F0–F7 already implem
 | Kho Tông Môn | P3.7 WarehouseSystem canonical stack/reserve/lock | Top bar and many building panels still read legacy materials, misleading balances | **M1 O1** |
 | Luyện Khí Đường / early crafting | Existing P2.6 EquipmentSystem recipe & real P3.7 warehouse debit; workforce forging | Clickable craft button exists, but recipe preview reads legacy material bucket | **M1 O1/O5** |
 | Nâng cấp công trình | P3.7 real BuildingSystem cost/upgrade timer exists for eligible instances | Opening UI button and actual wallet/stone affordability unverified; do not conflate with forge craft | **M1 O5 conditional** |
-| Linh Lâm / renewable Linh Mộc | In `P3_7_BUILDING_TREE_SPEC.md` as proposed producer | No `BuildingSystem.TYPE_LINH_FOREST` authored; must design independent owner, not show fake button | **M2 O7 (DESIGN)** |
-| Luyện Đan / pill making | Workforce profession name in shared system and sector design exist; old medicine logistics may exist | Dedicated P3.7 alchemy building/recipe/claim/consumer NOT verified, do not equate profession enum to actual manufacturing | **M2 O8 (DESIGN)** |
+| Linh Lâm / renewable Linh Mộc | `BuildingSystem.TYPE_LINH_FOREST`, Forestry crew/profession, generic carry-cycle job and canonical Warehouse deposit implemented | Real P3.2 token/panel/assignment; production/save/cancel/autonomous repeat focused+full PASS | **M2 O7 CLOSED/PASS** |
+| Luyện Đan / pill making | `alchemy_hall`, timed-recipe authority, Hồi Xuân Đan resource and Needs/Dược consumer implemented | Real P3.2 Hall + Field→herb→pill→Dược chain focused+full PASS; legacy medicine remains separate | **M2 O8 CLOSED/PASS** |
+| <!-- historical row retired --> |ctual manufacturing | **M2 O8 (DESIGN)** |
 | Phù Lục, Trận Pháp, linh thú, thương nghiệp etc. | High-level future building/production specs | No verified full production chain; **not M1 or M2 deliverable** | **DEFERRED** |
 
 ### Detailed execution sequence and technical deliverables
@@ -67,20 +68,20 @@ The existing **O0–O6 table in §C** remains authoritative for detailed M1 acti
 10. **Source lesson:** adopt explicit building↔profession identity and work lifecycle only. Building manager/policy delegation remains a later scale feature; do not add dormant manager fields in O7. Reference server production authority remains unknown.
 
 9. **O8 / LUYỆN ĐAN NHẬP MÔN (M2, only after O7):** first verify whether existing `WorkforceSystem.PROF_ALCHEMY` and MedicineSupply have a legitimate crafting owner/consumable; if absent, define one minimal authorized recipe using real field crop, timed worker job, one canonical item output and one legitimate recipient/use (medical/cultivation) without new generic stat or speculative advanced recipe. Respect reserve/lock, shortage, equipment-like ownership policy as appropriate; backend+scene E2E/save.
-### O8 design resolution — 2026-10-12 (DESIGN READY, CODE NOT AUTHORIZED)
+### O8 execution resolution — 2026-10-12 (CLOSED / FOCUSED PASS / FULL PASS)
 
-1. **Identity:** O8 adds one `alchemy_hall` / Luyện Đan Điện Lv1 and `alchemy_crew`, reusing existing `WorkforceSystem.PROF_ALCHEMY`. Dược Phòng and legacy `medicine_stock` remain separate.
+1. **Identity:** O8 now owns one `alchemy_hall` / Luyện Đan Điện Lv1 and `alchemy_crew`, reusing existing `WorkforceSystem.PROF_ALCHEMY`. Dược Phòng and legacy `medicine_stock` remain separate.
 2. **Job model:** Luyện Đan uses a building-owned `timed_recipe` model, not Mine/Forest carry-cycle and not instant Forge craft. Each job persists stable identity, recipe, worker, start/finish tick, committed inputs and deterministic output.
 3. **Capacity:** follow the canonical crafting-building default structurally: 2 workers at Lv1, +1 slot per 10 levels. O8 exposes no upgrade economy until authored coefficients/milestone costs exist.
-4. **Single opening recipe:** recommended `thanh_linh_thao x3 → hoi_xuan_dan x1`, base 6 simulation ticks before canonical work-speed reduction. No Stone/fuel, Yêu Đan, success/quality/rare RNG or by-product in O8. These are integration baselines; M3 owns later tuning.
+4. **Single opening recipe:** implemented `thanh_linh_thao x3 → hoi_xuan_dan x1`, base 6 simulation ticks before canonical work-speed reduction. Because P3.7 profession level is Lv0 at zero XP, this entry recipe requires Lv0 so fresh Alchemy is reachable; no free XP or level-curve change. No Stone/fuel, Yêu Đan, success/quality/rare RNG or by-product in O8. These are integration baselines; M3 owns later tuning.
 5. **Atomic start:** only canonical Warehouse `available_quantity` may fund the recipe. Reserve/lock/shortage deny start with no debit/job/XP. Inputs are consumed exactly once when the job is created.
 6. **Worker ownership:** one active job per worker; active alchemist is reserved until completion. Disabling the standing recipe prevents new jobs but does not cancel/refund jobs already paid.
 7. **Completion:** due jobs deposit exactly once to canonical Warehouse and clear in the same simulation step. Save/reload must preserve finish tick and input receipt and must not replay output.
 8. **Routine automation:** O8 permits one standing recipe permission so eligible assigned workers can repeat the sole routine recipe without a per-batch click. Advanced multi-recipe/reserve-priority queue remains future content.
-9. **Consumable:** add canonical stackable `hoi_xuan_dan`. Real consumer is Dược Phòng/Needs authority: one eligible injured in-sect disciple may consume one available pill for recommended fixed +55 HP capped at max; this does not charge wallet/treasury and does not debit legacy `medicine_stock`.
+9. **Consumable:** canonical stackable `hoi_xuan_dan` is implemented. Real consumer is Dược Phòng/Needs authority: one eligible injured in-sect disciple may consume one available pill for recommended fixed +55 HP capped at max; this does not charge wallet/treasury and does not debit legacy `medicine_stock`.
 10. **Profession scope:** Alchemy gains ordinary profession XP via shared P3.7 modifiers. Do not add Alchemy profession-talent generation in O8 because that would alter deterministic recruitment distributions.
 11. **Reference lesson only:** ZQZS `UIDanYaoModel/Controller` show recipe-cost checks, building-bound timed state, begin/progress/reward flow and batch/queue records. Server authoritative formulas/final stock remain unknown; copy no values, IDs, code or assets.
-12. **Acceptance:** fresh main-scene Field→real Thanh Linh Thảo→Alchemy input commit→mid-job save/reload→one canonical pill→Dược Phòng use; test reserve/lock, shortage, worker reservation, no duplicate start/output, profession XP and standing-policy repeat. Close only with focused Godot 4.7.2 + O1–O7/DV2/P3.7 cumulative. Windows remains PENDING USER.
+12. **Acceptance:** CLOSED. Focused O8 #38188554397 PASS; O1–O7 regressions PASS; P3.7 #38188487320 FAST+FULL PASS; corrected DV2 #38188712696 full PASS; final redundant P3.7 #38188712704 FAST+FULL PASS. Preview FAST+capture PASS with artifact upload blocked only by GitHub storage quota. Windows remains PENDING USER.
 
 10. **O9 / M2 FULL PRODUCTION REHEARSAL:** one fresh-state chain Field→herb→pill/use, Mine→ore→Forge/craft, Forest→wood→build/use, same roster, real work schedule/autonomy, UI readable at landscape resolution, no double-sourcing. Run focused and FULL official CI. Windows acceptance PENDING USER. Mark any unrealized consumer/feature BLOCKED instead of cosmetically checking it green.
 
