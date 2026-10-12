@@ -311,3 +311,11 @@ At any moment:
 - the next phase may be named, but may not be implemented until the current phase is locked.
 
 ---
+
+---
+
+## 9. FE-00 production frontend architecture (DESIGN ACCEPTED 2026-10-12)
+
+Long-term decision: `docs/decisions/0003-fe00-godot-native-data-driven-frontend.md` (ADR-0003, accepted DESIGN ONLY). Godot-native data-driven frontend with one canonical gameplay/save authority; presentation-only `PresentationQuery`, read-only view-model snapshots, `VisualAssetRegistry`, fixed `SectLayoutDefinition`/isometric `SectMapModel`, visual actor controller/renderer, reusable Godot UI. Source A is benchmark/candidate art, NOT transplanted Unity authority. Existing `docs/P3_ASSET_REGISTRY.json`, historical approved visual contracts, source recovery and ADR-0002 LFS gate remain controlling. Fixed layout does NOT add placement fields to `BuildingState`. 13 Source A building candidates do NOT imply 13 persistent building instances. Android/Windows visual acceptance remains PENDING USER.
+
+FE-00 review/design **CLOSED**, no Godot runtime pass implied. FE-01 is separately queued, **NOT CODE AUTHORIZED**; current one-active-implementation-phase policy still applies. Do not switch main scene, enable Spine, import binaries by unverified transport, or rewrite gameplay in FE-00.

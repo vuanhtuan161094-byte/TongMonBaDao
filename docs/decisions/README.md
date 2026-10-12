@@ -46,3 +46,4 @@ Các spec/code/test bị ảnh hưởng.
 
 - `0001-use-p3-presentation-authority-workflow.md` — accepted;
 - `0002-adopt-git-lfs-for-production-art.md` — proposed, chưa bật cho tới khi kiểm trên máy Windows.
+- `0003-fe00-godot-native-data-driven-frontend.md` — accepted (DESIGN ONLY; FE-01 not authorized).

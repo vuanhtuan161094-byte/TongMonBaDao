@@ -1,5 +1,7 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+**2026-10-12 FE-00 DESIGN REVIEW CLOSED (DOCS ONLY).** Chốt khuyến nghị Godot-native Data-Driven Frontend, xem `docs/decisions/0003-fe00-godot-native-data-driven-frontend.md` + `docs/GAME_SYSTEM_ARCHITECTURE.md §9`. Base audit game SHA `5f5646ce77b7c53b9452a1740070fe9d6e0d84dc`, Source A KB SHA `83cbc4ecbd83eb518a6d6f2b3894377d9d99254d`. Không sửa gameplay, main scene, asset, CI trong FE-00. **FE-01 chưa được CODE AUTHORIZE**; user phải cấp lệnh riêng và giữ `AGENTS.md` one-active-phase rule (DV2-03 vẫn ACTIVE). FE-01 nếu được duyệt: kiểm provenance/quyền/binary transport của 13 candidate assets, bảo vệ 8 building art đã duyệt; làm runtime asset lookup/aliases/manifest/fallback/tests, **không đổi scene, không Spine, không layout editor**. 3 visual analog chưa phải functional exact. ADR-0002 LFS còn PROPOSED. O9 Linux CI vẫn PASS cũ; Windows click/visual/APK PENDING USER. Không mở G1, DV2-04, balance hoặc FE-02 chỉ vì FE-00 closed.
+
 **Bàn giao cập nhật: 12/10/2026 — M2 O7–O9 CLOSED/PASS trên official Godot 4.7.2 Linux. O9 multi-producer/restart rehearsal green. Windows visual/click/APK PENDING USER; PC hiện đã sẵn sàng kiểm tra. Next code NOT AUTHORIZED.**
 
 

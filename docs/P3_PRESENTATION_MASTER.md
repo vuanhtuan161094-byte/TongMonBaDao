@@ -270,3 +270,11 @@ Không được dùng static audit này để thay thế FAST/FULL Godot gate.
 ## P3.6A playable vertical slice status
 
 Real user video on 2026-10-05 showed that the live main scene still reads as a QA/debug shell despite P3.3/P3.4/P3.5 being runtime-green. Productization authority: `P3_6A_PLAYABLE_VERTICAL_SLICE_SPEC.md`. P3.6 manual product-loop playtest is blocked until P3.6A visual acceptance. P3.6A code productization is now implemented on main; runtime is REAL PASS and real visual review is pending. Its procedural building silhouettes are temporary stand-ins only and do not supersede approved building art.
+
+---
+
+## FE-00 production frontend architecture (2026-10-12 — DESIGN ACCEPTED)
+
+Read `docs/decisions/0003-fe00-godot-native-data-driven-frontend.md` before any production frontend/asset transfer work. This decision establishes one Godot-native presentation pipeline (canonical simulation -> snapshots/view-models -> controllers -> visual registry/components) and a fixed-layout isometric world/navigation model. It **does not supersede** V3.1/V3.2/V3.3 UX, the eight approved historical building visuals, `P3_ASSET_REGISTRY.json` or the source recovery manifest. TransferKit's 13 Source A visual records are candidate mappings; three remain INFERRED_VISUAL_ANALOG. Only an explicitly approved visual replacement may change a historically approved building identity. ADR-0002 LFS remains PROPOSED.
+
+FE-00 is closed as design review only, FE-01 code/art transfer is **QUEUED / NOT AUTHORIZED**, Windows click/visual/APK remains PENDING USER. Preserve the single authoritative gameplay state and existing landscape 1280x720 acceptance.

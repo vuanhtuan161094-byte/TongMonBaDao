@@ -7,6 +7,16 @@ It is not a historical changelog.
 
 Read `docs/GAME_SYSTEM_ARCHITECTURE.md` for system structure and phase discipline.
 
+## FE-00 FINAL DESIGN GATE — 2026-10-12 (ACCEPTED / CLOSED, DOCUMENTATION ONLY)
+
+**User authorization:** re-review FE-00 Round 1 and, if sound, lock recommended Godot-native Data-Driven Frontend. Audit completed at game `main` `5f5646ce77b7c53b9452a1740070fe9d6e0d84dc` and Source A Knowledge `main` `83cbc4ecbd83eb518a6d6f2b3894377d9d99254d`. Accepted durable architecture rationale: `docs/decisions/0003-fe00-godot-native-data-driven-frontend.md`; `docs/GAME_SYSTEM_ARCHITECTURE.md` and `docs/P3_PRESENTATION_MASTER.md` link the decision. **DESIGN REVIEW PASS only — no FE runtime test, no asset import, no gameplay/code change, no FE-01 code authorization.**
+
+**Final safeguards:** 13 TransferKit buildings are candidate visuals, not 13 canonical building instances; three are visual analogs only; historical eight approved building images remain approved/bytes S3 missing until verified/replaced; candidate Source A rights and release redistribution separately reviewed. Runtime registry is derived from existing P3 asset/status authority, not a second approval source. Fixed grid/layout/projection and AStar2D are presentation only; no `BuildingState` x/y, no invented production, no native Unity `_MapManager` parity. Spine 3.8.75 actor remains BLOCKED in lab. ADR-0002 Git LFS remains PROPOSED pending Windows proof.
+
+**Next allowed work:** FE-01 limited to preflight/curated asset provenance + logical alias + read-only visual registry, **only after separate user CODE authorization** and compliance with `AGENTS.md` single-active-phase gate. DV2-03 remains ACTIVE; no DV2-03G1 or other gameplay phase authorized by this design review. Existing O9/M2 official Linux CI green remains historical unchanged; Windows landscape visual/click/APK still **PENDING USER**.
+
+---
+
 
 ## O9 CLOSURE — M2 MULTI-PRODUCER RELEASE REHEARSAL (2026-10-12)
 
