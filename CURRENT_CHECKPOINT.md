@@ -8,6 +8,22 @@ It is not a historical changelog.
 Read `docs/GAME_SYSTEM_ARCHITECTURE.md` for system structure and phase discipline.
 
 
+## O9 CLOSURE — M2 MULTI-PRODUCER RELEASE REHEARSAL (2026-10-12)
+
+**Authorized packet:** user expressly authorized **CODE O9 ONLY** as an integration rehearsal. Production gameplay remains the O8 source SHA `8d30579fea28febe79f445de3c5b469e4b0d5f6e`; O9 added acceptance/CI only. Final O9 test SHA: `495a5e4fec141be2ec8bfda22111f8e631baa99e`. **O9 is CLOSED / FOCUSED PASS / FULL PASS on official Godot 4.7.2 Linux; M2 O7–O9 is CLOSED/PASS.**
+
+**Integrated acceptance:** the real P3.2 landscape scene reserves all starter Thanh Thiết/Linh Mộc as provenance floors, then two legitimate Mine cycles create +4 spendable Thanh Thiết and one Linh Lâm cycle creates +2 spendable Linh Mộc. The actual Forge action consumes exactly 3 newly produced Thanh Thiết + 1 newly produced Linh Mộc for exactly one Thanh Thiết Kiếm without crossing the starter reserves. The real Linh Điền then produces the exact 3 Thanh Linh Thảo input, Luyện Đan commits those 3 herbs exactly once into a timed Hồi Xuân Đan job, and no pill appears before completion.
+
+**Four-system persistence:** O9 saves while Mine carry-cycle + Forest carry-cycle + a growing Spirit Field plot + an active Alchemy timed recipe are simultaneously live. Reload restores the same simulation tick, canonical Warehouse/item balances, carry-cycle identity/phase/progress, Field plot identity/finish tick/cost/yield and Alchemy job identity/finish tick/committed inputs. One shared scheduler resumes each saved production state exactly once. Dược Phòng then consumes one canonical pill for +55 HP capped without changing legacy `medicine_stock`, wallet or treasury. With no further production clicks, Mine, Forest and Field repeat autonomously and standing Alchemy starts a later legitimate job; final save/reload shows no replay or loss.
+
+**Official evidence:** [O9 #38193051636](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38193051636) **COMPLETED/SUCCESS** and also passes O8, O7 and P3.6A regressions in the same job. [DV2-03 #38193051740](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38193051740) is **COMPLETED/SUCCESS**. [P3.7 #38193051669](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38193051669) is **FAST PASS + FULL cumulative PASS / COMPLETED SUCCESS**.
+
+**Historical red evidence:** O9 #38192840839, #38192925597 and #38192974228 were test-assumption failures only: worker selection accidentally reused the Field worker for Alchemy; the test assumed a queued Field command had already created a plot; and the test assumed one scheduler step was enough to arm two carry cycles. Commits `a9eb0c44...`, `3044a804...` and `495a5e4f...` corrected test setup/timing only. No production gameplay was weakened or changed.
+
+**Release decision / next gate:** M1 and M2 production depth are technically green on official Linux CI. Windows visual/click/APK remains **PENDING USER**, but the user's PC is now available. Immediate recommended user gate is `Sync-Main.cmd Run-P3-6A-Playable-Slice.cmd` from the repository root, then hands-on landscape 1280×720 smoke of Mine, Linh Lâm, Linh Điền, Luyện Đan, Forge, Dược Phòng and save/reload. **No next gameplay packet is authorized by O9 closure.** After Windows smoke, the recommended next design packet is the still-active **DV2-03G1 player-started V2 hunting connection**; do not jump directly to M3 balance or DV2-04 while DV2-03 remains active.
+
+---
+
 ## O8 CLOSURE — LINH ĐIỀN → LUYỆN ĐAN → HỒI XUÂN ĐAN → DƯỢC PHÒNG (2026-10-12)
 
 **Authorized packet:** User expressly authorized **CODE O8 ONLY** after the O8 design review and ZQZS read-only benchmark. Backend authority SHA: `5f00790afcdcbb2fcd3b59d69807743ffb9d085f`. Final gameplay/UI source SHA: `8d30579fea28febe79f445de3c5b469e4b0d5f6e`. Focused test-isolation child: `bc9ddf96fad1d57332c5806685c06eb6ddca385d`. DV2 test-compatibility child: `f3d388f2cfca6f37e7d8046cf9ca06b86f2dfd46`. **O8 is CLOSED / FOCUSED PASS / FULL PASS on official Godot 4.7.2 Linux.**
@@ -34,7 +50,7 @@ Read `docs/GAME_SYSTEM_ARCHITECTURE.md` for system structure and phase disciplin
 
 **Source benchmark boundary:** ZQZS informed only recipe-config/timed-building/profession/item-use patterns. Its observed single `dizi_id` manager, serial queue, manual order/reward UX, recipe values, output RNG and server behavior were **not copied**. Server debit/reward/anti-duplicate authority remains UNKNOWN.
 
-**Scope closure:** no Alchemy profession-talent generation, Yêu Đan recipe, success/quality/rare/explosion system, manager system, market, medicine-stock migration, building upgrade economy, O9 or M3 balance was added. **O9 is NOT authorized.** Recommended next action is **O9 DESIGN REVIEW**: one integrated M2 production rehearsal across Field→herb→pill/use, Mine→ore→Forge/craft and Forest→wood→legitimate use, with the same roster/scheduler/save path and no double sourcing. Windows/mobile visual click-through, screenshots and APK remain **PENDING USER**.
+**Subsequent status:** O9 was separately authorized as an integration-only packet and is now CLOSED/PASS; see the O9 closure above. O8 itself still added no Alchemy profession-talent generation, Yêu Đan recipe, success/quality/rare/explosion system, manager system, market, medicine-stock migration, building upgrade economy or M3 balance. Windows/mobile visual click-through, screenshots and APK remain **PENDING USER; PC is now available for the user gate**.
 
 ---
 
@@ -56,7 +72,7 @@ Read `docs/GAME_SYSTEM_ARCHITECTURE.md` for system structure and phase disciplin
 
 **Reference boundary:** O7 uses only the architectural lesson “building ↔ profession ↔ explicit work lifecycle” from ZQZS. No source code, IDs, assets, production formulas or server assumptions were copied. Building-manager authority remains deferred.
 
-**Subsequent status:** O8 was authorized and is now CLOSED/PASS; see the O8 closure above. The next unstarted M2 packet is O9 and requires explicit approval. Windows/mobile visual click-through, screenshots and APK acceptance remain **PENDING USER**.
+**Subsequent status:** O8 and O9 were subsequently authorized and are now CLOSED/PASS; M2 O7–O9 is CLOSED. Windows/mobile visual click-through, screenshots and APK acceptance remain **PENDING USER; PC is now available for the user gate**.
 
 ---
 

@@ -1,7 +1,7 @@
 # TÔNG MÔN BÁ ĐẠO — KẾ HOẠCH TÍCH HỢP & NGHIỆM THU BẢN CHƠI ĐẦU
 
 Date: 2026-10-11  
-Status: **EXECUTION RECORD — M1 O1–O6 CLOSED/PASS; M2 O7–O8 CLOSED/PASS; O9 NEXT DESIGN GATE ONLY; Windows acceptance PENDING USER**  
+Status: **EXECUTION RECORD — M1 O1–O6 CLOSED/PASS; M2 O7–O9 CLOSED/PASS; Windows acceptance PENDING USER (PC AVAILABLE)**  
 Product authority: `docs/P3_6_SECT_MASTER_GAMEPLAY_LOOP_SPEC.md`, `docs/P3_6A_PLAYABLE_VERTICAL_SLICE_SPEC.md`  
 Technical authority: `AGENTS.md`, `docs/GAME_SYSTEM_ARCHITECTURE.md`, `CURRENT_CHECKPOINT.md`, respective P3.7/Disciple V2 master specs.  
 Implementation phase at planning time: **DV2-03 ACTIVE**, F0–F7 already implemented and Linux focused/FAST/FULL tested at gameplay SHA `bfbf62c3`; neither DV2-03 nor a neighboring phase closes/starts because of this document.
@@ -26,7 +26,7 @@ Implementation phase at planning time: **DV2-03 ACTIVE**, F0–F7 already implem
 
 ### Opening-production system map — planning-time baseline (historical)
 
-> This table preserves the original pre-O1 planning audit. **Current implementation/closure truth is in `CURRENT_CHECKPOINT.md`.** O1–O8 have since executed; do not use stale M1 rows below to override the closure evidence.
+> This table preserves the original pre-O1 planning audit. **Current implementation/closure truth is in `CURRENT_CHECKPOINT.md`.** O1–O9 have since executed; do not use stale M1 rows below to override the closure evidence.
 
 | Gameplay / building | Canonical Godot code present | Player-facing reality | Priority |
 |---|---|---|---|
@@ -84,7 +84,18 @@ The existing **O0–O6 table in §C** remains authoritative for detailed M1 acti
 11. **Reference lesson only:** ZQZS `UIDanYaoModel/Controller` show recipe-cost checks, building-bound timed state, begin/progress/reward flow and batch/queue records. Server authoritative formulas/final stock remain unknown; copy no values, IDs, code or assets.
 12. **Acceptance:** CLOSED. Focused O8 #38188554397 PASS; O1–O7 regressions PASS; P3.7 #38188487320 FAST+FULL PASS; corrected DV2 #38188712696 full PASS; final redundant P3.7 #38188712704 FAST+FULL PASS. Preview FAST+capture PASS with artifact upload blocked only by GitHub storage quota. Windows remains PENDING USER.
 
-10. **O9 / M2 FULL PRODUCTION REHEARSAL:** one fresh-state chain Field→herb→pill/use, Mine→ore→Forge/craft, Forest→wood→build/use, same roster, real work schedule/autonomy, UI readable at landscape resolution, no double-sourcing. Run focused and FULL official CI. Windows acceptance PENDING USER. Mark any unrealized consumer/feature BLOCKED instead of cosmetically checking it green.
+### O9 execution resolution — 2026-10-12 (CLOSED / FOCUSED PASS / FULL PASS)
+
+- O9 is an integration/release rehearsal only; no production gameplay source was changed after O8.
+- Starter Thanh Thiết/Linh Mộc are reserved as provenance floors; real Mine + real Linh Lâm production alone funds one `Thanh Thiết Kiếm` craft.
+- Real Linh Điền produces the exact Alchemy input; timed Hồi Xuân Đan commits input once and Dược Phòng consumes one canonical pill for +55 HP capped.
+- The save boundary contains four simultaneous authorities: Mine carry-cycle, Forest carry-cycle, Spirit Field growing plot and Alchemy timed recipe. Reload preserves each exact state and one scheduler resumes each exactly once.
+- After the resumed pill is used, Mine/Forest/Field and standing Alchemy continue without another per-batch production click.
+- Final [O9 #38193051636](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38193051636), [DV2-03 #38193051740](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38193051740) and [P3.7 #38193051669](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38193051669) are SUCCESS; P3.7 includes FAST+FULL.
+- **M2 O7–O9 is CLOSED/PASS on Linux CI.** Windows click/visual/APK remains PENDING USER; PC is now available. M2 closure does not authorize M3 or another feature packet. Recommended next design after Windows smoke is active-DV2-03 G1 player-started V2 hunting.
+
+
+10. **O9 / M2 FULL PRODUCTION REHEARSAL — CLOSED/PASS:** fresh P3.2 uses real Mine output + real Linh Lâm output for the same Thanh Thiết Kiếm Forge consumer, and real Linh Điền → Thanh Linh Thảo → timed Hồi Xuân Đan → Dược Phòng. The acceptance saves with Mine + Forest + Field + Alchemy simultaneously active, restores exact work state and settles each saved production exactly once, then proves autonomous repeat. Final O9 #38193051636 SUCCESS; DV2 #38193051740 SUCCESS; P3.7 #38193051669 FAST+FULL SUCCESS. Production gameplay remains O8 SHA `8d30579...`; O9 is acceptance/CI-only. Windows acceptance remains PENDING USER, but the PC is now available.
 
 **No invented timings in schedule:** O0–O9 are ordered **dependency gates**, not promises of completion dates. A missing owner/lock/affordability blocker takes precedence over adding extra producers. Deliver the first independently playable M1 as soon as tests support it; treat M2 as a separate follow-on request, not a blocker for M1.
 

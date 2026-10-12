@@ -1,7 +1,21 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
-**Bàn giao cập nhật: 12/10/2026 — O8 CLOSED/PASS; real Linh Điền → Luyện Đan → Hồi Xuân Đan → Dược Phòng loop green. O9 NOT AUTHORIZED. Windows visual/click/APK PENDING USER.**
+**Bàn giao cập nhật: 12/10/2026 — M2 O7–O9 CLOSED/PASS trên official Godot 4.7.2 Linux. O9 multi-producer/restart rehearsal green. Windows visual/click/APK PENDING USER; PC hiện đã sẵn sàng kiểm tra. Next code NOT AUTHORIZED.**
 
+
+## M2/O9 CLOSED — MULTI-PRODUCER REHEARSAL GREEN (2026-10-12)
+
+**Status:** O9 is **CLOSED / FOCUSED PASS / FULL PASS**. Production gameplay source remains O8 SHA `8d30579fea28febe79f445de3c5b469e4b0d5f6e`; final O9 acceptance/test SHA is `495a5e4fec141be2ec8bfda22111f8e631baa99e`. M2 O7–O9 is technically closed on official Godot 4.7.2 Linux.
+
+**What O9 proves:** the live P3.2 scene uses newly produced Mine ore + newly produced Forest wood for one real Thanh Thiết Kiếm craft while starter stock is reserved; produces real Thanh Linh Thảo via Linh Điền; commits it once into timed Hồi Xuân Đan; saves with Mine + Forest + Field + Alchemy all active; reloads exact work identities/timers/progress without stock mutation; resumes each exactly once; consumes a canonical pill in Dược Phòng for +55 HP; then proves Mine/Forest/Field and standing Alchemy can continue without per-batch clicking. Final reload has no replay.
+
+**Evidence:** [O9 #38193051636](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38193051636) SUCCESS including O8/O7/P3.6A regressions; [DV2-03 #38193051740](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38193051740) SUCCESS; [P3.7 #38193051669](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38193051669) FAST+FULL SUCCESS. Early O9 reds were test-sequencing assumptions only; no production gameplay file was changed.
+
+**User machine status:** PC is now available. Windows visual/click/APK is still **PENDING USER until actually run**. First recommended command from repo root: `Sync-Main.cmd Run-P3-6A-Playable-Slice.cmd`. If sync stops because local tracked/staged changes exist, preserve them and resolve before retrying; do not force reset.
+
+**Next design direction after Windows smoke:** return to the active DV2-03 bottleneck and review **DV2-03G1 player-started V2 hunting**. Do not start DV2-04, M3 balance, manager system, high-realm C–H content, Equipment V2/Pháp Bảo/Phù or new producer families implicitly.
+
+---
 
 ## M2/O8 CLOSED — REAL TIMED ALCHEMY + HEALING CONSUMER GREEN (2026-10-12)
 
@@ -23,7 +37,7 @@
 
 **Reference boundary:** ZQZS deep-dive verified recipe config, assigned worker/profession, timed building state, serial building queue and generic pill-use patterns. Tông Môn Bá Đạo does **not** copy its single-manager serial queue, manual-claim UX, IDs, values, formulas, assets or unknown server behavior.
 
-**Next packet requires explicit approval:** **O9 DESIGN REVIEW first**, not code by default. O9 should integrate the three M2 production families in one fresh/restart rehearsal: Field→herb→pill/use, Mine→ore→Forge/craft, Forest→wood→a legitimate existing consumer/use, same roster, scheduler, Warehouse, save path and autonomous policies; diagnose any missing Forest consumer instead of faking one. Do not start manager system or M3 balance implicitly.
+**Subsequent status:** O9 was separately authorized and is now CLOSED/PASS; see the O9 handoff above. Do not start manager system or M3 balance implicitly.
 
 ---
 
@@ -43,7 +57,7 @@
 
 **Reference-game boundary:** O7 uses the architectural lesson “building ↔ profession ↔ explicit work lifecycle” from ZQZS only. Reference server production math remains UNKNOWN; no source formula/code/asset was copied.
 
-**Subsequent status:** O8 was authorized and closed; see the current O8 handoff above. **O9 DESIGN REVIEW** is now the recommended next packet and still requires explicit user approval. Do not add manager system or M3 balance implicitly.
+**Subsequent status:** O8 and O9 were subsequently authorized and closed; M2 O7–O9 is CLOSED/PASS. Do not add manager system or M3 balance implicitly.
 
 ---
 
