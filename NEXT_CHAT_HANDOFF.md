@@ -1,36 +1,29 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
-**Bàn giao cập nhật: 12/10/2026 — O8 DESIGN READY / CODE NOT AUTHORIZED. O7 remains CLOSED/PASS. Windows visual/click/APK PENDING USER.**
+**Bàn giao cập nhật: 12/10/2026 — O8 CLOSED/PASS; real Linh Điền → Luyện Đan → Hồi Xuân Đan → Dược Phòng loop green. O9 NOT AUTHORIZED. Windows visual/click/APK PENDING USER.**
 
 
-## M2/O8 DESIGN READY — LUYỆN ĐAN NHẬP MÔN (2026-10-12)
+## M2/O8 CLOSED — REAL TIMED ALCHEMY + HEALING CONSUMER GREEN (2026-10-12)
 
-**No O8 gameplay code is authorized yet.** Review used live main after O7 closure plus read-only `ZQZS-Source-Knowledge`.
+**Status:** O8 is **CLOSED / FOCUSED PASS / FULL PASS**. Backend SHA `5f00790afcdcbb2fcd3b59d69807743ffb9d085f`; final gameplay/UI SHA `8d30579fea28febe79f445de3c5b469e4b0d5f6e`; focused test-isolation child `bc9ddf96fad1d57332c5806685c06eb6ddca385d`; DV2 compatibility-test child `f3d388f2cfca6f37e7d8046cf9ca06b86f2dfd46`.
 
-Recommended contract:
-- add separate `alchemy_hall` / **Luyện Đan Điện** Lv1; reuse existing `WorkforceSystem.PROF_ALCHEMY`; add `alchemy_crew`;
-- do not alias Dược Phòng or legacy `medicine_stock`;
-- use building-owned `timed_recipe` jobs, not O7 carry-cycle and not instant Forge craft;
-- job snapshot: stable job ID, recipe, worker, start/finish tick, committed inputs and deterministic output;
-- Lv1 structural crafting capacity = 2 workers; one active job per worker;
-- exactly one O8 recipe: **Hồi Xuân Đan** = recommended `Thanh Linh Thảo x3 → Hồi Xuân Đan x1`, base 6 simulation ticks before canonical work-speed reduction;
-- job start atomically consumes canonical Warehouse input with reserve/lock respected; no job/no XP on shortage;
-- active worker is reserved; stopping policy prevents new jobs but current paid jobs finish; no cancel/refund in O8;
-- completion deposits exactly once to canonical Warehouse; save/reload mid-job preserves finish tick and cannot double-charge/double-output;
-- one standing recipe permission may auto-repeat when an assigned worker is eligible and inputs exist; no manual click per routine batch, but no advanced multi-recipe queue yet;
-- add canonical stackable `hoi_xuan_dan`;
-- real consumer is Dược Phòng/Needs authority: use one available pill on an injured in-sect disciple for recommended fixed +55 HP capped at max, with no wallet/treasury transfer and no legacy medicine-stock debit;
-- do not add Alchemy profession talent generation in O8; current recruitment trait distribution stays unchanged;
-- UI only projects/commands: separate Luyện Đan token/panel and Dược Phòng pill-use controls;
-- exclude O9, Tu Vi/body/breakthrough pills, Yêu Đan recipe, success/quality/rare RNG, manager system, market, hunter auto-loadout, medicine migration, upgrade economy and M3 balance.
+**Delivered:** `alchemy_hall` / Luyện Đan Điện Lv1, existing `alchemy` profession, `alchemy_crew`, 2 worker slots, building-owned `timed_recipe` jobs, standing recipe policy, canonical `hoi_xuan_dan`, and a real Dược Phòng/Needs consumer. Opening recipe is **3 Thanh Linh Thảo → 1 Hồi Xuân Đan**, base 6 simulation ticks before work-speed modifier. Active job commits inputs once, reserves its worker, persists exact identity/timer/input receipt, completes into the single canonical Warehouse and cannot replay after reload.
 
-Why this model: current Godot has only the Alchemy enum, not a real Alchemy action/building/recipe/consumer. Current `medicine_stock` is a separate capped logistics authority. ZQZS reference shows recipe cost checks + timed building production state + begin/progress/reward request flow; use that architecture lesson only, not its IDs/formulas/assets/server assumptions.
+**Entry-level correction:** current P3.7 profession level is 0 when XP is 0, so the only opening recipe must require Alchemy Lv0 rather than the design draft's Lv1; otherwise no fresh worker could ever earn first Alchemy XP. No free XP, profession curve, trait/talent or recruitment probability changed.
 
-**ZQZS Alchemy deep-dive result:** VERIFIED client source shows recipe definitions carry material costs, recipe time, Đan Đạo-level gate, unlock gate, profession EXP and output/random metadata; the observed Luyện Đan building has one assigned `dizi_id`, timed production state, start/progress/reward messages, and later a per-building serial order queue. Finished healing pills are consumed through a generic disciple item-use flow that filters injured disciples rather than through the production window. Server debit/reward/anti-duplicate authority remains UNKNOWN.
+**Real consumer:** Dược Phòng can consume exactly one available Hồi Xuân Đan on an injured in-sect disciple for **+55 HP capped at max**. It does not consume legacy `medicine_stock` and does not mutate personal wallet or Sect treasury. Legacy HEAL/medicine logistics remains a separate authority.
 
-**Decision after comparison:** do **not** copy the single-manager/serial-queue model into O8. Our own canonical building tree already owns 2 Lv1 crafting worker slots, so keep one active timed recipe per active worker for the opening implementation; future advanced queue remains building-owned later. Keep standing-recipe automation because our game explicitly avoids mandatory per-batch clicking for routine production. Keep Hồi Xuân Đan consumption behind our medical/Needs authority rather than directly copying the reference generic-use UX.
+**Focused evidence:** [O8 #38188554397](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38188554397) COMPLETED/SUCCESS. It proves a real P3.2 chain: Field produces real crops and one exact 3-unit Thanh Linh Thảo batch → lock/reserve denial → real UI Alchemy start → exact-one input commit → no early pill → worker reservation → mid-job save/reload with same job/finish tick and no second debit → exact-one pill completion + Alchemy XP → post-completion reload no replay → real Dược Phòng pill use with +55 HP and no legacy medicine/money mutation → standing policy later starts another legitimate Alchemy job from newly produced Field herbs without another Alchemy work click. O7 and P3.6A scene regressions are green in the same focused job.
 
-If CODE O8 is later approved, focused acceptance must prove a real fresh chain **Linh Điền → Thanh Linh Thảo → timed Luyện Đan → Hồi Xuân Đan in Warehouse → Dược Phòng consumption**, plus lock/reserve denial, worker reservation, exact-one input debit, mid-job persistence, no replay, profession XP and standing-policy repeat. Closing O8 requires focused official Godot 4.7.2 plus O1–O7/DV2/P3.7 cumulative. Windows remains **PENDING USER**.
+**Cumulative evidence on gameplay SHA `8d30579...`:** [O1 #38188487415](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38188487415), [O2 #38188487414](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38188487414), [O3 #38188487382](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38188487382), [O4 #38188487410](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38188487410), [O5 #38188487325](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38188487325), [O6 #38188487321](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38188487321), [O7 #38188487393](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38188487393) all SUCCESS; [P3.7 #38188487320](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38188487320) FAST+FULL SUCCESS. Final corrected DV2 [#38188712696](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38188712696) is full-workflow SUCCESS.
+
+**Historical reds:** initial O8 focused #38188487378 failed only because the test allowed legitimate standing automation to start before its planned manual first-batch click; `bc9ddf96...` fixed isolation only. Initial DV2 #38188487371 failed at F1 because it incorrectly locked the total global ResourceRegistry size; O8's new unrelated pill made that assumption stale. `f3d388f2...` keeps the exact 29 Body recipes and validates the exact 19 protected Body material identities instead. Do not relabel either historical run PASS.
+
+**Preview:** #38188487361 has FAST + capture PASS; only artifact upload fails because GitHub artifact storage quota is exhausted. Windows/mobile visual click-through, screenshots and APK remain **PENDING USER**.
+
+**Reference boundary:** ZQZS deep-dive verified recipe config, assigned worker/profession, timed building state, serial building queue and generic pill-use patterns. Tông Môn Bá Đạo does **not** copy its single-manager serial queue, manual-claim UX, IDs, values, formulas, assets or unknown server behavior.
+
+**Next packet requires explicit approval:** **O9 DESIGN REVIEW first**, not code by default. O9 should integrate the three M2 production families in one fresh/restart rehearsal: Field→herb→pill/use, Mine→ore→Forge/craft, Forest→wood→a legitimate existing consumer/use, same roster, scheduler, Warehouse, save path and autonomous policies; diagnose any missing Forest consumer instead of faking one. Do not start manager system or M3 balance implicitly.
 
 ---
 
