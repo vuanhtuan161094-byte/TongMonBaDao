@@ -1,6 +1,18 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
-## PRIORITY HANDOFF — FAST VISUAL FIRST (2026-10-12, DOCS-ONLY; START PV-00)
+## PRIMARY ENTRY — ENV-01 WINDOWS QA (2026-10-12; SUPERSEDES OLD PV-00 HANDOFF)
+
+**READ FIRST:** [`docs/handoffs/ENV01_WINDOWS_QA_HANDOFF_2026-10-12.md`](docs/handoffs/ENV01_WINDOWS_QA_HANDOFF_2026-10-12.md) and the top entry of [`CURRENT_CHECKPOINT.md`](CURRENT_CHECKPOINT.md). The PV-00, FE-01B and old code-gate instructions further below are **historical** and must not restart work already done.
+
+**Current owner instruction:** ENV-01 isolated lab has been reported delivered and is awaiting real Godot 4.7.2 Windows QA, **not yet visual approved**. Next get the **actual ENV-01 ZIP or directory**, read its instructions, and collect real Godot screenshot + **two test logs** under `ENV01_TEST_RESULTS`. Do **not invent artifact paths or log names** and do not claim PASS from an import or historical screenshot. Windows executable: `E:\Godot_v4.7.2-stable_win64_console.exe`.
+
+Original Source A asset handoff: `E:\TongMonIntegrationLab\ChatGPT_Handoff\SourceA_Map_Prep_20261012.zip`, owner/previous-chat audited 428 entries, not a verified ENV-01 code artifact. The chat assistant cannot directly access E:; if the ENV-01 artifact is missing from the new session, request that one file.
+
+**Hard locks:** production P3.1/P3.2 and canonical gameplay/save unchanged; eight S3 artwork approvals unchanged; FE-02/G1 unopened; DV2-03 PAUSED NOT CLOSED; Spine converter parallel and no need to wait for static map. **No repeated catalog scan, no new map prototype.** Approval for isolated ENV-01 does not authorize production integration.
+
+---
+
+## HISTORICAL HANDOFF — FAST VISUAL FIRST (2026-10-12, BEFORE ENV-01; PV-00 ALREADY SUPERSEDED)
 
 **Instruction for new chat:** User wants the fastest sound route to a playable beautiful sect map, not a new round of tool-building. The user has explicitly requested to hand off details on GitHub. **Start immediately with PV-00 READ-ONLY audit**. Do not ask them to upload an existing local MapPrototype ZIP by default; Source Knowledge has reports/indexes, and the complete MapPrototype is local Windows-only. If the current assistant cannot inspect E: directly, provide **one** complete local read-only Codex/PowerShell inspection request and work with its output. Do not claim direct local access.
 
