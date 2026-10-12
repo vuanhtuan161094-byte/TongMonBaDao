@@ -1,0 +1,82 @@
+name: FE-01A Presentation Candidate Registry
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'godot/data/presentation/source_a_candidate_manifest.json'
+      - 'godot/src/presentation/assets/**'
+      - 'godot/tests/presentation/fe_01a_visual_registry_test.gd'
+      - 'tools/validate_fe01_manifest.py'
+      - 'tools/test_validate_fe01_manifest.py'
+      - '.github/workflows/fe-01a-asset-registry.yml'
+  pull_request:
+    paths:
+      - 'godot/data/presentation/source_a_candidate_manifest.json'
+      - 'godot/src/presentation/assets/**'
+      - 'godot/tests/presentation/fe_01a_visual_registry_test.gd'
+      - 'tools/validate_fe01_manifest.py'
+      - 'tools/test_validate_fe01_manifest.py'
+      - '.github/workflows/fe-01a-asset-registry.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  fe-01a-validation-and-regression:
+    name: FE-01A focused + opening production regression (Godot 4.7.2)
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Use Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Validate canonical P3 asset authority
+        run: python tools/validate_p3_presentation.py
+      - name: Validate FE-01A candidate manifest
+        run: python tools/validate_fe01_manifest.py
+      - name: Test fail-closed validator
+        run: python -m unittest discover -s tools -p 'test_validate_fe01_manifest.py' -v
+      - name: Install official Godot 4.7.2 binary
+        shell: bash
+        run: |
+          set -euo pipefail
+          GODOT_URL="https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip"
+          GODOT_SHA256="cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4"
+          curl --fail --location --retry 3 --output /tmp/godot.zip "$GODOT_URL"
+          echo "$GODOT_SHA256  /tmp/godot.zip" | sha256sum --check --strict
+          unzip -q /tmp/godot.zip -d /tmp
+          sudo install -m 0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+      - name: Confirm official version
+        run: godot --version
+      - name: Restore existing canonical female Stage A runtime pack (unchanged)
+        shell: bash
+        run: |
+          set -euo pipefail
+          PACK="/tmp/female_normal_v1_stageA_runtime_pack_v2_quant.zip"
+          cat .github/assets/p3/female_stage_a/part01.b64 .github/assets/p3/female_stage_a/part02.b64 .github/assets/p3/female_stage_a/part03.b64 .github/assets/p3/female_stage_a/part04.b64 .github/assets/p3/female_stage_a/part05.b64 .github/assets/p3/female_stage_a/part06.b64 .github/assets/p3/female_stage_a/part07.b64 .github/assets/p3/female_stage_a/part08.b64 .github/assets/p3/female_stage_a/part09.b64 .github/assets/p3/female_stage_a/part10.b64 .github/assets/p3/female_stage_a/part11.b64 .github/assets/p3/female_stage_a/part12.b64 .github/assets/p3/female_stage_a/part13.b64 .github/assets/p3/female_stage_a/part14.b64 .github/assets/p3/female_stage_a/part15a.b64 .github/assets/p3/female_stage_a/part15b.b64 .github/assets/p3/female_stage_a/part16.b64 .github/assets/p3/female_stage_a/part17.b64 .github/assets/p3/female_stage_a/part18.b64 .github/assets/p3/female_stage_a/part19.b64 .github/assets/p3/female_stage_a/part20.b64 | tr -d '\\r\\n\\t ' | base64 --decode > "$PACK"
+          test "$(stat -c%s "$PACK")" -eq 44838
+          echo "6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  $PACK" | sha256sum --check --strict
+          unzip -q "$PACK" -d .
+      - name: Import Godot resources
+        run: godot --headless --path godot --import
+      - name: Parse FE-01A scripts and test
+        shell: bash
+        run: |
+          set -euo pipefail
+          godot --headless --path godot --check-only --script res://src/presentation/assets/visual_asset_record.gd
+          godot --headless --path godot --check-only --script res://src/presentation/assets/visual_asset_registry.gd
+          godot --headless --path godot --check-only --script res://tests/presentation/fe_01a_visual_registry_test.gd
+      - name: FE-01A focused Godot test
+        run: godot --headless --path godot -s res://tests/presentation/fe_01a_visual_registry_test.gd
+      - name: O9 existing multi-producer integration regression
+        run: godot --headless --path godot -s res://tests/presentation/p3_o9_m2_production_rehearsal_test.gd
+      - name: O8 existing alchemy regression
+        run: godot --headless --path godot -s res://tests/presentation/p3_o8_alchemy_loop_test.gd
+      - name: O7 existing forest regression
+        run: godot --headless --path godot -s res://tests/presentation/p3_o7_linh_forest_test.gd
+      - name: P3.6A landscape scene regression
+        run: godot --headless --path godot -s res://tests/presentation/p3_6a_playable_slice_test.gd
