@@ -31,7 +31,7 @@ func start(
         return {"ok":false,"reason":"invalid_live_runtime_step_limit"}
 
     save_path = path
-    var save_exists := FileAccess.file_exists(save_path)
+    var save_exists := FileAccess.file_exists(save_path) or FileAccess.file_exists(save_path + ".bak")
     var loaded := SaveService.new().load_from_path(save_path)
 
     if save_exists and loaded == null:

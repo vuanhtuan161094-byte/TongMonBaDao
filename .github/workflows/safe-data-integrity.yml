@@ -1,0 +1,41 @@
+name: SAFE-01 and SAFE-02 Data Integrity
+on:
+  push:
+    paths:
+      - 'godot/src/simulation/save/save_service.gd'
+      - 'godot/src/simulation/core/live_game_runtime_v2.gd'
+      - 'godot/src/simulation/resource/warehouse_system.gd'
+      - 'godot/tests/simulation/safe_01_save_recovery_test.gd'
+      - 'godot/tests/simulation/safe_02_warehouse_migration_test.gd'
+      - '.github/workflows/safe-data-integrity.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  safe-data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install official Godot 4.7.2
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 -o /tmp/godot.zip "https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip"
+          echo "cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot.zip" | sha256sum --check --strict
+          unzip -q /tmp/godot.zip -d /tmp
+          sudo install -m 0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+      - name: Godot version and project parse
+        run: |
+          godot --version
+          godot --headless --path godot --editor --quit
+      - name: SAFE-01 failure/recovery
+        run: godot --headless --path godot -s res://tests/simulation/safe_01_save_recovery_test.gd
+      - name: P0 old save contract
+        run: godot --headless --path godot -s res://tests/simulation/p0_save_roundtrip_test.gd
+      - name: P3 warehouse regression
+        run: godot --headless --path godot -s res://tests/simulation/p3_7b1_warehouse_test.gd
+      - name: DV2 live runtime save resume
+        run: godot --headless --path godot -s res://tests/simulation/dv2_03_live_runtime_integration_test.gd
+      - name: M2 multi-producer save contract
+        run: godot --headless --path godot -s res://tests/presentation/p3_o9_m2_production_rehearsal_test.gd

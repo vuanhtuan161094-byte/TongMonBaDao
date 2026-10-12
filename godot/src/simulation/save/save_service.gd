@@ -4,20 +4,77 @@ extends RefCounted
 const CURRENT_VERSION := 2
 
 func save_to_path(state: SimulationState, path: String) -> Error:
+    if state == null or path.is_empty():
+        return ERR_INVALID_PARAMETER
     var payload := state.to_dict()
     payload["save_version"] = CURRENT_VERSION
+    var staged := path + ".tmp"
+    var backup := path + ".bak"
+    var content := JSON.stringify(_encode_floats(payload), "", true, true)
 
-    var file := FileAccess.open(path, FileAccess.WRITE)
+    # Stage and verify a complete save before touching the only good copy.
+    var file := FileAccess.open(staged, FileAccess.WRITE)
     if file == null:
         return FileAccess.get_open_error()
-
-    # JSON decimal parsing can shift a float by one ULP even with full_precision.
-    # Version 2 stores float64 bytes losslessly; runtime state stays unchanged.
-    file.store_string(JSON.stringify(_encode_floats(payload), "", true, true))
+    file.store_string(content)
+    file.flush()
+    var write_error := file.get_error()
     file.close()
+    if write_error != OK or _load_exact(staged) == null:
+        _remove_if_present(staged)
+        return FAILED
+
+    var had_primary := FileAccess.file_exists(path)
+    var valid_primary := had_primary and _load_exact(path) != null
+    if had_primary and not valid_primary:
+        # Do not discard a broken primary if there is no valid recovery copy.
+        if _load_exact(backup) == null:
+            _remove_if_present(staged)
+            return ERR_FILE_CORRUPT
+        var remove_error := _remove_if_present(path)
+        if remove_error != OK:
+            _remove_if_present(staged)
+            return remove_error
+    elif valid_primary:
+        # Old primary becomes the last-known-good recovery copy.
+        var clear_error := _remove_if_present(backup)
+        if clear_error != OK:
+            _remove_if_present(staged)
+            return clear_error
+        var rotate_error := DirAccess.rename_absolute(
+            ProjectSettings.globalize_path(path),
+            ProjectSettings.globalize_path(backup)
+        )
+        if rotate_error != OK:
+            _remove_if_present(staged)
+            return rotate_error
+
+    var install_error := DirAccess.rename_absolute(
+        ProjectSettings.globalize_path(staged),
+        ProjectSettings.globalize_path(path)
+    )
+    if install_error != OK:
+        # Restore the previously valid primary if the publish failed.
+        if valid_primary and not FileAccess.file_exists(path):
+            DirAccess.rename_absolute(
+                ProjectSettings.globalize_path(backup),
+                ProjectSettings.globalize_path(path)
+            )
+        return install_error
     return OK
 
+func _remove_if_present(path: String) -> Error:
+    if not FileAccess.file_exists(path):
+        return OK
+    return DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+
 func load_from_path(path: String) -> SimulationState:
+    var current := _load_exact(path)
+    if current != null:
+        return current
+    return _load_exact(path + ".bak")
+
+func _load_exact(path: String) -> SimulationState:
     if not FileAccess.file_exists(path):
         return null
 
