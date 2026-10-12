@@ -51,6 +51,18 @@ func _run() -> void:
     if not await _press("Group_alchemy_crew_%s" % str(alchemist_id)):
         return
 
+    # Isolate the first batch from legitimate standing automation. Keep the
+    # recipe disabled while the Field creates its first real herb batch.
+    if not await _press("AlchemyRecipeToggle"):
+        return
+    hall = buildings.primary_building(state, BuildingSystem.TYPE_ALCHEMY_HALL)
+    if bool(hall.production_state.get("recipe_enabled", true)):
+        _fail("O8 test isolation failed to disable standing recipe.")
+        return
+    if not workforce.issue_command(state, alchemist_id, WorkforceSystem.COMMAND_HOLD, "", 1200):
+        _fail("O8 could not hold isolated alchemist before first herb batch.")
+        return
+
     for raw_id in state.disciples.keys():
         var id := StringName(raw_id)
         if id == field_worker_id or id == alchemist_id:
@@ -93,6 +105,14 @@ func _run() -> void:
         return
     var locked_qty := warehouse.quantity(state, &"thanh_linh_thao")
     if not await _open_building(SectMapPresentation.DEST_ALCHEMY_HALL):
+        return
+    # Re-enable the standing recipe while canonical stock is locked. No
+    # scheduler tick occurs here, so lock denial remains the only start gate.
+    if not await _press("AlchemyRecipeToggle"):
+        return
+    hall = buildings.primary_building(state, BuildingSystem.TYPE_ALCHEMY_HALL)
+    if not bool(hall.production_state.get("recipe_enabled", false)):
+        _fail("O8 could not re-enable standing recipe under lock.")
         return
     var locked_button := ui.find_child("Work_alchemy_%s" % str(alchemist_id), true, false) as Button
     if locked_button == null or not locked_button.disabled:
