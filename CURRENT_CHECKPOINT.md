@@ -7,6 +7,29 @@ It is not a historical changelog.
 
 Read `docs/GAME_SYSTEM_ARCHITECTURE.md` for system structure and phase discipline.
 
+## FE-01B2A — WINDOWS ISOLATED MAIN HALL PACK (CLOSED / USER WINDOWS ACCEPTANCE PASS, 2026-10-12)
+
+**Authorization/evidence:** User explicitly authorized FE-01B2A isolated pack export on Windows, following FE-01B1 official Godot 4.7.2 Linux CI [#38214043053](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38214043053) SUCCESS at `f50de16ee2abfed4ca4540e2dbd0af0348c51a3e`. All FE-01B2A Windows results below are **user-provided PowerShell logs**, not assistant-run Windows tests. The actual binary pack remains only on the user's local E: drive; no artifact is committed to GitHub.
+
+**Local preflight:** Game `main` at `f50de16ee2abfed4ca4540e2dbd0af0348c51a3e`, clean working tree (0 changes), new exporter `tools/fe01b1/export_verified_pack.py` and external catalog/source/lab all present. Isolated output root initially absent, so no existing Main Hall target, exporter lock or staging directory. **PASS**. Source A Knowledge stays pinned `83cbc4ecbd83eb518a6d6f2b3894377d9d99254d`.
+
+**Windows prerequisite FE-01B1 verification:** Python 3.12.14; new exporter `building.main_hall --dry-run` on the real Source A/catalog returned `DRY_RUN ... files 4` **PASS**. Synthetic Windows fixture suite ran 19, **18 passed / 1 SKIPPED** (`test_source_symlink_refused`, symlink creation unsupported on that Windows runner); zero test failures, exit code 0, temporary test directory removed, Git working tree unchanged. Separate official Linux CI synthetic suite had all 19 tests PASS; do not call the Windows skip PASS.
+
+**Real FE-01B2A isolated output:** `E:\TongMonIntegrationLab\TransferKit\FE01B2VerifiedPacks\building.main_hall`; **not** legacy `TransferKit\GodotPacks\building.main_hall`. Exporter first call returned `EXPORTED ... files 4`, 4/4 packaged dependency hashes and byte counts matched Source A candidate manifest:
+- `510052_lum.png`: 20,042 bytes / SHA-256 `db8a49b339afd8d93e5cbf8477a7b8d3e3d3bae12014e78b3bacd241de94c8ed`.
+- `510052.png`: 596,816 bytes / SHA-256 `b6bf88c35e3edc33aba822124296af15a5c8491a05c28f6b5d7b342d20d5325c`.
+- `510052.atlas`: 176 bytes / SHA-256 `69dc956d8ee7bed005c31a2e1120abc17a9fdd901c4f81f6481d2a921acf31cd`.
+- `510052.skel`: 430 bytes / SHA-256 `9e400ab40c6c3272bd862dbff81b5865b5c02aa133f7aa6d712aa8b2851fab73`.
+- Exactly **617,464 asset bytes**, with `manifest.json` and `README.md` (6 ordinary files in pack), expected `building.main_hall` manifest logical ID. Full structural/size/hash verification **PASS** per user logs. `.ab` original bundle SHA was separately verified during FE-01B preflight; the bundle is **not** one of the four packaged dependencies.
+
+**Idempotence/cleanup:** Second exporter call yielded precisely `UNCHANGED ... building.main_hall files 4`. Before/after snapshot confirmed **all 6 files unchanged** in name, length, SHA-256 and last-write UTC; exporter lock absent (`False`), staging count `0`, Git working tree entries `0`. **FE-01B2A WINDOWS ACCEPTANCE: PASS.** This is pack-copy integrity / cooperative exporter staged publish, **not** Godot visual/Spine playback or Android compatibility, and does not establish absolute safety against an unrelated uncooperative external writer.
+
+**Source A rights — current owner instruction (supersedes earlier UNVERIFIED notes as a project decision):** User repeatedly and explicitly confirms they own full rights to **use, copy, edit, convert, integrate and distribute Source A art in Tông Môn Bá Đạo**, including release. Project decision label: `OWNER_CONFIRMED_FULL_RIGHTS`; **do not re-open rights as a development blocker or demand additional proof in this workflow**. This is the owner's explicit statement, not an independently performed legal audit. Earlier FE-01A/FE-01B1 frozen metadata values (`release_rights=UNVERIFIED`, `A_USER_AUTHORIZED_LAB`, `lab_only=true`) remain unchanged **as files**, because the present packet is DOCS ONLY; later separately authorized metadata versioning must preserve pack integrity and `UNCHANGED` semantics, not manually rewrite existing pack manifests.
+
+**Locked scope / next:** FE-01B2A **CLOSED / Windows logged PASS**; FE-01B1 **CLOSED / Linux official CI + Windows tests evidence above**; FE-01A **CLOSED**. Next suggested **FE-01B2B independent Godot 4.7.2 static Main Hall texture render in TransferKit lab** (DESIGN REVIEW / user authorization required): distinguish raw atlas PNG from fully composed building, verify transparency, dimensions and landscape 1280×720 placement. FE-01B2B **NOT OPENED**. No binary copied/imported into game, no production art visual approval, no changes to eight historic S3 approved/missing assets, Source A repo, Godot code/runtime, gameplay/EXP/Warehouse/BuildingState/save/main scene, Git LFS or `.gitattributes`. LFS binary push/pull **NOT TESTED**; FE-02/Spine/DV2-03G1 **NOT AUTHORIZED**; DV2-03 **PAUSED BY USER, NOT CLOSED**. Windows game visual/click/APK **PENDING USER**. Current docs-only commit updates only checkpoint/handoff; Docs Audit workflow `p3-presentation-audit.yml` excludes these paths from its push trigger, so no new audit run is implied by this documentation change.
+
+---
+
 ## FE-01B1 TOOLING ONLY — CLOSED / OFFICIAL GODOT 4.7.2 PASS (2026-10-12)
 
 User authorized FE-01B1 ONLY. Game repo commits e51d2950c672eeecc0dabdc7a6f84830c32636a6 (exporter + 19 synthetic fixture tests + Actions workflow), 322180ba7e750a9c1a0e3bc7810a3b5062478784 (normalize missing source path error to fail-closed PackError). New files: tools/fe01b1/export_verified_pack.py; tools/fe01b1/test_export_verified_pack.py; tools/fe01b1/README.md; .github/workflows/fe-01b1-asset-exporter.yml.
