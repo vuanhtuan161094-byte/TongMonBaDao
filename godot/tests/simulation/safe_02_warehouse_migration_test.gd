@@ -90,9 +90,11 @@ func _reject_without_mutation(warehouse: WarehouseSystem, state: SimulationState
     var before := JSON.stringify(state.sect.to_dict())
     var event_count := state.sect.warehouse_event_count
     var ok := warehouse.ensure_migrated(state)
-    return not ok and not state.sect.p3_7_resources_enabled and
+    return (
+        not ok and not state.sect.p3_7_resources_enabled and
         state.sect.warehouse_event_count == event_count and
         JSON.stringify(state.sect.to_dict()) == before
+    )
 
 func _check(ok: bool, reason: String) -> bool:
     if ok:
