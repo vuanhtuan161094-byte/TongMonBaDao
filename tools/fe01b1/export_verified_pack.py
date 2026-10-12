@@ -78,8 +78,11 @@ def _resolve_source(raw: str, source_root: Path | None,
         if not relative.parts or any(p in (".", "..") for p in relative.parts):
             raise PackError(f"Unsafe source relative path: {raw}")
         path = source_root.joinpath(*relative.parts)
-        root_real = source_root.resolve(strict=True)
-        path_real = path.resolve(strict=True)
+        try:
+            root_real = source_root.resolve(strict=True)
+            path_real = path.resolve(strict=True)
+        except (FileNotFoundError, NotADirectoryError) as exc:
+            raise PackError(f"Missing source dependency or root: {path}") from exc
         if not path_real.is_relative_to(root_real):
             raise PackError(f"Source escaped declared source root: {raw}")
     if path.is_symlink() or not path.is_file():
