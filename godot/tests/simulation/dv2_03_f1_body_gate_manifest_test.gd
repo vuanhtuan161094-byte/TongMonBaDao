@@ -150,10 +150,29 @@ func _run() -> void:
     for group in ["C","D","E","F","G","H"]:
         for id in EXPECTED_ITEMS[group]:
             high_items.append(str(id))
-    if not _require(high_items.size()==12 and
-        registry.all_resource_ids().size()==27 and
-        registry.validate_definitions().is_empty(),
-        "Registry no longer has 12 old + 15 new valid definitions."):
+    # F1 owns the exact 19 Body material identities, not the size of the
+    # global ResourceRegistry. Later unrelated systems may add canonical
+    # resources (for example O8 Hồi Xuân Đan) without changing this locked
+    # Body catalogue.
+    var protected_body_ids: Array[String] = []
+    for group in ["A","B","C","D","E","F","G","H"]:
+        for id in EXPECTED_ITEMS[group]:
+            if not protected_body_ids.has(str(id)):
+                protected_body_ids.append(str(id))
+    for seal in EXPECTED_SEALS.values():
+        if not protected_body_ids.has(str(seal)):
+            protected_body_ids.append(str(seal))
+    protected_body_ids.sort()
+    var manifest_ids: Array[String] = []
+    for id in content.material_ids():
+        manifest_ids.append(str(id))
+    manifest_ids.sort()
+    if not _require(
+        high_items.size()==12
+        and protected_body_ids.size()==19
+        and manifest_ids==protected_body_ids
+        and registry.validate_definitions().is_empty(),
+        "Registry no longer preserves the exact 19 protected Body material identities."):
         return
     for id in high_items:
         if not _require(registry.has(StringName(id)) and
