@@ -1,0 +1,18 @@
+name: ENV-02A Isolated Lab Code Audit
+on:
+  push:
+    paths:
+      - 'labs/env02a/**'
+      - '.github/workflows/env02a-code-audit.yml'
+  pull_request:
+    paths:
+      - 'labs/env02a/**'
+      - '.github/workflows/env02a-code-audit.yml'
+  workflow_dispatch:
+jobs:
+  isolated-static-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify code-only contracts (not Godot runtime)
+        run: python3 labs/env02a/tools/verify_env02a_code_only.py

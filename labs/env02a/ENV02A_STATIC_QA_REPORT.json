@@ -1,0 +1,55 @@
+{
+  "phase": "ENV-02A ONLY",
+  "baseline": "Owner-supplied ENV-01 v4 isolated Godot lab",
+  "source_integrity": "PASS_OFFLINE: 35/35 PNGs unchanged SHA-256",
+  "old_files_removed": [],
+  "old_files_changed": [
+    "project.godot",
+    "scripts/map_model.gd"
+  ],
+  "new_files": [
+    "ENV02A_BASELINE_ASSET_SHA256.json",
+    "README_ENV02A_VI.md",
+    "RUN_ENV02A_WINDOWS.cmd",
+    "scenes/env02a_large_world.tscn",
+    "scripts/env02_chunk_environment.gd",
+    "scripts/env02_world.gd",
+    "tools/verify_env02a_static.py"
+  ],
+  "geometry": "PASS_OFFLINE: BFS feasibility and footprints; NOT Godot AStar",
+  "grid": {
+    "world": [
+      192,
+      192
+    ],
+    "initial_area": {
+      "x": 72,
+      "y": 72,
+      "w": 48,
+      "h": 48
+    },
+    "chunk_size": 16,
+    "chunks_total": 144
+  },
+  "estimated_chunks_visible_center": {
+    "0.65": 49,
+    "1.0": 25,
+    "1.65": 16
+  },
+  "godot_parser": "PENDING_WINDOWS - Godot executable not available in sandbox",
+  "godot_legacy_runtime": "PENDING_WINDOWS for this new package; earlier ENV-01 v4 20x13 Windows PASS per owner logs",
+  "godot_env02_structure": "PENDING_WINDOWS",
+  "godot_windows_visual": "PENDING_USER",
+  "android_device_performance": "PENDING_USER",
+  "production_repo": "UNTOUCHED",
+  "scope_locks": [
+    "NO FE-02",
+    "NO ENV-02B-E",
+    "NO independent map authority",
+    "NO free building",
+    "NO BuildingState changes",
+    "NO EXP/warehouse/save changes",
+    "NO S3 art change",
+    "DV2-03 PAUSED NOT CLOSED"
+  ]
+}

@@ -7,6 +7,16 @@ It is not a historical changelog.
 
 Read `docs/GAME_SYSTEM_ARCHITECTURE.md` for system structure and phase discipline.
 
+## CURRENT PRIORITY — ENV-02A CODE ON GITHUB / WINDOWS QA PENDING (2026-10-13)
+
+**Read:** [ENV-02A source and backend audit](docs/handoffs/ENV02A_CODE_AND_BACKEND_AUDIT_2026-10-13.md). Owner requested isolated lab code push and read-only backend audit while PC unavailable.
+
+- **ENV-01 v4:** Godot 4.7.2 Windows resource import, `ENV01_RESULT PASS_STRUCTURE`, interactive render screenshot observed PASS. Manual selection/pan/zoom suite and Android remain PENDING USER.
+- **ENV-02A:** 192×192 logical grid, 48×48 starter preview, 16×16 chunk view; code at `labs/env02a/`, full PNG-backed ZIP retained separately. Offline geometry/asset SHA and code-only audit PASS; Godot 4.7.2 Windows parsing/AStar/render, Android FPS/touch PENDING USER. GitHub mirror is NOT runnable without matching 35 PNGs.
+- Historical backend official CI: P3 O9/M2, P3.7, DV2-03, FE-01A and FE-01B1 success on recorded source commits, not fresh Android/end-to-end PASS. See source audit for inventory, open risks and testing boundaries.
+- **No production main scene or simulation/save/BuildingState/EXP/Warehouse edits. No FE-02, ENV-02B–E or free construction. Eight S3 approved visual identities unchanged. DV2-03 PAUSED NOT CLOSED.**
+
+---
 ## PRIORITY CURRENT — ENV-01 ISOLATED LAB WINDOWS QA (2026-10-12; DOCUMENTATION ONLY)
 
 **AUTHORITATIVE NEW HANDOFF:** [ENV-01 Windows QA and next-chat handoff](docs/handoffs/ENV01_WINDOWS_QA_HANDOFF_2026-10-12.md). This status supersedes the older PV-00/FE-01 visual-first handoff immediately below, which is retained for history.

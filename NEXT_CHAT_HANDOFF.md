@@ -1,5 +1,14 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## PRIMARY ENTRY — ENV-02A SOURCE MIRROR AND BACKEND AUDIT (2026-10-13; SUPERSEDES EARLIER ENV-01 ENTRY BELOW)
+
+**Read:** `CURRENT_CHECKPOINT.md` top entry and [ENV02A_CODE_AND_BACKEND_AUDIT_2026-10-13.md](docs/handoffs/ENV02A_CODE_AND_BACKEND_AUDIT_2026-10-13.md).
+
+GitHub `labs/env02a/` contains text-source only, not Source A PNG binaries. Full owner-hand-off archive: `TongMonBaDao_ENV02A_192World_Lab.zip`. Use matching original ZIP for Windows QA, not checkout alone. Godot 4.7.2 launcher `RUN_ENV02A_WINDOWS.cmd`; expected logs `ENV02A_TEST_RESULTS/{import.log,env01_regression.log,env02_structure.log,interactive.log,launcher.log}` and two real screenshots. ENV-02A Godot Windows / Android PENDING USER.
+
+ENV-01 v4 import/structure and actual Windows screenshot PASS, manual selection/pan/zoom and Android unverified. Backend P3.7/M2/DV2 and FE-01 tools had historical official CI success, not a current whole-game Android PASS. **No production changes, FE-02/ENV-02B–E unopened, DV2-03 PAUSED NOT CLOSED; eight S3 artworks and Spine pipeline preserved.**
+
+---
 ## PRIMARY ENTRY — ENV-01 WINDOWS QA (2026-10-12; SUPERSEDES OLD PV-00 HANDOFF)
 
 **READ FIRST:** [`docs/handoffs/ENV01_WINDOWS_QA_HANDOFF_2026-10-12.md`](docs/handoffs/ENV01_WINDOWS_QA_HANDOFF_2026-10-12.md) and the top entry of [`CURRENT_CHECKPOINT.md`](CURRENT_CHECKPOINT.md). The PV-00, FE-01B and old code-gate instructions further below are **historical** and must not restart work already done.
