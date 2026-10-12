@@ -24,7 +24,9 @@ Implementation phase at planning time: **DV2-03 ACTIVE**, F0–F7 already implem
 
 **M3 — BALANCE + SCALE (after M1/M2 acceptance, separate later planning):** numeric tuning, recurring income/spending policy budgets, workload simulation 1,000–3,000, wider producer families and polished art/UX. M3 is **NOT** a prerequisite to say M1 works; only ownership/funding integrity and one legitimately repeatable opening loop are prerequisites.
 
-### Opening-production system map — what's real vs unproven
+### Opening-production system map — planning-time baseline (historical)
+
+> This table preserves the original pre-O1 planning audit. **Current implementation/closure truth is in `CURRENT_CHECKPOINT.md`.** O1–O8 have since executed; do not use stale M1 rows below to override the closure evidence.
 
 | Gameplay / building | Canonical Godot code present | Player-facing reality | Priority |
 |---|---|---|---|
@@ -37,7 +39,6 @@ Implementation phase at planning time: **DV2-03 ACTIVE**, F0–F7 already implem
 | Nâng cấp công trình | P3.7 real BuildingSystem cost/upgrade timer exists for eligible instances | Opening UI button and actual wallet/stone affordability unverified; do not conflate with forge craft | **M1 O5 conditional** |
 | Linh Lâm / renewable Linh Mộc | `BuildingSystem.TYPE_LINH_FOREST`, Forestry crew/profession, generic carry-cycle job and canonical Warehouse deposit implemented | Real P3.2 token/panel/assignment; production/save/cancel/autonomous repeat focused+full PASS | **M2 O7 CLOSED/PASS** |
 | Luyện Đan / pill making | `alchemy_hall`, timed-recipe authority, Hồi Xuân Đan resource and Needs/Dược consumer implemented | Real P3.2 Hall + Field→herb→pill→Dược chain focused+full PASS; legacy medicine remains separate | **M2 O8 CLOSED/PASS** |
-| <!-- historical row retired --> |ctual manufacturing | **M2 O8 (DESIGN)** |
 | Phù Lục, Trận Pháp, linh thú, thương nghiệp etc. | High-level future building/production specs | No verified full production chain; **not M1 or M2 deliverable** | **DEFERRED** |
 
 ### Detailed execution sequence and technical deliverables
@@ -54,9 +55,9 @@ The existing **O0–O6 table in §C** remains authoritative for detailed M1 acti
 8. **O7 / LINH LÂM (M2, only after M1):** design exactly ONE Lv1 forest producer with one material `linh_moc`, worker slot and legal forestry profession/assignment mapping, work time, upgrade hooks and deterministic output. Use canonical warehouse and policy. Confirm existing build/tree rules before changing code; no novel economy system. Pass real produced wood→warehouse→upgrade/craft, cancelled work and reload.
 
 
-### O7 design resolution — 2026-10-12 (DESIGN READY, CODE NOT AUTHORIZED)
+### O7 execution resolution — 2026-10-12 (CLOSED / FOCUSED PASS / FULL PASS)
 
-1. **Identity:** O7 adds one `linh_forest` Lv1 instance and one new `forestry` (Lâm Nghiệp) profession with `forestry_crew`. Do not reuse Mining/Herbalism and do not add Forestry talent-generation probabilities during O7.
+1. **Identity:** O7 owns one `linh_forest` Lv1 instance and one `forestry` (Lâm Nghiệp) profession with `forestry_crew`. Do not reuse Mining/Herbalism and do not add Forestry talent-generation probabilities during O7.
 2. **Shared job envelope:** `DiscipleState.work_cycle_state` is the generic worker-owned job envelope: `profession, building_id, optional task, phase, progress, carried_units`. Building definitions gain explicit profession/output/valid-phase metadata. Mine retains current persisted phase names; old saves require no semantic phase migration.
 3. **Producer-specific state boundary:** Mine and Linh Lâm use worker carry cycles. Spirit Field keeps its building-owned plot/timer data because multiple persistent plots are a distinct facility-owned process. Genericization must not flatten every producer into one storage shape.
 4. **Linh Lâm cycle:** `travel_out → harvesting → haul_back → WarehouseSystem.add(linh_moc)`. Cancel before carrying yields zero; cancel while carrying settles canonical output once; no double payout on reload/retry.
@@ -64,7 +65,7 @@ The existing **O0–O6 table in §C** remains authoritative for detailed M1 acti
 6. **Numeric boundary:** existing docs do not lock a Forest yield/timer. Recommended integration baseline for CODE O7 approval: **2 Linh Mộc per Lv1 completed cycle**, with a Mine-like low-complexity travel/work/haul envelope solely to establish the loop. These numbers are not M3 balance lock.
 7. **Upgrade boundary:** keep standard level/slot compatibility, but do not expose Forest upgrade spending until Forest base coefficients and milestone-component policy are explicitly authored. Prove the O7 consumer by reserving starter wood and spending newly produced wood through an existing canonical consumer instead.
 8. **Presentation:** add one landscape Linh Lâm token/destination, `WORK_FORESTRY` action/destination, management rows using real group/work commands, cycle/status and canonical Warehouse projection. No button can grant output.
-9. **Acceptance:** fresh/old-save deterministic initialization; actual UI assignment; direct cycle; autonomous repeat; profession XP; Warehouse delta; reserve/lock-aware real consumer; cancellation before/after carry; mid-cycle save/reload; no duplicate output; invariants; O1–O6/DV2/P3.7 cumulative.
+9. **Acceptance:** CLOSED/PASS. Real UI assignment, direct cycle, autonomous repeat, Forestry XP, canonical Warehouse delta, real consumer, cancellation semantics, mid-cycle reload and no-duplicate output are verified; O1–O6/DV2/P3.7 cumulative passed at O7 closure.
 10. **Source lesson:** adopt explicit building↔profession identity and work lifecycle only. Building manager/policy delegation remains a later scale feature; do not add dormant manager fields in O7. Reference server production authority remains unknown.
 
 9. **O8 / LUYỆN ĐAN NHẬP MÔN (M2, only after O7):** first verify whether existing `WorkforceSystem.PROF_ALCHEMY` and MedicineSupply have a legitimate crafting owner/consumable; if absent, define one minimal authorized recipe using real field crop, timed worker job, one canonical item output and one legitimate recipient/use (medical/cultivation) without new generic stat or speculative advanced recipe. Respect reserve/lock, shortage, equipment-like ownership policy as appropriate; backend+scene E2E/save.
