@@ -64,6 +64,7 @@ on:
       - '.github/workflows/dv2-03-realm-body-progress.yml'
 
       - 'godot/tests/presentation/p3_o6_m1_release_rehearsal_test.gd'
+      - 'godot/tests/presentation/p3_o9_m2_production_rehearsal_test.gd'
 permissions:
   contents: read
 
