@@ -26,6 +26,10 @@ Recommended contract:
 
 Why this model: current Godot has only the Alchemy enum, not a real Alchemy action/building/recipe/consumer. Current `medicine_stock` is a separate capped logistics authority. ZQZS reference shows recipe cost checks + timed building production state + begin/progress/reward request flow; use that architecture lesson only, not its IDs/formulas/assets/server assumptions.
 
+**ZQZS Alchemy deep-dive result:** VERIFIED client source shows recipe definitions carry material costs, recipe time, Đan Đạo-level gate, unlock gate, profession EXP and output/random metadata; the observed Luyện Đan building has one assigned `dizi_id`, timed production state, start/progress/reward messages, and later a per-building serial order queue. Finished healing pills are consumed through a generic disciple item-use flow that filters injured disciples rather than through the production window. Server debit/reward/anti-duplicate authority remains UNKNOWN.
+
+**Decision after comparison:** do **not** copy the single-manager/serial-queue model into O8. Our own canonical building tree already owns 2 Lv1 crafting worker slots, so keep one active timed recipe per active worker for the opening implementation; future advanced queue remains building-owned later. Keep standing-recipe automation because our game explicitly avoids mandatory per-batch clicking for routine production. Keep Hồi Xuân Đan consumption behind our medical/Needs authority rather than directly copying the reference generic-use UX.
+
 If CODE O8 is later approved, focused acceptance must prove a real fresh chain **Linh Điền → Thanh Linh Thảo → timed Luyện Đan → Hồi Xuân Đan in Warehouse → Dược Phòng consumption**, plus lock/reserve denial, worker reservation, exact-one input debit, mid-job persistence, no replay, profession XP and standing-policy repeat. Closing O8 requires focused official Godot 4.7.2 plus O1–O7/DV2/P3.7 cumulative. Windows remains **PENDING USER**.
 
 ---
