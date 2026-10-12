@@ -41,3 +41,6 @@ jobs:
         run: godot --headless --path godot -s res://tests/simulation/dv2_03_live_runtime_integration_test.gd
       - name: M2 multi-producer save contract
         run: godot --headless --path godot -s res://tests/presentation/p3_o9_m2_production_rehearsal_test.gd
+      - name: Full P3.7 cumulative backend regression
+        shell: pwsh
+        run: ./tools/godot/Verify-P3-7C1-Foundation-Dan-Tien-Full.ps1 -GodotBin /usr/local/bin/godot
