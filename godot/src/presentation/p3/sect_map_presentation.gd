@@ -11,6 +11,7 @@ const DEST_FORGE := &"forge"
 const DEST_MEDICINE := &"medicine"
 const DEST_MINE := &"mine"
 const DEST_LINH_FOREST := &"linh_forest"
+const DEST_ALCHEMY_HALL := &"alchemy_hall"
 const DEST_SPIRIT_FIELD := &"spirit_field"
 const DEST_GUIDANCE := &"guidance"
 const DEST_GATE := &"gate"
@@ -26,6 +27,7 @@ const DESTINATION_POSITIONS := {
     "medicine": Vector2(815.0, 520.0),
     "mine": Vector2(350.0, 365.0),
     "linh_forest": Vector2(185.0, 370.0),
+    "alchemy_hall": Vector2(980.0, 520.0),
     "spirit_field": Vector2(190.0, 520.0),
     "guidance": Vector2(1135.0, 292.0),
     "gate": Vector2(1130.0, 515.0)
@@ -49,6 +51,7 @@ const ACTION_LABELS := {
     "WORK_FORGING": "Đang luyện khí",
     "WORK_HERBALISM": "Đang làm Linh Điền",
     "WORK_FORESTRY": "Đang làm Lâm Nghiệp",
+    "WORK_ALCHEMY": "Đang luyện đan",
     "HOLD": "Đang chờ lệnh",
     "BREAKTHROUGH": "Đang phá cảnh"
 }
@@ -65,6 +68,8 @@ static func destination_for_action(action: StringName, previous: StringName = DE
             return DEST_SPIRIT_FIELD
         &"WORK_FORESTRY":
             return DEST_LINH_FOREST
+        &"WORK_ALCHEMY":
+            return DEST_ALCHEMY_HALL
         &"WORK_FORGING":
             return DEST_FORGE
         &"REST":

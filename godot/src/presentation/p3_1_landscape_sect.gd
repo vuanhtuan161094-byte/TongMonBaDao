@@ -274,6 +274,7 @@ func _build_buildings() -> void:
         {"id":"warehouse", "name":"Kho", "pos":Vector2(952, 332), "size":Vector2(132, 92), "body":Color(0.52, 0.39, 0.24, 1.0), "roof":Color(0.26, 0.34, 0.31, 1.0), "kind":"warehouse"},
         {"id":"forge", "name":"Luyện Khí Đường", "pos":Vector2(466, 432), "size":Vector2(158, 112), "body":Color(0.56, 0.31, 0.20, 1.0), "roof":Color(0.30, 0.29, 0.27, 1.0), "kind":"forge"},
         {"id":"medicine", "name":"Dược Phòng", "pos":Vector2(748, 466), "size":Vector2(152, 100), "body":Color(0.40, 0.55, 0.34, 1.0), "roof":Color(0.24, 0.38, 0.31, 1.0), "kind":"medicine"},
+        {"id":"alchemy_hall", "name":"Luyện Đan Điện", "pos":Vector2(910, 470), "size":Vector2(142, 96), "body":Color(0.52, 0.45, 0.31, 1.0), "roof":Color(0.43, 0.28, 0.24, 1.0), "kind":"alchemy"},
         {"id":"mine", "name":"Khai Khoáng", "pos":Vector2(288, 304), "size":Vector2(142, 108), "body":Color(0.43, 0.40, 0.35, 1.0), "roof":Color(0.23, 0.24, 0.23, 1.0), "kind":"mine"},
         {"id":"linh_forest", "name":"Linh Lâm", "pos":Vector2(105, 315), "size":Vector2(150, 100), "body":Color(0.31, 0.50, 0.29, 1.0), "roof":Color(0.20, 0.38, 0.24, 1.0), "kind":"forest"},
         {"id":"spirit_field", "name":"Linh Điền", "pos":Vector2(105, 455), "size":Vector2(160, 98), "body":Color(0.43, 0.55, 0.32, 1.0), "roof":Color(0.33, 0.42, 0.25, 1.0), "kind":"field"},
@@ -390,6 +391,9 @@ func _build_playable_building_token(data: Dictionary) -> void:
                 _add_building_block(holder, Vector2(22, h * 0.66), Vector2(22, 11), Color(0.29, 0.48, 0.25, 1.0), 6)
                 _add_building_block(holder, Vector2(50, h * 0.66), Vector2(22, 11), Color(0.33, 0.55, 0.28, 1.0), 6)
                 _add_building_block(holder, Vector2(78, h * 0.66), Vector2(22, 11), Color(0.27, 0.45, 0.24, 1.0), 6)
+            elif kind == "alchemy":
+                _add_building_block(holder, Vector2(w * 0.37, h * 0.52), Vector2(w * 0.26, h * 0.26), Color(0.30, 0.31, 0.28, 1.0), 10)
+                _add_building_block(holder, Vector2(w * 0.43, h * 0.36), Vector2(w * 0.14, h * 0.20), Color(0.74, 0.48, 0.20, 1.0), 8)
 
     var name_plate := Label.new()
     name_plate.text = str(data.get("name", destination))
@@ -685,6 +689,7 @@ func _building_name(destination: StringName) -> String:
         SectMapPresentation.DEST_MEDICINE: return "Dược Phòng"
         SectMapPresentation.DEST_MINE: return "Khu Khai Khoáng"
         SectMapPresentation.DEST_LINH_FOREST: return "Linh Lâm"
+        SectMapPresentation.DEST_ALCHEMY_HALL: return "Luyện Đan Điện"
         SectMapPresentation.DEST_SPIRIT_FIELD: return "Linh Điền"
         SectMapPresentation.DEST_GUIDANCE: return "Dẫn Tiên Đài"
         SectMapPresentation.DEST_GATE: return "Tông Môn Đại Môn"
@@ -716,6 +721,19 @@ func _building_detail(destination: StringName) -> String:
                 BuildingSystem.new().worker_slots(forest),
                 _warehouse_pair(&"linh_moc")
             ]
+        SectMapPresentation.DEST_ALCHEMY_HALL:
+            var hall := BuildingSystem.new().primary_building(state, BuildingSystem.TYPE_ALCHEMY_HALL)
+            if hall == null:
+                return "Luyện Đan Điện chưa sẵn sàng."
+            var jobs := BuildingSystem.new().alchemy_jobs(state, hall)
+            return "Cấp: %d\nĐệ tử hoạt động: %d/%d\nMẻ đang luyện: %d\nThanh Linh Thảo: %s\nHồi Xuân Đan: %s\n\nNguyên liệu commit đúng một lần khi bắt đầu; thành phẩm chỉ vào Kho khi đủ thời gian." % [
+                hall.level,
+                BuildingSystem.new().active_worker_ids(state, hall).size(),
+                BuildingSystem.new().worker_slots(hall),
+                jobs.size(),
+                _warehouse_pair(&"thanh_linh_thao", true),
+                _warehouse_pair(&"hoi_xuan_dan", true)
+            ]
         SectMapPresentation.DEST_SPIRIT_FIELD:
             var field := BuildingSystem.new().primary_building(state, BuildingSystem.TYPE_SPIRIT_FIELD)
             if field == null:
@@ -745,7 +763,7 @@ func _building_detail(destination: StringName) -> String:
         SectMapPresentation.DEST_RESIDENCE:
             return "Đệ tử đang nghỉ: %d\nSức chứa chỗ ở: %d\n\nNghỉ ngơi giúp hồi thể lực và một phần thương thế." % [_count_action(&"REST"), state.sect.lodging_capacity]
         SectMapPresentation.DEST_MEDICINE:
-            return "Đệ tử đang trị thương: %d\nThuốc dự trữ: %d\n\nDược Phòng hỗ trợ hồi phục khi tông môn còn thuốc." % [_count_action(&"HEAL"), state.sect.medicine_stock]
+            return "Đệ tử đang trị thương: %d\nThuốc hậu cần: %d\nHồi Xuân Đan: %s\n\nDược Phòng có thể dùng Hồi Xuân Đan canonical mà không tiêu thuốc hậu cần." % [_count_action(&"HEAL"), state.sect.medicine_stock, _warehouse_pair(&"hoi_xuan_dan", true)]
         SectMapPresentation.DEST_GATE:
             return "Đệ tử ngoài tông: %d\nĐang săn/di chuyển/chiến đấu: %d\n\nĐại Môn là nơi theo dõi người đang xuất môn và triệu hồi họ khi cần." % [_count_outside(), _count_actions([&"HUNT", &"TRAVEL", &"COMBAT", &"LOOT", &"RETURN_SECT"])]
         _:

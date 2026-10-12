@@ -712,6 +712,8 @@ func _rebuild_building_management_controls() -> void:
             _build_mine_upgrade_control()
         SectMapPresentation.DEST_LINH_FOREST:
             _build_work_management(WorkforceSystem.PROF_FORESTRY, &"forestry_crew", "Đội Lâm Nghiệp", "Thu hoạch")
+        SectMapPresentation.DEST_ALCHEMY_HALL:
+            _build_alchemy_management()
         SectMapPresentation.DEST_SPIRIT_FIELD:
             _build_spirit_field_management()
         SectMapPresentation.DEST_FORGE:
@@ -726,6 +728,7 @@ func _rebuild_building_management_controls() -> void:
             _build_lodging_expansion_control()
         SectMapPresentation.DEST_MEDICINE:
             _build_needs_priority_controls("ƯU TIÊN HẬU CẦN")
+            _build_healing_pill_controls()
         SectMapPresentation.DEST_GUIDANCE:
             _build_guidance_recruitment_controls()
         SectMapPresentation.DEST_GATE:
@@ -1139,12 +1142,16 @@ func _build_work_management(profession_id: StringName, group_id: StringName, gro
         var disciple: DiscipleState = state.disciples[raw_id]
         var row := _new_management_row(disciple)
         var in_group := disciple.work_group_id == group_id
+        var timed_recipe_busy := building_system.disciple_has_active_timed_recipe(state, disciple.id)
 
         var group_button := Button.new()
         group_button.name = "Group_%s_%s" % [str(group_id), str(disciple.id)]
         group_button.text = "Rút đội" if in_group else "Phân đội"
         group_button.custom_minimum_size = Vector2(70, 34)
         group_button.add_theme_font_size_override("font_size", 11)
+        if timed_recipe_busy:
+            group_button.disabled = true
+            group_button.tooltip_text = "Đệ tử đang hoàn thành mẻ đã commit; không thể đổi đội."
         if in_group:
             group_button.pressed.connect(Callable(self, "_assign_building_group").bind(disciple.id, &"", "Đã rút %s khỏi %s." % [disciple.display_name, group_label]))
         else:
@@ -1499,6 +1506,8 @@ func _building_operation_text(destination: StringName) -> String:
             return _mine_operation_text()
         SectMapPresentation.DEST_LINH_FOREST:
             return _linh_forest_operation_text()
+        SectMapPresentation.DEST_ALCHEMY_HALL:
+            return _alchemy_operation_text()
         SectMapPresentation.DEST_SPIRIT_FIELD:
             return _spirit_field_operation_text()
         SectMapPresentation.DEST_FORGE:
@@ -1558,6 +1567,96 @@ func _main_hall_operation_text() -> String:
         _work_policy_label(state.sect.work_policy),
         _needs_priority_label(state.sect.needs_priority),
         _equipment_policy_label(state.sect.equipment_policy)
+    ]
+
+func _build_alchemy_management() -> void:
+    _build_work_management(WorkforceSystem.PROF_ALCHEMY, &"alchemy_crew", "Đội Luyện Đan", "Luyện đan")
+    var hall := BuildingSystem.new().primary_building(state, BuildingSystem.TYPE_ALCHEMY_HALL)
+    if hall == null:
+        return
+    _add_management_section_label("CÔNG THỨC THƯỜNG TRỰC")
+    var enabled := bool(hall.production_state.get("recipe_enabled", true))
+    var toggle := Button.new()
+    toggle.name = "AlchemyRecipeToggle"
+    toggle.text = "Tắt tự luyện" if enabled else "Bật tự luyện"
+    toggle.custom_minimum_size = Vector2(170, 34)
+    toggle.pressed.connect(Callable(self, "_set_alchemy_recipe_enabled_from_ui").bind(hall.id, not enabled))
+    building_management_container.add_child(toggle)
+
+func _set_alchemy_recipe_enabled_from_ui(hall_id: StringName, enabled: bool) -> void:
+    var ok := BuildingSystem.new().set_alchemy_recipe_enabled(state, hall_id, enabled)
+    building_management_feedback = ("Đã bật tự luyện Hồi Xuân Đan." if enabled else "Đã tắt mẻ mới; mẻ đã commit vẫn hoàn thành.") if ok else "Không thể đổi chính sách Luyện Đan."
+    _refresh_building_operation_content()
+
+func _build_healing_pill_controls() -> void:
+    _add_management_section_label("HỒI XUÂN ĐAN")
+    var available := WarehouseSystem.new().available_quantity(state, NeedsSystem.HEALING_PILL_ID)
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    var shown := 0
+    for raw_id in ids:
+        var disciple: DiscipleState = state.disciples[raw_id]
+        if disciple.region_id != &"sect" or disciple.hp >= disciple.max_hp:
+            continue
+        var row := _new_management_row(disciple)
+        var use := Button.new()
+        use.name = "UsePill_%s" % str(disciple.id)
+        use.text = "Dùng đan"
+        use.custom_minimum_size = Vector2(92, 34)
+        use.disabled = available <= 0
+        if use.disabled:
+            use.tooltip_text = "Không có Hồi Xuân Đan có thể dùng trong Kho."
+        use.pressed.connect(Callable(self, "_use_healing_pill_from_ui").bind(disciple.id))
+        row.add_child(use)
+        shown += 1
+    if shown == 0:
+        _add_management_section_label("Không có đệ tử bị thương đang ở trong tông.")
+
+func _use_healing_pill_from_ui(disciple_id: StringName) -> void:
+    if not state.disciples.has(disciple_id):
+        return
+    var disciple: DiscipleState = state.disciples[disciple_id]
+    var before := disciple.hp
+    var ok := needs_system.use_healing_pill(state, disciple)
+    building_management_feedback = (
+        "Đã dùng 1 Hồi Xuân Đan cho %s: HP %.0f → %.0f." % [disciple.display_name, before, disciple.hp]
+        if ok else "Không thể dùng Hồi Xuân Đan cho mục tiêu này."
+    )
+    _refresh_building_operation_content()
+
+func _alchemy_operation_text() -> String:
+    var buildings := BuildingSystem.new()
+    var hall := buildings.primary_building(state, BuildingSystem.TYPE_ALCHEMY_HALL)
+    if hall == null:
+        return "Luyện Đan Điện chưa tồn tại trong trạng thái hiện tại."
+    var jobs := buildings.alchemy_jobs(state, hall)
+    var lines: Array[String] = []
+    for raw_job in jobs:
+        var job: Dictionary = raw_job
+        var worker_id := StringName(job.get("worker_id", ""))
+        var worker_name := str(worker_id)
+        if state.disciples.has(worker_id):
+            worker_name = state.disciples[worker_id].display_name
+        lines.append("• %s · còn %d phút" % [worker_name, maxi(int(job.get("finish_tick", state.tick)) - state.tick, 0)])
+    if lines.is_empty():
+        lines.append("• Không có mẻ đang luyện")
+    return (
+        "LUYỆN ĐAN ĐIỆN · Lv%d\n"
+        + "Chỗ hoạt động: %d/%d · mẻ đang luyện: %d\n"
+        + "Công thức thường trực: Hồi Xuân Đan · %s\n"
+        + "Thanh Linh Thảo: %s\n"
+        + "Hồi Xuân Đan: %s\n"
+        + "Công thức: 3 Thanh Linh Thảo → 1 Hồi Xuân Đan · nền 6 phút\n\n"
+        + "MẺ ĐANG CHẠY\n%s"
+    ) % [
+        hall.level,
+        buildings.active_worker_ids(state, hall).size(),
+        buildings.worker_slots(hall),
+        jobs.size(),
+        "BẬT" if bool(hall.production_state.get("recipe_enabled", true)) else "TẮT",
+        _warehouse_pair(&"thanh_linh_thao", true),
+        _warehouse_pair(&"hoi_xuan_dan", true),
+        "\n".join(lines)
     ]
 
 func _linh_forest_operation_text() -> String:
@@ -1878,7 +1977,8 @@ func _medicine_operation_text() -> String:
         injured.append("• Không có đệ tử dưới ngưỡng HP 72%")
 
     return (
-        "Thuốc: %d / %d\n"
+        "Thuốc hậu cần: %d / %d\n"
+        + "Hồi Xuân Đan: %s\n"
         + "Vật tư: %d / %d\n"
         + "Đang trị thương: %d\n"
         + "Ưu tiên hậu cần: %s\n"
@@ -1887,6 +1987,7 @@ func _medicine_operation_text() -> String:
         + "Điều chỉnh ưu tiên hậu cần để cân bằng thuốc và vật tư theo tình hình hiện tại."
     ) % [
         state.sect.medicine_stock, NeedsSystem.MEDICINE_CAP,
+        _warehouse_pair(NeedsSystem.HEALING_PILL_ID, true),
         state.sect.supply_stock, NeedsSystem.SUPPLY_CAP,
         _count_action(&"HEAL"),
         _needs_priority_label(state.sect.needs_priority),
@@ -1915,7 +2016,7 @@ func _warehouse_operation_text() -> String:
         + "Thanh Thiết: %s · Linh Mộc: %s\n"
         + "Tinh Lang Bì: %s · Yêu Đan: %s\n"
         + "Linh Cốc: %s · Thanh Linh Thảo: %s\n"
-        + "Tử Vân Thảo: %s\n\n"
+        + "Tử Vân Thảo: %s · Hồi Xuân Đan: %s\n\n"
         + "TRANG BỊ\n"
         + "Trong kho: %d · Đang bán: %d · Đã trang bị: %d\n\n"
         + "Trang bị và vật tư được tổng hợp tại đây."
@@ -1929,6 +2030,7 @@ func _warehouse_operation_text() -> String:
         _warehouse_pair(&"linh_coc", true),
         _warehouse_pair(&"thanh_linh_thao", true),
         _warehouse_pair(&"tu_van_thao", true),
+        _warehouse_pair(&"hoi_xuan_dan", true),
         storage_count, shop_count, equipped_count
     ]
 
@@ -2394,6 +2496,7 @@ func _work_group_label_id(group_id: StringName) -> String:
     match group_id:
         &"mining_crew": return "Đội Khai Khoáng"
         &"forestry_crew": return "Đội Lâm Nghiệp"
+        &"alchemy_crew": return "Đội Luyện Đan"
         &"forge_hall": return "Luyện Khí Đường"
         &"": return "Chưa phân"
         _: return str(group_id)
