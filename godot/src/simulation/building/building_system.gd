@@ -3,12 +3,14 @@ extends RefCounted
 
 const TYPE_MINE := &"mine"
 const TYPE_LINH_FOREST := &"linh_forest"
+const TYPE_ALCHEMY_HALL := &"alchemy_hall"
 const TYPE_SPIRIT_FIELD := &"spirit_field"
 const TYPE_GUIDANCE_PLATFORM := &"dan_tien_dai"
 const TYPE_BODY_TRAINING := &"ren_than_duong"
 
 const PROF_MINING := &"mining"
 const PROF_FORESTRY := &"forestry"
+const PROF_ALCHEMY := &"alchemy"
 const PROF_HERBALISM := &"herbalism"
 
 const STATUS_ACTIVE := &"active"
@@ -96,6 +98,17 @@ const DEFINITIONS := {
         "upgrade_enabled": false,
         "requires_milestone_component": false
     },
+    "alchemy_hall": {
+        "name": "Luyện Đan Điện",
+        "max_level": 100,
+        "worker_group_id": "alchemy_crew",
+        "profession_id": "alchemy",
+        "job_model": "timed_recipe",
+        "base_worker_slots": 2,
+        "worker_slot_every": 10,
+        "upgrade_enabled": false,
+        "requires_milestone_component": false
+    },
     "spirit_field": {
         "name": "Linh Điền",
         "max_level": 100,
@@ -143,6 +156,7 @@ const DEFINITIONS := {
 var equipment := EquipmentSystem.new()
 var warehouse := WarehouseSystem.new()
 var crop_registry := SpiritCropRegistry.new()
+var alchemy_registry := AlchemyRecipeRegistry.new()
 var profession_modifiers := ProfessionModifierSystem.new()
 
 func initialize(state: SimulationState) -> void:
@@ -164,6 +178,13 @@ func initialize(state: SimulationState) -> void:
         }
         state.sect.workforce_event_count += 1
 
+    if not state.sect.work_groups.has("alchemy_crew"):
+        state.sect.work_groups["alchemy_crew"] = {
+            "name": "Đội Luyện Đan",
+            "priorities": {"alchemy": 3}
+        }
+        state.sect.workforce_event_count += 1
+
     if primary_building(state, TYPE_MINE) == null:
         var mine := create_building(TYPE_MINE, 1)
         state.buildings[str(mine.id)] = mine
@@ -172,6 +193,12 @@ func initialize(state: SimulationState) -> void:
     if primary_building(state, TYPE_LINH_FOREST) == null:
         var forest := create_building(TYPE_LINH_FOREST, 1)
         state.buildings[str(forest.id)] = forest
+        state.building_event_count += 1
+
+    if primary_building(state, TYPE_ALCHEMY_HALL) == null:
+        var alchemy_hall := create_building(TYPE_ALCHEMY_HALL, 1)
+        alchemy_hall.production_state = _default_alchemy_state()
+        state.buildings[str(alchemy_hall.id)] = alchemy_hall
         state.building_event_count += 1
 
     if primary_building(state, TYPE_SPIRIT_FIELD) == null:
@@ -195,6 +222,8 @@ func initialize(state: SimulationState) -> void:
 
     for field in _buildings_of_type(state, TYPE_SPIRIT_FIELD):
         _ensure_spirit_field_state(state, field)
+    for hall in _buildings_of_type(state, TYPE_ALCHEMY_HALL):
+        _ensure_alchemy_state(hall)
 
 # Add the selected V2 training facility only in the V2 live runtime, not in
 # older P3.7 factories/test fixtures. Repeat-safe on old loaded live saves.
@@ -364,6 +393,13 @@ func work_available(state: SimulationState, profession_id: StringName, disciple:
         PROF_MINING, PROF_FORESTRY:
             var producer := building_for_profession(state, profession_id, disciple)
             return producer != null and (disciple == null or can_disciple_work(state, producer, disciple))
+        PROF_ALCHEMY:
+            if disciple == null:
+                for hall in _buildings_of_type(state, TYPE_ALCHEMY_HALL):
+                    if _alchemy_has_startable_worker(state, hall):
+                        return true
+                return false
+            return bool(alchemy_can_start(state, disciple).get("ok", false))
         PROF_HERBALISM:
             if disciple != null:
                 var field := _building_for_disciple(state, TYPE_SPIRIT_FIELD, disciple)
@@ -538,6 +574,171 @@ func process_tick(state: SimulationState) -> void:
                 _complete_upgrade(state, building)
         if building.building_type == TYPE_SPIRIT_FIELD:
             _process_spirit_field_plots(state, building)
+        elif building.building_type == TYPE_ALCHEMY_HALL:
+            _process_alchemy_jobs(state, building)
+
+func _default_alchemy_state() -> Dictionary:
+    return {"recipe_enabled": true, "recipe_id": str(AlchemyRecipeRegistry.RECIPE_HOI_XUAN_DAN), "job_sequence": 0, "jobs": []}
+
+func _ensure_alchemy_state(hall: BuildingState) -> Dictionary:
+    if hall == null or hall.building_type != TYPE_ALCHEMY_HALL:
+        return {}
+    var raw := hall.production_state
+    var data: Dictionary = raw.duplicate(true) if raw is Dictionary else {}
+    data["recipe_enabled"] = bool(data.get("recipe_enabled", true))
+    var recipe_id := StringName(data.get("recipe_id", str(AlchemyRecipeRegistry.RECIPE_HOI_XUAN_DAN)))
+    if not alchemy_registry.has(recipe_id):
+        recipe_id = AlchemyRecipeRegistry.RECIPE_HOI_XUAN_DAN
+    data["recipe_id"] = str(recipe_id)
+    data["job_sequence"] = maxi(int(data.get("job_sequence", 0)), 0)
+    var jobs: Array = []
+    var seen_workers: Dictionary = {}
+    var raw_jobs = data.get("jobs", [])
+    if raw_jobs is Array:
+        for raw_job in raw_jobs:
+            if not (raw_job is Dictionary):
+                continue
+            var worker_id := str(raw_job.get("worker_id", ""))
+            var job_id := str(raw_job.get("job_id", ""))
+            var current_recipe := StringName(raw_job.get("recipe_id", ""))
+            if worker_id == "" or job_id == "" or seen_workers.has(worker_id) or not alchemy_registry.has(current_recipe):
+                continue
+            var started_tick := int(raw_job.get("started_tick", 0))
+            var finish_tick := int(raw_job.get("finish_tick", started_tick + 1))
+            if finish_tick <= started_tick:
+                continue
+            var inputs_raw = raw_job.get("inputs", {})
+            var inputs: Dictionary = inputs_raw.duplicate(true) if inputs_raw is Dictionary else {}
+            jobs.append({
+                "job_id": job_id,
+                "recipe_id": str(current_recipe),
+                "worker_id": worker_id,
+                "started_tick": started_tick,
+                "finish_tick": finish_tick,
+                "inputs": inputs,
+                "output_resource_id": str(raw_job.get("output_resource_id", alchemy_registry.output_resource_id(current_recipe))),
+                "output_quantity": maxi(int(raw_job.get("output_quantity", alchemy_registry.output_quantity(current_recipe))), 1),
+                "profession_xp_gain": maxf(float(raw_job.get("profession_xp_gain", 0.0)), 0.0)
+            })
+            seen_workers[worker_id] = true
+    data["jobs"] = jobs
+    hall.production_state = data
+    return data
+
+func alchemy_jobs(state: SimulationState, hall: BuildingState = null) -> Array:
+    var target := hall if hall != null else primary_building(state, TYPE_ALCHEMY_HALL)
+    if target == null:
+        return []
+    return Array(_ensure_alchemy_state(target).get("jobs", [])).duplicate(true)
+
+func active_alchemy_job_for_worker(state: SimulationState, disciple_id: StringName) -> Dictionary:
+    for hall in _buildings_of_type(state, TYPE_ALCHEMY_HALL):
+        for raw_job in alchemy_jobs(state, hall):
+            if raw_job is Dictionary and str(raw_job.get("worker_id", "")) == str(disciple_id):
+                return (raw_job as Dictionary).duplicate(true)
+    return {}
+
+func disciple_has_active_timed_recipe(state: SimulationState, disciple_id: StringName) -> bool:
+    return not active_alchemy_job_for_worker(state, disciple_id).is_empty()
+
+func set_alchemy_recipe_enabled(state: SimulationState, hall_id: StringName, enabled: bool) -> bool:
+    if not state.buildings.has(str(hall_id)):
+        return false
+    var hall: BuildingState = state.buildings[str(hall_id)]
+    if hall.building_type != TYPE_ALCHEMY_HALL:
+        return false
+    var data := _ensure_alchemy_state(hall)
+    data["recipe_enabled"] = enabled
+    hall.production_state = data
+    state.building_event_count += 1
+    return true
+
+func alchemy_can_start(state: SimulationState, disciple: DiscipleState) -> Dictionary:
+    if disciple == null or disciple.region_id != &"sect":
+        return {"ok": false, "reason": "invalid_worker"}
+    var hall := _building_for_disciple(state, TYPE_ALCHEMY_HALL, disciple)
+    if hall == null or not can_disciple_work(state, hall, disciple):
+        return {"ok": false, "reason": "no_active_alchemy_slot"}
+    var data := _ensure_alchemy_state(hall)
+    if not bool(data.get("recipe_enabled", true)):
+        return {"ok": false, "reason": "recipe_policy_disabled"}
+    if disciple_has_active_timed_recipe(state, disciple.id):
+        return {"ok": false, "reason": "worker_busy_alchemy"}
+    var recipe_id := StringName(data.get("recipe_id", str(AlchemyRecipeRegistry.RECIPE_HOI_XUAN_DAN)))
+    var requirements := alchemy_registry.inputs(recipe_id)
+    if not warehouse.can_consume_requirements(state, requirements):
+        return {"ok": false, "reason": "insufficient_or_reserved_inputs"}
+    return {"ok": true, "hall_id": str(hall.id), "recipe_id": str(recipe_id), "requirements": requirements}
+
+func perform_alchemy_step(state: SimulationState, disciple: DiscipleState, profession_level: int, work_speed: float, profession_xp_gain: float) -> Dictionary:
+    var check := alchemy_can_start(state, disciple)
+    if not bool(check.get("ok", false)):
+        return {"ok": false, "completed": false, "reason": str(check.get("reason", "cannot_start"))}
+    var hall: BuildingState = state.buildings[str(check.get("hall_id", ""))]
+    var data := _ensure_alchemy_state(hall)
+    var recipe_id := StringName(check.get("recipe_id", ""))
+    if profession_level < alchemy_registry.required_profession_level(recipe_id):
+        return {"ok": false, "completed": false, "reason": "profession_level_too_low"}
+    var requirements: Dictionary = check.get("requirements", {}).duplicate(true)
+    if not warehouse.consume_requirements(state, requirements):
+        return {"ok": false, "completed": false, "reason": "input_commit_failed"}
+    var sequence := int(data.get("job_sequence", 0)) + 1
+    var duration := maxi(1, int(ceil(float(alchemy_registry.base_cycle_ticks(recipe_id)) / maxf(work_speed, 0.25))))
+    var job := {
+        "job_id": "%s_job_%06d" % [str(hall.id), sequence],
+        "recipe_id": str(recipe_id),
+        "worker_id": str(disciple.id),
+        "started_tick": state.tick,
+        "finish_tick": state.tick + duration,
+        "inputs": requirements.duplicate(true),
+        "output_resource_id": str(alchemy_registry.output_resource_id(recipe_id)),
+        "output_quantity": alchemy_registry.output_quantity(recipe_id),
+        "profession_xp_gain": maxf(profession_xp_gain, 0.0)
+    }
+    var jobs: Array = data.get("jobs", [])
+    jobs.append(job)
+    data["jobs"] = jobs
+    data["job_sequence"] = sequence
+    hall.production_state = data
+    state.building_event_count += 1
+    return {"ok": true, "completed": false, "started": true, "job": job.duplicate(true), "building_id": str(hall.id), "finish_tick": int(job["finish_tick"])}
+
+func _alchemy_has_startable_worker(state: SimulationState, hall: BuildingState) -> bool:
+    for worker_id in active_worker_ids(state, hall):
+        if state.disciples.has(worker_id) and bool(alchemy_can_start(state, state.disciples[worker_id]).get("ok", false)):
+            return true
+    return false
+
+func _process_alchemy_jobs(state: SimulationState, hall: BuildingState) -> void:
+    var data := _ensure_alchemy_state(hall)
+    var jobs: Array = data.get("jobs", [])
+    if jobs.is_empty():
+        return
+    var remaining: Array = []
+    var changed := false
+    for raw_job in jobs:
+        var job: Dictionary = raw_job
+        if state.tick < int(job.get("finish_tick", state.tick + 1)):
+            remaining.append(job)
+            continue
+        var output_id := StringName(job.get("output_resource_id", ""))
+        var output_quantity := maxi(int(job.get("output_quantity", 0)), 0)
+        if output_id != &"" and output_quantity > 0:
+            _deposit_resource(state, hall, str(output_id), output_quantity)
+        var worker_id := StringName(job.get("worker_id", ""))
+        if state.disciples.has(worker_id):
+            var worker: DiscipleState = state.disciples[worker_id]
+            var xp_gain := maxf(float(job.get("profession_xp_gain", 0.0)), 0.0)
+            if xp_gain > 0.0:
+                worker.profession_xp[str(PROF_ALCHEMY)] = float(worker.profession_xp.get(str(PROF_ALCHEMY), 0.0)) + xp_gain
+            worker.metrics["work_completions"] = int(worker.metrics.get("work_completions", 0)) + 1
+            worker.metrics["alchemy_completions"] = int(worker.metrics.get("alchemy_completions", 0)) + 1
+            state.sect.workforce_event_count += 1
+        changed = true
+    if changed:
+        data["jobs"] = remaining
+        hall.production_state = data
+        state.building_event_count += 1
 
 func perform_mining_step(state: SimulationState, disciple: DiscipleState, work_speed: float) -> Dictionary:
     return perform_resource_job_step(state, disciple, work_speed, PROF_MINING)
@@ -766,6 +967,25 @@ func validate_invariants(state: SimulationState) -> Array[String]:
         for milestone in building.unlocked_milestones:
             if not MILESTONE_LEVELS.has(milestone) or milestone > building.level:
                 errors.append("Building %s has invalid milestone %d." % [building.id, milestone])
+
+        if building.building_type == TYPE_ALCHEMY_HALL:
+            var alchemy_data := _ensure_alchemy_state(building)
+            var seen_job_ids: Dictionary = {}
+            var seen_workers: Dictionary = {}
+            for raw_job in alchemy_data.get("jobs", []):
+                if not (raw_job is Dictionary):
+                    errors.append("Alchemy Hall %s contains invalid job data." % building.id)
+                    continue
+                var job_id := str(raw_job.get("job_id", ""))
+                var worker_id := str(raw_job.get("worker_id", ""))
+                if job_id == "" or seen_job_ids.has(job_id):
+                    errors.append("Alchemy Hall %s has invalid/duplicate job id." % building.id)
+                seen_job_ids[job_id] = true
+                if worker_id == "" or seen_workers.has(worker_id) or not state.disciples.has(StringName(worker_id)):
+                    errors.append("Alchemy Hall %s has invalid/duplicate worker reservation." % building.id)
+                seen_workers[worker_id] = true
+                if int(raw_job.get("finish_tick", 0)) <= int(raw_job.get("started_tick", -1)):
+                    errors.append("Alchemy Hall %s has invalid job timer." % building.id)
 
         if building.building_type == TYPE_SPIRIT_FIELD:
             var data = building.production_state

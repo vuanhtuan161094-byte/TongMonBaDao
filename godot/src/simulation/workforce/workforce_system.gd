@@ -114,6 +114,12 @@ func assign_group(state: SimulationState, disciple_id: StringName, group_id: Str
         var released := DiscipleBodyTrainingFacilityV2.release_slot(state,disciple_id)
         if not bool(released.get("ok",false)):
             return false
+    if (
+        state.p3_7_buildings_enabled
+        and building_system.disciple_has_active_timed_recipe(state, disciple.id)
+        and group_id != building_system.worker_group_for_profession(PROF_ALCHEMY)
+    ):
+        return false
     if state.p3_7_buildings_enabled and not disciple.work_cycle_state.is_empty():
         var cycle_profession := StringName(disciple.work_cycle_state.get("profession_id", disciple.work_cycle_state.get("profession", "")))
         var expected_group := building_system.worker_group_for_profession(cycle_profession)
@@ -222,6 +228,9 @@ func issue_command(state: SimulationState, disciple_id: StringName, kind: String
         return false
     var disciple: DiscipleState = state.disciples[disciple_id]
 
+    if state.p3_7_buildings_enabled and building_system.disciple_has_active_timed_recipe(state, disciple.id):
+        return false
+
     # O3/O4 fail-closed production command boundary: a direct Mine/Field
     # order is only real when the authoritative building can start work for
     # this disciple now. Waiting slots, occupied plots and unpaid crops are not
@@ -278,6 +287,8 @@ func next_action(state: SimulationState, disciple: DiscipleState) -> StringName:
 
     if state.p3_7_buildings_enabled and building_system.disciple_has_active_spirit_plot(state, disciple.id):
         return &""
+    if state.p3_7_buildings_enabled and building_system.disciple_has_active_timed_recipe(state, disciple.id):
+        return &"HOLD"
 
     var direct := _direct_command_action(state, disciple)
     if direct != &"":
@@ -352,6 +363,7 @@ func choose_work_profession(state: SimulationState, disciple: DiscipleState) -> 
     if state.p3_7_buildings_enabled:
         candidates.append(PROF_HERBALISM)
         candidates.append(PROF_FORESTRY)
+        candidates.append(PROF_ALCHEMY)
     var best := &""
     var best_score := -1.0e30
     for profession_id in candidates:
@@ -378,6 +390,8 @@ func perform_work(state: SimulationState, disciple: DiscipleState, profession_id
             return _perform_p3_7_mining(state, disciple)
         if profession_id == PROF_FORESTRY:
             return _perform_p3_7_forestry(state, disciple)
+        if profession_id == PROF_ALCHEMY:
+            return _perform_p3_7_alchemy(state, disciple)
         if profession_id == PROF_HERBALISM:
             return _perform_p3_7_herbalism(state, disciple)
     var duration := _work_duration(profession_id)
@@ -499,6 +513,23 @@ func _perform_p3_7_forestry(state: SimulationState, disciple: DiscipleState) -> 
     result["xp_gain"] = xp_gain
 
     if command_kind(disciple) == COMMAND_WORK and command_target(disciple) == PROF_FORESTRY:
+        clear_command(state, disciple)
+    return result
+
+func _perform_p3_7_alchemy(state: SimulationState, disciple: DiscipleState) -> Dictionary:
+    var xp_gain := BASE_WORK_XP * _learning_multiplier(state, disciple, PROF_ALCHEMY)
+    var result := building_system.perform_alchemy_step(
+        state,
+        disciple,
+        profession_level_for_state(state, disciple, PROF_ALCHEMY),
+        _work_speed(state, disciple, PROF_ALCHEMY),
+        xp_gain
+    )
+    if not bool(result.get("ok", false)):
+        return result
+    disciple.metrics["work_actions"] = int(disciple.metrics.get("work_actions", 0)) + 1
+    result["work_cultivation_gain"] = _grant_p3_7_work_cultivation(state, disciple, PROF_ALCHEMY)
+    if bool(result.get("started", false)) and command_kind(disciple) == COMMAND_WORK and command_target(disciple) == PROF_ALCHEMY:
         clear_command(state, disciple)
     return result
 
@@ -647,6 +678,8 @@ func _profession_action(profession_id: StringName) -> StringName:
             return &"WORK_HERBALISM"
         PROF_FORESTRY:
             return &"WORK_FORESTRY"
+        PROF_ALCHEMY:
+            return &"WORK_ALCHEMY"
         _:
             return &""
 

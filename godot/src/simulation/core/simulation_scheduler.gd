@@ -270,6 +270,10 @@ func _step_disciple(disciple: DiscipleState) -> void:
             workforce_system.perform_work(state, disciple, WorkforceSystem.PROF_FORESTRY)
             disciple.current_action = &"EVALUATE"
 
+        &"WORK_ALCHEMY":
+            workforce_system.perform_work(state, disciple, WorkforceSystem.PROF_ALCHEMY)
+            disciple.current_action = &"EVALUATE"
+
         &"HOLD":
             if not DiscipleRealmProgressV2.owns_v2_progression(disciple):
                 disciple.stamina = minf(100.0, disciple.stamina + 2.0)

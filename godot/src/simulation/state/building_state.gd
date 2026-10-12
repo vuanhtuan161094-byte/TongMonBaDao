@@ -90,8 +90,14 @@ static func _production_dictionary(value: Variant) -> Dictionary:
             result[key] = maxf(float(raw), 0.0)
         elif key == "snapshot_main_charisma":
             result[key] = maxf(float(raw), 0.0)
-        elif key in ["plant_sequence", "enhanced_heaven_count", "daily_arrival_target", "daily_arrivals_generated"]:
+        elif key in ["plant_sequence", "enhanced_heaven_count", "daily_arrival_target", "daily_arrivals_generated", "job_sequence"]:
             result[key] = maxi(int(raw), 0)
+        elif key == "recipe_enabled":
+            result[key] = bool(raw)
+        elif key == "recipe_id":
+            result[key] = str(raw)
+        elif key == "jobs":
+            result[key] = _timed_job_array(raw)
         elif key == "snapshot_day_index":
             result[key] = int(raw)
         elif key == "priority_weights":
@@ -102,6 +108,32 @@ static func _production_dictionary(value: Variant) -> Dictionary:
             result[key] = _plot_array(raw)
         else:
             result[key] = raw
+    return result
+
+static func _timed_job_array(value: Variant) -> Array:
+    var result: Array = []
+    if not (value is Array):
+        return result
+    for raw_job in value:
+        if not (raw_job is Dictionary):
+            continue
+        var job: Dictionary = {}
+        var keys: Array = raw_job.keys()
+        keys.sort()
+        for raw_key in keys:
+            var key := str(raw_key)
+            var raw = raw_job[raw_key]
+            if key in ["job_id", "recipe_id", "worker_id", "output_resource_id"]:
+                job[key] = str(raw)
+            elif key in ["started_tick", "finish_tick", "output_quantity"]:
+                job[key] = int(raw)
+            elif key == "profession_xp_gain":
+                job[key] = maxf(float(raw), 0.0)
+            elif key == "inputs":
+                job[key] = _int_dictionary(raw)
+            else:
+                job[key] = raw
+        result.append(job)
     return result
 
 static func _plot_array(value: Variant) -> Array:

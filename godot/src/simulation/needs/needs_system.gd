@@ -8,6 +8,8 @@ const VALID_PRIORITIES := [PRIORITY_BALANCED, PRIORITY_MEDICINE, PRIORITY_SUPPLI
 
 const MEDICINE_CAP := 60
 const SUPPLY_CAP := 90
+const HEALING_PILL_ID := &"hoi_xuan_dan"
+const HEALING_PILL_HP := 55.0
 const LOGISTICS_INTERVAL := 30
 const LODGING_EXPANSION_COST_PER_SLOT := 8
 const SUPPLIED_TRAVEL_STAMINA_COST := 7.0
@@ -16,6 +18,7 @@ const MIN_REST_MULTIPLIER := 0.45
 
 var bloodline_system := BloodlineSystem.new()
 var physique_system := PhysiqueSystem.new()
+var warehouse := WarehouseSystem.new()
 
 func initialize(state: SimulationState, medicine: int = 18, supplies: int = 24, lodging: int = 6) -> void:
     state.sect.needs_enabled = true
@@ -58,6 +61,18 @@ func region_need_modifier(state: SimulationState, region: RegionState) -> float:
 
 func can_heal(state: SimulationState) -> bool:
     return not state.sect.needs_enabled or state.sect.medicine_stock > 0
+
+func use_healing_pill(state: SimulationState, disciple: DiscipleState) -> bool:
+    if not state.sect.needs_enabled or not state.sect.p3_7_resources_enabled:
+        return false
+    if disciple == null or disciple.region_id != &"sect" or disciple.hp >= disciple.max_hp:
+        return false
+    if not warehouse.consume(state, HEALING_PILL_ID, 1):
+        return false
+    disciple.hp = minf(disciple.max_hp, disciple.hp + HEALING_PILL_HP)
+    state.sect.needs_stats["healing_pills_used"] = int(state.sect.needs_stats.get("healing_pills_used", 0)) + 1
+    state.sect.needs_event_count += 1
+    return true
 
 func heal_with_medicine(state: SimulationState, disciple: DiscipleState, economy: EconomySystem) -> bool:
     if not state.sect.needs_enabled:
