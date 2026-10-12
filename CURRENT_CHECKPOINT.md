@@ -7,6 +7,20 @@ It is not a historical changelog.
 
 Read `docs/GAME_SYSTEM_ARCHITECTURE.md` for system structure and phase discipline.
 
+## FE-01B1 TOOLING ONLY — CLOSED / OFFICIAL GODOT 4.7.2 PASS (2026-10-12)
+
+User authorized FE-01B1 ONLY. Game repo commits e51d2950c672eeecc0dabdc7a6f84830c32636a6 (exporter + 19 synthetic fixture tests + Actions workflow), 322180ba7e750a9c1a0e3bc7810a3b5062478784 (normalize missing source path error to fail-closed PackError). New files: tools/fe01b1/export_verified_pack.py; tools/fe01b1/test_export_verified_pack.py; tools/fe01b1/README.md; .github/workflows/fe-01b1-asset-exporter.yml.
+
+User-reported Windows FE-01B preflight before new code: local git sync e0aff07e PASS, 45/45 unique source paths and 43/43 unique dependency SHA-256 checks PASS across 49 references/13 candidate records, original Source A Main Hall exporter --dry-run PASS 4 files and bundle .ab SHA matched, Git LFS 3.7.1 installed and filters configured but NO LFS push/pull. This is user log evidence, not an assistant-executed Windows gate. The NEW FE-01B1 exporter has NOT run on Windows source bytes and no real Main Hall pack was exported this packet.
+
+FE-01B1 exporter is a standalone tooling script in game repo with configurable external catalog/source prefix/source root/output root, staging on same filesystem, source SHA-256/byte checks before and during copy, second staged hash check, per-pack exclusive lock for cooperating processes, guarded rename, invalid-existing-pack fail-closed, verified identical-existing-pack UNCHANGED and error cleanup. There is no guarantee against a non-cooperating external process concurrently modifying the destination; original Windows behavior awaits proof. Synthetic fixture tests include missing/source hash/case collision/path escapes, existing pack corruption, copy/rename exceptions and concurrency lock.
+
+CI: initial https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38213727177 failed one of 19 tests (missing file was FileNotFoundError, not expected PackError); no weakened test. After correction, https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38213775069 COMPLETED/SUCCESS at 322180ba: 19 synthetic exporter tests PASS; P3 validator and FE-01A manifest+negative tests PASS; official Godot 4.7.2 download/hash/version/import/parse PASS; FE-01A registry runtime PASS; O9/O8/O7/P3.6A cumulative landscape regression PASS. README/docs commit triggers a new scoped run; verify its result separately.
+
+Packet boundary: FE-01B1 TOOLING CLOSED. FE-01A CLOSED. DV2-03 PAUSED BY USER, NOT CLOSED. No other active implementation packet. FE-01B2 Main Hall real-pack export/Windows execution, LFS push/pull, asset import, art substitution, FE-02/Spine/G1 NOT AUTHORIZED. Source A Knowledge repo unchanged, no binary copied/imported, .gitattributes/LFS unchanged, eight historical P3/S3 visual approvals unchanged, no gameplay/EXP/Warehouse/BuildingState/save/main scene change. Source A commercial/public redistribution rights UNVERIFIED. Windows game visual/click/APK PENDING USER.
+
+---
+
 ## FE-01A IMPLEMENTATION CLOSURE — 2026-10-12 (CLOSED / FOCUSED PASS / RELEVANT CUMULATIVE PASS)
 
 **Explicit user authorization:** CODE FE-01A ONLY. DV2-03 is now **PAUSED BY USER, NOT CLOSED** and its state, gameplay code, tests, formulas and previous official evidence remain preserved. FE-01A was the only active implementation packet; after its closure there is **no new active implementation packet**. **FE-01B / FE-02 / DV2-03G1 are NOT AUTHORIZED.** No gameplay/EXP/resource/recruitment/building/save change and no binary import/Spine/LFS/main scene change.
