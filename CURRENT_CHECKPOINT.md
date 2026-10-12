@@ -7,7 +7,21 @@ It is not a historical changelog.
 
 Read `docs/GAME_SYSTEM_ARCHITECTURE.md` for system structure and phase discipline.
 
-## FRONTEND — FAST VISUAL FIRST / PILOT 3 BUILDINGS (2026-10-12, DOCS-ONLY HANDOFF)
+## PRIORITY CURRENT — ENV-01 ISOLATED LAB WINDOWS QA (2026-10-12; DOCUMENTATION ONLY)
+
+**AUTHORITATIVE NEW HANDOFF:** [ENV-01 Windows QA and next-chat handoff](docs/handoffs/ENV01_WINDOWS_QA_HANDOFF_2026-10-12.md). This status supersedes the older PV-00/FE-01 visual-first handoff immediately below, which is retained for history.
+
+- **Owner-authorized ENV-01 CODE scope:** isolated copy of existing PV-01 three-building Godot 4.7.2 landscape 1280×720 lab, original Source A terrain/road/vegetation/decor assets and three proven building PNGs, preserving `TransferMapModel`, click, pan/zoom, occupied footprints, doorways, and visual AStar. **Owner reports isolated ENV-01 deliverable was handed off for Windows QA; this repo does NOT contain an independently verified ENV-01 runnable ZIP.**
+- **NEXT REQUIRED GATE:** locate the actual ENV-01 deliverable, read its own test scripts/README, run with `E:\Godot_v4.7.2-stable_win64_console.exe`, collect **one genuine 1280×720 Godot screenshot and two complete logs** in `ENV01_TEST_RESULTS`, verify functional and visual quality; **PENDING WINDOWS, PENDING OWNER VISUAL**. Do not invent log basenames, test command, ZIP path, or screenshot.
+- **Original data handoff archive:** owner-reported `E:\TongMonIntegrationLab\ChatGPT_Handoff\SourceA_Map_Prep_20261012.zip` (28,000,430 bytes; 428 entries, 417 traced source payloads). Earlier ChatGPT audit reported SHA package checks PASS; **not an ENV-01 Windows render PASS**. Local archive is NOT committed to this repository.
+- **GitHub-only docs update today:** no game source, assets, simulation or production scene edits; no Windows QA or CI run is implied.
+- **Locks:** ADR-0003 Godot-native data-driven presentation, eight S3 art approvals unchanged, canonical gameplay/EXP/Warehouse/BuildingState/workforce/save untouched, FE-02/G1 **NOT AUTHORIZED**, `DV2-03 PAUSED NOT CLOSED`, Spine conversion independent and unaccepted. Do not restart PV-00, duplicate catalog, rebuild converter, or create second prototype.
+- If actual ENV-01 deliverable is inaccessible, request that **one exact ZIP**; do not silently recreate it from the Source A source-handoff ZIP.
+- Next action after Windows screenshot, logs and owner approval: **PV-02 visual acceptance/reconciliation**, and only after separate approval FE-02 production integration.
+
+---
+
+## HISTORICAL — FRONTEND FAST VISUAL FIRST / PILOT 3 BUILDINGS (2026-10-12, BEFORE ENV-01)
 
 **Current decision / authority:** Owner requests a clean GitHub handoff and a new chat to prioritize a visually attractive, interactive **LANDSCAPE 1280×720** Godot 4.7.2 sect-map pilot with three **real Source A** building textures: **Main Hall** (`building.main_hall`, model `510052`, 7×5), **Warehouse** (`building.warehouse`, `510102`, 3×2) and **Forge** (`building.forge`, `520081`, 3×3). **PV-00 is READ-ONLY preflight queued**; code for **PV-01 / PV-02 / FE-02 is NOT authorized** merely by this handoff. Do not redo existing tooling or require an unnecessary MapPrototype ZIP upload as a first step.
 
