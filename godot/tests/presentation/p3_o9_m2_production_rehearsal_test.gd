@@ -177,9 +177,31 @@ func _run() -> void:
         return
     if not await _press("Work_forestry_%s" % str(forest_worker_id)):
         return
-    scheduler.step()
+    for _i in range(12):
+        scheduler.step()
+        if not state.disciples[miner_id].work_cycle_state.is_empty() and not state.disciples[forest_worker_id].work_cycle_state.is_empty():
+            break
     if state.disciples[miner_id].work_cycle_state.is_empty() or state.disciples[forest_worker_id].work_cycle_state.is_empty():
-        _fail("O9 could not arm simultaneous Mine and Forest carry cycles.")
+        _fail("O9 scheduler never reached simultaneous Mine and Forest carry cycles.")
+        return
+
+    # Re-check the Field after carry commands consumed real scheduler ticks.
+    active_plot = _plot_for_worker(field, field_worker_id)
+    if active_plot.is_empty():
+        if not await _open_building(SectMapPresentation.DEST_SPIRIT_FIELD):
+            return
+        if not await _press("FieldPlant_%s" % str(field_worker_id)):
+            return
+        for _i in range(6):
+            scheduler.step()
+            active_plot = _plot_for_worker(field, field_worker_id)
+            if not active_plot.is_empty():
+                break
+    if active_plot.is_empty():
+        _fail("O9 could not keep a real Spirit Field plot active beside carry cycles.")
+        return
+    if state.disciples[miner_id].work_cycle_state.is_empty() or state.disciples[forest_worker_id].work_cycle_state.is_empty():
+        _fail("O9 carry cycles completed before Field could join the shared save boundary.")
         return
 
     if not await _open_building(SectMapPresentation.DEST_ALCHEMY_HALL):
@@ -194,9 +216,13 @@ func _run() -> void:
     var pill_before_job := warehouse.quantity(state, NeedsSystem.HEALING_PILL_ID)
     if not await _press("Work_alchemy_%s" % str(alchemist_id)):
         return
-    scheduler.step()
-    hall = buildings.primary_building(state, BuildingSystem.TYPE_ALCHEMY_HALL)
-    var jobs := buildings.alchemy_jobs(state, hall)
+    var jobs: Array = []
+    for _i in range(4):
+        scheduler.step()
+        hall = buildings.primary_building(state, BuildingSystem.TYPE_ALCHEMY_HALL)
+        jobs = buildings.alchemy_jobs(state, hall)
+        if not jobs.is_empty():
+            break
     if jobs.size() != 1:
         _fail("O9 did not create exactly one timed Alchemy job before save.")
         return
