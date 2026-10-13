@@ -1131,10 +1131,11 @@ func _build_work_management(profession_id: StringName, group_id: StringName, gro
     _add_management_section_label("PHÂN CÔNG")
     var active_building_ids: Array[StringName] = []
     var building_system := BuildingSystem.new()
+    var active_producer: BuildingState = null
     if building_system.is_building_profession(profession_id):
-        var producer := building_system.building_for_profession(state, profession_id)
-        if producer != null:
-            active_building_ids = building_system.active_worker_ids(state, producer)
+        active_producer = building_system.building_for_profession(state, profession_id)
+        if active_producer != null:
+            active_building_ids = building_system.active_worker_ids(state, active_producer)
 
     var ids: Array = state.disciples.keys()
     ids.sort()
@@ -1157,6 +1158,26 @@ func _build_work_management(profession_id: StringName, group_id: StringName, gro
         else:
             group_button.pressed.connect(Callable(self, "_assign_building_group").bind(disciple.id, group_id, "Đã phân %s vào %s." % [disciple.display_name, group_label]))
         row.add_child(group_button)
+
+        # GP-01: distinguish crew membership from an explicit, persisted Mine
+        # worksite. Full crews may retain waiting members; only active slots
+        # receive work orders. No fake worksite/building state is created.
+        if profession_id == WorkforceSystem.PROF_MINING and active_producer != null:
+            var site_button := Button.new()
+            site_button.name = "MineWorksite_%s" % str(disciple.id)
+            var assigned_here := disciple.worksite_building_id == active_producer.id
+            site_button.text = "Bỏ điểm" if assigned_here else "Chọn Mỏ"
+            site_button.custom_minimum_size = Vector2(76, 34)
+            site_button.add_theme_font_size_override("font_size", 11)
+            site_button.disabled = not in_group or timed_recipe_busy
+            site_button.tooltip_text = (
+                "Giữ nhóm nghề; chỉ xóa điểm làm việc cụ thể." if assigned_here
+                else "Đặt điểm làm việc tại Mỏ thật. Nếu hết slot, đệ tử tiếp tục chờ."
+            )
+            site_button.pressed.connect(Callable(self, "_assign_mine_worksite").bind(
+                disciple.id, &"" if assigned_here else active_producer.id
+            ))
+            row.add_child(site_button)
 
         var order_button := Button.new()
         order_button.name = "Work_%s_%s" % [str(profession_id), str(disciple.id)]
@@ -1354,6 +1375,16 @@ func _assign_building_group(disciple_id: StringName, group_id: StringName, succe
         return
     var ok := workforce.assign_group(state, disciple_id, group_id)
     building_management_feedback = success_text if ok else "Không thể đổi phân công lúc này."
+    _refresh_building_operation_content()
+
+func _assign_mine_worksite(disciple_id: StringName, building_id: StringName) -> void:
+    if not state.disciples.has(disciple_id):
+        return
+    var ok := workforce.assign_worksite(state, disciple_id, building_id)
+    building_management_feedback = (
+        "Đã cập nhật điểm làm việc; slot hoạt động do công trình quyết định."
+        if ok else "Không thể cập nhật điểm làm việc lúc này."
+    )
     _refresh_building_operation_content()
 
 func _issue_building_order(disciple_id: StringName, kind: StringName, target: String, success_text: String) -> void:
@@ -1735,13 +1766,20 @@ func _mine_operation_text() -> String:
         slots = building_system.worker_slots(mine)
 
     var lines: Array[String] = []
+    var waiting_count := 0
     for disciple_value in members:
         var disciple: DiscipleState = disciple_value
         var level := workforce.profession_level_for_state(state, disciple, WorkforceSystem.PROF_MINING)
-        lines.append("• %s · Lv%d · %s" % [
-            disciple.display_name,
-            level,
-            _mining_member_status(disciple, active_ids.has(disciple.id))
+        var is_active := active_ids.has(disciple.id)
+        if not is_active:
+            waiting_count += 1
+        var location := (
+            " · điểm %s" % str(disciple.worksite_building_id)
+            if disciple.worksite_building_id != &"" else " · điểm mặc định"
+        )
+        lines.append("• %s · Lv%d · %s%s" % [
+            disciple.display_name, level,
+            _mining_member_status(disciple, is_active), location
         ])
     if lines.is_empty():
         lines.append("• Chưa có thành viên Đội Khai Khoáng")
@@ -1758,6 +1796,7 @@ func _mine_operation_text() -> String:
         + "Mỏ Lv%d · %s\n"
         + "Thanh Thiết tồn (dùng): %s\n"
         + "Chỗ hoạt động: %d/%d\n"
+        + "Đang chờ slot Mỏ: %d\n"
         + "Đang khai khoáng: %d\n"
         + "Thành viên đội: %d\n\n"
         + "NHÂN SỰ\n%s\n\n"
@@ -1768,6 +1807,7 @@ func _mine_operation_text() -> String:
         _warehouse_pair(&"thanh_thiet"),
         active_ids.size(),
         slots,
+        waiting_count,
         _count_action(&"WORK_MINING"),
         members.size(),
         "\n".join(lines)
