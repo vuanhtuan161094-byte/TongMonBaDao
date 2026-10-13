@@ -1986,7 +1986,7 @@ func _cultivation_operation_text() -> String:
                     str(tuvi["name"]), int(tuvi["floor"]),
                     float(tuvi["xp"]), float(tuvi["required_xp"]),
                     disciple.stamina,
-                    " · CHỜ CỔNG ĐẠI CẢNH V2" if at_gate else ""
+                    " · CHỜ CỔNG ĐẠI CẢNH" if at_gate else ""
                 ])
             continue
 
@@ -2009,10 +2009,10 @@ func _cultivation_operation_text() -> String:
 
     return (
         "Đang tu luyện/phá cảnh: %d\n"
-        + "Đủ điều kiện đột phá P2: %d\n"
-        + "Chờ cổng đại cảnh V2: %d\n\n"
+        + "Đủ điều kiện đột phá: %d\n"
+        + "Chờ cổng đại cảnh: %d\n\n"
         + "ĐỆ TỬ LIÊN QUAN\n%s\n\n"
-        + "V2 dùng tiến độ/cổng đại cảnh riêng; không dùng điều kiện đột phá P2."
+        + "Tiến độ tu luyện hiển thị theo hồ sơ từng đệ tử; cổng đại cảnh có điều kiện riêng."
     ) % [active_count, ready_count, v2_gate_count, "\n".join(lines)]
 
 func _residence_operation_text() -> String:
