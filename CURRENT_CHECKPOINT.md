@@ -1,8 +1,22 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
-Updated: 2026-10-12
+Updated: 2026-10-13
 
 This file contains **current truth only**.
+
+## GP-01 — CLOSED (2026-10-13) · Đệ tử V2 → Mỏ → Kho → OFFLINE
+
+**Owner authorization:** 2026-10-13, CODE GP-01 ONLY. **Gameplay/test SHA:** `342aee6441bf4d5ac78258ab84265724bd58c240` on `main`; documentation closure is a separate docs-only commit and MUST NOT be interpreted as a new gameplay SHA. **Scope: CLOSED — official Linux Godot 4.7.2 focused + FULL cumulative PASS.**
+
+- Authentic Dẫn Tiên recruit via real Chiêu Mộ Lệnh and player-facing Accept creates one immutable `v2_birth_profile`; player's Mine workforce group and **explicit worksite** now have UI controls (`Chọn Mỏ`/`Bỏ điểm`) wired to existing `WorkforceSystem.assign_worksite`. Crew membership may exceed capacity; `BuildingSystem.active_worker_ids` owns actual slots. Mine panel shows waiting count/status and assigned/default worksite, work button stays disabled for waiting members; no new scheduler, warehouse, building state, resource, or save authority.
+- Test `godot/tests/presentation/gp_01_v2_mine_vertical_slice_test.gd` in actual P3.2 scene: recruit from Guidance → select mine work group/worksite → verify 2/2 active and third member waiting → release slot → real scheduler travel/extraction/haul → **no early ore/EXP** → save while carrying → injected test wall-clock offline resume through canonical clock/scheduler → precisely one `thanh_thiet` deposit, one mining EXP completion, natural V2 Tu Vi once per tick, exact persisted birth/worksite/work-cycle; repeated same-time reload gives no second payout. Tests do NOT inject resource/EXP or change V2 progression rules. Other founders are held via real `WorkforceSystem.COMMAND_HOLD` to isolate the output.
+- **Official focused + FULL CI:** [GP-01 #38329564079](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38329564079) **COMPLETED/SUCCESS**, including GP-01, O2 recruitment, O3 mine, O9 multi-producer, P3.7A1, P3.6A scene, DV2 live/training, SAFE-01/02 and P3.7 FULL; [P3.7 backend #38329563945](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38329563945) **FAST + FULL COMPLETED/SUCCESS** same gameplay SHA. [DV2 #38329564146](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38329564146) **SUCCESS**, regression only — DV2-03 is still PAUSED NOT CLOSED. O1–O8 triggered relevant scoped workflows and completed SUCCESS on gameplay SHA (apart from preview upload below).
+- **P3.6A Preview #38329564128:** workflow **FAIL only at artifact upload** due GitHub Actions artifact storage quota; Godot P3.6A actual test/FAST and image capture steps logged PASS. This is a CI storage/transport debt, not a GP-01 gameplay assertion failure. Do not call preview artifact delivered or preview workflow SUCCESS.
+- **No balance/content/rules changed:** EXP 300 floors, Tu Vi/Body rates, DV2-03/F gate recipes/sources, warehouse/save implementation, P3.7 production formulas, family of buildings, Source A assets, Spine pipeline, eight S3 artworks, production map unchanged.
+- **Next not authorized:** GP-02 (V2 daily work/rest/heal/cultivation exclusive action + V2-only UI consumers) is a **proposal requiring a separate user CODE decision**. DV2-03 **PAUSED NOT CLOSED**; DV2-04 not opened. ENV-02A Windows/Android **PENDING USER**, LAY-01–04/FE-02/ENV-02B–E **NOT OPEN** and ADR-0003 fixed-layout still in force. Real Android touch/offline kill/storage-full and 1k–3k benchmark **PENDING USER/UNVERIFIED**, not CI PASS.
+
+---
+
 It is not a historical changelog.
 
 Read `docs/GAME_SYSTEM_ARCHITECTURE.md` for system structure and phase discipline.

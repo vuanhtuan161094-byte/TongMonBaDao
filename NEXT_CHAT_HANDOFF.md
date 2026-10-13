@@ -1,5 +1,17 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## GP-01 IMPLEMENTATION CLOSED — 2026-10-13, READ BEFORE OLD READ-ONLY HANDOFF
+
+**Official gameplay code SHA `342aee6441bf4d5ac78258ab84265724bd58c240`, main.** User authorized **GP-01 ONLY**; work is **CLOSED**. Read top `CURRENT_CHECKPOINT.md` GP-01 closure for all exact evidence and caveats.
+
+- Player Dẫn Tiên recruits genuine V2 → Mine team → explicit Mine worksite UI; no fake third slot, waiting members identified/blocked; scheduler performs true Mine cycle; Warehouse/EXP/natural Tu Vi canonical; mid-haul save, offline catch-up, replay no double reward.
+- [GP-01 focused and full #38329564079](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38329564079) **SUCCESS**; [P3.7 FAST+FULL #38329563945](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38329563945) **SUCCESS**, [DV2 regression #38329564146](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38329564146) **SUCCESS**, all on gameplay code SHA. P3.6A Preview #38329564128 screenshot/artifact **upload FAIL due GitHub quota**, while gameplay/capture steps PASS. It is not a GP-01 code FAIL.
+- Exact added files: `godot/tests/presentation/gp_01_v2_mine_vertical_slice_test.gd`, `.github/workflows/gp-01-v2-mine-vertical-slice.yml`. Code change is scoped to `godot/src/presentation/p3_2_landscape_sect.gd`. Existing WorkforceSystem, BuildingSystem, Scheduler, SaveService, WarehouseSystem were reused without modification.
+- **No next CODE authorization:** optionally propose GP-02 scoped V2 everyday-action/consumer audit and later code **only on fresh explicit user instruction**. Parent DV2-03 PAUSED NOT CLOSED. ENV-02A Windows/Android PENDING USER, FE-02/LAY unopened, ADR-0003 unchanged, S3/Spine assets untouched, build/land prices TBD, SAFE mobile failure testing and 1k–3k performance unverified.
+
+---
+
+
 ## FIRST NEXT CHAT ENTRY — GAMEPLAY END-TO-END (2026-10-13; NO CODE AUTH)
 
 **Read in full:** [NEXT_CHAT_GAMEPLAY_DISCIPLE_TO_SECT_2026-10-13.md](docs/handoffs/NEXT_CHAT_GAMEPLAY_DISCIPLE_TO_SECT_2026-10-13.md), then CURRENT_CHECKPOINT top and core authority docs. Owner wants next chat to finish gameplay in priority order disciple identity/real effects → Tu Vi/body (DV2-03 still PAUSED) → daily actions/jobs/workers → building production/warehouse/upgrades → hunting/economy → later construction/land/UI. Deliver read-only implemented/partial/design-only gap matrix and one small executable next proposal, then request scoped code approval. SAFE-01/02 CI PASS; ENV-02A Windows/Android PENDING; ADR-0003 fixed layout unchanged; LAY-01–04 / FE-02 / ENV-02B-E NOT OPEN; DV2-03 PAUSED NOT CLOSED; S3 historical eight art approvals protected. No code/production scene/EXP changed by this handoff.
