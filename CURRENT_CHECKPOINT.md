@@ -7,6 +7,11 @@ It is not a historical changelog.
 
 Read `docs/GAME_SYSTEM_ARCHITECTURE.md` for system structure and phase discipline.
 
+## DESIGN PROPOSAL ONLY — XÂY DỰNG / MỞ ĐẤT (2026-10-13)
+
+Owner requested continuation of source-grounded construction, relocation, roads and area-unlock **design**, not code. [Read design proposal V1](docs/design/SECT_BUILDING_LAND_EXPANSION_DESIGN_V1.md). Proposes 192×192 world, 48×48 initial area, independent visual chunks, **future** opt-in persistent `SectLayoutState` within canonical SimulationState, and LAY-01–04 design packets, each separately authorized after ENV-02A Windows acceptance. ADR-0003 fixed-layout authority **not amended yet**. No new economic costs/road bonuses, no gameplay or scene changes; SAFE-01/02 CLOSED, ENV-02A Windows/Android PENDING, FE-02 NOT OPEN, DV2-03 PAUSED NOT CLOSED.
+
+---
 ## CURRENT BACKEND — SAFE-01 + SAFE-02 CLOSED / OFFICIAL CI PASS (2026-10-13)
 
 Owner-approved sequential production backend safeguards completed. **Read [SAFE closure report](docs/handoffs/SAFE01_SAFE02_2026-10-13_CLOSURE.md)**.
