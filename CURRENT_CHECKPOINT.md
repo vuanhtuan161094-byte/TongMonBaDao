@@ -7,6 +7,12 @@ It is not a historical changelog.
 
 Read `docs/GAME_SYSTEM_ARCHITECTURE.md` for system structure and phase discipline.
 
+## NEW NEXT CHAT PRIORITY — GAMEPLAY ĐỆ TỬ → CÔNG TRÌNH (HANDOFF 2026-10-13; DESIGN/READ-ONLY)
+
+User requests comprehensive continuity and new chat to complete gameplay from **disciple → actions/professions → buildings → sect economy/activities**. **Read FIRST:** [GAMEPLAY DISCIPLE-TO-SECT HANDOFF](docs/handoffs/NEXT_CHAT_GAMEPLAY_DISCIPLE_TO_SECT_2026-10-13.md). First new-chat task: read-only Gameplay Gap Matrix + one recommended smallest gameplay packet for explicit approval; not automatic code. Inherit SAFE-01/02 CLOSED Linux Godot 4.7.2 CI; **DV2-03 PAUSED NOT CLOSED**, A/B partial playable vs C-H/3 Seals lacking live sources. ENV-02A 192×192 Windows/Android PENDING USER; FE-02/ENV-02B-E/LAY-01–04 NOT OPENED; building/land design only APPROVED, ADR-0003 unchanged; S3 eight approved arts unchanged; Android game product QA and 1k–3k benchmark outstanding. Preserve source-knowledge benchmark, no second authority or speculative balance.
+
+---
+
 ## DESIGN APPROVED / CODE NOT AUTHORIZED — XÂY DỰNG VÀ MỞ ĐẤT (2026-10-13)
 
 **Owner explicitly approved only the design principles** in [Sect Building/Land Expansion Design V1](docs/design/SECT_BUILDING_LAND_EXPANSION_DESIGN_V1.md) §7: one future `SectLayoutState` inside `SimulationState` for placement/roads/unlocked regions, reuse existing `TransferMapModel` as non-authoritative projection, Android landscape 1280×720, ENV-02A world 192×192 / opening 48×48 / visual chunks 16×16, and **free house relocation + road paving V1**. Build-new and unlock-land costs require separate approval. **ADR-0003 fixed-layout V1 remains unchanged and authoritative in production**; user did NOT authorize a schema migration or any code. ENV-02A Windows 4.7.2 runtime/visual QA and Android are **PENDING USER**. `LAY-01–04`, `FE-02`, `ENV-02B–E` NOT OPENED. SAFE-01/02 CLOSED; DV2-03 PAUSED NOT CLOSED, S3 artworks untouched. Next: ENV-02A Windows evidence → separately approve ADR update and LAY-01 CODE, with explicit gates in design §7.

@@ -1,5 +1,11 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## FIRST NEXT CHAT ENTRY — GAMEPLAY END-TO-END (2026-10-13; NO CODE AUTH)
+
+**Read in full:** [NEXT_CHAT_GAMEPLAY_DISCIPLE_TO_SECT_2026-10-13.md](docs/handoffs/NEXT_CHAT_GAMEPLAY_DISCIPLE_TO_SECT_2026-10-13.md), then CURRENT_CHECKPOINT top and core authority docs. Owner wants next chat to finish gameplay in priority order disciple identity/real effects → Tu Vi/body (DV2-03 still PAUSED) → daily actions/jobs/workers → building production/warehouse/upgrades → hunting/economy → later construction/land/UI. Deliver read-only implemented/partial/design-only gap matrix and one small executable next proposal, then request scoped code approval. SAFE-01/02 CI PASS; ENV-02A Windows/Android PENDING; ADR-0003 fixed layout unchanged; LAY-01–04 / FE-02 / ENV-02B-E NOT OPEN; DV2-03 PAUSED NOT CLOSED; S3 historical eight art approvals protected. No code/production scene/EXP changed by this handoff.
+
+---
+
 ## DESIGN APPROVED — BUILDING / LAND (2026-10-13; NO CODE PERMISSION)
 
 Owner **APPROVED DESIGN ONLY**: [`docs/design/SECT_BUILDING_LAND_EXPANSION_DESIGN_V1.md`](docs/design/SECT_BUILDING_LAND_EXPANSION_DESIGN_V1.md) §7. Principles: one future persistent `SectLayoutState` within `SimulationState` for building placement/roads/unlocked regions, existing `TransferMapModel` as projection, 192×192 world and 48×48 starter district, visual 16×16 chunk, Android landscape 1280×720, relocate buildings and pave roads for free V1; build/unlock economy TBD. **Do NOT modify ADR-0003 or implementation** without separate approval; fixed-layout remains production contract. Before LAY-01 code: ENV-02A official Godot Windows import/structure/map/camera/AStar and real screenshots/logs, owner acceptance, then separately authorize ADR migration and LAY-01. Android still PENDING. No `LAY-01–04`, `FE-02`, `ENV-02B–E`, DV2-03 remains PAUSED NOT CLOSED; SAFE-01/02 CLOSED, S3 unchanged.
