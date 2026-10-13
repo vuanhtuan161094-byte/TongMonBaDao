@@ -299,7 +299,7 @@ func _real_pve_and_claim() -> bool:
     var resumed: HuntingPveRunV2 = copy["session"]
     var actual := session.finish()
     var again := resumed.finish()
-    if not _check(bool(actual.get("ok",false)) and bool(again.get("ok",false)) and actual["summary"] == again["summary"],"T12B","reloaded real encounter diverged"): return false
+    if not _check(bool(actual.get("ok",false)) and bool(again.get("ok",false)) and actual["summary"] == again["summary"],"T12B","reloaded real encounter diverged: first_ok=%s, resumed_ok=%s, resumed_reason=%s, outcome_A=%s, outcome_B=%s, actions_A=%s, actions_B=%s, receipt=%s" % [str(actual.get("ok")),str(again.get("ok")),str(again.get("reason","")),str(actual.get("summary",{}).get("outcome","")),str(again.get("summary",{}).get("outcome","")),str(actual.get("summary",{}).get("actions",-1)),str(again.get("summary",{}).get("actions",-1)),str(state.sect.v2_pve_settlement_receipts.get("gp02c-real-win",{})).left(600)]): return false
     if not _check(str(actual["summary"]["outcome"]) == "win","REAL_WIN","expected source-proven fair baseline win"): return false
     var preclaim := state.sect.v2_pve_active_runs.has("gp02c-real-win") and state.sect.v2_pve_settlement_receipts.has("gp02c-real-win")
     if not _check(preclaim and SaveService.new().save_to_path(state,PATH) == OK,"T08","terminal winning claim was lost before save"): return false
