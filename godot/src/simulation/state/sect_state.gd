@@ -97,6 +97,8 @@ var v2_pve_reward_claims: Dictionary = {}
 var v2_body_material_progress: Dictionary = {}
 # DV2-02 explicit opt-in: authoritative active hunt snapshots for save/reload.
 var v2_pve_active_runs: Dictionary = {}
+# Independent from the already-locked exactly-once reward claims.
+var v2_pve_settlement_receipts: Dictionary = {}
 # DV2-03F/F2: compact, per-disciple/per-major-realm committed Body receipts.
 # The request index is rebuilt from these saved receipts on load (not saved twice).
 # Default empty on every legacy save; no Body gate is enabled by this ledger.
@@ -186,7 +188,7 @@ func to_dict() -> Dictionary:
     if v2_training_enabled or not v2_training_rules.is_empty():
         data["v2_training_enabled"] = v2_training_enabled
         data["v2_training_rules"] = v2_training_rules.duplicate(true)
-    if v2_pve_enabled or not v2_pve_selected_levels.is_empty() or not v2_pve_reward_claims.is_empty() or not v2_pve_active_runs.is_empty() or not v2_body_material_progress.is_empty():
+    if v2_pve_enabled or not v2_pve_selected_levels.is_empty() or not v2_pve_reward_claims.is_empty() or not v2_pve_active_runs.is_empty() or not v2_body_material_progress.is_empty() or not v2_pve_settlement_receipts.is_empty():
         data["v2_pve_enabled"] = v2_pve_enabled
         data["v2_pve_selected_levels"] = v2_pve_selected_levels.duplicate(true)
         data["v2_pve_reward_claims"] = v2_pve_reward_claims.duplicate(true)
@@ -194,6 +196,8 @@ func to_dict() -> Dictionary:
             data["v2_body_material_progress"] = v2_body_material_progress.duplicate(true)
         if not v2_pve_active_runs.is_empty():
             data["v2_pve_active_runs"] = v2_pve_active_runs.duplicate(true)
+        if not v2_pve_settlement_receipts.is_empty():
+            data["v2_pve_settlement_receipts"] = v2_pve_settlement_receipts.duplicate(true)
     if not v2_body_gate_receipts.is_empty():
         data["v2_body_gate_receipts"] = v2_body_gate_receipts.duplicate(true)
     if disciple_traits_enabled or disciple_trait_event_count > 0 or not disciple_trait_profiles.is_empty():
@@ -282,6 +286,11 @@ static func from_dict(data: Dictionary) -> SectState:
         for raw_key in saved_body_progress.keys():
             if str(raw_key) == "linh_tuy_thanh_truc_wins":
                 state.v2_body_material_progress[str(raw_key)] = clampi(int(saved_body_progress[raw_key]),0,3)
+    var raw_receipts = data.get("v2_pve_settlement_receipts", {})
+    if raw_receipts is Dictionary:
+        for raw_id in raw_receipts.keys():
+            # Do not discard malformed persisted receipts and permit replay.
+            state.v2_pve_settlement_receipts[str(raw_id)] = raw_receipts[raw_id]
     var raw_runs = data.get("v2_pve_active_runs", {})
     if raw_runs is Dictionary:
         for encounter_id in raw_runs.keys():

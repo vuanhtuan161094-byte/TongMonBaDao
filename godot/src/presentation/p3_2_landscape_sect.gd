@@ -2478,15 +2478,18 @@ func _disciple_snapshot(disciple: DiscipleState) -> Dictionary:
 func _v2_disciple_summary_text(snapshot: Dictionary) -> String:
     var life: Dictionary = snapshot["life"]
     var progression: Dictionary = snapshot["progression"]
+    var injury_text := "Thương Thế: Khỏe mạnh" if int(life.get("injury_level",0)) == 0 else ("Thương Thế: Đang hồi phục · %d phút mô phỏng" % int(life.get("injury_remaining_ticks",0)))
     if not bool(progression.get("ready", false)):
         return (
             "HP %.0f/%.0f · Thể lực viễn chinh %.0f/100\n"
             + "Tu Vi/Luyện Thể: dữ liệu chưa sẵn sàng\n"
-            + "Đang làm: %s"
+            + "Đang làm: %s\n"
+            + "%s"
         ) % [
             float(life["hp"]), float(life["max_hp"]),
             float(life["expedition_stamina"]),
-            SectMapPresentation.action_label(StringName(life["current_action"]))
+            SectMapPresentation.action_label(StringName(life["current_action"])),
+            injury_text
         ]
 
     var tuvi: Dictionary = progression["cultivation"]
@@ -2518,7 +2521,8 @@ func _v2_disciple_summary_text(snapshot: Dictionary) -> String:
         + "Đặc Chất: %s\n"
         + "Huyết Mạch: %s · Thể Chất: %s\n"
         + "Mệnh Cách: %s\n"
-        + "Lệnh Tông Chủ: %s%s"
+        + "Lệnh Tông Chủ: %s%s\n"
+        + "%s"
     ) % [
         float(life["hp"]), float(life["max_hp"]), float(life["expedition_stamina"]),
         str(tuvi["name"]), int(tuvi["floor"]), float(tuvi["xp"]), float(tuvi["required_xp"]),
@@ -2533,7 +2537,8 @@ func _v2_disciple_summary_text(snapshot: Dictionary) -> String:
         _v2_identity_brief(innate["physique"], "Không"),
         _v2_identity_brief(innate["destiny"], "Không"),
         _direct_command_label_data(work.get("direct_command", {})),
-        feedback
+        feedback,
+        injury_text
     ]
 
 func _v2_root_brief(innate: Dictionary) -> String:

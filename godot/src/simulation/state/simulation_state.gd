@@ -73,6 +73,14 @@ func validate_invariants() -> Array[String]:
         errors.append("Sect population exceeds disciple capacity.")
 
     for disciple in disciples.values():
+        if disciple.injury_level < 0 or disciple.injury_level > 1:
+            errors.append("%s has invalid Injury level." % disciple.display_name)
+        if disciple.injury_level == 0 and disciple.injury_recover_at_tick != 0:
+            errors.append("%s has stale Injury recovery tick." % disciple.display_name)
+        if disciple.injury_level == 1 and (disciple.injury_recover_at_tick <= 0 or disciple.region_id != &"sect"):
+            errors.append("%s has invalid Injury recovery owner/tick." % disciple.display_name)
+        if not disciple.active_pve_encounter_id.is_empty() and not sect.v2_pve_active_runs.has(disciple.active_pve_encounter_id):
+            errors.append("%s has missing active PvE reservation snapshot." % disciple.display_name)
         if disciple.hp < 0.0 or disciple.hp > disciple.max_hp + 0.001:
             errors.append("%s has invalid HP %.2f/%.2f" % [disciple.display_name, disciple.hp, disciple.max_hp])
         if disciple.stamina < 0.0 or disciple.stamina > 100.001:

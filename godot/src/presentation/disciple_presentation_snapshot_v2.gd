@@ -74,7 +74,7 @@ static func build(state: SimulationState, disciple: DiscipleState) -> Dictionary
         "authentic_v2":authentic_v2,
         "identity":_identity(disciple),
         "foundations":_foundations(disciple),
-        "life":_life(disciple),
+        "life":_life(state,disciple),
         "work":_work(state,disciple),
         "learning":_learning(disciple),
         "equipment":_equipment(state,disciple,authentic_v2),
@@ -132,7 +132,7 @@ static func _foundations(disciple: DiscipleState) -> Dictionary:
         "labels":FOUNDATION_LABELS.duplicate(true)
     }
 
-static func _life(disciple: DiscipleState) -> Dictionary:
+static func _life(state: SimulationState, disciple: DiscipleState) -> Dictionary:
     var ratio := 0.0
     if disciple.max_hp > 0.0:
         ratio = clampf(disciple.hp/disciple.max_hp,0.0,1.0)
@@ -140,6 +140,9 @@ static func _life(disciple: DiscipleState) -> Dictionary:
         "hp":disciple.hp,
         "max_hp":disciple.max_hp,
         "hp_ratio":ratio,
+        "injury_level":disciple.injury_level,
+        "injury_remaining_ticks":maxi(0,disciple.injury_recover_at_tick-state.tick) if disciple.injury_level == 1 else 0,
+        "in_v2_pve":not disciple.active_pve_encounter_id.is_empty(),
         # User lock: this is expedition stamina for V2, not ordinary-work fuel.
         "expedition_stamina":disciple.stamina,
         "wallet":disciple.wallet,

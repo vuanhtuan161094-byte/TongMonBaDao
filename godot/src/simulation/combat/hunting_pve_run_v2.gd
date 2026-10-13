@@ -17,7 +17,7 @@ func begin(
         return {"ok":false,"reason":"v2_pve_disabled_or_already_started"}
     if party_members.is_empty() or party_members.size() > MapBattleV2.MAX_DISCIPLES:
         return {"ok":false,"reason":"invalid_party_size"}
-    if encounter_id.is_empty() or state.sect.v2_pve_active_runs.has(encounter_id) or state.sect.v2_pve_reward_claims.has(encounter_id):
+    if encounter_id.is_empty() or state.sect.v2_pve_active_runs.has(encounter_id) or state.sect.v2_pve_reward_claims.has(encounter_id) or state.sect.v2_pve_settlement_receipts.has(encounter_id):
         return {"ok":false,"reason":"duplicate_or_empty_encounter_id"}
     var level := HuntingMapV2.selected_level(state,region)
     if not HuntingMapV2.valid_choice(region,level):
@@ -37,6 +37,15 @@ func begin(
         var living: DiscipleState = state.disciples[StringName(disciple_id)]
         if living.hp <= 0.0:
             return {"ok":false,"reason":"downed_disciple_not_eligible"}
+        if living.injury_level != 0:
+            return {"ok":false,"reason":"injured_disciple_not_eligible"}
+        if not living.active_pve_encounter_id.is_empty() or _actor_in_active_saved_run(state,disciple_id):
+            return {"ok":false,"reason":"disciple_already_in_pve"}
+        if living.region_id != &"sect" or not [&"EVALUATE",&"IDLE",&"HOLD"].has(living.current_action):
+            return {"ok":false,"reason":"disciple_has_conflicting_action_or_location"}
+        var buildings := BuildingSystem.new()
+        if not living.work_cycle_state.is_empty() or buildings.disciple_has_active_spirit_plot(state,living.id) or buildings.disciple_has_active_timed_recipe(state,living.id) or DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,living):
+            return {"ok":false,"reason":"disciple_has_reserved_occupation"}
         # DV2-03 will persist these independently; until then *explicit
         # passed* canonical progress is required, not inferred from P2 power.
         var realm := int(record.get("realm",0))
@@ -68,6 +77,8 @@ func begin(
         )
         if not bool(actor.get("ok",false)):
             return actor
+        # Battle owns HP until terminal; no live object link may leak mutations.
+        actor["disciple"] = null
         actors.append(actor)
     actors.sort_custom(func(a,b): return str(a["id"]) < str(b["id"]))
     var spawned := HuntingMapV2.spawn(region,level,encounter_id,seed)
@@ -83,29 +94,62 @@ func begin(
     battle = map_battle
     var stored := _persist_live_state()
     if not bool(stored.get("ok",false)):
+        battle = null
+        owner_state = null
+        spawn_data.clear()
         return stored
+    # Atomically reserve validated actors after their checkpoint exists.
+    for actor in actors:
+        var participant: DiscipleState = state.disciples[StringName(str(actor["id"]))]
+        participant.active_pve_encounter_id = encounter_id
     return {"ok":true,"encounter_id":encounter_id,"region_id":region,
         "level":level,"party_size":actors.size(),"monster_count":spawned["monsters"].size()}
 
 func advance(viewed_map: bool = false) -> Dictionary:
-    if battle == null:
+    if battle == null or owner_state == null:
         return {"ok":false,"reason":"no_active_session"}
+    if owner_state.sect.v2_pve_settlement_receipts.has(battle.encounter_id):
+        return {"ok":false,"reason":"encounter_already_settled"}
     var result := battle.step(viewed_map)
-    if bool(result.get("ok",false)):
-        _persist_live_state()
+    if not bool(result.get("ok",false)):
+        return result
+    var stored := _persist_live_state()
+    if not bool(stored.get("ok",false)):
+        return stored
+    if not battle.active:
+        var settled := _settle_terminal()
+        if not bool(settled.get("ok",false)):
+            return settled
     return result
 
 func finish(max_steps: int = 400) -> Dictionary:
-    if battle == null:
+    if battle == null or owner_state == null:
         return {"ok":false,"reason":"no_session"}
+    if owner_state.sect.v2_pve_settlement_receipts.has(battle.encounter_id):
+        var repeated := _settle_terminal()
+        if not bool(repeated.get("ok",false)):
+            return repeated
+        return {"ok":true,"summary":battle.summary(),"already_settled":true}
     if battle.active:
         battle.run(max_steps,false)
-    _persist_live_state()
-    return {"ok":true,"summary":battle.summary()}
+    var stored := _persist_live_state()
+    if not bool(stored.get("ok",false)):
+        return stored
+    if battle.active:
+        return {"ok":false,"reason":"encounter_still_active","summary":battle.summary()}
+    var settled := _settle_terminal()
+    if not bool(settled.get("ok",false)):
+        return settled
+    return {"ok":true,"summary":battle.summary(),"already_settled":bool(settled.get("already_settled",false))}
 
 func claim() -> Dictionary:
     if battle == null or owner_state == null:
         return {"ok":false,"reason":"no_session"}
+    if battle.active:
+        return {"ok":false,"reason":"encounter_not_final"}
+    var settled := _settle_terminal()
+    if not bool(settled.get("ok",false)):
+        return settled
     var result := HuntingMapV2.claim_reward(owner_state,spawn_data,battle)
     if bool(result.get("ok",false)):
         owner_state.sect.v2_pve_active_runs.erase(battle.encounter_id)
@@ -122,10 +166,99 @@ func snapshot() -> Dictionary:
 
 
 func _persist_live_state() -> Dictionary:
+    if battle == null or owner_state == null:
+        return {"ok":false,"reason":"no_session"}
+    if owner_state.sect.v2_pve_reward_claims.has(battle.encounter_id):
+        return {"ok":false,"reason":"claimed_encounter_cannot_reopen"}
+    if owner_state.sect.v2_pve_settlement_receipts.has(battle.encounter_id):
+        return {"ok":false,"reason":"settled_encounter_cannot_reopen"}
     var saved := save_state()
     if bool(saved.get("ok",false)):
         owner_state.sect.v2_pve_active_runs[battle.encounter_id] = saved.duplicate(true)
     return saved
+
+
+# Older V2 saves can contain a valid active snapshot without a newer
+# per-character reservation. Scan those snapshots when admitting new actors.
+static func _actor_in_active_saved_run(state: SimulationState, disciple_id: String) -> bool:
+    for raw_id in state.sect.v2_pve_active_runs.keys():
+        var envelope = state.sect.v2_pve_active_runs[raw_id]
+        if not (envelope is Dictionary):
+            return true
+        var checked := MapBattleSnapshotV2.load(envelope.get("battle",{}))
+        if not bool(checked.get("ok",false)):
+            return true
+        var previous: MapBattleV2 = checked["battle"]
+        if previous.active and previous.actors.has(disciple_id):
+            return true
+    return false
+
+# Commit HP, Injury, auto-return and receipt as one in-memory transaction.
+# The existing SaveService persists the whole SimulationState atomically.
+func _settle_terminal() -> Dictionary:
+    if battle == null or owner_state == null or battle.active:
+        return {"ok":false,"reason":"encounter_not_terminal"}
+    if not ["win","defeat","timeout_retreat"].has(battle.outcome):
+        return {"ok":false,"reason":"invalid_terminal_outcome"}
+    var encounter := battle.encounter_id
+    var members: Dictionary = {}
+    var prepared: Dictionary = {}
+    var actor_ids: Array = battle.actors.keys()
+    actor_ids.sort()
+    for raw_id in actor_ids:
+        var actor: Dictionary = battle.actors[raw_id]
+        if str(actor.get("side","")) != "disciple":
+            continue
+        var key := str(raw_id)
+        if not owner_state.disciples.has(StringName(key)):
+            return {"ok":false,"reason":"missing_terminal_disciple"}
+        var disciple: DiscipleState = owner_state.disciples[StringName(key)]
+        var actor_max := float(actor.get("max_hp",0.0))
+        var actor_hp := float(actor.get("hp",-1.0))
+        if actor_max <= 0.0 or is_nan(actor_hp) or is_inf(actor_hp) or actor_hp < 0.0 or actor_hp > actor_max or disciple.max_hp <= 0.0:
+            return {"ok":false,"reason":"invalid_terminal_hp"}
+        var downed := actor_hp <= 0.0
+        var new_hp := 1.0 if downed else CombatStatsV2.rescale_current_hp(actor_hp,actor_max,disciple.max_hp)
+        members[key] = {"actor_hp":actor_hp,"actor_max_hp":actor_max,"downed":downed}
+        prepared[key] = {"hp":minf(disciple.max_hp,new_hp),"injury":1 if downed else 0}
+    if members.is_empty():
+        return {"ok":false,"reason":"empty_terminal_roster"}
+    var previous_receipt = owner_state.sect.v2_pve_settlement_receipts.get(encounter,null)
+    if previous_receipt != null:
+        if not (previous_receipt is Dictionary):
+            return {"ok":false,"reason":"invalid_terminal_receipt"}
+        var receipt: Dictionary = previous_receipt
+        if str(receipt.get("outcome","")) != battle.outcome or receipt.get("members",{}) != members:
+            return {"ok":false,"reason":"conflicting_terminal_replay"}
+        return {"ok":true,"already_settled":true}
+    if not owner_state.sect.v2_pve_active_runs.has(encounter):
+        return {"ok":false,"reason":"terminal_checkpoint_missing"}
+    for key in prepared.keys():
+        var disciple: DiscipleState = owner_state.disciples[StringName(key)]
+        if disciple.active_pve_encounter_id != encounter:
+            return {"ok":false,"reason":"missing_terminal_reservation"}
+        if disciple.injury_level != 0:
+            return {"ok":false,"reason":"participant_already_injured"}
+    var when := owner_state.tick
+    var ordered: Array = prepared.keys()
+    ordered.sort()
+    for key in ordered:
+        var disciple: DiscipleState = owner_state.disciples[StringName(key)]
+        var outcome: Dictionary = prepared[key]
+        disciple.hp = float(outcome["hp"])
+        disciple.injury_level = int(outcome["injury"])
+        disciple.injury_recover_at_tick = when + 120 if disciple.injury_level == 1 else 0
+        # GP-02C1 pilot return-to-Sect event has no travel delay.
+        disciple.region_id = &"sect"
+        disciple.target_region_id = &""
+        disciple.current_action = &"EVALUATE"
+        disciple.active_pve_encounter_id = ""
+    owner_state.sect.v2_pve_settlement_receipts[encounter] = {
+        "outcome":battle.outcome,"settled_tick":when,"members":members.duplicate(true)
+    }
+    if battle.outcome != "win":
+        owner_state.sect.v2_pve_active_runs.erase(encounter)
+    return {"ok":true,"already_settled":false,"settled_tick":when}
 
 # Production-facing recovery path: only a snapshot already recorded in the
 # canonical SectState may resume the encounter. Direct restore_state is a

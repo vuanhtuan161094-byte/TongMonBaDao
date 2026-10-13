@@ -357,6 +357,8 @@ func active_worker_ids(state: SimulationState, building: BuildingState) -> Array
     return result
 
 func can_disciple_work(state: SimulationState, building: BuildingState, disciple: DiscipleState) -> bool:
+    if disciple != null and not disciple.active_pve_encounter_id.is_empty():
+        return false
     if not state.p3_7_buildings_enabled or building == null:
         return false
     if disciple.region_id != &"sect":

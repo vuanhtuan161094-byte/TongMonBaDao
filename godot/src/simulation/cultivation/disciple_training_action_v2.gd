@@ -18,6 +18,8 @@ static func _validated_rule(disciple: DiscipleState, track: String, data: Varian
 # Read-only eligibility/ratio surface shared by autonomous policy and UI.
 # It uses the same authored rule validation as the eventual committed action.
 static func preview_training(state: SimulationState, disciple: DiscipleState, track: String) -> Dictionary:
+    if disciple != null and not disciple.active_pve_encounter_id.is_empty():
+        return {"ok":false,"reason":"disciple_in_v2_pve"}
     if state == null or disciple == null or not state.sect.v2_training_enabled or not DiscipleRealmProgressV2.TRACKS.has(track):
         return {"ok":false,"reason":"invalid_or_disabled_training_preview"}
     if not state.disciples.has(disciple.id) or state.disciples[disciple.id] != disciple:
@@ -72,6 +74,8 @@ static func request_training(state: SimulationState, disciple_id: StringName, tr
         return {"ok":false,"reason":"training_disciple_not_present"}
     if not [&"EVALUATE",&"IDLE",&"HOLD",&"CULTIVATE",&"TRAIN_BODY"].has(disciple.current_action):
         return {"ok":false,"reason":"training_cannot_interrupt_active_work"}
+    if not disciple.active_pve_encounter_id.is_empty():
+        return {"ok":false,"reason":"disciple_in_v2_pve"}
     # GP-02B1: current_action=EVALUATE does not mean unoccupied.
     # The real production cycle and timed building jobs own the actor until
     # their completion. Every backend caller must obey this gate, not only UI.
@@ -104,6 +108,8 @@ static func resolve(state: SimulationState, disciple: DiscipleState, action: Str
         return {"ok":false,"reason":"unsupported_training_action"}
     if not state.disciples.has(disciple.id) or state.disciples[disciple.id] != disciple:
         return {"ok":false,"reason":"training_actor_not_owned_by_state"}
+    if not disciple.active_pve_encounter_id.is_empty():
+        return {"ok":false,"reason":"disciple_in_v2_pve"}
     if disciple.current_action != StringName(action):
         return {"ok":false,"reason":"training_action_not_current"}
     if state.tick <= 0:

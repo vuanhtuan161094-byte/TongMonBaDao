@@ -16,7 +16,7 @@ static func reserve_slot(state: SimulationState, disciple_id: StringName) -> Dic
     var disciple: DiscipleState = state.disciples[disciple_id]
     if not DiscipleRealmProgressV2.progression_ready(disciple):
         return {"ok":false,"reason":"training_profile_not_ready"}
-    if disciple.region_id != &"sect" or disciple.hp <= 0.0:
+    if disciple.region_id != &"sect" or disciple.hp <= 0.0 or not disciple.active_pve_encounter_id.is_empty():
         return {"ok":false,"reason":"training_actor_not_available"}
     # Preflight before any reservation mutation; do not hijack ongoing combat,
     # paid crops, or a disciple already waiting at an unapproved major gate.
@@ -170,7 +170,7 @@ static func _prepare(state: SimulationState, disciple: DiscipleState) -> Diction
         return {"ok":false,"reason":"body_training_disciple_not_owned"}
     if not DiscipleRealmProgressV2.progression_ready(disciple):
         return {"ok":false,"reason":"training_profile_not_ready"}
-    if disciple.region_id != &"sect" or disciple.hp <= 0.0:
+    if disciple.region_id != &"sect" or disciple.hp <= 0.0 or not disciple.active_pve_encounter_id.is_empty():
         return {"ok":false,"reason":"training_actor_not_available"}
     var building_system := BuildingSystem.new()
     var building := building_system.primary_building(state,BuildingSystem.TYPE_BODY_TRAINING)

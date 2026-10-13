@@ -5,6 +5,10 @@ var id: StringName
 var display_name: String
 var max_hp: float = 100.0
 var hp: float = 100.0
+# GP-02C1: Injury is independent of ordinary HP and persists through offline saves.
+var injury_level: int = 0
+var injury_recover_at_tick: int = 0
+var active_pve_encounter_id: String = ""
 var stamina: float = 100.0
 var wallet: int = 100
 # Base/intrinsic combat power. P2.1 realm power is stored separately so older paths remain stable.
@@ -289,6 +293,11 @@ func to_dict() -> Dictionary:
         data["v2_birth_profile"] = v2_birth_profile.duplicate(true)
     if not v2_realm_progress.is_empty():
         data["v2_realm_progress"] = v2_realm_progress.duplicate(true)
+    if injury_level != 0:
+        data["injury_level"] = injury_level
+        data["injury_recover_at_tick"] = injury_recover_at_tick
+    if not active_pve_encounter_id.is_empty():
+        data["active_pve_encounter_id"] = active_pve_encounter_id
     return data
 
 static func from_dict(data: Dictionary) -> DiscipleState:
@@ -353,6 +362,9 @@ static func from_dict(data: Dictionary) -> DiscipleState:
         "v2_birth_profile": data.get("v2_birth_profile", {}),
         "v2_realm_progress": data.get("v2_realm_progress", {})
     })
+    disciple.injury_level = int(data.get("injury_level", 0))
+    disciple.injury_recover_at_tick = int(data.get("injury_recover_at_tick", 0))
+    disciple.active_pve_encounter_id = str(data.get("active_pve_encounter_id", ""))
     disciple.max_hp = float(data.get("max_hp", 100.0))
     disciple.hp = float(data.get("hp", disciple.max_hp))
     disciple.stamina = float(data.get("stamina", 100.0))

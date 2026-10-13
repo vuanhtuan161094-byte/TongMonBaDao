@@ -76,6 +76,13 @@ func _step_disciple(disciple: DiscipleState) -> void:
         )
         disciple.last_decision["v2_passive_tuvi_result"] = passive_tuvi.duplicate(true)
 
+    # Natural V2 Tu Vi above still accrues once per minute on expeditions.
+    # All competing work/legacy combat actions are suspended until settlement.
+    if not disciple.active_pve_encounter_id.is_empty():
+        return
+    if disciple.injury_level == 1 and disciple.region_id == &"sect" and disciple.injury_recover_at_tick > 0 and state.tick >= disciple.injury_recover_at_tick:
+        disciple.injury_level = 0
+        disciple.injury_recover_at_tick = 0
     match disciple.current_action:
         &"IDLE":
             disciple.current_action = &"EVALUATE"
@@ -106,8 +113,13 @@ func _step_disciple(disciple: DiscipleState) -> void:
                     return
             var decision := decision_system.evaluate(state, disciple)
             disciple.current_action = StringName(decision["action"])
+            if disciple.injury_level == 1 and DiscipleRealmProgressV2.owns_v2_progression(disciple) and disciple.current_action == &"HUNT":
+                disciple.current_action = &"HOLD"
 
         &"HUNT":
+            if disciple.injury_level == 1 and DiscipleRealmProgressV2.owns_v2_progression(disciple):
+                disciple.current_action = &"HOLD" if disciple.region_id == &"sect" else &"RETURN_SECT"
+                return
             if disciple.region_id == &"sect":
                 var direct_region := &""
                 if state.sect.workforce_enabled and workforce_system.command_kind(disciple) == WorkforceSystem.COMMAND_HUNT_REGION:
@@ -123,6 +135,9 @@ func _step_disciple(disciple: DiscipleState) -> void:
                 disciple.current_action = &"COMBAT"
 
         &"TRAVEL":
+            if disciple.injury_level == 1 and DiscipleRealmProgressV2.owns_v2_progression(disciple):
+                disciple.current_action = &"RETURN_SECT"
+                return
             if state.regions.has(disciple.target_region_id):
                 disciple.region_id = disciple.target_region_id
                 var region: RegionState = state.regions[disciple.region_id]
@@ -141,6 +156,9 @@ func _step_disciple(disciple: DiscipleState) -> void:
                 disciple.current_action = &"EVALUATE"
 
         &"COMBAT":
+            if disciple.injury_level == 1 and DiscipleRealmProgressV2.owns_v2_progression(disciple):
+                disciple.current_action = &"RETURN_SECT"
+                return
             var result := combat_system.resolve_encounter(state, disciple, rng)
             disciple.stamina = maxf(0.0, disciple.stamina - 10.0)
             var outcome := str(result.get("outcome", "invalid"))
