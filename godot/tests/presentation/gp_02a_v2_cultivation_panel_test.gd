@@ -1,0 +1,293 @@
+extends SceneTree
+
+# GP-02A: real Dẫn Tiên V2 recruit, V2-only cultivation panel and command
+# bridge, genuine Mine carry-cycle busy rejection, natural Tu Vi once per
+# scheduler minute, and canonical save/reload. P2 legacy remains separate.
+const SAVE_PATH := "user://gp_02a_v2_cultivation_panel_test.json"
+
+var ui: Control
+var state: SimulationState
+var workforce := WorkforceSystem.new()
+var buildings := BuildingSystem.new()
+var warehouse := WarehouseSystem.new()
+
+func _init() -> void:
+    call_deferred("_run")
+
+func _run() -> void:
+    _cleanup()
+    ProjectSettings.set_setting("runtime/live_save_path", SAVE_PATH)
+    if not await _open_scene():
+        return
+
+    # P2 isolation: this founding disciple has no authentic V2 birth. Its
+    # established stage and progress must remain sourced from P2.
+    var founders: Array = state.disciples.keys()
+    founders.sort()
+    if not _check(founders.size() == 6, "Fresh scene has no opening roster."):
+        return
+    var legacy: DiscipleState = state.disciples[founders[0]]
+    if not _check(not DiscipleRealmProgressV2.owns_v2_progression(legacy),
+        "Legacy P2 founder unexpectedly has authentic V2 progression."):
+        return
+    var old_action := legacy.current_action
+    legacy.current_action = &"CULTIVATE"
+    var legacy_label := CultivationSystem.new().stage_name(legacy)
+    var legacy_text := str(ui.call("_cultivation_operation_text"))
+    if not _check(legacy_text.contains(legacy_label)
+        and legacy_text.contains("thể lực %.0f" % legacy.stamina)
+        and not legacy_text.contains("Tu Vi V2: dữ liệu chưa sẵn sàng"),
+        "P2 founding disciple cultivation UI changed authority."):
+        return
+    legacy.current_action = old_action
+    var mine := buildings.primary_building(state, BuildingSystem.TYPE_MINE)
+    if not _check(mine != null, "Canonical Mine missing."):
+        return
+    var initial_miners := buildings.active_worker_ids(state, mine)
+    if not _check(initial_miners.size() == 2, "Opening Mine has no two active miners."):
+        return
+    for raw_id in founders:
+        if not _check(workforce.issue_command(
+            state, StringName(raw_id), WorkforceSystem.COMMAND_HOLD, "", 1000
+        ), "Cannot hold founder for isolated V2 test."):
+            return
+
+    # Recruit through the genuine Guidance UI, with token debit and Accept.
+    ui.call("_open_building", SectMapPresentation.DEST_GUIDANCE)
+    await process_frame
+    var tokens := state.sect.disciple_recruitment_tokens
+    if not await _press("GuidanceRecruitOrder"):
+        return
+    if not _check(state.sect.disciple_recruitment_tokens == tokens - 1,
+        "Real Dẫn Tiên order did not debit one token."):
+        return
+    var candidates: Array = state.recruitment_candidates.keys()
+    candidates.sort()
+    var chosen := &""
+    for raw_id in candidates:
+        var candidate: CandidateState = state.recruitment_candidates[raw_id]
+        if DiscipleBirthProfileV2.valid_complete_birth(candidate.v2_birth_profile):
+            chosen = StringName(raw_id)
+            break
+    if not _check(chosen != &"", "Dẫn Tiên produced no genuine V2 candidate."):
+        return
+    if not await _press("AcceptCandidate_%s" % str(chosen)):
+        return
+    if not _check(state.disciples.has(chosen), "V2 candidate was not accepted."):
+        return
+    var actor: DiscipleState = state.disciples[chosen]
+    if not _check(DiscipleRealmProgressV2.progression_ready(actor),
+        "Real recruited disciple lacks valid V2 authority."):
+        return
+    var v2_birth: Dictionary = actor.v2_birth_profile.duplicate(true)
+
+    # Poison the P2 compatibility fields. Neither the visible V2 panel nor
+    # its eligibility may take the legacy stage, XP, or breakthrough status.
+    actor.cultivation_stage_index = 8
+    actor.cultivation_progress = 876543.0
+    var tuvi_before := float(actor.v2_realm_progress["cultivation"]["xp"])
+    var passive_tick_before := int(actor.v2_realm_progress["last_passive_tuvi_tick"])
+    var specialized := DiscipleTuViFlowV2.preview_rate(state, actor, true)
+    if not _check(bool(specialized.get("ok", false)),
+        "Cannot preview the authored V2 specialized Tu Vi source."):
+        return
+
+    # Player-facing Tu Luyện Đài must route through the V2 request API.
+    ui.call("_open_building", SectMapPresentation.DEST_CULTIVATION)
+    await process_frame
+    if not await _press("Order_CULTIVATE_%s" % str(chosen)):
+        return
+    if not _check(actor.current_action == &"CULTIVATE"
+        and actor.direct_command.is_empty()
+        and str(actor.v2_realm_progress["training_policy"]) == "cultivation_focus"
+        and _close(float(actor.v2_realm_progress["cultivation"]["xp"]), tuvi_before)
+        and int(actor.v2_realm_progress["last_passive_tuvi_tick"]) == passive_tick_before
+        and str(ui.get("building_management_feedback")).contains("Chuyên Tu"),
+        "Cultivation Platform bypassed V2 preflight or granted instant XP."):
+        return
+
+    var snap: Dictionary = DisciplePresentationSnapshotV2.build(state, actor)
+    var cultivation: Dictionary = snap["progression"]["cultivation"]
+    var panel := str(ui.call("_cultivation_operation_text"))
+    var expected := "%s tầng %d · %.0f/%.0f" % [
+        str(cultivation["name"]), int(cultivation["floor"]),
+        float(cultivation["xp"]), float(cultivation["required_xp"])
+    ]
+    if not _check(panel.contains(expected)
+        and panel.contains("Thể lực viễn chinh")
+        and not panel.contains("876543")
+        and not panel.contains("Luyện Khí")
+        and not panel.contains("CÓ THỂ ĐỘT PHÁ"),
+        "Cultivation Platform leaked P2 fields/eligibility for V2."):
+        return
+
+    var scheduler: SimulationScheduler = (ui.get("runtime_session") as LiveGameRuntimeV2).scheduler()
+    scheduler.step()
+    var xp_one := float(actor.v2_realm_progress["cultivation"]["xp"])
+    if not _check(_close(
+        xp_one, tuvi_before + float(specialized["effective_tuvi_per_minute"])
+    ) and int(actor.v2_realm_progress["last_passive_tuvi_tick"]) == state.tick,
+        "Scheduler did not award V2 specialized Tu Vi precisely once."):
+        return
+    var duplicate := DiscipleTuViFlowV2.resolve_minute(state, actor, true)
+    if not _check(not bool(duplicate.get("ok", true))
+        and str(duplicate.get("reason", "")) == "passive_tuvi_tick_already_awarded"
+        and _close(float(actor.v2_realm_progress["cultivation"]["xp"]), xp_one),
+        "Second V2 Tu Vi grant in one tick was accepted."):
+        return
+
+    # Start a genuine paid Mine cycle and reach haul_back with carried ore.
+    # In between steps the scheduler leaves current_action=EVALUATE, which
+    # must not be mistaken for an idle occupation.
+    ui.call("_open_building", SectMapPresentation.DEST_MINE)
+    await process_frame
+    if not await _press("Group_mining_crew_%s" % str(chosen)):
+        return
+    if not await _press("MineWorksite_%s" % str(chosen)):
+        return
+    for raw_id in initial_miners:
+        if not _check(workforce.assign_group(state, raw_id, &""),
+            "Cannot make a Mine slot for the new V2 disciple."):
+            return
+    ui.call("_open_building", SectMapPresentation.DEST_MINE)
+    await process_frame
+    if not _check(buildings.active_worker_ids(state, mine).has(chosen),
+        "New V2 recruit has no active Mine slot."):
+        return
+    var ore_before := warehouse.quantity(state, &"thanh_thiet")
+    if not await _press("Work_mining_%s" % str(chosen)):
+        return
+    var carried := false
+    for _i in range(100):
+        scheduler.step()
+        if str(actor.work_cycle_state.get("phase", "")) == "haul_back" and int(actor.work_cycle_state.get("carried_units", 0)) > 0:
+            carried = true
+            break
+    if not _check(carried and actor.current_action == &"EVALUATE"
+        and warehouse.quantity(state, &"thanh_thiet") == ore_before,
+        "Real Mine carry-cycle not preserved for busy-command test."):
+        return
+
+    var before_cycle := actor.work_cycle_state.duplicate(true)
+    var before_command := actor.direct_command.duplicate(true)
+    var before_group := actor.work_group_id
+    var before_worksite := actor.worksite_building_id
+    var before_policy := str(actor.v2_realm_progress["training_policy"])
+    var before_xp := float(actor.v2_realm_progress["cultivation"]["xp"])
+    var before_ore := warehouse.quantity(state, &"thanh_thiet")
+
+    ui.call("_open_building", SectMapPresentation.DEST_CULTIVATION)
+    await process_frame
+    if not await _press("Order_CULTIVATE_%s" % str(chosen)):
+        return
+    if not _check(str(ui.get("building_management_feedback")).contains("đang bận")
+        and actor.current_action == &"EVALUATE"
+        and actor.work_cycle_state == before_cycle
+        and actor.direct_command == before_command
+        and actor.work_group_id == before_group
+        and actor.worksite_building_id == before_worksite
+        and str(actor.v2_realm_progress["training_policy"]) == before_policy
+        and _close(float(actor.v2_realm_progress["cultivation"]["xp"]), before_xp)
+        and warehouse.quantity(state, &"thanh_thiet") == before_ore,
+        "Busy V2 Cultivation Platform order canceled Mine haul or mutated state."):
+        return
+
+    # The already-existing summary V2 order must respect the SAME guard.
+    ui.call("_open_disciple", chosen)
+    await process_frame
+    ui.call("_issue_summary_order", WorkforceSystem.COMMAND_CULTIVATE, "", "Tu luyện")
+    if not _check(str(ui.get("summary_feedback")).contains("đang bận")
+        and actor.work_cycle_state == before_cycle
+        and actor.direct_command == before_command,
+        "V2 summary cultivation bypassed the shared busy guard."):
+        return
+
+    # Persist a mid-haul rejected order and reload via the live save owner.
+    ui.call("_autosave_runtime")
+    if not _check(FileAccess.file_exists(SAVE_PATH),
+        "Save file missing after denied busy command."):
+        return
+    _dispose_scene()
+    await process_frame
+    if not await _open_scene():
+        return
+    var restored: DiscipleState = state.disciples[chosen]
+    if not _check(restored.v2_birth_profile == v2_birth
+        and restored.work_cycle_state == before_cycle
+        and restored.direct_command == before_command
+        and restored.worksite_building_id == before_worksite
+        and str(restored.v2_realm_progress["training_policy"]) == before_policy
+        and _close(float(restored.v2_realm_progress["cultivation"]["xp"]), before_xp)
+        and warehouse.quantity(state, &"thanh_thiet") == before_ore,
+        "Save/reload changed V2 cultivation authority or lost carried ore."):
+        return
+
+    scheduler = (ui.get("runtime_session") as LiveGameRuntimeV2).scheduler()
+    var delivered := false
+    for _i in range(100):
+        scheduler.step()
+        if warehouse.quantity(state, &"thanh_thiet") > ore_before:
+            delivered = true
+            break
+    if not _check(delivered and restored.work_cycle_state.is_empty()
+        and float(restored.profession_xp.get("mining", 0.0)) > 0.0,
+        "Rejected Cultivation order broke continuation of the real Mine delivery."):
+        return
+    var errors := state.validate_invariants()
+    errors.append_array(buildings.validate_invariants(state))
+    errors.append_array(warehouse.validate_invariants(state))
+    errors.append_array(workforce.validate_invariants(state))
+    if not _check(errors.is_empty(), "GP-02A invariants failed: %s" % " | ".join(errors)):
+        return
+
+    print("GP-02A V2 CULTIVATION PANEL + SAFE BUSY COMMAND + SAVE/RELOAD + P2 ISOLATION PASS")
+    _dispose_scene()
+    _cleanup()
+    quit(0)
+
+func _close(a: float, b: float) -> bool:
+    return absf(a-b) < 0.1
+
+func _open_scene() -> bool:
+    var packed := load("res://scenes/p3/p3_2_landscape_sect.tscn") as PackedScene
+    if packed == null:
+        return _fail("Cannot load real landscape scene.")
+    ui = packed.instantiate() as Control
+    root.add_child(ui)
+    await process_frame
+    state = ui.get("state") as SimulationState
+    return _check(state != null and bool(ui.get("runtime_ready")),
+        "No canonical live simulation state.")
+
+func _press(name: String) -> bool:
+    var button := ui.find_child(name, true, false) as Button
+    if button == null or button.disabled:
+        return _fail("Missing or disabled real player control: " + name)
+    button.emit_signal("pressed")
+    await process_frame
+    return true
+
+func _dispose_scene() -> void:
+    if ui != null and is_instance_valid(ui):
+        root.remove_child(ui)
+        ui.queue_free()
+    ui = null
+    state = null
+
+func _check(value: bool, message: String) -> bool:
+    if not value:
+        return _fail(message)
+    return true
+
+func _fail(message: String) -> bool:
+    push_error("GP-02A: " + message)
+    _dispose_scene()
+    _cleanup()
+    quit(1)
+    return false
+
+func _cleanup() -> void:
+    for path in [SAVE_PATH, SAVE_PATH + ".bak", SAVE_PATH + ".tmp"]:
+        if FileAccess.file_exists(path):
+            DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+    ProjectSettings.set_setting("runtime/live_save_path", LiveGameRuntimeV2.DEFAULT_SAVE_PATH)

@@ -1390,8 +1390,16 @@ func _assign_mine_worksite(disciple_id: StringName, building_id: StringName) -> 
 func _issue_building_order(disciple_id: StringName, kind: StringName, target: String, success_text: String) -> void:
     if not state.disciples.has(disciple_id):
         return
-    var ok := workforce.issue_command(state, disciple_id, kind, target, 40)
-    building_management_feedback = success_text if ok else "Không thể ra lệnh lúc này."
+    var disciple: DiscipleState = state.disciples[disciple_id]
+    if kind == WorkforceSystem.COMMAND_CULTIVATE and DiscipleRealmProgressV2.owns_v2_progression(disciple):
+        # GP-02A: the Cultivation Platform must use the same preflight as the
+        # authentic V2 profile, never the legacy direct-command shortcut.
+        building_management_feedback = _v2_training_ui_feedback(
+            _queue_v2_training("cultivation", disciple_id), "cultivation"
+        )
+    else:
+        var ok := workforce.issue_command(state, disciple_id, kind, target, 40)
+        building_management_feedback = success_text if ok else "Không thể ra lệnh lúc này."
     _refresh_building_operation_content()
 
 # Display only two actual slots, rather than offering imaginary building
@@ -1950,19 +1958,45 @@ func _forge_operation_text() -> String:
 func _cultivation_operation_text() -> String:
     var lines: Array[String] = []
     var ready_count := 0
+    var v2_gate_count := 0
     var active_count := 0
     var ids: Array = state.disciples.keys()
     ids.sort()
     for raw_id in ids:
         var disciple: DiscipleState = state.disciples[raw_id]
-        if disciple.current_action in [&"CULTIVATE", &"BREAKTHROUGH"]:
+        var active := disciple.current_action in [&"CULTIVATE", &"BREAKTHROUGH"]
+        if active:
             active_count += 1
+        var snapshot := _disciple_snapshot(disciple)
+        if bool(snapshot.get("authentic_v2", false)):
+            # Only the canonical V2 progression snapshot may describe a V2
+            # realm/floor/XP. Never fall back to P2, even if V2 is malformed.
+            var progression: Dictionary = snapshot.get("progression", {})
+            if not bool(progression.get("ready", false)):
+                if active:
+                    lines.append("• %s · Tu Vi V2: dữ liệu chưa sẵn sàng" % disciple.display_name)
+                continue
+            var tuvi: Dictionary = progression["cultivation"]
+            var at_gate := bool(tuvi.get("at_major_gate", false))
+            if at_gate:
+                v2_gate_count += 1
+            if active or at_gate:
+                lines.append("• %s · %s tầng %d · %.0f/%.0f · Thể lực viễn chinh %.0f%s" % [
+                    disciple.display_name,
+                    str(tuvi["name"]), int(tuvi["floor"]),
+                    float(tuvi["xp"]), float(tuvi["required_xp"]),
+                    disciple.stamina,
+                    " · CHỜ CỔNG ĐẠI CẢNH V2" if at_gate else ""
+                ])
+            continue
+
+        # Preserve the established P2 legacy presentation and eligibility.
         var required := cultivation.required_progress(disciple)
         var progress_text := "Viên mãn" if required <= 0.0 else "%.0f/%.0f" % [disciple.cultivation_progress, required]
         var ready := cultivation.can_breakthrough(state, disciple)
         if ready:
             ready_count += 1
-        if disciple.current_action in [&"CULTIVATE", &"BREAKTHROUGH"] or ready:
+        if active or ready:
             lines.append("• %s · %s · %s · thể lực %.0f%s" % [
                 disciple.display_name,
                 cultivation.stage_name(disciple),
@@ -1975,10 +2009,11 @@ func _cultivation_operation_text() -> String:
 
     return (
         "Đang tu luyện/phá cảnh: %d\n"
-        + "Đủ điều kiện đột phá: %d\n\n"
+        + "Đủ điều kiện đột phá P2: %d\n"
+        + "Chờ cổng đại cảnh V2: %d\n\n"
         + "ĐỆ TỬ LIÊN QUAN\n%s\n\n"
-        + "Có thể gọi đệ tử tới tu luyện; đột phá do chính đệ tử thực hiện khi đủ điều kiện."
-    ) % [active_count, ready_count, "\n".join(lines)]
+        + "V2 dùng tiến độ/cổng đại cảnh riêng; không dùng điều kiện đột phá P2."
+    ) % [active_count, ready_count, v2_gate_count, "\n".join(lines)]
 
 func _residence_operation_text() -> String:
     var population := state.disciples.size()
@@ -2610,6 +2645,17 @@ func _queue_v2_training(track: String, disciple_id: StringName = &"") -> Diction
     var disciple: DiscipleState = state.disciples[chosen_id]
     if not DiscipleRealmProgressV2.owns_v2_progression(disciple):
         return {"ok":false,"reason":"v2_disciple_not_initialized"}
+    if track == "cultivation":
+        # GP-02A presentation preflight: current_action may be EVALUATE
+        # between real Mine/Forest carry-cycle steps. A rejected order must
+        # not cancel carried goods or consume a timed job/field reservation.
+        if not disciple.work_cycle_state.is_empty():
+            return {"ok":false,"reason":"busy_cultivation_work_cycle"}
+        var buildings := BuildingSystem.new()
+        if buildings.disciple_has_active_spirit_plot(state, disciple.id):
+            return {"ok":false,"reason":"busy_spirit_plot"}
+        if buildings.disciple_has_active_timed_recipe(state, disciple.id):
+            return {"ok":false,"reason":"busy_timed_recipe"}
     if track == "body":
         var slot := DiscipleBodyTrainingFacilityV2.reserve_slot(state,chosen_id)
         if not bool(slot.get("ok",false)):
@@ -2637,8 +2683,8 @@ func _v2_training_ui_feedback(result: Dictionary, track: String) -> String:
             return "Rèn Thân Đường chưa sẵn sàng."
         "body_training_slot_not_reserved":
             return "Chưa được phân vào vị trí Rèn Thân."
-        "training_cannot_interrupt_active_work", "busy_spirit_plot":
-            return "Đệ tử đang bận; không thể ngắt công việc hoặc ô Linh Điền."
+        "training_cannot_interrupt_active_work", "busy_cultivation_work_cycle", "busy_spirit_plot", "busy_timed_recipe":
+            return "Đệ tử đang bận; không thể ngắt công việc, vận chuyển hoặc tác vụ giữ chỗ."
         "major_gate_waiting":
             return "Đã tới cổng đại cảnh; cần đột phá trước."
         "training_disciple_not_present", "training_actor_not_available":
