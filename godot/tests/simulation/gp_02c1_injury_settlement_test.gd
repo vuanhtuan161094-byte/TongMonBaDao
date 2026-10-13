@@ -84,6 +84,7 @@ func _run() -> void:
     if not _receipt_replay_and_compatibility(): return
     if not _legacy_active_pve_save_migration(): return
     if not _legacy_terminal_and_fail_closed(): return
+    if not _legacy_completed_win_claim(): return
     if not _timed_occupation_guards(): return
     if not _work_guard_and_recovery(): return
     if not _real_pve_and_claim(): return
@@ -237,6 +238,41 @@ func _legacy_terminal_and_fail_closed() -> bool:
     var old_receipts := badstate.sect.v2_pve_settlement_receipts.size()
     var parsed := SimulationState.from_dict(badstate.to_dict())
     if not _check(parsed == null and badstate.sect.v2_pve_settlement_receipts.size() == old_receipts and bad.active_pve_encounter_id.is_empty(),"LEGACY_FAIL_CLOSED","conflicting old occupation created partial receipt/reservation"): return false
+    return true
+
+
+# Completed, unclaimed legacy win: authentic P3.7 party/battle and genuine
+# earned map reward, not a simulated win reward fixture.
+func _legacy_completed_win_claim() -> bool:
+    var state := P37Factory.create_state(12311)
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    var party: Array = []
+    for i in range(mini(6,ids.size())):
+        party.append({"disciple_id":str(ids[i]),"party_id":"legacy_crew",
+            "role":"healer" if i == 3 else ("mage" if i == 2 else "frontline"),
+            "position":Vector2(8.0+float(i)*0.3,8.0+float(i%2)*0.45),
+            "realm":2,"floor":1,"body_realm":2,"body_floor":1})
+    if not _check(bool(HuntingMapV2.choose_level(state,"bach_thach_khe",1).get("ok",false)),"LEGACY_WIN_MAP","map selection unavailable"): return false
+    var session := HuntingPveRunV2.new()
+    if not _check(bool(session.begin(state,"bach_thach_khe","gp02c-legacy-unclaimed",12771,party).get("ok",false)),"LEGACY_WIN_BEGIN","unable to start authentic PvE party"): return false
+    session.battle.run(400,false)
+    if not _check(not session.battle.active and session.battle.outcome == "win","LEGACY_WIN_REAL","genuine map battle did not win"): return false
+    state.sect.v2_pve_active_runs["gp02c-legacy-unclaimed"] = session.save_state()
+    for member in party:
+        (state.disciples[StringName(member["disciple_id"])] as DiscipleState).active_pve_encounter_id = ""
+    if not _check(SaveService.new().save_to_path(state,PATH) == OK,"LEGACY_WIN_SAVE","old terminal winning battle save refused"): return false
+    var loaded := SaveService.new().load_from_path(PATH)
+    if not _check(loaded != null and loaded.sect.v2_pve_settlement_receipts.has("gp02c-legacy-unclaimed")
+        and loaded.sect.v2_pve_active_runs.has("gp02c-legacy-unclaimed"),"LEGACY_WIN_RECEIPT","old terminal win lost claimable checkpoint"): return false
+    var restored := HuntingPveRunV2.resume_active(loaded,"gp02c-legacy-unclaimed")
+    if not _check(bool(restored.get("ok",false)),"LEGACY_WIN_RESUME","settled old win cannot resume for reward"): return false
+    var claimant: HuntingPveRunV2 = restored["session"]
+    if not _check(bool(claimant.claim().get("ok",false)) and
+        not bool(claimant.claim().get("ok",false)) and
+        loaded.sect.v2_pve_reward_claims.has("gp02c-legacy-unclaimed") and
+        not loaded.sect.v2_pve_active_runs.has("gp02c-legacy-unclaimed"),"LEGACY_WIN_EXACTLY_ONCE","old win reward/cleanup was replayed"): return false
+    _cleanup()
     return true
 
 func _timed_occupation_guards() -> bool:
