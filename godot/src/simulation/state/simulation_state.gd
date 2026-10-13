@@ -390,4 +390,10 @@ static func from_dict(data: Dictionary) -> SimulationState:
             if building.id != &"":
                 state.buildings[str(building.id)] = building
 
+    # Reconstruct GP-02C1 PvE reservation BEFORE SimulationRuntimeOwnerV2
+    # advances any offline minutes. Reject contested snapshots fail-closed.
+    var legacy_pve := HuntingPveRunV2.reconcile_loaded_v2_pve(state)
+    if not bool(legacy_pve.get("ok",false)):
+        push_error("GP-02C1: incompatible saved PvE: %s" % str(legacy_pve.get("reason","unknown")))
+        return null
     return state

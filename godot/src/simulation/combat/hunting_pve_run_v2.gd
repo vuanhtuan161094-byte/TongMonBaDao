@@ -267,6 +267,92 @@ func _settle_terminal() -> Dictionary:
         owner_state.sect.v2_pve_active_runs.erase(encounter)
     return {"ok":true,"already_settled":false,"settled_tick":when}
 
+
+# GP-02C1: restore valid pre-reservation V2 saves before *any* offline tick.
+# Two-phase validation leaves malformed/contested legacy saves untouched.
+static func reconcile_loaded_v2_pve(state: SimulationState) -> Dictionary:
+    if state == null:
+        return {"ok":false,"reason":"missing_loaded_state"}
+    if state.sect.v2_pve_active_runs.is_empty():
+        return {"ok":true,"legacy_restored":0,"terminal_settled":0}
+    var encountered: Dictionary = {}
+    var pending: Dictionary = {}
+    var ids: Array = state.sect.v2_pve_active_runs.keys()
+    ids.sort()
+    var buildings := BuildingSystem.new()
+    for raw_id in ids:
+        var id := str(raw_id)
+        var snapshot = state.sect.v2_pve_active_runs[raw_id]
+        if id.is_empty() or not (snapshot is Dictionary) or str(snapshot.get("encounter_id","")) != id:
+            return {"ok":false,"reason":"legacy_encounter_identity_invalid"}
+        if state.sect.v2_pve_reward_claims.has(id):
+            return {"ok":false,"reason":"claimed_encounter_has_active_snapshot"}
+        var restored := restore_state(state,snapshot)
+        if not bool(restored.get("ok",false)):
+            return {"ok":false,"reason":"legacy_encounter_snapshot_invalid","detail":restored.get("reason","unknown")}
+        var session: HuntingPveRunV2 = restored["session"]
+        var terminal := not session.battle.active
+        var previous_receipt = state.sect.v2_pve_settlement_receipts.get(id,null)
+        if previous_receipt != null:
+            if not terminal or not (previous_receipt is Dictionary):
+                return {"ok":false,"reason":"legacy_receipt_state_invalid"}
+            var receipt: Dictionary = previous_receipt
+            var members: Dictionary = {}
+            for raw_actor_id in session.battle.actors.keys():
+                var original: Dictionary = session.battle.actors[raw_actor_id]
+                if str(original.get("side","")) == "disciple":
+                    members[str(raw_actor_id)] = {
+                        "actor_hp":float(original.get("hp",-1.0)),
+                        "actor_max_hp":float(original.get("max_hp",0.0)),
+                        "downed":float(original.get("hp",-1.0)) <= 0.0
+                    }
+            if str(receipt.get("outcome","")) != session.battle.outcome or receipt.get("members",{}) != members:
+                return {"ok":false,"reason":"legacy_terminal_receipt_conflict"}
+            continue
+        for raw_actor_id in session.battle.actors.keys():
+            var actor: Dictionary = session.battle.actors[raw_actor_id]
+            if str(actor.get("side","")) != "disciple":
+                continue
+            var disciple_id := str(raw_actor_id)
+            if encountered.has(disciple_id):
+                return {"ok":false,"reason":"legacy_disciple_in_multiple_encounters"}
+            encountered[disciple_id] = id
+            if not state.disciples.has(StringName(disciple_id)):
+                return {"ok":false,"reason":"legacy_participant_missing"}
+            var disciple: DiscipleState = state.disciples[StringName(disciple_id)]
+            if not disciple.active_pve_encounter_id.is_empty() and disciple.active_pve_encounter_id != id:
+                return {"ok":false,"reason":"legacy_reservation_conflict"}
+            if disciple.injury_level != 0 or disciple.hp <= 0.0 or disciple.max_hp <= 0.0:
+                return {"ok":false,"reason":"legacy_participant_life_conflict"}
+            if not disciple.work_cycle_state.is_empty() or buildings.disciple_has_active_spirit_plot(state,disciple.id) or buildings.disciple_has_active_timed_recipe(state,disciple.id) or DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple):
+                return {"ok":false,"reason":"legacy_participant_occupation_conflict"}
+            if not [&"EVALUATE",&"IDLE",&"HOLD"].has(disciple.current_action):
+                return {"ok":false,"reason":"legacy_participant_action_conflict"}
+            var actor_max := float(actor.get("max_hp",0.0))
+            var actor_hp := float(actor.get("hp",-1.0))
+            if actor_max <= 0.0 or is_nan(actor_hp) or is_inf(actor_hp) or actor_hp < 0.0 or actor_hp > actor_max:
+                return {"ok":false,"reason":"legacy_participant_hp_invalid"}
+        pending[id] = session
+    # Only now may state change. All actors and terminal HPs are preflighted.
+    var assigned := 0
+    for key in encountered.keys():
+        var participant: DiscipleState = state.disciples[StringName(str(key))]
+        if participant.active_pve_encounter_id.is_empty():
+            assigned += 1
+        participant.active_pve_encounter_id = str(encountered[key])
+    var settled := 0
+    for raw_id in ids:
+        var id := str(raw_id)
+        if not pending.has(id):
+            continue
+        var run: HuntingPveRunV2 = pending[id]
+        if not run.battle.active:
+            var result := run._settle_terminal()
+            if not bool(result.get("ok",false)):
+                return {"ok":false,"reason":"legacy_terminal_settlement_failed","detail":result.get("reason","unknown")}
+            settled += 1
+    return {"ok":true,"legacy_restored":assigned,"terminal_settled":settled}
+
 # Production-facing recovery path: only a snapshot already recorded in the
 # canonical SectState may resume the encounter. Direct restore_state is a
 # validated low-level utility for migration/tests.

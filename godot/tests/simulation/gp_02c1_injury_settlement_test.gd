@@ -82,6 +82,8 @@ func _run() -> void:
     _cleanup()
     if not _terminal_contract(): return
     if not _receipt_replay_and_compatibility(): return
+    if not _legacy_active_pve_save_migration(): return
+    if not _legacy_terminal_and_fail_closed(): return
     if not _timed_occupation_guards(): return
     if not _work_guard_and_recovery(): return
     if not _real_pve_and_claim(): return
@@ -167,6 +169,76 @@ func _receipt_replay_and_compatibility() -> bool:
 
 # T15: genuine paid Spirit Field and Alchemy jobs must remain untouched when
 # the same worker attempts a conflicting V2 expedition.
+
+# Genuine legacy V2 snapshot fixtures are saved WITHOUT the GP-02C1 field.
+# SaveService then migrates the exact persisted bytes before offline catch-up.
+func _legacy_active_pve_save_migration() -> bool:
+    var fx := _seed(2)
+    if not _check(not fx.is_empty(),"LEGACY_ACTIVE_SETUP","missing authentic V2 recruits"): return false
+    var state: SimulationState = fx["state"]
+    var s := _begin(fx,"gp2c-legacy-inflight")
+    if not _check(s != null,"LEGACY_ACTIVE_BEGIN","cannot start genuine hunt"): return false
+    var actors: Array = fx["actors"]
+    for actor in actors:
+        (actor as DiscipleState).active_pve_encounter_id = ""
+    var hp_before := (actors[0] as DiscipleState).hp
+    var old_tick := state.tick
+    state.runtime_last_wall_unix = 1000000
+    if not _check(SaveService.new().save_to_path(state,PATH) == OK,"LEGACY_ACTIVE_SAVE","legacy snapshot not accepted by canonical SaveService"): return false
+    var loaded := SaveService.new().load_from_path(PATH)
+    if not _check(loaded != null,"LEGACY_ACTIVE_LOAD","legacy save was not migrated"): return false
+    for actor in actors:
+        var current: DiscipleState = loaded.disciples[(actor as DiscipleState).id]
+        if not _check(current.active_pve_encounter_id == "gp2c-legacy-inflight","LEGACY_ACTIVE_OWNER","missing restored reservation"): return false
+    if not _check(not bool(workforce.issue_command(loaded,(actors[0] as DiscipleState).id,WorkforceSystem.COMMAND_HOLD,"",100)) and
+        not bool(DiscipleTrainingActionV2.request_training(loaded,(actors[0] as DiscipleState).id,"body").get("ok",false)) and
+        (loaded.disciples[(actors[0] as DiscipleState).id] as DiscipleState).hp == hp_before,"LEGACY_ACTIVE_GUARD","legacy active participant worked or changed HP"): return false
+    var resumed := HuntingPveRunV2.resume_active(loaded,"gp2c-legacy-inflight")
+    if not _check(bool(resumed.get("ok",false)),"LEGACY_ACTIVE_RESUME","cannot resume genuine combat snapshot"): return false
+    var live: HuntingPveRunV2 = resumed["session"]
+    if not _check(bool(live.finish().get("ok",false)) and loaded.sect.v2_pve_settlement_receipts.has("gp2c-legacy-inflight") and loaded.tick == old_tick,"LEGACY_ACTIVE_FINISH","cannot settle restored legacy battle"): return false
+    _cleanup()
+    return true
+
+func _legacy_terminal_and_fail_closed() -> bool:
+    var fx := _seed(1)
+    if not _check(not fx.is_empty(),"LEGACY_TERM_SETUP","missing V2 disciple"): return false
+    var state: SimulationState = fx["state"]
+    var actor: DiscipleState = fx["actors"][0]
+    var s := _begin(fx,"gp2c-legacy-defeat")
+    if not _check(s != null,"LEGACY_TERM_BEGIN","missing battle"): return false
+    s.battle.actors[str(actor.id)]["hp"] = 0.0
+    s.battle.active = false
+    s.battle.outcome = "defeat"
+    state.sect.v2_pve_active_runs["gp2c-legacy-defeat"] = s.save_state()
+    actor.active_pve_encounter_id = ""
+    state.runtime_last_wall_unix = 1500000
+    if not _check(SaveService.new().save_to_path(state,PATH) == OK,"LEGACY_TERM_SAVE","cannot save pre-Injury terminal snapshot"): return false
+    var loaded := SaveService.new().load_from_path(PATH)
+    if not _check(loaded != null,"LEGACY_TERM_LOAD","terminal migration failed"): return false
+    var injured: DiscipleState = loaded.disciples[actor.id]
+    if not _check(injured.injury_level == 1 and injured.hp == 1.0 and injured.injury_recover_at_tick == loaded.tick + 120 and
+        injured.active_pve_encounter_id.is_empty() and loaded.sect.v2_pve_settlement_receipts.has("gp2c-legacy-defeat") and
+        not loaded.sect.v2_pve_active_runs.has("gp2c-legacy-defeat"),"LEGACY_TERM_SETTLE","legacy defeat incorrectly settled or retained run"): return false
+    var owner := SimulationRuntimeOwnerV2.new()
+    var caught := owner.load_from_path(PATH,1500000 + 119*60)
+    if not _check(bool(caught.get("ok",false)) and (owner.state.disciples[actor.id] as DiscipleState).injury_level == 1,"LEGACY_TERM_119","legacy Injury healed before 120 ticks"): return false
+    if not _check(bool(owner.update_to(1500000+120*60).get("ok",false)) and (owner.state.disciples[actor.id] as DiscipleState).injury_level == 0,"LEGACY_TERM_120","legacy Injury did not expire on exact tick"): return false
+    _cleanup()
+
+    var contested := _seed(1)
+    if not _check(not contested.is_empty(),"LEGACY_CONFLICT_SETUP","missing V2 actor"): return false
+    var badstate: SimulationState = contested["state"]
+    var bad: DiscipleState = contested["actors"][0]
+    var old := _begin(contested,"gp2c-legacy-contested")
+    if not _check(old != null,"LEGACY_CONFLICT_BEGIN","missing active snapshot"): return false
+    bad.active_pve_encounter_id = ""
+    bad.work_cycle_state = {"profession":"mining","profession_id":"mining","phase":"haul_back","carried_units":3}
+    var old_receipts := badstate.sect.v2_pve_settlement_receipts.size()
+    var parsed := SimulationState.from_dict(badstate.to_dict())
+    if not _check(parsed == null and badstate.sect.v2_pve_settlement_receipts.size() == old_receipts and bad.active_pve_encounter_id.is_empty(),"LEGACY_FAIL_CLOSED","conflicting old occupation created partial receipt/reservation"): return false
+    return true
+
 func _timed_occupation_guards() -> bool:
     var fx := _seed(1)
     if not _check(not fx.is_empty(),"T15_SETUP","cannot recruit V2 field worker"): return false
