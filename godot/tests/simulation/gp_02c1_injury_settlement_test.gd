@@ -143,7 +143,7 @@ func _receipt_replay_and_compatibility() -> bool:
     if not _check(reload != null and reload.sect.v2_pve_settlement_receipts.has("gp2c-defeat"),"RECEIPT_SAVE","terminal receipt missing after disk reload"): return false
     var restored: DiscipleState = reload.disciples[actor.id]
     if not _check(restored.injury_level == 1 and restored.injury_recover_at_tick == actor.injury_recover_at_tick and not HuntingPveRunV2.resume_active(reload,"gp2c-defeat").get("ok",false),"RECEIPT_LOAD","resumed already-settled defeat"): return false
-    var recorded := state.sect.v2_pve_settlement_receipts["gp2c-defeat"].duplicate(true)
+    var recorded: Dictionary = state.sect.v2_pve_settlement_receipts["gp2c-defeat"].duplicate(true)
     state.sect.v2_pve_settlement_receipts["gp2c-defeat"] = {"outcome":"win","members":{}}
     var rejected := session.finish()
     if not _check(not bool(rejected.get("ok",false)) and actor.injury_level == 1,"T23","corrupt receipt permitted terminal replay"): return false
