@@ -254,8 +254,25 @@ func _test_spirit_plot_and_alchemy() -> bool:
         return false
     var saved_job := alchemy_job.duplicate(true)
     var persisted := SimulationState.from_dict(JSON.parse_string(JSON.stringify(state.to_dict())))
-    if not _check(buildings.active_alchemy_job_for_worker(persisted,alchemist.id) == saved_job,
-        "Persisted V2 alchemy worker lost active recipe."):
+    var persisted_job := buildings.active_alchemy_job_for_worker(persisted,alchemist.id)
+    # Godot JSON normalizes numeric Variant types on roundtrip. Check every
+    # durable job identity/input/receipt field strictly and XP numerically.
+    var job_fields: Array[String] = [
+        "job_id","recipe_id","worker_id","started_tick","finish_tick",
+        "inputs","output_resource_id","output_quantity"
+    ]
+    for field_name in job_fields:
+        if not _check(persisted_job.has(field_name)
+            and persisted_job[field_name] == saved_job[field_name],
+            "Persisted Alchemy job changed "+field_name+" (before="+str(saved_job.get(field_name))+
+            ", after="+str(persisted_job.get(field_name))+")."):
+            return false
+    if not _check(persisted_job.has("profession_xp_gain")
+        and is_equal_approx(
+            float(persisted_job["profession_xp_gain"]),
+            float(saved_job["profession_xp_gain"])
+        ),
+        "Persisted Alchemy pending profession XP changed."):
         return false
     var loaded_scheduler := SimulationScheduler.new(persisted)
     while persisted.tick < finish_tick:
