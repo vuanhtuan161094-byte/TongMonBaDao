@@ -7,6 +7,16 @@ It is not a historical changelog.
 
 Read `docs/GAME_SYSTEM_ARCHITECTURE.md` for system structure and phase discipline.
 
+## CURRENT BACKEND — SAFE-01 + SAFE-02 CLOSED / OFFICIAL CI PASS (2026-10-13)
+
+Owner-approved sequential production backend safeguards completed. **Read [SAFE closure report](docs/handoffs/SAFE01_SAFE02_2026-10-13_CLOSURE.md)**.
+
+- **SAFE-01 CLOSED:** staged/verified save + backup rotation, fallback load and no silent overwrite of corrupt sole copy. JSON wire format unchanged.
+- **SAFE-02 CLOSED:** all-or-nothing legacy resource merge; failed migration retains old buckets and rejects invalid save without destructive overwrite.
+- **Official Godot 4.7.2 Linux CI SUCCESS:** [SAFE data integrity run #38324783574](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38324783574) on `a19feeb45506c74e0d606452536697dcb00d270f`, covering new tests, P0 save, P3.7 warehouse, DV2 runtime, O9/M2 and full P3.7 cumulative regression.
+- **Android power-loss/kill/storage-full test PENDING USER**; Linux CI is not Android/Windows proof. No gameplay balances, EXP, building operations, Source A art/map, or S3 approvals changed. DV2-03 **PAUSED NOT CLOSED**, FE-02 / ENV-02B-E not opened, ENV-02A Windows/Android PENDING USER.
+
+---
 ## CURRENT PRIORITY — ENV-02A CODE ON GITHUB / WINDOWS QA PENDING (2026-10-13)
 
 **Read:** [ENV-02A source and backend audit](docs/handoffs/ENV02A_CODE_AND_BACKEND_AUDIT_2026-10-13.md). Owner requested isolated lab code push and read-only backend audit while PC unavailable.

@@ -1,5 +1,12 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## PRIMARY ENTRY — SAFE-01 / SAFE-02 CLOSED (2026-10-13)
+
+Read `CURRENT_CHECKPOINT.md` top and `docs/handoffs/SAFE01_SAFE02_2026-10-13_CLOSURE.md`. Owner approved two minimal backend data-safety packets; both committed to `main`. `godot/src/simulation/save/save_service.gd` writes staged verified primary + .bak and recovers fallback; `godot/src/simulation/resource/warehouse_system.gd` merges legacy buckets transactionally and SaveService rejects failed migration. Save wire version, gameplay rules and content unchanged.
+
+**Godot 4.7.2 CI PASS:** [SAFE workflow #38324783574](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38324783574), including full P3.7 cumulative. Android real-device crash recovery still PENDING USER. **ENV-02A isolated lab still Windows/Android PENDING; no FE-02/ENV-02B-E; DV2-03 PAUSED NOT CLOSED; S3 eight art approvals untouched.** Do not restart SAFE-01/02 unless new evidence shows regression.
+
+---
 ## PRIMARY ENTRY — ENV-02A SOURCE MIRROR AND BACKEND AUDIT (2026-10-13; SUPERSEDES EARLIER ENV-01 ENTRY BELOW)
 
 **Read:** `CURRENT_CHECKPOINT.md` top entry and [ENV02A_CODE_AND_BACKEND_AUDIT_2026-10-13.md](docs/handoffs/ENV02A_CODE_AND_BACKEND_AUDIT_2026-10-13.md).
