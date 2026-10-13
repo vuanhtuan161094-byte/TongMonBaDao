@@ -72,6 +72,16 @@ static func request_training(state: SimulationState, disciple_id: StringName, tr
         return {"ok":false,"reason":"training_disciple_not_present"}
     if not [&"EVALUATE",&"IDLE",&"HOLD",&"CULTIVATE",&"TRAIN_BODY"].has(disciple.current_action):
         return {"ok":false,"reason":"training_cannot_interrupt_active_work"}
+    # GP-02B1: current_action=EVALUATE does not mean unoccupied.
+    # The real production cycle and timed building jobs own the actor until
+    # their completion. Every backend caller must obey this gate, not only UI.
+    if not disciple.work_cycle_state.is_empty():
+        return {"ok":false,"reason":"training_cannot_interrupt_active_work"}
+    var buildings := BuildingSystem.new()
+    if buildings.disciple_has_active_spirit_plot(state,disciple.id):
+        return {"ok":false,"reason":"busy_spirit_plot"}
+    if buildings.disciple_has_active_timed_recipe(state,disciple.id):
+        return {"ok":false,"reason":"busy_timed_recipe"}
     var action := "TRAIN_BODY" if track == "body" else "CULTIVATE"
     var ready := preview_training(state,disciple,track)
     if not bool(ready.get("ok",false)):

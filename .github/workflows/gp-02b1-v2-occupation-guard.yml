@@ -1,0 +1,121 @@
+name: GP-02B1 V2 Backend Occupation Guard
+# GP-02B1 backend entry guards and all real producer/slot regressions.
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'godot/tests/simulation/gp_02b1_v2_occupation_guard_test.gd'
+      - 'godot/src/simulation/cultivation/disciple_training_action_v2.gd'
+      - 'godot/src/simulation/cultivation/disciple_body_training_facility_v2.gd'
+      - 'godot/src/simulation/workforce/workforce_system.gd'
+      - '.github/workflows/gp-02b1-v2-occupation-guard.yml'
+      - 'godot/src/presentation/p3/sect_map_presentation.gd'
+      - 'godot/src/presentation/p3_1_landscape_sect.gd'
+      - 'godot/src/presentation/p3_2_landscape_sect.gd'
+      - 'godot/src/simulation/workforce/workforce_system.gd'
+      - 'godot/tests/presentation/p3_o3_real_mine_loop_test.gd'
+      - '.github/workflows/p3-o3-real-mine-loop.yml'
+
+      - 'godot/tests/presentation/p3_o6_m1_release_rehearsal_test.gd'
+permissions:
+  contents: read
+
+jobs:
+  gp-02b1-focused:
+    name: Godot 4.7.2 GP-02B1 backend guard plus full regressions
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install official Godot 4.7.2 binary
+        shell: bash
+        run: |
+          set -euo pipefail
+          GODOT_URL="https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip"
+          GODOT_SHA256="cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4"
+          curl --fail --location --retry 3 --output /tmp/godot.zip "$GODOT_URL"
+          echo "$GODOT_SHA256  /tmp/godot.zip" | sha256sum --check --strict
+          unzip -q /tmp/godot.zip -d /tmp
+          sudo install -m 0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+
+      - name: Confirm official version
+        run: godot --version
+
+      - name: Restore canonical female Stage A runtime pack
+        shell: bash
+        run: |
+          set -euo pipefail
+          PACK="/tmp/female_normal_v1_stageA_runtime_pack_v2_quant.zip"
+          cat             .github/assets/p3/female_stage_a/part01.b64             .github/assets/p3/female_stage_a/part02.b64             .github/assets/p3/female_stage_a/part03.b64             .github/assets/p3/female_stage_a/part04.b64             .github/assets/p3/female_stage_a/part05.b64             .github/assets/p3/female_stage_a/part06.b64             .github/assets/p3/female_stage_a/part07.b64             .github/assets/p3/female_stage_a/part08.b64             .github/assets/p3/female_stage_a/part09.b64             .github/assets/p3/female_stage_a/part10.b64             .github/assets/p3/female_stage_a/part11.b64             .github/assets/p3/female_stage_a/part12.b64             .github/assets/p3/female_stage_a/part13.b64             .github/assets/p3/female_stage_a/part14.b64             .github/assets/p3/female_stage_a/part15a.b64             .github/assets/p3/female_stage_a/part15b.b64             .github/assets/p3/female_stage_a/part16.b64             .github/assets/p3/female_stage_a/part17.b64             .github/assets/p3/female_stage_a/part18.b64             .github/assets/p3/female_stage_a/part19.b64             .github/assets/p3/female_stage_a/part20.b64             | tr -d '\r\n\t ' | base64 --decode > "$PACK"
+          test "$(stat -c%s "$PACK")" -eq 44838
+          echo "6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca  $PACK" | sha256sum --check --strict
+          unzip -q "$PACK" -d .
+
+      - name: Import project scripts and resources
+        run: godot --headless --path godot --import
+
+      - name: Parse GP-02B1 changed code and tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          for script in             res://src/simulation/workforce/workforce_system.gd             res://src/presentation/p3_2_landscape_sect.gd             res://tests/presentation/p3_o3_real_mine_loop_test.gd \
+            res://tests/presentation/gp_01_v2_mine_vertical_slice_test.gd \
+            res://src/simulation/cultivation/disciple_training_action_v2.gd \
+            res://src/simulation/cultivation/disciple_body_training_facility_v2.gd \
+            res://tests/presentation/gp_02a_v2_cultivation_panel_test.gd \
+            res://tests/simulation/gp_02b1_v2_occupation_guard_test.gd; do
+            godot --headless --path godot --check-only --script "$script"
+          done
+
+      - name: Run GP-02B1 direct backend occupation guard
+        run: godot --headless --path godot -s res://tests/simulation/gp_02b1_v2_occupation_guard_test.gd
+
+      - name: Run GP-02A authentic V2 cultivation presentation and safe commands
+        run: godot --headless --path godot -s res://tests/presentation/gp_02a_v2_cultivation_panel_test.gd
+
+      - name: Run GP-01 authentic V2 recruit to Mine and offline resume
+        run: godot --headless --path godot -s res://tests/presentation/gp_01_v2_mine_vertical_slice_test.gd
+
+      - name: Run O3 real player Mine loop persistence
+        run: godot --headless --path godot -s res://tests/presentation/p3_o3_real_mine_loop_test.gd
+
+      - name: Run O4 real Spirit Field plot reservation and save
+        run: godot --headless --path godot -s res://tests/presentation/p3_o4_spirit_field_loop_test.gd
+
+      - name: Run O7 real Forestry carry cycle
+        run: godot --headless --path godot -s res://tests/presentation/p3_o7_linh_forest_test.gd
+
+      - name: Run O8 real timed Alchemy consumer
+        run: godot --headless --path godot -s res://tests/presentation/p3_o8_alchemy_loop_test.gd
+
+      - name: Run DV2 E3.1 slot and training transfer regression
+        run: godot --headless --path godot -s res://tests/simulation/dv2_03_e3_1_training_priority_regression_test.gd
+
+      - name: Run P3.7A1 Mine backend regression
+        run: godot --headless --path godot -s res://tests/simulation/p3_7a1_building_authority_test.gd
+
+      - name: Run existing P3.6A scene regression
+        run: godot --headless --path godot -s res://tests/presentation/p3_6a_playable_slice_test.gd
+
+      - name: Run O2 Dẫn Tiên live map regression
+        run: godot --headless --path godot -s res://tests/presentation/p3_o2_recruitment_map_test.gd
+
+      - name: Run O9 multi-producer regression
+        run: godot --headless --path godot -s res://tests/presentation/p3_o9_m2_production_rehearsal_test.gd
+
+      - name: Run DV2 live V2 runtime and training regression
+        run: |
+          godot --headless --path godot -s res://tests/simulation/dv2_03_live_runtime_integration_test.gd
+          godot --headless --path godot -s res://tests/simulation/dv2_03_e3_1_training_priority_regression_test.gd
+
+      - name: Run SAFE save and warehouse regressions
+        run: |
+          godot --headless --path godot -s res://tests/simulation/safe_01_save_recovery_test.gd
+          godot --headless --path godot -s res://tests/simulation/safe_02_warehouse_migration_test.gd
+
+      - name: Run full P3.7 cumulative regression
+        shell: pwsh
+        run: ./tools/godot/Verify-P3-7C1-Foundation-Dan-Tien-Full.ps1 -GodotBin /usr/local/bin/godot

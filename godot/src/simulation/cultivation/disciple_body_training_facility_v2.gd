@@ -24,6 +24,12 @@ static func reserve_slot(state: SimulationState, disciple_id: StringName) -> Dic
         return {"ok":false,"reason":"body_training_authority_disabled"}
     if not [&"EVALUATE",&"IDLE",&"HOLD",&"CULTIVATE",&"TRAIN_BODY"].has(disciple.current_action):
         return {"ok":false,"reason":"training_cannot_interrupt_active_work"}
+    # GP-02B1: a reserved Body slot must not silently settle an unfinished
+    # Mine/Forest carry-cycle or transfer a worker from a paid timed job.
+    if not disciple.work_cycle_state.is_empty():
+        return {"ok":false,"reason":"training_cannot_interrupt_active_work"}
+    if BuildingSystem.new().disciple_has_active_timed_recipe(state,disciple.id):
+        return {"ok":false,"reason":"busy_timed_recipe"}
     if state.sect.spirit_stones < STONE_COST_PER_MINUTE:
         return {"ok":false,"reason":"insufficient_training_spirit_stones"}
     var rule = state.sect.v2_training_rules.get("body",null)
@@ -52,8 +58,6 @@ static func reserve_slot(state: SimulationState, disciple_id: StringName) -> Dic
         # Do not depend on WorkforceSystem here: its policy depends on the
         # training action, so keeping the facility independent avoids a parser
         # cycle. The same canonical disciple assignment fields own this slot.
-        if not disciple.work_cycle_state.is_empty():
-            buildings.cancel_work_cycle(state,disciple,true)
         disciple.work_group_id = building.worker_group_id
         disciple.worksite_building_id = building.id
         state.sect.workforce_event_count += 1

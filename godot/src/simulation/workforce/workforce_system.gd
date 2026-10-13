@@ -228,6 +228,14 @@ func issue_command(state: SimulationState, disciple_id: StringName, kind: String
         return false
     var disciple: DiscipleState = state.disciples[disciple_id]
 
+    # GP-02B1: legacy-compatible direct CULTIVATE cannot sidestep the
+    # authoritative V2 training occupation guard. Do not alter P2 command
+    # cancellation/transfer semantics or explicit non-training commands.
+    if kind == COMMAND_CULTIVATE and DiscipleRealmProgressV2.owns_v2_progression(disciple):
+        if not disciple.work_cycle_state.is_empty():
+            return false
+        if state.p3_7_buildings_enabled and building_system.disciple_has_active_spirit_plot(state,disciple.id):
+            return false
     if state.p3_7_buildings_enabled and building_system.disciple_has_active_timed_recipe(state, disciple.id):
         return false
 
