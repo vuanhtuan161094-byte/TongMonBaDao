@@ -126,6 +126,13 @@ func finish(max_steps: int = 400) -> Dictionary:
     if battle == null or owner_state == null:
         return {"ok":false,"reason":"no_session"}
     if owner_state.sect.v2_pve_settlement_receipts.has(battle.encounter_id):
+        # A second resumed in-memory session may still be at an earlier battle
+        # checkpoint. Replay combat locally to compare the immutable terminal
+        # receipt, but do NOT persist, settle or mutate DiscipleState again.
+        if battle.active:
+            battle.run(max_steps,false)
+        if battle.active:
+            return {"ok":false,"reason":"stale_replay_still_active"}
         var repeated := _settle_terminal()
         if not bool(repeated.get("ok",false)):
             return repeated
