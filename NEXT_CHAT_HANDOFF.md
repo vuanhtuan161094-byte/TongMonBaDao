@@ -1,5 +1,16 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## GP-02B1 CLOSED — 2026-10-13 · Backend V2 occupation protection / no next CODE permission
+
+**Final tested gameplay SHA:** `0027878eba0b1287e9185bc6e6257060ad53bdb3`; initial code `b2ef5219d4dc1dc1df40c3efa9f0a4a7cfe994bd`, documentation-only closure HEAD newer. **Run [#38335843100](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38335843100) official Linux Godot 4.7.2 COMPLETED/SUCCESS** covering GP-02B1, GP-02A, GP-01, O2/O3/O4/O7/O8/O9, DV2-E3.1/live, SAFE-01/02, P3.6A gameplay and P3.7 **FULL cumulative**. Read top `CURRENT_CHECKPOINT.md` for exact file diff, test evidence and unclosed debts.
+
+- GP-02B1 code changed exactly `disciple_training_action_v2.gd`, `disciple_body_training_facility_v2.gd`, `workforce_system.gd`; added `gp_02b1_v2_occupation_guard_test.gd` and its workflow. Canonical V2 backend training entrypoints/legacy `COMMAND_CULTIVATE` now fail-closed against active Mine/Linh Forest carry-cycle, Linh Điền growing plot, Alchemy timed recipe; accepted Body/Chuyên Tu transfer and P2 compatibility remain. Body slot reservation no longer auto-settles/abandons a work carry. Real production, earned herb/alchemy receipt, offline save/replay, 1 Tu Vi source, and paid Body slot are exercised. No runtime/save/balance/warehouse/schema rewrite.
+- **Debts still pending:** AI injury/rest/healing while worker reserved, direct non-training command cancellation semantics and TTL, comprehensive V2 hunting/work-life integration, 1k–3k load, real Windows/Android + kill/power/storage failure verification **PENDING USER**. Machine reported open but no Windows console log/screenshots were produced or remotely accessed. P3.6A Preview historical artifact quota failure remains separate.
+- GP-01/GP-02A/GP-02B1 CLOSED; DV2-03 PAUSED NOT CLOSED; no DV2-04/FE-02/LAY/ENV-02B–E, ADR-0003/S3/Spine untouched. **Next safest option: READ-ONLY study of worker emergency HEAL/REST and command TTL, then request a separately bounded CODE decision. Do not automatically open that packet.**
+
+---
+
+
 ## GP-02A CLOSED — 2026-10-13 · Handoff update / NO NEW CODE PERMISSION
 
 **Final tested gameplay SHA:** `05ea66ed9559547d570fdd1a118ded768f243dfd` on `main`; documentation-only closure commit is newer. GP-01 remains CLOSED at gameplay `342aee6441bf4d5ac78258ab84265724bd58c240`. Read newest `CURRENT_CHECKPOINT.md` entry first.
