@@ -1,5 +1,18 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## GP-02C1 — IMPLEMENTED, FOCUSED + P3.7 FULL CI SUCCESS; **OPEN / O6 TRIAGE REQUIRED** (2026-10-13)
+
+**Canonical evidence:** read the new top `CURRENT_CHECKPOINT.md` entry. Game/test SHA `442f2f593081d5c3c2394c7bc3ce65782fd09bba`; [official Godot 4.7.2 GP-02C1 CI #38360860726](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38360860726) COMPLETED/SUCCESS: focused Injury, real PvE and claim, snapshot/replay, offline, occupation, presentation and P3.7 FULL. GitHub compare vs pre-packet HEAD `0a29f9c6` proves exactly 14 authorized code/test/workflow files changed. Current HEAD may be newer because closure-status documentation-only commits must not be labeled gameplay SHAs.
+
+**Do NOT mark GP-02C1 CLOSED yet.** P3 O6 M1 independent workflow [#38360325913](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38360325913) FAIL on the initial GP-02C1 SHA and its rerun: expected 4 spendable Thanh Thiết after two isolated Mine batches. Causality vs earlier baseline is unverified. GP-02C1 green focused/FULL workflow does not execute that standalone O6. **Recommended next action: READ-ONLY O6 baseline differential investigation** comparing pre-GP-02C1 SHA `0a29f9c6` vs GP-02C1 `442f2f59`, inspect ore quantity, reservations, work-cycle/AI/claim boundary, without modifying code/test/docs or running new unrelated feature work. If remediation needs an out-of-allowlist file, stop for owner permission. No fresh CODE authority beyond completed GP-02C1 packet.
+
+- Locked GP-02C design: Injury binary, separate HP; HP=0 in battle; downed only -> HP 1/Injury1 on terminal; return to sect at settlement; recovery 120 canonical ticks pilot; zero penalty and still eligible for legitimate profession/Chuyên Tu/Rèn Thân.
+- Technical implementation: V2 battle snapshot HP authority, persistent exactly-once terminal receipt independent of reward claim, active roster reservation protecting scheduler/backend actions, idempotent terminal handling and stale-session replay, conservative save/offline bridge, read-only V2 profile text. Reward/EXP/warehouse/combat engine remain unchanged.
+- Do not treat synthetic terminal fixture assertions as empirical rare encounter frequency. Real six-disciple V2 hunting, actual paid field/alchemy work and actual reward claim are separately tested.
+- Pending: Windows GP-02C1 headless/GUI, Android, power/storage/kill tests, 1k–3k performance; DV2-03 PAUSED NOT CLOSED, DV2-04/FE-02/LAY unopened, ADR-0003/S3/Spine untouched. No next implementation permission.
+
+---
+
 ## GP-02B1 CLOSED — 2026-10-13 · Backend V2 occupation protection / no next CODE permission
 
 **Final tested gameplay SHA:** `0027878eba0b1287e9185bc6e6257060ad53bdb3`; initial code `b2ef5219d4dc1dc1df40c3efa9f0a4a7cfe994bd`, documentation-only closure HEAD `7535a8c1dbccb98bdb40087b0183fb2e4a3ad8c7` (Windows tested). **Run [#38335843100](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38335843100) official Linux Godot 4.7.2 COMPLETED/SUCCESS** covering GP-02B1, GP-02A, GP-01, O2/O3/O4/O7/O8/O9, DV2-E3.1/live, SAFE-01/02, P3.6A gameplay and P3.7 **FULL cumulative**. Read top `CURRENT_CHECKPOINT.md` for exact file diff, test evidence and unclosed debts.
