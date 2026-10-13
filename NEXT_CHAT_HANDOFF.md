@@ -1,5 +1,16 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## GP-02A CLOSED — 2026-10-13 · Handoff update / NO NEW CODE PERMISSION
+
+**Final tested gameplay SHA:** `05ea66ed9559547d570fdd1a118ded768f243dfd` on `main`; documentation-only closure commit is newer. GP-01 remains CLOSED at gameplay `342aee6441bf4d5ac78258ab84265724bd58c240`. Read newest `CURRENT_CHECKPOINT.md` entry first.
+
+- GP-02A changed exactly the authorized `godot/src/presentation/p3_2_landscape_sect.gd`, plus added `godot/tests/presentation/gp_02a_v2_cultivation_panel_test.gd` and `.github/workflows/gp-02a-v2-cultivation-panel.yml`. V2 Tu Luyện Đài now displays canonical snapshot realm/floor/XP/gate, P2 legacy UI remains isolated; player-facing Chuyên Tu V2 uses existing `_queue_v2_training`, and rejects real carry-cycle/field/timed recipe occupation without disruption. No backend/EXP/save changes.
+- **Godot 4.7.2 official Linux CI #38332335827 COMPLETED/SUCCESS on final gameplay SHA**, including new GP-02A, GP-01/O2/O3/O9, DV2/SAFE and P3.7 **FULL**; separate DV2 #38332335736 SUCCESS. First code SHA `a370f6ea` failed P3.6A due debug player-facing text, corrected in `05ea66ed9559547d570fdd1a118ded768f243dfd` and full suite re-passed. P3.6A Preview #38332335834 FAIL artifact upload due GitHub storage quota; gameplay FAST and capture PASS, screenshot delivery not verified.
+- **Strict outstanding debts:** only presentation-level occupation denial; an audit of direct backend caller exclusivity remains future. AI daily life (heal/rest/work transitions), PvE V2 integration, scale 1k–3k and real-device crash tests unverified. GP-02B **NOT authorized**; if user wants, propose READ-ONLY audit for smallest next packet. DV2-03 PAUSED NOT CLOSED, DV2-04/FE-02/LAY unopened, ADR-0003 fixed-layout, ENV-02A Windows/Android PENDING USER, S3/Spine untouched. Do not open a new packet automatically.
+
+---
+
+
 ## GP-01 IMPLEMENTATION CLOSED — 2026-10-13, READ BEFORE OLD READ-ONLY HANDOFF
 
 **Official gameplay code SHA `342aee6441bf4d5ac78258ab84265724bd58c240`, main.** User authorized **GP-01 ONLY**; work is **CLOSED**. Read top `CURRENT_CHECKPOINT.md` GP-01 closure for all exact evidence and caveats.
