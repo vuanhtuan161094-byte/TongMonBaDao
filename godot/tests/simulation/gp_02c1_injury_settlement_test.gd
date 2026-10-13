@@ -311,6 +311,14 @@ func _real_pve_and_claim() -> bool:
     var before := warehouse.quantity(reload,&"thanh_thiet")
     var claimed := claiming.claim()
     if not _check(bool(claimed.get("ok",false)) and reload.sect.v2_pve_reward_claims.has("gp02c-real-win") and warehouse.quantity(reload,&"thanh_thiet") >= before,"T08B","real earned claim failed"): return false
-    if not _check(not bool(claiming.claim().get("ok",false)) and not bool(resumed.claim().get("ok",false)),"T10","duplicate reward claim succeeded"): return false
+    # A replay must share the SAME canonical loaded state. Two independently
+    # forked save universes do not provide cross-device/server transactions.
+    var replay := HuntingPveRunV2.restore_state(
+        reload,state.sect.v2_pve_active_runs["gp02c-real-win"])
+    var stale_claim_ok := false
+    if bool(replay.get("ok",false)):
+        var stale: HuntingPveRunV2 = replay["session"]
+        stale_claim_ok = bool(stale.claim().get("ok",false))
+    if not _check(not bool(claiming.claim().get("ok",false)) and not stale_claim_ok,"T10","duplicate claim succeeded within one canonical save"): return false
     if not _check(not reload.sect.v2_pve_active_runs.has("gp02c-real-win") and not bool(HuntingPveRunV2.resume_active(reload,"gp02c-real-win").get("ok",false)),"T11","claimed terminal reopened active state"): return false
     return true
