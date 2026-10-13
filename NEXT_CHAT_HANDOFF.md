@@ -1,10 +1,11 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
-## DESIGN-ONLY HANDOFF — BUILDING + LAND (2026-10-13)
+## DESIGN APPROVED — BUILDING / LAND (2026-10-13; NO CODE PERMISSION)
 
-Read [construction and area-expansion design V1](docs/design/SECT_BUILDING_LAND_EXPANSION_DESIGN_V1.md). Verified source Home/Building patterns and present `BuildingState` lack of coordinates. Proposed a **future** exclusive layout owner inside `SimulationState` following a **separate ADR-0003 change approval**, not an implemented second map. No code authorization for LAY-01–04; no owner approval of new costs; 192×192/48×48 are ENV-02A design targets. SAFE-01/02 CLOSED; ENV-02A Windows/Android PENDING; FE-02/ENV-02B–E unopened, DV2-03 paused.
+Owner **APPROVED DESIGN ONLY**: [`docs/design/SECT_BUILDING_LAND_EXPANSION_DESIGN_V1.md`](docs/design/SECT_BUILDING_LAND_EXPANSION_DESIGN_V1.md) §7. Principles: one future persistent `SectLayoutState` within `SimulationState` for building placement/roads/unlocked regions, existing `TransferMapModel` as projection, 192×192 world and 48×48 starter district, visual 16×16 chunk, Android landscape 1280×720, relocate buildings and pave roads for free V1; build/unlock economy TBD. **Do NOT modify ADR-0003 or implementation** without separate approval; fixed-layout remains production contract. Before LAY-01 code: ENV-02A official Godot Windows import/structure/map/camera/AStar and real screenshots/logs, owner acceptance, then separately authorize ADR migration and LAY-01. Android still PENDING. No `LAY-01–04`, `FE-02`, `ENV-02B–E`, DV2-03 remains PAUSED NOT CLOSED; SAFE-01/02 CLOSED, S3 unchanged.
 
 ---
+
 ## PRIMARY ENTRY — SAFE-01 / SAFE-02 CLOSED (2026-10-13)
 
 Read `CURRENT_CHECKPOINT.md` top and `docs/handoffs/SAFE01_SAFE02_2026-10-13_CLOSURE.md`. Owner approved two minimal backend data-safety packets; both committed to `main`. `godot/src/simulation/save/save_service.gd` writes staged verified primary + .bak and recovers fallback; `godot/src/simulation/resource/warehouse_system.gd` merges legacy buckets transactionally and SaveService rejects failed migration. Save wire version, gameplay rules and content unchanged.

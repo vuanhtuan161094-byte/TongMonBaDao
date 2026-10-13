@@ -7,11 +7,12 @@ It is not a historical changelog.
 
 Read `docs/GAME_SYSTEM_ARCHITECTURE.md` for system structure and phase discipline.
 
-## DESIGN PROPOSAL ONLY — XÂY DỰNG / MỞ ĐẤT (2026-10-13)
+## DESIGN APPROVED / CODE NOT AUTHORIZED — XÂY DỰNG VÀ MỞ ĐẤT (2026-10-13)
 
-Owner requested continuation of source-grounded construction, relocation, roads and area-unlock **design**, not code. [Read design proposal V1](docs/design/SECT_BUILDING_LAND_EXPANSION_DESIGN_V1.md). Proposes 192×192 world, 48×48 initial area, independent visual chunks, **future** opt-in persistent `SectLayoutState` within canonical SimulationState, and LAY-01–04 design packets, each separately authorized after ENV-02A Windows acceptance. ADR-0003 fixed-layout authority **not amended yet**. No new economic costs/road bonuses, no gameplay or scene changes; SAFE-01/02 CLOSED, ENV-02A Windows/Android PENDING, FE-02 NOT OPEN, DV2-03 PAUSED NOT CLOSED.
+**Owner explicitly approved only the design principles** in [Sect Building/Land Expansion Design V1](docs/design/SECT_BUILDING_LAND_EXPANSION_DESIGN_V1.md) §7: one future `SectLayoutState` inside `SimulationState` for placement/roads/unlocked regions, reuse existing `TransferMapModel` as non-authoritative projection, Android landscape 1280×720, ENV-02A world 192×192 / opening 48×48 / visual chunks 16×16, and **free house relocation + road paving V1**. Build-new and unlock-land costs require separate approval. **ADR-0003 fixed-layout V1 remains unchanged and authoritative in production**; user did NOT authorize a schema migration or any code. ENV-02A Windows 4.7.2 runtime/visual QA and Android are **PENDING USER**. `LAY-01–04`, `FE-02`, `ENV-02B–E` NOT OPENED. SAFE-01/02 CLOSED; DV2-03 PAUSED NOT CLOSED, S3 artworks untouched. Next: ENV-02A Windows evidence → separately approve ADR update and LAY-01 CODE, with explicit gates in design §7.
 
 ---
+
 ## CURRENT BACKEND — SAFE-01 + SAFE-02 CLOSED / OFFICIAL CI PASS (2026-10-13)
 
 Owner-approved sequential production backend safeguards completed. **Read [SAFE closure report](docs/handoffs/SAFE01_SAFE02_2026-10-13_CLOSURE.md)**.

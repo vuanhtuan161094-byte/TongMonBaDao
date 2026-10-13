@@ -1,6 +1,6 @@
 # TÔNG MÔN BÁ ĐẠO — Xây dựng, di chuyển công trình và mở đất (DESIGN PROPOSAL V1)
 
-**Ngày:** 2026-10-13. **Trạng thái:** DESIGN ONLY — CHỜ CHỦ DỰ ÁN DUYỆT, KHÔNG CẤP QUYỀN CODE.  
+**Ngày:** 2026-10-13. **Trạng thái:** DESIGN APPROVED — DESIGN ONLY; CODE NOT AUTHORIZED. Quyết định chủ dự án ngày 2026-10-13; ADR-0003 giữ nguyên.  
 **Nền:** `main` sau SAFE-01/SAFE-02 CLOSED; ENV-02A 192×192, Windows/Android PENDING USER.  
 **Sản phẩm:** Android, LANDSCAPE, thiết kế 1280×720; Godot 4.7.2.  
 **Không mở:** FE-02, ENV-02B–E, DV2-03 (PAUSED NOT CLOSED), artwork S3, pipeline Spine.
@@ -65,13 +65,34 @@ Với **save cũ**, layout mặc định chưa kích hoạt. Sau khi người d�
  
 Mỗi packet được **duyệt riêng**, không code khi ENV-02A Windows chưa có kết quả, không coi ảnh đẹp là đủ nghiệm thu gameplay. **FE-02 production asset integration là quyết định riêng**, không bị LAY-01 tự mở. DV2-03 PAUSED NOT CLOSED.
 
-## 7. Những quyết định còn chờ chủ dự án
+## 7. Quyết định chủ dự án — ĐÃ DUYỆT THIẾT KẾ, CHƯA DUYỆT CODE
 
-1. Đồng ý hướng **xây dựng tự do dựa trên một persistent `SectLayoutState`** và chuyển authority layout đúng ADR-0003 ở phase tương lai?
-2. Cho **di chuyển nhà + lát đường miễn phí V1** để đơn giản, còn xây mới/mở đất phải có bảng chi phí gameplay duyệt riêng?
-3. Giữ **192×192 và vùng đầu 48×48** làm cơ sở thử nghiệm, sau này tăng theo benchmark, không khóa cứng số lượng vùng/nhà?
+1. **ĐÃ DUYỆT nguyên tắc:** chỉ một `SectLayoutState` giữ vị trí/đường/vùng mở **bên trong** `SimulationState`, tái sử dụng `TransferMapModel` như geometry projection; `BuildingState`, `BuildingSystem`, `WarehouseSystem` giữ authority gameplay riêng, không tạo bản đồ/save hoặc kho thứ hai.
+2. **ĐÃ DUYỆT quy mô thử nghiệm:** world 192×192, vùng đầu 48×48, chunk render 16×16; Android landscape thiết kế 1280×720. Đây **không phải** cam kết tối ưu Android hay kích thước thế giới vĩnh viễn.
+3. **ĐÃ DUYỆT V1:** dời nhà và lát đường miễn phí; giữ nguyên building ID, cấp, nhân sự, job và sản xuất; đường chỉ tác động tuyến visual/path, không tự sinh tài nguyên.
+4. **CHƯA DUYỆT:** công thức/giá xây mới và mở đất, giới hạn instance chi tiết, cơ chế tăng giới hạn đất; không invent số liệu.
+5. **CHƯA CẤP QUYỀN:** sửa ADR-0003, schema/save production, code LAY-01–04, FE-02, ENV-02B–E, xây tự do hay mở đất. ADR-0003 **fixed-layout V1 vẫn có hiệu lực** cho production hiện tại, cho đến quyết định sửa đổi riêng.
+6. **ENV-02A** vẫn Godot Windows/Android **PENDING USER**. Không dùng việc duyệt design làm bằng chứng runtime. DV2-03 **PAUSED NOT CLOSED**, SAFE-01/02 CLOSED, S3 tám artwork không đổi.
 
-**Đề xuất:** duyệt ba nguyên tắc thiết kế, **chưa cấp phép code**; đợi ENV-02A Godot Windows/Android runtime QA. Các giới hạn về thời gian/hiệu năng 1.000–3.000 đệ tử vẫn chưa được xác nhận.
+### Các cổng trước khi chủ dự án có thể cấp phép code
+
+**GATE A — ENV-02A technical acceptance (trước LAY-01):**
+- Godot **4.7.2 Windows** import/parse sạch; scene 192×192 / chunk 16×16, camera pan/zoom/culling, ba art Source A và selection/door/AStar chạy đúng; hồi quy `TransferMapModel` 20×13 PASS.
+- Có **log thực** `ENV02A_TEST_RESULTS`, ảnh Godot thực tế (khu trung tâm + vùng xa) và chủ dự án xác nhận. Không báo Windows/Android PASS bằng kiểm tra tĩnh/GitHub.
+- Android APK, pinch/tap, FPS và save-kill là gate riêng khi làm mobile; kết quả vẫn **PENDING USER** nếu chưa chạy thiết bị.
+
+**GATE B — Quyết định kiến trúc trước khi viết vào save production:**
+- Chủ dự án **duyệt riêng** sửa đổi/bổ sung ADR-0003 để chuyển từ fixed-layout sang editable-layout độc quyền: `SectLayoutState` là vị trí persistent **duy nhất**, content fixed seed chỉ dùng một lần khi migrate.
+- Chốt manifest visual ↔ `building_instance_id`: công trình gameplay thật khác landmark/trang trí, không giả sản lượng/cấp.
+- Chốt quy trình save cũ → layout seed kiểm tra ô/cửa/đường → save lại an toàn, migration idempotent, fail-closed; kiểm thử hồi quy SAFE-01/02 và rollback dữ liệu khi lỗi.
+
+**GATE C — Tiêu chí nghiệm thu mỗi packet chỉ khi được duyệt riêng:**
+- `LAY-01`: save/load layout exact, stable IDs, no duplicate authority, không chồng lấn/đứt doorway; hồi quy backend Godot 4.7.2 official CI PASS; không mở cơ chế xây mới.
+- `LAY-02`: dời nhà không đổi sản lượng/job/cấp/worker; vị trí persist qua reload; camera chạm/vuốt/phóng to không thành lệnh đặt nhầm; AStar và đường còn hợp lệ.
+- `LAY-03`: **chỉ sau khi** duyệt chi phí và luật instance; xây/đường fail-closed, preflight kho reserve/lock, trừ **đúng một lần**, không double tap/replay, rollback khi thiếu tài nguyên, test consumer `primary_building` với nhiều instance.
+- `LAY-04`: **chỉ sau khi** duyệt điều kiện và chi phí mở đất; vùng liền kề, không mở trùng, save/load, Android cảm ứng/culling và giới hạn 1.000–3.000 đệ tử được đánh giá bằng benchmark riêng.
+
+**Điều kiện triển khai bất biến:** không mở bất kỳ LAY packet hoặc FE-02 nào chỉ từ việc chốt V1 này. Chủ dự án phải cấp **lệnh CODE rõ tên packet**, sau khi các gate thích hợp đã được chứng minh.
 
 ## 8. Bằng chứng / đường dẫn
 
