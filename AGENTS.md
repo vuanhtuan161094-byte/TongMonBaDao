@@ -230,9 +230,9 @@ If the checkpoint says no implementation phase is active, do not start the queue
 
 ## 11. One-tap user continuation / prewritten next prompts (USER WORKFLOW RULE 2026-10-11)
 
-The user explicitly prefers **tap-to-continue, not typing/planning the next prompt**. Treat this as a **durable project working rule** for all project chats.
+The user explicitly prefers **tap-to-continue, not typing/planning the next prompt**. Treat this as a **durable project working rule** for all project chats. **Owner reaffirmation 2026-10-14:** end every Tông Môn Bá Đạo project-task reply with a clearly labeled, complete, copy-ready **recommended next-work prompt in Vietnamese** (not merely an abstract suggestion), including when QA is deferred or a phase is blocked. This is a communication rule, **not permission to start code or another phase**.
 
-After **every meaningful work packet or decision reply**:
+After **every project-task reply**:
 
 1. Present **2–3 concise, context-specific next choices**, with the recommended/most logical next step first. Do **not** overwhelm with 5–10 choices or ask the user to write their own prompt.
 2. Wherever the chat UI supports it, use actual **clickable options/actions** that submit a **complete ready-made Vietnamese next-turn instruction**. The user should be able to tap one option and automatically issue the precise next request. Do not create a decorative button with no action. Include proper repo, branch, scope, commit/CI/test obligations, exclusion of adjacent phases and Windows `PENDING USER` in any coding-authorization prompt.
