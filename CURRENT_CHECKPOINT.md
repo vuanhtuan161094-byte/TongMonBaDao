@@ -1,6 +1,18 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
-Updated: 2026-10-13
+Updated: 2026-10-15 (GOVERNANCE/DESIGN ONLY; gameplay/test baseline remains 2026-10-13)
+
+## 2026-10-15 — OWNER-APPROVED GOVERNANCE UPDATE / ECONOMY-A PREP / INJURY DESIGN STUDY
+
+**DOCS-ONLY update; no runtime/test/CI/balance action has been authorized or performed by this record.** Repo gameplay/test SHA remains `c8ec094c0bc8653b1438172de1d9338a6c0d28ea` for GP-02C1; at the 2026-10-15 pre-edit audit, main HEAD was `0439b34b16ea516c6100493f96d4a20be1754581` (later docs-only commits are not gameplay evidence).
+
+- **Governance effective now:** owner explicitly replaced the repository-wide single-active-phase barrier with scoped CODE ownership. A separately **authorized** non-overlapping gameplay packet may proceed even when earlier QA stays OPEN or a different phase stays PAUSED. At most one code writer per overlapping file/subsystem; shared state/save/scheduler integration has one owner; explicit allowlist and contract, focused+affected cumulative gates, no fake PASS, no silent save/balance rewrite. Read updated `docs/GAME_SYSTEM_ARCHITECTURE.md` §4 and `AGENTS.md` §3–4.
+- **Truth preserved:** GP-01/GP-02A/GP-02B1 CLOSED; **GP-02C1 CODE DONE; official Godot 4.7.2 Linux focused + P3.7 FULL PASS at c8ec094c, OVERALL QA OPEN** (historical O6 standalone failed at earlier a327ab59; current-HEAD O6 still UNVERIFIED). **DV2-03 PAUSED NOT CLOSED.** GP-02C1 Windows/headless/GUI, Android, real failure injection and 1k–3k scale PENDING USER/UNVERIFIED. O6 may not be pronounced PASS by rerunning an older SHA; no old test assertion may be weakened.
+- **Playable Economy V1:** A operations/real economy → B V2 equipment/PvE → C Android/balance approved in principle. **Economy-A CODE is NOT AUTHORIZED.** Candidate one-package allowlist, authority/migration, pilot questions and Godot/QA gates are recorded in the top of `NEXT_CHAT_HANDOFF.md`. V2 Spirit Stones: Sect `SectState.spirit_stones`, disciple `DiscipleState.spirit_stones`; legacy P2 `treasury/wallet` remain isolated. One canonical Warehouse/SimulationScheduler/active job; Sect owns unique equipment. Pilot numbers and market/compensation amounts not locked.
+- **Injury DESIGN STUDY (NOT LOCKED, NOT CODE):** ZQZS source `config.discipleinjuryconfig` shows four injury-name/threshold bands (0–30 healthy, 31–100 mild, 101–200 severe, 201–255 critical), client batch-treatment and auto-treat AI. Exact server settlement/recovery semantics UNKNOWN. Candidate simplified 0–3 severity + single 120-tick-per-stage clock, no independent Injury timer, optional real canonical healing-consumable service/batch selection in later authorized Injury packet; levels 2/3 require explicit future source and cannot be fabricated by an existing ordinary knockout. Never quietly replace production HP1/Injury1, Injury auto-clear 120 ticks, injured-no-PvE, production eligibility, legacy save migration or existing GP-02C1 tests.
+- **Next actual authority:** ask owner to approve a specific **CODE-A** allowlist plus numeric pilot policy, or approve a later distinct Injury redesign contract. Design or governance approval is not gameplay permission. FE-02, DV2-04, Economy-B/C, UI art/Spine, production Android remain unopened.
+
+---
 
 ## GP-02C1 — INJURY GAMEPLAY + LEGACY SAVE MIGRATION COMPLETE; CI GREEN; OVERALL OPEN (2026-10-13)
 
