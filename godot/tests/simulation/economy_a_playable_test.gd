@@ -204,6 +204,26 @@ func _run() -> void:
         scheduler.step()
     if not _check(warehouse.quantity(loaded,&"linh_moc") == woods,
         "Cancelled Forestry timer minted wood"): return
+    # Seed personal funds only to isolate the policy ceiling from funding; the
+    # genuine payroll/transfer above remains the integration proof.
+    if not _check(live_actor.region_id == &"sect","Auto service actor did not return"): return
+    live_actor.spirit_stones = 10
+    live_actor.hp = minf(live_actor.max_hp*0.1,live_actor.max_hp-30.0)
+    if not _check(bool(economy.configure_v1(loaded,"personal_heal_cost",1).get("ok",false))
+        and bool(economy.configure_v1(loaded,"auto_hp_daily_stone_limit",1).get("ok",false))
+        and bool(economy.configure_v1(loaded,"auto_hp_service",true).get("ok",false)),
+        "Could not configure bounded auto spending"): return
+    var auto_sect_before := loaded.sect.spirit_stones
+    var auto_hp_before := live_actor.hp
+    economy.auto_personal_service_tick(loaded,live_actor)
+    economy.auto_personal_service_tick(loaded,live_actor)
+    if not _check(live_actor.spirit_stones == 9
+        and loaded.sect.spirit_stones == auto_sect_before+1
+        and is_equal_approx(live_actor.hp,auto_hp_before+10.0)
+        and int(loaded.sect.economy_a_auto_spend_by_disciple.get(str(actor.id),0)) == 1,
+        "Auto personal service ignored daily per-disciple Stone limit"): return
+    if not _check(bool(economy.configure_v1(loaded,"auto_hp_service",false).get("ok",false)),
+        "Could not disable auto spending"): return
     if not _check(economy.validate_v1(loaded).is_empty(),"V2 economy invariants invalid"): return
 
     # Durable receipts through save/reload, second load has no phantom claims.
@@ -214,7 +234,8 @@ func _run() -> void:
         and (roundtrip.disciples[actor.id] as DiscipleState).spirit_stones == live_actor.spirit_stones
         and warehouse.quantity(roundtrip,&"linh_moc") == woods
         and roundtrip.sect.economy_a_market_stock == loaded.sect.economy_a_market_stock
-        and roundtrip.sect.economy_a_market_units_bought == loaded.sect.economy_a_market_units_bought,
+        and roundtrip.sect.economy_a_market_units_bought == loaded.sect.economy_a_market_units_bought
+        and roundtrip.sect.economy_a_auto_spend_by_disciple == loaded.sect.economy_a_auto_spend_by_disciple,
         "Economy-A reload changed receipts, stock, or Stone balances: receipts_equal=%s, sect=%d/%d, personal=%d/%d, wood=%d/%d, saved_receipts=%s, reloaded_receipts=%s" % [
             str(roundtrip != null and _receipts_equivalent(roundtrip.sect.economy_a_receipts,loaded.sect.economy_a_receipts)),
             -1 if roundtrip == null else roundtrip.sect.spirit_stones,loaded.sect.spirit_stones,
