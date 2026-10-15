@@ -175,7 +175,7 @@ func _run() -> void:
     var final_actor: DiscipleState = final_state.disciples[recruit_id]
     var final_mine := buildings.primary_building(final_state, BuildingSystem.TYPE_MINE)
     var definition: Dictionary = BuildingSystem.DEFINITIONS[str(BuildingSystem.TYPE_MINE)]
-    var batch := buildings.mining_batch_units_for_worker(state, mine, actor)
+    var batch := buildings._resource_job_batch_units(mine)
     if not _check(warehouse.quantity(final_state, &"thanh_thiet") == ore_before + batch
         and int(final_mine.metrics.get("production_batches", 0)) == batches_before + 1
         and final_actor.work_cycle_state.is_empty()
