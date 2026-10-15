@@ -208,7 +208,7 @@ func _run() -> void:
     # genuine payroll/transfer above remains the integration proof.
     if not _check(live_actor.region_id == &"sect","Auto service actor did not return"): return
     live_actor.spirit_stones = 10
-    live_actor.hp = minf(live_actor.max_hp*0.1,live_actor.max_hp-30.0)
+    live_actor.hp = maxf(1.0,minf(live_actor.max_hp*0.1,live_actor.max_hp-30.0))
     if not _check(bool(economy.configure_v1(loaded,"personal_heal_cost",1).get("ok",false))
         and bool(economy.configure_v1(loaded,"auto_hp_daily_stone_limit",1).get("ok",false))
         and bool(economy.configure_v1(loaded,"auto_hp_service",true).get("ok",false)),
