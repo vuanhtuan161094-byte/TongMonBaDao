@@ -29,6 +29,11 @@ func _run() -> void:
     if not state.sect.economy_a_enabled:
         _fail("Economy-A UI button did not change saved simulation authority")
         return
+    if not await _press("EconomyA_AutoSpendLimit"):
+        return
+    if int(state.sect.economy_a_policy.get("auto_hp_daily_stone_limit",-1)) != 12:
+        _fail("Main Hall did not change canonical personal spending limit")
+        return
     var before := state.sect.spirit_stones
     var warehouse := WarehouseSystem.new()
     var qty := warehouse.quantity(state,&"linh_moc")
