@@ -169,7 +169,9 @@ func _run() -> void:
                 "Cannot release legitimate Forestry slot"): return
     if not _check(buildings.active_worker_ids(loaded,live_forest).has(actor.id),
         "V2 actor did not receive legitimate Forestry slot"): return
-    var forestry := workforce.perform_work(loaded,actor,WorkforceSystem.PROF_FORESTRY)
+    # All simulation mutations after SaveService reload must use the restored
+    # DiscipleState, not the pre-save object that has the same identity.
+    var forestry := workforce.perform_work(loaded,live_actor,WorkforceSystem.PROF_FORESTRY)
     if not _check(bool(forestry.get("started",false)),
         "Forestry did not use new timer: %s" % str(forestry)): return
     var woods := warehouse.quantity(loaded,&"linh_moc")
