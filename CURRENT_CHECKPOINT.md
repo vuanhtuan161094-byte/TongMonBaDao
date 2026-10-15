@@ -1,5 +1,28 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+Updated: 2026-10-15 (ECONOMY-A CODE INTEGRATION; factual gates and historical QA preserved)
+
+## ECONOMY-A — CODE AUTHORIZED, IMPLEMENTED, FOCUSED GREEN; FULL CURRENT-SHA GATE AWAITED (2026-10-15)
+
+**Scope/owner:** owner explicitly granted one integrated Playable Economy V1 milestone A CODE packet on main under updated scoped-writer governance; source gameplay implementation commit `19127419097f42659457cbd0eda98f823ecf478b` and later authorized repairs/focused tests through **latest gameplay+test SHA `ed594e45a308eb55ad9373e703b807365b26c9aa`**. Do not confuse subsequent documentation commits with tested SHA. Only Economy-A simulation, current landscape presentation, dedicated tests and one GitHub Actions workflow changed. No Injury V2 redesign, FE-02, DV2-04 or Economy-B/C was implemented.
+
+**Concrete pilot runtime (UNLOCKED balance):**
+- Economy-A is **opt-in at the Main Hall UI** (`EconomyA_Enable`) and persistent in `SectState.economy_a_enabled`; P2/legacy saves behave exactly as before unless explicitly enabled. `SectState.spirit_stones` and authentic V2 `DiscipleState.spirit_stones` are separate from P2 `treasury/wallet` (legacy economy remains working).
+- New authentic V2 Mine and Linh Forest jobs are `BuildingState.production_state.economy_a_jobs` timed packets; valid old `work_cycle_state`/TRAVEL/EXTRACT/HAUL with `carried_units` drains using old path and is NOT wiped/reinterpreted. Single `SimulationScheduler`/runtime clock, canonical Warehouse, one active job guard. Default base duration **10 simulation ticks**, scaled by existing work-speed authority; completed resource packets credit canonical Warehouse and profession XP once; incomplete canceled timers create no output.
+- Wage is real Sect-to-personal **2 Spirit Stones per completed new resource packet** (default), with durable `wage:<job_id>` receipt and no currency creation; insufficient funds create an unpaid durable receipt, NOT debt currency. Existing Spirit Field/Alchemy and P2 forging consumer remain unchanged and are not yet paid via this wage policy.
+- NPC sale from actual available unreserved Warehouse goods uses existing registry values as pilot buy-back prices; default **20 items/day**, max **5 items/order**; new external Stones are backed by an actual Warehouse debit and a persisted `market:<request_id>` receipt. Main Hall policy and Warehouse Phường Thị buttons act on real simulation. Personal service (not Injury cure) costs **3 personal Stones** per actual **+10 HP** (capped by max HP), matches one Sect Stone credit; automatic personal-HP service OFF by default and may be toggled. `economy_a_policy` supports explicit pilot adjustment; **no numeric balance is locked**, no PvE 60/40 payout introduced.
+- Persistence remains existing `SaveService`/source `SimulationState`; receipt/job identities, quota and currency survive save/reload without repeat settlement. Presentational landscape panel is 1280×720; Android deployment, physical input/GUI and stress 1k–3k are PENDING USER.
+
+**EVIDENCE — no inferred PASS:**
+- Official Linux Godot 4.7.2 workflow [Economy-A #38678031221](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38678031221) on exact SHA `9f109c57020547e0a42bd61413e4a04c4d0da225` **COMPLETED/SUCCESS**: Economy focused simulation, actual landscape hall/market UI, GP-02C1 injury and terminal save, GP-02B1/02A/01, O2/O3/O4/O5/O7/O8/O9, DV2, SAFE, **P3.7 FULL cumulative and standalone O6** (unchanged assertion for exactly four spendable Thanh Thiết) all PASS. This is newer verified evidence than the old O6 standalone FAIL at `a327ab59`; old causal attribution is still UNKNOWN and was never fixed by weakening test.
+- A later test-only commit `ed594e45` adds a **genuine `SimulationRuntimeOwnerV2` wall-clock offline/reload** proof for newly timed Forestry and its once-only wages. [Economy-A #38678314842](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38678314842) official Linux focused + UI + GP-02C1/GP-02B1/GP-02A/GP-01/O3–O9/SAFE steps **SUCCESS**; the **P3.7 FULL and trailing O6 on this final test SHA were still IN PROGRESS/PENDING at the time of this checkpoint write**. Do not label them PASS unless their real GitHub run concludes SUCCESS. No production gameplay code changed after the first fully successful run, only focused test.
+- GP-02C1 stays **QA OPEN** for Windows/manual/device debt; DV2-03 stays **PAUSED NOT CLOSED**. Windows GP-02C1, Android GUI/APK, real power/storage failure, 100–3,000 disciple performance remain **PENDING USER**. Do not relabel prior Windows GP-02B1 evidence as Economy/GP-02C1 Windows acceptance.
+- **Potential future scope** distinct from A: gameplay salaries for all remaining production types, broad NPC market catalogue, full auto-service policy UX, high-volume transaction-receipt retention/performance and refined prices; never claim implemented or code these without new authorization.
+
+**Next action:** verify final test SHA `ed594e45` [workflow #38678314842](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38678314842), especially FULL and O6. If SUCCESS, record exact Economy-A integration acceptance and choose next expressly authorized packet (B or a focused QA repair). If FAILED, inspect exact failing step and repair only within current authorized allowlist. Read `NEXT_CHAT_HANDOFF.md` top for detailed continuation.
+
+---
+
 Updated: 2026-10-15 (GOVERNANCE/DESIGN ONLY; gameplay/test baseline remains 2026-10-13)
 
 ## 2026-10-15 — OWNER-APPROVED GOVERNANCE UPDATE / ECONOMY-A PREP / INJURY DESIGN STUDY
