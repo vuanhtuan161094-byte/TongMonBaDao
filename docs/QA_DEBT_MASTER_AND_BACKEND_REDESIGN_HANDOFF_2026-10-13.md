@@ -2,6 +2,31 @@
 Ngày: 2026-10-13 · Repository: `vuanhtuan161094-byte/TongMonBaDao` (`main`) · Engine: Godot **4.7.2**.
 Tài liệu điều phối / kiểm thử, **không đổi luật chơi, không cấp phép sửa gameplay**.
 
+## BẢN KIỂM KÊ HIỆN HÀNH — 2026-10-15, BASELINE `c64c610`
+
+Bảng này cập nhật trạng thái hiện hành trong **chính sổ nợ canonical này**; các dòng Q01–Q13 phía dưới là bản ghi lịch sử ngày 13/10, không còn là kết luận current-SHA. Economy-A CODE-A cũ đã đạt Linux Godot 4.7.2 focused/FULL/O6 tại `ed594e45` ([run 38678314842](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38678314842)). Lệnh chủ mới mở đầy đủ Economy-A, phát hiện thiếu merchant buy/stock và cap tự chi; branch `economy-a-market-completion-20261015` đang sửa trong allowlist. `40eaa214` đạt [focused/FULL/O6 official CI](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38682499335) cho merchant-buy trước cap tự chi; **latest branch SHA cần gate riêng**. Các Actions trung gian thất bại không có runner/step, không được coi là assertion FAIL hay PASS. Các file shared khác không có owner cạnh tranh được phát hiện qua open PR search; kiểm tra lại trước merge.
+
+| Mã / nhóm | Owner và file liên quan | Nguyên nhân / ảnh hưởng / bằng chứng | Trạng thái hiện hành và bước tiếp |
+|---|---|---|---|
+| ECONOMY-A | Economy integration; `economy_system.gd`, `sect_state.gd`, `p3_2_landscape_sect.gd`, dedicated tests | CODE-A cũ thiếu chiều mua/merchant stock và auto daily cap; current branch bổ sung. | **OPEN IN-SCOPE / PENDING CI** trên latest branch; chạy exact-SHA focused, FULL, O6 rồi cập nhật checkpoint. |
+| Q13 | Building/Workforce; `building_system.gd`, `workforce_system.gd` | V2 Mine/Forest timer + legacy carry drain đã có focused/offline chứng cứ `ed594e45`; các mức 1/2/4/8 giờ chỉ là thiết kế. | V2 Economy-A timer **CLOSED VERIFIED Linux** tại `ed594e45`; lựa chọn nhiều mức thời lượng **DESIGN ONLY**, packet khác. |
+| Q03 / O6 | O6 QA owner; `p3_o6_m1_release_rehearsal_test.gd` | Fail lịch sử ở `a327ab59` chưa rõ nguyên nhân; assertion `==4` nguyên vẹn; standalone PASS tại `ed594e45` và `40eaa214`. | O6 current prior SHA **CLOSED VERIFIED Linux**; historical attribution **BLOCKED** pending optional differential audit; latest branch O6 **PENDING CI**. |
+| GP-02C1 / Q01–Q02 | Injury QA; `gp_02c1_injury_settlement_test.gd`, presentation test | Linux focused/FULL PASS `ed594e45`; Windows/manual/device chưa có bằng chứng. Injury 0/1 không đổi. | Gameplay **CLOSED VERIFIED Linux**; overall **PENDING USER**, không đóng GP-02C1. |
+| GP-01/02A/02B1 | Respective owners; focused tests/workflows | Official Linux regression PASS `ed594e45` và `40eaa214`. | **CLOSED VERIFIED Linux** at cited SHAs; latest branch **PENDING CI**. |
+| O3/O5/O7/O8/O9 | Production owners; respective `p3_o*_test.gd` | Official Linux regression PASS `ed594e45` và `40eaa214`. | **CLOSED VERIFIED Linux** at cited SHAs; latest branch **PENDING CI**. |
+| SAFE / Q04 | Save/Warehouse owners; `save_service.gd`, SAFE tests, P3.7 FULL | SAFE + FULL PASS `ed594e45` và `40eaa214`; real device failure cases untested. | **CLOSED VERIFIED Linux**, current extension FULL **PENDING CI**, device **PENDING USER**. |
+| ACTION-GUARD-01 / Q12 | Character/Workforce owner; `workforce_system.gd`, `NEXT_CHAT_HANDOFF.md` | Existing occupation guards tested, global action guard audit not closed. | **DESIGN ONLY / BLOCKED outside Economy-A**; scope smallest guard diff before code authorization. |
+| CHAR-AUDIT-01/01B | Character owner; `DISCIPLE_MASTER_SCHEMA.md`, `CURRENT_CHECKPOINT.md` | Wider character-source and data audit is not evidenced by Economy-A gates. | **BLOCKED outside allowlist**; dedicated read-only data audit. |
+| CHAR-ISO-00 | Character owner; `DISCIPLE_V2_ROOT_ARCHITECTURE.md` | Isolation proposal has no Economy-A code authority. | **DESIGN ONLY**; require distinct code packet. |
+| DV2-03 | Disciple V2 owner; `DV2_03_TWO_TRACK_PROGRESS_EXECUTION.md` | Residual content/runtime work remains independent. | **PAUSED**, never relabel CLOSED from Economy-A regression. |
+| DV2-04 | Disciple V2 owner; `CURRENT_CHECKPOINT.md` | Phase not opened. | **FUTURE PHASE**. |
+| ENV-02A / PV-02 | Map/visual owners; `docs/handoffs/ENV02A_CODE_AND_BACKEND_AUDIT_2026-10-13.md`, `NEXT_CHAT_HANDOFF.md` | Device map checks and visual candidate decision absent. | **PENDING USER / FUTURE PHASE**; no production scene/art integration. |
+| FE-02 / Spine / Source A | Frontend/asset owners; ADR-0003 and handoff | Production frontend art gate separate, visual approval pending. | **FUTURE PHASE / PENDING USER**; no Economy-A authority. |
+| Windows / Android / 1k–3k | QA/device owner; `tools/qa/RUN-QA-DEBTS-WINDOWS.cmd` and device harness | Headless local Windows focused Economy-A passed for branch, but no full manual GUI/touch/APK, actual storage/power or scale evidence. | **PENDING USER**; record exact hardware logs before PASS. |
+
+**Next authorized work in this branch:** complete latest exact-SHA Economy-A CI, preserve old O6 assertion and valid `carried_units`, inspect diff/ownership, then update the checkpoint/handoff and propose integration. Any broader action-guard, character, Injury, FE, DV2, map, or Economy-B/C fix needs its own allowlist and approval. No test assertion was removed or relaxed in this extension.
+
+
 ## A. Authority và nguyên tắc mới của chủ dự án
 1. Đọc `AGENTS.md` → `docs/GAME_SYSTEM_ARCHITECTURE.md` → `CURRENT_CHECKPOINT.md` → `NEXT_CHAT_HANDOFF.md` → tài liệu này → master spec / code / test live. Kiểm tra `main` HEAD lại; không suy code status từ tên tài liệu.
 2. Chủ dự án muốn **tạm ngừng mở rộng backend**, rà sâu từ đầu lần lượt **nhân vật → nghề & công việc → công trình → kho/giao dịch → kinh tế game**, duyệt gameplay và luật thiết kế trước; mỗi phần/code packet riêng phải có phê duyệt cụ thể.
