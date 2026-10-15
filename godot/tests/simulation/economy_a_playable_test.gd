@@ -187,12 +187,12 @@ func _run() -> void:
     # Durable receipts through save/reload, second load has no phantom claims.
     if not _check(saver.save_to_path(loaded,SAVE_PATH) == OK,"Cannot save completed Economy-A"): return
     var roundtrip := saver.load_from_path(SAVE_PATH)
-    if not _check(roundtrip != null and roundtrip.sect.economy_a_receipts == loaded.sect.economy_a_receipts
+    if not _check(roundtrip != null and _receipts_equivalent(roundtrip.sect.economy_a_receipts,loaded.sect.economy_a_receipts)
         and roundtrip.sect.spirit_stones == loaded.sect.spirit_stones
         and (roundtrip.disciples[actor.id] as DiscipleState).spirit_stones == live_actor.spirit_stones
         and warehouse.quantity(roundtrip,&"linh_moc") == woods,
         "Economy-A reload changed receipts, stock, or Stone balances: receipts_equal=%s, sect=%d/%d, personal=%d/%d, wood=%d/%d, saved_receipts=%s, reloaded_receipts=%s" % [
-            str(roundtrip != null and roundtrip.sect.economy_a_receipts == loaded.sect.economy_a_receipts),
+            str(roundtrip != null and _receipts_equivalent(roundtrip.sect.economy_a_receipts,loaded.sect.economy_a_receipts)),
             -1 if roundtrip == null else roundtrip.sect.spirit_stones,loaded.sect.spirit_stones,
             -1 if roundtrip == null else (roundtrip.disciples[actor.id] as DiscipleState).spirit_stones,live_actor.spirit_stones,
             -1 if roundtrip == null else warehouse.quantity(roundtrip,&"linh_moc"),woods,
@@ -200,8 +200,35 @@ func _run() -> void:
             "{}" if roundtrip == null else str(roundtrip.sect.economy_a_receipts)
         ]): return
     if not _check(saver.save_to_path(roundtrip,SAVE_PATH) == OK and
-        saver.load_from_path(SAVE_PATH).sect.economy_a_receipts == loaded.sect.economy_a_receipts,
+        _receipts_equivalent(saver.load_from_path(SAVE_PATH).sect.economy_a_receipts,loaded.sect.economy_a_receipts),
         "Repeated save/load replayed economic receipts"): return
     print("ECONOMY-A PLAYABLE V2 TIMERS + WAGES + MARKET + PERSONAL + SAVE: PASS")
     DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
     quit(0)
+
+
+# JSON numbers can return as float while real in-memory ledger values are
+# integer. Compare field semantics without dropping required receipt fields.
+func _receipts_equivalent(expected: Dictionary, actual: Dictionary) -> bool:
+    if expected.size() != actual.size():
+        return false
+    for key in expected.keys():
+        if not actual.has(key):
+            return false
+        var e = expected[key]
+        var a = actual[key]
+        if not (e is Dictionary) or not (a is Dictionary) or e.size() != a.size():
+            return false
+        for field in e.keys():
+            if not a.has(field):
+                return false
+            var left = e[field]
+            var right = a[field]
+            var numeric_left := typeof(left) == TYPE_INT or typeof(left) == TYPE_FLOAT
+            var numeric_right := typeof(right) == TYPE_INT or typeof(right) == TYPE_FLOAT
+            if numeric_left and numeric_right:
+                if not is_equal_approx(float(left),float(right)):
+                    return false
+            elif left != right:
+                return false
+    return true
