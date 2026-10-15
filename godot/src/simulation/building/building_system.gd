@@ -1503,6 +1503,9 @@ func _deposit_resource(state: SimulationState, building: BuildingState, resource
     if quantity <= 0:
         return false
     if state.sect.p3_7_resources_enabled:
+        # A full Warehouse is expected backpressure for timed jobs, not a lost delivery.
+        if quantity > WarehouseSystem.MAX_SAFE_STACK - warehouse.quantity(state, StringName(resource_id)):
+            return false
         if not warehouse.add(state, StringName(resource_id), quantity):
             push_error("BuildingSystem: failed to deposit canonical resource %s x%d." % [resource_id, quantity])
             return false
