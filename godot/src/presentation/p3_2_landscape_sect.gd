@@ -795,7 +795,9 @@ func _worker_busy_reason(disciple: DiscipleState) -> String:
     var command := WorkforceSystem.new().command_kind(disciple)
     if command != &"" and command != WorkforceSystem.COMMAND_HOLD:
         return "Đang có lệnh " + str(command)
-    if str(disciple.current_action).begins_with("WORK_") or disciple.current_action in [&"TRAIN_BODY",&"CULTIVATE",&"BREAKTHROUGH"]:
+    # Autonomous cultivation without a reserved job is not an active occupation.
+    # Only a command/real reservation or unsafe action blocks selection.
+    if str(disciple.current_action).begins_with("WORK_") or disciple.current_action in [&"TRAIN_BODY",&"BREAKTHROUGH"]:
         return "Đang " + SectMapPresentation.action_label(disciple.current_action)
     return ""
 
