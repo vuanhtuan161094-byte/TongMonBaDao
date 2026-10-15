@@ -118,6 +118,78 @@ func settle_work_wage(state: SimulationState, worker: DiscipleState, job_id: Str
     state.sect.economy_a_event_count += 1
     return {"ok":true,"already_settled":false,"receipt":receipt.duplicate(true)}
 
+const V2_MARKET_CATALOG := ["linh_moc", "thanh_thiet", "thanh_linh_thao", "linh_coc"]
+
+# Merchant stock is separate from the Sect Warehouse and legacy P2 market.
+# Daily replenishment uses the canonical simulation tick; existing stock from
+# player sales survives until purchased.
+func sync_market_day(state: SimulationState) -> void:
+    if state == null or not state.sect.economy_a_enabled:
+        return
+    var day := int(state.tick / V2_DAY_TICKS)
+    if state.sect.economy_a_market_stock_day == day:
+        return
+    var target := maxi(int(state.sect.economy_a_policy.get("market_stock_target",20)),0)
+    for raw_id in V2_MARKET_CATALOG:
+        state.sect.economy_a_market_stock[raw_id] = maxi(
+            int(state.sect.economy_a_market_stock.get(raw_id,0)),target)
+    state.sect.economy_a_market_stock_day = day
+    state.sect.economy_a_market_units_bought = 0
+    if state.sect.economy_a_market_day != day:
+        state.sect.economy_a_market_day = day
+        state.sect.economy_a_market_units_sold = 0
+
+func market_buy_remaining(state: SimulationState) -> int:
+    if state == null or not state.sect.economy_a_enabled:
+        return 0
+    var day := int(state.tick / V2_DAY_TICKS)
+    var bought := state.sect.economy_a_market_units_bought if state.sect.economy_a_market_stock_day == day else 0
+    return maxi(int(state.sect.economy_a_policy.get("market_daily_units",20))-bought,0)
+
+func market_sell_price(resource_id: StringName) -> int:
+    if not V2_MARKET_CATALOG.has(str(resource_id)):
+        return 0
+    return int(ResourceRegistry.new().definition(resource_id).get("market_value",0))
+
+func market_purchase_price(state: SimulationState, resource_id: StringName) -> int:
+    return market_sell_price(resource_id)*maxi(int(state.sect.economy_a_policy.get("market_buy_markup",2)),1)
+
+# Player buys from durable NPC stock; Warehouse receives the actual item before
+# Sect Stones are debited. Every rejection leaves currency and goods unchanged.
+func buy_from_npc_v1(state: SimulationState, resource_id: StringName, quantity: int, request_id: String) -> Dictionary:
+    if state == null or not state.sect.economy_a_enabled:
+        return {"ok":false,"reason":"economy_a_disabled"}
+    if request_id.is_empty():
+        return {"ok":false,"reason":"missing_request_id"}
+    var receipt_id := "market-buy:%s" % request_id
+    if state.sect.economy_a_receipts.has(receipt_id):
+        var prior = state.sect.economy_a_receipts[receipt_id]
+        if not (prior is Dictionary) or str(prior.get("resource_id","")) != str(resource_id) or int(prior.get("quantity",-1)) != quantity:
+            return {"ok":false,"reason":"conflicting_market_replay"}
+        return {"ok":true,"already_settled":true,"receipt":prior.duplicate(true)}
+    sync_market_day(state)
+    var per_buy := maxi(int(state.sect.economy_a_policy.get("market_max_per_buy",5)),1)
+    var unit_price := market_purchase_price(state,resource_id)
+    if quantity <= 0 or quantity > per_buy or quantity > market_buy_remaining(state) or unit_price <= 0:
+        return {"ok":false,"reason":"invalid_or_over_demand_buy"}
+    var available := int(state.sect.economy_a_market_stock.get(str(resource_id),0))
+    if available < quantity:
+        return {"ok":false,"reason":"merchant_stock_missing"}
+    var cost := unit_price*quantity
+    if state.sect.spirit_stones < cost:
+        return {"ok":false,"reason":"insufficient_spirit_stones"}
+    var warehouse := WarehouseSystem.new()
+    if not warehouse.add(state,resource_id,quantity):
+        return {"ok":false,"reason":"warehouse_rejected"}
+    state.sect.economy_a_market_stock[str(resource_id)] = available-quantity
+    state.sect.economy_a_market_units_bought += quantity
+    state.sect.spirit_stones -= cost
+    var day := int(state.tick / V2_DAY_TICKS)
+    var receipt := {"kind":"market_buy","request_id":request_id,"resource_id":str(resource_id),"quantity":quantity,"unit_price":unit_price,"cost":cost,"day":day,"tick":state.tick}
+    state.sect.economy_a_receipts[receipt_id] = receipt
+    state.sect.economy_a_event_count += 1
+    return {"ok":true,"already_settled":false,"receipt":receipt.duplicate(true)}
+
 func market_remaining(state: SimulationState) -> int:
     if state == null or not state.sect.economy_a_enabled:
         return 0
@@ -138,13 +210,17 @@ func sell_to_npc_v1(state: SimulationState, resource_id: StringName, quantity: i
         if not (prior is Dictionary) or str(prior.get("resource_id","")) != str(resource_id) or int(prior.get("quantity",-1)) != quantity:
             return {"ok":false,"reason":"conflicting_market_replay"}
         return {"ok":true,"already_settled":true,"receipt":prior.duplicate(true)}
-    var unit_price := int(ResourceRegistry.new().definition(resource_id).get("market_value",0))
+    sync_market_day(state)
+    var unit_price := market_sell_price(resource_id)
     var per_sale := maxi(int(state.sect.economy_a_policy.get("market_max_per_sale",5)),1)
     if quantity <= 0 or quantity > per_sale or quantity > market_remaining(state) or unit_price <= 0:
         return {"ok":false,"reason":"invalid_or_over_demand_sale"}
     var earned := unit_price*quantity
     if earned > V2_MAX_STONES-state.sect.spirit_stones:
         return {"ok":false,"reason":"stone_overflow"}
+    var merchant_stock := int(state.sect.economy_a_market_stock.get(str(resource_id),0))
+    if quantity > WarehouseSystem.MAX_SAFE_STACK-merchant_stock:
+        return {"ok":false,"reason":"merchant_stock_overflow"}
     var warehouse := WarehouseSystem.new()
     if not warehouse.consume(state,resource_id,quantity):
         return {"ok":false,"reason":"stock_missing_or_reserved"}
@@ -153,6 +229,7 @@ func sell_to_npc_v1(state: SimulationState, resource_id: StringName, quantity: i
         state.sect.economy_a_market_day = day
         state.sect.economy_a_market_units_sold = 0
     state.sect.economy_a_market_units_sold += quantity
+    state.sect.economy_a_market_stock[str(resource_id)] = merchant_stock+quantity
     state.sect.spirit_stones += earned
     var receipt := {"kind":"market","request_id":request_id,"resource_id":str(resource_id),"quantity":quantity,"unit_price":unit_price,"earned":earned,"day":day,"tick":state.tick}
     state.sect.economy_a_receipts[receipt_id] = receipt
@@ -224,6 +301,11 @@ func validate_v1(state: SimulationState) -> Array[String]:
         errors.append("Economy-A Sect Stone balance invalid.")
     if state.sect.economy_a_market_units_sold < 0 or state.sect.economy_a_market_units_sold > int(state.sect.economy_a_policy.get("market_daily_units",20)):
         errors.append("Economy-A market quota invalid.")
+    if state.sect.economy_a_market_units_bought < 0 or state.sect.economy_a_market_units_bought > int(state.sect.economy_a_policy.get("market_daily_units",20)):
+        errors.append("Economy-A market buy quota invalid.")
+    for raw_id in state.sect.economy_a_market_stock.keys():
+        if not V2_MARKET_CATALOG.has(str(raw_id)) or int(state.sect.economy_a_market_stock[raw_id]) < 0 or int(state.sect.economy_a_market_stock[raw_id]) > WarehouseSystem.MAX_SAFE_STACK:
+            errors.append("Economy-A merchant stock invalid.")
     for actor in state.disciples.values():
         if (actor as DiscipleState).spirit_stones < 0 or (actor as DiscipleState).spirit_stones > V2_MAX_STONES:
             errors.append("Economy-A personal Stone balance invalid.")
