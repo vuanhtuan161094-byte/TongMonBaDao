@@ -843,11 +843,7 @@ func perform_resource_job_step(state: SimulationState, disciple: DiscipleState, 
         if progress + 0.000001 >= _resource_job_duration(producer):
             phase = &"haul_back"
             progress = 0.0
-            cycle["carried_units"] = (
-                mining_batch_units_for_worker(state, producer, disciple)
-                if profession_id == PROF_MINING
-                else _resource_job_batch_units(producer)
-            )
+            cycle["carried_units"] = _resource_job_batch_units(producer)
     elif phase == &"haul_back":
         progress += _movement_speed(state, disciple) * _haul_speed_multiplier(disciple)
         if progress + 0.000001 >= float(definition.get("haul_distance", 6.0)):
@@ -979,10 +975,7 @@ func _start_resource_timer(state: SimulationState, producer: BuildingState, acto
         "job_id":"%s:v1:%d" % [str(producer.id),sequence],
         "worker_id":str(actor.id),"profession_id":str(profession_id),
         "resource_id":str(definition.get("resource_id","")),
-        "output_quantity": (
-            mining_batch_units_for_worker(state, producer, actor)
-            if profession_id == PROF_MINING else _resource_job_batch_units(producer)
-        ),
+        "output_quantity":_resource_job_batch_units(producer),
         "profession_xp_gain":maxf(xp_gain,0.0),
         "started_tick":state.tick,"finish_tick":state.tick+duration
     }
@@ -1586,24 +1579,11 @@ func _resource_job_batch_units(building: BuildingState) -> int:
     var base := maxi(int(definition_for(building).get("base_batch_units", 2)), 1)
     return base + int(floor(float(building.level) / 10.0))
 
-# MINE-V2 PILOT (tunable, NOT a locked economy curve):
-# 1) Profession level remains the canonical time/throughput channel, via
-#    WorkforceSystem._work_speed() -> ProfessionModifierSystem.
-# 2) Căn Cốt is a MINE-SPECIFIC physical extraction quantity channel,
-#    NOT a generic hauling/speed modifier or a substitute for Luyện Thể.
-#    One flat extra ore per 1,000 points, capped at +3 per finished packet.
-# 3) Thông Tuệ affects mining-profession XP through the existing channel.
-#    No automatic % output from total lục duy or cultivation realm.
-# We snapshot this quantity at packet start, ensuring save/offline exactly-once.
-func mining_batch_units_for_worker(state: SimulationState, mine: BuildingState, worker: DiscipleState) -> int:
-    if mine == null or mine.building_type != TYPE_MINE or worker == null:
-        return 0
-    var base := _resource_job_batch_units(mine)
-    if not state.p3_7_buildings_enabled or worker.foundation_model_version < FoundationSystem.MODEL_OPEN_POINTS:
-        return base
-    var bonus := mini(int(floor(maxf(worker.constitution, 0.0) / 1000.0)), 3)
-    return base + bonus
-
+# Mining output remains the authored Mine/level batch quantity until a
+# specific, approved production-result modifier is defined. In particular,
+# Căn Cốt is a Body-training foundation and never grants arbitrary extra ore.
+# Mining profession level already controls work time through WorkforceSystem;
+# Thông Tuệ controls profession XP via the existing modifier channel.
 # Keep old helper names for regression/debug compatibility.
 func _mining_duration(mine: BuildingState) -> float:
     return _resource_job_duration(mine)
