@@ -1,5 +1,16 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## CURRENT HANDOFF — 2026-10-15 ECONOMY-A INTEGRATED ON MAIN (WINDOWS QA VERIFIED)
+
+**Authoritative latest state:** Economy-A PR [#1](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/1) **MERGED** into GitHub `main` via merge commit `0689d0ddf0ebd72463d08bad4835c60428c64d24`; PR HEAD `4a6937dc28d477be13ffc0283d44cc74fe610733`. Last gameplay/test SHA `95bf06ecfd2c7fce5026d4485af55a5a3c40d909`. Post-gameplay branch commits altered **documentation only**. **18/18 official Windows Godot 4.7.2 automated QA PASS, 0 FAIL** from owner-uploaded `20261015_135007.zip`, SHA-256 `2d35d82d7eadf44ae06407c3899a36facf480c05b14c2922b22041062d3531f6` (all exit codes 0 and PASS markers independently inspected): Economy-A simulation/UI, GP-01/02A/02B1/02C1 sim+presentation, O3–O9 including standalone O6 with unchanged `==4`, SAFE-01/02, P3.7 FULL. Isolated detached worktree did not change original local repository or saves. The two expected negative-fixture diagnostic stderr cases (invalid saved PvE and corrupt JSON) do not negate test PASS. Full evidence and pilot balance in the **latest top section of `CURRENT_CHECKPOINT.md`**.
+
+**Validation authority for merge:** owner directed local Windows testing because GitHub Actions quota was exhausted; Windows 18/18 evidence accepted as Economy-A merge gate. Official Linux on the **exact latest gameplay SHA** remains `PENDING CI`, since [#38684703913](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38684703913) failed before runner/job steps on all attempts. Do not convert that to Linux PASS or gameplay FAIL. The previous Linux green SHA `40eaa214` does not test final Field/Alchemy wages.
+
+**Still pending / separate:** Windows **manual GUI screenshot** acceptance, real Android APK/touch/landscape, physical interruption/storage errors, target-hardware 100/500/1000/3000 disciple load; GP-02C1 overall QA remains OPEN, DV2-03 remains PAUSED NOT CLOSED, DV2-04/FE-02/Economy-B/C not authorized. User's original local `main` may be stale (`0439b34b...` in the Windows QA log); do not assume it was synchronized by the detached QA runner. Sync locally only through authorized safe workflow, without losing untracked local QA scripts or saves. No further Economy-A code mutation from this integration alone.
+
+---
+
+
 ## CURRENT HANDOFF — 2026-10-15 ECONOMY-A COMPLETION BRANCH, INTEGRATION QA PENDING
 
 Read `CURRENT_CHECKPOINT.md` top and the current section of the canonical `docs/QA_DEBT_MASTER_AND_BACKEND_REDESIGN_HANDOFF_2026-10-13.md` first. Baseline main `c64c61029ab6f569a66aba1f1cbeed3bd76f796e`; the owner's new comprehensive Economy-A instruction supersedes the old "next packet needs authorization" note below **only for Economy-A**. Earlier CODE-A official Linux Godot 4.7.2 focused/FULL/O6 green at `ed594e45` [#38678314842](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38678314842). The owner requested complete Phường Thị buy/sell/merchant stock and bounded automatic personal spending, which the older implementation did not have.
