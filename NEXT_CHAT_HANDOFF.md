@@ -1,5 +1,16 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## CURRENT HANDOFF — 2026-10-15 ECONOMY-A COMPLETION BRANCH, INTEGRATION QA PENDING
+
+Read `CURRENT_CHECKPOINT.md` top and the current section of the canonical `docs/QA_DEBT_MASTER_AND_BACKEND_REDESIGN_HANDOFF_2026-10-13.md` first. Baseline main `c64c61029ab6f569a66aba1f1cbeed3bd76f796e`; the owner's new comprehensive Economy-A instruction supersedes the old "next packet needs authorization" note below **only for Economy-A**. Earlier CODE-A official Linux Godot 4.7.2 focused/FULL/O6 green at `ed594e45` [#38678314842](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38678314842). The owner requested complete Phường Thị buy/sell/merchant stock and bounded automatic personal spending, which the older implementation did not have.
+
+Branch `economy-a-market-completion-20261015` has the smallest corresponding edits in `SectState`, `EconomySystem`, current P3.2 landscape UI, two dedicated tests and current checkpoint/debt docs. It uses Sect Warehouse for player inventory, persisted merchant stock for NPC inventory, simulation-day limits, actual Stones, receipts and replay checks. Auto HP spending has an adjustable per-disciple daily Stone ceiling, default 6, while auto policy stays OFF by default. The first market-buy SHA `40eaa214` passed official Linux focused/FULL/O6 [#38682499335](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38682499335). Later branch commits added the spending cap and its assertions. Latest exact-SHA official CI is PENDING; intermediate runs with zero runner/steps are infrastructure failures, not gameplay PASS. Latest branch Windows official focused simulation and landscape UI were locally PASS before the final test-only fixture adjustment; rerun latest if integrating. Keep O6 `==4`, Injury 0/1, valid `carried_units`, legacy P2 currency, single Warehouse/Scheduler/job owner and locked balances unchanged.
+
+Before merging or claiming CLOSED: verify remote main still at expected base, review branch diff against the allowlist, get exact latest gameplay/test SHA focused + P3.7 FULL + standalone O6 on official Godot 4.7.2, then update these docs with that SHA and run links. Windows GUI/manual and Android APK/device, power/storage and 1k–3k performance remain PENDING USER. GP-02C1 overall QA remains OPEN, DV2-03 PAUSED, Economy-B/C, FE-02, DV2-04, map/visual and Injury redesign outside authorization. If current CI cannot start a runner, report PENDING CI and keep integration open; do not map previous-SHA green to latest code.
+
+---
+
+
 ## CURRENT HANDOFF — ECONOMY-A CODE-A LINUX CLOSURE VERIFIED; NEXT PACKET REQUIRES OWNER AUTHORIZATION
 
 **Owner CODE-A authorization: 2026-10-15.** Main gameplay+test SHA `ed594e45a308eb55ad9373e703b807365b26c9aa`, next commit(s) DOCS ONLY. The original comprehensive Playable Economy A/B/C plan and governance are in `AGENTS.md` §3, `docs/GAME_SYSTEM_ARCHITECTURE.md` §4 and the next historical handoff below. **Current live truth** in the newest `CURRENT_CHECKPOINT.md` top supersedes old DESIGN ONLY instructions below.
