@@ -122,7 +122,7 @@ func _verify_typed_foundation_output() -> bool:
             return false
     # Tu Vi realm level is not an input to mining profession level or output.
     var no_realm_bonus := buildings.mining_batch_units_for_worker(state, mine, worker)
-    worker.cultivation_stage = worker.cultivation_stage
+    worker.cultivation_stage_index += 1
     if not _check(buildings.mining_batch_units_for_worker(state, mine, worker) == no_realm_bonus,
         "Mine output depends on unrelated realm field"):
         return false
@@ -207,6 +207,9 @@ func _verify_real_timed_packet_save_and_wage() -> bool:
         "Mine output wage was not exactly-once and zero sum"):
         return false
     var stable_ore := warehouse.quantity(loaded, &"thanh_thiet")
+    if not _check(workforce.issue_command(loaded, actor.id, WorkforceSystem.COMMAND_HOLD, "", 200),
+        "could not hold sole Mine worker after paid packet"):
+        return false
     for _i in range(5):
         runner.step()
     if not _check(warehouse.quantity(loaded, &"thanh_thiet") == stable_ore
