@@ -29,6 +29,11 @@ func _run() -> void:
     if not state.sect.economy_a_enabled:
         _fail("Economy-A UI button did not change saved simulation authority")
         return
+    if not await _press("EconomyA_AutoSpendLimit"):
+        return
+    if int(state.sect.economy_a_policy.get("auto_hp_daily_stone_limit",-1)) != 12:
+        _fail("Main Hall did not change canonical personal spending limit")
+        return
     var before := state.sect.spirit_stones
     var warehouse := WarehouseSystem.new()
     var qty := warehouse.quantity(state,&"linh_moc")
@@ -38,6 +43,16 @@ func _run() -> void:
         return
     if not (state.sect.spirit_stones > before and warehouse.quantity(state,&"linh_moc") < qty):
         _fail("Economy-A Phuong Thi UI did not settle actual stock and Stones")
+        return
+    var market_before := int(state.sect.economy_a_market_stock.get("linh_moc",0))
+    var stones_before_buy := state.sect.spirit_stones
+    var wood_before_buy := warehouse.quantity(state,&"linh_moc")
+    if not await _press("EconomyA_Buy_linh_moc"):
+        return
+    if not (state.sect.spirit_stones < stones_before_buy
+        and warehouse.quantity(state,&"linh_moc") > wood_before_buy
+        and int(state.sect.economy_a_market_stock.get("linh_moc",0)) < market_before):
+        _fail("Economy-A Phuong Thi UI buy did not settle real stock and Stones")
         return
     var result := state.validate_invariants()
     if not result.is_empty():

@@ -787,6 +787,12 @@ func _build_economy_a_hall_controls() -> void:
     heal_toggle.custom_minimum_size = Vector2(384,36)
     heal_toggle.pressed.connect(_economy_a_toggle_heal_from_ui)
     building_management_container.add_child(heal_toggle)
+    var spending_limit := Button.new()
+    spending_limit.name = "EconomyA_AutoSpendLimit"
+    spending_limit.text = "Hạn mức tự chữa: %d LT/đệ tử/ngày" % int(policy.get("auto_hp_daily_stone_limit",6))
+    spending_limit.custom_minimum_size = Vector2(384,36)
+    spending_limit.pressed.connect(_economy_a_cycle_spend_limit_from_ui)
+    building_management_container.add_child(spending_limit)
 
 func _economy_a_enable_from_ui() -> void:
     var result := EconomySystem.new().enable_v1(state)
@@ -800,13 +806,23 @@ func _economy_a_toggle_heal_from_ui() -> void:
     building_management_feedback = "Đã đổi chính sách chi tiêu cá nhân." if bool(result.get("ok",false)) else "Chính sách bị từ chối."
     _refresh_building_operation_content()
 
+func _economy_a_cycle_spend_limit_from_ui() -> void:
+    var choices := [0,3,6,12]
+    var current := int(state.sect.economy_a_policy.get("auto_hp_daily_stone_limit",6))
+    var index := choices.find(current)
+    var next_value := int(choices[(index+1) % choices.size()])
+    var result := EconomySystem.new().configure_v1(state,"auto_hp_daily_stone_limit",next_value)
+    building_management_feedback = "Đã đổi hạn mức tự chữa." if bool(result.get("ok",false)) else "Không đổi được hạn mức."
+    _refresh_building_operation_content()
+
 func _build_economy_a_market_controls() -> void:
     if not state.sect.economy_a_enabled:
         return
     var economy := EconomySystem.new()
-    _add_management_section_label("PHƯỜNG THỊ · NPC MUA NGUYÊN LIỆU")
+    economy.sync_market_day(state)
+    _add_management_section_label("PHƯỜNG THỊ · GIAO DỊCH NGUYÊN LIỆU")
     var quota := Label.new()
-    quota.text = "Hạn mức còn %d sản phẩm/ngày; chỉ bán tồn khả dụng." % economy.market_remaining(state)
+    quota.text = "Hạn mức bán %d · mua %d sản phẩm/ngày." % [economy.market_remaining(state),economy.market_buy_remaining(state)]
     quota.custom_minimum_size = Vector2(384,28)
     building_management_container.add_child(quota)
     for raw_id in ["linh_moc","thanh_thiet","thanh_linh_thao","linh_coc"]:
@@ -822,9 +838,31 @@ func _build_economy_a_market_controls() -> void:
         row.disabled = sellable <= 0 or price <= 0
         row.pressed.connect(Callable(self,"_economy_a_sell_from_ui").bind(resource_id,sellable))
         building_management_container.add_child(row)
+        var merchant_stock := int(state.sect.economy_a_market_stock.get(raw_id,0))
+        var buy_price := economy.market_purchase_price(state,resource_id)
+        var buyable := mini(merchant_stock,mini(int(state.sect.economy_a_policy.get("market_max_per_buy",5)),economy.market_buy_remaining(state)))
+        buyable = mini(buyable,int(state.sect.spirit_stones / maxi(buy_price,1)))
+        var buy_row := Button.new()
+        buy_row.name = "EconomyA_Buy_%s" % raw_id
+        buy_row.text = "Mua %s ×%d · -%d LT · Chợ còn %d" % [ResourceRegistry.new().display_name(resource_id),buyable,buy_price*buyable,merchant_stock]
+        buy_row.custom_minimum_size = Vector2(384,36)
+        buy_row.disabled = buyable <= 0 or buy_price <= 0 or state.sect.spirit_stones < buy_price*buyable
+        buy_row.pressed.connect(Callable(self,"_economy_a_buy_from_ui").bind(resource_id,buyable))
+        building_management_container.add_child(buy_row)
+
+func _economy_a_buy_from_ui(resource_id: StringName, qty: int) -> void:
+    var request_id := "panel-buy:%s:%d" % [str(resource_id),state.sect.economy_a_event_count+1]
+    var result := EconomySystem.new().buy_from_npc_v1(state,resource_id,qty,request_id)
+    var receipt: Dictionary = result.get("receipt",{})
+    building_management_feedback = (
+        "Đã mua %d sản phẩm; quỹ -%d Linh Thạch." % [qty,int(receipt.get("cost",0))]
+        if bool(result.get("ok",false)) and not bool(result.get("already_settled",false))
+        else ("Lệnh mua đã xử lý trước đó." if bool(result.get("already_settled",false)) else "Không mua được: %s" % str(result.get("reason","unknown")))
+    )
+    _refresh_building_operation_content()
 
 func _economy_a_sell_from_ui(resource_id: StringName, qty: int) -> void:
-    var request_id := "panel:%s:%d" % [str(resource_id),state.tick]
+    var request_id := "panel:%s:%d" % [str(resource_id),state.sect.economy_a_event_count+1]
     var result := EconomySystem.new().sell_to_npc_v1(state,resource_id,qty,request_id)
     var receipt: Dictionary = result.get("receipt",{})
     building_management_feedback = (

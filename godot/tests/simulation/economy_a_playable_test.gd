@@ -146,6 +146,28 @@ func _run() -> void:
     if not _check(bool(second_service.get("already_settled",false)) and live_actor.spirit_stones == 1,
         "Personal service replay debited twice"): return
 
+    # Merchant stock, purchase limit, Warehouse credit and exact receipt must
+    # survive replay. A rejected buy may not mutate either side.
+    var merchant_ore := int(loaded.sect.economy_a_market_stock.get("thanh_thiet",0))
+    var buy_stones := loaded.sect.spirit_stones
+    var buy_ore := warehouse.quantity(loaded,&"thanh_thiet")
+    var bought := economy.buy_from_npc_v1(loaded,&"thanh_thiet",1,"test-ore-buy")
+    if not _check(bool(bought.get("ok",false)) and warehouse.quantity(loaded,&"thanh_thiet") == buy_ore+1
+        and int(loaded.sect.economy_a_market_stock.get("thanh_thiet",0)) == merchant_ore-1
+        and loaded.sect.spirit_stones == buy_stones-16,
+        "Merchant purchase did not transfer actual item and Stones"): return
+    if not _check(bool(economy.buy_from_npc_v1(loaded,&"thanh_thiet",1,"test-ore-buy").get("already_settled",false))
+        and not bool(economy.buy_from_npc_v1(loaded,&"thanh_thiet",2,"test-ore-buy").get("ok",false))
+        and warehouse.quantity(loaded,&"thanh_thiet") == buy_ore+1
+        and loaded.sect.spirit_stones == buy_stones-16,
+        "Merchant replay or conflicting request changed balances"): return
+    var rejected_stones := loaded.sect.spirit_stones
+    var rejected_stock := warehouse.quantity(loaded,&"thanh_thiet")
+    if not _check(not bool(economy.buy_from_npc_v1(loaded,&"thanh_thiet",100,"over-limit-buy").get("ok",false))
+        and loaded.sect.spirit_stones == rejected_stones
+        and warehouse.quantity(loaded,&"thanh_thiet") == rejected_stock,
+        "Over-limit merchant buy partially committed"): return
+
     # Scheduler may have legitimately assigned an ordinary outside action
     # at the Mine settlement boundary. Recall the actor through Workforce,
     # never set region/current_action directly in the fixture.
@@ -182,6 +204,26 @@ func _run() -> void:
         scheduler.step()
     if not _check(warehouse.quantity(loaded,&"linh_moc") == woods,
         "Cancelled Forestry timer minted wood"): return
+    # Seed personal funds only to isolate the policy ceiling from funding; the
+    # genuine payroll/transfer above remains the integration proof.
+    if not _check(live_actor.region_id == &"sect","Auto service actor did not return"): return
+    live_actor.spirit_stones = 10
+    live_actor.hp = maxf(1.0,minf(live_actor.max_hp*0.1,live_actor.max_hp-30.0))
+    if not _check(bool(economy.configure_v1(loaded,"personal_heal_cost",1).get("ok",false))
+        and bool(economy.configure_v1(loaded,"auto_hp_daily_stone_limit",1).get("ok",false))
+        and bool(economy.configure_v1(loaded,"auto_hp_service",true).get("ok",false)),
+        "Could not configure bounded auto spending"): return
+    var auto_sect_before := loaded.sect.spirit_stones
+    var auto_hp_before := live_actor.hp
+    economy.auto_personal_service_tick(loaded,live_actor)
+    economy.auto_personal_service_tick(loaded,live_actor)
+    if not _check(live_actor.spirit_stones == 9
+        and loaded.sect.spirit_stones == auto_sect_before+1
+        and is_equal_approx(live_actor.hp,auto_hp_before+10.0)
+        and int(loaded.sect.economy_a_auto_spend_by_disciple.get(str(actor.id),0)) == 1,
+        "Auto personal service ignored daily per-disciple Stone limit"): return
+    if not _check(bool(economy.configure_v1(loaded,"auto_hp_service",false).get("ok",false)),
+        "Could not disable auto spending"): return
     if not _check(economy.validate_v1(loaded).is_empty(),"V2 economy invariants invalid"): return
 
     # Durable receipts through save/reload, second load has no phantom claims.
@@ -190,7 +232,10 @@ func _run() -> void:
     if not _check(roundtrip != null and _receipts_equivalent(roundtrip.sect.economy_a_receipts,loaded.sect.economy_a_receipts)
         and roundtrip.sect.spirit_stones == loaded.sect.spirit_stones
         and (roundtrip.disciples[actor.id] as DiscipleState).spirit_stones == live_actor.spirit_stones
-        and warehouse.quantity(roundtrip,&"linh_moc") == woods,
+        and warehouse.quantity(roundtrip,&"linh_moc") == woods
+        and roundtrip.sect.economy_a_market_stock == loaded.sect.economy_a_market_stock
+        and roundtrip.sect.economy_a_market_units_bought == loaded.sect.economy_a_market_units_bought
+        and roundtrip.sect.economy_a_auto_spend_by_disciple == loaded.sect.economy_a_auto_spend_by_disciple,
         "Economy-A reload changed receipts, stock, or Stone balances: receipts_equal=%s, sect=%d/%d, personal=%d/%d, wood=%d/%d, saved_receipts=%s, reloaded_receipts=%s" % [
             str(roundtrip != null and _receipts_equivalent(roundtrip.sect.economy_a_receipts,loaded.sect.economy_a_receipts)),
             -1 if roundtrip == null else roundtrip.sect.spirit_stones,loaded.sect.spirit_stones,
@@ -242,9 +287,131 @@ func _run() -> void:
         and (replay_owner.state.disciples[actor.id] as DiscipleState).spirit_stones == settled_stones
         and _receipts_equivalent(offline.state.sect.economy_a_receipts,replay_owner.state.sect.economy_a_receipts),
         "Repeated wall-clock offline reload changed a settled reward"): return
+    if not _test_field_and_alchemy_wages(): return
     print("ECONOMY-A PLAYABLE V2 TIMERS + WAGES + MARKET + PERSONAL + SAVE + OFFLINE: PASS")
     DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
     quit(0)
+
+
+
+# These are real V2 jobs with saved identity. Full Warehouse output blocks
+# completion and payroll; freeing capacity permits exactly one settlement.
+func _test_field_and_alchemy_wages() -> bool:
+    var state := P37Factory.create_state(471104)
+    state.sect.disciple_v2_birth_enabled = true
+    state.sect.v2_training_enabled = true
+    state.sect.v2_training_rules = DiscipleTrainingContentV2.canonical_rules()
+    state.sect.disciple_capacity = state.disciples.size() + 1
+    var original_ids: Array = state.disciples.keys()
+    for raw_id in original_ids:
+        if not _check(workforce.issue_command(state, StringName(raw_id), WorkforceSystem.COMMAND_HOLD, "", 1000),
+            "Cannot isolate Field/Alchemy fixture"): return false
+    var candidate := DiscipleGeneratorOpenPoints.new().generate_candidate(
+        state, DiscipleGeneratorV2.SOURCE_ORDINARY, 9712)
+    if not _check(candidate != null and not candidate.v2_birth_profile.is_empty(),
+        "No authentic V2 Field/Alchemy recruit"): return false
+    state.recruitment_candidates[candidate.id] = candidate
+    if not _check(bool(RecruitmentSystem.new().accept_candidate(state, candidate.id).get("ok", false))
+        and bool(economy.enable_v1(state).get("ok", false)),
+        "Could not recruit or enable Field/Alchemy economy"): return false
+    var worker: DiscipleState = state.disciples[candidate.id]
+    var field := buildings.primary_building(state, BuildingSystem.TYPE_SPIRIT_FIELD)
+    var hall := buildings.primary_building(state, BuildingSystem.TYPE_ALCHEMY_HALL)
+    if not _check(field != null and hall != null, "Field/Alchemy facility missing"): return false
+    if not _check(workforce.assign_group(state, worker.id, &"herbalism_crew")
+        and workforce.assign_worksite(state, worker.id, field.id),
+        "Could not assign genuine Field slot"): return false
+    var field_start := buildings.perform_spirit_field_step(state, worker, 1.0)
+    if not _check(bool(field_start.get("ok", false)), "Field job did not start: %s" % str(field_start)): return false
+    var plots := buildings.spirit_field_plots(state, field)
+    var plot: Dictionary = {}
+    for raw_plot in plots:
+        if str(raw_plot.get("assigned_worker_id", "")) == str(worker.id):
+            plot = raw_plot
+            break
+    var field_job_id := str(plot.get("economy_a_wage_job_id", ""))
+    var field_output := SpiritCropRegistry.new().output_resource_id(StringName(plot.get("crop_id", "")))
+    var field_finish := int(plot.get("finish_tick", -1))
+    var field_stones := state.sect.spirit_stones
+    var personal_before := worker.spirit_stones
+    if not _check(field_job_id != "" and field_finish > state.tick
+        and not state.sect.economy_a_receipts.has("wage:" + field_job_id),
+        "Field start created wage or lacks durable identity"): return false
+    if not _check(warehouse.add(state, field_output, WarehouseSystem.MAX_SAFE_STACK - warehouse.quantity(state, field_output)),
+        "Could not fill Field output for delivery failure"): return false
+    state.tick = field_finish
+    buildings._process_spirit_field_plots(state, field)
+    if not _check(buildings.disciple_has_active_spirit_plot(state, worker.id, field)
+        and worker.spirit_stones == personal_before
+        and state.sect.spirit_stones == field_stones
+        and not state.sect.economy_a_receipts.has("wage:" + field_job_id),
+        "Blocked Field output retired job or paid phantom wage"): return false
+    if not _check(warehouse.consume(state, field_output, WarehouseSystem.MAX_SAFE_STACK - 10, true),
+        "Could not restore Field output capacity"): return false
+    if not _check(SaveService.new().save_to_path(state, SAVE_PATH) == OK,
+        "Could not save blocked Field job"): return false
+    state = SaveService.new().load_from_path(SAVE_PATH)
+    if not _check(state != null, "Could not reload blocked Field job"): return false
+    worker = state.disciples[candidate.id]
+    field = buildings.primary_building(state, BuildingSystem.TYPE_SPIRIT_FIELD)
+    var field_stock := warehouse.quantity(state, field_output)
+    buildings._process_spirit_field_plots(state, field)
+    if not _check(warehouse.quantity(state, field_output) > field_stock
+        and worker.spirit_stones == personal_before + 2
+        and state.sect.spirit_stones == field_stones - 2
+        and state.sect.economy_a_receipts.has("wage:" + field_job_id)
+        and not buildings.disciple_has_active_spirit_plot(state, worker.id, field),
+        "Field reload did not deliver output and exactly one Sect-funded wage"): return false
+    buildings._process_spirit_field_plots(state, field)
+    if not _check(worker.spirit_stones == personal_before + 2, "Field replay paid twice"): return false
+
+    if not _check(workforce.assign_group(state, worker.id, &"alchemy_crew")
+        and workforce.assign_worksite(state, worker.id, hall.id),
+        "Could not assign genuine Alchemy slot"): return false
+    hall = buildings.primary_building(state, BuildingSystem.TYPE_ALCHEMY_HALL)
+    var recipe := AlchemyRecipeRegistry.new()
+    var input_id := StringName("thanh_linh_thao")
+    var needed := maxi(0, 3 - warehouse.available_quantity(state, input_id))
+    if needed > 0 and not _check(warehouse.add(state, input_id, needed),
+        "Could not seed real Alchemy inputs"): return false
+    var alchemy_start := buildings.perform_alchemy_step(state, worker, 0, 1.0, 1.0)
+    if not _check(bool(alchemy_start.get("ok", false)), "Alchemy job did not start: %s" % str(alchemy_start)): return false
+    var job: Dictionary = alchemy_start.get("job", {})
+    var alchemy_id := str(job.get("job_id", ""))
+    var alchemy_finish := int(job.get("finish_tick", -1))
+    var output_id := recipe.output_resource_id(AlchemyRecipeRegistry.RECIPE_HOI_XUAN_DAN)
+    personal_before = worker.spirit_stones
+    var sect_before := state.sect.spirit_stones
+    if not _check(bool(job.get("economy_a_wage_eligible", false))
+        and not state.sect.economy_a_receipts.has("wage:" + alchemy_id),
+        "Alchemy start created wage or lacks durable identity"): return false
+    if not _check(warehouse.add(state, output_id, WarehouseSystem.MAX_SAFE_STACK - warehouse.quantity(state, output_id)),
+        "Could not fill Alchemy output for delivery failure"): return false
+    state.tick = alchemy_finish
+    buildings._process_alchemy_jobs(state, hall)
+    if not _check(not buildings.active_alchemy_job_for_worker(state, worker.id).is_empty()
+        and worker.spirit_stones == personal_before
+        and state.sect.spirit_stones == sect_before
+        and not state.sect.economy_a_receipts.has("wage:" + alchemy_id),
+        "Blocked Alchemy output retired job or paid phantom wage"): return false
+    if not _check(warehouse.consume(state, output_id, WarehouseSystem.MAX_SAFE_STACK - 10, true),
+        "Could not restore Alchemy output capacity"): return false
+    if not _check(SaveService.new().save_to_path(state, SAVE_PATH) == OK,
+        "Could not save blocked Alchemy job"): return false
+    state = SaveService.new().load_from_path(SAVE_PATH)
+    if not _check(state != null, "Could not reload blocked Alchemy job"): return false
+    worker = state.disciples[candidate.id]
+    hall = buildings.primary_building(state, BuildingSystem.TYPE_ALCHEMY_HALL)
+    var output_before := warehouse.quantity(state, output_id)
+    buildings._process_alchemy_jobs(state, hall)
+    if not _check(warehouse.quantity(state, output_id) == output_before + 1
+        and worker.spirit_stones == personal_before + 2
+        and state.sect.spirit_stones == sect_before - 2
+        and state.sect.economy_a_receipts.has("wage:" + alchemy_id)
+        and buildings.active_alchemy_job_for_worker(state, worker.id).is_empty(),
+        "Alchemy reload did not deliver output and exactly one Sect-funded wage"): return false
+    buildings._process_alchemy_jobs(state, hall)
+    return _check(worker.spirit_stones == personal_before + 2, "Alchemy replay paid twice")
 
 
 # JSON numbers can return as float while real in-memory ledger values are

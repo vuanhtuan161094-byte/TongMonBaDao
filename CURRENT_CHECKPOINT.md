@@ -1,5 +1,39 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-15 — ECONOMY-A MARKET / PAYROLL COMPLETION (BRANCH; QA IN PROGRESS)
+
+**Baseline:** main `c64c61029ab6f569a66aba1f1cbeed3bd76f796e`; prior gameplay/test `ed594e45a308eb55ad9373e703b807365b26c9aa` had official Linux Godot 4.7.2 focused + FULL + O6 SUCCESS [#38678314842](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38678314842). Current owner instruction newly authorizes the full Economy-A acceptance list. Branch `economy-a-market-completion-20261015` extends that baseline in EconomySystem, SectState, P3.2 landscape, the owner-approved BuildingSystem completion path and two dedicated Economy-A tests. Its first market-buy SHA `40eaa214` has official Linux focused + FULL + O6 SUCCESS [#38682499335](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38682499335). **Latest branch SHA must pass independently before this extension can be marked CLOSED.**
+
+**Implemented on this branch:** four-resource pilot merchant catalogue; merchant-owned stock persisted in SectState separately from canonical Sect Warehouse and legacy P2 market; 20-unit/day buy and sell limits, maximum 5 per order, actual Warehouse add/debit, Sect Stone debit/credit, buy and sell receipts/replay rejection, daily merchant replenishment on canonical simulation tick. Main Hall now controls a per-disciple daily cap on automatic personal HP service; the existing service still performs real HP restoration and personal-to-Sect Stone transfer, preserving Injury 0/1. Phường Thị shows merchant stock and actual buy buttons. No second Warehouse, scheduler, wallet, or job owner was introduced.
+
+**Owner-approved BuildingSystem addition:** new authentic V2 Field plots and Alchemy jobs persist wage eligibility/identity at start. The canonical Warehouse must accept output before the job retires; a full Warehouse leaves it pending for retry. Completion then records existing EXP/completion effects and one Sect-funded wage receipt. Old jobs without Economy-A eligibility are not retroactively paid. Existing Field planting EXP timing is unchanged. The dedicated test covers full-Warehouse backpressure, save/load, output, zero-sum salary and replay for both facilities.
+
+**QA truth:** official Windows Godot 4.7.2 headless focused simulation, live landscape UI, GP-01/02A/02B1/02C1 simulation+presentation, O3/O4/O5/O6/O7/O8/O9, SAFE-01/02 and cumulative P3.7 FULL **PASS** on exact gameplay/test SHA `95bf06ecfd2c7fce5026d4485af55a5a3c40d909` with isolated test user data. FULL process exit 0 and ends `P3.7C1 FOUNDATION + DAN TIEN FULL GATE: PASS`; local log SHA-256 `795116691D5F95222A9AE96E59784DFC4C95DE092CA4E51AD688CC43F1606E26`. Older non-isolated attempts reused stale `.bak` saves; isolated reruns passed. Latest official Linux Actions run #38684703913 and rerun attempt 2 failed with **zero job steps and no runner**; exact-SHA Linux CI remains PENDING, not gameplay FAIL or PASS. No physical GUI/touch acceptance is claimed. Windows physical GUI/touch, Android APK/device, actual power/storage failures, and 1k–3k population remain PENDING USER. GP-02C1 overall QA OPEN; DV2-03 PAUSED.
+
+### Economy-A pilot balance (no new LOCKED value)
+
+| Name | Value | Unit | Source | Status | Reason | Configuration |
+|---|---:|---|---|---|---|---|
+| V2 production wage (Mine/Forest/Field/Alchemy) | 2 | Stones/completed batch | Existing Economy-A pilot | PILOT | Bounded Sect-to-personal transfer after actual output | `SectState.economy_a_policy.wage_per_batch` |
+| Resource timer | 10 | simulation ticks base | Existing Economy-A pilot | PILOT | Opening cycle, work-speed modifier applies | `resource_duration_ticks` |
+| Mine/Forest yield | 2 | resources/batch at Lv1 | Existing P3.7 building content | LOCKED for this packet | Preserve existing production balance | `BuildingSystem` definitions |
+| Linh Mộc sell / buy | 2 / 4 | Stones/item | ResourceRegistry / 2× markup | PILOT | Opening wood trade | `ResourceRegistry.market_value`, `market_buy_markup` |
+| Thanh Thiết sell / buy | 8 / 16 | Stones/item | ResourceRegistry / 2× markup | PILOT | Opening ore trade | same |
+| Thanh Linh Thảo sell / buy | 6 / 12 | Stones/item | ResourceRegistry / 2× markup | PILOT | Opening herb trade | same |
+| Linh Cốc sell / buy | 4 / 8 | Stones/item | ResourceRegistry / 2× markup | PILOT | Opening grain trade | same |
+| Merchant daily stock floor | 20 | items/catalogue entry | This extension | PILOT | Playable opening inventory | `market_stock_target` |
+| Market daily buy/sell | 20 each | items/simulation day | Existing sell pilot; buy mirrors it | PILOT | Bounded trade volume | `market_daily_units` |
+| Market order cap | 5 each | items/order | Existing sell pilot; buy mirrors it | PILOT | Touch-friendly batch | `market_max_per_sale`, `market_max_per_buy` |
+| Personal HP service | 3 for 10 HP | Stones/service, HP | Existing Economy-A pilot | PILOT | Real service with personal payment | `personal_heal_cost`; HP in EconomySystem |
+| Auto personal spending cap | 6 | Stones/disciple/day | This extension | PILOT | Stops repeated tick/offline spend | `auto_hp_daily_stone_limit` |
+| Auto service default | off | policy | Existing Economy-A pilot | PILOT | Owner must enable | `auto_hp_service` |
+| Sect wage reserve | 0 | Stones | Existing Economy-A pilot | PILOT | Explicit affordability floor | `sect_pay_reserve` |
+
+The 60/40 PvE split belongs to Economy-B and is not part of these values. Existing GP/Body/Injury balances remain untouched.
+
+---
+
+
 Updated: 2026-10-15 (ECONOMY-A CODE INTEGRATION; factual gates and historical QA preserved)
 
 ## ECONOMY-A — CODE-A CLOSED FOR GODOT 4.7.2 LINUX FOCUSED + FULL + O6; DEVICE QA PENDING (2026-10-15)

@@ -622,7 +622,8 @@ func _ensure_alchemy_state(hall: BuildingState) -> Dictionary:
                 "inputs": inputs,
                 "output_resource_id": str(raw_job.get("output_resource_id", alchemy_registry.output_resource_id(current_recipe))),
                 "output_quantity": maxi(int(raw_job.get("output_quantity", alchemy_registry.output_quantity(current_recipe))), 1),
-                "profession_xp_gain": maxf(float(raw_job.get("profession_xp_gain", 0.0)), 0.0)
+                "profession_xp_gain": maxf(float(raw_job.get("profession_xp_gain", 0.0)), 0.0),
+                "economy_a_wage_eligible": bool(raw_job.get("economy_a_wage_eligible", false))
             })
             seen_workers[worker_id] = true
     data["jobs"] = jobs
@@ -697,7 +698,8 @@ func perform_alchemy_step(state: SimulationState, disciple: DiscipleState, profe
         "inputs": requirements.duplicate(true),
         "output_resource_id": str(alchemy_registry.output_resource_id(recipe_id)),
         "output_quantity": alchemy_registry.output_quantity(recipe_id),
-        "profession_xp_gain": maxf(profession_xp_gain, 0.0)
+        "profession_xp_gain": maxf(profession_xp_gain, 0.0),
+        "economy_a_wage_eligible": state.sect.economy_a_enabled and DiscipleRealmProgressV2.owns_v2_progression(disciple)
     }
     var jobs: Array = data.get("jobs", [])
     jobs.append(job)
@@ -727,8 +729,9 @@ func _process_alchemy_jobs(state: SimulationState, hall: BuildingState) -> void:
             continue
         var output_id := StringName(job.get("output_resource_id", ""))
         var output_quantity := maxi(int(job.get("output_quantity", 0)), 0)
-        if output_id != &"" and output_quantity > 0:
-            _deposit_resource(state, hall, str(output_id), output_quantity)
+        if output_id == &"" or output_quantity <= 0 or not _deposit_resource(state, hall, str(output_id), output_quantity):
+            remaining.append(job)
+            continue
         var worker_id := StringName(job.get("worker_id", ""))
         if state.disciples.has(worker_id):
             var worker: DiscipleState = state.disciples[worker_id]
@@ -738,6 +741,8 @@ func _process_alchemy_jobs(state: SimulationState, hall: BuildingState) -> void:
             worker.metrics["work_completions"] = int(worker.metrics.get("work_completions", 0)) + 1
             worker.metrics["alchemy_completions"] = int(worker.metrics.get("alchemy_completions", 0)) + 1
             state.sect.workforce_event_count += 1
+            if state.sect.economy_a_enabled and bool(job.get("economy_a_wage_eligible", false)):
+                EconomySystem.new().settle_work_wage(state, worker, str(job.get("job_id", "")))
         changed = true
     if changed:
         data["jobs"] = remaining
@@ -876,6 +881,7 @@ func perform_spirit_field_step(state: SimulationState, disciple: DiscipleState, 
     var rare_factor := profession_modifiers.rare_event_factor(state, disciple)
     var plot_id := str(plots[plot_index].get("plot_id", "plot_%03d" % [plot_index + 1]))
 
+    var plant_sequence := int(data.get("plant_sequence", 0)) + 1
     plots[plot_index] = {
         "plot_id": plot_id,
         "crop_id": str(crop_id),
@@ -885,10 +891,11 @@ func perform_spirit_field_step(state: SimulationState, disciple: DiscipleState, 
         "assigned_worker_id": str(disciple.id),
         "paid_spirit_stones": plant_cost,
         "routine_yield": routine_yield,
-        "rare_factor": rare_factor
+        "rare_factor": rare_factor,
+        "economy_a_wage_job_id": "%s_plot_%06d" % [str(field.id), plant_sequence] if state.sect.economy_a_enabled and DiscipleRealmProgressV2.owns_v2_progression(disciple) else ""
     }
     data["plots"] = plots
-    data["plant_sequence"] = int(data.get("plant_sequence", 0)) + 1
+    data["plant_sequence"] = plant_sequence
     field.production_state = data
     state.building_event_count += 1
 
@@ -1234,7 +1241,8 @@ func _process_spirit_field_plots(state: SimulationState, field: BuildingState) -
             continue
         if state.tick < int(plot.get("finish_tick", state.tick + 1)):
             continue
-        _resolve_spirit_plot(state, field, plot)
+        if not _resolve_spirit_plot(state, field, plot):
+            continue
         plots[index] = _empty_plot(str(plot.get("plot_id", "plot_%03d" % [index + 1])))
         changed = true
     if changed:
@@ -1261,19 +1269,25 @@ func spirit_field_plots(state: SimulationState, field: BuildingState) -> Array:
         return []
     return Array(_ensure_spirit_field_state(state, field).get("plots", [])).duplicate(true)
 
-func _resolve_spirit_plot(state: SimulationState, field: BuildingState, plot: Dictionary) -> void:
+func _resolve_spirit_plot(state: SimulationState, field: BuildingState, plot: Dictionary) -> bool:
     var crop_id := StringName(plot.get("crop_id", ""))
     if not crop_registry.has(crop_id):
-        return
+        return false
     var roll := _stable_plot_roll(state.seed, str(field.id), str(plot.get("plot_id", "")), int(plot.get("started_tick", 0)))
     var lucky := lucky_harvest_multiplier(float(plot.get("rare_factor", 1.0)), roll)
     var quantity := maxi(int(plot.get("routine_yield", crop_registry.base_yield(crop_id))), 1) * lucky
-    _deposit_resource(state, field, str(crop_registry.output_resource_id(crop_id)), quantity)
+    if not _deposit_resource(state, field, str(crop_registry.output_resource_id(crop_id)), quantity):
+        return false
+    var wage_job_id := str(plot.get("economy_a_wage_job_id", ""))
+    var worker_id := StringName(plot.get("assigned_worker_id", ""))
+    if state.sect.economy_a_enabled and wage_job_id != "" and state.disciples.has(worker_id):
+        EconomySystem.new().settle_work_wage(state, state.disciples[worker_id], wage_job_id)
 
     var fragment_roll := _stable_plot_roll(state.seed, "%s|linh_tuyen_fragment" % str(field.id), str(plot.get("plot_id", "")), int(plot.get("started_tick", 0)))
     if linh_tuyen_fragment_drop(float(plot.get("rare_factor", 1.0)), fragment_roll) > 0:
         _add_linh_tuyen_fragment(state)
         convert_linh_tuyen_fragments(state)
+    return true
 
 func linh_tuyen_fragment_drop(rare_factor: float, roll: float) -> int:
     var chance := clampf(LINH_TUYEN_FRAGMENT_BASE_CHANCE * maxf(rare_factor, 0.0), 0.0, 1.0)
@@ -1379,7 +1393,8 @@ func _normalize_plot(value: Variant, index: int) -> Dictionary:
         "assigned_worker_id": str(value.get("assigned_worker_id", "")),
         "paid_spirit_stones": maxi(int(value.get("paid_spirit_stones", 0)), 0),
         "routine_yield": maxi(int(value.get("routine_yield", crop_registry.base_yield(crop_id))), 1),
-        "rare_factor": maxf(float(value.get("rare_factor", 1.0)), 0.0)
+        "rare_factor": maxf(float(value.get("rare_factor", 1.0)), 0.0),
+        "economy_a_wage_job_id": str(value.get("economy_a_wage_job_id", ""))
     }
 
 func _empty_plot(plot_id: String) -> Dictionary:
@@ -1484,18 +1499,22 @@ func _building_for_disciple(state: SimulationState, building_type: StringName, d
         return null
     return primary_building(state, building_type)
 
-func _deposit_resource(state: SimulationState, building: BuildingState, resource_id: String, quantity: int) -> void:
+func _deposit_resource(state: SimulationState, building: BuildingState, resource_id: String, quantity: int) -> bool:
     if quantity <= 0:
-        return
+        return false
     if state.sect.p3_7_resources_enabled:
+        # A full Warehouse is expected backpressure for timed jobs, not a lost delivery.
+        if quantity > WarehouseSystem.MAX_SAFE_STACK - warehouse.quantity(state, StringName(resource_id)):
+            return false
         if not warehouse.add(state, StringName(resource_id), quantity):
             push_error("BuildingSystem: failed to deposit canonical resource %s x%d." % [resource_id, quantity])
-            return
+            return false
     else:
         state.sect.forge_materials[resource_id] = int(state.sect.forge_materials.get(resource_id, 0)) + quantity
     building.metrics["production_batches"] = int(building.metrics.get("production_batches", 0)) + 1
     building.metrics["units_produced"] = int(building.metrics.get("units_produced", 0)) + quantity
     state.building_event_count += 1
+    return true
 
 func _resource_available(state: SimulationState, resource_id: StringName) -> int:
     if state.sect.p3_7_resources_enabled:
