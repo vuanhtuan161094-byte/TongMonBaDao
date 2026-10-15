@@ -1,7 +1,7 @@
 # UI-REF-01 — Map → Mỏ → Chọn đệ tử (Godot 4.7.2)
 
 **Date:** 2026-10-15
-**Status:** DESIGN + SOURCE AUDIT COMPLETED; VISUAL / GODOT RUNTIME / USER APPROVAL PENDING
+**Status:** DESIGN + SOURCE AUDIT COMPLETED; 2026-10-15 OWNER MINE SINGLE-WORKER RULE ADDED; VISUAL / GODOT RUNTIME / CODE PENDING
 **Baseline:** GitHub `main` `461caca1171462e0da092f21108c5c1733157ad9`
 **Scope:** 1280×720 Android landscape; source-referenced presentation design only. No Unity migration, no Spine requirement, no Godot runtime/production edits.
 **Work branch:** `ui-ref-01-design-20261015`; separate from draft GUI-WORKFORCE-V1 PR #2 (`01272b2d`).
@@ -40,7 +40,7 @@ Hierarchy, not arbitrary text dump:
 
 1. Header: Mỏ Thanh Thiết, actual building level/status, small image, X.
 2. Production: real production name, progress if supported, time remaining **using canonical simulation tick semantics**, warehouse destination; do not display invented seconds or fabricated ore.
-3. Workforce: `real active_count/worker_slots` and assigned **portrait tokens** (portrait 44–52px), short name/current work; blank positions are clickable `+` buttons.
+3. Workforce: **exactly one worker slot per Mine** (owner decision 2026-10-15; pending backend implementation). Display one portrait + disciple mining level and six foundation values, or exactly one `+` empty portrait position. Never render `2/3`, multiple mine workers, or an invented slot capacity. Until the backend is migrated, mark the UI build NOT READY rather than merely masking extra authoritative workers.
 4. Warning/reason: material/capacity/worker condition **only if backed by live read model**. Show one primary warning; explanatory tooltip/deep details if required.
 5. Actions: `Điều động` (opens shared picker), `Quản lý` (deep parchment page), conditional real `Thu` / `Sản xuất` only when genuine command exists.
 
@@ -62,6 +62,23 @@ Hierarchy, not arbitrary text dump:
 A tile: 52–64px portrait, name, profession level, real status, and one action `Phân công`. If busy, no transfer; show reason in tile/tooltip and clearly disabled action. Selected/rare disciples use rarity frame **only when underlying quality is real**. Sorting default: available first, then relevant profession level descending, stable ID/name. Selection updates the current building in-place and closes modal on verified success; failure leaves an actionable reason. A full Mine still allows the user to inspect the roster but must not approve an unsafe assignment.
 
 **Roster at scale:** 1,000–3,000 disciples must not create 3,000 scene nodes at once; maintain a bounded visible page/virtualized list, preserve search/filter/page selection without regenerating unrelated gameplay. Existing eight-rows-per-page logic from PR #2 may be reused; tile count is **visual design proposal**, not a mandated backend rewrite. Search debounce only if actual performance tests justify it.
+
+## 4A. OWNER RULE — ONE DISCIPLE PER MINE & DISCIPLE-DEPENDENT HARVEST (2026-10-15)
+
+**Owner confirmed:** For each individual Mine, `worker_slots(mine)` must be **1 at every building level**. A different Mine can independently hold one disciple. One active job per disciple remains in force. This rule supersedes the previous Mine `base_worker_slots=2` and `worker_slot_every=5` behavior when its gameplay migration is authorized and implemented. It does **not** automatically apply to Linh Lâm, Linh Điền or other facilities.
+
+**Harvest policy desired by owner:** Mine output must depend on the selected disciple's **level and Lục Duy** rather than solely on building level. Treat the mining profession level as the initial relevant level candidate because the existing WorkforceSystem has a canonical profession level and work-speed pipeline; confirm whether owner's `cấp` also includes cultivation realm **before locking any formula**. Six canonical foundation axes are Tư Chất, Căn Cốt, Cơ Duyên, Thông Tuệ, Mị Lực and Tiềm Lực. Their weights / eligible channels, rate vs packet quantity, rounding, minimum, maximum, rare output, treatment of building upgrades, and whether any dimension is non-producing until a separate authored rule **remain UNDECIDED**. No imaginary formula or 12–16 ore forecast in production UI. Only render a real verified number from backend when present; otherwise show `Phụ thuộc Cấp & Lục Duy` with a `Chi tiết` affordance.
+
+**Code reality at main SHA `461caca1`:**
+- `godot/src/simulation/building/building_system.gd` definition for `mine` uses `base_worker_slots=2` and `worker_slot_every=5` and `worker_slots()` computes the resulting growing capacity.
+- `_resource_job_batch_units()` currently returns a baseline + building-level increment; Economy-A `_start_resource_timer()` snapshots this output into `output_quantity`. Work speed takes disciple profession level and traits via `WorkforceSystem._work_speed()` / `ProfessionModifierSystem`; no direct six-foundation harvest-amount formula has been verified in this code path.
+- O3 real-scene fixture `godot/tests/presentation/p3_o3_real_mine_loop_test.gd` assumes **two initial active Mine workers**, and asserts building-based batch quantities. Related GP-01/GP-02C1/O6 and save/offline/receipt tests must be audited for ripple effects.
+
+**Migration gate:** Existing saves and in-flight jobs may contain multiple assigned Mine workers. Do not truncate `assigned_worker_ids`, silently cancel work, discard valid `carried_units`, or fabricate completion. Define a deterministic policy for grandfathered workers, active timer completion and post-timer reassignment/idle status; preserve exactly-once Warehouse and wage receipts. Only after this policy and precise yield balance are approved can code/tests be amended as an explicitly authorized gameplay packet. Until then this design rule is **approved, implementation pending**.
+
+**UI mockup instruction:** at most **one** portrait frame in Mine. Show `Nhân sự 1/1` if assigned or `0/1` if empty. Show level and six-dimensional foundation cues, without made-up production amounts. The `Chọn đệ tử` control may open a safe selector while occupied, but changing the sole worker is blocked during an active uninterruptible timer with a clear reason.
+
+---
 
 ## 5. Visual system / reusable presentation-only components
 
@@ -99,10 +116,10 @@ When owner explicitly approves UI code:
 
 1. Map feels like a sect scene; UI edge-based; no horizontal scrolling to reach common actions.
 2. Mine tap opens right panel immediately; can close/switch buildings without stale panes.
-3. Every Mine slot shows actual worker identity or usable `+`; full Mine still provides safe status/reasons.
+3. **Exactly one** Mine slot shows the real worker or usable `+`; a Mine never displays `2/3`/additional slots and never masks an authoritative second active worker as if the backend supported the change.
 4. Picker uses visual portrait grid, search and status, correct live profession sorting and usable 44px+ controls.
 5. Busy Field/PvE/Alchemy/Body/Mine/legacy-cycle worker rejected without losing goods or silently reassigning.
-6. Actual Mine → timer → output to canonical Warehouse and real wages remain unchanged.
+6. Actual Mine → timer → output to canonical Warehouse and real wages remain exactly-once; under a *future separately authorized gameplay change* output depends on approved level/Lục Duy formula while old valid receipts remain correct.
 7. UI works at 1280×720 and on Android landscape with no clipped text/buttons.
 8. 100/500/1000/3000 roster navigation has bounded UI nodes/acceptable responsiveness on target hardware.
 9. Source art hashes confirmed; every graphic labeled S0/S1/S2/S3/S4 and licensed usage appropriately recorded.
