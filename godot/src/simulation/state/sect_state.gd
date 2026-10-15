@@ -41,10 +41,13 @@ var spirit_stones: int = 0
 
 # ECONOMY-A opt-in; old P2 treasury/wallet and default carry-cycle saves stay unchanged.
 var economy_a_enabled: bool = false
-var economy_a_policy: Dictionary = {"wage_per_batch": 2, "resource_duration_ticks": 10, "market_daily_units": 20, "market_max_per_sale": 5, "auto_hp_service": false, "personal_heal_cost": 3, "sect_pay_reserve": 0}
+var economy_a_policy: Dictionary = {"wage_per_batch": 2, "resource_duration_ticks": 10, "market_daily_units": 20, "market_max_per_sale": 5, "market_max_per_buy": 5, "market_stock_target": 20, "market_buy_markup": 2, "auto_hp_service": false, "personal_heal_cost": 3, "sect_pay_reserve": 0}
 var economy_a_receipts: Dictionary = {}
 var economy_a_market_day: int = -1
 var economy_a_market_units_sold: int = 0
+var economy_a_market_units_bought: int = 0
+var economy_a_market_stock_day: int = -1
+var economy_a_market_stock: Dictionary = {}
 var economy_a_event_count: int = 0
 var technique_library: Dictionary = {}
 var technique_manuals: Dictionary = {}
@@ -167,6 +170,9 @@ func to_dict() -> Dictionary:
         data["economy_a_receipts"] = economy_a_receipts.duplicate(true)
         data["economy_a_market_day"] = economy_a_market_day
         data["economy_a_market_units_sold"] = economy_a_market_units_sold
+        data["economy_a_market_units_bought"] = economy_a_market_units_bought
+        data["economy_a_market_stock_day"] = economy_a_market_stock_day
+        data["economy_a_market_stock"] = economy_a_market_stock.duplicate(true)
         data["economy_a_event_count"] = economy_a_event_count
     if cultivation_paths_enabled or cultivation_path_event_count > 0:
         data["cultivation_paths_enabled"] = cultivation_paths_enabled
@@ -262,6 +268,9 @@ static func from_dict(data: Dictionary) -> SectState:
         state.economy_a_receipts = saved_economy_receipts.duplicate(true)
     state.economy_a_market_day = int(data.get("economy_a_market_day", -1))
     state.economy_a_market_units_sold = maxi(int(data.get("economy_a_market_units_sold", 0)), 0)
+    state.economy_a_market_units_bought = maxi(int(data.get("economy_a_market_units_bought", 0)), 0)
+    state.economy_a_market_stock_day = int(data.get("economy_a_market_stock_day", -1))
+    state.economy_a_market_stock = _int_dictionary(data.get("economy_a_market_stock", {}))
     state.economy_a_event_count = maxi(int(data.get("economy_a_event_count", 0)), 0)
     state.technique_library = _bool_dictionary(data.get("technique_library", {}))
     state.technique_manuals = _int_dictionary(data.get("technique_manuals", {}))
