@@ -1,5 +1,19 @@
 # TÔNG MÔN BÁ ĐẠO — SỔ NỢ CHUNG + BÀN GIAO RÀ SOÁT BACKEND
 
+## BẰNG CHỨNG WINDOWS GUI THỰC — 2026-10-15 14:43–14:48 UTC+07
+
+- **Evidence mới, không thay đổi gameplay:** owner-uploaded `20261015_144302.zip` SHA-256 `a1aca095366dc701c0e6408491c157d54b66983a420a05eb77bf9f791c42fb3c` và video quay màn hình `Tong Mon Ba Dao (DEBUG) 2026-10-15 14-44-41.mp4` SHA-256 `31a7c44370e290935d379df5d2df7c2f5eee86b5ecf7c377f170813cf579ef18` (~61 giây, 1920×1004 recording). Tệp nguồn do user upload trong chat, **không tự có trên GitHub**.
+- **SYNC PASS:** local `main` fast-forward từ `0439b34b...` sang đúng remote `5e6fdd966bdf710b71e2a1539bb712e44069a4bb`. Tracked clean; 17 untracked preserved. Detached QA worktree tại đúng SHA; Stage A pack validated; official Windows Godot `4.7.2.stable.official.ed1daf0bf` project import exit 0. GUI started successfully, map/camera/building panels interacted with in supplied video. Không có observed visual crash trong đoạn ghi hình.
+- **GUI QA = PARTIAL / NOT ACCEPTED.** Runner says `GUI run: STILL_RUNNING_USER_MUST_CLOSE`, so no final process exit code. Captured screenshot `economy_a_gui_01.png` accidentally contains console window rather than game; separate owner video provides GUI evidence. Video covers Mine, Forge, Body Training, Medicine and camera/pan/zoom, **not Main Hall Economy-A enable, Market buy/sell, authentic V2 timers/payroll or personal auto spending**. Isolated saved `SectState` has no `economy_a_enabled` serialized field, consistent with Economy-A remaining opt-out in this manual session. 18/18 Windows headless PASS from the previous run is separate evidence and remains valid.
+- **GUI-DEFECT-01 (CONFIRMED):** disciple name rows in building management are extremely low contrast (light/default label font against light paper); `p3_2_landscape_sect.gd::_new_management_row()` does not set readable `font_color` on name labels.
+- **GUI-DEFECT-02 (CONFIRMED):** Mine worker action row requires at least approx. `190+70+76+82+3*6=436` px but parent content target width is 384 px. The last action is visibly clipped and horizontal scrolling appears in the video.
+- **GUI-DEFECT-03 (CONFIRMED):** building_operation_body normally reserves `420` px before action controls inside a 442-px scroll, forcing important worker/management controls far down and obscuring actionable controls on 1280×720 landscape.
+- **QA packaging debt:** owner ZIP contains the entire `ISOLATED_GAME_WORKTREE` and private sandbox save/cache; next evidence submission should upload only existing `UPLOAD_EVIDENCE_ONLY.zip` plus video/screenshots. Do not put private save/cache and source worktree in routine evidence archives. No runtime/UI changes authorized by these findings.
+- **Next code permission if owner chooses:** a bounded `GUI-FIX-01` presentation-only packet; update contrast, row layout, visible controls/scroll UX without touching EconomySystem, Warehouse, Scheduler, SaveService, Injuries, O6 or balance; add a real 1280×720 UI test and re-run Windows Godot focused + P3.7 FULL/O6. Physical/manual Economy-A acceptance still OPEN until toggle/market/timer interaction evidence.
+
+---
+
+
 ## CẬP NHẬT KIỂM KÊ — 2026-10-15, SAU MERGE ECONOMY-A
 
 - **ECONOMY-A CODE / INTEGRATION: CLOSED — Windows automated verification.** PR #1 merged at GitHub `main` commit `0689d0ddf0ebd72463d08bad4835c60428c64d24`; gameplay/test SHA `95bf06ecfd2c7fce5026d4485af55a5a3c40d909` and documentation-only PR HEAD `4a6937dc28d477be13ffc0283d44cc74fe610733`. Owner-uploaded `20261015_135007.zip` (SHA256 `2d35d82d7eadf44ae06407c3899a36facf480c05b14c2922b22041062d3531f6`) provides official Windows Godot 4.7.2 detached-worktree QA: **18/18 PASS, 0 FAIL** including Economy-A sim/UI, GP01/02A/02B1/02C1, O3–O9 including O6 unchanged, SAFE01/02 and P3.7 FULL. Local QA did not modify user's original checkout or saves. Prior branch-in-progress table below is historical/superseded, not current merge status.
