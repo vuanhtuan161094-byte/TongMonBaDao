@@ -1,5 +1,35 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-15 — ECONOMY-A MARKET / PERSONAL POLICY COMPLETION (BRANCH; QA IN PROGRESS)
+
+**Baseline:** main `c64c61029ab6f569a66aba1f1cbeed3bd76f796e`; prior gameplay/test `ed594e45a308eb55ad9373e703b807365b26c9aa` had official Linux Godot 4.7.2 focused + FULL + O6 SUCCESS [#38678314842](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38678314842). Current owner instruction newly authorizes the full Economy-A acceptance list. Branch `economy-a-market-completion-20261015` extends that baseline only in the existing EconomySystem, SectState, P3.2 landscape scene and two dedicated Economy-A tests. Its first market-buy SHA `40eaa214` has official Linux focused + FULL + O6 SUCCESS [#38682499335](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38682499335). **Latest branch SHA must pass independently before this extension can be marked CLOSED.**
+
+**Implemented on this branch:** four-resource pilot merchant catalogue; merchant-owned stock persisted in SectState separately from canonical Sect Warehouse and legacy P2 market; 20-unit/day buy and sell limits, maximum 5 per order, actual Warehouse add/debit, Sect Stone debit/credit, buy and sell receipts/replay rejection, daily merchant replenishment on canonical simulation tick. Main Hall now controls a per-disciple daily cap on automatic personal HP service; the existing service still performs real HP restoration and personal-to-Sect Stone transfer, preserving Injury 0/1. Phường Thị shows merchant stock and actual buy buttons. No second Warehouse, scheduler, wallet, or job owner was introduced.
+
+**QA truth:** official Windows Godot 4.7.2 local focused simulation and live landscape UI PASS on `4050f94d` (same gameplay source as later branch, before spending cap/test). A new official Linux run for the latest branch is PENDING; some intermediate Actions runs failed with **zero job steps and no runner**, without a gameplay assertion. The separate local P3.7 FULL attempt was stopped after initial parse because it invokes 230 scripts serially; this is **NOT RUN to completion**. Do not infer current-SHA FULL/O6 PASS from the earlier SHA. Windows physical GUI/touch, Android APK/device, actual power/storage failures, and 1k–3k population remain PENDING USER. GP-02C1 overall QA OPEN; DV2-03 PAUSED.
+
+### Economy-A pilot balance (no new LOCKED value)
+
+| Name | Value | Unit | Source | Status | Reason | Configuration |
+|---|---:|---|---|---|---|---|
+| Mine/Forest wage | 2 | Stones/completed batch | Existing Economy-A pilot | PILOT | Bounded zero-sum wage | `SectState.economy_a_policy.wage_per_batch` |
+| Resource timer | 10 | simulation ticks base | Existing Economy-A pilot | PILOT | Opening cycle, work-speed modifier applies | `resource_duration_ticks` |
+| Mine/Forest yield | 2 | resources/batch at Lv1 | Existing P3.7 building content | LOCKED for this packet | Preserve existing production balance | `BuildingSystem` definitions |
+| Market sell price | ResourceRegistry `market_value` | Stones/item | Existing Economy-A pilot | PILOT | Existing V2 resource values | `ResourceRegistry` |
+| Market buy price | 2 × sell price | Stones/item | This extension | PILOT | Prevent same-day arbitrage | `market_buy_markup` |
+| Merchant daily stock floor | 20 | items/catalogue entry | This extension | PILOT | Playable opening inventory | `market_stock_target` |
+| Market daily buy/sell | 20 each | items/simulation day | Existing sell pilot; buy mirrors it | PILOT | Bounded trade volume | `market_daily_units` |
+| Market order cap | 5 each | items/order | Existing sell pilot; buy mirrors it | PILOT | Touch-friendly batch | `market_max_per_sale`, `market_max_per_buy` |
+| Personal HP service | 3 for 10 HP | Stones/service, HP | Existing Economy-A pilot | PILOT | Real service with personal payment | `personal_heal_cost`; HP in EconomySystem |
+| Auto personal spending cap | 6 | Stones/disciple/day | This extension | PILOT | Stops repeated tick/offline spend | `auto_hp_daily_stone_limit` |
+| Auto service default | off | policy | Existing Economy-A pilot | PILOT | Owner must enable | `auto_hp_service` |
+| Sect wage reserve | 0 | Stones | Existing Economy-A pilot | PILOT | Explicit affordability floor | `sect_pay_reserve` |
+
+The 60/40 PvE split belongs to Economy-B and is not part of these values. Existing GP/Body/Injury balances remain untouched.
+
+---
+
+
 Updated: 2026-10-15 (ECONOMY-A CODE INTEGRATION; factual gates and historical QA preserved)
 
 ## ECONOMY-A — CODE-A CLOSED FOR GODOT 4.7.2 LINUX FOCUSED + FULL + O6; DEVICE QA PENDING (2026-10-15)
