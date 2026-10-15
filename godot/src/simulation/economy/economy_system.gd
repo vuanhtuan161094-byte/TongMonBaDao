@@ -91,7 +91,7 @@ func configure_v1(state: SimulationState, key: String, value: Variant) -> Dictio
     else:
         if not (value is int or value is float) or int(value) != value:
             return {"ok":false,"reason":"policy_type"}
-        var minimum := 0 if key == "sect_pay_reserve" or key == "wage_per_batch" else 1
+        var minimum := 0 if key in ["sect_pay_reserve","wage_per_batch","auto_hp_daily_stone_limit"] else 1
         var maximum := 100000 if key != "resource_duration_ticks" else 1440
         if int(value) < minimum or int(value) > maximum:
             return {"ok":false,"reason":"policy_out_of_bounds"}
@@ -287,9 +287,21 @@ func auto_personal_service_tick(state: SimulationState, actor: DiscipleState) ->
         return
     if actor.hp <= 0.0 or actor.hp >= actor.max_hp*0.5:
         return
-    if actor.spirit_stones < int(state.sect.economy_a_policy.get("personal_heal_cost",3)):
+    var cost := int(state.sect.economy_a_policy.get("personal_heal_cost",3))
+    if actor.spirit_stones < cost:
         return
-    buy_personal_hp_service(state,actor.id,"auto:%s:%d" % [str(actor.id),state.tick])
+    var day := int(state.tick / V2_DAY_TICKS)
+    if state.sect.economy_a_auto_spend_day != day:
+        state.sect.economy_a_auto_spend_day = day
+        state.sect.economy_a_auto_spend_by_disciple.clear()
+    var actor_id := str(actor.id)
+    var spent := int(state.sect.economy_a_auto_spend_by_disciple.get(actor_id,0))
+    var limit := maxi(int(state.sect.economy_a_policy.get("auto_hp_daily_stone_limit",6)),0)
+    if cost > limit-spent:
+        return
+    var result := buy_personal_hp_service(state,actor.id,"auto:%s:%d" % [actor_id,state.tick])
+    if bool(result.get("ok",false)) and not bool(result.get("already_settled",false)):
+        state.sect.economy_a_auto_spend_by_disciple[actor_id] = spent+cost
 
 func validate_v1(state: SimulationState) -> Array[String]:
     var errors: Array[String] = []
@@ -306,6 +318,9 @@ func validate_v1(state: SimulationState) -> Array[String]:
     for raw_id in state.sect.economy_a_market_stock.keys():
         if not V2_MARKET_CATALOG.has(str(raw_id)) or int(state.sect.economy_a_market_stock[raw_id]) < 0 or int(state.sect.economy_a_market_stock[raw_id]) > WarehouseSystem.MAX_SAFE_STACK:
             errors.append("Economy-A merchant stock invalid.")
+    for raw_id in state.sect.economy_a_auto_spend_by_disciple.keys():
+        if not state.disciples.has(StringName(raw_id)) or int(state.sect.economy_a_auto_spend_by_disciple[raw_id]) < 0:
+            errors.append("Economy-A auto spending record invalid.")
     for actor in state.disciples.values():
         if (actor as DiscipleState).spirit_stones < 0 or (actor as DiscipleState).spirit_stones > V2_MAX_STONES:
             errors.append("Economy-A personal Stone balance invalid.")
