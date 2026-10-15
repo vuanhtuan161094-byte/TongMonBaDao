@@ -787,6 +787,12 @@ func _build_economy_a_hall_controls() -> void:
     heal_toggle.custom_minimum_size = Vector2(384,36)
     heal_toggle.pressed.connect(_economy_a_toggle_heal_from_ui)
     building_management_container.add_child(heal_toggle)
+    var spending_limit := Button.new()
+    spending_limit.name = "EconomyA_AutoSpendLimit"
+    spending_limit.text = "Hạn mức tự chữa: %d LT/đệ tử/ngày" % int(policy.get("auto_hp_daily_stone_limit",6))
+    spending_limit.custom_minimum_size = Vector2(384,36)
+    spending_limit.pressed.connect(_economy_a_cycle_spend_limit_from_ui)
+    building_management_container.add_child(spending_limit)
 
 func _economy_a_enable_from_ui() -> void:
     var result := EconomySystem.new().enable_v1(state)
@@ -798,6 +804,15 @@ func _economy_a_toggle_heal_from_ui() -> void:
     var old := bool(state.sect.economy_a_policy.get("auto_hp_service",false))
     var result := economy.configure_v1(state,"auto_hp_service",not old)
     building_management_feedback = "Đã đổi chính sách chi tiêu cá nhân." if bool(result.get("ok",false)) else "Chính sách bị từ chối."
+    _refresh_building_operation_content()
+
+func _economy_a_cycle_spend_limit_from_ui() -> void:
+    var choices := [0,3,6,12]
+    var current := int(state.sect.economy_a_policy.get("auto_hp_daily_stone_limit",6))
+    var index := choices.find(current)
+    var next_value := int(choices[(index+1) % choices.size()])
+    var result := EconomySystem.new().configure_v1(state,"auto_hp_daily_stone_limit",next_value)
+    building_management_feedback = "Đã đổi hạn mức tự chữa." if bool(result.get("ok",false)) else "Không đổi được hạn mức."
     _refresh_building_operation_content()
 
 func _build_economy_a_market_controls() -> void:
