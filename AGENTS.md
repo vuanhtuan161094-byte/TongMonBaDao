@@ -47,23 +47,20 @@ Do not use Codex or Work for repository coding unless the user explicitly change
 
 ---
 
-## 3. One-phase-at-a-time rule
+## 3. Scoped CODE ownership rule — USER OVERRIDE 2026-10-15
 
-There is at most one active implementation phase.
+**Supersedes the old repository-wide one-active-implementation-phase ban.** The owner prioritizes a playable Economy-A while preserving real evidence and locked gameplay.
 
-Do not start a neighboring gameplay phase until the current phase is closed.
+1. **A CODE packet, not a historical phase, is the unit of implementation.** An OPEN QA debt or PAUSED unrelated phase does not automatically block a new explicitly authorized packet. A parallel DESIGN/QA investigation is allowed. There must be **one writer per overlapping file/subsystem**; concurrent CODE with shared `SimulationState`, `SectState`, `DiscipleState`, `BuildingSystem`, `WorkforceSystem`, `WarehouseSystem`, scheduler, save or scene integration needs one clearly named integration owner and no competing changes.
+2. **Separate permission is still compulsory.** Before CODE, obtain the owner's specific authorization naming package, intended behavior, current `main` SHA, allowed paths, disallowed systems, rollback/legacy migration and focused/cumulative tests. A plan, an approved design, or this governance change alone never authorizes runtime, tests, workflows or balance edits.
+3. **Preserve the exact statuses.** GP-02C1 is CODE DONE/official Linux focused+FULL PASS but overall QA OPEN because O6 standalone differential and physical Windows/Android debts are unresolved; DV2-03 remains PAUSED NOT CLOSED. Starting Economy-A cannot relabel either as CLOSED/PASS. Never call an old failure green or remove the test to make a dashboard green.
+4. **Risk-based dependency check.** Keep a known-red test as a traced baseline debt if demonstrably independent. If Economy-A edits Mine/Forest/warehouse/job timing/currency/save, the affected O6/O5/GP-01/GP-02B1/GP-02C1/SAFE contracts must be reproduced or compared on real commits. A pre-existing failure in the path being changed **blocks integrated acceptance**, though it need not block development; repair requires a separate authorized allowlist or inclusion expressly authorized in the packet.
+5. **Honest closure stays strict.** Close a packet only after explicit contract, complete implementation, official Godot 4.7.2 focused gate, cumulative regressions of affected and previously locked features (with any truly unrelated prior failures explicitly documented/owner-accepted, not called PASS), and `CURRENT_CHECKPOINT.md` / `NEXT_CHAT_HANDOFF.md` reflecting evidence, SHA, remaining debts and next permitted work.
+6. **No duplicate authority.** One canonical Warehouse, one scheduler/time source, one disciple active job, canonical V2 state/save. Preserve P2 legacy without silently treating `wallet/treasury` as V2 `spirit_stones`. Avoid speculative UI, fake economy outputs or invented game balance.
 
-A phase closes only when:
-1. contract/scope is explicit;
-2. implementation is complete for that scope;
-3. focused Godot 4.7.2 gate is green;
-4. cumulative regression is green when closing the phase;
-5. `CURRENT_CHECKPOINT.md` records the result and names the next phase.
+**Current user decision:** Economy-A may be prepared and proposed for separate CODE authorization without waiting for GP-02C1 QA and DV2-03 administrative closure. The existing Injury 0/1/120-tick behavior remains production authority; 最强祖师-inspired graduated Injury/treatment is an independent DESIGN proposal, NOT a permission to change it. Economy-B/C, FE-02, DV2-04 and historical test repairs do not become authorized.
 
-If a dependency is required to make the active phase correct, fix it inside the active phase.
-Otherwise record it for later and do not implement it early.
-
-Never implement speculative UI/data for a future phase.
+For any seeming conflict with historical notes, read the matching updated `docs/GAME_SYSTEM_ARCHITECTURE.md` section 4 and the top of `CURRENT_CHECKPOINT.md`.
 
 ---
 
@@ -223,7 +220,7 @@ Read:
 - `CURRENT_CHECKPOINT.md`;
 - `NEXT_CHAT_HANDOFF.md`.
 
-If the checkpoint says no implementation phase is active, do not start the queued next phase without a new user instruction.
+If the checkpoint says no CODE packet is authorized, do not start a queued packet without a new explicit user instruction; historical QA OPEN and PAUSED statuses do not themselves bar a new disjoint authorization.
 
 
 ---
