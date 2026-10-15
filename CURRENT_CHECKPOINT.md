@@ -17,8 +17,10 @@
 | Mine/Forest wage | 2 | Stones/completed batch | Existing Economy-A pilot | PILOT | Bounded zero-sum wage | `SectState.economy_a_policy.wage_per_batch` |
 | Resource timer | 10 | simulation ticks base | Existing Economy-A pilot | PILOT | Opening cycle, work-speed modifier applies | `resource_duration_ticks` |
 | Mine/Forest yield | 2 | resources/batch at Lv1 | Existing P3.7 building content | LOCKED for this packet | Preserve existing production balance | `BuildingSystem` definitions |
-| Market sell price | ResourceRegistry `market_value` | Stones/item | Existing Economy-A pilot | PILOT | Existing V2 resource values | `ResourceRegistry` |
-| Market buy price | 2 × sell price | Stones/item | This extension | PILOT | Prevent same-day arbitrage | `market_buy_markup` |
+| Linh Mộc sell / buy | 2 / 4 | Stones/item | ResourceRegistry / 2× markup | PILOT | Opening wood trade | `ResourceRegistry.market_value`, `market_buy_markup` |
+| Thanh Thiết sell / buy | 8 / 16 | Stones/item | ResourceRegistry / 2× markup | PILOT | Opening ore trade | same |
+| Thanh Linh Thảo sell / buy | 6 / 12 | Stones/item | ResourceRegistry / 2× markup | PILOT | Opening herb trade | same |
+| Linh Cốc sell / buy | 4 / 8 | Stones/item | ResourceRegistry / 2× markup | PILOT | Opening grain trade | same |
 | Merchant daily stock floor | 20 | items/catalogue entry | This extension | PILOT | Playable opening inventory | `market_stock_target` |
 | Market daily buy/sell | 20 each | items/simulation day | Existing sell pilot; buy mirrors it | PILOT | Bounded trade volume | `market_daily_units` |
 | Market order cap | 5 each | items/order | Existing sell pilot; buy mirrors it | PILOT | Touch-friendly batch | `market_max_per_sale`, `market_max_per_buy` |
