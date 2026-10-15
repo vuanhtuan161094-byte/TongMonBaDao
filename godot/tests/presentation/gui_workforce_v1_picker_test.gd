@@ -44,6 +44,16 @@ func _run() -> void:
     if holders.size() < 2:
         _fail("Expected two canonical Mine workers in opening state")
         return
+    var full_launcher := ui.find_child("WorkforcePickerOpen_%s" % str(mine.building_type),true,false) as Button
+    if full_launcher == null or full_launcher.disabled:
+        _fail("Picker cannot be opened to review a full building's roster")
+        return
+    full_launcher.emit_signal("pressed")
+    await process_frame
+    if not (ui.get("workforce_picker_overlay") as Control).visible:
+        _fail("Full Mine picker did not open")
+        return
+    ui.call("_close_workforce_picker")
     var candidate_id: StringName = holders[1]
     var legacy_release := ui.find_child("Group_mining_crew_%s" % str(candidate_id),true,false) as Button
     if legacy_release == null:
