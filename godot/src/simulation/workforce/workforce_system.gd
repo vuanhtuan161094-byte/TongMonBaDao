@@ -140,7 +140,16 @@ func assign_mine_worker(state: SimulationState, disciple_id: StringName, mine_id
         if not replace_existing:
             return {"ok": false, "reason": "mine_full"}
         previous = state.disciples[occupants[0]]
-        if not previous.work_cycle_state.is_empty() or building_system.disciple_has_active_timed_recipe(state, previous.id) or building_system.disciple_has_active_spirit_plot(state, previous.id) or DiscipleBodyTrainingFacilityV2.has_reserved_slot(state, previous):
+        if (
+            not previous.work_cycle_state.is_empty()
+            or not previous.direct_command.is_empty()
+            or str(previous.current_action).begins_with("WORK_")
+            or not previous.active_pve_encounter_id.is_empty()
+            or previous.region_id != &"sect"
+            or building_system.disciple_has_active_timed_recipe(state, previous.id)
+            or building_system.disciple_has_active_spirit_plot(state, previous.id)
+            or DiscipleBodyTrainingFacilityV2.has_reserved_slot(state, previous)
+        ):
             return {"ok": false, "reason": "previous_miner_busy"}
     # All guards completed: one synchronous state transaction, no intermediate
     # moment with a second Mine worker, no warehouse/scheduler side effects.
