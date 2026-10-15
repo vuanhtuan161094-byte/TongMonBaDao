@@ -1,0 +1,16 @@
+# Unity-generated local artifacts. Keep the scene, scripts, assets and tests.
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Mm]emoryCaptures/
+[Rr]ecordings/
+.vs/
+.idea/
+*.csproj
+*.sln
+*.user
+*.suo
