@@ -341,7 +341,7 @@ func _test_field_and_alchemy_wages() -> bool:
         "Could not fill Field output for delivery failure"): return false
     state.tick = field_finish
     buildings._process_spirit_field_plots(state, field)
-    if not _check(not buildings.disciple_has_active_spirit_plot(state, worker.id, field).is_empty()
+    if not _check(buildings.disciple_has_active_spirit_plot(state, worker.id, field)
         and worker.spirit_stones == personal_before
         and state.sect.spirit_stones == field_stones
         and not state.sect.economy_a_receipts.has("wage:" + field_job_id),
@@ -360,7 +360,7 @@ func _test_field_and_alchemy_wages() -> bool:
         and worker.spirit_stones == personal_before + 2
         and state.sect.spirit_stones == field_stones - 2
         and state.sect.economy_a_receipts.has("wage:" + field_job_id)
-        and buildings.disciple_has_active_spirit_plot(state, worker.id, field).is_empty(),
+        and not buildings.disciple_has_active_spirit_plot(state, worker.id, field),
         "Field reload did not deliver output and exactly one Sect-funded wage"): return false
     buildings._process_spirit_field_plots(state, field)
     if not _check(worker.spirit_stones == personal_before + 2, "Field replay paid twice"): return false
