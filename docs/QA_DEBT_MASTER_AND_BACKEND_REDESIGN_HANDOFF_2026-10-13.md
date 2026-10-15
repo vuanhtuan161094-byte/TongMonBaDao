@@ -1,4 +1,15 @@
 # TÔNG MÔN BÁ ĐẠO — SỔ NỢ CHUNG + BÀN GIAO RÀ SOÁT BACKEND
+
+## CẬP NHẬT KIỂM KÊ — 2026-10-15, SAU MERGE ECONOMY-A
+
+- **ECONOMY-A CODE / INTEGRATION: CLOSED — Windows automated verification.** PR #1 merged at GitHub `main` commit `0689d0ddf0ebd72463d08bad4835c60428c64d24`; gameplay/test SHA `95bf06ecfd2c7fce5026d4485af55a5a3c40d909` and documentation-only PR HEAD `4a6937dc28d477be13ffc0283d44cc74fe610733`. Owner-uploaded `20261015_135007.zip` (SHA256 `2d35d82d7eadf44ae06407c3899a36facf480c05b14c2922b22041062d3531f6`) provides official Windows Godot 4.7.2 detached-worktree QA: **18/18 PASS, 0 FAIL** including Economy-A sim/UI, GP01/02A/02B1/02C1, O3–O9 including O6 unchanged, SAFE01/02 and P3.7 FULL. Local QA did not modify user's original checkout or saves. Prior branch-in-progress table below is historical/superseded, not current merge status.
+- **PENDING CI (nonblocking for this owner-directed Windows acceptance):** exact-SHA Linux Actions [#38684703913](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38684703913) could not start runner on three attempts; owner's Actions quota reported exhausted. Do not infer Linux PASS or gameplay regression.
+- **PENDING USER / DEVICE:** Windows graphical manual scene/screenshots, Android APK/landscape/touch, real kill/power/storage recovery, 100/500/1000/3000 disciple performance. Automated headless Windows scene PASS is NOT human visual or Android acceptance.
+- **GP-02C1 overall QA OPEN; DV2-03 PAUSED; DV2-04/FE-02/Economy-B/C outside scope.** Q03/O6 current Economy-A automated Windows PASS, old-SHA O6 differential attribution remains optional historical issue. Q01/Q02/Q04 latest *headless* Windows automated gates PASS but physical/manual Q05–Q10 remain PENDING. ACTION-GUARD-01, CHAR-AUDIT and CHAR-ISO remain DESIGN/BLOCKED; no closure implied by Economy-A merge.
+- **Next priority:** safe sync of local game checkout and targeted physical GUI/device QA; then resume separately authorized character/action/production design debt. Do not replace canonical debt register or reinterpret Economy-A pilot values as locked.
+
+---
+
 Ngày: 2026-10-13 · Repository: `vuanhtuan161094-byte/TongMonBaDao` (`main`) · Engine: Godot **4.7.2**.
 Tài liệu điều phối / kiểm thử, **không đổi luật chơi, không cấp phép sửa gameplay**.
 
