@@ -88,10 +88,14 @@ namespace TMBDPilot
             Panel(uiRoot, "Courtyard", new Vector2(0, -104),
                 new Vector2(1280, 300), Hex("#B8BDA0"));
 
-            ButtonAt(uiRoot, "Tông Môn Đại Điện", new Vector2(-20, 125),
-                new Vector2(260, 140), Hex("#8A9C85"), delegate { OpenMine(); }, 23);
-            ButtonAt(uiRoot, "Linh Lâm", new Vector2(-370, 0),
-                new Vector2(220, 145), Hex("#819D87"), delegate { OpenMine(); }, 23);
+            Panel(uiRoot, "Tông Môn Đại Điện (placeholder)", new Vector2(-20, 125),
+                new Vector2(260, 140), Hex("#8A9C85"));
+            Label(uiRoot, "TÔNG MÔN ĐẠI ĐIỆN", new Vector2(-20, 125),
+                new Vector2(260, 58), 22, PalePaper, TextAnchor.MiddleCenter);
+            Panel(uiRoot, "Linh Lâm (placeholder)", new Vector2(-370, 0),
+                new Vector2(220, 145), Hex("#819D87"));
+            Label(uiRoot, "LINH LÂM", new Vector2(-370, 0),
+                new Vector2(220, 58), 23, PalePaper, TextAnchor.MiddleCenter);
             ButtonAt(uiRoot, "MỎ THANH THIẾT\\nChạm để quản lý", new Vector2(-25, -85),
                 new Vector2(280, 160), Hex("#8C8B72"), OpenMine, 22);
 
