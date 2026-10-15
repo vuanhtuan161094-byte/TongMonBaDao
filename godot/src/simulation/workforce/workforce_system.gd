@@ -118,6 +118,11 @@ func assign_mine_worker(state: SimulationState, disciple_id: StringName, mine_id
     if occupants.size() > 1:
         return {"ok": false, "reason": "mine_overassigned_reset_dev_save"}
     if occupants.has(disciple_id):
+        # Resolve legacy group-only primary-Mine assignment into its explicit
+        # canonical building ID without claiming another worker slot.
+        if actor.worksite_building_id == &"":
+            actor.worksite_building_id = mine_id
+            state.sect.workforce_event_count += 1
         return {"ok": true, "already_assigned": true}
     if actor.region_id != &"sect" or not actor.active_pve_encounter_id.is_empty():
         return {"ok": false, "reason": "disciple_not_at_sect"}
