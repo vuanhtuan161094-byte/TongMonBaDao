@@ -846,6 +846,10 @@ func _refresh_workforce_picker() -> void:
         var level := 0 if workforce_picker_profession == &"body" else workforce.profession_level_for_state(state,disciple,workforce_picker_profession)
         matching.append({"id":disciple.id,"name":disciple.display_name,"level":level,"reason":reason})
     matching.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
+        var available_a := str(a["reason"]) == ""
+        var available_b := str(b["reason"]) == ""
+        if available_a != available_b:
+            return available_a
         if int(a["level"]) != int(b["level"]):
             return int(a["level"]) > int(b["level"])
         return str(a["name"]) < str(b["name"])
@@ -1938,6 +1942,7 @@ func _build_body_training_management() -> void:
         label.clip_text = true
         label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
         label.add_theme_font_size_override("font_size",12)
+        label.add_theme_color_override("font_color",INK)
         row.add_child(label)
         var start := Button.new()
         start.name = "BodyTrainingAssign_%s" % str(member.id)
