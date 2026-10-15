@@ -7,6 +7,10 @@
 - Unity pilot PR #3: paused; leave separate, do not merge. No Spine runtime dependency.
 - This design packet: **only `docs/design/UI_REF_01_*.md`**. Nothing is claimed running.
 
+## 2026-10-15 owner correction — Mỏ single slot + level/Lục Duy output
+
+A Mỏ has **one disciple only**; harvesting depends on that disciple's level and six foundation stats. This is a **gameplay design decision**, not just a visual adjustment. Current `BuildingSystem` has two initial slots and +1 per five building levels; O3 checks two initial workers and a fixed building-level batch. PR #4 remains **DESIGN ONLY**. A later gameplay packet must establish the precise level meaning/weights, migration of existing multi-worker saves and in-flight timer/legacy carry jobs, preservation of canonical Warehouse and wage receipts, and regression migration of O3/GP-01/GP-02C1/O6. No slot clamping or yield changes in UI without backend readiness.
+
 ## Integration plan after separate CODE authorization
 
 1. Fetch current main and PR #2, inspect exact diffs and baseline (do not blindly merge branches).
