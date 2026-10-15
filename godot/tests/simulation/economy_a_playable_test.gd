@@ -191,7 +191,14 @@ func _run() -> void:
         and roundtrip.sect.spirit_stones == loaded.sect.spirit_stones
         and (roundtrip.disciples[actor.id] as DiscipleState).spirit_stones == live_actor.spirit_stones
         and warehouse.quantity(roundtrip,&"linh_moc") == woods,
-        "Economy-A reload changed receipts, stock, or Stone balances"): return
+        "Economy-A reload changed receipts, stock, or Stone balances: receipts_equal=%s, sect=%d/%d, personal=%d/%d, wood=%d/%d, saved_receipts=%s, reloaded_receipts=%s" % [
+            str(roundtrip != null and roundtrip.sect.economy_a_receipts == loaded.sect.economy_a_receipts),
+            -1 if roundtrip == null else roundtrip.sect.spirit_stones,loaded.sect.spirit_stones,
+            -1 if roundtrip == null else (roundtrip.disciples[actor.id] as DiscipleState).spirit_stones,live_actor.spirit_stones,
+            -1 if roundtrip == null else warehouse.quantity(roundtrip,&"linh_moc"),woods,
+            str(loaded.sect.economy_a_receipts),
+            "{}" if roundtrip == null else str(roundtrip.sect.economy_a_receipts)
+        ]): return
     if not _check(saver.save_to_path(roundtrip,SAVE_PATH) == OK and
         saver.load_from_path(SAVE_PATH).sect.economy_a_receipts == loaded.sect.economy_a_receipts,
         "Repeated save/load replayed economic receipts"): return
