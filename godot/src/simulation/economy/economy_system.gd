@@ -68,7 +68,7 @@ func buy_supplies(state: SimulationState, disciple: DiscipleState) -> bool:
 
 
 # ECONOMY-A: independent, optional V2 Stone accounting. Pilot values live in
-// SectState.economy_a_policy and are NOT locked balance. Old P2 money is untouched.
+# SectState.economy_a_policy and are NOT locked balance. Old P2 money is untouched.
 const V2_MAX_STONES := 9000000000000000
 const V2_DAY_TICKS := 1440
 
