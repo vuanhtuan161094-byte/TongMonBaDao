@@ -63,6 +63,9 @@ jobs:
       - name: Import project scripts and resources
         run: godot --headless --path godot --import
 
+      - name: Diagnose Economy-A EconomySystem script independently
+        run: godot --headless --path godot --check-only --script res://src/simulation/economy/economy_system.gd
+
       - name: Parse GP-02C1 changed code and tests
         shell: bash
         run: |
