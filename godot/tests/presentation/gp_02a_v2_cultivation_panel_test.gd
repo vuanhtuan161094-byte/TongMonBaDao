@@ -44,7 +44,7 @@ func _run() -> void:
     if not _check(mine != null, "Canonical Mine missing."):
         return
     var initial_miners := buildings.active_worker_ids(state, mine)
-    if not _check(initial_miners.size() == 2, "Opening Mine has no two active miners."):
+    if not _check(initial_miners.size() == 1, "Opening Mine must have one active miner."):
         return
     for raw_id in founders:
         if not _check(workforce.issue_command(
@@ -136,6 +136,12 @@ func _run() -> void:
         "Second V2 Tu Vi grant in one tick was accepted."):
         return
 
+    # Open the one-worker Mine slot BEFORE assigning the new V2 disciple.
+    # The former two-slot fixture attempted assignment while full.
+    for raw_id in initial_miners:
+        if not _check(workforce.assign_group(state, raw_id, &""),
+            "Cannot make a Mine slot for the new V2 disciple."):
+            return
     # Start a genuine paid Mine cycle and reach haul_back with carried ore.
     # In between steps the scheduler leaves current_action=EVALUATE, which
     # must not be mistaken for an idle occupation.
@@ -145,10 +151,6 @@ func _run() -> void:
         return
     if not await _press("MineWorksite_%s" % str(chosen)):
         return
-    for raw_id in initial_miners:
-        if not _check(workforce.assign_group(state, raw_id, &""),
-            "Cannot make a Mine slot for the new V2 disciple."):
-            return
     ui.call("_open_building", SectMapPresentation.DEST_MINE)
     await process_frame
     if not _check(buildings.active_worker_ids(state, mine).has(chosen),
