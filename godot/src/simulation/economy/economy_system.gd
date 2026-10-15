@@ -172,8 +172,25 @@ func buy_personal_hp_service(state: SimulationState, disciple_id: StringName, re
         return {"ok":true,"already_settled":true,"receipt":previous.duplicate(true)}
     var actor: DiscipleState = state.disciples[disciple_id]
     var cost := maxi(int(state.sect.economy_a_policy.get("personal_heal_cost",3)),1)
-    var buildings := BuildingSystem.new()
-    if actor.region_id != &"sect" or not actor.active_pve_encounter_id.is_empty() or not actor.work_cycle_state.is_empty() or buildings.disciple_has_active_timed_recipe(state,disciple_id) or buildings.disciple_has_active_spirit_plot(state,disciple_id) or DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,actor):
+    # No circular dependency on BuildingSystem: inspect the actual saved
+    # worker reservations already owned by each building's production_state.
+    var reserved := actor.work_group_id == &"body_training_crew"
+    for building_value in state.buildings.values():
+        if not (building_value is BuildingState):
+            continue
+        var stored: Dictionary = (building_value as BuildingState).production_state
+        for job_key in ["jobs","economy_a_jobs"]:
+            var jobs = stored.get(job_key,[])
+            if jobs is Array:
+                for saved_job in jobs:
+                    if saved_job is Dictionary and str(saved_job.get("worker_id","")) == str(disciple_id):
+                        reserved = true
+        var plots = stored.get("plots",[])
+        if plots is Array:
+            for saved_plot in plots:
+                if saved_plot is Dictionary and str(saved_plot.get("status","")) == "growing" and str(saved_plot.get("assigned_worker_id","")) == str(disciple_id):
+                    reserved = true
+    if actor.region_id != &"sect" or not actor.active_pve_encounter_id.is_empty() or not actor.work_cycle_state.is_empty() or reserved:
         return {"ok":false,"reason":"personal_service_worker_busy"}
     if actor.hp >= actor.max_hp or actor.hp <= 0.0 or actor.spirit_stones < cost:
         return {"ok":false,"reason":"personal_service_unavailable"}

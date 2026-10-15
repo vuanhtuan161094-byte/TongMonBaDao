@@ -931,7 +931,7 @@ func active_resource_timer_for_worker(state: SimulationState, disciple_id: Strin
 func _start_resource_timer(state: SimulationState, producer: BuildingState, actor: DiscipleState, speed: float, profession_id: StringName, xp_gain: float) -> Dictionary:
     if not state.sect.p3_7_resources_enabled or not can_disciple_work(state,producer,actor):
         return {"ok":false,"reason":"missing_canonical_job_slot"}
-    if disciple_has_active_timed_recipe(state,actor.id) or disciple_has_active_spirit_plot(state,actor.id) or DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,actor):
+    if disciple_has_active_timed_recipe(state,actor.id) or disciple_has_active_spirit_plot(state,actor.id) or actor.work_group_id == &"body_training_crew":
         return {"ok":false,"reason":"another_active_job"}
     if actor.region_id != &"sect" or not actor.active_pve_encounter_id.is_empty():
         return {"ok":false,"reason":"worker_not_available"}
@@ -1125,6 +1125,7 @@ func validate_invariants(state: SimulationState) -> Array[String]:
                 if int(timer.get("finish_tick",0)) <= int(timer.get("started_tick",-1)):
                     errors.append("Economy-A invalid resource timer deadline.")
         if building.building_type == TYPE_ALCHEMY_HALL:
+            var alchemy_data := _ensure_alchemy_state(building)
             var seen_job_ids: Dictionary = {}
             var seen_workers: Dictionary = {}
             for raw_job in alchemy_data.get("jobs", []):

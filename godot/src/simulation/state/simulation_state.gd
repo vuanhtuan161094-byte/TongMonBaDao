@@ -206,7 +206,16 @@ func validate_invariants() -> Array[String]:
     if is_nan(runtime_unconsumed_wall_seconds) or is_inf(runtime_unconsumed_wall_seconds) or runtime_unconsumed_wall_seconds < 0.0:
         errors.append("Runtime unconsumed wall seconds are invalid.")
 
-    errors.append_array(EconomySystem.new().validate_v1(self))
+    # Keep state invariant validation independent of the economy service class
+    # so GDScript class parsing does not create a SimulationState cycle.
+    if sect.economy_a_enabled:
+        if not sect.p3_7_resources_enabled or not p3_7_buildings_enabled:
+            errors.append("Economy-A requires canonical Warehouse and buildings.")
+        if sect.spirit_stones < 0 or sect.economy_a_market_units_sold < 0:
+            errors.append("Economy-A invalid Sect balance or market quota.")
+        for economy_actor in disciples.values():
+            if (economy_actor as DiscipleState).spirit_stones < 0:
+                errors.append("Economy-A negative disciple Stone balance.")
     return errors
 
 func to_dict() -> Dictionary:
