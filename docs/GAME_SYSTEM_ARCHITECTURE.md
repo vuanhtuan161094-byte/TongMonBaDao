@@ -1,7 +1,7 @@
 # GAME SYSTEM ARCHITECTURE — TÔNG MÔN BÁ ĐẠO
 
 Status: CANONICAL STRUCTURE AUTHORITY  
-Updated: 2026-10-06
+Updated: 2026-10-15 (governance section 4 only; gameplay specs unchanged)
 
 This document defines **where each gameplay system belongs** and **how phases are allowed to progress**.
 
