@@ -186,6 +186,20 @@ func _verify_real_timed_packet_save_and_wage() -> bool:
     if not _check(not bool(workforce.perform_work(state, actor, WorkforceSystem.PROF_MINING).get("ok", false)),
         "same actor started a competing Mine timer"):
         return false
+    var replacement_id: StringName = &""
+    for raw_id in state.disciples.keys():
+        var d: DiscipleState = state.disciples[raw_id]
+        if d.work_group_id == &"" and d.direct_command.is_empty() and d.region_id == &"sect":
+            replacement_id = d.id
+            break
+    if not _check(replacement_id != &"", "no replacement disciple available"):
+        return false
+    var forbidden := workforce.assign_mine_worker(state, replacement_id, mine.id, true)
+    if not _check(not bool(forbidden.get("ok", false))
+        and str(forbidden.get("reason", "")) == "previous_miner_busy"
+        and buildings.active_worker_ids(state, mine) == [actor.id],
+        "replacement canceled or displaced an active timed Mine packet"):
+        return false
     if not _check(SaveService.new().save_to_path(state, SAVE_PATH) == OK,
         "cannot save active Mine V2 packet"):
         return false
