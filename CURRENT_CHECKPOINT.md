@@ -1,5 +1,17 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-15 — GUI-WORKFORCE-V1 BRANCH CODE IMPLEMENTED / QA OPEN
+
+**Authorization:** owner requested GUI-WORKFORCE-V1 after reviewing physical Windows gameplay (cannot select disciples conveniently for Mine/Spirit Field); backend authority must be audited before UI. Source `main` baseline: `461caca1171462e0da092f21108c5c1733157ad9`. Implementation branch `gui-workforce-v1-20261015`, draft [PR #2](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/2), **not merged**. Previous Economy-A MERGED/Windows 18/18 PASS at older code remains unaffected by branch work; do not carry its PASS forward to GUI-WORKFORCE-V1.
+
+**Read-only backend review:** `WorkforceSystem.assign_group/assign_worksite/issue_command`, `BuildingSystem.assigned_worker_ids/active_worker_ids/work_available`, resource timer and legacy work-cycle cancellation, Field/Alchemy reserved output, Body Training reservation, `DiscipleState` persisted work group/worksite/command/cycle, SaveService and SimulationScheduler canonical owners. Explicit reassignment risks canceling valid work; UI blocks transfer for PvE, remote worker, running timer, active Field plot/Alchemy, legacy carried cycle, Body reservation or incompatible active direct command. No direct state mutation in the picker and no backend writer opened. Source ZQZS `UIMDiscipleSelect_manager` used for *UX only* (search/status/level), not game balance or server semantics.
+
+**Implemented on branch:** one modal search/filter/paged disciple selector for Mine/Forest/Field/Alchemy/Forge/Body using real worker slots and Workforce/Training commands; free-first profession-level ordering, clear occupied reasons and concise currently-assigned display. Building panel puts controls before long body text, removes 420px forced description offset, fixes ink contrast and horizontal row widths. Existing per-disciple UI `Group_*`/`FieldGroup_*`/`Work_*` remains in opt-in advanced section (max first 24 for scalability) so established locked regression selectors remain. Focused new actual-scene presentation test `gui_workforce_v1_picker_test.gd` exercises Mine vacancy/picker/search/assignment and prevents busy Mine-to-Field transfer, checks canonical invariants.
+
+**QA truth:** code committed to **branch only**; no official Godot runtime execution has been performed on new SHA in this chat, therefore **PENDING WINDOWS QA / NOT ACCEPTED**. GitHub Actions Linux runner quota exhausted, CI PENDING. Required on exact gameplay/test SHA: Godot 4.7.2 import, new focused scene, Economy-A scene, GP-01/02A/02B1/02C1, O3–O9 including O6 unchanged, SAFE-01/02, P3.7 FULL. After automated gates, physical Windows GUI video/screenshot must demonstrate choosing a real disciple for Mine and Spirit Field; Android and 100–3,000 stress remain PENDING USER. Keep PR draft until QA; stop for any necessary out-of-allowlist backend repair.
+
+---
+
 ## 2026-10-15 — ECONOMY-A MERGED TO MAIN; WINDOWS AUTOMATED QA VERIFIED
 
 **GitHub integration:** PR [#1](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/1) **MERGED** as `0689d0ddf0ebd72463d08bad4835c60428c64d24` into `main` (base `c64c61029ab6f569a66aba1f1cbeed3bd76f796e`). PR HEAD `4a6937dc28d477be13ffc0283d44cc74fe610733`; the last **gameplay/test-changing** SHA was `95bf06ecfd2c7fce5026d4485af55a5a3c40d909`. Comparison of gameplay/test SHA to PR HEAD shows **only three changed documentation files**, no subsequent gameplay/test edits. Existing 9-file PR allowlist and O6 assertion were preserved.
