@@ -48,6 +48,18 @@ var building_operation_content: VBoxContainer
 var building_management_container: VBoxContainer
 var building_management_feedback := ""
 var selected_building: StringName = &""
+# GUI-WORKFORCE-V1: a transient picker; only Workforce/Building/Training own state.
+var workforce_picker_overlay: Control
+var workforce_picker_list: VBoxContainer
+var workforce_picker_search: LineEdit
+var workforce_picker_filter: OptionButton
+var workforce_picker_count: Label
+var workforce_picker_page_label: Label
+var workforce_picker_profession: StringName = &""
+var workforce_picker_building_id: StringName = &""
+var workforce_picker_group_id: StringName = &""
+var workforce_picker_page: int = 0
+const WORKFORCE_PICKER_PAGE_SIZE := 8
 var deep_restore_summary := false
 var screen_pointer_dragged := false
 var mouse_pointer_dragged := false
@@ -65,6 +77,7 @@ func _ready() -> void:
     _build_camera_controls()
     _build_disciple_summary_panel()
     _build_building_operation_panel()
+    _build_workforce_picker()
     _build_living_cue_layer()
     living_cue_tracker.seed_from_state(state)
     _refresh_living_cues()
@@ -403,7 +416,7 @@ func _camera_center() -> Vector2:
     return SectMapCamera.VIEW_RECT.position + SectMapCamera.VIEW_RECT.size * 0.5
 
 func _popup_is_open() -> bool:
-    return popup_layer != null and popup_layer.get_child_count() > 0
+    return (popup_layer != null and popup_layer.get_child_count() > 0) or (workforce_picker_overlay != null and workforce_picker_overlay.visible)
 
 func _clear_pointer_state() -> void:
     touch_points.clear()
@@ -413,6 +426,7 @@ func _clear_pointer_state() -> void:
     mouse_pointer_dragged = false
 
 func _open_building(destination: StringName) -> void:
+    _close_workforce_picker()
     _close_disciple_summary(true)
     _clear_popup()
     selected_building = destination
@@ -582,6 +596,358 @@ func _install_modular_live_actors() -> void:
         actor_status_labels[key] = actor.status_label
         modular_live_actor_ids[key] = true
 
+
+# Shared, read-only picker: one popup for every producer. The presentation
+# never writes work_group_id, worksite_building_id or direct_command itself.
+func _build_workforce_picker() -> void:
+    workforce_picker_overlay = Control.new()
+    workforce_picker_overlay.name = "WorkforcePickerOverlay"
+    workforce_picker_overlay.position = Vector2.ZERO
+    workforce_picker_overlay.size = Vector2(1280,720)
+    workforce_picker_overlay.z_index = 120
+    workforce_picker_overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+    workforce_picker_overlay.visible = false
+    add_child(workforce_picker_overlay)
+
+    var shade := ColorRect.new()
+    shade.name = "PickerBackdrop"
+    shade.color = Color(0.04,0.04,0.04,0.68)
+    shade.size = Vector2(1280,720)
+    shade.mouse_filter = Control.MOUSE_FILTER_STOP
+    workforce_picker_overlay.add_child(shade)
+
+    var panel := Panel.new()
+    panel.name = "WorkforcePickerPanel"
+    panel.position = Vector2(226,65)
+    panel.size = Vector2(828,588)
+    panel.mouse_filter = Control.MOUSE_FILTER_STOP
+    panel.add_theme_stylebox_override("panel",_style(PAPER_LIGHT,INK,3,16))
+    workforce_picker_overlay.add_child(panel)
+
+    var heading := _label(panel,"CHỌN ĐỆ TỬ PHÂN CÔNG",Vector2(24,14),Vector2(590,32),23)
+    heading.name = "WorkforcePickerHeading"
+    heading.add_theme_color_override("font_color",CINNABAR.darkened(0.2))
+    var close := Button.new()
+    close.name = "WorkforcePickerClose"
+    close.text = "Đóng"
+    close.position = Vector2(714,12)
+    close.size = Vector2(90,40)
+    close.pressed.connect(_close_workforce_picker)
+    panel.add_child(close)
+
+    workforce_picker_search = LineEdit.new()
+    workforce_picker_search.name = "WorkforcePickerSearch"
+    workforce_picker_search.placeholder_text = "Tìm tên đệ tử..."
+    workforce_picker_search.position = Vector2(24,66)
+    workforce_picker_search.size = Vector2(430,44)
+    workforce_picker_search.add_theme_font_size_override("font_size",16)
+    workforce_picker_search.text_changed.connect(_picker_search_changed)
+    panel.add_child(workforce_picker_search)
+
+    workforce_picker_filter = OptionButton.new()
+    workforce_picker_filter.name = "WorkforcePickerFilter"
+    workforce_picker_filter.position = Vector2(470,66)
+    workforce_picker_filter.size = Vector2(334,44)
+    for item in ["Tất cả","Sẵn sàng","Đang bận","Đã ở công trình"]:
+        workforce_picker_filter.add_item(item)
+    workforce_picker_filter.item_selected.connect(_picker_filter_changed)
+    panel.add_child(workforce_picker_filter)
+
+    workforce_picker_count = _label(panel,"",Vector2(24,122),Vector2(755,27),13)
+    workforce_picker_count.name = "WorkforcePickerCount"
+    workforce_picker_count.add_theme_color_override("font_color",INK)
+
+    var scroll := ScrollContainer.new()
+    scroll.name = "WorkforcePickerScroll"
+    scroll.position = Vector2(24,156)
+    scroll.size = Vector2(780,345)
+    scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+    panel.add_child(scroll)
+    workforce_picker_list = VBoxContainer.new()
+    workforce_picker_list.name = "WorkforcePickerList"
+    workforce_picker_list.custom_minimum_size = Vector2(754,0)
+    workforce_picker_list.add_theme_constant_override("separation",4)
+    scroll.add_child(workforce_picker_list)
+
+    var previous := Button.new()
+    previous.name = "WorkforcePickerPrevious"
+    previous.text = "◀ Trước"
+    previous.position = Vector2(24,515)
+    previous.size = Vector2(135,44)
+    previous.pressed.connect(_picker_change_page.bind(-1))
+    panel.add_child(previous)
+    workforce_picker_page_label = _label(panel,"",Vector2(295,521),Vector2(238,32),14)
+    workforce_picker_page_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    workforce_picker_page_label.add_theme_color_override("font_color",INK)
+    var next_button := Button.new()
+    next_button.name = "WorkforcePickerNext"
+    next_button.text = "Sau ▶"
+    next_button.position = Vector2(669,515)
+    next_button.size = Vector2(135,44)
+    next_button.pressed.connect(_picker_change_page.bind(1))
+    panel.add_child(next_button)
+
+func _new_advanced_roster(title: String) -> VBoxContainer:
+    var toggle := Button.new()
+    toggle.text = title + " ▾"
+    toggle.custom_minimum_size = Vector2(384,38)
+    building_management_container.add_child(toggle)
+    var detail := VBoxContainer.new()
+    detail.custom_minimum_size = Vector2(384,0)
+    detail.visible = false
+    detail.add_theme_constant_override("separation",3)
+    building_management_container.add_child(detail)
+    toggle.pressed.connect(func() -> void: detail.visible = not detail.visible)
+    return detail
+
+func _add_workforce_picker_launcher(building: BuildingState, profession: StringName, group_id: StringName) -> void:
+    var bs := BuildingSystem.new()
+    var holders := bs.active_worker_ids(state,building)
+    var slots := bs.worker_slots(building)
+    var line := Label.new()
+    line.text = "Vị trí làm việc: %d/%d · %s" % [holders.size(),slots,building.display_name]
+    line.custom_minimum_size = Vector2(384,25)
+    line.add_theme_color_override("font_color",INK)
+    line.add_theme_font_size_override("font_size",13)
+    building_management_container.add_child(line)
+    for worker_id in holders:
+        if not state.disciples.has(worker_id):
+            continue
+        var worker: DiscipleState = state.disciples[worker_id]
+        var info := HBoxContainer.new()
+        info.custom_minimum_size = Vector2(384,41)
+        building_management_container.add_child(info)
+        var name := Label.new()
+        var phase := SectMapPresentation.action_label(worker.current_action)
+        var timer := bs.active_resource_timer_for_worker(state,worker.id)
+        if not timer.is_empty():
+            phase = "Mẻ còn %d phút" % maxi(int(timer.get("finish_tick",state.tick))-state.tick,0)
+        elif bs.disciple_has_active_spirit_plot(state,worker.id):
+            phase = "Đang trồng"
+        elif bs.disciple_has_active_timed_recipe(state,worker.id):
+            phase = "Đang luyện đan"
+        name.text = worker.display_name + " · " + phase
+        name.tooltip_text = name.text
+        name.custom_minimum_size = Vector2(250,36)
+        name.clip_text = true
+        name.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+        name.add_theme_color_override("font_color",INK)
+        info.add_child(name)
+        if profession != &"body":
+            var withdraw := Button.new()
+            withdraw.name = "PickerWithdraw_%s" % str(worker.id)
+            withdraw.text = "Rút"
+            withdraw.custom_minimum_size = Vector2(102,36)
+            var blocked := _worker_busy_reason(worker)
+            withdraw.disabled = blocked != ""
+            withdraw.tooltip_text = blocked
+            withdraw.pressed.connect(_picker_withdraw.bind(worker.id,group_id))
+            info.add_child(withdraw)
+    var launch := Button.new()
+    launch.name = "WorkforcePickerOpen_%s" % str(building.building_type)
+    launch.text = "＋ Chọn đệ tử"
+    launch.custom_minimum_size = Vector2(384,46)
+    launch.add_theme_font_size_override("font_size",15)
+    launch.disabled = building.status != BuildingSystem.STATUS_ACTIVE
+    launch.tooltip_text = "Công trình chưa hoạt động." if launch.disabled else ("Đã đủ người: xem ứng viên và rút người khi mẻ hoàn tất." if holders.size() >= slots else "Tìm kiếm và phân công theo cấp nghề.")
+    launch.pressed.connect(_open_workforce_picker.bind(building.id,profession,group_id))
+    building_management_container.add_child(launch)
+
+func _open_workforce_picker(building_id: StringName, profession: StringName, group_id: StringName) -> void:
+    if not state.buildings.has(str(building_id)):
+        return
+    workforce_picker_building_id = building_id
+    workforce_picker_profession = profession
+    workforce_picker_group_id = group_id
+    workforce_picker_page = 0
+    workforce_picker_search.text = ""
+    workforce_picker_filter.select(0)
+    workforce_picker_overlay.visible = true
+    _clear_pointer_state()
+    _refresh_workforce_picker()
+
+func _close_workforce_picker() -> void:
+    if workforce_picker_overlay != null:
+        workforce_picker_overlay.visible = false
+    workforce_picker_building_id = &""
+    _clear_pointer_state()
+
+func _picker_search_changed(_term: String) -> void:
+    workforce_picker_page = 0
+    _refresh_workforce_picker()
+
+func _picker_filter_changed(_mode: int) -> void:
+    workforce_picker_page = 0
+    _refresh_workforce_picker()
+
+func _picker_change_page(delta: int) -> void:
+    workforce_picker_page = maxi(workforce_picker_page+delta,0)
+    _refresh_workforce_picker()
+
+func _worker_busy_reason(disciple: DiscipleState) -> String:
+    var bs := BuildingSystem.new()
+    if not disciple.active_pve_encounter_id.is_empty():
+        return "Đang chiến đấu PvE"
+    if disciple.region_id != &"sect":
+        return "Đệ tử chưa về Tông Môn"
+    if not bs.active_resource_timer_for_worker(state,disciple.id).is_empty():
+        return "Mẻ Mỏ/Linh Lâm đang chạy"
+    if bs.disciple_has_active_spirit_plot(state,disciple.id):
+        return "Đang phụ trách ô Linh Điền"
+    if bs.disciple_has_active_timed_recipe(state,disciple.id):
+        return "Mẻ luyện đan đang chạy"
+    if not disciple.work_cycle_state.is_empty():
+        return "Chu kỳ sản xuất cũ chưa hoàn tất"
+    if DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple):
+        return "Đã giữ chỗ Rèn Thân"
+    var command := WorkforceSystem.new().command_kind(disciple)
+    if command != &"" and command != WorkforceSystem.COMMAND_HOLD:
+        return "Đang có lệnh " + str(command)
+    # Autonomous cultivation without a reserved job is not an active occupation.
+    # Only a command/real reservation or unsafe action blocks selection.
+    if str(disciple.current_action).begins_with("WORK_") or disciple.current_action in [&"TRAIN_BODY",&"BREAKTHROUGH"]:
+        return "Đang " + SectMapPresentation.action_label(disciple.current_action)
+    return ""
+
+func _picker_candidate_reason(disciple: DiscipleState) -> String:
+    if workforce_picker_building_id == &"" or not state.buildings.has(str(workforce_picker_building_id)):
+        return "Không có công trình"
+    var building: BuildingState = state.buildings[str(workforce_picker_building_id)]
+    if building.status != BuildingSystem.STATUS_ACTIVE:
+        return "Công trình chưa hoạt động"
+    var bs := BuildingSystem.new()
+    var holders := bs.active_worker_ids(state,building)
+    if holders.has(disciple.id):
+        return "Đã ở công trình này"
+    if workforce_picker_profession == &"body" and not DiscipleRealmProgressV2.owns_v2_progression(disciple):
+        return "Chỉ nhận đệ tử V2"
+    var busy := _worker_busy_reason(disciple)
+    if busy != "":
+        return busy
+    if holders.size() >= bs.worker_slots(building):
+        return "Không còn slot; rút người trước"
+    if not state.sect.workforce_enabled or not state.sect.work_groups.has(str(workforce_picker_group_id)):
+        return "Đội nghề chưa sẵn sàng"
+    if workforce_picker_profession != &"body" and building.worker_group_id != workforce_picker_group_id:
+        return "Điểm làm việc không đúng đội"
+    return ""
+
+func _refresh_workforce_picker() -> void:
+    if workforce_picker_overlay == null or not workforce_picker_overlay.visible:
+        return
+    for child in workforce_picker_list.get_children():
+        workforce_picker_list.remove_child(child)
+        child.queue_free()
+    var matching: Array[Dictionary] = []
+    var query := workforce_picker_search.text.strip_edges().to_lower()
+    var mode := workforce_picker_filter.selected
+    for raw_id in state.disciples.keys():
+        var disciple: DiscipleState = state.disciples[raw_id]
+        if query != "" and not disciple.display_name.to_lower().contains(query) and not str(disciple.id).to_lower().contains(query):
+            continue
+        var reason := _picker_candidate_reason(disciple)
+        var assigned := reason == "Đã ở công trình này"
+        if mode == 1 and reason != "":
+            continue
+        if mode == 2 and (reason == "" or assigned):
+            continue
+        if mode == 3 and not assigned:
+            continue
+        var level := 0 if workforce_picker_profession == &"body" else workforce.profession_level_for_state(state,disciple,workforce_picker_profession)
+        matching.append({"id":disciple.id,"name":disciple.display_name,"level":level,"reason":reason})
+    matching.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
+        var available_a := str(a["reason"]) == ""
+        var available_b := str(b["reason"]) == ""
+        if available_a != available_b:
+            return available_a
+        if int(a["level"]) != int(b["level"]):
+            return int(a["level"]) > int(b["level"])
+        return str(a["name"]) < str(b["name"])
+    )
+    var page_count := maxi(int(ceil(float(matching.size())/float(WORKFORCE_PICKER_PAGE_SIZE))),1)
+    workforce_picker_page = clampi(workforce_picker_page,0,page_count-1)
+    workforce_picker_page_label.text = "Trang %d/%d" % [workforce_picker_page+1,page_count]
+    workforce_picker_count.text = "%d đệ tử · ưu tiên cấp nghề cao · người bận không thể chuyển" % matching.size()
+    var start := workforce_picker_page*WORKFORCE_PICKER_PAGE_SIZE
+    for i in range(start,mini(start+WORKFORCE_PICKER_PAGE_SIZE,matching.size())):
+        var entry: Dictionary = matching[i]
+        var reason := str(entry["reason"])
+        var row := HBoxContainer.new()
+        row.custom_minimum_size = Vector2(754,38)
+        workforce_picker_list.add_child(row)
+        var line := Label.new()
+        line.name = "PickerName_%s" % str(entry["id"])
+        line.text = "%s  ·  Nghề Lv%d  ·  %s" % [str(entry["name"]),int(entry["level"]),"Rảnh" if reason == "" else reason]
+        line.tooltip_text = line.text
+        line.custom_minimum_size = Vector2(608,38)
+        line.clip_text = true
+        line.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+        line.add_theme_font_size_override("font_size",14)
+        line.add_theme_color_override("font_color",INK if reason == "" else Color(0.46,0.36,0.28))
+        row.add_child(line)
+        var choose := Button.new()
+        choose.name = "WorkforcePick_%s" % str(entry["id"])
+        choose.text = "Phân công" if reason == "" else "Đang bận"
+        choose.custom_minimum_size = Vector2(137,38)
+        choose.disabled = reason != ""
+        choose.tooltip_text = reason
+        choose.pressed.connect(_picker_assign.bind(StringName(entry["id"])))
+        row.add_child(choose)
+    if matching.is_empty():
+        var empty := Label.new()
+        empty.text = "Không có đệ tử phù hợp; thử đổi bộ lọc."
+        empty.add_theme_color_override("font_color",INK)
+        workforce_picker_list.add_child(empty)
+
+func _picker_assign(disciple_id: StringName) -> void:
+    if not workforce_picker_overlay.visible or not state.disciples.has(disciple_id):
+        return
+    var worker: DiscipleState = state.disciples[disciple_id]
+    var reason := _picker_candidate_reason(worker)
+    if reason != "":
+        workforce_picker_count.text = "Không thể phân công: " + reason
+        _refresh_workforce_picker()
+        return
+    if workforce_picker_profession == &"body":
+        _start_body_training_from_building(disciple_id)
+        var hall: BuildingState = state.buildings[str(workforce_picker_building_id)]
+        if BuildingSystem.new().active_worker_ids(state,hall).has(disciple_id):
+            _close_workforce_picker()
+        else:
+            _refresh_workforce_picker()
+        return
+    var group_id := workforce_picker_group_id
+    var building_id := workforce_picker_building_id
+    var profession := workforce_picker_profession
+    if not workforce.assign_group(state,disciple_id,group_id):
+        building_management_feedback = "Không thể phân đội: trạng thái đệ tử đã đổi."
+    elif not workforce.assign_worksite(state,disciple_id,building_id):
+        building_management_feedback = "Đã vào đội nhưng chưa đặt được điểm làm; cần kiểm tra trạng thái."
+    else:
+        var bs := BuildingSystem.new()
+        var building: BuildingState = state.buildings[str(building_id)]
+        if bs.active_worker_ids(state,building).has(disciple_id) and bs.work_available(state,profession,worker):
+            var started := workforce.issue_command(state,disciple_id,WorkforceSystem.COMMAND_WORK,str(profession),40)
+            building_management_feedback = ("%s đã nhận việc." % worker.display_name) if started else ("Đã phân %s; lệnh chưa thể bắt đầu." % worker.display_name)
+        else:
+            building_management_feedback = "Đã phân %s vào công trình, đang chờ điều kiện sản xuất." % worker.display_name
+    _refresh_building_operation_content()
+    _close_workforce_picker()
+
+func _picker_withdraw(disciple_id: StringName, group_id: StringName) -> void:
+    if not state.disciples.has(disciple_id):
+        return
+    var worker: DiscipleState = state.disciples[disciple_id]
+    var blocked := _worker_busy_reason(worker)
+    if blocked != "":
+        building_management_feedback = "Không thể rút %s: %s." % [worker.display_name,blocked]
+    elif worker.work_group_id != group_id:
+        building_management_feedback = "Đệ tử không còn thuộc đội này."
+    else:
+        var ok := workforce.assign_group(state,disciple_id,&"")
+        building_management_feedback = ("Đã rút %s khỏi đội." % worker.display_name) if ok else "Không thể rút đệ tử."
+    _refresh_building_operation_content()
+
 func _build_building_operation_panel() -> void:
     building_operation_panel = Panel.new()
     building_operation_panel.name = "BuildingOperationPanel"
@@ -639,6 +1005,8 @@ func _build_building_operation_panel() -> void:
     building_management_container.custom_minimum_size = Vector2(384, 0)
     building_management_container.add_theme_constant_override("separation", 7)
     building_operation_content.add_child(building_management_container)
+    # Actions are the primary content; long building details belong below.
+    building_operation_content.move_child(building_management_container,0)
 
 func _building_operation_is_open() -> bool:
     return building_operation_panel != null and is_instance_valid(building_operation_panel) and building_operation_panel.visible
@@ -662,6 +1030,7 @@ func _hide_building_operation_panel() -> void:
         camera_hint.visible = true
 
 func _close_building_operation_panel(clear_selection: bool = true) -> void:
+    _close_workforce_picker()
     _hide_building_operation_panel()
     building_management_feedback = ""
     if not clear_selection:
@@ -686,15 +1055,9 @@ func _refresh_building_operation_content() -> void:
     if building_management_feedback != "":
         feedback = "\n\n%s" % building_management_feedback
     building_operation_body.text = _building_operation_text(selected_building) + feedback
-    # Keep actionable controls in view for dense management panels.
-    if selected_building == SectMapPresentation.DEST_BODY_TRAINING:
-        building_operation_body.custom_minimum_size.y = 248
-    elif selected_building == SectMapPresentation.DEST_GUIDANCE:
-        building_operation_body.custom_minimum_size.y = 150
-    elif selected_building == SectMapPresentation.DEST_SPIRIT_FIELD:
-        building_operation_body.custom_minimum_size.y = 220
-    else:
-        building_operation_body.custom_minimum_size.y = 420
+    # Avoid the historical 420px empty description before working controls.
+    # The full facts remain accessible by scrolling after the actions.
+    building_operation_body.custom_minimum_size.y = 0
     _rebuild_building_management_controls()
 
 func _rebuild_building_management_controls() -> void:
@@ -1242,7 +1605,7 @@ func _craft_from_building(recipe_id: StringName) -> void:
     _refresh_building_operation_content()
 
 func _build_work_management(profession_id: StringName, group_id: StringName, group_label: String, order_label: String) -> void:
-    _add_management_section_label("PHÂN CÔNG")
+    _add_management_section_label("NHÂN SỰ · VỊ TRÍ & PHÂN CÔNG")
     var active_building_ids: Array[StringName] = []
     var building_system := BuildingSystem.new()
     var active_producer: BuildingState = null
@@ -1251,11 +1614,15 @@ func _build_work_management(profession_id: StringName, group_id: StringName, gro
         if active_producer != null:
             active_building_ids = building_system.active_worker_ids(state, active_producer)
 
+    if active_producer != null:
+        _add_workforce_picker_launcher(active_producer, profession_id, group_id)
+    var legacy_rows := _new_advanced_roster("Tùy chọn từng đệ tử (nâng cao)")
     var ids: Array = state.disciples.keys()
     ids.sort()
-    for raw_id in ids:
+    # Old commands retained for locked tests, but do not create 3,000 hidden rows.
+    for raw_id in ids.slice(0,mini(ids.size(),24)):
         var disciple: DiscipleState = state.disciples[raw_id]
-        var row := _new_management_row(disciple)
+        var row := _new_management_row(disciple,legacy_rows)
         var in_group := disciple.work_group_id == group_id
         var timed_recipe_busy := building_system.disciple_has_active_timed_recipe(state, disciple.id)
 
@@ -1351,12 +1718,14 @@ func _build_spirit_field_management() -> void:
         policy_row.add_child(fixed)
 
     _add_management_section_label("PHÂN CÔNG & GIEO TRỒNG")
+    _add_workforce_picker_launcher(field,WorkforceSystem.PROF_HERBALISM,&"herbalism_crew")
+    var field_advanced := _new_advanced_roster("Tùy chọn gieo trồng từng đệ tử (nâng cao)")
     var active_ids := buildings.active_worker_ids(state, field)
     var ids: Array = state.disciples.keys()
     ids.sort()
-    for raw_id in ids:
+    for raw_id in ids.slice(0,mini(ids.size(),24)):
         var disciple: DiscipleState = state.disciples[raw_id]
-        var row := _new_management_row(disciple)
+        var row := _new_management_row(disciple,field_advanced)
         var in_group := disciple.work_group_id == &"herbalism_crew"
         var has_plot := buildings.disciple_has_active_spirit_plot(state, disciple.id, field)
 
@@ -1469,18 +1838,21 @@ func _add_management_section_label(text: String) -> void:
     label.add_theme_color_override("font_color", CINNABAR.darkened(0.12))
     building_management_container.add_child(label)
 
-func _new_management_row(disciple: DiscipleState) -> HBoxContainer:
+func _new_management_row(disciple: DiscipleState, destination: VBoxContainer = null) -> HBoxContainer:
     var row := HBoxContainer.new()
     row.name = "Person_%s" % str(disciple.id)
-    row.custom_minimum_size = Vector2(384, 38)
+    row.custom_minimum_size = Vector2(380, 38)
     row.add_theme_constant_override("separation", 6)
-    building_management_container.add_child(row)
+    (destination if destination != null else building_management_container).add_child(row)
 
     var name := Label.new()
     name.text = "%s · TL %.0f" % [disciple.display_name, disciple.stamina]
-    name.custom_minimum_size = Vector2(190, 34)
+    name.custom_minimum_size = Vector2(130, 34)
+    name.clip_text = true
+    name.tooltip_text = disciple.display_name
     name.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
     name.add_theme_font_size_override("font_size", 11)
+    name.add_theme_color_override("font_color",INK)
     row.add_child(name)
     return row
 
@@ -1554,7 +1926,9 @@ func _build_body_training_management() -> void:
         release.pressed.connect(Callable(self,"_release_body_training_from_building").bind(disciple_id))
         row.add_child(release)
 
-    _add_management_section_label("PHÂN CÔNG ĐỆ TỬ V2")
+    _add_management_section_label("CHỌN ĐỆ TỬ RÈN THÂN")
+    _add_workforce_picker_launcher(hall,&"body",&"body_training_crew")
+    var body_advanced := _new_advanced_roster("Danh sách nhanh (nâng cao)")
     var ids: Array = state.disciples.keys()
     ids.sort()
     var shown := 0
@@ -1571,13 +1945,14 @@ func _build_body_training_management() -> void:
         var row := HBoxContainer.new()
         row.name = "BodyTrainingCandidate_%s" % str(member.id)
         row.custom_minimum_size = Vector2(384,40)
-        building_management_container.add_child(row)
+        body_advanced.add_child(row)
         var label := Label.new()
         label.text = member.display_name
         label.custom_minimum_size = Vector2(252,34)
         label.clip_text = true
         label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
         label.add_theme_font_size_override("font_size",12)
+        label.add_theme_color_override("font_color",INK)
         row.add_child(label)
         var start := Button.new()
         start.name = "BodyTrainingAssign_%s" % str(member.id)
