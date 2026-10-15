@@ -202,7 +202,47 @@ func _run() -> void:
     if not _check(saver.save_to_path(roundtrip,SAVE_PATH) == OK and
         _receipts_equivalent(saver.load_from_path(SAVE_PATH).sect.economy_a_receipts,loaded.sect.economy_a_receipts),
         "Repeated save/load replayed economic receipts"): return
-    print("ECONOMY-A PLAYABLE V2 TIMERS + WAGES + MARKET + PERSONAL + SAVE: PASS")
+    # A separate legitimate timed Forestry batch must complete through the
+    # actual wall-clock runtime owner while the game is closed. One reload at
+    # the same wall time cannot replay either wages or stock.
+    var before_offline_wood := warehouse.quantity(loaded,&"linh_moc")
+    var before_offline_stones := live_actor.spirit_stones
+    var offline_start := workforce.perform_work(loaded,live_actor,WorkforceSystem.PROF_FORESTRY)
+    if not _check(bool(offline_start.get("ok",false)) and bool(offline_start.get("started",false)),
+        "Could not start real Forestry batch for offline runtime"): return
+    var pending_offline := buildings.active_resource_timer_for_worker(loaded,actor.id)
+    if not _check(not pending_offline.is_empty(),"Offline Forestry lacks persisted job identity"): return
+    var remaining_ticks := int(pending_offline.get("finish_tick",-1))-loaded.tick
+    if not _check(remaining_ticks > 0,"Offline Forestry has invalid finish time"): return
+    var wall_time := 1721000000
+    var owner := SimulationRuntimeOwnerV2.new()
+    if not _check(bool(owner.attach(loaded,wall_time).get("ok",false))
+        and bool(owner.save_to_path(SAVE_PATH,wall_time).get("ok",false)),
+        "Could not save active Forestry through canonical owner"): return
+    var offline := SimulationRuntimeOwnerV2.new()
+    var next_wall := wall_time+remaining_ticks*60
+    var recovered := offline.load_from_path(SAVE_PATH,next_wall)
+    if not _check(bool(recovered.get("ok",false))
+        and int(recovered.get("catch_up_steps",-1)) == remaining_ticks,
+        "Wall-clock offline did not replay the exact saved timer"): return
+    var recovered_actor: DiscipleState = offline.state.disciples[actor.id]
+    var settled_wood := warehouse.quantity(offline.state,&"linh_moc")
+    var settled_stones := recovered_actor.spirit_stones
+    if not _check(settled_wood == before_offline_wood+2
+        and settled_stones == before_offline_stones+4
+        and buildings.active_resource_timer_for_worker(offline.state,actor.id).is_empty(),
+        "Real offline Forestry did not settle exactly one real batch and wage"): return
+    if not _check(bool(offline.save_to_path(SAVE_PATH,next_wall).get("ok",false)),
+        "Could not persist offline completed settlement"): return
+    var replay_owner := SimulationRuntimeOwnerV2.new()
+    var repeat_clock := replay_owner.load_from_path(SAVE_PATH,next_wall)
+    if not _check(bool(repeat_clock.get("ok",false))
+        and int(repeat_clock.get("catch_up_steps",-1)) == 0
+        and warehouse.quantity(replay_owner.state,&"linh_moc") == settled_wood
+        and (replay_owner.state.disciples[actor.id] as DiscipleState).spirit_stones == settled_stones
+        and _receipts_equivalent(offline.state.sect.economy_a_receipts,replay_owner.state.sect.economy_a_receipts),
+        "Repeated wall-clock offline reload changed a settled reward"): return
+    print("ECONOMY-A PLAYABLE V2 TIMERS + WAGES + MARKET + PERSONAL + SAVE + OFFLINE: PASS")
     DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
     quit(0)
 
