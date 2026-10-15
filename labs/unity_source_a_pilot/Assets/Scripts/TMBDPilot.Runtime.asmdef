@@ -1,0 +1,14 @@
+{
+  "name": "TMBDPilot.Runtime",
+  "rootNamespace": "TMBDPilot",
+  "references": [],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
