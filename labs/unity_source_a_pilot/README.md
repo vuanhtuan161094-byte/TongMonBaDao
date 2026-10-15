@@ -1,7 +1,7 @@
 # TÔNG MÔN BÁ ĐẠO — ISOLATED UNITY / SOURCE-A PILOT
 
 Status (15 Oct 2026): **CODE PREPARED, UNITY RUNTIME / VISUAL / SPINE NOT TESTED**.
-Branch `unity-sourcea-pilot-20261015`; based on Godot `main` at
+Draft review: https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/3\nBranch `unity-sourcea-pilot-20261015`; based on Godot `main` at
 `461caca1171462e0da092f21108c5c1733157ad9`.
 This directory is **independent** and is not part of the Godot runtime,
 save files, simulation, Economy-A or existing GUI-WORKFORCE-V1 PR #2.
@@ -35,7 +35,7 @@ not authorization to migrate the game or port its gameplay rules.
 6. Tap `MỎ THANH THIẾT`, then `PHÂN CÔNG ĐỆ TỬ`.
    Verify searching/filtering/paging, selecting an Idle disciple,
    rejection for one currently in Field or PvE, and progress.
-7. Run **Window > General > Test Runner > EditMode** tests.
+7. Run **Window > General > Test Runner > EditMode** tests.\n   Inspect compile/console errors before trying a device.
 8. Only after Editor proof, assess a real Android landscape build.
    Screenshot approval is required before calling the art/gameplay PASS.
 
@@ -54,7 +54,7 @@ https://esotericsoftware.com/spine-editor-license
 Do not commit a license key or copy a bundled Spine runtime into this
 repository. After verifying licensing, install the matching 3.8 Unity
 runtime, add skeleton, atlas and page textures locally, confirm version,
-and enable `TMBD_SPINE38`. Animation names `stand`, `walk`,
+and enable `TMBD_SPINE38`. If the imported Spine package uses a\nseparate assembly definition, first reference that actual assembly from\n`Assets/Scripts/TMBDPilot.Runtime.asmdef`. Animation names `stand`, `walk`,
 `attack1` are hypotheses to confirm per real asset. Test skin,
 orientation, atlas pages, frame rate and Android build.
 
