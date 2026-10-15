@@ -137,7 +137,7 @@ func _run() -> void:
             _fail("O3 player loop never observed canonical phase %s." % phase_name)
             return
 
-    var expected_batch := buildings.mining_batch_units_for_worker(state, mine, target)
+    var expected_batch := buildings._resource_job_batch_units(mine)
     var ore_after := warehouse.quantity(state, &"thanh_thiet")
     if ore_after != ore_before + expected_batch:
         _fail("O3 first isolated batch deposited %d ore; expected exactly %d." % [ore_after - ore_before, expected_batch])
