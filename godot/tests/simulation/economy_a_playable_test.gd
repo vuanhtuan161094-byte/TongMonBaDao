@@ -146,6 +146,16 @@ func _run() -> void:
     if not _check(bool(second_service.get("already_settled",false)) and live_actor.spirit_stones == 1,
         "Personal service replay debited twice"): return
 
+    # Scheduler may have legitimately assigned an ordinary outside action
+    # at the Mine settlement boundary. Recall the actor through Workforce,
+    # never set region/current_action directly in the fixture.
+    if not _check(workforce.issue_command(loaded,actor.id,WorkforceSystem.COMMAND_HOLD,"",500),
+        "Cannot issue lawful recall/HOLD after the finished Mine"): return
+    for recovery_tick in range(16):
+        if live_actor.region_id == &"sect" and (live_actor.current_action == &"EVALUATE" or live_actor.current_action == &"HOLD" or live_actor.current_action == &"IDLE"):
+            break
+        scheduler.step()
+    if not _check(live_actor.region_id == &"sect","Worker did not return to Sect under HOLD"): return
     # Explicit cancellation of unfinished *new* timer must produce no goods.
     if not _check(workforce.assign_group(loaded,actor.id,original_forest.worker_group_id)
         and workforce.assign_worksite(loaded,actor.id,original_forest.id),
