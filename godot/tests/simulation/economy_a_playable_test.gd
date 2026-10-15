@@ -146,6 +146,28 @@ func _run() -> void:
     if not _check(bool(second_service.get("already_settled",false)) and live_actor.spirit_stones == 1,
         "Personal service replay debited twice"): return
 
+    # Merchant stock, purchase limit, Warehouse credit and exact receipt must
+    # survive replay. A rejected buy may not mutate either side.
+    var merchant_ore := int(loaded.sect.economy_a_market_stock.get("thanh_thiet",0))
+    var buy_stones := loaded.sect.spirit_stones
+    var buy_ore := warehouse.quantity(loaded,&"thanh_thiet")
+    var bought := economy.buy_from_npc_v1(loaded,&"thanh_thiet",1,"test-ore-buy")
+    if not _check(bool(bought.get("ok",false)) and warehouse.quantity(loaded,&"thanh_thiet") == buy_ore+1
+        and int(loaded.sect.economy_a_market_stock.get("thanh_thiet",0)) == merchant_ore-1
+        and loaded.sect.spirit_stones == buy_stones-16,
+        "Merchant purchase did not transfer actual item and Stones"): return
+    if not _check(bool(economy.buy_from_npc_v1(loaded,&"thanh_thiet",1,"test-ore-buy").get("already_settled",false))
+        and not bool(economy.buy_from_npc_v1(loaded,&"thanh_thiet",2,"test-ore-buy").get("ok",false))
+        and warehouse.quantity(loaded,&"thanh_thiet") == buy_ore+1
+        and loaded.sect.spirit_stones == buy_stones-16,
+        "Merchant replay or conflicting request changed balances"): return
+    var rejected_stones := loaded.sect.spirit_stones
+    var rejected_stock := warehouse.quantity(loaded,&"thanh_thiet")
+    if not _check(not bool(economy.buy_from_npc_v1(loaded,&"thanh_thiet",100,"over-limit-buy").get("ok",false))
+        and loaded.sect.spirit_stones == rejected_stones
+        and warehouse.quantity(loaded,&"thanh_thiet") == rejected_stock,
+        "Over-limit merchant buy partially committed"): return
+
     # Scheduler may have legitimately assigned an ordinary outside action
     # at the Mine settlement boundary. Recall the actor through Workforce,
     # never set region/current_action directly in the fixture.
@@ -190,7 +212,9 @@ func _run() -> void:
     if not _check(roundtrip != null and _receipts_equivalent(roundtrip.sect.economy_a_receipts,loaded.sect.economy_a_receipts)
         and roundtrip.sect.spirit_stones == loaded.sect.spirit_stones
         and (roundtrip.disciples[actor.id] as DiscipleState).spirit_stones == live_actor.spirit_stones
-        and warehouse.quantity(roundtrip,&"linh_moc") == woods,
+        and warehouse.quantity(roundtrip,&"linh_moc") == woods
+        and roundtrip.sect.economy_a_market_stock == loaded.sect.economy_a_market_stock
+        and roundtrip.sect.economy_a_market_units_bought == loaded.sect.economy_a_market_units_bought,
         "Economy-A reload changed receipts, stock, or Stone balances: receipts_equal=%s, sect=%d/%d, personal=%d/%d, wood=%d/%d, saved_receipts=%s, reloaded_receipts=%s" % [
             str(roundtrip != null and _receipts_equivalent(roundtrip.sect.economy_a_receipts,loaded.sect.economy_a_receipts)),
             -1 if roundtrip == null else roundtrip.sect.spirit_stones,loaded.sect.spirit_stones,
