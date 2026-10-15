@@ -150,8 +150,18 @@ func _run() -> void:
     if not _check(workforce.assign_group(loaded,actor.id,original_forest.worker_group_id)
         and workforce.assign_worksite(loaded,actor.id,original_forest.id),
         "Cannot assign real Forestry slot after completed Mine"): return
+    # Existing Sect workers can legitimately occupy both Forestry slots.
+    # Release a real slot instead of manufacturing an extra producer.
+    var live_forest := buildings.primary_building(loaded,BuildingSystem.TYPE_LINH_FOREST)
+    for reserved_id in buildings.active_worker_ids(loaded,live_forest):
+        if reserved_id != actor.id:
+            if not _check(workforce.assign_group(loaded,reserved_id,&""),
+                "Cannot release legitimate Forestry slot"): return
+    if not _check(buildings.active_worker_ids(loaded,live_forest).has(actor.id),
+        "V2 actor did not receive legitimate Forestry slot"): return
     var forestry := workforce.perform_work(loaded,actor,WorkforceSystem.PROF_FORESTRY)
-    if not _check(bool(forestry.get("started",false)),"Forestry did not use new timer"): return
+    if not _check(bool(forestry.get("started",false)),
+        "Forestry did not use new timer: %s" % str(forestry)): return
     var woods := warehouse.quantity(loaded,&"linh_moc")
     if not _check(workforce.issue_command(loaded,actor.id,WorkforceSystem.COMMAND_HOLD,"",300)
         and buildings.active_resource_timer_for_worker(loaded,actor.id).is_empty(),
