@@ -1,5 +1,18 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-15 — ECONOMY-A MERGED TO MAIN; WINDOWS AUTOMATED QA VERIFIED
+
+**GitHub integration:** PR [#1](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/1) **MERGED** as `0689d0ddf0ebd72463d08bad4835c60428c64d24` into `main` (base `c64c61029ab6f569a66aba1f1cbeed3bd76f796e`). PR HEAD `4a6937dc28d477be13ffc0283d44cc74fe610733`; the last **gameplay/test-changing** SHA was `95bf06ecfd2c7fce5026d4485af55a5a3c40d909`. Comparison of gameplay/test SHA to PR HEAD shows **only three changed documentation files**, no subsequent gameplay/test edits. Existing 9-file PR allowlist and O6 assertion were preserved.
+
+**Primary accepted QA evidence:** owner-uploaded Windows V3 result archive `20261015_135007.zip` (ZIP SHA-256 `2d35d82d7eadf44ae06407c3899a36facf480c05b14c2922b22041062d3531f6`, run 2026-10-15 13:50–14:17 UTC+07), official `Godot 4.7.2.stable.official.ed1daf0bf`; detached temporary worktree at exact PR HEAD, isolated APPDATA/user data for each test, restored Stage A art pack hash verified. `SUMMARY.txt` says **18 PASS / 0 FAIL** with exit code 0 and verified PASS marker for each: import; Economy-A simulation and landscape UI; GP-01/02A/02B1; GP-02C1 simulation/presentation; O3/O4/O5/O6/O7/O8/O9; SAFE-01/02; P3.7 FULL. Individual logs inspected: standalone O6 ends `P3 O6 M1 END-TO-END RELEASE REHEARSAL PASS`; FULL ends `P3.7C1 FOUNDATION + DAN TIEN FULL GATE: PASS`. SAFE-01 intentionally supplies corrupt JSON to test fail-closed/recovery; GP-02C1 deliberately tests invalid old PvE save. Corresponding logged ERROR diagnostics are expected negative fixtures, not gate failures. Original local checkout unchanged, though its local main `0439b34b...` was stale relative to GitHub; Windows QA used the detached PR worktree instead.
+
+**Decision:** owner redirected Economy-A acceptance to **Windows official Godot QA** because GitHub Actions quota was exhausted. On that accepted local automation evidence, the ECONOMY-A **code integration is COMPLETE and MERGED**; do not claim a Linux exact-SHA PASS. GitHub Actions [#38684703913](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38684703913) attempts 1–3 ended before runner/steps: **PENDING CI / infra**, not gameplay failure. Old Linux PASS at SHA `40eaa214` is distinct, not exact-SHA evidence.
+
+**Still OPEN:** Windows manual/physical GUI and screenshots, Android APK/real touch/landscape, real crash/power/storage fault acceptance, 100–3,000 disciple performance on target hardware, and GP-02C1 OVERALL QA. DV2-03 remains PAUSED. Economy-B/C, DV2-04, FE-02, Source A and unrelated character/map/code packets remain outside Economy-A authorization. The earlier branch-in-progress section below is **historical**, superseded by this entry; no new game balance was locked.
+
+---
+
+
 ## 2026-10-15 — ECONOMY-A MARKET / PAYROLL COMPLETION (BRANCH; QA IN PROGRESS)
 
 **Baseline:** main `c64c61029ab6f569a66aba1f1cbeed3bd76f796e`; prior gameplay/test `ed594e45a308eb55ad9373e703b807365b26c9aa` had official Linux Godot 4.7.2 focused + FULL + O6 SUCCESS [#38678314842](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38678314842). Current owner instruction newly authorizes the full Economy-A acceptance list. Branch `economy-a-market-completion-20261015` extends that baseline in EconomySystem, SectState, P3.2 landscape, the owner-approved BuildingSystem completion path and two dedicated Economy-A tests. Its first market-buy SHA `40eaa214` has official Linux focused + FULL + O6 SUCCESS [#38682499335](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38682499335). **Latest branch SHA must pass independently before this extension can be marked CLOSED.**
