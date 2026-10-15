@@ -26,23 +26,15 @@ func _run() -> void:
         _fail("O3 live scene has no authoritative Mine.")
         return
     var initial_active := buildings.active_worker_ids(state, mine)
-    if initial_active.size() < 2:
-        _fail("O3 fresh Mine does not have the expected two real active workers.")
+    if initial_active.size() != 1:
+        _fail("O3 fresh Mine must have one real active worker.")
         return
 
     var target_id: StringName = initial_active[0]
-    var other_id: StringName = initial_active[1]
     ui.call("_open_building", SectMapPresentation.DEST_MINE)
     await process_frame
 
-    # Use the actual player-facing group buttons to isolate one real worker,
-    # then prove re-assignment through the same UI path.
-    if not await _press_button("Group_mining_crew_%s" % str(other_id)):
-        return
-    if (state.disciples[other_id] as DiscipleState).work_group_id != &"":
-        _fail("O3 UI failed to withdraw the second Mine worker.")
-        return
-
+    # Withdraw the sole owner, then re-assign via the existing real UI.
     if not await _press_button("Group_mining_crew_%s" % str(target_id)):
         return
     if (state.disciples[target_id] as DiscipleState).work_group_id != &"":
@@ -145,8 +137,7 @@ func _run() -> void:
             _fail("O3 player loop never observed canonical phase %s." % phase_name)
             return
 
-    var definition: Dictionary = BuildingSystem.DEFINITIONS[str(BuildingSystem.TYPE_MINE)]
-    var expected_batch := maxi(int(definition.get("base_batch_units", 1)), 1) + int(floor(float(mine.level) / 10.0))
+    var expected_batch := buildings.mining_batch_units_for_worker(state, mine, target)
     var ore_after := warehouse.quantity(state, &"thanh_thiet")
     if ore_after != ore_before + expected_batch:
         _fail("O3 first isolated batch deposited %d ore; expected exactly %d." % [ore_after - ore_before, expected_batch])
@@ -225,48 +216,35 @@ func _run() -> void:
         _fail("O3 interrupted/removed assignment later produced phantom ore.")
         return
 
-    # Busy slot: fill two real slots, add a third waiting group member, and
-    # verify the waiting member cannot receive a mining order.
+    # Occupied Mine: a second disciple must be refused before allocation,
+    # not left in a hidden waiting crew.
     ui.call("_open_building", SectMapPresentation.DEST_MINE)
     await process_frame
     if not await _press_button("Group_mining_crew_%s" % str(target_id)):
         return
-    if not await _press_button("Group_mining_crew_%s" % str(other_id)):
-        return
-
+    var candidate_id := &""
     var all_ids: Array = state.disciples.keys()
     all_ids.sort()
-    var third_id := &""
     for raw_id in all_ids:
-        var candidate_id := StringName(raw_id)
-        if candidate_id != target_id and candidate_id != other_id:
-            third_id = candidate_id
+        var probe_id := StringName(raw_id)
+        var probe: DiscipleState = state.disciples[probe_id]
+        if probe_id != target_id and probe.work_group_id == &"":
+            candidate_id = probe_id
             break
-    if third_id == &"":
-        _fail("O3 slot probe has no third disciple.")
+    if candidate_id == &"":
+        _fail("O3 needs another unassigned disciple to probe full Mine.")
         return
-    var third: DiscipleState = state.disciples[third_id]
-    if third.work_group_id == &"mining_crew":
-        _fail("O3 third slot probe unexpectedly started in mining crew.")
+    if workforce.assign_group(state, candidate_id, &"mining_crew"):
+        _fail("O3 accepted a second miner into the one-worker Mine.")
         return
-    if not await _press_button("Group_mining_crew_%s" % str(third_id)):
+    if bool(workforce.assign_mine_worker(state, candidate_id, mine.id).get("ok", false)):
+        _fail("O3 atomic assignment bypassed one-worker Mine.")
         return
-
-    var active_ids := buildings.active_worker_ids(state, mine)
-    var waiting_id := &""
-    for member in _mining_group_ids():
-        if not active_ids.has(member):
-            waiting_id = member
-            break
-    if waiting_id == &"":
-        _fail("O3 Mine did not expose a waiting member beyond its two active slots.")
+    if buildings.assigned_worker_ids(state, mine).size() != 1:
+        _fail("O3 rejected second worker changed the Mine roster.")
         return
-    var waiting_button := ui.find_child("Work_mining_%s" % str(waiting_id), true, false) as Button
-    if waiting_button == null or not waiting_button.disabled:
-        _fail("O3 waiting Mine member has an enabled work command.")
-        return
-    if workforce.issue_command(state, waiting_id, WorkforceSystem.COMMAND_WORK, str(WorkforceSystem.PROF_MINING), 40):
-        _fail("O3 backend accepted a direct order for a waiting Mine member.")
+    if workforce.issue_command(state, candidate_id, WorkforceSystem.COMMAND_WORK, str(WorkforceSystem.PROF_MINING), 40):
+        _fail("O3 backend accepted work without an actual Mine slot.")
         return
 
     var errors := state.validate_invariants()
