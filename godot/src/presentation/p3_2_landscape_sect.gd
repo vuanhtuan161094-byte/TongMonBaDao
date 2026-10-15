@@ -705,7 +705,7 @@ func _add_workforce_picker_launcher(building: BuildingState, profession: StringN
     var holders := bs.active_worker_ids(state,building)
     var slots := bs.worker_slots(building)
     var line := Label.new()
-    line.text = "Vị trí làm việc: %d/%d · %s" % [holders.size(),slots,str(building.name)]
+    line.text = "Vị trí làm việc: %d/%d · %s" % [holders.size(),slots,building.display_name]
     line.custom_minimum_size = Vector2(384,25)
     line.add_theme_color_override("font_color",INK)
     line.add_theme_font_size_override("font_size",13)
@@ -740,8 +740,8 @@ func _add_workforce_picker_launcher(building: BuildingState, profession: StringN
     launch.text = "＋ Chọn đệ tử / thay người"
     launch.custom_minimum_size = Vector2(384,46)
     launch.add_theme_font_size_override("font_size",15)
-    launch.disabled = holders.size() >= slots or building.status != BuildingSystem.STATUS_ACTIVE
-    launch.tooltip_text = "Rút người rảnh trước khi chọn người thay thế." if launch.disabled else "Mở danh sách có tìm kiếm, lọc và sắp xếp cấp nghề."
+    launch.disabled = building.status != BuildingSystem.STATUS_ACTIVE
+    launch.tooltip_text = "Công trình chưa hoạt động." if launch.disabled else ("Đã đủ người: xem ứng viên và rút người khi mẻ hoàn tất." if holders.size() >= slots else "Tìm kiếm và phân công theo cấp nghề.")
     launch.pressed.connect(_open_workforce_picker.bind(building.id,profession,group_id))
     building_management_container.add_child(launch)
 
@@ -1605,7 +1605,8 @@ func _build_work_management(profession_id: StringName, group_id: StringName, gro
     var legacy_rows := _new_advanced_roster("Tùy chọn từng đệ tử (nâng cao)")
     var ids: Array = state.disciples.keys()
     ids.sort()
-    for raw_id in ids:
+    # Old commands retained for locked tests, but do not create 3,000 hidden rows.
+    for raw_id in ids.slice(0,mini(ids.size(),24)):
         var disciple: DiscipleState = state.disciples[raw_id]
         var row := _new_management_row(disciple,legacy_rows)
         var in_group := disciple.work_group_id == group_id
@@ -1708,7 +1709,7 @@ func _build_spirit_field_management() -> void:
     var active_ids := buildings.active_worker_ids(state, field)
     var ids: Array = state.disciples.keys()
     ids.sort()
-    for raw_id in ids:
+    for raw_id in ids.slice(0,mini(ids.size(),24)):
         var disciple: DiscipleState = state.disciples[raw_id]
         var row := _new_management_row(disciple,field_advanced)
         var in_group := disciple.work_group_id == &"herbalism_crew"
