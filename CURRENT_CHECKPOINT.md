@@ -1,5 +1,22 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-15 — MINE-V2-ONE-WORKER-01 OWNER-AUTHORIZED CODE BRANCH / QA PENDING
+
+**Owner direction:** every production activity derives work level from its own profession, not Tu Vi realm; Lục Duy may affect production only through relevant typed work/result channels. Each Mine has exactly **one** worker at every level. Changes to Linh Điền/Linh Lâm/Alchemy/Forge yield are **NOT** in this code packet.
+
+**Code branch:** `mine-v2-one-worker-20261015` forked from verified `main` `461caca1171462e0da092f21108c5c1733157ad9`. Core change `524d99b9`; later code/test fixes on the same branch. Mine worker slots 1/1, new fresh P3 seeding removes second legacy founder from mining_crew only when creating a new Mine, explicit atomic `WorkforceSystem.assign_mine_worker(..., replace_existing=false)`, strict group/worksite occupancy, no active Mine replacement, Mine output retains its pre-existing building/level batch amount; **user explicitly rejected Căn Cốt-to-ore pilot**. Profession level retains the existing timed speed channel, Thông Tuệ retains profession-XP channel, and no new foundation-based quantity rule is enabled. No speculative direct Lục Duy-to-ore formula is authorized. No new warehouse, scheduler, data-currency or generic Lục Duy channel.
+
+**Development saves:** owner authorized *reset of Mine-related experimental saves* when rules change; no preservation/migration of test worker/quarry assignments is required. **Do not delete actual files on user's PC remotely, untracked assets or arbitrary app data.** New clean session Save/Load, offline and exactly-once remain required.
+
+**CORRECTION (2026-10-15):** Căn Cốt belongs to Luyện Thể, not ordinary ore. The previously committed `+floor(Căn Cốt/1000)` bonus was reverted in code/test/docs on this branch before any merge; never reintroduce without an explicit, source-grounded user rule. Other Lục Duy effects use typed role-specific channels only.
+
+**Tests edited/added (written, NOT RUN):** `p3_7a1_building_authority_test.gd`, `gp_01_v2_mine_vertical_slice_test.gd`, `p3_o3_real_mine_loop_test.gd`, new `mine_v2_one_worker_test.gd`. Existing O6 exact 4 ore fixture retained because ordinary legacy-founding miner produces the same 2+2; validate this assumption via actual Godot. O5/O6/O7/O9/Economy-A/GP-02B1/GP-02C1/SAFE + P3.7 FULL are mandatory affected regressions and **PENDING**. GitHub Actions quota was exhausted earlier; no official Godot 4.7.2 runtime available in this session, so no PASSED status can be asserted. Windows GUI/Android physical still PENDING USER.
+
+**Integration:** only review/merge after exact-branch-Godot focused + cumulative tests prove green and `AGENTS.md` gates are met. PR #2 GUI, #3 Unity paused, #4 UI design and #5 roadmap are independent, not merged by this packet. Further UI picker refactor is P2 and needs its own bounded CODE authorization. Note: broader support for multiple building instances and new-world map placement remains a separate upcoming packet.
+
+---
+
+
 ## 2026-10-15 — ECONOMY-A MERGED TO MAIN; WINDOWS AUTOMATED QA VERIFIED
 
 **GitHub integration:** PR [#1](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/1) **MERGED** as `0689d0ddf0ebd72463d08bad4835c60428c64d24` into `main` (base `c64c61029ab6f569a66aba1f1cbeed3bd76f796e`). PR HEAD `4a6937dc28d477be13ffc0283d44cc74fe610733`; the last **gameplay/test-changing** SHA was `95bf06ecfd2c7fce5026d4485af55a5a3c40d909`. Comparison of gameplay/test SHA to PR HEAD shows **only three changed documentation files**, no subsequent gameplay/test edits. Existing 9-file PR allowlist and O6 assertion were preserved.

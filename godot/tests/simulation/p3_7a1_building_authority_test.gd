@@ -57,47 +57,55 @@ func _verify_initial_mine_authority() -> bool:
         return _fail("Initial Mine level/status contract is invalid.")
     if mine.worker_group_id != &"mining_crew":
         return _fail("Mine is not linked to the existing mining workforce group.")
-    if buildings.worker_slots(mine) != 2:
+    if buildings.worker_slots(mine) != 1:
         return _fail("Mine Lv1 worker-slot contract is invalid.")
     var active := buildings.active_worker_ids(state, mine)
-    if active.size() != 2:
-        return _fail("Mine did not bind the expected two active legacy mining workers.")
+    if active.size() != 1:
+        return _fail("Fresh Mine did not bind exactly one valid mining worker.")
     return _validate(state)
 
 func _verify_worker_slot_enforcement() -> bool:
     var state := P37Factory.create_state(TEST_SEED + 10)
     var mine := buildings.primary_building(state, BuildingSystem.TYPE_MINE)
+    var owners := buildings.active_worker_ids(state, mine)
+    if owners.size() != 1:
+        return _fail("Mine fresh instance must start with one worker.")
+    var first_id: StringName = owners[0]
+    var second: DiscipleState = null
     var ids: Array = state.disciples.keys()
     ids.sort()
-    if ids.size() < 3:
-        return _fail("Worker-slot test needs at least three disciples.")
+    for raw_id in ids:
+        var candidate: DiscipleState = state.disciples[raw_id]
+        if candidate.work_group_id == &"" and candidate.id != first_id:
+            second = candidate
+            break
+    if second == null:
+        return _fail("Need unassigned worker to verify single Mine slot.")
 
-    var third: DiscipleState = state.disciples[ids[2]]
-    if not workforce.assign_group(state, third.id, &"mining_crew"):
-        return _fail("Could not assign a third disciple to mining_crew.")
-    var assigned := buildings.assigned_worker_ids(state, mine)
-    var active := buildings.active_worker_ids(state, mine)
-    if assigned.size() < 3 or active.size() != 2:
-        return _fail("Mine Lv1 did not enforce two active worker slots.")
+    # A second group-only or explicit worksite assignment cannot create a
+    # shadow/waiting mining worker.
+    if workforce.assign_group(state, second.id, &"mining_crew"):
+        return _fail("Full Mine accepted a shadow mining_crew assignment.")
+    var blocked := workforce.assign_mine_worker(state, second.id, mine.id)
+    if bool(blocked.get("ok", false)) or str(blocked.get("reason", "")) != "mine_full":
+        return _fail("Full Mine accepted an unauthorized second operator.")
+    if buildings.assigned_worker_ids(state, mine).size() != 1:
+        return _fail("Failed Mine allocation mutated canonical assignment.")
+    _normalize_worker(second)
+    var not_working := workforce.perform_work(state, second, WorkforceSystem.PROF_MINING)
+    if bool(not_working.get("ok", false)) or str(not_working.get("reason", "")) != "no_active_mine_slot":
+        return _fail("Unassigned worker can still extract from full Mine.")
 
-    if active.has(third.id):
-        # The deterministic active set is sorted by id; if the third id happens to
-        # sort into the active pair, probe whichever assigned worker is outside.
-        var blocked_id := &""
-        for worker_id in assigned:
-            if not active.has(worker_id):
-                blocked_id = worker_id
-                break
-        if blocked_id == &"":
-            return _fail("Could not identify worker outside Mine slots.")
-        third = state.disciples[blocked_id]
-
-    _normalize_worker(third)
-    var result := workforce.perform_work(state, third, WorkforceSystem.PROF_MINING)
-    if bool(result.get("ok", false)):
-        return _fail("Disciple outside Mine worker slots was allowed to produce mining progress.")
-    if str(result.get("reason", "")) != "no_active_mine_slot":
-        return _fail("Mine worker-slot rejection returned the wrong reason.")
+    # Independent second Mine is allowed and owns one different disciple.
+    var second_mine := buildings.create_building(BuildingSystem.TYPE_MINE, 2)
+    state.buildings[str(second_mine.id)] = second_mine
+    var assigned := workforce.assign_mine_worker(state, second.id, second_mine.id)
+    if not bool(assigned.get("ok", false)):
+        return _fail("Second Mine could not accept a separate real worker.")
+    if buildings.active_worker_ids(state, second_mine) != [second.id]:
+        return _fail("Second Mine did not store its own one-worker assignment.")
+    if buildings.active_worker_ids(state, mine) != [first_id]:
+        return _fail("Second Mine assignment displaced first Mine worker.")
     return _validate(state)
 
 func _verify_timed_upgrade_and_cost() -> bool:
@@ -163,8 +171,8 @@ func _verify_milestone_requires_real_component() -> bool:
         buildings.process_tick(state)
     if mine.level != 10 or not mine.unlocked_milestones.has(10):
         return _fail("Mine Lv10 milestone did not unlock after timed construction.")
-    if buildings.worker_slots(mine) != 4:
-        return _fail("Mine worker slots did not scale at canonical five-level boundaries.")
+    if buildings.worker_slots(mine) != 1:
+        return _fail("Mine Lv10 must retain exactly one operator.")
     return _validate(state)
 
 func _verify_mining_travel_work_haul_cycle() -> bool:

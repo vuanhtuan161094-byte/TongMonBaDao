@@ -1,5 +1,12 @@
 # P3.7 — SHARED PROFESSION / WORK MODIFIER SPEC
 
+## Owner clarification — 2026-10-15 (profession, not cultivation realm)
+
+**Áp dụng cho mọi nghề:** cấp làm việc là **cấp nghề của chính hoạt động đó**: Mỏ → Khai Khoáng, Linh Điền → Linh Thực, Linh Lâm → Lâm Nghiệp, Luyện Đan → Luyện Đan, Luyện Khí → Luyện Khí. Không lấy cảnh giới Tu Vi thay cấp nghề sản xuất. Lục Duy chỉ được đi qua kênh có thẩm quyền của nghề/recipe, không nhân `Tổng Lục Duy` cho mọi sản phẩm.
+
+**P1 code scope chỉ có Mỏ:** một công trình Mỏ = một người tại mọi level. Existing `ProfessionModifierSystem` remains canonical speed/EXP for every profession. Cấp nghề Khai Khoáng tiếp tục thay đổi **thời gian mẻ** qua `1 + 0.01 × Level`; Thông Tuệ giữ kênh EXP nghề đã có. **KHÔNG có bonus Căn Cốt → quặng:** Căn Cốt là nguồn tác động Luyện Thể; chủ dự án đã bác bỏ công thức tùy tiện `+1 quặng/1.000 Căn Cốt` ngày 15/10. Số quặng/mẻ P1 **tạm dùng output hiện có từ định nghĩa/cấp Mỏ**, snapshot khi bắt đầu timer, commit Kho và lương đúng một lần. Ảnh hưởng Lục Duy lên **kết quả** sản xuất riêng từng nghề cần luật outcome cụ thể được duyệt; không tự dùng cả sáu trục, không tạo bonus quặng hiếm giả. Các nghề khác vẫn giữ speed/XP và luật kết quả đã khóa, P1 không đổi công thức.
+
+
 Status: CANONICAL DESIGN AUTHORITY  
 Updated: 2026-10-06
 

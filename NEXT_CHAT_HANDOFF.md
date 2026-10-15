@@ -1,5 +1,14 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-15 NEW HANDOFF — MINE-V2 P1 AUTHORIZED / IMPLEMENTED ON BRANCH, NOT VERIFIED
+
+Current main `461caca1171462e0da092f21108c5c1733157ad9`; owner approved P1 Mine-V2 gameplay implementation. Branch `mine-v2-one-worker-20261015` has one worker/Mỏ per level, single-command `assign_mine_worker`, existing authored Mine batch quantity **without a Căn Cốt ore bonus** and reuse of profession work-speed by proper job level. **CORRECTION: owner rejected the speculative `+1 ore/1000 Căn Cốt`, reverted before merge.** Profession output differentiation needs separate design approval; existing Thông Tuệ → profession XP and Căn Cốt → Body remain intact. `CURRENT_CHECKPOINT.md` top section contains exact scope and test status. Keep one scheduler, one canonical Warehouse, Injury 0/1/120, authentic V2 job/receipts. The user permits **reset of development test saves**, not deletion of user assets or avoidance of correct fresh-save exact-once.
+
+**Immediately next:** verify GitHub PR draft/files/HEAD; run official Godot 4.7.2 parse/import then `mine_v2_one_worker_test`, `p3_7a1`, GP-01, O3, Economy-A, O6 unchanged exact +4, O5/O7/O9, GP-02B1/GP-02C1, SAFE, P3.7 FULL. Fix **only authorized P1 files** from real failures, report evidence per SHA. Windows physical and Android remain PENDING USER. PR #2 presentation UI still draft, P2 needs follow-up authorization. Do not change Linh Điền/Linh Lâm/Alchemy/Forge production formulas in P1; profession-level policy applies conceptually to all and existing work-speed implementation is retained.
+
+---
+
+
 ## CURRENT HANDOFF — 2026-10-15 ECONOMY-A INTEGRATED ON MAIN (WINDOWS QA VERIFIED)
 
 **Authoritative latest state:** Economy-A PR [#1](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/1) **MERGED** into GitHub `main` via merge commit `0689d0ddf0ebd72463d08bad4835c60428c64d24`; PR HEAD `4a6937dc28d477be13ffc0283d44cc74fe610733`. Last gameplay/test SHA `95bf06ecfd2c7fce5026d4485af55a5a3c40d909`. Post-gameplay branch commits altered **documentation only**. **18/18 official Windows Godot 4.7.2 automated QA PASS, 0 FAIL** from owner-uploaded `20261015_135007.zip`, SHA-256 `2d35d82d7eadf44ae06407c3899a36facf480c05b14c2922b22041062d3531f6` (all exit codes 0 and PASS markers independently inspected): Economy-A simulation/UI, GP-01/02A/02B1/02C1 sim+presentation, O3–O9 including standalone O6 with unchanged `==4`, SAFE-01/02, P3.7 FULL. Isolated detached worktree did not change original local repository or saves. The two expected negative-fixture diagnostic stderr cases (invalid saved PvE and corrupt JSON) do not negate test PASS. Full evidence and pilot balance in the **latest top section of `CURRENT_CHECKPOINT.md`**.

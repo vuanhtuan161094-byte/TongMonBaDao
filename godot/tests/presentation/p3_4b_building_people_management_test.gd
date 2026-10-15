@@ -64,6 +64,17 @@ func _verify_mine_flow(disciple: DiscipleState) -> bool:
     if not _management_controls_present():
         return _fail("Mine did not expose P3.4B people-management controls.")
 
+    # One-worker Mine: if the selected management-panel actor is not its
+    # current owner, first free the real founding slot. No waiting miners.
+    var mine := BuildingSystem.new().primary_building(state, BuildingSystem.TYPE_MINE)
+    if mine == null:
+        return _fail("Mine authority missing.")
+    if disciple.work_group_id != &"mining_crew":
+        var occupant_ids := BuildingSystem.new().active_worker_ids(state, mine)
+        if occupant_ids.size() != 1:
+            return _fail("Mine must start with one worker.")
+        if not WorkforceSystem.new().assign_group(state, occupant_ids[0], &""):
+            return _fail("Could not release the one Mine slot.")
     var before_action := disciple.current_action
     var before_region := disciple.region_id
 

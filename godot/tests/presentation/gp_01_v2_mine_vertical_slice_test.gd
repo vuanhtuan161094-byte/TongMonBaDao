@@ -28,7 +28,7 @@ func _run() -> void:
     var founders: Array = state.disciples.keys()
     founders.sort()
     var initial_miners := buildings.active_worker_ids(state, mine)
-    if not _check(initial_miners.size() == 2, "Opening mine must have two real slots."):
+    if not _check(initial_miners.size() == 1, "Opening mine must have exactly one operator."):
         return
 
     # Keep the six founders in the simulation, but prevent unrelated
@@ -70,56 +70,34 @@ func _run() -> void:
         "V2 birth identity rerolled on acceptance."):
         return
 
+    # Fresh Mine is full with one founder: the recruited worker must not
+    # receive a hidden waiting/oversubscribed assignment.
+    if workforce.assign_group(state, recruit_id, &"mining_crew"):
+        _fail("Mine allowed a second group-only worker before vacancy.")
+        return
+    if bool(workforce.assign_mine_worker(state, recruit_id, mine.id).get("ok", false)):
+        _fail("Mine accepted a second active worker before vacancy.")
+        return
+
+    # Release the founder, then exercise the real player-facing group/site UI.
+    if not _check(workforce.assign_group(state, initial_miners[0], &""),
+        "Could not release initial one-worker Mine slot."):
+        return
     ui.call("_open_building", SectMapPresentation.DEST_MINE)
     await process_frame
     if not await _press("Group_mining_crew_%s" % str(recruit_id)):
         return
     if not _check(actor.work_group_id == &"mining_crew",
-        "New V2 recruit did not join the real mining crew."):
+        "New V2 recruit was not allocated to the vacant mining crew."):
         return
     if not await _press("MineWorksite_%s" % str(recruit_id)):
         return
-    if not _check(actor.worksite_building_id == mine.id,
-        "Mine worksite was not assigned through player-facing UI."):
+    if not _check(actor.worksite_building_id == mine.id
+        and buildings.active_worker_ids(state, mine) == [recruit_id]
+        and buildings.assigned_worker_ids(state, mine).size() == 1,
+        "Recruit did not receive exactly one real Mine worksite."):
         return
 
-    # Being in a group/worksite is not the same as consuming an active slot.
-    # Explicit worksite selection must not create phantom third slot.
-    var active := buildings.active_worker_ids(state, mine)
-    if not _check(active.size() == buildings.worker_slots(mine)
-        and _mine_group_count() == 3
-        and str(ui.call("_mine_operation_text")).contains("Đang chờ slot Mỏ: 1"),
-        "Oversubscribed Mine did not report one waiting member."):
-        return
-    var waiting_id := &""
-    for raw_id in state.disciples.keys():
-        var d: DiscipleState = state.disciples[raw_id]
-        if d.work_group_id == &"mining_crew" and not active.has(d.id):
-            waiting_id = d.id
-            break
-    if not _check(waiting_id != &"" and not workforce.issue_command(
-        state, waiting_id, WorkforceSystem.COMMAND_WORK, "mining", 40
-    ), "Waiting member received a fake work command."):
-        return
-    var waiting_button := ui.find_child(
-        "Work_mining_%s" % str(waiting_id), true, false
-    ) as Button
-    if not _check(waiting_button != null and waiting_button.disabled,
-        "Waiting Mine member's UI work control is enabled."):
-        return
-
-    # Releasing founding workers preserves the V2 recruit's group and
-    # explicit worksite, and activates exactly one valid Mine slot.
-    for raw_id in initial_miners:
-        if not _check(workforce.assign_group(state, raw_id, &""),
-            "Could not release an initial Mine slot."):
-            return
-    ui.call("_open_building", SectMapPresentation.DEST_MINE)
-    await process_frame
-    if not _check(buildings.active_worker_ids(state, mine).has(recruit_id)
-        and actor.worksite_building_id == mine.id,
-        "V2 recruit did not gain the available Mine slot."):
-        return
     var xp_before := float(actor.profession_xp.get("mining", 0.0))
     var tuvi_before := float(actor.v2_realm_progress["cultivation"]["xp"])
     var natural := DiscipleTuViFlowV2.preview_rate(state, actor, false)
@@ -197,7 +175,7 @@ func _run() -> void:
     var final_actor: DiscipleState = final_state.disciples[recruit_id]
     var final_mine := buildings.primary_building(final_state, BuildingSystem.TYPE_MINE)
     var definition: Dictionary = BuildingSystem.DEFINITIONS[str(BuildingSystem.TYPE_MINE)]
-    var batch := maxi(int(definition.get("base_batch_units", 1)), 1) + int(floor(float(mine.level) / 10.0))
+    var batch := buildings._resource_job_batch_units(mine)
     if not _check(warehouse.quantity(final_state, &"thanh_thiet") == ore_before + batch
         and int(final_mine.metrics.get("production_batches", 0)) == batches_before + 1
         and final_actor.work_cycle_state.is_empty()
