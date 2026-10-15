@@ -14,7 +14,7 @@
 
 | Name | Value | Unit | Source | Status | Reason | Configuration |
 |---|---:|---|---|---|---|---|
-| Mine/Forest wage | 2 | Stones/completed batch | Existing Economy-A pilot | PILOT | Bounded zero-sum wage | `SectState.economy_a_policy.wage_per_batch` |
+| V2 production wage (Mine/Forest/Field/Alchemy) | 2 | Stones/completed batch | Existing Economy-A pilot | PILOT | Bounded Sect-to-personal transfer after actual output | `SectState.economy_a_policy.wage_per_batch` |
 | Resource timer | 10 | simulation ticks base | Existing Economy-A pilot | PILOT | Opening cycle, work-speed modifier applies | `resource_duration_ticks` |
 | Mine/Forest yield | 2 | resources/batch at Lv1 | Existing P3.7 building content | LOCKED for this packet | Preserve existing production balance | `BuildingSystem` definitions |
 | Linh Mộc sell / buy | 2 / 4 | Stones/item | ResourceRegistry / 2× markup | PILOT | Opening wood trade | `ResourceRegistry.market_value`, `market_buy_markup` |
