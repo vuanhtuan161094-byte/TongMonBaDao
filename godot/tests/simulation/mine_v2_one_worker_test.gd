@@ -22,11 +22,11 @@ func _run() -> void:
     _cleanup()
     if not _verify_fresh_slots_and_atomic_assignment():
         return
-    if not _verify_typed_foundation_output():
+    if not _verify_no_arbitrary_foundation_ore_bonus():
         return
     if not _verify_real_timed_packet_save_and_wage():
         return
-    print("MINE-V2 ONE WORKER + TYPED OUTPUT + SAVE/RECEIPT TEST PASS")
+    print("MINE-V2 ONE WORKER + PROFESSION TIME + SAVE/RECEIPT TEST PASS")
     _cleanup()
     quit(0)
 
@@ -99,35 +99,23 @@ func _verify_fresh_slots_and_atomic_assignment() -> bool:
     errors.append_array(workforce.validate_invariants(state))
     return _check(errors.is_empty(), "new 2-Mine state violates invariants: %s" % " | ".join(errors))
 
-func _verify_typed_foundation_output() -> bool:
+func _verify_no_arbitrary_foundation_ore_bonus() -> bool:
     var state := P37Factory.create_state(900502)
     var mine := buildings.primary_building(state, BuildingSystem.TYPE_MINE)
-    var worker: DiscipleState = state.disciples[buildings.active_worker_ids(state, mine)[0]]
+    var actor: DiscipleState = state.disciples[buildings.active_worker_ids(state, mine)[0]]
     var base := buildings._resource_job_batch_units(mine)
-    # Force the P2 normalized representation; the fresh P3.7 factory itself
-    # correctly migrates all founding disciples into open-point Lục Duy.
-    worker.foundation_model_version = FoundationSystem.MODEL_LEGACY_NORMALIZED
-    worker.constitution = 0.8
-    if not _check(buildings.mining_batch_units_for_worker(state, mine, worker) == base,
-        "legacy normalized Căn Cốt was interpreted as open points"):
-        return false
-    worker.foundation_model_version = FoundationSystem.MODEL_OPEN_POINTS
-    for probe in [
-        {"constitution": 0.0, "extra": 0},
-        {"constitution": 999.0, "extra": 0},
-        {"constitution": 1000.0, "extra": 1},
-        {"constitution": 2500.0, "extra": 2},
-        {"constitution": 10000.0, "extra": 3}
-    ]:
-        worker.constitution = float(probe["constitution"])
-        if not _check(buildings.mining_batch_units_for_worker(state, mine, worker) == base + int(probe["extra"]),
-            "Mine pilot physical-result channel mismatch for Căn Cốt"):
+    # Căn Cốt has its canonical Body training role; mining must not turn
+    # 1,000 points into a gratuitous extra ore. Output formula is a mine
+    # building/content value until an independently approved result rule.
+    for points in [0.0, 999.0, 1000.0, 2500.0, 10000.0]:
+        actor.constitution = points
+        if not _check(buildings._resource_job_batch_units(mine) == base,
+            "Mine received an unapproved Căn Cốt-to-ore bonus"):
             return false
-    # Tu Vi realm level is not an input to mining profession level or output.
-    var no_realm_bonus := buildings.mining_batch_units_for_worker(state, mine, worker)
-    worker.cultivation_stage_index += 1
-    if not _check(buildings.mining_batch_units_for_worker(state, mine, worker) == no_realm_bonus,
-        "Mine output depends on unrelated realm field"):
+    var realm_before := buildings._resource_job_batch_units(mine)
+    actor.cultivation_stage_index += 1
+    if not _check(buildings._resource_job_batch_units(mine) == realm_before,
+        "Cultivation realm incorrectly changes ore quantity"):
         return false
     return true
 
@@ -155,8 +143,6 @@ func _verify_real_timed_packet_save_and_wage() -> bool:
     if not _check(DiscipleRealmProgressV2.owns_v2_progression(actor),
         "test actor is not real V2"):
         return false
-    actor.constitution = 2500.0
-    FoundationSystem.new().recompute_disciple_quality(actor)
     actor.profession_xp["mining"] = 2400.0 # canonical profession Lv10
     if not _check(workforce.profession_level_for_state(state, actor, &"mining") == 10,
         "Mine pilot did not use canonical profession level"):
@@ -178,14 +164,14 @@ func _verify_real_timed_packet_save_and_wage() -> bool:
             return false
     var before := warehouse.quantity(state, &"thanh_thiet")
     var stones_before := state.sect.spirit_stones
-    var expected := buildings.mining_batch_units_for_worker(state, mine, actor)
+    var expected := buildings._resource_job_batch_units(mine)
     var started := workforce.perform_work(state, actor, WorkforceSystem.PROF_MINING)
     if not _check(bool(started.get("ok", false)) and bool(started.get("started", false)),
         "V2 Mine did not start real Economy-A timed job"):
         return false
     var timer := buildings.active_resource_timer_for_worker(state, actor.id)
     if not _check(not timer.is_empty() and int(timer.get("output_quantity", -1)) == expected,
-        "Mine timer did not snapshot real typed output"):
+        "Mine timer did not snapshot authored Mine quantity"):
         return false
     if not _check(not bool(workforce.perform_work(state, actor, WorkforceSystem.PROF_MINING).get("ok", false)),
         "same actor started a competing Mine timer"):
