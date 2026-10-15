@@ -826,6 +826,7 @@ func _build_economy_a_market_controls() -> void:
         var merchant_stock := int(state.sect.economy_a_market_stock.get(raw_id,0))
         var buy_price := economy.market_purchase_price(state,resource_id)
         var buyable := mini(merchant_stock,mini(int(state.sect.economy_a_policy.get("market_max_per_buy",5)),economy.market_buy_remaining(state)))
+        buyable = mini(buyable,int(state.sect.spirit_stones / maxi(buy_price,1)))
         var buy_row := Button.new()
         buy_row.name = "EconomyA_Buy_%s" % raw_id
         buy_row.text = "Mua %s ×%d · -%d LT · Chợ còn %d" % [ResourceRegistry.new().display_name(resource_id),buyable,buy_price*buyable,merchant_stock]
