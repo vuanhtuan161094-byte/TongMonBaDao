@@ -102,6 +102,52 @@ func set_work_policy(state: SimulationState, policy: StringName) -> bool:
     state.sect.workforce_event_count += 1
     return true
 
+# One atomic backend command for a Mine assignment or safe replacement.
+# Other professions retain their specific building/plot/reservation rules.
+# Do not route this through assign_group() + assign_worksite() in two UI calls.
+func assign_mine_worker(state: SimulationState, disciple_id: StringName, mine_id: StringName, replace_existing: bool = false) -> Dictionary:
+    if not state.sect.workforce_enabled or not state.p3_7_buildings_enabled:
+        return {"ok": false, "reason": "workforce_unavailable"}
+    var building = state.buildings.get(str(mine_id))
+    if not (building is BuildingState) or building.building_type != BuildingSystem.TYPE_MINE:
+        return {"ok": false, "reason": "invalid_mine"}
+    if not state.disciples.has(disciple_id):
+        return {"ok": false, "reason": "missing_disciple"}
+    var actor: DiscipleState = state.disciples[disciple_id]
+    var occupants := building_system.assigned_worker_ids(state, building)
+    if occupants.size() > 1:
+        return {"ok": false, "reason": "mine_overassigned_reset_dev_save"}
+    if occupants.has(disciple_id):
+        return {"ok": true, "already_assigned": true}
+    if actor.region_id != &"sect" or not actor.active_pve_encounter_id.is_empty():
+        return {"ok": false, "reason": "disciple_not_at_sect"}
+    if actor.work_group_id != &"" or actor.worksite_building_id != &"":
+        return {"ok": false, "reason": "disciple_already_assigned"}
+    if not actor.work_cycle_state.is_empty() or not actor.direct_command.is_empty():
+        return {"ok": false, "reason": "disciple_has_active_command_or_cycle"}
+    if building_system.disciple_has_active_timed_recipe(state, disciple_id) or building_system.disciple_has_active_spirit_plot(state, disciple_id) or DiscipleBodyTrainingFacilityV2.has_reserved_slot(state, actor):
+        return {"ok": false, "reason": "disciple_has_active_job"}
+    if str(actor.current_action).begins_with("WORK_") or actor.current_action == &"CULTIVATE":
+        return {"ok": false, "reason": "disciple_finishing_action"}
+
+    var previous: DiscipleState = null
+    if not occupants.is_empty():
+        if not replace_existing:
+            return {"ok": false, "reason": "mine_full"}
+        previous = state.disciples[occupants[0]]
+        if not previous.work_cycle_state.is_empty() or building_system.disciple_has_active_timed_recipe(state, previous.id) or building_system.disciple_has_active_spirit_plot(state, previous.id) or DiscipleBodyTrainingFacilityV2.has_reserved_slot(state, previous):
+            return {"ok": false, "reason": "previous_miner_busy"}
+    # All guards completed: one synchronous state transaction, no intermediate
+    # moment with a second Mine worker, no warehouse/scheduler side effects.
+    if previous != null:
+        clear_command(state, previous)
+        previous.work_group_id = &""
+        previous.worksite_building_id = &""
+    actor.work_group_id = &"mining_crew"
+    actor.worksite_building_id = mine_id
+    state.sect.workforce_event_count += 1
+    return {"ok": true, "replaced": previous != null, "mine_id": str(mine_id), "worker_id": str(disciple_id)}
+
 func assign_group(state: SimulationState, disciple_id: StringName, group_id: StringName) -> bool:
     if not state.sect.workforce_enabled or not state.disciples.has(disciple_id):
         return false
@@ -110,6 +156,12 @@ func assign_group(state: SimulationState, disciple_id: StringName, group_id: Str
     var disciple: DiscipleState = state.disciples[disciple_id]
     if not disciple.active_pve_encounter_id.is_empty():
         return false
+    # Legacy group-only allocation targets the primary Mine. No hidden waiting
+    # group members: multi-instance assignment uses assign_mine_worker() above.
+    if state.p3_7_buildings_enabled and group_id == &"mining_crew" and disciple.work_group_id != group_id:
+        var mine := building_system.primary_building(state, BuildingSystem.TYPE_MINE)
+        if mine == null or building_system.assigned_worker_ids(state, mine).size() >= 1:
+            return false
     if state.sect.economy_a_enabled and not building_system.active_resource_timer_for_worker(state,disciple.id).is_empty() and group_id != disciple.work_group_id:
         return false
     # Explicitly assigning a different crew frees the real Body facility slot;
@@ -174,6 +226,10 @@ func assign_worksite(state: SimulationState, disciple_id: StringName, building_i
     var building = state.buildings.get(str(building_id))
     if not (building is BuildingState) or building.worker_group_id == &"" or disciple.work_group_id != building.worker_group_id:
         return false
+    if building.building_type == BuildingSystem.TYPE_MINE:
+        for occupant_id in building_system.assigned_worker_ids(state, building):
+            if occupant_id != disciple_id:
+                return false
     if disciple.worksite_building_id != building_id and not disciple.work_cycle_state.is_empty():
         building_system.cancel_work_cycle(state, disciple, true)
     disciple.worksite_building_id = building_id

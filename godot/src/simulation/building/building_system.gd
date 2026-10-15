@@ -68,8 +68,8 @@ const DEFINITIONS := {
         "resource_id": MATERIAL_ORE,
         "cycle_phases": ["travel_out", "mining", "haul_back"],
         "cycle_work_phase": "mining",
-        "base_worker_slots": 2,
-        "worker_slot_every": 5,
+        "base_worker_slots": 1,
+        "worker_slot_every": 0,
         "base_wood_cost": 4,
         "base_ore_cost": 6,
         "base_stone_cost": 20,
@@ -189,6 +189,21 @@ func initialize(state: SimulationState) -> void:
         var mine := create_building(TYPE_MINE, 1)
         state.buildings[str(mine.id)] = mine
         state.building_event_count += 1
+        # Fresh P2 founders may have two legacy mining_crew members. This is
+        # initial-state creation ONLY, not a silent migration of old user saves.
+        var seed_ids: Array = state.disciples.keys()
+        seed_ids.sort()
+        var found_miner := false
+        for raw_seed_id in seed_ids:
+            var founder: DiscipleState = state.disciples[raw_seed_id]
+            if founder.work_group_id != &"mining_crew":
+                continue
+            if not found_miner:
+                found_miner = true
+                continue
+            founder.work_group_id = &""
+            founder.worksite_building_id = &""
+            state.sect.workforce_event_count += 1
 
     if primary_building(state, TYPE_LINH_FOREST) == null:
         var forest := create_building(TYPE_LINH_FOREST, 1)
@@ -277,6 +292,9 @@ func worker_slots(building: BuildingState) -> int:
     var definition := definition_for(building)
     if definition.is_empty():
         return 0
+    # Owner-locked P1: every individual Mine has one operator at every level.
+    if building.building_type == TYPE_MINE:
+        return 1
     var base_slots := maxi(int(definition.get("base_worker_slots", 0)), 0)
     var every := maxi(int(definition.get("worker_slot_every", 0)), 0)
     if every <= 0:
@@ -825,7 +843,11 @@ func perform_resource_job_step(state: SimulationState, disciple: DiscipleState, 
         if progress + 0.000001 >= _resource_job_duration(producer):
             phase = &"haul_back"
             progress = 0.0
-            cycle["carried_units"] = _resource_job_batch_units(producer)
+            cycle["carried_units"] = (
+                mining_batch_units_for_worker(state, producer, disciple)
+                if profession_id == PROF_MINING
+                else _resource_job_batch_units(producer)
+            )
     elif phase == &"haul_back":
         progress += _movement_speed(state, disciple) * _haul_speed_multiplier(disciple)
         if progress + 0.000001 >= float(definition.get("haul_distance", 6.0)):
@@ -940,6 +962,8 @@ func _start_resource_timer(state: SimulationState, producer: BuildingState, acto
         return {"ok":false,"reason":"missing_canonical_job_slot"}
     if disciple_has_active_timed_recipe(state,actor.id) or disciple_has_active_spirit_plot(state,actor.id) or actor.work_group_id == &"body_training_crew":
         return {"ok":false,"reason":"another_active_job"}
+    if producer.building_type == TYPE_MINE and resource_timer_jobs(producer).size() >= 1:
+        return {"ok":false,"reason":"mine_job_already_running"}
     if actor.region_id != &"sect" or not actor.active_pve_encounter_id.is_empty():
         return {"ok":false,"reason":"worker_not_available"}
     var definition := definition_for(producer)
@@ -955,7 +979,10 @@ func _start_resource_timer(state: SimulationState, producer: BuildingState, acto
         "job_id":"%s:v1:%d" % [str(producer.id),sequence],
         "worker_id":str(actor.id),"profession_id":str(profession_id),
         "resource_id":str(definition.get("resource_id","")),
-        "output_quantity":_resource_job_batch_units(producer),
+        "output_quantity": (
+            mining_batch_units_for_worker(state, producer, actor)
+            if profession_id == PROF_MINING else _resource_job_batch_units(producer)
+        ),
         "profession_xp_gain":maxf(xp_gain,0.0),
         "started_tick":state.tick,"finish_tick":state.tick+duration
     }
@@ -1115,6 +1142,8 @@ func validate_invariants(state: SimulationState) -> Array[String]:
             if not MILESTONE_LEVELS.has(milestone) or milestone > building.level:
                 errors.append("Building %s has invalid milestone %d." % [building.id, milestone])
 
+        if building.building_type == TYPE_MINE and assigned_worker_ids(state, building).size() > 1:
+            errors.append("Mine %s has more than one assigned worker." % str(building.id))
         if state.sect.economy_a_enabled and (building.building_type == TYPE_MINE or building.building_type == TYPE_LINH_FOREST):
             var resource_ids: Dictionary = {}
             var resource_workers: Dictionary = {}
@@ -1556,6 +1585,24 @@ func _resource_job_duration(building: BuildingState) -> float:
 func _resource_job_batch_units(building: BuildingState) -> int:
     var base := maxi(int(definition_for(building).get("base_batch_units", 2)), 1)
     return base + int(floor(float(building.level) / 10.0))
+
+# MINE-V2 PILOT (tunable, NOT a locked economy curve):
+# 1) Profession level remains the canonical time/throughput channel, via
+#    WorkforceSystem._work_speed() -> ProfessionModifierSystem.
+# 2) Căn Cốt is a MINE-SPECIFIC physical extraction quantity channel,
+#    NOT a generic hauling/speed modifier or a substitute for Luyện Thể.
+#    One flat extra ore per 1,000 points, capped at +3 per finished packet.
+# 3) Thông Tuệ affects mining-profession XP through the existing channel.
+#    No automatic % output from total lục duy or cultivation realm.
+# We snapshot this quantity at packet start, ensuring save/offline exactly-once.
+func mining_batch_units_for_worker(state: SimulationState, mine: BuildingState, worker: DiscipleState) -> int:
+    if mine == null or mine.building_type != TYPE_MINE or worker == null:
+        return 0
+    var base := _resource_job_batch_units(mine)
+    if not state.p3_7_buildings_enabled or worker.foundation_model_version < FoundationSystem.MODEL_OPEN_POINTS:
+        return base
+    var bonus := mini(int(floor(maxf(worker.constitution, 0.0) / 1000.0)), 3)
+    return base + bonus
 
 # Keep old helper names for regression/debug compatibility.
 func _mining_duration(mine: BuildingState) -> float:
