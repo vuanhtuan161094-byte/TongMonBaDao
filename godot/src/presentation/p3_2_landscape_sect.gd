@@ -718,7 +718,15 @@ func _add_workforce_picker_launcher(building: BuildingState, profession: StringN
         info.custom_minimum_size = Vector2(384,41)
         building_management_container.add_child(info)
         var name := Label.new()
-        name.text = worker.display_name + " · " + SectMapPresentation.action_label(worker.current_action)
+        var phase := SectMapPresentation.action_label(worker.current_action)
+        var timer := bs.active_resource_timer_for_worker(state,worker.id)
+        if not timer.is_empty():
+            phase = "Mẻ còn %d phút" % maxi(int(timer.get("finish_tick",state.tick))-state.tick,0)
+        elif bs.disciple_has_active_spirit_plot(state,worker.id):
+            phase = "Đang trồng"
+        elif bs.disciple_has_active_timed_recipe(state,worker.id):
+            phase = "Đang luyện đan"
+        name.text = worker.display_name + " · " + phase
         name.tooltip_text = name.text
         name.custom_minimum_size = Vector2(250,36)
         name.clip_text = true
@@ -737,7 +745,7 @@ func _add_workforce_picker_launcher(building: BuildingState, profession: StringN
             info.add_child(withdraw)
     var launch := Button.new()
     launch.name = "WorkforcePickerOpen_%s" % str(building.building_type)
-    launch.text = "＋ Chọn đệ tử / thay người"
+    launch.text = "＋ Chọn đệ tử"
     launch.custom_minimum_size = Vector2(384,46)
     launch.add_theme_font_size_override("font_size",15)
     launch.disabled = building.status != BuildingSystem.STATUS_ACTIVE
