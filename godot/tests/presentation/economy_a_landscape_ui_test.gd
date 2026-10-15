@@ -39,6 +39,16 @@ func _run() -> void:
     if not (state.sect.spirit_stones > before and warehouse.quantity(state,&"linh_moc") < qty):
         _fail("Economy-A Phuong Thi UI did not settle actual stock and Stones")
         return
+    var market_before := int(state.sect.economy_a_market_stock.get("linh_moc",0))
+    var stones_before_buy := state.sect.spirit_stones
+    var wood_before_buy := warehouse.quantity(state,&"linh_moc")
+    if not await _press("EconomyA_Buy_linh_moc"):
+        return
+    if not (state.sect.spirit_stones < stones_before_buy
+        and warehouse.quantity(state,&"linh_moc") > wood_before_buy
+        and int(state.sect.economy_a_market_stock.get("linh_moc",0)) < market_before):
+        _fail("Economy-A Phuong Thi UI buy did not settle real stock and Stones")
+        return
     var result := state.validate_invariants()
     if not result.is_empty():
         _fail("Economy-A real landscape state violated invariants: %s" % str(result))
