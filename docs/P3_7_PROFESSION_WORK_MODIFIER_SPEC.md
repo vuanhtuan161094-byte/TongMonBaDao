@@ -1,5 +1,12 @@
 # P3.7 — SHARED PROFESSION / WORK MODIFIER SPEC
 
+## Owner clarification — 2026-10-15 (profession, not cultivation realm)
+
+**Áp dụng cho mọi nghề:** cấp làm việc là **cấp nghề của chính hoạt động đó**: Mỏ → Khai Khoáng, Linh Điền → Linh Thực, Linh Lâm → Lâm Nghiệp, Luyện Đan → Luyện Đan, Luyện Khí → Luyện Khí. Không lấy cảnh giới Tu Vi thay cấp nghề sản xuất. Lục Duy chỉ được đi qua kênh có thẩm quyền của nghề/recipe, không nhân `Tổng Lục Duy` cho mọi sản phẩm.
+
+**P1 code scope chỉ có Mỏ:** một công trình Mỏ = một người tại mọi level. Existing `ProfessionModifierSystem` remains canonical speed/EXP for every profession. Pilot Mỏ: mining profession level still changes duration via `1 + 0.01 × Level`; Căn Cốt open points adds `min(floor(Căn Cốt/1000),3)` *flat ore per packet*, a specifically authored physical extraction RESULT modifier (not generic work speed or Body XP). Thông Tuệ keeps its already-locked mining EXP channel. Base batch continues the current building definition and building-level progression. Formula pilot is **TUNABLE, NOT balance locked**, does not replace the existing Căn Cốt Body role; no automatic rare tier or Cơ Duyên bonus is introduced. Output quantity is snapshotted when the job begins, and canonical Warehouse/wage are settled once. Other profession result formulas remain unchanged pending their own task packets.
+
+
 Status: CANONICAL DESIGN AUTHORITY  
 Updated: 2026-10-06
 
