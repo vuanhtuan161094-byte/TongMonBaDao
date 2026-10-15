@@ -222,26 +222,19 @@ This owns high-level relationships between:
 
 ---
 
-## 4. One-phase-at-a-time development rule
+## 4. Scoped implementation ownership and honest closure (OWNER DECISION 2026-10-15)
 
-There is **at most one active implementation phase**.
+The former repository-wide **one-active-phase barrier is replaced**. Unclosed QA or a paused, non-overlapping roadmap phase does not automatically prohibit a separately authorized playable-game implementation packet.
 
-A phase is not complete until all five conditions are met:
+- **One code writer per overlapping file/subsystem at a time.** Concurrent READ-ONLY design and QA are allowed. Two CODE packets may coexist only with explicit owner approvals, disjoint file/authority ownership, a common integration HEAD and no competing mutation of shared state/save/scheduler/contracts.
+- **No implicit permission:** every CODE packet still requires a fresh owner instruction naming scope, path allowlist, preserved locked rules, persistence/migration risks, tests and exclusions. Design approval or this governance amendment alone is not CODE authorization.
+- **Dependency gate, not bureaucratic queue:** existing OPEN/PAUSED work stays labeled OPEN/PAUSED. A known failure unrelated to the new packet is retained as a named debt with baseline SHA/evidence. If the packet **touches** that subsystem/scenario, reproduce or isolate the baseline, run focused comparative regression and resolve or explicitly gate the affected scenario before claiming integrated PASS. Never weaken assertions, erase legacy save goods or fake rewards to make a test green.
+- **Evidence discipline:** no phase/piece is CLOSED without (1) explicit contract/ownership, (2) completed code for that contract, (3) official Godot 4.7.2 focused PASS, (4) cumulative regression PASS or clearly scoped, owner-accepted pre-existing exceptions that are proven unrelated, and (5) an updated `CURRENT_CHECKPOINT.md` naming the next work and debt. A documented exception is not a PASS and cannot waive a failing regression in a subsystem changed by the packet.
+- **Physical/device evidence stays separately labeled:** Windows GUI, Android device, crash/storage-failure and large-population acceptance are never inferred from Linux headless CI. Only make such tests release-blocking for a packet when they are stated in its explicit acceptance contract; otherwise carry them as PENDING USER/release-gate debt.
+- **Authority remains unchanged:** one canonical Warehouse, one scheduler/time source, one active disciple job, canonical V2 HP/Injury/EXP/realm, Sect-owned equipment, deterministic save/offline. New UI may only reflect genuine backend state.
+- **Current priority:** owner chose Economy-A as the next **candidate** CODE packet while GP-02C1 is QA OPEN and DV2-03 PAUSED NOT CLOSED. Economy-A is DESIGN/PREP ONLY until a separate CODE allowlist authorization. Injury redesign inspired by 最强祖师 is DESIGN ONLY and must not silently replace verified GP-02C1 runtime.
 
-1. **Contract** — scope and ownership are explicit.
-2. **Implementation** — no known placeholder/fake authority remains inside the phase.
-3. **Focused gate** — active-phase tests pass on Godot 4.7.2.
-4. **Cumulative gate** — locked earlier systems still pass when phase is being closed.
-5. **Checkpoint lock** — `CURRENT_CHECKPOINT.md` is updated and the next phase is named.
-
-Before those five conditions are met:
-- do not start the next gameplay phase;
-- do not partially implement a neighboring system “while here”;
-- do not expose unfinished backend values in presentation;
-- do not add speculative UI for data that does not exist.
-
-A newly discovered dependency belongs to the current phase if it is necessary to make that phase correct.
-Otherwise it is recorded as future work and left untouched.
+This section supersedes historical single-phase instructions elsewhere in older checkpoints/specs; do not rewrite their historical evidence. A truly blocking overlapping dependency must be handled within the expressly approved scope or returned to the owner for a revised allowlist.
 
 ---
 
@@ -304,13 +297,10 @@ Implementation evidence and exact gate status live in `CURRENT_CHECKPOINT.md`.
 
 At any moment:
 
-- `CURRENT_CHECKPOINT.md` names the active phase, or explicitly states that no implementation phase is active.
-- `NEXT_CHAT_HANDOFF.md` explains only how to continue that phase.
-- design specs contain design, not chronological implementation diaries.
-- completed-phase history is not duplicated across every spec.
-- the next phase may be named, but may not be implemented until the current phase is locked.
-
----
+- `CURRENT_CHECKPOINT.md` lists current CODE packets, QA-only OPEN debt, PAUSED work and independently approved design; status never changes merely because another packet starts.
+- `NEXT_CHAT_HANDOFF.md` records the immediate authorized next action, file ownership, explicit exclusions and evidence obligations.
+- Design specs describe intended mechanics and decisions, not proof of production/runtime readiness.
+- A separately authorized, non-overlapping packet can start without administratively closing an unrelated historical phase, under section 4. The integration gate must expose any pre-existing failures as debts, not turn them into PASS.
 
 ---
 
@@ -318,4 +308,4 @@ At any moment:
 
 Long-term decision: `docs/decisions/0003-fe00-godot-native-data-driven-frontend.md` (ADR-0003, accepted DESIGN ONLY). Godot-native data-driven frontend with one canonical gameplay/save authority; presentation-only `PresentationQuery`, read-only view-model snapshots, `VisualAssetRegistry`, fixed `SectLayoutDefinition`/isometric `SectMapModel`, visual actor controller/renderer, reusable Godot UI. Source A is benchmark/candidate art, NOT transplanted Unity authority. Existing `docs/P3_ASSET_REGISTRY.json`, historical approved visual contracts, source recovery and ADR-0002 LFS gate remain controlling. Fixed layout does NOT add placement fields to `BuildingState`. 13 Source A building candidates do NOT imply 13 persistent building instances. Android/Windows visual acceptance remains PENDING USER.
 
-FE-00 review/design **CLOSED**, no Godot runtime pass implied. FE-01 is separately queued, **NOT CODE AUTHORIZED**; current one-active-implementation-phase policy still applies. Do not switch main scene, enable Spine, import binaries by unverified transport, or rewrite gameplay in FE-00.
+FE-00 review/design **CLOSED**, no Godot runtime pass implied. FE-01 is separately queued, **NOT CODE AUTHORIZED**; section 4 scoped-ownership/code-authorization policy applies. Do not switch main scene, enable Spine, import binaries by unverified transport, or rewrite gameplay in FE-00.
