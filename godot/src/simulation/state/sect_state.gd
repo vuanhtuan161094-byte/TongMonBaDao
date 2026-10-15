@@ -38,6 +38,14 @@ var spiritual_root_event_count: int = 0
 # P2.3 sect-owned technique economy.
 var techniques_enabled: bool = false
 var spirit_stones: int = 0
+
+# ECONOMY-A opt-in; old P2 treasury/wallet and default carry-cycle saves stay unchanged.
+var economy_a_enabled: bool = false
+var economy_a_policy: Dictionary = {"wage_per_batch": 2, "resource_duration_ticks": 10, "market_daily_units": 20, "market_max_per_sale": 5, "auto_hp_service": false, "personal_heal_cost": 3, "sect_pay_reserve": 0}
+var economy_a_receipts: Dictionary = {}
+var economy_a_market_day: int = -1
+var economy_a_market_units_sold: int = 0
+var economy_a_event_count: int = 0
 var technique_library: Dictionary = {}
 var technique_manuals: Dictionary = {}
 var technique_fragments: Dictionary = {}
@@ -153,6 +161,13 @@ func to_dict() -> Dictionary:
         data["technique_materials"] = technique_materials.duplicate(true)
         data["technique_gacha_index"] = technique_gacha_index
         data["technique_event_count"] = technique_event_count
+    if economy_a_enabled or not economy_a_receipts.is_empty():
+        data["economy_a_enabled"] = economy_a_enabled
+        data["economy_a_policy"] = economy_a_policy.duplicate(true)
+        data["economy_a_receipts"] = economy_a_receipts.duplicate(true)
+        data["economy_a_market_day"] = economy_a_market_day
+        data["economy_a_market_units_sold"] = economy_a_market_units_sold
+        data["economy_a_event_count"] = economy_a_event_count
     if cultivation_paths_enabled or cultivation_path_event_count > 0:
         data["cultivation_paths_enabled"] = cultivation_paths_enabled
         data["cultivation_path_event_count"] = cultivation_path_event_count
@@ -236,6 +251,18 @@ static func from_dict(data: Dictionary) -> SectState:
     state.spiritual_root_event_count = maxi(int(data.get("spiritual_root_event_count", 0)), 0)
     state.techniques_enabled = bool(data.get("techniques_enabled", false))
     state.spirit_stones = maxi(int(data.get("spirit_stones", 0)), 0)
+    state.economy_a_enabled = bool(data.get("economy_a_enabled", false))
+    var economy_policy = data.get("economy_a_policy", {})
+    if economy_policy is Dictionary:
+        for key in state.economy_a_policy.keys():
+            if economy_policy.has(key):
+                state.economy_a_policy[key] = economy_policy[key]
+    var saved_economy_receipts = data.get("economy_a_receipts", {})
+    if saved_economy_receipts is Dictionary:
+        state.economy_a_receipts = saved_economy_receipts.duplicate(true)
+    state.economy_a_market_day = int(data.get("economy_a_market_day", -1))
+    state.economy_a_market_units_sold = maxi(int(data.get("economy_a_market_units_sold", 0)), 0)
+    state.economy_a_event_count = maxi(int(data.get("economy_a_event_count", 0)), 0)
     state.technique_library = _bool_dictionary(data.get("technique_library", {}))
     state.technique_manuals = _int_dictionary(data.get("technique_manuals", {}))
     state.technique_fragments = _int_dictionary(data.get("technique_fragments", {}))

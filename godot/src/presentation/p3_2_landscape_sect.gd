@@ -707,6 +707,8 @@ func _rebuild_building_management_controls() -> void:
     match selected_building:
         SectMapPresentation.DEST_MAIN_HALL:
             _build_main_hall_policy_controls()
+        SectMapPresentation.DEST_WAREHOUSE:
+            _build_economy_a_market_controls()
         SectMapPresentation.DEST_MINE:
             _build_work_management(WorkforceSystem.PROF_MINING, &"mining_crew", "Đội Khai Khoáng", "Khai khoáng")
             _build_mine_upgrade_control()
@@ -737,6 +739,7 @@ func _rebuild_building_management_controls() -> void:
             pass
 
 func _build_main_hall_policy_controls() -> void:
+    _build_economy_a_hall_controls()
     _add_management_section_label("CHÍNH SÁCH LAO ĐỘNG")
     _add_policy_button_row([
         {"label":"Cân bằng", "value":WorkforceSystem.POLICY_BALANCED},
@@ -757,6 +760,79 @@ func _build_main_hall_policy_controls() -> void:
         {"label":"Chiến đấu", "value":EquipmentSystem.POLICY_COMBAT},
         {"label":"Tiết kiệm", "value":EquipmentSystem.POLICY_FRUGAL}
     ], state.sect.equipment_policy, "_set_equipment_policy_from_building")
+
+# ECONOMY-A player actions are actual simulation transactions; no fake income.
+func _build_economy_a_hall_controls() -> void:
+    _add_management_section_label("KINH TẾ V1 · LINH THẠCH")
+    if not state.sect.economy_a_enabled:
+        var enable := Button.new()
+        enable.name = "EconomyA_Enable"
+        enable.text = "Bật kinh tế V1 cho lượt chơi này"
+        enable.custom_minimum_size = Vector2(384,36)
+        enable.pressed.connect(_economy_a_enable_from_ui)
+        building_management_container.add_child(enable)
+        return
+    var policy: Dictionary = state.sect.economy_a_policy
+    var summary := Label.new()
+    summary.text = "Quỹ: %d · Lương/mẻ: %d · Timer gốc: %d phút" % [
+        state.sect.spirit_stones,int(policy.get("wage_per_batch",2)),
+        int(policy.get("resource_duration_ticks",10))
+    ]
+    summary.custom_minimum_size = Vector2(384,32)
+    summary.add_theme_font_size_override("font_size",12)
+    building_management_container.add_child(summary)
+    var heal_toggle := Button.new()
+    heal_toggle.name = "EconomyA_AutoHP"
+    heal_toggle.text = "Tự chữa HP: BẬT" if bool(policy.get("auto_hp_service",false)) else "Tự chữa HP: TẮT"
+    heal_toggle.custom_minimum_size = Vector2(384,36)
+    heal_toggle.pressed.connect(_economy_a_toggle_heal_from_ui)
+    building_management_container.add_child(heal_toggle)
+
+func _economy_a_enable_from_ui() -> void:
+    var result := EconomySystem.new().enable_v1(state)
+    building_management_feedback = "Đã bật Kinh tế V1; các mẻ mới của đệ tử V2 dùng timer." if bool(result.get("ok",false)) else str(result.get("reason","Không thể bật kinh tế."))
+    _refresh_building_operation_content()
+
+func _economy_a_toggle_heal_from_ui() -> void:
+    var economy := EconomySystem.new()
+    var old := bool(state.sect.economy_a_policy.get("auto_hp_service",false))
+    var result := economy.configure_v1(state,"auto_hp_service",not old)
+    building_management_feedback = "Đã đổi chính sách chi tiêu cá nhân." if bool(result.get("ok",false)) else "Chính sách bị từ chối."
+    _refresh_building_operation_content()
+
+func _build_economy_a_market_controls() -> void:
+    if not state.sect.economy_a_enabled:
+        return
+    var economy := EconomySystem.new()
+    _add_management_section_label("PHƯỜNG THỊ · NPC MUA NGUYÊN LIỆU")
+    var quota := Label.new()
+    quota.text = "Hạn mức còn %d sản phẩm/ngày; chỉ bán tồn khả dụng." % economy.market_remaining(state)
+    quota.custom_minimum_size = Vector2(384,28)
+    building_management_container.add_child(quota)
+    for raw_id in ["linh_moc","thanh_thiet","thanh_linh_thao","linh_coc"]:
+        var resource_id := StringName(raw_id)
+        var available := WarehouseSystem.new().available_quantity(state,resource_id)
+        var price := int(ResourceRegistry.new().definition(resource_id).get("market_value",0))
+        var max_sale := int(state.sect.economy_a_policy.get("market_max_per_sale",5))
+        var sellable := mini(available,mini(max_sale,economy.market_remaining(state)))
+        var row := Button.new()
+        row.name = "EconomyA_Sell_%s" % raw_id
+        row.text = "Bán %s ×%d · +%d LT" % [ResourceRegistry.new().display_name(resource_id),sellable,price*sellable]
+        row.custom_minimum_size = Vector2(384,36)
+        row.disabled = sellable <= 0 or price <= 0
+        row.pressed.connect(Callable(self,"_economy_a_sell_from_ui").bind(resource_id,sellable))
+        building_management_container.add_child(row)
+
+func _economy_a_sell_from_ui(resource_id: StringName, qty: int) -> void:
+    var request_id := "panel:%s:%d" % [str(resource_id),state.tick]
+    var result := EconomySystem.new().sell_to_npc_v1(state,resource_id,qty,request_id)
+    var receipt: Dictionary = result.get("receipt",{})
+    building_management_feedback = (
+        "Phường Thị nhận %d sản phẩm; quỹ +%d Linh Thạch." % [qty,int(receipt.get("earned",0))]
+        if bool(result.get("ok",false)) and not bool(result.get("already_settled",false))
+        else ("Lệnh bán đã xử lý trước đó." if bool(result.get("already_settled",false)) else "Không bán được: %s" % str(result.get("reason","unknown")))
+    )
+    _refresh_building_operation_content()
 
 func _build_needs_priority_controls(title: String) -> void:
     _add_management_section_label(title)
@@ -1600,6 +1676,7 @@ func _main_hall_operation_text() -> String:
         + "Hậu cần: %s\n"
         + "Trang bị: %s\n\n"
         + "Chọn một hướng ưu tiên để điều chỉnh cách tông môn tự vận hành."
+        + ("\n\nKINH TẾ V1: ĐANG BẬT · Lương mẻ đã thanh toán theo giao dịch thực." if state.sect.economy_a_enabled else "")
     ) % [
         state.disciples.size(), state.sect.disciple_capacity,
         state.sect.treasury, state.sect.spirit_stones,
@@ -1740,6 +1817,10 @@ func _linh_forest_operation_text() -> String:
     ]
 
 func _resource_job_member_status(disciple: DiscipleState, profession_id: StringName, has_active_slot: bool) -> String:
+    if state.sect.economy_a_enabled:
+        var timer := BuildingSystem.new().active_resource_timer_for_worker(state,disciple.id)
+        if not timer.is_empty() and StringName(timer.get("profession_id","")) == profession_id:
+            return "Đang sản xuất · còn %d phút" % maxi(int(timer.get("finish_tick",state.tick))-state.tick,0)
     if not has_active_slot:
         return "Chờ chỗ hoạt động"
     var cycle: Dictionary = disciple.work_cycle_state
@@ -1822,6 +1903,10 @@ func _mine_operation_text() -> String:
     ]
 
 func _mining_member_status(disciple: DiscipleState, has_active_slot: bool) -> String:
+    if state.sect.economy_a_enabled:
+        var timer := BuildingSystem.new().active_resource_timer_for_worker(state,disciple.id)
+        if not timer.is_empty():
+            return "Mẻ timer · còn %d phút" % maxi(int(timer.get("finish_tick",state.tick))-state.tick,0)
     if not has_active_slot:
         return "Chờ chỗ hoạt động"
     var cycle: Dictionary = disciple.work_cycle_state
@@ -2409,6 +2494,8 @@ func _refresh_disciple_summary_content() -> void:
     else:
         disciple_summary_meta.text = "%s · %s" % [quality, cultivation.stage_name(disciple)]
     disciple_summary_body.text = _disciple_summary_text(disciple)
+    if authentic_v2 and state.sect.economy_a_enabled:
+        disciple_summary_meta.text += " · %d Linh Thạch cá nhân" % disciple.spirit_stones
 
 
 func _disciple_summary_text(disciple: DiscipleState) -> String:

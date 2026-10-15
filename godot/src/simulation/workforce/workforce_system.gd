@@ -110,6 +110,8 @@ func assign_group(state: SimulationState, disciple_id: StringName, group_id: Str
     var disciple: DiscipleState = state.disciples[disciple_id]
     if not disciple.active_pve_encounter_id.is_empty():
         return false
+    if state.sect.economy_a_enabled and not building_system.active_resource_timer_for_worker(state,disciple.id).is_empty() and group_id != disciple.work_group_id:
+        return false
     # Explicitly assigning a different crew frees the real Body facility slot;
     # a returned position may be immediately reused by another disciple.
     if group_id != disciple.work_group_id and DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple):
@@ -151,6 +153,8 @@ func assign_worksite(state: SimulationState, disciple_id: StringName, building_i
     if not state.sect.workforce_enabled or not state.disciples.has(disciple_id):
         return false
     var disciple: DiscipleState = state.disciples[disciple_id]
+    if state.sect.economy_a_enabled and not building_system.active_resource_timer_for_worker(state,disciple.id).is_empty() and building_id != disciple.worksite_building_id:
+        return false
     # The primary-building fallback counts group-only members as assigned.
     # Clearing only worksite would therefore leave a hidden Rèn Thân slot.
     # Use the canonical two-field release for an explicit vacancy request.
@@ -246,7 +250,13 @@ func issue_command(state: SimulationState, disciple_id: StringName, kind: String
         if state.p3_7_buildings_enabled and building_system.disciple_has_active_spirit_plot(state,disciple.id):
             return false
     if state.p3_7_buildings_enabled and building_system.disciple_has_active_timed_recipe(state, disciple.id):
-        return false
+        var resource_timer := building_system.active_resource_timer_for_worker(state,disciple.id)
+        if resource_timer.is_empty() or not [COMMAND_HOLD,COMMAND_REST,COMMAND_RETURN_SECT].has(kind):
+            return false
+        # Explicit interruption abandons only unearned timer progress, never
+        # already-carried legacy goods or an Alchemy input commitment.
+        if not building_system.cancel_resource_timer(state,disciple.id):
+            return false
 
     # O3/O4 fail-closed production command boundary: a direct Mine/Field
     # order is only real when the authoritative building can start work for
@@ -298,6 +308,8 @@ func next_action(state: SimulationState, disciple: DiscipleState) -> StringName:
         return &""
 
     _expire_command_if_needed(state, disciple)
+    if state.sect.economy_a_enabled and not building_system.active_resource_timer_for_worker(state,disciple.id).is_empty():
+        return &"HOLD"
 
     var hp_ratio := disciple.hp / maxf(disciple.max_hp, 1.0)
     var owns_v2 := DiscipleRealmProgressV2.owns_v2_progression(disciple)
@@ -458,7 +470,11 @@ func perform_work(state: SimulationState, disciple: DiscipleState, profession_id
     return result
 
 func _perform_p3_7_mining(state: SimulationState, disciple: DiscipleState) -> Dictionary:
-    var result := building_system.perform_mining_step(state, disciple, _work_speed(state, disciple, PROF_MINING))
+    var result := building_system.perform_mining_step(state, disciple, _work_speed(state, disciple, PROF_MINING), BASE_WORK_XP*_learning_multiplier(state,disciple,PROF_MINING))
+    if bool(result.get("started",false)):
+        if command_kind(disciple) == COMMAND_WORK and command_target(disciple) == PROF_MINING:
+            clear_command(state,disciple)
+        return result
     if not bool(result.get("ok", false)):
         return result
 
@@ -509,8 +525,13 @@ func _perform_p3_7_mining(state: SimulationState, disciple: DiscipleState) -> Di
 
 func _perform_p3_7_forestry(state: SimulationState, disciple: DiscipleState) -> Dictionary:
     var result := building_system.perform_forestry_step(
-        state, disciple, _work_speed(state, disciple, PROF_FORESTRY)
+        state, disciple, _work_speed(state, disciple, PROF_FORESTRY),
+        BASE_WORK_XP*_learning_multiplier(state,disciple,PROF_FORESTRY)
     )
+    if bool(result.get("started",false)):
+        if command_kind(disciple) == COMMAND_WORK and command_target(disciple) == PROF_FORESTRY:
+            clear_command(state,disciple)
+        return result
     if not bool(result.get("ok", false)):
         return result
 

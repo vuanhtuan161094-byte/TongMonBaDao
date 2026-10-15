@@ -83,6 +83,8 @@ func _step_disciple(disciple: DiscipleState) -> void:
     if disciple.injury_level == 1 and disciple.region_id == &"sect" and disciple.injury_recover_at_tick > 0 and state.tick >= disciple.injury_recover_at_tick:
         disciple.injury_level = 0
         disciple.injury_recover_at_tick = 0
+    if state.sect.economy_a_enabled and disciple.current_action == &"EVALUATE":
+        economy_system.auto_personal_service_tick(state,disciple)
     match disciple.current_action:
         &"IDLE":
             disciple.current_action = &"EVALUATE"

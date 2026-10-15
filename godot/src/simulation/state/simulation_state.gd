@@ -206,6 +206,7 @@ func validate_invariants() -> Array[String]:
     if is_nan(runtime_unconsumed_wall_seconds) or is_inf(runtime_unconsumed_wall_seconds) or runtime_unconsumed_wall_seconds < 0.0:
         errors.append("Runtime unconsumed wall seconds are invalid.")
 
+    errors.append_array(EconomySystem.new().validate_v1(self))
     return errors
 
 func to_dict() -> Dictionary:

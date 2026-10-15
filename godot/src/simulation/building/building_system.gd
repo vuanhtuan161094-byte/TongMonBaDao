@@ -394,7 +394,7 @@ func work_available(state: SimulationState, profession_id: StringName, disciple:
     match profession_id:
         PROF_MINING, PROF_FORESTRY:
             var producer := building_for_profession(state, profession_id, disciple)
-            return producer != null and (disciple == null or can_disciple_work(state, producer, disciple))
+            return producer != null and (disciple == null or (can_disciple_work(state, producer, disciple) and not disciple_has_active_timed_recipe(state,disciple.id)))
         PROF_ALCHEMY:
             if disciple == null:
                 for hall in _buildings_of_type(state, TYPE_ALCHEMY_HALL):
@@ -578,6 +578,8 @@ func process_tick(state: SimulationState) -> void:
             _process_spirit_field_plots(state, building)
         elif building.building_type == TYPE_ALCHEMY_HALL:
             _process_alchemy_jobs(state, building)
+        if state.sect.economy_a_enabled and (building.building_type == TYPE_MINE or building.building_type == TYPE_LINH_FOREST):
+            _process_resource_timers(state,building)
 
 func _default_alchemy_state() -> Dictionary:
     return {"recipe_enabled": true, "recipe_id": str(AlchemyRecipeRegistry.RECIPE_HOI_XUAN_DAN), "job_sequence": 0, "jobs": []}
@@ -641,7 +643,7 @@ func active_alchemy_job_for_worker(state: SimulationState, disciple_id: StringNa
     return {}
 
 func disciple_has_active_timed_recipe(state: SimulationState, disciple_id: StringName) -> bool:
-    return not active_alchemy_job_for_worker(state, disciple_id).is_empty()
+    return not active_alchemy_job_for_worker(state, disciple_id).is_empty() or not active_resource_timer_for_worker(state, disciple_id).is_empty()
 
 func set_alchemy_recipe_enabled(state: SimulationState, hall_id: StringName, enabled: bool) -> bool:
     if not state.buildings.has(str(hall_id)):
@@ -742,15 +744,15 @@ func _process_alchemy_jobs(state: SimulationState, hall: BuildingState) -> void:
         hall.production_state = data
         state.building_event_count += 1
 
-func perform_mining_step(state: SimulationState, disciple: DiscipleState, work_speed: float) -> Dictionary:
-    return perform_resource_job_step(state, disciple, work_speed, PROF_MINING)
+func perform_mining_step(state: SimulationState, disciple: DiscipleState, work_speed: float, profession_xp_gain: float = 0.0) -> Dictionary:
+    return perform_resource_job_step(state, disciple, work_speed, PROF_MINING, profession_xp_gain)
 
-func perform_forestry_step(state: SimulationState, disciple: DiscipleState, work_speed: float) -> Dictionary:
-    return perform_resource_job_step(state, disciple, work_speed, PROF_FORESTRY)
+func perform_forestry_step(state: SimulationState, disciple: DiscipleState, work_speed: float, profession_xp_gain: float = 0.0) -> Dictionary:
+    return perform_resource_job_step(state, disciple, work_speed, PROF_FORESTRY, profession_xp_gain)
 
 # Generic carry-cycle producer used by Mine and Linh Lâm. Spirit Field remains
 # plot/timer authority and intentionally does not use this envelope.
-func perform_resource_job_step(state: SimulationState, disciple: DiscipleState, work_speed: float, profession_id: StringName) -> Dictionary:
+func perform_resource_job_step(state: SimulationState, disciple: DiscipleState, work_speed: float, profession_id: StringName, profession_xp_gain: float = 0.0) -> Dictionary:
     var producer := building_for_profession(state, profession_id, disciple)
     if producer == null or not can_disciple_work(state, producer, disciple):
         var slot_reason := "no_active_building_slot"
@@ -760,6 +762,10 @@ func perform_resource_job_step(state: SimulationState, disciple: DiscipleState, 
             slot_reason = "no_active_linh_forest_slot"
         return {"ok": false, "completed": false, "reason": slot_reason}
 
+    # Old TRAVEL/EXTRACT/HAUL cycles drain to canonical Warehouse without
+    # resetting carried_units. Only *new* V2 jobs use the opt-in timer.
+    if state.sect.economy_a_enabled and DiscipleRealmProgressV2.owns_v2_progression(disciple) and disciple.work_cycle_state.is_empty():
+        return _start_resource_timer(state,producer,disciple,work_speed,profession_id,profession_xp_gain)
     var definition := definition_for(producer)
     if str(definition.get("job_model", "")) != "carry_cycle":
         return {"ok": false, "completed": false, "reason": "unsupported_job_model"}
@@ -900,6 +906,138 @@ func perform_spirit_field_step(state: SimulationState, disciple: DiscipleState, 
         "stamina_cost": 0.0
     }
 
+# ECONOMY-A duration/quantity pilot; real authority = saved building jobs +
+# the existing SimulationScheduler.process_tick. Animations never settle goods.
+func resource_timer_jobs(building: BuildingState) -> Array:
+    if building == null:
+        return []
+    var value = building.production_state.get("economy_a_jobs",[])
+    return value.duplicate(true) if value is Array else []
+
+func active_resource_timer_for_worker(state: SimulationState, disciple_id: StringName) -> Dictionary:
+    if not state.sect.economy_a_enabled:
+        return {}
+    for raw_building in state.buildings.values():
+        if not (raw_building is BuildingState):
+            continue
+        var building: BuildingState = raw_building
+        if building.building_type != TYPE_MINE and building.building_type != TYPE_LINH_FOREST:
+            continue
+        for raw_job in resource_timer_jobs(building):
+            if raw_job is Dictionary and str(raw_job.get("worker_id","")) == str(disciple_id):
+                return (raw_job as Dictionary).duplicate(true)
+    return {}
+
+func _start_resource_timer(state: SimulationState, producer: BuildingState, actor: DiscipleState, speed: float, profession_id: StringName, xp_gain: float) -> Dictionary:
+    if not state.sect.p3_7_resources_enabled or not can_disciple_work(state,producer,actor):
+        return {"ok":false,"reason":"missing_canonical_job_slot"}
+    if disciple_has_active_timed_recipe(state,actor.id) or disciple_has_active_spirit_plot(state,actor.id) or DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,actor):
+        return {"ok":false,"reason":"another_active_job"}
+    if actor.region_id != &"sect" or not actor.active_pve_encounter_id.is_empty():
+        return {"ok":false,"reason":"worker_not_available"}
+    var definition := definition_for(producer)
+    if StringName(definition.get("profession_id","")) != profession_id:
+        return {"ok":false,"reason":"wrong_job_profession"}
+    var policy := state.sect.economy_a_policy
+    var base_duration := clampi(int(policy.get("resource_duration_ticks",10)),1,1440)
+    var duration := maxi(1,int(ceil(float(base_duration)/maxf(speed,0.25))))
+    var data := producer.production_state.duplicate(true)
+    var jobs := resource_timer_jobs(producer)
+    var sequence := maxi(int(data.get("economy_a_sequence",0)),0)+1
+    var job := {
+        "job_id":"%s:v1:%d" % [str(producer.id),sequence],
+        "worker_id":str(actor.id),"profession_id":str(profession_id),
+        "resource_id":str(definition.get("resource_id","")),
+        "output_quantity":_resource_job_batch_units(producer),
+        "profession_xp_gain":maxf(xp_gain,0.0),
+        "started_tick":state.tick,"finish_tick":state.tick+duration
+    }
+    jobs.append(job)
+    data["economy_a_sequence"] = sequence
+    data["economy_a_jobs"] = jobs
+    producer.production_state = data
+    state.building_event_count += 1
+    return {"ok":true,"started":true,"completed":false,"job_id":str(job["job_id"]),"finish_tick":int(job["finish_tick"]),"phase":"timed","profession_id":str(profession_id),"building_id":str(producer.id),"stamina_cost":0.0}
+
+func cancel_resource_timer(state: SimulationState, disciple_id: StringName) -> bool:
+    if not state.sect.economy_a_enabled:
+        return false
+    for raw_building in state.buildings.values():
+        if not (raw_building is BuildingState):
+            continue
+        var building: BuildingState = raw_building
+        if building.building_type != TYPE_MINE and building.building_type != TYPE_LINH_FOREST:
+            continue
+        var jobs := resource_timer_jobs(building)
+        for index in range(jobs.size()):
+            if jobs[index] is Dictionary and str(jobs[index].get("worker_id","")) == str(disciple_id):
+                jobs.remove_at(index)
+                var data := building.production_state.duplicate(true)
+                data["economy_a_jobs"] = jobs
+                building.production_state = data
+                state.building_event_count += 1
+                return true
+    return false
+
+func _process_resource_timers(state: SimulationState, building: BuildingState) -> void:
+    var jobs := resource_timer_jobs(building)
+    if jobs.is_empty():
+        return
+    var remaining: Array = []
+    var changed := false
+    for raw_job in jobs:
+        if not (raw_job is Dictionary):
+            remaining.append(raw_job)
+            continue
+        var job: Dictionary = raw_job
+        var worker_id := StringName(job.get("worker_id",""))
+        if not state.disciples.has(worker_id):
+            remaining.append(job)
+            continue
+        var worker: DiscipleState = state.disciples[worker_id]
+        if worker.active_pve_encounter_id != "":
+            remaining.append(job)
+            continue
+        if state.tick < int(job.get("finish_tick",state.tick+1)):
+            if StringName(job.get("profession_id","")) == PROF_MINING:
+                _award_timed_mining_body_minute(state,worker,building)
+            remaining.append(job)
+            continue
+        var resource_id := StringName(job.get("resource_id",""))
+        var units := int(job.get("output_quantity",0))
+        var job_id := str(job.get("job_id",""))
+        if job_id.is_empty() or units <= 0 or not warehouse.add(state,resource_id,units):
+            remaining.append(job)
+            continue
+        building.metrics["production_batches"] = int(building.metrics.get("production_batches",0))+1
+        building.metrics["units_produced"] = int(building.metrics.get("units_produced",0))+units
+        var profession := str(job.get("profession_id",""))
+        worker.profession_xp[profession] = float(worker.profession_xp.get(profession,0.0))+maxf(float(job.get("profession_xp_gain",0.0)),0.0)
+        worker.metrics["work_completions"] = int(worker.metrics.get("work_completions",0))+1
+        worker.metrics["%s_completions" % profession] = int(worker.metrics.get("%s_completions" % profession,0))+1
+        state.sect.workforce_event_count += 1
+        EconomySystem.new().settle_work_wage(state,worker,job_id)
+        changed = true
+    if changed:
+        var data := building.production_state.duplicate(true)
+        data["economy_a_jobs"] = remaining
+        building.production_state = data
+        state.building_event_count += 1
+
+func _award_timed_mining_body_minute(state: SimulationState, worker: DiscipleState, mine: BuildingState) -> void:
+    if not state.sect.v2_training_enabled or not DiscipleRealmProgressV2.owns_v2_progression(worker):
+        return
+    var body_rule = state.sect.v2_training_rules.get("body",null)
+    if not (body_rule is Dictionary):
+        return
+    DiscipleBodyXpSourceV2.commit_minute(state,worker,{
+        "source_id":"p3_7_mine_active_extraction:%s" % str(mine.id),
+        "source_kind":DiscipleBodyXpSourceV2.SOURCE_PRODUCTION,
+        "base_body_xp_per_minute":DiscipleProgressionBalanceV2.BODY_PRODUCTION_REFERENCE_PER_MINUTE,
+        "floor_costs":body_rule.get("floor_costs",{}),
+        "modifiers":[],"active_work_verified":true
+    },"dv2:mine:active:%s:%d" % [str(worker.id),state.tick])
+
 func cancel_work_cycle(state: SimulationState, disciple: DiscipleState, settle_carried: bool = true) -> int:
     if disciple.work_cycle_state.is_empty():
         return 0
@@ -970,8 +1108,23 @@ func validate_invariants(state: SimulationState) -> Array[String]:
             if not MILESTONE_LEVELS.has(milestone) or milestone > building.level:
                 errors.append("Building %s has invalid milestone %d." % [building.id, milestone])
 
+        if state.sect.economy_a_enabled and (building.building_type == TYPE_MINE or building.building_type == TYPE_LINH_FOREST):
+            var resource_ids: Dictionary = {}
+            var resource_workers: Dictionary = {}
+            for raw_timer in resource_timer_jobs(building):
+                if not (raw_timer is Dictionary):
+                    errors.append("Economy-A invalid resource timer.")
+                    continue
+                var timer: Dictionary = raw_timer
+                var timer_id := str(timer.get("job_id",""))
+                var timer_worker := str(timer.get("worker_id",""))
+                if timer_id.is_empty() or resource_ids.has(timer_id) or timer_worker.is_empty() or resource_workers.has(timer_worker) or not state.disciples.has(StringName(timer_worker)):
+                    errors.append("Economy-A invalid/duplicate resource timer owner.")
+                resource_ids[timer_id] = true
+                resource_workers[timer_worker] = true
+                if int(timer.get("finish_tick",0)) <= int(timer.get("started_tick",-1)):
+                    errors.append("Economy-A invalid resource timer deadline.")
         if building.building_type == TYPE_ALCHEMY_HALL:
-            var alchemy_data := _ensure_alchemy_state(building)
             var seen_job_ids: Dictionary = {}
             var seen_workers: Dictionary = {}
             for raw_job in alchemy_data.get("jobs", []):
