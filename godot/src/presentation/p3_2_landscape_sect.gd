@@ -59,7 +59,7 @@ var workforce_picker_profession: StringName = &""
 var workforce_picker_building_id: StringName = &""
 var workforce_picker_group_id: StringName = &""
 var workforce_picker_page: int = 0
-const WORKFORCE_PICKER_PAGE_SIZE := 9
+const WORKFORCE_PICKER_PAGE_SIZE := 8
 var deep_restore_summary := false
 var screen_pointer_dragged := false
 var mouse_pointer_dragged := false
@@ -833,7 +833,7 @@ func _refresh_workforce_picker() -> void:
     var mode := workforce_picker_filter.selected
     for raw_id in state.disciples.keys():
         var disciple: DiscipleState = state.disciples[raw_id]
-        if query != "" and not (query in disciple.display_name.to_lower() or query in str(disciple.id).to_lower()):
+        if query != "" and not disciple.display_name.to_lower().contains(query) and not str(disciple.id).to_lower().contains(query):
             continue
         var reason := _picker_candidate_reason(disciple)
         var assigned := reason == "Đã ở công trình này"
