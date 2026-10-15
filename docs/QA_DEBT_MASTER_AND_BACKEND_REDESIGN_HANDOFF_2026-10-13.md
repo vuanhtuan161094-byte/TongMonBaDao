@@ -1,5 +1,15 @@
 # TÔNG MÔN BÁ ĐẠO — SỔ NỢ CHUNG + BÀN GIAO RÀ SOÁT BACKEND
 
+## GUI-WORKFORCE-V1 — 2026-10-15 · BRANCH CODE / PENDING QA
+
+- **Owner and scope:** GUI presentation owner only: `godot/src/presentation/p3_2_landscape_sect.gd`, `godot/tests/presentation/gui_workforce_v1_picker_test.gd`, this existing canonical ledger and checkpoint/handoff. PR #2 draft, branch `gui-workforce-v1-20261015`; baseline `main=461caca1171462e0da092f21108c5c1733157ad9`. No Backend, Economy, Warehouse, Scheduler, SaveService or balance edits allowed.
+- **Backend audit result:** `assign_group` may terminate an older work cycle, `assign_worksite` changes real worker location, `issue_command` may cancel a running timer or other occupation. Existing V2 Field plots, Alchemy jobs, Body training and PvE reservations have guards. Picker therefore filters with read-only actual state and refuses silent transfer; dispatch uses existing Workforce/Training APIs, never writes disciple keys directly.
+- **UI-DEFECT-01/02/03:** implementation targets readable name contrast, width-safe 384px row and layout with controls above building descriptions. Code updated on draft branch; **do not mark GUI PASS** until real Windows video after regression. Secondary user-reported defect: unusable worker allocation for Mine/Field; implementation adds shared modal, search, status, profession ranking, real slot and pagination for six facility types.
+- **Compatibility/debt:** older `Group_*`, `FieldGroup_*`, `Work_*` retained in hidden advanced section; focused O3/O4/O5/O6/O7/O8/O9/P3.7 FULL still **NOT RUN on branch**. Legacy large-roster advanced control panel shows max first 24 while picker filters full state (8 rows per page); target scale and GUI interactions with 1000–3000 are **PENDING USER**, not benchmarked.
+- **Acceptance:** exact-SHA Godot 4.7.2 import, focused `gui_workforce_v1_picker_test.gd` and cumulative regression, GUI videos of Mine/Field selection. Linux Actions quota exhausted, no Linux PASS. Maintain Economy-A previous acceptance and GP-02C1 overall OPEN, DV2-03 PAUSED.
+
+---
+
 ## BẰNG CHỨNG WINDOWS GUI THỰC — 2026-10-15 14:43–14:48 UTC+07
 
 - **Evidence mới, không thay đổi gameplay:** owner-uploaded `20261015_144302.zip` SHA-256 `a1aca095366dc701c0e6408491c157d54b66983a420a05eb77bf9f791c42fb3c` và video quay màn hình `Tong Mon Ba Dao (DEBUG) 2026-10-15 14-44-41.mp4` SHA-256 `31a7c44370e290935d379df5d2df7c2f5eee86b5ecf7c377f170813cf579ef18` (~61 giây, 1920×1004 recording). Tệp nguồn do user upload trong chat, **không tự có trên GitHub**.
