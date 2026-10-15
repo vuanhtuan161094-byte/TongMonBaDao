@@ -104,7 +104,10 @@ func _verify_typed_foundation_output() -> bool:
     var mine := buildings.primary_building(state, BuildingSystem.TYPE_MINE)
     var worker: DiscipleState = state.disciples[buildings.active_worker_ids(state, mine)[0]]
     var base := buildings._resource_job_batch_units(mine)
-    # The normalized P2 legacy foundation must not be treated as P3.7 points.
+    # Force the P2 normalized representation; the fresh P3.7 factory itself
+    # correctly migrates all founding disciples into open-point Lục Duy.
+    worker.foundation_model_version = FoundationSystem.MODEL_LEGACY_NORMALIZED
+    worker.constitution = 0.8
     if not _check(buildings.mining_batch_units_for_worker(state, mine, worker) == base,
         "legacy normalized Căn Cốt was interpreted as open points"):
         return false
@@ -153,6 +156,7 @@ func _verify_real_timed_packet_save_and_wage() -> bool:
         "test actor is not real V2"):
         return false
     actor.constitution = 2500.0
+    FoundationSystem.new().recompute_disciple_quality(actor)
     actor.profession_xp["mining"] = 2400.0 # canonical profession Lv10
     if not _check(workforce.profession_level_for_state(state, actor, &"mining") == 10,
         "Mine pilot did not use canonical profession level"):
