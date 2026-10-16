@@ -146,6 +146,7 @@ func assign_mine_worker(state: SimulationState, disciple_id: StringName, mine_id
             or str(previous.current_action).begins_with("WORK_")
             or not previous.active_pve_encounter_id.is_empty()
             or previous.region_id != &"sect"
+            or not building_system.active_resource_timer_for_worker(state, previous.id).is_empty()
             or building_system.disciple_has_active_timed_recipe(state, previous.id)
             or building_system.disciple_has_active_spirit_plot(state, previous.id)
             or DiscipleBodyTrainingFacilityV2.has_reserved_slot(state, previous)
@@ -162,6 +163,90 @@ func assign_mine_worker(state: SimulationState, disciple_id: StringName, mine_id
     state.sect.workforce_event_count += 1
     return {"ok": true, "replaced": previous != null, "mine_id": str(mine_id), "worker_id": str(disciple_id)}
 
+func assign_linh_forest_worker(state: SimulationState, disciple_id: StringName, forest_id: StringName, replace_existing: bool = false) -> Dictionary:
+    return _assign_single_operator_building(
+        state, disciple_id, forest_id, BuildingSystem.TYPE_LINH_FOREST,
+        &"forestry_crew", "linh_forest", replace_existing
+    )
+
+func assign_spirit_field_worker(state: SimulationState, disciple_id: StringName, field_id: StringName, replace_existing: bool = false) -> Dictionary:
+    return _assign_single_operator_building(
+        state, disciple_id, field_id, BuildingSystem.TYPE_SPIRIT_FIELD,
+        &"herbalism_crew", "spirit_field", replace_existing
+    )
+
+# Shared atomic assignment for owner-locked one-operator resource buildings.
+# Mine keeps its P1 public adapter above for compatibility; Forest/Field use
+# this helper directly so secondary instances never create hidden waiting staff.
+func _assign_single_operator_building(
+    state: SimulationState, disciple_id: StringName, building_id: StringName,
+    expected_type: StringName, group_id: StringName, reason_prefix: String,
+    replace_existing: bool = false
+) -> Dictionary:
+    if not state.sect.workforce_enabled or not state.p3_7_buildings_enabled:
+        return {"ok":false,"reason":"workforce_unavailable"}
+    var building = state.buildings.get(str(building_id))
+    if not (building is BuildingState) or building.building_type != expected_type:
+        return {"ok":false,"reason":"invalid_%s" % reason_prefix}
+    if not state.disciples.has(disciple_id):
+        return {"ok":false,"reason":"missing_disciple"}
+
+    var actor: DiscipleState = state.disciples[disciple_id]
+    var occupants := building_system.assigned_worker_ids(state,building)
+    if occupants.size() > 1:
+        return {"ok":false,"reason":"%s_overassigned_reset_dev_save" % reason_prefix}
+    if occupants.has(disciple_id):
+        if actor.worksite_building_id == &"":
+            actor.worksite_building_id = building_id
+            state.sect.workforce_event_count += 1
+        return {"ok":true,"already_assigned":true}
+
+    if actor.region_id != &"sect" or not actor.active_pve_encounter_id.is_empty():
+        return {"ok":false,"reason":"disciple_not_at_sect"}
+    if actor.work_group_id != &"" or actor.worksite_building_id != &"":
+        return {"ok":false,"reason":"disciple_already_assigned"}
+    if not actor.work_cycle_state.is_empty() or not actor.direct_command.is_empty():
+        return {"ok":false,"reason":"disciple_has_active_command_or_cycle"}
+    if (
+        not building_system.active_resource_timer_for_worker(state,actor.id).is_empty()
+        or building_system.disciple_has_active_timed_recipe(state,actor.id)
+        or building_system.disciple_has_active_spirit_plot(state,actor.id)
+        or DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,actor)
+    ):
+        return {"ok":false,"reason":"disciple_has_active_job"}
+    if str(actor.current_action).begins_with("WORK_") or actor.current_action == &"CULTIVATE":
+        return {"ok":false,"reason":"disciple_finishing_action"}
+
+    var previous: DiscipleState = null
+    if not occupants.is_empty():
+        if not replace_existing:
+            return {"ok":false,"reason":"%s_full" % reason_prefix}
+        previous = state.disciples[occupants[0]]
+        if (
+            not previous.work_cycle_state.is_empty()
+            or not previous.direct_command.is_empty()
+            or str(previous.current_action).begins_with("WORK_")
+            or not previous.active_pve_encounter_id.is_empty()
+            or previous.region_id != &"sect"
+            or not building_system.active_resource_timer_for_worker(state,previous.id).is_empty()
+            or building_system.disciple_has_active_timed_recipe(state,previous.id)
+            or building_system.disciple_has_active_spirit_plot(state,previous.id)
+            or DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,previous)
+        ):
+            return {"ok":false,"reason":"previous_operator_busy"}
+
+    if previous != null:
+        clear_command(state,previous)
+        previous.work_group_id = &""
+        previous.worksite_building_id = &""
+    actor.work_group_id = group_id
+    actor.worksite_building_id = building_id
+    state.sect.workforce_event_count += 1
+    return {
+        "ok":true,"replaced":previous != null,
+        "building_id":str(building_id),"worker_id":str(disciple_id)
+    }
+
 func assign_group(state: SimulationState, disciple_id: StringName, group_id: StringName) -> bool:
     if not state.sect.workforce_enabled or not state.disciples.has(disciple_id):
         return false
@@ -170,12 +255,18 @@ func assign_group(state: SimulationState, disciple_id: StringName, group_id: Str
     var disciple: DiscipleState = state.disciples[disciple_id]
     if not disciple.active_pve_encounter_id.is_empty():
         return false
-    # Legacy group-only allocation targets the primary Mine. No hidden waiting
-    # group members: multi-instance assignment uses assign_mine_worker() above.
-    if state.p3_7_buildings_enabled and group_id == &"mining_crew" and disciple.work_group_id != group_id:
-        var mine := building_system.primary_building(state, BuildingSystem.TYPE_MINE)
-        if mine == null or building_system.assigned_worker_ids(state, mine).size() >= 1:
-            return false
+    # Legacy group-only allocation targets the primary instance. Economy V2
+    # one-operator resource buildings never keep hidden waiting members.
+    if state.p3_7_buildings_enabled and disciple.work_group_id != group_id:
+        var one_operator_type := {
+            "mining_crew": BuildingSystem.TYPE_MINE,
+            "forestry_crew": BuildingSystem.TYPE_LINH_FOREST,
+            "herbalism_crew": BuildingSystem.TYPE_SPIRIT_FIELD
+        }.get(str(group_id), &"")
+        if one_operator_type != &"":
+            var primary := building_system.primary_building(state, StringName(one_operator_type))
+            if primary == null or building_system.assigned_worker_ids(state, primary).size() >= 1:
+                return false
     if state.sect.economy_a_enabled and not building_system.active_resource_timer_for_worker(state,disciple.id).is_empty() and group_id != disciple.work_group_id:
         return false
     # Explicitly assigning a different crew frees the real Body facility slot;
@@ -240,7 +331,7 @@ func assign_worksite(state: SimulationState, disciple_id: StringName, building_i
     var building = state.buildings.get(str(building_id))
     if not (building is BuildingState) or building.worker_group_id == &"" or disciple.work_group_id != building.worker_group_id:
         return false
-    if building.building_type == BuildingSystem.TYPE_MINE:
+    if [BuildingSystem.TYPE_MINE, BuildingSystem.TYPE_LINH_FOREST, BuildingSystem.TYPE_SPIRIT_FIELD].has(building.building_type):
         for occupant_id in building_system.assigned_worker_ids(state, building):
             if occupant_id != disciple_id:
                 return false
@@ -292,7 +383,10 @@ func p3_7_profession_level(disciple: DiscipleState, profession_id: StringName) -
     var xp := profession_xp(disciple, profession_id)
     if xp <= 0.0:
         return 0
-    return maxi(int(floor(sqrt(xp / P3_7_XP_LEVEL_SCALE))), 0)
+    # Economy V2 balance authority uses profession Lv0..100. XP may continue
+    # accumulating for audit/future content, but production modifiers cannot
+    # silently exceed the approved cap.
+    return clampi(int(floor(sqrt(xp / P3_7_XP_LEVEL_SCALE))), 0, 100)
 
 func profession_level_for_state(state: SimulationState, disciple: DiscipleState, profession_id: StringName) -> int:
     return p3_7_profession_level(disciple, profession_id) if state.p3_7_buildings_enabled else profession_level(disciple, profession_id)
