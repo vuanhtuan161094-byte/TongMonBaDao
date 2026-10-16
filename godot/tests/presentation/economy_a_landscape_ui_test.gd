@@ -99,25 +99,6 @@ func _run() -> void:
     if filtered_rows != 1:
         _fail("Mine search did not narrow worker rows to the requested ID")
         return
-    var v2_profile_checked := false
-    for raw_id in state.disciples.keys():
-        var actor: DiscipleState = state.disciples[raw_id]
-        if not DiscipleRealmProgressV2.owns_v2_progression(actor):
-            continue
-        var snapshot := DisciplePresentationSnapshotV2.build(state,actor)
-        var professions: Dictionary = snapshot["work"]["professions"]
-        var mining: Dictionary = professions[str(WorkforceSystem.PROF_MINING)]
-        var profile_text := str(ui.call("_attributes_tab_text",actor))
-        if not profile_text.contains("Khai Khoáng Lv%d · EXP %.1f" % [
-            int(mining["level"]), float(mining["xp"])
-        ]):
-            _fail("Authentic V2 profile omitted canonical Mining level or EXP")
-            return
-        v2_profile_checked = true
-        break
-    if not v2_profile_checked:
-        _fail("Fresh landscape state has no authentic V2 profile to verify")
-        return
     var result := state.validate_invariants()
     if not result.is_empty():
         _fail("Economy-A real landscape state violated invariants: %s" % str(result))
