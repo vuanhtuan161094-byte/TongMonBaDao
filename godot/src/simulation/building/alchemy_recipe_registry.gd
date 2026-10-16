@@ -60,8 +60,9 @@ func validate_definitions() -> Array[String]:
         var output_id := output_resource_id(recipe_id)
         if output_id == &"" or not resources.has(output_id) or output_quantity(recipe_id) <= 0:
             errors.append("Alchemy recipe %s has invalid output." % recipe_id)
-        var cultivation_tier := cultivation_realm_tier(recipe_id)
-        var body_tier := body_realm_tier(recipe_id)
+        var raw_definition := definition(recipe_id)
+        var cultivation_tier := int(raw_definition.get("cultivation_realm_tier", -1))
+        var body_tier := int(raw_definition.get("body_realm_tier", -1))
         if cultivation_tier <= 0 or cultivation_tier > DiscipleRealmProgressV2.MAX_REALM:
             errors.append("Alchemy recipe %s has invalid Tu Vi tier." % recipe_id)
         if body_tier < 0 or body_tier > DiscipleRealmProgressV2.MAX_REALM:
