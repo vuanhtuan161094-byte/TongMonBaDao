@@ -81,6 +81,24 @@ func _run() -> void:
     if checked_rows == 0:
         _fail("Mine worker management rows are missing")
         return
+    var search := ui.find_child("BuildingDiscipleSearch",true,false) as LineEdit
+    if search == null:
+        _fail("Mine worker search is missing")
+        return
+    var target_id := str(state.disciples.keys()[0])
+    search.emit_signal("text_submitted",target_id)
+    await process_frame
+    controls = ui.find_child("BuildingManagementControls",true,false) as VBoxContainer
+    var filtered_rows := 0
+    for node in controls.get_children():
+        if node is GridContainer and str(node.name).begins_with("Person_"):
+            filtered_rows += 1
+            if str(node.name) != "Person_%s" % target_id:
+                _fail("Mine search returned an unrelated disciple")
+                return
+    if filtered_rows != 1:
+        _fail("Mine search did not narrow worker rows to the requested ID")
+        return
     var result := state.validate_invariants()
     if not result.is_empty():
         _fail("Economy-A real landscape state violated invariants: %s" % str(result))
