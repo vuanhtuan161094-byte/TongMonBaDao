@@ -26,6 +26,16 @@ func _run() -> void:
         if SectIsometricWorldV1.virtual_legacy_point(kind) == Vector2.ZERO:
             _fail("landmark has no screen projection")
             return
+    # ENV02A PV01 3 buildings display at footprint centers, not top-left.
+    for kind in ["main_hall","warehouse","forge"]:
+        var at: Vector2i = SectIsometricWorldV1.TYPE_ANCHORS[kind]
+        var footprint: Vector2 = SectIsometricWorldV1.HOUSE_FOOTPRINT_CENTERS[kind]
+        var projected := SectIsometricWorldV1.project(
+            SectIsometricWorldV1.visual_anchor(StringName(kind),at)
+        )
+        if projected.distance_to(SectIsometricWorldV1.project(Vector2(at)+footprint)) > 0.001:
+            _fail("PV01 display anchor diverged from footprint center for "+kind)
+            return
     print("MAP-2.5D PROJECTION %d CASES PASS" % actual)
     quit(0)
 

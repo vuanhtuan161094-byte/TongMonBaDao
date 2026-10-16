@@ -43,6 +43,13 @@ const HOUSE_SIZES := {
     "warehouse":Vector2(162,138),
     "forge":Vector2(205,164)
 }
+# PV01 renders sprite artwork at the CENTER of each actual static
+# footprint (not at the map-model origin cell). This is presentation only.
+const HOUSE_FOOTPRINT_CENTERS := {
+    "main_hall":Vector2(3.0,2.0),
+    "warehouse":Vector2(1.0,0.5),
+    "forge":Vector2(1.0,1.0)
+}
 const ROAD_TEXTURES := {
     "cross":"stone_cross.png",
     "junction":"stone_junction.png",
@@ -230,15 +237,20 @@ static func inverse(world: Vector2) -> Vector2:
     var v := world.y/HALF_H
     return Vector2((u+v)*0.5,(v-u)*0.5)
 
+static func visual_anchor(destination: StringName, cell: Vector2i) -> Vector2:
+    # The three verified PV01 houses must agree with footprint door geometry.
+    # For all other destinations the existing V1 anchor remains authoritative.
+    return Vector2(cell)+HOUSE_FOOTPRINT_CENTERS.get(str(destination),Vector2.ZERO)
+
 static func virtual_legacy_point(destination: StringName, building_id: StringName = &"") -> Vector2:
-    var cell := TYPE_ANCHORS.get(str(destination),Vector2i(90,92))
+    var cell: Vector2i = TYPE_ANCHORS.get(str(destination),Vector2i(90,92))
     if building_id != &"":
         # Extra instances in a fixed-layout V1 save have NO true placement.
         # Only display a stable read-only cluster, never persist coordinates.
         var sequence := maxi(int(str(building_id).get_slice("_",str(building_id).get_slice_count("_")-1)),1)
         if sequence > 1:
             cell += Vector2i((sequence-1)%4*2,(sequence-1)/4*2)
-    return LEGACY_ANCHOR+project(Vector2(cell))-project(CENTER_CELL)
+    return LEGACY_ANCHOR+project(visual_anchor(destination,cell))-project(CENTER_CELL)
 
 func refresh_from_state(state: SimulationState) -> void:
     if state == null:
@@ -275,7 +287,7 @@ func _row(dest: StringName, instance_id: StringName, text_label: String, index: 
     return {
         "destination":dest,
         "building_id":instance_id,
-        "world":project(Vector2(cell)),
+        "world":project(visual_anchor(dest,cell)),
         "cell":cell,
         "managed":managed,
         "label":text_label
