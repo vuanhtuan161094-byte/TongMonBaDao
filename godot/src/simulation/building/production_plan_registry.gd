@@ -134,16 +134,38 @@ func body_realm_tier(plan_id: StringName) -> int:
 func building_speed_factor(level: int) -> float:
     return 1.0 + 0.005 * float(maxi(level - 1, 0))
 
-# Owner-approved common-output scaling: +0.5% common yield per level after Lv1.
+# Pilot common-output curve. Adjacent levels interpolate geometrically between
+# the owner's milestones, avoiding a one-level jump at each milestone.
+# This affects routine units per batch only; speed, profession and rare rolls
+# retain their separate authorities.
+const COMMON_YIELD_MILESTONES := {
+    1: 1.0, 10: 2.0, 20: 5.0, 30: 10.0, 40: 30.0,
+    50: 100.0, 60: 300.0, 75: 1000.0, 90: 3000.0, 100: 10000.0
+}
+const COMMON_YIELD_LEVELS := [1, 10, 20, 30, 40, 50, 60, 75, 90, 100]
+
 func common_yield_factor(level: int) -> float:
-    return 1.0 + 0.005 * float(maxi(level - 1, 0))
+    var bounded_level := clampi(level, 1, 100)
+    if bounded_level == 100:
+        return COMMON_YIELD_MILESTONES[100]
+    for index in range(COMMON_YIELD_LEVELS.size() - 1):
+        var lower: int = COMMON_YIELD_LEVELS[index]
+        var upper: int = COMMON_YIELD_LEVELS[index + 1]
+        if bounded_level <= upper:
+            var fraction := float(bounded_level - lower) / float(upper - lower)
+            var low_factor: float = COMMON_YIELD_MILESTONES[lower]
+            var high_factor: float = COMMON_YIELD_MILESTONES[upper]
+            return low_factor * pow(high_factor / low_factor, fraction)
+    return 1.0
 
 func scaled_yield(plan_id: StringName, building_level: int) -> int:
     var base := base_yield(plan_id)
     if base <= 0:
         return 0
     var factor := common_yield_factor(building_level) if bool(definition(plan_id).get("common_yield", false)) else 1.0
-    return maxi(int(round(float(base) * factor)), 1)
+    # Keep conversion and later warehouse accounting within the exact safe stack.
+    var units := minf(float(base) * factor, float(WarehouseSystem.MAX_SAFE_STACK))
+    return maxi(int(round(units)), 1)
 
 func scale_common_requirement(resource_id: StringName, legacy_quantity: int) -> int:
     var quantity := maxi(legacy_quantity, 0)
