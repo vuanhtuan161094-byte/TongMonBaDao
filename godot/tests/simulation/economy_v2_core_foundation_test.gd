@@ -117,6 +117,7 @@ func _verify_one_operator_contract() -> bool:
 
 func _verify_field_duty_internal_plots() -> bool:
     var state := P37Factory.create_state(920602)
+    state.sect.spirit_stones = 1000
     var field := buildings.primary_building(state, BuildingSystem.TYPE_SPIRIT_FIELD)
     var worker: DiscipleState = null
     var ids: Array = state.disciples.keys()
@@ -132,34 +133,68 @@ func _verify_field_duty_internal_plots() -> bool:
         "cannot assign one Linh Điền operator"):
         return false
 
-    var result := buildings.perform_spirit_field_step(state,worker,1.0)
-    if not _check(bool(result.get("ok",false)) and int(result.get("plots_started",0)) == 4,
-        "one field duty did not start the four internal plot timers"):
-        return false
+    var duty_id := ""
+    var total_paid := 0
+    for _i in range(4):
+        var stones_before := state.sect.spirit_stones
+        var result := buildings.perform_spirit_field_step(state,worker,1.0)
+        if not _check(bool(result.get("ok",false)) and bool(result.get("completed",false)),
+            "sole operator could not start an internal plot"):
+            return false
+        if duty_id == "":
+            duty_id = str(result.get("duty_job_id",""))
+        elif not _check(str(result.get("duty_job_id","")) == duty_id,
+            "internal plot created a competing Field duty"):
+            return false
+        var paid := int(result.get("paid_spirit_stones",0))
+        if not _check(paid > 0 and state.sect.spirit_stones == stones_before-paid,
+            "one plot action did not debit exactly one crop cost"):
+            return false
+        total_paid += paid
+
     var plots := buildings.spirit_field_plots(state,field)
     if not _check(plots.size() == 4, "field duty changed the four-plot contract"):
         return false
+    var growing := 0
     var wage_ids: Dictionary = {}
     for raw_plot in plots:
         if not (raw_plot is Dictionary):
             return _check(false,"field contains invalid plot state")
+        if StringName(raw_plot.get("status","")) != BuildingSystem.PLOT_GROWING:
+            continue
+        growing += 1
         if not _check(str(raw_plot.get("assigned_worker_id","")) == str(worker.id),
             "field plot is owned by another disciple"):
+            return false
+        if not _check(str(raw_plot.get("field_duty_id","")) == duty_id,
+            "field plot escaped the shared duty identity"):
             return false
         var wage_id := str(raw_plot.get("economy_a_wage_job_id",""))
         if wage_id != "":
             wage_ids[wage_id] = true
-    if not _check(wage_ids.size() <= 1,
-        "four plots created multiple wage identities for one field duty"):
+    if not _check(growing == 4 and wage_ids.size() <= 1 and total_paid > 0,
+        "four internal plots do not belong to one operator/duty"):
         return false
     if not _check(buildings.disciple_has_active_spirit_plot(state,worker.id,field),
         "field duty does not reserve its sole operator"):
         return false
-    var duplicate := buildings.perform_spirit_field_step(state,worker,1.0)
+
+    var fifth := buildings.perform_spirit_field_step(state,worker,1.0)
+    if not _check(not bool(fifth.get("ok",false)) and str(fifth.get("reason","")) == "no_empty_plot",
+        "full four-plot Field accepted a fifth internal timer"):
+        return false
+
+    var extra: DiscipleState = null
+    for raw_id in ids:
+        var candidate: DiscipleState = state.disciples[raw_id]
+        if candidate.id != worker.id and candidate.work_group_id == &"" and candidate.region_id == &"sect":
+            extra = candidate
+            break
+    if extra == null:
+        return _check(false,"no second disciple available for one-operator probe")
     return _check(
-        not bool(duplicate.get("ok",false))
-        and str(duplicate.get("reason","")) == "field_duty_already_running",
-        "same operator started a competing Field duty"
+        not bool(workforce.assign_spirit_field_worker(state,extra.id,field.id).get("ok",false)),
+        "active Linh Điền accepted a second responsible operator"
     )
 
 func _verify_fractional_work_speed_is_preserved() -> bool:
