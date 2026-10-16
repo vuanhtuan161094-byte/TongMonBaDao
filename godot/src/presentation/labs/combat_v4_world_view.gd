@@ -50,6 +50,8 @@ var monster_previous_positions: Dictionary = {}
 var monster_facing: Dictionary = {}
 var monster_reactions: Dictionary = {}
 var visual_clock := 0.0
+var disciple_reaction_pose := ""
+var disciple_reaction_until := 0.0
 
 static func world_point(logical: Vector2) -> Vector2:
     return MAP_RECT.position + Vector2(
@@ -86,10 +88,12 @@ func bind_battle(authority: MapBattleV2) -> void:
     monster_facing.clear()
     monster_reactions.clear()
     visual_clock = 0.0
+    disciple_reaction_pose = ""
+    disciple_reaction_until = 0.0
     disciple_visual = ModularDiscipleActor.new()
     disciple_visual.name = "StageA_Female_Proof"
     add_child(disciple_visual)
-    disciple_visual.set_animation_library(FemaleNormalV1MotionLibrary.build())
+    disciple_visual.set_animation_library(CombatV4TwoWayMotion.build())
     var installed := FemaleStageAAssetLoader.apply_public_direction(disciple_visual, &"right")
     stage_art_loaded = int(installed.get("applied", 0)) == 14
     disciple_visual.set_status_text("")
@@ -141,6 +145,9 @@ func sync_visuals() -> void:
         else:
             disciple_visual.current_clip = DiscipleActorVisualCatalog.CLIP_IDLE
             disciple_visual.set_facing_from_delta(Vector2.ZERO)
+        if visual_clock < disciple_reaction_until:
+            disciple_visual.current_clip = StringName(disciple_reaction_pose)
+            disciple_visual.set_facing_from_delta(Vector2.ZERO)
         last_disciple_position = logical
         disciple_visual.modulate.a = 0.36 if float(actor.get("hp", 0.0)) <= 0.0 else 1.0
         break
@@ -191,12 +198,18 @@ func consume_events(new_events: Array) -> void:
         match str(event.get("type", "")):
             "hit":
                 var attacker_id := str(event.get("attacker", ""))
+                if attacker_id == "pilot_female":
+                    disciple_reaction_pose = "attack"
+                    disciple_reaction_until = visual_clock + CombatV4TwoWayMotion.ATTACK_SECONDS
                 if monster_nodes.has(attacker_id):
                     monster_reactions[attacker_id] = {"pose": "attack", "until": visual_clock + 0.24}
                 var target_id := str(event.get("target", ""))
                 var target: Dictionary = battle.actors.get(target_id, {})
                 if not target.is_empty():
                     fx.append({"at": world_point(target["position"]), "ttl": 0.28, "kind": "hit"})
+                if target_id == "pilot_female":
+                    disciple_reaction_pose = "hit"
+                    disciple_reaction_until = visual_clock + CombatV4TwoWayMotion.HIT_SECONDS
                 if monster_nodes.has(target_id):
                     monster_reactions[target_id] = {"pose": "hit", "until": visual_clock + 0.23}
             "area_release":
