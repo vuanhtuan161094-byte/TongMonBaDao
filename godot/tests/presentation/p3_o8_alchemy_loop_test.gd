@@ -76,6 +76,26 @@ func _run() -> void:
             continue
         workforce.issue_command(state, id, WorkforceSystem.COMMAND_HOLD, "", 1200)
 
+    # Recall the existing operator through the real scheduler before issuing a
+    # player Field action. Cancel only pre-existing plot work in this fixture.
+    for _wait in range(300):
+        var current: DiscipleState = state.disciples[field_worker_id]
+        if current.region_id == &"sect" and current.active_pve_encounter_id.is_empty():
+            break
+        scheduler.step()
+    var field_actor: DiscipleState = state.disciples[field_worker_id]
+    if field_actor.region_id != &"sect" or not field_actor.active_pve_encounter_id.is_empty():
+        _fail("O8 existing Field operator did not return to Sect.")
+        return
+    if not workforce.issue_command(state,field_worker_id,WorkforceSystem.COMMAND_HOLD,"",1200):
+        _fail("O8 could not hold returned Field operator.")
+        return
+    for prior_plot in buildings.spirit_field_plots(state,field):
+        if StringName(prior_plot.get("status","")) == BuildingSystem.PLOT_GROWING:
+            if not buildings.cancel_spirit_plot(state,field.id,StringName(prior_plot.get("plot_id",""))):
+                _fail("O8 could not cancel a pre-existing plot for isolation.")
+                return
+
     # AUTO_DEMAND uses actual stock-to-target ratios, so a fresh save may
     # prioritize the herb directly. Observe a genuine 2,000-unit herb batch.
     if not await _open_building(SectMapPresentation.DEST_SPIRIT_FIELD):
