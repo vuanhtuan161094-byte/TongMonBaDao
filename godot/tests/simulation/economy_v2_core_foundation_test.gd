@@ -184,6 +184,15 @@ func _verify_field_duty_internal_plots() -> bool:
         "full four-plot Field accepted a fifth internal timer"):
         return false
 
+    var second_field := buildings.create_building(BuildingSystem.TYPE_SPIRIT_FIELD,2)
+    state.buildings[str(second_field.id)] = second_field
+    state.building_event_count += 1
+    if not _check(
+        not workforce.assign_worksite(state,worker.id,second_field.id),
+        "active Field duty allowed worksite transfer to another Linh Điền"
+    ):
+        return false
+
     var extra: DiscipleState = null
     for raw_id in ids:
         var candidate: DiscipleState = state.disciples[raw_id]
