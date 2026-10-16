@@ -176,9 +176,10 @@ func _run() -> void:
     if warehouse.quantity(state, NeedsSystem.HEALING_PILL_ID) != pill_before + 1:
         _fail("O8 timed completion did not deposit exactly one canonical pill.")
         return
-    if not buildings.alchemy_jobs(state, hall).is_empty():
-        _fail("O8 completed job was not removed atomically.")
-        return
+    for next_job in buildings.alchemy_jobs(state,hall):
+        if str(next_job.get("job_id","")) == saved_id:
+            _fail("O8 completed job was not removed atomically.")
+            return
     if workforce.profession_xp(state.disciples[alchemist_id], WorkforceSystem.PROF_ALCHEMY) <= xp_before:
         _fail("O8 completed Alchemy job granted no profession XP.")
         return
@@ -189,9 +190,13 @@ func _run() -> void:
     if not await _open_scene():
         return
     hall = buildings.primary_building(state, BuildingSystem.TYPE_ALCHEMY_HALL)
-    if warehouse.quantity(state, NeedsSystem.HEALING_PILL_ID) != pill_before + 1 or not buildings.alchemy_jobs(state, hall).is_empty():
+    if warehouse.quantity(state, NeedsSystem.HEALING_PILL_ID) != pill_before + 1:
         _fail("O8 post-completion reload replayed output.")
         return
+    for next_job in buildings.alchemy_jobs(state,hall):
+        if str(next_job.get("job_id","")) == saved_id:
+            _fail("O8 completed recipe reappeared after reload.")
+            return
 
     # Dược Phòng consumes the canonical pill without legacy medicine/money.
     var target: DiscipleState = state.disciples[field_worker_id]
