@@ -160,7 +160,7 @@ tags
 AUTO_DEMAND may also use a simple stock target.
 
 No seed item.
-No Phẩm Lực.
+No realm/tier.
 No crop-specific hidden stamina formula.
 
 ---
@@ -182,11 +182,36 @@ Manual cancellation:
 
 ---
 
+# 7.1 Economy V2 ProductionPlan authority
+
+Crop duration and common routine yield are not duplicated inside the Field system.
+They are read from `ProductionPlanRegistry`.
+
+Canonical opening plans:
+
+| Crop | Base cycle | Base common yield | Field unlock | Tu Vi tier | Luyện Thể tier |
+|---|---:|---:|---:|---:|---:|
+| Linh Cốc | 60 phút | 2,500 | Lv1 | 2 — Luyện Khí | 0 |
+| Thanh Linh Thảo | 90 phút | 2,000 | Lv1 | 2 — Luyện Khí | 1 — Phàm Thân |
+| Tử Vân Thảo | 180 phút | 1,000 | Lv30 | 3 — Trúc Cơ | 4 — Luyện Cân |
+
+Realm tier is descriptive content/progression alignment. It **does not** replace the
+Linh Thực profession level, Field-level unlock, or other explicit Sect progression gates.
+
+Building level applies:
+- +0.5% Field speed per level after Lv1;
+- +0.5% common routine yield per level after Lv1.
+
+Existing milestone speed/yield factors then stack multiplicatively as documented below.
+Profession level affects cycle speed only; it does not multiply routine yield again.
+
+---
+
 # 8. Cycle time
 
 For crop `c`, worker `d`, field `b`:
 
-**Actual Cycle Ticks = ceil(Base Cycle × Milestone Time Factor / Total Speed)**
+**Actual Cycle Ticks = fixed-point deadline(Base ProductionPlan Cycle × Milestone Time Factor / Total Speed)**
 
 Where:
 
@@ -210,7 +235,7 @@ Cần Mẫn, Cẩu Thả and future named content affect this only through gener
 
 # 9. Routine yield
 
-**Routine Yield = round(Base Yield × Field Yield Factor)**
+**Routine Yield = round(Base ProductionPlan Yield × Field Yield Factor)**
 
 Base Field Yield Factor:
 
