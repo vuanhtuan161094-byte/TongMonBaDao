@@ -2,7 +2,7 @@
 
 ## 2026-10-16 — LAY-01/BUILDING EXPANSION DESIGN-ONLY HANDOFF
 
-Stacked from draft PR #12 `economy-v2-resource-expansion-gates-20261016` HEAD `a13d91fcc848859951c1541fe510026f0d33cbfd`. This packet updated only the existing `docs/design/SECT_BUILDING_LAND_EXPANSION_DESIGN_V1.md` (Sections 9.1–9.10), `CURRENT_CHECKPOINT.md` and this handoff. **It did NOT implement Hall, land, construction, layout serialization or migrate saves.** PR #12 and earlier draft stack remain unmerged; main is unchanged.
+Stacked from draft PR #12 `economy-v2-resource-expansion-gates-20261016` HEAD `a13d91fcc848859951c1541fe510026f0d33cbfd`. Draft **PR #13** updated only the existing `docs/design/SECT_BUILDING_LAND_EXPANSION_DESIGN_V1.md` (Sections 9.1–9.10), `CURRENT_CHECKPOINT.md` and this handoff. **It did NOT implement Hall, land, construction, layout serialization or migrate saves.** PR #12 and earlier draft stack remain unmerged; main is unchanged.
 
 **Evidence:** ADR-0003 accepted fixed-layout forbids persistent x/y authority; current SimulationState has no SectLayoutState; SaveService V2 already stages temp+backup; no real Hall BuildingState; PR12 cap is read-only. ENV-02A GitHub contains text-only lab/static QA, not official Windows scene acceptance and two screenshots, so ENV-02A stays PENDING USER. PR #9 P3.7 Windows PASS at `453df9aa...` is NOT LAY evidence.
 
