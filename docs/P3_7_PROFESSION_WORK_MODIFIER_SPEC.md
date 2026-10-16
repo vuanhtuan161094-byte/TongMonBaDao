@@ -104,7 +104,13 @@ uses `ceil(base/speed)`. Production timers therefore retain fixed-point overshoo
 remainder and commit that remainder only when the corresponding output actually settles.
 Cancellation does not bank free work.
 
-Locked P2 factories retain their legacy Lv0–6 behavior for compatibility.
+For Economy V2 ProductionPlans, total timer speed is composed from the corresponding
+profession speed and the building/content speed channel. The approved opening building
+factor is **+0.5% speed per building level after Lv1**. Profession level remains an
+independent learned-work progression and does not multiply common output quantity.
+
+Locked P2 factories and legacy carry-cycle migration retain their historical behavior
+until their own compatibility path drains.
 
 ## 3.1 Realm separation
 
