@@ -878,6 +878,8 @@ func perform_spirit_field_step(state: SimulationState, disciple: DiscipleState, 
     var field := _building_for_disciple(state, TYPE_SPIRIT_FIELD, disciple)
     if field == null or not can_disciple_work(state, field, disciple):
         return {"ok": false, "completed": false, "reason": "no_active_spirit_field_slot"}
+    if disciple_has_active_spirit_plot(state, disciple.id, field):
+        return {"ok": false, "completed": false, "reason": "field_duty_already_running"}
 
     var data := _ensure_spirit_field_state(state, field)
     var plots: Array = data.get("plots", [])
