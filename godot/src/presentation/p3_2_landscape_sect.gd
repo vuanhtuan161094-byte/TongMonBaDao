@@ -1047,8 +1047,10 @@ func _workforce_candidate_reason(actor: DiscipleState, building: BuildingState, 
         return "Đang phụ trách"
     if actor.region_id != &"sect" or not actor.active_pve_encounter_id.is_empty():
         return "Đang xuất môn / PvE"
-    if actor.work_group_id != &"" or actor.worksite_building_id != &"":
-        return "Đã có công việc khác"
+    if actor.worksite_building_id != &"":
+        var old_site = state.buildings.get(str(actor.worksite_building_id))
+        if not (old_site is BuildingState) or old_site.worker_group_id != actor.work_group_id:
+            return "Điểm làm việc cũ không hợp lệ"
     if not actor.work_cycle_state.is_empty() or not actor.direct_command.is_empty():
         return "Đang có lệnh/công việc"
     if not (actor.current_action in [&"EVALUATE",&"IDLE",&"HOLD"]):
@@ -1107,7 +1109,7 @@ func _render_workforce_picker() -> void:
         var text_label := Label.new()
         text_label.text = "%s · nghề Lv%d\n%s" % [actor.display_name,
             int(entry["level"]),
-            "Sẵn sàng" if reason == "" else reason]
+            ("Sẵn sàng" if actor.work_group_id == &"" else "Có thể chuyển từ %s" % str(actor.work_group_id)) if reason == "" else reason]
         text_label.custom_minimum_size = Vector2(435,44)
         text_label.add_theme_color_override("font_color",INK)
         text_label.add_theme_font_size_override("font_size",12)
@@ -1143,16 +1145,7 @@ func _workforce_pick_candidate(disciple_id: StringName) -> void:
         building_management_feedback = reason
         _render_workforce_picker()
         return
-    var result: Dictionary = {}
-    match building.building_type:
-        BuildingSystem.TYPE_MINE:
-            result = workforce.assign_mine_worker(state,disciple_id,building.id,true)
-        BuildingSystem.TYPE_LINH_FOREST:
-            result = workforce.assign_linh_forest_worker(state,disciple_id,building.id,true)
-        BuildingSystem.TYPE_SPIRIT_FIELD:
-            result = workforce.assign_spirit_field_worker(state,disciple_id,building.id,true)
-        _:
-            result = {"ok":false,"reason":"unsupported_building"}
+    var result := workforce.transfer_production_worker(state,disciple_id,building.id,true)
     if not bool(result.get("ok",false)):
         building_management_feedback = "Không thể giao việc: %s" % str(result.get("reason","invalid_assignment"))
         _render_workforce_picker()

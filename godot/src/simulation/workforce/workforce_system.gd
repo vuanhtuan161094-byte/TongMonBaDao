@@ -249,6 +249,54 @@ func _assign_single_operator_building(
         "building_id":str(building_id),"worker_id":str(disciple_id)
     }
 
+# GUI-WORKFORCE V1: one atomic transfer from a different IDLE crew.
+# No two-step UI clearing, no job, inventory or timer side effects.
+func transfer_production_worker(state: SimulationState, disciple_id: StringName, building_id: StringName, replace_existing: bool = true) -> Dictionary:
+    if state == null or not state.sect.workforce_enabled or not state.p3_7_buildings_enabled:
+        return {"ok":false,"reason":"workforce_disabled"}
+    var building = state.buildings.get(str(building_id))
+    if not (building is BuildingState) or not [BuildingSystem.TYPE_MINE,BuildingSystem.TYPE_LINH_FOREST,BuildingSystem.TYPE_SPIRIT_FIELD].has(building.building_type):
+        return {"ok":false,"reason":"invalid_production_building"}
+    if not state.disciples.has(disciple_id):
+        return {"ok":false,"reason":"missing_disciple"}
+    var actor: DiscipleState = state.disciples[disciple_id]
+    var occupants := building_system.assigned_worker_ids(state,building)
+    if occupants.size() > 1:
+        return {"ok":false,"reason":"overassigned_building"}
+    if occupants.has(disciple_id):
+        if actor.worksite_building_id == &"":
+            actor.worksite_building_id = building.id
+            state.sect.workforce_event_count += 1
+        return {"ok":true,"already_assigned":true}
+    if actor.region_id != &"sect" or not actor.active_pve_encounter_id.is_empty():
+        return {"ok":false,"reason":"worker_absent"}
+    if not [&"EVALUATE",&"IDLE",&"HOLD"].has(actor.current_action) or not actor.direct_command.is_empty() or not actor.work_cycle_state.is_empty():
+        return {"ok":false,"reason":"worker_busy"}
+    if building_system.disciple_has_active_timed_recipe(state,actor.id) or building_system.disciple_has_active_spirit_plot(state,actor.id) or DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,actor):
+        return {"ok":false,"reason":"active_job"}
+    if actor.worksite_building_id != &"":
+        var old_site = state.buildings.get(str(actor.worksite_building_id))
+        if not (old_site is BuildingState) or old_site.worker_group_id != actor.work_group_id:
+            return {"ok":false,"reason":"invalid_old_worksite"}
+    var previous: DiscipleState = null
+    if not occupants.is_empty():
+        if not replace_existing:
+            return {"ok":false,"reason":"building_full"}
+        previous = state.disciples.get(occupants[0],null)
+        if previous == null or previous.region_id != &"sect" or not previous.active_pve_encounter_id.is_empty() or not [&"EVALUATE",&"IDLE",&"HOLD"].has(previous.current_action) or not previous.direct_command.is_empty() or not previous.work_cycle_state.is_empty():
+            return {"ok":false,"reason":"previous_worker_busy"}
+        if building_system.disciple_has_active_timed_recipe(state,previous.id) or building_system.disciple_has_active_spirit_plot(state,previous.id) or DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,previous):
+            return {"ok":false,"reason":"previous_worker_busy"}
+    var from_group := actor.work_group_id
+    if previous != null:
+        previous.work_group_id = &""
+        previous.worksite_building_id = &""
+    actor.work_group_id = building.worker_group_id
+    actor.worksite_building_id = building.id
+    state.sect.workforce_event_count += 1
+    return {"ok":true,"transferred":from_group != &"","replaced":previous != null,
+        "worker_id":str(disciple_id),"building_id":str(building_id)}
+
 func assign_group(state: SimulationState, disciple_id: StringName, group_id: StringName) -> bool:
     if not state.sect.workforce_enabled or not state.disciples.has(disciple_id):
         return false
