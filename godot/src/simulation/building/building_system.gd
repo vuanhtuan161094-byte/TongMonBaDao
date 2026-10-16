@@ -755,6 +755,12 @@ func alchemy_can_start(state: SimulationState, disciple: DiscipleState) -> Dicti
         return {"ok": false, "reason": "recipe_policy_disabled"}
     if disciple_has_active_timed_recipe(state, disciple.id):
         return {"ok": false, "reason": "worker_busy_alchemy"}
+    if (
+        not disciple.work_cycle_state.is_empty()
+        or disciple_has_active_spirit_plot(state,disciple.id)
+        or DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple)
+    ):
+        return {"ok":false,"reason":"worker_has_other_active_job"}
     var recipe_id := StringName(data.get("recipe_id", str(AlchemyRecipeRegistry.RECIPE_HOI_XUAN_DAN)))
     var requirements := alchemy_registry.inputs(recipe_id)
     if not warehouse.can_consume_requirements(state, requirements):
@@ -857,6 +863,20 @@ func perform_forestry_step(state: SimulationState, disciple: DiscipleState, work
 # Generic carry-cycle producer used by Mine and Linh Lâm. Spirit Field remains
 # plot/timer authority and intentionally does not use this envelope.
 func perform_resource_job_step(state: SimulationState, disciple: DiscipleState, work_speed: float, profession_id: StringName, profession_xp_gain: float = 0.0) -> Dictionary:
+    if disciple == null:
+        return {"ok":false,"completed":false,"reason":"invalid_worker"}
+    if (
+        disciple_has_active_timed_recipe(state,disciple.id)
+        or disciple_has_active_spirit_plot(state,disciple.id)
+        or DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple)
+    ):
+        return {"ok":false,"completed":false,"reason":"worker_has_other_active_job"}
+    if not disciple.work_cycle_state.is_empty():
+        var existing_prof := StringName(disciple.work_cycle_state.get(
+            "profession_id",disciple.work_cycle_state.get("profession","")
+        ))
+        if existing_prof != profession_id:
+            return {"ok":false,"completed":false,"reason":"worker_has_other_active_job"}
     var producer := building_for_profession(state, profession_id, disciple)
     if producer == null or not can_disciple_work(state, producer, disciple):
         var slot_reason := "no_active_building_slot"
@@ -952,6 +972,15 @@ func perform_resource_job_step(state: SimulationState, disciple: DiscipleState, 
     return result
 
 func perform_spirit_field_step(state: SimulationState, disciple: DiscipleState, work_speed: float) -> Dictionary:
+    if disciple == null:
+        return {"ok":false,"completed":false,"reason":"invalid_worker"}
+    if (
+        not disciple.work_cycle_state.is_empty()
+        or disciple_has_active_timed_recipe(state,disciple.id)
+        or DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple)
+    ):
+        return {"ok":false,"completed":false,"reason":"worker_has_other_active_job"}
+    # Repeated planting within the same Field duty remains legal.
     var field := _building_for_disciple(state, TYPE_SPIRIT_FIELD, disciple)
     if field == null or not can_disciple_work(state, field, disciple):
         return {"ok": false, "completed": false, "reason": "no_active_spirit_field_slot"}
