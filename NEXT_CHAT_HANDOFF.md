@@ -1,5 +1,15 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-16 — GUI-WORKFORCE V1 CODE HANDOFF — PR #18
+
+**Implementation SHA `7377a60d55f06bf22d14ff65e7a90eebdca375d1`.** Existing game main scene `p3_2_landscape_sect.tscn` remains unchanged, Godot-native `p3_2_landscape_sect.gd` now gives each Mine/Forest/Field one compact right-panel operator card, a 16-row paginated search picker, buttons Select/Replace, Start, Remove, busy status and warehouse balance. `WorkforceSystem.transfer_production_worker` performs fully validated atomic transfer between idle crews, replacing an idle former operator without losing any committed work. Hidden advanced roster/policies preserve prior UI routes. Only canonical BuildingState/DiscipleState/ProductionPlan/SimulationScheduler/Warehouse drive output. Existing Economy-A disabled fresh saves get an explicit enable-timer action; none is silently enabled.
+
+**Verification:** static 7/7 lexical scripts, NOT Godot parser/runtime, NO CI, NO merge. New `gui_workforce_v1_e2e_test.gd` and patched `economy_a_landscape_ui_test.gd`/`p3_o7_linh_forest_test.gd` are **UNRUN**. Next runtime gate: import Godot 4.7.2, then GUI-Workforce focused E2E, O3/O4/O7/O8/O9, Economy-A/V2, O6==4, GP-02B1/02C1, save/offline, SAFE, P3.7 FULL, Windows screenshot, Android touch. Keep evidence SHA-specific and no forced computer request. PR #9 O8 and Windows prior SHA evidence are historical only; not proof for PR #18.
+
+**Boundaries:** 1 worker per Mine/Forest/Field; Field same worker many plots; no change to Economy V2 production curves, 30×10 Realm/Body, injury 0/1/120, CombatStats, Warehouse, Scheduler or SaveService. Future technical fixes do not require the user to choose an implementation method. Ask the user only if a NEW gameplay rule/number becomes unavoidable. Remaining blockers are runner/visual acceptance and unrelated earned permanent-six-foundation/PvE policy.
+
+---
+
 ## 2026-10-16 — PR #18 COMBINED DISCIPLE-V2 REPAIR, STATIC ONLY
 
 **Repository:** `vuanhtuan161094-byte/TongMonBaDao`; open draft PR #18 branch `integration-v2-pr9-pr10-pr17-20261016`, target PR #9 branch (not main). Verified code/test SHA **`333172bd2d50f97f853a0b5ec4fb0f2a9cbe79ff`**, followed only by this checkpoint documentation. PR #9 and PR #10/#17 history preserved, no CI, no merge.
