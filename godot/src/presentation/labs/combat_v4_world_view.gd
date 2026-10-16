@@ -56,6 +56,10 @@ var last_facing: StringName = &"right"
 var fx: Array[Dictionary] = []
 var source_textures: Dictionary = {}
 var source_loaded: Array[String] = []
+var jx_wolf_clips: Dictionary = {}
+var jx_wolf_loaded := false
+var jx_direction_row := CombatV4JX1Atlas.DEFAULT_ROW
+var jx_current_clips: Dictionary = {}
 var cc0_wolf_sheet: Texture2D
 var cc0_wolf_loaded := false
 var original_textures: Dictionary = {}
@@ -81,6 +85,10 @@ func _ready() -> void:
             if texture != null:
                 source_textures[key] = texture
                 source_loaded.append(key)
+    # Third-party original VLTK/JX1 art, locally staged only (not shipped in GitHub).
+    # Requires exact original source bytes, not a guessed Wolf/King sprite.
+    jx_wolf_clips = CombatV4JX1Atlas.load_verified()
+    jx_wolf_loaded = jx_wolf_clips.size() == CombatV4JX1Atlas.CLIPS.size()
     # CC0 source: https://opengameart.org/content/pixel-wolf (alizard).
     # One side-profile sprite sheet, five 66x66 frames in a single 330x66 PNG.
     if ResourceLoader.exists(CC0_WOLF_RUN_PATH):
@@ -113,6 +121,7 @@ func bind_battle(authority: MapBattleV2) -> void:
     monster_previous_positions.clear()
     monster_facing.clear()
     monster_reactions.clear()
+    jx_current_clips.clear()
     visual_clock = 0.0
     disciple_reaction_pose = ""
     disciple_reaction_until = 0.0
@@ -142,11 +151,13 @@ func bind_battle(authority: MapBattleV2) -> void:
             continue
         var is_boss := str(actor.get("tier", "")) == "boss"
         var key := "boss_idle" if is_boss else "wolf_idle"
-        if not original_textures.has(key) and not (not is_boss and cc0_wolf_loaded):
+        if not original_textures.has(key) and not (not is_boss and (jx_wolf_loaded or cc0_wolf_loaded)):
             continue
         var sprite := Sprite2D.new()
         sprite.name = "Proof_" + str(raw_id)
-        if not is_boss and cc0_wolf_loaded:
+        if not is_boss and jx_wolf_loaded:
+            CombatV4JX1Atlas.setup_sprite(sprite, jx_wolf_clips, "st", jx_direction_row, 0.0, false)
+        elif not is_boss and cc0_wolf_loaded:
             sprite.texture = cc0_wolf_sheet
             sprite.hframes = 5
             sprite.vframes = 1
@@ -225,10 +236,11 @@ func _sync_monster_art() -> void:
         monster_previous_positions[raw_id] = logical
         # Source concept wolves face LEFT. Flip for RIGHT; vertical retains facing.
         sprite.flip_h = CombatV4TwoWayFacing.flip_h(facing, true)
-        var using_cc0: bool = not is_boss and cc0_wolf_loaded
-        var base_scale := 1.28 if using_cc0 else (0.42 if is_boss else 0.34)
+        var using_jx: bool = not is_boss and jx_wolf_loaded
+        var using_cc0: bool = not is_boss and not using_jx and cc0_wolf_loaded
+        var base_scale := 1.45 if using_jx else (1.28 if using_cc0 else (0.42 if is_boss else 0.34))
         sprite.scale = Vector2.ONE * base_scale
-        sprite.position = at - Vector2(0, (30.0 if using_cc0 else (189.0 if is_boss else 90.0)) * base_scale)
+        sprite.position = at if using_jx else at - Vector2(0, (30.0 if using_cc0 else (189.0 if is_boss else 90.0)) * base_scale)
         sprite.z_index = clampi(roundi(at.y), 0, 1000)
         sprite.modulate.a = 0.4 if float(actor.get("hp", 0.0)) <= 0.0 else 1.0
         var clip := "idle"
@@ -239,7 +251,11 @@ func _sync_monster_art() -> void:
         elif moving:
             clip = "walk"
         var desired := "boss_idle" if is_boss else "wolf_" + clip
-        if using_cc0:
+        if using_jx:
+            jx_current_clips[raw_id] = CombatV4JX1Atlas.clip_for_state(clip)
+            CombatV4JX1Atlas.setup_sprite(sprite, jx_wolf_clips, jx_current_clips[raw_id],
+                jx_direction_row, visual_clock, clip == "downed")
+        elif using_cc0:
             sprite.frame = int(floor(visual_clock * 8.0)) % 5 if moving and clip != "downed" else 0
         elif original_textures.has(desired):
             sprite.texture = original_textures[desired]
@@ -259,7 +275,7 @@ func consume_events(new_events: Array) -> void:
                     disciple_reaction_pose = "attack"
                     disciple_reaction_until = visual_clock + CombatV4TwoWayMotion.ATTACK_SECONDS
                 if monster_nodes.has(attacker_id):
-                    monster_reactions[attacker_id] = {"pose": "attack", "until": visual_clock + 0.24}
+                    monster_reactions[attacker_id] = {"pose": "attack", "until": visual_clock + (0.44 if jx_wolf_loaded else 0.24)}
                 var target_id := str(event.get("target", ""))
                 var target: Dictionary = battle.actors.get(target_id, {})
                 if not target.is_empty():
@@ -282,6 +298,15 @@ func consume_events(new_events: Array) -> void:
 
 func advance_cosmetics(delta: float) -> void:
     visual_clock += maxf(0.0, delta)
+    # Advance animation frames cosmetically WITHOUT stepping battle.
+    if jx_wolf_loaded:
+        for monster_id in jx_current_clips:
+            if not monster_nodes.has(monster_id) or not battle.actors.has(monster_id):
+                continue
+            var current_sprite: Sprite2D = monster_nodes[monster_id]
+            var current_clip: String = jx_current_clips[monster_id]
+            CombatV4JX1Atlas.setup_sprite(current_sprite, jx_wolf_clips, current_clip,
+                jx_direction_row, visual_clock, current_clip == "die")
     for i in range(fx.size() - 1, -1, -1):
         fx[i]["ttl"] = float(fx[i]["ttl"]) - delta
         if float(fx[i]["ttl"]) <= 0.0:
@@ -335,8 +360,9 @@ func _draw() -> void:
             draw_set_transform(Vector2.ZERO)
             draw_arc(at, width + 4, 0, TAU, 30, GOLD if boss else INK, 1.5)
         _draw_label(
+            ("JX1 SÓI XÁM · 5 CLIPS" if not boss and jx_wolf_loaded else
             ("THANH LANG · CC0 RUN 5F" if not boss and cc0_wolf_loaded else
-            ("BOSS · ORIGINAL POSE PROOF" if boss else "THANH LANG · ORIGINAL POSE PROOF"))
+            ("BOSS · ORIGINAL POSE PROOF" if boss else "THANH LANG · ORIGINAL POSE PROOF")))
             if monster_nodes.has(raw_id) else
             ("BOSS · ART MISSING" if boss else "THANH LANG · ART MISSING"),
             at + Vector2(-90 if boss else -70, -110 if boss else -62), 11, INK
