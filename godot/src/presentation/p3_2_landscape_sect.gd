@@ -109,7 +109,9 @@ func _install_main_isometric_world() -> void:
     iso_view_container.stretch = false
     iso_view_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
     add_child(iso_view_container)
-    move_child(iso_view_container,1)
+    # Background is child 0; the Control actor/interaction map layer follows.
+    # Insert the 2.5D texture BEFORE map_layer or it overpaints disciples.
+    move_child(iso_view_container,map_layer.get_index())
     iso_viewport = SubViewport.new()
     iso_viewport.name = "SectMainIsoSubViewport"
     iso_viewport.size = Vector2i(1028,570)

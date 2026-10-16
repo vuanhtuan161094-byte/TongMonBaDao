@@ -31,6 +31,10 @@ func _run() -> void:
     if container == null or sub == null or iso == null or iso.camera == null:
         _fail("main scene did not mount genuine 2.5D SubViewport/Camera2D")
         return
+    var original_map_layer := scene.get("map_layer") as Control
+    if original_map_layer == null or container.get_index() >= original_map_layer.get_index():
+        _fail("isometric texture overpaints avatar/map interaction layer")
+        return
     if (
         sub.size != Vector2i(1028,570)
         or iso.GRID != Vector2i(192,192)
