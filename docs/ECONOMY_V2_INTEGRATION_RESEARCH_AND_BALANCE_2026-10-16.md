@@ -67,9 +67,9 @@ The final 15 IDs remain in paused Disciple V2 gate content. This integration doe
 | Thông Tuệ | `1 + 0.0015 × points` learning/EXP | `CharacterModifierSystem` → profession EXP; profession level separately changes speed |
 | Cơ Duyên | rare event factor/valid lucky roll | `ProfessionModifierSystem` → Field lucky harvest, Mine discrete byproduct; no routine quantity factor |
 | Mị Lực | guidance quality/social score | `RecruitmentSystem` Dẫn Tiên; no global production factor |
-| Tiềm Lực | `1 + 0.0005 × points` affects **Realm + Body core** ATK/DEF/HP only, not flat equipment | `CombatStatsV2.derive` already applies the core factor; `FoundationSystem.add_permanent_points` now synchronizes live V2 HP without a free heal. Stacked PR #11 adds an explicit paid crop consumer, **1,000 actual Tử Vân Thảo → 1 permanent Tiềm Lực**, via canonical Warehouse with reserve protection, exactly-once request receipt and rollback. No idle/free-point faucet. Runtime QA PENDING. |
+| Tiềm Lực | `1 + 0.0005 × points` affects **Realm + Body core** ATK/DEF/HP only, not flat equipment | `CombatStatsV2.derive` already applies the core factor; `FoundationSystem.add_permanent_points` now synchronizes live V2 HP without a free heal. Stacked draft PR #14 adds an explicit paid crop consumer, **1,000 actual Tử Vân Thảo → 1 permanent Tiềm Lực**, via canonical Warehouse with reserve protection, exactly-once request receipt and rollback. No idle/free-point faucet. Runtime QA PENDING. |
 
-### Disciple V2 action-entry audit (stacked PR #11; static, not runtime-accepted)
+### Disciple V2 action-entry audit (stacked PR #14; static, not runtime-accepted)
 
 | Entrypoint | Current reservation rule | Status |
 |---|---|---|
@@ -82,6 +82,23 @@ The final 15 IDs remain in paused Disciple V2 gate content. This integration doe
 | `BuildingSystem.alchemy_can_start` | Now rejects legacy work, Field and Body reservations before any Warehouse debit | CODE; QA PENDING |
 | `DiscipleBodyGateTransactionV2.preview_gate/commit_gate` | Now refuses active PvE, work cycle, Field, recipe and Body-training slot before opening a breakthrough transaction | CODE; QA PENDING |
 | `FoundationGrowthV2.preview/commit` | Forbids active work/PvE/Body duty; commits real crop and Potential/HP in one rollback-safe request with persisted replay receipt | CODE; QA PENDING |
+
+### PR #16 focused hardening (stacked on PR #14; NOT RUNTIME VERIFIED)
+
+PR #14 correctly owns the actual Tử Vân Thảo-funded Potential transaction and player UI;
+an alternative Linh Tủy growth implementation in PR #15 was closed unmerged as a
+duplicate. PR #16 fixes only missing existing ingress guards:
+
+| Entrypoint | Additional deterministic guard | Test |
+|---|---|---|
+| `WorkforceSystem.assign_group` | A timed Mine/Forest/Alchemy worker cannot switch from their *current* crew, even to `alchemy_crew` | `disciple_v2_active_job_ingress_test.gd` |
+| `WorkforceSystem.assign_worksite` | Running Alchemy has the same worksite ownership as timed Mine/Forest | focused simulation test |
+| `DiscipleBodyTrainingFacilityV2.reserve_slot` | Reject pending direct orders and a different group/worksite before reserving a paid Rèn Thân slot | focused simulation test |
+| `DiscipleTrainingActionV2.request_training` | Reject commands that would override requested training; retain the compatible `CULTIVATE` order | focused simulation test |
+| `FoundationSystem.validate_candidate/validate_disciple` | Reject NaN/Inf across all six permanent open-point dimensions | focused simulation test |
+
+The source/material recipe is unchanged from PR #14. All new tests are authored,
+**not executed with official Godot 4.7.2**. No claim of universal ingress completion.
 
 This is a scoped audit of these verified entrypoints, **not a claim that every future/legacy entrypoint in the repository is closed**. No new OccupationManager or second scheduler was introduced. For Cơ Duyên and Mị Lực, legacy bridge percentages still exist in P2-compatible paths; proper P3.7 Fortune/Social checks require separate full consumer migration. All six stat values remain independent; birth snapshots are never overwritten by earned growth.
 
