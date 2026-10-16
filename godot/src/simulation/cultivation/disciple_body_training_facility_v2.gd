@@ -24,6 +24,20 @@ static func reserve_slot(state: SimulationState, disciple_id: StringName) -> Dic
         return {"ok":false,"reason":"body_training_authority_disabled"}
     if not [&"EVALUATE",&"IDLE",&"HOLD",&"CULTIVATE",&"TRAIN_BODY"].has(disciple.current_action):
         return {"ok":false,"reason":"training_cannot_interrupt_active_work"}
+    # A Body facility never steals an existing direct order or another
+    # building's assignment. Player transfer must release the old occupation
+    # through its own authorized API before booking a paid training slot.
+    # An existing reservation is idempotent; a different worksite is not.
+    if not disciple.direct_command.is_empty():
+        return {"ok":false,"reason":"body_training_active_command"}
+    var original_assignment := disciple.work_group_id
+    var original_worksite := disciple.worksite_building_id
+    if original_assignment != &"" and original_assignment != &"body_training_crew":
+        return {"ok":false,"reason":"body_training_another_worksite"}
+    if original_worksite != &"":
+        var held = state.buildings.get(str(original_worksite))
+        if not (held is BuildingState) or held.building_type != BuildingSystem.TYPE_BODY_TRAINING:
+            return {"ok":false,"reason":"body_training_another_worksite"}
     # GP-02B1: a reserved Body slot must not silently settle an unfinished
     # Mine/Forest carry-cycle or transfer a worker from a paid timed job.
     if not disciple.work_cycle_state.is_empty():
