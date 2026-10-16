@@ -1,5 +1,18 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-16 — PR #16 DV2 INGRESS FOLLOW-UP, PR #14 GROWTH AUTHORITY
+
+**Only one Potential growth system:** draft PR #14 at `027627bca396afecf90879717da8d3fc855c2eb7` supplies `FoundationGrowthV2`, Tử Vân Thảo 1,000 per point, UI button and `v2_foundation_growth_receipts`. Duplicate PR #15 (Linh Tủy/alternate receipt authority) was deliberately **CLOSED, NOT MERGED**. Do not reopen/reuse it or implement two growth recipes by accident.
+
+**New draft PR #16** `disciple-v2-ingress-hardening-20261016` targets PR #14 (NOT PR #10 or main); latest gameplay/test SHA before docs `db394203bf11797b455504b6a8f3a5ea24092d6d`. It only guards missing worksite/group/direct-command occupation ingress and rejects NaN/Inf in open-point candidate/disciples. New focused regression: `disciple_v2_active_job_ingress_test.gd`. PR #14 remains owner of actual Potential material transaction and profile UI.
+
+**Verification:** 5/5 GDScript delimiter scans only. NO official Godot 4.7.2 runtime / Android / full regression; no GitHub Actions run and no merge. PR #9 moved after PR #10 branched, so its latest QA and commits must be reconciled before acceptance. Validate exact SHA with PR #14 growth test + PR #16 ingress test + Windows DV2/P3.7/GP-02B1/GP-02C1/O6 ==4/SAFE FULL when runner available.
+
+**Next recommended step:** Static re-audit stacked integration graph #9 → #10 → #14 → #16, resolve file ownership/branch updates without losing PR #9's newer O8/FULL evidence, then close remaining action ingress only with proven bugs; separately plan Body high-tier earned resources and Hall expansion. Keep main unchanged, draft PRs unmerged, no false QA PASS.
+
+---
+
+
 ## 2026-10-16 — DV2 FOUNDATION GROWTH + ACTION GUARD HANDOFF
 
 **Integration lineage:** new branch `disciple-v2-foundation-action-guard-20261016` was branched from PR #10 `f374bc78a5556ad1003d92b27d6ec89c7c929aa3`; PR #10 targets PR #9. PR #9 moved to `cf11d53f2ac48e9b7a220500fece983b675dcd62` separately with newer O8 regression and Windows FULL documentation. Preserve those commits and reconcile before any merge. `main` unchanged at `461caca1`.
