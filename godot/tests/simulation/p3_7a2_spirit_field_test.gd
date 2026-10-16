@@ -402,7 +402,16 @@ func _verify_legacy_field_state_migrates() -> bool:
     var field := buildings.primary_building(state, BuildingSystem.TYPE_SPIRIT_FIELD)
     var ids: Array = state.disciples.keys()
     ids.sort()
-    var legacy_actor: DiscipleState = state.disciples[ids[0]]
+    var legacy_actor: DiscipleState = null
+    for raw_id in ids:
+        var candidate: DiscipleState = state.disciples[raw_id]
+        if candidate.work_group_id == &"" and candidate.region_id == &"sect":
+            var assigned := workforce.assign_spirit_field_worker(state,candidate.id,field.id)
+            if bool(assigned.get("ok",false)):
+                legacy_actor = candidate
+                break
+    if legacy_actor == null:
+        return _fail("Legacy field migration has no valid canonical operator.")
     field.production_state = {
         "phase": str(BuildingSystem.SPIRIT_PHASE_GROWING),
         "resource_id": str(SpiritCropRegistry.CROP_THANH_LINH_THAO),
