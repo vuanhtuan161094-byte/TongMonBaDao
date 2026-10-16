@@ -60,6 +60,12 @@ var workforce_picker_building_id: StringName = &""
 var workforce_picker_query := ""
 var workforce_picker_offset := 0
 var workforce_advanced_visible := false
+# Presentation-only navigation state. All displayed numbers come from the
+# existing canonical SimulationState, never from a second model.
+var sect_hub_panel: Panel
+var sect_hub_content: VBoxContainer
+var sect_hub_button: Button
+var last_accepted_disciple_id: StringName = &""
 const WORKFORCE_PICKER_PAGE_SIZE := 16
 var deep_restore_summary := false
 var screen_pointer_dragged := false
@@ -78,6 +84,7 @@ func _ready() -> void:
     _build_camera_controls()
     _build_disciple_summary_panel()
     _build_building_operation_panel()
+    _build_sect_hub()
     _build_living_cue_layer()
     living_cue_tracker.seed_from_state(state)
     _refresh_living_cues()
@@ -426,6 +433,7 @@ func _clear_pointer_state() -> void:
     mouse_pointer_dragged = false
 
 func _open_building(destination: StringName) -> void:
+    _hide_sect_hub()
     _close_disciple_summary(true)
     _close_workforce_picker()
     _clear_popup()
@@ -447,6 +455,7 @@ func _bottom_action(action: String) -> void:
         _close_disciple_summary(true)
         _close_building_operation_panel(true)
         _reset_camera(true)
+        _show_sect_hub()
         return
     if action == "disciples":
         var ids: Array = state.disciples.keys()
@@ -462,6 +471,7 @@ func _bottom_action(action: String) -> void:
 func _open_disciple(disciple_id: StringName) -> void:
     if not state.disciples.has(disciple_id):
         return
+    _hide_sect_hub()
     _close_building_operation_panel(true)
     selected_id = disciple_id
     opened_disciple_profile = true
@@ -1162,6 +1172,158 @@ func _workforce_pick_candidate(disciple_id: StringName) -> void:
     _refresh_building_operation_content()
 
 
+# SECT-PLAYABLE V1: one central, touch-sized route through the existing map
+# and canonical gameplay. This panel owns no economy, roster or job state.
+func _build_sect_hub() -> void:
+    sect_hub_button = Button.new()
+    sect_hub_button.name = "OpenSectHub"
+    sect_hub_button.text = "Điều hành"
+    sect_hub_button.position = Vector2(306,16)
+    sect_hub_button.size = Vector2(154,43)
+    sect_hub_button.z_index = 55
+    sect_hub_button.add_theme_font_size_override("font_size",15)
+    sect_hub_button.pressed.connect(_show_sect_hub)
+    add_child(sect_hub_button)
+
+    sect_hub_panel = Panel.new()
+    sect_hub_panel.name = "SectOperationsHub"
+    sect_hub_panel.position = Vector2(269,85)
+    sect_hub_panel.size = Vector2(740,543)
+    sect_hub_panel.z_index = 85
+    sect_hub_panel.visible = false
+    sect_hub_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+    sect_hub_panel.add_theme_stylebox_override("panel",_style(PAPER_LIGHT,INK,3,16))
+    add_child(sect_hub_panel)
+
+    var title := _label(sect_hub_panel,"TÔNG MÔN · ĐIỀU HÀNH",Vector2(20,12),Vector2(585,36),22)
+    title.add_theme_color_override("font_color",CINNABAR.darkened(0.18))
+    var close := Button.new()
+    close.name = "CloseSectHub"
+    close.text = "Đóng ×"
+    close.position = Vector2(630,13)
+    close.size = Vector2(90,44)
+    close.pressed.connect(_hide_sect_hub)
+    sect_hub_panel.add_child(close)
+    var scroll := ScrollContainer.new()
+    scroll.name = "SectHubScroll"
+    scroll.position = Vector2(18,68)
+    scroll.size = Vector2(704,459)
+    sect_hub_panel.add_child(scroll)
+    sect_hub_content = VBoxContainer.new()
+    sect_hub_content.name = "SectHubContent"
+    sect_hub_content.custom_minimum_size = Vector2(675,0)
+    sect_hub_content.add_theme_constant_override("separation",9)
+    scroll.add_child(sect_hub_content)
+
+func _hide_sect_hub() -> void:
+    if sect_hub_panel != null and is_instance_valid(sect_hub_panel):
+        sect_hub_panel.visible = false
+
+func _show_sect_hub() -> void:
+    if not runtime_ready or sect_hub_panel == null or not is_instance_valid(sect_hub_panel):
+        return
+    _close_workforce_picker()
+    _close_building_operation_panel(true)
+    _close_disciple_summary(true)
+    _clear_popup()
+    _refresh_sect_hub()
+    sect_hub_panel.visible = true
+
+func _sect_hub_label(message: String, font_size: int = 14) -> void:
+    var label := Label.new()
+    label.text = message
+    label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    label.custom_minimum_size = Vector2(665,0)
+    label.add_theme_font_size_override("font_size",font_size)
+    label.add_theme_color_override("font_color",INK)
+    label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    sect_hub_content.add_child(label)
+
+func _sect_hub_route(text_label: String, destination: StringName) -> void:
+    var button := Button.new()
+    button.text = text_label
+    button.custom_minimum_size = Vector2(675,48)
+    button.add_theme_font_size_override("font_size",15)
+    button.pressed.connect(Callable(self,"_open_building").bind(destination))
+    sect_hub_content.add_child(button)
+
+func _sect_hub_production_line(
+    label_text: String, building_type: StringName, resource_id: StringName
+) -> String:
+    var buildings := BuildingSystem.new()
+    var building := buildings.primary_building(state,building_type)
+    if building == null:
+        return "%s · Chưa có công trình" % label_text
+    var occupied := buildings.assigned_worker_ids(state,building)
+    var worker_name := "Chưa giao"
+    var activity := "Cần chọn đệ tử"
+    if occupied.size() == 1 and state.disciples.has(occupied[0]):
+        worker_name = (state.disciples[occupied[0]] as DiscipleState).display_name
+        activity = _workforce_worker_status(building,occupied[0])
+    elif occupied.size() > 1:
+        activity = "Cần kiểm tra phân công"
+    return "%s · Lv%d · %s\n%s · Kho %s" % [
+        label_text,building.level,worker_name,activity,_warehouse_pair(resource_id,true)
+    ]
+
+func _refresh_sect_hub() -> void:
+    if sect_hub_content == null or not is_instance_valid(sect_hub_content):
+        return
+    for child in sect_hub_content.get_children():
+        sect_hub_content.remove_child(child)
+        child.queue_free()
+    _sect_hub_label("Đệ tử: %d/%d · Ứng viên chờ: %d · Chiêu Mộ Lệnh: %d" % [
+        state.disciples.size(),state.sect.disciple_capacity,
+        state.recruitment_candidates.size(),state.sect.disciple_recruitment_tokens
+    ],15)
+    _sect_hub_label("Linh Thạch tông môn: %d · Tick %d" % [
+        state.sect.spirit_stones,state.tick
+    ])
+    _sect_hub_route("DẪN TIÊN · Tuyển và nhận đệ tử",SectMapPresentation.DEST_GUIDANCE)
+    _sect_hub_label(_sect_hub_production_line("MỎ LINH KHOÁNG",BuildingSystem.TYPE_MINE,&"thanh_thiet"))
+    _sect_hub_route("MỎ · Chọn người / Khai khoáng",SectMapPresentation.DEST_MINE)
+    _sect_hub_label(_sect_hub_production_line("LINH LÂM",BuildingSystem.TYPE_LINH_FOREST,&"linh_moc"))
+    _sect_hub_route("LINH LÂM · Chọn người / Thu hoạch",SectMapPresentation.DEST_LINH_FOREST)
+    _sect_hub_label(_sect_hub_production_line("LINH ĐIỀN",BuildingSystem.TYPE_SPIRIT_FIELD,&"linh_coc"))
+    _sect_hub_route("LINH ĐIỀN · Chọn người / Gieo trồng",SectMapPresentation.DEST_SPIRIT_FIELD)
+    _sect_hub_route("KHO · Kiểm tra vật tư / Phường Thị",SectMapPresentation.DEST_WAREHOUSE)
+    var disciples_button := Button.new()
+    disciples_button.name = "SectHubDisciples"
+    disciples_button.text = "ĐỆ TỬ · Thuộc tính và công việc"
+    disciples_button.custom_minimum_size = Vector2(675,48)
+    disciples_button.pressed.connect(Callable(self,"_bottom_action").bind("disciples"))
+    sect_hub_content.add_child(disciples_button)
+    var save := Button.new()
+    save.name = "SectHubSave"
+    save.text = "LƯU TIẾN ĐỘ NGAY"
+    save.custom_minimum_size = Vector2(675,48)
+    save.pressed.connect(_sect_hub_save)
+    sect_hub_content.add_child(save)
+
+func _sect_hub_save() -> void:
+    if runtime_session == null or not runtime_ready:
+        return
+    var result := runtime_session.save()
+    tab_status_text = (
+        "Đã lưu tông môn."
+        if bool(result.get("ok",false))
+        else "Chưa lưu được: %s" % str(result.get("reason",result.get("error","unknown")))
+    )
+    _refresh_sect_hub()
+    _sect_hub_label(tab_status_text,14)
+
+func _open_new_recruit_workforce(disciple_id: StringName) -> void:
+    if not state.disciples.has(disciple_id):
+        return
+    _open_building(SectMapPresentation.DEST_MINE)
+    var building := BuildingSystem.new().primary_building(state,BuildingSystem.TYPE_MINE)
+    if building == null:
+        return
+    _open_workforce_picker(building.id)
+    if workforce_picker_search != null:
+        workforce_picker_search.text = str(disciple_id)
+        _workforce_picker_search_changed(str(disciple_id))
+
 func _build_main_hall_policy_controls() -> void:
     _build_economy_a_hall_controls()
     _add_management_section_label("CHÍNH SÁCH LAO ĐỘNG")
@@ -1310,6 +1472,14 @@ func _build_needs_priority_controls(title: String) -> void:
 
 func _build_guidance_recruitment_controls() -> void:
     _add_management_section_label("DẪN TIÊN")
+    if last_accepted_disciple_id != &"" and state.disciples.has(last_accepted_disciple_id):
+        var newest: DiscipleState = state.disciples[last_accepted_disciple_id]
+        var assign_next := Button.new()
+        assign_next.name = "GuidanceAssignNewRecruit"
+        assign_next.text = "Phân công ngay: %s → Mỏ" % newest.display_name
+        assign_next.custom_minimum_size = Vector2(384,48)
+        assign_next.pressed.connect(Callable(self,"_open_new_recruit_workforce").bind(last_accepted_disciple_id))
+        building_management_container.add_child(assign_next)
     var order := Button.new()
     order.name = "GuidanceRecruitOrder"
     order.text = "Dùng Chiêu Mộ Lệnh (%d)" % state.sect.disciple_recruitment_tokens
@@ -1398,7 +1568,8 @@ func _accept_guidance_candidate(candidate_id: StringName) -> void:
     var candidate_name := candidate.display_name if candidate != null else str(candidate_id)
     var result := recruitment_system.accept_candidate(state, candidate_id)
     if bool(result.get("ok", false)):
-        building_management_feedback = "Đã nhận %s vào tông môn." % candidate_name
+        last_accepted_disciple_id = candidate_id
+        building_management_feedback = "Đã nhận %s vào tông môn. Có thể phân công ngay." % candidate_name
     else:
         building_management_feedback = _recruitment_feedback(str(result.get("reason", "accept_failed")))
     # Refresh immediately so a successful authoritative roster mutation creates
@@ -2851,6 +3022,8 @@ func _refresh_all() -> void:
     super._refresh_all()
     if _building_operation_is_open() and workforce_picker_panel == null:
         _refresh_building_operation_content()
+    if sect_hub_panel != null and is_instance_valid(sect_hub_panel) and sect_hub_panel.visible:
+        _refresh_sect_hub()
 
 func _process(_delta: float) -> void:
     _refresh_living_cue_positions()
