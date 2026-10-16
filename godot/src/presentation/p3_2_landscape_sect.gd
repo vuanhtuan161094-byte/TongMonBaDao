@@ -55,6 +55,7 @@ const DISCIPLE_PROFILE_PAGE_SIZE := 50
 var selected_building: StringName = &""
 # UI selection only; actual building ID/worker/production live in SimulationState.
 var selected_production_instance_id: StringName = &""
+var sect_layout_preview_open := false
 var workforce_picker_panel: Panel
 var workforce_picker_results: VBoxContainer
 var workforce_picker_search: LineEdit
@@ -1267,6 +1268,7 @@ func _build_sect_hub() -> void:
     scroll.add_child(sect_hub_content)
 
 func _hide_sect_hub() -> void:
+    sect_layout_preview_open = false
     if sect_hub_panel != null and is_instance_valid(sect_hub_panel):
         sect_hub_panel.visible = false
 
@@ -1330,6 +1332,7 @@ func _sect_hub_production_line(
 func _show_sect_layout_preview() -> void:
     if not runtime_ready or sect_hub_content == null or not is_instance_valid(sect_hub_content):
         return
+    sect_layout_preview_open = true
     for child in sect_hub_content.get_children():
         sect_hub_content.remove_child(child)
         child.queue_free()
@@ -1371,6 +1374,7 @@ func _show_sect_layout_preview() -> void:
     sect_hub_content.add_child(back)
 
 func _refresh_sect_hub() -> void:
+    sect_layout_preview_open = false
     if sect_hub_content == null or not is_instance_valid(sect_hub_content):
         return
     var scroll := sect_hub_panel.find_child("SectHubScroll",false,false) as ScrollContainer
@@ -2016,6 +2020,11 @@ func _build_work_management(profession_id: StringName, group_id: StringName, gro
             plan_button.tooltip_text = "Huyền Thiết mở ở Mỏ Lv30."
         plan_button.pressed.connect(Callable(self,"_set_mine_plan_from_ui").bind(active_producer.id,next_plan))
         building_management_container.add_child(plan_button)
+    # Secondary instances are assigned exclusively by the canonical picker;
+    # old crew-wide buttons cannot silently mutate the primary producer.
+    if active_producer != null and building_system.primary_building(state,active_producer.building_type) != active_producer:
+        _add_management_section_label("Công trình bổ sung: chọn một đệ tử bằng Chọn / Đổi ở trên.")
+        return
     _add_management_search()
     var ids := _ranked_management_ids(profession_id,group_id)
     var shown := 0
@@ -2131,6 +2140,9 @@ func _build_spirit_field_management() -> void:
 
     _add_management_section_label("PHÂN CÔNG & GIEO TRỒNG")
     var active_ids := buildings.active_worker_ids(state, field)
+    if buildings.primary_building(state,BuildingSystem.TYPE_SPIRIT_FIELD) != field:
+        _add_management_section_label("Linh Điền bổ sung: dùng Chọn / Đổi để gán riêng một người.")
+        return
     _add_management_search()
     var ids := _ranked_management_ids(WorkforceSystem.PROF_HERBALISM,&"herbalism_crew")
     var shown := 0
@@ -3137,7 +3149,10 @@ func _refresh_all() -> void:
     if _building_operation_is_open() and workforce_picker_panel == null:
         _refresh_building_operation_content()
     if sect_hub_panel != null and is_instance_valid(sect_hub_panel) and sect_hub_panel.visible:
-        _refresh_sect_hub()
+        if sect_layout_preview_open:
+            _show_sect_layout_preview()
+        else:
+            _refresh_sect_hub()
 
 func _process(_delta: float) -> void:
     _refresh_living_cue_positions()
