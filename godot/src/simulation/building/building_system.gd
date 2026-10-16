@@ -1276,6 +1276,8 @@ func validate_invariants(state: SimulationState) -> Array[String]:
                         var only_worker := str(plot_workers.keys()[0])
                         if active_duty_id == "" or active_duty_worker != only_worker:
                             errors.append("Spirit Field %s active duty/operator metadata is inconsistent." % building.id)
+                        if not assigned_worker_ids(state,building).has(StringName(only_worker)):
+                            errors.append("Spirit Field %s active duty worker is not the building operator." % building.id)
                         for raw_plot in plots:
                             if raw_plot is Dictionary and StringName(raw_plot.get("status","")) == PLOT_GROWING and str(raw_plot.get("field_duty_id","")) != active_duty_id:
                                 errors.append("Spirit Field %s has a plot outside the active duty." % building.id)
