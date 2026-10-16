@@ -1,5 +1,19 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-16 — DISCIPLE-V2 LỤC DUY CORE + ONE-ACTIVE-JOB STACKED HANDOFF
+
+New code branch `disciple-v2-foundation-job-20261016` starts from **draft PR #10** `disciple-v2-scale-20261016` HEAD `f374bc78a5556ad1003d92b27d6ec89c7c929aa3`, not from main. Parent PR #9 head observed `cf11d53f2ac48e9b7a220500fece983b675dcd62`, so compare parent ancestry before integration; never silently claim the newer PR #9 tip is included. `main` remains `461caca1171462e0da092f21108c5c1733157ad9`; all PRs draft/unmerged.
+
+**Committed backend work:** finite/overflow checked `FoundationSystem.add_permanent_points` with saved birth snapshot intact, updated derived quality, Potential Realm+Body max HP ratio synchronization and atomic rollback. Existing `CombatStatsV2` already owns Potential on three RealmBodyCore channels, unrelated flat equipment excluded; 30×10 progression not replaced. Direct job/worksite/Field/Alchemy/Body training entrypoints now refuse concurrent occupations; existing resource/Alchemy shared timed-work detection reused, with same-Field plot reuse and legacy carry-drain protected. Zero production/economy price edits; Injury 0/1/120 unchanged.
+
+**Focused regression authored but NOT EXECUTED:** `godot/tests/simulation/disciple_v2_foundation_core_regression_test.gd`, `godot/tests/simulation/disciple_v2_one_active_job_entrypoints_test.gd`; see `docs/DISCIPLE_V2_FOUNDATION_JOB_AUDIT_2026-10-16.md` for exact test commands and source/consumer matrix. Static structural evidence only. Godot 4.7.2 runtime, cumulative O6/SAFE, Windows GUI/Android, 3k sustained: **PENDING**. No CI/no merge/no local PC requested.
+
+**Honest OPEN:** a true game-earnable permanent-growth item/event/receipt has not been authored. `add_permanent_points` is checked primitive, not a reward faucet; synthetic test grants demonstrate math, not economic provenance. Fortune meaningful-event and broader social consumers and advanced stat sources remain incomplete. Do not open unrelated gameplay in this PR.
+
+**Next:** maintain stacked draft; validate exact PR tip on a real Godot runner when permission/tool exists and fix only failures proven within this allowlist. A separate approval is needed for new permanent-growth source content, claim receipts and Economy integration beyond this packet.
+
+---
+
 ## 2026-10-16 — DISCIPLE-V2 SCALE-SAFE CONTINUATION HANDOFF
 
 PR #9 (`economy-v2-disciple-production-integration-20261016` HEAD `d9b02dfd270b5165251e1e5e443b53a96ab68164`) remains the integration authority; isolated follow-up `disciple-v2-scale-20261016` is based directly on it. No merge into `main`.

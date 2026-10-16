@@ -99,23 +99,51 @@ func recompute_disciple_quality(disciple: DiscipleState) -> StringName:
     disciple.disciple_quality = quality_for_total(total_disciple(disciple))
     return disciple.disciple_quality
 
+# Mathematical permanent-growth primitive, NOT a free reward faucet.
+# Only a separately authorized, earned content/event owner may call this.
+# The birth snapshot is never mutated by a later permanent gain.
 func add_permanent_points(disciple: DiscipleState, dimension: StringName, amount: float) -> bool:
-    if disciple == null or disciple.foundation_model_version < MODEL_OPEN_POINTS or amount <= 0.0 or not DIMENSIONS.has(dimension):
+    if disciple == null or disciple.foundation_model_version < MODEL_OPEN_POINTS or not DIMENSIONS.has(dimension):
         return false
-    match dimension:
-        DIM_APTITUDE:
-            disciple.aptitude += amount
-        DIM_CONSTITUTION:
-            disciple.constitution += amount
-        DIM_FORTUNE:
-            disciple.fortune += amount
-        DIM_COMPREHENSION:
-            disciple.comprehension += amount
-        DIM_CHARISMA:
-            disciple.charisma += amount
-        DIM_POTENTIAL:
-            disciple.potential += amount
+    if is_nan(amount) or is_inf(amount) or amount <= 0.0:
+        return false
+    # Reject nonfinite, corrupt or overflowing foundations BEFORE any write.
+    for key in DIMENSIONS:
+        var value := float(disciple.get(str(key)))
+        if is_nan(value) or is_inf(value) or value < 0.0:
+            return false
+    var previous := float(disciple.get(str(dimension)))
+    var updated := previous + amount
+    var new_total := total_disciple(disciple) + amount
+    if is_nan(updated) or is_inf(updated) or is_nan(new_total) or is_inf(new_total):
+        return false
+
+    var sync_potential := dimension == DIM_POTENTIAL and DiscipleRealmProgressV2.owns_v2_progression(disciple)
+    if sync_potential:
+        if not DiscipleRealmProgressV2.progression_ready(disciple):
+            return false
+        # A corrupted live HP pair must fail closed, not turn NaN into a
+        # persisted nonfinite value or silently cap an invalid ratio.
+        if is_nan(disciple.hp) or is_inf(disciple.hp) or is_nan(disciple.max_hp) or is_inf(disciple.max_hp):
+            return false
+        if disciple.max_hp <= 0.0 or disciple.hp < 0.0 or disciple.hp > disciple.max_hp:
+            return false
+    var old_quality := disciple.disciple_quality
+    var old_hp := disciple.hp
+    var old_max_hp := disciple.max_hp
+    disciple.set(str(dimension), updated)
     recompute_disciple_quality(disciple)
+    # Tiềm Lực only scales the already-earned Realm+Body core. Existing V2
+    # live HP must change retroactively while retaining its current HP ratio;
+    # fail closed rather than leaving permanent values and HP out of sync.
+    if sync_potential:
+        var synced := DiscipleRealmProgressV2.sync_live_hp(disciple)
+        if not bool(synced.get("ok",false)):
+            disciple.set(str(dimension), previous)
+            disciple.disciple_quality = old_quality
+            disciple.hp = old_hp
+            disciple.max_hp = old_max_hp
+            return false
     return true
 
 func birth_total(values: Dictionary) -> float:
