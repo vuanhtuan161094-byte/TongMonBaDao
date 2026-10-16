@@ -19,7 +19,12 @@ const ORIGINAL_ART_FILES := {
     "wolf_attack": "res://assets/labs/combat_v4/original/thanh_lang_attack_concept_256.png",
     "wolf_hit": "res://assets/labs/combat_v4/original/thanh_lang_hit_concept_256.png",
     "wolf_downed": "res://assets/labs/combat_v4/original/thanh_lang_downed_concept_256.png",
-    "boss_idle": "res://assets/labs/combat_v4/original/hac_lang_vuong_idle_concept_512.png"
+    "boss_idle": "res://assets/labs/combat_v4/original/hac_lang_vuong_idle_concept_512.png",
+    "human_idle": "res://assets/labs/combat_v4/original/01_idle_concept_512.png",
+    "human_walk": "res://assets/labs/combat_v4/original/02_walk_concept_512.png",
+    "human_attack": "res://assets/labs/combat_v4/original/04_attack_concept_512.png",
+    "human_hit": "res://assets/labs/combat_v4/original/06_hit_concept_512.png",
+    "human_downed": "res://assets/labs/combat_v4/original/07_downed_concept_512.png"
 }
 const ORIGINAL_ART_HASHES := {
     "wolf_idle": "66512ed97090af2f059c47aa7ac4b079396cf6b720432c5dcdde19ecf12499c2",
@@ -28,7 +33,12 @@ const ORIGINAL_ART_HASHES := {
     "wolf_attack": "578a8732de8baf169066da26885f8f83ee1482120f4e04d583389014a4d9e63d",
     "wolf_hit": "341eb66656149fc36b6507300a37687d21425d9108bdb4ff0fd1fe6aefd620f6",
     "wolf_downed": "14e383b9b185c66ef0590a44323bad370f32e702b006c8799bb835f0e01490e1",
-    "boss_idle": "b515de27e2e71a7f506294236f6b835bfb44777b33d3611b01c324c3f7c429bc"
+    "boss_idle": "b515de27e2e71a7f506294236f6b835bfb44777b33d3611b01c324c3f7c429bc",
+    "human_idle": "32d94d5b1c02f5aac1dd7c9c0e803d454a83db52f287de48c2b1da2db7dbff61",
+    "human_walk": "7738899b232c502134aa30ecf203790d89f1ca202cf9df63ebb2e8151f67e8a5",
+    "human_attack": "86eedc20d95d5b4611b0f10b43255937a3d1c33acdb7ad6f302859b2a3ffc043",
+    "human_hit": "cc67ee5cffb4ba0d60c4669e2b338e9f4c9fee48d83b52870208097e3e06c261",
+    "human_downed": "82c7aede9d9e3f7797d1ad01045b7583189680aab47b5b71f2a1b15d4fc95241"
 }
 const SOURCE_HASHES := {
     "res://assets/labs/combat_v4/terrain/stone_courtyard.png": "c157965bd15f2747a55b602d4320dc34ad70c9129f79cc17eb8b4b139897468a",
@@ -38,6 +48,7 @@ const SOURCE_HASHES := {
 
 var battle: MapBattleV2
 var disciple_visual: ModularDiscipleActor
+var human_concept_sprite: Sprite2D
 var stage_art_loaded := false
 var last_disciple_position := Vector2(-999.0, -999.0)
 var last_facing: StringName = &"right"
@@ -80,6 +91,9 @@ func bind_battle(authority: MapBattleV2) -> void:
     battle = authority
     if disciple_visual != null:
         disciple_visual.queue_free()
+    if human_concept_sprite != null:
+        human_concept_sprite.queue_free()
+        human_concept_sprite = null
     for n in monster_nodes.values():
         if is_instance_valid(n):
             (n as Sprite2D).queue_free()
@@ -97,6 +111,14 @@ func bind_battle(authority: MapBattleV2) -> void:
     var installed := FemaleStageAAssetLoader.apply_public_direction(disciple_visual, &"right")
     stage_art_loaded = int(installed.get("applied", 0)) == 14
     disciple_visual.set_status_text("")
+    if not stage_art_loaded and original_textures.has("human_idle"):
+        # Optional original-art illustration is an explicit pose PROOF, not a rig.
+        disciple_visual.visible = false
+        human_concept_sprite = Sprite2D.new()
+        human_concept_sprite.name = "Original_Hero_Pose_Proof"
+        human_concept_sprite.texture = original_textures["human_idle"]
+        human_concept_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+        add_child(human_concept_sprite)
     last_disciple_position = Vector2(-999.0, -999.0)
     last_facing = CombatV4TwoWayFacing.RIGHT
     # The concept wolf/boss images are one SIDE profile, never Up/Down renders.
@@ -148,6 +170,20 @@ func sync_visuals() -> void:
         if visual_clock < disciple_reaction_until:
             disciple_visual.current_clip = StringName(disciple_reaction_pose)
             disciple_visual.set_facing_from_delta(Vector2.ZERO)
+        if human_concept_sprite != null:
+            var visual_clip := "human_idle"
+            if float(actor.get("hp", 0.0)) <= 0.0:
+                visual_clip = "human_downed"
+            elif visual_clock < disciple_reaction_until:
+                visual_clip = "human_" + disciple_reaction_pose
+            elif moving:
+                visual_clip = "human_walk"
+            if original_textures.has(visual_clip):
+                human_concept_sprite.texture = original_textures[visual_clip]
+            human_concept_sprite.flip_h = CombatV4TwoWayFacing.flip_h(last_facing)
+            human_concept_sprite.scale = Vector2.ONE * 0.17
+            human_concept_sprite.position = position_on_map - Vector2(0, 224.0 * 0.17)
+            human_concept_sprite.z_index = disciple_visual.z_index
         last_disciple_position = logical
         disciple_visual.modulate.a = 0.36 if float(actor.get("hp", 0.0)) <= 0.0 else 1.0
         break
@@ -305,7 +341,11 @@ func _draw() -> void:
         draw_arc(at, 19.0 + (0.5 - ttl) * 17.0, -1.9, 1.4, 28,
             Color("#68a995") if kind == "heal" else Color("#e2ba72"), 2.2)
     if not stage_art_loaded:
-        _draw_label("STAGE A PACK NOT INSTALLED · FALLBACK ONLY", Vector2(370, 590), 16, INK)
+        _draw_label(
+            "ORIGINAL FEMALE POSE PROOF · STAGE A PACK ABSENT" if human_concept_sprite != null
+            else "STAGE A PACK NOT INSTALLED · FALLBACK ONLY",
+            Vector2(370, 590), 13, INK
+        )
     if source_loaded.is_empty():
         _draw_label("ENV ART NOT STAGED · PROCEDURAL GROUND", Vector2(375, 610), 12, INK)
 
