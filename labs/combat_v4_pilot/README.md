@@ -58,6 +58,20 @@ Full original source identifiers and hashes are recorded in labs/env02a/ENV02A_B
 
 The 570185 ID has NO verified biological/visual classification: do not call it bamboo without preview. Stone courtyard is NOT proof of forest ground set. Procedural backup is visible and labeled when external art is not present. This lab is NOT full production Combat V4 art. It does NOT copy 192x192 ENV-02A grid/chunk/placement authority.
 
+## CC0 LICENSED WOLF RUN — 2026-10-16
+
+**Selected actual third-party sprite:** `wolf_run.png`, author **alizard**, license **CC0**. Verified public release/source: https://opengameart.org/content/pixel-wolf ; direct source: https://opengameart.org/sites/default/files/wolf_run.png . Source description specifies 5 side-profile frames, each 66x66px, giving a 330x66 horizontal sprite sheet. THIS IS NOT VLTK1 ART AND MUST NOT BE LABELED AS SUCH.
+
+Installer in repository: `tools/asset/Install-CMBV4-CC0-Wolf.ps1` (Windows PowerShell). It downloads source to a temporary directory, validates PNG signature and exact dimensions, obtains SHA-256, refuses to overwrite a different file, then stages under `godot/assets/labs/combat_v4/cc0_wolf/wolf_run.png`. Never manually copy unverified game-client Resources into this path.
+
+The Godot visual lab automatically prefers the CC0 5-frame wolf sheet over the original-art one-pose proof for regular Thanh Lang, using Sprite2D.hframes=5, vframes=1, 8 fps when moving, native flip_h for facing left/right and previous horizontal side while moving vertically. The Boss remains the separately labeled original-art pose proof (or a placeholder), since this CC0 file is only a regular wolf RUN animation. Both editions share the same canonical MapBattleV2 positions/HP; the frame index is visual only.
+
+The network-backed artifact could **not** be downloaded into the assistant runtime: local network resolution and asset transfer were blocked. Therefore there is **no new asset binary committed, no verified local download SHA, no Godot runtime PASS** from this work. The script is awaiting one successful legitimate download on a Windows testing machine. No CI/workflow triggered.
+
+**True runtime screenshots:** The isolated lab now has a `Chụp ảnh` button which waits for a real rendered frame and saves the viewport PNG to `user://cmb_v4_screenshots/CMB-V4-<timestamp>.png`; it logs the resolved absolute filename. Requires running Godot 4.7.2 with a graphical display. Any composited preview prepared outside Godot must prominently say NOT A GODOT SCREENSHOT.
+
+VLTK1/JX1 freely uploaded game clients/resources have **unverified redistribution/reuse rights** despite some third-party GitHub repos being MIT-licensed; not ingested. License-approved replacement art can be evaluated separately, without copying VLTK1 art into production.
+
 ## Monster Source A art proof — SEPARATE / UNRESOLVED
 
 | TMBĐ species | Gameplay proof | Verified Source A rig/atlas/PNG? |
