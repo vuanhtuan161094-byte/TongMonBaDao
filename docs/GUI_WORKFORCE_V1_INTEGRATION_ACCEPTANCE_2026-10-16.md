@@ -1,5 +1,13 @@
 # GUI-WORKFORCE V1 — Integration acceptance and runtime queue
 
+## Sect-Playable V1 navigation handoff (2026-10-16)
+
+- Code/test checkpoint SHA: `d147477b184deff1ff266bcb2be90db2098be453`, same existing 1280×720 main scene; PR #18 remains draft.
+- Top **Điều hành**, bottom **Tông Môn** now expose real roster capacity/tokens/Stones and status/warehouse per Mine, Forest, Field. One-tap navigation to existing Guidance recruitment, worker-card assignments, Kho/Phường Thị, deep Disciple profile, and save-current-state action (real runtime save).
+- After real RecruitmentSystem accepted complete V2 candidate, **Phân công ngay** opens Mine's workforce picker prefiltered for accepted ID; no auto fake assignment or extra candidate.
+- New `godot/tests/presentation/sect_playable_home_loop_test.gd` validates the live Godot scene route Guidance→recruit→Mine picker→Kho→autosave/reload→disciple profile. Test is **UNRUN**; requires Godot 4.7.2.
+- QA not closed: official import, focused new test, prior GUI-Workforce full 3-producer test, O2/O3/O4/O6/O7/O8/O9, Injury/SAFE, cumulative FULL, Android/Windows visuals, offline recovery and sustained device load all PENDING. No change to locked backend authority or balance. 4 scripts source-structure checked only.
+
 Date 2026-10-16. Draft PR #18 code/test SHA `7377a60d55f06bf22d14ff65e7a90eebdca375d1`. **Implementation complete at static code level only; runtime PENDING.**
 
 ## Player workflow

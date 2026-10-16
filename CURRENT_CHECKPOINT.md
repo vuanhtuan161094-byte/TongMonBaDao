@@ -1,5 +1,21 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-16 — SECT-PLAYABLE V1: integrated game-screen navigation on PR #18, STATIC ONLY
+
+**Owner selection:** option 1 at 2026-10-16 15:24Z; complete one holistic tông môn gameplay UI flow rather than many mini-approvals. **Game + new scene test SHA:** `d147477b184deff1ff266bcb2be90db2098be453`. Live draft PR #18 branch `integration-v2-pr9-pr10-pr17-20261016`; parent PR #9 base `cf11d53f2ac48e9b7a220500fece983b675dcd62`. Verified main `461caca1171462e0da092f21108c5c1733157ad9` unchanged.
+
+**Code shipped (single existing Godot-native landscape scene, no new gameplay authority):** `godot/src/presentation/p3_2_landscape_sect.gd` now adds a visible top-bar **Điều hành** entry and bottom **Tông Môn** home action opening `SectOperationsHub` 740×543 at (269,85) on 1280×720; scrollable, accessible labels and 48px touch targets. Hub shows **real** Sect roster/capacity, candidate count, recruit token count, Sect Stones, live simulation tick, one owner + status + canonical stock of Mine (selected actual ore plan), Linh Lâm and Linh Điền. One-tap routes: Dẫn Tiên, three producers, Kho/Phường Thị, real disciple deep profile; manual **Lưu tiến độ ngay** invokes existing `LiveGameRuntimeV2.save()` with honest success/failure. All action routes operate on existing scene state. Hub scroll position preserved across normal simulation refresh; full modal properly closes before entering building/disciple, avoids overlays in 1280×720.
+
+**Recruit→work bridge:** after successful existing `RecruitmentSystem.accept_candidate`, retain the accepted ID in presentation-only memory to reveal `GuidanceAssignNewRecruit`, immediately navigating to Mine's canonical workforce picker filtered for that exact disciple. The player still chooses a valid candidate with the standard **Giao việc** button; worker authority `WorkforceSystem.transfer_production_worker`, timer/profession EXP/wages/crops/warehouse and save/offline remain canonical. No fake candidate, free recruit, resource award or auto-spend introduced.
+
+**Regression authored, NOT executed:** `godot/tests/presentation/sect_playable_home_loop_test.gd` loads the real main scene from a test save path, follows Home→Guidance, debits one real Chiêu Mộ Lệnh, accepts a complete V2 candidate once, follows `GuidanceAssignNewRecruit` to real Mine picker, commits one-worker worksite, navigates Home→Kho, autosaves with `LiveGameRuntimeV2` and validates physical SaveService round-trip and invariants; also follows Home→deep Disciple view. Existing `gui_workforce_v1_e2e_test.gd` retains 3-building production/workforce/save checks.
+
+**Evidence:** direct GitHub static lexer/structural scan of 4 relevant GDScript files PASS, no duplicate function names. Blob compare proves 8 locked production/economy/scheduler/save/combat authority scripts identical to PR #9: ProductionPlanRegistry, EconomySystem, WarehouseSystem, SimulationScheduler, CombatStatsV2, DiscipleRealmProgressV2, SaveService, HuntingPveRunV2. No CI or merge main. **Godot 4.7.2 import/parser/headless GUI/game runtime = NOT RUN / PENDING.** Real Android touch screenshot, Windows GUI visual, O2/O3/O4/O6 ==4/O7/O8/O9/SAFE/GP-02B1/GP-02C1/P3.7 FULL, save/offline scenario and sustained 100–3,000 disciple responsiveness remain PENDING. Historic Windows PASS on PR9 SHA `453df9a` does not certify PR18. This is a code-delivery checkpoint, NOT acceptance or a playable-runtime PASS.
+
+**Next:** focused Godot 4.7.2 real runner verification + evidence-led compile/UX/regression corrections when a runner is accessible without requiring the owner to supply a PC; no new economy numbers. Candidate gameplay rule decisions (permanent-growth source, PvE midfight Potential policy) remain separate.
+
+---
+
 ## 2026-10-16 — GUI-WORKFORCE V1: END-TO-END IMPLEMENTATION IN DRAFT PR #18 (STATIC ONLY)
 
 **User authorization:** 2026-10-16 12:35Z full GUI Workforce V1, end-to-end without piecemeal requests. Game+test SHA **`7377a60d55f06bf22d14ff65e7a90eebdca375d1`**; future documentation-only SHA has no additional gameplay impact. Working branch `integration-v2-pr9-pr10-pr17-20261016`, draft PR #18 based on PR #9. Main unchanged at `461caca1171462e0da092f21108c5c1733157ad9` as verified at start.

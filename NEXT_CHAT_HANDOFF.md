@@ -1,5 +1,13 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-16 — SECT-PLAYABLE V1: END-TO-END PLAYER ROUTING, DRAFT PR #18
+
+**Exact code/test SHA `d147477b184deff1ff266bcb2be90db2098be453`** under draft PR #18. Added a central SectOps hub to real `p3_2_landscape_sect.gd`: top **Điều hành** button, bottom **Tông Môn** hub, true 3-building resource status/employee + Warehouse numbers, Guidance recruit, Mine/Forest/Field workplace choice, Kho/market and Disciple profile navigation; manual physical `LiveGameRuntimeV2.save` action. Guidance after authentic candidate acceptance exposes one-click **Phân công ngay** into prefiltered Mine Workforce picker. No invented simulation state or new scheduler/stock/timer. Existing worker cards, advanced plan controls and save states remain. One new focused `sect_playable_home_loop_test.gd` exercises end-to-end navigation, true recruiter token and V2 admission, one worker/worksite, Warehouse access, actual autosave + SaveService reload and invariants. Test authored, **Godot 4.7.2 NOT RUN**.
+
+**Preliminary evidence:** lexical/script delimiter scan 4/4 no duplicate functions; eight locked gameplay blob SHA equal PR #9. Full Godot import/compilation and runtime tests O2, GUI-WORKFORCE, O3/O4/O6/O7/O8/O9/SAFE/GP-02B1/02C1/P3.7 FULL; Windows screenshot, Android touchscreen and sustained 1,000–3,000 performance are **PENDING**. Never label playable PASS from source/CI-only evidence. No CI requested, no merge. Continue bundled technical repairs after actual failures, not small owner prompts. Gameplay/balance source decisions only if absolutely necessary.
+
+---
+
 ## 2026-10-16 — GUI-WORKFORCE V1 CODE HANDOFF — PR #18
 
 **Implementation SHA `7377a60d55f06bf22d14ff65e7a90eebdca375d1`.** Existing game main scene `p3_2_landscape_sect.tscn` remains unchanged, Godot-native `p3_2_landscape_sect.gd` now gives each Mine/Forest/Field one compact right-panel operator card, a 16-row paginated search picker, buttons Select/Replace, Start, Remove, busy status and warehouse balance. `WorkforceSystem.transfer_production_worker` performs fully validated atomic transfer between idle crews, replacing an idle former operator without losing any committed work. Hidden advanced roster/policies preserve prior UI routes. Only canonical BuildingState/DiscipleState/ProductionPlan/SimulationScheduler/Warehouse drive output. Existing Economy-A disabled fresh saves get an explicit enable-timer action; none is silently enabled.
