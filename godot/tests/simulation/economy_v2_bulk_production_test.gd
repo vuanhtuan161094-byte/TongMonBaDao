@@ -33,6 +33,8 @@ func _run() -> void:
         return
     if not _verify_advanced_ore_plan_snapshot():
         return
+    if not _verify_tiered_upgrade_and_rare_source():
+        return
     print("ECON-V2 BULK PRODUCTION TEST PASS")
     quit(0)
 
@@ -283,3 +285,48 @@ func _verify_advanced_ore_plan_snapshot() -> bool:
         "changing future Mine plan rewrote a committed batch"):
         return false
     return true
+
+func _verify_tiered_upgrade_and_rare_source() -> bool:
+    var seed := -1
+    for probe in range(1,10000):
+        if buildings._stable_plot_roll(probe,"mine_001","mine_001:v2:1",0) < 0.02:
+            seed = probe
+            break
+    if not _check(seed > 0,"no deterministic rare-source probe seed"):
+        return false
+    var state := P37Factory.create_state(seed)
+    var mine := buildings.primary_building(state,BuildingSystem.TYPE_MINE)
+    var forest := buildings.primary_building(state,BuildingSystem.TYPE_LINH_FOREST)
+    if not _check(mine != null and forest != null
+        and bool(EconomySystem.new().enable_v1(state).get("ok",false)),
+        "tiered upgrade probe lacks producer or Warehouse"):
+        return false
+    mine.level = 19
+    var mine_milestone := buildings.upgrade_cost_for_state(state,mine)
+    mine.level = 29
+    var mine_high := buildings.upgrade_cost_for_state(state,mine)
+    forest.level = 29
+    var forest_high := buildings.upgrade_cost_for_state(state,forest)
+    if not _check(int(mine_milestone.get("tam_mach_ban",0)) == 1
+        and int(mine_high.get("huyen_thiet",0)) >= 1
+        and int(forest_high.get("huyen_thiet",0)) >= 1
+        and bool(buildings.definition_for(forest).get("upgrade_enabled",false)),
+        "high-level Mine/Forest upgrades lack real tiered material gates"):
+        return false
+    mine.level = 1
+    var worker_ids := buildings.active_worker_ids(state,mine)
+    if not _check(not worker_ids.is_empty(),"rare-source probe has no miner"):
+        return false
+    var worker: DiscipleState = state.disciples[worker_ids[0]]
+    var before_ore := warehouse.quantity(state,&"thanh_thiet")
+    var started := buildings._start_resource_timer(state,mine,worker,1.0,BuildingSystem.PROF_MINING,1.0)
+    var jobs := buildings.resource_timer_jobs(mine)
+    if not _check(bool(started.get("ok",false)) and jobs.size() == 1
+        and str(jobs[0].get("rare_drop_id","")) == "tam_mach_ban",
+        "deterministic Mine batch did not snapshot a discrete component"):
+        return false
+    state.tick = int(jobs[0].get("finish_tick",0))
+    buildings.process_tick(state)
+    return _check(warehouse.quantity(state,&"tam_mach_ban") == 1
+        and warehouse.quantity(state,&"thanh_thiet") == before_ore+10000,
+        "Mine did not deliver both ordinary and discrete resource outputs")
