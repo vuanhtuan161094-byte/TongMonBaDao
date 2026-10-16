@@ -213,7 +213,7 @@ future recipes blindly. New recipes should author real quantities directly.
 
 Opening minimum sinks include:
 - Hồi Xuân Đan: 500 Thanh Linh Thảo → 1 pill per 6-minute base recipe;
-- Linh Cốc logistics: 1 unit / disciple / 30 simulation minutes, respecting Warehouse
+- Linh Cốc logistics: 2 units / disciple / 30 simulation minutes (~96/day), respecting Warehouse
   reserve/lock; shortage is audit-only in this packet and has no hunger penalty.
 
 Example:
