@@ -861,10 +861,10 @@ func perform_resource_job_step(state: SimulationState, disciple: DiscipleState, 
     elif phase == work_phase:
         progress += maxf(work_speed, 0.25)
         result["stamina_cost"] = 3.0
-        if progress + 0.000001 >= _legacy_resource_job_duration(producer):
+        if progress + 0.000001 >= _resource_job_duration(producer):
             phase = &"haul_back"
             progress = 0.0
-            cycle["carried_units"] = _legacy_resource_job_batch_units(producer)
+            cycle["carried_units"] = _resource_job_batch_units(producer)
     elif phase == &"haul_back":
         progress += _movement_speed(state, disciple) * _haul_speed_multiplier(disciple)
         if progress + 0.000001 >= float(definition.get("haul_distance", 6.0)):
@@ -1752,37 +1752,21 @@ func _timed_duration_plan(base_ticks: float, speed: float, prior_remainder_bp: i
         "speed_bp": speed_bp
     }
 
-# Legacy carry-cycle helpers are migration-only. They preserve historical
-# quantities/timing for old TRAVEL/EXTRACT/HAUL states and opt-out legacy play.
-func _legacy_resource_job_duration(building: BuildingState) -> float:
+# Public resource helpers remain the historical carry-cycle contract used by
+# legacy migration/O3/O6. New Economy V2 timer jobs read ProductionPlanRegistry
+# directly and snapshot their bulk duration/yield at job start.
+func _resource_job_duration(building: BuildingState) -> float:
     var base := float(definition_for(building).get("base_work_duration", 4.0))
     var facility_multiplier := maxf(0.50, 1.0 - float(maxi(building.level - 1, 0)) * 0.005)
     return maxf(base * facility_multiplier, 1.0)
 
-func _legacy_resource_job_batch_units(building: BuildingState) -> int:
+func _resource_job_batch_units(building: BuildingState) -> int:
     var base := maxi(int(definition_for(building).get("base_batch_units", 2)), 1)
     return base + int(floor(float(building.level) / 10.0))
 
-func _resource_job_duration(building: BuildingState) -> float:
-    if building == null:
-        return 0.0
-    var plan_id := StringName(definition_for(building).get("production_plan_id",""))
-    if not production_plans.has(plan_id):
-        return 0.0
-    var base := float(production_plans.base_cycle_ticks(plan_id))
-    return maxf(base / production_plans.building_speed_factor(building.level), 1.0)
-
-func _resource_job_batch_units(building: BuildingState) -> int:
-    if building == null:
-        return 0
-    var plan_id := StringName(definition_for(building).get("production_plan_id",""))
-    return production_plans.scaled_yield(plan_id,building.level) if production_plans.has(plan_id) else 0
-
-# Economy V2 raw-production result authority is ProductionPlanRegistry.
 # Căn Cốt remains a Body-training foundation and never grants arbitrary ore.
-# Profession level controls work time; building level contributes +0.5% speed
-# and +0.5% common yield per level after Lv1.
-# Keep old helper names for regression/debug compatibility.
+# Profession level controls V2 timer work speed; ProductionPlanRegistry owns
+# the +0.5%/level facility speed and common-yield scale for new timer jobs.
 func _mining_duration(mine: BuildingState) -> float:
     return _resource_job_duration(mine)
 
