@@ -276,7 +276,7 @@ func _press(node_name: String) -> bool:
     if button == null:
         return _fail("O8 missing player-facing button %s." % node_name)
     if button.disabled:
-        return _fail("O8 required button is disabled: %s." % node_name)
+        return _fail("O8 required button is disabled: %s (%s)." % [node_name,button.tooltip_text])
     button.emit_signal("pressed")
     await process_frame
     return true
