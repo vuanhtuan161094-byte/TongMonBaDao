@@ -19,6 +19,10 @@ static func preview(state: SimulationState, disciple_id: StringName, points: int
     var actor: DiscipleState = state.disciples[disciple_id]
     if not DiscipleRealmProgressV2.owns_v2_progression(actor) or not DiscipleRealmProgressV2.progression_ready(actor):
         return {"ok":false,"reason":"v2_foundation_profile_not_ready"}
+    # This is an instantaneous paid item use, not a second timed job.
+    # The actor must be physically present and alive, never in an active PvE.
+    if actor.region_id != &"sect" or actor.hp <= 0.0 or not actor.active_pve_encounter_id.is_empty():
+        return {"ok":false,"reason":"foundation_disciple_unavailable"}
     var required := points * MATERIALS_PER_POINT
     var warehouse := WarehouseSystem.new()
     if not warehouse.can_consume(state,SOURCE_LINH_TUY,required):
