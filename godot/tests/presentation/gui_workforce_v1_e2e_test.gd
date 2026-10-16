@@ -114,6 +114,17 @@ func _run() -> void:
     if buildings.active_worker_ids(state,forest).size() != 1 or not buildings.active_worker_ids(state,forest).has(forester_id):
         _fail("Forest picker did not assign one worker")
         return
+    if not await _press("WorkforceRemove"):
+        return
+    var released: DiscipleState = state.disciples[forester_id]
+    if released.work_group_id != &"" or released.worksite_building_id != &"" or not released.direct_command.is_empty():
+        _fail("Forest remove did not release canonical assignment and command")
+        return
+    if not await _choose(forester_id):
+        return
+    if not buildings.active_worker_ids(state,forest).has(forester_id):
+        _fail("Forest could not reassign legally released worker")
+        return
     var wood_job := {}
     for _i in range(8):
         scheduler.step()
