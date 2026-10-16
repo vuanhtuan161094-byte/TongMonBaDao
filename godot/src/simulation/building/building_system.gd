@@ -66,6 +66,7 @@ const DEFINITIONS := {
         "profession_id": "mining",
         "job_model": "carry_cycle",
         "resource_id": MATERIAL_ORE,
+        "production_plan_id": "mine_thanh_thiet_t1",
         "cycle_phases": ["travel_out", "mining", "haul_back"],
         "cycle_work_phase": "mining",
         "base_worker_slots": 1,
@@ -87,6 +88,7 @@ const DEFINITIONS := {
         "profession_id": "forestry",
         "job_model": "carry_cycle",
         "resource_id": MATERIAL_WOOD,
+        "production_plan_id": "forest_linh_moc_t1",
         "cycle_phases": ["travel_out", "harvesting", "haul_back"],
         "cycle_work_phase": "harvesting",
         "base_worker_slots": 1,
@@ -156,6 +158,7 @@ const DEFINITIONS := {
 var equipment := EquipmentSystem.new()
 var warehouse := WarehouseSystem.new()
 var crop_registry := SpiritCropRegistry.new()
+var production_plans := ProductionPlanRegistry.new()
 var alchemy_registry := AlchemyRecipeRegistry.new()
 var profession_modifiers := ProfessionModifierSystem.new()
 
@@ -323,7 +326,7 @@ func guidance_base_daily_arrivals(building: BuildingState) -> int:
     return 5 + 3 * int(floor(float(building.level) / 10.0))
 
 func spirit_field_speed_factor(field: BuildingState) -> float:
-    return 1.0 + 0.005 * float(maxi(field.level - 1, 0))
+    return production_plans.building_speed_factor(field.level)
 
 func spirit_field_cycle_time_factor(field: BuildingState) -> float:
     var factor := 1.0
@@ -334,7 +337,7 @@ func spirit_field_cycle_time_factor(field: BuildingState) -> float:
     return factor
 
 func spirit_field_yield_factor(field: BuildingState) -> float:
-    var factor := 1.0 + 0.005 * float(maxi(field.level - 1, 0))
+    var factor := production_plans.common_yield_factor(field.level)
     if field.level >= 20:
         factor *= 1.10
     if field.level >= 75:
@@ -516,9 +519,11 @@ func upgrade_cost(building: BuildingState) -> Dictionary:
     var factor := 1.0 + 0.15 * level + 0.01 * level * level
     var target_level := building.level + 1
     var milestone_mult := 2.0 if MILESTONE_LEVELS.has(target_level) else 1.0
+    var legacy_wood := maxi(1, int(ceil(float(definition.get("base_wood_cost", 1)) * factor * milestone_mult)))
+    var legacy_ore := maxi(1, int(ceil(float(definition.get("base_ore_cost", 1)) * factor * milestone_mult)))
     var cost := {
-        MATERIAL_WOOD: maxi(1, int(ceil(float(definition.get("base_wood_cost", 1)) * factor * milestone_mult))),
-        MATERIAL_ORE: maxi(1, int(ceil(float(definition.get("base_ore_cost", 1)) * factor * milestone_mult))),
+        MATERIAL_WOOD: production_plans.scale_common_requirement(StringName(MATERIAL_WOOD), legacy_wood),
+        MATERIAL_ORE: production_plans.scale_common_requirement(StringName(MATERIAL_ORE), legacy_ore),
         "spirit_stones": maxi(1, int(ceil(float(definition.get("base_stone_cost", 1)) * factor * milestone_mult)))
     }
     if MILESTONE_LEVELS.has(target_level):
@@ -1019,18 +1024,28 @@ func _start_resource_timer(state: SimulationState, producer: BuildingState, acto
     var definition := definition_for(producer)
     if StringName(definition.get("profession_id","")) != profession_id:
         return {"ok":false,"reason":"wrong_job_profession"}
-    var policy := state.sect.economy_a_policy
-    var base_duration := clampi(int(policy.get("resource_duration_ticks",10)),1,1440)
+    var plan_id := StringName(definition.get("production_plan_id",""))
+    if not production_plans.has(plan_id):
+        return {"ok":false,"reason":"missing_production_plan"}
+    if production_plans.producer_type(plan_id) != producer.building_type:
+        return {"ok":false,"reason":"production_plan_building_mismatch"}
+    if production_plans.profession_id(plan_id) != profession_id:
+        return {"ok":false,"reason":"production_plan_profession_mismatch"}
+    if producer.level < production_plans.required_building_level(plan_id):
+        return {"ok":false,"reason":"production_plan_locked"}
     var data := producer.production_state.duplicate(true)
-    var timing := _timed_duration_plan(float(base_duration), maxf(speed,0.25), int(data.get("economy_a_work_remainder_bp",0)))
+    var total_speed := maxf(speed,0.25) * production_plans.building_speed_factor(producer.level)
+    var base_duration := production_plans.base_cycle_ticks(plan_id)
+    var timing := _timed_duration_plan(float(base_duration), total_speed, int(data.get("economy_a_work_remainder_bp",0)))
     var duration := int(timing["duration_ticks"])
     var jobs := resource_timer_jobs(producer)
     var sequence := maxi(int(data.get("economy_a_sequence",0)),0)+1
     var job := {
-        "job_id":"%s:v1:%d" % [str(producer.id),sequence],
+        "job_id":"%s:v2:%d" % [str(producer.id),sequence],
         "worker_id":str(actor.id),"profession_id":str(profession_id),
-        "resource_id":str(definition.get("resource_id","")),
-        "output_quantity":_resource_job_batch_units(producer),
+        "production_plan_id":str(plan_id),
+        "resource_id":str(production_plans.output_resource_id(plan_id)),
+        "output_quantity":production_plans.scaled_yield(plan_id,producer.level),
         "profession_xp_gain":maxf(xp_gain,0.0),
         "started_tick":state.tick,"finish_tick":state.tick+duration,
         "completion_work_remainder_bp":int(timing["completion_remainder_bp"])
@@ -1738,19 +1753,24 @@ func _timed_duration_plan(base_ticks: float, speed: float, prior_remainder_bp: i
     }
 
 func _resource_job_duration(building: BuildingState) -> float:
-    var base := float(definition_for(building).get("base_work_duration", 4.0))
-    var facility_multiplier := maxf(0.50, 1.0 - float(maxi(building.level - 1, 0)) * 0.005)
-    return maxf(base * facility_multiplier, 1.0)
+    if building == null:
+        return 0.0
+    var plan_id := StringName(definition_for(building).get("production_plan_id",""))
+    if not production_plans.has(plan_id):
+        return 0.0
+    var base := float(production_plans.base_cycle_ticks(plan_id))
+    return maxf(base / production_plans.building_speed_factor(building.level), 1.0)
 
 func _resource_job_batch_units(building: BuildingState) -> int:
-    var base := maxi(int(definition_for(building).get("base_batch_units", 2)), 1)
-    return base + int(floor(float(building.level) / 10.0))
+    if building == null:
+        return 0
+    var plan_id := StringName(definition_for(building).get("production_plan_id",""))
+    return production_plans.scaled_yield(plan_id,building.level) if production_plans.has(plan_id) else 0
 
-# Mining output remains the authored Mine/level batch quantity until a
-# specific, approved production-result modifier is defined. In particular,
-# Căn Cốt is a Body-training foundation and never grants arbitrary extra ore.
-# Mining profession level already controls work time through WorkforceSystem;
-# Thông Tuệ controls profession XP via the existing modifier channel.
+# Economy V2 raw-production result authority is ProductionPlanRegistry.
+# Căn Cốt remains a Body-training foundation and never grants arbitrary ore.
+# Profession level controls work time; building level contributes +0.5% speed
+# and +0.5% common yield per level after Lv1.
 # Keep old helper names for regression/debug compatibility.
 func _mining_duration(mine: BuildingState) -> float:
     return _resource_job_duration(mine)
