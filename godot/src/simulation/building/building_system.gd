@@ -957,7 +957,7 @@ func perform_spirit_field_step(state: SimulationState, disciple: DiscipleState, 
         "plot_ids": started_plots,
         "plots_started": started_plots.size(),
         "paid_spirit_stones": total_cost,
-        "base_work_xp": xp_basis if xp_basis > 0.0 else BASE_WORK_XP,
+        "base_work_xp": xp_basis if xp_basis > 0.0 else crop_registry.base_work_xp(first_crop),
         "field_xp_factor": spirit_field_xp_factor(field),
         "stamina_cost": 0.0
     }
@@ -989,8 +989,8 @@ func _start_resource_timer(state: SimulationState, producer: BuildingState, acto
         return {"ok":false,"reason":"missing_canonical_job_slot"}
     if disciple_has_active_timed_recipe(state,actor.id) or disciple_has_active_spirit_plot(state,actor.id) or actor.work_group_id == &"body_training_crew":
         return {"ok":false,"reason":"another_active_job"}
-    if producer.building_type == TYPE_MINE and resource_timer_jobs(producer).size() >= 1:
-        return {"ok":false,"reason":"mine_job_already_running"}
+    if [TYPE_MINE, TYPE_LINH_FOREST].has(producer.building_type) and resource_timer_jobs(producer).size() >= 1:
+        return {"ok":false,"reason":"resource_job_already_running"}
     if actor.region_id != &"sect" or not actor.active_pve_encounter_id.is_empty():
         return {"ok":false,"reason":"worker_not_available"}
     var definition := definition_for(producer)
