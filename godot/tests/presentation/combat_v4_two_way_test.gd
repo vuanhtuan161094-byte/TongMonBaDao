@@ -86,7 +86,18 @@ func _run() -> void:
         view.call("sync_visuals")
         if not _assert_ok(sprite.flip_h, "wolf vertical motion must retain its rightward flip"):
             return
+    if bool(view.get("cc0_wolf_loaded")):
+        var wolf_nodes: Dictionary = view.get("monster_nodes")
+        if not _assert_ok(wolf_nodes.has("pilot_wolf"), "verified CC0 atlas must spawn a wolf sprite"):
+            return
+        var sheet: Sprite2D = wolf_nodes["pilot_wolf"]
+        if not _assert_ok(sheet.hframes == 5 and sheet.vframes == 1 and
+            sheet.texture.get_width() == 330 and sheet.texture.get_height() == 66,
+            "CC0 source must remain five native 66px horizontal frames"):
+            return
     print("CMB-V4 TWO-WAY SIDE/MIRROR/STAGEA/BOSS: STATIC-CONTRACT PASS")
+    print("CC0 wolf 5-frame sheet loaded: ", view.get("cc0_wolf_loaded"),
+        " (false means download/staging still pending)")
     print("Wolf concept art present: ", nodes.has("pilot_wolf"), " (optional art QA separate)")
     lab.queue_free()
     await process_frame
