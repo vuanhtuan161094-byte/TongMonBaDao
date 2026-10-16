@@ -3348,7 +3348,7 @@ func _disciple_tab_text(tab_name: String, disciple: DiscipleState) -> String:
 func _attributes_tab_text(disciple: DiscipleState) -> String:
     var snapshot := _disciple_snapshot(disciple)
     if bool(snapshot.get("ok", false)) and bool(snapshot.get("authentic_v2", false)):
-        return _v2_attributes_tab_text(snapshot) + "\n\n" + _body_gate_preview_text(disciple.id)
+        return _v2_attributes_tab_text(snapshot) + "\n\n" + _v2_profession_summary_text(snapshot) + "\n\n" + _body_gate_preview_text(disciple.id)
 
     var required := cultivation.required_progress(disciple)
     var progress_text := "Đã viên mãn" if required <= 0.0 else "%.0f / %.0f" % [disciple.cultivation_progress, required]
@@ -3430,6 +3430,26 @@ func _v2_attributes_tab_text(snapshot: Dictionary) -> String:
         SectMapPresentation.action_label(StringName(life["current_action"])),
         tab_status_text
     ]
+
+
+func _v2_profession_summary_text(snapshot: Dictionary) -> String:
+    var work: Dictionary = snapshot["work"]
+    var professions: Dictionary = work.get("professions", {})
+    var names := {
+        "mining":"Khai Khoáng", "forestry":"Lâm Nghiệp",
+        "herbalism":"Linh Thực", "alchemy":"Luyện Đan",
+        "forging":"Luyện Khí", "logistics":"Hậu Cần"
+    }
+    var lines: Array[String] = ["Nghề nghiệp · cấp / EXP:"]
+    for profession_id in ["mining","forestry","herbalism","alchemy","forging","logistics"]:
+        var row: Dictionary = professions.get(profession_id, {})
+        lines.append("• %s Lv%d · EXP %.1f" % [
+            str(names[profession_id]), int(row.get("level",1)), float(row.get("xp",0.0))
+        ])
+    var site := str(work.get("worksite_building_id",""))
+    if not site.is_empty():
+        lines.append("Điểm làm việc: %s" % site)
+    return "\n".join(lines)
 
 
 func _technique_tab_text(disciple: DiscipleState) -> String:
