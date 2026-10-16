@@ -4,7 +4,7 @@
 
 **Owner authorization:** owner approved implementation of the Economy V2 recommendations and explicitly required alignment with the canonical **30 Tu Vi realms + 30 Luyện Thể realms**, each with 10 floors. This packet deliberately implements the shared production foundation first; it does **not** yet apply the later bulk-10,000 production/market/recipe rebalance.
 
-**Integration topology:** GitHub `main` remains `461caca1171462e0da092f21108c5c1733157ad9`. PR #6 `mine-v2-one-worker-20261015` remains OPEN/DRAFT and unmerged. New branch `economy-v2-core-20261016` is stacked from PR #6 HEAD `dc3ad974252f5d4c034cfebe441f33fa24e9560c`; draft PR **#7** targets that branch, not `main`. Latest gameplay+test SHA for this packet before checkpoint docs is **`995ba89f2d87f07a211eea3c459d2a47d7b1cfc2`**.
+**Integration topology:** GitHub `main` remains `461caca1171462e0da092f21108c5c1733157ad9`. PR #6 `mine-v2-one-worker-20261015` remains OPEN/DRAFT and unmerged. New branch `economy-v2-core-20261016` is stacked from PR #6 HEAD `dc3ad974252f5d4c034cfebe441f33fa24e9560c`; draft PR **#7** targets that branch, not `main`. Latest gameplay+test SHA for this packet before checkpoint docs is **`c9ff6cd5c30da4033a3735b20e1808fc6d3f0907`**.
 
 **Implemented authority on PR #7:**
 - Mine, Linh Lâm and Linh Điền each expose exactly **one operator per instance at every Lv1–100**. Forest/Field have atomic assignment APIs and group/worksite overbooking guards; active-job reservations block unsafe replacement.
