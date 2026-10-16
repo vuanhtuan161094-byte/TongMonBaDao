@@ -1,7 +1,7 @@
 # P3.7 — LINH ĐIỀN / SPIRIT FIELD SPEC
 
 Status: CANONICAL DESIGN AUTHORITY  
-Updated: 2026-10-06
+Updated: 2026-10-16
 
 Parents:
 - `docs/GAME_SYSTEM_ARCHITECTURE.md`
@@ -29,11 +29,21 @@ Do not simulate agricultural micro-management that does not create a meaningful 
 
 ---
 
-# 2. One plot = one timer
+# 2. One operator = one Field duty; plots are internal timers
 
 Canonical lifecycle:
 
-**start crop -> countdown -> harvest resolves**
+**assign one Linh Thực operator -> first plot starts Field duty -> repeated one-plot planting actions may fill empty plots -> internal timers -> final plot resolves/cancels -> duty ends**
+
+Each Linh Điền instance has exactly **one responsible disciple at every building level**.
+The field's plots are subordinate production timers owned by that one occupation; they are
+not four independent disciple jobs and never justify four active-job reservations.
+
+**One planting action starts exactly one plot and pays exactly one crop cost.**
+If the same operator already owns the active Field duty, another valid Herbalism order may
+start another empty plot under the **same duty identity**. While any duty plot remains
+growing, the operator cannot transfer worksite, leave the Herbalism crew, cultivate, hunt,
+or start another profession job.
 
 There are no separate backend phases for:
 - walking to the field;
@@ -60,14 +70,17 @@ status: empty | growing
 started_tick
 finish_tick
 assigned_worker_id
+field_duty_id
 paid_spirit_stones
 routine_yield
 rare_factor
+completion_work_remainder_bp
 ```
 
 The relevant worker and facility factors are sampled when the plot starts.
 
-The assigned worker remains reserved by that plot until `finish_tick`.
+All growing plots created by one Field duty carry the same responsible operator.
+That disciple remains reserved by the Linh Điền while any plot from the duty is unresolved.
 There are still no detailed walking/tending/harvest backend phases.
 
 When `finish_tick` is reached:
@@ -86,24 +99,26 @@ Worker slots and plot slots are separate.
 
 ## Worker slots
 
-How many disciples may operate the field concurrently.
+**Owner lock 2026-10-16:**
+- every Linh Điền instance has exactly **1 operator**;
+- building level never increases worker count;
+- one disciple still obeys One Active Job.
 
-Baseline:
-- Lv1: 4;
-- +1 every 5 levels.
-
-There is exactly one worker slot per plot slot.
-A disciple may occupy only one active Spirit Field plot at a time.
+The operator manages the whole field duty. Internal plot timers do not create extra
+disciple occupations.
 
 ## Plot slots
 
-How many crop timers may exist concurrently.
+**Economy V2 pilot: exactly 4 plots per Linh Điền at every level.**
 
-Baseline:
-- Lv1: 4;
-- +1 every 5 levels.
+Building level may improve speed/yield/content unlocks, but does not automatically add
+plots. More aggregate farming capacity comes from stronger fields and additional
+Spirit Field instances under the building-count progression rules.
 
-A plot with an active crop reserves exactly one disciple until harvest resolves.
+A single duty may own several empty-to-growing plot starts, but each player/backend
+plant action starts **one** plot only. All growing plots retain the same operator and
+`field_duty_id` while their timers may finish at different ticks. Economy-A wage identity
+is per Field duty, not per plot; replaying completion from several plots must not pay four wages.
 
 ---
 
@@ -305,9 +320,9 @@ Plant only the selected crop while:
 # 14. Building-level rules
 
 Baseline:
-- worker slots: 4 at Lv1, +1 every 5 levels;
-- plot slots: 4 at Lv1, +1 every 5 levels;
-- worker slots and plot slots stay 1:1;
+- worker slots: exactly **1** at every Lv1–100;
+- plot slots: exactly **4** internal plots at every Lv1–100;
+- worker count and plot count are intentionally independent;
 - field speed: +0.5% per level after Lv1;
 - field yield: +0.5% per level after Lv1.
 
@@ -377,24 +392,25 @@ A2R closes only when runtime evidence covers:
 2. Spirit Stone planting cost;
 3. insufficient-funds behavior;
 4. cancel with no default refund;
-5. multiple independent plots;
-6. exactly one reserved disciple per active plot;
-7. disciple released when that plot resolves;
-8. multiple Spirit Field instances;
-9. concrete worksite assignment;
-10. AUTO_DEMAND / PRIORITY / FIXED;
-11. profession-level cycle-time effect;
-12. generic graded work modifier effect;
-13. Thông Tuệ profession-XP effect;
-14. graded Linh Thực talent XP;
-15. Cơ Duyên lucky-harvest bands;
-16. field-level speed/yield formulas;
-17. milestone numeric behavior;
-18. passive work Tu Vi only during actual work;
-19. canonical warehouse deposit;
-20. save/load mid-cycle;
-21. deterministic continuation;
-22. legacy A2 migration;
-23. locked earlier gates remain green.
+5. four independent internal plot timers per Linh Điền;
+6. one planting action starts exactly one plot/cost while repeated Herbalism orders reuse the same duty;
+7. exactly one responsible disciple for the whole Linh Điền instance;
+8. that operator remains reserved while any duty plot is unresolved, cannot transfer worksite, and releases after the duty drains;
+9. multiple Spirit Field instances, each with its own one operator;
+10. concrete worksite assignment;
+11. AUTO_DEMAND / PRIORITY / FIXED;
+12. profession-level cycle-time effect;
+13. generic graded work modifier effect;
+14. Thông Tuệ profession-XP effect;
+15. graded Linh Thực talent XP;
+16. Cơ Duyên lucky-harvest bands;
+17. field-level speed/yield formulas;
+18. milestone numeric behavior;
+19. passive work Tu Vi only during actual work;
+20. canonical warehouse deposit;
+21. save/load mid-cycle;
+22. deterministic continuation;
+23. legacy A2 migration;
+24. locked earlier gates remain green.
 
 Detailed walking/pathfinding/hauling is explicitly outside Linh Điền backend authority.

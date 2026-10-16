@@ -89,8 +89,8 @@ const DEFINITIONS := {
         "resource_id": MATERIAL_WOOD,
         "cycle_phases": ["travel_out", "harvesting", "haul_back"],
         "cycle_work_phase": "harvesting",
-        "base_worker_slots": 2,
-        "worker_slot_every": 5,
+        "base_worker_slots": 1,
+        "worker_slot_every": 0,
         "work_distance": 8.0,
         "haul_distance": 6.0,
         "base_work_duration": 4.0,
@@ -115,8 +115,8 @@ const DEFINITIONS := {
         "worker_group_id": "herbalism_crew",
         "profession_id": "herbalism",
         "job_model": "plot_timer",
-        "base_worker_slots": 4,
-        "worker_slot_every": 5,
+        "base_worker_slots": 1,
+        "worker_slot_every": 0,
         "base_wood_cost": 6,
         "base_ore_cost": 3,
         "base_stone_cost": 18,
@@ -292,8 +292,10 @@ func worker_slots(building: BuildingState) -> int:
     var definition := definition_for(building)
     if definition.is_empty():
         return 0
-    # Owner-locked P1: every individual Mine has one operator at every level.
-    if building.building_type == TYPE_MINE:
+    # Economy V2 owner lock: raw-resource buildings have one responsible
+    # operator per instance at every building level. Capacity growth belongs to
+    # more instances / internal plots, never hidden extra workers.
+    if [TYPE_MINE, TYPE_LINH_FOREST, TYPE_SPIRIT_FIELD].has(building.building_type):
         return 1
     var base_slots := maxi(int(definition.get("base_worker_slots", 0)), 0)
     var every := maxi(int(definition.get("worker_slot_every", 0)), 0)
@@ -304,7 +306,9 @@ func worker_slots(building: BuildingState) -> int:
 func spirit_plot_slots(building: BuildingState) -> int:
     if building == null or building.building_type != TYPE_SPIRIT_FIELD:
         return 0
-    return 4 + int(floor(float(building.level) / 5.0))
+    # One Linh Điền keeps four internal production plots. Building level scales
+    # efficiency/content, not worker count or plot count.
+    return 4
 
 func guidance_elder_slots(building: BuildingState) -> int:
     if building == null or building.building_type != TYPE_GUIDANCE_PLATFORM:
@@ -423,7 +427,16 @@ func work_available(state: SimulationState, profession_id: StringName, disciple:
         PROF_HERBALISM:
             if disciple != null:
                 var field := _building_for_disciple(state, TYPE_SPIRIT_FIELD, disciple)
-                return field != null and can_disciple_work(state, field, disciple) and not disciple_has_active_spirit_plot(state, disciple.id, field) and _field_has_startable_plot(state, field)
+                if field == null or not can_disciple_work(state,field,disciple):
+                    return false
+                var field_data := _ensure_spirit_field_state(state,field)
+                var duty_worker := str(field_data.get("active_duty_worker_id",""))
+                if duty_worker != "" and duty_worker != str(disciple.id):
+                    return false
+                # Additional empty plots belong to the same Field duty for the
+                # sole operator, so an active plot does not consume a second
+                # disciple job slot or block another one-plot planting action.
+                return _field_has_startable_plot(state, field)
             for field in _buildings_of_type(state, TYPE_SPIRIT_FIELD):
                 if _field_has_startable_plot(state, field):
                     return true
@@ -487,6 +500,9 @@ func cancel_spirit_plot(state: SimulationState, field_id: StringName, plot_id: S
             return false
         plots[index] = _empty_plot(str(plot_id))
         data["plots"] = plots
+        if not _plots_have_growing_crop(plots):
+            data["active_duty_id"] = ""
+            data["active_duty_worker_id"] = ""
         field.production_state = data
         state.building_event_count += 1
         return true
@@ -874,8 +890,6 @@ func perform_spirit_field_step(state: SimulationState, disciple: DiscipleState, 
     var field := _building_for_disciple(state, TYPE_SPIRIT_FIELD, disciple)
     if field == null or not can_disciple_work(state, field, disciple):
         return {"ok": false, "completed": false, "reason": "no_active_spirit_field_slot"}
-    if disciple_has_active_spirit_plot(state, disciple.id, field):
-        return {"ok": false, "completed": false, "reason": "worker_already_has_plot"}
 
     var data := _ensure_spirit_field_state(state, field)
     var plots: Array = data.get("plots", [])
@@ -883,37 +897,73 @@ func perform_spirit_field_step(state: SimulationState, disciple: DiscipleState, 
     if plot_index < 0:
         return {"ok": false, "completed": false, "reason": "no_empty_plot"}
 
+    # One Linh Điền has one operator, but one click still plants exactly one
+    # plot and pays exactly one crop cost. Additional plots started by the same
+    # operator reuse the same Field-duty identity, so they are subordinate
+    # timers of ONE active job rather than extra disciple occupations.
+    var active_worker_id := str(data.get("active_duty_worker_id", ""))
+    if active_worker_id != "" and active_worker_id != str(disciple.id):
+        return {"ok": false, "completed": false, "reason": "field_owned_by_other_operator"}
+
     var crop_id := _select_crop(state, field, data)
     if crop_id == &"":
         return {"ok": false, "completed": false, "reason": "no_affordable_crop"}
-
     var plant_cost := crop_registry.cost(crop_id)
     if state.sect.spirit_stones < plant_cost:
         return {"ok": false, "completed": false, "reason": "insufficient_spirit_stones"}
 
-    state.sect.spirit_stones -= plant_cost
+    var duty_id := str(data.get("active_duty_id", ""))
+    var has_active_plot := disciple_has_active_spirit_plot(state, disciple.id, field)
+    if not has_active_plot:
+        var duty_sequence := maxi(int(data.get("duty_sequence", 0)), 0) + 1
+        duty_id = "%s:duty:%06d" % [str(field.id), duty_sequence]
+        data["duty_sequence"] = duty_sequence
+        data["active_duty_id"] = duty_id
+        data["active_duty_worker_id"] = str(disciple.id)
+    elif duty_id == "":
+        # Compatibility fallback for an already-growing pre-duty save. Reuse
+        # any prior wage identity if available; otherwise create a stable
+        # non-retroactive duty identity for subsequent plots.
+        for raw_plot in plots:
+            if raw_plot is Dictionary and StringName(raw_plot.get("status","")) == PLOT_GROWING and str(raw_plot.get("assigned_worker_id","")) == str(disciple.id):
+                duty_id = str(raw_plot.get("field_duty_id", raw_plot.get("economy_a_wage_job_id","")))
+                if duty_id != "":
+                    break
+        if duty_id == "":
+            duty_id = "%s:duty:resume:%s" % [str(field.id), str(disciple.id)]
+        data["active_duty_id"] = duty_id
+        data["active_duty_worker_id"] = str(disciple.id)
+
+    var remainders = data.get("plot_work_remainders_bp", {})
+    var plot_remainders: Dictionary = remainders.duplicate(true) if remainders is Dictionary else {}
     var affinity := _crop_affinity_factor(disciple, crop_id)
     var total_speed := maxf(work_speed, 0.25) * spirit_field_speed_factor(field) * affinity
-    var duration := maxi(1, int(ceil(float(crop_registry.base_cycle_ticks(crop_id)) * spirit_field_cycle_time_factor(field) / total_speed)))
+    var base_duration := float(crop_registry.base_cycle_ticks(crop_id)) * spirit_field_cycle_time_factor(field)
+    var plot_id := str(plots[plot_index].get("plot_id", "plot_%03d" % [plot_index + 1]))
+    var timing := _timed_duration_plan(base_duration, total_speed, int(plot_remainders.get(plot_id, 0)))
     var routine_yield := maxi(1, int(round(float(crop_registry.base_yield(crop_id)) * spirit_field_yield_factor(field))))
     var rare_factor := profession_modifiers.rare_event_factor(state, disciple)
-    var plot_id := str(plots[plot_index].get("plot_id", "plot_%03d" % [plot_index + 1]))
 
-    var plant_sequence := int(data.get("plant_sequence", 0)) + 1
+    state.sect.spirit_stones -= plant_cost
+    var plant_sequence := maxi(int(data.get("plant_sequence", 0)), 0) + 1
+    var wage_job_id := duty_id if state.sect.economy_a_enabled and DiscipleRealmProgressV2.owns_v2_progression(disciple) else ""
     plots[plot_index] = {
         "plot_id": plot_id,
         "crop_id": str(crop_id),
         "status": str(PLOT_GROWING),
         "started_tick": state.tick,
-        "finish_tick": state.tick + duration,
+        "finish_tick": state.tick + int(timing["duration_ticks"]),
         "assigned_worker_id": str(disciple.id),
+        "field_duty_id": duty_id,
         "paid_spirit_stones": plant_cost,
         "routine_yield": routine_yield,
         "rare_factor": rare_factor,
-        "economy_a_wage_job_id": "%s_plot_%06d" % [str(field.id), plant_sequence] if state.sect.economy_a_enabled and DiscipleRealmProgressV2.owns_v2_progression(disciple) else ""
+        "economy_a_wage_job_id": wage_job_id,
+        "completion_work_remainder_bp": int(timing["completion_remainder_bp"])
     }
     data["plots"] = plots
     data["plant_sequence"] = plant_sequence
+    data["plot_work_remainders_bp"] = plot_remainders
     field.production_state = data
     state.building_event_count += 1
 
@@ -922,9 +972,10 @@ func perform_spirit_field_step(state: SimulationState, disciple: DiscipleState, 
         "completed": true,
         "work_kind": "start_crop",
         "building_id": str(field.id),
+        "duty_job_id": duty_id,
         "plot_id": plot_id,
         "crop_id": str(crop_id),
-        "finish_tick": state.tick + duration,
+        "finish_tick": state.tick + int(timing["duration_ticks"]),
         "paid_spirit_stones": plant_cost,
         "base_work_xp": crop_registry.base_work_xp(crop_id),
         "field_xp_factor": spirit_field_xp_factor(field),
@@ -958,8 +1009,11 @@ func _start_resource_timer(state: SimulationState, producer: BuildingState, acto
         return {"ok":false,"reason":"missing_canonical_job_slot"}
     if disciple_has_active_timed_recipe(state,actor.id) or disciple_has_active_spirit_plot(state,actor.id) or actor.work_group_id == &"body_training_crew":
         return {"ok":false,"reason":"another_active_job"}
-    if producer.building_type == TYPE_MINE and resource_timer_jobs(producer).size() >= 1:
-        return {"ok":false,"reason":"mine_job_already_running"}
+    if resource_timer_jobs(producer).size() >= 1:
+        if producer.building_type == TYPE_MINE:
+            return {"ok":false,"reason":"mine_job_already_running"}
+        if producer.building_type == TYPE_LINH_FOREST:
+            return {"ok":false,"reason":"linh_forest_job_already_running"}
     if actor.region_id != &"sect" or not actor.active_pve_encounter_id.is_empty():
         return {"ok":false,"reason":"worker_not_available"}
     var definition := definition_for(producer)
@@ -967,8 +1021,9 @@ func _start_resource_timer(state: SimulationState, producer: BuildingState, acto
         return {"ok":false,"reason":"wrong_job_profession"}
     var policy := state.sect.economy_a_policy
     var base_duration := clampi(int(policy.get("resource_duration_ticks",10)),1,1440)
-    var duration := maxi(1,int(ceil(float(base_duration)/maxf(speed,0.25))))
     var data := producer.production_state.duplicate(true)
+    var timing := _timed_duration_plan(float(base_duration), maxf(speed,0.25), int(data.get("economy_a_work_remainder_bp",0)))
+    var duration := int(timing["duration_ticks"])
     var jobs := resource_timer_jobs(producer)
     var sequence := maxi(int(data.get("economy_a_sequence",0)),0)+1
     var job := {
@@ -977,7 +1032,8 @@ func _start_resource_timer(state: SimulationState, producer: BuildingState, acto
         "resource_id":str(definition.get("resource_id","")),
         "output_quantity":_resource_job_batch_units(producer),
         "profession_xp_gain":maxf(xp_gain,0.0),
-        "started_tick":state.tick,"finish_tick":state.tick+duration
+        "started_tick":state.tick,"finish_tick":state.tick+duration,
+        "completion_work_remainder_bp":int(timing["completion_remainder_bp"])
     }
     jobs.append(job)
     data["economy_a_sequence"] = sequence
@@ -1044,6 +1100,11 @@ func _process_resource_timers(state: SimulationState, building: BuildingState) -
         worker.metrics["%s_completions" % profession] = int(worker.metrics.get("%s_completions" % profession,0))+1
         state.sect.workforce_event_count += 1
         EconomySystem.new().settle_work_wage(state,worker,job_id)
+        # Only a successfully delivered batch commits the timing overshoot.
+        # Cancelled/blocked jobs never bank phantom progress.
+        var committed_data := building.production_state.duplicate(true)
+        committed_data["economy_a_work_remainder_bp"] = maxi(int(job.get("completion_work_remainder_bp",0)),0)
+        building.production_state = committed_data
         changed = true
     if changed:
         var data := building.production_state.duplicate(true)
@@ -1135,8 +1196,8 @@ func validate_invariants(state: SimulationState) -> Array[String]:
             if not MILESTONE_LEVELS.has(milestone) or milestone > building.level:
                 errors.append("Building %s has invalid milestone %d." % [building.id, milestone])
 
-        if building.building_type == TYPE_MINE and assigned_worker_ids(state, building).size() > 1:
-            errors.append("Mine %s has more than one assigned worker." % str(building.id))
+        if [TYPE_MINE, TYPE_LINH_FOREST, TYPE_SPIRIT_FIELD].has(building.building_type) and assigned_worker_ids(state, building).size() > 1:
+            errors.append("%s %s has more than one assigned operator." % [str(building.building_type), str(building.id)])
         if state.sect.economy_a_enabled and (building.building_type == TYPE_MINE or building.building_type == TYPE_LINH_FOREST):
             var resource_ids: Dictionary = {}
             var resource_workers: Dictionary = {}
@@ -1185,6 +1246,7 @@ func validate_invariants(state: SimulationState) -> Array[String]:
                     errors.append("Spirit Field %s has invalid plot count." % building.id)
                 else:
                     var seen_plot_ids: Dictionary = {}
+                    var plot_workers: Dictionary = {}
                     for raw_plot in plots:
                         if not (raw_plot is Dictionary):
                             errors.append("Spirit Field %s contains invalid plot data." % building.id)
@@ -1204,6 +1266,27 @@ func validate_invariants(state: SimulationState) -> Array[String]:
                                 errors.append("Spirit Field %s plot %s has invalid timer." % [building.id, plot_id])
                             if int(raw_plot.get("paid_spirit_stones", -1)) < 0:
                                 errors.append("Spirit Field %s plot %s has invalid paid cost." % [building.id, plot_id])
+                            var plot_worker := str(raw_plot.get("assigned_worker_id",""))
+                            if plot_worker.is_empty() or not state.disciples.has(StringName(plot_worker)):
+                                errors.append("Spirit Field %s plot %s has invalid operator." % [building.id, plot_id])
+                            else:
+                                plot_workers[plot_worker] = true
+                    if plot_workers.size() > 1:
+                        errors.append("Spirit Field %s has plots owned by multiple operators." % building.id)
+                    var active_duty_id := str(data.get("active_duty_id",""))
+                    var active_duty_worker := str(data.get("active_duty_worker_id",""))
+                    if plot_workers.is_empty():
+                        if active_duty_id != "" or active_duty_worker != "":
+                            errors.append("Spirit Field %s has stale active duty metadata." % building.id)
+                    else:
+                        var only_worker := str(plot_workers.keys()[0])
+                        if active_duty_id == "" or active_duty_worker != only_worker:
+                            errors.append("Spirit Field %s active duty/operator metadata is inconsistent." % building.id)
+                        if not assigned_worker_ids(state,building).has(StringName(only_worker)):
+                            errors.append("Spirit Field %s active duty worker is not the building operator." % building.id)
+                        for raw_plot in plots:
+                            if raw_plot is Dictionary and StringName(raw_plot.get("status","")) == PLOT_GROWING and str(raw_plot.get("field_duty_id","")) != active_duty_id:
+                                errors.append("Spirit Field %s has a plot outside the active duty." % building.id)
 
     for disciple_value in state.disciples.values():
         var disciple: DiscipleState = disciple_value
@@ -1265,10 +1348,18 @@ func _process_spirit_field_plots(state: SimulationState, field: BuildingState) -
             continue
         if not _resolve_spirit_plot(state, field, plot):
             continue
-        plots[index] = _empty_plot(str(plot.get("plot_id", "plot_%03d" % [index + 1])))
+        var plot_id := str(plot.get("plot_id", "plot_%03d" % [index + 1]))
+        var stored_remainders = data.get("plot_work_remainders_bp", {})
+        var plot_remainders: Dictionary = stored_remainders.duplicate(true) if stored_remainders is Dictionary else {}
+        plot_remainders[plot_id] = maxi(int(plot.get("completion_work_remainder_bp",0)),0)
+        data["plot_work_remainders_bp"] = plot_remainders
+        plots[index] = _empty_plot(plot_id)
         changed = true
     if changed:
         data["plots"] = plots
+        if not _plots_have_growing_crop(plots):
+            data["active_duty_id"] = ""
+            data["active_duty_worker_id"] = ""
         field.production_state = data
         state.building_event_count += 1
 
@@ -1348,6 +1439,11 @@ func _ensure_spirit_field_state(state: SimulationState, field: BuildingState) ->
         var weights = data.get("priority_weights", {})
         data["priority_weights"] = weights.duplicate(true) if weights is Dictionary else {}
         data["plant_sequence"] = maxi(int(data.get("plant_sequence", 0)), 0)
+        data["duty_sequence"] = maxi(int(data.get("duty_sequence", 0)), 0)
+        data["active_duty_id"] = str(data.get("active_duty_id", ""))
+        data["active_duty_worker_id"] = str(data.get("active_duty_worker_id", ""))
+        var raw_remainders = data.get("plot_work_remainders_bp", {})
+        data["plot_work_remainders_bp"] = raw_remainders.duplicate(true) if raw_remainders is Dictionary else {}
         var plots: Array = []
         var raw_plots = data.get("plots", [])
         if raw_plots is Array:
@@ -1358,6 +1454,7 @@ func _ensure_spirit_field_state(state: SimulationState, field: BuildingState) ->
         if plots.size() > desired_slots:
             plots.resize(desired_slots)
         data["plots"] = plots
+        _reconcile_spirit_field_duty(field, data)
         field.production_state = data
         return data
 
@@ -1367,6 +1464,10 @@ func _ensure_spirit_field_state(state: SimulationState, field: BuildingState) ->
         "fixed_crop_id": "",
         "priority_weights": {},
         "plant_sequence": 0,
+        "duty_sequence": 0,
+        "active_duty_id": "",
+        "active_duty_worker_id": "",
+        "plot_work_remainders_bp": {},
         "plots": []
     }
     var plots: Array = []
@@ -1387,11 +1488,15 @@ func _ensure_spirit_field_state(state: SimulationState, field: BuildingState) ->
             "started_tick": state.tick - int(floor(progress)),
             "finish_tick": state.tick + remaining,
             "assigned_worker_id": str(legacy.get("planted_by", "")),
+            "field_duty_id": "",
             "paid_spirit_stones": 0,
             "routine_yield": crop_registry.base_yield(crop_id),
-            "rare_factor": 1.0
+            "rare_factor": 1.0,
+            "economy_a_wage_job_id": "",
+            "completion_work_remainder_bp": 0
         }
     migrated["plots"] = plots
+    _reconcile_spirit_field_duty(field, migrated)
     field.production_state = migrated
     state.building_event_count += 1
     return migrated
@@ -1413,10 +1518,12 @@ func _normalize_plot(value: Variant, index: int) -> Dictionary:
         "started_tick": int(value.get("started_tick", 0)),
         "finish_tick": int(value.get("finish_tick", 1)),
         "assigned_worker_id": str(value.get("assigned_worker_id", "")),
+        "field_duty_id": str(value.get("field_duty_id", "")),
         "paid_spirit_stones": maxi(int(value.get("paid_spirit_stones", 0)), 0),
         "routine_yield": maxi(int(value.get("routine_yield", crop_registry.base_yield(crop_id))), 1),
         "rare_factor": maxf(float(value.get("rare_factor", 1.0)), 0.0),
-        "economy_a_wage_job_id": str(value.get("economy_a_wage_job_id", ""))
+        "economy_a_wage_job_id": str(value.get("economy_a_wage_job_id", "")),
+        "completion_work_remainder_bp": maxi(int(value.get("completion_work_remainder_bp",0)),0)
     }
 
 func _empty_plot(plot_id: String) -> Dictionary:
@@ -1427,10 +1534,49 @@ func _empty_plot(plot_id: String) -> Dictionary:
         "started_tick": -1,
         "finish_tick": -1,
         "assigned_worker_id": "",
+        "field_duty_id": "",
         "paid_spirit_stones": 0,
         "routine_yield": 0,
-        "rare_factor": 1.0
+        "rare_factor": 1.0,
+        "completion_work_remainder_bp": 0
     }
+
+func _plots_have_growing_crop(plots: Array) -> bool:
+    for raw_plot in plots:
+        if raw_plot is Dictionary and StringName(raw_plot.get("status","")) == PLOT_GROWING:
+            return true
+    return false
+
+func _reconcile_spirit_field_duty(field: BuildingState, data: Dictionary) -> void:
+    var plots = data.get("plots", [])
+    if not (plots is Array) or not _plots_have_growing_crop(plots):
+        data["active_duty_id"] = ""
+        data["active_duty_worker_id"] = ""
+        return
+
+    var worker_id := str(data.get("active_duty_worker_id", ""))
+    var duty_id := str(data.get("active_duty_id", ""))
+    for raw_plot in plots:
+        if not (raw_plot is Dictionary) or StringName(raw_plot.get("status","")) != PLOT_GROWING:
+            continue
+        if worker_id == "":
+            worker_id = str(raw_plot.get("assigned_worker_id",""))
+        if duty_id == "":
+            duty_id = str(raw_plot.get("field_duty_id", raw_plot.get("economy_a_wage_job_id","")))
+        if worker_id != "" and duty_id != "":
+            break
+    if duty_id == "":
+        duty_id = "%s:duty:resume:%s" % [str(field.id), worker_id]
+    data["active_duty_id"] = duty_id
+    data["active_duty_worker_id"] = worker_id
+    for index in range(plots.size()):
+        if not (plots[index] is Dictionary) or StringName(plots[index].get("status","")) != PLOT_GROWING:
+            continue
+        var plot: Dictionary = plots[index]
+        if str(plot.get("field_duty_id","")) == "":
+            plot["field_duty_id"] = duty_id
+            plots[index] = plot
+    data["plots"] = plots
 
 func _first_empty_plot_index(plots: Array) -> int:
     for index in range(plots.size()):
@@ -1569,6 +1715,27 @@ func _movement_speed(state: SimulationState, disciple: DiscipleState) -> float:
 
 func _haul_speed_multiplier(_disciple: DiscipleState) -> float:
     return 1.0
+
+const WORK_PROGRESS_BP := 10000
+
+# Convert fractional work speed into integer tick deadlines without losing
+# small modifiers to ceil(). The completion remainder is persisted only after
+# a real output settlement, so cancellation cannot create free progress.
+func _timed_duration_plan(base_ticks: float, speed: float, prior_remainder_bp: int = 0) -> Dictionary:
+    var required_bp := maxi(int(round(maxf(base_ticks, 1.0) * float(WORK_PROGRESS_BP))), WORK_PROGRESS_BP)
+    var speed_bp := maxi(int(round(maxf(speed, 0.25) * float(WORK_PROGRESS_BP))), 1)
+    var prior := clampi(prior_remainder_bp, 0, required_bp - 1)
+    var remaining_bp := maxi(required_bp - prior, 1)
+    var duration_ticks := maxi(int(ceil(float(remaining_bp) / float(speed_bp))), 1)
+    var completion := prior + duration_ticks * speed_bp - required_bp
+    if completion >= required_bp:
+        completion %= required_bp
+    return {
+        "duration_ticks": duration_ticks,
+        "completion_remainder_bp": maxi(completion, 0),
+        "required_work_bp": required_bp,
+        "speed_bp": speed_bp
+    }
 
 func _resource_job_duration(building: BuildingState) -> float:
     var base := float(definition_for(building).get("base_work_duration", 4.0))

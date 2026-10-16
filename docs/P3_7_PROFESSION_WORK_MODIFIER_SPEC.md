@@ -8,7 +8,7 @@
 
 
 Status: CANONICAL DESIGN AUTHORITY  
-Updated: 2026-10-06
+Updated: 2026-10-16
 
 Parents:
 - `docs/GAME_SYSTEM_ARCHITECTURE.md`
@@ -86,17 +86,39 @@ Profession throughput:
 
 Examples:
 - Lv0 -> ×1.00;
+- Lv1 -> ×1.01;
 - Lv10 -> ×1.10;
 - Lv50 -> ×1.50;
-- Lv100 -> ×2.00;
-- Lv500 -> ×6.00;
-- Lv1000 -> ×11.00.
+- Lv100 -> ×2.00.
+
+**Lv100 is a balance benchmark, not a profession cap.** Profession progression remains
+independent from the two 30-realm character tracks; a future cap requires a separate owner decision.
 
 Profession level improves throughput by reducing work/cycle time.
 
 Do not multiply routine output by the same full profession factor again.
 
+Timer authority must preserve small speed modifiers across integer simulation ticks.
+A +1% worker cannot lose the entire benefit merely because each individual deadline
+uses `ceil(base/speed)`. Production timers therefore retain fixed-point overshoot
+remainder and commit that remainder only when the corresponding output actually settles.
+Cancellation does not bank free work.
+
 Locked P2 factories retain their legacy Lv0–6 behavior for compatibility.
+
+## 3.1 Realm separation
+
+Production profession level is independent from both canonical progression tracks:
+
+- Tu Vi: 30 đại cảnh × 10 tầng, `Phàm Nhân` through `Sáng Thế Chủ`;
+- Luyện Thể: 30 đại cảnh × 10 tầng, `Phàm Thân` through `Sáng Thế Thần Thể`.
+
+A resource/recipe may declare an explicit canonical **realm tier** when progression content
+needs thematic/tier alignment. That tier is descriptive progression metadata, **not** a worker
+eligibility or work-speed substitute. Production access remains owned by explicit building level,
+profession level and Sect progression rules. New Economy V2 content uses 1-based realm-tier
+indexes from `DiscipleRealmProgressV2`; legacy labels such as `pham/luyen_khi/truc_co/kim_dan`
+are compatibility metadata only.
 
 ---
 

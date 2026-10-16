@@ -53,8 +53,8 @@ func _verify_authority_and_crop_registry() -> bool:
     var field := buildings.primary_building(state, BuildingSystem.TYPE_SPIRIT_FIELD)
     if field == null or field.level != 1 or field.max_level != 100:
         return _fail("Spirit Field authority is missing or has invalid level bounds.")
-    if field.worker_group_id != &"herbalism_crew" or buildings.worker_slots(field) != 4:
-        return _fail("Spirit Field Lv1 must expose four worker slots for four plots.")
+    if field.worker_group_id != &"herbalism_crew" or buildings.worker_slots(field) != 1:
+        return _fail("Spirit Field Lv1 must expose exactly one responsible operator.")
     if buildings.spirit_plot_slots(field) != 4:
         return _fail("Spirit Field Lv1 must expose four plots.")
     var plots := buildings.spirit_field_plots(state, field)
@@ -116,9 +116,22 @@ func _verify_simple_timer_cost_and_warehouse_harvest() -> bool:
         return _fail("Herbalist entered an obsolete detailed movement/harvest work cycle.")
     if not buildings.disciple_has_active_spirit_plot(state, actor.id, field):
         return _fail("Started plot did not reserve exactly one disciple.")
-    var blocked_again := workforce.perform_work(state, actor, WorkforceSystem.PROF_HERBALISM)
-    if bool(blocked_again.get("ok", false)) or str(blocked_again.get("reason", "")) != "busy_spirit_plot":
-        return _fail("One disciple was allowed to occupy more than one Spirit Field plot.")
+    var second_stones_before := state.sect.spirit_stones
+    var second := workforce.perform_work(state, actor, WorkforceSystem.PROF_HERBALISM)
+    if not bool(second.get("ok", false)) or not bool(second.get("completed", false)):
+        return _fail("The sole field operator could not start a second internal plot in the same duty.")
+    if str(second.get("duty_job_id","")) != str(result.get("duty_job_id","")):
+        return _fail("Second internal plot created a competing Field duty.")
+    var second_crop := StringName(second.get("crop_id",""))
+    if state.sect.spirit_stones != second_stones_before - crops.cost(second_crop):
+        return _fail("Second plot did not consume exactly one additional crop cost.")
+
+    var owned_plots := 0
+    for raw_plot in buildings.spirit_field_plots(state, field):
+        if raw_plot is Dictionary and StringName(raw_plot.get("status","")) == BuildingSystem.PLOT_GROWING and str(raw_plot.get("assigned_worker_id","")) == str(actor.id):
+            owned_plots += 1
+    if owned_plots != 2:
+        return _fail("One Field duty did not retain two internal plot timers for its sole operator.")
 
     var plot := _growing_plot(state, field)
     if plot.is_empty() or int(plot.get("finish_tick", 0)) <= state.tick:
@@ -161,24 +174,44 @@ func _verify_multiple_plots_and_workers() -> bool:
     var state := P37Factory.create_state(TEST_SEED + 4)
     state.sect.spirit_stones = 1000
     var field := buildings.primary_building(state, BuildingSystem.TYPE_SPIRIT_FIELD)
-    var workers := _assign_herbalists(state, field, 2)
-    if workers.size() != 2:
-        return _fail("Multiple-plot test needs two active herbalists.")
+    var actor := _assign_herbalist(state, field)
+    if actor == null:
+        return _fail("Multiple-plot test needs one valid field operator.")
+    _normalize_worker(state,actor)
 
-    for actor in workers:
-        _normalize_worker(state, actor)
-        if not bool(workforce.perform_work(state, actor, WorkforceSystem.PROF_HERBALISM).get("ok", false)):
-            return _fail("A valid field worker could not start an independent plot.")
+    var duty_id := ""
+    for _i in range(4):
+        var started := workforce.perform_work(state, actor, WorkforceSystem.PROF_HERBALISM)
+        if not bool(started.get("ok",false)):
+            return _fail("Sole operator could not fill an internal Spirit Field plot.")
+        if duty_id == "":
+            duty_id = str(started.get("duty_job_id",""))
+        elif str(started.get("duty_job_id","")) != duty_id:
+            return _fail("Internal plots did not share one Field duty identity.")
 
     var growing := 0
-    for plot in buildings.spirit_field_plots(state, field):
-        if StringName(plot.get("status", "")) == BuildingSystem.PLOT_GROWING:
+    for raw_plot in buildings.spirit_field_plots(state, field):
+        if raw_plot is Dictionary and StringName(raw_plot.get("status","")) == BuildingSystem.PLOT_GROWING:
             growing += 1
-    if growing != 2:
-        return _fail("Two workers did not start two independent crop timers.")
-    for actor in workers:
-        if not buildings.disciple_has_active_spirit_plot(state, actor.id, field):
-            return _fail("Growing plot did not keep its assigned disciple.")
+            if str(raw_plot.get("assigned_worker_id","")) != str(actor.id):
+                return _fail("Spirit Field plot was assigned to another disciple.")
+            if str(raw_plot.get("field_duty_id","")) != duty_id:
+                return _fail("Spirit Field plot escaped the active duty.")
+    if growing != 4:
+        return _fail("Sole operator did not fill all four internal plot timers.")
+
+    var extra: DiscipleState = null
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    for raw_id in ids:
+        var candidate: DiscipleState = state.disciples[raw_id]
+        if candidate.id != actor.id and candidate.work_group_id == &"" and candidate.region_id == &"sect":
+            extra = candidate
+            break
+    if extra == null:
+        return _fail("No free disciple available to probe one-operator field lock.")
+    if bool(workforce.assign_spirit_field_worker(state,extra.id,field.id).get("ok",false)):
+        return _fail("Spirit Field accepted a second responsible operator.")
     return _validate(state)
 
 func _verify_multiple_fields_use_specific_worksites() -> bool:
@@ -190,18 +223,30 @@ func _verify_multiple_fields_use_specific_worksites() -> bool:
     state.building_event_count += 1
     buildings.spirit_field_plots(state, field_b)
 
-    var workers := _assign_herbalists(state, field_a, 2)
-    if workers.size() != 2:
-        return _fail("Multiple-field test needs two disciples.")
-    if not workforce.assign_worksite(state, workers[1].id, field_b.id):
-        return _fail("Could not assign second concrete Spirit Field worksite.")
+    var worker_a := _assign_herbalist(state,field_a)
+    if worker_a == null:
+        return _fail("Could not assign primary Spirit Field operator.")
+    var worker_b: DiscipleState = null
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    for raw_id in ids:
+        var candidate: DiscipleState = state.disciples[raw_id]
+        if candidate.id != worker_a.id and candidate.work_group_id == &"" and candidate.region_id == &"sect":
+            var assigned := workforce.assign_spirit_field_worker(state,candidate.id,field_b.id)
+            if bool(assigned.get("ok",false)):
+                worker_b = candidate
+                break
+    if worker_b == null:
+        return _fail("Could not assign an independent operator to second Spirit Field.")
 
-    for actor in workers:
-        _normalize_worker(state, actor)
-        if not bool(workforce.perform_work(state, actor, WorkforceSystem.PROF_HERBALISM).get("ok", false)):
-            return _fail("Concrete field worker could not start crop.")
-    if _growing_plot(state, field_a).is_empty() or _growing_plot(state, field_b).is_empty():
+    for actor in [worker_a,worker_b]:
+        _normalize_worker(state,actor)
+        if not bool(workforce.perform_work(state,actor,WorkforceSystem.PROF_HERBALISM).get("ok",false)):
+            return _fail("Concrete field operator could not start crop.")
+    if _growing_plot(state,field_a).is_empty() or _growing_plot(state,field_b).is_empty():
         return _fail("Concrete worksite assignment routed both workers into one field.")
+    if buildings.assigned_worker_ids(state,field_a) != [worker_a.id] or buildings.assigned_worker_ids(state,field_b) != [worker_b.id]:
+        return _fail("Two field instances did not preserve one independent operator each.")
     return _validate(state)
 
 func _verify_crop_policies() -> bool:
@@ -278,8 +323,8 @@ func _verify_field_level_and_milestone_numbers() -> bool:
 
     field.level = 20
     buildings.spirit_field_plots(state, field)
-    if buildings.worker_slots(field) != 8 or buildings.spirit_plot_slots(field) != 8:
-        return _fail("Field must keep one worker slot per plot at Lv20.")
+    if buildings.worker_slots(field) != 1 or buildings.spirit_plot_slots(field) != 4:
+        return _fail("Field Lv20 must retain one operator and four internal plots.")
     if not is_equal_approx(buildings.spirit_field_speed_factor(field), 1.095):
         return _fail("Field +0.5% speed/level formula is wrong.")
     if not is_equal_approx(buildings.spirit_field_yield_factor(field), 1.095 * 1.10):
@@ -355,12 +400,24 @@ func _verify_passive_work_cultivation_only_on_work() -> bool:
 func _verify_legacy_field_state_migrates() -> bool:
     var state := P37Factory.create_state(TEST_SEED + 10)
     var field := buildings.primary_building(state, BuildingSystem.TYPE_SPIRIT_FIELD)
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    var legacy_actor: DiscipleState = null
+    for raw_id in ids:
+        var candidate: DiscipleState = state.disciples[raw_id]
+        if candidate.work_group_id == &"" and candidate.region_id == &"sect":
+            var assigned := workforce.assign_spirit_field_worker(state,candidate.id,field.id)
+            if bool(assigned.get("ok",false)):
+                legacy_actor = candidate
+                break
+    if legacy_actor == null:
+        return _fail("Legacy field migration has no valid canonical operator.")
     field.production_state = {
         "phase": str(BuildingSystem.SPIRIT_PHASE_GROWING),
         "resource_id": str(SpiritCropRegistry.CROP_THANH_LINH_THAO),
         "growth_progress": 2.0,
         "growth_required": 12.0,
-        "planted_by": "legacy_worker"
+        "planted_by": str(legacy_actor.id)
     }
 
     var plots := buildings.spirit_field_plots(state, field)
@@ -375,14 +432,20 @@ func _verify_save_load_and_deterministic_continuation() -> bool:
     var state_a := P37Factory.create_state(TEST_SEED + 11)
     state_a.sect.spirit_stones = 1000
     var field := buildings.primary_building(state_a, BuildingSystem.TYPE_SPIRIT_FIELD)
-    var workers := _assign_herbalists(state_a, field, 2)
-    if workers.size() != 2:
-        return _fail("Persistence test needs two herbalists.")
+    var actor := _assign_herbalist(state_a,field)
+    if actor == null:
+        return _fail("Persistence test needs one Spirit Field operator.")
+    _normalize_worker(state_a,actor)
 
-    for actor in workers:
-        _normalize_worker(state_a, actor)
-        if not bool(workforce.perform_work(state_a, actor, WorkforceSystem.PROF_HERBALISM).get("ok", false)):
-            return _fail("Persistence test could not start independent plots.")
+    var duty_id := ""
+    for _i in range(2):
+        var started := workforce.perform_work(state_a,actor,WorkforceSystem.PROF_HERBALISM)
+        if not bool(started.get("ok",false)):
+            return _fail("Persistence test could not start internal plot.")
+        if duty_id == "":
+            duty_id = str(started.get("duty_job_id",""))
+        elif str(started.get("duty_job_id","")) != duty_id:
+            return _fail("Persistence fixture created competing Field duties.")
     state_a.tick += 2
     buildings.process_tick(state_a)
 
