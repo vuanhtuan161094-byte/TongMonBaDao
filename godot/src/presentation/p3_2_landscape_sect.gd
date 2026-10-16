@@ -793,7 +793,8 @@ func _workforce_profession(building_type: StringName) -> StringName:
 
 func _workforce_occupants(building: BuildingState) -> Array[StringName]:
     if building == null:
-        return [] as Array[StringName]
+        var none: Array[StringName] = []
+        return none
     return BuildingSystem.new().assigned_worker_ids(state,building)
 
 func _workforce_operation_summary(building_type: StringName) -> String:
@@ -944,7 +945,10 @@ func _fold_workforce_legacy_controls() -> void:
     var advanced := VBoxContainer.new()
     advanced.name = "WorkforceAdvancedControls"
     advanced.add_theme_constant_override("separation",6)
-    for index in range(3,children.size()):
+    var header_size := 3
+    if children.size() > 3 and str(children[3].name) == "WorkforceEnableTimer":
+        header_size = 4
+    for index in range(header_size,children.size()):
         var node: Control = children[index]
         building_management_container.remove_child(node)
         advanced.add_child(node)
@@ -1069,35 +1073,40 @@ func _render_workforce_picker() -> void:
     var building: BuildingState = state.buildings[str(workforce_picker_building_id)]
     var current := _workforce_occupants(building)
     var profession_id := _workforce_profession(building.building_type)
-    var candidates: Array = []
+    # Compute eligibility once per actor, not O(N log N) scanning every
+    # building/timer again inside the sort comparator at 1,000–3,000 people.
+    var candidates: Array[Dictionary] = []
     for raw_id in state.disciples.keys():
         var actor: DiscipleState = state.disciples[raw_id]
         if workforce_picker_query != "" and not actor.display_name.to_lower().contains(workforce_picker_query) and not str(actor.id).to_lower().contains(workforce_picker_query):
             continue
-        candidates.append(raw_id)
-    candidates.sort_custom(func(a: Variant,b: Variant) -> bool:
-        var left: DiscipleState = state.disciples[a]
-        var right: DiscipleState = state.disciples[b]
-        var lr := _workforce_candidate_reason(left,building,current)
-        var rr := _workforce_candidate_reason(right,building,current)
-        if (lr == "") != (rr == ""):
-            return lr == ""
-        var llevel := workforce.profession_level_for_state(state,left,profession_id)
-        var rlevel := workforce.profession_level_for_state(state,right,profession_id)
-        return llevel > rlevel if llevel != rlevel else str(a) < str(b)
+        candidates.append({
+            "id":actor.id,
+            "reason":_workforce_candidate_reason(actor,building,current),
+            "level":workforce.profession_level_for_state(state,actor,profession_id)
+        })
+    candidates.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
+        var lready := str(a["reason"]) == ""
+        var rready := str(b["reason"]) == ""
+        if lready != rready:
+            return lready
+        if int(a["level"]) != int(b["level"]):
+            return int(a["level"]) > int(b["level"])
+        return str(a["id"]) < str(b["id"])
     )
     workforce_picker_offset = mini(workforce_picker_offset,maxi(0,candidates.size()-1))
     var end_index := mini(candidates.size(),workforce_picker_offset+WORKFORCE_PICKER_PAGE_SIZE)
     for index in range(workforce_picker_offset,end_index):
-        var actor: DiscipleState = state.disciples[candidates[index]]
-        var reason := _workforce_candidate_reason(actor,building,current)
+        var entry: Dictionary = candidates[index]
+        var actor: DiscipleState = state.disciples[entry["id"]]
+        var reason := str(entry["reason"])
         var row := HBoxContainer.new()
         row.name = "WorkforceCandidate_%s" % str(actor.id)
         row.custom_minimum_size = Vector2(590,44)
         workforce_picker_results.add_child(row)
         var text_label := Label.new()
         text_label.text = "%s · nghề Lv%d\n%s" % [actor.display_name,
-            workforce.profession_level_for_state(state,actor,profession_id),
+            int(entry["level"]),
             "Sẵn sàng" if reason == "" else reason]
         text_label.custom_minimum_size = Vector2(435,44)
         text_label.add_theme_color_override("font_color",INK)
