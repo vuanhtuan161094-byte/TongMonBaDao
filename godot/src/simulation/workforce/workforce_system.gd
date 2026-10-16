@@ -278,10 +278,13 @@ func assign_group(state: SimulationState, disciple_id: StringName, group_id: Str
         var released := DiscipleBodyTrainingFacilityV2.release_slot(state,disciple_id)
         if not bool(released.get("ok",false)):
             return false
+    # Timed Mine/Forest and Alchemy jobs all own the current work group until
+    # output settlement/cancellation. Comparing against Alchemy's crew alone
+    # could have transferred a busy Miner into the Alchemy group.
     if (
         state.p3_7_buildings_enabled
         and building_system.disciple_has_active_timed_recipe(state, disciple.id)
-        and group_id != building_system.worker_group_for_profession(PROF_ALCHEMY)
+        and group_id != disciple.work_group_id
     ):
         return false
     if state.p3_7_buildings_enabled and not disciple.work_cycle_state.is_empty():
@@ -313,7 +316,13 @@ func assign_worksite(state: SimulationState, disciple_id: StringName, building_i
     if not state.sect.workforce_enabled or not state.disciples.has(disciple_id):
         return false
     var disciple: DiscipleState = state.disciples[disciple_id]
-    if state.sect.economy_a_enabled and not building_system.active_resource_timer_for_worker(state,disciple.id).is_empty() and building_id != disciple.worksite_building_id:
+    # Both timer producers and Alchemy reserve their worker. Never let a
+    # worksite swap or removal hide a running paid job from the UI/scheduler.
+    if (
+        state.p3_7_buildings_enabled
+        and building_system.disciple_has_active_timed_recipe(state,disciple.id)
+        and building_id != disciple.worksite_building_id
+    ):
         return false
     if state.p3_7_buildings_enabled and building_system.disciple_has_active_spirit_plot(state,disciple.id):
         if building_id == &"":
@@ -606,6 +615,19 @@ func perform_work(state: SimulationState, disciple: DiscipleState, profession_id
         return {"ok":false,"reason":"disciple_in_v2_pve"}
     if not state.sect.workforce_enabled or disciple.region_id != &"sect" or not VALID_PROFESSIONS.has(profession_id):
         return {"ok":false, "completed":false}
+    # This public backend action may be called without passing through
+    # next_action() or issue_command(): it must honor live job reservations.
+    if state.p3_7_buildings_enabled:
+        if building_system.disciple_has_active_timed_recipe(state,disciple.id):
+            return {"ok":false,"completed":false,"reason":"busy_timed_job"}
+        if DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple):
+            return {"ok":false,"completed":false,"reason":"busy_body_training"}
+    if not disciple.work_cycle_state.is_empty():
+        var cycle_profession := StringName(
+            disciple.work_cycle_state.get("profession_id",disciple.work_cycle_state.get("profession",""))
+        )
+        if cycle_profession != profession_id:
+            return {"ok":false,"completed":false,"reason":"busy_other_work_cycle"}
     if (
         state.p3_7_buildings_enabled
         and building_system.disciple_has_active_spirit_plot(state, disciple.id)
