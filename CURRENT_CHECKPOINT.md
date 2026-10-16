@@ -1,5 +1,20 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-16 — ECON-V2 RESOURCE BUILDING CAP PREFLIGHT (STACKED, READ-ONLY)
+
+**User continuation:** prioritize construction/instance expansion before advanced-resource faucets. Current draft PR #9 HEAD observed `cf11d53f2ac48e9b7a220500fece983b675dcd62`; prior draft PR #10 HEAD `f374bc78a5556ad1003d92b27d6ec89c7c929aa3`. The follow-up draft **PR #12** branch `economy-v2-resource-expansion-gates-20261016` stacks on PR #10; `main` stays unchanged. The update from PR #10 base `d9b02df` to latest PR #9 includes an O8 Alchemy presentation test change **in addition to documentation**. Do not drop O8 when integrating the stack.
+
+**Implemented here:** `ResourceBuildingExpansionPolicyV2`, a **read-only, fail-closed** cap/preflight policy for the existing three raw-resource instance types. Its Hall-level table is the canonical 1/1/1 → 2/2/3 → 5/5/7 → 10/10/14 → 18/18/24 → 30/30/40, including documented mean-level requirements. It computes deterministic existing instance count, next available index, mean level and hypothetical available slots. It **never grants construction**: every preview has `ok=false`, `preview_only=true`, and `hall_land_and_construction_authority_pending`. No State/Sect/Building schema changes, no new Hall state, no layout seed, no wallet debit, no second scheduler/warehouse, no instance creation in production and no permission to bypass ADR-0003.
+
+**Added test:** `godot/tests/simulation/economy_v2_expansion_cap_preview_test.gd`, covering Hall level boundaries, invalid levels/types, count/mean on a test-only extra instance, index gap, no mutation and fail-closed response. Code/test SHA: `851c3b48a7620aa2e5d9b4d62ed97a4c07376f9b`.
+
+**QA:** Godot 4.7.2 runtime on this branch is **NOT RUN**. Codex reports Windows P3.7 FULL exit 0 on `453df9aa...`, which is prior PR #9 evidence, not proof for PR #10 or this policy. No GitHub Actions manually dispatched, no merge.
+
+**Blocking prerequisites for player-facing build:** explicit revision of ADR-0003 from fixed map to one owned `SectLayoutState`; verified ENV-02A/Windows placement acceptance; real Hall progress/state, authorized construction/land cost and time tables, atomic Warehouse/Spirit Stone/placement/idempotency transaction, save migration and all-instance UI/worker management. These remain OPEN, not silently passed. Advanced Body-gate resource sources remain a separate subsequent packet.
+
+---
+
+
 ## 2026-10-16 — DISCIPLE-V2 SCALE-SAFE BACKEND / STACKED ON DRAFT PR #9
 
 **Owner continuation:** Continue authorized Disciple V2 + Production V2 integration without requiring the owner's Windows computer. This limited follow-up addresses measured 100–3,000-disciple scheduler overhead and does not introduce new simulation authorities, content tiers or balance changes.

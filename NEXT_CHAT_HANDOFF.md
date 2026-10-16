@@ -1,5 +1,16 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-16 — ECON-V2 RESOURCE INSTANCE EXPANSION GATE HANDOFF
+
+**Topology:** draft PR #9 latest observed `cf11d53f2ac48e9b7a220500fece983b675dcd62`; draft PR #10 `f374bc78a5556ad1003d92b27d6ec89c7c929aa3`. Draft **PR #12** branch `economy-v2-resource-expansion-gates-20261016` stacks on PR #10. PR #9 gained `p3_o8_alchemy_loop_test.gd` changes after PR #10 was branched; reconcile by safe ancestry/merge before integrated runtime QA. Do not reset/rebase branches destructively or drop the O8 test.
+
+**New code:** read-only `ResourceBuildingExpansionPolicyV2` authors published caps (Mine/Forest/Field) and minimum existing average levels by hypothetical Hall tier. Existing-instance counts, index, availability are deterministic; all previews **fail closed** because Hall/land/paid-build authorities have NOT been implemented. Test-only synthetic instances do not create player production. Focused `economy_v2_expansion_cap_preview_test.gd` covers table boundaries, no mutation, missing authority. Commit `851c3b48a7620aa2e5d9b4d62ed97a4c07376f9b` before docs.
+
+**Open before real building construction:** explicit LAY code/ADR-0003 decision, ENV-02A acceptance, single owned layout + migration, Hall level authority, paid construction and land unlock balance, atomic exactly-once receipt, all-instance GUI/one-worker assignment, Windows Godot 4.7.2 and Android. No CI manually run, no merge; new runtime QA PENDING.
+
+---
+
+
 ## 2026-10-16 — DISCIPLE-V2 SCALE-SAFE CONTINUATION HANDOFF
 
 PR #9 (`economy-v2-disciple-production-integration-20261016` HEAD `d9b02dfd270b5165251e1e5e443b53a96ab68164`) remains the integration authority; isolated follow-up `disciple-v2-scale-20261016` is based directly on it. No merge into `main`.
