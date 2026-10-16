@@ -397,8 +397,8 @@ A2R closes only when runtime evidence covers:
 7. exactly one responsible disciple for the whole Linh Điền instance;
 8. that operator remains reserved while any duty plot is unresolved, cannot transfer worksite, and releases after the duty drains;
 9. multiple Spirit Field instances, each with its own one operator;
-11. concrete worksite assignment;
-10. AUTO_DEMAND / PRIORITY / FIXED;
+10. concrete worksite assignment;
+11. AUTO_DEMAND / PRIORITY / FIXED;
 12. profession-level cycle-time effect;
 13. generic graded work modifier effect;
 14. Thông Tuệ profession-XP effect;
