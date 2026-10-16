@@ -34,6 +34,8 @@ const PRODUCER_TYPES := {
     "spirit_field":"spirit_field"
 }
 const APPROVED_IMAGE_PATHS := {} # No verified Source A binaries in GitHub-only package.
+const SPAWN_CELL := Vector2i(82,84)
+const ROADS_JUNCTION := Vector2i(91,91)
 
 var camera: Camera2D
 var surface: Node2D
@@ -42,6 +44,9 @@ var tiles: Dictionary = {}
 var active_chunks: Array[Vector2i] = []
 var draw_revision := 0
 var fallback_art_count := 0
+var lab_geometry: SectIsoMapModelV1
+var preview_roads: Dictionary = {}
+var lab_routes_ready := false
 
 func _ready() -> void:
     camera = Camera2D.new()
@@ -57,7 +62,47 @@ func _ready() -> void:
     set_process(false)
     # An actual Node2D world with Camera2D lives only inside its own SubViewport.
     # The parent Control HUD is intentionally outside this camera transform.
+    _seed_env02a_geometry()
     _update_chunks()
+
+# Reuse the ENV02A lab's exact AStarGrid2D/doorway geometry. This model
+# owns ONLY procedural visual roads in the SubViewport, never player layout
+# or paid construction. It is rebuilt from static content, never saved.
+func _seed_env02a_geometry() -> void:
+    lab_geometry = SectIsoMapModelV1.new(GRID,SPAWN_CELL)
+    for kind in ["main_hall","warehouse","forge"]:
+        var origin: Vector2i = TYPE_ANCHORS[kind]
+        var placement := lab_geometry.place(kind,kind,origin)
+        if not bool(placement.get("ok",false)):
+            lab_routes_ready = false
+            push_warning("ISO_ENV02A_PREVIEW_SEED "+kind+" "+str(placement.get("reason","")))
+            return
+    lab_routes_ready = true
+    var hall := lab_geometry.get_building("main_hall")
+    var store := lab_geometry.get_building("warehouse")
+    var forge := lab_geometry.get_building("forge")
+    var hdoor: Vector2i = lab_geometry.doorway("main_hall",hall["origin"],0)
+    var sdoor: Vector2i = lab_geometry.doorway("warehouse",store["origin"],0)
+    var fdoor: Vector2i = lab_geometry.doorway("forge",forge["origin"],0)
+    var segments := [
+        [SPAWN_CELL,hdoor],[hdoor,ROADS_JUNCTION],
+        [ROADS_JUNCTION,sdoor],[ROADS_JUNCTION,fdoor]
+    ]
+    for pair in segments:
+        var navigation: AStarGrid2D = lab_geometry._navigation()
+        var route: Array[Vector2i] = navigation.get_id_path(pair[0],pair[1])
+        if route.is_empty():
+            lab_routes_ready = false
+            continue
+        for cell in route:
+            if not lab_geometry.occupied(cell):
+                preview_roads[cell] = true
+                if cell not in lab_geometry.roads:
+                    lab_geometry.toggle_road(cell)
+    for kind in ["main_hall","warehouse","forge"]:
+        if lab_geometry.path_to(kind,SPAWN_CELL).is_empty():
+            lab_routes_ready = false
+    queue_redraw()
 
 static func project(cell: Vector2) -> Vector2:
     return Vector2((cell.x-cell.y)*HALF_W,(cell.x+cell.y)*HALF_H)
@@ -215,12 +260,8 @@ func _visible_world(point: Vector2) -> bool:
     return delta.x <= half.x and delta.y <= half.y
 
 func _is_road(cell: Vector2i) -> bool:
-    # Visual starter-only road network; never a persisted player road.
-    return STARTER.has_point(cell) and (
-        (cell.x == 91 and cell.y >= 86 and cell.y <= 105)
-        or (cell.y == 92 and cell.x >= 81 and cell.x <= 105)
-        or (cell.y == 99 and cell.x >= 80 and cell.x <= 103)
-    )
+    # Rebuildable read-only ENV-02A map-model route projection.
+    return STARTER.has_point(cell) and preview_roads.has(cell)
 
 func _draw_bush(p: Vector2) -> void:
     draw_circle(p+Vector2(0,-8),6,Color(0.14,0.38,0.24,0.83))
