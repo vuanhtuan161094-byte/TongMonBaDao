@@ -320,9 +320,9 @@ Plant only the selected crop while:
 # 14. Building-level rules
 
 Baseline:
-- worker slots: 4 at Lv1, +1 every 5 levels;
-- plot slots: 4 at Lv1, +1 every 5 levels;
-- worker slots and plot slots stay 1:1;
+- worker slots: exactly **1** at every Lv1–100;
+- plot slots: exactly **4** internal plots at every Lv1–100;
+- worker count and plot count are intentionally independent;
 - field speed: +0.5% per level after Lv1;
 - field yield: +0.5% per level after Lv1.
 
@@ -393,23 +393,24 @@ A2R closes only when runtime evidence covers:
 3. insufficient-funds behavior;
 4. cancel with no default refund;
 5. four independent internal plot timers per Linh Điền;
-6. exactly one responsible disciple for the whole Linh Điền instance;
-7. that operator remains reserved while any duty plot is unresolved and releases after the duty drains;
-8. multiple Spirit Field instances, each with its own one operator;
-9. concrete worksite assignment;
+6. one planting action starts exactly one plot/cost while repeated Herbalism orders reuse the same duty;
+7. exactly one responsible disciple for the whole Linh Điền instance;
+8. that operator remains reserved while any duty plot is unresolved, cannot transfer worksite, and releases after the duty drains;
+9. multiple Spirit Field instances, each with its own one operator;
+11. concrete worksite assignment;
 10. AUTO_DEMAND / PRIORITY / FIXED;
-11. profession-level cycle-time effect;
-12. generic graded work modifier effect;
-13. Thông Tuệ profession-XP effect;
-14. graded Linh Thực talent XP;
-15. Cơ Duyên lucky-harvest bands;
-16. field-level speed/yield formulas;
-17. milestone numeric behavior;
-18. passive work Tu Vi only during actual work;
-19. canonical warehouse deposit;
-20. save/load mid-cycle;
-21. deterministic continuation;
-22. legacy A2 migration;
-23. locked earlier gates remain green.
+12. profession-level cycle-time effect;
+13. generic graded work modifier effect;
+14. Thông Tuệ profession-XP effect;
+15. graded Linh Thực talent XP;
+16. Cơ Duyên lucky-harvest bands;
+17. field-level speed/yield formulas;
+18. milestone numeric behavior;
+19. passive work Tu Vi only during actual work;
+20. canonical warehouse deposit;
+21. save/load mid-cycle;
+22. deterministic continuation;
+23. legacy A2 migration;
+24. locked earlier gates remain green.
 
 Detailed walking/pathfinding/hauling is explicitly outside Linh Điền backend authority.
