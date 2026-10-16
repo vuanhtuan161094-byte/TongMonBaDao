@@ -66,10 +66,15 @@ func _run() -> void:
     ids.sort()
     for raw_id in ids:
         var actor: DiscipleState = state.disciples[raw_id]
-        if actor.work_group_id == &"" and actor.worksite_building_id == &"" \
-            and actor.direct_command.is_empty() and actor.work_cycle_state.is_empty() \
-            and actor.region_id == &"sect" and actor.active_pve_encounter_id.is_empty() \
-            and actor.current_action in [&"EVALUATE",&"IDLE",&"HOLD"]:
+        if (
+            actor.work_group_id == &""
+            and actor.worksite_building_id == &""
+            and actor.direct_command.is_empty()
+            and actor.work_cycle_state.is_empty()
+            and actor.region_id == &"sect"
+            and actor.active_pve_encounter_id.is_empty()
+            and actor.current_action in [&"EVALUATE",&"IDLE",&"HOLD"]
+        ):
             worker_id = actor.id
             break
     if worker_id == &"":
@@ -86,8 +91,11 @@ func _run() -> void:
     if assigned.size() != 1 or assigned[0] != worker_id:
         _fail("secondary operator assignment did not persist exact site")
         return
-    if buildings.assigned_worker_ids(state,first) != first_occupants \
-        or first.to_dict() != first_snapshot or state.sect.spirit_stones != before_resources:
+    if (
+        buildings.assigned_worker_ids(state,first) != first_occupants
+        or first.to_dict() != first_snapshot
+        or state.sect.spirit_stones != before_resources
+    ):
         _fail("secondary assignment mutated primary Mine or secretly charged resources")
         return
     var valid := state.validate_invariants()
@@ -96,8 +104,10 @@ func _run() -> void:
         return
     # A second instance survives the canonical serializer, no shadow map.
     var saved := SimulationState.from_dict(state.to_dict())
-    if not saved.buildings.has(str(second.id)) \
-        or (saved.disciples[worker_id] as DiscipleState).worksite_building_id != second.id:
+    if (
+        not saved.buildings.has(str(second.id))
+        or (saved.disciples[worker_id] as DiscipleState).worksite_building_id != second.id
+    ):
         _fail("roundtrip lost secondary instance or its one worker")
         return
     print("GUI MULTI-INSTANCE ID ROUTING TEST PASS (NO PLAYER CONSTRUCTION)")
