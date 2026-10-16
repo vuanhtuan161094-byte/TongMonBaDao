@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/presentation/labs/combat_v4_visual_pilot.gd" id="1_lab"]
+
+[node name="CombatV4VisualPilot" type="Node2D"]
+script = ExtResource("1_lab")
