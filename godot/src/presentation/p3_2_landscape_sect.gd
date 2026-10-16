@@ -1051,7 +1051,7 @@ func _workforce_candidate_reason(actor: DiscipleState, building: BuildingState, 
         return "Đã có công việc khác"
     if not actor.work_cycle_state.is_empty() or not actor.direct_command.is_empty():
         return "Đang có lệnh/công việc"
-    if not actor.current_action in [&"EVALUATE",&"IDLE",&"HOLD"]:
+    if not (actor.current_action in [&"EVALUATE",&"IDLE",&"HOLD"]):
         return "Đang thực hiện hành động"
     var buildings := BuildingSystem.new()
     if buildings.disciple_has_active_timed_recipe(state,actor.id) or buildings.disciple_has_active_spirit_plot(state,actor.id) or DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,actor):
