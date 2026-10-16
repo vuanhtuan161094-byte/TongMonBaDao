@@ -82,7 +82,6 @@ func _verify_growth() -> bool:
         "real Warehouse debit and permanent Potential did not settle together"):
         return false
 
-    var expected_factor := 1.0 + FoundationSystem.POTENTIAL_PERCENT_PER_POINT
     var core_after := DiscipleRealmProgressV2.derive_stats(actor)
     if not _check(bool(core_after.get("ok",false))
         and float(core_after["stats"]["attack"]) > float(core_before["stats"]["attack"])
@@ -154,19 +153,21 @@ func _verify_active_job_guards() -> bool:
         return false
     # Body-gate entrypoint must also reject a disguised HOLD actor who still
     # owns an in-flight production transaction.
-    var body_gate := DiscipleBodyGateTransactionV2.new().preview_gate(state,miner.id)
-    if DiscipleRealmProgressV2.progression_ready(miner):
-        if not _check(not bool(body_gate.get("ok",false))
-            or str(body_gate.get("reason","")) == "body_gate_disciple_reserved",
-            "body gate bypassed Mine reservation"):
-            return false
-
     var growth_actor := _actor(state,956604)
     if not _check(growth_actor != null, "growth reservation actor missing"):
         return false
     growth_actor.current_action = &"HOLD"
     growth_actor.work_cycle_state = {"profession":"mining","phase":"extract"}
     var growth_denied := growth.preview(state,growth_actor.id)
-    return _check(not bool(growth_denied.get("ok",false))
+    if not _check(not bool(growth_denied.get("ok",false))
         and str(growth_denied.get("reason","")) == "foundation_reserved_occupation",
-        "growth entrypoint bypassed saved active work")
+        "growth entrypoint bypassed saved active work"):
+        return false
+    var body_gate := DiscipleBodyGateTransactionV2.new().preview_gate(state,growth_actor.id)
+    if not _check(str(body_gate.get("reason","")) == "body_gate_disciple_reserved",
+        "Body gate bypassed active legacy production cycle"):
+        return false
+    var growth_commit := growth.commit(state,growth_actor.id,"busy-growth")
+    return _check(not bool(growth_commit.get("ok",false))
+        and str(growth_commit.get("reason","")) == "foundation_reserved_occupation",
+        "busy actor committed growth despite active job")
