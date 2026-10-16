@@ -1,5 +1,20 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-16 — DISCIPLE-V2 COMPLETE-INGRESS REPAIR / INTEGRATED PR #18
+
+**Owner instruction:** finish the relevant backend as one outcome-driven packet, handle implementation decisions without piecemeal approval, seek owner only for NEW gameplay rules/numeric balance. Exact game-and-regression code SHA `333172bd2d50f97f853a0b5ec4fb0f2a9cbe79ff` (backend patch `c0f21293638bee04ade5eb808e52f43442806b4c`, follow-on tests `95cdd700c26c4ecf0250876fdd96398ba33f4734` and `333172b`). Branch `integration-v2-pr9-pr10-pr17-20261016`, draft PR #18, baseline PR #9 unchanged; main still `461caca1171462e0da092f21108c5c1733157ad9` at initial verification.
+
+**Backend repaired, 3 files:** `BuildingSystem.work_entry_conflict` is a single execution-time action/direct-command gate shared by direct Mine/Forest legacy+timer, Field plot and Alchemy recipe, explicitly NOT used to block player-authorized command replacement preflight; `WorkforceSystem.perform_work` and worker adapters respect it, dedicated single-operator assignments reject pending `TRAIN_BODY` as well as `CULTIVATE`; `issue_command` clears stale paid Body/Chuyên Tu current_action on a successful replacement only; `DiscipleBodyTrainingFacilityV2.reserve_slot` retires incompatible saved direct commands and pending cultivate/HOLD action ONLY after full slot/cost/work preflight. Existing policy `manual` is NOT changed automatically. No extra timer, receipt, production value or resource transaction was introduced.
+
+**Regression authored/expanded, 2 files:** direct contradictory action checks for Mine, Forest, Field and Alchemy; correct replacement HOLD→WORK; canceled Mine timer HOLD→Body auto-policy TRAIN_BODY; TRAIN_BODY→HOLD→reserved Body restoration without charging; legitimate Field multiple plots same duty; saved real Mine batch roundtrip using `SimulationState.to_dict/from_dict`, scheduler advancement to exact finish tick and persisted per-job `wage:job_id` replay check; Foundation/Potential, birth identity and HP ratio save-roundtrip. Test code exists, these runtime assertions HAVE NOT BEEN EXECUTED.
+
+**Static evidence:** all 8 relevant GDScript scripts passed bracket/quote/comment scan in this connector session. This is NOT Godot import/parser or runtime. Godot 4.7.2 absent from active environment; no Windows device requested, no CI manually run, no merge. Required focused P3.7/O6 `==4`/O8/SAFE/Injury/One Active Job, offline physical SaveService, full cumulative and Android remain **PENDING**, not PASS. Windows `FULL_EXIT=0` at `453df9aa0bc39f31f33cf65fc4aedcf688e7bf74` is historical PR #9 evidence only.
+
+**Do not reopen locked systems:** PR #9 blob hashes checked unchanged for ProductionPlan, EconomySystem, Warehouse, Scheduler, CombatStats, RealmProgress, SaveService and HuntingPveRun. 30×10 tracks, Injury 0/1/120, Economy V2 ×10000 and common yield, job cancellation semantics unchanged. One job ingress closure is **static repair implemented, runtime PENDING**, not a full playable release.
+
+**Separately OPEN pending rule/content:** source of earned permanent Lục Duy gain with exactly-once consumption; PvE mid-combat Potential snapshot policy; remaining scene-level GUI/Android/full lifecycle; physical sustained 100/500/1k/3k QA. No invented balance or gameplay rule in this packet.
+
+---
 ## 2026-10-16 — STACK-INTEGRATION-02 PR #9/#10/#17 — MERGED HISTORY, RUNTIME PENDING
 
 **Exact integration gameplay/tree SHA:** `c3d652b9f554687470ce1d3375cdd47ff1c9b6c7` (two-parent merge PR #9 + PR #17). Any subsequent documentation-only commit changes no game/test scripts. At this SHA, Git diff against PR #9 is 11 authorized files; against PR #17 it is 5 authorized files. Godot 4.7.2 combined runtime **PENDING**, not inherited from PR #9 Windows evidence.

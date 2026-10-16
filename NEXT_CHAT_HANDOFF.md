@@ -1,5 +1,16 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-16 — PR #18 COMBINED DISCIPLE-V2 REPAIR, STATIC ONLY
+
+**Repository:** `vuanhtuan161094-byte/TongMonBaDao`; open draft PR #18 branch `integration-v2-pr9-pr10-pr17-20261016`, target PR #9 branch (not main). Verified code/test SHA **`333172bd2d50f97f853a0b5ec4fb0f2a9cbe79ff`**, followed only by this checkpoint documentation. PR #9 and PR #10/#17 history preserved, no CI, no merge.
+
+**Delivered:** 3 backend files guard all direct production entrypoints against contradictory current_action/direct_command; issue_command only retires training action when accepted; explicit Body reservation discards stale HOLD/CULTIVATE order only AFTER complete preflight; one worker per Mine/Forest/Field, multiple plots per one Field duty, lawful HOLD cancels timers without rewards. Regression covers action/command guards, Forest, Field, Alchemy, timed Mine save/from_dict/scheduler exact-once wage by `wage:job_id`, Body transitions and permanent Potential HP ratio/birth save roundtrip. Existing source/rates/RealmBody/Injury and canonical state unchanged.
+
+**Truthful evidence:** STATIC bracket/string/comment scan 8/8 only; **Godot 4.7.2 importer/test/runtime NOT RUN/PENDING**; previous Windows FULL_EXIT=0 PR #9 SHA `453df9a` cannot certify new integrated code. Need focused tests, O6 ==4, O8, GP-02B1/C1, SAFE-01/02, authentic SaveService offline and P3.7 FULL on exact new SHA when a runner becomes available. Do not force user to supply a computer; no CI without authorization, no merge main.
+
+**Remaining separate design decisions:** earned permanent improvement resource/receipt; effect timing for permanent Potential acquired during V2 PvE snapshot; advanced gameplay/GUI. The owner now wants bundled technical completion, not micro-approvals. Ask only for a genuine user-facing new game rule/number, not implementation mechanics. If tests reveal concrete failures, repair the cause without weakening assertions or balance.
+
+---
 ## 2026-10-16 — STACK-INTEGRATION-02 HANDOFF / DRAFT PR #9 + #10 + #17
 
 **Exact integration gameplay/tree SHA:** `c3d652b9f554687470ce1d3375cdd47ff1c9b6c7` (two-parent merge PR #9 + PR #17). Any subsequent documentation-only commit changes no game/test scripts. At this SHA, Git diff against PR #9 is 11 authorized files; against PR #17 it is 5 authorized files. Godot 4.7.2 combined runtime **PENDING**, not inherited from PR #9 Windows evidence.

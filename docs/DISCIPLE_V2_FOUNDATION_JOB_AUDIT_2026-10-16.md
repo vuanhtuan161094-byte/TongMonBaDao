@@ -1,5 +1,12 @@
 # DISCIPLE V2 — LỤC DUY / REALM–BODY / ONE ACTIVE JOB AUDIT
 
+## Addendum — 2026-10-16 PR #18 integrated guard+handoff repair
+
+Post-merge code/test SHA: `333172bd2d50f97f853a0b5ec4fb0f2a9cbe79ff`. PR #18 is still a draft targeting PR #9. Direct production entrypoints now use an execution-only action/direct-command conflict gate, preserving WORK-command replacement preflight. Legal Body transfer clears conflicting saved HOLD/Chuyên Tu only after fully valid reservation. Founding Three test regressions are still unexecuted; extended One Active Job test now covers Forest, synthetic incompatible actions, actual Mine timed batch serialization and deterministic scheduler completion exactly once, receipt keyed by `wage:job_id`, and Body transfer; Foundation test checks save-roundtrip without changing growth source/provenance. All locked Economy V2, V2 combat stats and 30×10 tracks untouched.
+
+**Validation disclaimer:** static delimiter/quote/comment scan 8/8 GDScript files; NOT official Godot 4.7.2 parse, import, headless or Windows test. No CI or merge. Run proper real runtime gates, including O6 ==4/O8/SAFE/GP-02B1/02C1/P3.7 FULL; do not claim these fixes passed in game yet. Historical PR #9 official Windows FULL_EXIT=0 at `453df9a` remains separate prior evidence.
+
+---
 Date: 2026-10-16
 Status: **CODE WRITTEN; STATIC STRUCTURAL VALIDATION ONLY; GODOT 4.7.2 RUNTIME PENDING**.
 Repository: `vuanhtuan161094-byte/TongMonBaDao`.
