@@ -139,6 +139,9 @@ func _run() -> void:
         and warehouse.quantity(loaded,&"thanh_thiet") == before_ore+mine_output-2
         and loaded.sect.spirit_stones == before_stones-4+16,
         "NPC market did not purchase real spare ore"): return
+    # Reserve all remaining bulk ore before probing an overdraw.
+    if not _check(warehouse.set_rule(loaded,&"thanh_thiet",before_ore+mine_output-2,false),
+        "Bulk reserve rejected"): return
     var replay_sale := economy.sell_to_npc_v1(loaded,&"thanh_thiet",2,"test-ore-sale")
     if not _check(bool(replay_sale.get("already_settled",false))
         and not bool(economy.sell_to_npc_v1(loaded,&"thanh_thiet",2,"different-overdraw").get("ok",false)),
