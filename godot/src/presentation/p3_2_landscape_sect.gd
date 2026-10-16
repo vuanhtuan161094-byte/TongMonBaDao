@@ -1260,6 +1260,11 @@ func _sect_hub_production_line(
     if building == null:
         return "%s · Chưa có công trình" % label_text
     var occupied := buildings.assigned_worker_ids(state,building)
+    var actual_resource_id := resource_id
+    if building_type == BuildingSystem.TYPE_MINE:
+        actual_resource_id = production_plan_registry.output_resource_id(
+            buildings.selected_resource_production_plan(building)
+        )
     var worker_name := "Chưa giao"
     var activity := "Cần chọn đệ tử"
     if occupied.size() == 1 and state.disciples.has(occupied[0]):
@@ -1268,7 +1273,7 @@ func _sect_hub_production_line(
     elif occupied.size() > 1:
         activity = "Cần kiểm tra phân công"
     return "%s · Lv%d · %s\n%s · Kho %s" % [
-        label_text,building.level,worker_name,activity,_warehouse_pair(resource_id,true)
+        label_text,building.level,worker_name,activity,_warehouse_pair(actual_resource_id,true)
     ]
 
 func _refresh_sect_hub() -> void:

@@ -115,6 +115,13 @@ func _run() -> void:
     if not reopened.validate_invariants().is_empty():
         _fail("real recruited-and-assigned state violates invariants")
         return
+    ui.call("_bottom_action","home")
+    await process_frame
+    if not hub.visible or not await _press("SectHubDisciples"):
+        return
+    if hub.visible or StringName(ui.get("selected_id")) == &"":
+        _fail("Sect Hub disciple route did not show existing profile navigation")
+        return
     print("SECT-PLAYABLE V1 GUIDANCE→WORKFORCE→WAREHOUSE→SAVE: PASS")
     if ui != null:
         ui.queue_free()
