@@ -337,14 +337,9 @@ func spirit_field_cycle_time_factor(field: BuildingState) -> float:
     return factor
 
 func spirit_field_yield_factor(field: BuildingState) -> float:
-    var factor := production_plans.common_yield_factor(field.level)
-    if field.level >= 20:
-        factor *= 1.10
-    if field.level >= 75:
-        factor *= 1.10
-    if field.level >= 100:
-        factor *= 1.20
-    return factor
+    # Common yield milestones now live solely in ProductionPlanRegistry.
+    # Field cycle-time and profession modifiers remain separate channels.
+    return production_plans.common_yield_factor(field.level)
 
 func spirit_field_xp_factor(field: BuildingState) -> float:
     var factor := 1.0
