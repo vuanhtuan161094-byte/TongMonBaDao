@@ -153,7 +153,8 @@ func _refresh_hud() -> void:
     var source_loaded: Array = world.get("source_loaded")
     var art: Dictionary = world.get("original_textures")
     var human_art := "STAGE A" if stage_ready else ("ORIGINAL POSE" if art.has("human_idle") else "FALLBACK")
-    var wolves := "ORIGINAL POSE" if art.has("wolf_idle") and art.has("boss_idle") else "PLACEHOLDER"
+    var jx_ready: bool = bool(world.get("jx_wolf_loaded"))
+    var wolves := "JX1 GOC · 5 CLIP (HANG %d, F8 DOI HUONG)" % int(world.get("jx_direction_row")) if jx_ready else ("ORIGINAL POSE" if art.has("wolf_idle") and art.has("boss_idle") else "PLACEHOLDER")
     source_note.text = "2 HƯỚNG + MIRROR · NGƯỜI: %s · SÓI/BOSS: %s · ĐỊA HÌNH: %s · ART POSE CHƯA ANIMATE" % [
         human_art, wolves,
         "%d SOURCE A" % source_loaded.size() if not source_loaded.is_empty() else "procedural"
@@ -199,6 +200,17 @@ func _clamp_camera() -> void:
     camera.position.y = (top + bottom) * 0.5 if top > bottom else clampf(camera.position.y, top, bottom)
 
 func _unhandled_input(event: InputEvent) -> void:
+    if event is InputEventKey:
+        var keyboard := event as InputEventKey
+        if keyboard.pressed and not keyboard.echo and keyboard.keycode == KEY_F8:
+            # Preview 8 SOURCE atlas rows to identify a side profile; Combat V4
+            # still uses ONE approved row + mirror after actual screenshot review.
+            var row := (int(world.get("jx_direction_row")) + 1) % 8
+            world.set("jx_direction_row", row)
+            world.call("sync_visuals")
+            _refresh_hud()
+            return
+
     if event is InputEventMouseButton:
         var button := event as InputEventMouseButton
         if button.button_index == MOUSE_BUTTON_WHEEL_UP and button.pressed:
