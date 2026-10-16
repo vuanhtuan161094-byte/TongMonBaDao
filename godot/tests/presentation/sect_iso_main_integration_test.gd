@@ -42,6 +42,14 @@ func _run() -> void:
     if iso.active_chunks.is_empty() or iso.active_chunks.size() > 144:
         _fail("initial camera did not cull chunks")
         return
+    # The main world reuses the lab's authentic TransferMapModel AStar API.
+    if iso.lab_geometry == null or iso.lab_geometry.grid_size != Vector2i(192,192) or not iso.lab_routes_ready:
+        _fail("ENV02A geometry/doorway and AStar routes are not active")
+        return
+    for kind in ["main_hall","warehouse","forge"]:
+        if iso.lab_geometry.path_to(kind,iso.SPAWN_CELL).is_empty():
+            _fail("main-world lab route to "+kind+" is broken")
+            return
     var initial_snapshot := state.to_dict()
     var first := BuildingSystem.new().primary_building(state,BuildingSystem.TYPE_MINE)
     if first == null:
