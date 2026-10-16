@@ -617,14 +617,18 @@ func _sync_actor_positions() -> void:
         if actor is ModularDiscipleActor:
             var modular := actor as ModularDiscipleActor
             if delta.length() > 1.0:
-                var direction := DiscipleActorVisualCatalog.direction_for_delta(delta, modular.facing)
+                # Two authored horizontal facings only. Vertical map travel
+                # still moves vertically; character uses last left/right
+                # visual and built-in Godot rig mirroring for left.
+                var two_way := _iso_two_direction_delta(delta,modular.facing)
+                var direction := DiscipleActorVisualCatalog.direction_for_delta(two_way,modular.facing)
                 if (
                     modular.rig_id == DiscipleActorVisualCatalog.RIG_FEMALE_NORMAL_V1
                     and _stage_a_live_assets_ready()
                     and direction != modular.facing
                 ):
-                    FemaleStageAAssetLoader.apply_public_direction(modular, direction)
-                modular.play_walk_for_delta(delta)
+                    FemaleStageAAssetLoader.apply_public_direction(modular,direction)
+                modular.play_walk_for_delta(two_way)
             else:
                 modular.sync_action(disciple.current_action)
 
@@ -651,11 +655,14 @@ func _actor_anchor_offset(actor: Control) -> Vector2:
     return Vector2(30.0, 30.0)
 
 func _stage_a_live_assets_ready() -> bool:
-    return (
-        FemaleStageAAssetLoader.assets_available(&"down")
-        and FemaleStageAAssetLoader.assets_available(&"right")
-        and FemaleStageAAssetLoader.assets_available(&"up")
-    )
+    return FemaleStageAAssetLoader.assets_available(&"right")
+
+func _iso_two_direction_delta(delta: Vector2, old_facing: StringName) -> Vector2:
+    # Facial orientation is independent of movement vector/position tween.
+    var x := delta.x
+    if absf(x) <= 0.01:
+        x = -1.0 if old_facing == &"left" else 1.0
+    return Vector2(-1.0 if x < 0.0 else 1.0,0.0)
 
 func _install_modular_live_actors() -> void:
     modular_live_actor_ids.clear()
@@ -687,7 +694,7 @@ func _install_modular_live_actors() -> void:
         actor.configure(disciple)
         actor.set_animation_library(female_motion_library)
         if actor.rig_id == DiscipleActorVisualCatalog.RIG_FEMALE_NORMAL_V1 and female_assets_ready:
-            FemaleStageAAssetLoader.apply_public_direction(actor, &"down")
+            FemaleStageAAssetLoader.apply_public_direction(actor, &"right")
         actor.sync_action(disciple.current_action)
         actor.actor_pressed.connect(Callable(self, "_open_disciple"))
         var world_foot := _iso_actor_point(destination) + _actor_offset(index)
