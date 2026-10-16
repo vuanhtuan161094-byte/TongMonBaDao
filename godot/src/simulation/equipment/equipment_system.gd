@@ -446,6 +446,18 @@ func validate_invariants(state: SimulationState) -> Array[String]:
         errors.append("Equipment policy is invalid.")
     if state.sect.equipment_forge_index < 0 or state.sect.equipment_event_count < 0:
         errors.append("Equipment counters cannot be negative.")
+    for raw_recipe_id in RECIPES.keys():
+        var recipe_id := StringName(raw_recipe_id)
+        var cultivation_tier := cultivation_realm_tier(recipe_id)
+        var body_tier := body_realm_tier(recipe_id)
+        if cultivation_tier <= 0 or cultivation_tier > DiscipleRealmProgressV2.MAX_REALM:
+            errors.append("Equipment recipe %s has invalid Tu Vi tier." % recipe_id)
+        if body_tier < 0 or body_tier > DiscipleRealmProgressV2.MAX_REALM:
+            errors.append("Equipment recipe %s has invalid Luyện Thể tier." % recipe_id)
+        var requirements := crafting_requirements(state,recipe_id)
+        for raw_material in requirements.keys():
+            if not MATERIAL_NAMES.has(str(raw_material)) or int(requirements[raw_material]) <= 0:
+                errors.append("Equipment recipe %s has invalid material %s." % [recipe_id,raw_material])
     if state.sect.p3_7_resources_enabled:
         if not state.sect.forge_materials.is_empty():
             errors.append("Legacy forge materials must be empty under P3.7 warehouse authority.")
