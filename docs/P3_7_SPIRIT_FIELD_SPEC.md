@@ -1,7 +1,7 @@
 # P3.7 — LINH ĐIỀN / SPIRIT FIELD SPEC
 
 Status: CANONICAL DESIGN AUTHORITY  
-Updated: 2026-10-06
+Updated: 2026-10-16
 
 Parents:
 - `docs/GAME_SYSTEM_ARCHITECTURE.md`
@@ -29,11 +29,15 @@ Do not simulate agricultural micro-management that does not create a meaningful 
 
 ---
 
-# 2. One plot = one timer
+# 2. One operator = one Field duty; plots are internal timers
 
 Canonical lifecycle:
 
-**start crop -> countdown -> harvest resolves**
+**assign one Linh Thực operator -> start Field duty -> internal plot timers -> harvest resolves**
+
+Each Linh Điền instance has exactly **one responsible disciple at every building level**.
+The field's plots are subordinate production timers owned by that one occupation; they are
+not four independent disciple jobs and never justify four active-job reservations.
 
 There are no separate backend phases for:
 - walking to the field;
@@ -67,7 +71,8 @@ rare_factor
 
 The relevant worker and facility factors are sampled when the plot starts.
 
-The assigned worker remains reserved by that plot until `finish_tick`.
+All growing plots created by one Field duty carry the same responsible operator.
+That disciple remains reserved by the Linh Điền while any plot from the duty is unresolved.
 There are still no detailed walking/tending/harvest backend phases.
 
 When `finish_tick` is reached:
@@ -86,24 +91,25 @@ Worker slots and plot slots are separate.
 
 ## Worker slots
 
-How many disciples may operate the field concurrently.
+**Owner lock 2026-10-16:**
+- every Linh Điền instance has exactly **1 operator**;
+- building level never increases worker count;
+- one disciple still obeys One Active Job.
 
-Baseline:
-- Lv1: 4;
-- +1 every 5 levels.
-
-There is exactly one worker slot per plot slot.
-A disciple may occupy only one active Spirit Field plot at a time.
+The operator manages the whole field duty. Internal plot timers do not create extra
+disciple occupations.
 
 ## Plot slots
 
-How many crop timers may exist concurrently.
+**Economy V2 pilot: exactly 4 plots per Linh Điền at every level.**
 
-Baseline:
-- Lv1: 4;
-- +1 every 5 levels.
+Building level may improve speed/yield/content unlocks, but does not automatically add
+plots. More aggregate farming capacity comes from stronger fields and additional
+Spirit Field instances under the building-count progression rules.
 
-A plot with an active crop reserves exactly one disciple until harvest resolves.
+A single duty may start several empty plots. All such plots retain the same operator
+identity and may have independent crop timers. Economy-A wage identity is per Field
+duty, not per plot; replaying completion from several plots must not pay four wages.
 
 ---
 
@@ -377,10 +383,10 @@ A2R closes only when runtime evidence covers:
 2. Spirit Stone planting cost;
 3. insufficient-funds behavior;
 4. cancel with no default refund;
-5. multiple independent plots;
-6. exactly one reserved disciple per active plot;
-7. disciple released when that plot resolves;
-8. multiple Spirit Field instances;
+5. four independent internal plot timers per Linh Điền;
+6. exactly one responsible disciple for the whole Linh Điền instance;
+7. that operator remains reserved while any duty plot is unresolved and releases after the duty drains;
+8. multiple Spirit Field instances, each with its own one operator;
 9. concrete worksite assignment;
 10. AUTO_DEMAND / PRIORITY / FIXED;
 11. profession-level cycle-time effect;
