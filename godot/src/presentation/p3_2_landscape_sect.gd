@@ -53,6 +53,14 @@ var disciple_profile_query := ""
 const MANAGEMENT_PAGE_SIZE := 50
 const DISCIPLE_PROFILE_PAGE_SIZE := 50
 var selected_building: StringName = &""
+var workforce_picker_panel: Panel
+var workforce_picker_results: VBoxContainer
+var workforce_picker_search: LineEdit
+var workforce_picker_building_id: StringName = &""
+var workforce_picker_query := ""
+var workforce_picker_offset := 0
+var workforce_advanced_visible := false
+const WORKFORCE_PICKER_PAGE_SIZE := 16
 var deep_restore_summary := false
 var screen_pointer_dragged := false
 var mouse_pointer_dragged := false
@@ -419,7 +427,10 @@ func _clear_pointer_state() -> void:
 
 func _open_building(destination: StringName) -> void:
     _close_disciple_summary(true)
+    _close_workforce_picker()
     _clear_popup()
+    if selected_building != destination:
+        workforce_advanced_visible = false
     selected_building = destination
     var point := SectMapPresentation.position_for_destination(destination)
     _set_focus_target(point, &"building", destination, _building_name(destination), true)
@@ -667,6 +678,7 @@ func _hide_building_operation_panel() -> void:
         camera_hint.visible = true
 
 func _close_building_operation_panel(clear_selection: bool = true) -> void:
+    _close_workforce_picker()
     _hide_building_operation_panel()
     building_management_feedback = ""
     if not clear_selection:
@@ -690,9 +702,15 @@ func _refresh_building_operation_content() -> void:
     var feedback := ""
     if building_management_feedback != "":
         feedback = "\n\n%s" % building_management_feedback
-    building_operation_body.text = _building_operation_text(selected_building) + feedback
-    # Keep actionable controls in view for dense management panels.
-    if selected_building == SectMapPresentation.DEST_BODY_TRAINING:
+    var workforce_target := _workforce_building_type()
+    building_operation_body.text = (
+        _workforce_operation_summary(workforce_target) if workforce_target != &""
+        else _building_operation_text(selected_building)
+    ) + feedback
+    # The 3 production panels must expose actions above the fold on 1280x720.
+    if workforce_target != &"":
+        building_operation_body.custom_minimum_size.y = 0
+    elif selected_building == SectMapPresentation.DEST_BODY_TRAINING:
         building_operation_body.custom_minimum_size.y = 248
     elif selected_building == SectMapPresentation.DEST_GUIDANCE:
         building_operation_body.custom_minimum_size.y = 150
@@ -715,13 +733,16 @@ func _rebuild_building_management_controls() -> void:
         SectMapPresentation.DEST_WAREHOUSE:
             _build_economy_a_market_controls()
         SectMapPresentation.DEST_MINE:
+            _build_workforce_card(BuildingSystem.TYPE_MINE,WorkforceSystem.PROF_MINING)
             _build_work_management(WorkforceSystem.PROF_MINING, &"mining_crew", "Đội Khai Khoáng", "Khai khoáng")
             _build_mine_upgrade_control()
         SectMapPresentation.DEST_LINH_FOREST:
+            _build_workforce_card(BuildingSystem.TYPE_LINH_FOREST,WorkforceSystem.PROF_FORESTRY)
             _build_work_management(WorkforceSystem.PROF_FORESTRY, &"forestry_crew", "Đội Lâm Nghiệp", "Thu hoạch")
         SectMapPresentation.DEST_ALCHEMY_HALL:
             _build_alchemy_management()
         SectMapPresentation.DEST_SPIRIT_FIELD:
+            _build_workforce_card(BuildingSystem.TYPE_SPIRIT_FIELD,WorkforceSystem.PROF_HERBALISM)
             _build_spirit_field_management()
         SectMapPresentation.DEST_FORGE:
             _build_work_management(WorkforceSystem.PROF_FORGING, &"forge_hall", "Luyện Khí Đường", "Luyện khí")
@@ -742,6 +763,400 @@ func _rebuild_building_management_controls() -> void:
             _build_direct_order_management(WorkforceSystem.COMMAND_RETURN_SECT, "", "Triệu hồi", true)
         _:
             pass
+    if _workforce_building_type() != &"":
+        _fold_workforce_legacy_controls()
+
+
+# GUI-WORKFORCE V1: the visible compact card is presentation only. All
+# occupancy, jobs, cancellation and salary come from the canonical systems.
+func _workforce_building_type() -> StringName:
+    match selected_building:
+        SectMapPresentation.DEST_MINE:
+            return BuildingSystem.TYPE_MINE
+        SectMapPresentation.DEST_LINH_FOREST:
+            return BuildingSystem.TYPE_LINH_FOREST
+        SectMapPresentation.DEST_SPIRIT_FIELD:
+            return BuildingSystem.TYPE_SPIRIT_FIELD
+        _:
+            return &""
+
+func _workforce_profession(building_type: StringName) -> StringName:
+    match building_type:
+        BuildingSystem.TYPE_MINE:
+            return WorkforceSystem.PROF_MINING
+        BuildingSystem.TYPE_LINH_FOREST:
+            return WorkforceSystem.PROF_FORESTRY
+        BuildingSystem.TYPE_SPIRIT_FIELD:
+            return WorkforceSystem.PROF_HERBALISM
+        _:
+            return &""
+
+func _workforce_occupants(building: BuildingState) -> Array[StringName]:
+    if building == null:
+        return [] as Array[StringName]
+    return BuildingSystem.new().assigned_worker_ids(state,building)
+
+func _workforce_operation_summary(building_type: StringName) -> String:
+    var buildings := BuildingSystem.new()
+    var building := buildings.primary_building(state,building_type)
+    if building == null:
+        return "Công trình chưa có trong tông môn."
+    var assigned := _workforce_occupants(building)
+    var who := "Chưa giao" if assigned.is_empty() else (
+        state.disciples[assigned[0]].display_name if state.disciples.has(assigned[0])
+        else str(assigned[0])
+    )
+    if assigned.size() > 1:
+        who = "Lỗi dữ liệu: nhiều đệ tử cùng một công trình"
+    var output := ""
+    if building_type == BuildingSystem.TYPE_MINE:
+        var plan := buildings.selected_resource_production_plan(building)
+        var rid := production_plan_registry.output_resource_id(plan)
+        output = "Kho: %s · %s" % [str(rid),_warehouse_pair(rid,true)]
+    elif building_type == BuildingSystem.TYPE_LINH_FOREST:
+        output = "Linh Mộc: %s" % _warehouse_pair(&"linh_moc",true)
+    else:
+        output = "Linh Cốc: %s · Thanh Linh Thảo: %s" % [
+            _warehouse_pair(&"linh_coc",true),_warehouse_pair(&"thanh_linh_thao",true)
+        ]
+    return "Lv%d · 1 công trình / 1 đệ tử\nPhụ trách: %s\n%s" % [building.level,who,output]
+
+func _workforce_worker_status(building: BuildingState, worker_id: StringName) -> String:
+    var buildings := BuildingSystem.new()
+    var timer := buildings.active_resource_timer_for_worker(state,worker_id)
+    if not timer.is_empty():
+        var rid := StringName(timer.get("resource_id",""))
+        return "Mẻ %s · %d phút còn lại" % [
+            str(rid),maxi(0,int(timer.get("finish_tick",state.tick))-state.tick)
+        ]
+    if building.building_type == BuildingSystem.TYPE_SPIRIT_FIELD:
+        var growing := 0
+        var latest := 0
+        for raw_plot in buildings.spirit_field_plots(state,building):
+            if raw_plot is Dictionary and str(raw_plot.get("status","")) == str(BuildingSystem.PLOT_GROWING) and str(raw_plot.get("assigned_worker_id","")) == str(worker_id):
+                growing += 1
+                latest = maxi(latest,int(raw_plot.get("finish_tick",state.tick))-state.tick)
+        if growing > 0:
+            return "%d ô đang trồng · hoàn thành muộn nhất %d phút" % [growing,latest]
+    if state.disciples.has(worker_id):
+        var actor: DiscipleState = state.disciples[worker_id]
+        if not actor.work_cycle_state.is_empty():
+            return "Đang xử lý lượt cũ: %s" % str(actor.work_cycle_state.get("phase",""))
+        if not actor.direct_command.is_empty():
+            return "Đã nhận lệnh: %s" % str(actor.direct_command.get("kind",""))
+    return "Sẵn sàng nhận công việc"
+
+func _workforce_ui_button(parent: Control, node_name: String, label_text: String, callback: Callable) -> Button:
+    var button := Button.new()
+    button.name = node_name
+    button.text = label_text
+    button.custom_minimum_size = Vector2(112,44)
+    button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    button.add_theme_font_size_override("font_size",13)
+    button.pressed.connect(callback)
+    parent.add_child(button)
+    return button
+
+func _build_workforce_card(building_type: StringName, profession_id: StringName) -> void:
+    var buildings := BuildingSystem.new()
+    var building := buildings.primary_building(state,building_type)
+    _add_management_section_label("NGƯỜI PHỤ TRÁCH · THAO TÁC NHANH")
+    if building == null:
+        _add_management_section_label("Chưa có công trình để phân công.")
+        return
+    var assigned := _workforce_occupants(building)
+    var owned := assigned.size() == 1 and state.disciples.has(assigned[0])
+    var worker_id: StringName = assigned[0] if owned else &""
+    var label := Label.new()
+    label.name = "WorkforceOwner"
+    label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    label.custom_minimum_size = Vector2(384,40)
+    label.add_theme_font_size_override("font_size",15)
+    label.add_theme_color_override("font_color",INK)
+    if assigned.size() > 1:
+        label.text = "Dữ liệu phân công không hợp lệ: %d người." % assigned.size()
+    elif owned:
+        var actor: DiscipleState = state.disciples[worker_id]
+        var level := workforce.profession_level_for_state(state,actor,profession_id)
+        label.text = "%s · Nghề Lv%d\n%s" % [
+            actor.display_name,level,_workforce_worker_status(building,worker_id)
+        ]
+    else:
+        label.text = "Chưa có đệ tử. Chọn người để bắt đầu."
+    building_management_container.add_child(label)
+    var buttons := HBoxContainer.new()
+    buttons.name = "WorkforceQuickActions"
+    buttons.custom_minimum_size = Vector2(384,48)
+    buttons.add_theme_constant_override("separation",7)
+    building_management_container.add_child(buttons)
+    var choose := _workforce_ui_button(buttons,"WorkforceChoose","Chọn / Đổi",Callable(self,"_open_workforce_picker").bind(building.id))
+    choose.disabled = assigned.size() > 1
+    var start := _workforce_ui_button(buttons,"WorkforceStart","Bắt đầu",Callable(self,"_workforce_start").bind(building.id))
+    start.disabled = not owned or not buildings.work_available(state,profession_id,state.disciples[worker_id])
+    if owned and not start.disabled:
+        start.tooltip_text = "Gửi lệnh tới scheduler; tiến độ và sản phẩm là dữ liệu thực."
+    else:
+        start.tooltip_text = "Cần người phụ trách rảnh, slot và nguyên liệu hợp lệ."
+    var remove := _workforce_ui_button(buttons,"WorkforceRemove","Gỡ người",Callable(self,"_workforce_remove").bind(building.id))
+    remove.disabled = not owned or buildings.disciple_has_active_timed_recipe(state,worker_id) or buildings.disciple_has_active_spirit_plot(state,worker_id)
+    if not state.sect.economy_a_enabled and building_type in [BuildingSystem.TYPE_MINE,BuildingSystem.TYPE_LINH_FOREST]:
+        var enable := _workforce_ui_button(building_management_container,"WorkforceEnableTimer","Bật sản xuất timer (Economy-A)",Callable(self,"_workforce_enable_timer"))
+        enable.custom_minimum_size = Vector2(384,42)
+
+func _workforce_enable_timer() -> void:
+    var result := EconomySystem.new().enable_v1(state)
+    building_management_feedback = "Đã bật timer; dùng chung scheduler và kho." if bool(result.get("ok",false)) else "Không thể bật timer: %s" % str(result.get("reason",""))
+    _refresh_building_operation_content()
+
+func _workforce_start(building_id: StringName) -> void:
+    if not state.buildings.has(str(building_id)):
+        return
+    var building: BuildingState = state.buildings[str(building_id)]
+    var assigned := _workforce_occupants(building)
+    if assigned.size() != 1:
+        building_management_feedback = "Công trình phải có đúng một người phụ trách."
+    else:
+        var profession_id := _workforce_profession(building.building_type)
+        var ok := workforce.issue_command(state,assigned[0],WorkforceSystem.COMMAND_WORK,str(profession_id),40)
+        building_management_feedback = (
+            "Đã giao lệnh; scheduler sẽ khởi động lượt làm việc hợp lệ."
+            if ok else "Không thể bắt đầu: đệ tử bận hoặc công trình chưa đủ điều kiện."
+        )
+    _refresh_building_operation_content()
+
+func _workforce_remove(building_id: StringName) -> void:
+    if not state.buildings.has(str(building_id)):
+        return
+    var assigned := _workforce_occupants(state.buildings[str(building_id)])
+    if assigned.size() != 1:
+        building_management_feedback = "Không có đúng một người để gỡ."
+    else:
+        var ok := workforce.assign_group(state,assigned[0],&"")
+        building_management_feedback = "Đã gỡ người phụ trách khỏi công trình." if ok else "Đệ tử đang bận; phải hoàn thành hoặc hủy công việc hợp lệ trước."
+    _refresh_building_operation_content()
+
+# Advanced controls remain accessible for production plans, policies, and the
+# historical P3 interaction contracts, but are not the main mobile workflow.
+func _fold_workforce_legacy_controls() -> void:
+    var children := building_management_container.get_children()
+    if children.size() < 4:
+        return
+    var advanced := VBoxContainer.new()
+    advanced.name = "WorkforceAdvancedControls"
+    advanced.add_theme_constant_override("separation",6)
+    for index in range(3,children.size()):
+        var node: Control = children[index]
+        building_management_container.remove_child(node)
+        advanced.add_child(node)
+    var toggle := Button.new()
+    toggle.name = "WorkforceAdvancedToggle"
+    toggle.text = "Ẩn tùy chọn nâng cao" if workforce_advanced_visible else "Kế hoạch / Danh sách nâng cao"
+    toggle.custom_minimum_size = Vector2(384,40)
+    toggle.pressed.connect(_toggle_workforce_advanced)
+    building_management_container.add_child(toggle)
+    building_management_container.add_child(advanced)
+    advanced.visible = workforce_advanced_visible
+
+func _toggle_workforce_advanced() -> void:
+    workforce_advanced_visible = not workforce_advanced_visible
+    _refresh_building_operation_content()
+
+func _close_workforce_picker() -> void:
+    if workforce_picker_panel != null and is_instance_valid(workforce_picker_panel):
+        workforce_picker_panel.queue_free()
+    workforce_picker_panel = null
+    workforce_picker_results = null
+    workforce_picker_search = null
+    workforce_picker_building_id = &""
+
+func _open_workforce_picker(building_id: StringName) -> void:
+    _close_workforce_picker()
+    if not state.buildings.has(str(building_id)):
+        return
+    workforce_picker_building_id = building_id
+    workforce_picker_query = ""
+    workforce_picker_offset = 0
+    workforce_picker_panel = Panel.new()
+    workforce_picker_panel.name = "WorkforcePicker"
+    workforce_picker_panel.position = Vector2(310,88)
+    workforce_picker_panel.size = Vector2(660,535)
+    workforce_picker_panel.z_index = 90
+    workforce_picker_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+    workforce_picker_panel.add_theme_stylebox_override("panel",_style(PAPER_LIGHT,INK,3,16))
+    add_child(workforce_picker_panel)
+    _label(workforce_picker_panel,"CHỌN ĐỆ TỬ CHO CÔNG TRÌNH",Vector2(20,12),Vector2(570,35),20)
+    var close := Button.new()
+    close.name = "WorkforcePickerClose"
+    close.text = "Đóng ×"
+    close.position = Vector2(558,13)
+    close.size = Vector2(84,42)
+    close.pressed.connect(_close_workforce_picker)
+    workforce_picker_panel.add_child(close)
+    workforce_picker_search = LineEdit.new()
+    workforce_picker_search.name = "WorkforcePickerSearch"
+    workforce_picker_search.placeholder_text = "Tìm tên / ID... (ưu tiên người rảnh)"
+    workforce_picker_search.position = Vector2(20,67)
+    workforce_picker_search.size = Vector2(620,44)
+    workforce_picker_search.text_changed.connect(_workforce_picker_search_changed)
+    workforce_picker_panel.add_child(workforce_picker_search)
+    var scroll := ScrollContainer.new()
+    scroll.name = "WorkforcePickerScroll"
+    scroll.position = Vector2(20,120)
+    scroll.size = Vector2(620,345)
+    workforce_picker_panel.add_child(scroll)
+    workforce_picker_results = VBoxContainer.new()
+    workforce_picker_results.name = "WorkforcePickerResults"
+    workforce_picker_results.custom_minimum_size = Vector2(594,0)
+    workforce_picker_results.add_theme_constant_override("separation",5)
+    scroll.add_child(workforce_picker_results)
+    var prev := Button.new()
+    prev.name = "WorkforcePickerPrev"
+    prev.text = "◀ Trang trước"
+    prev.position = Vector2(20,478)
+    prev.size = Vector2(170,42)
+    prev.pressed.connect(_workforce_picker_previous)
+    workforce_picker_panel.add_child(prev)
+    var next := Button.new()
+    next.name = "WorkforcePickerNext"
+    next.text = "Trang tiếp ▶"
+    next.position = Vector2(470,478)
+    next.size = Vector2(170,42)
+    next.pressed.connect(_workforce_picker_next)
+    workforce_picker_panel.add_child(next)
+    _render_workforce_picker()
+
+func _workforce_picker_search_changed(value: String) -> void:
+    workforce_picker_query = value.strip_edges().to_lower()
+    workforce_picker_offset = 0
+    _render_workforce_picker()
+
+func _workforce_picker_previous() -> void:
+    workforce_picker_offset = maxi(0,workforce_picker_offset-WORKFORCE_PICKER_PAGE_SIZE)
+    _render_workforce_picker()
+
+func _workforce_picker_next() -> void:
+    workforce_picker_offset += WORKFORCE_PICKER_PAGE_SIZE
+    _render_workforce_picker()
+
+func _workforce_candidate_reason(actor: DiscipleState, building: BuildingState, current: Array[StringName]) -> String:
+    if current.has(actor.id):
+        return "Đang phụ trách"
+    if actor.region_id != &"sect" or not actor.active_pve_encounter_id.is_empty():
+        return "Đang xuất môn / PvE"
+    if actor.work_group_id != &"" or actor.worksite_building_id != &"":
+        return "Đã có công việc khác"
+    if not actor.work_cycle_state.is_empty() or not actor.direct_command.is_empty():
+        return "Đang có lệnh/công việc"
+    if not actor.current_action in [&"EVALUATE",&"IDLE",&"HOLD"]:
+        return "Đang thực hiện hành động"
+    var buildings := BuildingSystem.new()
+    if buildings.disciple_has_active_timed_recipe(state,actor.id) or buildings.disciple_has_active_spirit_plot(state,actor.id) or DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,actor):
+        return "Đang có lượt sản xuất / Rèn Thân"
+    if current.size() > 1:
+        return "Công trình đang bị phân nhiều người"
+    if current.size() == 1 and state.disciples.has(current[0]):
+        var former: DiscipleState = state.disciples[current[0]]
+        if not former.work_cycle_state.is_empty() or not former.direct_command.is_empty() or not former.active_pve_encounter_id.is_empty() or former.region_id != &"sect" or str(former.current_action).begins_with("WORK_") or BuildingSystem.new().disciple_has_active_timed_recipe(state,former.id) or BuildingSystem.new().disciple_has_active_spirit_plot(state,former.id):
+            return "Người cũ đang sản xuất"
+    return ""
+
+func _render_workforce_picker() -> void:
+    if workforce_picker_results == null or not is_instance_valid(workforce_picker_results) or not state.buildings.has(str(workforce_picker_building_id)):
+        return
+    for old in workforce_picker_results.get_children():
+        workforce_picker_results.remove_child(old)
+        old.queue_free()
+    var building: BuildingState = state.buildings[str(workforce_picker_building_id)]
+    var current := _workforce_occupants(building)
+    var profession_id := _workforce_profession(building.building_type)
+    var candidates: Array = []
+    for raw_id in state.disciples.keys():
+        var actor: DiscipleState = state.disciples[raw_id]
+        if workforce_picker_query != "" and not actor.display_name.to_lower().contains(workforce_picker_query) and not str(actor.id).to_lower().contains(workforce_picker_query):
+            continue
+        candidates.append(raw_id)
+    candidates.sort_custom(func(a: Variant,b: Variant) -> bool:
+        var left: DiscipleState = state.disciples[a]
+        var right: DiscipleState = state.disciples[b]
+        var lr := _workforce_candidate_reason(left,building,current)
+        var rr := _workforce_candidate_reason(right,building,current)
+        if (lr == "") != (rr == ""):
+            return lr == ""
+        var llevel := workforce.profession_level_for_state(state,left,profession_id)
+        var rlevel := workforce.profession_level_for_state(state,right,profession_id)
+        return llevel > rlevel if llevel != rlevel else str(a) < str(b)
+    )
+    workforce_picker_offset = mini(workforce_picker_offset,maxi(0,candidates.size()-1))
+    var end_index := mini(candidates.size(),workforce_picker_offset+WORKFORCE_PICKER_PAGE_SIZE)
+    for index in range(workforce_picker_offset,end_index):
+        var actor: DiscipleState = state.disciples[candidates[index]]
+        var reason := _workforce_candidate_reason(actor,building,current)
+        var row := HBoxContainer.new()
+        row.name = "WorkforceCandidate_%s" % str(actor.id)
+        row.custom_minimum_size = Vector2(590,44)
+        workforce_picker_results.add_child(row)
+        var text_label := Label.new()
+        text_label.text = "%s · nghề Lv%d\n%s" % [actor.display_name,
+            workforce.profession_level_for_state(state,actor,profession_id),
+            "Sẵn sàng" if reason == "" else reason]
+        text_label.custom_minimum_size = Vector2(435,44)
+        text_label.add_theme_color_override("font_color",INK)
+        text_label.add_theme_font_size_override("font_size",12)
+        row.add_child(text_label)
+        var select := Button.new()
+        select.name = "WorkforcePick_%s" % str(actor.id)
+        select.text = "Giao việc" if reason == "" else "Bận"
+        select.custom_minimum_size = Vector2(115,42)
+        select.disabled = reason != ""
+        select.pressed.connect(Callable(self,"_workforce_pick_candidate").bind(actor.id))
+        row.add_child(select)
+    if candidates.is_empty():
+        _add_management_section_label_to(workforce_picker_results,"Không tìm thấy đệ tử phù hợp.")
+    var prev := workforce_picker_panel.find_child("WorkforcePickerPrev",true,false) as Button
+    var next := workforce_picker_panel.find_child("WorkforcePickerNext",true,false) as Button
+    prev.disabled = workforce_picker_offset == 0
+    next.disabled = end_index >= candidates.size()
+
+func _add_management_section_label_to(parent: Control, message: String) -> void:
+    var label := Label.new()
+    label.text = message
+    label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    label.add_theme_color_override("font_color",INK)
+    parent.add_child(label)
+
+func _workforce_pick_candidate(disciple_id: StringName) -> void:
+    if not state.buildings.has(str(workforce_picker_building_id)) or not state.disciples.has(disciple_id):
+        return
+    var building: BuildingState = state.buildings[str(workforce_picker_building_id)]
+    var occupants := _workforce_occupants(building)
+    var reason := _workforce_candidate_reason(state.disciples[disciple_id],building,occupants)
+    if reason != "":
+        building_management_feedback = reason
+        _render_workforce_picker()
+        return
+    var result: Dictionary = {}
+    match building.building_type:
+        BuildingSystem.TYPE_MINE:
+            result = workforce.assign_mine_worker(state,disciple_id,building.id,true)
+        BuildingSystem.TYPE_LINH_FOREST:
+            result = workforce.assign_linh_forest_worker(state,disciple_id,building.id,true)
+        BuildingSystem.TYPE_SPIRIT_FIELD:
+            result = workforce.assign_spirit_field_worker(state,disciple_id,building.id,true)
+        _:
+            result = {"ok":false,"reason":"unsupported_building"}
+    if not bool(result.get("ok",false)):
+        building_management_feedback = "Không thể giao việc: %s" % str(result.get("reason","invalid_assignment"))
+        _render_workforce_picker()
+        return
+    _close_workforce_picker()
+    var profession_id := _workforce_profession(building.building_type)
+    var started := workforce.issue_command(state,disciple_id,WorkforceSystem.COMMAND_WORK,str(profession_id),40)
+    building_management_feedback = (
+        "Đã phân công %s và gửi lệnh sản xuất." % state.disciples[disciple_id].display_name
+        if started else "Đã phân công; chưa thể chạy ngay (thiếu nguyên liệu/điều kiện)."
+    )
+    _refresh_building_operation_content()
+
 
 func _build_main_hall_policy_controls() -> void:
     _build_economy_a_hall_controls()
@@ -2427,6 +2842,11 @@ func _equipment_policy_label(policy: StringName) -> String:
         EquipmentSystem.POLICY_COMBAT: return "Chiến đấu"
         EquipmentSystem.POLICY_FRUGAL: return "Tiết kiệm"
         _: return "Cân bằng"
+
+func _refresh_all() -> void:
+    super._refresh_all()
+    if _building_operation_is_open() and workforce_picker_panel == null:
+        _refresh_building_operation_content()
 
 func _process(_delta: float) -> void:
     _refresh_living_cue_positions()
