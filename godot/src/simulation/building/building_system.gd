@@ -431,6 +431,30 @@ func worker_group_for_profession(profession_id: StringName) -> StringName:
 func is_building_profession(profession_id: StringName) -> bool:
     return building_type_for_profession(profession_id) != &""
 
+# Execution boundary (not selection/preflight): explicit player orders may replace
+# an older HOLD/CULTIVATE command, but a direct backend producer call may not.
+# Avoid importing WorkforceSystem here to prevent class dependency cycles.
+func work_entry_conflict(disciple: DiscipleState, profession_id: StringName) -> String:
+    if disciple == null:
+        return "missing_worker"
+    var action := str(disciple.current_action)
+    var expected_actions := {
+        "WORK_MINING": PROF_MINING,
+        "WORK_FORESTRY": PROF_FORESTRY,
+        "WORK_HERBALISM": PROF_HERBALISM,
+        "WORK_ALCHEMY": PROF_ALCHEMY,
+        "WORK_FORGING": &"forging"
+    }
+    if not ["EVALUATE", "IDLE", "HOLD"].has(action) and StringName(expected_actions.get(action, "")) != profession_id:
+        return "another_active_action"
+    var current_command := str(disciple.direct_command.get("kind", ""))
+    if current_command != "" and (
+        current_command != "WORK_PROFESSION"
+        or str(disciple.direct_command.get("target", "")) != str(profession_id)
+    ):
+        return "another_direct_command"
+    return ""
+
 func work_available(state: SimulationState, profession_id: StringName, disciple: DiscipleState = null) -> bool:
     match profession_id:
         PROF_MINING, PROF_FORESTRY:
@@ -768,6 +792,9 @@ func alchemy_can_start(state: SimulationState, disciple: DiscipleState) -> Dicti
     return {"ok": true, "hall_id": str(hall.id), "recipe_id": str(recipe_id), "requirements": requirements}
 
 func perform_alchemy_step(state: SimulationState, disciple: DiscipleState, profession_level: int, work_speed: float, profession_xp_gain: float) -> Dictionary:
+    var conflict := work_entry_conflict(disciple, PROF_ALCHEMY)
+    if conflict != "":
+        return {"ok":false,"completed":false,"reason":conflict}
     var check := alchemy_can_start(state, disciple)
     if not bool(check.get("ok", false)):
         return {"ok": false, "completed": false, "reason": str(check.get("reason", "cannot_start"))}
@@ -863,6 +890,9 @@ func perform_forestry_step(state: SimulationState, disciple: DiscipleState, work
 # Generic carry-cycle producer used by Mine and Linh Lâm. Spirit Field remains
 # plot/timer authority and intentionally does not use this envelope.
 func perform_resource_job_step(state: SimulationState, disciple: DiscipleState, work_speed: float, profession_id: StringName, profession_xp_gain: float = 0.0) -> Dictionary:
+    var conflict := work_entry_conflict(disciple, profession_id)
+    if conflict != "":
+        return {"ok":false,"completed":false,"reason":conflict}
     var producer := building_for_profession(state, profession_id, disciple)
     if producer == null or not can_disciple_work(state, producer, disciple):
         var slot_reason := "no_active_building_slot"
@@ -960,6 +990,9 @@ func perform_resource_job_step(state: SimulationState, disciple: DiscipleState, 
     return result
 
 func perform_spirit_field_step(state: SimulationState, disciple: DiscipleState, work_speed: float) -> Dictionary:
+    var conflict := work_entry_conflict(disciple, PROF_HERBALISM)
+    if conflict != "":
+        return {"ok":false,"completed":false,"reason":conflict}
     var field := _building_for_disciple(state, TYPE_SPIRIT_FIELD, disciple)
     if field == null or not can_disciple_work(state, field, disciple):
         return {"ok": false, "completed": false, "reason": "no_active_spirit_field_slot"}

@@ -61,6 +61,15 @@ static func reserve_slot(state: SimulationState, disciple_id: StringName) -> Dic
         disciple.work_group_id = building.worker_group_id
         disciple.worksite_building_id = building.id
         state.sect.workforce_event_count += 1
+    # A successful explicit Body-slot selection supersedes a previous HOLD,
+    # cultivate or hunt order. Without this the scheduler routes the saved
+    # command forever and never reaches the reserved Rèn Thân facility.
+    # No wage, XP, material or Stone transaction occurs during this transfer.
+    if not disciple.direct_command.is_empty():
+        disciple.direct_command.clear()
+        state.sect.workforce_event_count += 1
+    if disciple.current_action in [&"CULTIVATE", &"HOLD"]:
+        disciple.current_action = &"EVALUATE"
     return {"ok":true,"building_id":str(building.id),"reserved_slots":buildings.assigned_worker_ids(state,building).size(),
         "slots":buildings.worker_slots(building)}
 

@@ -43,6 +43,8 @@ func _run() -> void:
         return
     if not _alchemy_timer_guards():
         return
+    if not _direct_training_and_command_guards():
+        return
     print("DISCIPLE V2 ONE ACTIVE JOB ALL ENTRYPOINT REGRESSION PASS")
     quit(0)
 
@@ -99,8 +101,15 @@ func _mine_timer_guards() -> bool:
         return false
     if not _check(workforce.assign_group(state,actor.id,&"")
         and buildings.ensure_body_training_facility(state) != null
-        and bool(DiscipleBodyTrainingFacilityV2.reserve_slot(state,actor.id).get("ok",false)),
-        "legal transfer after timer cancellation was blocked"):
+        and bool(DiscipleBodyTrainingFacilityV2.reserve_slot(state,actor.id).get("ok",false))
+        and actor.direct_command.is_empty()
+        and actor.current_action == &"EVALUATE",
+        "legal Body transfer retained a stale HOLD command/action"):
+        return false
+    if not _check(bool(DiscipleTrainingPolicyV2.set_policy(state,actor.id,
+            DiscipleTrainingPolicyV2.POLICY_BODY).get("ok",false))
+        and workforce.next_action(state,actor) == &"TRAIN_BODY",
+        "Body reservation still routes to HOLD instead of training"):
         return false
     return true
 
@@ -115,6 +124,13 @@ func _field_duty_guards() -> bool:
         and workforce.assign_worksite(state,actor.id,field.id),
         "real Field worker assignment failed"):
         return false
+    var field_stones := state.sect.spirit_stones
+    actor.current_action = &"CULTIVATE"
+    if not _check(not bool(buildings.perform_spirit_field_step(state,actor,1.0).get("ok",false))
+        and state.sect.spirit_stones == field_stones,
+        "direct Field entry overlapped cultivation or charged Stone"):
+        return false
+    actor.current_action = &"EVALUATE"
     var first := buildings.perform_spirit_field_step(state,actor,1.0)
     if not _check(bool(first.get("ok",false))
         and buildings.disciple_has_active_spirit_plot(state,actor.id,field),
@@ -156,6 +172,13 @@ func _alchemy_timer_guards() -> bool:
     var missing := maxi(0,required-warehouse.available_quantity(state,input_id))
     if missing > 0 and not _check(warehouse.add(state,input_id,missing),"Alchemy fixture inputs unavailable"):
         return false
+    var herbs_initial := warehouse.quantity(state,input_id)
+    actor.current_action = &"CULTIVATE"
+    if not _check(not bool(buildings.perform_alchemy_step(state,actor,0,1.0,1.0).get("ok",false))
+        and warehouse.quantity(state,input_id) == herbs_initial,
+        "direct Alchemy entry consumed herbs during cultivation"):
+        return false
+    actor.current_action = &"EVALUATE"
     var started := buildings.perform_alchemy_step(state,actor,0,1.0,1.0)
     if not _check(bool(started.get("ok",false))
         and not buildings.active_alchemy_job_for_worker(state,actor.id).is_empty(),
@@ -175,3 +198,76 @@ func _alchemy_timer_guards() -> bool:
         "Alchemy timer transfer/overlap leaked work, resources or payment"):
         return false
     return true
+
+func _direct_training_and_command_guards() -> bool:
+    var fixture := _seed(4)
+    if not _check(not fixture.is_empty(),"direct-work fixture unavailable"):
+        return false
+    var state: SimulationState = fixture["state"]
+    var actor: DiscipleState = fixture["actor"]
+    var mine := buildings.primary_building(state,BuildingSystem.TYPE_MINE)
+    if not _check(mine != null,"direct-work Mine missing"):
+        return false
+    for occupant in buildings.active_worker_ids(state,mine):
+        if not _check(workforce.assign_group(state,occupant,&""),"direct-work Mine not released"):
+            return false
+    if not _check(bool(workforce.assign_mine_worker(state,actor.id,mine.id).get("ok",false)),
+        "direct-work miner not assigned"):
+        return false
+    var ore_before := warehouse.quantity(state,&"thanh_thiet")
+    var xp_before := float(actor.profession_xp.get("mining",0.0))
+    for action in [&"CULTIVATE",&"TRAIN_BODY",&"WORK_FORGING"]:
+        actor.current_action = action
+        if not _check(not bool(workforce.perform_work(state,actor,WorkforceSystem.PROF_MINING).get("ok",false))
+            and not bool(buildings.perform_mining_step(state,actor,1.0,1.0).get("ok",false))
+            and buildings.active_resource_timer_for_worker(state,actor.id).is_empty()
+            and warehouse.quantity(state,&"thanh_thiet") == ore_before
+            and float(actor.profession_xp.get("mining",0.0)) == xp_before,
+            "direct Mine API admitted conflicting active action "+str(action)):
+            return false
+    actor.current_action = &"EVALUATE"
+    actor.direct_command = {
+        "kind":str(WorkforceSystem.COMMAND_HOLD),"target":"",
+        "issued_tick":state.tick,"expires_tick":state.tick+40
+    }
+    if not _check(not bool(workforce.perform_work(state,actor,WorkforceSystem.PROF_MINING).get("ok",false))
+        and not bool(buildings.perform_mining_step(state,actor,1.0,1.0).get("ok",false)),
+        "direct Mine bypassed an existing HOLD order"):
+        return false
+    if not _check(workforce.issue_command(state,actor.id,WorkforceSystem.COMMAND_WORK,"mining",40),
+        "explicit replacement of HOLD by WORK failed"):
+        return false
+    var started := workforce.perform_work(state,actor,WorkforceSystem.PROF_MINING)
+    if not _check(bool(started.get("ok",false)) and bool(started.get("started",false))
+        and not buildings.active_resource_timer_for_worker(state,actor.id).is_empty(),
+        "valid matching WORK order failed to start Mine timer"):
+        return false
+    # Round-trip the canonical saved timer, including the one-active-job gate.
+    var recovered := SimulationState.from_dict(state.to_dict())
+    if not _check(recovered != null,"Mine timer save/load roundtrip failed"):
+        return false
+    var loaded_actor: DiscipleState = recovered.disciples[actor.id]
+    var loaded_job := buildings.active_resource_timer_for_worker(recovered,actor.id)
+    if not _check(not loaded_job.is_empty()
+        and not bool(workforce.perform_work(recovered,loaded_actor,WorkforceSystem.PROF_FORGING).get("ok",false)),
+        "save/load dropped the timer occupation guard"):
+        return false
+    var target_tick := int(loaded_job.get("finish_tick",0))
+    if not _check(target_tick > recovered.tick,"saved timer has invalid finish tick"):
+        return false
+    # Disable fresh autonomous Mine work; this does not alter the saved job.
+    loaded_actor.work_preferences["mining"] = 0
+    var scheduled := SimulationScheduler.new(recovered)
+    var receipt_before := recovered.sect.economy_a_receipts.size()
+    scheduled.run_ticks(target_tick-recovered.tick)
+    var after_quantity := warehouse.quantity(recovered,&"thanh_thiet")
+    var receipt_after := recovered.sect.economy_a_receipts.size()
+    if not _check(after_quantity > ore_before
+        and buildings.active_resource_timer_for_worker(recovered,actor.id).is_empty()
+        and receipt_after == receipt_before+1,
+        "offline-equivalent job settlement missing or receipt not written once"):
+        return false
+    scheduled.run_ticks(2)
+    return _check(warehouse.quantity(recovered,&"thanh_thiet") == after_quantity
+        and recovered.sect.economy_a_receipts.size() == receipt_after,
+        "settled timer replay minted extra ore or wage receipts")

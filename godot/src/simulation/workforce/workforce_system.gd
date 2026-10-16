@@ -132,7 +132,7 @@ func assign_mine_worker(state: SimulationState, disciple_id: StringName, mine_id
         return {"ok": false, "reason": "disciple_has_active_command_or_cycle"}
     if building_system.disciple_has_active_timed_recipe(state, disciple_id) or building_system.disciple_has_active_spirit_plot(state, disciple_id) or DiscipleBodyTrainingFacilityV2.has_reserved_slot(state, actor):
         return {"ok": false, "reason": "disciple_has_active_job"}
-    if str(actor.current_action).begins_with("WORK_") or actor.current_action == &"CULTIVATE":
+    if str(actor.current_action).begins_with("WORK_") or actor.current_action in [&"CULTIVATE", &"TRAIN_BODY"]:
         return {"ok": false, "reason": "disciple_finishing_action"}
 
     var previous: DiscipleState = null
@@ -214,7 +214,7 @@ func _assign_single_operator_building(
         or DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,actor)
     ):
         return {"ok":false,"reason":"disciple_has_active_job"}
-    if str(actor.current_action).begins_with("WORK_") or actor.current_action == &"CULTIVATE":
+    if str(actor.current_action).begins_with("WORK_") or actor.current_action in [&"CULTIVATE", &"TRAIN_BODY"]:
         return {"ok":false,"reason":"disciple_finishing_action"}
 
     var previous: DiscipleState = null
@@ -464,6 +464,13 @@ func issue_command(state: SimulationState, disciple_id: StringName, kind: String
         var keeps_current_work := kind == COMMAND_WORK and StringName(target) == cycle_profession
         if not keeps_current_work:
             building_system.cancel_work_cycle(state, disciple, true)
+    # An accepted replacement order stops a pending paid Body / specialized
+    # cultivation action before the next scheduler minute. Rejected orders
+    # above leave the original activity untouched.
+    if disciple.current_action == &"TRAIN_BODY" or (
+        disciple.current_action == &"CULTIVATE" and kind != COMMAND_CULTIVATE
+    ):
+        disciple.current_action = &"EVALUATE"
     disciple.direct_command = {
         "kind": str(kind),
         "target": target,
@@ -604,6 +611,9 @@ func choose_work_profession(state: SimulationState, disciple: DiscipleState) -> 
     return best
 
 func perform_work(state: SimulationState, disciple: DiscipleState, profession_id: StringName) -> Dictionary:
+    var conflict := building_system.work_entry_conflict(disciple, profession_id)
+    if conflict != "":
+        return {"ok":false,"completed":false,"reason":conflict}
     if not disciple.active_pve_encounter_id.is_empty():
         return {"ok":false,"reason":"disciple_in_v2_pve"}
     if not state.sect.workforce_enabled or disciple.region_id != &"sect" or not VALID_PROFESSIONS.has(profession_id):

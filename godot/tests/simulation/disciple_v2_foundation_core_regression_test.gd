@@ -115,6 +115,20 @@ func _run() -> void:
         "typed lục duy, fixed XP or unchanged birth snapshot diverged"):
         return
 
+    # Persist the exact six-dimensional growth + live HP ratio through the
+    # canonical state serializer, not just the immediate in-memory actor.
+    var recovered := SimulationState.from_dict(state.to_dict())
+    if not _check(recovered != null,"V2 foundation save/load roundtrip failed"):
+        return
+    var restored: DiscipleState = recovered.disciples[actor.id]
+    if not _check(restored.foundation_birth_values == original_birth
+        and restored.v2_realm_progress == before_progress
+        and _close(restored.potential,actor.potential)
+        and _close(restored.hp/restored.max_hp,actor.hp/actor.max_hp)
+        and restored.disciple_quality == actor.disciple_quality,
+        "V2 foundation lost canonical values or HP ratio on save/load"):
+        return
+
     # No new foundation mutation may be inferred from dry-run XP checks.
     if not _check(actor.v2_realm_progress == before_progress
         and actor.potential == original_potential+1250.0,
