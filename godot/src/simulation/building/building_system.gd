@@ -1186,6 +1186,7 @@ func definition_for(building: BuildingState) -> Dictionary:
 
 func validate_invariants(state: SimulationState) -> Array[String]:
     var errors: Array[String] = []
+    errors.append_array(production_plans.validate_definitions())
     if not state.p3_7_buildings_enabled:
         if not state.buildings.is_empty() or state.building_event_count != 0:
             errors.append("P3.7 building data exists while the authority is disabled.")
