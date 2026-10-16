@@ -1256,6 +1256,20 @@ func _build_work_management(profession_id: StringName, group_id: StringName, gro
         if active_producer != null:
             active_building_ids = building_system.active_worker_ids(state, active_producer)
 
+    if profession_id == WorkforceSystem.PROF_MINING and active_producer != null and state.sect.economy_a_enabled:
+        var selected_plan := building_system.selected_resource_production_plan(active_producer)
+        var next_plan := ProductionPlanRegistry.PLAN_MINE_HUYEN_THIET_T2 if selected_plan == ProductionPlanRegistry.PLAN_MINE_THANH_THIET_T1 else ProductionPlanRegistry.PLAN_MINE_THANH_THIET_T1
+        var plan_button := Button.new()
+        plan_button.name = "MineProductionPlan"
+        plan_button.text = "Mỏ đang khai thác: %s · đổi sang %s" % [
+            "Huyền Thiết" if selected_plan == ProductionPlanRegistry.PLAN_MINE_HUYEN_THIET_T2 else "Thanh Thiết",
+            "Huyền Thiết" if next_plan == ProductionPlanRegistry.PLAN_MINE_HUYEN_THIET_T2 else "Thanh Thiết"]
+        plan_button.custom_minimum_size = Vector2(384,36)
+        plan_button.disabled = active_producer.level < ProductionPlanRegistry.new().required_building_level(next_plan)
+        if plan_button.disabled:
+            plan_button.tooltip_text = "Huyền Thiết mở ở Mỏ Lv30."
+        plan_button.pressed.connect(Callable(self,"_set_mine_plan_from_ui").bind(active_producer.id,next_plan))
+        building_management_container.add_child(plan_button)
     var ids: Array = state.disciples.keys()
     ids.sort()
     for raw_id in ids:
@@ -1317,6 +1331,11 @@ func _build_work_management(profession_id: StringName, group_id: StringName, gro
             "Đã ra lệnh %s: %s." % [order_label.to_lower(), disciple.display_name]
         ))
         row.add_child(order_button)
+
+func _set_mine_plan_from_ui(building_id: StringName, plan_id: StringName) -> void:
+    var ok := BuildingSystem.new().set_resource_production_plan(state,building_id,plan_id)
+    building_management_feedback = "Đã đổi kế hoạch khai khoáng." if ok else "Chưa thể đổi kế hoạch khai khoáng."
+    _refresh_building_operation_content()
 
 func _build_spirit_field_management() -> void:
     var buildings := BuildingSystem.new()
