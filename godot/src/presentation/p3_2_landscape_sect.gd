@@ -1060,7 +1060,7 @@ func _workforce_candidate_reason(actor: DiscipleState, building: BuildingState, 
         return "Công trình đang bị phân nhiều người"
     if current.size() == 1 and state.disciples.has(current[0]):
         var former: DiscipleState = state.disciples[current[0]]
-        if not former.work_cycle_state.is_empty() or not former.direct_command.is_empty() or not former.active_pve_encounter_id.is_empty() or former.region_id != &"sect" or str(former.current_action).begins_with("WORK_") or BuildingSystem.new().disciple_has_active_timed_recipe(state,former.id) or BuildingSystem.new().disciple_has_active_spirit_plot(state,former.id):
+        if not former.work_cycle_state.is_empty() or not former.direct_command.is_empty() or not former.active_pve_encounter_id.is_empty() or former.region_id != &"sect" or str(former.current_action).begins_with("WORK_") or former.current_action in [&"CULTIVATE",&"TRAIN_BODY"] or BuildingSystem.new().disciple_has_active_timed_recipe(state,former.id) or BuildingSystem.new().disciple_has_active_spirit_plot(state,former.id):
             return "Người cũ đang sản xuất"
     return ""
 

@@ -144,6 +144,7 @@ func assign_mine_worker(state: SimulationState, disciple_id: StringName, mine_id
             not previous.work_cycle_state.is_empty()
             or not previous.direct_command.is_empty()
             or str(previous.current_action).begins_with("WORK_")
+            or previous.current_action in [&"CULTIVATE", &"TRAIN_BODY"]
             or not previous.active_pve_encounter_id.is_empty()
             or previous.region_id != &"sect"
             or not building_system.active_resource_timer_for_worker(state, previous.id).is_empty()
@@ -226,6 +227,7 @@ func _assign_single_operator_building(
             not previous.work_cycle_state.is_empty()
             or not previous.direct_command.is_empty()
             or str(previous.current_action).begins_with("WORK_")
+            or previous.current_action in [&"CULTIVATE", &"TRAIN_BODY"]
             or not previous.active_pve_encounter_id.is_empty()
             or previous.region_id != &"sect"
             or not building_system.active_resource_timer_for_worker(state,previous.id).is_empty()
