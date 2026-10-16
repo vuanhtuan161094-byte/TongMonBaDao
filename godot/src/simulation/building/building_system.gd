@@ -24,6 +24,7 @@ const MILESTONE_LEVELS := [10, 20, 30, 50, 75, 100]
 const MATERIAL_WOOD := "linh_moc"
 const MATERIAL_ORE := "thanh_thiet"
 const MATERIAL_TAM_MACH_BAN := "tam_mach_ban"
+const MATERIAL_HUYEN_ORE := "huyen_thiet"
 const MATERIAL_HERB := "thanh_linh_thao"
 const MATERIAL_LINH_TUYEN_HEART := "linh_tuyen_chi_tam"
 const MATERIAL_LINH_TUYEN_FRAGMENT := "linh_tuyen_chi_tam_manh"
@@ -46,7 +47,12 @@ const PLOT_GROWING := &"growing"
 # across all major thresholds, with quantity increasing by milestone level.
 const MILESTONE_COMPONENTS := {
     "mine": {
-        10: MATERIAL_TAM_MACH_BAN
+        10: MATERIAL_TAM_MACH_BAN,
+        20: MATERIAL_TAM_MACH_BAN,
+        30: MATERIAL_HUYEN_ORE,
+        50: MATERIAL_HUYEN_ORE,
+        75: MATERIAL_HUYEN_ORE,
+        100: MATERIAL_HUYEN_ORE
     },
     "spirit_field": {
         10: MATERIAL_LINH_TUYEN_HEART,
@@ -97,7 +103,12 @@ const DEFINITIONS := {
         "haul_distance": 6.0,
         "base_work_duration": 4.0,
         "base_batch_units": 2,
-        "upgrade_enabled": false,
+        "base_wood_cost": 6,
+        "base_ore_cost": 4,
+        "base_stone_cost": 18,
+        "base_upgrade_work": 8.0,
+        "upgrade_work_per_level": 2.0,
+        "upgrade_enabled": true,
         "requires_milestone_component": false
     },
     "alchemy_hall": {
@@ -535,6 +546,12 @@ func upgrade_cost_for_state(state: SimulationState, building: BuildingState) -> 
         var key := str(material_id)
         if cost.has(key):
             cost[key] = production_plans.scale_common_requirement(material_id, int(cost[key]))
+    # Each high-level upgrade needs a real tier-2 mineral, available from PvE
+    # before Mine Lv30 and from the unlocked Mine plan thereafter.
+    if [TYPE_MINE, TYPE_LINH_FOREST, TYPE_SPIRIT_FIELD].has(building.building_type):
+        var target_level := building.level + 1
+        if target_level >= 30:
+            cost[MATERIAL_HUYEN_ORE] = int(ceil(float(target_level - 29) / 10.0))
     return cost
 
 func upgrade_required_work(building: BuildingState) -> float:
