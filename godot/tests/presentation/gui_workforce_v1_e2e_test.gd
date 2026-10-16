@@ -49,7 +49,10 @@ func _run() -> void:
     var miner_id := _idle_assigned_disciple()
     if miner_id == &"":
         miner_id = _free_disciple()
-    if miner_id == &"" or not await _choose(miner_id):
+    if miner_id == &"":
+        _fail("no Mine worker could be recruited or transferred")
+        return
+    if not await _choose(miner_id):
         return
     var miner: DiscipleState = state.disciples[miner_id]
     if not buildings.active_worker_ids(state,mine).has(miner_id) or miner.worksite_building_id != mine.id:
@@ -123,7 +126,10 @@ func _run() -> void:
     ui.call("_open_building",SectMapPresentation.DEST_LINH_FOREST)
     await process_frame
     var forester_id := _free_disciple()
-    if forester_id == &"" or not await _choose(forester_id):
+    if forester_id == &"":
+        _fail("no suitable Forest worker")
+        return
+    if not await _choose(forester_id):
         return
     if buildings.active_worker_ids(state,forest).size() != 1 or not buildings.active_worker_ids(state,forest).has(forester_id):
         _fail("Forest picker did not assign one worker")
@@ -155,7 +161,10 @@ func _run() -> void:
     ui.call("_open_building",SectMapPresentation.DEST_SPIRIT_FIELD)
     await process_frame
     var farmer_id := _free_disciple()
-    if farmer_id == &"" or not await _choose(farmer_id):
+    if farmer_id == &"":
+        _fail("no suitable Field worker")
+        return
+    if not await _choose(farmer_id):
         return
     if buildings.active_worker_ids(state,field).size() != 1 or not buildings.active_worker_ids(state,field).has(farmer_id):
         _fail("Field picker did not assign one worker")

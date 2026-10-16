@@ -949,7 +949,9 @@ func _fold_workforce_legacy_controls() -> void:
     if children.size() > 3 and str(children[3].name) == "WorkforceEnableTimer":
         header_size = 4
     for index in range(header_size,children.size()):
-        var node: Control = children[index]
+        var node := children[index] as Control
+        if node == null:
+            continue
         building_management_container.remove_child(node)
         advanced.add_child(node)
     var toggle := Button.new()
