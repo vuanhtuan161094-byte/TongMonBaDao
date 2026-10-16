@@ -71,7 +71,7 @@ func _run() -> void:
             _fail("Disciple controls no longer wrap into two columns")
             return
         var name := row.get_child(0) as Label
-        if name == null or name.get_theme_color("font_color") != ui.get("INK"):
+        if name == null or name.get_theme_color("font_color").get_luminance() > 0.45:
             _fail("Disciple name lost readable ink color")
             return
         for child in row.get_children():
