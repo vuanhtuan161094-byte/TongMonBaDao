@@ -4,7 +4,7 @@
 
 **Owner authorization:** owner approved implementation of the Economy V2 recommendations and explicitly required alignment with the canonical **30 Tu Vi realms + 30 Luyện Thể realms**, each with 10 floors. This packet deliberately implements the shared production foundation first; it does **not** yet apply the later bulk-10,000 production/market/recipe rebalance.
 
-**Integration topology:** GitHub `main` remains `461caca1171462e0da092f21108c5c1733157ad9`. PR #6 `mine-v2-one-worker-20261015` remains OPEN/DRAFT and unmerged. New branch `economy-v2-core-20261016` is stacked from PR #6 HEAD `dc3ad974252f5d4c034cfebe441f33fa24e9560c`; draft PR **#7** targets that branch, not `main`. Latest gameplay+test SHA for this packet before checkpoint docs is **`880665f1a3c90ba0dfaf79ae5f8f9e7b6680d69d`**.
+**Integration topology:** GitHub `main` remains `461caca1171462e0da092f21108c5c1733157ad9`. PR #6 `mine-v2-one-worker-20261015` remains OPEN/DRAFT and unmerged. New branch `economy-v2-core-20261016` is stacked from PR #6 HEAD `dc3ad974252f5d4c034cfebe441f33fa24e9560c`; draft PR **#7** targets that branch, not `main`. Latest gameplay+test SHA for this packet before checkpoint docs is **`995ba89f2d87f07a211eea3c459d2a47d7b1cfc2`**.
 
 **Implemented authority on PR #7:**
 - Mine, Linh Lâm and Linh Điền each expose exactly **one operator per instance at every Lv1–100**. Forest/Field have atomic assignment APIs and group/worksite overbooking guards; active-job reservations block unsafe replacement.
@@ -12,7 +12,7 @@
 - Mine/Forest timed production and Field crop timing use integer fixed-point work progress (`WORK_PROGRESS_BP=10000`) with completion remainder. Example: 60-minute work at ×1.01 completes first at 60 ticks with remainder, then the remainder can reduce a later cycle to 59 ticks. Remainder commits only after real Warehouse settlement; cancellation/blocked output cannot bank free work.
 - P3.7 production profession level remains `floor(sqrt(XP/24))`. **Lv100 is a balance benchmark, not a profession cap.** Profession remains independent from cultivation/body realm; speed stays `1 + 0.01 × profession level`, not a duplicated output multiplier.
 - Resource and Spirit Crop definitions now carry explicit `cultivation_realm_min` / `body_realm_min` indexes against `DiscipleRealmProgressV2.MAX_REALM=30`. Existing `realm_grade/realm_rank` remain compatibility metadata only. Existing Body-gate materials are mapped to their first canonical Luyện Thể source-gate realm; e.g. Huyết Linh Sâm → Body realm 7 (Tôi Tạng), Ấn Thần Giới → gate realm 29 (Hỗn Độn Thần Thể → realm 30).
-- Canonical specs updated: Spirit Field one-operator/four-plot model; profession Lv100 cap + precise timer rule + two 30×10 realm tracks; raw-resource building instance cap design table 1/1/1 → 30/30/40.
+- Canonical specs updated: Spirit Field one-operator/four-plot model; profession/realm separation with Lv100 as a benchmark + precise timer rule + two 30×10 realm tracks; raw-resource building instance cap design table 1/1/1 → 30/30/40.
 
 **Authored focused regression (NOT RUN):** `godot/tests/simulation/economy_v2_core_foundation_test.gd` checks both 30×10 realm lists, resource/crop realm metadata, one operator for all three raw buildings at Lv1/5/10/20/50/100, fixed four Field plots, atomic Forest/Field assignments, one duty/four plot timers/no competing duty, fixed-point +1% speed preservation and profession/realm independence at the Lv100 benchmark.
 
