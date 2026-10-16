@@ -629,7 +629,7 @@ func _build_building_operation_panel() -> void:
 
     building_operation_body = Label.new()
     building_operation_body.name = "BuildingOperationBody"
-    building_operation_body.custom_minimum_size = Vector2(384, 420)
+    building_operation_body.custom_minimum_size = Vector2(384, 0)
     building_operation_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     building_operation_body.add_theme_font_size_override("font_size", 13)
     building_operation_body.add_theme_color_override("font_color", INK)
@@ -1469,11 +1469,15 @@ func _add_management_section_label(text: String) -> void:
     label.add_theme_color_override("font_color", CINNABAR.darkened(0.12))
     building_management_container.add_child(label)
 
-func _new_management_row(disciple: DiscipleState) -> HBoxContainer:
-    var row := HBoxContainer.new()
+func _new_management_row(disciple: DiscipleState) -> GridContainer:
+    # Two columns keep the Mine's three actions within the 384px panel.
+    # The name stays readable on paper and commands wrap to a second row.
+    var row := GridContainer.new()
     row.name = "Person_%s" % str(disciple.id)
-    row.custom_minimum_size = Vector2(384, 38)
-    row.add_theme_constant_override("separation", 6)
+    row.columns = 2
+    row.custom_minimum_size = Vector2(384, 0)
+    row.add_theme_constant_override("h_separation", 6)
+    row.add_theme_constant_override("v_separation", 3)
     building_management_container.add_child(row)
 
     var name := Label.new()
@@ -1481,6 +1485,7 @@ func _new_management_row(disciple: DiscipleState) -> HBoxContainer:
     name.custom_minimum_size = Vector2(190, 34)
     name.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
     name.add_theme_font_size_override("font_size", 11)
+    name.add_theme_color_override("font_color", INK)
     row.add_child(name)
     return row
 
