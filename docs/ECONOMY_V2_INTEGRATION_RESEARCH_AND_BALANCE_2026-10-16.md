@@ -73,5 +73,6 @@ The final 15 IDs remain in paused Disciple V2 gate content. This integration doe
 
 - No canonical Hall level, 192×192/48×48/16×16 land placement, or construction timer authority exists in the present runtime. Consequently expansion to 30/30/40 instances is not implemented here; `BuildingSystem.create_building` alone is not a paid, placed construction flow.
 - Advanced Body gate resources/seals above B have no verified runtime faucet. The locked 30×10 realm ladder remains intact; the absent route must be authored in its own content packet.
-- Current GUI controls become readable/unclipped in the 1280×720 live scene, but search/filter/ranking for thousands of disciples and all-instance production management are not implemented.
-- Current headless Godot gates prove runtime assertions, not manual visual acceptance, Android touch or 3,000-disciple performance.
+- Current GUI controls become readable/unclipped in the 1280×720 live scene. Worker search and profession-speed ranking now use backend data and render at most 50 rows; all-instance production management and one-step worker replacement remain open.
+- The authentic V2 disciple profile now displays six profession levels/EXP from `DisciplePresentationSnapshotV2`; its full equipment consumer remains separately paused.
+- Windows Godot 4.7.2 headless tests at `927a5f3` passed the authentic V2 profile and Economy-A landscape UI gates. A one-tick authentic-V2 scheduler probe at `df97f58` measured 139.5 ms (100), 761.0 ms (500), 1,633.1 ms (1,000), and 3,160.6 ms (3,000) in this local checkout. Those are measurements, not an FPS or sustained-load PASS. Manual visual acceptance and Android touch remain untested. P3.7 FULL was still running when this row was authored.
