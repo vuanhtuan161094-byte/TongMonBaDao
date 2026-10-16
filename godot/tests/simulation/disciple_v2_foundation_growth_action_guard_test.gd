@@ -163,6 +163,13 @@ func _verify_active_job_guards() -> bool:
         and str(growth_denied.get("reason","")) == "foundation_reserved_occupation",
         "growth entrypoint bypassed saved active work"):
         return false
+    var other_profession := workforce.perform_work(state,growth_actor,WorkforceSystem.PROF_FORGING)
+    if not _check(
+        not bool(other_profession.get("ok",false))
+        and str(other_profession.get("reason","")) == "busy_work_cycle",
+        "direct Forge bypassed an active legacy carry cycle"
+    ):
+        return false
     var body_gate := DiscipleBodyGateTransactionV2.new().preview_gate(state,growth_actor.id)
     if not _check(str(body_gate.get("reason","")) == "body_gate_disciple_reserved",
         "Body gate bypassed active legacy production cycle"):
