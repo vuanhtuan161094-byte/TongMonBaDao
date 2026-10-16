@@ -1,5 +1,25 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-16 — MAP25: ENV-02A native 2.5D world mounted into real P3 gameplay scene (STATIC ONLY)
+
+**Exact game + focused test SHA:** `e64fbfe35ac08f8b5e8be62553a31811c2b40ce7`. Draft PR #18 `integration-v2-pr9-pr10-pr17-20261016` (base PR #9), main verified unchanged `461caca1171462e0da092f21108c5c1733157ad9`. Owner explicitly authorized complete main-scene map integration on 16/10 16:16Z, no CI, no merge, no PC request.
+
+**Integrated, CODE delivered:**
+- NEW `godot/src/presentation/p3/sect_iso_map_model_v1.gd`: geometry and AStarGrid2D algorithm ported directly from `labs/env02a/scripts/map_model.gd`, with class name renamed for the main Godot project. It is a rebuildable **presentation projection only**, NOT persistent SectLayoutState or gameplay authority.
+- NEW `godot/src/presentation/p3/sect_isometric_world_v1.gd`: real Godot Node2D + Camera2D in a 1028×570 SubViewport, 192×192 world, initial 48×48 starter (72,72), chunk 16×16 viewport culling, isometric 25×13 half-tile transform, deterministic fallbacks for 13 destination buildings, vegetation and Lab-AStar preview roads from fixed hall/warehouse/forge. Real Mine/Forest/Field visual objects are derived from **actual** `state.buildings` IDs, including secondary instances; non-production Hall/Warehouse/Forge landmarks are visual only.
+- Existing `godot/src/presentation/p3_2_landscape_sect.gd` now mounts this real SubViewport into the MAIN scene, behind original independent 1280×720 HUD and actor UI (no second scene/gameplay state), hides flat graybox decoration and legacy hitboxes without deleting old tester nodes, syncs Camera2D with existing zoom/pan/tween, projects actor destination anchors to the same 2.5D world, resolves touch/mouse map picks back to correct `BuildingState.id` and existing GUI Workforce V1, and keeps GUI input/popup guard.
+- New focused `godot/tests/presentation/sect_iso_projection_contract_test.gd` and `sect_iso_main_integration_test.gd`: iso inverse math, real scene viewport/camera/chunk, three AStar lab doorway routes, mine screen pick → exact-worksite panel, pan/zoom, read-only SimulationState assertion. Test files **AUTHORED ONLY, UNRUN**.
+
+**Critical ART LIMITATION:** `labs/env02a/` is code-only on GitHub; the required 35 verified artwork PNGs from the previous ENV-02A external owner ZIP are **not on the branch**. Game-native map therefore uses procedural tinted tiles/2.5D building polygons and deterministic trees/paths; `APPROVED_IMAGE_PATHS` empty and `fallback_art_count` makes this explicit. Not authentic Source A visual integration, not a screenshot of final art, and no synthetic claim that art hashes/rights or Godot asset import passed. Source A curated art must be rehydrated from owner-authorized original pack and SHA-validated before replacing fallbacks. ENV-01 Windows screenshots and PV-01 previews do not establish ENV-02A game main scene visual PASS.
+
+**Safety:** old `main` untouched, PR #18 still OPEN DRAFT and unmerged. No SaveService, SimulationScheduler, Warehouse, economy formulas, CombatStats, RealmBody, Injury or position/save schema changed; 8 protected source blob SHAs identical to PR #9. No construction/land unlock or paid build enabled. UI remains Android LANDSCAPE 1280×720.
+
+**QA TRUTH:** Five relevant source/test GDScript scripts passed only static lexical delimiter/string/comment and duplicate-function scan. **Godot 4.7.2 parser/import/main-scene render/touch/camera/AStar focused E2E = PENDING**, no runner installed in active environment; full O2/O3/O4/O6==4/O7/O8/O9/Economy/One Active Job/SAFE/P3.7 cumulative, mobile device save-kill/perf and Windows screenshot PENDING. Historical Windows FULL_EXIT=0 PR #9 code `453df9a` not proof for PR #18. Do NOT call map art/gameplay runtime PASS yet.
+
+**Next technical queue:** run real Godot 4.7.2 importer/headless focused tests and fix any real parser/layout/touch failures; source verified 35 PNG art manifest via prior external pack when available, replace fallback with curated image import and validate crop/z-index on Windows 1280×720/Android; thereafter discuss persistent land/build construction gates separately. No need to reapprove routine technical corrections.
+
+---
+
 **Final LAY-V2 gameplay/test SHA:** `5de888843df04cfd7f3b9269823c00415463224f` (read-only preview UI scroll stability fix after initial integration). There is no real construction or editable-placement activation. Official Godot runtime remains PENDING.
 
 ## 2026-10-16 — LAY-V2 INTEGRATION READINESS: REAL INSTANCE GUI + FAIL-CLOSED BUILD/LAND PREVIEW

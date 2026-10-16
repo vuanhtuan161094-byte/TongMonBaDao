@@ -1,5 +1,11 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-16 — MAP25 MAIN-SCENE 2.5D / PR #18 `e64fbfe35ac08f8b5e8be62553a31811c2b40ce7`
+
+**Status:** code-delivered, static-only. Godot native main scene `p3_2_landscape_sect.gd` now mounts `SectIsometricWorldV1` inside independent SubViewport+Camera2D behind the original HUD; old graybox map visuals are hidden, old test node IDs retained. ENV-02A `TransferMapModel` copy renamed `SectIsoMapModelV1` owns presentation-only 192 grid and AStar doors/roads, never saved. Starter 48×48, chunk16, iso half-tile25×13, camera pan/zoom/touch synced, picks map exact canonical Mine/Forest/Field BuildingState IDs and current GUI Workforce. Draw fallback polygon houses/plants/paths because GitHub lab contains NO 35 source PNG; do not claim Source A art integrated. Do not create fake Hall, construct/unlock or new persistent layout; gameplay backend remains unchanged. Tests `sect_iso_projection_contract_test.gd`, `sect_iso_main_integration_test.gd` authored but **Godot 4.7.2 NOT RUN**; check real viewport, model route, input, actor layer, render order and platform on actual runner. Previously locked backend SHA unchanged and PR18 still draft; no CI/merge. Prior ENV02A external owner pack art hashes and QA remain outstanding. See `docs/MAP25_MAIN_ENV02A_INTEGRATION_2026-10-16.md`.
+
+---
+
 **Final gameplay/test SHA:** `5de888843df04cfd7f3b9269823c00415463224f`; previous `2e6cdc2` code SHA was followed by a small UI-only immutable-preview scroll correction. PR #18 still draft; no Godot runtime run.
 
 ## 2026-10-16 — LAY-V2 EXECUTION HANDOFF / PR #18, CODE SHA `2e6cdc2e67a456e4836dcf4d2f252773f486a9d9`
