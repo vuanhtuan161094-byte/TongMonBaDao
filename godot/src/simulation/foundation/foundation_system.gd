@@ -119,8 +119,15 @@ func add_permanent_points(disciple: DiscipleState, dimension: StringName, amount
         return false
 
     var sync_potential := dimension == DIM_POTENTIAL and DiscipleRealmProgressV2.owns_v2_progression(disciple)
-    if sync_potential and not DiscipleRealmProgressV2.progression_ready(disciple):
-        return false
+    if sync_potential:
+        if not DiscipleRealmProgressV2.progression_ready(disciple):
+            return false
+        # A corrupted live HP pair must fail closed, not turn NaN into a
+        # persisted nonfinite value or silently cap an invalid ratio.
+        if is_nan(disciple.hp) or is_inf(disciple.hp) or is_nan(disciple.max_hp) or is_inf(disciple.max_hp):
+            return false
+        if disciple.max_hp <= 0.0 or disciple.hp < 0.0 or disciple.hp > disciple.max_hp:
+            return false
     var old_quality := disciple.disciple_quality
     var old_hp := disciple.hp
     var old_max_hp := disciple.max_hp

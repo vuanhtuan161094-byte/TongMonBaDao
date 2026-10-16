@@ -47,6 +47,16 @@ func _run() -> void:
             "invalid/nonfinite permanent points mutated character"):
             return
 
+    # A malformed current HP pair may not commit a permanent Potential gain.
+    var valid_hp := actor.hp
+    actor.hp = NAN
+    var corrupted_gain := foundation.add_permanent_points(actor,FoundationSystem.DIM_POTENTIAL,10.0)
+    actor.hp = valid_hp
+    if not _check(not corrupted_gain and actor.potential == original_potential
+        and actor.foundation_birth_values == original_birth,
+        "corrupt HP accepted a non-atomic Potential mutation"):
+        return
+
     if not _check(foundation.add_permanent_points(actor,FoundationSystem.DIM_POTENTIAL,1250.0),
         "valid permanent Tiềm Lực was refused"):
         return
