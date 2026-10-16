@@ -47,19 +47,19 @@ func _verify_30x10_realm_alignment() -> bool:
     if not _check(crops.validate_definitions().is_empty(),
         "crop registry canonical-realm metadata is invalid"):
         return false
-    if not _check(resources.cultivation_realm_min(&"thanh_thiet") == 2
+    if not _check(resources.cultivation_realm_tier(&"thanh_thiet") == 2
         and resources.cultivation_realm_name(&"thanh_thiet") == "Luyện Khí",
         "Thanh Thiết is not aligned to Tu Vi realm 2 / Luyện Khí"):
         return false
-    if not _check(resources.cultivation_realm_min(&"huyen_thiet") == 3
+    if not _check(resources.cultivation_realm_tier(&"huyen_thiet") == 3
         and resources.cultivation_realm_name(&"huyen_thiet") == "Trúc Cơ",
         "Huyền Thiết is not aligned to Tu Vi realm 3 / Trúc Cơ"):
         return false
-    if not _check(resources.body_realm_min(&"huyet_linh_sam") == 7
+    if not _check(resources.body_realm_tier(&"huyet_linh_sam") == 7
         and resources.body_realm_name(&"huyet_linh_sam") == "Tôi Tạng",
         "Huyết Linh Sâm is not aligned to Luyện Thể realm 7"):
         return false
-    if not _check(resources.body_realm_min(&"an_than_gioi") == 29
+    if not _check(resources.body_realm_tier(&"an_than_gioi") == 29
         and resources.body_realm_name(&"an_than_gioi") == "Hỗn Độn Thần Thể",
         "Ấn Thần Giới is not aligned to Luyện Thể gate realm 29"):
         return false
