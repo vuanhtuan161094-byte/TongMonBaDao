@@ -144,7 +144,11 @@ func crafting_requirements(state: SimulationState, recipe_id: StringName) -> Dic
     var data := recipe(recipe_id)
     var raw = data.get("materials", {})
     var result: Dictionary = raw.duplicate(true) if raw is Dictionary else {}
-    if state == null or not state.sect.p3_7_resources_enabled:
+    if (
+        state == null
+        or not state.sect.p3_7_resources_enabled
+        or not state.sect.economy_a_enabled
+    ):
         return result
 
     # Scale only abundant common materials. Rare/discrete drops keep their
