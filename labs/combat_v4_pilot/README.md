@@ -72,6 +72,34 @@ The network-backed artifact could **not** be downloaded into the assistant runti
 
 VLTK1/JX1 freely uploaded game clients/resources have **unverified redistribution/reuse rights** despite some third-party GitHub repos being MIT-licensed; not ingested. License-approved replacement art can be evaluated separately, without copying VLTK1 art into production.
 
+## Original VLTK/JX1 WebP pilot: locally staged, not publicly redistributed
+
+**User authorized asset use for their private game prototype on 2026-10-16.** This is permission to proceed with selection/testing, not independent copyright-holder clearance. Never bundle the recovered original images into a public PR, release APK, or redistributed ZIP while the original artwork's external redistribution rights remain unverified.
+
+Exact public repository examined: https://github.com/hudy9x/jx1-idle-web.
+The owner's JS mapping in src/data/monsters-zones.js identifies monster no. 5 "Sói xám" -> animation ani009; five real JX1 sprite sheets are publicly present:
+
+| Clip | File in upstream img/a/ | Frames | Rows | Cell | Origin ax,ay | Duration/frame |
+|---|---|---:|---:|---|---|---:|
+| Idle | ani009_st.webp | 6 | 8 | 49x43 | 25,41 | 143ms |
+| Run | ani009_run.webp | 8 | 8 | 53x46 | 26,43 | 71ms |
+| Attack | ani009_at.webp | 7 | 8 | 73x55 | 37,53 | 62ms |
+| Hurt | ani009_hurt.webp | 3 | 8 | 72x46 | 36,42 | 83ms |
+| Downed | ani009_die.webp | 5 | 8 | 73x50 | 37,41 | 100ms |
+
+Use ONLY the five named files. Exact source Git blob SHA-1, dimensions, frame metadata and private stage paths are in labs/combat_v4_pilot/jx1_gray_wolf_manifest.json, not computed from file names. The read-only loader CombatV4JX1Atlas checks full Git-blob SHA-1 and each texture sheet geometry. The 8 source rows are the ORIGINAL FILE FORMAT, not a new demand for 8 directions: the pilot selects ONE row; horizontal mirror provides the other visual direction, including when the actor travels vertically.
+
+Stage locally with tools/asset/Stage-CMBV4-JX1-GrayWolf.ps1. The script downloads from the public repository, checks RIFF/WebP format and Git blob hashes before writing five original files to godot/assets/labs/combat_v4/jx1_private/. It refuses to replace a different file and does not add images to Git. Avoid all-asset pack downloads or executables.
+
+**Row 2 is only a preview starting value.** In the lab F8 cycles row 0..7 so a screenshot can verify which row is a true side profile for this wolf. Do not freeze row selection or assume its left/right orientation before a real preview. Production art authority / visual acceptance remains pending.
+
+If the verified JX1 original five-sheet set is locally present it takes priority over the CC0 Wolf Run and generated-original single poses for NORMAL WOLF ONLY. The user game species "thanh_lang" is represented by upstream "Sói xám" for visual lab; that is an art-mapping proposal, not a statement that the original VLTK1 game includes the original game user's Thanh Lang. **Hắc Lang Vương still lacks a verified original model mapping**; no boss001 is silently relabeled. A real boss JX1 source can be reviewed as separate art input.
+
+Run focused test:
+    godot --headless --path godot -s res://tests/presentation/combat_v4_jx1_atlas_test.gd
+
+Missing WebP binary prints explicit PENDING LOCAL STAGE rather than an art PASS. Actual Windows GUI screenshot, Godot 4.7.2 import and Android performance remain PENDING, not accomplished here. No CI or merge has been run.
+
 ## Monster Source A art proof — SEPARATE / UNRESOLVED
 
 | TMBĐ species | Gameplay proof | Verified Source A rig/atlas/PNG? |
