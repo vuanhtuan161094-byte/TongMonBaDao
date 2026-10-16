@@ -31,8 +31,12 @@ func _run() -> void:
     if container == null or sub == null or iso == null or iso.camera == null:
         _fail("main scene did not mount genuine 2.5D SubViewport/Camera2D")
         return
-    if sub.size != Vector2i(1028,570) or iso.GRID != Vector2i(192,192) \
-        or iso.CHUNK != 16 or iso.STARTER != Rect2i(72,72,48,48):
+    if (
+        sub.size != Vector2i(1028,570)
+        or iso.GRID != Vector2i(192,192)
+        or iso.CHUNK != 16
+        or iso.STARTER != Rect2i(72,72,48,48)
+    ):
         _fail("main scene's map does not match ENV02A 192x192/48x48/16")
         return
     if iso.active_chunks.is_empty() or iso.active_chunks.size() > 144:
@@ -66,8 +70,10 @@ func _run() -> void:
         _fail("tap did not open actual management panel")
         return
     await process_frame
-    if StringName(scene.get("selected_production_instance_id")) != first.id \
-        or StringName(scene.get("selected_building")) != SectMapPresentation.DEST_MINE:
+    if (
+        StringName(scene.get("selected_production_instance_id")) != first.id
+        or StringName(scene.get("selected_building")) != SectMapPresentation.DEST_MINE
+    ):
         _fail("2.5D Mine selection did not reach exact WorkForce panel")
         return
     var panel := scene.find_child("BuildingOperationPanel",true,false) as Panel

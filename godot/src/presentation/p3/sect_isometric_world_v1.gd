@@ -23,7 +23,7 @@ const TYPE_ANCHORS := {
     "medicine": Vector2i(95,98),
     "alchemy_hall": Vector2i(100,94),
     "mine": Vector2i(80,94),
-    "linh_forest": Vector2i(79,102),
+    "linh_forest": Vector2i(84,99),
     "spirit_field": Vector2i(87,103),
     "guidance": Vector2i(104,88),
     "gate": Vector2i(104,104)

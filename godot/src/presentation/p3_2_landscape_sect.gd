@@ -127,7 +127,7 @@ func _install_main_isometric_world() -> void:
         if node is ModularDiscipleActor:
             continue
         if node is CanvasItem:
-            node.visible = false
+            (node as CanvasItem).visible = false
         if node is Control:
             _disable_legacy_hit_input(node)
     iso_world.set_legacy_transform(map_zoom,map_layer.position)
@@ -155,6 +155,10 @@ func _iso_open_picked_building(picked: Dictionary) -> void:
         var actual: BuildingState = state.buildings[str(real_id)]
         if actual.building_type == dest:
             selected_production_instance_id = real_id
+            _set_focus_target(
+                SectIsometricWorldV1.virtual_legacy_point(dest,real_id),
+                &"building",dest,_building_name(dest),false
+            )
             _refresh_building_operation_content()
 
 func _try_iso_map_pick(screen_point: Vector2) -> bool:
@@ -3237,7 +3241,8 @@ func _refresh_all() -> void:
 
 func _process(_delta: float) -> void:
     if iso_world != null:
-        iso_world.set_legacy_transform(map_zoom,map_layer.position)
+        # Synchronize every animated camera tween frame with old actor overlay.
+        iso_world.set_legacy_transform(map_layer.scale.x,map_layer.position)
         if state != null and state.building_event_count != iso_building_count:
             iso_building_count = state.building_event_count
             iso_world.refresh_from_state(state)

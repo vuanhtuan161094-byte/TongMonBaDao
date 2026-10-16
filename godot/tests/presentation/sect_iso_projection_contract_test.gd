@@ -16,8 +16,10 @@ func _run() -> void:
                 _fail("isometric projection inverse mismatch")
                 return
             actual += 1
-    if world.STARTER != Rect2i(72,72,48,48) \
-        or world.GRID.x/world.CHUNK != 12:
+    if (
+        world.STARTER != Rect2i(72,72,48,48)
+        or world.GRID.x/world.CHUNK != 12
+    ):
         _fail("starter or 16-cell chunk changed")
         return
     for kind in [SectMapPresentation.DEST_MINE,SectMapPresentation.DEST_SPIRIT_FIELD]:
