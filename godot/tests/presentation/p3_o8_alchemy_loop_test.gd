@@ -33,16 +33,20 @@ func _run() -> void:
         _fail("O8 Alchemy recipe registry is invalid.")
         return
 
-    var field_worker_id := _first_unassigned()
+    # Economy V2 may start with the single Field operator already assigned.
+    # Reuse that real slot rather than attempting to overbook a second worker.
+    var assigned_field := buildings.active_worker_ids(state,field)
+    var field_worker_id: StringName = assigned_field[0] if not assigned_field.is_empty() else _first_unassigned()
     if field_worker_id == &"":
-        _fail("O8 has no unassigned Spirit Field worker.")
+        _fail("O8 has no available Spirit Field worker.")
         return
-    if not await _open_building(SectMapPresentation.DEST_SPIRIT_FIELD):
-        return
-    if not await _press("FieldGroup_%s" % str(field_worker_id)):
-        return
+    if assigned_field.is_empty():
+        if not await _open_building(SectMapPresentation.DEST_SPIRIT_FIELD):
+            return
+        if not await _press("FieldGroup_%s" % str(field_worker_id)):
+            return
     if state.disciples[field_worker_id].work_group_id != &"herbalism_crew":
-        _fail("O8 Field group assignment failed: %s" % str(ui.get("building_management_feedback")))
+        _fail("O8 Field operator is not in the canonical crew.")
         return
 
     var alchemist_id := _first_unassigned()
