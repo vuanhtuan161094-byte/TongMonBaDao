@@ -1,5 +1,30 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-16 — DISCIPLE V2 FOUNDATION GROWTH + ACTION INGRESS / DRAFT STACKED PACKET
+
+**Owner authorization:** Continue directly on GitHub from draft PR #10, audit six foundation stats and legitimate permanent Potential growth, close proven One Active Job bypasses in existing entrypoints. **No CI, no merge, no user computer required.**
+
+**Git topology:** `main` observed `461caca1171462e0da092f21108c5c1733157ad9`. This branch `disciple-v2-foundation-action-guard-20261016` starts at PR #10 HEAD `f374bc78a5556ad1003d92b27d6ec89c7c929aa3`; PR #10 itself targets draft PR #9. PR #9 advanced separately to `cf11d53f2ac48e9b7a220500fece983b675dcd62` after PR #10 was branched: 6 commits, including O8 fixture and verified Windows FULL docs. **Reconcile/rebase the stack before acceptance; do not overwrite newer PR #9 QA docs.** PR #6–#10 remain draft/unmerged.
+
+**Delivered code/test SHA before this checkpoint:** `66f72f8b3b0155f4727d6a942c8e07d02695f4dc`.
+
+**Six-stat static ledger:** Tư Chất +0.25%/point to natural cultivation; Căn Cốt +0.20%/point to natural Body XP; Thông Tuệ +0.15%/point to profession XP; Cơ Duyên to eligible rare event checks (not bulk common yield); Mị Lực to Dẫn Tiên/social; Tiềm Lực +0.05%/point **only Realm+Body core ATK/DEF/HP**, not flat equipment. The existing `CombatStatsV2` already implemented the core Potential factor; this packet closes the missing earned-consumer path, not by adding a second stat system.
+
+**Real earned Potential path:** `FoundationGrowthV2` consumes 1,000 Tử Vân Thảo (canonical Field crop unlocked at Field Lv30; plan's Tu Vi tier 3 / Body tier 4) from **canonical Warehouse** to add exactly +1 permanent Potential. It respects reserve/lock, does not credit XP/materials for free, records request-ID receipt in `SectState.v2_foundation_growth_receipts`, persists via SectState/SaveService, and returns idempotent replay. Failed debit/growth rolls back resources, counters and HP. This is a pilot recipe, not full Lục Duy consumption content.
+
+**Stat application:** `FoundationSystem.add_permanent_points` now rejects nonfinite growth and recalculates live V2 max HP on Potential increase while preserving current HP percentage (no free heal) and immutable birth snapshot. Source semantics remain Realm/Body-core-only.
+
+**Action ingress safeguards:** `WorkforceSystem.perform_work` rejects active resource/Alchemy timers, nonmatching legacy carry cycles, unrelated Field duty and reserved Body-training; direct `BuildingSystem` producer, Field and Alchemy entrypoints reject other occupations while legal same-operator extra Field plot actions remain allowed. `DiscipleBodyGateTransactionV2.preview_gate` now rejects all saved active occupations. Existing PvE/Training/command/assignment guards were audited and retained. A scoped matrix is in `docs/ECONOMY_V2_INTEGRATION_RESEARCH_AND_BALANCE_2026-10-16.md`.
+
+**Actual UI:** V2 Thuộc tính has `PotentialGrowthRealCommit`, a backend-gated Bồi dưỡng Tiềm Lực action; runtime_save result is reported, no fake production or stat grant.
+
+**QA:** New `godot/tests/simulation/disciple_v2_foundation_growth_action_guard_test.gd` covers authentic birth, warehouse reserve/cost, HP/core, immutable birth snapshot, one-request replay, alternate actor conflict, SectState + SaveService roundtrip, invalid input, timer/legacy-work Body gate and direct work guards. Existing live V2 profile presentation test asserts real backend-gated action. **9/9 changed GDScript files have PASS on lightweight delimiter/string structural scan only, not GDScript compiler. Godot 4.7.2/runtime/focused/FULL NOT RUN on this branch.** PR #9 Windows FULL `453df9aa0bc39f31f33cf65fc4aedcf688e7bf74` is prior-code evidence, not PR #11 evidence.
+
+**Still open:** true full legacy/global action ingress coverage; tests not executed; full six-dimension earned-consumer recipes; market-wide late-game Potential cost scale; Hall/land/30-30-40 construction; Body C–H/3 seal real sources; sustained 3,000-disciple runtime; manual Android visual/device QA. Retain 30×10 Tu Vi + 30×10 Body, Injury 0/1/120 ticks, one operator Mine/Forest/Field, four Field plots and PR #9 ×10,000 ordinary yield. No CI and no merge.
+
+---
+
+
 ## 2026-10-16 — DISCIPLE-V2 SCALE-SAFE BACKEND / STACKED ON DRAFT PR #9
 
 **Owner continuation:** Continue authorized Disciple V2 + Production V2 integration without requiring the owner's Windows computer. This limited follow-up addresses measured 100–3,000-disciple scheduler overhead and does not introduce new simulation authorities, content tiers or balance changes.
