@@ -26,7 +26,7 @@ func _run() -> void:
         return
     if not _verify_fractional_work_speed_is_preserved():
         return
-    if not _verify_profession_cap():
+    if not _verify_profession_realm_independence():
         return
     print("ECON-V2 CORE FOUNDATION TEST PASS")
     quit(0)
@@ -174,11 +174,17 @@ func _verify_fractional_work_speed_is_preserved() -> bool:
     return _check(int(second.get("duration_ticks",0)) == 59,
         "saved work remainder did not convert +1% speed into long-run throughput")
 
-func _verify_profession_cap() -> bool:
+func _verify_profession_realm_independence() -> bool:
     var state := P37Factory.create_state(920603)
     var actor: DiscipleState = state.disciples[state.disciples.keys()[0]]
-    actor.profession_xp["mining"] = WorkforceSystem.P3_7_XP_LEVEL_SCALE * 150.0 * 150.0
-    return _check(
-        workforce.profession_level_for_state(state,actor,WorkforceSystem.PROF_MINING) == 100,
-        "Economy V2 profession level exceeds approved Lv100 cap"
-    )
+    actor.profession_xp["mining"] = WorkforceSystem.P3_7_XP_LEVEL_SCALE * 100.0 * 100.0
+    var before := workforce.profession_level_for_state(state,actor,WorkforceSystem.PROF_MINING)
+    if not _check(before == 100, "profession Lv100 benchmark is not derived from profession XP"):
+        return false
+
+    if DiscipleRealmProgressV2.progression_ready(actor):
+        actor.v2_realm_progress["cultivation"]["realm"] = DiscipleRealmProgressV2.MAX_REALM
+        actor.v2_realm_progress["body"]["realm"] = DiscipleRealmProgressV2.MAX_REALM
+    var after := workforce.profession_level_for_state(state,actor,WorkforceSystem.PROF_MINING)
+    return _check(after == before,
+        "Tu Vi/Luyện Thể realm incorrectly replaced profession level authority")
