@@ -2,7 +2,7 @@
 
 ## 2026-10-16 — LAY-01 / HALL / LAND / PAID CONSTRUCTION DESIGN READY (NOT CODE-AUTHORIZED)
 
-**Scope:** owner requested review of LAY-01, ADR-0003 and ENV-02A plus an implementable design for `SectLayoutState`, save migration, main Hall authority, paid multi-instance construction and land unlocks, but explicitly prohibited crossing unapproved code gates. Work is **DESIGN ONLY** stacked above draft PR #12; **no GDScript/schema/migration/gameplay was changed**.
+**Scope:** owner requested review of LAY-01, ADR-0003 and ENV-02A plus an implementable design for `SectLayoutState`, save migration, main Hall authority, paid multi-instance construction and land unlocks, but explicitly prohibited crossing unapproved code gates. Work is **DESIGN ONLY** in draft **PR #13**, stacked above draft PR #12; **no GDScript/schema/migration/gameplay was changed**.
 
 **Verified current code:** PR #12 `ResourceBuildingExpansionPolicyV2` is preview-only and always fail-closed; `BuildingSystem.create_building` is a raw factory, not a paid construction action. Live `BuildingSystem` has no real Main Hall type. ENV-02A visually previews Hall/Warehouse/Forge but those are NOT equivalent to actual `BuildingState`. `SimulationState` has no layout field and `SaveService.CURRENT_VERSION=2` already stages/verifies `.tmp` and rotates `.bak`. ADR-0003 retains **fixed-layout-only** and must be explicitly amended before introducing editable persistent layout.
 
