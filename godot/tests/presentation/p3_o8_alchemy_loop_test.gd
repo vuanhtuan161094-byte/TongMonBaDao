@@ -229,8 +229,20 @@ func _run() -> void:
             _fail("O8 completed recipe reappeared after reload.")
             return
 
-    # Dược Phòng consumes the canonical pill without legacy medicine/money.
-    var target: DiscipleState = state.disciples[field_worker_id]
+    # Dược Phòng lists only disciples actually inside the sect. The Field
+    # operator can legitimately travel after the saved job completes, so pick
+    # a current sect resident without changing their location or job.
+    var target: DiscipleState = null
+    var target_ids: Array = state.disciples.keys()
+    target_ids.sort()
+    for raw_id in target_ids:
+        var resident: DiscipleState = state.disciples[raw_id]
+        if resident.region_id == &"sect" and resident.active_pve_encounter_id.is_empty():
+            target = resident
+            break
+    if target == null:
+        _fail("O8 has no eligible sect resident for the real pill-use control.")
+        return
     target.hp = maxf(1.0, target.max_hp - 60.0)
     var hp_before := target.hp
     var medicine_before := state.sect.medicine_stock
