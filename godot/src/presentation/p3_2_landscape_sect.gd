@@ -695,7 +695,7 @@ func _refresh_building_operation_content() -> void:
     elif selected_building == SectMapPresentation.DEST_SPIRIT_FIELD:
         building_operation_body.custom_minimum_size.y = 220
     else:
-        building_operation_body.custom_minimum_size.y = 420
+        building_operation_body.custom_minimum_size.y = 0
     _rebuild_building_management_controls()
 
 func _rebuild_building_management_controls() -> void:
