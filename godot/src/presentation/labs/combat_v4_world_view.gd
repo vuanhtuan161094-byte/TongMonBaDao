@@ -8,6 +8,7 @@ const SOIL := Color("#a3a786")
 const INK := Color("#263c35")
 const ENEMY := Color("#936454")
 const GOLD := Color("#d9bc78")
+const CC0_WOLF_RUN_PATH := "res://assets/labs/combat_v4/cc0_wolf/wolf_run.png"
 const STAGE_A_ROOT := "res://assets/p3/character_creator/parts/female_normal_v1/"
 const SOURCE_TERRAIN := "res://assets/labs/combat_v4/terrain/stone_courtyard.png"
 const SOURCE_ROAD := "res://assets/labs/combat_v4/roads/stone_branch.png"
@@ -55,6 +56,8 @@ var last_facing: StringName = &"right"
 var fx: Array[Dictionary] = []
 var source_textures: Dictionary = {}
 var source_loaded: Array[String] = []
+var cc0_wolf_sheet: Texture2D
+var cc0_wolf_loaded := false
 var original_textures: Dictionary = {}
 var monster_nodes: Dictionary = {}
 var monster_previous_positions: Dictionary = {}
@@ -78,6 +81,15 @@ func _ready() -> void:
             if texture != null:
                 source_textures[key] = texture
                 source_loaded.append(key)
+    # CC0 source: https://opengameart.org/content/pixel-wolf (alizard).
+    # One side-profile sprite sheet, five 66x66 frames in a single 330x66 PNG.
+    if ResourceLoader.exists(CC0_WOLF_RUN_PATH):
+        var candidate: Texture2D = load(CC0_WOLF_RUN_PATH) as Texture2D
+        if candidate != null and candidate.get_width() == 330 and candidate.get_height() == 66:
+            cc0_wolf_sheet = candidate
+            cc0_wolf_loaded = true
+        else:
+            push_warning("CMB-V4 CC0 Wolf ignored: atlas must be exactly 330x66.")
     # Generated, original concept art: not Source A. Import ONLY exact-checksum test images.
     for art_key in ORIGINAL_ART_FILES:
         var art_path: String = ORIGINAL_ART_FILES[art_key]
@@ -130,11 +142,17 @@ func bind_battle(authority: MapBattleV2) -> void:
             continue
         var is_boss := str(actor.get("tier", "")) == "boss"
         var key := "boss_idle" if is_boss else "wolf_idle"
-        if not original_textures.has(key):
+        if not original_textures.has(key) and not (not is_boss and cc0_wolf_loaded):
             continue
         var sprite := Sprite2D.new()
         sprite.name = "Proof_" + str(raw_id)
-        sprite.texture = original_textures[key]
+        if not is_boss and cc0_wolf_loaded:
+            sprite.texture = cc0_wolf_sheet
+            sprite.hframes = 5
+            sprite.vframes = 1
+            sprite.frame = 0
+        else:
+            sprite.texture = original_textures[key]
         sprite.centered = true
         sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
         add_child(sprite)
@@ -207,9 +225,10 @@ func _sync_monster_art() -> void:
         monster_previous_positions[raw_id] = logical
         # Source concept wolves face LEFT. Flip for RIGHT; vertical retains facing.
         sprite.flip_h = CombatV4TwoWayFacing.flip_h(facing, true)
-        var base_scale := 0.42 if is_boss else 0.34
+        var using_cc0: bool = not is_boss and cc0_wolf_loaded
+        var base_scale := 1.28 if using_cc0 else (0.42 if is_boss else 0.34)
         sprite.scale = Vector2.ONE * base_scale
-        sprite.position = at - Vector2(0, (189.0 if is_boss else 90.0) * base_scale)
+        sprite.position = at - Vector2(0, (30.0 if using_cc0 else (189.0 if is_boss else 90.0)) * base_scale)
         sprite.z_index = clampi(roundi(at.y), 0, 1000)
         sprite.modulate.a = 0.4 if float(actor.get("hp", 0.0)) <= 0.0 else 1.0
         var clip := "idle"
@@ -220,9 +239,11 @@ func _sync_monster_art() -> void:
         elif moving:
             clip = "walk"
         var desired := "boss_idle" if is_boss else "wolf_" + clip
-        if original_textures.has(desired):
+        if using_cc0:
+            sprite.frame = int(floor(visual_clock * 8.0)) % 5 if moving and clip != "downed" else 0
+        elif original_textures.has(desired):
             sprite.texture = original_textures[desired]
-        elif original_textures.has("wolf_idle"):
+        elif not is_boss and original_textures.has("wolf_idle"):
             sprite.texture = original_textures["wolf_idle"]
 
 func consume_events(new_events: Array) -> void:
@@ -314,7 +335,8 @@ func _draw() -> void:
             draw_set_transform(Vector2.ZERO)
             draw_arc(at, width + 4, 0, TAU, 30, GOLD if boss else INK, 1.5)
         _draw_label(
-            ("BOSS · ORIGINAL POSE PROOF" if boss else "THANH LANG · ORIGINAL POSE PROOF")
+            ("THANH LANG · CC0 RUN 5F" if not boss and cc0_wolf_loaded else
+            ("BOSS · ORIGINAL POSE PROOF" if boss else "THANH LANG · ORIGINAL POSE PROOF"))
             if monster_nodes.has(raw_id) else
             ("BOSS · ART MISSING" if boss else "THANH LANG · ART MISSING"),
             at + Vector2(-90 if boss else -70, -110 if boss else -62), 11, INK
