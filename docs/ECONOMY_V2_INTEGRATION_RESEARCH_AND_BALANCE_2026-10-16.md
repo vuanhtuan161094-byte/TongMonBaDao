@@ -67,7 +67,7 @@ The final 15 IDs remain in paused Disciple V2 gate content. This integration doe
 | Thông Tuệ | `1 + 0.0015 × points` learning/EXP | `CharacterModifierSystem` → profession EXP; profession level separately changes speed |
 | Cơ Duyên | rare event factor/valid lucky roll | `ProfessionModifierSystem` → Field lucky harvest, Mine discrete byproduct; no routine quantity factor |
 | Mị Lực | guidance quality/social score | `RecruitmentSystem` Dẫn Tiên; no global production factor |
-| Tiềm Lực | `1 + 0.0005 × points` is defined in `FoundationSystem`; combat core also has a 0.0005 factor | **Growth consumer missing**: no call to `potential_growth_factor` or `add_permanent_points` from normal progression. Do not claim long-term attribute growth until a real progression event owns it. |
+| Tiềm Lực | `1 + 0.0005 × points` is defined in `FoundationSystem`; `CombatStatsV2` applies the same factor once to **Realm+Body ATK/DEF/HP core**, not equipment flat | **Stacked follow-up pilot:** `DiscipleFoundationGrowthV2.commit` consumes 10 *earned* Linh Tủy from canonical Warehouse per +1 permanent Potential point, persists a request receipt, preserves live HP ratio and birth snapshot. No passive/free-point faucet; no claim of runtime PASS before Godot 4.7.2 tests. |
 
 ## 5. Open integration gates
 
