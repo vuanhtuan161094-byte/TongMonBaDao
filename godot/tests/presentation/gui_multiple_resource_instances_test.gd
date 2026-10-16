@@ -102,13 +102,34 @@ func _run() -> void:
     if not valid.is_empty():
         _fail("two real BuildingState instances violated save invariants: "+str(valid))
         return
+    # Run the existing scheduler against the explicitly assigned SECOND Mine;
+    # the location must not silently revert to primary_building().
+    if not state.sect.economy_a_enabled:
+        var enabled := EconomySystem.new().enable_v1(state)
+        if not bool(enabled.get("ok",false)):
+            _fail("Economy-A timer unavailable for second Mine regression")
+            return
+    if not workforce.issue_command(state,worker_id,WorkforceSystem.COMMAND_WORK,"mining",40):
+        _fail("secondary Mine cannot receive canonical WORK command")
+        return
+    var scheduler := SimulationScheduler.new(state)
+    var secondary_timer: Dictionary = {}
+    for _tick in range(8):
+        scheduler.step()
+        secondary_timer = buildings.active_resource_timer_for_worker(state,worker_id)
+        if not secondary_timer.is_empty():
+            break
+    if secondary_timer.is_empty() or str(secondary_timer.get("building_id","")) != str(second.id):
+        _fail("secondary operator started timer at primary building or not at all")
+        return
     # A second instance survives the canonical serializer, no shadow map.
     var saved := SimulationState.from_dict(state.to_dict())
     if (
         not saved.buildings.has(str(second.id))
         or (saved.disciples[worker_id] as DiscipleState).worksite_building_id != second.id
+        or buildings.active_resource_timer_for_worker(saved,worker_id).is_empty()
     ):
-        _fail("roundtrip lost secondary instance or its one worker")
+        _fail("roundtrip lost secondary instance, one worker, or its real timer")
         return
     print("GUI MULTI-INSTANCE ID ROUTING TEST PASS (NO PLAYER CONSTRUCTION)")
     if ui != null:
