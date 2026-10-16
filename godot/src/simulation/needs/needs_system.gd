@@ -17,7 +17,7 @@ const UNSUPPLIED_TRAVEL_STAMINA_COST := 13.0
 const MIN_REST_MULTIPLIER := 0.45
 const V2_FOOD_RESOURCE_ID := &"linh_coc"
 const V2_FOOD_INTERVAL := 30
-const V2_FOOD_PER_DISCIPLE := 1
+const V2_FOOD_PER_DISCIPLE := 2
 
 var bloodline_system := BloodlineSystem.new()
 var physique_system := PhysiqueSystem.new()
@@ -151,7 +151,7 @@ func process_logistics_tick(state: SimulationState) -> void:
     if not state.sect.needs_enabled or state.tick <= 0 or state.tick % LOGISTICS_INTERVAL != 0:
         return
 
-    # Economy V2 minimum food sink. One Linh Cốc unit per disciple per 30
+    # Economy V2 minimum food sink. Two Linh Cốc units per disciple per 30
     # simulation minutes is intentionally simple and population-scaled. It
     # respects Warehouse reserve/lock rules and adds no starvation penalty in
     # this packet; shortage is audit data only.
