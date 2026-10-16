@@ -613,6 +613,12 @@ func perform_work(state: SimulationState, disciple: DiscipleState, profession_id
         # same duty; a Mine/Forest timer or Alchemy recipe owns the full actor.
         if building_system.disciple_has_active_timed_recipe(state, disciple.id):
             return {"ok":false,"completed":false,"reason":"busy_timed_job"}
+        if not disciple.work_cycle_state.is_empty():
+            var cycle_prof := StringName(disciple.work_cycle_state.get(
+                "profession_id",disciple.work_cycle_state.get("profession","")
+            ))
+            if cycle_prof != profession_id:
+                return {"ok":false,"completed":false,"reason":"busy_work_cycle"}
         if (
             building_system.disciple_has_active_spirit_plot(state, disciple.id)
             and profession_id != PROF_HERBALISM
