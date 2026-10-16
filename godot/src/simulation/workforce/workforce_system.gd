@@ -585,10 +585,13 @@ func choose_work_profession(state: SimulationState, disciple: DiscipleState) -> 
     var best := &""
     var best_score := -1.0e30
     for profession_id in candidates:
-        if state.p3_7_buildings_enabled and not building_system.work_available(state, profession_id, disciple):
-            continue
+        # Priority zero can never win; skip the potentially roster-wide
+        # worksite availability lookup before scoring. This preserves the
+        # candidate order/tie-break and actual eligibility of every job.
         var priority := effective_priority(state, disciple, profession_id)
         if priority <= 0:
+            continue
+        if state.p3_7_buildings_enabled and not building_system.work_available(state, profession_id, disciple):
             continue
         var score := float(priority) * 100.0 + float(profession_level_for_state(state, disciple, profession_id)) * 3.0
         if _has_profession_trait(disciple, profession_id):

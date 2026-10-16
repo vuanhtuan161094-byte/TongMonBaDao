@@ -6,7 +6,9 @@ extends RefCounted
 # step is already one simulation minute in the P3.7 time contract.
 # Presentation/wall-clock cadence must not change this rate.
 
-static func validate_rule(disciple: DiscipleState, data: Variant) -> Dictionary:
+static func validate_rule(
+    disciple: DiscipleState, data: Variant, require_preview: bool = true
+) -> Dictionary:
     if disciple == null or not DiscipleRealmProgressV2.progression_ready(disciple):
         return {"ok":false,"reason":"training_profile_not_ready"}
     if not (data is Dictionary):
@@ -36,13 +38,17 @@ static func validate_rule(disciple: DiscipleState, data: Variant) -> Dictionary:
     if not (sources is Array):
         return {"ok":false,"reason":"invalid_training_source_list"}
 
-    # Validate current progression/cost coverage and source structure without
-    # changing XP. One base minute is sufficient for structural preflight.
-    var preview := DiscipleRealmProgressV2.grant_xp(
-        disciple,"cultivation",base_rate,"natural",costs,sources,true
-    )
-    if not bool(preview.get("ok",false)):
-        return {"ok":false,"reason":str(preview.get("reason","invalid_tuvi_preview"))}
+    # Explicit previews still perform the full read-only grant_xp preflight.
+    # resolve_minute() immediately performs the same authoritative grant_xp
+    # with commit and can skip this duplicate computation. Any invalid cost,
+    # source or progression state is still rejected by that live grant before
+    # its XP is mutated. This matters at 1,000–3,000 disciples per minute.
+    if require_preview:
+        var preview := DiscipleRealmProgressV2.grant_xp(
+            disciple,"cultivation",base_rate,"natural",costs,sources,true
+        )
+        if not bool(preview.get("ok",false)):
+            return {"ok":false,"reason":str(preview.get("reason","invalid_tuvi_preview"))}
 
     return {
         "ok":true,
@@ -97,7 +103,7 @@ static func resolve_minute(
         return {"ok":false,"reason":"passive_tuvi_tick_already_awarded"}
 
     var ready := validate_rule(
-        disciple,state.sect.v2_training_rules.get("cultivation",null)
+        disciple,state.sect.v2_training_rules.get("cultivation",null),false
     )
     if not bool(ready.get("ok",false)):
         return ready

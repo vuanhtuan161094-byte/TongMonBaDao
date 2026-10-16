@@ -1,5 +1,18 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-16 — DISCIPLE-V2 SCALE-SAFE CONTINUATION HANDOFF
+
+PR #9 (`economy-v2-disciple-production-integration-20261016` HEAD `d9b02dfd270b5165251e1e5e443b53a96ab68164`) remains the integration authority; isolated follow-up `disciple-v2-scale-20261016` is based directly on it. No merge into `main`.
+
+**Implemented in this follow-up:** remove redundant full XP dry-run on each committed natural Tu Vi minute while preserving full live grant validation; skip availability probes for zero-priority work; fast-reject unrelated worksite actors before 1,000–3,000-person roster scans. Focused regression: `godot/tests/simulation/disciple_v2_scale_safe_path_test.gd`. Gameplay/test SHA `89974c7dbf34f3855015b9cf1e721f7e498b987a`.
+
+**Not claimed:** runtime PASS or improved tick ms. Only structural static scan 4/4 has been performed; Godot 4.7.2 and Windows performance remain PENDING. Do not claim 3,000-disciple device readiness from this optimization.
+
+**Next recommended implementation packet:** safely finish canonical character core growth/Potential source-consumer coverage, then audit global active-job ingress, and implement all-instance construction/land caps with exact material/production source links. Compare against real PR #9 implementation; do not redo its ×10,000 yield curve, finite merchant budget, stock-target pause or GUI fixes. Leave PRs stacked/draft; do not invoke CI or merge.
+
+---
+
+
 ## 2026-10-16 HANDOFF — ECON-V2 BULK PRODUCTION STACKED ABOVE PR #7
 
 Owner explicitly authorized ProductionPlan + bulk balance code and minimum existing-consumer rebalance. Branch `economy-v2-bulk-production-20261016` is stacked from PR #7 HEAD `c6f87edc0112b544b8ee6e3cc63905697caf307e`; draft **PR #8** targets `economy-v2-core-20261016`. **PR #6/#7/#8 remain unmerged and `main` remains `461caca1171462e0da092f21108c5c1733157ad9`**. Latest gameplay+test SHA before docs is **`6428a4c359b7691a5f01fda1b08cf199ee44c115`**.
