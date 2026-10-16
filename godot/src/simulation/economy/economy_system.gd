@@ -203,7 +203,7 @@ func market_remaining(state: SimulationState) -> int:
 func market_stone_budget_remaining(state: SimulationState) -> int:
     if state == null or not state.sect.economy_a_enabled:
         return 0
-    var budget := maxi(int(state.sect.economy_a_policy.get("market_daily_stone_budget",120)),0)
+    var budget := maxi(int(state.sect.economy_a_policy.get("market_daily_stone_budget",2000)),0)
     var day := int(state.tick / V2_DAY_TICKS)
     for raw_receipt in state.sect.economy_a_receipts.values():
         if raw_receipt is Dictionary and str(raw_receipt.get("kind","")) == "market" and int(raw_receipt.get("day",-1)) == day:
