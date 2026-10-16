@@ -13,9 +13,9 @@ const SOURCE_TERRAIN := "res://assets/labs/combat_v4/terrain/stone_courtyard.png
 const SOURCE_ROAD := "res://assets/labs/combat_v4/roads/stone_branch.png"
 const SOURCE_VEGETATION := "res://assets/labs/combat_v4/vegetation/570185.png"
 const SOURCE_HASHES := {
-    SOURCE_TERRAIN: "c157965bd15f2747a55b602d4320dc34ad70c9129f79cc17eb8b4b139897468a",
-    SOURCE_ROAD: "1894d9047c73a6d9c80c8455b1a09209e49acb6eafed2922eb23446f190ab819",
-    SOURCE_VEGETATION: "89fba324db3e3c6d850ed36ee2a3b0aea2021fa6a3d0712c569cae220fbe9655"
+    "res://assets/labs/combat_v4/terrain/stone_courtyard.png": "c157965bd15f2747a55b602d4320dc34ad70c9129f79cc17eb8b4b139897468a",
+    "res://assets/labs/combat_v4/roads/stone_branch.png": "1894d9047c73a6d9c80c8455b1a09209e49acb6eafed2922eb23446f190ab819",
+    "res://assets/labs/combat_v4/vegetation/570185.png": "89fba324db3e3c6d850ed36ee2a3b0aea2021fa6a3d0712c569cae220fbe9655"
 }
 
 var battle: MapBattleV2
