@@ -26,8 +26,8 @@ func _run() -> void:
     if forest == null:
         _fail("O7 fresh runtime has no authoritative Linh Lam.")
         return
-    if forest.level != 1 or buildings.worker_slots(forest) != 2:
-        _fail("O7 fresh Linh Lam must be Lv1 with exactly two active slots.")
+    if forest.level != 1 or buildings.worker_slots(forest) != 1:
+        _fail("O7 Economy V2 Linh Lam must be Lv1 with exactly one operator.")
         return
     if ui.find_child("BuildingToken_linh_forest", true, false) == null:
         _fail("O7 landscape has no real Linh Lam token.")

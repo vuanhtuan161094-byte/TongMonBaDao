@@ -8,6 +8,7 @@ var ui: Control
 var state: SimulationState
 var buildings := BuildingSystem.new()
 var warehouse := WarehouseSystem.new()
+var workforce := WorkforceSystem.new()
 
 func _init() -> void:
     call_deferred("_run")
@@ -45,7 +46,9 @@ func _run() -> void:
         if not state.sect.economy_a_enabled:
             _fail("timer enable button did not use canonical EconomySystem")
             return
-    var miner_id := _free_disciple()
+    var miner_id := _idle_assigned_disciple()
+    if miner_id == &"":
+        miner_id = _free_disciple()
     if miner_id == &"" or not await _choose(miner_id):
         return
     var miner: DiscipleState = state.disciples[miner_id]
@@ -54,6 +57,15 @@ func _run() -> void:
         return
     if not await _press("WorkforceStart"):
         return
+    # Freeze independent workers before the long timer to isolate the real
+    # Mine production receipt from auto-assignment during elapsed minutes.
+    for raw_id in state.disciples.keys():
+        var other_id := StringName(raw_id)
+        if other_id == miner_id:
+            continue
+        if not workforce.issue_command(state,other_id,WorkforceSystem.COMMAND_HOLD,"",1200):
+            _fail("unable to isolate independent producer during Mine timer")
+            return
     var ore_before := warehouse.quantity(state,&"thanh_thiet")
     var scheduler := SimulationScheduler.new(state)
     var mining_job := {}
@@ -106,6 +118,8 @@ func _run() -> void:
         _fail("Mine completion did not provide earned wage receipt/profession XP")
         return
 
+    for occupant_id in buildings.active_worker_ids(state,forest):
+        workforce.clear_command(state,state.disciples[occupant_id])
     ui.call("_open_building",SectMapPresentation.DEST_LINH_FOREST)
     await process_frame
     var forester_id := _free_disciple()
@@ -136,6 +150,8 @@ func _run() -> void:
         _fail("Forest picker did not start real timer")
         return
 
+    for occupant_id in buildings.active_worker_ids(state,field):
+        workforce.clear_command(state,state.disciples[occupant_id])
     ui.call("_open_building",SectMapPresentation.DEST_SPIRIT_FIELD)
     await process_frame
     var farmer_id := _free_disciple()
@@ -191,6 +207,15 @@ func _run() -> void:
     print("GUI-WORKFORCE V1 REAL LANDSCAPE END-TO-END PASS")
     _dispose()
     quit(0)
+
+func _idle_assigned_disciple() -> StringName:
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    for raw in ids:
+        var d: DiscipleState = state.disciples[raw]
+        if d.work_group_id != &"" and d.work_group_id != &"mining_crew" and d.direct_command.is_empty() and d.work_cycle_state.is_empty() and d.active_pve_encounter_id.is_empty() and d.region_id == &"sect" and d.current_action in [&"EVALUATE",&"IDLE",&"HOLD"]:
+            return d.id
+    return &""
 
 func _free_disciple() -> StringName:
     var ids: Array = state.disciples.keys()
