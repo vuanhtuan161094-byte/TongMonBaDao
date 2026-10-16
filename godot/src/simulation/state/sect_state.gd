@@ -94,6 +94,8 @@ var disciple_recruitment_tokens: int = 0
 var disciple_generation_event_count: int = 0
 # P3.7C1 open-point lục duy + Dẫn Tiên recruitment authority.
 var foundation_points_enabled: bool = false
+# Exactly-once earned-resource -> permanent foundation transactions.
+var foundation_growth_receipts: Dictionary = {}
 var guidance_recruitment_enabled: bool = false
 # DV2-01 explicit opt-in: do not modify P0-P3.7C1 births when false.
 var disciple_v2_birth_enabled: bool = false
@@ -208,6 +210,8 @@ func to_dict() -> Dictionary:
         data["disciple_generation_event_count"] = disciple_generation_event_count
         data["foundation_points_enabled"] = foundation_points_enabled
         data["guidance_recruitment_enabled"] = guidance_recruitment_enabled
+    if not foundation_growth_receipts.is_empty():
+        data["foundation_growth_receipts"] = foundation_growth_receipts.duplicate(true)
     if disciple_v2_birth_enabled:
         data["disciple_v2_birth_enabled"] = true
     if v2_training_enabled or not v2_training_rules.is_empty():
@@ -307,6 +311,9 @@ static func from_dict(data: Dictionary) -> SectState:
     state.disciple_recruitment_tokens = maxi(int(data.get("disciple_recruitment_tokens", 0)), 0)
     state.disciple_generation_event_count = maxi(int(data.get("disciple_generation_event_count", 0)), 0)
     state.foundation_points_enabled = bool(data.get("foundation_points_enabled", false))
+    var saved_growth_receipts = data.get("foundation_growth_receipts", {})
+    if saved_growth_receipts is Dictionary:
+        state.foundation_growth_receipts = saved_growth_receipts.duplicate(true)
     state.guidance_recruitment_enabled = bool(data.get("guidance_recruitment_enabled", false))
     state.disciple_v2_birth_enabled = bool(data.get("disciple_v2_birth_enabled", false))
     state.v2_training_enabled = bool(data.get("v2_training_enabled", false))
