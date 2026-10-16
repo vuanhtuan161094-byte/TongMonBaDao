@@ -88,6 +88,13 @@ func _run() -> void:
     if panel == null or not panel.visible:
         _fail("actual one-worker management HUD failed to open")
         return
+    # Vertical movement retains horizontal-facing art, left mirrored, no
+    # requirement for separate up/down sprite sheets in the map renderer.
+    var vertical_left: Vector2 = scene.call("_iso_two_direction_delta",Vector2(0,-85),&"left")
+    var vertical_right: Vector2 = scene.call("_iso_two_direction_delta",Vector2(0,85),&"right")
+    if vertical_left != Vector2(-1,0) or vertical_right != Vector2(1,0):
+        _fail("up/down travel unexpectedly required a third/fourth sprite facing")
+        return
     scene.call("_close_building_operation_panel",true)
     scene.call("_pan_camera",Vector2(-90,40))
     await process_frame
