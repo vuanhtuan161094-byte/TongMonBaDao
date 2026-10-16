@@ -92,16 +92,16 @@ func _run() -> void:
 
     other.current_action = &"EVALUATE"
     if not _check(workforce.issue_command(
-        state,other.id,WorkforceSystem.COMMAND_HOLD,"",90
-    ),"could not set real Hold command"):
+        state,other.id,WorkforceSystem.COMMAND_CULTIVATE,"",90
+    ),"could not set real incompatible Cultivate command"):
         return
     var direct_before := other.to_dict()
     var blocked_reserve := DiscipleBodyTrainingFacilityV2.reserve_slot(state,other.id)
-    var blocked_train := DiscipleTrainingActionV2.request_training(state,other.id,"cultivation")
+    var blocked_train := DiscipleTrainingActionV2.request_training(state,other.id,"body")
     if not _check(not bool(blocked_reserve.get("ok",false))
         and not bool(blocked_train.get("ok",false))
         and other.to_dict() == direct_before,
-        "Body or Cultivation silently overwrote a live Hold command"):
+        "Body silently overwrote an incompatible queued Cultivate command"):
         return
 
     workforce.clear_command(state,other)
@@ -117,13 +117,30 @@ func _run() -> void:
     if not _check(workforce.assign_group(state,other.id,&""),
         "could not explicitly release Forge group"):
         return
+    # HOLD has no active job reservation and should be replaceable by a
+    # deliberate, valid Body request, without forcing manual command cleanup.
+    if not _check(workforce.issue_command(
+        state,other.id,WorkforceSystem.COMMAND_HOLD,"",90
+    ),"could not queue replaceable Hold order"):
+        return
     var booked := DiscipleBodyTrainingFacilityV2.reserve_slot(state,other.id)
     var busy_work := workforce.perform_work(state,other,WorkforceSystem.PROF_FORGING)
     if not _check(bool(booked.get("ok",false))
+        and other.direct_command.is_empty()
         and DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,other)
         and not bool(busy_work.get("ok",false))
         and str(busy_work.get("reason","")) == "busy_body_training",
-        "reserved Body trainee performed a competing Forge action"):
+        "Body transfer from Hold failed or reserved trainee performed Forge"):
+        return
+    if not _check(bool(DiscipleBodyTrainingFacilityV2.release_slot(state,other.id).get("ok",false))
+        and workforce.issue_command(state,other.id,WorkforceSystem.COMMAND_HOLD,"",90),
+        "could not release Body slot and queue a fresh Hold"):
+        return
+    var cultivation := DiscipleTrainingActionV2.request_training(state,other.id,"cultivation")
+    if not _check(bool(cultivation.get("ok",false))
+        and other.direct_command.is_empty()
+        and other.current_action == &"CULTIVATE",
+        "valid explicit Hold -> Chuyên Tu transfer failed"):
         return
 
     if not _check(_verify_nonfinite_foundations(),
