@@ -89,7 +89,7 @@ func _run() -> void:
         if warehouse.quantity(state, &"linh_coc") > grain_before:
             break
     if warehouse.quantity(state, &"linh_coc") <= grain_before:
-        _fail("O8 first real Spirit Field crop never harvested.")
+        _fail("O8 first Field crop absent: grain %d→%d, herb %d→%d, plots=%s." % [grain_before,warehouse.quantity(state,&"linh_coc"),herb_before,warehouse.quantity(state,&"thanh_linh_thao"),str(buildings.spirit_field_plots(state,field))])
         return
 
     field = buildings.primary_building(state, BuildingSystem.TYPE_SPIRIT_FIELD)
