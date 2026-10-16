@@ -1085,7 +1085,7 @@ func _build_mine_upgrade_control() -> void:
         button.disabled = true
         return
 
-    var cost := buildings.upgrade_cost(mine)
+    var cost := buildings.upgrade_cost_for_state(state,mine)
     var ore_need := int(cost.get(BuildingSystem.MATERIAL_ORE, 0))
     var wood_need := int(cost.get(BuildingSystem.MATERIAL_WOOD, 0))
     var stone_need := int(cost.get("spirit_stones", 0))
