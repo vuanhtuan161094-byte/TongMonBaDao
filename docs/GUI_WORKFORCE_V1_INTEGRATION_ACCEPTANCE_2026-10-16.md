@@ -1,5 +1,9 @@
 # GUI-WORKFORCE V1 — Integration acceptance and runtime queue
 
+## 2026-10-16 — LAY-V2 all-instance readiness (CODE SHA `2e6cdc2e67a456e4836dcf4d2f252773f486a9d9`)
+
+Per-instance picker now enumerates saved canonical BuildingState IDs and routes resource worker, production plan, Field policy and Mine upgrading to the selected instance. Previous production costs and Warehouse/Scheduler unchanged. Hub exposes proposed Hall tiers and 13-region design without activating construction; status `preview_only=true`, Hall/land/building pricing and persistent layout authority PENDING owner/ENV-02A verification. Tests `economy_v2_expansion_cap_preview_test.gd`, `sect_land_region_preview_v2_test.gd`, `gui_multiple_resource_instances_test.gd` authored, **NOT RUN**. Their addition is not a legal build command. See `docs/LAY_V2_INTEGRATION_READINESS_2026-10-16.md` and PR #13 for blocked numeric approvals.
+
 ## Sect-Playable V1 navigation handoff (2026-10-16)
 
 - Code/test checkpoint SHA: `d147477b184deff1ff266bcb2be90db2098be453`, same existing 1280×720 main scene; PR #18 remains draft.

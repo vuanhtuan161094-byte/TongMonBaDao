@@ -1,5 +1,15 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-16 — LAY-V2 EXECUTION HANDOFF / PR #18, CODE SHA `2e6cdc2e67a456e4836dcf4d2f252773f486a9d9`
+
+**Done (not a playable Build feature):** PR #12 read-only `ResourceBuildingExpansionPolicyV2` and `economy_v2_expansion_cap_preview_test.gd` integrated byte-for-byte; new immutable `SectLandRegionPreviewV2` 13-region 192×192/48×48/16×16 read-only geometry + `sect_land_region_preview_v2_test.gd`. Existing `p3_2_landscape_sect.gd` now has explicit selector of canonical Mine/Forest/Field instance ID, actions and selected-building policy/upgrade use that ID, and hub shows proposed limits and locked land without enabling paid Build. Test-only `gui_multiple_resource_instances_test.gd` checks actor assignment, secondary timer and save round-trip, does NOT claim user built a paid house. No second layout, warehouse or clock.
+
+**Blocked from true LAY-01/02/03/04:** fixed-layout ADR-0003 must be explicitly amended; canonical Hall `BuildingState`, full authorized real-instance map seed manifest, ENV-02A Godot Windows 4.7.2 visual/path proof, and numeric owner approval of PR #13 §9.5–9.7 Hall/new construction/land tariff candidates are required. Do not invent prices, unlock or silently migrate saves; consumer of PR #12 hypothetical Hall cap must remain fail-closed. Separate tech decisions after those owner game decisions can be handled autonomously.
+
+**Test status:** source-structure static only; 4 focused scripts for cap, land geometry, second-instance UI and GUI-Workforce are UNRUN on Godot 4.7.2; O6 ==4 / O8 / One Active Job / injury / SAFE and P3.7 full Windows and Android remain PENDING. Do not call runtime PASS; no CI or merge main. Exact code `2e6cdc2e67a456e4836dcf4d2f252773f486a9d9`, followed by this docs-only checkpoint.
+
+---
+
 ## 2026-10-16 — SECT-PLAYABLE V1: END-TO-END PLAYER ROUTING, DRAFT PR #18
 
 **Exact code/test SHA `d147477b184deff1ff266bcb2be90db2098be453`** under draft PR #18. Added a central SectOps hub to real `p3_2_landscape_sect.gd`: top **Điều hành** button, bottom **Tông Môn** hub, true 3-building resource status/employee + Warehouse numbers, Guidance recruit, Mine/Forest/Field workplace choice, Kho/market and Disciple profile navigation; manual physical `LiveGameRuntimeV2.save` action. Guidance after authentic candidate acceptance exposes one-click **Phân công ngay** into prefiltered Mine Workforce picker. No invented simulation state or new scheduler/stock/timer. Existing worker cards, advanced plan controls and save states remain. One new focused `sect_playable_home_loop_test.gd` exercises end-to-end navigation, true recruiter token and V2 admission, one worker/worksite, Warehouse access, actual autosave + SaveService reload and invariants. Test authored, **Godot 4.7.2 NOT RUN**.
