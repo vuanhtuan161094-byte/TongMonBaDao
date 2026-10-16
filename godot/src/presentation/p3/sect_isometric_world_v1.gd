@@ -33,7 +33,46 @@ const PRODUCER_TYPES := {
     "linh_forest":"linh_forest",
     "spirit_field":"spirit_field"
 }
-const APPROVED_IMAGE_PATHS := {} # No verified Source A binaries in GitHub-only package.
+const HOUSE_TEXTURES := {
+    "main_hall":"pv01_assets/main_hall/510052.png",
+    "warehouse":"pv01_assets/warehouse/510102.png",
+    "forge":"pv01_assets/forge/520081.png"
+}
+const HOUSE_SIZES := {
+    "main_hall":Vector2(300,201),
+    "warehouse":Vector2(162,138),
+    "forge":Vector2(205,164)
+}
+const ROAD_TEXTURES := {
+    "cross":"stone_cross.png",
+    "junction":"stone_junction.png",
+    "axis_a":"stone_axis_a.png",
+    "axis_b":"stone_axis_b.png",
+    "branch":"stone_branch.png",
+    "scatter":"stone_scatter.png"
+}
+# Curated lab ENV01 single-region vegetation, inside starter district.
+const DECOR_LAYOUT := [
+    {"id":"570036","offset":Vector2i(-1,7),"scale":0.42},
+    {"id":"570037","offset":Vector2i(4,13),"scale":0.44},
+    {"id":"570038","offset":Vector2i(19,9),"scale":0.40},
+    {"id":"570171","offset":Vector2i(8,14),"scale":0.40},
+    {"id":"570172","offset":Vector2i(21,4),"scale":0.40},
+    {"id":"570173","offset":Vector2i(15,13),"scale":0.39},
+    {"id":"570181","offset":Vector2i(-2,10),"scale":0.47},
+    {"id":"570182","offset":Vector2i(20,10),"scale":0.46},
+    {"id":"570041","offset":Vector2i(2,12),"scale":0.50},
+    {"id":"570042","offset":Vector2i(18,-1),"scale":0.43},
+    {"id":"570043","offset":Vector2i(13,13),"scale":0.47},
+    {"id":"570073","offset":Vector2i(0,12),"scale":0.32},
+    {"id":"570144","offset":Vector2i(9,6),"scale":0.38},
+    {"id":"570399","offset":Vector2i(16,8),"scale":0.43},
+    {"id":"570185","offset":Vector2i(-1,8),"scale":0.39},
+    {"id":"570186","offset":Vector2i(11,13),"scale":0.34},
+    {"id":"570187","offset":Vector2i(21,6),"scale":0.38},
+    {"id":"570397","offset":Vector2i(18,7),"scale":0.30}
+]
+
 const SPAWN_CELL := Vector2i(82,84)
 const ROADS_JUNCTION := Vector2i(91,91)
 
@@ -47,6 +86,12 @@ var fallback_art_count := 0
 var lab_geometry: SectIsoMapModelV1
 var preview_roads: Dictionary = {}
 var lab_routes_ready := false
+var source_art: SectMap25SourceArt
+var render_art: Dictionary = {}
+var decoration_items: Array[Dictionary] = []
+var art_loaded_count := 0
+var art_source_status: Dictionary = {}
+
 
 func _ready() -> void:
     camera = Camera2D.new()
@@ -63,6 +108,7 @@ func _ready() -> void:
     # An actual Node2D world with Camera2D lives only inside its own SubViewport.
     # The parent Control HUD is intentionally outside this camera transform.
     _seed_env02a_geometry()
+    _load_verified_source_art()
     _update_chunks()
 
 # Reuse the ENV02A lab's exact AStarGrid2D/doorway geometry. This model
@@ -103,6 +149,78 @@ func _seed_env02a_geometry() -> void:
         if lab_geometry.path_to(kind,SPAWN_CELL).is_empty():
             lab_routes_ready = false
     queue_redraw()
+
+# Exact-SHA gated, individually optional Source A images. Fail-closed:
+# no texture is drawn just because a file happens to have the correct name.
+func _load_verified_source_art() -> void:
+    source_art = SectMap25SourceArt.new()
+    render_art.clear()
+    decoration_items.clear()
+    for house in HOUSE_TEXTURES:
+        var key := str(HOUSE_TEXTURES[house])
+        var asset := source_art.texture_for(key)
+        if asset != null:
+            render_art[key] = asset
+    for key in ["stone_courtyard","stone_variant","stone_border","stone_runes"]:
+        var rel := "env01_assets/terrain/%s.png" % key
+        var terrain := source_art.texture_for(rel)
+        if terrain != null:
+            render_art[rel] = terrain
+    for key in ROAD_TEXTURES:
+        var rel := "env01_assets/roads/%s" % str(ROAD_TEXTURES[key])
+        var paving := source_art.texture_for(rel)
+        if paving != null:
+            render_art[rel] = paving
+    var occupied: Dictionary = {}
+    for landmark in ["main_hall","warehouse","forge"]:
+        if lab_geometry != null:
+            var placed: Dictionary = lab_geometry.get_building(landmark)
+            if not placed.is_empty():
+                for tile in lab_geometry.cells_for(landmark,placed["origin"],0):
+                    occupied[tile] = true
+    for item in DECOR_LAYOUT:
+        var tile: Vector2i = SPAWN_CELL+Vector2i(item["offset"])
+        if not STARTER.has_point(tile) or occupied.has(tile) or preview_roads.has(tile):
+            continue
+        var rel := "env01_assets/vegetation/%s.png" % str(item["id"])
+        var vegetation := source_art.texture_for(rel)
+        if vegetation != null:
+            render_art[rel] = vegetation
+            decoration_items.append({
+                "world":project(Vector2(tile)),
+                "texture":vegetation,
+                "scale":float(item["scale"]),
+                "cell":tile
+            })
+    decoration_items.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
+        return (a["world"] as Vector2).y < (b["world"] as Vector2).y
+    )
+    art_source_status = source_art.status()
+    art_loaded_count = int(art_source_status.get("accepted_count",0))
+    # The user is not shown an invented Source A completion status.
+    fallback_art_count = HOUSE_TEXTURES.size()-mini(HOUSE_TEXTURES.size(),render_art.size())
+    queue_redraw()
+
+func _road_key(cell: Vector2i) -> String:
+    var neighbors := 0
+    var n := preview_roads.has(cell+Vector2i(0,-1))
+    var s := preview_roads.has(cell+Vector2i(0,1))
+    var e := preview_roads.has(cell+Vector2i(1,0))
+    var w := preview_roads.has(cell+Vector2i(-1,0))
+    for on in [n,s,e,w]:
+        if on:
+            neighbors += 1
+    if neighbors == 4:
+        return "cross"
+    if neighbors == 3:
+        return "junction"
+    if neighbors <= 1:
+        return "branch" if posmod(cell.x+cell.y,3)!=0 else "scatter"
+    if e and w:
+        return "axis_a"
+    if n and s:
+        return "axis_b"
+    return "cross"
 
 static func project(cell: Vector2) -> Vector2:
     return Vector2((cell.x-cell.y)*HALF_W,(cell.x+cell.y)*HALF_H)
@@ -147,7 +265,7 @@ func refresh_from_state(state: SimulationState) -> void:
         var pb: Vector2 = b["world"]
         return pa.y < pb.y)
     display_instances = rows
-    fallback_art_count = rows.size()
+    fallback_art_count = maxi(0,rows.size()-int(render_art.has(HOUSE_TEXTURES["main_hall"]))-int(render_art.has(HOUSE_TEXTURES["warehouse"]))-int(render_art.has(HOUSE_TEXTURES["forge"])))
     queue_redraw()
 
 func _row(dest: StringName, instance_id: StringName, text_label: String, index: int, managed: bool) -> Dictionary:
@@ -242,15 +360,44 @@ func _draw() -> void:
                 draw_colored_polygon(diamond,tone)
                 if within and _is_road(cell):
                     draw_colored_polygon(diamond,Color(0.63,0.58,0.43,0.9))
+                    var road_key := "env01_assets/roads/%s" % str(ROAD_TEXTURES[_road_key(cell)])
+                    if render_art.has(road_key):
+                        draw_texture_rect(render_art[road_key],
+                            Rect2(center-Vector2(HALF_W*1.1,HALF_H*1.15),
+                                Vector2(HALF_W*2.2,HALF_H*2.3)),
+                            false,Color(0.92,0.91,0.80,0.92))
                 elif within and posmod(ix*13+iy*29,31)==0:
                     _draw_bush(center)
+                if within and posmod(ix*11+iy*23,13)==0:
+                    var tile_art := "env01_assets/terrain/stone_courtyard.png"
+                    if render_art.has(tile_art):
+                        draw_texture_rect(render_art[tile_art],
+                            Rect2(center-Vector2(HALF_W,HALF_H),
+                                Vector2(HALF_W*2.0,HALF_H*2.0)),
+                            false,Color(0.78,0.90,0.76,0.13))
+    # Sort all decorations with building art by actual projected ground depth.
+    # One draw surface and one depth queue prevent large roofs from showing
+    # behind trees which should occlude them.
+    var queue: Array[Dictionary] = []
     for item in display_instances:
+        if _visible_world(item["world"]):
+            queue.append({"y":(item["world"] as Vector2).y,"kind":"building","data":item})
+    for item in decoration_items:
+        if _visible_world(item["world"]):
+            queue.append({"y":(item["world"] as Vector2).y,"kind":"vegetation","data":item})
+    queue.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
+        return float(a["y"]) < float(b["y"])
+    )
+    for entry in queue:
+        var item: Dictionary = entry["data"]
         var place: Vector2 = item["world"]
-        if not _visible_world(place):
-            continue
-        var dest := str(item["destination"])
-        var managed := bool(item["managed"])
-        _draw_building(place,dest,managed)
+        if str(entry["kind"]) == "vegetation":
+            var tex: Texture2D = item["texture"]
+            var scaled := tex.get_size()*float(item["scale"])
+            draw_texture_rect(tex,Rect2(place-Vector2(scaled.x*0.5,
+                scaled.y-4.0),scaled),false)
+        else:
+            _draw_building(place,str(item["destination"]),bool(item["managed"]))
 
 func _visible_world(point: Vector2) -> bool:
     if camera == null:
@@ -268,6 +415,14 @@ func _draw_bush(p: Vector2) -> void:
     draw_circle(p+Vector2(-3,-11),5,Color(0.23,0.46,0.27,0.88))
 
 func _draw_building(p: Vector2,kind: String, managed: bool) -> void:
+    if HOUSE_TEXTURES.has(kind):
+        var key := str(HOUSE_TEXTURES[kind])
+        if render_art.has(key):
+            var image: Texture2D = render_art[key]
+            var target: Vector2 = HOUSE_SIZES[kind]
+            var offset := Vector2(0.0,-target.y*0.28)
+            draw_texture_rect(image,Rect2(p+offset-target*0.5,target),false)
+            return
     var base := Color(0.68,0.54,0.35)
     var roof := Color(0.23,0.45,0.36)
     if kind == "mine":
