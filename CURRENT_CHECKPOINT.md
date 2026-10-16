@@ -1,5 +1,20 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-16 — LAY-01 / HALL / LAND / PAID CONSTRUCTION DESIGN READY (NOT CODE-AUTHORIZED)
+
+**Scope:** owner requested review of LAY-01, ADR-0003 and ENV-02A plus an implementable design for `SectLayoutState`, save migration, main Hall authority, paid multi-instance construction and land unlocks, but explicitly prohibited crossing unapproved code gates. Work is **DESIGN ONLY** stacked above draft PR #12; **no GDScript/schema/migration/gameplay was changed**.
+
+**Verified current code:** PR #12 `ResourceBuildingExpansionPolicyV2` is preview-only and always fail-closed; `BuildingSystem.create_building` is a raw factory, not a paid construction action. Live `BuildingSystem` has no real Main Hall type. ENV-02A visually previews Hall/Warehouse/Forge but those are NOT equivalent to actual `BuildingState`. `SimulationState` has no layout field and `SaveService.CURRENT_VERSION=2` already stages/verifies `.tmp` and rotates `.bak`. ADR-0003 retains **fixed-layout-only** and must be explicitly amended before introducing editable persistent layout.
+
+**ENV-02A status:** code-only GitHub lab, static reports and Windows launcher exist; full official Godot 4.7.2 Windows import/camera/AStar/culling/two screenshots with exact PNG pack, and Android touch evidence remain **PENDING USER**. Historical ENV-01 evidence or PR #9 Windows P3.7 FULL PASS at `453df9aa...` must not be used to close ENV-02A/LAY.
+
+**Design output:** appended Sections 9.1–9.10 of `docs/design/SECT_BUILDING_LAND_EXPANSION_DESIGN_V1.md`: single `SimulationState.sect_layout` owner proposed (not implemented), reviewed all-instance seed/migration and backup handling, 13 nonoverlapping authored land rectangles including starter 48×48, real singleton Main Hall as a future BuildingState, one operator per resource instance and cap 30/30/40, pilot new construction/Hall upgrade/land tariffs, one-scheduler transactions/receipts, failure rollback, acceptance tests and exact owner approvals. All monetary amounts are **PILOT PROPOSALS, NOT LOCKED CODE BALANCE**. The historic Sections 1–8 retain their approval status; ADR-0003 and ENV02A code remain unchanged.
+
+**Blocked until new owner authorization:** explicit ADR-0003 owner-approved placement authority transfer, exact LAY-01 code allowlist, matched current ENV-02A Windows evidence and all-actual-instance seed manifest; then separately LAY-02 (move), LAY-03 (paid build), LAY-04 (paid land) with real Hall/cost approvals. No CI, no merge, no Combat or FE-02 edits, no Windows/Android PASS claim.
+
+---
+
+
 ## 2026-10-16 — ECON-V2 RESOURCE BUILDING CAP PREFLIGHT (STACKED, READ-ONLY)
 
 **User continuation:** prioritize construction/instance expansion before advanced-resource faucets. Current draft PR #9 HEAD observed `cf11d53f2ac48e9b7a220500fece983b675dcd62`; prior draft PR #10 HEAD `f374bc78a5556ad1003d92b27d6ec89c7c929aa3`. The follow-up draft **PR #12** branch `economy-v2-resource-expansion-gates-20261016` stacks on PR #10; `main` stays unchanged. The update from PR #10 base `d9b02df` to latest PR #9 includes an O8 Alchemy presentation test change **in addition to documentation**. Do not drop O8 when integrating the stack.
