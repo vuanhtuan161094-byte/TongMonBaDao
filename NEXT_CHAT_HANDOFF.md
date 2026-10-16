@@ -2,7 +2,7 @@
 
 ## 2026-10-16 — ECON-V2 RESOURCE INSTANCE EXPANSION GATE HANDOFF
 
-**Topology:** draft PR #9 latest observed `cf11d53f2ac48e9b7a220500fece983b675dcd62`; draft PR #10 `f374bc78a5556ad1003d92b27d6ec89c7c929aa3`. Branch `economy-v2-resource-expansion-gates-20261016` stacks on PR #10. PR #9 gained `p3_o8_alchemy_loop_test.gd` changes after PR #10 was branched; reconcile by safe ancestry/merge before integrated runtime QA. Do not reset/rebase branches destructively or drop the O8 test.
+**Topology:** draft PR #9 latest observed `cf11d53f2ac48e9b7a220500fece983b675dcd62`; draft PR #10 `f374bc78a5556ad1003d92b27d6ec89c7c929aa3`. Draft **PR #12** branch `economy-v2-resource-expansion-gates-20261016` stacks on PR #10. PR #9 gained `p3_o8_alchemy_loop_test.gd` changes after PR #10 was branched; reconcile by safe ancestry/merge before integrated runtime QA. Do not reset/rebase branches destructively or drop the O8 test.
 
 **New code:** read-only `ResourceBuildingExpansionPolicyV2` authors published caps (Mine/Forest/Field) and minimum existing average levels by hypothetical Hall tier. Existing-instance counts, index, availability are deterministic; all previews **fail closed** because Hall/land/paid-build authorities have NOT been implemented. Test-only synthetic instances do not create player production. Focused `economy_v2_expansion_cap_preview_test.gd` covers table boundaries, no mutation, missing authority. Commit `851c3b48a7620aa2e5d9b4d62ed97a4c07376f9b` before docs.
 
