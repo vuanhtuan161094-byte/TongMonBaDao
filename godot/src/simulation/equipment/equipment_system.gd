@@ -452,8 +452,9 @@ func validate_invariants(state: SimulationState) -> Array[String]:
         errors.append("Equipment counters cannot be negative.")
     for raw_recipe_id in RECIPES.keys():
         var recipe_id := StringName(raw_recipe_id)
-        var cultivation_tier := cultivation_realm_tier(recipe_id)
-        var body_tier := body_realm_tier(recipe_id)
+        var recipe_data := recipe(recipe_id)
+        var cultivation_tier := int(recipe_data.get("cultivation_realm_tier",-1))
+        var body_tier := int(recipe_data.get("body_realm_tier",-1))
         if cultivation_tier <= 0 or cultivation_tier > DiscipleRealmProgressV2.MAX_REALM:
             errors.append("Equipment recipe %s has invalid Tu Vi tier." % recipe_id)
         if body_tier < 0 or body_tier > DiscipleRealmProgressV2.MAX_REALM:
