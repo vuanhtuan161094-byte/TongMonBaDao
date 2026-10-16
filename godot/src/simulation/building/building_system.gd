@@ -491,6 +491,9 @@ func cancel_spirit_plot(state: SimulationState, field_id: StringName, plot_id: S
             return false
         plots[index] = _empty_plot(str(plot_id))
         data["plots"] = plots
+        if not _plots_have_growing_crop(plots):
+            data["active_duty_id"] = ""
+            data["active_duty_worker_id"] = ""
         field.production_state = data
         state.building_event_count += 1
         return true
@@ -878,72 +881,77 @@ func perform_spirit_field_step(state: SimulationState, disciple: DiscipleState, 
     var field := _building_for_disciple(state, TYPE_SPIRIT_FIELD, disciple)
     if field == null or not can_disciple_work(state, field, disciple):
         return {"ok": false, "completed": false, "reason": "no_active_spirit_field_slot"}
-    if disciple_has_active_spirit_plot(state, disciple.id, field):
-        return {"ok": false, "completed": false, "reason": "field_duty_already_running"}
 
     var data := _ensure_spirit_field_state(state, field)
     var plots: Array = data.get("plots", [])
-    var empty_indices: Array[int] = []
-    for index in range(plots.size()):
-        if plots[index] is Dictionary and StringName(plots[index].get("status", "")) == PLOT_EMPTY:
-            empty_indices.append(index)
-    if empty_indices.is_empty():
+    var plot_index := _first_empty_plot_index(plots)
+    if plot_index < 0:
         return {"ok": false, "completed": false, "reason": "no_empty_plot"}
 
-    # A field operator starts one FIELD DUTY that may seed several internal
-    # plots. Those plot timers are sub-state of this single occupation, not
-    # separate disciple jobs. This preserves one-active-job while allowing one
-    # person to manage the four-plot building.
-    var first_crop := _select_crop(state, field, data)
-    if first_crop == &"":
+    # One Linh Điền has one operator, but one click still plants exactly one
+    # plot and pays exactly one crop cost. Additional plots started by the same
+    # operator reuse the same Field-duty identity, so they are subordinate
+    # timers of ONE active job rather than extra disciple occupations.
+    var active_worker_id := str(data.get("active_duty_worker_id", ""))
+    if active_worker_id != "" and active_worker_id != str(disciple.id):
+        return {"ok": false, "completed": false, "reason": "field_owned_by_other_operator"}
+
+    var crop_id := _select_crop(state, field, data)
+    if crop_id == &"":
         return {"ok": false, "completed": false, "reason": "no_affordable_crop"}
-
-    var plant_sequence := int(data.get("plant_sequence", 0)) + 1
-    var duty_job_id := "%s:duty:%06d" % [str(field.id), plant_sequence]
-    var wage_job_id := duty_job_id if state.sect.economy_a_enabled and DiscipleRealmProgressV2.owns_v2_progression(disciple) else ""
-    var remainders = data.get("plot_work_remainders_bp", {})
-    var plot_remainders: Dictionary = remainders.duplicate(true) if remainders is Dictionary else {}
-    var started_plots: Array = []
-    var total_cost := 0
-    var xp_basis := 0.0
-
-    for plot_index in empty_indices:
-        var crop_id := _select_crop(state, field, data)
-        if crop_id == &"":
-            break
-        var plant_cost := crop_registry.cost(crop_id)
-        if state.sect.spirit_stones < plant_cost:
-            break
-
-        var affinity := _crop_affinity_factor(disciple, crop_id)
-        var total_speed := maxf(work_speed, 0.25) * spirit_field_speed_factor(field) * affinity
-        var base_duration := float(crop_registry.base_cycle_ticks(crop_id)) * spirit_field_cycle_time_factor(field)
-        var plot_id := str(plots[plot_index].get("plot_id", "plot_%03d" % [plot_index + 1]))
-        var timing := _timed_duration_plan(base_duration, total_speed, int(plot_remainders.get(plot_id, 0)))
-        var routine_yield := maxi(1, int(round(float(crop_registry.base_yield(crop_id)) * spirit_field_yield_factor(field))))
-        var rare_factor := profession_modifiers.rare_event_factor(state, disciple)
-
-        state.sect.spirit_stones -= plant_cost
-        total_cost += plant_cost
-        xp_basis = maxf(xp_basis, crop_registry.base_work_xp(crop_id))
-        plots[plot_index] = {
-            "plot_id": plot_id,
-            "crop_id": str(crop_id),
-            "status": str(PLOT_GROWING),
-            "started_tick": state.tick,
-            "finish_tick": state.tick + int(timing["duration_ticks"]),
-            "assigned_worker_id": str(disciple.id),
-            "paid_spirit_stones": plant_cost,
-            "routine_yield": routine_yield,
-            "rare_factor": rare_factor,
-            "economy_a_wage_job_id": wage_job_id,
-            "completion_work_remainder_bp": int(timing["completion_remainder_bp"])
-        }
-        started_plots.append(plot_id)
-
-    if started_plots.is_empty():
+    var plant_cost := crop_registry.cost(crop_id)
+    if state.sect.spirit_stones < plant_cost:
         return {"ok": false, "completed": false, "reason": "insufficient_spirit_stones"}
 
+    var duty_id := str(data.get("active_duty_id", ""))
+    var has_active_plot := disciple_has_active_spirit_plot(state, disciple.id, field)
+    if not has_active_plot:
+        var duty_sequence := maxi(int(data.get("duty_sequence", 0)), 0) + 1
+        duty_id = "%s:duty:%06d" % [str(field.id), duty_sequence]
+        data["duty_sequence"] = duty_sequence
+        data["active_duty_id"] = duty_id
+        data["active_duty_worker_id"] = str(disciple.id)
+    elif duty_id == "":
+        # Compatibility fallback for an already-growing pre-duty save. Reuse
+        # any prior wage identity if available; otherwise create a stable
+        # non-retroactive duty identity for subsequent plots.
+        for raw_plot in plots:
+            if raw_plot is Dictionary and StringName(raw_plot.get("status","")) == PLOT_GROWING and str(raw_plot.get("assigned_worker_id","")) == str(disciple.id):
+                duty_id = str(raw_plot.get("field_duty_id", raw_plot.get("economy_a_wage_job_id","")))
+                if duty_id != "":
+                    break
+        if duty_id == "":
+            duty_id = "%s:duty:resume:%s" % [str(field.id), str(disciple.id)]
+        data["active_duty_id"] = duty_id
+        data["active_duty_worker_id"] = str(disciple.id)
+
+    var remainders = data.get("plot_work_remainders_bp", {})
+    var plot_remainders: Dictionary = remainders.duplicate(true) if remainders is Dictionary else {}
+    var affinity := _crop_affinity_factor(disciple, crop_id)
+    var total_speed := maxf(work_speed, 0.25) * spirit_field_speed_factor(field) * affinity
+    var base_duration := float(crop_registry.base_cycle_ticks(crop_id)) * spirit_field_cycle_time_factor(field)
+    var plot_id := str(plots[plot_index].get("plot_id", "plot_%03d" % [plot_index + 1]))
+    var timing := _timed_duration_plan(base_duration, total_speed, int(plot_remainders.get(plot_id, 0)))
+    var routine_yield := maxi(1, int(round(float(crop_registry.base_yield(crop_id)) * spirit_field_yield_factor(field))))
+    var rare_factor := profession_modifiers.rare_event_factor(state, disciple)
+
+    state.sect.spirit_stones -= plant_cost
+    var plant_sequence := maxi(int(data.get("plant_sequence", 0)), 0) + 1
+    var wage_job_id := duty_id if state.sect.economy_a_enabled and DiscipleRealmProgressV2.owns_v2_progression(disciple) else ""
+    plots[plot_index] = {
+        "plot_id": plot_id,
+        "crop_id": str(crop_id),
+        "status": str(PLOT_GROWING),
+        "started_tick": state.tick,
+        "finish_tick": state.tick + int(timing["duration_ticks"]),
+        "assigned_worker_id": str(disciple.id),
+        "field_duty_id": duty_id,
+        "paid_spirit_stones": plant_cost,
+        "routine_yield": routine_yield,
+        "rare_factor": rare_factor,
+        "economy_a_wage_job_id": wage_job_id,
+        "completion_work_remainder_bp": int(timing["completion_remainder_bp"])
+    }
     data["plots"] = plots
     data["plant_sequence"] = plant_sequence
     data["plot_work_remainders_bp"] = plot_remainders
@@ -953,13 +961,14 @@ func perform_spirit_field_step(state: SimulationState, disciple: DiscipleState, 
     return {
         "ok": true,
         "completed": true,
-        "work_kind": "start_field_duty",
+        "work_kind": "start_crop",
         "building_id": str(field.id),
-        "duty_job_id": duty_job_id,
-        "plot_ids": started_plots,
-        "plots_started": started_plots.size(),
-        "paid_spirit_stones": total_cost,
-        "base_work_xp": xp_basis if xp_basis > 0.0 else crop_registry.base_work_xp(first_crop),
+        "duty_job_id": duty_id,
+        "plot_id": plot_id,
+        "crop_id": str(crop_id),
+        "finish_tick": state.tick + int(timing["duration_ticks"]),
+        "paid_spirit_stones": plant_cost,
+        "base_work_xp": crop_registry.base_work_xp(crop_id),
         "field_xp_factor": spirit_field_xp_factor(field),
         "stamina_cost": 0.0
     }
@@ -1255,6 +1264,18 @@ func validate_invariants(state: SimulationState) -> Array[String]:
                                 plot_workers[plot_worker] = true
                     if plot_workers.size() > 1:
                         errors.append("Spirit Field %s has plots owned by multiple operators." % building.id)
+                    var active_duty_id := str(data.get("active_duty_id",""))
+                    var active_duty_worker := str(data.get("active_duty_worker_id",""))
+                    if plot_workers.is_empty():
+                        if active_duty_id != "" or active_duty_worker != "":
+                            errors.append("Spirit Field %s has stale active duty metadata." % building.id)
+                    else:
+                        var only_worker := str(plot_workers.keys()[0])
+                        if active_duty_id == "" or active_duty_worker != only_worker:
+                            errors.append("Spirit Field %s active duty/operator metadata is inconsistent." % building.id)
+                        for raw_plot in plots:
+                            if raw_plot is Dictionary and StringName(raw_plot.get("status","")) == PLOT_GROWING and str(raw_plot.get("field_duty_id","")) != active_duty_id:
+                                errors.append("Spirit Field %s has a plot outside the active duty." % building.id)
 
     for disciple_value in state.disciples.values():
         var disciple: DiscipleState = disciple_value
@@ -1325,6 +1346,9 @@ func _process_spirit_field_plots(state: SimulationState, field: BuildingState) -
         changed = true
     if changed:
         data["plots"] = plots
+        if not _plots_have_growing_crop(plots):
+            data["active_duty_id"] = ""
+            data["active_duty_worker_id"] = ""
         field.production_state = data
         state.building_event_count += 1
 
@@ -1404,6 +1428,9 @@ func _ensure_spirit_field_state(state: SimulationState, field: BuildingState) ->
         var weights = data.get("priority_weights", {})
         data["priority_weights"] = weights.duplicate(true) if weights is Dictionary else {}
         data["plant_sequence"] = maxi(int(data.get("plant_sequence", 0)), 0)
+        data["duty_sequence"] = maxi(int(data.get("duty_sequence", 0)), 0)
+        data["active_duty_id"] = str(data.get("active_duty_id", ""))
+        data["active_duty_worker_id"] = str(data.get("active_duty_worker_id", ""))
         var raw_remainders = data.get("plot_work_remainders_bp", {})
         data["plot_work_remainders_bp"] = raw_remainders.duplicate(true) if raw_remainders is Dictionary else {}
         var plots: Array = []
@@ -1416,6 +1443,7 @@ func _ensure_spirit_field_state(state: SimulationState, field: BuildingState) ->
         if plots.size() > desired_slots:
             plots.resize(desired_slots)
         data["plots"] = plots
+        _reconcile_spirit_field_duty(field, data)
         field.production_state = data
         return data
 
@@ -1425,6 +1453,9 @@ func _ensure_spirit_field_state(state: SimulationState, field: BuildingState) ->
         "fixed_crop_id": "",
         "priority_weights": {},
         "plant_sequence": 0,
+        "duty_sequence": 0,
+        "active_duty_id": "",
+        "active_duty_worker_id": "",
         "plot_work_remainders_bp": {},
         "plots": []
     }
@@ -1446,11 +1477,15 @@ func _ensure_spirit_field_state(state: SimulationState, field: BuildingState) ->
             "started_tick": state.tick - int(floor(progress)),
             "finish_tick": state.tick + remaining,
             "assigned_worker_id": str(legacy.get("planted_by", "")),
+            "field_duty_id": "",
             "paid_spirit_stones": 0,
             "routine_yield": crop_registry.base_yield(crop_id),
-            "rare_factor": 1.0
+            "rare_factor": 1.0,
+            "economy_a_wage_job_id": "",
+            "completion_work_remainder_bp": 0
         }
     migrated["plots"] = plots
+    _reconcile_spirit_field_duty(field, migrated)
     field.production_state = migrated
     state.building_event_count += 1
     return migrated
@@ -1472,6 +1507,7 @@ func _normalize_plot(value: Variant, index: int) -> Dictionary:
         "started_tick": int(value.get("started_tick", 0)),
         "finish_tick": int(value.get("finish_tick", 1)),
         "assigned_worker_id": str(value.get("assigned_worker_id", "")),
+        "field_duty_id": str(value.get("field_duty_id", "")),
         "paid_spirit_stones": maxi(int(value.get("paid_spirit_stones", 0)), 0),
         "routine_yield": maxi(int(value.get("routine_yield", crop_registry.base_yield(crop_id))), 1),
         "rare_factor": maxf(float(value.get("rare_factor", 1.0)), 0.0),
@@ -1487,11 +1523,49 @@ func _empty_plot(plot_id: String) -> Dictionary:
         "started_tick": -1,
         "finish_tick": -1,
         "assigned_worker_id": "",
+        "field_duty_id": "",
         "paid_spirit_stones": 0,
         "routine_yield": 0,
         "rare_factor": 1.0,
         "completion_work_remainder_bp": 0
     }
+
+func _plots_have_growing_crop(plots: Array) -> bool:
+    for raw_plot in plots:
+        if raw_plot is Dictionary and StringName(raw_plot.get("status","")) == PLOT_GROWING:
+            return true
+    return false
+
+func _reconcile_spirit_field_duty(field: BuildingState, data: Dictionary) -> void:
+    var plots = data.get("plots", [])
+    if not (plots is Array) or not _plots_have_growing_crop(plots):
+        data["active_duty_id"] = ""
+        data["active_duty_worker_id"] = ""
+        return
+
+    var worker_id := str(data.get("active_duty_worker_id", ""))
+    var duty_id := str(data.get("active_duty_id", ""))
+    for raw_plot in plots:
+        if not (raw_plot is Dictionary) or StringName(raw_plot.get("status","")) != PLOT_GROWING:
+            continue
+        if worker_id == "":
+            worker_id = str(raw_plot.get("assigned_worker_id",""))
+        if duty_id == "":
+            duty_id = str(raw_plot.get("field_duty_id", raw_plot.get("economy_a_wage_job_id","")))
+        if worker_id != "" and duty_id != "":
+            break
+    if duty_id == "":
+        duty_id = "%s:duty:resume:%s" % [str(field.id), worker_id]
+    data["active_duty_id"] = duty_id
+    data["active_duty_worker_id"] = worker_id
+    for index in range(plots.size()):
+        if not (plots[index] is Dictionary) or StringName(plots[index].get("status","")) != PLOT_GROWING:
+            continue
+        var plot: Dictionary = plots[index]
+        if str(plot.get("field_duty_id","")) == "":
+            plot["field_duty_id"] = duty_id
+            plots[index] = plot
+    data["plots"] = plots
 
 func _first_empty_plot_index(plots: Array) -> int:
     for index in range(plots.size()):
