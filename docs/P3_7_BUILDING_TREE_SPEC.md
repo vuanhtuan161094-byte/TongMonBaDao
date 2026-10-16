@@ -157,6 +157,30 @@ Quy mô tăng bằng:
 - mở content/tier;
 - xây thêm instance theo cap ở mục 3.2.
 
+### Economy V2 opening ProductionPlan
+
+Một simulation tick = một phút.
+
+| Producer Lv1 | Output | Base cycle | Base yield |
+|---|---|---:|---:|
+| Mỏ | Thanh Thiết | 60 phút | 10,000 |
+| Linh Lâm | Linh Mộc | 60 phút | 8,000 |
+| Linh Điền — Linh Cốc | Linh Cốc | 60 phút | 2,500 / plot |
+| Linh Điền — Thanh Linh Thảo | Thanh Linh Thảo | 90 phút | 2,000 / plot |
+| Linh Điền — Tử Vân Thảo | Tử Vân Thảo | 180 phút | 1,000 / plot |
+
+Normal building levels apply **+0.5% speed and +0.5% common yield per level after Lv1**.
+Profession level remains the corresponding work-profession authority and affects work speed;
+it does not replace building level or multiply routine quantity a second time.
+
+New authentic V2 Mine/Forest timer jobs use these ProductionPlans. Existing legacy
+TRAVEL/EXTRACT/HAUL saves and opt-out carry cycles drain with their historical quantity/timing;
+they are not retroactively converted into 10,000/8,000-unit packets.
+
+Common bulk consumers use the same quantity scale while the V2 bulk economy is active:
+routine construction/upgrade Thanh Thiết/Linh Mộc requirements and common Forge inputs scale
+from legacy units to bulk units. Rare/discrete drops and milestone components stay discrete.
+
 
 ## 4.2 Công trình chế tạo
 
@@ -532,8 +556,8 @@ Không yêu cầu người chơi bấm tưới/thu hoạch.
 ## Cấp thường
 - sản lượng;
 - tốc độ tăng trưởng;
-- Ngưỡng Xử Lý PL;
-- tỷ lệ mở/thu được giống hoặc nguyên liệu thuộc cảnh giới phẩm cao hơn.
+- ngưỡng content/tier;
+- tỷ lệ mở/thu được giống hoặc nguyên liệu thuộc realm/tier cao hơn.
 
 **Worker count is not a level-up channel.** Economy V2 keeps exactly one Linh Thực
 operator and four internal plots per Linh Điền at every Lv1–100.
@@ -568,7 +592,7 @@ Lv.75:
 
 Lv.100:
 - Linh Điền Đại Thành;
-- bonus Phẩm Lực đầu ra;
+- bonus realm/tier đầu ra;
 - tăng EXP Linh Thực cho worker.
 
 ## Specialty
@@ -601,8 +625,8 @@ PvE mang về:
 - sản lượng;
 - độ sâu;
 - tỷ lệ khoáng hiếm;
-- Ngưỡng Xử Lý PL;
-- khả năng tiếp cận loại khoáng thuộc cảnh giới phẩm cao hơn.
+- ngưỡng content/tier;
+- khả năng tiếp cận loại khoáng thuộc realm/tier cao hơn.
 
 **Worker count is fixed:** one Khai Khoáng operator per Mine instance at every level.
 
