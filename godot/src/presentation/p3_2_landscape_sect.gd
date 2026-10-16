@@ -48,6 +48,8 @@ var building_operation_body: Label
 var building_operation_content: VBoxContainer
 var building_management_container: VBoxContainer
 var building_management_feedback := ""
+var building_management_query := ""
+const MANAGEMENT_PAGE_SIZE := 50
 var selected_building: StringName = &""
 var deep_restore_summary := false
 var screen_pointer_dragged := false
@@ -1246,6 +1248,44 @@ func _craft_from_building(recipe_id: StringName) -> void:
         ]
     _refresh_building_operation_content()
 
+func _add_management_search() -> void:
+    var search := LineEdit.new()
+    search.name = "BuildingDiscipleSearch"
+    search.placeholder_text = "Tìm tên hoặc ID đệ tử · Enter để lọc"
+    search.text = building_management_query
+    search.custom_minimum_size = Vector2(384,34)
+    search.text_submitted.connect(Callable(self,"_apply_management_search"))
+    building_management_container.add_child(search)
+
+func _apply_management_search(value: String) -> void:
+    building_management_query = value.strip_edges().to_lower()
+    _refresh_building_operation_content()
+
+func _ranked_management_ids(profession_id: StringName, group_id: StringName) -> Array:
+    var ids: Array = []
+    for raw_id in state.disciples.keys():
+        var disciple: DiscipleState = state.disciples[raw_id]
+        if building_management_query != "" and not disciple.display_name.to_lower().contains(building_management_query) and not str(disciple.id).to_lower().contains(building_management_query):
+            continue
+        ids.append(raw_id)
+    var modifiers := ProfessionModifierSystem.new()
+    ids.sort_custom(func(a: Variant, b: Variant) -> bool:
+        var left: DiscipleState = state.disciples[a]
+        var right: DiscipleState = state.disciples[b]
+        var left_level := workforce.profession_level_for_state(state,left,profession_id)
+        var right_level := workforce.profession_level_for_state(state,right,profession_id)
+        var left_score := modifiers.total_work_speed_factor(state,left,left_level)
+        var right_score := modifiers.total_work_speed_factor(state,right,right_level)
+        if left.work_group_id == group_id:
+            left_score += 10000.0
+        if right.work_group_id == group_id:
+            right_score += 10000.0
+        if not is_equal_approx(left_score,right_score):
+            return left_score > right_score
+        return str(a) < str(b)
+    )
+    return ids
+
 func _build_work_management(profession_id: StringName, group_id: StringName, group_label: String, order_label: String) -> void:
     _add_management_section_label("PHÂN CÔNG")
     var active_building_ids: Array[StringName] = []
@@ -1270,11 +1310,20 @@ func _build_work_management(profession_id: StringName, group_id: StringName, gro
             plan_button.tooltip_text = "Huyền Thiết mở ở Mỏ Lv30."
         plan_button.pressed.connect(Callable(self,"_set_mine_plan_from_ui").bind(active_producer.id,next_plan))
         building_management_container.add_child(plan_button)
-    var ids: Array = state.disciples.keys()
-    ids.sort()
+    _add_management_search()
+    var ids := _ranked_management_ids(profession_id,group_id)
+    var shown := 0
     for raw_id in ids:
+        if shown >= MANAGEMENT_PAGE_SIZE:
+            break
         var disciple: DiscipleState = state.disciples[raw_id]
         var row := _new_management_row(disciple)
+        var level := workforce.profession_level_for_state(state,disciple,profession_id)
+        var name_label := row.get_child(0) as Label
+        name_label.text = "%s · nghề Lv%d" % [disciple.display_name,level]
+        name_label.tooltip_text = "%s · nghề Lv%d · tốc độ ×%.2f" % [
+            disciple.display_name,level,ProfessionModifierSystem.new().total_work_speed_factor(state,disciple,level)]
+        shown += 1
         var in_group := disciple.work_group_id == group_id
         var timed_recipe_busy := building_system.disciple_has_active_timed_recipe(state, disciple.id)
 
@@ -1376,11 +1425,18 @@ func _build_spirit_field_management() -> void:
 
     _add_management_section_label("PHÂN CÔNG & GIEO TRỒNG")
     var active_ids := buildings.active_worker_ids(state, field)
-    var ids: Array = state.disciples.keys()
-    ids.sort()
+    _add_management_search()
+    var ids := _ranked_management_ids(WorkforceSystem.PROF_HERBALISM,&"herbalism_crew")
+    var shown := 0
     for raw_id in ids:
+        if shown >= MANAGEMENT_PAGE_SIZE:
+            break
         var disciple: DiscipleState = state.disciples[raw_id]
         var row := _new_management_row(disciple)
+        var level := workforce.profession_level_for_state(state,disciple,WorkforceSystem.PROF_HERBALISM)
+        var name_label := row.get_child(0) as Label
+        name_label.text = "%s · nghề Lv%d" % [disciple.display_name,level]
+        shown += 1
         var in_group := disciple.work_group_id == &"herbalism_crew"
         var has_plot := buildings.disciple_has_active_spirit_plot(state, disciple.id, field)
 
