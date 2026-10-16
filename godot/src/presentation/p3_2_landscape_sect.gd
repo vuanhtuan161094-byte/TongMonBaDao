@@ -49,7 +49,9 @@ var building_operation_content: VBoxContainer
 var building_management_container: VBoxContainer
 var building_management_feedback := ""
 var building_management_query := ""
+var disciple_profile_query := ""
 const MANAGEMENT_PAGE_SIZE := 50
+const DISCIPLE_PROFILE_PAGE_SIZE := 50
 var selected_building: StringName = &""
 var deep_restore_summary := false
 var screen_pointer_dragged := false
@@ -3001,9 +3003,19 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
     roster_panel.add_theme_stylebox_override("panel", _style(Color(0.86, 0.80, 0.66, 1.0), Color(0.40, 0.31, 0.20, 1.0), 2, 10))
     panel.add_child(roster_panel)
 
+    var roster_search := LineEdit.new()
+    roster_search.name = "DiscipleProfileSearch"
+    roster_search.position = Vector2(8, 8)
+    roster_search.size = Vector2(168, 36)
+    roster_search.placeholder_text = "Tên hoặc ID · Enter"
+    roster_search.text = disciple_profile_query
+    roster_search.tooltip_text = "Tìm theo tên hoặc ID; hiển thị tối đa 50 đệ tử mỗi lượt."
+    roster_search.text_submitted.connect(Callable(self,"_set_disciple_profile_search").bind(disciple_id,tab_name))
+    roster_panel.add_child(roster_search)
+
     var scroll := ScrollContainer.new()
-    scroll.position = Vector2(8, 8)
-    scroll.size = Vector2(168, 448)
+    scroll.position = Vector2(8, 50)
+    scroll.size = Vector2(168, 406)
     roster_panel.add_child(scroll)
 
     var roster := VBoxContainer.new()
@@ -3013,9 +3025,21 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
 
     var ids: Array = state.disciples.keys()
     ids.sort()
+    if disciple_profile_query.is_empty() and ids.has(disciple_id):
+        ids.erase(disciple_id)
+        ids.push_front(disciple_id)
+    var roster_shown := 0
     for raw_id in ids:
+        if roster_shown >= DISCIPLE_PROFILE_PAGE_SIZE:
+            break
         var id := StringName(raw_id)
         var roster_disciple: DiscipleState = state.disciples[id]
+        if not disciple_profile_query.is_empty() and not (
+            roster_disciple.display_name.to_lower().contains(disciple_profile_query)
+            or str(id).to_lower().contains(disciple_profile_query)
+        ):
+            continue
+        roster_shown += 1
         var entry := Button.new()
         entry.text = roster_disciple.display_name
         entry.custom_minimum_size = Vector2(148, 44)
@@ -3107,6 +3131,11 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
         tab.add_theme_stylebox_override("normal", _style(Color(0.97, 0.88, 0.64, 1.0) if active else Color(0.88, 0.82, 0.67, 1.0), GOLD if active else Color(0.45, 0.37, 0.25, 1.0), 2 if active else 1, 7))
         tab.pressed.connect(Callable(self, "_open_disciple_deep_screen").bind(selected_id, str(tab_names[index])))
         panel.add_child(tab)
+
+
+func _set_disciple_profile_search(query: String, disciple_id: StringName, tab_name: String) -> void:
+    disciple_profile_query = query.strip_edges().to_lower()
+    _open_disciple_deep_screen(disciple_id,tab_name,true)
 
 
 func _deep_status_text(disciple: DiscipleState) -> String:
