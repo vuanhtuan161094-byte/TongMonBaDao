@@ -10,6 +10,8 @@ Owner explicitly authorized ProductionPlan + bulk balance code and minimum exist
 
 **Minimum consumers now aligned:** common Forge and building-upgrade inputs scale ×1,000 only in active bulk mode; rare/discrete materials are not multiplied; Hồi Xuân Đan consumes 500 Thanh Linh Thảo / 6m; Linh Cốc logistics consumes 2/disciple/30m with reserve/lock and audit-only shortage. No market-price/lot redesign, refining, advanced resources, new equipment architecture, PvE or Injury change was opened.
 
+**Deep static audit:** PR #8 received in-scope fixes after first handoff: raw 0–30 realm-tier validation, per-worker fixed-point remainder for 6-minute Alchemy timers, and live UI correction for bulk Mine/Forest/Alchemy numbers. Latest gameplay+test SHA before docs: **`b9c5be6df6228dde830dcadd4bf7491912d33a2b`**. Static balance audit also found current building growth too weak relative to late upgrade costs: Mine/Forest Lv100 building-only throughput ≈×2.235 versus Lv1. Owner is considering/accepting roughly ×10 Lv100 per-batch yield; **not implemented yet** because that is a balance change, not a bugfix.
+
 **QA status:** focused contracts are authored/updated, including new `economy_v2_bulk_production_test.gd`. Static structural scan only. **Official Godot 4.7.2 NOT RUN; no CI; no PASS; no merge.** Before integration, run exact-branch parse/import + bulk focused + Mine V2 + Economy-A + P3.7A2/O4/O8/O9 + GP-01/O3/O6 unchanged + GP-02B1/GP-02C1/SAFE + P3.7 FULL as affected regression gates.
 
 ---
