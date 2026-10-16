@@ -315,6 +315,16 @@ func assign_worksite(state: SimulationState, disciple_id: StringName, building_i
     var disciple: DiscipleState = state.disciples[disciple_id]
     if state.sect.economy_a_enabled and not building_system.active_resource_timer_for_worker(state,disciple.id).is_empty() and building_id != disciple.worksite_building_id:
         return false
+    if state.p3_7_buildings_enabled and building_system.disciple_has_active_spirit_plot(state,disciple.id):
+        if building_id == &"":
+            return false
+        var active_field_target = state.buildings.get(str(building_id))
+        if (
+            not (active_field_target is BuildingState)
+            or active_field_target.building_type != BuildingSystem.TYPE_SPIRIT_FIELD
+            or not building_system.disciple_has_active_spirit_plot(state,disciple.id,active_field_target)
+        ):
+            return false
     # The primary-building fallback counts group-only members as assigned.
     # Clearing only worksite would therefore leave a hidden Rèn Thân slot.
     # Use the canonical two-field release for an explicit vacancy request.
