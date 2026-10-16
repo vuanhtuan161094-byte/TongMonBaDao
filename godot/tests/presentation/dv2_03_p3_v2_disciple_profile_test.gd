@@ -78,6 +78,13 @@ func _run() -> void:
         return
 
     var snapshot := DisciplePresentationSnapshotV2.build(state,disciple)
+    var professions: Dictionary = snapshot["work"]["professions"]
+    var mining: Dictionary = professions[str(WorkforceSystem.PROF_MINING)]
+    if not attributes.contains("Khai Khoáng Lv%d · EXP %.1f" % [
+        int(mining["level"]), float(mining["xp"])
+    ]):
+        _fail("Authentic V2 profile omitted canonical Mining level or EXP.")
+        return
     var combat: Dictionary = snapshot["combat"]
     if not bool(combat.get("ready",false)):
         _fail("V2 UI snapshot has no canonical combat stats.")
