@@ -152,8 +152,15 @@ func _verify_field_duty_internal_plots() -> bool:
     if not _check(wage_ids.size() <= 1,
         "four plots created multiple wage identities for one field duty"):
         return false
-    return _check(buildings.disciple_has_active_spirit_plot(state,worker.id,field),
-        "field duty does not reserve its sole operator")
+    if not _check(buildings.disciple_has_active_spirit_plot(state,worker.id,field),
+        "field duty does not reserve its sole operator"):
+        return false
+    var duplicate := buildings.perform_spirit_field_step(state,worker,1.0)
+    return _check(
+        not bool(duplicate.get("ok",false))
+        and str(duplicate.get("reason","")) == "field_duty_already_running",
+        "same operator started a competing Field duty"
+    )
 
 func _verify_fractional_work_speed_is_preserved() -> bool:
     var first := buildings._timed_duration_plan(60.0,1.01,0)
