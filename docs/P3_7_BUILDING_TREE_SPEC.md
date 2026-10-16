@@ -1,7 +1,7 @@
 # P3.7 — CÂY CÔNG TRÌNH TÔNG MÔN V1
 
 Status: CANONICAL DESIGN AUTHORITY  
-Date: 2026-10-05  
+Date: 2026-10-16  
 Parent authority: `docs/P3_7_LONG_TERM_SECT_ECONOMY_HUNTING_SPEC.md`
 
 Mục tiêu của file này là khóa bộ xương công trình dài hạn cho Tông Môn Bá Đạo.
@@ -48,10 +48,14 @@ Không dùng Mỏ Lv.8.000.
 Quy mô dài hạn tăng bằng:
 - nhiều instance hơn;
 - nhiều đất hơn;
-- nhiều worker hơn;
+- hiệu suất/cấp nghề cao hơn;
+- nhiều worker hơn ở các họ công trình cho phép;
 - nhiều tuyến sản xuất;
 - nhiều đội săn;
 - Tông Môn lớn hơn.
+
+**Ngoại lệ Economy V2 đã khóa:** Mỏ, Linh Lâm và Linh Điền mỗi instance chỉ có
+**một đệ tử phụ trách**, không tăng worker theo cấp công trình.
 
 ---
 
@@ -102,35 +106,57 @@ Có thể có nhiều instance:
 - Tửu Phường;
 - v.v.
 
-### Quy tắc mở thêm instance
+### Economy V2 — cap ba raw-resource buildings
 
-Ví dụ một họ công trình có trần ban đầu 10 instance.
+Không dùng ví dụ "10 instance" cũ làm giới hạn mặc định.
 
-Khi:
-- toàn bộ 10 instance đã Lv.100;
-- Tông Môn đủ điều kiện đất/quản trị;
+| Cấp Đại Điện/Tông Môn | Mỏ max | Linh Lâm max | Linh Điền max | Tổng raw producer |
+|---|---:|---:|---:|---:|
+| 1–9 | 1 | 1 | 1 | 3 |
+| 10–19 | 2 | 2 | 3 | 7 |
+| 20–39 | 5 | 5 | 7 | 17 |
+| 40–59 | 10 | 10 | 14 | 34 |
+| 60–79 | 18 | 18 | 24 | 60 |
+| 80–100 | 30 | 30 | 40 | 100 |
 
-thì mở instance thứ 11.
+Mở thêm instance yêu cầu đồng thời:
+- chưa vượt cap của cấp Đại Điện/Tông Môn;
+- có vùng đất đã mở và placement hợp lệ;
+- đủ chi phí xây;
+- cấp trung bình các instance hiện hữu đạt mốc progression của tier mở rộng;
+- có đệ tử khả dụng nếu muốn vận hành ngay.
 
-Khi 11 instance cùng đạt điều kiện hoàn thiện:
-- mở instance thứ 12.
+Mốc cấp trung bình pilot:
+- tier Đại Điện 10: average building Lv5;
+- tier 20: average Lv10;
+- tier 40: average Lv20;
+- tier 60: average Lv35;
+- tier 80: average Lv50.
 
-Cơ chế này có thể tiếp tục.
-
-Không bắt buộc mọi họ công trình đều bắt đầu ở 10; con số ban đầu là dữ liệu cân bằng.
+Một instance chưa có operator có thể tồn tại nhưng không được tạo sản lượng.
 
 ---
 
 # 4. Luật worker slot
 
-## 4.1 Công trình khai thác
+## 4.1 Raw-resource buildings — owner lock 2026-10-16
 
-Mặc định:
-- Lv.1: 2 worker;
-- mỗi 5 level: +1 worker;
-- Lv.100: khoảng 22 worker/instance.
+Ba loại sau dùng **một operator duy nhất trên mỗi instance ở mọi Lv1–100**:
+- Mỏ Linh Khoáng → nghề Khai Khoáng;
+- Linh Lâm → nghề Lâm Nghiệp;
+- Linh Điền → nghề Linh Thực.
 
-Đây là default, từng loại có thể chỉnh.
+Cấp công trình không cộng worker slot cho ba loại này.
+
+Linh Điền có **4 plot nội bộ cố định** trong Economy V2 pilot. Plot là timer sản xuất
+của cùng một Field duty, không phải bốn active jobs và không tạo bốn worker slots.
+
+Quy mô tăng bằng:
+- nâng cấp building;
+- profession speed;
+- mở content/tier;
+- xây thêm instance theo cap ở mục 3.2.
+
 
 ## 4.2 Công trình chế tạo
 
