@@ -96,8 +96,19 @@ func _run() -> void:
                 _fail("O8 could not cancel a pre-existing plot for isolation.")
                 return
 
-    # AUTO_DEMAND uses actual stock-to-target ratios, so a fresh save may
-    # prioritize the herb directly. Observe a genuine 2,000-unit herb batch.
+    # Test-only grain stock isolates the Alchemy herb path. AUTO_DEMAND still
+    # chooses by real Warehouse ratios, and no herb is granted by this fixture.
+    var grain_crop := SpiritCropRegistry.CROP_LINH_COC
+    var grain_target := maxi(SpiritCropRegistry.new().stock_target(grain_crop),
+        ProductionPlanRegistry.new().scaled_yield(
+            SpiritCropRegistry.new().production_plan_id(grain_crop),field.level
+        ) * 10)
+    var grain_stock := warehouse.quantity(state,&"linh_coc")
+    if grain_stock < grain_target and not warehouse.add(state,&"linh_coc",grain_target-grain_stock):
+        _fail("O8 could not isolate grain stock for AUTO_DEMAND herb selection.")
+        return
+
+    # Observe one genuine 2,000-unit herb batch settled by the real Field.
     if not await _open_building(SectMapPresentation.DEST_SPIRIT_FIELD):
         return
     if not await _press("FieldPlant_%s" % str(field_worker_id)):
