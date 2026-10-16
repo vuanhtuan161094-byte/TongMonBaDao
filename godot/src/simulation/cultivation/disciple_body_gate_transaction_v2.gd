@@ -44,6 +44,17 @@ func preview_gate(state: SimulationState, disciple_id: StringName) -> Dictionary
         return {"ok":false,"reason":"body_gate_disciple_unavailable"}
     if not [&"EVALUATE", &"HOLD", &"IDLE", &"CULTIVATE", &"TRAIN_BODY"].has(disciple.current_action):
         return {"ok":false,"reason":"body_gate_disciple_busy"}
+    # A major Body gate cannot debit ingredients or advance while another
+    # active job owns this actor, even if current_action was reset to HOLD.
+    var buildings := BuildingSystem.new()
+    if (
+        not disciple.active_pve_encounter_id.is_empty()
+        or not disciple.work_cycle_state.is_empty()
+        or buildings.disciple_has_active_spirit_plot(state,disciple.id)
+        or buildings.disciple_has_active_timed_recipe(state,disciple.id)
+        or DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple)
+    ):
+        return {"ok":false,"reason":"body_gate_disciple_reserved"}
     var body: Dictionary = disciple.v2_realm_progress["body"]
     var source_realm := int(body["realm"])
     var recipe := DiscipleBodyGateContentV2.recipe(source_realm)
