@@ -52,6 +52,8 @@ func _run() -> void:
     if not buildings.active_worker_ids(state,mine).has(miner_id) or miner.worksite_building_id != mine.id:
         _fail("Mine picker failed to assign canonical one-worker slot")
         return
+    if not await _press("WorkforceStart"):
+        return
     var ore_before := warehouse.quantity(state,&"thanh_thiet")
     var scheduler := SimulationScheduler.new(state)
     var mining_job := {}
@@ -158,8 +160,19 @@ func _run() -> void:
     if not buildings.active_worker_ids(restored,restored_field).has(farmer_id) or not buildings.disciple_has_active_spirit_plot(restored,farmer_id,restored_field):
         _fail("saved Field operator and active plots were not recovered")
         return
-    if buildings.active_resource_timer_for_worker(restored,forester_id).is_empty():
+    var saved_forest_job := buildings.active_resource_timer_for_worker(restored,forester_id)
+    if saved_forest_job.is_empty():
         _fail("saved Forest timer was lost")
+        return
+    var saved_wood := warehouse.quantity(restored,&"linh_moc")
+    var settle_until := int(saved_forest_job.get("finish_tick",restored.tick))
+    if settle_until <= restored.tick:
+        _fail("saved Forest timer has invalid finish tick")
+        return
+    var recovered_scheduler := SimulationScheduler.new(restored)
+    recovered_scheduler.run_ticks(settle_until-restored.tick)
+    if warehouse.quantity(restored,&"linh_moc") != saved_wood+int(saved_forest_job.get("output_quantity",0)):
+        _fail("offline-restored Forest batch was not deposited exactly once")
         return
     if not restored.validate_invariants().is_empty():
         _fail("loaded state invariants failed")
@@ -175,6 +188,17 @@ func _free_disciple() -> StringName:
         var d: DiscipleState = state.disciples[raw]
         if d.work_group_id == &"" and d.worksite_building_id == &"" and d.work_cycle_state.is_empty() and d.direct_command.is_empty() and d.region_id == &"sect" and d.active_pve_encounter_id.is_empty() and d.current_action in [&"EVALUATE",&"IDLE",&"HOLD"]:
             return d.id
+    # Real generator/recruitment path for a compact test roster with no idle
+    # seat; never fabricate a disciple by directly adding to the state.
+    state.sect.disciple_v2_birth_enabled = true
+    state.sect.disciple_capacity = state.disciples.size()+1
+    var generated := DiscipleGeneratorOpenPoints.new().generate_candidate(
+        state,DiscipleGeneratorV2.SOURCE_ORDINARY,781300+state.disciples.size())
+    if generated != null:
+        state.recruitment_candidates[generated.id] = generated
+        var accepted := RecruitmentSystem.new().accept_candidate(state,generated.id)
+        if bool(accepted.get("ok",false)):
+            return generated.id
     return &""
 
 func _filter_picker(id: StringName) -> void:
