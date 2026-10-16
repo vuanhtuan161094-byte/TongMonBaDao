@@ -1,5 +1,38 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-16 — ECONOMY-V2 PRODUCTION PLAN + BULK BALANCE / STACKED BRANCH / RUNTIME QA PENDING
+
+**Owner authorization:** implement a new stacked Economy V2 packet on top of draft PR #7; keep PR #6/#7 unmerged; add canonical ProductionPlan authority and the approved bulk rates; apply +0.5% building speed and +0.5% common yield per level; keep work level = profession level and align content tiers to the canonical 30 Tu Vi + 30 Luyện Thể tracks; rebalance only the minimum existing consumers needed to avoid a producer-only economy. **No CI and no merge.**
+
+**Integration topology:** GitHub `main` remains `461caca1171462e0da092f21108c5c1733157ad9`. PR #6 and PR #7 remain OPEN/DRAFT and unmerged. Branch `economy-v2-bulk-production-20261016` is stacked from exact PR #7 HEAD `c6f87edc0112b544b8ee6e3cc63905697caf307e`. Latest gameplay+test SHA before documentation-only commits is **`6428a4c359b7691a5f01fda1b08cf199ee44c115`**.
+
+**Implemented ProductionPlan authority:**
+- new `ProductionPlanRegistry` is the single content source for opening bulk duration/yield;
+- Mine T1: **10,000 Thanh Thiết / 60 simulation minutes**;
+- Linh Lâm T1: **8,000 Linh Mộc / 60 minutes**;
+- Linh Điền: **2,500 Linh Cốc / 60m / plot**, **2,000 Thanh Linh Thảo / 90m / plot**, **1,000 Tử Vân Thảo / 180m / plot**;
+- building level: **+0.5% timer speed +0.5% common yield per level after Lv1**; Lv100 normal-level factor = ×1.495 before existing explicit milestone factors;
+- profession speed remains `1 + 0.01 × profession level`; profession is independent from realm and does not multiply routine common yield a second time;
+- ProductionPlans carry descriptive `cultivation_realm_tier/body_realm_tier` aligned to `DiscipleRealmProgressV2.MAX_REALM=30`; tier does not become a generic worker eligibility gate.
+
+**Compatibility boundary:** only new authentic V2 Mine/Forest timer jobs snapshot the 10,000/8,000 bulk ProductionPlan values. Historical/opt-out TRAVEL/EXTRACT/HAUL carry-cycle jobs keep their old helper quantity/timing and drain normally. This deliberately preserves GP-01/O3/O6 legacy provenance; **O6 exact `==4` produced-ore fixture is not weakened or rewritten**.
+
+**Minimum consumer rebalance in this packet:**
+- routine common Forge inputs use ×1,000 bulk units only while canonical P3.7 Warehouse + Economy-A bulk mode are active; e.g. Thanh Thiết Kiếm becomes 3,000 Thanh Thiết + 1,000 Linh Mộc. Rare/discrete inputs such as Tinh Lang Bì/Yêu Đan stay 1/2/3 units;
+- routine building upgrade common Thanh Thiết/Linh Mộc requirements use the same ×1,000 compatibility adapter only in bulk mode; Spirit Stones and milestone components stay on their own scales; public legacy `upgrade_cost()` remains unchanged for compatibility, while gameplay/UI use state-aware `upgrade_cost_for_state()`;
+- Hồi Xuân Đan opening consumer: **500 Thanh Linh Thảo → 1 pill / 6-minute base recipe**, tier-aligned to Tu Vi realm 2;
+- Linh Cốc logistics pilot: **2 units/disciple/30 simulation minutes (~96/day)**, consuming only Warehouse-available stock and respecting reserve/lock. Shortage is audit-only here; **no starvation penalty** was introduced;
+- market lots/prices were not changed in this packet, so the old small daily NPC quota cannot turn bulk warehouse stock directly into runaway Spirit Stone inflation.
+
+**Authored/updated tests (NOT RUN):** new `godot/tests/simulation/economy_v2_bulk_production_test.gd` verifies all five plans, 30×10 realm authority, +0.5%/level factors, legacy-vs-bulk boundary, Forge/upgrade common scaling, rare-input preservation, 500-herb Alchemy and reserve-aware food sink. `mine_v2_one_worker_test.gd`, `economy_a_playable_test.gd` and O8 Alchemy presentation contract now read real ProductionPlan/recipe quantities. O6/GP-01/O3 legacy fixtures intentionally remain unchanged.
+
+**QA truth:** GitHub Actions were **not used**, per owner instruction. Static delimiter/string scanning of changed GDScript files is structurally balanced, but this is not Godot parsing or runtime evidence. Official Godot 4.7.2 focused/cumulative tests are **NOT RUN / PENDING**. Do not label this packet PASS and do not merge this branch, PR #7 or PR #6 from static evidence.
+
+**Still out of scope:** new advanced resource IDs (Huyền Tinh/Cổ Mộc etc.), refining, market-lot/price redesign, new equipment V2 architecture, PvE reward rebalance, runtime Main Hall building-count/construction unlocks, wage-time redesign, stock-target auto-pause, Injury changes, DV2-04, FE-02 and Android/device acceptance.
+
+---
+
+
 ## 2026-10-16 — ECONOMY-V2 CORE FOUNDATION / DRAFT PR #7 / RUNTIME QA PENDING
 
 **Owner authorization:** owner approved implementation of the Economy V2 recommendations and explicitly required alignment with the canonical **30 Tu Vi realms + 30 Luyện Thể realms**, each with 10 floors. This packet deliberately implements the shared production foundation first; it does **not** yet apply the later bulk-10,000 production/market/recipe rebalance.
