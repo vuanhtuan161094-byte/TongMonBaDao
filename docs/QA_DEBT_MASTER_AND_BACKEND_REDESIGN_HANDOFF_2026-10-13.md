@@ -1,5 +1,22 @@
 # TÔNG MÔN BÁ ĐẠO — SỔ NỢ CHUNG + BÀN GIAO RÀ SOÁT BACKEND
 
+## CẬP NHẬT INTEGRATION — 2026-10-16 (PR #9 DRAFT, CHƯA MERGE)
+
+Master authorization ngày 16/10 mở quyền CODE cho Disciple/Production/Economy V2; các câu "chưa được sửa" trong phần lịch sử bên dưới là trạng thái của packet cũ, không còn là giới hạn quyền hiện tại. PR #9 xếp trên #8 → #7 → #6, không nhập `main`.
+
+| Nợ | Bằng chứng hiện có | Trạng thái còn lại |
+|---|---|---|
+| GUI-DEFECT-01/02/03 | Đã sửa màu chữ, hàng hành động hai cột, bỏ spacer 420 px; bài scene thật 1280×720 Windows Godot 4.7.2 PASS tại `927a5f3` | CODE + headless VERIFIED; manual visual/Android PENDING |
+| Q13, O3/O5/O6/O8/O9 | ProductionPlan tách yield/speed/rare, snapshot timer và stock pause; focused O3/O5/O6/O8/O9 PASS trên integration, O8/O9 fixture đã theo registry hiện hành | Pilot CODE; P3.7 FULL exact final SHA PENDING; 30/30/40 instance/land/construction OPEN |
+| ACTION-GUARD-01 / Q12, GP-01/02B1/02C1 | Focused one-active-job, worksite và Injury 0/1 gates PASS; V2 profile gate PASS tại `d79cdd1` | Chưa có audit toàn bộ action entrypoints; không đóng ACTION-GUARD-01 |
+| CHAR-AUDIT-01/01B, CHAR-ISO-00 | Snapshot hiển thị Lục Duy, hai progression tracks, nghề và trang bị thật; nguồn/consumer Tiềm Lực đã ghi vào ledger Economy V2 | Growth consumer Tiềm Lực và audit/isolation toàn nhân vật OPEN |
+| SAFE-01/02, Warehouse, save/offline | SAFE focused và Economy-A save/offline/payroll/market focused PASS trên integration | Device kill/low-storage/recovery và FULL exact SHA PENDING |
+| 100/500/1.000/3.000 đệ tử | One-tick authentic V2 Windows scheduler probe tại `df97f58`: 139.5/761.0/1633.1/3160.6 ms | Measured only; sustained simulation, memory, GUI FPS/device PENDING |
+
+Nguồn số liệu, giới hạn balance và các thiếu hụt tài nguyên cao cấp: `docs/ECONOMY_V2_INTEGRATION_RESEARCH_AND_BALANCE_2026-10-16.md`. Không diễn giải test headless thành duyệt giao diện hoặc Android.
+
+---
+
 ## BẰNG CHỨNG WINDOWS GUI THỰC — 2026-10-15 14:43–14:48 UTC+07
 
 - **Evidence mới, không thay đổi gameplay:** owner-uploaded `20261015_144302.zip` SHA-256 `a1aca095366dc701c0e6408491c157d54b66983a420a05eb77bf9f791c42fb3c` và video quay màn hình `Tong Mon Ba Dao (DEBUG) 2026-10-15 14-44-41.mp4` SHA-256 `31a7c44370e290935d379df5d2df7c2f5eee86b5ecf7c377f170813cf579ef18` (~61 giây, 1920×1004 recording). Tệp nguồn do user upload trong chat, **không tự có trên GitHub**.
