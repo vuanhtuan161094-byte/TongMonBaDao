@@ -1098,8 +1098,18 @@ func _start_resource_timer(state: SimulationState, producer: BuildingState, acto
     var duration := int(timing["duration_ticks"])
     var jobs := resource_timer_jobs(producer)
     var sequence := maxi(int(data.get("economy_a_sequence",0)),0)+1
+    var job_id := "%s:v2:%d" % [str(producer.id),sequence]
+    # A recovered vein instrument is a rare discrete byproduct, never part
+    # of the common-yield curve. Snapshot the deterministic result at start.
+    var rare_drop_id := ""
+    if plan_id == ProductionPlanRegistry.PLAN_MINE_THANH_THIET_T1:
+        var rare_roll := _stable_plot_roll(state.seed,str(producer.id),job_id,state.tick)
+        var rare_chance := clampf(0.02 * profession_modifiers.rare_event_factor(state,actor),0.0,1.0)
+        if rare_roll < rare_chance:
+            rare_drop_id = MATERIAL_TAM_MACH_BAN
     var job := {
-        "job_id":"%s:v2:%d" % [str(producer.id),sequence],
+        "job_id":job_id,
+        "rare_drop_id":rare_drop_id,
         "worker_id":str(actor.id),"profession_id":str(profession_id),
         "production_plan_id":str(plan_id),
         "resource_id":str(production_plans.output_resource_id(plan_id)),
@@ -1189,7 +1199,16 @@ func _process_resource_timers(state: SimulationState, building: BuildingState) -
         var resource_id := StringName(job.get("resource_id",""))
         var units := int(job.get("output_quantity",0))
         var job_id := str(job.get("job_id",""))
+        var rare_drop_id := StringName(job.get("rare_drop_id",""))
+        if rare_drop_id != &"" and (not ResourceRegistry.new().has(rare_drop_id)
+            or warehouse.quantity(state,rare_drop_id) >= WarehouseSystem.MAX_SAFE_STACK):
+            remaining.append(job)
+            continue
         if job_id.is_empty() or units <= 0 or not warehouse.add(state,resource_id,units):
+            remaining.append(job)
+            continue
+        if rare_drop_id != &"" and not warehouse.add(state,rare_drop_id,1):
+            warehouse.consume(state,resource_id,units,true)
             remaining.append(job)
             continue
         building.metrics["production_batches"] = int(building.metrics.get("production_batches",0))+1
