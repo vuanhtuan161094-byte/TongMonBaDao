@@ -125,6 +125,11 @@ func _make_hud() -> void:
     pause_button.custom_minimum_size = Vector2(150, 44)
     pause_button.pressed.connect(_toggle_pause)
     top.add_child(pause_button)
+    var capture := Button.new()
+    capture.text = "Chụp ảnh"
+    capture.custom_minimum_size = Vector2(110, 44)
+    capture.pressed.connect(_save_godot_screenshot)
+    top.add_child(capture)
     var restart := Button.new()
     restart.text = "Chơi lại"
     restart.custom_minimum_size = Vector2(142, 44)
@@ -153,6 +158,25 @@ func _refresh_hud() -> void:
         human_art, wolves,
         "%d SOURCE A" % source_loaded.size() if not source_loaded.is_empty() else "procedural"
     ]
+
+func _save_godot_screenshot() -> void:
+    # Requires a REAL graphical Godot renderer (not --headless).
+    var folder := ProjectSettings.globalize_path("user://cmb_v4_screenshots")
+    var mkerr := DirAccess.make_dir_recursive_absolute(folder)
+    if mkerr != OK:
+        push_error("CMB-V4 screenshot directory failed: " + str(mkerr))
+        return
+    var safe_time := Time.get_datetime_string_from_system().replace(":", "-")
+    var filename := folder.path_join("CMB-V4-%s.png" % safe_time)
+    # Wait until the next drawn frame; captures the actual game viewport.
+    await RenderingServer.frame_post_draw
+    var captured := get_viewport().get_texture().get_image()
+    var err := captured.save_png(filename)
+    if err == OK:
+        print("CMB-V4 REAL GODOT SCREENSHOT: " + filename)
+        source_note.text = "ẢNH GODOT ĐÃ LƯU: " + filename
+    else:
+        push_error("CMB-V4 screenshot failed: " + str(err))
 
 func _toggle_pause() -> void:
     paused = not paused
