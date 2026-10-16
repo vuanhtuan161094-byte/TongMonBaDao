@@ -458,6 +458,7 @@ func _bottom_action(action: String) -> void:
         _show_sect_hub()
         return
     if action == "disciples":
+        _hide_sect_hub()
         var ids: Array = state.disciples.keys()
         ids.sort()
         if ids.is_empty():
