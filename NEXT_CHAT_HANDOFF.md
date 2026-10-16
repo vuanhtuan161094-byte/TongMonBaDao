@@ -1,5 +1,17 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-16 HANDOFF — MASTER DISCIPLE/PRODUCTION/ECONOMY V2, PR #9 DRAFT
+
+Owner's 16/10 master message is new CODE authorization; do not reapply older packet approval stops from historical sections below. Current stack: PR #6 (main) → #7 → #8 (`b424d9d`) → [draft PR #9](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/9), branch `economy-v2-disciple-production-integration-20261016`. None is merged into main. Before further edits, fetch live refs and verify head/base again. Repository edits use the GitHub connector; preserve the original `E:\TongMonBaDaoWorkspace\01_Game\TongMonBaDao` untracked QA work and saves. Do not run GitHub Actions or change workflows for green status.
+
+**Last tested code/test SHA:** `453df9aa0bc39f31f33cf65fc4aedcf688e7bf74`; Godot Windows 4.7.2 P3.7C1 cumulative FULL exited 0 with A1/A2/B1/C1 PASS. Log: `C:\Users\Admin\Documents\Codex\2026-10-16\economy-v2-full-453df9.log`. Economy V2 bulk, Economy-A save/offline, UI, V2 profile, O3/O5/O6/O8/O9, GP-02B1/02C1, SAFE-01/02 passed focused on code-equivalent commits. Subsequent commits through this handoff edit change documentation only; confirm diff before claiming an exact newer code SHA. One-tick authentic V2 scheduler measurements: 100=139.5 ms, 500=761.0 ms, 1,000=1,633.1 ms, 3,000=3,160.6 ms; no sustained/FPS claim.
+
+**Current pilot:** ProductionPlan ordinary yield interpolates to ×10,000 at Lv100; Huyền Thiết is an unlocked discrete Mine plan; Tầm Mạch Bàn rare output is not scaled; stock pause/overflow and finite merchant purse are live; presentation shows actual levels/EXP, searchable bounded rosters and repaired management rows. Read `docs/ECONOMY_V2_INTEGRATION_RESEARCH_AND_BALANCE_2026-10-16.md` and the top of the canonical QA debt document for the exact source/consumer matrix and caveats.
+
+**Next authorized work, in dependency order:** (1) author Hall level, 192×192 map/48×48 starter/16×16 land chunks, paid construction timers and save migration using existing BuildingSystem; verify 1/1/1 → 30/30/40 caps, per-instance operators and no duplicate jobs; (2) create verified routes for higher Body gate materials and useful tiered consumers without fake PvE rewards or unique-item scaling; (3) add all-instance one-step worker management, explicit eligibility reasons and sustained 100/500/1,000/3,000 Windows UI/runtime benchmarks; (4) run focused + FULL on each gameplay SHA. Manual visual, Android touch and real power/storage recovery remain PENDING USER. Keep PR #9 draft and do not merge into main.
+
+---
+
 ## 2026-10-16 HANDOFF — ECON-V2 BULK PRODUCTION STACKED ABOVE PR #7
 
 Owner explicitly authorized ProductionPlan + bulk balance code and minimum existing-consumer rebalance. Branch `economy-v2-bulk-production-20261016` is stacked from PR #7 HEAD `c6f87edc0112b544b8ee6e3cc63905697caf307e`; draft **PR #8** targets `economy-v2-core-20261016`. **PR #6/#7/#8 remain unmerged and `main` remains `461caca1171462e0da092f21108c5c1733157ad9`**. Latest gameplay+test SHA before docs is **`6428a4c359b7691a5f01fda1b08cf199ee44c115`**.
