@@ -1,5 +1,17 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-16 — DISCIPLE/PRODUCTION/ECONOMY V2 INTEGRATION (PR #9 DRAFT)
+
+**Current authority:** the owner's 16/10 master CODE authorization supersedes the earlier packet limits below. GitHub `main` is `461caca1171462e0da092f21108c5c1733157ad9`; draft PR #6 → #7 → #8 → [#9](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/9) remain stacked and unmerged. PR #9 base is exact PR #8 HEAD `b424d9dad96ec880037691d8163c0258c5667dc7`. The original Windows checkout and its untracked QA files were preserved.
+
+**Code/test evidence SHA:** `453df9aa0bc39f31f33cf65fc4aedcf688e7bf74`. Official local Windows Godot `4.7.2.stable.official.ed1daf0bf` ran `Verify-P3-7C1-Foundation-Dan-Tien-Full.ps1` with **FULL_EXIT=0**; A1, A2, B1 and C1 subgates show PASS in the saved log `C:\Users\Admin\Documents\Codex\2026-10-16\economy-v2-full-453df9.log`. Focused Economy V2, Economy-A save/offline, live landscape UI, authentic V2 profile, O3/O5/O6/O8/O9, GP-02B1/02C1 and SAFE-01/02 also passed on code-equivalent integration commits. No GitHub Actions were manually run. Documentation-only commits after `453df9a` do not change the tested code.
+
+**Delivered pilot:** ProductionPlan geometric common yield ×1→×10,000 by Lv100, separate facility/profession speed, no duplicate Field yield milestone; Mine Lv30 discrete Huyền Thiết plan and Tầm Mạch Bàn rare byproduct; output/warehouse stock pause and finite merchant Stone purse; real GUI contrast/layout, worker search/ranking, searchable V2 profile with profession levels/EXP. See `docs/ECONOMY_V2_INTEGRATION_RESEARCH_AND_BALANCE_2026-10-16.md` for source claims, resource matrix, balance arithmetic and the 100/500/1,000/3,000 one-tick measurements.
+
+**Open, not closed:** Hall/land/chunk authority, paid construction and 30/30/40 instances; 15 higher Body gate resource sources; Potential permanent-growth consumer; all-instance one-tap management and complete disciple lifecycle; sustained 3,000-disciple performance, manual visual/Android/device failure QA. PR #9 remains draft and is **not authorized as a completed integrated release**. Do not merge #6/#7/#8/#9 into main on the basis of these headless tests.
+
+---
+
 ## 2026-10-16 — ECONOMY-V2 PRODUCTION PLAN + BULK BALANCE / STACKED BRANCH / RUNTIME QA PENDING
 
 **Owner authorization:** implement a new stacked Economy V2 packet on top of draft PR #7; keep PR #6/#7 unmerged; add canonical ProductionPlan authority and the approved bulk rates; apply +0.5% building speed and +0.5% common yield per level; keep work level = profession level and align content tiers to the canonical 30 Tu Vi + 30 Luyện Thể tracks; rebalance only the minimum existing consumers needed to avoid a producer-only economy. **No CI and no merge.**
