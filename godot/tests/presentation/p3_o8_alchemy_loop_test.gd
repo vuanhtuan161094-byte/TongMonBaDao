@@ -93,10 +93,10 @@ func _run() -> void:
             return
     for _i in range(100):
         scheduler.step()
-        if warehouse.quantity(state, &"thanh_linh_thao") >= herb_before + 3:
+        if warehouse.quantity(state, &"thanh_linh_thao") >= herb_before + 2000:
             break
-    if warehouse.quantity(state, &"thanh_linh_thao") != herb_before + 3:
-        _fail("O8 real Spirit Field did not produce exactly one Lv1 Thanh Linh Thao batch.")
+    if warehouse.quantity(state, &"thanh_linh_thao") != herb_before + 2000:
+        _fail("O8 real Spirit Field did not produce exactly one 2,000-unit Thanh Linh Thảo batch.")
         return
 
     # Canonical lock denial: no job and no debit.
@@ -149,8 +149,10 @@ func _run() -> void:
         _fail("O8 did not create exactly one timed Alchemy job.")
         return
     var job: Dictionary = jobs[0]
-    if warehouse.quantity(state, &"thanh_linh_thao") != herbs_before_start - 3:
-        _fail("O8 Alchemy start did not commit exactly three herbs once.")
+    var recipe_inputs := AlchemyRecipeRegistry.new().inputs(AlchemyRecipeRegistry.RECIPE_HOI_XUAN_DAN)
+    var herb_need := int(recipe_inputs.get("thanh_linh_thao",0))
+    if herb_need != 500 or warehouse.quantity(state, &"thanh_linh_thao") != herbs_before_start - herb_need:
+        _fail("O8 Alchemy start did not commit the canonical 500-herb input once.")
         return
     if warehouse.quantity(state, NeedsSystem.HEALING_PILL_ID) != pill_before:
         _fail("O8 pill appeared before timed job completion.")
