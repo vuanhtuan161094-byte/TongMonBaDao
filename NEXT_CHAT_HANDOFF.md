@@ -2,7 +2,7 @@
 
 ## 2026-10-16 HANDOFF — ECON-V2 BULK PRODUCTION STACKED ABOVE PR #7
 
-Owner explicitly authorized ProductionPlan + bulk balance code and minimum existing-consumer rebalance. Branch `economy-v2-bulk-production-20261016` is stacked from PR #7 HEAD `c6f87edc0112b544b8ee6e3cc63905697caf307e`; **PR #6/#7 remain unmerged and `main` remains `461caca1171462e0da092f21108c5c1733157ad9`**. Latest gameplay+test SHA before docs is **`6428a4c359b7691a5f01fda1b08cf199ee44c115`**.
+Owner explicitly authorized ProductionPlan + bulk balance code and minimum existing-consumer rebalance. Branch `economy-v2-bulk-production-20261016` is stacked from PR #7 HEAD `c6f87edc0112b544b8ee6e3cc63905697caf307e`; draft **PR #8** targets `economy-v2-core-20261016`. **PR #6/#7/#8 remain unmerged and `main` remains `461caca1171462e0da092f21108c5c1733157ad9`**. Latest gameplay+test SHA before docs is **`6428a4c359b7691a5f01fda1b08cf199ee44c115`**.
 
 **Code truth:** `ProductionPlanRegistry` owns Mine 10,000 Thanh Thiết/60m; Forest 8,000 Linh Mộc/60m; Field 2,500 Linh Cốc/60m, 2,000 Thanh Linh Thảo/90m, 1,000 Tử Vân Thảo/180m. Building level adds +0.5% speed and +0.5% common yield/level after Lv1. Profession level remains the work-level authority. Content realm tiers are descriptive 1-based indexes against the canonical **30 Tu Vi ×10 floors + 30 Luyện Thể ×10 floors**, never a substitute for profession/building/Sect unlock rules.
 
