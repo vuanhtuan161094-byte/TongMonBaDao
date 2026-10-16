@@ -1,5 +1,17 @@
 # MAP25 Source A asset recovery (exact original bytes only)
 
+## Repository checkpoint 2026-10-16
+
+Original ENV-02A zip was discovered as metadata in the owner's Library
+(`TongMonBaDao_ENV02A_192World_Lab.zip`, 3,425,000 bytes), but its raw
+content was **not retrievable** through the authorized file-copy operation.
+Actual original PNGs validated/imported: **0/32**. Archive identity by name
+does not prove content identity or original file SHA-256.
+
+Automated restore tool `tools/assets/restore_map25_env02a_art.py` and four
+contract regression tests `tools/assets/test_restore_map25_env02a_art.py`
+committed at SHA `5748bdc26ef91585e42d2ee73719b0ace6428a14`. Both Python test and Godot runtime gate remain
+**NOT RUN**. No source art PNG, fake asset or gameplay file changed.
 **Repository PR #18 still contains no source art PNGs.** This folder houses
 only an optional restoration script, not replacements for the original art.
 

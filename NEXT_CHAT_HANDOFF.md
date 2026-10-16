@@ -1,5 +1,15 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-16 — MAP25 ENV02A ARCHIVE METADATA RECOVERED, BUT RAW ZIP BYTES BLOCKED
+
+**Commit `5748bdc26ef91585e42d2ee73719b0ace6428a14`** on draft PR #18. ChatGPT Library contains a record of `TongMonBaDao_ENV02A_192World_Lab.zip`, 3,425,000 bytes, but materializing that record to local bytes failed with **Project file has no authorized raw-byte path**. Therefore **0/32** PNG originals have been checked/imported; the GitHub Source A code-only lab is still missing binary assets. Do NOT claim recovered artwork or runtime PASS.
+
+Prepared `tools/assets/restore_map25_env02a_art.py`: future one-shot `--archive <original.zip>` dry validation, then `--import` of only 32/32 SHA-matching original PNG to the exact runtime root `godot/art/source_a_env02a`. Four regression tests written under `tools/assets/test_restore_map25_env02a_art.py` but not executed. Documentation: `docs/MAP25_SOURCE_A_ORIGINAL_ASSET_RECOVERY.md`.
+
+Next dependency is access to the **raw** original library file or an explicitly reattached source ZIP; this does not require the owner to use a PC. Once bytes are accessible, check SHA, integrate only originals, then run Godot import/focused scene/Android art QA; no new gameplay, no CI, no merge. Historical MAP25 code/test at `b8b003280ef235767cc4627bf7df9adea8a618a2` and source art loader remain intact. No technical renderer redesign is necessary until genuine images and QA evidence are available.
+
+---
+
 ## 2026-10-16 — PR18 MAP25 ART follow-up, verified static code, missing binary
 
 **Source/game SHA `b8b003280ef235767cc4627bf7df9adea8a618a2`.** Original ENV02A SHA manifest and in-game 32-file whitelist are byte/hash equivalent for every whitelisted path. `SectMap25SourceArt` rejects absent/incorrect bytes; `SectIsometricWorldV1` draws matching house sprites with PV01 footprints, ENV01 terrain/road/vegetation with depth sort, otherwise fallback. Correct main game SubViewport child order ensures actor visual overlays map but not HUD; 2-direction character movement uses rig mirror. GitHub has **zero Source A PNG files**, so no real texture is currently displayed, no screenshot/runtime certified. Static GDScript lexical 6/6 + whitelist 32/32 matches only; focused tests are written but **UNRUN**. User must only provide owner-authorized original asset ZIP when convenient; no PC requested. No Economy, Warehouse, Scheduler, SaveService, Combat, injury changes, no CI/merge main. Next gate: original 32 matched files under `godot/art/source_a_env02a`, official Godot4.7.2 import, image-scale/depth/tap evidence, Android touch; regression tests and cumulative O6==4/O8. Check this SHA rather than historical PR9 Windows PASS.
