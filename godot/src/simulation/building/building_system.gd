@@ -66,6 +66,7 @@ const DEFINITIONS := {
         "profession_id": "mining",
         "job_model": "carry_cycle",
         "resource_id": MATERIAL_ORE,
+        "production_plan_id": "mine_thanh_thiet_t1",
         "cycle_phases": ["travel_out", "mining", "haul_back"],
         "cycle_work_phase": "mining",
         "base_worker_slots": 1,
@@ -87,6 +88,7 @@ const DEFINITIONS := {
         "profession_id": "forestry",
         "job_model": "carry_cycle",
         "resource_id": MATERIAL_WOOD,
+        "production_plan_id": "forest_linh_moc_t1",
         "cycle_phases": ["travel_out", "harvesting", "haul_back"],
         "cycle_work_phase": "harvesting",
         "base_worker_slots": 1,
@@ -156,6 +158,7 @@ const DEFINITIONS := {
 var equipment := EquipmentSystem.new()
 var warehouse := WarehouseSystem.new()
 var crop_registry := SpiritCropRegistry.new()
+var production_plans := ProductionPlanRegistry.new()
 var alchemy_registry := AlchemyRecipeRegistry.new()
 var profession_modifiers := ProfessionModifierSystem.new()
 
@@ -323,7 +326,7 @@ func guidance_base_daily_arrivals(building: BuildingState) -> int:
     return 5 + 3 * int(floor(float(building.level) / 10.0))
 
 func spirit_field_speed_factor(field: BuildingState) -> float:
-    return 1.0 + 0.005 * float(maxi(field.level - 1, 0))
+    return production_plans.building_speed_factor(field.level)
 
 func spirit_field_cycle_time_factor(field: BuildingState) -> float:
     var factor := 1.0
@@ -334,7 +337,7 @@ func spirit_field_cycle_time_factor(field: BuildingState) -> float:
     return factor
 
 func spirit_field_yield_factor(field: BuildingState) -> float:
-    var factor := 1.0 + 0.005 * float(maxi(field.level - 1, 0))
+    var factor := production_plans.common_yield_factor(field.level)
     if field.level >= 20:
         factor *= 1.10
     if field.level >= 75:
@@ -527,6 +530,18 @@ func upgrade_cost(building: BuildingState) -> Dictionary:
             cost[component] = _milestone_component_quantity(building.building_type, target_level)
     return cost
 
+func upgrade_cost_for_state(state: SimulationState, building: BuildingState) -> Dictionary:
+    var cost := upgrade_cost(building)
+    if cost.is_empty() or state == null:
+        return cost
+    if not state.sect.economy_a_enabled or not state.sect.p3_7_resources_enabled:
+        return cost
+    for material_id in [StringName(MATERIAL_WOOD), StringName(MATERIAL_ORE)]:
+        var key := str(material_id)
+        if cost.has(key):
+            cost[key] = production_plans.scale_common_requirement(material_id, int(cost[key]))
+    return cost
+
 func upgrade_required_work(building: BuildingState) -> float:
     var definition := definition_for(building)
     var target_level := building.level + 1
@@ -555,7 +570,7 @@ func can_start_upgrade(state: SimulationState, building_id: StringName) -> Dicti
     if MILESTONE_LEVELS.has(target_level) and requires_milestone_component and _milestone_component(building.building_type, target_level) == "":
         return {"ok": false, "reason": "milestone_component_not_defined", "target_level": target_level}
 
-    var cost := upgrade_cost(building)
+    var cost := upgrade_cost_for_state(state,building)
     var material_ids: Array = cost.keys()
     material_ids.erase("spirit_stones")
     material_ids.sort()
@@ -616,7 +631,13 @@ func process_tick(state: SimulationState) -> void:
             _process_resource_timers(state,building)
 
 func _default_alchemy_state() -> Dictionary:
-    return {"recipe_enabled": true, "recipe_id": str(AlchemyRecipeRegistry.RECIPE_HOI_XUAN_DAN), "job_sequence": 0, "jobs": []}
+    return {
+        "recipe_enabled": true,
+        "recipe_id": str(AlchemyRecipeRegistry.RECIPE_HOI_XUAN_DAN),
+        "job_sequence": 0,
+        "work_remainders_bp": {},
+        "jobs": []
+    }
 
 func _ensure_alchemy_state(hall: BuildingState) -> Dictionary:
     if hall == null or hall.building_type != TYPE_ALCHEMY_HALL:
@@ -629,6 +650,14 @@ func _ensure_alchemy_state(hall: BuildingState) -> Dictionary:
         recipe_id = AlchemyRecipeRegistry.RECIPE_HOI_XUAN_DAN
     data["recipe_id"] = str(recipe_id)
     data["job_sequence"] = maxi(int(data.get("job_sequence", 0)), 0)
+    var raw_remainders = data.get("work_remainders_bp", {})
+    var work_remainders: Dictionary = {}
+    if raw_remainders is Dictionary:
+        for raw_worker_id in raw_remainders.keys():
+            var worker_key := str(raw_worker_id)
+            if worker_key != "":
+                work_remainders[worker_key] = maxi(int(raw_remainders[raw_worker_id]), 0)
+    data["work_remainders_bp"] = work_remainders
     var jobs: Array = []
     var seen_workers: Dictionary = {}
     var raw_jobs = data.get("jobs", [])
@@ -657,6 +686,7 @@ func _ensure_alchemy_state(hall: BuildingState) -> Dictionary:
                 "output_resource_id": str(raw_job.get("output_resource_id", alchemy_registry.output_resource_id(current_recipe))),
                 "output_quantity": maxi(int(raw_job.get("output_quantity", alchemy_registry.output_quantity(current_recipe))), 1),
                 "profession_xp_gain": maxf(float(raw_job.get("profession_xp_gain", 0.0)), 0.0),
+                "completion_work_remainder_bp": maxi(int(raw_job.get("completion_work_remainder_bp", 0)), 0),
                 "economy_a_wage_eligible": bool(raw_job.get("economy_a_wage_eligible", false))
             })
             seen_workers[worker_id] = true
@@ -722,7 +752,14 @@ func perform_alchemy_step(state: SimulationState, disciple: DiscipleState, profe
     if not warehouse.consume_requirements(state, requirements):
         return {"ok": false, "completed": false, "reason": "input_commit_failed"}
     var sequence := int(data.get("job_sequence", 0)) + 1
-    var duration := maxi(1, int(ceil(float(alchemy_registry.base_cycle_ticks(recipe_id)) / maxf(work_speed, 0.25))))
+    var remainders: Dictionary = data.get("work_remainders_bp", {}).duplicate(true)
+    var worker_key := str(disciple.id)
+    var timing := _timed_duration_plan(
+        float(alchemy_registry.base_cycle_ticks(recipe_id)),
+        maxf(work_speed, 0.25),
+        int(remainders.get(worker_key, 0))
+    )
+    var duration := int(timing["duration_ticks"])
     var job := {
         "job_id": "%s_job_%06d" % [str(hall.id), sequence],
         "recipe_id": str(recipe_id),
@@ -733,6 +770,7 @@ func perform_alchemy_step(state: SimulationState, disciple: DiscipleState, profe
         "output_resource_id": str(alchemy_registry.output_resource_id(recipe_id)),
         "output_quantity": alchemy_registry.output_quantity(recipe_id),
         "profession_xp_gain": maxf(profession_xp_gain, 0.0),
+        "completion_work_remainder_bp": int(timing["completion_remainder_bp"]),
         "economy_a_wage_eligible": state.sect.economy_a_enabled and DiscipleRealmProgressV2.owns_v2_progression(disciple)
     }
     var jobs: Array = data.get("jobs", [])
@@ -755,6 +793,7 @@ func _process_alchemy_jobs(state: SimulationState, hall: BuildingState) -> void:
     if jobs.is_empty():
         return
     var remaining: Array = []
+    var work_remainders: Dictionary = data.get("work_remainders_bp", {}).duplicate(true)
     var changed := false
     for raw_job in jobs:
         var job: Dictionary = raw_job
@@ -777,8 +816,12 @@ func _process_alchemy_jobs(state: SimulationState, hall: BuildingState) -> void:
             state.sect.workforce_event_count += 1
             if state.sect.economy_a_enabled and bool(job.get("economy_a_wage_eligible", false)):
                 EconomySystem.new().settle_work_wage(state, worker, str(job.get("job_id", "")))
+            work_remainders[str(worker_id)] = maxi(
+                int(job.get("completion_work_remainder_bp", 0)), 0
+            )
         changed = true
     if changed:
+        data["work_remainders_bp"] = work_remainders
         data["jobs"] = remaining
         hall.production_state = data
         state.building_event_count += 1
@@ -1019,18 +1062,28 @@ func _start_resource_timer(state: SimulationState, producer: BuildingState, acto
     var definition := definition_for(producer)
     if StringName(definition.get("profession_id","")) != profession_id:
         return {"ok":false,"reason":"wrong_job_profession"}
-    var policy := state.sect.economy_a_policy
-    var base_duration := clampi(int(policy.get("resource_duration_ticks",10)),1,1440)
+    var plan_id := StringName(definition.get("production_plan_id",""))
+    if not production_plans.has(plan_id):
+        return {"ok":false,"reason":"missing_production_plan"}
+    if production_plans.producer_type(plan_id) != producer.building_type:
+        return {"ok":false,"reason":"production_plan_building_mismatch"}
+    if production_plans.profession_id(plan_id) != profession_id:
+        return {"ok":false,"reason":"production_plan_profession_mismatch"}
+    if producer.level < production_plans.required_building_level(plan_id):
+        return {"ok":false,"reason":"production_plan_locked"}
     var data := producer.production_state.duplicate(true)
-    var timing := _timed_duration_plan(float(base_duration), maxf(speed,0.25), int(data.get("economy_a_work_remainder_bp",0)))
+    var total_speed := maxf(speed,0.25) * production_plans.building_speed_factor(producer.level)
+    var base_duration := production_plans.base_cycle_ticks(plan_id)
+    var timing := _timed_duration_plan(float(base_duration), total_speed, int(data.get("economy_a_work_remainder_bp",0)))
     var duration := int(timing["duration_ticks"])
     var jobs := resource_timer_jobs(producer)
     var sequence := maxi(int(data.get("economy_a_sequence",0)),0)+1
     var job := {
-        "job_id":"%s:v1:%d" % [str(producer.id),sequence],
+        "job_id":"%s:v2:%d" % [str(producer.id),sequence],
         "worker_id":str(actor.id),"profession_id":str(profession_id),
-        "resource_id":str(definition.get("resource_id","")),
-        "output_quantity":_resource_job_batch_units(producer),
+        "production_plan_id":str(plan_id),
+        "resource_id":str(production_plans.output_resource_id(plan_id)),
+        "output_quantity":production_plans.scaled_yield(plan_id,producer.level),
         "profession_xp_gain":maxf(xp_gain,0.0),
         "started_tick":state.tick,"finish_tick":state.tick+duration,
         "completion_work_remainder_bp":int(timing["completion_remainder_bp"])
@@ -1161,6 +1214,7 @@ func definition_for(building: BuildingState) -> Dictionary:
 
 func validate_invariants(state: SimulationState) -> Array[String]:
     var errors: Array[String] = []
+    errors.append_array(production_plans.validate_definitions())
     if not state.p3_7_buildings_enabled:
         if not state.buildings.is_empty() or state.building_event_count != 0:
             errors.append("P3.7 building data exists while the authority is disabled.")
@@ -1737,6 +1791,9 @@ func _timed_duration_plan(base_ticks: float, speed: float, prior_remainder_bp: i
         "speed_bp": speed_bp
     }
 
+# Public resource helpers remain the historical carry-cycle contract used by
+# legacy migration/O3/O6. New Economy V2 timer jobs read ProductionPlanRegistry
+# directly and snapshot their bulk duration/yield at job start.
 func _resource_job_duration(building: BuildingState) -> float:
     var base := float(definition_for(building).get("base_work_duration", 4.0))
     var facility_multiplier := maxf(0.50, 1.0 - float(maxi(building.level - 1, 0)) * 0.005)
@@ -1746,12 +1803,9 @@ func _resource_job_batch_units(building: BuildingState) -> int:
     var base := maxi(int(definition_for(building).get("base_batch_units", 2)), 1)
     return base + int(floor(float(building.level) / 10.0))
 
-# Mining output remains the authored Mine/level batch quantity until a
-# specific, approved production-result modifier is defined. In particular,
-# Căn Cốt is a Body-training foundation and never grants arbitrary extra ore.
-# Mining profession level already controls work time through WorkforceSystem;
-# Thông Tuệ controls profession XP via the existing modifier channel.
-# Keep old helper names for regression/debug compatibility.
+# Căn Cốt remains a Body-training foundation and never grants arbitrary ore.
+# Profession level controls V2 timer work speed; ProductionPlanRegistry owns
+# the +0.5%/level facility speed and common-yield scale for new timer jobs.
 func _mining_duration(mine: BuildingState) -> float:
     return _resource_job_duration(mine)
 

@@ -7,6 +7,7 @@ const SAVE_PATH := "user://mine_v2_one_worker_test.json"
 var buildings := BuildingSystem.new()
 var workforce := WorkforceSystem.new()
 var warehouse := WarehouseSystem.new()
+var plans := ProductionPlanRegistry.new()
 
 func _init() -> void:
     call_deferred("_run")
@@ -164,14 +165,19 @@ func _verify_real_timed_packet_save_and_wage() -> bool:
             return false
     var before := warehouse.quantity(state, &"thanh_thiet")
     var stones_before := state.sect.spirit_stones
-    var expected := buildings._resource_job_batch_units(mine)
+    var expected := plans.scaled_yield(ProductionPlanRegistry.PLAN_MINE_THANH_THIET_T1,mine.level)
     var started := workforce.perform_work(state, actor, WorkforceSystem.PROF_MINING)
     if not _check(bool(started.get("ok", false)) and bool(started.get("started", false)),
         "V2 Mine did not start real Economy-A timed job"):
         return false
     var timer := buildings.active_resource_timer_for_worker(state, actor.id)
-    if not _check(not timer.is_empty() and int(timer.get("output_quantity", -1)) == expected,
-        "Mine timer did not snapshot authored Mine quantity"):
+    if not _check(
+        not timer.is_empty()
+        and StringName(timer.get("production_plan_id","")) == ProductionPlanRegistry.PLAN_MINE_THANH_THIET_T1
+        and int(timer.get("output_quantity", -1)) == expected
+        and expected == 10000,
+        "Mine timer did not snapshot canonical 10,000-unit ProductionPlan quantity"
+    ):
         return false
     if not _check(not bool(workforce.perform_work(state, actor, WorkforceSystem.PROF_MINING).get("ok", false)),
         "same actor started a competing Mine timer"):

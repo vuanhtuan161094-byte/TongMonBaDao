@@ -15,6 +15,9 @@ const LODGING_EXPANSION_COST_PER_SLOT := 8
 const SUPPLIED_TRAVEL_STAMINA_COST := 7.0
 const UNSUPPLIED_TRAVEL_STAMINA_COST := 13.0
 const MIN_REST_MULTIPLIER := 0.45
+const V2_FOOD_RESOURCE_ID := &"linh_coc"
+const V2_FOOD_INTERVAL := 30
+const V2_FOOD_PER_DISCIPLE := 2
 
 var bloodline_system := BloodlineSystem.new()
 var physique_system := PhysiqueSystem.new()
@@ -147,6 +150,25 @@ func apply_rest(
 func process_logistics_tick(state: SimulationState) -> void:
     if not state.sect.needs_enabled or state.tick <= 0 or state.tick % LOGISTICS_INTERVAL != 0:
         return
+
+    # Economy V2 minimum food sink. Two Linh Cốc units per disciple per 30
+    # simulation minutes is intentionally simple and population-scaled. It
+    # respects Warehouse reserve/lock rules and adds no starvation penalty in
+    # this packet; shortage is audit data only.
+    if state.sect.p3_7_resources_enabled and state.tick % V2_FOOD_INTERVAL == 0:
+        var required_food := maxi(state.disciples.size(),0) * V2_FOOD_PER_DISCIPLE
+        var available_food := warehouse.available_quantity(state,V2_FOOD_RESOURCE_ID)
+        var consumed_food := mini(required_food,available_food)
+        if consumed_food > 0:
+            warehouse.consume(state,V2_FOOD_RESOURCE_ID,consumed_food)
+        state.sect.needs_stats["v2_linh_coc_consumed"] = int(
+            state.sect.needs_stats.get("v2_linh_coc_consumed",0)
+        ) + consumed_food
+        state.sect.needs_stats["v2_linh_coc_shortage"] = int(
+            state.sect.needs_stats.get("v2_linh_coc_shortage",0)
+        ) + maxi(required_food-consumed_food,0)
+        if required_food > 0:
+            state.sect.needs_event_count += 1
 
     # P1.6 legacy logistics production is keyed from the P1.5 combat/adventure
     # role. Use the semantic accessor instead of treating role storage as a

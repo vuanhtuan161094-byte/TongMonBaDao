@@ -5,6 +5,8 @@ const CROP_THANH_LINH_THAO := &"thanh_linh_thao"
 const CROP_LINH_COC := &"linh_coc"
 const CROP_TU_VAN_THAO := &"tu_van_thao"
 
+var production_plans := ProductionPlanRegistry.new()
+
 const DEFINITIONS := {
     "thanh_linh_thao": {
         "name": "Thanh Linh Thảo",
@@ -15,10 +17,9 @@ const DEFINITIONS := {
         "body_realm_tier": 1,
         "required_field_level": 1,
         "plant_cost_spirit_stones": 4,
-        "base_cycle_ticks": 12,
-        "base_yield": 3,
+        "production_plan_id": "field_thanh_linh_thao_t1",
         "base_work_xp": 10.0,
-        "stock_target": 40,
+        "stock_target": 4000,
         "affinity_elements": ["wood", "water"],
         "tags": ["herb", "alchemy"]
     },
@@ -31,10 +32,9 @@ const DEFINITIONS := {
         "body_realm_tier": 0,
         "required_field_level": 1,
         "plant_cost_spirit_stones": 3,
-        "base_cycle_ticks": 10,
-        "base_yield": 5,
+        "production_plan_id": "field_linh_coc_t1",
         "base_work_xp": 8.0,
-        "stock_target": 60,
+        "stock_target": 5000,
         "affinity_elements": ["earth", "water"],
         "tags": ["spirit_grain", "food"]
     },
@@ -47,10 +47,9 @@ const DEFINITIONS := {
         "body_realm_tier": 4,
         "required_field_level": 30,
         "plant_cost_spirit_stones": 14,
-        "base_cycle_ticks": 24,
-        "base_yield": 3,
+        "production_plan_id": "field_tu_van_thao_t1",
         "base_work_xp": 16.0,
-        "stock_target": 20,
+        "stock_target": 2000,
         "affinity_elements": ["wood"],
         "tags": ["herb", "alchemy", "advanced_crop"]
     }
@@ -69,6 +68,9 @@ func all_crop_ids() -> Array[StringName]:
     for raw_id in ids:
         result.append(StringName(raw_id))
     return result
+
+func production_plan_id(crop_id: StringName) -> StringName:
+    return StringName(definition(crop_id).get("production_plan_id", ""))
 
 func cultivation_realm_tier(crop_id: StringName) -> int:
     return clampi(int(definition(crop_id).get("cultivation_realm_tier", 0)), 0, DiscipleRealmProgressV2.MAX_REALM)
@@ -101,10 +103,10 @@ func cost(crop_id: StringName) -> int:
     return maxi(int(definition(crop_id).get("plant_cost_spirit_stones", 0)), 0)
 
 func base_cycle_ticks(crop_id: StringName) -> int:
-    return maxi(int(definition(crop_id).get("base_cycle_ticks", 1)), 1)
+    return maxi(production_plans.base_cycle_ticks(production_plan_id(crop_id)), 1)
 
 func base_yield(crop_id: StringName) -> int:
-    return maxi(int(definition(crop_id).get("base_yield", 1)), 1)
+    return maxi(production_plans.base_yield(production_plan_id(crop_id)), 1)
 
 func base_work_xp(crop_id: StringName) -> float:
     return maxf(float(definition(crop_id).get("base_work_xp", 0.0)), 0.0)
@@ -143,10 +145,24 @@ func validate_definitions() -> Array[String]:
             errors.append("Crop %s cultivation realm has no canonical name." % crop_id)
         if body_tier > 0 and body_realm_name(crop_id).is_empty():
             errors.append("Crop %s body realm has no canonical name." % crop_id)
+        var plan_id := production_plan_id(crop_id)
+        if not production_plans.has(plan_id):
+            errors.append("Crop %s has no canonical ProductionPlan." % crop_id)
+        else:
+            if production_plans.producer_type(plan_id) != &"spirit_field":
+                errors.append("Crop %s ProductionPlan has wrong producer type." % crop_id)
+            if production_plans.output_resource_id(plan_id) != output_resource_id(crop_id):
+                errors.append("Crop %s ProductionPlan output mismatches crop output." % crop_id)
+            if production_plans.required_building_level(plan_id) != int(data.get("required_field_level", 1)):
+                errors.append("Crop %s ProductionPlan unlock mismatches field level." % crop_id)
+            if production_plans.cultivation_realm_tier(plan_id) != cultivation_realm_tier(crop_id):
+                errors.append("Crop %s ProductionPlan Tu Vi tier mismatch." % crop_id)
+            if production_plans.body_realm_tier(plan_id) != body_realm_tier(crop_id):
+                errors.append("Crop %s ProductionPlan Luyện Thể tier mismatch." % crop_id)
         if cost(crop_id) <= 0:
             errors.append("Crop %s has invalid Spirit Stone cost." % crop_id)
         if base_cycle_ticks(crop_id) <= 0 or base_yield(crop_id) <= 0:
-            errors.append("Crop %s has invalid cycle/yield." % crop_id)
+            errors.append("Crop %s has invalid ProductionPlan cycle/yield." % crop_id)
         if stock_target(crop_id) <= 0:
             errors.append("Crop %s has invalid stock target." % crop_id)
     return errors

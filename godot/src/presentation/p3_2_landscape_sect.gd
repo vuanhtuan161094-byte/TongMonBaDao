@@ -25,6 +25,7 @@ var equipment_system := EquipmentSystem.new()
 var needs_system := NeedsSystem.new()
 var recruitment_system := RecruitmentSystem.new()
 var spirit_crop_registry := SpiritCropRegistry.new()
+var production_plan_registry := ProductionPlanRegistry.new()
 var living_cue_resolver := LivingCueResolver.new()
 var living_cue_tracker := LivingCueTracker.new()
 var living_cue_layer: LivingCueLayer
@@ -774,9 +775,10 @@ func _build_economy_a_hall_controls() -> void:
         return
     var policy: Dictionary = state.sect.economy_a_policy
     var summary := Label.new()
-    summary.text = "Quỹ: %d · Lương/mẻ: %d · Timer gốc: %d phút" % [
-        state.sect.spirit_stones,int(policy.get("wage_per_batch",2)),
-        int(policy.get("resource_duration_ticks",10))
+    summary.text = "Quỹ: %d · Lương/mẻ: %d · Mỏ/Lâm T1: %d phút" % [
+        state.sect.spirit_stones,
+        int(policy.get("wage_per_batch",2)),
+        production_plan_registry.base_cycle_ticks(ProductionPlanRegistry.PLAN_MINE_THANH_THIET_T1)
     ]
     summary.custom_minimum_size = Vector2(384,32)
     summary.add_theme_font_size_override("font_size",12)
@@ -1085,7 +1087,7 @@ func _build_mine_upgrade_control() -> void:
         button.disabled = true
         return
 
-    var cost := buildings.upgrade_cost(mine)
+    var cost := buildings.upgrade_cost_for_state(state,mine)
     var ore_need := int(cost.get(BuildingSystem.MATERIAL_ORE, 0))
     var wood_need := int(cost.get(BuildingSystem.MATERIAL_WOOD, 0))
     var stone_need := int(cost.get("spirit_stones", 0))
@@ -1187,7 +1189,7 @@ func _recipe_material_status(recipe_id: StringName) -> String:
     var data := equipment_system.recipe(recipe_id)
     if data.is_empty():
         return "Recipe không tồn tại."
-    var materials: Dictionary = data.get("materials", {})
+    var materials: Dictionary = equipment_system.crafting_requirements(state,recipe_id)
     var ids: Array = materials.keys()
     ids.sort()
     var parts: Array[String] = []
@@ -1792,13 +1794,16 @@ func _alchemy_operation_text() -> String:
         lines.append("• %s · còn %d phút" % [worker_name, maxi(int(job.get("finish_tick", state.tick)) - state.tick, 0)])
     if lines.is_empty():
         lines.append("• Không có mẻ đang luyện")
+    var alchemy_registry := AlchemyRecipeRegistry.new()
+    var recipe_inputs := alchemy_registry.inputs(AlchemyRecipeRegistry.RECIPE_HOI_XUAN_DAN)
+    var herb_need := int(recipe_inputs.get("thanh_linh_thao", 0))
     return (
         "LUYỆN ĐAN ĐIỆN · Lv%d\n"
         + "Chỗ hoạt động: %d/%d · mẻ đang luyện: %d\n"
         + "Công thức thường trực: Hồi Xuân Đan · %s\n"
         + "Thanh Linh Thảo: %s\n"
         + "Hồi Xuân Đan: %s\n"
-        + "Công thức: 3 Thanh Linh Thảo → 1 Hồi Xuân Đan · nền 6 phút\n\n"
+        + "Công thức: %d Thanh Linh Thảo → 1 Hồi Xuân Đan · nền %d phút\n\n"
         + "MẺ ĐANG CHẠY\n%s"
     ) % [
         hall.level,
@@ -1808,6 +1813,8 @@ func _alchemy_operation_text() -> String:
         "BẬT" if bool(hall.production_state.get("recipe_enabled", true)) else "TẮT",
         _warehouse_pair(&"thanh_linh_thao", true),
         _warehouse_pair(&"hoi_xuan_dan", true),
+        herb_need,
+        alchemy_registry.base_cycle_ticks(AlchemyRecipeRegistry.RECIPE_HOI_XUAN_DAN),
         "\n".join(lines)
     ]
 
@@ -1832,6 +1839,14 @@ func _linh_forest_operation_text() -> String:
         ])
     if lines.is_empty():
         lines.append("• Chưa có thành viên Đội Lâm Nghiệp")
+    var production_note := "Chu kỳ legacy: đi tới Linh Lâm → thu hoạch → vận chuyển về Kho."
+    if state.sect.economy_a_enabled and forest != null:
+        production_note = "Timer V2: nền %d Linh Mộc / %d phút · sản lượng Lv%d: %d/mẻ." % [
+            production_plan_registry.base_yield(ProductionPlanRegistry.PLAN_FOREST_LINH_MOC_T1),
+            production_plan_registry.base_cycle_ticks(ProductionPlanRegistry.PLAN_FOREST_LINH_MOC_T1),
+            forest.level,
+            production_plan_registry.scaled_yield(ProductionPlanRegistry.PLAN_FOREST_LINH_MOC_T1, forest.level)
+        ]
 
     return (
         "SẢN XUẤT\n"
@@ -1841,7 +1856,7 @@ func _linh_forest_operation_text() -> String:
         + "Đang làm Lâm Nghiệp: %d\n"
         + "Thành viên đội: %d\n\n"
         + "NHÂN SỰ\n%s\n\n"
-        + "Chu kỳ thật: đi tới Linh Lâm → thu hoạch → vận chuyển về Kho. Lv1 nền: 2 Linh Mộc mỗi chu kỳ."
+        + "%s"
     ) % [
         0 if forest == null else forest.level,
         _warehouse_pair(&"linh_moc"),
@@ -1849,7 +1864,8 @@ func _linh_forest_operation_text() -> String:
         slots,
         _count_action(&"WORK_FORESTRY"),
         members.size(),
-        "\n".join(lines)
+        "\n".join(lines),
+        production_note
     ]
 
 func _resource_job_member_status(disciple: DiscipleState, profession_id: StringName, has_active_slot: bool) -> String:
@@ -1915,6 +1931,14 @@ func _mine_operation_text() -> String:
             mine.level, mine.upgrade_target_level,
             mine.upgrade_progress, mine.upgrade_required_work
         ]
+    var production_note := "Chu kỳ legacy: đi tới mỏ → khai thác → vận chuyển về kho."
+    if state.sect.economy_a_enabled and mine != null:
+        production_note = "Timer V2: nền %d Thanh Thiết / %d phút · sản lượng Lv%d: %d/mẻ." % [
+            production_plan_registry.base_yield(ProductionPlanRegistry.PLAN_MINE_THANH_THIET_T1),
+            production_plan_registry.base_cycle_ticks(ProductionPlanRegistry.PLAN_MINE_THANH_THIET_T1),
+            mine.level,
+            production_plan_registry.scaled_yield(ProductionPlanRegistry.PLAN_MINE_THANH_THIET_T1, mine.level)
+        ]
 
     return (
         "SẢN XUẤT\n"
@@ -1925,7 +1949,7 @@ func _mine_operation_text() -> String:
         + "Đang khai khoáng: %d\n"
         + "Thành viên đội: %d\n\n"
         + "NHÂN SỰ\n%s\n\n"
-        + "Chu kỳ thật: đi tới mỏ → khai thác → vận chuyển về kho. Chỉ đệ tử có chỗ hoạt động mới nhận lệnh khai khoáng."
+        + "%s"
     ) % [
         0 if mine == null else mine.level,
         upgrade_text,
@@ -1935,7 +1959,8 @@ func _mine_operation_text() -> String:
         waiting_count,
         _count_action(&"WORK_MINING"),
         members.size(),
-        "\n".join(lines)
+        "\n".join(lines),
+        production_note
     ]
 
 func _mining_member_status(disciple: DiscipleState, has_active_slot: bool) -> String:
