@@ -861,10 +861,10 @@ func perform_resource_job_step(state: SimulationState, disciple: DiscipleState, 
     elif phase == work_phase:
         progress += maxf(work_speed, 0.25)
         result["stamina_cost"] = 3.0
-        if progress + 0.000001 >= _resource_job_duration(producer):
+        if progress + 0.000001 >= _legacy_resource_job_duration(producer):
             phase = &"haul_back"
             progress = 0.0
-            cycle["carried_units"] = _resource_job_batch_units(producer)
+            cycle["carried_units"] = _legacy_resource_job_batch_units(producer)
     elif phase == &"haul_back":
         progress += _movement_speed(state, disciple) * _haul_speed_multiplier(disciple)
         if progress + 0.000001 >= float(definition.get("haul_distance", 6.0)):
@@ -1751,6 +1751,17 @@ func _timed_duration_plan(base_ticks: float, speed: float, prior_remainder_bp: i
         "required_work_bp": required_bp,
         "speed_bp": speed_bp
     }
+
+# Legacy carry-cycle helpers are migration-only. They preserve historical
+# quantities/timing for old TRAVEL/EXTRACT/HAUL states and opt-out legacy play.
+func _legacy_resource_job_duration(building: BuildingState) -> float:
+    var base := float(definition_for(building).get("base_work_duration", 4.0))
+    var facility_multiplier := maxf(0.50, 1.0 - float(maxi(building.level - 1, 0)) * 0.005)
+    return maxf(base * facility_multiplier, 1.0)
+
+func _legacy_resource_job_batch_units(building: BuildingState) -> int:
+    var base := maxi(int(definition_for(building).get("base_batch_units", 2)), 1)
+    return base + int(floor(float(building.level) / 10.0))
 
 func _resource_job_duration(building: BuildingState) -> float:
     if building == null:
