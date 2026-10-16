@@ -81,6 +81,13 @@ static func request_training(state: SimulationState, disciple_id: StringName, tr
     # their completion. Every backend caller must obey this gate, not only UI.
     if not disciple.work_cycle_state.is_empty():
         return {"ok":false,"reason":"training_cannot_interrupt_active_work"}
+    # Do not queue a training action behind an outstanding Work/Hunt/Rest/Hold
+    # command: on the next EVALUATE it would overwrite the requested action.
+    # A matching legacy CULTIVATE command is the sole compatible exception.
+    if not disciple.direct_command.is_empty():
+        var cmd_kind := str(disciple.direct_command.get("kind",""))
+        if track != "cultivation" or cmd_kind != "cultivate":
+            return {"ok":false,"reason":"training_conflicting_direct_command"}
     var buildings := BuildingSystem.new()
     if buildings.disciple_has_active_spirit_plot(state,disciple.id):
         return {"ok":false,"reason":"busy_spirit_plot"}
