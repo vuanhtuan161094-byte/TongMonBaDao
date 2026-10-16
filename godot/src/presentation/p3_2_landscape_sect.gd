@@ -3120,6 +3120,28 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
         gate_button.pressed.connect(Callable(self, "_disciple_tab_action").bind("v2_body_gate"))
         content_panel.add_child(gate_button)
 
+        # Real earned-material growth. This fourth action fits inside the
+        # existing 626px details panel without hiding Body gate controls.
+        var growth_preview := FoundationGrowthV2.new().preview(state,selected_id)
+        var growth_button := Button.new()
+        growth_button.name = "PotentialGrowthRealCommit"
+        growth_button.text = "Bồi dưỡng Tiềm Lực"
+        growth_button.position = Vector2(449,344)
+        growth_button.size = Vector2(159,40)
+        growth_button.add_theme_font_size_override("font_size",12)
+        growth_button.add_theme_stylebox_override("normal",_style(CINNABAR,PAPER_LIGHT,2,8))
+        growth_button.disabled = not bool(growth_preview.get("ok",false))
+        growth_button.tooltip_text = (
+            "Tốn %d Tử Vân Thảo → +1 Tiềm Lực; kho khả dụng: %d" % [
+                FoundationGrowthV2.RESOURCE_QUANTITY,
+                WarehouseSystem.new().available_quantity(state,FoundationGrowthV2.RESOURCE_ID)
+            ]
+            if bool(growth_preview.get("ok",false))
+            else "Chưa thể bồi dưỡng: %s" % str(growth_preview.get("reason","blocked"))
+        )
+        growth_button.pressed.connect(Callable(self,"_disciple_tab_action").bind("v2_potential_growth"))
+        content_panel.add_child(growth_button)
+
     var tab_names: Array[String] = ["Thuộc tính", "Công pháp", "Trang bị", "Huyết Mạch", "Thể Chất", "Quan hệ"]
     for index in range(tab_names.size()):
         var tab := Button.new()
@@ -3225,6 +3247,27 @@ func _disciple_tab_action(action: String) -> void:
             if bool(applied.get("ok",false)) and runtime_ready and runtime_session != null:
                 var persisted := runtime_session.save()
                 if not bool(persisted.get("ok",false)):
+                    tab_status_text += " CẢNH BÁO: chưa lưu được tiến độ."
+        _open_disciple_deep_screen(selected_id,"Thuộc tính",true)
+        return
+    if action == "v2_potential_growth":
+        var growth := FoundationGrowthV2.new()
+        var eligibility := growth.preview(state,selected_id)
+        if not bool(eligibility.get("ok",false)):
+            tab_status_text = "Chưa thể bồi dưỡng: %s" % str(eligibility.get("reason","blocked"))
+        else:
+            var request_id := "ui:potential:%s:%d:%d" % [
+                str(selected_id),state.tick,state.sect.v2_foundation_growth_receipts.size()
+            ]
+            var result := growth.commit(state,selected_id,request_id)
+            tab_status_text = (
+                "Đã dùng %d Tử Vân Thảo, tăng 1 điểm Tiềm Lực." % FoundationGrowthV2.RESOURCE_QUANTITY
+                if bool(result.get("ok",false)) else
+                "Bồi dưỡng thất bại: %s" % str(result.get("reason","unknown"))
+            )
+            if bool(result.get("ok",false)) and runtime_ready and runtime_session != null:
+                var saved := runtime_session.save()
+                if not bool(saved.get("ok",false)):
                     tab_status_text += " CẢNH BÁO: chưa lưu được tiến độ."
         _open_disciple_deep_screen(selected_id,"Thuộc tính",true)
         return
