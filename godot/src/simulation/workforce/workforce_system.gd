@@ -270,6 +270,8 @@ func assign_group(state: SimulationState, disciple_id: StringName, group_id: Str
                 return false
     if state.sect.economy_a_enabled and not building_system.active_resource_timer_for_worker(state,disciple.id).is_empty() and group_id != disciple.work_group_id:
         return false
+    if state.p3_7_buildings_enabled and building_system.disciple_has_active_spirit_plot(state,disciple.id) and group_id != &"herbalism_crew":
+        return false
     # Explicitly assigning a different crew frees the real Body facility slot;
     # a returned position may be immediately reused by another disciple.
     if group_id != disciple.work_group_id and DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple):
@@ -402,6 +404,11 @@ func issue_command(state: SimulationState, disciple_id: StringName, kind: String
 
     if not disciple.active_pve_encounter_id.is_empty():
         return false
+    var has_active_field_duty := state.p3_7_buildings_enabled and building_system.disciple_has_active_spirit_plot(state,disciple.id)
+    if has_active_field_duty:
+        var extends_same_field_duty := kind == COMMAND_WORK and StringName(target) == PROF_HERBALISM
+        if not extends_same_field_duty and kind != COMMAND_HOLD:
+            return false
     if kind == COMMAND_HUNT_REGION and disciple.injury_level == 1 and DiscipleRealmProgressV2.owns_v2_progression(disciple):
         return false
 
@@ -481,7 +488,13 @@ func next_action(state: SimulationState, disciple: DiscipleState) -> StringName:
         return &""
 
     if state.p3_7_buildings_enabled and building_system.disciple_has_active_spirit_plot(state, disciple.id):
-        return &""
+        if (
+            command_kind(disciple) == COMMAND_WORK
+            and command_target(disciple) == PROF_HERBALISM
+            and building_system.work_available(state, PROF_HERBALISM, disciple)
+        ):
+            return &"WORK_HERBALISM"
+        return &"HOLD"
     if state.p3_7_buildings_enabled and building_system.disciple_has_active_timed_recipe(state, disciple.id):
         return &"HOLD"
 
@@ -580,8 +593,12 @@ func perform_work(state: SimulationState, disciple: DiscipleState, profession_id
         return {"ok":false,"reason":"disciple_in_v2_pve"}
     if not state.sect.workforce_enabled or disciple.region_id != &"sect" or not VALID_PROFESSIONS.has(profession_id):
         return {"ok":false, "completed":false}
-    if state.p3_7_buildings_enabled and building_system.disciple_has_active_spirit_plot(state, disciple.id):
-        return {"ok":false, "completed":false, "reason":"busy_spirit_plot"}
+    if (
+        state.p3_7_buildings_enabled
+        and building_system.disciple_has_active_spirit_plot(state, disciple.id)
+        and profession_id != PROF_HERBALISM
+    ):
+        return {"ok":false, "completed":false, "reason":"busy_spirit_field_duty"}
     if state.p3_7_buildings_enabled:
         if profession_id == PROF_MINING:
             return _perform_p3_7_mining(state, disciple)
