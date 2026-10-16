@@ -139,6 +139,18 @@ func _run() -> void:
         and warehouse.quantity(loaded,&"thanh_thiet") == before_ore+mine_output-2
         and loaded.sect.spirit_stones == before_stones-4+16,
         "NPC market did not purchase real spare ore"): return
+    # The merchant has a finite Stone purse separate from its item quota.
+    if not _check(bool(economy.configure_v1(loaded,"market_daily_stone_budget",16).get("ok",false))
+        and economy.market_stone_budget_remaining(loaded) == 0,
+        "NPC Stone budget did not include the completed sale"): return
+    var budget_stock := warehouse.quantity(loaded,&"thanh_thiet")
+    var budget_stones := loaded.sect.spirit_stones
+    var over_budget := economy.sell_to_npc_v1(loaded,&"thanh_thiet",1,"over-budget-sale")
+    if not _check(not bool(over_budget.get("ok",false))
+        and str(over_budget.get("reason","")) == "merchant_stone_budget_exhausted"
+        and warehouse.quantity(loaded,&"thanh_thiet") == budget_stock
+        and loaded.sect.spirit_stones == budget_stones,
+        "NPC overspent daily Stones or changed stock on rejection"): return
     # Reserve all remaining bulk ore before probing an overdraw.
     if not _check(warehouse.set_rule(loaded,&"thanh_thiet",before_ore+mine_output-2,false),
         "Bulk reserve rejected"): return
