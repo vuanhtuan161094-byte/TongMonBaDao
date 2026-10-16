@@ -29,6 +29,8 @@ func _run() -> void:
         return
     if not _verify_population_food_sink():
         return
+    if not _verify_field_stock_pause_and_resume():
+        return
     print("ECON-V2 BULK PRODUCTION TEST PASS")
     quit(0)
 
@@ -208,3 +210,28 @@ func _verify_population_food_sink() -> bool:
         and int(state.sect.needs_stats.get("v2_linh_coc_shortage",0)) == population * NeedsSystem.V2_FOOD_PER_DISCIPLE-expected_consumed,
         "food consumption/shortage audit counters are wrong"
     )
+
+func _verify_field_stock_pause_and_resume() -> bool:
+    var state := P37Factory.create_state(940704)
+    var field := buildings.primary_building(state,BuildingSystem.TYPE_SPIRIT_FIELD)
+    if not _check(field != null and field.level == 1,"stock probe has no Lv1 Field"):
+        return false
+    state.sect.spirit_stones = 100000
+    var data := buildings._ensure_spirit_field_state(state,field)
+    if not _check(buildings._select_crop(state,field,data) != &"",
+        "affordable Field cannot select an initial crop"):
+        return false
+    for crop_id in [SpiritCropRegistry.CROP_LINH_COC,SpiritCropRegistry.CROP_THANH_LINH_THAO]:
+        var resource_id := crops.output_resource_id(crop_id)
+        var target := maxi(crops.stock_target(crop_id),
+            plans.scaled_yield(crops.production_plan_id(crop_id),field.level) * 10)
+        if not _check(warehouse.add(state,resource_id,target),"cannot fill stock target"):
+            return false
+    if not _check(buildings._select_crop(state,field,data) == &"",
+        "Field continued planting after every unlocked crop reached stock target"):
+        return false
+    if not _check(warehouse.consume(state,crops.output_resource_id(SpiritCropRegistry.CROP_LINH_COC),1),
+        "cannot consume one Linh Cốc to reopen production"):
+        return false
+    return _check(buildings._select_crop(state,field,data) == SpiritCropRegistry.CROP_LINH_COC,
+        "Field did not resume after stock fell below target")
