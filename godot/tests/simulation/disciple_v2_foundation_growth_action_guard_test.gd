@@ -8,6 +8,13 @@ var buildings := BuildingSystem.new()
 var workforce := WorkforceSystem.new()
 var growth := FoundationGrowthV2.new()
 var foundation := FoundationSystem.new()
+const SAVE_PATH := "user://dv2_foundation_growth_action_guard_test.json"
+
+func _cleanup() -> void:
+    for suffix in ["", ".tmp", ".bak"]:
+        var path := SAVE_PATH + suffix
+        if FileAccess.file_exists(path):
+            DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 
 func _init() -> void:
     call_deferred("_run")
@@ -15,6 +22,7 @@ func _init() -> void:
 func _check(ok: bool, reason: String) -> bool:
     if not ok:
         push_error("DV2 FOUNDATION + ACTION GUARD FAIL: " + reason)
+        _cleanup()
         quit(1)
         return false
     return true
@@ -34,10 +42,12 @@ func _actor(state: SimulationState, index: int) -> DiscipleState:
     return state.disciples[candidate.id]
 
 func _run() -> void:
+    _cleanup()
     if not _verify_growth():
         return
     if not _verify_active_job_guards():
         return
+    _cleanup()
     print("DV2 FOUNDATION + ACTION GUARD TEST PASS")
     quit(0)
 
@@ -113,6 +123,31 @@ func _verify_growth() -> bool:
     if not _check(restored.v2_foundation_growth_receipts.has("potential-001")
         and restored.v2_foundation_growth_receipts["potential-001"] == state.sect.v2_foundation_growth_receipts["potential-001"],
         "exactly-once receipt did not survive SectState save/load"):
+        return false
+
+    # Exercise the real SaveService path, not just a SectState dictionary.
+    var saves := SaveService.new()
+    if not _check(saves.save_to_path(state,SAVE_PATH) == OK,
+        "growth state could not be persisted through canonical SaveService"):
+        return false
+    var loaded := saves.load_from_path(SAVE_PATH)
+    if not _check(loaded != null and loaded.disciples.has(actor.id),
+        "saved growth state could not be reloaded"):
+        return false
+    var loaded_actor: DiscipleState = loaded.disciples[actor.id]
+    if not _check(
+        loaded.sect.v2_foundation_growth_receipts.has("potential-001")
+        and is_equal_approx(loaded_actor.potential,stable_potential)
+        and warehouse.quantity(loaded,FoundationGrowthV2.RESOURCE_ID) == stable_stock,
+        "SaveService lost crop debit, permanent Potential or committed receipt"
+    ):
+        return false
+    var loaded_replay := growth.commit(loaded,actor.id,"potential-001")
+    if not _check(bool(loaded_replay.get("ok",false))
+        and bool(loaded_replay.get("already_settled",false))
+        and is_equal_approx(loaded_actor.potential,stable_potential)
+        and warehouse.quantity(loaded,FoundationGrowthV2.RESOURCE_ID) == stable_stock,
+        "reloaded request granted Potential or spent crop twice"):
         return false
 
     var bad := foundation.add_permanent_points(actor,FoundationSystem.DIM_POTENTIAL,INF)
