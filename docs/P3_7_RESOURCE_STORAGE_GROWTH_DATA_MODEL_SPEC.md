@@ -191,10 +191,35 @@ Examples:
 
 Requirements are quantity-based.
 
+### Economy V2 common bulk-unit rule
+
+The approved opening producer scale treats abundant common resources as bulk commodities:
+- Thanh Thiết;
+- Linh Mộc;
+- Thanh Linh Thảo;
+- Linh Cốc production/consumption where an explicit consumer exists.
+
+When the V2 bulk economy is active, existing routine consumers that use **common** materials
+must be expressed on the same order of magnitude rather than consuming historical 1–3-unit
+amounts. Current compatibility adapter scales routine Forge/common construction inputs by
+×1,000. This adapter does **not** scale:
+- Yêu Đan;
+- Tinh Lang Bì;
+- milestone components;
+- other rare/discrete drops.
+
+The adapter is a compatibility bridge for existing consumers, not permission to multiply
+future recipes blindly. New recipes should author real quantities directly.
+
+Opening minimum sinks include:
+- Hồi Xuân Đan: 500 Thanh Linh Thảo → 1 pill per 6-minute base recipe;
+- Linh Cốc logistics: 1 unit / disciple / 30 simulation minutes, respecting Warehouse
+  reserve/lock; shortage is audit-only in this packet and has no hunger penalty.
+
 Example:
-- 120 Linh Mộc;
-- 80 Thanh Thiết;
-- 500 Linh Thạch.
+- bulk common construction quantities;
+- explicit rare components;
+- Spirit Stones kept in their own currency scale.
 
 Higher-level construction may require higher-tier resource IDs explicitly.
 
