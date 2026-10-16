@@ -4,7 +4,7 @@
 
 **Owner authorization:** implement a new stacked Economy V2 packet on top of draft PR #7; keep PR #6/#7 unmerged; add canonical ProductionPlan authority and the approved bulk rates; apply +0.5% building speed and +0.5% common yield per level; keep work level = profession level and align content tiers to the canonical 30 Tu Vi + 30 Luyện Thể tracks; rebalance only the minimum existing consumers needed to avoid a producer-only economy. **No CI and no merge.**
 
-**Integration topology:** GitHub `main` remains `461caca1171462e0da092f21108c5c1733157ad9`. PR #6 and PR #7 remain OPEN/DRAFT and unmerged. Branch `economy-v2-bulk-production-20261016` is stacked from exact PR #7 HEAD `c6f87edc0112b544b8ee6e3cc63905697caf307e`. Latest gameplay+test SHA before documentation-only commits is **`6428a4c359b7691a5f01fda1b08cf199ee44c115`**.
+**Integration topology:** GitHub `main` remains `461caca1171462e0da092f21108c5c1733157ad9`. PR #6 and PR #7 remain OPEN/DRAFT and unmerged. Branch `economy-v2-bulk-production-20261016` is stacked from exact PR #7 HEAD `c6f87edc0112b544b8ee6e3cc63905697caf307e`; draft **PR #8** targets `economy-v2-core-20261016`, not `main`. Latest gameplay+test SHA before documentation-only commits is **`6428a4c359b7691a5f01fda1b08cf199ee44c115`**.
 
 **Implemented ProductionPlan authority:**
 - new `ProductionPlanRegistry` is the single content source for opening bulk duration/yield;
