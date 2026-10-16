@@ -1325,6 +1325,51 @@ func _sect_hub_production_line(
         label_text,instance_count,building.level,worker_name,activity,_warehouse_pair(actual_resource_id,true)
     ]
 
+# Read-only cap and land geometry authority; do NOT enable construction
+# without one persistent SectLayoutState, real Hall and approved tariffs.
+func _show_sect_layout_preview() -> void:
+    if not runtime_ready or sect_hub_content == null or not is_instance_valid(sect_hub_content):
+        return
+    for child in sect_hub_content.get_children():
+        sect_hub_content.remove_child(child)
+        child.queue_free()
+    _sect_hub_label("QUY HOẠCH TÔNG MÔN V2 · XEM TRƯỚC",19)
+    _sect_hub_label("Bản đồ đề xuất 192×192 · khu đầu 48×48 · chunk 16×16")
+    _sect_hub_label("XÂY MỚI / MỞ ĐẤT: CHƯA KHẢ DỤNG. Thiếu Đại Điện thật, bố cục có thể lưu, chi phí đã duyệt và QA ENV-02A.")
+    var grid := SectLandRegionPreviewV2.preview()
+    _sect_hub_label("Vùng quy hoạch: %d · đất đầu đề xuất: %d ô · không có quyền mở đất ở lượt chơi này." % [
+        int(grid.get("region_count",0)),int(grid.get("starter_cells",0))
+    ])
+    _sect_hub_label("GIỚI HẠN CÔNG TRÌNH THEO CẤP ĐẠI ĐIỆN (ĐỀ XUẤT):",16)
+    for hall in [1,10,20,40,60,80,100]:
+        _sect_hub_label("Đại Điện Lv%d: Mỏ %d · Linh Lâm %d · Linh Điền %d" % [
+            hall,
+            ResourceBuildingExpansionPolicyV2.capacity_for(hall,BuildingSystem.TYPE_MINE),
+            ResourceBuildingExpansionPolicyV2.capacity_for(hall,BuildingSystem.TYPE_LINH_FOREST),
+            ResourceBuildingExpansionPolicyV2.capacity_for(hall,BuildingSystem.TYPE_SPIRIT_FIELD)
+        ])
+    _sect_hub_label("CÔNG TRÌNH THẬT ĐANG CÓ:",16)
+    for item in [
+        {"name":"Mỏ","type":BuildingSystem.TYPE_MINE},
+        {"name":"Linh Lâm","type":BuildingSystem.TYPE_LINH_FOREST},
+        {"name":"Linh Điền","type":BuildingSystem.TYPE_SPIRIT_FIELD}
+    ]:
+        var existing := ResourceBuildingExpansionPolicyV2.existing_instances(state,item["type"])
+        var lines: Array[String] = []
+        for building in existing:
+            lines.append("%s Lv%d" % [str(building.id),building.level])
+        _sect_hub_label("%s: %d · %s" % [
+            item["name"],existing.size(),
+            " · ".join(lines) if not lines.is_empty() else "Chưa có"
+        ])
+    _sect_hub_label("Vùng ngoài khu đầu chưa được mở. Bản vẽ không thay đổi save, kho, Linh Thạch, công trình hoặc thời gian.")
+    var back := Button.new()
+    back.name = "SectLayoutPreviewBack"
+    back.text = "← Trở lại điều hành"
+    back.custom_minimum_size = Vector2(675,50)
+    back.pressed.connect(_refresh_sect_hub)
+    sect_hub_content.add_child(back)
+
 func _refresh_sect_hub() -> void:
     if sect_hub_content == null or not is_instance_valid(sect_hub_content):
         return
@@ -1348,6 +1393,12 @@ func _refresh_sect_hub() -> void:
     _sect_hub_label(_sect_hub_production_line("LINH ĐIỀN",BuildingSystem.TYPE_SPIRIT_FIELD,&"linh_coc"))
     _sect_hub_route("LINH ĐIỀN · Chọn người / Gieo trồng",SectMapPresentation.DEST_SPIRIT_FIELD)
     _sect_hub_route("KHO · Kiểm tra vật tư / Phường Thị",SectMapPresentation.DEST_WAREHOUSE)
+    var layout := Button.new()
+    layout.name = "SectHubLayoutPreview"
+    layout.text = "QUY HOẠCH · 30 Mỏ / 30 Linh Lâm / 40 Linh Điền (xem trước)"
+    layout.custom_minimum_size = Vector2(675,50)
+    layout.pressed.connect(_show_sect_layout_preview)
+    sect_hub_content.add_child(layout)
     var disciples_button := Button.new()
     disciples_button.name = "SectHubDisciples"
     disciples_button.text = "ĐỆ TỬ · Thuộc tính và công việc"
