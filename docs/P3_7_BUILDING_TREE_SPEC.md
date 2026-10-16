@@ -531,16 +531,19 @@ Không yêu cầu người chơi bấm tưới/thu hoạch.
 
 ## Cấp thường
 - sản lượng;
-- worker slot;
 - tốc độ tăng trưởng;
 - Ngưỡng Xử Lý PL;
 - tỷ lệ mở/thu được giống hoặc nguyên liệu thuộc cảnh giới phẩm cao hơn.
+
+**Worker count is not a level-up channel.** Economy V2 keeps exactly one Linh Thực
+operator and four internal plots per Linh Điền at every Lv1–100.
 
 ## Milestone
 
 Lv.1:
 - trồng cây phổ thông;
-- 2 worker.
+- 1 operator;
+- 4 internal plots.
 
 Lv.10:
 - tưới tự động;
@@ -597,10 +600,11 @@ PvE mang về:
 ## Cấp thường
 - sản lượng;
 - độ sâu;
-- worker;
 - tỷ lệ khoáng hiếm;
 - Ngưỡng Xử Lý PL;
 - khả năng tiếp cận loại khoáng thuộc cảnh giới phẩm cao hơn.
+
+**Worker count is fixed:** one Khai Khoáng operator per Mine instance at every level.
 
 ## Milestone
 
@@ -648,22 +652,25 @@ PvE có thể mang:
 
 ## Chức năng
 - Linh Mộc;
-- nhựa;
-- quả;
-- nấm;
-- thực vật phụ;
-- habitat cho linh thú.
+- gỗ/cổ mộc cấp cao khi có consumer thực;
+- kết quả hiếm thuộc cây khi có content/sink đã đăng ký;
+- habitat cho linh thú chỉ khi hệ Ngự Thú thật sự sử dụng.
+
+Không tự thêm nhựa/quả/nấm chỉ để tăng số item trong kho.
 
 ## Nghề
-- Lâm Nghiệp;
-- Thu Thập.
+- Lâm Nghiệp.
+
+Mọi phụ phẩm hợp lệ của Linh Lâm vẫn là kết quả của cùng nghề Lâm Nghiệp, không tạo
+một worker/nghề Thu Thập thứ hai cho cùng công trình.
 
 ## Cấp thường
 - tốc độ tái sinh;
 - sản lượng;
-- worker;
 - tỷ lệ cổ mộc;
 - tier gỗ có thể khai thác.
+
+**Worker count is fixed:** one Lâm Nghiệp operator per Linh Lâm instance at every level.
 
 ## Milestone
 
