@@ -2,7 +2,7 @@
 
 Ngày: 2026-10-09.
 
-**Status: DESIGN INTERFACE V1 / USER-APPROVED STAT-FIRST DIRECTION. Numeric recipe-level additions and rounding remain OPEN. NO GAMEPLAY CODE IMPLEMENTED BY THIS DOCUMENT.**
+**Status: DESIGN INTERFACE V1, with an implemented Economy V2 pilot on the integration branch.** The common-yield curve, timed Mine/Forest/Field jobs, Warehouse settlement and finite merchant budget now have code and focused Windows Godot tests. Universal quantity modifiers, refunds, product quality and advanced tier sources remain OPEN. See [integration research and ledger](ECONOMY_V2_INTEGRATION_RESEARCH_AND_BALANCE_2026-10-16.md) for the exact implemented boundary.
 
 Các nguồn nền: `docs/P3_7_PROFESSION_WORK_MODIFIER_SPEC.md`, `docs/P3_7_BUILDING_TREE_SPEC.md`, `docs/P3_7_RESOURCE_STORAGE_GROWTH_DATA_MODEL_SPEC.md`, `docs/P3_7_SPIRIT_FIELD_SPEC.md`, `docs/DISCIPLE_CHARACTERISTICS_STAT_FRAMEWORK_V2.md`, `docs/TRAITS_V2_SPEC.md`, `docs/DESTINY_V2_SPEC.md`, `docs/BODY_CULTIVATION_V2_SPEC.md`.
 
