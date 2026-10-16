@@ -1,7 +1,6 @@
 extends SceneTree
 
 # ECON-V2 BULK PRODUCTION — authored focused contract.
-# Runtime status remains PENDING until executed with official Godot 4.7.2.
 var plans := ProductionPlanRegistry.new()
 var buildings := BuildingSystem.new()
 var crops := SpiritCropRegistry.new()
@@ -87,14 +86,25 @@ func _verify_level_scaling_and_legacy_boundary() -> bool:
         and is_equal_approx(plans.common_yield_factor(1),1.0),
         "Lv1 facility factor must be neutral"):
         return false
-    if not _check(is_equal_approx(plans.building_speed_factor(3),1.01)
-        and plans.scaled_yield(ProductionPlanRegistry.PLAN_MINE_THANH_THIET_T1,3) == 10100
-        and plans.scaled_yield(ProductionPlanRegistry.PLAN_FOREST_LINH_MOC_T1,3) == 8080,
-        "+0.5%/level speed/yield scaling is wrong"):
-        return false
-    if not _check(is_equal_approx(plans.building_speed_factor(100),1.495)
-        and is_equal_approx(plans.common_yield_factor(100),1.495),
-        "Lv100 normal-level factor must be x1.495"):
+    var milestones := {
+        1: 1.0, 10: 2.0, 20: 5.0, 30: 10.0, 40: 30.0,
+        50: 100.0, 60: 300.0, 75: 1000.0, 90: 3000.0, 100: 10000.0
+    }
+    for level in milestones.keys():
+        if not _check(is_equal_approx(plans.common_yield_factor(level), milestones[level]),
+            "common yield misses level %d milestone" % level):
+            return false
+    for level in range(2, 101):
+        var current := plans.common_yield_factor(level)
+        var previous := plans.common_yield_factor(level - 1)
+        if not _check(current > previous and current / previous < 1.16,
+            "common yield has a non-monotone or abrupt level jump at %d" % level):
+            return false
+    if not _check(
+        is_equal_approx(plans.building_speed_factor(100), 1.495)
+        and plans.scaled_yield(ProductionPlanRegistry.PLAN_MINE_THANH_THIET_T1,100) == 100000000
+        and plans.scaled_yield(ProductionPlanRegistry.PLAN_FOREST_LINH_MOC_T1,100) == 80000000,
+        "Lv100 batch yield or independent speed factor is wrong"):
         return false
 
     var state := P37Factory.create_state(940701)
