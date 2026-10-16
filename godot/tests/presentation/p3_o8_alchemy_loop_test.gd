@@ -76,29 +76,14 @@ func _run() -> void:
             continue
         workforce.issue_command(state, id, WorkforceSystem.COMMAND_HOLD, "", 1200)
 
-    # Auto-demand tie starts with Linh Cốc; after that real stock exists and
-    # Thanh Linh Thảo becomes the highest-demand Lv1 crop.
+    # AUTO_DEMAND uses actual stock-to-target ratios, so a fresh save may
+    # prioritize the herb directly. Observe a genuine 2,000-unit herb batch.
     if not await _open_building(SectMapPresentation.DEST_SPIRIT_FIELD):
         return
     if not await _press("FieldPlant_%s" % str(field_worker_id)):
         return
-    var grain_before := warehouse.quantity(state, &"linh_coc")
     var herb_before := warehouse.quantity(state, &"thanh_linh_thao")
-    for _i in range(80):
-        scheduler.step()
-        if warehouse.quantity(state, &"linh_coc") > grain_before:
-            break
-    if warehouse.quantity(state, &"linh_coc") <= grain_before:
-        _fail("O8 first Field crop absent: grain %d→%d, herb %d→%d, plots=%s." % [grain_before,warehouse.quantity(state,&"linh_coc"),herb_before,warehouse.quantity(state,&"thanh_linh_thao"),str(buildings.spirit_field_plots(state,field))])
-        return
-
-    field = buildings.primary_building(state, BuildingSystem.TYPE_SPIRIT_FIELD)
-    if not buildings.disciple_has_active_spirit_plot(state, field_worker_id, field):
-        if not await _open_building(SectMapPresentation.DEST_SPIRIT_FIELD):
-            return
-        if not await _press("FieldPlant_%s" % str(field_worker_id)):
-            return
-    for _i in range(100):
+    for _i in range(140):
         scheduler.step()
         if warehouse.quantity(state, &"thanh_linh_thao") >= herb_before + 2000:
             break
