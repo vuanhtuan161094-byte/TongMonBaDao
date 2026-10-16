@@ -146,9 +146,12 @@ func _refresh_hud() -> void:
         status.text += "  — kết quả fixture, KHÔNG có phần thưởng"
     var stage_ready: bool = bool(world.get("stage_art_loaded"))
     var source_loaded: Array = world.get("source_loaded")
-    source_note.text = "STAGE A: %s   •   TERRAIN: %s   •   THANH LANG/BOSS: ART CHƯA XÁC MINH   •   Kéo/zoom để xem" % [
-        "PACK VERIFIED" if stage_ready else "PACK MISSING",
-        "%d SOURCE A texture" % source_loaded.size() if not source_loaded.is_empty() else "procedural fallback"
+    var art: Dictionary = world.get("original_textures")
+    var human_art := "STAGE A" if stage_ready else ("ORIGINAL POSE" if art.has("human_idle") else "FALLBACK")
+    var wolves := "ORIGINAL POSE" if art.has("wolf_idle") and art.has("boss_idle") else "PLACEHOLDER"
+    source_note.text = "2 HƯỚNG + MIRROR · NGƯỜI: %s · SÓI/BOSS: %s · ĐỊA HÌNH: %s · ART POSE CHƯA ANIMATE" % [
+        human_art, wolves,
+        "%d SOURCE A" % source_loaded.size() if not source_loaded.is_empty() else "procedural"
     ]
 
 func _toggle_pause() -> void:
