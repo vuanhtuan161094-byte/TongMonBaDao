@@ -445,6 +445,10 @@ func work_available(state: SimulationState, profession_id: StringName, disciple:
             return bool(alchemy_can_start(state, disciple).get("ok", false))
         PROF_HERBALISM:
             if disciple != null:
+                # A Field duty may own several plots, but cannot run beside
+                # an Alchemy/ore/forest timer or an unfinished carry cycle.
+                if disciple_has_active_timed_recipe(state,disciple.id) or not disciple.work_cycle_state.is_empty():
+                    return false
                 var field := _building_for_disciple(state, TYPE_SPIRIT_FIELD, disciple)
                 if field == null or not can_disciple_work(state,field,disciple):
                     return false
@@ -755,6 +759,8 @@ func alchemy_can_start(state: SimulationState, disciple: DiscipleState) -> Dicti
         return {"ok": false, "reason": "recipe_policy_disabled"}
     if disciple_has_active_timed_recipe(state, disciple.id):
         return {"ok": false, "reason": "worker_busy_alchemy"}
+    if not disciple.work_cycle_state.is_empty() or disciple_has_active_spirit_plot(state,disciple.id):
+        return {"ok":false,"reason":"another_active_job"}
     var recipe_id := StringName(data.get("recipe_id", str(AlchemyRecipeRegistry.RECIPE_HOI_XUAN_DAN)))
     var requirements := alchemy_registry.inputs(recipe_id)
     if not warehouse.can_consume_requirements(state, requirements):
@@ -865,6 +871,8 @@ func perform_resource_job_step(state: SimulationState, disciple: DiscipleState, 
         elif profession_id == PROF_FORESTRY:
             slot_reason = "no_active_linh_forest_slot"
         return {"ok": false, "completed": false, "reason": slot_reason}
+    if disciple_has_active_timed_recipe(state,disciple.id) or disciple_has_active_spirit_plot(state,disciple.id):
+        return {"ok":false,"completed":false,"reason":"another_active_job"}
 
     # Old TRAVEL/EXTRACT/HAUL cycles drain to canonical Warehouse without
     # resetting carried_units. Only *new* V2 jobs use the opt-in timer.
@@ -955,6 +963,8 @@ func perform_spirit_field_step(state: SimulationState, disciple: DiscipleState, 
     var field := _building_for_disciple(state, TYPE_SPIRIT_FIELD, disciple)
     if field == null or not can_disciple_work(state, field, disciple):
         return {"ok": false, "completed": false, "reason": "no_active_spirit_field_slot"}
+    if not disciple.work_cycle_state.is_empty() or disciple_has_active_timed_recipe(state,disciple.id):
+        return {"ok":false,"completed":false,"reason":"another_active_job"}
 
     var data := _ensure_spirit_field_state(state, field)
     var plots: Array = data.get("plots", [])
