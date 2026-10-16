@@ -824,7 +824,9 @@ func _build_economy_a_market_controls() -> void:
     economy.sync_market_day(state)
     _add_management_section_label("PHƯỜNG THỊ · GIAO DỊCH NGUYÊN LIỆU")
     var quota := Label.new()
-    quota.text = "Hạn mức bán %d · mua %d sản phẩm/ngày." % [economy.market_remaining(state),economy.market_buy_remaining(state)]
+    quota.text = "Bán %d · mua %d đơn vị/ngày · thương nhân còn %d LT." % [
+        economy.market_remaining(state),economy.market_buy_remaining(state),
+        economy.market_stone_budget_remaining(state)]
     quota.custom_minimum_size = Vector2(384,28)
     building_management_container.add_child(quota)
     for raw_id in ["linh_moc","thanh_thiet","thanh_linh_thao","linh_coc"]:
@@ -833,6 +835,7 @@ func _build_economy_a_market_controls() -> void:
         var price := int(ResourceRegistry.new().definition(resource_id).get("market_value",0))
         var max_sale := int(state.sect.economy_a_policy.get("market_max_per_sale",5))
         var sellable := mini(available,mini(max_sale,economy.market_remaining(state)))
+        sellable = mini(sellable,int(economy.market_stone_budget_remaining(state) / maxi(price,1)))
         var row := Button.new()
         row.name = "EconomyA_Sell_%s" % raw_id
         row.text = "Bán %s ×%d · +%d LT" % [ResourceRegistry.new().display_name(resource_id),sellable,price*sellable]
