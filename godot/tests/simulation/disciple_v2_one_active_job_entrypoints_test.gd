@@ -260,19 +260,25 @@ func _direct_training_and_command_guards() -> bool:
     # Disable fresh autonomous Mine work; this does not alter the saved job.
     loaded_actor.work_preferences["mining"] = 0
     var scheduled := SimulationScheduler.new(recovered)
-    var receipt_before := recovered.sect.economy_a_receipts.size()
+    var receipt_key := "wage:%s" % str(loaded_job.get("job_id",""))
+    if not _check(receipt_key != "wage:"
+        and not recovered.sect.economy_a_receipts.has(receipt_key),
+        "wage receipt was minted before committed batch"):
+        return false
     scheduled.run_ticks(target_tick-recovered.tick)
     var after_quantity := warehouse.quantity(recovered,&"thanh_thiet")
-    var receipt_after := recovered.sect.economy_a_receipts.size()
+    var wage_receipt = recovered.sect.economy_a_receipts.get(receipt_key,null)
     if not _check(after_quantity > ore_before
         and buildings.active_resource_timer_for_worker(recovered,actor.id).is_empty()
-        and receipt_after == receipt_before+1,
-        "offline-equivalent job settlement missing or receipt not written once"):
+        and wage_receipt is Dictionary
+        and str(wage_receipt.get("job_id","")) == str(loaded_job.get("job_id","")),
+        "offline-equivalent job settlement missing or wage receipt not committed"):
         return false
+    var settled_receipt: Dictionary = wage_receipt.duplicate(true)
     scheduled.run_ticks(2)
     return _check(warehouse.quantity(recovered,&"thanh_thiet") == after_quantity
-        and recovered.sect.economy_a_receipts.size() == receipt_after,
-        "settled timer replay minted extra ore or wage receipts")
+        and recovered.sect.economy_a_receipts.get(receipt_key,{}) == settled_receipt,
+        "settled timer replay minted extra ore or changed wage receipt")
 
 func _forest_and_body_transfer_guards() -> bool:
     var fixture := _seed(5)
