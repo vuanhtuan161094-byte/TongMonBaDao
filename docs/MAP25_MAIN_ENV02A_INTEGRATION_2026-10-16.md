@@ -1,5 +1,14 @@
 # MAP25 — ENV-02A 2.5D main game integration handoff
 
+## 2026-10-16 — Source A art renderer update (code SHA `b8b003280ef235767cc4627bf7df9adea8a618a2`)
+
+**Implemented:** GitHub art whitelist `godot/data/presentation/map25_source_a_verified.json` includes **32 exact image hashes/paths** copied from original ENV-02A baseline manifest; `SectMap25SourceArt` validates PNG bytes before creating ImageTexture, accepts only the fixed `res://art/source_a_env02a` root. Renderer uses textures for houses (510052, 510102, 520081), terrain tiles, road tiles and 19 curated vegetation models if present. World sorts ground-contact Y for decoration and buildings; Godot actor LEFT/RIGHT mirrored walk; real scene viewport corrected to draw underneath character layer; PV01 artwork anchored to footprint centers.
+
+**Missing:** zero original Source A PNG binaries in actual GitHub repo. No art was imported or authenticated at runtime; fallback remains visible. The 32 count excludes preview/evidence PNGs in 35-entry ENV02A manifest. To resume with art use exact owner-authorized ENV02A ZIP, check all relevant SHA, then copy to `godot/art/source_a_env02a` without altering raw bytes; actual Godot import and interactive screenshots are mandatory.
+
+**Evidence:** static parser-like bracket/string scan 6/6 and every 32 SHA/index pairs match original manifest; official Godot 4.7.2 headless and GUI **PENDING**, test scripts are **not executed**. No CI/merge/balance/SaveService changes; main untouched. Regression now guards SubViewport below actors and verifies the three PV01 anchor offsets.
+
+---
 **Code/test SHA:** `e64fbfe35ac08f8b5e8be62553a31811c2b40ce7`. Draft [PR #18](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/18); project is Godot 4.7.2, mobile landscape 1280×720. Runtime tests **NOT RUN**, no CI, no merge.
 
 ## Main scene, not a separate lab

@@ -1,5 +1,14 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-16 — MAP25 Source A art SHA-gated renderer + sprite placement repair
+
+**Code/test SHA `b8b003280ef235767cc4627bf7df9adea8a618a2`.** Scope: draft PR #18 on integration branch. Exact `labs/env02a/ENV02A_BASELINE_ASSET_SHA256.json` was compared with `godot/data/presentation/map25_source_a_verified.json`: **32/32 original art candidate SHA-256/path mappings match**, excluding three evidence-preview PNGs. `SectMap25SourceArt` checks real PNG bytes before ImageTexture is accepted. `SectIsometricWorldV1` can now draw real verified Source A 3 house textures, curated vegetation, roads and terrain; otherwise retains procedural fallback. ENV01 decorative props are sorted together with buildings on isometric world-foot Y. Two-sided LEFT/RIGHT walking via mirrored rig reuses an existing animation path. Fixed 2.5D SubViewport render order to sit **between background and Control actor/HUD layer**, not overpaint the disciples. Three PV01 building footprints use exact center offset for main hall 7×5, Warehouse 3×2 and Forge 3×3 instead of artwork being pinned to top-left build cell. Two tests assert ordering and corrected PV01 anchor.
+
+**Current art evidence:** GitHub tree PNG count = **0**; no authorized original ENV02A 32 art bytes could be recovered from this conversation's currently mountable resources. Therefore **0/32 source images imported** and live map displays fallback; code-only loader/renderer is **not a finished Source A visual implementation**. The ZIP from Windows external lab is the missing dependency, not a technical license to use counterfeit textures. Source A internal-use authorization does not establish commercial redistribution rights. Do NOT claim Godot/Android GUI or art runtime PASS.
+
+**Static verification only:** relevant six GDScript scripts passed delimiters/quote/comments and duplicate function scans (6/6); all 32 curated index keys exactly match original manifest sha and paths; eight protected gameplay authority blobs unchanged from PR #9. New `sect_map25_verified_art_gate_test.gd`, `sect_iso_main_integration_test.gd`, `sect_iso_projection_contract_test.gd` are **AUTHORED / NOT RUN**. No official Godot 4.7.2 binary in available environment; Windows 1280×720, Android touch/camera/visual, cumulative One Active Job/O6==4/O8/SAFE/P3.7 and SaveService are **PENDING**. No CI, no merge, main unchanged. Full ENV02A art requires owner original ZIP reimport with SHA verification.
+
+---
 ## 2026-10-16 — MAP25: ENV-02A native 2.5D world mounted into real P3 gameplay scene (STATIC ONLY)
 
 **Exact game + focused test SHA:** `e64fbfe35ac08f8b5e8be62553a31811c2b40ce7`. Draft PR #18 `integration-v2-pr9-pr10-pr17-20261016` (base PR #9), main verified unchanged `461caca1171462e0da092f21108c5c1733157ad9`. Owner explicitly authorized complete main-scene map integration on 16/10 16:16Z, no CI, no merge, no PC request.
