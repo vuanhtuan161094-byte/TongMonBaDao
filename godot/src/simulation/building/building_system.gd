@@ -1057,7 +1057,7 @@ func _start_resource_timer(state: SimulationState, producer: BuildingState, acto
     var definition := definition_for(producer)
     if StringName(definition.get("profession_id","")) != profession_id:
         return {"ok":false,"reason":"wrong_job_profession"}
-    var plan_id := StringName(definition.get("production_plan_id",""))
+    var plan_id := selected_resource_production_plan(producer)
     if not production_plans.has(plan_id):
         return {"ok":false,"reason":"missing_production_plan"}
     if production_plans.producer_type(plan_id) != producer.building_type:
@@ -1097,6 +1097,33 @@ func _start_resource_timer(state: SimulationState, producer: BuildingState, acto
     producer.production_state = data
     state.building_event_count += 1
     return {"ok":true,"started":true,"completed":false,"job_id":str(job["job_id"]),"finish_tick":int(job["finish_tick"]),"phase":"timed","profession_id":str(profession_id),"building_id":str(producer.id),"stamina_cost":0.0}
+
+# The selection belongs to the building instance and survives save/offline.
+# A running batch keeps its original saved plan snapshot.
+func set_resource_production_plan(state: SimulationState, building_id: StringName, plan_id: StringName) -> bool:
+    if state == null or not state.sect.economy_a_enabled or not state.buildings.has(str(building_id)):
+        return false
+    var producer: BuildingState = state.buildings[str(building_id)]
+    if producer.building_type != TYPE_MINE and producer.building_type != TYPE_LINH_FOREST:
+        return false
+    if not production_plans.has(plan_id) or production_plans.producer_type(plan_id) != producer.building_type:
+        return false
+    if producer.level < production_plans.required_building_level(plan_id):
+        return false
+    var data := producer.production_state.duplicate(true)
+    data["selected_plan_id"] = str(plan_id)
+    producer.production_state = data
+    state.building_event_count += 1
+    return true
+
+func selected_resource_production_plan(producer: BuildingState) -> StringName:
+    if producer == null:
+        return &""
+    var default_id := StringName(definition_for(producer).get("production_plan_id",""))
+    var selected := StringName(producer.production_state.get("selected_plan_id",str(default_id)))
+    if not production_plans.has(selected) or production_plans.producer_type(selected) != producer.building_type:
+        return default_id
+    return selected
 
 func cancel_resource_timer(state: SimulationState, disciple_id: StringName) -> bool:
     if not state.sect.economy_a_enabled:
