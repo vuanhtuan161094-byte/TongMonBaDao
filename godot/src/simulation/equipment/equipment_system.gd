@@ -36,26 +36,31 @@ const RECIPES := {
     "thanh_thiet_kiem": {
         "name":"Thanh Thiết Kiếm", "slot":"weapon", "path":"sword", "element":"metal", "base_price":84,
         "materials":{"thanh_thiet":3, "linh_moc":1},
+        "cultivation_realm_tier":2, "body_realm_tier":0,
         "stats":{"combat_power":6.0, "skill_effect":0.10, "basic_speed":0.08, "basic_ratio":0.05}
     },
     "huyen_thiet_quyen_sao": {
         "name":"Huyền Thiết Quyền Sáo", "slot":"weapon", "path":"body", "element":"earth", "base_price":82,
         "materials":{"thanh_thiet":3, "tinh_lang_bi":1},
+        "cultivation_realm_tier":2, "body_realm_tier":1,
         "stats":{"combat_power":5.5, "skill_effect":0.11, "defense_reduction":0.04, "basic_ratio":0.09}
     },
     "linh_moc_phap_truong": {
         "name":"Linh Mộc Pháp Trượng", "slot":"weapon", "path":"spell", "element":"wood", "base_price":88,
         "materials":{"linh_moc":3, "yeu_dan":1},
+        "cultivation_realm_tier":2, "body_realm_tier":0,
         "stats":{"combat_power":4.5, "skill_effect":0.13, "basic_range":0.45, "basic_speed":0.04}
     },
     "tinh_lang_giap": {
         "name":"Tinh Lang Giáp", "slot":"armor", "path":"body", "element":"earth", "base_price":76,
         "materials":{"tinh_lang_bi":3, "thanh_thiet":1},
+        "cultivation_realm_tier":2, "body_realm_tier":1,
         "stats":{"combat_power":1.5, "defense_reduction":0.12, "move_speed":-0.03}
     },
     "hoa_van_ngoc": {
         "name":"Hỏa Vân Ngọc", "slot":"talisman", "path":"spell", "element":"fire", "base_price":92,
         "materials":{"yeu_dan":2, "linh_moc":1},
+        "cultivation_realm_tier":2, "body_realm_tier":0,
         "stats":{"combat_power":2.0, "skill_effect":0.16, "basic_range":0.20}
     }
 }
@@ -67,6 +72,7 @@ const HASH_MODULUS := 2147483629
 var paths := CultivationPathSystem.new()
 var combat_skills := CombatSkillSystem.new()
 var warehouse := WarehouseSystem.new()
+var production_plans := ProductionPlanRegistry.new()
 
 func initialize(state: SimulationState) -> void:
     if not state.sect.combat_skills_enabled:
@@ -134,13 +140,38 @@ func deposit_forge_inventory(state: SimulationState, disciple: DiscipleState) ->
         state.sect.equipment_event_count += 1
     return moved
 
+func crafting_requirements(state: SimulationState, recipe_id: StringName) -> Dictionary:
+    var data := recipe(recipe_id)
+    var raw = data.get("materials", {})
+    var result: Dictionary = raw.duplicate(true) if raw is Dictionary else {}
+    if state == null or not state.sect.p3_7_resources_enabled:
+        return result
+
+    # Scale only abundant common materials. Rare/discrete drops keep their
+    # original unit counts so a bulk economy does not inflate boss/rare loot.
+    var ids: Array = result.keys()
+    for raw_id in ids:
+        var material_id := StringName(raw_id)
+        result[str(material_id)] = production_plans.scale_common_requirement(
+            material_id, int(result[raw_id])
+        )
+        if str(raw_id) != str(material_id):
+            result.erase(raw_id)
+    return result
+
+func cultivation_realm_tier(recipe_id: StringName) -> int:
+    return clampi(int(recipe(recipe_id).get("cultivation_realm_tier",0)),0,DiscipleRealmProgressV2.MAX_REALM)
+
+func body_realm_tier(recipe_id: StringName) -> int:
+    return clampi(int(recipe(recipe_id).get("body_realm_tier",0)),0,DiscipleRealmProgressV2.MAX_REALM)
+
 func can_craft(state: SimulationState, recipe_id: StringName) -> bool:
     if not state.sect.equipment_enabled:
         return false
     var data: Dictionary = recipe(recipe_id)
     if data.is_empty():
         return false
-    var materials: Dictionary = data.get("materials", {})
+    var materials: Dictionary = crafting_requirements(state,recipe_id)
     if state.sect.p3_7_resources_enabled:
         return warehouse.can_consume_requirements(state, materials)
     for raw_id in materials.keys():
@@ -152,7 +183,7 @@ func craft(state: SimulationState, recipe_id: StringName, list_for_sale: bool = 
     if not can_craft(state, recipe_id):
         return {}
     var data: Dictionary = recipe(recipe_id)
-    var materials: Dictionary = data.get("materials", {})
+    var materials: Dictionary = crafting_requirements(state,recipe_id)
     if state.sect.p3_7_resources_enabled:
         if not warehouse.consume_requirements(state, materials):
             return {}
