@@ -6,11 +6,15 @@ const RECIPE_HOI_XUAN_DAN := &"hoi_xuan_dan"
 const DEFINITIONS := {
     "hoi_xuan_dan": {
         "name": "Hồi Xuân Đan",
-        "inputs": {"thanh_linh_thao": 3},
+        # Bulk consumer balance: one Lv1 four-plot Thanh Linh Thảo field
+        # supplies roughly one continuously-working 6-minute Alchemy line.
+        "inputs": {"thanh_linh_thao": 500},
         "output_resource_id": "hoi_xuan_dan",
         "output_quantity": 1,
         "required_profession_level": 0,
-        "base_cycle_ticks": 6
+        "base_cycle_ticks": 6,
+        "cultivation_realm_tier": 2,
+        "body_realm_tier": 0
     }
 }
 
@@ -36,6 +40,12 @@ func required_profession_level(recipe_id: StringName) -> int:
 func base_cycle_ticks(recipe_id: StringName) -> int:
     return maxi(int(definition(recipe_id).get("base_cycle_ticks", 1)), 1)
 
+func cultivation_realm_tier(recipe_id: StringName) -> int:
+    return clampi(int(definition(recipe_id).get("cultivation_realm_tier", 0)), 0, DiscipleRealmProgressV2.MAX_REALM)
+
+func body_realm_tier(recipe_id: StringName) -> int:
+    return clampi(int(definition(recipe_id).get("body_realm_tier", 0)), 0, DiscipleRealmProgressV2.MAX_REALM)
+
 func validate_definitions() -> Array[String]:
     var errors: Array[String] = []
     var resources := ResourceRegistry.new()
@@ -50,4 +60,12 @@ func validate_definitions() -> Array[String]:
         var output_id := output_resource_id(recipe_id)
         if output_id == &"" or not resources.has(output_id) or output_quantity(recipe_id) <= 0:
             errors.append("Alchemy recipe %s has invalid output." % recipe_id)
+        var cultivation_tier := cultivation_realm_tier(recipe_id)
+        var body_tier := body_realm_tier(recipe_id)
+        if cultivation_tier <= 0 or cultivation_tier > DiscipleRealmProgressV2.MAX_REALM:
+            errors.append("Alchemy recipe %s has invalid Tu Vi tier." % recipe_id)
+        if body_tier < 0 or body_tier > DiscipleRealmProgressV2.MAX_REALM:
+            errors.append("Alchemy recipe %s has invalid Luyện Thể tier." % recipe_id)
+        if cultivation_tier > 0 and resources.cultivation_realm_tier(output_id) != cultivation_tier:
+            errors.append("Alchemy recipe %s tier mismatches output resource." % recipe_id)
     return errors
