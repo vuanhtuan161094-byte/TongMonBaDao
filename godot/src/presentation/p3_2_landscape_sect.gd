@@ -3444,7 +3444,7 @@ func _v2_profession_summary_text(snapshot: Dictionary) -> String:
     for profession_id in ["mining","forestry","herbalism","alchemy","forging","logistics"]:
         var row: Dictionary = professions.get(profession_id, {})
         lines.append("• %s Lv%d · EXP %.1f" % [
-            str(names[profession_id]), int(row.get("level",1)), float(row.get("xp",0.0))
+            str(names[profession_id]), int(row.get("level",0)), float(row.get("xp",0.0))
         ])
     var site := str(work.get("worksite_building_id",""))
     if not site.is_empty():
