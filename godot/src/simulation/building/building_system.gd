@@ -1212,7 +1212,9 @@ func _process_resource_timers(state: SimulationState, building: BuildingState) -
             remaining.append(job)
             continue
         building.metrics["production_batches"] = int(building.metrics.get("production_batches",0))+1
-        building.metrics["units_produced"] = int(building.metrics.get("units_produced",0))+units
+        building.metrics["units_produced"] = mini(
+            int(building.metrics.get("units_produced",0)),
+            WarehouseSystem.MAX_SAFE_STACK-units) + units
         var profession := str(job.get("profession_id",""))
         worker.profession_xp[profession] = float(worker.profession_xp.get(profession,0.0))+maxf(float(job.get("profession_xp_gain",0.0)),0.0)
         worker.metrics["work_completions"] = int(worker.metrics.get("work_completions",0))+1
@@ -1808,7 +1810,9 @@ func _deposit_resource(state: SimulationState, building: BuildingState, resource
     else:
         state.sect.forge_materials[resource_id] = int(state.sect.forge_materials.get(resource_id, 0)) + quantity
     building.metrics["production_batches"] = int(building.metrics.get("production_batches", 0)) + 1
-    building.metrics["units_produced"] = int(building.metrics.get("units_produced", 0)) + quantity
+    building.metrics["units_produced"] = mini(
+        int(building.metrics.get("units_produced", 0)),
+        WarehouseSystem.MAX_SAFE_STACK-quantity) + quantity
     state.building_event_count += 1
     return true
 
