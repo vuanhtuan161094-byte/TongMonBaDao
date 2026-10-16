@@ -10,6 +10,10 @@ func _run() -> void:
     for count in COUNTS:
         var state := P37Factory.create_state(166000 + count)
         state.sect.disciple_capacity = count
+        state.sect.disciple_v2_birth_enabled = true
+        state.sect.v2_training_enabled = true
+        state.sect.v2_training_rules = DiscipleTrainingContentV2.canonical_rules()
+        BuildingSystem.new().ensure_body_training_facility(state)
         var candidate := DiscipleGeneratorOpenPoints.new().generate_candidate(
             state, DiscipleGeneratorV2.SOURCE_ORDINARY, 90000 + count
         )
