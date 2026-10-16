@@ -86,7 +86,7 @@ static func request_training(state: SimulationState, disciple_id: StringName, tr
     # A matching legacy CULTIVATE command is the sole compatible exception.
     if not disciple.direct_command.is_empty():
         var cmd_kind := str(disciple.direct_command.get("kind",""))
-        if track != "cultivation" or cmd_kind != "cultivate":
+        if track != "cultivation" or cmd_kind != "CULTIVATE":
             return {"ok":false,"reason":"training_conflicting_direct_command"}
     var buildings := BuildingSystem.new()
     if buildings.disciple_has_active_spirit_plot(state,disciple.id):
