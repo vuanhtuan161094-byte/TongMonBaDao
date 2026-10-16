@@ -3149,9 +3149,9 @@ func _refresh_all() -> void:
     if _building_operation_is_open() and workforce_picker_panel == null:
         _refresh_building_operation_content()
     if sect_hub_panel != null and is_instance_valid(sect_hub_panel) and sect_hub_panel.visible:
-        if sect_layout_preview_open:
-            _show_sect_layout_preview()
-        else:
+        # Planning geometry is immutable and has no runtime job output to poll.
+        # Do not rebuild its scroll view each tick while the player reads it.
+        if not sect_layout_preview_open:
             _refresh_sect_hub()
 
 func _process(_delta: float) -> void:
