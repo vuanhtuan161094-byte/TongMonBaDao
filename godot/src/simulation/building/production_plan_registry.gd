@@ -4,6 +4,7 @@ extends RefCounted
 # Economy V2 canonical bulk-production authority.
 # One simulation tick = one simulation minute.
 const PLAN_MINE_THANH_THIET_T1 := &"mine_thanh_thiet_t1"
+const PLAN_MINE_HUYEN_THIET_T2 := &"mine_huyen_thiet_t2"
 const PLAN_FOREST_LINH_MOC_T1 := &"forest_linh_moc_t1"
 const PLAN_FIELD_LINH_COC_T1 := &"field_linh_coc_t1"
 const PLAN_FIELD_THANH_LINH_THAO_T1 := &"field_thanh_linh_thao_t1"
@@ -30,6 +31,17 @@ const DEFINITIONS := {
         "cultivation_realm_tier": 2,
         "body_realm_tier": 0,
         "common_yield": true
+    },
+    "mine_huyen_thiet_t2": {
+        "producer_type": "mine",
+        "profession_id": "mining",
+        "output_resource_id": "huyen_thiet",
+        "base_cycle_ticks": 120,
+        "base_yield": 10,
+        "required_building_level": 30,
+        "cultivation_realm_tier": 3,
+        "body_realm_tier": 0,
+        "common_yield": false
     },
     "forest_linh_moc_t1": {
         "producer_type": "linh_forest",
