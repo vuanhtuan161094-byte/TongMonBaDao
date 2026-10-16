@@ -2,6 +2,8 @@
 
 ## 2026-10-16 — STACK-INTEGRATION-02 HANDOFF / DRAFT PR #9 + #10 + #17
 
+**Exact integration gameplay/tree SHA:** `c3d652b9f554687470ce1d3375cdd47ff1c9b6c7` (two-parent merge PR #9 + PR #17). Any subsequent documentation-only commit changes no game/test scripts. At this SHA, Git diff against PR #9 is 11 authorized files; against PR #17 it is 5 authorized files. Godot 4.7.2 combined runtime **PENDING**, not inherited from PR #9 Windows evidence.
+
 New `integration-v2-pr9-pr10-pr17-20261016` branch has PR #9 `cf11d53f2ac48e9b7a220500fece983b675dcd62` and PR #17 `2719dbf6ac32bc5bab2196c25284ced127464406` as merge parents (PR #10 HEAD `f374bc78a5556ad1003d92b27d6ec89c7c929aa3` is on PR #17 ancestry). Preserve untouched original branches/main and their draft PRs.
 
 **Exact content:** the PR #17 Disciple V2 fast path, Foundation/Potential and one-active-job guards + 3 simulations regressions; the PR #9 grain-isolation and actual sect-resident O8 test edits; PR #9 Economy-V2 balance report and QA-debt evidence. Both additions to `CURRENT_CHECKPOINT.md` and `NEXT_CHAT_HANDOFF.md` survive byte-for-byte; integration note is newest.
