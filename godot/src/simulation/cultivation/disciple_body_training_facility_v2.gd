@@ -24,6 +24,18 @@ static func reserve_slot(state: SimulationState, disciple_id: StringName) -> Dic
         return {"ok":false,"reason":"body_training_authority_disabled"}
     if not [&"EVALUATE",&"IDLE",&"HOLD",&"CULTIVATE",&"TRAIN_BODY"].has(disciple.current_action):
         return {"ok":false,"reason":"training_cannot_interrupt_active_work"}
+    # Do not steal a queued player command or an existing Forge/production
+    # assignment. An explicit release is required before reserving Rèn Thân.
+    # Already-reserved trainees remain idempotent.
+    var pending_command := str(disciple.direct_command.get("kind",""))
+    if pending_command != "" and pending_command != "HOLD_AT_SECT":
+        return {"ok":false,"reason":"body_training_active_command"}
+    if disciple.work_group_id != &"" and disciple.work_group_id != &"body_training_crew":
+        return {"ok":false,"reason":"body_training_another_worksite"}
+    if disciple.worksite_building_id != &"":
+        var held = state.buildings.get(str(disciple.worksite_building_id))
+        if not (held is BuildingState) or held.building_type != BuildingSystem.TYPE_BODY_TRAINING:
+            return {"ok":false,"reason":"body_training_another_worksite"}
     # GP-02B1: a reserved Body slot must not silently settle an unfinished
     # Mine/Forest carry-cycle or transfer a worker from a paid timed job.
     if not disciple.work_cycle_state.is_empty():
@@ -54,6 +66,11 @@ static func reserve_slot(state: SimulationState, disciple_id: StringName) -> Dic
     var already := buildings.active_worker_ids(state, building).has(disciple_id)
     if not already and buildings.assigned_worker_ids(state, building).size() >= buildings.worker_slots(building):
         return {"ok":false,"reason":"body_training_slots_full"}
+    # HOLD is a nonexclusive player order; a successful explicit Body
+    # assignment may replace it. Do not clear a rejected request's command.
+    if pending_command == "HOLD_AT_SECT":
+        disciple.direct_command.clear()
+        state.sect.workforce_event_count += 1
     if not already:
         # Do not depend on WorkforceSystem here: its policy depends on the
         # training action, so keeping the facility independent avoids a parser

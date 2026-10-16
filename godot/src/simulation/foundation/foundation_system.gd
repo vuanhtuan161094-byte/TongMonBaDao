@@ -177,8 +177,8 @@ func validate_candidate(candidate: CandidateState) -> Array[String]:
     if candidate.foundation_model_version < MODEL_OPEN_POINTS:
         errors.append("Open-point candidate has the wrong foundation model.")
     for value in _candidate_values(candidate):
-        if value < 0.0:
-            errors.append("Open-point candidate has a negative foundation value.")
+        if is_nan(value) or is_inf(value) or value < 0.0:
+            errors.append("Open-point candidate has an invalid or nonfinite foundation value.")
             break
     if candidate.foundation_birth_values.is_empty() or birth_total(candidate.foundation_birth_values) <= 0.0:
         errors.append("Open-point candidate has no birth-foundation snapshot.")
@@ -197,8 +197,8 @@ func validate_disciple(disciple: DiscipleState) -> Array[String]:
     if disciple.foundation_model_version < MODEL_OPEN_POINTS:
         return errors
     for value in _disciple_values(disciple):
-        if value < 0.0:
-            errors.append("%s has a negative foundation value." % disciple.display_name)
+        if is_nan(value) or is_inf(value) or value < 0.0:
+            errors.append("%s has an invalid or nonfinite foundation value." % disciple.display_name)
             break
     if disciple.foundation_birth_values.is_empty() or birth_total(disciple.foundation_birth_values) <= 0.0:
         errors.append("%s has no birth-foundation snapshot." % disciple.display_name)

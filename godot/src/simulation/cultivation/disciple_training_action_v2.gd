@@ -81,6 +81,13 @@ static func request_training(state: SimulationState, disciple_id: StringName, tr
     # their completion. Every backend caller must obey this gate, not only UI.
     if not disciple.work_cycle_state.is_empty():
         return {"ok":false,"reason":"training_cannot_interrupt_active_work"}
+    # Direct Work/Hunt/Rest/Hold commands would overwrite this queued V2
+    # training action on EVALUATE. Keep only a matching CULTIVATE command.
+    var pending_command := str(disciple.direct_command.get("kind",""))
+    var compatible_cultivate := track == "cultivation" and pending_command == "CULTIVATE"
+    var replaceable_hold := pending_command == "HOLD_AT_SECT"
+    if pending_command != "" and not compatible_cultivate and not replaceable_hold:
+        return {"ok":false,"reason":"training_conflicting_direct_command"}
     var buildings := BuildingSystem.new()
     if buildings.disciple_has_active_spirit_plot(state,disciple.id):
         return {"ok":false,"reason":"busy_spirit_plot"}
@@ -98,6 +105,11 @@ static func request_training(state: SimulationState, disciple_id: StringName, tr
         var released := DiscipleBodyTrainingFacilityV2.release_slot(state,disciple_id)
         if not bool(released.get("ok",false)):
             return released
+    # HOLD is a nonexclusive order: successful explicit training replaces it.
+    # Invalid requests above must never clear the player's queued instruction.
+    if replaceable_hold:
+        disciple.direct_command.clear()
+        state.sect.workforce_event_count += 1
     disciple.current_action = StringName(action)
     return {"ok":true,"track":track,"queued_action":action}
 

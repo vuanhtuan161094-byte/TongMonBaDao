@@ -278,10 +278,12 @@ func assign_group(state: SimulationState, disciple_id: StringName, group_id: Str
         var released := DiscipleBodyTrainingFacilityV2.release_slot(state,disciple_id)
         if not bool(released.get("ok",false)):
             return false
+    # Mine/Forest and Alchemy timer jobs all own their existing group.
+    # Never compare a busy Miner's destination against Alchemy's crew.
     if (
         state.p3_7_buildings_enabled
         and building_system.disciple_has_active_timed_recipe(state, disciple.id)
-        and group_id != building_system.worker_group_for_profession(PROF_ALCHEMY)
+        and group_id != disciple.work_group_id
     ):
         return false
     if state.p3_7_buildings_enabled and not disciple.work_cycle_state.is_empty():
@@ -313,7 +315,13 @@ func assign_worksite(state: SimulationState, disciple_id: StringName, building_i
     if not state.sect.workforce_enabled or not state.disciples.has(disciple_id):
         return false
     var disciple: DiscipleState = state.disciples[disciple_id]
-    if state.sect.economy_a_enabled and not building_system.active_resource_timer_for_worker(state,disciple.id).is_empty() and building_id != disciple.worksite_building_id:
+    # Protect both timed producers and Alchemy; earlier code guarded only
+    # resource timers, allowing worksite removal during paid Alchemy.
+    if (
+        state.p3_7_buildings_enabled
+        and building_system.disciple_has_active_timed_recipe(state,disciple.id)
+        and building_id != disciple.worksite_building_id
+    ):
         return false
     if state.p3_7_buildings_enabled and building_system.disciple_has_active_spirit_plot(state,disciple.id):
         if building_id == &"":
