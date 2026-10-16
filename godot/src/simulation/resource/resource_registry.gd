@@ -19,8 +19,8 @@ const DEFINITIONS := {
         "family": "wood",
         "realm_grade": "pham",
         "realm_rank": 0,
-        "cultivation_realm_min": 1,
-        "body_realm_min": 0,
+        "cultivation_realm_tier": 1,
+        "body_realm_tier": 0,
         "market_value": 2,
         "tags": ["construction_wood", "crafting_wood"]
     },
@@ -29,8 +29,8 @@ const DEFINITIONS := {
         "family": "mineral",
         "realm_grade": "luyen_khi",
         "realm_rank": 1,
-        "cultivation_realm_min": 2,
-        "body_realm_min": 0,
+        "cultivation_realm_tier": 2,
+        "body_realm_tier": 0,
         "market_value": 8,
         "tags": ["construction_mineral", "metal", "crafting_metal"]
     },
@@ -39,8 +39,8 @@ const DEFINITIONS := {
         "family": "mineral",
         "realm_grade": "truc_co",
         "realm_rank": 2,
-        "cultivation_realm_min": 3,
-        "body_realm_min": 0,
+        "cultivation_realm_tier": 3,
+        "body_realm_tier": 0,
         "market_value": 34,
         "tags": ["construction_mineral", "metal", "technique_material"]
     },
@@ -49,8 +49,8 @@ const DEFINITIONS := {
         "family": "beast_material",
         "realm_grade": "luyen_khi",
         "realm_rank": 1,
-        "cultivation_realm_min": 2,
-        "body_realm_min": 1,
+        "cultivation_realm_tier": 2,
+        "body_realm_tier": 1,
         "market_value": 10,
         "tags": ["beast_hide", "crafting_leather"]
     },
@@ -59,8 +59,8 @@ const DEFINITIONS := {
         "family": "monster_core",
         "realm_grade": "luyen_khi",
         "realm_rank": 1,
-        "cultivation_realm_min": 2,
-        "body_realm_min": 0,
+        "cultivation_realm_tier": 2,
+        "body_realm_tier": 0,
         "market_value": 18,
         "tags": ["monster_core", "alchemy", "technique_material"]
     },
@@ -69,8 +69,8 @@ const DEFINITIONS := {
         "family": "essence",
         "realm_grade": "luyen_khi",
         "realm_rank": 1,
-        "cultivation_realm_min": 2,
-        "body_realm_min": 4,
+        "cultivation_realm_tier": 2,
+        "body_realm_tier": 4,
         "market_value": 14,
         "tags": ["essence", "technique_material"]
     },
@@ -79,8 +79,8 @@ const DEFINITIONS := {
         "family": "building_component",
         "realm_grade": "luyen_khi",
         "realm_rank": 1,
-        "cultivation_realm_min": 2,
-        "body_realm_min": 0,
+        "cultivation_realm_tier": 2,
+        "body_realm_tier": 0,
         "market_value": 80,
         "tags": ["building_component", "mine_milestone"]
     },
@@ -89,8 +89,8 @@ const DEFINITIONS := {
         "family": "herb",
         "realm_grade": "luyen_khi",
         "realm_rank": 1,
-        "cultivation_realm_min": 2,
-        "body_realm_min": 1,
+        "cultivation_realm_tier": 2,
+        "body_realm_tier": 1,
         "market_value": 6,
         "tags": ["herb", "alchemy"]
     },
@@ -99,8 +99,8 @@ const DEFINITIONS := {
         "family": "pill",
         "realm_grade": "luyen_khi",
         "realm_rank": 1,
-        "cultivation_realm_min": 2,
-        "body_realm_min": 0,
+        "cultivation_realm_tier": 2,
+        "body_realm_tier": 0,
         "market_value": 0,
         "tags": ["pill", "healing", "alchemy_product"]
     },
@@ -109,8 +109,8 @@ const DEFINITIONS := {
         "family": "crop",
         "realm_grade": "luyen_khi",
         "realm_rank": 1,
-        "cultivation_realm_min": 2,
-        "body_realm_min": 0,
+        "cultivation_realm_tier": 2,
+        "body_realm_tier": 0,
         "market_value": 4,
         "tags": ["spirit_grain", "food"]
     },
@@ -119,8 +119,8 @@ const DEFINITIONS := {
         "family": "herb",
         "realm_grade": "truc_co",
         "realm_rank": 2,
-        "cultivation_realm_min": 3,
-        "body_realm_min": 4,
+        "cultivation_realm_tier": 3,
+        "body_realm_tier": 4,
         "market_value": 16,
         "tags": ["herb", "alchemy", "advanced_crop"]
     },
@@ -129,8 +129,8 @@ const DEFINITIONS := {
         "family": "building_fragment",
         "realm_grade": "luyen_khi",
         "realm_rank": 1,
-        "cultivation_realm_min": 2,
-        "body_realm_min": 0,
+        "cultivation_realm_tier": 2,
+        "body_realm_tier": 0,
         "market_value": 2,
         "tags": ["spirit_field_milestone_fragment"]
     },
@@ -139,8 +139,8 @@ const DEFINITIONS := {
         "family": "building_component",
         "realm_grade": "truc_co",
         "realm_rank": 2,
-        "cultivation_realm_min": 3,
-        "body_realm_min": 0,
+        "cultivation_realm_tier": 3,
+        "body_realm_tier": 0,
         "market_value": 120,
         "tags": ["building_component", "spirit_field_milestone"]
     },
@@ -149,8 +149,8 @@ const DEFINITIONS := {
         "family": "herb",
         "realm_grade": "nhan",
         "realm_rank": 7,
-        "cultivation_realm_min": 0,
-        "body_realm_min": 7,
+        "cultivation_realm_tier": 0,
+        "body_realm_tier": 7,
         "market_value": 0,
         "tags": ["body_gate_material", "body_gate_main", "body_gate_c"]
     },
@@ -159,8 +159,8 @@ const DEFINITIONS := {
         "family": "beast_material",
         "realm_grade": "nhan",
         "realm_rank": 7,
-        "cultivation_realm_min": 0,
-        "body_realm_min": 7,
+        "cultivation_realm_tier": 0,
+        "body_realm_tier": 7,
         "market_value": 0,
         "tags": ["body_gate_material", "body_gate_aux", "body_gate_c"]
     },
@@ -169,8 +169,8 @@ const DEFINITIONS := {
         "family": "herb",
         "realm_grade": "tien",
         "realm_rank": 11,
-        "cultivation_realm_min": 0,
-        "body_realm_min": 11,
+        "cultivation_realm_tier": 0,
+        "body_realm_tier": 11,
         "market_value": 0,
         "tags": ["body_gate_material", "body_gate_main", "body_gate_d"]
     },
@@ -179,8 +179,8 @@ const DEFINITIONS := {
         "family": "beast_material",
         "realm_grade": "tien",
         "realm_rank": 11,
-        "cultivation_realm_min": 0,
-        "body_realm_min": 11,
+        "cultivation_realm_tier": 0,
+        "body_realm_tier": 11,
         "market_value": 0,
         "tags": ["body_gate_material", "body_gate_aux", "body_gate_d"]
     },
@@ -189,8 +189,8 @@ const DEFINITIONS := {
         "family": "herb",
         "realm_grade": "tien",
         "realm_rank": 15,
-        "cultivation_realm_min": 0,
-        "body_realm_min": 15,
+        "cultivation_realm_tier": 0,
+        "body_realm_tier": 15,
         "market_value": 0,
         "tags": ["body_gate_material", "body_gate_main", "body_gate_e"]
     },
@@ -199,8 +199,8 @@ const DEFINITIONS := {
         "family": "beast_material",
         "realm_grade": "tien",
         "realm_rank": 15,
-        "cultivation_realm_min": 0,
-        "body_realm_min": 15,
+        "cultivation_realm_tier": 0,
+        "body_realm_tier": 15,
         "market_value": 0,
         "tags": ["body_gate_material", "body_gate_aux", "body_gate_e"]
     },
@@ -209,8 +209,8 @@ const DEFINITIONS := {
         "family": "essence",
         "realm_grade": "tien",
         "realm_rank": 18,
-        "cultivation_realm_min": 0,
-        "body_realm_min": 18,
+        "cultivation_realm_tier": 0,
+        "body_realm_tier": 18,
         "market_value": 0,
         "tags": ["body_gate_material", "body_gate_main", "body_gate_f"]
     },
@@ -219,8 +219,8 @@ const DEFINITIONS := {
         "family": "beast_material",
         "realm_grade": "tien",
         "realm_rank": 18,
-        "cultivation_realm_min": 0,
-        "body_realm_min": 18,
+        "cultivation_realm_tier": 0,
+        "body_realm_tier": 18,
         "market_value": 0,
         "tags": ["body_gate_material", "body_gate_aux", "body_gate_f"]
     },
@@ -229,8 +229,8 @@ const DEFINITIONS := {
         "family": "mineral",
         "realm_grade": "than",
         "realm_rank": 21,
-        "cultivation_realm_min": 0,
-        "body_realm_min": 21,
+        "cultivation_realm_tier": 0,
+        "body_realm_tier": 21,
         "market_value": 0,
         "tags": ["body_gate_material", "body_gate_main", "body_gate_g"]
     },
@@ -239,8 +239,8 @@ const DEFINITIONS := {
         "family": "beast_material",
         "realm_grade": "than",
         "realm_rank": 21,
-        "cultivation_realm_min": 0,
-        "body_realm_min": 21,
+        "cultivation_realm_tier": 0,
+        "body_realm_tier": 21,
         "market_value": 0,
         "tags": ["body_gate_material", "body_gate_aux", "body_gate_g"]
     },
@@ -249,8 +249,8 @@ const DEFINITIONS := {
         "family": "essence",
         "realm_grade": "than",
         "realm_rank": 26,
-        "cultivation_realm_min": 0,
-        "body_realm_min": 26,
+        "cultivation_realm_tier": 0,
+        "body_realm_tier": 26,
         "market_value": 0,
         "tags": ["body_gate_material", "body_gate_main", "body_gate_h"]
     },
@@ -259,8 +259,8 @@ const DEFINITIONS := {
         "family": "beast_material",
         "realm_grade": "than",
         "realm_rank": 26,
-        "cultivation_realm_min": 0,
-        "body_realm_min": 26,
+        "cultivation_realm_tier": 0,
+        "body_realm_tier": 26,
         "market_value": 0,
         "tags": ["body_gate_material", "body_gate_aux", "body_gate_h"]
     },
@@ -269,8 +269,8 @@ const DEFINITIONS := {
         "family": "body_gate_seal",
         "realm_grade": "nhan",
         "realm_rank": 10,
-        "cultivation_realm_min": 0,
-        "body_realm_min": 10,
+        "cultivation_realm_tier": 0,
+        "body_realm_tier": 10,
         "market_value": 0,
         "tags": ["body_gate_material", "body_gate_seal", "body_gate_nhan"]
     },
@@ -279,8 +279,8 @@ const DEFINITIONS := {
         "family": "body_gate_seal",
         "realm_grade": "tien",
         "realm_rank": 20,
-        "cultivation_realm_min": 0,
-        "body_realm_min": 20,
+        "cultivation_realm_tier": 0,
+        "body_realm_tier": 20,
         "market_value": 0,
         "tags": ["body_gate_material", "body_gate_seal", "body_gate_tien"]
     },
@@ -289,8 +289,8 @@ const DEFINITIONS := {
         "family": "body_gate_seal",
         "realm_grade": "than",
         "realm_rank": 29,
-        "cultivation_realm_min": 0,
-        "body_realm_min": 29,
+        "cultivation_realm_tier": 0,
+        "body_realm_tier": 29,
         "market_value": 0,
         "tags": ["body_gate_material", "body_gate_seal", "body_gate_than"]
     }
@@ -318,18 +318,18 @@ func realm_rank(resource_id: StringName) -> int:
 # Economy V2 uses the canonical two independent 30-realm tracks. The legacy
 # realm_grade/realm_rank fields stay for compatibility only; new progression
 # gates must use these explicit 1-based indexes (0 = no requirement).
-func cultivation_realm_min(resource_id: StringName) -> int:
-    return clampi(int(definition(resource_id).get("cultivation_realm_min", 0)), 0, DiscipleRealmProgressV2.MAX_REALM)
+func cultivation_realm_tier(resource_id: StringName) -> int:
+    return clampi(int(definition(resource_id).get("cultivation_realm_tier", 0)), 0, DiscipleRealmProgressV2.MAX_REALM)
 
-func body_realm_min(resource_id: StringName) -> int:
-    return clampi(int(definition(resource_id).get("body_realm_min", 0)), 0, DiscipleRealmProgressV2.MAX_REALM)
+func body_realm_tier(resource_id: StringName) -> int:
+    return clampi(int(definition(resource_id).get("body_realm_tier", 0)), 0, DiscipleRealmProgressV2.MAX_REALM)
 
 func cultivation_realm_name(resource_id: StringName) -> String:
-    var realm := cultivation_realm_min(resource_id)
+    var realm := cultivation_realm_tier(resource_id)
     return DiscipleRealmProgressV2.realm_name("cultivation", realm) if realm > 0 else ""
 
 func body_realm_name(resource_id: StringName) -> String:
-    var realm := body_realm_min(resource_id)
+    var realm := body_realm_tier(resource_id)
     return DiscipleRealmProgressV2.realm_name("body", realm) if realm > 0 else ""
 
 
@@ -366,15 +366,15 @@ func validate_definitions() -> Array[String]:
             errors.append("Resource %s has no family." % resource_id)
         if int(data.get("realm_rank", -1)) < 0:
             errors.append("Resource %s has invalid realm rank." % resource_id)
-        var cultivation_min := int(data.get("cultivation_realm_min", -1))
-        var body_min := int(data.get("body_realm_min", -1))
-        if cultivation_min < 0 or cultivation_min > DiscipleRealmProgressV2.MAX_REALM:
-            errors.append("Resource %s has invalid canonical cultivation realm." % resource_id)
-        if body_min < 0 or body_min > DiscipleRealmProgressV2.MAX_REALM:
-            errors.append("Resource %s has invalid canonical body realm." % resource_id)
-        if cultivation_min > 0 and cultivation_realm_name(resource_id).is_empty():
+        var cultivation_tier := int(data.get("cultivation_realm_tier", -1))
+        var body_tier := int(data.get("body_realm_tier", -1))
+        if cultivation_tier < 0 or cultivation_tier > DiscipleRealmProgressV2.MAX_REALM:
+            errors.append("Resource %s has invalid canonical cultivation realm tier." % resource_id)
+        if body_tier < 0 or body_tier > DiscipleRealmProgressV2.MAX_REALM:
+            errors.append("Resource %s has invalid canonical body realm tier." % resource_id)
+        if cultivation_tier > 0 and cultivation_realm_name(resource_id).is_empty():
             errors.append("Resource %s cultivation realm has no canonical name." % resource_id)
-        if body_min > 0 and body_realm_name(resource_id).is_empty():
+        if body_tier > 0 and body_realm_name(resource_id).is_empty():
             errors.append("Resource %s body realm has no canonical name." % resource_id)
         if not (data.get("tags", []) is Array):
             errors.append("Resource %s has invalid tags." % resource_id)
