@@ -382,13 +382,17 @@ static func from_dict(data: Dictionary) -> SectState:
             var row = growth_receipts[raw_request]
             if request_id.is_empty() or request_id.length() > 128 or not (row is Dictionary):
                 continue
+            var raw_points = row.get("points",null)
+            if not (raw_points is float or raw_points is int):
+                continue
+            var points := float(raw_points)
             if (
                 int(row.get("version", 0)) != 1
                 or str(row.get("request_id", "")) != request_id
                 or str(row.get("disciple_id", "")).is_empty()
                 or str(row.get("resource_id", "")) != "tu_van_thao"
                 or int(row.get("spent", 0)) <= 0
-                or float(row.get("points", 0.0)) <= 0.0
+                or is_nan(points) or is_inf(points) or points <= 0.0
             ):
                 continue
             state.v2_foundation_growth_receipts[request_id] = row.duplicate(true)
