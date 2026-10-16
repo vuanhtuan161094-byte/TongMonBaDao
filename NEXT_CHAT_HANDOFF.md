@@ -1,5 +1,20 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-16 — DV2 FOUNDATION GROWTH + ACTION GUARD HANDOFF
+
+**Integration lineage:** new branch `disciple-v2-foundation-action-guard-20261016` was branched from PR #10 `f374bc78a5556ad1003d92b27d6ec89c7c929aa3`; PR #10 targets PR #9. PR #9 moved to `cf11d53f2ac48e9b7a220500fece983b675dcd62` separately with newer O8 regression and Windows FULL documentation. Preserve those commits and reconcile before any merge. `main` unchanged at `461caca1`.
+
+**Code/test SHA:** `66f72f8b3b0155f4727d6a942c8e07d02695f4dc`. New `FoundationGrowthV2` permits only real Warehouse Tử Vân Thảo 1,000 → one permanent Tiềm Lực point with exactly-once receipt, rollback and save migration, plus one real player-facing button in authentic V2 attributes panel. Potential already affected Realm+Body ATK/DEF/HP via `CombatStatsV2`; `FoundationSystem` now synchronizes current V2 HP when Potential increases and rejects nonfinite growth. Six-stat channel inventory and action-entry audit matrix are in Economy V2 integration ledger.
+
+**One Active Job:** guarded `WorkforceSystem.perform_work`, direct resource/Field/Alchemy building methods, and Body major-gate preview. Existing Body training/PvE/commands remain canonical. No second scheduler, currency, wallet, Warehouse or OccupationManager introduced. The Field operator may still start other plots inside the existing single Field duty.
+
+**QA truth:** Structural delimiter/string scan **9/9 PASS**, no Godot parser/runtime/FULL run on this new branch. Authored simulation + live UI regressions must be executed on official Godot 4.7.2; include save/offline, O6 `==4`, GP-02B1/02C1, SAFE-01/02, Economy V2 and P3.7 FULL after reconciling the six later PR #9 commits. Do not infer PR #11 PASS from PR #9 prior Windows FULL.
+
+**Next:** close remaining character ingress paths only from verified defects; test the latest exact SHA, address test failures without weakening fixtures; balance Potential crop sink against ×10,000 late-game common yield; then return to canonical Hall/construction/earned high Body materials. No CI, no merge without explicit acceptance.
+
+---
+
+
 ## 2026-10-16 — DISCIPLE-V2 SCALE-SAFE CONTINUATION HANDOFF
 
 PR #9 (`economy-v2-disciple-production-integration-20261016` HEAD `d9b02dfd270b5165251e1e5e443b53a96ab68164`) remains the integration authority; isolated follow-up `disciple-v2-scale-20261016` is based directly on it. No merge into `main`.

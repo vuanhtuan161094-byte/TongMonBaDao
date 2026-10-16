@@ -118,6 +118,10 @@ var v2_pve_settlement_receipts: Dictionary = {}
 var v2_body_gate_receipts: Dictionary = {}
 var v2_body_gate_request_index: Dictionary = {}
 
+# DV2 foundation growth: persisted exactly-once receipts for legitimately
+# consumed Warehouse crops. Request IDs are unique per Sect save.
+var v2_foundation_growth_receipts: Dictionary = {}
+
 # P2.9 deterministic visible/latent/revealed trait profiles. Fully opt-in.
 var disciple_traits_enabled: bool = false
 var disciple_trait_profiles: Dictionary = {}
@@ -225,6 +229,8 @@ func to_dict() -> Dictionary:
             data["v2_pve_settlement_receipts"] = v2_pve_settlement_receipts.duplicate(true)
     if not v2_body_gate_receipts.is_empty():
         data["v2_body_gate_receipts"] = v2_body_gate_receipts.duplicate(true)
+    if not v2_foundation_growth_receipts.is_empty():
+        data["v2_foundation_growth_receipts"] = v2_foundation_growth_receipts.duplicate(true)
     if disciple_traits_enabled or disciple_trait_event_count > 0 or not disciple_trait_profiles.is_empty():
         data["disciple_traits_enabled"] = disciple_traits_enabled
         data["disciple_trait_profiles"] = disciple_trait_profiles.duplicate(true)
@@ -365,6 +371,31 @@ static func from_dict(data: Dictionary) -> SectState:
                 continue
             state.v2_body_gate_receipts[key] = normalized
             state.v2_body_gate_request_index[request_id] = key
+    # Legacy saves omit the ledger. Discard malformed records but preserve
+    # each valid receipt verbatim; never replay its resource debit/growth.
+    var growth_receipts = data.get("v2_foundation_growth_receipts", {})
+    if growth_receipts is Dictionary:
+        var growth_keys: Array = growth_receipts.keys()
+        growth_keys.sort()
+        for raw_request in growth_keys:
+            var request_id := str(raw_request)
+            var row = growth_receipts[raw_request]
+            if request_id.is_empty() or request_id.length() > 128 or not (row is Dictionary):
+                continue
+            var raw_points = row.get("points",null)
+            if not (raw_points is float or raw_points is int):
+                continue
+            var points := float(raw_points)
+            if (
+                int(row.get("version", 0)) != 1
+                or str(row.get("request_id", "")) != request_id
+                or str(row.get("disciple_id", "")).is_empty()
+                or str(row.get("resource_id", "")) != "tu_van_thao"
+                or int(row.get("spent", 0)) <= 0
+                or is_nan(points) or is_inf(points) or points <= 0.0
+            ):
+                continue
+            state.v2_foundation_growth_receipts[request_id] = row.duplicate(true)
     state.disciple_traits_enabled = bool(data.get("disciple_traits_enabled", false))
     state.disciple_trait_profiles = _trait_profile_dictionary(data.get("disciple_trait_profiles", {}))
     state.disciple_trait_event_count = maxi(int(data.get("disciple_trait_event_count", 0)), 0)

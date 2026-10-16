@@ -185,6 +185,15 @@ func _run() -> void:
     if deep == null or not _has_button_text(deep,"Chuyên tu") or not _has_button_text(deep,"Rèn thân"):
         _fail("V2 attribute tab did not expose both real training controls.")
         return
+    var growth_action := deep.find_child("PotentialGrowthRealCommit",true,false) as Button
+    if growth_action == null or growth_action.text != "Bồi dưỡng Tiềm Lực":
+        _fail("V2 attribute tab did not expose canonical Potential growth consumer.")
+        return
+    if not growth_action.disabled:
+        var eligibility := FoundationGrowthV2.new().preview(state,disciple.id)
+        if not bool(eligibility.get("ok",false)):
+            _fail("Potential growth UI enabled despite backend denial.")
+            return
 
     var profile_search := deep.find_child("DiscipleProfileSearch",true,false) as LineEdit
     if profile_search == null:

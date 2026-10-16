@@ -67,7 +67,23 @@ The final 15 IDs remain in paused Disciple V2 gate content. This integration doe
 | Thông Tuệ | `1 + 0.0015 × points` learning/EXP | `CharacterModifierSystem` → profession EXP; profession level separately changes speed |
 | Cơ Duyên | rare event factor/valid lucky roll | `ProfessionModifierSystem` → Field lucky harvest, Mine discrete byproduct; no routine quantity factor |
 | Mị Lực | guidance quality/social score | `RecruitmentSystem` Dẫn Tiên; no global production factor |
-| Tiềm Lực | `1 + 0.0005 × points` is defined in `FoundationSystem`; combat core also has a 0.0005 factor | **Growth consumer missing**: no call to `potential_growth_factor` or `add_permanent_points` from normal progression. Do not claim long-term attribute growth until a real progression event owns it. |
+| Tiềm Lực | `1 + 0.0005 × points` affects **Realm + Body core** ATK/DEF/HP only, not flat equipment | `CombatStatsV2.derive` already applies the core factor; `FoundationSystem.add_permanent_points` now synchronizes live V2 HP without a free heal. Stacked PR #11 adds an explicit paid crop consumer, **1,000 actual Tử Vân Thảo → 1 permanent Tiềm Lực**, via canonical Warehouse with reserve protection, exactly-once request receipt and rollback. No idle/free-point faucet. Runtime QA PENDING. |
+
+### Disciple V2 action-entry audit (stacked PR #11; static, not runtime-accepted)
+
+| Entrypoint | Current reservation rule | Status |
+|---|---|---|
+| `HuntingPveRunV2.begin` | Reject PvE/injury, current action, legacy work cycle, growing Field plot, timed recipe, reserved Rèn Thân slot | Already enforced; unchanged |
+| `DiscipleTrainingActionV2.request_training` | Reject active work, Field/timed job, PvE; only valid Chuyên Tu may release Body slot | Already enforced; unchanged |
+| `WorkforceSystem.issue_command` | Direct work/transfer restrictions; legal timer cancel is explicit; compatible HOLD/Field continuation | Already enforced; unchanged |
+| `WorkforceSystem.perform_work` | Now rejects any active timed job or reserved Rèn Thân slot and rejects other professions during Field duty, even on direct caller | CODE; Godot regression PENDING |
+| `BuildingSystem.perform_resource_job_step` | Now guards Field/timed/Body reservations and opposite legacy work-cycle profession at direct authority boundary | CODE; QA PENDING |
+| `BuildingSystem.perform_spirit_field_step` | Now rejects legacy work/timed/Body reservations while preserving same-operator additional plots under one Field duty | CODE; QA PENDING |
+| `BuildingSystem.alchemy_can_start` | Now rejects legacy work, Field and Body reservations before any Warehouse debit | CODE; QA PENDING |
+| `DiscipleBodyGateTransactionV2.preview_gate/commit_gate` | Now refuses active PvE, work cycle, Field, recipe and Body-training slot before opening a breakthrough transaction | CODE; QA PENDING |
+| `FoundationGrowthV2.preview/commit` | Forbids active work/PvE/Body duty; commits real crop and Potential/HP in one rollback-safe request with persisted replay receipt | CODE; QA PENDING |
+
+This is a scoped audit of these verified entrypoints, **not a claim that every future/legacy entrypoint in the repository is closed**. No new OccupationManager or second scheduler was introduced. For Cơ Duyên and Mị Lực, legacy bridge percentages still exist in P2-compatible paths; proper P3.7 Fortune/Social checks require separate full consumer migration. All six stat values remain independent; birth snapshots are never overwritten by earned growth.
 
 ## 5. Open integration gates
 

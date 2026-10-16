@@ -606,13 +606,28 @@ func perform_work(state: SimulationState, disciple: DiscipleState, profession_id
         return {"ok":false,"reason":"disciple_in_v2_pve"}
     if not state.sect.workforce_enabled or disciple.region_id != &"sect" or not VALID_PROFESSIONS.has(profession_id):
         return {"ok":false, "completed":false}
-    if (
-        state.p3_7_buildings_enabled
-        and building_system.disciple_has_active_spirit_plot(state, disciple.id)
-        and profession_id != PROF_HERBALISM
-    ):
-        return {"ok":false, "completed":false, "reason":"busy_spirit_field_duty"}
     if state.p3_7_buildings_enabled:
+        # Direct callers (including legacy UI) cannot bypass the scheduler's
+        # One Active Job reservation merely by calling perform_work().
+        # A Field operator alone may start another internal plot under the
+        # same duty; a Mine/Forest timer or Alchemy recipe owns the full actor.
+        if building_system.disciple_has_active_timed_recipe(state, disciple.id):
+            return {"ok":false,"completed":false,"reason":"busy_timed_job"}
+        if not disciple.work_cycle_state.is_empty():
+            var cycle_prof := StringName(disciple.work_cycle_state.get(
+                "profession_id",disciple.work_cycle_state.get("profession","")
+            ))
+            if cycle_prof != profession_id:
+                return {"ok":false,"completed":false,"reason":"busy_work_cycle"}
+        if (
+            building_system.disciple_has_active_spirit_plot(state, disciple.id)
+            and profession_id != PROF_HERBALISM
+        ):
+            return {"ok":false,"completed":false,"reason":"busy_spirit_field_duty"}
+        if (
+            DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple)
+        ):
+            return {"ok":false,"completed":false,"reason":"busy_body_training"}
         if profession_id == PROF_MINING:
             return _perform_p3_7_mining(state, disciple)
         if profession_id == PROF_FORESTRY:

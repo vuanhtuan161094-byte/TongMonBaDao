@@ -100,21 +100,56 @@ func recompute_disciple_quality(disciple: DiscipleState) -> StringName:
     return disciple.disciple_quality
 
 func add_permanent_points(disciple: DiscipleState, dimension: StringName, amount: float) -> bool:
-    if disciple == null or disciple.foundation_model_version < MODEL_OPEN_POINTS or amount <= 0.0 or not DIMENSIONS.has(dimension):
+    if (
+        disciple == null or disciple.foundation_model_version < MODEL_OPEN_POINTS
+        or not DIMENSIONS.has(dimension) or is_nan(amount) or is_inf(amount)
+        or amount <= 0.0
+    ):
         return false
+    var before := 0.0
     match dimension:
         DIM_APTITUDE:
-            disciple.aptitude += amount
+            before = disciple.aptitude
         DIM_CONSTITUTION:
-            disciple.constitution += amount
+            before = disciple.constitution
         DIM_FORTUNE:
-            disciple.fortune += amount
+            before = disciple.fortune
         DIM_COMPREHENSION:
-            disciple.comprehension += amount
+            before = disciple.comprehension
         DIM_CHARISMA:
-            disciple.charisma += amount
+            before = disciple.charisma
         DIM_POTENTIAL:
-            disciple.potential += amount
+            before = disciple.potential
+    var after := before + amount
+    if is_nan(before) or is_inf(before) or before < 0.0 or is_nan(after) or is_inf(after):
+        return false
+    var old_quality := disciple.disciple_quality
+    var old_hp := disciple.hp
+    var old_max_hp := disciple.max_hp
+    match dimension:
+        DIM_APTITUDE:
+            disciple.aptitude = after
+        DIM_CONSTITUTION:
+            disciple.constitution = after
+        DIM_FORTUNE:
+            disciple.fortune = after
+        DIM_COMPREHENSION:
+            disciple.comprehension = after
+        DIM_CHARISMA:
+            disciple.charisma = after
+        DIM_POTENTIAL:
+            disciple.potential = after
+    # Potential already scales only Realm+Body core through CombatStatsV2.
+    # Recompute actual V2 maximum HP immediately without providing a free
+    # heal; unrelated equipment/stat sources remain unmultiplied.
+    if dimension == DIM_POTENTIAL and DiscipleRealmProgressV2.progression_ready(disciple):
+        var synced := DiscipleRealmProgressV2.sync_live_hp(disciple)
+        if not bool(synced.get("ok",false)):
+            disciple.potential = before
+            disciple.hp = old_hp
+            disciple.max_hp = old_max_hp
+            disciple.disciple_quality = old_quality
+            return false
     recompute_disciple_quality(disciple)
     return true
 
