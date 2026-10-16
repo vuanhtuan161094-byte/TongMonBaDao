@@ -165,7 +165,7 @@ Legacy P0–P2 factories vẫn có thể dùng normalized values để bảo to�
 - **Cơ Duyên** -> `RNG 0..9999 + Cơ Duyên - difficulty`; tier 6000/8500/9500/9900.
 - **Thông Tuệ** -> EXP học/nghề/mastery; balance khởi đầu +0,15%/điểm.
 - **Mị Lực** -> social power; Dẫn Tiên có recruitment curve/cap riêng.
-- **Tiềm Lực** -> chất lượng stat growth từ Realm + Luyện Thể; balance khởi đầu +0,05%/điểm khi authority đó được triển khai.
+- **Tiềm Lực** -> chất lượng **Realm+Body core ATK/DEF/HP** (+0,05%/điểm), đã có consumer trong `CombatStatsV2`; không nhân lên trang bị flat. Pilot growth tiêu **10 Linh Tủy earned PvE / +1 điểm** qua `DiscipleFoundationGrowthV2`, receipt exactly-once và giữ tỉ lệ HP hiện tại. Đây là pilot nguồn tăng chỉ số có trả nguyên liệu, không phải cộng điểm miễn phí mỗi phút.
 
 Fixed-value consumable rewards remain fixed:
 - đan +10.000 Tu Vi -> đúng +10.000;
