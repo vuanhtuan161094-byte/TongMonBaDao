@@ -313,7 +313,9 @@ func assign_worksite(state: SimulationState, disciple_id: StringName, building_i
     if not state.sect.workforce_enabled or not state.disciples.has(disciple_id):
         return false
     var disciple: DiscipleState = state.disciples[disciple_id]
-    if state.sect.economy_a_enabled and not building_system.active_resource_timer_for_worker(state,disciple.id).is_empty() and building_id != disciple.worksite_building_id:
+    # Cover both saved resource packets and Alchemy jobs, including commands
+    # made directly via this API rather than the management UI.
+    if state.p3_7_buildings_enabled and building_system.disciple_has_active_timed_recipe(state,disciple.id) and building_id != disciple.worksite_building_id:
         return false
     if state.p3_7_buildings_enabled and building_system.disciple_has_active_spirit_plot(state,disciple.id):
         if building_id == &"":
@@ -585,10 +587,13 @@ func choose_work_profession(state: SimulationState, disciple: DiscipleState) -> 
     var best := &""
     var best_score := -1.0e30
     for profession_id in candidates:
-        if state.p3_7_buildings_enabled and not building_system.work_available(state, profession_id, disciple):
-            continue
+        # Priority zero can never win; skip the potentially roster-wide
+        # worksite availability lookup before scoring. This preserves the
+        # candidate order/tie-break and actual eligibility of every job.
         var priority := effective_priority(state, disciple, profession_id)
         if priority <= 0:
+            continue
+        if state.p3_7_buildings_enabled and not building_system.work_available(state, profession_id, disciple):
             continue
         var score := float(priority) * 100.0 + float(profession_level_for_state(state, disciple, profession_id)) * 3.0
         if _has_profession_trait(disciple, profession_id):
@@ -603,6 +608,18 @@ func perform_work(state: SimulationState, disciple: DiscipleState, profession_id
         return {"ok":false,"reason":"disciple_in_v2_pve"}
     if not state.sect.workforce_enabled or disciple.region_id != &"sect" or not VALID_PROFESSIONS.has(profession_id):
         return {"ok":false, "completed":false}
+    if state.p3_7_buildings_enabled:
+        # Direct worker API is an entrypoint too: never start an independent
+        # profession while the disciple owns an active timer, Body slot or a
+        # different unfinished legacy cycle. Field plots remain one duty.
+        if building_system.disciple_has_active_timed_recipe(state,disciple.id):
+            return {"ok":false,"completed":false,"reason":"another_active_job"}
+        if DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple):
+            return {"ok":false,"completed":false,"reason":"another_active_job"}
+        if not disciple.work_cycle_state.is_empty():
+            var cycle_profession := StringName(disciple.work_cycle_state.get("profession_id",disciple.work_cycle_state.get("profession","")))
+            if cycle_profession != profession_id:
+                return {"ok":false,"completed":false,"reason":"another_active_job"}
     if (
         state.p3_7_buildings_enabled
         and building_system.disciple_has_active_spirit_plot(state, disciple.id)

@@ -1,5 +1,53 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-16 — STACK-INTEGRATION-02 PR #9/#10/#17 — MERGED HISTORY, RUNTIME PENDING
+
+**Authorization:** 2026-10-16 code integration only, limited to 14 authorized paths, no rebase/force-push/edit parent PRs, no CI or main merge.
+
+**Graph:** branch `integration-v2-pr9-pr10-pr17-20261016` is based on PR #9 `cf11d53f2ac48e9b7a220500fece983b675dcd62` and integrates PR #17 `2719dbf6ac32bc5bab2196c25284ced127464406` as a second parent; PR #10 `f374bc78a5556ad1003d92b27d6ec89c7c929aa3` is an ancestor of #17. Exact merge commit SHA is available in the branch/PR commit history.
+
+**Conflict resolution:** use PR #17 backend and its 3 regression tests; retain both PR #9 O8 fixture fixes, economy evidence and QA debt corrections; concatenate each side's top-of-file checkpoint/handoff changes without deleting historical entries. No changes to ProductionPlan, EconomySystem, Warehouse, SimulationScheduler, CombatStats, SaveService or locked 30x10 cultivation/body, Injury 0/1/120 or V2 yield x10000.
+
+**Evidence:** 9/9 affected GDScript texts passed only a lexical brackets/comments/strings check, NOT Godot parsing/runtime. Official Windows Godot 4.7.2 FULL_EXIT=0 at `453df9aa0bc39f31f33cf65fc4aedcf688e7bf74` is pre-integration PR #9 evidence; it is NOT a PASS for this new combined branch. Godot 4.7.2 focused three Disciple V2 tests + O8, Economy V2/A, O6 ==4, GP-02B1/02C1, SAFE-01/02, P3.7 FULL, Windows visual/Android and 100-3,000 sustained performance remain PENDING. No CI requested or triggered manually.
+
+**OPEN:** permanent foundation growth's earned source/receipt, all active job ingress, Potential mid-PvE HP sync behavior, Hall/land/instance limits, upper Body resources, and runtime QA. Draft integration only; do not call it released.
+
+---
+## 2026-10-16 — DISCIPLE-V2 FOUNDATION + ONE ACTIVE JOB / NEW STACKED DRAFT
+
+**Authority:** user-approved 2026-10-16 continuation; base is draft PR #10 `disciple-v2-scale-20261016` HEAD `f374bc78a5556ad1003d92b27d6ec89c7c929aa3`. New stacked branch `disciple-v2-foundation-job-20261016`. `main` `461caca1171462e0da092f21108c5c1733157ad9` untouched; PR #6–#10 all unmerged. Draft PR #9 HEAD was observed `cf11d53f2ac48e9b7a220500fece983b675dcd62`; this can be newer than PR #10's ancestor. No parent rewrites or integration claim.
+
+**Code/test commits:** `ca0997237d5de590f0d8dbc43567be8efd5b4a39` (4 backend guards + atomic permanent growth), `339edf9d3e8bdd61e965944ba1d74e3745811174` (2 focused regression scripts), `f4db1804690abd4624572fed86eea5f9863e5029` (reject corrupt HP for Potential). Updated docs and draft PR follow as a separate commit.
+
+**Effect evidence:** Realm/Body ATK/DEF/HP already use Potential ×(1+0.0005/point) via `CombatStatsV2` BEFORE unrelated flats. New `FoundationSystem.add_permanent_points` checks finite six stats/amount/total, updates derived quality, and syncs live V2 HP ratio for Potential only, with rollback on failed sync. Tu Vi +0.25%/pt aptitude, Body XP +0.20%/pt constitution, profession XP +0.15%/pt comprehension stay in canonical consumers. Fortune meaningful-event coverage and general social consumers are not fully live; no invented permanent-growth earning source. Birth values immutable.
+
+**One Active Job:** direct work, Mine/Forest, Field, Alchemy, worksite changes and Body paid-minute checks tightened. Existing `disciple_has_active_timed_recipe` already covers BOTH resource timers and Alchemy. Multiple Field plots remain a single duty. Legacy carry, authorized HOLD cancellation, one Warehouse and one Scheduler preserved. **No changes** to 30×10 dual tracks, Injury 0/1/120, PR #9 Economy V2 bulk/yield/pricing/stock, save/workflow/CI/UI/Android.
+
+**Evidence/QA:** static source/bracket/string audit only. New focused regression `disciple_v2_foundation_core_regression_test.gd` and `disciple_v2_one_active_job_entrypoints_test.gd` were authored; **GODOT 4.7.2 HEADLESS RUNTIME NOT RUN / PENDING**. No CI triggered, no merge, no machine requested. Cross-phase cumulative/O6/SAFE/Windows/Android/performance 1k–3k still PENDING. For complete matrix and exact replay tests see `docs/DISCIPLE_V2_FOUNDATION_JOB_AUDIT_2026-10-16.md`. This is not a release/phase PASS.
+
+**Next work:** first prove these 2 focused regressions plus parent gates on a true Godot 4.7.2 runner when authorized; then implement actual earned permanent growth source/receipt in a separately authorized packet. Keep advanced Trait/Pháp Bảo, land-cap and Economy-B/C deferred.
+
+---
+
+## 2026-10-16 — DISCIPLE-V2 SCALE-SAFE BACKEND / STACKED ON DRAFT PR #9
+
+**Owner continuation:** Continue authorized Disciple V2 + Production V2 integration without requiring the owner's Windows computer. This limited follow-up addresses measured 100–3,000-disciple scheduler overhead and does not introduce new simulation authorities, content tiers or balance changes.
+
+**Git topology:** Integration branch `economy-v2-disciple-production-integration-20261016` is PR #9 HEAD `d9b02dfd270b5165251e1e5e443b53a96ab68164`. This packet uses an isolated branch `disciple-v2-scale-20261016` stacked directly on that exact commit. PR #6/#7/#8/#9 remain separate drafts; do not merge or modify `main`.
+
+**Changes, gameplay/test commit `89974c7dbf34f3855015b9cf1e721f7e498b987a`:**
+- Authentic V2 passive Tu Vi minute calls `DiscipleTuViFlowV2.validate_rule(...,false)` for scalar/schema validation, then makes **one** canonical `DiscipleRealmProgressV2.grant_xp` commit. Explicit preview/UI callers still run the full dry-run preflight. Live grant still validates all floor costs, XP sources, bounds and progression before mutation.
+- `WorkforceSystem.choose_work_profession` rejects professions of priority 0 before potentially roster-wide `work_available` lookups; candidate ranking and valid work selection are unchanged.
+- `BuildingSystem.can_disciple_work` cheaply rejects wrong work group, worksite and primary-instance fallback before scanning/sorting the full roster; the canonical `active_worker_ids` capacity check is unchanged for genuinely assigned workers.
+- New `godot/tests/simulation/disciple_v2_scale_safe_path_test.gd`: authentic V2 actor, dry/live Tu Vi equality, exactly-once tick, invalid XP source rejection without mutation, and assigned/unassigned/wrong-worksite fast guards.
+
+**QA honesty:** 4/4 changed GDScript files passed delimiter/string structural scan only. Official Godot 4.7.2 runtime is **NOT RUN** in this environment. No new timing measurement is available. Codex PR #9 previously reported 100/500/1,000/3,000 disciple one-tick measurements of 139.5/761.0/1633.1/3160.6 ms; these are the prior baseline, not improvement evidence. Run the same probe at the new exact branch/commit plus focused DV2-03 clock/train, One Active Job, Economy-A, O6, SAFE and P3.7 FULL before accepting. Windows visual, Android and sustained performance remain **PENDING USER**.
+
+**Remaining scope:** Potential growth consumer, all-instance building/cap/land authority, Body C–H/seal earned sources, resource-to-consumer matrix, global action ingress audit, and full 3,000-disciple sustained performance are OPEN. Preserve Injury 0/1/120; canonical 30×10 Tu Vi/Body; one worker per Mine/Forest/Field; 4 Field plots; PR #9 ×10,000 ordinary-yield pilot; no CI/no merge.
+
+---
+
+
 ## 2026-10-16 — DISCIPLE/PRODUCTION/ECONOMY V2 INTEGRATION (PR #9 DRAFT)
 
 **Current authority:** the owner's 16/10 master CODE authorization supersedes the earlier packet limits below. GitHub `main` is `461caca1171462e0da092f21108c5c1733157ad9`; draft PR #6 → #7 → #8 → [#9](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/9) remain stacked and unmerged. PR #9 base is exact PR #8 HEAD `b424d9dad96ec880037691d8163c0258c5667dc7`. The original Windows checkout and its untracked QA files were preserved.

@@ -1,5 +1,43 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-16 — STACK-INTEGRATION-02 HANDOFF / DRAFT PR #9 + #10 + #17
+
+New `integration-v2-pr9-pr10-pr17-20261016` branch has PR #9 `cf11d53f2ac48e9b7a220500fece983b675dcd62` and PR #17 `2719dbf6ac32bc5bab2196c25284ced127464406` as merge parents (PR #10 HEAD `f374bc78a5556ad1003d92b27d6ec89c7c929aa3` is on PR #17 ancestry). Preserve untouched original branches/main and their draft PRs.
+
+**Exact content:** the PR #17 Disciple V2 fast path, Foundation/Potential and one-active-job guards + 3 simulations regressions; the PR #9 grain-isolation and actual sect-resident O8 test edits; PR #9 Economy-V2 balance report and QA-debt evidence. Both additions to `CURRENT_CHECKPOINT.md` and `NEXT_CHAT_HANDOFF.md` survive byte-for-byte; integration note is newest.
+
+**Validation:** 9 GDScript texts static delimiter check only, no Godot headless runtime/Windows/Android claim. The previously reported Windows FULL exit 0 at PR #9 `453df9aa0bc39f31f33cf65fc4aedcf688e7bf74` does not certify the integrated tree. Run focused `disciple_v2_scale_safe_path_test.gd`, `disciple_v2_foundation_core_regression_test.gd`, `disciple_v2_one_active_job_entrypoints_test.gd`, `p3_o8_alchemy_loop_test.gd`, plus Economy-A/bulk, O3/O5/O6/O8/O9, GP-02B1/02C1, SAFE-01/02 and P3.7 FULL at an exact commit on Godot 4.7.2 later; UI/Android and 1k-3k sustained PENDING USER.
+
+**Next:** first focused real Godot execution and evidence-led corrections; separately design earned permanent growth sources and PvE HP snapshot safety. No CI, no merge, no balance/schema or source-authority change. Keep prior documentation historical decisions contextual.
+
+---
+## 2026-10-16 — DISCIPLE-V2 LỤC DUY CORE + ONE-ACTIVE-JOB STACKED HANDOFF
+
+New code branch `disciple-v2-foundation-job-20261016` starts from **draft PR #10** `disciple-v2-scale-20261016` HEAD `f374bc78a5556ad1003d92b27d6ec89c7c929aa3`, not from main. Parent PR #9 head observed `cf11d53f2ac48e9b7a220500fece983b675dcd62`, so compare parent ancestry before integration; never silently claim the newer PR #9 tip is included. `main` remains `461caca1171462e0da092f21108c5c1733157ad9`; all PRs draft/unmerged.
+
+**Committed backend work:** finite/overflow checked `FoundationSystem.add_permanent_points` with saved birth snapshot intact, updated derived quality, Potential Realm+Body max HP ratio synchronization and atomic rollback. Existing `CombatStatsV2` already owns Potential on three RealmBodyCore channels, unrelated flat equipment excluded; 30×10 progression not replaced. Direct job/worksite/Field/Alchemy/Body training entrypoints now refuse concurrent occupations; existing resource/Alchemy shared timed-work detection reused, with same-Field plot reuse and legacy carry-drain protected. Zero production/economy price edits; Injury 0/1/120 unchanged.
+
+**Focused regression authored but NOT EXECUTED:** `godot/tests/simulation/disciple_v2_foundation_core_regression_test.gd`, `godot/tests/simulation/disciple_v2_one_active_job_entrypoints_test.gd`; see `docs/DISCIPLE_V2_FOUNDATION_JOB_AUDIT_2026-10-16.md` for exact test commands and source/consumer matrix. Static structural evidence only. Godot 4.7.2 runtime, cumulative O6/SAFE, Windows GUI/Android, 3k sustained: **PENDING**. No CI/no merge/no local PC requested.
+
+**Honest OPEN:** a true game-earnable permanent-growth item/event/receipt has not been authored. `add_permanent_points` is checked primitive, not a reward faucet; synthetic test grants demonstrate math, not economic provenance. Fortune meaningful-event and broader social consumers and advanced stat sources remain incomplete. Do not open unrelated gameplay in this PR.
+
+**Next:** maintain stacked draft; validate exact PR tip on a real Godot runner when permission/tool exists and fix only failures proven within this allowlist. A separate approval is needed for new permanent-growth source content, claim receipts and Economy integration beyond this packet.
+
+---
+
+## 2026-10-16 — DISCIPLE-V2 SCALE-SAFE CONTINUATION HANDOFF
+
+PR #9 (`economy-v2-disciple-production-integration-20261016` HEAD `d9b02dfd270b5165251e1e5e443b53a96ab68164`) remains the integration authority; isolated follow-up `disciple-v2-scale-20261016` is based directly on it. No merge into `main`.
+
+**Implemented in this follow-up:** remove redundant full XP dry-run on each committed natural Tu Vi minute while preserving full live grant validation; skip availability probes for zero-priority work; fast-reject unrelated worksite actors before 1,000–3,000-person roster scans. Focused regression: `godot/tests/simulation/disciple_v2_scale_safe_path_test.gd`. Gameplay/test SHA `89974c7dbf34f3855015b9cf1e721f7e498b987a`.
+
+**Not claimed:** runtime PASS or improved tick ms. Only structural static scan 4/4 has been performed; Godot 4.7.2 and Windows performance remain PENDING. Do not claim 3,000-disciple device readiness from this optimization.
+
+**Next recommended implementation packet:** safely finish canonical character core growth/Potential source-consumer coverage, then audit global active-job ingress, and implement all-instance construction/land caps with exact material/production source links. Compare against real PR #9 implementation; do not redo its ×10,000 yield curve, finite merchant budget, stock-target pause or GUI fixes. Leave PRs stacked/draft; do not invoke CI or merge.
+
+---
+
+
 ## 2026-10-16 HANDOFF — MASTER DISCIPLE/PRODUCTION/ECONOMY V2, PR #9 DRAFT
 
 Owner's 16/10 master message is new CODE authorization; do not reapply older packet approval stops from historical sections below. Current stack: PR #6 (main) → #7 → #8 (`b424d9d`) → [draft PR #9](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/9), branch `economy-v2-disciple-production-integration-20261016`. None is merged into main. Before further edits, fetch live refs and verify head/base again. Repository edits use the GitHub connector; preserve the original `E:\TongMonBaDaoWorkspace\01_Game\TongMonBaDao` untracked QA work and saves. Do not run GitHub Actions or change workflows for green status.
