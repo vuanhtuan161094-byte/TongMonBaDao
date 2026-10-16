@@ -186,6 +186,20 @@ func _run() -> void:
         _fail("V2 attribute tab did not expose both real training controls.")
         return
 
+    var profile_search := deep.find_child("DiscipleProfileSearch",true,false) as LineEdit
+    if profile_search == null:
+        _fail("V2 profile roster has no disciple search.")
+        return
+    profile_search.emit_signal("text_submitted",str(disciple.id))
+    await process_frame
+    deep = (ui.get("popup_layer") as Control).get_node_or_null("DiscipleDeepScreen") as Panel
+    profile_search = deep.find_child("DiscipleProfileSearch",true,false) as LineEdit
+    if profile_search == null or profile_search.text != str(disciple.id).to_lower():
+        _fail("V2 profile roster search did not retain the submitted ID.")
+        return
+    profile_search.emit_signal("text_submitted","")
+    await process_frame
+
     # No available treasury: no slot assignment, action or fake success.
     state.sect.spirit_stones = 0
     disciple.current_action = &"EVALUATE"
