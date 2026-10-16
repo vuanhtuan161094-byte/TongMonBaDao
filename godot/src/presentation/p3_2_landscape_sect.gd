@@ -1928,11 +1928,13 @@ func _linh_forest_operation_text() -> String:
         lines.append("• Còn %d người; dùng tìm kiếm bên dưới." % [members.size()-5])
     var production_note := "Chu kỳ legacy: đi tới Linh Lâm → thu hoạch → vận chuyển về Kho."
     if state.sect.economy_a_enabled and forest != null:
-        production_note = "Timer V2: nền %d Linh Mộc / %d phút · sản lượng Lv%d: %d/mẻ." % [
-            production_plan_registry.base_yield(ProductionPlanRegistry.PLAN_FOREST_LINH_MOC_T1),
+        var forest_batch := production_plan_registry.scaled_yield(ProductionPlanRegistry.PLAN_FOREST_LINH_MOC_T1,forest.level)
+        var forest_stock := WarehouseSystem.new().quantity(state,&"linh_moc")
+        production_note = "Timer V2: %d Linh Mộc/mẻ · nền %d phút · kho %d/%d%s." % [
+            forest_batch,
             production_plan_registry.base_cycle_ticks(ProductionPlanRegistry.PLAN_FOREST_LINH_MOC_T1),
-            forest.level,
-            production_plan_registry.scaled_yield(ProductionPlanRegistry.PLAN_FOREST_LINH_MOC_T1, forest.level)
+            forest_stock,forest_batch*10,
+            " · tạm dừng" if forest_stock >= forest_batch*10 else ""
         ]
 
     return (
@@ -2115,11 +2117,13 @@ func _spirit_field_operation_text() -> String:
 
     var crop_lines: Array[String] = []
     for crop_id in spirit_crop_registry.eligible_crop_ids(field.level):
-        crop_lines.append("• %s · phí %d LT · nền %d phút · nền %d" % [
+        var crop_plan := spirit_crop_registry.production_plan_id(crop_id)
+        var actual_yield := production_plan_registry.scaled_yield(crop_plan,field.level)
+        crop_lines.append("• %s · phí %d LT · nền %d phút · thường %d/ô" % [
             spirit_crop_registry.display_name(crop_id),
             spirit_crop_registry.cost(crop_id),
             spirit_crop_registry.base_cycle_ticks(crop_id),
-            spirit_crop_registry.base_yield(crop_id)
+            actual_yield
         ])
 
     return (
