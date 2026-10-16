@@ -53,6 +53,8 @@ var disciple_profile_query := ""
 const MANAGEMENT_PAGE_SIZE := 50
 const DISCIPLE_PROFILE_PAGE_SIZE := 50
 var selected_building: StringName = &""
+# UI selection only; actual building ID/worker/production live in SimulationState.
+var selected_production_instance_id: StringName = &""
 var workforce_picker_panel: Panel
 var workforce_picker_results: VBoxContainer
 var workforce_picker_search: LineEdit
@@ -439,6 +441,7 @@ func _open_building(destination: StringName) -> void:
     _clear_popup()
     if selected_building != destination:
         workforce_advanced_visible = false
+        selected_production_instance_id = &""
     selected_building = destination
     var point := SectMapPresentation.position_for_destination(destination)
     _set_focus_target(point, &"building", destination, _building_name(destination), true)
@@ -808,9 +811,53 @@ func _workforce_occupants(building: BuildingState) -> Array[StringName]:
         return none
     return BuildingSystem.new().assigned_worker_ids(state,building)
 
+func _selected_resource_instance(building_type: StringName) -> BuildingState:
+    var buildings := BuildingSystem.new()
+    if selected_production_instance_id != &"" and state.buildings.has(str(selected_production_instance_id)):
+        var selected: BuildingState = state.buildings[str(selected_production_instance_id)]
+        if selected.building_type == building_type:
+            return selected
+    return buildings.primary_building(state,building_type)
+
+func _choose_resource_instance(index: int, building_type: StringName, ids: Array[StringName]) -> void:
+    if index < 0 or index >= ids.size() or not state.buildings.has(str(ids[index])):
+        return
+    var chosen: BuildingState = state.buildings[str(ids[index])]
+    if chosen.building_type != building_type:
+        return
+    selected_production_instance_id = chosen.id
+    workforce_advanced_visible = false
+    building_management_feedback = ""
+    _refresh_building_operation_content()
+
+func _build_resource_instance_chooser(building_type: StringName) -> void:
+    var instances := ResourceBuildingExpansionPolicyV2.existing_instances(state,building_type)
+    if instances.is_empty():
+        return
+    var ids: Array[StringName] = []
+    var select := OptionButton.new()
+    select.name = "WorkforceInstanceChooser"
+    select.custom_minimum_size = Vector2(384,46)
+    select.add_theme_font_size_override("font_size",14)
+    var active := _selected_resource_instance(building_type)
+    var selected_index := 0
+    for instance in instances:
+        ids.append(instance.id)
+        select.add_item("%s · Lv%d · %s" % [
+            str(instance.id),instance.level,
+            "Có người" if not BuildingSystem.new().assigned_worker_ids(state,instance).is_empty() else "Chưa giao"
+        ])
+        if active != null and active.id == instance.id:
+            selected_index = ids.size()-1
+    select.select(selected_index)
+    select.disabled = instances.size() < 2
+    select.tooltip_text = "Mỗi công trình dùng đúng ID instance và một đệ tử; không tạo thêm công trình."
+    select.item_selected.connect(Callable(self,"_choose_resource_instance").bind(building_type,ids))
+    building_management_container.add_child(select)
+
 func _workforce_operation_summary(building_type: StringName) -> String:
     var buildings := BuildingSystem.new()
-    var building := buildings.primary_building(state,building_type)
+    var building := _selected_resource_instance(building_type)
     if building == null:
         return "Công trình chưa có trong tông môn."
     var assigned := _workforce_occupants(building)
@@ -831,7 +878,7 @@ func _workforce_operation_summary(building_type: StringName) -> String:
         output = "Linh Cốc: %s · Thanh Linh Thảo: %s" % [
             _warehouse_pair(&"linh_coc",true),_warehouse_pair(&"thanh_linh_thao",true)
         ]
-    return "Lv%d · 1 công trình / 1 đệ tử\nPhụ trách: %s\n%s" % [building.level,who,output]
+    return "%s · Lv%d · 1 đệ tử / công trình\nPhụ trách: %s\n%s" % [str(building.id),building.level,who,output]
 
 func _workforce_worker_status(building: BuildingState, worker_id: StringName) -> String:
     var buildings := BuildingSystem.new()
@@ -871,7 +918,7 @@ func _workforce_ui_button(parent: Control, node_name: String, label_text: String
 
 func _build_workforce_card(building_type: StringName, profession_id: StringName) -> void:
     var buildings := BuildingSystem.new()
-    var building := buildings.primary_building(state,building_type)
+    var building := _selected_resource_instance(building_type)
     _add_management_section_label("NGƯỜI PHỤ TRÁCH · THAO TÁC NHANH")
     if building == null:
         _add_management_section_label("Chưa có công trình để phân công.")
@@ -896,6 +943,7 @@ func _build_workforce_card(building_type: StringName, profession_id: StringName)
     else:
         label.text = "Chưa có đệ tử. Chọn người để bắt đầu."
     building_management_container.add_child(label)
+    _build_resource_instance_chooser(building_type)
     var buttons := HBoxContainer.new()
     buttons.name = "WorkforceQuickActions"
     buttons.custom_minimum_size = Vector2(384,48)
@@ -956,9 +1004,9 @@ func _fold_workforce_legacy_controls() -> void:
     var advanced := VBoxContainer.new()
     advanced.name = "WorkforceAdvancedControls"
     advanced.add_theme_constant_override("separation",6)
-    var header_size := 3
-    if children.size() > 3 and str(children[3].name) == "WorkforceEnableTimer":
-        header_size = 4
+    var header_size := 4 # title, owner, per-instance chooser, quick-action row
+    if children.size() > header_size and str(children[header_size].name) == "WorkforceEnableTimer":
+        header_size += 1
     for index in range(header_size,children.size()):
         var node := children[index] as Control
         if node == null:
@@ -1259,6 +1307,7 @@ func _sect_hub_production_line(
     var building := buildings.primary_building(state,building_type)
     if building == null:
         return "%s · Chưa có công trình" % label_text
+    var instance_count := ResourceBuildingExpansionPolicyV2.existing_instances(state,building_type).size()
     var occupied := buildings.assigned_worker_ids(state,building)
     var actual_resource_id := resource_id
     if building_type == BuildingSystem.TYPE_MINE:
@@ -1272,8 +1321,8 @@ func _sect_hub_production_line(
         activity = _workforce_worker_status(building,occupied[0])
     elif occupied.size() > 1:
         activity = "Cần kiểm tra phân công"
-    return "%s · Lv%d · %s\n%s · Kho %s" % [
-        label_text,building.level,worker_name,activity,_warehouse_pair(actual_resource_id,true)
+    return "%s · %d công trình thật · Lv%d (mẫu đầu) · %s\n%s · Kho %s" % [
+        label_text,instance_count,building.level,worker_name,activity,_warehouse_pair(actual_resource_id,true)
     ]
 
 func _refresh_sect_hub() -> void:
@@ -1657,7 +1706,7 @@ func _build_lodging_expansion_control() -> void:
 
 func _build_mine_upgrade_control() -> void:
     var buildings := BuildingSystem.new()
-    var mine := buildings.primary_building(state, BuildingSystem.TYPE_MINE)
+    var mine := _selected_resource_instance(BuildingSystem.TYPE_MINE)
     _add_management_section_label("NÂNG CẤP MỎ")
     if mine == null:
         var missing := Label.new()
@@ -1898,7 +1947,7 @@ func _build_work_management(profession_id: StringName, group_id: StringName, gro
     var building_system := BuildingSystem.new()
     var active_producer: BuildingState = null
     if building_system.is_building_profession(profession_id):
-        active_producer = building_system.building_for_profession(state, profession_id)
+        active_producer = _selected_resource_instance(building_system.building_type_for_profession(profession_id))
         if active_producer != null:
             active_building_ids = building_system.active_worker_ids(state, active_producer)
 
@@ -1994,7 +2043,7 @@ func _set_mine_plan_from_ui(building_id: StringName, plan_id: StringName) -> voi
 
 func _build_spirit_field_management() -> void:
     var buildings := BuildingSystem.new()
-    var field := buildings.primary_building(state, BuildingSystem.TYPE_SPIRIT_FIELD)
+    var field := _selected_resource_instance(BuildingSystem.TYPE_SPIRIT_FIELD)
     if field == null:
         _add_management_section_label("LINH ĐIỀN CHƯA SẴN SÀNG")
         return
