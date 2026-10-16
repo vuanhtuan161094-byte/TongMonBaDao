@@ -33,13 +33,20 @@ func _run() -> void:
         _fail("O8 Alchemy recipe registry is invalid.")
         return
 
-    var field_worker_id := _first_unassigned()
+    # Economy V2 may start with the single Field operator already assigned.
+    # Reuse that real slot rather than attempting to overbook a second worker.
+    var assigned_field := buildings.active_worker_ids(state,field)
+    var field_worker_id: StringName = assigned_field[0] if not assigned_field.is_empty() else _first_unassigned()
     if field_worker_id == &"":
-        _fail("O8 has no unassigned Spirit Field worker.")
+        _fail("O8 has no available Spirit Field worker.")
         return
-    if not await _open_building(SectMapPresentation.DEST_SPIRIT_FIELD):
-        return
-    if not await _press("FieldGroup_%s" % str(field_worker_id)):
+    if assigned_field.is_empty():
+        if not await _open_building(SectMapPresentation.DEST_SPIRIT_FIELD):
+            return
+        if not await _press("FieldGroup_%s" % str(field_worker_id)):
+            return
+    if state.disciples[field_worker_id].work_group_id != &"herbalism_crew":
+        _fail("O8 Field operator is not in the canonical crew.")
         return
 
     var alchemist_id := _first_unassigned()
@@ -69,29 +76,45 @@ func _run() -> void:
             continue
         workforce.issue_command(state, id, WorkforceSystem.COMMAND_HOLD, "", 1200)
 
-    # Auto-demand tie starts with Linh Cốc; after that real stock exists and
-    # Thanh Linh Thảo becomes the highest-demand Lv1 crop.
+    # Recall the existing operator through the real scheduler before issuing a
+    # player Field action. Cancel only pre-existing plot work in this fixture.
+    for _wait in range(300):
+        var current: DiscipleState = state.disciples[field_worker_id]
+        if current.region_id == &"sect" and current.active_pve_encounter_id.is_empty():
+            break
+        scheduler.step()
+    var field_actor: DiscipleState = state.disciples[field_worker_id]
+    if field_actor.region_id != &"sect" or not field_actor.active_pve_encounter_id.is_empty():
+        _fail("O8 existing Field operator did not return to Sect.")
+        return
+    if not workforce.issue_command(state,field_worker_id,WorkforceSystem.COMMAND_HOLD,"",1200):
+        _fail("O8 could not hold returned Field operator.")
+        return
+    for prior_plot in buildings.spirit_field_plots(state,field):
+        if StringName(prior_plot.get("status","")) == BuildingSystem.PLOT_GROWING:
+            if not buildings.cancel_spirit_plot(state,field.id,StringName(prior_plot.get("plot_id",""))):
+                _fail("O8 could not cancel a pre-existing plot for isolation.")
+                return
+
+    # Test-only grain stock isolates the Alchemy herb path. AUTO_DEMAND still
+    # chooses by real Warehouse ratios, and no herb is granted by this fixture.
+    var grain_crop := SpiritCropRegistry.CROP_LINH_COC
+    var grain_target := maxi(SpiritCropRegistry.new().stock_target(grain_crop),
+        ProductionPlanRegistry.new().scaled_yield(
+            SpiritCropRegistry.new().production_plan_id(grain_crop),field.level
+        ) * 10)
+    var grain_stock := warehouse.quantity(state,&"linh_coc")
+    if grain_stock < grain_target and not warehouse.add(state,&"linh_coc",grain_target-grain_stock):
+        _fail("O8 could not isolate grain stock for AUTO_DEMAND herb selection.")
+        return
+
+    # Observe one genuine 2,000-unit herb batch settled by the real Field.
     if not await _open_building(SectMapPresentation.DEST_SPIRIT_FIELD):
         return
     if not await _press("FieldPlant_%s" % str(field_worker_id)):
         return
-    var grain_before := warehouse.quantity(state, &"linh_coc")
     var herb_before := warehouse.quantity(state, &"thanh_linh_thao")
-    for _i in range(80):
-        scheduler.step()
-        if warehouse.quantity(state, &"linh_coc") > grain_before:
-            break
-    if warehouse.quantity(state, &"linh_coc") <= grain_before:
-        _fail("O8 first real Spirit Field crop never harvested.")
-        return
-
-    field = buildings.primary_building(state, BuildingSystem.TYPE_SPIRIT_FIELD)
-    if not buildings.disciple_has_active_spirit_plot(state, field_worker_id, field):
-        if not await _open_building(SectMapPresentation.DEST_SPIRIT_FIELD):
-            return
-        if not await _press("FieldPlant_%s" % str(field_worker_id)):
-            return
-    for _i in range(100):
+    for _i in range(140):
         scheduler.step()
         if warehouse.quantity(state, &"thanh_linh_thao") >= herb_before + 2000:
             break
@@ -184,9 +207,10 @@ func _run() -> void:
     if warehouse.quantity(state, NeedsSystem.HEALING_PILL_ID) != pill_before + 1:
         _fail("O8 timed completion did not deposit exactly one canonical pill.")
         return
-    if not buildings.alchemy_jobs(state, hall).is_empty():
-        _fail("O8 completed job was not removed atomically.")
-        return
+    for next_job in buildings.alchemy_jobs(state,hall):
+        if str(next_job.get("job_id","")) == saved_id:
+            _fail("O8 completed job was not removed atomically.")
+            return
     if workforce.profession_xp(state.disciples[alchemist_id], WorkforceSystem.PROF_ALCHEMY) <= xp_before:
         _fail("O8 completed Alchemy job granted no profession XP.")
         return
@@ -197,12 +221,28 @@ func _run() -> void:
     if not await _open_scene():
         return
     hall = buildings.primary_building(state, BuildingSystem.TYPE_ALCHEMY_HALL)
-    if warehouse.quantity(state, NeedsSystem.HEALING_PILL_ID) != pill_before + 1 or not buildings.alchemy_jobs(state, hall).is_empty():
+    if warehouse.quantity(state, NeedsSystem.HEALING_PILL_ID) != pill_before + 1:
         _fail("O8 post-completion reload replayed output.")
         return
+    for next_job in buildings.alchemy_jobs(state,hall):
+        if str(next_job.get("job_id","")) == saved_id:
+            _fail("O8 completed recipe reappeared after reload.")
+            return
 
-    # Dược Phòng consumes the canonical pill without legacy medicine/money.
-    var target: DiscipleState = state.disciples[field_worker_id]
+    # Dược Phòng lists only disciples actually inside the sect. The Field
+    # operator can legitimately travel after the saved job completes, so pick
+    # a current sect resident without changing their location or job.
+    var target: DiscipleState = null
+    var target_ids: Array = state.disciples.keys()
+    target_ids.sort()
+    for raw_id in target_ids:
+        var resident: DiscipleState = state.disciples[raw_id]
+        if resident.region_id == &"sect" and resident.active_pve_encounter_id.is_empty():
+            target = resident
+            break
+    if target == null:
+        _fail("O8 has no eligible sect resident for the real pill-use control.")
+        return
     target.hp = maxf(1.0, target.max_hp - 60.0)
     var hp_before := target.hp
     var medicine_before := state.sect.medicine_stock
@@ -276,7 +316,7 @@ func _press(node_name: String) -> bool:
     if button == null:
         return _fail("O8 missing player-facing button %s." % node_name)
     if button.disabled:
-        return _fail("O8 required button is disabled: %s." % node_name)
+        return _fail("O8 required button is disabled: %s (%s)." % [node_name,button.tooltip_text])
     button.emit_signal("pressed")
     await process_frame
     return true

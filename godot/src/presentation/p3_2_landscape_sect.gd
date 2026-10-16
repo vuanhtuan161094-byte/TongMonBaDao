@@ -48,6 +48,10 @@ var building_operation_body: Label
 var building_operation_content: VBoxContainer
 var building_management_container: VBoxContainer
 var building_management_feedback := ""
+var building_management_query := ""
+var disciple_profile_query := ""
+const MANAGEMENT_PAGE_SIZE := 50
+const DISCIPLE_PROFILE_PAGE_SIZE := 50
 var selected_building: StringName = &""
 var deep_restore_summary := false
 var screen_pointer_dragged := false
@@ -629,7 +633,7 @@ func _build_building_operation_panel() -> void:
 
     building_operation_body = Label.new()
     building_operation_body.name = "BuildingOperationBody"
-    building_operation_body.custom_minimum_size = Vector2(384, 420)
+    building_operation_body.custom_minimum_size = Vector2(384, 0)
     building_operation_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     building_operation_body.add_theme_font_size_override("font_size", 13)
     building_operation_body.add_theme_color_override("font_color", INK)
@@ -695,7 +699,7 @@ func _refresh_building_operation_content() -> void:
     elif selected_building == SectMapPresentation.DEST_SPIRIT_FIELD:
         building_operation_body.custom_minimum_size.y = 220
     else:
-        building_operation_body.custom_minimum_size.y = 420
+        building_operation_body.custom_minimum_size.y = 0
     _rebuild_building_management_controls()
 
 func _rebuild_building_management_controls() -> void:
@@ -824,7 +828,9 @@ func _build_economy_a_market_controls() -> void:
     economy.sync_market_day(state)
     _add_management_section_label("PHƯỜNG THỊ · GIAO DỊCH NGUYÊN LIỆU")
     var quota := Label.new()
-    quota.text = "Hạn mức bán %d · mua %d sản phẩm/ngày." % [economy.market_remaining(state),economy.market_buy_remaining(state)]
+    quota.text = "Bán %d · mua %d đơn vị/ngày · thương nhân còn %d LT." % [
+        economy.market_remaining(state),economy.market_buy_remaining(state),
+        economy.market_stone_budget_remaining(state)]
     quota.custom_minimum_size = Vector2(384,28)
     building_management_container.add_child(quota)
     for raw_id in ["linh_moc","thanh_thiet","thanh_linh_thao","linh_coc"]:
@@ -833,6 +839,7 @@ func _build_economy_a_market_controls() -> void:
         var price := int(ResourceRegistry.new().definition(resource_id).get("market_value",0))
         var max_sale := int(state.sect.economy_a_policy.get("market_max_per_sale",5))
         var sellable := mini(available,mini(max_sale,economy.market_remaining(state)))
+        sellable = mini(sellable,int(economy.market_stone_budget_remaining(state) / maxi(price,1)))
         var row := Button.new()
         row.name = "EconomyA_Sell_%s" % raw_id
         row.text = "Bán %s ×%d · +%d LT" % [ResourceRegistry.new().display_name(resource_id),sellable,price*sellable]
@@ -1243,6 +1250,44 @@ func _craft_from_building(recipe_id: StringName) -> void:
         ]
     _refresh_building_operation_content()
 
+func _add_management_search() -> void:
+    var search := LineEdit.new()
+    search.name = "BuildingDiscipleSearch"
+    search.placeholder_text = "Tìm tên hoặc ID đệ tử · Enter để lọc"
+    search.text = building_management_query
+    search.custom_minimum_size = Vector2(384,34)
+    search.text_submitted.connect(Callable(self,"_apply_management_search"))
+    building_management_container.add_child(search)
+
+func _apply_management_search(value: String) -> void:
+    building_management_query = value.strip_edges().to_lower()
+    _refresh_building_operation_content()
+
+func _ranked_management_ids(profession_id: StringName, group_id: StringName) -> Array:
+    var ids: Array = []
+    for raw_id in state.disciples.keys():
+        var disciple: DiscipleState = state.disciples[raw_id]
+        if building_management_query != "" and not disciple.display_name.to_lower().contains(building_management_query) and not str(disciple.id).to_lower().contains(building_management_query):
+            continue
+        ids.append(raw_id)
+    var modifiers := ProfessionModifierSystem.new()
+    ids.sort_custom(func(a: Variant, b: Variant) -> bool:
+        var left: DiscipleState = state.disciples[a]
+        var right: DiscipleState = state.disciples[b]
+        var left_level := workforce.profession_level_for_state(state,left,profession_id)
+        var right_level := workforce.profession_level_for_state(state,right,profession_id)
+        var left_score := modifiers.total_work_speed_factor(state,left,left_level)
+        var right_score := modifiers.total_work_speed_factor(state,right,right_level)
+        if left.work_group_id == group_id:
+            left_score += 10000.0
+        if right.work_group_id == group_id:
+            right_score += 10000.0
+        if not is_equal_approx(left_score,right_score):
+            return left_score > right_score
+        return str(a) < str(b)
+    )
+    return ids
+
 func _build_work_management(profession_id: StringName, group_id: StringName, group_label: String, order_label: String) -> void:
     _add_management_section_label("PHÂN CÔNG")
     var active_building_ids: Array[StringName] = []
@@ -1253,11 +1298,34 @@ func _build_work_management(profession_id: StringName, group_id: StringName, gro
         if active_producer != null:
             active_building_ids = building_system.active_worker_ids(state, active_producer)
 
-    var ids: Array = state.disciples.keys()
-    ids.sort()
+    if profession_id == WorkforceSystem.PROF_MINING and active_producer != null and state.sect.economy_a_enabled:
+        var selected_plan := building_system.selected_resource_production_plan(active_producer)
+        var next_plan := ProductionPlanRegistry.PLAN_MINE_HUYEN_THIET_T2 if selected_plan == ProductionPlanRegistry.PLAN_MINE_THANH_THIET_T1 else ProductionPlanRegistry.PLAN_MINE_THANH_THIET_T1
+        var plan_button := Button.new()
+        plan_button.name = "MineProductionPlan"
+        plan_button.text = "Mỏ đang khai thác: %s · đổi sang %s" % [
+            "Huyền Thiết" if selected_plan == ProductionPlanRegistry.PLAN_MINE_HUYEN_THIET_T2 else "Thanh Thiết",
+            "Huyền Thiết" if next_plan == ProductionPlanRegistry.PLAN_MINE_HUYEN_THIET_T2 else "Thanh Thiết"]
+        plan_button.custom_minimum_size = Vector2(384,36)
+        plan_button.disabled = active_producer.level < ProductionPlanRegistry.new().required_building_level(next_plan)
+        if plan_button.disabled:
+            plan_button.tooltip_text = "Huyền Thiết mở ở Mỏ Lv30."
+        plan_button.pressed.connect(Callable(self,"_set_mine_plan_from_ui").bind(active_producer.id,next_plan))
+        building_management_container.add_child(plan_button)
+    _add_management_search()
+    var ids := _ranked_management_ids(profession_id,group_id)
+    var shown := 0
     for raw_id in ids:
+        if shown >= MANAGEMENT_PAGE_SIZE:
+            break
         var disciple: DiscipleState = state.disciples[raw_id]
         var row := _new_management_row(disciple)
+        var level := workforce.profession_level_for_state(state,disciple,profession_id)
+        var name_label := row.get_child(0) as Label
+        name_label.text = "%s · nghề Lv%d" % [disciple.display_name,level]
+        name_label.tooltip_text = "%s · nghề Lv%d · tốc độ ×%.2f" % [
+            disciple.display_name,level,ProfessionModifierSystem.new().total_work_speed_factor(state,disciple,level)]
+        shown += 1
         var in_group := disciple.work_group_id == group_id
         var timed_recipe_busy := building_system.disciple_has_active_timed_recipe(state, disciple.id)
 
@@ -1315,6 +1383,11 @@ func _build_work_management(profession_id: StringName, group_id: StringName, gro
         ))
         row.add_child(order_button)
 
+func _set_mine_plan_from_ui(building_id: StringName, plan_id: StringName) -> void:
+    var ok := BuildingSystem.new().set_resource_production_plan(state,building_id,plan_id)
+    building_management_feedback = "Đã đổi kế hoạch khai khoáng." if ok else "Chưa thể đổi kế hoạch khai khoáng."
+    _refresh_building_operation_content()
+
 func _build_spirit_field_management() -> void:
     var buildings := BuildingSystem.new()
     var field := buildings.primary_building(state, BuildingSystem.TYPE_SPIRIT_FIELD)
@@ -1354,11 +1427,18 @@ func _build_spirit_field_management() -> void:
 
     _add_management_section_label("PHÂN CÔNG & GIEO TRỒNG")
     var active_ids := buildings.active_worker_ids(state, field)
-    var ids: Array = state.disciples.keys()
-    ids.sort()
+    _add_management_search()
+    var ids := _ranked_management_ids(WorkforceSystem.PROF_HERBALISM,&"herbalism_crew")
+    var shown := 0
     for raw_id in ids:
+        if shown >= MANAGEMENT_PAGE_SIZE:
+            break
         var disciple: DiscipleState = state.disciples[raw_id]
         var row := _new_management_row(disciple)
+        var level := workforce.profession_level_for_state(state,disciple,WorkforceSystem.PROF_HERBALISM)
+        var name_label := row.get_child(0) as Label
+        name_label.text = "%s · nghề Lv%d" % [disciple.display_name,level]
+        shown += 1
         var in_group := disciple.work_group_id == &"herbalism_crew"
         var has_plot := buildings.disciple_has_active_spirit_plot(state, disciple.id, field)
 
@@ -1469,11 +1549,15 @@ func _add_management_section_label(text: String) -> void:
     label.add_theme_color_override("font_color", CINNABAR.darkened(0.12))
     building_management_container.add_child(label)
 
-func _new_management_row(disciple: DiscipleState) -> HBoxContainer:
-    var row := HBoxContainer.new()
+func _new_management_row(disciple: DiscipleState) -> GridContainer:
+    # Two columns keep the Mine's three actions within the 384px panel.
+    # The name stays readable on paper and commands wrap to a second row.
+    var row := GridContainer.new()
     row.name = "Person_%s" % str(disciple.id)
-    row.custom_minimum_size = Vector2(384, 38)
-    row.add_theme_constant_override("separation", 6)
+    row.columns = 2
+    row.custom_minimum_size = Vector2(384, 0)
+    row.add_theme_constant_override("h_separation", 6)
+    row.add_theme_constant_override("v_separation", 3)
     building_management_container.add_child(row)
 
     var name := Label.new()
@@ -1481,6 +1565,7 @@ func _new_management_row(disciple: DiscipleState) -> HBoxContainer:
     name.custom_minimum_size = Vector2(190, 34)
     name.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
     name.add_theme_font_size_override("font_size", 11)
+    name.add_theme_color_override("font_color", INK)
     row.add_child(name)
     return row
 
@@ -1830,6 +1915,8 @@ func _linh_forest_operation_text() -> String:
 
     var lines: Array[String] = []
     for disciple_value in members:
+        if lines.size() >= 5:
+            break
         var disciple: DiscipleState = disciple_value
         var level := workforce.profession_level_for_state(state, disciple, WorkforceSystem.PROF_FORESTRY)
         lines.append("• %s · Lv%d · %s" % [
@@ -1839,13 +1926,17 @@ func _linh_forest_operation_text() -> String:
         ])
     if lines.is_empty():
         lines.append("• Chưa có thành viên Đội Lâm Nghiệp")
+    elif members.size() > 5:
+        lines.append("• Còn %d người; dùng tìm kiếm bên dưới." % [members.size()-5])
     var production_note := "Chu kỳ legacy: đi tới Linh Lâm → thu hoạch → vận chuyển về Kho."
     if state.sect.economy_a_enabled and forest != null:
-        production_note = "Timer V2: nền %d Linh Mộc / %d phút · sản lượng Lv%d: %d/mẻ." % [
-            production_plan_registry.base_yield(ProductionPlanRegistry.PLAN_FOREST_LINH_MOC_T1),
+        var forest_batch := production_plan_registry.scaled_yield(ProductionPlanRegistry.PLAN_FOREST_LINH_MOC_T1,forest.level)
+        var forest_stock := WarehouseSystem.new().quantity(state,&"linh_moc")
+        production_note = "Timer V2: %d Linh Mộc/mẻ · nền %d phút · kho %d/%d%s." % [
+            forest_batch,
             production_plan_registry.base_cycle_ticks(ProductionPlanRegistry.PLAN_FOREST_LINH_MOC_T1),
-            forest.level,
-            production_plan_registry.scaled_yield(ProductionPlanRegistry.PLAN_FOREST_LINH_MOC_T1, forest.level)
+            forest_stock,forest_batch*10,
+            " · tạm dừng" if forest_stock >= forest_batch*10 else ""
         ]
 
     return (
@@ -1918,12 +2009,15 @@ func _mine_operation_text() -> String:
             " · điểm %s" % str(disciple.worksite_building_id)
             if disciple.worksite_building_id != &"" else " · điểm mặc định"
         )
-        lines.append("• %s · Lv%d · %s%s" % [
-            disciple.display_name, level,
-            _mining_member_status(disciple, is_active), location
-        ])
+        if lines.size() < 5:
+            lines.append("• %s · Lv%d · %s%s" % [
+                disciple.display_name, level,
+                _mining_member_status(disciple, is_active), location
+            ])
     if lines.is_empty():
         lines.append("• Chưa có thành viên Đội Khai Khoáng")
+    elif members.size() > 5:
+        lines.append("• Còn %d người; dùng tìm kiếm bên dưới." % [members.size()-5])
 
     var upgrade_text := "Ổn định"
     if mine != null and mine.is_upgrading():
@@ -1933,11 +2027,15 @@ func _mine_operation_text() -> String:
         ]
     var production_note := "Chu kỳ legacy: đi tới mỏ → khai thác → vận chuyển về kho."
     if state.sect.economy_a_enabled and mine != null:
-        production_note = "Timer V2: nền %d Thanh Thiết / %d phút · sản lượng Lv%d: %d/mẻ." % [
-            production_plan_registry.base_yield(ProductionPlanRegistry.PLAN_MINE_THANH_THIET_T1),
-            production_plan_registry.base_cycle_ticks(ProductionPlanRegistry.PLAN_MINE_THANH_THIET_T1),
-            mine.level,
-            production_plan_registry.scaled_yield(ProductionPlanRegistry.PLAN_MINE_THANH_THIET_T1, mine.level)
+        var plan_id := building_system.selected_resource_production_plan(mine)
+        var output_id := production_plan_registry.output_resource_id(plan_id)
+        var batch := production_plan_registry.scaled_yield(plan_id,mine.level)
+        var stock := WarehouseSystem.new().quantity(state,output_id)
+        var target := batch * 10
+        production_note = "%s: %d/mẻ · nền %d phút · kho %d/%d. %s" % [
+            ResourceRegistry.new().display_name(output_id),batch,
+            production_plan_registry.base_cycle_ticks(plan_id),stock,target,
+            "Tạm dừng khi đạt mục tiêu kho." if stock >= target else "Có thể tiếp tục."
         ]
 
     return (
@@ -2021,11 +2119,13 @@ func _spirit_field_operation_text() -> String:
 
     var crop_lines: Array[String] = []
     for crop_id in spirit_crop_registry.eligible_crop_ids(field.level):
-        crop_lines.append("• %s · phí %d LT · nền %d phút · nền %d" % [
+        var crop_plan := spirit_crop_registry.production_plan_id(crop_id)
+        var actual_yield := production_plan_registry.scaled_yield(crop_plan,field.level)
+        crop_lines.append("• %s · phí %d LT · nền %d phút · thường %d/ô" % [
             spirit_crop_registry.display_name(crop_id),
             spirit_crop_registry.cost(crop_id),
             spirit_crop_registry.base_cycle_ticks(crop_id),
-            spirit_crop_registry.base_yield(crop_id)
+            actual_yield
         ])
 
     return (
@@ -2903,9 +3003,19 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
     roster_panel.add_theme_stylebox_override("panel", _style(Color(0.86, 0.80, 0.66, 1.0), Color(0.40, 0.31, 0.20, 1.0), 2, 10))
     panel.add_child(roster_panel)
 
+    var roster_search := LineEdit.new()
+    roster_search.name = "DiscipleProfileSearch"
+    roster_search.position = Vector2(8, 8)
+    roster_search.size = Vector2(168, 36)
+    roster_search.placeholder_text = "Tên hoặc ID · Enter"
+    roster_search.text = disciple_profile_query
+    roster_search.tooltip_text = "Tìm theo tên hoặc ID; hiển thị tối đa 50 đệ tử mỗi lượt."
+    roster_search.text_submitted.connect(Callable(self,"_set_disciple_profile_search").bind(disciple_id,tab_name))
+    roster_panel.add_child(roster_search)
+
     var scroll := ScrollContainer.new()
-    scroll.position = Vector2(8, 8)
-    scroll.size = Vector2(168, 448)
+    scroll.position = Vector2(8, 50)
+    scroll.size = Vector2(168, 406)
     roster_panel.add_child(scroll)
 
     var roster := VBoxContainer.new()
@@ -2915,9 +3025,21 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
 
     var ids: Array = state.disciples.keys()
     ids.sort()
+    if disciple_profile_query.is_empty() and ids.has(disciple_id):
+        ids.erase(disciple_id)
+        ids.push_front(disciple_id)
+    var roster_shown := 0
     for raw_id in ids:
+        if roster_shown >= DISCIPLE_PROFILE_PAGE_SIZE:
+            break
         var id := StringName(raw_id)
         var roster_disciple: DiscipleState = state.disciples[id]
+        if not disciple_profile_query.is_empty() and not (
+            roster_disciple.display_name.to_lower().contains(disciple_profile_query)
+            or str(id).to_lower().contains(disciple_profile_query)
+        ):
+            continue
+        roster_shown += 1
         var entry := Button.new()
         entry.text = roster_disciple.display_name
         entry.custom_minimum_size = Vector2(148, 44)
@@ -3009,6 +3131,11 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
         tab.add_theme_stylebox_override("normal", _style(Color(0.97, 0.88, 0.64, 1.0) if active else Color(0.88, 0.82, 0.67, 1.0), GOLD if active else Color(0.45, 0.37, 0.25, 1.0), 2 if active else 1, 7))
         tab.pressed.connect(Callable(self, "_open_disciple_deep_screen").bind(selected_id, str(tab_names[index])))
         panel.add_child(tab)
+
+
+func _set_disciple_profile_search(query: String, disciple_id: StringName, tab_name: String) -> void:
+    disciple_profile_query = query.strip_edges().to_lower()
+    _open_disciple_deep_screen(disciple_id,tab_name,true)
 
 
 func _deep_status_text(disciple: DiscipleState) -> String:
@@ -3250,7 +3377,7 @@ func _disciple_tab_text(tab_name: String, disciple: DiscipleState) -> String:
 func _attributes_tab_text(disciple: DiscipleState) -> String:
     var snapshot := _disciple_snapshot(disciple)
     if bool(snapshot.get("ok", false)) and bool(snapshot.get("authentic_v2", false)):
-        return _v2_attributes_tab_text(snapshot) + "\n\n" + _body_gate_preview_text(disciple.id)
+        return _v2_attributes_tab_text(snapshot) + "\n\n" + _v2_profession_summary_text(snapshot) + "\n\n" + _body_gate_preview_text(disciple.id)
 
     var required := cultivation.required_progress(disciple)
     var progress_text := "Đã viên mãn" if required <= 0.0 else "%.0f / %.0f" % [disciple.cultivation_progress, required]
@@ -3332,6 +3459,26 @@ func _v2_attributes_tab_text(snapshot: Dictionary) -> String:
         SectMapPresentation.action_label(StringName(life["current_action"])),
         tab_status_text
     ]
+
+
+func _v2_profession_summary_text(snapshot: Dictionary) -> String:
+    var work: Dictionary = snapshot["work"]
+    var professions: Dictionary = work.get("professions", {})
+    var names := {
+        "mining":"Khai Khoáng", "forestry":"Lâm Nghiệp",
+        "herbalism":"Linh Thực", "alchemy":"Luyện Đan",
+        "forging":"Luyện Khí", "logistics":"Hậu Cần"
+    }
+    var lines: Array[String] = ["Nghề nghiệp · cấp / EXP:"]
+    for profession_id in ["mining","forestry","herbalism","alchemy","forging","logistics"]:
+        var row: Dictionary = professions.get(profession_id, {})
+        lines.append("• %s Lv%d · EXP %.1f" % [
+            str(names[profession_id]), int(row.get("level",0)), float(row.get("xp",0.0))
+        ])
+    var site := str(work.get("worksite_building_id",""))
+    if not site.is_empty():
+        lines.append("Điểm làm việc: %s" % site)
+    return "\n".join(lines)
 
 
 func _technique_tab_text(disciple: DiscipleState) -> String:

@@ -1,7 +1,6 @@
 extends SceneTree
 
 # ECON-V2 BULK PRODUCTION — authored focused contract.
-# Runtime status remains PENDING until executed with official Godot 4.7.2.
 var plans := ProductionPlanRegistry.new()
 var buildings := BuildingSystem.new()
 var crops := SpiritCropRegistry.new()
@@ -29,6 +28,12 @@ func _run() -> void:
     if not _verify_bulk_consumers():
         return
     if not _verify_population_food_sink():
+        return
+    if not _verify_field_stock_pause_and_resume():
+        return
+    if not _verify_advanced_ore_plan_snapshot():
+        return
+    if not _verify_tiered_upgrade_and_rare_source():
         return
     print("ECON-V2 BULK PRODUCTION TEST PASS")
     quit(0)
@@ -87,17 +92,37 @@ func _verify_level_scaling_and_legacy_boundary() -> bool:
         and is_equal_approx(plans.common_yield_factor(1),1.0),
         "Lv1 facility factor must be neutral"):
         return false
-    if not _check(is_equal_approx(plans.building_speed_factor(3),1.01)
-        and plans.scaled_yield(ProductionPlanRegistry.PLAN_MINE_THANH_THIET_T1,3) == 10100
-        and plans.scaled_yield(ProductionPlanRegistry.PLAN_FOREST_LINH_MOC_T1,3) == 8080,
-        "+0.5%/level speed/yield scaling is wrong"):
-        return false
-    if not _check(is_equal_approx(plans.building_speed_factor(100),1.495)
-        and is_equal_approx(plans.common_yield_factor(100),1.495),
-        "Lv100 normal-level factor must be x1.495"):
+    var milestones := {
+        1: 1.0, 10: 2.0, 20: 5.0, 30: 10.0, 40: 30.0,
+        50: 100.0, 60: 300.0, 75: 1000.0, 90: 3000.0, 100: 10000.0
+    }
+    for level in milestones.keys():
+        if not _check(is_equal_approx(plans.common_yield_factor(level), milestones[level]),
+            "common yield misses level %d milestone" % level):
+            return false
+    for level in range(2, 101):
+        var current := plans.common_yield_factor(level)
+        var previous := plans.common_yield_factor(level - 1)
+        if not _check(current > previous and current / previous < 1.16,
+            "common yield has a non-monotone or abrupt level jump at %d" % level):
+            return false
+    if not _check(
+        is_equal_approx(plans.building_speed_factor(100), 1.495)
+        and plans.scaled_yield(ProductionPlanRegistry.PLAN_MINE_THANH_THIET_T1,100) == 100000000
+        and plans.scaled_yield(ProductionPlanRegistry.PLAN_FOREST_LINH_MOC_T1,100) == 80000000,
+        "Lv100 batch yield or independent speed factor is wrong"):
         return false
 
     var state := P37Factory.create_state(940701)
+    var field := buildings.primary_building(state,BuildingSystem.TYPE_SPIRIT_FIELD)
+    if not _check(field != null,"yield probe has no Field"):
+        return false
+    for level in [1, 20, 75, 100]:
+        field.level = level
+        if not _check(is_equal_approx(buildings.spirit_field_yield_factor(field),
+            plans.common_yield_factor(level)),
+            "Field multiplied the common-yield milestone twice at Lv%d" % level):
+            return false
     var mine := buildings.primary_building(state,BuildingSystem.TYPE_MINE)
     if not _check(mine != null and buildings._resource_job_batch_units(mine) == 2,
         "legacy carry helper was incorrectly bulk-converted"):
@@ -198,3 +223,110 @@ func _verify_population_food_sink() -> bool:
         and int(state.sect.needs_stats.get("v2_linh_coc_shortage",0)) == population * NeedsSystem.V2_FOOD_PER_DISCIPLE-expected_consumed,
         "food consumption/shortage audit counters are wrong"
     )
+
+func _verify_field_stock_pause_and_resume() -> bool:
+    var state := P37Factory.create_state(940704)
+    var field := buildings.primary_building(state,BuildingSystem.TYPE_SPIRIT_FIELD)
+    if not _check(field != null and field.level == 1,"stock probe has no Lv1 Field"):
+        return false
+    state.sect.spirit_stones = 100000
+    var data := buildings._ensure_spirit_field_state(state,field)
+    if not _check(buildings._select_crop(state,field,data) != &"",
+        "affordable Field cannot select an initial crop"):
+        return false
+    for crop_id in [SpiritCropRegistry.CROP_LINH_COC,SpiritCropRegistry.CROP_THANH_LINH_THAO]:
+        var resource_id := crops.output_resource_id(crop_id)
+        var target := maxi(crops.stock_target(crop_id),
+            plans.scaled_yield(crops.production_plan_id(crop_id),field.level) * 10)
+        if not _check(warehouse.add(state,resource_id,target),"cannot fill stock target"):
+            return false
+    if not _check(buildings._select_crop(state,field,data) == &"",
+        "Field continued planting after every unlocked crop reached stock target"):
+        return false
+    if not _check(warehouse.consume(state,crops.output_resource_id(SpiritCropRegistry.CROP_LINH_COC),1),
+        "cannot consume one Linh Cốc to reopen production"):
+        return false
+    return _check(buildings._select_crop(state,field,data) == SpiritCropRegistry.CROP_LINH_COC,
+        "Field did not resume after stock fell below target")
+
+func _verify_advanced_ore_plan_snapshot() -> bool:
+    var state := P37Factory.create_state(940705)
+    var mine := buildings.primary_building(state,BuildingSystem.TYPE_MINE)
+    if not _check(mine != null,"advanced ore probe has no Mine"):
+        return false
+    if not _check(bool(EconomySystem.new().enable_v1(state).get("ok",false)),
+        "advanced ore probe lacks canonical economy"):
+        return false
+    var advanced := ProductionPlanRegistry.PLAN_MINE_HUYEN_THIET_T2
+    if not _check(not buildings.set_resource_production_plan(state,mine.id,advanced),
+        "Huyen Thiet plan unlocked before Mine Lv30"):
+        return false
+    mine.level = 30
+    if not _check(buildings.set_resource_production_plan(state,mine.id,advanced)
+        and buildings.selected_resource_production_plan(mine) == advanced
+        and plans.scaled_yield(advanced,100) == 10,
+        "Huyen Thiet plan or rare-yield isolation is wrong"):
+        return false
+    var worker_ids := buildings.active_worker_ids(state,mine)
+    if not _check(not worker_ids.is_empty(),"advanced ore probe has no canonical miner"):
+        return false
+    var worker: DiscipleState = state.disciples[worker_ids[0]]
+    var started := buildings._start_resource_timer(state,mine,worker,1.0,BuildingSystem.PROF_MINING,1.0)
+    var jobs := buildings.resource_timer_jobs(mine)
+    if not _check(bool(started.get("ok",false)) and jobs.size() == 1
+        and str(jobs[0].get("production_plan_id","")) == str(advanced)
+        and str(jobs[0].get("resource_id","")) == "huyen_thiet"
+        and int(jobs[0].get("output_quantity",-1)) == 10,
+        "advanced ore timer did not snapshot real plan and output"):
+        return false
+    if not _check(buildings.set_resource_production_plan(state,mine.id,
+        ProductionPlanRegistry.PLAN_MINE_THANH_THIET_T1)
+        and str(buildings.resource_timer_jobs(mine)[0].get("resource_id","")) == "huyen_thiet",
+        "changing future Mine plan rewrote a committed batch"):
+        return false
+    return true
+
+func _verify_tiered_upgrade_and_rare_source() -> bool:
+    var seed := -1
+    for probe in range(1,10000):
+        if buildings._stable_plot_roll(probe,"mine_001","mine_001:v2:1",0) < 0.02:
+            seed = probe
+            break
+    if not _check(seed > 0,"no deterministic rare-source probe seed"):
+        return false
+    var state := P37Factory.create_state(seed)
+    var mine := buildings.primary_building(state,BuildingSystem.TYPE_MINE)
+    var forest := buildings.primary_building(state,BuildingSystem.TYPE_LINH_FOREST)
+    if not _check(mine != null and forest != null
+        and bool(EconomySystem.new().enable_v1(state).get("ok",false)),
+        "tiered upgrade probe lacks producer or Warehouse"):
+        return false
+    mine.level = 19
+    var mine_milestone := buildings.upgrade_cost_for_state(state,mine)
+    mine.level = 29
+    var mine_high := buildings.upgrade_cost_for_state(state,mine)
+    forest.level = 29
+    var forest_high := buildings.upgrade_cost_for_state(state,forest)
+    if not _check(int(mine_milestone.get("tam_mach_ban",0)) == 1
+        and int(mine_high.get("huyen_thiet",0)) >= 1
+        and int(forest_high.get("huyen_thiet",0)) >= 1
+        and bool(buildings.definition_for(forest).get("upgrade_enabled",false)),
+        "high-level Mine/Forest upgrades lack real tiered material gates"):
+        return false
+    mine.level = 1
+    var worker_ids := buildings.active_worker_ids(state,mine)
+    if not _check(not worker_ids.is_empty(),"rare-source probe has no miner"):
+        return false
+    var worker: DiscipleState = state.disciples[worker_ids[0]]
+    var before_ore := warehouse.quantity(state,&"thanh_thiet")
+    var started := buildings._start_resource_timer(state,mine,worker,1.0,BuildingSystem.PROF_MINING,1.0)
+    var jobs := buildings.resource_timer_jobs(mine)
+    if not _check(bool(started.get("ok",false)) and jobs.size() == 1
+        and str(jobs[0].get("rare_drop_id","")) == "tam_mach_ban",
+        "deterministic Mine batch did not snapshot a discrete component"):
+        return false
+    state.tick = int(jobs[0].get("finish_tick",0))
+    buildings.process_tick(state)
+    return _check(warehouse.quantity(state,&"tam_mach_ban") == 1
+        and warehouse.quantity(state,&"thanh_thiet") == before_ore+10000,
+        "Mine did not deliver both ordinary and discrete resource outputs")

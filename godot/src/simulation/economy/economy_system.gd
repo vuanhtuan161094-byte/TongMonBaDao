@@ -82,7 +82,7 @@ func configure_v1(state: SimulationState, key: String, value: Variant) -> Dictio
     if state == null or not state.sect.economy_a_enabled:
         return {"ok":false,"reason":"economy_a_disabled"}
     var policy: Dictionary = state.sect.economy_a_policy
-    if not policy.has(key):
+    if not policy.has(key) and key != "market_daily_stone_budget":
         return {"ok":false,"reason":"unknown_policy"}
     if key == "auto_hp_service":
         if not (value is bool):
@@ -197,6 +197,19 @@ func market_remaining(state: SimulationState) -> int:
     var spent := state.sect.economy_a_market_units_sold if state.sect.economy_a_market_day == current_day else 0
     return maxi(int(state.sect.economy_a_policy.get("market_daily_units",20))-spent,0)
 
+# Daily NPC Stone capacity is independent of the item quota. Reconstructing
+# spent budget from durable sale receipts keeps old saves compatible and makes
+# reload/replay use the same authority without another counter to migrate.
+func market_stone_budget_remaining(state: SimulationState) -> int:
+    if state == null or not state.sect.economy_a_enabled:
+        return 0
+    var budget := maxi(int(state.sect.economy_a_policy.get("market_daily_stone_budget",2000)),0)
+    var day := int(state.tick / V2_DAY_TICKS)
+    for raw_receipt in state.sect.economy_a_receipts.values():
+        if raw_receipt is Dictionary and str(raw_receipt.get("kind","")) == "market" and int(raw_receipt.get("day",-1)) == day:
+            budget = maxi(budget - maxi(int(raw_receipt.get("earned",0)),0),0)
+    return budget
+
 # NPC purchases create external Stones only against an actual, unreserved Sect
 # Warehouse debit. request_id is user-action idempotency key across reloads.
 func sell_to_npc_v1(state: SimulationState, resource_id: StringName, quantity: int, request_id: String) -> Dictionary:
@@ -216,6 +229,8 @@ func sell_to_npc_v1(state: SimulationState, resource_id: StringName, quantity: i
     if quantity <= 0 or quantity > per_sale or quantity > market_remaining(state) or unit_price <= 0:
         return {"ok":false,"reason":"invalid_or_over_demand_sale"}
     var earned := unit_price*quantity
+    if earned > market_stone_budget_remaining(state):
+        return {"ok":false,"reason":"merchant_stone_budget_exhausted"}
     if earned > V2_MAX_STONES-state.sect.spirit_stones:
         return {"ok":false,"reason":"stone_overflow"}
     var merchant_stock := int(state.sect.economy_a_market_stock.get(str(resource_id),0))

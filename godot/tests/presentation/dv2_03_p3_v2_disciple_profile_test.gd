@@ -78,6 +78,13 @@ func _run() -> void:
         return
 
     var snapshot := DisciplePresentationSnapshotV2.build(state,disciple)
+    var professions: Dictionary = snapshot["work"]["professions"]
+    var mining: Dictionary = professions[str(WorkforceSystem.PROF_MINING)]
+    if not attributes.contains("Khai Khoáng Lv%d · EXP %.1f" % [
+        int(mining["level"]), float(mining["xp"])
+    ]):
+        _fail("Authentic V2 profile omitted canonical Mining level or EXP.")
+        return
     var combat: Dictionary = snapshot["combat"]
     if not bool(combat.get("ready",false)):
         _fail("V2 UI snapshot has no canonical combat stats.")
@@ -178,6 +185,20 @@ func _run() -> void:
     if deep == null or not _has_button_text(deep,"Chuyên tu") or not _has_button_text(deep,"Rèn thân"):
         _fail("V2 attribute tab did not expose both real training controls.")
         return
+
+    var profile_search := deep.find_child("DiscipleProfileSearch",true,false) as LineEdit
+    if profile_search == null:
+        _fail("V2 profile roster has no disciple search.")
+        return
+    profile_search.emit_signal("text_submitted",str(disciple.id))
+    await process_frame
+    deep = (ui.get("popup_layer") as Control).get_node_or_null("DiscipleDeepScreen") as Panel
+    profile_search = deep.find_child("DiscipleProfileSearch",true,false) as LineEdit
+    if profile_search == null or profile_search.text != str(disciple.id).to_lower():
+        _fail("V2 profile roster search did not retain the submitted ID.")
+        return
+    profile_search.emit_signal("text_submitted","")
+    await process_frame
 
     # No available treasury: no slot assignment, action or fake success.
     state.sect.spirit_stones = 0

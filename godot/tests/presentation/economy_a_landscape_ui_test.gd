@@ -54,6 +54,51 @@ func _run() -> void:
         and int(state.sect.economy_a_market_stock.get("linh_moc",0)) < market_before):
         _fail("Economy-A Phuong Thi UI buy did not settle real stock and Stones")
         return
+    ui.call("_open_building",SectMapPresentation.DEST_MINE)
+    await process_frame
+    var body := ui.find_child("BuildingOperationBody",true,false) as Label
+    var controls := ui.find_child("BuildingManagementControls",true,false) as VBoxContainer
+    if body == null or controls == null or body.custom_minimum_size.y > 0:
+        _fail("Mine controls still sit behind the old 420px spacer")
+        return
+    var checked_rows := 0
+    for node in controls.get_children():
+        if not (node is GridContainer) or not str(node.name).begins_with("Person_"):
+            continue
+        checked_rows += 1
+        var row := node as GridContainer
+        if row.columns != 2:
+            _fail("Disciple controls no longer wrap into two columns")
+            return
+        var name := row.get_child(0) as Label
+        if name == null or name.get_theme_color("font_color").get_luminance() > 0.45:
+            _fail("Disciple name lost readable ink color")
+            return
+        for child in row.get_children():
+            if child is Button and child.position.x + child.size.x > row.size.x + 1.0:
+                _fail("Mine worker action extends past the management row")
+                return
+    if checked_rows == 0:
+        _fail("Mine worker management rows are missing")
+        return
+    var search := ui.find_child("BuildingDiscipleSearch",true,false) as LineEdit
+    if search == null:
+        _fail("Mine worker search is missing")
+        return
+    var target_id := str(state.disciples.keys()[0])
+    search.emit_signal("text_submitted",target_id)
+    await process_frame
+    controls = ui.find_child("BuildingManagementControls",true,false) as VBoxContainer
+    var filtered_rows := 0
+    for node in controls.get_children():
+        if node is GridContainer and str(node.name).begins_with("Person_"):
+            filtered_rows += 1
+            if str(node.name) != "Person_%s" % target_id:
+                _fail("Mine search returned an unrelated disciple")
+                return
+    if filtered_rows != 1:
+        _fail("Mine search did not narrow worker rows to the requested ID")
+        return
     var result := state.validate_invariants()
     if not result.is_empty():
         _fail("Economy-A real landscape state violated invariants: %s" % str(result))

@@ -24,6 +24,7 @@ const MILESTONE_LEVELS := [10, 20, 30, 50, 75, 100]
 const MATERIAL_WOOD := "linh_moc"
 const MATERIAL_ORE := "thanh_thiet"
 const MATERIAL_TAM_MACH_BAN := "tam_mach_ban"
+const MATERIAL_HUYEN_ORE := "huyen_thiet"
 const MATERIAL_HERB := "thanh_linh_thao"
 const MATERIAL_LINH_TUYEN_HEART := "linh_tuyen_chi_tam"
 const MATERIAL_LINH_TUYEN_FRAGMENT := "linh_tuyen_chi_tam_manh"
@@ -46,7 +47,12 @@ const PLOT_GROWING := &"growing"
 # across all major thresholds, with quantity increasing by milestone level.
 const MILESTONE_COMPONENTS := {
     "mine": {
-        10: MATERIAL_TAM_MACH_BAN
+        10: MATERIAL_TAM_MACH_BAN,
+        20: MATERIAL_TAM_MACH_BAN,
+        30: MATERIAL_HUYEN_ORE,
+        50: MATERIAL_HUYEN_ORE,
+        75: MATERIAL_HUYEN_ORE,
+        100: MATERIAL_HUYEN_ORE
     },
     "spirit_field": {
         10: MATERIAL_LINH_TUYEN_HEART,
@@ -97,7 +103,12 @@ const DEFINITIONS := {
         "haul_distance": 6.0,
         "base_work_duration": 4.0,
         "base_batch_units": 2,
-        "upgrade_enabled": false,
+        "base_wood_cost": 6,
+        "base_ore_cost": 4,
+        "base_stone_cost": 18,
+        "base_upgrade_work": 8.0,
+        "upgrade_work_per_level": 2.0,
+        "upgrade_enabled": true,
         "requires_milestone_component": false
     },
     "alchemy_hall": {
@@ -337,14 +348,9 @@ func spirit_field_cycle_time_factor(field: BuildingState) -> float:
     return factor
 
 func spirit_field_yield_factor(field: BuildingState) -> float:
-    var factor := production_plans.common_yield_factor(field.level)
-    if field.level >= 20:
-        factor *= 1.10
-    if field.level >= 75:
-        factor *= 1.10
-    if field.level >= 100:
-        factor *= 1.20
-    return factor
+    # Common yield milestones now live solely in ProductionPlanRegistry.
+    # Field cycle-time and profession modifiers remain separate channels.
+    return production_plans.common_yield_factor(field.level)
 
 func spirit_field_xp_factor(field: BuildingState) -> float:
     var factor := 1.0
@@ -540,6 +546,12 @@ func upgrade_cost_for_state(state: SimulationState, building: BuildingState) -> 
         var key := str(material_id)
         if cost.has(key):
             cost[key] = production_plans.scale_common_requirement(material_id, int(cost[key]))
+    # Each high-level upgrade needs a real tier-2 mineral, available from PvE
+    # before Mine Lv30 and from the unlocked Mine plan thereafter.
+    if [TYPE_MINE, TYPE_LINH_FOREST, TYPE_SPIRIT_FIELD].has(building.building_type):
+        var target_level := building.level + 1
+        if target_level >= 30:
+            cost[MATERIAL_HUYEN_ORE] = int(ceil(float(target_level - 29) / 10.0))
     return cost
 
 func upgrade_required_work(building: BuildingState) -> float:
@@ -1062,7 +1074,7 @@ func _start_resource_timer(state: SimulationState, producer: BuildingState, acto
     var definition := definition_for(producer)
     if StringName(definition.get("profession_id","")) != profession_id:
         return {"ok":false,"reason":"wrong_job_profession"}
-    var plan_id := StringName(definition.get("production_plan_id",""))
+    var plan_id := selected_resource_production_plan(producer)
     if not production_plans.has(plan_id):
         return {"ok":false,"reason":"missing_production_plan"}
     if production_plans.producer_type(plan_id) != producer.building_type:
@@ -1071,6 +1083,14 @@ func _start_resource_timer(state: SimulationState, producer: BuildingState, acto
         return {"ok":false,"reason":"production_plan_profession_mismatch"}
     if producer.level < production_plans.required_building_level(plan_id):
         return {"ok":false,"reason":"production_plan_locked"}
+    var resource_id := production_plans.output_resource_id(plan_id)
+    var batch_units := production_plans.scaled_yield(plan_id,producer.level)
+    var stock_target := mini(batch_units * 10, WarehouseSystem.MAX_SAFE_STACK)
+    var stock := warehouse.quantity(state,resource_id)
+    if stock >= stock_target:
+        return {"ok":false,"reason":"stock_target_reached","resource_id":str(resource_id),"stock":stock,"target":stock_target}
+    if batch_units > WarehouseSystem.MAX_SAFE_STACK-stock:
+        return {"ok":false,"reason":"warehouse_overflow","resource_id":str(resource_id)}
     var data := producer.production_state.duplicate(true)
     var total_speed := maxf(speed,0.25) * production_plans.building_speed_factor(producer.level)
     var base_duration := production_plans.base_cycle_ticks(plan_id)
@@ -1078,8 +1098,18 @@ func _start_resource_timer(state: SimulationState, producer: BuildingState, acto
     var duration := int(timing["duration_ticks"])
     var jobs := resource_timer_jobs(producer)
     var sequence := maxi(int(data.get("economy_a_sequence",0)),0)+1
+    var job_id := "%s:v2:%d" % [str(producer.id),sequence]
+    # A recovered vein instrument is a rare discrete byproduct, never part
+    # of the common-yield curve. Snapshot the deterministic result at start.
+    var rare_drop_id := ""
+    if plan_id == ProductionPlanRegistry.PLAN_MINE_THANH_THIET_T1:
+        var rare_roll := _stable_plot_roll(state.seed,str(producer.id),job_id,state.tick)
+        var rare_chance := clampf(0.02 * profession_modifiers.rare_event_factor(state,actor),0.0,1.0)
+        if rare_roll < rare_chance:
+            rare_drop_id = MATERIAL_TAM_MACH_BAN
     var job := {
-        "job_id":"%s:v2:%d" % [str(producer.id),sequence],
+        "job_id":job_id,
+        "rare_drop_id":rare_drop_id,
         "worker_id":str(actor.id),"profession_id":str(profession_id),
         "production_plan_id":str(plan_id),
         "resource_id":str(production_plans.output_resource_id(plan_id)),
@@ -1094,6 +1124,33 @@ func _start_resource_timer(state: SimulationState, producer: BuildingState, acto
     producer.production_state = data
     state.building_event_count += 1
     return {"ok":true,"started":true,"completed":false,"job_id":str(job["job_id"]),"finish_tick":int(job["finish_tick"]),"phase":"timed","profession_id":str(profession_id),"building_id":str(producer.id),"stamina_cost":0.0}
+
+# The selection belongs to the building instance and survives save/offline.
+# A running batch keeps its original saved plan snapshot.
+func set_resource_production_plan(state: SimulationState, building_id: StringName, plan_id: StringName) -> bool:
+    if state == null or not state.sect.economy_a_enabled or not state.buildings.has(str(building_id)):
+        return false
+    var producer: BuildingState = state.buildings[str(building_id)]
+    if producer.building_type != TYPE_MINE and producer.building_type != TYPE_LINH_FOREST:
+        return false
+    if not production_plans.has(plan_id) or production_plans.producer_type(plan_id) != producer.building_type:
+        return false
+    if producer.level < production_plans.required_building_level(plan_id):
+        return false
+    var data := producer.production_state.duplicate(true)
+    data["selected_plan_id"] = str(plan_id)
+    producer.production_state = data
+    state.building_event_count += 1
+    return true
+
+func selected_resource_production_plan(producer: BuildingState) -> StringName:
+    if producer == null:
+        return &""
+    var default_id := StringName(definition_for(producer).get("production_plan_id",""))
+    var selected := StringName(producer.production_state.get("selected_plan_id",str(default_id)))
+    if not production_plans.has(selected) or production_plans.producer_type(selected) != producer.building_type:
+        return default_id
+    return selected
 
 func cancel_resource_timer(state: SimulationState, disciple_id: StringName) -> bool:
     if not state.sect.economy_a_enabled:
@@ -1142,11 +1199,22 @@ func _process_resource_timers(state: SimulationState, building: BuildingState) -
         var resource_id := StringName(job.get("resource_id",""))
         var units := int(job.get("output_quantity",0))
         var job_id := str(job.get("job_id",""))
+        var rare_drop_id := StringName(job.get("rare_drop_id",""))
+        if rare_drop_id != &"" and (not ResourceRegistry.new().has(rare_drop_id)
+            or warehouse.quantity(state,rare_drop_id) >= WarehouseSystem.MAX_SAFE_STACK):
+            remaining.append(job)
+            continue
         if job_id.is_empty() or units <= 0 or not warehouse.add(state,resource_id,units):
             remaining.append(job)
             continue
+        if rare_drop_id != &"" and not warehouse.add(state,rare_drop_id,1):
+            warehouse.consume(state,resource_id,units,true)
+            remaining.append(job)
+            continue
         building.metrics["production_batches"] = int(building.metrics.get("production_batches",0))+1
-        building.metrics["units_produced"] = int(building.metrics.get("units_produced",0))+units
+        building.metrics["units_produced"] = mini(
+            int(building.metrics.get("units_produced",0)),
+            WarehouseSystem.MAX_SAFE_STACK-units) + units
         var profession := str(job.get("profession_id",""))
         worker.profession_xp[profession] = float(worker.profession_xp.get(profession,0.0))+maxf(float(job.get("profession_xp_gain",0.0)),0.0)
         worker.metrics["work_completions"] = int(worker.metrics.get("work_completions",0))+1
@@ -1647,8 +1715,15 @@ func _field_has_startable_plot(state: SimulationState, field: BuildingState) -> 
 func _select_crop(state: SimulationState, field: BuildingState, data: Dictionary) -> StringName:
     var eligible: Array[StringName] = []
     for crop_id in crop_registry.eligible_crop_ids(field.level):
-        if state.sect.spirit_stones >= crop_registry.cost(crop_id):
-            eligible.append(crop_id)
+        if state.sect.spirit_stones < crop_registry.cost(crop_id):
+            continue
+        var output_id := crop_registry.output_resource_id(crop_id)
+        var batch_units := production_plans.scaled_yield(crop_registry.production_plan_id(crop_id),field.level)
+        var target := maxi(crop_registry.stock_target(crop_id),batch_units * 10)
+        var current := warehouse.quantity(state,output_id) if state.sect.p3_7_resources_enabled else 0
+        if current >= target or batch_units > WarehouseSystem.MAX_SAFE_STACK-current:
+            continue
+        eligible.append(crop_id)
     if eligible.is_empty():
         return &""
 
@@ -1679,7 +1754,8 @@ func _select_crop(state: SimulationState, field: BuildingState, data: Dictionary
     var best := eligible[0]
     var best_score := -1.0e30
     for crop_id in eligible:
-        var target := float(crop_registry.stock_target(crop_id))
+        var target := float(maxi(crop_registry.stock_target(crop_id),
+            production_plans.scaled_yield(crop_registry.production_plan_id(crop_id),field.level) * 10))
         var quantity := float(warehouse.quantity(state, crop_registry.output_resource_id(crop_id))) if state.sect.p3_7_resources_enabled else 0.0
         var score := (target - quantity) / maxf(target, 1.0)
         if score > best_score or (is_equal_approx(score, best_score) and str(crop_id) < str(best)):
@@ -1734,7 +1810,9 @@ func _deposit_resource(state: SimulationState, building: BuildingState, resource
     else:
         state.sect.forge_materials[resource_id] = int(state.sect.forge_materials.get(resource_id, 0)) + quantity
     building.metrics["production_batches"] = int(building.metrics.get("production_batches", 0)) + 1
-    building.metrics["units_produced"] = int(building.metrics.get("units_produced", 0)) + quantity
+    building.metrics["units_produced"] = mini(
+        int(building.metrics.get("units_produced", 0)),
+        WarehouseSystem.MAX_SAFE_STACK-quantity) + quantity
     state.building_event_count += 1
     return true
 

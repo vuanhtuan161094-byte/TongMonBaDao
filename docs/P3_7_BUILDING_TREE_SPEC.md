@@ -169,9 +169,13 @@ Một simulation tick = một phút.
 | Linh Điền — Thanh Linh Thảo | Thanh Linh Thảo | 90 phút | 2,000 / plot |
 | Linh Điền — Tử Vân Thảo | Tử Vân Thảo | 180 phút | 1,000 / plot |
 
-Normal building levels apply **+0.5% speed and +0.5% common yield per level after Lv1**.
-Profession level remains the corresponding work-profession authority and affects work speed;
-it does not replace building level or multiply routine quantity a second time.
+Economy V2 integration pilot: building speed remains **+0.5% per level after Lv1**.
+Routine common yield uses geometric interpolation across Lv1/10/20/30/40/50/60/75/90/100
+with multipliers ×1/2/5/10/30/100/300/1,000/3,000/10,000. Profession level affects
+work speed and EXP separately; it does not multiply routine quantity. Field yield milestones
+are represented by this curve once. Rare/discrete outputs never inherit it.
+See [integration balance and resource ledger](ECONOMY_V2_INTEGRATION_RESEARCH_AND_BALANCE_2026-10-16.md)
+for implementation status and open gates.
 
 New authentic V2 Mine/Forest timer jobs use these ProductionPlans. Existing legacy
 TRAVEL/EXTRACT/HAUL saves and opt-out carry cycles drain with their historical quantity/timing;

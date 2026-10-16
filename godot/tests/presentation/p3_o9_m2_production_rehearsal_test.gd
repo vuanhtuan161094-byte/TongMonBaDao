@@ -147,10 +147,10 @@ func _run() -> void:
             return
     for _i in range(140):
         scheduler.step()
-        if warehouse.quantity(state, &"thanh_linh_thao") >= herb_before + 3:
+        if warehouse.quantity(state, &"thanh_linh_thao") >= herb_before + SpiritCropRegistry.new().base_yield(SpiritCropRegistry.CROP_THANH_LINH_THAO):
             break
-    if warehouse.quantity(state, &"thanh_linh_thao") != herb_before + 3:
-        _fail("O9 real Field did not produce the exact first 3-herb Alchemy input.")
+    if warehouse.quantity(state, &"thanh_linh_thao") != herb_before + SpiritCropRegistry.new().base_yield(SpiritCropRegistry.CROP_THANH_LINH_THAO):
+        _fail("O9 real Field did not produce the canonical first herb batch.")
         return
 
     field = buildings.primary_building(state, BuildingSystem.TYPE_SPIRIT_FIELD)
@@ -226,8 +226,8 @@ func _run() -> void:
     if jobs.size() != 1:
         _fail("O9 did not create exactly one timed Alchemy job before save.")
         return
-    if warehouse.quantity(state, &"thanh_linh_thao") != herb_before_job - 3:
-        _fail("O9 timed Alchemy did not commit exactly 3 herbs once.")
+    if warehouse.quantity(state, &"thanh_linh_thao") != herb_before_job - int(AlchemyRecipeRegistry.new().inputs(AlchemyRecipeRegistry.RECIPE_HOI_XUAN_DAN).get("thanh_linh_thao",0)):
+        _fail("O9 timed Alchemy did not commit the canonical recipe input once.")
         return
     if warehouse.quantity(state, NeedsSystem.HEALING_PILL_ID) != pill_before_job:
         _fail("O9 minted a pill before the timed job finished.")
