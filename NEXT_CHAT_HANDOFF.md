@@ -1,5 +1,18 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-16 — LAY-01/BUILDING EXPANSION DESIGN-ONLY HANDOFF
+
+Stacked from draft PR #12 `economy-v2-resource-expansion-gates-20261016` HEAD `a13d91fcc848859951c1541fe510026f0d33cbfd`. This packet updated only the existing `docs/design/SECT_BUILDING_LAND_EXPANSION_DESIGN_V1.md` (Sections 9.1–9.10), `CURRENT_CHECKPOINT.md` and this handoff. **It did NOT implement Hall, land, construction, layout serialization or migrate saves.** PR #12 and earlier draft stack remain unmerged; main is unchanged.
+
+**Evidence:** ADR-0003 accepted fixed-layout forbids persistent x/y authority; current SimulationState has no SectLayoutState; SaveService V2 already stages temp+backup; no real Hall BuildingState; PR12 cap is read-only. ENV-02A GitHub contains text-only lab/static QA, not official Windows scene acceptance and two screenshots, so ENV-02A stays PENDING USER. PR #9 P3.7 Windows PASS at `453df9aa...` is NOT LAY evidence.
+
+**Prepared decisions:** one persistent SectLayoutState owner under SimulationState; validated one-time all-instance seed/migration, no phantom building; 13 authored 192×192 regions; Main Hall singleton as building; pilot Mine/Forest/Field construction prices and timers, Hall Lv1–100 upgrade curve, region land tariffs, single scheduler/warehouse receipt transactions and fail-closed policy. Pilot numbers **NOT APPROVED** until owner explicitly decides.
+
+**Next permission required:** owner must separately approve ADR-0003 amendment and LAY-01 code (schema + seed manifest + migration tests only), ideally after exact ENV-02A Windows gate. LAY-02/03/04 construction/move/paid land require later scope and prices. Do not invoke CI/merge, alter Combat/FE-02, or claim runtime QA.
+
+---
+
+
 ## 2026-10-16 — ECON-V2 RESOURCE INSTANCE EXPANSION GATE HANDOFF
 
 **Topology:** draft PR #9 latest observed `cf11d53f2ac48e9b7a220500fece983b675dcd62`; draft PR #10 `f374bc78a5556ad1003d92b27d6ec89c7c929aa3`. Draft **PR #12** branch `economy-v2-resource-expansion-gates-20261016` stacks on PR #10. PR #9 gained `p3_o8_alchemy_loop_test.gd` changes after PR #10 was branched; reconcile by safe ancestry/merge before integrated runtime QA. Do not reset/rebase branches destructively or drop the O8 test.
