@@ -1,5 +1,23 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-16 — DV2 INGRESS HARDENING ABOVE PR #14 / DRAFT PR #16
+
+**Scope/authority resolution:** During authorized follow-up from PR #10, a previously existing concurrent **PR #14** was found implementing the same Tiềm Lực goal. **PR #14** `disciple-v2-foundation-action-guard-20261016` HEAD `027627bca396afecf90879717da8d3fc855c2eb7` is the sole canonical new growth source: real **1,000 Tử Vân Thảo → +1 permanent Tiềm Lực** via `FoundationGrowthV2`, UI action, durable `SectState.v2_foundation_growth_receipts` and rollback. The duplicate **PR #15** (alternative Linh Tủy growth and duplicate receipt ledger) was **CLOSED UNMERGED**; do not cherry-pick its growth source. No new foundation-source authority is introduced in this packet.
+
+**Draft PR #16:** `disciple-v2-ingress-hardening-20261016` branches from exact PR #14 HEAD above and targets PR #14, not main. Gameplay/test HEAD before docs: **`db394203bf11797b455504b6a8f3a5ea24092d6d`**. Only incremental fixes absent from PR #14:
+- timed Mine/Forest/Alchemy job guards in `WorkforceSystem.assign_group/assign_worksite` now preserve the current crew/worksite. The former Alchemy-only group comparison allowed a busy Miner to switch into Alchemy; removal of an occupied Alchemy worksite was also unguarded.
+- `DiscipleBodyTrainingFacilityV2.reserve_slot` cannot steal an existing direct order or another worksite assignment; genuine free trainees can still reserve, and explicit release remains supported.
+- `DiscipleTrainingActionV2.request_training` rejects direct commands incompatible with the requested action (matching `CULTIVATE` remains allowed).
+- All six open-point foundation validator dimensions now reject NaN/Inf instead of only values below zero.
+- New `godot/tests/simulation/disciple_v2_active_job_ingress_test.gd` exercises a genuine V2 Mine timer, attempted group/worksite change, competing Forge/training/command and Body transfer, plus invalid six-stat payloads. Existing PR #14 `disciple_v2_foundation_growth_action_guard_test.gd` and real profile UI test remain authoritative for the **Tử Vân Thảo** growth consumer.
+
+**QA status:** 5/5 changed GDScript files passed a lightweight structural delimiter/string scan. **NO Godot 4.7.2 parser/runtime run; no CI invocation, no merge.** PR #9 has newer Windows FULL/O8 QA evidence after PR #10 branched; that does not establish current PR #14/#16 PASS. Run exact-branch focused growth + ingress + GUI profile + GP-02B1/GP-02C1 + Economy-A/O6 ==4 + P3.7 FULL/SAFE on reconciled lineage when Windows or another official Godot runner is available. Manual Android and sustained 3,000 actors remain PENDING.
+
+**Other open debts:** all-instance Hall/land/construction, remaining Body C–H/seal earned sources, six-dimensional growth recipes beyond Potential, full global ingress audit (only named entrypoints checked), and integration of concurrently advanced PR #9. Preserve 30 Tu Vi×10 + 30 Luyện Thể×10, Injury 0/1/120, one worker per Mine/Forest/Field, four Field plots, PR #9 ×10,000 common-yield pilot.
+
+---
+
+
 ## 2026-10-16 — DISCIPLE V2 FOUNDATION GROWTH + ACTION INGRESS / DRAFT STACKED PACKET
 
 **Owner authorization:** Continue directly on GitHub from draft PR #10, audit six foundation stats and legitimate permanent Potential growth, close proven One Active Job bypasses in existing entrypoints. **No CI, no merge, no user computer required.**
