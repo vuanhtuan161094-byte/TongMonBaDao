@@ -1,5 +1,21 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-16 — DISCIPLE-V2 FOUNDATION + ONE ACTIVE JOB / NEW STACKED DRAFT
+
+**Authority:** user-approved 2026-10-16 continuation; base is draft PR #10 `disciple-v2-scale-20261016` HEAD `f374bc78a5556ad1003d92b27d6ec89c7c929aa3`. New stacked branch `disciple-v2-foundation-job-20261016`. `main` `461caca1171462e0da092f21108c5c1733157ad9` untouched; PR #6–#10 all unmerged. Draft PR #9 HEAD was observed `cf11d53f2ac48e9b7a220500fece983b675dcd62`; this can be newer than PR #10's ancestor. No parent rewrites or integration claim.
+
+**Code/test commits:** `ca0997237d5de590f0d8dbc43567be8efd5b4a39` (4 backend guards + atomic permanent growth), `339edf9d3e8bdd61e965944ba1d74e3745811174` (2 focused regression scripts), `f4db1804690abd4624572fed86eea5f9863e5029` (reject corrupt HP for Potential). Updated docs and draft PR follow as a separate commit.
+
+**Effect evidence:** Realm/Body ATK/DEF/HP already use Potential ×(1+0.0005/point) via `CombatStatsV2` BEFORE unrelated flats. New `FoundationSystem.add_permanent_points` checks finite six stats/amount/total, updates derived quality, and syncs live V2 HP ratio for Potential only, with rollback on failed sync. Tu Vi +0.25%/pt aptitude, Body XP +0.20%/pt constitution, profession XP +0.15%/pt comprehension stay in canonical consumers. Fortune meaningful-event coverage and general social consumers are not fully live; no invented permanent-growth earning source. Birth values immutable.
+
+**One Active Job:** direct work, Mine/Forest, Field, Alchemy, worksite changes and Body paid-minute checks tightened. Existing `disciple_has_active_timed_recipe` already covers BOTH resource timers and Alchemy. Multiple Field plots remain a single duty. Legacy carry, authorized HOLD cancellation, one Warehouse and one Scheduler preserved. **No changes** to 30×10 dual tracks, Injury 0/1/120, PR #9 Economy V2 bulk/yield/pricing/stock, save/workflow/CI/UI/Android.
+
+**Evidence/QA:** static source/bracket/string audit only. New focused regression `disciple_v2_foundation_core_regression_test.gd` and `disciple_v2_one_active_job_entrypoints_test.gd` were authored; **GODOT 4.7.2 HEADLESS RUNTIME NOT RUN / PENDING**. No CI triggered, no merge, no machine requested. Cross-phase cumulative/O6/SAFE/Windows/Android/performance 1k–3k still PENDING. For complete matrix and exact replay tests see `docs/DISCIPLE_V2_FOUNDATION_JOB_AUDIT_2026-10-16.md`. This is not a release/phase PASS.
+
+**Next work:** first prove these 2 focused regressions plus parent gates on a true Godot 4.7.2 runner when authorized; then implement actual earned permanent growth source/receipt in a separately authorized packet. Keep advanced Trait/Pháp Bảo, land-cap and Economy-B/C deferred.
+
+---
+
 ## 2026-10-16 — DISCIPLE-V2 SCALE-SAFE BACKEND / STACKED ON DRAFT PR #9
 
 **Owner continuation:** Continue authorized Disciple V2 + Production V2 integration without requiring the owner's Windows computer. This limited follow-up addresses measured 100–3,000-disciple scheduler overhead and does not introduce new simulation authorities, content tiers or balance changes.
