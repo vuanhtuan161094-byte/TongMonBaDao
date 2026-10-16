@@ -45,6 +45,8 @@ func _run() -> void:
         return
     if not _direct_training_and_command_guards():
         return
+    if not _forest_and_body_transfer_guards():
+        return
     print("DISCIPLE V2 ONE ACTIVE JOB ALL ENTRYPOINT REGRESSION PASS")
     quit(0)
 
@@ -271,3 +273,66 @@ func _direct_training_and_command_guards() -> bool:
     return _check(warehouse.quantity(recovered,&"thanh_thiet") == after_quantity
         and recovered.sect.economy_a_receipts.size() == receipt_after,
         "settled timer replay minted extra ore or wage receipts")
+
+func _forest_and_body_transfer_guards() -> bool:
+    var fixture := _seed(5)
+    if not _check(not fixture.is_empty(),"Forest fixture unavailable"):
+        return false
+    var state: SimulationState = fixture["state"]
+    var actor: DiscipleState = fixture["actor"]
+    var forest := buildings.primary_building(state,BuildingSystem.TYPE_LINH_FOREST)
+    if not _check(forest != null,"primary Forest unavailable"):
+        return false
+    for assigned_id in buildings.active_worker_ids(state,forest):
+        if not _check(workforce.assign_group(state,assigned_id,&""),
+            "Forest original worker not released"):
+            return false
+    if not _check(bool(workforce.assign_linh_forest_worker(state,actor.id,forest.id).get("ok",false)),
+        "Forest worker assignment failed"):
+        return false
+    actor.current_action = &"CULTIVATE"
+    if not _check(not bool(buildings.perform_forestry_step(state,actor,1.0,1.0).get("ok",false))
+        and buildings.active_resource_timer_for_worker(state,actor.id).is_empty(),
+        "direct Forest bypassed cultivation occupation"):
+        return false
+    if not _check(workforce.issue_command(state,actor.id,WorkforceSystem.COMMAND_WORK,
+            "forestry",40)
+        and actor.current_action == &"EVALUATE"
+        and workforce.next_action(state,actor) == &"WORK_FORESTRY",
+        "accepted WORK order did not atomically replace cultivation"):
+        return false
+    var started := workforce.perform_work(state,actor,WorkforceSystem.PROF_FORESTRY)
+    if not _check(bool(started.get("started",false))
+        and not buildings.active_resource_timer_for_worker(state,actor.id).is_empty(),
+        "Forest V2 timer failed after lawful cultivation transfer"):
+        return false
+
+    var body_fixture := _seed(6)
+    if not _check(not body_fixture.is_empty(),"Body transfer fixture unavailable"):
+        return false
+    var body_state: SimulationState = body_fixture["state"]
+    var trainee: DiscipleState = body_fixture["actor"]
+    if not _check(buildings.ensure_body_training_facility(body_state) != null
+        and bool(DiscipleBodyTrainingFacilityV2.reserve_slot(body_state,trainee.id).get("ok",false)),
+        "Body reservation fixture failed"):
+        return false
+    var body_stones := body_state.sect.spirit_stones
+    var body_before := trainee.v2_realm_progress.duplicate(true)
+    trainee.current_action = &"TRAIN_BODY"
+    if not _check(workforce.issue_command(body_state,trainee.id,
+            WorkforceSystem.COMMAND_HOLD,"",40)
+        and trainee.current_action == &"EVALUATE"
+        and not DiscipleBodyTrainingFacilityV2.has_reserved_slot(body_state,trainee)
+        and body_state.sect.spirit_stones == body_stones
+        and trainee.v2_realm_progress == body_before,
+        "HOLD failed to end Body assignment without a paid minute"):
+        return false
+    if not _check(bool(DiscipleBodyTrainingFacilityV2.reserve_slot(
+            body_state,trainee.id).get("ok",false))
+        and trainee.direct_command.is_empty()
+        and DiscipleBodyTrainingFacilityV2.has_reserved_slot(body_state,trainee)
+        and body_state.sect.spirit_stones == body_stones
+        and trainee.v2_realm_progress == body_before,
+        "new Body reservation did not replace stale HOLD atomically"):
+        return false
+    return true
