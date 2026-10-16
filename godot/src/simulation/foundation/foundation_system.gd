@@ -99,23 +99,31 @@ func recompute_disciple_quality(disciple: DiscipleState) -> StringName:
     disciple.disciple_quality = quality_for_total(total_disciple(disciple))
     return disciple.disciple_quality
 
+# Low-level permanent foundation mutation, NOT a source of free points.
+# Player-facing growth must pay through DiscipleFoundationGrowthV2.
+# Preserve birth snapshot and live HP ratio when Potential changes V2 core.
 func add_permanent_points(disciple: DiscipleState, dimension: StringName, amount: float) -> bool:
-    if disciple == null or disciple.foundation_model_version < MODEL_OPEN_POINTS or amount <= 0.0 or not DIMENSIONS.has(dimension):
+    if disciple == null or disciple.foundation_model_version < MODEL_OPEN_POINTS or not DIMENSIONS.has(dimension):
         return false
-    match dimension:
-        DIM_APTITUDE:
-            disciple.aptitude += amount
-        DIM_CONSTITUTION:
-            disciple.constitution += amount
-        DIM_FORTUNE:
-            disciple.fortune += amount
-        DIM_COMPREHENSION:
-            disciple.comprehension += amount
-        DIM_CHARISMA:
-            disciple.charisma += amount
-        DIM_POTENTIAL:
-            disciple.potential += amount
+    if is_nan(amount) or is_inf(amount) or amount <= 0.0:
+        return false
+    var current := float(disciple.get(str(dimension)))
+    var increased := current + amount
+    if is_nan(current) or is_inf(current) or current < 0.0 or is_nan(increased) or is_inf(increased):
+        return false
+    var original_quality := disciple.disciple_quality
+    var old_hp := disciple.hp
+    var old_max_hp := disciple.max_hp
+    disciple.set(str(dimension), increased)
     recompute_disciple_quality(disciple)
+    if dimension == DIM_POTENTIAL and DiscipleRealmProgressV2.owns_v2_progression(disciple):
+        var sync := DiscipleRealmProgressV2.sync_live_hp(disciple)
+        if not bool(sync.get("ok",false)):
+            disciple.set(str(dimension), current)
+            disciple.disciple_quality = original_quality
+            disciple.hp = old_hp
+            disciple.max_hp = old_max_hp
+            return false
     return true
 
 func birth_total(values: Dictionary) -> float:
