@@ -53,6 +53,10 @@ var disciple_profile_query := ""
 const MANAGEMENT_PAGE_SIZE := 50
 const DISCIPLE_PROFILE_PAGE_SIZE := 50
 var selected_building: StringName = &""
+var iso_view_container: SubViewportContainer
+var iso_viewport: SubViewport
+var iso_world: SectIsometricWorldV1
+var iso_building_count := -1
 # UI selection only; actual building ID/worker/production live in SimulationState.
 var selected_production_instance_id: StringName = &""
 var sect_layout_preview_open := false
@@ -80,6 +84,7 @@ func _ready() -> void:
         return
     female_motion_library = FemaleNormalV1MotionLibrary.build()
     _install_modular_live_actors()
+    _install_main_isometric_world()
     _sync_actor_positions()
     popup_layer.z_index = 100
     _reset_camera(false)
@@ -91,6 +96,78 @@ func _ready() -> void:
     _build_living_cue_layer()
     living_cue_tracker.seed_from_state(state)
     _refresh_living_cues()
+
+# Only the 2.5D world goes in a real Camera2D canvas; legacy controls/HUD
+# remain outside it. All actual jobs, buildings and stocks are untouched.
+func _install_main_isometric_world() -> void:
+    if map_layer == null or iso_world != null:
+        return
+    iso_view_container = SubViewportContainer.new()
+    iso_view_container.name = "SectMainIsoViewportContainer"
+    iso_view_container.position = SectMapCamera.VIEW_RECT.position
+    iso_view_container.size = SectMapCamera.VIEW_RECT.size
+    iso_view_container.stretch = false
+    iso_view_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    add_child(iso_view_container)
+    move_child(iso_view_container,1)
+    iso_viewport = SubViewport.new()
+    iso_viewport.name = "SectMainIsoSubViewport"
+    iso_viewport.size = Vector2i(1028,570)
+    iso_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+    iso_viewport.gui_disable_input = true
+    iso_view_container.add_child(iso_viewport)
+    iso_world = SectIsometricWorldV1.new()
+    iso_world.name = "SectIsoWorld192"
+    iso_viewport.add_child(iso_world)
+    iso_world.refresh_from_state(state)
+    iso_building_count = state.building_event_count
+    # Retain the names of historical test controls but hide flat graybox
+    # visuals; no old token can intercept a genuine 2.5D world tap.
+    for node in map_layer.get_children():
+        if node is ModularDiscipleActor:
+            continue
+        if node is CanvasItem:
+            node.visible = false
+        if node is Control:
+            _disable_legacy_hit_input(node)
+    iso_world.set_legacy_transform(map_zoom,map_layer.position)
+
+func _disable_legacy_hit_input(parent: Node) -> void:
+    if parent is Control:
+        (parent as Control).mouse_filter = Control.MOUSE_FILTER_IGNORE
+    for child in parent.get_children():
+        _disable_legacy_hit_input(child)
+
+func _iso_actor_point(destination: StringName) -> Vector2:
+    if iso_world == null:
+        return SectMapPresentation.position_for_destination(destination)
+    return SectIsometricWorldV1.virtual_legacy_point(destination)
+
+func _iso_open_picked_building(picked: Dictionary) -> void:
+    if picked.is_empty():
+        return
+    var dest := StringName(picked.get("destination",""))
+    if dest == &"":
+        return
+    _open_building(dest)
+    var real_id := StringName(picked.get("building_id",""))
+    if real_id != &"" and state.buildings.has(str(real_id)):
+        var actual: BuildingState = state.buildings[str(real_id)]
+        if actual.building_type == dest:
+            selected_production_instance_id = real_id
+            _refresh_building_operation_content()
+
+func _try_iso_map_pick(screen_point: Vector2) -> bool:
+    if iso_world == null or not SectMapCamera.is_map_screen_point(screen_point):
+        return false
+    if _popup_is_open() or _building_operation_is_open() or _disciple_summary_is_open():
+        return false
+    var picked := iso_world.pick_at_screen(screen_point)
+    if picked.is_empty():
+        return false
+    _iso_open_picked_building(picked)
+    get_viewport().set_input_as_handled()
+    return true
 
 func _unhandled_input(event: InputEvent) -> void:
     if _popup_is_open():
@@ -219,6 +296,8 @@ func _handle_screen_touch(touch: InputEventScreenTouch) -> void:
     touch_points.erase(touch.index)
     _refresh_pinch_baseline()
     if was_single_pointer and not screen_pointer_dragged:
+        if _try_iso_map_pick(touch.position):
+            return
         if _disciple_summary_is_open():
             _close_disciple_summary(true)
         elif _building_operation_is_open():
@@ -280,6 +359,8 @@ func _handle_mouse_button(mouse: InputEventMouseButton) -> void:
         var should_close_summary := mouse_panning and not mouse_pointer_dragged and _disciple_summary_is_open()
         var should_close_building := mouse_panning and not mouse_pointer_dragged and _building_operation_is_open()
         mouse_panning = false
+        if not mouse_pointer_dragged and _try_iso_map_pick(mouse.position):
+            return
         if should_close_summary:
             _close_disciple_summary(true)
         elif should_close_building:
@@ -444,7 +525,7 @@ func _open_building(destination: StringName) -> void:
         workforce_advanced_visible = false
         selected_production_instance_id = &""
     selected_building = destination
-    var point := SectMapPresentation.position_for_destination(destination)
+    var point := _iso_actor_point(destination)
     _set_focus_target(point, &"building", destination, _building_name(destination), true)
     _show_building_operation_panel()
 
@@ -525,7 +606,7 @@ func _sync_actor_positions() -> void:
         actor_destinations[key] = str(destination)
 
         var actor: Control = actor_nodes[key] as Control
-        var world_foot := SectMapPresentation.position_for_destination(destination) + _actor_offset(index)
+        var world_foot := _iso_actor_point(destination) + _actor_offset(index)
         var target := world_foot - _actor_anchor_offset(actor)
         var delta := target - actor.position
 
@@ -605,7 +686,7 @@ func _install_modular_live_actors() -> void:
             FemaleStageAAssetLoader.apply_public_direction(actor, &"down")
         actor.sync_action(disciple.current_action)
         actor.actor_pressed.connect(Callable(self, "_open_disciple"))
-        var world_foot := SectMapPresentation.position_for_destination(destination) + _actor_offset(index)
+        var world_foot := _iso_actor_point(destination) + _actor_offset(index)
         actor.position = world_foot - DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
         map_layer.add_child(actor)
 
@@ -3155,6 +3236,11 @@ func _refresh_all() -> void:
             _refresh_sect_hub()
 
 func _process(_delta: float) -> void:
+    if iso_world != null:
+        iso_world.set_legacy_transform(map_zoom,map_layer.position)
+        if state != null and state.building_event_count != iso_building_count:
+            iso_building_count = state.building_event_count
+            iso_world.refresh_from_state(state)
     _refresh_living_cue_positions()
 
 func _build_living_cue_layer() -> void:
