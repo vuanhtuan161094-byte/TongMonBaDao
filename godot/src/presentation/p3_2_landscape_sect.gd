@@ -1187,7 +1187,7 @@ func _recipe_material_status(recipe_id: StringName) -> String:
     var data := equipment_system.recipe(recipe_id)
     if data.is_empty():
         return "Recipe không tồn tại."
-    var materials: Dictionary = data.get("materials", {})
+    var materials: Dictionary = equipment_system.crafting_requirements(state,recipe_id)
     var ids: Array = materials.keys()
     ids.sort()
     var parts: Array[String] = []
