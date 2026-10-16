@@ -1,5 +1,20 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-16 HANDOFF — ECONOMY-V2 CORE FOUNDATION ON STACKED DRAFT PR #7
+
+Owner approved Economy V2 implementation plus explicit compatibility with the canonical **30 Tu Vi ×10 floors and 30 Luyện Thể ×10 floors**. Keep `DiscipleRealmProgressV2` as realm authority; production profession level is separate and never replaced by Tu Vi/Luyện Thể. Legacy resource labels `pham/luyen_khi/truc_co/kim_dan` are compatibility metadata only; new Economy progression uses explicit canonical 1-based realm indexes.
+
+**Git truth:** `main` remains `461caca1171462e0da092f21108c5c1733157ad9`. PR #6 Mine-one-worker remains OPEN/DRAFT, HEAD baseline `dc3ad974252f5d4c034cfebe441f33fa24e9560c`, not merged. Branch `economy-v2-core-20261016` is stacked from PR #6; draft PR **#7** targets `mine-v2-one-worker-20261015`. Latest gameplay+test SHA before handoff docs: **`880665f1a3c90ba0dfaf79ae5f8f9e7b6680d69d`**.
+
+**PR #7 delivered code:** one operator per Mine/Linh Lâm/Linh Điền instance at all levels; Forest/Field atomic assignment; Linh Điền fixed four internal plot timers under one Field duty and one responsible worker; no competing Field duty; shared wage receipt identity across duty plots; fixed-point work-speed remainder for Mine/Forest/Field timers; production profession Lv0–100 cap; explicit resource/crop `cultivation_realm_min/body_realm_min` against the 30-realm canonical lists. Focused test `economy_v2_core_foundation_test.gd` is authored.
+
+**Status:** STATIC REVIEW ONLY. **Godot 4.7.2 runtime NOT RUN; no CI invoked; no PASS.** Do not merge PR #7 or PR #6 until exact-branch runtime gates exist. Preserve one scheduler, canonical Warehouse, One Active Job, Injury 0/1/120, save/offline/exactly-once and all prior locked regression contracts.
+
+**Next implementation after this foundation:** create a separate stacked Economy V2 production-plan/bulk-balance packet, not by mutating PR #7. It should add the approved bulk T1 rates (Mine 10,000 Thanh Thiết/60m; Forest 8,000 Linh Mộc/60m; Field crops 2,500 Linh Cốc/60m, 2,000 Thanh Linh Thảo/90m, 1,000 Tử Vân Thảo/180m), building +0.5% speed/yield per level, then explicit production-plan unlock tiers aligned to the canonical 30-realm tracks. Rare/discrete resources stay quantity-scale separate. Market lots, food sink, Forge/Alchemy/refining and runtime building-count construction are subsequent packets.
+
+---
+
+
 ## 2026-10-15 NEW HANDOFF — MINE-V2 P1 AUTHORIZED / IMPLEMENTED ON BRANCH, NOT VERIFIED
 
 Current main `461caca1171462e0da092f21108c5c1733157ad9`; owner approved P1 Mine-V2 gameplay implementation. Branch `mine-v2-one-worker-20261015` has one worker/Mỏ per level, single-command `assign_mine_worker`, existing authored Mine batch quantity **without a Căn Cốt ore bonus** and reuse of profession work-speed by proper job level. **CORRECTION: owner rejected the speculative `+1 ore/1000 Căn Cốt`, reverted before merge.** Profession output differentiation needs separate design approval; existing Thông Tuệ → profession XP and Căn Cốt → Body remain intact. `CURRENT_CHECKPOINT.md` top section contains exact scope and test status. Keep one scheduler, one canonical Warehouse, Injury 0/1/120, authentic V2 job/receipts. The user permits **reset of development test saves**, not deletion of user assets or avoidance of correct fresh-save exact-once.
