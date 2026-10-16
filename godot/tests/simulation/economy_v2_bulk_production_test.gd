@@ -110,6 +110,15 @@ func _verify_level_scaling_and_legacy_boundary() -> bool:
         return false
 
     var state := P37Factory.create_state(940701)
+    var field := buildings.primary_building(state,BuildingSystem.TYPE_SPIRIT_FIELD)
+    if not _check(field != null,"yield probe has no Field"):
+        return false
+    for level in [1, 20, 75, 100]:
+        field.level = level
+        if not _check(is_equal_approx(buildings.spirit_field_yield_factor(field),
+            plans.common_yield_factor(level)),
+            "Field multiplied the common-yield milestone twice at Lv%d" % level):
+            return false
     var mine := buildings.primary_building(state,BuildingSystem.TYPE_MINE)
     if not _check(mine != null and buildings._resource_job_batch_units(mine) == 2,
         "legacy carry helper was incorrectly bulk-converted"):
