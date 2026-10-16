@@ -143,7 +143,7 @@ func _verify_nonfinite_foundations() -> bool:
         return false
     candidate.aptitude = NAN
     var bad_candidate := FoundationSystem.new().validate_candidate(candidate)
-    if not "nonfinite" in " | ".join(bad_candidate):
+    if not ("nonfinite" in " | ".join(bad_candidate)):
         return false
     # An independently recruited authentic actor must also fail closed if
     # a loaded/dev payload contains an invalid open-point dimension.
