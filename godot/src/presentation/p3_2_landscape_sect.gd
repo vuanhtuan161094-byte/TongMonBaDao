@@ -1182,6 +1182,8 @@ func _build_sect_hub() -> void:
     sect_hub_button.size = Vector2(154,43)
     sect_hub_button.z_index = 55
     sect_hub_button.add_theme_font_size_override("font_size",15)
+    sect_hub_button.add_theme_color_override("font_color",INK)
+    sect_hub_button.add_theme_stylebox_override("normal",_style(PAPER_LIGHT,INK,2,10))
     sect_hub_button.pressed.connect(_show_sect_hub)
     add_child(sect_hub_button)
 
@@ -1242,7 +1244,9 @@ func _sect_hub_label(message: String, font_size: int = 14) -> void:
 func _sect_hub_route(text_label: String, destination: StringName) -> void:
     var button := Button.new()
     button.text = text_label
+    button.name = "SectHubRoute_%s" % str(destination)
     button.custom_minimum_size = Vector2(675,48)
+    button.add_theme_color_override("font_color",INK)
     button.add_theme_font_size_override("font_size",15)
     button.pressed.connect(Callable(self,"_open_building").bind(destination))
     sect_hub_content.add_child(button)
@@ -1269,6 +1273,8 @@ func _sect_hub_production_line(
 func _refresh_sect_hub() -> void:
     if sect_hub_content == null or not is_instance_valid(sect_hub_content):
         return
+    var scroll := sect_hub_panel.find_child("SectHubScroll",false,false) as ScrollContainer
+    var last_scroll := scroll.scroll_vertical if scroll != null else 0
     for child in sect_hub_content.get_children():
         sect_hub_content.remove_child(child)
         child.queue_free()
@@ -1299,6 +1305,8 @@ func _refresh_sect_hub() -> void:
     save.custom_minimum_size = Vector2(675,48)
     save.pressed.connect(_sect_hub_save)
     sect_hub_content.add_child(save)
+    if scroll != null:
+        scroll.set_deferred("scroll_vertical",last_scroll)
 
 func _sect_hub_save() -> void:
     if runtime_session == null or not runtime_ready:
