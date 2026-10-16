@@ -1367,7 +1367,7 @@ func _build_spirit_field_management() -> void:
         group_button.add_theme_font_size_override("font_size", 11)
         group_button.disabled = has_plot
         if has_plot:
-            group_button.tooltip_text = "Ô đang trồng giữ đệ tử tới khi thu hoạch xong."
+            group_button.tooltip_text = "Field duty đang chạy; phải xử lý hết các ô đang trồng trước khi đổi người phụ trách."
         elif in_group:
             group_button.pressed.connect(Callable(self, "_assign_building_group").bind(
                 disciple.id, &"", "Đã rút %s khỏi Đội Linh Thực." % disciple.display_name
@@ -1380,7 +1380,7 @@ func _build_spirit_field_management() -> void:
 
         var plant_button := Button.new()
         plant_button.name = "FieldPlant_%s" % str(disciple.id)
-        plant_button.text = "Gieo trồng"
+        plant_button.text = "Gieo ô tiếp" if has_plot else "Gieo trồng"
         plant_button.custom_minimum_size = Vector2(82, 34)
         plant_button.add_theme_font_size_override("font_size", 10)
         var reason := _spirit_field_start_reason(disciple, field, active_ids)
@@ -1407,9 +1407,7 @@ func _spirit_field_start_reason(disciple: DiscipleState, field: BuildingState, a
     if disciple.work_group_id != &"herbalism_crew":
         return "Cần phân vào Đội Linh Thực."
     if not active_ids.has(disciple.id):
-        return "Không còn chỗ hoạt động tại Linh Điền."
-    if buildings.disciple_has_active_spirit_plot(state, disciple.id, field):
-        return "Đệ tử đã phụ trách một ô đang trồng."
+        return "Linh Điền này đã có người phụ trách khác."
 
     var has_empty := false
     for raw_plot in buildings.spirit_field_plots(state, field):
