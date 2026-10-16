@@ -113,10 +113,12 @@ Production profession level is independent from both canonical progression track
 - Tu Vi: 30 đại cảnh × 10 tầng, `Phàm Nhân` through `Sáng Thế Chủ`;
 - Luyện Thể: 30 đại cảnh × 10 tầng, `Phàm Thân` through `Sáng Thế Thần Thể`.
 
-A resource/recipe may declare an explicit canonical realm index when progression content
-needs it, but that requirement never replaces the profession level used for work speed.
-New Economy V2 content uses 1-based realm indexes from `DiscipleRealmProgressV2`;
-legacy labels such as `pham/luyen_khi/truc_co/kim_dan` are compatibility metadata only.
+A resource/recipe may declare an explicit canonical **realm tier** when progression content
+needs thematic/tier alignment. That tier is descriptive progression metadata, **not** a worker
+eligibility or work-speed substitute. Production access remains owned by explicit building level,
+profession level and Sect progression rules. New Economy V2 content uses 1-based realm-tier
+indexes from `DiscipleRealmProgressV2`; legacy labels such as `pham/luyen_khi/truc_co/kim_dan`
+are compatibility metadata only.
 
 ---
 
