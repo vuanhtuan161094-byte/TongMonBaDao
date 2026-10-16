@@ -384,10 +384,9 @@ func p3_7_profession_level(disciple: DiscipleState, profession_id: StringName) -
     var xp := profession_xp(disciple, profession_id)
     if xp <= 0.0:
         return 0
-    # Economy V2 balance authority uses profession Lv0..100. XP may continue
-    # accumulating for audit/future content, but production modifiers cannot
-    # silently exceed the approved cap.
-    return clampi(int(floor(sqrt(xp / P3_7_XP_LEVEL_SCALE))), 0, 100)
+    # Profession progression is independent from the two 30-realm character
+    # tracks. Lv100 is a balance benchmark, not an owner-approved profession cap.
+    return maxi(int(floor(sqrt(xp / P3_7_XP_LEVEL_SCALE))), 0)
 
 func profession_level_for_state(state: SimulationState, disciple: DiscipleState, profession_id: StringName) -> int:
     return p3_7_profession_level(disciple, profession_id) if state.p3_7_buildings_enabled else profession_level(disciple, profession_id)
