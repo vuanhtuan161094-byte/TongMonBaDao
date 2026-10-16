@@ -519,17 +519,27 @@ func upgrade_cost(building: BuildingState) -> Dictionary:
     var factor := 1.0 + 0.15 * level + 0.01 * level * level
     var target_level := building.level + 1
     var milestone_mult := 2.0 if MILESTONE_LEVELS.has(target_level) else 1.0
-    var legacy_wood := maxi(1, int(ceil(float(definition.get("base_wood_cost", 1)) * factor * milestone_mult)))
-    var legacy_ore := maxi(1, int(ceil(float(definition.get("base_ore_cost", 1)) * factor * milestone_mult)))
     var cost := {
-        MATERIAL_WOOD: production_plans.scale_common_requirement(StringName(MATERIAL_WOOD), legacy_wood),
-        MATERIAL_ORE: production_plans.scale_common_requirement(StringName(MATERIAL_ORE), legacy_ore),
+        MATERIAL_WOOD: maxi(1, int(ceil(float(definition.get("base_wood_cost", 1)) * factor * milestone_mult))),
+        MATERIAL_ORE: maxi(1, int(ceil(float(definition.get("base_ore_cost", 1)) * factor * milestone_mult))),
         "spirit_stones": maxi(1, int(ceil(float(definition.get("base_stone_cost", 1)) * factor * milestone_mult)))
     }
     if MILESTONE_LEVELS.has(target_level):
         var component := _milestone_component(building.building_type, target_level)
         if component != "":
             cost[component] = _milestone_component_quantity(building.building_type, target_level)
+    return cost
+
+func upgrade_cost_for_state(state: SimulationState, building: BuildingState) -> Dictionary:
+    var cost := upgrade_cost(building)
+    if cost.is_empty() or state == null:
+        return cost
+    if not state.sect.economy_a_enabled or not state.sect.p3_7_resources_enabled:
+        return cost
+    for material_id in [StringName(MATERIAL_WOOD), StringName(MATERIAL_ORE)]:
+        var key := str(material_id)
+        if cost.has(key):
+            cost[key] = production_plans.scale_common_requirement(material_id, int(cost[key]))
     return cost
 
 func upgrade_required_work(building: BuildingState) -> float:
@@ -560,7 +570,7 @@ func can_start_upgrade(state: SimulationState, building_id: StringName) -> Dicti
     if MILESTONE_LEVELS.has(target_level) and requires_milestone_component and _milestone_component(building.building_type, target_level) == "":
         return {"ok": false, "reason": "milestone_component_not_defined", "target_level": target_level}
 
-    var cost := upgrade_cost(building)
+    var cost := upgrade_cost_for_state(state,building)
     var material_ids: Array = cost.keys()
     material_ids.erase("spirit_stones")
     material_ids.sort()
