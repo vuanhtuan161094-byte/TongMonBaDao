@@ -258,13 +258,14 @@ func assign_group(state: SimulationState, disciple_id: StringName, group_id: Str
     # Legacy group-only allocation targets the primary instance. Economy V2
     # one-operator resource buildings never keep hidden waiting members.
     if state.p3_7_buildings_enabled and disciple.work_group_id != group_id:
-        var one_operator_type := {
+        var one_operator_types := {
             "mining_crew": BuildingSystem.TYPE_MINE,
             "forestry_crew": BuildingSystem.TYPE_LINH_FOREST,
             "herbalism_crew": BuildingSystem.TYPE_SPIRIT_FIELD
-        }.get(str(group_id), &"")
+        }
+        var one_operator_type := StringName(one_operator_types.get(str(group_id), ""))
         if one_operator_type != &"":
-            var primary := building_system.primary_building(state, StringName(one_operator_type))
+            var primary := building_system.primary_building(state, one_operator_type)
             if primary == null or building_system.assigned_worker_ids(state, primary).size() >= 1:
                 return false
     if state.sect.economy_a_enabled and not building_system.active_resource_timer_for_worker(state,disciple.id).is_empty() and group_id != disciple.work_group_id:
