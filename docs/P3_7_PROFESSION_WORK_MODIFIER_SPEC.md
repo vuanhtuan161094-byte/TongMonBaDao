@@ -78,9 +78,7 @@ Fixed-value books/pills/items grant their stated amount and are not multiplied b
 
 P3.7 long-term profession level is derived from accumulated profession XP:
 
-**Raw Level = floor(sqrt(XP / 24))**
-
-**Economy V2 production Level = clamp(Raw Level, 0, 100)**
+**Level = floor(sqrt(XP / 24))**
 
 Profession throughput:
 
@@ -93,8 +91,8 @@ Examples:
 - Lv50 -> ×1.50;
 - Lv100 -> ×2.00.
 
-Profession XP may continue accumulating for audit/future content, but Economy V2
-production modifiers do not silently exceed Lv100.
+**Lv100 is a balance benchmark, not a profession cap.** Profession progression remains
+independent from the two 30-realm character tracks; a future cap requires a separate owner decision.
 
 Profession level improves throughput by reducing work/cycle time.
 
