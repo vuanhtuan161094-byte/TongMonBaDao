@@ -31,6 +31,8 @@ func _run() -> void:
         return
     if not _verify_field_stock_pause_and_resume():
         return
+    if not _verify_advanced_ore_plan_snapshot():
+        return
     print("ECON-V2 BULK PRODUCTION TEST PASS")
     quit(0)
 
@@ -244,3 +246,40 @@ func _verify_field_stock_pause_and_resume() -> bool:
         return false
     return _check(buildings._select_crop(state,field,data) == SpiritCropRegistry.CROP_LINH_COC,
         "Field did not resume after stock fell below target")
+
+func _verify_advanced_ore_plan_snapshot() -> bool:
+    var state := P37Factory.create_state(940705)
+    var mine := buildings.primary_building(state,BuildingSystem.TYPE_MINE)
+    if not _check(mine != null,"advanced ore probe has no Mine"):
+        return false
+    if not _check(bool(EconomySystem.new().enable_v1(state).get("ok",false)),
+        "advanced ore probe lacks canonical economy"):
+        return false
+    var advanced := ProductionPlanRegistry.PLAN_MINE_HUYEN_THIET_T2
+    if not _check(not buildings.set_resource_production_plan(state,mine.id,advanced),
+        "Huyen Thiet plan unlocked before Mine Lv30"):
+        return false
+    mine.level = 30
+    if not _check(buildings.set_resource_production_plan(state,mine.id,advanced)
+        and buildings.selected_resource_production_plan(mine) == advanced
+        and plans.scaled_yield(advanced,100) == 10,
+        "Huyen Thiet plan or rare-yield isolation is wrong"):
+        return false
+    var worker_ids := buildings.active_worker_ids(state,mine)
+    if not _check(not worker_ids.is_empty(),"advanced ore probe has no canonical miner"):
+        return false
+    var worker: DiscipleState = state.disciples[worker_ids[0]]
+    var started := buildings._start_resource_timer(state,mine,worker,1.0,BuildingSystem.PROF_MINING,1.0)
+    var jobs := buildings.resource_timer_jobs(mine)
+    if not _check(bool(started.get("ok",false)) and jobs.size() == 1
+        and str(jobs[0].get("production_plan_id","")) == str(advanced)
+        and str(jobs[0].get("resource_id","")) == "huyen_thiet"
+        and int(jobs[0].get("output_quantity",-1)) == 10,
+        "advanced ore timer did not snapshot real plan and output"):
+        return false
+    if not _check(buildings.set_resource_production_plan(state,mine.id,
+        ProductionPlanRegistry.PLAN_MINE_THANH_THIET_T1)
+        and str(buildings.resource_timer_jobs(mine)[0].get("resource_id","")) == "huyen_thiet",
+        "changing future Mine plan rewrote a committed batch"):
+        return false
+    return true
