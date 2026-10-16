@@ -93,8 +93,8 @@ duplicate. PR #16 fixes only missing existing ingress guards:
 |---|---|---|
 | `WorkforceSystem.assign_group` | A timed Mine/Forest/Alchemy worker cannot switch from their *current* crew, even to `alchemy_crew` | `disciple_v2_active_job_ingress_test.gd` |
 | `WorkforceSystem.assign_worksite` | Running Alchemy has the same worksite ownership as timed Mine/Forest | focused simulation test |
-| `DiscipleBodyTrainingFacilityV2.reserve_slot` | Reject pending direct orders and a different group/worksite before reserving a paid Rèn Thân slot | focused simulation test |
-| `DiscipleTrainingActionV2.request_training` | Reject commands that would override requested training; retain the compatible `CULTIVATE` order | focused simulation test |
+| `DiscipleBodyTrainingFacilityV2.reserve_slot` | Reject **conflicting** direct orders and a different group/worksite. A nonexclusive `HOLD_AT_SECT` can be replaced only after the new Body reservation passes all preflights | focused simulation test |
+| `DiscipleTrainingActionV2.request_training` | Reject incompatible queued commands. Matching `CULTIVATE` or nonexclusive `HOLD_AT_SECT` can transfer into an explicitly requested valid training action; rejected requests preserve old command | focused simulation test |
 | `FoundationSystem.validate_candidate/validate_disciple` | Reject NaN/Inf across all six permanent open-point dimensions | focused simulation test |
 
 The source/material recipe is unchanged from PR #14. All new tests are authored,
