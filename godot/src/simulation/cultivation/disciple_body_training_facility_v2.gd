@@ -24,6 +24,17 @@ static func reserve_slot(state: SimulationState, disciple_id: StringName) -> Dic
         return {"ok":false,"reason":"body_training_authority_disabled"}
     if not [&"EVALUATE",&"IDLE",&"HOLD",&"CULTIVATE",&"TRAIN_BODY"].has(disciple.current_action):
         return {"ok":false,"reason":"training_cannot_interrupt_active_work"}
+    # Do not steal a queued player command or an existing Forge/production
+    # assignment. An explicit release is required before reserving Rèn Thân.
+    # Already-reserved trainees remain idempotent.
+    if not disciple.direct_command.is_empty():
+        return {"ok":false,"reason":"body_training_active_command"}
+    if disciple.work_group_id != &"" and disciple.work_group_id != &"body_training_crew":
+        return {"ok":false,"reason":"body_training_another_worksite"}
+    if disciple.worksite_building_id != &"":
+        var held = state.buildings.get(str(disciple.worksite_building_id))
+        if not (held is BuildingState) or held.building_type != BuildingSystem.TYPE_BODY_TRAINING:
+            return {"ok":false,"reason":"body_training_another_worksite"}
     # GP-02B1: a reserved Body slot must not silently settle an unfinished
     # Mine/Forest carry-cycle or transfer a worker from a paid timed job.
     if not disciple.work_cycle_state.is_empty():
