@@ -427,10 +427,16 @@ func work_available(state: SimulationState, profession_id: StringName, disciple:
         PROF_HERBALISM:
             if disciple != null:
                 var field := _building_for_disciple(state, TYPE_SPIRIT_FIELD, disciple)
+                if field == null or not can_disciple_work(state,field,disciple):
+                    return false
+                var field_data := _ensure_spirit_field_state(state,field)
+                var duty_worker := str(field_data.get("active_duty_worker_id",""))
+                if duty_worker != "" and duty_worker != str(disciple.id):
+                    return false
                 # Additional empty plots belong to the same Field duty for the
                 # sole operator, so an active plot does not consume a second
                 # disciple job slot or block another one-plot planting action.
-                return field != null and can_disciple_work(state, field, disciple) and _field_has_startable_plot(state, field)
+                return _field_has_startable_plot(state, field)
             for field in _buildings_of_type(state, TYPE_SPIRIT_FIELD):
                 if _field_has_startable_plot(state, field):
                     return true
