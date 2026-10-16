@@ -1,5 +1,24 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-16 — DISCIPLE-V2 SCALE-SAFE BACKEND / STACKED ON DRAFT PR #9
+
+**Owner continuation:** Continue authorized Disciple V2 + Production V2 integration without requiring the owner's Windows computer. This limited follow-up addresses measured 100–3,000-disciple scheduler overhead and does not introduce new simulation authorities, content tiers or balance changes.
+
+**Git topology:** Integration branch `economy-v2-disciple-production-integration-20261016` is PR #9 HEAD `d9b02dfd270b5165251e1e5e443b53a96ab68164`. This packet uses an isolated branch `disciple-v2-scale-20261016` stacked directly on that exact commit. PR #6/#7/#8/#9 remain separate drafts; do not merge or modify `main`.
+
+**Changes, gameplay/test commit `89974c7dbf34f3855015b9cf1e721f7e498b987a`:**
+- Authentic V2 passive Tu Vi minute calls `DiscipleTuViFlowV2.validate_rule(...,false)` for scalar/schema validation, then makes **one** canonical `DiscipleRealmProgressV2.grant_xp` commit. Explicit preview/UI callers still run the full dry-run preflight. Live grant still validates all floor costs, XP sources, bounds and progression before mutation.
+- `WorkforceSystem.choose_work_profession` rejects professions of priority 0 before potentially roster-wide `work_available` lookups; candidate ranking and valid work selection are unchanged.
+- `BuildingSystem.can_disciple_work` cheaply rejects wrong work group, worksite and primary-instance fallback before scanning/sorting the full roster; the canonical `active_worker_ids` capacity check is unchanged for genuinely assigned workers.
+- New `godot/tests/simulation/disciple_v2_scale_safe_path_test.gd`: authentic V2 actor, dry/live Tu Vi equality, exactly-once tick, invalid XP source rejection without mutation, and assigned/unassigned/wrong-worksite fast guards.
+
+**QA honesty:** 4/4 changed GDScript files passed delimiter/string structural scan only. Official Godot 4.7.2 runtime is **NOT RUN** in this environment. No new timing measurement is available. Codex PR #9 previously reported 100/500/1,000/3,000 disciple one-tick measurements of 139.5/761.0/1633.1/3160.6 ms; these are the prior baseline, not improvement evidence. Run the same probe at the new exact branch/commit plus focused DV2-03 clock/train, One Active Job, Economy-A, O6, SAFE and P3.7 FULL before accepting. Windows visual, Android and sustained performance remain **PENDING USER**.
+
+**Remaining scope:** Potential growth consumer, all-instance building/cap/land authority, Body C–H/seal earned sources, resource-to-consumer matrix, global action ingress audit, and full 3,000-disciple sustained performance are OPEN. Preserve Injury 0/1/120; canonical 30×10 Tu Vi/Body; one worker per Mine/Forest/Field; 4 Field plots; PR #9 ×10,000 ordinary-yield pilot; no CI/no merge.
+
+---
+
+
 ## 2026-10-16 — ECONOMY-V2 PRODUCTION PLAN + BULK BALANCE / STACKED BRANCH / RUNTIME QA PENDING
 
 **Owner authorization:** implement a new stacked Economy V2 packet on top of draft PR #7; keep PR #6/#7 unmerged; add canonical ProductionPlan authority and the approved bulk rates; apply +0.5% building speed and +0.5% common yield per level; keep work level = profession level and align content tiers to the canonical 30 Tu Vi + 30 Luyện Thể tracks; rebalance only the minimum existing consumers needed to avoid a producer-only economy. **No CI and no merge.**
