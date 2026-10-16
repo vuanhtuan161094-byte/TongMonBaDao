@@ -327,8 +327,8 @@ func _verify_field_level_and_milestone_numbers() -> bool:
         return _fail("Field Lv20 must retain one operator and four internal plots.")
     if not is_equal_approx(buildings.spirit_field_speed_factor(field), 1.095):
         return _fail("Field +0.5% speed/level formula is wrong.")
-    if not is_equal_approx(buildings.spirit_field_yield_factor(field), 1.095 * 1.10):
-        return _fail("Field Lv20 yield formula is wrong.")
+    if not is_equal_approx(buildings.spirit_field_yield_factor(field), ProductionPlanRegistry.new().common_yield_factor(20)):
+        return _fail("Field Lv20 common-yield milestone contract is wrong.")
 
     field.level = 10
     buildings.spirit_field_plots(state, field)
