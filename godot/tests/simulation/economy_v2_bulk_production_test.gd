@@ -24,6 +24,8 @@ func _run() -> void:
         return
     if not _verify_level_scaling_and_legacy_boundary():
         return
+    if not _verify_fixed_point_timer_math():
+        return
     if not _verify_bulk_consumers():
         return
     if not _verify_population_food_sink():
@@ -103,6 +105,22 @@ func _verify_level_scaling_and_legacy_boundary() -> bool:
     return _check(
         plans.scaled_yield(ProductionPlanRegistry.PLAN_MINE_THANH_THIET_T1,mine.level) == 10000,
         "V2 ProductionPlan cannot coexist with legacy carry helper"
+    )
+
+func _verify_fixed_point_timer_math() -> bool:
+    # A 6-minute Alchemy recipe at profession speed x1.10 must not remain
+    # permanently quantized to six minutes. Overshoot from the first batch
+    # shortens the next batch while cancellation still banks nothing.
+    var first := buildings._timed_duration_plan(6.0, 1.10, 0)
+    var second := buildings._timed_duration_plan(
+        6.0, 1.10, int(first.get("completion_remainder_bp", 0))
+    )
+    return _check(
+        int(first.get("duration_ticks", -1)) == 6
+        and int(first.get("completion_remainder_bp", -1)) == 6000
+        and int(second.get("duration_ticks", -1)) == 5
+        and int(second.get("completion_remainder_bp", -1)) == 1000,
+        "fixed-point timer remainder does not preserve small profession-speed gains"
     )
 
 func _verify_bulk_consumers() -> bool:
