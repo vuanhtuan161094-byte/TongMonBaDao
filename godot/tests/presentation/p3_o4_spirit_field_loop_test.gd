@@ -29,8 +29,8 @@ func _run() -> void:
     if ui.find_child("BuildingToken_spirit_field", true, false) == null:
         _fail("O4 landscape map has no Linh Điền entry.")
         return
-    if field.level != 1 or buildings.worker_slots(field) != 4 or buildings.spirit_plot_slots(field) != 4:
-        _fail("O4 fresh Lv1 Spirit Field must expose 4 workers / 4 plots.")
+    if field.level != 1 or buildings.worker_slots(field) != 1 or buildings.spirit_plot_slots(field) != 4:
+        _fail("O4 fresh Lv1 Spirit Field must expose 1 operator / 4 internal plots.")
         return
     if state.sect.spirit_stones != 500:
         _fail("O4 fresh opening must use the existing canonical 500 Sect Spirit Stones.")
@@ -107,12 +107,19 @@ func _run() -> void:
     ui.call("_open_building", SectMapPresentation.DEST_SPIRIT_FIELD)
     await process_frame
     var duplicate_button := ui.find_child("FieldPlant_%s" % str(target_id), true, false) as Button
-    if duplicate_button == null or not duplicate_button.disabled:
-        _fail("O4 UI allows a second plot for a worker already reserved by one.")
+    if duplicate_button == null or duplicate_button.disabled or duplicate_button.text != "Gieo ô tiếp":
+        _fail("O4 UI did not expose same-duty planting for another internal plot.")
         return
-    if workforce.issue_command(state, target_id, WorkforceSystem.COMMAND_WORK, str(WorkforceSystem.PROF_HERBALISM), 40):
-        _fail("O4 backend accepted duplicate field work for a reserved worker.")
+    var before_extension_command := state.sect.spirit_stones
+    if not workforce.issue_command(state, target_id, WorkforceSystem.COMMAND_WORK, str(WorkforceSystem.PROF_HERBALISM), 40):
+        _fail("O4 backend rejected same-operator extension of the active Field duty.")
         return
+    if state.sect.spirit_stones != before_extension_command:
+        _fail("O4 merely queueing another internal plot consumed resources early.")
+        return
+    # This O4 path continues with one planted plot to preserve its exact
+    # save/harvest probe; the focused simulation suite covers multi-plot duty.
+    workforce.clear_command(state,target)
 
     var output_before := warehouse.quantity(state, output_id)
     var batches_before := int(field.metrics.get("production_batches", 0))
