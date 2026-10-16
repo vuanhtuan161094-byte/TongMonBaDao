@@ -41,6 +41,9 @@ func _run() -> void:
         return
     if not await _press("FieldGroup_%s" % str(field_worker_id)):
         return
+    if state.disciples[field_worker_id].work_group_id != &"herbalism_crew":
+        _fail("O8 Field group assignment failed: %s" % str(ui.get("building_management_feedback")))
+        return
 
     var alchemist_id := _first_unassigned()
     if alchemist_id == &"":
