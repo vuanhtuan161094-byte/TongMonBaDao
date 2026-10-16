@@ -631,7 +631,13 @@ func process_tick(state: SimulationState) -> void:
             _process_resource_timers(state,building)
 
 func _default_alchemy_state() -> Dictionary:
-    return {"recipe_enabled": true, "recipe_id": str(AlchemyRecipeRegistry.RECIPE_HOI_XUAN_DAN), "job_sequence": 0, "jobs": []}
+    return {
+        "recipe_enabled": true,
+        "recipe_id": str(AlchemyRecipeRegistry.RECIPE_HOI_XUAN_DAN),
+        "job_sequence": 0,
+        "work_remainders_bp": {},
+        "jobs": []
+    }
 
 func _ensure_alchemy_state(hall: BuildingState) -> Dictionary:
     if hall == null or hall.building_type != TYPE_ALCHEMY_HALL:
@@ -644,6 +650,14 @@ func _ensure_alchemy_state(hall: BuildingState) -> Dictionary:
         recipe_id = AlchemyRecipeRegistry.RECIPE_HOI_XUAN_DAN
     data["recipe_id"] = str(recipe_id)
     data["job_sequence"] = maxi(int(data.get("job_sequence", 0)), 0)
+    var raw_remainders = data.get("work_remainders_bp", {})
+    var work_remainders: Dictionary = {}
+    if raw_remainders is Dictionary:
+        for raw_worker_id in raw_remainders.keys():
+            var worker_key := str(raw_worker_id)
+            if worker_key != "":
+                work_remainders[worker_key] = maxi(int(raw_remainders[raw_worker_id]), 0)
+    data["work_remainders_bp"] = work_remainders
     var jobs: Array = []
     var seen_workers: Dictionary = {}
     var raw_jobs = data.get("jobs", [])
@@ -672,6 +686,7 @@ func _ensure_alchemy_state(hall: BuildingState) -> Dictionary:
                 "output_resource_id": str(raw_job.get("output_resource_id", alchemy_registry.output_resource_id(current_recipe))),
                 "output_quantity": maxi(int(raw_job.get("output_quantity", alchemy_registry.output_quantity(current_recipe))), 1),
                 "profession_xp_gain": maxf(float(raw_job.get("profession_xp_gain", 0.0)), 0.0),
+                "completion_work_remainder_bp": maxi(int(raw_job.get("completion_work_remainder_bp", 0)), 0),
                 "economy_a_wage_eligible": bool(raw_job.get("economy_a_wage_eligible", false))
             })
             seen_workers[worker_id] = true
@@ -737,7 +752,14 @@ func perform_alchemy_step(state: SimulationState, disciple: DiscipleState, profe
     if not warehouse.consume_requirements(state, requirements):
         return {"ok": false, "completed": false, "reason": "input_commit_failed"}
     var sequence := int(data.get("job_sequence", 0)) + 1
-    var duration := maxi(1, int(ceil(float(alchemy_registry.base_cycle_ticks(recipe_id)) / maxf(work_speed, 0.25))))
+    var remainders: Dictionary = data.get("work_remainders_bp", {}).duplicate(true)
+    var worker_key := str(disciple.id)
+    var timing := _timed_duration_plan(
+        float(alchemy_registry.base_cycle_ticks(recipe_id)),
+        maxf(work_speed, 0.25),
+        int(remainders.get(worker_key, 0))
+    )
+    var duration := int(timing["duration_ticks"])
     var job := {
         "job_id": "%s_job_%06d" % [str(hall.id), sequence],
         "recipe_id": str(recipe_id),
@@ -748,6 +770,7 @@ func perform_alchemy_step(state: SimulationState, disciple: DiscipleState, profe
         "output_resource_id": str(alchemy_registry.output_resource_id(recipe_id)),
         "output_quantity": alchemy_registry.output_quantity(recipe_id),
         "profession_xp_gain": maxf(profession_xp_gain, 0.0),
+        "completion_work_remainder_bp": int(timing["completion_remainder_bp"]),
         "economy_a_wage_eligible": state.sect.economy_a_enabled and DiscipleRealmProgressV2.owns_v2_progression(disciple)
     }
     var jobs: Array = data.get("jobs", [])
@@ -770,6 +793,7 @@ func _process_alchemy_jobs(state: SimulationState, hall: BuildingState) -> void:
     if jobs.is_empty():
         return
     var remaining: Array = []
+    var work_remainders: Dictionary = data.get("work_remainders_bp", {}).duplicate(true)
     var changed := false
     for raw_job in jobs:
         var job: Dictionary = raw_job
@@ -792,8 +816,12 @@ func _process_alchemy_jobs(state: SimulationState, hall: BuildingState) -> void:
             state.sect.workforce_event_count += 1
             if state.sect.economy_a_enabled and bool(job.get("economy_a_wage_eligible", false)):
                 EconomySystem.new().settle_work_wage(state, worker, str(job.get("job_id", "")))
+            work_remainders[str(worker_id)] = maxi(
+                int(job.get("completion_work_remainder_bp", 0)), 0
+            )
         changed = true
     if changed:
+        data["work_remainders_bp"] = work_remainders
         data["jobs"] = remaining
         hall.production_state = data
         state.building_event_count += 1
