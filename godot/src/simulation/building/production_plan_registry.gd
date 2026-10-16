@@ -164,10 +164,11 @@ func validate_definitions() -> Array[String]:
             errors.append("Production plan %s has invalid output resource." % plan_id)
         if base_cycle_ticks(plan_id) <= 0 or base_yield(plan_id) <= 0:
             errors.append("Production plan %s has invalid duration/yield." % plan_id)
-        if required_building_level(plan_id) < 1 or required_building_level(plan_id) > 100:
+        var raw_required_level := int(data.get("required_building_level", 0))
+        if raw_required_level < 1 or raw_required_level > 100:
             errors.append("Production plan %s has invalid building-level unlock." % plan_id)
-        var cultivation_tier := cultivation_realm_tier(plan_id)
-        var body_tier := body_realm_tier(plan_id)
+        var cultivation_tier := int(data.get("cultivation_realm_tier", -1))
+        var body_tier := int(data.get("body_realm_tier", -1))
         if cultivation_tier < 0 or cultivation_tier > DiscipleRealmProgressV2.MAX_REALM:
             errors.append("Production plan %s has invalid Tu Vi tier." % plan_id)
         if body_tier < 0 or body_tier > DiscipleRealmProgressV2.MAX_REALM:
