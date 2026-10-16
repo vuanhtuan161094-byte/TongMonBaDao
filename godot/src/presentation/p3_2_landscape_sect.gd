@@ -25,6 +25,7 @@ var equipment_system := EquipmentSystem.new()
 var needs_system := NeedsSystem.new()
 var recruitment_system := RecruitmentSystem.new()
 var spirit_crop_registry := SpiritCropRegistry.new()
+var production_plan_registry := ProductionPlanRegistry.new()
 var living_cue_resolver := LivingCueResolver.new()
 var living_cue_tracker := LivingCueTracker.new()
 var living_cue_layer: LivingCueLayer
@@ -774,9 +775,10 @@ func _build_economy_a_hall_controls() -> void:
         return
     var policy: Dictionary = state.sect.economy_a_policy
     var summary := Label.new()
-    summary.text = "Quỹ: %d · Lương/mẻ: %d · Timer gốc: %d phút" % [
-        state.sect.spirit_stones,int(policy.get("wage_per_batch",2)),
-        int(policy.get("resource_duration_ticks",10))
+    summary.text = "Quỹ: %d · Lương/mẻ: %d · Mỏ/Lâm T1: %d phút" % [
+        state.sect.spirit_stones,
+        int(policy.get("wage_per_batch",2)),
+        production_plan_registry.base_cycle_ticks(ProductionPlanRegistry.PLAN_MINE_THANH_THIET_T1)
     ]
     summary.custom_minimum_size = Vector2(384,32)
     summary.add_theme_font_size_override("font_size",12)
