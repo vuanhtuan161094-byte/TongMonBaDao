@@ -1,5 +1,7 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+**Final gameplay/test SHA:** `5de888843df04cfd7f3b9269823c00415463224f`; previous `2e6cdc2` code SHA was followed by a small UI-only immutable-preview scroll correction. PR #18 still draft; no Godot runtime run.
+
 ## 2026-10-16 — LAY-V2 EXECUTION HANDOFF / PR #18, CODE SHA `2e6cdc2e67a456e4836dcf4d2f252773f486a9d9`
 
 **Done (not a playable Build feature):** PR #12 read-only `ResourceBuildingExpansionPolicyV2` and `economy_v2_expansion_cap_preview_test.gd` integrated byte-for-byte; new immutable `SectLandRegionPreviewV2` 13-region 192×192/48×48/16×16 read-only geometry + `sect_land_region_preview_v2_test.gd`. Existing `p3_2_landscape_sect.gd` now has explicit selector of canonical Mine/Forest/Field instance ID, actions and selected-building policy/upgrade use that ID, and hub shows proposed limits and locked land without enabling paid Build. Test-only `gui_multiple_resource_instances_test.gd` checks actor assignment, secondary timer and save round-trip, does NOT claim user built a paid house. No second layout, warehouse or clock.

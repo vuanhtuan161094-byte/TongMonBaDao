@@ -1,5 +1,7 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+**Final LAY-V2 gameplay/test SHA:** `5de888843df04cfd7f3b9269823c00415463224f` (read-only preview UI scroll stability fix after initial integration). There is no real construction or editable-placement activation. Official Godot runtime remains PENDING.
+
 ## 2026-10-16 — LAY-V2 INTEGRATION READINESS: REAL INSTANCE GUI + FAIL-CLOSED BUILD/LAND PREVIEW
 
 **Owner selected Option 1 (2026-10-16 15:40Z):** implement whole building/land V2 in integrated PR #18; only ask owner to decide new game numbers/rules. **Exact code/test SHA `2e6cdc2e67a456e4836dcf4d2f252773f486a9d9`**, branch `integration-v2-pr9-pr10-pr17-20261016` targeting PR #9; main initially verified `461caca1171462e0da092f21108c5c1733157ad9`.

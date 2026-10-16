@@ -1,5 +1,7 @@
 # TÔNG MÔN BÁ ĐẠO — LAY-V2 Integration Readiness (2026-10-16)
 
+**Final code SHA:** `5de888843df04cfd7f3b9269823c00415463224f`. A final UI-only patch prevents the read-only land preview from being rebuilt/reset every scheduler tick. This does not activate construction, persistent placement, roads or land unlock.
+
 ## Status
 
 Branch PR #18 code/test SHA `2e6cdc2e67a456e4836dcf4d2f252773f486a9d9`: **multi-instance operator/policy GUI implemented; expansion caps and land regions design-preview only; actual construction, persistent move and paid land unlock BLOCKED**. Godot 4.7.2 runtime and ENV-02A Windows visual gate **PENDING**. No CI, no merge main.
