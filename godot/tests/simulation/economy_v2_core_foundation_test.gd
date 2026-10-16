@@ -176,15 +176,27 @@ func _verify_fractional_work_speed_is_preserved() -> bool:
 
 func _verify_profession_realm_independence() -> bool:
     var state := P37Factory.create_state(920603)
-    var actor: DiscipleState = state.disciples[state.disciples.keys()[0]]
+    state.sect.disciple_v2_birth_enabled = true
+    state.sect.disciple_capacity = state.disciples.size() + 1
+    var candidate := DiscipleGeneratorOpenPoints.new().generate_candidate(
+        state, DiscipleGeneratorV2.SOURCE_ORDINARY, 930603
+    )
+    state.recruitment_candidates[candidate.id] = candidate
+    var accepted := RecruitmentSystem.new().accept_candidate(state,candidate.id)
+    if not _check(bool(accepted.get("ok",false)), "cannot create authentic V2 profession/realm probe"):
+        return false
+    var actor: DiscipleState = state.disciples[candidate.id]
+    if not _check(DiscipleRealmProgressV2.progression_ready(actor),
+        "profession/realm probe is not an authentic initialized V2 disciple"):
+        return false
+
     actor.profession_xp["mining"] = WorkforceSystem.P3_7_XP_LEVEL_SCALE * 100.0 * 100.0
     var before := workforce.profession_level_for_state(state,actor,WorkforceSystem.PROF_MINING)
     if not _check(before == 100, "profession Lv100 benchmark is not derived from profession XP"):
         return false
 
-    if DiscipleRealmProgressV2.progression_ready(actor):
-        actor.v2_realm_progress["cultivation"]["realm"] = DiscipleRealmProgressV2.MAX_REALM
-        actor.v2_realm_progress["body"]["realm"] = DiscipleRealmProgressV2.MAX_REALM
+    actor.v2_realm_progress["cultivation"]["realm"] = DiscipleRealmProgressV2.MAX_REALM
+    actor.v2_realm_progress["body"]["realm"] = DiscipleRealmProgressV2.MAX_REALM
     var after := workforce.profession_level_for_state(state,actor,WorkforceSystem.PROF_MINING)
     return _check(after == before,
         "Tu Vi/Luyện Thể realm incorrectly replaced profession level authority")
