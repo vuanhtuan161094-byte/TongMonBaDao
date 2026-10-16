@@ -388,12 +388,22 @@ func active_worker_ids(state: SimulationState, building: BuildingState) -> Array
     return result
 
 func can_disciple_work(state: SimulationState, building: BuildingState, disciple: DiscipleState) -> bool:
-    if disciple != null and not disciple.active_pve_encounter_id.is_empty():
+    if not state.p3_7_buildings_enabled or building == null or disciple == null:
         return false
-    if not state.p3_7_buildings_enabled or building == null:
+    if not disciple.active_pve_encounter_id.is_empty() or disciple.region_id != &"sect":
         return false
-    if disciple.region_id != &"sect":
+    # An actor who is not assigned to this profession/building cannot possibly
+    # appear in active_worker_ids(). Avoid scanning and sorting a 3,000-person
+    # roster for every other idle actor on every work-availability check.
+    if disciple.work_group_id != building.worker_group_id or building.worker_group_id == &"":
         return false
+    if disciple.worksite_building_id != &"" and disciple.worksite_building_id != building.id:
+        return false
+    if disciple.worksite_building_id == &"":
+        var primary := primary_building(state,building.building_type)
+        if primary == null or primary.id != building.id:
+            return false
+    # Keep the canonical capacity/order guard for genuinely assigned workers.
     return active_worker_ids(state, building).has(disciple.id)
 
 func building_for_profession(state: SimulationState, profession_id: StringName, disciple: DiscipleState = null) -> BuildingState:
