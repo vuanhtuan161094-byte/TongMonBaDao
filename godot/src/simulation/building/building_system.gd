@@ -1071,6 +1071,14 @@ func _start_resource_timer(state: SimulationState, producer: BuildingState, acto
         return {"ok":false,"reason":"production_plan_profession_mismatch"}
     if producer.level < production_plans.required_building_level(plan_id):
         return {"ok":false,"reason":"production_plan_locked"}
+    var resource_id := production_plans.output_resource_id(plan_id)
+    var batch_units := production_plans.scaled_yield(plan_id,producer.level)
+    var stock_target := mini(batch_units * 10, WarehouseSystem.MAX_SAFE_STACK)
+    var stock := warehouse.quantity(state,resource_id)
+    if stock >= stock_target:
+        return {"ok":false,"reason":"stock_target_reached","resource_id":str(resource_id),"stock":stock,"target":stock_target}
+    if batch_units > WarehouseSystem.MAX_SAFE_STACK-stock:
+        return {"ok":false,"reason":"warehouse_overflow","resource_id":str(resource_id)}
     var data := producer.production_state.duplicate(true)
     var total_speed := maxf(speed,0.25) * production_plans.building_speed_factor(producer.level)
     var base_duration := production_plans.base_cycle_ticks(plan_id)
@@ -1647,8 +1655,15 @@ func _field_has_startable_plot(state: SimulationState, field: BuildingState) -> 
 func _select_crop(state: SimulationState, field: BuildingState, data: Dictionary) -> StringName:
     var eligible: Array[StringName] = []
     for crop_id in crop_registry.eligible_crop_ids(field.level):
-        if state.sect.spirit_stones >= crop_registry.cost(crop_id):
-            eligible.append(crop_id)
+        if state.sect.spirit_stones < crop_registry.cost(crop_id):
+            continue
+        var output_id := crop_registry.output_resource_id(crop_id)
+        var batch_units := production_plans.scaled_yield(crop_registry.production_plan_id(crop_id),field.level)
+        var target := maxi(crop_registry.stock_target(crop_id),batch_units * 10)
+        var current := warehouse.quantity(state,output_id) if state.sect.p3_7_resources_enabled else 0
+        if current >= target or batch_units > WarehouseSystem.MAX_SAFE_STACK-current:
+            continue
+        eligible.append(crop_id)
     if eligible.is_empty():
         return &""
 
@@ -1679,7 +1694,8 @@ func _select_crop(state: SimulationState, field: BuildingState, data: Dictionary
     var best := eligible[0]
     var best_score := -1.0e30
     for crop_id in eligible:
-        var target := float(crop_registry.stock_target(crop_id))
+        var target := float(maxi(crop_registry.stock_target(crop_id),
+            production_plans.scaled_yield(crop_registry.production_plan_id(crop_id),field.level) * 10))
         var quantity := float(warehouse.quantity(state, crop_registry.output_resource_id(crop_id))) if state.sect.p3_7_resources_enabled else 0.0
         var score := (target - quantity) / maxf(target, 1.0)
         if score > best_score or (is_equal_approx(score, best_score) and str(crop_id) < str(best)):
