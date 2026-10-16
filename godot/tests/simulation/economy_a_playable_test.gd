@@ -7,6 +7,7 @@ var warehouse := WarehouseSystem.new()
 var buildings := BuildingSystem.new()
 var workforce := WorkforceSystem.new()
 var economy := EconomySystem.new()
+var production_plans := ProductionPlanRegistry.new()
 
 func _init() -> void:
     call_deferred("_run")
@@ -79,7 +80,7 @@ func _run() -> void:
         "V2 Mine slot is not active"): return
     if not _check(bool(economy.configure_v1(state,"wage_per_batch",4).get("ok",false))
         and bool(economy.configure_v1(state,"resource_duration_ticks",10).get("ok",false)),
-        "Pilot adjustable policy was rejected"): return
+        "Compatibility policy update was rejected"): return
 
     var before_ore := warehouse.quantity(state,&"thanh_thiet")
     var before_stones := state.sect.spirit_stones
@@ -91,9 +92,16 @@ func _run() -> void:
         and actor.spirit_stones == 0,
         "Starting timed Mine falsely credited output, XP, or salary"): return
     var pending := buildings.active_resource_timer_for_worker(state,actor.id)
-    if not _check(not pending.is_empty() and int(pending.get("finish_tick",-1)) > state.tick
+    var mine_output := int(pending.get("output_quantity",-1))
+    if not _check(
+        not pending.is_empty()
+        and StringName(pending.get("production_plan_id","")) == ProductionPlanRegistry.PLAN_MINE_THANH_THIET_T1
+        and mine_output == production_plans.base_yield(ProductionPlanRegistry.PLAN_MINE_THANH_THIET_T1)
+        and mine_output == 10000
+        and int(pending.get("finish_tick",-1)) > state.tick
         and not workforce.issue_command(state,actor.id,WorkforceSystem.COMMAND_CULTIVATE,"",5),
-        "Timed worker has no exclusive reservation"): return
+        "Timed worker lacks canonical ProductionPlan snapshot/exclusive reservation"
+    ): return
 
     var saver := SaveService.new()
     if not _check(saver.save_to_path(state,SAVE_PATH) == OK,"Cannot save active Economy-A timer"): return
@@ -110,7 +118,7 @@ func _run() -> void:
         scheduler.step()
     var job_id := str(pending.get("job_id",""))
     var receipt_id := "wage:%s" % job_id
-    if not _check(warehouse.quantity(loaded,&"thanh_thiet") == before_ore+2
+    if not _check(warehouse.quantity(loaded,&"thanh_thiet") == before_ore+mine_output
         and float(live_actor.profession_xp.get("mining",0.0)) > xp_before
         and live_actor.spirit_stones == 4
         and loaded.sect.spirit_stones == before_stones-4
@@ -256,7 +264,13 @@ func _run() -> void:
     if not _check(bool(offline_start.get("ok",false)) and bool(offline_start.get("started",false)),
         "Could not start real Forestry batch for offline runtime"): return
     var pending_offline := buildings.active_resource_timer_for_worker(loaded,actor.id)
-    if not _check(not pending_offline.is_empty(),"Offline Forestry lacks persisted job identity"): return
+    var forest_output := int(pending_offline.get("output_quantity",-1))
+    if not _check(
+        not pending_offline.is_empty()
+        and StringName(pending_offline.get("production_plan_id","")) == ProductionPlanRegistry.PLAN_FOREST_LINH_MOC_T1
+        and forest_output == 8000,
+        "Offline Forestry lacks canonical 8,000-unit ProductionPlan snapshot"
+    ): return
     var remaining_ticks := int(pending_offline.get("finish_tick",-1))-loaded.tick
     if not _check(remaining_ticks > 0,"Offline Forestry has invalid finish time"): return
     var wall_time := 1721000000
@@ -273,7 +287,7 @@ func _run() -> void:
     var recovered_actor: DiscipleState = offline.state.disciples[actor.id]
     var settled_wood := warehouse.quantity(offline.state,&"linh_moc")
     var settled_stones := recovered_actor.spirit_stones
-    if not _check(settled_wood == before_offline_wood+2
+    if not _check(settled_wood == before_offline_wood+forest_output
         and settled_stones == before_offline_stones+4
         and buildings.active_resource_timer_for_worker(offline.state,actor.id).is_empty(),
         "Real offline Forestry did not settle exactly one real batch and wage"): return
@@ -371,7 +385,8 @@ func _test_field_and_alchemy_wages() -> bool:
     hall = buildings.primary_building(state, BuildingSystem.TYPE_ALCHEMY_HALL)
     var recipe := AlchemyRecipeRegistry.new()
     var input_id := StringName("thanh_linh_thao")
-    var needed := maxi(0, 3 - warehouse.available_quantity(state, input_id))
+    var input_need := int(recipe.inputs(AlchemyRecipeRegistry.RECIPE_HOI_XUAN_DAN).get(str(input_id),0))
+    var needed := maxi(0, input_need - warehouse.available_quantity(state, input_id))
     if needed > 0 and not _check(warehouse.add(state, input_id, needed),
         "Could not seed real Alchemy inputs"): return false
     var alchemy_start := buildings.perform_alchemy_step(state, worker, 0, 1.0, 1.0)
