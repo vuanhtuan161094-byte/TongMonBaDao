@@ -1913,6 +1913,8 @@ func _linh_forest_operation_text() -> String:
 
     var lines: Array[String] = []
     for disciple_value in members:
+        if lines.size() >= 5:
+            break
         var disciple: DiscipleState = disciple_value
         var level := workforce.profession_level_for_state(state, disciple, WorkforceSystem.PROF_FORESTRY)
         lines.append("• %s · Lv%d · %s" % [
@@ -1922,6 +1924,8 @@ func _linh_forest_operation_text() -> String:
         ])
     if lines.is_empty():
         lines.append("• Chưa có thành viên Đội Lâm Nghiệp")
+    elif members.size() > 5:
+        lines.append("• Còn %d người; dùng tìm kiếm bên dưới." % [members.size()-5])
     var production_note := "Chu kỳ legacy: đi tới Linh Lâm → thu hoạch → vận chuyển về Kho."
     if state.sect.economy_a_enabled and forest != null:
         production_note = "Timer V2: nền %d Linh Mộc / %d phút · sản lượng Lv%d: %d/mẻ." % [
@@ -2001,12 +2005,15 @@ func _mine_operation_text() -> String:
             " · điểm %s" % str(disciple.worksite_building_id)
             if disciple.worksite_building_id != &"" else " · điểm mặc định"
         )
-        lines.append("• %s · Lv%d · %s%s" % [
-            disciple.display_name, level,
-            _mining_member_status(disciple, is_active), location
-        ])
+        if lines.size() < 5:
+            lines.append("• %s · Lv%d · %s%s" % [
+                disciple.display_name, level,
+                _mining_member_status(disciple, is_active), location
+            ])
     if lines.is_empty():
         lines.append("• Chưa có thành viên Đội Khai Khoáng")
+    elif members.size() > 5:
+        lines.append("• Còn %d người; dùng tìm kiếm bên dưới." % [members.size()-5])
 
     var upgrade_text := "Ổn định"
     if mine != null and mine.is_upgrading():
@@ -2016,11 +2023,15 @@ func _mine_operation_text() -> String:
         ]
     var production_note := "Chu kỳ legacy: đi tới mỏ → khai thác → vận chuyển về kho."
     if state.sect.economy_a_enabled and mine != null:
-        production_note = "Timer V2: nền %d Thanh Thiết / %d phút · sản lượng Lv%d: %d/mẻ." % [
-            production_plan_registry.base_yield(ProductionPlanRegistry.PLAN_MINE_THANH_THIET_T1),
-            production_plan_registry.base_cycle_ticks(ProductionPlanRegistry.PLAN_MINE_THANH_THIET_T1),
-            mine.level,
-            production_plan_registry.scaled_yield(ProductionPlanRegistry.PLAN_MINE_THANH_THIET_T1, mine.level)
+        var plan_id := building_system.selected_resource_production_plan(mine)
+        var output_id := production_plan_registry.output_resource_id(plan_id)
+        var batch := production_plan_registry.scaled_yield(plan_id,mine.level)
+        var stock := WarehouseSystem.new().quantity(state,output_id)
+        var target := batch * 10
+        production_note = "%s: %d/mẻ · nền %d phút · kho %d/%d. %s" % [
+            ResourceRegistry.new().display_name(output_id),batch,
+            production_plan_registry.base_cycle_ticks(plan_id),stock,target,
+            "Tạm dừng khi đạt mục tiêu kho." if stock >= target else "Có thể tiếp tục."
         ]
 
     return (
