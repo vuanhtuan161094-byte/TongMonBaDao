@@ -33,11 +33,17 @@ Do not simulate agricultural micro-management that does not create a meaningful 
 
 Canonical lifecycle:
 
-**assign one Linh Thực operator -> start Field duty -> internal plot timers -> harvest resolves**
+**assign one Linh Thực operator -> first plot starts Field duty -> repeated one-plot planting actions may fill empty plots -> internal timers -> final plot resolves/cancels -> duty ends**
 
 Each Linh Điền instance has exactly **one responsible disciple at every building level**.
 The field's plots are subordinate production timers owned by that one occupation; they are
 not four independent disciple jobs and never justify four active-job reservations.
+
+**One planting action starts exactly one plot and pays exactly one crop cost.**
+If the same operator already owns the active Field duty, another valid Herbalism order may
+start another empty plot under the **same duty identity**. While any duty plot remains
+growing, the operator cannot transfer worksite, leave the Herbalism crew, cultivate, hunt,
+or start another profession job.
 
 There are no separate backend phases for:
 - walking to the field;
@@ -64,9 +70,11 @@ status: empty | growing
 started_tick
 finish_tick
 assigned_worker_id
+field_duty_id
 paid_spirit_stones
 routine_yield
 rare_factor
+completion_work_remainder_bp
 ```
 
 The relevant worker and facility factors are sampled when the plot starts.
@@ -107,9 +115,10 @@ Building level may improve speed/yield/content unlocks, but does not automatical
 plots. More aggregate farming capacity comes from stronger fields and additional
 Spirit Field instances under the building-count progression rules.
 
-A single duty may start several empty plots. All such plots retain the same operator
-identity and may have independent crop timers. Economy-A wage identity is per Field
-duty, not per plot; replaying completion from several plots must not pay four wages.
+A single duty may own several empty-to-growing plot starts, but each player/backend
+plant action starts **one** plot only. All growing plots retain the same operator and
+`field_duty_id` while their timers may finish at different ticks. Economy-A wage identity
+is per Field duty, not per plot; replaying completion from several plots must not pay four wages.
 
 ---
 
