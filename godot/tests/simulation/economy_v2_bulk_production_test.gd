@@ -162,21 +162,21 @@ func _verify_population_food_sink() -> bool:
     if not _check(warehouse.add(state,NeedsSystem.V2_FOOD_RESOURCE_ID,100),
         "cannot seed Linh Cốc food probe"):
         return false
-    if not _check(warehouse.set_rule(state,NeedsSystem.V2_FOOD_RESOURCE_ID,96,false),
+    if not _check(warehouse.set_rule(state,NeedsSystem.V2_FOOD_RESOURCE_ID,88,false),
         "cannot set Linh Cốc reserve"):
         return false
 
     state.tick = NeedsSystem.V2_FOOD_INTERVAL
     NeedsSystem.new().process_logistics_tick(state)
-    var expected_consumed := mini(population,4)
+    var expected_consumed := mini(population * NeedsSystem.V2_FOOD_PER_DISCIPLE,12)
     if not _check(
         warehouse.quantity(state,NeedsSystem.V2_FOOD_RESOURCE_ID) == 100-expected_consumed
-        and warehouse.quantity(state,NeedsSystem.V2_FOOD_RESOURCE_ID) >= 96,
+        and warehouse.quantity(state,NeedsSystem.V2_FOOD_RESOURCE_ID) >= 88,
         "population food sink ignored canonical Warehouse reserve"
     ):
         return false
     return _check(
         int(state.sect.needs_stats.get("v2_linh_coc_consumed",0)) == expected_consumed
-        and int(state.sect.needs_stats.get("v2_linh_coc_shortage",0)) == population-expected_consumed,
+        and int(state.sect.needs_stats.get("v2_linh_coc_shortage",0)) == population * NeedsSystem.V2_FOOD_PER_DISCIPLE-expected_consumed,
         "food consumption/shortage audit counters are wrong"
     )
