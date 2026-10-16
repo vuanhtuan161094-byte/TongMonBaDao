@@ -193,7 +193,7 @@ Canonical opening plans:
 |---|---:|---:|---:|---:|---:|
 | Linh Cốc | 60 phút | 2,500 | Lv1 | 2 — Luyện Khí | 0 |
 | Thanh Linh Thảo | 90 phút | 2,000 | Lv1 | 2 — Luyện Khí | 1 — Phàm Thân |
-| Tử Vân Thảo | 180 phút | 1,000 | Lv30 | 3 — Trúc Cơ | 4 — Luyện Cân |
+| Tử Vân Thảo | 180 phút | 1,000 | Lv30 | 3 — Trúc Cơ | 4 — Dịch Cân |
 
 Realm tier is descriptive content/progression alignment. It **does not** replace the
 Linh Thực profession level, Field-level unlock, or other explicit Sect progression gates.
