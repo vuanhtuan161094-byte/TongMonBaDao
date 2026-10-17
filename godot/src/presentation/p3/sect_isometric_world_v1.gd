@@ -293,19 +293,23 @@ func _row(dest: StringName, instance_id: StringName, text_label: String, index: 
         "label":text_label
     }
 
-func set_legacy_transform(zoom: float, legacy_position: Vector2) -> void:
+func set_legacy_transform(zoom: float, legacy_position: Vector2) -> bool:
     if camera == null:
-        return
+        return false
     var z := clampf(zoom,0.75,1.80)
-    camera.zoom = Vector2.ONE*z
-    # Legacy canvas transform: screen = legacy_position + old_world_pixel*z.
-    # Center the Camera2D so the Node2D and existing overlay/tap projection
-    # have identical screen coordinates at all accepted pan/zoom values.
+    # Match the legacy Control actor overlay and the isometric camera.
     var legacy_center := MAP_SCREEN_OFFSET+VIEW_SIZE*0.5
-    camera.position = project(CENTER_CELL)-(
+    var next_position := project(CENTER_CELL)-(
         legacy_position+LEGACY_ANCHOR*z-legacy_center
     )/z
+    # Called every main-scene frame. A static camera does not need to
+    # recalculate visible chunks or re-render thousands of ground tiles.
+    if is_equal_approx(camera.zoom.x,z) and camera.position.is_equal_approx(next_position):
+        return false
+    camera.zoom = Vector2.ONE*z
+    camera.position = next_position
     _update_chunks()
+    return true
 
 func _update_chunks() -> void:
     if camera == null:
