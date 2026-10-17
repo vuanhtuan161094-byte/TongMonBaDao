@@ -1,5 +1,11 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — G1 Windows QA one-click harness, authentic-V2 fixture correction
+
+On draft [PR #20](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/20) (based on PR19, not main), corrected G1 test to recruit a REAL V2 disciple rather than assume the first founding disciple is V2. Added `Run-G1-PR20-Windows.cmd` + `tools/qa/Run-G1-PR20-Windows.ps1`, which clones only the G1 branch into TEMP, isolates APPDATA/LOCALAPPDATA, verifies official Godot 4.7.2 and records the actual checked-out commit. The runner performs import, focused G1/SourceA/Disciple/Workforce/map tests, existing P3.7 FULL and native 1280×720 MAP25 GUI+600 frame benchmark, packages only evidence logs/CSV/screenshots, never owner saves or repo state. **Harness CODE WRITTEN; WINDOWS EXECUTION STILL PENDING.** The current tool environment is Linux without official Godot 4.7.2, and no CI was run. See `docs/G1_DISCIPLE_RADAR_SOURCE_A_POOL_QA_2026-10-17.md`; no merge, no main/gameplay change.
+
+---
+
 ## 2026-10-17 — G1 RADAR LỤC DUY + SOURCE A POOL — draft PR #20
 
 Owner-authorized G1 presentation package [PR #20](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/20) stacks **only** on PR #19 at `5ce3c0f` without merging or editing main. Code/test SHA `5ac9d5cad86887cefa0ad05c6bdee05f743e79fd`; later commits are Markdown checkpoint/handoff only. Added `DiscipleSixDimensionRadar` (real 6-value `DisciplePresentationSnapshotV2.foundations.current`, dynamic drawing ceiling not a gameplay cap), `DiscipleSourceAVisualPool` (manifest-verified imported female `1113028_1` only; male uses existing fallback), and existing P3.2 deep profile/map wiring. Attribute tab explains existing 6-stat channels without enabling new consumers. New `sect_g1_disciple_radar_test.gd` exercises dynamic scaling, invalid snapshot fail-closed, stable/sex-correct art path, real deep scene/tab, exact stat projection and no disciple-state mutation. **NO gameplay V2/backend/save/CI changes.** Structural lexical scan 4/4 PASS, **official Godot 4.7.2 parser/focused/FULL, MAP25 performance after G1, visual review and Android PENDING**. Do not treat PR19 Windows results as PR20 runtime results; see `docs/G1_DISCIPLE_RADAR_SOURCE_A_POOL_QA_2026-10-17.md`. PR remains draft, no merge.
