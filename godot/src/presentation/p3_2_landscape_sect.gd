@@ -73,7 +73,7 @@ var sect_hub_panel: Panel
 var sect_hub_content: VBoxContainer
 var sect_hub_button: Button
 var last_accepted_disciple_id: StringName = &""
-const WORKFORCE_PICKER_PAGE_SIZE := 16
+const WORKFORCE_PICKER_PAGE_SIZE := 8
 var deep_restore_summary := false
 var screen_pointer_dragged := false
 var mouse_pointer_dragged := false
@@ -1140,49 +1140,52 @@ func _open_workforce_picker(building_id: StringName) -> void:
     workforce_picker_offset = 0
     workforce_picker_panel = Panel.new()
     workforce_picker_panel.name = "WorkforcePicker"
-    workforce_picker_panel.position = Vector2(310,88)
-    workforce_picker_panel.size = Vector2(660,535)
+    # Fit entirely beside the 440px right-hand building panel.
+    # Do not block its Start/Remove controls while a candidate is inspected.
+    workforce_picker_panel.position = Vector2(326,102)
+    workforce_picker_panel.size = Vector2(480,516)
     workforce_picker_panel.z_index = 90
     workforce_picker_panel.mouse_filter = Control.MOUSE_FILTER_STOP
     workforce_picker_panel.add_theme_stylebox_override("panel",_style(PAPER_LIGHT,INK,3,16))
     add_child(workforce_picker_panel)
-    _label(workforce_picker_panel,"CHỌN ĐỆ TỬ CHO CÔNG TRÌNH",Vector2(20,12),Vector2(570,35),20)
+    var picker_title := _label(workforce_picker_panel,"CHỌN ĐỆ TỬ",Vector2(18,12),Vector2(320,35),20)
+    picker_title.add_theme_color_override("font_color",INK)
     var close := Button.new()
     close.name = "WorkforcePickerClose"
     close.text = "Đóng ×"
-    close.position = Vector2(558,13)
-    close.size = Vector2(84,42)
+    close.position = Vector2(377,13)
+    close.size = Vector2(85,42)
     close.pressed.connect(_close_workforce_picker)
     workforce_picker_panel.add_child(close)
     workforce_picker_search = LineEdit.new()
     workforce_picker_search.name = "WorkforcePickerSearch"
     workforce_picker_search.placeholder_text = "Tìm tên / ID... (ưu tiên người rảnh)"
-    workforce_picker_search.position = Vector2(20,67)
-    workforce_picker_search.size = Vector2(620,44)
+    workforce_picker_search.position = Vector2(18,67)
+    workforce_picker_search.size = Vector2(444,44)
     workforce_picker_search.text_changed.connect(_workforce_picker_search_changed)
     workforce_picker_panel.add_child(workforce_picker_search)
     var scroll := ScrollContainer.new()
     scroll.name = "WorkforcePickerScroll"
-    scroll.position = Vector2(20,120)
-    scroll.size = Vector2(620,345)
+    scroll.position = Vector2(18,120)
+    scroll.size = Vector2(444,336)
     workforce_picker_panel.add_child(scroll)
     workforce_picker_results = VBoxContainer.new()
     workforce_picker_results.name = "WorkforcePickerResults"
-    workforce_picker_results.custom_minimum_size = Vector2(594,0)
+    workforce_picker_results.custom_minimum_size = Vector2(424,0)
     workforce_picker_results.add_theme_constant_override("separation",5)
     scroll.add_child(workforce_picker_results)
     var prev := Button.new()
     prev.name = "WorkforcePickerPrev"
     prev.text = "◀ Trang trước"
-    prev.position = Vector2(20,478)
-    prev.size = Vector2(170,42)
+    prev.position = Vector2(18,463)
+    prev.size = Vector2(165,42)
     prev.pressed.connect(_workforce_picker_previous)
     workforce_picker_panel.add_child(prev)
     var next := Button.new()
     next.name = "WorkforcePickerNext"
     next.text = "Trang tiếp ▶"
-    next.position = Vector2(470,478)
-    next.size = Vector2(170,42)
+    next.position = Vector2(297,463)
+    next.size = Vector2(165,42)
     next.pressed.connect(_workforce_picker_next)
     workforce_picker_panel.add_child(next)
     _render_workforce_picker()
@@ -1209,10 +1212,15 @@ func _workforce_candidate_reason(actor: DiscipleState, building: BuildingState, 
         var old_site = state.buildings.get(str(actor.worksite_building_id))
         if not (old_site is BuildingState) or old_site.worker_group_id != actor.work_group_id:
             return "Điểm làm việc cũ không hợp lệ"
-    if not actor.work_cycle_state.is_empty() or not actor.direct_command.is_empty():
-        return "Đang có lệnh/công việc"
+    if not actor.work_cycle_state.is_empty():
+        var phase := str(actor.work_cycle_state.get("phase",actor.work_cycle_state.get("status","")))
+        if phase == "travel_out":
+            return "Lượt cũ: đang đi mỏ (travel_out)"
+        return "Đang xử lý lượt làm việc" if phase == "" else "Đang làm: %s" % phase
+    if not actor.direct_command.is_empty():
+        return "Đang có lệnh chờ xử lý"
     if not (actor.current_action in [&"EVALUATE",&"IDLE",&"HOLD"]):
-        return "Đang thực hiện hành động"
+        return "Đang: %s" % SectMapPresentation.action_label(actor.current_action)
     var buildings := BuildingSystem.new()
     if buildings.disciple_has_active_timed_recipe(state,actor.id) or buildings.disciple_has_active_spirit_plot(state,actor.id) or DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,actor):
         return "Đang có lượt sản xuất / Rèn Thân"
@@ -1262,21 +1270,22 @@ func _render_workforce_picker() -> void:
         var reason := str(entry["reason"])
         var row := HBoxContainer.new()
         row.name = "WorkforceCandidate_%s" % str(actor.id)
-        row.custom_minimum_size = Vector2(590,44)
+        row.custom_minimum_size = Vector2(424,48)
         workforce_picker_results.add_child(row)
         var text_label := Label.new()
         text_label.text = "%s · nghề Lv%d\n%s" % [actor.display_name,
             int(entry["level"]),
             ("Sẵn sàng" if actor.work_group_id == &"" else "Có thể chuyển từ %s" % str(actor.work_group_id)) if reason == "" else reason]
-        text_label.custom_minimum_size = Vector2(435,44)
+        text_label.custom_minimum_size = Vector2(302,48)
         text_label.add_theme_color_override("font_color",INK)
         text_label.add_theme_font_size_override("font_size",12)
         row.add_child(text_label)
         var select := Button.new()
         select.name = "WorkforcePick_%s" % str(actor.id)
-        select.text = "Giao việc" if reason == "" else "Bận"
-        select.custom_minimum_size = Vector2(115,42)
+        select.text = "Chọn" if reason == "" else "Bận"
+        select.custom_minimum_size = Vector2(110,44)
         select.disabled = reason != ""
+        select.tooltip_text = "Giao người cho công trình thật" if reason == "" else reason
         select.pressed.connect(Callable(self,"_workforce_pick_candidate").bind(actor.id))
         row.add_child(select)
     if candidates.is_empty():
