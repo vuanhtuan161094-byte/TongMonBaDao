@@ -332,7 +332,7 @@ func _run() -> void:
     if (
         not delivery_card.detail.text.contains("×")
         or not delivery_card.detail.text.contains("p")
-        or not delivery_card.detail.text.contains(spirit_crop_registry.display_name(StringName(first_growing.get("crop_id",""))))
+        or not delivery_card.detail.text.contains(SpiritCropRegistry.new().display_name(StringName(first_growing.get("crop_id",""))))
     ):
         _fail("Field badge must show the crop, expected amount and ETA")
         return
