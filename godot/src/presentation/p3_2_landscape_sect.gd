@@ -1111,6 +1111,19 @@ func _workforce_start_block_reason(building: BuildingState, worker_id: StringNam
     if building.building_type in [BuildingSystem.TYPE_MINE,BuildingSystem.TYPE_LINH_FOREST]:
         if not buildings.resource_timer_jobs(building).is_empty():
             return "Mẻ đang chạy; chờ hoàn thành hoặc dùng Hủy mẻ."
+        if state.sect.economy_a_enabled and DiscipleRealmProgressV2.owns_v2_progression(actor):
+            var plan := buildings.selected_resource_production_plan(building)
+            if production_plan_registry.has(plan):
+                var resource_id := production_plan_registry.output_resource_id(plan)
+                var units := production_plan_registry.scaled_yield(plan,building.level)
+                var stock := WarehouseSystem.new().quantity(state,resource_id)
+                var target := mini(units*10,WarehouseSystem.MAX_SAFE_STACK)
+                if stock >= target:
+                    return "Kho đã đạt mục tiêu %d %s; đổi kế hoạch hoặc dùng nguyên liệu trước." % [
+                        target,ResourceRegistry.new().display_name(resource_id)
+                    ]
+                if units > WarehouseSystem.MAX_SAFE_STACK-stock:
+                    return "Kho gần giới hạn lưu trữ an toàn; chưa thể bắt đầu mẻ này."
     if actor.region_id != &"sect" or not actor.active_pve_encounter_id.is_empty():
         return "Đệ tử đang xuất môn hoặc tham gia PvE."
     if not actor.work_cycle_state.is_empty():
