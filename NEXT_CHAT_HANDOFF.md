@@ -1,5 +1,11 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — MAP25 UI/UX finalization P0 measured on Windows; continue P2 actor then P3/P4
+
+The owner-authorized stacked presentation packet has begun from draft PR #18 HEAD `855fc4e8342607fed36f1128536f7a1c0d3d09fa`. Official Windows Godot 4.7.2 isolated gates 01–07 and five 1280×720 captures passed at this source. Terrain batching cut active pan/zoom draw calls to 415.9/375.1, with observed p95 intervals 21.949/24.380 ms; see `docs/MAP25_UIUX_FINALIZATION_ACCEPTANCE_2026-10-17.md` and the task output evidence ZIP for baseline/current comparison and exact limits. This is **performance evidence**, not visual finalization: the live scene still shows green actors, a blank left strip, placeholder building markers and a wide Mine panel. Next authorized order: integrate exactly one verified Batch-01 Source A actor pilot `1113028_1` into the current map actor layer, then improve live Mine/Forest/Field UI and six-tab disciple UI without changing gameplay authority. Re-run focused/visual/performance gates per packet. No CI, merge, main push or V2 backend edit. Android remains PENDING.
+
+---
+
 ## 2026-10-17 — 13:59 Windows QA: 01–07 PASS; draw-call bottleneck measured; batch-ground-only optimization awaiting official rerun
 
 **Verified new ZIP** `MAP25_QA_RESULTS_20261017_135946.zip`, Godot Windows official 4.7.2 pinned PR #18 at `5e0ec9af6f3bc9b571c37882f33f0418ff4ab1f9`. All Git pin/EOL/clone gates PASS; **01 editor import PASS; 02 Source A 32/32 SHA PASS; 03 projection 36/36 PASS; 04 real main/camera/Workforce PASS; 05 Workforce E2E PASS; 06 multi-resource instance PASS; 07 current HEAD graphic capture PASS.** Five actual 1280×720 `after/01_idle.png`, `02_pan.png`, `03_zoom.png`, `04_mine.png`, `05_picker.png`; `performance_summary.csv`, `frame_samples.csv` (600 samples), metadata with `failed_capture_tags=[]`; no gate stdout/stderr errors. **Historical before/baseline capture still PENDING**, shallow TEMP clone cannot fetch old `8b23f787` object; no before/after acceptance.
