@@ -1,5 +1,12 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — G1 visual acceptance: exact-ID camera focus / readable receipt
+
+PR #20 baseline `946d8f5c`. Static audit found **three paths** where selecting Mine/Forest/Field instance #2 could keep focus on the type's default primary building: map picked-site, production board and in-panel instance chooser. Unified `_open_building(destination,instance_id)` validates a persisted production instance BEFORE the initial camera tween and initial panel data draw; board/map picker now use one exact-ID call (no double focus), chooser focuses selected real site. Operation panel subtitle displays actual instance ID/level. Settlement-only `+N đã vào kho` worksite receipt now has opaque cream backing and contrasting green border, with no change to metrics or emission rules. Extended existing focused multi-instance regression for board/picker/map 3 paths, exact focus, ID visibility, and receipt style. Four Godot 4.7.2 focused Windows cases remain **PENDING**; owner UX acceptance **NOT ACCEPTED**, Android/physical device PENDING. No CI, FULL, merge, gameplay/economy/scheduler/warehouse/save/G2 changes.
+
+---
+
+
 ## 2026-10-17 — G1 interaction & real stand/walk stability follow-up
 
 **Baseline PR20 `18b707b7`**, draft `g1-disciple-radar-sourcea-pool-20261017`. Owner authorized scoped G1 playability changes only. Source review found two concrete presentation issues: touch/mouse drag threshold used **per-event relative length** while still panning before threshold, so many tiny movements could pan the camera then trigger a false tap; repeated `_sync_actor_positions()` killed a still-running same-destination tween, extending/restarting actor travel. Fixed with cumulative finger/press displacement (12px touchscreen, 8px mouse), release guarding, and same-destination tween reuse + safe replacement cleanup. Added legible short work-status tag with opaque parchment and dark ink, while preserving **real Source A stand/walk only**; no fake mining/chopping/planting action. Map badge visibility uses actual interpolated layer zoom. Added focused gesture, tween and state-readonly assertions in existing multi-instance test. Lexical/static verification only; **Godot official 4.7.2 focused runtime PENDING**, Windows screenshot/Android and G1 owner UX **NOT ACCEPTED**. No changes to gameplay/One Active Job/Economy V2/Scheduler/Warehouse/save, CI/FULL/merge/G2.

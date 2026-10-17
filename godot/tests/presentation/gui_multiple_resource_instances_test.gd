@@ -174,8 +174,19 @@ func _run() -> void:
         return
     open_second.pressed.emit()
     await process_frame
-    if StringName(ui.get("selected_production_instance_id")) != second.id:
-        _fail("sect board open went to primary instead of selected second Mine")
+    var exact_second_anchor := SectIsometricWorldV1.virtual_legacy_point(
+        SectMapPresentation.DEST_MINE,second.id
+    )
+    if (
+        StringName(ui.get("selected_production_instance_id")) != second.id
+        or Vector2(ui.get("focused_world_point")).distance_to(exact_second_anchor) > 0.5
+        or not (ui.get("building_operation_panel") as Panel).visible
+    ):
+        _fail("sect board open failed secondary Mine selection or exact camera focus")
+        return
+    var operation_subtitle := ui.find_child("BuildingOperationSubtitle",true,false) as Label
+    if operation_subtitle == null or not operation_subtitle.text.contains(str(second.id)):
+        _fail("production operation panel does not identify its real Mine instance")
         return
     if first.to_dict() != first_snapshot:
         _fail("opening secondary Mine from board wrote primary production state")
@@ -190,8 +201,22 @@ func _run() -> void:
     chooser.select(1)
     chooser.emit_signal("item_selected",1)
     await process_frame
-    if StringName(ui.get("selected_production_instance_id")) != second.id:
-        _fail("secondary Mine selection did not remember exact canonical ID")
+    if (
+        StringName(ui.get("selected_production_instance_id")) != second.id
+        or Vector2(ui.get("focused_world_point")).distance_to(exact_second_anchor) > 0.5
+    ):
+        _fail("secondary Mine chooser did not align camera with exact instance")
+        return
+    # The map pick must also open and focus the requested ID in one pass.
+    ui.call("_iso_open_picked_building",{
+        "destination":SectMapPresentation.DEST_MINE,
+        "building_id":str(second.id)
+    })
+    if (
+        StringName(ui.get("selected_production_instance_id")) != second.id
+        or Vector2(ui.get("focused_world_point")).distance_to(exact_second_anchor) > 0.5
+    ):
+        _fail("tapping a secondary Mine re-focused the primary instance")
         return
     var owner_label := ui.find_child("WorkforceOwner",true,false) as Label
     if owner_label == null or not owner_label.text.contains("Chưa có"):
@@ -346,6 +371,10 @@ func _run() -> void:
         )
     ):
         _fail("second Mine badge failed exact instance anchor, screen-size or viewport contract")
+        return
+    var receipt_label := second_cue.find_child("WorksiteSettledReceipt",false,false) as Label
+    if receipt_label == null or not (receipt_label.get_theme_stylebox("normal") is StyleBoxFlat):
+        _fail("warehouse receipt overlay lacks readable contrast backdrop")
         return
     var worker_label := second_cue.find_child("WorksiteWorker",false,false) as Label
     var received_label := second_cue.find_child("WorksiteReceived",false,false) as Label

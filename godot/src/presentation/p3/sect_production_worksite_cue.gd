@@ -108,6 +108,15 @@ func _ready() -> void:
     receipt.size = Vector2(190,24)
     receipt.add_theme_font_size_override("font_size",12)
     receipt.add_theme_color_override("font_color",Color(0.08,0.31,0.21))
+    receipt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    # Green text alone disappears against terrain. Keep the receipt tied to
+    # a real Warehouse-settled production delta, only improve readability.
+    var receipt_background := StyleBoxFlat.new()
+    receipt_background.bg_color = Color(0.96,0.94,0.82,0.98)
+    receipt_background.border_color = Color(0.16,0.40,0.30,1.0)
+    receipt_background.set_border_width_all(1)
+    receipt_background.set_corner_radius_all(5)
+    receipt.add_theme_stylebox_override("normal",receipt_background)
     receipt.mouse_filter = Control.MOUSE_FILTER_IGNORE
     receipt.visible = false
     add_child(receipt)

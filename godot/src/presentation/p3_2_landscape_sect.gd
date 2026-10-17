@@ -188,17 +188,10 @@ func _iso_open_picked_building(picked: Dictionary) -> void:
     var dest := StringName(picked.get("destination",""))
     if dest == &"":
         return
-    _open_building(dest)
     var real_id := StringName(picked.get("building_id",""))
-    if real_id != &"" and state.buildings.has(str(real_id)):
-        var actual: BuildingState = state.buildings[str(real_id)]
-        if actual.building_type == dest:
-            selected_production_instance_id = real_id
-            _set_focus_target(
-                SectIsometricWorldV1.virtual_legacy_point(dest,real_id),
-                &"building",dest,_building_name(dest),false
-            )
-            _refresh_building_operation_content()
+    # One exact-ID path controls selection, focus AND the first panel paint.
+    # Opening the generic type first used to pan toward its primary site.
+    _open_building(dest,real_id)
 
 func _try_iso_map_pick(screen_point: Vector2) -> bool:
     if iso_world == null or not SectMapCamera.is_map_screen_point(screen_point):
@@ -584,7 +577,7 @@ func _clear_pointer_state() -> void:
     screen_pointer_dragged = false
     mouse_pointer_dragged = false
 
-func _open_building(destination: StringName) -> void:
+func _open_building(destination: StringName, instance_id: StringName = &"") -> void:
     _hide_sect_hub()
     _close_disciple_summary(true)
     _close_workforce_picker()
@@ -594,6 +587,16 @@ func _open_building(destination: StringName) -> void:
         selected_production_instance_id = &""
     selected_building = destination
     var point := _iso_actor_point(destination)
+    # Validate the given ID against the destination, not merely existence.
+    # Keep ordinary type-only navigation compatible with existing callers.
+    if instance_id != &"" and state.buildings.has(str(instance_id)):
+        var requested: BuildingState = state.buildings[str(instance_id)]
+        if _sect_production_destination(requested.building_type) == destination:
+            selected_production_instance_id = requested.id
+    if selected_production_instance_id != &"" and state.buildings.has(str(selected_production_instance_id)):
+        var exact: BuildingState = state.buildings[str(selected_production_instance_id)]
+        if _sect_production_destination(exact.building_type) == destination:
+            point = SectIsometricWorldV1.virtual_legacy_point(destination,exact.id)
     _set_focus_target(point, &"building", destination, _building_name(destination), true)
     _show_building_operation_panel()
 
@@ -1006,6 +1009,17 @@ func _refresh_building_operation_content() -> void:
     if not _building_operation_is_open() or selected_building == &"":
         return
     building_operation_title.text = _building_name(selected_building)
+    var subtitle := building_operation_panel.get_node("BuildingOperationSubtitle") as Label
+    var focused_work_type := _workforce_building_type()
+    var focused_site := _selected_resource_instance(focused_work_type) if focused_work_type != &"" else null
+    if focused_site != null:
+        # Show which of several identical Mine/Forest/Field sites is open.
+        subtitle.text = "ID: %s · Cấp %d" % [str(focused_site.id),focused_site.level]
+        subtitle.tooltip_text = subtitle.text
+        subtitle.clip_text = true
+    else:
+        subtitle.text = "Tình hình vận hành"
+        subtitle.tooltip_text = ""
     var feedback := ""
     if building_management_feedback != "":
         feedback = "\n\n%s" % building_management_feedback
@@ -1236,6 +1250,12 @@ func _choose_resource_instance(index: int, building_type: StringName, ids: Array
     selected_production_instance_id = chosen.id
     workforce_advanced_visible = false
     building_management_feedback = ""
+    var destination := _sect_production_destination(building_type)
+    if destination != &"":
+        _set_focus_target(
+            SectIsometricWorldV1.virtual_legacy_point(destination,chosen.id),
+            &"building",destination,_building_name(destination),true
+        )
     _refresh_building_operation_content()
 
 func _build_resource_instance_chooser(building_type: StringName) -> void:
@@ -2264,15 +2284,8 @@ func _open_sect_production_instance(building_id: StringName) -> void:
     var destination := _sect_production_destination(building.building_type)
     if destination == &"":
         return
-    # Canonical exact-ID route: never let the panel silently fall back to
-    # primary_building() when the user tapped a secondary Mine/Forest/Field.
-    _open_building(destination)
-    selected_production_instance_id = building.id
-    _set_focus_target(
-        SectIsometricWorldV1.virtual_legacy_point(destination,building.id),
-        &"building",destination,_building_name(destination),false
-    )
-    _refresh_building_operation_content()
+    # Open, focus and first render must all use the same selected ID.
+    _open_building(destination,building.id)
 
 func _show_sect_production_board() -> void:
     sect_production_board_filter = &""
