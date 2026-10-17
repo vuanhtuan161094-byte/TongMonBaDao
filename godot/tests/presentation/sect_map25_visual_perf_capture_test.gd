@@ -105,6 +105,10 @@ func _sample(label: String, pan: bool) -> void:
     for index in range(FRAMES_PER_CASE):
         if pan:
             scene.call("_pan_camera",Vector2(1.6,0.35))
+        elif label == "zoom":
+            # Sample active pinch-like zoom changes, not just a static
+            # camera left at zoom=125% after the transition.
+            scene.call("_zoom_at",Vector2(620,340),1.12+0.18*sin(float(index)/7.0),false)
         await process_frame
         var now_usec := Time.get_ticks_usec()
         var elapsed_ms := float(now_usec-last_usec)/1000.0
