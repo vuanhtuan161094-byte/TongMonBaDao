@@ -1,5 +1,11 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — G1.6 production operation UI (PR #20, code committed / Windows PENDING)
+
+Owner authorized **code-first, focused-only** G1.6 for exact-ID Mine/Linh Lâm/Linh Điền in draft PR20. The existing right-hand 1280×720 compact Workforce card now shows saved Mine/Forest timer job's actual `started_tick/finish_tick/output_quantity/resource_id` with elapsed/remaining minutes, real Warehouse stock, and Field's actual individual growing/empty plot snapshots (`routine_yield` is guaranteed baseline only; no pre-promised rare harvest). Kept 44px touch actions above the live status. Start button distinguishes extra Field plot versus active resource timer; disabled reasons include busy job, full Field, unsupported policy/stone conditions, and canonical Mine/Forest stock target. Assignment feedback distinguishes scheduler command accepted from actual batch started. No invented stock, payout, job, schedule, growth, persistence or balance. Extended existing `gui_workforce_v1_e2e_test.gd` with assertions binding live panel content to real scheduled Mine and paid Field state. **Structural/contract checks: 2 GDScript files structural PASS, 12/12 focused source invariants PASS. Godot 4.7.2 runtime on this new HEAD NOT RUN (environment unavailable); Windows PENDING.** No FULL/CI/merge/main writes.
+
+---
+
 ## 2026-10-17 — G1 off-map Source A portraits (PR #20, code committed)
 
 Verified PR20 male Source A import at `009ffd957624c63518f4f10141613540ce0fb2c9`; male `body_1120402` and `body_1110201`, existing female `1113028_1`, Windows Godot focused G1 + actor pilot PASS reported in Codex checkpoint; main unchanged. Follow-on presentation fix: `_disciple_avatar_button` and deep profile now use the same verified male/female Source A pool even when the disciple has NO live map actor. One shared stand `Texture2D` is cached per verified scene, temporary `AnimatedSprite2D` released immediately; existing modular production body takes precedence. Added one focused G1 test for synthetic off-map male/female portrait and bounded cache. **Static 2/2 files PASS; Godot 4.7.2 exact-new-HEAD focused test NOT RUN here (runner unavailable).** No simulation, CI, FULL QA, merge, or main changes.
