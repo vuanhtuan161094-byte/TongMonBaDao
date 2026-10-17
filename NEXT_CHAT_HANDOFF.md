@@ -1,5 +1,11 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## G1 2026-10-17 — Map-local production gauges DONE; actual Source A work animations PENDING
+
+PR20 includes one visual-only `SectProductionWorksiteCue` per visible producer ID (max 10), displays saved job/plot ETA and output; `+units đã vào kho` flashes only after real BuildingState metrics increment following Warehouse credit, baseline seeded to block replay. Exact Mine #2 anchor tested in added focused source test; Field read never triggers legacy migration. Static contract 17/17 and lexical 4/4 PASS, no official Windows/Godot run on new HEAD, owner G1 visual still NOT ACCEPTED. Three committed actor manifests have `stand/walk` only. Read `docs/G1_SOURCE_A_WORK_ACTION_ASSET_PACKET_2026-10-17.md` before separately approved Source A action-clip art work; never fake mining/chop/plant frames. No CI/FULL/merge, no simulation/save modification.
+
+---
+
 ## 2026-10-17 — Owner UX feedback now authoritative: G1 visuals NOT ACCEPTED
 
 Windows ZIP `TONG_MON_G1_PR20_QA_20261017_194619.zip` confirms old SHA `78254c6` 4/4 focused + import + game preview PASS (runtime only, no screenshots). Owner reports illegible light-on-light UI, not seeing mining, mined units/progress hidden, fixed-duration sliding actors, too confusing. G1 visual ACCEPTANCE **FAILED / OPEN**. Presentation-only PR20 hotfix after that SHA has always-visible canonical timer/percentage/output + cumulative goods, readable disabled states, 420px management panel, distance-based visual actor walking, real production work cue. **Genuine Source A mine/work animations absent; separate visual asset task, not solved by stand/walk fallback.** Test extended; hotfix Godot runtime and owner visual recheck still PENDING; no new FULL/CI/merge. G2 roadmap still planning-only, prioritize G1 user-experience fixes.
