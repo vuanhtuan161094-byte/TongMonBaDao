@@ -685,6 +685,7 @@ func _sync_actor_positions() -> void:
     _refresh_living_cues()
 
 func _finish_actor_walk(disciple_id: StringName, expected_target: Vector2) -> void:
+    actor_walk_tweens.erase(str(disciple_id))
     var actor := actor_nodes.get(str(disciple_id)) as ModularDiscipleActor
     if actor == null or not is_instance_valid(actor) or actor.position.distance_to(expected_target) > 1.0:
         return
