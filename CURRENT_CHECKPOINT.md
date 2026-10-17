@@ -1,5 +1,15 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — MAP25 Windows PowerShell importer: clean-clone preflight stopped, no PNG push
+
+**Owner Windows console evidence** at 2026-10-17 09:26 local: transport SHA-256 `8b3976e2f7400063798fbac88ced5d85c24beee9aa057e369fdbfc937cf3f920` PASS, PR #18 HEAD lease `05d351bd4538e966a8fa74cc8c4824a0231b7e6f` PASS, Git reached clone step, then tool refused with `Unexpected dirty new clone; refusing art import.` This log excerpt does not include the underlying `git status --porcelain` rows. Treat cause as **unresolved** (possibly checkout/normalization or empty-output handling); do not assert a known exact cause or bypass genuine dirty-worktree rejection. Source A 32/32 bytes remain validated off-repo, but GitHub import stays **0/32**; Godot 4.7.2 tests not reached.
+
+**Tool-only follow-up prepared (Windows runner PENDING):** use a uniquely-created isolated temporary Git clone with `--no-checkout`, explicit `core.autocrlf=false` settings and a pinned-HEAD `reset --hard` confined to the *new temporary clone*. Capture and show the exact nonblank porcelain status lines on failure instead of reporting only `dirty`. Abort if any genuine uncommitted/untracked content persists; do not modify owner's original workspace/save; no force push/merge/manual CI. Any future genuine PNG commit must use `[skip ci]` to request skipping GitHub Actions automatically triggered by that commit, though repository/platform policies may still apply. Recheck HEAD after these documentation-only commits when packaging the repair.
+
+**Evidence status:** technical repair authored/pending Windows execution, no claimed successful push or renderer runtime PASS; 32 verified original PNGs available in the recovery pack. Request `MAP25_IMPORT_RESULT_*.log` only if the next launcher fails; prioritize a one-click, Python-free, fail-closed workflow.
+
+---
+
 ## 2026-10-17 — MAP25 Windows one-click import Python alias error 9009; PowerShell-only retry
 
 **Owner-supplied Windows launcher result:** original `RUN_MAP25_IMPORT.cmd` stopped before importing assets because `python` resolved to the Microsoft Store App Execution Alias rather than a Python 3 runtime, resulting in exit **9009**. No successful clone, Godot run, art commit or GitHub push was evidenced. Live PR #18 HEAD was checked still `47041cada3d9791d536dfe6ab1021141554fd8e5`, DRAFT; `main` not edited. This is a local tooling/environment error, **not** a failure of the original PNG hashes.
