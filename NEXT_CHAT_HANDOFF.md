@@ -1,5 +1,11 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — PR20 Source A male + off-map avatar follow-up
+
+Confirmed Codex male import PR20 commit `009ffd957624c63518f4f10141613540ce0fb2c9` (Godot Windows G1/actor focused PASS as recorded by Codex). Added UI-only shared cached verified Source A portraits for disciples absent from `actor_nodes`; focused G1 regression covers synthetic off-map female/male, single shared texture per rig. **Static 2/2 PASS; Windows for newer UI commit still PENDING.** Continue code-first, no unnecessary new Windows/CI/FULL QA, no gameplay changes. Before further writes re-fetch latest PR #20 HEAD; `main` remains separate. Owner visual signoff/Android still PENDING.
+
+---
+
 ## 2026-10-17 — G1 Source A male art on draft PR #20
 
 Continue from the current PR #20 HEAD, not `main`. Owner-authorized comment `SOURCE_A_MALE_G1_ONE_SHOT` replaced the missing Markdown prompt. Two real male Batch-01 rigs `body_1120402` and `body_1110201` were imported with 6/6 listed file hashes verified. Existing female art stays unchanged. Deterministic sex-specific pool, map scale/ground anchor, roster/Workforce/profile art, small touch area and actor UI z-order are presentation only. Official Windows Godot 4.7.2 import, G1 focused test and real-scene actor pilot PASS; one native 1280×720 male profile capture is in this task's `evidence/source_a_male_pr20/`. FULL, CI, Android, 600-frame benchmark and owner visual approval remain PENDING by explicit scope. See top of `CURRENT_CHECKPOINT.md` for exact evidence and limits.
