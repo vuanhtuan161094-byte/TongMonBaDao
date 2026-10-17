@@ -64,6 +64,13 @@ func sync_action(action: StringName) -> void:
     _ensure_built()
     current_clip = DiscipleActorVisualCatalog.action_clip(action)
     status_label.text = SectMapPresentation.action_label(action)
+    # Compact world-space work cue: Source A currently supplies stand/walk,
+    # not an authored digging/sowing swing. Do not impersonate dig animation.
+    status_label.visible = current_clip in [
+        DiscipleActorVisualCatalog.CLIP_MINING,
+        DiscipleActorVisualCatalog.CLIP_FORGING,
+        DiscipleActorVisualCatalog.CLIP_WORK
+    ]
     if click_button != null:
         click_button.tooltip_text = "%s · %s" % [display_name, status_label.text] if display_name != "" else status_label.text
     _play_shared_animation()
@@ -291,7 +298,12 @@ func _play_shared_animation() -> void:
     _apply_mirror()
     if baked_visual_active():
         baked_sprite.flip_h = facing == DiscipleActorVisualCatalog.DIR_LEFT and mirror_left
-        var baked_clip := &"walk" if current_clip == DiscipleActorVisualCatalog.CLIP_WALK else &"stand"
+        # Use a real authored action only if the imported verified SpriteFrames
+        # contains it. Current Source A male/female pilots have stand/walk;
+        # mining/forest/field action clips are separate pending art work.
+        var baked_clip := current_clip if baked_sprite.sprite_frames.has_animation(current_clip) else (
+            &"walk" if current_clip == DiscipleActorVisualCatalog.CLIP_WALK else &"stand"
+        )
         if baked_sprite.animation != baked_clip or not baked_sprite.is_playing():
             baked_sprite.play(baked_clip)
         return
