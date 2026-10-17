@@ -5,7 +5,8 @@ param(
     [string]$GodotBin = $env:GODOT_BIN,
     [switch]$Full,
     [switch]$Visual,
-    [switch]$Play
+    [switch]$Play,
+    [switch]$PlayOnly
 )
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
@@ -179,13 +180,17 @@ try {
             @("11_main_scene","res://tests/presentation/sect_iso_main_integration_test.gd","MAP 2.5D REAL MAIN SCENE WORKFORCE CAMERA PASS")
         )
     }
-    Add-Note ("QA scope: " + $(if ($Full) { "FOCUSED + FULL" } else { "G1 QUICK (4 focused tests)" }))
+    if ($PlayOnly) {
+        $tests = @()
+        Add-Note "[PLAY-ONLY] No Quick tests requested; import plus real game preview."
+    }
+    Add-Note ("QA scope: " + $(if ($PlayOnly) { "PLAY ONLY (no tests)" } elseif ($Full) { "FOCUSED + FULL" } else { "G1 QUICK (4 focused tests)" }))
     foreach ($t in $tests) {
         $ok = Run-GodotTest $t[0] $t[1] $t[2]
         if (-not $ok) { Add-Note ("[WARN] Independent tests continue after " + $t[0]) }
     }
 
-    if ($Full) {
+    if ($Full -and -not $PlayOnly) {
         $full = Join-Path $clone "tools\godot\Verify-P3-7C1-Foundation-Dan-Tien-Full.ps1"
         $argsFull = '-NoProfile -ExecutionPolicy Bypass -File "' + $full + '" -GodotBin "' + $GodotBin + '"'
         $null = Invoke-QAProcess -Label "12_full_p37" -Exe "powershell.exe" -ArgumentLine $argsFull -PassMarker "P3.7C1 FOUNDATION + DAN TIEN FULL GATE: PASS" -TimeoutSec 1800
@@ -193,7 +198,7 @@ try {
         Add-Note "[NOT IN SCOPE] P3.7 FULL (presentation-only change; opt in with -Full)"
     }
 
-    if ($Visual) {
+    if ($Visual -and -not $PlayOnly) {
         $capture = Join-Path $report "native_1280x720"
         New-Item -ItemType Directory -Force -Path $capture | Out-Null
         $env:MAP25_QA_OUT = $capture
@@ -227,10 +232,10 @@ try {
         Add-Note "[NOT IN SCOPE] Native visual/FPS capture (opt in with -Visual)"
     }
 
-    if ($Play) {
+    if ($Play -or $PlayOnly) {
         if ($failures.Count -eq 0) {
             Add-Note "[PLAY] Opening the real 1280x720 game in an isolated save directory."
-            Add-Note "[PLAY] Try: Hồ sơ đệ tử > Phân công > Mỏ / Linh Lâm / Linh Điền > Giao việc."
+            Add-Note "[PLAY] Try: Disciple profile > Assign > Mine / Forest / Spirit Field > Confirm."
             Add-Note "[PLAY] Close the game window to finish and receive the QA ZIP."
             $previewOk = Invoke-QAProcess -Label "14_g15_play_preview" -Exe $GodotBin -ArgumentLine ('--path "' + $project + '" --resolution 1280x720') -PassMarker "" -TimeoutSec 3600
             if (-not $previewOk) {
