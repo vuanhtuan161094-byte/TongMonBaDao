@@ -4,7 +4,8 @@
 param(
     [string]$GodotBin = $env:GODOT_BIN,
     [switch]$Full,
-    [switch]$Visual
+    [switch]$Visual,
+    [switch]$Play
 )
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
@@ -224,6 +225,20 @@ try {
         }
     } else {
         Add-Note "[NOT IN SCOPE] Native visual/FPS capture (opt in with -Visual)"
+    }
+
+    if ($Play) {
+        if ($failures.Count -eq 0) {
+            Add-Note "[PLAY] Opening the real 1280x720 game in an isolated save directory."
+            Add-Note "[PLAY] Try: Hồ sơ đệ tử > Phân công > Mỏ / Linh Lâm / Linh Điền > Giao việc."
+            Add-Note "[PLAY] Close the game window to finish and receive the QA ZIP."
+            $previewOk = Invoke-QAProcess -Label "14_g15_play_preview" -Exe $GodotBin -ArgumentLine ('--path "' + $project + '" --resolution 1280x720') -PassMarker "" -TimeoutSec 3600
+            if (-not $previewOk) {
+                Add-Note "[WARN] G1.5 preview returned an error; inspect 14_g15_play_preview logs."
+            }
+        } else {
+            Add-Note "[PLAY BLOCKED] Quick tests failed. No misleading gameplay preview launched."
+        }
     }
 
     $status = if ($failures.Count -gt 0) { "FAIL" } elseif ($blocked.Count -gt 0) { "PENDING" } else { "PASS" }
