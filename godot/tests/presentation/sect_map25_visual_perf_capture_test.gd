@@ -38,18 +38,21 @@ func _run() -> void:
     if iso == null or iso.camera == null:
         _fail("real MAP25 camera missing")
         return
-    if not _capture("01_idle"):
-        return
+    # A screenshot failure must not destroy measurements from later scenarios.
+    # Keep the 1280x720 contract strict; never rescale an incorrect screenshot.
+    var failed_captures: Array[String] = []
+    if not await _capture("01_idle"):
+        failed_captures.append("01_idle")
     await _sample("idle",false)
     await _sample("pan",true)
-    if not _capture("02_pan"):
-        return
+    if not await _capture("02_pan"):
+        failed_captures.append("02_pan")
     scene.call("_zoom_at",Vector2(620,340),1.25,false)
     for _i in range(20):
         await process_frame
     await _sample("zoom",false)
-    if not _capture("03_zoom"):
-        return
+    if not await _capture("03_zoom"):
+        failed_captures.append("03_zoom")
     scene.call("_open_building",SectMapPresentation.DEST_MINE)
     for _i in range(20):
         await process_frame
@@ -57,8 +60,8 @@ func _run() -> void:
     if panel == null or not panel.visible:
         _fail("Mine panel not visible")
         return
-    if not _capture("04_mine"):
-        return
+    if not await _capture("04_mine"):
+        failed_captures.append("04_mine")
     await _sample("mine_panel",false)
     var state := scene.get("state") as SimulationState
     var mine := BuildingSystem.new().primary_building(state,BuildingSystem.TYPE_MINE)
@@ -72,8 +75,8 @@ func _run() -> void:
     if picker == null or not picker.visible:
         _fail("Workforce picker not visible")
         return
-    if not _capture("05_picker"):
-        return
+    if not await _capture("05_picker"):
+        failed_captures.append("05_picker")
     await _sample("picker",false)
     if not _write("frame_samples.csv",raw_csv) or not _write("performance_summary.csv",summary_csv):
         _fail("could not write QA performance CSV")
@@ -85,10 +88,14 @@ func _run() -> void:
         "viewport":root.get_viewport().get_visible_rect().size,
         "display_server":DisplayServer.get_name(),
         "sample_frames":FRAMES_PER_CASE,
+        "failed_capture_tags":failed_captures,
         "note":"Graphic-window observed frame intervals, not GPU-profiler timings; compare on identical machine/settings."
     }
     if not _write("capture_metadata.json",JSON.stringify(meta,"  ")):
         _fail("could not write metadata")
+        return
+    if not failed_captures.is_empty():
+        _fail("not all genuine 1280x720 images captured: "+str(failed_captures)+"; all five scenario metrics are preserved in CSV")
         return
     print("MAP25 VISUAL PERFORMANCE CAPTURE PASS out=",output_dir)
     scene.queue_free()
@@ -137,19 +144,43 @@ func _sample(label: String, pan: bool) -> void:
         label,count,average,p95,total_process/float(count),
         total_fps/float(count),total_draw/float(count),peak_nodes
     ]
+    # Crash-safe evidence: each completed scenario is available even if a
+    # subsequent screenshot fails before the final five-scenario gate.
+    _write("frame_samples.csv",raw_csv)
+    _write("performance_summary.csv",summary_csv)
     print("MAP25 PERF ",label," avg_interval_ms=",average," p95_interval_ms=",p95)
 
 func _capture(label: String) -> bool:
-    var viewport := root.get_viewport()
-    var image := viewport.get_texture().get_image()
-    if image == null or image.is_empty() or image.get_width() != 1280 or image.get_height() != 720:
-        _fail("not a genuine 1280x720 capture: "+label)
-        return false
-    var err := image.save_png(output_dir.path_join(label+".png"))
-    if err != OK:
-        _fail("PNG write failed for "+label+": "+error_string(err))
-        return false
-    return true
+    # In an official window capture, GPU readback can be transient during
+    # zoom. Retry after real rendered frames. If the OS resized the client
+    # window, request 1280x720 again and report the observed resize, not an
+    # invented/rescaled screenshot.
+    var expected := Vector2i(1280,720)
+    var observed := Vector2i.ZERO
+    var observed_window := Vector2i.ZERO
+    var observed_rect := Vector2i.ZERO
+    for attempt in range(8):
+        await process_frame
+        var viewport := root.get_viewport()
+        observed_window = DisplayServer.window_get_size()
+        observed_rect = Vector2i(viewport.get_visible_rect().size)
+        var image: Image = viewport.get_texture().get_image()
+        if image != null and not image.is_empty():
+            observed = Vector2i(image.get_width(),image.get_height())
+            if observed == expected:
+                var err := image.save_png(output_dir.path_join(label+".png"))
+                if err != OK:
+                    print("MAP25 CAPTURE FILE_WRITE_FAIL ",label," ",error_string(err))
+                    return false
+                print("MAP25 CAPTURE_OK ",label," image=",observed," window=",observed_window," viewport=",observed_rect," retries=",attempt)
+                return true
+        if attempt == 0:
+            print("MAP25 CAPTURE_DIM_WARNING ",label," image=",observed," window=",observed_window," viewport=",observed_rect)
+        if attempt == 2 and observed_window != expected:
+            DisplayServer.window_set_size(expected)
+            print("MAP25 CAPTURE_WINDOW_RESTORE_REQUEST ",label," previous=",observed_window," requested=",expected)
+    print("MAP25 CAPTURE_DIM_FAIL ",label," image=",observed," window=",observed_window," viewport=",observed_rect)
+    return false
 
 func _write(filename: String, body: String) -> bool:
     var file := FileAccess.open(output_dir.path_join(filename),FileAccess.WRITE)
