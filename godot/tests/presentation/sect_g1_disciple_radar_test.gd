@@ -43,11 +43,46 @@ func _run() -> void:
     if DiscipleSourceAVisualPool.scene_for_disciple(female) == null:
         _fail("verified female PackedScene missing")
         return
-    if DiscipleSourceAVisualPool.scene_path_for_disciple(male) != "" or DiscipleSourceAVisualPool.scene_for_disciple(male) != null:
-        _fail("female-only art assigned to male")
+    var male_path := DiscipleSourceAVisualPool.scene_path_for_disciple(male)
+    if male_path.is_empty() or male_path != DiscipleSourceAVisualPool.scene_path_for_disciple(male) or male_path == female_path:
+        _fail("verified male visual missing, unstable or using female art")
+        return
+    for id in ["body_1110201","body_1120402"]:
+        var base := "res://assets/actors/%s/" % id
+        var manifest := JSON.parse_string(FileAccess.get_file_as_string(base+"asset.json")) as Dictionary
+        if manifest.is_empty() or str(manifest.get("id","")) != id:
+            _fail("male Source A provenance manifest missing: "+id)
+            return
+        var hashes := manifest.get("file_sha256",{}) as Dictionary
+        if hashes.is_empty():
+            _fail("male Source A hashes missing: "+id)
+            return
+        for filename in hashes.keys():
+            if FileAccess.get_sha256(base+str(filename)).to_lower() != str(hashes[filename]):
+                _fail("male Source A SHA-256 mismatch: "+id+"/"+str(filename))
+                return
+        var rig := load(base+"actor.tscn") as PackedScene
+        var sprite := rig.instantiate() as AnimatedSprite2D if rig != null else null
+        if sprite == null or sprite.sprite_frames == null:
+            _fail("male Source A PackedScene missing: "+id)
+            return
+        if not sprite.sprite_frames.has_animation(&"stand") or not sprite.sprite_frames.has_animation(&"walk"):
+            sprite.free()
+            _fail("male Source A stand/walk missing: "+id)
+            return
+        var crop := manifest.get("crop",[]) as Array
+        var foot := manifest.get("foot_anchor",[]) as Array
+        var frame := sprite.sprite_frames.get_frame_texture(&"stand",0)
+        if crop.size() != 4 or foot.size() != 2 or frame == null or frame.get_size() != Vector2(crop[2],crop[3]) or sprite.offset != Vector2(float(crop[0])-float(foot[0]),float(crop[1])-float(foot[1])):
+            sprite.free()
+            _fail("male Source A crop/foot anchor mismatch: "+id)
+            return
+        sprite.free()
+    if DiscipleSourceAVisualPool.scene_for_disciple(male) == null:
+        _fail("verified male Source A scene unavailable")
         return
 
-    # Unconverted rigs now use a simple colored chibi (not uniform green),
+    # The fallback still covers unavailable/production-body cases,
     # driven only by the same stable cosmetic appearance seed.
     var fallback := ModularDiscipleActor.new()
     fallback.configure(male)

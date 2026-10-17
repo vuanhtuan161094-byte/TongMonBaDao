@@ -1,11 +1,12 @@
 class_name DiscipleSourceAVisualPool
 extends RefCounted
 
-# Only verified and imported Source A PackedScenes. Batch-01 converted rig
-# outputs remaining on E: are NOT automatically available to GitHub/Android.
-# Extend by actual manifest/hash-gated import, not invented asset IDs.
+# Source A Batch-01 scenes with copied binaries verified against each
+# asset.json file_sha256. Sex is based on inspected stand/walk artwork.
 const VERIFIED_ACTORS := [
-    {"asset_id":"1113028_1","sex":"female","scene":"res://assets/actors/1113028_1/actor.tscn"}
+    {"asset_id":"1113028_1","sex":"female","scene":"res://assets/actors/1113028_1/actor.tscn"},
+    {"asset_id":"body_1110201","sex":"male","scene":"res://assets/actors/body_1110201/actor.tscn"},
+    {"asset_id":"body_1120402","sex":"male","scene":"res://assets/actors/body_1120402/actor.tscn"}
 ]
 
 static func scene_path_for_disciple(disciple: DiscipleState) -> String:

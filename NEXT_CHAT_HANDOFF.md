@@ -1,5 +1,9 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — G1 Source A male art on draft PR #20
+
+Continue from the current PR #20 HEAD, not `main`. Owner-authorized comment `SOURCE_A_MALE_G1_ONE_SHOT` replaced the missing Markdown prompt. Two real male Batch-01 rigs `body_1120402` and `body_1110201` were imported with 6/6 listed file hashes verified. Existing female art stays unchanged. Deterministic sex-specific pool, map scale/ground anchor, roster/Workforce/profile art, small touch area and actor UI z-order are presentation only. Official Windows Godot 4.7.2 import, G1 focused test and real-scene actor pilot PASS; one native 1280×720 male profile capture is in this task's `evidence/source_a_male_pr20/`. FULL, CI, Android, 600-frame benchmark and owner visual approval remain PENDING by explicit scope. See top of `CURRENT_CHECKPOINT.md` for exact evidence and limits.
+
 ## G1.5 2026-10-17 — VIDEO-BASED SAFE UNBLOCK DONE; runtime PENDING
 
 Owner's 33s game recording demonstrates G1 quick worksite chooser all gray because selected Lâm An has a **pending direct command**, while Mine's existing Choose/Replace workflow runs. Draft PR20 now adds **Hủy lệnh chờ** with guards against all live jobs/PvE/Body timers and calls the existing `workforce.clear_command` only; refreshes same picker, retains summary origin, does not auto-assign. Modal height responds to actual worksite count. A G1 regression test clicks the real button and asserts pending clear does not mutate resources/occupants. **Static code-contract 13/13 + lexical 2/2 PASS**, official Godot for this HEAD not available here, so **Windows exact-HEAD runtime PENDING**. No full QA/CI/merge required for further incremental UI coding. Owner may reuse their prior working `01_CHAY_GAME_NGAY.cmd` which clones the latest PR20 branch; no new launcher needed. Next highest-priority visual debt is true male Source A art, not green provisional geometry.

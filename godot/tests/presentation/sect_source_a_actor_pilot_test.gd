@@ -8,6 +8,10 @@ func _init() -> void:
 
 func _run() -> void:
     ProjectSettings.set_setting("runtime/live_save_path",SAVE_PATH)
+    var capture_path := OS.get_environment("SOURCE_A_MALE_CAPTURE")
+    if not capture_path.is_empty():
+        DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+        DisplayServer.window_set_size(Vector2i(1280,720))
     var packed := load("res://scenes/p3/p3_2_landscape_sect.tscn") as PackedScene
     if packed == null:
         _fail("real landscape scene missing")
@@ -22,6 +26,8 @@ func _run() -> void:
     var actors := scene.get("actor_nodes") as Dictionary
     var state := scene.get("state") as SimulationState
     var pilot_count := 0
+    var male_id: StringName = &""
+    var female_count := 0
     for key in actors.keys():
         var actor := actors[key] as ModularDiscipleActor
         var disciple := state.disciples.get(StringName(key)) as DiscipleState
@@ -29,11 +35,21 @@ func _run() -> void:
             _fail("map actor lost canonical disciple identity")
             return
         if actor.baked_visual_active():
-            if actor.rig_id != DiscipleActorVisualCatalog.RIG_FEMALE_NORMAL_V1:
-                _fail("female pilot was applied to a non-female rig")
+            var expected := DiscipleSourceAVisualPool.scene_path_for_disciple(disciple)
+            var visual_sex := str(DiscipleActorVisualCatalog.visual_sex_for_disciple(disciple))
+            if expected.is_empty() or (visual_sex == "female") != (actor.rig_id == DiscipleActorVisualCatalog.RIG_FEMALE_NORMAL_V1):
+                _fail("Source A actor does not match canonical visual sex")
                 return
+            if visual_sex == "male":
+                male_id = disciple.id
+            else:
+                female_count += 1
             if actor.fallback_visual.visible or actor.baked_sprite.position != DiscipleActorVisualCatalog.ACTOR_FOOT_POINT:
                 _fail("baked pilot did not replace fallback at foot anchor")
+                return
+            var stand := actor.baked_sprite.sprite_frames.get_frame_texture(&"stand",0)
+            if stand == null or absf(actor.baked_sprite.scale.x * stand.get_height()-67.0) > 0.1 or actor.z_index >= 20:
+                _fail("baked actor size/layer obscures map UI")
                 return
             actor.play_walk_for_delta(Vector2(-1,0))
             if actor.baked_sprite.animation != &"walk" or not actor.baked_sprite.flip_h:
@@ -51,7 +67,20 @@ func _run() -> void:
     if pilot_count == 0:
         _fail("verified pilot did not appear in the real scene")
         return
-    print("SOURCE A ACTOR PILOT REAL SCENE PASS female_actors=",pilot_count)
+    if not capture_path.is_empty():
+        if male_id == &"" or female_count == 0:
+            _fail("capture requires real male and female map actors")
+            return
+        scene.call("_open_disciple_deep_screen",male_id,"Thuộc tính")
+        for _i in range(20):
+            await process_frame
+        await RenderingServer.frame_post_draw
+        var image := root.get_texture().get_image()
+        if image == null or image.get_size() != Vector2i(1280,720) or image.save_png(capture_path) != OK:
+            _fail("native 1280x720 male profile capture failed")
+            return
+        print("SOURCE A MALE CAPTURE PASS ",capture_path)
+    print("SOURCE A ACTOR PILOT REAL SCENE PASS baked_actors=",pilot_count)
     scene.queue_free()
     quit(0)
 

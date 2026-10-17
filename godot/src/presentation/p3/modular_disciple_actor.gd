@@ -113,7 +113,16 @@ func set_baked_visual(packed: PackedScene) -> bool:
     baked_sprite = candidate
     baked_sprite.name = "VerifiedBakedVisual"
     baked_sprite.position = DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
-    baked_sprite.scale = Vector2.ONE * 0.35
+    # The baked scene offset encodes the manifest's foot anchor. Scale by
+    # its real cropped frame height so differently sized rigs share a map
+    # height near 67 px at zoom 1 without moving the ground contact.
+    var stand_frame := baked_sprite.sprite_frames.get_frame_texture(&"stand",0)
+    var frame_height := float(stand_frame.get_height()) if stand_frame != null else 192.0
+    baked_sprite.scale = Vector2.ONE * (67.0 / maxf(frame_height,1.0))
+    baked_sprite.z_index = 1
+    # Keep the interactive area over the body, not the surrounding building.
+    click_button.position = Vector2(20.0,5.0)
+    click_button.size = Vector2(48.0,67.0)
     add_child(baked_sprite)
     _refresh_placeholder_mode()
     _play_shared_animation()

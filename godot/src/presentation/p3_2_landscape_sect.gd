@@ -620,6 +620,9 @@ func _sync_actor_positions() -> void:
         var actor: Control = actor_nodes[key] as Control
         var world_foot := _iso_actor_point(destination) + _actor_offset(index)
         var target := world_foot - _actor_anchor_offset(actor)
+        # Sort live actors by their ground contact while keeping them below
+        # all navigation and modal panels (z >= 20).
+        actor.z_index = clampi(int(world_foot.y / 160.0),0,5)
         var delta := target - actor.position
 
         if actor is ModularDiscipleActor:
@@ -722,6 +725,7 @@ func _install_modular_live_actors() -> void:
         actor.actor_pressed.connect(Callable(self, "_open_disciple"))
         var world_foot := _iso_actor_point(destination) + _actor_offset(index)
         actor.position = world_foot - DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
+        actor.z_index = clampi(int(world_foot.y / 160.0),0,5)
         map_layer.add_child(actor)
 
         actor_nodes[key] = actor
@@ -4357,11 +4361,16 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
     var selected_actor := actor_nodes.get(str(disciple.id)) as ModularDiscipleActor
     var selected_source_scene := DiscipleSourceAVisualPool.scene_for_disciple(disciple)
     if selected_actor != null and selected_actor.baked_visual_active() and selected_source_scene != null:
-        # The verified source clip is displayed at its native pixel size,
-        # independently from the small scaled map instance.
+        # Keep the authored foot anchor while fitting each real crop in the
+        # same profile art area; all three portrait surfaces use this scene.
         var artwork := selected_source_scene.instantiate() as AnimatedSprite2D
         artwork.name = "DiscipleSourceAArtwork"
-        artwork.position = Vector2(150,170)
+        var stand_frame := artwork.sprite_frames.get_frame_texture(&"stand",0)
+        var art_size := stand_frame.get_size() if stand_frame != null else Vector2(192,192)
+        var art_scale := minf(230.0/maxf(art_size.x,1.0),175.0/maxf(art_size.y,1.0))
+        artwork.scale = Vector2.ONE * art_scale
+        artwork.position = Vector2(150,185)
+        artwork.z_index = 1
         showcase.add_child(artwork)
         artwork.play(&"stand")
     else:
