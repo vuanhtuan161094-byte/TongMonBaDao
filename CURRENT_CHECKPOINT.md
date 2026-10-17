@@ -1,5 +1,11 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — G1 off-map Source A portraits (PR #20, code committed)
+
+Verified PR20 male Source A import at `009ffd957624c63518f4f10141613540ce0fb2c9`; male `body_1120402` and `body_1110201`, existing female `1113028_1`, Windows Godot focused G1 + actor pilot PASS reported in Codex checkpoint; main unchanged. Follow-on presentation fix: `_disciple_avatar_button` and deep profile now use the same verified male/female Source A pool even when the disciple has NO live map actor. One shared stand `Texture2D` is cached per verified scene, temporary `AnimatedSprite2D` released immediately; existing modular production body takes precedence. Added one focused G1 test for synthetic off-map male/female portrait and bounded cache. **Static 2/2 files PASS; Godot 4.7.2 exact-new-HEAD focused test NOT RUN here (runner unavailable).** No simulation, CI, FULL QA, merge, or main changes.
+
+---
+
 ## 2026-10-17 — G1 Source A male visual packet (PR #20, focused Windows PASS)
 
 Owner comment `SOURCE_A_MALE_G1_ONE_SHOT` on draft PR #20 authorizes this presentation-only packet from `9cd0b4e`. Inspected Godot 4.7.2 stand/walk captures: `body_1120402` (long-haired male in white/gold) and `body_1110201` (bald monk) have recognizable male humanoid artwork, feet and transparent crops. Copied only their baked actor scene, SpriteFrames, WebP atlas and `asset.json` from E: into `godot/assets/actors/`; **6/6 manifest-listed binaries SHA-256 PASS** before and after copy. Existing female `1113028_1` is unchanged. `1113005_1` and `113104_5` were left out because the packet limits the pool to two proven rigs; `body_1120101_s` was optional and not needed. No raw Spine or converter work.
