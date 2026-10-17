@@ -262,12 +262,21 @@ func _ensure_built() -> void:
 
     status_label = Label.new()
     status_label.name = "StatusLabel"
-    status_label.position = Vector2(0.0, 73.0)
-    status_label.size = Vector2(ACTOR_SIZE.x, 18.0)
+    # A narrow but opaque tag avoids invisible dark-on-terrain letters;
+    # work actions are text-only until real authored Source A clips exist.
+    status_label.position = Vector2(-11.0, 72.0)
+    status_label.size = Vector2(110.0, 22.0)
+    status_label.clip_text = true
     status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
     status_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-    status_label.add_theme_font_size_override("font_size", 10)
+    status_label.add_theme_font_size_override("font_size", 11)
     status_label.add_theme_color_override("font_color", STATUS_TEXT)
+    var tag_background := StyleBoxFlat.new()
+    tag_background.bg_color = Color(0.96,0.92,0.80,0.97)
+    tag_background.border_color = Color(0.25,0.23,0.18,1.0)
+    tag_background.set_border_width_all(1)
+    tag_background.set_corner_radius_all(5)
+    status_label.add_theme_stylebox_override("normal", tag_background)
     status_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
     status_label.visible = false
     add_child(status_label)

@@ -8,11 +8,15 @@ const PRODUCTION_CONTENT_WIDTH := 384.0
 # Visual travel rate in map world pixels/second; gameplay travel, scheduler
 # and profession work speed remain separate canonical systems.
 const MAP_ACTOR_VISUAL_WALK_PX_PER_SEC := 175.0
+const MAP_TOUCH_DRAG_THRESHOLD_PX := 12.0
+const MAP_MOUSE_DRAG_THRESHOLD_PX := 8.0
 
 var map_zoom: float = SectMapCamera.DEFAULT_ZOOM
 var touch_points: Dictionary = {}
+var touch_start_points: Dictionary = {}
 var last_pinch_distance: float = 0.0
 var mouse_panning := false
+var mouse_press_position := Vector2.ZERO
 var camera_tween: Tween
 var focus_marker_tween: Tween
 var zoom_readout: Label
@@ -39,6 +43,8 @@ var female_motion_library: AnimationLibrary
 var workforce_return_building_id: StringName = &""
 var modular_live_actor_ids: Dictionary = {}
 var actor_walk_tweens: Dictionary = {}
+# Visual destinations let recurring scheduler refreshes reuse a running tween.
+var actor_walk_targets: Dictionary = {}
 # Only three source scenes currently: cache shared stand textures by scene path,
 # never make one atlas/AnimatedSprite2D per disciple or roster entry.
 var source_a_portrait_textures: Dictionary = {}
@@ -322,6 +328,7 @@ func _handle_screen_touch(touch: InputEventScreenTouch) -> void:
         else:
             screen_pointer_dragged = true
         touch_points[touch.index] = touch.position
+        touch_start_points[touch.index] = touch.position
         if touch.double_tap:
             screen_pointer_dragged = true
             _zoom_at(touch.position, maxf(map_zoom, SectMapCamera.FOCUS_ZOOM), true)
@@ -331,6 +338,7 @@ func _handle_screen_touch(touch: InputEventScreenTouch) -> void:
 
     var was_single_pointer := touch_points.size() == 1 and touch_points.has(touch.index)
     touch_points.erase(touch.index)
+    touch_start_points.erase(touch.index)
     _refresh_pinch_baseline()
     if touch_points.is_empty() and screen_pointer_dragged:
         _refresh_map_worksite_cues()
@@ -345,9 +353,11 @@ func _handle_screen_touch(touch: InputEventScreenTouch) -> void:
 func _handle_screen_drag(drag: InputEventScreenDrag) -> void:
     if not touch_points.has(drag.index):
         return
+    var old_point := Vector2(touch_points[drag.index])
     touch_points[drag.index] = drag.position
 
     if touch_points.size() >= 2:
+        screen_pointer_dragged = true
         var pair := _first_two_touch_points()
         if pair.size() < 2:
             return
@@ -363,9 +373,13 @@ func _handle_screen_drag(drag: InputEventScreenDrag) -> void:
         get_viewport().set_input_as_handled()
         return
 
-    if drag.relative.length() > 2.0:
-        screen_pointer_dragged = true
-    _pan_camera(drag.relative)
+    # Ignore small per-event jitter until TOTAL finger travel crosses
+    # a finger-friendly threshold; otherwise a pan can become a false tap.
+    var start := Vector2(touch_start_points.get(drag.index,old_point))
+    if not screen_pointer_dragged and drag.position.distance_to(start) < MAP_TOUCH_DRAG_THRESHOLD_PX:
+        return
+    screen_pointer_dragged = true
+    _pan_camera(drag.position-old_point)
     get_viewport().set_input_as_handled()
 
 func _handle_mouse_button(mouse: InputEventMouseButton) -> void:
@@ -388,6 +402,7 @@ func _handle_mouse_button(mouse: InputEventMouseButton) -> void:
         if not SectMapCamera.is_map_screen_point(mouse.position):
             return
         mouse_pointer_dragged = false
+        mouse_press_position = mouse.position
         if mouse.double_click:
             mouse_pointer_dragged = true
             _zoom_at(mouse.position, maxf(map_zoom, SectMapCamera.FOCUS_ZOOM), true)
@@ -395,6 +410,10 @@ func _handle_mouse_button(mouse: InputEventMouseButton) -> void:
             return
         mouse_panning = true
     else:
+        # A release over the world without a preceding world press must
+        # not become an accidental building selection.
+        if not mouse_panning:
+            return
         var should_close_summary := mouse_panning and not mouse_pointer_dragged and _disciple_summary_is_open()
         var should_close_building := mouse_panning and not mouse_pointer_dragged and _building_operation_is_open()
         mouse_panning = false
@@ -413,8 +432,9 @@ func _handle_mouse_motion(motion: InputEventMouseMotion) -> void:
     if (motion.button_mask & MOUSE_BUTTON_MASK_LEFT) == 0:
         mouse_panning = false
         return
-    if motion.relative.length() > 2.0:
-        mouse_pointer_dragged = true
+    if not mouse_pointer_dragged and motion.position.distance_to(mouse_press_position) < MAP_MOUSE_DRAG_THRESHOLD_PX:
+        return
+    mouse_pointer_dragged = true
     _pan_camera(motion.relative)
     get_viewport().set_input_as_handled()
 
@@ -557,7 +577,9 @@ func _popup_is_open() -> bool:
 
 func _clear_pointer_state() -> void:
     touch_points.clear()
+    touch_start_points.clear()
     last_pinch_distance = 0.0
+    mouse_press_position = Vector2.ZERO
     mouse_panning = false
     screen_pointer_dragged = false
     mouse_pointer_dragged = false
@@ -703,10 +725,17 @@ func _sync_actor_positions() -> void:
         # all navigation and modal panels (z >= 20).
         actor.z_index = clampi(int(world_foot.y / 160.0),0,5)
         var delta := target - actor.position
+        var old_tween := actor_walk_tweens.get(key) as Tween
+        var continuing_walk := (
+            delta.length() > 1.0
+            and old_tween != null and old_tween.is_running()
+            and actor_walk_targets.has(key)
+            and Vector2(actor_walk_targets[key]).distance_to(target) <= 1.0
+        )
 
         if actor is ModularDiscipleActor:
             var modular := actor as ModularDiscipleActor
-            if delta.length() > 1.0:
+            if delta.length() > 1.0 and not continuing_walk:
                 # Two authored horizontal facings only. Vertical map travel
                 # still moves vertically; character uses last left/right
                 # visual and built-in Godot rig mirroring for left.
@@ -719,14 +748,13 @@ func _sync_actor_positions() -> void:
                 ):
                     FemaleStageAAssetLoader.apply_public_direction(modular,direction)
                 modular.play_walk_for_delta(two_way)
-            else:
+            elif delta.length() <= 1.0:
                 modular.sync_action(disciple.current_action)
 
-        if delta.length() > 1.0:
-            # Travel time reflects visible distance, rather than teleporting
-            # any distance in the same 0.32 s. Purely cosmetic: cannot change
-            # canonical travel ticks, work speed or production completion.
-            var old_tween := actor_walk_tweens.get(key) as Tween
+        if delta.length() > 1.0 and not continuing_walk:
+            # Do not reset a running same-destination tween on each refresh;
+            # this can cause sliding/jitter and an artificially late arrival.
+            # Travel remains cosmetic and does not change work or scheduler.
             if old_tween != null and old_tween.is_running():
                 old_tween.kill()
             var duration := clampf(delta.length()/MAP_ACTOR_VISUAL_WALK_PX_PER_SEC,0.18,6.0)
@@ -734,14 +762,19 @@ func _sync_actor_positions() -> void:
             tween.set_trans(Tween.TRANS_LINEAR)
             tween.tween_property(actor, "position", target, duration)
             actor_walk_tweens[key] = tween
-            if actor is ModularDiscipleActor:
-                tween.finished.connect(Callable(self,"_finish_actor_walk").bind(disciple_id,target))
+            actor_walk_targets[key] = target
+            tween.finished.connect(Callable(self,"_finish_actor_walk").bind(disciple_id,target))
+        elif delta.length() <= 1.0:
+            if old_tween != null and old_tween.is_running():
+                old_tween.kill()
+            actor_walk_tweens.erase(key)
+            actor_walk_targets.erase(key)
 
         if actor_status_labels.has(key):
             var status := actor_status_labels[key] as Label
             if is_instance_valid(status):
                 if actual_work_cues.has(key):
-                    status.text = str(actual_work_cues[key])
+                    status.text = _compact_production_actor_status(str(actual_work_cues[key]))
                     status.visible = true
                 else:
                     status.text = SectMapPresentation.action_label(disciple.current_action)
@@ -758,8 +791,18 @@ func _sync_actor_positions() -> void:
     _refresh_building_operation_content()
     _refresh_living_cues()
 
+# Space for characters is intentionally narrow. Full job text lives in
+# exact-ID production badges and the workforce panel; this is just a tag.
+func _compact_production_actor_status(full_status: String) -> String:
+    match full_status:
+        "Đang khai khoáng": return "Đang ở Mỏ"
+        "Đang khai lâm": return "Đang ở Lâm"
+        "Linh Điền đang trồng": return "Đang trồng"
+        _: return full_status
+
 func _finish_actor_walk(disciple_id: StringName, expected_target: Vector2) -> void:
     actor_walk_tweens.erase(str(disciple_id))
+    actor_walk_targets.erase(str(disciple_id))
     var actor := actor_nodes.get(str(disciple_id)) as ModularDiscipleActor
     if actor == null or not is_instance_valid(actor) or actor.position.distance_to(expected_target) > 1.0:
         return
@@ -799,6 +842,11 @@ func _install_modular_live_actors() -> void:
             continue
 
         var old_actor: Control = actor_nodes.get(key) as Control
+        var replacing_tween := actor_walk_tweens.get(key) as Tween
+        if replacing_tween != null and replacing_tween.is_running():
+            replacing_tween.kill()
+        actor_walk_tweens.erase(key)
+        actor_walk_targets.erase(key)
         if old_actor != null and is_instance_valid(old_actor):
             if old_actor.get_parent() != null:
                 old_actor.get_parent().remove_child(old_actor)
@@ -4402,7 +4450,7 @@ func _refresh_map_worksite_cues() -> void:
         if not _map_worksite_is_supported(building):
             continue
         var anchor := SectIsometricWorldV1.virtual_legacy_point(building.building_type,building.id)
-        var screen := SectMapCamera.world_to_screen(anchor,map_layer.position,map_zoom)
+        var screen := SectMapCamera.world_to_screen(anchor,map_layer.position,map_layer.scale.x)
         # Labels stay in the legacy world overlay and transform with the map.
         # Keep only visible, important producers to avoid 100 UI cards.
         if not SectMapCamera.VIEW_RECT.grow(95.0).has_point(screen):

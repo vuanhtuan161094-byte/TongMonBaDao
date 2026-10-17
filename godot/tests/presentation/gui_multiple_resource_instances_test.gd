@@ -26,6 +26,71 @@ func _run() -> void:
     if state == null:
         _fail("real simulation missing")
         return
+
+    # G1 input regression: many tiny events must not pan and then
+    # accidentally select a building on release. This is presentation-only.
+    var before_gesture_state := state.to_dict()
+    var touch_down := InputEventScreenTouch.new()
+    touch_down.index = 0
+    touch_down.position = Vector2(420,300)
+    touch_down.pressed = true
+    ui.call("_handle_screen_touch",touch_down)
+    var touch_motion := InputEventScreenDrag.new()
+    touch_motion.index = 0
+    touch_motion.position = Vector2(425,300)
+    touch_motion.relative = Vector2(5,0)
+    ui.call("_handle_screen_drag",touch_motion)
+    touch_motion.position = Vector2(430,300)
+    ui.call("_handle_screen_drag",touch_motion)
+    if bool(ui.get("screen_pointer_dragged")):
+        _fail("touch jitter incorrectly became a pan")
+        return
+    touch_motion.position = Vector2(433,300)
+    touch_motion.relative = Vector2(3,0)
+    ui.call("_handle_screen_drag",touch_motion)
+    if not bool(ui.get("screen_pointer_dragged")):
+        _fail("cumulative touch drag did not become an intentional pan")
+        return
+    var touch_up := InputEventScreenTouch.new()
+    touch_up.index = 0
+    touch_up.position = touch_motion.position
+    touch_up.pressed = false
+    ui.call("_handle_screen_touch",touch_up)
+    if not (ui.get("touch_points") as Dictionary).is_empty() or not (ui.get("touch_start_points") as Dictionary).is_empty():
+        _fail("touch gesture left stale pointer state")
+        return
+
+    var mouse_down := InputEventMouseButton.new()
+    mouse_down.button_index = MOUSE_BUTTON_LEFT
+    mouse_down.pressed = true
+    mouse_down.position = Vector2(420,300)
+    ui.call("_handle_mouse_button",mouse_down)
+    var mouse_move := InputEventMouseMotion.new()
+    mouse_move.button_mask = MOUSE_BUTTON_MASK_LEFT
+    mouse_move.position = Vector2(424,300)
+    mouse_move.relative = Vector2(4,0)
+    ui.call("_handle_mouse_motion",mouse_move)
+    mouse_move.position = Vector2(427,300)
+    mouse_move.relative = Vector2(3,0)
+    ui.call("_handle_mouse_motion",mouse_move)
+    if bool(ui.get("mouse_pointer_dragged")):
+        _fail("mouse jitter incorrectly became a pan")
+        return
+    mouse_move.position = Vector2(431,300)
+    mouse_move.relative = Vector2(4,0)
+    ui.call("_handle_mouse_motion",mouse_move)
+    if not bool(ui.get("mouse_pointer_dragged")):
+        _fail("cumulative mouse drag did not become an intentional pan")
+        return
+    var mouse_up := InputEventMouseButton.new()
+    mouse_up.button_index = MOUSE_BUTTON_LEFT
+    mouse_up.pressed = false
+    mouse_up.position = mouse_move.position
+    ui.call("_handle_mouse_button",mouse_up)
+    if bool(ui.get("mouse_panning")) or state.to_dict() != before_gesture_state:
+        _fail("map gestures changed gameplay state or left pointer captured")
+        return
+
     var first := buildings.primary_building(state,BuildingSystem.TYPE_MINE)
     if first == null:
         _fail("canonical primary mine absent")
@@ -299,6 +364,16 @@ func _run() -> void:
     if actor_foot.distance_to(expected_anchor + Vector2(12,14)) > 0.5:
         _fail("working disciple was visually assigned to the primary Mine instead of exact ID")
         return
+    # Refreshing a moving disciple with the SAME target must retain its
+    # existing stand/walk tween rather than restarting movement every tick.
+    ui.call("_sync_actor_positions")
+    var first_tween := (ui.get("actor_walk_tweens") as Dictionary).get(str(worker_id)) as Tween
+    if first_tween != null and first_tween.is_running():
+        ui.call("_sync_actor_positions")
+        var resumed := (ui.get("actor_walk_tweens") as Dictionary).get(str(worker_id)) as Tween
+        if resumed != first_tween:
+            _fail("same-destination animation tween restarted on refresh")
+            return
     # Zooming does not make the production overlay scale with the terrain.
     var layer := ui.get("map_layer") as Control
     var old_scale := layer.scale

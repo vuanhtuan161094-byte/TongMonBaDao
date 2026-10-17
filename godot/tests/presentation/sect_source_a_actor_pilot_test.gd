@@ -1,3 +1,4 @@
+# TEST ONLY - short actor badge readability is presentation, not a work-action clip.
 extends SceneTree
 
 const SAVE_PATH := "user://sect_source_a_actor_pilot_test.json"

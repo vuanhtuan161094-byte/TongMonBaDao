@@ -1,5 +1,12 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — G1 interaction & real stand/walk stability follow-up
+
+**Baseline PR20 `18b707b7`**, draft `g1-disciple-radar-sourcea-pool-20261017`. Owner authorized scoped G1 playability changes only. Source review found two concrete presentation issues: touch/mouse drag threshold used **per-event relative length** while still panning before threshold, so many tiny movements could pan the camera then trigger a false tap; repeated `_sync_actor_positions()` killed a still-running same-destination tween, extending/restarting actor travel. Fixed with cumulative finger/press displacement (12px touchscreen, 8px mouse), release guarding, and same-destination tween reuse + safe replacement cleanup. Added legible short work-status tag with opaque parchment and dark ink, while preserving **real Source A stand/walk only**; no fake mining/chopping/planting action. Map badge visibility uses actual interpolated layer zoom. Added focused gesture, tween and state-readonly assertions in existing multi-instance test. Lexical/static verification only; **Godot official 4.7.2 focused runtime PENDING**, Windows screenshot/Android and G1 owner UX **NOT ACCEPTED**. No changes to gameplay/One Active Job/Economy V2/Scheduler/Warehouse/save, CI/FULL/merge/G2.
+
+---
+
+
 ## 2026-10-17 — G1 camera/production overlay UX refinement (presentation-only)
 
 Authorized reference UX research used (a) **Ta Làm Tông Sư Trong Tiên Môn** [official Vietnamese Play listing](https://play.google.com/store/apps/details?id=com.vnzqzs.and), [BlueStacks management overview](https://www.bluestacks.com/vi/blog/game-guides/a-grandmaster-in-the-immortal-sect/gmms-beginners-guide-vi.html) and [最强祖师 production staff screenshot](https://shouyou.3dmgame.com/gl/526618.html); and (b) **Evil Hunter Tycoon** [official building documentation](https://evilhunter.zendesk.com/hc/vi/articles/360039886271-Th%C3%B4ng-Tin-C%C3%B4ng-Tr%C3%ACnh), [hunter control documentation](https://evilhunter.zendesk.com/hc/en-us/articles/360039885551-Conversing-with-a-hunter). Reference supports **operator→building→production visibility and town-map-to-person navigation**. Specific animations, timer numbers, per-pixel geometry and backend rules are **not verified** from these sources; never copy images/code or import other-game assets.
