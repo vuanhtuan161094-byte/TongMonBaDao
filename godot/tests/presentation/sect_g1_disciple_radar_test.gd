@@ -142,8 +142,12 @@ func _run() -> void:
             return
         off_map_avatar.free()
     var portrait_cache := ui.get("source_a_portrait_textures") as Dictionary
-    if portrait_cache.size() != 2:
-        _fail("male/female Source A portrait cache allocated unexpected scenes")
+    if (
+        not portrait_cache.has(DiscipleSourceAVisualPool.scene_path_for_disciple(male))
+        or not portrait_cache.has(DiscipleSourceAVisualPool.scene_path_for_disciple(female))
+        or portrait_cache.size() > DiscipleSourceAVisualPool.VERIFIED_ACTORS.size()
+    ):
+        _fail("off-map Source A cache does not match the verified scene pool")
         return
     # Recruit an authentic V2 actor through the real state/recruitment API.
     # The initial sect roster may include historical P2 compatibility actors.
