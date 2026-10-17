@@ -1,5 +1,16 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — Windows MAP25 QA official 01–05 PASS, 06 GDScript parser FAIL and test-only fixed; 07 GUI/FPS PENDING
+
+**Newest owner upload** `MAP25_QA_RESULTS_20261017_132030.zip`, official Godot 4.7.2 run pinned at PR #18 SHA `0729f8aff26da70a734fec34e74548ab6751ecc3`. Temp Git clone + SHA/EOL checks PASS; 01 editor import PASS; 02 Source A accepted=32 missing=0 rejected=0 PASS; 03 iso projection 36/36 PASS; 04 real main scene camera/Workforce PASS; **05 Workforce GUI E2E PASS** including full timed production/SaveService fixture assertions. **06 FAIL before assertions at test parse line 141** `var p := SAVE_PATH+suffix`: Godot cannot infer type of `p`. 07 screenshots/profile never executed. Full runner FINAL FAIL, no runtime visual/performance acceptance.
+
+**Only `godot/tests/presentation/gui_multiple_resource_instances_test.gd` changed** in commit `7429947819a903e4d7ffd6a73ca131d4468b2938`: declare explicit `var p: String = SAVE_PATH + str(suffix)`. Also commit `ad6d46da5a7aeafb5f18c52a6b4e7ceabafaa4b5` protects second-Mine timer fixture: select real authentic V2 eligible worker or recruit via canonical `RecruitmentSystem`; legacy actor still must run old carry/haul, not a V2 timer. Preserve all assertions, no fake worker/gameplay/save mutations outside isolated QA state. Add useful actor diagnostics on failure. Code static verification only, new Godot run PENDING.
+
+**Operator next step:** reuse SAME `TONG_MON_BA_DAO_MAP25_WINDOWS_QA_HOTFIX_V4_20261017.zip` CMD + PS1; it automatically pins newest PR #18 HEAD. No new runner or manual Git sync. If successful, attach full `MAP25_QA_RESULTS_*` folder including after/before 1280×720 screenshots and performance CSV; if FAIL, attach failed stderr + `failure_details.txt`. Inspect 06 first; then 07. Keep no CI, no merge, no main modifications, no gameplay/balance/Source A edits. Update both MD with actual outcomes. Old 01–05 PASS applies specifically to SHA 0729f, not automatically subsequent HEAD.
+
+---
+
+
 ## 2026-10-17 — MAP25 official Windows gates 01–04 PASS, Workforce gate 05 FAIL, test-only fixture corrected
 
 **Newest official Windows evidence** `MAP25_QA_RESULTS_20261017_114116.zip` at pinned PR #18 `278089d1971752423425a6d6cb6e9a971467d2fc`: Git pin/clone/EOL safety PASS; official Godot 4.7.2 `01_editor_import` PASS, Source A `02` PASS accepted=32 missing=0 rejected=0, `03` PASS projection 36/36, `04` PASS real main scene and Workforce camera. **`05_gui_workforce_e2e` FAIL** exit 1 at `gui_workforce_v1_e2e_test.gd:82` = “Mine start did not create real timed production”; gate 06 multiple instances and gate 07 physical GUI screenshots/FPS not run. This is no longer a launcher failure. Overall FAIL.
