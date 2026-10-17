@@ -4429,7 +4429,7 @@ func _disciple_tab_text(tab_name: String, disciple: DiscipleState) -> String:
 func _attributes_tab_text(disciple: DiscipleState) -> String:
     var snapshot := _disciple_snapshot(disciple)
     if bool(snapshot.get("ok", false)) and bool(snapshot.get("authentic_v2", false)):
-        return _v2_attributes_tab_text(snapshot) + "\n\n" + _v2_profession_summary_text(snapshot) + "\n\n" + _body_gate_preview_text(disciple.id)
+        return _v2_attributes_tab_text(snapshot) + "\n\n" + _v2_foundation_meaning_text() + "\n\n" + _v2_profession_summary_text(snapshot) + "\n\n" + _body_gate_preview_text(disciple.id)
 
     var required := cultivation.required_progress(disciple)
     var progress_text := "Đã viên mãn" if required <= 0.0 else "%.0f / %.0f" % [disciple.cultivation_progress, required]
@@ -4454,6 +4454,20 @@ func _attributes_tab_text(disciple: DiscipleState) -> String:
         tab_status_text
     ]
 
+
+
+# Source effects are established in FoundationSystem and the V2 stat contract.
+# Fortune/Charisma remain conditional checks; this text does not activate them.
+func _v2_foundation_meaning_text() -> String:
+    return (
+        "ẢNH HƯỞNG LỤC DUY (điểm hiện tại)\n"
+        + "Tư Chất: +0,25% / điểm vào Tu Vi tự nhiên\n"
+        + "Căn Cốt: +0,20% / điểm vào EXP Luyện Thể\n"
+        + "Thông Tuệ: +0,15% / điểm vào học / EXP nghề hợp lệ\n"
+        + "Tiềm Lực: +0,05% / điểm vào lõi HP, Công, Thủ\n"
+        + "Cơ Duyên: kiểm tra vận may khi có sự kiện hợp lệ\n"
+        + "Mị Lực: kiểm tra tương tác xã hội khi có sự kiện hợp lệ"
+    )
 
 func _v2_attributes_tab_text(snapshot: Dictionary) -> String:
     var progression: Dictionary = snapshot["progression"]
