@@ -1,5 +1,20 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — MAP25 Windows one-click QA initial owner run: FINAL FAIL, failing gate unknown
+
+**Owner-uploaded direct evidence:** `pinned_live_head.txt` contains `ec8631552fcebf89ba32a76dab0f401b0b3a873d`; `qa_gates.csv` contains header and **only** `FINAL,FAIL,NA,check specific step logs`. No gate-specific stdout/stderr, screenshot, frame data or source failure trace accompanied these two uploaded files. Consequently **overall Windows QA FAIL; gates 01–07 status UNKNOWN / NOT VERIFIED**, not PASS. Exact first error is **NOT IDENTIFIED**. The pinned SHA indicates live remote branch resolution happened; because neither `00` nor `01` is recorded in the old launcher, a preflight clone/checkout/startup error remains possible, but not confirmed.
+
+**QA harness audit:** existing external `RUN_MAP25_QA.ps1` calls git with `2>&1` under Windows PowerShell `$ErrorActionPreference='Stop'`. Native git clone sends normal progress to stderr; under Windows PowerShell 5.1 this can surface as `NativeCommandError` even on process success. This is a **plausible harness-level failure**, not proof of the actual uploaded failure. Also old catch wrote only generic `FINAL,FAIL` to CSV and deleted TEMP, losing the reason when the operator shared only summary.
+
+**Prepared diagnostic replacement of the SAME one-click runner** (not a new game pipeline), external ZIP `TONG_MON_BA_DAO_MAP25_WINDOWS_QA_DIAGNOSTIC_20261017.zip`, SHA-256 `eb05783bbc95c8c683fadb512b7d41f3e6dd23fcf47d519e9fedad0f39b783eb`. It keeps `RUN_MAP25_QA.cmd` / `.ps1`, captures separate `git_*.stdout.txt`, `git_*.stderr.txt`, always writes `launcher_progress.txt`, `failure_details.txt` with `FAILED_STEP` if a startup failure occurs, and records preflight gate success separately. Isolates `APPDATA`/`LOCALAPPDATA`, TEMP clone, live HEAD pin, unchanged existing Godot 01–06 tests and same graphical before/after probe. **NOT RUN on owner's Windows**; ZIP member CRC/integrity verified in this session only.
+
+**No gameplay, source art, Godot renderer, backend or save change.** Do not call any latest-HEAD Godot gate PASS. `main` still `461caca1171462e0da092f21108c5c1733157ad9` unchanged when checked. Draft PR remains unmerged; no CI.
+
+**Next:** replace previous extracted runner with diagnostic ZIP outside game, double-click once; send FULL `MAP25_QA_RESULTS_*` as ZIP, especially `failure_details.txt`, `launcher_progress.txt`, `qa_gates.csv` and `git_*.stderr.txt` / `01_*.stderr.txt`. Until those exist, root cause and frame-performance measurements remain PENDING.
+
+---
+
+
 ## 2026-10-17 — MAP25 GUI/Performance Windows QA preparation — ONE-CLICK PACKAGE PREPARED, NEVER RUN HERE
 
 **PR #18** draft `integration-v2-pr9-pr10-pr17-20261016`: prior HEAD `ca971ba1676c39368f8f434833c641932372eb8e`; focused **test-only** commit `96943842630607f38a39dfc8af298073ab80a1cf` adds `godot/tests/presentation/sect_map25_visual_perf_capture_test.gd`. This is a graphical Godot SceneTree QA probe, not a player-facing renderer modification. It screenshots `1280×720` at idle/pan/zoom/Mine panel/Workforce picker and samples 120 displayed frames per scenario: observed inter-frame delta average/p95, `Performance.TIME_PROCESS`, FPS, draw calls, node count and memory. CSV/PNG/metadata outputs go to an **external designated QA results folder**, not to tracked game files; fresh `user://map25_visual_perf_probe.json` is isolated by the Windows runner's temporary APPDATA.
