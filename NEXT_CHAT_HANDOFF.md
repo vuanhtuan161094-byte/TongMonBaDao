@@ -1,5 +1,16 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — 11:35:40 Windows QA ZIP: exact TEMP clone false-dirty file, safe V4 ready
+
+**Read direct user ZIP** `MAP25_QA_RESULTS_20261017_113540.zip`. Windows Godot 4.7.2 official + Git 2.55.0 detection PASS; PR #18 HEAD pinned `40ef10459517766e8a4948ade079e4f4d1f3ab0a`; clone and `rev-parse HEAD` PASS. `git status --porcelain` alone reports ` M tools/godot/Verify-P3-6A-Playable-Slice.ps1` and QA launcher hard-stopped before all Godot tests. Only `00_git_smoke`, `00_remote_pin` PASS, final FAIL. This matches a reproducible Git CRLF normalization hazard; without worktree bytes the exact owner diff is not yet proven equivalent. No code regression identified, zero Godot tests run on that attempt.
+
+**Hotfix (USE THIS INSTEAD OF V1–V3):** `TONG_MON_BA_DAO_MAP25_WINDOWS_QA_HOTFIX_V4_20261017.zip` SHA256 `d44fbd494d9611e7d89f905dbe9c787bb80b6ecaffc9fedc4fcd0c9aeaefd41f`. Same single-click CMD/PowerShell launcher with V3 native Git/Godot process exit correctness; validates EXACT known `M` file only after `git diff --cached --exit-code` AND `git diff --ignore-space-at-eol --exit-code` succeed. No reset/force/edits. Any other Git dirt stops safely. Verified syntax anchors and ZIP CRC on Linux plus simulated Git CRLF case, not executed on official Windows.
+
+**Next:** run V4 in fresh separate folder (only double-click `RUN_MAP25_QA.cmd`); collect full evidence directory, distinguish gates 01–07 PASS/FAIL; verify 32 SHA, projection 36, UI camera/Workforce, genuine 1280×720 screenshots and p95/frame-time before changing presentation. Two MDs updated. PR #18 remains draft, no CI/main push/merge, no gameplay/save changes. Avoid creating a new QA pipeline.
+
+---
+
+
 ## 2026-10-17 — Windows launcher bootstrap FAIL at git --version; only Hotfix V3 should be run
 
 **Direct pasted Windows evidence:** Godot `4.7.2.stable.official.ed1daf0bf` detected; then `[GIT] git_01___version: --version`; `[FAIL] git exit= at git_01___version:`. This was a **false bootstrap gate FAIL in QA launcher**, before any Godot test; code used `Start-Process -PassThru` and checked an empty `ExitCode` as failure. This does NOT show game/map/Source A failure. Real Windows Godot 01–07 for this attempt are NOT RUN, previous art32/projection36 were historical.
