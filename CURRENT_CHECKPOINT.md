@@ -1,5 +1,16 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — MAP25 official Windows QA second launcher failure at Git bootstrap; QA harness V3 prepared
+
+**User Windows console evidence at 11:31:07 ICT:** `[GODOT] 4.7.2.stable.official.ed1daf0bf / E:\Godot_v4.7.2-stable_win64_console.exe`, followed by `[GIT] git_01___version: --version` and `[FAIL] git exit= at git_01___version:`. This is a **QA harness bootstrap FAIL, BEFORE any clone or Godot 01–07 gate**, not a game/runtime failure. `Start-Process -PassThru` in the diagnostic PowerShell wrapper reported a blank `ExitCode`; the script compared null to integer 0 as nonzero and raised a false git failure. The console is direct evidence of an empty exit code, not proof of why Windows returned it. The previous diagnosis of Git `NativeCommandError` remains only a possible separate issue, not the confirmed root cause here.
+
+**Prepared external hotfix V3** `TONG_MON_BA_DAO_MAP25_WINDOWS_QA_HOTFIX_V3_20261017.zip`, SHA256 `59ba8941a3776fd4c52ef85be41db665e4f2086d2ebb0989b373fac075866b38`: same `RUN_MAP25_QA.cmd`/`.ps1`, no new pipeline; moves BOTH Git/Godot process execution to `System.Diagnostics.Process` + `WaitForExit` + verified integer `ExitCode` and concurrently-drained stderr/stdout, with per-gate logs and `00_git_smoke`. The complete ZIP, member names, CRC, patch structure were checked here; **Windows PowerShell/Godot runtime of V3 NOT EXECUTED / PENDING**. Do not reuse previous one-click/diagnostic ZIPs. Main and game code unchanged.
+
+**Actual latest-gate status:** detection of official Godot binary PASS; Git bootstrap FAIL under old harness; SHA/art32, projection36, main scene, Workforce E2E, multi-instance, 1280×720 screenshot and FPS/frame-time **NOT RUN**. The exact pin read from earlier upload is historical; V3 resolves live PR #18 SHA on its next run. No CI, merge, main push, backend modifications or SaveService changes.
+
+---
+
+
 ## 2026-10-17 — MAP25 Windows one-click QA initial owner run: FINAL FAIL, failing gate unknown
 
 **Owner-uploaded direct evidence:** `pinned_live_head.txt` contains `ec8631552fcebf89ba32a76dab0f401b0b3a873d`; `qa_gates.csv` contains header and **only** `FINAL,FAIL,NA,check specific step logs`. No gate-specific stdout/stderr, screenshot, frame data or source failure trace accompanied these two uploaded files. Consequently **overall Windows QA FAIL; gates 01–07 status UNKNOWN / NOT VERIFIED**, not PASS. Exact first error is **NOT IDENTIFIED**. The pinned SHA indicates live remote branch resolution happened; because neither `00` nor `01` is recorded in the old launcher, a preflight clone/checkout/startup error remains possible, but not confirmed.
