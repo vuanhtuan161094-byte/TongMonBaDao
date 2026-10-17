@@ -89,6 +89,21 @@ func _run() -> void:
         return
     ui.call("_open_building",SectMapPresentation.DEST_MINE)
     await process_frame
+    var owner_avatar := ui.find_child("WorkforceOwnerAvatar",true,false) as Button
+    if owner_avatar == null or owner_avatar.custom_minimum_size.x < 44.0:
+        _fail("Mine owner avatar missing or not touch sized")
+        return
+    ui.call("_open_workforce_owner",miner_id,mine.id)
+    await process_frame
+    var owner_return := ui.find_child("ReturnToWorkforce",true,false) as Button
+    if owner_return == null or not owner_return.visible or not bool(ui.get("disciple_summary_panel").visible):
+        _fail("worker link did not open summary with building return")
+        return
+    ui.call("_return_to_workforce_building")
+    await process_frame
+    if not panel.visible or StringName(ui.get("selected_production_instance_id")) != mine.id:
+        _fail("return from worker lost exact Mine instance")
+        return
     var remove := ui.find_child("WorkforceRemove",true,false) as Button
     if remove == null or remove.disabled or remove.text != "Hủy mẻ":
         _fail("active Mine timer must expose canonical cancel instead of worker removal")
