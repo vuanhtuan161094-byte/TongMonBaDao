@@ -1,5 +1,20 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — MAP25 Windows GUI/Perf QA one-click — PACKAGE READY, WINDOWS GATE 01–07 PENDING
+
+**Current scope:** user authorized preparation only; no changes to Economy V2, One Active Job, Warehouse, scheduler, SaveService, combat, layout, Source A binary, or main. PR #18 remains DRAFT. `main` previously verified SHA `461caca1171462e0da092f21108c5c1733157ad9`. Read live branch HEAD immediately before future writes.
+
+**New QA probe:** `godot/tests/presentation/sect_map25_visual_perf_capture_test.gd`, created `96943842630607f38a39dfc8af298073ab80a1cf`; only actual camera/panel open calls, five 1280×720 screenshots, collected frame intervals/process time/FPS/draw calls/nodes/memory on Windows graphical rendering, CSV + capture metadata. No core/save/UI product changes.
+
+**Downloadable external operator ZIP:** `TONG_MON_BA_DAO_MAP25_WINDOWS_QA_ONECLICK_20261017.zip`, SHA-256 `16c689c9e7298314f2694fdc4eadb27593fcc05d9678e8f2bd01d9b594f04a04`, includes `RUN_MAP25_QA.cmd`, `RUN_MAP25_QA.ps1`, `README.txt`. It reuses EXISTING Godot tests, rather than cloning their assertions or multiplying runners; separately staged because the owner's previous MAP25 QA CMD/PS1 lives in an external Windows ZIP rather than GitHub. One-click cmd resolves official Godot 4.7.2, asks Git for fresh PR head and pins it in an isolated temporary clone, redirects process APPDATA/LOCALAPPDATA to disposable save namespace and tests 01 import, 02 32 SHA, 03 projection 36, 04 actual camera/workforce, 05 GUI Workforce E2E, 06 multi-instance. It optionally builds baseline worktree at pre-fix SHA `8b23f78797e99ed5568f3d61b1611b6426c616a8`, runs the same graphical probe before/after and emits metrics/snapshots + logs. Repo has no new launcher/pipeline files.
+
+**STATUS NOT RUN:** This chat has no physical Windows Godot 4.7.2 runner; runtime gate PASS, actual snapshot visual, fps/p95 comparisons, Android touch/PCK, O6/O8/SAFE/full remain PENDING. Historical 01/02/03 Windows PASS were for prior commit; historic 04 FAIL parser bug remains pending official post-fix verification. Graphic FPS/p95 measured only when owner runs, never infer from static code.
+
+**Next:** extract ZIP outside game, double-click `RUN_MAP25_QA.cmd`; send whole generated `MAP25_QA_RESULTS_*` folder. Assess log first failure; do not change backend or reduce assertions to green. Update `CURRENT_CHECKPOINT.md` + `NEXT_CHAT_HANDOFF.md` with actual SHA, exit, metrics, snapshots. Keep no CI, no push main, no merge.
+
+---
+
+
 ## 2026-10-17 — GUI-MAP25 Repair V1 handoff — new code STATIC ONLY; real Windows/performance QA PENDING
 
 **Read `AGENTS.md`, architecture, latest `CURRENT_CHECKPOINT.md` first.** Draft PR [#18](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/18) (`integration-v2-pr9-pr10-pr17-20261016`) includes six repair commits `1e581e3` (flat fallback markers), `cfdda1e` (camera unchanged short-circuit), `1d0c293` (static viewport UPDATE_ONCE), `67d58ca` (compact adjacent Workforce picker/actual disabled reason), `5eab832` (map regressions), `6028df4` (picker regressions). Latest documented code commit `6028df48cb175389fa075a3aa6f950c45aa9c2bc`; doc checkpoint `844b69830e5456afeaa583fdbb65966eeb11714e`. **Before any further write read live PR HEAD; these pins become stale after docs commit.** `main` `461caca1171462e0da092f21108c5c1733157ad9` verified identical when work started.
