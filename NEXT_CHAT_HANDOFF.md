@@ -1,5 +1,12 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — G1 focused UX closure follow-up
+
+After `f55ecd55` exact-ID route, one adjacent static state leak remained: closing an operation panel cleared `selected_building` but not `selected_production_instance_id`; the old badge was still prioritized as user-selected. Close now clears both presentation-only selections and updates map cues. Resource badge idle status avoids repeating a cumulative `Đã thu N` already shown as `Đã nhập kho N`; now says `Chờ mẻ tiếp` for a staffed previously productive, presently idle worksite. Focused instance test asserts close clears selections. No gameplay or Warehouse state touched. **Godot 4.7.2 latest HEAD focused test/1280×720 owner visual/Android all PENDING; owner UX NOT ACCEPTED**. Only a single already-designed Windows Godot acceptance pass after static readiness; no CI/FULL/merge/G2.
+
+---
+
+
 ## 2026-10-17 — G1 visual acceptance: exact-ID camera focus / readable receipt
 
 PR #20 baseline `946d8f5c`. Static audit found **three paths** where selecting Mine/Forest/Field instance #2 could keep focus on the type's default primary building: map picked-site, production board and in-panel instance chooser. Unified `_open_building(destination,instance_id)` validates a persisted production instance BEFORE the initial camera tween and initial panel data draw; board/map picker now use one exact-ID call (no double focus), chooser focuses selected real site. Operation panel subtitle displays actual instance ID/level. Settlement-only `+N đã vào kho` worksite receipt now has opaque cream backing and contrasting green border, with no change to metrics or emission rules. Extended existing focused multi-instance regression for board/picker/map 3 paths, exact focus, ID visibility, and receipt style. Four Godot 4.7.2 focused Windows cases remain **PENDING**; owner UX acceptance **NOT ACCEPTED**, Android/physical device PENDING. No CI, FULL, merge, gameplay/economy/scheduler/warehouse/save/G2 changes.

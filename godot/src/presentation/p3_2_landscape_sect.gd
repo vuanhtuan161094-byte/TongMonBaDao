@@ -994,6 +994,11 @@ func _close_building_operation_panel(clear_selection: bool = true) -> void:
     if not clear_selection:
         return
     selected_building = &""
+    # Closing the panel also ends its selection. Otherwise the previous
+    # Mine/Forest/Field badge stays "selected" on the map indefinitely.
+    selected_production_instance_id = &""
+    if iso_world != null:
+        _refresh_map_worksite_cues()
     if focused_kind == &"building":
         focused_kind = &""
         focused_id = &""
@@ -4344,7 +4349,9 @@ func _map_worksite_snapshot(building: BuildingState) -> Dictionary:
             result["detail"] = "Chưa phân công"
         else:
             var total_received := maxi(0,int(building.metrics.get("units_produced",0)))
-            result["detail"] = "Đã thu %d" % total_received if total_received > 0 else "Chưa có mẻ"
+            # The next line already reports cumulative Warehouse credit.
+            # Do not duplicate the same number in the batch-status line.
+            result["detail"] = "Chờ mẻ tiếp" if total_received > 0 else "Chưa có mẻ"
         return result
     var plot_data = building.production_state.get("plots",[])
     if not (plot_data is Array):

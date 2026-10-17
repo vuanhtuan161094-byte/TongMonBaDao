@@ -455,6 +455,13 @@ func _run() -> void:
     ):
         _fail("roundtrip lost secondary instance, worker, or its canonical persisted timer")
         return
+    ui.call("_close_building_operation_panel",true)
+    if (
+        StringName(ui.get("selected_production_instance_id")) != &""
+        or StringName(ui.get("selected_building")) != &""
+    ):
+        _fail("closing production panel left stale map instance selection")
+        return
     print("GUI MULTI-INSTANCE ID ROUTING TEST PASS (NO PLAYER CONSTRUCTION)")
     if ui != null:
         ui.queue_free()
