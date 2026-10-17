@@ -1,5 +1,19 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — Source A ORIGINAL PNG BYTES RECOVERED 32/32 from owner upload; repo import pending
+
+**Authorized raw source now available:** owner attached `SourceA_Map_Prep_20261012(1).zip`, size **28,000,430 bytes**, full ZIP SHA-256 `c453ef9e0a2762be0c6d17599d5736cb6b7e250ba11b6c9753efc8c1fd70f1a4`; ZIP enumerated with Python (`428` members). This **supersedes only the earlier missing-raw-file blocker**; original Library `TongMonBaDao_ENV02A_192World_Lab.zip` remains inaccessible but is no longer needed.
+
+**Actual original PNG SHA-256 verification:** scanned each PNG member by decompressed-byte digest, ignoring untrusted filename. Against `godot/data/presentation/map25_source_a_verified.json` (which is 32/32 equal to `labs/env02a/ENV02A_BASELINE_ASSET_SHA256.json`), found exact original PNG bytes for **3/3 PV01 buildings, 4/4 terrain, 6/6 roads, 19/19 vegetation = 32/32 PASS**, **0 missing / 0 tampered**. Pillow loaded/decoded all 32 PNGs as RGBA with nonzero dimensions; untouched original bytes retained. Owner-source metadata + crypto hashes demonstrate pack integrity; this is **not Godot runtime acceptance**.
+
+**Prepared verified transport archive:** `MAP25_VERIFIED_32_SOURCE_A.zip`, 32 original PNGs in proper curated `source_a_env02a/...` destinations, size `2,172,522` bytes, SHA-256 `8b3976e2f7400063798fbac88ced5d85c24beee9aa057e369fdbfc937cf3f920`. This is NOT fabricated artwork and is NOT a PR file yet.
+
+**Delivery boundary:** current sandbox can verify uploaded binary but cannot send the resulting binary directly into authenticated GitHub writes from its byte store. **Do not state that assets have been committed or Godot has displayed them.** Instead, a separately packaged, protected one-click Windows import/commit tool will use the existing repo `tools/assets/restore_map25_env02a_art.py`, check the exact draft PR head, stage only 32 art paths on a **fresh isolated clone** and fast-forward push with no CI invocation. If clone credentials/runner are unavailable, remain BLOCKED ON BINARY PUSH; do not overwrite the user's working repository, do not merge main, and do not claim runtime PASS.
+
+**Actual local evidence:** ZIP byte access PASS, 32/32 image hash PASS, 32/32 Pillow PNG decoder PASS, curated transport zip 32 members. Official Godot 4.7.2 importer, SHA-gate focused test, 2.5D projection, main scene/headless + Windows GUI/screenshot, mobile gestures and cumulative backend regression are **NOT RUN/PENDING** at the inspected PR HEAD. Previous 4 synthetic Python tests PASS remain independent historical proof.
+
+---
+
 ## 2026-10-17 — MAP25 Source A archive recheck; Python restore contract 4/4 PASS; genuine art BLOCKED
 
 **PR #18 starting HEAD:** `8ec1079681733fbb1f458620f81044111cfc3c78` (DRAFT, base PR #9). `main` was independently checked at `461caca1171462e0da092f21108c5c1733157ad9` and was not targeted for edits. This is a **docs-only evidence update**; source/renderer/gameplay binaries were not changed.
