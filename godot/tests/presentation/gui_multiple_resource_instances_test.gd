@@ -45,6 +45,41 @@ func _run() -> void:
     if bool(preview.get("ok",true)) or int(preview.get("current_count",0)) != 2:
         _fail("adding fixture accidentally authorized player construction")
         return
+    # G1.7: the central operations board must list both genuine instance
+    # IDs and open the SECOND one without falling back to the first Mine.
+    ui.call("_show_sect_hub")
+    ui.call("_show_sect_production_board")
+    await process_frame
+    var board := ui.find_child("SectOperationsHub",true,false) as Panel
+    var first_card := ui.find_child("SectProductionCard_%s" % str(first.id),true,false)
+    var second_card := ui.find_child("SectProductionCard_%s" % str(second.id),true,false)
+    var open_second := ui.find_child("SectProductionOpen_%s" % str(second.id),true,false) as Button
+    if board == null or not board.visible or first_card == null or second_card == null or open_second == null:
+        _fail("sect production board omitted one of two real Mine instances")
+        return
+    var all_label := ui.find_child("SectProductionPageInfo",true,false) as Label
+    if all_label == null or not all_label.text.contains("công trình"):
+        _fail("sect production board page count missing")
+        return
+    ui.call("_sect_production_filter_changed",BuildingSystem.TYPE_MINE)
+    await process_frame
+    var filtered_label := ui.find_child("SectProductionPageInfo",true,false) as Label
+    if filtered_label == null or not filtered_label.text.contains("2 công trình"):
+        _fail("Mine board filter omitted a real Mine instance")
+        return
+    open_second = ui.find_child("SectProductionOpen_%s" % str(second.id),true,false) as Button
+    if open_second == null or open_second.disabled:
+        _fail("filtered second Mine cannot be opened by ID")
+        return
+    open_second.pressed.emit()
+    await process_frame
+    if StringName(ui.get("selected_production_instance_id")) != second.id:
+        _fail("sect board open went to primary instead of selected second Mine")
+        return
+    if first.to_dict() != first_snapshot:
+        _fail("opening secondary Mine from board wrote primary production state")
+        return
+
     ui.call("_open_building",SectMapPresentation.DEST_MINE)
     await process_frame
     var chooser := ui.find_child("WorkforceInstanceChooser",true,false) as OptionButton
@@ -165,6 +200,25 @@ func _run() -> void:
             str(selected.current_action),str(selected.direct_command),
             str(selected.work_cycle_state),str(secondary_timer)
         ])
+        return
+    # The board reads the exact stored timer on the exact selected instance.
+    ui.call("_show_sect_hub")
+    ui.call("_show_sect_production_board")
+    ui.call("_sect_production_filter_changed",BuildingSystem.TYPE_MINE)
+    await process_frame
+    var second_status := ui.find_child("SectProductionStatus_%s" % str(second.id),true,false) as Label
+    var first_status := ui.find_child("SectProductionStatus_%s" % str(first.id),true,false) as Label
+    var expected_remaining := maxi(0,int(secondary_timer.get("finish_tick",state.tick))-state.tick)
+    if (
+        second_status == null or first_status == null
+        or not second_status.text.contains("×%d" % int(secondary_timer.get("output_quantity",0)))
+        or not second_status.text.contains("còn %d phút" % expected_remaining)
+        or first_status.text.contains(str(timed_job_id))
+    ):
+        _fail("production board did not show secondary canonical timer/status")
+        return
+    if not state.validate_invariants().is_empty():
+        _fail("opening production dashboard mutated canonical state")
         return
     # A second instance survives the canonical serializer, no shadow map.
     var saved := SimulationState.from_dict(state.to_dict())
