@@ -1203,6 +1203,39 @@ func _disciple_avatar_button(disciple: DiscipleState, edge: float) -> Button:
             portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
             avatar.text = ""
             avatar.add_child(portrait)
+            return avatar
+
+    # Verified Source A portrait not yet imported for this disciple:
+    # render a lightweight seed-stable face/hair/robe tile instead of a
+    # misleading female art swap or the same initial-only green square.
+    var look := DiscipleActorVisualCatalog.default_appearance_for_disciple(disciple)
+    var garment := Color.from_string(str(look.get("outfit_tint","455472")),Color(0.27,0.33,0.45))
+    var hair_tint := Color.from_string(str(look.get("hair_tint","2b2624")),Color(0.17,0.15,0.14))
+    var stage := Control.new()
+    stage.name = "FallbackPortrait"
+    stage.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    stage.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    var chest := Panel.new()
+    chest.position = Vector2(edge*0.15,edge*0.62)
+    chest.size = Vector2(edge*0.70,edge*0.33)
+    chest.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    chest.add_theme_stylebox_override("panel",_style(garment,INK,1,5))
+    stage.add_child(chest)
+    var face := Panel.new()
+    face.position = Vector2(edge*0.29,edge*0.23)
+    face.size = Vector2(edge*0.42,edge*0.43)
+    face.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    face.add_theme_stylebox_override("panel",_style(Color(0.94,0.79,0.65),INK,1,9))
+    stage.add_child(face)
+    var hair := Panel.new()
+    hair.position = Vector2(edge*0.24,edge*0.12)
+    hair.size = Vector2(edge*0.52,edge*0.20)
+    hair.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    hair.add_theme_stylebox_override("panel",_style(hair_tint,INK,1,8))
+    stage.add_child(hair)
+    avatar.text = ""
+    avatar.tooltip_text = disciple.display_name
+    avatar.add_child(stage)
     return avatar
 
 func _open_workforce_owner(disciple_id: StringName, building_id: StringName) -> void:
