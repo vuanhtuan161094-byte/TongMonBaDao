@@ -1,5 +1,11 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — G1.6 production panel direct coding DONE / runtime PENDING
+
+Draft PR20 G1.6: read-only canonical production ledger for Mine/Forest (real timer/units/remaining/stock) and Spirit Field (per-plot crop, baseline yield, finish/empty), below always-visible 44px Start/Choose/Remove. Start blocked clearly for active timer/full plots, stock target, invalid current job; accepted command explicitly says scheduler *will* start, does not claim goods. Single test `gui_workforce_v1_e2e_test.gd` extended to check actual Mine timer and planted Field snapshot display; source static 12/12 + lexical 2/2 PASS, official Windows/Godot exact HEAD PENDING. No CI/FULL/merge; no gameplay edits. Re-fetch latest PR20 before next code packet.
+
+---
+
 ## 2026-10-17 — PR20 Source A male + off-map avatar follow-up
 
 Confirmed Codex male import PR20 commit `009ffd957624c63518f4f10141613540ce0fb2c9` (Godot Windows G1/actor focused PASS as recorded by Codex). Added UI-only shared cached verified Source A portraits for disciples absent from `actor_nodes`; focused G1 regression covers synthetic off-map female/male, single shared texture per rig. **Static 2/2 PASS; Windows for newer UI commit still PENDING.** Continue code-first, no unnecessary new Windows/CI/FULL QA, no gameplay changes. Before further writes re-fetch latest PR #20 HEAD; `main` remains separate. Owner visual signoff/Android still PENDING.
