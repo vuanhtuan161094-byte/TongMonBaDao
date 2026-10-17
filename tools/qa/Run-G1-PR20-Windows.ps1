@@ -32,6 +32,8 @@ $oldMapOut = $env:MAP25_QA_OUT
 $oldMapSha = $env:MAP25_QA_SHA
 $status = "BLOCKED"
 $zipPath = $report + ".zip"
+$g1Screenshots = Join-Path $report "G1_SCREENSHOTS"
+$g1ScreenshotCount = 0
 
 function Add-Note([string]$line) {
     $script:summary.Add($line)
@@ -246,6 +248,22 @@ try {
         Add-Note "[NOT IN SCOPE] Native visual/FPS capture (opt in with -Visual)"
     }
 
+    if ($Acceptance) {
+        # Real manual game screenshots only. No synthetic or desktop scraping.
+        New-Item -Path $g1Screenshots -ItemType Directory -Force | Out-Null
+        @(
+            "G1 TIMELINE: Save three genuine 1280x720 game screenshots."
+            "Win+Shift+S during gameplay; Save As PNG/JPG to this folder."
+            "01_mo.png: actual Mine worker, progress, ETA, planned output, credited"
+            "02_linh_lam.png: actual Forest worker, progress, ETA, credited"
+            "03_linh_dien.png: Field worker, nearest growing plot, progress/ETA"
+            "Also inspect zoom/pan stutter and button overlaps; no FPS claims."
+            "Owner UX + Android remain PENDING until inspected."
+        ) | Set-Content -LiteralPath (Join-Path $g1Screenshots "HOW_TO_CAPTURE.txt") -Encoding UTF8
+        Add-Note "[G1 IMAGES] While the game is open, save 3 real Mine/Forest/Field screenshots."
+        Add-Note ("[G1 IMAGES] Save As folder: " + $g1Screenshots)
+        Add-Note "[G1 IMAGES] These images will enter the ONE ZIP with focused test logs."
+    }
     if ($Play -or $PlayOnly) {
         if ($failures.Count -eq 0) {
             Add-Note "[PLAY] Opening the real 1280x720 game in an isolated save directory."
@@ -260,9 +278,24 @@ try {
         }
     }
 
+    if ($Acceptance) {
+        # Test PASS is not an owner visual PASS.
+        $g1Images = @(
+            Get-ChildItem -LiteralPath $g1Screenshots -File -ErrorAction SilentlyContinue |
+                Where-Object { $_.Extension.ToLowerInvariant() -in @(".png",".jpg",".jpeg") -and $_.Length -gt 0 }
+        )
+        $g1ScreenshotCount = $g1Images.Count
+        Add-Note ("[G1 IMAGES] Nonempty PNG/JPG files in report: " + $g1ScreenshotCount)
+        if ($g1ScreenshotCount -lt 3) {
+            $blocked.Add("G1 screenshot evidence missing ($g1ScreenshotCount/3); real Mine/Forest/Field images required.")
+            Add-Note "[G1 PENDING] Focused logs preserved, screenshots missing; no owner UX PASS."
+        } else {
+            Add-Note "[G1 EVIDENCE READY] Three images present. Owner must inspect before accepting G1."
+        }
+    }
     $status = if ($failures.Count -gt 0) { "FAIL" } elseif ($blocked.Count -gt 0) { "PENDING" } else { "PASS" }
     if ($status -eq "PASS") {
-        Add-Note ("[PASS] " + $(if ($Acceptance) { "G1.5-G1.8 WINDOWS FOCUSED ACCEPTANCE" } elseif ($PlayOnly) { "PLAY PREVIEW (NO TESTS)" } elseif ($Full -and $Visual) { "WINDOWS FULL + VISUAL" } elseif ($Full) { "WINDOWS FULL" } elseif ($Visual) { "G1 QUICK + VISUAL" } else { "G1 QUICK ONLY" }))
+        Add-Note ("[PASS] " + $(if ($Acceptance) { "G1 WINDOWS FOCUSED TESTS + IMAGE FILES; OWNER UX ACCEPTANCE PENDING" } elseif ($PlayOnly) { "PLAY PREVIEW (NO TESTS)" } elseif ($Full -and $Visual) { "WINDOWS FULL + VISUAL" } elseif ($Full) { "WINDOWS FULL" } elseif ($Visual) { "G1 QUICK + VISUAL" } else { "G1 QUICK ONLY" }))
     }
 } catch {
     Add-Note ("[BLOCKED/FAIL] " + $_.Exception.Message)
@@ -281,7 +314,7 @@ try {
     try {
         if (-not (Test-Path $report)) { New-Item -ItemType Directory -Force -Path $report | Out-Null }
         [IO.File]::WriteAllLines((Join-Path $report "SUMMARY.md"),$summary)
-        $info = @{ branch=$branchName; head_sha=$headSha; final_status=$status; failing=@($failures); blocked=@($blocked); godot_bin=$GodotBin; source_repo=$remoteUrl; time=$stamp; ci="NOT RUN"; merge="NOT RUN"; android="PENDING"; visual_owner="PENDING" }
+        $info = @{ branch=$branchName; head_sha=$headSha; final_status=$status; failing=@($failures); blocked=@($blocked); godot_bin=$GodotBin; source_repo=$remoteUrl; time=$stamp; ci="NOT RUN"; merge="NOT RUN"; android="PENDING"; visual_owner="PENDING"; g1_screenshot_count=$g1ScreenshotCount }
         $info | ConvertTo-Json -Depth 5 | Set-Content -Path (Join-Path $report "QA_METADATA.json") -Encoding UTF8
         if (Test-Path $zipPath) { throw "Existing evidence ZIP; refuse overwrite" }
         Compress-Archive -Path (Join-Path $report "*") -DestinationPath $zipPath -CompressionLevel Optimal
