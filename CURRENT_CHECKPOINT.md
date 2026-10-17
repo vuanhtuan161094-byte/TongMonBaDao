@@ -1,5 +1,18 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — MAP25 Windows QA at 11:35:40 ICT: TEMP Git checkout false dirty, V4 launcher hotfix prepared
+
+**Direct owner ZIP evidence** `MAP25_QA_RESULTS_20261017_113540.zip`: Godot `4.7.2.stable.official.ed1daf0bf` binary found; `git version 2.55.0.windows.3` exit zero; git remote PR #18 HEAD pinned `40ef10459517766e8a4948ade079e4f4d1f3ab0a`; TEMP `git clone` completed; `git rev-parse HEAD` matched pin. But `git status --porcelain` returned exactly ` M tools/godot/Verify-P3-6A-Playable-Slice.ps1`. Launcher stopped `TEMP clone was not clean on initial checkout` at line 206; `qa_gates.csv` records `00_git_smoke,PASS`, `00_remote_pin,PASS`, `FINAL,FAIL`. **01 editor import, 02 art SHA32, 03 projection36, 04 main/workforce, 05 GUI E2E, 06 multi-instance, 07 visuals/FPS were ALL NOT RUN** at this SHA. Failure belongs to Git QA preflight, not game/art runtime.
+
+**Root cause corroborated independently:** reproduce a fresh Git worktree from blob containing CRLF under `*.ps1 text` attributes, with `git status --porcelain` showing ` M` and `git diff --ignore-space-at-eol --exit-code` returning 0. This matches the repository's known historical CRLF/text normalization debt, but **the ZIP does not include a byte-level diff**, so exact equivalence for the owner's clone is still to be verified by V4's Git check rather than assumed.
+
+**One-click V4 package prepared, not Windows-run:** `TONG_MON_BA_DAO_MAP25_WINDOWS_QA_HOTFIX_V4_20261017.zip`, SHA256 `d44fbd494d9611e7d89f905dbe9c787bb80b6ecaffc9fedc4fcd0c9aeaefd41f`. Keeps same `RUN_MAP25_QA.cmd` + `RUN_MAP25_QA.ps1`, previous V3 native process exit-code fix and all existing official Godot gates. Only tolerates exact known `M tools/godot/Verify-P3-6A-Playable-Slice.ps1` **if both cached/index diff and `git diff --ignore-space-at-eol --exit-code -- exact/path` succeed**; all other changes fail closed. No `git reset/add/checkout` performed to hide dirt; no gameplay, original art, save, main, CI, merge changes. ZIP members/CRC checked and simulated git CRLF behavior tested. Windows runtime V4 gate status PENDING.
+
+**Next:** run V4 launcher from fresh extracted folder; upload full newest `MAP25_QA_RESULTS_*` only if FAILURE or for proof of PASS. Review 01–07 independently and actual FPS metrics before any GUI/MAP25 conclusion.
+
+---
+
+
 ## 2026-10-17 — MAP25 official Windows QA second launcher failure at Git bootstrap; QA harness V3 prepared
 
 **User Windows console evidence at 11:31:07 ICT:** `[GODOT] 4.7.2.stable.official.ed1daf0bf / E:\Godot_v4.7.2-stable_win64_console.exe`, followed by `[GIT] git_01___version: --version` and `[FAIL] git exit= at git_01___version:`. This is a **QA harness bootstrap FAIL, BEFORE any clone or Godot 01–07 gate**, not a game/runtime failure. `Start-Process -PassThru` in the diagnostic PowerShell wrapper reported a blank `ExitCode`; the script compared null to integer 0 as nonzero and raised a false git failure. The console is direct evidence of an empty exit code, not proof of why Windows returned it. The previous diagnosis of Git `NativeCommandError` remains only a possible separate issue, not the confirmed root cause here.
