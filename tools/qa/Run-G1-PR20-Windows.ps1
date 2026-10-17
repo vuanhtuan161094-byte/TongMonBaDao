@@ -6,7 +6,8 @@ param(
     [switch]$Full,
     [switch]$Visual,
     [switch]$Play,
-    [switch]$PlayOnly
+    [switch]$PlayOnly,
+    [switch]$Acceptance
 )
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
@@ -112,6 +113,9 @@ try {
     New-Item -Path $tempRoot -ItemType Directory -Force | Out-Null
     Add-Note "# TONG MON BA DAO - G1 PR20 Windows QA"
     Add-Note ("Run: " + $stamp)
+    if ($Acceptance -and ($Full -or $Visual -or $PlayOnly)) {
+        throw "Acceptance is standalone; use -Acceptance -Play, not Full/Visual/PlayOnly."
+    }
     Add-Note ("Draft branch: " + $branchName)
     Add-Note "Expected ancestor: $projectSha"
     Add-Note "No CI; no merge; never touches owner's tracked/untracked or saves."
@@ -180,11 +184,21 @@ try {
             @("11_main_scene","res://tests/presentation/sect_iso_main_integration_test.gd","MAP 2.5D REAL MAIN SCENE WORKFORCE CAMERA PASS")
         )
     }
+    if ($Acceptance) {
+        # One final playability gate for G1.5-G1.8. No unrelated FULL,
+        # no 600-frame benchmark, no CI and no alternate game authority.
+        $tests = @(
+            @("03_g1_radar","res://tests/presentation/sect_g1_disciple_radar_test.gd","G1 DISCIPLE RADAR + VERIFIED SOURCE A POOL: PASS"),
+            @("04_sourcea_actor","res://tests/presentation/sect_source_a_actor_pilot_test.gd","SOURCE A ACTOR PILOT REAL SCENE PASS"),
+            @("05_workforce_play","res://tests/presentation/gui_workforce_v1_e2e_test.gd","GUI-WORKFORCE V1 REAL LANDSCAPE END-TO-END PASS"),
+            @("06_instance_board","res://tests/presentation/gui_multiple_resource_instances_test.gd","GUI MULTI-INSTANCE ID ROUTING TEST PASS")
+        )
+    }
     if ($PlayOnly) {
         $tests = @()
         Add-Note "[PLAY-ONLY] No Quick tests requested; import plus real game preview."
     }
-    Add-Note ("QA scope: " + $(if ($PlayOnly) { "PLAY ONLY (no tests)" } elseif ($Full) { "FOCUSED + FULL" } else { "G1 QUICK (4 focused tests)" }))
+    Add-Note ("QA scope: " + $(if ($PlayOnly) { "PLAY ONLY (no tests)" } elseif ($Acceptance) { "G1.5-G1.8 ACCEPTANCE (4 focused presentation tests)" } elseif ($Full) { "FOCUSED + FULL" } else { "G1 QUICK (4 focused tests)" }))
     foreach ($t in $tests) {
         $ok = Run-GodotTest $t[0] $t[1] $t[2]
         if (-not $ok) { Add-Note ("[WARN] Independent tests continue after " + $t[0]) }
@@ -235,7 +249,7 @@ try {
     if ($Play -or $PlayOnly) {
         if ($failures.Count -eq 0) {
             Add-Note "[PLAY] Opening the real 1280x720 game in an isolated save directory."
-            Add-Note "[PLAY] Try: Disciple profile > Assign > Mine / Forest / Spirit Field > Confirm."
+            Add-Note "[PLAY] Try: Hub > Production Board > Attention Filter > Exact Mine / Forest / Field > Assign / Start."
             Add-Note "[PLAY] Close the game window to finish and receive the QA ZIP."
             $previewOk = Invoke-QAProcess -Label "14_g15_play_preview" -Exe $GodotBin -ArgumentLine ('--path "' + $project + '" --resolution 1280x720') -PassMarker "" -TimeoutSec 3600
             if (-not $previewOk) {
@@ -248,7 +262,7 @@ try {
 
     $status = if ($failures.Count -gt 0) { "FAIL" } elseif ($blocked.Count -gt 0) { "PENDING" } else { "PASS" }
     if ($status -eq "PASS") {
-        Add-Note ("[PASS] " + $(if ($Full -and $Visual) { "WINDOWS FULL + VISUAL" } elseif ($Full) { "WINDOWS FULL" } elseif ($Visual) { "G1 QUICK + VISUAL" } else { "G1 QUICK ONLY" }))
+        Add-Note ("[PASS] " + $(if ($Acceptance) { "G1.5-G1.8 WINDOWS FOCUSED ACCEPTANCE" } elseif ($PlayOnly) { "PLAY PREVIEW (NO TESTS)" } elseif ($Full -and $Visual) { "WINDOWS FULL + VISUAL" } elseif ($Full) { "WINDOWS FULL" } elseif ($Visual) { "G1 QUICK + VISUAL" } else { "G1 QUICK ONLY" }))
     }
 } catch {
     Add-Note ("[BLOCKED/FAIL] " + $_.Exception.Message)
