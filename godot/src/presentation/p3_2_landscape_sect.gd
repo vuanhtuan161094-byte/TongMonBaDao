@@ -3939,7 +3939,7 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
     var roster_search := LineEdit.new()
     roster_search.name = "DiscipleProfileSearch"
     roster_search.position = Vector2(8, 8)
-    roster_search.size = Vector2(168, 36)
+    roster_search.size = Vector2(168, 44)
     roster_search.placeholder_text = "Tên hoặc ID · Enter"
     roster_search.text = disciple_profile_query
     roster_search.tooltip_text = "Tìm theo tên hoặc ID; hiển thị tối đa 50 đệ tử mỗi lượt."
@@ -3947,8 +3947,8 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
     roster_panel.add_child(roster_search)
 
     var scroll := ScrollContainer.new()
-    scroll.position = Vector2(8, 50)
-    scroll.size = Vector2(168, 406)
+    scroll.position = Vector2(8, 58)
+    scroll.size = Vector2(168, 398)
     roster_panel.add_child(scroll)
 
     var roster := VBoxContainer.new()
@@ -3977,6 +3977,8 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
         entry.text = roster_disciple.display_name
         entry.custom_minimum_size = Vector2(148, 44)
         entry.add_theme_font_size_override("font_size", 13)
+        entry.add_theme_color_override("font_color",INK)
+        entry.add_theme_color_override("font_hover_color",INK)
         var is_selected := id == selected_id
         entry.add_theme_stylebox_override("normal", _style(Color(0.97, 0.90, 0.70, 1.0) if is_selected else Color(0.91, 0.86, 0.72, 1.0), GOLD if is_selected else Color(0.45, 0.37, 0.25, 1.0), 2 if is_selected else 1, 8))
         entry.pressed.connect(Callable(self, "_open_disciple_deep_screen").bind(id, tab_name))
@@ -3990,10 +3992,23 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
     showcase.add_theme_stylebox_override("panel", _style(Color(0.76, 0.84, 0.72, 1.0), Color(0.31, 0.40, 0.28, 1.0), 2, 80))
     panel.add_child(showcase)
 
-    var initial := _label(showcase, disciple.display_name.substr(0, 1), Vector2(70, 66), Vector2(160, 150), 86)
-    initial.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-    initial.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-    initial.add_theme_color_override("font_color", JADE_DARK)
+    var selected_actor := actor_nodes.get(str(disciple.id)) as ModularDiscipleActor
+    if selected_actor != null and selected_actor.baked_visual_active() and source_a_pilot_scene != null:
+        # The verified source clip is displayed at its native pixel size,
+        # independently from the small scaled map instance.
+        var artwork := source_a_pilot_scene.instantiate() as AnimatedSprite2D
+        artwork.name = "DiscipleSourceAArtwork"
+        artwork.position = Vector2(150,170)
+        showcase.add_child(artwork)
+        artwork.play(&"stand")
+    else:
+        var initial := _label(showcase, disciple.display_name.substr(0, 1), Vector2(70, 60), Vector2(160, 138), 86)
+        initial.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+        initial.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+        initial.add_theme_color_override("font_color", JADE_DARK)
+        var art_pending := _label(showcase,"Chưa có chân dung xác minh",Vector2(25,204),Vector2(250,20),12)
+        art_pending.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+        art_pending.add_theme_color_override("font_color",INK)
 
     var center_name := _label(showcase, disciple.display_name, Vector2(20, 232), Vector2(260, 32), 22)
     center_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -4058,8 +4073,10 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
         var tab := Button.new()
         tab.text = tab_names[index]
         tab.position = Vector2(220 + index * 154, 470)
-        tab.size = Vector2(144, 42)
+        tab.size = Vector2(144, 44)
         tab.add_theme_font_size_override("font_size", 12)
+        tab.add_theme_color_override("font_color",INK)
+        tab.add_theme_color_override("font_hover_color",INK)
         var active := tab_names[index] == tab_name
         tab.add_theme_stylebox_override("normal", _style(Color(0.97, 0.88, 0.64, 1.0) if active else Color(0.88, 0.82, 0.67, 1.0), GOLD if active else Color(0.45, 0.37, 0.25, 1.0), 2 if active else 1, 7))
         tab.pressed.connect(Callable(self, "_open_disciple_deep_screen").bind(selected_id, str(tab_names[index])))
