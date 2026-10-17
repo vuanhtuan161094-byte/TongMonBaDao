@@ -1,5 +1,11 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — G1 QA HANDOFF (real V2 radar image required)
+
+On [draft PR #20](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/20), `Run-G1-PR20-Windows.cmd` / `tools/qa/Run-G1-PR20-Windows.ps1` is the prepared isolated official Windows tester. New MAP25 capture `08b_g1_real_v2_radar.png` MUST show genuine V2 six-axis radar; test recruits through actual backend and validates values. 12 native images expected if the prior 11 all pass. Run the script on an available graphical Windows host with official Godot 4.7.2; return log/CSV/screenshots evidence ZIP and actual tested SHA for independent review. **No Windows result yet.** Static lexical scans 5/5 PASS only, CI OFF, no merge or main writes. Check current branch and docs before any changes.
+
+---
+
 ## 2026-10-17 — G1 exact-branch Windows QA prepared; runtime PENDING
 
 Draft [PR #20](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/20) contains radar + Source A pool, G1 authentic-V2 regression (corrected legacy-first-roster fixture), and isolated **one-click Windows QA launcher** `Run-G1-PR20-Windows.cmd` / `tools/qa/Run-G1-PR20-Windows.ps1`. Run on Windows with official `E:\\Godot_v4.7.2-stable_win64_console.exe` or `GODOT_BIN` set; it automatically clones GitHub branch `g1-disciple-radar-sourcea-pool-20261017` into TEMP, isolates save roots, runs 9 focused contracts, P3.7 FULL, GUI MAP25 screenshots/perf, and outputs `Downloads/TONG_MON_G1_PR20_QA_*.zip`. Attach the evidence ZIP to check exact HEAD, logs, screenshots and 600 samples. **NOT RUN** in this session; no CI, merge or main edits. If Godot fails, repair the observed parser/runtime defect first; do not call the Windows gate PASS based on structural checks. Full plan in `docs/G1_DISCIPLE_RADAR_SOURCE_A_POOL_QA_2026-10-17.md`.
