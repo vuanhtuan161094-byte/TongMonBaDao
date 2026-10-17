@@ -79,7 +79,13 @@ func _run() -> void:
         if not mining_job.is_empty():
             break
     if mining_job.is_empty():
-        _fail("Mine start did not create real timed production")
+        _fail(
+            "Mine start did not create real timed production; v2=%s action=%s command=%s cycle=%s tick=%d economy_a=%s" % [
+                str(DiscipleRealmProgressV2.owns_v2_progression(miner)),
+                str(miner.current_action),str(miner.direct_command),
+                str(miner.work_cycle_state),state.tick,str(state.sect.economy_a_enabled)
+            ]
+        )
         return
     ui.call("_open_building",SectMapPresentation.DEST_MINE)
     await process_frame
@@ -229,6 +235,17 @@ func _idle_assigned_disciple() -> StringName:
     ids.sort()
     for raw in ids:
         var d: DiscipleState = state.disciples[raw]
+        # Economy-A timer is V2-only. Legacy actors intentionally continue
+        # their old carry/haul cycle and cannot satisfy the timer assertion.
+        # The test must recruit a real V2 actor rather than rewriting a save.
+        if not DiscipleRealmProgressV2.owns_v2_progression(d):
+            continue
+        if d.hp / maxf(d.max_hp,1.0) < 0.72:
+            continue
+        if buildings.disciple_has_active_timed_recipe(state,d.id) or buildings.disciple_has_active_spirit_plot(state,d.id):
+            continue
+        if DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,d):
+            continue
         if d.work_group_id != &"" and d.work_group_id != &"mining_crew" and d.direct_command.is_empty() and d.work_cycle_state.is_empty() and d.active_pve_encounter_id.is_empty() and d.region_id == &"sect" and d.current_action in [&"EVALUATE",&"IDLE",&"HOLD"]:
             return d.id
     return &""
@@ -238,6 +255,17 @@ func _free_disciple() -> StringName:
     ids.sort()
     for raw in ids:
         var d: DiscipleState = state.disciples[raw]
+        # Economy-A timer is V2-only. Legacy actors intentionally continue
+        # their old carry/haul cycle and cannot satisfy the timer assertion.
+        # The test must recruit a real V2 actor rather than rewriting a save.
+        if not DiscipleRealmProgressV2.owns_v2_progression(d):
+            continue
+        if d.hp / maxf(d.max_hp,1.0) < 0.72:
+            continue
+        if buildings.disciple_has_active_timed_recipe(state,d.id) or buildings.disciple_has_active_spirit_plot(state,d.id):
+            continue
+        if DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,d):
+            continue
         if d.work_group_id == &"" and d.worksite_building_id == &"" and d.work_cycle_state.is_empty() and d.direct_command.is_empty() and d.region_id == &"sect" and d.active_pve_encounter_id.is_empty() and d.current_action in [&"EVALUATE",&"IDLE",&"HOLD"]:
             return d.id
     # Real generator/recruitment path for a compact test roster with no idle
@@ -249,7 +277,7 @@ func _free_disciple() -> StringName:
     if generated != null:
         state.recruitment_candidates[generated.id] = generated
         var accepted := RecruitmentSystem.new().accept_candidate(state,generated.id)
-        if bool(accepted.get("ok",false)):
+        if bool(accepted.get("ok",false)) and DiscipleRealmProgressV2.owns_v2_progression(state.disciples[generated.id]):
             return generated.id
     return &""
 
