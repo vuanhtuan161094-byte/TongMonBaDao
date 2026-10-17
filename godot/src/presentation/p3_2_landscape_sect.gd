@@ -617,8 +617,40 @@ func _reconcile_live_actors() -> void:
     if needs_install:
         _install_modular_live_actors()
 
+# Read-only map work cues from committed production snapshots. These
+# labels communicate timer activity, but are not a replacement for authored
+# mining/forestry/sowing animation clips.
+func _active_resource_work_cues() -> Dictionary:
+    var cues := {}
+    if state == null:
+        return cues
+    for raw_building in state.buildings.values():
+        if not (raw_building is BuildingState):
+            continue
+        var building: BuildingState = raw_building
+        if building.building_type in [BuildingSystem.TYPE_MINE,BuildingSystem.TYPE_LINH_FOREST]:
+            var raw_jobs = building.production_state.get("economy_a_jobs",[])
+            if not (raw_jobs is Array):
+                continue
+            for job in raw_jobs:
+                if job is Dictionary:
+                    var worker_id := str(job.get("worker_id",""))
+                    if worker_id != "":
+                        cues[worker_id] = "Đang khai khoáng" if building.building_type == BuildingSystem.TYPE_MINE else "Đang khai lâm"
+        elif building.building_type == BuildingSystem.TYPE_SPIRIT_FIELD:
+            var raw_plots = building.production_state.get("plots",[])
+            if not (raw_plots is Array):
+                continue
+            for plot in raw_plots:
+                if plot is Dictionary and StringName(plot.get("status","")) == BuildingSystem.PLOT_GROWING:
+                    var worker_id := str(plot.get("assigned_worker_id",""))
+                    if worker_id != "":
+                        cues[worker_id] = "Linh Điền đang trồng"
+    return cues
+
 func _sync_actor_positions() -> void:
     _reconcile_live_actors()
+    var actual_work_cues := _active_resource_work_cues()
     var ids: Array = state.disciples.keys()
     ids.sort()
     for index in range(ids.size()):
@@ -676,7 +708,17 @@ func _sync_actor_positions() -> void:
         if actor_status_labels.has(key):
             var status := actor_status_labels[key] as Label
             if is_instance_valid(status):
-                status.text = SectMapPresentation.action_label(disciple.current_action)
+                if actual_work_cues.has(key):
+                    status.text = str(actual_work_cues[key])
+                    status.visible = true
+                else:
+                    status.text = SectMapPresentation.action_label(disciple.current_action)
+                    if actor is ModularDiscipleActor:
+                        status.visible = (actor as ModularDiscipleActor).current_clip in [
+                            DiscipleActorVisualCatalog.CLIP_MINING,
+                            DiscipleActorVisualCatalog.CLIP_FORGING,
+                            DiscipleActorVisualCatalog.CLIP_WORK
+                        ]
 
     if focused_kind == &"disciple":
         _refresh_focused_disciple_point()
