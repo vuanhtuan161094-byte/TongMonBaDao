@@ -129,6 +129,14 @@ func _run() -> void:
     if not work_cues.has(str(miner_id)) or str(work_cues[str(miner_id)]) != "Đang khai khoáng":
         _fail("map worker did not expose canonical mining work cue")
         return
+    var mine_snapshot := ui.call("_map_worksite_snapshot",mine) as Dictionary
+    if (
+        str(mine_snapshot.get("worker","")) != miner.display_name
+        or int(mine_snapshot.get("received",-1)) != int(mine.metrics.get("units_produced",0))
+        or not bool(mine_snapshot.get("active",false))
+    ):
+        _fail("map Mine production card lacks canonical worker and credited total")
+        return
     var owner_avatar := ui.find_child("WorkforceOwnerAvatar",true,false) as Button
     if owner_avatar == null or owner_avatar.custom_minimum_size.x < 44.0:
         _fail("Mine owner avatar missing or not touch sized")

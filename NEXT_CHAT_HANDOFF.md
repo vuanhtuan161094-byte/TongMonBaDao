@@ -1,5 +1,12 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — G1 visual follow-up: exact worker/site + readable production card (runtime pending)
+
+PR #20 follow-up at baseline `f8ade7e5`. Kept existing `SectProductionWorksiteCue`; extended its map badge with canonical assigned/active worker, **planned batch and remaining time**, cumulative **post-Warehouse credited** `units_produced`, and numeric percent beside the actual scheduler progress bar. Map prioritizes selected/active/receipt worksites and limits other idle badges to two; no new timers or receipt paths. Fixed active production actor visual foot position to the exact `worksite_building_id` instead of the type's primary building; cosmetic movement speed/real stand-walk clips unchanged. Focused existing Workforce E2E and second-Mine assertions extended. Only source/lexical verification possible here; **Godot official 4.7.2 exact new HEAD, 1280×720 visual owner signoff and Android remain PENDING**. Source A mining/chopping/planting clips still ART PENDING. No CI/FULL/merge/G2 or gameplay/save/economy mutation.
+
+---
+
+
 ## 2026-10-17 — G1 per-instance map production feedback + Source A work clips ART PENDING
 
 Read PR20 current HEAD and `docs/G1_SOURCE_A_WORK_ACTION_MINIMAL_PACKET_2026-10-17.md`. Existing compact `SectProductionWorksiteCue` overlays exact canonical Mine/Forest/Field instance ID (real timer, Field plot crop, percentage, count), uses metrics-only post-Warehouse `+N đã vào kho`. Follow-up explicitly prioritizes real active 0% timer and keeps "Mẻ" planned vs "Đã thu" credited stock distinct. Focused E2E regression asserts receipt cannot appear early/replay; multi-instance regression checks 0% active. 16/16 focused static contracts & 4/4 lexical checks PASS; **Godot Windows exact HEAD PENDING**. Repo Source A male/female all stand+walk only; authored mining/chop/plant art absent. No fake action; no gameplay/save/balance modification. G1 owner UX not yet accepted; no CI/FULL/merge.

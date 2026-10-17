@@ -245,6 +245,8 @@ func _run() -> void:
         not str(secondary_snapshot.get("detail","")).contains("×%d" % int(secondary_timer.get("output_quantity",0)))
         or float(secondary_snapshot.get("progress",-1.0)) < 0.0
         or not bool(secondary_snapshot.get("active",false))
+        or str(secondary_snapshot.get("worker","")) != state.disciples[worker_id].display_name
+        or int(secondary_snapshot.get("received",-1)) != int(second.metrics.get("units_produced",0))
     ):
         _fail("second Mine map cue is not bound to its real persisted timer")
         return
@@ -262,8 +264,29 @@ func _run() -> void:
         _fail("map did not show its real second Mine instance")
         return
     var expected_anchor := SectIsometricWorldV1.virtual_legacy_point(BuildingSystem.TYPE_MINE,second.id)
-    if (second_cue.position+Vector2(85,109)).distance_to(expected_anchor) > 0.5:
+    var cue_anchor := second_cue.position + Vector2(
+        SectProductionWorksiteCue.CARD_SIZE.x * 0.5,
+        SectProductionWorksiteCue.CARD_SIZE.y + 43.0
+    )
+    if cue_anchor.distance_to(expected_anchor) > 0.5:
         _fail("second Mine map progress was anchored to wrong visual instance")
+        return
+    var worker_label := second_cue.find_child("WorksiteWorker",false,false) as Label
+    var received_label := second_cue.find_child("WorksiteReceived",false,false) as Label
+    var percent_label := second_cue.find_child("WorksitePercentage",false,false) as Label
+    if (
+        worker_label == null or received_label == null or percent_label == null
+        or not worker_label.text.contains(state.disciples[worker_id].display_name)
+        or not received_label.text.contains(str(int(second.metrics.get("units_produced",0))))
+        or not percent_label.text.contains("%")
+    ):
+        _fail("second Mine map card omitted actual worker/settled quantity/percentage")
+        return
+    var actor_foot := ui.call("_production_actor_world_foot",
+        state.disciples[worker_id],SectMapPresentation.DEST_MINE,0,
+        ui.call("_active_resource_work_cues")) as Vector2
+    if actor_foot.distance_to(expected_anchor + Vector2(12,14)) > 0.5:
+        _fail("working disciple was visually assigned to the primary Mine instead of exact ID")
         return
     if state.to_dict() != before_map_cues:
         _fail("map production progress mutated simulation state")

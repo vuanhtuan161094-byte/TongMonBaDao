@@ -655,6 +655,18 @@ func _active_resource_work_cues() -> Dictionary:
                         cues[worker_id] = "Linh Điền đang trồng"
     return cues
 
+# Active work production is drawn at its exact persisted building instance,
+# not at the primary instance's type-wide destination. This visual position
+# never influences the simulation worker assignment, pathing or job clocks.
+func _production_actor_world_foot(disciple: DiscipleState, destination: StringName, index: int, work_cues: Dictionary) -> Vector2:
+    var fallback := _iso_actor_point(destination) + _actor_offset(index)
+    if disciple == null or not work_cues.has(str(disciple.id)) or disciple.worksite_building_id == &"":
+        return fallback
+    var site := state.buildings.get(str(disciple.worksite_building_id)) as BuildingState
+    if not _map_worksite_is_supported(site):
+        return fallback
+    return SectIsometricWorldV1.virtual_legacy_point(site.building_type,site.id) + Vector2(12,14)
+
 func _sync_actor_positions() -> void:
     _reconcile_live_actors()
     var actual_work_cues := _active_resource_work_cues()
@@ -672,7 +684,7 @@ func _sync_actor_positions() -> void:
         actor_destinations[key] = str(destination)
 
         var actor: Control = actor_nodes[key] as Control
-        var world_foot := _iso_actor_point(destination) + _actor_offset(index)
+        var world_foot := _production_actor_world_foot(disciple,destination,index,actual_work_cues)
         var target := world_foot - _actor_anchor_offset(actor)
         # Sort live actors by their ground contact while keeping them below
         # all navigation and modal panels (z >= 20).
@@ -4216,8 +4228,18 @@ func _map_worksite_snapshot(building: BuildingState) -> Dictionary:
     if not _map_worksite_is_supported(building) or state == null:
         return {}
     var type_title := _sect_production_type_name(building.building_type)
-    var result := {"heading":type_title,"detail":"Chưa có người","progress":0.0,"active":false}
+    var result := {
+        "heading":type_title,"worker":"Chưa phân công","detail":"Chưa có người",
+        "received":maxi(0,int(building.metrics.get("units_produced",0))),
+        "progress":0.0,"active":false
+    }
     var assigned := BuildingSystem.new().assigned_worker_ids(state,building)
+    if not assigned.is_empty():
+        var assigned_id := StringName(assigned[0])
+        result["worker"] = (
+            state.disciples[assigned_id].display_name
+            if state.disciples.has(assigned_id) else str(assigned_id)
+        )
     if building.building_type in [BuildingSystem.TYPE_MINE,BuildingSystem.TYPE_LINH_FOREST]:
         # resource_timer_jobs does not normalize / migrate state on read.
         var raw_jobs = building.production_state.get("economy_a_jobs",[])
@@ -4230,6 +4252,12 @@ func _map_worksite_snapshot(building: BuildingState) -> Dictionary:
                 var total := maxi(1,finish_tick-start_tick)
                 var elapsed := clampi(state.tick-start_tick,0,total)
                 var output_id := StringName(job.get("resource_id",""))
+                var active_worker_id := StringName(job.get("worker_id",""))
+                if active_worker_id != &"":
+                    result["worker"] = (
+                        state.disciples[active_worker_id].display_name
+                        if state.disciples.has(active_worker_id) else str(active_worker_id)
+                    )
                 result["heading"] = "%s · %s" % [type_title,ResourceRegistry.new().display_name(output_id)]
                 result["detail"] = "Mẻ ×%d · %s" % [
                     maxi(0,int(job.get("output_quantity",0))),
@@ -4266,6 +4294,12 @@ func _map_worksite_snapshot(building: BuildingState) -> Dictionary:
     if nearest.is_empty():
         result["detail"] = "Chưa trồng" if not assigned.is_empty() else "Chưa phân công"
         return result
+    var plot_worker_id := StringName(nearest.get("assigned_worker_id",""))
+    if plot_worker_id != &"":
+        result["worker"] = (
+            state.disciples[plot_worker_id].display_name
+            if state.disciples.has(plot_worker_id) else str(plot_worker_id)
+        )
     var start_tick := int(nearest.get("started_tick",state.tick))
     var finish_tick := int(nearest.get("finish_tick",state.tick))
     var total := maxi(1,finish_tick-start_tick)
@@ -4329,6 +4363,11 @@ func _refresh_map_worksite_cues() -> void:
         elif bool(snapshot.get("active",false)):
             # A 0% freshly started mẻ is just as real as a 99% mẻ.
             attention = 2
+        else:
+            var prior_cue := map_worksite_cues.get(str(building.id)) as SectProductionWorksiteCue
+            if prior_cue != null and is_instance_valid(prior_cue) and prior_cue.receipt != null and prior_cue.receipt.visible:
+                # Do not hide an authentic delivery popup when the batch ends.
+                attention = 3
         candidates.append({"building":building,"anchor":anchor,"snapshot":snapshot,"priority":attention})
     candidates.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
         if int(a["priority"]) != int(b["priority"]):
@@ -4338,8 +4377,16 @@ func _refresh_map_worksite_cues() -> void:
         return str(one.id) < str(two.id)
     )
     var retained := {}
-    for index in range(mini(MAP_WORKSITE_MAX_CUES,candidates.size())):
-        var entry: Dictionary = candidates[index]
+    var idle_shown := 0
+    for entry in candidates:
+        if retained.size() >= MAP_WORKSITE_MAX_CUES:
+            break
+        # Most idle sites are discoverable from the existing production board.
+        # Two small idle previews are enough; the map belongs to active work.
+        if int(entry["priority"]) == 0:
+            if idle_shown >= 2:
+                continue
+            idle_shown += 1
         var building: BuildingState = entry["building"]
         var key := str(building.id)
         var cue := map_worksite_cues.get(key) as SectProductionWorksiteCue
@@ -4349,7 +4396,10 @@ func _refresh_map_worksite_cues() -> void:
             map_layer.add_child(cue)
             cue.z_index = 9
             map_worksite_cues[key] = cue
-        cue.position = Vector2(entry["anchor"])-Vector2(85,109)
+        cue.position = Vector2(entry["anchor"])-Vector2(
+            SectProductionWorksiteCue.CARD_SIZE.x * 0.5,
+            SectProductionWorksiteCue.CARD_SIZE.y + 43.0
+        )
         cue.display(entry["snapshot"])
         if deliveries.has(key):
             cue.show_delivered(int(deliveries[key]))

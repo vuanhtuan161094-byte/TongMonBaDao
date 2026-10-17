@@ -1,5 +1,12 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — G1 visual follow-up: exact worker/site + readable production card (runtime pending)
+
+PR #20 follow-up at baseline `f8ade7e5`. Kept existing `SectProductionWorksiteCue`; extended its map badge with canonical assigned/active worker, **planned batch and remaining time**, cumulative **post-Warehouse credited** `units_produced`, and numeric percent beside the actual scheduler progress bar. Map prioritizes selected/active/receipt worksites and limits other idle badges to two; no new timers or receipt paths. Fixed active production actor visual foot position to the exact `worksite_building_id` instead of the type's primary building; cosmetic movement speed/real stand-walk clips unchanged. Focused existing Workforce E2E and second-Mine assertions extended. Only source/lexical verification possible here; **Godot official 4.7.2 exact new HEAD, 1280×720 visual owner signoff and Android remain PENDING**. Source A mining/chopping/planting clips still ART PENDING. No CI/FULL/merge/G2 or gameplay/save/economy mutation.
+
+---
+
+
 ## 2026-10-17 — G1 map feedback re-audit + authentic Source A action gate
 
 User authorized visual-first G1 production map feedback (NOT G2 gameplay) on draft PR #20. Current PR already carried `SectProductionWorksiteCue` (170×66, max 10 visible) showing **real instance-ID anchored progress/quantity and +N delivered only on stored post-Warehouse production metrics**, seeded at startup to avoid replay on loaded games. Continued directly with two narrowly verified fixes: (1) snapshot carries explicit `active` to prioritize legitimate *0%-elapsed* Mine/Forest/Field job over idle buildings, while giving verified post-settlement alerts higher rank; (2) worksite detail distinguishes **Mẻ ×N** planned work from **Đã thu N** completed stock. Extended `gui_multiple_resource_instances_test.gd` for active 0% job and `gui_workforce_v1_e2e_test.gd` for *no receipt before settlement*, exactly one notified deposit and no duplicated UI receipt. No new scheduler/warehouses, assignments or gameplay mutations.
