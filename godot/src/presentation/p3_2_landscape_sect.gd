@@ -2131,7 +2131,7 @@ func _refresh_sect_production_board(reset_scroll: bool = false) -> void:
         horizontal.add_child(detail)
         var open_button := Button.new()
         open_button.name = "SectProductionOpen_%s" % str(building.id)
-        open_button.text = "Mở"
+        open_button.text = "Xử lý" if bool(attention.get("needs_action",false)) else "Mở"
         open_button.custom_minimum_size = Vector2(119,48)
         open_button.add_theme_font_size_override("font_size",15)
         open_button.add_theme_color_override("font_color",PAPER_LIGHT)
