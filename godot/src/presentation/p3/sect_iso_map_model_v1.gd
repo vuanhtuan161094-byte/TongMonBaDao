@@ -27,10 +27,10 @@ var grid_size: Vector2i = Vector2i(WIDTH, HEIGHT)
 var spawn_cell: Vector2i = SPAWN
 
 func _init(p_grid_size: Vector2i = Vector2i(WIDTH, HEIGHT), p_spawn: Vector2i = SPAWN) -> void:
-    assert(p_grid_size.x > 0 and p_grid_size.y > 0)
-    grid_size = p_grid_size
-    spawn_cell = p_spawn
-    assert(inside(spawn_cell))
+	assert(p_grid_size.x > 0 and p_grid_size.y > 0)
+	grid_size = p_grid_size
+	spawn_cell = p_spawn
+	assert(inside(spawn_cell))
 
 
 func inside(cell: Vector2i) -> bool:
