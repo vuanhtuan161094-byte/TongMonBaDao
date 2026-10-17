@@ -244,8 +244,16 @@ func _run() -> void:
     if (
         not str(secondary_snapshot.get("detail","")).contains("×%d" % int(secondary_timer.get("output_quantity",0)))
         or float(secondary_snapshot.get("progress",-1.0)) < 0.0
+        or not bool(secondary_snapshot.get("active",false))
     ):
         _fail("second Mine map cue is not bound to its real persisted timer")
+        return
+    # Even a zero-percent just-started batch must be shown ahead of idle
+    # sites when many resource buildings compete for the bounded map HUD.
+    var start_snapshot := secondary_snapshot.duplicate(true)
+    start_snapshot["progress"] = 0.0
+    if not bool(start_snapshot.get("active",false)):
+        _fail("active second Mine must keep its busy status at zero progress")
         return
     ui.call("_refresh_map_worksite_cues")
     var second_cue := ui.find_child("MapWorksite_%s" % str(second.id),true,false) as SectProductionWorksiteCue
