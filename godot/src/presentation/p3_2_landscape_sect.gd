@@ -4216,7 +4216,7 @@ func _map_worksite_snapshot(building: BuildingState) -> Dictionary:
     if not _map_worksite_is_supported(building) or state == null:
         return {}
     var type_title := _sect_production_type_name(building.building_type)
-    var result := {"heading":type_title,"detail":"Chưa có người","progress":0.0}
+    var result := {"heading":type_title,"detail":"Chưa có người","progress":0.0,"active":false}
     var assigned := BuildingSystem.new().assigned_worker_ids(state,building)
     if building.building_type in [BuildingSystem.TYPE_MINE,BuildingSystem.TYPE_LINH_FOREST]:
         # resource_timer_jobs does not normalize / migrate state on read.
@@ -4236,6 +4236,7 @@ func _map_worksite_snapshot(building: BuildingState) -> Dictionary:
                     "Chờ nhập kho" if finish_tick <= state.tick else "còn %dp" % (finish_tick-state.tick)
                 ]
                 result["progress"] = 100.0*float(elapsed)/float(total)
+                result["active"] = true # Includes newly started 0% jobs.
                 return result
         result["detail"] = "Chưa có mẻ" if not assigned.is_empty() else "Chưa phân công"
         return result
@@ -4271,6 +4272,7 @@ func _map_worksite_snapshot(building: BuildingState) -> Dictionary:
         "Chờ nhập kho" if finish_tick <= state.tick else "còn %dp" % (finish_tick-state.tick)
     ]
     result["progress"] = 100.0*float(elapsed)/float(total)
+    result["active"] = true
     return result
 
 func _map_worksite_deliveries() -> Dictionary:
@@ -4317,11 +4319,12 @@ func _refresh_map_worksite_cues() -> void:
         var snapshot := _map_worksite_snapshot(building)
         var attention := 0
         if building.id == selected_production_instance_id:
-            attention = 3
-        elif float(snapshot.get("progress",0.0)) > 0.0:
-            attention = 2
+            attention = 4
         elif deliveries.has(str(building.id)):
-            attention = 1
+            attention = 3
+        elif bool(snapshot.get("active",false)):
+            # A 0% freshly started mẻ is just as real as a 99% mẻ.
+            attention = 2
         candidates.append({"building":building,"anchor":anchor,"snapshot":snapshot,"priority":attention})
     candidates.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
         if int(a["priority"]) != int(b["priority"]):
