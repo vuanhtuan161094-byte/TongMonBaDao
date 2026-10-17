@@ -1,5 +1,11 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — Owner UX feedback now authoritative: G1 visuals NOT ACCEPTED
+
+Windows ZIP `TONG_MON_G1_PR20_QA_20261017_194619.zip` confirms old SHA `78254c6` 4/4 focused + import + game preview PASS (runtime only, no screenshots). Owner reports illegible light-on-light UI, not seeing mining, mined units/progress hidden, fixed-duration sliding actors, too confusing. G1 visual ACCEPTANCE **FAILED / OPEN**. Presentation-only PR20 hotfix after that SHA has always-visible canonical timer/percentage/output + cumulative goods, readable disabled states, 420px management panel, distance-based visual actor walking, real production work cue. **Genuine Source A mine/work animations absent; separate visual asset task, not solved by stand/walk fallback.** Test extended; hotfix Godot runtime and owner visual recheck still PENDING; no new FULL/CI/merge. G2 roadmap still planning-only, prioritize G1 user-experience fixes.
+
+---
+
 ## 2026-10-17 — G2 core loop roadmap ready; owner CODE permission required
 
 Read `docs/G2_PLAYABLE_CORE_LOOP_PLAN_2026-10-17.md` (main `461caca`, PR20 `78254c6` audit). Four small G2 code packets proposed behind G1 focused acceptance: `G2-01` read-only journey prompts, `G2-02` real produce→consumer navigation, `G2-03` existing-building upgrade presentation with preflight, `G2-04` one genuine save/offline produce–spend–grow E2E. **NO G2 CODE AUTHORIZED YET**. Construction/new buildings are blocked by absent real Hall, land, persistent layout, paid build transaction. G1 Windows/owner visual acceptance still pending. No CI/FULL/merge/main writes.
