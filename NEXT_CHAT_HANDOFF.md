@@ -1,5 +1,12 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-18 — G1 ART source audit (docs-only)
+
+PR20 `207eaf45fe74` verified source-only: 3 committed rig SpriteFrames contain only `stand/walk` (48+24 frames/rig); 4 WebP pages present, raw original 3×(.skel/.atlas/PNG) inputs absent from repo (exact nine names/SHA256 listed in `docs/G1_SOURCE_A_WORK_ACTION_MINIMAL_PACKET_2026-10-17.md`). Source Knowledge pinned `83cbc4e` CSV 803 candidate skeletons: 2 `work` string candidates (`113116_1_s`, `113116_1`) but **0 confirmed authentic work clips**, neither parsed/playback tested and companion texture path absent in CSV. `body_1120402` source folder category `body_female` conflicts with current male visual selection; **needs visual review, no production reassignment**. Minimal future isolated pilot = verify `113116_1_s` source triplet/sha, playback true work motion; fail closed if missing/mismatched. Existing converter/Batch-01 avoids full rebake. **DOCS AUDIT ONLY; latest Godot focused, Source A work action and G1 visual owner approval PENDING**. No CI/FULL/merge/gameplay/save/balance changes.
+
+---
+
+
 ## 2026-10-17 — G1 focused UX closure follow-up
 
 After `f55ecd55` exact-ID route, one adjacent static state leak remained: closing an operation panel cleared `selected_building` but not `selected_production_instance_id`; the old badge was still prioritized as user-selected. Close now clears both presentation-only selections and updates map cues. Resource badge idle status avoids repeating a cumulative `Đã thu N` already shown as `Đã nhập kho N`; now says `Chờ mẻ tiếp` for a staffed previously productive, presently idle worksite. Focused instance test asserts close clears selections. No gameplay or Warehouse state touched. **Godot 4.7.2 latest HEAD focused test/1280×720 owner visual/Android all PENDING; owner UX NOT ACCEPTED**. Only a single already-designed Windows Godot acceptance pass after static readiness; no CI/FULL/merge/G2.
