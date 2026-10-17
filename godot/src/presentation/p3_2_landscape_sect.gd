@@ -956,7 +956,7 @@ func _workforce_operation_summary(building_type: StringName) -> String:
     if building == null:
         return "Công trình chưa có trong tông môn."
     var assigned := _workforce_occupants(building)
-    var who := "Chưa giao" if assigned.is_empty() else (
+    var who: String = "Chưa giao" if assigned.is_empty() else (
         state.disciples[assigned[0]].display_name if state.disciples.has(assigned[0])
         else str(assigned[0])
     )
