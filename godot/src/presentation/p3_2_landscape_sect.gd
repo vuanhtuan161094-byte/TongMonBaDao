@@ -115,7 +115,9 @@ func _install_main_isometric_world() -> void:
     iso_viewport = SubViewport.new()
     iso_viewport.name = "SectMainIsoSubViewport"
     iso_viewport.size = Vector2i(1028,570)
-    iso_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+    # Only camera movement and building-layout changes invalidate this static map.
+    # The moving disciple actors remain outside the map SubViewport.
+    iso_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
     iso_viewport.gui_disable_input = true
     iso_view_container.add_child(iso_viewport)
     iso_world = SectIsometricWorldV1.new()
@@ -3251,10 +3253,12 @@ func _refresh_all() -> void:
 func _process(_delta: float) -> void:
     if iso_world != null:
         # Synchronize every animated camera tween frame with old actor overlay.
-        iso_world.set_legacy_transform(map_layer.scale.x,map_layer.position)
+        if iso_world.set_legacy_transform(map_layer.scale.x,map_layer.position):
+            iso_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
         if state != null and state.building_event_count != iso_building_count:
             iso_building_count = state.building_event_count
             iso_world.refresh_from_state(state)
+            iso_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
     _refresh_living_cue_positions()
 
 func _build_living_cue_layer() -> void:
