@@ -121,7 +121,7 @@ func _install_main_isometric_world() -> void:
     move_child(iso_view_container,map_layer.get_index())
     iso_viewport = SubViewport.new()
     iso_viewport.name = "SectMainIsoSubViewport"
-    iso_viewport.size = Vector2i(1028,570)
+    iso_viewport.size = Vector2i(1280,570)
     # Only camera movement and building-layout changes invalidate this static map.
     # The moving disciple actors remain outside the map SubViewport.
     iso_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
