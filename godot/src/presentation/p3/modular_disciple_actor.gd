@@ -49,6 +49,7 @@ func configure(disciple: DiscipleState) -> void:
     display_name = disciple.display_name
     rig_id = DiscipleActorVisualCatalog.rig_for_disciple(disciple)
     appearance_profile = DiscipleActorVisualCatalog.default_appearance_for_disciple(disciple)
+    _apply_fallback_palette()
     click_button.tooltip_text = display_name
     sync_action(disciple.current_action)
     _refresh_placeholder_mode()
@@ -57,6 +58,7 @@ func apply_appearance_profile(raw_profile: Variant, disciple: DiscipleState = nu
     _ensure_built()
     appearance_profile = DiscipleActorVisualCatalog.normalize_appearance_profile(raw_profile, disciple)
     rig_id = StringName(appearance_profile.get("rig_id", DiscipleActorVisualCatalog.RIG_FEMALE_NORMAL_V1))
+    _apply_fallback_palette()
 
 func sync_action(action: StringName) -> void:
     _ensure_built()
@@ -343,6 +345,7 @@ func _build_fallback_visual() -> void:
     fallback_visual.add_child(shadow)
 
     var leg_l := Panel.new()
+    leg_l.name = "LegLeft"
     leg_l.position = Vector2(12.0, 43.0)
     leg_l.size = Vector2(10.0, 20.0)
     leg_l.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -350,6 +353,7 @@ func _build_fallback_visual() -> void:
     fallback_visual.add_child(leg_l)
 
     var leg_r := Panel.new()
+    leg_r.name = "LegRight"
     leg_r.position = Vector2(26.0, 43.0)
     leg_r.size = Vector2(10.0, 20.0)
     leg_r.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -357,6 +361,7 @@ func _build_fallback_visual() -> void:
     fallback_visual.add_child(leg_r)
 
     var torso := Panel.new()
+    torso.name = "Torso"
     torso.position = Vector2(9.0, 20.0)
     torso.size = Vector2(30.0, 30.0)
     torso.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -365,6 +370,7 @@ func _build_fallback_visual() -> void:
 
     for x in [2.0, 38.0]:
         var arm := Panel.new()
+        arm.name = "LeftArm" if x < 10.0 else "RightArm"
         arm.position = Vector2(x, 23.0)
         arm.size = Vector2(8.0, 25.0)
         arm.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -372,11 +378,54 @@ func _build_fallback_visual() -> void:
         fallback_visual.add_child(arm)
 
     var head := Panel.new()
+    head.name = "Head"
     head.position = Vector2(14.0, 1.0)
     head.size = Vector2(20.0, 20.0)
     head.mouse_filter = Control.MOUSE_FILTER_IGNORE
     head.add_theme_stylebox_override("panel", _style(PLACEHOLDER_FILL.lightened(0.08), PLACEHOLDER_BORDER, 1, 10))
     fallback_visual.add_child(head)
+
+    # Lightweight 2D chibi silhouette for unconverted Source A rigs.
+    # Deliberately cosmetic, with visible skin/hair/robe rather than a
+    # uniform green placeholder. Source A replaces this automatically.
+    var hair := Panel.new()
+    hair.name = "Hair"
+    hair.position = Vector2(12.0, 0.0)
+    hair.size = Vector2(24.0, 9.0)
+    hair.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    fallback_visual.add_child(hair)
+
+    var sash := Panel.new()
+    sash.name = "Sash"
+    sash.position = Vector2(12.0, 40.0)
+    sash.size = Vector2(24.0, 4.0)
+    sash.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    fallback_visual.add_child(sash)
+    _apply_fallback_palette()
+
+func _apply_fallback_palette() -> void:
+    if fallback_visual == null or appearance_profile.is_empty():
+        return
+    # Already persisted profile_seed determines these display-only tint IDs.
+    # This does not change the disciple, combat, work, or sprite source.
+    var robe := Color.from_string(str(appearance_profile.get("outfit_tint","455472")), Color(0.27,0.33,0.45))
+    var hair_tint := Color.from_string(str(appearance_profile.get("hair_tint","2b2624")), Color(0.17,0.15,0.14))
+    var ink := Color(0.16,0.14,0.14,1.0)
+    var skin := Color(0.94,0.79,0.65,1.0)
+    for part_name in ["Torso","LeftArm","RightArm","LegLeft","LegRight"]:
+        var part := fallback_visual.get_node_or_null(part_name) as Panel
+        if part != null:
+            var fill := robe.darkened(0.17) if part_name.begins_with("Leg") else robe
+            part.add_theme_stylebox_override("panel",_style(fill,ink,1,5))
+    var head := fallback_visual.get_node_or_null("Head") as Panel
+    if head != null:
+        head.add_theme_stylebox_override("panel",_style(skin,ink,1,10))
+    var hair := fallback_visual.get_node_or_null("Hair") as Panel
+    if hair != null:
+        hair.add_theme_stylebox_override("panel",_style(hair_tint,ink,1,7))
+    var sash := fallback_visual.get_node_or_null("Sash") as Panel
+    if sash != null:
+        sash.add_theme_stylebox_override("panel",_style(Color(0.73,0.56,0.30,1.0),Color.TRANSPARENT,0,2))
 
 func _refresh_placeholder_mode() -> void:
     if click_button == null:
