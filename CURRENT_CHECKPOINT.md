@@ -1,5 +1,15 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — MAP25 Windows one-click import Python alias error 9009; PowerShell-only retry
+
+**Owner-supplied Windows launcher result:** original `RUN_MAP25_IMPORT.cmd` stopped before importing assets because `python` resolved to the Microsoft Store App Execution Alias rather than a Python 3 runtime, resulting in exit **9009**. No successful clone, Godot run, art commit or GitHub push was evidenced. Live PR #18 HEAD was checked still `47041cada3d9791d536dfe6ab1021141554fd8e5`, DRAFT; `main` not edited. This is a local tooling/environment error, **not** a failure of the original PNG hashes.
+
+**Prepared technical fix, not yet executed on Windows:** replacement self-contained one-click ZIP changes the launcher to **Windows PowerShell 5.1/.NET ZIP/SHA-256 with NO Python dependency**. It verifies pinned source transport ZIP SHA, leases exact PR HEAD, clones to isolated `%TEMP%`, checks BOTH original GitHub SHA manifests and all **32/32** ZIP member PNG decompressed-byte digests plus basic PNG signature/IHDR, then copies and rechecks 32 destination PNGs. If available, runs official Godot 4.7.2 importer + 3 focused MAP25 tests; stage/commit/push ONLY `godot/art/source_a_env02a` PNGs using non-force fast-forward on draft PR #18 after gates. Any failure aborts without mutating the owner's existing workspace or saves. Does not merge or dispatch CI; existing workflow auto-triggers remain outside launcher control. Requires existing Git for Windows and private-repo credentials.
+
+**Validated in this environment:** package contents and ZIP SHA readback match pinned `8b3976e2f7400063798fbac88ced5d85c24beee9aa057e369fdbfc937cf3f920`; its **32/32** original PNG bytes still match recovered evidence SHA-256. **Windows PowerShell script execution itself NOT RUN here** (no Windows PowerShell runner), so this is FIX AUTHORED / Windows QA PENDING, not proven end-to-end. Original Source A image bytes recovered and validated 32/32 in prior checkpoint; Github PNG import remains **0/32** pending successful one-click push. The ZIP must use the newest PR HEAD after these docs-only checkpoint commits. Request the new `MAP25_IMPORT_RESULT_*.log` after owner retries. No gameplay/save/economy/renderer source was changed.
+
+---
+
 ## 2026-10-17 — Source A ORIGINAL PNG BYTES RECOVERED 32/32 from owner upload; repo import pending
 
 **Authorized raw source now available:** owner attached `SourceA_Map_Prep_20261012(1).zip`, size **28,000,430 bytes**, full ZIP SHA-256 `c453ef9e0a2762be0c6d17599d5736cb6b7e250ba11b6c9753efc8c1fd70f1a4`; ZIP enumerated with Python (`428` members). This **supersedes only the earlier missing-raw-file blocker**; original Library `TongMonBaDao_ENV02A_192World_Lab.zip` remains inaccessible but is no longer needed.
