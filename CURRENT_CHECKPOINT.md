@@ -1,5 +1,18 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — MAP25 GUI/Performance Windows QA preparation — ONE-CLICK PACKAGE PREPARED, NEVER RUN HERE
+
+**PR #18** draft `integration-v2-pr9-pr10-pr17-20261016`: prior HEAD `ca971ba1676c39368f8f434833c641932372eb8e`; focused **test-only** commit `96943842630607f38a39dfc8af298073ab80a1cf` adds `godot/tests/presentation/sect_map25_visual_perf_capture_test.gd`. This is a graphical Godot SceneTree QA probe, not a player-facing renderer modification. It screenshots `1280×720` at idle/pan/zoom/Mine panel/Workforce picker and samples 120 displayed frames per scenario: observed inter-frame delta average/p95, `Performance.TIME_PROCESS`, FPS, draw calls, node count and memory. CSV/PNG/metadata outputs go to an **external designated QA results folder**, not to tracked game files; fresh `user://map25_visual_perf_probe.json` is isolated by the Windows runner's temporary APPDATA.
+
+**Operator artifact prepared in this chat (NOT RUN):** `TONG_MON_BA_DAO_MAP25_WINDOWS_QA_ONECLICK_20261017.zip`, three files `RUN_MAP25_QA.cmd`, `RUN_MAP25_QA.ps1`, `README.txt`; SHA-256 `16c689c9e7298314f2694fdc4eadb27593fcc05d9678e8f2bd01d9b594f04a04`. Created separately rather than introducing multiple competing launcher paths in the repository; reuses existing source test scripts `sect_map25_verified_art_gate_test.gd`, `sect_iso_projection_contract_test.gd`, `sect_iso_main_integration_test.gd`, `gui_workforce_v1_e2e_test.gd`, `gui_multiple_resource_instances_test.gd`. It resolves official Godot 4.7.2, obtains **live** PR branch SHA using git ls-remote, clones **only into unique TEMP**, verifies pinned HEAD, redirects APPDATA/LOCALAPPDATA, checks errors + exit codes, then captures same-machine old baseline `8b23f78797e99ed5568f3d61b1611b6426c616a8` and current HEAD with the same test probe. No push/merge/main checkout/force reset/CI/save access. Baseline capture failure must be labeled PENDING, not a green measurement.
+
+**Evidence status:** ZIP generated with Python ZIP/SHA verification; newly committed Godot probe inspected statically only. Official Windows Godot 4.7.2 execution **PENDING USER**, all seven gates **NOT RUN on latest HEAD**; measured lag improvement, snapshots and screenshot assessment **PENDING**. Past `01`/`02`/`03` historical PASS and old gate-04 FAIL remain historical, not new evidence. Official desktop visual benchmark is only comparable on same GPU/driver/resolution and similarly seeded test scene; interval p95 is an *observed* frame-time proxy, not a GPU stall diagnosis. Screenshot cannot by itself certify Android device/touch. O6/O8/SAFE/SaveService/full/Android export remain PENDING.
+
+**Next:** user extracts ZIP OUTSIDE game, runs ONLY `RUN_MAP25_QA.cmd`; supply the `MAP25_QA_RESULTS_*` folder containing pinned_sha, stderr/stdout gate logs, `before/` `after/` five genuine 1280x720 PNG each, raw frame CSV, summary CSV and comparison CSV if baseline succeeded. If any gate fails, stop/diagnose first exact error without changing gameplay or weakening tests. Update both existing MDs with exit/log SHA and actual measured outcomes, keep PR Draft.
+
+---
+
+
 ## 2026-10-17 — GUI-MAP25 visual/performance/workforce repair V1 — CODE COMMITTED, RUNTIME PENDING
 
 **Authority:** owner-uploaded `TONG_MON_BA_DAO_GUI_MAP25_HANDOFF_2026-10-17(1).md`; authorized presentation-only repair on draft [PR #18](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/18), branch `integration-v2-pr9-pr10-pr17-20261016`. Starting HEAD `8b23f78797e99ed5568f3d61b1611b6426c616a8`; `main` verified unchanged at `461caca1171462e0da092f21108c5c1733157ad9`. No CI trigger, main push, merge, force-push or backend/save/art edit.
