@@ -1,5 +1,16 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — MAP25 official Windows gates 01–04 PASS, Workforce gate 05 FAIL, test-only fixture corrected
+
+**Newest official Windows evidence** `MAP25_QA_RESULTS_20261017_114116.zip` at pinned PR #18 `278089d1971752423425a6d6cb6e9a971467d2fc`: Git pin/clone/EOL safety PASS; official Godot 4.7.2 `01_editor_import` PASS, Source A `02` PASS accepted=32 missing=0 rejected=0, `03` PASS projection 36/36, `04` PASS real main scene and Workforce camera. **`05_gui_workforce_e2e` FAIL** exit 1 at `gui_workforce_v1_e2e_test.gd:82` = “Mine start did not create real timed production”; gate 06 multiple instances and gate 07 physical GUI screenshots/FPS not run. This is no longer a launcher failure. Overall FAIL.
+
+**Back-end vs fixture distinction:** Economy V2 produces new Mine/Forest timers ONLY for authentic V2 workers with a valid birth profile. Legacy actors intentionally follow the older carry-cycle; the previous E2E selector chose any idle worker without checking birth profile. Deterministic fixture precondition bug confirmed in code, exact selected actor at failure not logged. Only **presentation E2E test** was modified on PR #18, commit `2cde88b8338d14802ab35784b537ce01ccb33ad9`: prefer healthy authentic V2 workers with no other active production/Body duty, or actually recruit one through existing canonical generator + recruitment; preserve all gameplay assertions. Add actor/cycle/command diagnostic to the exact existing timer-failure check. No backend/scheduler/SaveService/balance/art/UI renderer change. Static bracket/string scan PASS; runtime on new SHA PENDING.
+
+**Action:** Reuse the existing verified **V4** `RUN_MAP25_QA.cmd` extracted in a fresh folder, which pins live PR #18 HEAD automatically. No new QA launcher. Supply full `MAP25_QA_RESULTS_*` ZIP; inspect remaining gate 05 and if green gate 06 and 07 before any GUI visual/FPS conclusion. If 05 still fails, read new detailed error (v2, action, command, cycle, tick, economy), do not speculate or weaken backend. Update both documents with actual evidence. Keep PR #18 Draft, no CI, no merge, no main push.
+
+---
+
+
 ## 2026-10-17 — 11:35:40 Windows QA ZIP: exact TEMP clone false-dirty file, safe V4 ready
 
 **Read direct user ZIP** `MAP25_QA_RESULTS_20261017_113540.zip`. Windows Godot 4.7.2 official + Git 2.55.0 detection PASS; PR #18 HEAD pinned `40ef10459517766e8a4948ade079e4f4d1f3ab0a`; clone and `rev-parse HEAD` PASS. `git status --porcelain` alone reports ` M tools/godot/Verify-P3-6A-Playable-Slice.ps1` and QA launcher hard-stopped before all Godot tests. Only `00_git_smoke`, `00_remote_pin` PASS, final FAIL. This matches a reproducible Git CRLF normalization hazard; without worktree bytes the exact owner diff is not yet proven equivalent. No code regression identified, zero Godot tests run on that attempt.
