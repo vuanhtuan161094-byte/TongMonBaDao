@@ -3,7 +3,6 @@ extends "res://src/presentation/p3_1_landscape_sect.gd"
 const ZOOM_STEP := 1.12
 const CAMERA_TWEEN_SECONDS := 0.22
 const FOCUS_MARKER_SIZE := Vector2(82.0, 82.0)
-const SOURCE_A_PILOT_SCENE_PATH := "res://assets/actors/1113028_1/actor.tscn"
 const PRODUCTION_PANEL_WIDTH := 320.0
 const PRODUCTION_CONTENT_WIDTH := 284.0
 
@@ -34,7 +33,6 @@ var living_cue_tracker := LivingCueTracker.new()
 var living_cue_layer: LivingCueLayer
 var visible_living_cues: Array[Dictionary] = []
 var female_motion_library: AnimationLibrary
-var source_a_pilot_scene: PackedScene
 var workforce_return_building_id: StringName = &""
 var modular_live_actor_ids: Dictionary = {}
 
@@ -88,8 +86,6 @@ func _ready() -> void:
     if not runtime_ready:
         return
     female_motion_library = FemaleNormalV1MotionLibrary.build()
-    if ResourceLoader.exists(SOURCE_A_PILOT_SCENE_PATH,"PackedScene"):
-        source_a_pilot_scene = load(SOURCE_A_PILOT_SCENE_PATH) as PackedScene
     _install_modular_live_actors()
     _install_main_isometric_world()
     _sync_actor_positions()
@@ -717,8 +713,11 @@ func _install_modular_live_actors() -> void:
         actor.set_animation_library(female_motion_library)
         if actor.rig_id == DiscipleActorVisualCatalog.RIG_FEMALE_NORMAL_V1 and female_assets_ready:
             FemaleStageAAssetLoader.apply_public_direction(actor, &"right")
-        if actor.rig_id == DiscipleActorVisualCatalog.RIG_FEMALE_NORMAL_V1 and source_a_pilot_scene != null and not actor.production_body_active():
-            actor.set_baked_visual(source_a_pilot_scene)
+        # Deterministic presentation-only Source A selection. The pool admits
+        # only verified, imported art of the correct body/sex family.
+        var baked_scene := DiscipleSourceAVisualPool.scene_for_disciple(disciple)
+        if baked_scene != null and not actor.production_body_active():
+            actor.set_baked_visual(baked_scene)
         actor.sync_action(disciple.current_action)
         actor.actor_pressed.connect(Callable(self, "_open_disciple"))
         var world_foot := _iso_actor_point(destination) + _actor_offset(index)
@@ -4077,10 +4076,11 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
     panel.add_child(showcase)
 
     var selected_actor := actor_nodes.get(str(disciple.id)) as ModularDiscipleActor
-    if selected_actor != null and selected_actor.baked_visual_active() and source_a_pilot_scene != null:
+    var selected_source_scene := DiscipleSourceAVisualPool.scene_for_disciple(disciple)
+    if selected_actor != null and selected_actor.baked_visual_active() and selected_source_scene != null:
         # The verified source clip is displayed at its native pixel size,
         # independently from the small scaled map instance.
-        var artwork := source_a_pilot_scene.instantiate() as AnimatedSprite2D
+        var artwork := selected_source_scene.instantiate() as AnimatedSprite2D
         artwork.name = "DiscipleSourceAArtwork"
         artwork.position = Vector2(150,170)
         showcase.add_child(artwork)
@@ -4112,6 +4112,10 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
     var tab_title := _label(content_panel, tab_name, Vector2(18, 12), Vector2(360, 30), 20)
     tab_title.add_theme_color_override("font_color", CINNABAR.darkened(0.18))
 
+    # The six-dimensional radar and all tab text consume the same real
+    # canonical snapshot. No independent stat generation or persisted UI state.
+    var profile_snapshot := _disciple_snapshot(disciple)
+
     # Make attribute/Body requirements readable without overlapping action row.
     var details_scroll := ScrollContainer.new()
     details_scroll.name = "DiscipleTabContentScroll"
@@ -4127,7 +4131,21 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
     content.add_theme_color_override("font_color", INK)
     details_scroll.add_child(content)
 
-    var profile_snapshot := _disciple_snapshot(disciple)
+    # Read-only G1 six-foundation radar. Reuse full existing text/scroll/actions
+    # without changing progression, workforce, equipment or hidden identities.
+    if tab_name == "Thuộc tính" and bool(profile_snapshot.get("ok",false)):
+        var radar := DiscipleSixDimensionRadar.new()
+        radar.name = "DiscipleSixDimensionRadar"
+        radar.position = Vector2(18,52)
+        radar.size = Vector2(274,286)
+        radar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        if radar.apply_snapshot(profile_snapshot):
+            content_panel.add_child(radar)
+            details_scroll.position = Vector2(302,52)
+            details_scroll.size = Vector2(306,286)
+            content.custom_minimum_size = Vector2(282,0)
+            content.add_theme_font_size_override("font_size",13)
+
     var authentic_v2 := bool(profile_snapshot.get("authentic_v2", false))
     if not authentic_v2:
         if tab_name == "Huyết Mạch":
