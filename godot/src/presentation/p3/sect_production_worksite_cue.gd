@@ -16,7 +16,6 @@ var receipt_tween: Tween
 var last_display_signature := ""
 
 func _ready() -> void:
-    name = "WorksiteCue"
     size = CARD_SIZE
     custom_minimum_size = CARD_SIZE
     mouse_filter = Control.MOUSE_FILTER_IGNORE
