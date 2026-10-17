@@ -1,5 +1,14 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — G1 camera/production overlay UX refinement (presentation-only)
+
+Authorized reference UX research used (a) **Ta Làm Tông Sư Trong Tiên Môn** [official Vietnamese Play listing](https://play.google.com/store/apps/details?id=com.vnzqzs.and), [BlueStacks management overview](https://www.bluestacks.com/vi/blog/game-guides/a-grandmaster-in-the-immortal-sect/gmms-beginners-guide-vi.html) and [最强祖师 production staff screenshot](https://shouyou.3dmgame.com/gl/526618.html); and (b) **Evil Hunter Tycoon** [official building documentation](https://evilhunter.zendesk.com/hc/vi/articles/360039886271-Th%C3%B4ng-Tin-C%C3%B4ng-Tr%C3%ACnh), [hunter control documentation](https://evilhunter.zendesk.com/hc/en-us/articles/360039885551-Conversing-with-a-hunter). Reference supports **operator→building→production visibility and town-map-to-person navigation**. Specific animations, timer numbers, per-pixel geometry and backend rules are **not verified** from these sources; never copy images/code or import other-game assets.
+
+G1 fix after `f09a72a4`: existing `SectProductionWorksiteCue` retains real worker, actual timer, planned batch, credited stock and settlement-only receipt. Corrected **zoom-amplified 202×110 badges** by inverse-scale display and bounded cached per-frame reflow (max 10); per-camera refresh picks **non-overlapping, in-viewport** badges from selected/receipt/active priority, followed by max 2 idle; pan/pinch/zoom refresh at interaction end or tween end. No expensive per-frame simulation/worksite rescans and no new jobs/scheduler. Extended existing second-Mine focused static contracts for true instance location and stable screen size. Godot 4.7.2 exact-head focused runtime and owner-visible 1280×720 screenshot **PENDING**, UX **NOT ACCEPTED**; real Source A work-action art still **PENDING**. No gameplay, balance, save, CI, FULL, merge or G2.
+
+---
+
+
 ## 2026-10-17 — G1 visual follow-up: exact worker/site + readable production card (runtime pending)
 
 PR #20 follow-up at baseline `f8ade7e5`. Kept existing `SectProductionWorksiteCue`; extended its map badge with canonical assigned/active worker, **planned batch and remaining time**, cumulative **post-Warehouse credited** `units_produced`, and numeric percent beside the actual scheduler progress bar. Map prioritizes selected/active/receipt worksites and limits other idle badges to two; no new timers or receipt paths. Fixed active production actor visual foot position to the exact `worksite_building_id` instead of the type's primary building; cosmetic movement speed/real stand-walk clips unchanged. Focused existing Workforce E2E and second-Mine assertions extended. Only source/lexical verification possible here; **Godot official 4.7.2 exact new HEAD, 1280×720 visual owner signoff and Android remain PENDING**. Source A mining/chopping/planting clips still ART PENDING. No CI/FULL/merge/G2 or gameplay/save/economy mutation.

@@ -46,6 +46,10 @@ var source_a_portrait_textures: Dictionary = {}
 # initialized from the loaded save to prevent phantom "collected" messages.
 var map_worksite_cues: Dictionary = {}
 var map_worksite_receipt_baseline: Dictionary = {}
+# Cached presentation anchors/offsets; layout and zoom never touch simulation.
+var map_worksite_anchors: Dictionary = {}
+var map_worksite_screen_offsets: Dictionary = {}
+var map_worksite_last_scale := -1.0
 const MAP_WORKSITE_MAX_CUES := 10
 
 var camera_controls_panel: Panel
@@ -328,6 +332,8 @@ func _handle_screen_touch(touch: InputEventScreenTouch) -> void:
     var was_single_pointer := touch_points.size() == 1 and touch_points.has(touch.index)
     touch_points.erase(touch.index)
     _refresh_pinch_baseline()
+    if touch_points.is_empty() and screen_pointer_dragged:
+        _refresh_map_worksite_cues()
     if was_single_pointer and not screen_pointer_dragged:
         if _try_iso_map_pick(touch.position):
             return
@@ -392,6 +398,8 @@ func _handle_mouse_button(mouse: InputEventMouseButton) -> void:
         var should_close_summary := mouse_panning and not mouse_pointer_dragged and _disciple_summary_is_open()
         var should_close_building := mouse_panning and not mouse_pointer_dragged and _building_operation_is_open()
         mouse_panning = false
+        if mouse_pointer_dragged:
+            _refresh_map_worksite_cues()
         if not mouse_pointer_dragged and _try_iso_map_pick(mouse.position):
             return
         if should_close_summary:
@@ -507,9 +515,14 @@ func _apply_camera(zoom: float, position: Vector2, animate: bool) -> void:
         camera_tween.set_ease(Tween.EASE_OUT)
         camera_tween.tween_property(map_layer, "scale", target_scale, CAMERA_TWEEN_SECONDS)
         camera_tween.tween_property(map_layer, "position", target_position, CAMERA_TWEEN_SECONDS)
+        # Re-select visible worksite cards after the camera animation,
+        # rather than rescanning all buildings on every interpolation frame.
+        camera_tween.finished.connect(_refresh_map_worksite_cues)
     else:
         map_layer.scale = target_scale
         map_layer.position = target_position
+        if not mouse_panning and touch_points.is_empty():
+            _refresh_map_worksite_cues()
 
     _refresh_zoom_readout()
 
@@ -4337,6 +4350,46 @@ func _map_worksite_deliveries() -> Dictionary:
         map_worksite_receipt_baseline[key] = current
     return deliveries
 
+# Cards use constant SCREEN pixels even when the isometric world zooms.
+# Try above the building first, otherwise below; horizontally clamp at the
+# camera edge. Skip overlapping low-priority cards rather than covering work.
+func _map_worksite_layout_for_anchor(anchor: Vector2, occupied: Array) -> Dictionary:
+    var zoom := maxf(map_layer.scale.x,0.1)
+    var screen := SectMapCamera.world_to_screen(anchor,map_layer.position,zoom)
+    var card := SectProductionWorksiteCue.CARD_SIZE
+    var bounds := SectMapCamera.VIEW_RECT.grow(-6.0)
+    var left := clampf(screen.x-card.x*0.5,bounds.position.x,bounds.end.x-card.x)
+    for top in [screen.y-card.y-43.0,screen.y+22.0]:
+        var box := Rect2(Vector2(left,top),card)
+        if not bounds.encloses(box):
+            continue
+        var collides := false
+        for used in occupied:
+            if used is Rect2 and box.grow(5.0).intersects(used):
+                collides = true
+                break
+        if not collides:
+            return {"offset":box.position-screen,"rect":box}
+    return {}
+
+# Reposition at most ten cached lightweight widgets during camera tweens.
+# Avoid any building scans, production reads or UI node allocation per frame.
+func _reflow_map_worksite_cues() -> void:
+    if map_layer == null:
+        return
+    var zoom := maxf(map_layer.scale.x,0.1)
+    if is_equal_approx(zoom,map_worksite_last_scale):
+        return
+    map_worksite_last_scale = zoom
+    for key in map_worksite_cues.keys():
+        var cue := map_worksite_cues[key] as SectProductionWorksiteCue
+        if cue == null or not is_instance_valid(cue):
+            continue
+        cue.scale = Vector2.ONE / zoom
+        cue.position = Vector2(map_worksite_anchors.get(key,Vector2.ZERO)) + (
+            Vector2(map_worksite_screen_offsets.get(key,Vector2.ZERO)) / zoom
+        )
+
 func _refresh_map_worksite_cues() -> void:
     if state == null or map_layer == null or iso_world == null:
         return
@@ -4377,18 +4430,26 @@ func _refresh_map_worksite_cues() -> void:
         return str(one.id) < str(two.id)
     )
     var retained := {}
+    var occupied: Array = []
     var idle_shown := 0
     for entry in candidates:
         if retained.size() >= MAP_WORKSITE_MAX_CUES:
             break
         # Most idle sites are discoverable from the existing production board.
         # Two small idle previews are enough; the map belongs to active work.
-        if int(entry["priority"]) == 0:
-            if idle_shown >= 2:
-                continue
-            idle_shown += 1
+        if int(entry["priority"]) == 0 and idle_shown >= 2:
+            continue
         var building: BuildingState = entry["building"]
         var key := str(building.id)
+        var anchor := Vector2(entry["anchor"])
+        var layout := _map_worksite_layout_for_anchor(anchor,occupied)
+        if layout.is_empty():
+            continue
+        if int(entry["priority"]) == 0:
+            idle_shown += 1
+        occupied.append(layout["rect"])
+        map_worksite_anchors[key] = anchor
+        map_worksite_screen_offsets[key] = layout["offset"]
         var cue := map_worksite_cues.get(key) as SectProductionWorksiteCue
         if cue == null or not is_instance_valid(cue):
             cue = SectProductionWorksiteCue.new()
@@ -4396,10 +4457,9 @@ func _refresh_map_worksite_cues() -> void:
             map_layer.add_child(cue)
             cue.z_index = 9
             map_worksite_cues[key] = cue
-        cue.position = Vector2(entry["anchor"])-Vector2(
-            SectProductionWorksiteCue.CARD_SIZE.x * 0.5,
-            SectProductionWorksiteCue.CARD_SIZE.y + 43.0
-        )
+        var actual_zoom := maxf(map_layer.scale.x,0.1)
+        cue.scale = Vector2.ONE / actual_zoom
+        cue.position = anchor + Vector2(layout["offset"]) / actual_zoom
         cue.display(entry["snapshot"])
         if deliveries.has(key):
             cue.show_delivered(int(deliveries[key]))
@@ -4411,6 +4471,9 @@ func _refresh_map_worksite_cues() -> void:
         if old_cue != null and is_instance_valid(old_cue):
             old_cue.queue_free()
         map_worksite_cues.erase(key)
+        map_worksite_anchors.erase(key)
+        map_worksite_screen_offsets.erase(key)
+    map_worksite_last_scale = maxf(map_layer.scale.x,0.1)
 
 func _refresh_all() -> void:
     super._refresh_all()
@@ -4435,6 +4498,7 @@ func _process(_delta: float) -> void:
             iso_building_count = state.building_event_count
             iso_world.refresh_from_state(state)
             iso_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+    _reflow_map_worksite_cues()
     _refresh_living_cue_positions()
 
 func _build_living_cue_layer() -> void:

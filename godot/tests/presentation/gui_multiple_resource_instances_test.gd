@@ -264,12 +264,23 @@ func _run() -> void:
         _fail("map did not show its real second Mine instance")
         return
     var expected_anchor := SectIsometricWorldV1.virtual_legacy_point(BuildingSystem.TYPE_MINE,second.id)
-    var cue_anchor := second_cue.position + Vector2(
-        SectProductionWorksiteCue.CARD_SIZE.x * 0.5,
-        SectProductionWorksiteCue.CARD_SIZE.y + 43.0
-    )
-    if cue_anchor.distance_to(expected_anchor) > 0.5:
-        _fail("second Mine map progress was anchored to wrong visual instance")
+    # The map badge remains ~202×110 screen pixels at any zoom and
+    # stays in the camera viewport, with its true instance anchor cached.
+    var stored_anchors := ui.get("map_worksite_anchors") as Dictionary
+    var stored_offsets := ui.get("map_worksite_screen_offsets") as Dictionary
+    var actual_zoom := (ui.get("map_layer") as Control).scale.x
+    var expected_pos := expected_anchor + Vector2(stored_offsets.get(str(second.id),Vector2.ZERO)) / actual_zoom
+    var badge_screen := SectMapCamera.world_to_screen(second_cue.position,
+        (ui.get("map_layer") as Control).position,actual_zoom)
+    if (
+        Vector2(stored_anchors.get(str(second.id),Vector2.ZERO)).distance_to(expected_anchor) > 0.5
+        or second_cue.position.distance_to(expected_pos) > 0.5
+        or absf(second_cue.scale.x*actual_zoom-1.0) > 0.001
+        or not SectMapCamera.VIEW_RECT.grow(-6.0).encloses(
+            Rect2(badge_screen,SectProductionWorksiteCue.CARD_SIZE)
+        )
+    ):
+        _fail("second Mine badge failed exact instance anchor, screen-size or viewport contract")
         return
     var worker_label := second_cue.find_child("WorksiteWorker",false,false) as Label
     var received_label := second_cue.find_child("WorksiteReceived",false,false) as Label
@@ -288,6 +299,16 @@ func _run() -> void:
     if actor_foot.distance_to(expected_anchor + Vector2(12,14)) > 0.5:
         _fail("working disciple was visually assigned to the primary Mine instead of exact ID")
         return
+    # Zooming does not make the production overlay scale with the terrain.
+    var layer := ui.get("map_layer") as Control
+    var old_scale := layer.scale
+    layer.scale = Vector2.ONE * 1.5
+    ui.call("_reflow_map_worksite_cues")
+    if absf(second_cue.scale.x*layer.scale.x-1.0) > 0.001:
+        _fail("map production card magnified with map zoom")
+        return
+    layer.scale = old_scale
+    ui.call("_reflow_map_worksite_cues")
     if state.to_dict() != before_map_cues:
         _fail("map production progress mutated simulation state")
         return
