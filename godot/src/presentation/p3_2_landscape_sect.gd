@@ -4150,6 +4150,11 @@ func _open_disciple_quick_assignment(disciple_id: StringName, preserve_summary_o
         empty.text = "Chưa có Mỏ / Linh Lâm / Linh Điền. Không thể phân công."
         empty.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
         rows.add_child(empty)
+    # Three buildings should not leave half the 1280x720 game covered by
+    # an empty dialog; many buildings still scroll inside the max height.
+    var compact_height := clampf(180.0 + float(count)*83.0,420.0,546.0)
+    panel.size.y = compact_height
+    scroll.size.y = compact_height-scroll.position.y-18.0
 
 func _can_cancel_queued_assignment_command(disciple: DiscipleState) -> bool:
     if disciple == null or disciple.direct_command.is_empty():
