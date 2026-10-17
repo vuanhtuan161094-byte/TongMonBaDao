@@ -31,6 +31,8 @@ func _run() -> void:
     if radar.dimension_values[4] != 6500.0:
         _fail("rejected payload mutated a previously valid chart")
         return
+    # CanvasItem allocated without a parent must be explicitly released.
+    radar.free()
 
     var female := DiscipleState.new({"id":"visual_female","name":"Nữ Thử","sex_id":"female","profile_seed":31})
     var male := DiscipleState.new({"id":"visual_male","name":"Nam Thử","sex_id":"male","profile_seed":31})
@@ -43,6 +45,31 @@ func _run() -> void:
         return
     if DiscipleSourceAVisualPool.scene_path_for_disciple(male) != "" or DiscipleSourceAVisualPool.scene_for_disciple(male) != null:
         _fail("female-only art assigned to male")
+        return
+
+    # Unconverted rigs now use a simple colored chibi (not uniform green),
+    # driven only by the same stable cosmetic appearance seed.
+    var fallback := ModularDiscipleActor.new()
+    fallback.configure(male)
+    var robe := fallback.fallback_visual.get_node_or_null("Torso") as Panel
+    var head := fallback.fallback_visual.get_node_or_null("Head") as Panel
+    var hair := fallback.fallback_visual.get_node_or_null("Hair") as Panel
+    if robe == null or head == null or hair == null:
+        fallback.free()
+        _fail("male fallback missing robe/face/hair")
+        return
+    var robe_style := robe.get_theme_stylebox("panel") as StyleBoxFlat
+    var head_style := head.get_theme_stylebox("panel") as StyleBoxFlat
+    var hair_style := hair.get_theme_stylebox("panel") as StyleBoxFlat
+    var palette_ok := robe_style != null and head_style != null and hair_style != null
+    if palette_ok:
+        palette_ok = (
+            not robe_style.bg_color.is_equal_approx(ModularDiscipleActor.PLACEHOLDER_FILL)
+            and not head_style.bg_color.is_equal_approx(hair_style.bg_color)
+        )
+    fallback.free()
+    if not palette_ok:
+        _fail("unconverted male still renders as a uniform green marker")
         return
 
     if FileAccess.file_exists(SAVE_PATH):
@@ -113,6 +140,7 @@ func _run() -> void:
         _fail("read-only G1 UI mutated gameplay")
         return
     ui.queue_free()
+    await process_frame
     ui = null
     ProjectSettings.set_setting("runtime/live_save_path",LiveGameRuntimeV2.DEFAULT_SAVE_PATH)
     if FileAccess.file_exists(SAVE_PATH):
