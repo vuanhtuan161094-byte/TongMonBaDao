@@ -184,6 +184,19 @@ func _run() -> void:
     if warehouse.quantity(state,&"thanh_thiet") != ore_before+int(mining_job.get("output_quantity",0)):
         _fail("Mine completion did not deposit one real batch into Warehouse")
         return
+    # The map receipt only appears AFTER canonical Warehouse credit and
+    # cannot replay when simply refreshing the HUD a second time.
+    ui.call("_refresh_map_worksite_cues")
+    var delivered := ui.find_child("MapWorksite_%s" % str(mine.id),true,false) as SectProductionWorksiteCue
+    if delivered == null or delivered.receipt == null or not delivered.receipt.visible:
+        _fail("real delivered Mine batch did not notify the map")
+        return
+    if not delivered.receipt.text.contains("+%d" % int(mining_job.get("output_quantity",0))):
+        _fail("map receipt did not match actual Warehouse credit")
+        return
+    if not (ui.call("_map_worksite_deliveries") as Dictionary).is_empty():
+        _fail("map receipt replayed again without a new completed batch")
+        return
     var receipt := "wage:%s" % str(mining_job.get("job_id",""))
     if not state.sect.economy_a_receipts.has(receipt) or float(miner.profession_xp.get("mining",0.0)) <= 0.0:
         _fail("Mine completion did not provide earned wage receipt/profession XP")
