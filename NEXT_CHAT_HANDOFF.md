@@ -1,5 +1,11 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — G1 exact-branch Windows QA prepared; runtime PENDING
+
+Draft [PR #20](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/20) contains radar + Source A pool, G1 authentic-V2 regression (corrected legacy-first-roster fixture), and isolated **one-click Windows QA launcher** `Run-G1-PR20-Windows.cmd` / `tools/qa/Run-G1-PR20-Windows.ps1`. Run on Windows with official `E:\\Godot_v4.7.2-stable_win64_console.exe` or `GODOT_BIN` set; it automatically clones GitHub branch `g1-disciple-radar-sourcea-pool-20261017` into TEMP, isolates save roots, runs 9 focused contracts, P3.7 FULL, GUI MAP25 screenshots/perf, and outputs `Downloads/TONG_MON_G1_PR20_QA_*.zip`. Attach the evidence ZIP to check exact HEAD, logs, screenshots and 600 samples. **NOT RUN** in this session; no CI, merge or main edits. If Godot fails, repair the observed parser/runtime defect first; do not call the Windows gate PASS based on structural checks. Full plan in `docs/G1_DISCIPLE_RADAR_SOURCE_A_POOL_QA_2026-10-17.md`.
+
+---
+
 ## 2026-10-17 — G1 implementation handoff (DRAFT PR #20)
 
 **Latest work:** [PR #20](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/20) branch `g1-disciple-radar-sourcea-pool-20261017` based on PR19 `5ce3c0f`, code/test SHA `5ac9d5c`. Done: real six-foundation spider chart in deep Attribute tab, stable gender-aware imported Source A visual pool sharing `1113028_1` female scene across map/showcase/avatar, backend-consistent Lục Duy effect captions, focused scene test and QA document `docs/G1_DISCIPLE_RADAR_SOURCE_A_POOL_QA_2026-10-17.md`. No fake source rig, male remains existing fallback. No changes to game authority, production, combat or save. **STATUS: CODE COMMITTED + structural scan PASS / GODOT 4.7.2 parser/runtime PENDING / visual+Android PENDING.** Next perform isolated official Windows Godot import + new G1 focused test + authentic V2 profile + Source A pilot + Workforce E2E, full affected regressions, native 1280×720 screenshot and frame benchmark; fix only observed failures. Do not CI/merge/main-edit. PR19 Windows PASS is prior-SHA evidence, not G1 PASS.
