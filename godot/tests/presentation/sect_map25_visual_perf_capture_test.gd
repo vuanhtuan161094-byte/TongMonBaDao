@@ -22,6 +22,7 @@ func _run() -> void:
         _fail("could not create QA directory")
         return
     ProjectSettings.set_setting("runtime/live_save_path",SAVE_PATH)
+    DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
     DisplayServer.window_set_size(Vector2i(1280,720))
     var packed := load("res://scenes/p3/p3_2_landscape_sect.tscn") as PackedScene
     if packed == null:
@@ -78,6 +79,52 @@ func _run() -> void:
     if not await _capture("05_picker"):
         failed_captures.append("05_picker")
     await _sample("picker",false)
+    scene.call("_close_workforce_picker")
+    scene.call("_open_building",SectMapPresentation.DEST_SPIRIT_FIELD)
+    for _i in range(20):
+        await process_frame
+    if not await _capture("06_field"):
+        failed_captures.append("06_field")
+    scene.call("_close_building_operation_panel",true)
+    scene.call("_open_building",SectMapPresentation.DEST_LINH_FOREST)
+    for _i in range(20):
+        await process_frame
+    if not await _capture("07_forest"):
+        failed_captures.append("07_forest")
+    scene.call("_close_building_operation_panel",true)
+    var disciple_ids: Array = state.disciples.keys()
+    disciple_ids.sort()
+    if disciple_ids.is_empty():
+        _fail("canonical roster absent for disciple visual capture")
+        return
+    var disciple_id := StringName(disciple_ids[0])
+    scene.call("_open_disciple",disciple_id)
+    scene.call("_open_disciple_deep_screen",disciple_id,"Thuộc tính")
+    for _i in range(20):
+        await process_frame
+    if not await _capture("08_disciple"):
+        failed_captures.append("08_disciple")
+    scene.call("_return_to_disciple_summary")
+    scene.call("_close_disciple_summary",true)
+    scene.call("_reset_camera",false)
+    var actors := scene.get("actor_nodes") as Dictionary
+    var pilot: ModularDiscipleActor
+    for key in actors.keys():
+        var candidate := actors[key] as ModularDiscipleActor
+        if candidate != null and candidate.baked_visual_active():
+            pilot = candidate
+            break
+    if pilot == null:
+        _fail("verified Source A actor absent for animation evidence")
+        return
+    pilot.play_walk_for_delta(Vector2(-1,0))
+    for sample in range(3):
+        for _frame in range(7):
+            await process_frame
+        var tag := "09_actor_walk_%02d" % (sample+1)
+        if not await _capture(tag):
+            failed_captures.append(tag)
+    pilot.sync_action(&"IDLE")
     if not _write("frame_samples.csv",raw_csv) or not _write("performance_summary.csv",summary_csv):
         _fail("could not write QA performance CSV")
         return
@@ -177,6 +224,10 @@ func _capture(label: String) -> bool:
         if attempt == 0:
             print("MAP25 CAPTURE_DIM_WARNING ",label," image=",observed," window=",observed_window," viewport=",observed_rect)
         if attempt == 2 and observed_window != expected:
+            # Windows may maximize the QA window during a pan/zoom run;
+            # resizing alone cannot restore a maximized window. Keep the
+            # genuine 1280x720 image requirement unchanged.
+            DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
             DisplayServer.window_set_size(expected)
             print("MAP25 CAPTURE_WINDOW_RESTORE_REQUEST ",label," previous=",observed_window," requested=",expected)
     print("MAP25 CAPTURE_DIM_FAIL ",label," image=",observed," window=",observed_window," viewport=",observed_rect)
