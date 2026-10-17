@@ -90,8 +90,12 @@ func _run() -> void:
     if not await _press("WorkforceChoose"):
         return
     var picker := ui.find_child("WorkforcePicker",true,false) as Panel
-    if picker == null or picker.position.x+picker.size.x > 1280.0:
-        _fail("picker outside 1280x720")
+    if (
+        picker == null
+        or picker.position.x+picker.size.x > panel.position.x
+        or picker.position.y+picker.size.y > 720.0
+    ):
+        _fail("picker overlaps right-side controls or leaves 1280x720")
         return
     var other_id := _free_disciple()
     if other_id == &"":
@@ -102,6 +106,9 @@ func _run() -> void:
     var blocked := ui.find_child("WorkforcePick_%s" % str(other_id),true,false) as Button
     if blocked == null or not blocked.disabled:
         _fail("Mine replacement accepted while timer is committed")
+        return
+    if blocked.tooltip_text.strip_edges() == "" or blocked.text != "Bận":
+        _fail("disabled candidate does not explain why assignment is blocked")
         return
     if not await _press("WorkforcePickerClose"):
         return
