@@ -89,6 +89,19 @@ func _run() -> void:
         return
     ui.call("_open_building",SectMapPresentation.DEST_MINE)
     await process_frame
+    # G1.6 shows the real saved mẻ, not a guessed output or fake clock.
+    var live_mine := ui.find_child("WorkforceLiveProgress",true,false) as Label
+    var in_progress := ui.find_child("WorkforceStart",true,false) as Button
+    if live_mine == null or in_progress == null:
+        _fail("Mine panel missing production progress/Start controls")
+        return
+    if (
+        not live_mine.text.contains(str(mining_job.get("output_quantity",0)))
+        or not live_mine.text.contains("Còn %d phút" % (int(mining_job.get("finish_tick",state.tick))-state.tick))
+        or not in_progress.disabled
+    ):
+        _fail("Mine panel is not bound to canonical current timer quantity/time")
+        return
     var owner_avatar := ui.find_child("WorkforceOwnerAvatar",true,false) as Button
     if owner_avatar == null or owner_avatar.custom_minimum_size.x < 44.0:
         _fail("Mine owner avatar missing or not touch sized")
@@ -206,6 +219,25 @@ func _run() -> void:
             break
     if not first:
         _fail("Field did not start genuine paid plot")
+        return
+    ui.call("_refresh_all")
+    var real_field_plots := buildings.spirit_field_plots(state,field)
+    var live_field := ui.find_child("WorkforceLiveProgress",true,false) as Label
+    var first_growing: Dictionary = {}
+    for raw_plot in real_field_plots:
+        if raw_plot is Dictionary and StringName(raw_plot.get("status","")) == BuildingSystem.PLOT_GROWING:
+            first_growing = raw_plot
+            break
+    if live_field == null or first_growing.is_empty():
+        _fail("Field panel missing canonical crop progress")
+        return
+    var expected_remaining := maxi(0,int(first_growing.get("finish_tick",state.tick))-state.tick)
+    if (
+        not live_field.text.contains(str(first_growing.get("plot_id","")))
+        or not live_field.text.contains("×%d thường" % int(first_growing.get("routine_yield",0)))
+        or not live_field.text.contains("còn %d phút" % expected_remaining)
+    ):
+        _fail("Field progress did not reflect paid crop's saved yield/timer")
         return
     var farmer: DiscipleState = state.disciples[farmer_id]
     var stones := state.sect.spirit_stones
