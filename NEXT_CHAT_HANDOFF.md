@@ -1,5 +1,16 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — MAP25 Windows 13:33 run: 01–05 PASS; 06 FAIL is an invalid test field, repaired without production edits
+
+**Latest evidence ZIP:** `MAP25_QA_RESULTS_20261017_133329.zip`, pinned PR #18 SHA `03bfa7551fee7c8370dea140cf323060bfe01209`, official Windows Godot 4.7.2. All isolated Git gates and `01` editor import, `02` SHA 32/32, `03` projection 36/36, `04` real main scene camera/Workforce, `05` GUI Workforce E2E **PASS**. `06_gui_multiple_instances` failed with verbose log **despite a real second-Mỏ job being created:** `job_id=mine_002:v2:1`, `worker_id=candidate_0004`, `started_tick=2`, `finish_tick=62`, `output_quantity=10000`. Test incorrectly expected `building_id` on a stored timer snapshot returned by `active_resource_timer_for_worker()`; only the one-off start result includes `building_id`, whereas saved jobs belong to the enclosing `BuildingState.production_state`. No gameplay failure established. `07` image capture/lag profiling **NOT RUN**; no actual performance claim.
+
+**Scoped test-only commit** `54fcd52a4955f7ad8c255ae0069c4aa7ee5e2383`: in `godot/tests/presentation/gui_multiple_resource_instances_test.gd`, compare exact timer `job_id` + worker against jobs in second Mine, require absence of same job in first Mine, and verify saved/restored second Mine owns the same job. No new fake `building_id`, no weakened assertion, no gameplay/save schema changes. Windows after fix **PENDING**. `CURRENT_CHECKPOINT.md` updated with direct evidence.
+
+**Next step:** use SAME V4 `RUN_MAP25_QA.cmd` (no new runner) and upload result folder; 01–06 should prove each stage, then 07 must provide true 1280×720 five-state screen capture and FPS/inter-frame p95 CSV before any map visual/performance PASS. Retain Source A hashed files and canonical worker/timer/save authority. Keep PR #18 Draft, no CI, no main push/merge.
+
+---
+
+
 ## 2026-10-17 — Windows MAP25 QA official 01–05 PASS, 06 GDScript parser FAIL and test-only fixed; 07 GUI/FPS PENDING
 
 **Newest owner upload** `MAP25_QA_RESULTS_20261017_132030.zip`, official Godot 4.7.2 run pinned at PR #18 SHA `0729f8aff26da70a734fec34e74548ab6751ecc3`. Temp Git clone + SHA/EOL checks PASS; 01 editor import PASS; 02 Source A accepted=32 missing=0 rejected=0 PASS; 03 iso projection 36/36 PASS; 04 real main scene camera/Workforce PASS; **05 Workforce GUI E2E PASS** including full timed production/SaveService fixture assertions. **06 FAIL before assertions at test parse line 141** `var p := SAVE_PATH+suffix`: Godot cannot infer type of `p`. 07 screenshots/profile never executed. Full runner FINAL FAIL, no runtime visual/performance acceptance.
