@@ -1942,7 +1942,9 @@ func _refresh_sect_production_board(reset_scroll: bool = false) -> void:
     if not sect_production_board_open or sect_hub_content == null or not is_instance_valid(sect_hub_content):
         return
     var scroll := sect_hub_panel.find_child("SectHubScroll",false,false) as ScrollContainer
-    var scroll_before := 0 if reset_scroll else scroll.scroll_vertical if scroll != null else 0
+    var scroll_before := 0
+    if not reset_scroll and scroll != null:
+        scroll_before = scroll.scroll_vertical
     for child in sect_hub_content.get_children():
         sect_hub_content.remove_child(child)
         child.queue_free()
