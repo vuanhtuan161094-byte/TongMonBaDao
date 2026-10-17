@@ -113,6 +113,7 @@ func _run() -> void:
     if (
         caption == null or progress == null or not caption.visible or not progress.visible
         or not caption.text.contains("×%d" % int(mining_job.get("output_quantity",0)))
+        or not caption.text.contains("đã thu %d" % int(mine.metrics.get("units_produced",0)))
         or absf(progress.value-expected_percent) > 0.01
         or progress.position.y > 150.0
     ):
