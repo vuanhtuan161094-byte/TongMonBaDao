@@ -3,8 +3,8 @@ extends "res://src/presentation/p3_1_landscape_sect.gd"
 const ZOOM_STEP := 1.12
 const CAMERA_TWEEN_SECONDS := 0.22
 const FOCUS_MARKER_SIZE := Vector2(82.0, 82.0)
-const PRODUCTION_PANEL_WIDTH := 320.0
-const PRODUCTION_CONTENT_WIDTH := 284.0
+const PRODUCTION_PANEL_WIDTH := 420.0
+const PRODUCTION_CONTENT_WIDTH := 384.0
 # Visual travel rate in map world pixels/second; gameplay travel, scheduler
 # and profession work speed remain separate canonical systems.
 const MAP_ACTOR_VISUAL_WALK_PX_PER_SEC := 175.0
@@ -1681,9 +1681,9 @@ func _open_workforce_picker(building_id: StringName) -> void:
     workforce_picker_offset = 0
     workforce_picker_panel = Panel.new()
     workforce_picker_panel.name = "WorkforcePicker"
-    # Fit beside the compact production panel without hiding live actions.
-    # Do not block its Start/Remove controls while a candidate is inspected.
-    workforce_picker_panel.position = Vector2(440,102)
+    # Keep the picker entirely to the left of the wider, legible 420px
+    # production panel. No overlap with Start/Remove at 1280x720.
+    workforce_picker_panel.position = Vector2(340,102)
     workforce_picker_panel.size = Vector2(480,516)
     workforce_picker_panel.z_index = 90
     workforce_picker_panel.mouse_filter = Control.MOUSE_FILTER_STOP
