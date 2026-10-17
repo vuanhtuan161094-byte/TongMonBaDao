@@ -1,5 +1,16 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — MAP25 Windows QA first operator results FAIL; diagnostic-only re-run prepared
+
+**Evidence received:** `pinned_live_head.txt` records `ec8631552fcebf89ba32a76dab0f401b0b3a873d`; `qa_gates.csv` records only `FINAL,FAIL,NA,check specific step logs`. No first-failing gate, process stderr, FPS CSV, screenshot or screenshot comparison uploaded. **FAIL overall; 01 import, 02 SHA32, 03 projection36, 04 main scene camera, 05 Workforce, 06 multi-instance, 07 capture all NOT VERIFIED on this run.** Earlier historical PASS remains historical only.
+
+**Action taken:** independently audited existing PowerShell launcher. It merges native Git stderr into PowerShell under `$ErrorActionPreference=Stop`, a known potential pre-gate-01 failure for Git clone progress; this has NOT been proven as the actual cause. Existing old failure handler emitted only generic CSV row. Prepared **diagnostic revision of same launcher**, three same names `RUN_MAP25_QA.cmd`, `RUN_MAP25_QA.ps1`, `README.txt`, external ZIP `TONG_MON_BA_DAO_MAP25_WINDOWS_QA_DIAGNOSTIC_20261017.zip`, SHA256 `eb05783bbc95c8c683fadb512b7d41f3e6dd23fcf47d519e9fedad0f39b783eb`. Revision logs `launcher_progress.txt`, `failure_details.txt` with `FAILED_STEP`, separated Git stderr/stdout and preflight pin/clone verdicts before running unchanged Godot gates. **No new repo launcher**, no code other than pre-existing repair/test probe, no local save/workspace interaction.
+
+**Next operator instruction:** extract diagnostic ZIP OUTSIDE game, replacing prior extracted runner (not next to game), click `RUN_MAP25_QA.cmd` once, ZIP and upload full `MAP25_QA_RESULTS_*`. First read `failure_details.txt`, `launcher_progress.txt`, `qa_gates.csv`, `git_*.stderr.txt`, `01_*.stderr.txt`; identify the first exact failure before any presentation patch. Keep GitHub PR #18 Draft, no CI, no main push/merge, no backend change. Update this handoff and checkpoint with official Godot log or remain PENDING.
+
+---
+
+
 ## 2026-10-17 — MAP25 Windows GUI/Perf QA one-click — PACKAGE READY, WINDOWS GATE 01–07 PENDING
 
 **Current scope:** user authorized preparation only; no changes to Economy V2, One Active Job, Warehouse, scheduler, SaveService, combat, layout, Source A binary, or main. PR #18 remains DRAFT. `main` previously verified SHA `461caca1171462e0da092f21108c5c1733157ad9`. Read live branch HEAD immediately before future writes.
