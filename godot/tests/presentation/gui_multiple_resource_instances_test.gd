@@ -57,6 +57,42 @@ func _run() -> void:
     if board == null or not board.visible or first_card == null or second_card == null or open_second == null:
         _fail("sect production board omitted one of two real Mine instances")
         return
+    # G1.8: secondary Mine is unassigned, so it MUST appear in the owner's
+    # actionable queue. Viewing / filtering must not write a state or migrate
+    # legacy Field production merely to render the overview.
+    var state_before_dashboard := state.to_dict()
+    var second_attention := ui.call("_sect_production_attention",second) as Dictionary
+    if not bool(second_attention.get("needs_action",false)):
+        _fail("new secondary Mine was not classified as needs-worker")
+        return
+    var field := buildings.primary_building(state,BuildingSystem.TYPE_SPIRIT_FIELD)
+    if field != null:
+        ui.call("_sect_production_attention",field)
+        ui.call("_sect_production_status",field)
+    if state.to_dict() != state_before_dashboard:
+        _fail("production attention board wrote gameplay data while being viewed")
+        return
+    var attention_filter := ui.find_child("SectProductionAttentionOnly",true,false) as Button
+    if attention_filter == null:
+        _fail("no actionable-only production filter on the hub")
+        return
+    attention_filter.pressed.emit()
+    await process_frame
+    var actionable_open := ui.find_child("SectProductionOpen_%s" % str(second.id),true,false) as Button
+    var actionable_label := ui.find_child("SectProductionStatus_%s" % str(second.id),true,false) as Label
+    if (
+        actionable_open == null or actionable_label == null
+        or not actionable_label.text.contains("CẦN XỬ LÝ")
+        or not actionable_label.text.contains("Chưa có đệ tử")
+    ):
+        _fail("actionable filter failed to show the unassigned secondary Mine")
+        return
+    if state.to_dict() != state_before_dashboard:
+        _fail("production alert filter mutated canonical state")
+        return
+    attention_filter = ui.find_child("SectProductionAttentionOnly",true,false) as Button
+    attention_filter.pressed.emit()
+    await process_frame
     var all_label := ui.find_child("SectProductionPageInfo",true,false) as Label
     if all_label == null or not all_label.text.contains("công trình"):
         _fail("sect production board page count missing")
