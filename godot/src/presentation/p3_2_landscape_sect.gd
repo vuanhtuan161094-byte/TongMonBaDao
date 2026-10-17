@@ -3532,6 +3532,19 @@ func _build_disciple_summary_panel() -> void:
     _add_summary_order_button("Nghỉ", Vector2(110, 398), Vector2(82, 38), WorkforceSystem.COMMAND_REST)
     _add_summary_order_button("Về tông", Vector2(198, 398), Vector2(94, 38), WorkforceSystem.COMMAND_RETURN_SECT)
     _add_summary_order_button("Khai khoáng", Vector2(16, 442), Vector2(132, 38), WorkforceSystem.COMMAND_WORK, str(WorkforceSystem.PROF_MINING))
+    # Authentic V2 selects an actual Mine/Forest/Field instance instead of
+    # issuing a generic historical Mine command without a worksite.
+    var quick_assign := Button.new()
+    quick_assign.name = "SummaryQuickAssignment"
+    quick_assign.text = "Phân công"
+    quick_assign.position = Vector2(16,442)
+    quick_assign.size = Vector2(132,38)
+    quick_assign.add_theme_font_size_override("font_size",13)
+    quick_assign.add_theme_stylebox_override("normal",_style(JADE_DARK,INK,1,8))
+    quick_assign.add_theme_color_override("font_color",PAPER_LIGHT)
+    quick_assign.visible = false
+    quick_assign.pressed.connect(_open_selected_disciple_quick_assignment)
+    disciple_summary_panel.add_child(quick_assign)
     _add_summary_order_button("Luyện khí", Vector2(160, 442), Vector2(132, 38), WorkforceSystem.COMMAND_WORK, str(WorkforceSystem.PROF_FORGING))
     # V2 only: a real paid Body-training command replaces the legacy forge
     # shortcut at the same location. It does not act as a free EXP button.
@@ -3573,6 +3586,8 @@ func _add_summary_order_button(text: String, pos: Vector2, button_size: Vector2,
     button.text = text
     if kind == WorkforceSystem.COMMAND_WORK and target == str(WorkforceSystem.PROF_FORGING):
         button.name = "SummaryLegacyForge"
+    if kind == WorkforceSystem.COMMAND_WORK and target == str(WorkforceSystem.PROF_MINING):
+        button.name = "SummaryLegacyMining"
     button.position = pos
     button.size = button_size
     button.add_theme_font_size_override("font_size", 12)
@@ -3641,9 +3656,15 @@ func _refresh_disciple_summary_content() -> void:
 
     var authentic_v2 := bool(snapshot.get("authentic_v2", false))
     var legacy_forge: Button = disciple_summary_panel.get_node_or_null("SummaryLegacyForge")
+    var legacy_mine: Button = disciple_summary_panel.get_node_or_null("SummaryLegacyMining")
+    var v2_quick: Button = disciple_summary_panel.get_node_or_null("SummaryQuickAssignment")
     var v2_body: Button = disciple_summary_panel.get_node_or_null("SummaryV2BodyTraining")
     if legacy_forge != null:
         legacy_forge.visible = not authentic_v2
+    if legacy_mine != null:
+        legacy_mine.visible = not authentic_v2
+    if v2_quick != null:
+        v2_quick.visible = authentic_v2
     if v2_body != null:
         v2_body.visible = authentic_v2
     var identity: Dictionary = snapshot["identity"]
@@ -3964,6 +3985,157 @@ func _open_selected_disciple_detail() -> void:
     deep_restore_summary = true
     _open_disciple_deep_screen(selected_id, "Thuộc tính")
 
+# G1.5: fast disciple-to-building assignment. UI-only, no separate
+# workforce model: every eventual transfer goes through the existing picker
+# and its single-job/canonical-worksite/active-timer guards.
+func _open_selected_disciple_quick_assignment() -> void:
+    if selected_id != &"":
+        _open_disciple_quick_assignment(selected_id)
+
+func _open_disciple_quick_assignment(disciple_id: StringName) -> void:
+    if not state.disciples.has(disciple_id):
+        return
+    var disciple: DiscipleState = state.disciples[disciple_id]
+    var returning_to_summary := _disciple_summary_is_open()
+    selected_id = disciple_id
+    _hide_disciple_summary()
+    _clear_popup()
+    _add_dim()
+
+    var panel := Panel.new()
+    panel.name = "DiscipleQuickAssignment"
+    panel.position = Vector2(310,87)
+    panel.size = Vector2(660,546)
+    panel.add_theme_stylebox_override("panel",_style(PAPER_LIGHT,INK,3,16))
+    popup_layer.add_child(panel)
+
+    var heading := _label(panel,"PHÂN CÔNG · %s" % disciple.display_name,Vector2(22,12),Vector2(475,37),22)
+    heading.add_theme_color_override("font_color",JADE_DARK)
+    var description := _label(panel,"Chọn công trình đang có. Chỉ người rảnh mới được giao việc.",Vector2(22,51),Vector2(604,29),13)
+    description.add_theme_color_override("font_color",INK)
+    var back := Button.new()
+    back.name = "DiscipleQuickAssignmentBack"
+    back.text = "← Hồ sơ"
+    back.position = Vector2(514,12)
+    back.size = Vector2(125,43)
+    back.add_theme_color_override("font_color",INK)
+    back.add_theme_stylebox_override("normal",_style(Color(0.88,0.82,0.67),INK,1,8))
+    back.pressed.connect(Callable(self,"_return_from_disciple_quick_assignment").bind(disciple_id,returning_to_summary))
+    panel.add_child(back)
+
+    var scroll := ScrollContainer.new()
+    scroll.name = "DiscipleQuickAssignmentScroll"
+    scroll.position = Vector2(22,92)
+    scroll.size = Vector2(614,427)
+    panel.add_child(scroll)
+    var rows := VBoxContainer.new()
+    rows.name = "DiscipleQuickAssignmentRows"
+    rows.custom_minimum_size = Vector2(587,0)
+    rows.add_theme_constant_override("separation",8)
+    scroll.add_child(rows)
+
+    var count := 0
+    var definitions := [
+        {"type":BuildingSystem.TYPE_MINE,"name":"MỎ KHOÁNG"},
+        {"type":BuildingSystem.TYPE_LINH_FOREST,"name":"LINH LÂM"},
+        {"type":BuildingSystem.TYPE_SPIRIT_FIELD,"name":"LINH ĐIỀN"}
+    ]
+    for item in definitions:
+        var building_type := StringName(item["type"])
+        var instances := ResourceBuildingExpansionPolicyV2.existing_instances(state,building_type)
+        var group_name := Label.new()
+        group_name.text = "%s · %d công trình" % [str(item["name"]),instances.size()]
+        group_name.add_theme_font_size_override("font_size",16)
+        group_name.add_theme_color_override("font_color",CINNABAR)
+        rows.add_child(group_name)
+        for building in instances:
+            count += 1
+            var occupants := _workforce_occupants(building)
+            var reason := _workforce_candidate_reason(disciple,building,occupants)
+            var already_owner := reason == "Đang phụ trách"
+            var can_assign := reason == "" or already_owner
+            var entry := HBoxContainer.new()
+            entry.name = "QuickAssignRow_%s" % str(building.id)
+            entry.custom_minimum_size = Vector2(582,56)
+            entry.add_theme_constant_override("separation",8)
+            rows.add_child(entry)
+            var info := Label.new()
+            info.name = "QuickAssignStatus_%s" % str(building.id)
+            var busy_worker := ""
+            if occupants.size() == 1 and state.disciples.has(occupants[0]):
+                busy_worker = state.disciples[occupants[0]].display_name
+            var occupation := "Chưa có người" if occupants.is_empty() else (
+                busy_worker if busy_worker != "" else "%d người" % occupants.size()
+            )
+            info.text = "%s · Lv%d · %s\\n%s" % [
+                str(building.id),building.level,occupation,
+                ("Đang phụ trách" if already_owner else "Có thể nhận việc" if reason == "" else reason)
+            ]
+            info.custom_minimum_size = Vector2(448,52)
+            info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+            info.add_theme_font_size_override("font_size",12)
+            info.add_theme_color_override("font_color",INK)
+            entry.add_child(info)
+            var choose := Button.new()
+            choose.name = "QuickAssignTarget_%s" % str(building.id)
+            choose.text = "Xem" if already_owner else "Giao việc"
+            choose.custom_minimum_size = Vector2(125,46)
+            choose.disabled = not can_assign
+            choose.tooltip_text = "Mở công trình đang phụ trách" if already_owner else (
+                "Phân công qua Workforce V2" if reason == "" else reason
+            )
+            choose.add_theme_font_size_override("font_size",13)
+            choose.add_theme_stylebox_override("normal",_style(JADE_DARK,INK,1,8))
+            choose.add_theme_color_override("font_color",PAPER_LIGHT)
+            choose.pressed.connect(Callable(self,"_disciple_quick_assign_target").bind(disciple_id,building.id))
+            entry.add_child(choose)
+    if count == 0:
+        var empty := Label.new()
+        empty.text = "Chưa có Mỏ / Linh Lâm / Linh Điền. Không thể phân công."
+        empty.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+        rows.add_child(empty)
+
+func _return_from_disciple_quick_assignment(disciple_id: StringName, to_summary: bool) -> void:
+    if not state.disciples.has(disciple_id):
+        _clear_popup()
+        return
+    _clear_popup()
+    selected_id = disciple_id
+    if to_summary:
+        _show_disciple_summary()
+    else:
+        _open_disciple_deep_screen(disciple_id,"Thuộc tính")
+
+func _disciple_quick_assign_target(disciple_id: StringName, building_id: StringName) -> void:
+    if not state.disciples.has(disciple_id) or not state.buildings.has(str(building_id)):
+        return
+    var building: BuildingState = state.buildings[str(building_id)]
+    var destination := &""
+    match building.building_type:
+        BuildingSystem.TYPE_MINE:
+            destination = SectMapPresentation.DEST_MINE
+        BuildingSystem.TYPE_LINH_FOREST:
+            destination = SectMapPresentation.DEST_LINH_FOREST
+        BuildingSystem.TYPE_SPIRIT_FIELD:
+            destination = SectMapPresentation.DEST_SPIRIT_FIELD
+    if destination == &"":
+        return
+    var reason := _workforce_candidate_reason(
+        state.disciples[disciple_id],building,_workforce_occupants(building)
+    )
+    if reason != "" and reason != "Đang phụ trách":
+        return
+    _open_building(destination)
+    selected_production_instance_id = building_id
+    _refresh_building_operation_content()
+    if reason == "Đang phụ trách":
+        return
+    # This is exactly the same vetted action as a tap on the existing
+    # Worksite picker button, including scheduler/One Active Job guards.
+    _open_workforce_picker(building_id)
+    _workforce_pick_candidate(disciple_id)
+
+
 func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thuộc tính", preserve_feedback: bool = false) -> void:
     if not state.disciples.has(disciple_id):
         return
@@ -3985,6 +4157,19 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
 
     var title := _label(panel, "Hồ sơ đệ tử", Vector2(20, 12), Vector2(220, 34), 23)
     title.add_theme_color_override("font_color", CINNABAR.darkened(0.18))
+
+    # Direct player shortcut: pick an EXISTING worksite and use the canonical
+    # Workforce V2 command (no new slot/job/warehouse authority).
+    var quick_assign := Button.new()
+    quick_assign.name = "DeepQuickAssignment"
+    quick_assign.text = "Phân công"
+    quick_assign.position = Vector2(751,12)
+    quick_assign.size = Vector2(174,44)
+    quick_assign.add_theme_font_size_override("font_size",14)
+    quick_assign.add_theme_color_override("font_color",PAPER_LIGHT)
+    quick_assign.add_theme_stylebox_override("normal",_style(JADE_DARK,INK,1,8))
+    quick_assign.pressed.connect(Callable(self,"_open_disciple_quick_assignment").bind(disciple_id))
+    panel.add_child(quick_assign)
 
     var back := Button.new()
     back.name = "BackToMapContext"
