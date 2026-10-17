@@ -4,7 +4,8 @@ func _init() -> void:
     call_deferred("_run")
 
 func _run() -> void:
-    var world := SectIsometricWorldV1.new()
+    # All checked projection/size data are class constants; no Node2D is needed.
+    # Do not allocate a CanvasItem outside the scene tree and leak its RID.
     var actual := 0
     for x in [0,1,72,96,119,191]:
         for y in [0,1,72,96,119,191]:
@@ -17,8 +18,8 @@ func _run() -> void:
                 return
             actual += 1
     if (
-        world.STARTER != Rect2i(72,72,48,48)
-        or world.GRID.x/world.CHUNK != 12
+        SectIsometricWorldV1.STARTER != Rect2i(72,72,48,48)
+        or SectIsometricWorldV1.GRID.x/SectIsometricWorldV1.CHUNK != 12
     ):
         _fail("starter or 16-cell chunk changed")
         return
