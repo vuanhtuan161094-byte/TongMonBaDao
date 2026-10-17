@@ -1,5 +1,16 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — Windows launcher bootstrap FAIL at git --version; only Hotfix V3 should be run
+
+**Direct pasted Windows evidence:** Godot `4.7.2.stable.official.ed1daf0bf` detected; then `[GIT] git_01___version: --version`; `[FAIL] git exit= at git_01___version:`. This was a **false bootstrap gate FAIL in QA launcher**, before any Godot test; code used `Start-Process -PassThru` and checked an empty `ExitCode` as failure. This does NOT show game/map/Source A failure. Real Windows Godot 01–07 for this attempt are NOT RUN, previous art32/projection36 were historical.
+
+**Replacement (do not use earlier diagnostic ZIP):** `TONG_MON_BA_DAO_MAP25_WINDOWS_QA_HOTFIX_V3_20261017.zip` SHA256 `59ba8941a3776fd4c52ef85be41db665e4f2086d2ebb0989b373fac075866b38`, three files with unchanged launcher names. New shared `.NET System.Diagnostics.Process` helper for BOTH Git and Godot: async stdout/stderr + waited real signed ExitCode; `00_git_smoke` line after valid version. Static/integrity check done; real Windows run **PENDING**. Same isolated TEMP/APPDATA clone, SHA pin, tests and graphical capture; no main, backend, CI or merge edits.
+
+**Immediate next:** extract ONLY V3 into a fresh folder outside game; double-click `RUN_MAP25_QA.cmd`; if FAIL zip and return full `MAP25_QA_RESULTS_*` containing `failure_details.txt`, all `git_*.*` and `qa_gates.csv`. Do not patch Godot renderer based on launcher-only failure. Check scripts and game only against official runtime logs.
+
+---
+
+
 ## 2026-10-17 — MAP25 Windows QA first operator results FAIL; diagnostic-only re-run prepared
 
 **Evidence received:** `pinned_live_head.txt` records `ec8631552fcebf89ba32a76dab0f401b0b3a873d`; `qa_gates.csv` records only `FINAL,FAIL,NA,check specific step logs`. No first-failing gate, process stderr, FPS CSV, screenshot or screenshot comparison uploaded. **FAIL overall; 01 import, 02 SHA32, 03 projection36, 04 main scene camera, 05 Workforce, 06 multi-instance, 07 capture all NOT VERIFIED on this run.** Earlier historical PASS remains historical only.
