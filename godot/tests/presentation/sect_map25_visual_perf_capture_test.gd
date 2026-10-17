@@ -106,6 +106,43 @@ func _run() -> void:
         failed_captures.append("08_disciple")
     scene.call("_return_to_disciple_summary")
     scene.call("_close_disciple_summary",true)
+
+    # G1 proof: a generated authentic V2 recruit with canonical six dimensions,
+    # not a P2 founding disciple or hand-authored stats. QA-only fixture.
+    state.sect.disciple_capacity = maxi(state.sect.disciple_capacity,state.disciples.size()+1)
+    var v2_candidate := DiscipleGeneratorOpenPoints.new().generate_candidate(
+        state,DiscipleGeneratorV2.SOURCE_ORDINARY,779
+    )
+    if v2_candidate == null or v2_candidate.v2_birth_profile.is_empty():
+        _fail("G1 authentic V2 visual capture candidate unavailable")
+        return
+    state.recruitment_candidates[v2_candidate.id] = v2_candidate
+    var accepted_v2 := RecruitmentSystem.new().accept_candidate(state,v2_candidate.id)
+    if not bool(accepted_v2.get("ok",false)):
+        _fail("G1 authentic V2 recruit denied for visual capture")
+        return
+    var actual_v2 := state.disciples.get(v2_candidate.id) as DiscipleState
+    if actual_v2 == null or not DiscipleRealmProgressV2.progression_ready(actual_v2):
+        _fail("G1 authentic V2 recruit missing ready progression")
+        return
+    scene.call("_open_disciple_deep_screen",actual_v2.id,"Thuộc tính")
+    for _i in range(20):
+        await process_frame
+    var real_radar := scene.find_child("DiscipleSixDimensionRadar",true,false) as DiscipleSixDimensionRadar
+    if real_radar == null or real_radar.dimension_values.size() != 6:
+        _fail("G1 real V2 visual screenshot lacks canonical six-axis radar")
+        return
+    var actual_snapshot := DisciplePresentationSnapshotV2.build(state,actual_v2)
+    var actual_six: Dictionary = actual_snapshot["foundations"]["current"]
+    for value_index in range(DiscipleSixDimensionRadar.KEYS.size()):
+        var value_key := str(DiscipleSixDimensionRadar.KEYS[value_index])
+        if not is_equal_approx(real_radar.dimension_values[value_index],float(actual_six[value_key])):
+            _fail("G1 visual chart diverged from V2 canonical stat "+value_key)
+            return
+    if not await _capture("08b_g1_real_v2_radar"):
+        failed_captures.append("08b_g1_real_v2_radar")
+    scene.call("_return_to_disciple_summary")
+    scene.call("_close_disciple_summary",true)
     scene.call("_reset_camera",false)
     var actors := scene.get("actor_nodes") as Dictionary
     var pilot: ModularDiscipleActor
