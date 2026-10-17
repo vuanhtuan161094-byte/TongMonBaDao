@@ -50,12 +50,11 @@ func texture_for(relative: String) -> Texture2D:
         if relative not in rejected:
             rejected.append(relative)
         return null
-    var image := Image.load_from_file(path)
-    if image == null or image.is_empty():
-        if relative not in rejected:
-            rejected.append(relative)
-        return null
-    var texture := ImageTexture.create_from_image(image)
+    # Use Godot's imported texture path instead of reading the source PNG as
+    # an Image file (which is unsupported in exported resource packs).
+    # The canonical original-byte SHA256 guard above remains mandatory.
+    # Android export must ALSO include raw PNG bytes for this guard to pass.
+    var texture := ResourceLoader.load(path) as Texture2D
     if texture == null or texture.get_width() <= 0 or texture.get_height() <= 0:
         if relative not in rejected:
             rejected.append(relative)
