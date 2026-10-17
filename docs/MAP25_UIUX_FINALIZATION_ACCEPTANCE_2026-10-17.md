@@ -1,6 +1,6 @@
 # MAP25 / UI-UX finalization acceptance — 2026-10-17
 
-Status: IN PROGRESS. P0 Windows focused gates and performance target PASS on PR #18 ancestor `855fc4e8342607fed36f1128536f7a1c0d3d09fa`; visual acceptance, Source A actor integration, production UI, disciple UI and Android remain OPEN.
+Status: **WINDOWS FOCUSED TEST PASS / PERFORMANCE TARGET PASS / VISUAL ACCEPTANCE OPEN / ANDROID PENDING**. Stacked branch `map25-uiux-finalization-20261017` starts at draft PR #18 HEAD `855fc4e8342607fed36f1128536f7a1c0d3d09fa`. Source A pilot, production and disciple presentation packets were implemented and tested. No gameplay, CI, merge or main edit.
 
 ## P0 — terrain batching verification
 
@@ -28,14 +28,40 @@ Official Godot exits were 0 with no `SCRIPT ERROR`, `Parse Error`, `ERROR:` or `
 
 Direct screenshot review: the ground colors, roads, trees and PV01 building layering rendered, with no ArrayMesh compile/color regression observed. The left map viewport contains a large pale blank margin; green silhouette actors remain; building markers and the 440-pixel Mine panel are still conspicuously provisional. Thus **TEST PASS / PERF TARGET PASS / VISUAL ACCEPTANCE OPEN**. P1 needs no further speculative renderer optimization on this measured host; proceed with the authorized Source A pilot and UI packets, then benchmark again after their integration.
 
-## Remaining gates
+## P1–P4 packet results and rollback points
 
-| Packet | State | Required proof |
+| Packet | Code commit | Tested result | Acceptance limit |
+|---|---|---|---|
+| P1 terrain | `41783d3` inherited; P0 docs `a1402bd` | Pan/zoom p95 and draw-call targets met on same Intel Iris Plus machine; no extra renderer patch was needed. | Pale left viewport margin remains visible. |
+| P2 actor pilot | `873f3cd` | Exact Batch-01 `1113028_1` files copied, asset hash verified, female map actors use genuine stand/walk SpriteFrames, left/right mirror and idle stop while existing actor ID/click/foot API stays intact. Official real-scene focused gate PASS for two female actors; 3 walk frames captured. | Visual approval, some roof overlap, three zoom scales, sustained atlas/Android performance and other rigs OPEN. Male green fallback still visible because no approved source for that actor. |
+| P3 production | `a073515`, `05af0b6` | Mine/Forest/Field right panel narrowed to 320 px. Exact building-instance picker, one worker, live plan/yield/warehouse, authentic timer result and cancel through existing BuildingSystem; verified worker avatar links to summary and returns to the exact building ID. Workforce E2E, multiple-instance/save test PASS. | Field progress hierarchy and missing building artwork still need visual approval/refinement; no blanket visual COMPLETE. |
+| P4 disciple | `2fd377d`, `05af0b6` | Left roster, center verified pilot artwork, right canonical data, six existing real tabs retained. Improved contrast and 44 px controls; verified art or explicit pending portrait. Operational-flow and authentic V2 profile focused gates PASS. | Only verified female pilot has artwork; separate male/individual portraits, some reference ornamentation and mobile device QA OPEN. |
+| Integrated capture | `a7bebcc` | Existing capture probe now saves eight 1280×720 states, three consecutive actor frames and five-case 600-frame CSV; strict native resolution, no image rescaling. | Three-frame GIF is a short visual sample, not frame-perfect motion or z-order approval. |
+
+**Source/provenance.** `E:\TongMonBaDaoWorkspace\05_DauRa\Assets_Godot472\1113028_1\asset.json` SHA-256 `daecefdc454883b8613fa2ec8361be1c80b2ddcc162b4aceff84618306e4a637`; copied to `godot/assets/actors/1113028_1/`. Its four resource/atlas hashes were checked: `actor.tscn` `5442a4442a31c9ae27027ef0bf16941e3a1afe0f85b94a17713be300578b2cf5`; `animations.tres` `e2864cfe778fac39b093fa30c76c76bfec40f1b03a8ed1f3af5ea72aa6eb6473`; `atlas_000.webp` `ce2bea0da04a8e461016de756546640afd4eda855f64ed3cd44e15bdc06c4197`; `atlas_001.webp` `8e1bffa36d2c5ff68ca54be3f56633006a94b42bf9b0abecd03ab50023024da6`. The copied `asset.json` names and hashes the original `.skel`, `.atlas` and PNG. Its two atlases total 2,833,528 on-disk bytes; this is **not VRAM**. No converter rerun. No claim of rights beyond owner personal-project use.
+
+## Integrated Windows 4.7.2 release-candidate evidence
+
+All commands used `E:\Godot_v4.7.2-stable_win64_console.exe`, the repository `godot/` project, isolated QA user-data roots, Compatibility OpenGL 3.3 on Intel Iris Plus Graphics, native landscape 1280×720. Test command pattern: `Godot --headless --path godot --script res://tests/presentation/<name>.gd`; visual probe omits `--headless` and uses `--rendering-method gl_compatibility`. Final visual probe exited 0 after 11 `CAPTURE_OK` at exactly 1280×720 and 600 benchmark samples; screenshot SHA-256 values are in `evidence_manifest_release.json` inside the output ZIP. Import exit 0 with no parse or script error. Final focused PASS logs: 32/32 Source A art hash, 36/36 projection, real MAP25 main scene/camera/Workforce, Source A in-scene stand/walk pilot, Workforce one-worker/timer/cancel/warehouse/EXP/offline E2E including worker→exact-building return, multiple building IDs and save roundtrip, P3.3 operational disciple flow, DV2-03 authentic V2 disciple profile. The 600-frame profile is from the same final presentation code; its test script alone was subsequently committed without changing its logic or outputs.
+
+| Scenario | `5e0ec9` baseline avg / p95 ms; draw calls | Final avg / p95 ms; draw calls | Final converted FPS `1000/avg` |
+|---|---:|---:|---:|
+| Idle | 16.569 / 19.257; 78.0 | 16.505 / 17.547; 65.0 | 60.59 |
+| Pan | 58.175 / 60.623; 4892.7 | 16.910 / 17.686; 399.4 | 59.14 |
+| Zoom | 67.124 / 104.761; 4339.6 | 16.662 / 18.202; 356.1 | 60.02 |
+| Mine panel | 16.568 / 17.509; 91.0 | 16.470 / 17.588; 59.0 | 60.72 |
+| Picker | 16.523 / 17.303; 121.0 | 16.582 / 17.317; 101.0 | 60.31 |
+
+The monitor's `avg_fps` and `avg_process_ms` columns differ from observed interval timing and are **not** used as causal CPU/GPU evidence. Sampled `memory_bytes` in the 600 rows ranges from 57,259,048 to 59,566,610 bytes; this is an engine monitor value, not atlas VRAM or memory peak for Android. There is no sustained-play or Android FPS claim. Pan and zoom p95 remain below 33.3 ms and mean draw calls below 600 on this machine.
+
+**Artifact:** `MAP25_UIUX_WINDOWS_CANDIDATE_20261017.zip` in the task outputs, SHA-256 `a078e60cd2768f20c3bc4cc0f6508935acd61af82543048cf366da8b35af655f`; ZIP CRC PASS. It contains 11 original 1280×720 screenshots, `frame_samples.csv`, `performance_summary.csv`, manifest and named Godot logs. `MAP25_SourceA_actor_walk_20261017.gif` is a three-frame excerpt from actual rendered screenshots, SHA-256 `8ecf4768b3321755bdb96cd9cee816f14bc125a35dfba91bc33a3fef115a8002`.
+
+| Screenshot in bundle | Reference pattern from `P3_REFERENCE_UI_AUDIT` | Ours / limitation |
 |---|---|---|
-| P2 Source A actor `1113028_1` | PENDING | Exact asset hashes, in-scene idle/walk/stop, feet/click/z-order, 0.75/1/1.35 zoom, screenshots/clip |
-| P3 Mine/Forest/Field UI | PENDING | Live one-worker/building actions and backend timer/stock/EXP, seven-state screenshots, focused regression |
-| P4 disciple V3.3 UI | PENDING | Roster/showcase/six real tabs, hidden data, touch/navigation regression |
-| Integrated Windows | PENDING | Repeat 5-case benchmark and 7 screenshots on final SHA, save/offline/One Active Job affected gates |
-| Android | PENDING | Real runner/device evidence |
+| `01_idle.png`, `02_pan.png`, `03_zoom.png` | Map-first, thin edge HUD, tappable buildings | Camera and Source A terrain/buildings visible; pale left margin, green fallback actors and flat markers remain. |
+| `04_mine.png`, `06_field.png`, `07_forest.png` | Compact right panel over visible map, responsible disciple then real production | 320 px panel, one-person card, genuine stock/job state and actions; historical building art for all three still pending recovery. |
+| `05_picker.png` | Fast worker choice with status | Search, readiness sorting, profession level, worker portrait/initial and blocked reason; visual decoration remains simpler than reference. |
+| `08_disciple.png` | Left portrait roster, large center character, right information, lower tabs | Pilot artwork, six live tabs and canonical attributes visible; other individual portraits pending verified assets. |
+| `09_actor_walk_01..03.png` | Character animates in the real map | Genuine three-frame capture; foot/click focused tests pass, roof overlap and all-zoom visual signoff remain open. |
 
-Source A binary redistribution rights remain restricted to the owner's personal project permission. Technical Batch-01 PASS is not visual acceptance. No CI, merge, main change or gameplay-authority edit was performed in P0.
+**Open visual/asset gate:** MAP25 left blank strip, actor/roof overlap, green fallback males, provisional map markers, historical S3 building images for Mine/Forest/Field and remaining individual portraits. Exact S3 bytes were not recovered, so no replacement was relabeled as canonical Source A. Visual comparison uses structural observations in the existing reference audit; no reference artwork was copied into the repository or artifact. **Android PENDING**: no device/export runner was available in this packet. The branch is a reviewable candidate, not a declared fully polished/visually accepted production release.
