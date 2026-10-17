@@ -1,5 +1,23 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — GUI-MAP25 visual/performance/workforce repair V1 — CODE COMMITTED, RUNTIME PENDING
+
+**Authority:** owner-uploaded `TONG_MON_BA_DAO_GUI_MAP25_HANDOFF_2026-10-17(1).md`; authorized presentation-only repair on draft [PR #18](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/18), branch `integration-v2-pr9-pr10-pr17-20261016`. Starting HEAD `8b23f78797e99ed5568f3d61b1611b6426c616a8`; `main` verified unchanged at `461caca1171462e0da092f21108c5c1733157ad9`. No CI trigger, main push, merge, force-push or backend/save/art edit.
+
+**Code checkpoints (4 files, six small commits):**
+- `1e581e351b85d8cb516aa2fcd22a9eca2b198ccd` MAP25 ground-plane, labelled/color-coded producer and visual-landmark markers replace fallback floating polygons; three SHA-gated PV01 building textures remain preferred and canonical producer `building_id`/tap geometry unchanged.
+- `cfdda1e44480961eb76b3ff825a317d3c81b6626` avoid unchanged camera transform/chunk re-evaluation. `1d0c2938615a47a6b87533b309f3fa7d27c0531a` switch static world `SubViewport` from per-frame `UPDATE_ALWAYS` to `UPDATE_ONCE` on camera/building changes. This is code-level optimization, **NOT verified measured FPS/frame-time improvement**.
+- `67d58cac435c1de022593f5d603dd286f2c99801` picker 480×516 at x326, alongside right 440px panel x824; 8 candidates/page; title contrast; explicit state reasons/disabled tooltip; `travel_out` remains blocked, no backend reset or fake assignment.
+- `5eab832e9ce250a886d453c9fe33bfa5cfb150d8` map canonical instance/PV01 uniqueness/static camera regression; `6028df48cb175389fa075a3aa6f950c45aa9c2bc` GUI picker non-overlap/disabled-reason regression.
+
+**Root cause confirmed in CODE:** old `SectIsometricWorldV1._draw_building` used 3D roof/walls for every no-art landmark; the green/brown box fallback is now removed. **Performance code risk** was unconditional SubViewport redraw and camera/chunk checks, but no profiler before/after means real lag cause remains **UNVERIFIED**. Workforce picker previously displayed generic button “Bận” even when state-specific reason existed in the row; busy/traveling/legacy data must be honored, not cleared.
+
+**Static verification only:** GitHub compare against starting PR HEAD reports exactly four presentation/test files changed; 6 commits; balanced brackets/string scan in all four; no official Godot binary exists in this execution environment. **DO NOT report runtime PASS for the new HEAD.** Historical owner Windows Godot 4.7.2 log at older HEAD `de170cf9...`: 01 import PASS, 02 art SHA accepted=32/missing=0/rejected=0 PASS, 03 projection 36/36 PASS; gate 04 parser FAIL at reserved `match` subsequently corrected, **no Windows gate-04 PASS log confirmed**. These historical gates do not qualify the new renderer/viewport/GUI commits.
+
+**NEXT GATE (same isolated Windows runner, latest PR HEAD pin, no save alteration):** 01 editor import; 02 original SHA32 gate; 03 projection 36 clean; 04 real scene/Workforce camera; `gui_workforce_v1_e2e_test.gd`, `gui_multiple_resource_instances_test.gd`, and relevant camera/picking; genuine 1280×720 before/after GUI capture. Record Godot Profiler FPS/frame-time p95 if possible, CPU/render time, draw calls/node counts for still/pan/zoom/picker states to assess `UPDATE_ONCE` invalidation and performance. If viewport goes stale, fix based on evidence before claiming acceptance. O6 ==4, O8, SAFE, SaveService, Android touch/export/PCK still **PENDING**, no measured FPS, visual acceptance or Android PASS.
+
+---
+
 ## 2026-10-17 — MAP25 Windows Gate-04 reserved keyword parser FAIL; focused test-only fix, rerun pending
 
 **Owner Windows Godot 4.7.2 real QA at PR #18 HEAD `de170cf9fae0da629d7d40e24b308fcf33d7d80c`, run 10:25–10:26 ICT:** `01_editor_import` exit 0 **PASS** (no script errors); `02_art_hash_gate` exit 0 printed `MAP25 SOURCE A SHA-GATED ART CONTRACT PASS accepted=32 missing=0 rejected=0` **PASS**; `03_isometric_projection` exit 0 printed `MAP-2.5D PROJECTION 36 CASES PASS` **PASS**, no leak/error stderr stopping the wrapper. Step `04_real_main_scene_and_workforce` exited 1 on `Parse Error: Expected expression to test after "match"` at `res://tests/presentation/sect_iso_main_integration_test.gd:65`. The test could not be loaded, so **no evidence yet** for real main scene/workforce/camera runtime. Wrapper correctly stopped overall acceptance. 32/32 actual Source A bytes remain SHA PASS. Owner workspace/save isolated; main unchanged; no CI/merge.
