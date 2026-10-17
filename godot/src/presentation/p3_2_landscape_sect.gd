@@ -4231,14 +4231,18 @@ func _map_worksite_snapshot(building: BuildingState) -> Dictionary:
                 var elapsed := clampi(state.tick-start_tick,0,total)
                 var output_id := StringName(job.get("resource_id",""))
                 result["heading"] = "%s · %s" % [type_title,ResourceRegistry.new().display_name(output_id)]
-                result["detail"] = "×%d · %s" % [
+                result["detail"] = "Mẻ ×%d · %s" % [
                     maxi(0,int(job.get("output_quantity",0))),
                     "Chờ nhập kho" if finish_tick <= state.tick else "còn %dp" % (finish_tick-state.tick)
                 ]
                 result["progress"] = 100.0*float(elapsed)/float(total)
                 result["active"] = true # Includes newly started 0% jobs.
                 return result
-        result["detail"] = "Chưa có mẻ" if not assigned.is_empty() else "Chưa phân công"
+        if assigned.is_empty():
+            result["detail"] = "Chưa phân công"
+        else:
+            var total_received := maxi(0,int(building.metrics.get("units_produced",0)))
+            result["detail"] = "Đã thu %d" % total_received if total_received > 0 else "Chưa có mẻ"
         return result
     var plot_data = building.production_state.get("plots",[])
     if not (plot_data is Array):
