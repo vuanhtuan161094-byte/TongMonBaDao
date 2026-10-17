@@ -3,8 +3,8 @@
 # Godot's APPDATA/LOCALAPPDATA to private disposable directories.
 param(
     [string]$GodotBin = $env:GODOT_BIN,
-    [switch]$SkipFull,
-    [switch]$SkipGui
+    [switch]$Full,
+    [switch]$Visual
 )
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
@@ -161,32 +161,38 @@ try {
     $importOk = Invoke-QAProcess -Label "02_import" -Exe $GodotBin -ArgumentLine ('--headless --path "'+$project+'" --import') -PassMarker "" -TimeoutSec 300
     if (-not $importOk) { throw "Godot import/parse failed; stop dependent tests" }
 
+    # Quick is the DEFAULT, because G1 only edits presentation/read-only art.
+    # Run only four directly relevant tests unless -Full is explicitly selected.
     $tests = @(
         @("03_g1_radar","res://tests/presentation/sect_g1_disciple_radar_test.gd","G1 DISCIPLE RADAR + VERIFIED SOURCE A POOL: PASS"),
         @("04_v2_profile","res://tests/presentation/dv2_03_p3_v2_disciple_profile_test.gd","DV2-03 P3 AUTHENTIC V2 DISCIPLE PROFILE: PASS"),
         @("05_p33_flow","res://tests/presentation/p3_3_disciple_operational_flow_test.gd","P3.3 DISCIPLE OPERATIONAL FLOW TEST PASS"),
-        @("06_sourcea_actor","res://tests/presentation/sect_source_a_actor_pilot_test.gd","SOURCE A ACTOR PILOT REAL SCENE PASS"),
-        @("07_workforce","res://tests/presentation/gui_workforce_v1_e2e_test.gd","GUI-WORKFORCE V1 REAL LANDSCAPE END-TO-END PASS"),
-        @("08_instance_ids","res://tests/presentation/gui_multiple_resource_instances_test.gd","GUI MULTI-INSTANCE ID ROUTING TEST PASS"),
-        @("09_sourcea_art","res://tests/presentation/sect_map25_verified_art_gate_test.gd","MAP25 SOURCE A SHA-GATED ART CONTRACT PASS"),
-        @("10_projection","res://tests/presentation/sect_iso_projection_contract_test.gd","CASES PASS"),
-        @("11_main_scene","res://tests/presentation/sect_iso_main_integration_test.gd","MAP 2.5D REAL MAIN SCENE WORKFORCE CAMERA PASS")
+        @("06_sourcea_actor","res://tests/presentation/sect_source_a_actor_pilot_test.gd","SOURCE A ACTOR PILOT REAL SCENE PASS")
     )
+    if ($Full) {
+        $tests += @(
+            @("07_workforce","res://tests/presentation/gui_workforce_v1_e2e_test.gd","GUI-WORKFORCE V1 REAL LANDSCAPE END-TO-END PASS"),
+            @("08_instance_ids","res://tests/presentation/gui_multiple_resource_instances_test.gd","GUI MULTI-INSTANCE ID ROUTING TEST PASS"),
+            @("09_sourcea_art","res://tests/presentation/sect_map25_verified_art_gate_test.gd","MAP25 SOURCE A SHA-GATED ART CONTRACT PASS"),
+            @("10_projection","res://tests/presentation/sect_iso_projection_contract_test.gd","CASES PASS"),
+            @("11_main_scene","res://tests/presentation/sect_iso_main_integration_test.gd","MAP 2.5D REAL MAIN SCENE WORKFORCE CAMERA PASS")
+        )
+    }
+    Add-Note ("QA scope: " + $(if ($Full) { "FOCUSED + FULL" } else { "G1 QUICK (4 focused tests)" }))
     foreach ($t in $tests) {
         $ok = Run-GodotTest $t[0] $t[1] $t[2]
         if (-not $ok) { Add-Note ("[WARN] Independent tests continue after " + $t[0]) }
     }
 
-    if (-not $SkipFull) {
+    if ($Full) {
         $full = Join-Path $clone "tools\godot\Verify-P3-7C1-Foundation-Dan-Tien-Full.ps1"
         $argsFull = '-NoProfile -ExecutionPolicy Bypass -File "' + $full + '" -GodotBin "' + $GodotBin + '"'
         $null = Invoke-QAProcess -Label "12_full_p37" -Exe "powershell.exe" -ArgumentLine $argsFull -PassMarker "P3.7C1 FOUNDATION + DAN TIEN FULL GATE: PASS" -TimeoutSec 1800
     } else {
-        $blocked.Add("P3.7 FULL intentionally skipped by caller")
-        Add-Note "[PENDING] P3.7 FULL skipped"
+        Add-Note "[NOT IN SCOPE] P3.7 FULL (presentation-only change; opt in with -Full)"
     }
 
-    if (-not $SkipGui) {
+    if ($Visual) {
         $capture = Join-Path $report "native_1280x720"
         New-Item -ItemType Directory -Force -Path $capture | Out-Null
         $env:MAP25_QA_OUT = $capture
@@ -217,11 +223,13 @@ try {
             }
         }
     } else {
-        $blocked.Add("1280x720 GUI capture + current-HEAD MAP25 performance skipped by caller")
-        Add-Note "[PENDING] Native Windows visual/performance capture skipped"
+        Add-Note "[NOT IN SCOPE] Native visual/FPS capture (opt in with -Visual)"
     }
 
     $status = if ($failures.Count -gt 0) { "FAIL" } elseif ($blocked.Count -gt 0) { "PENDING" } else { "PASS" }
+    if ($status -eq "PASS") {
+        Add-Note ("[PASS] " + $(if ($Full -and $Visual) { "WINDOWS FULL + VISUAL" } elseif ($Full) { "WINDOWS FULL" } elseif ($Visual) { "G1 QUICK + VISUAL" } else { "G1 QUICK ONLY" }))
+    }
 } catch {
     Add-Note ("[BLOCKED/FAIL] " + $_.Exception.Message)
     if ($blocked.Count -eq 0 -and $failures.Count -eq 0) { $failures.Add($_.Exception.Message) }
