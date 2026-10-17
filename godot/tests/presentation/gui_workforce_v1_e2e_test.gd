@@ -90,8 +90,8 @@ func _run() -> void:
     ui.call("_open_building",SectMapPresentation.DEST_MINE)
     await process_frame
     var remove := ui.find_child("WorkforceRemove",true,false) as Button
-    if remove == null or not remove.disabled:
-        _fail("busy Mine worker can be removed during committed timer")
+    if remove == null or remove.disabled or remove.text != "Hủy mẻ":
+        _fail("active Mine timer must expose canonical cancel instead of worker removal")
         return
     if not await _press("WorkforceChoose"):
         return
