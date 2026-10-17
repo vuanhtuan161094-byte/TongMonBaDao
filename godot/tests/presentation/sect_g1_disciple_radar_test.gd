@@ -125,6 +125,26 @@ func _run() -> void:
     if state == null or state.disciples.is_empty():
         _fail("real scene has no canonical disciples")
         return
+
+    # Characters can be listed before they have a live map actor (roster
+    # paging / large sect); verified Source A art must still be their portrait.
+    # Check the exact same shared Texture2D is reused, not per-actor atlases.
+    for visual_disciple in [male,female]:
+        if (ui.get("actor_nodes") as Dictionary).has(str(visual_disciple.id)):
+            _fail("off-map portrait fixture was unexpectedly added to map")
+            return
+        var off_map_avatar := ui.call("_disciple_avatar_button",visual_disciple,44.0) as Button
+        var true_portrait := off_map_avatar.get_node_or_null("VerifiedSourceAPortrait") as TextureRect
+        var shared_texture := ui.call("_disciple_source_a_portrait_texture",visual_disciple) as Texture2D
+        if true_portrait == null or shared_texture == null or true_portrait.texture != shared_texture:
+            off_map_avatar.free()
+            _fail("off-map disciple avatar did not use cached verified Source A")
+            return
+        off_map_avatar.free()
+    var portrait_cache := ui.get("source_a_portrait_textures") as Dictionary
+    if portrait_cache.size() != 2:
+        _fail("male/female Source A portrait cache allocated unexpected scenes")
+        return
     # Recruit an authentic V2 actor through the real state/recruitment API.
     # The initial sect roster may include historical P2 compatibility actors.
     state.sect.disciple_capacity = maxi(state.sect.disciple_capacity,state.disciples.size()+1)
