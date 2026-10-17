@@ -1,5 +1,11 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — G1.7 sect-wide production board implemented
+
+Draft PR20 G1.7 uses existing SectOperationsHub: paged 8-row display of all canonical Mine/Forest/Field instances, 4 filters, real owner/timer/plot status, exact-ID `Mở` route to same Workforce/BuildingSystem panel; non-mutating Field snapshot reads; no shadow job/clock/warehouse. Added focused coverage to `gui_multiple_resource_instances_test.gd` (two Mines, filtered list, open second ID, current timer). Static contract 12/12 and lexical 2/2 PASS, Windows Godot runtime exact new HEAD PENDING. No gameplay/save/CI/merge; do not request owner Full QA. Before next work re-fetch PR20 HEAD.
+
+---
+
 ## 2026-10-17 — G1.6 production panel direct coding DONE / runtime PENDING
 
 Draft PR20 G1.6: read-only canonical production ledger for Mine/Forest (real timer/units/remaining/stock) and Spirit Field (per-plot crop, baseline yield, finish/empty), below always-visible 44px Start/Choose/Remove. Start blocked clearly for active timer/full plots, stock target, invalid current job; accepted command explicitly says scheduler *will* start, does not claim goods. Single test `gui_workforce_v1_e2e_test.gd` extended to check actual Mine timer and planted Field snapshot display; source static 12/12 + lexical 2/2 PASS, official Windows/Godot exact HEAD PENDING. No CI/FULL/merge; no gameplay edits. Re-fetch latest PR20 before next code packet.
