@@ -988,8 +988,9 @@ func _refresh_production_progress_header(building_type: StringName) -> void:
                 StringName(job.get("resource_id",""))
             )
             building_operation_progress_caption.text = (
-                "%s ×%d dự kiến\n%d/%d phút · %s" % [
+                "%s ×%d mẻ · đã thu %d\n%d/%d phút · %s" % [
                     resource_name,maxi(0,int(job.get("output_quantity",0))),
+                    maxi(0,int(building.metrics.get("units_produced",0))),
                     elapsed,total,
                     "Chờ scheduler kết toán" if finish_tick <= state.tick
                     else "Còn %d phút" % (finish_tick-state.tick)
@@ -998,7 +999,9 @@ func _refresh_production_progress_header(building_type: StringName) -> void:
             building_operation_progress_bar.value = 100.0*float(elapsed)/float(total)
         else:
             var plan := buildings.selected_resource_production_plan(building)
-            building_operation_progress_caption.text = "CHƯA CÓ MẺ\nDự kiến %s ×%d/mẻ" % [
+            building_operation_progress_caption.text = "Đã thu %d · %d mẻ\nMẻ mới: %s ×%d" % [
+                maxi(0,int(building.metrics.get("units_produced",0))),
+                maxi(0,int(building.metrics.get("production_batches",0))),
                 ResourceRegistry.new().display_name(production_plan_registry.output_resource_id(plan)),
                 production_plan_registry.scaled_yield(plan,building.level)
             ]
