@@ -237,6 +237,29 @@ func _run() -> void:
             str(selected.work_cycle_state),str(secondary_timer)
         ])
         return
+    # G1 map cue binds to SECOND Mine instance and its own timer.
+    # It cannot silently read first Mine or write to SimulationState.
+    var before_map_cues := state.to_dict()
+    var secondary_snapshot := ui.call("_map_worksite_snapshot",second) as Dictionary
+    if (
+        not str(secondary_snapshot.get("detail","")).contains("×%d" % int(secondary_timer.get("output_quantity",0)))
+        or float(secondary_snapshot.get("progress",-1.0)) < 0.0
+    ):
+        _fail("second Mine map cue is not bound to its real persisted timer")
+        return
+    ui.call("_refresh_map_worksite_cues")
+    var second_cue := ui.find_child("MapWorksite_%s" % str(second.id),true,false) as SectProductionWorksiteCue
+    if second_cue == null:
+        _fail("map did not show its real second Mine instance")
+        return
+    var expected_anchor := SectIsometricWorldV1.virtual_legacy_point(BuildingSystem.TYPE_MINE,second.id)
+    if (second_cue.position+Vector2(85,109)).distance_to(expected_anchor) > 0.5:
+        _fail("second Mine map progress was anchored to wrong visual instance")
+        return
+    if state.to_dict() != before_map_cues:
+        _fail("map production progress mutated simulation state")
+        return
+
     # The board reads the exact stored timer on the exact selected instance.
     ui.call("_show_sect_hub")
     ui.call("_show_sect_production_board")
