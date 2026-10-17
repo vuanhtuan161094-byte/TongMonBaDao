@@ -1,5 +1,15 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — MAP25 Windows Gate-04 reserved keyword parser FAIL; focused test-only fix, rerun pending
+
+**Owner Windows Godot 4.7.2 real QA at PR #18 HEAD `de170cf9fae0da629d7d40e24b308fcf33d7d80c`, run 10:25–10:26 ICT:** `01_editor_import` exit 0 **PASS** (no script errors); `02_art_hash_gate` exit 0 printed `MAP25 SOURCE A SHA-GATED ART CONTRACT PASS accepted=32 missing=0 rejected=0` **PASS**; `03_isometric_projection` exit 0 printed `MAP-2.5D PROJECTION 36 CASES PASS` **PASS**, no leak/error stderr stopping the wrapper. Step `04_real_main_scene_and_workforce` exited 1 on `Parse Error: Expected expression to test after "match"` at `res://tests/presentation/sect_iso_main_integration_test.gd:65`. The test could not be loaded, so **no evidence yet** for real main scene/workforce/camera runtime. Wrapper correctly stopped overall acceptance. 32/32 actual Source A bytes remain SHA PASS. Owner workspace/save isolated; main unchanged; no CI/merge.
+
+**Code-authorized scoped fix committed [`4c36c9737846fe4edb7bb3eb3549eccdd02031d4`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/4c36c9737846fe4edb7bb3eb3549eccdd02031d4):** solely `godot/tests/presentation/sect_iso_main_integration_test.gd`, rename local dictionary `match` (GDScript reserved keyword) to `matched_instance` in its declaration, assignment, empty-check and world-position lookup. No assertions weakened and no game/production/backend/art code or save format changed. **Static diff checked; official Windows rerun PENDING.**
+
+**Next:** rerun existing QA four gates with pinned LIVE PR #18 HEAD after these docs commits, no-push isolated TEMP clone/save; if all PASS, start real Godot 4.7.2 GUI 1280×720 via `OPEN_MAP25_GAME.cmd` and supply screenshot for actual visual/camera/Workforce review. Android export SHA-PCK integration and full cumulative gameplay regression remain independent PENDING. Old QA packages pin outdated SHA, must not reuse unchanged.
+
+---
+
 ## 2026-10-17 — MAP25 official Windows 4.7.2: importer PASS, SHA-gated art PASS 32/32, projection 36 assertions PASS but cleanup ERROR; fixes committed, rerun PENDING
 
 **User Windows logs at HEAD `ccc08d3b890c339cb74201922766e92f7a4158f2` (run 10:15 local):** original bytes validated **32/32 SHA256**, `01_editor_import` Godot 4.7.2 exit **0**, no parser errors, **PASS**. `02_art_hash_gate` exit **0**, printed `MAP25 SOURCE A SHA-GATED ART CONTRACT PASS accepted=32 missing=0 rejected=0`; texture acceptance **PASS**, but **32 warnings** about `Image.load_from_file` being incompatible with exported resource images. `03_isometric_projection` exit **0**, printed `MAP-2.5D PROJECTION 36 CASES PASS`, but stderr `WARNING: 1 RID of type CanvasItem was leaked`, `WARNING: 3 ObjectDB instances were leaked at exit`, and `ERROR: 1 resources still in use at exit`. Wrapper correctly **stopped overall QA as FAIL**. `04_real_main_scene_and_workforce`, Windows screenshot, Android export and cumulative gameplay regressions were **NOT RUN**.
