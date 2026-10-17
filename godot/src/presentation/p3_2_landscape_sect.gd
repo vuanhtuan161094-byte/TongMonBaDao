@@ -2347,6 +2347,7 @@ func _refresh_sect_production_board(reset_scroll: bool = false) -> void:
     back.custom_minimum_size = Vector2(662,48)
     back.pressed.connect(_refresh_sect_hub)
     sect_hub_content.add_child(back)
+    _ensure_disabled_controls_readable(sect_hub_content)
     if scroll != null:
         scroll.set_deferred("scroll_vertical",scroll_before)
 
@@ -4904,6 +4905,7 @@ func _open_disciple_quick_assignment(disciple_id: StringName, preserve_summary_o
     var compact_height := clampf(180.0 + float(count)*83.0,420.0,546.0)
     panel.size.y = compact_height
     scroll.size.y = compact_height-scroll.position.y-18.0
+    _ensure_disabled_controls_readable(panel)
 
 func _can_cancel_queued_assignment_command(disciple: DiscipleState) -> bool:
     if disciple == null or disciple.direct_command.is_empty():
