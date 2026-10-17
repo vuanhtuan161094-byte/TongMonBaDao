@@ -89,6 +89,54 @@ func _run() -> void:
         return
     ui.call("_open_building",SectMapPresentation.DEST_MINE)
     await process_frame
+    # G1.6 shows the real saved mẻ, not a guessed output or fake clock.
+    var live_mine := ui.find_child("WorkforceLiveProgress",true,false) as Label
+    var in_progress := ui.find_child("WorkforceStart",true,false) as Button
+    if live_mine == null or in_progress == null:
+        _fail("Mine panel missing production progress/Start controls")
+        return
+    if (
+        not live_mine.text.contains(str(mining_job.get("output_quantity",0)))
+        or not live_mine.text.contains("Còn %d phút" % (int(mining_job.get("finish_tick",state.tick))-state.tick))
+        or not in_progress.disabled
+    ):
+        _fail("Mine panel is not bound to canonical current timer quantity/time")
+        return
+    # Owner UX report: production percentage was hidden deep in a scroll
+    # view. Check visible top-of-panel progress and real saved batch quantity.
+    var caption := ui.find_child("ProductionProgressCaption",true,false) as Label
+    var progress := ui.find_child("ProductionProgressBar",true,false) as ProgressBar
+    var elapsed := clampi(state.tick-int(mining_job.get("started_tick",state.tick)),0,
+        maxi(1,int(mining_job.get("finish_tick",state.tick))-int(mining_job.get("started_tick",state.tick))))
+    var total := maxi(1,int(mining_job.get("finish_tick",state.tick))-int(mining_job.get("started_tick",state.tick)))
+    var expected_percent := 100.0*float(elapsed)/float(total)
+    if (
+        caption == null or progress == null or not caption.visible or not progress.visible
+        or not caption.text.contains("×%d" % int(mining_job.get("output_quantity",0)))
+        or not caption.text.contains("đã thu %d" % int(mine.metrics.get("units_produced",0)))
+        or absf(progress.value-expected_percent) > 0.01
+        or progress.position.y > 150.0
+    ):
+        _fail("above-fold Mine progress does not match canonical timer/quantity")
+        return
+    var disabled_label_color := in_progress.get_theme_color("font_disabled_color")
+    if disabled_label_color.get_luminance() > 0.55:
+        _fail("Mine disabled controls are still near-white text on pale background")
+        return
+    # The map must distinguish a real timed worker from a static spectator.
+    # This cue reads the saved timer; it never starts/rewards the job.
+    var work_cues := ui.call("_active_resource_work_cues") as Dictionary
+    if not work_cues.has(str(miner_id)) or str(work_cues[str(miner_id)]) != "Đang khai khoáng":
+        _fail("map worker did not expose canonical mining work cue")
+        return
+    var mine_snapshot := ui.call("_map_worksite_snapshot",mine) as Dictionary
+    if (
+        str(mine_snapshot.get("worker","")) != miner.display_name
+        or int(mine_snapshot.get("received",-1)) != int(mine.metrics.get("units_produced",0))
+        or not bool(mine_snapshot.get("active",false))
+    ):
+        _fail("map Mine production card lacks canonical worker and credited total")
+        return
     var owner_avatar := ui.find_child("WorkforceOwnerAvatar",true,false) as Button
     if owner_avatar == null or owner_avatar.custom_minimum_size.x < 44.0:
         _fail("Mine owner avatar missing or not touch sized")
@@ -140,9 +188,36 @@ func _run() -> void:
     if job_finish <= state.tick:
         _fail("Mine finish tick invalid")
         return
+    # No "+stock" toast just because a timer has started or crossed the
+    # screen boundary. Only real BuildingSystem delivery increments metrics.
+    var early_delivery := ui.call("_map_worksite_deliveries") as Dictionary
+    if early_delivery.has(str(mine.id)):
+        _fail("Mine showed delivered receipt before Warehouse settlement")
+        return
     scheduler.run_ticks(job_finish-state.tick)
     if warehouse.quantity(state,&"thanh_thiet") != ore_before+int(mining_job.get("output_quantity",0)):
         _fail("Mine completion did not deposit one real batch into Warehouse")
+        return
+    var actual_delivery := ui.call("_map_worksite_deliveries") as Dictionary
+    if int(actual_delivery.get(str(mine.id),0)) != int(mining_job.get("output_quantity",0)):
+        _fail("Mine notification not backed by actually delivered Warehouse batch")
+        return
+    var duplicate_delivery := ui.call("_map_worksite_deliveries") as Dictionary
+    if duplicate_delivery.has(str(mine.id)):
+        _fail("same Mine receipt was shown twice on repeated UI refresh")
+        return
+    # The map receipt only appears AFTER canonical Warehouse credit and
+    # cannot replay when simply refreshing the HUD a second time.
+    ui.call("_refresh_map_worksite_cues")
+    var delivered := ui.find_child("MapWorksite_%s" % str(mine.id),true,false) as SectProductionWorksiteCue
+    if delivered == null or delivered.receipt == null or not delivered.receipt.visible:
+        _fail("real delivered Mine batch did not notify the map")
+        return
+    if not delivered.receipt.text.contains("+%d" % int(mining_job.get("output_quantity",0))):
+        _fail("map receipt did not match actual Warehouse credit")
+        return
+    if not (ui.call("_map_worksite_deliveries") as Dictionary).is_empty():
+        _fail("map receipt replayed again without a new completed batch")
         return
     var receipt := "wage:%s" % str(mining_job.get("job_id",""))
     if not state.sect.economy_a_receipts.has(receipt) or float(miner.profession_xp.get("mining",0.0)) <= 0.0:
@@ -207,7 +282,71 @@ func _run() -> void:
     if not first:
         _fail("Field did not start genuine paid plot")
         return
+    ui.call("_refresh_all")
+    var real_field_plots := buildings.spirit_field_plots(state,field)
+    var live_field := ui.find_child("WorkforceLiveProgress",true,false) as Label
+    var first_growing: Dictionary = {}
+    for raw_plot in real_field_plots:
+        if raw_plot is Dictionary and StringName(raw_plot.get("status","")) == BuildingSystem.PLOT_GROWING:
+            first_growing = raw_plot
+            break
+    if live_field == null or first_growing.is_empty():
+        _fail("Field panel missing canonical crop progress")
+        return
+    var expected_remaining := maxi(0,int(first_growing.get("finish_tick",state.tick))-state.tick)
+    if (
+        not live_field.text.contains(str(first_growing.get("plot_id","")))
+        or not live_field.text.contains("×%d thường" % int(first_growing.get("routine_yield",0)))
+        or not live_field.text.contains("còn %d phút" % expected_remaining)
+    ):
+        _fail("Field progress did not reflect paid crop's saved yield/timer")
+        return
+    var field_caption := ui.find_child("ProductionProgressCaption",true,false) as Label
+    var field_progress := ui.find_child("ProductionProgressBar",true,false) as ProgressBar
+    if (
+        field_caption == null or field_progress == null
+        or not field_caption.visible or not field_progress.visible
+        or not field_caption.text.contains("×%d" % int(first_growing.get("routine_yield",0)))
+    ):
+        _fail("Field progress was not exposed above the fold")
+        return
     var farmer: DiscipleState = state.disciples[farmer_id]
+    var field_snapshot := ui.call("_map_worksite_snapshot",field) as Dictionary
+    var field_start := int(first_growing.get("started_tick",state.tick))
+    var field_finish := int(first_growing.get("finish_tick",state.tick))
+    var field_duration := maxi(1,field_finish-field_start)
+    var field_elapsed := clampi(state.tick-field_start,0,field_duration)
+    if (
+        not bool(field_snapshot.get("active",false))
+        or str(field_snapshot.get("worker","")) != state.disciples[farmer_id].display_name
+        or not str(field_snapshot.get("detail","")).contains("×%d" % int(first_growing.get("routine_yield",0)))
+        or absf(float(field_snapshot.get("progress",-1.0))-100.0*float(field_elapsed)/float(field_duration)) > 0.001
+        or bool(field_snapshot.get("waiting",false)) != (field_finish <= state.tick)
+        or not field_caption.text.contains("đã nhập %d" % int(field.metrics.get("units_produced",0)))
+    ):
+        _fail("Field map timeline or panel credited amount does not match canonical saved plot")
+        return
+    var delivery_card := SectProductionWorksiteCue.new()
+    ui.add_child(delivery_card)
+    delivery_card.display(field_snapshot)
+    if (
+        not delivery_card.detail.text.contains("×")
+        or not delivery_card.detail.text.contains("p")
+        or not delivery_card.detail.text.contains(SpiritCropRegistry.new().display_name(StringName(first_growing.get("crop_id",""))))
+    ):
+        _fail("Field badge must show the crop, expected amount and ETA")
+        return
+    delivery_card.display({"heading":"Mỏ","worker":"Thử","detail":"Chờ nhập kho","received":0,
+        "progress":100.0,"active":true,"waiting":true})
+    var pending_fill := delivery_card.progress.get_theme_stylebox("fill") as StyleBoxFlat
+    if (
+        not delivery_card.percentage.text.contains("100%")
+        or not delivery_card.progress.tooltip_text.contains("chưa nhập kho")
+        or pending_fill == null or pending_fill.bg_color != SectProductionWorksiteCue.PENDING_COLOR
+    ):
+        _fail("100 percent pending batch was incorrectly displayed as settled")
+        return
+    delivery_card.queue_free()
     var stones := state.sect.spirit_stones
     var second := buildings.perform_spirit_field_step(state,farmer,1.0)
     if not bool(second.get("ok",false)) or state.sect.spirit_stones >= stones:

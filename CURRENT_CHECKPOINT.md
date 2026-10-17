@@ -1,5 +1,178 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-18 — One-pass G1 Windows evidence gate READY (Windows runtime NOT RUN)
+
+At PR20 `c86201ada61e`, audited the original `Run-G1-Acceptance-Windows.cmd` / `tools/qa/Run-G1-PR20-Windows.ps1`: isolated TEMP clone/save, official Godot 4.7.2, exactly 4 focused tests on `-Acceptance -Play` followed by 1280x720 real play only after tests pass, no CI/FULL/-Visual benchmark. Found one concrete proof gap: automated PASS could be reported without actual owner screenshots in QA ZIP. Focused launcher/doc patch (commit `4e983938`) creates a persistent `G1_SCREENSHOTS` folder in Downloads QA report, prints Win+Shift+S capture instructions, packs owner-selected real Mine/Forest/Field PNG/JPG files with all logs and records their count; <3 images -> PENDING, not final acceptance PASS. Even 4 tests + 3 image files do not override **G1 owner UX PENDING**; owner still inspects imagery, tap targets and manual perceived camera fluidity; Android remains PENDING. **Official Windows Godot 4.7.2 latest HEAD, screenshots, FPS data and acceptance NOT RUN / NOT OBSERVED.** Only QA launcher/docs updated, no gameplay/economy/save/Source A/CI/FULL/merge/G2.
+
+---
+
+
+## 2026-10-18 — G1 compact badge detail / ETA visibility
+
+After `649758c47f53`, made one focused presentation correction: keep the persisted canonical `detail` string and full tooltip unchanged while showing a separate short `display_detail` string inside the 186px badge row. Mine/Forest render `×quantity · remaining-minutes`; Field renders `crop ×routine_yield · remaining-minutes`, or `chờ kho` if the saved work has elapsed but not settled. Quantity uses the existing approximate-marked compact formatting only if >=100,000. No state/job/stock writes; tests assert qty/ETA and crop label visually displayed in addition to exact source snapshot. 1280×720 and latest Godot runtime/owner acceptance still **PENDING**, no CI/FULL/merge/G2.
+
+---
+
+
+## 2026-10-18 — G1 timer-only production presentation focused patch
+
+Baseline `55a8943f062a`; owner explicitly cancelled mining/chopping/planting action animation requirement. Static code audit found that pending jobs (100% elapsed but **not credited**) had the same jade progress fill as running jobs, the real Field panel did not show cumulative credited units in its above-fold header, and map cards could be placed under open operations/roster/workforce panels. Presentation-only changes: amber `waiting` cue for persisted Mine/Forest/Field jobs past `finish_tick`, full tooltip with exact quantity while small card abbreviates only values >=100,000 with `≈`; 12px progress line; Field panel `đã nhập` actual persisted `units_produced`; panel rectangles reserved in bounded map-card layout. Existing focused Workforce + multi-instance tests extended for real Field plot timing, pending-not-settled, field credited units, 12px bar and right-panel exclusion. No new clock, product settlement, second Warehouse or job logic. **Static checks only; official Godot 4.7.2 focused runtime, 1280×720 screenshots, Android performance and G1 owner UX acceptance remain PENDING.** No CI/FULL/merge/G2.
+
+---
+
+
+## 2026-10-18 — Owner khóa lại UX G1: chỉ cần timeline sản xuất
+
+**USER DECISION SUPERSEDES ALL EARLIER G1 ART-PENDING WORK-ACTION PACKETS:** Không cần Source A mining/chopping/planting animations; `stand/walk` là đủ. **STOP** audit `113116_1_s`/`113116_1`, tìm binary Spine, rebake, làm asset nghề; tài liệu ART packet chỉ giữ để truy vết, không phải blocker. G1 UX chấp nhận về thiết kế việc **progress bar/% + ETA + expected batch + actual credited Warehouse units** ngay trên instance Mỏ/Linh Lâm/Linh Điền, trạng thái worker thật; không fake production hay nhập kho sớm. Existing `SectProductionWorksiteCue` + operation panel đã có đường hiển thị từ canonical state trong **static code** trên PR20 baseline `663fe80e7a5b`; chưa có latest Godot 4.7.2 focused runtime/ảnh nghiệm thu 1280×720. Tập trung polish/thử timeline, dễ chạm, không chồng, performance; **G1 owner UX acceptance PENDING**. Không sửa gameplay/save/Economy V2/Warehouse/Scheduler, không CI/FULL/merge/G2.
+
+---
+
+
+## 2026-10-18 — G1 ART source audit (docs-only)
+
+PR20 `207eaf45fe74` verified source-only: 3 committed rig SpriteFrames contain only `stand/walk` (48+24 frames/rig); 4 WebP pages present, raw original 3×(.skel/.atlas/PNG) inputs absent from repo (exact nine names/SHA256 listed in `docs/G1_SOURCE_A_WORK_ACTION_MINIMAL_PACKET_2026-10-17.md`). Source Knowledge pinned `83cbc4e` CSV 803 candidate skeletons: 2 `work` string candidates (`113116_1_s`, `113116_1`) but **0 confirmed authentic work clips**, neither parsed/playback tested and companion texture path absent in CSV. `body_1120402` source folder category `body_female` conflicts with current male visual selection; **needs visual review, no production reassignment**. Minimal future isolated pilot = verify `113116_1_s` source triplet/sha, playback true work motion; fail closed if missing/mismatched. Existing converter/Batch-01 avoids full rebake. **DOCS AUDIT ONLY; latest Godot focused, Source A work action and G1 visual owner approval PENDING**. No CI/FULL/merge/gameplay/save/balance changes.
+
+---
+
+
+## 2026-10-17 — G1 focused UX closure follow-up
+
+After `f55ecd55` exact-ID route, one adjacent static state leak remained: closing an operation panel cleared `selected_building` but not `selected_production_instance_id`; the old badge was still prioritized as user-selected. Close now clears both presentation-only selections and updates map cues. Resource badge idle status avoids repeating a cumulative `Đã thu N` already shown as `Đã nhập kho N`; now says `Chờ mẻ tiếp` for a staffed previously productive, presently idle worksite. Focused instance test asserts close clears selections. No gameplay or Warehouse state touched. **Godot 4.7.2 latest HEAD focused test/1280×720 owner visual/Android all PENDING; owner UX NOT ACCEPTED**. Only a single already-designed Windows Godot acceptance pass after static readiness; no CI/FULL/merge/G2.
+
+---
+
+
+## 2026-10-17 — G1 visual acceptance: exact-ID camera focus / readable receipt
+
+PR #20 baseline `946d8f5c`. Static audit found **three paths** where selecting Mine/Forest/Field instance #2 could keep focus on the type's default primary building: map picked-site, production board and in-panel instance chooser. Unified `_open_building(destination,instance_id)` validates a persisted production instance BEFORE the initial camera tween and initial panel data draw; board/map picker now use one exact-ID call (no double focus), chooser focuses selected real site. Operation panel subtitle displays actual instance ID/level. Settlement-only `+N đã vào kho` worksite receipt now has opaque cream backing and contrasting green border, with no change to metrics or emission rules. Extended existing focused multi-instance regression for board/picker/map 3 paths, exact focus, ID visibility, and receipt style. Four Godot 4.7.2 focused Windows cases remain **PENDING**; owner UX acceptance **NOT ACCEPTED**, Android/physical device PENDING. No CI, FULL, merge, gameplay/economy/scheduler/warehouse/save/G2 changes.
+
+---
+
+
+## 2026-10-17 — G1 interaction & real stand/walk stability follow-up
+
+**Baseline PR20 `18b707b7`**, draft `g1-disciple-radar-sourcea-pool-20261017`. Owner authorized scoped G1 playability changes only. Source review found two concrete presentation issues: touch/mouse drag threshold used **per-event relative length** while still panning before threshold, so many tiny movements could pan the camera then trigger a false tap; repeated `_sync_actor_positions()` killed a still-running same-destination tween, extending/restarting actor travel. Fixed with cumulative finger/press displacement (12px touchscreen, 8px mouse), release guarding, and same-destination tween reuse + safe replacement cleanup. Added legible short work-status tag with opaque parchment and dark ink, while preserving **real Source A stand/walk only**; no fake mining/chopping/planting action. Map badge visibility uses actual interpolated layer zoom. Added focused gesture, tween and state-readonly assertions in existing multi-instance test. Lexical/static verification only; **Godot official 4.7.2 focused runtime PENDING**, Windows screenshot/Android and G1 owner UX **NOT ACCEPTED**. No changes to gameplay/One Active Job/Economy V2/Scheduler/Warehouse/save, CI/FULL/merge/G2.
+
+---
+
+
+## 2026-10-17 — G1 camera/production overlay UX refinement (presentation-only)
+
+Authorized reference UX research used (a) **Ta Làm Tông Sư Trong Tiên Môn** [official Vietnamese Play listing](https://play.google.com/store/apps/details?id=com.vnzqzs.and), [BlueStacks management overview](https://www.bluestacks.com/vi/blog/game-guides/a-grandmaster-in-the-immortal-sect/gmms-beginners-guide-vi.html) and [最强祖师 production staff screenshot](https://shouyou.3dmgame.com/gl/526618.html); and (b) **Evil Hunter Tycoon** [official building documentation](https://evilhunter.zendesk.com/hc/vi/articles/360039886271-Th%C3%B4ng-Tin-C%C3%B4ng-Tr%C3%ACnh), [hunter control documentation](https://evilhunter.zendesk.com/hc/en-us/articles/360039885551-Conversing-with-a-hunter). Reference supports **operator→building→production visibility and town-map-to-person navigation**. Specific animations, timer numbers, per-pixel geometry and backend rules are **not verified** from these sources; never copy images/code or import other-game assets.
+
+G1 fix after `f09a72a4`: existing `SectProductionWorksiteCue` retains real worker, actual timer, planned batch, credited stock and settlement-only receipt. Corrected **zoom-amplified 202×110 badges** by inverse-scale display and bounded cached per-frame reflow (max 10); per-camera refresh picks **non-overlapping, in-viewport** badges from selected/receipt/active priority, followed by max 2 idle; pan/pinch/zoom refresh at interaction end or tween end. No expensive per-frame simulation/worksite rescans and no new jobs/scheduler. Extended existing second-Mine focused static contracts for true instance location and stable screen size. Godot 4.7.2 exact-head focused runtime and owner-visible 1280×720 screenshot **PENDING**, UX **NOT ACCEPTED**; real Source A work-action art still **PENDING**. No gameplay, balance, save, CI, FULL, merge or G2.
+
+---
+
+
+## 2026-10-17 — G1 visual follow-up: exact worker/site + readable production card (runtime pending)
+
+PR #20 follow-up at baseline `f8ade7e5`. Kept existing `SectProductionWorksiteCue`; extended its map badge with canonical assigned/active worker, **planned batch and remaining time**, cumulative **post-Warehouse credited** `units_produced`, and numeric percent beside the actual scheduler progress bar. Map prioritizes selected/active/receipt worksites and limits other idle badges to two; no new timers or receipt paths. Fixed active production actor visual foot position to the exact `worksite_building_id` instead of the type's primary building; cosmetic movement speed/real stand-walk clips unchanged. Focused existing Workforce E2E and second-Mine assertions extended. Only source/lexical verification possible here; **Godot official 4.7.2 exact new HEAD, 1280×720 visual owner signoff and Android remain PENDING**. Source A mining/chopping/planting clips still ART PENDING. No CI/FULL/merge/G2 or gameplay/save/economy mutation.
+
+---
+
+
+## 2026-10-17 — G1 map feedback re-audit + authentic Source A action gate
+
+User authorized visual-first G1 production map feedback (NOT G2 gameplay) on draft PR #20. Current PR already carried `SectProductionWorksiteCue` (170×66, max 10 visible) showing **real instance-ID anchored progress/quantity and +N delivered only on stored post-Warehouse production metrics**, seeded at startup to avoid replay on loaded games. Continued directly with two narrowly verified fixes: (1) snapshot carries explicit `active` to prioritize legitimate *0%-elapsed* Mine/Forest/Field job over idle buildings, while giving verified post-settlement alerts higher rank; (2) worksite detail distinguishes **Mẻ ×N** planned work from **Đã thu N** completed stock. Extended `gui_multiple_resource_instances_test.gd` for active 0% job and `gui_workforce_v1_e2e_test.gd` for *no receipt before settlement*, exactly one notified deposit and no duplicated UI receipt. No new scheduler/warehouses, assignments or gameplay mutations.
+
+**Source A audit:** `1113028_1` female and `body_1110201`/`body_1120402` male all have **only `stand`/`walk`** in verified repo `asset.json` and `animations.tres`. No authorized mining/chopping/planting clip; no fake action inserted. Design/art-proof packet `docs/G1_SOURCE_A_WORK_ACTION_MINIMAL_PACKET_2026-10-17.md` recorded as future isolated asset job; raw licensed Source A Spine on Windows E: needs inspection before any import. **Static lexical 4/4 PASS, focused source-contract 16/16 PASS. Latest Godot 4.7.2 Windows runtime and owner visual acceptance remain PENDING/NOT ACCEPTED**. No FULL/CI/merge/main writes.
+
+---
+
+## 2026-10-17 — G1 MAP WORKSITE VISUAL FEEDBACK (CODE COMMITTED, RUNTIME PENDING)
+
+Owner expressly authorized G1 map-local work feedback on draft PR20. Added `SectProductionWorksiteCue` (`godot/src/presentation/p3/sect_production_worksite_cue.gd`), a compact read-only 170x66 badge with dark readable text and ProgressBar attached to `map_layer`; capped to 10 on-screen producer instances, pointer transparent, priority current selection/active jobs, exact `SectIsometricWorldV1.virtual_legacy_point(type,building.id)` anchor (including Mine #2). `p3_2_landscape_sect.gd` reads actual Mine/Linh Lâm job `started_tick/finish_tick/output_quantity`, Field persisted plots `routine_yield` and ETA; *due* is labelled waiting for Warehouse commit, never silently labelled collected. A short `+units đã vào kho` notification is emitted only on **strictly increasing** real `BuildingState.metrics.production_batches` AND `units_produced`, which the backend increments only after successful Warehouse settlement. Baseline seeded at scene load, consuming each increase once in presentation memory (no save/receipt changes or second clock). Focused `gui_multiple_resource_instances_test.gd` asserts Mine #2 ID→map anchor/quantity and no SimulationState mutation; existing `gui_workforce_v1_e2e_test.gd` asserts receipt only after genuine mined Warehouse delivery and never replayed by refresh. **Static source contracts 17/17 PASS; structural/lexical four GDScript files PASS; Godot 4.7.2 new exact-HEAD runtime NOT RUN/PENDING.** No gameplay/save/economy/scheduler/CI/FULL/merge/main modifications.
+
+Verified PR20 baked Source A art manifests for female `1113028_1` and males `body_1120402`, `body_1110201`: each exactly `stand` (48 frames) + `walk` (24 frames); none includes authored mining/chopping/planting. New `docs/G1_SOURCE_A_WORK_ACTION_ASSET_PACKET_2026-10-17.md` is **art-only next packet**, explicitly NOT proof original licensed raw Source A lacks actions, and NOT code authorization for new animations. Do not call player visual G1 accepted until owner review; earlier 4/4 Windows PASS on older SHA does not cover this newer feature.
+
+---
+
+## 2026-10-17 — G1 OWNER VISUAL UX REJECTED; focused Windows PASS on old SHA; readability/feedback HOTFIX CODED
+
+Owner submitted real Windows G1 acceptance `TONG_MON_G1_PR20_QA_20261017_194619.zip`. **Exact tested SHA `78254c615e49ed40304a4e60966115dd41a8c657`**: Godot 4.7.2 import PASS; 4/4 focused G1 radar/Source A, actor pilot, Workforce E2E, multi-instance board PASS; 1280x720 play-preview launched and exited 0; CI/FULL/Android NOT RUN. Owner **explicitly rejects current visual/playability**: some white-on-light text illegible, no evident mining action, no obvious physical production progress/quantity, map actors move unnaturally, overall flow confusing. ZIP contains **NO screenshot/video of that actual session**, so visual specifics beyond owner observations and older screenshot cannot be independently measured. **G1 acceptance remains OPEN / VISUAL NOT ACCEPTED.**
+
+Narrow presentation-only corrective commits on PR20 after tested SHA: widened right production panel to 420px and moved 480px workforce picker left (no overlap at 1280x720); persistent above-scroll `ProductionProgressCaption` + `ProductionProgressBar` read actual job/plot snapshot ticks; separates **planned output** from **already delivered** cumulative `building.metrics.units_produced`; disabled button text on light background forced dark across building/picker/board; visual actor movement duration = true screen/world travel distance divided by 175 px/s (cosmetic, **NOT gameplay speed stat**); actor work cues derived from real active Mine/Forest/Field snapshots, with imported action clip used **only if genuinely present**. Current Source A pool has stand/walk only; authentic digging animation/action still **ART PENDING**, cannot fake it with walk. Extended existing Workforce E2E for progress/bar/quantity/contrast/cue. **Static structural scans 3 files PASS; 14/14 focused source checks PASS on prior narrow hotfix; new exact-HEAD Godot runtime/visual still PENDING**. Gameplay, scheduler, economy, save, One Active Job, main, CI, merge unchanged. Do not call G1 done/accepted.
+
+---
+
+## 2026-10-17 — G2 PLAYABLE CORE LOOP PLANNED ONLY (NO GAMEPLAY CODE AUTHORIZATION)
+
+Owner-requested G2 code/UX audit of main `461caca` vs draft PR20 baseline `78254c6` produced `docs/G2_PLAYABLE_CORE_LOOP_PLAN_2026-10-17.md`. Real backend: Dẫn Tiên/Recruitment, Workforce/one-active-job, Mine/Forest timers and Field plots, canonical Scheduler/Warehouse/save, NPC Market with budget/receipts, Mine upgrade and Alchemy/Forge consumers. Primary missing layer is a coherent player-facing produce→spend→grow route and analogous enabled upgrade UI for existing resource instances. New construction, Hall, land, persistent SectLayout authority are **NOT implemented**; expansion policy is **read-only preview**, not authorization to build. Proposed G2-00 G1 Acceptance prerequisite then G2-01 UI guidance, G2-02 spend navigation, G2-03 existing-building growth UX, G2-04 focused real end-to-end loop — all **DESIGN/PLAN ONLY**, separate owner CODE authorization still required. G1 Windows exact-HEAD acceptance, visual owner review, Android, FULL and CI remain PENDING/NOT RUN. No G2 gameplay code, merge or main changes.
+
+---
+## 2026-10-17 — G1.5–G1.8 ONE-PASS ACCEPTANCE PLANNED; RUNTIME PENDING
+
+On draft PR #20, owner requested next-step planning rather than more incremental UI expansion. Added `docs/G1_ACCEPTANCE_MINIMAL_PLAN_2026-10-17.md` and optional `Run-G1-Acceptance-Windows.cmd` launching the existing isolated Windows QA runner with new `-Acceptance -Play`: **only 4 focused tests** (G1 radar/Source A, actor pilot, canonical Workforce E2E, multi-instance production/attention), then native 1280×720 playable preview. No FULL, CI, 600-frame benchmark, merge, Android or gameplay changes. ZIP artifact for owner is a direct downloadable one-click script and matched PS1 source; file contents checked against GitHub PS1 blob. **Windows on exact new HEAD still PENDING**; owner need not run now. No G1 acceptance or visual owner signoff until actual Windows evidence and review.
+
+---
+
+## 2026-10-17 — G1.8 production attention queue (CODE DONE, Windows runtime PENDING)
+
+Directly on draft PR #20 after G1.7: implemented non-mutating classification of *every canonical Mine/Linh Lâm/Linh Điền instance* in existing `SectOperationsHub`: missing/invalid assigned operator; idle/not-yet-started job; warehouse reached plan target or batch cannot fit; Field legacy/empty plot/no enough stones; other pending command; active timer / active plots / scheduler-pending / due-but-unsettled. The **`Cần xử lý` count and toggle**, actionable-first ordering, 8-row pagination and per-row `Xử lý` button all route to the existing exact instance ID. **Never describe a due job as delivered/completed before canonical scheduler commits Warehouse state; no auto-cancel/start/harvest.** Field overview reads persisted `production_state.plots` without `spirit_field_plots()` legacy migrations. Extended the existing multi-instance GUI-focused test with unassigned second-Mine attention, filter toggle, exact-ID routing and `SimulationState.to_dict()` non-mutation. **Static focused contract 14/14 PASS; lexical/structure 2/2 PASS; Godot official 4.7.2 parser and new test NOT RUN (environment has no executable)—runtime PENDING.** No gameplay, One Active Job, Warehouse, scheduler, economy, save, CI, FULL QA, merge, or main edits.
+
+---
+
+## 2026-10-17 — G1.7 Bảng điều hành sản xuất toàn tông môn (CODE DONE, Godot runtime PENDING)
+
+On draft PR #20, extended existing `SectOperationsHub` (Godot 4.7.2 Android landscape 1280x720) with a **single paged, filtered, read-only production dashboard** for all real Mine/Linh Lâm/Linh Điền instances from `ResourceBuildingExpansionPolicyV2.existing_instances`. Four filters (all/3 resource types), 8 rows/page, 46–48px touch buttons. Each row shows real instance ID, Lv, assigned disciple, Mine/Forest saved resource timer/actual output/remaining ticks, or Field saved plot count/next finish/snapshotted routine yield (no pre-promised lucky drops). Each `Mở` checks `state.buildings`, routes exact `building.id`, focuses its map coordinate and sets `selected_production_instance_id` before refreshing canonical Workforce controls; never silently picks a primary instance. Board reads Field `production_state.plots` without invoking lazy mutating migration; legacy snapshot reports pending synchronization. Filters/page reset scroll; scheduler tick refresh is scoped to current 8-row page. Extended existing multi-instance presentation test to prove board lists both test Mines, filter count=2, opens second Mine exact ID and shows its genuine saved timer output/remaining time. **Static targeted source checks 12/12 PASS; lexical checks 2/2 PASS; official Godot parser/runtime for this HEAD PENDING (no local runner).** Zero gameplay, construction, balance, save, CI, FULL QA, merges or main writes.
+
+---
+
+## 2026-10-17 — G1.6 production operation UI (PR #20, code committed / Windows PENDING)
+
+Owner authorized **code-first, focused-only** G1.6 for exact-ID Mine/Linh Lâm/Linh Điền in draft PR20. The existing right-hand 1280×720 compact Workforce card now shows saved Mine/Forest timer job's actual `started_tick/finish_tick/output_quantity/resource_id` with elapsed/remaining minutes, real Warehouse stock, and Field's actual individual growing/empty plot snapshots (`routine_yield` is guaranteed baseline only; no pre-promised rare harvest). Kept 44px touch actions above the live status. Start button distinguishes extra Field plot versus active resource timer; disabled reasons include busy job, full Field, unsupported policy/stone conditions, and canonical Mine/Forest stock target. Assignment feedback distinguishes scheduler command accepted from actual batch started. No invented stock, payout, job, schedule, growth, persistence or balance. Extended existing `gui_workforce_v1_e2e_test.gd` with assertions binding live panel content to real scheduled Mine and paid Field state. **Structural/contract checks: 2 GDScript files structural PASS, 12/12 focused source invariants PASS. Godot 4.7.2 runtime on this new HEAD NOT RUN (environment unavailable); Windows PENDING.** No FULL/CI/merge/main writes.
+
+---
+
+## 2026-10-17 — G1 off-map Source A portraits (PR #20, code committed)
+
+Verified PR20 male Source A import at `009ffd957624c63518f4f10141613540ce0fb2c9`; male `body_1120402` and `body_1110201`, existing female `1113028_1`, Windows Godot focused G1 + actor pilot PASS reported in Codex checkpoint; main unchanged. Follow-on presentation fix: `_disciple_avatar_button` and deep profile now use the same verified male/female Source A pool even when the disciple has NO live map actor. One shared stand `Texture2D` is cached per verified scene, temporary `AnimatedSprite2D` released immediately; existing modular production body takes precedence. Added one focused G1 test for synthetic off-map male/female portrait and bounded cache. **Static 2/2 files PASS; Godot 4.7.2 exact-new-HEAD focused test NOT RUN here (runner unavailable).** No simulation, CI, FULL QA, merge, or main changes.
+
+---
+
+## 2026-10-17 — G1 Source A male visual packet (PR #20, focused Windows PASS)
+
+Owner comment `SOURCE_A_MALE_G1_ONE_SHOT` on draft PR #20 authorizes this presentation-only packet from `9cd0b4e`. Inspected Godot 4.7.2 stand/walk captures: `body_1120402` (long-haired male in white/gold) and `body_1110201` (bald monk) have recognizable male humanoid artwork, feet and transparent crops. Copied only their baked actor scene, SpriteFrames, WebP atlas and `asset.json` from E: into `godot/assets/actors/`; **6/6 manifest-listed binaries SHA-256 PASS** before and after copy. Existing female `1113028_1` is unchanged. `1113005_1` and `113104_5` were left out because the packet limits the pool to two proven rigs; `body_1120101_s` was optional and not needed. No raw Spine or converter work.
+
+Male/female pool remains deterministic by canonical cosmetic seed/sex. Map scale now derives from each real stand crop height (67 px target); original baked scene offsets preserve manifest foot anchors. Map actors are ordered below navigation/modal UI; baked click area is narrower. Roster, Workforce and profile use the same chosen scene. Official Windows Godot `4.7.2.stable.official.ed1daf0bf`: headless import exit 0; G1 radar/pool and Source A real-scene actor pilot exit 0; native OpenGL Compatibility capture exit 0 at **1280×720**, showing male profile and both-sex roster. Screenshot: `C:\Users\Admin\Documents\Codex\2026-10-17\t-ng-m-n-b-o\evidence\source_a_male_pr20\male_profile_1280x720.png`. Headless runs printed an OS root-certificate-store warning without test failure. FULL/CI/Android/performance/owner visual signoff **NOT RUN/PENDING**. No gameplay or `main` changes.
+
+## 2026-10-17 — G1.5 owner video review + pending-command UI unblock (code committed, runtime PENDING)
+
+Owner video `Tong Mon Ba Dao (DEBUG) 2026-10-17 17-33-21.mp4` (33s) shows real G1 radar, female Source A, quick assignment for Lâm An with **all 3 worksite buttons disabled due to "Đang có lệnh chờ xử lý"**, and normal Mine picker working separately; male green chibi remains provisional. G1.5 UI was fixed on draft PR #20: explicit `Hủy lệnh chờ` appears only if an idle actor has a pending command and NO active PvE/timer/plot/Body/work cycle; button calls existing canonical `WorkforceSystem.clear_command`, immediately refreshes worksite choices, NEVER auto-assigns or cancels active jobs; modal height compact for three buildings. Existing G1 test now emulates real HOLD pending -> disabled Mine -> press cancel -> Mine enabled, checks inventory and occupant unchanged. Independent source-contract checks **13/13 PASS** and lexical scan **2/2 PASS**; these are **NOT Godot runtime**. Latest G1.5 code requires only focused visual proof if owner wishes; no full QA/CI/merge/main edits. Separate Source A male art still PENDING; never mislabel fallback as true Source A.
+
+---
+
+## 2026-10-17 — G1.5 quản lý đệ tử nhanh — CODED / QUICK PENDING
+
+Owner authorized prioritize code/new features over repeated FULL QA. On [draft PR #20](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/20), added **Phân công** from authentic V2 disciple summary and any deep-profile tab. Opens exact-ID *existing* Mine/Linh Lâm/Linh Điền list with occupancies, eligibility reasons, disabled busy rows, one-click **Giao việc**, and **Xem** for current owner. Delegates final assignment to existing `_workforce_pick_candidate` → canonical `WorkforceSystem.transfer_production_worker` + scheduler command: no new slot, queue, job, production or save authority. Improved roster/workforce thumbnails and fallback actor hair/face/robe using deterministic cosmetic appearance seed; Source A verified imported rigs still take priority. Extended existing G1 test (same test runner) to assert actual instance IDs and zero mutation on opening/closing selector. Prepared downloadable `TONG_MON_G15_QUICK_PLAY_20261017.zip` containing Windows **4 focused tests + real game preview** (no FULL/CI/benchmark by default). Changed GDScript + PowerShell lexical scan PASS only; **new exact-HEAD Windows G1.5 runtime and owner visual verification PENDING**. Previous owner ZIP `TONG_MON_G1_PR20_QA_20261017_163618.zip` confirmed 9 focused PASS for earlier G1 code, not these subsequent edits. No CI, merge or main writes.
+
+---
+
+## 2026-10-17 — REAL owner Windows G1 ZIP 16:26:07: QA RUNNER FALSE FAIL, FIXED / RE-RUN PENDING
+
+Owner submitted `TONG_MON_G1_PR20_QA_20261017_162607.zip` (7 files, ZIP CRC valid). It proves isolated clone at exact draft PR #20 `83278e0b39e737b406f72e2cbada7de942587a69`, Godot `4.7.2.stable.official.ed1daf0bf`, and `02_import.stdout.log` ending with all `[ DONE ]` phases including reimport/editor loading, no observed import `ERROR:` or `SCRIPT ERROR`. `QA_METADATA.json` labels FAIL because the runner recorded `02_import EXITCODE` **empty** even though `marker=True timeout=False`. No focused tests, FULL test, 1280×720 radar screenshot or benchmark ran; **DO NOT call Godot importer / G1 PASS**. Fixed only `tools/qa/Run-G1-PR20-Windows.ps1` via native `System.Diagnostics.Process` exit-code capture, async stdout/stderr, timeout and parser error detection; re-test PENDING. A new direct-download launcher ZIP `TONG_MON_G1_PR20_WINDOWS_QA_V2_FIX_EXITCODE_2026-10-17.zip` was built with PS1 Git blob SHA `177bcf6226b29802fa2b511868432579d5a5e235` matching GitHub. No CI, merge, gameplay or main changes. Full log interpretation in `docs/G1_DISCIPLE_RADAR_SOURCE_A_POOL_QA_2026-10-17.md`.
+
+---
+
+## 2026-10-17 — G1 QA static review + authentic V2 radar screenshot fixture
+
+PR #20 includes an added capture `08b_g1_real_v2_radar.png` after `08_disciple`, generated by a canonical V2 recruit on the test scene; checks the six drawn values against the real snapshot before saving 1280×720 image. Old MAP25 performance sampling still 600 frames. G1 regression also uses a canonical V2 recruit (fixes false-negative legacy-roster assumption). **5/5 modified GDScript lexical scans PASS; NOT Godot parser/runtime.** Windows one-click script + evidence ZIP run is still **PENDING**; no actual screenshot or refreshed benchmark yet. Keep [draft PR #20](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/20) unmerged and no CI. Document: `docs/G1_DISCIPLE_RADAR_SOURCE_A_POOL_QA_2026-10-17.md`.
+
+---
+
+## 2026-10-17 — G1 Windows QA one-click harness, authentic-V2 fixture correction
+
+On draft [PR #20](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/20) (based on PR19, not main), corrected G1 test to recruit a REAL V2 disciple rather than assume the first founding disciple is V2. Added `Run-G1-PR20-Windows.cmd` + `tools/qa/Run-G1-PR20-Windows.ps1`, which clones only the G1 branch into TEMP, isolates APPDATA/LOCALAPPDATA, verifies official Godot 4.7.2 and records the actual checked-out commit. The runner performs import, focused G1/SourceA/Disciple/Workforce/map tests, existing P3.7 FULL and native 1280×720 MAP25 GUI+600 frame benchmark, packages only evidence logs/CSV/screenshots, never owner saves or repo state. **Harness CODE WRITTEN; WINDOWS EXECUTION STILL PENDING.** The current tool environment is Linux without official Godot 4.7.2, and no CI was run. See `docs/G1_DISCIPLE_RADAR_SOURCE_A_POOL_QA_2026-10-17.md`; no merge, no main/gameplay change.
+
+---
+
+## 2026-10-17 — G1 RADAR LỤC DUY + SOURCE A POOL — draft PR #20
+
+Owner-authorized G1 presentation package [PR #20](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/20) stacks **only** on PR #19 at `5ce3c0f` without merging or editing main. Code/test SHA `5ac9d5cad86887cefa0ad05c6bdee05f743e79fd`; later commits are Markdown checkpoint/handoff only. Added `DiscipleSixDimensionRadar` (real 6-value `DisciplePresentationSnapshotV2.foundations.current`, dynamic drawing ceiling not a gameplay cap), `DiscipleSourceAVisualPool` (manifest-verified imported female `1113028_1` only; male uses existing fallback), and existing P3.2 deep profile/map wiring. Attribute tab explains existing 6-stat channels without enabling new consumers. New `sect_g1_disciple_radar_test.gd` exercises dynamic scaling, invalid snapshot fail-closed, stable/sex-correct art path, real deep scene/tab, exact stat projection and no disciple-state mutation. **NO gameplay V2/backend/save/CI changes.** Structural lexical scan 4/4 PASS, **official Godot 4.7.2 parser/focused/FULL, MAP25 performance after G1, visual review and Android PENDING**. Do not treat PR19 Windows results as PR20 runtime results; see `docs/G1_DISCIPLE_RADAR_SOURCE_A_POOL_QA_2026-10-17.md`. PR remains draft, no merge.
+
+---
+
 ## 2026-10-17 — MAP25 final full-width Windows rerun, draft PR #19
 
 Presentation-only correction `4c35b2c` extends the existing MAP25 SubViewport from x=252/1028 px to x=0/1280 px, removing the pale unused left band without a second renderer or gameplay state. Official Windows Godot 4.7.2 import, art SHA 32/32, projection 36/36, real scene, Workforce E2E, multiple building IDs, Source A pilot, V3.3 and authentic DV2 profile all PASS again. Final native 1280×720 capture: 11 images and 600 frames PASS; pan avg/p95 **16.926/18.770 ms**, **413.2** draw calls; zoom **16.802/19.968 ms**, **403.2** calls. Updated evidence ZIP `MAP25_UIUX_WINDOWS_CANDIDATE_20261017.zip` SHA-256 `36ed9c5f16edbe133cac58a85541cfa29ba9ddddc5ab017b986bdde7d96fe122`; actor GIF SHA-256 `60dfe96013398df268a2ac640968ead60264b8ae988a2a4342337838d7002837`. See `docs/MAP25_UIUX_FINALIZATION_ACCEPTANCE_2026-10-17.md`. Draft stacked [PR #19](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/19) targets draft PR #18 branch; **do not merge**. Windows focused TEST/PERF TARGET PASS; visual acceptance remains OPEN for actor/roof overlap, green fallback males, map markers, missing S3 buildings/individual portraits; Android PENDING. No CI or gameplay edit.

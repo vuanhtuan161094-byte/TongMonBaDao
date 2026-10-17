@@ -3,14 +3,20 @@ extends "res://src/presentation/p3_1_landscape_sect.gd"
 const ZOOM_STEP := 1.12
 const CAMERA_TWEEN_SECONDS := 0.22
 const FOCUS_MARKER_SIZE := Vector2(82.0, 82.0)
-const SOURCE_A_PILOT_SCENE_PATH := "res://assets/actors/1113028_1/actor.tscn"
-const PRODUCTION_PANEL_WIDTH := 320.0
-const PRODUCTION_CONTENT_WIDTH := 284.0
+const PRODUCTION_PANEL_WIDTH := 420.0
+const PRODUCTION_CONTENT_WIDTH := 384.0
+# Visual travel rate in map world pixels/second; gameplay travel, scheduler
+# and profession work speed remain separate canonical systems.
+const MAP_ACTOR_VISUAL_WALK_PX_PER_SEC := 175.0
+const MAP_TOUCH_DRAG_THRESHOLD_PX := 12.0
+const MAP_MOUSE_DRAG_THRESHOLD_PX := 8.0
 
 var map_zoom: float = SectMapCamera.DEFAULT_ZOOM
 var touch_points: Dictionary = {}
+var touch_start_points: Dictionary = {}
 var last_pinch_distance: float = 0.0
 var mouse_panning := false
+var mouse_press_position := Vector2.ZERO
 var camera_tween: Tween
 var focus_marker_tween: Tween
 var zoom_readout: Label
@@ -34,9 +40,23 @@ var living_cue_tracker := LivingCueTracker.new()
 var living_cue_layer: LivingCueLayer
 var visible_living_cues: Array[Dictionary] = []
 var female_motion_library: AnimationLibrary
-var source_a_pilot_scene: PackedScene
 var workforce_return_building_id: StringName = &""
 var modular_live_actor_ids: Dictionary = {}
+var actor_walk_tweens: Dictionary = {}
+# Visual destinations let recurring scheduler refreshes reuse a running tween.
+var actor_walk_targets: Dictionary = {}
+# Only three source scenes currently: cache shared stand textures by scene path,
+# never make one atlas/AnimatedSprite2D per disciple or roster entry.
+var source_a_portrait_textures: Dictionary = {}
+# Read-only map display; receipt baseline is presentation-memory only and is
+# initialized from the loaded save to prevent phantom "collected" messages.
+var map_worksite_cues: Dictionary = {}
+var map_worksite_receipt_baseline: Dictionary = {}
+# Cached presentation anchors/offsets; layout and zoom never touch simulation.
+var map_worksite_anchors: Dictionary = {}
+var map_worksite_screen_offsets: Dictionary = {}
+var map_worksite_last_scale := -1.0
+const MAP_WORKSITE_MAX_CUES := 10
 
 var camera_controls_panel: Panel
 var camera_hint: Label
@@ -50,6 +70,8 @@ var summary_feedback := ""
 var building_operation_panel: Panel
 var building_operation_title: Label
 var building_operation_body: Label
+var building_operation_progress_caption: Label
+var building_operation_progress_bar: ProgressBar
 var building_operation_content: VBoxContainer
 var building_management_container: VBoxContainer
 var building_management_feedback := ""
@@ -65,6 +87,12 @@ var iso_building_count := -1
 # UI selection only; actual building ID/worker/production live in SimulationState.
 var selected_production_instance_id: StringName = &""
 var sect_layout_preview_open := false
+# Presentation-only listing state; all actual producers stay in SimulationState.
+var sect_production_board_open := false
+var sect_production_board_filter: StringName = &""
+var sect_production_attention_only := false
+var sect_production_board_page := 0
+const SECT_PRODUCTION_PAGE_SIZE := 8
 var workforce_picker_panel: Panel
 var workforce_picker_results: VBoxContainer
 var workforce_picker_search: LineEdit
@@ -88,8 +116,6 @@ func _ready() -> void:
     if not runtime_ready:
         return
     female_motion_library = FemaleNormalV1MotionLibrary.build()
-    if ResourceLoader.exists(SOURCE_A_PILOT_SCENE_PATH,"PackedScene"):
-        source_a_pilot_scene = load(SOURCE_A_PILOT_SCENE_PATH) as PackedScene
     _install_modular_live_actors()
     _install_main_isometric_world()
     _sync_actor_positions()
@@ -101,6 +127,8 @@ func _ready() -> void:
     _build_building_operation_panel()
     _build_sect_hub()
     _build_living_cue_layer()
+    _seed_map_worksite_receipts()
+    _refresh_map_worksite_cues()
     living_cue_tracker.seed_from_state(state)
     _refresh_living_cues()
 
@@ -160,17 +188,10 @@ func _iso_open_picked_building(picked: Dictionary) -> void:
     var dest := StringName(picked.get("destination",""))
     if dest == &"":
         return
-    _open_building(dest)
     var real_id := StringName(picked.get("building_id",""))
-    if real_id != &"" and state.buildings.has(str(real_id)):
-        var actual: BuildingState = state.buildings[str(real_id)]
-        if actual.building_type == dest:
-            selected_production_instance_id = real_id
-            _set_focus_target(
-                SectIsometricWorldV1.virtual_legacy_point(dest,real_id),
-                &"building",dest,_building_name(dest),false
-            )
-            _refresh_building_operation_content()
+    # One exact-ID path controls selection, focus AND the first panel paint.
+    # Opening the generic type first used to pan toward its primary site.
+    _open_building(dest,real_id)
 
 func _try_iso_map_pick(screen_point: Vector2) -> bool:
     if iso_world == null or not SectMapCamera.is_map_screen_point(screen_point):
@@ -300,6 +321,7 @@ func _handle_screen_touch(touch: InputEventScreenTouch) -> void:
         else:
             screen_pointer_dragged = true
         touch_points[touch.index] = touch.position
+        touch_start_points[touch.index] = touch.position
         if touch.double_tap:
             screen_pointer_dragged = true
             _zoom_at(touch.position, maxf(map_zoom, SectMapCamera.FOCUS_ZOOM), true)
@@ -309,7 +331,10 @@ func _handle_screen_touch(touch: InputEventScreenTouch) -> void:
 
     var was_single_pointer := touch_points.size() == 1 and touch_points.has(touch.index)
     touch_points.erase(touch.index)
+    touch_start_points.erase(touch.index)
     _refresh_pinch_baseline()
+    if touch_points.is_empty() and screen_pointer_dragged:
+        _refresh_map_worksite_cues()
     if was_single_pointer and not screen_pointer_dragged:
         if _try_iso_map_pick(touch.position):
             return
@@ -321,9 +346,11 @@ func _handle_screen_touch(touch: InputEventScreenTouch) -> void:
 func _handle_screen_drag(drag: InputEventScreenDrag) -> void:
     if not touch_points.has(drag.index):
         return
+    var old_point := Vector2(touch_points[drag.index])
     touch_points[drag.index] = drag.position
 
     if touch_points.size() >= 2:
+        screen_pointer_dragged = true
         var pair := _first_two_touch_points()
         if pair.size() < 2:
             return
@@ -339,9 +366,13 @@ func _handle_screen_drag(drag: InputEventScreenDrag) -> void:
         get_viewport().set_input_as_handled()
         return
 
-    if drag.relative.length() > 2.0:
-        screen_pointer_dragged = true
-    _pan_camera(drag.relative)
+    # Ignore small per-event jitter until TOTAL finger travel crosses
+    # a finger-friendly threshold; otherwise a pan can become a false tap.
+    var start := Vector2(touch_start_points.get(drag.index,old_point))
+    if not screen_pointer_dragged and drag.position.distance_to(start) < MAP_TOUCH_DRAG_THRESHOLD_PX:
+        return
+    screen_pointer_dragged = true
+    _pan_camera(drag.position-old_point)
     get_viewport().set_input_as_handled()
 
 func _handle_mouse_button(mouse: InputEventMouseButton) -> void:
@@ -364,6 +395,7 @@ func _handle_mouse_button(mouse: InputEventMouseButton) -> void:
         if not SectMapCamera.is_map_screen_point(mouse.position):
             return
         mouse_pointer_dragged = false
+        mouse_press_position = mouse.position
         if mouse.double_click:
             mouse_pointer_dragged = true
             _zoom_at(mouse.position, maxf(map_zoom, SectMapCamera.FOCUS_ZOOM), true)
@@ -371,9 +403,15 @@ func _handle_mouse_button(mouse: InputEventMouseButton) -> void:
             return
         mouse_panning = true
     else:
+        # A release over the world without a preceding world press must
+        # not become an accidental building selection.
+        if not mouse_panning:
+            return
         var should_close_summary := mouse_panning and not mouse_pointer_dragged and _disciple_summary_is_open()
         var should_close_building := mouse_panning and not mouse_pointer_dragged and _building_operation_is_open()
         mouse_panning = false
+        if mouse_pointer_dragged:
+            _refresh_map_worksite_cues()
         if not mouse_pointer_dragged and _try_iso_map_pick(mouse.position):
             return
         if should_close_summary:
@@ -387,8 +425,9 @@ func _handle_mouse_motion(motion: InputEventMouseMotion) -> void:
     if (motion.button_mask & MOUSE_BUTTON_MASK_LEFT) == 0:
         mouse_panning = false
         return
-    if motion.relative.length() > 2.0:
-        mouse_pointer_dragged = true
+    if not mouse_pointer_dragged and motion.position.distance_to(mouse_press_position) < MAP_MOUSE_DRAG_THRESHOLD_PX:
+        return
+    mouse_pointer_dragged = true
     _pan_camera(motion.relative)
     get_viewport().set_input_as_handled()
 
@@ -489,9 +528,14 @@ func _apply_camera(zoom: float, position: Vector2, animate: bool) -> void:
         camera_tween.set_ease(Tween.EASE_OUT)
         camera_tween.tween_property(map_layer, "scale", target_scale, CAMERA_TWEEN_SECONDS)
         camera_tween.tween_property(map_layer, "position", target_position, CAMERA_TWEEN_SECONDS)
+        # Re-select visible worksite cards after the camera animation,
+        # rather than rescanning all buildings on every interpolation frame.
+        camera_tween.finished.connect(_refresh_map_worksite_cues)
     else:
         map_layer.scale = target_scale
         map_layer.position = target_position
+        if not mouse_panning and touch_points.is_empty():
+            _refresh_map_worksite_cues()
 
     _refresh_zoom_readout()
 
@@ -526,12 +570,14 @@ func _popup_is_open() -> bool:
 
 func _clear_pointer_state() -> void:
     touch_points.clear()
+    touch_start_points.clear()
     last_pinch_distance = 0.0
+    mouse_press_position = Vector2.ZERO
     mouse_panning = false
     screen_pointer_dragged = false
     mouse_pointer_dragged = false
 
-func _open_building(destination: StringName) -> void:
+func _open_building(destination: StringName, instance_id: StringName = &"") -> void:
     _hide_sect_hub()
     _close_disciple_summary(true)
     _close_workforce_picker()
@@ -541,6 +587,16 @@ func _open_building(destination: StringName) -> void:
         selected_production_instance_id = &""
     selected_building = destination
     var point := _iso_actor_point(destination)
+    # Validate the given ID against the destination, not merely existence.
+    # Keep ordinary type-only navigation compatible with existing callers.
+    if instance_id != &"" and state.buildings.has(str(instance_id)):
+        var requested: BuildingState = state.buildings[str(instance_id)]
+        if _sect_production_destination(requested.building_type) == destination:
+            selected_production_instance_id = requested.id
+    if selected_production_instance_id != &"" and state.buildings.has(str(selected_production_instance_id)):
+        var exact: BuildingState = state.buildings[str(selected_production_instance_id)]
+        if _sect_production_destination(exact.building_type) == destination:
+            point = SectIsometricWorldV1.virtual_legacy_point(destination,exact.id)
     _set_focus_target(point, &"building", destination, _building_name(destination), true)
     _show_building_operation_panel()
 
@@ -606,8 +662,52 @@ func _reconcile_live_actors() -> void:
     if needs_install:
         _install_modular_live_actors()
 
+# Read-only map work cues from committed production snapshots. These
+# labels communicate timer activity, but are not a replacement for authored
+# mining/forestry/sowing animation clips.
+func _active_resource_work_cues() -> Dictionary:
+    var cues := {}
+    if state == null:
+        return cues
+    for raw_building in state.buildings.values():
+        if not (raw_building is BuildingState):
+            continue
+        var building: BuildingState = raw_building
+        if building.building_type in [BuildingSystem.TYPE_MINE,BuildingSystem.TYPE_LINH_FOREST]:
+            var raw_jobs = building.production_state.get("economy_a_jobs",[])
+            if not (raw_jobs is Array):
+                continue
+            for job in raw_jobs:
+                if job is Dictionary:
+                    var worker_id := str(job.get("worker_id",""))
+                    if worker_id != "":
+                        cues[worker_id] = "Đang khai khoáng" if building.building_type == BuildingSystem.TYPE_MINE else "Đang khai lâm"
+        elif building.building_type == BuildingSystem.TYPE_SPIRIT_FIELD:
+            var raw_plots = building.production_state.get("plots",[])
+            if not (raw_plots is Array):
+                continue
+            for plot in raw_plots:
+                if plot is Dictionary and StringName(plot.get("status","")) == BuildingSystem.PLOT_GROWING:
+                    var worker_id := str(plot.get("assigned_worker_id",""))
+                    if worker_id != "":
+                        cues[worker_id] = "Linh Điền đang trồng"
+    return cues
+
+# Active work production is drawn at its exact persisted building instance,
+# not at the primary instance's type-wide destination. This visual position
+# never influences the simulation worker assignment, pathing or job clocks.
+func _production_actor_world_foot(disciple: DiscipleState, destination: StringName, index: int, work_cues: Dictionary) -> Vector2:
+    var fallback := _iso_actor_point(destination) + _actor_offset(index)
+    if disciple == null or not work_cues.has(str(disciple.id)) or disciple.worksite_building_id == &"":
+        return fallback
+    var site := state.buildings.get(str(disciple.worksite_building_id)) as BuildingState
+    if not _map_worksite_is_supported(site):
+        return fallback
+    return SectIsometricWorldV1.virtual_legacy_point(site.building_type,site.id) + Vector2(12,14)
+
 func _sync_actor_positions() -> void:
     _reconcile_live_actors()
+    var actual_work_cues := _active_resource_work_cues()
     var ids: Array = state.disciples.keys()
     ids.sort()
     for index in range(ids.size()):
@@ -622,13 +722,23 @@ func _sync_actor_positions() -> void:
         actor_destinations[key] = str(destination)
 
         var actor: Control = actor_nodes[key] as Control
-        var world_foot := _iso_actor_point(destination) + _actor_offset(index)
+        var world_foot := _production_actor_world_foot(disciple,destination,index,actual_work_cues)
         var target := world_foot - _actor_anchor_offset(actor)
+        # Sort live actors by their ground contact while keeping them below
+        # all navigation and modal panels (z >= 20).
+        actor.z_index = clampi(int(world_foot.y / 160.0),0,5)
         var delta := target - actor.position
+        var old_tween := actor_walk_tweens.get(key) as Tween
+        var continuing_walk := (
+            delta.length() > 1.0
+            and old_tween != null and old_tween.is_running()
+            and actor_walk_targets.has(key)
+            and Vector2(actor_walk_targets[key]).distance_to(target) <= 1.0
+        )
 
         if actor is ModularDiscipleActor:
             var modular := actor as ModularDiscipleActor
-            if delta.length() > 1.0:
+            if delta.length() > 1.0 and not continuing_walk:
                 # Two authored horizontal facings only. Vertical map travel
                 # still moves vertically; character uses last left/right
                 # visual and built-in Godot rig mirroring for left.
@@ -641,21 +751,42 @@ func _sync_actor_positions() -> void:
                 ):
                     FemaleStageAAssetLoader.apply_public_direction(modular,direction)
                 modular.play_walk_for_delta(two_way)
-            else:
+            elif delta.length() <= 1.0:
                 modular.sync_action(disciple.current_action)
 
-        if delta.length() > 1.0:
+        if delta.length() > 1.0 and not continuing_walk:
+            # Do not reset a running same-destination tween on each refresh;
+            # this can cause sliding/jitter and an artificially late arrival.
+            # Travel remains cosmetic and does not change work or scheduler.
+            if old_tween != null and old_tween.is_running():
+                old_tween.kill()
+            var duration := clampf(delta.length()/MAP_ACTOR_VISUAL_WALK_PX_PER_SEC,0.18,6.0)
             var tween := create_tween()
-            tween.set_trans(Tween.TRANS_QUAD)
-            tween.set_ease(Tween.EASE_IN_OUT)
-            tween.tween_property(actor, "position", target, 0.32)
-            if actor is ModularDiscipleActor:
-                tween.finished.connect(Callable(self,"_finish_actor_walk").bind(disciple_id,target))
+            tween.set_trans(Tween.TRANS_LINEAR)
+            tween.tween_property(actor, "position", target, duration)
+            actor_walk_tweens[key] = tween
+            actor_walk_targets[key] = target
+            tween.finished.connect(Callable(self,"_finish_actor_walk").bind(disciple_id,target))
+        elif delta.length() <= 1.0:
+            if old_tween != null and old_tween.is_running():
+                old_tween.kill()
+            actor_walk_tweens.erase(key)
+            actor_walk_targets.erase(key)
 
         if actor_status_labels.has(key):
             var status := actor_status_labels[key] as Label
             if is_instance_valid(status):
-                status.text = SectMapPresentation.action_label(disciple.current_action)
+                if actual_work_cues.has(key):
+                    status.text = _compact_production_actor_status(str(actual_work_cues[key]))
+                    status.visible = true
+                else:
+                    status.text = SectMapPresentation.action_label(disciple.current_action)
+                    if actor is ModularDiscipleActor:
+                        status.visible = (actor as ModularDiscipleActor).current_clip in [
+                            DiscipleActorVisualCatalog.CLIP_MINING,
+                            DiscipleActorVisualCatalog.CLIP_FORGING,
+                            DiscipleActorVisualCatalog.CLIP_WORK
+                        ]
 
     if focused_kind == &"disciple":
         _refresh_focused_disciple_point()
@@ -663,7 +794,18 @@ func _sync_actor_positions() -> void:
     _refresh_building_operation_content()
     _refresh_living_cues()
 
+# Space for characters is intentionally narrow. Full job text lives in
+# exact-ID production badges and the workforce panel; this is just a tag.
+func _compact_production_actor_status(full_status: String) -> String:
+    match full_status:
+        "Đang khai khoáng": return "Đang ở Mỏ"
+        "Đang khai lâm": return "Đang ở Lâm"
+        "Linh Điền đang trồng": return "Đang trồng"
+        _: return full_status
+
 func _finish_actor_walk(disciple_id: StringName, expected_target: Vector2) -> void:
+    actor_walk_tweens.erase(str(disciple_id))
+    actor_walk_targets.erase(str(disciple_id))
     var actor := actor_nodes.get(str(disciple_id)) as ModularDiscipleActor
     if actor == null or not is_instance_valid(actor) or actor.position.distance_to(expected_target) > 1.0:
         return
@@ -703,6 +845,11 @@ func _install_modular_live_actors() -> void:
             continue
 
         var old_actor: Control = actor_nodes.get(key) as Control
+        var replacing_tween := actor_walk_tweens.get(key) as Tween
+        if replacing_tween != null and replacing_tween.is_running():
+            replacing_tween.kill()
+        actor_walk_tweens.erase(key)
+        actor_walk_targets.erase(key)
         if old_actor != null and is_instance_valid(old_actor):
             if old_actor.get_parent() != null:
                 old_actor.get_parent().remove_child(old_actor)
@@ -717,12 +864,16 @@ func _install_modular_live_actors() -> void:
         actor.set_animation_library(female_motion_library)
         if actor.rig_id == DiscipleActorVisualCatalog.RIG_FEMALE_NORMAL_V1 and female_assets_ready:
             FemaleStageAAssetLoader.apply_public_direction(actor, &"right")
-        if actor.rig_id == DiscipleActorVisualCatalog.RIG_FEMALE_NORMAL_V1 and source_a_pilot_scene != null and not actor.production_body_active():
-            actor.set_baked_visual(source_a_pilot_scene)
+        # Deterministic presentation-only Source A selection. The pool admits
+        # only verified, imported art of the correct body/sex family.
+        var baked_scene := DiscipleSourceAVisualPool.scene_for_disciple(disciple)
+        if baked_scene != null and not actor.production_body_active():
+            actor.set_baked_visual(baked_scene)
         actor.sync_action(disciple.current_action)
         actor.actor_pressed.connect(Callable(self, "_open_disciple"))
         var world_foot := _iso_actor_point(destination) + _actor_offset(index)
         actor.position = world_foot - DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
+        actor.z_index = clampi(int(world_foot.y / 160.0),0,5)
         map_layer.add_child(actor)
 
         actor_nodes[key] = actor
@@ -763,6 +914,32 @@ func _build_building_operation_panel() -> void:
     separator.size = Vector2(412, 2)
     building_operation_panel.add_child(separator)
 
+    # Above-the-fold actual production timer, visible without scrolling.
+    # The backing value is recomputed from real saved jobs/plots on refresh.
+    building_operation_progress_caption = Label.new()
+    building_operation_progress_caption.name = "ProductionProgressCaption"
+    building_operation_progress_caption.position = Vector2(16, 84)
+    building_operation_progress_caption.size = Vector2(PRODUCTION_CONTENT_WIDTH,40)
+    building_operation_progress_caption.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    building_operation_progress_caption.add_theme_font_size_override("font_size",13)
+    building_operation_progress_caption.add_theme_color_override("font_color",INK)
+    building_operation_progress_caption.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    building_operation_progress_caption.visible = false
+    building_operation_panel.add_child(building_operation_progress_caption)
+
+    building_operation_progress_bar = ProgressBar.new()
+    building_operation_progress_bar.name = "ProductionProgressBar"
+    building_operation_progress_bar.position = Vector2(16,127)
+    building_operation_progress_bar.size = Vector2(PRODUCTION_CONTENT_WIDTH,13)
+    building_operation_progress_bar.min_value = 0.0
+    building_operation_progress_bar.max_value = 100.0
+    building_operation_progress_bar.show_percentage = false
+    building_operation_progress_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    building_operation_progress_bar.add_theme_stylebox_override("background",_style(Color(0.80,0.79,0.70),INK,1,5))
+    building_operation_progress_bar.add_theme_stylebox_override("fill",_style(JADE_DARK,JADE_DARK,0,5))
+    building_operation_progress_bar.visible = false
+    building_operation_panel.add_child(building_operation_progress_bar)
+
     var scroll := ScrollContainer.new()
     scroll.name = "BuildingOperationScroll"
     scroll.position = Vector2(14, 92)
@@ -801,6 +978,7 @@ func _show_building_operation_panel() -> void:
     if camera_hint != null:
         camera_hint.visible = false
     _refresh_building_operation_content()
+    _refresh_map_worksite_cues()
 
 func _hide_building_operation_panel() -> void:
     if building_operation_panel != null:
@@ -817,6 +995,11 @@ func _close_building_operation_panel(clear_selection: bool = true) -> void:
     if not clear_selection:
         return
     selected_building = &""
+    # Closing the panel also ends its selection. Otherwise the previous
+    # Mine/Forest/Field badge stays "selected" on the map indefinitely.
+    selected_production_instance_id = &""
+    if iso_world != null:
+        _refresh_map_worksite_cues()
     if focused_kind == &"building":
         focused_kind = &""
         focused_id = &""
@@ -832,11 +1015,23 @@ func _refresh_building_operation_content() -> void:
     if not _building_operation_is_open() or selected_building == &"":
         return
     building_operation_title.text = _building_name(selected_building)
+    var subtitle := building_operation_panel.get_node("BuildingOperationSubtitle") as Label
+    var focused_work_type := _workforce_building_type()
+    var focused_site := _selected_resource_instance(focused_work_type) if focused_work_type != &"" else null
+    if focused_site != null:
+        # Show which of several identical Mine/Forest/Field sites is open.
+        subtitle.text = "ID: %s · Cấp %d" % [str(focused_site.id),focused_site.level]
+        subtitle.tooltip_text = subtitle.text
+        subtitle.clip_text = true
+    else:
+        subtitle.text = "Tình hình vận hành"
+        subtitle.tooltip_text = ""
     var feedback := ""
     if building_management_feedback != "":
         feedback = "\n\n%s" % building_management_feedback
     var workforce_target := _workforce_building_type()
     _layout_building_operation_panel(workforce_target != &"")
+    _refresh_production_progress_header(workforce_target)
     building_operation_body.text = (
         _workforce_operation_summary(workforce_target) if workforce_target != &""
         else _building_operation_text(selected_building)
@@ -853,6 +1048,97 @@ func _refresh_building_operation_content() -> void:
     else:
         building_operation_body.custom_minimum_size.y = 0
     _rebuild_building_management_controls()
+    _ensure_disabled_controls_readable(building_management_container)
+
+# These controls are opaque even when disabled; use readable dark labels,
+# never the white-on-middle-gray text observed in the owner's visual audit.
+func _ensure_disabled_controls_readable(root_node: Node) -> void:
+    for child in root_node.get_children():
+        if child is Button:
+            var button := child as Button
+            button.add_theme_color_override("font_disabled_color",INK)
+            button.add_theme_stylebox_override(
+                "disabled",_style(Color(0.84,0.83,0.75),Color(0.46,0.44,0.37),1,8)
+            )
+        _ensure_disabled_controls_readable(child)
+
+func _refresh_production_progress_header(building_type: StringName) -> void:
+    if building_operation_progress_caption == null or building_operation_progress_bar == null:
+        return
+    var shown := building_type != &""
+    building_operation_progress_caption.visible = shown
+    building_operation_progress_bar.visible = shown
+    if not shown:
+        return
+    var building := _selected_resource_instance(building_type)
+    if building == null:
+        building_operation_progress_caption.text = "Chưa có công trình · chọn công trình trước"
+        building_operation_progress_bar.value = 0.0
+        return
+    var buildings := BuildingSystem.new()
+    if building_type in [BuildingSystem.TYPE_MINE,BuildingSystem.TYPE_LINH_FOREST]:
+        var jobs := buildings.resource_timer_jobs(building)
+        if not jobs.is_empty() and jobs[0] is Dictionary:
+            var job: Dictionary = jobs[0]
+            var start_tick := int(job.get("started_tick",state.tick))
+            var finish_tick := int(job.get("finish_tick",state.tick))
+            var total := maxi(1,finish_tick-start_tick)
+            var elapsed := clampi(state.tick-start_tick,0,total)
+            var resource_name := ResourceRegistry.new().display_name(
+                StringName(job.get("resource_id",""))
+            )
+            building_operation_progress_caption.text = (
+                "%s ×%d mẻ · đã thu %d\n%d/%d phút · %s" % [
+                    resource_name,maxi(0,int(job.get("output_quantity",0))),
+                    maxi(0,int(building.metrics.get("units_produced",0))),
+                    elapsed,total,
+                    "Chờ scheduler kết toán" if finish_tick <= state.tick
+                    else "Còn %d phút" % (finish_tick-state.tick)
+                ]
+            )
+            building_operation_progress_bar.value = 100.0*float(elapsed)/float(total)
+        else:
+            var plan := buildings.selected_resource_production_plan(building)
+            building_operation_progress_caption.text = "Đã thu %d · %d mẻ\nMẻ mới: %s ×%d" % [
+                maxi(0,int(building.metrics.get("units_produced",0))),
+                maxi(0,int(building.metrics.get("production_batches",0))),
+                ResourceRegistry.new().display_name(production_plan_registry.output_resource_id(plan)),
+                production_plan_registry.scaled_yield(plan,building.level)
+            ]
+            building_operation_progress_bar.value = 0.0
+        return
+    # Linh Điền has several concurrent plots. Show the nearest pending
+    # harvest explicitly, not a made-up overall progress percentage.
+    var nearest: Dictionary = {}
+    var active_count := 0
+    var snapshots = building.production_state.get("plots",[])
+    if snapshots is Array:
+        for raw in snapshots:
+            if not (raw is Dictionary):
+                continue
+            var plot: Dictionary = raw
+            if StringName(plot.get("status","")) != BuildingSystem.PLOT_GROWING:
+                continue
+            active_count += 1
+            if nearest.is_empty() or int(plot.get("finish_tick",0)) < int(nearest.get("finish_tick",0)):
+                nearest = plot
+    if nearest.is_empty():
+        building_operation_progress_caption.text = "Chưa trồng · đã nhập %d\nChọn đệ tử và bấm Bắt đầu" % maxi(0,int(building.metrics.get("units_produced",0)))
+        building_operation_progress_bar.value = 0.0
+        return
+    var start_tick := int(nearest.get("started_tick",state.tick))
+    var finish_tick := int(nearest.get("finish_tick",state.tick))
+    var total := maxi(1,finish_tick-start_tick)
+    var elapsed := clampi(state.tick-start_tick,0,total)
+    building_operation_progress_caption.text = "%d ô · %s ×%d · đã nhập %d\n%d/%d phút · %s" % [
+        active_count,
+        spirit_crop_registry.display_name(StringName(nearest.get("crop_id",""))),
+        maxi(0,int(nearest.get("routine_yield",0))),
+        maxi(0,int(building.metrics.get("units_produced",0))),elapsed,total,
+        "Chờ kết toán" if finish_tick <= state.tick
+        else "Còn %d phút" % (finish_tick-state.tick)
+    ]
+    building_operation_progress_bar.value = 100.0*float(elapsed)/float(total)
 
 func _layout_building_operation_panel(compact: bool) -> void:
     var width := PRODUCTION_PANEL_WIDTH if compact else 440.0
@@ -869,6 +1155,10 @@ func _layout_building_operation_panel(compact: bool) -> void:
     separator.size.x = width-28.0
     var scroll := building_operation_panel.get_node("BuildingOperationScroll") as ScrollContainer
     scroll.size.x = width-28.0
+    scroll.position.y = 150.0 if compact else 92.0
+    scroll.size.y = 384.0 if compact else 442.0
+    building_operation_progress_caption.size.x = content_width
+    building_operation_progress_bar.size.x = content_width
     building_operation_content.custom_minimum_size.x = content_width
     building_operation_body.custom_minimum_size.x = content_width
     building_management_container.custom_minimum_size.x = content_width
@@ -967,6 +1257,12 @@ func _choose_resource_instance(index: int, building_type: StringName, ids: Array
     selected_production_instance_id = chosen.id
     workforce_advanced_visible = false
     building_management_feedback = ""
+    var destination := _sect_production_destination(building_type)
+    if destination != &"":
+        _set_focus_target(
+            SectIsometricWorldV1.virtual_legacy_point(destination,chosen.id),
+            &"building",destination,_building_name(destination),true
+        )
     _refresh_building_operation_content()
 
 func _build_resource_instance_chooser(building_type: StringName) -> void:
@@ -1026,10 +1322,133 @@ func _workforce_operation_summary(building_type: StringName) -> String:
                     maxi(0,int(running.get("finish_tick",state.tick))-state.tick),_warehouse_pair(rid,true)
                 ]
     else:
-        output = "Linh Cốc: %s · Thanh Linh Thảo: %s" % [
-            _warehouse_pair(&"linh_coc",true),_warehouse_pair(&"thanh_linh_thao",true)
+        var growing := 0
+        var plots := buildings.spirit_field_plots(state,building)
+        for raw_plot in plots:
+            if raw_plot is Dictionary and StringName(raw_plot.get("status","")) == BuildingSystem.PLOT_GROWING:
+                growing += 1
+        output = "Đang trồng: %d/%d ô · Kho Linh Cốc: %s" % [
+            growing,plots.size(),_warehouse_pair(&"linh_coc",true)
         ]
     return "%s · Lv%d · 1 đệ tử / công trình\nPhụ trách: %s\n%s" % [str(building.id),building.level,who,output]
+
+# Read-only operations ledger from the already-saved job / plot snapshots.
+# UI never owns another timer, clock, warehouse, work slot or payout.
+func _workforce_live_production_lines(building: BuildingState) -> Array[String]:
+    var lines: Array[String] = []
+    if building == null:
+        return lines
+    var buildings := BuildingSystem.new()
+    if building.building_type in [BuildingSystem.TYPE_MINE,BuildingSystem.TYPE_LINH_FOREST]:
+        var jobs := buildings.resource_timer_jobs(building)
+        for raw_job in jobs:
+            if not (raw_job is Dictionary):
+                continue
+            var job: Dictionary = raw_job
+            var resource_id := StringName(job.get("resource_id",""))
+            var output := maxi(int(job.get("output_quantity",0)),0)
+            var started := int(job.get("started_tick",state.tick))
+            var finish := int(job.get("finish_tick",state.tick))
+            var total := maxi(1,finish-started)
+            var elapsed := clampi(state.tick-started,0,total)
+            lines.append("%s ×%d · %d/%d phút (%.0f%%)" % [
+                ResourceRegistry.new().display_name(resource_id),output,elapsed,total,
+                100.0*float(elapsed)/float(total)
+            ])
+            lines.append("Còn %d phút · Kho: %s" % [
+                maxi(0,finish-state.tick),_warehouse_pair(resource_id,true)
+            ])
+        if lines.is_empty():
+            var plan := buildings.selected_resource_production_plan(building)
+            var rid := production_plan_registry.output_resource_id(plan)
+            var batch := production_plan_registry.scaled_yield(plan,building.level)
+            lines.append("Chưa có mẻ · kế hoạch %s ×%d/mẻ" % [
+                ResourceRegistry.new().display_name(rid),batch
+            ])
+        return lines
+    if building.building_type != BuildingSystem.TYPE_SPIRIT_FIELD:
+        return lines
+    var plots := buildings.spirit_field_plots(state,building)
+    for raw_plot in plots:
+        if not (raw_plot is Dictionary):
+            continue
+        var plot: Dictionary = raw_plot
+        var plot_id := str(plot.get("plot_id","?"))
+        if StringName(plot.get("status","")) != BuildingSystem.PLOT_GROWING:
+            lines.append("%s · Trống" % plot_id)
+            continue
+        var crop_id := StringName(plot.get("crop_id",""))
+        var started := int(plot.get("started_tick",state.tick))
+        var finish := int(plot.get("finish_tick",state.tick))
+        var total := maxi(1,finish-started)
+        var elapsed := clampi(state.tick-started,0,total)
+        var base_units := maxi(int(plot.get("routine_yield",0)),0)
+        # Routine yield is already snapped at plant time. Lucky outcomes are
+        # deliberately NOT promised before the scheduler resolves the plot.
+        lines.append("%s · %s ×%d thường · còn %d phút (%.0f%%)" % [
+            plot_id,spirit_crop_registry.display_name(crop_id),base_units,
+            maxi(0,finish-state.tick),100.0*float(elapsed)/float(total)
+        ])
+    return lines
+
+# Explain every disabled Start in the same operation panel. Do not preempt
+# Workforce/BuildingSystem authority: their real command remains the gate.
+func _workforce_start_block_reason(building: BuildingState, worker_id: StringName) -> String:
+    if building == null or worker_id == &"" or not state.disciples.has(worker_id):
+        return "Chọn một đệ tử phụ trách trước."
+    var actor: DiscipleState = state.disciples[worker_id]
+    var buildings := BuildingSystem.new()
+    if building.building_type in [BuildingSystem.TYPE_MINE,BuildingSystem.TYPE_LINH_FOREST]:
+        if not buildings.resource_timer_jobs(building).is_empty():
+            return "Mẻ đang chạy; chờ hoàn thành hoặc dùng Hủy mẻ."
+        if state.sect.economy_a_enabled and DiscipleRealmProgressV2.owns_v2_progression(actor):
+            var plan := buildings.selected_resource_production_plan(building)
+            if production_plan_registry.has(plan):
+                var resource_id := production_plan_registry.output_resource_id(plan)
+                var units := production_plan_registry.scaled_yield(plan,building.level)
+                var stock := WarehouseSystem.new().quantity(state,resource_id)
+                var target := mini(units*10,WarehouseSystem.MAX_SAFE_STACK)
+                if stock >= target:
+                    return "Kho đã đạt mục tiêu %d %s; đổi kế hoạch hoặc dùng nguyên liệu trước." % [
+                        target,ResourceRegistry.new().display_name(resource_id)
+                    ]
+                if units > WarehouseSystem.MAX_SAFE_STACK-stock:
+                    return "Kho gần giới hạn lưu trữ an toàn; chưa thể bắt đầu mẻ này."
+    if actor.region_id != &"sect" or not actor.active_pve_encounter_id.is_empty():
+        return "Đệ tử đang xuất môn hoặc tham gia PvE."
+    if not actor.work_cycle_state.is_empty():
+        return "Đệ tử đang hoàn thành lượt làm việc cũ."
+    var other_timer := buildings.active_resource_timer_for_worker(state,worker_id)
+    if not other_timer.is_empty():
+        return "Đệ tử đang có mẻ sản xuất ở công trình khác."
+    if buildings.disciple_has_active_timed_recipe(state,worker_id):
+        return "Đệ tử đang luyện chế hoặc sản xuất có hẹn giờ."
+    if DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,actor):
+        return "Đệ tử đang giữ lượt Rèn Thân."
+    var profession := _workforce_profession(building.building_type)
+    if profession == &"":
+        return "Không có nghề sản xuất hợp lệ."
+    if building.building_type == BuildingSystem.TYPE_SPIRIT_FIELD:
+        var plots := buildings.spirit_field_plots(state,building)
+        var has_empty := false
+        for raw_plot in plots:
+            if raw_plot is Dictionary and StringName(raw_plot.get("status","")) == BuildingSystem.PLOT_EMPTY:
+                has_empty = true
+                break
+        if not has_empty:
+            return "Đã đủ ô Linh Điền; chờ thu hoạch để gieo tiếp."
+        if not buildings.work_available(state,profession,actor):
+            return "Chưa có cây hợp lệ: kiểm tra Linh Thạch, chính sách và mục tiêu kho."
+    elif not buildings.work_available(state,profession,actor):
+        return "Chưa đủ điều kiện làm việc: kiểm tra công trình, vật liệu và trạng thái."
+    # The pending command remains owned by the scheduler; a duplicate Start
+    # must not be advertised as a new job while another order is queued.
+    if not actor.direct_command.is_empty():
+        var kind := StringName(actor.direct_command.get("kind",""))
+        var target := str(actor.direct_command.get("target",""))
+        if kind != WorkforceSystem.COMMAND_WORK or target != str(profession):
+            return "Đệ tử đã có lệnh khác chờ xử lý."
+    return ""
 
 func _workforce_worker_status(building: BuildingState, worker_id: StringName) -> String:
     var buildings := BuildingSystem.new()
@@ -1118,12 +1537,14 @@ func _build_workforce_card(building_type: StringName, profession_id: StringName)
     building_management_container.add_child(buttons)
     var choose := _workforce_ui_button(buttons,"WorkforceChoose","Chọn / Đổi",Callable(self,"_open_workforce_picker").bind(building.id))
     choose.disabled = assigned.size() > 1
-    var start := _workforce_ui_button(buttons,"WorkforceStart","Bắt đầu",Callable(self,"_workforce_start").bind(building.id))
-    start.disabled = not owned or not buildings.work_available(state,profession_id,state.disciples[worker_id])
-    if owned and not start.disabled:
-        start.tooltip_text = "Gửi lệnh tới scheduler; tiến độ và sản phẩm là dữ liệu thực."
-    else:
-        start.tooltip_text = "Cần người phụ trách rảnh, slot và nguyên liệu hợp lệ."
+    var can_plant_more := owned and building_type == BuildingSystem.TYPE_SPIRIT_FIELD and buildings.disciple_has_active_spirit_plot(state,worker_id,building)
+    var start := _workforce_ui_button(buttons,"WorkforceStart","Gieo ô tiếp" if can_plant_more else "Bắt đầu",Callable(self,"_workforce_start").bind(building.id))
+    var block_reason := _workforce_start_block_reason(building,worker_id)
+    start.disabled = not owned or block_reason != ""
+    start.tooltip_text = (
+        block_reason if block_reason != "" else
+        "Gửi lệnh đến scheduler; hàng chỉ nhập kho sau khi hoàn tất thực tế."
+    )
     var active_timer := false
     if owned and building_type in [BuildingSystem.TYPE_MINE,BuildingSystem.TYPE_LINH_FOREST]:
         for raw_job in buildings.resource_timer_jobs(building):
@@ -1133,6 +1554,19 @@ func _build_workforce_card(building_type: StringName, profession_id: StringName)
     var remove := _workforce_ui_button(buttons,"WorkforceRemove","Hủy mẻ" if active_timer else "Gỡ người",
         Callable(self,"_workforce_cancel_timer").bind(building.id,worker_id) if active_timer else Callable(self,"_workforce_remove").bind(building.id))
     remove.disabled = not owned or (not active_timer and (buildings.disciple_has_active_timed_recipe(state,worker_id) or buildings.disciple_has_active_spirit_plot(state,worker_id)))
+    if remove.disabled and owned:
+        remove.tooltip_text = "Lượt sản xuất đang chạy; không thể gỡ người khi chưa kết thúc."
+    # Progress is visible immediately after the 44px touch actions, and is
+    # recomputed from saved snapshots whenever the live UI refreshes.
+    var live_lines := _workforce_live_production_lines(building)
+    var live_label := Label.new()
+    live_label.name = "WorkforceLiveProgress"
+    live_label.custom_minimum_size = Vector2(PRODUCTION_CONTENT_WIDTH,0)
+    live_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    live_label.add_theme_font_size_override("font_size",12)
+    live_label.add_theme_color_override("font_color",INK)
+    live_label.text = "TIẾN ĐỘ THỰC TẾ\n" + "\n".join(live_lines)
+    building_management_container.add_child(live_label)
     if not state.sect.economy_a_enabled and building_type in [BuildingSystem.TYPE_MINE,BuildingSystem.TYPE_LINH_FOREST]:
         var enable := _workforce_ui_button(building_management_container,"WorkforceEnableTimer","Bật chu kỳ sản xuất",Callable(self,"_workforce_enable_timer"))
         enable.custom_minimum_size = Vector2(PRODUCTION_CONTENT_WIDTH,44)
@@ -1149,14 +1583,18 @@ func _workforce_start(building_id: StringName) -> void:
     var building: BuildingState = state.buildings[str(building_id)]
     var assigned := _workforce_occupants(building)
     if assigned.size() != 1:
-        building_management_feedback = "Công trình phải có đúng một người phụ trách."
+        building_management_feedback = "Cần đúng một đệ tử phụ trách công trình này."
     else:
-        var profession_id := _workforce_profession(building.building_type)
-        var ok := workforce.issue_command(state,assigned[0],WorkforceSystem.COMMAND_WORK,str(profession_id),40)
-        building_management_feedback = (
-            "Đã giao lệnh; scheduler sẽ khởi động lượt làm việc hợp lệ."
-            if ok else "Không thể bắt đầu: đệ tử bận hoặc công trình chưa đủ điều kiện."
-        )
+        var reason := _workforce_start_block_reason(building,assigned[0])
+        if reason != "":
+            building_management_feedback = "Chưa thể bắt đầu: " + reason
+        else:
+            var profession_id := _workforce_profession(building.building_type)
+            var ok := workforce.issue_command(state,assigned[0],WorkforceSystem.COMMAND_WORK,str(profession_id),40)
+            building_management_feedback = (
+                "Đã nhận lệnh. Scheduler sẽ gieo ô/mở mẻ ở nhịp hợp lệ; xem TIẾN ĐỘ THỰC TẾ."
+                if ok else "Chưa thể gửi lệnh: trạng thái việc làm đã thay đổi, hãy chọn lại."
+            )
     _refresh_building_operation_content()
 
 func _workforce_remove(building_id: StringName) -> void:
@@ -1186,6 +1624,32 @@ func _workforce_cancel_timer(building_id: StringName, worker_id: StringName) -> 
         building_management_feedback = "Đã hủy mẻ trên công trình này." if cancelled else "Không thể hủy mẻ hiện tại."
     _refresh_building_operation_content()
 
+# Resolve the same verified sex+seed visual as the map, even when this
+# disciple has not been instantiated as a map actor (paged roster / workforce).
+# Texture2D is shared across buttons and loaded once per accepted Source A rig.
+func _disciple_source_a_portrait_texture(disciple: DiscipleState) -> Texture2D:
+    if disciple == null:
+        return null
+    var scene_path := DiscipleSourceAVisualPool.scene_path_for_disciple(disciple)
+    if scene_path.is_empty():
+        return null
+    if source_a_portrait_textures.has(scene_path):
+        return source_a_portrait_textures[scene_path] as Texture2D
+    var packed := DiscipleSourceAVisualPool.scene_for_disciple(disciple)
+    if packed == null:
+        return null
+    var preview := packed.instantiate() as AnimatedSprite2D
+    if preview == null:
+        return null
+    var texture: Texture2D = null
+    var frames := preview.sprite_frames
+    if frames != null and frames.has_animation(&"stand") and frames.get_frame_count(&"stand") > 0:
+        texture = frames.get_frame_texture(&"stand",0)
+    preview.free()
+    if texture != null:
+        source_a_portrait_textures[scene_path] = texture
+    return texture
+
 func _disciple_avatar_button(disciple: DiscipleState, edge: float) -> Button:
     var avatar := Button.new()
     avatar.text = disciple.display_name.substr(0,1)
@@ -1193,17 +1657,54 @@ func _disciple_avatar_button(disciple: DiscipleState, edge: float) -> Button:
     avatar.add_theme_color_override("font_color",INK)
     avatar.add_theme_stylebox_override("normal",_style(Color(0.86,0.91,0.77),JADE_DARK,1,8))
     var actor := actor_nodes.get(str(disciple.id)) as ModularDiscipleActor
-    if actor != null and actor.baked_visual_active() and actor.baked_sprite != null:
-        var frames := actor.baked_sprite.sprite_frames
-        if frames != null and frames.has_animation(&"stand") and frames.get_frame_count(&"stand") > 0:
-            var portrait := TextureRect.new()
-            portrait.texture = frames.get_frame_texture(&"stand",0)
-            portrait.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-            portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-            portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-            portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
-            avatar.text = ""
-            avatar.add_child(portrait)
+    # A real modular production body takes precedence over Source A artwork.
+    var can_show_baked := actor == null or not actor.production_body_active()
+    var baked_texture: Texture2D = null
+    if can_show_baked:
+        baked_texture = _disciple_source_a_portrait_texture(disciple)
+    if baked_texture != null:
+        var portrait := TextureRect.new()
+        portrait.name = "VerifiedSourceAPortrait"
+        portrait.texture = baked_texture
+        portrait.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+        portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+        portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+        portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        avatar.text = ""
+        avatar.add_child(portrait)
+        return avatar
+
+    # Verified Source A portrait not yet imported for this disciple:
+    # render a lightweight seed-stable face/hair/robe tile instead of a
+    # misleading female art swap or the same initial-only green square.
+    var look := DiscipleActorVisualCatalog.default_appearance_for_disciple(disciple)
+    var garment := Color.from_string(str(look.get("outfit_tint","455472")),Color(0.27,0.33,0.45))
+    var hair_tint := Color.from_string(str(look.get("hair_tint","2b2624")),Color(0.17,0.15,0.14))
+    var stage := Control.new()
+    stage.name = "FallbackPortrait"
+    stage.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    stage.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    var chest := Panel.new()
+    chest.position = Vector2(edge*0.15,edge*0.62)
+    chest.size = Vector2(edge*0.70,edge*0.33)
+    chest.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    chest.add_theme_stylebox_override("panel",_style(garment,INK,1,5))
+    stage.add_child(chest)
+    var face := Panel.new()
+    face.position = Vector2(edge*0.29,edge*0.23)
+    face.size = Vector2(edge*0.42,edge*0.43)
+    face.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    face.add_theme_stylebox_override("panel",_style(Color(0.94,0.79,0.65),INK,1,9))
+    stage.add_child(face)
+    var hair := Panel.new()
+    hair.position = Vector2(edge*0.24,edge*0.12)
+    hair.size = Vector2(edge*0.52,edge*0.20)
+    hair.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    hair.add_theme_stylebox_override("panel",_style(hair_tint,INK,1,8))
+    stage.add_child(hair)
+    avatar.text = ""
+    avatar.tooltip_text = disciple.display_name
+    avatar.add_child(stage)
     return avatar
 
 func _open_workforce_owner(disciple_id: StringName, building_id: StringName) -> void:
@@ -1287,9 +1788,9 @@ func _open_workforce_picker(building_id: StringName) -> void:
     workforce_picker_offset = 0
     workforce_picker_panel = Panel.new()
     workforce_picker_panel.name = "WorkforcePicker"
-    # Fit beside the compact production panel without hiding live actions.
-    # Do not block its Start/Remove controls while a candidate is inspected.
-    workforce_picker_panel.position = Vector2(440,102)
+    # Keep the picker entirely to the left of the wider, legible 420px
+    # production panel. No overlap with Start/Remove at 1280x720.
+    workforce_picker_panel.position = Vector2(340,102)
     workforce_picker_panel.size = Vector2(480,516)
     workforce_picker_panel.z_index = 90
     workforce_picker_panel.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -1473,8 +1974,10 @@ func _workforce_pick_candidate(disciple_id: StringName) -> void:
     var profession_id := _workforce_profession(building.building_type)
     var started := workforce.issue_command(state,disciple_id,WorkforceSystem.COMMAND_WORK,str(profession_id),40)
     building_management_feedback = (
-        "Đã phân công %s và gửi lệnh sản xuất." % state.disciples[disciple_id].display_name
-        if started else "Đã phân công; chưa thể chạy ngay (thiếu nguyên liệu/điều kiện)."
+        "Đã giao %s vào %s; lệnh đang chờ scheduler. Xem tiến độ khi mẻ bắt đầu." % [
+            state.disciples[disciple_id].display_name,str(building.id)
+        ]
+        if started else "Đã giao người vào %s; chưa gửi được lệnh. Bấm Bắt đầu để xem lý do." % str(building.id)
     )
     _refresh_building_operation_content()
 
@@ -1526,8 +2029,11 @@ func _build_sect_hub() -> void:
 
 func _hide_sect_hub() -> void:
     sect_layout_preview_open = false
+    sect_production_board_open = false
     if sect_hub_panel != null and is_instance_valid(sect_hub_panel):
         sect_hub_panel.visible = false
+    if iso_world != null:
+        _refresh_map_worksite_cues()
 
 func _show_sect_hub() -> void:
     if not runtime_ready or sect_hub_panel == null or not is_instance_valid(sect_hub_panel):
@@ -1538,6 +2044,7 @@ func _show_sect_hub() -> void:
     _clear_popup()
     _refresh_sect_hub()
     sect_hub_panel.visible = true
+    _refresh_map_worksite_cues()
 
 func _sect_hub_label(message: String, font_size: int = 14) -> void:
     var label := Label.new()
@@ -1584,11 +2091,378 @@ func _sect_hub_production_line(
         label_text,instance_count,building.level,worker_name,activity,_warehouse_pair(actual_resource_id,true)
     ]
 
+# G1.7: one read-only, paged view of EVERY canonical producer instance.
+# No shadow map, local clock, construction/assignment command or save writes.
+func _sect_production_instances(filter_type: StringName = &"", attention_only: bool = false) -> Array[BuildingState]:
+    var urgent: Array[BuildingState] = []
+    var regular: Array[BuildingState] = []
+    for building_type in [
+        BuildingSystem.TYPE_MINE,
+        BuildingSystem.TYPE_LINH_FOREST,
+        BuildingSystem.TYPE_SPIRIT_FIELD
+    ]:
+        if filter_type != &"" and filter_type != building_type:
+            continue
+        for building in ResourceBuildingExpansionPolicyV2.existing_instances(state,building_type):
+            if bool(_sect_production_attention(building).get("needs_action",false)):
+                urgent.append(building)
+            elif not attention_only:
+                regular.append(building)
+    # Attention rows appear first; stable type and ID ordering in each bucket.
+    urgent.append_array(regular)
+    return urgent
+
+# G1.8 actionable hints are derived from canonical, persisted snapshots.
+# These labels are *advice only*. No resource delivery, new job, auto-order,
+# construction, instant harvest, or migration may happen while viewing the hub.
+func _sect_production_attention(building: BuildingState) -> Dictionary:
+    if building == null:
+        return {"needs_action":false,"label":"Không có công trình"}
+    var buildings := BuildingSystem.new()
+    var assigned := buildings.assigned_worker_ids(state,building)
+    if assigned.size() > 1:
+        return {"needs_action":true,"label":"Phân công bất thường: kiểm tra số người"}
+    if assigned.is_empty():
+        return {"needs_action":true,"label":"Chưa có đệ tử · Mở để phân công"}
+    var worker_id: StringName = assigned[0]
+    if not state.disciples.has(worker_id):
+        return {"needs_action":true,"label":"Không tìm thấy người phụ trách · cần kiểm tra"}
+    var actor: DiscipleState = state.disciples[worker_id]
+
+    if building.building_type in [BuildingSystem.TYPE_MINE,BuildingSystem.TYPE_LINH_FOREST]:
+        var jobs := buildings.resource_timer_jobs(building)
+        if not jobs.is_empty():
+            var first_job = jobs[0]
+            if first_job is Dictionary:
+                var remaining := int(first_job.get("finish_tick",state.tick))-state.tick
+                if remaining <= 0:
+                    return {"needs_action":false,"label":"Mẻ đến hạn · chờ scheduler xử lý"}
+                return {"needs_action":false,"label":"Mẻ đang chạy · còn %d phút" % remaining}
+            return {"needs_action":true,"label":"Dữ liệu mẻ không hợp lệ · cần kiểm tra"}
+        if not actor.work_cycle_state.is_empty():
+            return {"needs_action":false,"label":"Đang hoàn tất chu kỳ sản xuất cũ"}
+        if not state.sect.economy_a_enabled:
+            return {"needs_action":true,"label":"Chưa bật chu kỳ timer · mở công trình"}
+        if DiscipleRealmProgressV2.owns_v2_progression(actor):
+            var plan_id := buildings.selected_resource_production_plan(building)
+            if production_plan_registry.has(plan_id):
+                var output_id := production_plan_registry.output_resource_id(plan_id)
+                var batch_units := production_plan_registry.scaled_yield(plan_id,building.level)
+                var stock := WarehouseSystem.new().quantity(state,output_id)
+                var target := mini(batch_units*10,WarehouseSystem.MAX_SAFE_STACK)
+                if stock >= target:
+                    return {"needs_action":true,"label":"Kho đạt mục tiêu %d · đổi kế hoạch hoặc tiêu thụ" % target}
+                if batch_units > WarehouseSystem.MAX_SAFE_STACK-stock:
+                    return {"needs_action":true,"label":"Kho không đủ chỗ cho mẻ tiếp theo"}
+    elif building.building_type == BuildingSystem.TYPE_SPIRIT_FIELD:
+        # The accessor spirit_field_plots() may *write* legacy migration.
+        # Inspect the persisted snapshots directly in this read-only board.
+        if not building.production_state.has("plots"):
+            return {"needs_action":true,"label":"Linh Điền cũ · mở công trình để đồng bộ"}
+        var stored_plots = building.production_state.get("plots",[])
+        if not (stored_plots is Array):
+            return {"needs_action":true,"label":"Dữ liệu ô đất cần kiểm tra"}
+        var growing := 0
+        var empty := 0
+        var due := 0
+        for raw_plot in stored_plots:
+            if not (raw_plot is Dictionary):
+                continue
+            var plot: Dictionary = raw_plot
+            var plot_status := StringName(plot.get("status",""))
+            if plot_status == BuildingSystem.PLOT_GROWING:
+                growing += 1
+                if int(plot.get("finish_tick",state.tick))-state.tick <= 0:
+                    due += 1
+            elif plot_status == BuildingSystem.PLOT_EMPTY:
+                empty += 1
+        if due > 0:
+            return {"needs_action":false,"label":"%d ô đến hạn · chờ scheduler xử lý" % due}
+        if empty == 0:
+            return {"needs_action":false,"label":"Đang trồng đủ %d ô" % growing}
+        var eligible := spirit_crop_registry.eligible_crop_ids(building.level)
+        var affordable := false
+        for crop_id in eligible:
+            if state.sect.spirit_stones >= spirit_crop_registry.cost(crop_id):
+                affordable = true
+                break
+        if not affordable:
+            return {"needs_action":true,"label":"Chưa đủ Linh Thạch gieo trồng"}
+    else:
+        return {"needs_action":false,"label":"Không thuộc nhóm sản xuất"}
+
+    if actor.region_id != &"sect" or not actor.active_pve_encounter_id.is_empty():
+        return {"needs_action":true,"label":"Người phụ trách đang xuất môn/PvE"}
+    if not actor.direct_command.is_empty():
+        var target := str(actor.direct_command.get("target",""))
+        var kind := StringName(actor.direct_command.get("kind",""))
+        if kind == WorkforceSystem.COMMAND_WORK and target == str(_workforce_profession(building.building_type)):
+            return {"needs_action":false,"label":"Đã nhận lệnh · chờ scheduler mở lượt"}
+        return {"needs_action":true,"label":"Có lệnh khác chờ xử lý"}
+    if building.building_type == BuildingSystem.TYPE_SPIRIT_FIELD:
+        return {"needs_action":true,"label":"Còn ô trống · mở để kiểm tra gieo tiếp"}
+    return {"needs_action":true,"label":"Chưa có mẻ · mở để bắt đầu"}
+
+func _sect_production_type_name(building_type: StringName) -> String:
+    match building_type:
+        BuildingSystem.TYPE_MINE:
+            return "Mỏ"
+        BuildingSystem.TYPE_LINH_FOREST:
+            return "Linh Lâm"
+        BuildingSystem.TYPE_SPIRIT_FIELD:
+            return "Linh Điền"
+    return "Công trình"
+
+func _sect_production_destination(building_type: StringName) -> StringName:
+    match building_type:
+        BuildingSystem.TYPE_MINE:
+            return SectMapPresentation.DEST_MINE
+        BuildingSystem.TYPE_LINH_FOREST:
+            return SectMapPresentation.DEST_LINH_FOREST
+        BuildingSystem.TYPE_SPIRIT_FIELD:
+            return SectMapPresentation.DEST_SPIRIT_FIELD
+    return &""
+
+func _sect_production_status(building: BuildingState) -> String:
+    if building == null:
+        return "Công trình không tồn tại."
+    var buildings := BuildingSystem.new()
+    var assigned := buildings.assigned_worker_ids(state,building)
+    if assigned.size() > 1:
+        return "Lỗi phân công: %d người cùng công trình" % assigned.size()
+    var owner := "Chưa có đệ tử"
+    if assigned.size() == 1:
+        owner = (
+            (state.disciples[assigned[0]] as DiscipleState).display_name
+            if state.disciples.has(assigned[0]) else str(assigned[0])
+        )
+    var activity := "Chưa có mẻ"
+    if building.building_type in [BuildingSystem.TYPE_MINE,BuildingSystem.TYPE_LINH_FOREST]:
+        var jobs := buildings.resource_timer_jobs(building)
+        if not jobs.is_empty() and jobs[0] is Dictionary:
+            var job: Dictionary = jobs[0]
+            activity = "Đang làm %s ×%d · còn %d phút" % [
+                ResourceRegistry.new().display_name(StringName(job.get("resource_id",""))),
+                maxi(0,int(job.get("output_quantity",0))),
+                maxi(0,int(job.get("finish_tick",state.tick))-state.tick)
+            ]
+        elif not assigned.is_empty() and state.disciples.has(assigned[0]):
+            activity = _workforce_worker_status(building,assigned[0])
+        else:
+            var plan := buildings.selected_resource_production_plan(building)
+            activity = "Kế hoạch %s ×%d/mẻ" % [
+                ResourceRegistry.new().display_name(production_plan_registry.output_resource_id(plan)),
+                production_plan_registry.scaled_yield(plan,building.level)
+            ]
+    elif building.building_type == BuildingSystem.TYPE_SPIRIT_FIELD:
+        # Dashboard reads the persisted plot snapshot directly, because the
+        # BuildingSystem accessor can lazily migrate an old Field on read.
+        # Merely opening this board must not write to production_state.
+        var stored_plots = building.production_state.get("plots",[])
+        if not (stored_plots is Array):
+            return "Phụ trách: %s\nDữ liệu ô đất cần đồng bộ tại công trình." % owner
+        var plots: Array = stored_plots
+        if not building.production_state.has("plots"):
+            return "Phụ trách: %s\nLinh Điền cũ: mở công trình để xem các ô đã đồng bộ." % owner
+        var growing := 0
+        var next_remaining := -1
+        var crop_label := ""
+        for raw_plot in plots:
+            if not (raw_plot is Dictionary):
+                continue
+            var plot: Dictionary = raw_plot
+            if StringName(plot.get("status","")) != BuildingSystem.PLOT_GROWING:
+                continue
+            growing += 1
+            var remaining := maxi(0,int(plot.get("finish_tick",state.tick))-state.tick)
+            if next_remaining < 0 or remaining < next_remaining:
+                next_remaining = remaining
+                crop_label = "%s ×%d thường" % [
+                    spirit_crop_registry.display_name(StringName(plot.get("crop_id",""))),
+                    maxi(0,int(plot.get("routine_yield",0)))
+                ]
+        activity = "%d/%d ô đang trồng" % [growing,plots.size()]
+        if growing > 0:
+            activity += " · gần nhất %d phút · %s" % [next_remaining,crop_label]
+    return "Phụ trách: %s\n%s" % [owner,activity]
+
+func _open_sect_production_instance(building_id: StringName) -> void:
+    if not state.buildings.has(str(building_id)):
+        _refresh_sect_production_board()
+        return
+    var building: BuildingState = state.buildings[str(building_id)]
+    var destination := _sect_production_destination(building.building_type)
+    if destination == &"":
+        return
+    # Open, focus and first render must all use the same selected ID.
+    _open_building(destination,building.id)
+
+func _show_sect_production_board() -> void:
+    sect_production_board_filter = &""
+    sect_production_attention_only = false
+    sect_production_board_page = 0
+    sect_layout_preview_open = false
+    sect_production_board_open = true
+    _refresh_sect_production_board(true)
+
+func _sect_production_filter_changed(building_type: StringName) -> void:
+    if building_type != &"" and not ResourceBuildingExpansionPolicyV2.RAW_TYPES.has(building_type):
+        return
+    sect_production_board_filter = building_type
+    sect_production_board_page = 0
+    _refresh_sect_production_board(true)
+
+func _sect_production_attention_filter_changed() -> void:
+    sect_production_attention_only = not sect_production_attention_only
+    sect_production_board_page = 0
+    _refresh_sect_production_board(true)
+
+func _sect_production_page_changed(direction: int) -> void:
+    var total := _sect_production_instances(sect_production_board_filter,sect_production_attention_only).size()
+    var max_page := maxi(0,int(ceili(float(total)/float(SECT_PRODUCTION_PAGE_SIZE)))-1)
+    sect_production_board_page = clampi(sect_production_board_page+direction,0,max_page)
+    _refresh_sect_production_board(true)
+
+func _refresh_sect_production_board(reset_scroll: bool = false) -> void:
+    if not sect_production_board_open or sect_hub_content == null or not is_instance_valid(sect_hub_content):
+        return
+    var scroll := sect_hub_panel.find_child("SectHubScroll",false,false) as ScrollContainer
+    var scroll_before := 0
+    if not reset_scroll and scroll != null:
+        scroll_before = scroll.scroll_vertical
+    for child in sect_hub_content.get_children():
+        sect_hub_content.remove_child(child)
+        child.queue_free()
+    var mine_count := _sect_production_instances(BuildingSystem.TYPE_MINE).size()
+    var forest_count := _sect_production_instances(BuildingSystem.TYPE_LINH_FOREST).size()
+    var field_count := _sect_production_instances(BuildingSystem.TYPE_SPIRIT_FIELD).size()
+    _sect_hub_label("SẢN XUẤT TÔNG MÔN · DỮ LIỆU THẬT",19)
+    _sect_hub_label("Mỏ %d · Linh Lâm %d · Linh Điền %d · Tick %d" % [
+        mine_count,forest_count,field_count,state.tick
+    ],13)
+    var attention_count := _sect_production_instances(&"",true).size()
+    _sect_hub_label("CẦN XỬ LÝ: %d công trình · các mục này được xếp trước" % attention_count,14)
+    var attention_button := Button.new()
+    attention_button.name = "SectProductionAttentionOnly"
+    attention_button.text = "Đang lọc: Cần xử lý ✓" if sect_production_attention_only else "Chỉ xem CẦN XỬ LÝ"
+    attention_button.custom_minimum_size = Vector2(662,46)
+    attention_button.add_theme_font_size_override("font_size",14)
+    attention_button.add_theme_color_override("font_color",INK)
+    attention_button.pressed.connect(_sect_production_attention_filter_changed)
+    sect_hub_content.add_child(attention_button)
+
+    var tabs := HBoxContainer.new()
+    tabs.name = "SectProductionFilters"
+    tabs.custom_minimum_size = Vector2(662,48)
+    tabs.add_theme_constant_override("separation",5)
+    sect_hub_content.add_child(tabs)
+    for entry in [
+        {"type":&"","name":"Tất cả"},
+        {"type":BuildingSystem.TYPE_MINE,"name":"Mỏ"},
+        {"type":BuildingSystem.TYPE_LINH_FOREST,"name":"Linh Lâm"},
+        {"type":BuildingSystem.TYPE_SPIRIT_FIELD,"name":"Linh Điền"}
+    ]:
+        var type_id: StringName = StringName(entry["type"])
+        var filter_button := Button.new()
+        filter_button.name = "SectProductionFilter_%s" % (
+            "all" if type_id == &"" else str(type_id)
+        )
+        filter_button.text = str(entry["name"])
+        filter_button.custom_minimum_size = Vector2(153,46)
+        filter_button.add_theme_font_size_override("font_size",13)
+        filter_button.add_theme_color_override("font_color",INK)
+        if type_id == sect_production_board_filter:
+            filter_button.add_theme_stylebox_override("normal",_style(Color(0.95,0.86,0.61),INK,2,8))
+        filter_button.pressed.connect(Callable(self,"_sect_production_filter_changed").bind(type_id))
+        tabs.add_child(filter_button)
+
+    var all_instances := _sect_production_instances(sect_production_board_filter,sect_production_attention_only)
+    var max_page := maxi(0,ceili(float(all_instances.size())/float(SECT_PRODUCTION_PAGE_SIZE))-1)
+    sect_production_board_page = clampi(sect_production_board_page,0,max_page)
+    var first := sect_production_board_page*SECT_PRODUCTION_PAGE_SIZE
+    var last := mini(first+SECT_PRODUCTION_PAGE_SIZE,all_instances.size())
+    if all_instances.is_empty():
+        _sect_hub_label("Chưa có công trình thuộc nhóm này. Không tự xây mới.",14)
+    for index in range(first,last):
+        var building: BuildingState = all_instances[index]
+        var card := PanelContainer.new()
+        card.name = "SectProductionCard_%s" % str(building.id)
+        card.add_theme_stylebox_override("panel",_style(Color(0.95,0.91,0.80),INK,1,9))
+        sect_hub_content.add_child(card)
+        var horizontal := HBoxContainer.new()
+        horizontal.custom_minimum_size = Vector2(645,104)
+        horizontal.add_theme_constant_override("separation",8)
+        card.add_child(horizontal)
+        var attention := _sect_production_attention(building)
+        var detail := Label.new()
+        detail.name = "SectProductionStatus_%s" % str(building.id)
+        detail.text = "%s · %s · Lv%d\n%s\n%s: %s" % [
+            _sect_production_type_name(building.building_type),
+            str(building.id),building.level,_sect_production_status(building),
+            "CẦN XỬ LÝ" if bool(attention.get("needs_action",false)) else "TRẠNG THÁI",
+            str(attention.get("label",""))
+        ]
+        detail.custom_minimum_size = Vector2(493,98)
+        detail.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+        detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+        detail.add_theme_font_size_override("font_size",13)
+        detail.add_theme_color_override("font_color",INK)
+        detail.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        horizontal.add_child(detail)
+        var open_button := Button.new()
+        open_button.name = "SectProductionOpen_%s" % str(building.id)
+        open_button.text = "Xử lý" if bool(attention.get("needs_action",false)) else "Mở"
+        open_button.custom_minimum_size = Vector2(119,48)
+        open_button.add_theme_font_size_override("font_size",15)
+        open_button.add_theme_color_override("font_color",PAPER_LIGHT)
+        open_button.add_theme_stylebox_override("normal",_style(JADE_DARK,INK,1,8))
+        open_button.pressed.connect(Callable(self,"_open_sect_production_instance").bind(building.id))
+        horizontal.add_child(open_button)
+
+    var paging := HBoxContainer.new()
+    paging.name = "SectProductionPaging"
+    paging.custom_minimum_size = Vector2(662,48)
+    paging.add_theme_constant_override("separation",13)
+    sect_hub_content.add_child(paging)
+    var prev := Button.new()
+    prev.name = "SectProductionPrevious"
+    prev.text = "← Trước"
+    prev.custom_minimum_size = Vector2(133,46)
+    prev.disabled = sect_production_board_page == 0
+    prev.pressed.connect(Callable(self,"_sect_production_page_changed").bind(-1))
+    paging.add_child(prev)
+    var page_label := Label.new()
+    page_label.name = "SectProductionPageInfo"
+    page_label.text = "Trang %d/%d · %d công trình" % [
+        sect_production_board_page+1,max_page+1,all_instances.size()
+    ]
+    page_label.custom_minimum_size = Vector2(258,44)
+    page_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    paging.add_child(page_label)
+    var next := Button.new()
+    next.name = "SectProductionNext"
+    next.text = "Sau →"
+    next.custom_minimum_size = Vector2(133,46)
+    next.disabled = sect_production_board_page >= max_page
+    next.pressed.connect(Callable(self,"_sect_production_page_changed").bind(1))
+    paging.add_child(next)
+
+    var back := Button.new()
+    back.name = "SectProductionBackToHub"
+    back.text = "← Quay lại Điều hành"
+    back.custom_minimum_size = Vector2(662,48)
+    back.pressed.connect(_refresh_sect_hub)
+    sect_hub_content.add_child(back)
+    _ensure_disabled_controls_readable(sect_hub_content)
+    if scroll != null:
+        scroll.set_deferred("scroll_vertical",scroll_before)
+
 # Read-only cap and land geometry authority; do NOT enable construction
 # without one persistent SectLayoutState, real Hall and approved tariffs.
 func _show_sect_layout_preview() -> void:
     if not runtime_ready or sect_hub_content == null or not is_instance_valid(sect_hub_content):
         return
+    sect_production_board_open = false
     sect_layout_preview_open = true
     for child in sect_hub_content.get_children():
         sect_hub_content.remove_child(child)
@@ -1632,6 +2506,7 @@ func _show_sect_layout_preview() -> void:
 
 func _refresh_sect_hub() -> void:
     sect_layout_preview_open = false
+    sect_production_board_open = false
     if sect_hub_content == null or not is_instance_valid(sect_hub_content):
         return
     var scroll := sect_hub_panel.find_child("SectHubScroll",false,false) as ScrollContainer
@@ -1646,6 +2521,16 @@ func _refresh_sect_hub() -> void:
     _sect_hub_label("Linh Thạch tông môn: %d · Tick %d" % [
         state.sect.spirit_stones,state.tick
     ])
+    var attention_count := _sect_production_instances(&"",true).size()
+    var dashboard := Button.new()
+    dashboard.name = "SectHubOpenProductionBoard"
+    dashboard.text = "BẢNG SẢN XUẤT · %d cần xử lý" % attention_count
+    dashboard.custom_minimum_size = Vector2(675,50)
+    dashboard.add_theme_font_size_override("font_size",16)
+    dashboard.add_theme_color_override("font_color",PAPER_LIGHT)
+    dashboard.add_theme_stylebox_override("normal",_style(JADE_DARK,INK,1,9))
+    dashboard.pressed.connect(_show_sect_production_board)
+    sect_hub_content.add_child(dashboard)
     _sect_hub_route("DẪN TIÊN · Tuyển và nhận đệ tử",SectMapPresentation.DEST_GUIDANCE)
     _sect_hub_label(_sect_hub_production_line("MỎ LINH KHOÁNG",BuildingSystem.TYPE_MINE,&"thanh_thiet"))
     _sect_hub_route("MỎ · Chọn người / Khai khoáng",SectMapPresentation.DEST_MINE)
@@ -3401,14 +4286,302 @@ func _equipment_policy_label(policy: StringName) -> String:
         EquipmentSystem.POLICY_FRUGAL: return "Tiết kiệm"
         _: return "Cân bằng"
 
+# G1 map production: each cue is anchored by the real building instance ID,
+# not the type's first building. Every snapshot is read-only and bounded.
+func _map_worksite_is_supported(building: BuildingState) -> bool:
+    return building != null and building.building_type in [
+        BuildingSystem.TYPE_MINE,BuildingSystem.TYPE_LINH_FOREST,BuildingSystem.TYPE_SPIRIT_FIELD
+    ]
+
+func _map_worksite_metrics(building: BuildingState) -> Dictionary:
+    return {
+        "batches":maxi(0,int(building.metrics.get("production_batches",0))),
+        "units":maxi(0,int(building.metrics.get("units_produced",0)))
+    }
+
+func _seed_map_worksite_receipts() -> void:
+    map_worksite_receipt_baseline.clear()
+    if state == null:
+        return
+    for raw_building in state.buildings.values():
+        if raw_building is BuildingState and _map_worksite_is_supported(raw_building):
+            var building: BuildingState = raw_building
+            map_worksite_receipt_baseline[str(building.id)] = _map_worksite_metrics(building)
+
+func _map_worksite_snapshot(building: BuildingState) -> Dictionary:
+    if not _map_worksite_is_supported(building) or state == null:
+        return {}
+    var type_title := _sect_production_type_name(building.building_type)
+    var result := {
+        "heading":type_title,"worker":"Chưa phân công","detail":"Chưa có người",
+        "received":maxi(0,int(building.metrics.get("units_produced",0))),
+        "progress":0.0,"active":false,"waiting":false
+    }
+    var assigned := BuildingSystem.new().assigned_worker_ids(state,building)
+    if not assigned.is_empty():
+        var assigned_id := StringName(assigned[0])
+        result["worker"] = (
+            state.disciples[assigned_id].display_name
+            if state.disciples.has(assigned_id) else str(assigned_id)
+        )
+    if building.building_type in [BuildingSystem.TYPE_MINE,BuildingSystem.TYPE_LINH_FOREST]:
+        # resource_timer_jobs does not normalize / migrate state on read.
+        var raw_jobs = building.production_state.get("economy_a_jobs",[])
+        if raw_jobs is Array:
+            for job in raw_jobs:
+                if not (job is Dictionary):
+                    continue
+                var start_tick := int(job.get("started_tick",state.tick))
+                var finish_tick := int(job.get("finish_tick",state.tick))
+                var total := maxi(1,finish_tick-start_tick)
+                var elapsed := clampi(state.tick-start_tick,0,total)
+                var output_id := StringName(job.get("resource_id",""))
+                var active_worker_id := StringName(job.get("worker_id",""))
+                if active_worker_id != &"":
+                    result["worker"] = (
+                        state.disciples[active_worker_id].display_name
+                        if state.disciples.has(active_worker_id) else str(active_worker_id)
+                    )
+                result["heading"] = "%s · %s" % [type_title,ResourceRegistry.new().display_name(output_id)]
+                result["detail"] = "Mẻ ×%d · %s" % [
+                    maxi(0,int(job.get("output_quantity",0))),
+                    "Chờ nhập kho" if finish_tick <= state.tick else "còn %dp" % (finish_tick-state.tick)
+                ]
+                # Compact map text keeps BOTH quantity and ETA inside 186px;
+                # the authoritative full-detail string remains unchanged.
+                result["display_detail"] = "×%s · %s" % [
+                    SectProductionWorksiteCue._map_quantity(maxi(0,int(job.get("output_quantity",0)))),
+                    "chờ kho" if finish_tick <= state.tick else "%dp" % (finish_tick-state.tick)
+                ]
+                result["progress"] = 100.0*float(elapsed)/float(total)
+                result["active"] = true # Includes newly started 0% jobs.
+                result["waiting"] = finish_tick <= state.tick
+                return result
+        if assigned.is_empty():
+            result["detail"] = "Chưa phân công"
+        else:
+            var total_received := maxi(0,int(building.metrics.get("units_produced",0)))
+            # The next line already reports cumulative Warehouse credit.
+            # Do not duplicate the same number in the batch-status line.
+            result["detail"] = "Chờ mẻ tiếp" if total_received > 0 else "Chưa có mẻ"
+        return result
+    var plot_data = building.production_state.get("plots",[])
+    if not (plot_data is Array):
+        result["detail"] = "Chờ đồng bộ ô đất"
+        return result
+    if not building.production_state.has("plots"):
+        result["detail"] = "Chưa đồng bộ ô đất"
+        return result
+    var growing := 0
+    var nearest: Dictionary = {}
+    for raw_plot in plot_data:
+        if not (raw_plot is Dictionary):
+            continue
+        var plot: Dictionary = raw_plot
+        if StringName(plot.get("status","")) != BuildingSystem.PLOT_GROWING:
+            continue
+        growing += 1
+        if nearest.is_empty() or int(plot.get("finish_tick",0)) < int(nearest.get("finish_tick",0)):
+            nearest = plot
+    result["heading"] = "Linh Điền · %d/%d ô" % [growing,plot_data.size()]
+    if nearest.is_empty():
+        result["detail"] = "Chưa trồng" if not assigned.is_empty() else "Chưa phân công"
+        return result
+    var plot_worker_id := StringName(nearest.get("assigned_worker_id",""))
+    if plot_worker_id != &"":
+        result["worker"] = (
+            state.disciples[plot_worker_id].display_name
+            if state.disciples.has(plot_worker_id) else str(plot_worker_id)
+        )
+    var start_tick := int(nearest.get("started_tick",state.tick))
+    var finish_tick := int(nearest.get("finish_tick",state.tick))
+    var total := maxi(1,finish_tick-start_tick)
+    var elapsed := clampi(state.tick-start_tick,0,total)
+    # routine_yield is the baseline, not a claim about future rare harvest.
+    result["detail"] = "Thường ×%d · %s" % [
+        maxi(0,int(nearest.get("routine_yield",0))),
+        "Chờ nhập kho" if finish_tick <= state.tick else "còn %dp" % (finish_tick-state.tick)
+    ]
+    result["display_detail"] = "%s ×%s · %s" % [
+        spirit_crop_registry.display_name(StringName(nearest.get("crop_id",""))),
+        SectProductionWorksiteCue._map_quantity(maxi(0,int(nearest.get("routine_yield",0)))),
+        "chờ kho" if finish_tick <= state.tick else "%dp" % (finish_tick-state.tick)
+    ]
+    result["progress"] = 100.0*float(elapsed)/float(total)
+    result["active"] = true
+    result["waiting"] = finish_tick <= state.tick
+    return result
+
+func _map_worksite_deliveries() -> Dictionary:
+    var deliveries := {}
+    if state == null:
+        return deliveries
+    for raw_building in state.buildings.values():
+        if not (raw_building is BuildingState):
+            continue
+        var building: BuildingState = raw_building
+        if not _map_worksite_is_supported(building):
+            continue
+        var key := str(building.id)
+        var current := _map_worksite_metrics(building)
+        if map_worksite_receipt_baseline.has(key):
+            var previous: Dictionary = map_worksite_receipt_baseline[key]
+            # BuildingSystem increments BOTH only after Warehouse credit.
+            # On save/reload we seed baseline, so no old receipts replay.
+            if (
+                int(current["batches"]) > int(previous.get("batches",0))
+                and int(current["units"]) > int(previous.get("units",0))
+            ):
+                deliveries[key] = int(current["units"])-int(previous.get("units",0))
+        map_worksite_receipt_baseline[key] = current
+    return deliveries
+
+# Cards use constant SCREEN pixels even when the isometric world zooms.
+# Try above the building first, otherwise below; horizontally clamp at the
+# camera edge. Skip overlapping low-priority cards rather than covering work.
+func _map_worksite_layout_for_anchor(anchor: Vector2, occupied: Array) -> Dictionary:
+    var zoom := maxf(map_layer.scale.x,0.1)
+    var screen := SectMapCamera.world_to_screen(anchor,map_layer.position,zoom)
+    var card := SectProductionWorksiteCue.CARD_SIZE
+    var bounds := SectMapCamera.VIEW_RECT.grow(-6.0)
+    var left := clampf(screen.x-card.x*0.5,bounds.position.x,bounds.end.x-card.x)
+    for top in [screen.y-card.y-43.0,screen.y+22.0]:
+        var box := Rect2(Vector2(left,top),card)
+        if not bounds.encloses(box):
+            continue
+        var collides := false
+        for used in occupied:
+            if used is Rect2 and box.grow(5.0).intersects(used):
+                collides = true
+                break
+        if not collides:
+            return {"offset":box.position-screen,"rect":box}
+    return {}
+
+# Keep read-only world badges out from behind operational panels. A selected
+# production panel always carries the same exact-ID timeline if a badge is hidden.
+func _map_worksite_panel_exclusions() -> Array:
+    var blocked: Array = []
+    for panel in [building_operation_panel,disciple_summary_panel,sect_hub_panel,workforce_picker_panel]:
+        if panel is Control and is_instance_valid(panel) and panel.visible:
+            blocked.append(Rect2(panel.global_position,panel.size).grow(4.0))
+    return blocked
+
+# Reposition at most ten cached lightweight widgets during camera tweens.
+# Avoid any building scans, production reads or UI node allocation per frame.
+func _reflow_map_worksite_cues() -> void:
+    if map_layer == null:
+        return
+    var zoom := maxf(map_layer.scale.x,0.1)
+    if is_equal_approx(zoom,map_worksite_last_scale):
+        return
+    map_worksite_last_scale = zoom
+    for key in map_worksite_cues.keys():
+        var cue := map_worksite_cues[key] as SectProductionWorksiteCue
+        if cue == null or not is_instance_valid(cue):
+            continue
+        cue.scale = Vector2.ONE / zoom
+        cue.position = Vector2(map_worksite_anchors.get(key,Vector2.ZERO)) + (
+            Vector2(map_worksite_screen_offsets.get(key,Vector2.ZERO)) / zoom
+        )
+
+func _refresh_map_worksite_cues() -> void:
+    if state == null or map_layer == null or iso_world == null:
+        return
+    var deliveries := _map_worksite_deliveries()
+    var candidates: Array[Dictionary] = []
+    var ids: Array = state.buildings.keys()
+    ids.sort()
+    for raw_id in ids:
+        var building: BuildingState = state.buildings[raw_id]
+        if not _map_worksite_is_supported(building):
+            continue
+        var anchor := SectIsometricWorldV1.virtual_legacy_point(building.building_type,building.id)
+        var screen := SectMapCamera.world_to_screen(anchor,map_layer.position,map_layer.scale.x)
+        # Labels stay in the legacy world overlay and transform with the map.
+        # Keep only visible, important producers to avoid 100 UI cards.
+        if not SectMapCamera.VIEW_RECT.grow(95.0).has_point(screen):
+            continue
+        var snapshot := _map_worksite_snapshot(building)
+        var attention := 0
+        if building.id == selected_production_instance_id:
+            attention = 4
+        elif deliveries.has(str(building.id)):
+            attention = 3
+        elif bool(snapshot.get("active",false)):
+            # A 0% freshly started mẻ is just as real as a 99% mẻ.
+            attention = 2
+        else:
+            var prior_cue := map_worksite_cues.get(str(building.id)) as SectProductionWorksiteCue
+            if prior_cue != null and is_instance_valid(prior_cue) and prior_cue.receipt != null and prior_cue.receipt.visible:
+                # Do not hide an authentic delivery popup when the batch ends.
+                attention = 3
+        candidates.append({"building":building,"anchor":anchor,"snapshot":snapshot,"priority":attention})
+    candidates.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
+        if int(a["priority"]) != int(b["priority"]):
+            return int(a["priority"]) > int(b["priority"])
+        var one: BuildingState = a["building"]
+        var two: BuildingState = b["building"]
+        return str(one.id) < str(two.id)
+    )
+    var retained := {}
+    var occupied: Array = _map_worksite_panel_exclusions()
+    var idle_shown := 0
+    for entry in candidates:
+        if retained.size() >= MAP_WORKSITE_MAX_CUES:
+            break
+        # Most idle sites are discoverable from the existing production board.
+        # Two small idle previews are enough; the map belongs to active work.
+        if int(entry["priority"]) == 0 and idle_shown >= 2:
+            continue
+        var building: BuildingState = entry["building"]
+        var key := str(building.id)
+        var anchor := Vector2(entry["anchor"])
+        var layout := _map_worksite_layout_for_anchor(anchor,occupied)
+        if layout.is_empty():
+            continue
+        if int(entry["priority"]) == 0:
+            idle_shown += 1
+        occupied.append(layout["rect"])
+        map_worksite_anchors[key] = anchor
+        map_worksite_screen_offsets[key] = layout["offset"]
+        var cue := map_worksite_cues.get(key) as SectProductionWorksiteCue
+        if cue == null or not is_instance_valid(cue):
+            cue = SectProductionWorksiteCue.new()
+            cue.name = "MapWorksite_%s" % key
+            map_layer.add_child(cue)
+            cue.z_index = 9
+            map_worksite_cues[key] = cue
+        var actual_zoom := maxf(map_layer.scale.x,0.1)
+        cue.scale = Vector2.ONE / actual_zoom
+        cue.position = anchor + Vector2(layout["offset"]) / actual_zoom
+        cue.display(entry["snapshot"])
+        if deliveries.has(key):
+            cue.show_delivered(int(deliveries[key]))
+        retained[key] = true
+    for key in map_worksite_cues.keys():
+        if retained.has(key):
+            continue
+        var old_cue := map_worksite_cues[key] as SectProductionWorksiteCue
+        if old_cue != null and is_instance_valid(old_cue):
+            old_cue.queue_free()
+        map_worksite_cues.erase(key)
+        map_worksite_anchors.erase(key)
+        map_worksite_screen_offsets.erase(key)
+    map_worksite_last_scale = maxf(map_layer.scale.x,0.1)
+
 func _refresh_all() -> void:
     super._refresh_all()
+    _refresh_map_worksite_cues()
     if _building_operation_is_open() and workforce_picker_panel == null:
         _refresh_building_operation_content()
     if sect_hub_panel != null and is_instance_valid(sect_hub_panel) and sect_hub_panel.visible:
         # Planning geometry is immutable and has no runtime job output to poll.
-        # Do not rebuild its scroll view each tick while the player reads it.
-        if not sect_layout_preview_open:
+        # A production board is dynamic: real scheduler ticks change ETA and
+        # work status; refresh only the current bounded/paged board.
+        if sect_production_board_open:
+            _refresh_sect_production_board()
+        elif not sect_layout_preview_open:
             _refresh_sect_hub()
 
 func _process(_delta: float) -> void:
@@ -3420,6 +4593,7 @@ func _process(_delta: float) -> void:
             iso_building_count = state.building_event_count
             iso_world.refresh_from_state(state)
             iso_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+    _reflow_map_worksite_cues()
     _refresh_living_cue_positions()
 
 func _build_living_cue_layer() -> void:
@@ -3533,6 +4707,19 @@ func _build_disciple_summary_panel() -> void:
     _add_summary_order_button("Nghỉ", Vector2(110, 398), Vector2(82, 38), WorkforceSystem.COMMAND_REST)
     _add_summary_order_button("Về tông", Vector2(198, 398), Vector2(94, 38), WorkforceSystem.COMMAND_RETURN_SECT)
     _add_summary_order_button("Khai khoáng", Vector2(16, 442), Vector2(132, 38), WorkforceSystem.COMMAND_WORK, str(WorkforceSystem.PROF_MINING))
+    # Authentic V2 selects an actual Mine/Forest/Field instance instead of
+    # issuing a generic historical Mine command without a worksite.
+    var quick_assign := Button.new()
+    quick_assign.name = "SummaryQuickAssignment"
+    quick_assign.text = "Phân công"
+    quick_assign.position = Vector2(16,442)
+    quick_assign.size = Vector2(132,38)
+    quick_assign.add_theme_font_size_override("font_size",13)
+    quick_assign.add_theme_stylebox_override("normal",_style(JADE_DARK,INK,1,8))
+    quick_assign.add_theme_color_override("font_color",PAPER_LIGHT)
+    quick_assign.visible = false
+    quick_assign.pressed.connect(_open_selected_disciple_quick_assignment)
+    disciple_summary_panel.add_child(quick_assign)
     _add_summary_order_button("Luyện khí", Vector2(160, 442), Vector2(132, 38), WorkforceSystem.COMMAND_WORK, str(WorkforceSystem.PROF_FORGING))
     # V2 only: a real paid Body-training command replaces the legacy forge
     # shortcut at the same location. It does not act as a free EXP button.
@@ -3574,6 +4761,8 @@ func _add_summary_order_button(text: String, pos: Vector2, button_size: Vector2,
     button.text = text
     if kind == WorkforceSystem.COMMAND_WORK and target == str(WorkforceSystem.PROF_FORGING):
         button.name = "SummaryLegacyForge"
+    if kind == WorkforceSystem.COMMAND_WORK and target == str(WorkforceSystem.PROF_MINING):
+        button.name = "SummaryLegacyMining"
     button.position = pos
     button.size = button_size
     button.add_theme_font_size_override("font_size", 12)
@@ -3642,9 +4831,15 @@ func _refresh_disciple_summary_content() -> void:
 
     var authentic_v2 := bool(snapshot.get("authentic_v2", false))
     var legacy_forge: Button = disciple_summary_panel.get_node_or_null("SummaryLegacyForge")
+    var legacy_mine: Button = disciple_summary_panel.get_node_or_null("SummaryLegacyMining")
+    var v2_quick: Button = disciple_summary_panel.get_node_or_null("SummaryQuickAssignment")
     var v2_body: Button = disciple_summary_panel.get_node_or_null("SummaryV2BodyTraining")
     if legacy_forge != null:
         legacy_forge.visible = not authentic_v2
+    if legacy_mine != null:
+        legacy_mine.visible = not authentic_v2
+    if v2_quick != null:
+        v2_quick.visible = authentic_v2
     if v2_body != null:
         v2_body.visible = authentic_v2
     var identity: Dictionary = snapshot["identity"]
@@ -3965,6 +5160,219 @@ func _open_selected_disciple_detail() -> void:
     deep_restore_summary = true
     _open_disciple_deep_screen(selected_id, "Thuộc tính")
 
+# G1.5: fast disciple-to-building assignment. UI-only, no separate
+# workforce model: every eventual transfer goes through the existing picker
+# and its single-job/canonical-worksite/active-timer guards.
+func _open_selected_disciple_quick_assignment() -> void:
+    if selected_id != &"":
+        _open_disciple_quick_assignment(selected_id)
+
+func _open_disciple_quick_assignment(disciple_id: StringName, preserve_summary_origin: bool = false, feedback_message: String = "") -> void:
+    if not state.disciples.has(disciple_id):
+        return
+    var disciple: DiscipleState = state.disciples[disciple_id]
+    var returning_to_summary := _disciple_summary_is_open() or preserve_summary_origin
+    selected_id = disciple_id
+    _hide_disciple_summary()
+    _clear_popup()
+    _add_dim()
+
+    var panel := Panel.new()
+    panel.name = "DiscipleQuickAssignment"
+    panel.position = Vector2(310,87)
+    panel.size = Vector2(660,546)
+    panel.add_theme_stylebox_override("panel",_style(PAPER_LIGHT,INK,3,16))
+    popup_layer.add_child(panel)
+
+    var heading := _label(panel,"PHÂN CÔNG · %s" % disciple.display_name,Vector2(22,12),Vector2(475,37),22)
+    heading.add_theme_color_override("font_color",JADE_DARK)
+    var message := "Chọn công trình đang có. Chỉ người rảnh mới được giao việc." if feedback_message == "" else feedback_message
+    var description := _label(panel,message,Vector2(22,51),Vector2(604,29),13)
+    description.add_theme_color_override("font_color",INK)
+    var back := Button.new()
+    back.name = "DiscipleQuickAssignmentBack"
+    back.text = "← Hồ sơ"
+    back.position = Vector2(514,12)
+    back.size = Vector2(125,43)
+    back.add_theme_color_override("font_color",INK)
+    back.add_theme_stylebox_override("normal",_style(Color(0.88,0.82,0.67),INK,1,8))
+    back.pressed.connect(Callable(self,"_return_from_disciple_quick_assignment").bind(disciple_id,returning_to_summary))
+    panel.add_child(back)
+
+    var scroll := ScrollContainer.new()
+    scroll.name = "DiscipleQuickAssignmentScroll"
+    scroll.position = Vector2(22,92)
+    scroll.size = Vector2(614,427)
+    if _can_cancel_queued_assignment_command(disciple):
+        # Explicit player action. Never clear a live timer, Body-training
+        # reservation, field plot, PvE encounter or work cycle here.
+        var cancel_pending := Button.new()
+        cancel_pending.name = "QuickAssignmentCancelPendingCommand"
+        cancel_pending.text = "Hủy lệnh chờ"
+        cancel_pending.position = Vector2(22,88)
+        cancel_pending.size = Vector2(177,42)
+        cancel_pending.add_theme_font_size_override("font_size",14)
+        cancel_pending.add_theme_stylebox_override("normal",_style(CINNABAR,PAPER_LIGHT,1,8))
+        cancel_pending.tooltip_text = "Chỉ hủy lệnh chưa chạy; không xóa sản phẩm, công việc đang chạy hoặc công trình."
+        cancel_pending.pressed.connect(
+            Callable(self,"_cancel_quick_assignment_pending_command").bind(disciple_id,returning_to_summary)
+        )
+        panel.add_child(cancel_pending)
+        var pending_tip := _label(
+            panel,"Đệ tử đang có lệnh chờ. Hủy để chọn công việc mới.",
+            Vector2(209,93),Vector2(415,34),12
+        )
+        pending_tip.add_theme_color_override("font_color",INK)
+        scroll.position = Vector2(22,140)
+        scroll.size = Vector2(614,379)
+    panel.add_child(scroll)
+    var rows := VBoxContainer.new()
+    rows.name = "DiscipleQuickAssignmentRows"
+    rows.custom_minimum_size = Vector2(587,0)
+    rows.add_theme_constant_override("separation",8)
+    scroll.add_child(rows)
+
+    var count := 0
+    var definitions := [
+        {"type":BuildingSystem.TYPE_MINE,"name":"MỎ KHOÁNG"},
+        {"type":BuildingSystem.TYPE_LINH_FOREST,"name":"LINH LÂM"},
+        {"type":BuildingSystem.TYPE_SPIRIT_FIELD,"name":"LINH ĐIỀN"}
+    ]
+    for item in definitions:
+        var building_type := StringName(item["type"])
+        var instances := ResourceBuildingExpansionPolicyV2.existing_instances(state,building_type)
+        var group_name := Label.new()
+        group_name.text = "%s · %d công trình" % [str(item["name"]),instances.size()]
+        group_name.add_theme_font_size_override("font_size",16)
+        group_name.add_theme_color_override("font_color",CINNABAR)
+        rows.add_child(group_name)
+        for building in instances:
+            count += 1
+            var occupants := _workforce_occupants(building)
+            var reason := _workforce_candidate_reason(disciple,building,occupants)
+            var already_owner := reason == "Đang phụ trách"
+            var can_assign := reason == "" or already_owner
+            var entry := HBoxContainer.new()
+            entry.name = "QuickAssignRow_%s" % str(building.id)
+            entry.custom_minimum_size = Vector2(582,56)
+            entry.add_theme_constant_override("separation",8)
+            rows.add_child(entry)
+            var info := Label.new()
+            info.name = "QuickAssignStatus_%s" % str(building.id)
+            var busy_worker := ""
+            if occupants.size() == 1 and state.disciples.has(occupants[0]):
+                busy_worker = state.disciples[occupants[0]].display_name
+            var occupation := "Chưa có người" if occupants.is_empty() else (
+                busy_worker if busy_worker != "" else "%d người" % occupants.size()
+            )
+            info.text = "%s · Lv%d · %s\n%s" % [
+                str(building.id),building.level,occupation,
+                ("Đang phụ trách" if already_owner else "Có thể nhận việc" if reason == "" else reason)
+            ]
+            info.custom_minimum_size = Vector2(448,52)
+            info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+            info.add_theme_font_size_override("font_size",12)
+            info.add_theme_color_override("font_color",INK)
+            entry.add_child(info)
+            var choose := Button.new()
+            choose.name = "QuickAssignTarget_%s" % str(building.id)
+            choose.text = "Xem" if already_owner else "Giao việc"
+            choose.custom_minimum_size = Vector2(125,46)
+            choose.disabled = not can_assign
+            choose.tooltip_text = "Mở công trình đang phụ trách" if already_owner else (
+                "Phân công qua Workforce V2" if reason == "" else reason
+            )
+            choose.add_theme_font_size_override("font_size",13)
+            choose.add_theme_stylebox_override("normal",_style(JADE_DARK,INK,1,8))
+            choose.add_theme_color_override("font_color",PAPER_LIGHT)
+            choose.pressed.connect(Callable(self,"_disciple_quick_assign_target").bind(disciple_id,building.id))
+            entry.add_child(choose)
+    if count == 0:
+        var empty := Label.new()
+        empty.text = "Chưa có Mỏ / Linh Lâm / Linh Điền. Không thể phân công."
+        empty.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+        rows.add_child(empty)
+    # Three buildings should not leave half the 1280x720 game covered by
+    # an empty dialog; many buildings still scroll inside the max height.
+    var compact_height := clampf(180.0 + float(count)*83.0,420.0,546.0)
+    panel.size.y = compact_height
+    scroll.size.y = compact_height-scroll.position.y-18.0
+    _ensure_disabled_controls_readable(panel)
+
+func _can_cancel_queued_assignment_command(disciple: DiscipleState) -> bool:
+    if disciple == null or disciple.direct_command.is_empty():
+        return false
+    if disciple.region_id != &"sect" or not disciple.active_pve_encounter_id.is_empty():
+        return false
+    if not disciple.work_cycle_state.is_empty():
+        return false
+    if not [&"EVALUATE",&"IDLE",&"HOLD"].has(disciple.current_action):
+        return false
+    var buildings := BuildingSystem.new()
+    if buildings.disciple_has_active_timed_recipe(state,disciple.id):
+        return false
+    if buildings.disciple_has_active_spirit_plot(state,disciple.id):
+        return false
+    if DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple):
+        return false
+    return true
+
+func _cancel_quick_assignment_pending_command(disciple_id: StringName, to_summary: bool) -> void:
+    if not state.disciples.has(disciple_id):
+        return
+    var disciple: DiscipleState = state.disciples[disciple_id]
+    if not _can_cancel_queued_assignment_command(disciple):
+        return
+    # The authoritative Workforce method increments the canonical event
+    # counter. Do not write direct_command/current_action from presentation.
+    workforce.clear_command(state,disciple)
+    if not disciple.direct_command.is_empty():
+        return
+    _open_disciple_quick_assignment(
+        disciple_id,to_summary,"Đã hủy lệnh chờ. Chọn công trình phù hợp để nhận việc."
+    )
+
+func _return_from_disciple_quick_assignment(disciple_id: StringName, to_summary: bool) -> void:
+    if not state.disciples.has(disciple_id):
+        _clear_popup()
+        return
+    _clear_popup()
+    selected_id = disciple_id
+    if to_summary:
+        _show_disciple_summary()
+    else:
+        _open_disciple_deep_screen(disciple_id,"Thuộc tính")
+
+func _disciple_quick_assign_target(disciple_id: StringName, building_id: StringName) -> void:
+    if not state.disciples.has(disciple_id) or not state.buildings.has(str(building_id)):
+        return
+    var building: BuildingState = state.buildings[str(building_id)]
+    var destination := &""
+    match building.building_type:
+        BuildingSystem.TYPE_MINE:
+            destination = SectMapPresentation.DEST_MINE
+        BuildingSystem.TYPE_LINH_FOREST:
+            destination = SectMapPresentation.DEST_LINH_FOREST
+        BuildingSystem.TYPE_SPIRIT_FIELD:
+            destination = SectMapPresentation.DEST_SPIRIT_FIELD
+    if destination == &"":
+        return
+    var reason := _workforce_candidate_reason(
+        state.disciples[disciple_id],building,_workforce_occupants(building)
+    )
+    if reason != "" and reason != "Đang phụ trách":
+        return
+    _open_building(destination)
+    selected_production_instance_id = building_id
+    _refresh_building_operation_content()
+    if reason == "Đang phụ trách":
+        return
+    # This is exactly the same vetted action as a tap on the existing
+    # Worksite picker button, including scheduler/One Active Job guards.
+    _open_workforce_picker(building_id)
+    _workforce_pick_candidate(disciple_id)
+
+
 func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thuộc tính", preserve_feedback: bool = false) -> void:
     if not state.disciples.has(disciple_id):
         return
@@ -3986,6 +5394,19 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
 
     var title := _label(panel, "Hồ sơ đệ tử", Vector2(20, 12), Vector2(220, 34), 23)
     title.add_theme_color_override("font_color", CINNABAR.darkened(0.18))
+
+    # Direct player shortcut: pick an EXISTING worksite and use the canonical
+    # Workforce V2 command (no new slot/job/warehouse authority).
+    var quick_assign := Button.new()
+    quick_assign.name = "DeepQuickAssignment"
+    quick_assign.text = "Phân công"
+    quick_assign.position = Vector2(751,12)
+    quick_assign.size = Vector2(174,44)
+    quick_assign.add_theme_font_size_override("font_size",14)
+    quick_assign.add_theme_color_override("font_color",PAPER_LIGHT)
+    quick_assign.add_theme_stylebox_override("normal",_style(JADE_DARK,INK,1,8))
+    quick_assign.pressed.connect(Callable(self,"_open_disciple_quick_assignment").bind(disciple_id))
+    panel.add_child(quick_assign)
 
     var back := Button.new()
     back.name = "BackToMapContext"
@@ -4077,12 +5498,18 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
     panel.add_child(showcase)
 
     var selected_actor := actor_nodes.get(str(disciple.id)) as ModularDiscipleActor
-    if selected_actor != null and selected_actor.baked_visual_active() and source_a_pilot_scene != null:
-        # The verified source clip is displayed at its native pixel size,
-        # independently from the small scaled map instance.
-        var artwork := source_a_pilot_scene.instantiate() as AnimatedSprite2D
+    var selected_source_scene := DiscipleSourceAVisualPool.scene_for_disciple(disciple)
+    if selected_source_scene != null and (selected_actor == null or not selected_actor.production_body_active()):
+        # Keep the authored foot anchor while fitting each real crop in the
+        # same profile art area; all three portrait surfaces use this scene.
+        var artwork := selected_source_scene.instantiate() as AnimatedSprite2D
         artwork.name = "DiscipleSourceAArtwork"
-        artwork.position = Vector2(150,170)
+        var stand_frame := artwork.sprite_frames.get_frame_texture(&"stand",0)
+        var art_size := stand_frame.get_size() if stand_frame != null else Vector2(192,192)
+        var art_scale := minf(230.0/maxf(art_size.x,1.0),175.0/maxf(art_size.y,1.0))
+        artwork.scale = Vector2.ONE * art_scale
+        artwork.position = Vector2(150,185)
+        artwork.z_index = 1
         showcase.add_child(artwork)
         artwork.play(&"stand")
     else:
@@ -4112,6 +5539,10 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
     var tab_title := _label(content_panel, tab_name, Vector2(18, 12), Vector2(360, 30), 20)
     tab_title.add_theme_color_override("font_color", CINNABAR.darkened(0.18))
 
+    # The six-dimensional radar and all tab text consume the same real
+    # canonical snapshot. No independent stat generation or persisted UI state.
+    var profile_snapshot := _disciple_snapshot(disciple)
+
     # Make attribute/Body requirements readable without overlapping action row.
     var details_scroll := ScrollContainer.new()
     details_scroll.name = "DiscipleTabContentScroll"
@@ -4127,7 +5558,21 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
     content.add_theme_color_override("font_color", INK)
     details_scroll.add_child(content)
 
-    var profile_snapshot := _disciple_snapshot(disciple)
+    # Read-only G1 six-foundation radar. Reuse full existing text/scroll/actions
+    # without changing progression, workforce, equipment or hidden identities.
+    if tab_name == "Thuộc tính" and bool(profile_snapshot.get("ok",false)):
+        var radar := DiscipleSixDimensionRadar.new()
+        radar.name = "DiscipleSixDimensionRadar"
+        radar.position = Vector2(18,52)
+        radar.size = Vector2(274,286)
+        radar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        if radar.apply_snapshot(profile_snapshot):
+            content_panel.add_child(radar)
+            details_scroll.position = Vector2(302,52)
+            details_scroll.size = Vector2(306,286)
+            content.custom_minimum_size = Vector2(282,0)
+            content.add_theme_font_size_override("font_size",13)
+
     var authentic_v2 := bool(profile_snapshot.get("authentic_v2", false))
     if not authentic_v2:
         if tab_name == "Huyết Mạch":
@@ -4411,7 +5856,7 @@ func _disciple_tab_text(tab_name: String, disciple: DiscipleState) -> String:
 func _attributes_tab_text(disciple: DiscipleState) -> String:
     var snapshot := _disciple_snapshot(disciple)
     if bool(snapshot.get("ok", false)) and bool(snapshot.get("authentic_v2", false)):
-        return _v2_attributes_tab_text(snapshot) + "\n\n" + _v2_profession_summary_text(snapshot) + "\n\n" + _body_gate_preview_text(disciple.id)
+        return _v2_attributes_tab_text(snapshot) + "\n\n" + _v2_foundation_meaning_text() + "\n\n" + _v2_profession_summary_text(snapshot) + "\n\n" + _body_gate_preview_text(disciple.id)
 
     var required := cultivation.required_progress(disciple)
     var progress_text := "Đã viên mãn" if required <= 0.0 else "%.0f / %.0f" % [disciple.cultivation_progress, required]
@@ -4436,6 +5881,20 @@ func _attributes_tab_text(disciple: DiscipleState) -> String:
         tab_status_text
     ]
 
+
+
+# Source effects are established in FoundationSystem and the V2 stat contract.
+# Fortune/Charisma remain conditional checks; this text does not activate them.
+func _v2_foundation_meaning_text() -> String:
+    return (
+        "ẢNH HƯỞNG LỤC DUY (điểm hiện tại)\n"
+        + "Tư Chất: +0,25% / điểm vào Tu Vi tự nhiên\n"
+        + "Căn Cốt: +0,20% / điểm vào EXP Luyện Thể\n"
+        + "Thông Tuệ: +0,15% / điểm vào học / EXP nghề hợp lệ\n"
+        + "Tiềm Lực: +0,05% / điểm vào lõi HP, Công, Thủ\n"
+        + "Cơ Duyên: kiểm tra vận may khi có sự kiện hợp lệ\n"
+        + "Mị Lực: kiểm tra tương tác xã hội khi có sự kiện hợp lệ"
+    )
 
 func _v2_attributes_tab_text(snapshot: Dictionary) -> String:
     var progression: Dictionary = snapshot["progression"]
