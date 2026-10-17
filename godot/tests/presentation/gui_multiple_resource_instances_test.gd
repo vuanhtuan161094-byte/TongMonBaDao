@@ -140,9 +140,27 @@ func _run() -> void:
         secondary_timer = buildings.active_resource_timer_for_worker(state,worker_id)
         if not secondary_timer.is_empty():
             break
-    if secondary_timer.is_empty() or str(secondary_timer.get("building_id","")) != str(second.id):
+    # Canonical timer snapshots are owned by BuildingState.production_state.
+    # Their persisted Dictionary intentionally has no "building_id" field;
+    # that key only exists on the immediate _start_resource_timer() result.
+    # Prove the exact saved job is on the SECOND Mine, never on the first.
+    var timed_job_id: String = str(secondary_timer.get("job_id",""))
+    var second_owns_job := false
+    for raw_job in buildings.resource_timer_jobs(second):
+        if (
+            raw_job is Dictionary
+            and str(raw_job.get("job_id","")) == timed_job_id
+            and str(raw_job.get("worker_id","")) == str(worker_id)
+        ):
+            second_owns_job = true
+    var primary_owns_same_job := false
+    for raw_job in buildings.resource_timer_jobs(first):
+        if raw_job is Dictionary and str(raw_job.get("job_id","")) == timed_job_id:
+            primary_owns_same_job = true
+    if secondary_timer.is_empty() or timed_job_id.is_empty() or not second_owns_job or primary_owns_same_job:
         var selected: DiscipleState = state.disciples[worker_id]
-        _fail("second Mine timer missing or wrong ID; v2=%s action=%s command=%s cycle=%s timer=%s" % [
+        _fail("second Mine canonical job owner mismatch; second=%s primary_duplicate=%s v2=%s action=%s command=%s cycle=%s timer=%s" % [
+            str(second_owns_job),str(primary_owns_same_job),
             str(DiscipleRealmProgressV2.owns_v2_progression(selected)),
             str(selected.current_action),str(selected.direct_command),
             str(selected.work_cycle_state),str(secondary_timer)
@@ -150,12 +168,22 @@ func _run() -> void:
         return
     # A second instance survives the canonical serializer, no shadow map.
     var saved := SimulationState.from_dict(state.to_dict())
+    var restored_second: BuildingState = saved.buildings.get(str(second.id)) as BuildingState
+    var restored_owns_job := false
+    for raw_job in buildings.resource_timer_jobs(restored_second):
+        if (
+            raw_job is Dictionary
+            and str(raw_job.get("job_id","")) == timed_job_id
+            and str(raw_job.get("worker_id","")) == str(worker_id)
+        ):
+            restored_owns_job = true
     if (
         not saved.buildings.has(str(second.id))
         or (saved.disciples[worker_id] as DiscipleState).worksite_building_id != second.id
         or buildings.active_resource_timer_for_worker(saved,worker_id).is_empty()
+        or not restored_owns_job
     ):
-        _fail("roundtrip lost secondary instance, one worker, or its real timer")
+        _fail("roundtrip lost secondary instance, worker, or its canonical persisted timer")
         return
     print("GUI MULTI-INSTANCE ID ROUTING TEST PASS (NO PLAYER CONSTRUCTION)")
     if ui != null:
