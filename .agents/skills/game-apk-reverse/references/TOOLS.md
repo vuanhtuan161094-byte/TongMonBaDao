@@ -1,35 +1,68 @@
-# Tools and source provenance — Game/APK reverse (17 Oct 2026)
+# Tools, compatibility and provenance — Game/APK reverse (17 Oct 2026)
 
-This list references external **upstream projects**; no third-party code, binaries, skills or scripts are imported by this project skill. Always review license, security advisories, exact release version and checksums before a local installation. **No upstream commit/version is pinned or installed by this document.** Never follow upstream `main` blindly, consistent with `skills/SOURCE_LOCK.md`.
+**Status:** upstream reference audit only. These URLs identify external projects; no code, binary, third-party skills or executables are installed, embedded or pinned by this PR. Before any installation/recovery, review each tool's **exact release/commit, license, provenance, checksums, security advisories and target-format compatibility**, then request permission. Do not silently track upstream `main`. This follows `skills/SOURCE_LOCK.md`.
 
-| Route | Upstream repository | Why/limits |
+## Codex skill loading — VERIFIED DOCUMENTATION, NOT LIVE-RUN
+
+- Official skill docs: https://learn.chatgpt.com/docs/build-skills
+- Repo skill path: `.agents/skills/game-apk-reverse/SKILL.md`; references live in `references/TOOLS.md` relative to `SKILL.md`. Required front matter keys: `name` and `description`; `agents/openai.yaml` and executable helpers are **optional**.
+- Codex searches `.agents/skills` from current directory up to repository root. Invoke using `/skills` then select `game-apk-reverse`, or type `$game-apk-reverse`; matching descriptions can also select implicitly. If a skill is not reflected after checkout, restart the session.
+- A **draft PR only** does not install a skill on the **main** checkout. Confirm branch/tree and active Codex workspace before attempting discovery. No Codex runtime activation test is claimed for this documentation audit.
+- Existing project `AGENTS.md` bans Codex/Work for **repository coding** without a separate explicit instruction; skill discovery or analysis is NOT implementation authorization.
+
+## Audited tool routing
+
+| Target or route | Verified upstream | Capabilities and constraints |
 | --- | --- | --- |
-| General agent skill reference | https://github.com/EncidXVII/claude-reverse-engineering-skill | Cross-format triage and playbooks; a reference, **not** installed/endorsed bundled scripts |
-| APK Java/Kotlin | https://github.com/skylot/jadx | DEX→readable Java-like code; incomplete recovery is normal |
-| APK resources/Smali | https://github.com/iBotPeaches/Apktool | Decode Android resource table/manifest, Smali; not original Kotlin/Java source |
-| Android Python inspection | https://github.com/androguard/androguard | APK/DEX inspection for scripted audits |
-| Godot builds | https://github.com/GDRETools/gdsdecomp | PCK and resource recovery/GDScript; validate target Godot version, not native extension source |
-| Unity serialized assets | https://github.com/AssetRipper/AssetRipper | Asset analysis/recovery; engine/build/version dependent; GPL-3.0 tool license does **not** confer rights in extracted artwork |
-| Unity IL2CPP | https://github.com/SamboyCoding/Cpp2IL | IL2CPP semantic analysis, not complete original source |
-| Other native code | https://github.com/NationalSecurityAgency/ghidra | ELF/PE/.so inspection; more costly and deeper than routine asset/UI tasks |
-| Optional runtime investigation | https://github.com/frida/frida | Authorized dynamic instrumentation in isolated environment only |
+| General agent skill *reference only* | https://github.com/EncidXVII/claude-reverse-engineering-skill | Upstream describes Codex CLI support. Do **not** install the external skill, trust its scripts, or claim its content is copied here. This project's `SKILL.md` is independently authored. |
+| Android DEX in APK / AAB | https://github.com/skylot/jadx | DEX→Java-like decompilation with CLI and GUI; often incomplete and never original Kotlin project; review release-specific AAB/XAPK handling. |
+| Standard Android APK resources / Smali | https://github.com/iBotPeaches/Apktool | APK resource/manifest decoding and Smali; **not** original Java/Kotlin. For AAB/XAPK, identify/extract contained APK modules first; do not treat package types as identical. |
+| Optional scripted APK / DEX inspection | https://github.com/androguard/androguard | Python API and tools for structured static inspection; optional, not a default requirement. |
+| Godot PCK, APK or embedded game | https://github.com/GDRETools/gdsdecomp | Reads supported Godot 2.x–4.x family builds; GDScript/resource recovery depends on exact build and support. Does not recover GDExtension, native, or Mono/C# source. No confirmed **Godot 4.7.2** target compatibility without testing that version. |
+| Unity serialized assets | https://github.com/AssetRipper/AssetRipper | Unity asset / dependency and export analysis. Upstream states 3.5.0–6000.4.X support with varying quality. Tool GPL-3.0 ≠ rights to original game assets. |
+| Unity Mono managed assemblies | https://github.com/icsharpcode/ILSpy | .NET/Mono assembly browser and decompiler for available C# DLLs, e.g. `Assembly-CSharp.dll`. Not useful for raw IL2CPP native game binary alone. |
+| Unity IL2CPP | https://github.com/SamboyCoding/Cpp2IL | Work-in-progress IL2CPP metadata/native processing to partially recover managed structures; upstream notes incomplete CIL output and changing CLI. Not original code. |
+| Native ELF/PE/.so examination | https://github.com/NationalSecurityAgency/ghidra | Lower-level disassembly/decompilation when separately authorized; not a routine Unity/Android asset extractor. |
+| Optional dynamic instrumentation | https://github.com/frida/frida | Advanced investigation in isolated environment and only with explicit rights/approval; not required for ordinary UI/UX work. |
 
-## Decision table
+Upstream source/compatibility pointers:
+- Codex format and discovery: https://learn.chatgpt.com/docs/build-skills
+- Godot support and limitations: https://github.com/GDRETools/gdsdecomp#readme
+- Unity AssetRipper limitations and asset range: https://github.com/AssetRipper/AssetRipper#readme
+- Unity Mono assembly issue guide: https://github.com/AssetRipper/AssetRipper/blob/master/docs/articles/CommonIssues.md
+- JADX README and command formats: https://github.com/skylot/jadx#readme
+- Apktool project: https://github.com/iBotPeaches/Apktool
+- Cpp2IL WIP and ILSpy recommendation: https://github.com/SamboyCoding/Cpp2IL#readme
 
-- **APK shell / app metadata**: 7-Zip list + JADX + Apktool; engine check immediately.
-- **Godot reference**: GDRETools after version gate; source reconstruction may be partial.
-- **Unity reference**: AssetRipper; Cpp2IL only for identified IL2CPP and authorized semantic study.
-- **UI/UX demonstration only**: video/screenshots and systematic manual experience; reverse tool often adds no value.
-- **Third-party game**: observable interaction can inspire an independently implemented UI. Extracted proprietary assets/code must **not** enter `godot/` or `source_art/` without proof of permission.
-- **Source A / ENV-02A**: existing manifest/hash provenance requirements remain fully effective.
+## Correct decision tree
 
-## External-agent skill caution
+1. **Only reference video/screenshots:** Analyze player UX/flows. No executable decompiler or engine classification is justified.
+2. **APK:** Inspect ZIP inventory and package structure, package name/metadata when permitted. `classes*.dex`/Android UI → JADX; resources/Smali → Apktool. Engine artifacts guide the next branch.
+3. **AAB:** Modules (`base/`, feature modules) and manifests differ from APK. **XAPK:** multiple APK splits/OBB may exist. First identify constituent files; do not blindly use Apktool as if the container were a single APK.
+4. **Godot:** Detect engine/version and whether a recoverable PCK exists; use supported GDRETools release and record failure modes. Godot **4.7.2** for *Tông Môn Bá Đạo* does not prove the reference game's engine version.
+5. **Unity:** Inspect Unity data formats with AssetRipper; if `Managed/*.dll` indicates Mono, use ILSpy. If `libil2cpp.so` or `GameAssembly.dll` plus matching metadata indicates IL2CPP, evaluate Cpp2IL; use Ghidra only if needed.
+6. **Unidentified native:** Passive file identification first; Ghidra only within explicitly authorized low-level scope.
+7. **Use in *Tông Môn Bá Đạo*:** Keep reference-game observations separate from canonical Godot simulation state. Recreate behavior independently; never import proprietary recovered bytes without rights.
 
-Do **not** run e.g. `npx skills add` or `curl ... | bash` automatically; external SKILL.md may contain executable hooks or instructions. Review dependencies/scripts, pin a specific upstream commit, and obtain explicit installation authorization. This project playbook is original text rather than a verbatim third-party skill distribution.
+## Windows command review (examples, not executed)
 
-## Acceptance for this documentation-only packet
+- Built-in PowerShell: `Get-FileHash -LiteralPath $inputFile -Algorithm SHA256`.
+- 7-Zip list: `7z l $inputFile` only if `Get-Command 7z` succeeds. Listing is not content validation.
+- JADX decompile: on supported Windows installation, `jadx.bat -d <new_output_folder> <input.apk>`; *do not assume every XAPK/AAB can be handled as APK*.
+- Apktool: depending on installed wrapper, `apktool.bat d <input.apk> -o <new_output_folder>` or a verified `java -jar apktool_*.jar d ...`. Only on a standard APK after safety and rights gates.
+- Commands are **examples**; tool versions and local executables were not verified or run. Decompilation writes generated files, so enforce isolated output and immutable input; do not run from within the Godot repo.
 
-1. `SKILL.md` has correct name/description front matter, trigger, routing, rights and sandbox gates.
-2. Every tool link points to an identifiable upstream; no false claims that tools were installed or run.
-3. Only these two new Markdown files are introduced. No production, QA, balance, CI or game assets changed.
-4. Follow-up work remains separately authorized; this doc is **not** evidence any target game has been decompiled or tested.
+## Governance and rights
+
+- Software tool licenses apply to the **tool**; extracted third-party graphics/code remain subject to their own rights and applicable law.
+- No automatic acquisition of reference-game APKs, bypass of DRM/online service authentication, proprietary-source redistribution, publishing decompiled data, or runtime instrumentation.
+- **Source A / ENV-02A** require existing manifests, file identity and SHA-256 evidence; **VLTK1** original art rights remain unverified.
+- Do not install external skills via `npx skills add`, `curl | bash`, script hooks or a clone-and-run shortcut. If approved later, inspect and pin the reviewed upstream commit.
+- Without an actual authorized binary, the document audit is **STATIC VERIFIED**, but recovery, Codex loading, Windows and Godot runtime all remain **PENDING**.
+
+## Acceptance criteria — documentation-only packet
+
+1. Repo skill path and YAML front matter agree with official Codex docs, and referenced file exists.
+2. Source repositories exist and are mapped accurately; Mono vs IL2CPP and APK vs AAB vs XAPK are distinct.
+3. No claim of release pinning, installation, extraction or runtime test. No proprietary asset/source rights inferred.
+4. Only `SKILL.md` and `references/TOOLS.md` are edited/added in this PR. No engine gameplay, CI, QA assertions, save, assets or `main` changes.
