@@ -1,5 +1,11 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — G1.5–G1.8 ONE-PASS ACCEPTANCE PLANNED; RUNTIME PENDING
+
+On draft PR #20, owner requested next-step planning rather than more incremental UI expansion. Added `docs/G1_ACCEPTANCE_MINIMAL_PLAN_2026-10-17.md` and optional `Run-G1-Acceptance-Windows.cmd` launching the existing isolated Windows QA runner with new `-Acceptance -Play`: **only 4 focused tests** (G1 radar/Source A, actor pilot, canonical Workforce E2E, multi-instance production/attention), then native 1280×720 playable preview. No FULL, CI, 600-frame benchmark, merge, Android or gameplay changes. ZIP artifact for owner is a direct downloadable one-click script and matched PS1 source; file contents checked against GitHub PS1 blob. **Windows on exact new HEAD still PENDING**; owner need not run now. No G1 acceptance or visual owner signoff until actual Windows evidence and review.
+
+---
+
 ## 2026-10-17 — G1.8 production attention queue (CODE DONE, Windows runtime PENDING)
 
 Directly on draft PR #20 after G1.7: implemented non-mutating classification of *every canonical Mine/Linh Lâm/Linh Điền instance* in existing `SectOperationsHub`: missing/invalid assigned operator; idle/not-yet-started job; warehouse reached plan target or batch cannot fit; Field legacy/empty plot/no enough stones; other pending command; active timer / active plots / scheduler-pending / due-but-unsettled. The **`Cần xử lý` count and toggle**, actionable-first ordering, 8-row pagination and per-row `Xử lý` button all route to the existing exact instance ID. **Never describe a due job as delivered/completed before canonical scheduler commits Warehouse state; no auto-cancel/start/harvest.** Field overview reads persisted `production_state.plots` without `spirit_field_plots()` legacy migrations. Extended the existing multi-instance GUI-focused test with unassigned second-Mine attention, filter toggle, exact-ID routing and `SimulationState.to_dict()` non-mutation. **Static focused contract 14/14 PASS; lexical/structure 2/2 PASS; Godot official 4.7.2 parser and new test NOT RUN (environment has no executable)—runtime PENDING.** No gameplay, One Active Job, Warehouse, scheduler, economy, save, CI, FULL QA, merge, or main edits.
