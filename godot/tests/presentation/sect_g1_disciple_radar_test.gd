@@ -142,6 +142,43 @@ func _run() -> void:
         _fail("assignment back button did not restore disciple profile")
         return
 
+    # User video 17:33: all quick targets disabled on a pending command.
+    # Press the real button and ensure only the pending command is cleared.
+    var live_mine := BuildingSystem.new().primary_building(state,BuildingSystem.TYPE_MINE)
+    if live_mine == null:
+        _fail("quick-cancel fixture has no Mine")
+        return
+    var before_mine := BuildingSystem.new().assigned_worker_ids(state,live_mine)
+    var before_items := disciple.inventory.duplicate(true)
+    if not WorkforceSystem.new().issue_command(
+        state,disciple.id,WorkforceSystem.COMMAND_HOLD,"",40
+    ):
+        _fail("cannot stage a legitimate pending Workforce HOLD")
+        return
+    ui.call("_open_disciple_quick_assignment",disciple.id)
+    await process_frame
+    chooser = (ui.get("popup_layer") as Control).get_node_or_null("DiscipleQuickAssignment")
+    var cancel_pending := chooser.find_child("QuickAssignmentCancelPendingCommand",true,false) as Button if chooser != null else null
+    var mine_before := chooser.find_child("QuickAssignTarget_%s" % str(live_mine.id),true,false) as Button if chooser != null else null
+    if cancel_pending == null or mine_before == null or not mine_before.disabled:
+        _fail("pending job is not safely blocked with a visible cancel action")
+        return
+    cancel_pending.pressed.emit()
+    await process_frame
+    chooser = (ui.get("popup_layer") as Control).get_node_or_null("DiscipleQuickAssignment")
+    var mine_after := chooser.find_child("QuickAssignTarget_%s" % str(live_mine.id),true,false) as Button if chooser != null else null
+    if not disciple.direct_command.is_empty() or mine_after == null or mine_after.disabled:
+        _fail("explicit pending-command cancellation failed to enable idle Mine choice")
+        return
+    if disciple.inventory != before_items or not disciple.work_cycle_state.is_empty():
+        _fail("quick cancel touched inventory or an active work cycle")
+        return
+    if BuildingSystem.new().assigned_worker_ids(state,live_mine) != before_mine:
+        _fail("cancel button implicitly assigned or removed a worker")
+        return
+    ui.call("_return_from_disciple_quick_assignment",disciple.id,false)
+    await process_frame
+
     var attributes := str(ui.call("_disciple_tab_text","Thuộc tính",disciple))
     if not attributes.contains("ẢNH HƯỞNG LỤC DUY") or not attributes.contains("Tiềm Lực: +0,05%"):
         _fail("attribute explanations are missing or do not match V2 authority")
