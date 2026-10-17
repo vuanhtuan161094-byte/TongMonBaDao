@@ -63,9 +63,24 @@ func _run() -> void:
     if state == null or state.disciples.is_empty():
         _fail("real scene has no canonical disciples")
         return
-    var ids: Array = state.disciples.keys()
-    ids.sort()
-    var disciple := state.disciples[ids[0]] as DiscipleState
+    # Recruit an authentic V2 actor through the real state/recruitment API.
+    # The initial sect roster may include historical P2 compatibility actors.
+    state.sect.disciple_capacity = maxi(state.sect.disciple_capacity,state.disciples.size()+1)
+    var candidate := DiscipleGeneratorOpenPoints.new().generate_candidate(
+        state,DiscipleGeneratorV2.SOURCE_ORDINARY,778
+    )
+    if candidate == null or candidate.v2_birth_profile.is_empty():
+        _fail("cannot generate canonical V2 recruit")
+        return
+    state.recruitment_candidates[candidate.id] = candidate
+    var accepted := RecruitmentSystem.new().accept_candidate(state,candidate.id)
+    if not bool(accepted.get("ok",false)):
+        _fail("canonical recruitment failed")
+        return
+    var disciple := state.disciples.get(candidate.id) as DiscipleState
+    if disciple == null or not DiscipleRealmProgressV2.progression_ready(disciple):
+        _fail("recruit was not authentic Realm/Body V2")
+        return
     var saved := disciple.to_dict()
     var attributes := str(ui.call("_disciple_tab_text","Thuộc tính",disciple))
     if not attributes.contains("ẢNH HƯỞNG LỤC DUY") or not attributes.contains("Tiềm Lực: +0,05%"):
