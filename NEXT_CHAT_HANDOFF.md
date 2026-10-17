@@ -1,5 +1,11 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — G1 implementation handoff (DRAFT PR #20)
+
+**Latest work:** [PR #20](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/20) branch `g1-disciple-radar-sourcea-pool-20261017` based on PR19 `5ce3c0f`, code/test SHA `5ac9d5c`. Done: real six-foundation spider chart in deep Attribute tab, stable gender-aware imported Source A visual pool sharing `1113028_1` female scene across map/showcase/avatar, backend-consistent Lục Duy effect captions, focused scene test and QA document `docs/G1_DISCIPLE_RADAR_SOURCE_A_POOL_QA_2026-10-17.md`. No fake source rig, male remains existing fallback. No changes to game authority, production, combat or save. **STATUS: CODE COMMITTED + structural scan PASS / GODOT 4.7.2 parser/runtime PENDING / visual+Android PENDING.** Next perform isolated official Windows Godot import + new G1 focused test + authentic V2 profile + Source A pilot + Workforce E2E, full affected regressions, native 1280×720 screenshot and frame benchmark; fix only observed failures. Do not CI/merge/main-edit. PR19 Windows PASS is prior-SHA evidence, not G1 PASS.
+
+---
+
 ## 2026-10-17 — Latest MAP25 full-width visual/performance gate
 
 Draft stacked [PR #19](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/19) targets draft PR #18 branch. Presentation commit `4c35b2c` fills the former 252 px pale left band with the existing isometric map viewport. Final official Windows Godot 4.7.2 import, Source A art SHA 32/32, projection 36/36, real scene, Workforce E2E, multiple building IDs, actor pilot and disciple V2/V3.3 focused tests PASS. Eleven native 1280×720 screenshots and 600 samples PASS: pan avg/p95 **16.926/18.770 ms**, **413.2** mean draws; zoom **16.802/19.968 ms**, **403.2** draws. Current evidence `MAP25_UIUX_WINDOWS_CANDIDATE_20261017.zip` SHA-256 `36ed9c5f16edbe133cac58a85541cfa29ba9ddddc5ab017b986bdde7d96fe122`, GIF SHA-256 `60dfe96013398df268a2ac640968ead60264b8ae988a2a4342337838d7002837`; detailed gate/visual limits: `docs/MAP25_UIUX_FINALIZATION_ACCEPTANCE_2026-10-17.md`. **Windows focused TEST/PERF TARGET PASS; VISUAL ACCEPTANCE OPEN; Android PENDING.** Owner visual review still needed for actor/roof overlap, green fallback males, markers and missing S3 building/individual art. Do not rerun Batch-01 converter, change gameplay authority, run CI or merge.
