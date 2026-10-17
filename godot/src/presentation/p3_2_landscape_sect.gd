@@ -4025,11 +4025,11 @@ func _open_selected_disciple_quick_assignment() -> void:
     if selected_id != &"":
         _open_disciple_quick_assignment(selected_id)
 
-func _open_disciple_quick_assignment(disciple_id: StringName) -> void:
+func _open_disciple_quick_assignment(disciple_id: StringName, preserve_summary_origin: bool = false, feedback_message: String = "") -> void:
     if not state.disciples.has(disciple_id):
         return
     var disciple: DiscipleState = state.disciples[disciple_id]
-    var returning_to_summary := _disciple_summary_is_open()
+    var returning_to_summary := _disciple_summary_is_open() or preserve_summary_origin
     selected_id = disciple_id
     _hide_disciple_summary()
     _clear_popup()
@@ -4044,7 +4044,8 @@ func _open_disciple_quick_assignment(disciple_id: StringName) -> void:
 
     var heading := _label(panel,"PHÂN CÔNG · %s" % disciple.display_name,Vector2(22,12),Vector2(475,37),22)
     heading.add_theme_color_override("font_color",JADE_DARK)
-    var description := _label(panel,"Chọn công trình đang có. Chỉ người rảnh mới được giao việc.",Vector2(22,51),Vector2(604,29),13)
+    var message := "Chọn công trình đang có. Chỉ người rảnh mới được giao việc." if feedback_message == "" else feedback_message
+    var description := _label(panel,message,Vector2(22,51),Vector2(604,29),13)
     description.add_theme_color_override("font_color",INK)
     var back := Button.new()
     back.name = "DiscipleQuickAssignmentBack"
@@ -4060,6 +4061,28 @@ func _open_disciple_quick_assignment(disciple_id: StringName) -> void:
     scroll.name = "DiscipleQuickAssignmentScroll"
     scroll.position = Vector2(22,92)
     scroll.size = Vector2(614,427)
+    if _can_cancel_queued_assignment_command(disciple):
+        # Explicit player action. Never clear a live timer, Body-training
+        # reservation, field plot, PvE encounter or work cycle here.
+        var cancel_pending := Button.new()
+        cancel_pending.name = "QuickAssignmentCancelPendingCommand"
+        cancel_pending.text = "Hủy lệnh chờ"
+        cancel_pending.position = Vector2(22,88)
+        cancel_pending.size = Vector2(177,42)
+        cancel_pending.add_theme_font_size_override("font_size",14)
+        cancel_pending.add_theme_stylebox_override("normal",_style(CINNABAR,PAPER_LIGHT,1,8))
+        cancel_pending.tooltip_text = "Chỉ hủy lệnh chưa chạy; không xóa sản phẩm, công việc đang chạy hoặc công trình."
+        cancel_pending.pressed.connect(
+            Callable(self,"_cancel_quick_assignment_pending_command").bind(disciple_id,returning_to_summary)
+        )
+        panel.add_child(cancel_pending)
+        var pending_tip := _label(
+            panel,"Đệ tử đang có lệnh chờ. Hủy để chọn công việc mới.",
+            Vector2(209,93),Vector2(415,34),12
+        )
+        pending_tip.add_theme_color_override("font_color",INK)
+        scroll.position = Vector2(22,140)
+        scroll.size = Vector2(614,379)
     panel.add_child(scroll)
     var rows := VBoxContainer.new()
     rows.name = "DiscipleQuickAssignmentRows"
@@ -4127,6 +4150,39 @@ func _open_disciple_quick_assignment(disciple_id: StringName) -> void:
         empty.text = "Chưa có Mỏ / Linh Lâm / Linh Điền. Không thể phân công."
         empty.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
         rows.add_child(empty)
+
+func _can_cancel_queued_assignment_command(disciple: DiscipleState) -> bool:
+    if disciple == null or disciple.direct_command.is_empty():
+        return false
+    if disciple.region_id != &"sect" or not disciple.active_pve_encounter_id.is_empty():
+        return false
+    if not disciple.work_cycle_state.is_empty():
+        return false
+    if not [&"EVALUATE",&"IDLE",&"HOLD"].has(disciple.current_action):
+        return false
+    var buildings := BuildingSystem.new()
+    if buildings.disciple_has_active_timed_recipe(state,disciple.id):
+        return false
+    if buildings.disciple_has_active_spirit_plot(state,disciple.id):
+        return false
+    if DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple):
+        return false
+    return true
+
+func _cancel_quick_assignment_pending_command(disciple_id: StringName, to_summary: bool) -> void:
+    if not state.disciples.has(disciple_id):
+        return
+    var disciple: DiscipleState = state.disciples[disciple_id]
+    if not _can_cancel_queued_assignment_command(disciple):
+        return
+    # The authoritative Workforce method increments the canonical event
+    # counter. Do not write direct_command/current_action from presentation.
+    workforce.clear_command(state,disciple)
+    if not disciple.direct_command.is_empty():
+        return
+    _open_disciple_quick_assignment(
+        disciple_id,to_summary,"Đã hủy lệnh chờ. Chọn công trình phù hợp để nhận việc."
+    )
 
 func _return_from_disciple_quick_assignment(disciple_id: StringName, to_summary: bool) -> void:
     if not state.disciples.has(disciple_id):
