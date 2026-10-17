@@ -44,24 +44,61 @@ function Invoke-QAProcess {
         TimedOut = $false
         MarkerFound = $false
     }
-    $process = Start-Process -FilePath $Exe -ArgumentList $ArgumentLine -NoNewWindow -PassThru -RedirectStandardOutput $stdout -RedirectStandardError $stderr
-    if (-not $process.WaitForExit($TimeoutSec * 1000)) {
-        $out.TimedOut = $true
-        Stop-Process -Id $process.Id -Force -ErrorAction SilentlyContinue
-        $script:failures.Add("$Label timed out after $TimeoutSec seconds")
-    } else {
-        $out.ExitCode = $process.ExitCode
+    # Windows PowerShell 5.1 Start-Process -PassThru without -Wait can
+    # return an empty ExitCode EVEN AFTER WaitForExit() reports success.
+    # Use the .NET Process object directly to retrieve a real integer exit
+    # code; drain both streams asynchronously to avoid output deadlocks.
+    $start = New-Object System.Diagnostics.ProcessStartInfo
+    $start.FileName = $Exe
+    $start.Arguments = $ArgumentLine
+    $start.UseShellExecute = $false
+    $start.CreateNoWindow = $true
+    $start.RedirectStandardOutput = $true
+    $start.RedirectStandardError = $true
+    $process = New-Object System.Diagnostics.Process
+    $process.StartInfo = $start
+    $stdoutText = ""
+    $stderrText = ""
+    $stdoutTask = $null
+    $stderrTask = $null
+    try {
+        if (-not $process.Start()) {
+            throw "Could not launch $Label"
+        }
+        $stdoutTask = $process.StandardOutput.ReadToEndAsync()
+        $stderrTask = $process.StandardError.ReadToEndAsync()
+        if (-not $process.WaitForExit($TimeoutSec * 1000)) {
+            $out.TimedOut = $true
+            try { $process.Kill() } catch { }
+            $process.WaitForExit()
+            $script:failures.Add("$Label timed out after $TimeoutSec seconds")
+        } else {
+            $process.WaitForExit()
+            $process.Refresh()
+            $out.ExitCode = [int]$process.ExitCode
+        }
+        if ($stdoutTask -ne $null) { $stdoutText = $stdoutTask.GetAwaiter().GetResult() }
+        if ($stderrTask -ne $null) { $stderrText = $stderrTask.GetAwaiter().GetResult() }
+    } catch {
+        $script:failures.Add("$Label runner exception: " + $_.Exception.Message)
+        Add-Note ("[FAIL] " + $Label + " runner exception: " + $_.Exception.Message)
+        return $false
+    } finally {
+        [IO.File]::WriteAllText($stdout,$stdoutText)
+        [IO.File]::WriteAllText($stderr,$stderrText)
+        $process.Dispose()
     }
-    $combined = ""
-    if (Test-Path $stdout) { $combined += [IO.File]::ReadAllText($stdout) }
-    if (Test-Path $stderr) { $combined += [IO.File]::ReadAllText($stderr) }
+    $combined = $stdoutText + "`n" + $stderrText
     $out.MarkerFound = ($PassMarker -eq "" -or $combined.Contains($PassMarker))
-    if ($out.ExitCode -ne 0 -or -not $out.MarkerFound -or $out.TimedOut) {
-        $script:failures.Add("$Label FAIL (exit=$($out.ExitCode), marker=$($out.MarkerFound), timeout=$($out.TimedOut))")
+    # Godot occasionally emits parser failures without a non-zero process exit.
+    # Fail closed on explicit native parser/runtime error markers.
+    $godotErrors = ($combined -match '(?im)^\s*(?:SCRIPT ERROR|Parse Error|ERROR):')
+    if ($out.ExitCode -ne 0 -or -not $out.MarkerFound -or $out.TimedOut -or $godotErrors) {
+        $script:failures.Add("$Label FAIL (exit=$($out.ExitCode), marker=$($out.MarkerFound), timeout=$($out.TimedOut), godotErrors=$godotErrors)")
         Add-Note ("[FAIL] " + $Label + "; see " + $Label + ".*.log")
         return $false
     }
-    Add-Note ("[PASS] " + $Label)
+    Add-Note ("[PASS] " + $Label + " (exit=" + $out.ExitCode + ")")
     return $true
 }
 function Run-GodotTest([string]$name,[string]$scriptPath,[string]$passMarker) {
