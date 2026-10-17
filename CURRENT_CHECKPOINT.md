@@ -1,5 +1,12 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-18 — G1 compact badge detail / ETA visibility
+
+After `649758c47f53`, made one focused presentation correction: keep the persisted canonical `detail` string and full tooltip unchanged while showing a separate short `display_detail` string inside the 186px badge row. Mine/Forest render `×quantity · remaining-minutes`; Field renders `crop ×routine_yield · remaining-minutes`, or `chờ kho` if the saved work has elapsed but not settled. Quantity uses the existing approximate-marked compact formatting only if >=100,000. No state/job/stock writes; tests assert qty/ETA and crop label visually displayed in addition to exact source snapshot. 1280×720 and latest Godot runtime/owner acceptance still **PENDING**, no CI/FULL/merge/G2.
+
+---
+
+
 ## 2026-10-18 — G1 timer-only production presentation focused patch
 
 Baseline `55a8943f062a`; owner explicitly cancelled mining/chopping/planting action animation requirement. Static code audit found that pending jobs (100% elapsed but **not credited**) had the same jade progress fill as running jobs, the real Field panel did not show cumulative credited units in its above-fold header, and map cards could be placed under open operations/roster/workforce panels. Presentation-only changes: amber `waiting` cue for persisted Mine/Forest/Field jobs past `finish_tick`, full tooltip with exact quantity while small card abbreviates only values >=100,000 with `≈`; 12px progress line; Field panel `đã nhập` actual persisted `units_produced`; panel rectangles reserved in bounded map-card layout. Existing focused Workforce + multi-instance tests extended for real Field plot timing, pending-not-settled, field credited units, 12px bar and right-panel exclusion. No new clock, product settlement, second Warehouse or job logic. **Static checks only; official Godot 4.7.2 focused runtime, 1280×720 screenshots, Android performance and G1 owner UX acceptance remain PENDING.** No CI/FULL/merge/G2.

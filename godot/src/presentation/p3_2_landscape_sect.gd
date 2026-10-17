@@ -4347,6 +4347,12 @@ func _map_worksite_snapshot(building: BuildingState) -> Dictionary:
                     maxi(0,int(job.get("output_quantity",0))),
                     "Chờ nhập kho" if finish_tick <= state.tick else "còn %dp" % (finish_tick-state.tick)
                 ]
+                # Compact map text keeps BOTH quantity and ETA inside 186px;
+                # the authoritative full-detail string remains unchanged.
+                result["display_detail"] = "×%s · %s" % [
+                    SectProductionWorksiteCue._map_quantity(maxi(0,int(job.get("output_quantity",0)))),
+                    "chờ kho" if finish_tick <= state.tick else "%dp" % (finish_tick-state.tick)
+                ]
                 result["progress"] = 100.0*float(elapsed)/float(total)
                 result["active"] = true # Includes newly started 0% jobs.
                 result["waiting"] = finish_tick <= state.tick
@@ -4395,6 +4401,11 @@ func _map_worksite_snapshot(building: BuildingState) -> Dictionary:
     result["detail"] = "Thường ×%d · %s" % [
         maxi(0,int(nearest.get("routine_yield",0))),
         "Chờ nhập kho" if finish_tick <= state.tick else "còn %dp" % (finish_tick-state.tick)
+    ]
+    result["display_detail"] = "%s ×%s · %s" % [
+        spirit_crop_registry.display_name(StringName(nearest.get("crop_id",""))),
+        SectProductionWorksiteCue._map_quantity(maxi(0,int(nearest.get("routine_yield",0)))),
+        "chờ kho" if finish_tick <= state.tick else "%dp" % (finish_tick-state.tick)
     ]
     result["progress"] = 100.0*float(elapsed)/float(total)
     result["active"] = true

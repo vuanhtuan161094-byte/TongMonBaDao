@@ -135,14 +135,15 @@ func display(snapshot: Dictionary) -> void:
     var title_text := str(snapshot.get("heading",""))
     var worker_text := "Người: %s" % str(snapshot.get("worker","Chưa phân công"))
     var detail_text := str(snapshot.get("detail",""))
+    var display_detail := str(snapshot.get("display_detail",detail_text))
     var received_count := maxi(0,int(snapshot.get("received",0)))
     var received_text := "Đã nhập: %s" % _map_quantity(received_count)
     var fraction := clampf(float(snapshot.get("progress",0.0)),0.0,100.0)
     var active := bool(snapshot.get("active",false))
     # A full timer is NOT a completed warehouse receipt.
     var waiting := bool(snapshot.get("waiting",false))
-    var signature := "%s|%s|%s|%s|%.2f|%s|%s" % [
-        title_text,worker_text,detail_text,received_text,fraction,str(active),str(waiting)
+    var signature := "%s|%s|%s|%s|%s|%.2f|%s|%s" % [
+        title_text,worker_text,detail_text,display_detail,received_text,fraction,str(active),str(waiting)
     ]
     if signature == last_display_signature:
         return
@@ -151,7 +152,7 @@ func display(snapshot: Dictionary) -> void:
     heading.tooltip_text = title_text
     worker.text = worker_text
     worker.tooltip_text = worker_text
-    detail.text = detail_text
+    detail.text = display_detail
     detail.tooltip_text = detail_text
     received.text = received_text
     received.tooltip_text = "Đã nhập kho: %d" % received_count

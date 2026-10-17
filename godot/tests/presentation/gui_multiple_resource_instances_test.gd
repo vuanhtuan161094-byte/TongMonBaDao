@@ -395,6 +395,8 @@ func _run() -> void:
         or not received_label.text.contains(str(int(second.metrics.get("units_produced",0))))
         or not percent_label.text.contains("%")
         or progress_bar.size.y < 12.0
+        or not second_cue.detail.text.contains("×")
+        or not second_cue.detail.text.contains("p")
     ):
         _fail("second Mine map card omitted actual worker/settled quantity/percentage")
         return

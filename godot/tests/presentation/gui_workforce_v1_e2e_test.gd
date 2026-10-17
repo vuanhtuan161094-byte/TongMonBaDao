@@ -328,6 +328,14 @@ func _run() -> void:
         return
     var delivery_card := SectProductionWorksiteCue.new()
     ui.add_child(delivery_card)
+    delivery_card.display(field_snapshot)
+    if (
+        not delivery_card.detail.text.contains("×")
+        or not delivery_card.detail.text.contains("p")
+        or not delivery_card.detail.text.contains(spirit_crop_registry.display_name(StringName(first_growing.get("crop_id",""))))
+    ):
+        _fail("Field badge must show the crop, expected amount and ETA")
+        return
     delivery_card.display({"heading":"Mỏ","worker":"Thử","detail":"Chờ nhập kho","received":0,
         "progress":100.0,"active":true,"waiting":true})
     var pending_fill := delivery_card.progress.get_theme_stylebox("fill") as StyleBoxFlat
