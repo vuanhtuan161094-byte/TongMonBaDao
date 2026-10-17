@@ -35,6 +35,16 @@ func _run() -> void:
         if actor == null or disciple == null:
             _fail("map actor lost canonical disciple identity")
             return
+        # Real Source A art remains stand/walk; the visible status caption
+        # must contrast against the map and must not extend beyond the actor.
+        if (
+            actor.status_label == null
+            or actor.status_label.get_theme_font_size("font_size") < 11
+            or not (actor.status_label.get_theme_stylebox("normal") is StyleBoxFlat)
+            or not actor.status_label.clip_text
+        ):
+            _fail("actor map work status lacks readable bounded background")
+            return
         if actor.baked_visual_active():
             var expected := DiscipleSourceAVisualPool.scene_path_for_disciple(disciple)
             var visual_sex := str(DiscipleActorVisualCatalog.visual_sex_for_disciple(disciple))
