@@ -85,3 +85,10 @@ Extended the existing `sect_map25_visual_perf_capture_test.gd` **test-only** aft
 - **Root cause:** `Start-Process -PassThru` without `-Wait`, followed by `WaitForExit`, yielded an empty `ExitCode` in the actual Windows PowerShell environment. `tools/qa/Run-G1-PR20-Windows.ps1` was changed to create `System.Diagnostics.Process` directly, asynchronously drain both pipes, wait with timeout, read a real integer `ExitCode`, and fail closed on explicit Godot parser/runtime error markers. The new launcher HAS NOT RUN yet; its success remains PENDING.
 
 No gameplay, CI, main branch or previously passed MAP25 PR19 code was changed for this repair. Distribute fresh one-click ZIP containing revised QA script; previous launcher ZIP must not be reused.
+
+
+## Quy trình tinh gọn — quyết định 17/10
+
+- Code tính năng trước, hạn chế tạo tài liệu và QA lặp lại. G1 chỉ cần **Quick 4 bài** mặc định: radar mới, V2 profile, P3.3 và Source A. `Run-G1-PR20-Windows.cmd` tự dùng Quick; `-Full` chỉ khi thay đổi simulation/Save/Workforce hoặc phát hiện regression liên quan; `-Visual` khi cần duyệt ảnh hoặc đo hiệu năng. CI vẫn OFF, không merge khi chưa được duyệt.
+- ZIP người dùng `TONG_MON_G1_PR20_QA_20261017_163618.zip`: official Windows Godot 4.7.2, import hoàn tất, **9/9 focused test stdout báo PASS** (G1, V2, P3.3, Source A actor, Workforce, multi-instance, Source A art 32/32, projection 36, scene integration). Test G1 có cảnh báo CanvasItem/ObjectDB resource leak lúc thoát; các test khác không ghi stderr lỗi. ZIP không chứa FULL hoặc GUI/performance nên không kế thừa PASS cho hai gate đó.
+- Đã sửa test G1 bằng `radar.free()` và `await process_frame` sau `queue_free()`; thêm xác nhận palette fallback nam không còn đồng nhất xanh. Đã CODE thêm màu đạo bào, tóc và da cho fallback actor theo seed sẵn có, không yêu cầu thêm asset, không sửa gameplay/Source A thật. **Các thay đổi mới sau ZIP là CODE + static scan only**, chưa có Windows runtime chính xác trên HEAD mới.
