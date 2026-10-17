@@ -67,18 +67,39 @@ func _run() -> void:
     for raw_id in ids:
         var actor: DiscipleState = state.disciples[raw_id]
         if (
-            actor.work_group_id == &""
+            # Only authentic V2 workers can create a new Economy-A timer.
+            # Legacy workers intentionally follow the old carry/haul cycle.
+            DiscipleRealmProgressV2.owns_v2_progression(actor)
+            and actor.hp / maxf(actor.max_hp, 1.0) >= 0.72
+            and actor.work_group_id == &""
             and actor.worksite_building_id == &""
             and actor.direct_command.is_empty()
             and actor.work_cycle_state.is_empty()
             and actor.region_id == &"sect"
             and actor.active_pve_encounter_id.is_empty()
             and actor.current_action in [&"EVALUATE",&"IDLE",&"HOLD"]
+            and not buildings.disciple_has_active_timed_recipe(state,actor.id)
+            and not buildings.disciple_has_active_spirit_plot(state,actor.id)
+            and not DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,actor)
         ):
             worker_id = actor.id
             break
+    if worker_id == &"" and state.sect.disciple_v2_birth_enabled:
+        # Real canonical recruitment, in the isolated QA save only.
+        # Never fabricate V2 identity or bypass accept_candidate().
+        state.sect.disciple_capacity = state.disciples.size() + 1
+        var recruitment := RecruitmentSystem.new()
+        var candidate: CandidateState = recruitment.generate_candidate(
+            state,DiscipleGeneratorV2.SOURCE_ORDINARY
+        )
+        if candidate != null:
+            var accepted: Dictionary = recruitment.accept_candidate(state,candidate.id)
+            if bool(accepted.get("ok",false)) and state.disciples.has(candidate.id):
+                var recruited: DiscipleState = state.disciples[candidate.id]
+                if DiscipleRealmProgressV2.owns_v2_progression(recruited):
+                    worker_id = recruited.id
     if worker_id == &"":
-        _fail("no idle actor in fresh state to validate second instance")
+        _fail("no eligible authentic V2 worker to test Economy-A timer for second Mine")
         return
     var before_resources := state.sect.spirit_stones
     var result := workforce.transfer_production_worker(state,worker_id,second.id,true)
@@ -120,7 +141,12 @@ func _run() -> void:
         if not secondary_timer.is_empty():
             break
     if secondary_timer.is_empty() or str(secondary_timer.get("building_id","")) != str(second.id):
-        _fail("secondary operator started timer at primary building or not at all")
+        var selected: DiscipleState = state.disciples[worker_id]
+        _fail("second Mine timer missing or wrong ID; v2=%s action=%s command=%s cycle=%s timer=%s" % [
+            str(DiscipleRealmProgressV2.owns_v2_progression(selected)),
+            str(selected.current_action),str(selected.direct_command),
+            str(selected.work_cycle_state),str(secondary_timer)
+        ])
         return
     # A second instance survives the canonical serializer, no shadow map.
     var saved := SimulationState.from_dict(state.to_dict())
