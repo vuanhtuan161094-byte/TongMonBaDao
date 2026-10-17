@@ -4067,7 +4067,7 @@ func _open_disciple_quick_assignment(disciple_id: StringName) -> void:
             var occupation := "Chưa có người" if occupants.is_empty() else (
                 busy_worker if busy_worker != "" else "%d người" % occupants.size()
             )
-            info.text = "%s · Lv%d · %s\\n%s" % [
+            info.text = "%s · Lv%d · %s\n%s" % [
                 str(building.id),building.level,occupation,
                 ("Đang phụ trách" if already_owner else "Có thể nhận việc" if reason == "" else reason)
             ]
