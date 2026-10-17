@@ -5,6 +5,9 @@ const CAMERA_TWEEN_SECONDS := 0.22
 const FOCUS_MARKER_SIZE := Vector2(82.0, 82.0)
 const PRODUCTION_PANEL_WIDTH := 320.0
 const PRODUCTION_CONTENT_WIDTH := 284.0
+# Visual travel rate in map world pixels/second; gameplay travel, scheduler
+# and profession work speed remain separate canonical systems.
+const MAP_ACTOR_VISUAL_WALK_PX_PER_SEC := 175.0
 
 var map_zoom: float = SectMapCamera.DEFAULT_ZOOM
 var touch_points: Dictionary = {}
@@ -35,6 +38,7 @@ var visible_living_cues: Array[Dictionary] = []
 var female_motion_library: AnimationLibrary
 var workforce_return_building_id: StringName = &""
 var modular_live_actor_ids: Dictionary = {}
+var actor_walk_tweens: Dictionary = {}
 # Only three source scenes currently: cache shared stand textures by scene path,
 # never make one atlas/AnimatedSprite2D per disciple or roster entry.
 var source_a_portrait_textures: Dictionary = {}
@@ -51,6 +55,8 @@ var summary_feedback := ""
 var building_operation_panel: Panel
 var building_operation_title: Label
 var building_operation_body: Label
+var building_operation_progress_caption: Label
+var building_operation_progress_bar: ProgressBar
 var building_operation_content: VBoxContainer
 var building_management_container: VBoxContainer
 var building_management_feedback := ""
@@ -653,10 +659,17 @@ func _sync_actor_positions() -> void:
                 modular.sync_action(disciple.current_action)
 
         if delta.length() > 1.0:
+            # Travel time reflects visible distance, rather than teleporting
+            # any distance in the same 0.32 s. Purely cosmetic: cannot change
+            # canonical travel ticks, work speed or production completion.
+            var old_tween := actor_walk_tweens.get(key) as Tween
+            if old_tween != null and old_tween.is_running():
+                old_tween.kill()
+            var duration := clampf(delta.length()/MAP_ACTOR_VISUAL_WALK_PX_PER_SEC,0.18,6.0)
             var tween := create_tween()
-            tween.set_trans(Tween.TRANS_QUAD)
-            tween.set_ease(Tween.EASE_IN_OUT)
-            tween.tween_property(actor, "position", target, 0.32)
+            tween.set_trans(Tween.TRANS_LINEAR)
+            tween.tween_property(actor, "position", target, duration)
+            actor_walk_tweens[key] = tween
             if actor is ModularDiscipleActor:
                 tween.finished.connect(Callable(self,"_finish_actor_walk").bind(disciple_id,target))
 
@@ -775,6 +788,32 @@ func _build_building_operation_panel() -> void:
     separator.size = Vector2(412, 2)
     building_operation_panel.add_child(separator)
 
+    # Above-the-fold actual production timer, visible without scrolling.
+    # The backing value is recomputed from real saved jobs/plots on refresh.
+    building_operation_progress_caption = Label.new()
+    building_operation_progress_caption.name = "ProductionProgressCaption"
+    building_operation_progress_caption.position = Vector2(16, 84)
+    building_operation_progress_caption.size = Vector2(PRODUCTION_CONTENT_WIDTH,40)
+    building_operation_progress_caption.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    building_operation_progress_caption.add_theme_font_size_override("font_size",13)
+    building_operation_progress_caption.add_theme_color_override("font_color",INK)
+    building_operation_progress_caption.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    building_operation_progress_caption.visible = false
+    building_operation_panel.add_child(building_operation_progress_caption)
+
+    building_operation_progress_bar = ProgressBar.new()
+    building_operation_progress_bar.name = "ProductionProgressBar"
+    building_operation_progress_bar.position = Vector2(16,127)
+    building_operation_progress_bar.size = Vector2(PRODUCTION_CONTENT_WIDTH,13)
+    building_operation_progress_bar.min_value = 0.0
+    building_operation_progress_bar.max_value = 100.0
+    building_operation_progress_bar.show_percentage = false
+    building_operation_progress_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    building_operation_progress_bar.add_theme_stylebox_override("background",_style(Color(0.80,0.79,0.70),INK,1,5))
+    building_operation_progress_bar.add_theme_stylebox_override("fill",_style(JADE_DARK,JADE_DARK,0,5))
+    building_operation_progress_bar.visible = false
+    building_operation_panel.add_child(building_operation_progress_bar)
+
     var scroll := ScrollContainer.new()
     scroll.name = "BuildingOperationScroll"
     scroll.position = Vector2(14, 92)
@@ -849,6 +888,7 @@ func _refresh_building_operation_content() -> void:
         feedback = "\n\n%s" % building_management_feedback
     var workforce_target := _workforce_building_type()
     _layout_building_operation_panel(workforce_target != &"")
+    _refresh_production_progress_header(workforce_target)
     building_operation_body.text = (
         _workforce_operation_summary(workforce_target) if workforce_target != &""
         else _building_operation_text(selected_building)
@@ -865,6 +905,93 @@ func _refresh_building_operation_content() -> void:
     else:
         building_operation_body.custom_minimum_size.y = 0
     _rebuild_building_management_controls()
+    _ensure_disabled_controls_readable(building_management_container)
+
+# These controls are opaque even when disabled; use readable dark labels,
+# never the white-on-middle-gray text observed in the owner's visual audit.
+func _ensure_disabled_controls_readable(root_node: Node) -> void:
+    for child in root_node.get_children():
+        if child is Button:
+            var button := child as Button
+            button.add_theme_color_override("font_disabled_color",INK)
+            button.add_theme_stylebox_override(
+                "disabled",_style(Color(0.84,0.83,0.75),Color(0.46,0.44,0.37),1,8)
+            )
+        _ensure_disabled_controls_readable(child)
+
+func _refresh_production_progress_header(building_type: StringName) -> void:
+    if building_operation_progress_caption == null or building_operation_progress_bar == null:
+        return
+    var shown := building_type != &""
+    building_operation_progress_caption.visible = shown
+    building_operation_progress_bar.visible = shown
+    if not shown:
+        return
+    var building := _selected_resource_instance(building_type)
+    if building == null:
+        building_operation_progress_caption.text = "Chưa có công trình · chọn công trình trước"
+        building_operation_progress_bar.value = 0.0
+        return
+    var buildings := BuildingSystem.new()
+    if building_type in [BuildingSystem.TYPE_MINE,BuildingSystem.TYPE_LINH_FOREST]:
+        var jobs := buildings.resource_timer_jobs(building)
+        if not jobs.is_empty() and jobs[0] is Dictionary:
+            var job: Dictionary = jobs[0]
+            var start_tick := int(job.get("started_tick",state.tick))
+            var finish_tick := int(job.get("finish_tick",state.tick))
+            var total := maxi(1,finish_tick-start_tick)
+            var elapsed := clampi(state.tick-start_tick,0,total)
+            var resource_name := ResourceRegistry.new().display_name(
+                StringName(job.get("resource_id",""))
+            )
+            building_operation_progress_caption.text = (
+                "%s ×%d dự kiến\n%d/%d phút · %s" % [
+                    resource_name,maxi(0,int(job.get("output_quantity",0))),
+                    elapsed,total,
+                    "Chờ scheduler kết toán" if finish_tick <= state.tick
+                    else "Còn %d phút" % (finish_tick-state.tick)
+                ]
+            )
+            building_operation_progress_bar.value = 100.0*float(elapsed)/float(total)
+        else:
+            var plan := buildings.selected_resource_production_plan(building)
+            building_operation_progress_caption.text = "CHƯA CÓ MẺ\nDự kiến %s ×%d/mẻ" % [
+                ResourceRegistry.new().display_name(production_plan_registry.output_resource_id(plan)),
+                production_plan_registry.scaled_yield(plan,building.level)
+            ]
+            building_operation_progress_bar.value = 0.0
+        return
+    # Linh Điền has several concurrent plots. Show the nearest pending
+    # harvest explicitly, not a made-up overall progress percentage.
+    var nearest: Dictionary = {}
+    var active_count := 0
+    var snapshots = building.production_state.get("plots",[])
+    if snapshots is Array:
+        for raw in snapshots:
+            if not (raw is Dictionary):
+                continue
+            var plot: Dictionary = raw
+            if StringName(plot.get("status","")) != BuildingSystem.PLOT_GROWING:
+                continue
+            active_count += 1
+            if nearest.is_empty() or int(plot.get("finish_tick",0)) < int(nearest.get("finish_tick",0)):
+                nearest = plot
+    if nearest.is_empty():
+        building_operation_progress_caption.text = "CHƯA TRỒNG CÂY\nChọn đệ tử và bấm Bắt đầu"
+        building_operation_progress_bar.value = 0.0
+        return
+    var start_tick := int(nearest.get("started_tick",state.tick))
+    var finish_tick := int(nearest.get("finish_tick",state.tick))
+    var total := maxi(1,finish_tick-start_tick)
+    var elapsed := clampi(state.tick-start_tick,0,total)
+    building_operation_progress_caption.text = "%d ô trồng · gần nhất: %s ×%d\n%d/%d phút · %s" % [
+        active_count,
+        spirit_crop_registry.display_name(StringName(nearest.get("crop_id",""))),
+        maxi(0,int(nearest.get("routine_yield",0))),elapsed,total,
+        "Chờ scheduler kết toán" if finish_tick <= state.tick
+        else "Còn %d phút" % (finish_tick-state.tick)
+    ]
+    building_operation_progress_bar.value = 100.0*float(elapsed)/float(total)
 
 func _layout_building_operation_panel(compact: bool) -> void:
     var width := PRODUCTION_PANEL_WIDTH if compact else 440.0
@@ -881,6 +1008,10 @@ func _layout_building_operation_panel(compact: bool) -> void:
     separator.size.x = width-28.0
     var scroll := building_operation_panel.get_node("BuildingOperationScroll") as ScrollContainer
     scroll.size.x = width-28.0
+    scroll.position.y = 150.0 if compact else 92.0
+    scroll.size.y = 384.0 if compact else 442.0
+    building_operation_progress_caption.size.x = content_width
+    building_operation_progress_bar.size.x = content_width
     building_operation_content.custom_minimum_size.x = content_width
     building_operation_body.custom_minimum_size.x = content_width
     building_management_container.custom_minimum_size.x = content_width
