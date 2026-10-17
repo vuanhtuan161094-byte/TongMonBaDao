@@ -3,6 +3,9 @@ extends "res://src/presentation/p3_1_landscape_sect.gd"
 const ZOOM_STEP := 1.12
 const CAMERA_TWEEN_SECONDS := 0.22
 const FOCUS_MARKER_SIZE := Vector2(82.0, 82.0)
+const SOURCE_A_PILOT_SCENE_PATH := "res://assets/actors/1113028_1/actor.tscn"
+const PRODUCTION_PANEL_WIDTH := 320.0
+const PRODUCTION_CONTENT_WIDTH := 284.0
 
 var map_zoom: float = SectMapCamera.DEFAULT_ZOOM
 var touch_points: Dictionary = {}
@@ -31,6 +34,7 @@ var living_cue_tracker := LivingCueTracker.new()
 var living_cue_layer: LivingCueLayer
 var visible_living_cues: Array[Dictionary] = []
 var female_motion_library: AnimationLibrary
+var source_a_pilot_scene: PackedScene
 var modular_live_actor_ids: Dictionary = {}
 
 var camera_controls_panel: Panel
@@ -83,6 +87,8 @@ func _ready() -> void:
     if not runtime_ready:
         return
     female_motion_library = FemaleNormalV1MotionLibrary.build()
+    if ResourceLoader.exists(SOURCE_A_PILOT_SCENE_PATH,"PackedScene"):
+        source_a_pilot_scene = load(SOURCE_A_PILOT_SCENE_PATH) as PackedScene
     _install_modular_live_actors()
     _install_main_isometric_world()
     _sync_actor_positions()
@@ -641,6 +647,8 @@ func _sync_actor_positions() -> void:
             tween.set_trans(Tween.TRANS_QUAD)
             tween.set_ease(Tween.EASE_IN_OUT)
             tween.tween_property(actor, "position", target, 0.32)
+            if actor is ModularDiscipleActor:
+                tween.finished.connect(Callable(self,"_finish_actor_walk").bind(disciple_id,target))
 
         if actor_status_labels.has(key):
             var status := actor_status_labels[key] as Label
@@ -652,6 +660,14 @@ func _sync_actor_positions() -> void:
     _refresh_disciple_summary_content()
     _refresh_building_operation_content()
     _refresh_living_cues()
+
+func _finish_actor_walk(disciple_id: StringName, expected_target: Vector2) -> void:
+    var actor := actor_nodes.get(str(disciple_id)) as ModularDiscipleActor
+    if actor == null or not is_instance_valid(actor) or actor.position.distance_to(expected_target) > 1.0:
+        return
+    var disciple := state.disciples.get(disciple_id) as DiscipleState
+    if disciple != null:
+        actor.sync_action(disciple.current_action)
 
 func _actor_anchor_offset(actor: Control) -> Vector2:
     if actor is ModularDiscipleActor:
@@ -699,6 +715,8 @@ func _install_modular_live_actors() -> void:
         actor.set_animation_library(female_motion_library)
         if actor.rig_id == DiscipleActorVisualCatalog.RIG_FEMALE_NORMAL_V1 and female_assets_ready:
             FemaleStageAAssetLoader.apply_public_direction(actor, &"right")
+        if actor.rig_id == DiscipleActorVisualCatalog.RIG_FEMALE_NORMAL_V1 and source_a_pilot_scene != null and not actor.production_body_active():
+            actor.set_baked_visual(source_a_pilot_scene)
         actor.sync_action(disciple.current_action)
         actor.actor_pressed.connect(Callable(self, "_open_disciple"))
         var world_foot := _iso_actor_point(destination) + _actor_offset(index)
