@@ -61,6 +61,15 @@ static func reserve_slot(state: SimulationState, disciple_id: StringName) -> Dic
         disciple.work_group_id = building.worker_group_id
         disciple.worksite_building_id = building.id
         state.sect.workforce_event_count += 1
+    # A successful explicit Body-slot selection supersedes a previous HOLD,
+    # cultivate or hunt order. Without this the scheduler routes the saved
+    # command forever and never reaches the reserved Rèn Thân facility.
+    # No wage, XP, material or Stone transaction occurs during this transfer.
+    if not disciple.direct_command.is_empty():
+        disciple.direct_command.clear()
+        state.sect.workforce_event_count += 1
+    if disciple.current_action in [&"CULTIVATE", &"HOLD"]:
+        disciple.current_action = &"EVALUATE"
     return {"ok":true,"building_id":str(building.id),"reserved_slots":buildings.assigned_worker_ids(state,building).size(),
         "slots":buildings.worker_slots(building)}
 
@@ -173,6 +182,10 @@ static func _prepare(state: SimulationState, disciple: DiscipleState) -> Diction
     if disciple.region_id != &"sect" or disciple.hp <= 0.0 or not disciple.active_pve_encounter_id.is_empty():
         return {"ok":false,"reason":"training_actor_not_available"}
     var building_system := BuildingSystem.new()
+    # A reserved slot cannot debit Stones/award EXP while an unrelated
+    # committed production job owns the same disciple.
+    if not disciple.work_cycle_state.is_empty() or building_system.disciple_has_active_timed_recipe(state,disciple.id):
+        return {"ok":false,"reason":"another_active_job"}
     var building := building_system.primary_building(state,BuildingSystem.TYPE_BODY_TRAINING)
     if building == null or building.status != BuildingSystem.STATUS_ACTIVE:
         return {"ok":false,"reason":"body_training_facility_unavailable"}

@@ -62,9 +62,7 @@ func _run() -> void:
         _fail("Mine controls still sit behind the old 420px spacer")
         return
     var checked_rows := 0
-    for node in controls.get_children():
-        if not (node is GridContainer) or not str(node.name).begins_with("Person_"):
-            continue
+    for node in controls.find_children("Person_*","GridContainer",true,false):
         checked_rows += 1
         var row := node as GridContainer
         if row.columns != 2:
@@ -90,10 +88,9 @@ func _run() -> void:
     await process_frame
     controls = ui.find_child("BuildingManagementControls",true,false) as VBoxContainer
     var filtered_rows := 0
-    for node in controls.get_children():
-        if node is GridContainer and str(node.name).begins_with("Person_"):
-            filtered_rows += 1
-            if str(node.name) != "Person_%s" % target_id:
+    for node in controls.find_children("Person_*","GridContainer",true,false):
+        filtered_rows += 1
+        if str(node.name) != "Person_%s" % target_id:
                 _fail("Mine search returned an unrelated disciple")
                 return
     if filtered_rows != 1:

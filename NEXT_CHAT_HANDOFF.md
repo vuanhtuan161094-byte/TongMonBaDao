@@ -1,5 +1,328 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — 13:59 Windows QA: 01–07 PASS; draw-call bottleneck measured; batch-ground-only optimization awaiting official rerun
+
+**Verified new ZIP** `MAP25_QA_RESULTS_20261017_135946.zip`, Godot Windows official 4.7.2 pinned PR #18 at `5e0ec9af6f3bc9b571c37882f33f0418ff4ab1f9`. All Git pin/EOL/clone gates PASS; **01 editor import PASS; 02 Source A 32/32 SHA PASS; 03 projection 36/36 PASS; 04 real main/camera/Workforce PASS; 05 Workforce E2E PASS; 06 multi-resource instance PASS; 07 current HEAD graphic capture PASS.** Five actual 1280×720 `after/01_idle.png`, `02_pan.png`, `03_zoom.png`, `04_mine.png`, `05_picker.png`; `performance_summary.csv`, `frame_samples.csv` (600 samples), metadata with `failed_capture_tags=[]`; no gate stdout/stderr errors. **Historical before/baseline capture still PENDING**, shallow TEMP clone cannot fetch old `8b23f787` object; no before/after acceptance.
+
+**Performance on official Windows Intel Iris Plus/OpenGL Compatibility 3.3:** idle 16.569ms avg /19.257ms p95 /78 draw calls; pan 58.175ms avg /60.623ms p95 /4892.7 draws; active zoom 67.124ms avg /104.761ms p95 /4339.6 draws; Mine popup 16.568ms avg /17.509ms p95 /91 draws; picker 16.523ms avg /17.303ms p95 /121 draws. 120 samples each. Map camera stutter is real and amplified ~63x/56x draw calls. `TIME_PROCESS` monitor observations appear inconsistent with wall-clock interframe timing: **do not claim a CPU or GPU-only cause**, profile further if needed. Screenshot review: Source A houses and vegetation rendered; green disciple silhouettes and flat footprint markers remain **art debt**; Workforce popup fits screen. Do not confuse SHA 32/32 with all art completed.
+
+**Applied scoped presentation-only patch, commit `41783d312281be7ade5d86ff86e3cbad1b6f97d3`**, file `godot/src/presentation/p3/sect_isometric_world_v1.gd`: cache `ArrayMesh` for each 16x16 terrain chunk, combine original diamond tile colors and road fill into 2D indexed mesh (4 verts + 6 indices/tile), draw one mesh/chunk instead of one colored polygon/tile; keep Source A decorations, road textures, click hitbox, canonical IDs, workforce and save/gameplay unchanged. Static source inspection/bracket validation PASS; ***official Windows parse/capture/perf after this patch NOT RUN***. Avoid premature FPS claim; user should use existing V4 launcher (fresh PR pin) rather than new runner, and send `MAP25_QA_RESULTS_*`.
+
+**Next actions:** check next Windows results gate 01 for 2D ArrayMesh parse/runtime, 02–06 regression, 07 screenshot/color/ground visual fidelity, compare new `after/performance_summary.csv` against **5e0ec9** old sample here on same device, especially draw calls pan/zoom and p95; if regression or stale graphics, rollback that single presentation patch. No CI, merge, main push, gameplay, scheduler, warehouse or save edits; PR #18 remains Draft. The existing external QA V4 reports TEMP cleanup warning and baseline PENDING, separate from map renderer.
+
+---
+
+
+## 2026-10-17 — Latest Windows QA: 01–06 PASS; 07 frame stutter verified + PNG capture aborted, probe repaired
+
+**Newest user-uploaded evidence** `MAP25_QA_RESULTS_20261017_134712.zip`: official Windows Godot 4.7.2, pinned PR #18 `31215f13561092227811abfa5dc155cf6a93db80`. Exact `qa_gates.csv` includes PASS `00_git_smoke`, `00_remote_pin`, `00_git_eol_gate`, `00_isolated_checkout`, `01_editor_import`, `02_art_hash_gate` (Source A 32/32), `03_isometric_projection` (36/36), `04_real_main_scene_and_workforce`, `05_gui_workforce_e2e`, **`06_gui_multiple_instances` PASS**. No need to reopen or rewrite these tests without new failing evidence. **`capture_after` FAIL** at third screenshot (03_zoom not genuine 1280x720); first two real 1280x720 screenshots `after/01_idle.png` and `after/02_pan.png` available and inspected. Preview human green silhouettes still visible and real Source A is not complete for all actor types; Source A 32/32 hash PASS only covers allowlist.
+
+**Real graphical performance samples (observed wall interframe intervals; 120 frames each):** idle mean 16.523 ms/p95 17.386 ms, active pan mean 59.452 ms/p95 57.810 ms, active zoom mean 80.773 ms/p95 153.303 ms. Pan/zoom stutter real; no recorded process-vs-graphics breakdown or baseline. Windows OpenGL 3.3 Compatibility, Intel Iris Plus Graphics. Worksite popup/Mine panel timing not yet reached. Baseline `8b23f78797e99ed5568f3d61b1611b6426c616a8` missing from V4 shallow clone `--depth 30` (`git cat-file` exit 128); do NOT claim before/after FPS improvement. Disposable TMP removal warning is separate QA harness debt.
+
+**Latest scope-limited code change** `7b8ad7b7bcb22a3cf334bb7127f2b917e8b9cf0d` in **only** `godot/tests/presentation/sect_map25_visual_perf_capture_test.gd`: persist frame + summary CSV at end of each scenario; do not abort full five-scenario sampling when one PNG invalid; camera/window/viewport sizes logged; retry true GPU captures after process frames, request true native 1280x720 window if necessary (no rescaled/fake PNG); require all five PNGs for PASS and retain FAIL on any invalid capture. **Official Windows runtime on new SHA PENDING**; no new launcher, scene or renderer changed. Investigate whether client viewport actually changes during continuous zoom before making any code changes for performance.
+
+**Immediate next:** run existing V4 `RUN_MAP25_QA.cmd` one-click (fresh PR pin), return full `MAP25_QA_RESULTS_*`, prioritize gate 07 `frame_samples.csv`, `performance_summary.csv`, `capture_metadata.json`, `capture_after.stdout/stderr`, and PNG `01_idle`–`05_picker`. Analyze `process_ms` vs `interval_ms` and draw calls, identify actual slowdown. For a robust historical comparator, the current V4 shallow clone cannot resolve baseline commit, and fixing it would require strictly scoped change to the existing launcher rather than a duplicated runner. Keep PR #18 Draft, no CI, merge, main push or any gameplay/balance/save/core modifications. Preserve current verified 01–06 PASS exactly at SHA 31215f.
+
+---
+
+
+## 2026-10-17 — MAP25 Windows 13:33 run: 01–05 PASS; 06 FAIL is an invalid test field, repaired without production edits
+
+**Latest evidence ZIP:** `MAP25_QA_RESULTS_20261017_133329.zip`, pinned PR #18 SHA `03bfa7551fee7c8370dea140cf323060bfe01209`, official Windows Godot 4.7.2. All isolated Git gates and `01` editor import, `02` SHA 32/32, `03` projection 36/36, `04` real main scene camera/Workforce, `05` GUI Workforce E2E **PASS**. `06_gui_multiple_instances` failed with verbose log **despite a real second-Mỏ job being created:** `job_id=mine_002:v2:1`, `worker_id=candidate_0004`, `started_tick=2`, `finish_tick=62`, `output_quantity=10000`. Test incorrectly expected `building_id` on a stored timer snapshot returned by `active_resource_timer_for_worker()`; only the one-off start result includes `building_id`, whereas saved jobs belong to the enclosing `BuildingState.production_state`. No gameplay failure established. `07` image capture/lag profiling **NOT RUN**; no actual performance claim.
+
+**Scoped test-only commit** `54fcd52a4955f7ad8c255ae0069c4aa7ee5e2383`: in `godot/tests/presentation/gui_multiple_resource_instances_test.gd`, compare exact timer `job_id` + worker against jobs in second Mine, require absence of same job in first Mine, and verify saved/restored second Mine owns the same job. No new fake `building_id`, no weakened assertion, no gameplay/save schema changes. Windows after fix **PENDING**. `CURRENT_CHECKPOINT.md` updated with direct evidence.
+
+**Next step:** use SAME V4 `RUN_MAP25_QA.cmd` (no new runner) and upload result folder; 01–06 should prove each stage, then 07 must provide true 1280×720 five-state screen capture and FPS/inter-frame p95 CSV before any map visual/performance PASS. Retain Source A hashed files and canonical worker/timer/save authority. Keep PR #18 Draft, no CI, no main push/merge.
+
+---
+
+
+## 2026-10-17 — Windows MAP25 QA official 01–05 PASS, 06 GDScript parser FAIL and test-only fixed; 07 GUI/FPS PENDING
+
+**Newest owner upload** `MAP25_QA_RESULTS_20261017_132030.zip`, official Godot 4.7.2 run pinned at PR #18 SHA `0729f8aff26da70a734fec34e74548ab6751ecc3`. Temp Git clone + SHA/EOL checks PASS; 01 editor import PASS; 02 Source A accepted=32 missing=0 rejected=0 PASS; 03 iso projection 36/36 PASS; 04 real main scene camera/Workforce PASS; **05 Workforce GUI E2E PASS** including full timed production/SaveService fixture assertions. **06 FAIL before assertions at test parse line 141** `var p := SAVE_PATH+suffix`: Godot cannot infer type of `p`. 07 screenshots/profile never executed. Full runner FINAL FAIL, no runtime visual/performance acceptance.
+
+**Only `godot/tests/presentation/gui_multiple_resource_instances_test.gd` changed** in commit `7429947819a903e4d7ffd6a73ca131d4468b2938`: declare explicit `var p: String = SAVE_PATH + str(suffix)`. Also commit `ad6d46da5a7aeafb5f18c52a6b4e7ceabafaa4b5` protects second-Mine timer fixture: select real authentic V2 eligible worker or recruit via canonical `RecruitmentSystem`; legacy actor still must run old carry/haul, not a V2 timer. Preserve all assertions, no fake worker/gameplay/save mutations outside isolated QA state. Add useful actor diagnostics on failure. Code static verification only, new Godot run PENDING.
+
+**Operator next step:** reuse SAME `TONG_MON_BA_DAO_MAP25_WINDOWS_QA_HOTFIX_V4_20261017.zip` CMD + PS1; it automatically pins newest PR #18 HEAD. No new runner or manual Git sync. If successful, attach full `MAP25_QA_RESULTS_*` folder including after/before 1280×720 screenshots and performance CSV; if FAIL, attach failed stderr + `failure_details.txt`. Inspect 06 first; then 07. Keep no CI, no merge, no main modifications, no gameplay/balance/Source A edits. Update both MD with actual outcomes. Old 01–05 PASS applies specifically to SHA 0729f, not automatically subsequent HEAD.
+
+---
+
+
+## 2026-10-17 — MAP25 official Windows gates 01–04 PASS, Workforce gate 05 FAIL, test-only fixture corrected
+
+**Newest official Windows evidence** `MAP25_QA_RESULTS_20261017_114116.zip` at pinned PR #18 `278089d1971752423425a6d6cb6e9a971467d2fc`: Git pin/clone/EOL safety PASS; official Godot 4.7.2 `01_editor_import` PASS, Source A `02` PASS accepted=32 missing=0 rejected=0, `03` PASS projection 36/36, `04` PASS real main scene and Workforce camera. **`05_gui_workforce_e2e` FAIL** exit 1 at `gui_workforce_v1_e2e_test.gd:82` = “Mine start did not create real timed production”; gate 06 multiple instances and gate 07 physical GUI screenshots/FPS not run. This is no longer a launcher failure. Overall FAIL.
+
+**Back-end vs fixture distinction:** Economy V2 produces new Mine/Forest timers ONLY for authentic V2 workers with a valid birth profile. Legacy actors intentionally follow the older carry-cycle; the previous E2E selector chose any idle worker without checking birth profile. Deterministic fixture precondition bug confirmed in code, exact selected actor at failure not logged. Only **presentation E2E test** was modified on PR #18, commit `2cde88b8338d14802ab35784b537ce01ccb33ad9`: prefer healthy authentic V2 workers with no other active production/Body duty, or actually recruit one through existing canonical generator + recruitment; preserve all gameplay assertions. Add actor/cycle/command diagnostic to the exact existing timer-failure check. No backend/scheduler/SaveService/balance/art/UI renderer change. Static bracket/string scan PASS; runtime on new SHA PENDING.
+
+**Action:** Reuse the existing verified **V4** `RUN_MAP25_QA.cmd` extracted in a fresh folder, which pins live PR #18 HEAD automatically. No new QA launcher. Supply full `MAP25_QA_RESULTS_*` ZIP; inspect remaining gate 05 and if green gate 06 and 07 before any GUI visual/FPS conclusion. If 05 still fails, read new detailed error (v2, action, command, cycle, tick, economy), do not speculate or weaken backend. Update both documents with actual evidence. Keep PR #18 Draft, no CI, no merge, no main push.
+
+---
+
+
+## 2026-10-17 — 11:35:40 Windows QA ZIP: exact TEMP clone false-dirty file, safe V4 ready
+
+**Read direct user ZIP** `MAP25_QA_RESULTS_20261017_113540.zip`. Windows Godot 4.7.2 official + Git 2.55.0 detection PASS; PR #18 HEAD pinned `40ef10459517766e8a4948ade079e4f4d1f3ab0a`; clone and `rev-parse HEAD` PASS. `git status --porcelain` alone reports ` M tools/godot/Verify-P3-6A-Playable-Slice.ps1` and QA launcher hard-stopped before all Godot tests. Only `00_git_smoke`, `00_remote_pin` PASS, final FAIL. This matches a reproducible Git CRLF normalization hazard; without worktree bytes the exact owner diff is not yet proven equivalent. No code regression identified, zero Godot tests run on that attempt.
+
+**Hotfix (USE THIS INSTEAD OF V1–V3):** `TONG_MON_BA_DAO_MAP25_WINDOWS_QA_HOTFIX_V4_20261017.zip` SHA256 `d44fbd494d9611e7d89f905dbe9c787bb80b6ecaffc9fedc4fcd0c9aeaefd41f`. Same single-click CMD/PowerShell launcher with V3 native Git/Godot process exit correctness; validates EXACT known `M` file only after `git diff --cached --exit-code` AND `git diff --ignore-space-at-eol --exit-code` succeed. No reset/force/edits. Any other Git dirt stops safely. Verified syntax anchors and ZIP CRC on Linux plus simulated Git CRLF case, not executed on official Windows.
+
+**Next:** run V4 in fresh separate folder (only double-click `RUN_MAP25_QA.cmd`); collect full evidence directory, distinguish gates 01–07 PASS/FAIL; verify 32 SHA, projection 36, UI camera/Workforce, genuine 1280×720 screenshots and p95/frame-time before changing presentation. Two MDs updated. PR #18 remains draft, no CI/main push/merge, no gameplay/save changes. Avoid creating a new QA pipeline.
+
+---
+
+
+## 2026-10-17 — Windows launcher bootstrap FAIL at git --version; only Hotfix V3 should be run
+
+**Direct pasted Windows evidence:** Godot `4.7.2.stable.official.ed1daf0bf` detected; then `[GIT] git_01___version: --version`; `[FAIL] git exit= at git_01___version:`. This was a **false bootstrap gate FAIL in QA launcher**, before any Godot test; code used `Start-Process -PassThru` and checked an empty `ExitCode` as failure. This does NOT show game/map/Source A failure. Real Windows Godot 01–07 for this attempt are NOT RUN, previous art32/projection36 were historical.
+
+**Replacement (do not use earlier diagnostic ZIP):** `TONG_MON_BA_DAO_MAP25_WINDOWS_QA_HOTFIX_V3_20261017.zip` SHA256 `59ba8941a3776fd4c52ef85be41db665e4f2086d2ebb0989b373fac075866b38`, three files with unchanged launcher names. New shared `.NET System.Diagnostics.Process` helper for BOTH Git and Godot: async stdout/stderr + waited real signed ExitCode; `00_git_smoke` line after valid version. Static/integrity check done; real Windows run **PENDING**. Same isolated TEMP/APPDATA clone, SHA pin, tests and graphical capture; no main, backend, CI or merge edits.
+
+**Immediate next:** extract ONLY V3 into a fresh folder outside game; double-click `RUN_MAP25_QA.cmd`; if FAIL zip and return full `MAP25_QA_RESULTS_*` containing `failure_details.txt`, all `git_*.*` and `qa_gates.csv`. Do not patch Godot renderer based on launcher-only failure. Check scripts and game only against official runtime logs.
+
+---
+
+
+## 2026-10-17 — MAP25 Windows QA first operator results FAIL; diagnostic-only re-run prepared
+
+**Evidence received:** `pinned_live_head.txt` records `ec8631552fcebf89ba32a76dab0f401b0b3a873d`; `qa_gates.csv` records only `FINAL,FAIL,NA,check specific step logs`. No first-failing gate, process stderr, FPS CSV, screenshot or screenshot comparison uploaded. **FAIL overall; 01 import, 02 SHA32, 03 projection36, 04 main scene camera, 05 Workforce, 06 multi-instance, 07 capture all NOT VERIFIED on this run.** Earlier historical PASS remains historical only.
+
+**Action taken:** independently audited existing PowerShell launcher. It merges native Git stderr into PowerShell under `$ErrorActionPreference=Stop`, a known potential pre-gate-01 failure for Git clone progress; this has NOT been proven as the actual cause. Existing old failure handler emitted only generic CSV row. Prepared **diagnostic revision of same launcher**, three same names `RUN_MAP25_QA.cmd`, `RUN_MAP25_QA.ps1`, `README.txt`, external ZIP `TONG_MON_BA_DAO_MAP25_WINDOWS_QA_DIAGNOSTIC_20261017.zip`, SHA256 `eb05783bbc95c8c683fadb512b7d41f3e6dd23fcf47d519e9fedad0f39b783eb`. Revision logs `launcher_progress.txt`, `failure_details.txt` with `FAILED_STEP`, separated Git stderr/stdout and preflight pin/clone verdicts before running unchanged Godot gates. **No new repo launcher**, no code other than pre-existing repair/test probe, no local save/workspace interaction.
+
+**Next operator instruction:** extract diagnostic ZIP OUTSIDE game, replacing prior extracted runner (not next to game), click `RUN_MAP25_QA.cmd` once, ZIP and upload full `MAP25_QA_RESULTS_*`. First read `failure_details.txt`, `launcher_progress.txt`, `qa_gates.csv`, `git_*.stderr.txt`, `01_*.stderr.txt`; identify the first exact failure before any presentation patch. Keep GitHub PR #18 Draft, no CI, no main push/merge, no backend change. Update this handoff and checkpoint with official Godot log or remain PENDING.
+
+---
+
+
+## 2026-10-17 — MAP25 Windows GUI/Perf QA one-click — PACKAGE READY, WINDOWS GATE 01–07 PENDING
+
+**Current scope:** user authorized preparation only; no changes to Economy V2, One Active Job, Warehouse, scheduler, SaveService, combat, layout, Source A binary, or main. PR #18 remains DRAFT. `main` previously verified SHA `461caca1171462e0da092f21108c5c1733157ad9`. Read live branch HEAD immediately before future writes.
+
+**Additional probe commit:** `28524a84aa0d9bd4f2f2254b3da6b1dc80bba41e` instruments active zoom redraw during measurement, still UNRUN.
+
+**New QA probe:** `godot/tests/presentation/sect_map25_visual_perf_capture_test.gd`, created `96943842630607f38a39dfc8af298073ab80a1cf`; only actual camera/panel open calls, five 1280×720 screenshots, collected frame intervals/process time/FPS/draw calls/nodes/memory on Windows graphical rendering, CSV + capture metadata. No core/save/UI product changes.
+
+**Downloadable external operator ZIP:** `TONG_MON_BA_DAO_MAP25_WINDOWS_QA_ONECLICK_20261017.zip`, SHA-256 `16c689c9e7298314f2694fdc4eadb27593fcc05d9678e8f2bd01d9b594f04a04`, includes `RUN_MAP25_QA.cmd`, `RUN_MAP25_QA.ps1`, `README.txt`. It reuses EXISTING Godot tests, rather than cloning their assertions or multiplying runners; separately staged because the owner's previous MAP25 QA CMD/PS1 lives in an external Windows ZIP rather than GitHub. One-click cmd resolves official Godot 4.7.2, asks Git for fresh PR head and pins it in an isolated temporary clone, redirects process APPDATA/LOCALAPPDATA to disposable save namespace and tests 01 import, 02 32 SHA, 03 projection 36, 04 actual camera/workforce, 05 GUI Workforce E2E, 06 multi-instance. It optionally builds baseline worktree at pre-fix SHA `8b23f78797e99ed5568f3d61b1611b6426c616a8`, runs the same graphical probe before/after and emits metrics/snapshots + logs. Repo has no new launcher/pipeline files.
+
+**STATUS NOT RUN:** This chat has no physical Windows Godot 4.7.2 runner; runtime gate PASS, actual snapshot visual, fps/p95 comparisons, Android touch/PCK, O6/O8/SAFE/full remain PENDING. Historical 01/02/03 Windows PASS were for prior commit; historic 04 FAIL parser bug remains pending official post-fix verification. Graphic FPS/p95 measured only when owner runs, never infer from static code.
+
+**Next:** extract ZIP outside game, double-click `RUN_MAP25_QA.cmd`; send whole generated `MAP25_QA_RESULTS_*` folder. Assess log first failure; do not change backend or reduce assertions to green. Update `CURRENT_CHECKPOINT.md` + `NEXT_CHAT_HANDOFF.md` with actual SHA, exit, metrics, snapshots. Keep no CI, no push main, no merge.
+
+---
+
+
+## 2026-10-17 — GUI-MAP25 Repair V1 handoff — new code STATIC ONLY; real Windows/performance QA PENDING
+
+**Read `AGENTS.md`, architecture, latest `CURRENT_CHECKPOINT.md` first.** Draft PR [#18](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/18) (`integration-v2-pr9-pr10-pr17-20261016`) includes six repair commits `1e581e3` (flat fallback markers), `cfdda1e` (camera unchanged short-circuit), `1d0c293` (static viewport UPDATE_ONCE), `67d58ca` (compact adjacent Workforce picker/actual disabled reason), `5eab832` (map regressions), `6028df4` (picker regressions). Latest documented code commit `6028df48cb175389fa075a3aa6f950c45aa9c2bc`; doc checkpoint `844b69830e5456afeaa583fdbb65966eeb11714e`. **Before any further write read live PR HEAD; these pins become stale after docs commit.** `main` `461caca1171462e0da092f21108c5c1733157ad9` verified identical when work started.
+
+**Verified:** exact four code/test paths changed relative to starting PR HEAD `8b23f787...`; source code previously created 3D fallback polygons for non-PV01 art. New fallback footprints preserve producer canonical IDs; the GUI is now configured 480×516 alongside the right panel. Static bracket/strings scan reported no mismatch; no backend/Economy/Warehouse/Scheduler/SaveService/Original SHA PNG changed. No CI/merge.
+
+**Not verified:** official Godot 4.7.2 import/parser for new changes; runtime gate 04 was FAIL in previous owner QA before reserved `match` fix; GUI screenshots/touch picking, map marker legibility, SubViewport UPDATE_ONCE correct refresh behavior and FPS/frame-time improvements require real Windows runtime/profiler. The historical 32/32 SHA and 36/36 projection PASS belong to older SHA; do not relabel them current. O6/O8/SAFE/SaveService, Android export/package source hash remain PENDING.
+
+**Next permitted work:** run existing isolated single-click Windows QA at pinned live PR HEAD (never touch owner workspace/save); capture stderr/exit for 01_import, 02_hash, 03_projection, 04_real_main_scene_and_workforce, `gui_workforce_v1_e2e_test.gd`, `gui_multiple_resource_instances_test.gd`; visually validate map/Workforce 1280×720. Use Godot profiler baseline vs revised code if feasible for static camera/pan-zoom/picker; do not invent performance figures. Only repair proven presentation regressions in exact allowlist; backend changes require separate explicit permission. On PASS, update these two existing MD documents; stay draft PR #18, no CI, no merge.
+
+---
+
+## 2026-10-17 — MAP25 Windows Gate-04 reserved keyword parser FAIL; focused test-only fix, rerun pending
+
+**Owner Windows Godot 4.7.2 real QA at PR #18 HEAD `de170cf9fae0da629d7d40e24b308fcf33d7d80c`, run 10:25–10:26 ICT:** `01_editor_import` exit 0 **PASS** (no script errors); `02_art_hash_gate` exit 0 printed `MAP25 SOURCE A SHA-GATED ART CONTRACT PASS accepted=32 missing=0 rejected=0` **PASS**; `03_isometric_projection` exit 0 printed `MAP-2.5D PROJECTION 36 CASES PASS` **PASS**, no leak/error stderr stopping the wrapper. Step `04_real_main_scene_and_workforce` exited 1 on `Parse Error: Expected expression to test after "match"` at `res://tests/presentation/sect_iso_main_integration_test.gd:65`. The test could not be loaded, so **no evidence yet** for real main scene/workforce/camera runtime. Wrapper correctly stopped overall acceptance. 32/32 actual Source A bytes remain SHA PASS. Owner workspace/save isolated; main unchanged; no CI/merge.
+
+**Code-authorized scoped fix committed [`4c36c9737846fe4edb7bb3eb3549eccdd02031d4`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/4c36c9737846fe4edb7bb3eb3549eccdd02031d4):** solely `godot/tests/presentation/sect_iso_main_integration_test.gd`, rename local dictionary `match` (GDScript reserved keyword) to `matched_instance` in its declaration, assignment, empty-check and world-position lookup. No assertions weakened and no game/production/backend/art code or save format changed. **Static diff checked; official Windows rerun PENDING.**
+
+**Next:** rerun existing QA four gates with pinned LIVE PR #18 HEAD after these docs commits, no-push isolated TEMP clone/save; if all PASS, start real Godot 4.7.2 GUI 1280×720 via `OPEN_MAP25_GAME.cmd` and supply screenshot for actual visual/camera/Workforce review. Android export SHA-PCK integration and full cumulative gameplay regression remain independent PENDING. Old QA packages pin outdated SHA, must not reuse unchanged.
+
+---
+
+## 2026-10-17 — MAP25 official Windows 4.7.2: importer PASS, SHA-gated art PASS 32/32, projection 36 assertions PASS but cleanup ERROR; fixes committed, rerun PENDING
+
+**User Windows logs at HEAD `ccc08d3b890c339cb74201922766e92f7a4158f2` (run 10:15 local):** original bytes validated **32/32 SHA256**, `01_editor_import` Godot 4.7.2 exit **0**, no parser errors, **PASS**. `02_art_hash_gate` exit **0**, printed `MAP25 SOURCE A SHA-GATED ART CONTRACT PASS accepted=32 missing=0 rejected=0`; texture acceptance **PASS**, but **32 warnings** about `Image.load_from_file` being incompatible with exported resource images. `03_isometric_projection` exit **0**, printed `MAP-2.5D PROJECTION 36 CASES PASS`, but stderr `WARNING: 1 RID of type CanvasItem was leaked`, `WARNING: 3 ObjectDB instances were leaked at exit`, and `ERROR: 1 resources still in use at exit`. Wrapper correctly **stopped overall QA as FAIL**. `04_real_main_scene_and_workforce`, Windows screenshot, Android export and cumulative gameplay regressions were **NOT RUN**.
+
+**Focused repairs committed on draft PR #18 (no CI/merge/main):** [`4df0f3007b03faeef2468273e51480012c4270e4`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/4df0f3007b03faeef2468273e51480012c4270e4) removes an unnecessary `SectIsometricWorldV1.new()` Node2D allocated outside the scene tree by the projection contract; the same world class constants and all 36 coordinate assertions remain checked. [`c5159e2fd4a3c5e524a06ab5df2cc4ad5fe3e519`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/c5159e2fd4a3c5e524a06ab5df2cc4ad5fe3e519) replaces `Image.load_from_file(path)` + `ImageTexture.create_from_image` with `ResourceLoader.load(path) as Texture2D`, preserving the exact original-PNG `FileAccess.get_sha256` **before loading** and existing allowlist/fail-closed behavior. No simulation/One Active Job/Workforce/economy/save/land geometry/32 original PNG bytes modified. These changes have static scope confirmation only; **new Windows Godot rerun PENDING**.
+
+**Export-specific OPEN debt:** `FileAccess.file_exists/get_sha256(res://...png)` checks original PNG bytes. Godot exports normally remap PNG resources to imported textures; the original PNG file may be absent from Android PCK. The new loader uses the exported-safe ResourceLoader for texture retrieval **after** the unchanged raw SHA gate, but this is **NOT** Android-ready until the future export configuration explicitly bundles source PNG bytes or a separate approved integrity design makes the gate work in exported builds. Do not weaken SHA fail-closed or silently trust a filename for Android. No `export_presets.cfg` is presently in PR #18; Android export must remain PENDING.
+
+**Next:** use the latest PR HEAD after this docs update in the existing single-click isolated Windows 4.7.2 QA, same 32 hashes, unique `user://`, strict stderr error/exit checks; run import, art accepted=32, projection 36 clean (including exit cleanup), main-scene Workforce/camera, then genuine 1280x720 screenshot. If another runtime failure, fix only the evidence-backed first failure. Cumulative O6/O8/SAFE, Android and visual approval remain PENDING.
+
+---
+
+## 2026-10-17 — MAP25 WINDOWS QA second import: PNG import reached, nested model class parse fails; indentation fixed, runtime rerun pending
+
+**Real Windows Godot 4.7.2 owner evidence:** QA at pinned PR #18 `8c1522ebda133c1c98d290b945cc63a53bb53b88` detected `4.7.2.stable.official.ed1daf0bf`; GitHub PNG SHA-256 **32/32 PASS**; `01_editor_import` numeric process exit **0** but stderr contained compiler/script failures, so **QA is FAIL**. `01_editor_import.stdout.txt` explicitly enumerated and completed 32 PNG import steps. `01_editor_import.stderr.txt` reported `Could not parse global class "SectIsoMapModelV1"` referenced from `sect_isometric_world_v1.gd:93/125`, followed by derivative `Cannot infer type` of `placement` (128), `hall` (134), `store` (135), `forge` (136), and dependent main-scene compile failure. The stderr did **not** provide the underlying parser line inside the model itself. Three focused runtime tests and Windows screenshot **NOT RUN**, Windows acceptance **OPEN**. Godot editor exit=0 alone is **not** PASS if stderr contains `SCRIPT ERROR`.
+
+**Specific structural defect found by source inspection:** production `godot/src/presentation/p3/sect_iso_map_model_v1.gd` was copied from ENV02A lab with its `_init` function body indented by **four spaces on four lines**, whereas every other indented code line in that same file used **tabs**. This is inconsistent GDScript indentation and a plausible isolated model-parser blocker. Corrected **only those four indentation lines** to tabs in commit [`a5f66826a71b9630359c7b8dc7f399ef3f3e9e17`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/a5f66826a71b9630359c7b8dc7f399ef3f3e9e17). Verified source now has no space-indented code lines, only tab indentation. No route algorithm, renderer content, state, save, gameplay or economy changes; leave the world model's four derivative inference errors unchanged pending a real rerun to avoid unnecessary speculative edits. **Root-cause hypothesis NOT yet verified by official Godot after commit.**
+
+**Next gate:** regenerate the already available **Python-free, isolated TEMP-clone Windows Godot QA** with live HEAD after docs commits; the wrapper checks SHA pin, 32 original PNG hashes, isolates `user://`, fails on stderr errors even when Godot exit=0, executes importer / art gate accepted=32 / 36 projection samples / main-scene workforce camera. Do not request old FIX pack; do not run CI, merge, push binary again, or touch owner's workspace. If next import still errors, first obtain a *direct parser error from the model file* rather than adding blind type fixes; record it in checkpoint. Other cumulative O6/O8/SAFE and Android remain PENDING.
+
+---
+
+## 2026-10-17 — MAP25 Godot 4.7.2 Windows QA FAIL at parser; narrow typed-string correction committed; rerun pending
+
+**Real Windows failure (owner console 2026-10-17 09:58 local):** official `4.7.2.stable.official.ed1daf0bf` detected, checked exact prior PR #18 HEAD `775dc38f0b0d9959418c2ad9d7caa05bc3f5c6f1` in disposable clone, **32/32 real GitHub PNG SHA256 PASS**, isolated custom `user://` save namespace. `01_editor_import` hit `SCRIPT ERROR: Parse Error: Cannot infer the type of "who" variable because the value doesn't have a set type` at `res://src/presentation/p3_2_landscape_sect.gd:959`, followed by failed script load. The launcher did not record a trustworthy numeric import exit code (`EXIT=` blank), but it stopped on reported script errors; **01_editor_import FAIL, 3 focused tests NOT RUN, visual screenshot NOT RUN**. No Windows user workspace/save changed; no CI/merge/main edit.
+
+**Scoped code correction:** [`305b6821e721d3e590722ac6ca6a3b7342d30594`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/305b6821e721d3e590722ac6ca6a3b7342d30594) changes **only** `godot/src/presentation/p3_2_landscape_sect.gd` line 959, from `var who := "Chưa giao" if assigned.is_empty() else (...)` to `var who: String = "Chưa giao" if assigned.is_empty() else (...)`. The expression reads a dynamically typed `state.disciples` dictionary entry, which makes `:=` unable to infer a static type in Godot 4.7.2. No branching/state/save/economy/One Active Job/asset logic changed. **Static single-line diff checked; actual Windows Godot parser rerun is PENDING.** Do not relabel MAP25 PASS until the importer, art gate accepted=32, projection and main-scene integration all run.
+
+**Next:** use refreshed pinned PR HEAD after these docs commits in the **existing isolated, no-push/no-CI one-click QA**, retain exact stdout/stderr/exit and fail-closed logging, keep user save separate. After a clean gate, launch actual Godot GUI 1280x720 and send screenshot. If another parser/runtime error appears, address that exact error without broad refactor. Previous baseline EOL-only dirty line `tools/godot/Verify-P3-6A-Playable-Slice.ps1` is confined to the Windows temp clone and unrelated to this parser failure.
+
+---
+
+## 2026-10-17 — MAP25 ORIGINAL SOURCE A ART IMPORTED TO GITHUB (32/32) — Godot runtime/visual PENDING
+
+**Direct GitHub confirmation (not merely owner transcript):** the owner's Windows FIX4 import completed with process exit 0 and remote fast-forward success. Draft [PR #18](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/18) HEAD immediately after the asset commit was [`10c85e80067a81be98a29a97a5d30c434997b7bf`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/10c85e80067a81be98a29a97a5d30c434997b7bf), parent `4806ec8c3312a362184293c1bb9d3da4de86a27a`; GitHub compare confirmed exactly **1 commit / 32 added files / zero other files**, all under `godot/art/source_a_env02a/`. GitHub recursive tree confirmed 32 physical PNG entries: **3 PV01 buildings, 4 terrain, 6 roads, 19 vegetation**. Draft not merged; main not touched by the tool. Source transport SHA-256 `8b3976e2f7400063798fbac88ced5d85c24beee9aa057e369fdbfc937cf3f920`, 32/32 actual PNG SHA-256 matched both source manifests per Windows transcript; owner-supplied log `MAP25_IMPORT_RESULT_20261017_094701.log` shows successful non-force push. Existing PNG byte hashes match original verified source archive, not invented art. **The prior binary-access and GitHub-import blockers are CLOSED.**
+
+**Strict QA boundary:** launcher output `WARNING: Godot 4.7.2 not confirmed; ... Found: 4.7.2.stable.official.ed1daf0bf` was a detection/validation issue in the launcher, **not** evidence of an engine installation failure. It did not run official Godot importer/three focused tests before pushing. **Godot 4.7.2 import/parser, asset-gate accepted=32, isometric projection, real main scene/workforce, Windows 1280×720 screenshots, Android mobile gestures/performance and cumulative O6/O8/SAFE/One Active Job regressions remain PENDING**. Do NOT mark MAP25 visual/runtime PASS based on a successful upload or JPEG/PNG integrity alone. Art changes only; no gameplay/renderer code edits, no manual CI, no merge.
+
+**Next required step:** official Godot 4.7.2 Windows QA in a disposable clone of PR #18 (keep user:// save namespace isolated), run `sect_map25_verified_art_gate_test.gd`, `sect_iso_projection_contract_test.gd`, and `sect_iso_main_integration_test.gd`; collect per-test stdout/stderr/exit code, and inspect a genuine 1280×720 scene screenshot. Once runtime gate and visual are clean, pilot one existing Batch-01 `1113028_1` female rig (`stand/walk`) in the genuine scene; do not reconvert the entire batch or pretend Android PASS. When these docs are committed after the art commit, **always use the new live PR HEAD**, not the old art commit, for the QA checkout.
+
+---
+
+## 2026-10-17 — MAP25 Windows PowerShell importer: clean-clone preflight stopped, no PNG push
+
+**Owner Windows console evidence** at 2026-10-17 09:26 local: transport SHA-256 `8b3976e2f7400063798fbac88ced5d85c24beee9aa057e369fdbfc937cf3f920` PASS, PR #18 HEAD lease `05d351bd4538e966a8fa74cc8c4824a0231b7e6f` PASS, Git reached clone step, then tool refused with `Unexpected dirty new clone; refusing art import.` This log excerpt does not include the underlying `git status --porcelain` rows. Treat cause as **unresolved** (possibly checkout/normalization or empty-output handling); do not assert a known exact cause or bypass genuine dirty-worktree rejection. Source A 32/32 bytes remain validated off-repo, but GitHub import stays **0/32**; Godot 4.7.2 tests not reached.
+
+**Tool-only follow-up prepared (Windows runner PENDING):** use a uniquely-created isolated temporary Git clone with `--no-checkout`, explicit `core.autocrlf=false` settings and a pinned-HEAD `reset --hard` confined to the *new temporary clone*. Capture and show the exact nonblank porcelain status lines on failure instead of reporting only `dirty`. Abort if any genuine uncommitted/untracked content persists; do not modify owner's original workspace/save; no force push/merge/manual CI. Any future genuine PNG commit must use `[skip ci]` to request skipping GitHub Actions automatically triggered by that commit, though repository/platform policies may still apply. Recheck HEAD after these documentation-only commits when packaging the repair.
+
+**Evidence status:** technical repair authored/pending Windows execution, no claimed successful push or renderer runtime PASS; 32 verified original PNGs available in the recovery pack. Request `MAP25_IMPORT_RESULT_*.log` only if the next launcher fails; prioritize a one-click, Python-free, fail-closed workflow.
+
+---
+
+## 2026-10-17 — MAP25 Windows one-click import Python alias error 9009; PowerShell-only retry
+
+**Owner-supplied Windows launcher result:** original `RUN_MAP25_IMPORT.cmd` stopped before importing assets because `python` resolved to the Microsoft Store App Execution Alias rather than a Python 3 runtime, resulting in exit **9009**. No successful clone, Godot run, art commit or GitHub push was evidenced. Live PR #18 HEAD was checked still `47041cada3d9791d536dfe6ab1021141554fd8e5`, DRAFT; `main` not edited. This is a local tooling/environment error, **not** a failure of the original PNG hashes.
+
+**Prepared technical fix, not yet executed on Windows:** replacement self-contained one-click ZIP changes the launcher to **Windows PowerShell 5.1/.NET ZIP/SHA-256 with NO Python dependency**. It verifies pinned source transport ZIP SHA, leases exact PR HEAD, clones to isolated `%TEMP%`, checks BOTH original GitHub SHA manifests and all **32/32** ZIP member PNG decompressed-byte digests plus basic PNG signature/IHDR, then copies and rechecks 32 destination PNGs. If available, runs official Godot 4.7.2 importer + 3 focused MAP25 tests; stage/commit/push ONLY `godot/art/source_a_env02a` PNGs using non-force fast-forward on draft PR #18 after gates. Any failure aborts without mutating the owner's existing workspace or saves. Does not merge or dispatch CI; existing workflow auto-triggers remain outside launcher control. Requires existing Git for Windows and private-repo credentials.
+
+**Validated in this environment:** package contents and ZIP SHA readback match pinned `8b3976e2f7400063798fbac88ced5d85c24beee9aa057e369fdbfc937cf3f920`; its **32/32** original PNG bytes still match recovered evidence SHA-256. **Windows PowerShell script execution itself NOT RUN here** (no Windows PowerShell runner), so this is FIX AUTHORED / Windows QA PENDING, not proven end-to-end. Original Source A image bytes recovered and validated 32/32 in prior checkpoint; Github PNG import remains **0/32** pending successful one-click push. The ZIP must use the newest PR HEAD after these docs-only checkpoint commits. Request the new `MAP25_IMPORT_RESULT_*.log` after owner retries. No gameplay/save/economy/renderer source was changed.
+
+---
+
+## 2026-10-17 — Source A ORIGINAL PNG BYTES RECOVERED 32/32 from owner upload; repo import pending
+
+**Authorized raw source now available:** owner attached `SourceA_Map_Prep_20261012(1).zip`, size **28,000,430 bytes**, full ZIP SHA-256 `c453ef9e0a2762be0c6d17599d5736cb6b7e250ba11b6c9753efc8c1fd70f1a4`; ZIP enumerated with Python (`428` members). This **supersedes only the earlier missing-raw-file blocker**; original Library `TongMonBaDao_ENV02A_192World_Lab.zip` remains inaccessible but is no longer needed.
+
+**Actual original PNG SHA-256 verification:** scanned each PNG member by decompressed-byte digest, ignoring untrusted filename. Against `godot/data/presentation/map25_source_a_verified.json` (which is 32/32 equal to `labs/env02a/ENV02A_BASELINE_ASSET_SHA256.json`), found exact original PNG bytes for **3/3 PV01 buildings, 4/4 terrain, 6/6 roads, 19/19 vegetation = 32/32 PASS**, **0 missing / 0 tampered**. Pillow loaded/decoded all 32 PNGs as RGBA with nonzero dimensions; untouched original bytes retained. Owner-source metadata + crypto hashes demonstrate pack integrity; this is **not Godot runtime acceptance**.
+
+**Prepared verified transport archive:** `MAP25_VERIFIED_32_SOURCE_A.zip`, 32 original PNGs in proper curated `source_a_env02a/...` destinations, size `2,172,522` bytes, SHA-256 `8b3976e2f7400063798fbac88ced5d85c24beee9aa057e369fdbfc937cf3f920`. This is NOT fabricated artwork and is NOT a PR file yet.
+
+**Delivery boundary:** current sandbox can verify uploaded binary but cannot send the resulting binary directly into authenticated GitHub writes from its byte store. **Do not state that assets have been committed or Godot has displayed them.** Instead, a separately packaged, protected one-click Windows import/commit tool will use the existing repo `tools/assets/restore_map25_env02a_art.py`, check the exact draft PR head, stage only 32 art paths on a **fresh isolated clone** and fast-forward push with no CI invocation. If clone credentials/runner are unavailable, remain BLOCKED ON BINARY PUSH; do not overwrite the user's working repository, do not merge main, and do not claim runtime PASS.
+
+**Actual local evidence:** ZIP byte access PASS, 32/32 image hash PASS, 32/32 Pillow PNG decoder PASS, curated transport zip 32 members. Official Godot 4.7.2 importer, SHA-gate focused test, 2.5D projection, main scene/headless + Windows GUI/screenshot, mobile gestures and cumulative backend regression are **NOT RUN/PENDING** at the inspected PR HEAD. Previous 4 synthetic Python tests PASS remain independent historical proof.
+
+---
+
+## 2026-10-17 — MAP25 Source A archive recheck; Python restore contract 4/4 PASS; genuine art BLOCKED
+
+**PR #18 starting HEAD:** `8ec1079681733fbb1f458620f81044111cfc3c78` (DRAFT, base PR #9). `main` was independently checked at `461caca1171462e0da092f21108c5c1733157ad9` and was not targeted for edits. This is a **docs-only evidence update**; source/renderer/gameplay binaries were not changed.
+
+**Byte-access attempts, current session:** No conversation-mounted files. Library records include `TongMonBaDao_ENV02A_192World_Lab.zip` (3,425,000 bytes), `TongMonBaDao_ENV01_SourceA_Map_Lab(1).zip` (3,403,950 bytes), and `SourceA_Map_Prep_20261012.zip` (28,000,430 bytes); attempts to materialize `raw_file` from each failed with **"This Project file does not have an authorized raw-byte materialization path."** Archive filenames/sizes are metadata only; no actual ZIP or PNG bytes were obtained. GitHub PR #18 recursive tree (617 entries) has **0 PNG/ZIP files**; Source Knowledge main recursive tree (26,256 entries) has **0 PNG/ZIP files**; game repo releases returned none. Workflow artifacts could not be enumerated via the available approved GitHub read endpoint (not evidence that none exist).
+
+**Hash/provenance boundary:** live ENV-02A baseline has 35 entries; the production allowlist has **32/32 matching SHA-256 strings and exact destination paths**: PV01 buildings 3, terrain 4, roads 6, vegetation 19; the other 3 baseline entries are previews/evidence excluded on purpose. This is **manifest-to-manifest textual verification**, not a hash of recovered image bytes. Actual original PNGs verified `0/32`, imported `0/32`, visibly Source A sprites in main map `0/32`; procedural fallback stays active.
+
+**New actual focused Python test evidence:** retrieved GitHub files `tools/assets/restore_map25_env02a_art.py` (Git blob SHA-1 `de03d2d6e1c1c8da3605d6e7b5d89a9d25570cec`) and `tools/assets/test_restore_map25_env02a_art.py` (Git blob SHA-1 `5fb4a569a2317f7c79f39b99e71fd4f501895483`). Both local test copies were independently confirmed `git hash-object` byte-for-byte identical to the GitHub blobs. Ran `python3 -m unittest -v test_restore_map25_env02a_art.py`: **4 tests, 4 PASS, 0 FAIL, 0.012 s**. Cases: SHA match independent of archive name and idempotence, missing image fail-closed, modified image rejection, refusal to overwrite unrelated existing content. Tests use synthetic PNG-named byte fixtures and do **not** prove real 32 PNG provenance, valid Godot texture decoding, or atomic recovery from an interrupted OS move.
+
+**Status / gate:** Original art recovery BLOCKED BY AUTHORIZED RAW-BYTE ACCESS, not CLOSED. `SectMap25SourceArt` / `SectIsometricWorldV1` previous map code is unchanged. Godot 4.7.2 parser/import/scene runtime, visual Y-sort/footprint/camera/hitbox, Windows screenshot, Android touch/performance, SaveService/O6==4/O8/One Active Job/SAFE/full cumulative regressions are **PENDING/NOT RUN at this PR HEAD**. No CI was invoked; no merge/force-push/main edit. Next action remains obtaining the original authorized ZIP **as accessible raw bytes**, then executing the existing read-only SHA gate before 32/32 import; never substitute preview/fake Source A assets or open gameplay/paid construction.
+
+---
+
+## 2026-10-16 — MAP25 ENV02A ARCHIVE METADATA RECOVERED, BUT RAW ZIP BYTES BLOCKED
+
+**Commit `5748bdc26ef91585e42d2ee73719b0ace6428a14`** on draft PR #18. ChatGPT Library contains a record of `TongMonBaDao_ENV02A_192World_Lab.zip`, 3,425,000 bytes, but materializing that record to local bytes failed with **Project file has no authorized raw-byte path**. Therefore **0/32** PNG originals have been checked/imported; the GitHub Source A code-only lab is still missing binary assets. Do NOT claim recovered artwork or runtime PASS.
+
+Prepared `tools/assets/restore_map25_env02a_art.py`: future one-shot `--archive <original.zip>` dry validation, then `--import` of only 32/32 SHA-matching original PNG to the exact runtime root `godot/art/source_a_env02a`. Four regression tests written under `tools/assets/test_restore_map25_env02a_art.py` but not executed. Documentation: `docs/MAP25_SOURCE_A_ORIGINAL_ASSET_RECOVERY.md`.
+
+Next dependency is access to the **raw** original library file or an explicitly reattached source ZIP; this does not require the owner to use a PC. Once bytes are accessible, check SHA, integrate only originals, then run Godot import/focused scene/Android art QA; no new gameplay, no CI, no merge. Historical MAP25 code/test at `b8b003280ef235767cc4627bf7df9adea8a618a2` and source art loader remain intact. No technical renderer redesign is necessary until genuine images and QA evidence are available.
+
+---
+
+## 2026-10-16 — PR18 MAP25 ART follow-up, verified static code, missing binary
+
+**Source/game SHA `b8b003280ef235767cc4627bf7df9adea8a618a2`.** Original ENV02A SHA manifest and in-game 32-file whitelist are byte/hash equivalent for every whitelisted path. `SectMap25SourceArt` rejects absent/incorrect bytes; `SectIsometricWorldV1` draws matching house sprites with PV01 footprints, ENV01 terrain/road/vegetation with depth sort, otherwise fallback. Correct main game SubViewport child order ensures actor visual overlays map but not HUD; 2-direction character movement uses rig mirror. GitHub has **zero Source A PNG files**, so no real texture is currently displayed, no screenshot/runtime certified. Static GDScript lexical 6/6 + whitelist 32/32 matches only; focused tests are written but **UNRUN**. User must only provide owner-authorized original asset ZIP when convenient; no PC requested. No Economy, Warehouse, Scheduler, SaveService, Combat, injury changes, no CI/merge main. Next gate: original 32 matched files under `godot/art/source_a_env02a`, official Godot4.7.2 import, image-scale/depth/tap evidence, Android touch; regression tests and cumulative O6==4/O8. Check this SHA rather than historical PR9 Windows PASS.
+
+---
+## 2026-10-16 — MAP25 MAIN-SCENE 2.5D / PR #18 `e64fbfe35ac08f8b5e8be62553a31811c2b40ce7`
+
+**Status:** code-delivered, static-only. Godot native main scene `p3_2_landscape_sect.gd` now mounts `SectIsometricWorldV1` inside independent SubViewport+Camera2D behind the original HUD; old graybox map visuals are hidden, old test node IDs retained. ENV-02A `TransferMapModel` copy renamed `SectIsoMapModelV1` owns presentation-only 192 grid and AStar doors/roads, never saved. Starter 48×48, chunk16, iso half-tile25×13, camera pan/zoom/touch synced, picks map exact canonical Mine/Forest/Field BuildingState IDs and current GUI Workforce. Draw fallback polygon houses/plants/paths because GitHub lab contains NO 35 source PNG; do not claim Source A art integrated. Do not create fake Hall, construct/unlock or new persistent layout; gameplay backend remains unchanged. Tests `sect_iso_projection_contract_test.gd`, `sect_iso_main_integration_test.gd` authored but **Godot 4.7.2 NOT RUN**; check real viewport, model route, input, actor layer, render order and platform on actual runner. Previously locked backend SHA unchanged and PR18 still draft; no CI/merge. Prior ENV02A external owner pack art hashes and QA remain outstanding. See `docs/MAP25_MAIN_ENV02A_INTEGRATION_2026-10-16.md`.
+
+---
+
+**Final gameplay/test SHA:** `5de888843df04cfd7f3b9269823c00415463224f`; previous `2e6cdc2` code SHA was followed by a small UI-only immutable-preview scroll correction. PR #18 still draft; no Godot runtime run.
+
+## 2026-10-16 — LAY-V2 EXECUTION HANDOFF / PR #18, CODE SHA `2e6cdc2e67a456e4836dcf4d2f252773f486a9d9`
+
+**Done (not a playable Build feature):** PR #12 read-only `ResourceBuildingExpansionPolicyV2` and `economy_v2_expansion_cap_preview_test.gd` integrated byte-for-byte; new immutable `SectLandRegionPreviewV2` 13-region 192×192/48×48/16×16 read-only geometry + `sect_land_region_preview_v2_test.gd`. Existing `p3_2_landscape_sect.gd` now has explicit selector of canonical Mine/Forest/Field instance ID, actions and selected-building policy/upgrade use that ID, and hub shows proposed limits and locked land without enabling paid Build. Test-only `gui_multiple_resource_instances_test.gd` checks actor assignment, secondary timer and save round-trip, does NOT claim user built a paid house. No second layout, warehouse or clock.
+
+**Blocked from true LAY-01/02/03/04:** fixed-layout ADR-0003 must be explicitly amended; canonical Hall `BuildingState`, full authorized real-instance map seed manifest, ENV-02A Godot Windows 4.7.2 visual/path proof, and numeric owner approval of PR #13 §9.5–9.7 Hall/new construction/land tariff candidates are required. Do not invent prices, unlock or silently migrate saves; consumer of PR #12 hypothetical Hall cap must remain fail-closed. Separate tech decisions after those owner game decisions can be handled autonomously.
+
+**Test status:** source-structure static only; 4 focused scripts for cap, land geometry, second-instance UI and GUI-Workforce are UNRUN on Godot 4.7.2; O6 ==4 / O8 / One Active Job / injury / SAFE and P3.7 full Windows and Android remain PENDING. Do not call runtime PASS; no CI or merge main. Exact code `2e6cdc2e67a456e4836dcf4d2f252773f486a9d9`, followed by this docs-only checkpoint.
+
+---
+
+## 2026-10-16 — SECT-PLAYABLE V1: END-TO-END PLAYER ROUTING, DRAFT PR #18
+
+**Exact code/test SHA `d147477b184deff1ff266bcb2be90db2098be453`** under draft PR #18. Added a central SectOps hub to real `p3_2_landscape_sect.gd`: top **Điều hành** button, bottom **Tông Môn** hub, true 3-building resource status/employee + Warehouse numbers, Guidance recruit, Mine/Forest/Field workplace choice, Kho/market and Disciple profile navigation; manual physical `LiveGameRuntimeV2.save` action. Guidance after authentic candidate acceptance exposes one-click **Phân công ngay** into prefiltered Mine Workforce picker. No invented simulation state or new scheduler/stock/timer. Existing worker cards, advanced plan controls and save states remain. One new focused `sect_playable_home_loop_test.gd` exercises end-to-end navigation, true recruiter token and V2 admission, one worker/worksite, Warehouse access, actual autosave + SaveService reload and invariants. Test authored, **Godot 4.7.2 NOT RUN**.
+
+**Preliminary evidence:** lexical/script delimiter scan 4/4 no duplicate functions; eight locked gameplay blob SHA equal PR #9. Full Godot import/compilation and runtime tests O2, GUI-WORKFORCE, O3/O4/O6/O7/O8/O9/SAFE/GP-02B1/02C1/P3.7 FULL; Windows screenshot, Android touchscreen and sustained 1,000–3,000 performance are **PENDING**. Never label playable PASS from source/CI-only evidence. No CI requested, no merge. Continue bundled technical repairs after actual failures, not small owner prompts. Gameplay/balance source decisions only if absolutely necessary.
+
+---
+
+## 2026-10-16 — GUI-WORKFORCE V1 CODE HANDOFF — PR #18
+
+**Implementation SHA `7377a60d55f06bf22d14ff65e7a90eebdca375d1`.** Existing game main scene `p3_2_landscape_sect.tscn` remains unchanged, Godot-native `p3_2_landscape_sect.gd` now gives each Mine/Forest/Field one compact right-panel operator card, a 16-row paginated search picker, buttons Select/Replace, Start, Remove, busy status and warehouse balance. `WorkforceSystem.transfer_production_worker` performs fully validated atomic transfer between idle crews, replacing an idle former operator without losing any committed work. Hidden advanced roster/policies preserve prior UI routes. Only canonical BuildingState/DiscipleState/ProductionPlan/SimulationScheduler/Warehouse drive output. Existing Economy-A disabled fresh saves get an explicit enable-timer action; none is silently enabled.
+
+**Verification:** static 7/7 lexical scripts, NOT Godot parser/runtime, NO CI, NO merge. New `gui_workforce_v1_e2e_test.gd` and patched `economy_a_landscape_ui_test.gd`/`p3_o7_linh_forest_test.gd` are **UNRUN**. Next runtime gate: import Godot 4.7.2, then GUI-Workforce focused E2E, O3/O4/O7/O8/O9, Economy-A/V2, O6==4, GP-02B1/02C1, save/offline, SAFE, P3.7 FULL, Windows screenshot, Android touch. Keep evidence SHA-specific and no forced computer request. PR #9 O8 and Windows prior SHA evidence are historical only; not proof for PR #18.
+
+**Boundaries:** 1 worker per Mine/Forest/Field; Field same worker many plots; no change to Economy V2 production curves, 30×10 Realm/Body, injury 0/1/120, CombatStats, Warehouse, Scheduler or SaveService. Future technical fixes do not require the user to choose an implementation method. Ask the user only if a NEW gameplay rule/number becomes unavoidable. Remaining blockers are runner/visual acceptance and unrelated earned permanent-six-foundation/PvE policy.
+
+---
+
+## 2026-10-16 — PR #18 COMBINED DISCIPLE-V2 REPAIR, STATIC ONLY
+
+**Repository:** `vuanhtuan161094-byte/TongMonBaDao`; open draft PR #18 branch `integration-v2-pr9-pr10-pr17-20261016`, target PR #9 branch (not main). Verified code/test SHA **`333172bd2d50f97f853a0b5ec4fb0f2a9cbe79ff`**, followed only by this checkpoint documentation. PR #9 and PR #10/#17 history preserved, no CI, no merge.
+
+**Delivered:** 3 backend files guard all direct production entrypoints against contradictory current_action/direct_command; issue_command only retires training action when accepted; explicit Body reservation discards stale HOLD/CULTIVATE order only AFTER complete preflight; one worker per Mine/Forest/Field, multiple plots per one Field duty, lawful HOLD cancels timers without rewards. Regression covers action/command guards, Forest, Field, Alchemy, timed Mine save/from_dict/scheduler exact-once wage by `wage:job_id`, Body transitions and permanent Potential HP ratio/birth save roundtrip. Existing source/rates/RealmBody/Injury and canonical state unchanged.
+
+**Truthful evidence:** STATIC bracket/string/comment scan 8/8 only; **Godot 4.7.2 importer/test/runtime NOT RUN/PENDING**; previous Windows FULL_EXIT=0 PR #9 SHA `453df9a` cannot certify new integrated code. Need focused tests, O6 ==4, O8, GP-02B1/C1, SAFE-01/02, authentic SaveService offline and P3.7 FULL on exact new SHA when a runner becomes available. Do not force user to supply a computer; no CI without authorization, no merge main.
+
+**Remaining separate design decisions:** earned permanent improvement resource/receipt; effect timing for permanent Potential acquired during V2 PvE snapshot; advanced gameplay/GUI. The owner now wants bundled technical completion, not micro-approvals. Ask only for a genuine user-facing new game rule/number, not implementation mechanics. If tests reveal concrete failures, repair the cause without weakening assertions or balance.
+
+---
+## 2026-10-16 — STACK-INTEGRATION-02 HANDOFF / DRAFT PR #9 + #10 + #17
+
+**Exact integration gameplay/tree SHA:** `c3d652b9f554687470ce1d3375cdd47ff1c9b6c7` (two-parent merge PR #9 + PR #17). Any subsequent documentation-only commit changes no game/test scripts. At this SHA, Git diff against PR #9 is 11 authorized files; against PR #17 it is 5 authorized files. Godot 4.7.2 combined runtime **PENDING**, not inherited from PR #9 Windows evidence.
+
+New `integration-v2-pr9-pr10-pr17-20261016` branch has PR #9 `cf11d53f2ac48e9b7a220500fece983b675dcd62` and PR #17 `2719dbf6ac32bc5bab2196c25284ced127464406` as merge parents (PR #10 HEAD `f374bc78a5556ad1003d92b27d6ec89c7c929aa3` is on PR #17 ancestry). Preserve untouched original branches/main and their draft PRs.
+
+**Exact content:** the PR #17 Disciple V2 fast path, Foundation/Potential and one-active-job guards + 3 simulations regressions; the PR #9 grain-isolation and actual sect-resident O8 test edits; PR #9 Economy-V2 balance report and QA-debt evidence. Both additions to `CURRENT_CHECKPOINT.md` and `NEXT_CHAT_HANDOFF.md` survive byte-for-byte; integration note is newest.
+
+**Validation:** 9 GDScript texts static delimiter check only, no Godot headless runtime/Windows/Android claim. The previously reported Windows FULL exit 0 at PR #9 `453df9aa0bc39f31f33cf65fc4aedcf688e7bf74` does not certify the integrated tree. Run focused `disciple_v2_scale_safe_path_test.gd`, `disciple_v2_foundation_core_regression_test.gd`, `disciple_v2_one_active_job_entrypoints_test.gd`, `p3_o8_alchemy_loop_test.gd`, plus Economy-A/bulk, O3/O5/O6/O8/O9, GP-02B1/02C1, SAFE-01/02 and P3.7 FULL at an exact commit on Godot 4.7.2 later; UI/Android and 1k-3k sustained PENDING USER.
+
+**Next:** first focused real Godot execution and evidence-led corrections; separately design earned permanent growth sources and PvE HP snapshot safety. No CI, no merge, no balance/schema or source-authority change. Keep prior documentation historical decisions contextual.
+
+---
+## 2026-10-16 — DISCIPLE-V2 LỤC DUY CORE + ONE-ACTIVE-JOB STACKED HANDOFF
+
+New code branch `disciple-v2-foundation-job-20261016` starts from **draft PR #10** `disciple-v2-scale-20261016` HEAD `f374bc78a5556ad1003d92b27d6ec89c7c929aa3`, not from main. Parent PR #9 head observed `cf11d53f2ac48e9b7a220500fece983b675dcd62`, so compare parent ancestry before integration; never silently claim the newer PR #9 tip is included. `main` remains `461caca1171462e0da092f21108c5c1733157ad9`; all PRs draft/unmerged.
+
+**Committed backend work:** finite/overflow checked `FoundationSystem.add_permanent_points` with saved birth snapshot intact, updated derived quality, Potential Realm+Body max HP ratio synchronization and atomic rollback. Existing `CombatStatsV2` already owns Potential on three RealmBodyCore channels, unrelated flat equipment excluded; 30×10 progression not replaced. Direct job/worksite/Field/Alchemy/Body training entrypoints now refuse concurrent occupations; existing resource/Alchemy shared timed-work detection reused, with same-Field plot reuse and legacy carry-drain protected. Zero production/economy price edits; Injury 0/1/120 unchanged.
+
+**Focused regression authored but NOT EXECUTED:** `godot/tests/simulation/disciple_v2_foundation_core_regression_test.gd`, `godot/tests/simulation/disciple_v2_one_active_job_entrypoints_test.gd`; see `docs/DISCIPLE_V2_FOUNDATION_JOB_AUDIT_2026-10-16.md` for exact test commands and source/consumer matrix. Static structural evidence only. Godot 4.7.2 runtime, cumulative O6/SAFE, Windows GUI/Android, 3k sustained: **PENDING**. No CI/no merge/no local PC requested.
+
+**Honest OPEN:** a true game-earnable permanent-growth item/event/receipt has not been authored. `add_permanent_points` is checked primitive, not a reward faucet; synthetic test grants demonstrate math, not economic provenance. Fortune meaningful-event and broader social consumers and advanced stat sources remain incomplete. Do not open unrelated gameplay in this PR.
+
+**Next:** maintain stacked draft; validate exact PR tip on a real Godot runner when permission/tool exists and fix only failures proven within this allowlist. A separate approval is needed for new permanent-growth source content, claim receipts and Economy integration beyond this packet.
+
+---
+
+## 2026-10-16 — DISCIPLE-V2 SCALE-SAFE CONTINUATION HANDOFF
+
+PR #9 (`economy-v2-disciple-production-integration-20261016` HEAD `d9b02dfd270b5165251e1e5e443b53a96ab68164`) remains the integration authority; isolated follow-up `disciple-v2-scale-20261016` is based directly on it. No merge into `main`.
+
+**Implemented in this follow-up:** remove redundant full XP dry-run on each committed natural Tu Vi minute while preserving full live grant validation; skip availability probes for zero-priority work; fast-reject unrelated worksite actors before 1,000–3,000-person roster scans. Focused regression: `godot/tests/simulation/disciple_v2_scale_safe_path_test.gd`. Gameplay/test SHA `89974c7dbf34f3855015b9cf1e721f7e498b987a`.
+
+**Not claimed:** runtime PASS or improved tick ms. Only structural static scan 4/4 has been performed; Godot 4.7.2 and Windows performance remain PENDING. Do not claim 3,000-disciple device readiness from this optimization.
+
+**Next recommended implementation packet:** safely finish canonical character core growth/Potential source-consumer coverage, then audit global active-job ingress, and implement all-instance construction/land caps with exact material/production source links. Compare against real PR #9 implementation; do not redo its ×10,000 yield curve, finite merchant budget, stock-target pause or GUI fixes. Leave PRs stacked/draft; do not invoke CI or merge.
+
+---
+
+
 ## 2026-10-16 HANDOFF — MASTER DISCIPLE/PRODUCTION/ECONOMY V2, PR #9 DRAFT
 
 Owner's 16/10 master message is new CODE authorization; do not reapply older packet approval stops from historical sections below. Current stack: PR #6 (main) → #7 → #8 (`b424d9d`) → [draft PR #9](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/9), branch `economy-v2-disciple-production-integration-20261016`. None is merged into main. Before further edits, fetch live refs and verify head/base again. Repository edits use the GitHub connector; preserve the original `E:\TongMonBaDaoWorkspace\01_Game\TongMonBaDao` untracked QA work and saves. Do not run GitHub Actions or change workflows for green status.

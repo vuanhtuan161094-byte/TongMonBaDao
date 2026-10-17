@@ -132,7 +132,7 @@ func assign_mine_worker(state: SimulationState, disciple_id: StringName, mine_id
         return {"ok": false, "reason": "disciple_has_active_command_or_cycle"}
     if building_system.disciple_has_active_timed_recipe(state, disciple_id) or building_system.disciple_has_active_spirit_plot(state, disciple_id) or DiscipleBodyTrainingFacilityV2.has_reserved_slot(state, actor):
         return {"ok": false, "reason": "disciple_has_active_job"}
-    if str(actor.current_action).begins_with("WORK_") or actor.current_action == &"CULTIVATE":
+    if str(actor.current_action).begins_with("WORK_") or actor.current_action in [&"CULTIVATE", &"TRAIN_BODY"]:
         return {"ok": false, "reason": "disciple_finishing_action"}
 
     var previous: DiscipleState = null
@@ -144,6 +144,7 @@ func assign_mine_worker(state: SimulationState, disciple_id: StringName, mine_id
             not previous.work_cycle_state.is_empty()
             or not previous.direct_command.is_empty()
             or str(previous.current_action).begins_with("WORK_")
+            or previous.current_action in [&"CULTIVATE", &"TRAIN_BODY"]
             or not previous.active_pve_encounter_id.is_empty()
             or previous.region_id != &"sect"
             or not building_system.active_resource_timer_for_worker(state, previous.id).is_empty()
@@ -214,7 +215,7 @@ func _assign_single_operator_building(
         or DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,actor)
     ):
         return {"ok":false,"reason":"disciple_has_active_job"}
-    if str(actor.current_action).begins_with("WORK_") or actor.current_action == &"CULTIVATE":
+    if str(actor.current_action).begins_with("WORK_") or actor.current_action in [&"CULTIVATE", &"TRAIN_BODY"]:
         return {"ok":false,"reason":"disciple_finishing_action"}
 
     var previous: DiscipleState = null
@@ -226,6 +227,7 @@ func _assign_single_operator_building(
             not previous.work_cycle_state.is_empty()
             or not previous.direct_command.is_empty()
             or str(previous.current_action).begins_with("WORK_")
+            or previous.current_action in [&"CULTIVATE", &"TRAIN_BODY"]
             or not previous.active_pve_encounter_id.is_empty()
             or previous.region_id != &"sect"
             or not building_system.active_resource_timer_for_worker(state,previous.id).is_empty()
@@ -246,6 +248,54 @@ func _assign_single_operator_building(
         "ok":true,"replaced":previous != null,
         "building_id":str(building_id),"worker_id":str(disciple_id)
     }
+
+# GUI-WORKFORCE V1: one atomic transfer from a different IDLE crew.
+# No two-step UI clearing, no job, inventory or timer side effects.
+func transfer_production_worker(state: SimulationState, disciple_id: StringName, building_id: StringName, replace_existing: bool = true) -> Dictionary:
+    if state == null or not state.sect.workforce_enabled or not state.p3_7_buildings_enabled:
+        return {"ok":false,"reason":"workforce_disabled"}
+    var building = state.buildings.get(str(building_id))
+    if not (building is BuildingState) or not [BuildingSystem.TYPE_MINE,BuildingSystem.TYPE_LINH_FOREST,BuildingSystem.TYPE_SPIRIT_FIELD].has(building.building_type):
+        return {"ok":false,"reason":"invalid_production_building"}
+    if not state.disciples.has(disciple_id):
+        return {"ok":false,"reason":"missing_disciple"}
+    var actor: DiscipleState = state.disciples[disciple_id]
+    var occupants := building_system.assigned_worker_ids(state,building)
+    if occupants.size() > 1:
+        return {"ok":false,"reason":"overassigned_building"}
+    if occupants.has(disciple_id):
+        if actor.worksite_building_id == &"":
+            actor.worksite_building_id = building.id
+            state.sect.workforce_event_count += 1
+        return {"ok":true,"already_assigned":true}
+    if actor.region_id != &"sect" or not actor.active_pve_encounter_id.is_empty():
+        return {"ok":false,"reason":"worker_absent"}
+    if not [&"EVALUATE",&"IDLE",&"HOLD"].has(actor.current_action) or not actor.direct_command.is_empty() or not actor.work_cycle_state.is_empty():
+        return {"ok":false,"reason":"worker_busy"}
+    if building_system.disciple_has_active_timed_recipe(state,actor.id) or building_system.disciple_has_active_spirit_plot(state,actor.id) or DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,actor):
+        return {"ok":false,"reason":"active_job"}
+    if actor.worksite_building_id != &"":
+        var old_site = state.buildings.get(str(actor.worksite_building_id))
+        if not (old_site is BuildingState) or old_site.worker_group_id != actor.work_group_id:
+            return {"ok":false,"reason":"invalid_old_worksite"}
+    var previous: DiscipleState = null
+    if not occupants.is_empty():
+        if not replace_existing:
+            return {"ok":false,"reason":"building_full"}
+        previous = state.disciples.get(occupants[0],null)
+        if previous == null or previous.region_id != &"sect" or not previous.active_pve_encounter_id.is_empty() or not [&"EVALUATE",&"IDLE",&"HOLD"].has(previous.current_action) or not previous.direct_command.is_empty() or not previous.work_cycle_state.is_empty():
+            return {"ok":false,"reason":"previous_worker_busy"}
+        if building_system.disciple_has_active_timed_recipe(state,previous.id) or building_system.disciple_has_active_spirit_plot(state,previous.id) or DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,previous):
+            return {"ok":false,"reason":"previous_worker_busy"}
+    var from_group := actor.work_group_id
+    if previous != null:
+        previous.work_group_id = &""
+        previous.worksite_building_id = &""
+    actor.work_group_id = building.worker_group_id
+    actor.worksite_building_id = building.id
+    state.sect.workforce_event_count += 1
+    return {"ok":true,"transferred":from_group != &"","replaced":previous != null,
+        "worker_id":str(disciple_id),"building_id":str(building_id)}
 
 func assign_group(state: SimulationState, disciple_id: StringName, group_id: StringName) -> bool:
     if not state.sect.workforce_enabled or not state.disciples.has(disciple_id):
@@ -313,7 +363,9 @@ func assign_worksite(state: SimulationState, disciple_id: StringName, building_i
     if not state.sect.workforce_enabled or not state.disciples.has(disciple_id):
         return false
     var disciple: DiscipleState = state.disciples[disciple_id]
-    if state.sect.economy_a_enabled and not building_system.active_resource_timer_for_worker(state,disciple.id).is_empty() and building_id != disciple.worksite_building_id:
+    # Cover both saved resource packets and Alchemy jobs, including commands
+    # made directly via this API rather than the management UI.
+    if state.p3_7_buildings_enabled and building_system.disciple_has_active_timed_recipe(state,disciple.id) and building_id != disciple.worksite_building_id:
         return false
     if state.p3_7_buildings_enabled and building_system.disciple_has_active_spirit_plot(state,disciple.id):
         if building_id == &"":
@@ -462,6 +514,13 @@ func issue_command(state: SimulationState, disciple_id: StringName, kind: String
         var keeps_current_work := kind == COMMAND_WORK and StringName(target) == cycle_profession
         if not keeps_current_work:
             building_system.cancel_work_cycle(state, disciple, true)
+    # An accepted replacement order stops a pending paid Body / specialized
+    # cultivation action before the next scheduler minute. Rejected orders
+    # above leave the original activity untouched.
+    if disciple.current_action == &"TRAIN_BODY" or (
+        disciple.current_action == &"CULTIVATE" and kind != COMMAND_CULTIVATE
+    ):
+        disciple.current_action = &"EVALUATE"
     disciple.direct_command = {
         "kind": str(kind),
         "target": target,
@@ -585,10 +644,13 @@ func choose_work_profession(state: SimulationState, disciple: DiscipleState) -> 
     var best := &""
     var best_score := -1.0e30
     for profession_id in candidates:
-        if state.p3_7_buildings_enabled and not building_system.work_available(state, profession_id, disciple):
-            continue
+        # Priority zero can never win; skip the potentially roster-wide
+        # worksite availability lookup before scoring. This preserves the
+        # candidate order/tie-break and actual eligibility of every job.
         var priority := effective_priority(state, disciple, profession_id)
         if priority <= 0:
+            continue
+        if state.p3_7_buildings_enabled and not building_system.work_available(state, profession_id, disciple):
             continue
         var score := float(priority) * 100.0 + float(profession_level_for_state(state, disciple, profession_id)) * 3.0
         if _has_profession_trait(disciple, profession_id):
@@ -599,10 +661,25 @@ func choose_work_profession(state: SimulationState, disciple: DiscipleState) -> 
     return best
 
 func perform_work(state: SimulationState, disciple: DiscipleState, profession_id: StringName) -> Dictionary:
+    var conflict := building_system.work_entry_conflict(disciple, profession_id)
+    if conflict != "":
+        return {"ok":false,"completed":false,"reason":conflict}
     if not disciple.active_pve_encounter_id.is_empty():
         return {"ok":false,"reason":"disciple_in_v2_pve"}
     if not state.sect.workforce_enabled or disciple.region_id != &"sect" or not VALID_PROFESSIONS.has(profession_id):
         return {"ok":false, "completed":false}
+    if state.p3_7_buildings_enabled:
+        # Direct worker API is an entrypoint too: never start an independent
+        # profession while the disciple owns an active timer, Body slot or a
+        # different unfinished legacy cycle. Field plots remain one duty.
+        if building_system.disciple_has_active_timed_recipe(state,disciple.id):
+            return {"ok":false,"completed":false,"reason":"another_active_job"}
+        if DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple):
+            return {"ok":false,"completed":false,"reason":"another_active_job"}
+        if not disciple.work_cycle_state.is_empty():
+            var cycle_profession := StringName(disciple.work_cycle_state.get("profession_id",disciple.work_cycle_state.get("profession","")))
+            if cycle_profession != profession_id:
+                return {"ok":false,"completed":false,"reason":"another_active_job"}
     if (
         state.p3_7_buildings_enabled
         and building_system.disciple_has_active_spirit_plot(state, disciple.id)
