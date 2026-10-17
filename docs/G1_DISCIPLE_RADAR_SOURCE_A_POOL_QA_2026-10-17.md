@@ -55,3 +55,16 @@ Các lệnh trên là **runbook chưa chạy**, không phải chứng cứ PASS.
 3. Từng rig Batch-01 chỉ được thêm vào `VERIFIED_ACTORS` sau khi có Scene binary, giới tính xác minh, stand/walk, SHA manifest và foot anchor.
 4. G1 không giải quyết riêng actor/roof, male fallback, marker/công trình thiếu art; đây là visual debt kế tiếp, không giả CLOSED.
 5. PR phải giữ draft, chưa merge main. Đợi owner duyệt trải nghiệm khi runtime có bằng chứng.
+
+
+## 5. G1 Windows one-click acceptance package (prepared, NOT executed)
+
+Owner request 17/10/2026: continue the next appropriate step by organizing **exact-HEAD Windows QA** and fixing a false-negative fixture. QA is now available directly in PR #20:
+
+- `Run-G1-PR20-Windows.cmd`: one-click Windows launcher; invokes existing `tools/qa/Run-G1-PR20-Windows.ps1`.
+- The PowerShell runner fetches **the named G1 draft branch** from GitHub into its own GUID-labeled TEMP clone, checks ancestor `5ce3c0f`, redirects both APPDATA and LOCALAPPDATA to temporary QA directories, verifies `4.7.2.stable.official` and records the **exact tested SHA**. It never checks out/resets/cleans any owner working tree or owner `user://`.
+- Runs import; G1 radar; authentic-V2 profile; P3.3 operational flow; Source A actor; GUI-Workforce, instance ID, Source A art SHA, projection, MAP25 real scene; calls the existing `Verify-P3-7C1-Foundation-Dan-Tien-Full.ps1` (unless explicitly skipped), then real graphical `sect_map25_visual_perf_capture_test.gd` (unless explicitly skipped) at native 1280×720. Validates expected success markers, exit codes, 600 frame samples, p95 <=33.3ms and <=600 mean draw calls for pan/zoom.
+- Evidence writes **only logs, CSV, actual screenshots, SHA and summary** to `%USERPROFILE%\\Downloads\\TONG_MON_G1_PR20_QA_<timestamp>.zip` (fallback Documents). No complete worktree or save files in the evidence archive. Returns 0=automated Windows PASS, 1=FAIL, 2=BLOCKED/PENDING. The launcher does not claim owner visual signoff or Android PASS.
+- Prior G1 test initially selected an arbitrary first roster entry that may be legacy P2. It has been **corrected** to recruit an authentic V2 disciple using `DiscipleGeneratorOpenPoints.generate_candidate` plus `RecruitmentSystem.accept_candidate`, matching the existing V2 profile test's canonical fixture.
+
+**Gate truth:** Neither this QA launcher nor Windows Godot 4.7.2 have run in the current Linux tool environment. Current status is CODE/QA HARNESS COMMITTED, static inspection only. No CI. No merge/main change. G1 Windows **PENDING** until the generated evidence ZIP plus code SHA are supplied; do not inherit PR19's older Windows benchmark as PR20 proof.
