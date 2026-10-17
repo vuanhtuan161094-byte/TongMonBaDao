@@ -109,6 +109,39 @@ func _run() -> void:
         _fail("recruit was not authentic Realm/Body V2")
         return
     var saved := disciple.to_dict()
+
+    # G1.5 UI-only: all listed choices must correspond to REAL buildings.
+    # Merely opening/closing this selector cannot commit a job or mutate V2.
+    ui.call("_open_disciple_quick_assignment",disciple.id)
+    await process_frame
+    var chooser := (ui.get("popup_layer") as Control).get_node_or_null("DiscipleQuickAssignment")
+    if chooser == null or chooser.find_child("DiscipleQuickAssignmentScroll",true,false) == null:
+        _fail("playable quick-assignment panel missing")
+        return
+    var existing_count := 0
+    for building_type in [BuildingSystem.TYPE_MINE,BuildingSystem.TYPE_LINH_FOREST,BuildingSystem.TYPE_SPIRIT_FIELD]:
+        for building in ResourceBuildingExpansionPolicyV2.existing_instances(state,building_type):
+            existing_count += 1
+            var target_button := chooser.find_child("QuickAssignTarget_%s" % str(building.id),true,false) as Button
+            if target_button == null:
+                _fail("a real production instance cannot be selected: "+str(building.id))
+                return
+            if target_button.disabled and target_button.tooltip_text.is_empty():
+                _fail("blocked building does not show eligibility reason")
+                return
+    if existing_count == 0:
+        _fail("quick assignment listed no actual producer instances")
+        return
+    if disciple.to_dict() != saved:
+        _fail("opening quick assignment modified the disciple's job")
+        return
+    ui.call("_return_from_disciple_quick_assignment",disciple.id,false)
+    await process_frame
+    var returned := (ui.get("popup_layer") as Control).get_node_or_null("DiscipleDeepScreen")
+    if returned == null or returned.find_child("DeepQuickAssignment",true,false) == null:
+        _fail("assignment back button did not restore disciple profile")
+        return
+
     var attributes := str(ui.call("_disciple_tab_text","Thuộc tính",disciple))
     if not attributes.contains("ẢNH HƯỞNG LỤC DUY") or not attributes.contains("Tiềm Lực: +0,05%"):
         _fail("attribute explanations are missing or do not match V2 authority")
