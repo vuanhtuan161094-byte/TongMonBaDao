@@ -102,6 +102,26 @@ func _run() -> void:
     ):
         _fail("Mine panel is not bound to canonical current timer quantity/time")
         return
+    # Owner UX report: production percentage was hidden deep in a scroll
+    # view. Check visible top-of-panel progress and real saved batch quantity.
+    var caption := ui.find_child("ProductionProgressCaption",true,false) as Label
+    var progress := ui.find_child("ProductionProgressBar",true,false) as ProgressBar
+    var elapsed := clampi(state.tick-int(mining_job.get("started_tick",state.tick)),0,
+        maxi(1,int(mining_job.get("finish_tick",state.tick))-int(mining_job.get("started_tick",state.tick))))
+    var total := maxi(1,int(mining_job.get("finish_tick",state.tick))-int(mining_job.get("started_tick",state.tick)))
+    var expected_percent := 100.0*float(elapsed)/float(total)
+    if (
+        caption == null or progress == null or not caption.visible or not progress.visible
+        or not caption.text.contains("×%d" % int(mining_job.get("output_quantity",0)))
+        or absf(progress.value-expected_percent) > 0.01
+        or progress.position.y > 150.0
+    ):
+        _fail("above-fold Mine progress does not match canonical timer/quantity")
+        return
+    var disabled_label_color := in_progress.get_theme_color("font_disabled_color")
+    if disabled_label_color.get_luminance() > 0.55:
+        _fail("Mine disabled controls are still near-white text on pale background")
+        return
     var owner_avatar := ui.find_child("WorkforceOwnerAvatar",true,false) as Button
     if owner_avatar == null or owner_avatar.custom_minimum_size.x < 44.0:
         _fail("Mine owner avatar missing or not touch sized")
@@ -238,6 +258,15 @@ func _run() -> void:
         or not live_field.text.contains("còn %d phút" % expected_remaining)
     ):
         _fail("Field progress did not reflect paid crop's saved yield/timer")
+        return
+    var field_caption := ui.find_child("ProductionProgressCaption",true,false) as Label
+    var field_progress := ui.find_child("ProductionProgressBar",true,false) as ProgressBar
+    if (
+        field_caption == null or field_progress == null
+        or not field_caption.visible or not field_progress.visible
+        or not field_caption.text.contains("×%d" % int(first_growing.get("routine_yield",0)))
+    ):
+        _fail("Field progress was not exposed above the fold")
         return
     var farmer: DiscipleState = state.disciples[farmer_id]
     var stones := state.sect.spirit_stones
