@@ -1,5 +1,8 @@
 # G1 — SOURCE A: MINING / FORESTRY / FIELD ACTION CLIPS (ART-ONLY PACKET)
 
+**CURRENT OWNER DECISION 2026-10-18:** Superseded as a required-art work item. Work-action clips for mining/chopping/planting are **NOT REQUIRED for G1**. Keep this document as an archival proof packet only; do not execute steps below unless a new explicit owner decision authorizes art. Production timeline/status is the acceptance target. See [G1 acceptance plan](G1_ACCEPTANCE_MINIMAL_PLAN_2026-10-17.md).
+
+
 **Status:** REQUIRED ART / NOT YET AVAILABLE. Does not authorize changing gameplay, source rights, converter logic or importing invented character sprites. Target: Godot 4.7.2, Android landscape 1280x720. Owner visual G1 acceptance still PENDING.
 
 ## Evidence from verified PR #20 assets (2026-10-17)

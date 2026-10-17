@@ -1,5 +1,16 @@
 # G1 — Source A work-action pilot (minimal asset packet, ART PENDING)
 
+## 2026-10-18 — QUYẾT ĐỊNH OWNER: G1 KHÔNG CẦN ACTION CLIP (SUPERSEDES ART PENDING)
+
+**Quyết định mới nhất:** Người chơi **không cần hoạt ảnh đào mỏ/chặt cây/trồng trọt**. Với Mỏ, Linh Lâm và Linh Điền, chỉ cần **thanh tiến độ/timeline sản xuất thật**, thời gian còn lại, sản lượng dự kiến và số thực nhập kho tại đúng ID công trình; có thể hiển thị đệ tử bằng Source A `stand/walk` đã xác minh. Chuyển trạng thái hạng mục `mining/chopping/planting action clips` từ **ART REQUIRED/PENDING** sang **NOT REQUIRED — OUT OF G1 SCOPE**.
+
+- **DỪNG** mọi đề xuất tìm `113116_1_s`/`113116_1` để làm action, audit lại Spine, rebake Batch-01, tạo animation mới, hoặc đòi binary gốc chỉ vì action G1. Phần kiểm toán phía dưới lưu **bằng chứng lịch sử**, **không phải danh sách việc còn phải thực hiện**.
+- **G1 gameplay visual acceptance** chỉ tập trung `SectProductionWorksiteCue` và panel: đúng công trình/đệ tử, tiến độ % từ mốc tick chính thức; linh điền nhiều ô chỉ nêu tiến độ ô gần nhất, không giả % tổng; giữ thông báo `+N đã vào kho` chỉ sau settlement và trạng thái chưa phân công/rảnh/chờ kết toán. Không tạo timer hay kho song song.
+- **Tình trạng code tại baseline `663fe80e7a5b`:** `godot/src/presentation/p3/sect_production_worksite_cue.gd` đã có ProgressBar + phần trăm, `godot/src/presentation/p3_2_landscape_sect.gd` đã lấy dữ liệu từ job/plot và metrics theo instance ID; panel có progress header. Đây là kiểm tra **mã tĩnh**, chưa phải xác nhận timeline dễ đọc/chạy đúng qua Godot 4.7.2.
+- **Cổng nghiệm thu còn lại:** focused Godot 4.7.2 cho PR #20 HEAD mới nhất, một lượt Windows UX 1280×720: progress/ETA/yield/received, đúng instance, không chồng badge, không lỗi tương tác, không lag nghiêm trọng. Owner UX **PENDING**; Android performance PENDING. Không CI/FULL/merge/G2.
+
+---
+
 ## 2026-10-18 — G1 read-only source/manifest action audit (PR #20 baseline `207eaf45fe74`)
 
 **Evidence scope / truth:** GitHub PR20 textual manifest + checked-in SpriteFrames and recursive tree were read directly; external [ZQZS-Source-Knowledge `ANIMATION_LIBRARY_INDEX.csv`](https://github.com/vuanhtuan161094-byte/ZQZS-Source-Knowledge/blob/83cbc4ecbd83eb518a6d6f2b3894377d9d99254d/analysis/DarkEdition/ANIMATION_LIBRARY_INDEX.csv) was parsed at pinned knowledge commit `83cbc4ecbd83eb518a6d6f2b3894377d9d99254d`. Source-knowledge CSV is **binary-string candidate inventory**, explicitly **not a parsed Spine animation list**. No access to owner's E: raw Spine bytes in this session; **no source binary was hashed or played back now**.

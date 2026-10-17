@@ -4,6 +4,8 @@
 
 **Mục tiêu:** Chốt một lần trải nghiệm chơi cho **G1.5–G1.8** sau các lượt code UI. Không mở rộng chức năng, không chạy FULL/CI/600-frame benchmark, không merge hoặc thay đổi gameplay. Chỉ nghiệm thu UX/interaction và giữ đúng authority backend.
 
+**OWNER UX SCOPE UPDATE — 2026-10-18:** Không yêu cầu hoạt ảnh đào/chặt/trồng hoặc truy xuất/convert thêm Source A cho ba nghề này. Chỉ yêu cầu **thanh timeline/progress** theo công trình, đệ tử, thời gian còn lại, mẻ dự kiến và số đã nhập kho từ backend thật. `stand/walk` đã có là đủ. Một thiếu hụt action clip không phải lỗi nghiệm thu G1. Kiểm tra chất lượng và tương tác thanh tiến độ trong một lượt Windows như dưới đây; G1 owner acceptance PENDING.
+
 ## Phạm vi & ưu tiên
 
 - **P0 — Không được sai:** Mở đúng instance ID Mỏ/Linh Lâm/Linh Điền từ bảng Điều hành; phân công/đổi người không xuyên One Active Job; Start chỉ gửi lệnh hợp lệ; timer/plot/quantity/kho từ BuildingSystem + Workforce + Scheduler + Warehouse; mở bảng không thay đổi SimulationState hoặc kích hoạt migration Linh Điền.
@@ -15,10 +17,10 @@
 1. Chạy `Run-G1-Acceptance-Windows.cmd` từ ZIP đính kèm hoặc từ repo. Launcher dùng `-Acceptance -Play`, clone HEAD mới nhất của draft PR #20 sang TEMP riêng, cách ly APPDATA/save, kiểm phiên bản Godot official 4.7.2, import project.
 2. **Bốn test tập trung**, không thêm test khác:
    - `sect_g1_disciple_radar_test.gd`: radar, hồ sơ V2, hai giới Source A, hủy lệnh chờ;
-   - `sect_source_a_actor_pilot_test.gd`: scene thật, actor nam/nữ, idle/walk/mirror, scale;
+   - `sect_source_a_actor_pilot_test.gd`: scene thật, actor nam/nữ, stand/walk/mirror, scale; **không yêu cầu action clip nghề**;
    - `gui_workforce_v1_e2e_test.gd`: Mỏ/Linh Lâm/Linh Điền, timer/plot/receipt/save/offline;
-   - `gui_multiple_resource_instances_test.gd`: instance #2, bảng sản xuất, bộ lọc Cần xử lý, bất biến read-only, đúng ID.
-3. Chỉ khi 4 test PASS, tự mở game với save tạm 1280×720. Người chơi thử trong **5–10 phút**: (a) mở Điều hành > bảng sản xuất > lọc Cần xử lý, (b) mở đúng Mỏ và chọn người, (c) Bắt đầu, xem tiến độ thật và lý do khi bận, (d) thử Linh Lâm/Linh Điền và `Gieo ô tiếp`, (e) mở hồ sơ nam/nữ, quay lại công trình. Đóng game để xuất ZIP logs.
+   - `gui_multiple_resource_instances_test.gd`: instance #2, bảng sản xuất, bộ lọc Cần xử lý, bất biến read-only, đúng ID, thanh tiến độ đúng công trình.
+3. Chỉ khi 4 test PASS, tự mở game với save tạm 1280×720. Người chơi thử trong **5–10 phút**: (a) mở Điều hành > bảng sản xuất > lọc Cần xử lý, (b) mở đúng Mỏ và chọn người, (c) Bắt đầu, xem thanh tiến độ %, thời gian còn lại, sản lượng mẻ và lượng thật đã nhập kho (không được báo nhập kho sớm), (d) thử Linh Lâm/Linh Điền và `Gieo ô tiếp`, (e) mở hồ sơ nam/nữ, quay lại công trình. Đóng game để xuất ZIP logs.
 4. Nếu **FAIL**: gửi **một ZIP trong Downloads**. Chỉ sửa lỗi được log/ảnh xác minh, chạy lại focused case lỗi, không mở QA FULL. Nếu chỉ UI xấu/tràn màn, gửi 1–3 ảnh hoặc video ngắn.
 5. Nếu 4 test PASS và chủ dự án chấp nhận thao tác/ảnh: ghi `G1 focused Windows PASS` + `G1 visual owner ACCEPTED`; **không tự suy ra Android PASS**. Sau đó mới lập packet **G2 playable core loop** riêng; không merge PR #20 khi chưa quyết định tích hợp stacked PR.
 

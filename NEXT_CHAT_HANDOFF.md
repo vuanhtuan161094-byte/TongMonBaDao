@@ -1,5 +1,12 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-18 — Owner khóa lại UX G1: chỉ cần timeline sản xuất
+
+**USER DECISION SUPERSEDES ALL EARLIER G1 ART-PENDING WORK-ACTION PACKETS:** Không cần Source A mining/chopping/planting animations; `stand/walk` là đủ. **STOP** audit `113116_1_s`/`113116_1`, tìm binary Spine, rebake, làm asset nghề; tài liệu ART packet chỉ giữ để truy vết, không phải blocker. G1 UX chấp nhận về thiết kế việc **progress bar/% + ETA + expected batch + actual credited Warehouse units** ngay trên instance Mỏ/Linh Lâm/Linh Điền, trạng thái worker thật; không fake production hay nhập kho sớm. Existing `SectProductionWorksiteCue` + operation panel đã có đường hiển thị từ canonical state trong **static code** trên PR20 baseline `663fe80e7a5b`; chưa có latest Godot 4.7.2 focused runtime/ảnh nghiệm thu 1280×720. Tập trung polish/thử timeline, dễ chạm, không chồng, performance; **G1 owner UX acceptance PENDING**. Không sửa gameplay/save/Economy V2/Warehouse/Scheduler, không CI/FULL/merge/G2.
+
+---
+
+
 ## 2026-10-18 — G1 ART source audit (docs-only)
 
 PR20 `207eaf45fe74` verified source-only: 3 committed rig SpriteFrames contain only `stand/walk` (48+24 frames/rig); 4 WebP pages present, raw original 3×(.skel/.atlas/PNG) inputs absent from repo (exact nine names/SHA256 listed in `docs/G1_SOURCE_A_WORK_ACTION_MINIMAL_PACKET_2026-10-17.md`). Source Knowledge pinned `83cbc4e` CSV 803 candidate skeletons: 2 `work` string candidates (`113116_1_s`, `113116_1`) but **0 confirmed authentic work clips**, neither parsed/playback tested and companion texture path absent in CSV. `body_1120402` source folder category `body_female` conflicts with current male visual selection; **needs visual review, no production reassignment**. Minimal future isolated pilot = verify `113116_1_s` source triplet/sha, playback true work motion; fail closed if missing/mismatched. Existing converter/Batch-01 avoids full rebake. **DOCS AUDIT ONLY; latest Godot focused, Source A work action and G1 visual owner approval PENDING**. No CI/FULL/merge/gameplay/save/balance changes.
