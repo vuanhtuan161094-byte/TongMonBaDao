@@ -68,3 +68,9 @@ Owner request 17/10/2026: continue the next appropriate step by organizing **exa
 - Prior G1 test initially selected an arbitrary first roster entry that may be legacy P2. It has been **corrected** to recruit an authentic V2 disciple using `DiscipleGeneratorOpenPoints.generate_candidate` plus `RecruitmentSystem.accept_candidate`, matching the existing V2 profile test's canonical fixture.
 
 **Gate truth:** Neither this QA launcher nor Windows Godot 4.7.2 have run in the current Linux tool environment. Current status is CODE/QA HARNESS COMMITTED, static inspection only. No CI. No merge/main change. G1 Windows **PENDING** until the generated evidence ZIP plus code SHA are supplied; do not inherit PR19's older Windows benchmark as PR20 proof.
+
+### G1 real-V2 image proof added to the current capture script
+
+Extended the existing `sect_map25_visual_perf_capture_test.gd` **test-only** after its normal `08_disciple` capture to recruit a deterministic authentic V2 actor through canonical `RecruitmentSystem`, validate all six radar points against `DisciplePresentationSnapshotV2` and attempt a native `08b_g1_real_v2_radar.png` capture. The existing 600 frame scenario windows and old screenshot names are unchanged. The new screenshot is proof of the REAL G1 chart rather than a legacy-character-only view; it has NOT been generated or reviewed yet. The suite now expects 12 native screenshots if all existing 11 plus the G1 capture succeed.
+
+**Static inspection after latest source change:** 5/5 modified GDScript files pass a lexical delimiter/quote/comment scan. This is NOT a Godot parser, native Windows runtime PASS, or visual acceptance. Windows QA remains PENDING.
