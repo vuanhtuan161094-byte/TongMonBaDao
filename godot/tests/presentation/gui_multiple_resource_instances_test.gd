@@ -248,12 +248,13 @@ func _run() -> void:
     ):
         _fail("second Mine map cue is not bound to its real persisted timer")
         return
-    # Even a zero-percent just-started batch must be shown ahead of idle
-    # sites when many resource buildings compete for the bounded map HUD.
-    var start_snapshot := secondary_snapshot.duplicate(true)
-    start_snapshot["progress"] = 0.0
-    if not bool(start_snapshot.get("active",false)):
-        _fail("active second Mine must keep its busy status at zero progress")
+    # A timer starts at zero elapsed minutes, but remains a real
+    # active batch and must not be deprioritized as an idle worksite.
+    if (
+        int(secondary_timer.get("started_tick",-1)) == state.tick
+        and absf(float(secondary_snapshot.get("progress",-1.0))) > 0.001
+    ):
+        _fail("a new Mine batch did not report genuine zero-percent progress")
         return
     ui.call("_refresh_map_worksite_cues")
     var second_cue := ui.find_child("MapWorksite_%s" % str(second.id),true,false) as SectProductionWorksiteCue
