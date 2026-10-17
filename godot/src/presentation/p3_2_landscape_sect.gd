@@ -35,6 +35,9 @@ var visible_living_cues: Array[Dictionary] = []
 var female_motion_library: AnimationLibrary
 var workforce_return_building_id: StringName = &""
 var modular_live_actor_ids: Dictionary = {}
+# Only three source scenes currently: cache shared stand textures by scene path,
+# never make one atlas/AnimatedSprite2D per disciple or roster entry.
+var source_a_portrait_textures: Dictionary = {}
 
 var camera_controls_panel: Panel
 var camera_hint: Label
@@ -1189,6 +1192,32 @@ func _workforce_cancel_timer(building_id: StringName, worker_id: StringName) -> 
         building_management_feedback = "Đã hủy mẻ trên công trình này." if cancelled else "Không thể hủy mẻ hiện tại."
     _refresh_building_operation_content()
 
+# Resolve the same verified sex+seed visual as the map, even when this
+# disciple has not been instantiated as a map actor (paged roster / workforce).
+# Texture2D is shared across buttons and loaded once per accepted Source A rig.
+func _disciple_source_a_portrait_texture(disciple: DiscipleState) -> Texture2D:
+    if disciple == null:
+        return null
+    var scene_path := DiscipleSourceAVisualPool.scene_path_for_disciple(disciple)
+    if scene_path.is_empty():
+        return null
+    if source_a_portrait_textures.has(scene_path):
+        return source_a_portrait_textures[scene_path] as Texture2D
+    var packed := DiscipleSourceAVisualPool.scene_for_disciple(disciple)
+    if packed == null:
+        return null
+    var preview := packed.instantiate() as AnimatedSprite2D
+    if preview == null:
+        return null
+    var texture: Texture2D = null
+    var frames := preview.sprite_frames
+    if frames != null and frames.has_animation(&"stand") and frames.get_frame_count(&"stand") > 0:
+        texture = frames.get_frame_texture(&"stand",0)
+    preview.free()
+    if texture != null:
+        source_a_portrait_textures[scene_path] = texture
+    return texture
+
 func _disciple_avatar_button(disciple: DiscipleState, edge: float) -> Button:
     var avatar := Button.new()
     avatar.text = disciple.display_name.substr(0,1)
@@ -1196,18 +1225,22 @@ func _disciple_avatar_button(disciple: DiscipleState, edge: float) -> Button:
     avatar.add_theme_color_override("font_color",INK)
     avatar.add_theme_stylebox_override("normal",_style(Color(0.86,0.91,0.77),JADE_DARK,1,8))
     var actor := actor_nodes.get(str(disciple.id)) as ModularDiscipleActor
-    if actor != null and actor.baked_visual_active() and actor.baked_sprite != null:
-        var frames := actor.baked_sprite.sprite_frames
-        if frames != null and frames.has_animation(&"stand") and frames.get_frame_count(&"stand") > 0:
-            var portrait := TextureRect.new()
-            portrait.texture = frames.get_frame_texture(&"stand",0)
-            portrait.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-            portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-            portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-            portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
-            avatar.text = ""
-            avatar.add_child(portrait)
-            return avatar
+    # A real modular production body takes precedence over Source A artwork.
+    var can_show_baked := actor == null or not actor.production_body_active()
+    var baked_texture: Texture2D = null
+    if can_show_baked:
+        baked_texture = _disciple_source_a_portrait_texture(disciple)
+    if baked_texture != null:
+        var portrait := TextureRect.new()
+        portrait.name = "VerifiedSourceAPortrait"
+        portrait.texture = baked_texture
+        portrait.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+        portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+        portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+        portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        avatar.text = ""
+        avatar.add_child(portrait)
+        return avatar
 
     # Verified Source A portrait not yet imported for this disciple:
     # render a lightweight seed-stable face/hair/robe tile instead of a
@@ -4360,7 +4393,7 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
 
     var selected_actor := actor_nodes.get(str(disciple.id)) as ModularDiscipleActor
     var selected_source_scene := DiscipleSourceAVisualPool.scene_for_disciple(disciple)
-    if selected_actor != null and selected_actor.baked_visual_active() and selected_source_scene != null:
+    if selected_source_scene != null and (selected_actor == null or not selected_actor.production_body_active()):
         # Keep the authored foot anchor while fitting each real crop in the
         # same profile art area; all three portrait surfaces use this scene.
         var artwork := selected_source_scene.instantiate() as AnimatedSprite2D
