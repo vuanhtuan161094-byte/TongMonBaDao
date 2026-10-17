@@ -36,7 +36,7 @@ func _run() -> void:
         _fail("isometric texture overpaints avatar/map interaction layer")
         return
     if (
-        sub.size != Vector2i(1028,570)
+        sub.size != Vector2i(1280,570)
         or iso.GRID != Vector2i(192,192)
         or iso.CHUNK != 16
         or iso.STARTER != Rect2i(72,72,48,48)

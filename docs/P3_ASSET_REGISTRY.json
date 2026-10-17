@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated": "2026-10-04",
+  "updated": "2026-10-17",
   "purpose": "Machine-readable presentation asset status. Detail lives in authority docs; this file tracks identity, source availability, visual evidence and runtime state without duplicating art specs.",
   "static_validator": "tools/validate_p3_presentation.py",
   "source_recovery_manifest": "docs/P3_SOURCE_RECOVERY_MANIFEST.md",
@@ -317,6 +317,23 @@
       "approved_on": "2026-10-04",
       "approval_evidence": "User reviewed the real Godot front/side/back Stage A preview on 2026-10-04 and accepted identity, registration, side readability, back-view face hiding, and 0.75x silhouette.",
       "runtime_evidence": "P3.2 FEMALE STAGE A 3-DIRECTION FAST CHECK: PASS on Windows Godot 4.7.2; shared-rig, down regression, 3-direction asset contract and sandbox smoke all passed."
+    },
+    {
+      "id": "actor.source_a.1113028_1.map_pilot",
+      "category": "map_actor",
+      "display_name": "Source A 1113028_1 baked stand/walk pilot",
+      "authority_doc": "docs/P3_SOURCE_A_ANIMATION_ASSET_UI_UX_HANDOFF_2026-10-17.md",
+      "design_status": "planned",
+      "source_status": "repo_source",
+      "source_evidence_class": "S0",
+      "visual_status": "pending",
+      "runtime_status": "runtime_green",
+      "runtime_evidence": "Official Windows Godot 4.7.2 real MAP25 scene actor pilot, Workforce and 1280x720 capture gates PASS on stacked branch; z-order and owner visual review remain open.",
+      "source_ref": "E:/TongMonBaDaoWorkspace/05_DauRa/Assets_Godot472/1113028_1/asset.json",
+      "source_path": "godot/assets/actors/1113028_1/asset.json",
+      "source_sha256": "daecefdc454883b8613fa2ec8361be1c80b2ddcc162b4aceff84618306e4a637",
+      "runtime_management": "candidate_source_a_pilot",
+      "runtime_paths": ["godot/assets/actors/1113028_1/actor.tscn", "godot/assets/actors/1113028_1/animations.tres", "godot/assets/actors/1113028_1/atlas_000.webp", "godot/assets/actors/1113028_1/atlas_001.webp", "godot/assets/actors/1113028_1/asset.json"]
     },
     {
       "id": "ui.ux.v3_1_main_map",

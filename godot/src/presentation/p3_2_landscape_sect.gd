@@ -3,6 +3,9 @@ extends "res://src/presentation/p3_1_landscape_sect.gd"
 const ZOOM_STEP := 1.12
 const CAMERA_TWEEN_SECONDS := 0.22
 const FOCUS_MARKER_SIZE := Vector2(82.0, 82.0)
+const SOURCE_A_PILOT_SCENE_PATH := "res://assets/actors/1113028_1/actor.tscn"
+const PRODUCTION_PANEL_WIDTH := 320.0
+const PRODUCTION_CONTENT_WIDTH := 284.0
 
 var map_zoom: float = SectMapCamera.DEFAULT_ZOOM
 var touch_points: Dictionary = {}
@@ -31,6 +34,8 @@ var living_cue_tracker := LivingCueTracker.new()
 var living_cue_layer: LivingCueLayer
 var visible_living_cues: Array[Dictionary] = []
 var female_motion_library: AnimationLibrary
+var source_a_pilot_scene: PackedScene
+var workforce_return_building_id: StringName = &""
 var modular_live_actor_ids: Dictionary = {}
 
 var camera_controls_panel: Panel
@@ -83,6 +88,8 @@ func _ready() -> void:
     if not runtime_ready:
         return
     female_motion_library = FemaleNormalV1MotionLibrary.build()
+    if ResourceLoader.exists(SOURCE_A_PILOT_SCENE_PATH,"PackedScene"):
+        source_a_pilot_scene = load(SOURCE_A_PILOT_SCENE_PATH) as PackedScene
     _install_modular_live_actors()
     _install_main_isometric_world()
     _sync_actor_positions()
@@ -114,7 +121,7 @@ func _install_main_isometric_world() -> void:
     move_child(iso_view_container,map_layer.get_index())
     iso_viewport = SubViewport.new()
     iso_viewport.name = "SectMainIsoSubViewport"
-    iso_viewport.size = Vector2i(1028,570)
+    iso_viewport.size = Vector2i(1280,570)
     # Only camera movement and building-layout changes invalidate this static map.
     # The moving disciple actors remain outside the map SubViewport.
     iso_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
@@ -565,6 +572,7 @@ func _bottom_action(action: String) -> void:
 func _open_disciple(disciple_id: StringName) -> void:
     if not state.disciples.has(disciple_id):
         return
+    workforce_return_building_id = &""
     _hide_sect_hub()
     _close_building_operation_panel(true)
     selected_id = disciple_id
@@ -641,6 +649,8 @@ func _sync_actor_positions() -> void:
             tween.set_trans(Tween.TRANS_QUAD)
             tween.set_ease(Tween.EASE_IN_OUT)
             tween.tween_property(actor, "position", target, 0.32)
+            if actor is ModularDiscipleActor:
+                tween.finished.connect(Callable(self,"_finish_actor_walk").bind(disciple_id,target))
 
         if actor_status_labels.has(key):
             var status := actor_status_labels[key] as Label
@@ -652,6 +662,14 @@ func _sync_actor_positions() -> void:
     _refresh_disciple_summary_content()
     _refresh_building_operation_content()
     _refresh_living_cues()
+
+func _finish_actor_walk(disciple_id: StringName, expected_target: Vector2) -> void:
+    var actor := actor_nodes.get(str(disciple_id)) as ModularDiscipleActor
+    if actor == null or not is_instance_valid(actor) or actor.position.distance_to(expected_target) > 1.0:
+        return
+    var disciple := state.disciples.get(disciple_id) as DiscipleState
+    if disciple != null:
+        actor.sync_action(disciple.current_action)
 
 func _actor_anchor_offset(actor: Control) -> Vector2:
     if actor is ModularDiscipleActor:
@@ -699,6 +717,8 @@ func _install_modular_live_actors() -> void:
         actor.set_animation_library(female_motion_library)
         if actor.rig_id == DiscipleActorVisualCatalog.RIG_FEMALE_NORMAL_V1 and female_assets_ready:
             FemaleStageAAssetLoader.apply_public_direction(actor, &"right")
+        if actor.rig_id == DiscipleActorVisualCatalog.RIG_FEMALE_NORMAL_V1 and source_a_pilot_scene != null and not actor.production_body_active():
+            actor.set_baked_visual(source_a_pilot_scene)
         actor.sync_action(disciple.current_action)
         actor.actor_pressed.connect(Callable(self, "_open_disciple"))
         var world_foot := _iso_actor_point(destination) + _actor_offset(index)
@@ -724,6 +744,7 @@ func _build_building_operation_panel() -> void:
     building_operation_title.add_theme_color_override("font_color", CINNABAR.darkened(0.18))
 
     var subtitle := _label(building_operation_panel, "Tình hình vận hành", Vector2(18, 48), Vector2(350, 22), 11)
+    subtitle.name = "BuildingOperationSubtitle"
     subtitle.add_theme_color_override("font_color", Color(0.22, 0.20, 0.16, 0.72))
 
     var close := Button.new()
@@ -737,6 +758,7 @@ func _build_building_operation_panel() -> void:
     building_operation_panel.add_child(close)
 
     var separator := HSeparator.new()
+    separator.name = "BuildingOperationSeparator"
     separator.position = Vector2(14, 78)
     separator.size = Vector2(412, 2)
     building_operation_panel.add_child(separator)
@@ -814,6 +836,7 @@ func _refresh_building_operation_content() -> void:
     if building_management_feedback != "":
         feedback = "\n\n%s" % building_management_feedback
     var workforce_target := _workforce_building_type()
+    _layout_building_operation_panel(workforce_target != &"")
     building_operation_body.text = (
         _workforce_operation_summary(workforce_target) if workforce_target != &""
         else _building_operation_text(selected_building)
@@ -830,6 +853,25 @@ func _refresh_building_operation_content() -> void:
     else:
         building_operation_body.custom_minimum_size.y = 0
     _rebuild_building_management_controls()
+
+func _layout_building_operation_panel(compact: bool) -> void:
+    var width := PRODUCTION_PANEL_WIDTH if compact else 440.0
+    var content_width := PRODUCTION_CONTENT_WIDTH if compact else 384.0
+    building_operation_panel.position.x = 1280.0-width-16.0
+    building_operation_panel.size.x = width
+    building_operation_title.size.x = width-76.0
+    var subtitle := building_operation_panel.get_node("BuildingOperationSubtitle") as Label
+    subtitle.size.x = width-76.0
+    var close := building_operation_panel.get_node("CloseBuildingOperation") as Button
+    close.position.x = width-54.0
+    close.size = Vector2(44,44)
+    var separator := building_operation_panel.get_node("BuildingOperationSeparator") as HSeparator
+    separator.size.x = width-28.0
+    var scroll := building_operation_panel.get_node("BuildingOperationScroll") as ScrollContainer
+    scroll.size.x = width-28.0
+    building_operation_content.custom_minimum_size.x = content_width
+    building_operation_body.custom_minimum_size.x = content_width
+    building_management_container.custom_minimum_size.x = content_width
 
 func _rebuild_building_management_controls() -> void:
     if building_management_container == null:
@@ -934,7 +976,7 @@ func _build_resource_instance_chooser(building_type: StringName) -> void:
     var ids: Array[StringName] = []
     var select := OptionButton.new()
     select.name = "WorkforceInstanceChooser"
-    select.custom_minimum_size = Vector2(384,46)
+    select.custom_minimum_size = Vector2(PRODUCTION_CONTENT_WIDTH,46)
     select.add_theme_font_size_override("font_size",14)
     var active := _selected_resource_instance(building_type)
     var selected_index := 0
@@ -965,12 +1007,24 @@ func _workforce_operation_summary(building_type: StringName) -> String:
     if assigned.size() > 1:
         who = "Lỗi dữ liệu: nhiều đệ tử cùng một công trình"
     var output := ""
-    if building_type == BuildingSystem.TYPE_MINE:
+    if building_type in [BuildingSystem.TYPE_MINE,BuildingSystem.TYPE_LINH_FOREST]:
         var plan := buildings.selected_resource_production_plan(building)
         var rid := production_plan_registry.output_resource_id(plan)
-        output = "Kho: %s · %s" % [str(rid),_warehouse_pair(rid,true)]
-    elif building_type == BuildingSystem.TYPE_LINH_FOREST:
-        output = "Linh Mộc: %s" % _warehouse_pair(&"linh_moc",true)
+        var product := ResourceRegistry.new().display_name(rid)
+        var units := production_plan_registry.scaled_yield(plan,building.level)
+        output = "Sản phẩm: %s · mẻ dự kiến %d\nKho: %s" % [product,units,_warehouse_pair(rid,true)]
+        if assigned.size() == 1:
+            var running: Dictionary = {}
+            for raw_job in buildings.resource_timer_jobs(building):
+                if raw_job is Dictionary and str(raw_job.get("worker_id","")) == str(assigned[0]):
+                    running = raw_job
+                    break
+            if not running.is_empty():
+                output = "Đang làm: %s ×%d · +%.0f EXP nghề\nCòn %d phút · Kho: %s" % [
+                    ResourceRegistry.new().display_name(StringName(running.get("resource_id",""))),
+                    int(running.get("output_quantity",0)),float(running.get("profession_xp_gain",0.0)),
+                    maxi(0,int(running.get("finish_tick",state.tick))-state.tick),_warehouse_pair(rid,true)
+                ]
     else:
         output = "Linh Cốc: %s · Thanh Linh Thảo: %s" % [
             _warehouse_pair(&"linh_coc",true),_warehouse_pair(&"thanh_linh_thao",true)
@@ -1006,9 +1060,14 @@ func _workforce_ui_button(parent: Control, node_name: String, label_text: String
     var button := Button.new()
     button.name = node_name
     button.text = label_text
-    button.custom_minimum_size = Vector2(112,44)
+    button.custom_minimum_size = Vector2(84,44)
     button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     button.add_theme_font_size_override("font_size",13)
+    button.add_theme_color_override("font_color",Color(0.97,0.95,0.86))
+    button.add_theme_color_override("font_hover_color",Color(1.0,0.98,0.89))
+    button.add_theme_stylebox_override("normal",_style(JADE_DARK,INK,1,8))
+    button.add_theme_stylebox_override("hover",_style(JADE_DARK.lightened(0.13),GOLD,2,8))
+    button.add_theme_stylebox_override("disabled",_style(Color(0.69,0.67,0.58),Color(0.49,0.47,0.40),1,8))
     button.pressed.connect(callback)
     parent.add_child(button)
     return button
@@ -1016,17 +1075,28 @@ func _workforce_ui_button(parent: Control, node_name: String, label_text: String
 func _build_workforce_card(building_type: StringName, profession_id: StringName) -> void:
     var buildings := BuildingSystem.new()
     var building := _selected_resource_instance(building_type)
-    _add_management_section_label("NGƯỜI PHỤ TRÁCH · THAO TÁC NHANH")
+    _add_management_section_label("ĐỆ TỬ PHỤ TRÁCH")
     if building == null:
         _add_management_section_label("Chưa có công trình để phân công.")
         return
     var assigned := _workforce_occupants(building)
     var owned := assigned.size() == 1 and state.disciples.has(assigned[0])
     var worker_id: StringName = assigned[0] if owned else &""
+    var owner_row := HBoxContainer.new()
+    owner_row.name = "WorkforceOwnerRow"
+    owner_row.custom_minimum_size = Vector2(PRODUCTION_CONTENT_WIDTH,48)
+    owner_row.add_theme_constant_override("separation",8)
+    building_management_container.add_child(owner_row)
+    if owned:
+        var avatar := _disciple_avatar_button(state.disciples[worker_id],48)
+        avatar.name = "WorkforceOwnerAvatar"
+        avatar.tooltip_text = "Xem hồ sơ %s" % state.disciples[worker_id].display_name
+        avatar.pressed.connect(Callable(self,"_open_workforce_owner").bind(worker_id,building.id))
+        owner_row.add_child(avatar)
     var label := Label.new()
     label.name = "WorkforceOwner"
     label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-    label.custom_minimum_size = Vector2(384,40)
+    label.custom_minimum_size = Vector2(PRODUCTION_CONTENT_WIDTH-56.0 if owned else PRODUCTION_CONTENT_WIDTH,40)
     label.add_theme_font_size_override("font_size",15)
     label.add_theme_color_override("font_color",INK)
     if assigned.size() > 1:
@@ -1039,11 +1109,11 @@ func _build_workforce_card(building_type: StringName, profession_id: StringName)
         ]
     else:
         label.text = "Chưa có đệ tử. Chọn người để bắt đầu."
-    building_management_container.add_child(label)
+    owner_row.add_child(label)
     _build_resource_instance_chooser(building_type)
     var buttons := HBoxContainer.new()
     buttons.name = "WorkforceQuickActions"
-    buttons.custom_minimum_size = Vector2(384,48)
+    buttons.custom_minimum_size = Vector2(PRODUCTION_CONTENT_WIDTH,48)
     buttons.add_theme_constant_override("separation",7)
     building_management_container.add_child(buttons)
     var choose := _workforce_ui_button(buttons,"WorkforceChoose","Chọn / Đổi",Callable(self,"_open_workforce_picker").bind(building.id))
@@ -1054,11 +1124,19 @@ func _build_workforce_card(building_type: StringName, profession_id: StringName)
         start.tooltip_text = "Gửi lệnh tới scheduler; tiến độ và sản phẩm là dữ liệu thực."
     else:
         start.tooltip_text = "Cần người phụ trách rảnh, slot và nguyên liệu hợp lệ."
-    var remove := _workforce_ui_button(buttons,"WorkforceRemove","Gỡ người",Callable(self,"_workforce_remove").bind(building.id))
-    remove.disabled = not owned or buildings.disciple_has_active_timed_recipe(state,worker_id) or buildings.disciple_has_active_spirit_plot(state,worker_id)
+    var active_timer := false
+    if owned and building_type in [BuildingSystem.TYPE_MINE,BuildingSystem.TYPE_LINH_FOREST]:
+        for raw_job in buildings.resource_timer_jobs(building):
+            if raw_job is Dictionary and str(raw_job.get("worker_id","")) == str(worker_id):
+                active_timer = true
+                break
+    var remove := _workforce_ui_button(buttons,"WorkforceRemove","Hủy mẻ" if active_timer else "Gỡ người",
+        Callable(self,"_workforce_cancel_timer").bind(building.id,worker_id) if active_timer else Callable(self,"_workforce_remove").bind(building.id))
+    remove.disabled = not owned or (not active_timer and (buildings.disciple_has_active_timed_recipe(state,worker_id) or buildings.disciple_has_active_spirit_plot(state,worker_id)))
     if not state.sect.economy_a_enabled and building_type in [BuildingSystem.TYPE_MINE,BuildingSystem.TYPE_LINH_FOREST]:
-        var enable := _workforce_ui_button(building_management_container,"WorkforceEnableTimer","Bật sản xuất timer (Economy-A)",Callable(self,"_workforce_enable_timer"))
-        enable.custom_minimum_size = Vector2(384,42)
+        var enable := _workforce_ui_button(building_management_container,"WorkforceEnableTimer","Bật chu kỳ sản xuất",Callable(self,"_workforce_enable_timer"))
+        enable.custom_minimum_size = Vector2(PRODUCTION_CONTENT_WIDTH,44)
+        enable.tooltip_text = "Dùng chu kỳ sản xuất thật từ Economy-A và scheduler hiện có."
 
 func _workforce_enable_timer() -> void:
     var result := EconomySystem.new().enable_v1(state)
@@ -1092,6 +1170,65 @@ func _workforce_remove(building_id: StringName) -> void:
         building_management_feedback = "Đã gỡ người phụ trách khỏi công trình." if ok else "Đệ tử đang bận; phải hoàn thành hoặc hủy công việc hợp lệ trước."
     _refresh_building_operation_content()
 
+func _workforce_cancel_timer(building_id: StringName, worker_id: StringName) -> void:
+    if not state.buildings.has(str(building_id)):
+        return
+    var building: BuildingState = state.buildings[str(building_id)]
+    var owns_timer := false
+    for raw_job in BuildingSystem.new().resource_timer_jobs(building):
+        if raw_job is Dictionary and str(raw_job.get("worker_id","")) == str(worker_id):
+            owns_timer = true
+            break
+    if not owns_timer:
+        building_management_feedback = "Mẻ đã kết thúc; không có gì để hủy."
+    else:
+        var cancelled := BuildingSystem.new().cancel_resource_timer(state,worker_id)
+        building_management_feedback = "Đã hủy mẻ trên công trình này." if cancelled else "Không thể hủy mẻ hiện tại."
+    _refresh_building_operation_content()
+
+func _disciple_avatar_button(disciple: DiscipleState, edge: float) -> Button:
+    var avatar := Button.new()
+    avatar.text = disciple.display_name.substr(0,1)
+    avatar.custom_minimum_size = Vector2(edge,edge)
+    avatar.add_theme_color_override("font_color",INK)
+    avatar.add_theme_stylebox_override("normal",_style(Color(0.86,0.91,0.77),JADE_DARK,1,8))
+    var actor := actor_nodes.get(str(disciple.id)) as ModularDiscipleActor
+    if actor != null and actor.baked_visual_active() and actor.baked_sprite != null:
+        var frames := actor.baked_sprite.sprite_frames
+        if frames != null and frames.has_animation(&"stand") and frames.get_frame_count(&"stand") > 0:
+            var portrait := TextureRect.new()
+            portrait.texture = frames.get_frame_texture(&"stand",0)
+            portrait.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+            portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+            portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+            portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
+            avatar.text = ""
+            avatar.add_child(portrait)
+    return avatar
+
+func _open_workforce_owner(disciple_id: StringName, building_id: StringName) -> void:
+    _open_disciple(disciple_id)
+    workforce_return_building_id = building_id
+    _show_disciple_summary()
+
+func _return_to_workforce_building() -> void:
+    var building_id := workforce_return_building_id
+    workforce_return_building_id = &""
+    if not state.buildings.has(str(building_id)):
+        return
+    var building: BuildingState = state.buildings[str(building_id)]
+    var destination := &""
+    match building.building_type:
+        BuildingSystem.TYPE_MINE: destination = SectMapPresentation.DEST_MINE
+        BuildingSystem.TYPE_LINH_FOREST: destination = SectMapPresentation.DEST_LINH_FOREST
+        BuildingSystem.TYPE_SPIRIT_FIELD: destination = SectMapPresentation.DEST_SPIRIT_FIELD
+    if destination == &"":
+        return
+    _close_disciple_summary(true)
+    _open_building(destination)
+    selected_production_instance_id = building_id
+    _refresh_building_operation_content()
+
 # Advanced controls remain accessible for production plans, policies, and the
 # historical P3 interaction contracts, but are not the main mobile workflow.
 func _fold_workforce_legacy_controls() -> void:
@@ -1113,11 +1250,21 @@ func _fold_workforce_legacy_controls() -> void:
     var toggle := Button.new()
     toggle.name = "WorkforceAdvancedToggle"
     toggle.text = "Ẩn tùy chọn nâng cao" if workforce_advanced_visible else "Kế hoạch / Danh sách nâng cao"
-    toggle.custom_minimum_size = Vector2(384,40)
+    toggle.custom_minimum_size = Vector2(PRODUCTION_CONTENT_WIDTH,44)
     toggle.pressed.connect(_toggle_workforce_advanced)
     building_management_container.add_child(toggle)
     building_management_container.add_child(advanced)
     advanced.visible = workforce_advanced_visible
+    if workforce_advanced_visible:
+        _fit_workforce_controls(advanced)
+
+func _fit_workforce_controls(node: Node) -> void:
+    if node is Control:
+        var control := node as Control
+        if control.custom_minimum_size.x > PRODUCTION_CONTENT_WIDTH:
+            control.custom_minimum_size.x = PRODUCTION_CONTENT_WIDTH
+    for child in node.get_children():
+        _fit_workforce_controls(child)
 
 func _toggle_workforce_advanced() -> void:
     workforce_advanced_visible = not workforce_advanced_visible
@@ -1140,9 +1287,9 @@ func _open_workforce_picker(building_id: StringName) -> void:
     workforce_picker_offset = 0
     workforce_picker_panel = Panel.new()
     workforce_picker_panel.name = "WorkforcePicker"
-    # Fit entirely beside the 440px right-hand building panel.
+    # Fit beside the compact production panel without hiding live actions.
     # Do not block its Start/Remove controls while a candidate is inspected.
-    workforce_picker_panel.position = Vector2(326,102)
+    workforce_picker_panel.position = Vector2(440,102)
     workforce_picker_panel.size = Vector2(480,516)
     workforce_picker_panel.z_index = 90
     workforce_picker_panel.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -1154,7 +1301,7 @@ func _open_workforce_picker(building_id: StringName) -> void:
     close.name = "WorkforcePickerClose"
     close.text = "Đóng ×"
     close.position = Vector2(377,13)
-    close.size = Vector2(85,42)
+    close.size = Vector2(85,44)
     close.pressed.connect(_close_workforce_picker)
     workforce_picker_panel.add_child(close)
     workforce_picker_search = LineEdit.new()
@@ -1178,14 +1325,14 @@ func _open_workforce_picker(building_id: StringName) -> void:
     prev.name = "WorkforcePickerPrev"
     prev.text = "◀ Trang trước"
     prev.position = Vector2(18,463)
-    prev.size = Vector2(165,42)
+    prev.size = Vector2(165,44)
     prev.pressed.connect(_workforce_picker_previous)
     workforce_picker_panel.add_child(prev)
     var next := Button.new()
     next.name = "WorkforcePickerNext"
     next.text = "Trang tiếp ▶"
     next.position = Vector2(297,463)
-    next.size = Vector2(165,42)
+    next.size = Vector2(165,44)
     next.pressed.connect(_workforce_picker_next)
     workforce_picker_panel.add_child(next)
     _render_workforce_picker()
@@ -1272,18 +1419,23 @@ func _render_workforce_picker() -> void:
         row.name = "WorkforceCandidate_%s" % str(actor.id)
         row.custom_minimum_size = Vector2(424,48)
         workforce_picker_results.add_child(row)
+        var avatar := _disciple_avatar_button(actor,44)
+        avatar.name = "WorkforceCandidateAvatar_%s" % str(actor.id)
+        avatar.tooltip_text = actor.display_name
+        avatar.disabled = true
+        row.add_child(avatar)
         var text_label := Label.new()
         text_label.text = "%s · nghề Lv%d\n%s" % [actor.display_name,
             int(entry["level"]),
             ("Sẵn sàng" if actor.work_group_id == &"" else "Có thể chuyển từ %s" % str(actor.work_group_id)) if reason == "" else reason]
-        text_label.custom_minimum_size = Vector2(302,48)
+        text_label.custom_minimum_size = Vector2(250,48)
         text_label.add_theme_color_override("font_color",INK)
         text_label.add_theme_font_size_override("font_size",12)
         row.add_child(text_label)
         var select := Button.new()
         select.name = "WorkforcePick_%s" % str(actor.id)
         select.text = "Chọn" if reason == "" else "Bận"
-        select.custom_minimum_size = Vector2(110,44)
+        select.custom_minimum_size = Vector2(104,44)
         select.disabled = reason != ""
         select.tooltip_text = "Giao người cho công trình thật" if reason == "" else reason
         select.pressed.connect(Callable(self,"_workforce_pick_candidate").bind(actor.id))
@@ -3361,8 +3513,8 @@ func _build_disciple_summary_panel() -> void:
     var close := Button.new()
     close.name = "CloseSummary"
     close.text = "×"
-    close.position = Vector2(262, 12)
-    close.size = Vector2(34, 34)
+    close.position = Vector2(250, 12)
+    close.size = Vector2(44, 44)
     close.add_theme_font_size_override("font_size", 20)
     close.add_theme_stylebox_override("normal", _style(Color(0.86, 0.80, 0.66, 1.0), INK, 1, 16))
     close.pressed.connect(Callable(self, "_close_disciple_summary").bind(true))
@@ -3406,6 +3558,17 @@ func _build_disciple_summary_panel() -> void:
     detail.pressed.connect(_open_selected_disciple_detail)
     disciple_summary_panel.add_child(detail)
 
+    var return_button := Button.new()
+    return_button.name = "ReturnToWorkforce"
+    return_button.text = "← Công trình"
+    return_button.position = Vector2(16,494)
+    return_button.size = Vector2(130,44)
+    return_button.visible = false
+    return_button.add_theme_color_override("font_color",INK)
+    return_button.add_theme_stylebox_override("normal",_style(Color(0.88,0.82,0.67),INK,1,8))
+    return_button.pressed.connect(_return_to_workforce_building)
+    disciple_summary_panel.add_child(return_button)
+
 func _add_summary_order_button(text: String, pos: Vector2, button_size: Vector2, kind: StringName, target: String = "") -> void:
     var button := Button.new()
     button.text = text
@@ -3426,6 +3589,11 @@ func _show_disciple_summary() -> void:
     if disciple_summary_panel == null or selected_id == &"" or not state.disciples.has(selected_id):
         return
     disciple_summary_panel.visible = true
+    var return_button := disciple_summary_panel.get_node("ReturnToWorkforce") as Button
+    return_button.visible = workforce_return_building_id != &""
+    var detail_button := disciple_summary_panel.get_node("OpenDiscipleDetail") as Button
+    detail_button.position.x = 154 if return_button.visible else 16
+    detail_button.size.x = 138 if return_button.visible else 276
     if camera_controls_panel != null:
         camera_controls_panel.visible = false
     if camera_hint != null:
@@ -3445,6 +3613,7 @@ func _close_disciple_summary(clear_selection: bool = true) -> void:
     summary_feedback = ""
     if not clear_selection:
         return
+    workforce_return_building_id = &""
     selected_id = &""
     deep_restore_summary = false
     if focused_kind == &"disciple":
@@ -3822,15 +3991,18 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
     back.name = "BackToMapContext"
     back.text = "← Trở lại bản đồ"
     back.position = Vector2(936, 12)
-    back.size = Vector2(184, 38)
+    back.size = Vector2(184, 44)
+    back.add_theme_color_override("font_color",INK)
+    back.add_theme_color_override("font_hover_color",INK)
     back.add_theme_stylebox_override("normal", _style(Color(0.88, 0.82, 0.67, 1.0), INK, 1, 8))
     back.pressed.connect(_return_to_disciple_summary)
     panel.add_child(back)
 
     var close := Button.new()
     close.text = "×"
-    close.position = Vector2(1128, 12)
-    close.size = Vector2(36, 34)
+    close.position = Vector2(1120, 12)
+    close.size = Vector2(44, 44)
+    close.add_theme_color_override("font_color",INK)
     close.add_theme_font_size_override("font_size", 22)
     close.add_theme_stylebox_override("normal", _style(Color(0.76, 0.70, 0.58, 1.0), INK, 1, 16))
     close.pressed.connect(_return_to_disciple_summary)
@@ -3845,7 +4017,7 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
     var roster_search := LineEdit.new()
     roster_search.name = "DiscipleProfileSearch"
     roster_search.position = Vector2(8, 8)
-    roster_search.size = Vector2(168, 36)
+    roster_search.size = Vector2(168, 44)
     roster_search.placeholder_text = "Tên hoặc ID · Enter"
     roster_search.text = disciple_profile_query
     roster_search.tooltip_text = "Tìm theo tên hoặc ID; hiển thị tối đa 50 đệ tử mỗi lượt."
@@ -3853,8 +4025,8 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
     roster_panel.add_child(roster_search)
 
     var scroll := ScrollContainer.new()
-    scroll.position = Vector2(8, 50)
-    scroll.size = Vector2(168, 406)
+    scroll.position = Vector2(8, 58)
+    scroll.size = Vector2(168, 398)
     roster_panel.add_child(scroll)
 
     var roster := VBoxContainer.new()
@@ -3880,13 +4052,21 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
             continue
         roster_shown += 1
         var entry := Button.new()
-        entry.text = roster_disciple.display_name
+        entry.text = "      " + roster_disciple.display_name
         entry.custom_minimum_size = Vector2(148, 44)
         entry.add_theme_font_size_override("font_size", 13)
+        entry.add_theme_color_override("font_color",INK)
+        entry.add_theme_color_override("font_hover_color",INK)
         var is_selected := id == selected_id
         entry.add_theme_stylebox_override("normal", _style(Color(0.97, 0.90, 0.70, 1.0) if is_selected else Color(0.91, 0.86, 0.72, 1.0), GOLD if is_selected else Color(0.45, 0.37, 0.25, 1.0), 2 if is_selected else 1, 8))
         entry.pressed.connect(Callable(self, "_open_disciple_deep_screen").bind(id, tab_name))
         roster.add_child(entry)
+        var avatar := _disciple_avatar_button(roster_disciple,36)
+        avatar.name = "DiscipleRosterAvatar_%s" % str(id)
+        avatar.position = Vector2(4,4)
+        avatar.size = Vector2(36,36)
+        avatar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        entry.add_child(avatar)
 
     var disciple: DiscipleState = state.disciples[selected_id]
 
@@ -3896,10 +4076,23 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
     showcase.add_theme_stylebox_override("panel", _style(Color(0.76, 0.84, 0.72, 1.0), Color(0.31, 0.40, 0.28, 1.0), 2, 80))
     panel.add_child(showcase)
 
-    var initial := _label(showcase, disciple.display_name.substr(0, 1), Vector2(70, 66), Vector2(160, 150), 86)
-    initial.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-    initial.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-    initial.add_theme_color_override("font_color", JADE_DARK)
+    var selected_actor := actor_nodes.get(str(disciple.id)) as ModularDiscipleActor
+    if selected_actor != null and selected_actor.baked_visual_active() and source_a_pilot_scene != null:
+        # The verified source clip is displayed at its native pixel size,
+        # independently from the small scaled map instance.
+        var artwork := source_a_pilot_scene.instantiate() as AnimatedSprite2D
+        artwork.name = "DiscipleSourceAArtwork"
+        artwork.position = Vector2(150,170)
+        showcase.add_child(artwork)
+        artwork.play(&"stand")
+    else:
+        var initial := _label(showcase, disciple.display_name.substr(0, 1), Vector2(70, 60), Vector2(160, 138), 86)
+        initial.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+        initial.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+        initial.add_theme_color_override("font_color", JADE_DARK)
+        var art_pending := _label(showcase,"Chưa có chân dung xác minh",Vector2(25,204),Vector2(250,20),12)
+        art_pending.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+        art_pending.add_theme_color_override("font_color",INK)
 
     var center_name := _label(showcase, disciple.display_name, Vector2(20, 232), Vector2(260, 32), 22)
     center_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -3964,8 +4157,10 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
         var tab := Button.new()
         tab.text = tab_names[index]
         tab.position = Vector2(220 + index * 154, 470)
-        tab.size = Vector2(144, 42)
+        tab.size = Vector2(144, 44)
         tab.add_theme_font_size_override("font_size", 12)
+        tab.add_theme_color_override("font_color",INK)
+        tab.add_theme_color_override("font_hover_color",INK)
         var active := tab_names[index] == tab_name
         tab.add_theme_stylebox_override("normal", _style(Color(0.97, 0.88, 0.64, 1.0) if active else Color(0.88, 0.82, 0.67, 1.0), GOLD if active else Color(0.45, 0.37, 0.25, 1.0), 2 if active else 1, 7))
         tab.pressed.connect(Callable(self, "_open_disciple_deep_screen").bind(selected_id, str(tab_names[index])))

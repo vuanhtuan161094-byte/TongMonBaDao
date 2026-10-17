@@ -1,5 +1,11 @@
 # P3 — PRESENTATION SOURCE RECOVERY MANIFEST
 
+## 2026-10-17 — Source A actor pilot newly ingested
+
+`actor.source_a.1113028_1.map_pilot` is now **S0 repo source candidate** at `godot/assets/actors/1113028_1/`, copied from `E:\TongMonBaDaoWorkspace\05_DauRa\Assets_Godot472\1113028_1`. Its `asset.json` SHA-256 is `daecefdc454883b8613fa2ec8361be1c80b2ddcc162b4aceff84618306e4a637`; that manifest includes hashes of the four Godot resource/atlas files and the three original Spine inputs. Batch-01 technical QA and the focused Windows in-scene stand/walk gate pass. The selected MAP25 visual, roof overlap, owner approval, Android behavior and redistribution rights outside this personal project remain **pending**. This pilot does not replace the approved `female_normal_v1` modular identity or change the S3 recovery status of historical building art.
+
+---
+
 Date: 2026-10-03
 Status: CANONICAL SOURCE-AVAILABILITY INVENTORY
 

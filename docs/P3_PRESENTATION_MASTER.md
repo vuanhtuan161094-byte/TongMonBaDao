@@ -1,5 +1,7 @@
 # P3 — PRESENTATION MASTER / AUTHORITY INDEX
 
+**MAP25 Windows candidate (2026-10-17):** [MAP25 UI/UX finalization acceptance](MAP25_UIUX_FINALIZATION_ACCEPTANCE_2026-10-17.md) records the Source A `1113028_1` in-scene pilot, compact Mine/Forest/Field production UI, six-tab disciple presentation, benchmark and 1280×720 evidence. Technical Windows focused gates and performance target pass; owner visual approval, unrecovered building art and Android remain open. This candidate does not supersede the visual canon or gameplay V2 authority below.
+
 Date: 2026-10-04
 Status: CANONICAL ROUTER FOR UI/UX + VISUAL ASSETS
 

@@ -30,6 +30,7 @@ var visual_components: Dictionary = {}
 var click_button: Button
 var status_label: Label
 var fallback_visual: Control
+var baked_sprite: AnimatedSprite2D
 var _built := false
 
 func _init() -> void:
@@ -91,6 +92,33 @@ func set_animation_library(library: AnimationLibrary) -> void:
     if library != null:
         animation_player.add_animation_library(&"", library)
     _play_shared_animation()
+
+# A verified baked pilot can supply map pixels while this actor keeps the
+# existing public direction, hit area, identity and action APIs. The modular
+# appearance remains the authority whenever a real production body exists.
+func set_baked_visual(packed: PackedScene) -> bool:
+    _ensure_built()
+    if packed == null or production_body_active():
+        return false
+    var candidate := packed.instantiate() as AnimatedSprite2D
+    if candidate == null:
+        return false
+    if candidate.sprite_frames == null or not candidate.sprite_frames.has_animation(&"stand") or not candidate.sprite_frames.has_animation(&"walk"):
+        candidate.free()
+        return false
+    if baked_sprite != null:
+        baked_sprite.queue_free()
+    baked_sprite = candidate
+    baked_sprite.name = "VerifiedBakedVisual"
+    baked_sprite.position = DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
+    baked_sprite.scale = Vector2.ONE * 0.35
+    add_child(baked_sprite)
+    _refresh_placeholder_mode()
+    _play_shared_animation()
+    return true
+
+func baked_visual_active() -> bool:
+    return baked_sprite != null and is_instance_valid(baked_sprite)
 
 # Convenience for a full-canvas single-piece layer. Production body/outfit should
 # normally use set_component_texture() for the coarse head/torso/arms/legs bundle.
@@ -250,6 +278,12 @@ func _play_shared_animation() -> void:
     if not _built:
         return
     _apply_mirror()
+    if baked_visual_active():
+        baked_sprite.flip_h = facing == DiscipleActorVisualCatalog.DIR_LEFT and mirror_left
+        var baked_clip := &"walk" if current_clip == DiscipleActorVisualCatalog.CLIP_WALK else &"stand"
+        if baked_sprite.animation != baked_clip or not baked_sprite.is_playing():
+            baked_sprite.play(baked_clip)
+        return
     if animation_player == null:
         return
     var animation := _best_available_animation()
@@ -347,7 +381,7 @@ func _build_fallback_visual() -> void:
 func _refresh_placeholder_mode() -> void:
     if click_button == null:
         return
-    var has_production_body := production_body_active()
+    var has_production_body := production_body_active() or baked_visual_active()
     if fallback_visual != null:
         fallback_visual.visible = not has_production_body
     click_button.text = ""
