@@ -180,9 +180,23 @@ func _run() -> void:
     if job_finish <= state.tick:
         _fail("Mine finish tick invalid")
         return
+    # No "+stock" toast just because a timer has started or crossed the
+    # screen boundary. Only real BuildingSystem delivery increments metrics.
+    var early_delivery := ui.call("_map_worksite_deliveries") as Dictionary
+    if early_delivery.has(str(mine.id)):
+        _fail("Mine showed delivered receipt before Warehouse settlement")
+        return
     scheduler.run_ticks(job_finish-state.tick)
     if warehouse.quantity(state,&"thanh_thiet") != ore_before+int(mining_job.get("output_quantity",0)):
         _fail("Mine completion did not deposit one real batch into Warehouse")
+        return
+    var actual_delivery := ui.call("_map_worksite_deliveries") as Dictionary
+    if int(actual_delivery.get(str(mine.id),0)) != int(mining_job.get("output_quantity",0)):
+        _fail("Mine notification not backed by actually delivered Warehouse batch")
+        return
+    var duplicate_delivery := ui.call("_map_worksite_deliveries") as Dictionary
+    if duplicate_delivery.has(str(mine.id)):
+        _fail("same Mine receipt was shown twice on repeated UI refresh")
         return
     # The map receipt only appears AFTER canonical Warehouse credit and
     # cannot replay when simply refreshing the HUD a second time.
