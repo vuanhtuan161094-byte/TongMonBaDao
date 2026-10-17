@@ -1032,10 +1032,120 @@ func _workforce_operation_summary(building_type: StringName) -> String:
                     maxi(0,int(running.get("finish_tick",state.tick))-state.tick),_warehouse_pair(rid,true)
                 ]
     else:
-        output = "Linh Cốc: %s · Thanh Linh Thảo: %s" % [
-            _warehouse_pair(&"linh_coc",true),_warehouse_pair(&"thanh_linh_thao",true)
+        var growing := 0
+        var plots := buildings.spirit_field_plots(state,building)
+        for raw_plot in plots:
+            if raw_plot is Dictionary and StringName(raw_plot.get("status","")) == BuildingSystem.PLOT_GROWING:
+                growing += 1
+        output = "Đang trồng: %d/%d ô · Kho Linh Cốc: %s" % [
+            growing,plots.size(),_warehouse_pair(&"linh_coc",true)
         ]
     return "%s · Lv%d · 1 đệ tử / công trình\nPhụ trách: %s\n%s" % [str(building.id),building.level,who,output]
+
+# Read-only operations ledger from the already-saved job / plot snapshots.
+# UI never owns another timer, clock, warehouse, work slot or payout.
+func _workforce_live_production_lines(building: BuildingState) -> Array[String]:
+    var lines: Array[String] = []
+    if building == null:
+        return lines
+    var buildings := BuildingSystem.new()
+    if building.building_type in [BuildingSystem.TYPE_MINE,BuildingSystem.TYPE_LINH_FOREST]:
+        var jobs := buildings.resource_timer_jobs(building)
+        for raw_job in jobs:
+            if not (raw_job is Dictionary):
+                continue
+            var job: Dictionary = raw_job
+            var resource_id := StringName(job.get("resource_id",""))
+            var output := maxi(int(job.get("output_quantity",0)),0)
+            var started := int(job.get("started_tick",state.tick))
+            var finish := int(job.get("finish_tick",state.tick))
+            var total := maxi(1,finish-started)
+            var elapsed := clampi(state.tick-started,0,total)
+            lines.append("%s ×%d · %d/%d phút (%.0f%%)" % [
+                ResourceRegistry.new().display_name(resource_id),output,elapsed,total,
+                100.0*float(elapsed)/float(total)
+            ])
+            lines.append("Còn %d phút · Kho: %s" % [
+                maxi(0,finish-state.tick),_warehouse_pair(resource_id,true)
+            ])
+        if lines.is_empty():
+            var plan := buildings.selected_resource_production_plan(building)
+            var rid := production_plan_registry.output_resource_id(plan)
+            var batch := production_plan_registry.scaled_yield(plan,building.level)
+            lines.append("Chưa có mẻ · kế hoạch %s ×%d/mẻ" % [
+                ResourceRegistry.new().display_name(rid),batch
+            ])
+        return lines
+    if building.building_type != BuildingSystem.TYPE_SPIRIT_FIELD:
+        return lines
+    var plots := buildings.spirit_field_plots(state,building)
+    for raw_plot in plots:
+        if not (raw_plot is Dictionary):
+            continue
+        var plot: Dictionary = raw_plot
+        var plot_id := str(plot.get("plot_id","?"))
+        if StringName(plot.get("status","")) != BuildingSystem.PLOT_GROWING:
+            lines.append("%s · Trống" % plot_id)
+            continue
+        var crop_id := StringName(plot.get("crop_id",""))
+        var started := int(plot.get("started_tick",state.tick))
+        var finish := int(plot.get("finish_tick",state.tick))
+        var total := maxi(1,finish-started)
+        var elapsed := clampi(state.tick-started,0,total)
+        var base_units := maxi(int(plot.get("routine_yield",0)),0)
+        # Routine yield is already snapped at plant time. Lucky outcomes are
+        # deliberately NOT promised before the scheduler resolves the plot.
+        lines.append("%s · %s ×%d thường · còn %d phút (%.0f%%)" % [
+            plot_id,spirit_crop_registry.display_name(crop_id),base_units,
+            maxi(0,finish-state.tick),100.0*float(elapsed)/float(total)
+        ])
+    return lines
+
+# Explain every disabled Start in the same operation panel. Do not preempt
+# Workforce/BuildingSystem authority: their real command remains the gate.
+func _workforce_start_block_reason(building: BuildingState, worker_id: StringName) -> String:
+    if building == null or worker_id == &"" or not state.disciples.has(worker_id):
+        return "Chọn một đệ tử phụ trách trước."
+    var actor: DiscipleState = state.disciples[worker_id]
+    var buildings := BuildingSystem.new()
+    if building.building_type in [BuildingSystem.TYPE_MINE,BuildingSystem.TYPE_LINH_FOREST]:
+        if not buildings.resource_timer_jobs(building).is_empty():
+            return "Mẻ đang chạy; chờ hoàn thành hoặc dùng Hủy mẻ."
+    if actor.region_id != &"sect" or not actor.active_pve_encounter_id.is_empty():
+        return "Đệ tử đang xuất môn hoặc tham gia PvE."
+    if not actor.work_cycle_state.is_empty():
+        return "Đệ tử đang hoàn thành lượt làm việc cũ."
+    var other_timer := buildings.active_resource_timer_for_worker(state,worker_id)
+    if not other_timer.is_empty():
+        return "Đệ tử đang có mẻ sản xuất ở công trình khác."
+    if buildings.disciple_has_active_timed_recipe(state,worker_id):
+        return "Đệ tử đang luyện chế hoặc sản xuất có hẹn giờ."
+    if DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,actor):
+        return "Đệ tử đang giữ lượt Rèn Thân."
+    var profession := _workforce_profession(building.building_type)
+    if profession == &"":
+        return "Không có nghề sản xuất hợp lệ."
+    if building.building_type == BuildingSystem.TYPE_SPIRIT_FIELD:
+        var plots := buildings.spirit_field_plots(state,building)
+        var has_empty := false
+        for raw_plot in plots:
+            if raw_plot is Dictionary and StringName(raw_plot.get("status","")) == BuildingSystem.PLOT_EMPTY:
+                has_empty = true
+                break
+        if not has_empty:
+            return "Đã đủ ô Linh Điền; chờ thu hoạch để gieo tiếp."
+        if not buildings.work_available(state,profession,actor):
+            return "Chưa có cây hợp lệ: kiểm tra Linh Thạch, chính sách và mục tiêu kho."
+    elif not buildings.work_available(state,profession,actor):
+        return "Chưa đủ điều kiện làm việc: kiểm tra công trình, vật liệu và trạng thái."
+    # The pending command remains owned by the scheduler; a duplicate Start
+    # must not be advertised as a new job while another order is queued.
+    if not actor.direct_command.is_empty():
+        var kind := StringName(actor.direct_command.get("kind",""))
+        var target := str(actor.direct_command.get("target",""))
+        if kind != WorkforceSystem.COMMAND_WORK or target != str(profession):
+            return "Đệ tử đã có lệnh khác chờ xử lý."
+    return ""
 
 func _workforce_worker_status(building: BuildingState, worker_id: StringName) -> String:
     var buildings := BuildingSystem.new()
@@ -1124,12 +1234,14 @@ func _build_workforce_card(building_type: StringName, profession_id: StringName)
     building_management_container.add_child(buttons)
     var choose := _workforce_ui_button(buttons,"WorkforceChoose","Chọn / Đổi",Callable(self,"_open_workforce_picker").bind(building.id))
     choose.disabled = assigned.size() > 1
-    var start := _workforce_ui_button(buttons,"WorkforceStart","Bắt đầu",Callable(self,"_workforce_start").bind(building.id))
-    start.disabled = not owned or not buildings.work_available(state,profession_id,state.disciples[worker_id])
-    if owned and not start.disabled:
-        start.tooltip_text = "Gửi lệnh tới scheduler; tiến độ và sản phẩm là dữ liệu thực."
-    else:
-        start.tooltip_text = "Cần người phụ trách rảnh, slot và nguyên liệu hợp lệ."
+    var can_plant_more := owned and building_type == BuildingSystem.TYPE_SPIRIT_FIELD and buildings.disciple_has_active_spirit_plot(state,worker_id,building)
+    var start := _workforce_ui_button(buttons,"WorkforceStart","Gieo ô tiếp" if can_plant_more else "Bắt đầu",Callable(self,"_workforce_start").bind(building.id))
+    var block_reason := _workforce_start_block_reason(building,worker_id)
+    start.disabled = not owned or block_reason != ""
+    start.tooltip_text = (
+        block_reason if block_reason != "" else
+        "Gửi lệnh đến scheduler; hàng chỉ nhập kho sau khi hoàn tất thực tế."
+    )
     var active_timer := false
     if owned and building_type in [BuildingSystem.TYPE_MINE,BuildingSystem.TYPE_LINH_FOREST]:
         for raw_job in buildings.resource_timer_jobs(building):
@@ -1139,6 +1251,19 @@ func _build_workforce_card(building_type: StringName, profession_id: StringName)
     var remove := _workforce_ui_button(buttons,"WorkforceRemove","Hủy mẻ" if active_timer else "Gỡ người",
         Callable(self,"_workforce_cancel_timer").bind(building.id,worker_id) if active_timer else Callable(self,"_workforce_remove").bind(building.id))
     remove.disabled = not owned or (not active_timer and (buildings.disciple_has_active_timed_recipe(state,worker_id) or buildings.disciple_has_active_spirit_plot(state,worker_id)))
+    if remove.disabled and owned:
+        remove.tooltip_text = "Lượt sản xuất đang chạy; không thể gỡ người khi chưa kết thúc."
+    # Progress is visible immediately after the 44px touch actions, and is
+    # recomputed from saved snapshots whenever the live UI refreshes.
+    var live_lines := _workforce_live_production_lines(building)
+    var live_label := Label.new()
+    live_label.name = "WorkforceLiveProgress"
+    live_label.custom_minimum_size = Vector2(PRODUCTION_CONTENT_WIDTH,0)
+    live_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    live_label.add_theme_font_size_override("font_size",12)
+    live_label.add_theme_color_override("font_color",INK)
+    live_label.text = "TIẾN ĐỘ THỰC TẾ\n" + "\n".join(live_lines)
+    building_management_container.add_child(live_label)
     if not state.sect.economy_a_enabled and building_type in [BuildingSystem.TYPE_MINE,BuildingSystem.TYPE_LINH_FOREST]:
         var enable := _workforce_ui_button(building_management_container,"WorkforceEnableTimer","Bật chu kỳ sản xuất",Callable(self,"_workforce_enable_timer"))
         enable.custom_minimum_size = Vector2(PRODUCTION_CONTENT_WIDTH,44)
@@ -1155,14 +1280,18 @@ func _workforce_start(building_id: StringName) -> void:
     var building: BuildingState = state.buildings[str(building_id)]
     var assigned := _workforce_occupants(building)
     if assigned.size() != 1:
-        building_management_feedback = "Công trình phải có đúng một người phụ trách."
+        building_management_feedback = "Cần đúng một đệ tử phụ trách công trình này."
     else:
-        var profession_id := _workforce_profession(building.building_type)
-        var ok := workforce.issue_command(state,assigned[0],WorkforceSystem.COMMAND_WORK,str(profession_id),40)
-        building_management_feedback = (
-            "Đã giao lệnh; scheduler sẽ khởi động lượt làm việc hợp lệ."
-            if ok else "Không thể bắt đầu: đệ tử bận hoặc công trình chưa đủ điều kiện."
-        )
+        var reason := _workforce_start_block_reason(building,assigned[0])
+        if reason != "":
+            building_management_feedback = "Chưa thể bắt đầu: " + reason
+        else:
+            var profession_id := _workforce_profession(building.building_type)
+            var ok := workforce.issue_command(state,assigned[0],WorkforceSystem.COMMAND_WORK,str(profession_id),40)
+            building_management_feedback = (
+                "Đã nhận lệnh. Scheduler sẽ gieo ô/mở mẻ ở nhịp hợp lệ; xem TIẾN ĐỘ THỰC TẾ."
+                if ok else "Chưa thể gửi lệnh: trạng thái việc làm đã thay đổi, hãy chọn lại."
+            )
     _refresh_building_operation_content()
 
 func _workforce_remove(building_id: StringName) -> void:
@@ -1542,8 +1671,10 @@ func _workforce_pick_candidate(disciple_id: StringName) -> void:
     var profession_id := _workforce_profession(building.building_type)
     var started := workforce.issue_command(state,disciple_id,WorkforceSystem.COMMAND_WORK,str(profession_id),40)
     building_management_feedback = (
-        "Đã phân công %s và gửi lệnh sản xuất." % state.disciples[disciple_id].display_name
-        if started else "Đã phân công; chưa thể chạy ngay (thiếu nguyên liệu/điều kiện)."
+        "Đã giao %s vào %s; lệnh đang chờ scheduler. Xem tiến độ khi mẻ bắt đầu." % [
+            state.disciples[disciple_id].display_name,str(building.id)
+        ]
+        if started else "Đã giao người vào %s; chưa gửi được lệnh. Bấm Bắt đầu để xem lý do." % str(building.id)
     )
     _refresh_building_operation_content()
 
