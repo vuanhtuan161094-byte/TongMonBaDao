@@ -55,6 +55,38 @@ func _run() -> void:
             _fail("main-world lab route to "+kind+" is broken")
             return
     var initial_snapshot := state.to_dict()
+    # Only genuine Mine/Forest/Field state instances may appear as managed
+    # ground markers. Three PV01 art landmarks must each draw exactly once.
+    var live_ids: Dictionary = {}
+    for raw_id in state.buildings.keys():
+        var building: BuildingState = state.buildings[raw_id]
+        if building.building_type in [
+            BuildingSystem.TYPE_MINE,
+            BuildingSystem.TYPE_LINH_FOREST,
+            BuildingSystem.TYPE_SPIRIT_FIELD
+        ]:
+            live_ids[str(building.id)] = str(building.building_type)
+    var shown_ids: Dictionary = {}
+    var pv01_counts := {"main_hall":0,"warehouse":0,"forge":0}
+    for row in iso.display_instances:
+        var dest := str(row["destination"])
+        if bool(row["managed"]):
+            var id := str(row["building_id"])
+            if not live_ids.has(id) or live_ids[id] != dest or shown_ids.has(id):
+                _fail("MAP25 marker is not a unique canonical BuildingState")
+                return
+            shown_ids[id] = dest
+        elif pv01_counts.has(dest):
+            if StringName(row["building_id"]) != &"":
+                _fail("PV01 visual landmark pretends to own a BuildingState")
+                return
+            pv01_counts[dest] = int(pv01_counts[dest])+1
+    if shown_ids != live_ids or pv01_counts != {"main_hall":1,"warehouse":1,"forge":1}:
+        _fail("MAP25 managed instances or PV01 art rows are missing/duplicated")
+        return
+    if iso.set_legacy_transform(original_map_layer.scale.x,original_map_layer.position):
+        _fail("stationary camera unnecessarily invalidated MAP25 viewport")
+        return
     var first := BuildingSystem.new().primary_building(state,BuildingSystem.TYPE_MINE)
     if first == null:
         _fail("real Mine BuildingState missing")
