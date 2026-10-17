@@ -1,5 +1,11 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — G1.8 production attention complete / Windows pending
+
+PR20 now includes read-only `Cần xử lý` mode on G1.7 board: unstaffed, idle, resource-stock-limit, empty Field, insufficient stones, wrong pending command; distinguishes active and due-but-unsettled scheduler jobs. Counts + actionable-first ordering, scoped pagination, 44+ px touch buttons, exact building ID. Existing multi-instance presentation test now covers attention filtering, no state mutation, unchanged ID navigation. Static focused 14/14 + lexical 2/2 PASS; **Godot exact-HEAD runtime PENDING**. Continue feature code only after refreshing PR20 HEAD; no CI/FULL/merge or gameplay edits. Owner need not rerun Windows per small presentation commit.
+
+---
+
 ## 2026-10-17 — G1.7 sect-wide production board implemented
 
 Draft PR20 G1.7 uses existing SectOperationsHub: paged 8-row display of all canonical Mine/Forest/Field instances, 4 filters, real owner/timer/plot status, exact-ID `Mở` route to same Workforce/BuildingSystem panel; non-mutating Field snapshot reads; no shadow job/clock/warehouse. Added focused coverage to `gui_multiple_resource_instances_test.gd` (two Mines, filtered list, open second ID, current timer). Static contract 12/12 and lexical 2/2 PASS, Windows Godot runtime exact new HEAD PENDING. No gameplay/save/CI/merge; do not request owner Full QA. Before next work re-fetch PR20 HEAD.
