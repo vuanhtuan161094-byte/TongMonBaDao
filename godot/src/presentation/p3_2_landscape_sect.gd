@@ -66,6 +66,11 @@ var iso_building_count := -1
 # UI selection only; actual building ID/worker/production live in SimulationState.
 var selected_production_instance_id: StringName = &""
 var sect_layout_preview_open := false
+# Presentation-only listing state; all actual producers stay in SimulationState.
+var sect_production_board_open := false
+var sect_production_board_filter: StringName = &""
+var sect_production_board_page := 0
+const SECT_PRODUCTION_PAGE_SIZE := 8
 var workforce_picker_panel: Panel
 var workforce_picker_results: VBoxContainer
 var workforce_picker_search: LineEdit
@@ -1739,6 +1744,7 @@ func _build_sect_hub() -> void:
 
 func _hide_sect_hub() -> void:
     sect_layout_preview_open = false
+    sect_production_board_open = false
     if sect_hub_panel != null and is_instance_valid(sect_hub_panel):
         sect_hub_panel.visible = false
 
@@ -1797,11 +1803,257 @@ func _sect_hub_production_line(
         label_text,instance_count,building.level,worker_name,activity,_warehouse_pair(actual_resource_id,true)
     ]
 
+# G1.7: one read-only, paged view of EVERY canonical producer instance.
+# No shadow map, local clock, construction/assignment command or save writes.
+func _sect_production_instances(filter_type: StringName = &"") -> Array[BuildingState]:
+    var result: Array[BuildingState] = []
+    for building_type in [
+        BuildingSystem.TYPE_MINE,
+        BuildingSystem.TYPE_LINH_FOREST,
+        BuildingSystem.TYPE_SPIRIT_FIELD
+    ]:
+        if filter_type != &"" and filter_type != building_type:
+            continue
+        result.append_array(ResourceBuildingExpansionPolicyV2.existing_instances(state,building_type))
+    return result
+
+func _sect_production_type_name(building_type: StringName) -> String:
+    match building_type:
+        BuildingSystem.TYPE_MINE:
+            return "Mỏ"
+        BuildingSystem.TYPE_LINH_FOREST:
+            return "Linh Lâm"
+        BuildingSystem.TYPE_SPIRIT_FIELD:
+            return "Linh Điền"
+    return "Công trình"
+
+func _sect_production_destination(building_type: StringName) -> StringName:
+    match building_type:
+        BuildingSystem.TYPE_MINE:
+            return SectMapPresentation.DEST_MINE
+        BuildingSystem.TYPE_LINH_FOREST:
+            return SectMapPresentation.DEST_LINH_FOREST
+        BuildingSystem.TYPE_SPIRIT_FIELD:
+            return SectMapPresentation.DEST_SPIRIT_FIELD
+    return &""
+
+func _sect_production_status(building: BuildingState) -> String:
+    if building == null:
+        return "Công trình không tồn tại."
+    var buildings := BuildingSystem.new()
+    var assigned := buildings.assigned_worker_ids(state,building)
+    if assigned.size() > 1:
+        return "Lỗi phân công: %d người cùng công trình" % assigned.size()
+    var owner := "Chưa có đệ tử"
+    if assigned.size() == 1:
+        owner = (
+            (state.disciples[assigned[0]] as DiscipleState).display_name
+            if state.disciples.has(assigned[0]) else str(assigned[0])
+        )
+    var activity := "Chưa có mẻ"
+    if building.building_type in [BuildingSystem.TYPE_MINE,BuildingSystem.TYPE_LINH_FOREST]:
+        var jobs := buildings.resource_timer_jobs(building)
+        if not jobs.is_empty() and jobs[0] is Dictionary:
+            var job: Dictionary = jobs[0]
+            activity = "Đang làm %s ×%d · còn %d phút" % [
+                ResourceRegistry.new().display_name(StringName(job.get("resource_id",""))),
+                maxi(0,int(job.get("output_quantity",0))),
+                maxi(0,int(job.get("finish_tick",state.tick))-state.tick)
+            ]
+        elif not assigned.is_empty() and state.disciples.has(assigned[0]):
+            activity = _workforce_worker_status(building,assigned[0])
+        else:
+            var plan := buildings.selected_resource_production_plan(building)
+            activity = "Kế hoạch %s ×%d/mẻ" % [
+                ResourceRegistry.new().display_name(production_plan_registry.output_resource_id(plan)),
+                production_plan_registry.scaled_yield(plan,building.level)
+            ]
+    elif building.building_type == BuildingSystem.TYPE_SPIRIT_FIELD:
+        var plots := buildings.spirit_field_plots(state,building)
+        var growing := 0
+        var next_remaining := -1
+        var crop_label := ""
+        for raw_plot in plots:
+            if not (raw_plot is Dictionary):
+                continue
+            var plot: Dictionary = raw_plot
+            if StringName(plot.get("status","")) != BuildingSystem.PLOT_GROWING:
+                continue
+            growing += 1
+            var remaining := maxi(0,int(plot.get("finish_tick",state.tick))-state.tick)
+            if next_remaining < 0 or remaining < next_remaining:
+                next_remaining = remaining
+                crop_label = "%s ×%d thường" % [
+                    spirit_crop_registry.display_name(StringName(plot.get("crop_id",""))),
+                    maxi(0,int(plot.get("routine_yield",0)))
+                ]
+        activity = "%d/%d ô đang trồng" % [growing,plots.size()]
+        if growing > 0:
+            activity += " · gần nhất %d phút · %s" % [next_remaining,crop_label]
+    return "Phụ trách: %s\n%s" % [owner,activity]
+
+func _open_sect_production_instance(building_id: StringName) -> void:
+    if not state.buildings.has(str(building_id)):
+        _refresh_sect_production_board()
+        return
+    var building: BuildingState = state.buildings[str(building_id)]
+    var destination := _sect_production_destination(building.building_type)
+    if destination == &"":
+        return
+    # Canonical exact-ID route: never let the panel silently fall back to
+    # primary_building() when the user tapped a secondary Mine/Forest/Field.
+    _open_building(destination)
+    selected_production_instance_id = building.id
+    _set_focus_target(
+        SectIsometricWorldV1.virtual_legacy_point(destination,building.id),
+        &"building",destination,_building_name(destination),false
+    )
+    _refresh_building_operation_content()
+
+func _show_sect_production_board() -> void:
+    sect_production_board_filter = &""
+    sect_production_board_page = 0
+    sect_layout_preview_open = false
+    sect_production_board_open = true
+    _refresh_sect_production_board()
+
+func _sect_production_filter_changed(building_type: StringName) -> void:
+    if building_type != &"" and not ResourceBuildingExpansionPolicyV2.RAW_TYPES.has(building_type):
+        return
+    sect_production_board_filter = building_type
+    sect_production_board_page = 0
+    _refresh_sect_production_board()
+
+func _sect_production_page_changed(direction: int) -> void:
+    var total := _sect_production_instances(sect_production_board_filter).size()
+    var max_page := maxi(0,int(ceili(float(total)/float(SECT_PRODUCTION_PAGE_SIZE)))-1)
+    sect_production_board_page = clampi(sect_production_board_page+direction,0,max_page)
+    _refresh_sect_production_board()
+
+func _refresh_sect_production_board() -> void:
+    if not sect_production_board_open or sect_hub_content == null or not is_instance_valid(sect_hub_content):
+        return
+    var scroll := sect_hub_panel.find_child("SectHubScroll",false,false) as ScrollContainer
+    var scroll_before := scroll.scroll_vertical if scroll != null else 0
+    for child in sect_hub_content.get_children():
+        sect_hub_content.remove_child(child)
+        child.queue_free()
+    var mine_count := _sect_production_instances(BuildingSystem.TYPE_MINE).size()
+    var forest_count := _sect_production_instances(BuildingSystem.TYPE_LINH_FOREST).size()
+    var field_count := _sect_production_instances(BuildingSystem.TYPE_SPIRIT_FIELD).size()
+    _sect_hub_label("SẢN XUẤT TÔNG MÔN · DỮ LIỆU THẬT",19)
+    _sect_hub_label("Mỏ %d · Linh Lâm %d · Linh Điền %d · Tick %d" % [
+        mine_count,forest_count,field_count,state.tick
+    ],13)
+
+    var tabs := HBoxContainer.new()
+    tabs.name = "SectProductionFilters"
+    tabs.custom_minimum_size = Vector2(662,48)
+    tabs.add_theme_constant_override("separation",5)
+    sect_hub_content.add_child(tabs)
+    for entry in [
+        {"type":&"","name":"Tất cả"},
+        {"type":BuildingSystem.TYPE_MINE,"name":"Mỏ"},
+        {"type":BuildingSystem.TYPE_LINH_FOREST,"name":"Linh Lâm"},
+        {"type":BuildingSystem.TYPE_SPIRIT_FIELD,"name":"Linh Điền"}
+    ]:
+        var type_id: StringName = StringName(entry["type"])
+        var filter_button := Button.new()
+        filter_button.name = "SectProductionFilter_%s" % (
+            "all" if type_id == &"" else str(type_id)
+        )
+        filter_button.text = str(entry["name"])
+        filter_button.custom_minimum_size = Vector2(153,46)
+        filter_button.add_theme_font_size_override("font_size",13)
+        filter_button.add_theme_color_override("font_color",INK)
+        if type_id == sect_production_board_filter:
+            filter_button.add_theme_stylebox_override("normal",_style(Color(0.95,0.86,0.61),INK,2,8))
+        filter_button.pressed.connect(Callable(self,"_sect_production_filter_changed").bind(type_id))
+        tabs.add_child(filter_button)
+
+    var all_instances := _sect_production_instances(sect_production_board_filter)
+    var max_page := maxi(0,ceili(float(all_instances.size())/float(SECT_PRODUCTION_PAGE_SIZE))-1)
+    sect_production_board_page = clampi(sect_production_board_page,0,max_page)
+    var first := sect_production_board_page*SECT_PRODUCTION_PAGE_SIZE
+    var last := mini(first+SECT_PRODUCTION_PAGE_SIZE,all_instances.size())
+    if all_instances.is_empty():
+        _sect_hub_label("Chưa có công trình thuộc nhóm này. Không tự xây mới.",14)
+    for index in range(first,last):
+        var building: BuildingState = all_instances[index]
+        var card := PanelContainer.new()
+        card.name = "SectProductionCard_%s" % str(building.id)
+        card.add_theme_stylebox_override("panel",_style(Color(0.95,0.91,0.80),INK,1,9))
+        sect_hub_content.add_child(card)
+        var horizontal := HBoxContainer.new()
+        horizontal.custom_minimum_size = Vector2(645,88)
+        horizontal.add_theme_constant_override("separation",8)
+        card.add_child(horizontal)
+        var detail := Label.new()
+        detail.name = "SectProductionStatus_%s" % str(building.id)
+        detail.text = "%s · %s · Lv%d\n%s" % [
+            _sect_production_type_name(building.building_type),
+            str(building.id),building.level,_sect_production_status(building)
+        ]
+        detail.custom_minimum_size = Vector2(493,80)
+        detail.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+        detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+        detail.add_theme_font_size_override("font_size",13)
+        detail.add_theme_color_override("font_color",INK)
+        detail.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        horizontal.add_child(detail)
+        var open_button := Button.new()
+        open_button.name = "SectProductionOpen_%s" % str(building.id)
+        open_button.text = "Mở"
+        open_button.custom_minimum_size = Vector2(119,48)
+        open_button.add_theme_font_size_override("font_size",15)
+        open_button.add_theme_color_override("font_color",PAPER_LIGHT)
+        open_button.add_theme_stylebox_override("normal",_style(JADE_DARK,INK,1,8))
+        open_button.pressed.connect(Callable(self,"_open_sect_production_instance").bind(building.id))
+        horizontal.add_child(open_button)
+
+    var paging := HBoxContainer.new()
+    paging.name = "SectProductionPaging"
+    paging.custom_minimum_size = Vector2(662,48)
+    paging.add_theme_constant_override("separation",13)
+    sect_hub_content.add_child(paging)
+    var prev := Button.new()
+    prev.name = "SectProductionPrevious"
+    prev.text = "← Trước"
+    prev.custom_minimum_size = Vector2(133,46)
+    prev.disabled = sect_production_board_page == 0
+    prev.pressed.connect(Callable(self,"_sect_production_page_changed").bind(-1))
+    paging.add_child(prev)
+    var page_label := Label.new()
+    page_label.name = "SectProductionPageInfo"
+    page_label.text = "Trang %d/%d · %d công trình" % [
+        sect_production_board_page+1,max_page+1,all_instances.size()
+    ]
+    page_label.custom_minimum_size = Vector2(258,44)
+    page_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    paging.add_child(page_label)
+    var next := Button.new()
+    next.name = "SectProductionNext"
+    next.text = "Sau →"
+    next.custom_minimum_size = Vector2(133,46)
+    next.disabled = sect_production_board_page >= max_page
+    next.pressed.connect(Callable(self,"_sect_production_page_changed").bind(1))
+    paging.add_child(next)
+
+    var back := Button.new()
+    back.name = "SectProductionBackToHub"
+    back.text = "← Quay lại Điều hành"
+    back.custom_minimum_size = Vector2(662,48)
+    back.pressed.connect(_refresh_sect_hub)
+    sect_hub_content.add_child(back)
+    if scroll != null:
+        scroll.set_deferred("scroll_vertical",scroll_before)
+
 # Read-only cap and land geometry authority; do NOT enable construction
 # without one persistent SectLayoutState, real Hall and approved tariffs.
 func _show_sect_layout_preview() -> void:
     if not runtime_ready or sect_hub_content == null or not is_instance_valid(sect_hub_content):
         return
+    sect_production_board_open = false
     sect_layout_preview_open = true
     for child in sect_hub_content.get_children():
         sect_hub_content.remove_child(child)
@@ -1845,6 +2097,7 @@ func _show_sect_layout_preview() -> void:
 
 func _refresh_sect_hub() -> void:
     sect_layout_preview_open = false
+    sect_production_board_open = false
     if sect_hub_content == null or not is_instance_valid(sect_hub_content):
         return
     var scroll := sect_hub_panel.find_child("SectHubScroll",false,false) as ScrollContainer
@@ -1859,6 +2112,15 @@ func _refresh_sect_hub() -> void:
     _sect_hub_label("Linh Thạch tông môn: %d · Tick %d" % [
         state.sect.spirit_stones,state.tick
     ])
+    var dashboard := Button.new()
+    dashboard.name = "SectHubOpenProductionBoard"
+    dashboard.text = "BẢNG SẢN XUẤT · Tất cả công trình"
+    dashboard.custom_minimum_size = Vector2(675,50)
+    dashboard.add_theme_font_size_override("font_size",16)
+    dashboard.add_theme_color_override("font_color",PAPER_LIGHT)
+    dashboard.add_theme_stylebox_override("normal",_style(JADE_DARK,INK,1,9))
+    dashboard.pressed.connect(_show_sect_production_board)
+    sect_hub_content.add_child(dashboard)
     _sect_hub_route("DẪN TIÊN · Tuyển và nhận đệ tử",SectMapPresentation.DEST_GUIDANCE)
     _sect_hub_label(_sect_hub_production_line("MỎ LINH KHOÁNG",BuildingSystem.TYPE_MINE,&"thanh_thiet"))
     _sect_hub_route("MỎ · Chọn người / Khai khoáng",SectMapPresentation.DEST_MINE)
@@ -3620,8 +3882,11 @@ func _refresh_all() -> void:
         _refresh_building_operation_content()
     if sect_hub_panel != null and is_instance_valid(sect_hub_panel) and sect_hub_panel.visible:
         # Planning geometry is immutable and has no runtime job output to poll.
-        # Do not rebuild its scroll view each tick while the player reads it.
-        if not sect_layout_preview_open:
+        # A production board is dynamic: real scheduler ticks change ETA and
+        # work status; refresh only the current bounded/paged board.
+        if sect_production_board_open:
+            _refresh_sect_production_board()
+        elif not sect_layout_preview_open:
             _refresh_sect_hub()
 
 func _process(_delta: float) -> void:
