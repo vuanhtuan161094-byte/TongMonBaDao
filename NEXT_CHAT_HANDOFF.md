@@ -1,5 +1,12 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-18 — One-pass G1 Windows evidence gate READY (Windows runtime NOT RUN)
+
+At PR20 `c86201ada61e`, audited the original `Run-G1-Acceptance-Windows.cmd` / `tools/qa/Run-G1-PR20-Windows.ps1`: isolated TEMP clone/save, official Godot 4.7.2, exactly 4 focused tests on `-Acceptance -Play` followed by 1280x720 real play only after tests pass, no CI/FULL/-Visual benchmark. Found one concrete proof gap: automated PASS could be reported without actual owner screenshots in QA ZIP. Focused launcher/doc patch (commit `4e983938`) creates a persistent `G1_SCREENSHOTS` folder in Downloads QA report, prints Win+Shift+S capture instructions, packs owner-selected real Mine/Forest/Field PNG/JPG files with all logs and records their count; <3 images -> PENDING, not final acceptance PASS. Even 4 tests + 3 image files do not override **G1 owner UX PENDING**; owner still inspects imagery, tap targets and manual perceived camera fluidity; Android remains PENDING. **Official Windows Godot 4.7.2 latest HEAD, screenshots, FPS data and acceptance NOT RUN / NOT OBSERVED.** Only QA launcher/docs updated, no gameplay/economy/save/Source A/CI/FULL/merge/G2.
+
+---
+
+
 ## 2026-10-18 — G1 compact badge detail / ETA visibility
 
 After `649758c47f53`, made one focused presentation correction: keep the persisted canonical `detail` string and full tooltip unchanged while showing a separate short `display_detail` string inside the 186px badge row. Mine/Forest render `×quantity · remaining-minutes`; Field renders `crop ×routine_yield · remaining-minutes`, or `chờ kho` if the saved work has elapsed but not settled. Quantity uses the existing approximate-marked compact formatting only if >=100,000. No state/job/stock writes; tests assert qty/ETA and crop label visually displayed in addition to exact source snapshot. 1280×720 and latest Godot runtime/owner acceptance still **PENDING**, no CI/FULL/merge/G2.
