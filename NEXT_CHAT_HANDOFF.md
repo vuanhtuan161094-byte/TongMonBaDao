@@ -1,5 +1,10 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — G2 core loop roadmap ready; owner CODE permission required
+
+Read `docs/G2_PLAYABLE_CORE_LOOP_PLAN_2026-10-17.md` (main `461caca`, PR20 `78254c6` audit). Four small G2 code packets proposed behind G1 focused acceptance: `G2-01` read-only journey prompts, `G2-02` real produce→consumer navigation, `G2-03` existing-building upgrade presentation with preflight, `G2-04` one genuine save/offline produce–spend–grow E2E. **NO G2 CODE AUTHORIZED YET**. Construction/new buildings are blocked by absent real Hall, land, persistent layout, paid build transaction. G1 Windows/owner visual acceptance still pending. No CI/FULL/merge/main writes.
+
+---
 ## 2026-10-17 — G1 minimal acceptance prepared, optional once-only Windows
 
 Owner: stop adding G1 UI for now; read `docs/G1_ACCEPTANCE_MINIMAL_PLAN_2026-10-17.md`. Optional `Run-G1-Acceptance-Windows.cmd` does HEAD-verified isolated TEMP clone + Godot 4.7.2 import + four directly relevant focused presentation/Workforce tests; `-Play` opens 1280×720 game when green. Existing runner now accepts `-Acceptance` (ASCII-safe Windows PowerShell 5.1); never implies FULL/CI/Android or merge. Source/package static verified; official Windows exact HEAD and owner visual signoff PENDING. Repair only evidenced blockers, otherwise after owner acceptance request separate G2 packet. Avoid repeated QA or extra paperwork.
