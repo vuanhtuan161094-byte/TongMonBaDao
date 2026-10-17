@@ -62,6 +62,7 @@ Nếu quyết định làm thay đổi architecture/pipeline lâu dài, tạo AD
 | Màn Đệ Tử | `P3_UX_DISCIPLE_SCREEN.md` | V3.3 locked; 6 real tabs |
 | UI skin/icon | `P3_UI_SKIN_AND_ICONOGRAPHY.md` | Style canon locked; runtime asset family pending |
 | Asset manifest kỹ thuật cũ | `P3_2_ASSET_MANIFEST.md` | Inventory/checklist; không thay registry/authority mới |
+| Source A Spine converter / Batch-01 / Godot UI asset handoff | `P3_SOURCE_A_ANIMATION_ASSET_UI_UX_HANDOFF_2026-10-17.md` | 10 rig technical PASS ngoài repo; UI visual/Android và MAP25 binary import PENDING; **không thay rig modular canon** |
 | Decision history | `docs/decisions/` | Append-only rationale for major decisions |
 | Simulation/identity nhân vật | `DISCIPLE_MASTER_SCHEMA.md` | Gameplay authority |
 
