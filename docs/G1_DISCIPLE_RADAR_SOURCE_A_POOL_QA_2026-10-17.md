@@ -74,3 +74,14 @@ Owner request 17/10/2026: continue the next appropriate step by organizing **exa
 Extended the existing `sect_map25_visual_perf_capture_test.gd` **test-only** after its normal `08_disciple` capture to recruit a deterministic authentic V2 actor through canonical `RecruitmentSystem`, validate all six radar points against `DisciplePresentationSnapshotV2` and attempt a native `08b_g1_real_v2_radar.png` capture. The existing 600 frame scenario windows and old screenshot names are unchanged. The new screenshot is proof of the REAL G1 chart rather than a legacy-character-only view; it has NOT been generated or reviewed yet. The suite now expects 12 native screenshots if all existing 11 plus the G1 capture succeed.
 
 **Static inspection after latest source change:** 5/5 modified GDScript files pass a lexical delimiter/quote/comment scan. This is NOT a Godot parser, native Windows runtime PASS, or visual acceptance. Windows QA remains PENDING.
+
+## 2026-10-17 — Owner Windows QA ZIP 16:26:07 — runner exit-code capture FAIL (fixed in subsequent commit)
+
+**Evidence inspected:** owner-uploaded `TONG_MON_G1_PR20_QA_20261017_162607.zip` (7 files; ZIP CRC intact).
+- Git clone succeeded at exact PR #20 SHA `83278e0b39e737b406f72e2cbada7de942587a69`; PR19 ancestry verified.
+- Official Windows `Godot 4.7.2.stable.official.ed1daf0bf` confirmed.
+- `02_import.stdout.log` reaches final `[ DONE ] loading_editor_layout` and all asset reimport stages; `02_import.stderr.log` empty; no `ERROR:`, `SCRIPT ERROR:` or parse failures observed in the supplied import log.
+- `SUMMARY.md` reports `[FAIL] 02_import`, `exit=` **empty**, `marker=True`, `timeout=False`. No later tests, screenshots, 600-frame CSV or P3.7 FULL gate were run. This is a **QA launcher instrumentation failure**, not proof of a Godot import or game failure.
+- **Root cause:** `Start-Process -PassThru` without `-Wait`, followed by `WaitForExit`, yielded an empty `ExitCode` in the actual Windows PowerShell environment. `tools/qa/Run-G1-PR20-Windows.ps1` was changed to create `System.Diagnostics.Process` directly, asynchronously drain both pipes, wait with timeout, read a real integer `ExitCode`, and fail closed on explicit Godot parser/runtime error markers. The new launcher HAS NOT RUN yet; its success remains PENDING.
+
+No gameplay, CI, main branch or previously passed MAP25 PR19 code was changed for this repair. Distribute fresh one-click ZIP containing revised QA script; previous launcher ZIP must not be reused.
