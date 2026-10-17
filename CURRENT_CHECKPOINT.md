@@ -1,5 +1,10 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — G2 PLAYABLE CORE LOOP PLANNED ONLY (NO GAMEPLAY CODE AUTHORIZATION)
+
+Owner-requested G2 code/UX audit of main `461caca` vs draft PR20 baseline `78254c6` produced `docs/G2_PLAYABLE_CORE_LOOP_PLAN_2026-10-17.md`. Real backend: Dẫn Tiên/Recruitment, Workforce/one-active-job, Mine/Forest timers and Field plots, canonical Scheduler/Warehouse/save, NPC Market with budget/receipts, Mine upgrade and Alchemy/Forge consumers. Primary missing layer is a coherent player-facing produce→spend→grow route and analogous enabled upgrade UI for existing resource instances. New construction, Hall, land, persistent SectLayout authority are **NOT implemented**; expansion policy is **read-only preview**, not authorization to build. Proposed G2-00 G1 Acceptance prerequisite then G2-01 UI guidance, G2-02 spend navigation, G2-03 existing-building growth UX, G2-04 focused real end-to-end loop — all **DESIGN/PLAN ONLY**, separate owner CODE authorization still required. G1 Windows exact-HEAD acceptance, visual owner review, Android, FULL and CI remain PENDING/NOT RUN. No G2 gameplay code, merge or main changes.
+
+---
 ## 2026-10-17 — G1.5–G1.8 ONE-PASS ACCEPTANCE PLANNED; RUNTIME PENDING
 
 On draft PR #20, owner requested next-step planning rather than more incremental UI expansion. Added `docs/G1_ACCEPTANCE_MINIMAL_PLAN_2026-10-17.md` and optional `Run-G1-Acceptance-Windows.cmd` launching the existing isolated Windows QA runner with new `-Acceptance -Play`: **only 4 focused tests** (G1 radar/Source A, actor pilot, canonical Workforce E2E, multi-instance production/attention), then native 1280×720 playable preview. No FULL, CI, 600-frame benchmark, merge, Android or gameplay changes. ZIP artifact for owner is a direct downloadable one-click script and matched PS1 source; file contents checked against GitHub PS1 blob. **Windows on exact new HEAD still PENDING**; owner need not run now. No G1 acceptance or visual owner signoff until actual Windows evidence and review.
