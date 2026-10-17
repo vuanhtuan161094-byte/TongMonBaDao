@@ -1,5 +1,11 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — G1 first owner Windows ZIP / corrected one-click QA runner
+
+Owner-supplied `TONG_MON_G1_PR20_QA_20261017_162607.zip` confirms **branch G1 at SHA 83278e0** and real Godot 4.7.2 launch. Import stdout ends `[DONE]` without parse error, but QA runner reported false `02_import FAIL (exit=)` due to PowerShell `Start-Process -PassThru` empty ExitCode. No G1 tests or captures ran. Replaced process code with native .NET `Process`, async logs, integer ExitCode, parser error fail-closed, and distributed updated **direct-download** file `TONG_MON_G1_PR20_WINDOWS_QA_V2_FIX_EXITCODE_2026-10-17.zip`. Next: run that ZIP, receive `TONG_MON_G1_PR20_QA_*.zip`, audit focused tests/12 screenshots/600 samples/FULL; only fix proven code errors. **G1 actual Windows pass PENDING**, PR20 draft, no CI or merge.
+
+---
+
 ## 2026-10-17 — G1 QA HANDOFF (real V2 radar image required)
 
 On [draft PR #20](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/20), `Run-G1-PR20-Windows.cmd` / `tools/qa/Run-G1-PR20-Windows.ps1` is the prepared isolated official Windows tester. New MAP25 capture `08b_g1_real_v2_radar.png` MUST show genuine V2 six-axis radar; test recruits through actual backend and validates values. 12 native images expected if the prior 11 all pass. Run the script on an available graphical Windows host with official Godot 4.7.2; return log/CSV/screenshots evidence ZIP and actual tested SHA for independent review. **No Windows result yet.** Static lexical scans 5/5 PASS only, CI OFF, no merge or main writes. Check current branch and docs before any changes.
