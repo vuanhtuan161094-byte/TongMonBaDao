@@ -1,5 +1,12 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-18 — G1 timer-only production presentation focused patch
+
+Baseline `55a8943f062a`; owner explicitly cancelled mining/chopping/planting action animation requirement. Static code audit found that pending jobs (100% elapsed but **not credited**) had the same jade progress fill as running jobs, the real Field panel did not show cumulative credited units in its above-fold header, and map cards could be placed under open operations/roster/workforce panels. Presentation-only changes: amber `waiting` cue for persisted Mine/Forest/Field jobs past `finish_tick`, full tooltip with exact quantity while small card abbreviates only values >=100,000 with `≈`; 12px progress line; Field panel `đã nhập` actual persisted `units_produced`; panel rectangles reserved in bounded map-card layout. Existing focused Workforce + multi-instance tests extended for real Field plot timing, pending-not-settled, field credited units, 12px bar and right-panel exclusion. No new clock, product settlement, second Warehouse or job logic. **Static checks only; official Godot 4.7.2 focused runtime, 1280×720 screenshots, Android performance and G1 owner UX acceptance remain PENDING.** No CI/FULL/merge/G2.
+
+---
+
+
 ## 2026-10-18 — Owner khóa lại UX G1: chỉ cần timeline sản xuất
 
 **USER DECISION SUPERSEDES ALL EARLIER G1 ART-PENDING WORK-ACTION PACKETS:** Không cần Source A mining/chopping/planting animations; `stand/walk` là đủ. **STOP** audit `113116_1_s`/`113116_1`, tìm binary Spine, rebake, làm asset nghề; tài liệu ART packet chỉ giữ để truy vết, không phải blocker. G1 UX chấp nhận về thiết kế việc **progress bar/% + ETA + expected batch + actual credited Warehouse units** ngay trên instance Mỏ/Linh Lâm/Linh Điền, trạng thái worker thật; không fake production hay nhập kho sớm. Existing `SectProductionWorksiteCue` + operation panel đã có đường hiển thị từ canonical state trong **static code** trên PR20 baseline `663fe80e7a5b`; chưa có latest Godot 4.7.2 focused runtime/ảnh nghiệm thu 1280×720. Tập trung polish/thử timeline, dễ chạm, không chồng, performance; **G1 owner UX acceptance PENDING**. Không sửa gameplay/save/Economy V2/Warehouse/Scheduler, không CI/FULL/merge/G2.

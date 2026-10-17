@@ -311,6 +311,34 @@ func _run() -> void:
         _fail("Field progress was not exposed above the fold")
         return
     var farmer: DiscipleState = state.disciples[farmer_id]
+    var field_snapshot := ui.call("_map_worksite_snapshot",field) as Dictionary
+    var field_start := int(first_growing.get("started_tick",state.tick))
+    var field_finish := int(first_growing.get("finish_tick",state.tick))
+    var field_duration := maxi(1,field_finish-field_start)
+    var field_elapsed := clampi(state.tick-field_start,0,field_duration)
+    if (
+        not bool(field_snapshot.get("active",false))
+        or str(field_snapshot.get("worker","")) != state.disciples[farmer_id].display_name
+        or not str(field_snapshot.get("detail","")).contains("×%d" % int(first_growing.get("routine_yield",0)))
+        or absf(float(field_snapshot.get("progress",-1.0))-100.0*float(field_elapsed)/float(field_duration)) > 0.001
+        or bool(field_snapshot.get("waiting",false)) != (field_finish <= state.tick)
+        or not field_caption.text.contains("đã nhập %d" % int(field.metrics.get("units_produced",0)))
+    ):
+        _fail("Field map timeline or panel credited amount does not match canonical saved plot")
+        return
+    var delivery_card := SectProductionWorksiteCue.new()
+    ui.add_child(delivery_card)
+    delivery_card.display({"heading":"Mỏ","worker":"Thử","detail":"Chờ nhập kho","received":0,
+        "progress":100.0,"active":true,"waiting":true})
+    var pending_fill := delivery_card.progress.get_theme_stylebox("fill") as StyleBoxFlat
+    if (
+        not delivery_card.percentage.text.contains("100%")
+        or not delivery_card.progress.tooltip_text.contains("chưa nhập kho")
+        or pending_fill == null or pending_fill.bg_color != SectProductionWorksiteCue.PENDING_COLOR
+    ):
+        _fail("100 percent pending batch was incorrectly displayed as settled")
+        return
+    delivery_card.queue_free()
     var stones := state.sect.spirit_stones
     var second := buildings.perform_spirit_field_step(state,farmer,1.0)
     if not bool(second.get("ok",false)) or state.sect.spirit_stones >= stones:

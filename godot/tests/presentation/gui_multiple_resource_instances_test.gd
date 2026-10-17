@@ -348,6 +348,15 @@ func _run() -> void:
     ):
         _fail("a new Mine batch did not report genuine zero-percent progress")
         return
+    # A visible right-hand panel is an occupied screen region, not free
+    # map room. Hide it before asserting the selected world badge itself.
+    var panel_blockers := ui.call("_map_worksite_panel_exclusions") as Array
+    var operation_panel := ui.get("building_operation_panel") as Panel
+    if panel_blockers.is_empty() or not panel_blockers.has(Rect2(operation_panel.global_position,operation_panel.size).grow(4.0)):
+        _fail("map badges did not reserve the open production panel area")
+        return
+    ui.call("_hide_building_operation_panel")
+    await process_frame
     ui.call("_refresh_map_worksite_cues")
     var second_cue := ui.find_child("MapWorksite_%s" % str(second.id),true,false) as SectProductionWorksiteCue
     if second_cue == null:
@@ -379,13 +388,18 @@ func _run() -> void:
     var worker_label := second_cue.find_child("WorksiteWorker",false,false) as Label
     var received_label := second_cue.find_child("WorksiteReceived",false,false) as Label
     var percent_label := second_cue.find_child("WorksitePercentage",false,false) as Label
+    var progress_bar := second_cue.find_child("WorksiteProgress",false,false) as ProgressBar
     if (
-        worker_label == null or received_label == null or percent_label == null
+        worker_label == null or received_label == null or percent_label == null or progress_bar == null
         or not worker_label.text.contains(state.disciples[worker_id].display_name)
         or not received_label.text.contains(str(int(second.metrics.get("units_produced",0))))
         or not percent_label.text.contains("%")
+        or progress_bar.size.y < 12.0
     ):
         _fail("second Mine map card omitted actual worker/settled quantity/percentage")
+        return
+    if SectProductionWorksiteCue._map_quantity(100000) != "≈100.0K":
+        _fail("large screen quantities did not keep an explicit approximation mark")
         return
     var actor_foot := Vector2(ui.call("_production_actor_world_foot",
         state.disciples[worker_id],SectMapPresentation.DEST_MINE,0,

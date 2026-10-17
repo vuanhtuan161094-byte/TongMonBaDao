@@ -7,6 +7,7 @@ const CARD_SIZE := Vector2(202.0,110.0)
 const INK := Color(0.16,0.14,0.11,1.0)
 const PAPER := Color(0.96,0.92,0.80,0.97)
 const JADE := Color(0.17,0.40,0.31,1.0)
+const PENDING_COLOR := Color(0.61,0.37,0.10,1.0)
 
 var heading: Label
 var worker: Label
@@ -77,8 +78,8 @@ func _ready() -> void:
 
     progress = ProgressBar.new()
     progress.name = "WorksiteProgress"
-    progress.position = Vector2(8,94)
-    progress.size = Vector2(150,9)
+    progress.position = Vector2(8,92)
+    progress.size = Vector2(150,12)
     progress.max_value = 100.0
     progress.show_percentage = false
     progress.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -121,25 +122,46 @@ func _ready() -> void:
     receipt.visible = false
     add_child(receipt)
 
+# Preserve exact quantities in the snapshot, panel and warehouse; compress
+# the tiny world badge ONLY when a value cannot fit at 1280x720.
+static func _map_quantity(value: int) -> String:
+    if value >= 1000000:
+        return "≈%.1fTr" % (float(value)/1000000.0)
+    if value >= 100000:
+        return "≈%.1fK" % (float(value)/1000.0)
+    return str(value)
+
 func display(snapshot: Dictionary) -> void:
     var title_text := str(snapshot.get("heading",""))
     var worker_text := "Người: %s" % str(snapshot.get("worker","Chưa phân công"))
     var detail_text := str(snapshot.get("detail",""))
-    var received_text := "Đã nhập kho: %d" % maxi(0,int(snapshot.get("received",0)))
+    var received_count := maxi(0,int(snapshot.get("received",0)))
+    var received_text := "Đã nhập: %s" % _map_quantity(received_count)
     var fraction := clampf(float(snapshot.get("progress",0.0)),0.0,100.0)
     var active := bool(snapshot.get("active",false))
-    var signature := "%s|%s|%s|%s|%.2f|%s" % [
-        title_text,worker_text,detail_text,received_text,fraction,str(active)
+    # A full timer is NOT a completed warehouse receipt.
+    var waiting := bool(snapshot.get("waiting",false))
+    var signature := "%s|%s|%s|%s|%.2f|%s|%s" % [
+        title_text,worker_text,detail_text,received_text,fraction,str(active),str(waiting)
     ]
     if signature == last_display_signature:
         return
     last_display_signature = signature
     heading.text = title_text
+    heading.tooltip_text = title_text
     worker.text = worker_text
+    worker.tooltip_text = worker_text
     detail.text = detail_text
+    detail.tooltip_text = detail_text
     received.text = received_text
+    received.tooltip_text = "Đã nhập kho: %d" % received_count
     progress.value = fraction
+    var fill := progress.get_theme_stylebox("fill") as StyleBoxFlat
+    if fill != null:
+        fill.bg_color = PENDING_COLOR if waiting else JADE
+    progress.tooltip_text = "Chờ scheduler kết toán, chưa nhập kho" if waiting else detail_text
     percentage.text = "%d%%" % roundi(fraction) if active else "—"
+    percentage.tooltip_text = progress.tooltip_text
 
 func show_delivered(amount: int) -> void:
     if amount <= 0:

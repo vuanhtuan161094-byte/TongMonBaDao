@@ -978,6 +978,7 @@ func _show_building_operation_panel() -> void:
     if camera_hint != null:
         camera_hint.visible = false
     _refresh_building_operation_content()
+    _refresh_map_worksite_cues()
 
 func _hide_building_operation_panel() -> void:
     if building_operation_panel != null:
@@ -1122,18 +1123,19 @@ func _refresh_production_progress_header(building_type: StringName) -> void:
             if nearest.is_empty() or int(plot.get("finish_tick",0)) < int(nearest.get("finish_tick",0)):
                 nearest = plot
     if nearest.is_empty():
-        building_operation_progress_caption.text = "CHƯA TRỒNG CÂY\nChọn đệ tử và bấm Bắt đầu"
+        building_operation_progress_caption.text = "Chưa trồng · đã nhập %d\nChọn đệ tử và bấm Bắt đầu" % maxi(0,int(building.metrics.get("units_produced",0)))
         building_operation_progress_bar.value = 0.0
         return
     var start_tick := int(nearest.get("started_tick",state.tick))
     var finish_tick := int(nearest.get("finish_tick",state.tick))
     var total := maxi(1,finish_tick-start_tick)
     var elapsed := clampi(state.tick-start_tick,0,total)
-    building_operation_progress_caption.text = "%d ô trồng · gần nhất: %s ×%d\n%d/%d phút · %s" % [
+    building_operation_progress_caption.text = "%d ô · %s ×%d · đã nhập %d\n%d/%d phút · %s" % [
         active_count,
         spirit_crop_registry.display_name(StringName(nearest.get("crop_id",""))),
-        maxi(0,int(nearest.get("routine_yield",0))),elapsed,total,
-        "Chờ scheduler kết toán" if finish_tick <= state.tick
+        maxi(0,int(nearest.get("routine_yield",0))),
+        maxi(0,int(building.metrics.get("units_produced",0))),elapsed,total,
+        "Chờ kết toán" if finish_tick <= state.tick
         else "Còn %d phút" % (finish_tick-state.tick)
     ]
     building_operation_progress_bar.value = 100.0*float(elapsed)/float(total)
@@ -2030,6 +2032,8 @@ func _hide_sect_hub() -> void:
     sect_production_board_open = false
     if sect_hub_panel != null and is_instance_valid(sect_hub_panel):
         sect_hub_panel.visible = false
+    if iso_world != null:
+        _refresh_map_worksite_cues()
 
 func _show_sect_hub() -> void:
     if not runtime_ready or sect_hub_panel == null or not is_instance_valid(sect_hub_panel):
@@ -2040,6 +2044,7 @@ func _show_sect_hub() -> void:
     _clear_popup()
     _refresh_sect_hub()
     sect_hub_panel.visible = true
+    _refresh_map_worksite_cues()
 
 func _sect_hub_label(message: String, font_size: int = 14) -> void:
     var label := Label.new()
@@ -4310,7 +4315,7 @@ func _map_worksite_snapshot(building: BuildingState) -> Dictionary:
     var result := {
         "heading":type_title,"worker":"Chưa phân công","detail":"Chưa có người",
         "received":maxi(0,int(building.metrics.get("units_produced",0))),
-        "progress":0.0,"active":false
+        "progress":0.0,"active":false,"waiting":false
     }
     var assigned := BuildingSystem.new().assigned_worker_ids(state,building)
     if not assigned.is_empty():
@@ -4344,6 +4349,7 @@ func _map_worksite_snapshot(building: BuildingState) -> Dictionary:
                 ]
                 result["progress"] = 100.0*float(elapsed)/float(total)
                 result["active"] = true # Includes newly started 0% jobs.
+                result["waiting"] = finish_tick <= state.tick
                 return result
         if assigned.is_empty():
             result["detail"] = "Chưa phân công"
@@ -4392,6 +4398,7 @@ func _map_worksite_snapshot(building: BuildingState) -> Dictionary:
     ]
     result["progress"] = 100.0*float(elapsed)/float(total)
     result["active"] = true
+    result["waiting"] = finish_tick <= state.tick
     return result
 
 func _map_worksite_deliveries() -> Dictionary:
@@ -4439,6 +4446,15 @@ func _map_worksite_layout_for_anchor(anchor: Vector2, occupied: Array) -> Dictio
         if not collides:
             return {"offset":box.position-screen,"rect":box}
     return {}
+
+# Keep read-only world badges out from behind operational panels. A selected
+# production panel always carries the same exact-ID timeline if a badge is hidden.
+func _map_worksite_panel_exclusions() -> Array:
+    var blocked: Array = []
+    for panel in [building_operation_panel,disciple_summary_panel,sect_hub_panel,workforce_picker_panel]:
+        if panel is Control and is_instance_valid(panel) and panel.visible:
+            blocked.append(Rect2(panel.global_position,panel.size).grow(4.0))
+    return blocked
 
 # Reposition at most ten cached lightweight widgets during camera tweens.
 # Avoid any building scans, production reads or UI node allocation per frame.
@@ -4498,7 +4514,7 @@ func _refresh_map_worksite_cues() -> void:
         return str(one.id) < str(two.id)
     )
     var retained := {}
-    var occupied: Array = []
+    var occupied: Array = _map_worksite_panel_exclusions()
     var idle_shown := 0
     for entry in candidates:
         if retained.size() >= MAP_WORKSITE_MAX_CUES:
