@@ -88,6 +88,8 @@ var surface: Node2D
 var display_instances: Array[Dictionary] = []
 var tiles: Dictionary = {}
 var active_chunks: Array[Vector2i] = []
+# Chunk-local immutable ArrayMesh, cached in memory; purely visual, no save data.
+var ground_chunk_meshes: Dictionary = {}
 var draw_revision := 0
 var fallback_art_count := 0
 var lab_geometry: SectIsoMapModelV1
@@ -356,35 +358,74 @@ func pick_at_screen(screen: Vector2) -> Dictionary:
             result = item.duplicate(true)
     return result
 
+# Each static 16x16 chunk is one 2D colored triangle mesh instead of 256
+# separate CanvasItem polygons. The viewport still redraws on camera motion,
+# but its draw command count no longer grows by one per ground tile.
+# Road paint is composited into its tile's vertex color; road sprites, paths,
+# Source A buildings and vegetation stay in the existing overlay/depth pass.
+func _ground_mesh_for_chunk(chunk_id: Vector2i) -> ArrayMesh:
+    if ground_chunk_meshes.has(chunk_id):
+        return ground_chunk_meshes[chunk_id] as ArrayMesh
+    var vertices := PackedVector2Array()
+    var colors := PackedColorArray()
+    var indices := PackedInt32Array()
+    var origin := chunk_id*CHUNK
+    for iy in range(origin.y,mini(origin.y+CHUNK,GRID.y)):
+        for ix in range(origin.x,mini(origin.x+CHUNK,GRID.x)):
+            var cell := Vector2i(ix,iy)
+            var center := project(Vector2(cell))
+            var within := STARTER.has_point(cell)
+            var tone := Color(0.39,0.56,0.36) if within else Color(0.26,0.35,0.29)
+            if posmod(ix*17+iy*23,11)<4:
+                tone = tone.lightened(0.055 if within else 0.012)
+            if within and _is_road(cell):
+                tone = tone.blend(Color(0.63,0.58,0.43,0.9))
+            var base := vertices.size()
+            vertices.append_array(PackedVector2Array([
+                center+Vector2(0,-HALF_H),center+Vector2(HALF_W,0),
+                center+Vector2(0,HALF_H),center+Vector2(-HALF_W,0)
+            ]))
+            for _vertex in range(4):
+                colors.append(tone)
+            indices.append_array(PackedInt32Array([
+                base,base+1,base+2,base,base+2,base+3
+            ]))
+    var arrays := []
+    arrays.resize(Mesh.ARRAY_MAX)
+    arrays[Mesh.ARRAY_VERTEX] = vertices
+    arrays[Mesh.ARRAY_COLOR] = colors
+    arrays[Mesh.ARRAY_INDEX] = indices
+    var mesh := ArrayMesh.new()
+    mesh.add_surface_from_arrays(
+        Mesh.PRIMITIVE_TRIANGLES,arrays,[],{},Mesh.ARRAY_FLAG_USE_2D_VERTICES
+    )
+    ground_chunk_meshes[chunk_id] = mesh
+    return mesh
+
 func _draw() -> void:
-    # Batched per-visible-chunk drawing; only map geometry, no saved ownership.
-    # Fallback is deliberately stylized until verified Source A pack is imported.
+    # Ground layer first: cached meshes remain valid for all camera positions.
+    # Visibility still uses the original active_chunks and the existing camera.
+    for chunk_id in active_chunks:
+        draw_mesh(_ground_mesh_for_chunk(chunk_id),null)
+    # Sparse overlays only. Terrain tint and road fill are baked into the mesh.
     for chunk_id in active_chunks:
         var origin: Vector2i = chunk_id*CHUNK
         for iy in range(origin.y,mini(origin.y+CHUNK,GRID.y)):
             for ix in range(origin.x,mini(origin.x+CHUNK,GRID.x)):
                 var cell := Vector2i(ix,iy)
+                if not STARTER.has_point(cell):
+                    continue
                 var center := project(Vector2(cell))
-                var within := STARTER.has_point(cell)
-                var tone := Color(0.39,0.56,0.36) if within else Color(0.26,0.35,0.29)
-                if posmod(ix*17+iy*23,11)<4:
-                    tone = tone.lightened(0.055 if within else 0.012)
-                var diamond := PackedVector2Array([
-                    center+Vector2(0,-HALF_H),center+Vector2(HALF_W,0),
-                    center+Vector2(0,HALF_H),center+Vector2(-HALF_W,0)
-                ])
-                draw_colored_polygon(diamond,tone)
-                if within and _is_road(cell):
-                    draw_colored_polygon(diamond,Color(0.63,0.58,0.43,0.9))
+                if _is_road(cell):
                     var road_key := "env01_assets/roads/%s" % str(ROAD_TEXTURES[_road_key(cell)])
                     if render_art.has(road_key):
                         draw_texture_rect(render_art[road_key],
                             Rect2(center-Vector2(HALF_W*1.1,HALF_H*1.15),
                                 Vector2(HALF_W*2.2,HALF_H*2.3)),
                             false,Color(0.92,0.91,0.80,0.92))
-                elif within and posmod(ix*13+iy*29,31)==0:
+                elif posmod(ix*13+iy*29,31)==0:
                     _draw_bush(center)
-                if within and posmod(ix*11+iy*23,13)==0:
+                if posmod(ix*11+iy*23,13)==0:
                     var tile_art := "env01_assets/terrain/stone_courtyard.png"
                     if render_art.has(tile_art):
                         draw_texture_rect(render_art[tile_art],
