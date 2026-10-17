@@ -1869,7 +1869,15 @@ func _sect_production_status(building: BuildingState) -> String:
                 production_plan_registry.scaled_yield(plan,building.level)
             ]
     elif building.building_type == BuildingSystem.TYPE_SPIRIT_FIELD:
-        var plots := buildings.spirit_field_plots(state,building)
+        # Dashboard reads the persisted plot snapshot directly, because the
+        # BuildingSystem accessor can lazily migrate an old Field on read.
+        # Merely opening this board must not write to production_state.
+        var stored_plots = building.production_state.get("plots",[])
+        if not (stored_plots is Array):
+            return "Phụ trách: %s\nDữ liệu ô đất cần đồng bộ tại công trình." % owner
+        var plots: Array = stored_plots
+        if not building.production_state.has("plots"):
+            return "Phụ trách: %s\nLinh Điền cũ: mở công trình để xem các ô đã đồng bộ." % owner
         var growing := 0
         var next_remaining := -1
         var crop_label := ""
@@ -1915,26 +1923,26 @@ func _show_sect_production_board() -> void:
     sect_production_board_page = 0
     sect_layout_preview_open = false
     sect_production_board_open = true
-    _refresh_sect_production_board()
+    _refresh_sect_production_board(true)
 
 func _sect_production_filter_changed(building_type: StringName) -> void:
     if building_type != &"" and not ResourceBuildingExpansionPolicyV2.RAW_TYPES.has(building_type):
         return
     sect_production_board_filter = building_type
     sect_production_board_page = 0
-    _refresh_sect_production_board()
+    _refresh_sect_production_board(true)
 
 func _sect_production_page_changed(direction: int) -> void:
     var total := _sect_production_instances(sect_production_board_filter).size()
     var max_page := maxi(0,int(ceili(float(total)/float(SECT_PRODUCTION_PAGE_SIZE)))-1)
     sect_production_board_page = clampi(sect_production_board_page+direction,0,max_page)
-    _refresh_sect_production_board()
+    _refresh_sect_production_board(true)
 
-func _refresh_sect_production_board() -> void:
+func _refresh_sect_production_board(reset_scroll: bool = false) -> void:
     if not sect_production_board_open or sect_hub_content == null or not is_instance_valid(sect_hub_content):
         return
     var scroll := sect_hub_panel.find_child("SectHubScroll",false,false) as ScrollContainer
-    var scroll_before := scroll.scroll_vertical if scroll != null else 0
+    var scroll_before := 0 if reset_scroll else scroll.scroll_vertical if scroll != null else 0
     for child in sect_hub_content.get_children():
         sect_hub_content.remove_child(child)
         child.queue_free()
