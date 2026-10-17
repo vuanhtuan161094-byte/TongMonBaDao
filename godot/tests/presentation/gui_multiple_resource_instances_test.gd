@@ -282,9 +282,9 @@ func _run() -> void:
     ):
         _fail("second Mine map card omitted actual worker/settled quantity/percentage")
         return
-    var actor_foot := ui.call("_production_actor_world_foot",
+    var actor_foot := Vector2(ui.call("_production_actor_world_foot",
         state.disciples[worker_id],SectMapPresentation.DEST_MINE,0,
-        ui.call("_active_resource_work_cues")) as Vector2
+        ui.call("_active_resource_work_cues")))
     if actor_foot.distance_to(expected_anchor + Vector2(12,14)) > 0.5:
         _fail("working disciple was visually assigned to the primary Mine instead of exact ID")
         return
