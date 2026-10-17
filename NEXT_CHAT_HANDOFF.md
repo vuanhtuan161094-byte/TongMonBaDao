@@ -1,5 +1,17 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — GUI-MAP25 Repair V1 handoff — new code STATIC ONLY; real Windows/performance QA PENDING
+
+**Read `AGENTS.md`, architecture, latest `CURRENT_CHECKPOINT.md` first.** Draft PR [#18](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/18) (`integration-v2-pr9-pr10-pr17-20261016`) includes six repair commits `1e581e3` (flat fallback markers), `cfdda1e` (camera unchanged short-circuit), `1d0c293` (static viewport UPDATE_ONCE), `67d58ca` (compact adjacent Workforce picker/actual disabled reason), `5eab832` (map regressions), `6028df4` (picker regressions). Latest documented code commit `6028df48cb175389fa075a3aa6f950c45aa9c2bc`; doc checkpoint `844b69830e5456afeaa583fdbb65966eeb11714e`. **Before any further write read live PR HEAD; these pins become stale after docs commit.** `main` `461caca1171462e0da092f21108c5c1733157ad9` verified identical when work started.
+
+**Verified:** exact four code/test paths changed relative to starting PR HEAD `8b23f787...`; source code previously created 3D fallback polygons for non-PV01 art. New fallback footprints preserve producer canonical IDs; the GUI is now configured 480×516 alongside the right panel. Static bracket/strings scan reported no mismatch; no backend/Economy/Warehouse/Scheduler/SaveService/Original SHA PNG changed. No CI/merge.
+
+**Not verified:** official Godot 4.7.2 import/parser for new changes; runtime gate 04 was FAIL in previous owner QA before reserved `match` fix; GUI screenshots/touch picking, map marker legibility, SubViewport UPDATE_ONCE correct refresh behavior and FPS/frame-time improvements require real Windows runtime/profiler. The historical 32/32 SHA and 36/36 projection PASS belong to older SHA; do not relabel them current. O6/O8/SAFE/SaveService, Android export/package source hash remain PENDING.
+
+**Next permitted work:** run existing isolated single-click Windows QA at pinned live PR HEAD (never touch owner workspace/save); capture stderr/exit for 01_import, 02_hash, 03_projection, 04_real_main_scene_and_workforce, `gui_workforce_v1_e2e_test.gd`, `gui_multiple_resource_instances_test.gd`; visually validate map/Workforce 1280×720. Use Godot profiler baseline vs revised code if feasible for static camera/pan-zoom/picker; do not invent performance figures. Only repair proven presentation regressions in exact allowlist; backend changes require separate explicit permission. On PASS, update these two existing MD documents; stay draft PR #18, no CI, no merge.
+
+---
+
 ## 2026-10-17 — MAP25 Windows Gate-04 reserved keyword parser FAIL; focused test-only fix, rerun pending
 
 **Owner Windows Godot 4.7.2 real QA at PR #18 HEAD `de170cf9fae0da629d7d40e24b308fcf33d7d80c`, run 10:25–10:26 ICT:** `01_editor_import` exit 0 **PASS** (no script errors); `02_art_hash_gate` exit 0 printed `MAP25 SOURCE A SHA-GATED ART CONTRACT PASS accepted=32 missing=0 rejected=0` **PASS**; `03_isometric_projection` exit 0 printed `MAP-2.5D PROJECTION 36 CASES PASS` **PASS**, no leak/error stderr stopping the wrapper. Step `04_real_main_scene_and_workforce` exited 1 on `Parse Error: Expected expression to test after "match"` at `res://tests/presentation/sect_iso_main_integration_test.gd:65`. The test could not be loaded, so **no evidence yet** for real main scene/workforce/camera runtime. Wrapper correctly stopped overall acceptance. 32/32 actual Source A bytes remain SHA PASS. Owner workspace/save isolated; main unchanged; no CI/merge.
