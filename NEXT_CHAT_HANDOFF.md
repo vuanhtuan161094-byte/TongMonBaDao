@@ -1,5 +1,11 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-17 — G1 per-instance map production feedback + Source A work clips ART PENDING
+
+Read PR20 current HEAD and `docs/G1_SOURCE_A_WORK_ACTION_MINIMAL_PACKET_2026-10-17.md`. Existing compact `SectProductionWorksiteCue` overlays exact canonical Mine/Forest/Field instance ID (real timer, Field plot crop, percentage, count), uses metrics-only post-Warehouse `+N đã vào kho`. Follow-up explicitly prioritizes real active 0% timer and keeps "Mẻ" planned vs "Đã thu" credited stock distinct. Focused E2E regression asserts receipt cannot appear early/replay; multi-instance regression checks 0% active. 16/16 focused static contracts & 4/4 lexical checks PASS; **Godot Windows exact HEAD PENDING**. Repo Source A male/female all stand+walk only; authored mining/chop/plant art absent. No fake action; no gameplay/save/balance modification. G1 owner UX not yet accepted; no CI/FULL/merge.
+
+---
+
 ## G1 2026-10-17 — Map-local production gauges DONE; actual Source A work animations PENDING
 
 PR20 includes one visual-only `SectProductionWorksiteCue` per visible producer ID (max 10), displays saved job/plot ETA and output; `+units đã vào kho` flashes only after real BuildingState metrics increment following Warehouse credit, baseline seeded to block replay. Exact Mine #2 anchor tested in added focused source test; Field read never triggers legacy migration. Static contract 17/17 and lexical 4/4 PASS, no official Windows/Godot run on new HEAD, owner G1 visual still NOT ACCEPTED. Three committed actor manifests have `stand/walk` only. Read `docs/G1_SOURCE_A_WORK_ACTION_ASSET_PACKET_2026-10-17.md` before separately approved Source A action-clip art work; never fake mining/chop/plant frames. No CI/FULL/merge, no simulation/save modification.
