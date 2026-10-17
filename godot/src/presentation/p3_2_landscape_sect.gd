@@ -42,6 +42,11 @@ var actor_walk_tweens: Dictionary = {}
 # Only three source scenes currently: cache shared stand textures by scene path,
 # never make one atlas/AnimatedSprite2D per disciple or roster entry.
 var source_a_portrait_textures: Dictionary = {}
+# Read-only map display; receipt baseline is presentation-memory only and is
+# initialized from the loaded save to prevent phantom "collected" messages.
+var map_worksite_cues: Dictionary = {}
+var map_worksite_receipt_baseline: Dictionary = {}
+const MAP_WORKSITE_MAX_CUES := 10
 
 var camera_controls_panel: Panel
 var camera_hint: Label
@@ -112,6 +117,8 @@ func _ready() -> void:
     _build_building_operation_panel()
     _build_sect_hub()
     _build_living_cue_layer()
+    _seed_map_worksite_receipts()
+    _refresh_map_worksite_cues()
     living_cue_tracker.seed_from_state(state)
     _refresh_living_cues()
 
@@ -4183,8 +4190,174 @@ func _equipment_policy_label(policy: StringName) -> String:
         EquipmentSystem.POLICY_FRUGAL: return "Tiết kiệm"
         _: return "Cân bằng"
 
+# G1 map production: each cue is anchored by the real building instance ID,
+# not the type's first building. Every snapshot is read-only and bounded.
+func _map_worksite_is_supported(building: BuildingState) -> bool:
+    return building != null and building.building_type in [
+        BuildingSystem.TYPE_MINE,BuildingSystem.TYPE_LINH_FOREST,BuildingSystem.TYPE_SPIRIT_FIELD
+    ]
+
+func _map_worksite_metrics(building: BuildingState) -> Dictionary:
+    return {
+        "batches":maxi(0,int(building.metrics.get("production_batches",0))),
+        "units":maxi(0,int(building.metrics.get("units_produced",0)))
+    }
+
+func _seed_map_worksite_receipts() -> void:
+    map_worksite_receipt_baseline.clear()
+    if state == null:
+        return
+    for raw_building in state.buildings.values():
+        if raw_building is BuildingState and _map_worksite_is_supported(raw_building):
+            var building: BuildingState = raw_building
+            map_worksite_receipt_baseline[str(building.id)] = _map_worksite_metrics(building)
+
+func _map_worksite_snapshot(building: BuildingState) -> Dictionary:
+    if not _map_worksite_is_supported(building) or state == null:
+        return {}
+    var type_title := _sect_production_type_name(building.building_type)
+    var result := {"heading":type_title,"detail":"Chưa có người","progress":0.0}
+    var assigned := BuildingSystem.new().assigned_worker_ids(state,building)
+    if building.building_type in [BuildingSystem.TYPE_MINE,BuildingSystem.TYPE_LINH_FOREST]:
+        # resource_timer_jobs does not normalize / migrate state on read.
+        var raw_jobs = building.production_state.get("economy_a_jobs",[])
+        if raw_jobs is Array:
+            for job in raw_jobs:
+                if not (job is Dictionary):
+                    continue
+                var start_tick := int(job.get("started_tick",state.tick))
+                var finish_tick := int(job.get("finish_tick",state.tick))
+                var total := maxi(1,finish_tick-start_tick)
+                var elapsed := clampi(state.tick-start_tick,0,total)
+                var output_id := StringName(job.get("resource_id",""))
+                result["heading"] = "%s · %s" % [type_title,ResourceRegistry.new().display_name(output_id)]
+                result["detail"] = "×%d · %s" % [
+                    maxi(0,int(job.get("output_quantity",0))),
+                    "Chờ nhập kho" if finish_tick <= state.tick else "còn %dp" % (finish_tick-state.tick)
+                ]
+                result["progress"] = 100.0*float(elapsed)/float(total)
+                return result
+        result["detail"] = "Chưa có mẻ" if not assigned.is_empty() else "Chưa phân công"
+        return result
+    var plot_data = building.production_state.get("plots",[])
+    if not (plot_data is Array):
+        result["detail"] = "Chờ đồng bộ ô đất"
+        return result
+    if not building.production_state.has("plots"):
+        result["detail"] = "Chưa đồng bộ ô đất"
+        return result
+    var growing := 0
+    var nearest: Dictionary = {}
+    for raw_plot in plot_data:
+        if not (raw_plot is Dictionary):
+            continue
+        var plot: Dictionary = raw_plot
+        if StringName(plot.get("status","")) != BuildingSystem.PLOT_GROWING:
+            continue
+        growing += 1
+        if nearest.is_empty() or int(plot.get("finish_tick",0)) < int(nearest.get("finish_tick",0)):
+            nearest = plot
+    result["heading"] = "Linh Điền · %d/%d ô" % [growing,plot_data.size()]
+    if nearest.is_empty():
+        result["detail"] = "Chưa trồng" if not assigned.is_empty() else "Chưa phân công"
+        return result
+    var start_tick := int(nearest.get("started_tick",state.tick))
+    var finish_tick := int(nearest.get("finish_tick",state.tick))
+    var total := maxi(1,finish_tick-start_tick)
+    var elapsed := clampi(state.tick-start_tick,0,total)
+    # routine_yield is the baseline, not a claim about future rare harvest.
+    result["detail"] = "Thường ×%d · %s" % [
+        maxi(0,int(nearest.get("routine_yield",0))),
+        "Chờ nhập kho" if finish_tick <= state.tick else "còn %dp" % (finish_tick-state.tick)
+    ]
+    result["progress"] = 100.0*float(elapsed)/float(total)
+    return result
+
+func _map_worksite_deliveries() -> Dictionary:
+    var deliveries := {}
+    if state == null:
+        return deliveries
+    for raw_building in state.buildings.values():
+        if not (raw_building is BuildingState):
+            continue
+        var building: BuildingState = raw_building
+        if not _map_worksite_is_supported(building):
+            continue
+        var key := str(building.id)
+        var current := _map_worksite_metrics(building)
+        if map_worksite_receipt_baseline.has(key):
+            var previous: Dictionary = map_worksite_receipt_baseline[key]
+            # BuildingSystem increments BOTH only after Warehouse credit.
+            # On save/reload we seed baseline, so no old receipts replay.
+            if (
+                int(current["batches"]) > int(previous.get("batches",0))
+                and int(current["units"]) > int(previous.get("units",0))
+            ):
+                deliveries[key] = int(current["units"])-int(previous.get("units",0))
+        map_worksite_receipt_baseline[key] = current
+    return deliveries
+
+func _refresh_map_worksite_cues() -> void:
+    if state == null or map_layer == null or iso_world == null:
+        return
+    var deliveries := _map_worksite_deliveries()
+    var candidates: Array[Dictionary] = []
+    var ids: Array = state.buildings.keys()
+    ids.sort()
+    for raw_id in ids:
+        var building: BuildingState = state.buildings[raw_id]
+        if not _map_worksite_is_supported(building):
+            continue
+        var anchor := SectIsometricWorldV1.virtual_legacy_point(building.building_type,building.id)
+        var screen := SectMapCamera.world_to_screen(anchor,map_layer.position,map_zoom)
+        # Labels stay in the legacy world overlay and transform with the map.
+        # Keep only visible, important producers to avoid 100 UI cards.
+        if not SectMapCamera.VIEW_RECT.grow(95.0).has_point(screen):
+            continue
+        var snapshot := _map_worksite_snapshot(building)
+        var attention := 0
+        if building.id == selected_production_instance_id:
+            attention = 3
+        elif float(snapshot.get("progress",0.0)) > 0.0:
+            attention = 2
+        elif deliveries.has(str(building.id)):
+            attention = 1
+        candidates.append({"building":building,"anchor":anchor,"snapshot":snapshot,"priority":attention})
+    candidates.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
+        if int(a["priority"]) != int(b["priority"]):
+            return int(a["priority"]) > int(b["priority"])
+        var one: BuildingState = a["building"]
+        var two: BuildingState = b["building"]
+        return str(one.id) < str(two.id)
+    )
+    var retained := {}
+    for index in range(mini(MAP_WORKSITE_MAX_CUES,candidates.size())):
+        var entry: Dictionary = candidates[index]
+        var building: BuildingState = entry["building"]
+        var key := str(building.id)
+        var cue := map_worksite_cues.get(key) as SectProductionWorksiteCue
+        if cue == null or not is_instance_valid(cue):
+            cue = SectProductionWorksiteCue.new()
+            cue.name = "MapWorksite_%s" % key
+            map_layer.add_child(cue)
+            cue.z_index = 9
+            map_worksite_cues[key] = cue
+        cue.position = Vector2(entry["anchor"])-Vector2(85,109)
+        cue.display(entry["snapshot"])
+        if deliveries.has(key):
+            cue.show_delivered(int(deliveries[key]))
+        retained[key] = true
+    for key in map_worksite_cues.keys():
+        if retained.has(key):
+            continue
+        var old_cue := map_worksite_cues[key] as SectProductionWorksiteCue
+        if old_cue != null and is_instance_valid(old_cue):
+            old_cue.queue_free()
+        map_worksite_cues.erase(key)
+
 func _refresh_all() -> void:
     super._refresh_all()
+    _refresh_map_worksite_cues()
     if _building_operation_is_open() and workforce_picker_panel == null:
         _refresh_building_operation_content()
     if sect_hub_panel != null and is_instance_valid(sect_hub_panel) and sect_hub_panel.visible:
