@@ -69,6 +69,7 @@ var sect_layout_preview_open := false
 # Presentation-only listing state; all actual producers stay in SimulationState.
 var sect_production_board_open := false
 var sect_production_board_filter: StringName = &""
+var sect_production_attention_only := false
 var sect_production_board_page := 0
 const SECT_PRODUCTION_PAGE_SIZE := 8
 var workforce_picker_panel: Panel
@@ -1805,8 +1806,9 @@ func _sect_hub_production_line(
 
 # G1.7: one read-only, paged view of EVERY canonical producer instance.
 # No shadow map, local clock, construction/assignment command or save writes.
-func _sect_production_instances(filter_type: StringName = &"") -> Array[BuildingState]:
-    var result: Array[BuildingState] = []
+func _sect_production_instances(filter_type: StringName = &"", attention_only: bool = false) -> Array[BuildingState]:
+    var urgent: Array[BuildingState] = []
+    var regular: Array[BuildingState] = []
     for building_type in [
         BuildingSystem.TYPE_MINE,
         BuildingSystem.TYPE_LINH_FOREST,
@@ -1814,8 +1816,105 @@ func _sect_production_instances(filter_type: StringName = &"") -> Array[Building
     ]:
         if filter_type != &"" and filter_type != building_type:
             continue
-        result.append_array(ResourceBuildingExpansionPolicyV2.existing_instances(state,building_type))
-    return result
+        for building in ResourceBuildingExpansionPolicyV2.existing_instances(state,building_type):
+            if bool(_sect_production_attention(building).get("needs_action",false)):
+                urgent.append(building)
+            elif not attention_only:
+                regular.append(building)
+    # Attention rows appear first; stable type and ID ordering in each bucket.
+    urgent.append_array(regular)
+    return urgent
+
+# G1.8 actionable hints are derived from canonical, persisted snapshots.
+# These labels are *advice only*. No resource delivery, new job, auto-order,
+# construction, instant harvest, or migration may happen while viewing the hub.
+func _sect_production_attention(building: BuildingState) -> Dictionary:
+    if building == null:
+        return {"needs_action":false,"label":"Không có công trình"}
+    var buildings := BuildingSystem.new()
+    var assigned := buildings.assigned_worker_ids(state,building)
+    if assigned.size() > 1:
+        return {"needs_action":true,"label":"Phân công bất thường: kiểm tra số người"}
+    if assigned.is_empty():
+        return {"needs_action":true,"label":"Chưa có đệ tử · Mở để phân công"}
+    var worker_id: StringName = assigned[0]
+    if not state.disciples.has(worker_id):
+        return {"needs_action":true,"label":"Không tìm thấy người phụ trách · cần kiểm tra"}
+    var actor: DiscipleState = state.disciples[worker_id]
+
+    if building.building_type in [BuildingSystem.TYPE_MINE,BuildingSystem.TYPE_LINH_FOREST]:
+        var jobs := buildings.resource_timer_jobs(building)
+        if not jobs.is_empty():
+            var first_job = jobs[0]
+            if first_job is Dictionary:
+                var remaining := int(first_job.get("finish_tick",state.tick))-state.tick
+                if remaining <= 0:
+                    return {"needs_action":false,"label":"Mẻ đến hạn · chờ scheduler xử lý"}
+                return {"needs_action":false,"label":"Mẻ đang chạy · còn %d phút" % remaining}
+            return {"needs_action":true,"label":"Dữ liệu mẻ không hợp lệ · cần kiểm tra"}
+        if not actor.work_cycle_state.is_empty():
+            return {"needs_action":false,"label":"Đang hoàn tất chu kỳ sản xuất cũ"}
+        if not state.sect.economy_a_enabled:
+            return {"needs_action":true,"label":"Chưa bật chu kỳ timer · mở công trình"}
+        if DiscipleRealmProgressV2.owns_v2_progression(actor):
+            var plan_id := buildings.selected_resource_production_plan(building)
+            if production_plan_registry.has(plan_id):
+                var output_id := production_plan_registry.output_resource_id(plan_id)
+                var batch_units := production_plan_registry.scaled_yield(plan_id,building.level)
+                var stock := WarehouseSystem.new().quantity(state,output_id)
+                var target := mini(batch_units*10,WarehouseSystem.MAX_SAFE_STACK)
+                if stock >= target:
+                    return {"needs_action":true,"label":"Kho đạt mục tiêu %d · đổi kế hoạch hoặc tiêu thụ" % target}
+                if batch_units > WarehouseSystem.MAX_SAFE_STACK-stock:
+                    return {"needs_action":true,"label":"Kho không đủ chỗ cho mẻ tiếp theo"}
+    elif building.building_type == BuildingSystem.TYPE_SPIRIT_FIELD:
+        # The accessor spirit_field_plots() may *write* legacy migration.
+        # Inspect the persisted snapshots directly in this read-only board.
+        if not building.production_state.has("plots"):
+            return {"needs_action":true,"label":"Linh Điền cũ · mở công trình để đồng bộ"}
+        var stored_plots = building.production_state.get("plots",[])
+        if not (stored_plots is Array):
+            return {"needs_action":true,"label":"Dữ liệu ô đất cần kiểm tra"}
+        var growing := 0
+        var empty := 0
+        var due := 0
+        for raw_plot in stored_plots:
+            if not (raw_plot is Dictionary):
+                continue
+            var plot: Dictionary = raw_plot
+            var plot_status := StringName(plot.get("status",""))
+            if plot_status == BuildingSystem.PLOT_GROWING:
+                growing += 1
+                if int(plot.get("finish_tick",state.tick))-state.tick <= 0:
+                    due += 1
+            elif plot_status == BuildingSystem.PLOT_EMPTY:
+                empty += 1
+        if due > 0:
+            return {"needs_action":false,"label":"%d ô đến hạn · chờ scheduler xử lý" % due}
+        if empty == 0:
+            return {"needs_action":false,"label":"Đang trồng đủ %d ô" % growing}
+        var eligible := spirit_crop_registry.eligible_crop_ids(building.level)
+        var affordable := false
+        for crop_id in eligible:
+            if state.sect.spirit_stones >= spirit_crop_registry.cost(crop_id):
+                affordable = true
+                break
+        if not affordable:
+            return {"needs_action":true,"label":"Chưa đủ Linh Thạch gieo trồng"}
+    else:
+        return {"needs_action":false,"label":"Không thuộc nhóm sản xuất"}
+
+    if actor.region_id != &"sect" or not actor.active_pve_encounter_id.is_empty():
+        return {"needs_action":true,"label":"Người phụ trách đang xuất môn/PvE"}
+    if not actor.direct_command.is_empty():
+        var target := str(actor.direct_command.get("target",""))
+        var kind := StringName(actor.direct_command.get("kind",""))
+        if kind == WorkforceSystem.COMMAND_WORK and target == str(_workforce_profession(building.building_type)):
+            return {"needs_action":false,"label":"Đã nhận lệnh · chờ scheduler mở lượt"}
+        return {"needs_action":true,"label":"Có lệnh khác chờ xử lý"}
+    if building.building_type == BuildingSystem.TYPE_SPIRIT_FIELD:
+        return {"needs_action":true,"label":"Còn ô trống · mở để kiểm tra gieo tiếp"}
+    return {"needs_action":true,"label":"Chưa có mẻ · mở để bắt đầu"}
 
 func _sect_production_type_name(building_type: StringName) -> String:
     match building_type:
@@ -1920,6 +2019,7 @@ func _open_sect_production_instance(building_id: StringName) -> void:
 
 func _show_sect_production_board() -> void:
     sect_production_board_filter = &""
+    sect_production_attention_only = false
     sect_production_board_page = 0
     sect_layout_preview_open = false
     sect_production_board_open = true
@@ -1932,8 +2032,13 @@ func _sect_production_filter_changed(building_type: StringName) -> void:
     sect_production_board_page = 0
     _refresh_sect_production_board(true)
 
+func _sect_production_attention_filter_changed() -> void:
+    sect_production_attention_only = not sect_production_attention_only
+    sect_production_board_page = 0
+    _refresh_sect_production_board(true)
+
 func _sect_production_page_changed(direction: int) -> void:
-    var total := _sect_production_instances(sect_production_board_filter).size()
+    var total := _sect_production_instances(sect_production_board_filter,sect_production_attention_only).size()
     var max_page := maxi(0,int(ceili(float(total)/float(SECT_PRODUCTION_PAGE_SIZE)))-1)
     sect_production_board_page = clampi(sect_production_board_page+direction,0,max_page)
     _refresh_sect_production_board(true)
@@ -1955,6 +2060,16 @@ func _refresh_sect_production_board(reset_scroll: bool = false) -> void:
     _sect_hub_label("Mỏ %d · Linh Lâm %d · Linh Điền %d · Tick %d" % [
         mine_count,forest_count,field_count,state.tick
     ],13)
+    var attention_count := _sect_production_instances(&"",true).size()
+    _sect_hub_label("CẦN XỬ LÝ: %d công trình · các mục này được xếp trước" % attention_count,14)
+    var attention_button := Button.new()
+    attention_button.name = "SectProductionAttentionOnly"
+    attention_button.text = "Đang lọc: Cần xử lý ✓" if sect_production_attention_only else "Chỉ xem CẦN XỬ LÝ"
+    attention_button.custom_minimum_size = Vector2(662,46)
+    attention_button.add_theme_font_size_override("font_size",14)
+    attention_button.add_theme_color_override("font_color",INK)
+    attention_button.pressed.connect(_sect_production_attention_filter_changed)
+    sect_hub_content.add_child(attention_button)
 
     var tabs := HBoxContainer.new()
     tabs.name = "SectProductionFilters"
@@ -1981,7 +2096,7 @@ func _refresh_sect_production_board(reset_scroll: bool = false) -> void:
         filter_button.pressed.connect(Callable(self,"_sect_production_filter_changed").bind(type_id))
         tabs.add_child(filter_button)
 
-    var all_instances := _sect_production_instances(sect_production_board_filter)
+    var all_instances := _sect_production_instances(sect_production_board_filter,sect_production_attention_only)
     var max_page := maxi(0,ceili(float(all_instances.size())/float(SECT_PRODUCTION_PAGE_SIZE))-1)
     sect_production_board_page = clampi(sect_production_board_page,0,max_page)
     var first := sect_production_board_page*SECT_PRODUCTION_PAGE_SIZE
@@ -1995,16 +2110,19 @@ func _refresh_sect_production_board(reset_scroll: bool = false) -> void:
         card.add_theme_stylebox_override("panel",_style(Color(0.95,0.91,0.80),INK,1,9))
         sect_hub_content.add_child(card)
         var horizontal := HBoxContainer.new()
-        horizontal.custom_minimum_size = Vector2(645,88)
+        horizontal.custom_minimum_size = Vector2(645,104)
         horizontal.add_theme_constant_override("separation",8)
         card.add_child(horizontal)
+        var attention := _sect_production_attention(building)
         var detail := Label.new()
         detail.name = "SectProductionStatus_%s" % str(building.id)
-        detail.text = "%s · %s · Lv%d\n%s" % [
+        detail.text = "%s · %s · Lv%d\n%s\n%s: %s" % [
             _sect_production_type_name(building.building_type),
-            str(building.id),building.level,_sect_production_status(building)
+            str(building.id),building.level,_sect_production_status(building),
+            "CẦN XỬ LÝ" if bool(attention.get("needs_action",false)) else "TRẠNG THÁI",
+            str(attention.get("label",""))
         ]
-        detail.custom_minimum_size = Vector2(493,80)
+        detail.custom_minimum_size = Vector2(493,98)
         detail.size_flags_horizontal = Control.SIZE_EXPAND_FILL
         detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
         detail.add_theme_font_size_override("font_size",13)
@@ -2122,9 +2240,10 @@ func _refresh_sect_hub() -> void:
     _sect_hub_label("Linh Thạch tông môn: %d · Tick %d" % [
         state.sect.spirit_stones,state.tick
     ])
+    var attention_count := _sect_production_instances(&"",true).size()
     var dashboard := Button.new()
     dashboard.name = "SectHubOpenProductionBoard"
-    dashboard.text = "BẢNG SẢN XUẤT · Tất cả công trình"
+    dashboard.text = "BẢNG SẢN XUẤT · %d cần xử lý" % attention_count
     dashboard.custom_minimum_size = Vector2(675,50)
     dashboard.add_theme_font_size_override("font_size",16)
     dashboard.add_theme_color_override("font_color",PAPER_LIGHT)
