@@ -435,36 +435,57 @@ func _draw_building(p: Vector2,kind: String, managed: bool) -> void:
             var offset := Vector2(0.0,-target.y*0.28)
             draw_texture_rect(image,Rect2(p+offset-target*0.5,target),false)
             return
-    var base := Color(0.68,0.54,0.35)
-    var roof := Color(0.23,0.45,0.36)
-    if kind == "mine":
-        base = Color(0.48,0.48,0.46)
-        roof = Color(0.23,0.24,0.26)
-    elif kind == "linh_forest":
-        base = Color(0.25,0.38,0.25)
-        roof = Color(0.17,0.46,0.27)
-    elif kind == "spirit_field":
-        base = Color(0.59,0.47,0.29)
-        roof = Color(0.34,0.59,0.30)
-    elif kind == "main_hall":
-        roof = Color(0.26,0.45,0.50)
-    draw_ellipse_shadow(p)
-    draw_colored_polygon(PackedVector2Array([
-        p+Vector2(-58,-32),p+Vector2(0,-5),p+Vector2(58,-32),p+Vector2(0,-59)
-    ]),base.darkened(0.20))
-    draw_colored_polygon(PackedVector2Array([
-        p+Vector2(-58,-32),p+Vector2(0,-5),p+Vector2(0,-51),p+Vector2(-58,-78)
-    ]),base)
-    draw_colored_polygon(PackedVector2Array([
-        p+Vector2(0,-5),p+Vector2(58,-32),p+Vector2(58,-78),p+Vector2(0,-51)
-    ]),base.darkened(0.10))
-    draw_colored_polygon(PackedVector2Array([
-        p+Vector2(-68,-80),p+Vector2(0,-118),p+Vector2(68,-80),p+Vector2(0,-43)
-    ]),roof if managed else roof.lightened(0.11))
-    draw_line(p+Vector2(-68,-80),p+Vector2(0,-43),Color(0.87,0.76,0.50),3.0)
-    draw_line(p+Vector2(68,-80),p+Vector2(0,-43),Color(0.87,0.76,0.50),3.0)
+    # MAP25 visual-only fallback: a flat ground footprint, never a fake
+    # 3D building. Actual producer rows retain BuildingState.id and tap hitbox.
+    # Non-producer landmarks are navigation labels, not constructed buildings.
+    var ground := Color(0.53,0.49,0.38)
+    var mark := Color(0.78,0.71,0.54)
+    var label := kind.replace("_"," ").to_upper()
+    match kind:
+        "mine":
+            ground = Color(0.40,0.43,0.44)
+            mark = Color(0.88,0.77,0.50)
+            label = "MỎ"
+        "linh_forest":
+            ground = Color(0.25,0.43,0.32)
+            mark = Color(0.75,0.88,0.56)
+            label = "LINH LÂM"
+        "spirit_field":
+            ground = Color(0.43,0.53,0.30)
+            mark = Color(0.92,0.84,0.52)
+            label = "LINH ĐIỀN"
+        "residence":
+            label = "CƯ XÁ"
+        "cultivation":
+            label = "TU LUYỆN"
+        "ren_than_duong":
+            label = "RÈN THÂN"
+        "medicine":
+            label = "Y QUÁN"
+        "alchemy_hall":
+            label = "LUYỆN ĐAN"
+        "guidance":
+            label = "DẪN TIÊN"
+        "gate":
+            label = "CỔNG"
+    var footprint := PackedVector2Array([
+        p+Vector2(0,-18),p+Vector2(37,0),
+        p+Vector2(0,18),p+Vector2(-37,0)
+    ])
+    draw_colored_polygon(footprint,ground)
+    draw_polyline(PackedVector2Array([
+        footprint[0],footprint[1],footprint[2],footprint[3],footprint[0]
+    ]),mark,2.0,true)
+    draw_circle(p,5.0,mark)
     if managed:
-        draw_circle(p+Vector2(0,6),5,Color(0.93,0.74,0.30))
+        draw_circle(p+Vector2(28,1),4.0,Color(0.99,0.78,0.28))
+    var font: Font = ThemeDB.fallback_font
+    if font != null:
+        var font_size := 12
+        var label_width := font.get_string_size(label,HORIZONTAL_ALIGNMENT_LEFT,-1,font_size).x
+        var at := p+Vector2(-label_width*0.5,35)
+        draw_string_outline(font,at,label,HORIZONTAL_ALIGNMENT_LEFT,-1,font_size,2,Color(0.10,0.15,0.11))
+        draw_string(font,at,label,HORIZONTAL_ALIGNMENT_LEFT,-1,font_size,Color(1,0.98,0.88))
 
 func draw_ellipse_shadow(p: Vector2) -> void:
     draw_colored_polygon(PackedVector2Array([
