@@ -45,6 +45,8 @@ func _run() -> void:
         _fail("female-only art assigned to male")
         return
 
+    if FileAccess.file_exists(SAVE_PATH):
+        DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
     ProjectSettings.set_setting("runtime/live_save_path",SAVE_PATH)
     var packed := load("res://scenes/p3/p3_2_landscape_sect.tscn") as PackedScene
     if packed == null:
@@ -65,6 +67,10 @@ func _run() -> void:
     ids.sort()
     var disciple := state.disciples[ids[0]] as DiscipleState
     var saved := disciple.to_dict()
+    var attributes := str(ui.call("_disciple_tab_text","Thuộc tính",disciple))
+    if not attributes.contains("ẢNH HƯỞNG LỤC DUY") or not attributes.contains("Tiềm Lực: +0,05%"):
+        _fail("attribute explanations are missing or do not match V2 authority")
+        return
     ui.call("_open_disciple_deep_screen",disciple.id,"Thuộc tính")
     await process_frame
     var deep := (ui.get("popup_layer") as Control).get_node_or_null("DiscipleDeepScreen")
@@ -94,5 +100,7 @@ func _run() -> void:
     ui.queue_free()
     ui = null
     ProjectSettings.set_setting("runtime/live_save_path",LiveGameRuntimeV2.DEFAULT_SAVE_PATH)
+    if FileAccess.file_exists(SAVE_PATH):
+        DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
     print("G1 DISCIPLE RADAR + VERIFIED SOURCE A POOL: PASS")
     quit(0)
