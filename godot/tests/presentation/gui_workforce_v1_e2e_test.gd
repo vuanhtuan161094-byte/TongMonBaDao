@@ -122,6 +122,12 @@ func _run() -> void:
     if disabled_label_color.get_luminance() > 0.55:
         _fail("Mine disabled controls are still near-white text on pale background")
         return
+    # The map must distinguish a real timed worker from a static spectator.
+    # This cue reads the saved timer; it never starts/rewards the job.
+    var work_cues := ui.call("_active_resource_work_cues") as Dictionary
+    if not work_cues.has(str(miner_id)) or str(work_cues[str(miner_id)]) != "Đang khai khoáng":
+        _fail("map worker did not expose canonical mining work cue")
+        return
     var owner_avatar := ui.find_child("WorkforceOwnerAvatar",true,false) as Button
     if owner_avatar == null or owner_avatar.custom_minimum_size.x < 44.0:
         _fail("Mine owner avatar missing or not touch sized")
