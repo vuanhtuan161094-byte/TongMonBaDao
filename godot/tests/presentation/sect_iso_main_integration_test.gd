@@ -59,15 +59,15 @@ func _run() -> void:
     if first == null:
         _fail("real Mine BuildingState missing")
         return
-    var match: Dictionary = {}
+    var matched_instance: Dictionary = {}
     for item in iso.display_instances:
         if item["building_id"] == first.id:
-            match = item
+            matched_instance = item
             break
-    if match.is_empty():
+    if matched_instance.is_empty():
         _fail("main isometric world did not project canonical Mine ID")
         return
-    var mine_world: Vector2 = match["world"]
+    var mine_world: Vector2 = matched_instance["world"]
     var screen := iso.MAP_SCREEN_OFFSET+iso.VIEW_SIZE*0.5+(
         mine_world+Vector2(0,-36)-iso.camera.position
     )*iso.camera.zoom.x
