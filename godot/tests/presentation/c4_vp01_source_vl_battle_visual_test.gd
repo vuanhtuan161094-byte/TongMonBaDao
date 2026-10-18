@@ -108,9 +108,62 @@ func _run() -> void:
     var cursor := view._event_cursor
     var post_tick := battle.now
     var post_rng: int = battle.rng.snapshot_seed_state()
+    var post_actors: Dictionary = battle.actors.duplicate(true)
+    var post_casts: Array = battle.pending_casts.duplicate(true)
+    var post_events: Array = battle.events.duplicate(true)
+    var post_actions: int = battle.actions
+    var post_outcome: String = battle.outcome
+    var actual_cast_fx := 0
+    var actual_hit_fx := 0
+    for cue_value in view._effect_cues:
+        var cue: Dictionary = cue_value
+        if str(cue.get("kind","")) == "sword_cast":
+            actual_cast_fx += 1
+        elif str(cue.get("kind","")) == "sword_hit":
+            actual_hit_fx += 1
+    if not _assert(actual_cast_fx == 1 and actual_hit_fx == 1,
+            "typed V2 skill cast/hit did not produce exactly one mapped VFX cue each"):
+        return
     view.refresh_from_authority()
-    if not _assert(view._event_cursor == cursor and battle.now == post_tick and
-            battle.rng.snapshot_seed_state() == post_rng,"renderer duplicated events or mutated authority"):
+    if not _assert(view._event_cursor == cursor and view._effect_cues.size() == actual_cast_fx+actual_hit_fx,
+            "refresh replayed source FX cues"):
+        return
+    # Trigger genuine _draw/_process in SceneTree, not only a no-op queue_redraw.
+    view.queue_redraw()
+    await process_frame
+    await process_frame
+    if not _assert(battle.now == post_tick and battle.rng.snapshot_seed_state() == post_rng and
+            battle.actors == post_actors and battle.pending_casts == post_casts and
+            battle.events == post_events and battle.actions == post_actions and
+            battle.outcome == post_outcome,
+            "draw/animation mutated HP, positions, casts, events, RNG or result"):
+        return
+    # 100ms real frame must advance 100ms in the cosmetic clock even on slow devices.
+    var previous_frame_clock := view._frame_clock
+    view._process(0.10)
+    if not _assert(is_equal_approx(view._frame_clock-previous_frame_clock,0.10),
+            "visual frame clock clamps real elapsed time and slows animation"):
+        return
+    # Combat can be stopped mid-action: action and run cues must expire independently
+    # of frozen battle.now. No gameplay ticks are issued in this visual-only check.
+    view._action_cues["p01"] = {
+        "action":"attack","started":view._frame_clock,"until":view._frame_clock+0.05
+    }
+    view._frame_clock += 0.30
+    if not _assert(str(view._actor_clip("p01",true).get("name","")) != "attack",
+            "frozen combat time stranded actor in attack pose"):
+        return
+    view._action_cues.erase("p01")
+    view._last_move["p01"] = view._frame_clock
+    view._frame_clock += 0.40
+    if not _assert(str(view._actor_clip("p01",true).get("name","")) != "run",
+            "frozen combat time stranded actor in running pose"):
+        return
+    if not _assert(battle.now == post_tick and battle.rng.snapshot_seed_state() == post_rng and
+            battle.actors == post_actors and battle.pending_casts == post_casts and
+            battle.events == post_events and battle.actions == post_actions and
+            battle.outcome == post_outcome,
+            "visual cue expiry changed real combat state"):
         return
     view.queue_free()
     print("C4-VP01 SOURCE VL REAL ATLAS + MAPBATTLE V2 VISUAL TEST: PASS")
