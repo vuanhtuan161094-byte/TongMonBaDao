@@ -368,6 +368,14 @@ Passive source bookkeeping must retain `source_id: skill_family/skill_owner/disc
 - Render adapters: `VFXGraph/ActionAtlas/ActorVisualBinding/SoundBank` are view-only consumers of TRUE V2 actor+skill events; never call RNG/resolve damage. Pool and lazy-load WebP; cap simultaneous expensive effects; quality levels for Android 1280×720. Keep actor facing and HP readable, team overlays minimal.
 - Distinguish owner upload permission from rights clearance of original JX artwork; both fan-made source licenses/readmes limit use. Don't claim commercial redistribution rights.
 
+## I.1. SOURCE CROSS-VERSION FORENSICS — NEW FINDINGS
+
+- **330 different external SkillIds, NOT 330 playable game skills**: new Võ Lâm Idle `data.js` has 240 definitions, old Source VL coverage has 260, overlap 170, new-only 70, old-only 90. Among 170 common IDs, 167 labels match after Unicode case/accent/space normalization; 3 label variant pairs explicitly recorded: **#45 Tích Lịch đơn / Phích Lịch đơn**, **#93 Từ Hàng Phổ D / Từ Hàng Phổ Độ**, **#124 Đả Cẩu bổng / Đả Cẩu Bổng Pháp**. Same ID with similar name does not validate identical runtime effect or sprite.
+- Source `JFX.m` contains **44 missile `fly` descriptors with 16 authored directions**, **61 with 1 direction**, **85 single-direction hit atlas records**, **one single-direction end atlas**. These are metadata counts, not confirmed imported WebP textures. Preserve 16-direction effect sheets/anchors even if some character sprite rigs are 2- or 8-direction; do not infer source support for other orientations.
+- JX new defines 2,151 NPC rows and 992 maps as game-data records; no claim all NPC/maps have actual artwork/binary or suit this game's maps. The new `doll-data.js` declares 11,171 sheets/16,238 cells but Drive-folder recursive binary closure hasn't been independently completed. Never treat a declared sprite as delivered.
+- Old Source VL coverage `playable=118` refers to its community web game only; new `JFX.f=176` merely maps skills to FX entries; these are different denominators and **cannot be added** or equated to 294 runnable skills.
+- The one-to-many mechanical adapter distinguishes **source native missile physics** from deterministic Godot hit resolution. JX`childN=16` is a source configured missile/count parameter but no evidence 16 individually authorized damage packets inside V2. MapBattleV2 owns packet count, target cap3 default and event settlement.
+
 ## J. IMPLEMENTATION INCREMENT (ONLY AFTER SEPARATE OWNER AUTHORIZATION)
 
 1. DESIGN source closure: skill ID crosswalk, auto/manual passive taxonomy, graphs and true effect keys; treat source still downloading and version incomplete.
