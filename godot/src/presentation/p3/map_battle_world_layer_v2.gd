@@ -62,6 +62,46 @@ func actor_at_map_point(map_position: Vector2, max_distance: float = 17.0) -> St
             best = str(id)
     return best
 
+# Only cast packets with the actual delayed AoE geometry produce red zones.
+# Learned single-target casts contain target_id/skill_id but NO center/radius.
+# Kept pure so the focused test checks the SAME data consumed by _draw().
+func aoe_warning_geometry() -> Array[Dictionary]:
+    var zones: Array[Dictionary] = []
+    if battle == null:
+        return zones
+    for cast_value in battle.pending_casts:
+        if not (cast_value is Dictionary):
+            continue
+        var cast: Dictionary = cast_value
+        if cast.has("skill_id") or cast.has("target_id"):
+            continue
+        if not (cast.has("center") and cast.has("radius") and cast.has("caster") and
+                cast.has("ready") and cast.has("maximum")):
+            continue
+        if not (cast["center"] is Vector2) or not (cast["radius"] is float or cast["radius"] is int):
+            continue
+        if not (cast["ready"] is float or cast["ready"] is int) or not (cast["maximum"] is int):
+            continue
+        var center: Vector2 = cast["center"]
+        var radius := float(cast["radius"])
+        var ready_at := float(cast["ready"])
+        if is_nan(center.x) or is_inf(center.x) or is_nan(center.y) or is_inf(center.y):
+            continue
+        if center.x < 0.0 or center.x > GRID_SIZE.x or center.y < 0.0 or center.y > GRID_SIZE.y:
+            continue
+        if is_nan(radius) or is_inf(radius) or radius <= 0.0:
+            continue
+        if is_nan(ready_at) or is_inf(ready_at) or ready_at < battle.now:
+            continue
+        if int(cast["maximum"]) < 1 or int(cast["maximum"]) > MapBattleV2.MAX_TARGETS_AOE:
+            continue
+        var caster_id := str(cast["caster"])
+        var caster: Dictionary = battle.actors.get(caster_id,{})
+        if caster_id.is_empty() or caster.is_empty() or float(caster.get("hp",0.0)) <= 0.0:
+            continue
+        zones.append({"center":center,"radius":radius})
+    return zones
+
 func _draw() -> void:
     if battle == null:
         return
@@ -69,10 +109,9 @@ func _draw() -> void:
     # Drawing them never changes target hit checks performed in MapBattleV2.
     var scale_x := stage_rect.size.x/GRID_SIZE.x
     var scale_y := stage_rect.size.y/GRID_SIZE.y
-    for cast_value in battle.pending_casts:
-        var cast: Dictionary = cast_value
-        var center := point_on_map(cast["center"])
-        var radius := Vector2(float(cast["radius"])*scale_x,float(cast["radius"])*scale_y)
+    for zone in aoe_warning_geometry():
+        var center := point_on_map(zone["center"])
+        var radius := Vector2(float(zone["radius"])*scale_x,float(zone["radius"])*scale_y)
         # Slight top-down perspective: warning ellipse is a gameplay cue only.
         draw_set_transform(center,0.0,radius)
         draw_circle(Vector2.ZERO,1.0,WARNING)
