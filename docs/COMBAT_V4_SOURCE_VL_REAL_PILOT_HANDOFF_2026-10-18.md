@@ -29,6 +29,16 @@ Date: 2026-10-18. Status: **CODE IMPLEMENTED ON ISOLATED BRANCH; GODOT 4.7.2 RUN
 - **Combat V2 balance/save/end-to-end PVE: UNCHANGED, NOT RE-TESTED on this commit**. The roster fixture in sandbox is not the canonical player's 6 real disciples, so this packet is not full game integration.
 - **No CI/FULL / no merge**, independent from PR20 and ongoing G1.
 
+## Additional C4-VP01 focused hardening / current HEAD
+
+- Static 2026-10-18 evidence checked against original owner-provided WebP bytes and source sprite/VFX JSON: **13/13 Git blob SHA-1 matches imported binary**, total **897/897 source atlas rectangles in image bounds** (10 character/wolf clips × 8 directions + 2 VFX; final 1px transparent/sentinel cells in VFX are valid and intentionally not rendered). No image has been altered. This is **STATIC PASS, NOT GODOT RUNTIME PASS**.
+- `CombatV4SpriteAtlas` now uses the authentic clip duration for idle when source provides it; non-idle clips with no authored duration still use explicit pilot fallback FPS. No gameplay timing changes.
+- `MapBattleWorldLayerV2` now paints actual sprites by stable increasing foot-point Y then X then actor ID **only when Source VL art is opted in**. This avoids ID-dependent overlap depth. Combat action order, skill targeting, tick, RNG are unchanged.
+- Expanded focused test iterates **every 8-direction sprite frame**, full 36/21-frame VFX including last-frame sentinels, V2 skill cast/hit, renderer-read-only authority and event re-read. Created but **not executed on official engine**.
+- **Single-click Windows runner** is at `tools/qa/RUN-C4-VP01-WINDOWS.cmd`; PowerShell implementation `tools/qa/Run-C4-VP01-Windows.ps1`. It makes a brand-new uniquely named clone **under Windows TEMP**, prints and records the **exact checked-out SHA**, verifies official Godot version `4.7.2.stable.*`, uses process-only isolated APPDATA/LOCALAPPDATA/USERPROFILE/TEMP so Godot `user://` cannot touch the real game save, executes one import + three focused scripts (C4-01, C4-VP01, DV2-02) + one headless scene parse smoke, then launches **one 1280x720 manual scene** unless `-SkipGui` was passed. Exits nonzero if blocked/failed; saves logs in TEMP evidence folder and `C4_VP01_QA_LOGS.zip`, never deletes original files and never commits/pushes/merges/CI.
+- It is **not a replacement for Sync-Main.cmd**. This is an isolated feature-branch acceptance launcher, not main synchronization.
+- Runner/PowerShell **has not itself been executed on Windows here**. No Godot binary exists in the current environment; direct `git clone` was network-DNS blocked in sandbox. User screenshots/FPS/owner UX approval remain **PENDING**, even if the future headless gate succeeds.
+
 ## Minimal one-pass acceptance (user Windows PC, safe TEMP clone)
 
 Open the isolated branch in a fresh TEMP clone; never overwrite local game/save/untracked Source A. In official Godot 4.7.2:
