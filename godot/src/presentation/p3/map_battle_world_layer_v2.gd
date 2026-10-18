@@ -32,6 +32,20 @@ var _action_cues: Dictionary = {}
 var _impact_cues: Dictionary = {}
 var _effect_atlas := CombatV4EffectAtlas.new()
 var _effect_cues: Array[Dictionary] = []
+# Cosmetic-only overdraw budget: dropping FX never drops damage/cast events.
+const MAX_VISIBLE_SOURCE_FX := 12
+
+func _queue_source_fx(kind: String, position: Vector2) -> void:
+    if _effect_cues.size() >= MAX_VISIBLE_SOURCE_FX:
+        if kind == "sword_cast":
+            return # prioritize resolved contacts over redundant cast overlays
+        var discard := 0
+        for i in range(_effect_cues.size()):
+            if str(_effect_cues[i].get("kind","")) == "sword_cast":
+                discard = i
+                break
+        _effect_cues.remove_at(discard)
+    _effect_cues.append({"kind":kind,"at":position,"started":_frame_clock})
 
 func _process(delta: float) -> void:
     if enable_source_vl_art and battle != null and is_visible_in_tree():
@@ -70,9 +84,7 @@ func _ingest_authority_events() -> void:
             elif kind == "hit" and str(event.get("kind","")) == "learned_skill":
                 if bool(announced_hits.get(contact_key,false)) and float(event.get("damage",0.0)) > 0.0:
                     if battle.actors.has(target):
-                        _effect_cues.append({"kind":"sword_hit",
-                            "at":point_on_map(battle.actors[target]["position"]),
-                            "started":_frame_clock})
+                        _queue_source_fx("sword_hit",point_on_map(battle.actors[target]["position"]))
                 announced_hits.erase(contact_key)
             if battle.actors.has(source):
                 _action_cues[source] = {"action":"attack", "started":_frame_clock, "until":_frame_clock+0.45}
@@ -88,9 +100,7 @@ func _ingest_authority_events() -> void:
             var caster_id := str(event.get("actor_id", ""))
             if battle.actors.has(caster_id):
                 if str(event.get("skill_id","")) == "ngu_kiem_thuat":
-                    _effect_cues.append({"kind":"sword_cast",
-                        "at":point_on_map(battle.actors[caster_id]["position"]),
-                        "started":_frame_clock})
+                    _queue_source_fx("sword_cast",point_on_map(battle.actors[caster_id]["position"]))
                 _action_cues[caster_id] = {"action":"attack","started":_frame_clock,
                     "until":_frame_clock+clampf(float(event.get("release_at",battle.now+0.45))-battle.now,0.15,1.0)}
         elif kind in ["heal","guard","cast"]:
