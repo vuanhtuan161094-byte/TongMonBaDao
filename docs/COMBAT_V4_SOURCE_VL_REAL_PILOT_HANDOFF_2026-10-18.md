@@ -39,6 +39,27 @@ Date: 2026-10-18. Status: **CODE IMPLEMENTED ON ISOLATED BRANCH; GODOT 4.7.2 RUN
 - It is **not a replacement for Sync-Main.cmd**. This is an isolated feature-branch acceptance launcher, not main synchronization.
 - Runner/PowerShell **has not itself been executed on Windows here**. No Godot binary exists in the current environment; direct `git clone` was network-DNS blocked in sandbox. User screenshots/FPS/owner UX approval remain **PENDING**, even if the future headless gate succeeds.
 
+## C4-VP01 Static Audit / Focused Hardening — 2026-10-18
+
+**Source audit (confirmed by local original asset bytes):** 897/897 rectangles are in-bounds in original owner-uploaded Source VL sprites.json + decoded vltk-fx.json and 12 downloaded WebP sheets: 840 actor frames over 8 authored directions + 57 FX frames, including two legitimate 1x1 terminal blank frames. Exact original effects: `swords9`/`hitBig`, 30 ms/frame and `blend=lighter`. The original `sprites.js::sheetFrame` indexes `(dir*frames+frame)*6`, uses `dirOffset=6` and frame anchor x/y; Godot index mapping matches. This is STATIC metadata inspection, **NOT** Godot runtime/visual acceptance.
+
+**Memory:** 12 WebP pages total 28.43 MiB estimated decoded base-level RGBA8 `(w*h*4)`; not observed GPU memory. Further driver copies, import formats, mipmaps and VRAM remain UNKNOWN. Presentation is lazy-loaded and caches actual textures; VFX overdraw is capped at `MAX_VISIBLE_SOURCE_FX = 12`, with priority to authoritative positive-hit impact cues. No claim of Android 30 FPS.
+
+**Confirmed bugs repaired in this branch, without changing combat simulation:**
+
+1. `_frame_clock += minf(delta,0.05)` slowed animations at low FPS; now uses nonnegative actual `delta`.
+2. Running/attacking visual expiry used `battle.now`, which freezes when battle ends; now uses render clock so last actor cannot stay indefinitely in one pose.
+3. The V2 `skill_hit` event fires before `_deal_direct` settlement. Original impact VFX could be shown on pre-settlement event without confirmed hit. Now a matching positive-damage `hit` event of `kind=learned_skill` is required; skill VFX does not cause damage.
+4. Fixed HP bar offsets (-78/-110) overlapped real sprites, especially scaled wolf Boss, based on original cropped atlas anchor coordinates. HP bars now use exact frame-anchor top and draw after all actor sprites; default non-Source-VL rendering path remains unchanged.
+5. Opt-in actor depth draw sort uses exact lexicographic Y then X then ID (transitive); removed epsilon-tie comparator. Actor simulation and RNG order unchanged.
+6. Source VFX list was unbounded; now capped at 12 concurrent cosmetic overlays, discarding redundant cast visuals first, retaining settled impacts where possible.
+
+**Focused test strengthened (authored, NOT RUN):** every frame/direction and terminal sentinel; true atlas-top HP clearance for human and 2.3x wolf Boss; one V2 cast and settled hit spawn one each of two mapped effects; duplicate refresh cannot duplicate cues; actual SceneTree `_draw` frames must not alter V2 snapshots (`now`, RNG, actors/HP/position, pending casts, event journal, actions or outcome); 100ms frame must advance 100ms visual clock; stopped battle action and running cues expire; 30 simultaneous cosmetics stay at 12 without affecting V2 authority.
+
+**QA launcher repaired (authored, NOT RUN on Windows):** `tools/qa/RUN-C4-VP01-WINDOWS.cmd` calls PowerShell runner, clones only feature branch into unique fresh TEMP folder, isolates APPDATA/LOCALAPPDATA/USERPROFILE/TEMP per process, enforces Godot `4.7.2.stable.official`, logs actual HEAD, runs import, C4-01 + C4-VP01 + DV2-02 each requiring its exact PASS marker, then smoke scene parse, then optionally one 1280x720 GUI. Explicitly handles Windows PowerShell 5.1 native stderr without throwing prematurely while retaining nonzero exit/marker enforcement; nonzero manual GUI exit fails. Does NOT run CI/FULL or edit original repo/save.
+
+**Pending:** No Godot 4.7.2 runner in present environment; no imported script parse, focused engine PASS, GUI screenshot, actual FPS, Android GPU/memory/touch proof. Both source `lighter` blending fidelity and exact Wolf King asset identity remain unverified; enlarged Thanh Lang Boss sprite is a marked placeholder. Source skill VFX is a presentation analog for `ngu_kiem_thuat`, not 1:1 verified original source move. Original third-party artwork license provenance remains independent from owner's Drive usage authorization. Model C school and Legendary exclusives are design only, not part of C4-VP01.
+
 ## Minimal one-pass acceptance (user Windows PC, safe TEMP clone)
 
 Open the isolated branch in a fresh TEMP clone; never overwrite local game/save/untracked Source A. In official Godot 4.7.2:
