@@ -19,14 +19,94 @@ var battle: MapBattleV2
 var stage_rect := Rect2(Vector2(90.0,50.0),Vector2(1100.0,600.0))
 var displayed_at: float = 0.0
 
+# Opt-in source-backed V4 view for isolated pilot; normal map retains original circles.
+var enable_source_vl_art: bool = false
+var draw_pilot_ground: bool = false
+var _source_atlas := CombatV4SpriteAtlas.new()
+var _frame_clock: float = 0.0
+var _event_cursor: int = 0
+var _facing: Dictionary = {}
+var _positions: Dictionary = {}
+var _last_move: Dictionary = {}
+var _action_cues: Dictionary = {}
+var _impact_cues: Dictionary = {}
+
+func _process(delta: float) -> void:
+    if enable_source_vl_art and battle != null and is_visible_in_tree():
+        _frame_clock += minf(delta, 0.05)
+        queue_redraw()
+
+func _ingest_authority_events() -> void:
+    if battle == null or not enable_source_vl_art:
+        return
+    for index in range(_event_cursor, battle.events.size()):
+        var event: Dictionary = battle.events[index]
+        var kind := str(event.get("type", ""))
+        var actor_id := str(event.get("actor_id", ""))
+        if kind == "move" and battle.actors.has(actor_id):
+            var current: Vector2 = event.get("position", Vector2.ZERO)
+            var previous: Vector2 = _positions.get(actor_id, current)
+            var direction := current - previous
+            if direction.length_squared() > 0.0001:
+                _facing[actor_id] = direction.normalized()
+            _positions[actor_id] = current
+            _last_move[actor_id] = battle.now
+        elif kind in ["hit", "skill_hit"]:
+            var source := str(event.get("attacker", event.get("caster", "")))
+            var target := str(event.get("target", ""))
+            if battle.actors.has(source):
+                _action_cues[source] = {"action":"attack", "started":_frame_clock, "until":battle.now+0.45}
+                if battle.actors.has(target):
+                    var direction := (battle.actors[target]["position"] as Vector2) - (battle.actors[source]["position"] as Vector2)
+                    if direction.length_squared() > 0.001:
+                        _facing[source] = direction.normalized()
+            if kind == "hit" and battle.actors.has(target):
+                _impact_cues[target] = _frame_clock
+                if float(battle.actors[target].get("hp",0.0)) > 0.0:
+                    _action_cues[target] = {"action":"hit","started":_frame_clock,"until":battle.now+0.24}
+        elif kind == "skill_cast":
+            var caster_id := str(event.get("actor_id", ""))
+            if battle.actors.has(caster_id):
+                _action_cues[caster_id] = {"action":"attack","started":_frame_clock,"until":minf(float(event.get("release_at",battle.now+0.45)),battle.now+1.0)}
+        elif kind in ["heal","guard","cast"]:
+            var caster_id := str(event.get("caster",event.get("actor_id","")))
+            if battle.actors.has(caster_id):
+                _action_cues[caster_id] = {"action":"attack","started":_frame_clock,"until":battle.now+0.35}
+        elif kind == "downed" and battle.actors.has(actor_id):
+            _action_cues[actor_id] = {"action":"die","started":_frame_clock,"until":INF}
+    _event_cursor = battle.events.size()
+
+func _actor_clip(actor_id: String, alive: bool) -> Dictionary:
+    var cue: Dictionary = _action_cues.get(actor_id,{})
+    if not alive:
+        return {"name":"die","age":maxf(0.0,_frame_clock-float(cue.get("started",_frame_clock)))}
+    if not cue.is_empty() and battle.now <= float(cue.get("until",-1.0)):
+        return {"name":str(cue["action"]),"age":maxf(0.0,_frame_clock-float(cue.get("started",_frame_clock)))}
+    if battle.now-float(_last_move.get(actor_id,-99.0)) <= MapBattleV2.STEP_SECONDS+0.001:
+        return {"name":"run","age":_frame_clock}
+    return {"name":"idle","age":_frame_clock}
+
+
 func attach_session(session: MapBattleV2) -> void:
     battle = session
     displayed_at = 0.0
+    _frame_clock = 0.0
+    _event_cursor = session.events.size() if session != null else 0
+    _positions.clear()
+    _facing.clear()
+    _last_move.clear()
+    _action_cues.clear()
+    _impact_cues.clear()
+    if session != null:
+        for id in session.actors:
+            _positions[str(id)] = session.actors[id]["position"]
+            _facing[str(id)] = Vector2.RIGHT if str(session.actors[id].get("side","")) == "disciple" else Vector2.LEFT
     queue_redraw()
 
 func refresh_from_authority() -> void:
     if battle != null:
         displayed_at = battle.now
+        _ingest_authority_events()
     queue_redraw()
 
 func point_on_map(logical_position: Vector2) -> Vector2:
@@ -105,6 +185,14 @@ func aoe_warning_geometry() -> Array[Dictionary]:
 func _draw() -> void:
     if battle == null:
         return
+    if draw_pilot_ground:
+        draw_rect(stage_rect,Color(0.09,0.15,0.13,1.0))
+        for grid_x in range(0,37,2):
+            var x := stage_rect.position.x+float(grid_x)*stage_rect.size.x/GRID_SIZE.x
+            draw_line(Vector2(x,stage_rect.position.y),Vector2(x,stage_rect.end.y),Color(0.16,0.25,0.18,0.18),1.0)
+        for grid_y in range(0,21,2):
+            var y := stage_rect.position.y+float(grid_y)*stage_rect.size.y/GRID_SIZE.y
+            draw_line(Vector2(stage_rect.position.x,y),Vector2(stage_rect.end.x,y),Color(0.16,0.25,0.18,0.18),1.0)
     # Telegraphs are projected onto the SAME world-space positions as actors.
     # Drawing them never changes target hit checks performed in MapBattleV2.
     var scale_x := stage_rect.size.x/GRID_SIZE.x
@@ -131,12 +219,33 @@ func _draw() -> void:
         if not alive:
             fill = Color(0.42,0.42,0.41,0.36)
         var radius := 10.0 if tier == "boss" else (7.5 if tier == "elite" else 6.0)
-        draw_circle(at+Vector2(0.0,2.0),radius+2.0,BORDER)
-        draw_circle(at,radius,fill)
+        var art_key := ""
+        if side == "disciple":
+            art_key = "hero"
+        elif str(actor.get("species_id","")) in ["thanh_lang","hac_lang","hac_lang_vuong"]:
+            art_key = "wolf"
+        var art_used := false
+        if enable_source_vl_art and not art_key.is_empty():
+            var clip := _actor_clip(str(id),alive)
+            var art_scale := 2.30 if tier == "boss" else (1.18 if art_key == "wolf" else 0.92)
+            draw_circle(at+Vector2(0.0,3.0),maxf(8.0,radius*1.25),Color(0.02,0.05,0.04,0.43))
+            art_used = _source_atlas.draw_actor(self,art_key,str(clip["name"]),at,
+                _facing.get(str(id),Vector2.RIGHT),float(clip["age"]),art_scale)
+        if not art_used:
+            draw_circle(at+Vector2(0.0,2.0),radius+2.0,BORDER)
+            draw_circle(at,radius,fill)
         if tier == "boss" and alive:
-            draw_arc(at,radius+3.0,0.0,TAU,24,Color(0.94,0.73,0.39,0.85),1.3)
+            draw_arc(at,maxf(15.0,radius+3.0),0.0,TAU,24,Color(0.94,0.73,0.39,0.85),1.5)
         var health := clampf(float(actor["hp"])/maxf(1.0,float(actor["max_hp"])),0.0,1.0)
-        var bar := Rect2(at+Vector2(-11.0,-radius-10.0),Vector2(22.0,3.5))
+        var bar_width := 53.0 if tier == "boss" else (42.0 if art_used else 22.0)
+        var bar_height := 5.5 if tier == "boss" else 4.0
+        var bar_y := -110.0 if art_used and tier == "boss" else (-78.0 if art_used else -radius-10.0)
+        var bar := Rect2(at+Vector2(-bar_width*0.5,bar_y),Vector2(bar_width,bar_height))
         draw_rect(bar,HP_BG)
         draw_rect(Rect2(bar.position,Vector2(bar.size.x*health,bar.size.y)),
             HP_GOOD if side == "disciple" else HP_ENEMY)
+        if enable_source_vl_art and _impact_cues.has(str(id)):
+            var passed := _frame_clock-float(_impact_cues[str(id)])
+            if passed >= 0.0 and passed < 0.30:
+                draw_arc(at,13.0+passed*35.0,0.0,TAU,24,
+                    Color(1.0,0.80,0.40,0.88*(1.0-passed/0.30)),2.0)
