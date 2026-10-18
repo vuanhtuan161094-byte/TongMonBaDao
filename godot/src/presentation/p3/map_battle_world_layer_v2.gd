@@ -46,6 +46,9 @@ func _process(delta: float) -> void:
 func _ingest_authority_events() -> void:
     if battle == null or not enable_source_vl_art:
         return
+    # MapBattleV2 emits skill_hit BEFORE actual _deal_direct settlement.
+    # Only a matching subsequent positive learned_skill hit may produce hit VFX.
+    var announced_hits: Dictionary = {}
     for index in range(_event_cursor, battle.events.size()):
         var event: Dictionary = battle.events[index]
         var kind := str(event.get("type", ""))
@@ -59,14 +62,18 @@ func _ingest_authority_events() -> void:
             _positions[actor_id] = current
             _last_move[actor_id] = _frame_clock
         elif kind in ["hit", "skill_hit"]:
-            if kind == "skill_hit" and str(event.get("skill_id","")) == "ngu_kiem_thuat":
-                var impacted_id := str(event.get("target",""))
-                if battle.actors.has(impacted_id):
-                    _effect_cues.append({"kind":"sword_hit",
-                        "at":point_on_map(battle.actors[impacted_id]["position"]),
-                        "started":_frame_clock})
             var source := str(event.get("attacker", event.get("caster", "")))
             var target := str(event.get("target", ""))
+            var contact_key := source + "|" + target
+            if kind == "skill_hit" and str(event.get("skill_id","")) == "ngu_kiem_thuat":
+                announced_hits[contact_key] = true
+            elif kind == "hit" and str(event.get("kind","")) == "learned_skill":
+                if bool(announced_hits.get(contact_key,false)) and float(event.get("damage",0.0)) > 0.0:
+                    if battle.actors.has(target):
+                        _effect_cues.append({"kind":"sword_hit",
+                            "at":point_on_map(battle.actors[target]["position"]),
+                            "started":_frame_clock})
+                announced_hits.erase(contact_key)
             if battle.actors.has(source):
                 _action_cues[source] = {"action":"attack", "started":_frame_clock, "until":_frame_clock+0.45}
                 if battle.actors.has(target):
