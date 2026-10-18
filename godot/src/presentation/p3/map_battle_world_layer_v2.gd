@@ -229,7 +229,20 @@ func _draw() -> void:
             _effect_atlas.draw_effect(self,str(cue["kind"]),cue["at"],
                 _frame_clock-float(cue["started"]),ratio)
     var ids: Array = battle.actors.keys()
-    ids.sort()
+    # Isometric depth: far-away feet draw first; stable ID tie prevents flicker.
+    # Presentation sort only, NEVER affects MapBattleV2 action/target order.
+    if enable_source_vl_art:
+        ids.sort_custom(func(a,b):
+            var at_a: Vector2 = battle.actors[a]["position"]
+            var at_b: Vector2 = battle.actors[b]["position"]
+            if absf(at_a.y - at_b.y) > 0.00001:
+                return at_a.y < at_b.y
+            if absf(at_a.x - at_b.x) > 0.00001:
+                return at_a.x < at_b.x
+            return str(a) < str(b)
+        )
+    else:
+        ids.sort()
     for id in ids:
         var actor: Dictionary = battle.actors[id]
         var at := point_on_map(actor["position"])
