@@ -269,9 +269,10 @@ func _draw() -> void:
         ids.sort_custom(func(a,b):
             var at_a: Vector2 = battle.actors[a]["position"]
             var at_b: Vector2 = battle.actors[b]["position"]
-            if absf(at_a.y - at_b.y) > 0.00001:
+            # Exact lexicographic ordering is transitive, unlike epsilon ties.
+            if at_a.y != at_b.y:
                 return at_a.y < at_b.y
-            if absf(at_a.x - at_b.x) > 0.00001:
+            if at_a.x != at_b.x:
                 return at_a.x < at_b.x
             return str(a) < str(b)
         )
