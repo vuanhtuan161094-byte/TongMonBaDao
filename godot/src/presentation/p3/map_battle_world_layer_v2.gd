@@ -35,7 +35,8 @@ var _effect_cues: Array[Dictionary] = []
 
 func _process(delta: float) -> void:
     if enable_source_vl_art and battle != null and is_visible_in_tree():
-        _frame_clock += minf(delta, 0.05)
+        # Visual time follows elapsed frame time; never slow down VFX on sub-20-FPS devices.
+        _frame_clock += maxf(0.0, delta)
         for i in range(_effect_cues.size()-1,-1,-1):
             var cue: Dictionary = _effect_cues[i]
             if _frame_clock-float(cue["started"]) > _effect_atlas.duration(str(cue["kind"])):
@@ -56,7 +57,7 @@ func _ingest_authority_events() -> void:
             if direction.length_squared() > 0.0001:
                 _facing[actor_id] = direction.normalized()
             _positions[actor_id] = current
-            _last_move[actor_id] = battle.now
+            _last_move[actor_id] = _frame_clock
         elif kind in ["hit", "skill_hit"]:
             if kind == "skill_hit" and str(event.get("skill_id","")) == "ngu_kiem_thuat":
                 var impacted_id := str(event.get("target",""))
@@ -67,7 +68,7 @@ func _ingest_authority_events() -> void:
             var source := str(event.get("attacker", event.get("caster", "")))
             var target := str(event.get("target", ""))
             if battle.actors.has(source):
-                _action_cues[source] = {"action":"attack", "started":_frame_clock, "until":battle.now+0.45}
+                _action_cues[source] = {"action":"attack", "started":_frame_clock, "until":_frame_clock+0.45}
                 if battle.actors.has(target):
                     var direction := (battle.actors[target]["position"] as Vector2) - (battle.actors[source]["position"] as Vector2)
                     if direction.length_squared() > 0.001:
@@ -75,7 +76,7 @@ func _ingest_authority_events() -> void:
             if kind == "hit" and battle.actors.has(target):
                 _impact_cues[target] = _frame_clock
                 if float(battle.actors[target].get("hp",0.0)) > 0.0:
-                    _action_cues[target] = {"action":"hit","started":_frame_clock,"until":battle.now+0.24}
+                    _action_cues[target] = {"action":"hit","started":_frame_clock,"until":_frame_clock+0.24}
         elif kind == "skill_cast":
             var caster_id := str(event.get("actor_id", ""))
             if battle.actors.has(caster_id):
@@ -83,11 +84,12 @@ func _ingest_authority_events() -> void:
                     _effect_cues.append({"kind":"sword_cast",
                         "at":point_on_map(battle.actors[caster_id]["position"]),
                         "started":_frame_clock})
-                _action_cues[caster_id] = {"action":"attack","started":_frame_clock,"until":minf(float(event.get("release_at",battle.now+0.45)),battle.now+1.0)}
+                _action_cues[caster_id] = {"action":"attack","started":_frame_clock,
+                    "until":_frame_clock+clampf(float(event.get("release_at",battle.now+0.45))-battle.now,0.15,1.0)}
         elif kind in ["heal","guard","cast"]:
             var caster_id := str(event.get("caster",event.get("actor_id","")))
             if battle.actors.has(caster_id):
-                _action_cues[caster_id] = {"action":"attack","started":_frame_clock,"until":battle.now+0.35}
+                _action_cues[caster_id] = {"action":"attack","started":_frame_clock,"until":_frame_clock+0.35}
         elif kind == "downed" and battle.actors.has(actor_id):
             _action_cues[actor_id] = {"action":"die","started":_frame_clock,"until":INF}
     _event_cursor = battle.events.size()
@@ -96,9 +98,9 @@ func _actor_clip(actor_id: String, alive: bool) -> Dictionary:
     var cue: Dictionary = _action_cues.get(actor_id,{})
     if not alive:
         return {"name":"die","age":maxf(0.0,_frame_clock-float(cue.get("started",_frame_clock)))}
-    if not cue.is_empty() and battle.now <= float(cue.get("until",-1.0)):
+    if not cue.is_empty() and _frame_clock <= float(cue.get("until",-1.0)):
         return {"name":str(cue["action"]),"age":maxf(0.0,_frame_clock-float(cue.get("started",_frame_clock)))}
-    if battle.now-float(_last_move.get(actor_id,-99.0)) <= MapBattleV2.STEP_SECONDS+0.001:
+    if _frame_clock-float(_last_move.get(actor_id,-99.0)) <= MapBattleV2.STEP_SECONDS+0.001:
         return {"name":"run","age":_frame_clock}
     return {"name":"idle","age":_frame_clock}
 
