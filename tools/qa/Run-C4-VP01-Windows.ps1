@@ -83,7 +83,7 @@ try {
     }
     $version = (& $GodotExe --version 2>&1 | Out-String).Trim()
     Write-Result ("Godot: {0}; executable: {1}" -f $version, $GodotExe)
-    if ($version -notmatch '^4\.7\.2\.stable') { Fail ("Wrong Godot version: {0}; requires official 4.7.2 stable" -f $version) }
+    if ($version -notmatch '^4\.7\.2\.stable\.official') { Fail ("Wrong Godot version: {0}; requires official 4.7.2 stable" -f $version) }
     # Isolate user:// and editor state in THIS process and its child Godot processes.
     $sandbox = Join-Path $root "isolated_user"
     $env:APPDATA = Join-Path $sandbox "AppData\Roaming"
