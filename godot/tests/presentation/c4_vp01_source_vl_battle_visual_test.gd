@@ -15,23 +15,52 @@ func _run() -> void:
     var atlas := CombatV4SpriteAtlas.new()
     if not _assert(atlas.has_actor("hero") and atlas.has_actor("wolf"),"real Source VL atlas metadata missing"):
         return
+    # Exercise every real 8-direction actor frame at its actual animation age.
+    # Do NOT silently test only one tile in a multi-row WebP atlas.
     for archetype in ["hero","wolf"]:
+        var sheet: Dictionary = atlas.sheets[archetype]
+        var direction_count := int(sheet["directions"])
+        if not _assert(direction_count == 8,"source VL expected all 8 authored views"):
+            return
         for action in ["idle","run","attack","hit","die"]:
-            for direction in [Vector2.RIGHT,Vector2.LEFT,Vector2.UP,Vector2.DOWN]:
-                var sprite: Dictionary = atlas.frame_region(archetype,action,direction,0.1)
-                if not _assert(not sprite.is_empty(),"missing/out-of-bounds texture: "+archetype+" "+action):
-                    return
-                if not _assert(sprite["texture"] is Texture2D and (sprite["source"] as Rect2).size.x > 0.0,
-                    "invalid loaded texture region"):
-                    return
+            var clip: Dictionary = sheet["actions"][action]
+            var frame_count := int(clip["frames"])
+            var fps := CombatV4SpriteAtlas.DEFAULT_FPS
+            var cycle_value = clip.get("duration",null)
+            if cycle_value is float or cycle_value is int:
+                if float(cycle_value) > 0.0:
+                    fps = float(frame_count)/float(cycle_value)
+            for dir_index in range(direction_count):
+                var facing := Vector2.RIGHT.rotated(TAU * float(dir_index) / float(direction_count))
+                for frame in range(frame_count):
+                    var age := (float(frame)+0.10)/fps
+                    var sprite: Dictionary = atlas.frame_region(archetype,action,facing,age)
+                    if not _assert(not sprite.is_empty(),
+                            "missing source frame: "+archetype+" "+action+" "+str(dir_index)+"/"+str(frame)):
+                        return
+                    if not _assert(sprite["texture"] is Texture2D and
+                            (sprite["source"] as Rect2).size.x > 0.0,
+                            "invalid source atlas region"):
+                        return
     var vfx := CombatV4EffectAtlas.new()
     for effect in ["sword_cast","sword_hit"]:
         if not _assert(vfx.duration(effect) > 0.0,"VFX source duration missing: "+effect):
             return
-        var sample: Dictionary = vfx.frame_region(effect,0.035)
-        if not _assert(not sample.is_empty() and sample["texture"] is Texture2D,
-            "original VFX atlas failed frame bounds: "+effect):
-            return
+        var definition: Dictionary = vfx.effects[effect]
+        var frame_count := int(definition["frames"])
+        var interval := float(definition["frame_ms"])*0.001
+        for frame in range(frame_count):
+            var offset := frame * 6
+            var rects: Array = definition["rects"]
+            # A 1x1 final source sentinel denotes an empty frame, not a bug.
+            var source_has_pixels := int(rects[offset+2]) > 1 and int(rects[offset+3]) > 1
+            var sample: Dictionary = vfx.frame_region(effect,(float(frame)+0.10)*interval)
+            if source_has_pixels:
+                if not _assert(not sample.is_empty() and sample["texture"] is Texture2D,
+                    "source FX atlas bounds: "+effect+" frame "+str(frame)):
+                    return
+            elif not _assert(sample.is_empty(),"sentinel FX frame should not be rendered"):
+                return
     var hero: Dictionary = CombatStatsV2.derive(2,1,2,1,0.0)
     if not _assert(bool(hero.get("ok",false)),"V2 stat fixture failed"):
         return
