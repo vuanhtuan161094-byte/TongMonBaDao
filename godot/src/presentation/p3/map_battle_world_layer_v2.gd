@@ -201,6 +201,20 @@ func aoe_warning_geometry() -> Array[Dictionary]:
         zones.append({"center":center,"radius":radius})
     return zones
 
+# The bar must clear the actual sprite's top edge, not a fixed guess.
+# Source anchors can exceed a frame's cropped height (notably wolf sheets).
+func _hp_bar_y(art_key: String, action: String, facing: Vector2,
+        age: float, art_scale: float, radius: float) -> float:
+    var fallback := -radius-10.0
+    if art_key.is_empty() or not enable_source_vl_art:
+        return fallback
+    var frame: Dictionary = _source_atlas.frame_region(art_key,action,facing,age)
+    if frame.is_empty():
+        return fallback
+    var ratio := art_scale * float(frame["scale"])
+    var sprite_top := -float((frame["anchor"] as Vector2).y)*ratio
+    return minf(fallback,sprite_top-10.0)
+
 func _draw() -> void:
     if battle == null:
         return
@@ -230,6 +244,7 @@ func _draw() -> void:
             var ratio := 0.42 if str(cue["kind"]) == "sword_cast" else 0.66
             _effect_atlas.draw_effect(self,str(cue["kind"]),cue["at"],
                 _frame_clock-float(cue["started"]),ratio)
+    var hp_overlays: Array[Dictionary] = []
     var ids: Array = battle.actors.keys()
     # Isometric depth: far-away feet draw first; stable ID tie prevents flicker.
     # Presentation sort only, NEVER affects MapBattleV2 action/target order.
@@ -263,12 +278,16 @@ func _draw() -> void:
         elif str(actor.get("species_id","")) in ["thanh_lang","hac_lang","hac_lang_vuong"]:
             art_key = "wolf"
         var art_used := false
+        var hp_y := -radius-10.0
         if enable_source_vl_art and not art_key.is_empty():
             var clip := _actor_clip(str(id),alive)
             var art_scale := 2.30 if tier == "boss" else (1.18 if art_key == "wolf" else 0.92)
             draw_circle(at+Vector2(0.0,3.0),maxf(8.0,radius*1.25),Color(0.02,0.05,0.04,0.43))
             art_used = _source_atlas.draw_actor(self,art_key,str(clip["name"]),at,
                 _facing.get(str(id),Vector2.RIGHT),float(clip["age"]),art_scale)
+            if art_used:
+                hp_y = _hp_bar_y(art_key,str(clip["name"]),_facing.get(str(id),Vector2.RIGHT),
+                    float(clip["age"]),art_scale,radius)
         if not art_used:
             draw_circle(at+Vector2(0.0,2.0),radius+2.0,BORDER)
             draw_circle(at,radius,fill)
@@ -277,13 +296,24 @@ func _draw() -> void:
         var health := clampf(float(actor["hp"])/maxf(1.0,float(actor["max_hp"])),0.0,1.0)
         var bar_width := 53.0 if tier == "boss" else (42.0 if art_used else 22.0)
         var bar_height := 5.5 if tier == "boss" else 4.0
-        var bar_y := -110.0 if art_used and tier == "boss" else (-78.0 if art_used else -radius-10.0)
-        var bar := Rect2(at+Vector2(-bar_width*0.5,bar_y),Vector2(bar_width,bar_height))
-        draw_rect(bar,HP_BG)
-        draw_rect(Rect2(bar.position,Vector2(bar.size.x*health,bar.size.y)),
-            HP_GOOD if side == "disciple" else HP_ENEMY)
+        var bar := Rect2(at+Vector2(-bar_width*0.5,hp_y),Vector2(bar_width,bar_height))
+        if enable_source_vl_art:
+            # Bars are drawn after ALL sprites, preventing near-actor occlusion.
+            hp_overlays.append({"rect":bar,"ratio":health,"fill":HP_GOOD if side == "disciple" else HP_ENEMY})
+        else:
+            draw_rect(bar,HP_BG)
+            draw_rect(Rect2(bar.position,Vector2(bar.size.x*health,bar.size.y)),
+                HP_GOOD if side == "disciple" else HP_ENEMY)
         if enable_source_vl_art and _impact_cues.has(str(id)):
             var passed := _frame_clock-float(_impact_cues[str(id)])
             if passed >= 0.0 and passed < 0.30:
                 draw_arc(at,13.0+passed*35.0,0.0,TAU,24,
                     Color(1.0,0.80,0.40,0.88*(1.0-passed/0.30)),2.0)
+
+    if enable_source_vl_art:
+        for overlay_value in hp_overlays:
+            var overlay: Dictionary = overlay_value
+            var bounds: Rect2 = overlay["rect"]
+            draw_rect(bounds,HP_BG)
+            draw_rect(Rect2(bounds.position,Vector2(bounds.size.x*float(overlay["ratio"]),bounds.size.y)),
+                overlay["fill"])
