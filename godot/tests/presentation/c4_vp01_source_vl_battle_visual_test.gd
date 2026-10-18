@@ -24,6 +24,14 @@ func _run() -> void:
                 if not _assert(sprite["texture"] is Texture2D and (sprite["source"] as Rect2).size.x > 0.0,
                     "invalid loaded texture region"):
                     return
+    var vfx := CombatV4EffectAtlas.new()
+    for effect in ["sword_cast","sword_hit"]:
+        if not _assert(vfx.duration(effect) > 0.0,"VFX source duration missing: "+effect):
+            return
+        var sample: Dictionary = vfx.frame_region(effect,0.035)
+        if not _assert(not sample.is_empty() and sample["texture"] is Texture2D,
+            "original VFX atlas failed frame bounds: "+effect):
+            return
     var hero: Dictionary = CombatStatsV2.derive(2,1,2,1,0.0)
     if not _assert(bool(hero.get("ok",false)),"V2 stat fixture failed"):
         return
@@ -47,7 +55,7 @@ func _run() -> void:
     get_root().add_child(view)
     view.attach_session(battle)
     var before_now := battle.now
-    var before_rng: Dictionary = battle.rng.snapshot_seed_state()
+    var before_rng: int = battle.rng.snapshot_seed_state()
     view.refresh_from_authority()
     if not _assert(battle.now == before_now and battle.rng.snapshot_seed_state() == before_rng,
         "renderer advanced combat time or RNG"):
@@ -59,9 +67,18 @@ func _run() -> void:
         view.refresh_from_authority()
     if not _assert(view._event_cursor == battle.events.size(),"renderer failed to consume typed events"):
         return
+    var seen_real_cast := false
+    var seen_real_hit := false
+    for row in battle.events:
+        if str(row.get("type","")) == "skill_cast" and str(row.get("skill_id","")) == "ngu_kiem_thuat":
+            seen_real_cast = true
+        if str(row.get("type","")) == "skill_hit" and str(row.get("skill_id","")) == "ngu_kiem_thuat":
+            seen_real_hit = true
+    if not _assert(seen_real_cast and seen_real_hit,"V2 did not deliver true authored skill cast and hit"):
+        return
     var cursor := view._event_cursor
     var post_tick := battle.now
-    var post_rng: Dictionary = battle.rng.snapshot_seed_state()
+    var post_rng: int = battle.rng.snapshot_seed_state()
     view.refresh_from_authority()
     if not _assert(view._event_cursor == cursor and battle.now == post_tick and
             battle.rng.snapshot_seed_state() == post_rng,"renderer duplicated events or mutated authority"):
