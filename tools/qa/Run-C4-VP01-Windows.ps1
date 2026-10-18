@@ -12,6 +12,11 @@ $testPaths = @(
     "res://tests/presentation/c4_vp01_source_vl_battle_visual_test.gd",
     "res://tests/simulation/dv2_02_group_map_battle_test.gd"
 )
+$testMarkers = @{
+    "res://tests/presentation/combat_v4_world_layer_cast_schema_test.gd" = "C4-01 WORLD CAST SCHEMA: SINGLE TARGET / BOSS AOE / INVALID CAST / PURE VIEW / RELEASE PASS"
+    "res://tests/presentation/c4_vp01_source_vl_battle_visual_test.gd" = "C4-VP01 SOURCE VL REAL ATLAS + MAPBATTLE V2 VISUAL TEST: PASS"
+    "res://tests/simulation/dv2_02_group_map_battle_test.gd" = "DV2-02D GROUP MAP COMBAT: MOVEMENT/HEAL/AOE/BOSS/30-ACTOR/REPLAY TEST PASS"
+}
 $timestamp = (Get-Date).ToUniversalTime().ToString("yyyyMMddTHHmmssZ")
 $root = Join-Path ([IO.Path]::GetTempPath()) ("C4_VP01_QA_{0}_{1}" -f $timestamp, ([guid]::NewGuid().ToString("N").Substring(0,8)))
 $clone = Join-Path $root "repo"
@@ -31,8 +36,16 @@ function Fail([string]$why) {
 function Invoke-Focused([string]$title, [string[]]$arguments, [string]$requiredMarker = "") {
     $safeName = $title.Replace(" ","_")
     $logFile = Join-Path $logs ("{0}.log" -f $safeName)
-    & $GodotExe @arguments *> $logFile
-    $exitCode = $LASTEXITCODE
+    # Windows PowerShell 5.1 may promote native stderr to a terminating error
+    # when ErrorActionPreference=Stop. Capture BOTH streams and trust exit code + PASS marker.
+    $beforeNativePreference = $ErrorActionPreference
+    try {
+        $ErrorActionPreference = "Continue"
+        & $GodotExe @arguments *> $logFile
+        $exitCode = $LASTEXITCODE
+    } finally {
+        $ErrorActionPreference = $beforeNativePreference
+    }
     $out = Get-Content -Raw -LiteralPath $logFile -ErrorAction SilentlyContinue
     if ($null -eq $out) { $out = "" }
     Write-Result ("{0}: EXIT={1}; log={2}" -f $title, $exitCode, $logFile)
@@ -54,8 +67,16 @@ foreach ($key in @("APPDATA","LOCALAPPDATA","USERPROFILE","TEMP","TMP")) {
 try {
     $git = Get-Command git -ErrorAction SilentlyContinue
     if ($null -eq $git) { Fail "git not found in PATH" }
-    & git -c core.longpaths=true clone --single-branch --depth 1 --branch $branch $repo $clone *> (Join-Path $logs "git-clone.log")
-    if ($LASTEXITCODE -ne 0) { Fail "TEMP clone failed; inspect git-clone.log" }
+    # Clone is a native command too; capture stderr warnings without dropping exit checks.
+    $clonePreference = $ErrorActionPreference
+    try {
+        $ErrorActionPreference = "Continue"
+        & git -c core.longpaths=true clone --single-branch --depth 1 --branch $branch $repo $clone *> (Join-Path $logs "git-clone.log")
+        $cloneExit = $LASTEXITCODE
+    } finally {
+        $ErrorActionPreference = $clonePreference
+    }
+    if ($cloneExit -ne 0) { Fail "TEMP clone failed; inspect git-clone.log" }
     $headSha = (& git -C $clone rev-parse HEAD).Trim()
     if ($LASTEXITCODE -ne 0 -or $headSha -notmatch "^[0-9a-f]{40}$") { Fail "Could not verify cloned HEAD" }
     Write-Result ("Verified branch: {0}; SHA: {1}" -f $branch, $headSha)
@@ -99,10 +120,8 @@ try {
     $n = 1
     foreach ($test in $testPaths) {
         $n += 1
-        $marker = ""
-        if ($test -match "c4_vp01_source_vl") {
-            $marker = "C4-VP01 SOURCE VL REAL ATLAS + MAPBATTLE V2 VISUAL TEST: PASS"
-        }
+        $marker = $testMarkers[$test]
+        if ([string]::IsNullOrWhiteSpace($marker)) { Fail ("Missing known PASS marker for {0}" -f $test) }
         Invoke-Focused ("0{0}_focused" -f $n) @("--headless","--path",$game,"--script",$test) $marker
     }
     Invoke-Focused "05_scene_parse_smoke" @("--headless","--path",$game,"--quit-after","180","res://scenes/p3/combat_v4_pilot.tscn")
@@ -113,6 +132,7 @@ try {
         $process = Start-Process -FilePath $GodotExe -ArgumentList $argLine -PassThru
         $process.WaitForExit()
         Write-Result ("Visual scene exited with code {0}. USER screenshot/FPS and owner UX approval remain PENDING." -f $process.ExitCode)
+        if ($process.ExitCode -ne 0) { Fail ("GUI scene exited with code {0}" -f $process.ExitCode) }
     }
 } catch {
     $script:failed = $true
