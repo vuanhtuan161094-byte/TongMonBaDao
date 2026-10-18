@@ -38,7 +38,14 @@ func frame_region(actor_key: String, action: String, facing: Vector2, elapsed: f
     var rects: Array = clip.get("rects", [])
     if frames < 1 or dirs < 1 or rects.size() != frames * dirs * 6:
         return {}
-    var frame_index := int(floor(maxf(elapsed, 0.0) * DEFAULT_FPS))
+    var fps := DEFAULT_FPS
+    # Honor authentic idle cycle durations where exported by Source VL.
+    # Other actions have no documented duration in the selected source manifest.
+    var cycle_value = clip.get("duration", null)
+    if cycle_value is float or cycle_value is int:
+        if float(cycle_value) > 0.0:
+            fps = float(frames) / float(cycle_value)
+    var frame_index := int(floor(maxf(elapsed, 0.0) * fps))
     if action in ["attack", "hit", "die"]:
         frame_index = mini(frame_index, frames - 1)
     else:
