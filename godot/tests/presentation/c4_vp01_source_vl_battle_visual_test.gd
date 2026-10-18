@@ -83,6 +83,20 @@ func _run() -> void:
     view.draw_pilot_ground = true
     get_root().add_child(view)
     view.attach_session(battle)
+    # Cropped Source VL anchors exceed some frame heights; use real top edge
+    # for hero + upscaled boss instead of static -78 / -110 offsets.
+    for probe in [
+        {"key":"hero","scale":0.92,"radius":6.0,"bar_height":4.0},
+        {"key":"wolf","scale":2.30,"radius":10.0,"bar_height":5.5}
+    ]:
+        var sprite_frame: Dictionary = atlas.frame_region(str(probe["key"]),"idle",Vector2.RIGHT,0.0)
+        var ratio: float = float(probe["scale"])*float(sprite_frame["scale"])
+        var top: float = -float((sprite_frame["anchor"] as Vector2).y)*ratio
+        var y := view._hp_bar_y(str(probe["key"]),"idle",Vector2.RIGHT,0.0,
+            float(probe["scale"]),float(probe["radius"]))
+        if not _assert(y+float(probe["bar_height"]) < top,
+                "HP bar overlaps actual sprite top: "+str(probe["key"])):
+            return
     var before_now := battle.now
     var before_rng: int = battle.rng.snapshot_seed_state()
     view.refresh_from_authority()
