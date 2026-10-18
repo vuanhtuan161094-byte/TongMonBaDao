@@ -179,6 +179,27 @@ func _run() -> void:
             battle.outcome == post_outcome,
             "visual cue expiry changed real combat state"):
         return
+    # 30 simultaneous view-only cast cues cannot allocate unbounded sprites.
+    view._effect_cues.clear()
+    for i in range(30):
+        view._queue_source_fx("sword_cast",Vector2(100.0+float(i),200.0))
+    if not _assert(view._effect_cues.size() == MapBattleWorldLayerV2.MAX_VISIBLE_SOURCE_FX,
+            "overdraw budget failed to cap parallel cosmetic casts"):
+        return
+    view._queue_source_fx("sword_hit",Vector2(440.0,300.0))
+    var has_hit := false
+    for fx_value in view._effect_cues:
+        if str(fx_value.get("kind","")) == "sword_hit":
+            has_hit = true
+    if not _assert(has_hit and view._effect_cues.size() == MapBattleWorldLayerV2.MAX_VISIBLE_SOURCE_FX,
+            "real settled hit FX lost priority under visual-only budget"):
+        return
+    if not _assert(battle.now == post_tick and battle.rng.snapshot_seed_state() == post_rng and
+            battle.actors == post_actors and battle.pending_casts == post_casts and
+            battle.events == post_events and battle.actions == post_actions and
+            battle.outcome == post_outcome,
+            "FX budget modified combat authority"):
+        return
     view.queue_free()
     print("C4-VP01 SOURCE VL REAL ATLAS + MAPBATTLE V2 VISUAL TEST: PASS")
     quit(0)
