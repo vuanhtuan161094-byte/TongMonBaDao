@@ -30,10 +30,16 @@ var _positions: Dictionary = {}
 var _last_move: Dictionary = {}
 var _action_cues: Dictionary = {}
 var _impact_cues: Dictionary = {}
+var _effect_atlas := CombatV4EffectAtlas.new()
+var _effect_cues: Array[Dictionary] = []
 
 func _process(delta: float) -> void:
     if enable_source_vl_art and battle != null and is_visible_in_tree():
         _frame_clock += minf(delta, 0.05)
+        for i in range(_effect_cues.size()-1,-1,-1):
+            var cue: Dictionary = _effect_cues[i]
+            if _frame_clock-float(cue["started"]) > _effect_atlas.duration(str(cue["kind"])):
+                _effect_cues.remove_at(i)
         queue_redraw()
 
 func _ingest_authority_events() -> void:
@@ -52,6 +58,12 @@ func _ingest_authority_events() -> void:
             _positions[actor_id] = current
             _last_move[actor_id] = battle.now
         elif kind in ["hit", "skill_hit"]:
+            if kind == "skill_hit" and str(event.get("skill_id","")) == "ngu_kiem_thuat":
+                var impacted_id := str(event.get("target",""))
+                if battle.actors.has(impacted_id):
+                    _effect_cues.append({"kind":"sword_hit",
+                        "at":point_on_map(battle.actors[impacted_id]["position"]),
+                        "started":_frame_clock})
             var source := str(event.get("attacker", event.get("caster", "")))
             var target := str(event.get("target", ""))
             if battle.actors.has(source):
@@ -67,6 +79,10 @@ func _ingest_authority_events() -> void:
         elif kind == "skill_cast":
             var caster_id := str(event.get("actor_id", ""))
             if battle.actors.has(caster_id):
+                if str(event.get("skill_id","")) == "ngu_kiem_thuat":
+                    _effect_cues.append({"kind":"sword_cast",
+                        "at":point_on_map(battle.actors[caster_id]["position"]),
+                        "started":_frame_clock})
                 _action_cues[caster_id] = {"action":"attack","started":_frame_clock,"until":minf(float(event.get("release_at",battle.now+0.45)),battle.now+1.0)}
         elif kind in ["heal","guard","cast"]:
             var caster_id := str(event.get("caster",event.get("actor_id","")))
@@ -97,6 +113,7 @@ func attach_session(session: MapBattleV2) -> void:
     _last_move.clear()
     _action_cues.clear()
     _impact_cues.clear()
+    _effect_cues.clear()
     if session != null:
         for id in session.actors:
             _positions[str(id)] = session.actors[id]["position"]
@@ -205,6 +222,12 @@ func _draw() -> void:
         draw_circle(Vector2.ZERO,1.0,WARNING)
         draw_arc(Vector2.ZERO,1.0,0.0,TAU,40,Color(0.94,0.36,0.26,0.74),0.08)
         draw_set_transform(Vector2.ZERO,0.0,Vector2.ONE)
+    # Art cues are observations of real V2 casts/hits; draw BELOW actor silhouettes and HP.
+    if enable_source_vl_art:
+        for cue in _effect_cues:
+            var ratio := 0.42 if str(cue["kind"]) == "sword_cast" else 0.66
+            _effect_atlas.draw_effect(self,str(cue["kind"]),cue["at"],
+                _frame_clock-float(cue["started"]),ratio)
     var ids: Array = battle.actors.keys()
     ids.sort()
     for id in ids:
