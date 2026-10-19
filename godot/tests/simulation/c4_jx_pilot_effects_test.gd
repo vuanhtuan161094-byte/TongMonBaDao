@@ -140,6 +140,16 @@ func _run() -> void:
     if not _check(poison_stacks == 3,
         "four casters bypassed poison cap=3 across one target"):
         return
+    # Fatal stacked Poison ticks must settle one and only one downed receipt.
+    cap_battle.actors["jx_mob_1"]["hp"] = 1.0
+    cap_battle.now = 1.0
+    JxPilotRuntimeV1.tick(cap_battle)
+    var lethal_receipts := 0
+    for e in cap_battle.events:
+        if str(e.get("type","")) == "downed" and str(e.get("actor_id","")) == "jx_mob_1":
+            lethal_receipts += 1
+    if not _check(lethal_receipts == 1,"stacked poison caused duplicate downed receipts"):
+        return
     # A party aura may never leak into a second party even at the same position.
     var teams := _team()
     teams.append({"id":"guest","party_id":"party_2","role":"ranged",
