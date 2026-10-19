@@ -89,10 +89,10 @@ try {
         $ErrorActionPreference = $oldPreference
     }
     Require-Zero "Godot version" $versionCode
-    if ($version -notmatch "^4[.]7[.]2([.]|$)") {
-        throw "Wrong Godot runner: '$version'; requires 4.7.2 stable."
+    if ($version -notmatch "^4[.]7[.]2[.]stable[.]official") {
+        throw "Wrong Godot runner: '$version'; requires official Godot 4.7.2.stable.official."
     }
-    Write-Host "Official Godot candidate: $version"
+    Write-Host "Official Godot verified: $version"
 
     $git = Get-Command "git.exe" -ErrorAction Stop
     Write-Host "--> Clone isolated branch $branch to $clone"
@@ -148,7 +148,7 @@ try {
         "res://tests/presentation/combat_v4_world_layer_cast_schema_test.gd") "C4-01 WORLD CAST SCHEMA: SINGLE TARGET / BOSS AOE / INVALID CAST / PURE VIEW / RELEASE PASS"
     # Parse the real 6v5 pilot scene in the official runtime, not just its tests.
     Invoke-GodotQA "08_scene_smoke" @("--headless","--path",$project,
-        "--quit-after","30","res://scenes/p3/combat_v4_jx_pilot.tscn") ""
+        "--quit-after","30","--scene","res://scenes/p3/combat_v4_jx_pilot.tscn") ""
 
     $tracked = (& $git.Source -C $clone status --porcelain --untracked-files=no | Out-String).Trim()
     Require-Zero "tracked worktree check" ([int]$LASTEXITCODE)
@@ -162,7 +162,7 @@ try {
         $oldPreference = $ErrorActionPreference
         try {
             $ErrorActionPreference = "Continue"
-            & $GodotExe --path $project --resolution "1280x720" "res://scenes/p3/combat_v4_jx_pilot.tscn"
+            & $GodotExe --path $project --resolution "1280x720" --scene "res://scenes/p3/combat_v4_jx_pilot.tscn"
             $guiCode = [int]$LASTEXITCODE
         } finally {
             $ErrorActionPreference = $oldPreference
