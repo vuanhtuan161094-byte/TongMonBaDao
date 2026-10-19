@@ -43,6 +43,9 @@ var _status_feedback: Dictionary = {} # only actual event feedback, not status a
 var enable_spectator_framing: bool = false
 var _camera_center := GRID_SIZE*0.5
 var _camera_zoom: float = 1.0
+# The battle pilot can opt for JX1-like original-size overview without
+# changing world positions or the generic zoomable spectator test view.
+var spectator_zoom_ceiling: float = 2.10
 # Cosmetic-only overdraw budget: dropping FX never drops damage/cast events.
 const MAX_VISIBLE_SOURCE_FX := 12
 # GP01 is strictly presentational: the authority emits final damage/crit/heal
@@ -55,8 +58,8 @@ var _combat_text: Array[Dictionary] = []
 
 # Format ONLY an already-settled amount. No damage computation occurs here.
 func _combat_amount(amount: float) -> String:
-    if amount < 10.0 and absf(amount-roundf(amount)) > 0.01:
-        return "%.1f" % amount
+    # Classic JX-style floating values are integer-only, including small hits.
+    # The receipt's original float stays untouched in _combat_text["amount"].
     return str(int(roundf(amount)))
 
 func _enqueue_combat_text(actor_id: String, amount: float, category: String,
@@ -145,7 +148,7 @@ func _combat_feedback_color(category: String) -> Color:
         "poison":
             return Color(0.83,0.58,1.0,1.0)
         _:
-            return Color(1.0,0.92,0.78,1.0)
+            return Color(1.0,0.43,0.30,1.0)
 
 func _queue_source_fx(kind: String, position: Vector2, actor_id: String = "") -> void:
     if _effect_cues.size() >= MAX_VISIBLE_SOURCE_FX:
@@ -377,7 +380,7 @@ func spectator_camera_goal() -> Dictionary:
     var height_zoom := stage_rect.size.y/maxf(height_pixels+200.0,1.0)
     return {
         "center":(low+high)*0.5,
-        "zoom":clampf(minf(width_zoom,height_zoom),1.0,2.10)
+        "zoom":clampf(minf(width_zoom,height_zoom),1.0,maxf(1.0,spectator_zoom_ceiling))
     }
 
 func _update_spectator_camera(delta: float) -> void:
@@ -551,6 +554,19 @@ func _school_tag(actor: Dictionary) -> String:
     var role := str(actor.get("role",""))
     return {"frontline":"CAN","ranged":"XA","healer":"HOI","mage":"PHAP"}.get(role,"DT")
 
+# A visible label must originate in the actor or canonical monster catalogue.
+# Never invent disciple names from render positions or overlay state.
+func combat_actor_label(actor: Dictionary) -> String:
+    var authored := str(actor.get("display_name",actor.get("name",""))).strip_edges()
+    if not authored.is_empty():
+        return authored
+    if str(actor.get("side","")) == "monster":
+        var species_id := str(actor.get("species_id",""))
+        if MonsterCatalogueV2.SPECIES.has(species_id):
+            return str(MonsterCatalogueV2.SPECIES[species_id]["name"])
+        return "Quái"
+    return _actor_badge(actor)
+
 # Stable per-actor badge ID; does not assign gameplay identity/role.
 func _actor_badge(actor: Dictionary) -> String:
     var tag := _school_tag(actor)
@@ -665,14 +681,19 @@ func _draw() -> void:
         if tier == "boss" and alive:
             draw_arc(at,maxf(15.0,radius+3.0)*spectator_zoom(),
                 0.0,TAU,24,Color(0.94,0.73,0.39,0.85),1.5)
-        if enable_source_vl_art and alive and side == "disciple":
-            var tag := _school_tag(actor)
-            ui_overlays.append({
-                "kind":"badge",
-                "rect":Rect2(at+Vector2(-24.0,9.0),Vector2(48.0,19.0)),
-                "text":_actor_badge(actor),"fill":_school_color(tag)
-            })
         if enable_source_vl_art and alive:
+            # Classic JX nameplate reads above the HP meter; live monster
+            # names come from MonsterCatalogueV2, not a cosmetic alias.
+            var actor_name := combat_actor_label(actor)
+            var name_width := clampf(float(actor_name.length())*7.0+12.0,54.0,138.0)
+            var name_tint := _school_color(_school_tag(actor)) if side == "disciple" else (
+                Color(1.0,0.77,0.37) if tier == "boss" else Color(1.0,0.85,0.72))
+            ui_overlays.append({
+                "kind":"name",
+                "rect":Rect2(at+Vector2(-name_width*0.5,hp_y-24.0),
+                    Vector2(name_width,14.0)),
+                "text":actor_name,"fill":name_tint
+            })
             # Statuses derive from currently active effects/guards, never a
             # guessed VFX duration. Keep no more than two tags visible in 6v5.
             var tags := active_combat_status_tags(actor)
@@ -715,12 +736,17 @@ func _draw() -> void:
                     Vector2(bounds.size.x*float(overlay["ratio"]),bounds.size.y)),
                     overlay["fill"])
             else:
-                draw_rect(bounds,Color(0.035,0.065,0.07,0.94))
-                if kind == "badge":
-                    draw_rect(Rect2(bounds.position,Vector2(3.0,bounds.size.y)),overlay["fill"])
-                draw_string(ThemeDB.fallback_font,bounds.position+Vector2(3.0,14.5),
+                if kind != "name":
+                    draw_rect(bounds,Color(0.035,0.065,0.07,0.94))
+                var text_size := 11 if kind == "name" else 12
+                var baseline := bounds.position+Vector2(2.0,
+                    12.0 if kind == "name" else 14.5)
+                draw_string_outline(ThemeDB.fallback_font,baseline,
                     str(overlay["text"]),HORIZONTAL_ALIGNMENT_CENTER,
-                    bounds.size.x-4.0,12,overlay["fill"])
+                    bounds.size.x-4.0,text_size,2,Color(0.025,0.035,0.025,0.96))
+                draw_string(ThemeDB.fallback_font,baseline,
+                    str(overlay["text"]),HORIZONTAL_ALIGNMENT_CENTER,
+                    bounds.size.x-4.0,text_size,overlay["fill"])
 
         # Numeric event feedback belongs above silhouettes and HUD, never
         # changes HP or other world state. Deterministic lanes avoid fake RNG.
@@ -747,9 +773,13 @@ func _draw() -> void:
                     stage_rect.position.y+2.0,stage_rect.end.y-25.0)
                 var fade := clampf((COMBAT_TEXT_SECONDS-age)/0.25,0.0,1.0)
                 var bounds := Rect2(position,Vector2(width,float(size)+9.0))
-                draw_rect(bounds,Color(0.02,0.035,0.04,0.78*fade))
+                # JX1-inspired colored glyph + dark stroke, no opaque
+                # rectangle hiding the source sprite or the battlefield.
                 var tint := _combat_feedback_color(category)
                 tint.a = fade
-                draw_string(ThemeDB.fallback_font,
-                    position+Vector2(4.0,float(size)+2.0),text_value,
+                var text_at := position+Vector2(4.0,float(size)+2.0)
+                draw_string_outline(ThemeDB.fallback_font,text_at,text_value,
+                    HORIZONTAL_ALIGNMENT_CENTER,width-8.0,size,2,
+                    Color(0.015,0.015,0.012,0.95*fade))
+                draw_string(ThemeDB.fallback_font,text_at,text_value,
                     HORIZONTAL_ALIGNMENT_CENTER,width-8.0,size,tint)
