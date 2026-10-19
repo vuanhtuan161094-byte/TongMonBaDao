@@ -1,3 +1,9 @@
+## 2026-10-19 — C4 PRES-01 corrected QA handoff (LATEST)
+
+On `c4-pres01-jx-motion-readability-20261019`, inspect `docs/C4_PRES00_PRES01_IMPLEMENTATION_LOG_2026-10-19.md` and run **only** the isolated official Windows Godot 4.7.2 launcher `tools/qa/RUN-C4-PRES01-WINDOWS.cmd` from a checked-out copy; optionally provide `-ExpectedSha` for the final exact branch commit. The updated script checks six focused tests + one headless 6v5 scene smoke, captures logs/ZIP and opens the real 1280×720 scene. Any parser/visual failure requires true log/footage evidence and changes confined to PRES-01 presentation/test/QA/docs. **Godot runtime PENDING, owner UX PENDING**; screenshots, >=10s video, FPS and Android memory must not be invented. No CI/FULL/merge, no simulation, main/PR20/Economy/SaveService edits. PRES-02 projectile source integration and PRES-03 authoritative collision remain separately scoped.
+
+---
+
 ## 2026-10-19 — IMMEDIATE C4 PRES-01 HANDOFF (NEWEST)
 
 Branch: `c4-pres01-jx-motion-readability-20261019` from pinned C4-EP01 `5c2e42abb44407bfc4d5a14ea2e7b2e966a2c3de`. Current authorisation covers only presentation code + tests + docs. See `docs/C4_PRES00_PRES01_IMPLEMENTATION_LOG_2026-10-19.md`.
