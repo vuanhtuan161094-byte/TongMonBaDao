@@ -1,3 +1,12 @@
+## 2026-10-19 — real Windows Godot 4.7.2 focused QA result (user-provided logs)
+
+User ran offline helper on exact SHA `4563cddf9b015eaaa56ad638564db61ff9b80dc2`, official Godot `4.7.2.stable.official.ed1daf0bf`. Attached evidence `C4_PRES01_QA_LOGS.zip`: `01_import` completed without parser errors; `02_pilot_status` PASS; `03_snapshot` PASS. `04_group` FAIL (exit 1) due to real GDScript warning promoted to error at `res://src/presentation/p3/map_battle_world_layer_v2.gd:490`: inferred `Variant` from `Dictionary.get()` on the `feedback` lookup. Result: **2/6 focused gates PASS; overall QA FAIL**, `05`–`07`, `08_scene_smoke`, GUI/owner UX/Android all NOT RUN/PENDING. This does not establish a Combat V2 simulation defect.
+
+Authorized targeted repair on same branch: change inferred `var feedback := {...}.get(kind,"")` to explicitly typed `var feedback: String = str({...}.get(kind,""))`. Does not change game rules or actual status-event meanings. Runtime after the repair remains PENDING until new physical Windows evidence.
+
+Owner also explicitly requested log ZIP stay **in the launcher folder**, not deep in TEMP. ChatGPT-distributed one-click launcher v4 is to keep source clone + isolated user profile under TEMP, but write durable per-run `logs/`, `SUMMARY.txt`, per-run archive and a convenience `KET_QUA_C4_PRES01/C4_PRES01_QA_LOGS.zip` beside `CHAY_COMBAT_V4.cmd`. On future failures, provide the file from that visible folder. The companion launcher is outside GitHub and does not modify project gameplay.
+
+
 # C4 PRES-00 → PRES-01 implementation log — 2026-10-19
 
 ## Exact scope and status
