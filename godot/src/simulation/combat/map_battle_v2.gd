@@ -27,6 +27,41 @@ var downed_disciples: int = 0
 func _init(seed_value: int = 515151) -> void:
     rng = GameRng.new(seed_value)
 
+# Source-only view metadata must be validated before it crosses the V2
+# snapshot boundary. It is never an additional combat statistic or HP owner.
+# Missing legacy fields remain missing rather than manufacturing level 1.
+static func _copy_optional_combat_identity(actor: Dictionary, source: Dictionary,
+        allow_body: bool) -> bool:
+    var has_realm := source.has("realm_index") or source.has("floor_index")
+    if has_realm:
+        if not source.has("realm_index") or not source.has("floor_index"):
+            return false
+        if not (source["realm_index"] is int and source["floor_index"] is int):
+            return false
+        var realm := int(source["realm_index"])
+        var floor_index := int(source["floor_index"])
+        if not DiscipleRealmProgressV2.valid_coordinates(realm,floor_index):
+            return false
+        actor["realm_index"] = realm
+        actor["floor_index"] = floor_index
+    var has_body := source.has("body_realm_index") or source.has("body_floor_index")
+    if has_body:
+        if not allow_body or not source.has("body_realm_index") or not source.has("body_floor_index"):
+            return false
+        if not (source["body_realm_index"] is int and source["body_floor_index"] is int):
+            return false
+        var body_realm := int(source["body_realm_index"])
+        var body_floor := int(source["body_floor_index"])
+        if not DiscipleRealmProgressV2.valid_coordinates(body_realm,body_floor):
+            return false
+        actor["body_realm_index"] = body_realm
+        actor["body_floor_index"] = body_floor
+    var name_key := "display_name" if allow_body else "name"
+    var name := str(source.get(name_key,"")).strip_edges()
+    if not name.is_empty():
+        actor[name_key] = name
+    return true
+
 func setup(id: String, party: Array, monsters: Array) -> Dictionary:
     if active or id.is_empty() or party.is_empty() or party.size() > MAX_DISCIPLES:
         return {"ok":false,"reason":"invalid_encounter_or_party"}
@@ -86,6 +121,8 @@ func setup(id: String, party: Array, monsters: Array) -> Dictionary:
             "next_basic":0.0,"next_skill":0.0,"guard_until":-1.0,
             "linked_disciple":row.get("disciple",null)
         })
+        if not _copy_optional_combat_identity(entries[entries.size()-1],row,true):
+            return {"ok":false,"reason":"invalid_disciple_identity_metadata"}
     for raw in monsters:
         if not (raw is Dictionary):
             return {"ok":false,"reason":"invalid_monster_entry"}
@@ -113,6 +150,8 @@ func setup(id: String, party: Array, monsters: Array) -> Dictionary:
             "next_basic":0.0,"next_skill":3.5 if tier == "boss" else 4.0,"guard_until":-1.0,
             "linked_disciple":null,"context_sources":[]
         })
+        if not _copy_optional_combat_identity(entries[entries.size()-1],row,false):
+            return {"ok":false,"reason":"invalid_monster_identity_metadata"}
     entries.sort_custom(func(a,b): return str(a["id"]) < str(b["id"]))
     for actor in entries:
         var actor_id := str(actor["id"])
