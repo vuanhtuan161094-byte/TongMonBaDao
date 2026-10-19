@@ -57,6 +57,10 @@ func setup(id: String, party: Array, monsters: Array) -> Dictionary:
             return {"ok":false,"reason":"invalid_party_actor"}
         if not JxPilotSkillsV1.valid_loadout(row.get("pilot_skill_loadout",[])):
             return {"ok":false,"reason":"invalid_pilot_skill_loadout"}
+        # Pilot loadout is mutually exclusive with the production learned
+        # action bar. Otherwise a fixture actor has up to 8 active spells.
+        if not (row.get("pilot_skill_loadout",[]) as Array).is_empty() and not (row.get("skill_loadout",[]) as Array).is_empty():
+            return {"ok":false,"reason":"mixed_pilot_and_learned_active_slots"}
         if not JxPilotSkillsV1.valid_roots(row.get("spiritual_root_values",{})):
             return {"ok":false,"reason":"invalid_pilot_root_values"}
         var hp := float(row.get("hp",float(stats.get("max_hp",0.0))))
@@ -392,6 +396,16 @@ func _release_casts() -> void:
     var remaining: Array = []
     for cast_value in pending_casts:
         var cast: Dictionary = cast_value
+        # One cast commits once at the end of wind-up. Projectile in-flight
+        # remains pending for impact, but must not immobilize the caster.
+        if cast.has("pilot_id") and not bool(cast.get("committed",false)) and now+0.000001 >= float(cast.get("commit_at",cast["ready"])):
+            var pilot_caster: Dictionary = actors.get(str(cast["caster"]),{})
+            if pilot_caster.is_empty() or float(pilot_caster["hp"]) <= 0.0:
+                continue
+            cast["committed"] = true
+            _event("pilot_commit",{"caster":cast["caster"],
+                "target":cast["target_id"],"pilot_id":cast["pilot_id"],
+                "cast_id":cast.get("cast_id","")})
         if now+0.000001 < float(cast["ready"]):
             remaining.append(cast)
             continue
@@ -441,8 +455,13 @@ func _enemies_near(center: Dictionary, radius: float) -> int:
 
 func _actor_casting(actor_id: String) -> bool:
     for cast in pending_casts:
-        if str(cast["caster"]) == actor_id:
-            return true
+        if str(cast["caster"]) != actor_id:
+            continue
+        if cast.has("pilot_id"):
+            # Flight to impact is NOT part of the attack animation lock.
+            if now+0.000001 >= float(cast.get("commit_at",cast["ready"])):
+                continue
+        return true
     return false
 
 func _count_alive(side: String) -> int:
