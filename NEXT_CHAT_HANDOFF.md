@@ -1,3 +1,9 @@
+## 2026-10-19 — actual Windows C4 PRES-01 log and user-friendly ZIP location
+
+User uploaded `C4_PRES01_QA_LOGS.zip` from official Godot 4.7.2 at pinned `4563cddf`. Source import completed, `02_pilot_status` and `03_snapshot` PASS, `04_group` failed due to `map_battle_world_layer_v2.gd:490` inferred Variant-as-error. Branch `c4-pres01-jx-motion-readability-20261019` has one-line typed `String` repair; all remaining focused gates, smoke and visual PENDING; **do not misrepresent as runtime PASS**. Owner requires logs/ZIP generated **beside** Windows launcher, not in TEMP. Distribute v4 launcher in ChatGPT with fixed HEAD, durable `KET_QUA_C4_PRES01` output; repo clone/profile only in TEMP. Wait for new genuine log ZIP and respond to precise failures. Scope excludes Combat V2 gameplay, main, PR20, Economy, SaveService, CI/FULL/merge.
+
+---
+
 ## 2026-10-19 — C4 PRES-01 final pre-Windows handoff (CURRENT)
 
 **Current GitHub branch:** `c4-pres01-jx-motion-readability-20261019`. Following the initial HEAD `3337dada...`, a source-only second review improved bounded stage UI after-sprite overlays, genuine Boss AoE warning-time attacks and no post-impact replay; source-backed learned skill, Boss and real 6v5 scene assertions were added. Keep Code V2 authority unchanged. See `docs/C4_PRES00_PRES01_IMPLEMENTATION_LOG_2026-10-19.md`.
