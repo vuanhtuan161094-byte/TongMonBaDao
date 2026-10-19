@@ -148,7 +148,7 @@ func step(viewed_map: bool = false) -> Dictionary:
         if target.is_empty():
             continue
         # Explicit pilot loadout replaces role-granted free support abilities.
-        if JxPilotRuntimeV1.try_cast(self,actor,target):
+        if JxPilotRuntimeV1.try_cast(self,actor,target,STEP_SECONDS):
             continue
         if (actor.get("pilot_loadout",[]) as Array).is_empty():
             if str(actor["role"]) == "healer" and now >= float(actor["next_skill"]):
@@ -413,7 +413,7 @@ func _release_casts() -> void:
         if caster.is_empty() or float(caster["hp"]) <= 0.0:
             continue
         if cast.has("pilot_id"):
-            JxPilotRuntimeV1.release(self,caster,cast)
+            JxPilotRuntimeV1.release(self,caster,cast,STEP_SECONDS)
             continue
         if cast.has("skill_id"):
             var targeted: Dictionary = actors.get(str(cast["target_id"]),{})
