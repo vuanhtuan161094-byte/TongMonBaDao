@@ -57,7 +57,8 @@ func _run() -> void:
     if not _check(view._combat_amount(4.6) == "5"
             and view._combat_amount(5.1) == "5"
             and view._combat_amount(19.0) == "19"
-            and view._combat_amount(0.6) == "1",
+            and view._combat_amount(0.6) == "1"
+            and view._combat_amount(0.1) == "1",
             "JX1 integer damage formatting regressed to decimals"):
         return
     view._ingest_combat_feedback({"type":"hit","target":"c4_monster_00",
