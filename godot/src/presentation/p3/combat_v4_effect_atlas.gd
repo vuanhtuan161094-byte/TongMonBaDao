@@ -5,6 +5,8 @@ extends RefCounted
 # Source graphics illustrate existing V2 skill events only; never determine damage.
 const INDEX_PATH := "res://assets/combat_v4/source_vl/vfx_manifest.json"
 const ATLAS_ROOT := "res://assets/combat_v4/source_vl/"
+const JX_FX_INDEX := "res://assets/combat_v4/jx1_skill_fx/fx_manifest.json"
+const JX_FX_ROOT := "res://assets/combat_v4/jx1_skill_fx/"
 var effects: Dictionary = {}
 var cache: Dictionary = {}
 
@@ -14,6 +16,15 @@ func _init() -> void:
     var parsed = JSON.parse_string(FileAccess.get_file_as_string(INDEX_PATH))
     if parsed is Dictionary:
         effects = parsed.get("effects",{})
+    # Separate user-supplied JX1 clips; never overwrite original Source VL
+    # cues, and never let an effect create a gameplay hit or status.
+    if FileAccess.file_exists(JX_FX_INDEX):
+        var extra = JSON.parse_string(FileAccess.get_file_as_string(JX_FX_INDEX))
+        if extra is Dictionary:
+            var extra_effects: Dictionary = extra.get("effects",{})
+            for kind in extra_effects:
+                if not effects.has(kind):
+                    effects[kind] = extra_effects[kind]
 
 func duration(kind: String) -> float:
     var cue: Dictionary = effects.get(kind,{})
@@ -42,7 +53,7 @@ func frame_region(kind: String, elapsed: float) -> Dictionary:
     var h := int(rects[offset+3])
     if w <= 1 or h <= 1:
         return {}
-    var texture := _texture(file_name)
+    var texture := _texture(file_name,str(cue.get("source","source_vl")))
     if texture == null or x < 0 or y < 0 or x+w > texture.get_width() or y+h > texture.get_height():
         return {}
     return {"texture":texture,"region":Rect2(float(x),float(y),float(w),float(h)),
@@ -59,9 +70,13 @@ func draw_effect(canvas: CanvasItem, kind: String, position: Vector2,
         Rect2(position-at*scale,source.size*scale),source,Color(1.0,1.0,1.0,0.74))
     return true
 
-func _texture(file_name: String) -> Texture2D:
-    if cache.has(file_name):
-        return cache[file_name]
-    var texture := load(ATLAS_ROOT + file_name) as Texture2D
-    cache[file_name] = texture
+func _texture(file_name: String, source: String = "source_vl") -> Texture2D:
+    if source not in ["source_vl","jx1"]:
+        return null
+    var root := JX_FX_ROOT if source == "jx1" else ATLAS_ROOT
+    var key := root+file_name
+    if cache.has(key):
+        return cache[key]
+    var texture := load(key) as Texture2D
+    cache[key] = texture
     return texture
