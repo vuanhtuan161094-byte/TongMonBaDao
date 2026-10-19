@@ -66,8 +66,32 @@ func _ready() -> void:
     _build_disciple_summary_panel()
     _build_building_operation_panel()
     _build_living_cue_layer()
+    _install_hunting_entry()
     living_cue_tracker.seed_from_state(state)
     _refresh_living_cues()
+
+# World button opens a modal adapter; it never owns another game clock.
+func _install_hunting_entry() -> void:
+    var entry := Button.new()
+    entry.name = "OpenRealHuntingV2"
+    entry.text = "SĂN QUÁI"
+    entry.position = Vector2(918.0,656.0)
+    entry.size = Vector2(126.0,49.0)
+    entry.z_index = 22
+    entry.add_theme_font_size_override("font_size",16)
+    entry.tooltip_text = "Chọn vùng săn, đệ tử V2 và nhận thưởng thật"
+    entry.pressed.connect(_open_real_hunting)
+    add_child(entry)
+
+func _open_real_hunting() -> void:
+    if not runtime_ready or state == null or runtime_session == null:
+        return
+    _close_disciple_summary(true)
+    _clear_popup()
+    var panel := HuntingExpeditionPanelV2.new()
+    panel.name = "RealHuntingExpeditionV2"
+    popup_layer.add_child(panel)
+    panel.bind_runtime(runtime_session)
 
 func _unhandled_input(event: InputEvent) -> void:
     if _popup_is_open():
