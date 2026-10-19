@@ -96,6 +96,30 @@ func _ingest_authority_events() -> void:
                 _impact_cues[target] = _frame_clock
                 if float(battle.actors[target].get("hp",0.0)) > 0.0:
                     _action_cues[target] = {"action":"hit","started":_frame_clock,"until":_frame_clock+0.24}
+        elif kind == "pilot_cast":
+            # Actual EP01 cast packet, not a cosmetic attack inferred from class.
+            # Sword/poison/HoT asset mapping is PENDING; do not substitute the
+            # unrelated ngu_kiem_thuat FX for a different JX source skill.
+            var source_id := str(event.get("caster",""))
+            var target_id := str(event.get("target",""))
+            if battle.actors.has(source_id):
+                _action_cues[source_id] = {"action":"attack","started":_frame_clock,
+                    "until":_frame_clock+0.45}
+                if battle.actors.has(target_id):
+                    var aim := (battle.actors[target_id]["position"] as Vector2) - (battle.actors[source_id]["position"] as Vector2)
+                    if aim.length_squared() > 0.001:
+                        _facing[source_id] = aim.normalized()
+        elif kind == "pilot_impact":
+            var victim := str(event.get("target",""))
+            var source_id := str(event.get("caster",""))
+            if float(event.get("effective_damage",0.0)) > 0.0 and battle.actors.has(victim):
+                _impact_cues[victim] = _frame_clock
+                if float(battle.actors[victim].get("hp",0.0)) > 0.0:
+                    _action_cues[victim] = {"action":"hit","started":_frame_clock,
+                        "until":_frame_clock+0.24}
+            if battle.actors.has(source_id):
+                _action_cues[source_id] = {"action":"attack","started":_frame_clock,
+                    "until":_frame_clock+0.26}
         elif kind == "skill_cast":
             var caster_id := str(event.get("actor_id", ""))
             if battle.actors.has(caster_id):
