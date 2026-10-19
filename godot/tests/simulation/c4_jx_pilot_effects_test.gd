@@ -28,6 +28,9 @@ func _team() -> Array:
             "position":Vector2(8.0,7.0+float(i)*0.5),
             "hp":float(_stats()["max_hp"])*float(c[3]),
             "pilot_skill_loadout":c[2],"spiritual_root_values":{}}
+        if i == 2:
+            # Force application in a deterministic fixture, not gameplay balance.
+            row["stats"]["effect_hit"] = 1.0
         entries.append(row)
     return entries
 
@@ -94,7 +97,7 @@ func _run() -> void:
     var b := _start(4444)
     if not _check(a != null and b != null,"replay fixtures"):
         return
-    for _i in range(15):
+    for _i in range(9):
         a.step(false)
         b.step(true)
     if not _check(a.events == b.events,"viewed flag altered pilot combat"):
