@@ -434,6 +434,13 @@ func _open_real_hunting() -> void:
     _clear_pointer_state()
     var panel := HuntingPlayPanelV2.new()
     panel.name = "LiveHuntingPveV2"
+    # Reuse existing production recruitment UX, never create a second
+    # candidate-generation/migration command in the combat screen.
+    panel.request_guidance.connect(func():
+        if is_instance_valid(panel):
+            panel.queue_free()
+        _open_building(SectMapPresentation.DEST_GUIDANCE)
+    )
     popup_layer.add_child(panel)
     panel.open_session(runtime_session)
 
