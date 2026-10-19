@@ -85,16 +85,27 @@ func _enqueue_combat_text(actor_id: String, amount: float, category: String,
         if int(item.get("event_id",-1)) == event_id and str(item.get("category","")) == category:
             return
     if _combat_text.size() >= MAX_VISIBLE_COMBAT_TEXT:
-        # Preserve salient critical/healing numbers preferentially.
-        var discard := 0
+        # Ordinary numbers cannot evict an entire screen of genuine
+        # critical/healing receipts. The cap only limits DRAW feedback.
+        var discard := -1
         for i in range(_combat_text.size()):
-            if str(_combat_text[i].get("category","")) not in ["crit","heal"]:
+            if str(_combat_text[i].get("category","")) not in ["crit","heal","lifesteal"]:
                 discard = i
                 break
+        if discard < 0:
+            if category not in ["crit","heal","lifesteal"]:
+                return
+            discard = 0 # all important: retire the oldest one
         _combat_text.remove_at(discard)
+    # Sample visible feet once at receipt ingestion: a moving actor does not
+    # carry already-rendered damage numbers across the map. The logical
+    # coordinate is reprojected if the presentation camera pans later.
+    var receipt_foot: Vector2 = visual_position(
+        actor_id,battle.actors[actor_id]["position"])
     _combat_text.append({
         "actor_id":actor_id, "amount":amount, "category":category,
-        "label":label, "event_id":event_id,"started":_frame_clock
+        "label":label, "event_id":event_id,"started":_frame_clock,
+        "world_origin":receipt_foot
     })
 
 func _ingest_combat_feedback(event: Dictionary, event_id: int) -> void:
@@ -517,9 +528,23 @@ func layout_hp_overlays(overlays: Array[Dictionary]) -> Array[Dictionary]:
     # Keep every overlay inside the 1280x720 pilot's stage; otherwise a
     # clustered group at the top edge can push HP completely off-screen.
     var placed: Array[Dictionary] = []
+    var answer: Array[Dictionary] = []
+    answer.resize(overlays.size())
+    var order: Array[Dictionary] = []
+    for i in range(overlays.size()):
+        var kind := str(overlays[i].get("kind","hp"))
+        # HP is a gameplay-essential meter. Names precede short status tags.
+        var priority := 0 if kind == "hp" else (1 if kind == "name" else 2)
+        order.append({"index":i,"priority":priority})
+    order.sort_custom(func(a,b):
+        if int(a["priority"]) != int(b["priority"]):
+            return int(a["priority"]) < int(b["priority"])
+        return int(a["index"]) < int(b["index"])
+    )
     var bounds := stage_rect.grow(-4.0)
-    for item in overlays:
-        var entry: Dictionary = item.duplicate()
+    for record in order:
+        var index := int(record["index"])
+        var entry: Dictionary = overlays[index].duplicate()
         var initial: Rect2 = entry["rect"]
         var candidate := initial
         candidate.position.x = clampf(initial.position.x,bounds.position.x,
@@ -539,7 +564,9 @@ func layout_hp_overlays(overlays: Array[Dictionary]) -> Array[Dictionary]:
                 break
         entry["rect"] = candidate
         placed.append(entry)
-    return placed
+        # Preserve caller/painter order while using priority for placement.
+        answer[index] = entry
+    return answer
 
 func _school_tag(actor: Dictionary) -> String:
     var loadout: Array = actor.get("pilot_loadout",[])
@@ -724,6 +751,44 @@ func _draw() -> void:
                     Color(1.0,0.80,0.40,0.88*(1.0-passed/0.30)),2.0)
 
     if enable_source_vl_art:
+        # Combat numbers sit above sprites but BELOW HP/name HUD.
+        # Display never changes HP. Event-ID lanes use no gameplay RNG.
+        if enable_combat_text:
+            for popup in _combat_text:
+                var age := _frame_clock-float(popup["started"])
+                if age < 0.0 or age > COMBAT_TEXT_SECONDS:
+                    continue
+                var actor_id := str(popup["actor_id"])
+                if not battle.actors.has(actor_id):
+                    continue
+                var target: Dictionary = battle.actors[actor_id]
+                var origin: Vector2 = popup.get("world_origin",
+                    visual_position(actor_id,target["position"]))
+                var point := point_on_map(origin)
+                var lane := int(popup["event_id"]) % 4
+                var position := point+Vector2(
+                    float(lane-2)*15.0,-44.0-age*38.0)
+                var category := str(popup["category"])
+                var text_value := str(popup["label"])
+                var size := 16 if category == "crit" else 13
+                var width := maxf(52.0,float(text_value.length())*float(size)*0.67+10.0)
+                position.x = clampf(position.x-width*0.5,
+                    stage_rect.position.x,stage_rect.end.x-width)
+                position.y = clampf(position.y,
+                    stage_rect.position.y+2.0,stage_rect.end.y-25.0)
+                var fade := clampf((COMBAT_TEXT_SECONDS-age)/0.25,0.0,1.0)
+                var bounds := Rect2(position,Vector2(width,float(size)+9.0))
+                # JX1-inspired colored glyph + dark stroke, no opaque
+                # rectangle hiding the source sprite or the battlefield.
+                var tint := _combat_feedback_color(category)
+                tint.a = fade
+                var text_at := position+Vector2(4.0,float(size)+2.0)
+                draw_string_outline(ThemeDB.fallback_font,text_at,text_value,
+                    HORIZONTAL_ALIGNMENT_CENTER,width-8.0,size,2,
+                    Color(0.015,0.015,0.012,0.95*fade))
+                draw_string(ThemeDB.fallback_font,text_at,text_value,
+                    HORIZONTAL_ALIGNMENT_CENTER,width-8.0,size,tint)
+
         # LAST pass: front-row sprites and FX cannot hide role/HP labels.
         # Moving UI boxes is permitted; sprite feet / battle target positions stay exact.
         for overlay_value in layout_hp_overlays(ui_overlays):
@@ -748,38 +813,3 @@ func _draw() -> void:
                     str(overlay["text"]),HORIZONTAL_ALIGNMENT_CENTER,
                     bounds.size.x-4.0,text_size,overlay["fill"])
 
-        # Numeric event feedback belongs above silhouettes and HUD, never
-        # changes HP or other world state. Deterministic lanes avoid fake RNG.
-        if enable_combat_text:
-            for popup in _combat_text:
-                var age := _frame_clock-float(popup["started"])
-                if age < 0.0 or age > COMBAT_TEXT_SECONDS:
-                    continue
-                var actor_id := str(popup["actor_id"])
-                if not battle.actors.has(actor_id):
-                    continue
-                var target: Dictionary = battle.actors[actor_id]
-                var point := point_on_map(visual_position(actor_id,target["position"]))
-                var lane := int(popup["event_id"]) % 4
-                var position := point+Vector2(
-                    float(lane-2)*15.0,-44.0-age*38.0)
-                var category := str(popup["category"])
-                var text_value := str(popup["label"])
-                var size := 16 if category == "crit" else 13
-                var width := maxf(52.0,float(text_value.length())*float(size)*0.67+10.0)
-                position.x = clampf(position.x-width*0.5,
-                    stage_rect.position.x,stage_rect.end.x-width)
-                position.y = clampf(position.y,
-                    stage_rect.position.y+2.0,stage_rect.end.y-25.0)
-                var fade := clampf((COMBAT_TEXT_SECONDS-age)/0.25,0.0,1.0)
-                var bounds := Rect2(position,Vector2(width,float(size)+9.0))
-                # JX1-inspired colored glyph + dark stroke, no opaque
-                # rectangle hiding the source sprite or the battlefield.
-                var tint := _combat_feedback_color(category)
-                tint.a = fade
-                var text_at := position+Vector2(4.0,float(size)+2.0)
-                draw_string_outline(ThemeDB.fallback_font,text_at,text_value,
-                    HORIZONTAL_ALIGNMENT_CENTER,width-8.0,size,2,
-                    Color(0.015,0.015,0.012,0.95*fade))
-                draw_string(ThemeDB.fallback_font,text_at,text_value,
-                    HORIZONTAL_ALIGNMENT_CENTER,width-8.0,size,tint)
