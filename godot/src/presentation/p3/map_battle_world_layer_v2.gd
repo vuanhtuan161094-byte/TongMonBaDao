@@ -14,6 +14,8 @@ const HP_GOOD := Color(0.36,0.83,0.45,1.0)
 const HP_ENEMY := Color(0.91,0.39,0.35,1.0)
 const WARNING := Color(0.92,0.28,0.20,0.32)
 const GRID_SIZE := Vector2(36.0,20.0)
+# Owner-supplied Võ Lâm Idle HP strip; keep raw PNG and provenance in repo.
+const JX_HP_STRIP: Texture2D = preload("res://assets/combat_v4/jx1_ui/bar_hp.png")
 
 var battle: MapBattleV2
 var stage_rect := Rect2(Vector2(90.0,50.0),Vector2(1100.0,600.0))
@@ -55,6 +57,9 @@ const COMBAT_TEXT_SECONDS := 0.80
 var enable_combat_text: bool = true
 var combat_text_detail: String = "standard" # minimal | standard | detailed
 var _combat_text: Array[Dictionary] = []
+# View-owned metadata does not enter MapBattleV2 actor/RNG/event snapshots.
+# Required for monster realm data stripped by MapBattleV2.setup.
+var _actor_view_metadata: Dictionary = {}
 
 # Format ONLY an already-settled amount. No damage computation occurs here.
 func _combat_amount(amount: float) -> String:
@@ -315,6 +320,7 @@ func _actor_clip(actor_id: String, alive: bool) -> Dictionary:
 
 func attach_session(session: MapBattleV2) -> void:
     battle = session
+    _actor_view_metadata.clear()
     displayed_at = 0.0
     _frame_clock = 0.0
     _event_cursor = session.events.size() if session != null else 0
@@ -534,7 +540,8 @@ func layout_hp_overlays(overlays: Array[Dictionary]) -> Array[Dictionary]:
     for i in range(overlays.size()):
         var kind := str(overlays[i].get("kind","hp"))
         # HP is a gameplay-essential meter. Names precede short status tags.
-        var priority := 0 if kind == "hp" else (1 if kind == "name" else 2)
+        var priority := 0 if kind == "hp" else (
+            1 if kind == "name" else (2 if kind == "rank" else 3))
         order.append({"index":i,"priority":priority})
     order.sort_custom(func(a,b):
         if int(a["priority"]) != int(b["priority"]):
@@ -581,10 +588,84 @@ func _school_tag(actor: Dictionary) -> String:
     var role := str(actor.get("role",""))
     return {"frontline":"CAN","ranged":"XA","healer":"HOI","mage":"PHAP"}.get(role,"DT")
 
+# Attach provenance-rich display rows from the original encounter source,
+# never from combat damage/stats or guessed monster HP. This bridge is not saved.
+func set_actor_view_metadata(rows: Dictionary) -> void:
+    _actor_view_metadata.clear()
+    if battle == null:
+        return
+    for id in rows:
+        var key := str(id)
+        if not battle.actors.has(key) or not (rows[id] is Dictionary):
+            continue
+        var raw: Dictionary = rows[id]
+        var entry: Dictionary = {}
+        var realm := int(raw.get("realm_index",0))
+        var floor_index := int(raw.get("floor_index",0))
+        if DiscipleRealmProgressV2.valid_coordinates(realm,floor_index):
+            entry["realm_index"] = realm
+            entry["floor_index"] = floor_index
+        var body_realm := int(raw.get("body_realm_index",0))
+        var body_floor := int(raw.get("body_floor_index",0))
+        if DiscipleRealmProgressV2.valid_coordinates(body_realm,body_floor):
+            entry["body_realm_index"] = body_realm
+            entry["body_floor_index"] = body_floor
+        var authored := str(raw.get("display_name","")).strip_edges()
+        if not authored.is_empty():
+            entry["display_name"] = authored.substr(0,32)
+        if not entry.is_empty():
+            _actor_view_metadata[key] = entry
+
+# Real recruit's V2 progression can be observed without cloning or writing it.
+# No level is fabricated when a fixture/snapshot lacks its source metadata.
+func _actor_realm_metadata(actor: Dictionary) -> Dictionary:
+    var id := str(actor.get("id",""))
+    var row: Dictionary = _actor_view_metadata.get(id,{})
+    if row.has("realm_index") and row.has("floor_index"):
+        return row
+    var linked: Variant = actor.get("linked_disciple",null)
+    if linked is DiscipleState and DiscipleRealmProgressV2.progression_ready(linked):
+        var progress: Dictionary = linked.v2_realm_progress
+        var cultivation: Dictionary = progress.get("cultivation",{})
+        var body: Dictionary = progress.get("body",{})
+        return {
+            "realm_index":int(cultivation.get("realm",0)),
+            "floor_index":int(cultivation.get("floor",0)),
+            "body_realm_index":int(body.get("realm",0)),
+            "body_floor_index":int(body.get("floor",0))
+        }
+    return {}
+
+func combat_actor_rank_label(actor: Dictionary) -> String:
+    var row := _actor_realm_metadata(actor)
+    var realm := int(row.get("realm_index",0))
+    var floor_index := int(row.get("floor_index",0))
+    if not DiscipleRealmProgressV2.valid_coordinates(realm,floor_index):
+        return ""
+    var name := DiscipleRealmProgressV2.realm_name("cultivation",realm)
+    var prefix := ""
+    if str(actor.get("side","")) == "monster":
+        match str(actor.get("tier","normal")):
+            "boss":
+                prefix = "BOSS · "
+            "elite":
+                prefix = "TINH ANH · "
+    return prefix+name+" · Tầng "+str(floor_index)
+
+func combat_actor_body_label(actor: Dictionary) -> String:
+    var row := _actor_realm_metadata(actor)
+    var realm := int(row.get("body_realm_index",0))
+    var floor_index := int(row.get("body_floor_index",0))
+    if not DiscipleRealmProgressV2.valid_coordinates(realm,floor_index):
+        return ""
+    return DiscipleRealmProgressV2.realm_name("body",realm)+" · Tầng "+str(floor_index)
+
 # A visible label must originate in the actor or canonical monster catalogue.
 # Never invent disciple names from render positions or overlay state.
 func combat_actor_label(actor: Dictionary) -> String:
-    var authored := str(actor.get("display_name",actor.get("name",""))).strip_edges()
+    var source: Dictionary = _actor_view_metadata.get(str(actor.get("id","")),{})
+    var authored := str(source.get("display_name",
+        actor.get("display_name",actor.get("name","")))).strip_edges()
     if not authored.is_empty():
         return authored
     if str(actor.get("side","")) == "monster":
@@ -721,6 +802,15 @@ func _draw() -> void:
                     Vector2(name_width,14.0)),
                 "text":actor_name,"fill":name_tint
             })
+            var rank := combat_actor_rank_label(actor)
+            if not rank.is_empty():
+                var rank_width := clampf(float(rank.length())*6.0+12.0,72.0,194.0)
+                ui_overlays.append({
+                    "kind":"rank",
+                    "rect":Rect2(at+Vector2(-rank_width*0.5,hp_y-41.0),
+                        Vector2(rank_width,14.0)),
+                    "text":rank,"fill":Color(0.86,0.88,0.76)
+                })
             # Statuses derive from currently active effects/guards, never a
             # guessed VFX duration. Keep no more than two tags visible in 6v5.
             var tags := active_combat_status_tags(actor)
@@ -739,6 +829,7 @@ func _draw() -> void:
         if enable_source_vl_art and alive:
             # Bars are drawn after ALL sprites, preventing near-actor occlusion.
             ui_overlays.append({"kind":"hp","rect":bar,"ratio":health,
+                "monster":side == "monster",
                 "fill":HP_GOOD if side == "disciple" else HP_ENEMY})
         else:
             draw_rect(bar,HP_BG)
@@ -797,15 +888,23 @@ func _draw() -> void:
             var kind := str(overlay.get("kind","hp"))
             if kind == "hp":
                 draw_rect(bounds,HP_BG)
-                draw_rect(Rect2(bounds.position,
-                    Vector2(bounds.size.x*float(overlay["ratio"]),bounds.size.y)),
-                    overlay["fill"])
+                var hp_ratio := clampf(float(overlay["ratio"]),0.0,1.0)
+                if bool(overlay.get("monster",false)) and JX_HP_STRIP != null:
+                    # Source strip pixels, cropped by real authoritative HP.
+                    draw_texture_rect_region(JX_HP_STRIP,
+                        Rect2(bounds.position,Vector2(bounds.size.x*hp_ratio,bounds.size.y)),
+                        Rect2(Vector2.ZERO,Vector2(float(JX_HP_STRIP.get_width())*hp_ratio,
+                            float(JX_HP_STRIP.get_height()))))
+                else:
+                    draw_rect(Rect2(bounds.position,
+                        Vector2(bounds.size.x*hp_ratio,bounds.size.y)),
+                        overlay["fill"])
             else:
-                if kind != "name":
+                if kind != "name" and kind != "rank":
                     draw_rect(bounds,Color(0.035,0.065,0.07,0.94))
-                var text_size := 11 if kind == "name" else 12
+                var text_size := 11 if kind in ["name","rank"] else 12
                 var baseline := bounds.position+Vector2(2.0,
-                    12.0 if kind == "name" else 14.5)
+                    12.0 if kind in ["name","rank"] else 14.5)
                 draw_string_outline(ThemeDB.fallback_font,baseline,
                     str(overlay["text"]),HORIZONTAL_ALIGNMENT_CENTER,
                     bounds.size.x-4.0,text_size,2,Color(0.025,0.035,0.025,0.96))
