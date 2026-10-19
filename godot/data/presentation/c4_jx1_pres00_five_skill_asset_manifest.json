@@ -1,12 +1,12 @@
 {
   "schema": "c4_jx1_pres00_reference_only_v1",
   "dated": "2026-10-19",
-  "scope": "PERSONAL-RESEARCH SOURCE EVIDENCE; NOT AN IMPORTABLE GAMEPLAY OR LICENSE GRANT",
+  "scope": "OWNER-AUTHORIZED C4 PRESENTATION SOURCE PROVENANCE; GAMEPLAY REMAINS COMBAT V2",
   "source_variant": "community_jx1_drive2",
   "source_folder": "https://drive.google.com/drive/folders/19mdpwyTf2tzYblpfOg0CARi-JHdO70ZR",
   "metadata": "data/vltk-fx.json (tieungao-json-gzip-v1 decoded) / data/asset-hashes.json",
-  "rights": "owner-supplied fan-game archive; publisher/third-party redistribution and commercial rights NOT VERIFIED",
-  "status": "metadata_only_do_not_load_images",
+  "rights": "User has explicitly authorized use of all user-supplied assets for this project on 2026-10-19; origin may include upstream JX1 works; third-party redistribution/commercial license independently unverified.",
+  "status": "partial_binary_import_verified_2026-10-19",
   "skills": [
     {
       "id": 15,
@@ -43,7 +43,8 @@
           "dirs": 1,
           "frame_ms": 50,
           "sha256": "84c63b5352a2873c05370c5d5c884e72aab07c4f2073af905e0f45b05605bb52",
-          "status": "DRIVE_BINARY_SHA256_VERIFIED"
+          "status": "SOURCE_IMPORTED_SHA256_REVERIFIED",
+          "godot_path": "res://assets/combat_v4/jx1_skill_fx/3dfcabc2.webp"
         },
         {
           "stage": "cast",
@@ -52,7 +53,8 @@
           "dirs": 1,
           "frame_ms": 50,
           "sha256": "bbd0e0c189249e9aa44920d6fa9fe6e61caf26f18530244501f1c2fae732a53c",
-          "status": "DRIVE_BINARY_SHA256_VERIFIED"
+          "status": "SOURCE_IMPORTED_SHA256_REVERIFIED",
+          "godot_path": "res://assets/combat_v4/jx1_skill_fx/aa93d577.webp"
         },
         {
           "stage": "impact",
@@ -61,7 +63,8 @@
           "dirs": 1,
           "frame_ms": 40,
           "sha256": "4052de409053ad3dc3562795c0f0d93e96029387169c7f42a4dca5d104352e13",
-          "status": "DRIVE_BINARY_SHA256_VERIFIED"
+          "status": "SOURCE_IMPORTED_SHA256_REVERIFIED",
+          "godot_path": "res://assets/combat_v4/jx1_skill_fx/361b4525.webp"
         }
       ]
     },
@@ -93,7 +96,8 @@
           "dirs": 16,
           "frame_ms": 50,
           "sha256": "b33a62e2e78957f85cee8d44991a5a482ae39dd3aed3e069d405a5dada8f4448",
-          "status": "DRIVE_BINARY_SHA256_VERIFIED"
+          "status": "SOURCE_IMPORTED_SHA256_REVERIFIED",
+          "godot_path": "res://assets/combat_v4/jx1_skill_fx/40a1c4ff.webp"
         },
         {
           "stage": "impact",
@@ -102,7 +106,8 @@
           "dirs": 1,
           "frame_ms": 55.55555555555556,
           "sha256": "a22e5b9148a7d36e73dfea69cba271472e8700150f235da32fd5d36e212a5d2c",
-          "status": "DRIVE_BINARY_SHA256_VERIFIED"
+          "status": "SOURCE_IMPORTED_SHA256_REVERIFIED",
+          "godot_path": "res://assets/combat_v4/jx1_skill_fx/1fffed7e.webp"
         }
       ]
     },
@@ -122,7 +127,8 @@
           "dirs": 1,
           "frame_ms": 60,
           "sha256": "621d884fd24c9fffbde197b667f734c0b88094fae3f3afdc6d37586f3ee6ab67",
-          "status": "DRIVE_BINARY_SHA256_VERIFIED"
+          "status": "SOURCE_IMPORTED_SHA256_REVERIFIED",
+          "godot_path": "res://assets/combat_v4/jx1_skill_fx/2f8c6d50.webp"
         },
         {
           "stage": "cast",
@@ -139,15 +145,18 @@
           "dirs": 1,
           "frame_ms": 100,
           "sha256": "84e3ae2bb64af51bb44384c5d63064ccfbe5db4b0c4b3f18c28357578632f362",
-          "status": "DRIVE_BINARY_SHA256_VERIFIED"
+          "status": "SOURCE_IMPORTED_SHA256_REVERIFIED",
+          "godot_path": "res://assets/combat_v4/jx1_skill_fx/e8178d06.webp"
         }
       ]
     }
   ],
   "notes": [
-    "Eight-direction actor sheets and native VFX data exist in Drive, but are NOT automatically copied into Godot.",
-    "Pres-01 authoritatively displays only existing hero/wolf sheet plus generic status text. No unrelated swords9 source FX is reused for these five school skills.",
-    "SFX key names exist for #15/#158/#63/#93; no per-skill audio binary SHA checked yet. #159 has no audio mapping.",
-    "Source A combat-compatible cast/hit/die coverage for disciple rigs remains under audit. Does not invent clips."
+    "All seven previously pinned SHA-256 native WebP assets re-fetched from the exact owner Drive folder, locally checked and committed to owner source branch.",
+    "Source HUD bar_hp.png 106x11 RGBA imported separately from Võ Lâm Idle; displayed only as monster HP fill.",
+    "Only #158 impact, #63 impact, #93 precast are event-mapped in the JX1 pilot; additional imported frames remain unbound until atlas and event contracts verified.",
+    "#15 precast and #93 cast files listed as metadata_only_not_located, #159 has no bound FX clips; do not fake or borrow unrelated effects.",
+    "Canonical 30 Tu Vi and 30 Luyện Thể tiers come from DiscipleRealmProgressV2; monster encounter source level metadata sent separately into view, not inferred from HP or stats.",
+    "Authority: imported graphics and viewport display cannot change Combat V2, pending casts, RNG, target selection or real hit/damage/DoT/HoT."
   ]
 }
