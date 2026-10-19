@@ -633,6 +633,12 @@ func _actor_realm_metadata(actor: Dictionary) -> Dictionary:
     var row: Dictionary = _actor_view_metadata.get(id,{})
     if row.has("realm_index") and row.has("floor_index"):
         return row
+    # Canonical MapBattleV2 actor carries source coordinates through saved
+    # snapshots. Live hunting no longer requires a pilot-only metadata bridge.
+    var realm := int(actor.get("realm_index",0))
+    var floor_index := int(actor.get("floor_index",0))
+    if DiscipleRealmProgressV2.valid_coordinates(realm,floor_index):
+        return actor
     var linked: Variant = actor.get("linked_disciple",null)
     if linked is DiscipleState and DiscipleRealmProgressV2.progression_ready(linked):
         var progress: Dictionary = linked.v2_realm_progress
