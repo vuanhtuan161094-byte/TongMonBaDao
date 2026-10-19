@@ -1,3 +1,13 @@
+## 2026-10-19 — C4-GP01 presentation feedback + Accuracy/Evasion OWNER OVERRIDE
+
+The owner authorised GP01 real event-based damage/crit/heal/poison/status UI and revoked the previous "No Accuracy/Dodge" gameplay design. Code branch: c4-gp01-combat-feedback-20261019, forked from PRES01 v6 d160f97982f627460ab17661bdbfc572fe7c51b4. Main observed 461caca1171462e0da092f21108c5c1733157ad9, not edited.
+
+New UI source code: godot/src/presentation/p3/map_battle_world_layer_v2.gd; authentic MapBattleV2 hit/critical/lifesteal/heal/HoT/poison, finite capped 28 transient popups, no pilot_impact/skill_hit double count, current status from backend pilot_effects / guard timers. New focused test: godot/tests/presentation/c4_gp01_combat_feedback_receipts_test.gd. Owner's Accuracy, Evasion, hit chance, real build movement, owned dodge skill policy is documented in docs/C4_ACCURACY_EVASION_MOVEMENT_SKILL_REACTION_DESIGN_2026-10-19.md. IMPORTANT mismatch: CombatStatsV2 derives move_speed multiplier, MapBattleV2.setup uses role speed default and ignores modifier except direct row override. GP01 does not change RNG/movement/save/combat stats and does not fake MISS/DODGE.
+
+ALL official Godot 4.7.2 runtime, focused tests, smoke, Windows 1280x720 UX PENDING for new GP01 SHA; previous v5 6/6 belongs only to 33a3118, v6 parent is also untested. No CI/FULL/merge, no changes to main/PR20/Economy/SaveService. Roll back GP01 by checking out exact d160f979 parent on a fresh isolated TEMP checkout. Request actual logs in adjacent launcher folder.
+
+---
+
 ## 2026-10-19 — PRES-01 v5 log and video verified; next QA for pilot-only spectator camera
 
 Owner provided `C4_PRES01_QA_LOGS(2).zip` and 15.85s video. Real official Windows Godot 4.7.2 on exact `33a3118cf0ce8d5c21184fe76f66d2343eae2669` has 6/6 focused PASS, clean import, headless 6v5 smoke and GUI run. Owner visual UX still NOT ACCEPTED: crowding in small center of large empty arena. On later **unverified** branch HEAD, presentation-only JX pilot spectator framing tracks real living actor extent/center, bounded zoom 1–2.10 with correct AoE/map click projection, no fighter displacement, no gameplay changes; focused camera tests added. Use a direct-ChatGPT ZIP launcher pinned to the **new HEAD** with `C4_PRES01_QA_LOGS.zip` beside CMD; seek new official Windows logs and 10–20s recording. Do not label new HEAD PASS without actual run. No CI/FULL/merge/main/PR20/Economy/SaveService/Combat V2; PRES-02 genuine FX and PRES-03 actual formation are separate authorization.
