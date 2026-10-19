@@ -65,8 +65,8 @@ static func try_cast(battle: Variant, caster: Dictionary, target: Dictionary) ->
             travel_ticks = int(ceil(distance/(float(skill.get("speed",8.0))*MapBattleV2.STEP_SECONDS)))
         # Committing an action and the projectile reaching the target are
         # distinct authoritative timestamps. Cooldown begins on commitment.
-        var commit_time := battle.now + float(int(skill["cast_ticks"]))*MapBattleV2.STEP_SECONDS
-        var release_time := commit_time+float(travel_ticks)*MapBattleV2.STEP_SECONDS
+        var commit_time: float = float(battle.now) + float(int(skill["cast_ticks"]))*MapBattleV2.STEP_SECONDS
+        var release_time: float = commit_time+float(travel_ticks)*MapBattleV2.STEP_SECONDS
         var cast_id := str(battle.encounter_id)+":"+str(caster["id"])+":"+str(battle.actions+1)
         battle.pending_casts.append({
             "caster":str(caster["id"]),"target_id":str(victim["id"]),
@@ -128,8 +128,8 @@ static func release(battle: Variant, caster: Dictionary, cast: Dictionary) -> vo
     if str(target["side"]) != "monster":
         return
     var matchup := JxPilotSkillsV1.elemental_matchup(element,str(target.get("primary_element","")))
-    var damage := battle._deal_direct(caster,target,float(skill.get("ratio",0.0))*multiplier,
-        "pilot_skill",true,element,matchup)
+    var damage: float = float(battle._deal_direct(caster,target,float(skill.get("ratio",0.0))*multiplier,
+        "pilot_skill",true,element,matchup))
     battle._event("pilot_impact",{"caster":caster["id"],"target":target["id"],
         "pilot_id":sid,"cast_id":str(cast.get("cast_id","")),
         "effective_damage":damage})
