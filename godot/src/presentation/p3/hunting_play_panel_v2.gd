@@ -190,7 +190,6 @@ func _rebuild_roster() -> void:
         child.queue_free()
     var ids: Array = state.disciples.keys()
     ids.sort()
-    var available := 0
     var shown := 0
     var fragment := roster_filter.text.strip_edges().to_lower() if roster_filter != null else ""
     for id in ids:
@@ -207,8 +206,6 @@ func _rebuild_roster() -> void:
         check.set_pressed_no_signal(chosen.has(str(id)) and can_enter)
         check.toggled.connect(_select_disciple.bind(str(id)))
         roster_list.add_child(check)
-        if can_enter:
-            available += 1
     launch_button.disabled = session != null or chosen.is_empty() or not state.sect.p3_7_resources_enabled
     resume_button.disabled = session != null or state.sect.v2_pve_active_runs.is_empty()
     region_choice.disabled = session != null
