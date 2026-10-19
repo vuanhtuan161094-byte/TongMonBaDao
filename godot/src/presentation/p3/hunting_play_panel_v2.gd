@@ -250,7 +250,7 @@ func _rebuild_roster() -> void:
         check.toggled.connect(_select_disciple.bind(str(id)))
         roster_list.add_child(check)
     if roster_diagnostics != null:
-        roster_diagnostics.text = "Khả dụng: %d | Chưa V2: %d | Bận: %d | Bị thương: %d" % [
+        roster_diagnostics.text = "Trong tối đa 90 kết quả: sẵn sàng %d | chưa V2 %d | bận %d | bị thương %d" % [
             eligible_total,v2_missing,busy_total,injury_total
         ]
     launch_button.disabled = session != null or chosen.is_empty() or not state.sect.p3_7_resources_enabled
