@@ -102,6 +102,8 @@ func bind_runtime(runtime: LiveGameRuntimeV2) -> void:
         _say("Chưa có dữ liệu runtime.")
         return
     _gather_candidates()
+    if candidates.is_empty():
+        _say("Chưa có đệ tử V2 hợp lệ: tuyển đệ tử mới trước khi săn quái.")
     if zone_choice.item_count > 0:
         zone_choice.select(0)
         _change_region(0)
@@ -209,6 +211,7 @@ func _toggle_member(checked: bool, id: String) -> void:
     else:
         selected_ids.erase(id)
     _render_roster()
+    _refresh_actions()
 
 func _page_previous() -> void:
     page = maxi(0,page-1)
