@@ -158,7 +158,7 @@ func _build() -> void:
     status.add_theme_font_size_override("font_size",15)
     status.add_theme_color_override("font_color",Color(0.92,0.89,0.77))
     add_child(status)
-    _status("Chọn khu vực, độ khó và đệ tử V2 rảnh. Không sử dụng tài nguyên giả.")
+    _status("Chọn khu vực, độ khó và đệ tử V2 rảnh. Đệ tử chưa có tiến độ V2 cần tuyển tại Dẫn Tiên Đài.")
 
 func _status(message: String) -> void:
     if status != null:
@@ -202,14 +202,14 @@ func _rebuild_roster() -> void:
         shown += 1
         var can_enter := _eligible(disciple)
         var check := CheckBox.new()
-        check.text = disciple.display_name + (" (sẵn sàng)" if can_enter else " (đang bận / bị thương)")
+        check.text = disciple.display_name + (" (sẵn sàng)" if can_enter else " (bận / chưa có Tu Vi V2 / bị thương)")
         check.disabled = not can_enter or session != null
         check.set_pressed_no_signal(chosen.has(str(id)) and can_enter)
         check.toggled.connect(_select_disciple.bind(str(id)))
         roster_list.add_child(check)
         if can_enter:
             available += 1
-    launch_button.disabled = session != null or available == 0 or not state.sect.p3_7_resources_enabled
+    launch_button.disabled = session != null or chosen.is_empty() or not state.sect.p3_7_resources_enabled
     resume_button.disabled = session != null or state.sect.v2_pve_active_runs.is_empty()
     region_choice.disabled = session != null
     level_choice.disabled = session != null
@@ -258,7 +258,9 @@ func _launch() -> void:
         # Real V2 rank is read by HuntingPveRunV2 from the disciple's
         # canonical persistent progression. No fake stats in the live flow.
         roster.append(row)
-    var id := "hunt_%d_%d" % [int(Time.get_unix_time_from_system()),state.tick]
+    var id := "hunt_%d_%d_%d" % [
+        int(Time.get_unix_time_from_system()),state.tick,Time.get_ticks_usec()
+    ]
     var seed_value := maxi(1,int(state.tick)+int(Time.get_unix_time_from_system())%1000000)
     var proposed := HuntingPveRunV2.new()
     var started := proposed.begin(state,selected_region,id,seed_value,roster)
