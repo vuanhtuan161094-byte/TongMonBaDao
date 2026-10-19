@@ -33,8 +33,18 @@ function Require-Zero([string]$Name, [int]$Code) {
 function Invoke-GodotQA([string]$Name, [string[]]$GodotArguments, [string]$PassMarker) {
     $out = Join-Path $logs ($Name + ".log")
     Write-Host "--> $Name"
-    & $GodotExe @GodotArguments > $out 2>&1
-    $code = [int]$LASTEXITCODE
+    # PowerShell 5.1 can promote native stderr into terminating
+    # NativeCommandError with ErrorActionPreference=Stop. Negative QA fixtures
+    # may write expected stderr even when the process exits 0. Trust the
+    # process exit code and explicit PASS marker, preserving merged log.
+    $oldPreference = $ErrorActionPreference
+    try {
+        $ErrorActionPreference = "Continue"
+        & $GodotExe @GodotArguments > $out 2>&1
+        $code = [int]$LASTEXITCODE
+    } finally {
+        $ErrorActionPreference = $oldPreference
+    }
     Require-Zero $Name $code
     if ($PassMarker -ne "" -and -not (Select-String -LiteralPath $out -Pattern $PassMarker -SimpleMatch -Quiet)) {
         throw "$Name exit 0 but missing explicit PASS marker '$PassMarker': $out"
@@ -72,9 +82,16 @@ try {
 
     $git = Get-Command "git.exe" -ErrorAction Stop
     Write-Host "--> Clone isolated branch $branch to $clone"
-    & $git.Source clone --quiet --single-branch --branch $branch $repo $clone 2>&1 |
-        Out-File -LiteralPath (Join-Path $logs "clone.log") -Encoding UTF8
-    Require-Zero "TEMP clone" ([int]$LASTEXITCODE)
+    $oldPreference = $ErrorActionPreference
+    try {
+        $ErrorActionPreference = "Continue"
+        & $git.Source clone --quiet --single-branch --branch $branch $repo $clone 2>&1 |
+            Out-File -LiteralPath (Join-Path $logs "clone.log") -Encoding UTF8
+        $cloneExit = [int]$LASTEXITCODE
+    } finally {
+        $ErrorActionPreference = $oldPreference
+    }
+    Require-Zero "TEMP clone" $cloneExit
     $headSha = (& $git.Source -C $clone rev-parse HEAD | Out-String).Trim()
     Require-Zero "HEAD identity" ([int]$LASTEXITCODE)
     if ($headSha -notmatch "^[a-f0-9]{40}$") {
