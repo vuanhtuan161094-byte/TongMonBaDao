@@ -168,7 +168,7 @@ func step(viewed_map: bool = false) -> Dictionary:
             if str(actor["tier"]) == "elite" or str(actor["tier"]) == "boss":
                 _begin_telegraphed_aoe(actor,target)
                 continue
-            if str(actor["role"]) == "mage" and _enemies_near(target,3.0)>=2:
+            if (str(actor["role"]) == "mage" and (actor.get("pilot_loadout",[]) as Array).is_empty() and _enemies_near(target,3.0)>=2):
                 _cast_mage_aoe(actor,target)
                 continue
         if now >= float(actor["next_basic"]):
