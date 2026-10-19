@@ -1,3 +1,13 @@
+## 2026-10-19 — IMMEDIATE C4 PRES-01 HANDOFF (NEWEST)
+
+Branch: `c4-pres01-jx-motion-readability-20261019` from pinned C4-EP01 `5c2e42abb44407bfc4d5a14ea2e7b2e966a2c3de`. Current authorisation covers only presentation code + tests + docs. See `docs/C4_PRES00_PRES01_IMPLEMENTATION_LOG_2026-10-19.md`.
+
+**NEXT ACTION:** exact-HEAD Windows Godot **4.7.2 official** focused tests and a real 1280×720 6v5 manual scene. One-click runner: `tools/qa/RUN-C4-PRES01-WINDOWS.cmd`. TEMP clone, isolated save/profile, no main/PR20 changes, no CI/FULL/merge. If parser or new focused tests fail, repair only presentation code/adjacent tests on this branch; never weaken V2 authority or falsify PASS. Capture real still + >=10s video and observe role visibility, frame motion, sprite alignment/HP, screen contrast. Owner UX remains NOT ACCEPTED; Android FPS PENDING.
+
+**AFTER THAT:** scope PRES-02 authentic five-source skill FX/projectile/SFX graphs separately with verified binary SHA and rights. PRES-03 real formation/occupancy requires simulation authorization and seeded regression. 11 further skills prohibited meanwhile.
+
+---
+
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
 ## CURRENT HANDOFF — 2026-10-15 ECONOMY-A INTEGRATED ON MAIN (WINDOWS QA VERIFIED)
