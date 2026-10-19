@@ -441,7 +441,21 @@ func _bottom_action(action: String) -> void:
         deep_restore_summary = false
         _open_disciple_deep_screen(target_id, "Thuộc tính")
         return
+    if action == "world":
+        _open_hunting_expedition()
+        return
     super._bottom_action(action)
+
+func _open_hunting_expedition() -> void:
+    if not runtime_ready or state == null or runtime_session == null:
+        return
+    _close_disciple_summary(true)
+    _close_building_operation_panel(true)
+    _clear_popup()
+    var screen := HuntingExpeditionScreenV2.new()
+    screen.name = "C4HuntingExpedition"
+    screen.configure(state,runtime_session)
+    popup_layer.add_child(screen)
 
 func _open_disciple(disciple_id: StringName) -> void:
     if not state.disciples.has(disciple_id):
