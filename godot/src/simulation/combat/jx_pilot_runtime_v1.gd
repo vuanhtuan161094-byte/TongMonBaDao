@@ -64,14 +64,15 @@ static func try_cast(battle: Variant, caster: Dictionary, target: Dictionary) ->
         if kind == "projectile" or kind == "poison_hit":
             travel_ticks = int(ceil(distance/(float(skill.get("speed",8.0))*MapBattleV2.STEP_SECONDS)))
         var release_time := battle.now + float(int(skill["cast_ticks"])+travel_ticks)*MapBattleV2.STEP_SECONDS
+        var cast_id := str(battle.encounter_id)+":"+str(caster["id"])+":"+str(battle.actions+1)
         battle.pending_casts.append({
             "caster":str(caster["id"]),"target_id":str(victim["id"]),
-            "pilot_id":sid,"ready":release_time
+            "pilot_id":sid,"ready":release_time,"cast_id":cast_id
         })
         ready[sid] = battle.now+float(int(skill["cd_ticks"]))*MapBattleV2.STEP_SECONDS
         caster["pilot_ready"] = ready
         battle._event("pilot_cast",{"caster":caster["id"],"target":victim["id"],
-            "pilot_id":sid,"release_at":release_time})
+            "pilot_id":sid,"cast_id":cast_id,"release_at":release_time})
         battle.actions += 1
         return true
     return false
@@ -114,10 +115,11 @@ static func release(battle: Variant, caster: Dictionary, cast: Dictionary) -> vo
                 return
         var effects: Array = target.get("pilot_effects",[])
         effects.append({"kind":"hot","caster":str(caster["id"]),"pilot_id":sid,
+            "cast_id":str(cast.get("cast_id","")),
             "per_tick":float(caster["stats"]["attack"])*0.40*multiplier,
             "ticks_left":3,"next_tick":battle.now+1.0})
         target["pilot_effects"] = effects
-        battle._event("pilot_hot_applied",{"caster":caster["id"],"target":target["id"],"pilot_id":sid})
+        battle._event("pilot_hot_applied",{"caster":caster["id"],"target":target["id"],"pilot_id":sid,"cast_id":str(cast.get("cast_id",""))})
         return
     if str(target["side"]) != "monster":
         return
@@ -125,7 +127,8 @@ static func release(battle: Variant, caster: Dictionary, cast: Dictionary) -> vo
     var damage := battle._deal_direct(caster,target,float(skill.get("ratio",0.0))*multiplier,
         "pilot_skill",true,element,matchup)
     battle._event("pilot_impact",{"caster":caster["id"],"target":target["id"],
-        "pilot_id":sid,"effective_damage":damage})
+        "pilot_id":sid,"cast_id":str(cast.get("cast_id","")),
+        "effective_damage":damage})
     if kind != "poison_hit" or damage <= 0.0 or float(target["hp"]) <= 0.0:
         return
     var chance := CombatStatsV2.ordinary_status_chance(0.85,caster["stats"],target["stats"])
@@ -143,7 +146,8 @@ static func release(battle: Variant, caster: Dictionary, cast: Dictionary) -> vo
             same = i
     var poison := {"kind":"poison","caster":str(caster["id"]),"pilot_id":sid,
         "attack_snapshot":float(caster["stats"]["attack"]),"root_scale":multiplier,
-        "matchup":matchup,"ticks_left":3,"next_tick":battle.now+1.0}
+        "matchup":matchup,"ticks_left":3,"next_tick":battle.now+1.0,
+        "cast_id":str(cast.get("cast_id",""))}
     if same >= 0:
         statuses[same] = poison
     elif stacks < 3:
@@ -151,7 +155,8 @@ static func release(battle: Variant, caster: Dictionary, cast: Dictionary) -> vo
     else:
         return
     target["pilot_effects"] = statuses
-    battle._event("pilot_poison_applied",{"caster":caster["id"],"target":target["id"],"pilot_id":sid,"stacks":stacks if same >= 0 else stacks+1})
+    battle._event("pilot_poison_applied",{"caster":caster["id"],"target":target["id"],"pilot_id":sid,"cast_id":str(cast.get("cast_id","")),
+        "stacks":stacks if same >= 0 else stacks+1})
 
 static func tick(battle: Variant) -> void:
     var keys: Array = battle.actors.keys()
@@ -174,7 +179,9 @@ static func tick(battle: Variant) -> void:
                         maxf(0.0,float(target["max_hp"])-float(target["hp"])))
                     target["hp"] = float(target["hp"])+amount
                     battle._sync_linked_hp(target)
-                    battle._event("pilot_hot_tick",{"caster":fx["caster"],"target":target["id"],"amount":amount})
+                    battle._event("pilot_hot_tick",{"caster":fx["caster"],"target":target["id"],
+                        "pilot_id":fx["pilot_id"],"cast_id":str(fx.get("cast_id","")),
+                        "amount":amount})
                 elif kind == "poison":
                     var caster: Dictionary = battle.actors.get(str(fx.get("caster","")),{})
                     if not caster.is_empty():
@@ -189,7 +196,8 @@ static func tick(battle: Variant) -> void:
                             target["hp"] = float(target["hp"])-damage
                             battle._sync_linked_hp(target)
                             battle._event("pilot_poison_tick",{"caster":fx["caster"],
-                                "target":target["id"],"damage":damage})
+                                "target":target["id"],"pilot_id":fx["pilot_id"],
+                                "cast_id":str(fx.get("cast_id","")),"damage":damage})
                             if float(target["hp"]) <= 0.0:
                                 battle._event("downed",{"actor_id":target["id"],"side":target["side"]})
                 fx["ticks_left"] = int(fx.get("ticks_left",0))-1
