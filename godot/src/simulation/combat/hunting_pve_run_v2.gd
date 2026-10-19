@@ -424,6 +424,15 @@ static func restore_state(state: SimulationState, saved: Dictionary) -> Dictiona
                 return {"ok":false,"reason":"monster_provenance_mismatch"}
             if not is_equal_approx(float(row["max_hp"]),float(original["stats"]["max_hp"])):
                 return {"ok":false,"reason":"monster_stat_content_incompatible"}
+            # New V1-compatible identity fields are source provenance, not
+            # combat rolls. Older legitimate snapshots omit them and remain
+            # loadable. Present fields must match the seeded encounter spawn.
+            if row.has("realm_index") and (
+                    int(row["realm_index"]) != int(original["realm_index"]) or
+                    int(row["floor_index"]) != int(original["floor_index"])):
+                return {"ok":false,"reason":"monster_realm_provenance_mismatch"}
+            if row.has("name") and str(row["name"]) != str(original["name"]):
+                return {"ok":false,"reason":"monster_name_provenance_mismatch"}
         elif str(row["side"]) == "disciple":
             seen_disciples += 1
             if not state.disciples.has(StringName(str(row["id"]))):
