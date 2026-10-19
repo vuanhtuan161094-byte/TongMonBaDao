@@ -119,6 +119,11 @@ func bind_runtime(runtime: LiveGameRuntimeV2) -> void:
         var result := HuntingPveRunV2.resume_active(game_state,str(id))
         if bool(result.get("ok",false)):
             session = result["session"]
+            for slot in range(zone_choice.item_count):
+                if str(zone_choice.get_item_metadata(slot)) == session.region_id:
+                    zone_choice.select(slot)
+                    _change_region(slot)
+                    break
             battle_view.attach_session(session.battle)
             battle_view.set_actor_view_metadata(_source_view_metadata())
             _say("Đã tiếp tục trận có checkpoint: "+str(id))
@@ -262,6 +267,7 @@ func _begin_hunt() -> void:
     elapsed = 0.0
     if not _checkpoint():
         _say("LỖI LƯU: trận đã khởi tạo trong RAM; tạm dừng để bảo vệ dữ liệu.")
+        _refresh_actions()
         return
     _say("Đã vào trận: "+encounter)
     _refresh_actions()
@@ -277,6 +283,7 @@ func _process(delta: float) -> void:
         if not bool(result.get("ok",false)):
             save_ready = false
             _say("Trận tạm dừng: "+str(result.get("reason","unknown")))
+            _refresh_actions()
             return
         ticks += 1
     if ticks > 0:
@@ -308,6 +315,7 @@ func _claim_reward() -> void:
     # never by this Control. Persist before allowing another encounter.
     if not _checkpoint():
         _say("LỖI LƯU SAU NHẬN THƯỞNG. Không khởi tạo trận khác.")
+        _refresh_actions()
         return
     session = null
     battle_view.visible = false
