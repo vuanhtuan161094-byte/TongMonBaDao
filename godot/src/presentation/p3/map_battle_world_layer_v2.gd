@@ -45,6 +45,82 @@ var _camera_center := GRID_SIZE*0.5
 var _camera_zoom: float = 1.0
 # Cosmetic-only overdraw budget: dropping FX never drops damage/cast events.
 const MAX_VISIBLE_SOURCE_FX := 12
+# GP01 is strictly presentational: the authority emits final damage/crit/heal
+# receipts. Never calculate hits or derive a dodge outcome from animations.
+const MAX_VISIBLE_COMBAT_TEXT := 28
+const COMBAT_TEXT_SECONDS := 0.80
+var enable_combat_text: bool = true
+var combat_text_detail: String = "standard" # minimal | standard | detailed
+var _combat_text: Array[Dictionary] = []
+
+# Format ONLY an already-settled amount. No damage computation occurs here.
+func _combat_amount(amount: float) -> String:
+    if amount < 10.0 and absf(amount-roundf(amount)) > 0.01:
+        return "%.1f" % amount
+    return str(int(roundf(amount)))
+
+func _enqueue_combat_text(actor_id: String, amount: float, category: String,
+        event_id: int) -> void:
+    if not enable_source_vl_art or not enable_combat_text or battle == null:
+        return
+    if amount <= 0.0 or is_nan(amount) or is_inf(amount) or not battle.actors.has(actor_id):
+        return
+    if combat_text_detail == "minimal" and category not in ["crit","heal"]:
+        return
+    var label := _combat_amount(amount)
+    if category == "crit":
+        label = "CRIT " + label + "!"
+    elif category == "heal":
+        label = "+" + label
+    elif category == "poison":
+        label = "DOC " + label
+    elif category == "lifesteal":
+        label = "+" + label
+    # The global V2 event index is a stable receipt; pilot_impact / skill_hit
+    # are *not* separate damage events, so one damage commit has one popup.
+    for item in _combat_text:
+        if int(item.get("event_id",-1)) == event_id and str(item.get("category","")) == category:
+            return
+    if _combat_text.size() >= MAX_VISIBLE_COMBAT_TEXT:
+        # Preserve salient critical/healing numbers preferentially.
+        var discard := 0
+        for i in range(_combat_text.size()):
+            if str(_combat_text[i].get("category","")) not in ["crit","heal"]:
+                discard = i
+                break
+        _combat_text.remove_at(discard)
+    _combat_text.append({
+        "actor_id":actor_id, "amount":amount, "category":category,
+        "label":label, "event_id":event_id,"started":_frame_clock
+    })
+
+func _ingest_combat_feedback(event: Dictionary, event_id: int) -> void:
+    var kind := str(event.get("type",""))
+    if kind == "hit":
+        var target := str(event.get("target",""))
+        var damage := float(event.get("damage",0.0))
+        _enqueue_combat_text(target,damage,
+            "crit" if bool(event.get("critical",false)) else "damage",event_id)
+        var leech := float(event.get("lifesteal",0.0))
+        if leech > 0.0:
+            _enqueue_combat_text(str(event.get("attacker","")),leech,"lifesteal",event_id)
+    elif kind in ["heal","pilot_hot_tick"]:
+        _enqueue_combat_text(str(event.get("target","")),
+            float(event.get("amount",0.0)),"heal",event_id)
+    elif kind == "pilot_poison_tick":
+        _enqueue_combat_text(str(event.get("target","")),
+            float(event.get("damage",0.0)),"poison",event_id)
+
+func _combat_feedback_color(category: String) -> Color:
+    match category:
+        "crit":
+            return Color(1.0,0.75,0.26,1.0)
+        "heal","lifesteal":
+            return Color(0.48,0.99,0.64,1.0)
+        "poison":
+            return Color(0.83,0.58,1.0,1.0)
+        _:
+            return Color(1.0,0.92,0.78,1.0)
 
 func _queue_source_fx(kind: String, position: Vector2, actor_id: String = "") -> void:
     if _effect_cues.size() >= MAX_VISIBLE_SOURCE_FX:
@@ -72,6 +148,9 @@ func _process(delta: float) -> void:
             var cue: Dictionary = _effect_cues[i]
             if _frame_clock-float(cue["started"]) > _effect_atlas.duration(str(cue["kind"])):
                 _effect_cues.remove_at(i)
+        for i in range(_combat_text.size()-1,-1,-1):
+            if _frame_clock-float(_combat_text[i]["started"]) > COMBAT_TEXT_SECONDS:
+                _combat_text.remove_at(i)
         queue_redraw()
 
 func _ingest_authority_events() -> void:
@@ -83,6 +162,8 @@ func _ingest_authority_events() -> void:
     for index in range(_event_cursor, battle.events.size()):
         var event: Dictionary = battle.events[index]
         var kind := str(event.get("type", ""))
+        # Receipt values are final HP deltas from simulation, not FX amounts.
+        _ingest_combat_feedback(event,index)
         var actor_id := str(event.get("actor_id", ""))
         if kind == "move" and battle.actors.has(actor_id):
             var current: Vector2 = event.get("position", Vector2.ZERO)
@@ -208,6 +289,7 @@ func attach_session(session: MapBattleV2) -> void:
     _action_cues.clear()
     _impact_cues.clear()
     _effect_cues.clear()
+    _combat_text.clear()
     _camera_center = GRID_SIZE*0.5
     _camera_zoom = 1.0
     if session != null:
@@ -615,3 +697,35 @@ func _draw() -> void:
                 draw_string(ThemeDB.fallback_font,bounds.position+Vector2(3.0,14.5),
                     str(overlay["text"]),HORIZONTAL_ALIGNMENT_CENTER,
                     bounds.size.x-4.0,12,overlay["fill"])
+
+        # Numeric event feedback belongs above silhouettes and HUD, never
+        # changes HP or other world state. Deterministic lanes avoid fake RNG.
+        if enable_combat_text:
+            for popup in _combat_text:
+                var age := _frame_clock-float(popup["started"])
+                if age < 0.0 or age > COMBAT_TEXT_SECONDS:
+                    continue
+                var actor_id := str(popup["actor_id"])
+                if not battle.actors.has(actor_id):
+                    continue
+                var target: Dictionary = battle.actors[actor_id]
+                var point := point_on_map(visual_position(actor_id,target["position"]))
+                var lane := int(popup["event_id"]) % 4
+                var position := point+Vector2(
+                    float(lane-2)*15.0,-44.0-age*38.0)
+                var category := str(popup["category"])
+                var text_value := str(popup["label"])
+                var size := 16 if category == "crit" else 13
+                var width := maxf(52.0,float(text_value.length())*float(size)*0.67+10.0)
+                position.x = clampf(position.x-width*0.5,
+                    stage_rect.position.x,stage_rect.end.x-width)
+                position.y = clampf(position.y,
+                    stage_rect.position.y+2.0,stage_rect.end.y-25.0)
+                var fade := clampf((COMBAT_TEXT_SECONDS-age)/0.25,0.0,1.0)
+                var bounds := Rect2(position,Vector2(width,float(size)+9.0))
+                draw_rect(bounds,Color(0.02,0.035,0.04,0.78*fade))
+                var tint := _combat_feedback_color(category)
+                tint.a = fade
+                draw_string(ThemeDB.fallback_font,
+                    position+Vector2(4.0,float(size)+2.0),text_value,
+                    HORIZONTAL_ALIGNMENT_CENTER,width-8.0,size,tint)
