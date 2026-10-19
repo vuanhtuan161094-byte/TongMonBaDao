@@ -99,13 +99,19 @@ func _run() -> void:
                 int(enemy["floor_index"])==MAX_FLOOR,
                 "monster not max realm/floor"):
             return
+    # Boundary rejects must exercise COUNT caps, not merely duplicate IDs.
+    var thirty_one: Dictionary = troops[0].duplicate(true)
+    thirty_one["id"] = "overflow_member_31"
+    thirty_one["party_id"] = "sixth_team"
+    var forty_one: Dictionary = enemies[0].duplicate(true)
+    forty_one["id"] = "overflow_monster_41"
     if not _check(not bool(MapBattleV2.new(3).setup("illegal_31",
-            troops+[troops[0]],enemies).get("ok",true)),
-            "31 disciples illegally admitted"):
+            troops+[thirty_one],enemies).get("ok",true)),
+            "31 unique disciples illegally admitted"):
         return
     if not _check(not bool(MapBattleV2.new(3).setup("illegal_41",
-            troops,enemies+[enemies[0]]).get("ok",true)),
-            "41 monsters illegally admitted"):
+            troops,enemies+[forty_one]).get("ok",true)),
+            "41 unique monsters illegally admitted"):
         return
     var main := _max_battle(BOSS_SEED)
     if not _check(main != null and main.actors.size()==70,
