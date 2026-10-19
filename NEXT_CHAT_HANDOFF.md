@@ -1,3 +1,28 @@
+## 2026-10-19 — C4 BE01 Combat V2 source identity / hunting replay (CODE; RUNTIME PENDING)
+
+**Owner instruction:** inspect Combat V4 backend, finish small evidence-backed remaining work, preserve locked gameplay. Original base branch `c4-jx1-rank-and-fx-source-20261019` verified `f757c5f162f85ebccda936b06ba8a06b07eac003`. New isolated branch `c4-backend-identity-contract-20261019`; GitHub `main` checked at `461caca1171462e0da092f21108c5c1733157ad9`. No changes to main or PR20; no CI/FULL/merge.
+
+**Completed narrow authority-safe implementation:**
+- `DiscipleCombatLoadoutV2.build` carries genuine `DiscipleState.display_name` and exact Tu Vi/Luyện Thể realm/floor source coordinates alongside V2 stat inputs; no stat formula changes.
+- `MapBattleV2.setup` validates/copies OPTIONAL source-only `display_name/name`, `realm_index/floor_index`, independent `body_realm_index/body_floor_index`. Strict typed integer pairs in canonical 1..30 × 1..10; invalid/incomplete pairs rejected; legacy without rank remains unranked; monster has no body channel.
+- `MapBattleSnapshotV2.load` rejects invalid injected identity coordinates in otherwise well-formed Variant JSON checkpoints, while accepting true old V1 saves without fields.
+- `MapBattleWorldLayerV2` observes the immutable actor's persisted rank before falling back to linked disciple, while pilot-only `set_actor_view_metadata` remains optional.
+- `HuntingPveRunV2.restore_state` checks present monster source realm and name against deterministic `HuntingMapV2.spawn`; source-missing legacy V1 saved monsters remain admissible, no metadata-based increase in rewards.
+- Regression: `c4_be01_actor_identity_snapshot_test.gd` covers real P37 loadout, monster catalogue, HUD, snapshot roundtrip, no stat/RNG/event change, invalid/missing source, forged saved monster rank/name and legacy V1 restoration. Updated prior `c4_gp01_combat_feedback_receipts_test.gd` for new legitimate `Phàm Nhân Tầng 1` source instead of stale expectation of blank.
+- No CombatStatsV2, JxPilotRuntimeV1, RNG consumption, damage/crit, movement, rewards, Economy, SaveService, cultivation authority or world hit positions touched.
+
+**Audit findings held for separately scoped gameplay packets:**
+1. `DiscipleCombatLoadoutV2.build` **already bridges equipped move-speed multiplier** into explicit `actor.move_speed` for live hunting. However raw `MapBattleV2.setup` fixtures use role defaults; this is NOT evidence of production hunting ignoring equipment. Sect-map movement has separate authority.
+2. Accuracy/Evasion/Hit Chance are an **owner-approved design only** under `docs/C4_ACCURACY_EVASION_MOVEMENT_SKILL_REACTION_DESIGN_2026-10-19.md`. Migrating CombatStatsV2/MapBattleV2/MonsterEncounterV2 requires explicit stats, snapshot and seeded RNG version strategy, not an unreviewed silent change. No fake MISS/DODGE.
+3. Five authored JX source skills are opt-in `JxPilotSkillsV1` pilot loadout; `DiscipleCombatLoadoutV2.build` equips only actual learned P2 damage skills. No implicit free skill distribution or new skill learning persistence.
+4. Real reactive boss AoE escape + dedicated equipped evade skill not implemented; pending GP03/GP04 permission and geometry/cooldown tests.
+5. `HuntingMapV2.claim_reward` is low-level public static and assumes caller has authenticated victory. The production-facing `HuntingPveRunV2._settle_terminal` and exactly-once receipt gate it; any future external direct command/remote caller must enforce provenance. Do not change loot/save ownership casually.
+6. Real official Godot 4.7.2 focused tests, full impacted hunting/settlement regression, physical Windows Android acceptance and 30×40 FPS/memory remain **PENDING**. All new BE01 tests are *authored only*, not PASS. Existing 7/7 GP01 official user Windows evidence belongs to previous SHA, not BE01.
+
+**Next suggested packet:** BE01 official isolated Godot 4.7.2 focused verification (new test + GP01 HUD + DV2 battle snapshot/group + five-level PvE + GP02C1 injury/settlement). No CI/FULL/merge until owner authorizes QA regime. For later major gameplay features, ask an explicit dedicated GP02-STAT or GP03/GP04 authorization.
+
+---
+
 ## 2026-10-19 — C4 JX1 rank + owner FX source branch (NEW; runtime PENDING)
 
 Owner authorized complete user-provided asset use and requested real cultivator/monster realm labels, monster power tiers, extra missing JX1 UI coverage. Independent branch `c4-jx1-rank-and-fx-source-20261019` forked from hardening `8f14d171744b3d332f198dc5fca9c2547a71989c`; main untouched. Imported SHA256-verified 7 original WebP (skills #158/#63/#93) and 106x11 PNG HP strip. Actual source-level Tu Vi/Body rank metadata delivered to presentation via `set_actor_view_metadata()` (because `MapBattleV2.setup` strips levels and actor names); generic live linked DiscipleState V2 progression/name also readable, no fabricated missing values. Pilot touch/left-click read-only name/Tu Vi/Luyện Thể/HP info. Opt-in source VFX only on real pilot event #158 impact, #63 positive impact and #93 precast, never replayed on refresh or zero hit. Remaining imported FX are unbound until correct atlas contracts; #15/#159 lack verified clips. No Combat V2/RNG/Save/Economy/main/PR20 changes. Adjacent focused GP01 extension + new JX source FX test authored; official Godot 4.7.2/Windows/Android runtime + owner UX still **PENDING**. Full details and SHA256 provenance in `docs/C4_GP01_FEEDBACK_IMPLEMENTATION_LOG_2026-10-19.md`. Need direct-chat one-click QA archive pinned to final branch SHA; no CI/FULL/merge.
