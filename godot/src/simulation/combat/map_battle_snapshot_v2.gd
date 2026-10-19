@@ -100,6 +100,13 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
         if not (pos is Vector2) or not MapBattleV2.ARENA.has_point(pos):
             return {"ok":false,"reason":"invalid_actor_position"}
         actor["position"] = pos
+        # New source-only rank/name fields may be absent from V1 legacy
+        # snapshots, but present fields must remain valid 30x10 coordinates.
+        # Reject malformed partial pairs before they reach a nameplate.
+        var validated_identity: Dictionary = {}
+        if not MapBattleV2._copy_optional_combat_identity(
+                validated_identity,actor,side == "disciple"):
+            return {"ok":false,"reason":"invalid_snapshot_actor_identity"}
         var stats: Dictionary = actor.get("stats",{})
         if stats.is_empty() or not (actor.get("resistances",{}) is Dictionary):
             return {"ok":false,"reason":"missing_stat_snapshot"}
