@@ -135,6 +135,78 @@ func _run() -> void:
             "numerical render overdraw cap not enforced"):
         return
 
+    # GP02: HUD priority is independent of the source actor draw order.
+    # The HP stays near the true feet even when a name/status starts atop it.
+    var hud_input: Array[Dictionary] = [
+        {"kind":"name","rect":Rect2(Vector2(220.0,165.0),Vector2(84.0,15.0))},
+        {"kind":"status","rect":Rect2(Vector2(225.0,164.0),Vector2(48.0,19.0))},
+        {"kind":"hp","rect":Rect2(Vector2(232.0,171.0),Vector2(48.0,6.0))}
+    ]
+    var original_hud: Array[Dictionary] = hud_input.duplicate(true)
+    var hud_output: Array[Dictionary] = layer.layout_hp_overlays(hud_input)
+    if not _check(hud_output.size() == 3 and
+            hud_output[2]["rect"] == hud_input[2]["rect"],
+            "HP must take priority over coincident name/status labels"):
+        return
+    if not _check(hud_input == original_hud and
+            layer.layout_hp_overlays(hud_input) == hud_output,
+            "HUD placement changed input or is not deterministic"):
+        return
+    for i in range(hud_output.size()):
+        var first: Rect2 = hud_output[i]["rect"]
+        if not _check(layer.stage_rect.grow(-4.0).encloses(first),
+                "HUD escaped its stage after priority sorting"):
+            return
+        for j in range(i):
+            if not _check(not first.grow(3.0).intersects(
+                    (hud_output[j]["rect"] as Rect2).grow(3.0)),
+                    "HP/name/status overlap despite available free space"):
+                return
+
+    # A receipt remembers its observed impact foot. Later actor movement and
+    # renderer interpolation cannot drag a flying damage number with the wolf.
+    var burst := MapBattleWorldLayerV2.new()
+    burst.enable_source_vl_art = true
+    burst.attach_session(battle)
+    burst._enqueue_combat_text("z_gp01_wolf",3.25,"damage",92001)
+    if not _check(burst._combat_text.size() == 1 and
+            str(burst._combat_text[0]["label"]) == "3",
+            "integer small damage not ingested"):
+        return
+    var frozen: Vector2 = burst._combat_text[0]["world_origin"]
+    burst._view_prev["z_gp01_wolf"] = Vector2(25.0,13.0)
+    burst._view_next["z_gp01_wolf"] = Vector2(28.0,14.0)
+    if not _check(burst._combat_text[0]["world_origin"] == frozen and
+            burst.point_on_map(frozen) == burst.point_on_map(
+                burst._combat_text[0]["world_origin"]),
+            "moving actor displaced an existing event popup"):
+        return
+
+    # When all 28 popups are real crits, basic hits do not throw away crit
+    # context. A new healing receipt may displace only the oldest protected
+    # popup. The V2 events themselves remain unchanged.
+    burst._combat_text.clear()
+    for n in range(MapBattleWorldLayerV2.MAX_VISIBLE_COMBAT_TEXT):
+        burst._enqueue_combat_text("z_gp01_wolf",1.0,"crit",100000+n)
+    burst._enqueue_combat_text("z_gp01_wolf",2.0,"damage",200000)
+    var protected_count := 0
+    for item_value in burst._combat_text:
+        if str(item_value.get("category","")) == "crit":
+            protected_count += 1
+    if not _check(protected_count == MapBattleWorldLayerV2.MAX_VISIBLE_COMBAT_TEXT,
+            "ordinary damage evicted a protected critical receipt"):
+        return
+    burst._enqueue_combat_text("a_gp01_member",2.0,"heal",200001)
+    var protected_heals := 0
+    for item_value in burst._combat_text:
+        if str(item_value.get("category","")) == "heal":
+            protected_heals += 1
+    if not _check(burst._combat_text.size() == MapBattleWorldLayerV2.MAX_VISIBLE_COMBAT_TEXT and
+            protected_heals == 1,
+            "new healing must remain visible without exceeding popup cap"):
+        return
+    burst._combat_text.clear()
+
     var subject: Dictionary = (battle.actors["z_gp01_wolf"] as Dictionary).duplicate(true)
     subject["pilot_effects"] = [
         {"kind":"poison","ticks_left":3},
