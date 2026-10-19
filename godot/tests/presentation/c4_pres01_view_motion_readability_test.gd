@@ -257,6 +257,38 @@ func _run() -> void:
     if not _check(pilot_battle != null and pilot_layer != null,
             "C4 pilot _ready failed to build a real V2 battle + view"):
         return
+    if not _check(pilot_layer.enable_spectator_framing,
+            "real JX 6v5 pilot must enable its view-only fight camera"):
+        return
+    # The framing camera derives its goal from *real* V2 fighter positions;
+    # it must not mutate any authority or invent physical spacing.
+    var camera_authority: Dictionary = pilot_battle.actors.duplicate(true)
+    var camera_events: Array = pilot_battle.events.duplicate(true)
+    var camera_rng: int = pilot_battle.rng.snapshot_seed_state()
+    var camera_now: float = pilot_battle.now
+    var goal: Dictionary = pilot_layer.spectator_camera_goal()
+    if not _check(float(goal["zoom"]) > 1.0 and float(goal["zoom"]) <= 2.10
+            and (goal["center"] as Vector2).x > 10.0,
+            "adaptive framing did not include the real initial 6v5 actor bounds"):
+        return
+    for frame_no in range(100):
+        pilot_layer._process(1.0/60.0)
+    if not _check(pilot_layer.spectator_zoom() > 1.0
+            and pilot_layer.spectator_zoom() <= 2.10,
+            "camera interpolation zoom escaped the optical 1..2.1 contract"):
+        return
+    for live_actor in pilot_battle.actors.values():
+        var position: Vector2 = live_actor["position"]
+        var screen: Vector2 = pilot_layer.point_on_map(position)
+        if not _check(pilot_layer.logical_from_map(screen).distance_to(position) < 0.001,
+                "pilot camera broke forward/inverse world coordinate projection"):
+            return
+    if not _check(pilot_battle.now == camera_now and
+            pilot_battle.actors == camera_authority and
+            pilot_battle.events == camera_events and
+            pilot_battle.rng.snapshot_seed_state() == camera_rng,
+            "presentation camera mutated Combat V2 authority"):
+        return
     var counted_disciples := 0
     var counted_monsters := 0
     for actor_value in pilot_battle.actors.values():
