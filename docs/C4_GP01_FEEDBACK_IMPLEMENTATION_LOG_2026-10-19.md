@@ -34,3 +34,18 @@ Reference provenance: primary visual references from [Thanh Niên historic VLTK 
 **Focused regression**: extended `c4_gp01_combat_feedback_receipts_test.gd` for integer glyphs, authentic canonical monster name, authored actor name, no extra popup, and 1x view goal. Existing seven focused tests must be run on official Godot 4.7.2 exact branch HEAD. This environment has **no Godot executable and no network git clone**, hence Windows Godot import/tests, actual 1280×720 screenshot, Android memory/FPS and owner UX signoff **PENDING**. No CI/FULL/merge. GP01 7/7 historic user-reported result applies only to owner-tested previous SHA; it must NOT be carried forward to this branch.
 
 **Scope**: only `godot/src/presentation/p3/map_battle_world_layer_v2.gd`, `godot/src/presentation/p3/combat_v4_jx_pilot.gd`, adjacent focused regression, and these documents. One-click user-facing QA ZIP pinned to exact final SHA is shipped via ChatGPT, not committed binary.
+
+---
+
+## 2026-10-19 — Second-pass review, JX UI readability hardening
+
+Previous branch `c4-jx1-ui-source-first-20261019` at `5cd6889` verified; user unavailable for Windows and authorized next presentation pass. Created independent `c4-jx1-ui-readability-hardening-20261019`. Audited actual renderer and `MapBattleV2._event`: combat events append up to MAX_EVENTS=2400 and never shift/rotate; the index cursor is consistent with this bounded log. Did not modify this simulation/event authority. Public classic JX1 PC capture reference: https://thanhnien.vn/vltk-tinh-trong-thien-ha-xin-dung-thach-thuc-tinh-yeu-1851119381.htm ; this is only style evidence and does not establish camera/FPS/font values.
+
+**Observed source defects & patches:**
+1. `layout_hp_overlays` originally processed all name/status/HP entries in incidental per-actor iteration order, allowing title/status to evict HP from its intended near-character slot. Added deterministic HP-first/name-second/status-third placement, preserving caller's output order and not changing physics.
+2. Numeric events originally queried the actor's *current* interpolated position on every draw frame. Damage numbers therefore followed a moving wolf. Frozen `world_origin` is sampled when the true event reaches the view and reprojected through the existing camera transformation; supports pan without actor-position mutation.
+3. The max 28 queue originally always evicted an item even when a new *ordinary* hit arrived with a queue full of protected CRIT/heal popups. Now common hit is dropped in that exact case; high-priority heal/crit/lifesteal may evict the oldest protected one while never exceeding the cap. Only discarded cosmetic popups, not simulation event receipts.
+4. Numeric floating text previously painted after HUD; changed draw ordering to keep crucial HP/name/status labels visible above text while preserving source FX below sprites.
+
+**Adjacent focused regression:** GP01 receipt script now covers the 3-entry contested HUD, original-arrangement fidelity, deterministic collision avoidance, static source-world anchor, 28-crit saturation, healed popup admission. Simulation snapshots/events/RNG are not modified by the view. Code SHA and official Windows data still need verification; no claim of 4.7.2 runtime PASS, frames, FPS, memory or UX. No borrowed JX1 binary/file/license claim, no CI/FULL/merge.
+
