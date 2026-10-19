@@ -102,7 +102,7 @@ func setup(id: String, party: Array, monsters: Array) -> Dictionary:
             "hp":float(row.get("hp",stats["max_hp"])),
             "max_hp":float(stats["max_hp"]),
             "resistances":row.get("resistances",{}).duplicate(true),
-            "primary_element":str(row.get("primary_element","")),
+            "primary_element":str(row.get("primary_element",row.get("element",""))),
             "pilot_effects":[],"pilot_guard_until":-1.0,"pilot_def_until":-1.0,
             "range":1.65 if tier == "boss" else 1.50,
             "move_speed":1.9 if tier == "boss" else 2.2,
