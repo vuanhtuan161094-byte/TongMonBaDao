@@ -67,7 +67,7 @@ static func matching_root_multiplier(values: Dictionary, skill_element: String) 
     for value in values.values():
         if int(value) == 100:
             perfected += 1
-    var resonance := [1.0,1.1,1.25,1.45,1.70,2.0][mini(perfected,5)]
+    var resonance: float = float([1.0,1.1,1.25,1.45,1.70,2.0][mini(perfected,5)])
     var purity := clampi(int(values[skill_element]),1,100)
     return 1.0 + float(purity)*0.003*resonance
 
