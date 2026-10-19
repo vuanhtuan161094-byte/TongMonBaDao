@@ -81,3 +81,13 @@ Google Drive source folders: Võ Lâm Idle `https://drive.google.com/drive/folde
 
 **Remaining product gaps, not fabricated:** permanent real production name+realm bridge on all hunting entrypoints, skill teaching/equipping outside 5 pilot IDs, missing #15/#159 VFX, remaining four WebP atlas/movement mappings, true linked/source cast rigs, JX1 exact font/color/camera proof, real 30v40 readability/FPS, real Accuracy/Evasion roll/miss and learned evade skill simulation migration. These require relevant source evidence, testing, or separately-authorized gameplay work; do not claim feature completion.
 
+
+---
+
+### 2026-10-19 — Backend BE01 identity preservation audit
+
+Pinned predecessor: `f757c5f162f85ebccda936b06ba8a06b07eac003`, isolated new branch `c4-backend-identity-contract-20261019`.
+
+User requested a backend gap review. Rather than silently alter existing Combat V2 RNG/replay balance, implemented a **source-only actor identity preservation contract**: disciple names plus Tu Vi and Luyện Thể 30×10 inputs pass `DiscipleCombatLoadoutV2.build` → `MapBattleV2.setup` → `MapBattleSnapshotV2` → HUD, and monster canonical names/realm follow `MonsterCatalogueV2.create_actor` → battle → saved hunting. Invalid source coordinates fail admission, legacy absent coordinates remain absent. `HuntingPveRunV2.restore_state` rejects saved monster name/realm metadata that conflicts with seeded canonical spawn; historical V1 snapshots without those fields are still supported. Kept presentation's pilot view override only for fixture-specific views. Added dedicated focused BE01 test and adjusted old GP01 HUD expectation for authentic monster rank. **No combat-damage/stat formulas, RNG, HP, hitboxes, cooldown, injury or rewards changed.**
+
+Code written to GitHub, static inspection only. Official Godot 4.7.2 import, focused tests, inherited battle snapshot/5-tier PvE and GP02C1 Injury regressions **PENDING**, not claimed PASS. Deferred substantial C4-GP02 accuracy/evasion RNG migration, C4-GP03 movement/telegraph reactive AI, C4-GP04 learned evade, and JX skills outside pilot until separate scoped authorization. Production move speed from equipped gear is already explicitly bridged by `DiscipleCombatLoadoutV2.build`; do not report as globally broken.
