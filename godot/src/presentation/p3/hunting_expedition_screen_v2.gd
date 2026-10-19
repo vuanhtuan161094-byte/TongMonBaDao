@@ -213,7 +213,8 @@ func _refresh_controls() -> void:
         return
     advance_button.disabled = not run.battle.active
     finish_button.disabled = not run.battle.active
-    reward_button.disabled = run.battle.active or run.battle.outcome != "win"
+    reward_button.disabled = run.battle.active or run.battle.outcome != "win" or \
+        game_state.sect.v2_pve_reward_claims.has(run.battle.encounter_id)
     var report := run.battle.summary()
     summary.text = "%s · %s · %.2fs · Đệ tử còn %d · Quái còn %d" % [
         str(run.region_id),str(report["outcome"]),float(report["time"]),
