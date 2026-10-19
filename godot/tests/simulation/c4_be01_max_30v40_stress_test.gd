@@ -67,6 +67,27 @@ func _run() -> void:
             battle.summary() == mirror.summary(),
             "max encounter changed with viewed/offscreen flag"):
         return
+    # Also verify the exact same 70-actor world can attach to the map
+    # without stepping simulation or changing seeded actions.
+    var before_view: Dictionary = battle.summary().duplicate(true)
+    var before_rng := battle.rng.snapshot_seed_state()
+    var world := MapBattleWorldLayerV2.new()
+    world.enable_source_vl_art = true
+    world.enable_spectator_framing = true
+    world.spectator_zoom_ceiling = 1.0
+    get_root().add_child(world)
+    world.attach_session(battle)
+    var names: Dictionary = {}
+    for actor_id in battle.actors:
+        names[str(actor_id)] = {"realm_index":30,"floor_index":10}
+    world.set_actor_view_metadata(names)
+    world.refresh_from_authority()
+    if not _check(battle.summary() == before_view and
+            battle.rng.snapshot_seed_state() == before_rng and
+            world._actor_view_metadata.size() == 70,
+            "70 actor UI attachment mutated actual simulation"):
+        return
+    world.queue_free()
     var saved := MapBattleSnapshotV2.save(battle)
     var loaded := MapBattleSnapshotV2.load(saved)
     if not _check(bool(loaded.get("ok",false)),
