@@ -141,6 +141,20 @@ func _ingest_authority_events() -> void:
                         "until":_frame_clock+0.24}
             # Impact belongs to the receiver; it MUST NOT restart the caster's
             # attack clip after the authoritative cast has already launched.
+        elif kind == "telegraph":
+            # Real boss/elite wind-up: animate when the red AoE zone appears,
+            # NOT when an area_slam hit resolves after the warning.
+            var caster_id := str(event.get("caster",""))
+            if battle.actors.has(caster_id):
+                _action_cues[caster_id] = {"action":"attack","started":_frame_clock,
+                    "until":_frame_clock+clampf(
+                        float(event.get("release_at",battle.now+0.45))-battle.now,
+                        0.15,1.2)}
+                var caster_at: Vector2 = battle.actors[caster_id]["position"]
+                var center: Vector2 = event.get("center",caster_at)
+                var aim := center-caster_at
+                if aim.length_squared() > 0.001:
+                    _facing[caster_id] = aim.normalized()
         elif kind == "skill_cast":
             var caster_id := str(event.get("actor_id", ""))
             if battle.actors.has(caster_id):
@@ -159,7 +173,7 @@ func _ingest_authority_events() -> void:
 # Only actual basic damage settlements start a swing without a separate cast event.
 # Pilot and learned-skill impacts never restart the caster's already-started clip.
 func should_start_attack_on_hit(event_type: String, damage_kind: String) -> bool:
-    return event_type == "hit" and damage_kind in ["basic","basic_followup","area_slam"]
+    return event_type == "hit" and damage_kind in ["basic","basic_followup"]
 
 func _actor_clip(actor_id: String, alive: bool) -> Dictionary:
     var cue: Dictionary = _action_cues.get(actor_id,{})
