@@ -27,11 +27,17 @@ var _frame_clock: float = 0.0
 var _event_cursor: int = 0
 var _facing: Dictionary = {}
 var _positions: Dictionary = {}
+# PRES-01 view-only position samples: an explicit 250ms render delay.
+# Every endpoint is a REAL authoritative position; never extrapolate movement.
+var _view_prev: Dictionary = {}
+var _view_next: Dictionary = {}
+var _view_elapsed: float = MapBattleV2.STEP_SECONDS
 var _last_move: Dictionary = {}
 var _action_cues: Dictionary = {}
 var _impact_cues: Dictionary = {}
 var _effect_atlas := CombatV4EffectAtlas.new()
 var _effect_cues: Array[Dictionary] = []
+var _status_feedback: Dictionary = {} # only actual event feedback, not status authority
 # Cosmetic-only overdraw budget: dropping FX never drops damage/cast events.
 const MAX_VISIBLE_SOURCE_FX := 12
 
@@ -51,6 +57,10 @@ func _process(delta: float) -> void:
     if enable_source_vl_art and battle != null and is_visible_in_tree():
         # Visual time follows elapsed frame time; never slow down VFX on sub-20-FPS devices.
         _frame_clock += maxf(0.0, delta)
+        _view_elapsed = minf(MapBattleV2.STEP_SECONDS, _view_elapsed + maxf(0.0, delta))
+        for id in _status_feedback.keys():
+            if _frame_clock > float(_status_feedback[id].get("until", 0.0)):
+                _status_feedback.erase(id)
         for i in range(_effect_cues.size()-1,-1,-1):
             var cue: Dictionary = _effect_cues[i]
             if _frame_clock-float(cue["started"]) > _effect_atlas.duration(str(cue["kind"])):
@@ -109,6 +119,11 @@ func _ingest_authority_events() -> void:
                     var aim := (battle.actors[target_id]["position"] as Vector2) - (battle.actors[source_id]["position"] as Vector2)
                     if aim.length_squared() > 0.001:
                         _facing[source_id] = aim.normalized()
+        elif kind in ["pilot_poison_applied", "pilot_hot_applied", "pilot_guard", "pilot_party_defense"]:
+            # Short response to events that ACTUALLY occurred. No source FX is invented.
+            var recipient := str(event.get("target", event.get("caster", "")))
+            if battle.actors.has(recipient):
+                _status_feedback[recipient] = {"kind":kind, "until":_frame_clock+0.85}
         elif kind == "pilot_impact":
             var victim := str(event.get("target",""))
             var source_id := str(event.get("caster",""))
@@ -117,9 +132,8 @@ func _ingest_authority_events() -> void:
                 if float(battle.actors[victim].get("hp",0.0)) > 0.0:
                     _action_cues[victim] = {"action":"hit","started":_frame_clock,
                         "until":_frame_clock+0.24}
-            if battle.actors.has(source_id):
-                _action_cues[source_id] = {"action":"attack","started":_frame_clock,
-                    "until":_frame_clock+0.26}
+            # Impact belongs to the receiver; it MUST NOT restart the caster's
+            # attack clip after the authoritative cast has already launched.
         elif kind == "skill_cast":
             var caster_id := str(event.get("actor_id", ""))
             if battle.actors.has(caster_id):
@@ -152,6 +166,10 @@ func attach_session(session: MapBattleV2) -> void:
     _frame_clock = 0.0
     _event_cursor = session.events.size() if session != null else 0
     _positions.clear()
+    _view_prev.clear()
+    _view_next.clear()
+    _view_elapsed = MapBattleV2.STEP_SECONDS
+    _status_feedback.clear()
     _facing.clear()
     _last_move.clear()
     _action_cues.clear()
@@ -160,14 +178,38 @@ func attach_session(session: MapBattleV2) -> void:
     if session != null:
         for id in session.actors:
             _positions[str(id)] = session.actors[id]["position"]
+            _view_prev[str(id)] = session.actors[id]["position"]
+            _view_next[str(id)] = session.actors[id]["position"]
             _facing[str(id)] = Vector2.RIGHT if str(session.actors[id].get("side","")) == "disciple" else Vector2.LEFT
     queue_redraw()
 
 func refresh_from_authority() -> void:
     if battle != null:
+        if enable_source_vl_art and battle.now != displayed_at:
+            # A tick lands after the previous frame render; sample the last
+            # visible position, then target only the new V2 snapshot endpoint.
+            var sampled: Dictionary = {}
+            for id in battle.actors:
+                var key := str(id)
+                var authoritative: Vector2 = battle.actors[id]["position"]
+                sampled[key] = visual_position(key, authoritative)
+            for id in battle.actors:
+                var key := str(id)
+                _view_prev[key] = sampled[key]
+                _view_next[key] = battle.actors[id]["position"]
+            _view_elapsed = 0.0
         displayed_at = battle.now
         _ingest_authority_events()
     queue_redraw()
+
+# Public deterministic probe for focused view-only tests.
+func visual_position(actor_id: String, authoritative: Vector2) -> Vector2:
+    if not enable_source_vl_art:
+        return authoritative
+    var start: Vector2 = _view_prev.get(actor_id, authoritative)
+    var finish: Vector2 = _view_next.get(actor_id, authoritative)
+    var alpha := clampf(_view_elapsed/MapBattleV2.STEP_SECONDS, 0.0, 1.0)
+    return start.lerp(finish, alpha)
 
 func point_on_map(logical_position: Vector2) -> Vector2:
     return stage_rect.position + Vector2(
@@ -195,7 +237,7 @@ func actor_at_map_point(map_position: Vector2, max_distance: float = 17.0) -> St
         var actor: Dictionary = battle.actors[id]
         if float(actor.get("hp",0.0)) <= 0.0:
             continue
-        var at := point_on_map(actor["position"])
+        var at := point_on_map(visual_position(str(id),actor["position"]))
         var dist := at.distance_squared_to(map_position)
         if dist < nearest:
             nearest = dist
@@ -256,17 +298,62 @@ func _hp_bar_y(art_key: String, action: String, facing: Vector2,
     var sprite_top := -float((frame["anchor"] as Vector2).y)*ratio
     return minf(fallback,sprite_top-10.0)
 
+# Moving a UI health bar is permitted; moving a character away from its
+# authoritative path is NOT. Layout remains deterministic for a given frame.
+func layout_hp_overlays(overlays: Array[Dictionary]) -> Array[Dictionary]:
+    var placed: Array[Dictionary] = []
+    for item in overlays:
+        var entry: Dictionary = item.duplicate()
+        var candidate: Rect2 = entry["rect"]
+        for attempt in range(32):
+            var collided := false
+            for other in placed:
+                if candidate.grow(3.0).intersects((other["rect"] as Rect2).grow(3.0)):
+                    collided = true
+                    break
+            if not collided:
+                break
+            candidate.position.y -= candidate.size.y + 6.0
+        entry["rect"] = candidate
+        placed.append(entry)
+    return placed
+
+func _school_tag(actor: Dictionary) -> String:
+    var loadout: Array = actor.get("pilot_loadout",[])
+    if loadout.has("jx_shaolin_15"):
+        return "TL"
+    if loadout.has("jx_wudang_159") or loadout.has("jx_wudang_158"):
+        return "VD"
+    if loadout.has("jx_wudu_63"):
+        return "ND"
+    if loadout.has("jx_emei_93"):
+        return "NM"
+    var role := str(actor.get("role",""))
+    return {"frontline":"CAN","ranged":"XA","healer":"HOI","mage":"PHAP"}.get(role,"DT")
+
+func _school_color(tag: String) -> Color:
+    return {
+        "TL":Color(0.96,0.68,0.32), "VD":Color(0.45,0.75,0.98),
+        "ND":Color(0.72,0.60,0.98), "NM":Color(0.53,0.91,0.66),
+        "CAN":Color(0.94,0.67,0.42), "XA":Color(0.49,0.83,0.88),
+        "HOI":Color(0.47,0.91,0.66), "PHAP":Color(0.68,0.70,0.98)
+    }.get(tag,Color(0.82,0.86,0.80))
+
 func _draw() -> void:
     if battle == null:
         return
     if draw_pilot_ground:
-        draw_rect(stage_rect,Color(0.09,0.15,0.13,1.0))
-        for grid_x in range(0,37,2):
-            var x := stage_rect.position.x+float(grid_x)*stage_rect.size.x/GRID_SIZE.x
-            draw_line(Vector2(x,stage_rect.position.y),Vector2(x,stage_rect.end.y),Color(0.16,0.25,0.18,0.18),1.0)
-        for grid_y in range(0,21,2):
-            var y := stage_rect.position.y+float(grid_y)*stage_rect.size.y/GRID_SIZE.y
-            draw_line(Vector2(stage_rect.position.x,y),Vector2(stage_rect.end.x,y),Color(0.16,0.25,0.18,0.18),1.0)
+        # Neutral procedural test-stage dressing, NOT mislabeled JX terrain.
+        # Remove debug grid; leave accurate world-to-screen geometry unchanged.
+        draw_rect(stage_rect,Color(0.10,0.17,0.14,1.0))
+        var horizon := stage_rect.position.y + stage_rect.size.y*0.38
+        draw_rect(Rect2(stage_rect.position,Vector2(stage_rect.size.x,horizon-stage_rect.position.y)),
+            Color(0.075,0.13,0.12,0.54))
+        draw_colored_polygon(PackedVector2Array([
+            Vector2(stage_rect.position.x,horizon+80.0),
+            Vector2(stage_rect.end.x,horizon+30.0),
+            stage_rect.end,Vector2(stage_rect.position.x,stage_rect.end.y)
+        ]),Color(0.16,0.20,0.15,0.26))
     # Telegraphs are projected onto the SAME world-space positions as actors.
     # Drawing them never changes target hit checks performed in MapBattleV2.
     var scale_x := stage_rect.size.x/GRID_SIZE.x
@@ -291,8 +378,8 @@ func _draw() -> void:
     # Presentation sort only, NEVER affects MapBattleV2 action/target order.
     if enable_source_vl_art:
         ids.sort_custom(func(a,b):
-            var at_a: Vector2 = battle.actors[a]["position"]
-            var at_b: Vector2 = battle.actors[b]["position"]
+            var at_a: Vector2 = visual_position(str(a), battle.actors[a]["position"])
+            var at_b: Vector2 = visual_position(str(b), battle.actors[b]["position"])
             # Exact lexicographic ordering is transitive, unlike epsilon ties.
             if at_a.y != at_b.y:
                 return at_a.y < at_b.y
@@ -304,7 +391,7 @@ func _draw() -> void:
         ids.sort()
     for id in ids:
         var actor: Dictionary = battle.actors[id]
-        var at := point_on_map(actor["position"])
+        var at := point_on_map(visual_position(str(id),actor["position"]))
         var side := str(actor.get("side",""))
         var alive := float(actor["hp"]) > 0.0
         var tier := str(actor.get("tier","normal"))
@@ -323,7 +410,7 @@ func _draw() -> void:
         var hp_y := -radius-10.0
         if enable_source_vl_art and not art_key.is_empty():
             var clip := _actor_clip(str(id),alive)
-            var art_scale := 2.30 if tier == "boss" else (1.18 if art_key == "wolf" else 0.92)
+            var art_scale := 1.52 if tier == "boss" else (1.12 if art_key == "wolf" else 0.92)
             draw_circle(at+Vector2(0.0,3.0),maxf(8.0,radius*1.25),Color(0.02,0.05,0.04,0.43))
             art_used = _source_atlas.draw_actor(self,art_key,str(clip["name"]),at,
                 _facing.get(str(id),Vector2.RIGHT),float(clip["age"]),art_scale)
@@ -335,11 +422,29 @@ func _draw() -> void:
             draw_circle(at,radius,fill)
         if tier == "boss" and alive:
             draw_arc(at,maxf(15.0,radius+3.0),0.0,TAU,24,Color(0.94,0.73,0.39,0.85),1.5)
+        if enable_source_vl_art and alive and side == "disciple":
+            var tag := _school_tag(actor)
+            var accent := _school_color(tag)
+            var marker := Rect2(at+Vector2(-15.0,8.0),Vector2(30.0,15.0))
+            draw_rect(marker,Color(0.035,0.065,0.07,0.90))
+            draw_rect(Rect2(marker.position,Vector2(3.0,marker.size.y)),accent)
+            draw_string(ThemeDB.fallback_font,marker.position+Vector2(3.0,11.5),
+                tag,HORIZONTAL_ALIGNMENT_CENTER,27,10,accent)
+        if enable_source_vl_art and alive and _status_feedback.has(str(id)):
+            var kind := str(_status_feedback[str(id)].get("kind",""))
+            var feedback := {
+                "pilot_poison_applied":"DOC", "pilot_hot_applied":"HOI",
+                "pilot_guard":"THU", "pilot_party_defense":"TRAN"
+            }.get(kind,"")
+            if not feedback.is_empty():
+                draw_string(ThemeDB.fallback_font,at+Vector2(-22.0,37.0),
+                    feedback,HORIZONTAL_ALIGNMENT_CENTER,44,11,Color(0.95,0.94,0.70))
+
         var health := clampf(float(actor["hp"])/maxf(1.0,float(actor["max_hp"])),0.0,1.0)
         var bar_width := 53.0 if tier == "boss" else (42.0 if art_used else 22.0)
         var bar_height := 5.5 if tier == "boss" else 4.0
         var bar := Rect2(at+Vector2(-bar_width*0.5,hp_y),Vector2(bar_width,bar_height))
-        if enable_source_vl_art:
+        if enable_source_vl_art and alive:
             # Bars are drawn after ALL sprites, preventing near-actor occlusion.
             hp_overlays.append({"rect":bar,"ratio":health,"fill":HP_GOOD if side == "disciple" else HP_ENEMY})
         else:
@@ -353,7 +458,7 @@ func _draw() -> void:
                     Color(1.0,0.80,0.40,0.88*(1.0-passed/0.30)),2.0)
 
     if enable_source_vl_art:
-        for overlay_value in hp_overlays:
+        for overlay_value in layout_hp_overlays(hp_overlays):
             var overlay: Dictionary = overlay_value
             var bounds: Rect2 = overlay["rect"]
             draw_rect(bounds,HP_BG)
