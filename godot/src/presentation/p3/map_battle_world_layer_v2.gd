@@ -41,7 +41,7 @@ var _status_feedback: Dictionary = {} # only actual event feedback, not status a
 # Cosmetic-only overdraw budget: dropping FX never drops damage/cast events.
 const MAX_VISIBLE_SOURCE_FX := 12
 
-func _queue_source_fx(kind: String, position: Vector2) -> void:
+func _queue_source_fx(kind: String, position: Vector2, actor_id: String = "") -> void:
     if _effect_cues.size() >= MAX_VISIBLE_SOURCE_FX:
         if kind == "sword_cast":
             return # prioritize resolved contacts over redundant cast overlays
@@ -51,7 +51,7 @@ func _queue_source_fx(kind: String, position: Vector2) -> void:
                 discard = i
                 break
         _effect_cues.remove_at(discard)
-    _effect_cues.append({"kind":kind,"at":position,"started":_frame_clock})
+    _effect_cues.append({"kind":kind,"at":position,"actor_id":actor_id,"started":_frame_clock})
 
 func _process(delta: float) -> void:
     if enable_source_vl_art and battle != null and is_visible_in_tree():
@@ -94,10 +94,16 @@ func _ingest_authority_events() -> void:
             elif kind == "hit" and str(event.get("kind","")) == "learned_skill":
                 if bool(announced_hits.get(contact_key,false)) and float(event.get("damage",0.0)) > 0.0:
                     if battle.actors.has(target):
-                        _queue_source_fx("sword_hit",point_on_map(battle.actors[target]["position"]))
+                        _queue_source_fx("sword_hit",point_on_map(battle.actors[target]["position"]),target)
                 announced_hits.erase(contact_key)
-            if battle.actors.has(source):
-                _action_cues[source] = {"action":"attack", "started":_frame_clock, "until":_frame_clock+0.45}
+            # skill_hit is an authoritative RELEASE notification, not a new attack.
+            # Its following learned_skill hit is settlement only: no second swing.
+            # Genuine basic attacks have no earlier wind-up event, so cue them here.
+            var damage_kind := str(event.get("kind",""))
+            if should_start_attack_on_hit(kind, damage_kind) and battle.actors.has(source):
+                var existing: Dictionary = _action_cues.get(source,{})
+                if existing.is_empty() or str(existing.get("action","")) != "attack" or                         not is_equal_approx(float(existing.get("started",-1.0)),_frame_clock):
+                    _action_cues[source] = {"action":"attack", "started":_frame_clock, "until":_frame_clock+0.45}
                 if battle.actors.has(target):
                     var direction := (battle.actors[target]["position"] as Vector2) - (battle.actors[source]["position"] as Vector2)
                     if direction.length_squared() > 0.001:
@@ -138,7 +144,7 @@ func _ingest_authority_events() -> void:
             var caster_id := str(event.get("actor_id", ""))
             if battle.actors.has(caster_id):
                 if str(event.get("skill_id","")) == "ngu_kiem_thuat":
-                    _queue_source_fx("sword_cast",point_on_map(battle.actors[caster_id]["position"]))
+                    _queue_source_fx("sword_cast",point_on_map(battle.actors[caster_id]["position"]),caster_id)
                 _action_cues[caster_id] = {"action":"attack","started":_frame_clock,
                     "until":_frame_clock+clampf(float(event.get("release_at",battle.now+0.45))-battle.now,0.15,1.0)}
         elif kind in ["heal","guard","cast"]:
@@ -148,6 +154,11 @@ func _ingest_authority_events() -> void:
         elif kind == "downed" and battle.actors.has(actor_id):
             _action_cues[actor_id] = {"action":"die","started":_frame_clock,"until":INF}
     _event_cursor = battle.events.size()
+
+# Only actual basic damage settlements start a swing without a separate cast event.
+# Pilot and learned-skill impacts never restart the caster's already-started clip.
+func should_start_attack_on_hit(event_type: String, damage_kind: String) -> bool:
+    return event_type == "hit" and damage_kind in ["basic","basic_followup","area_slam"]
 
 func _actor_clip(actor_id: String, alive: bool) -> Dictionary:
     var cue: Dictionary = _action_cues.get(actor_id,{})
@@ -348,6 +359,16 @@ func _school_color(tag: String) -> Color:
         "HOI":Color(0.47,0.91,0.66), "PHAP":Color(0.68,0.70,0.98)
     }.get(tag,Color(0.82,0.86,0.80))
 
+# Attach source FX to the visible character position, not one simulation tick
+# ahead of the interpolated sprite. No change to gameplay hit coordinates.
+func source_fx_screen_position(cue: Dictionary) -> Vector2:
+    var fallback: Vector2 = cue.get("at",Vector2.ZERO)
+    var actor_id := str(cue.get("actor_id",""))
+    if battle == null or actor_id.is_empty() or not battle.actors.has(actor_id):
+        return fallback
+    var real_position: Vector2 = battle.actors[actor_id]["position"]
+    return point_on_map(visual_position(actor_id,real_position))
+
 func _draw() -> void:
     if battle == null:
         return
@@ -379,7 +400,7 @@ func _draw() -> void:
     if enable_source_vl_art:
         for cue in _effect_cues:
             var ratio := 0.42 if str(cue["kind"]) == "sword_cast" else 0.66
-            _effect_atlas.draw_effect(self,str(cue["kind"]),cue["at"],
+            _effect_atlas.draw_effect(self,str(cue["kind"]),source_fx_screen_position(cue),
                 _frame_clock-float(cue["started"]),ratio)
     var hp_overlays: Array[Dictionary] = []
     var ids: Array = battle.actors.keys()
