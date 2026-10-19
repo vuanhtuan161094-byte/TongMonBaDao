@@ -1,3 +1,9 @@
+## 2026-10-19 — C4 JX1 rank + owner FX source branch (NEW; runtime PENDING)
+
+Owner authorized complete user-provided asset use and requested real cultivator/monster realm labels, monster power tiers, extra missing JX1 UI coverage. Independent branch `c4-jx1-rank-and-fx-source-20261019` forked from hardening `8f14d171744b3d332f198dc5fca9c2547a71989c`; main untouched. Imported SHA256-verified 7 original WebP (skills #158/#63/#93) and 106x11 PNG HP strip. Actual source-level Tu Vi/Body rank metadata delivered to presentation via `set_actor_view_metadata()` (because `MapBattleV2.setup` strips levels and actor names); generic live linked DiscipleState V2 progression/name also readable, no fabricated missing values. Pilot touch/left-click read-only name/Tu Vi/Luyện Thể/HP info. Opt-in source VFX only on real pilot event #158 impact, #63 positive impact and #93 precast, never replayed on refresh or zero hit. Remaining imported FX are unbound until correct atlas contracts; #15/#159 lack verified clips. No Combat V2/RNG/Save/Economy/main/PR20 changes. Adjacent focused GP01 extension + new JX source FX test authored; official Godot 4.7.2/Windows/Android runtime + owner UX still **PENDING**. Full details and SHA256 provenance in `docs/C4_GP01_FEEDBACK_IMPLEMENTATION_LOG_2026-10-19.md`. Need direct-chat one-click QA archive pinned to final branch SHA; no CI/FULL/merge.
+
+---
+
 ## 2026-10-19 — C4-JX1 UI READABILITY HARDENING / OWNER CONTINUATION
 
 **Baseline:** `c4-jx1-ui-source-first-20261019` at `5cd6889a9b25b2221515f8aad7a8882806d06106`, verified live before branching. **Current isolated CODE branch:** `c4-jx1-ui-readability-hardening-20261019`. Maintains original GP01 base `f2ea6852823d8bf5f7a1451c0cb975a0773364af`, Godot 4.7.2, Android landscape 1280x720. `main` and PR20 not changed.
