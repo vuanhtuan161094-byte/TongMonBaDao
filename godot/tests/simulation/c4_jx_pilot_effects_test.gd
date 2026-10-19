@@ -235,7 +235,7 @@ func _run() -> void:
         return
     for caster_index in range(4):
         JxPilotRuntimeV1.release(cap_battle,cap_battle.actors["p%d" % caster_index],
-            {"pilot_id":"jx_wudu_63","target_id":"jx_mob_1"})
+            {"pilot_id":"jx_wudu_63","target_id":"jx_mob_1"},MapBattleV2.STEP_SECONDS)
     var poison_stacks := 0
     for fx in cap_battle.actors["jx_mob_1"]["pilot_effects"]:
         if str(fx.get("kind","")) == "poison":
