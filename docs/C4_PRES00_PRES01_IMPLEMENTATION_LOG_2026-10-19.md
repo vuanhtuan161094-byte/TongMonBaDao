@@ -34,6 +34,23 @@ Review base at start of this pass: `441f55198a89b9ebc810fd117a42d6a222cdb5f9`. G
 
 **Current honesty gates:** GitHub source review/comparison is completed. GDScript official parse, actual test markers, headless 6v5 smoke, Windows 1280×720 screenshot/video, frame pacing/FPS, Android hardware and owner visual sign-off are all **PENDING**.
 
+## 2026-10-19 — final pre-Windows PRES-01 source review
+
+Owner requested a detailed second pass before physically running the computer. Starting SHA for this pass: `3337dadaadc815842c93925f0b98cfb29542dfe8`. The original C4 source architecture, authoritative `MapBattleV2.setup/step/_deal_direct/_begin_telegraphed_aoe/_release_casts`, the exact 6-v-5 pilot scene, atlas draw path, test contracts and PowerShell launcher were read again.
+
+**Evidence-based render corrections made on the same PRES-01 branch:**
+
+- HP and school/status tags now share a deterministic UI-only deconfliction pass **after** sprites/effect art so later-drawn sprites cannot obscure role text. The placement prefers original positions, alternates up/down if blocked, constrains labels/bars to the visible stage and does not offset a fighter, camera, hitbox, combat map transform or targeting. The crowded 11-label top-boundary case is asserted in the focused test. A 30-v-30 readability claim is explicitly NOT made.
+- Actual `MapBattleV2` emits a Boss/elite `telegraph` event when a real red delayed AoE warning is created; `area_slam` `hit` happens only at release. The renderer now starts the boss attack cue and faces the warning center upon the real `telegraph`, suppressing a second post-impact attack replay. A genuine boss test fixture checks the pre-release cue, warning geometry and no post-release restart.
+- The focused test now exercises a **genuine** V2 `ngu_kiem_thuat` cast `skill_cast -> skill_hit -> hit` (not merely the cue-policy helper), confirming no caster replay and one matching positive real-source hit FX.
+- The focused test also loads and instantiates the **real** `combat_v4_jx_pilot.tscn` fixture and verifies 6 real disciples, 5 real monsters, enabled presentation and eleven attached V2 positions. The PowerShell launcher explicitly invokes Godot `--scene` for headless smoke and GUI and requires version prefix `4.7.2.stable.official` rather than accepting arbitrary/custom 4.7.2 builds.
+
+**Audit limits:** Only static source read, GitHub branch/blob verification and delimiter/function-duplicate checks have been performed here. Static validation does not prove Godot grammar, shader/art import, actual test passes or Windows PowerShell execution. The Godot 4.7.2 executable and Windows runner are NOT present in this environment. All six focused markers, import, headless real scene, 1280x720 GUI, FPS, screenshot/video and owner UX remain **PENDING**. No QA ZIP/video from a Windows run was supplied for this pass.
+
+**Known residual visual debts (not mislabelled as fixed):** all six disciples still share a provisional hero sprite, 6-v-5 authoritative foot positions may converge because PRES-03 collision/formation is not authorised; five JX skill source-matched projectile/VFX/SFX integration remains PRES-02 and rights-gated; dense 30-actor crowds and Android hardware frame rate require a separate physical test.
+
+**After latest static review:** use the final HEAD of `c4-pres01-jx-motion-readability-20261019` in `RUN-C4-PRES01-WINDOWS.cmd -ExpectedSha <40-character SHA>`. The launcher creates an isolated TEMP checkout and archive (`C4_PRES01_QA_LOGS.zip`); leave the machine untouched until physical owner evidence is returned. No CI/FULL/merge.
+
 ## Test and evidence truth
 
 - GitHub connector file read/write and source metadata checks: **completed**.
