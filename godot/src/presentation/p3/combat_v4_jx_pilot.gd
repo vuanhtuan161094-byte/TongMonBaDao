@@ -1,5 +1,8 @@
 extends "res://src/presentation/p3/combat_v4_pilot.gd"
 
+# Pure view selection; never issues actions or modifies combat targeting.
+var _selected_actor_id: String = ""
+
 # Manual 1280x720 EP01 visual fixture; overrides only the demo line-up.
 # No edits to canonical disciples, learned skills, player save or rewards.
 func _ready() -> void:
@@ -14,9 +17,10 @@ func _ready() -> void:
             child.text = "THANH TRUC LAM  /  C4 JX1 BỐN PHÁI — PILOT"
     summary_label.size = Vector2(1150.0,26.0)
     summary_label.add_theme_font_size_override("font_size",14)
-    help_label.text = "JX SIM: Bất Động / Thất Tinh / Kiếm Phi / Độc Sa / Từ Hàng | 0.25s V2 | KHÔNG CÓ LOOT/SAVE | JX FX SPEC PENDING"
+    help_label.text = "CHẠM NHÂN VẬT/QUÁI ĐỂ XEM TU VI, LUYỆN THỂ VÀ HP | JX PILOT / COMBAT V2"
 
 func _begin_battle() -> void:
+    _selected_actor_id = ""
     battle = MapBattleV2.new(41726)
     var team: Array = []
     # Read-only nameplate/rank metadata belongs to the pilot view, NOT V2.
@@ -85,6 +89,41 @@ func _begin_battle() -> void:
     layer.set_actor_view_metadata(view_metadata)
     _update_summary()
 
+func _unhandled_input(event: InputEvent) -> void:
+    if layer == null or battle == null:
+        return
+    var position := Vector2.ZERO
+    if event is InputEventScreenTouch:
+        if not event.pressed:
+            return
+        position = event.position
+    elif event is InputEventMouseButton:
+        if not event.pressed or event.button_index != MOUSE_BUTTON_LEFT:
+            return
+        position = event.position
+    else:
+        return
+    var picked := layer.actor_at_map_point(position,48.0)
+    if not picked.is_empty():
+        _selected_actor_id = picked
+        _refresh_selected_info()
+
+func _refresh_selected_info() -> void:
+    if _selected_actor_id.is_empty() or battle == null or help_label == null:
+        return
+    if not battle.actors.has(_selected_actor_id):
+        _selected_actor_id = ""
+        return
+    var actor: Dictionary = battle.actors[_selected_actor_id]
+    var realm := layer.combat_actor_rank_label(actor)
+    var body := layer.combat_actor_body_label(actor)
+    help_label.text = "%s | Tu Vi: %s | Luyện Thể: %s | HP: %d/%d" % [
+        layer.combat_actor_label(actor),realm if not realm.is_empty() else "chưa có dữ liệu",
+        body if not body.is_empty() else "chưa có dữ liệu",
+        int(roundf(float(actor.get("hp",0.0)))),
+        int(roundf(float(actor.get("max_hp",0.0))))
+    ]
+
 func _update_summary() -> void:
     if battle == null:
         return
@@ -100,3 +139,4 @@ func _update_summary() -> void:
         int(stats["pilot_cast"]),int(stats["pilot_impact"]),
         int(stats["pilot_poison_tick"]),int(stats["pilot_hot_tick"])
     ]
+    _refresh_selected_info()
