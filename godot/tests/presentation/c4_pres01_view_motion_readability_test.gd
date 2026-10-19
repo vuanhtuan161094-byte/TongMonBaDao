@@ -257,8 +257,20 @@ func _run() -> void:
     if not _check(pilot_battle != null and pilot_layer != null,
             "C4 pilot _ready failed to build a real V2 battle + view"):
         return
-    if not _check(pilot_layer.enable_spectator_framing,
-            "real JX 6v5 pilot must enable its view-only fight camera"):
+    # JX1-like default is a wide, 1x 2D viewport; close zoom is OPTIONAL.
+    if not _check(pilot_layer.enable_jx1_hud
+            and not pilot_layer.enable_spectator_framing
+            and is_equal_approx(pilot_layer.spectator_zoom(),1.0),
+            "JX1 normal mode must have source-based HUD and no auto closeup"):
+        return
+    var camera_toggle := pilot.get_node_or_null("C4JXCameraToggle") as Button
+    if not _check(camera_toggle != null and camera_toggle.text == "GÓC GẦN",
+            "JX1 manual close-view button missing"):
+        return
+    pilot.call("_toggle_jx_camera")
+    if not _check(pilot_layer.enable_spectator_framing
+            and camera_toggle.text == "GÓC RỘNG",
+            "manual JX camera toggle did not select close framing"):
         return
     # The framing camera derives its goal from *real* V2 fighter positions;
     # it must not mutate any authority or invent physical spacing.
@@ -288,6 +300,12 @@ func _run() -> void:
             pilot_battle.events == camera_events and
             pilot_battle.rng.snapshot_seed_state() == camera_rng,
             "presentation camera mutated Combat V2 authority"):
+        return
+    pilot.call("_toggle_jx_camera")
+    if not _check(not pilot_layer.enable_spectator_framing
+            and is_equal_approx(pilot_layer.spectator_zoom(),1.0)
+            and camera_toggle.text == "GÓC GẦN",
+            "return to wide JX1 view did not reset visual zoom"):
         return
     var counted_disciples := 0
     var counted_monsters := 0
