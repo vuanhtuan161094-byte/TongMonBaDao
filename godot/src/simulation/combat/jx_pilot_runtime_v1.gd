@@ -63,13 +63,17 @@ static func try_cast(battle: Variant, caster: Dictionary, target: Dictionary) ->
         var travel_ticks := 0
         if kind == "projectile" or kind == "poison_hit":
             travel_ticks = int(ceil(distance/(float(skill.get("speed",8.0))*MapBattleV2.STEP_SECONDS)))
-        var release_time := battle.now + float(int(skill["cast_ticks"])+travel_ticks)*MapBattleV2.STEP_SECONDS
+        # Committing an action and the projectile reaching the target are
+        # distinct authoritative timestamps. Cooldown begins on commitment.
+        var commit_time := battle.now + float(int(skill["cast_ticks"]))*MapBattleV2.STEP_SECONDS
+        var release_time := commit_time+float(travel_ticks)*MapBattleV2.STEP_SECONDS
         var cast_id := str(battle.encounter_id)+":"+str(caster["id"])+":"+str(battle.actions+1)
         battle.pending_casts.append({
             "caster":str(caster["id"]),"target_id":str(victim["id"]),
-            "pilot_id":sid,"ready":release_time,"cast_id":cast_id
+            "pilot_id":sid,"commit_at":commit_time,"ready":release_time,
+            "cast_id":cast_id,"committed":false
         })
-        ready[sid] = battle.now+float(int(skill["cd_ticks"]))*MapBattleV2.STEP_SECONDS
+        ready[sid] = commit_time+float(int(skill["cd_ticks"]))*MapBattleV2.STEP_SECONDS
         caster["pilot_ready"] = ready
         battle._event("pilot_cast",{"caster":caster["id"],"target":victim["id"],
             "pilot_id":sid,"cast_id":cast_id,"release_at":release_time})
