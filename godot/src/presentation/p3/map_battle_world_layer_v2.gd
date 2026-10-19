@@ -54,6 +54,7 @@ var enable_combat_text: bool = true
 # Based on SourceInit-JX1 KNpc::PaintInfo/PaintLife/PaintBlood behavior.
 # No JX C++ or sprite binaries copied; draw primitive conversion only.
 var enable_jx1_hud: bool = false
+var jx1_selected_actor_id: String = ""
 var combat_text_detail: String = "standard" # minimal | standard | detailed
 var _combat_text: Array[Dictionary] = []
 
@@ -170,6 +171,32 @@ func _combat_feedback_color(category: String) -> Color:
             return Color(0.83,0.58,1.0,1.0)
         _:
             return Color(1.0,0.92,0.78,1.0)
+
+# JX1 displays ordinary NPC names and life on explicit selection.
+# Touch support follows the actual world-to-screen actor picking transform.
+func _unhandled_input(event: InputEvent) -> void:
+    if not enable_jx1_hud or battle == null:
+        return
+    var touch_at := Vector2(-100.0,-100.0)
+    if event is InputEventMouseButton:
+        var mouse := event as InputEventMouseButton
+        if mouse.button_index != MOUSE_BUTTON_LEFT or not mouse.pressed:
+            return
+        touch_at = mouse.position
+    elif event is InputEventScreenTouch:
+        var finger := event as InputEventScreenTouch
+        if not finger.pressed:
+            return
+        touch_at = finger.position
+    else:
+        return
+    if not stage_rect.has_point(touch_at):
+        return
+    var clicked := actor_at_map_point(touch_at,22.0)
+    if not clicked.is_empty():
+        jx1_selected_actor_id = clicked
+        queue_redraw()
+        get_viewport().set_input_as_handled()
 
 func _queue_source_fx(kind: String, position: Vector2, actor_id: String = "") -> void:
     if _effect_cues.size() >= MAX_VISIBLE_SOURCE_FX:
@@ -340,6 +367,7 @@ func attach_session(session: MapBattleV2) -> void:
     _impact_cues.clear()
     _effect_cues.clear()
     _combat_text.clear()
+    jx1_selected_actor_id = ""
     _camera_center = GRID_SIZE*0.5
     _camera_zoom = 1.0
     if session != null:
@@ -715,8 +743,11 @@ func _draw() -> void:
         var bar_height := (4.0 if tier == "boss" else 3.0) if enable_jx1_hud else (
             7.0 if tier == "boss" else (6.0 if art_used else 4.0))
         var bar := Rect2(at+Vector2(-bar_width*0.5,hp_y),Vector2(bar_width,bar_height))
-        if enable_source_vl_art and alive:
-            # Bars are drawn after ALL sprites, preventing near-actor occlusion.
+        var show_jx_hp := not enable_jx1_hud or side == "disciple" or (
+            jx1_selected_actor_id == str(id) or tier == "boss")
+        if enable_source_vl_art and alive and show_jx_hp:
+            # JX1 displays normal NPC HP/name when explicitly selected.
+            # Boss remains identified for the encounter's telegraph.
             var hp_tint := HP_GOOD if side == "disciple" else HP_ENEMY
             if enable_jx1_hud:
                 # KNpc::PaintLife: green >50%, yellow at 25..49%, then red.
@@ -732,13 +763,13 @@ func _draw() -> void:
                 ui_overlays.append({
                     "kind":"jx_name",
                     "rect":Rect2(at+Vector2(-name_width*0.5,hp_y-22.0),
-                        Vector2(name_width,17.0)),
-                    "text":name_text,
+                        Vector2(name_width,18.0)),
+                    "text":name_text,"selected":jx1_selected_actor_id == str(id),
                     "fill":Color(1.0,0.84,0.40) if tier == "boss" else (
                         Color(0.88,1.0,0.89) if side == "disciple" else
                         Color(1.0,0.86,0.76))
                 })
-        else:
+        elif not enable_jx1_hud:
             draw_rect(bar,HP_BG)
             draw_rect(Rect2(bar.position,Vector2(bar.size.x*health,bar.size.y)),
                 HP_GOOD if side == "disciple" else HP_ENEMY)
@@ -764,8 +795,8 @@ func _draw() -> void:
                 # Exact visual structure from KNpc::PaintInfo: border/shadowed
                 # colored text OVER sprite; no dark rectangular badge.
                 var label_text := str(overlay["text"])
-                var fontsize := 12
-                var baseline := bounds.position+Vector2(0.0,13.0)
+                var fontsize := 14 if bool(overlay.get("selected",false)) else 12
+                var baseline := bounds.position+Vector2(0.0,float(fontsize)+1.0)
                 for offset in [Vector2(-1.0,0.0),Vector2(1.0,0.0),
                         Vector2(0.0,-1.0),Vector2(0.0,1.0)]:
                     draw_string(ThemeDB.fallback_font,baseline+offset,label_text,
