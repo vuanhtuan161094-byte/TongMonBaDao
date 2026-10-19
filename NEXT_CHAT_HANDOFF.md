@@ -1,3 +1,13 @@
+## 2026-10-19 — C4-BE01 REAL HUNTING UI + MAX QA — CODE AUTHORIZED, RUNTIME PENDING
+
+Owner explicitly authorized implementing backend audit priority 1 and testing the engine at maximum legitimate stress: 30 disciples (five parties ×6) vs 40 monsters, 30 Tu Vi×10 and 30 Luyện Thể×10, 4 pilot slots per actor covering five JX source skills, all 3 existing P2 equipment slots and all 9 learned P2 definitions in **isolated test fixtures only**. The separate maximal pressure test does not change real regional difficulty 5 spawn (3–7 monsters) and does not grant users any XP/items. Active branch: `c4-be01-live-hunting-maxqa-20261019`, created from audit parent `ab554f931760dcd7acf7a968f8ffc144d5927449`. GitHub main `461caca1171462e0da092f21108c5c1733157ad9` unchanged.
+
+Production main-scene P3.2 now opens a real HuntingExpeditionPanelV2: choose region/difficulty, paginated true V2 recruit roster, up to 30 in legal teams, start/advance/resume/finish/claim using canonical HuntingPveRunV2 + existing LiveGameRuntimeV2.save, real MapBattleWorldLayerV2 display and genuine monster/name/realm read-only source metadata. No new scheduler or combat rules; One Active Job reservations checked by backend and existing SimulationScheduler. Tested authorization boundaries in two NEW targeted Godot SceneTree scripts `c4_be01_max_hunting_30v40_test.gd` and `c4_be01_live_hunt_ui_save_test.gd` (not yet EXECUTED). Safeguards include defeat/timeout cleanup, no fake payouts, no duplicate claim, failed save retry. UI only advances live fight while panel is open; no fake offscreen timer.
+
+Code + focused tests are committed but official Godot 4.7.2 runtime import, focused batch, Android 1280×720 and owner UX **PENDING**. Current container has no Godot and no GitHub DNS; tested only static source balancing/diff. No CI/FULL/merge and no simulation/Economy/SaveService/main/PR20 changes. See `docs/C4_BE01_LIVE_HUNT_MAX_QA_2026-10-19.md`. Roll back by using parent SHA in a clean isolated clone; don't report former GP01 runtime PASS on this branch.
+
+---
+
 ## 2026-10-19 — C4 backend source audit (READ-ONLY / NO SIMULATION CODE)
 
 Audit branch `audit/c4-backend-gap-contract-20261019` forks current C4 presentation HEAD `f757c5f162f85ebccda936b06ba8a06b07eac003`; GitHub main `461caca1171462e0da092f21108c5c1733157ad9` untouched. Detailed source evidence and prioritized, implementation-specific gates: `docs/C4_BACKEND_AUDIT_AND_CODE_PACKET_2026-10-19.md`.
