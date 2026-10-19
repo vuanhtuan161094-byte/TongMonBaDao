@@ -99,6 +99,21 @@ V1 transformations: Kim→Lôi, Mộc→Phong, Thủy→Băng, Hỏa→Dương, 
 - **Võ Đang source nuance:** #158/#165 JX attributes say Lôi damage, faction still Thổ. This pilot defines **ordinary Thổ-based Ngự Kiếm** (Thổ counter/root matching) with JX lightning-themed effect presentation; it **does not** fake Thiên Lôi. A future explicitly authored \`Kim+Lôi\` upgraded variant may opt into mutation mechanics if disciple actually owns the relevant awakened mutation. This is a transparent game adaptation from JX, not a claim the browser source's raw damage type is Thổ.
 - This preserves JX artwork and multi-element freedom *without breaking the already locked Kim→Lôi mutation dependency*. Native reference \`series=4 + lightingdamage_v\` stays recorded for provenance.
 
+### 1.5 Cảnh giới/ATK/HP authority — no extra JX faction multiplier
+
+The **user-locked** baseline before gear/Trait/etc. is computed from two *independent* progress tracks:
+
+\`\`\`text
+Gr = 1.65^(tu_vi_realm-1) * 1.03^(tu_vi_floor-1)
+Gb = 1.65^(body_realm-1) * 1.03^(body_floor-1)
+Pfac = 1 + 0.0005 * potential
+HP  = (100*Gr + 90*Gb) * Pfac
+ATK = (20*Gr +  3*Gb) * Pfac
+DEF = (12*Gr +  7*Gb) * Pfac
+\`\`\`
+
+V2 \`CombatStatsV2\` then applies legitimate flat/percent-add/pp/remaining-reduction sources. A special skill's **skill ratio multiplies one resolved authorized ATK damage packet**, not \`Gr\` or \`Gb\` again. A faction's native JX stage/level is **not** another player level, extra school multiplier or a reason to ignore Tu Vi/Luyện Thể imbalance. Tu Vi-biased versus Body-biased skill build categories below are **learning/pre-requisite categories**, and the actual base of \`CombatStatsV2.attack\` already includes both progress tracks.
+
 ## 2. PILOT COMBAT CONTRACT v1.0 — NUMERIC BASELINE LOCKED FOR QA
 
 ### 2.1 Rulebook applying to all 16 active entries
