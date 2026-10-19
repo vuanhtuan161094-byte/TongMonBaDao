@@ -267,15 +267,28 @@ func _run() -> void:
     var camera_rng: int = pilot_battle.rng.snapshot_seed_state()
     var camera_now: float = pilot_battle.now
     var goal: Dictionary = pilot_layer.spectator_camera_goal()
-    if not _check(float(goal["zoom"]) > 1.0 and float(goal["zoom"]) <= 2.10
-            and (goal["center"] as Vector2).x > 10.0,
-            "adaptive framing did not include the real initial 6v5 actor bounds"):
+    # The owner opted for unzoomed 1.0x JX-style overview in
+    # combat_v4_jx_pilot.gd. The former zoom>1 assertion was inherited
+    # from an earlier experimental magnified camera and is obsolete.
+    # Verify actual living actor midpoint and the currently authored cap,
+    # rather than silently changing the user's 1x presentation setting.
+    var low := Vector2(INF,INF)
+    var high := Vector2(-INF,-INF)
+    for live_actor in pilot_battle.actors.values():
+        if float(live_actor.get("hp",0.0)) <= 0.0:
+            continue
+        var at: Vector2 = live_actor["position"]
+        low = Vector2(minf(low.x,at.x),minf(low.y,at.y))
+        high = Vector2(maxf(high.x,at.x),maxf(high.y,at.y))
+    var correct_center := (low+high)*0.5
+    if not _check(is_equal_approx(float(goal["zoom"]),1.0)
+            and (goal["center"] as Vector2).distance_to(correct_center)<0.001,
+            "pilot 1x camera goal deviated from authentic 6v5 actor bounds"):
         return
     for _frame_no in range(100):
         pilot_layer._process(1.0/60.0)
-    if not _check(pilot_layer.spectator_zoom() > 1.0
-            and pilot_layer.spectator_zoom() <= 2.10,
-            "camera interpolation zoom escaped the optical 1..2.1 contract"):
+    if not _check(is_equal_approx(pilot_layer.spectator_zoom(),1.0),
+            "1x owner pilot unexpectedly zoomed/magnified actors"):
         return
     for live_actor in pilot_battle.actors.values():
         var position: Vector2 = live_actor["position"]
