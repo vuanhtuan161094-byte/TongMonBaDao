@@ -107,11 +107,11 @@ func _run() -> void:
             int(counts["damage"]) == hit_count-crit_count+1,
             "not matching real event-specific numeric categories"):
         return
-    if not _check(layer._combat_text.size() <= layer.MAX_VISIBLE_COMBAT_TEXT,
+    if not _check(layer._combat_text.size() <= MapBattleWorldLayerV2.MAX_VISIBLE_COMBAT_TEXT,
             "numerical render overdraw cap not enforced"):
         return
 
-    var subject: Dictionary = battle.actors["z_gp01_wolf"]
+    var subject: Dictionary = (battle.actors["z_gp01_wolf"] as Dictionary).duplicate(true)
     subject["pilot_effects"] = [
         {"kind":"poison","ticks_left":3},
         {"kind":"poison","ticks_left":1},
