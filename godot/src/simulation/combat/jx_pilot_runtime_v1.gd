@@ -3,7 +3,7 @@ extends RefCounted
 
 # Event consumers for explicitly equipped pilot skills only.
 # Source JX ID is provenance, not a game stat or an implicit learned skill.
-static func heal_target(battle: MapBattleV2, caster: Dictionary, radius: float) -> Dictionary:
+static func heal_target(battle: Variant, caster: Dictionary, radius: float) -> Dictionary:
     var keys: Array = battle.actors.keys()
     keys.sort()
     var selected: Dictionary = {}
@@ -28,7 +28,7 @@ static func heal_target(battle: MapBattleV2, caster: Dictionary, radius: float) 
         lowest = fraction
     return selected
 
-static func try_cast(battle: MapBattleV2, caster: Dictionary, target: Dictionary) -> bool:
+static func try_cast(battle: Variant, caster: Dictionary, target: Dictionary) -> bool:
     if str(caster.get("side","")) != "disciple":
         return false
     var loadout: Array = caster.get("pilot_loadout",[])
@@ -76,7 +76,7 @@ static func try_cast(battle: MapBattleV2, caster: Dictionary, target: Dictionary
         return true
     return false
 
-static func release(battle: MapBattleV2, caster: Dictionary, cast: Dictionary) -> void:
+static func release(battle: Variant, caster: Dictionary, cast: Dictionary) -> void:
     var sid := str(cast.get("pilot_id",""))
     var skill: Dictionary = JxPilotSkillsV1.definition(sid)
     if skill.is_empty():
@@ -153,7 +153,7 @@ static func release(battle: MapBattleV2, caster: Dictionary, cast: Dictionary) -
     target["pilot_effects"] = statuses
     battle._event("pilot_poison_applied",{"caster":caster["id"],"target":target["id"],"pilot_id":sid,"stacks":stacks if same >= 0 else stacks+1})
 
-static func tick(battle: MapBattleV2) -> void:
+static func tick(battle: Variant) -> void:
     var keys: Array = battle.actors.keys()
     keys.sort()
     for key in keys:
