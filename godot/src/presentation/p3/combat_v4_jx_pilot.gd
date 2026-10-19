@@ -7,6 +7,8 @@ func _ready() -> void:
     for child in get_children():
         if child is Label and str(child.text).begins_with("THANH TRUC LAM"):
             child.text = "THANH TRUC LAM  /  C4 JX1 BỐN PHÁI — PILOT"
+    summary_label.size = Vector2(1150.0,26.0)
+    summary_label.add_theme_font_size_override("font_size",14)
     help_label.text = "JX SIM: Bất Động / Thất Tinh / Kiếm Phi / Độc Sa / Từ Hàng | 0.25s V2 | KHÔNG CÓ LOOT/SAVE | JX FX SPEC PENDING"
 
 func _begin_battle() -> void:
