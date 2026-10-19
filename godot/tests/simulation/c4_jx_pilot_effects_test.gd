@@ -99,6 +99,9 @@ func _run() -> void:
     var poison_hits := 0
     var heal_hits := 0
     for e in initial.events:
+        if not _check(not (str(e.get("type","")) == "cast" and str(e.get("skill","")) == "area_burst"),
+            "opt-in JX mage received an unlearned legacy role AoE"):
+            return
         observed[str(e["type"])] = true
         if str(e["type"]) == "pilot_poison_tick":
             poison_hits += 1
