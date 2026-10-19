@@ -1,3 +1,11 @@
+## 2026-10-19 — C4 PRES-01 final pre-Windows handoff (CURRENT)
+
+**Current GitHub branch:** `c4-pres01-jx-motion-readability-20261019`. Following the initial HEAD `3337dada...`, a source-only second review improved bounded stage UI after-sprite overlays, genuine Boss AoE warning-time attacks and no post-impact replay; source-backed learned skill, Boss and real 6v5 scene assertions were added. Keep Code V2 authority unchanged. See `docs/C4_PRES00_PRES01_IMPLEMENTATION_LOG_2026-10-19.md`.
+
+**NEXT HUMAN ACTION:** take **latest exact 40-character branch HEAD**, run `tools/qa/RUN-C4-PRES01-WINDOWS.cmd -ExpectedSha <SHA>` on Windows with official Godot 4.7.2; the launcher does a TEMP clone and user data isolation, six focused gates, separate headless smoke, scene GUI 1280x720, ZIP log archive. Return `C4_PRES01_QA_LOGS.zip` and any actual screenshot/short video; report parser problems verbatim. **Official Godot PARSER + focused tests: PENDING. Visual owner sign-off: PENDING. Android FPS: PENDING.** No CI, FULL, merge or modifications to main/PR20/Combat V2/Economy/SaveService. Further JX source-skill projectile and formations belong to separate PRES-02/PRES-03 authorisation.
+
+---
+
 ## 2026-10-19 — C4 PRES-01 corrected QA handoff (LATEST)
 
 On `c4-pres01-jx-motion-readability-20261019`, inspect `docs/C4_PRES00_PRES01_IMPLEMENTATION_LOG_2026-10-19.md` and run **only** the isolated official Windows Godot 4.7.2 launcher `tools/qa/RUN-C4-PRES01-WINDOWS.cmd` from a checked-out copy; optionally provide `-ExpectedSha` for the final exact branch commit. The updated script checks six focused tests + one headless 6v5 scene smoke, captures logs/ZIP and opens the real 1280×720 scene. Any parser/visual failure requires true log/footage evidence and changes confined to PRES-01 presentation/test/QA/docs. **Godot runtime PENDING, owner UX PENDING**; screenshots, >=10s video, FPS and Android memory must not be invented. No CI/FULL/merge, no simulation, main/PR20/Economy/SaveService edits. PRES-02 projectile source integration and PRES-03 authoritative collision remain separately scoped.
