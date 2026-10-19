@@ -605,7 +605,32 @@ func _open_notice(title_text: String, body: String) -> void:
     _close_building_operation_panel(true)
     super._open_notice(title_text, body)
 
+# C4-BE01 integration sits on the actual PR20 G1/MAP25 sect viewport.
+# Keep every existing Source A/production/Workforce control intact.
+func _open_real_hunting() -> void:
+    if not runtime_ready or state == null or runtime_session == null:
+        return
+    _hide_sect_hub()
+    _close_disciple_summary(true)
+    _close_building_operation_panel(true)
+    _close_workforce_picker()
+    _clear_popup()
+    _clear_pointer_state()
+    var panel := HuntingPlayPanelV2.new()
+    panel.name = "LiveHuntingPveV2"
+    panel.request_guidance.connect(func():
+        if is_instance_valid(panel):
+            panel.queue_free()
+        _open_building(SectMapPresentation.DEST_GUIDANCE)
+    )
+    popup_layer.add_child(panel)
+    panel.open_session(runtime_session)
+
+
 func _bottom_action(action: String) -> void:
+    if action == "world":
+        _open_real_hunting()
+        return
     if action == "home":
         _clear_popup()
         _close_disciple_summary(true)
