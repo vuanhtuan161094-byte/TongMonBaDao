@@ -4,8 +4,17 @@ extends "res://src/presentation/p3/combat_v4_pilot.gd"
 # No edits to canonical disciples, learned skills, player save or rewards.
 func _ready() -> void:
     super._ready()
-    # Camera frames the actual moving 6v5 world feet; V2 positions stay fixed.
-    layer.enable_spectator_framing = true
+    # JX1 camera is a fixed 2D world viewport, NOT a 3D height and not
+    # an auto-zooming duel closeup. The close view remains user-selectable.
+    layer.enable_spectator_framing = false
+    layer.enable_jx1_hud = true
+    var camera_button := Button.new()
+    camera_button.name = "C4JXCameraToggle"
+    camera_button.text = "GÓC GẦN"
+    camera_button.position = Vector2(924.0,8.0)
+    camera_button.size = Vector2(130.0,38.0)
+    camera_button.pressed.connect(_toggle_jx_camera)
+    add_child(camera_button)
     for child in get_children():
         if child is Label and str(child.text).begins_with("THANH TRUC LAM"):
             child.text = "THANH TRUC LAM  /  C4 JX1 BỐN PHÁI — PILOT"
@@ -85,3 +94,14 @@ func _update_summary() -> void:
         int(stats["pilot_cast"]),int(stats["pilot_impact"]),
         int(stats["pilot_poison_tick"]),int(stats["pilot_hot_tick"])
     ]
+
+# View-only player choice. Button works on touch and Windows.
+func _toggle_jx_camera() -> void:
+    layer.enable_spectator_framing = not layer.enable_spectator_framing
+    if not layer.enable_spectator_framing:
+        layer._camera_zoom = 1.0
+        layer._camera_center = MapBattleWorldLayerV2.GRID_SIZE*0.5
+    var toggle := get_node_or_null("C4JXCameraToggle") as Button
+    if toggle != null:
+        toggle.text = "GÓC RỘNG" if layer.enable_spectator_framing else "GÓC GẦN"
+    layer.queue_redraw()
