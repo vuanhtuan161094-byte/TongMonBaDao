@@ -4,6 +4,8 @@ extends "res://src/presentation/p3/combat_v4_pilot.gd"
 # No edits to canonical disciples, learned skills, player save or rewards.
 func _ready() -> void:
     super._ready()
+    # Camera frames the actual moving 6v5 world feet; V2 positions stay fixed.
+    layer.enable_spectator_framing = true
     for child in get_children():
         if child is Label and str(child.text).begins_with("THANH TRUC LAM"):
             child.text = "THANH TRUC LAM  /  C4 JX1 BỐN PHÁI — PILOT"
