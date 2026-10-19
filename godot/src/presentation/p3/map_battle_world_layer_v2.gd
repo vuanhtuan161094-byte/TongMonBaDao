@@ -313,11 +313,23 @@ func _hp_bar_y(art_key: String, action: String, facing: Vector2,
 # Moving a UI health bar is permitted; moving a character away from its
 # authoritative path is NOT. Layout remains deterministic for a given frame.
 func layout_hp_overlays(overlays: Array[Dictionary]) -> Array[Dictionary]:
+    # Shared collision pass for HP, identity tags and status feedback.
+    # Keep every overlay inside the 1280x720 pilot's stage; otherwise a
+    # clustered group at the top edge can push HP completely off-screen.
     var placed: Array[Dictionary] = []
+    var bounds := stage_rect.grow(-4.0)
     for item in overlays:
         var entry: Dictionary = item.duplicate()
-        var candidate: Rect2 = entry["rect"]
-        for attempt in range(32):
+        var initial: Rect2 = entry["rect"]
+        var candidate := initial
+        candidate.position.x = clampf(initial.position.x,bounds.position.x,
+            bounds.end.x-initial.size.x)
+        var step := initial.size.y+6.0
+        for attempt in range(64):
+            var lane := int(ceil(float(attempt)*0.5))
+            var direction := -1.0 if attempt%2 == 1 else 1.0
+            candidate.position.y = clampf(initial.position.y+float(lane)*step*direction,
+                bounds.position.y,bounds.end.y-initial.size.y)
             var collided := false
             for other in placed:
                 if candidate.grow(3.0).intersects((other["rect"] as Rect2).grow(3.0)):
@@ -325,7 +337,6 @@ func layout_hp_overlays(overlays: Array[Dictionary]) -> Array[Dictionary]:
                     break
             if not collided:
                 break
-            candidate.position.y -= candidate.size.y + 6.0
         entry["rect"] = candidate
         placed.append(entry)
     return placed
@@ -403,7 +414,7 @@ func _draw() -> void:
             var ratio := 0.42 if str(cue["kind"]) == "sword_cast" else 0.66
             _effect_atlas.draw_effect(self,str(cue["kind"]),source_fx_screen_position(cue),
                 _frame_clock-float(cue["started"]),ratio)
-    var hp_overlays: Array[Dictionary] = []
+    var ui_overlays: Array[Dictionary] = []
     var ids: Array = battle.actors.keys()
     # Isometric depth: far-away feet draw first; stable ID tie prevents flicker.
     # Presentation sort only, NEVER affects MapBattleV2 action/target order.
@@ -455,12 +466,11 @@ func _draw() -> void:
             draw_arc(at,maxf(15.0,radius+3.0),0.0,TAU,24,Color(0.94,0.73,0.39,0.85),1.5)
         if enable_source_vl_art and alive and side == "disciple":
             var tag := _school_tag(actor)
-            var accent := _school_color(tag)
-            var marker := Rect2(at+Vector2(-21.0,8.0),Vector2(42.0,15.0))
-            draw_rect(marker,Color(0.035,0.065,0.07,0.90))
-            draw_rect(Rect2(marker.position,Vector2(3.0,marker.size.y)),accent)
-            draw_string(ThemeDB.fallback_font,marker.position+Vector2(3.0,11.5),
-                _actor_badge(actor),HORIZONTAL_ALIGNMENT_CENTER,39,10,accent)
+            ui_overlays.append({
+                "kind":"badge",
+                "rect":Rect2(at+Vector2(-21.0,8.0),Vector2(42.0,15.0)),
+                "text":_actor_badge(actor),"fill":_school_color(tag)
+            })
         if enable_source_vl_art and alive and _status_feedback.has(str(id)):
             var kind := str(_status_feedback[str(id)].get("kind",""))
             var feedback := {
@@ -468,8 +478,11 @@ func _draw() -> void:
                 "pilot_guard":"THU", "pilot_party_defense":"TRAN"
             }.get(kind,"")
             if not feedback.is_empty():
-                draw_string(ThemeDB.fallback_font,at+Vector2(-22.0,37.0),
-                    feedback,HORIZONTAL_ALIGNMENT_CENTER,44,11,Color(0.95,0.94,0.70))
+                ui_overlays.append({
+                    "kind":"status","rect":Rect2(at+Vector2(-22.0,37.0),
+                        Vector2(44.0,15.0)),
+                    "text":feedback,"fill":Color(0.95,0.94,0.70)
+                })
 
         var health := clampf(float(actor["hp"])/maxf(1.0,float(actor["max_hp"])),0.0,1.0)
         var bar_width := 53.0 if tier == "boss" else (42.0 if art_used else 22.0)
@@ -477,7 +490,8 @@ func _draw() -> void:
         var bar := Rect2(at+Vector2(-bar_width*0.5,hp_y),Vector2(bar_width,bar_height))
         if enable_source_vl_art and alive:
             # Bars are drawn after ALL sprites, preventing near-actor occlusion.
-            hp_overlays.append({"rect":bar,"ratio":health,"fill":HP_GOOD if side == "disciple" else HP_ENEMY})
+            ui_overlays.append({"kind":"hp","rect":bar,"ratio":health,
+                "fill":HP_GOOD if side == "disciple" else HP_ENEMY})
         else:
             draw_rect(bar,HP_BG)
             draw_rect(Rect2(bar.position,Vector2(bar.size.x*health,bar.size.y)),
@@ -489,9 +503,21 @@ func _draw() -> void:
                     Color(1.0,0.80,0.40,0.88*(1.0-passed/0.30)),2.0)
 
     if enable_source_vl_art:
-        for overlay_value in layout_hp_overlays(hp_overlays):
+        # LAST pass: front-row sprites and FX cannot hide role/HP labels.
+        # Moving UI boxes is permitted; sprite feet / battle target positions stay exact.
+        for overlay_value in layout_hp_overlays(ui_overlays):
             var overlay: Dictionary = overlay_value
             var bounds: Rect2 = overlay["rect"]
-            draw_rect(bounds,HP_BG)
-            draw_rect(Rect2(bounds.position,Vector2(bounds.size.x*float(overlay["ratio"]),bounds.size.y)),
-                overlay["fill"])
+            var kind := str(overlay.get("kind","hp"))
+            if kind == "hp":
+                draw_rect(bounds,HP_BG)
+                draw_rect(Rect2(bounds.position,
+                    Vector2(bounds.size.x*float(overlay["ratio"]),bounds.size.y)),
+                    overlay["fill"])
+            else:
+                draw_rect(bounds,Color(0.035,0.065,0.07,0.94))
+                if kind == "badge":
+                    draw_rect(Rect2(bounds.position,Vector2(3.0,bounds.size.y)),overlay["fill"])
+                draw_string(ThemeDB.fallback_font,bounds.position+Vector2(3.0,11.5),
+                    str(overlay["text"]),HORIZONTAL_ALIGNMENT_CENTER,
+                    bounds.size.x-4.0,10,overlay["fill"])
