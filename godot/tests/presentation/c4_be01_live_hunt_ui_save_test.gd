@@ -53,6 +53,13 @@ func _run() -> void:
             panel.difficulty.buttons.size()==5,
             "five-level modal or authentic roster did not open"):
         return
+    # All UI testing is performed at the highest REAL map difficulty.
+    var zone := str(panel.zone_choice.get_item_metadata(panel.zone_choice.selected))
+    var chosen := panel.difficulty.select_level(5)
+    if not _check(bool(chosen.get("ok",false)) and
+            HuntingMapV2.selected_level(state,zone)==5,
+            "max fifth region difficulty was not actually selected"):
+        return
     panel._toggle_member(true,str(member.id))
     if not _check(panel.selected_ids.size()==1 and
             not panel.start_button.disabled,
