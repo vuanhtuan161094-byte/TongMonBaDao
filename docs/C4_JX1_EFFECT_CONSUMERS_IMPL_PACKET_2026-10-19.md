@@ -28,6 +28,37 @@ No merge, no CI, no FULL tests, no changes to main, PR20, Economy, SaveService, 
 9. Existing non-pilot actors never lose legacy role heal/guard. Pilot actor with a non-empty pilot loadout does not gain those role abilities free in addition.
 10. Expiry, cooldown, hit, cast and status ordering are battle-authoritative; actor state snapshots contain effects; only test runtime can prove absence of Godot parse/restore issues.
 
+## 2026-10-19 — USER-AUTHORIZED QA CONTINUATION / HONEST RUNTIME STATUS
+
+The owner explicitly authorized official Godot 4.7.2 isolated import + **exactly three focused tests**, one 1280×720 visual battle and a six-person benchmark; repair only evidence-backed bugs; no CI/FULL/merge, main/PR20/Economy/Save untouched.
+
+**Environment evidence:** inspected Linux runner environment: no `godot` executable in PATH or local tool locations; no Windows/PowerShell; `git ls-remote` and `curl` GitHub release both failed **Could not resolve host: github.com**. Consequently NO Godot 4.7.2 import, parser test, headless combat, manual 1280×720 capture or actual eight-seed runtime measurements ran. **ALL RUNTIME GATES REMAIN PENDING**, including Windows and Android. GitHub connector code reads/writes succeeded, but do not mistake commits for runtime PASS.
+
+### Proof-driven repairs in this follow-up
+
+- **Missing canonical monster element:** `MonsterCatalogueV2.create_actor` returns `element`, while `MapBattleV2.setup` previously accepted only `primary_element`; ordinary monsters thus became empty-element and pilot attacks always used neutral matchup. Corrected default `primary_element = row.get("primary_element",row.get("element",""))`. Explicit monster primary overrides still work. Added test for a real `truc_thu` canonical wood element; baseline non-pilot damage remains unaffected.
+- **Duplicate death event on lethal same-tick Poison stacks:** `JxPilotRuntimeV1.tick` previously processed all poison effects despite target HP reaching zero from the first due stack, repeatedly emitting `downed`. Break processing immediately when target HP is zero; added focused setup 4 poison casters, global cap 3 and assert exactly **one** `downed` receipt when 3 stacks are due at once. Does not modify reward/SaveService.
+- **Pilot events invisible to V4 map view:** `MapBattleWorldLayerV2._ingest_authority_events` previously handled `skill_cast` and `skill_hit`, not `pilot_cast` or `pilot_impact`. Added read-only pilot cast and real-damage impact cues in V4 view. Does NOT substitute an unrelated sword VFX for JX skill art or affect battle RNG.
+- **Manual QA scene prepared:** `res://scenes/p3/combat_v4_jx_pilot.tscn` with separate `combat_v4_jx_pilot.gd`; 6 fixture disciples across the 4 schools, 5 real wolves including boss (faster visual coverage), 1280×720 inherited Godot project viewport, counters for cast/hit/poison/HoT, replay button; no player save/recruitment/loot/ownership modifications. **Scene import / visible frame PENDING**; do not call it a screenshot or completed manual battle.
+- **Multi-root/five-element checks expanded:** all five counter relations and reverse, full-root resonance, independently owned earth root, and canonical monster element preservation; tests written but not run.
+- **QA launcher prepared:** `tools/qa/Verify-C4-EP01-Windows.cmd` -> `.ps1`, isolated fresh TEMP clone, isolated `APPDATA/LOCALAPPDATA`, official Godot 4.7.2 version gate, branch commit log and optional `-ExpectedSha` branch drift guard, import and only three focused test scripts with explicit PASS markers. Optional `-OpenVisual` opens isolated manual scene; owner must still review actual output. No automatic CI/FULL/merge/production sync. **The launcher itself has not been run on Windows.**
+
+**Outstanding risks:** GDScript parser unresolved until official import, event fidelity visually unresolved, effect/boss balance not measured, full 16 skills and skill ownership integration outside this QA packet. Existing monster visual art can be fallback; source-specific JX skill FX assets not mapped in this packet.
+
+### Exact execution (when official Windows machine is available)
+
+From the **branch's** checked-out `tools/qa` folder run `Verify-C4-EP01-Windows.cmd` with Godot 4.7.2 available in PATH/Downloads or pass the executable:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/qa/Verify-C4-EP01-Windows.ps1 -GodotExe "C:\\Path\\Godot_v4.7.2-stable_win64_console.exe" -OpenVisual
+```
+
+The launcher clones the specified branch into a *separate* TEMP location and prints the EXACT commit SHA in `SUMMARY.txt`; if the owner wants an exact immutable SHA, additionally pass `-ExpectedSha <40-character SHA>`. Preserve `SUMMARY.txt`, `logs/01_import.log` through `logs/04_group.log`, the `C4-JX-PILOT BENCHMARK` line and screenshot/screen recording of manual scene. A successful runner exit does not certify the manual visual frame; owner visual acceptance remains PENDING. No local original clone, untracked files, or player save should be changed.
+
+**No permission implied to merge/main/PR20/Economy/Save, run FULL/CI or unlock extra 11 pilot skills.**
+
+---
+
 ## Focused QA instructions, isolated TEMP clone and save
 
 Use official Godot **4.7.2 stable**. Never run from the owner's live game workspace/save. Checkout exact branch HEAD into a *fresh clone under TEMP*, redirect Godot user data to an isolated TEMP location and check clean working tree before/after. Do not download untrusted executable assets from the JX Drive.
