@@ -13,6 +13,12 @@
 - **PRES-02 not implemented:** no JX projectile sprite, 16-direction FX graph, audio mix or source audio playback is represented as ready. #158/#63/other school FX only when exact source binary mapping is legally and technically cleared.
 - **PRES-03 not implemented:** 6 heroes may still converge to the same authoritative positions; this cannot be fixed by cosmetic offsets. No collision/formation/gameplay changes authorised.
 
+## One-click Windows handoff
+
+- `tools/qa/RUN-C4-PRES01-WINDOWS.cmd` invokes `Verify-C4-PRES01-Windows.ps1` in a newly cloned, TEMP-isolated branch. It checks official Godot version, the exact observed HEAD (supports optional `-ExpectedSha`), six existing/new focused markers, immutable tracked-source status during the run and opens the real `combat_v4_jx_pilot.tscn` scene at 1280×720.
+- Runtime script **created but not executed or validated in Windows** this session. If the launcher fails, report exact log; do not classify it as a Godot PASS.
+- The school badges use source-confirmed opt-in loadout IDs (TL, VD, ND, NM); generic actual roles are distinctly marked, and each pilot actor also gets its stable numeric identifier. The body texture remains provisional `hero`; no false claim of six unique sourced animated bodies.
+
 ## Test and evidence truth
 
 - GitHub connector file read/write and source metadata checks: **completed**.
