@@ -131,9 +131,32 @@ func _run() -> void:
     if not _check(basic_or_skill_hits > 0,"max test performed no real combat"):
         return
     # Negative boundary: 31st disciple and 41st monster must be rejected.
-    var overloaded := _setup(19)
-    if not _check(overloaded != null and overloaded.actors.size() == 70,
-            "max test did not maintain 70 fixed actors"):
+    # Build from existing valid actor dictionaries, changing only actor count.
+    var party_rows: Array = []
+    var monster_rows: Array = []
+    for actor_id in replay.actors.keys():
+        var actor: Dictionary = replay.actors[actor_id]
+        if str(actor.get("side","")) == "disciple":
+            party_rows.append(actor.duplicate(true))
+        else:
+            monster_rows.append(actor.duplicate(true))
+    var one_more_disciple: Dictionary = party_rows[0].duplicate(true)
+    one_more_disciple["id"] = "overflow_disciple"
+    one_more_disciple["party_id"] = "overflow_team"
+    party_rows.append(one_more_disciple)
+    var one_more_monster: Dictionary = monster_rows[0].duplicate(true)
+    one_more_monster["id"] = "overflow_monster"
+    monster_rows.append(one_more_monster)
+    var rejected_party := MapBattleV2.new(1901)
+    if not _check(not bool(rejected_party.setup("reject_party",party_rows,
+            monster_rows.slice(0,40)).get("ok",true)),
+            "31st disciple admitted past MAX_DISCIPLES"):
+        return
+    party_rows.pop_back()
+    var rejected_monsters := MapBattleV2.new(1902)
+    if not _check(not bool(rejected_monsters.setup("reject_monsters",party_rows,
+            monster_rows).get("ok",true)),
+            "41st monster admitted past MAX_MONSTERS"):
         return
     print("C4-BE01 MAX 30v40 / TUVI 30x10 / BODY 30x10 / LEGAL SKILLS / SAVE+REPLAY: PASS")
     quit(0)
