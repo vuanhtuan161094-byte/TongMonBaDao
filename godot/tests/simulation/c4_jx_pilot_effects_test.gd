@@ -137,7 +137,11 @@ func _run() -> void:
                 "party_id":"party_1","stats":_stats(),
                 "position":Vector2(7.0,8.0+float(flex_index)),
                 "hp":float(_stats()["max_hp"])})
-        var group := _mobs()
+        var group: Array = []
+        var regular := MonsterCatalogueV2.create_actor("truc_thu",1,1,"jx_bench_normal")
+        regular["id"] = "jx_bench_normal"
+        regular["position"] = Vector2(11.0,8.0)
+        group.append(regular)
         for j in range(3):
             var species := "hac_lang_vuong" if j == 0 else "thanh_lang"
             var mob := MonsterCatalogueV2.create_actor(species,1,1,"benchmark_%d" % j)
