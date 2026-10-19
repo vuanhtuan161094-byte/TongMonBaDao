@@ -120,6 +120,27 @@ func _run() -> void:
     if not _check((placed[0]["rect"] as Rect2) == bar1,
             "bar layout must never mutate original entry"):
         return
+    # Identical actor coordinates must not push real role/HP UI above the
+    # stage or make later actors' badges cover earlier actors' badges.
+    var crowded: Array[Dictionary] = []
+    for n in range(11):
+        crowded.append({"kind":"badge",
+            "rect":Rect2(Vector2(190.0,56.0),Vector2(42.0,15.0)),
+            "text":"TL"+str(n),"fill":Color.YELLOW})
+    var spaced := layer.layout_hp_overlays(crowded)
+    if not _check(spaced.size() == crowded.size(),
+            "crowded stage label layout silently lost a genuine actor"):
+        return
+    var safe_stage := layer.stage_rect.grow(-4.0)
+    for i in range(spaced.size()):
+        var rect: Rect2 = spaced[i]["rect"]
+        if not _check(safe_stage.encloses(rect),
+                "crowded HUD box escaped the 1280x720 arena bounds"):
+            return
+        for j in range(i):
+            if not _check(not rect.grow(3.0).intersects((spaced[j]["rect"] as Rect2).grow(3.0)),
+                    "crowded HUD boxes overlap after decluttering"):
+                return
     # Two separate display interactions do not step 0.25s simulation.
     var now_before := battle.now
     var actors_before: Dictionary = battle.actors.duplicate(true)
@@ -133,6 +154,54 @@ func _run() -> void:
             battle.events == events_before and battle.rng.snapshot_seed_state() == rng_before,
             "view frame changed authoritative simulation"):
         return
+    # Genuine V2 learned skill cast -> release -> hit is one on-screen
+    # caster swing, not two (or three) independent action starts.
+    var caster: Dictionary = member.duplicate(true)
+    caster["id"] = "c4_cast_hero"
+    caster.erase("pilot_skill_loadout")
+    caster["skill_loadout"] = ["ngu_kiem_thuat"]
+    caster["position"] = Vector2(6.0,9.0)
+    var cast_wolf: Dictionary = wolf.duplicate(true)
+    cast_wolf["id"] = "c4_cast_wolf"
+    cast_wolf["position"] = Vector2(8.0,9.0)
+    var release_battle := MapBattleV2.new(41726)
+    if not _check(bool(release_battle.setup("pres01_learned_event",
+            [caster],[cast_wolf]).get("ok",false)),
+            "genuine learned-skill V2 fixture cannot initialize"):
+        return
+    var release_view := MapBattleWorldLayerV2.new()
+    release_view.enable_source_vl_art = true
+    get_root().add_child(release_view)
+    release_view.attach_session(release_battle)
+    if not _check(release_battle._try_learned_damage_skill(
+            release_battle.actors["c4_cast_hero"],
+            release_battle.actors["c4_cast_wolf"]),
+            "genuine learned cast could not enter wind-up"):
+        return
+    release_view.refresh_from_authority()
+    var original_cue: Dictionary = release_view._action_cues.get("c4_cast_hero",{})
+    if not _check(not original_cue.is_empty()
+            and str(original_cue.get("action","")) == "attack",
+            "genuine skill_cast failed to animate caster"):
+        return
+    var action_started := float(original_cue["started"])
+    release_view._frame_clock += 0.17
+    release_battle.now = float(release_battle.pending_casts[0]["ready"])
+    release_battle._release_casts()
+    release_view.refresh_from_authority()
+    var resolved_cue: Dictionary = release_view._action_cues.get("c4_cast_hero",{})
+    if not _check(is_equal_approx(float(resolved_cue.get("started",-1.0)),
+            action_started),
+            "skill_hit/hit restarted the caster animation after settlement"):
+        return
+    var hit_fx_count := 0
+    for source_cue in release_view._effect_cues:
+        if str(source_cue.get("kind","")) == "sword_hit":
+            hit_fx_count += 1
+    if not _check(hit_fx_count == 1,
+            "positive learned settlement must produce one real-source impact FX"):
+        return
+    release_view.queue_free()
     layer.queue_free()
     print("C4 PRES-01 VIEW MOTION READABILITY: PASS")
     quit(0)
