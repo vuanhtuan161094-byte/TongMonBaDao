@@ -55,6 +55,10 @@ func setup(id: String, party: Array, monsters: Array) -> Dictionary:
         var role := str(row.get("role","frontline"))
         if actor_id.is_empty() or stats.is_empty() or not ARENA.has_point(pos) or not ["frontline","ranged","mage","healer"].has(role):
             return {"ok":false,"reason":"invalid_party_actor"}
+        if not JxPilotSkillsV1.valid_loadout(row.get("pilot_skill_loadout",[])):
+            return {"ok":false,"reason":"invalid_pilot_skill_loadout"}
+        if not JxPilotSkillsV1.valid_roots(row.get("spiritual_root_values",{})):
+            return {"ok":false,"reason":"invalid_pilot_root_values"}
         var hp := float(row.get("hp",float(stats.get("max_hp",0.0))))
         var max_hp := float(stats.get("max_hp",0.0))
         if hp <= 0.0 or max_hp <= 0.0 or hp > max_hp or float(stats.get("attack",0.0)) <= 0.0:
@@ -68,6 +72,10 @@ func setup(id: String, party: Array, monsters: Array) -> Dictionary:
             "basic_ratio":float(row.get("basic_ratio",1.0)),
             "basic_interval":float(row.get("basic_interval",1.6)),
             "skill_loadout":row.get("skill_loadout",[]).duplicate(true),
+            "pilot_loadout":row.get("pilot_skill_loadout",[]).duplicate(true),
+            "pilot_roots":row.get("spiritual_root_values",{}).duplicate(true),
+            "pilot_ready":{},"pilot_effects":[],
+            "pilot_guard_until":-1.0,"pilot_def_until":-1.0,
             "skill_factors":row.get("skill_factors",{}).duplicate(true),
             "skill_ready":{},
             "context_sources":row.get("context_sources",[]).duplicate(true),
@@ -94,6 +102,8 @@ func setup(id: String, party: Array, monsters: Array) -> Dictionary:
             "hp":float(row.get("hp",stats["max_hp"])),
             "max_hp":float(stats["max_hp"]),
             "resistances":row.get("resistances",{}).duplicate(true),
+            "primary_element":str(row.get("primary_element","")),
+            "pilot_effects":[],"pilot_guard_until":-1.0,"pilot_def_until":-1.0,
             "range":1.65 if tier == "boss" else 1.50,
             "move_speed":1.9 if tier == "boss" else 2.2,
             "next_basic":0.0,"next_skill":3.5 if tier == "boss" else 4.0,"guard_until":-1.0,
@@ -117,6 +127,7 @@ func step(viewed_map: bool = false) -> Dictionary:
         return {"ok":false,"reason":"encounter_not_active","outcome":outcome}
     now += STEP_SECONDS
     _release_casts()
+    JxPilotRuntimeV1.tick(self)
     var actor_ids: Array = actors.keys()
     actor_ids.sort()
     for id_value in actor_ids:
@@ -132,12 +143,16 @@ func step(viewed_map: bool = false) -> Dictionary:
         var target: Dictionary = _nearest_enemy(actor)
         if target.is_empty():
             continue
-        if str(actor["role"]) == "healer" and now >= float(actor["next_skill"]):
-            if _heal_ally(actor):
-                continue
-        if str(actor["role"]) == "frontline" and now >= float(actor["next_skill"]):
-            if _guard_frontline(actor):
-                continue
+        # Explicit pilot loadout replaces role-granted free support abilities.
+        if JxPilotRuntimeV1.try_cast(self,actor,target):
+            continue
+        if (actor.get("pilot_loadout",[]) as Array).is_empty():
+            if str(actor["role"]) == "healer" and now >= float(actor["next_skill"]):
+                if _heal_ally(actor):
+                    continue
+            if str(actor["role"]) == "frontline" and now >= float(actor["next_skill"]):
+                if _guard_frontline(actor):
+                    continue
         if now >= float(actor["next_skill"]) and _try_learned_damage_skill(actor,target):
             continue
         var distance := (actor["position"] as Vector2).distance_to(target["position"])
@@ -257,7 +272,7 @@ func _guard_frontline(actor: Dictionary) -> bool:
     actions += 1
     return true
 
-func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: String, eligible_lifesteal: bool, damage_element: String = "") -> float:
+func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: String, eligible_lifesteal: bool, damage_element: String = "", matchup_factor: float = 1.0) -> float:
     if float(attacker["hp"]) <= 0.0 or float(target["hp"]) <= 0.0:
         return 0.0
     var a_stats: Dictionary = attacker["stats"]
@@ -273,13 +288,20 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
         if not bool(context.get("ok",false)):
             return 0.0
         ratio *= float(context["outgoing_damage_factor"])
+    var guard_factor := 1.0
     if now < float(target.get("guard_until",-1.0)):
+        guard_factor *= 0.65
+    if now < float(target.get("pilot_guard_until",-1.0)):
+        guard_factor *= 0.75
+    if guard_factor < 1.0 or now < float(target.get("pilot_def_until",-1.0)):
         t_stats = t_stats.duplicate(true)
         var previous_reduction := clampf(float(t_stats.get("damage_reduction",0.0)),0.0,1.0)
-        t_stats["damage_reduction"] = 1.0-(1.0-previous_reduction)*0.65
+        t_stats["damage_reduction"] = 1.0-(1.0-previous_reduction)*guard_factor
+        if now < float(target.get("pilot_def_until",-1.0)):
+            t_stats["defense"] = float(t_stats.get("defense",0.0))*1.10
     var crit := false if kind == "basic_followup" else rng.chance(CombatStatsV2.effective_crit_chance(a_stats,t_stats))
     var hit := CombatStatsV2.resolve_direct_hit(
-        a_stats,t_stats,target["resistances"],ratio,crit,damage_element,1.0,true
+        a_stats,t_stats,target["resistances"],ratio,crit,damage_element,matchup_factor,true
     )
     if not bool(hit.get("ok",false)):
         return 0.0
@@ -375,6 +397,9 @@ func _release_casts() -> void:
             continue
         var caster: Dictionary = actors.get(str(cast["caster"]),{})
         if caster.is_empty() or float(caster["hp"]) <= 0.0:
+            continue
+        if cast.has("pilot_id"):
+            JxPilotRuntimeV1.release(self,caster,cast)
             continue
         if cast.has("skill_id"):
             var targeted: Dictionary = actors.get(str(cast["target_id"]),{})
