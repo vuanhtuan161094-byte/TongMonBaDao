@@ -102,7 +102,9 @@ func _ingest_authority_events() -> void:
             var damage_kind := str(event.get("kind",""))
             if should_start_attack_on_hit(kind, damage_kind) and battle.actors.has(source):
                 var existing: Dictionary = _action_cues.get(source,{})
-                if existing.is_empty() or str(existing.get("action","")) != "attack" or                         not is_equal_approx(float(existing.get("started",-1.0)),_frame_clock):
+                if (existing.is_empty()
+                        or str(existing.get("action","")) != "attack"
+                        or not is_equal_approx(float(existing.get("started",-1.0)),_frame_clock)):
                     _action_cues[source] = {"action":"attack", "started":_frame_clock, "until":_frame_clock+0.45}
                 if battle.actors.has(target):
                     var direction := (battle.actors[target]["position"] as Vector2) - (battle.actors[source]["position"] as Vector2)
