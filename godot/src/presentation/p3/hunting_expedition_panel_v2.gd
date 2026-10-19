@@ -112,9 +112,43 @@ func bind_runtime(runtime: LiveGameRuntimeV2) -> void:
         if bool(result.get("ok",false)):
             session = result["session"]
             battle_view.attach_session(session.battle)
+            battle_view.set_actor_view_metadata(_source_view_metadata())
             _say("Đã tiếp tục trận có checkpoint: "+str(id))
             break
     _refresh_actions()
+
+# Snapshot level/name metadata is view-only. The real battle strips spawn
+# realm coordinates; the original, reproducibly seeded spawn retains them.
+func _source_view_metadata() -> Dictionary:
+    var rows: Dictionary = {}
+    if session == null or game_state == null:
+        return rows
+    for enemy in session.spawn_data.get("monsters",[]):
+        var row: Dictionary = enemy
+        rows[str(row["id"])] = {
+            "realm_index":int(row.get("realm_index",0)),
+            "floor_index":int(row.get("floor_index",0))
+        }
+    for key in session.battle.actors.keys():
+        var actor: Dictionary = session.battle.actors[key]
+        if str(actor.get("side","")) != "disciple":
+            continue
+        if not game_state.disciples.has(StringName(str(key))):
+            continue
+        var living: DiscipleState = game_state.disciples[StringName(str(key))]
+        if not DiscipleRealmProgressV2.progression_ready(living):
+            continue
+        var progress: Dictionary = living.v2_realm_progress
+        var cultivation: Dictionary = progress["cultivation"]
+        var body: Dictionary = progress["body"]
+        rows[str(key)] = {
+            "display_name":str(living.display_name),
+            "realm_index":int(cultivation["realm"]),
+            "floor_index":int(cultivation["floor"]),
+            "body_realm_index":int(body["realm"]),
+            "body_floor_index":int(body["floor"])
+        }
+    return rows
 
 func _change_region(index: int) -> void:
     if game_state == null or index < 0 or index >= zone_choice.item_count:
@@ -215,6 +249,7 @@ func _begin_hunt() -> void:
         return
     session = run
     battle_view.attach_session(run.battle)
+    battle_view.set_actor_view_metadata(_source_view_metadata())
     elapsed = 0.0
     if not _checkpoint():
         _say("LỖI LƯU: trận đã khởi tạo trong RAM; tạm dừng để bảo vệ dữ liệu.")
@@ -310,6 +345,11 @@ func _close() -> void:
     if session != null:
         _checkpoint()
     queue_free()
+
+func _exit_tree() -> void:
+    # Closing from another Sect UI entry also preserves the live checkpoint.
+    if session != null and live_runtime != null:
+        _checkpoint()
 
 func _label(parent: Control, value: String, pos: Vector2, dimensions: Vector2, size: int) -> Label:
     var node := Label.new()
