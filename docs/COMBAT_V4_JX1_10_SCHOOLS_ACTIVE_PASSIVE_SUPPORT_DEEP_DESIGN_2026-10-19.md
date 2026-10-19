@@ -1,5 +1,8 @@
 # TÔNG MÔN BÁ ĐẠO — JX1 × COMBAT V4: THIẾT KẾ VÕ HỌC CHỦ ĐỘNG / BỊ ĐỘNG / HỖ TRỢ 10 PHÁI
 
+> **⚠️ DEEP REVIEW V2 SUPERSEDES SELECTED V1 MECHANICS (2026-10-19):** Before coding, read [`COMBAT_V4_JX1_DEEP_REVIEW_GAMEPLAY_SKILL_BLUEPRINT_V2_2026-10-19.md`](COMBAT_V4_JX1_DEEP_REVIEW_GAMEPLAY_SKILL_BLUEPRINT_V2_2026-10-19.md). This prior V1 file is a useful **source candidate list only**. The V2 audit corrects misclassified support vs passive and source-inferred trap/dash/root/detonate/instant-heal mechanics; it also corrects 0.25s tick timing, confirms new Drive asset closure (202/202 FX filenames, 117 complete five-clip actor groups, and old native 176 WebP +74 WAV). **V1 candidate damage ratios/cooldowns are NOT approved balance.**
+
+
 **Ngày thiết kế:** 2026-10-19. **Trạng thái:** OWNER REVIEW / DESIGN ONLY, NO GAMEPLAY CODE, NO MERGE, NO CI/FULL.
 **Source evidence A:** user Drive Võ Lâm Idle, `data.js` (240 definitions), `fx.js` (176 skill→VFX entries; 121 missile templates, 11 other FX templates) and `README.md` (unofficial fan-made research-only, noncommercial notice).
 **Source evidence B:** user Drive Giang Hồ Chi Chiến — Community Offline, `data/vltk/faction-coverage.json` (260 IDs, 13 phái, 118 web playable), `data/vltk-fx.json` compressed and JS `native-presentation.js` (cast/launch/impact graph).
