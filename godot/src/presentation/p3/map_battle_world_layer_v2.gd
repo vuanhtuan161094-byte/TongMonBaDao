@@ -247,12 +247,15 @@ func _ingest_authority_events() -> void:
                 if float(battle.actors[target].get("hp",0.0)) > 0.0:
                     _action_cues[target] = {"action":"hit","started":_frame_clock,"until":_frame_clock+0.24}
         elif kind == "pilot_cast":
-            # Actual EP01 cast packet, not a cosmetic attack inferred from class.
-            # Sword/poison/HoT asset mapping is PENDING; do not substitute the
-            # unrelated ngu_kiem_thuat FX for a different JX source skill.
+            # VFX is cued solely from an actual configured pilot cast.
+            # #93 HoT source precast is verified; #15/#159 visuals remain
+            # unmapped, never borrow another skill's animation.
             var source_id := str(event.get("caster",""))
             var target_id := str(event.get("target",""))
             if battle.actors.has(source_id):
+                if str(event.get("pilot_id","")) == "jx_emei_93":
+                    _queue_source_fx("jx_emei_93_precast",
+                        point_on_map(battle.actors[source_id]["position"]),source_id)
                 _action_cues[source_id] = {"action":"attack","started":_frame_clock,
                     "until":_frame_clock+0.45}
                 if battle.actors.has(target_id):
@@ -267,6 +270,13 @@ func _ingest_authority_events() -> void:
         elif kind == "pilot_impact":
             var victim := str(event.get("target",""))
             if float(event.get("effective_damage",0.0)) > 0.0 and battle.actors.has(victim):
+                var source_kind := {
+                    "jx_wudang_158":"jx_wudang_158_impact",
+                    "jx_wudu_63":"jx_wudu_63_impact"
+                }.get(str(event.get("pilot_id","")),"")
+                if not str(source_kind).is_empty():
+                    _queue_source_fx(str(source_kind),
+                        point_on_map(battle.actors[victim]["position"]),victim)
                 _impact_cues[victim] = _frame_clock
                 if float(battle.actors[victim].get("hp",0.0)) > 0.0:
                     _action_cues[victim] = {"action":"hit","started":_frame_clock,
@@ -732,8 +742,11 @@ func _draw() -> void:
     # Art cues are observations of real V2 casts/hits; draw BELOW actor silhouettes and HP.
     if enable_source_vl_art:
         for cue in _effect_cues:
-            var ratio := 0.42 if str(cue["kind"]) == "sword_cast" else 0.66
-            _effect_atlas.draw_effect(self,str(cue["kind"]),source_fx_screen_position(cue),
+            var source_kind := str(cue["kind"])
+            var ratio := 0.42 if source_kind in [
+                "sword_cast","jx_wudang_158_impact","jx_wudu_63_impact"
+            ] else 0.66
+            _effect_atlas.draw_effect(self,source_kind,source_fx_screen_position(cue),
                 _frame_clock-float(cue["started"]),ratio)
     var ui_overlays: Array[Dictionary] = []
     var ids: Array = battle.actors.keys()
@@ -889,7 +902,7 @@ func _draw() -> void:
             if kind == "hp":
                 draw_rect(bounds,HP_BG)
                 var hp_ratio := clampf(float(overlay["ratio"]),0.0,1.0)
-                if bool(overlay.get("monster",false)) and JX_HP_STRIP != null:
+                if hp_ratio > 0.0 and bool(overlay.get("monster",false)) and JX_HP_STRIP != null:
                     # Source strip pixels, cropped by real authoritative HP.
                     draw_texture_rect_region(JX_HP_STRIP,
                         Rect2(bounds.position,Vector2(bounds.size.x*hp_ratio,bounds.size.y)),
