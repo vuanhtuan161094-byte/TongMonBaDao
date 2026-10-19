@@ -77,6 +77,11 @@ static func build(
         "ok":true,"id":str(disciple.id),"party_id":party_id,
         "role":role,"position":position,"disciple":safe_live_link,
         "origin_disciple_id":str(disciple.id),
+        # Read-only source identity for the fight HUD and lossless replay.
+        # These are the SAME validated 30x10 coordinates passed to derive.
+        "display_name":disciple.display_name,
+        "realm_index":realm,"floor_index":floor_index,
+        "body_realm_index":body_realm,"body_floor_index":body_floor,
         "hp":CombatStatsV2.rescale_current_hp(
             disciple.hp,maxf(0.0001,disciple.max_hp),float(stats["max_hp"])
         ),
