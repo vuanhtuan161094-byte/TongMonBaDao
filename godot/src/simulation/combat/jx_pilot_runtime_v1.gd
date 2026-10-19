@@ -171,6 +171,10 @@ static func tick(battle: Variant) -> void:
             continue
         var keep: Array = []
         for entry in statuses:
+            # Multiple caster-owned Poison stacks may become due on one tick.
+            # A fatal first stack must not emit more downed or damage receipts.
+            if float(target["hp"]) <= 0.0:
+                break
             var fx: Dictionary = entry
             if battle.now+0.000001 >= float(fx.get("next_tick",INF)):
                 var kind := str(fx.get("kind",""))
