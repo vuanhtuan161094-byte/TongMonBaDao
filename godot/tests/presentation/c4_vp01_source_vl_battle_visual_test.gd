@@ -83,19 +83,29 @@ func _run() -> void:
     view.draw_pilot_ground = true
     get_root().add_child(view)
     view.attach_session(battle)
-    # Cropped Source VL anchors exceed some frame heights; use real top edge
-    # for hero + upscaled boss instead of static -78 / -110 offsets.
+    # Source VL wolf foot anchors can sit BELOW cropped image bounds.
+    # Check the true rendered atlas top, using its render-only foot correction.
+    # This is NOT an actor position or collision offset.
     for probe in [
-        {"key":"hero","scale":0.92,"radius":6.0,"bar_height":4.0},
-        {"key":"wolf","scale":2.30,"radius":10.0,"bar_height":5.5}
+        {"key":"hero","scale":0.92,"radius":6.0,"bar_height":6.0},
+        {"key":"wolf","scale":1.52,"radius":10.0,"bar_height":7.0}
     ]:
         var sprite_frame: Dictionary = atlas.frame_region(str(probe["key"]),"idle",Vector2.RIGHT,0.0)
         var ratio: float = float(probe["scale"])*float(sprite_frame["scale"])
-        var top: float = -float((sprite_frame["anchor"] as Vector2).y)*ratio
+        var anchor: Vector2 = sprite_frame["anchor"]
+        var crop: Rect2 = sprite_frame["source"]
+        var baseline := Vector2(500.0,300.0)
+        var drawn_foot := view.source_art_foot(str(probe["key"]),"idle",
+            Vector2.RIGHT,0.0,float(probe["scale"]),baseline)
+        var top := drawn_foot.y-anchor.y*ratio-baseline.y
         var y := view._hp_bar_y(str(probe["key"]),"idle",Vector2.RIGHT,0.0,
             float(probe["scale"]),float(probe["radius"]))
         if not _assert(y+float(probe["bar_height"]) < top,
-                "HP bar overlaps actual sprite top: "+str(probe["key"])):
+                "HP bar overlaps the actual adjusted source sprite top: "+str(probe["key"])):
+            return
+        var expected_drop := maxf(0.0,anchor.y-crop.size.y)*ratio
+        if not _assert(is_equal_approx(drawn_foot.y-baseline.y,expected_drop),
+                "source image moved by an ungrounded foot anchor offset: "+str(probe["key"])):
             return
     var before_now := battle.now
     var before_rng: int = battle.rng.snapshot_seed_state()
