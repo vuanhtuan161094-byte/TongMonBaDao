@@ -90,6 +90,82 @@ func _run() -> void:
         str(source_battle.actors["element_source"].get("primary_element","")) == "wood",
         "MonsterCatalogue elemental source lost during battle setup"):
         return
+    # A pilot kit and a learned P2 damage bar may not grant eight active slots.
+    var mixed_team: Array = _team()
+    mixed_team[1]["skill_loadout"] = ["ngu_kiem_thuat"]
+    var mixed_battle := MapBattleV2.new(932)
+    var mixed_result := mixed_battle.setup("mixed_active_bar",mixed_team,_mobs())
+    if not _check(not bool(mixed_result.get("ok",false)) and
+        str(mixed_result.get("reason","")) == "mixed_pilot_and_learned_active_slots",
+        "mixed pilot/learned skill loadout bypasses four-active slot limit"):
+        return
+    # Projectile cast wind-up is distinct from travel. At t=0.75 the cast
+    # has committed, its bolt remains in flight, and caster action is unlocked.
+    var ranged_team: Array = [{"id":"ranged_fixture","party_id":"range_party",
+        "role":"mage","position":Vector2(5.0,8.0),"stats":_stats(),
+        "pilot_skill_loadout":["jx_wudang_158"]}]
+    var flight_battle := MapBattleV2.new(19001)
+    var ranged_mob: Dictionary = _mobs()[0]
+    ranged_mob["position"] = Vector2(11.0,8.0)
+    if not _check(bool(flight_battle.setup("flight_focused",ranged_team,[ranged_mob]).get("ok",false)),
+        "ranged projectile fixture failed setup"):
+        return
+    flight_battle.step(false) # starts casting at t=0.25
+    if not _check(flight_battle.pending_casts.size() == 1,
+        "no queued cast during wind-up"):
+        return
+    var queued: Dictionary = flight_battle.pending_casts[0]
+    var committed_at := float(queued.get("commit_at",-1.0))
+    if not _check(is_equal_approx(committed_at,0.75) and
+        is_equal_approx(float(queued["ready"]),1.50) and
+        is_equal_approx(float(flight_battle.actors["ranged_fixture"]["pilot_ready"]["jx_wudang_158"]),5.75),
+        "cast/flight separation or cooldown starting at wrong timestamp"):
+        return
+    flight_battle.step(false) # t=0.50, actor locked
+    if not _check(flight_battle._actor_casting("ranged_fixture"),
+        "caster unlocked BEFORE cast completion"):
+        return
+    flight_battle.step(false) # t=0.75, launched but missile still in flight
+    if not _check(flight_battle.pending_casts.size() == 1 and
+        not flight_battle._actor_casting("ranged_fixture") and
+        bool(flight_battle.pending_casts[0].get("committed",false)),
+        "caster still immobilized during launched projectile"):
+        return
+    var commit_count := 0
+    for evt in flight_battle.events:
+        if str(evt.get("type","")) == "pilot_commit":
+            commit_count += 1
+    if not _check(commit_count == 1,"cast committed more than once"):
+        return
+    var flight_save := MapBattleSnapshotV2.save(flight_battle)
+    var flight_loaded := MapBattleSnapshotV2.load(JSON.parse_string(JSON.stringify(flight_save)))
+    if not _check(bool(flight_loaded.get("ok",false)),
+        "post-commit in-flight snapshot rejected"):
+        return
+    var restored_flight: MapBattleV2 = flight_loaded["battle"]
+    if not _check(restored_flight.pending_casts == flight_battle.pending_casts and
+        restored_flight.actors["ranged_fixture"]["pilot_ready"] ==
+        flight_battle.actors["ranged_fixture"]["pilot_ready"],
+        "in-flight snapshot lost commit state/cooldown"):
+        return
+    for _flight_step in range(7):
+        flight_battle.step(false)
+        restored_flight.step(true)
+    if not _check(flight_battle.events == restored_flight.events and
+        is_equal_approx(float(flight_battle.actors["jx_mob_1"]["hp"]),
+            float(restored_flight.actors["jx_mob_1"]["hp"])),
+        "post-flight impact mismatch after snapshot replay"):
+        return
+    var impacts := 0
+    var commits := 0
+    for evt in flight_battle.events:
+        if str(evt.get("type","")) == "pilot_impact":
+            impacts += 1
+        if str(evt.get("type","")) == "pilot_commit":
+            commits += 1
+    if not _check(impacts == 1 and commits == 1,
+        "duplicate projectile impact/commit packet"):
+        return
     var initial := _start(4444)
     if not _check(initial != null,"fixture"):
         return
