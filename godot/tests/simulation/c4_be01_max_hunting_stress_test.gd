@@ -62,6 +62,42 @@ func _setup(seed: int) -> MapBattleV2:
     return battle
 
 func _run() -> void:
+    # Full owned skill LIBRARY and speed equipment at maximal lawful realm
+    # input. Only authored damage effects may enter the active combat bar.
+    var sandbox := P37Factory.create_state(20261019)
+    var members: Array = sandbox.disciples.keys()
+    members.sort()
+    if not _check(not members.is_empty(),"P37 sandbox founder missing"):
+        return
+    var disciple: DiscipleState = sandbox.disciples[members[0]]
+    disciple.cultivation_stage_index = 9
+    sandbox.sect.combat_skills_enabled = true
+    sandbox.sect.equipment_enabled = true
+    for key in CombatSkillSystem.SKILLS:
+        disciple.learned_combat_skills[str(key)] = true
+    var unbuffed := DiscipleCombatLoadoutV2.build(
+        sandbox,disciple,30,10,30,10,"ranged",Vector2(7.0,8.0),"sandbox")
+    if not _check(bool(unbuffed.get("ok",false)) and
+            (unbuffed["skill_loadout"] as Array).size() == 2 and
+            (unbuffed["deferred_skill_ids"] as Array).size() == 7,
+            "nine learned authored P2 skills were not separated by actual consumer coverage"):
+        return
+    disciple.equipped_items["boots"] = "stress_boots_01"
+    sandbox.sect.equipment_items["stress_boots_01"] = {
+        "id":"stress_boots_01","recipe_id":"test_boots",
+        "slot":"boots","location":"equipped",
+        "owner_id":str(disciple.id),"path":"sword","element":"wood",
+        "stats":{"move_speed":0.50}
+    }
+    var boosted := DiscipleCombatLoadoutV2.build(
+        sandbox,disciple,30,10,30,10,"ranged",Vector2(7.0,8.0),"sandbox")
+    if not _check(bool(boosted.get("ok",false)) and
+            float(boosted["move_speed"]) > float(unbuffed["move_speed"]) and
+            float(boosted["stats"]["move_speed"]) > 1.0 and
+            float(boosted["stats"]["max_hp"]) > 0.0,
+            "max-level genuine equipment move speed not bridged to real battle input"):
+        return
+
     var source := _setup(1901940)
     if not _check(source != null,"max encounter setup or realm derivation failed"):
         return
