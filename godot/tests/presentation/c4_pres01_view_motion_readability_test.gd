@@ -41,6 +41,13 @@ func _run() -> void:
     if not _check(layer._school_tag(battle.actors["c4_member"]) == "TL",
             "actual equipped pilot ID not reflected in role marker"):
         return
+    if not _check(layer._actor_badge(battle.actors["c4_member"]) == "TL",
+            "un-numbered fixture must preserve meaningful school badge"):
+        return
+    if not _check(layer._actor_badge({"id":"c4_disciple_00","pilot_loadout":["jx_shaolin_15"]}) == "TL1" and
+            layer._actor_badge({"id":"c4_disciple_01","pilot_loadout":["jx_shaolin_15"]}) == "TL2",
+            "same school must retain stable distinct pilot member identifiers"):
+        return
     var advanced := false
     for i in range(12):
         if not battle.active:
