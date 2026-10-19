@@ -1,3 +1,5 @@
+> **OWNER OVERRIDE 2026-10-19 — CHÍNH XÁC / NÉ TRÁNH:** This document's historical "No normal Accuracy / Dodge" decision in §12.1 and the old 16-primary-stat count are **SUPERSEDED FOR THE NEXT CODED SCHEMA**, not yet implemented. The owner requires new buildable Accuracy and Evasion, target-specific Hit Chance, and genuine learned dodge skills. See [C4 Accuracy / Evasion / Movement / Skill Reaction DESIGN](C4_ACCURACY_EVASION_MOVEMENT_SKILL_REACTION_DESIGN_2026-10-19.md). Current live CombatStatsV2 code still has 16 primary stats and no normal miss roll; planned next schema has **18 primary stats**, retaining the existing ten elemental resistance keys, subject to focused migration tests. No change to current runtime is implied by this document edit.
+
 # COMBAT STATS V2 — TÔNG MÔN BÁ ĐẠO
 
 Date: 2026-10-07
