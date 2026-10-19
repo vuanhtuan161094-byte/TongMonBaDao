@@ -19,6 +19,8 @@ func _ready() -> void:
 func _begin_battle() -> void:
     battle = MapBattleV2.new(41726)
     var team: Array = []
+    # Read-only nameplate/rank metadata belongs to the pilot view, NOT V2.
+    var view_metadata: Dictionary = {}
     var roles := ["frontline","mage","mage","healer","ranged","frontline"]
     var kits := [
         ["jx_shaolin_15"],
@@ -54,6 +56,11 @@ func _begin_battle() -> void:
             "spiritual_root_values":root_sets[i]
         }
         team.append(row)
+        # Exact fixture realm coordinates used by CombatStatsV2.derive.
+        view_metadata[str(row["id"])] = {
+            "realm_index":2,"floor_index":1,
+            "body_realm_index":2,"body_floor_index":1
+        }
     var foes: Array = []
     var species := ["thanh_lang","thanh_lang","hac_lang","thanh_lang","hac_lang_vuong"]
     for i in range(species.size()):
@@ -64,6 +71,10 @@ func _begin_battle() -> void:
         mob["id"] = "c4_monster_%02d" % i
         mob["position"] = Vector2(23.0+float(i%3)*1.1,8.0+float(i/3)*1.4)
         foes.append(mob)
+        view_metadata[str(mob["id"])] = {
+            "realm_index":int(mob["realm_index"]),
+            "floor_index":int(mob["floor_index"])
+        }
     var start := battle.setup("c4_jx_four_schools_visual",team,foes)
     if not bool(start.get("ok",false)):
         push_error("C4 JX visual battle setup failed: "+str(start))
@@ -71,6 +82,7 @@ func _begin_battle() -> void:
     elapsed_buffer = 0.0
     is_paused = false
     layer.attach_session(battle)
+    layer.set_actor_view_metadata(view_metadata)
     _update_summary()
 
 func _update_summary() -> void:
