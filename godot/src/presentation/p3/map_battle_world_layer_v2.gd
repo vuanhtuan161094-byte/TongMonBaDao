@@ -676,6 +676,10 @@ func combat_actor_label(actor: Dictionary) -> String:
     var source: Dictionary = _actor_view_metadata.get(str(actor.get("id","")),{})
     var authored := str(source.get("display_name",
         actor.get("display_name",actor.get("name","")))).strip_edges()
+    if authored.is_empty():
+        var linked: Variant = actor.get("linked_disciple",null)
+        if linked is DiscipleState:
+            authored = str(linked.display_name).strip_edges()
     if not authored.is_empty():
         return authored
     if str(actor.get("side","")) == "monster":
