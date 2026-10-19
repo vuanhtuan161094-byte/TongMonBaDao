@@ -82,10 +82,10 @@ func _run() -> void:
             (unbuffed["deferred_skill_ids"] as Array).size() == 7,
             "nine learned authored P2 skills were not separated by actual consumer coverage"):
         return
-    disciple.equipped_items["boots"] = "stress_boots_01"
-    sandbox.sect.equipment_items["stress_boots_01"] = {
-        "id":"stress_boots_01","recipe_id":"test_boots",
-        "slot":"boots","location":"equipped",
+    disciple.equipped_items["armor"] = "stress_armor_01"
+    sandbox.sect.equipment_items["stress_armor_01"] = {
+        "id":"stress_armor_01","recipe_id":"tinh_lang_giap",
+        "slot":"armor","location":"equipped",
         "owner_id":str(disciple.id),"path":"sword","element":"wood",
         "stats":{"move_speed":0.50}
     }
