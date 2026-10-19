@@ -51,7 +51,7 @@ func _build() -> void:
         return
     mouse_filter = Control.MOUSE_FILTER_STOP
     var shade := ColorRect.new()
-    shade.color = Color(0.055,0.10,0.085,0.98)
+    shade.color = Color(0.91,0.86,0.72,0.99)
     shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     add_child(shade)
 
@@ -60,7 +60,7 @@ func _build() -> void:
     header.size = Vector2(1000,39)
     header.text = "THẾ GIỚI / SĂN QUÁI — COMBAT V2"
     header.add_theme_font_size_override("font_size",22)
-    header.add_theme_color_override("font_color",Color(0.94,0.85,0.62))
+    header.add_theme_color_override("font_color",Color(0.16,0.24,0.20,1.0))
     add_child(header)
 
     var close := Button.new()
@@ -77,6 +77,8 @@ func _build() -> void:
     var column := VBoxContainer.new()
     column.add_theme_constant_override("separation",5)
     left.add_child(column)
+    left.add_theme_stylebox_override("panel",_hunting_panel_style(
+        Color(0.975,0.94,0.84,1.0),Color(0.39,0.31,0.20,1.0)))
 
     var region_text := Label.new()
     region_text.text = "Khu vực"
@@ -154,6 +156,8 @@ func _build() -> void:
     var viewing := Control.new()
     viewing.clip_contents = true
     battlefield.add_child(viewing)
+    battlefield.add_theme_stylebox_override("panel",_hunting_panel_style(
+        Color(0.10,0.17,0.14,1.0),Color(0.35,0.29,0.18,1.0)))
 
     battle_layer = MapBattleWorldLayerV2.new()
     battle_layer.position = Vector2.ZERO
@@ -169,9 +173,30 @@ func _build() -> void:
     status.size = Vector2(1230,71)
     status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     status.add_theme_font_size_override("font_size",15)
-    status.add_theme_color_override("font_color",Color(0.92,0.89,0.77))
+    status.add_theme_color_override("font_color",Color(0.16,0.23,0.18,1.0))
     add_child(status)
+    # Match G1/MAP25 parchment and ink; Source-VL combat renderer stays unchanged.
+    for control in [close,launch_button,resume_button,claim_button,guidance_button]:
+        control.add_theme_stylebox_override("normal",_hunting_panel_style(
+            Color(0.20,0.38,0.30,1.0),Color(0.60,0.48,0.28,1.0)))
+        control.add_theme_stylebox_override("hover",_hunting_panel_style(
+            Color(0.28,0.49,0.38,1.0),Color(0.81,0.65,0.37,1.0)))
+        control.add_theme_color_override("font_color",Color(0.97,0.94,0.84,1.0))
+    for label in [region_text,level_text,roster_text,roster_diagnostics]:
+        label.add_theme_color_override("font_color",Color(0.18,0.24,0.17,1.0))
     _status("Cần đệ tử thật có Tu Vi/Luyện Thể V2 và rảnh. Nhấn 'Tuyển đệ tử V2' để tới Dẫn Tiên Đài.")
+
+func _hunting_panel_style(fill: Color, outline: Color) -> StyleBoxFlat:
+    var style := StyleBoxFlat.new()
+    style.bg_color = fill
+    style.border_color = outline
+    style.set_border_width_all(2)
+    style.set_corner_radius_all(10)
+    style.content_margin_left = 8.0
+    style.content_margin_right = 8.0
+    style.content_margin_top = 8.0
+    style.content_margin_bottom = 8.0
+    return style
 
 func _status(message: String) -> void:
     if status != null:
