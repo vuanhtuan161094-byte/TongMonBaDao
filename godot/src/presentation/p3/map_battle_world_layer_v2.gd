@@ -487,10 +487,10 @@ func _draw() -> void:
             })
         if enable_source_vl_art and alive and _status_feedback.has(str(id)):
             var kind := str(_status_feedback[str(id)].get("kind",""))
-            var feedback := {
+            var feedback: String = str({
                 "pilot_poison_applied":"DOC", "pilot_hot_applied":"HOI",
                 "pilot_guard":"THU", "pilot_party_defense":"TRAN"
-            }.get(kind,"")
+            }.get(kind,""))
             if not feedback.is_empty():
                 ui_overlays.append({
                     "kind":"status","rect":Rect2(at+Vector2(-22.0,37.0),
