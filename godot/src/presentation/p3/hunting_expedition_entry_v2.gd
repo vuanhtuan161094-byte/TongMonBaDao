@@ -10,19 +10,24 @@ static func eligible_roster(state: SimulationState) -> Array[Dictionary]:
         return result
     var ids: Array = state.disciples.keys()
     ids.sort()
+    var buildings := BuildingSystem.new()
     for raw in ids:
         var disciple: DiscipleState = state.disciples[raw]
         if disciple == null:
             continue
         if disciple.hp <= 0.0 or disciple.injury_level != 0:
             continue
-        if disciple.region_id != &"sect" or not disciple.current_action in [
+        if disciple.region_id != &"sect" or not (disciple.current_action in [
             &"EVALUATE", &"IDLE", &"HOLD"
-        ]:
+        ]):
             continue
         if not disciple.active_pve_encounter_id.is_empty() or not disciple.work_cycle_state.is_empty():
             continue
-        if not DiscipleRealmProgressV2.valid_profile(disciple.v2_realm_progress):
+        if buildings.disciple_has_active_spirit_plot(state,disciple.id) or \
+                buildings.disciple_has_active_timed_recipe(state,disciple.id) or \
+                DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple):
+            continue
+        if not DiscipleRealmProgressV2.progression_ready(disciple):
             # Legacy/non-V2 disciples may need a separately authorized
             # migration, never infer cultivation from legacy combat_power.
             continue
