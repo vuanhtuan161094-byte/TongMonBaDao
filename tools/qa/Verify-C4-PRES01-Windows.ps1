@@ -46,6 +46,13 @@ function Invoke-GodotQA([string]$Name, [string[]]$GodotArguments, [string]$PassM
         $ErrorActionPreference = $oldPreference
     }
     Require-Zero $Name $code
+    # A successful process exit is insufficient when Godot logged a script
+    # parse/import failure yet continued running another scene or test.
+    if (Select-String -LiteralPath $out -Pattern @(
+            "SCRIPT ERROR:", "Parse Error:", "Parser Error:",
+            "Failed to load script", "Error parsing") -SimpleMatch -Quiet) {
+        throw "$Name logged a Godot parser/import error despite exit 0: $out"
+    }
     if ($PassMarker -ne "" -and -not (Select-String -LiteralPath $out -Pattern $PassMarker -SimpleMatch -Quiet)) {
         throw "$Name exit 0 but missing explicit PASS marker '$PassMarker': $out"
     }
@@ -73,8 +80,15 @@ try {
     if ([string]::IsNullOrWhiteSpace($GodotExe) -or -not (Test-Path -LiteralPath $GodotExe -PathType Leaf)) {
         throw "Godot 4.7.2 runner NOT FOUND. Supply -GodotExe 'C:\\path\\Godot.exe'. Runtime PENDING."
     }
-    $version = (& $GodotExe --version | Out-String).Trim()
-    Require-Zero "Godot version" ([int]$LASTEXITCODE)
+    $oldPreference = $ErrorActionPreference
+    try {
+        $ErrorActionPreference = "Continue"
+        $version = (& $GodotExe --version 2>&1 | Out-String).Trim()
+        $versionCode = [int]$LASTEXITCODE
+    } finally {
+        $ErrorActionPreference = $oldPreference
+    }
+    Require-Zero "Godot version" $versionCode
     if ($version -notmatch "^4[.]7[.]2([.]|$)") {
         throw "Wrong Godot runner: '$version'; requires 4.7.2 stable."
     }
@@ -105,6 +119,8 @@ try {
     # Compare the tracked status before and after Godot instead of false PASS/FAIL.
     $baselineTracked = (& $git.Source -C $clone status --porcelain --untracked-files=no | Out-String).Trim()
     Require-Zero "baseline tracked status" ([int]$LASTEXITCODE)
+    $baselineDiff = (& $git.Source -C $clone diff --binary --no-ext-diff | Out-String)
+    Require-Zero "baseline tracked diff" ([int]$LASTEXITCODE)
     Write-Host "Pre-QA tracked status: $baselineTracked"
     $project = Join-Path $clone "godot"
     if (-not (Test-Path -LiteralPath (Join-Path $project "project.godot"))) {
@@ -130,16 +146,28 @@ try {
         "res://tests/presentation/c4_vp01_source_vl_battle_visual_test.gd") "C4-VP01 SOURCE VL REAL ATLAS + MAPBATTLE V2 VISUAL TEST: PASS"
     Invoke-GodotQA "07_cast_schema" @("--headless","--path",$project,"--script",
         "res://tests/presentation/combat_v4_world_layer_cast_schema_test.gd") "C4-01 WORLD CAST SCHEMA: SINGLE TARGET / BOSS AOE / INVALID CAST / PURE VIEW / RELEASE PASS"
+    # Parse the real 6v5 pilot scene in the official runtime, not just its tests.
+    Invoke-GodotQA "08_scene_smoke" @("--headless","--path",$project,
+        "--quit-after","30","res://scenes/p3/combat_v4_jx_pilot.tscn") ""
 
     $tracked = (& $git.Source -C $clone status --porcelain --untracked-files=no | Out-String).Trim()
     Require-Zero "tracked worktree check" ([int]$LASTEXITCODE)
-    if ($tracked -ne $baselineTracked) {
-        throw "Godot QA changed tracked-source status in TEMP clone. Before: $baselineTracked; after: $tracked"
+    $afterDiff = (& $git.Source -C $clone diff --binary --no-ext-diff | Out-String)
+    Require-Zero "tracked content diff after QA" ([int]$LASTEXITCODE)
+    if ($tracked -ne $baselineTracked -or $afterDiff -cne $baselineDiff) {
+        throw "Godot QA modified tracked sources in TEMP clone; inspect tracked diff and logs"
     }
     if ($OpenVisual) {
         Write-Host "--> Manual 1280x720 C4 scene. Inspect + capture the actual game window; close when done."
-        & $GodotExe --path $project "res://scenes/p3/combat_v4_jx_pilot.tscn"
-        Require-Zero "Manual scene process" ([int]$LASTEXITCODE)
+        $oldPreference = $ErrorActionPreference
+        try {
+            $ErrorActionPreference = "Continue"
+            & $GodotExe --path $project --resolution "1280x720" "res://scenes/p3/combat_v4_jx_pilot.tscn"
+            $guiCode = [int]$LASTEXITCODE
+        } finally {
+            $ErrorActionPreference = $oldPreference
+        }
+        Require-Zero "Manual scene process" $guiCode
         Write-Host "Scene process exited zero; USER visual review/screenshot is STILL PENDING until supplied."
     } else {
         Write-Host "Manual 1280x720 visual scene not launched. Re-run with -OpenVisual."
@@ -169,6 +197,14 @@ finally {
     ) -join [Environment]::NewLine
     $summary | Out-File -LiteralPath (Join-Path $root "SUMMARY.txt") -Encoding UTF8
     Write-Host $summary
+    # Keep a small auditable report archive even if the temporary clone is removed.
+    try {
+        $archive = Join-Path $root "C4_PRES01_QA_LOGS.zip"
+        Compress-Archive -Path (Join-Path $logs "*"),(Join-Path $root "SUMMARY.txt") -DestinationPath $archive -Force
+        Write-Host "Evidence ZIP: $archive"
+    } catch {
+        Write-Host "Evidence archive failed; raw logs remain at $logs"
+    }
     if ($exitCode -eq 0 -and -not $KeepClone) {
         Remove-Item -LiteralPath $clone -Recurse -Force -ErrorAction SilentlyContinue
     }
