@@ -271,7 +271,7 @@ func _run() -> void:
             and (goal["center"] as Vector2).x > 10.0,
             "adaptive framing did not include the real initial 6v5 actor bounds"):
         return
-    for frame_no in range(100):
+    for _frame_no in range(100):
         pilot_layer._process(1.0/60.0)
     if not _check(pilot_layer.spectator_zoom() > 1.0
             and pilot_layer.spectator_zoom() <= 2.10,
