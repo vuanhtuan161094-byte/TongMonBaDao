@@ -1,3 +1,15 @@
+## 2026-10-19 — C4 PRES-00/PRES-01 INDEPENDENT PRESENTATION BRANCH (RUNTIME PENDING)
+
+**Explicit owner authorisation:** PRES-00 source mapping + PRES-01 view-only improvements from C4-EP01 pinned baseline `5c2e42abb44407bfc4d5a14ea2e7b2e966a2c3de`. Branch `c4-pres01-jx-motion-readability-20261019` only, no main/PR20/Economy/SaveService, no CI/FULL/merge.
+
+**Actual implementation:** `map_battle_world_layer_v2.gd` now samples only real authoritative actor positions through 0.25s bounded visual interpolation, keeps click hit-testing aligned with drawn characters, renders distinct role/school + actor numeric badges for the 6-person JX pilot, prevents health bar overlap through UI-only layout, shrinks wolf boss sprite, removes debug grid, and produces short status labels only from actual JX pilot events. Does not invent projectile art. Source manifest `godot/data/presentation/c4_jx1_pres00_five_skill_asset_manifest.json` pins #15/#158/#159/#63/#93; 7 specific binary WebP were checked by SHA256 from the owner's Drive and are **not** redistributed. No gameplay/spatial formation changes.
+
+**Evidence:** GitHub code and source asset checks completed. Godot official 4.7.2 parse/focused test/Windows scene **NOT RUN**, hence **RUNTIME PENDING**. Added focused `c4_pres01_view_motion_readability_test.gd` and Windows isolated runner `tools/qa/RUN-C4-PRES01-WINDOWS.cmd`. 6v5 screenshot/video and Android FPS **PENDING**; owner visual acceptance **NOT GIVEN**. Real convergence of actors remains future PRES-03 gameplay-scope work, not cosmetically faked.
+
+**Living detail:** `docs/C4_PRES00_PRES01_IMPLEMENTATION_LOG_2026-10-19.md`. PRES-02/03 not authorised as part of this implementation. Do not call PRES-01 PASS until official exact-head focused regressions, Windows visual evidence and explicit owner UX approval.
+
+---
+
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
 ## 2026-10-15 — ECONOMY-A MERGED TO MAIN; WINDOWS AUTOMATED QA VERIFIED
