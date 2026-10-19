@@ -1,3 +1,9 @@
+## 2026-10-19 — PRES-01 v5 log and video verified; next QA for pilot-only spectator camera
+
+Owner provided `C4_PRES01_QA_LOGS(2).zip` and 15.85s video. Real official Windows Godot 4.7.2 on exact `33a3118cf0ce8d5c21184fe76f66d2343eae2669` has 6/6 focused PASS, clean import, headless 6v5 smoke and GUI run. Owner visual UX still NOT ACCEPTED: crowding in small center of large empty arena. On later **unverified** branch HEAD, presentation-only JX pilot spectator framing tracks real living actor extent/center, bounded zoom 1–2.10 with correct AoE/map click projection, no fighter displacement, no gameplay changes; focused camera tests added. Use a direct-ChatGPT ZIP launcher pinned to the **new HEAD** with `C4_PRES01_QA_LOGS.zip` beside CMD; seek new official Windows logs and 10–20s recording. Do not label new HEAD PASS without actual run. No CI/FULL/merge/main/PR20/Economy/SaveService/Combat V2; PRES-02 genuine FX and PRES-03 actual formation are separate authorization.
+
+---
+
 ## 2026-10-19 — C4 PRES-01 authentic video-based visual review handoff
 
 Real Windows `C4_PRES01_QA_LOGS(1).zip` establishes official Godot 4.7.2 import + six focused PASS + smoke + GUI exit zero on historical `a30c7fc032891064164d074c750f5e438a892a4e`. Real 31.527s 1280×720 recording shows combat and replay but poor clustered character readability, tiny badge/HP, wolf art floating (manifest cropped wolf 53 vs anchor y67), huge unused map; owner UX **NOT ACCEPTED**. Narrow PRES-01 source sprite-foot alignment and readability improvements followed on **new branch HEAD** and updates to existing directly affected VP01 source atlas test. New HEAD QA **PENDING**; do not copy 6/6 PASS forward. Distribute a launcher ZIP directly in ChatGPT, pin exact new SHA and continue putting logs beside CMD, isolated clone/save only in TEMP. Owner returns new ZIP and short video. Keep Combat V2 gameplay/MapBattleV2, main/PR20/Economy/SaveService, CI/FULL/merge and PRES-02/PRES-03 unchanged.
