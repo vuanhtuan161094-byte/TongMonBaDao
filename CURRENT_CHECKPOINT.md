@@ -1,3 +1,9 @@
+## 2026-10-19 — C4+G1/MAP25 REAL-HUNT INTEGRATION / ROSTER DIAGNOSTICS
+
+Owner reported BE01 P3.2 legacy UI mismatch and no selectable disciples. Correct integrated branch **`integration/g1-map25-c4-real-hunt-20261019`**, forked from PR20 G1 HEAD `2219535fc3519ce811265ceed5cb85001efe5e45`, imported 57 disjoint C4 source/art/tests and patched only the World action hook on authentic G1 P3_2 scene. The vanilla G1 resource/production UI is preserved; JX1 Combat V4 remains real renderer in hunting panel. Legacy P2 founders have no authorized Tu Vi/Body V2 profile: select controls explain exact reason and link original Dẫn Tiên recruitment; test recruits one authentic V2 in isolated scene and begins one true PvE session. Old C4 QA ZIP 3/10 PASS only on older SHA; new user file `C4_BE01_RECHECK_ONE_CLICK(1).zip` is only a launcher, **no recheck QA LOGS**. Integrated QA/owner UX/Android **PENDING**, no CI/FULL/merge. Canonical Q01–Q17 debt ledger = 4 automated groups, 6 manual/device, 7 design backlogs, not 17 failing tests. Integrating this new C4+G1 SHA needs 17 focused scripts + one 1280×720 scene review; see `docs/C4_G1_MAP25_COMBAT_INTEGRATION_QA_DEBTS_2026-10-19.md`.
+
+---
+
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
 ## 2026-10-18 — One-pass G1 Windows evidence gate READY (Windows runtime NOT RUN)
