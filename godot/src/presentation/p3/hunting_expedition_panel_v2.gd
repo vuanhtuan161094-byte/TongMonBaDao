@@ -291,6 +291,9 @@ func _process(delta: float) -> void:
     if not session.battle.active:
         if _checkpoint():
             _say("Kết thúc: "+session.battle.outcome+". Nhấn nhận thưởng nếu chiến thắng.")
+        else:
+            _say("Đã kết thúc trong RAM nhưng lỗi lưu; thử lưu lại trước khi nhận thưởng.")
+        _refresh_actions()
 
 func _finish_hunt() -> void:
     if session == null or not save_ready:
@@ -303,6 +306,9 @@ func _finish_hunt() -> void:
     _refresh_battle()
     if _checkpoint():
         _say("Kết thúc: "+session.battle.outcome+" (đã lưu).")
+    else:
+        _say("Kết thúc nhưng lỗi lưu; phải thử lưu lại.")
+    _refresh_actions()
 
 func _claim_reward() -> void:
     if session == null or session.battle.active or not save_ready:
@@ -329,6 +335,7 @@ func _return_from_finished_hunt() -> void:
     # Defeat/retreat has already been settled by the owned PVE authority.
     # There is no warehouse claim; merely clear the finished screen.
     if not _checkpoint():
+        _refresh_actions()
         return
     session = null
     battle_view.visible = false
@@ -338,10 +345,20 @@ func _return_from_finished_hunt() -> void:
 
 func _retry_checkpoint() -> void:
     if _checkpoint():
-        _say("Đã lưu checkpoint thành công. Có thể tiếp tục.")
+        # Reward might already have been committed in RAM when disk failed;
+        # the retry must NOT call claim() a second time.
+        if session != null and not session.battle.active and game_state != null and (
+                game_state.sect.v2_pve_reward_claims.has(session.battle.encounter_id)):
+            session = null
+            battle_view.visible = false
+            _gather_candidates()
+            _say("Đã lưu phần thưởng đã nhận trước đó, không cấp thêm lần nữa.")
+        else:
+            _say("Đã lưu checkpoint thành công. Có thể tiếp tục.")
         _refresh_actions()
     else:
         _say("Vẫn không thể lưu. Trận tạm dừng, giữ nguyên dữ liệu trong RAM.")
+        _refresh_actions()
 
 func _checkpoint() -> bool:
     if live_runtime == null:
@@ -383,8 +400,10 @@ func _say(message: String) -> void:
         status_label.text = message
 
 func _close() -> void:
-    if session != null:
-        _checkpoint()
+    if session != null and not _checkpoint():
+        _say("Không thể đóng an toàn khi checkpoint thất bại. Hãy thử lưu lại.")
+        _refresh_actions()
+        return
     queue_free()
 
 func _exit_tree() -> void:
