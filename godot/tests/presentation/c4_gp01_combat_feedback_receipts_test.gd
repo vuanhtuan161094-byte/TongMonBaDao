@@ -65,6 +65,43 @@ func _run() -> void:
     if not _check(is_equal_approx(float(layer.spectator_camera_goal()["zoom"]),1.0),
             "classic overview zoom still magnifies overlapping actors"):
         return
+    # Combat V2 snapshots deliberately omit input realm information. The
+    # presentation adapter reads only the original source values; it must
+    # not estimate a realm from monster HP/ATK.
+    if not _check(layer.combat_actor_rank_label(battle.actors["z_gp01_wolf"]) == "",
+            "renderer invented a level from monster strength"):
+        return
+    layer.set_actor_view_metadata({
+        "a_gp01_member":{"realm_index":2,"floor_index":1,
+            "body_realm_index":3,"body_floor_index":3},
+        "z_gp01_wolf":{"realm_index":2,"floor_index":1},
+        "unknown_id":{"realm_index":30,"floor_index":10}
+    })
+    if not _check(layer.combat_actor_rank_label(battle.actors["z_gp01_wolf"]) ==
+            "Luyện Khí · Tầng 1" and
+            layer.combat_actor_rank_label(battle.actors["a_gp01_member"]) ==
+            "Luyện Khí · Tầng 1" and
+            layer.combat_actor_body_label(battle.actors["a_gp01_member"]) ==
+            "Dịch Cân · Tầng 3",
+            "rank UI failed to read exact 30x10 canonical realms"):
+        return
+    if not _check(not layer._actor_view_metadata.has("unknown_id"),
+            "ghost actor rank metadata not rejected"):
+        return
+    var before_bad: Dictionary = layer._actor_view_metadata.duplicate(true)
+    layer.set_actor_view_metadata({"z_gp01_wolf":{"realm_index":0,"floor_index":11}})
+    if not _check(layer.combat_actor_rank_label(battle.actors["z_gp01_wolf"]) == "" and
+            layer._actor_view_metadata.is_empty(),
+            "invalid monster level shown instead of blank"):
+        return
+    layer.set_actor_view_metadata(before_bad)
+    # Evidence-backed JX UI strip: present in the isolated import and with
+    # readable texture dimensions. Missing asset should fail focused QA.
+    if not _check(MapBattleWorldLayerV2.JX_HP_STRIP != null and
+            MapBattleWorldLayerV2.JX_HP_STRIP.get_width() == 106 and
+            MapBattleWorldLayerV2.JX_HP_STRIP.get_height() == 11,
+            "missing or incorrect owner JX HP strip"):
+        return
     var original_actors: Dictionary = battle.actors.duplicate(true)
     var original_rng: int = battle.rng.snapshot_seed_state()
     var original_now: float = battle.now
