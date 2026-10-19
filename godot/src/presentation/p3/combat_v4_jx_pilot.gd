@@ -6,6 +6,9 @@ func _ready() -> void:
     super._ready()
     # Camera frames the actual moving 6v5 world feet; V2 positions stay fixed.
     layer.enable_spectator_framing = true
+    # Classic JX1 overview: original stage scale (1x), still follows real
+    # living actor bounds. Do not use magnification to conceal collisions.
+    layer.spectator_zoom_ceiling = 1.0
     for child in get_children():
         if child is Label and str(child.text).begins_with("THANH TRUC LAM"):
             child.text = "THANH TRUC LAM  /  C4 JX1 BỐN PHÁI — PILOT"
