@@ -19,6 +19,21 @@
 - Runtime script **created but not executed or validated in Windows** this session. If the launcher fails, report exact log; do not classify it as a Godot PASS.
 - The school badges use source-confirmed opt-in loadout IDs (TL, VD, ND, NM); generic actual roles are distinctly marked, and each pilot actor also gets its stable numeric identifier. The body texture remains provisional `hero`; no false claim of six unique sourced animated bodies.
 
+## 2026-10-19 — focused STATIC re-audit and corrective commits
+
+Review base at start of this pass: `441f55198a89b9ebc810fd117a42d6a222cdb5f9`. GitHub branch comparison showed an exact match before edits. No new Windows QA logs were supplied and no official Godot 4.7.2 executable / PowerShell host is available in this runtime.
+
+**Confirmed from V2 event producer and existing PRES-01 consumer:**
+
+1. `MapBattleV2._release_casts()` emits `skill_hit` then `_deal_direct(...,"learned_skill")` emits `hit`. The earlier renderer restarted the original caster's attack on both resolution notifications, even though `skill_cast` had already started it. PRES-01 now triggers settlement-only basic and boss slam animations, not learned/pilot impact replays. Consecutive basic follow-up hits in one render tick deduplicate the same animation clock.
+2. Previous `_draw()` projected source FX at the latest authoritative target or caster coordinate, while the body was drawn at `visual_position()` (0..0.25 seconds behind). FX cues now optionally bind by actor ID, resolve the same view-only interpolation at draw time and retain a stable fallback for deleted/unbound targets. Combat hit receipts remain unchanged.
+3. Focused `c4_pres01_view_motion_readability_test.gd` now verifies the exact event-kind policy for `basic`/`basic_followup`/`area_slam` versus learned/pilot releases, and confirms bound FX follows the 50% interpolation point without altering battle authority. **Test code added, not executed on Godot.**
+4. Windows TEMP runner hardening: version stdout/stderr handling, fail-closed parse/import diagnostics even when process exits zero, true `combat_v4_jx_pilot.tscn` headless smoke after six focused gates, compare tracked Git diffs both before and after QA even when checkout has pre-existing CRLF status, explicitly run 1280×720 and persist a compressed log bundle. Windows PowerShell and Godot runner **not executed here**.
+
+**Contract unchanged:** no edit to V2 simulation, RNG, HP, target, snapshot, SAVE, economy, main/PR20; no new VFX/SFX binaries introduced. This change prevents a renderer-only double-action error; it is not PRES-02 or PRES-03.
+
+**Current honesty gates:** GitHub source review/comparison is completed. GDScript official parse, actual test markers, headless 6v5 smoke, Windows 1280×720 screenshot/video, frame pacing/FPS, Android hardware and owner visual sign-off are all **PENDING**.
+
 ## Test and evidence truth
 
 - GitHub connector file read/write and source metadata checks: **completed**.
