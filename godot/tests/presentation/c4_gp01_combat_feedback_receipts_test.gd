@@ -73,11 +73,12 @@ func _run() -> void:
     if not _check(is_equal_approx(float(layer.spectator_camera_goal()["zoom"]),1.0),
             "classic overview zoom still magnifies overlapping actors"):
         return
-    # Combat V2 snapshots deliberately omit input realm information. The
-    # presentation adapter reads only the original source values; it must
-    # not estimate a realm from monster HP/ATK.
-    if not _check(layer.combat_actor_rank_label(battle.actors["z_gp01_wolf"]) == "",
-            "renderer invented a level from monster strength"):
+    # The backend now carries an authentic MonsterCatalogueV2 realm through
+    # setup and snapshot. Legacy fixtures without source data remain unknown.
+    if not _check(layer.combat_actor_rank_label(battle.actors["z_gp01_wolf"]) ==
+            "Phàm Nhân · Tầng 1" and
+            layer.combat_actor_rank_label({"side":"monster","id":"legacy_unknown"}) == "",
+            "canonical rank missing or invented for actor without metadata"):
         return
     layer.set_actor_view_metadata({
         "a_gp01_member":{"realm_index":2,"floor_index":1,
@@ -98,9 +99,10 @@ func _run() -> void:
         return
     var before_bad: Dictionary = layer._actor_view_metadata.duplicate(true)
     layer.set_actor_view_metadata({"z_gp01_wolf":{"realm_index":0,"floor_index":11}})
-    if not _check(layer.combat_actor_rank_label(battle.actors["z_gp01_wolf"]) == "" and
+    if not _check(layer.combat_actor_rank_label(battle.actors["z_gp01_wolf"]) ==
+            "Phàm Nhân · Tầng 1" and
             layer._actor_view_metadata.is_empty(),
-            "invalid monster level shown instead of blank"):
+            "invalid optional metadata must fall back to canonical actor realm"):
         return
     layer.set_actor_view_metadata(before_bad)
     # Evidence-backed JX UI strip: present in the isolated import and with
