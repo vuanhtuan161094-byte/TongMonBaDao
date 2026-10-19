@@ -1,3 +1,5 @@
+> **2026-10-19 OWNER OVERRIDE — SUPERSEDES THIS DOCUMENT'S OLD NO-ACCURACY/DODGE ASSUMPTION.** The owner now requires **Chính Xác, Né Tránh, Tỷ Lệ Trúng, real movement speed build and learned/equipped dodge skills**; consult `docs/C4_ACCURACY_EVASION_MOVEMENT_SKILL_REACTION_DESIGN_2026-10-19.md` as the newer authority. Do not infer AI universal/guaranteed dodge. GP01 currently presentation only; stats/RNG/simulation migration requires a scoped separate CODE packet. Historical design paragraphs below are retained for traceability but their no-accuracy/dodge clauses are superseded.
+
 # TÔNG MÔN BÁ ĐẠO — Combat V4 gameplay, AI né AoE, quái/Boss, DMG/crit và ba trận chuẩn
 Ngày: 2026-10-19. Trạng thái: DESIGN REVIEWED FROM SOURCE / NOT GAMEPLAY CODE / NOT NUMERICALLY LOCKED.
 Repo: vuanhtuan161094-byte/TongMonBaDao. Design branch: design/combat-v4-gameplay-ai-hud-3encounters-20261019.
