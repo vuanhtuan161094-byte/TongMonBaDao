@@ -28,6 +28,8 @@ var selection_group: Control
 var start_button: Button
 var claim_button: Button
 var finish_button: Button
+var return_button: Button
+var retry_save_button: Button
 
 func _ready() -> void:
     set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -90,6 +92,10 @@ func _ready() -> void:
     finish_button.pressed.connect(_finish_hunt)
     claim_button = _button(self,"NHẬN THƯỞNG",Vector2(966,285),Vector2(276,52))
     claim_button.pressed.connect(_claim_reward)
+    return_button = _button(self,"VỀ TÔNG (THUA/HÒA)",Vector2(966,350),Vector2(276,52))
+    return_button.pressed.connect(_return_from_finished_hunt)
+    retry_save_button = _button(self,"THỬ LƯU LẠI",Vector2(966,414),Vector2(276,52))
+    retry_save_button.pressed.connect(_retry_checkpoint)
     status_label = _label(self,"",Vector2(28,615),Vector2(1210,85),16)
     status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     status_label.add_theme_color_override("font_color",Color(0.94,0.91,0.81))
@@ -309,6 +315,26 @@ func _claim_reward() -> void:
     _say("Thưởng đã nhập kho: "+str(result.get("items",{})))
     _refresh_actions()
 
+func _return_from_finished_hunt() -> void:
+    if session == null or session.battle.active or session.battle.outcome == "win":
+        return
+    # Defeat/retreat has already been settled by the owned PVE authority.
+    # There is no warehouse claim; merely clear the finished screen.
+    if not _checkpoint():
+        return
+    session = null
+    battle_view.visible = false
+    _gather_candidates()
+    _say("Đã trở về tông, không có phần thưởng khi thua hoặc rút lui.")
+    _refresh_actions()
+
+func _retry_checkpoint() -> void:
+    if _checkpoint():
+        _say("Đã lưu checkpoint thành công. Có thể tiếp tục.")
+        _refresh_actions()
+    else:
+        _say("Vẫn không thể lưu. Trận tạm dừng, giữ nguyên dữ liệu trong RAM.")
+
 func _checkpoint() -> bool:
     if live_runtime == null:
         return false
@@ -339,6 +365,10 @@ func _refresh_actions() -> void:
         finish_button.disabled = session == null or not save_ready or not session.battle.active
     if claim_button != null:
         claim_button.disabled = session == null or not save_ready or session.battle.active or session.battle.outcome != "win"
+    if return_button != null:
+        return_button.disabled = session == null or not save_ready or session.battle.active or session.battle.outcome == "win"
+    if retry_save_button != null:
+        retry_save_button.disabled = live_runtime == null or save_ready
 
 func _say(message: String) -> void:
     if status_label != null:
