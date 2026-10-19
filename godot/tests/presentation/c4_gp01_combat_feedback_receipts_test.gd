@@ -45,6 +45,26 @@ func _run() -> void:
     if not _check(hit_count > 0 and crit_count > 0,
             "genuine MapBattleV2 crit hit not produced"):
         return
+    # ALL source-backed hits are integer glyphs, including sub-10 amounts.
+    if not _check(layer._combat_amount(9.625) == "10" and
+            layer._combat_amount(1.25) == "1" and
+            layer._combat_amount(125.4) == "125",
+            "classic JX damage feedback must never display decimals"):
+        return
+    var canonical_wolf: Dictionary = battle.actors["z_gp01_wolf"]
+    if not _check(layer.combat_actor_label(canonical_wolf) == "Thanh Lang",
+            "monster HUD did not use canonical species name"):
+        return
+    if not _check(layer.combat_actor_label({
+            "side":"disciple","name":"Đệ tử thử","id":"fixture"
+        }) == "Đệ tử thử",
+            "source-provided actor name ignored"):
+        return
+    layer.enable_spectator_framing = true
+    layer.spectator_zoom_ceiling = 1.0
+    if not _check(is_equal_approx(float(layer.spectator_camera_goal()["zoom"]),1.0),
+            "classic overview zoom still magnifies overlapping actors"):
+        return
     var original_actors: Dictionary = battle.actors.duplicate(true)
     var original_rng: int = battle.rng.snapshot_seed_state()
     var original_now: float = battle.now
@@ -98,6 +118,10 @@ func _run() -> void:
         var kind := str(popup.get("category",""))
         if counts.has(kind):
             counts[kind] = int(counts[kind])+1
+        var glyph := str(popup.get("label",""))
+        if not _check(not glyph.contains("."),
+                "numeric combat label unexpectedly contains a decimal"):
+            return
         if kind == "heal" and not _check(float(popup["amount"]) > 0.0,
                 "fake zero healing popup"):
             return
