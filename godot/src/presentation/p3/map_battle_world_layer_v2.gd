@@ -331,6 +331,15 @@ func _school_tag(actor: Dictionary) -> String:
     var role := str(actor.get("role",""))
     return {"frontline":"CAN","ranged":"XA","healer":"HOI","mage":"PHAP"}.get(role,"DT")
 
+# Stable per-actor badge ID; does not assign gameplay identity/role.
+func _actor_badge(actor: Dictionary) -> String:
+    var tag := _school_tag(actor)
+    var actor_id := str(actor.get("id",""))
+    var digits := actor_id.substr(maxi(0,actor_id.length()-2),2)
+    if digits.is_valid_int():
+        return tag + str(int(digits)+1)
+    return tag
+
 func _school_color(tag: String) -> Color:
     return {
         "TL":Color(0.96,0.68,0.32), "VD":Color(0.45,0.75,0.98),
@@ -425,11 +434,11 @@ func _draw() -> void:
         if enable_source_vl_art and alive and side == "disciple":
             var tag := _school_tag(actor)
             var accent := _school_color(tag)
-            var marker := Rect2(at+Vector2(-15.0,8.0),Vector2(30.0,15.0))
+            var marker := Rect2(at+Vector2(-21.0,8.0),Vector2(42.0,15.0))
             draw_rect(marker,Color(0.035,0.065,0.07,0.90))
             draw_rect(Rect2(marker.position,Vector2(3.0,marker.size.y)),accent)
             draw_string(ThemeDB.fallback_font,marker.position+Vector2(3.0,11.5),
-                tag,HORIZONTAL_ALIGNMENT_CENTER,27,10,accent)
+                _actor_badge(actor),HORIZONTAL_ALIGNMENT_CENTER,39,10,accent)
         if enable_source_vl_art and alive and _status_feedback.has(str(id)):
             var kind := str(_status_feedback[str(id)].get("kind",""))
             var feedback := {
