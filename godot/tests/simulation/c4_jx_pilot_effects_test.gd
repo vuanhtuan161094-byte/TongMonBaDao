@@ -117,6 +117,43 @@ func _run() -> void:
     if not _check(end_a == end_b,
         "snapshot RNG/DoT/HoT/guard/proc/reward journal divergence"):
         return
+    # Four independent poison casters must share ONE global target cap of three.
+    var poison_team: Array = []
+    for caster_index in range(4):
+        var poison_stats: Dictionary = _stats()
+        poison_stats["effect_hit"] = 1.0
+        poison_team.append({"id":"p%d" % caster_index,"party_id":"poison_party",
+            "role":"mage","stats":poison_stats,
+            "position":Vector2(8.0,7.0+0.4*float(caster_index)),
+            "pilot_skill_loadout":["jx_wudu_63"]})
+    var cap_battle := MapBattleV2.new(5817)
+    if not _check(bool(cap_battle.setup("poison_cap_probe",poison_team,_mobs()).get("ok",false)),
+        "four-caster status setup"):
+        return
+    for caster_index in range(4):
+        JxPilotRuntimeV1.release(cap_battle,cap_battle.actors["p%d" % caster_index],
+            {"pilot_id":"jx_wudu_63","target_id":"jx_mob_1"})
+    var poison_stacks := 0
+    for fx in cap_battle.actors["jx_mob_1"]["pilot_effects"]:
+        if str(fx.get("kind","")) == "poison":
+            poison_stacks += 1
+    if not _check(poison_stacks == 3,
+        "four casters bypassed poison cap=3 across one target"):
+        return
+    # A party aura may never leak into a second party even at the same position.
+    var teams := _team()
+    teams.append({"id":"guest","party_id":"party_2","role":"ranged",
+        "position":Vector2(8.0,8.0),"stats":_stats()})
+    var isolation := MapBattleV2.new(567)
+    if not _check(bool(isolation.setup("party_isolation",teams,_mobs()).get("ok",false)),
+        "party-isolation setup"):
+        return
+    for _t in range(4):
+        isolation.step()
+    if not _check(float(isolation.actors["guest"]["pilot_def_until"]) < 0.0 and
+        float(isolation.actors["sword"]["pilot_def_until"]) > 0.0,
+        "party defense buff leaked or failed to activate"):
+        return
     # A second healer's HoT may not stack for free on the same target.
     var lifeline: Dictionary = resumed.actors["monk"]
     var effects: Array = lifeline.get("pilot_effects",[])
