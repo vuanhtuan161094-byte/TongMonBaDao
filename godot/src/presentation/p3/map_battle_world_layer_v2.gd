@@ -111,6 +111,31 @@ func _ingest_combat_feedback(event: Dictionary, event_id: int) -> void:
         _enqueue_combat_text(str(event.get("target","")),
             float(event.get("damage",0.0)),"poison",event_id)
 
+# Read real V2 status ownership at the current simulation timestamp.
+# Labels disappear when the authoritative effect ends, even if rendering lags.
+func active_combat_status_tags(actor: Dictionary) -> Array[String]:
+    var tags: Array[String] = []
+    var poison_count := 0
+    var has_hot := false
+    for entry in actor.get("pilot_effects",[]):
+        var effect: Dictionary = entry
+        if int(effect.get("ticks_left",0)) <= 0:
+            continue
+        if str(effect.get("kind","")) == "poison":
+            poison_count += 1
+        elif str(effect.get("kind","")) == "hot":
+            has_hot = true
+    if poison_count > 0:
+        tags.append("DOC" + (str(poison_count) if poison_count > 1 else ""))
+    if has_hot:
+        tags.append("HOI")
+    if battle != null:
+        if battle.now < float(actor.get("pilot_guard_until",-1.0)) or battle.now < float(actor.get("guard_until",-1.0)):
+            tags.append("THU")
+        if battle.now < float(actor.get("pilot_def_until",-1.0)):
+            tags.append("TRAN")
+    return tags
+
 func _combat_feedback_color(category: String) -> Color:
     match category:
         "crit":
@@ -647,17 +672,16 @@ func _draw() -> void:
                 "rect":Rect2(at+Vector2(-24.0,9.0),Vector2(48.0,19.0)),
                 "text":_actor_badge(actor),"fill":_school_color(tag)
             })
-        if enable_source_vl_art and alive and _status_feedback.has(str(id)):
-            var kind := str(_status_feedback[str(id)].get("kind",""))
-            var feedback: String = str({
-                "pilot_poison_applied":"DOC", "pilot_hot_applied":"HOI",
-                "pilot_guard":"THU", "pilot_party_defense":"TRAN"
-            }.get(kind,""))
-            if not feedback.is_empty():
+        if enable_source_vl_art and alive:
+            # Statuses derive from currently active effects/guards, never a
+            # guessed VFX duration. Keep no more than two tags visible in 6v5.
+            var tags := active_combat_status_tags(actor)
+            for status_index in range(mini(tags.size(),2)):
                 ui_overlays.append({
-                    "kind":"status","rect":Rect2(at+Vector2(-24.0,40.0),
+                    "kind":"status","rect":Rect2(
+                        at+Vector2(-24.0+float(status_index)*51.0,40.0),
                         Vector2(48.0,19.0)),
-                    "text":feedback,"fill":Color(0.95,0.94,0.70)
+                    "text":tags[status_index],"fill":Color(0.95,0.94,0.70)
                 })
 
         var health := clampf(float(actor["hp"])/maxf(1.0,float(actor["max_hp"])),0.0,1.0)
