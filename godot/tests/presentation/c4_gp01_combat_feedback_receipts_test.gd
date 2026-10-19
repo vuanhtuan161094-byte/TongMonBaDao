@@ -60,6 +60,14 @@ func _run() -> void:
         }) == "Đệ tử thử",
             "source-provided actor name ignored"):
         return
+    var linked_disciple := DiscipleState.new()
+    linked_disciple.display_name = "Trần Thanh Phong"
+    if not _check(layer.combat_actor_label({
+        "side":"disciple","id":"member_with_name",
+        "linked_disciple":linked_disciple
+    }) == "Trần Thanh Phong",
+            "authentic linked disciple name omitted from JX nameplate"):
+        return
     layer.enable_spectator_framing = true
     layer.spectator_zoom_ceiling = 1.0
     if not _check(is_equal_approx(float(layer.spectator_camera_goal()["zoom"]),1.0),
