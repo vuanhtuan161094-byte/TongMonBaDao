@@ -25,3 +25,15 @@
 ## Rollback / non-changes
 
 Rollback by checking out source baseline `f757c5f162f85ebccda936b06ba8a06b07eac003` in an isolated TEMP clone. `MapBattleV2`, `HuntingPveRunV2`, `HuntingMapV2`, `CombatStatsV2`, `MapBattleSnapshotV2`, `DiscipleState`, `SimulationScheduler`, `SaveService`, Economy and unrelated PR20 are **not modified**. No synthetic rewards, RNG cheats, skill grant, max-stat production injection, CI/FULL/merge. Need user Windows QA to call actual launcher runtime/UX PASS.
+
+## 2026-10-19 owner Windows QA upload: partial PASS, obsolete camera test corrected
+
+Owner uploaded `C4_BE01_HUNTING_MAX_QA_LOGS.zip`. ZIP integrity checked; `SUMMARY.txt` expected and actual pinned HEAD **`c194a0c3153814460addab0dca88de96c8b55a60`**, official **Godot `4.7.2.stable.official.ed1daf0bf`** at `E:\\Godot_v4.7.2-stable_win64_console.exe`. Import completed. Focused `02_pilot_effects`, `03_snapshot`, `04_group_battle` all emit their correct PASS markers. **3/10 passed before abort**; test 05 failed at `c4_pres01_view_motion_readability_test.gd:270`; no evidence from 06–11, scene smoke or manual game (SUMMARY `visual_scene_opened=False`). Failure was a **stale assertion** expecting zoom >1.0 while current owner-authored `combat_v4_jx_pilot.gd` sets spectator zoom ceiling **1.0x** for classic overview. It was not evidence that actor positions were wrong, nor proof backend failed.
+
+Follow-up commits:
+- Fix focused camera test to require exactly 1.0x *and* canonical midpoint of real 6v5 living actors; retain forward/inverse camera and RNG/state invariance checks. **Do not change renderer zoom behavior** merely to satisfy outdated assertion.
+- Reduce arena roster scroll min-size to keep action buttons visible at 1280x720, preserving 90-row search limit.
+- New `godot/tests/presentation/c4_be01_real_hunting_ui_smoke_test.gd`: isolated real new-game P3.2 scene, actual Thế Giới button, actual HuntingPlayPanelV2 showing 3 authored regions / 5 tiers, canonical state not touched by open and no imaginary encounters.
+- Superseding one-click bundle pinned to later HEAD runs **previously unexecuted 05–11 plus new UI smoke**. It collects **all** focused outcomes before reporting and avoids PowerShell 5.1 native stderr terminating early. Earlier 02–04 PASS evidence is retained with its exact SHA and unchanged simulation code; optional rerun in future if authority code changes.
+- This log does not make any later SHA automatically PASS. Godot 4.7.2 focused/runtime / 1280×720 click-through and real PvE claim still pending.
+
