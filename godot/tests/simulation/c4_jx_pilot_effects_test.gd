@@ -66,6 +66,30 @@ func _run() -> void:
         is_equal_approx(JxPilotSkillsV1.matching_root_multiplier({"metal":100},"metal"),1.33),
         "five-element counter or perfect-root magnitude"):
         return
+    # All five roots, no assumed school-only element and no fake main root.
+    var perfect_roots := {"metal":100,"wood":100,"water":100,"fire":100,"earth":100}
+    if not _check(is_equal_approx(
+        JxPilotSkillsV1.matching_root_multiplier(perfect_roots,"fire"),1.60) and
+        is_equal_approx(
+        JxPilotSkillsV1.matching_root_multiplier({"metal":80,"wood":45,"water":70,"earth":60},"earth"),1.18),
+        "five-root resonance or independent earth root"):
+        return
+    var counter_edges := {"metal":"wood","wood":"earth","earth":"water",
+        "water":"fire","fire":"metal"}
+    for key in counter_edges.keys():
+        var victim_element := str(counter_edges[key])
+        if not _check(is_equal_approx(JxPilotSkillsV1.elemental_matchup(str(key),victim_element),1.25) and
+            is_equal_approx(JxPilotSkillsV1.elemental_matchup(victim_element,str(key)),0.85),
+            "five-element matchup cycle at "+str(key)):
+            return
+    var real_monster := MonsterCatalogueV2.create_actor("truc_thu",1,1,"element_source")
+    real_monster["id"] = "element_source"
+    real_monster["position"] = Vector2(11.0,8.0)
+    var source_battle := MapBattleV2.new(909)
+    if not _check(bool(source_battle.setup("element_identity",_team(),[real_monster]).get("ok",false)) and
+        str(source_battle.actors["element_source"].get("primary_element","")) == "wood",
+        "MonsterCatalogue elemental source lost during battle setup"):
+        return
     var initial := _start(4444)
     if not _check(initial != null,"fixture"):
         return
