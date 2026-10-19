@@ -43,6 +43,17 @@ func _run() -> void:
     if not _check(view.jx1_display_name(battle.actors["c4_monster_00"]) == "Thanh Lang",
             "monster species name not preserved in JX1 overhead text"):
         return
+    if not _check(view.jx1_selected_actor_id.is_empty(),
+            "JX1 normal NPC selection must not be fabricated"):
+        return
+    var mouse := InputEventMouseButton.new()
+    mouse.button_index = MOUSE_BUTTON_LEFT
+    mouse.pressed = true
+    mouse.position = view.point_on_map(battle.actors["c4_monster_00"]["position"])
+    view._unhandled_input(mouse)
+    if not _check(view.jx1_selected_actor_id == "c4_monster_00",
+            "real JX1 player click failed to select nearest mob"):
+        return
     if not _check(view._combat_amount(4.6) == "5"
             and view._combat_amount(5.1) == "5"
             and view._combat_amount(19.0) == "19"
