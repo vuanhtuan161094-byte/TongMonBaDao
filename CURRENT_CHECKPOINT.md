@@ -1,3 +1,13 @@
+## 2026-10-19 — C4-GP01 presentation feedback + Accuracy/Evasion OWNER OVERRIDE
+
+The owner authorised GP01 real event-based damage/crit/heal/poison/status UI and revoked the previous "No Accuracy/Dodge" gameplay design. Code branch: c4-gp01-combat-feedback-20261019, forked from PRES01 v6 d160f97982f627460ab17661bdbfc572fe7c51b4. Main observed 461caca1171462e0da092f21108c5c1733157ad9, not edited.
+
+New UI source code: godot/src/presentation/p3/map_battle_world_layer_v2.gd; authentic MapBattleV2 hit/critical/lifesteal/heal/HoT/poison, finite capped 28 transient popups, no pilot_impact/skill_hit double count, current status from backend pilot_effects / guard timers. New focused test: godot/tests/presentation/c4_gp01_combat_feedback_receipts_test.gd. Owner's Accuracy, Evasion, hit chance, real build movement, owned dodge skill policy is documented in docs/C4_ACCURACY_EVASION_MOVEMENT_SKILL_REACTION_DESIGN_2026-10-19.md. IMPORTANT mismatch: CombatStatsV2 derives move_speed multiplier, MapBattleV2.setup uses role speed default and ignores modifier except direct row override. GP01 does not change RNG/movement/save/combat stats and does not fake MISS/DODGE.
+
+ALL official Godot 4.7.2 runtime, focused tests, smoke, Windows 1280x720 UX PENDING for new GP01 SHA; previous v5 6/6 belongs only to 33a3118, v6 parent is also untested. No CI/FULL/merge, no changes to main/PR20/Economy/SaveService. Roll back GP01 by checking out exact d160f979 parent on a fresh isolated TEMP checkout. Request actual logs in adjacent launcher folder.
+
+---
+
 ## 2026-10-19 — official PRES-01 v5 PASS, video still UX PENDING, new camera patch untested
 
 On official Windows Godot 4.7.2, uploaded `C4_PRES01_QA_LOGS(2).zip` proves **all 6 focused PASS** and clean import, 6v5 smoke and GUI exit at **v5 SHA `33a3118cf0ce8d5c21184fe76f66d2343eae2669`**. Uploaded 15.85s 1280x720 video shows genuine 6v5 combat/replay/Boss AoE but distant arena framing and small dense central combat cluster; owner UX not accepted. A **new** opt-in source-view camera follows the genuine living-actor center at zoom 1–2.10, scales sprite/warning radius consistently, preserves inverse world projection and never mutates Combat V2. Expanded focused camera authority/isolation regression. **New HEAD official Godot QA PENDING** (previous 6/6 cannot transfer to new code); Android/PRES-02/PRES-03 also pending. No CI/FULL/merge or unrelated module edits; details: `docs/C4_PRES00_PRES01_IMPLEMENTATION_LOG_2026-10-19.md`.
