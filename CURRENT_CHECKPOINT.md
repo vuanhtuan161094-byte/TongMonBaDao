@@ -1,3 +1,9 @@
+## 2026-10-19 — C4 PRES-01 second pre-Windows review (STATIC ONLY)
+
+Owner requested thorough final pre-computer refinements on `c4-pres01-jx-motion-readability-20261019`. Presentation-only: school and real-event status badges rendered **after** sprites; badge/HP UI deconflicted within stage bounds; actual boss/elite telegraph triggers wind-up attack cue, while `area_slam` release does **not** replay caster; true learned `skill_cast/skill_hit/hit` no replay. Focused test expanded for real learned skill, true Boss AoE, crowded top-boundary 11-label layout and actual pilot scene instantiation (6 disciples / 5 monsters). Windows TEMP launcher tightened to `4.7.2.stable.official`, explicit `--scene` and archived log evidence. **Only source/static auditing completed: parser, focused tests, Windows runtime, 1280x720 UX, FPS and Android all PENDING**; no CI/FULL/merge. No Combat V2, RNG, Economy, SaveService, main or PR20 edits. Detailed handoff: `docs/C4_PRES00_PRES01_IMPLEMENTATION_LOG_2026-10-19.md`.
+
+---
+
 ## 2026-10-19 — C4 PRES-01 focused static re-audit (NO official runtime)
 
 Following PRES-01 initial branch HEAD `441f5519`, the authorised presentation-only branch received two evidence-based repairs: **no attack clip replay on the `skill_hit` → `hit(kind=learned_skill)` resolution sequence**, and **source-VL FX visually anchored to interpolated actor positions**. A focused presentation test was augmented. The Windows TEMP QA script now detects parser diagnostics despite exit 0, checks before/after tracked diff bytes, runs an isolated headless 6v5 smoke and collects ZIP logs. No change to simulation, V2 ticks/HP/RNG/events, SaveService, main, PR20, Economy. GitHub source review completed; official Godot 4.7.2 tests **NOT RUN**, real 1280×720 owner GUI and Android FPS **PENDING**, UX NOT ACCEPTED. Detailed evidence: `docs/C4_PRES00_PRES01_IMPLEMENTATION_LOG_2026-10-19.md`.
