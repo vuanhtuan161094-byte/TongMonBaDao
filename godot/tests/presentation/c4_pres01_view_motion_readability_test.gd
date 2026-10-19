@@ -48,6 +48,16 @@ func _run() -> void:
             layer._actor_badge({"id":"c4_disciple_01","pilot_loadout":["jx_shaolin_15"]}) == "TL2",
             "same school must retain stable distinct pilot member identifiers"):
         return
+    # Learned/pilot skill events have their own casting cues. Settled
+    # skill_hit + hit must not replay that caster animation at impact time.
+    if not _check(layer.should_start_attack_on_hit("hit","basic") and
+            layer.should_start_attack_on_hit("hit","basic_followup") and
+            layer.should_start_attack_on_hit("hit","area_slam") and
+            not layer.should_start_attack_on_hit("skill_hit","") and
+            not layer.should_start_attack_on_hit("hit","learned_skill") and
+            not layer.should_start_attack_on_hit("hit","pilot_projectile"),
+            "impact stage incorrectly starts a new learned or pilot cast"):
+        return
     var advanced := false
     for i in range(12):
         if not battle.active:
@@ -68,6 +78,18 @@ func _run() -> void:
             var middle := layer.visual_position("c4_member",next_pos)
             if not _check(middle.is_equal_approx(original_position.lerp(next_pos,0.5)),
                     "250ms position interpolation mid-point is wrong"):
+                return
+            # FX bound to a live actor must follow the same delayed visible
+            # position; unbound FX retains its explicit immutable screen point.
+            var cue := {"at":Vector2(99.0,111.0),"actor_id":"c4_member"}
+            var fx_at := layer.source_fx_screen_position(cue)
+            if not _check(fx_at.is_equal_approx(layer.point_on_map(middle)),
+                    "contact FX detached from displayed interpolated body"):
+                return
+            var unbound_fx := layer.source_fx_screen_position(
+                {"at":Vector2(99.0,111.0),"actor_id":"nonexistent"})
+            if not _check(unbound_fx == Vector2(99.0,111.0),
+                    "unbound FX unexpectedly received fabricated position"):
                 return
             layer._view_elapsed = MapBattleV2.STEP_SECONDS*5.0
             if not _check(layer.visual_position("c4_member",next_pos).is_equal_approx(next_pos),
