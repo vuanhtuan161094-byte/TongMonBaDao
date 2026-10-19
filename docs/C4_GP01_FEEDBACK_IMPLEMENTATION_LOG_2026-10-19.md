@@ -1,0 +1,13 @@
+# C4-GP01 — Implementation audit and QA (2026-10-19)
+
+**Scope**: real feedback UI from canonical MapBattleV2 events; user separately directed Accuracy/Evasion design override. Existing parent PRES01 head d160f97982f627460ab17661bdbfc572fe7c51b4; main inspected 461caca1171462e0da092f21108c5c1733157ad9.
+
+- Real event `hit.damage` displays final settled damage at true target world position; `critical=true` creates CRIT label. `hit.lifesteal` displays actual healed amount at attacking character. `heal.amount` and `pilot_hot_tick.amount` display actual heal. `pilot_poison_tick.damage` displays DoT. No popup for zero or NaN values.
+- `skill_hit` and `pilot_impact` are not additional damage receipts. Event cursor + index prevents double rendering on refresh; no authoritative damage/event lost.
+- Combat display uses no gameplay RNG and never changes HP, simulation position, real crit or cooldown. Maximum 28 floating popups, 0.8 second lifetime, deterministic visual lanes, prioritizes critical/heals when over cap, 13–16 px text with background; real source actor coordinates, scene view camera projection.
+- Pilot poison and HoT stacks, frontline guard, Shaolin guard and party-defense tags are computed from authoritative current statuses and `battle.now`, never from display-only elapsed time. Max two tags displayed at any one actor to limit crowding.
+- New focused test: `godot/tests/presentation/c4_gp01_combat_feedback_receipts_test.gd` uses one authentic MapBattleV2 battle to require a genuine seeded critical, one visual popup per real HP commit, no double from skill_hit/pilot_impact or repeated refresh, correct source category and current status expiry, no mutation to battle actors, RNG, time/events.
+- User explicitly reversed old no-Accuracy/Dodge design; see `docs/C4_ACCURACY_EVASION_MOVEMENT_SKILL_REACTION_DESIGN_2026-10-19.md`. GP01 does not enable new stats/miss/skill dash in simulation because that changes RNG and snapshot contracts. This needs separate scope/packet. The derived move_speed channel currently DOES NOT automatically propagate into MapBattleV2's role movement speed.
+- **QA truth:** Static implementation/checkpoint only; official Godot 4.7.2, import, test, full adjacent existing focused regressions, scene 6v5 smoke, Windows GUI and owner UX on THIS HEAD are ALL PENDING. Old v5 six PASS on a different SHA does not transfer. No CI/FULL/merge, no main/PR20/Economy/SaveService edits.
+- Windows helper ZIP must pin exact new branch HEAD; clone and save isolated TEMP; write `C4_GP01_QA_LOGS.zip` BESIDE launcher on all successes/failures. Owner supplies actual log/archive + short video; fix evidenced regressions without silently changing authority.
+
