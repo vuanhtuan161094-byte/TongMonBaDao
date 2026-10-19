@@ -1,3 +1,9 @@
+## 2026-10-19 — PRES-01 real Windows failure and one-line parser fix
+
+User log ZIP for C4 PRES-01 GitHub SHA `4563cddf`: official Windows Godot 4.7.2 `01_import` complete, `02_pilot_status` PASS, `03_snapshot` PASS, **`04_group` FAIL** with GDScript warning-as-error at `map_battle_world_layer_v2.gd:490` (`Variant` inferred from status `Dictionary.get()`). Narrow source fix committed: explicitly convert to `String`; subsequent official runtime, rest of focused tests, smoke and UX **PENDING**, no retrospective PASS. One-click v4 launcher designed for output ZIP next to launcher under `KET_QUA_C4_PRES01`, source checkout remains isolated TEMP. No Combat V2, main, PR20, Economy or SaveService edits; no CI/FULL/merge. Details in `docs/C4_PRES00_PRES01_IMPLEMENTATION_LOG_2026-10-19.md`.
+
+---
+
 ## 2026-10-19 — C4 PRES-01 second pre-Windows review (STATIC ONLY)
 
 Owner requested thorough final pre-computer refinements on `c4-pres01-jx-motion-readability-20261019`. Presentation-only: school and real-event status badges rendered **after** sprites; badge/HP UI deconflicted within stage bounds; actual boss/elite telegraph triggers wind-up attack cue, while `area_slam` release does **not** replay caster; true learned `skill_cast/skill_hit/hit` no replay. Focused test expanded for real learned skill, true Boss AoE, crowded top-boundary 11-label layout and actual pilot scene instantiation (6 disciples / 5 monsters). Windows TEMP launcher tightened to `4.7.2.stable.official`, explicit `--scene` and archived log evidence. **Only source/static auditing completed: parser, focused tests, Windows runtime, 1280x720 UX, FPS and Android all PENDING**; no CI/FULL/merge. No Combat V2, RNG, Economy, SaveService, main or PR20 edits. Detailed handoff: `docs/C4_PRES00_PRES01_IMPLEMENTATION_LOG_2026-10-19.md`.
