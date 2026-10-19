@@ -38,6 +38,11 @@ var _impact_cues: Dictionary = {}
 var _effect_atlas := CombatV4EffectAtlas.new()
 var _effect_cues: Array[Dictionary] = []
 var _status_feedback: Dictionary = {} # only actual event feedback, not status authority
+# PRES-01 visual-only adaptive framing, opt-in for the 6v5 JX pilot.
+# Does NOT move any fighter or affect V2 world coordinates / hit selection.
+var enable_spectator_framing: bool = false
+var _camera_center := GRID_SIZE*0.5
+var _camera_zoom: float = 1.0
 # Cosmetic-only overdraw budget: dropping FX never drops damage/cast events.
 const MAX_VISIBLE_SOURCE_FX := 12
 
@@ -58,6 +63,8 @@ func _process(delta: float) -> void:
         # Visual time follows elapsed frame time; never slow down VFX on sub-20-FPS devices.
         _frame_clock += maxf(0.0, delta)
         _view_elapsed = minf(MapBattleV2.STEP_SECONDS, _view_elapsed + maxf(0.0, delta))
+        if enable_spectator_framing:
+            _update_spectator_camera(delta)
         for id in _status_feedback.keys():
             if _frame_clock > float(_status_feedback[id].get("until", 0.0)):
                 _status_feedback.erase(id)
@@ -201,6 +208,8 @@ func attach_session(session: MapBattleV2) -> void:
     _action_cues.clear()
     _impact_cues.clear()
     _effect_cues.clear()
+    _camera_center = GRID_SIZE*0.5
+    _camera_zoom = 1.0
     if session != null:
         for id in session.actors:
             _positions[str(id)] = session.actors[id]["position"]
@@ -237,16 +246,66 @@ func visual_position(actor_id: String, authoritative: Vector2) -> Vector2:
     var alpha := clampf(_view_elapsed/MapBattleV2.STEP_SECONDS, 0.0, 1.0)
     return start.lerp(finish, alpha)
 
+# Frame the real living-actor bounds, not a cosmetic formation.
+# Allow generous margins for original Source VL art/attack frames/AoE.
+func spectator_camera_goal() -> Dictionary:
+    if battle == null or not enable_spectator_framing:
+        return {"center":GRID_SIZE*0.5,"zoom":1.0}
+    var low := Vector2(INF,INF)
+    var high := Vector2(-INF,-INF)
+    var count := 0
+    for id in battle.actors:
+        var actor: Dictionary = battle.actors[id]
+        if float(actor.get("hp",0.0)) <= 0.0:
+            continue
+        var at: Vector2 = visual_position(str(id),actor["position"])
+        low = Vector2(minf(low.x,at.x),minf(low.y,at.y))
+        high = Vector2(maxf(high.x,at.x),maxf(high.y,at.y))
+        count += 1
+    if count == 0:
+        return {"center":_camera_center,"zoom":_camera_zoom}
+    var width_pixels := (high.x-low.x)*stage_rect.size.x/GRID_SIZE.x
+    var height_pixels := (high.y-low.y)*stage_rect.size.y/GRID_SIZE.y
+    var width_zoom := stage_rect.size.x/maxf(width_pixels+230.0,1.0)
+    var height_zoom := stage_rect.size.y/maxf(height_pixels+200.0,1.0)
+    return {
+        "center":(low+high)*0.5,
+        "zoom":clampf(minf(width_zoom,height_zoom),1.0,2.10)
+    }
+
+func _update_spectator_camera(delta: float) -> void:
+    var goal: Dictionary = spectator_camera_goal()
+    var blend := clampf(1.0-exp(-2.8*maxf(delta,0.0)),0.0,1.0)
+    _camera_center = _camera_center.lerp(goal["center"],blend)
+    _camera_zoom = lerpf(_camera_zoom,float(goal["zoom"]),blend)
+
+func spectator_zoom() -> float:
+    return _camera_zoom if enable_spectator_framing and enable_source_vl_art else 1.0
+
 func point_on_map(logical_position: Vector2) -> Vector2:
-    return stage_rect.position + Vector2(
+    var raw := stage_rect.position + Vector2(
         clampf(logical_position.x/GRID_SIZE.x,0.0,1.0)*stage_rect.size.x,
         clampf(logical_position.y/GRID_SIZE.y,0.0,1.0)*stage_rect.size.y
     )
+    if not enable_spectator_framing or not enable_source_vl_art:
+        return raw
+    var camera_origin := stage_rect.position + Vector2(
+        _camera_center.x/GRID_SIZE.x*stage_rect.size.x,
+        _camera_center.y/GRID_SIZE.y*stage_rect.size.y
+    )
+    return stage_rect.get_center()+(raw-camera_origin)*_camera_zoom
 
 func logical_from_map(map_position: Vector2) -> Vector2:
     if stage_rect.size.x <= 0.0 or stage_rect.size.y <= 0.0:
         return Vector2.ZERO
-    var relative := (map_position-stage_rect.position)/stage_rect.size
+    var raw := map_position
+    if enable_spectator_framing and enable_source_vl_art:
+        var camera_origin := stage_rect.position + Vector2(
+            _camera_center.x/GRID_SIZE.x*stage_rect.size.x,
+            _camera_center.y/GRID_SIZE.y*stage_rect.size.y
+        )
+        raw = camera_origin+(map_position-stage_rect.get_center())/maxf(1.0,_camera_zoom)
+    var relative := (raw-stage_rect.position)/stage_rect.size
     return Vector2(
         clampf(relative.x*GRID_SIZE.x,0.0,GRID_SIZE.x),
         clampf(relative.y*GRID_SIZE.y,0.0,GRID_SIZE.y)
@@ -256,7 +315,7 @@ func actor_at_map_point(map_position: Vector2, max_distance: float = 17.0) -> St
     if battle == null:
         return ""
     var best := ""
-    var nearest := max_distance*max_distance
+    var nearest := pow(max_distance*spectator_zoom(),2.0)
     var ids: Array = battle.actors.keys()
     ids.sort()
     for id in ids:
@@ -433,7 +492,7 @@ func _draw() -> void:
     var scale_y := stage_rect.size.y/GRID_SIZE.y
     for zone in aoe_warning_geometry():
         var center := point_on_map(zone["center"])
-        var radius := Vector2(float(zone["radius"])*scale_x,float(zone["radius"])*scale_y)
+        var radius := Vector2(float(zone["radius"])*scale_x,float(zone["radius"])*scale_y)*spectator_zoom()
         # Slight top-down perspective: warning ellipse is a gameplay cue only.
         draw_set_transform(center,0.0,radius)
         draw_circle(Vector2.ZERO,1.0,WARNING)
@@ -483,8 +542,9 @@ func _draw() -> void:
         var hp_y := -radius-10.0
         if enable_source_vl_art and not art_key.is_empty():
             var clip := _actor_clip(str(id),alive)
-            var art_scale := 1.52 if tier == "boss" else (1.12 if art_key == "wolf" else 0.92)
-            draw_circle(at+Vector2(0.0,3.0),maxf(8.0,radius*1.25),Color(0.02,0.05,0.04,0.43))
+            var art_scale := (1.52 if tier == "boss" else (1.12 if art_key == "wolf" else 0.92))*spectator_zoom()
+            draw_circle(at+Vector2(0.0,3.0),maxf(8.0,radius*1.25)*spectator_zoom(),
+                Color(0.02,0.05,0.04,0.43))
             var art_foot := source_art_foot(art_key,str(clip["name"]),
                 _facing.get(str(id),Vector2.RIGHT),float(clip["age"]),art_scale,at)
             art_used = _source_atlas.draw_actor(self,art_key,str(clip["name"]),art_foot,
@@ -493,10 +553,11 @@ func _draw() -> void:
                 hp_y = _hp_bar_y(art_key,str(clip["name"]),_facing.get(str(id),Vector2.RIGHT),
                     float(clip["age"]),art_scale,radius)
         if not art_used:
-            draw_circle(at+Vector2(0.0,2.0),radius+2.0,BORDER)
-            draw_circle(at,radius,fill)
+            draw_circle(at+Vector2(0.0,2.0),(radius+2.0)*spectator_zoom(),BORDER)
+            draw_circle(at,radius*spectator_zoom(),fill)
         if tier == "boss" and alive:
-            draw_arc(at,maxf(15.0,radius+3.0),0.0,TAU,24,Color(0.94,0.73,0.39,0.85),1.5)
+            draw_arc(at,maxf(15.0,radius+3.0)*spectator_zoom(),
+                0.0,TAU,24,Color(0.94,0.73,0.39,0.85),1.5)
         if enable_source_vl_art and alive and side == "disciple":
             var tag := _school_tag(actor)
             ui_overlays.append({
