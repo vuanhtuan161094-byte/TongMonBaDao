@@ -57,7 +57,7 @@ static func build_party(state: SimulationState, selected_ids: Array) -> Dictiona
         unique[id] = true
         var record: Dictionary = roster[id]
         var i := party.size()
-        var role := ["frontline","ranged","mage","healer"][i%4]
+        var role: String = str(["frontline","ranged","mage","healer"][i%4])
         party.append({
             "disciple_id":id,
             "realm":int(record["realm"]),"floor":int(record["floor"]),
