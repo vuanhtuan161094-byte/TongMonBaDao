@@ -62,7 +62,8 @@ var _combat_text: Array[Dictionary] = []
 func _combat_amount(amount: float) -> String:
     # JX1 uses decimal integers in SetBlood(int), never fractional damage text.
     # This is display rounding only: actual HP can remain fractional in V2.
-    return str(int(roundf(amount)))
+    # Show at least 1 for a positive settlement; never show "0" for a hit.
+    return str(maxi(1,int(roundf(amount))))
 
 func _enqueue_combat_text(actor_id: String, amount: float, category: String,
         event_id: int) -> void:
