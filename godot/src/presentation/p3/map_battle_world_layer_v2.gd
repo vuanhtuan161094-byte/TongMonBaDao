@@ -134,7 +134,6 @@ func _ingest_authority_events() -> void:
                 _status_feedback[recipient] = {"kind":kind, "until":_frame_clock+0.85}
         elif kind == "pilot_impact":
             var victim := str(event.get("target",""))
-            var source_id := str(event.get("caster",""))
             if float(event.get("effective_damage",0.0)) > 0.0 and battle.actors.has(victim):
                 _impact_cues[victim] = _frame_clock
                 if float(battle.actors[victim].get("hp",0.0)) > 0.0:
