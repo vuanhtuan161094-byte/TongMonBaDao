@@ -1,3 +1,11 @@
+## 2026-10-19 — C4-JX1-HUD01 native source referenced renderer (NEW HEAD QA PENDING)
+
+Owner provided real GP01 user QA ZIP and 24.56s 1280x720 video. Parent GP01 commit `f2ea6852823d8bf5f7a1451c0cb975a0773364af` on official Windows Godot 4.7.2 has **7/7 focused PASS**, clean scene smoke and GUI exit 0; owner says current HUD unsatisfactory compared with classic JX1. Inspected direct C++ community source at `kiendaotac/SourceInit-JX1`: KNpc::PaintInfo (overhead names font12/selected14 with border), PaintLife (38×3 with green/yellow/red HP stages), SetBlood/PaintBlood (integer red font16, 27 updates, rise2/update), CoreDrawGameObj ordering, KScenePlaceC 2D viewport focus. **Source repository license for graphics/C++ unclear, no raw external binary/copied code imported**.
+
+Created separate branch `c4-gp01-jx1-source-hud-20261019` from GP01 PASS HEAD for rendering only. Pilot now defaults to JX-wide 1x world view with user tap `GÓC GẦN` close view; correct reset to `GÓC RỘNG`. JX mode uses source-referenced overhead actor name/status, NPC selected-only name/HP, visible Boss, outlined text no below-foot black badges, 38×3 thin HP, GREEN/YELLOW/RED thresholds, integer red non-boxed damage float, gold CRIT/heal/poison from real GP01 event receipts. New JX focused test and updated legacy camera view test. **Official Godot 4.7.2 QA/8 focused/scene/owner UX for NEW HEAD all PENDING**; prior 7/7 PASS not transferred. Authoritative Combat V2/RNG/SaveService/Economy/main/PR20 unchanged; no CI/FULL/merge. Exact evidence and rights note: `docs/C4_JX1_NATIVE_HUD_SOURCE_REFERENCE_IMPLEMENTATION_2026-10-19.md`.
+
+---
+
 ## 2026-10-19 — C4-GP01 presentation feedback + Accuracy/Evasion OWNER OVERRIDE
 
 The owner authorised GP01 real event-based damage/crit/heal/poison/status UI and revoked the previous "No Accuracy/Dodge" gameplay design. Code branch: c4-gp01-combat-feedback-20261019, forked from PRES01 v6 d160f97982f627460ab17661bdbfc572fe7c51b4. Main observed 461caca1171462e0da092f21108c5c1733157ad9, not edited.
