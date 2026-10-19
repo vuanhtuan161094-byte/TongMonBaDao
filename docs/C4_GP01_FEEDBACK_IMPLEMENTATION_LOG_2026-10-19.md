@@ -49,3 +49,35 @@ Previous branch `c4-jx1-ui-source-first-20261019` at `5cd6889` verified; user un
 
 **Adjacent focused regression:** GP01 receipt script now covers the 3-entry contested HUD, original-arrangement fidelity, deterministic collision avoidance, static source-world anchor, 28-crit saturation, healed popup admission. Simulation snapshots/events/RNG are not modified by the view. Code SHA and official Windows data still need verification; no claim of 4.7.2 runtime PASS, frames, FPS, memory or UX. No borrowed JX1 binary/file/license claim, no CI/FULL/merge.
 
+
+---
+
+## 2026-10-19 — C4 JX1 source assets, ranks and touch inspector (owner-authorized)
+
+**Base:** `c4-jx1-ui-readability-hardening-20261019` pinned `8f14d171744b3d332f198dc5fca9c2547a71989c`.
+**Code branch:** `c4-jx1-rank-and-fx-source-20261019`; `main` still at `461caca1171462e0da092f21108c5c1733157ad9` when checked.
+User expressly affirmed permission to use all owner-supplied assets in this personal project, 2026-10-19. No claim that the original VLTK publisher licensed distribution to unrelated third parties.
+
+**VERIFIED ASSET IMPORT (all SHA-256 recomputed from Drive binary bytes before commit):**
+
+| Godot relative basename under `assets/combat_v4/jx1_skill_fx/` | Bytes | SHA-256 | skill, stage |
+| --- | ---: | --- | --- |
+| `3dfcabc2.webp` | 35210 | `84c63b5352a2873c05370c5d5c884e72aab07c4f2073af905e0f45b05605bb52` | #158 precast |
+| `aa93d577.webp` | 213656 | `bbd0e0c189249e9aa44920d6fa9fe6e61caf26f18530244501f1c2fae732a53c` | #158 cast |
+| `361b4525.webp` | 16286 | `4052de409053ad3dc3562795c0f0d93e96029387169c7f42a4dca5d104352e13` | #158 impact |
+| `40a1c4ff.webp` | 228498 | `b33a62e2e78957f85cee8d44991a5a482ae39dd3aed3e069d405a5dada8f4448` | #63 cast (16 dirs) |
+| `1fffed7e.webp` | 12602 | `a22e5b9148a7d36e73dfea69cba271472e8700150f235da32fd5d36e212a5d2c` | #63 impact |
+| `2f8c6d50.webp` | 15714 | `621d884fd24c9fffbde197b667f734c0b88094fae3f3afdc6d37586f3ee6ab67` | #93 precast |
+| `e8178d06.webp` | 51244 | `84e3ae2bb64af51bb44384c5d63064ccfbe5db4b0c4b3f18c28357578632f362` | #93 impact |
+| `bar_hp.png` under `assets/combat_v4/jx1_ui/` | 354 | `2f4a6395548e64bc88f2cb951084a1ca017e85e5648abe19cb31e9f2ab2c14c5` | owner Võ Lâm Idle, 106×11 RGBA original UI fill |
+
+Google Drive source folders: Võ Lâm Idle `https://drive.google.com/drive/folders/1OYhASFXTBNK4ky3ln2p_m7g7qGbyYDPm`; Giang Hồ Chi Chiến `https://drive.google.com/drive/folders/19mdpwyTf2tzYblpfOg0CARi-JHdO70ZR`. Imported via authenticated Drive → GitHub blob/tree without rescaling source bytes; no commercial licensing representations.
+
+**Direct C4 presentation code:** rank label uses only `DiscipleRealmProgressV2.CULTIVATION_REALM_NAMES` + actual raw `realm_index/floor_index` provided to `layer.set_actor_view_metadata()`. Body uses independent `BODY_REALM_NAMES` + source body coordinates; view can also read a genuine linked `DiscipleState.v2_realm_progress` when valid. V2 `MapBattleV2.setup` strips original source realm and name, so the generic view adapter requires explicit original metadata from its encounter caller, not guessing from combat stats. Monster tier prefix Boss/Tinh Anh derives from actual snapshot tier; pilot source monsters created at realm2/floor1. Real linked `DiscipleState.display_name` is preferred over synthetic role badge. Touch/mouse actor pick displays both tracks and actual HP read-only. Pilot's six members use actual stats inputs CombatStatsV2.derive(2,1,2,1) and display corresponding rank; it is a fixture, not a production recruit. No changes to saved DiscipleState or MonsterCatalogueV2.
+
+**Source FX adapter:** existing Source VL manifest remains available; separate `jx1_skill_fx/fx_manifest.json` provides verified, opt-in WebP frame rects. Only real `pilot_impact(pilot_id=jx_wudang_158, effective_damage>0)` → #158 impact sheet, `pilot_impact(...jx_wudu_63, damage>0)` → #63 impact sheet, and `pilot_cast(pilot_id=jx_emei_93)` → #93 precast; no duplicate on refresh, no effect on HP or roll sequence. No FX on zero effective impact. #158 cast, #63 16-dir cast, #93 impact sheets imported but mapping/preview **PENDING**; #15/#159 have missing source binding. No fake `MISS`/`DODGE`, effect playback does not change cast timing.
+
+**Test/evidence:** expanded `c4_gp01_combat_feedback_receipts_test.gd` verifies canonical Tu Vi/Body labels, data missing/invalid fail-closed, linked name, source HP strip. New `c4_jx1_rank_fx_source_test.gd` checks 3 imported clips decoded with real Godot, durations/end frames, exact event cues, zero-damage omission, refresh dedupe, unchanged sim HP/RNG/time. No Godot 4.7.2 executable in current environment; official exact-HEAD import/focused Windows runtime, screenshot/UX and Android FPS **PENDING** (tests authored, not run). No CI, FULL, merge, main/PR20/Economy/SaveService/CombatStatsV2/MapBattleV2 touched. Static review only; the one-click isolated Windows ZIP will be delivered directly in ChatGPT pinned to final HEAD.
+
+**Remaining product gaps, not fabricated:** permanent real production name+realm bridge on all hunting entrypoints, skill teaching/equipping outside 5 pilot IDs, missing #15/#159 VFX, remaining four WebP atlas/movement mappings, true linked/source cast rigs, JX1 exact font/color/camera proof, real 30v40 readability/FPS, real Accuracy/Evasion roll/miss and learned evade skill simulation migration. These require relevant source evidence, testing, or separately-authorized gameplay work; do not claim feature completion.
+
