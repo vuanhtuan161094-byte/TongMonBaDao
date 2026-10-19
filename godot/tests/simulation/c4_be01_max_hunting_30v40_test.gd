@@ -173,6 +173,42 @@ func _run() -> void:
     recruit.hp = recruit.max_hp
     recruit.region_id = &"sect"
     recruit.current_action = &"IDLE"
+    # Actual three canonical P2 equipment slots, all nine learned P2 skill
+    # definitions in a test-only maximal inventory. Runtime only equips
+    # damage consumers, not deferred dash/DoT/guard mechanics.
+    state.sect.equipment_enabled = true
+    state.sect.combat_skills_enabled = true
+    recruit.cultivation_stage_index = 9
+    for skill in CombatSkillSystem.SKILLS.keys():
+        recruit.learned_combat_skills[str(skill)] = true
+    var slots := [
+        {"slot":"weapon","recipe_id":"thanh_thiet_kiem",
+            "stats":{"combat_power":6.0,"basic_speed":0.12,"move_speed":0.08,
+                "basic_ratio":0.10,"skill_effect":0.16}},
+        {"slot":"armor","recipe_id":"tinh_lang_giap",
+            "stats":{"combat_power":2.0,"defense_reduction":0.16}},
+        {"slot":"talisman","recipe_id":"hoa_van_ngoc",
+            "stats":{"combat_power":3.0,"skill_effect":0.20}}
+    ]
+    for gear in slots:
+        var item_id := "qa_max_"+str(gear["slot"])
+        state.sect.equipment_items[item_id] = {
+            "id":item_id,"recipe_id":gear["recipe_id"],"slot":gear["slot"],
+            "location":"equipped","owner_id":str(recruit.id),
+            "path":"sword","element":"metal","quality_id":"thuong",
+            "stats":gear["stats"]
+        }
+        recruit.equipped_items[str(gear["slot"])] = item_id
+    var outfit := DiscipleCombatLoadoutV2.build(
+        state,recruit,30,10,30,10,"frontline",Vector2(7.0,8.0),"owned_party"
+    )
+    if not _check(bool(outfit.get("ok",false)) and
+            (outfit["equipped_item_ids"] as Array).size()==EquipmentSystem.VALID_SLOTS.size() and
+            (outfit["skill_loadout"] as Array).has("thanh_phong_tram") and
+            (outfit["deferred_skill_ids"] as Array).has("truy_phong_bo") and
+            float(outfit["move_speed"]) > 2.7,
+            "owned three-slot gear or nine learned skills not routed correctly"):
+        return
     var zone := HuntingMapV2.choose_level(state,"thanh_truc_lam",5)
     if not _check(bool(zone.get("ok",false)) and
             HuntingMapV2.selected_level(state,"thanh_truc_lam")==5,
