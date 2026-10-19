@@ -28,6 +28,29 @@ No merge, no CI, no FULL tests, no changes to main, PR20, Economy, SaveService, 
 9. Existing non-pilot actors never lose legacy role heal/guard. Pilot actor with a non-empty pilot loadout does not gain those role abilities free in addition.
 10. Expiry, cooldown, hit, cast and status ordering are battle-authoritative; actor state snapshots contain effects; only test runtime can prove absence of Godot parse/restore issues.
 
+## 2026-10-19 — EP01 FOLLOW-UP STATIC AUDIT (CAST / ROOT / SNAPSHOT / QA)
+
+**Scope:** static-only fixes and focused regression on the same branch; **no official Godot binary in this runtime, zero official tests executed**. Tested by source-level call graph, contract comparison and delimiter/type-inference review only. **Runtime and balance remain PENDING**; no 11 additional JX skills, live learning or SaveService changes.
+
+**Evidence-backed repairs added:**
+
+1. **Wind-up versus missile flight:** before this patch, pilot `_actor_casting` locked the actor until the entire projectile travel delay elapsed. `pilot_ready` began cooldown from the **start** of cast, contradicting the approved commit-time contract. Now `commit_at = cast_start + cast_ticks * STEP_SECONDS`, `impact_at = commit_at + ceil(distance_at_start/speed/STEP_SECONDS) * STEP_SECONDS`; after commit, action lock ends but the target-locked packet remains queued until impact. Cooldown is recorded as `commit_at + cd_ticks * STEP_SECONDS`. One `pilot_commit` event per cast, `pilot_impact` only on real effect resolution. The start event remains `pilot_cast`. No per-frame simulation.
+2. **Duplicate action bars:** before, a caller could provide 1–4 `pilot_skill_loadout` entries *and* an independent learned `skill_loadout`, allowing more than the V2 maximum four equipped active skills. Now setup rejects mixed nonempty bars with `mixed_pilot_and_learned_active_slots`. Empty pilot loadouts retain all legacy behavior.
+3. **GDScript Variant inference hazard:** `JxPilotRuntimeV1` intentionally accepts `battle: Variant`, so values retrieved via `battle.now` and `battle._deal_direct(...)` have no trustworthy inferred static type. New numerical timestamps and result use explicit `: float` / `float(...)` rather than `:=` inference from a dynamic call. This reduces known parser risk; official parse still PENDING.
+4. **PowerShell native stderr:** Windows PowerShell 5.1 with `$ErrorActionPreference="Stop"` can promote native stderr into `NativeCommandError`. A focused test may intentionally emit warnings/stderr and exit 0 with a true PASS marker. The QA script temporarily allows native stderr collection around git clone/Godot invocation, then **requires process exit code 0** and **exact PASS marker**; no masking of actual failed gate.
+5. **Focused regression expanded:** six active-bar denial, `cast0.50 + flight0.75` from a 6-unit projectile, cooldown 5s after commit, no actor lock during in-flight projectile, exactly-one `pilot_commit` and impact, lossless mid-flight snapshot/replay equivalence. Previous poison 3-stack global cap, same-party buff boundary, fatal one `downed`, five-root resonance, five-element counter and old V2 test scripts remain unchanged.
+
+**Remaining static contracts / NOT proven:** 
+- Projectile is currently target-locked with deterministic initial-distance arrival; the spawned WebP is not yet an in-world travelling missile. `pilot_commit` is a simulation event, **not** claim of integrated JX FX or manual scene PASS.
+- If a caster dies during missile flight, existing `MapBattleV2._release_casts` discards that caster's pending impact when due. Whether post-death projectiles should resolve requires a separate authored gameplay policy, not a guess.
+- Full permanent multi-root stat modifiers are not applied by EP01; only eligible per-skill root matching magnitude. No new Root V2 source double buff.
+- `MapBattleSnapshotV2` currently persists primitive `pilot_effects` and `pilot_ready` with Godot Variant bytes. Official replay checks and corrupt/new-field fail-closed validation are still **PENDING**; don't call it durable SAVE integration.
+- Potential class resolution / warning-as-error, actual Godot 4.7.2 scripts, 1280×720 visible animation, Android timing/FPS, and 8-seed win/time/downed outputs remain PENDING.
+
+**Gate to resume:** run isolated QA launcher on exact HEAD: import, `c4_jx_pilot_effects_test.gd`, `dv2_02_battle_snapshot_test.gd`, `dv2_02_group_map_battle_test.gd`, inspect 1280×720 `combat_v4_jx_pilot.tscn`. Preserve exit codes, logs and benchmark console data. No CI/FULL/merge/production system changes.
+
+---
+
 ## 2026-10-19 — USER-AUTHORIZED QA CONTINUATION / HONEST RUNTIME STATUS
 
 The owner explicitly authorized official Godot 4.7.2 isolated import + **exactly three focused tests**, one 1280×720 visual battle and a six-person benchmark; repair only evidence-backed bugs; no CI/FULL/merge, main/PR20/Economy/Save untouched.
