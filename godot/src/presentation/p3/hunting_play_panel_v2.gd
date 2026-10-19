@@ -6,6 +6,7 @@ extends Control
 const STAGE := Vector2(1280.0,720.0)
 const BATTLE_STEP := MapBattleV2.STEP_SECONDS
 const MAX_STEPS_PER_FRAME := 4
+const VISIBLE_ROSTER_LIMIT := 90
 
 var live: LiveGameRuntimeV2
 var state: SimulationState
@@ -13,6 +14,8 @@ var session: HuntingPveRunV2
 var selected_region := "thanh_truc_lam"
 var selected_level := 1
 var chosen: Dictionary = {}
+var building_rules := BuildingSystem.new()
+var roster_filter: LineEdit
 var accumulator := 0.0
 var running := false
 
@@ -82,6 +85,10 @@ func _build() -> void:
         region_choice.set_item_metadata(region_choice.item_count-1,str(id))
     region_choice.item_selected.connect(_region_changed)
     column.add_child(region_choice)
+    for i in range(region_choice.item_count):
+        if str(region_choice.get_item_metadata(i)) == selected_region:
+            region_choice.select(i)
+            break
 
     var level_text := Label.new()
     level_text.text = "Độ khó"
@@ -97,6 +104,10 @@ func _build() -> void:
     roster_text.text = "Chọn tối đa 30 đệ tử; mỗi đội tối đa 6"
     roster_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     column.add_child(roster_text)
+    roster_filter = LineEdit.new()
+    roster_filter.placeholder_text = "Tìm đệ tử (tối đa 90 kết quả)"
+    roster_filter.text_changed.connect(func(_text: String): _rebuild_roster())
+    column.add_child(roster_filter)
     roster_scroll = ScrollContainer.new()
     roster_scroll.custom_minimum_size = Vector2(330,288)
     roster_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -168,8 +179,8 @@ func _eligible(disciple: DiscipleState) -> bool:
         disciple.region_id == &"sect" and \
         disciple.current_action in [&"EVALUATE",&"IDLE",&"HOLD"] and \
         disciple.work_cycle_state.is_empty() and \
-        not BuildingSystem.new().disciple_has_active_spirit_plot(state,disciple.id) and \
-        not BuildingSystem.new().disciple_has_active_timed_recipe(state,disciple.id) and \
+        not building_rules.disciple_has_active_spirit_plot(state,disciple.id) and \
+        not building_rules.disciple_has_active_timed_recipe(state,disciple.id) and \
         not DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple)
 
 func _rebuild_roster() -> void:
@@ -180,8 +191,15 @@ func _rebuild_roster() -> void:
     var ids: Array = state.disciples.keys()
     ids.sort()
     var available := 0
+    var shown := 0
+    var fragment := roster_filter.text.strip_edges().to_lower() if roster_filter != null else ""
     for id in ids:
         var disciple: DiscipleState = state.disciples[id]
+        if not fragment.is_empty() and not disciple.display_name.to_lower().contains(fragment):
+            continue
+        if shown >= VISIBLE_ROSTER_LIMIT:
+            break
+        shown += 1
         var can_enter := _eligible(disciple)
         var check := CheckBox.new()
         check.text = disciple.display_name + (" (sẵn sàng)" if can_enter else " (đang bận / bị thương)")
@@ -192,7 +210,9 @@ func _rebuild_roster() -> void:
         if can_enter:
             available += 1
     launch_button.disabled = session != null or available == 0 or not state.sect.p3_7_resources_enabled
-    resume_button.disabled = state.sect.v2_pve_active_runs.is_empty()
+    resume_button.disabled = session != null or state.sect.v2_pve_active_runs.is_empty()
+    region_choice.disabled = session != null
+    level_choice.disabled = session != null
     claim_button.disabled = session == null or session.battle == null or session.battle.active or session.battle.outcome != "win"
 
 func _select_disciple(enabled: bool, id: String) -> void:
@@ -267,6 +287,13 @@ func _restore_first_session() -> void:
         _status("Checkpoint không hợp lệ: "+str(restored.get("reason","unknown")))
         return
     session = restored["session"]
+    selected_region = session.region_id
+    selected_level = int(session.spawn_data.get("level",1))
+    for i in range(region_choice.item_count):
+        if str(region_choice.get_item_metadata(i)) == selected_region:
+            region_choice.select(i)
+            break
+    level_choice.select(clampi(selected_level,1,5)-1)
     if session.battle.active:
         _start_view()
     else:
