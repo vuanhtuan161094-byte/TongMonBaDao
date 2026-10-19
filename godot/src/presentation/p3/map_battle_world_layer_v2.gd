@@ -49,14 +49,18 @@ const MAX_VISIBLE_SOURCE_FX := 12
 # receipts. Never calculate hits or derive a dodge outcome from animations.
 const MAX_VISIBLE_COMBAT_TEXT := 28
 const COMBAT_TEXT_SECONDS := 0.80
+const JX1_FLOAT_TIME := 0.62 # 27 legacy display updates; render-independent time
 var enable_combat_text: bool = true
+# Based on SourceInit-JX1 KNpc::PaintInfo/PaintLife/PaintBlood behavior.
+# No JX C++ or sprite binaries copied; draw primitive conversion only.
+var enable_jx1_hud: bool = false
 var combat_text_detail: String = "standard" # minimal | standard | detailed
 var _combat_text: Array[Dictionary] = []
 
 # Format ONLY an already-settled amount. No damage computation occurs here.
 func _combat_amount(amount: float) -> String:
-    if amount < 10.0 and absf(amount-roundf(amount)) > 0.01:
-        return "%.1f" % amount
+    # JX1 uses decimal integers in SetBlood(int), never fractional damage text.
+    # This is display rounding only: actual HP can remain fractional in V2.
     return str(int(roundf(amount)))
 
 func _enqueue_combat_text(actor_id: String, amount: float, category: String,
@@ -113,6 +117,26 @@ func _ingest_combat_feedback(event: Dictionary, event_id: int) -> void:
 
 # Read real V2 status ownership at the current simulation timestamp.
 # Labels disappear when the authoritative effect ends, even if rendering lags.
+# Drawn labels are world-attached, as in JX1 PaintInfo, not nameplates at feet.
+# Pilot roster lacks persistent personal names; use real school and stable number.
+func jx1_display_name(actor: Dictionary) -> String:
+    var species := str(actor.get("species_id",""))
+    if not species.is_empty():
+        return str({
+            "truc_thu":"Trúc Thử","thanh_lang":"Thanh Lang",
+            "hac_lang":"Hắc Lang","hac_lang_vuong":"Hắc Lang Vương",
+            "nham_giap_thu":"Nham Giáp Thú","u_hon":"U Hồn",
+            "huyet_lang_dau_dan":"Huyết Lang Đầu Đàn"
+        }.get(species,"Quái"))
+    var label := str({
+        "TL":"Thiếu Lâm","VD":"Võ Đang","ND":"Ngũ Độc",
+        "NM":"Nga Mi"
+    }.get(_school_tag(actor),"Đệ Tử"))
+    var actor_id := str(actor.get("id",""))
+    if actor_id.begins_with("c4_disciple_"):
+        label += " "+str(int(actor_id.trim_prefix("c4_disciple_"))+1)
+    return label
+
 func active_combat_status_tags(actor: Dictionary) -> Array[String]:
     var tags: Array[String] = []
     var poison_count := 0
@@ -174,7 +198,8 @@ func _process(delta: float) -> void:
             if _frame_clock-float(cue["started"]) > _effect_atlas.duration(str(cue["kind"])):
                 _effect_cues.remove_at(i)
         for i in range(_combat_text.size()-1,-1,-1):
-            if _frame_clock-float(_combat_text[i]["started"]) > COMBAT_TEXT_SECONDS:
+            if _frame_clock-float(_combat_text[i]["started"]) > (
+                    JX1_FLOAT_TIME if enable_jx1_hud else COMBAT_TEXT_SECONDS):
                 _combat_text.remove_at(i)
         queue_redraw()
 
@@ -665,14 +690,14 @@ func _draw() -> void:
         if tier == "boss" and alive:
             draw_arc(at,maxf(15.0,radius+3.0)*spectator_zoom(),
                 0.0,TAU,24,Color(0.94,0.73,0.39,0.85),1.5)
-        if enable_source_vl_art and alive and side == "disciple":
+        if enable_source_vl_art and alive and side == "disciple" and not enable_jx1_hud:
             var tag := _school_tag(actor)
             ui_overlays.append({
                 "kind":"badge",
                 "rect":Rect2(at+Vector2(-24.0,9.0),Vector2(48.0,19.0)),
                 "text":_actor_badge(actor),"fill":_school_color(tag)
             })
-        if enable_source_vl_art and alive:
+        if enable_source_vl_art and alive and not enable_jx1_hud:
             # Statuses derive from currently active effects/guards, never a
             # guessed VFX duration. Keep no more than two tags visible in 6v5.
             var tags := active_combat_status_tags(actor)
@@ -685,13 +710,34 @@ func _draw() -> void:
                 })
 
         var health := clampf(float(actor["hp"])/maxf(1.0,float(actor["max_hp"])),0.0,1.0)
-        var bar_width := 60.0 if tier == "boss" else (48.0 if art_used else 22.0)
-        var bar_height := 7.0 if tier == "boss" else (6.0 if art_used else 4.0)
+        var bar_width := (50.0 if tier == "boss" else 38.0) if enable_jx1_hud else (
+            60.0 if tier == "boss" else (48.0 if art_used else 22.0))
+        var bar_height := (4.0 if tier == "boss" else 3.0) if enable_jx1_hud else (
+            7.0 if tier == "boss" else (6.0 if art_used else 4.0))
         var bar := Rect2(at+Vector2(-bar_width*0.5,hp_y),Vector2(bar_width,bar_height))
         if enable_source_vl_art and alive:
             # Bars are drawn after ALL sprites, preventing near-actor occlusion.
-            ui_overlays.append({"kind":"hp","rect":bar,"ratio":health,
-                "fill":HP_GOOD if side == "disciple" else HP_ENEMY})
+            var hp_tint := HP_GOOD if side == "disciple" else HP_ENEMY
+            if enable_jx1_hud:
+                # KNpc::PaintLife: green >50%, yellow at 25..49%, then red.
+                hp_tint = Color(0.05,0.95,0.10) if health >= 0.50 else (
+                    Color(1.0,0.90,0.10) if health >= 0.25 else Color(1.0,0.15,0.13))
+            ui_overlays.append({"kind":"hp","rect":bar,"ratio":health,"fill":hp_tint})
+            if enable_jx1_hud:
+                var name_text := jx1_display_name(actor)
+                var tags := active_combat_status_tags(actor)
+                if not tags.is_empty():
+                    name_text += " ("+str(tags[0])+")"
+                var name_width := clampf(30.0+float(name_text.length())*7.0,66.0,185.0)
+                ui_overlays.append({
+                    "kind":"jx_name",
+                    "rect":Rect2(at+Vector2(-name_width*0.5,hp_y-22.0),
+                        Vector2(name_width,17.0)),
+                    "text":name_text,
+                    "fill":Color(1.0,0.84,0.40) if tier == "boss" else (
+                        Color(0.88,1.0,0.89) if side == "disciple" else
+                        Color(1.0,0.86,0.76))
+                })
         else:
             draw_rect(bar,HP_BG)
             draw_rect(Rect2(bar.position,Vector2(bar.size.x*health,bar.size.y)),
@@ -714,6 +760,20 @@ func _draw() -> void:
                 draw_rect(Rect2(bounds.position,
                     Vector2(bounds.size.x*float(overlay["ratio"]),bounds.size.y)),
                     overlay["fill"])
+            elif kind == "jx_name":
+                # Exact visual structure from KNpc::PaintInfo: border/shadowed
+                # colored text OVER sprite; no dark rectangular badge.
+                var label_text := str(overlay["text"])
+                var fontsize := 12
+                var baseline := bounds.position+Vector2(0.0,13.0)
+                for offset in [Vector2(-1.0,0.0),Vector2(1.0,0.0),
+                        Vector2(0.0,-1.0),Vector2(0.0,1.0)]:
+                    draw_string(ThemeDB.fallback_font,baseline+offset,label_text,
+                        HORIZONTAL_ALIGNMENT_CENTER,bounds.size.x,fontsize,
+                        Color(0.01,0.015,0.012,0.95))
+                draw_string(ThemeDB.fallback_font,baseline,label_text,
+                    HORIZONTAL_ALIGNMENT_CENTER,bounds.size.x,fontsize,
+                    overlay["fill"])
             else:
                 draw_rect(bounds,Color(0.035,0.065,0.07,0.94))
                 if kind == "badge":
@@ -727,7 +787,8 @@ func _draw() -> void:
         if enable_combat_text:
             for popup in _combat_text:
                 var age := _frame_clock-float(popup["started"])
-                if age < 0.0 or age > COMBAT_TEXT_SECONDS:
+                var life := JX1_FLOAT_TIME if enable_jx1_hud else COMBAT_TEXT_SECONDS
+                if age < 0.0 or age > life:
                     continue
                 var actor_id := str(popup["actor_id"])
                 if not battle.actors.has(actor_id):
@@ -737,19 +798,32 @@ func _draw() -> void:
                 var lane := int(popup["event_id"]) % 4
                 var position := point+Vector2(
                     float(lane-2)*15.0,-44.0-age*38.0)
+                if enable_jx1_hud:
+                    # KNpc::PaintBlood: rises in integer screen increments.
+                    position = point+Vector2(float(lane-2)*12.0,
+                        -45.0-age*87.0)
                 var category := str(popup["category"])
                 var text_value := str(popup["label"])
-                var size := 16 if category == "crit" else 13
+                var size := (18 if category == "crit" else 16) if enable_jx1_hud else (
+                    16 if category == "crit" else 13)
                 var width := maxf(52.0,float(text_value.length())*float(size)*0.67+10.0)
                 position.x = clampf(position.x-width*0.5,
                     stage_rect.position.x,stage_rect.end.x-width)
                 position.y = clampf(position.y,
                     stage_rect.position.y+2.0,stage_rect.end.y-25.0)
-                var fade := clampf((COMBAT_TEXT_SECONDS-age)/0.25,0.0,1.0)
+                var fade := clampf((life-age)/0.25,0.0,1.0)
                 var bounds := Rect2(position,Vector2(width,float(size)+9.0))
-                draw_rect(bounds,Color(0.02,0.035,0.04,0.78*fade))
+                if not enable_jx1_hud:
+                    draw_rect(bounds,Color(0.02,0.035,0.04,0.78*fade))
                 var tint := _combat_feedback_color(category)
+                if enable_jx1_hud and category == "damage":
+                    tint = Color(1.0,0.20,0.16)
                 tint.a = fade
-                draw_string(ThemeDB.fallback_font,
-                    position+Vector2(4.0,float(size)+2.0),text_value,
+                var text_origin := position+Vector2(4.0,float(size)+2.0)
+                if enable_jx1_hud:
+                    # The source's red 16px flying number has NO black plate.
+                    draw_string(ThemeDB.fallback_font,text_origin+Vector2(1.0,1.0),
+                        text_value,HORIZONTAL_ALIGNMENT_CENTER,width-8.0,size,
+                        Color(0.03,0.01,0.01,fade*0.90))
+                draw_string(ThemeDB.fallback_font,text_origin,text_value,
                     HORIZONTAL_ALIGNMENT_CENTER,width-8.0,size,tint)
