@@ -138,7 +138,6 @@ func _build() -> void:
     battle_layer.enable_source_vl_art = true
     battle_layer.enable_spectator_framing = true
     battle_layer.spectator_zoom_ceiling = 1.0
-    battle_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
     viewing.add_child(battle_layer)
 
     status = Label.new()
@@ -148,7 +147,7 @@ func _build() -> void:
     status.add_theme_font_size_override("font_size",15)
     status.add_theme_color_override("font_color",Color(0.92,0.89,0.77))
     add_child(status)
-    _status("Chọn khu vực, độ khó và đệ tử rảnh. Không sử dụng tài nguyên giả.")
+    _status("Chọn khu vực, độ khó và đệ tử V2 rảnh. Không sử dụng tài nguyên giả.")
 
 func _status(message: String) -> void:
     if status != null:
@@ -163,7 +162,8 @@ func _level_changed(index: int) -> void:
     selected_level = index+1
 
 func _eligible(disciple: DiscipleState) -> bool:
-    return disciple.hp > 0.0 and disciple.injury_level == 0 and \
+    return DiscipleRealmProgressV2.valid_profile(disciple.v2_realm_progress) and \
+        disciple.hp > 0.0 and disciple.injury_level == 0 and \
         disciple.active_pve_encounter_id.is_empty() and \
         disciple.region_id == &"sect" and \
         disciple.current_action in [&"EVALUATE",&"IDLE",&"HOLD"] and \
@@ -186,7 +186,7 @@ func _rebuild_roster() -> void:
         var check := CheckBox.new()
         check.text = disciple.display_name + (" (sẵn sàng)" if can_enter else " (đang bận / bị thương)")
         check.disabled = not can_enter or session != null
-        check.button_pressed = chosen.has(str(id)) and can_enter
+        check.set_pressed_no_signal(chosen.has(str(id)) and can_enter)
         check.toggled.connect(_select_disciple.bind(str(id)))
         roster_list.add_child(check)
         if can_enter:
