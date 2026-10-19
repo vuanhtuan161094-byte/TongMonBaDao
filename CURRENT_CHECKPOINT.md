@@ -1,3 +1,11 @@
+## 2026-10-19 — C4 JX1 UI source-first follow-up (EXACT-SHA QA PENDING)
+
+Owner directed JX1-PC-inspired Combat V4 presentation, specifically integer-only damage and wider default pilot camera. Separate branch `c4-jx1-ui-source-first-20261019` forked from GP01 `f2ea6852823d8bf5f7a1451c0cb975a0773364af`; GitHub main `461caca1171462e0da092f21108c5c1733157ad9` unchanged. Presentation changes: canonical monster names above HP from MonsterCatalogueV2, authored name when present, role/slot fallback (NOT invented disciples), integer-only visible receipt text preserving underlying float, outlined colored glyphs with no opaque damage boxes, pilot overview zoom cap 1x without moving combat actors; source VL sprite/FX unchanged. Regression extended for render-only identity, amount, camera and no duplicate receipts. See `docs/C4_GP01_FEEDBACK_IMPLEMENTATION_LOG_2026-10-19.md`.
+
+Owner Drive Võ Lâm Idle README says fan-made/research only; Giang Hồ Chi Chiến verifies runtime but admits uncertain mirror art redistribution rights. Sources used READ-ONLY for JX cues, no JX binaries/fonts imported. Camera ratio 1x is unzoomed project stage, NOT measured original JX camera. All new official Godot 4.7.2 focused tests, Windows visual and Android/owner UX **PENDING** on new branch HEAD. One-click direct ChatGPT ZIP required, output log archive beside CMD. No CI/FULL/merge/Combat V2/RNG/Economy/SaveService/main/PR20 mutation.
+
+---
+
 ## 2026-10-19 — C4-GP01 presentation feedback + Accuracy/Evasion OWNER OVERRIDE
 
 The owner authorised GP01 real event-based damage/crit/heal/poison/status UI and revoked the previous "No Accuracy/Dodge" gameplay design. Code branch: c4-gp01-combat-feedback-20261019, forked from PRES01 v6 d160f97982f627460ab17661bdbfc572fe7c51b4. Main observed 461caca1171462e0da092f21108c5c1733157ad9, not edited.
