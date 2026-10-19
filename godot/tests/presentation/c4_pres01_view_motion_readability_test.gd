@@ -52,7 +52,7 @@ func _run() -> void:
     # skill_hit + hit must not replay that caster animation at impact time.
     if not _check(layer.should_start_attack_on_hit("hit","basic") and
             layer.should_start_attack_on_hit("hit","basic_followup") and
-            layer.should_start_attack_on_hit("hit","area_slam") and
+            not layer.should_start_attack_on_hit("hit","area_slam") and
             not layer.should_start_attack_on_hit("skill_hit","") and
             not layer.should_start_attack_on_hit("hit","learned_skill") and
             not layer.should_start_attack_on_hit("hit","pilot_projectile"),
@@ -202,6 +202,45 @@ func _run() -> void:
             "positive learned settlement must produce one real-source impact FX"):
         return
     release_view.queue_free()
+    # Authentic monster telegraph starts the attack animation BEFORE release,
+    # and area_slam settlements cannot start a second post-impact animation.
+    var boss_foe := MonsterCatalogueV2.create_actor("hac_lang_vuong",1,1,
+        "c4_aoe_boss")
+    if not _check(bool(boss_foe.get("ok",false)),"real boss fixture missing"):
+        return
+    boss_foe["id"] = "c4_aoe_boss"
+    boss_foe["position"] = Vector2(10.0,9.0)
+    var defender: Dictionary = member.duplicate(true)
+    defender["id"] = "c4_aoe_defender"
+    defender["position"] = Vector2(9.0,9.0)
+    var area_battle := MapBattleV2.new(41111)
+    if not _check(bool(area_battle.setup("pres01_boss_telegraph",
+            [defender],[boss_foe]).get("ok",false)),
+            "boss telegraph V2 fixture cannot initialize"):
+        return
+    var area_view := MapBattleWorldLayerV2.new()
+    area_view.enable_source_vl_art = true
+    get_root().add_child(area_view)
+    area_view.attach_session(area_battle)
+    area_battle._begin_telegraphed_aoe(
+        area_battle.actors["c4_aoe_boss"],area_battle.actors["c4_aoe_defender"])
+    area_view.refresh_from_authority()
+    var boss_cue: Dictionary = area_view._action_cues.get("c4_aoe_boss",{})
+    if not _check(str(boss_cue.get("action","")) == "attack" and
+            area_view.aoe_warning_geometry().size() == 1,
+            "actual boss AoE telegraph failed to animate the caster"):
+        return
+    var boss_start := float(boss_cue.get("started",-1.0))
+    area_view._frame_clock += 0.21
+    area_battle.now = float(area_battle.pending_casts[0]["ready"])
+    area_battle._release_casts()
+    area_view.refresh_from_authority()
+    var boss_resolved: Dictionary = area_view._action_cues.get("c4_aoe_boss",{})
+    if not _check(is_equal_approx(float(boss_resolved.get("started",-1.0)),
+            boss_start),
+            "settled area_slam restarted boss attack after real AoE release"):
+        return
+    area_view.queue_free()
     # Verify the actual C4 6v5 scene launches with the intended configuration,
     # not just a synthetic mini battle or a headless process that exits zero.
     var pilot_scene := load("res://scenes/p3/combat_v4_jx_pilot.tscn") as PackedScene
