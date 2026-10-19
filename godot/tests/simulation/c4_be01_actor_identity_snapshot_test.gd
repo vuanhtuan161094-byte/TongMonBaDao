@@ -146,6 +146,68 @@ func _run() -> void:
     if not _check(bool(MapBattleSnapshotV2.load(old_style).get("ok",false)),
             "pre-identity V1 snapshot compatibility broken"):
         return
+    # A legitimate restored Hunt derives monster source realm from the map.
+    # Tampering rank/name in a persisted V1 battle must not change identity.
+    if not _check(bool(HuntingMapV2.choose_level(
+            state,"thanh_truc_lam",1).get("ok",false)),
+            "cannot select focused hunting region"):
+        return
+    var hunt_member := {
+        "disciple_id":str(disciple.id),"party_id":"team_1","role":"frontline",
+        "position":Vector2(7.0,9.0),
+        "realm":1,"floor":1,"body_realm":1,"body_floor":1
+    }
+    if DiscipleRealmProgressV2.valid_profile(disciple.v2_realm_progress):
+        var cultivation: Dictionary = disciple.v2_realm_progress["cultivation"]
+        var body: Dictionary = disciple.v2_realm_progress["body"]
+        hunt_member["realm"] = int(cultivation["realm"])
+        hunt_member["floor"] = int(cultivation["floor"])
+        hunt_member["body_realm"] = int(body["realm"])
+        hunt_member["body_floor"] = int(body["floor"])
+    var hunt := HuntingPveRunV2.new()
+    if not _check(bool(hunt.begin(state,"thanh_truc_lam",
+            "be01_restore_hunt",121001,[hunt_member]).get("ok",false)),
+            "genuine P37 hunting fixture rejected"):
+        return
+    var canonical_hunt := hunt.save_state()
+    if not _check(bool(HuntingPveRunV2.restore_state(
+            state,canonical_hunt).get("ok",false)),
+            "unmodified hunting checkpoint fails provenance validation"):
+        return
+    for forged_field in ["realm_index","name"]:
+        var envelope_copy: Dictionary = canonical_hunt.duplicate(true)
+        var snapshot_copy: Dictionary = envelope_copy["battle"]
+        var source_payload: Dictionary = bytes_to_var(
+            Marshalls.base64_to_raw(str(snapshot_copy["payload"])))
+        for saved_actor in source_payload["actors"]:
+            if str(saved_actor.get("side","")) == "monster":
+                if forged_field == "realm_index":
+                    saved_actor["realm_index"] = 30
+                else:
+                    saved_actor["name"] = "Quái giả"
+                break
+        snapshot_copy["payload"] = Marshalls.raw_to_base64(
+            var_to_bytes(source_payload))
+        envelope_copy["battle"] = snapshot_copy
+        if not _check(not bool(HuntingPveRunV2.restore_state(
+                state,envelope_copy).get("ok",true)),
+                "saved hunting monster passed forged provenance: "+forged_field):
+            return
+    var legacy_hunt: Dictionary = canonical_hunt.duplicate(true)
+    var legacy_blob: Dictionary = legacy_hunt["battle"]
+    var legacy_payload: Dictionary = bytes_to_var(
+        Marshalls.base64_to_raw(str(legacy_blob["payload"])))
+    for saved_actor in legacy_payload["actors"]:
+        if str(saved_actor.get("side","")) == "monster":
+            for field in ["name","realm_index","floor_index"]:
+                saved_actor.erase(field)
+    legacy_blob["payload"] = Marshalls.raw_to_base64(
+        var_to_bytes(legacy_payload))
+    legacy_hunt["battle"] = legacy_blob
+    if not _check(bool(HuntingPveRunV2.restore_state(
+            state,legacy_hunt).get("ok",false)),
+            "legacy V1 hunting saves without rank must remain restorable"):
+        return
     view.queue_free()
     print("C4 BE01 SOURCE IDENTITY, 30x10, SNAPSHOT, RNG ISOLATION: PASS")
     quit(0)
