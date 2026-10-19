@@ -270,10 +270,10 @@ func _ingest_authority_events() -> void:
         elif kind == "pilot_impact":
             var victim := str(event.get("target",""))
             if float(event.get("effective_damage",0.0)) > 0.0 and battle.actors.has(victim):
-                var source_kind := {
+                var source_kind: String = str({
                     "jx_wudang_158":"jx_wudang_158_impact",
                     "jx_wudu_63":"jx_wudu_63_impact"
-                }.get(str(event.get("pilot_id","")),"")
+                }.get(str(event.get("pilot_id","")),""))
                 if not str(source_kind).is_empty():
                     _queue_source_fx(str(source_kind),
                         point_on_map(battle.actors[victim]["position"]),victim)
