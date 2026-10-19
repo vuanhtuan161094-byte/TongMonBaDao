@@ -310,8 +310,23 @@ func aoe_warning_geometry() -> Array[Dictionary]:
         zones.append({"center":center,"radius":radius})
     return zones
 
-# The bar must clear the actual sprite's top edge, not a fixed guess.
-# Source anchors can exceed a frame's cropped height (notably wolf sheets).
+# Source VL wolf sheets can specify an anchor BELOW the cropped texture
+# (e.g. idle 53px high, source anchor y=67). Draw-time art alignment is
+# independent of authoritative MapBattleV2 feet/hit coordinates.
+func source_art_foot(art_key: String, action: String, facing: Vector2,
+        age: float, art_scale: float, logical_foot: Vector2) -> Vector2:
+    if art_key.is_empty() or not enable_source_vl_art:
+        return logical_foot
+    var frame: Dictionary = _source_atlas.frame_region(art_key,action,facing,age)
+    if frame.is_empty():
+        return logical_foot
+    var anchor: Vector2 = frame["anchor"]
+    var crop: Rect2 = frame["source"]
+    var extra := maxf(0.0,anchor.y-crop.size.y)
+    return logical_foot+Vector2(0.0,extra*art_scale*float(frame["scale"]))
+
+# The bar must clear the DRAWN sprite's top edge, not a fixed guess.
+# Render correction for below-crop anchors must also affect this UI offset.
 func _hp_bar_y(art_key: String, action: String, facing: Vector2,
         age: float, art_scale: float, radius: float) -> float:
     var fallback := -radius-10.0
@@ -321,7 +336,9 @@ func _hp_bar_y(art_key: String, action: String, facing: Vector2,
     if frame.is_empty():
         return fallback
     var ratio := art_scale * float(frame["scale"])
-    var sprite_top := -float((frame["anchor"] as Vector2).y)*ratio
+    var crop: Rect2 = frame["source"]
+    var sprite_top := -minf(float((frame["anchor"] as Vector2).y),
+        crop.size.y)*ratio
     return minf(fallback,sprite_top-10.0)
 
 # Moving a UI health bar is permitted; moving a character away from its
@@ -468,7 +485,9 @@ func _draw() -> void:
             var clip := _actor_clip(str(id),alive)
             var art_scale := 1.52 if tier == "boss" else (1.12 if art_key == "wolf" else 0.92)
             draw_circle(at+Vector2(0.0,3.0),maxf(8.0,radius*1.25),Color(0.02,0.05,0.04,0.43))
-            art_used = _source_atlas.draw_actor(self,art_key,str(clip["name"]),at,
+            var art_foot := source_art_foot(art_key,str(clip["name"]),
+                _facing.get(str(id),Vector2.RIGHT),float(clip["age"]),art_scale,at)
+            art_used = _source_atlas.draw_actor(self,art_key,str(clip["name"]),art_foot,
                 _facing.get(str(id),Vector2.RIGHT),float(clip["age"]),art_scale)
             if art_used:
                 hp_y = _hp_bar_y(art_key,str(clip["name"]),_facing.get(str(id),Vector2.RIGHT),
@@ -482,7 +501,7 @@ func _draw() -> void:
             var tag := _school_tag(actor)
             ui_overlays.append({
                 "kind":"badge",
-                "rect":Rect2(at+Vector2(-21.0,8.0),Vector2(42.0,15.0)),
+                "rect":Rect2(at+Vector2(-24.0,9.0),Vector2(48.0,19.0)),
                 "text":_actor_badge(actor),"fill":_school_color(tag)
             })
         if enable_source_vl_art and alive and _status_feedback.has(str(id)):
@@ -493,14 +512,14 @@ func _draw() -> void:
             }.get(kind,""))
             if not feedback.is_empty():
                 ui_overlays.append({
-                    "kind":"status","rect":Rect2(at+Vector2(-22.0,37.0),
-                        Vector2(44.0,15.0)),
+                    "kind":"status","rect":Rect2(at+Vector2(-24.0,40.0),
+                        Vector2(48.0,19.0)),
                     "text":feedback,"fill":Color(0.95,0.94,0.70)
                 })
 
         var health := clampf(float(actor["hp"])/maxf(1.0,float(actor["max_hp"])),0.0,1.0)
-        var bar_width := 53.0 if tier == "boss" else (42.0 if art_used else 22.0)
-        var bar_height := 5.5 if tier == "boss" else 4.0
+        var bar_width := 60.0 if tier == "boss" else (48.0 if art_used else 22.0)
+        var bar_height := 7.0 if tier == "boss" else (6.0 if art_used else 4.0)
         var bar := Rect2(at+Vector2(-bar_width*0.5,hp_y),Vector2(bar_width,bar_height))
         if enable_source_vl_art and alive:
             # Bars are drawn after ALL sprites, preventing near-actor occlusion.
@@ -532,6 +551,6 @@ func _draw() -> void:
                 draw_rect(bounds,Color(0.035,0.065,0.07,0.94))
                 if kind == "badge":
                     draw_rect(Rect2(bounds.position,Vector2(3.0,bounds.size.y)),overlay["fill"])
-                draw_string(ThemeDB.fallback_font,bounds.position+Vector2(3.0,11.5),
+                draw_string(ThemeDB.fallback_font,bounds.position+Vector2(3.0,14.5),
                     str(overlay["text"]),HORIZONTAL_ALIGNMENT_CENTER,
-                    bounds.size.x-4.0,10,overlay["fill"])
+                    bounds.size.x-4.0,12,overlay["fill"])
