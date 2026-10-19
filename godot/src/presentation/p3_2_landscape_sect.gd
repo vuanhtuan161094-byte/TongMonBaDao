@@ -425,7 +425,23 @@ func _open_notice(title_text: String, body: String) -> void:
     _close_building_operation_panel(true)
     super._open_notice(title_text, body)
 
+func _open_real_hunting() -> void:
+    if not runtime_ready or state == null or runtime_session == null:
+        return
+    _close_disciple_summary(true)
+    _close_building_operation_panel(true)
+    _clear_popup()
+    _clear_pointer_state()
+    var panel := HuntingPlayPanelV2.new()
+    panel.name = "LiveHuntingPveV2"
+    popup_layer.add_child(panel)
+    panel.open_session(runtime_session)
+
+
 func _bottom_action(action: String) -> void:
+    if action == "world":
+        _open_real_hunting()
+        return
     if action == "home":
         _clear_popup()
         _close_disciple_summary(true)
