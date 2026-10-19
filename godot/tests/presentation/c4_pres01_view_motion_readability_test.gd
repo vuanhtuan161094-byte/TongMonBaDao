@@ -202,6 +202,32 @@ func _run() -> void:
             "positive learned settlement must produce one real-source impact FX"):
         return
     release_view.queue_free()
+    # Verify the actual C4 6v5 scene launches with the intended configuration,
+    # not just a synthetic mini battle or a headless process that exits zero.
+    var pilot_scene := load("res://scenes/p3/combat_v4_jx_pilot.tscn") as PackedScene
+    if not _check(pilot_scene != null,"C4 6v5 pilot scene cannot be loaded"):
+        return
+    var pilot := pilot_scene.instantiate()
+    if not _check(pilot != null,"C4 6v5 pilot scene cannot be instantiated"):
+        return
+    get_root().add_child(pilot)
+    if not _check(pilot.battle != null and pilot.layer != null,
+            "C4 pilot _ready failed to build a real V2 battle + view"):
+        return
+    var counted_disciples := 0
+    var counted_monsters := 0
+    for actor_value in pilot.battle.actors.values():
+        var actor: Dictionary = actor_value
+        if str(actor.get("side","")) == "disciple":
+            counted_disciples += 1
+        elif str(actor.get("side","")) == "monster":
+            counted_monsters += 1
+    if not _check(counted_disciples == 6 and counted_monsters == 5 and
+            pilot.layer.enable_source_vl_art and pilot.layer.draw_pilot_ground and
+            pilot.layer._view_next.size() == 11,
+            "C4 scene is not the real 6-disciple / 5-monster PRES-01 pilot"):
+        return
+    pilot.queue_free()
     layer.queue_free()
     print("C4 PRES-01 VIEW MOTION READABILITY: PASS")
     quit(0)
