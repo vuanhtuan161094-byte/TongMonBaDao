@@ -30,10 +30,10 @@ function Require-Zero([string]$Name, [int]$Code) {
     }
 }
 
-function Invoke-GodotQA([string]$Name, [string[]]$Args, [string]$PassMarker) {
+function Invoke-GodotQA([string]$Name, [string[]]$GodotArguments, [string]$PassMarker) {
     $out = Join-Path $logs ($Name + ".log")
     Write-Host "--> $Name"
-    & $GodotExe @Args > $out 2>&1
+    & $GodotExe @GodotArguments > $out 2>&1
     $code = [int]$LASTEXITCODE
     Require-Zero $Name $code
     if ($PassMarker -ne "" -and -not (Select-String -LiteralPath $out -Pattern $PassMarker -SimpleMatch -Quiet)) {
