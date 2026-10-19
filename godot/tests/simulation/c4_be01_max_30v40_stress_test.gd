@@ -24,7 +24,7 @@ func _run() -> void:
         if not _check(bool(stats_result.get("ok",false)),
             "max canonical Tu Vi/Body stats invalid"):
             return
-        var role := ["frontline","ranged","mage","healer"][i%4]
+        var role: String = str(["frontline","ranged","mage","healer"][i%4])
         var equipped: Array = []
         for k in range(4):
             equipped.append(str(roster[(i+k)%roster.size()]))
