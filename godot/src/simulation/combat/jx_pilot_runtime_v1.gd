@@ -28,7 +28,7 @@ static func heal_target(battle: Variant, caster: Dictionary, radius: float) -> D
         lowest = fraction
     return selected
 
-static func try_cast(battle: Variant, caster: Dictionary, target: Dictionary) -> bool:
+static func try_cast(battle: Variant, caster: Dictionary, target: Dictionary, step_seconds: float) -> bool:
     if str(caster.get("side","")) != "disciple":
         return false
     var loadout: Array = caster.get("pilot_loadout",[])
@@ -62,18 +62,18 @@ static func try_cast(battle: Variant, caster: Dictionary, target: Dictionary) ->
             continue
         var travel_ticks := 0
         if kind == "projectile" or kind == "poison_hit":
-            travel_ticks = int(ceil(distance/(float(skill.get("speed",8.0))*MapBattleV2.STEP_SECONDS)))
+            travel_ticks = int(ceil(distance/(float(skill.get("speed",8.0))*step_seconds)))
         # Committing an action and the projectile reaching the target are
         # distinct authoritative timestamps. Cooldown begins on commitment.
-        var commit_time: float = float(battle.now) + float(int(skill["cast_ticks"]))*MapBattleV2.STEP_SECONDS
-        var release_time: float = commit_time+float(travel_ticks)*MapBattleV2.STEP_SECONDS
+        var commit_time: float = float(battle.now) + float(int(skill["cast_ticks"]))*step_seconds
+        var release_time: float = commit_time+float(travel_ticks)*step_seconds
         var cast_id := str(battle.encounter_id)+":"+str(caster["id"])+":"+str(battle.actions+1)
         battle.pending_casts.append({
             "caster":str(caster["id"]),"target_id":str(victim["id"]),
             "pilot_id":sid,"commit_at":commit_time,"ready":release_time,
             "cast_id":cast_id,"committed":false
         })
-        ready[sid] = commit_time+float(int(skill["cd_ticks"]))*MapBattleV2.STEP_SECONDS
+        ready[sid] = commit_time+float(int(skill["cd_ticks"]))*step_seconds
         caster["pilot_ready"] = ready
         battle._event("pilot_cast",{"caster":caster["id"],"target":victim["id"],
             "pilot_id":sid,"cast_id":cast_id,"release_at":release_time})
@@ -81,7 +81,7 @@ static func try_cast(battle: Variant, caster: Dictionary, target: Dictionary) ->
         return true
     return false
 
-static func release(battle: Variant, caster: Dictionary, cast: Dictionary) -> void:
+static func release(battle: Variant, caster: Dictionary, cast: Dictionary, step_seconds: float) -> void:
     var sid := str(cast.get("pilot_id",""))
     var skill: Dictionary = JxPilotSkillsV1.definition(sid)
     if skill.is_empty():
@@ -93,7 +93,7 @@ static func release(battle: Variant, caster: Dictionary, cast: Dictionary) -> vo
     var element := str(skill["element"])
     var multiplier := JxPilotSkillsV1.matching_root_multiplier(caster.get("pilot_roots",{}),element)
     if kind == "guard":
-        caster["pilot_guard_until"] = battle.now + float(int(skill["duration_ticks"]))*MapBattleV2.STEP_SECONDS
+        caster["pilot_guard_until"] = battle.now + float(int(skill["duration_ticks"]))*step_seconds
         battle._event("pilot_guard",{"caster":caster["id"],"until":caster["pilot_guard_until"],"pilot_id":sid})
         return
     if kind == "party_defense":
@@ -105,7 +105,7 @@ static func release(battle: Variant, caster: Dictionary, cast: Dictionary) -> vo
             if str(ally.get("side","")) == "disciple" and str(ally.get("party_id","")) == str(caster["party_id"]) and float(ally.get("hp",0.0)) > 0.0:
                 if (ally["position"] as Vector2).distance_to(caster["position"]) <= float(skill["range"]):
                     ally["pilot_def_until"] = maxf(float(ally.get("pilot_def_until",-1.0)),
-                        battle.now+float(int(skill["duration_ticks"]))*MapBattleV2.STEP_SECONDS)
+                        battle.now+float(int(skill["duration_ticks"]))*step_seconds)
                     affected += 1
         battle._event("pilot_party_defense",{"caster":caster["id"],"members":affected,"pilot_id":sid})
         return
