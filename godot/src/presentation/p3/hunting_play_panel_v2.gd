@@ -71,7 +71,7 @@ func _build() -> void:
     left.size = Vector2(357,561)
     add_child(left)
     var column := VBoxContainer.new()
-    column.add_theme_constant_override("separation",8)
+    column.add_theme_constant_override("separation",5)
     left.add_child(column)
 
     var region_text := Label.new()
@@ -109,7 +109,7 @@ func _build() -> void:
     roster_filter.text_changed.connect(func(_text: String): _rebuild_roster())
     column.add_child(roster_filter)
     roster_scroll = ScrollContainer.new()
-    roster_scroll.custom_minimum_size = Vector2(330,288)
+    roster_scroll.custom_minimum_size = Vector2(330,202)
     roster_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
     column.add_child(roster_scroll)
     roster_list = VBoxContainer.new()
