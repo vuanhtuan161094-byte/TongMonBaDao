@@ -126,5 +126,37 @@ func _run() -> void:
             hot_count += 1
     if not _check(hot_count <= 1,"multiple same-family HoT stacks"):
         return
+    # Focused six-person benchmark: observe, do not approve combat balance from 8 seeds.
+    var wins := 0
+    var total_time := 0.0
+    var total_downed := 0
+    for seed_index in range(8):
+        var team := _team()
+        for flex_index in range(2):
+            team.append({"id":"flex_%d" % flex_index,"role":"ranged",
+                "party_id":"party_1","stats":_stats(),
+                "position":Vector2(7.0,8.0+float(flex_index)),
+                "hp":float(_stats()["max_hp"])})
+        var group := _mobs()
+        for j in range(3):
+            var species := "hac_lang_vuong" if j == 0 else "thanh_lang"
+            var mob := MonsterCatalogueV2.create_actor(species,1,1,"benchmark_%d" % j)
+            mob["id"] = "benchmark_%d" % j
+            mob["position"] = Vector2(13.0+float(j),7.5)
+            group.append(mob)
+        var bench := MapBattleV2.new(70000+seed_index)
+        if not _check(bool(bench.setup("jx_bench_%d" % seed_index,team,group).get("ok",false)),
+            "six-person benchmark could not initialize"):
+            return
+        var result := bench.run(400,false)
+        if not _check(str(result["outcome"]) in ["win","defeat","timeout_retreat"],
+            "six-person benchmark had no terminal state"):
+            return
+        if str(result["outcome"]) == "win":
+            wins += 1
+        total_time += float(result["time"])
+        total_downed += int(result["downed_disciples"])
+    print("C4-JX-PILOT BENCHMARK (not balanced/approved): 6v4, 8 seeds; wins=",
+        wins,"/8, mean_time=",total_time/8.0,"s, total_downed=",total_downed)
     print("C4-JX-PILOT focused status, source, skill, 5-elements, snapshot, replay: PASS")
     quit(0)
