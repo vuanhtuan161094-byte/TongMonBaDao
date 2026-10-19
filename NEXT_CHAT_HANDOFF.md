@@ -1,3 +1,15 @@
+## 2026-10-19 — C4-JX1 UI READABILITY HARDENING / OWNER CONTINUATION
+
+**Baseline:** `c4-jx1-ui-source-first-20261019` at `5cd6889a9b25b2221515f8aad7a8882806d06106`, verified live before branching. **Current isolated CODE branch:** `c4-jx1-ui-readability-hardening-20261019`. Maintains original GP01 base `f2ea6852823d8bf5f7a1451c0cb975a0773364af`, Godot 4.7.2, Android landscape 1280x720. `main` and PR20 not changed.
+
+**Fixes:** (1) pure presentation `layout_hp_overlays` sorts HP first, then canonical name, then status, while returning the original caller/draw ordering and preserving all actor world positions; (2) successful battle-event text records a frozen *rendered* world-origin at ingestion and reprojects that saved coordinate when the presentation camera moves, rather than following future actor motion; (3) the MAX_VISIBLE_COMBAT_TEXT=28 eviction policy never lets a common damage number displace an entirely critical/healing/lifesteal-filled queue; (4) popup draw order puts text above sprite sheets but below HP/names/status overlays. All float damage and combat authority remain in MapBattleV2; only glyph rounding, collision and VFX presentation are changed. **No MISS/DODGE UI invented**.
+
+**QA:** focused `godot/tests/presentation/c4_gp01_combat_feedback_receipts_test.gd` expanded: protected 28-crit saturation, healing admission, frozen origin, deterministic non-mutating HP-first layout within stage without collisions. No Godot 4.7.2 executable available to this session. These are authored tests, **NOT a runtime PASS**. All exact-new-HEAD official Godot focused, scene smoke, Windows 1280x720, Android and owner UX acceptance **PENDING**. Use one-click ZIP delivered in this chat after SHA finalized; separate TEMP clone and save, ZIP evidence beside CMD. Do not conflate user's historic GP01 7/7 at earlier SHA.
+
+**Provenance:** original JX1 PC screenshots may inform small text + names + colored HUD, but are not original renderer binaries or license. Owner Drive Võ Lâm Idle and Giang Hồ Chi Chiến are fan projects with VLTK binary distribution rights unresolved; no JX binary/font/asset imported. Next work only after real runtime evidence; no CI, FULL, merge, MapBattleV2/CombatStatsV2, RNG/skills, Economy, SaveService, `main`, PR20 edits.
+
+---
+
 ## 2026-10-19 — C4 JX1 UI source-first follow-up (EXACT-SHA QA PENDING)
 
 Owner directed JX1-PC-inspired Combat V4 presentation, specifically integer-only damage and wider default pilot camera. Separate branch `c4-jx1-ui-source-first-20261019` forked from GP01 `f2ea6852823d8bf5f7a1451c0cb975a0773364af`; GitHub main `461caca1171462e0da092f21108c5c1733157ad9` unchanged. Presentation changes: canonical monster names above HP from MonsterCatalogueV2, authored name when present, role/slot fallback (NOT invented disciples), integer-only visible receipt text preserving underlying float, outlined colored glyphs with no opaque damage boxes, pilot overview zoom cap 1x without moving combat actors; source VL sprite/FX unchanged. Regression extended for render-only identity, amount, camera and no duplicate receipts. See `docs/C4_GP01_FEEDBACK_IMPLEMENTATION_LOG_2026-10-19.md`.
