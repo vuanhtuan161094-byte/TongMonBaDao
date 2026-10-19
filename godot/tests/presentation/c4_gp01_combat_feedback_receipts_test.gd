@@ -82,7 +82,7 @@ func _run() -> void:
             layer.combat_actor_rank_label(battle.actors["a_gp01_member"]) ==
             "Luyện Khí · Tầng 1" and
             layer.combat_actor_body_label(battle.actors["a_gp01_member"]) ==
-            "Dịch Cân · Tầng 3",
+            "Luyện Nhục · Tầng 3",
             "rank UI failed to read exact 30x10 canonical realms"):
         return
     if not _check(not layer._actor_view_metadata.has("unknown_id"),
