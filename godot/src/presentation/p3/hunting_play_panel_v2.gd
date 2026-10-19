@@ -1,6 +1,8 @@
 class_name HuntingPlayPanelV2
 extends Control
 
+signal request_guidance
+
 # C4-BE01: actual region -> real disciple roster -> persisted HuntingPveRunV2.
 # This is a view/controller. No substitute combat, loot, scheduler or save state.
 const STAGE := Vector2(1280.0,720.0)
@@ -16,6 +18,8 @@ var selected_level := 1
 var chosen: Dictionary = {}
 var building_rules := BuildingSystem.new()
 var roster_filter: LineEdit
+var guidance_button: Button
+var roster_diagnostics: Label
 var accumulator := 0.0
 var running := false
 
@@ -101,15 +105,24 @@ func _build() -> void:
     column.add_child(level_choice)
 
     var roster_text := Label.new()
-    roster_text.text = "Chọn tối đa 30 đệ tử; mỗi đội tối đa 6"
+    roster_text.text = "Chọn tối đa 30 đệ tử V2 rảnh; mỗi đội tối đa 6"
     roster_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     column.add_child(roster_text)
     roster_filter = LineEdit.new()
     roster_filter.placeholder_text = "Tìm đệ tử (tối đa 90 kết quả)"
     roster_filter.text_changed.connect(func(_text: String): _rebuild_roster())
     column.add_child(roster_filter)
+    roster_diagnostics = Label.new()
+    roster_diagnostics.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    roster_diagnostics.add_theme_font_size_override("font_size",12)
+    column.add_child(roster_diagnostics)
+    guidance_button = Button.new()
+    guidance_button.text = "Tuyển đệ tử V2 ở Dẫn Tiên Đài"
+    guidance_button.custom_minimum_size.y = 32
+    guidance_button.pressed.connect(func(): request_guidance.emit())
+    column.add_child(guidance_button)
     roster_scroll = ScrollContainer.new()
-    roster_scroll.custom_minimum_size = Vector2(330,202)
+    roster_scroll.custom_minimum_size = Vector2(330,148)
     roster_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
     column.add_child(roster_scroll)
     roster_list = VBoxContainer.new()
@@ -158,7 +171,7 @@ func _build() -> void:
     status.add_theme_font_size_override("font_size",15)
     status.add_theme_color_override("font_color",Color(0.92,0.89,0.77))
     add_child(status)
-    _status("Chọn khu vực, độ khó và đệ tử V2 rảnh. Đệ tử chưa có tiến độ V2 cần tuyển tại Dẫn Tiên Đài.")
+    _status("Cần đệ tử thật có Tu Vi/Luyện Thể V2 và rảnh. Nhấn 'Tuyển đệ tử V2' để tới Dẫn Tiên Đài.")
 
 func _status(message: String) -> void:
     if status != null:
@@ -172,16 +185,32 @@ func _region_changed(index: int) -> void:
 func _level_changed(index: int) -> void:
     selected_level = index+1
 
+func _eligibility_reason(disciple: DiscipleState) -> String:
+    # Each reason is source-backed and does not mutate legacy disciples.
+    if not DiscipleRealmProgressV2.progression_ready(disciple):
+        return "Chưa có hồ sơ Tu Vi + Luyện Thể V2"
+    if disciple.hp <= 0.0:
+        return "Đã gục, chưa được hồi phục"
+    if disciple.injury_level != 0:
+        return "Đang bị thương"
+    if not disciple.active_pve_encounter_id.is_empty():
+        return "Đang tham chiến ở khu khác"
+    if disciple.region_id != &"sect":
+        return "Đang ở ngoài tông môn"
+    if disciple.current_action not in [&"EVALUATE",&"IDLE",&"HOLD"]:
+        return "Đang làm việc: " + SectMapPresentation.action_label(disciple.current_action)
+    if not disciple.work_cycle_state.is_empty():
+        return "Đang có chu kỳ lao động"
+    if building_rules.disciple_has_active_spirit_plot(state,disciple.id):
+        return "Đang phụ trách Linh Điền"
+    if building_rules.disciple_has_active_timed_recipe(state,disciple.id):
+        return "Đang phụ trách sản xuất"
+    if DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple):
+        return "Đang rèn thân"
+    return ""
+
 func _eligible(disciple: DiscipleState) -> bool:
-    return DiscipleRealmProgressV2.valid_profile(disciple.v2_realm_progress) and \
-        disciple.hp > 0.0 and disciple.injury_level == 0 and \
-        disciple.active_pve_encounter_id.is_empty() and \
-        disciple.region_id == &"sect" and \
-        disciple.current_action in [&"EVALUATE",&"IDLE",&"HOLD"] and \
-        disciple.work_cycle_state.is_empty() and \
-        not building_rules.disciple_has_active_spirit_plot(state,disciple.id) and \
-        not building_rules.disciple_has_active_timed_recipe(state,disciple.id) and \
-        not DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple)
+    return _eligibility_reason(disciple).is_empty()
 
 func _rebuild_roster() -> void:
     if roster_list == null or state == null:
@@ -191,6 +220,10 @@ func _rebuild_roster() -> void:
     var ids: Array = state.disciples.keys()
     ids.sort()
     var shown := 0
+    var eligible_total := 0
+    var v2_missing := 0
+    var busy_total := 0
+    var injury_total := 0
     var fragment := roster_filter.text.strip_edges().to_lower() if roster_filter != null else ""
     for id in ids:
         var disciple: DiscipleState = state.disciples[id]
@@ -199,17 +232,32 @@ func _rebuild_roster() -> void:
         if shown >= VISIBLE_ROSTER_LIMIT:
             break
         shown += 1
-        var can_enter := _eligible(disciple)
+        var reason := _eligibility_reason(disciple)
+        var can_enter := reason.is_empty()
+        if can_enter:
+            eligible_total += 1
+        elif reason.begins_with("Chưa có hồ sơ"):
+            v2_missing += 1
+        elif reason == "Đang bị thương" or reason.begins_with("Đã gục"):
+            injury_total += 1
+        else:
+            busy_total += 1
         var check := CheckBox.new()
-        check.text = disciple.display_name + (" (sẵn sàng)" if can_enter else " (bận / chưa có Tu Vi V2 / bị thương)")
+        check.text = disciple.display_name + (" — SẴN SÀNG" if can_enter else " — " + reason)
+        check.tooltip_text = reason if not can_enter else "Có thể xếp đội săn quái"
         check.disabled = not can_enter or session != null
         check.set_pressed_no_signal(chosen.has(str(id)) and can_enter)
         check.toggled.connect(_select_disciple.bind(str(id)))
         roster_list.add_child(check)
+    if roster_diagnostics != null:
+        roster_diagnostics.text = "Khả dụng: %d | Chưa V2: %d | Bận: %d | Bị thương: %d" % [
+            eligible_total,v2_missing,busy_total,injury_total
+        ]
     launch_button.disabled = session != null or chosen.is_empty() or not state.sect.p3_7_resources_enabled
     resume_button.disabled = session != null or state.sect.v2_pve_active_runs.is_empty()
     region_choice.disabled = session != null
     level_choice.disabled = session != null
+    guidance_button.disabled = session != null
     claim_button.disabled = session == null or session.battle == null or session.battle.active or session.battle.outcome != "win"
 
 func _select_disciple(enabled: bool, id: String) -> void:
