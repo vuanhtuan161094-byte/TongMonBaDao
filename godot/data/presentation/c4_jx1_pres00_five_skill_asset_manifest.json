@@ -1,0 +1,153 @@
+{
+  "schema": "c4_jx1_pres00_reference_only_v1",
+  "dated": "2026-10-19",
+  "scope": "PERSONAL-RESEARCH SOURCE EVIDENCE; NOT AN IMPORTABLE GAMEPLAY OR LICENSE GRANT",
+  "source_variant": "community_jx1_drive2",
+  "source_folder": "https://drive.google.com/drive/folders/19mdpwyTf2tzYblpfOg0CARi-JHdO70ZR",
+  "metadata": "data/vltk-fx.json (tieungao-json-gzip-v1 decoded) / data/asset-hashes.json",
+  "rights": "owner-supplied fan-game archive; publisher/third-party redistribution and commercial rights NOT VERIFIED",
+  "status": "metadata_only_do_not_load_images",
+  "skills": [
+    {
+      "id": 15,
+      "code": "jx_shaolin_15",
+      "school": "shaolin",
+      "name": "Bất Động Minh Vương",
+      "source_chain": [
+        15
+      ],
+      "clips": [
+        {
+          "stage": "precast",
+          "file": "vltk/fx/source_dd035109.webp",
+          "frames": 20,
+          "dirs": 1,
+          "frame_ms": 40,
+          "status": "metadata_claimed_file_not_located_in_reviewed_folder"
+        }
+      ]
+    },
+    {
+      "id": 158,
+      "code": "jx_wudang_158",
+      "school": "wudang",
+      "name": "Kiếm Phi Kinh Thiên",
+      "source_chain": [
+        158
+      ],
+      "clips": [
+        {
+          "stage": "precast",
+          "file": "vltk/native/assets/3dfcabc2.webp",
+          "frames": 10,
+          "dirs": 1,
+          "frame_ms": 50,
+          "sha256": "84c63b5352a2873c05370c5d5c884e72aab07c4f2073af905e0f45b05605bb52",
+          "status": "DRIVE_BINARY_SHA256_VERIFIED"
+        },
+        {
+          "stage": "cast",
+          "file": "vltk/native/assets/aa93d577.webp",
+          "frames": 17,
+          "dirs": 1,
+          "frame_ms": 50,
+          "sha256": "bbd0e0c189249e9aa44920d6fa9fe6e61caf26f18530244501f1c2fae732a53c",
+          "status": "DRIVE_BINARY_SHA256_VERIFIED"
+        },
+        {
+          "stage": "impact",
+          "file": "vltk/native/assets/361b4525.webp",
+          "frames": 8,
+          "dirs": 1,
+          "frame_ms": 40,
+          "sha256": "4052de409053ad3dc3562795c0f0d93e96029387169c7f42a4dca5d104352e13",
+          "status": "DRIVE_BINARY_SHA256_VERIFIED"
+        }
+      ]
+    },
+    {
+      "id": 159,
+      "code": "jx_wudang_159",
+      "school": "wudang",
+      "name": "Thất Tinh Trận",
+      "source_chain": [
+        159,
+        211
+      ],
+      "clips": [],
+      "status": "skill_metadata_verified_no_cast_or_impact_clip_bound_to_skill"
+    },
+    {
+      "id": 63,
+      "code": "jx_wudu_63",
+      "school": "wudu",
+      "name": "Độc Sa Chưởng",
+      "source_chain": [
+        63
+      ],
+      "clips": [
+        {
+          "stage": "cast",
+          "file": "vltk/native/assets/40a1c4ff.webp",
+          "frames": 8,
+          "dirs": 16,
+          "frame_ms": 50,
+          "sha256": "b33a62e2e78957f85cee8d44991a5a482ae39dd3aed3e069d405a5dada8f4448",
+          "status": "DRIVE_BINARY_SHA256_VERIFIED"
+        },
+        {
+          "stage": "impact",
+          "file": "vltk/native/assets/1fffed7e.webp",
+          "frames": 13,
+          "dirs": 1,
+          "frame_ms": 55.55555555555556,
+          "sha256": "a22e5b9148a7d36e73dfea69cba271472e8700150f235da32fd5d36e212a5d2c",
+          "status": "DRIVE_BINARY_SHA256_VERIFIED"
+        }
+      ]
+    },
+    {
+      "id": 93,
+      "code": "jx_emei_93",
+      "school": "emei",
+      "name": "Từ Hàng Phổ Độ",
+      "source_chain": [
+        93
+      ],
+      "clips": [
+        {
+          "stage": "precast",
+          "file": "vltk/native/assets/2f8c6d50.webp",
+          "frames": 5,
+          "dirs": 1,
+          "frame_ms": 60,
+          "sha256": "621d884fd24c9fffbde197b667f734c0b88094fae3f3afdc6d37586f3ee6ab67",
+          "status": "DRIVE_BINARY_SHA256_VERIFIED"
+        },
+        {
+          "stage": "cast",
+          "file": "vltk/fx/source_976b73ad.webp",
+          "frames": 20,
+          "dirs": 1,
+          "frame_ms": 40,
+          "status": "metadata_claimed_file_not_located_in_reviewed_folder"
+        },
+        {
+          "stage": "impact",
+          "file": "vltk/native/assets/e8178d06.webp",
+          "frames": 18,
+          "dirs": 1,
+          "frame_ms": 100,
+          "sha256": "84e3ae2bb64af51bb44384c5d63064ccfbe5db4b0c4b3f18c28357578632f362",
+          "status": "DRIVE_BINARY_SHA256_VERIFIED"
+        }
+      ]
+    }
+  ],
+  "notes": [
+    "Eight-direction actor sheets and native VFX data exist in Drive, but are NOT automatically copied into Godot.",
+    "Pres-01 authoritatively displays only existing hero/wolf sheet plus generic status text. No unrelated swords9 source FX is reused for these five school skills.",
+    "SFX key names exist for #15/#158/#63/#93; no per-skill audio binary SHA checked yet. #159 has no audio mapping.",
+    "Source A combat-compatible cast/hit/die coverage for disciple rigs remains under audit. Does not invent clips."
+  ]
+}
