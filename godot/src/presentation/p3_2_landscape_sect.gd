@@ -116,6 +116,9 @@ func _ready() -> void:
     super._ready()
     if not runtime_ready:
         return
+    # G1 inherits legacy P3 labels. Their default Godot white is invisible
+    # on cream modal/dialog surfaces; provide ink defaults only for popups.
+    popup_layer.theme = _legible_parchment_theme()
     female_motion_library = FemaleNormalV1MotionLibrary.build()
     _install_modular_live_actors()
     _install_main_isometric_world()
