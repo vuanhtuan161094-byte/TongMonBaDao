@@ -1,3 +1,16 @@
+## JXQY2 local slice — code 8db9b9e358aceb9711ca7966e623fb011ae5195e
+
+Chạy script mới, M1 launcher cũ vẫn dùng như trước:
+
+~~~powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/qa/Run-TMB-JXQY2-Slice-Windows.ps1 -SourceRoot "E:\codex\work\jxqy2_slice\source" -GodotBin "E:\Godot_v4.7.2-stable_win64_console.exe" -SandboxRoot "E:\codex\work\godot_isolated"
+~~~
+
+Bộ nạp kiểm lại 44 hash nguồn, dùng map đầy đủ 50×100 và save JXQY2 riêng; không ghi đè save đã có để khởi tạo lại. Mặc định một kiếm tu thật để thấy native acMagic/Ngự Kiếm Thuật → projectile → impact; có thể cấu hình auto-skill, chọn thêm đệ tử, kéo camera, chọn actor để follow và về tông môn để claim.
+
+Asset là JXQY2 offline, còn quyền phân phối pack bên ngoài chưa xác minh. Binary chỉ cache local; không cần/không tìm 2.jpg. Xem `docs/M2_JXQY2_LOCAL_SLICE_QA_2026-10-20.md` để phân biệt PASS logic/capture và visual acceptance PENDING, cũng như phần Boss/school/weapon/trap còn thiếu.
+
+---
 # Cách chạy DEMO V3
 
 Commit PD-00/PD-01: d0fd434a0004532f06fd8d7898df0388d59d94e8. M2 Combat V2: c887ee8bf3342236b1a5ab10cd71ab26bf209e90 trên nhánh work/playfirst-demo-max-v3-20261020.

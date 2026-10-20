@@ -1,0 +1,687 @@
+{
+  "schema_version": 1,
+  "code_commit": "8db9b9e358aceb9711ca7966e623fb011ae5195e",
+  "source_repository": "Upwinded/jxqy2-assets",
+  "source_commit": "8ffc1ecd1b50742ac619bf74684f70b9850c2af3",
+  "source_kind": "JXQY2 offline; không phải JX1 MMO",
+  "distribution_status": "Chưa xác minh điều khoản phân phối; binary chỉ nằm trong cache QA local",
+  "verified_count": 44,
+  "total_bytes": 9093183,
+  "map": {
+    "trap_cells": 26,
+    "layers": 3,
+    "blocked_cells": 525,
+    "height": 100,
+    "width": 50,
+    "source_spawn_verified": false
+  },
+  "skill_mapping": {
+    "canonical_skill_id": "ngu_kiem_thuat",
+    "source_skill_id": "天意剑诀",
+    "source_school": null,
+    "actor_animation": "ini/npcres/z-南宫飞云.ini#[magic] => mpc/character/z01-南宫飞云-sat.mpc",
+    "required_weapon": null,
+    "effect_consumer_v2": "direct_damage",
+    "ini": "ini/magic/player-magic-天意剑诀.ini",
+    "cast": "mpc/character/z01-南宫飞云-sat.mpc",
+    "projectile": "mpc/effect/magic-南宫飞云攻击.mpc",
+    "impact": "mpc/effect/explod-大型红色爆炸a.mpc",
+    "status": "CAST_PROJECTILE_IMPACT_VERIFIED_MAPPING_PARTIAL",
+    "missing": [
+      "Source school and required-weapon learning constraint are not stated by these source records. No new learning/equipment rule is enforced.",
+      "Native generic acMagic cast is used; no skill-specific actionfile is declared by this skill INI. The single-frame image field is not rendered as combat VFX."
+    ],
+    "source_large_icon": "mpc/magic/天意剑诀.mpc"
+  },
+  "files": [
+    {
+      "path": "ini/magic/player-magic-天意剑诀.ini",
+      "size_bytes": 1010,
+      "git_blob_sha": "8e3b9853248413ed5c691f0b83c1f09c42d1df1d",
+      "verified": true
+    },
+    {
+      "path": "ini/npc/b39-剑客掌门1.ini",
+      "size_bytes": 413,
+      "git_blob_sha": "7930ba5b82cb35da5357e1d7dbdcac6253313ebb",
+      "verified": true
+    },
+    {
+      "path": "ini/npc/n02-灰狼.ini",
+      "size_bytes": 392,
+      "git_blob_sha": "797823f87d51b5999aba379315759393a14125a8",
+      "verified": true
+    },
+    {
+      "path": "ini/npcres/npc-b39-剑客掌门1.ini",
+      "size_bytes": 492,
+      "git_blob_sha": "dc687e035ebe22b59f304a6bcd8d37c2cf6764d7",
+      "verified": true
+    },
+    {
+      "path": "ini/npcres/npc-n02-灰狼.ini",
+      "size_bytes": 355,
+      "git_blob_sha": "9206abe4e9cc7db68a4776419cc3f856ea2e0cff",
+      "verified": true
+    },
+    {
+      "path": "map/中都-矿山.map",
+      "size_bytes": 66512,
+      "git_blob_sha": "836b8ef5cdf6d8aeba0eb69115d350db3a162ace",
+      "verified": true
+    },
+    {
+      "path": "mpc/character/b39-剑客掌门1-at.mpc",
+      "size_bytes": 406940,
+      "git_blob_sha": "8cf2361396ce58af82d55b3810e8fe9780ed2d7f",
+      "verified": true,
+      "frame_count": 136,
+      "stored_directions": 8,
+      "interval_ms": 50,
+      "first_anchor": [
+        25,
+        73
+      ],
+      "first_png_size": [
+        41,
+        64
+      ]
+    },
+    {
+      "path": "mpc/character/b39-剑客掌门1-bat.mpc",
+      "size_bytes": 115123,
+      "git_blob_sha": "15a9913be97817bd682e8f58c500d98233bb924c",
+      "verified": true,
+      "frame_count": 40,
+      "stored_directions": 8,
+      "interval_ms": 48,
+      "first_anchor": [
+        25,
+        73
+      ],
+      "first_png_size": [
+        41,
+        64
+      ]
+    },
+    {
+      "path": "mpc/character/b39-剑客掌门1-die.mpc",
+      "size_bytes": 307319,
+      "git_blob_sha": "4fc92a86cc62a3d67b4e3b27429e9e529879b254",
+      "verified": true,
+      "frame_count": 120,
+      "stored_directions": 8,
+      "interval_ms": 80,
+      "first_anchor": [
+        25,
+        75
+      ],
+      "first_png_size": [
+        41,
+        66
+      ]
+    },
+    {
+      "path": "mpc/character/b39-剑客掌门1-st.mpc",
+      "size_bytes": 430329,
+      "git_blob_sha": "8a2ba6de0b6a14bcfaff9f07e1b8522166c4d08f",
+      "verified": true,
+      "frame_count": 144,
+      "stored_directions": 8,
+      "interval_ms": 100,
+      "first_anchor": [
+        25,
+        73
+      ],
+      "first_png_size": [
+        40,
+        64
+      ]
+    },
+    {
+      "path": "mpc/character/b39-剑客掌门1-wlk.mpc",
+      "size_bytes": 234605,
+      "git_blob_sha": "91c2731732fba1731e3dfdb06fdd5053ef0cf91c",
+      "verified": true,
+      "frame_count": 80,
+      "stored_directions": 8,
+      "interval_ms": 50,
+      "first_anchor": [
+        17,
+        73
+      ],
+      "first_png_size": [
+        32,
+        67
+      ]
+    },
+    {
+      "path": "mpc/character/n02-灰狼-at.mpc",
+      "size_bytes": 219199,
+      "git_blob_sha": "e3d9c842c0222da402dfc43c42ad81448ed624bf",
+      "verified": true,
+      "frame_count": 88,
+      "stored_directions": 8,
+      "interval_ms": 60,
+      "first_anchor": [
+        10,
+        47
+      ],
+      "first_png_size": [
+        24,
+        50
+      ]
+    },
+    {
+      "path": "mpc/character/n02-灰狼-bat.mpc",
+      "size_bytes": 102768,
+      "git_blob_sha": "8d4cad87454a1872f2fe9a684db28a15cee62c30",
+      "verified": true,
+      "frame_count": 40,
+      "stored_directions": 8,
+      "interval_ms": 100,
+      "first_anchor": [
+        10,
+        46
+      ],
+      "first_png_size": [
+        24,
+        49
+      ]
+    },
+    {
+      "path": "mpc/character/n02-灰狼-die.mpc",
+      "size_bytes": 191595,
+      "git_blob_sha": "3638fed80f6dc28af3b017c719851ddf446f40fd",
+      "verified": true,
+      "frame_count": 80,
+      "stored_directions": 8,
+      "interval_ms": 70,
+      "first_anchor": [
+        10,
+        46
+      ],
+      "first_png_size": [
+        24,
+        49
+      ]
+    },
+    {
+      "path": "mpc/character/n02-灰狼-st.mpc",
+      "size_bytes": 402589,
+      "git_blob_sha": "f504ec50dfcc55c6e538f2a6f56b2b56f334ac46",
+      "verified": true,
+      "frame_count": 144,
+      "stored_directions": 8,
+      "interval_ms": 100,
+      "first_anchor": [
+        10,
+        45
+      ],
+      "first_png_size": [
+        24,
+        48
+      ]
+    },
+    {
+      "path": "mpc/character/n02-灰狼-wlk.mpc",
+      "size_bytes": 220066,
+      "git_blob_sha": "5f95f552247d2abada6ad815ee075652ad438fb7",
+      "verified": true,
+      "frame_count": 80,
+      "stored_directions": 8,
+      "interval_ms": 50,
+      "first_anchor": [
+        9,
+        45
+      ],
+      "first_png_size": [
+        19,
+        53
+      ]
+    },
+    {
+      "path": "mpc/effect/explod-大型红色爆炸a.mpc",
+      "size_bytes": 54550,
+      "git_blob_sha": "4b6f2a26712dcda7d9fcc2f1c9c8ae90b91c71ff",
+      "verified": true,
+      "frame_count": 16,
+      "stored_directions": 1,
+      "interval_ms": 46,
+      "first_anchor": [
+        50,
+        100
+      ],
+      "first_png_size": [
+        100,
+        100
+      ]
+    },
+    {
+      "path": "mpc/effect/magic-南宫飞云攻击.mpc",
+      "size_bytes": 346044,
+      "git_blob_sha": "79e76c5f4e4f03a199b12e7797dc5955f1bd8420",
+      "verified": true,
+      "frame_count": 112,
+      "stored_directions": 16,
+      "interval_ms": 40,
+      "first_anchor": [
+        34,
+        64
+      ],
+      "first_png_size": [
+        52,
+        52
+      ]
+    },
+    {
+      "path": "mpc/magic/天意剑诀.mpc",
+      "size_bytes": 7364,
+      "git_blob_sha": "0ccf257a81f52cf5ad2237d7af3d6367dec0ace8",
+      "verified": true,
+      "frame_count": 1,
+      "stored_directions": 8,
+      "interval_ms": 100,
+      "first_anchor": [
+        40,
+        100
+      ],
+      "first_png_size": [
+        80,
+        100
+      ]
+    },
+    {
+      "path": "mpc/map/矿山/峭壁008.mpc",
+      "size_bytes": 198206,
+      "git_blob_sha": "8f9f3fbedddb83ee966349230ab16b994e4631df",
+      "verified": true,
+      "frame_count": 55,
+      "stored_directions": 8,
+      "interval_ms": 100,
+      "first_anchor": [
+        20,
+        32
+      ],
+      "first_png_size": [
+        41,
+        21
+      ]
+    },
+    {
+      "path": "mpc/map/矿山/树带雪_1.mpc",
+      "size_bytes": 280329,
+      "git_blob_sha": "25a01840d4a9e77bf490d1b4c59e07fd60328c0f",
+      "verified": true,
+      "frame_count": 28,
+      "stored_directions": 8,
+      "interval_ms": 100,
+      "first_anchor": [
+        28,
+        128
+      ],
+      "first_png_size": [
+        60,
+        120
+      ]
+    },
+    {
+      "path": "mpc/map/矿山/树带雪_2.mpc",
+      "size_bytes": 251074,
+      "git_blob_sha": "20caf93cb5b256e3962222900db36bb55b6676c5",
+      "verified": true,
+      "frame_count": 27,
+      "stored_directions": 8,
+      "interval_ms": 100,
+      "first_anchor": [
+        21,
+        128
+      ],
+      "first_png_size": [
+        39,
+        119
+      ]
+    },
+    {
+      "path": "mpc/map/矿山/树带雪_3.mpc",
+      "size_bytes": 264690,
+      "git_blob_sha": "442b810cad1928e71ceb5c3dd3f03e1623dc86b3",
+      "verified": true,
+      "frame_count": 29,
+      "stored_directions": 8,
+      "interval_ms": 100,
+      "first_anchor": [
+        32,
+        128
+      ],
+      "first_png_size": [
+        48,
+        118
+      ]
+    },
+    {
+      "path": "mpc/map/矿山/雪地00.mpc",
+      "size_bytes": 106111,
+      "git_blob_sha": "0f9f979879078e7a73b62b76c0055db07a9215af",
+      "verified": true,
+      "frame_count": 64,
+      "stored_directions": 8,
+      "interval_ms": 100,
+      "first_anchor": [
+        31,
+        32
+      ],
+      "first_png_size": [
+        62,
+        32
+      ]
+    },
+    {
+      "path": "mpc/map/矿山/雪堆00.mpc",
+      "size_bytes": 167539,
+      "git_blob_sha": "f503e190c7b359d3c04a829db2ffa54e62d0d94c",
+      "verified": true,
+      "frame_count": 119,
+      "stored_directions": 8,
+      "interval_ms": 100,
+      "first_anchor": [
+        31,
+        32
+      ],
+      "first_png_size": [
+        62,
+        32
+      ]
+    },
+    {
+      "path": "script/map/中都-矿山/地图陷阱1.txt",
+      "size_bytes": 635,
+      "git_blob_sha": "06d47eec4025a7e32c53398017ece3a6ec7930c2",
+      "verified": true
+    },
+    {
+      "path": "mpc/map/矿山/峭壁001.mpc",
+      "size_bytes": 166598,
+      "git_blob_sha": "6cea155ca175226fb781392d1f592a356a6a2c1b",
+      "verified": true,
+      "frame_count": 55,
+      "stored_directions": 8,
+      "interval_ms": 100,
+      "first_anchor": [
+        -1,
+        224
+      ],
+      "first_png_size": [
+        31,
+        219
+      ]
+    },
+    {
+      "path": "mpc/map/矿山/峭壁002.mpc",
+      "size_bytes": 329614,
+      "git_blob_sha": "505fd7b01dead455f658b1f4576a840cc58c2e37",
+      "verified": true,
+      "frame_count": 75,
+      "stored_directions": 8,
+      "interval_ms": 100,
+      "first_anchor": [
+        32,
+        224
+      ],
+      "first_png_size": [
+        64,
+        222
+      ]
+    },
+    {
+      "path": "mpc/map/矿山/峭壁003.mpc",
+      "size_bytes": 230977,
+      "git_blob_sha": "3de65585dcfb4f746d231cd77b735d36a5280a9f",
+      "verified": true,
+      "frame_count": 53,
+      "stored_directions": 8,
+      "interval_ms": 100,
+      "first_anchor": [
+        32,
+        192
+      ],
+      "first_png_size": [
+        64,
+        192
+      ]
+    },
+    {
+      "path": "mpc/map/矿山/峭壁004.mpc",
+      "size_bytes": 277327,
+      "git_blob_sha": "6a5ef3f360f9c6dbb73bb588b4bf2efa33a7eff5",
+      "verified": true,
+      "frame_count": 68,
+      "stored_directions": 8,
+      "interval_ms": 100,
+      "first_anchor": [
+        32,
+        224
+      ],
+      "first_png_size": [
+        63,
+        216
+      ]
+    },
+    {
+      "path": "mpc/map/矿山/峭壁005.mpc",
+      "size_bytes": 477879,
+      "git_blob_sha": "18f75aa30ed30300e7a2a8f1cbea78da1ef93faa",
+      "verified": true,
+      "frame_count": 105,
+      "stored_directions": 8,
+      "interval_ms": 100,
+      "first_anchor": [
+        32,
+        224
+      ],
+      "first_png_size": [
+        32,
+        224
+      ]
+    },
+    {
+      "path": "mpc/map/矿山/峭壁006.mpc",
+      "size_bytes": 305492,
+      "git_blob_sha": "7c4746fac9e00b361cd2b3e4318e3a0e44d7128a",
+      "verified": true,
+      "frame_count": 87,
+      "stored_directions": 8,
+      "interval_ms": 100,
+      "first_anchor": [
+        19,
+        192
+      ],
+      "first_png_size": [
+        51,
+        192
+      ]
+    },
+    {
+      "path": "mpc/map/矿山/峭壁007.mpc",
+      "size_bytes": 287803,
+      "git_blob_sha": "8a3bc13611353006f82d57dabeb2aa9cc163dad1",
+      "verified": true,
+      "frame_count": 86,
+      "stored_directions": 8,
+      "interval_ms": 100,
+      "first_anchor": [
+        32,
+        224
+      ],
+      "first_png_size": [
+        50,
+        224
+      ]
+    },
+    {
+      "path": "mpc/map/矿山/峭壁009.mpc",
+      "size_bytes": 371718,
+      "git_blob_sha": "57e6db03733c5e337fc133d6423b1f1941baf574",
+      "verified": true,
+      "frame_count": 86,
+      "stored_directions": 8,
+      "interval_ms": 100,
+      "first_anchor": [
+        25,
+        32
+      ],
+      "first_png_size": [
+        30,
+        18
+      ]
+    },
+    {
+      "path": "mpc/map/矿山/树带雪_4.mpc",
+      "size_bytes": 179019,
+      "git_blob_sha": "14236cb46295c794ec86ee4ba28c60b810048edf",
+      "verified": true,
+      "frame_count": 32,
+      "stored_directions": 8,
+      "interval_ms": 100,
+      "first_anchor": [
+        24,
+        64
+      ],
+      "first_png_size": [
+        50,
+        51
+      ]
+    },
+    {
+      "path": "mpc/map/矿山/树带雪_5.mpc",
+      "size_bytes": 144000,
+      "git_blob_sha": "61c4f6600f83c78fa8089d8f9b87b8341d918fd9",
+      "verified": true,
+      "frame_count": 31,
+      "stored_directions": 8,
+      "interval_ms": 100,
+      "first_anchor": [
+        9,
+        96
+      ],
+      "first_png_size": [
+        47,
+        90
+      ]
+    },
+    {
+      "path": "save/rpg0/player.ini",
+      "size_bytes": 501,
+      "git_blob_sha": "eff30a4b28983a08b102759c6021c560a8e2f832",
+      "verified": true
+    },
+    {
+      "path": "ini/npcres/z-南宫飞云.ini",
+      "size_bytes": 1398,
+      "git_blob_sha": "f395c8922344ac8052a736fc4b73a0fb5f02228c",
+      "verified": true
+    },
+    {
+      "path": "mpc/character/z01-南宫飞云-st.mpc",
+      "size_bytes": 379086,
+      "git_blob_sha": "a98cadf79bbdef2d332d03854a219607863665ee",
+      "verified": true,
+      "frame_count": 128,
+      "stored_directions": 8,
+      "interval_ms": 100,
+      "first_anchor": [
+        29,
+        79
+      ],
+      "first_png_size": [
+        46,
+        67
+      ]
+    },
+    {
+      "path": "mpc/character/z01-南宫飞云-wlk.mpc",
+      "size_bytes": 229857,
+      "git_blob_sha": "0a6b5184b4dbb4ef18f8452850058d322e6ebd2f",
+      "verified": true,
+      "frame_count": 80,
+      "stored_directions": 8,
+      "interval_ms": 50,
+      "first_anchor": [
+        16,
+        80
+      ],
+      "first_png_size": [
+        28,
+        71
+      ]
+    },
+    {
+      "path": "mpc/character/z01-南宫飞云-at1.mpc",
+      "size_bytes": 389800,
+      "git_blob_sha": "a3b7e87302851e27fcd2c508c74bf89af476c9b8",
+      "verified": true,
+      "frame_count": 136,
+      "stored_directions": 8,
+      "interval_ms": 20,
+      "first_anchor": [
+        29,
+        80
+      ],
+      "first_png_size": [
+        46,
+        67
+      ]
+    },
+    {
+      "path": "mpc/character/z01-南宫飞云-sat.mpc",
+      "size_bytes": 366443,
+      "git_blob_sha": "c0c031c04bdbbfcdf64a0b52dd6d448bf7f52956",
+      "verified": true,
+      "frame_count": 128,
+      "stored_directions": 8,
+      "interval_ms": 30,
+      "first_anchor": [
+        29,
+        79
+      ],
+      "first_png_size": [
+        46,
+        67
+      ]
+    },
+    {
+      "path": "mpc/character/z01-南宫飞云-bat.mpc",
+      "size_bytes": 119013,
+      "git_blob_sha": "7d306161b35f8c1659483abd1192e29398a850cc",
+      "verified": true,
+      "frame_count": 40,
+      "stored_directions": 8,
+      "interval_ms": 50,
+      "first_anchor": [
+        29,
+        80
+      ],
+      "first_png_size": [
+        46,
+        68
+      ]
+    },
+    {
+      "path": "mpc/character/z01-南宫飞云-die.mpc",
+      "size_bytes": 460409,
+      "git_blob_sha": "5a4c7b409c7ea633d165fb9c3e06184b51e4e269",
+      "verified": true,
+      "frame_count": 176,
+      "stored_directions": 8,
+      "interval_ms": 50,
+      "first_anchor": [
+        29,
+        81
+      ],
+      "first_png_size": [
+        48,
+        68
+      ]
+    }
+  ]
+}

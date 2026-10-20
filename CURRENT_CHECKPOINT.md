@@ -1,3 +1,20 @@
+## 2026-10-20 — M2 + JXQY2 local playable slice, focused PASS / visual PENDING
+
+Code `8db9b9e358aceb9711ca7966e623fb011ae5195e` trên `work/playfirst-demo-max-v3-20261020`, từ HEAD `98f9bc79392af2354a7dbf07130fa9dbc9d7fd28`. Ghi code bằng GitHub connector; 22 blob khớp bản local QA. Launcher M1 giữ nguyên.
+
+Entry mới `tools/qa/Run-TMB-JXQY2-Slice-Windows.ps1` chạy game thật với source cache đã kiểm đủ 44 path/size/Git blob SHA từ `Upwinded/jxqy2-assets@8ffc1ecd1b50742ac619bf74684f70b9850c2af3`. Native actor Nam Cung Phi Vân có 6 clip (kể cả acMagic), Sói Xám 5 clip, actor Kiếm Khách Chưởng Môn 5 clip dùng làm skin Boss V2. Map gốc 50×100, 3 lớp, 16 tile MPC, 525 ô chặn và 26 trap. Tìm đường dùng collision nguồn trên toàn map, camera không bị khóa ở arena cũ; logic đã tiếp tục 111 giây và khôi phục checkpoint tái lập. Không chạy trap script gốc hoặc khẳng định spawn NPC gốc.
+
+Ngự Kiếm Thuật dùng consumer sát thương V2, gắn nội dung Thiên Ý Kiếm Quyết: native [magic] sat.mpc + projectile/impact liên kết cùng INI. Image một frame là hình UI, không được mượn làm VFX. Hero có Thanh Thiết Kiếm thật; skin kiếm chỉ được vẽ khi weapon path thực là sword. Source school/required-weapon learning constraint để null; không tạo luật học hoặc phạt khác phái. Skin Boss là vai trò V2, chưa chứng minh danh tính Boss của game nguồn.
+
+Đã sửa policy bị mất ở dispatch; role spell không nằm trong learned/configured bar không tự được cấp cho trận auto mới; snapshot cũ và battle legacy giữ hành vi trước. Sửa cue chết sau respawn, lệch nửa ô, VFX bám vị trí hiển thị. Phục hồi loadout JX #158/#63/#93 của M1 bị mất từ M2 trước đó; test M1 dùng return_to_base sau khi dọn wave đúng yêu cầu vùng liên tục, vẫn kiểm đủ reward/ownership/save.
+
+Godot Windows `4.7.2.stable.official.ed1daf0bf`: **PASS** source-slice focused (44 hash, 16 directional clip, nguồn collision/navigation, spell hợp lệ, 111s, snapshot/camera), M2 auto-combat, DV2 snapshot, DV2 group map battle, C4 real hunting UI và PD01 DEMO MAX. Entry chơi riêng smoke PASS. GUI thật **PASS kỹ thuật** với 5 ảnh 1280×720 (roaming/cast/projectile/impact/camera_free); nghiệm thu hình ảnh của owner **PENDING**. Root certificate store warning là cảnh báo môi trường; test không dùng mạng. Không FULL/CI/merge.
+
+Save mới `user://demo_sandbox/jxqy2_playable_demo_v1.json`, policy `jxqy2_auto_skill_policy_v1.json`; tiếp tục khi có save. Profile kế thừa DEMO MAX 30.10/30.10 và seed P2 stage 9 cho một kiếm tu, chuẩn hóa rồi học skill qua API. Save mặc định của DEMO QA ABSENT trước/sau.
+
+Xem `docs/M2_JXQY2_LOCAL_SLICE_QA_2026-10-20.md`, `docs/M2_JXQY2_ASSET_AUDIT_2026-10-20.json` và runtime manifest. Binary ngoài chỉ local, chưa đưa vào Git/pack vì điều khoản phân phối chưa rõ; GPL-3.0 của engine không tự cấp quyền game art. Các đoạn cũ bên dưới nói chưa lấy được binary/không có map reader là lịch sử đã được thay thế. Không mở lại tìm 2.jpg.
+
+---
 ## 2026-10-20 — PD-02 + PD-04 M2 slice và kiểm kê JXQY
 
 Nhánh CODE: `work/playfirst-demo-max-v3-20261020`. HEAD trước gói này: `74fe4b1e03713522af5bedc00697d58852b27091`. Commit code M2: `c887ee8bf3342236b1a5ab10cd71ab26bf209e90` (Combat V2 formulas giữ nguyên). Launcher và DEMO MAX của M1 được giữ nguyên.

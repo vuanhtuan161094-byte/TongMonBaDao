@@ -1,177 +1,150 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "reviewed_at": "2026-10-20",
-  "overall_status": "ASSET_INCOMPLETE",
-  "gameplay_authority": "Combat V2 remains authoritative for stats, damage, effects, cooldowns, RNG, ownership, save, and settlement. JXQY2 is content evidence only and is not JX1 MMO content.",
+  "code_commit": "8db9b9e358aceb9711ca7966e623fb011ae5195e",
+  "overall_status": "Lát cắt local chơi được; nghiệm thu hình ảnh và pack phân phối còn PENDING",
+  "runtime_manifest": "godot/data/combat/jxqy2_slice_v1.json",
+  "binary_audit": "docs/M2_JXQY2_ASSET_AUDIT_2026-10-20.json",
+  "qa_report": "docs/M2_JXQY2_LOCAL_SLICE_QA_2026-10-20.md",
+  "gameplay_authority": "Combat V2 giữ công thức, RNG, cooldown, progression, hiệu ứng, job, save và Warehouse. Không lấy số damage/mana/level của JXQY2.",
   "external_sources": [
     {
       "repository": "https://github.com/Upwinded/jxqy2-assets",
       "commit": "8ffc1ecd1b50742ac619bf74684f70b9850c2af3",
-      "source_kind": "JXQY2 offline game assets; not JX1 MMO",
-      "license_review": "No repository LICENSE or asset redistribution terms were found in the inspected root metadata. Rights to redistribute the game files are therefore unverified.",
-      "imported_into_game": false
+      "kind": "JXQY2 offline; không phải JX1 MMO",
+      "runtime_verified_files": 44,
+      "license_review": "Tree 8.223 path không có LICENSE/COPYING; README 17 byte chỉ nêu tên repo. Điều khoản phân phối asset chưa được xác minh.",
+      "binary_in_git": false,
+      "binary_in_distribution_pack": false
     },
     {
       "repository": "https://github.com/Upwinded/JXQY-all-in-one",
       "commit": "6ff516bc1439e2b622a2e0ee4e1433cd98f8ec61",
-      "source_kind": "C++ offline runtime/editor repository",
-      "license_review": "The repository contains GPL-3.0 terms for code. The inspected assets directory exposes engine/resources.ini only; those code terms do not establish redistribution permission for game assets.",
-      "imported_into_game": false
-    },
-    {
-      "repository": "Owner-provided JX1 sources already in the project",
-      "source_kind": "Separate JX1 source; owner authorization is established project authority",
-      "license_review": "Owner-provided source rights are accepted per project instructions. This does not make JXQY2 files JX1 files.",
-      "imported_as_jxqy": false
+      "license_review": "LICENSE GPL-3.0 cho code; không xác lập riêng quyền phân phối kho game art.",
+      "usage": "Chỉ đọc để kiểm chứng cấu trúc/ý nghĩa dữ liệu; không sao chép code vào adapter."
     }
   ],
   "skill_mappings": [
     {
       "canonical_skill_id": "ngu_kiem_thuat",
-      "source_skill_id": null,
+      "source_skill_id": "天意剑诀",
       "source_school": null,
-      "actor_animation": null,
-      "required_weapon": "not verified in JXQY2 source",
-      "effect_consumer_v2": "direct_damage (existing Combat V2 consumer; no JXQY2 identity is mapped to it)",
-      "vfx": {
-        "current_visual_cue": "sword_cast / sword_hit from the existing Source-VL visual adapter",
-        "jxqy2_mapping": null
-      },
-      "status": "ASSET_INCOMPLETE",
-      "evidence_note": "The local M2 capture proves the learned V2 skill and its current Source-VL cue. It is not evidence of a JXQY2 skill or VFX mapping."
-    },
-    {
-      "canonical_skill_id": null,
-      "source_skill_id": "白虹贯日",
-      "source_school": null,
-      "actor_animation": null,
+      "actor_animation": "ini/npcres/z-南宫飞云.ini#[magic] => mpc/character/z01-南宫飞云-sat.mpc",
       "required_weapon": null,
-      "effect_consumer_v2": null,
-      "vfx": {
-        "cast": null,
-        "projectile_candidate": "mpc/magic/白虹贯日.mpc",
-        "impact": null,
-        "metadata_references": [
-          "image=白虹贯日.mpc",
-          "flyingimage=magic-中型蓝白色收缩光a.mpc"
-        ]
-      },
-      "status": "ASSET_INCOMPLETE",
-      "evidence_note": "The source INI describes healing intent, but no matching canonical V2 skill, V2 effect consumer, source school, actor animation, or complete cast/projectile/impact stage has been proven. Do not borrow another skill's VFX."
+      "effect_consumer_v2": "direct_damage",
+      "ini": "ini/magic/player-magic-天意剑诀.ini",
+      "cast": "mpc/character/z01-南宫飞云-sat.mpc",
+      "projectile": "mpc/effect/magic-南宫飞云攻击.mpc",
+      "impact": "mpc/effect/explod-大型红色爆炸a.mpc",
+      "status": "CAST_PROJECTILE_IMPACT_VERIFIED_MAPPING_PARTIAL",
+      "missing": [
+        "Source school and required-weapon learning constraint are not stated by these source records. No new learning/equipment rule is enforced.",
+        "Native generic acMagic cast is used; no skill-specific actionfile is declared by this skill INI. The single-frame image field is not rendered as combat VFX."
+      ],
+      "source_large_icon": "mpc/magic/天意剑诀.mpc",
+      "verified_demo_weapon": "Thanh Thiết Kiếm do EquipmentSystem craft/equip; visual_weapon_path=sword",
+      "cast_binding_note": "player.ini trỏ z-南宫飞云.ini; mục magic trỏ sat.mpc. Engine nguồn acMagic dùng res.magic. image/icon là hình UI, không được vẽ thành cast VFX.",
+      "learning_rule_change": false,
+      "cross_school_penalty": false
     }
   ],
-  "candidate_files": [
+  "actor_mappings": [
     {
-      "repository": "Upwinded/jxqy2-assets",
-      "commit": "8ffc1ecd1b50742ac619bf74684f70b9850c2af3",
-      "path": "ini/magic/player-magic-白虹贯日.ini",
-      "git_blob_sha": "13f1111fbd9a2a7a58bf8ef9a8341811ccaea797",
-      "size_bytes": 909,
-      "verification": "UTF-8 metadata inspected; asset references verified in text only"
+      "combat_v2_role": "disciple",
+      "source_actor": "z01-南宫飞云",
+      "source_resource": "ini/npcres/z-南宫飞云.ini",
+      "clips": [
+        "st",
+        "wlk",
+        "at1",
+        "sat",
+        "bat",
+        "die"
+      ],
+      "directions": 8,
+      "weapon_binding": "Chỉ vẽ skin kiếm khi trang bị thật có path sword; phần chưa có binding không được mượn skin."
     },
     {
-      "repository": "Upwinded/jxqy2-assets",
-      "commit": "8ffc1ecd1b50742ac619bf74684f70b9850c2af3",
-      "path": "mpc/magic/白虹贯日.mpc",
-      "git_blob_sha": "e73004a945908a36382263f2f709741efd41d975",
-      "size_bytes": 8566,
-      "verification": "Repository blob metadata only; MPC binary not retrieved or decoded"
+      "combat_v2_role": "normal monster visual skin",
+      "source_actor": "n02-灰狼",
+      "source_resource": "ini/npcres/npc-n02-灰狼.ini",
+      "clips": [
+        "st",
+        "wlk",
+        "at",
+        "bat",
+        "die"
+      ],
+      "directions": 8
     },
     {
-      "repository": "Upwinded/jxqy2-assets",
-      "commit": "8ffc1ecd1b50742ac619bf74684f70b9850c2af3",
-      "path": "mpc/magic/白虹贯日s.mpc",
-      "git_blob_sha": "ea22a80b701dfd6cba1c808cde7098c6de3819ac",
-      "size_bytes": 2724,
-      "verification": "Repository blob metadata only; MPC binary not retrieved or decoded"
-    },
-    {
-      "repository": "Upwinded/jxqy2-assets",
-      "commit": "8ffc1ecd1b50742ac619bf74684f70b9850c2af3",
-      "path": "map/中都.map",
-      "git_blob_sha": "92c9cac2e4e4d13dd7259f101430c9c04d8a7f3d",
-      "size_bytes": 816512,
-      "verification": "Repository blob metadata only; MAP binary, layers, collision, navigation, and spawn data not decoded"
-    },
-    {
-      "repository": "Upwinded/jxqy2-assets",
-      "commit": "8ffc1ecd1b50742ac619bf74684f70b9850c2af3",
-      "path": "map/中都-矿山.map",
-      "git_blob_sha": "836b8ef5cdf6d8aeba0eb69115d350db3a162ace",
-      "size_bytes": 66512,
-      "verification": "Repository blob metadata only; MAP binary, layers, collision, navigation, and spawn data not decoded"
-    },
-    {
-      "repository": "Upwinded/jxqy2-assets",
-      "commit": "8ffc1ecd1b50742ac619bf74684f70b9850c2af3",
-      "path": "mpc/character/11-壮丁-at.mpc",
-      "git_blob_sha": "88ac8b383a28ec8690251b7133030d42cc7d18e9",
-      "size_bytes": 322819,
-      "verification": "Filename candidate only; animation frames and direction/FPS/anchor not verified"
-    },
-    {
-      "repository": "Upwinded/jxqy2-assets",
-      "commit": "8ffc1ecd1b50742ac619bf74684f70b9850c2af3",
-      "path": "mpc/character/11-壮丁-bat.mpc",
-      "git_blob_sha": "4a90513acb995c3b42d9a1d5cb8a024a439e03d1",
-      "size_bytes": 99181,
-      "verification": "Filename candidate only; animation frames and direction/FPS/anchor not verified"
-    },
-    {
-      "repository": "Upwinded/jxqy2-assets",
-      "commit": "8ffc1ecd1b50742ac619bf74684f70b9850c2af3",
-      "path": "mpc/character/11-壮丁-die.mpc",
-      "git_blob_sha": "3e8c3937e1b1852d7c3cff9b570678013dcb0205",
-      "size_bytes": 275674,
-      "verification": "Filename candidate only; death clip playback not verified"
-    },
-    {
-      "repository": "Upwinded/jxqy2-assets",
-      "commit": "8ffc1ecd1b50742ac619bf74684f70b9850c2af3",
-      "path": "mpc/character/11-壮丁-sat.mpc",
-      "git_blob_sha": "adf0070d7f29472ecfcbef0b35b2a0f6d9286b2c",
-      "size_bytes": 219579,
-      "verification": "Filename candidate only; action meaning and playback not verified"
-    },
-    {
-      "repository": "Upwinded/jxqy2-assets",
-      "commit": "8ffc1ecd1b50742ac619bf74684f70b9850c2af3",
-      "path": "mpc/character/11-壮丁-st.mpc",
-      "git_blob_sha": "317baca852df3656bf57c243e1e3b5829a21a82b",
-      "size_bytes": 355784,
-      "verification": "Filename candidate only; stand clip playback not verified"
-    },
-    {
-      "repository": "Upwinded/jxqy2-assets",
-      "commit": "8ffc1ecd1b50742ac619bf74684f70b9850c2af3",
-      "path": "mpc/character/11-壮丁-wlk.mpc",
-      "git_blob_sha": "4c6a0a2fea7b11f873145bfadfce73ad5c7aa787",
-      "size_bytes": 194603,
-      "verification": "Filename candidate only; walk clip playback not verified"
-    },
-    {
-      "repository": "Upwinded/jxqy2-assets",
-      "commit": "8ffc1ecd1b50742ac619bf74684f70b9850c2af3",
-      "path": "mpc/effect/explod-中型红色爆炸a.mpc",
-      "git_blob_sha": "912a733d8cc88e0cef70bbcefed13d6313116b19",
-      "size_bytes": 67544,
-      "verification": "Candidate effect; not linked to 白虹贯日 or a Combat V2 event"
-    },
-    {
-      "repository": "Upwinded/jxqy2-assets",
-      "commit": "8ffc1ecd1b50742ac619bf74684f70b9850c2af3",
-      "path": "mpc/effect/explod-中型绿色爆炸a.mpc",
-      "git_blob_sha": "6e8e3fdb856074529616b7ed35d0a4dcc53ecf8c",
-      "size_bytes": 30263,
-      "verification": "Candidate effect; not linked to 白虹贯日 or a Combat V2 event"
+      "combat_v2_role": "boss prototype visual skin",
+      "source_actor": "b39-剑客掌门1",
+      "source_resource": "ini/npcres/npc-b39-剑客掌门1.ini",
+      "clips": [
+        "st",
+        "wlk",
+        "at",
+        "bat",
+        "die"
+      ],
+      "directions": 8,
+      "source_boss_classification_verified": false,
+      "status": "ASSET_INCOMPLETE đối với danh tính Boss JXQY2 bản gốc; tier Boss trong demo là authority V2"
     }
   ],
-  "missing_for_playable_jxqy2_slice": [
-    "Access to the exact pinned binary repository contents or an approved source checkout/ZIP that can be hash-verified locally.",
-    "MPC and MAP decoders/exporters that preserve actual directions, animation frames/FPS, anchors, render order, layers, collision, walkable cells, and source event timing.",
-    "A verified normal monster and separate boss with complete at/idle-or-stand/hit/death sources.",
-    "A skill with source-proven cast, travel/projectile, impact, and optional status stage plus a compatible existing Combat V2 consumer.",
-    "Explicit asset redistribution terms before putting third-party JXQY2 binaries in a distributable pack."
-  ],
-  "non_import_policy": "No JXQY2 binaries are committed or packaged in this slice. The active demo map remains the existing Source A-backed environment; it is not labeled JXQY2. No skill effect is borrowed from an unrelated source skill."
+  "map": {
+    "path": "map/中都-矿山.map",
+    "origin": [
+      0,
+      0
+    ],
+    "size": [
+      50,
+      100
+    ],
+    "folder": "mpc/map/矿山",
+    "tile_ids": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16
+    ],
+    "spawn_provenance": "Combat V2 pilot formations offset by (7,40), snapped to open cells; source MAP does not include NPC spawns. Full source collision mask is used by V2 navigation.",
+    "spawn_offset": [
+      7,
+      40
+    ],
+    "dimensions": [
+      50,
+      100
+    ],
+    "layers": 3,
+    "blocked_cells": 525,
+    "trap_cells": 26,
+    "trap_script_executed": false,
+    "source_spawn_verified": false,
+    "navigation": "Lưới bốn hướng V2 dùng bit collision 0xC0 nguồn; không tuyên bố pathfinding gốc JXQY2."
+  },
+  "qa": {
+    "godot": "4.7.2.stable.official.ed1daf0bf",
+    "focused_logic": "PASS",
+    "real_gui_capture": "PASS kỹ thuật, 5 PNG 1280x720",
+    "owner_visual_acceptance": "PENDING",
+    "android": "PENDING",
+    "full_ci_merge": "Không chạy"
+  },
+  "supersedes": "Kết luận cũ connector không lấy được binary đã được gỡ: fetch_file encoding=base64 trả đủ binary và blob SHA; toàn bộ 44 file dùng lúc chạy đã đối chiếu local."
 }

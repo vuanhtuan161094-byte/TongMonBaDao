@@ -1,3 +1,16 @@
+## 2026-10-20 — Tiếp tục từ JXQY2 playable slice
+
+Code hiện có: `8db9b9e358aceb9711ca7966e623fb011ae5195e`, nhánh `work/playfirst-demo-max-v3-20261020`. M1 đã có và lỗi loadout bị rơi trong M2 đã sửa; không làm lại launcher.
+
+Đọc bản bàn giao `docs/M2_JXQY2_LOCAL_SLICE_QA_2026-10-20.md`, runtime `godot/data/combat/jxqy2_slice_v1.json` và audit 44 file. Cache chính xác nằm tại `E:\codex\work\jxqy2_slice\source`; source repo local là `E:\codex\work\TongMonBaDao_playfirst-demo-v3` (snapshot không có .git). Quản lý commit/branch bằng GitHub connector. Fetch_file encoding=base64 đã lấy và đối chiếu đủ binary; không lặp blocker authentication hoặc tải raw không manifest.
+
+Dùng `tools/qa/Run-TMB-JXQY2-Slice-Windows.ps1` với -SourceRoot và Godot 4.7.2. Entry tạo/tiếp tục save JXQY2 riêng, một kiếm tu MAX dùng Ngự Kiếm Thuật thật, native acMagic + projectile/impact nguồn. Thêm hunter khác qua UI được, nhưng weapon chưa có binding hiển thị fallback thay vì mượn skin kiếm. Map đầy đủ 50×100/collision/navigation, vùng liên tục, snapshot và camera free/follow đã có. Chỉ role monster giữ AOE V2; đệ tử trong auto mới dùng learned/configured bar, không tự được cấp role heal/guard/AOE.
+
+Focused cuối: source/JXQY2, M2 auto, DV2 snapshot, DV2 group, C4 hunting UI, PD01 MAX đều PASS; GUI Godot 1280×720 có 5 PNG thật và marker PASS kỹ thuật. Owner visual acceptance/Android còn PENDING. Không gọi toàn M3/M4 hoặc pack phân phối hoàn tất.
+
+Tiếp theo: cải thiện độ rõ của vùng combat/occlusion dựa trên ảnh thật; xác minh danh tính Boss bản nguồn và source-school/weapon-learning metadata trước khi gắn identity hoặc luật học. Map trap có dữ liệu nhưng chưa chạy script nguồn; không tự tạo luật trap. Đánh giá hiệu năng/thiết bị và điều khoản phân phối trước pack ngoài. Không mở rộng chuyển cả kho asset trước nghiệm thu bộ này. Combat V2 numeric/save/job/Warehouse vẫn authority; không main/FULL/CI/merge, không repo cũ/save thật, toàn bộ phản hồi tiếng Việt.
+
+---
 ## 2026-10-20 — Tiếp tục sau M2 auto-combat V2
 
 HEAD code: `c887ee8bf3342236b1a5ab10cd71ab26bf209e90`, nhánh `work/playfirst-demo-max-v3-20261020`. PD-00/PD-01 không làm lại. M2 hiện có policy skill thật đã học/trang bị, điều kiện HP/tầm/tier/số mục tiêu, fallback đòn thường, lưu sandbox; vùng Combat V2 chạy liên tục, respawn template sau khi dọn wave, snapshot/restore và manual return. Godot 4.7.2 focused M2, snapshot, group combat, BE01 UI smoke và ảnh 1280×720 đều **PASS** trên source trước docs-only follow-up.
