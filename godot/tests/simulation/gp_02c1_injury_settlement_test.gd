@@ -289,7 +289,7 @@ func _timed_occupation_guards() -> bool:
         workforce.assign_group(state,worker_id,&"")
     if not _check(workforce.assign_group(state,actor.id,field.worker_group_id)
         and workforce.assign_worksite(state,actor.id,field.id)
-        and workforce.issue_command(state,actor.id,WorkforceSystem.COMMAND_HOLD,"",10000),"T15_ASSIGN","cannot assign real plot worker"): return false
+        and workforce.issue_command(state,actor.id,WorkforceSystem.COMMAND_WORK,str(WorkforceSystem.PROF_HERBALISM),10000),"T15_ASSIGN","cannot assign real plot worker"): return false
     var ready := false
     for i in range(5):
         var plot := workforce.perform_work(state,actor,WorkforceSystem.PROF_HERBALISM)
@@ -311,6 +311,10 @@ func _timed_occupation_guards() -> bool:
     if not _check(ready,"T15_HERBS","real field did not grow paid Alchemy input"): return false
     if not _check(workforce.assign_group(state,actor.id,hall.worker_group_id)
         and workforce.assign_worksite(state,actor.id,hall.id),"T15_HALL","cannot assign the actual Alchemy worker"): return false
+    if not _check(workforce.issue_command(state,actor.id,
+        WorkforceSystem.COMMAND_WORK,str(WorkforceSystem.PROF_ALCHEMY),10000),
+        "T15_HALL_COMMAND","cannot replace finished Field work order with Alchemy"):
+        return false
     var began := workforce.perform_work(state,actor,WorkforceSystem.PROF_ALCHEMY)
     if not _check(bool(began.get("ok",false)) and buildings.disciple_has_active_timed_recipe(state,actor.id),"T15_RECIPE","earned herbs did not start timed recipe"): return false
     var job := buildings.active_alchemy_job_for_worker(state,actor.id)
