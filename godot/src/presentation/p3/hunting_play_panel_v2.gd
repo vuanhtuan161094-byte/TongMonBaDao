@@ -37,6 +37,10 @@ var resume_button: Button
 var claim_button: Button
 var battle_layer: MapBattleWorldLayerV2
 var _log_counter := 0
+var _combat_drag_start := Vector2.ZERO
+var _combat_dragging := false
+var _combat_button_down := false
+
 
 func open_session(runtime: LiveGameRuntimeV2) -> void:
     live = runtime
@@ -159,6 +163,8 @@ func _build() -> void:
     add_child(battlefield)
     var viewing := Control.new()
     viewing.clip_contents = true
+    viewing.mouse_filter = Control.MOUSE_FILTER_STOP
+    viewing.gui_input.connect(_on_combat_view_input)
     battlefield.add_child(viewing)
     battlefield.add_theme_stylebox_override("panel",_hunting_panel_style(
         Color(0.10,0.17,0.14,1.0),Color(0.35,0.29,0.18,1.0)))
@@ -232,6 +238,63 @@ func _build() -> void:
     for label in [region_text,level_text,roster_text,roster_diagnostics]:
         label.add_theme_color_override("font_color",Color(0.18,0.24,0.17,1.0))
     _status("Cần đệ tử thật có Tu Vi/Luyện Thể V2 và rảnh. Nhấn 'Tuyển đệ tử V2' để tới Dẫn Tiên Đài.")
+
+# In the battlefield: left-drag to pan / single-click actor to follow.
+# This never tells MapBattleV2 to move a disciple; it is only a camera.
+func _on_combat_view_input(event: InputEvent) -> void:
+    if battle_layer == null or session == null or session.battle == null:
+        return
+    if event is InputEventMouseButton:
+        var mouse := event as InputEventMouseButton
+        if mouse.button_index == MOUSE_BUTTON_LEFT:
+            if mouse.pressed:
+                _combat_drag_start = mouse.position
+                _combat_dragging = false
+                _combat_button_down = true
+            elif _combat_button_down:
+                _combat_button_down = false
+                if not _combat_dragging:
+                    _focus_combat_actor_at(mouse.position)
+                _combat_dragging = false
+        return
+    if event is InputEventMouseMotion and _combat_button_down:
+        var move := event as InputEventMouseMotion
+        if (move.button_mask & MOUSE_BUTTON_MASK_LEFT) == 0:
+            _combat_button_down = false
+            return
+        if _combat_dragging or move.position.distance_to(_combat_drag_start) >= 7.0:
+            _combat_dragging = true
+            battle_layer.pan_camera_pixels(move.relative)
+        return
+    if event is InputEventScreenTouch:
+        var touch := event as InputEventScreenTouch
+        if touch.pressed:
+            _combat_drag_start = touch.position
+            _combat_dragging = false
+            _combat_button_down = true
+        elif _combat_button_down:
+            _combat_button_down = false
+            if not _combat_dragging:
+                _focus_combat_actor_at(touch.position)
+            _combat_dragging = false
+        return
+    if event is InputEventScreenDrag and _combat_button_down:
+        var swipe := event as InputEventScreenDrag
+        if _combat_dragging or swipe.position.distance_to(_combat_drag_start) >= 12.0:
+            _combat_dragging = true
+            battle_layer.pan_camera_pixels(swipe.relative)
+
+func _focus_combat_actor_at(screen_point: Vector2) -> void:
+    var actor_id := battle_layer.actor_at_map_point(screen_point,24.0)
+    if actor_id.is_empty():
+        battle_layer.clear_camera_follow()
+        return
+    if battle_layer.select_camera_actor(actor_id):
+        var follower := battle_layer.current_camera_follow_id()
+        if not follower.is_empty():
+            _status("CAMERA THEO DÕI: %s — kéo map để trở về chế độ tự do." % follower)
+        else:
+            _status("CAMERA TỰ DO — kéo chuột để di chuyển khung nhìn.")
 
 func _change_combat_camera(delta: float) -> void:
     if battle_layer == null:
