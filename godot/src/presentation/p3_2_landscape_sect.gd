@@ -125,6 +125,10 @@ func _ready() -> void:
     _sync_actor_positions()
     popup_layer.z_index = 100
     _reset_camera(false)
+    # Godot Control.mouse_filter STOP consumes GUI mouse events before
+    # _unhandled_input. Receive them directly on the actual map surface.
+    # Controls inside the map still own their individual click actions.
+    map_layer.gui_input.connect(_on_map_gui_input)
     _build_focus_marker()
     _build_camera_controls()
     _build_disciple_summary_panel()
@@ -378,6 +382,18 @@ func _handle_screen_drag(drag: InputEventScreenDrag) -> void:
     screen_pointer_dragged = true
     _pan_camera(drag.position-old_point)
     get_viewport().set_input_as_handled()
+
+# GUI map drag must be handled before Godot marks a Control event handled;
+# the old _unhandled_input-only path never saw ordinary left-click drags.
+func _on_map_gui_input(event: InputEvent) -> void:
+    if _popup_is_open() or _building_operation_is_open() or _disciple_summary_is_open():
+        return
+    if event is InputEventMouseButton:
+        _handle_mouse_button(event as InputEventMouseButton)
+        get_viewport().set_input_as_handled()
+    elif event is InputEventMouseMotion and mouse_panning:
+        _handle_mouse_motion(event as InputEventMouseMotion)
+        get_viewport().set_input_as_handled()
 
 func _handle_mouse_button(mouse: InputEventMouseButton) -> void:
     if mouse.button_index == MOUSE_BUTTON_WHEEL_UP and mouse.pressed:
