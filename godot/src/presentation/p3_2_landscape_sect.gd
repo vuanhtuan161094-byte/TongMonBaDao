@@ -803,15 +803,31 @@ func _sync_actor_positions() -> void:
             if is_instance_valid(status):
                 if actual_work_cues.has(key):
                     status.text = _compact_production_actor_status(str(actual_work_cues[key]))
+                    status.tooltip_text = str(actual_work_cues[key])
+                    status.position.x = -11.0
+                    status.size.x = 110.0
                     status.visible = true
                 else:
-                    status.text = SectMapPresentation.action_label(disciple.current_action)
-                    if actor is ModularDiscipleActor:
-                        status.visible = (actor as ModularDiscipleActor).current_clip in [
-                            DiscipleActorVisualCatalog.CLIP_MINING,
-                            DiscipleActorVisualCatalog.CLIP_FORGING,
-                            DiscipleActorVisualCatalog.CLIP_WORK
-                        ]
+                    if disciple.current_action in [&"EVALUATE",&"IDLE",&"HOLD"]:
+                        # Lightweight, readable idle glyph, never a verbose
+                        # overlay. Original Source A icon sheet is not yet
+                        # available as a verified import.
+                        status.text = "◇"
+                        status.tooltip_text = "Nhàn rỗi"
+                        status.visible = true
+                        status.position.x = 34.0
+                        status.size.x = 25.0
+                    else:
+                        status.text = SectMapPresentation.action_label(disciple.current_action)
+                        status.tooltip_text = status.text
+                        status.position.x = -11.0
+                        status.size.x = 110.0
+                        if actor is ModularDiscipleActor:
+                            status.visible = (actor as ModularDiscipleActor).current_clip in [
+                                DiscipleActorVisualCatalog.CLIP_MINING,
+                                DiscipleActorVisualCatalog.CLIP_FORGING,
+                                DiscipleActorVisualCatalog.CLIP_WORK
+                            ]
 
     if focused_kind == &"disciple":
         _refresh_focused_disciple_point()
@@ -905,8 +921,23 @@ func _install_modular_live_actors() -> void:
         actor_status_labels[key] = actor.status_label
         modular_live_actor_ids[key] = true
 
+# Scoped, readable parchment defaults. Explicit white-on-dark Combat,
+# navigation, and Source A art styles still win over inherited Theme values.
+func _legible_parchment_theme() -> Theme:
+    var theme := Theme.new()
+    var ink := Color(0.13,0.18,0.15,1.0)
+    for kind in ["Label","Button","CheckBox","OptionButton","LineEdit","RichTextLabel"]:
+        theme.set_color("font_color",kind,ink)
+        theme.set_color("font_hover_color",kind,ink)
+        theme.set_color("font_focus_color",kind,ink)
+        theme.set_color("font_pressed_color",kind,ink)
+        theme.set_color("font_disabled_color",kind,Color(0.34,0.35,0.31,1.0))
+        theme.set_color("font_placeholder_color",kind,Color(0.34,0.35,0.31,1.0))
+    return theme
+
 func _build_building_operation_panel() -> void:
     building_operation_panel = Panel.new()
+    building_operation_panel.theme = _legible_parchment_theme()
     building_operation_panel.name = "BuildingOperationPanel"
     building_operation_panel.position = Vector2(824, 80)
     building_operation_panel.size = Vector2(440, 552)
@@ -1812,6 +1843,7 @@ func _open_workforce_picker(building_id: StringName) -> void:
     workforce_picker_query = ""
     workforce_picker_offset = 0
     workforce_picker_panel = Panel.new()
+    workforce_picker_panel.theme = _legible_parchment_theme()
     workforce_picker_panel.name = "WorkforcePicker"
     # Keep the picker entirely to the left of the wider, legible 420px
     # production panel. No overlap with Start/Remove at 1280x720.
@@ -2023,6 +2055,7 @@ func _build_sect_hub() -> void:
     add_child(sect_hub_button)
 
     sect_hub_panel = Panel.new()
+    sect_hub_panel.theme = _legible_parchment_theme()
     sect_hub_panel.name = "SectOperationsHub"
     sect_hub_panel.position = Vector2(269,85)
     sect_hub_panel.size = Vector2(740,543)
