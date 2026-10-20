@@ -1,6 +1,6 @@
 # Cách chạy DEMO V3
 
-Commit PD-00/PD-01: d0fd434a0004532f06fd8d7898df0388d59d94e8 trên nhánh work/playfirst-demo-max-v3-20261020.
+Commit PD-00/PD-01: d0fd434a0004532f06fd8d7898df0388d59d94e8. M2 Combat V2: c887ee8bf3342236b1a5ab10cd71ab26bf209e90 trên nhánh work/playfirst-demo-max-v3-20261020.
 
 ## Yêu cầu
 
@@ -20,6 +20,15 @@ Trong launcher:
 Muốn chạy focused QA riêng, dùng tools\qa\Run-TMB-Demo-Windows.cmd -Focused. Muốn xóa riêng save sandbox DEMO, dùng tools\qa\Run-TMB-Demo-Windows.cmd -ResetDemo; thao tác này chỉ nhắm user://demo_sandbox của ứng dụng DEMO.
 
 Godot xác nhận thư mục người dùng riêng là %APPDATA%\Godot\app_userdata\Tong Mon Ba Dao Demo V3; trong phiên xác minh, OS.get_user_data_dir() trả về C:/Users/Admin/AppData/Roaming/Godot/app_userdata/Tong Mon Ba Dao Demo V3. Save DEMO nằm trong demo_sandbox/, tách khỏi save mặc định của game.
+
+
+## M2 — tự thiết lập kỹ năng và săn liên tục
+
+Trong khu săn, tại hàng của đệ tử V2 đủ điều kiện chọn **Kỹ năng**. Bật skill đã học/trang bị có consumer sát thương V2, đặt ưu tiên và điều kiện HP/tầm/loại mục tiêu/số mục tiêu gần; có thể bật fallback đánh thường. Chọn đội rồi bấm **PHÁI ĐỘI ĐI SĂN**. Cấu hình nằm riêng trong `user://demo_sandbox/auto_skill_policy_v1.json`.
+
+Trận M2 không tự dừng ở 90 giây. Sau khi dọn wave, quái từ template encounter V2 xuất hiện lại; **VỀ TÔNG MÔN** chủ động kết thúc và lưu/settle qua lifecycle săn hiện hành. Có thể dùng **ĐÓNG / LƯU** rồi mở lại để tiếp tục.
+
+Ảnh kiểm chứng Godot thực ở `user://demo_sandbox/m2_combat_1280x720.png`: đệ tử dùng đòn thường và `ngu_kiem_thuat` V2. Cue skill trong ảnh là Source-VL hiện có. Map hiện vẫn là Source A; **JXQY2 chưa được nhập**, không xem ảnh này là nghiệm thu JXQY.
 
 ## Nội dung và giới hạn đã xác minh
 

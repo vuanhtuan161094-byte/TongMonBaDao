@@ -1,3 +1,14 @@
+## 2026-10-20 — Tiếp tục sau M2 auto-combat V2
+
+HEAD code: `c887ee8bf3342236b1a5ab10cd71ab26bf209e90`, nhánh `work/playfirst-demo-max-v3-20261020`. PD-00/PD-01 không làm lại. M2 hiện có policy skill thật đã học/trang bị, điều kiện HP/tầm/tier/số mục tiêu, fallback đòn thường, lưu sandbox; vùng Combat V2 chạy liên tục, respawn template sau khi dọn wave, snapshot/restore và manual return. Godot 4.7.2 focused M2, snapshot, group combat, BE01 UI smoke và ảnh 1280×720 đều **PASS** trên source trước docs-only follow-up.
+
+Ranh giới cần giữ: không đổi công thức Combat V2 hoặc luật học. Skill chính sách hiện chỉ là direct-damage có consumer thật; chưa có setup heal/buff/AOE vì chưa có mapping consumer đủ căn cứ. Vùng liên tục hiện tái dùng hình học encounter V2 và template monster có sẵn; không gọi đó là map JXQY hoặc pathfinding/collision map hoàn chỉnh. Ảnh 1280×720 cho thấy Source A map hiện có và `ngu_kiem_thuat` với cue Source-VL; đây chưa phải JXQY asset acceptance.
+
+JXQY `ASSET_INCOMPLETE`: manifest `docs/M2_JXQY_ASSET_SKILL_MAPPING_2026-10-20.json` ghi source commit/blob SHA, skill fields, asset candidates và license review. GitHub connector đọc được metadata nhưng không tải binary MPC/MAP để chuyển đổi; điều khoản phân phối asset của `jxqy2-assets` chưa rõ. Không nhập binary khi chưa kiểm được file/hash/format và quyền phân phối. Không tìm/yêu cầu `2.jpg` Võ Lâm Idle.
+
+**Bước tiếp:** nếu có binary access và converter khả dụng, xác minh một bundle JXQY tối thiểu (actor idle/walk/attack/hit/death, skill cast/projectile/hit, monster + boss, map layers/collision/spawn) rồi mới làm adapter hiển thị Combat V2; nếu thiếu stage ghi `ASSET_INCOMPLETE`, không mượn VFX. Song song, chỉ mở rộng roaming bounds/pathing khi có dữ liệu walkability/spawn có nguồn. Giữ One Active Job, reservation, save isolation, exactly-once settlement, main và save thật.
+
+---
 ## 2026-10-20 — Continuation after PD-00/PD-01
 
 CODE branch work/playfirst-demo-max-v3-20261020 is based on verified commit 83b29fdfc10e1c475d4921f464821ff06ac0bd65. PD-00/PD-01 implementation commit: d0fd434a0004532f06fd8d7898df0388d59d94e8. Local Godot 4.7.2 focused integration for launcher → canonical DEMO MAX state → P3.2 → real V2 level-5 boss hunt → JX event cues → reward claim: **PASS** (hunters=6, workers=6, assigned_workers=3, 6 legal P2 damage skills, 3 verified JX cues). See CURRENT_CHECKPOINT.md and CACH_CHOITHU.md for evidence and run command.

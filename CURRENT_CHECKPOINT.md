@@ -1,3 +1,24 @@
+## 2026-10-20 — PD-02 + PD-04 M2 slice và kiểm kê JXQY
+
+Nhánh CODE: `work/playfirst-demo-max-v3-20261020`. HEAD trước gói này: `74fe4b1e03713522af5bedc00697d58852b27091`. Commit code M2: `c887ee8bf3342236b1a5ab10cd71ab26bf209e90` (Combat V2 formulas giữ nguyên). Launcher và DEMO MAX của M1 được giữ nguyên.
+
+Đã thêm policy auto-skill chỉ cho skill Combat V2 đã học/trang bị và có consumer sát thương thật; cấu hình bật/tắt, ưu tiên, HP nhân vật/mục tiêu, tầm, tier mục tiêu, số mục tiêu gần và fallback đánh thường được lưu ở `user://demo_sandbox/auto_skill_policy_v1.json`. Không thêm luật học, sát thương, cooldown hay cân bằng mới. Vùng săn dùng chế độ liên tục: không forced-end ở 90 giây, wave quái phục hồi từ template encounter V2 sau khi dọn sạch, snapshot lưu thời gian/wave/template/event sequence và có lệnh trở về thủ công. Dữ liệu hiện dùng vẫn là hình học encounter V2 hiện hữu; chưa phải bản đồ JXQY rộng có collision/pathfinding đã giải mã.
+
+Godot `4.7.2.stable.official.ed1daf0bf`, focused trên source của commit M2:
+- **PASS** `m2_auto_combat_continuous_world_test.gd`: cấu hình/đọc lại JSON, lọc skill hợp lệ, tiếp tục quá 90 giây, respawn, snapshot/restore và trở về thủ công.
+- **PASS** `dv2_02_battle_snapshot_test.gd`: JSON giữa trận, RNG, HP, cast và events.
+- **PASS** `dv2_02_group_map_battle_test.gd`: di chuyển, heal/AOE/Boss, 30 actor và replay.
+- **PASS** `c4_be01_real_hunting_ui_smoke_test.gd`: UI săn thật, state V2 và reservation.
+- **PASS** `m2_godot_1280_capture_test.gd`: Godot GUI thực, viewport 1280×720, đòn thường, `ngu_kiem_thuat`, cue VFX Source-VL hiện hữu, policy Boss-only, camera pan tự do. Capture: `user://demo_sandbox/m2_combat_1280x720.png`. Ảnh là bằng chứng Combat V2/UI và **không phải** nghiệm thu asset JXQY; người dùng vẫn chưa nghiệm thu hình ảnh.
+- Godot có cảnh báo hệ điều hành không đọc được kho chứng chỉ gốc; các test trên không dùng mạng và đều in marker PASS.
+
+JXQY: `ASSET_INCOMPLETE`. Đã ghi mapping/provenance và Git blob SHA trong `docs/M2_JXQY_ASSET_SKILL_MAPPING_2026-10-20.json`. `Upwinded/jxqy2-assets` tại `8ffc1ecd1b50742ac619bf74684f70b9850c2af3` có metadata skill 白虹贯日, MPC/map/actor candidates; connector chỉ trả được metadata/UTF-8, không cung cấp binary để giải mã. `jxqy2-assets` không có license/điều khoản phân phối asset rõ trong metadata đã xem. Repo `JXQY-all-in-one` tại `6ff516bc1439e2b622a2e0ee4e1433cd98f8ec61` có GPL-3.0 cho code, nhưng không xác lập quyền phân phối riêng cho asset. Không nhập/đóng gói binary, không mượn VFX kỹ năng khác. `ngu_kiem_thuat` trên ảnh là skill V2 thực với cue Source-VL, không phải JXQY.
+
+Chưa đạt: bộ actor JXQY đủ đứng/đi/đánh/trúng/chết; skill JXQY có cast/projectile/hit đầy đủ và consumer V2 khớp; quái thường + Boss xác minh; map JXQY với lớp/collision/walkability/spawn; giải mã và kiểm hướng/FPS/frame/anchor/event; nghiệm thu hình ảnh của người dùng; QA thiết bị Android. Không chạy FULL/CI/merge; không đổi main, SaveService hay save thật.
+
+Cách chạy vẫn là `tools/qa/Run-TMB-Demo-Windows.cmd`; xem phần M2 mới trong `CACH_CHOITHU.md`. Tiếp theo cần có binary JXQY chính xác, công cụ giải mã MPC/MAP và điều khoản phân phối asset rõ ràng để hoàn tất slice JXQY, đồng thời giữ luật Combat V2.
+
+---
 ## 2026-10-20 — PD-00 + PD-01 DEMO MAX playable vertical slice
 
 Verified source baseline: plan/codex-playfirst-demo-20261020 commit 83b29fdfc10e1c475d4921f464821ff06ac0bd65, tree ae7559daedd781550d12d8caa22d4ee2d7b710bd; local snapshot audit **PASS** (683 paths, 16,054,214 bytes, no path/mode/size/blob mismatches). Isolated CODE branch: work/playfirst-demo-max-v3-20261020, created from that exact commit. PD-00/PD-01 implementation commit: d0fd434a0004532f06fd8d7898df0388d59d94e8. One Git CLI OpenSSL probe failed at TCP connection to github.com:443; no authentication failure was observed. GitHub connector used for branch/commit operations.
