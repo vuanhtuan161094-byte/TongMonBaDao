@@ -32,7 +32,7 @@ class JX1AdapterTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             p=Path(tmp)/'data.pak';item=sprite()
             def mk(method):
-                hdr=struct.pack('<4s4I12s',b'PAK ',1,32+len(item),0,0,b'')
+                hdr=struct.pack('<4s4I12s',b'PACK',1,32+len(item),32,0,b'')
                 idx=struct.pack('<III3sB',123,32,len(item),len(item).to_bytes(3,'little'),method)
                 p.write_bytes(hdr+item+idx)
             mk(0)

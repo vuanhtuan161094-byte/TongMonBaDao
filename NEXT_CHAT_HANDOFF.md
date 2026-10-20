@@ -1,3 +1,8 @@
+## 2026-10-20 — AF-03 Asset Forge Studio JX1 tiếp tục (TOOL-ONLY, KHÔNG GAMEPLAY)
+
+Tiếp tục nhánh `tools/af-jx1-player-forge-20261020` từ HEAD mới nhất sau AF-03; đọc `tools/asset_forge/README.md`, `jx1_pak_v2.py`, `jx1_tables_v2.py` và tests. Chính tả nguồn PACK quan trọng: C++ `XPackFile.cpp` dùng `PACK`, UCL nrv2b, framed SPR, không đồng nhất JXQY2 MPC. Test Python tổng hợp 22/22 PASS, localhost HTTP smoke PASS; chưa kiểm tra binary JX1 Windows, không gọi đã nghiệm thu. Cách hiệu quả tiếp theo: chọn một PAK thật và `settings/npcres/人物类型.txt` cùng các table được tham chiếu trên máy Windows, chạy tool trực tiếp trên source lớn (không cần stage cả PAK), đối chiếu Kind/Part/Sect→hash→ID→giải 1 SPR→contact sheet đúng hướng/anchor; nếu thiếu nguồn ghi PENDING chính xác. Source A/G1 và M1/M2/V-01 giữ nguyên. Không CI/FULL/merge, không sao chép toàn bộ asset vào repo, không chạm Combat V2 numeric/RNG, One Active Job, save, warehouse. Sau đó mới cân nhắc binding presentation Godot bằng packet riêng do owner cấp phép.
+
+---
 ## 2026-10-20 — V-01: độ rõ combat JXQY2, nghiệm thu hình ảnh PENDING
 
 Tiếp tục từ c86f0b032ee52549d6205c738657458babfc24cc trên cùng nhánh CODE. Chỉ sửa presentation: xen hai lớp vật thể theo chân actor, làm mờ quanh cả actor đang sống/chết, culling, zoom ổn định 140% (hệ số hiển thị 2.1), mở góc camera tại đệ tử nhưng không tự follow, tên/HP/damage lớn hơn, viền tương phản, native VFX trên cảnh và nhãn giai đoạn từ event thật. Header phân biệt nguồn JXQY2 中都-矿山 với vùng gameplay V2 Thanh Trúc Lâm. Không đổi simulation, RNG, damage, skill gate, save, production, One Active Job hoặc asset/manifest.

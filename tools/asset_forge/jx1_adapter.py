@@ -2,7 +2,7 @@
 """Read-only Kingsoft JX1 SPR/PAK adapter and evidence-gated playable contact sheets.
 
 Format evidence: mapic91/MpcAsfTool SprDecode.cpp; JX1 C++ KNpcResNode,
-KNpcRes; Kingsoft PAK header/index. Unknown pack compression is refused.
+KNpcRes; Kingsoft PAK header/index. Unknown pack compression is refused; verified NRV2B is decoded.
 No reverse inference of player identity from sprite filename.
 """
 from __future__ import annotations
@@ -15,8 +15,6 @@ import struct
 from typing import Any
 
 SPR_HEADER = struct.Struct('<4s8H12s')  # 32-byte SPR header
-PAK_HEADER = struct.Struct('<4s4I12s')  # 32-byte PAK header
-PAK_ITEM = struct.Struct('<II I 3s B')   # ID, file offset, real length, packed len[3], method
 MAX_SPR_BYTES = 32 * 1024 * 1024
 MAX_FRAMES = 4096
 MAX_PIXELS = 4 * 1024 * 1024
@@ -110,42 +108,19 @@ class Spr:
                               'frame':frame_index,'direction':frame_index//self.header['frames_per_direction']}
 
 
+# The original Studio V1 PAK reader was a provisional probe of the wrong
+# signature. SourceInit-JX1 XPackFile.cpp confirms PACK (not PAK-space),
+# 16-byte records and UCL/independent-frame flags. Retain V1 names for UI.
+from jx1_pak_v2 import pak_index as _pak_index_v2, read_pak_entry as _read_pak_entry_v2
+
+
 def pak_index(path: Path) -> dict[str, Any]:
-    """PAK metadata only; DOES NOT decompress unknown compression methods."""
-    with path.open('rb') as stream:
-        stream.seek(0,2)
-        size=stream.tell()
-        if size < 32: raise ValueError('truncated PAK')
-        stream.seek(0)
-        signature,count,index_off,_,_,_=PAK_HEADER.unpack(stream.read(32))
-        if signature != b'PAK ' or not 0 <= count <= MAX_PAK_ITEMS or index_off < 32 or index_off + count*16 > size:
-            raise ValueError('invalid PAK header/index')
-        stream.seek(index_off)
-        records=[]
-        for _ in range(count):
-            id_, off, real_len, length3, method = PAK_ITEM.unpack(stream.read(16))
-            packed_len=int.from_bytes(length3,'little')
-            if off < 32 or off + packed_len > size or packed_len == 0:
-                raise ValueError('PAK entry offset/length out of range')
-            records.append({'id':id_, 'offset':off, 'real_length':real_len,
-                            'stored_length':packed_len,'method':method,
-                            'raw_read_supported':method==0 and packed_len==real_len})
-    return {'path':str(path),'size_bytes':size,'count':count,'entries':records,
-            'status':'INDEX_ONLY_NO_PATH_HASH_REVERSE'}
+    return _pak_index_v2(Path(path))
 
 
 def read_raw_pak_entry(path: Path, entry_id: int) -> bytes:
-    catalog=pak_index(path)
-    matches=[r for r in catalog['entries'] if r['id']==entry_id]
-    if len(matches)!=1: raise ValueError('PAK ID missing or not unique')
-    e=matches[0]
-    if not e['raw_read_supported'] or e['real_length'] > MAX_RAW_ENTRY:
-        raise ValueError('PAK compression unsupported/oversized; metadata only, no fabricated decode')
-    with path.open('rb') as stream:
-        stream.seek(e['offset'])
-        content=stream.read(e['stored_length'])
-    if len(content)!=e['real_length']: raise ValueError('PAK truncated entry')
-    return content
+    """Compatibility entrypoint: verified JX1 PACK extraction (incl UCL)."""
+    return _read_pak_entry_v2(Path(path), entry_id)
 
 
 def validate_playable(spec: dict, source_root: Path) -> dict:

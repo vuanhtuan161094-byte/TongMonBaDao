@@ -9,9 +9,10 @@ import sqlite3
 from urllib.parse import urlsplit, parse_qs
 from studio import init_vault,stage_files,safe_file,probe_map,map_patch,skill_graph,skill_preview,skill_visual_recipe,map_preview,curated_jxqy_pilot,vault_paths,jxqy_player
 from forge import cmd_inventory,cmd_sheet
-from jx1_adapter import validate_playable, playable_sheet, pak_index, Spr
+from jx1_adapter import validate_playable, playable_sheet, pak_index, read_raw_pak_entry, Spr
+from jx1_tables_v2 import player_table_catalog, link_catalog_to_pack
 
-PAGE = r'''<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>TMB Asset Forge Studio V1</title>
+PAGE = r'''<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>TMB Asset Forge Studio V2</title>
 <meta name="viewport" content="width=device-width,initial-scale=1"><style>
 :root{color-scheme:dark;font-family:Segoe UI,Arial,sans-serif;background:#111721;color:#edf2fc}*{box-sizing:border-box}
 body{margin:0}header{padding:14px 22px;background:#1e2938;border-bottom:1px solid #334457}header b{font-size:21px}
@@ -26,7 +27,7 @@ pre{white-space:pre-wrap;word-break:break-word;background:#111923;padding:12px;b
 .hidden{display:none}#mapcanvas{max-width:100%;background:#202936;border:1px solid #405568;image-rendering:pixelated;cursor:crosshair}
 img.preview{max-width:100%;max-height:750px;border:1px solid #556;object-fit:contain}
 .notice{margin-top:9px;padding:10px;background:#16283a;border-left:3px solid #4b8fb8}
-</style></head><body><header><b>TÔNG MÔN BÁ ĐẠO — ASSET FORGE STUDIO</b><div class="note">V1 • Offline 127.0.0.1 • Giữ nguyên raw • Không sửa combat/save</div></header>
+</style></head><body><header><b>TÔNG MÔN BÁ ĐẠO — ASSET FORGE STUDIO</b><div class="note">V2 • Offline 127.0.0.1 • Giữ nguyên raw • Không sửa combat/save</div></header>
 <nav><button data-tab="assets" class="active">Thư viện & nhập asset</button><button data-tab="map">Tool Map</button><button data-tab="skill">Tool Skill / VFX</button><button data-tab="player">Playable & Animation</button></nav>
 <main><section id="assets"><h2>Asset Vault</h2><div class="panel"><p>Chỉ copy các file được chọn, kiểm SHA-256; file gốc và file đã stage không bị ghi đè.</p>
 <div class="grid"><label>Nguồn / source ID<select id="srcid"><option>SOURCE_A</option><option>JX1_OWNER</option><option>JXQY2_OFFLINE</option><option>JX1M_UNITY</option></select></label><label>Thư mục nguồn trên máy<input id="fromroot" placeholder="E:\codex\work\jxqy2_slice\source"></label></div>
@@ -51,6 +52,18 @@ img.preview{max-width:100%;max-height:750px;border:1px solid #556;object-fit:con
 <label>Action của playable JXQY2<input id="playeraction" value="astand"></label>
 <button onclick="inspectPlayer()">Kiểm playable</button> <button onclick="showPlayer()">Xuất contact sheet nhân vật</button>
 <pre id="playermeta">Chưa đọc</pre><img id="playerimg" class="preview hidden" alt="Contact sheet playable">
+<hr><h3>JX1 PAK → SPR (một asset mỗi lượt)</h3>
+<p class="note">Nhập riêng PAK cần dùng vào <code>01_raw/JX1_OWNER</code>. Chỉ đọc index, hoặc trích đúng một resource ID ra <code>03_derived/jx1_spr</code>. Nhận diện PACK chuẩn; UCL và frame-split SPR có kiểm kích thước.</p>
+<label>PAK đã stage, đường dẫn trong 01_raw/JX1_OWNER<input id="jxpak" placeholder="data/sprite.pak"></label>
+<label>Resource ID trong index, dạng số hoặc 0x...<input id="jxpakid" placeholder="0x12345678"></label>
+<button onclick="inspectJxPak()">Kiểm PAK và ID</button> <button onclick="extractJxSpr()">Giải nén một SPR vào 03_derived</button>
+<pre id="jxpakmeta">Chưa đọc PAK</pre>
+<hr><h3>JX1 bảng Kind → Part → Sect (nhân vật/trang bị)</h3>
+<p class="note">Quét bảng nguồn đã nhập; chỉ tạo catalog bằng chứng. Special NPC là ứng viên ghép sprite, KHÔNG tự kết luận đó là nhân vật người chơi.</p>
+<label>Tên nhân vật đúng trong Kind table<input id="jxchar" placeholder="Đúng ID/tên dòng trong 人物类型.txt"></label>
+<label>Đường dẫn bảng Kind trong 01_raw/JX1_OWNER<input id="jxkind" value="settings/npcres/人物类型.txt"></label>
+<button onclick="scanJxTables()">Quét bảng và đối chiếu PAK (nếu có)</button>
+<pre id="jxtablemeta">Chưa quét</pre>
 <hr><h3>JX1 playable — ghép áo / mũ / vũ khí</h3>
 <p class="note">Chỉ đọc nguồn đã stage ở 01_raw/JX1_OWNER. Tệp khai báo có bằng chứng ở 02_catalog/jx1_playable_spec.json. Không tự coi NPC/quái là người chơi.</p>
 <label>Loadout JSON (theo variant thật trong bảng part)<input id="jxloadout" value='{"body":"default","armor":"default","helm":"default","weapon":"default"}'></label>
@@ -80,6 +93,9 @@ async function showSkill(){let r=await api('/api/skill-preview',{name:$('skillna
 async function saveSkillRecipe(){let r=await api('/api/skill-edit',{name:$('skillname').value,adjustments:{projectile:{offset_x:Number($('fx_x').value),offset_y:Number($('fx_y').value),scale:Number($('fx_scale').value),speed:Number($('fx_speed').value)}}});status(r)}
 async function inspectPlayer(){let r=await api('/api/player');$('playermeta').textContent=JSON.stringify(r,null,2);status({playable:r.source_name,verified_assets:r.verified_assets})}
 async function showPlayer(){let r=await api('/api/player-preview',{action:$('playeraction').value});status(r);$('playerimg').src=r.url+'?r='+Date.now();$('playerimg').classList.remove('hidden')}
+async function inspectJxPak(){let r=await api('/api/jx1-pak-info',{pak:$('jxpak').value,id:$('jxpakid').value});$('jxpakmeta').textContent=JSON.stringify(r,null,2);status(r)}
+async function extractJxSpr(){let r=await api('/api/jx1-pak-extract',{pak:$('jxpak').value,id:$('jxpakid').value});$('jxpakmeta').textContent=JSON.stringify(r,null,2);status(r)}
+async function scanJxTables(){let r=await api('/api/jx1-tables',{character:$('jxchar').value,kind:$('jxkind').value,pak:$('jxpak').value});$('jxtablemeta').textContent=JSON.stringify(r,null,2);status(r)}
 async function checkJx1(){let r=await api('/api/jx1-check');$('jx1meta').textContent=JSON.stringify(r,null,2);status(r)}
 async function sheetJx1(){let loadout=JSON.parse($('jxloadout').value),r=await api('/api/jx1-sheet',{loadout});$('jx1meta').textContent=JSON.stringify(r,null,2);$('jx1img').src=r.url+'?r='+Date.now();$('jx1img').classList.remove('hidden');status(r)}
 refresh().catch(()=>{});
@@ -152,6 +168,64 @@ def serve(vault:Path,port:int=8791):
                     roots=[f'{p.name}={p}' for p in (base/'01_raw').iterdir() if p.is_dir()]
                     with redirect_stdout(io.StringIO()):cmd_inventory(argparse.Namespace(source=roots,db=str(dst),out=str(base/'06_reports'/'inventory.json')))
                     result=json.loads((base/'06_reports'/'inventory.json').read_text(encoding='utf-8'))
+                elif route in ('/api/jx1-pak-info','/api/jx1-pak-extract'):
+                    # The selected source file must have been explicitly staged.
+                    rel=str(body.get('pak',''))
+                    src=safe_file(base/'01_raw/JX1_OWNER',rel)
+                    if not src.is_file() or src.suffix.lower()!='.pak':raise ValueError('stage a specific .pak before scanning')
+                    ident=str(body.get('id','')).strip()
+                    if len(ident)>14 or not ident or not (ident.isdecimal() or (ident.startswith('0x') and all(x in '0123456789abcdefABCDEF' for x in ident[2:]))):
+                        raise ValueError('valid PAK ID (decimal or 0x hex) required')
+                    uid=int(ident,0) if ident.startswith('0x') else int(ident,10)
+                    if not 0<=uid<=0xffffffff:raise ValueError('PAK ID out of range')
+                    meta=pak_index(src)
+                    entries=[row for row in meta['entries'] if row['id']==uid]
+                    if route=='/api/jx1-pak-info':
+                        result={'archive_sha256':hash_stream(src),
+                                'count':meta['count'],'signature':meta['signature'],
+                                'matching_records':entries, 'status':'INDEX_ONLY_NOT_BULK_IMPORT'}
+                    else:
+                        if len(entries)!=1:raise ValueError('PAK asset ID missing or ambiguous')
+                        blob=read_raw_pak_entry(src,uid)
+                        info=Spr(blob).header
+                        packsha=hash_stream(src)
+                        dest=base/'03_derived/jx1_spr'/f'{packsha[:12]}-{uid:08x}.spr'
+                        dest.parent.mkdir(parents=True,exist_ok=True)
+                        if dest.exists():
+                            if dest.read_bytes()!=blob:raise FileExistsError('existing derived SPR differs; not overwritten')
+                            stage='ALREADY_VERIFIED'
+                        else:
+                            with dest.open('xb') as o:o.write(blob)
+                            stage='NEW_SINGLE_ASSET'
+                        report={'source_pak':str(src),'source_pak_sha256':packsha,'id':uid,
+                                'derived_sha256':hashlib.sha256(blob).hexdigest(),'derived':str(dest),
+                                'spr':info,'status':stage,'gameplay_edit':False}
+                        manifest=dest.with_suffix('.json')
+                        if manifest.exists():
+                            saved=json.loads(manifest.read_text(encoding='utf-8'))
+                            if saved.get('derived_sha256')!=report['derived_sha256']:
+                                raise ValueError('derived provenance conflict')
+                        else:
+                            with manifest.open('x',encoding='utf-8') as o:json.dump(report,o,ensure_ascii=False,indent=2)
+                        result=report
+                elif route=='/api/jx1-tables':
+                    origin=base/'01_raw/JX1_OWNER'
+                    rel=str(body.get('kind',''))
+                    kind=safe_file(origin,rel)
+                    if not kind.is_file() or kind.suffix.lower()!='.txt':raise ValueError('JX1 Kind table must be an existing staged .txt')
+                    character=str(body.get('character','')).strip()
+                    if not 1<=len(character)<=100:raise ValueError('character name required')
+                    result=player_table_catalog(kind,character,origin/'settings/npcres',origin,max_rows=12)
+                    selected_pak=str(body.get('pak','')).strip()
+                    if selected_pak:
+                        candidate=safe_file(origin,selected_pak)
+                        if not candidate.is_file() or candidate.suffix.lower()!='.pak':raise ValueError('selected PAK is not staged')
+                        result['pak_links']=link_catalog_to_pack(result,[candidate],limit=160)
+                    result['status']='KIND_PART_SECT_SOURCE_ONLY_PLAYER_IDENTITY_PENDING'
+                    dest=base/'02_catalog'/('jx1_tables_'+hashlib.sha256((character+str(kind)).encode()).hexdigest()[:14]+'.json')
+                    if not dest.exists():
+                        with dest.open('x',encoding='utf-8') as o:json.dump(result,o,ensure_ascii=False,indent=2)
+                    result['catalog_report']=str(dest)
                 elif route=='/api/jx1-sheet':
                     specfile=base/'02_catalog/jx1_playable_spec.json'
                     spec=json.loads(specfile.read_text(encoding='utf-8'))
@@ -199,10 +273,16 @@ def serve(vault:Path,port:int=8791):
                 else:raise ValueError('unknown POST route')
                 self.reply(result)
             except (OSError,ValueError,KeyError,TypeError,sqlite3.Error,json.JSONDecodeError) as e:self.handle_error(e)
+    def hash_stream(path):
+        digest=hashlib.sha256()
+        with Path(path).open('rb') as handle:
+            for chunk in iter(lambda:handle.read(1024*1024),b''):
+                digest.update(chunk)
+        return digest.hexdigest()
     def write_json_local(target,obj):target.write_text(json.dumps(obj,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     if not 1024<=port<=65535:raise ValueError('invalid port')
     server=ThreadingHTTPServer(('127.0.0.1',port),Handler)
-    print(f'TMB Asset Forge Studio V1: http://127.0.0.1:{port}')
+    print(f'TMB Asset Forge Studio V2: http://127.0.0.1:{port}')
     print('Close terminal or Ctrl+C to stop; only localhost connections accepted.')
     try:server.serve_forever()
     finally:server.server_close()
