@@ -1,3 +1,11 @@
+## 2026-10-20 — C4 FOREST BACKDROP + CAMERA ZOOM AND FAST QA PREVIEW
+
+Owner video `Tong Mon Ba Dao (DEBUG) 2026-10-20 08-46-57.mp4` (43.46s) and `C4_G1_UX_FIX_QA_LOGS.zip` at old `0fb2b82`: official Windows 4.7.2 **5/6 focused PASS**, one GP-02C1 T15 plot FAIL (`another_direct_command`); G1 GUI/Source A and real V2 World hunt PASS. Live combat backdrop is an empty dark colored test rectangle, actors visually too small. Source `map_battle_world_layer_v2.gd` now draws multi-layer woodland terrain/path with **verified Source A 570036/570041/570073 vegetation textures** at arena edges, and retains full actor overlays. Hunting screen has **+/- combat camera, default multiplier 1.20, 70%–190% user range**, inverse projection for zoom-out corrected. No RNG/combat/save/economy changes. GP02C1 regression fixture corrected from impossible HOLD→direct WORK to canonical WORK_HERBALISM and WORK_ALCHEMY direct commands, without bypassing active-job guards. Updated actual hunt UI smoke checks Source A textures and +/- view state. New official Windows runtime and owner screenshot PENDING.
+
+A one-click ZIP on final SHA will include **Play-only persistent private cache** (first checkout/import only, then repeat previews without headless QA) and optional **6 focused tests** to verify Source A background, view, MAX30v40, V2 hunt, Injury, G1 source/map. Tests run as headless separate processes only when QA requested; visual preview is one real game window. Current user upload video confirms visual, no need resubmit. See `docs/C4_G1_MAP25_COMBAT_INTEGRATION_QA_DEBTS_2026-10-19.md`; main/PR20 unchanged; no CI/FULL/merge.
+
+---
+
 ## 2026-10-20 — USER G1/C4 UX FEEDBACK; WINDOWS 13/17 FOCUSED; PATCHES PENDING RETEST
 
 Real user evidence `C4_G1_INTEGRATED_QA_LOGS.zip` at SHA `770f8f3`: official Windows Godot 4.7.2 `13/17` focused PASS; 4 failures are `03_g1_workforce` consumed map receipt, `13_c4_max_30v40` role type GDScript parse error, `15_c4_world_real_v2` authentic V2 selection not enabling launch, and `17_gp02c1_injury` Spirit Field paid plot unavailable. Import, actual G1 scene smoke and GUI start PASS. No video attached.
