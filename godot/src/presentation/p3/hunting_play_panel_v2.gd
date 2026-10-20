@@ -28,6 +28,7 @@ var level_choice: OptionButton
 var roster_list: VBoxContainer
 var roster_scroll: ScrollContainer
 var status: Label
+var fight_state_badge: Label
 var launch_button: Button
 var resume_button: Button
 var claim_button: Button
@@ -131,7 +132,7 @@ func _build() -> void:
     roster_scroll.add_child(roster_list)
 
     launch_button = Button.new()
-    launch_button.text = "Xuất môn"
+    launch_button.text = "PHÁI ĐỘI ĐI SĂN (0)"
     launch_button.custom_minimum_size.y = 44
     launch_button.pressed.connect(_launch)
     column.add_child(launch_button)
@@ -167,6 +168,18 @@ func _build() -> void:
     battle_layer.enable_spectator_framing = true
     battle_layer.spectator_zoom_ceiling = 1.0
     viewing.add_child(battle_layer)
+    fight_state_badge = Label.new()
+    fight_state_badge.name = "C4HuntingPhase"
+    fight_state_badge.position = Vector2(20,14)
+    fight_state_badge.size = Vector2(790,37)
+    fight_state_badge.text = "CHƯA XUẤT CHIẾN — hãy chọn đệ tử và nhấn PHÁI ĐỘI ĐI SĂN"
+    fight_state_badge.add_theme_font_size_override("font_size",16)
+    fight_state_badge.add_theme_color_override("font_color",Color(0.98,0.90,0.62,1.0))
+    fight_state_badge.add_theme_color_override("font_shadow_color",Color(0.01,0.02,0.015,1.0))
+    fight_state_badge.add_theme_constant_override("shadow_offset_x",1)
+    fight_state_badge.add_theme_constant_override("shadow_offset_y",2)
+    fight_state_badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    viewing.add_child(fight_state_badge)
 
     status = Label.new()
     status.position = Vector2(18,636)
@@ -278,7 +291,8 @@ func _rebuild_roster() -> void:
         roster_diagnostics.text = "Trong tối đa 90 kết quả: sẵn sàng %d | chưa V2 %d | bận %d | bị thương %d" % [
             eligible_total,v2_missing,busy_total,injury_total
         ]
-    launch_button.disabled = session != null or chosen.is_empty() or not state.sect.p3_7_resources_enabled
+    launch_button.disabled = session != null or chosen.is_empty() or not state.sect.v2_pve_enabled
+    launch_button.text = ("PHÁI ĐỘI ĐI SĂN (%d)" % chosen.size()) if session == null else "ĐỘI ĐÃ XUẤT CHIẾN"
     resume_button.disabled = session != null or state.sect.v2_pve_active_runs.is_empty()
     region_choice.disabled = session != null
     level_choice.disabled = session != null
@@ -294,7 +308,9 @@ func _select_disciple(enabled: bool, id: String) -> void:
         chosen[id] = true
     else:
         chosen.erase(id)
-    _status("Đã chọn %d/30 đệ tử." % chosen.size())
+    launch_button.disabled = session != null or chosen.is_empty() or not state.sect.v2_pve_enabled
+    launch_button.text = "PHÁI ĐỘI ĐI SĂN (%d)" % chosen.size()
+    _status("ĐÃ CHỌN %d/30 · CHƯA PHÁI ĐI. Nhấn PHÁI ĐỘI ĐI SĂN để xuất chiến." % chosen.size())
 
 func _role_for(index: int) -> String:
     return ["frontline","ranged","mage","healer","frontline","ranged"][index%6]
@@ -303,7 +319,10 @@ func _launch() -> void:
     if state == null or live == null or session != null or chosen.is_empty():
         _status("Không thể xuất môn: thiếu đội hoặc còn trận chưa xử lý.")
         return
-    if not state.sect.p3_7_resources_enabled or not state.regions.has(StringName(selected_region)):
+    if not state.sect.v2_pve_enabled:
+        _status("Hệ thống săn quái chưa được mở theo tiến độ game.")
+        return
+    if not state.regions.has(StringName(selected_region)):
         _status("Khu vực / kho tài nguyên chưa được mở theo tiến độ game.")
         return
     var selected := HuntingMapV2.choose_level(state,selected_region,selected_level)
@@ -346,6 +365,9 @@ func _launch() -> void:
         _status("LỖI LƯU — trận đã tạo trong RAM; không tiếp tục để tránh mất dữ liệu.")
         return
     _start_view()
+    _status("ĐÃ PHÁI %d ĐỆ TỬ | Mã trận: %s | %s. Đang chiến đấu; có thể đóng/lưu rồi mở lại." % [
+        roster.size(),id,selected_region
+    ])
 
 func _restore_first_session() -> void:
     if state == null or live == null or session != null:
@@ -407,6 +429,11 @@ func _start_view() -> void:
     battle_layer.set_actor_view_metadata(metadata)
     accumulator = 0.0
     running = session.battle.active
+    if fight_state_badge != null:
+        fight_state_badge.text = (
+            "ĐÃ PHÁI ĐỘI — ĐANG CHIẾN ĐẤU · " + str(session.battle.encounter_id)
+            if running else "ĐÃ KẾT THÚC · " + str(session.battle.outcome)
+        )
     set_process(running)
     _rebuild_roster()
     _update_view_status()
@@ -429,6 +456,8 @@ func _process(delta: float) -> void:
     if not session.battle.active:
         running = false
         set_process(false)
+        if fight_state_badge != null:
+            fight_state_badge.text = "TRẬN KẾT THÚC · " + str(session.battle.outcome)
         # Terminal receipt and held character reservations must be durable.
         var saved := live.save()
         if not bool(saved.get("ok",false)):
@@ -468,6 +497,8 @@ func _claim() -> void:
     var reward_text := str(claimed.get("rewards",claimed))
     session = null
     chosen.clear()
+    if fight_state_badge != null:
+        fight_state_badge.text = "ĐÃ NHẬN THƯỞNG · CHƯA XUẤT CHIẾN MỚI"
     _rebuild_roster()
     _status("Đã kết toán chiến lợi phẩm đúng một lần: "+reward_text)
 
