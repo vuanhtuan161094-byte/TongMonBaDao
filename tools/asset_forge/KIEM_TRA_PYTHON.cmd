@@ -13,7 +13,10 @@ exit /b 0
 :missing
 echo [INFO] Available registered Python versions (if launcher installed):
 py -0p 2>nul
+echo [INFO] Registry / other-drive Python candidates (no full-disk scan):
+powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "%~dp0FIND_PYTHON.ps1" -Report
 echo [INFO] python.exe candidates in PATH:
 where.exe python.exe 2>nul
+echo [NEXT] If you have Python elsewhere: run CHON_PYTHON.cmd, browse to python.exe.
 pause
 exit /b 3

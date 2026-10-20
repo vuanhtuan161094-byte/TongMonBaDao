@@ -7,3 +7,5 @@ __pycache__/
 *.spr
 *.mpc
 *.map
+
+python.local.txt

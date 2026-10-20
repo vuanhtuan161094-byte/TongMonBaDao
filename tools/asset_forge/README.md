@@ -92,3 +92,8 @@ Source evidence (public `kiendaotac/SourceInit-JX1@b2e251a93f862571221b17cc1e92c
 - Neu khong tim thay, trong PowerShell kiem tra `py -0p` va `where.exe python`. Co the chi dinh duong dan Python cua ban trong **cung phien CMD**: `set "TMB_PYTHON_OVERRIDE=C:\Users\Admin\AppData\Local\Programs\Python\Python312\python.exe"` (thay bang duong dan thuc), roi chay `MO_ASSET_FORGE_STUDIO.cmd`. Neu mo bang nhap dup, tao `RUN_WITH_MY_PYTHON.cmd` voi `set ...` va `call MO_ASSET_FORGE_STUDIO.cmd`.
 - `where.exe python` in ra `...\Microsoft\WindowsApps\python.exe` khong chung minh Python that da cai. Neu can, tat `python.exe`/`python3.exe` tai **Settings → Apps → Advanced app settings → App execution aliases**.
 - Python/Windows runtime can kiem tra tren may Windows that; patch chi xac nhan static va regression Linux cho den khi co log thuc te.
+
+
+## Windows Python detection V3 (Oct 20)
+
+If the old diagnostic only prints `C:\Users\Admin\AppData\Local\Microsoft\WindowsApps\python.exe`, this is a **Microsoft Store execution alias, not confirmation that Python is installed**. Run `KIEM_TRA_PYTHON.cmd` in the V3 archive; the fallback PowerShell resolver checks Python PEP 514 Registry entries, Conda/uv and common custom D:/E: installation folders, without scanning entire disks. If it finds a working Python 3.10+, launch `MO_ASSET_FORGE_STUDIO.cmd`. If Python is inside an unusual folder, run `CHON_PYTHON.cmd` and select the actual `python.exe`; the choice is saved to `python.local.txt` (local only, ignored by git). `TIM_PYTHON_CHI_TIET.cmd` prints all candidates and their results. **Windows runtime verification still requires the user's actual PC.** No installation or PATH modification occurs automatically.

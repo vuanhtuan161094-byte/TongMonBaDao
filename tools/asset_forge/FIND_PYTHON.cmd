@@ -5,6 +5,14 @@ rem Do not SETLOCAL here: selected variables must survive in the caller.
 set "TMB_PYTHON_EXE="
 set "TMB_PYTHON_ARGS="
 
+rem A one-time local selection persists between launches without changing PATH.
+if exist "%~dp0python.local.txt" (
+  for /f "usebackq delims=" %%P in ("%~dp0python.local.txt") do (
+    call :check_exe "%%P"
+    if not errorlevel 1 exit /b 0
+  )
+)
+
 rem A user can select the exact installed interpreter without changing PATH.
 if defined TMB_PYTHON_OVERRIDE (
   call :check_exe "%TMB_PYTHON_OVERRIDE%"
@@ -66,11 +74,21 @@ for %%P in (
   )
 )
 
+rem Registry / environment / user-local / other drive discovery via bundled PowerShell.
+if exist "%~dp0FIND_PYTHON.ps1" (
+  for /f "usebackq delims=" %%P in (`powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "%~dp0FIND_PYTHON.ps1"`) do (
+    call :check_exe "%%P"
+    if not errorlevel 1 exit /b 0
+  )
+)
+
 echo [ERROR] Cannot find a runnable Python 3.10+ interpreter.
 echo [INFO] A Microsoft Store execution alias is not a Python installation.
 echo [INFO] In PowerShell, run: py -0p
 echo [INFO] Also run: where.exe python
-echo [INFO] For a custom location, first set TMB_PYTHON_OVERRIDE to python.exe.
+echo [INFO] Run TIM_PYTHON_CHI_TIET.cmd for Registry and other drives.
+echo [INFO] If installed elsewhere, run CHON_PYTHON.cmd to save the exact python.exe path.
+echo [INFO] Or set TMB_PYTHON_OVERRIDE to python.exe.
 exit /b 3
 
 :check_exe
