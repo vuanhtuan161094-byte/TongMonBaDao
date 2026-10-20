@@ -31,19 +31,31 @@ static func save(battle: MapBattleV2) -> Dictionary:
             if event.has(field):
                 event[field] = _encode_vec2(event[field])
         serialized_events.append(event)
+    var serialized_world_templates: Array = []
+    for raw_template in battle._world_monster_templates:
+        if not (raw_template is Dictionary):
+            continue
+        var template: Dictionary = raw_template.duplicate(true)
+        template["position"] = _encode_vec2(template.get("position", Vector2.ZERO))
+        serialized_world_templates.append(template)
     var payload := {
         "ok":true,"version":VERSION,
         "encounter_id":battle.encounter_id,
         "rng_state":battle.rng.snapshot_seed_state(),
         "time":battle.now,"active":battle.active,"outcome":battle.outcome,
         "actions":battle.actions,"downed_disciples":battle.downed_disciples,
+        "continuous_world":battle.continuous_world,
+        "world_waves_completed":battle.world_waves_completed,
+        "world_respawn_at":battle._world_respawn_at,
+        "event_sequence":battle.event_sequence,
+        "world_monster_templates":serialized_world_templates,
         "actors":serialized_actors,"casts":serialized_casts,"events":serialized_events
     }
     # JSON converts integers to floats and rounds float64 values, changing
     # mid-battle damage and RNG. Godot Variant bytes retain EXACT bit patterns.
     # Use a versioned base64 payload inside JSON, with object decoding OFF.
     return {"ok":true,"version":VERSION,"encoding":"godot_variant_b64",
-        "payload":Marshalls.raw_to_base64(var_to_bytes(payload))}
+        "payload":Marshalls.raw_to_base64(var_to_bytes(_canonicalize(payload)))}
 
 static func load(data: Dictionary) -> Dictionary:
     if not bool(data.get("ok",false)) or int(data.get("version",0)) != VERSION:
@@ -75,10 +87,16 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
     battle.outcome = str(data.get("outcome","invalid"))
     battle.actions = int(data.get("actions",-1))
     battle.downed_disciples = int(data.get("downed_disciples",-1))
-    if is_nan(battle.now) or is_inf(battle.now) or battle.now < 0.0 or battle.now > MapBattleV2.MAX_SECONDS:
+    battle.continuous_world = bool(data.get("continuous_world", false))
+    battle.world_waves_completed = int(data.get("world_waves_completed", 0))
+    battle._world_respawn_at = float(data.get("world_respawn_at", -1.0))
+    battle.event_sequence = int(data.get("event_sequence", 0))
+    if is_nan(battle.now) or is_inf(battle.now) or battle.now < 0.0 or (not battle.continuous_world and battle.now > MapBattleV2.MAX_SECONDS):
         return {"ok":false,"reason":"invalid_elapsed_time"}
-    if battle.actions < 0 or battle.downed_disciples < 0 or battle.downed_disciples > MapBattleV2.MAX_DISCIPLES:
+    if battle.actions < 0 or battle.downed_disciples < 0 or battle.downed_disciples > MapBattleV2.MAX_DISCIPLES or battle.world_waves_completed < 0 or battle.event_sequence < 0:
         return {"ok":false,"reason":"invalid_action_or_downed_count"}
+    if is_nan(battle._world_respawn_at) or is_inf(battle._world_respawn_at) or (battle._world_respawn_at >= 0.0 and battle._world_respawn_at < battle.now):
+        return {"ok":false,"reason":"invalid_world_respawn_time"}
     if battle.active and battle.outcome != "fighting":
         return {"ok":false,"reason":"invalid_active_outcome"}
     if not battle.active and not ["win","defeat","timeout_retreat"].has(battle.outcome):
@@ -100,6 +118,12 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
         if not (pos is Vector2) or not MapBattleV2.ARENA.has_point(pos):
             return {"ok":false,"reason":"invalid_actor_position"}
         actor["position"] = pos
+        if side == "disciple":
+            var learned_skill_ids: Array = actor.get("skill_loadout", [])
+            var policy_result := AutoSkillPolicyV2.normalize(actor.get("auto_skill_policy", {}), learned_skill_ids)
+            if not bool(policy_result.get("ok", false)):
+                return {"ok":false,"reason":"invalid_saved_auto_skill_policy:" + str(policy_result.get("reason", "unknown"))}
+            actor["auto_skill_policy"] = policy_result["policy"]
         var stats: Dictionary = actor.get("stats",{})
         if stats.is_empty() or not (actor.get("resistances",{}) is Dictionary):
             return {"ok":false,"reason":"missing_stat_snapshot"}
@@ -151,6 +175,29 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
                     return {"ok":false,"reason":"invalid_event_position"}
                 event[field] = coord
         battle.events.append(event)
+        battle.event_sequence = maxi(battle.event_sequence, int(event.get("sequence", 0)))
+    var raw_templates = data.get("world_monster_templates", [])
+    if not (raw_templates is Array) or raw_templates.size() > MapBattleV2.MAX_MONSTERS:
+        return {"ok":false,"reason":"invalid_world_monster_templates"}
+    for raw_template in raw_templates:
+        if not (raw_template is Dictionary):
+            return {"ok":false,"reason":"invalid_world_monster_template"}
+        var template: Dictionary = raw_template.duplicate(true)
+        var template_id := str(template.get("id", ""))
+        var template_pos = _decode_vec2(template.get("position", null))
+        if not battle.actors.has(template_id) or str(template.get("side", "")) != "monster" or not (template_pos is Vector2) or not MapBattleV2.ARENA.has_point(template_pos):
+            return {"ok":false,"reason":"invalid_world_monster_template_identity"}
+        var template_stats: Dictionary = template.get("stats", {})
+        if template_stats.is_empty() or not is_equal_approx(float(template.get("max_hp", 0.0)), float(template_stats.get("max_hp", -1.0))):
+            return {"ok":false,"reason":"invalid_world_monster_template_stats"}
+        template["position"] = template_pos
+        battle._world_monster_templates.append(template)
+    if battle.continuous_world and battle._world_monster_templates.is_empty():
+        for actor in battle.actors.values():
+            if str(actor.get("side", "")) == "monster":
+                battle._world_monster_templates.append((actor as Dictionary).duplicate(true))
+    if battle.continuous_world and battle._world_monster_templates.is_empty():
+        return {"ok":false,"reason":"missing_continuous_world_templates"}
     var saved_rng = data.get("rng_state",null)
     if not (saved_rng is int):
         return {"ok":false,"reason":"invalid_rng_state"}
@@ -159,6 +206,22 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
 
 static func _encode_vec2(value: Vector2) -> Array:
     return [value.x,value.y]
+
+static func _canonicalize(value: Variant) -> Variant:
+    if value is Dictionary:
+        var source: Dictionary = value
+        var result: Dictionary = {}
+        var keys: Array = source.keys()
+        keys.sort()
+        for key in keys:
+            result[key] = _canonicalize(source[key])
+        return result
+    if value is Array:
+        var result: Array = []
+        for item in value:
+            result.append(_canonicalize(item))
+        return result
+    return value
 
 static func _decode_vec2(value: Variant) -> Variant:
     if not (value is Array) or value.size() != 2:

@@ -10,6 +10,32 @@ func _assert(ok: bool, msg: String) -> bool:
         return false
     return true
 
+func _same_saved_value(left: Variant, right: Variant, path: String = "root") -> bool:
+    if left is Dictionary and right is Dictionary:
+        if left.size() != right.size():
+            print("SNAPSHOT MISMATCH ", path, " dictionary size ", left.size(), " / ", right.size())
+            return false
+        for key in left.keys():
+            if not right.has(key):
+                print("SNAPSHOT MISMATCH ", path, " missing key ", key)
+                return false
+            if not _same_saved_value(left[key], right[key], path + "/" + str(key)):
+                return false
+        return true
+    if left is Array and right is Array:
+        if left.size() != right.size():
+            print("SNAPSHOT MISMATCH ", path, " array size ", left.size(), " / ", right.size())
+            return false
+        for index in range(left.size()):
+            if not _same_saved_value(left[index], right[index], path + "[" + str(index) + "]"):
+                return false
+        return true
+    var same := var_to_bytes(left) == var_to_bytes(right)
+    if not same:
+        print("SNAPSHOT MISMATCH ", path, " types ", typeof(left), " / ", typeof(right),
+            " values ", str(left), " / ", str(right))
+    return same
+
 func _run() -> void:
     var group: Array = []
     var core: Dictionary = CombatStatsV2.derive(1,1,1,1,0.0)["stats"]
@@ -92,22 +118,9 @@ func _run() -> void:
         return
     var final_live := MapBattleSnapshotV2.save(live)
     var final_loaded := MapBattleSnapshotV2.save(resumed)
-    if final_live != final_loaded:
-        for key in final_live.keys():
-            if final_live[key] != final_loaded.get(key):
-                if key == "events" or key == "actors":
-                    var one: Array = final_live[key]
-                    var two: Array = final_loaded[key]
-                    print("SNAPSHOT DEBUG key=",key," count=",one.size(),"/",two.size())
-                    for k in range(mini(one.size(),two.size())):
-                        if one[k] != two[k]:
-                            print("SNAPSHOT DEBUG idx=",k," live=",str(one[k]).left(1200),
-                                " restored=",str(two[k]).left(1200))
-                            break
-                else:
-                    print("SNAPSHOT DEBUG key=",key," live=",str(final_live[key]).left(900),
-                        " restored=",str(final_loaded.get(key)).left(900))
-    if not _assert(final_live == final_loaded,
+    var final_live_payload: Dictionary = bytes_to_var(Marshalls.base64_to_raw(str(final_live["payload"])))
+    var final_loaded_payload: Dictionary = bytes_to_var(Marshalls.base64_to_raw(str(final_loaded["payload"])))
+    if not _assert(_same_saved_value(final_live_payload, final_loaded_payload),
         "Combat event journal, cast ordering or final RNG differs on save/resume."):
         return
     # Replay-safe status and rejection of corrupted or old-format saves.

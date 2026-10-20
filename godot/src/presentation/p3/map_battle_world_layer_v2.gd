@@ -23,10 +23,9 @@ const FOREST_C: Texture2D = preload("res://art/source_a_env02a/env01_assets/vege
 # Source-backed scenic bridge while the separately documented JX1 map file
 # is absent from this checkout. Never use generated polygons as a fake map.
 const SOURCE_A_FLOOR: Texture2D = preload("res://art/source_a_env02a/env01_assets/terrain/stone_courtyard.png")
-# Private JX1-inspired source supplied by owner from Drive jx-idle-main/img/z.
-# Owner-authorized JX map JPEG is staged from Drive in the isolated TEMP
-# clone; the runtime load path is an import choice, not a rights restriction.
-const JX_PRIVATE_BACKDROP := "res://art/jx1_private/img/z/2.jpg"
+# Retained as an empty compatibility marker for older focused tests. No
+# Võ Lâm Idle backdrop is probed or loaded by the current combat renderer.
+const JX_PRIVATE_BACKDROP := ""
 
 var battle: MapBattleV2
 var stage_rect := Rect2(Vector2(90.0,50.0),Vector2(1100.0,600.0))
@@ -226,11 +225,16 @@ func _ingest_authority_events() -> void:
     # MapBattleV2 emits skill_hit BEFORE actual _deal_direct settlement.
     # Only a matching subsequent positive learned_skill hit may produce hit VFX.
     var announced_hits: Dictionary = {}
-    for index in range(_event_cursor, battle.events.size()):
+    var last_sequence := _event_cursor
+    for index in range(battle.events.size()):
         var event: Dictionary = battle.events[index]
+        var event_id := int(event.get("sequence", index + 1))
+        if event_id <= _event_cursor:
+            continue
+        last_sequence = maxi(last_sequence, event_id)
         var kind := str(event.get("type", ""))
         # Receipt values are final HP deltas from simulation, not FX amounts.
-        _ingest_combat_feedback(event,index)
+        _ingest_combat_feedback(event,event_id)
         var actor_id := str(event.get("actor_id", ""))
         if kind == "move" and battle.actors.has(actor_id):
             var current: Vector2 = event.get("position", Vector2.ZERO)
@@ -333,7 +337,7 @@ func _ingest_authority_events() -> void:
                 _action_cues[caster_id] = {"action":"attack","started":_frame_clock,"until":_frame_clock+0.35}
         elif kind == "downed" and battle.actors.has(actor_id):
             _action_cues[actor_id] = {"action":"die","started":_frame_clock,"until":INF}
-    _event_cursor = battle.events.size()
+    _event_cursor = maxi(last_sequence, battle.event_sequence)
 
 # Only actual basic damage settlements start a swing without a separate cast event.
 # Pilot and learned-skill impacts never restart the caster's already-started clip.
@@ -356,7 +360,7 @@ func attach_session(session: MapBattleV2) -> void:
     _actor_view_metadata.clear()
     displayed_at = 0.0
     _frame_clock = 0.0
-    _event_cursor = session.events.size() if session != null else 0
+    _event_cursor = session.event_sequence if session != null else 0
     _positions.clear()
     _view_prev.clear()
     _view_next.clear()
@@ -786,26 +790,10 @@ func source_fx_screen_position(cue: Dictionary) -> Vector2:
     var real_position: Vector2 = battle.actors[actor_id]["position"]
     return point_on_map(visual_position(actor_id,real_position))
 
-# Presentation-only lâm địa backdrop; no map collision, actor position,
-# RNG, targeting or authoritative movement changed. Render first so the
-# verified Source A trees and earth can never obscure HP, cues or attacks.
-# Prefer authentic owner-held zone art to invented/Source A terrain
-# whenever its private binary is installed. This stays view-only, outside RNG.
+# The previous external backdrop probe is intentionally disabled. The real
+# current map fallback uses the imported Source A environment assets below.
 func _load_private_jx_ground() -> void:
-    if _jx_private_ground_checked:
-        return
     _jx_private_ground_checked = true
-    if not FileAccess.file_exists(JX_PRIVATE_BACKDROP):
-        return
-    var original := Image.new()
-    var status := original.load(JX_PRIVATE_BACKDROP)
-    if status != OK:
-        push_warning("C4 PRIVATE JX zone background could not be decoded")
-        return
-    if original.get_width() < 512 or original.get_height() < 512:
-        push_warning("C4 PRIVATE JX zone background is implausibly small")
-        return
-    _jx_private_ground = ImageTexture.create_from_image(original)
 
 func _draw_private_jx_zone() -> void:
     if _jx_private_ground == null:

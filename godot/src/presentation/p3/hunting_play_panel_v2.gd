@@ -35,11 +35,17 @@ var camera_zoom_plus: Button
 var launch_button: Button
 var resume_button: Button
 var claim_button: Button
+var return_button: Button
 var battle_layer: MapBattleWorldLayerV2
 var _log_counter := 0
 var _combat_drag_start := Vector2.ZERO
 var _combat_dragging := false
 var _combat_button_down := false
+var _policy_window: Window
+var _policy_actor_id := ""
+var _policy_owned_skill_ids: Array = []
+var _policy_controls: Dictionary = {}
+var _policy_basic_fallback: CheckBox
 
 
 func open_session(runtime: LiveGameRuntimeV2) -> void:
@@ -79,7 +85,7 @@ func _build() -> void:
 
     var header := Label.new()
     header.position = Vector2(22,12)
-    header.size = Vector2(1000,39)
+    header.size = Vector2(390,39)
     header.text = "THẾ GIỚI / SĂN QUÁI — COMBAT V2"
     header.add_theme_font_size_override("font_size",22)
     header.add_theme_color_override("font_color",Color(0.16,0.24,0.20,1.0))
@@ -87,9 +93,9 @@ func _build() -> void:
 
     var source_status := Label.new()
     source_status.name = "DemoAssetStatus"
-    source_status.position = Vector2(392,17)
-    source_status.size = Vector2(690,28)
-    source_status.text = "JX1 VFX đã xác minh · bản đồ JX1: ASSET_INCOMPLETE"
+    source_status.position = Vector2(430,17)
+    source_status.size = Vector2(655,28)
+    source_status.text = "JXQY2 offline · asset chưa nhập · map Source A hiện có"
     source_status.add_theme_font_size_override("font_size",12)
     source_status.add_theme_color_override("font_color",Color(0.48,0.22,0.12,1.0))
     add_child(source_status)
@@ -106,7 +112,7 @@ func _build() -> void:
     left.size = Vector2(357,561)
     add_child(left)
     var column := VBoxContainer.new()
-    column.add_theme_constant_override("separation",5)
+    column.add_theme_constant_override("separation",3)
     left.add_child(column)
     left.add_theme_stylebox_override("panel",_hunting_panel_style(
         Color(0.975,0.94,0.84,1.0),Color(0.39,0.31,0.20,1.0)))
@@ -138,7 +144,7 @@ func _build() -> void:
     column.add_child(level_choice)
 
     var roster_text := Label.new()
-    roster_text.text = "Chọn tối đa 30 đệ tử V2 rảnh; mỗi đội tối đa 6"
+    roster_text.text = "Chọn đệ tử săn (tối đa 30; mỗi đội ≤6)"
     roster_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     column.add_child(roster_text)
     roster_filter = LineEdit.new()
@@ -155,7 +161,7 @@ func _build() -> void:
     guidance_button.pressed.connect(func(): request_guidance.emit())
     column.add_child(guidance_button)
     roster_scroll = ScrollContainer.new()
-    roster_scroll.custom_minimum_size = Vector2(330,148)
+    roster_scroll.custom_minimum_size = Vector2(330,110)
     roster_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
     column.add_child(roster_scroll)
     roster_list = VBoxContainer.new()
@@ -163,22 +169,30 @@ func _build() -> void:
 
     launch_button = Button.new()
     launch_button.text = "PHÁI ĐỘI ĐI SĂN (0)"
-    launch_button.custom_minimum_size.y = 44
+    launch_button.custom_minimum_size.y = 40
     launch_button.pressed.connect(_launch)
     column.add_child(launch_button)
 
     resume_button = Button.new()
     resume_button.text = "Tiếp tục trận đã lưu"
-    resume_button.custom_minimum_size.y = 40
+    resume_button.custom_minimum_size.y = 34
     resume_button.pressed.connect(_restore_first_session)
     column.add_child(resume_button)
 
     claim_button = Button.new()
     claim_button.text = "Nhận chiến lợi phẩm"
-    claim_button.custom_minimum_size.y = 42
+    claim_button.custom_minimum_size.y = 36
     claim_button.disabled = true
     claim_button.pressed.connect(_claim)
     column.add_child(claim_button)
+
+    return_button = Button.new()
+    return_button.name = "CombatReturnToBase"
+    return_button.text = "VỀ TÔNG MÔN"
+    return_button.custom_minimum_size.y = 36
+    return_button.disabled = true
+    return_button.pressed.connect(_return_to_base)
+    column.add_child(return_button)
 
     var battlefield := PanelContainer.new()
     battlefield.position = Vector2(386,63)
@@ -245,14 +259,14 @@ func _build() -> void:
         camera_button.add_theme_color_override("font_color",Color(1.0,0.97,0.84,1.0))
 
     status = Label.new()
-    status.position = Vector2(18,636)
-    status.size = Vector2(1230,71)
+    status.position = Vector2(386,636)
+    status.size = Vector2(878,70)
     status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     status.add_theme_font_size_override("font_size",15)
     status.add_theme_color_override("font_color",Color(0.16,0.23,0.18,1.0))
     add_child(status)
     # Match G1/MAP25 parchment and ink; Source-VL combat renderer stays unchanged.
-    for control in [close,launch_button,resume_button,claim_button,guidance_button]:
+    for control in [close,launch_button,resume_button,claim_button,return_button,guidance_button]:
         control.add_theme_stylebox_override("normal",_hunting_panel_style(
             Color(0.20,0.38,0.30,1.0),Color(0.60,0.48,0.28,1.0)))
         control.add_theme_stylebox_override("hover",_hunting_panel_style(
@@ -416,9 +430,20 @@ func _rebuild_roster() -> void:
         check.disabled = not can_enter or session != null
         check.set_pressed_no_signal(chosen.has(str(id)) and can_enter)
         check.toggled.connect(_select_disciple.bind(str(id)))
-        roster_list.add_child(check)
+        var row := HBoxContainer.new()
+        row.add_child(check)
+        check.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+        if can_enter and session == null:
+            var configure := Button.new()
+            configure.text = "Kỹ năng"
+            configure.custom_minimum_size.x = 68
+            configure.disabled = DemoAutoSkillPolicyStoreV1.path_for_active_save().is_empty()
+            configure.tooltip_text = "Chỉ cấu hình kỹ năng V2 đã học, trong DEMO save cách ly"
+            configure.pressed.connect(_open_auto_skill_config.bind(str(id)))
+            row.add_child(configure)
+        roster_list.add_child(row)
     if roster_diagnostics != null:
-        roster_diagnostics.text = "Trong tối đa 90 kết quả: sẵn sàng %d | chưa V2 %d | bận %d | bị thương %d" % [
+        roster_diagnostics.text = "Sẵn sàng %d · thiếu V2 %d · bận %d · thương %d" % [
             eligible_total,v2_missing,busy_total,injury_total
         ]
     launch_button.disabled = session != null or chosen.is_empty() or not state.sect.p3_7_resources_enabled
@@ -428,6 +453,7 @@ func _rebuild_roster() -> void:
     level_choice.disabled = session != null
     guidance_button.disabled = session != null
     claim_button.disabled = session == null or session.battle == null or session.battle.active or session.battle.outcome != "win"
+    return_button.disabled = session == null or session.battle == null or not session.battle.active or not session.battle.continuous_world
 
 func _select_disciple(enabled: bool, id: String) -> void:
     if enabled:
@@ -473,21 +499,13 @@ func _launch() -> void:
             "role":_role_for(i),
             "position":Vector2(4.0+float(i%6)*0.85,3.0+float(i/6)*2.4)
         }
-        var demo_jx_loadouts: Dictionary = ProjectSettings.get_setting("demo/jx_loadouts",{})
-        var pilot_skills: Array = demo_jx_loadouts.get(id,[])
-        if not pilot_skills.is_empty():
-            row["pilot_skill_loadout"] = pilot_skills.duplicate(true)
-            row["spiritual_root_values"] = DemoSandboxFactoryV1.pilot_root_values(member)
-        if not pilot_skills.is_empty():
-            # Keep verified JX pilot users in range at encounter start. Other
-            # max V2 hunters enter from their normal formation, leaving time
-            # for the real cast/flight/impact events to render first.
-            if pilot_skills.has("jx_wudang_158"):
-                row["position"] = Vector2(22.0,13.0)
-            elif pilot_skills.has("jx_wudu_63"):
-                row["position"] = Vector2(21.0,8.0)
-            else:
-                row["position"] = Vector2(17.0,8.3)
+        var skill_system := CombatSkillSystem.new()
+        var owned_skill_ids: Array = []
+        for skill_id in skill_system.usable_skills(state,member):
+            var definition := skill_system.definition(skill_id)
+            if str(definition.get("effect", "")) == "damage":
+                owned_skill_ids.append(str(skill_id))
+        row["auto_skill_policy"] = DemoAutoSkillPolicyStoreV1.load_policy(id,owned_skill_ids)
         # Real V2 rank is read by HuntingPveRunV2 from the disciple's
         # canonical persistent progression. No fake stats in the live flow.
         roster.append(row)
@@ -496,7 +514,7 @@ func _launch() -> void:
     ]
     var seed_value := maxi(1,int(state.tick)+int(Time.get_unix_time_from_system())%1000000)
     var proposed := HuntingPveRunV2.new()
-    var started := proposed.begin(state,selected_region,id,seed_value,roster)
+    var started := proposed.begin(state,selected_region,id,seed_value,roster,true)
     if not bool(started.get("ok",false)):
         _status("Không thể xuất môn: "+str(started.get("reason","unknown")))
         _rebuild_roster()
@@ -579,6 +597,7 @@ func _start_view() -> void:
             if running else "ĐÃ KẾT THÚC · " + str(session.battle.outcome)
         )
     set_process(running)
+    return_button.disabled = not running or not session.battle.continuous_world
     _rebuild_roster()
     _update_view_status()
 
@@ -621,8 +640,166 @@ func _update_view_status() -> void:
         selected_region,str(result["outcome"]),float(result["time"]),
         int(result["alive_disciples"]),int(result["alive_monsters"]),
         int(result["actions"]),
-        "Nhận thưởng khi THẮNG" if not session.battle.active else "Đang giao chiến"
+        ("Nhận một lượt thưởng sau khi dừng" if session.battle.continuous_world else "Nhận thưởng khi THẮNG") if not session.battle.active else ("Liên tục · đã qua %d đợt · kéo chuột để xoay camera" % session.battle.world_waves_completed if session.battle.continuous_world else "Đang giao chiến")
     ])
+
+func _return_to_base() -> void:
+    if session == null or session.battle == null or not session.battle.active:
+        return
+    var result := session.return_to_base()
+    if not bool(result.get("ok", false)):
+        _status("Không thể rút đội: " + str(result.get("reason", "unknown")))
+        return
+    running = false
+    set_process(false)
+    var saved := live.save()
+    if not bool(saved.get("ok", false)):
+        _status("Đội đã rút trong RAM nhưng save thất bại; chưa thể tiếp tục hoặc nhận thưởng.")
+        return
+    if fight_state_badge != null:
+        fight_state_badge.text = "ĐÃ RÚT ĐỘI · " + str(result.get("outcome", ""))
+    _rebuild_roster()
+    _update_view_status()
+
+func _open_auto_skill_config(disciple_id: String) -> void:
+    if state == null or session != null or not state.disciples.has(StringName(disciple_id)):
+        return
+    var disciple: DiscipleState = state.disciples[StringName(disciple_id)]
+    var system := CombatSkillSystem.new()
+    _policy_owned_skill_ids.clear()
+    for skill_id in system.usable_skills(state, disciple):
+        if str(system.definition(skill_id).get("effect", "")) == "damage":
+            _policy_owned_skill_ids.append(str(skill_id))
+    if _policy_owned_skill_ids.is_empty():
+        _status("Đệ tử chưa có Thường Kỹ gây sát thương V2 đã học để cấu hình.")
+        return
+    _policy_actor_id = disciple_id
+    var policy := DemoAutoSkillPolicyStoreV1.load_policy(disciple_id, _policy_owned_skill_ids)
+    if _policy_window != null:
+        _policy_window.queue_free()
+    _policy_window = Window.new()
+    _policy_window.title = "Tự động chiến đấu · " + disciple.display_name
+    _policy_window.size = Vector2i(510, 580)
+    _policy_window.exclusive = true
+    add_child(_policy_window)
+    var root := VBoxContainer.new()
+    root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    root.add_theme_constant_override("separation", 7)
+    _policy_window.add_child(root)
+    var intro := Label.new()
+    intro.text = "Chỉ kỹ năng đã học/trang bị có consumer sát thương Combat V2 mới được thi triển."
+    intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    root.add_child(intro)
+    _policy_basic_fallback = CheckBox.new()
+    _policy_basic_fallback.text = "Đánh thường khi chưa đủ điều kiện dùng kỹ năng"
+    _policy_basic_fallback.button_pressed = bool(policy.get("basic_fallback", true))
+    root.add_child(_policy_basic_fallback)
+    var rows_by_id: Dictionary = {}
+    for row_value in policy.get("skills", []):
+        if row_value is Dictionary:
+            rows_by_id[str(row_value.get("canonical_skill_id", ""))] = row_value
+    _policy_controls.clear()
+    for skill_id in _policy_owned_skill_ids:
+        var definition: Dictionary = CombatSkillSystem.SKILLS[skill_id]
+        var row_policy: Dictionary = rows_by_id.get(skill_id, {})
+        var conditions: Dictionary = row_policy.get("conditions", {})
+        var group := VBoxContainer.new()
+        group.add_theme_constant_override("separation", 3)
+        root.add_child(group)
+        var heading := HBoxContainer.new()
+        group.add_child(heading)
+        var enabled := CheckBox.new()
+        enabled.text = str(definition.get("name", skill_id))
+        enabled.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+        enabled.button_pressed = bool(row_policy.get("enabled", false))
+        heading.add_child(enabled)
+        var priority := OptionButton.new()
+        priority.custom_minimum_size.x = 105
+        for index in range(AutoSkillPolicyV2.MAX_ACTIVE_SLOTS):
+            priority.add_item("Ưu tiên %d" % (index + 1))
+        priority.select(clampi(int(row_policy.get("priority", 0)), 0, AutoSkillPolicyV2.MAX_ACTIVE_SLOTS - 1))
+        heading.add_child(priority)
+        var thresholds := HBoxContainer.new()
+        group.add_child(thresholds)
+        var actor_hp := _policy_spinbox(0.0, 1.0, 0.05, float(conditions.get("actor_hp_at_or_below", 1.0)))
+        actor_hp.tooltip_text = "Thi triển khi HP bản thân không vượt ngưỡng"
+        thresholds.add_child(_policy_labeled_control("HP mình ≤", actor_hp))
+        var target_hp := _policy_spinbox(0.0, 1.0, 0.05, float(conditions.get("target_hp_at_or_below", 1.0)))
+        target_hp.tooltip_text = "Thi triển khi HP mục tiêu không vượt ngưỡng"
+        thresholds.add_child(_policy_labeled_control("HP địch ≤", target_hp))
+        var range_box := _policy_spinbox(0.0, float(definition.get("range", 0.0)), 0.25, float(conditions.get("max_range", definition.get("range", 0.0))))
+        range_box.tooltip_text = "Tầm dùng kỹ năng, không vượt định nghĩa Combat V2"
+        thresholds.add_child(_policy_labeled_control("Tầm", range_box))
+        var filters := HBoxContainer.new()
+        group.add_child(filters)
+        var tier := OptionButton.new()
+        tier.add_item("Mọi cấp")
+        tier.add_item("Quái thường")
+        tier.add_item("Tinh anh")
+        tier.add_item("Boss")
+        var saved_tiers: Array = conditions.get("target_tiers", AutoSkillPolicyV2.VALID_TIERS)
+        tier.select(0 if saved_tiers.size() == 3 else (1 if "normal" in saved_tiers else (2 if "elite" in saved_tiers else 3)))
+        filters.add_child(_policy_labeled_control("Mục tiêu", tier))
+        var nearby := OptionButton.new()
+        for count in range(1, MapBattleV2.MAX_TARGETS_AOE + 1):
+            nearby.add_item("%d mục tiêu gần" % count)
+        nearby.select(clampi(int(conditions.get("minimum_enemies_near_target", 1)) - 1, 0, MapBattleV2.MAX_TARGETS_AOE - 1))
+        filters.add_child(_policy_labeled_control("Điều kiện", nearby))
+        _policy_controls[skill_id] = {"enabled":enabled,"priority":priority,"actor_hp":actor_hp,"target_hp":target_hp,"range":range_box,"tier":tier,"nearby":nearby}
+    var save_button := Button.new()
+    save_button.text = "LƯU CHÍNH SÁCH VÀO DEMO SAVE"
+    save_button.pressed.connect(_save_auto_skill_config)
+    root.add_child(save_button)
+    _policy_window.popup_centered()
+
+func _policy_spinbox(minimum: float, maximum: float, step: float, value: float) -> SpinBox:
+    var spin := SpinBox.new()
+    spin.min_value = minimum
+    spin.max_value = maximum
+    spin.step = step
+    spin.value = clampf(value, minimum, maximum)
+    spin.custom_minimum_size.x = 92
+    return spin
+
+func _policy_labeled_control(caption: String, control: Control) -> Control:
+    var wrap := VBoxContainer.new()
+    var label := Label.new()
+    label.text = caption
+    wrap.add_child(label)
+    wrap.add_child(control)
+    return wrap
+
+func _save_auto_skill_config() -> void:
+    if _policy_window == null or _policy_actor_id.is_empty():
+        return
+    var rows: Array = []
+    for skill_id in _policy_owned_skill_ids:
+        var controls: Dictionary = _policy_controls.get(skill_id, {})
+        if controls.is_empty():
+            continue
+        var tier_selection := int((controls["tier"] as OptionButton).selected)
+        var tiers: Array = AutoSkillPolicyV2.VALID_TIERS.duplicate() if tier_selection == 0 else ["normal" if tier_selection == 1 else ("elite" if tier_selection == 2 else "boss")]
+        rows.append({
+            "canonical_skill_id":skill_id,
+            "enabled":(controls["enabled"] as CheckBox).button_pressed,
+            "priority":(controls["priority"] as OptionButton).selected,
+            "conditions":{
+                "actor_hp_at_or_below":(controls["actor_hp"] as SpinBox).value,
+                "target_hp_at_or_below":(controls["target_hp"] as SpinBox).value,
+                "min_range":0.0,
+                "max_range":(controls["range"] as SpinBox).value,
+                "target_tiers":tiers,
+                "minimum_enemies_near_target":(controls["nearby"] as OptionButton).selected + 1
+            }
+        })
+    var policy := {"schema":AutoSkillPolicyV2.SCHEMA,"basic_fallback":_policy_basic_fallback.button_pressed,"skills":rows}
+    var result := DemoAutoSkillPolicyStoreV1.save_policy(_policy_actor_id,_policy_owned_skill_ids,policy)
+    if not bool(result.get("ok", false)):
+        _status("Không lưu được auto-skill policy: " + str(result.get("reason", "unknown")))
+        return
+    _policy_window.queue_free()
+    _policy_window = null
+    _status("Đã lưu chính sách Combat V2 cho " + _policy_actor_id + " trong save DEMO cách ly.")
 
 func _claim() -> void:
     if session == null or session.battle == null or session.battle.active:

@@ -11,7 +11,7 @@ var battle: MapBattleV2
 
 func begin(
     state: SimulationState, region: String, encounter_id: String, seed: int,
-    party_members: Array
+    party_members: Array, continuous_world: bool = false
 ) -> Dictionary:
     if battle != null or state == null or not state.sect.v2_pve_enabled:
         return {"ok":false,"reason":"v2_pve_disabled_or_already_started"}
@@ -98,7 +98,7 @@ func begin(
     if not bool(spawned.get("ok",false)):
         return spawned
     var map_battle := MapBattleV2.new(seed)
-    var ready := map_battle.setup(encounter_id,actors,spawned["monsters"])
+    var ready := map_battle.setup(encounter_id,actors,spawned["monsters"],{"continuous_world":continuous_world})
     if not bool(ready.get("ok",false)):
         return ready
     owner_state = state
@@ -174,6 +174,22 @@ func claim() -> Dictionary:
     if bool(result.get("ok",false)):
         owner_state.sect.v2_pve_active_runs.erase(battle.encounter_id)
     return result
+
+func return_to_base() -> Dictionary:
+    if battle == null or owner_state == null:
+        return {"ok":false,"reason":"no_active_session"}
+    var returned := battle.request_return()
+    if not bool(returned.get("ok",false)):
+        return returned
+    var stored := _persist_live_state()
+    if not bool(stored.get("ok",false)):
+        return stored
+    var settled := _settle_terminal()
+    if not bool(settled.get("ok",false)):
+        return settled
+    return {"ok":true,"outcome":battle.outcome,
+        "world_waves_completed":battle.world_waves_completed,
+        "summary":battle.summary()}
 
 func snapshot() -> Dictionary:
     if battle == null:
@@ -390,6 +406,8 @@ func save_state() -> Dictionary:
         "difficulty":int(spawn_data.get("level",0)),
         "encounter_id":str(spawn_data.get("encounter_id","")),
         "reward_seed":int(spawn_data.get("reward_seed",0)),
+        "continuous_world":battle.continuous_world,
+        "world_waves_completed":battle.world_waves_completed,
         "battle":checkpoint
     }
 

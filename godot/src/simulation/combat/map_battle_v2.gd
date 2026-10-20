@@ -23,11 +23,16 @@ var active: bool = false
 var outcome: String = "uninitialized"
 var actions: int = 0
 var downed_disciples: int = 0
+var continuous_world: bool = false
+var world_waves_completed: int = 0
+var _world_respawn_at: float = -1.0
+var _world_monster_templates: Array = []
+var event_sequence: int = 0
 
 func _init(seed_value: int = 515151) -> void:
     rng = GameRng.new(seed_value)
 
-func setup(id: String, party: Array, monsters: Array) -> Dictionary:
+func setup(id: String, party: Array, monsters: Array, options: Dictionary = {}) -> Dictionary:
     if active or id.is_empty() or party.is_empty() or party.size() > MAX_DISCIPLES:
         return {"ok":false,"reason":"invalid_encounter_or_party"}
     if monsters.is_empty() or monsters.size() > MAX_MONSTERS:
@@ -39,6 +44,11 @@ func setup(id: String, party: Array, monsters: Array) -> Dictionary:
     encounter_id = id
     actions = 0
     downed_disciples = 0
+    continuous_world = bool(options.get("continuous_world", false))
+    world_waves_completed = 0
+    _world_respawn_at = -1.0
+    _world_monster_templates.clear()
+    event_sequence = 0
     var entries: Array = []
     var party_sizes: Dictionary = {}
     for raw in party:
@@ -55,6 +65,10 @@ func setup(id: String, party: Array, monsters: Array) -> Dictionary:
         var role := str(row.get("role","frontline"))
         if actor_id.is_empty() or stats.is_empty() or not ARENA.has_point(pos) or not ["frontline","ranged","mage","healer"].has(role):
             return {"ok":false,"reason":"invalid_party_actor"}
+        var learned_skills: Array = row.get("skill_loadout", [])
+        var policy_result := AutoSkillPolicyV2.normalize(row.get("auto_skill_policy", {}), learned_skills)
+        if not bool(policy_result.get("ok", false)):
+            return {"ok":false,"reason":str(policy_result.get("reason", "invalid_auto_skill_policy"))}
         if not JxPilotSkillsV1.valid_loadout(row.get("pilot_skill_loadout",[])):
             return {"ok":false,"reason":"invalid_pilot_skill_loadout"}
         # Pilot loadout is mutually exclusive with the production learned
@@ -76,6 +90,7 @@ func setup(id: String, party: Array, monsters: Array) -> Dictionary:
             "basic_ratio":float(row.get("basic_ratio",1.0)),
             "basic_interval":float(row.get("basic_interval",1.6)),
             "skill_loadout":row.get("skill_loadout",[]).duplicate(true),
+            "auto_skill_policy":policy_result["policy"],
             "pilot_loadout":row.get("pilot_skill_loadout",[]).duplicate(true),
             "pilot_roots":row.get("spiritual_root_values",{}).duplicate(true),
             "pilot_ready":{},"pilot_effects":[],
@@ -120,6 +135,8 @@ func setup(id: String, party: Array, monsters: Array) -> Dictionary:
             actors.clear()
             return {"ok":false,"reason":"duplicate_actor_or_invalid_monster_hp"}
         actors[actor_id] = actor
+        if continuous_world and str(actor.get("side", "")) == "monster":
+            _world_monster_templates.append(actor.duplicate(true))
     active = true
     outcome = "fighting"
     _event("battle_start",{"encounter_id":id,"disciples":party.size(),"monsters":monsters.size()})
@@ -175,6 +192,9 @@ func step(viewed_map: bool = false) -> Dictionary:
             if (str(actor["role"]) == "mage" and (actor.get("pilot_loadout",[]) as Array).is_empty() and _enemies_near(target,3.0)>=2):
                 _cast_mage_aoe(actor,target)
                 continue
+        var auto_policy: Dictionary = actor.get("auto_skill_policy", {})
+        if not bool(auto_policy.get("basic_fallback", true)):
+            continue
         if now >= float(actor["next_basic"]):
             _deal_direct(actor,target,float(actor.get("basic_ratio",1.0)),"basic",true)
             var interval := CombatStatsV2.effective_interval(
@@ -183,17 +203,73 @@ func step(viewed_map: bool = false) -> Dictionary:
             )
             actor["next_basic"] = now+maxf(STEP_SECONDS,interval)
     if _count_alive("monster") == 0:
-        outcome = "win"
-        active = false
+        if continuous_world and _count_alive("disciple") > 0:
+            if _world_respawn_at < 0.0:
+                world_waves_completed += 1
+                _world_respawn_at = now + 3.0
+                _event("world_wave_cleared", {"wave":world_waves_completed,"respawn_at":_world_respawn_at})
+            elif now + 0.000001 >= _world_respawn_at:
+                _respawn_world_wave()
+        else:
+            outcome = "win"
+            active = false
     elif _count_alive("disciple") == 0:
         outcome = "defeat"
         active = false
-    elif now >= MAX_SECONDS:
+    elif not continuous_world and now >= MAX_SECONDS:
         outcome = "timeout_retreat"
         active = false
     if not active:
         _event("battle_end",{"outcome":outcome,"elapsed":now,"downed_disciples":downed_disciples})
-    return {"ok":true,"outcome":outcome,"time":now,"alive_disciples":_count_alive("disciple"),"alive_monsters":_count_alive("monster")}
+    return {"ok":true,"outcome":outcome,"time":now,"alive_disciples":_count_alive("disciple"),"alive_monsters":_count_alive("monster"),"continuous_world":continuous_world,"world_waves_completed":world_waves_completed}
+
+func request_return() -> Dictionary:
+    if not active:
+        return {"ok":false,"reason":"encounter_not_active"}
+    if not continuous_world:
+        return {"ok":false,"reason":"not_a_continuous_world"}
+    outcome = "win" if world_waves_completed > 0 else "timeout_retreat"
+    active = false
+    pending_casts.clear()
+    _event("battle_end", {"outcome":outcome,"elapsed":now,"downed_disciples":downed_disciples,"manual_return":true,"world_waves_completed":world_waves_completed})
+    return {"ok":true,"outcome":outcome,"world_waves_completed":world_waves_completed}
+
+func configure_continuous_world(enabled: bool) -> void:
+    continuous_world = enabled
+    if enabled and _world_monster_templates.is_empty():
+        for actor in actors.values():
+            if str(actor.get("side", "")) == "monster":
+                _world_monster_templates.append(actor.duplicate(true))
+
+func _respawn_world_wave() -> void:
+    if _world_monster_templates.is_empty():
+        continuous_world = false
+        outcome = "timeout_retreat"
+        active = false
+        _event("world_respawn_failed", {"reason":"missing_authored_monster_templates"})
+        return
+    var monster_ids: Array = []
+    for actor_id in actors.keys():
+        if str(actors[actor_id].get("side", "")) == "monster":
+            monster_ids.append(str(actor_id))
+    for actor_id in monster_ids:
+        actors.erase(actor_id)
+    var offset := Vector2(float((world_waves_completed % 3) * 1.2), float((world_waves_completed % 2) * 0.8))
+    for template_value in _world_monster_templates:
+        var actor: Dictionary = (template_value as Dictionary).duplicate(true)
+        var actor_id := str(actor["id"])
+        var base: Vector2 = actor["position"]
+        actor["position"] = _keep_inside(base + offset)
+        actor["hp"] = float(actor["max_hp"])
+        actor["next_basic"] = now
+        actor["next_skill"] = now + 3.5 if str(actor.get("tier", "")) == "boss" else now + 4.0
+        actor["guard_until"] = -1.0
+        actor["pilot_effects"] = []
+        actor["pilot_guard_until"] = -1.0
+        actor["pilot_def_until"] = -1.0
+        actors[actor_id] = actor
+    _world_respawn_at = -1.0
+    _event("world_wave_spawned", {"wave":world_waves_completed + 1,"monsters":_world_monster_templates.size()})
 
 func run(max_steps: int = 400, viewed_map: bool = false) -> Dictionary:
     for _step in range(mini(max_steps,int(ceil(MAX_SECONDS/STEP_SECONDS))+1)):
@@ -339,12 +415,17 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
 # Only ALREADY-LEARNED, authored direct-damage P2 skills can be used.
 # Debuff/Burn/Dash/etc. remain deferred until those specific consumers exist.
 func _try_learned_damage_skill(actor: Dictionary, target: Dictionary) -> bool:
-    var skills: Array = actor.get("skill_loadout",[])
+    var policy: Dictionary = actor.get("auto_skill_policy", {})
+    var skills: Array = AutoSkillPolicyV2.ordered_enabled_skill_ids(actor)
+    if not actor.has("auto_skill_policy"):
+        skills = actor.get("skill_loadout", [])
     var ready: Dictionary = actor.get("skill_ready",{})
     for raw_id in skills:
         var skill_id := str(raw_id)
         var data: Dictionary = CombatSkillSystem.SKILLS.get(skill_id,{})
         if str(data.get("effect","")) != "damage":
+            continue
+        if actor.has("auto_skill_policy") and not AutoSkillPolicyV2.eligible(self, actor, target, skill_id):
             continue
         if now < float(ready.get(skill_id,0.0)):
             continue
@@ -480,8 +561,11 @@ func _keep_inside(position: Vector2) -> Vector2:
     return Vector2(clampf(position.x,0.0,36.0),clampf(position.y,0.0,20.0))
 
 func _event(kind: String, payload: Dictionary) -> void:
-    if events.size() >= MAX_EVENTS:
+    if events.size() >= MAX_EVENTS and not continuous_world:
         return
-    var row := {"type":kind,"time":now,"encounter_id":encounter_id}
+    event_sequence += 1
+    if events.size() >= MAX_EVENTS:
+        events.pop_front()
+    var row := {"type":kind,"time":now,"encounter_id":encounter_id,"sequence":event_sequence}
     row.merge(payload)
     events.append(row)
