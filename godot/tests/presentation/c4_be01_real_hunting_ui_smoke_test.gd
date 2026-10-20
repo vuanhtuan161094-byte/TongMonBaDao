@@ -33,6 +33,24 @@ func _run() -> void:
         panel = holder.get_node_or_null("LiveHuntingPveV2") as HuntingPlayPanelV2
     if not _check(panel != null,"Thế Giới button did not open canonical PvE panel"):
         return
+    # Verified Source A forest + manual view zoom contract. Camera is
+    # presentation-only and must not grant resources or alter authority.
+    if not _check(MapBattleWorldLayerV2.FOREST_A.get_size().x > 0.0 and
+            MapBattleWorldLayerV2.FOREST_B.get_size().x > 0.0 and
+            MapBattleWorldLayerV2.FOREST_C.get_size().x > 0.0,
+            "hunting ground missing original imported Source A vegetation"):
+        return
+    var camera_start := panel.battle_layer.spectator_zoom_multiplier
+    panel._change_combat_camera(-0.20)
+    if not _check(is_equal_approx(panel.battle_layer.spectator_zoom_multiplier,
+            camera_start-0.20) and panel.camera_zoom_label.text == "100%",
+            "combat zoom-out button did not update the real scene view"):
+        return
+    panel._change_combat_camera(0.20)
+    if not _check(is_equal_approx(panel.battle_layer.spectator_zoom_multiplier,
+            camera_start) and panel.camera_zoom_label.text == "120%",
+            "combat zoom-in button did not restore default framing"):
+        return
     var regions: OptionButton = panel.region_choice
     var levels: OptionButton = panel.level_choice
     if not _check(regions != null and regions.item_count == 3 and
