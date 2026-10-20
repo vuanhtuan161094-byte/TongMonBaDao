@@ -27,7 +27,7 @@ func _setup(seed: int) -> MapBattleV2:
         ["jx_wudu_63"],["jx_emei_93"],[]
     ]
     for i in range(MapBattleV2.MAX_DISCIPLES):
-        var role := ["frontline","ranged","mage","healer","frontline","mage"][i%6]
+        var role: String = str(["frontline","ranged","mage","healer","frontline","mage"][i%6])
         var actor := {
             "id":"max_disc_%02d" % i,
             "party_id":"max_team_%02d" % int(i/6),
