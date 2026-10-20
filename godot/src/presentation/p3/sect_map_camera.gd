@@ -1,7 +1,12 @@
 class_name SectMapCamera
 extends RefCounted
 
-const WORLD_SIZE := Vector2(1280.0, 720.0)
+const WORLD_SIZE := Vector2(1280.0, 720.0) # legacy initial stage dimensions
+# View-only bounds of the genuine 192x192 isometric map, based on
+# SectIsometricWorldV1's (25,13) half tile and legacy anchor.
+# A much larger scrollable camera area than one 1280x720 screen.
+const ISO_WORLD_BOUNDS := Rect2(
+    Vector2(-4170.0,-2240.0),Vector2(10000.0,5400.0))
 const VIEW_RECT := Rect2(Vector2(0.0, 72.0), Vector2(1280.0, 570.0))
 
 const MIN_ZOOM := 0.75
@@ -51,10 +56,13 @@ static func reset_transform() -> Dictionary:
 
 static func clamp_position(candidate: Vector2, zoom: float) -> Vector2:
     var applied_zoom := clamp_zoom(zoom)
-    var scaled_size := WORLD_SIZE * applied_zoom
+    var scaled_size := ISO_WORLD_BOUNDS.size * applied_zoom
+    var min_screen := ISO_WORLD_BOUNDS.position * applied_zoom
     return Vector2(
-        _clamp_axis(candidate.x, scaled_size.x, VIEW_RECT.position.x, VIEW_RECT.size.x),
-        _clamp_axis(candidate.y, scaled_size.y, VIEW_RECT.position.y, VIEW_RECT.size.y)
+        _clamp_axis(candidate.x+min_screen.x,scaled_size.x,
+            VIEW_RECT.position.x,VIEW_RECT.size.x)-min_screen.x,
+        _clamp_axis(candidate.y+min_screen.y,scaled_size.y,
+            VIEW_RECT.position.y,VIEW_RECT.size.y)-min_screen.y
     )
 
 static func _clamp_axis(candidate: float, scaled_world_size: float, view_start: float, view_size: float) -> float:
