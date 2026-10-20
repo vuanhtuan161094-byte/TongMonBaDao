@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Tong Mon Ba Dao"
+config/name="Tong Mon Ba Dao Demo V3"
 run/main_scene="res://scenes/p3/p3_2_landscape_sect.tscn"
 config/features=PackedStringArray("4.7")
 

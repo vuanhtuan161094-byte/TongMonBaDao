@@ -1,0 +1,54 @@
+{
+  "schema": "tmb_playfirst_demo_max_v3_asset_manifest",
+  "combat_authority": "Combat V2 stats, hit resolution, status chance, RNG, cooldown, reward and settlement; JX1 is content and presentation only",
+  "background": {
+    "status": "ASSET_INCOMPLETE",
+    "missing_jx1_path": "res://art/jx1_private/img/z/2.jpg",
+    "fan_derivative": "FAN_DERIVATIVE/NOT_ORIGINAL_MAP; not present in verified commit snapshot",
+    "temporary_scenic_bridge": "res://art/source_a_env02a/env01_assets/terrain/stone_courtyard.png",
+    "collision_authority": false,
+    "sha256": "c157965bd15f2747a55b602d4320dc34ad70c9129f79cc17eb8b4b139897468a"
+  },
+  "actor_and_monster_art": {
+    "atlas": "res://assets/combat_v4/source_vl/atlas_manifest.json",
+    "provenance": "owner supplied VLTK/JX-derived combat atlas, view only",
+    "verified_at_runtime": true
+  },
+  "monster_hp_bar": {
+    "path": "res://assets/combat_v4/jx1_ui/bar_hp.png",
+    "sha256": "2f4a6395548e64bc88f2cb951084a1ca017e85e5648abe19cb31e9f2ab2c14c5",
+    "source": "owner supplied JX1/VLTK combat UI asset; displayed ratio comes from Combat V2 HP"
+  },
+  "skill_cues": [
+    {
+      "source_jx_id": 158,
+      "skill": "Kiếm Phi Kinh Thiên",
+      "event": "pilot_impact",
+      "stage": "impact",
+      "path": "res://assets/combat_v4/jx1_skill_fx/361b4525.webp",
+      "sha256": "4052de409053ad3dc3562795c0f0d93e96029387169c7f42a4dca5d104352e13"
+    },
+    {
+      "source_jx_id": 63,
+      "skill": "Độc Sa Chưởng",
+      "event": "pilot_impact",
+      "stage": "impact",
+      "path": "res://assets/combat_v4/jx1_skill_fx/1fffed7e.webp",
+      "sha256": "a22e5b9148a7d36e73dfea69cba271472e8700150f235da32fd5d36e212a5d2c"
+    },
+    {
+      "source_jx_id": 93,
+      "skill": "Từ Hàng Phổ Độ",
+      "event": "pilot_cast",
+      "stage": "precast",
+      "path": "res://assets/combat_v4/jx1_skill_fx/2f8c6d50.webp",
+      "sha256": "621d884fd24c9fffbde197b667f734c0b88094fae3f3afdc6d37586f3ee6ab67"
+    }
+  ],
+  "incomplete": [
+    {"source_jx_id": 15, "stage": "precast", "status": "ASSET_INCOMPLETE"},
+    {"source_jx_id": 63, "stage": "cast", "status": "ASSET_INCOMPLETE"},
+    {"source_jx_id": 93, "stage": "cast", "status": "ASSET_INCOMPLETE"},
+    {"source_jx_id": 159, "stage": "cast_and_impact", "status": "ASSET_INCOMPLETE"}
+  ]
+}

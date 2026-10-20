@@ -77,6 +77,19 @@ func begin(
         )
         if not bool(actor.get("ok",false)):
             return actor
+        var pilot_skills: Array = record.get("pilot_skill_loadout",[])
+        if not pilot_skills.is_empty():
+            if not JxPilotSkillsV1.valid_loadout(pilot_skills):
+                return {"ok":false,"reason":"invalid_demo_jx_pilot_loadout"}
+            if not JxPilotSkillsV1.valid_roots(record.get("spiritual_root_values",{})):
+                return {"ok":false,"reason":"invalid_demo_jx_root_values"}
+            # A real encounter may use the existing V2-authored JX pilot
+            # consumers. They retain CombatStatsV2 and V2 hit/status/RNG APIs;
+            # a pilot actor cannot also equip the separate P2 active bar.
+            actor["pilot_skill_loadout"] = pilot_skills.duplicate(true)
+            actor["spiritual_root_values"] = record.get("spiritual_root_values",{}).duplicate(true)
+            actor["skill_loadout"] = []
+            actor["skill_factors"] = {}
         # Battle owns HP until terminal; no live object link may leak mutations.
         actor["disciple"] = null
         actors.append(actor)

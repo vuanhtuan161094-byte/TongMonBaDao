@@ -20,6 +20,9 @@ const JX_HP_STRIP: Texture2D = preload("res://assets/combat_v4/jx1_ui/bar_hp.png
 const FOREST_A: Texture2D = preload("res://art/source_a_env02a/env01_assets/vegetation/570036.png")
 const FOREST_B: Texture2D = preload("res://art/source_a_env02a/env01_assets/vegetation/570041.png")
 const FOREST_C: Texture2D = preload("res://art/source_a_env02a/env01_assets/vegetation/570073.png")
+# Source-backed scenic bridge while the separately documented JX1 map file
+# is absent from this checkout. Never use generated polygons as a fake map.
+const SOURCE_A_FLOOR: Texture2D = preload("res://art/source_a_env02a/env01_assets/terrain/stone_courtyard.png")
 # Private JX1-inspired source supplied by owner from Drive jx-idle-main/img/z.
 # Owner-authorized JX map JPEG is staged from Drive in the isolated TEMP
 # clone; the runtime load path is an import choice, not a rights restriction.
@@ -836,35 +839,9 @@ func _draw_source_a_forest_floor() -> void:
     var top := r.position.y
     var w := r.size.x
     var h := r.size.y
-    draw_rect(r,Color(0.23,0.39,0.27,1.0))
-    # Multi-tone grass/forest bands cover the ENTIRE 864x547 arena rather
-    # than leave an empty dark tactical test rectangle.
-    draw_colored_polygon(PackedVector2Array([
-        Vector2(left,top),Vector2(left+w,top),Vector2(left+w,top+h*0.30),
-        Vector2(left+w*0.65,top+h*0.36),Vector2(left+w*0.21,top+h*0.28),
-        Vector2(left,top+h*0.42)
-    ]),Color(0.13,0.27,0.20,1.0))
-    draw_colored_polygon(PackedVector2Array([
-        Vector2(left,top+h*0.79),Vector2(left+w*0.32,top+h*0.69),
-        Vector2(left+w*0.79,top+h*0.87),Vector2(left+w,top+h*0.72),
-        Vector2(left+w,top+h),Vector2(left,top+h)
-    ]),Color(0.28,0.44,0.29,1.0))
-    # Narrow earthen track through Thanh Trúc Lâm; purely scenic.
-    draw_colored_polygon(PackedVector2Array([
-        Vector2(left,top+h*0.56),Vector2(left+w*0.30,top+h*0.43),
-        Vector2(left+w*0.68,top+h*0.58),Vector2(left+w,top+h*0.47),
-        Vector2(left+w,top+h*0.62),Vector2(left+w*0.68,top+h*0.73),
-        Vector2(left+w*0.30,top+h*0.57),Vector2(left,top+h*0.70)
-    ]),Color(0.48,0.43,0.31,0.74))
-    # Fixed decorative tufts and pebbles; never consume GameRng or TIME.
-    for index in range(35):
-        var unit_x := fposmod(float(index*71+19),991.0)/991.0
-        var unit_y := fposmod(float(index*37+11),593.0)/593.0
-        var at := Vector2(left+unit_x*w,top+unit_y*h)
-        draw_circle(at,1.4 if index%3!=0 else 2.4,
-            Color(0.77,0.81,0.59,0.36) if index%4==0 else Color(0.13,0.26,0.15,0.48))
-        if index%3==0:
-            draw_line(at,at+Vector2(3.0,-6.0),Color(0.52,0.68,0.37,0.46),1.0)
+    # A real imported Source A texture is used as a temporary scenic bridge.
+    # It is not presented as JX1 art and has no collision or gameplay role.
+    draw_texture_rect(SOURCE_A_FLOOR,r,true,Color(0.74,0.86,0.77,0.76))
     # Sparse, original Source A sprite sheets at the margins. No edge props
     # at the combat center; battlefield actors always paint over these.
     var source_trees := [FOREST_A,FOREST_B,FOREST_C]

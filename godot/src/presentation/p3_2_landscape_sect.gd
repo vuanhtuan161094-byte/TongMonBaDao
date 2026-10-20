@@ -139,6 +139,8 @@ func _ready() -> void:
     _refresh_map_worksite_cues()
     living_cue_tracker.seed_from_state(state)
     _refresh_living_cues()
+    if bool(ProjectSettings.get_setting("demo/quick_hunt",false)):
+        call_deferred("_open_real_hunting")
 
 # Only the 2.5D world goes in a real Camera2D canvas; legacy controls/HUD
 # remain outside it. All actual jobs, buildings and stocks are untouched.

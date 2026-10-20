@@ -51,6 +51,20 @@ func open_session(runtime: LiveGameRuntimeV2) -> void:
     if state != null:
         _rebuild_roster()
         _restore_first_session()
+        var quick_demo := bool(ProjectSettings.get_setting("demo/quick_hunt",false))
+        if quick_demo:
+            ProjectSettings.set_setting("demo/quick_hunt",false)
+        if session == null and quick_demo:
+            selected_level = 5
+            level_choice.select(4)
+            var demo_ids: Array = ProjectSettings.get_setting("demo/hunter_ids",[])
+            for raw_id in demo_ids:
+                var demo_id := str(raw_id)
+                var member: DiscipleState = state.disciples.get(StringName(demo_id),null)
+                if member != null and _eligible(member):
+                    _select_disciple(true,demo_id)
+            if chosen.size() == 6:
+                call_deferred("_launch")
     else:
         _status("Không có dữ liệu game hợp lệ.")
 
@@ -70,6 +84,15 @@ func _build() -> void:
     header.add_theme_font_size_override("font_size",22)
     header.add_theme_color_override("font_color",Color(0.16,0.24,0.20,1.0))
     add_child(header)
+
+    var source_status := Label.new()
+    source_status.name = "DemoAssetStatus"
+    source_status.position = Vector2(392,17)
+    source_status.size = Vector2(690,28)
+    source_status.text = "JX1 VFX đã xác minh · bản đồ JX1: ASSET_INCOMPLETE"
+    source_status.add_theme_font_size_override("font_size",12)
+    source_status.add_theme_color_override("font_color",Color(0.48,0.22,0.12,1.0))
+    add_child(source_status)
 
     var close := Button.new()
     close.text = "Đóng / Lưu"
@@ -450,6 +473,21 @@ func _launch() -> void:
             "role":_role_for(i),
             "position":Vector2(4.0+float(i%6)*0.85,3.0+float(i/6)*2.4)
         }
+        var demo_jx_loadouts: Dictionary = ProjectSettings.get_setting("demo/jx_loadouts",{})
+        var pilot_skills: Array = demo_jx_loadouts.get(id,[])
+        if not pilot_skills.is_empty():
+            row["pilot_skill_loadout"] = pilot_skills.duplicate(true)
+            row["spiritual_root_values"] = DemoSandboxFactoryV1.pilot_root_values(member)
+        if not pilot_skills.is_empty():
+            # Keep verified JX pilot users in range at encounter start. Other
+            # max V2 hunters enter from their normal formation, leaving time
+            # for the real cast/flight/impact events to render first.
+            if pilot_skills.has("jx_wudang_158"):
+                row["position"] = Vector2(22.0,13.0)
+            elif pilot_skills.has("jx_wudu_63"):
+                row["position"] = Vector2(21.0,8.0)
+            else:
+                row["position"] = Vector2(17.0,8.3)
         # Real V2 rank is read by HuntingPveRunV2 from the disciple's
         # canonical persistent progression. No fake stats in the live flow.
         roster.append(row)
