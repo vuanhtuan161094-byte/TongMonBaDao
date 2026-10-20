@@ -49,6 +49,11 @@ var _status_feedback: Dictionary = {} # only actual event feedback, not status a
 var enable_spectator_framing: bool = false
 var _camera_center := GRID_SIZE*0.5
 var _camera_zoom: float = 1.0
+# Camera is presentation-only. Default FREE overview stays where the player
+# panned. Following a single actor requires an explicit click/tap.
+var _camera_follow_id: String = ""
+var _camera_free: bool = true
+
 # The battle pilot can opt for JX1-like original-size overview without
 # changing world positions or the generic zoomable spectator test view.
 var spectator_zoom_ceiling: float = 2.10
@@ -356,12 +361,18 @@ func attach_session(session: MapBattleV2) -> void:
     _combat_text.clear()
     _camera_center = GRID_SIZE*0.5
     _camera_zoom = 1.0
+    _camera_follow_id = ""
+    _camera_free = true
     if session != null:
         for id in session.actors:
             _positions[str(id)] = session.actors[id]["position"]
             _view_prev[str(id)] = session.actors[id]["position"]
             _view_next[str(id)] = session.actors[id]["position"]
             _facing[str(id)] = Vector2.RIGHT if str(session.actors[id].get("side","")) == "disciple" else Vector2.LEFT
+        # Begin at the actual battle encounter centroid, but do not
+        # re-center on every movement / AI tick. A player drag persists.
+        var goal: Dictionary = spectator_camera_goal()
+        _camera_center = goal["center"]
     queue_redraw()
 
 func refresh_from_authority() -> void:
@@ -424,8 +435,46 @@ func spectator_camera_goal() -> Dictionary:
 func _update_spectator_camera(delta: float) -> void:
     var goal: Dictionary = spectator_camera_goal()
     var blend := clampf(1.0-exp(-2.8*maxf(delta,0.0)),0.0,1.0)
-    _camera_center = _camera_center.lerp(goal["center"],blend)
+    if not _camera_follow_id.is_empty() and battle != null and battle.actors.has(_camera_follow_id):
+        var target: Dictionary = battle.actors[_camera_follow_id]
+        _camera_center = _camera_center.lerp(
+            visual_position(_camera_follow_id,target["position"]),blend)
+    # No default actor tracking. Camera remains freely panned otherwise.
     _camera_zoom = lerpf(_camera_zoom,float(goal["zoom"]),blend)
+
+# Explicit focus can be toggled by clicking the same actor. Pan cancels focus.
+func select_camera_actor(actor_id: String) -> bool:
+    if battle == null or not battle.actors.has(actor_id):
+        return false
+    if _camera_follow_id == actor_id:
+        _camera_follow_id = ""
+        _camera_free = true
+        return true
+    _camera_follow_id = actor_id
+    _camera_free = false
+    return true
+
+func clear_camera_follow() -> void:
+    _camera_follow_id = ""
+    _camera_free = true
+
+func pan_camera_pixels(screen_delta: Vector2) -> void:
+    if stage_rect.size.x <= 0.0 or stage_rect.size.y <= 0.0:
+        return
+    clear_camera_follow()
+    var zoom := maxf(spectator_zoom(),0.01)
+    var logical_delta := Vector2(
+        screen_delta.x * GRID_SIZE.x / stage_rect.size.x,
+        screen_delta.y * GRID_SIZE.y / stage_rect.size.y
+    ) / zoom
+    # A finite world clamp prevents dragging forever outside the encounter,
+    # but the viewport is NOT pinned to any disciple.
+    _camera_center = (_camera_center - logical_delta).clamp(
+        Vector2.ZERO,GRID_SIZE)
+    queue_redraw()
+
+func current_camera_follow_id() -> String:
+    return _camera_follow_id
 
 func spectator_zoom() -> float:
     return _camera_zoom if enable_spectator_framing and enable_source_vl_art else 1.0
