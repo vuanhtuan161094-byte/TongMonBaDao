@@ -128,6 +128,28 @@ func _run() -> void:
             "live UI start awarded phantom resources or failed to reserve real disciple"):
         return
 
+    # Camera mode is purely visual: free pan by default, follow only after
+    # selecting one real actor, then drag returns to free mode. No V2 change.
+    var owner_actors: Dictionary = panel.session.battle.actors.duplicate(true)
+    var owner_rng: int = panel.session.battle.rng.snapshot_seed_state()
+    var camera := panel.battle_layer
+    var camera_initial: Vector2 = camera._camera_center
+    camera.pan_camera_pixels(Vector2(110.0,25.0))
+    if not _check(camera._camera_center.distance_to(camera_initial)>0.1 and
+            camera.current_camera_follow_id().is_empty(),
+            "dragging 192x192 player view did not move free combat camera"):
+        return
+    if not _check(camera.select_camera_actor(str(new_disciple.id)) and
+            camera.current_camera_follow_id() == str(new_disciple.id),
+            "explicit tap did not enable selected-actor follow"):
+        return
+    camera.pan_camera_pixels(Vector2(-44.0,17.0))
+    if not _check(camera.current_camera_follow_id().is_empty() and
+            panel.session.battle.actors == owner_actors and
+            panel.session.battle.rng.snapshot_seed_state() == owner_rng,
+            "free camera drag changed battle authority or kept follow lock"):
+        return
+
     # Close checkpoints while still fighting; never generates a win/loot.
     panel.call("_close")
     sect.queue_free()
