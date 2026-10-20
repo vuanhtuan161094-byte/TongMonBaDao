@@ -1,0 +1,55 @@
+# TÔNG MÔN BÁ ĐẠO — MASTER AUDIT / NEXT CHAT (20/10/2026)
+
+**Status:** READ-ONLY AUDIT + TRANSFER CHECKPOINT. No gameplay or asset converter code changed by this audit. A separate detailed 41 KB Markdown handoff named `TONG_MON_BA_DAO_TONG_KIEM_TOAN_CHUYEN_CHAT_2026-10-20.md` was produced for the owner; this repository note is the independent, GitHub-readable minimum continuation.
+
+## Source authority / resolved owner decisions
+
+Owner has already confirmed the right to use supplied **JX1/VLTK1** and **Source A**. Never ask again or present their supplied assets as unlicensed. Separate *technical file availability and source-version attribution* from permission. Newest owner decision supersedes the visual-only parts of `TONG_MON_BA_DAO_UNIFIED_ASSET_FORGE_BLUEPRINT_2026-10-20.md`: **Source A → sect/G1/MAP25; JX1 → entire combat mechanic, maps, monsters, skill/VFX, animation and sounds**. That blueprint remains valid as a proposed **Asset Forge pipeline**, not as a gameplay veto. Distinguish original JX1 PC source/data from fan-made `Võ Lâm Idle` JS and Unity `jx1m` ports: all are independently attributable evidence, not identical engines.
+
+Godot 4.7.2 Android landscape 1280×720. Locked: two independent **30 realms × 10 floors** (Tu Vi + Luyện Thể), 6/team and max 30 members/cluster, Injury 0/1 with 120 simulation-minute ticks recovery, One Active Job, one canonical Warehouse/scheduler/save/offline, 1 worker per Mine/Forest/Field. Production `ProductionPlanRegistry`: Thanh Thiết 10,000/60m; Linh Mộc 8,000/60m; Linh Cốc 2,500/60m; Thanh Linh Thảo 2,000/90m; Tử Vân Thảo 1,000/180m; Huyền Thiết 10/120m discrete. Common yield ×10,000 Lv100, facility speed +0.5%/level pilot. Building limit preview 30 Mine/30 Forest/40 Field; **Hall/land/new-build/paid placement not implemented as canonical transaction**. Equipment Sect-owned. Map sect 192×192, starter48×48, chunks16×16; player mouse/touch pan. Camera combat free unless an explicit actor follow selection.
+
+## HEAD / evidence boundaries
+
+- Latest audit base: `c4-jx1-camera-world-source-audit-20261020`, last previously checked `7a1d928baf3d67f597dfdcad1877ede2c041e2a7` (this documentation commit will advance it). Base integration `integration/g1-map25-c4-real-hunt-20261019` HEAD `073e2d99c704c3e93009029218699a9bcc1ae799`; G1 PR #20 `2219535fc3519ce811265ceed5cb85001efe5e45`; main `461caca1171462e0da092f21108c5c1733157ad9` **not equivalent to new build**. There are **19 open draft PRs** in stacked families. Never merge chains based only on branch name.
+- Current tree 679 files: 94 simulation scripts, 48 presentation scripts, 27 scenes; **131 authored tests = 80 sim + 51 presentation**, NOT 131 PASS; 32 Source A ENV02A PNG and 39 files `godot/assets`.
+- Owner `C4_G1_INTEGRATED_QA_LOGS.zip`, `770f8f3`: **13/17 focused PASS, 4 fail**.
+- Owner `C4_G1_UX_FIX_QA_LOGS.zip`, `0fb2b82`: **5/6 targeted PASS**, 1 Injury test T15 fixture/direct-command failure; later test fixture changed, exact updated SHA pending verification.
+- Owner `C4_G1_FOREST_CAMERA_QA_LOGS.zip`, `073e2d9`: **PLAY ONLY; 0/6 focused executed**, clone 7.6s, import 38.12s, game open 244.51s (play duration, NOT startup time). Owner video ~33s and ~43s: combat visuals/camera NOT ACCEPTED.
+- At audit base `7a1d928`, new JX camera/map/owner full-zone JPEG path code and tests have been written; **no official Windows/Android runtime PASS on new SHA**. Android touch/FPS, owner visual, sustained 1k–3k and fault recovery PENDING. Master QA Q01–Q17 are **4 automated groups + 6 manual/device groups + 7 design/backlog groups**, not 17 failing tests.
+
+## Critical game incompleteness
+
+1. **Combat authority isn't JX1 yet.** `MapBattleV2` authoritative `ARENA=36×20`, 90-second cap, STEP=0.25 seconds, AoE targets cap 3; 30 disciples/40 monsters extreme fixture. New image/camera is visual; JX1 full roaming map, pathfinding, aggro, skill timing/missile, target/hit/evade/5-elements, AI, map respawn/drop/save need versioned authority design and real port. Five JX pilot IDs 15/158/159/63/93; ordinary P2 learned skills: only two damage consumers operational, seven non-damage deferred; learned JX skill/unlock/AI 16-skill pilot full integration NOT complete.
+2. **Map**: owner Drive `Võ Lâm Idle` has 17 JPEG backgrounds; zone `2.jpg` 3584×3584 SHA `cf1bc9d64d3399c7130a535dd4d1e6da83d48fe5c0fdf7aa48aaadd679322e07`. A JPEG is not authentic tile/blocked/walk/collision/spawn data. JX1 original `Skills.txt`/ `Missles.txt`, SPR/PAK, Lua/source ID mapping must be examined; original-version scope matters. Fan JS `combat.js`, `world.js`, `render.js`, `control.js` can inform a port but aren't official JX1 code.
+3. **Asset Forge** 566-line uploaded blueprint is READ-ONLY. Proposed immutable `E:\TongMonBaDao_AssetVault`, per-source adapters, one catalog/manifest, preview/QC, derived cache, publish packs. `tools/asset_forge/forge.py` not present. Reuse existing `tools/assets/`, `tools/fe01b1/`, Source A manifests and C4 atlases; no duplicate converter or big Qt app. Source A batch 10/10 rig/31 clips/1016 frames technical output from separate Windows workspace; not a complete runtime-ready all-assets library. Source A **idle icon sheet** must be indexed before replacing temporary glyph.
+4. **Gameplay/core loop incomplete**: P2 birth traits, spiritual roots, bloodline, physique and six foundations have many specs/partial consumers; permanent Potential growth *source* missing; Sect-owned 10-slot V2 gear/policy and 1k-3k auto allocation are not end-to-end. Canonical build/land/layout migration, economy faucet→sink at Lv100, high-tier resource costs, progression/breakthrough, autonomous work, late-game objectives need evidence/decisions. Live Mine/Forest/Field + recruitment + hunting + Warehouse receipts must be player-verified in same integrated scene.
+5. **UX**: G1/MAP25 not owner visually accepted. White text unreadable, too much idle text (use authentic Source A status glyph), unclear roster checked vs dispatched, JX1 battle background/zoom/camera and 1280×720 panel contrast, Android touch/scale. No synthetic action clips or blank JX maps.
+6. **Conflicting historic docs**: P3.7 Injury 0–100 versus canonical 0/1/120; old 100 Tu Vi/hour versus current 1,000 Tu Vi/minute; Combat Skills V2 design-only versus partial P2/JX pilot code; asset blueprint visual-only versus latest owner full JX1 logic. Mark SUPERSEDED explicitly, don't silently combine.
+
+## 24-decision register by block
+
+**P0 OWNER:** D01 JX1 mechanics port fidelity vs V2 cultivation scale; D02 roaming continuous world vs fixed 90s encounter; D03 team commands versus manual movement; D07 five-element/spiritual roots/accuracy/evasion bridge; D08 one proper complete combat pilot map+actor+monster+boss+3 VFX instead of bulk import (recommended).
+
+**P0 ENGINEERING (do NOT ask owner):** D04 distinguish real JX1 source versions / community JS and match IDs; D05 map binary tile/props/collision inventory; D06 exact-SHA Windows focused for GUI pan/free camera/real hunter/save; D09 stable disciple ID → combat visual/realm mapping.
+
+**P1 OWNER:** D10 accept G1 layout/icons/readability; D11 skill learning/equip/3-wave mastery; D12 Injury/defeat when adopting JX; D13 Lv100 yield ×10,000 economics; D14 canonical Hall/build/move/land costs; D15 permanent six-stat growth sources; D16 autonomous disciple policies; D19 3 regions×5 difficulties vs JX region grades.
+
+**P1 ENGINEERING:** D17 find original Source A idle/work icons; D18 JX real cast/fly/hit/AoE VFX atlas IDs, timing and performance; D20 cold/warm boot and combat/scheduler FPS measuring.
+
+**P2:** D21 endgame PvE/sect rivalry etc owner roadmap; D22 authority snapshot/RNG/offline deterministic migration engineering; D23 audio/VFX performance presets owner; D24 which inspiration-only game systems the owner truly wants.
+
+Never ask again: Source A/JX1 rights, 30×10, one job/warehouse, Injury 0/1/120, basic resource numbers, 1 worker per producer, game engine/orientation, large map/free camera and JX1-as-combat-target. Unknowns in engineering must be verified from source, not sent back as twenty owner questions.
+
+## Next steps in priority order
+
+1. Audit/normalize actual JX data `Skills.txt/Missles.txt/Lua/SPR/PAK/MAP`, owner Drive and source forge blueprint; separate files actually decodable from links only. Build **skill ID → missile → cast/move/hit/AoE → sprite/VFX stage → runtime consumer** matrix.
+2. Minimal exact-SHA focused QA for G1 mouse pan, C4 free view/selected follow, real V2 recruit→hunt and no loot duplication; just the red cases and map importer. Windows + owner screenshot, Android deferred.
+3. Forge AF-00/01 inventory/hash/catalog/search/preview of actual Source A icons and owner JX1 map/actor/VFX, reuse existing converters; no mass import.
+4. Define and implement staged JX1 gameplay authority, with P0 owner decisions **only if code is actually blocked**. One playable real JX world slice first. Preserve SaveService, simulation economy, existing V2 cultivation, persistent gear ownership via versioned adapter/migration.
+5. G1 core-loop and resource-sink/land/crafting endgame follow-on; 30v40 + 1k-3k performance and physical Android acceptance only after integrated slice.
+
+**No CI/FULL/merge/main edits by this audit.** Keep real log+SHA, read-only vs code vs owner UX statuses separate.
+
+## Copy-ready next chat brief
+
+**TÔNG MÔN BÁ ĐẠO — TIẾP QUẢN MASTER AUDIT, JX1 SOURCE-FIRST COMBAT & UNIFIED ASSET FORGE.** Read `AGENTS.md`, `docs/GAME_SYSTEM_ARCHITECTURE.md`, checkpoints and this handoff on live `c4-jx1-camera-world-source-audit-20261020` HEAD. Owner authorized JX1/Source A use; NEVER ask again. JX1 is full combat mechanic and art target, Source A is G1 sect presentation. Audit all core systems against source/canonical 30×10/One Active Job/one Warehouse/192×192 and current code; mark 24 decision IDs ALREADY LOCKED / OWNER DECISION / TECHNICAL VERIFICATION / RUNTIME QA, prioritize D01–D03/D07. Verify true JX1 Skills/Missles/Lua/PAK/map/FX vs community JS and Blueprint 20/10; show real gaps, not guesses. Next produce one-map JX1 combat vertical slice authority/asset/VFX plan, exact tests and dev-owner decisions. No new game balance, no invented art, no Full/CI/merge, no Windows requests for read-only GitHub/Drive research; don't claim code works without official 4.7.2 runtime. Update Markdown checkout checkpoint after verified work.
