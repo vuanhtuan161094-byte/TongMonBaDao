@@ -47,3 +47,18 @@ Required final statuses: **exact-SHA focused**, **Windows manual appearance**, *
 ## Rollback
 
 Leave PR #20 unchanged. If integrated UI fails, verify G1 baseline `2219535fc3519ce811265ceed5cb85001efe5e45` in isolated clone. If isolated C4 fails, verify BE01 baseline `1f08938da9ebf5386d0fbceb8e5ae8e2fb0f6969` or its later roster correction on its separate branch. Neither baseline alters live local save/production `main`.
+
+## 2026-10-20 — User QA 13/17, UI/UX objections and focused remediation
+
+User-uploaded `C4_G1_INTEGRATED_QA_LOGS.zip` was read directly (68 files; exact SHA `770f8f3c8fb768931bff16bb69006500f75c9165`, official Windows Godot 4.7.2, Intel Iris Plus). **13/17 focused PASS**, `import_ok=True`, `scene_smoke_ok=True`, `gui_opened=True`, `exit_code=1` due four real failures:
+- `03_g1_workforce`: `gui_workforce_v1_e2e_test.gd:214`, real Mine batch credited Warehouse but notification was consumed when a diagnostic read `_map_worksite_deliveries` before map refresh. Changed presentation-only one-shot queue, preserving canonical Warehouse exactly-once.
+- `13_c4_max_30v40`: parse error at line 30 `role` inferred from Variant Array. Added typed String conversion; **rest of stress test remains unrun**, not PASS.
+- `15_c4_world_real_v2`: authentic V2 recruit successfully generated, admitted and qualified, but `_select_disciple` did not update disabled launch button; also spotted an independent first-run `v2_pve_enabled` preflight cycle: `HuntingMapV2.choose_level()` authoritatively enables that flag after selecting a legal difficulty, not before. Corrected button and first-hunt gate; expanded smoke assertion for selection vs confirmed deployment. **Real UI launch still needs Windows replay**.
+- `17_gp02c1_injury`: most tests pass, but `T15_PLANT` failed at a real Spirit Field timed-occupation case. No gameplay cheat/relaxed assertion. Expanded reason diagnostics in focused test; **remains open**, rerun for specific `perform_work` result before patching scheduler/Field. Previous intentional malformed-save `legacy_participant_occupation_conflict` logs are expected negative guards and separate from T15 fail.
+
+Owner UI feedback from G1 real scene: too many idle action labels, text white on light parchment in multiple screens, unclear whether checking roster actually deploys fighters, video upload ~30MB slow/fails. Implemented minimal on-map **◇** glyph when idle (tooltip `Nhàn rỗi`), still preserve active work status and exact-ID progress UI; scoped inherited dark font colors for cream legacy modal / G1 operations / workforce picker / disciple summary; and `CHƯA XUẤT CHIẾN` → `PHÁI ĐỘI ĐI SĂN (N)` → `ĐÃ PHÁI ĐỘI — ĐANG CHIẾN ĐẤU` → terminal outcome / reward. The ◇ is **NOT falsely claimed as an original Source A icon**; original Source A icon-sheet not verified in imported project/source directory. Asset-level match pending provenance inspection of owner Source A icon binaries (do not fabricate art).
+
+Performance: user describes uploading video/ZIP as very slow, not an objective measurement of in-game FPS. Fresh TEMP Git clone + Godot 4.7.2 reimport of verified asset sheets can also take time; current logs do not quantify UI launch/render FPS. Do not confuse upload latency and game FPS. Ask for compressed H.264 short clip or owner Drive link/screenshots. No video is present in submitted QA archive.
+
+**Current integrated branch code changed, fresh Godot 4.7.2 results PENDING**. Rerun only 4 red focused + G1 scene/source + one GUI review; do not claim 17/17 or ask owner to repeat unrelated green tests. Full/CI/merge Android and owner UX still PENDING.
+
