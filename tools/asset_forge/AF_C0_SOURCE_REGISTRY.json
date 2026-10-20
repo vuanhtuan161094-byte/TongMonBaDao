@@ -1,0 +1,95 @@
+{
+  "schema_version": "af-c0-source-registry-v0.1",
+  "last_reviewed": "2026-10-20",
+  "purpose": "Source and rights registry for the read-only proof-of-concept. Registry entries are not evidence that a local binary exists.",
+  "sources": [
+    {
+      "source_id": "JX1_OWNER",
+      "family": "jx1_mmo",
+      "origin": "owner_provided",
+      "revision": "LOCAL_BINARY_SHA_PENDING",
+      "rights_status": "OWNER_AUTHORIZED",
+      "rights_evidence": "AGENTS.md owner asset authorization 2026-10-20",
+      "binary_inventory_status": "PENDING_LOCAL_INSPECTION",
+      "primary_role": "combat_and_player_proof"
+    },
+    {
+      "source_id": "SOURCE_A",
+      "family": "source_a_spine",
+      "origin": "owner_provided",
+      "revision": "PER_FILE_HASH_MANIFEST_REQUIRED",
+      "rights_status": "OWNER_AUTHORIZED",
+      "rights_evidence": "AGENTS.md; P3_SOURCE_A_ANIMATION_ASSET_UI_UX_HANDOFF_2026-10-17.md",
+      "binary_inventory_status": "PARTIAL_REPO_AND_LOCAL_EVIDENCE",
+      "primary_role": "sect_and_character_visuals"
+    },
+    {
+      "source_id": "JXQY2_OFFLINE",
+      "family": "jxqy2_offline_not_jx1_mmo",
+      "origin": "public_reference",
+      "url": "https://github.com/Upwinded/jxqy2-assets",
+      "revision": "8ffc1ecd1b50742ac619bf74684f70b9850c2af3",
+      "rights_status": "DISTRIBUTION_REVIEW_REQUIRED",
+      "rights_evidence": "M2_JXQY2_LOCAL_SLICE_QA_2026-10-20.md",
+      "binary_inventory_status": "44_ASSETS_QA_EVIDENCED_IN_OWNER_WINDOWS_CACHE",
+      "primary_role": "playable_and_skill_pipeline_probe"
+    },
+    {
+      "source_id": "JX1M_UNITY",
+      "family": "jx1m_community_unity",
+      "origin": "public_reference",
+      "url": "https://github.com/tuanminhnc/jx1m",
+      "revision": "12e7f85e26fba288aef911b0996198ab71183c04",
+      "rights_status": "REVIEW_REQUIRED",
+      "binary_inventory_status": "GITHUB_TREE_ONLY",
+      "primary_role": "png_and_tpsheet_probe"
+    },
+    {
+      "source_id": "JX1_LINUX_REF",
+      "family": "jx1_mmo_source_reference",
+      "origin": "public_reference",
+      "url": "https://github.com/phucnb/JXLinux-8.1.11",
+      "revision": "PIN_LOCAL_CHECKOUT_BEFORE_IMPORT",
+      "rights_status": "REVIEW_REQUIRED",
+      "binary_inventory_status": "CODE_SETTINGS_PROVEN_PAK_DECODE_NOT_PROVEN",
+      "primary_role": "jx1_skill_equipment_player_lookup"
+    },
+    {
+      "source_id": "JXQY_EDITOR",
+      "family": "jxqy2_offline_tool_code",
+      "origin": "public_tool_source",
+      "url": "https://github.com/Upwinded/JXQY-all-in-one",
+      "revision": "6ff516bc1439e2b622a2e0ee4e1433cd98f8ec61",
+      "code_license": "GPL-3.0",
+      "rights_status": "CODE_REUSE_REQUIRES_LICENSE_COMPLIANCE",
+      "binary_inventory_status": "SOURCE_FILE_INSPECTED",
+      "primary_role": "map_magic_editor_reference"
+    },
+    {
+      "source_id": "JX_ARTWIZ",
+      "family": "jx1_spr_pak_tool_code",
+      "origin": "public_tool_source",
+      "url": "https://github.com/TrdHuy/ArtWiz",
+      "revision": "f4c42f5b13b7de56c6aa90d4727589e462a0001c",
+      "rights_status": "CODE_LICENSE_REVIEW_REQUIRED",
+      "binary_inventory_status": "SOURCE_TREE_AND_README_INSPECTED",
+      "primary_role": "spr_pak_research"
+    },
+    {
+      "source_id": "JX1_SOURCEINIT_CXX_REF",
+      "family": "jx1_mmo_cpp_reference",
+      "origin": "public_code_reference",
+      "url": "https://github.com/kiendaotac/SourceInit-JX1",
+      "revision": "b2e251a93f862571221b17cc1e92ceb121fc3069",
+      "rights_status": "CODE_LICENSE_REVIEW_REQUIRED_DO_NOT_COPY_INTO_GODOT",
+      "binary_inventory_status": "CPP_CLASSES_DIRECTLY_INSPECTED_TABLES_AND_ART_PENDING",
+      "primary_role": "verify_player_equipment_render_layer_and_action_bindings",
+      "verified_cpp_paths": [
+        "SwordOnline/Sources/Core/Src/KNpcRes.cpp",
+        "SwordOnline/Sources/Core/Src/KNpcResNode.cpp",
+        "SwordOnline/Sources/Core/Src/KNpcResNode.h",
+        "SwordOnline/Sources/Core/Src/KNpc.cpp"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "schema_version": "af-c1-jx1-equip-code-proof-v1",
+  "checked_at": "2026-10-20",
+  "origin": "https://github.com/kiendaotac/SourceInit-JX1",
+  "source_revision": "b2e251a93f862571221b17cc1e92ceb121fc3069",
+  "evidence_type": "SOURCE_CPP_DIRECT_INSPECTION",
+  "render_implementation": "MODULAR_SPRITE_MAX_4_GROUPS_X_4_PARTS_IN_THIS_CODEBASE",
+  "code_evidence": [
+    {
+      "path": "SwordOnline/Sources/Core/Src/KNpcResNode.h",
+      "lines": "16-25",
+      "supports": "NPC_RES_SPECIAL for male/female composite actor distinct from NPC_RES_NORMAL, MAX_BODY_PART 4, MAX_BODY_PART_SECT 4"
+    },
+    {
+      "path": "SwordOnline/Sources/Core/Src/KNpcResNode.cpp",
+      "lines": "58-176",
+      "supports": "special actor part table and equip/action-to-sprite data file lookup"
+    },
+    {
+      "path": "SwordOnline/Sources/Core/Src/KNpcRes.cpp",
+      "lines": "468-608",
+      "supports": "SetHelm, SetArmor, SetWeapon update sprite resources; changing weapon selects action by GetActNo; horse group also refreshed"
+    },
+    {
+      "path": "SwordOnline/Sources/Core/Src/KNpcRes.cpp",
+      "lines": "274-350",
+      "supports": "GetSort per action/direction/frame; render composite part sprites"
+    },
+    {
+      "path": "SwordOnline/Sources/Core/Src/KNpc.cpp",
+      "lines": "415-446 and 3168-3181",
+      "supports": "actor calls SetArmor/Helm/Weapon in client path; player branch appears in nearby same method"
+    }
+  ],
+  "asset_tables_verified": false,
+  "binary_spr_verified": false,
+  "equip_item_id_to_visual_variant_id_verified": false,
+  "notes": [
+    "Source code is a public tree variant; exact original JX1 client version equivalence is not proven.",
+    "A C++ code path alone is not proof a corresponding actual player SPR/PAK binary or equipment variant exists in owner inventory.",
+    "Do not copy license-unknown C++ source into Godot; port only verified architecture/metadata with owner permission."
+  ]
+}

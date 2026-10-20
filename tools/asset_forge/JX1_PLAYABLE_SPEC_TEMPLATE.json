@@ -1,0 +1,26 @@
+{
+  "schema": "tmb_jx1_playable_modular_v1",
+  "id": "REPLACE_WITH_EXACT_JX1_PLAYER_RESOURCE_ID",
+  "kind": "JX1_PLAYABLE",
+  "playable_proof": {
+    "resource_mode": "NPC_RES_SPECIAL",
+    "player_resource_record": "REPLACE_WITH_PROVEN_PLAYER_CLASS_AND_ROW",
+    "part_table_record": "REPLACE_WITH_PROVEN_KIND_PART_SECT_TABLE_ROW"
+  },
+  "poses": [
+    {
+      "name": "stand_dir0_frame0",
+      "layers": [
+        {
+          "part": "body",
+          "variant": "default",
+          "spr": "REPLACE_WITH_SPR_RELATIVE_TO_01_raw/JX1_OWNER",
+          "frame": 0,
+          "z": 0,
+          "anchor": [0,0],
+          "sha256": "REPLACE_WITH_SHA256_FROM_CATALOG"
+        }
+      ]
+    }
+  ]
+}

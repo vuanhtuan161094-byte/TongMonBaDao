@@ -1,0 +1,9 @@
+AssetVault/
+__pycache__/
+*.pyc
+*.sqlite3
+*.png
+*.pak
+*.spr
+*.mpc
+*.map
