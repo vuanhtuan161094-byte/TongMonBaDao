@@ -156,12 +156,19 @@ def _frame_spr(payload: bytes,real_length:int,method:int)->bytes:
     return bytes(out)
 
 
-def read_pak_entry(path: Path,uid:int)->bytes:
-    if not isinstance(uid,int) or not 0<=uid<=0xffffffff:raise ValueError('PACK ID invalid')
-    entries=[v for v in pak_index(path)['entries'] if v['id']==uid]
-    if len(entries)!=1:raise ValueError('PACK ID missing/duplicate')
-    e=entries[0]
+def read_pak_entry_record(path:Path,e:dict)->bytes:
+    """Read one previously verified indexed record; avoids reindexing large PACK per layer."""
+    if not isinstance(e,dict) or type(e.get('id')) is not int:
+        raise ValueError('PACK indexed record required')
+    index_fields=('offset','stored_length','real_length','method','id')
+    if any(type(e.get(field)) is not int for field in index_fields):
+        raise ValueError('PACK record fields invalid')
+    if e['real_length']<=0 or e['real_length']>MAX_ENTRY or e['stored_length']<=0 or e['stored_length']>MAX_PACKED:
+        raise ValueError('PACK record size unsafe')
     with Path(path).open('rb') as stream:
+        stream.seek(0,2); fsize=stream.tell()
+        if e['offset']<PACK_HEADER.size or e['offset']+e['stored_length']>fsize:
+            raise ValueError('PACK record bounds invalid')
         stream.seek(e['offset'])
         payload=stream.read(e['stored_length'])
     if len(payload)!=e['stored_length']:raise ValueError('PACK truncated payload')
@@ -169,6 +176,13 @@ def read_pak_entry(path: Path,uid:int)->bytes:
         if e['method'] & ~0x1f:raise ValueError('PACK unknown framed flags')
         return _frame_spr(payload,e['real_length'],e['method'])
     return _decompress_data(payload,e['method'],e['real_length'])
+
+
+def read_pak_entry(path: Path,uid:int)->bytes:
+    if not isinstance(uid,int) or not 0<=uid<=0xffffffff:raise ValueError('PACK ID invalid')
+    entries=[v for v in pak_index(path)['entries'] if v['id']==uid]
+    if len(entries)!=1:raise ValueError('PACK ID missing/duplicate')
+    return read_pak_entry_record(path,entries[0])
 
 
 def jx1_path_hash(name:str)->int:

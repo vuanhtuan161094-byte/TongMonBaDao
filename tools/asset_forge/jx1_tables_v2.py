@@ -118,7 +118,9 @@ def player_table_catalog(kind_file:Path,character:str,table_root:Path,asset_root
                                 if source_path.is_file():
                                     obj['source_asset_sha256']=hashlib.sha256(source_path.read_bytes()).hexdigest()
                             actions[action]=obj
-                        if actions:element['variants'].append({'equip_variant_row':num,'actions':actions})
+                        if actions:element['variants'].append({'equip_variant_row':num,
+                                                             'source_variant_name':variants[0] if variants else '',
+                                                             'actions':actions})
             cells.append(element)
         groups.extend(cells)
     result['groups']=groups

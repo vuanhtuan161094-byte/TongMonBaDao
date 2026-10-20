@@ -11,6 +11,7 @@ from studio import init_vault,stage_files,safe_file,probe_map,map_patch,skill_gr
 from forge import cmd_inventory,cmd_sheet
 from jx1_adapter import validate_playable, playable_sheet, pak_index, read_raw_pak_entry, Spr
 from jx1_tables_v2 import player_table_catalog, link_catalog_to_pack
+from jx1_player_pipeline_v4 import catalog_equipment_variants, catalog_selected_player, render_player_sheet
 
 PAGE = r'''<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>TMB Asset Forge Studio V2</title>
 <meta name="viewport" content="width=device-width,initial-scale=1"><style>
@@ -70,6 +71,15 @@ img.preview{max-width:100%;max-height:750px;border:1px solid #556;object-fit:con
 <button onclick="checkJx1()">Kiểm SPR và chứng cứ playable</button>
 <button onclick="sheetJx1()">Xuất contact sheet JX1 (PNG)</button>
 <pre id="jx1meta">Chưa kiểm</pre><img id="jx1img" class="preview hidden" alt="JX1 playable compositing preview">
+<hr><h3>AF-04: tự dò trang phục &amp; contact sheet 8 hướng trực tiếp từ source JX1</h3>
+<p class="note">Không cần stage PAK khổng lồ. Dùng đúng thư mục nguồn JX1 có settings/npcres/人物类型.txt; chọn tối đa 6 PAK thật. Chỉ hai nhân vật chính được xác nhận: 男主角 / 女主角. Không import asset vào Godot.</p>
+<label>Thư mục JX1 gốc trên máy<input id="af4root" value="E:\JX1" placeholder="E:\JX1"></label>
+<div class="grid"><label>Nhân vật chính<select id="af4char"><option value="男主角">Nam chính — 男主角</option><option value="女主角">Nữ chính — 女主角</option></select></label>
+<label>Action gốc (đúng tên cột)<input id="af4action" value="空手站立1"></label></div>
+<label>Chỉ đường dẫn tới PAK cần thử (mỗi dòng một file, có thể để trống cho SPR rời)<textarea id="af4packs" placeholder="E:\JX1\data\sprite.pak"></textarea></label>
+<label>Chọn biến thể trang bị theo tên bộ phận trong bảng (0-based)<input id="af4choices" value='{"躯体":0,"右手武器":0}'></label>
+<div class="flex"><button onclick="af4Catalog()">Tự lập catalog trang phục</button><button onclick="af4Sheet()">Tự xuất 8 hướng thật</button></div>
+<pre id="af4result">Chưa quét nguồn</pre><img id="af4preview" class="preview hidden" alt="AF-04 JX1 provenance-gated contact sheet">
 </div></section>
 <div class="panel"><h3>Thông báo</h3><pre id="status">Studio chạy nội bộ. Nhập pilot hoặc chọn nguồn để bắt đầu.</pre></div></main>
 <script>
@@ -98,6 +108,9 @@ async function extractJxSpr(){let r=await api('/api/jx1-pak-extract',{pak:$('jxp
 async function scanJxTables(){let r=await api('/api/jx1-tables',{character:$('jxchar').value,kind:$('jxkind').value,pak:$('jxpak').value});$('jxtablemeta').textContent=JSON.stringify(r,null,2);status(r)}
 async function checkJx1(){let r=await api('/api/jx1-check');$('jx1meta').textContent=JSON.stringify(r,null,2);status(r)}
 async function sheetJx1(){let loadout=JSON.parse($('jxloadout').value),r=await api('/api/jx1-sheet',{loadout});$('jx1meta').textContent=JSON.stringify(r,null,2);$('jx1img').src=r.url+'?r='+Date.now();$('jx1img').classList.remove('hidden');status(r)}
+function af4Payload(){return {source_root:$('af4root').value,character:$('af4char').value,action:$('af4action').value,choices:JSON.parse($('af4choices').value),paks:$('af4packs').value.split('\n').map(x=>x.trim()).filter(Boolean)}}
+async function af4Catalog(){let r=await api('/api/jx1-af04-catalog',af4Payload());$('af4result').textContent=JSON.stringify(r,null,2);status(r)}
+async function af4Sheet(){let r=await api('/api/jx1-af04-sheet',af4Payload());$('af4result').textContent=JSON.stringify(r,null,2);$('af4preview').src=r.url+'?r='+Date.now();$('af4preview').classList.remove('hidden');status(r)}
 refresh().catch(()=>{});
 </script></body></html>'''
 
@@ -226,6 +239,43 @@ def serve(vault:Path,port:int=8791):
                     if not dest.exists():
                         with dest.open('x',encoding='utf-8') as o:json.dump(result,o,ensure_ascii=False,indent=2)
                     result['catalog_report']=str(dest)
+                elif route in ('/api/jx1-af04-catalog','/api/jx1-af04-sheet'):
+                    rawroot=str(body.get('source_root','')).strip()
+                    character=str(body.get('character','')).strip()
+                    action=str(body.get('action','')).strip()
+                    choices=body.get('choices',{})
+                    pp=body.get('paks',[])
+                    if not 1<=len(rawroot)<=800 or not isinstance(pp,list) or len(pp)>6 or any(not isinstance(v,str) or len(v)>800 for v in pp):
+                        raise ValueError('source root / PAK selections invalid')
+                    if not isinstance(choices,dict):raise ValueError('equipment choices JSON object required')
+                    root=Path(rawroot).resolve(strict=True)
+                    packs=[Path(v).resolve(strict=True) for v in pp]
+                    if route=='/api/jx1-af04-catalog':
+                        report=catalog_equipment_variants(root,character,action,packs)
+                        key=hashlib.sha256(json.dumps({'root':str(root),'character':character,'action':action,
+                          'packs':list(map(str,packs))},ensure_ascii=False,sort_keys=True).encode()).hexdigest()[:16]
+                        out=base/'02_catalog'/('af04-player-variants-'+key+'.json')
+                        if out.exists():
+                            old=json.loads(out.read_text(encoding='utf-8'))
+                            if old['kind_table_sha256']!=report['kind_table_sha256'] or old['variants_found']!=report['variants_found']:
+                                raise FileExistsError('catalog key already occupied by different input: preserve old revision')
+                        else:
+                            with out.open('x',encoding='utf-8') as f:json.dump(report,f,ensure_ascii=False,indent=2)
+                        result={'catalog_file':str(out),'variants_found':report['variants_found'],'groups':report['groups'],
+                                'status':report['status']}
+                    else:
+                        report=catalog_selected_player(root,character,action,choices,packs)
+                        bits=[report['playable_source_proof']['kind_table_sha256'],report['source_sort_sha256'],
+                              action,json.dumps(choices,ensure_ascii=False,sort_keys=True)]
+                        bits.extend(s['source']['sha256'] for s in report['selected'])
+                        signature=hashlib.sha256('\n'.join(bits).encode('utf-8')).hexdigest()[:20]
+                        dest=base/'04_previews/players'/('af04-'+signature+'.png')
+                        if dest.is_file() and dest.with_suffix('.json').is_file():
+                            result=json.loads(dest.with_suffix('.json').read_text(encoding='utf-8'))
+                            if result.get('png_sha256')!=hash_stream(dest):raise ValueError('preview/provenance conflict')
+                            result['status']='EXISTING_VERIFIED_CONTACT_SHEET__OWNER_VISUAL_PENDING'
+                        else:result=render_player_sheet(report,dest,frame=0,render_dirs=8)
+                        result['url']='/preview/players/'+dest.name
                 elif route=='/api/jx1-sheet':
                     specfile=base/'02_catalog/jx1_playable_spec.json'
                     spec=json.loads(specfile.read_text(encoding='utf-8'))

@@ -57,3 +57,29 @@ py -3 jx1_tables_v2.py --kind-file "E:\JX1\settings\npcres\人物类型.txt" --t
 ```
 
 **Evidence / statuses:** source code `KNpcResNode.cpp`, `XPackFile.cpp`, `ZPackFile.cpp`, `CoreUseNameDef.h` in [`kiendaotac/SourceInit-JX1@b2e251a`](https://github.com/kiendaotac/SourceInit-JX1/tree/b2e251a93f862571221b17cc1e92ceb121fc3069), plus published NRV2B specification in UCL sources. Code logic and synthetic tests verified. **Real owner JX1 PACK/SPR, exact equipment rows, contact sheet and Windows UI acceptance still PENDING USER.** Do not import any asset into Godot/gameplay while pending. This plugin source is separate from extracted game art; review any third-party implementation license before distributing a bundle that includes it.
+
+## AF-04 — Protagonist catalog → selected PACK → SPR → 8-direction contact sheet
+
+**GitHub implementation:** `jx1_player_pipeline_v4.py` plus the Studio **AF-04** controls in the Playable tab. The source audit on 2026-10-20 verified actual `bin/Client/settings/NpcRes/人物类型.txt` rows `男主角` / `女主角`, whose `人物类型=特殊npc` links to male/female `部件说明文件名`, resource path, part-specific Sect tables and `动作贴图顺序表`. The actual male `躯体` table enumerates `MA_BD_001_ST01.spr`, `MA_BD_002_ST01.spr` etc; the male `右手武器` table names sword variants `单手剑1`, `单手剑2` with action-specific filenames. **These references were checked against the published source tables; they do not prove corresponding binary SPRs exist in the owner's installed JX1.**
+
+1. **Catalog without binaries:** read a selected original Kind/Part/Sect chain and emit variant names, original action references, exact virtual paths and hash IDs. Mark loose-file and selected-PACK index matches; no extraction needed. For large PAKs, refer to the original path directly—never copy an entire archive just to scan it.
+2. **Render with source bytes:** choose the exact protagonist (`男主角` or `女主角`), action column (`空手站立1` etc), selected PAK files (0–6) and equipment rows (0-based), e.g. `{"躯体":1,"右手武器":1}`. The adapter joins virtual filename → source JX1 hash ID → selected PAK record (or loose SPR), verifies the archive decoder and SPR header, and reads 8/16 actual sprite directions. Ambiguous pack matches or loose-vs-packed bytes are rejected. Source `动作贴图顺序表` `Dir1..Dir16`, action overrides and matching `LineN` determine per-direction part order. Sprite metadata (`center_x/y`, frame offset) informs rendering; it is **provisional visual positioning until Windows comparison**.
+3. **Provenance:** the PNG and its companion JSON go into the external Vault `04_previews/players/`, include source SHA-256, table hashes, selected parts, action, variant rows, sort order and the exact evidence/status. Browser repeats are idempotent for identical hashes, never overwrite a mismatched output. In Studio use `Tự lập catalog trang phục` then `Tự xuất 8 hướng thật`.
+
+The two source protagonist rows are **allowed because public JX1 source tables explicitly name them**. Other `特殊npc` rows are not silently treated as players. This is not a game actor integration or a claim that a particular owner pack was proven.
+
+Direct Windows commands from `tools\asset_forge` (Python 3.10+; `pip install pillow` only for PNG previews):
+
+```powershell
+# No SPR binary needed; creates a JSON list of source variants.
+py -3 jx1_player_pipeline_v4.py --source-root "E:\JX1" --character "男主角" --action "空手站立1" --catalog-only --out "E:\TongMonBaDao_AssetVault\02_catalog\male_variants.json"
+
+# Requires the actual selected packed SPR resources, never whole-archive import.
+py -3 jx1_player_pipeline_v4.py --source-root "E:\JX1" --character "男主角" --action "空手站立1" --choices '{"躯体":1,"右手武器":1}' --pak "E:\JX1\data\sprite.pak" --directions 8 --out "E:\TongMonBaDao_AssetVault\04_previews\players\male_body2_sword1.png"
+```
+
+The example paths and variant indices require adjustment to the *actual* owner's files/tables, not automatically inferred; the UI provides selectors. The output is a **visualization of sourced sprites**, not Godot-ready equipment logic. No combat/save/skill rules changed.
+
+**Focused QA:** `python -m unittest discover -p 'test_*.py' -v` — **29/29 PASS**, including a 2-variant 8-direction PACK+loose SPR fixture and real localhost HTTP catalog/sheet/idempotence/error tests. These tests use **synthetic binary fixtures** whose *metadata names* were derived from audited JX1 source tables, not the owner's SPR art. **Windows JX1 binary acceptance, correct garment ordering/pixel alignment, 8-direction real contact sheet, Godot 4.7.2/Android QA: PENDING USER.** No CI/FULL/merge.
+
+Source evidence (public `kiendaotac/SourceInit-JX1@b2e251a93f862571221b17cc1e92ceb121fc3069`): `bin/Client/settings/NpcRes/ÈËÎïÀàÐÍ.txt` (`人物类型.txt` content), `ÄÐÖ÷½ÇÇûÌå.txt` (`男主角躯体.txt` content), `ÄÐÖ÷½ÇÓÒÊÖÎäÆ÷.txt` (`男主角右手武器.txt` content), `ÄÐÖ÷½ÇÌùÍ¼Ë³Ðò±í.txt` (sorting INI content), `SwordOnline/Sources/Core/Src/KNpcResNode.cpp` (rows/actions/sort), `SwordOnline/Sources/Engine/Src/XPackFile.cpp` (`PACK`/NRV2B). The mojibake repository **path names** reflect their stored encoding; original table contents were verified as Chinese columns. No original/source art binaries redistributed.
