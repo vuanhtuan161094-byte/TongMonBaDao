@@ -128,6 +128,15 @@ func _run() -> void:
             "live UI start awarded phantom resources or failed to reserve real disciple"):
         return
 
+    # When the owner supplied the private full-res zone JPEG, this MUST
+    # be the actual rendered source. Never silently call polygon dressing JX.
+    if FileAccess.file_exists(MapBattleWorldLayerV2.JX_PRIVATE_BACKDROP):
+        var original_zone := panel.battle_layer._jx_private_ground as Texture2D
+        if not _check(original_zone != null and
+                original_zone.get_size().x >= 1024.0,
+                "private JX zone art exists but battle uses fallback polygons"):
+            return
+
     # Camera mode is purely visual: free pan by default, follow only after
     # selecting one real actor, then drag returns to free mode. No V2 change.
     var owner_actors: Dictionary = panel.session.battle.actors.duplicate(true)
