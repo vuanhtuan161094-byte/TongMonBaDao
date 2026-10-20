@@ -16,6 +16,10 @@ const WARNING := Color(0.92,0.28,0.20,0.32)
 const GRID_SIZE := Vector2(36.0,20.0)
 # Owner-supplied Võ Lâm Idle HP strip; keep raw PNG and provenance in repo.
 const JX_HP_STRIP: Texture2D = preload("res://assets/combat_v4/jx1_ui/bar_hp.png")
+# Verified and already imported Source A environment art (not borrowed JX binary).
+const FOREST_A: Texture2D = preload("res://art/source_a_env02a/env01_assets/vegetation/570036.png")
+const FOREST_B: Texture2D = preload("res://art/source_a_env02a/env01_assets/vegetation/570041.png")
+const FOREST_C: Texture2D = preload("res://art/source_a_env02a/env01_assets/vegetation/570073.png")
 
 var battle: MapBattleV2
 var stage_rect := Rect2(Vector2(90.0,50.0),Vector2(1100.0,600.0))
@@ -48,6 +52,11 @@ var _camera_zoom: float = 1.0
 # The battle pilot can opt for JX1-like original-size overview without
 # changing world positions or the generic zoomable spectator test view.
 var spectator_zoom_ceiling: float = 2.10
+# Hunting screen may offer a user-facing visual zoom multiplier; classic C4
+# pilot remains 1.0 so its historical deterministic camera test is unchanged.
+var spectator_zoom_multiplier: float = 1.0
+const MIN_VIEW_ZOOM := 0.70
+const MAX_VIEW_ZOOM := 2.25
 # Cosmetic-only overdraw budget: dropping FX never drops damage/cast events.
 const MAX_VISIBLE_SOURCE_FX := 12
 # GP01 is strictly presentational: the authority emits final damage/crit/heal
@@ -407,7 +416,9 @@ func spectator_camera_goal() -> Dictionary:
     var height_zoom := stage_rect.size.y/maxf(height_pixels+200.0,1.0)
     return {
         "center":(low+high)*0.5,
-        "zoom":clampf(minf(width_zoom,height_zoom),1.0,maxf(1.0,spectator_zoom_ceiling))
+        "zoom":clampf(
+            clampf(minf(width_zoom,height_zoom),1.0,maxf(1.0,spectator_zoom_ceiling))
+            * spectator_zoom_multiplier,MIN_VIEW_ZOOM,MAX_VIEW_ZOOM)
     }
 
 func _update_spectator_camera(delta: float) -> void:
@@ -441,7 +452,7 @@ func logical_from_map(map_position: Vector2) -> Vector2:
             _camera_center.x/GRID_SIZE.x*stage_rect.size.x,
             _camera_center.y/GRID_SIZE.y*stage_rect.size.y
         )
-        raw = camera_origin+(map_position-stage_rect.get_center())/maxf(1.0,_camera_zoom)
+        raw = camera_origin+(map_position-stage_rect.get_center())/maxf(0.01,_camera_zoom)
     var relative := (raw-stage_rect.position)/stage_rect.size
     return Vector2(
         clampf(relative.x*GRID_SIZE.x,0.0,GRID_SIZE.x),
@@ -716,21 +727,68 @@ func source_fx_screen_position(cue: Dictionary) -> Vector2:
     var real_position: Vector2 = battle.actors[actor_id]["position"]
     return point_on_map(visual_position(actor_id,real_position))
 
+# Presentation-only lâm địa backdrop; no map collision, actor position,
+# RNG, targeting or authoritative movement changed. Render first so the
+# verified Source A trees and earth can never obscure HP, cues or attacks.
+func _draw_source_a_forest_floor() -> void:
+    var r := stage_rect
+    var left := r.position.x
+    var top := r.position.y
+    var w := r.size.x
+    var h := r.size.y
+    draw_rect(r,Color(0.23,0.39,0.27,1.0))
+    # Multi-tone grass/forest bands cover the ENTIRE 864x547 arena rather
+    # than leave an empty dark tactical test rectangle.
+    draw_colored_polygon(PackedVector2Array([
+        Vector2(left,top),Vector2(left+w,top),Vector2(left+w,top+h*0.30),
+        Vector2(left+w*0.65,top+h*0.36),Vector2(left+w*0.21,top+h*0.28),
+        Vector2(left,top+h*0.42)
+    ]),Color(0.13,0.27,0.20,1.0))
+    draw_colored_polygon(PackedVector2Array([
+        Vector2(left,top+h*0.79),Vector2(left+w*0.32,top+h*0.69),
+        Vector2(left+w*0.79,top+h*0.87),Vector2(left+w,top+h*0.72),
+        Vector2(left+w,top+h),Vector2(left,top+h)
+    ]),Color(0.28,0.44,0.29,1.0))
+    # Narrow earthen track through Thanh Trúc Lâm; purely scenic.
+    draw_colored_polygon(PackedVector2Array([
+        Vector2(left,top+h*0.56),Vector2(left+w*0.30,top+h*0.43),
+        Vector2(left+w*0.68,top+h*0.58),Vector2(left+w,top+h*0.47),
+        Vector2(left+w,top+h*0.62),Vector2(left+w*0.68,top+h*0.73),
+        Vector2(left+w*0.30,top+h*0.57),Vector2(left,top+h*0.70)
+    ]),Color(0.48,0.43,0.31,0.74))
+    # Fixed decorative tufts and pebbles; never consume GameRng or TIME.
+    for index in range(35):
+        var unit_x := fposmod(float(index*71+19),991.0)/991.0
+        var unit_y := fposmod(float(index*37+11),593.0)/593.0
+        var at := Vector2(left+unit_x*w,top+unit_y*h)
+        draw_circle(at,1.4 if index%3!=0 else 2.4,
+            Color(0.77,0.81,0.59,0.36) if index%4==0 else Color(0.13,0.26,0.15,0.48))
+        if index%3==0:
+            draw_line(at,at+Vector2(3.0,-6.0),Color(0.52,0.68,0.37,0.46),1.0)
+    # Sparse, original Source A sprite sheets at the margins. No edge props
+    # at the combat center; battlefield actors always paint over these.
+    var source_trees := [FOREST_A,FOREST_B,FOREST_C]
+    var placements := [
+        Vector2(0.01,0.02),Vector2(0.22,0.01),Vector2(0.74,0.01),Vector2(0.91,0.04),
+        Vector2(0.01,0.67),Vector2(0.10,0.84),Vector2(0.85,0.83),Vector2(0.96,0.70)
+    ]
+    for index in range(placements.size()):
+        var source: Texture2D = source_trees[index%source_trees.size()]
+        var pos: Vector2 = placements[index]
+        var width := 76.0 if index%3!=0 else 97.0
+        var native_size := source.get_size()
+        if native_size.x <= 0.0 or native_size.y <= 0.0:
+            continue
+        var height := minf(145.0,width*native_size.y/native_size.x)
+        draw_texture_rect(source,Rect2(Vector2(
+            left+pos.x*w-width*0.5,top+pos.y*h-height*0.1
+        ),Vector2(width,height)),false,Color(0.93,0.96,0.88,0.91))
+
 func _draw() -> void:
     if battle == null:
         return
     if draw_pilot_ground:
-        # Neutral procedural test-stage dressing, NOT mislabeled JX terrain.
-        # Remove debug grid; leave accurate world-to-screen geometry unchanged.
-        draw_rect(stage_rect,Color(0.10,0.17,0.14,1.0))
-        var horizon := stage_rect.position.y + stage_rect.size.y*0.38
-        draw_rect(Rect2(stage_rect.position,Vector2(stage_rect.size.x,horizon-stage_rect.position.y)),
-            Color(0.075,0.13,0.12,0.54))
-        draw_colored_polygon(PackedVector2Array([
-            Vector2(stage_rect.position.x,horizon+80.0),
-            Vector2(stage_rect.end.x,horizon+30.0),
-            stage_rect.end,Vector2(stage_rect.position.x,stage_rect.end.y)
-        ]),Color(0.16,0.20,0.15,0.26))
+        _draw_source_a_forest_floor()
     # Telegraphs are projected onto the SAME world-space positions as actors.
     # Drawing them never changes target hit checks performed in MapBattleV2.
     var scale_x := stage_rect.size.x/GRID_SIZE.x
