@@ -1,0 +1,47 @@
+# TÔNG MÔN BÁ ĐẠO — CODEX EXECUTION AUTHORIZATION V3
+## PLAY-FIRST DEMO MAX + COMBAT V2 RULES + JX1 COMBAT CONTENT
+
+**OWNER CODE AUTHORIZATION — 20/10/2026.** Tôi yêu cầu Codex trực tiếp triển khai code, không chỉ kiểm toán/thiết kế, theo file `docs/TMB_CODEX_PLAYABLE_DEMO_PLAN_V3_2026-10-20.md` và authority hiện hành của repo `vuanhtuan161094-byte/TongMonBaDao`. Godot 4.7.2, Windows first, target Android landscape 1280×720.
+
+### 1. ĐỌC ĐÚNG SOURCE VÀ BASELINE
+
+- `git fetch` và kiểm tra live HEAD **của nhánh plan có đủ G1 PR#20 + C4 + camera**; đọc `AGENTS.md`, `docs/GAME_SYSTEM_ARCHITECTURE.md`, `CURRENT_CHECKPOINT.md`, `NEXT_CHAT_HANDOFF.md`, Master Audit 20/10, QA Debt G1+C4, Combat Stats/Skills V2, Asset Forge blueprint và **plan V3**.
+- `main` tại thời điểm lập kế hoạch **không có toàn bộ integration**. Dùng `plan/codex-playfirst-demo-20261020` HEAD mới nhất **sau khi fetch** làm nguồn xuất phát nếu kiểm tree xác nhận đủ; mở **nhánh CODE mới** `work/playfirst-demo-max-v3-20261020` từ baseline này. Tuyệt đối không sửa `main`, PR#20, các nguồn raw hoặc save người dùng. Ghi exact base/main HEAD vào report; không giả định SHA trong plan vẫn mới nhất.
+- Bản plan V3 ở `docs/TMB_CODEX_PLAYABLE_DEMO_PLAN_V3_2026-10-20.md` là hướng triển khai; những dòng design cũ trái quyết định mới đã bị supersede bởi mục ĐÍNH CHÍNH V3. Chỉ sử dụng prompt V3 này.
+
+### 2. LUẬT BẮT BUỘC
+
+- **D01:** Combat V2 là gameplay/numeric authority — HP, ATK, DEF, crit, damage, effect status, cooldown, Ngũ Hành/Linh Căn, RNG, Tu Vi/Luyện Thể, Injury, equipment, ownership, save/settlement. **KHÔNG port công thức combat JX1.** JX1 là nguồn nội dung skill có bằng chứng, sprite/animation nhân vật combat, quái/Boss, map, projectile, cast/fly/hit/AoE VFX/SFX. Mỗi skill phải có `source_jx_id → canonical_v2_skill_id → effect_consumer → event → visual_stage`; skill thiếu consumer không gọi usable.
+- **D02:** gameplay realtime liên tục trên **một bản đồ rộng trước**, quái/AI không dừng khi camera đi nơi khác, không forced-end vì 90s. Không phá save cũ chỉ để xóa cap `ARENA`/`MAX_SECONDS`.
+- **D03:** AUTO chiến đấu, đệ tử tự tìm mục tiêu, di chuyển, đánh thường, cast kỹ năng **đã học/trang bị/đặt thứ tự ưu tiên**; người chơi không điều khiển từng đệ tử; 6/đội, tối đa 30/nhóm.
+- **D07:** dùng Ngũ Hành & combat stat V2, không tự thay bằng công thức JX1.
+- Giữ **30×10 Tu Vi độc lập 30×10 Luyện Thể**, One Active Job, Injury 0/1/120, 1 canonical Warehouse/time/scheduler/save/offline, 1 worker mỗi resource building, exactly-once reward/production, loadout tối đa 1 basic/4 active/6 passive, G1/MAP25 Source A. Quyền dùng Source A/JX1 owner-supplied đã xác nhận. JX1M/JXQY2/JX2/Phong Thần là nguồn khác; bản đồ `2.jpg` thuộc nguồn fan derivative, không được gọi original JX1 tile/collision.
+- **Không CODE** bất cứ thay đổi numeric/balance Combat V2, Accuracy/Evasion formula draft, loot economy, production rates, Injury, slot counts, permanent stat growth hay migration real save khi chưa có packet owner riêng.
+
+### 3. THỰC THI TỪNG PACKET — KHÔNG DỪNG Ở AUDIT
+
+**M1 — CHƠI NGAY (PD-00 + PD-01, ưu tiên số 1):**
+1. Tạo launcher Windows một nhấn, `Play` mặc định; `Focused` và `ResetDemo` là lựa chọn riêng; cache/import không lặp lại khi không đổi asset/code; lưu log ngắn, đúng engine. Test runtime **in ra và xác minh đường dẫn `OS.get_user_data_dir()` của process DEMO thực sự cách ly** với mọi save thật, so sánh checksum trước/sau. Không coi một biến môi trường không được Godot xác nhận là bằng chứng tự đủ.
+2. Thêm `CHƠI NGAY — DEMO MAX`, `CHƠI TỪ ĐẦU`, `TIẾP TỤC DEMO` và DEMO HUB ngắn. Build sandbox state canonical: **6 đệ tử chiến đấu thực** Tu Vi 30.10 + Luyện Thể 30.10, HP/stats từ V2, kỹ năng đã implemented được học/mastery tối đa hợp lệ, trang bị hợp lệ, loadout phân vai (kiếm/tank/độc/heal/buff/AoE khi có consumer). **Tạo nhóm worker DEMO khác** (mục tiêu 6, ít nhất 3 nếu state/capacity cho phép) để Mỏ/Linh Lâm/Linh Điền chạy mà không vi phạm One Active Job. Cấp test resources/sect building mức đã implemented hợp lệ chỉ trong sandbox; normal mode tuyệt đối không max/cheat.
+3. Nút `SĂN NGAY`: chọn sẵn 6 đệ tử đủ điều kiện, vào combat thật một chạm, AI đánh/cast qua V2, real HP, hit, boss và reward lifecycle. **Ngay M1 phải dùng những JX asset đã source/hash verified sẵn**, tối thiểu một background combat source-backed, actor/quái/Boss, HP bars, 3 cue FX gắn vào đúng authoritative events. Không dùng procedural nền phẳng/Source A giả JX. Nếu phải dùng `2.jpg` fan-derived bridge, ghi `FAN_DERIVATIVE/NOT_ORIGINAL_MAP` và đường dẫn/hash. Thiếu skill cast clip phải hiện `ASSET_INCOMPLETE`, không mượn VFX khác. Những gì chỉ có animation mà không có consumer V2 phải ghi `VISUAL_ONLY`.
+4. M1 không cần roaming hoàn chỉnh nhưng phải thành phẩm chơi được **ngay**; nếu vẫn dùng session 90s cũ trong M1, đánh dấu rõ `BOUNDED_INTERIM` và tự triển khai M2 tiếp theo, không báo D02 đạt.
+
+**M2 — ĐÚNG KIỂU JX AUTO-SQUAD VÀ REALTIME (PD-02 + PD-04, ưu tiên ngay sau M1):**
+5. UI setup skill từng đệ tử: enabled/disabled, priority, fallback basic, điều kiện HP/range/target/AoE/buff/cooldown; lưu/khôi phục trong **demo save trước**. Bảo đảm only equipped/learned, không bắn liên tục trái cast lock, không heal overheal giả. Giữ damage/RNG V2.
+6. Một zone rộng có world coords, player camera tự do mouse/touch pan/zoom, follow duy nhất khi chọn actor, drag hủy follow. AI/chase/combat tiếp tục offscreen; monster respawn có nguồn dữ liệu vùng, đúng walkable/collision có căn cứ. **Không dừng tự động sau 90s.** World session versioned + bound event log; chịu trách nhiệm pending casts/projectiles, save/reload RNG, người đi săn không đồng thời làm việc và exactly-once stop/settle/claim. Giữ legacy arena session cho old saves/tests nếu cần.
+
+**M3 — KHO SKILL JX1 THẬT + ASSET PACK (PD-03 subset):**
+7. Đọc skill/missile/Lua/SPR/PAK/atlas có thật từ nguồn user, xác minh IDs, hash, format; chỉ nhập file đã kiểm chứng. Mở thêm skill JX1 nhiều chức năng có consumer V2 thực. Phân loại `JX_USABLE / PARTIAL_VFX / VISUAL_ONLY / METADATA_ONLY / MISSING`, công khai số thật. Reuse tools/assets, tools/fe01b1, các atlases hiện hữu; Forge CLI/catalog tối thiểu, không xây Qt, không tải/nhập hàng loạt JX2/JXQY2/Phong Thần.
+
+**M4 — UX & GIAO BẢN CHƠI (PD-06/07/08):**
+8. Giữ G1 production UI, progress/ETA/worker/actual warehouse receipt đúng instance, contrast nhìn rõ. Combat HUD 1280×720 có camera/minimap, HP/status, skill setup, boss telegraph, nút exit/return. Stress 30v40 chạy **theo lệnh riêng**, không trong Play. Đóng gói launcher/ZIP hoặc verified reproducible Play recipe + `CACH_CHOITHU.md`; Android package nếu môi trường có SDK, không claim device PASS khi chưa chạy thiết bị thật.
+
+**Phạm vi file CODE theo packet (sau khi kiểm cây thật):** PD00 `tools/qa/Run-TMB-Demo-Windows.*` và test launcher; PD01 các file **mới** demo factory/controller/UI, điểm vào `godot/src/presentation/p3_2_landscape_sect.gd`, `godot/src/presentation/p3/hunting_play_panel_v2.gd`, test demo và manifest asset JX C4 verified; PD02 `godot/src/simulation/combat/{combat_skill_system,disciple_combat_loadout_v2,jx_pilot_runtime_v1}.gd`, module policy + UI skill setup + focused tests; PD04 world adapter mới và file `map_battle_v2.gd`, `hunting_pve_run_v2.gd`, `map_battle_snapshot_v2.gd`, `hunting_map_v2.gd`, `map_battle_world_layer_v2.gd` + scoped tests; PD03 `tools/assets/`, `tools/fe01b1/` reusable adapters, `tools/asset_forge/` minimal mới, manifests, asset subset proven; PD06/07/08 only touched presentation/QA/docs/packaging. **Một writer trên file chia sẻ.** Không sửa `SaveService`, `SimulationState`, `SectState`, `WarehouseSystem`, `SimulationScheduler`, economy hoặc save-schema production theo quyền chung này; nếu thực sự cần, nêu exact dependency và xin packet owner riêng, tiếp tục các phần độc lập.
+
+### 4. GATE VÀ ĐIỀU KIỆN BÀN GIAO
+
+- Test focused ít nhất: DEMO max 30.10/30.10 + 6 combat ready + separate workers; state/save isolation before/after; JX asset refs/hash/event; auto skill + cooldown; no-90s world >90s + camera follow/pan; save resume at pending projectile + exactly-once receipt; GP02C1 injury/One Active Job touched neighbor; G1 scene/readability. `30v40` chỉ chạy stress một lần khi ổn. Chỉ Godot 4.7.2 evidence exact HEAD mới là runtime PASS. Không FULL, CI, merge, commit vào main hay overwrite save thật.
+- **Mỗi mốc xuất ra 1 playable result trước**, sau đó viết tối đa một đoạn report rõ: branch+SHA, Godot version, những gì click-chơi được, skill/asset hoàn thiện thực, test pass/fail/pending, điểm còn thiếu, cách chạy, logs/screenshots từ game thật. Nếu không có Godot runner hoặc owner Drive binary, vẫn CODE phần độc lập, ghi thiếu đúng file/path/hash; không tạo screenshot hoặc PASS giả.
+- Tự tiếp tục gói kế tiếp trong phạm vi này khi gói trước đã có code và focused gate phù hợp; không chờ owner duyệt những việc owner đã xác nhận. Dừng **chỉ phần** cần thay luật numeric/save production, chưa có nguồn dữ liệu bắt buộc hoặc không thể test; báo blocker ngắn và tiếp tục phần độc lập.
+
+**LỆNH CUỐI:** Bắt đầu CODE ngay với PD00+PD01, tạo DEMO thật trước, tiếp theo PD02+PD04, sau đó mở rộng JX skill/assets và UX. Chỉ có báo cáo/audit không được xem là đã hoàn thành yêu cầu. Không tuyên bố DEMO M1/M2 PASS khi chưa có kết quả chạy thật.
