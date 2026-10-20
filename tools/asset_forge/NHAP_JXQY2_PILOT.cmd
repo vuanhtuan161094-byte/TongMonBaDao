@@ -15,8 +15,12 @@ if not exist "%JXQY_ROOT%\save\rpg0\player.ini" (
 if not defined TMB_ASSET_VAULT (
   if exist "E:\" (set "TMB_ASSET_VAULT=E:\TongMonBaDao_AssetVault") else (set "TMB_ASSET_VAULT=%~dp0AssetVault")
 )
-where py >nul 2>nul
-if not errorlevel 1 (set "PY=py -3") else (set "PY=python")
-%PY% studio.py stage-jxqy-pilot --vault "%TMB_ASSET_VAULT%" --from-root "%JXQY_ROOT%" --tile-dir "mpc/map/矿山"
+call "%~dp0FIND_PYTHON.cmd"
+if errorlevel 1 goto :missing
+"%TMB_PYTHON_EXE%" %TMB_PYTHON_ARGS% studio.py stage-jxqy-pilot --vault "%TMB_ASSET_VAULT%" --from-root "%JXQY_ROOT%" --tile-dir "mpc/map/矿山"
 if errorlevel 1 (echo Import PENDING. Kiem thong bao ben tren.) else (echo Import staging DONE. Mo MO_ASSET_FORGE_STUDIO.cmd de xem.)
 pause
+exit /b 0
+:missing
+pause
+exit /b 3

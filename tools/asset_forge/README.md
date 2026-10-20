@@ -83,3 +83,12 @@ The example paths and variant indices require adjustment to the *actual* owner's
 **Focused QA:** `python -m unittest discover -p 'test_*.py' -v` — **29/29 PASS**, including a 2-variant 8-direction PACK+loose SPR fixture and real localhost HTTP catalog/sheet/idempotence/error tests. These tests use **synthetic binary fixtures** whose *metadata names* were derived from audited JX1 source tables, not the owner's SPR art. **Windows JX1 binary acceptance, correct garment ordering/pixel alignment, 8-direction real contact sheet, Godot 4.7.2/Android QA: PENDING USER.** No CI/FULL/merge.
 
 Source evidence (public `kiendaotac/SourceInit-JX1@b2e251a93f862571221b17cc1e92ceb121fc3069`): `bin/Client/settings/NpcRes/ÈËÎïÀàÐÍ.txt` (`人物类型.txt` content), `ÄÐÖ÷½ÇÇûÌå.txt` (`男主角躯体.txt` content), `ÄÐÖ÷½ÇÓÒÊÖÎäÆ÷.txt` (`男主角右手武器.txt` content), `ÄÐÖ÷½ÇÌùÍ¼Ë³Ðò±í.txt` (sorting INI content), `SwordOnline/Sources/Core/Src/KNpcResNode.cpp` (rows/actions/sort), `SwordOnline/Sources/Engine/Src/XPackFile.cpp` (`PACK`/NRV2B). The mojibake repository **path names** reflect their stored encoding; original table contents were verified as Chinese columns. No original/source art binaries redistributed.
+
+
+## Windows: Python da cai nhung launcher bao Microsoft Store (AF-04 PYFIX)
+
+- Chay **`KIEM_TRA_PYTHON.cmd`**. Tool se kiem tra `py -3`, virtualenv/Conda, PATH va thu muc Python thuong dung; loai bo alias `Microsoft\WindowsApps` va thu chay Python 3.10+ that truoc khi chap nhan.
+- Neu hien **PASS**, chay **`MO_ASSET_FORGE_STUDIO.cmd`**. Ca test va cac launcher nhap asset cung goi `FIND_PYTHON.cmd`. Khong can cai lai Python neu da tim duoc.
+- Neu khong tim thay, trong PowerShell kiem tra `py -0p` va `where.exe python`. Co the chi dinh duong dan Python cua ban trong **cung phien CMD**: `set "TMB_PYTHON_OVERRIDE=C:\Users\Admin\AppData\Local\Programs\Python\Python312\python.exe"` (thay bang duong dan thuc), roi chay `MO_ASSET_FORGE_STUDIO.cmd`. Neu mo bang nhap dup, tao `RUN_WITH_MY_PYTHON.cmd` voi `set ...` va `call MO_ASSET_FORGE_STUDIO.cmd`.
+- `where.exe python` in ra `...\Microsoft\WindowsApps\python.exe` khong chung minh Python that da cai. Neu can, tat `python.exe`/`python3.exe` tai **Settings → Apps → Advanced app settings → App execution aliases**.
+- Python/Windows runtime can kiem tra tren may Windows that; patch chi xac nhan static va regression Linux cho den khi co log thuc te.

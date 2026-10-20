@@ -15,9 +15,9 @@ if not exist "%TMB_REPO%\godot\assets\actors\1113028_1\asset.json" (
 if not defined TMB_ASSET_VAULT (
   if exist "E:\" (set "TMB_ASSET_VAULT=E:\TongMonBaDao_AssetVault") else (set "TMB_ASSET_VAULT=%~dp0AssetVault")
 )
-where py >nul 2>nul
-if not errorlevel 1 (set "PY=py -3") else (set "PY=python")
-%PY% studio.py stage --vault "%TMB_ASSET_VAULT%" --source-id SOURCE_A --from-root "%TMB_REPO%" ^
+call "%~dp0FIND_PYTHON.cmd"
+if errorlevel 1 goto :missing_python
+"%TMB_PYTHON_EXE%" %TMB_PYTHON_ARGS% studio.py stage --vault "%TMB_ASSET_VAULT%" --source-id SOURCE_A --from-root "%TMB_REPO%" ^
  --path godot/assets/actors/1113028_1/actor.tscn ^
  --path godot/assets/actors/1113028_1/animations.tres ^
  --path godot/assets/actors/1113028_1/asset.json ^
@@ -33,3 +33,7 @@ if not errorlevel 1 (set "PY=py -3") else (set "PY=python")
  --path godot/assets/actors/body_1120402/atlas_000.webp
 if errorlevel 1 (echo STAGE PENDING. Xem log phia tren.) else (echo STAGE DONE: 13 file asset Godot Source A vao 01_raw\SOURCE_A)
 pause
+exit /b 0
+:missing_python
+pause
+exit /b 3
