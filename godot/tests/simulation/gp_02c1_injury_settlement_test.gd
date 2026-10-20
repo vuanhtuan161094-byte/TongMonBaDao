@@ -293,7 +293,7 @@ func _timed_occupation_guards() -> bool:
     var ready := false
     for i in range(5):
         var plot := workforce.perform_work(state,actor,WorkforceSystem.PROF_HERBALISM)
-        if not _check(bool(plot.get("ok",false)) and buildings.disciple_has_active_spirit_plot(state,actor.id),"T15_PLANT","real paid plot unavailable"): return false
+        if not _check(bool(plot.get("ok",false)) and buildings.disciple_has_active_spirit_plot(state,actor.id),"T15_PLANT","real paid plot unavailable: "+str(plot)): return false
         var stones := state.sect.spirit_stones
         if not _check(_begin(fx,"gp2c-field-blocked-%d" % i) == null and state.sect.spirit_stones == stones
             and buildings.disciple_has_active_spirit_plot(state,actor.id),"T15","PvE interrupted paid Spirit Field"): return false
