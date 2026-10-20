@@ -1,5 +1,7 @@
 # Cách chạy DEMO V3
 
+Commit PD-00/PD-01: d0fd434a0004532f06fd8d7898df0388d59d94e8 trên nhánh work/playfirst-demo-max-v3-20261020.
+
 ## Yêu cầu
 
 - Windows và Godot **4.7.2**.

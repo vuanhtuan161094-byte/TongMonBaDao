@@ -1,6 +1,6 @@
 ## 2026-10-20 — Continuation after PD-00/PD-01
 
-CODE branch work/playfirst-demo-max-v3-20261020 is based on verified commit 83b29fdfc10e1c475d4921f464821ff06ac0bd65. Local Godot 4.7.2 focused integration for launcher → canonical DEMO MAX state → P3.2 → real V2 level-5 boss hunt → JX event cues → reward claim: **PASS** (hunters=6, workers=6, assigned_workers=3, 6 legal P2 damage skills, 3 verified JX cues). See CURRENT_CHECKPOINT.md and CACH_CHOITHU.md for evidence and run command.
+CODE branch work/playfirst-demo-max-v3-20261020 is based on verified commit 83b29fdfc10e1c475d4921f464821ff06ac0bd65. PD-00/PD-01 implementation commit: d0fd434a0004532f06fd8d7898df0388d59d94e8. Local Godot 4.7.2 focused integration for launcher → canonical DEMO MAX state → P3.2 → real V2 level-5 boss hunt → JX event cues → reward claim: **PASS** (hunters=6, workers=6, assigned_workers=3, 6 legal P2 damage skills, 3 verified JX cues). See CURRENT_CHECKPOINT.md and CACH_CHOITHU.md for evidence and run command.
 
 Known asset blocker: JX map backdrop godot/art/jx1_private/img/z/2.jpg is missing from the complete verified source tree, so report ASSET_INCOMPLETE. Demo uses a hash-verified Source A stone courtyard floor as a declared bridge. Do not call it a JX map. Next authorized work is M2 auto-skill/realtime roaming and continued JX asset/content work without changing Combat V2 formulas; obtain the missing map source through an available owner-authorized source before claiming JX map completion. No full run, CI, merge, or main/save changes.
 
