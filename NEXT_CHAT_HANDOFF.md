@@ -1,3 +1,13 @@
+## 2026-10-20 — MASTER AUDIT + NEXT CHAT READY (DOCS ONLY)
+
+Authoritative cross-system handoff **`docs/TMB_DAO_MASTER_AUDIT_NEXT_CHAT_2026-10-20.md`** added on this branch. A separate **41 KB** user-download Markdown `TONG_MON_BA_DAO_TONG_KIEM_TOAN_CHUYEN_CHAT_2026-10-20.md` contains the extended 24-decision/full-game matrix and verbatim next-chat prompt; this GitHub note is the durable retrieval entrypoint. No gameplay/save/art code changes in the master-audit task.
+
+Latest owner decision is full **JX1 combat art + combat logic**; **Source A → G1/sect**; rights for owner's supplied assets verified by owner's repeated declaration, do NOT ask again. Asset Forge upload is **BLUEPRINT READ-ONLY**, with older visual-only combat plan and blanket JX1 rights pending superseded by latest owner instruction. Technical file integrity/source versions and code→skill-ID mapping are still to be verified. Existing C4 has small V2 ARENA 36×20/90s, five JX pilot skills, not an original full JX1 roaming world. Camera JX branch code exists but exact-SHA Windows runtime is PENDING. Historical 13/17 + 5/6 focused tests are earlier SHA; later PLAY ONLY actually ran 0/6 requested focused, though GUI/import and optional smoke ran. Q01–Q17 are categorized debts, not red tests. No FULL/CI/merge/main edit.
+
+**NEXT:** Start read-only JX source-vs-TMBĐ code mapping, separate engineering source/file questions from only blocking gameplay owner decisions D01/D02/D03/D07, freeze one correct JX1 real-map/skills/VFX vertical slice and focused acceptance before replacing MapBattleV2 authority. Preserve 30×10 two-track growth, One Active Job, Injury0/1/120, one Warehouse, Source A sect scene and exact saved game semantics. Read the new master audit doc before any new implementation.
+
+---
+
 ## 2026-10-20 — OWNER JX1 COMBAT SOURCE-FIRST AND LARGE MAP FREE CAMERA
 
 Owner explicitly selected JX1 as the ENTIRE combat reference (full zone maps, skill mechanics/missiles, characters, monster sprites, VFX, navigation/camera), rejects invented Source A green forest combat. QA video `Tong Mon Ba Dao (DEBUG) 2026-10-20 09-17-25.mp4` (32.86s) shows flat ground and camera issues. Official Windows `C4_G1_FOREST_CAMERA_QA_LOGS.zip` at `073e2d99` ran **PLAY ONLY** (0/6 focused intentionally; three optional smoke scripts independently PASS, first git clone 7.6s and Godot import 38.12s; user play 244.51s). These old test results are not new-branch proofs.
