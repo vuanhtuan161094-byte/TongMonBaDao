@@ -52,6 +52,7 @@ var source_a_portrait_textures: Dictionary = {}
 # initialized from the loaded save to prevent phantom "collected" messages.
 var map_worksite_cues: Dictionary = {}
 var map_worksite_receipt_baseline: Dictionary = {}
+var map_worksite_pending_receipts: Dictionary = {}
 # Cached presentation anchors/offsets; layout and zoom never touch simulation.
 var map_worksite_anchors: Dictionary = {}
 var map_worksite_screen_offsets: Dictionary = {}
@@ -4359,6 +4360,7 @@ func _map_worksite_metrics(building: BuildingState) -> Dictionary:
 
 func _seed_map_worksite_receipts() -> void:
     map_worksite_receipt_baseline.clear()
+    map_worksite_pending_receipts.clear()
     if state == null:
         return
     for raw_building in state.buildings.values():
@@ -4491,6 +4493,12 @@ func _map_worksite_deliveries() -> Dictionary:
                 and int(current["units"]) > int(previous.get("units",0))
             ):
                 deliveries[key] = int(current["units"])-int(previous.get("units",0))
+                # A read-only diagnostic may query receipts before the map
+                # refresh. Keep a separate one-shot UI notification buffer.
+                # Neither cache affects Warehouse or canonical ledger.
+                map_worksite_pending_receipts[key] = int(
+                    map_worksite_pending_receipts.get(key,0)
+                ) + int(deliveries[key])
         map_worksite_receipt_baseline[key] = current
     return deliveries
 
@@ -4546,7 +4554,8 @@ func _reflow_map_worksite_cues() -> void:
 func _refresh_map_worksite_cues() -> void:
     if state == null or map_layer == null or iso_world == null:
         return
-    var deliveries := _map_worksite_deliveries()
+    _map_worksite_deliveries()
+    var deliveries: Dictionary = map_worksite_pending_receipts.duplicate()
     var candidates: Array[Dictionary] = []
     var ids: Array = state.buildings.keys()
     ids.sort()
@@ -4616,6 +4625,7 @@ func _refresh_map_worksite_cues() -> void:
         cue.display(entry["snapshot"])
         if deliveries.has(key):
             cue.show_delivered(int(deliveries[key]))
+            map_worksite_pending_receipts.erase(key)
         retained[key] = true
     for key in map_worksite_cues.keys():
         if retained.has(key):
