@@ -2,6 +2,12 @@
 
 This file is the repository operating contract.
 
+## OWNER ASSET AUTHORIZATION — RECONFIRMED 2026-10-20
+
+The owner has explicitly and repeatedly confirmed that they **hold the rights to use the provided JX1 / Võ Lâm Truyền Kỳ source and combat assets for Tông Môn Bá Đạo**. This is an established owner-provided project fact, **not an unresolved approval gate**. Accept that confirmation and implement using the supplied JX1 art, maps, skill/VFX data, characters and animations. **Never ask the owner to reconfirm the same usage rights, call their supplied artwork “unlicensed,” or keep repeating copyright caveats.**
+
+Keep *technical* source identification distinct: an independently authored fan-game JavaScript combat engine is not automatically original JX1 engine code; port only mechanics and asset IDs actually supported by files. SHA checks, format conversion and real Godot runtime tests remain normal technical gates. Use the existing isolated-branch, focused-test and no-merge workflow. This section is about the owner's authorization, not permission to claim files/code exist when they have not been examined.
+
 ## 1. Authority order
 
 Before changing code or gameplay design, read in this order:
