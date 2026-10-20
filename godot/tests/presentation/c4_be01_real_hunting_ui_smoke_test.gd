@@ -85,6 +85,12 @@ func _run() -> void:
             "real V2 disciple cannot be selected for hunting"):
         return
 
+    if not _check(panel.launch_button.text.contains("(1)") and
+            panel.status.text.contains("CHƯA PHÁI ĐI") and
+            panel.fight_state_badge.text.contains("CHƯA XUẤT CHIẾN"),
+            "selected roster lacked distinct not-deployed state"):
+        return
+
     # The live canonical PvE begin path must register an actual saved
     # encounter, NOT merely enable a button in a synthetic interface.
     panel._launch()
@@ -93,6 +99,10 @@ func _run() -> void:
             state.sect.v2_pve_active_runs.has(panel.session.battle.encounter_id),
             "real V2 hunter was selected but canonical encounter failed to begin: " +
             panel.status.text):
+        return
+    if not _check(panel.fight_state_badge.text.contains("ĐÃ PHÁI ĐỘI") and
+            panel.launch_button.disabled,
+            "battle started without visible deployment confirmation"):
         return
     if not _check(state.sect.v2_pve_reward_claims == original_claims and
             panel.session.battle.active and
