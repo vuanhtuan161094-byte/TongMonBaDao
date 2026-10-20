@@ -291,7 +291,7 @@ func _rebuild_roster() -> void:
         roster_diagnostics.text = "Trong tối đa 90 kết quả: sẵn sàng %d | chưa V2 %d | bận %d | bị thương %d" % [
             eligible_total,v2_missing,busy_total,injury_total
         ]
-    launch_button.disabled = session != null or chosen.is_empty() or not state.sect.v2_pve_enabled
+    launch_button.disabled = session != null or chosen.is_empty() or not state.sect.p3_7_resources_enabled
     launch_button.text = ("PHÁI ĐỘI ĐI SĂN (%d)" % chosen.size()) if session == null else "ĐỘI ĐÃ XUẤT CHIẾN"
     resume_button.disabled = session != null or state.sect.v2_pve_active_runs.is_empty()
     region_choice.disabled = session != null
@@ -308,7 +308,7 @@ func _select_disciple(enabled: bool, id: String) -> void:
         chosen[id] = true
     else:
         chosen.erase(id)
-    launch_button.disabled = session != null or chosen.is_empty() or not state.sect.v2_pve_enabled
+    launch_button.disabled = session != null or chosen.is_empty() or not state.sect.p3_7_resources_enabled
     launch_button.text = "PHÁI ĐỘI ĐI SĂN (%d)" % chosen.size()
     _status("ĐÃ CHỌN %d/30 · CHƯA PHÁI ĐI. Nhấn PHÁI ĐỘI ĐI SĂN để xuất chiến." % chosen.size())
 
@@ -319,9 +319,8 @@ func _launch() -> void:
     if state == null or live == null or session != null or chosen.is_empty():
         _status("Không thể xuất môn: thiếu đội hoặc còn trận chưa xử lý.")
         return
-    if not state.sect.v2_pve_enabled:
-        _status("Hệ thống săn quái chưa được mở theo tiến độ game.")
-        return
+    # HuntingMapV2.choose_level enables v2_pve_enabled when legal.
+    # Do not require that flag before the first-ever hunt.
     if not state.regions.has(StringName(selected_region)):
         _status("Khu vực / kho tài nguyên chưa được mở theo tiến độ game.")
         return
