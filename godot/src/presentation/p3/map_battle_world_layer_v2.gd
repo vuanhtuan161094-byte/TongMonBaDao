@@ -21,7 +21,8 @@ const FOREST_A: Texture2D = preload("res://art/source_a_env02a/env01_assets/vege
 const FOREST_B: Texture2D = preload("res://art/source_a_env02a/env01_assets/vegetation/570041.png")
 const FOREST_C: Texture2D = preload("res://art/source_a_env02a/env01_assets/vegetation/570073.png")
 # Private JX1-inspired source supplied by owner from Drive jx-idle-main/img/z.
-# Unlicensed artwork does not enter the public Git history.
+# Owner-authorized JX map JPEG is staged from Drive in the isolated TEMP
+# clone; the runtime load path is an import choice, not a rights restriction.
 const JX_PRIVATE_BACKDROP := "res://art/jx1_private/img/z/2.jpg"
 
 var battle: MapBattleV2
