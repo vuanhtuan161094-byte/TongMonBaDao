@@ -20,6 +20,9 @@ const JX_HP_STRIP: Texture2D = preload("res://assets/combat_v4/jx1_ui/bar_hp.png
 const FOREST_A: Texture2D = preload("res://art/source_a_env02a/env01_assets/vegetation/570036.png")
 const FOREST_B: Texture2D = preload("res://art/source_a_env02a/env01_assets/vegetation/570041.png")
 const FOREST_C: Texture2D = preload("res://art/source_a_env02a/env01_assets/vegetation/570073.png")
+# Private JX1-inspired source supplied by owner from Drive jx-idle-main/img/z.
+# Unlicensed artwork does not enter the public Git history.
+const JX_PRIVATE_BACKDROP := "res://art/jx1_private/img/z/2.jpg"
 
 var battle: MapBattleV2
 var stage_rect := Rect2(Vector2(90.0,50.0),Vector2(1100.0,600.0))
@@ -29,6 +32,8 @@ var displayed_at: float = 0.0
 var enable_source_vl_art: bool = false
 var draw_pilot_ground: bool = false
 var _source_atlas := CombatV4SpriteAtlas.new()
+var _jx_private_ground: Texture2D
+var _jx_private_ground_checked := false
 var _frame_clock: float = 0.0
 var _event_cursor: int = 0
 var _facing: Dictionary = {}
@@ -359,6 +364,7 @@ func attach_session(session: MapBattleV2) -> void:
     _impact_cues.clear()
     _effect_cues.clear()
     _combat_text.clear()
+    _load_private_jx_ground()
     _camera_center = GRID_SIZE*0.5
     _camera_zoom = 1.0
     _camera_follow_id = ""
@@ -779,7 +785,51 @@ func source_fx_screen_position(cue: Dictionary) -> Vector2:
 # Presentation-only lâm địa backdrop; no map collision, actor position,
 # RNG, targeting or authoritative movement changed. Render first so the
 # verified Source A trees and earth can never obscure HP, cues or attacks.
+# Prefer authentic owner-held zone art to invented/Source A terrain
+# whenever its private binary is installed. This stays view-only, outside RNG.
+func _load_private_jx_ground() -> void:
+    if _jx_private_ground_checked:
+        return
+    _jx_private_ground_checked = true
+    if not FileAccess.file_exists(JX_PRIVATE_BACKDROP):
+        return
+    var original := Image.new()
+    var status := original.load(JX_PRIVATE_BACKDROP)
+    if status != OK:
+        push_warning("C4 PRIVATE JX zone background could not be decoded")
+        return
+    if original.get_width() < 512 or original.get_height() < 512:
+        push_warning("C4 PRIVATE JX zone background is implausibly small")
+        return
+    _jx_private_ground = ImageTexture.create_from_image(original)
+
+func _draw_private_jx_zone() -> void:
+    if _jx_private_ground == null:
+        return
+    var whole: Vector2 = _jx_private_ground.get_size()
+    var zoom := clampf(spectator_zoom(),0.70,2.25)
+    # Each stage covers a portion of the larger native JX zone; panning
+    # moves the backdrop and actors through the same camera coordinate.
+    var visible_x := minf(whole.x,whole.x*0.50/zoom)
+    var visible_y := minf(whole.y,visible_x*stage_rect.size.y/stage_rect.size.x)
+    var source_units_per_x := whole.x*0.50/GRID_SIZE.x
+    var source_units_per_y := (whole.y*0.50)*(stage_rect.size.y/stage_rect.size.x)/GRID_SIZE.y
+    var centered := whole*0.5 + Vector2(
+        (_camera_center.x-GRID_SIZE.x*0.5)*source_units_per_x,
+        (_camera_center.y-GRID_SIZE.y*0.5)*source_units_per_y
+    )
+    var start := Vector2(
+        clampf(centered.x-visible_x*0.5,0.0,whole.x-visible_x),
+        clampf(centered.y-visible_y*0.5,0.0,whole.y-visible_y)
+    )
+    draw_texture_rect_region(_jx_private_ground,stage_rect,
+        Rect2(start,Vector2(visible_x,visible_y)))
+
 func _draw_source_a_forest_floor() -> void:
+    _load_private_jx_ground()
+    if _jx_private_ground != null:
+        _draw_private_jx_zone()
+        return
     var r := stage_rect
     var left := r.position.x
     var top := r.position.y
