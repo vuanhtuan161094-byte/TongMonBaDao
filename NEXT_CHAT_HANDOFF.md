@@ -1,3 +1,10 @@
+## 2026-10-20 — V-01: độ rõ combat JXQY2, nghiệm thu hình ảnh PENDING
+
+Tiếp tục từ c86f0b032ee52549d6205c738657458babfc24cc trên cùng nhánh CODE. Chỉ sửa presentation: xen hai lớp vật thể theo chân actor, làm mờ quanh cả actor đang sống/chết, culling, zoom ổn định 140% (hệ số hiển thị 2.1), mở góc camera tại đệ tử nhưng không tự follow, tên/HP/damage lớn hơn, viền tương phản, native VFX trên cảnh và nhãn giai đoạn từ event thật. Header phân biệt nguồn JXQY2 中都-矿山 với vùng gameplay V2 Thanh Trúc Lâm. Không đổi simulation, RNG, damage, skill gate, save, production, One Active Job hoặc asset/manifest.
+
+Godot 4.7.2 focused source-slice PASS; GUI thật 1280×720 chụp 5 giai đoạn, kiểm pan/free và follow chủ động. QA chọn theo dõi kiếm tu để giữ đủ stage trong ảnh. Nghiệm thu hình ảnh của owner PENDING. Còn cảnh báo kho chứng chỉ hệ điều hành; Boss là skin minh họa vai trò V2, sidebar/đội sáu người/packaging ngoài phạm vi V-01. Không FULL/CI/merge, không V-02/V-03. Chạy launcher JXQY2 hiện hữu; nguồn cache và sandbox giữ nguyên.
+
+---
 ## 2026-10-20 — Tiếp tục từ JXQY2 playable slice
 
 Code hiện có: `8db9b9e358aceb9711ca7966e623fb011ae5195e`, nhánh `work/playfirst-demo-max-v3-20261020`. M1 đã có và lỗi loadout bị rơi trong M2 đã sửa; không làm lại launcher.

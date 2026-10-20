@@ -417,6 +417,12 @@ func attach_session(session: MapBattleV2) -> void:
         # re-center on every movement / AI tick. A player drag persists.
         var goal: Dictionary = spectator_camera_goal()
         _camera_center = goal["center"]
+        if jxqy2.active:
+            for actor in session.actors.values():
+                if str(actor.get("side","")) == "disciple" and float(actor["hp"]) > 0.0:
+                    _camera_center = actor["position"]
+                    break
+            _camera_zoom = clampf(1.5*spectator_zoom_multiplier,MIN_VIEW_ZOOM,MAX_VIEW_ZOOM)
     queue_redraw()
 
 func refresh_from_authority() -> void:
@@ -495,7 +501,10 @@ func _update_spectator_camera(delta: float) -> void:
         _camera_center = _camera_center.lerp(
             visual_position(_camera_follow_id,target["position"]),blend)
     # No default actor tracking. Camera remains freely panned otherwise.
-    _camera_zoom = lerpf(_camera_zoom,float(goal["zoom"]),blend)
+    # JXQY2 uses a stable readable default. Enemy spread must not shrink the
+    # selected view or undo the player's zoom while the camera is free.
+    var zoom_goal := clampf(1.5*spectator_zoom_multiplier,MIN_VIEW_ZOOM,MAX_VIEW_ZOOM) if jxqy2.active else float(goal["zoom"])
+    _camera_zoom = lerpf(_camera_zoom,zoom_goal,blend)
 
 # Explicit focus can be toggled by clicking the same actor. Pan cancels focus.
 func select_camera_actor(actor_id: String) -> bool:
@@ -903,9 +912,21 @@ func _draw_source_a_forest_floor() -> void:
 func _draw() -> void:
     if battle == null:
         return
+    var foreground: Array[Dictionary] = []
+    var foreground_index := 0
     if jxqy2.active:
+        var actor_feet: Array[Vector2] = []
+        for actor in battle.actors.values():
+            # A real lethal impact must remain readable during the death clip.
+            actor_feet.append(point_on_map(visual_position(str(actor["id"]),actor["position"])))
         jxqy2.draw_map(self,0,point_on_map,spectator_zoom(),[],stage_rect,logical_from_map)
-        jxqy2.draw_map(self,1,point_on_map,spectator_zoom(),[],stage_rect,logical_from_map)
+        for layer in [1,2]:
+            foreground.append_array(jxqy2.map_commands(layer,point_on_map,spectator_zoom(),actor_feet,stage_rect,logical_from_map))
+        foreground.sort_custom(func(a,b):
+            if a["foot"].y != b["foot"].y:
+                return a["foot"].y < b["foot"].y
+            return int(a["layer"]) < int(b["layer"])
+        )
     elif draw_pilot_ground:
         _draw_source_a_forest_floor()
     # Telegraphs are projected onto the SAME world-space positions as actors.
@@ -949,6 +970,11 @@ func _draw() -> void:
     for id in ids:
         var actor: Dictionary = battle.actors[id]
         var at := point_on_map(visual_position(str(id),actor["position"]))
+        while foreground_index < foreground.size() and foreground[foreground_index]["foot"].y <= at.y:
+            jxqy2.draw_map_command(self,foreground[foreground_index],spectator_zoom())
+            foreground_index += 1
+        if jxqy2.active and not stage_rect.grow(100.0).has_point(at):
+            continue # Off-screen actors must not stack nameplates at the edge.
         var side := str(actor.get("side",""))
         var alive := float(actor["hp"]) > 0.0
         var tier := str(actor.get("tier","normal"))
@@ -994,17 +1020,17 @@ func _draw() -> void:
             # Classic JX nameplate reads above the HP meter; live monster
             # names come from MonsterCatalogueV2, not a cosmetic alias.
             var actor_name := combat_actor_label(actor)
-            var name_width := clampf(float(actor_name.length())*7.0+12.0,54.0,138.0)
+            var name_width := clampf(float(actor_name.length())*9.0+16.0,72.0,180.0)
             var name_tint := _school_color(_school_tag(actor)) if side == "disciple" else (
                 Color(1.0,0.77,0.37) if tier == "boss" else Color(1.0,0.85,0.72))
             ui_overlays.append({
                 "kind":"name",
                 "rect":Rect2(at+Vector2(-name_width*0.5,hp_y-24.0),
-                    Vector2(name_width,14.0)),
+                    Vector2(name_width,20.0)),
                 "text":actor_name,"fill":name_tint
             })
             var rank := combat_actor_rank_label(actor)
-            if not rank.is_empty():
+            if not rank.is_empty() and not jxqy2.active:
                 var rank_width := clampf(float(rank.length())*6.0+12.0,72.0,194.0)
                 ui_overlays.append({
                     "kind":"rank",
@@ -1026,6 +1052,9 @@ func _draw() -> void:
         var health := clampf(float(actor["hp"])/maxf(1.0,float(actor["max_hp"])),0.0,1.0)
         var bar_width := 60.0 if tier == "boss" else (48.0 if art_used else 22.0)
         var bar_height := 7.0 if tier == "boss" else (6.0 if art_used else 4.0)
+        if jxqy2.active:
+            bar_width = 94.0 if tier == "boss" else 76.0
+            bar_height = 9.0
         var bar := Rect2(at+Vector2(-bar_width*0.5,hp_y),Vector2(bar_width,bar_height))
         if enable_source_vl_art and alive:
             # Bars are drawn after ALL sprites, preventing near-actor occlusion.
@@ -1043,14 +1072,19 @@ func _draw() -> void:
                     Color(1.0,0.80,0.40,0.88*(1.0-passed/0.30)),2.0)
 
     if jxqy2.active:
-        var actor_feet: Array[Vector2] = []
         var render_positions: Dictionary = {}
         for actor in battle.actors.values():
             var visible_position := visual_position(str(actor["id"]),actor["position"])
             render_positions[str(actor["id"])] = visible_position
-            actor_feet.append(point_on_map(visible_position))
-        jxqy2.draw_map(self,2,point_on_map,spectator_zoom(),actor_feet,stage_rect,logical_from_map)
+        while foreground_index < foreground.size():
+            jxqy2.draw_map_command(self,foreground[foreground_index],spectator_zoom())
+            foreground_index += 1
         jxqy2.draw_effects(self,point_on_map,_frame_clock,battle,spectator_zoom(),render_positions)
+        var skill_stage := jxqy2.observed_skill_stage(_frame_clock)
+        if not skill_stage.is_empty():
+            var badge := Rect2(stage_rect.position+Vector2(14,stage_rect.size.y-42),Vector2(390,30))
+            draw_rect(badge,Color(0.025,0.055,0.09,0.94))
+            draw_string(ThemeDB.fallback_font,badge.position+Vector2(10,21),skill_stage,HORIZONTAL_ALIGNMENT_LEFT,370,17,Color(1,0.89,0.55))
     if enable_source_vl_art:
         # Combat numbers sit above sprites but BELOW HP/name HUD.
         # Display never changes HP. Event-ID lanes use no gameplay RNG.
@@ -1071,7 +1105,7 @@ func _draw() -> void:
                     float(lane-2)*15.0,-44.0-age*38.0)
                 var category := str(popup["category"])
                 var text_value := str(popup["label"])
-                var size := 16 if category == "crit" else 13
+                var size := (24 if category == "crit" else 20) if jxqy2.active else (16 if category == "crit" else 13)
                 var width := maxf(52.0,float(text_value.length())*float(size)*0.67+10.0)
                 position.x = clampf(position.x-width*0.5,
                     stage_rect.position.x,stage_rect.end.x-width)
@@ -1097,6 +1131,7 @@ func _draw() -> void:
             var bounds: Rect2 = overlay["rect"]
             var kind := str(overlay.get("kind","hp"))
             if kind == "hp":
+                draw_rect(bounds.grow(2.0),Color(0.015,0.025,0.035,0.95))
                 draw_rect(bounds,HP_BG)
                 var hp_ratio := clampf(float(overlay["ratio"]),0.0,1.0)
                 if hp_ratio > 0.0 and bool(overlay.get("monster",false)) and JX_HP_STRIP != null:
@@ -1110,11 +1145,11 @@ func _draw() -> void:
                         Vector2(bounds.size.x*hp_ratio,bounds.size.y)),
                         overlay["fill"])
             else:
-                if kind != "name" and kind != "rank":
+                if (jxqy2.active and kind == "name") or (kind != "name" and kind != "rank"):
                     draw_rect(bounds,Color(0.035,0.065,0.07,0.94))
-                var text_size := 11 if kind in ["name","rank"] else 12
+                var text_size := 16 if jxqy2.active and kind == "name" else (11 if kind in ["name","rank"] else 12)
                 var baseline := bounds.position+Vector2(2.0,
-                    12.0 if kind in ["name","rank"] else 14.5)
+                    16.0 if jxqy2.active and kind == "name" else (12.0 if kind in ["name","rank"] else 14.5))
                 draw_string_outline(ThemeDB.fallback_font,baseline,
                     str(overlay["text"]),HORIZONTAL_ALIGNMENT_CENTER,
                     bounds.size.x-4.0,text_size,2,Color(0.025,0.035,0.025,0.96))

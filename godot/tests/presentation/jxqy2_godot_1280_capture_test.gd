@@ -1,7 +1,7 @@
 extends SceneTree
 
 const SAVE_PATH := "user://demo_sandbox/jxqy2_capture_save.json"
-const OUTPUT := "user://demo_sandbox/jxqy2_"
+const OUTPUT := "user://demo_sandbox/v01_"
 var failure := false
 
 func _init() -> void:
@@ -75,8 +75,14 @@ func _run() -> void:
     panel._launch()
     if not check(panel.session != null and panel.session.battle != null and not panel.session.battle.navigation_grid.is_empty(),"real hunting dispatch did not use source map navigation"):
         return
+    if not check(panel.battle_layer.current_camera_follow_id().is_empty(),"default camera must stay free"):
+        return
+    # QA explicitly selects the hunter to keep every native stage in frame.
+    # The playable default remains free; the final capture demonstrates drag.
+    if not check(panel.battle_layer.select_camera_actor(str(skill_id)),"explicit QA actor selection failed"):
+        return
     var caption := Label.new()
-    caption.text = "QA JXQY2 offline • Combat V2 • Map 50×100 • Thi triển acMagic / projectile / impact gốc • Actor Boss là vai trò V2"
+    caption.text = "V-01 • JXQY2 offline • Combat V2 • Boss: vai trò V2, dùng actor nguồn minh họa • 1280×720"
     caption.position = Vector2(12,695)
     caption.add_theme_font_size_override("font_size",14)
     caption.z_index = 4095

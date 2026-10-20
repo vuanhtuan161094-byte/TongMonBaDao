@@ -161,6 +161,14 @@ func unproject(pixel: Vector2) -> Vector2:
     return Vector2((pixel.x-shift)/64.0+0.5,y-float(manifest["map"]["origin"][1])+0.5)
 
 func draw_map(canvas: CanvasItem, layer: int, projection: Callable, zoom: float, occluders: Array[Vector2] = [], viewport: Rect2 = Rect2(), inverse: Callable = Callable()) -> void:
+    for command in map_commands(layer,projection,zoom,occluders,viewport,inverse):
+        draw_map_command(canvas,command,zoom)
+
+func draw_map_command(canvas: CanvasItem, command: Dictionary, zoom: float) -> void:
+    _draw_frame(canvas,command["frame"],command["foot"],BASE_SCALE*zoom,command["tint"])
+
+func map_commands(layer: int, projection: Callable, zoom: float, occluders: Array[Vector2], viewport: Rect2, inverse: Callable) -> Array[Dictionary]:
+    var commands: Array[Dictionary] = []
     var low := Vector2.ZERO
     var high := Vector2(float(manifest["map"]["size"][0]),float(manifest["map"]["size"][1]))
     if inverse.is_valid() and viewport.has_area():
@@ -181,13 +189,18 @@ func draw_map(canvas: CanvasItem, layer: int, projection: Callable, zoom: float,
             var frame: Dictionary = resource["frames"][int(tile["frame"])]
             var foot: Vector2 = projection.call(Vector2(x+0.5,y+0.5))
             var tint := Color.WHITE
-            if layer == 2:
+            if layer > 0:
                 var bounds := Rect2(foot-(frame["anchor"] as Vector2)*BASE_SCALE*zoom,(frame["size"] as Vector2)*BASE_SCALE*zoom)
                 for actor_foot in occluders:
-                    if bounds.has_point(actor_foot-Vector2(0,28.0*zoom)):
-                        tint.a = 0.08
+                    # Clear the whole silhouette plus a margin. Tree pieces on
+                    # either source object layer can cover the same actor.
+                    var silhouette := Rect2(actor_foot-Vector2(38,96)*zoom,Vector2(76,112)*zoom)
+                    if bounds.intersects(silhouette):
+                        tint.a = 0.035
                         break
-            _draw_frame(canvas,frame,foot,BASE_SCALE*zoom,tint)
+            if not viewport.has_area() or viewport.intersects(Rect2(foot-(frame["anchor"] as Vector2)*BASE_SCALE*zoom,(frame["size"] as Vector2)*BASE_SCALE*zoom)):
+                commands.append({"frame":frame,"foot":foot,"tint":tint,"layer":layer})
+    return commands
 
 func actor_key(actor: Dictionary) -> String:
     return "hero" if str(actor.get("side","")) == "disciple" else ("boss" if str(actor.get("tier","")) == "boss" else "wolf")
@@ -222,6 +235,9 @@ func draw_actor(canvas: CanvasItem, actor: Dictionary, clip: Dictionary,
     var action := str(clip["name"])
     var resource := actor_resource(actor_key(actor),action)
     var frame := frame_at(resource,direction_index(facing_pixels,int(resource["directions"])),float(clip["age"]),action in ["attack","cast","hit","die"])
+    # Screen-space contrast stroke uses the same native silhouette, no new art.
+    for offset in [Vector2(-1,0),Vector2(1,0),Vector2(0,-1),Vector2(0,1)]:
+        _draw_frame(canvas,frame,foot+offset,BASE_SCALE*zoom,Color(0.02,0.04,0.07,0.65))
     _draw_frame(canvas,frame,foot,BASE_SCALE*zoom)
     return -float((frame["anchor"] as Vector2).y)*BASE_SCALE*zoom-10.0
 
@@ -269,7 +285,10 @@ func draw_effects(canvas: CanvasItem, projection: Callable, clock: float,
             var alpha := clampf((age-float(cue["cast_time"]))/travel,0.0,1.0)
             var resource: Dictionary = assets[skill["projectile"]]
             var direction := direction_index(to-from,int(resource["directions"]))
-            _draw_frame(canvas,frame_at(resource,direction,age-float(cue["cast_time"]),false),from.lerp(to,alpha),BASE_SCALE*zoom)
+            var frame := frame_at(resource,direction,age-float(cue["cast_time"]),false)
+            for offset in [Vector2(-1,0),Vector2(1,0),Vector2(0,-1),Vector2(0,1)]:
+                _draw_frame(canvas,frame,from.lerp(to,alpha)+offset,BASE_SCALE*zoom*1.25,Color(0.02,0.04,0.07,0.75))
+            _draw_frame(canvas,frame,from.lerp(to,alpha),BASE_SCALE*zoom*1.25)
     for i in range(impacts.size()-1,-1,-1):
         var cue := impacts[i]
         var resource: Dictionary = assets[skill["impact"]]
@@ -279,4 +298,12 @@ func draw_effects(canvas: CanvasItem, projection: Callable, clock: float,
             impacts.remove_at(i)
             continue
         var target_id := str(cue["target"])
-        _draw_frame(canvas,frame_at(resource,0,age,true),projection.call(render_positions.get(target_id,battle.actors[target_id]["position"])),BASE_SCALE*zoom)
+        _draw_frame(canvas,frame_at(resource,0,age,true),projection.call(render_positions.get(target_id,battle.actors[target_id]["position"])),BASE_SCALE*zoom*1.15)
+
+func observed_skill_stage(clock: float) -> String:
+    if not impacts.is_empty():
+        return "NGỰ KIẾM THUẬT · TRÚNG ĐÍCH"
+    if not casts.is_empty():
+        var cue: Dictionary = casts.back()
+        return "NGỰ KIẾM THUẬT · "+("THI TRIỂN (acMagic)" if clock-float(cue["started"]) < float(cue["cast_time"]) else "PHI KIẾM")
+    return ""

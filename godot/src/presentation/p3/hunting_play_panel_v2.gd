@@ -93,8 +93,8 @@ func _build() -> void:
 
     var source_status := Label.new()
     source_status.name = "DemoAssetStatus"
-    source_status.position = Vector2(430,17)
-    source_status.size = Vector2(655,28)
+    source_status.position = Vector2(430,8)
+    source_status.size = Vector2(655,42)
     source_status.text = "JXQY2 offline · asset chưa nhập · map Source A hiện có"
     source_status.add_theme_font_size_override("font_size",12)
     source_status.add_theme_color_override("font_color",Color(0.48,0.22,0.12,1.0))
@@ -221,7 +221,8 @@ func _build() -> void:
         if not bool(source_result.get("ok",false)):
             push_warning("JXQY2: "+str(source_result.get("reason","ASSET_INCOMPLETE")))
         else:
-            source_status.text = "JXQY2 · Nam Cung Phi Vân / Thiên Ý Kiếm Quyết · Map 50×100"
+            source_status.text = "Nguồn JXQY2: 中都-矿山 · Trung Đô — Mỏ tuyết (50×100)\nVùng gameplay Combat V2: Thanh Trúc Lâm · hình ảnh thay thế"
+            battle_layer.spectator_zoom_multiplier = 1.40
     viewing.add_child(battle_layer)
     fight_state_badge = Label.new()
     fight_state_badge.name = "C4HuntingPhase"
@@ -234,6 +235,10 @@ func _build() -> void:
     fight_state_badge.add_theme_constant_override("shadow_offset_x",1)
     fight_state_badge.add_theme_constant_override("shadow_offset_y",2)
     fight_state_badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    var badge_style := StyleBoxFlat.new()
+    badge_style.bg_color = Color(0.025,0.055,0.09,0.94)
+    badge_style.content_margin_left = 10
+    fight_state_badge.add_theme_stylebox_override("normal",badge_style)
     viewing.add_child(fight_state_badge)
 
     camera_zoom_minus = Button.new()
@@ -251,7 +256,7 @@ func _build() -> void:
     camera_zoom_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
     camera_zoom_label.add_theme_font_size_override("font_size",15)
     camera_zoom_label.add_theme_color_override("font_color",Color(1.0,0.94,0.78,1.0))
-    camera_zoom_label.text = "120%"
+    camera_zoom_label.text = "140%" if battle_layer.jxqy2.active else "120%"
     viewing.add_child(camera_zoom_label)
     camera_zoom_plus = Button.new()
     camera_zoom_plus.name = "CombatZoomIn"
@@ -619,7 +624,7 @@ func _start_view() -> void:
     running = session.battle.active
     if fight_state_badge != null:
         fight_state_badge.text = (
-            "ĐÃ PHÁI ĐỘI — ĐANG CHIẾN ĐẤU · " + str(session.battle.encounter_id)
+            "ĐANG SĂN TỰ ĐỘNG · Kéo để xem · Chọn nhân vật để theo dõi"
             if running else "ĐÃ KẾT THÚC · " + str(session.battle.outcome)
         )
     set_process(running)
@@ -662,6 +667,11 @@ func _update_view_status() -> void:
     if session == null or session.battle == null:
         return
     var result := session.battle.summary()
+    if battle_layer.jxqy2.active:
+        _status("V2: Thanh Trúc Lâm · %s · %.1fs · Đệ tử: %d · Quái: %d\nKéo bản đồ: camera tự do · Nhấn nhân vật: theo dõi · + / −: zoom" % [
+            "Đang giao chiến" if session.battle.active else "Đã dừng",float(result["time"]),
+            int(result["alive_disciples"]),int(result["alive_monsters"])])
+        return
     _status("Khu: %s | %s | %.1f giây | Đệ tử còn: %d | Quái còn: %d | Đòn: %d | %s" % [
         selected_region,str(result["outcome"]),float(result["time"]),
         int(result["alive_disciples"]),int(result["alive_monsters"]),
