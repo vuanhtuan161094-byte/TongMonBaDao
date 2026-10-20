@@ -389,10 +389,19 @@ func _on_map_gui_input(event: InputEvent) -> void:
     if _popup_is_open() or _building_operation_is_open() or _disciple_summary_is_open():
         return
     if event is InputEventMouseButton:
-        _handle_mouse_button(event as InputEventMouseButton)
+        # Control.gui_input positions are LOCAL under scaled/translated
+        # map_layer; camera/selection routines require screen pixels.
+        var from_control := event as InputEventMouseButton
+        var screen_event := from_control.duplicate() as InputEventMouseButton
+        screen_event.position = map_layer.get_global_transform_with_canvas() * from_control.position
+        _handle_mouse_button(screen_event)
         get_viewport().set_input_as_handled()
     elif event is InputEventMouseMotion and mouse_panning:
-        _handle_mouse_motion(event as InputEventMouseMotion)
+        var from_control := event as InputEventMouseMotion
+        var screen_event := from_control.duplicate() as InputEventMouseMotion
+        screen_event.position = map_layer.get_global_transform_with_canvas() * from_control.position
+        screen_event.relative = from_control.relative*map_layer.scale.x
+        _handle_mouse_motion(screen_event)
         get_viewport().set_input_as_handled()
 
 func _handle_mouse_button(mouse: InputEventMouseButton) -> void:
