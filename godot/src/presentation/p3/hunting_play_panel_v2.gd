@@ -214,6 +214,14 @@ func _build() -> void:
     battle_layer.enable_spectator_framing = true
     battle_layer.spectator_zoom_ceiling = 1.65
     battle_layer.spectator_zoom_multiplier = 1.20
+    var jxqy2_root := OS.get_environment("TMB_JXQY2_ASSET_ROOT").strip_edges()
+    if not jxqy2_root.is_empty() and str(ProjectSettings.get_setting("runtime/live_save_path","")).contains("demo_sandbox"):
+        var source_result := battle_layer.configure_jxqy2_sources(jxqy2_root)
+        ProjectSettings.set_setting("demo/jxqy2_source_result",source_result)
+        if not bool(source_result.get("ok",false)):
+            push_warning("JXQY2: "+str(source_result.get("reason","ASSET_INCOMPLETE")))
+        else:
+            source_status.text = "JXQY2 · Nam Cung Phi Vân / Thiên Ý Kiếm Quyết · Map 50×100"
     viewing.add_child(battle_layer)
     fight_state_badge = Label.new()
     fight_state_badge.name = "C4HuntingPhase"
@@ -506,6 +514,19 @@ func _launch() -> void:
             if str(definition.get("effect", "")) == "damage":
                 owned_skill_ids.append(str(skill_id))
         row["auto_skill_policy"] = DemoAutoSkillPolicyStoreV1.load_policy(id,owned_skill_ids)
+        # Preserve the verified M1 owner-JX pilot route. The opt-in JXQY2
+        # slice uses the production learned skill bar instead of that pilot.
+        var demo_jx_loadouts: Dictionary = ProjectSettings.get_setting("demo/jx_loadouts",{})
+        var pilot_skills: Array = demo_jx_loadouts.get(id,[]) if not battle_layer.jxqy2.active else []
+        if not pilot_skills.is_empty():
+            row["pilot_skill_loadout"] = pilot_skills.duplicate(true)
+            row["spiritual_root_values"] = DemoSandboxFactoryV1.pilot_root_values(member)
+            if pilot_skills.has("jx_wudang_158"):
+                row["position"] = Vector2(22.0,13.0)
+            elif pilot_skills.has("jx_wudu_63"):
+                row["position"] = Vector2(21.0,8.0)
+            else:
+                row["position"] = Vector2(17.0,8.3)
         # Real V2 rank is read by HuntingPveRunV2 from the disciple's
         # canonical persistent progression. No fake stats in the live flow.
         roster.append(row)
@@ -514,7 +535,12 @@ func _launch() -> void:
     ]
     var seed_value := maxi(1,int(state.tick)+int(Time.get_unix_time_from_system())%1000000)
     var proposed := HuntingPveRunV2.new()
-    var started := proposed.begin(state,selected_region,id,seed_value,roster,true)
+    var world_options: Dictionary = {}
+    if battle_layer.jxqy2.active:
+        world_options["navigation_grid"] = battle_layer.jxqy2.navigation_grid()
+        var offset: Array = battle_layer.jxqy2.manifest["map"]["spawn_offset"]
+        world_options["spawn_offset"] = Vector2(float(offset[0]),float(offset[1]))
+    var started := proposed.begin(state,selected_region,id,seed_value,roster,true,world_options)
     if not bool(started.get("ok",false)):
         _status("Không thể xuất môn: "+str(started.get("reason","unknown")))
         _rebuild_roster()

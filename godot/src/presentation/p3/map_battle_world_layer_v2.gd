@@ -82,6 +82,15 @@ var _combat_text: Array[Dictionary] = []
 # View-owned metadata does not enter MapBattleV2 actor/RNG/event snapshots.
 # Required for monster realm data stripped by MapBattleV2.setup.
 var _actor_view_metadata: Dictionary = {}
+var jxqy2 := Jxqy2SourceSliceV1.new()
+
+func configure_jxqy2_sources(root: String) -> Dictionary:
+    return jxqy2.load_sources(root)
+
+func _grid_size() -> Vector2:
+    if battle != null and not battle.navigation_grid.is_empty():
+        return battle.world_bounds().size
+    return GRID_SIZE
 
 # Format ONLY an already-settled amount. No damage computation occurs here.
 func _combat_amount(amount: float) -> String:
@@ -225,6 +234,8 @@ func _ingest_authority_events() -> void:
     # MapBattleV2 emits skill_hit BEFORE actual _deal_direct settlement.
     # Only a matching subsequent positive learned_skill hit may produce hit VFX.
     var announced_hits: Dictionary = {}
+    if jxqy2.active:
+        jxqy2._announced.clear()
     var last_sequence := _event_cursor
     for index in range(battle.events.size()):
         var event: Dictionary = battle.events[index]
@@ -233,10 +244,23 @@ func _ingest_authority_events() -> void:
             continue
         last_sequence = maxi(last_sequence, event_id)
         var kind := str(event.get("type", ""))
+        if jxqy2.active:
+            jxqy2.ingest(event,_frame_clock,battle)
         # Receipt values are final HP deltas from simulation, not FX amounts.
         _ingest_combat_feedback(event,event_id)
         var actor_id := str(event.get("actor_id", ""))
-        if kind == "move" and battle.actors.has(actor_id):
+        if kind == "world_wave_spawned":
+            for respawn_id in battle.actors:
+                var respawned: Dictionary = battle.actors[respawn_id]
+                if str(respawned.get("side","")) != "monster":
+                    continue
+                _action_cues.erase(str(respawn_id))
+                _impact_cues.erase(str(respawn_id))
+                _last_move.erase(str(respawn_id))
+                _positions[str(respawn_id)] = respawned["position"]
+                _view_prev[str(respawn_id)] = respawned["position"]
+                _view_next[str(respawn_id)] = respawned["position"]
+        elif kind == "move" and battle.actors.has(actor_id):
             var current: Vector2 = event.get("position", Vector2.ZERO)
             var previous: Vector2 = _positions.get(actor_id, current)
             var direction := current - previous
@@ -329,7 +353,7 @@ func _ingest_authority_events() -> void:
             if battle.actors.has(caster_id):
                 if str(event.get("skill_id","")) == "ngu_kiem_thuat":
                     _queue_source_fx("sword_cast",point_on_map(battle.actors[caster_id]["position"]),caster_id)
-                _action_cues[caster_id] = {"action":"attack","started":_frame_clock,
+                _action_cues[caster_id] = {"action":"cast" if jxqy2.active and str(event.get("skill_id","")) == "ngu_kiem_thuat" else "attack","started":_frame_clock,
                     "until":_frame_clock+clampf(float(event.get("release_at",battle.now+0.45))-battle.now,0.15,1.0)}
         elif kind in ["heal","guard","cast"]:
             var caster_id := str(event.get("caster",event.get("actor_id","")))
@@ -348,7 +372,10 @@ func _actor_clip(actor_id: String, alive: bool) -> Dictionary:
     var cue: Dictionary = _action_cues.get(actor_id,{})
     if not alive:
         return {"name":"die","age":maxf(0.0,_frame_clock-float(cue.get("started",_frame_clock)))}
-    if not cue.is_empty() and _frame_clock <= float(cue.get("until",-1.0)):
+    var source_duration := 0.0
+    if jxqy2.active and not cue.is_empty() and battle != null and battle.actors.has(actor_id):
+        source_duration = jxqy2.action_duration(jxqy2.actor_key(battle.actors[actor_id]),str(cue.get("action","idle")))
+    if not cue.is_empty() and (_frame_clock <= float(cue.get("until",-1.0)) or _frame_clock-float(cue.get("started",0.0)) < source_duration):
         return {"name":str(cue["action"]),"age":maxf(0.0,_frame_clock-float(cue.get("started",_frame_clock)))}
     if _frame_clock-float(_last_move.get(actor_id,-99.0)) <= MapBattleV2.STEP_SECONDS+0.001:
         return {"name":"run","age":_frame_clock}
@@ -371,9 +398,12 @@ func attach_session(session: MapBattleV2) -> void:
     _action_cues.clear()
     _impact_cues.clear()
     _effect_cues.clear()
+    jxqy2.casts.clear()
+    jxqy2.impacts.clear()
+    jxqy2._announced.clear()
     _combat_text.clear()
     _load_private_jx_ground()
-    _camera_center = GRID_SIZE*0.5
+    _camera_center = _grid_size()*0.5
     _camera_zoom = 1.0
     _camera_follow_id = ""
     _camera_free = true
@@ -421,7 +451,7 @@ func visual_position(actor_id: String, authoritative: Vector2) -> Vector2:
 # Allow generous margins for original Source VL art/attack frames/AoE.
 func spectator_camera_goal() -> Dictionary:
     if battle == null or not enable_spectator_framing:
-        return {"center":GRID_SIZE*0.5,"zoom":1.0}
+        return {"center":_grid_size()*0.5,"zoom":1.0}
     var low := Vector2(INF,INF)
     var high := Vector2(-INF,-INF)
     var count := 0
@@ -435,14 +465,25 @@ func spectator_camera_goal() -> Dictionary:
         count += 1
     if count == 0:
         return {"center":_camera_center,"zoom":_camera_zoom}
-    var width_pixels := (high.x-low.x)*stage_rect.size.x/GRID_SIZE.x
-    var height_pixels := (high.y-low.y)*stage_rect.size.y/GRID_SIZE.y
+    var width_pixels := (high.x-low.x)*stage_rect.size.x/_grid_size().x
+    var height_pixels := (high.y-low.y)*stage_rect.size.y/_grid_size().y
+    if jxqy2.active:
+        var projected_low := Vector2(INF,INF)
+        var projected_high := Vector2(-INF,-INF)
+        for actor in battle.actors.values():
+            if float(actor.get("hp",0.0)) <= 0.0:
+                continue
+            var projected := jxqy2.project(actor["position"])*Jxqy2SourceSliceV1.BASE_SCALE
+            projected_low = projected_low.min(projected)
+            projected_high = projected_high.max(projected)
+        width_pixels = projected_high.x-projected_low.x
+        height_pixels = projected_high.y-projected_low.y
     var width_zoom := stage_rect.size.x/maxf(width_pixels+230.0,1.0)
     var height_zoom := stage_rect.size.y/maxf(height_pixels+200.0,1.0)
     return {
         "center":(low+high)*0.5,
         "zoom":clampf(
-            clampf(minf(width_zoom,height_zoom),1.0,maxf(1.0,spectator_zoom_ceiling))
+            clampf(minf(width_zoom,height_zoom),MIN_VIEW_ZOOM if jxqy2.active else 1.0,maxf(1.0,spectator_zoom_ceiling))
             * spectator_zoom_multiplier,MIN_VIEW_ZOOM,MAX_VIEW_ZOOM)
     }
 
@@ -477,14 +518,19 @@ func pan_camera_pixels(screen_delta: Vector2) -> void:
         return
     clear_camera_follow()
     var zoom := maxf(spectator_zoom(),0.01)
+    if jxqy2.active:
+        var before := jxqy2.project(_camera_center)
+        _camera_center = jxqy2.unproject(before-screen_delta/(Jxqy2SourceSliceV1.BASE_SCALE*zoom)).clamp(Vector2.ZERO,_grid_size())
+        queue_redraw()
+        return
     var logical_delta := Vector2(
-        screen_delta.x * GRID_SIZE.x / stage_rect.size.x,
-        screen_delta.y * GRID_SIZE.y / stage_rect.size.y
+        screen_delta.x * _grid_size().x / stage_rect.size.x,
+        screen_delta.y * _grid_size().y / stage_rect.size.y
     ) / zoom
     # A finite world clamp prevents dragging forever outside the encounter,
     # but the viewport is NOT pinned to any disciple.
     _camera_center = (_camera_center - logical_delta).clamp(
-        Vector2.ZERO,GRID_SIZE)
+        Vector2.ZERO,_grid_size())
     queue_redraw()
 
 func current_camera_follow_id() -> String:
@@ -494,32 +540,37 @@ func spectator_zoom() -> float:
     return _camera_zoom if enable_spectator_framing and enable_source_vl_art else 1.0
 
 func point_on_map(logical_position: Vector2) -> Vector2:
+    if jxqy2.active:
+        return stage_rect.get_center()+(jxqy2.project(logical_position)-jxqy2.project(_camera_center))*Jxqy2SourceSliceV1.BASE_SCALE*spectator_zoom()
     var raw := stage_rect.position + Vector2(
-        clampf(logical_position.x/GRID_SIZE.x,0.0,1.0)*stage_rect.size.x,
-        clampf(logical_position.y/GRID_SIZE.y,0.0,1.0)*stage_rect.size.y
+        clampf(logical_position.x/_grid_size().x,0.0,1.0)*stage_rect.size.x,
+        clampf(logical_position.y/_grid_size().y,0.0,1.0)*stage_rect.size.y
     )
     if not enable_spectator_framing or not enable_source_vl_art:
         return raw
     var camera_origin := stage_rect.position + Vector2(
-        _camera_center.x/GRID_SIZE.x*stage_rect.size.x,
-        _camera_center.y/GRID_SIZE.y*stage_rect.size.y
+        _camera_center.x/_grid_size().x*stage_rect.size.x,
+        _camera_center.y/_grid_size().y*stage_rect.size.y
     )
     return stage_rect.get_center()+(raw-camera_origin)*_camera_zoom
 
 func logical_from_map(map_position: Vector2) -> Vector2:
     if stage_rect.size.x <= 0.0 or stage_rect.size.y <= 0.0:
         return Vector2.ZERO
+    if jxqy2.active:
+        var pixel := jxqy2.project(_camera_center)+(map_position-stage_rect.get_center())/(Jxqy2SourceSliceV1.BASE_SCALE*maxf(0.01,spectator_zoom()))
+        return jxqy2.unproject(pixel).clamp(Vector2.ZERO,_grid_size())
     var raw := map_position
     if enable_spectator_framing and enable_source_vl_art:
         var camera_origin := stage_rect.position + Vector2(
-            _camera_center.x/GRID_SIZE.x*stage_rect.size.x,
-            _camera_center.y/GRID_SIZE.y*stage_rect.size.y
+            _camera_center.x/_grid_size().x*stage_rect.size.x,
+            _camera_center.y/_grid_size().y*stage_rect.size.y
         )
         raw = camera_origin+(map_position-stage_rect.get_center())/maxf(0.01,_camera_zoom)
     var relative := (raw-stage_rect.position)/stage_rect.size
     return Vector2(
-        clampf(relative.x*GRID_SIZE.x,0.0,GRID_SIZE.x),
-        clampf(relative.y*GRID_SIZE.y,0.0,GRID_SIZE.y)
+        clampf(relative.x*_grid_size().x,0.0,_grid_size().x),
+        clampf(relative.y*_grid_size().y,0.0,_grid_size().y)
     )
 
 func actor_at_map_point(map_position: Vector2, max_distance: float = 17.0) -> String:
@@ -565,7 +616,7 @@ func aoe_warning_geometry() -> Array[Dictionary]:
         var ready_at := float(cast["ready"])
         if is_nan(center.x) or is_inf(center.x) or is_nan(center.y) or is_inf(center.y):
             continue
-        if center.x < 0.0 or center.x > GRID_SIZE.x or center.y < 0.0 or center.y > GRID_SIZE.y:
+        if center.x < 0.0 or center.x > _grid_size().x or center.y < 0.0 or center.y > _grid_size().y:
             continue
         if is_nan(radius) or is_inf(radius) or radius <= 0.0:
             continue
@@ -804,11 +855,11 @@ func _draw_private_jx_zone() -> void:
     # moves the backdrop and actors through the same camera coordinate.
     var visible_x := minf(whole.x,whole.x*0.50/zoom)
     var visible_y := minf(whole.y,visible_x*stage_rect.size.y/stage_rect.size.x)
-    var source_units_per_x := whole.x*0.50/GRID_SIZE.x
-    var source_units_per_y := (whole.y*0.50)*(stage_rect.size.y/stage_rect.size.x)/GRID_SIZE.y
+    var source_units_per_x := whole.x*0.50/_grid_size().x
+    var source_units_per_y := (whole.y*0.50)*(stage_rect.size.y/stage_rect.size.x)/_grid_size().y
     var centered := whole*0.5 + Vector2(
-        (_camera_center.x-GRID_SIZE.x*0.5)*source_units_per_x,
-        (_camera_center.y-GRID_SIZE.y*0.5)*source_units_per_y
+        (_camera_center.x-_grid_size().x*0.5)*source_units_per_x,
+        (_camera_center.y-_grid_size().y*0.5)*source_units_per_y
     )
     var start := Vector2(
         clampf(centered.x-visible_x*0.5,0.0,whole.x-visible_x),
@@ -852,12 +903,15 @@ func _draw_source_a_forest_floor() -> void:
 func _draw() -> void:
     if battle == null:
         return
-    if draw_pilot_ground:
+    if jxqy2.active:
+        jxqy2.draw_map(self,0,point_on_map,spectator_zoom(),[],stage_rect,logical_from_map)
+        jxqy2.draw_map(self,1,point_on_map,spectator_zoom(),[],stage_rect,logical_from_map)
+    elif draw_pilot_ground:
         _draw_source_a_forest_floor()
     # Telegraphs are projected onto the SAME world-space positions as actors.
     # Drawing them never changes target hit checks performed in MapBattleV2.
-    var scale_x := stage_rect.size.x/GRID_SIZE.x
-    var scale_y := stage_rect.size.y/GRID_SIZE.y
+    var scale_x := stage_rect.size.x/_grid_size().x
+    var scale_y := stage_rect.size.y/_grid_size().y
     for zone in aoe_warning_geometry():
         var center := point_on_map(zone["center"])
         var radius := Vector2(float(zone["radius"])*scale_x,float(zone["radius"])*scale_y)*spectator_zoom()
@@ -867,7 +921,7 @@ func _draw() -> void:
         draw_arc(Vector2.ZERO,1.0,0.0,TAU,40,Color(0.94,0.36,0.26,0.74),0.08)
         draw_set_transform(Vector2.ZERO,0.0,Vector2.ONE)
     # Art cues are observations of real V2 casts/hits; draw BELOW actor silhouettes and HP.
-    if enable_source_vl_art:
+    if enable_source_vl_art and not jxqy2.active:
         for cue in _effect_cues:
             var source_kind := str(cue["kind"])
             var ratio := 0.42 if source_kind in [
@@ -911,7 +965,14 @@ func _draw() -> void:
             art_key = "wolf"
         var art_used := false
         var hp_y := -radius-10.0
-        if enable_source_vl_art and not art_key.is_empty():
+        if jxqy2.active and (side != "disciple" or str(actor.get("visual_weapon_path","")) == "sword"):
+            var clip := _actor_clip(str(id),alive)
+            var world_position: Vector2 = visual_position(str(id),actor["position"])
+            var facing: Vector2 = _facing.get(str(id),Vector2.RIGHT)
+            var pixel_facing := jxqy2.project(world_position+facing)-jxqy2.project(world_position)
+            hp_y = jxqy2.draw_actor(self,actor,clip,pixel_facing,at,spectator_zoom())
+            art_used = true
+        elif enable_source_vl_art and not jxqy2.active and not art_key.is_empty():
             var clip := _actor_clip(str(id),alive)
             var art_scale := (1.52 if tier == "boss" else (1.12 if art_key == "wolf" else 0.92))*spectator_zoom()
             draw_circle(at+Vector2(0.0,3.0),maxf(8.0,radius*1.25)*spectator_zoom(),
@@ -975,12 +1036,21 @@ func _draw() -> void:
             draw_rect(bar,HP_BG)
             draw_rect(Rect2(bar.position,Vector2(bar.size.x*health,bar.size.y)),
                 HP_GOOD if side == "disciple" else HP_ENEMY)
-        if enable_source_vl_art and _impact_cues.has(str(id)):
+        if enable_source_vl_art and not jxqy2.active and _impact_cues.has(str(id)):
             var passed := _frame_clock-float(_impact_cues[str(id)])
             if passed >= 0.0 and passed < 0.30:
                 draw_arc(at,13.0+passed*35.0,0.0,TAU,24,
                     Color(1.0,0.80,0.40,0.88*(1.0-passed/0.30)),2.0)
 
+    if jxqy2.active:
+        var actor_feet: Array[Vector2] = []
+        var render_positions: Dictionary = {}
+        for actor in battle.actors.values():
+            var visible_position := visual_position(str(actor["id"]),actor["position"])
+            render_positions[str(actor["id"])] = visible_position
+            actor_feet.append(point_on_map(visible_position))
+        jxqy2.draw_map(self,2,point_on_map,spectator_zoom(),actor_feet,stage_rect,logical_from_map)
+        jxqy2.draw_effects(self,point_on_map,_frame_clock,battle,spectator_zoom(),render_positions)
     if enable_source_vl_art:
         # Combat numbers sit above sprites but BELOW HP/name HUD.
         # Display never changes HP. Event-ID lanes use no gameplay RNG.

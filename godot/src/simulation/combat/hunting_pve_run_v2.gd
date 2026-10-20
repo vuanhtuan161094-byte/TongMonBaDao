@@ -11,7 +11,7 @@ var battle: MapBattleV2
 
 func begin(
     state: SimulationState, region: String, encounter_id: String, seed: int,
-    party_members: Array, continuous_world: bool = false
+    party_members: Array, continuous_world: bool = false, world_options: Dictionary = {}
 ) -> Dictionary:
     if battle != null or state == null or not state.sect.v2_pve_enabled:
         return {"ok":false,"reason":"v2_pve_disabled_or_already_started"}
@@ -77,6 +77,16 @@ func begin(
         )
         if not bool(actor.get("ok",false)):
             return actor
+        # Carry the user's policy through the real dispatch boundary. The
+        # canonical loadout remains the complete allowed set; policy cannot
+        # grant an unlearned or unequipped skill.
+        var policy := AutoSkillPolicyV2.normalize(record.get("auto_skill_policy",{}),actor.get("skill_loadout",[]))
+        if not bool(policy.get("ok",false)):
+            return policy
+        actor["auto_skill_policy"] = policy["policy"]
+        # New configured hunts do not receive unlearned role-granted spells.
+        # Legacy direct battles/old checkpoints keep their authored V2 roles.
+        actor["configured_auto_combat"] = true
         var pilot_skills: Array = record.get("pilot_skill_loadout",[])
         if not pilot_skills.is_empty():
             if not JxPilotSkillsV1.valid_loadout(pilot_skills):
@@ -90,6 +100,7 @@ func begin(
             actor["spiritual_root_values"] = record.get("spiritual_root_values",{}).duplicate(true)
             actor["skill_loadout"] = []
             actor["skill_factors"] = {}
+            actor["auto_skill_policy"] = AutoSkillPolicyV2.default_policy([])
         # Battle owns HP until terminal; no live object link may leak mutations.
         actor["disciple"] = null
         actors.append(actor)
@@ -97,8 +108,17 @@ func begin(
     var spawned := HuntingMapV2.spawn(region,level,encounter_id,seed)
     if not bool(spawned.get("ok",false)):
         return spawned
+    var spawn_offset = world_options.get("spawn_offset",Vector2.ZERO)
+    if not (spawn_offset is Vector2) or not (spawn_offset as Vector2).is_finite():
+        return {"ok":false,"reason":"invalid_world_spawn_offset"}
+    for actor in actors:
+        actor["position"] += spawn_offset
+    for monster in spawned["monsters"]:
+        monster["position"] += spawn_offset
     var map_battle := MapBattleV2.new(seed)
-    var ready := map_battle.setup(encounter_id,actors,spawned["monsters"],{"continuous_world":continuous_world})
+    var setup_options := world_options.duplicate(true)
+    setup_options["continuous_world"] = continuous_world
+    var ready := map_battle.setup(encounter_id,actors,spawned["monsters"],setup_options)
     if not bool(ready.get("ok",false)):
         return ready
     owner_state = state

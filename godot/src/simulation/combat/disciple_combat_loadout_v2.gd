@@ -18,6 +18,7 @@ static func build(
     var basic_ratio_bonus := 0.0
     var range_bonus := 0.0
     var item_ids: Array = []
+    var visual_weapon_path := ""
     if state.sect.equipment_enabled:
         for slot in EquipmentSystem.VALID_SLOTS:
             var item: Dictionary = gear.equipped_item(state,disciple,slot)
@@ -25,6 +26,8 @@ static func build(
                 continue
             var id := str(item.get("id",disciple.equipped_items.get(str(slot),"")))
             item_ids.append(id)
+            if str(slot) == "weapon":
+                visual_weapon_path = str(item.get("path",""))
             var stat: Dictionary = item.get("stats",{})
             var prefix := "equipped/"+id
             if float(stat.get("defense_reduction",0.0)) > 0.0:
@@ -84,6 +87,7 @@ static func build(
         "stat_breakdown":calculated["core_breakdown"],
         "applied_sources":calculated["applied_sources"],
         "equipped_item_ids":item_ids,
+        "visual_weapon_path":visual_weapon_path,
         "basic_range":basic_range,"basic_ratio":basic_ratio,
         "move_speed":move_speed,"basic_interval":base_interval,
         "skill_loadout":learned_damage_skills,

@@ -48,6 +48,7 @@ static func save(battle: MapBattleV2) -> Dictionary:
         "world_waves_completed":battle.world_waves_completed,
         "world_respawn_at":battle._world_respawn_at,
         "event_sequence":battle.event_sequence,
+        "navigation_grid":battle.navigation_grid.duplicate(true),
         "world_monster_templates":serialized_world_templates,
         "actors":serialized_actors,"casts":serialized_casts,"events":serialized_events
     }
@@ -81,6 +82,10 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
     if rows.is_empty() or rows.size() > MapBattleV2.MAX_DISCIPLES+MapBattleV2.MAX_MONSTERS:
         return {"ok":false,"reason":"invalid_actor_count"}
     var battle := MapBattleV2.new(515151)
+    var grid = data.get("navigation_grid",{})
+    if not (grid is Dictionary) or not CombatWorldGridV2.valid(grid):
+        return {"ok":false,"reason":"invalid_saved_navigation_grid"}
+    battle.navigation_grid = grid.duplicate(true)
     battle.encounter_id = id
     battle.now = float(data.get("time",-1.0))
     battle.active = bool(data.get("active",false))
@@ -115,8 +120,10 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
         if actor_id.is_empty() or battle.actors.has(actor_id) or not ["disciple","monster"].has(side):
             return {"ok":false,"reason":"invalid_actor_id_or_side"}
         var pos = _decode_vec2(actor.get("position",null))
-        if not (pos is Vector2) or not MapBattleV2.ARENA.has_point(pos):
+        if not (pos is Vector2) or not battle.world_bounds().has_point(pos):
             return {"ok":false,"reason":"invalid_actor_position"}
+        if not CombatWorldGridV2.walkable(battle.navigation_grid,CombatWorldGridV2.cell_at(pos)):
+            return {"ok":false,"reason":"saved_actor_in_blocked_cell"}
         actor["position"] = pos
         if side == "disciple":
             var learned_skill_ids: Array = actor.get("skill_loadout", [])
@@ -156,7 +163,7 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
             return {"ok":false,"reason":"orphan_or_past_due_cast"}
         if cast.has("center"):
             var center = _decode_vec2(cast["center"])
-            if not (center is Vector2) or not MapBattleV2.ARENA.has_point(center):
+            if not (center is Vector2) or not battle.world_bounds().has_point(center):
                 return {"ok":false,"reason":"invalid_telegraph_position"}
             cast["center"] = center
         elif not battle.actors.has(str(cast.get("target_id",""))):
@@ -185,7 +192,7 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
         var template: Dictionary = raw_template.duplicate(true)
         var template_id := str(template.get("id", ""))
         var template_pos = _decode_vec2(template.get("position", null))
-        if not battle.actors.has(template_id) or str(template.get("side", "")) != "monster" or not (template_pos is Vector2) or not MapBattleV2.ARENA.has_point(template_pos):
+        if not battle.actors.has(template_id) or str(template.get("side", "")) != "monster" or not (template_pos is Vector2) or not battle.world_bounds().has_point(template_pos):
             return {"ok":false,"reason":"invalid_world_monster_template_identity"}
         var template_stats: Dictionary = template.get("stats", {})
         if template_stats.is_empty() or not is_equal_approx(float(template.get("max_hp", 0.0)), float(template_stats.get("max_hp", -1.0))):

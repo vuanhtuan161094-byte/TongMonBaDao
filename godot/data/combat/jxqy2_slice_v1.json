@@ -1,0 +1,431 @@
+{
+  "schema_version": 1,
+  "repository": "Upwinded/jxqy2-assets",
+  "commit": "8ffc1ecd1b50742ac619bf74684f70b9850c2af3",
+  "distribution_status": "UNVERIFIED_LOCAL_QA_ONLY",
+  "source_kind": "JXQY2 offline; not JX1 MMO",
+  "map": {
+    "path": "map/中都-矿山.map",
+    "origin": [
+      0,
+      0
+    ],
+    "size": [
+      50,
+      100
+    ],
+    "folder": "mpc/map/矿山",
+    "tile_ids": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16
+    ],
+    "spawn_provenance": "Combat V2 pilot formations offset by (7,40), snapped to open cells; source MAP does not include NPC spawns. Full source collision mask is used by V2 navigation.",
+    "spawn_offset": [
+      7,
+      40
+    ]
+  },
+  "actors": {
+    "hero": "z01-南宫飞云",
+    "wolf": "n02-灰狼",
+    "boss": "b39-剑客掌门1"
+  },
+  "boss_role_note": "Combat V2 assigns boss tier. Source NPC INI does not establish native JXQY2 boss classification.",
+  "skill": {
+    "canonical_skill_id": "ngu_kiem_thuat",
+    "source_skill_id": "天意剑诀",
+    "source_school": null,
+    "actor_animation": "ini/npcres/z-南宫飞云.ini#[magic] => mpc/character/z01-南宫飞云-sat.mpc",
+    "required_weapon": null,
+    "effect_consumer_v2": "direct_damage",
+    "ini": "ini/magic/player-magic-天意剑诀.ini",
+    "cast": "mpc/character/z01-南宫飞云-sat.mpc",
+    "projectile": "mpc/effect/magic-南宫飞云攻击.mpc",
+    "impact": "mpc/effect/explod-大型红色爆炸a.mpc",
+    "status": "CAST_PROJECTILE_IMPACT_VERIFIED_MAPPING_PARTIAL",
+    "missing": [
+      "Source school and required-weapon learning constraint are not stated by these source records. No new learning/equipment rule is enforced.",
+      "Native generic acMagic cast is used; no skill-specific actionfile is declared by this skill INI. The single-frame image field is not rendered as combat VFX."
+    ],
+    "source_large_icon": "mpc/magic/天意剑诀.mpc"
+  },
+  "files": [
+    {
+      "path": "ini/magic/player-magic-天意剑诀.ini",
+      "git_blob_sha": "8e3b9853248413ed5c691f0b83c1f09c42d1df1d",
+      "size_bytes": 1010
+    },
+    {
+      "path": "ini/npc/b39-剑客掌门1.ini",
+      "git_blob_sha": "7930ba5b82cb35da5357e1d7dbdcac6253313ebb",
+      "size_bytes": 413
+    },
+    {
+      "path": "ini/npc/n02-灰狼.ini",
+      "git_blob_sha": "797823f87d51b5999aba379315759393a14125a8",
+      "size_bytes": 392
+    },
+    {
+      "path": "ini/npcres/npc-b39-剑客掌门1.ini",
+      "git_blob_sha": "dc687e035ebe22b59f304a6bcd8d37c2cf6764d7",
+      "size_bytes": 492
+    },
+    {
+      "path": "ini/npcres/npc-n02-灰狼.ini",
+      "git_blob_sha": "9206abe4e9cc7db68a4776419cc3f856ea2e0cff",
+      "size_bytes": 355
+    },
+    {
+      "path": "map/中都-矿山.map",
+      "git_blob_sha": "836b8ef5cdf6d8aeba0eb69115d350db3a162ace",
+      "size_bytes": 66512
+    },
+    {
+      "path": "mpc/character/b39-剑客掌门1-at.mpc",
+      "git_blob_sha": "8cf2361396ce58af82d55b3810e8fe9780ed2d7f",
+      "size_bytes": 406940,
+      "frames": 136,
+      "directions": 8,
+      "interval_ms": 50,
+      "first_frame_anchor": [
+        25,
+        73
+      ]
+    },
+    {
+      "path": "mpc/character/b39-剑客掌门1-bat.mpc",
+      "git_blob_sha": "15a9913be97817bd682e8f58c500d98233bb924c",
+      "size_bytes": 115123,
+      "frames": 40,
+      "directions": 8,
+      "interval_ms": 48,
+      "first_frame_anchor": [
+        25,
+        73
+      ]
+    },
+    {
+      "path": "mpc/character/b39-剑客掌门1-die.mpc",
+      "git_blob_sha": "4fc92a86cc62a3d67b4e3b27429e9e529879b254",
+      "size_bytes": 307319,
+      "frames": 120,
+      "directions": 8,
+      "interval_ms": 80,
+      "first_frame_anchor": [
+        25,
+        75
+      ]
+    },
+    {
+      "path": "mpc/character/b39-剑客掌门1-st.mpc",
+      "git_blob_sha": "8a2ba6de0b6a14bcfaff9f07e1b8522166c4d08f",
+      "size_bytes": 430329,
+      "frames": 144,
+      "directions": 8,
+      "interval_ms": 100,
+      "first_frame_anchor": [
+        25,
+        73
+      ]
+    },
+    {
+      "path": "mpc/character/b39-剑客掌门1-wlk.mpc",
+      "git_blob_sha": "91c2731732fba1731e3dfdb06fdd5053ef0cf91c",
+      "size_bytes": 234605,
+      "frames": 80,
+      "directions": 8,
+      "interval_ms": 50,
+      "first_frame_anchor": [
+        17,
+        73
+      ]
+    },
+    {
+      "path": "mpc/character/n02-灰狼-at.mpc",
+      "git_blob_sha": "e3d9c842c0222da402dfc43c42ad81448ed624bf",
+      "size_bytes": 219199,
+      "frames": 88,
+      "directions": 8,
+      "interval_ms": 60,
+      "first_frame_anchor": [
+        10,
+        47
+      ]
+    },
+    {
+      "path": "mpc/character/n02-灰狼-bat.mpc",
+      "git_blob_sha": "8d4cad87454a1872f2fe9a684db28a15cee62c30",
+      "size_bytes": 102768,
+      "frames": 40,
+      "directions": 8,
+      "interval_ms": 100,
+      "first_frame_anchor": [
+        10,
+        46
+      ]
+    },
+    {
+      "path": "mpc/character/n02-灰狼-die.mpc",
+      "git_blob_sha": "3638fed80f6dc28af3b017c719851ddf446f40fd",
+      "size_bytes": 191595,
+      "frames": 80,
+      "directions": 8,
+      "interval_ms": 70,
+      "first_frame_anchor": [
+        10,
+        46
+      ]
+    },
+    {
+      "path": "mpc/character/n02-灰狼-st.mpc",
+      "git_blob_sha": "f504ec50dfcc55c6e538f2a6f56b2b56f334ac46",
+      "size_bytes": 402589,
+      "frames": 144,
+      "directions": 8,
+      "interval_ms": 100,
+      "first_frame_anchor": [
+        10,
+        45
+      ]
+    },
+    {
+      "path": "mpc/character/n02-灰狼-wlk.mpc",
+      "git_blob_sha": "5f95f552247d2abada6ad815ee075652ad438fb7",
+      "size_bytes": 220066,
+      "frames": 80,
+      "directions": 8,
+      "interval_ms": 50,
+      "first_frame_anchor": [
+        9,
+        45
+      ]
+    },
+    {
+      "path": "mpc/effect/explod-大型红色爆炸a.mpc",
+      "git_blob_sha": "4b6f2a26712dcda7d9fcc2f1c9c8ae90b91c71ff",
+      "size_bytes": 54550,
+      "frames": 16,
+      "directions": 1,
+      "interval_ms": 46,
+      "first_frame_anchor": [
+        50,
+        100
+      ]
+    },
+    {
+      "path": "mpc/effect/magic-南宫飞云攻击.mpc",
+      "git_blob_sha": "79e76c5f4e4f03a199b12e7797dc5955f1bd8420",
+      "size_bytes": 346044,
+      "frames": 112,
+      "directions": 16,
+      "interval_ms": 40,
+      "first_frame_anchor": [
+        34,
+        64
+      ]
+    },
+    {
+      "path": "mpc/magic/天意剑诀.mpc",
+      "git_blob_sha": "0ccf257a81f52cf5ad2237d7af3d6367dec0ace8",
+      "size_bytes": 7364,
+      "frames": 1,
+      "directions": 8,
+      "interval_ms": 100,
+      "first_frame_anchor": [
+        40,
+        100
+      ]
+    },
+    {
+      "path": "mpc/map/矿山/峭壁008.mpc",
+      "git_blob_sha": "8f9f3fbedddb83ee966349230ab16b994e4631df",
+      "size_bytes": 198206,
+      "frames": 55,
+      "directions": 8,
+      "interval_ms": 100,
+      "first_frame_anchor": [
+        20,
+        32
+      ]
+    },
+    {
+      "path": "mpc/map/矿山/树带雪_1.mpc",
+      "git_blob_sha": "25a01840d4a9e77bf490d1b4c59e07fd60328c0f",
+      "size_bytes": 280329,
+      "frames": 28,
+      "directions": 8,
+      "interval_ms": 100,
+      "first_frame_anchor": [
+        28,
+        128
+      ]
+    },
+    {
+      "path": "mpc/map/矿山/树带雪_2.mpc",
+      "git_blob_sha": "20caf93cb5b256e3962222900db36bb55b6676c5",
+      "size_bytes": 251074,
+      "frames": 27,
+      "directions": 8,
+      "interval_ms": 100,
+      "first_frame_anchor": [
+        21,
+        128
+      ]
+    },
+    {
+      "path": "mpc/map/矿山/树带雪_3.mpc",
+      "git_blob_sha": "442b810cad1928e71ceb5c3dd3f03e1623dc86b3",
+      "size_bytes": 264690,
+      "frames": 29,
+      "directions": 8,
+      "interval_ms": 100,
+      "first_frame_anchor": [
+        32,
+        128
+      ]
+    },
+    {
+      "path": "mpc/map/矿山/雪地00.mpc",
+      "git_blob_sha": "0f9f979879078e7a73b62b76c0055db07a9215af",
+      "size_bytes": 106111,
+      "frames": 64,
+      "directions": 8,
+      "interval_ms": 100,
+      "first_frame_anchor": [
+        31,
+        32
+      ]
+    },
+    {
+      "path": "mpc/map/矿山/雪堆00.mpc",
+      "git_blob_sha": "f503e190c7b359d3c04a829db2ffa54e62d0d94c",
+      "size_bytes": 167539,
+      "frames": 119,
+      "directions": 8,
+      "interval_ms": 100,
+      "first_frame_anchor": [
+        31,
+        32
+      ]
+    },
+    {
+      "path": "script/map/中都-矿山/地图陷阱1.txt",
+      "git_blob_sha": "06d47eec4025a7e32c53398017ece3a6ec7930c2",
+      "size_bytes": 635
+    },
+    {
+      "path": "mpc/map/矿山/峭壁001.mpc",
+      "git_blob_sha": "6cea155ca175226fb781392d1f592a356a6a2c1b",
+      "size_bytes": 166598
+    },
+    {
+      "path": "mpc/map/矿山/峭壁002.mpc",
+      "git_blob_sha": "505fd7b01dead455f658b1f4576a840cc58c2e37",
+      "size_bytes": 329614
+    },
+    {
+      "path": "mpc/map/矿山/峭壁003.mpc",
+      "git_blob_sha": "3de65585dcfb4f746d231cd77b735d36a5280a9f",
+      "size_bytes": 230977
+    },
+    {
+      "path": "mpc/map/矿山/峭壁004.mpc",
+      "git_blob_sha": "6a5ef3f360f9c6dbb73bb588b4bf2efa33a7eff5",
+      "size_bytes": 277327
+    },
+    {
+      "path": "mpc/map/矿山/峭壁005.mpc",
+      "git_blob_sha": "18f75aa30ed30300e7a2a8f1cbea78da1ef93faa",
+      "size_bytes": 477879
+    },
+    {
+      "path": "mpc/map/矿山/峭壁006.mpc",
+      "git_blob_sha": "7c4746fac9e00b361cd2b3e4318e3a0e44d7128a",
+      "size_bytes": 305492
+    },
+    {
+      "path": "mpc/map/矿山/峭壁007.mpc",
+      "git_blob_sha": "8a3bc13611353006f82d57dabeb2aa9cc163dad1",
+      "size_bytes": 287803
+    },
+    {
+      "path": "mpc/map/矿山/峭壁009.mpc",
+      "git_blob_sha": "57e6db03733c5e337fc133d6423b1f1941baf574",
+      "size_bytes": 371718
+    },
+    {
+      "path": "mpc/map/矿山/树带雪_4.mpc",
+      "git_blob_sha": "14236cb46295c794ec86ee4ba28c60b810048edf",
+      "size_bytes": 179019
+    },
+    {
+      "path": "mpc/map/矿山/树带雪_5.mpc",
+      "git_blob_sha": "61c4f6600f83c78fa8089d8f9b87b8341d918fd9",
+      "size_bytes": 144000
+    },
+    {
+      "path": "save/rpg0/player.ini",
+      "git_blob_sha": "eff30a4b28983a08b102759c6021c560a8e2f832",
+      "size_bytes": 501
+    },
+    {
+      "path": "ini/npcres/z-南宫飞云.ini",
+      "git_blob_sha": "f395c8922344ac8052a736fc4b73a0fb5f02228c",
+      "size_bytes": 1398
+    },
+    {
+      "path": "mpc/character/z01-南宫飞云-st.mpc",
+      "git_blob_sha": "a98cadf79bbdef2d332d03854a219607863665ee",
+      "size_bytes": 379086
+    },
+    {
+      "path": "mpc/character/z01-南宫飞云-wlk.mpc",
+      "git_blob_sha": "0a6b5184b4dbb4ef18f8452850058d322e6ebd2f",
+      "size_bytes": 229857
+    },
+    {
+      "path": "mpc/character/z01-南宫飞云-at1.mpc",
+      "git_blob_sha": "a3b7e87302851e27fcd2c508c74bf89af476c9b8",
+      "size_bytes": 389800
+    },
+    {
+      "path": "mpc/character/z01-南宫飞云-sat.mpc",
+      "git_blob_sha": "c0c031c04bdbbfcdf64a0b52dd6d448bf7f52956",
+      "size_bytes": 366443
+    },
+    {
+      "path": "mpc/character/z01-南宫飞云-bat.mpc",
+      "git_blob_sha": "7d306161b35f8c1659483abd1192e29398a850cc",
+      "size_bytes": 119013
+    },
+    {
+      "path": "mpc/character/z01-南宫飞云-die.mpc",
+      "git_blob_sha": "5a4c7b409c7ea633d165fb9c3e06184b51e4e269",
+      "size_bytes": 460409
+    }
+  ],
+  "actor_clips": {
+    "hero": {
+      "idle": "st",
+      "run": "wlk",
+      "attack": "at1",
+      "cast": "sat",
+      "hit": "bat",
+      "die": "die"
+    }
+  }
+}

@@ -175,7 +175,19 @@ func _run() -> void:
                 "JX skill loadout did not persist in the actual encounter snapshot: "+str(id)):
             return
 
-    var finished := encounter.finish(400)
+    # M2 deliberately keeps the live zone active after a cleared wave.
+    # Preserve the M1 reward/ownership/JX checks through the real return API.
+    if not _check(encounter.battle.continuous_world,"DEMO did not enter the continuous M2 zone"):
+        return
+    for step in range(400):
+        if encounter.battle.world_waves_completed > 0 or not encounter.battle.active:
+            break
+        var advanced := encounter.advance(true)
+        if not _check(bool(advanced.get("ok",false)),"continuous DEMO advance failed"):
+            return
+    if not _check(encounter.battle.active and encounter.battle.world_waves_completed > 0,"cleared DEMO wave ended the zone automatically"):
+        return
+    var finished := encounter.return_to_base()
     if not _check(bool(finished.get("ok",false)) and encounter.battle.outcome == "win",
             "actual level 5 boss run did not finish successfully: "+str(finished)):
         return

@@ -28,6 +28,12 @@ var world_waves_completed: int = 0
 var _world_respawn_at: float = -1.0
 var _world_monster_templates: Array = []
 var event_sequence: int = 0
+var navigation_grid: Dictionary = {}
+
+func world_bounds() -> Rect2:
+    if navigation_grid.is_empty():
+        return ARENA
+    return Rect2(Vector2.ZERO,Vector2(float(navigation_grid["width"]),float(navigation_grid["height"])))
 
 func _init(seed_value: int = 515151) -> void:
     rng = GameRng.new(seed_value)
@@ -37,6 +43,10 @@ func setup(id: String, party: Array, monsters: Array, options: Dictionary = {}) 
         return {"ok":false,"reason":"invalid_encounter_or_party"}
     if monsters.is_empty() or monsters.size() > MAX_MONSTERS:
         return {"ok":false,"reason":"invalid_monster_group"}
+    var requested_grid = options.get("navigation_grid",{})
+    if not (requested_grid is Dictionary) or not CombatWorldGridV2.valid(requested_grid):
+        return {"ok":false,"reason":"invalid_navigation_grid"}
+    navigation_grid = requested_grid.duplicate(true)
     actors.clear()
     events.clear()
     pending_casts.clear()
@@ -63,7 +73,7 @@ func setup(id: String, party: Array, monsters: Array, options: Dictionary = {}) 
         var stats: Dictionary = row.get("stats",{})
         var pos: Vector2 = row.get("position",Vector2(-1.0,-1.0))
         var role := str(row.get("role","frontline"))
-        if actor_id.is_empty() or stats.is_empty() or not ARENA.has_point(pos) or not ["frontline","ranged","mage","healer"].has(role):
+        if actor_id.is_empty() or stats.is_empty() or not world_bounds().has_point(pos) or not ["frontline","ranged","mage","healer"].has(role):
             return {"ok":false,"reason":"invalid_party_actor"}
         var learned_skills: Array = row.get("skill_loadout", [])
         var policy_result := AutoSkillPolicyV2.normalize(row.get("auto_skill_policy", {}), learned_skills)
@@ -84,6 +94,7 @@ func setup(id: String, party: Array, monsters: Array, options: Dictionary = {}) 
         entries.append({
             "id":actor_id,"side":"disciple","party_id":party_id,"role":role,"tier":"disciple",
             "race_id":"nhan_toc","position":pos,"stats":stats.duplicate(true),
+            "visual_weapon_path":str(row.get("visual_weapon_path","")),
             "hp":hp,"max_hp":max_hp,"resistances":row.get("resistances",{}).duplicate(true),
             "range":float(row.get("basic_range",1.5 if role == "frontline" else (4.8 if role == "healer" else 5.5))),
             "move_speed":float(row.get("move_speed",2.35 if role == "frontline" else 2.05)),
@@ -91,6 +102,7 @@ func setup(id: String, party: Array, monsters: Array, options: Dictionary = {}) 
             "basic_interval":float(row.get("basic_interval",1.6)),
             "skill_loadout":row.get("skill_loadout",[]).duplicate(true),
             "auto_skill_policy":policy_result["policy"],
+            "configured_auto_combat":bool(row.get("configured_auto_combat",false)),
             "pilot_loadout":row.get("pilot_skill_loadout",[]).duplicate(true),
             "pilot_roots":row.get("spiritual_root_values",{}).duplicate(true),
             "pilot_ready":{},"pilot_effects":[],
@@ -109,7 +121,7 @@ func setup(id: String, party: Array, monsters: Array, options: Dictionary = {}) 
         var stats: Dictionary = row.get("stats",{})
         var position: Vector2 = row.get("position",Vector2(-1.0,-1.0))
         var tier := str(row.get("tier",""))
-        if actor_id.is_empty() or not ARENA.has_point(position) or not ["normal","elite","boss"].has(tier):
+        if actor_id.is_empty() or not world_bounds().has_point(position) or not ["normal","elite","boss"].has(tier):
             return {"ok":false,"reason":"invalid_monster_actor"}
         if stats.is_empty() or float(stats.get("max_hp",0.0)) <= 0.0 or float(stats.get("attack",0.0)) <= 0.0:
             return {"ok":false,"reason":"invalid_monster_stats"}
@@ -131,6 +143,9 @@ func setup(id: String, party: Array, monsters: Array, options: Dictionary = {}) 
     entries.sort_custom(func(a,b): return str(a["id"]) < str(b["id"]))
     for actor in entries:
         var actor_id := str(actor["id"])
+        actor["position"] = CombatWorldGridV2.nearest_open(navigation_grid,actor["position"])
+        if not world_bounds().has_point(actor["position"]):
+            return {"ok":false,"reason":"navigation_has_no_open_spawn"}
         if actors.has(actor_id) or float(actor["hp"]) <= 0.0 or float(actor["hp"]) > float(actor["max_hp"]):
             actors.clear()
             return {"ok":false,"reason":"duplicate_actor_or_invalid_monster_hp"}
@@ -167,7 +182,7 @@ func step(viewed_map: bool = false) -> Dictionary:
         # Explicit pilot loadout replaces role-granted free support abilities.
         if JxPilotRuntimeV1.try_cast(self,actor,target,STEP_SECONDS):
             continue
-        if (actor.get("pilot_loadout",[]) as Array).is_empty():
+        if (actor.get("pilot_loadout",[]) as Array).is_empty() and not bool(actor.get("configured_auto_combat",false)):
             if str(actor["role"]) == "healer" and now >= float(actor["next_skill"]):
                 if _heal_ally(actor):
                     continue
@@ -181,15 +196,19 @@ func step(viewed_map: bool = false) -> Dictionary:
         if distance > attack_range:
             var delta := minf(float(actor["move_speed"])*STEP_SECONDS,maxf(0.0,distance-attack_range+0.02))
             if delta > 0.0:
-                var direction := ((target["position"] as Vector2)-(actor["position"] as Vector2)).normalized()
-                actor["position"] = _keep_inside((actor["position"] as Vector2)+direction*delta)
+                if navigation_grid.is_empty():
+                    var direction := ((target["position"] as Vector2)-(actor["position"] as Vector2)).normalized()
+                    actor["position"] = _keep_inside((actor["position"] as Vector2)+direction*delta)
+                else:
+                    actor["position"] = _keep_inside(CombatWorldGridV2.move_toward(
+                        navigation_grid,actor["position"],target["position"],delta))
                 _event("move",{"actor_id":id,"position":actor["position"]})
             continue
         if now >= float(actor["next_skill"]):
             if str(actor["tier"]) == "elite" or str(actor["tier"]) == "boss":
                 _begin_telegraphed_aoe(actor,target)
                 continue
-            if (str(actor["role"]) == "mage" and (actor.get("pilot_loadout",[]) as Array).is_empty() and _enemies_near(target,3.0)>=2):
+            if (str(actor["role"]) == "mage" and not bool(actor.get("configured_auto_combat",false)) and (actor.get("pilot_loadout",[]) as Array).is_empty() and _enemies_near(target,3.0)>=2):
                 _cast_mage_aoe(actor,target)
                 continue
         var auto_policy: Dictionary = actor.get("auto_skill_policy", {})
@@ -259,7 +278,7 @@ func _respawn_world_wave() -> void:
         var actor: Dictionary = (template_value as Dictionary).duplicate(true)
         var actor_id := str(actor["id"])
         var base: Vector2 = actor["position"]
-        actor["position"] = _keep_inside(base + offset)
+        actor["position"] = CombatWorldGridV2.nearest_open(navigation_grid,_keep_inside(base + offset))
         actor["hp"] = float(actor["max_hp"])
         actor["next_basic"] = now
         actor["next_skill"] = now + 3.5 if str(actor.get("tier", "")) == "boss" else now + 4.0
@@ -558,7 +577,9 @@ func _sync_linked_hp(actor: Dictionary) -> void:
         linked.hp = float(actor["hp"])
 
 func _keep_inside(position: Vector2) -> Vector2:
-    return Vector2(clampf(position.x,0.0,36.0),clampf(position.y,0.0,20.0))
+    if navigation_grid.is_empty():
+        return Vector2(clampf(position.x,0.0,36.0),clampf(position.y,0.0,20.0))
+    return position.clamp(Vector2.ZERO,world_bounds().size-Vector2(0.000001,0.000001))
 
 func _event(kind: String, payload: Dictionary) -> void:
     if events.size() >= MAX_EVENTS and not continuous_world:

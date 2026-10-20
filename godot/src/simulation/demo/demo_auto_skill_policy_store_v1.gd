@@ -8,6 +8,8 @@ static func path_for_active_save() -> String:
 	var active_save := str(ProjectSettings.get_setting("runtime/live_save_path", ""))
 	if not active_save.begins_with("user://demo_sandbox/"):
 		return ""
+	if active_save.get_file().begins_with("jxqy2_"):
+		return "user://demo_sandbox/jxqy2_auto_skill_policy_v1.json"
 	return SAVE_PATH
 
 static func load_policy(actor_id: String, owned_skill_ids: Array) -> Dictionary:
