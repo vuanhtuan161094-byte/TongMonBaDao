@@ -29,6 +29,9 @@ var roster_list: VBoxContainer
 var roster_scroll: ScrollContainer
 var status: Label
 var fight_state_badge: Label
+var camera_zoom_label: Label
+var camera_zoom_minus: Button
+var camera_zoom_plus: Button
 var launch_button: Button
 var resume_button: Button
 var claim_button: Button
@@ -166,12 +169,13 @@ func _build() -> void:
     battle_layer.draw_pilot_ground = true
     battle_layer.enable_source_vl_art = true
     battle_layer.enable_spectator_framing = true
-    battle_layer.spectator_zoom_ceiling = 1.0
+    battle_layer.spectator_zoom_ceiling = 1.65
+    battle_layer.spectator_zoom_multiplier = 1.20
     viewing.add_child(battle_layer)
     fight_state_badge = Label.new()
     fight_state_badge.name = "C4HuntingPhase"
     fight_state_badge.position = Vector2(20,14)
-    fight_state_badge.size = Vector2(790,37)
+    fight_state_badge.size = Vector2(625,37)
     fight_state_badge.text = "CHƯA XUẤT CHIẾN — hãy chọn đệ tử và nhấn PHÁI ĐỘI ĐI SĂN"
     fight_state_badge.add_theme_font_size_override("font_size",16)
     fight_state_badge.add_theme_color_override("font_color",Color(0.98,0.90,0.62,1.0))
@@ -180,6 +184,36 @@ func _build() -> void:
     fight_state_badge.add_theme_constant_override("shadow_offset_y",2)
     fight_state_badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
     viewing.add_child(fight_state_badge)
+
+    camera_zoom_minus = Button.new()
+    camera_zoom_minus.name = "CombatZoomOut"
+    camera_zoom_minus.text = "−"
+    camera_zoom_minus.position = Vector2(663,12)
+    camera_zoom_minus.size = Vector2(44,39)
+    camera_zoom_minus.tooltip_text = "Thu nhỏ góc nhìn chiến đấu"
+    camera_zoom_minus.pressed.connect(_change_combat_camera.bind(-0.20))
+    viewing.add_child(camera_zoom_minus)
+    camera_zoom_label = Label.new()
+    camera_zoom_label.name = "CombatZoomPercent"
+    camera_zoom_label.position = Vector2(711,15)
+    camera_zoom_label.size = Vector2(70,34)
+    camera_zoom_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+    camera_zoom_label.add_theme_font_size_override("font_size",15)
+    camera_zoom_label.add_theme_color_override("font_color",Color(1.0,0.94,0.78,1.0))
+    camera_zoom_label.text = "120%"
+    viewing.add_child(camera_zoom_label)
+    camera_zoom_plus = Button.new()
+    camera_zoom_plus.name = "CombatZoomIn"
+    camera_zoom_plus.text = "+"
+    camera_zoom_plus.position = Vector2(785,12)
+    camera_zoom_plus.size = Vector2(44,39)
+    camera_zoom_plus.tooltip_text = "Phóng lớn góc nhìn chiến đấu"
+    camera_zoom_plus.pressed.connect(_change_combat_camera.bind(0.20))
+    viewing.add_child(camera_zoom_plus)
+    for camera_button in [camera_zoom_minus,camera_zoom_plus]:
+        camera_button.add_theme_stylebox_override("normal",_hunting_panel_style(
+            Color(0.15,0.29,0.23,0.96),Color(0.77,0.66,0.41,1.0)))
+        camera_button.add_theme_color_override("font_color",Color(1.0,0.97,0.84,1.0))
 
     status = Label.new()
     status.position = Vector2(18,636)
@@ -198,6 +232,16 @@ func _build() -> void:
     for label in [region_text,level_text,roster_text,roster_diagnostics]:
         label.add_theme_color_override("font_color",Color(0.18,0.24,0.17,1.0))
     _status("Cần đệ tử thật có Tu Vi/Luyện Thể V2 và rảnh. Nhấn 'Tuyển đệ tử V2' để tới Dẫn Tiên Đài.")
+
+func _change_combat_camera(delta: float) -> void:
+    if battle_layer == null:
+        return
+    battle_layer.spectator_zoom_multiplier = clampf(
+        battle_layer.spectator_zoom_multiplier + delta,0.70,1.90)
+    if camera_zoom_label != null:
+        camera_zoom_label.text = "%d%%" % int(roundf(
+            battle_layer.spectator_zoom_multiplier*100.0))
+
 
 func _hunting_panel_style(fill: Color, outline: Color) -> StyleBoxFlat:
     var style := StyleBoxFlat.new()
