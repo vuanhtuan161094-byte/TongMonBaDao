@@ -4735,6 +4735,7 @@ func _on_living_cue_pressed(cue: Dictionary) -> void:
 
 func _build_disciple_summary_panel() -> void:
     disciple_summary_panel = Panel.new()
+    disciple_summary_panel.theme = _legible_parchment_theme()
     disciple_summary_panel.name = "DiscipleSummaryPanel"
     disciple_summary_panel.position = Vector2(956, 80)
     disciple_summary_panel.size = Vector2(308, 552)
