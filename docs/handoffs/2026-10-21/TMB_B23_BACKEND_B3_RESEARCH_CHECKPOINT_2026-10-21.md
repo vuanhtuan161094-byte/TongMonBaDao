@@ -4,7 +4,7 @@
 
 **Date:** 2026-10-21 · **Status:** READ-ONLY CODE AUDIT + DESIGN PROPOSAL; NOT CODED, NOT RUNTIME-TESTED · **Research base:** `main` @ `461caca1171462e0da092f21108c5c1733157ad9` · **Document branch:** `docs/tmb-status-20261021-v5-sa-lib`.
 
-> **OWNER PRIORITY:** 1 main task = B2.3 Spawn & Loot Runtime; 1 secondary task = Source A library conversion only when safe hardware gates permit. V5.1 Combat/Character Studio V2 hold. No user Windows requirement. No merge, CI/FULL, balance lock, Source A metadata upload, or gameplay change is authorized by this research note.
+> **HISTORICAL OWNER PRIORITY (BEFORE FOUR-ZIP REVIEW; SUPERSEDED ABOVE):** 1 main task = B2.3 Spawn & Loot Runtime; 1 secondary task = Source A library conversion only when safe hardware gates permit. V5.1 Combat/Character Studio V2 hold. No user Windows requirement. No merge, CI/FULL, balance lock, Source A metadata upload, or gameplay change is authorized by this research note.
 
 ## 1. Findings from actual GitHub main code (not the unavailable local B2.3 worktree)
 
