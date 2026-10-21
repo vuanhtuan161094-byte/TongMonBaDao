@@ -6,7 +6,11 @@
 **Code audit:** GitHub `main @ 461caca1171462e0da092f21108c5c1733157ad9`  
 **Nguồn handoff:** `docs/tmb-status-20261021-v5-sa-lib @ 447112287da6b2aaa0e7c32bf53a3e3d70fa59d0`  
 **Nhánh thiết kế độc lập:** `docs/b3-v2-architecture-redesign-20261022`  
-**Scope:** audit + kiến trúc/contract/roadmap/QA có điều kiện. Không sửa gameplay/test/save, không CI, không merge, không chạm local Codex SA-LIB hoặc B2.4.
+**Scope:** audit + kiến trúc/contract/roadmap/QA có điều kiện. Không sửa gameplay/test/save, không CI, không merge; không chạm worktree/agent Map, Character Studio, Source A SA-LIB, B2.4, V5.1.
+
+> **OWNER OVERRIDE / ERRATUM — 2026-10-22, áp dụng ngay cho B3 V2:** Lệnh người dùng từ **2026-09-30** và **2026-10-21** xác nhận PvE **Evil Hunter Tycoon / Võ Lâm continuous in-place**: **không có trận 90 giây, không nối trận, không reset actor sau wave**. Mỗi quái có spawn slot và chết/rơi đồ/hồi sinh **độc lập**, ngay khi nhiều đệ tử tiếp tục combat trên **cùng map đang sống**. Tinh Anh/Boss xuất hiện theo cấu hình, skill auto theo cooldown; map farm **phẳng, chỉ hoa/cỏ trang trí, không collision vật cản hay pathfinding**. 90s vẫn đang nằm trong code `MapBattleV2` legacy, là **technical debt cần xử lý bằng CODE packet khác**, không phải luật được duyệt. Combat V2 vẫn là authority damage/stats/skills/RNG; đời sống thế giới/combat scheduling cần tái cấu trúc để *dùng* chính authority đó. **Mọi đoạn trước đây khuyên nối các trận hữu hạn đã bị hủy bỏ.**
+
+> **Concurrent work owner update:** Người dùng xác nhận đang có **Map** và **Character Studio nhân vật** thực hiện riêng, bên cạnh **Source A library**; tính là **OWNER-REPORTED ACTIVE**, chưa thể xác thực trạng thái worktree/HEAD từ GitHub. Không chuyển chúng thành HOLD dựa vào handoff cũ, không tự dừng/ghi đè, không chạy nhiệm vụ trùng chức năng. Combat V5.1 owner visual acceptance vẫn chưa có bằng chứng đóng; B2.4 standalone sandbox đã bàn giao ZIP, nhưng chưa phải B3 production.
 
 ## A. Kết luận thiết kế
 
@@ -42,7 +46,7 @@ Một Kho tông môn + registry vật phẩm unique, chính sách phân bổ
 | Kho & sở hữu | **Một Kho tông môn** cho resource stack; không Loot Warehouse, không team loot bag tồn tại lâu; gear unique 100% sở hữu tông môn, đệ tử chỉ được cấp quyền dùng; tôn trọng lock/reserve, không gameplay storage cap. |
 | Đệ tử & thưởng | Hai nhánh 30 Tu Vi ×10 tầng / 30 Luyện Thể ×10 tầng; săn tương xứng cảnh giới là con đường tăng Tu Vi mạnh (thiết kế khoảng 10–20× lao động thường), kèm skill mastery/Contribution/Linh Thạch tùy source luật đã duyệt. Tránh phá luật progression cũ trước migration. |
 | Trang bị đích | **10 ordinary slots, 12 phẩm, 24 lineage set (18 combat/6 nghề), mốc 2/3/4**, 6 vị trí set hợp lệ; 3+3 kích hoạt cả hai; 3 Phù + 2 Pháp Bảo **riêng**; độ phẩm != item realm rank 1..30. Không tự phát minh Chân Văn Cộng Hưởng. |
-| QoL/UX | Android landscape 1280×720; map/camera và chibi Source A là presentation; người chơi có thể pan/zoom/chọn nhân vật, không khóa toàn bộ camera vào một người; chân/bóng thật định vị sprite. |
+| QoL/UX | Android landscape 1280×720; map/camera và chibi Source A là presentation; người chơi có thể pan/zoom/chọn nhân vật, không khóa toàn bộ camera vào một người; chân/bóng thật định vị sprite. **Map săn phẳng, chỉ nền/hoa cỏ trang trí; không vật cản/pathfinding/collision địa hình** theo quyết định owner 21/10. |
 | RNG & durability | Determinism, save/load chống double award, idempotent, migration legacy. AI, UI, asset converter không phải kill/loot authority. |
 
 **Lưu ý về spec cũ:** `docs/P3_7_LONG_TERM_SECT_ECONOMY_HUNTING_SPEC.md` còn mô tả injury dạng thang 0–100; luật runtime đã được khóa mới hơn theo GP-02C1 là 0/1/120. Không âm thầm tái kích hoạt mô tả cũ.
@@ -51,7 +55,7 @@ Một Kho tông môn + registry vật phẩm unique, chính sách phân bổ
 
 | Code | Có thật | Gap B3 |
 |---|---|---|
-| `map_battle_v2.gd` | Bước **0,25 giây combat**, trận tối đa **90 giây**, 30 disciple / 40 mob trên **một battle**, kết thúc khi quái/đệ tử chết hết hoặc timeout. Presentation flags không tham gia simulation. | **Chưa là world combat liên tục**; không thể tuyên bố respawn giữa cùng một trận hoặc 300 cluster live. |
+| `map_battle_v2.gd` | Code legacy hiện bước **0,25 giây**, `MAX_SECONDS=90`, **tự WIN khi hết quái**, 30 disciple/40 monster trong một `MapBattleV2`; presentation flag không tham gia tính toán. | **90s/WIN-on-empty là lỗi khớp thiết kế đích, không phải luật B3**. World-combat mới phải bước liên tục **không timeout 90s, không wave clear, không re-setup/reset**; giữ kernel formula/RNG/skills của Combat V2 và backward compatibility save/mode legacy. |
 | `hunting_map_v2.gd` | 3 vùng V2 pilot, 5 mức lựa chọn/vùng, reward **theo trận thắng rồi claim**, rare được roll theo encounter; bảo đảm `linh_tuy` theo **4 thắng encounter** lịch sử. | Không phải loot per-monster production; không biến 4 win thành 4 kill. |
 | `hunting_pve_run_v2.gd` | Begin/advance/finish/claim, đặt reservation cho đệ tử, terminal HP/Injury, live snapshot. | Chưa nối continuous world/legacy scheduler; claim và terminal receipt khác nguồn. |
 | `simulation_scheduler.gd` | Phút mô phỏng, nghề/production/đệ tử; legacy path HUNT→TRAVEL→COMBAT→LOOT và `CombatSystem.resolve_encounter`. | Có **legacy route cá nhân**; không thể đồng thời trả B2.4 per-kill cho cùng một kill. |
@@ -61,16 +65,16 @@ Một Kho tông môn + registry vật phẩm unique, chính sách phân bổ
 | `equipment_system.gd` | **Pilot cũ 3 slot, 3 quality, 5 recipes**; craft hiện synchronous, unique item registry. | Chưa có 10/12/24, chưa có lệnh forge có thời gian thật theo V2; không gắn fake ETA. |
 | `save_service.gd` | Current wire `v2` với staging `.tmp`, verify, backup. | Schema thế giới, auto-duty và receipt mới chưa tích hợp production; cần versioned migration packet. |
 
-**Handoff mới hơn:** B2.3 đã có ZIP với 7 focused PASS; B2.4 ZIP integrity verified (85 entries, 84 hash) và có standalone opt-in săn thử 6 synthetic actors, Warehouse clone, seeded test-only `linh_moc`. **Production per-kill table vẫn trống, Editor manual pending, live SaveService và integration pending.** Worktree B2.4/Codex SA-LIB chỉ địa phương, không thể đọc từ GitHub. V5.1 và Character Studio HOLD.
+**Handoff mới hơn:** B2.3 đã có ZIP với 7 focused PASS; B2.4 ZIP integrity verified (85 entries, 84 hash) và có standalone opt-in săn thử 6 synthetic actors, Warehouse clone, seeded test-only `linh_moc`. **Production per-kill table vẫn trống, Editor manual pending, live SaveService và integration pending.** Các worktree địa phương không xem được từ GitHub. **Mới nhất từ owner:** Map và Character Studio đang có các luồng thực hiện song song; Source A library vẫn là luồng chuyển đổi riêng. Handoff ghi Character Studio HOLD là **mốc cũ**, không được dùng để bác thông báo ACTIVE mới; V5.1 visual vẫn chưa owner PASS.
 
 ## C. Nguyên tắc thiết kế sản phẩm B3 V2
 
-1. **Duty thường trực trước, FarmOrder sau.** Người chơi có thể giao đội “săn liên tục ở vùng này, đổi khi nguy hiểm, nghỉ nếu HP thấp”; tùy chọn thêm ưu tiên vật liệu/đồ bộ/Boss/Tu Vi. Đội không vô lý trở về nhà ngay khi kiếm đủ 3 nguyên liệu nếu còn đủ an toàn để săn tiếp.
-2. **Combat V2 là kernel duy nhất.** World coordinator quản lý di chuyển, chọn encounter, hợp đồng spawn/lease/reward, không tạo `damage_v3`/skill RNG riêng. V5 render những gì kernel xảy ra.
-3. **Mỗi quái một nguồn chết và reward identity duy nhất.** Dùng `zone_instance/slot/generation`, một receipt/kill, kiểm soát cạnh tranh giữa đội; preview/UI không bao giờ cấp loot.
-4. **Một thế giới logic, nhiều cách trình bày.** Visible/offscreen có cùng state, RNG và kết quả với cùng lệnh/thời gian; trình diễn chỉ là projection. Đã có game logic thì có thể dùng Source A pack được QA sau, không chờ chuyển đổi 6.578 rig để chứng minh backend.
-5. **Một economy, nhiều nguồn cung.** Mỏ/Linh Lâm/Linh Điền sản xuất ổn định; săn cấp nguyên liệu yêu thú, phần thưởng cá nhân, đặc sản vùng, gear trực tiếp; craft là consumer, không chi phối mọi quyết định.
-6. **Càng đông càng giảm micro.** Team policy > hall policy > direct disciple commands; scheduler theo sự kiện/nhóm; không AI per-frame cho 1.000–3.000 người.
+1. **Thế giới PvE + Combat V2 continuous in-place, không encounter/reset/90s.** Một bản đồ logic hoạt động liên tục, quái chết và hồi từng cá thể trong lúc đệ tử vẫn truy đuổi/đánh/skill. Combat V2 giữ công thức authority; orchestration/lifecycle được tách để mở world-step.\n2. **Duty thường trực trước, FarmOrder sau.** Người chơi có thể giao đội “săn liên tục ở vùng này, đổi khi nguy hiểm, nghỉ nếu HP thấp”; tùy chọn thêm ưu tiên vật liệu/đồ bộ/Boss/Tu Vi. Đội không vô lý trở về nhà ngay khi kiếm đủ 3 nguyên liệu nếu còn đủ an toàn để săn tiếp.
+3. **Combat V2 là kernel duy nhất.** World coordinator quản lý di chuyển, chọn encounter, hợp đồng spawn/lease/reward, không tạo `damage_v3`/skill RNG riêng. V5 render những gì kernel xảy ra.
+4. **Mỗi quái một nguồn chết và reward identity duy nhất.** Dùng `zone_instance/slot/generation`, một receipt/kill, kiểm soát cạnh tranh giữa đội; preview/UI không bao giờ cấp loot.
+5. **Một thế giới logic, nhiều cách trình bày.** Visible/offscreen có cùng state, RNG và kết quả với cùng lệnh/thời gian; trình diễn chỉ là projection. Đã có game logic thì có thể dùng Source A pack được QA sau, không chờ chuyển đổi 6.578 rig để chứng minh backend.
+6. **Một economy, nhiều nguồn cung.** Mỏ/Linh Lâm/Linh Điền sản xuất ổn định; săn cấp nguyên liệu yêu thú, phần thưởng cá nhân, đặc sản vùng, gear trực tiếp; craft là consumer, không chi phối mọi quyết định.
+7. **Càng đông càng giảm micro.** Team policy > hall policy > direct disciple commands; scheduler theo sự kiện/nhóm; không AI per-frame cho 1.000–3.000 người.
 
 ## D. Đề xuất kiến trúc module (logical, CHƯA CÓ FILE RUNTIME)
 
@@ -84,7 +88,7 @@ B3TeamDutyOrchestrator (single authority for team hunting admission)
            ├── B3TravelSupplyRecovery (canonical time, injury/HP/items)
            └── B3ZoneRuntime (instance + spawn slots + ownership leases)
                         ↓
-                  B3CombatBridge → MapBattleV2 / HuntingPveRunV2
+                  B3CombatV2WorldStep (continuous actors & casts)\n                       └── Reuse Combat V2 formulas/skills/targeting/RNG, NOT legacy battle lifecycle
                         ↓       authoritative lethal transition/outcome
                   B3KillAttribution → B3RewardResolver
                         ↓
@@ -107,7 +111,7 @@ B3TeamDutyOrchestrator (single authority for team hunting admission)
 - `TeamDuty`: team ID canonical, mode `CONTINUOUS_HUNT | TARGET_MATERIAL | TARGET_GEAR | PROGRESSION | BOSS_SEARCH | RETURN/HOLD`, ưu tiên cấp nhóm, route, entitlement; không sở hữu danh sách disciple copy.
 - `ZoneInstance`: zone/content version, unlock, biome, world/grid coordinates, clustered source pool, monster instance slots, respawn eligibility, contested boss lease.
 - `MonsterSlot`: stable slot ID, species + tier + authored content source, `generation`, `alive/dead`, respawn deadline theo canonical tick/offset, one active lease; không render sprite nghĩa là chết.
-- `HuntSession`: active team, zone/encounter reference, travel/engagement/return state, canonical time consumed, battle snapshot/HP/target and stop request.
+- `HuntDuty`: active team/region/world ID, patrol/engage/retreat state, world time cursor, persistent actor HP/cooldowns/pending casts/positions, stop request. **Không có reset encounter hoặc WIN toàn map**. Existing legacy `HuntingPveRunV2` vẫn riêng cho save cũ.
 - `RewardReceipt`: stable identity, source table/seed and already-rolled payload, recipient/progression shares, status `PENDING/COMMITTED`, provenance; game save chung với Warehouse/unique/disciples.
 - `ForgeOrder` (phase riêng): real crafter/building/time/material escrow/finish outcome/item unique receipt; current sync `craft()` pilot không tự động biến thành queue.
 
@@ -121,38 +125,45 @@ B3TeamDutyOrchestrator (single authority for team hunting admission)
 - Đội thắng: quái đó được quyết toán, slot chuyển dead, chờ hồi quái; đội tự nhặt thưởng *về authority ngay*, đánh tiếp/quay tuần tra. **Không yêu cầu click Claim mỗi trận B3 production**, nhưng legacy claim vẫn giữ nguyên mode cũ cho save cũ.
 - HP/stamina/medicine thấp: AI ưu tiên thoát đúng luật V2, về chữa trị, sau đó tự tiếp tục nếu policy cho phép và đã hết injury.
 - Boss/rare là cơ hội có source thật; không ép boss cố định mỗi 5 trận hoặc gắn tỷ lệ chưa duyệt.
-- Không khóa cứng đội hình; vị trí chân, shadow và collision logic phải đúng, sprite chồng hình tự nhiên được phép.
+- Không khóa cứng đội hình; vị trí chân và shadow thật; không thiết kế collision địa hình/pathfinding. Sprite chồng hình tự nhiên được phép, nhưng nguồn position gameplay ổn định.
 
-### E2. Thực trạng hạn chế kỹ thuật, lộ trình giải quyết
+### E2. Quyết định ĐÃ CHỐT: COMBAT LIÊN TỤC TRÊN MỘT THẾ GIỚI — KHÔNG BATTLE 90 GIÂY
 
-`MapBattleV2` **đang kết thúc ngay khi hết quái, sau 90 battle-seconds hoặc hết đệ tử**. Vì vậy **KHÔNG thể gọi API hiện có là continuous in-place**.
+**Owner lock 2026-09-30 và 2026-10-21:** Chơi như Evil Hunter Tycoon: người/đội đang đứng trên một map mở, đi tìm quái, tự đánh và cast skill. Khi quái A chết, A rơi đồ và chờ respawn; B/C vẫn đánh đệ tử bên cạnh; đội không bị đưa sang “trận” khác, không màn WIN, không hồi HP/skill cooldown/cast/RNG/position khi quái hết. Nếu tất cả quái gần đó chết, đệ tử tuần tra/chờ cá thể mới spawn; map/duty vẫn sống. Không có “giới hạn 90 giây” và không “clear cả wave”.
 
-**Đề xuất V1 khả thi, tương thích luật:**
-1. World/zone/session sống qua nhiều encounter, mỗi encounter là một `MapBattleV2` hữu hạn.
-2. World coordinator chỉ giao đúng quái có slot/generation/lease; tập hợp một battle subset trong max 30v40, không cấp cùng monster cho hai trận.
-3. Sau WIN, xử lý kill/HP/reward rồi chọn quái kế trên cùng map, giữ vị trí/world presentation và party continuity **chỉ khi adapter thực sự bảo toàn state hợp lệ** (HP, cooldown, skill stacks, target/cast, RNG, cursor). Không reset HP/cooldown miễn phí giữa trận, không dịch chuyển tức thời. Nếu chưa bảo đảm, ghi là **bridge gap**, không giả lập liền mạch.
-4. TIMEOUT/DEFEAT đi qua terminal Injury/retreat và policy; không tự tạo WIN/loot.
-5. Ở bước nâng cao, muốn **quái spawn vào ngay giữa combat** hoặc hai đội cùng đánh một Boss theo thời gian thực thì cần mở rộng riêng combat-world interaction, kiểm tra kernel/event contracts và approval; không sửa `MapBattleV2` âm thầm.
+**Lý do code chưa đạt:** `MapBattleV2.step()` của `main` dùng `_count_alive("monster")==0 → win`, `now>=MAX_SECONDS → timeout_retreat`, `active=false`; `setup()` tạo battle roster hữu hạn, và event queue `MAX_EVENTS=2400`. Chỉ xóa hằng `MAX_SECONDS` **KHÔNG ĐỦ**: vẫn WIN-on-empty, capped event history, snapshot actor list/HP, spawn identity, cooldown, persistent caster/buff và scheduler chưa nối live World.
 
-**Semantics “continuous”:** nghĩa là duty/zone của đội tồn tại và tự tạo các lần giao chiến hợp lệ nối tiếp; không đồng nghĩa một object battle bất tử hoặc loot tự rơi khi map không render.
+**Phương án kỹ thuật đích, mới là đề xuất CODE:**
+1. **`PveWorldState` là lifetime owner**, tồn tại theo region/zone instance, giữ 2D positions/hp/aggro/threat-triggers (nếu V2 có), actor cooldown, pending cast, deterministic RNG, spawn slot/generation, party duty và reward receipts. Không tạo `MapBattleV2.setup()` mới sau mỗi kill; không rollback world khi view đổi/camera pan.
+2. **`CombatV2WorldStep` tái sử dụng hạt nhân xử lý Combat V2** (range/move, attack interval, crit/damage/defense, skill use, AoE/projectile/cast/status and target resolution) bằng adapter hoặc tách lõi dùng chung **mà không đổi kết quả luật toán**. Có thể thêm `world_mode` hoặc một driver/factorization tương đương, nhưng không sao chép formula Combat V2 sang backend chiến đấu thứ hai.
+3. **Kill theo HP transition** từ từng `monster_instance_id`, kể cả basic/DoT/projectile/AoE. Emitted immutable `Killed(monster_id, generation, tick, attributed participants)` là gameplay event *trước* presentation ring buffer. Roll và commit reward per kill chính xác một lần.
+4. **Dead monster được thay sau deadline riêng** ngay trên world runtime: mọi quái khác/đệ tử/cast tiếp tục hành động tại timestamp đó. Respawn vào spawn slot theo vùng; nếu slot bị chiếm/không hợp lệ, xác định retry rule data-driven, không gọi wave-complete. Elite/Boss spawn chỉ khi có content hợp lệ.
+5. **Không defeat/win/timeout toàn zone**. Một **đội** có thể chủ động stop/return/retreat, bị HP/Injury buộc về, hoặc tạm mất mục tiêu; đội khác vẫn tiếp tục săn. Event terminal cũ chỉ dành cho `LEGACY_V2_ENCOUNTER`; luật bị thương/HP ở level disciple/team vẫn authoritative.
+6. **Map farm phẳng**: vị trí chân 2D, định hướng, khoảng cách attack/aggro, movement speed và skill range thật; di chuyển thẳng đến mục tiêu, không collision địa hình, không navmesh/pathfinding. Hoa/cỏ, bụi cây, shadow và chibi Source A hoàn toàn thuộc Map/Character presentation, không chặn chạy hay tác động RNG.
+7. **Giữ legacy nguyên vẹn qua opt-in migration**. Existing `HuntingPveRunV2` finite run và `HuntingMapV2.claim_reward` cần giữ cho game save/QA cũ, nhưng **KHÔNG còn được coi là hướng triển khai B3 continuous**.
 
-### E3. Hai thang thời gian: V2 phút và combat giây
+**Ví dụ đúng:** Mười quái hiện trên bãi: A bị đội 1 hạ lúc t=18.5s, thả reward A và lên lịch spawn A' lúc t=respawn_at; đồng thời đội 2 vẫn đánh B, đội 1 chuyển đánh C. Khi A' về map, A' sống độc lập trong khi B/C/đệ tử đang combat; không có màn dừng, tổng kết, reset hay 90s. AoE hạ A/C cùng bước → hai kill keys riêng. Các giờ chạy dài vẫn dùng cùng state; memory/render có giới hạn riêng.
 
-- Current: scheduler một phút/lần; battle `0.25` giây/lần. Không nhân tuỳ ý `1 kill = 1 minute` hoặc `1 monster = 1 offline minute`.
-- **Hướng đề xuất:** một timeline authoritative từ runtime clock, battle sử dụng **substep 0.25-second fixed point** trong ngân sách thời gian đã tiến, tích lũy carry qua biên một phút. Timer kinh tế xử lý đúng mốc phút; travel/engagement/cast/respawn có timestamp trên cùng timeline (minute + substep hoặc fixed integer quarter-seconds; schema quyết định sau).
-- Khi 60 wall seconds trôi: tối đa **240 combat substeps 0.25s được cấp** cho một trận đang chạy, nhưng không được coi là 240 tác vụ/sản lượng. Đệ tử bận hunt không đồng thời kiếm production work theo scheduler.
-- Combat diễn ra song song giữa **các team hợp lệ** trong thế giới cùng timeline, không trừ thời gian toàn game hai lần. Một team chỉ một duty/engagement đang hoạt động.
-- Online và offline dùng cùng thứ tự sự kiện, RNG nguồn và ngân sách thời gian; offline có thể xử lý sự kiện cấp tốc hoặc bounded replay tương đương. Không lấy `elapsed × average_drop` để mint tài nguyên khi không có kill.
-- **OPEN GATE:** hợp đồng substep ↔ scheduler chính xác, policy khi app tắt nửa trận, limit offline catch-up, hiệu năng 1.000–3.000, save timing. Đây là blocker production, không phải thành quả B2.4 sandbox.
+**Compatibility gate bắt buộc:** test parity các formula và skill/cast/RNG event ở Combat V2 trên một cửa sổ bước cố định với đầu vào tương đương; test world 90s, 180s, 3600s thấy world/cooldown/HP liên tục mà không hard timeout hoặc reset. Không mượn V5 Source A render để làm gameplay authority.
 
-### E4. Spawn, nhiều đội, Boss và map lớn
+### E3. Hai thang thời gian — ĐỒNG HỒ DUY NHẤT, NHƯNG KHÔNG GIỚI HẠN SESSION
 
-- Một `MonsterSlot` có một generation đang sống tối đa, death once; respawn deadline tính từ authority chứ không từ sprite/VFX. Chỉ active zones có actor-level update; vùng tắt chỉ cần countdown/event cursor, không farm từ không khí.
-- Một monster spawn không thể bị hai đội quyết toán độc lập. **Mob lease** cấp tới một encounter, trả lease khi terminal; eventual Boss cooperation/assist needs a separately approved damage+reward-sharing contract.
-- Các quái cùng loài có slot/generation độc lập; giết hai con cùng lúc có hai receipts. DoT/AoE/projectile event order canonical, không lọc từ capped UI events.
-- **30 disciples / 40 monsters** là hard cap **trên một `MapBattleV2`**, không được nhầm là trần tông môn 30 người vĩnh viễn; nhiều teams active phải chứng minh budgets/CPU/memory và fair spawn arbitration.
-- **30 vùng realm ×10 cụm** hiện là **content projection**, không phải 300 vùng đã code; engine data-driven có phân tầng `realm_band → region → cluster → spawn_pool`, lazy instantiate và ID stable. Map chibi 192×192 hiện là quy mô bản đồ presentation khác hoàn toàn content progression.
-- Boss rarity/release, ownership/quyền tham gia, reset interval, server-like global/world rare quotas: OPEN. Không bịa tỷ lệ hoặc giới thiệu “world boss” như tính năng đã có.
+- Existing: `SimulationRuntimeClockV2` có `60 wall seconds = 1 scheduler minute`, `MapBattleV2.STEP_SECONDS=0.25` combat. Không suy luận `1 quái = 1 phút`, `1 trận = 90 giây`, hoặc tính tiền offline theo số phút nhân tỷ lệ rơi đồ.
+- **Design proposal:** canonical world timestamp dạng fixed integer sub-ticks (mỗi 0.25 giây là một bước chiến đấu), với economic scheduler tick tại biên mỗi 240 sub-ticks; không đồng hồ riêng thứ hai. **Điều này là kế hoạch tái cấu trúc clock/adapter, CHƯA LOCK cách triển khai numeric.**
+- Khi có 60 giây thực trôi, world active đủ điều kiện nhận 240 substeps, nhưng tương tác tiêu hao travel, attack, mana-like mechanics **chỉ theo luật Combat V2 hiện có**, không tự tạo resource không được chốt. Đệ tử làm nghề không đồng thời hành động hunt qua One Active Job.
+- Thời gian respawn đếm theo **global canonical time**, không reset về zero khi quái cuối bị hạ, khi GUI đóng hoặc khi đội khác đến. `respawn_at` là deadline, không có timer tính bởi animation.
+- Online, nhìn thấy/không nhìn thấy và offline cùng command stream/state RNG/action ordering. Event-driven batching chỉ cho phép khi chứng minh bằng test cho kết quả như step-by-step; tuyệt đối không thu nhập đơn giản `thời gian × drop rate` hoặc simulate từng bước cho hàng nghìn đệ tử vô ích.
+- **Open decisions:** offline cap, exact substep/minute persistence, world-active/hibernation authority, snapshot granularity, chi phí CPU và save size; đo trên Android/Windows 8GB sau khi có 1-zone continuous gameplay, không suy diễn từ sandbox.
+
+### E4. Spawn từng con, nhiều đội, Tinh Anh/Boss, nhiều bản đồ
+
+- **`SpawnPointDef`** khai ID nguồn quái/địa điểm/vùng, số slot hoặc population budget, tier/loài/tables, independent respawn delay và điều kiện Elite/Boss. Chỉ dùng bảng production khi được author/duyệt; không tạo Boss định kỳ theo tỉ lệ chưa có.
+- **`MonsterInstance`** mang `zone/slot/generation` + vị trí chân/HP + next AI decision + combat cooldown/cast/FX link (FX không authority). Mỗi quái chết chuyển `DEAD`, tạo receipt, giữ `respawn_at`; các monster khác vẫn sống. Không phát `respawn all` khi hết quái.
+- Mỗi quái được một engagement/target reservation khi cần chống hai world combat owners; **không cấm nhiều đệ tử/đội đánh cùng một con quái theo mặc định**. Nếu nhiều đội cùng đánh một Boss, tất cả damage V2 xảy ra trên **một Boss HP state** và chỉ **một kill/receipt**, phân chia reward/participation phải quyết định sau; V1 chưa nên triển khai cooperative Boss khi chưa có luật attribution.
+- `30 disciples/40 mobs` đang là giới hạn `MapBattleV2` cũ, **không phải cap toàn map PvE đích hay trần thế giới 1.000–3.000 đệ tử**. Future live kernel phải có actor/region/chunk budgets và đo hiệu năng; không tự claim >40 active đã chạy.
+- 30 realm-region × 10 clusters đang là projection content; kiến trúc data-driven/lazy zoning hỗ trợ mở rộng mà không dựng 300 cụm ngay. Con số map tile `192×192` trong nhánh Map là presentation concern riêng, không biến thành một quy tắc slot/monster của B3.
+- Thiết kế bãi quái **không có địa hình cản, collision vật lý, pathfinding hoặc navmesh**. Ưu tiên sân phẳng rải hoa cỏ; khoảng cách 2D gameplay, speed, range, AI search/target là đủ. Character actor được phép overlap ảnh, chân/bóng thật phân biệt vị trí.
+- Spawn/generation/kill IDs phải khớp map content theo manifest versioned; Map stream được quyền bố trí cảnh/điểm spawn **dạng authored metadata**, còn backend B3 quyết định spawn lifetime/HP/loot. No duplicate source of truth.
 
 ## F. Reward production — ONE kill, ONE eligible payout, MANY channels
 
@@ -162,9 +173,9 @@ B3TeamDutyOrchestrator (single authority for team hunting admission)
 |---|---|---|
 | `LEGACY_AUTONOMOUS_P2` | `SimulationScheduler` + `CombatSystem.resolve_encounter` + pending inventory | Giữ save cũ; không đồng trả V2/B3 per-kill. |
 | `LEGACY_V2_ENCOUNTER` | `HuntingMapV2.claim_reward` after WIN + encounter receipt | Giữ 4-win `linh_tuy`, reward theo lần thắng, chưa phải mỗi monster. |
-| `B3_PER_KILL` (FUTURE) | authoritative verified HP lethal → receipt → one canonical settlement | Không gọi hai path trên cho cùng battle/kill; opt-in sau migration, content production đã duyệt. |
+| `B3_PER_KILL_CONTINUOUS_WORLD` (FUTURE) | authoritative per-monster HP lethal in persistent world → one receipt → canonical settlement | Không gọi hai path trên cho cùng world kill; **không có WIN/Claim/90s/wave reset**; opt-in sau migration, content production được duyệt. |
 
-Không thực hiện migration/reinterpreting pending loot hay legacy receipts một cách ngầm. Đội cũ đang dở battle phải hoàn thành/settle theo old authority hoặc explicitly orchestrated migration có tests.
+Không migration/reinterpret pending loot hay legacy receipts một cách ngầm. Đội cũ đang trong legacy battle hoàn thành/settle theo **old authority riêng**, hoặc có migration với tests/consent; **chỉ legacy** còn trạng thái WIN/TIMEOUT toàn encounter.
 
 ### F2. RewardEnvelope/receipt đề xuất
 
@@ -214,12 +225,12 @@ Không buộc có quest dài. Trạng thái nhiệm vụ/AI tổng gọn, phù h
 
 `READY → PREPARE → TRAVEL → SEARCH/PATROL → ENGAGE → SETTLE → [PATROL | RETURN] → RECOVER/RESUPPLY → READY`.
 
-Orthogonal **control state** `ACTIVE | PAUSE_REQUESTED | PAUSED | BLOCKED | STOP_REQUESTED | CANCELLED`, không nhập trộn với battle outcome `WIN | DEFEAT | TIMEOUT`.
+Orthogonal **control state** `ACTIVE | PAUSE_REQUESTED | PAUSED | BLOCKED | STOP_REQUESTED | CANCELLED`, không nhập trộn với **individual monster `ALIVE/DEAD/RESPAWNING`** và **team `HUNTING/RETURNING/RECOVERING`**. `WIN/DEFEAT/TIMEOUT` là encounter outcome **legacy-only**, không phải trạng thái terminal của B3 map.
 
 - Trước khi deploy: pure eligibility preflight team IDs, One Active Job, Injury=0, HP, active battle lease, zone unlocked, actual target content, supply requirements.
 - `SEARCH` dựa spawn availability/source and world travel, không giả mob “mỗi tick” nếu không có slot. 
-- `ENGAGE`: Combat V2 alone. Combat V2 determines kill/outcome.
-- `SETTLE`: freeze valid receipt, durable commit; no double pay via old claim.
+- `ENGAGE`: Combat V2 quyết định đòn đánh/skill/HP lethal; thế giới và các con quái khác **vẫn đang chạy**. Không chờ 'win toàn map'.
+- `SETTLE`: chạy theo **individual kill event** song song với các hành động PvE khác, durable commit, không double pay qua old claim; không pause toàn thế giới để tổng kết trận.
 - `PATROL`: nếu continued, chọn mục tiêu kế theo policy, không “complete recipe then return” mặc định.
 - `RETURN`: retreat/low supply, explicit owner stop or unacceptable risk, respects terminal state and outstanding receipt.
 - `RECOVER`: Injury/HP/treating follows existing law; wait 120 ticks or legitimate heal consumer, not fake instant.
@@ -276,7 +287,7 @@ Existing Thanh Trúc Lâm, Bạch Thạch Khê, Hắc Phong Cốc are **integrat
 5. Same seed + commands + elapsed world time yields identical combat/loot/HP/progression on visible vs offscreen vs save/reload and bounded offline.
 6. Save mid-cast/mid-death/PENDING reward/COMMITTED/respawn preserves state, no HP/cooldown reset exploit, unique ID collision or dup.
 7. RewardEnvelope with material, unique item, personal Tu Vi, skill mastery, Contribution and Spirit Stone partition commits atomically or rolls back; invalid resource/lock/range fails closed.
-8. After WIN, continuous encounter bridge preserves legal party HP and next battle readiness; after TIMEOUT/DEFEAT it follows Injury/retreat, does not fake WIN.
+8. World PvE chạy qua mốc 90s, 180s và 3600s **không dừng/reset**, quái A chết/hồi riêng lúc đội đánh B; HP/cooldown/pending cast/position không reset, kể cả khi một cluster hết quái. Team retreat/HP0 xử lý Injury đúng authority; only legacy encounter uses WIN/TIMEOUT.
 9. FarmOrder target uses actual usable Warehouse, not raw stock; material-ready ≠ gear-crafted ≠ gear-assigned.
 10. One fully authored forge order consumes canonical resources once at real finish tick, creates one Sect-owned unique item, respects player locks and existing pilot compat.
 11. Load older save version 2 unchanged; opt-in new B3 state never reclaims old completed encounter; versioned explicit migration.
@@ -289,14 +300,14 @@ Existing Thanh Trúc Lâm, Bạch Thạch Khê, Hắc Phong Cốc are **integrat
 | Packet | Outcome kiểm chứng | Dependency / scope |
 |---|---|---|
 | **B3-V2-D0 DESIGN** | Đặc tả này + graph audit + cơ chế open decisions. | Docs-only, thực hiện được ngay. |
-| **B3-V2-C0 WORLD/TIME CONTRACT** | Design freeze single clock, encounter bridge, world slots, team leases, online/offline proof fixtures. | Sau khi review B2.4 ZIP hiện hành. Có thể viết pure model trước nhưng cần approved allowed paths để CODE. |
-| **B3-V2-C1 ONE REAL KILL** | Opt-in one zone/one team/per-mob live authoritative lethal → production source → one ReceiptEnvelope + Warehouse/character grants → same SaveService. | One integration writer for Combat/State/Save/Warehouse; preserve old modes and data. **Không public payout trước.** |
-| **B3-V2-C2 CONTINUOUS DUTY** | Same persistent zone and team seamlessly move between legal V2 battles/slots; patrol, HP/supplies, return/recover, no free cooldown reset; UI live projection. | C0/C1 and Combat bridge proof; explicit pilot only. |
+| **B3-V2-C0 CONTINUOUS WORLD / TIME CONTRACT** | Chốt single clock, 0.25s Combat V2 stepping **không 90s/no WIN-on-empty**, monster slot/generation, actor persistence, scene-neutral world view; typed kill events, online/offline fixtures. | Sau khi review B2.4 ZIP. Cần scoped CODE packet/1 writer, không sửa formula V2. |
+| **B3-V2-C1 ONE REAL KILL IN WORLD** | Một `MonsterInstance` trong thế giới **không reset**, HP0 → per-kill receipt, reward đúng source; `SaveService` chung, replay/save consistency. | Integration writer duy nhất Combat/State/Save/Warehouse; bảo toàn legacy, production table đã duyệt. |
+| **B3-V2-C2 WORLD DUTY & INDIVIDUAL RESPAWN** | Nhiều monster trên cùng map, chết/hồi riêng trong lúc đội tiếp tục combat, AI patrol/target/return/recover, map view là projection. | C0/C1; không nối nhiều battle finite, không wave clear; thử 1 map nội dung authored. |
 | **B3-V2-C3 POLICY TEAM AI** | Default continued hunting + per-team/sect risk/rotation/goal, resume, optional FarmOrder; no job stealing. | Workforce/Organization/safety focused gates. |
 | **B3-V2-C4 GROWTH REWARDS** | Tu Vi/mastery/Contribution/sect+personal stones attributed to valid participants exactly once, challenge scale; test old migration. | C1 and authorized progression rate policy; don't mutate old P2 gains silently. |
 | **B3-V2-C5 GEAR/CRAFT BRIDGE** | First real source → one actual forge order/timer or drop unique → allocate gear without dup; basic materials from production still needed. | Owner-approved forge transaction, new content IDs/recipes. |
 | **B3-V2-C6 EQUIPMENT V2 MIGRATION** | 10-slot/12-grade/24-set legality; old items preserved; real Combat/stat/work consumers; auto-equip set-aware. | Dedicated allowlist, migration, separate focused+cumulative tests. |
-| **B3-V2-C7 WORLD/CONTENT SCALE** | Data-driven regions/clusters, multiple teams/contested Boss, offscreen equivalence/performance; Android 1280×720 measurable. | After real one-team loop; 30×10 target is content plan, not C1 scope. |
+| **B3-V2-C7 WORLD/CONTENT SCALE** | Data-driven regions/clusters, nhiều đội, spawn independent/Elite/Boss, cooperative Boss chỉ khi có reward attribution, offscreen/performance; Android landscape measurable. | Sau continuous 1-team proof; 30×10 content target là data plan, không phải C1 scope; Map/Character Studio không bị chạm. |
 | **B3-V2-C8 BALANCE** | Drop/progression/craft-rate simulation, p50/p90/p95 first useful upgrade, Boss chase variance, injury/downtime, production vs hunt economy. | Requires actual gameplay telemetry and owner approval of rates. |
 
 **Khuyến nghị thực thi:** chỉ 1 CODE writer chạm shared combat/state/save/scheduler, một design/QA researcher độc lập; không chạy B3 Godot đồng thời với heavy Source A trên Windows 8 GB. B2.4 đang sandbox không tự nhận là B3-C1; phải review exact worktree/ZIP trước khi code.
@@ -308,7 +319,7 @@ Existing Thanh Trúc Lâm, Bạch Thạch Khê, Hắc Phong Cốc are **integrat
 | Duty mặc định | **CONTINUOUS_HUNT**, có policy đổi vùng/nghỉ, không “đủ 3 nguyên liệu thì dừng”. |
 | Auto tiếp tục sau hồi phục | Bật theo team policy sau recovery hợp lệ, có giới hạn rủi ro và nguồn cung, không tự vượt Injury 1. |
 | Boss tranh chấp | V1: một lease/encounter, không hai team double-kill cùng slot. Cooperative boss riêng về sau. |
-| Seamless combat thật | V1: bounded `MapBattleV2` nối tiếp, world duty/state liên tục; validate state continuity trước khi tuyên bố seamless; in-combat spawn là scope riêng. |
+| Continuous combat world | **OWNER LOCK:** một PvE world chạy xuyên 90s/multi-kill, từng quái hồi sinh ngay khi các quái khác còn sống; **KHÔNG nối `MapBattleV2` hữu hạn hoặc reset**, chỉ tách/chuyển core Combat V2 giữ nguyên luật. |
 | Offline farm | Replay cùng authoritative time với cap xử lý/progress ledger; limit accrual và backlog sau kiểm chứng, không thả quyền “offline = x monsters” tùy ý. |
 | Gear source mix | Cả direct drop, material forge và Boss chase; không Boss-only hoặc forge-only. |
 | Reward split / drop / rarity / forge | Không tự khóa tỷ lệ; legacy pilot số hiện tại giữ trong legacy mode; production B3 phải owner duyệt. |
@@ -319,7 +330,35 @@ Existing Thanh Trúc Lâm, Bạch Thạch Khê, Hắc Phong Cốc are **integrat
 
 Owner duyệt/cập nhật tối thiểu: (1) “săn liên tục” là duty mặc định với stop/auto-return đúng; (2) online/offline authoritative time bridge; (3) per-kill + personal growth reward segmentation; (4) nguồn item direct-drop + forge; (5) nhóm/đội và Boss tranh chấp; (6) chỉ định một integration owner và packet allowlist, migration + regressions. **Duyệt kiến trúc không đồng nghĩa cấp phép code.**
 
-**Proof status:** Đã đọc từ GitHub `main` và các design spec, chưa mở chạy Godot, chưa kiểm chứng save hiện hành trên máy owner, chưa đo drop/gameplay, chưa có production B3 per-kill content. V5.1/Character Studio HOLD, Codex SA-LIB không bị ảnh hưởng.
+**Proof status:** Đã đọc từ GitHub `main` và các design spec, chưa mở chạy Godot, chưa kiểm chứng save hiện hành trên máy owner, chưa đo drop/gameplay, chưa có production B3 per-kill content. **Map và Character Studio: OWNER-REPORTED ACTIVE**, local SHA/chức năng còn phải review khi có handoff; Source A SA-LIB chạy độc lập theo tài nguyên; Combat V5.1 owner visual chưa PASS. Không tự can thiệp các luồng này.
+
+## N. Phân ranh rõ B3 backend ↔ Map ↔ Character Studio ↔ Source A / V5
+
+| Workstream | Quyền chủ trì | Chỗ B3 được thiết kế tiếp | Cấm trong B3 hiện tại |
+|---|---|---|---|
+| **Map (OWNER-REPORTED ACTIVE)** | Tỉ lệ/texture mặt đất, hoa/cỏ, vùng nhìn, màn hình/zoom/pan/camera, layout scene và placement authored metadata nếu Map owner xuất ra | `ZoneDef`/spawn-point interface theo **tọa độ chân gameplay**, stable IDs, viewport projection; không đòi physics/pathfinding | Không sửa map asset, scene, camera, tile/chunk, `project.godot` hay điều khiển Codex Map |
+| **Character Studio V2 (OWNER-REPORTED ACTIVE)** | Chọn rig/nam nữ/clip/skin/gear appearance, preview/lazy cache/manifest; clip thật, không giả action | B3 xuất `actor_id`, `rig_ref`, `clip_intent`, `heading`, `world_foot_position`, `skill_event_id` đọc-only | Không sửa Studio plugin/rig/clip/skin/outfit; không tạo converter khác |
+| **Source A SA-LIB (overnight conversion)** | converter/fingerprint/pack/checkpoint/status, rig Source A chuẩn, QA nhẹ theo rule riêng, không đụng source raw | B3 chỉ yêu cầu metadata schema/rig references; backend có thể dùng fallback khi chưa có pack QA | Không tải/batch/QA lại asset từ B3; không phá resource safety gate |
+| **Combat V5.1 presentation (owner visual pending)** | Render map battle, actor animation, VFX, HUD, chân/bóng/tên/camera | Nhận immutable Combat V2 gameplay events/snapshots cho FX, damage numbers, skill cues | Không ép hình ảnh làm HP, damage, loot, time authority |
+| **B2.4 Editor/tool sandbox** | Author/validate spawn/loot data, synthetic per-kill demo evidence | Tái sử dụng **format/catalog/validator/receipt concepts** khi proven, không bê bản test thành payout production | Không ghi worktree/merge/re-run sandbox của Codex |
+| **B3 backend (DESIGN ONLY)** | World runtime lifecycle model, canonical time, monster death/respawn, combat authority adapter, loot exactly-once, team autonomy/injury, persistence | Hợp đồng dữ liệu cho 4 luồng trên, và migration packet khi owner cho phép | Không sửa bất kỳ runtime/file chồng phạm vi cho tới khi CODE packet được duyệt rõ |
+
+**Proposed minimal Map→B3 boundary:** `zone_id, map_content_revision, world_to_canvas_scale, spawn_points[{id,foot_x,foot_y,species_pool_id,visual_marker?}], visual_decorations?`. **B3→Map/Studio read-only stream:** `{world_tick, entity_id, source_rig_ref, foot_position, facing, alive, hp_ratio, cast/cooldown/skill_event, damage_event, loot_visual_hint}`. Visual `loot_visual_hint` xuất **sau receipt**, không tự cấp reward. Metadata hoa cỏ `visual_decorations` không đi vào combat/loot RNG.
+
+**Collision/file coordination:** vì các agent Map và Studio đang chạy ở worktrees riêng theo owner, không thêm prompts/branch edits chạm file của họ; chỉ nhận review ZIP/diff/manifest sau khi họ xong. Nếu cần nối `project.godot`, scene root, Combat V5, `SectState`/Save, chỉ một integration owner được phép trong CODE packet riêng. B3 docs branch hiện tại không can thiệp tiến trình máy 8GB.
+
+## O. Acceptance examples cho PvE đúng kiểu Evil Hunter (owner lock)
+
+1. **T+0–T+120s:** một đội được thả vào bãi gồm ít nhất 3 con đang sống. Chết A lúc 20s, B chết lúc 41s, A respawn theo timer riêng lúc 55s trong khi đội đang đánh C; **không dừng toàn map lúc t=90s**, không reset cooldown/HP/position, không gọi claim WIN.
+2. **AoE 2 kills cùng tick:** A/B có 2 receipt độc lập, không thưởng lại nếu projectile/DoT cùng frame nổ sau HP0; world không đóng.
+3. **Empty-zone:** tạm hết quái, đội patrol/chờ spawn; có một con hồi thì tiếp tục đánh trong thế giới đã sống từ trước.
+4. **Hai đội đồng thời:** cùng map, 2 set hero/monster logic, không double kill cùng monster; bình thường có thể hỗ trợ đánh chung nếu reward attribution được chốt, nhưng Boss cooperation phải có luật riêng.
+5. **Return/injury:** 1 đệ tử bị hạ xử lý injury 0/1 và recovery 120 ticks theo authority, team khác vẫn hoạt động; save/load không reset.
+6. **Map giản lược:** tất cả chuyển động dùng chân XY/attack range, không có vật cản hoặc navmesh; xoay camera/zoom/ẩn map không đổi kill/loot/target simulation.
+7. **Online/offline:** cùng seed/lệnh/elapsed, quái/tick/HP/skill/receipt và reward giống nhau với giới hạn xử lý offline đã duyệt; không mint `elapsed × average_drop`.
+8. **5–10 phút và 1 giờ giả lập:** không có `MAX_SECONDS` termination, event history được xoay vòng presentation mà không mất simulation kill; không leak memory vì tích lũy event vô hạn.
+
+**Status:** Đây là diễn đạt chính xác quyết định owner về trải nghiệm. Những mục CODE cần để đạt vẫn được đánh dấu PENDING, không gọi runtime hiện tại là PASS.
 
 ### Nguồn đọc (GitHub)
 
