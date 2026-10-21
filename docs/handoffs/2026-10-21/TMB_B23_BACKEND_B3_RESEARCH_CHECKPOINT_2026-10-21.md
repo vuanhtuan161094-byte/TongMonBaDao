@@ -178,3 +178,103 @@ Let `K_{z,s,t}` be *actual committed eligible kills per hour* in zone `z` for sp
 **Integration readiness gate (after Codex completion):** receive B2.4 ZIP and SA-LIB ZIP with exact branch/HEAD, dirty tracked+untracked diffs, artifact SHA256SUMS, current-fingerprint proof, focused logs, GUI/screenshots, repeatable sandbox steps. Preserve local worktrees; inspect two ZIPs and parent commits; then propose a scoped **read-only** collision matrix before any merge. Only after approval may an integration owner choose the exact parent, paths, migrations and tests. No unattended merge.
 
 **Owner action now:** none. Codex Prompts 01/02 remain ongoing; do not resend them, restart them, or perform extra heavy QA here. This addendum is usable for immediate backend/B3 research while waiting for evidence.
+
+
+---
+
+## 7. B3 AI FARM DEEP DIVE — ACTUAL SOURCE GRAPH, POLICY, SAFETY, MVP GATES (2026-10-21)
+
+**Scope:** independent READ-ONLY design while Codex Prompt 01 B2.4 and Prompt 02 SA-LIB are running. No Godot code, runtime test, raw asset movement, table-rate lock or merge. Current \`main\` confirmed at \`461caca1171462e0da092f21108c5c1733157ad9\`. The in-progress Source A report states available RAM 1,011 MiB (<2,200-MiB gate), E: 51.36 GiB free, 0 Godot processes; converter **must remain stopped**. The CLI SQLite failure is a task write-root permissions problem as reported, **not evidence that the DB itself is corrupt**. If the task requests scope, prefer write access only to DB/checkpoint/output paths; preserve raw Source A immutably. Classification from current Codex message (not separately locally rerun): REVIEW = 915 parser / 162 atlas / 173 texture (sum = 1,250), multi-skin candidate \`2123019_10\` (12 skins, parse pass). No current-fingerprint QA has been demonstrated by these findings.
+
+### 7.1 Critical design collision to resolve before live B3
+
+1. **Time units are not interchangeable**. \`SimulationRuntimeClockV2\` explicitly defines 60 wall seconds = 1 simulation minute = 1 scheduler step, while \`MapBattleV2.STEP_SECONDS\` = 0.25 *battle seconds*. B2.4's sandbox time does not automatically authorize one hunt kill per scheduler tick, or unlimited offline wins. A separately approved integration packet must define a **bounded combat-to-simulation step accounting policy** and prove online/offline equivalence without multiplying income.
+2. **DecisionSystem methods are not pure preview functions.** \`DecisionSystem.choose_region()\` writes \`disciple.last_decision\`; \`evaluate()\` also mutates it. A read-only B3 UI planner must not call either in render loops or hypothetical simulations; use a pure candidate score extractor/adapter or execute only inside a canonical authorized command.
+3. **One Active Job is an ingress restriction, not merely a UI label**. \`WorkforceSystem.issue_command()\` can release Body training and cancel work on accepted explicit orders. An autonomous farm proposal must **never issue the command before a pure occupation/reservation preflight**. Default AI cannot evict a paid training slot, drain a production timer or cancel carried legacy goods. A human override must use the existing safe cancellation semantics; no quiet bypass.
+4. **Legacy hunt loot path differs from V2**. \`SimulationScheduler\` still runs P2 \`HUNT→TRAVEL→COMBAT→LOOT\` into \`DiscipleState.pending_loot\`, while \`HuntingMapV2.claim_reward()\` grants after victory to Warehouse and B2.3 sandbox records per-kill receipts. Treat these as *three separate modes*, with **one and only one authoritative credit owner** per run; do not join all three on the same kill.
+5. **Warehouse usable stock is not raw stock.** \`WarehouseSystem.available_quantity()\` returns 0 for locked materials or max(0, stock-reserve_min). B3's crafting demand must honor locks/minimum reserves. Planner-level predicted assignments are **nonphysical demand bookkeeping**, not a second warehouse or real item reservation until such a contract is separately approved.
+
+### 7.2 Confirmed candidate source graph, with truthful payout mode
+
+These are **existing authored encounter-level V2 pilot** resources (\`HuntingMapV2.REGION_CONTENT\`), *not* approved per-kill loot tables. B2.3/B2.4 production per-kill table is EMPTY; no material may actually be emitted from an unapproved live per-kill path.
+
+| Existing hunting region | Encounter-level pilot resources | Special source | Use for B3 source-planning feasibility |
+|---|---|---|---|
+| \`thanh_truc_lam\` | \`linh_moc\`, \`thanh_thiet\`, \`thanh_linh_thao\` | \`linh_tuy\` pilot rare, old 4-win body guarantee | Wood+ore starter, herbs, body material preserve legacy guarantee |
+| \`bach_thach_khe\` | \`thanh_thiet\`, \`tinh_lang_bi\`, \`tu_van_thao\` | \`huyen_thiet\` pilot rare | Iron+hide, Trúc Cơ herb |
+| \`hac_phong_coc\` | \`tinh_lang_bi\`, \`yeu_dan\` | \`huyen_thiet\` pilot rare | Hide+monster core, advanced target |
+
+Existing \`EquipmentSystem.RECIPES\` and *suggested* basic farm paths (material ID and recipe costs are already present in main pilot; these are NOT new B3 costs):
+
+| Existing pilot recipe | Existing material cost | Feasible source planning, **not** validated per-kill release |
+|---|---|---|
+| \`thanh_thiet_kiem\` | \`thanh_thiet:3\` + \`linh_moc:1\` | Thanh Trúc Lâm for both; Bạch Thạch Khê optionally supplements ore |
+| \`huyen_thiet_quyen_sao\` | \`thanh_thiet:3\` + \`tinh_lang_bi:1\` | Bạch Thạch Khê supplies both |
+| \`linh_moc_phap_truong\` | \`linh_moc:3\` + \`yeu_dan:1\` | Thanh Trúc Lâm wood + Hắc Phong Cốc core |
+| \`tinh_lang_giap\` | \`tinh_lang_bi:3\` + \`thanh_thiet:1\` | Bạch Thạch Khê supplies both |
+| \`hoa_van_ngoc\` | \`yeu_dan:2\` + \`linh_moc:1\` | Hắc Phong Cốc core + Thanh Trúc Lâm wood |
+
+**Most efficient first REAL loop candidate (only after reward integration authorization):** one party, \`huyen_thiet_quyen_sao\` or \`tinh_lang_giap\` sourced from Bạch Thạch Khê to minimize cross-region switching. Both inputs exist in the same region in the **legacy encounter reward content**; per-kill equivalence must be separately authored/verified before live farm automation. This is a feasibility proof, not current working game functionality.
+
+### 7.3 FarmOrder proposal — exact interface between player goal and old systems
+
+**User actions (design):** choose item/recipe or registered material; choose one existing team or auto-select from available valid teams; choose a maximum acceptable risk and stop objective; optional preferred region. The user never needs to select individual monster instance IDs. Do not add a global AI system when existing \`DecisionSystem\`, \`GoalSystem\`, \`OrganizationSystem\` and \`WorkforceSystem\` can be reused.
+
+Proposed persisted \`FarmOrder\` fields (unimplemented): \`order_id\`, \`objective_type\` = material_stock / recipe_batch / approved_gear_target; \`objective_id\`, \`target_amount\`, \`team_id\`, \`preferred_regions[]\`, \`eligible_sources_version\`, \`risk_policy\`, \`retreat_policy\`, \`max_duration_ticks\`, \`min_useful_stock\`, \`priority\`, \`status\`, \`reason_code\`, \`last_evaluated_tick\`, \`generation\`. Owner of future persisted orders must be **canonical SimulationState/SectState**, not Scene/Character Studio/asset catalog.
+
+**Source resolver:**
+- For material target, validate \`ResourceRegistry.has(material_id)\`; join **explicit validated mapping of species+tier+zone+loot table**; only live-eligible if an approved payout table exists. Existing per-encounter \`REGION_CONTENT.resources\` can drive *read-only candidate discovery*, not live per-kill payouts.
+- For recipe goal, read \`EquipmentSystem.recipe(recipe_id)\` (existing pilot only); compute deficits from \`WarehouseSystem.available_quantity()\`, considering other approved committed allocations **once**. Do not count pending loot receipts as committed stock.
+- For set/unique-item chase, require verified \`equipment_items\` identity/content, tier, quality and legal set lineage; if unimplemented, report \`CONTENT_NOT_AUTHORED\`, never invent a Boss guaranteed drop.
+- If multiple eligible zones, minimize *estimated risk-adjusted time to satisfy current bottleneck*, not merely maximize rarity or raw drops. Maintain \`source_confidence = VERIFIED_PRODUCTION | SANDBOX_ONLY | PROPOSAL | UNAVAILABLE\`; only VERIFIED_PRODUCTION is eligible for live auto-farm.
+
+### 7.4 Scheduler/policy: safe deterministic state machine
+
+States proposed: \`DRAFT\`, \`VALIDATING\`, \`QUEUED\`, \`DEPLOYING\`, \`HUNTING\`, \`RETURNING\`, \`RECOVERING\`, \`COMPLETED\`, \`PAUSED\`, \`BLOCKED\`, \`CANCELLED\`. A state change has an explicit tick, reason, and single owner; UI is a projection of those values.
+
+At an authoritative tick/event, the policy:
+1. Checks output goal from **committed** canonical Warehouse stock and valid craft recipe input (including lock/reserve constraints). Do not interpret locked goods as available for auto-crafting or declare completion falsely.
+2. Verifies team member identity, max 6 in one party, valid scene/zone, all members not injured (Injury 0), positive HP, currently usable gear/loadout, and absence of any active competing job/PvE reservation. **No forced job cancellation**.
+3. Applies **hard safety filters before utility ranking**: player maximum risk, retreat threshold, source content verification, no unsupported tier and no simultaneously assigned team. Predictive power estimates are advisory, not permission to override V2 survival AI.
+4. Orders eligible teams by current objective urgency, real inventory shortage, estimated useful drops per activity time, travel/recovery and future crafting bottleneck. Stable IDs break ties, avoiding Dictionary-order/RNG nondeterminism.
+5. Issues a single canonical authorized command only on state transitions, not repeatedly every frame/minute; does not create a separate tick owner or secondary monster simulator.
+6. Reacts to **COMMITTED** B2.4-derived reward ledger signals only after separately approved production hookup. On target reached, stop new deployment. Finish/settle existing real battle safely; no mid-attack deletion, no extra stop reward.
+7. If workers become injured, source invalid, supplies insufficient, or a locked reserve blocks crafting, transition to PAUSED/BLOCKED or RETURNING/RECOVERING with a precise reason. A paused order cannot mint loot while unloaded.
+
+**Anti-churn:** never bounce region every tick because a slightly different score wins; require a materially better feasible option or an event (goal reached, injury, region unavailable, explicit owner order). Any numeric minimum dwell/cooldown is **proposed tuning**, not locked. Resume reads persisted status and prior receipts without rerolling.
+
+### 7.5 Production/reward/persistence gates
+
+- No instant "farm in background" payout proportional to elapsed wall clock. \`SimulationRuntimeClockV2\` has real 60s→1-minute ticks; \`MapBattleV2\` has 0.25s battle steps and a bounded 90-second arena. An integration owner must define how bounded battle steps consume simulation action time. **No equivalent conversion is currently authorized.**
+- B2.4 sandbox cloned Warehouse and local restart are not \`SaveService\` production durability evidence. \`KillReceiptLedger\` status and Warehouse must eventually be saved atomically in canonical state; independently verify crash/reload around PENDING→COMMITTED, unique items and legacy encounter claims.
+- Idle/off-screen farms must use bounded accrual and state replay; if offline details are unresolved, **pause live rewards** rather than silently fast-forward infinite kills.
+- Combat V2 decides death; loot subsystem decides deterministic reward; Warehouse commits receipt; AI chooses next objective. Never let an AI goal or V5.1 animation call \`warehouse.add()\` directly.
+- Gear in Sect unique-item registry is 100% Sect-owned. \`owner_id\` in old P2.6 code is a migration-era equipped-user marker; do not give private ownership. Auto-equip computes **whole loadout utility including legal set thresholds** once 10-slot/24-set subsystem is actually implemented; in first pilot only existing 3 slots/3 grades/5 recipes exist.
+
+### 7.6 Policy cost model and telemetry (NO numerical rates locked)
+
+Inputs from real playtest: \`eligible_kills_per_hour\`, actual \`seconds_per_kill\`, travel seconds, waiting/respawn seconds, \`time_injured\`, repaired/medicine cost, canonical usable stock, actual recipe material consumption, forge completions, Boss chase outcomes, capped active monsters, loot receipts and \`bad_duplicate_count\`. The first benchmark must track **simulated game time separately from real wall time**.
+
+Let \`rate_i(z)\` denote verified credited units of material i per *simulated hunt hour* for zone z. \`time_to_goal\` estimate is driven by the slowest \`max(0, required_i - available_i)/rate_i(z)\` after accounting for mixed sources and actual region switching. Do not use \`HuntingMapV2.LEVELS.rare\` encounter percentages as per-kill probabilities. If any required \`rate_i\` is unknown, show \`UNKNOWN\` rather than invent a forecast.
+
+**Test scenarios required before first live AI packet:**
+- Same recipe goal can be fulfilled using existing stock+one team; no more loot once target reached.
+- Two competing recipe orders do not *double-count* the same eligible material stock; locked/reserved stock is not taken.
+- One team is never deployed to two concurrent hunting orders; no >6 in party, no >30 disciples / >40 monsters in active battle.
+- A member with active Mine/Forest/Field/Alchemy/Body job or Injury=1 is not silently stolen. No canceled old carries.
+- Missing material source or empty production per-kill table gives \`BLOCKED\` and **zero live payouts**.
+- Save/load a running hunt, PENDING receipt and completed receipt; compare viewed/unviewed and offline boundaries; no double payout or repeated reward on UI preview.
+- Retreat, defeat, timeout and recovery preserve HP, Injury 0/1/120, member availability and existing GP-02C1 settlement invariants.
+- Equipment craft input uses actual Warehouse; successful forge creates unique registered Sect item; disabled/invalid item and item ownership fail safely.
+- In first real proof, connect **one approved production material source and one existing recipe** before broadening sources; measure p50/p90/p95 time to first useful craft and risk hours.
+
+### 7.7 Shortest viable implementation packets AFTER B2.4 evidence (not active authorizations)
+
+1. **B3-D0 DATA READ-ONLY:** validate existing encounter source map vs ResourceRegistry, recipe ingredient IDs, target feasibility, unavailable per-kill tables; expose read-only content and shortages report. Does not collide with B2.4 runtime writer if kept entirely docs.
+2. **B3-D1 POLICY/PURE PLANNER (separately authorize):** design a pure demand/source/team evaluator with seeded fixtures only; no \`SimulationScheduler\`/\`SectState\` mutation. Focused dry-run tests only. Must choose allowed paths and new parent SHA first.
+3. **B3-D2 INTEGRATION CONTRACT (separately authorize):** one owner wires explicit opt-in V2 hunting runtime, kill receipt+Warehouse and genuine canonical SaveService with migration; preserve legacy modes and no double payout; focused V2 + economy gates.
+4. **B3-D3 FARM ORDER RUNTIME (separately authorize):** persist goal/queue and team assignments, policy decisions at canonical tick boundaries, survival priority, stock-based stop, missing-content BLOCKED. One code writer for shared Scheduler/Workforce/Save files.
+5. **B3-D4 CRAFT/EQUIP:** first existing pilot recipe/item, then distinct 10-slot/12-grade/24-set migration packet; no premature universal gear overhaul.
+6. **B3-D5 BALANCE:** compare observed material/recipe/gear progression and injury tradeoffs before requesting owner rate, guarantee, cap and Boss source approvals.
+
+**Next owner action while Codex 01/02 continue:** none required. This is a design checkpoint; do not start B3 code or extra QA, do not grant converter permission by changing RAM gates. Wait for new B2.4/SA-LIB evidence in the normal conversation, then inspect ZIP and branches before selecting a single CODE integration owner.
