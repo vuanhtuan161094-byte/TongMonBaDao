@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:tmbd:sourcea-spine-library:github-index:1.0.0",
+  "title": "TMB Source A path-free searchable asset index",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "source_id",
+    "source_sha256",
+    "source_status",
+    "qa_status",
+    "clips",
+    "skins",
+    "attachments"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "source_id": {
+      "type": "string"
+    },
+    "asset_id": {
+      "type": "string"
+    },
+    "source_sha256": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "atlas_sha256": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_status": {
+      "enum": [
+        "READY",
+        "REVIEW",
+        "UNSUPPORTED",
+        "MISSING"
+      ]
+    },
+    "skins": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "attachments": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "clips": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 2
+      }
+    },
+    "role": {
+      "const": "UNKNOWN"
+    },
+    "gender": {
+      "const": "UNKNOWN"
+    },
+    "qa_status": {
+      "type": "string"
+    },
+    "output_sha256": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "godot_scene": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "skin_bakes": {
+      "type": "array"
+    }
+  },
+  "additionalProperties": true
+}
+

@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:tmbd:sourcea-spine-library:catalog:1.0.0",
+  "title": "TMB Source A Spine asset metadata",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "source_id",
+    "source_sha256",
+    "source_status",
+    "qa_status"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "source_id": {
+      "type": "string"
+    },
+    "asset_id": {
+      "type": "string"
+    },
+    "source_sha256": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "source_status": {
+      "enum": [
+        "READY",
+        "REVIEW",
+        "UNSUPPORTED",
+        "MISSING"
+      ]
+    },
+    "spine_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "clips": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "evidence"
+        ]
+      }
+    },
+    "skins": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name"
+        ]
+      }
+    },
+    "attachments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "type"
+        ]
+      }
+    },
+    "role": {
+      "const": "UNKNOWN"
+    },
+    "gender": {
+      "const": "UNKNOWN"
+    },
+    "library_status": {
+      "enum": [
+        "QA_PASS",
+        "PARTIAL",
+        "BLOCKED",
+        "SKIPPED_UNSUPPORTED"
+      ]
+    },
+    "qa_status": {
+      "type": "string"
+    },
+    "output_sha256": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "converter_sha256": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "godot_scene": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "godot_spriteframes": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "additionalProperties": true
+}
+

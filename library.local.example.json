@@ -1,0 +1,26 @@
+{
+  "library_root": "E:\\path\\to\\03_AssetLibrary\\SourceA",
+  "source_root": "E:\\path\\to\\GameAssetExtract\\Assets",
+  "source_catalog_db": "E:\\path\\to\\AssetCatalog\\catalog.sqlite",
+  "source_catalog_alias": "A_ASSETS",
+  "source_catalog_prefix": "Characters/AndroidData_character/spinelib",
+  "converter_script": "E:\\path\\to\\SpineToGodot472\\spine_to_godot472.py",
+  "converter_root": "E:\\path\\to\\SpineToGodot472",
+  "godot45": "E:\\path\\to\\godot.windows.editor.x86_64.llvm.exe",
+  "spine_project": "E:\\path\\to\\NativeProbe",
+  "godot472": "E:\\path\\to\\Godot_v4.7.2-stable_win64_console.exe",
+  "spine38_parser_dir": "C:\\path\\to\\tmbd-spine-to-godot\\scripts",
+  "existing_output_roots": [],
+  "output_root": "E:\\path\\to\\03_AssetLibrary\\SourceA\\GodotAssets",
+  "fps": 30,
+  "width": 768,
+  "height": 768,
+  "foot_x": 384,
+  "foot_y": 540,
+  "minimum_available_ram_mib": 2200,
+  "minimum_free_disk_bytes": 5368709120,
+  "timeout_seconds": 3600,
+  "pilot_seconds_per_asset": 55.85,
+  "legacy_qa_imports": []
+}
+

@@ -1,0 +1,118 @@
+--- a/spine_to_godot472.py
++++ b/spine_to_godot472.py
+@@ -32,6 +32,16 @@
+     with Path(path).open('rb') as f:
+         for b in iter(lambda: f.read(1024*1024), b''):
+             h.update(b)
++    return h.hexdigest()
++
++
++def converter_bundle_sha256():
++    files = [Path(__file__).resolve(), CAPTURE_SCRIPT,
++             ROOT / 'native' / 'inspect_spine.gd', ROOT / 'asset_bundle.py']
++    h = hashlib.sha256()
++    for path in sorted((p for p in files if p.is_file()), key=lambda p: p.name.casefold()):
++        h.update(path.name.encode('utf-8'))
++        h.update(bytes.fromhex(sha256(path)))
+     return h.hexdigest()
+ 
+ 
+@@ -355,9 +365,11 @@
+         raise ConversionError('Không được xuất vào thư mục asset nguồn hoặc project runtime')
+     digests = [{'name':p.name,'sha256':sha256(p),'bytes':p.stat().st_size}
+                for p in [skel,atlas,*textures]]
+-    config = {'tool_schema':6,'id':actor_id,'source':digests,'fps':args.fps,
++    skins = args.skins or []
++    config = {'tool_schema':7,'id':actor_id,'source':digests,'fps':args.fps,
+               'canvas':[args.width,args.height], 'foot':[args.foot_x,args.foot_y],
+               'clips_requested':args.clips or 'ALL_RUNTIME_VERIFIED',
++              'skin_selection':skins or 'AUTO_DEFAULT',
+               'atlas_limit':ATLAS_LIMIT}
+     fingerprint = hashlib.sha256(json.dumps(config,sort_keys=True,ensure_ascii=False).encode('utf-8')).hexdigest()
+     replace_existing = output.exists()
+@@ -409,6 +421,7 @@
+             job.update({'clips':[{'name':n,'duration':d,'frames':max(1,round(d*args.fps))} for n,d in clips],
+                         'fps':args.fps,'canvas_width':args.width,'canvas_height':args.height,
+                         'foot_x':args.foot_x,'foot_y':args.foot_y,
++                        'skins':skins,
+                         'output':str(scratch/'frames'), 'template_scene':args.template_scene or ''})
+             (staging/'__s2g_job.json').write_text(json.dumps(job,ensure_ascii=False,indent=2),encoding='utf-8')
+             command=[str(eng),'--path',str(staging),'--rendering-method','gl_compatibility',
+@@ -433,7 +446,17 @@
+                               qa_dir/(name+'_'+label+'_native45.png'))
+                     qa_samples.append({'name':name,'label':label,
+                                        'source_index':source_index,'stored_index':stored_index})
+-            manifest={'id':actor_id,'fingerprint':fingerprint,'source':digests,
++            skin_lines = [line.partition('S2G_SKIN_SELECTED ')[2].strip()
++                          for line in (proc.stdout or '').splitlines() if 'S2G_SKIN_SELECTED ' in line]
++            try:
++                selected_skins = json.loads(skin_lines[-1]) if skin_lines else (skins or [])
++            except (ValueError, IndexError):
++                selected_skins = skins or []
++            manifest={'id':actor_id,'fingerprint':fingerprint,
++                      'converter_version':7,'converter_sha256':converter_bundle_sha256(),
++                      'source':digests,
++                      'skin_selection_requested':skins,
++                      'skin_selection_runtime':selected_skins,
+                       'fps':args.fps,'canvas':[args.width,args.height],
+                       'foot_anchor':[args.foot_x,args.foot_y], 'crop':metrics['crop'],
+                       'offset':metrics['offset'],'atlas_pages':metrics['atlas_pages'],
+@@ -722,6 +745,8 @@
+     p.add_argument('--textures',help='Atlas PNG page directory (default: alongside .atlas)')
+     p.add_argument('--output',help='Stable actor asset directory named by actor ID')
+     p.add_argument('--clips',default='',help='Native: comma-separated clip names, durations read from runtime. Pack-existing: name:duration pairs.')
++    p.add_argument('--skin',dest='skins',action='append',default=[],
++                   help='Select one source skin; repeat to combine a validated on-demand skin set')
+     p.add_argument('--fps',type=int,default=30)
+     p.add_argument('--width',type=int,default=768)
+     p.add_argument('--height',type=int,default=768)
+--- a/native/capture_spine.gd
++++ b/native/capture_spine.gd
+@@ -80,6 +80,28 @@
+ 	if data == null:
+ 		return false
+ 	var all_skins: Array = data.call("get_skins")
++	var requested: Array = job.get("skins", [])
++	if not requested.is_empty():
++		var by_name: Dictionary = {}
++		for skin in all_skins:
++			by_name[str(skin.call("get_name"))] = skin
++		var selected: Array = []
++		for requested_name in requested:
++			var skin_name := str(requested_name)
++			if not by_name.has(skin_name):
++				print("S2G_HINT: requested skin not found: ", skin_name)
++				return false
++			selected.append(by_name[skin_name])
++		if selected.size() == 1:
++			skeleton.call("set_skin", selected[0])
++		else:
++			var combined = sp.call("new_skin", "s2g_requested_combination")
++			for skin in selected:
++				combined.call("add_skin", skin)
++			skeleton.call("set_skin", combined)
++		skeleton.call("set_to_setup_pose")
++		print("S2G_SKIN_SELECTED ", JSON.stringify(requested))
++		return true
+ 	var body: Object = null
+ 	var extras: Array = []
+ 	for skin in all_skins:
+@@ -96,11 +118,17 @@
+ 			combined.call("add_skin", skin)
+ 		skeleton.call("set_skin", combined)
+ 		print("S2G_SKIN: combined body + ", extras.size(), " face/head")
++		var default_selection: Array = [str(body.call("get_name"))]
++		for skin in extras:
++			default_selection.append(str(skin.call("get_name")))
++		print("S2G_SKIN_SELECTED ", JSON.stringify(default_selection))
+ 	elif body != null:
+ 		skeleton.call("set_skin_by_name", str(body.call("get_name")))
+ 		print("S2G_SKIN: ", body.call("get_name"))
++		print("S2G_SKIN_SELECTED ", JSON.stringify([str(body.call("get_name"))]))
+ 	else:
+ 		print("S2G_SKIN: default")
++		print("S2G_SKIN_SELECTED [\"default\"]")
+ 	skeleton.call("set_to_setup_pose")
+ 	return true
+ 
+
