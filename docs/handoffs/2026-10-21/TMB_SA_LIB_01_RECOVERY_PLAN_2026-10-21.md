@@ -58,3 +58,27 @@ The tool was correctly blocked by 1,359 MiB available RAM vs 2,200 MiB threshold
 - `ASSET_LIBRARY_FOR_CODEX.md` in local library and review ZIP.
 - `reports/FINAL_STATUS.md`, `reports/summary.json`, `reports/focused_qa.json`.
 - SourceA GitHub tooling branch `sa-lib-01-sourcea-spine-library-20261021` @ `87d6b60123c85930e9eb571949f4aafbb8f8ac7d`.
+
+---
+
+## 2026-10-21 — RESOURCE-STARVED WORKER UPDATE (POST CURRENT-QA AUDIT)
+
+**Evidence as reported by Codex, not independently read from the local E: ZIP:** latest review package `TMB_SALIB_CURRENT_QA_BATCH_REVIEW.zip` has CRC and 383 internal checksums checked by Codex. Current-converter QA **0 PASS**, historical Batch-01 **10/10 source/input hashes and manifests intact but historical QA only**; candidate multi-skin rig `2123019_10` has 12 skins and parse PASS. 1,248 REVIEW not yet classified + 1 REVIEW duplicate alias + 1 historical-QA REVIEW. The new reported machine samples are RAM free **1,011 MiB** earlier, **1,888 MiB** later, versus the **2,200 MiB** gate; E: free **51.28 GiB**; the provided Task Manager screenshot shows **100% CPU / 96% memory** and multiple Godot processes, three shown `Not responding`. The counts are at different instants; do not overwrite one with another as a single synchronous measurement. No rig conversion or new Godot skin QA ran in this audit.
+
+### Audit of the real tool and consequence
+
+GitHub tooling source `tools/sourcea-spine-library/sourcea_library.py` on `sa-lib-01-sourcea-spine-library-20261021`:
+- `convert_one()` and `command_resume()` reject **free RAM < 2,200 MiB OR any Godot process**; this is deliberate concurrency protection. It does not become safe merely because the disk is large.
+- `convert_one()` launches existing Spine converter with Godot 4.5 capture and Godot 4.7.2 QA inputs as a child process; a one-worker sequential loop does not imply low peak RSS.
+- `status` opens `connect_library()`, which sets SQLite `journal_mode=WAL` and creates schema if necessary. Thus an allegedly read-only status **currently needs write access** and can fail under a task read-only writable-root policy. This is a CLI ergonomics improvement candidate; not proof of broken catalog.
+- `resume` when blocked can update many queued asset statuses; do **not** rerun it to see whether RAM has recovered. Use passive OS resource checks or an eventual scoped read-only status path.
+
+### New execution policy — no endless RAM waiting
+
+1. **NOW:** mark SA-LIB conversion `BLOCKED_RESOURCE` and close this QA cycle. Preserve review ZIP, SQLite, raw Source A, converter fingerprint and output manifests. B2.4 has priority for the limited Windows CPU/RAM. Never auto-kill Godot, disable Defender, raise priority arbitrarily, lower the guard, or trigger new heavy QA just to seek PASS.
+2. **LOW-RAM WORK ONLY:** read-only content source indexing and prioritization for 9 historical READY rigs / multi-skin pilot; parse or inspect existing manifests only as needed. Optional separately authorized **small tool-fix**: add a genuinely SQLite-URI `mode=ro` status/check command with no schema mutation, and a dry-run resource estimator. This is **not permission** to rewrite the converter.
+3. **BEST LONG-TERM UNBLOCK:** use a **dedicated adequately resourced Windows worker**, cloud or physical PC, with verified Godot 4.5 and official 4.7.2 binaries, source toolchain and free storage. Transfer **only an owner-authorized small rig+atlas+texture subset**, with SHA-256 manifest and private access; do not assume an E: path or GitHub repo can supply raw Source A to cloud. Do not upload 66 catalog chunks or entire Source A without separate authorization. Test 1 current-fingerprint rig and 1 skin first, record max RAM/CPU, converter SHA, Godot import/playback, result ZIP and ability to bring the evidence back into canonical SQLite before a 5–10-rig batch.
+4. **LOCAL FALLBACK:** after the B2.4 owner closes Editor and any Godot work (voluntarily, after saving), recheck live free RAM/CPU/disk. If the existing gates are green run **one rig only**, measure peak memory/CPU and checkpoint. If gates cannot be met in practice, mark local conversion `UNSCHEDULABLE` and use the dedicated worker path rather than polling/resuming indefinitely.
+5. **GAME DEPENDENCY:** B3 backend AI farm and Combat V2 simulation do not require completing all 5,328 READY rigs. Source A should first produce **specific approved QA packs** used by Combat V5.1/Character Studio; defer the broad catalog. No current-fingerprint QA PASS means no automatic Character V2 pack-bridge clearance yet.
+
+**Owner decision needed for actual cloud execution:** permission for an external worker and specifically scoped Source A input transfer. This research does not authorize such a transfer, additional Godot tests or code changes. No merge to `main`.
