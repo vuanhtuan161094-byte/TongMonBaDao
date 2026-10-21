@@ -278,3 +278,134 @@ Let `rate_i(z)` denote verified credited units of material i per *simulated hunt
 6. **B3-D5 BALANCE:** compare observed material/recipe/gear progression and injury tradeoffs before requesting owner rate, guarantee, cap and Boss source approvals.
 
 **Next owner action while Codex 01/02 continue:** none required. This is a design checkpoint; do not start B3 code or extra QA, do not grant converter permission by changing RAM gates. Wait for new B2.4/SA-LIB evidence in the normal conversation, then inspect ZIP and branches before selecting a single CODE integration owner.
+
+---
+
+## 8. B3-D0 — MA TRẬN NGUỒN → KHO → CÔNG THỨC → FARM ORDER (READ-ONLY AUDIT, 2026-10-21)
+
+**Permission and provenance:** this section is **DOCS-ONLY**, based on GitHub `main` @ `461caca1171462e0da092f21108c5c1733157ad9` and the latest 2026-10-21 four-ZIP/B3 checkpoints; no runnable game QA, save upload, claim production-per-kill table, Codex takeover or balance approval. User intends to focus Source A only **after B2.4**, but SA-LIB currently remains blocked on local resources. No `main` edit, CI, merge, or new converter.
+
+### 8.1 Existing source graph — exact IDs, no ghost loot
+
+**Static cross-reference result:** 8 unique relevant source/recipe resource IDs examined against `ResourceRegistry.DEFINITIONS`; **0 missing**. This checks declaration presence, not persisted stock or eligibility of a future per-kill table.
+
+| Item (`ResourceRegistry`) | Existing V2 encounter source | Other current pilot use | B3 D0 status |
+|---|---|---|---|
+| `linh_moc` | Thanh Trúc Lâm | Ingredient in `thanh_thiet_kiem`, `linh_moc_phap_truong`, `hoa_van_ngoc`; also Linh Lâm output | SOURCE_EXISTS_ENCOUNTER; per-kill production **UNAPPROVED** |
+| `thanh_thiet` | Thanh Trúc Lâm, Bạch Thạch Khê | Ingredient in `thanh_thiet_kiem`, `huyen_thiet_quyen_sao`, `tinh_lang_giap`; also Mỏ output | SOURCE_EXISTS_ENCOUNTER; per-kill production **UNAPPROVED** |
+| `tinh_lang_bi` | Bạch Thạch Khê, Hắc Phong Cốc | Ingredient in `huyen_thiet_quyen_sao`, `tinh_lang_giap` | SOURCE_EXISTS_ENCOUNTER; per-kill production **UNAPPROVED** |
+| `yeu_dan` | Hắc Phong Cốc | Ingredient in `linh_moc_phap_truong`, `hoa_van_ngoc` | SOURCE_EXISTS_ENCOUNTER; per-kill production **UNAPPROVED** |
+| `thanh_linh_thao` | Thanh Trúc Lâm | Herb / alchemy, **not ingredient** in five equipment recipes | SOURCE_EXISTS_ENCOUNTER; do not farm for ordinary gear pilot |
+| `tu_van_thao` | Bạch Thạch Khê | Herb / alchemy, **not ingredient** in five equipment recipes | SOURCE_EXISTS_ENCOUNTER; do not farm for ordinary gear pilot |
+| `linh_tuy` | Thanh Trúc Lâm, existing rare/4-win Body guarantee | Body milestone, **not ingredient** in five gear recipes | LEGACY_GUARANTEE; preserve 4 completed wins, not 4 monster kills |
+| `huyen_thiet` | Bạch Thạch Khê and Hắc Phong Cốc rare | Registered, **not used** in five pilot equipment recipes | RARE_EXISTS_ENCOUNTER; not a default target for first forge goal |
+
+**IMPORTANT payout isolation:**
+1. `HuntingMapV2.preview_reward()/claim_reward()` grants registered resources **once per victorious, completed PvE encounter**, not per individual monster, from `REGION_CONTENT` and level yield. Includes rare pilot roll and Thanh Trúc Lâm four-victory guarantee; retained legacy authority.
+2. `EquipmentSystem.forge_loot_for_victory()` is a **different older route** keyed by individual resolved legacy `species_id`: `truc_thu` → `linh_moc:1`; `thanh_lang` → `thanh_thiet:1,tinh_lang_bi:1`; `hac_lang` → `thanh_thiet:2,tinh_lang_bi:1,yeu_dan:1`; moves into disciple pending inventory and later deposited. **Do not add to V2 encounter payout or rebrand as B2.4 per-kill tables.**
+3. B2.4 editor/runtime prototype is an **isolated seeded sandbox**, not live `SaveService` or production drop tables; no live B3 loot should flow through it until an authorized integration owner establishes a single payout route.
+4. Monster `normal/elite/boss` composition in V2 is encounter-authored; the `rare` percentage applies **per won encounter**, not a per-kill chance or inferred Boss legendary drop.
+
+### 8.2 Exact encounter-level material matrix (existing pilot figures, NOT new B3 balance)
+
+For **each win** at the listed level, before any legacy rare bonus and when eligibility/settlement succeed: `max(1, round(base_resource * LEVELS[level].yield))`; fixed factors Level 1–5 are 1, 1.35, 1.8, 2.5, 3.5. Displaying existing code values **does not freeze future B3 drop rates**, and losing, retreating or unclaimed runs grant none via this claim method.
+
+| Vùng / `region_id` | Level (pilot) | Quái/trận | Vật liệu chắc chắn theo *thắng encounter* |
+|---|---:|---:|---|
+| Thanh Trúc Lâm / `thanh_truc_lam` | 1 | 3 | `linh_moc` **3**; `thanh_thiet` **1**; `thanh_linh_thao` **1** |
+| Thanh Trúc Lâm / `thanh_truc_lam` | 2 | 4 | `linh_moc` **4**; `thanh_thiet` **1**; `thanh_linh_thao` **1** |
+| Thanh Trúc Lâm / `thanh_truc_lam` | 3 | 5 | `linh_moc` **5**; `thanh_thiet` **2**; `thanh_linh_thao` **2** |
+| Thanh Trúc Lâm / `thanh_truc_lam` | 4 | 6 | `linh_moc` **8**; `thanh_thiet` **3**; `thanh_linh_thao` **3** |
+| Thanh Trúc Lâm / `thanh_truc_lam` | 5 | 7 | `linh_moc` **11**; `thanh_thiet` **4**; `thanh_linh_thao` **4** |
+| Bạch Thạch Khê / `bach_thach_khe` | 1 | 3 | `thanh_thiet` **2**; `tinh_lang_bi` **2**; `tu_van_thao` **2** |
+| Bạch Thạch Khê / `bach_thach_khe` | 2 | 4 | `thanh_thiet` **3**; `tinh_lang_bi` **3**; `tu_van_thao` **3** |
+| Bạch Thạch Khê / `bach_thach_khe` | 3 | 5 | `thanh_thiet` **4**; `tinh_lang_bi` **4**; `tu_van_thao` **4** |
+| Bạch Thạch Khê / `bach_thach_khe` | 4 | 6 | `thanh_thiet` **5**; `tinh_lang_bi` **5**; `tu_van_thao` **5** |
+| Bạch Thạch Khê / `bach_thach_khe` | 5 | 7 | `thanh_thiet` **7**; `tinh_lang_bi` **7**; `tu_van_thao` **7** |
+| Hắc Phong Cốc / `hac_phong_coc` | 1 | 3 | `tinh_lang_bi` **2**; `yeu_dan` **2** |
+| Hắc Phong Cốc / `hac_phong_coc` | 2 | 4 | `tinh_lang_bi` **3**; `yeu_dan` **3** |
+| Hắc Phong Cốc / `hac_phong_coc` | 3 | 5 | `tinh_lang_bi` **4**; `yeu_dan` **4** |
+| Hắc Phong Cốc / `hac_phong_coc` | 4 | 6 | `tinh_lang_bi` **5**; `yeu_dan` **5** |
+| Hắc Phong Cốc / `hac_phong_coc` | 5 | 7 | `tinh_lang_bi` **7**; `yeu_dan` **7** |
+
+Rare resources `linh_tuy/huyen_thiet` are separate pilot rolls (plus the old 4-win guarantee where applicable), omitted from fixed material matrix. The per-kill B2.4 synthetic QA award is **not** this table. Higher difficulty has more monsters and difficulty multipliers; more items *per win* does not imply a higher real material-per-hour throughput.
+
+### 8.3 Existing real recipe matrix and cheapest *encounter-count* paths
+
+The following costs were read from `EquipmentSystem.RECIPES`; all ingredient IDs appear in `ResourceRegistry.DEFINITIONS`. The example count is **illustrative static arithmetic**, not an actual available stock/party risk/time measurement; its assumptions are zero starting Warehouse, no reserved/locked goods, L1 successful claim per encounter, no rare bonus or competition.
+
+| Recipe ID hiện có | Vật liệu chính xác / một món | Vùng V2 cung ứng đầu vào | Kết luận với kho ban đầu = 0, không reserve, level 1, mọi trận thắng |
+|---|---|---|---|
+| `thanh_thiet_kiem` (weapon) | `thanh_thiet` ×3 + `linh_moc` ×1 | thanh_thiet ← Thanh Trúc Lâm, Bạch Thạch Khê; linh_moc ← Thanh Trúc Lâm | 1 thắng Thanh Trúc Lâm + 1 thắng Bạch Thạch Khê → có đủ; 2 chuyến/vùng (chưa tính đi lại). Chỉ Thanh Trúc Lâm cần 3 thắng. |
+| `huyen_thiet_quyen_sao` (weapon) | `thanh_thiet` ×3 + `tinh_lang_bi` ×1 | thanh_thiet ← Thanh Trúc Lâm, Bạch Thạch Khê; tinh_lang_bi ← Bạch Thạch Khê, Hắc Phong Cốc | 2 thắng Bạch Thạch Khê → có đủ. |
+| `linh_moc_phap_truong` (weapon) | `linh_moc` ×3 + `yeu_dan` ×1 | linh_moc ← Thanh Trúc Lâm; yeu_dan ← Hắc Phong Cốc | 1 thắng Thanh Trúc Lâm + 1 thắng Hắc Phong Cốc → có đủ; cần hai vùng. |
+| `tinh_lang_giap` (armor) | `tinh_lang_bi` ×3 + `thanh_thiet` ×1 | tinh_lang_bi ← Bạch Thạch Khê, Hắc Phong Cốc; thanh_thiet ← Thanh Trúc Lâm, Bạch Thạch Khê | 2 thắng Bạch Thạch Khê → có đủ. |
+| `hoa_van_ngoc` (talisman) | `yeu_dan` ×2 + `linh_moc` ×1 | yeu_dan ← Hắc Phong Cốc; linh_moc ← Thanh Trúc Lâm | 1 thắng Hắc Phong Cốc + 1 thắng Thanh Trúc Lâm → có đủ; cần hai vùng. |
+
+**A particularly compact feasibility pilot:** `tinh_lang_giap` from Bạch Thạch Khê alone. At existing Level 1 content, 2 victorious encounters yield `tinh_lang_bi:4` + `thanh_thiet:4`, enough for armor cost `tinh_lang_bi:3` + `thanh_thiet:1`, **assuming stock starts at 0 and claims succeed**. At Level 2, one victorious encounter yields `3+3`, enough in material count, but higher battle danger may make Level 1 preferable. These are **old encounter claim** calculations, NOT a forecast of B2.4 per-kill drop, measured hunt time, actual available warehouse or free player reward.
+
+**Source switching principle:** when the necessary input is already produced by Mine/Linh Lâm, AI should compare real warehouse supply and the committed building timer before redirecting a team. `huyen_thiet` is not a component of `huyen_thiet_quyen_sao` despite its name; the existing recipe requires `thanh_thiet` and `tinh_lang_bi` only. Do not chase the rare Huyền Thiết just to craft that weapon.
+
+### 8.4 Canonical Warehouse demand, reserve, competing orders, stop conditions
+
+**LIVE STOCK GAP:** No user's current `SimulationState` save is attached/accessible from GitHub. Therefore no factual `warehouse_resources` quantities, rules, currently queued jobs, team HP or actual deficits can be claimed. A code declaration is *not* a live inventory snapshot. All D0 results requiring a live save must explicitly report `UNKNOWN_STATE`.
+
+For each ingredient `i`, output goal type `recipe_batch` and quantity `n`:
+
+- `required_i = recipe.materials[i] × n`.
+- `usable_i = WarehouseSystem.available_quantity(state, i)`, which accounts for `locked` and `reserve_min`; **do not** infer this from raw quantity if rules exist.
+- `committed_other_orders_i` is a *policy accounting constraint* for future approved orders (not a new real wallet/warehouse or item transfer).
+- `uncommitted_usable_i = max(0, usable_i - committed_other_orders_i)`.
+- `deficit_i = max(0, required_i - uncommitted_usable_i)`. A zero deficit means **MATERIALS_READY**, not that an actual gear item was crafted.
+- A **material stock** goal may complete when its actual committed stock condition is satisfied. A **gear craft** goal completes only when an actual `equipment_items` unique item exists with the intended recipe and lawful Sect ownership, after a validated forge transaction. If the goal also includes equipping, verify a genuine assignment to the chosen existing disciple before `COMPLETED`.
+- If the goal targets `n` units of *spendable material*, satisfy `available_quantity` rather than `quantity` and preserve existing reserve; don't subtract reserve twice.
+- An AI objective must not count `pending_loot`, preview panels, uncommitted receipts, unprocessed job timers, static region rewards, shop listings, personal inventory, or hypothetical market purchases as credited Sect material.
+
+**Deterministic tie-break example (not real save):** For `tinh_lang_giap`, suppose `tinh_lang_bi` physical stock 2 with `reserve_min=1`, `thanh_thiet` physical stock 5 with `reserve_min=2`, neither locked, and no other claim. Usable hide = 1, usable ore = 3; deficit hide = 2, ore = 0. AI's **material target** is hide only. If a second order has already allocated that one usable hide in a canonical future policy, hide deficit becomes 3. These are *illustrative figures only*. Once loot increases stock, re-evaluate `available_quantity` at a canonical tick/event and stop redeployment at goal; avoid per-frame state writes.
+
+**Order priority across recipes:** one deterministic ordering per policy revision/tick: player explicit priority, urgent validated shortfall, source viability, risk-adjusted expected *useful* credited materials per total elapsed hunt time, available eligible team, then stable order ID. **No planner-made pseudo-reservations may be committed or exposed as actual Warehouse reserved stock.** More than one recipe order sharing the same material must have either one documented allocation ledger inside canonical state or be queued serially to prevent double counting.
+
+### 8.5 Team selection and job conflicts (safe AI farm)
+
+Reuse `OrganizationSystem` canonical `TeamState`, `DecisionSystem` risk/region scoring, `WorkforceSystem` occupation preflights and `HuntingPveRunV2.begin()` actual eligibility validation. Policy recommendations are not a second authoritative job admission path:
+
+1. Gather existing team IDs in stable lexical order and their actual `member_ids`; require 1–6 members (one currently existing battle's global cap 30 disciples and 40 monsters remains separate). Reject missing/duplicate members or simultaneous team deployments.
+2. Reject injuries `injury_level != 0`, HP<=0, existing PvE reservations, invalid current region/action, active Mine/Forest resource timer, Spirit Field plot, Alchemy timed recipe, Body facility, any nonempty work cycle or conflicting direct command. **Do not call `issue_command` as a preflight**; accepted explicit commands can release/cancel work.
+3. Require actually registered region, unlocked/eligible V2 difficulty and genuine source evidence. `DecisionSystem.choose_region` and `evaluate` **mutate** `last_decision`; UI planner must use pure extraction/ranking, not call them per render frame.
+4. Hard-filter by owner danger/retreat policy and stable V2 HP/Body combat readiness, then rank eligible region/team pairs. Leadership, skill/path/equipment bonuses may inform predicted safety but must never spoof V2 canonical combat stats.
+5. Choose one order/team at a time; leave busy teams `WAITING_FOR_TEAM` (not `FAILED`). On urgent Injury/defeat/retreat, let real V2 terminal HP/Injury/return settlement finish before issuing another plan; no arbitrary auto-redeploy.
+6. If a run is already active at the moment target becomes available, **stop scheduling new runs** but let the current authoritative encounter finish and settle. Do not delete the battle or revoke a valid existing kill receipt just to stop farm.
+
+**Source confidence status:** `VERIFIED_LEGACY_ENCOUNTER`, `VERIFIED_LEGACY_DISCIPLE_INVENTORY`, `SANDBOX_TEST_ONLY`, `VERIFIED_PRODUCTION_PER_KILL`, `UNAVAILABLE`. None of the currently observed B2.3/B2.4 synthetic records qualifies as `VERIFIED_PRODUCTION_PER_KILL`. Use `BLOCKED_NO_PRODUCTION_TABLE` for hypothetical *live per-kill* FarmOrder until separately authorized; do not disable legacy PvE to claim B3 is ready.
+
+### 8.6 Real time, forge time, ETA — separate existing authorities
+
+| Stage / actual existing code | Timing authority | Fact/status for B3 |
+|---|---|---|
+| Economy-A authentic V2 Mine / Linh Lâm resource packet | `BuildingSystem._start_resource_timer` uses `base_duration = economy_a_policy.resource_duration_ticks` default **10 scheduler ticks** and `duration = ceil(base_duration / max(work_speed,0.25))` min 1; real persisted `finish_tick`; starts only on valid worker slot | **IMPLEMENTED** when Economy-A enabled. Read actual policy/actor speed and timer progress before choosing farm over passive production. Do not assume ten minutes final for every job. |
+| Other P3.7 work cycles/Field/Alchemy | `BuildingSystem` job/plot timers and `SimulationScheduler.step()` | **IMPLEMENTED by respective subsystems**, durations and conditions depend on real building/worker/recipe; don't collapse into the Mine/Forest ten-tick timer. |
+| `WorkforceSystem` forging profession cycle | `FORGING_DURATION=5.0` legacy work-progress units under work-speed modifiers | **NOT a scheduled forge recipe**. This produces profession XP/support channels; it is not a five-minute guaranteed equipment forge. |
+| `EquipmentSystem.craft(recipe_id, list_for_sale=true)` | Synchronous function: checks/consumes materials then creates a unique `equipment_items` entry and increments forge index | **NO forged gear timer in current pilot**. `list_for_sale=false` initially stores item; default puts it in `LOCATION_SHOP`. Do not show invented forging progress/ETA or claim a durable forge queue exists. |
+| Autonomous legacy expedition vs V2 map combat | `SimulationRuntimeClockV2` 60 wall seconds = 1 scheduler-minute; `MapBattleV2` 0.25 battle-seconds per combat step and 90 battle-second cap | **NO approved general conversion between combat steps and scheduler minutes for B3 repeated farm**. Thus expected minutes/gear is `UNKNOWN` until an integration owner defines and tests the accounting. |
+| B2.4 sandbox per-slot respawn | Separate sandbox runtime from Codex Prompt 01 | Do not reuse sandbox respawn seconds as production earning clock or treat seeded fake drops as B3 material/hour. |
+
+**ETA proposal (not implemented):** `T_total = T_wait_for_eligible_team + T_travel + Σ(real successful and failed encounters + respawn/wait + recovery + claim) + T_real_forge_queue_if_it_exists + T_assignment`. For the current direct `EquipmentSystem.craft()`, `T_real_forge_queue` is **0 synchronous code execution**, *not* an approved gameplay instant-forge policy for V2 equipment. If any time/rate/payout eligibility is unknown, UI displays `ETA_UNAVAILABLE` with reason, rather than fabricating a countdown. Measure wall time and simulation time separately.
+
+### 8.7 Stop/recovery and B3-D0 acceptance contract
+
+| Trigger | State transition (proposal, no code) | Forbidden shortcut |
+|---|---|---|
+| Missing/empty approved production per-kill table | `BLOCKED_NO_PRODUCTION_TABLE` | No synthetic/legacy payout substituted for B2.4 |
+| Material ID unregistered, ingredient source unverified, zone inaccessible | `BLOCKED_SOURCE` | Never invent resource, region, mob or item |
+| Material stock target met from committed Warehouse | `COMPLETED` for material-stock objective only | No phantom gear completion |
+| Recipe inputs become affordable without touching lock/reserve | `MATERIALS_READY` → wait for authorized real craft | Do not debit twice or count other orders' reservations |
+| Unique item actually crafted | `CRAFTED` → optional `ALLOCATING` / `COMPLETED` | No clone gear or personal resale |
+| HP retreat, Injury=1, team conflict or supply shortage | `RETURNING/RECOVERING` or `WAITING_FOR_TEAM/SUPPLIES` | No forced job transfer, skipped Injury, or infinite farm |
+| Stop/pause/cancel by owner | stop *new* dispatch; settle active run and outstanding receipts exactly once | No mid-battle kill deletion or rollback of earned valid loot |
+| Offline/save reload, process interruption | resume from canonical persisted state *when integrated*; otherwise sandbox no live rewards | No proportional offline payout without actual simulated bounded combats |
+
+**Next meaningful non-Godot verification before authorizing B3 code:** inspect B2.4 ZIP for actual per-kill source map, table validator, receipts and one tick/clock owner; inspect first current-fingerprint SA-LIB pack only for visual asset usability (not a blocker for D0); obtain **a safe read-only exported save/warehouse snapshot** when available to replace `UNKNOWN_STATE` with actual stock and team eligibility. Do not request Windows action now.
+
+**Minimal future focused tests when code is separately authorized (not executed):** (1) one recipe / one region / real stock deficit; (2) locked reserves & two competing orders; (3) no duplicate payout across legacy and B2.4 modes; (4) busy/injured/team-full rejection; (5) provenance of completed Forge registry item; (6) online/offline tick equivalence with bounded combat advancement; (7) early-stop not deleting valid receipts; (8) no fabricated forge timer. Retain existing 3 baseline red regressions and test SHA provenance.
+
+**D0 exit today:** source/recipe IDs **statically cross-checked**; model & first pilot chosen; real stock and quantitative farm/forge ETA **UNKNOWN** by evidence. No Godot PASS, balance lock or production AI implementation claimed. The next CODE packet is **not authorized by this document**.
