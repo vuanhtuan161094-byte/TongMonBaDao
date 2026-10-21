@@ -1,5 +1,7 @@
 # TÔNG MÔN BÁ ĐẠO — B2.3 BACKEND AUDIT + B3 RESEARCH CHECKPOINT
 
+> **LATEST OWNER/FOUR-ZIP UPDATE — 2026-10-21:** B2.3 sandbox pilot was reviewed: ZIP SHA-256 `f9a934abbc9aa8712296447c466897ef686f27720caddcd2a32b736a9b12408e`; seven focused/regression tests reported PASS. Its live SaveService hook, production per-kill tables and true Editor manual acceptance are *not* complete. **P0 is now B2.4 playable/observable sandbox**, Codex Prompt 01 **RUNNING per owner**; **P1 Source A library** Codex Prompt 02 **RUNNING per owner**, but any RAM-heavy conversion/QA must wait for safe hardware gate and must not overlap B2.4 Godot runtime. **V5.1/Character Studio V2 remain HOLD**. The B2.3-original statements below are retained as research history and may be superseded by the ZIP checkpoint. See `TMB_FOUR_ZIP_REVIEW_AND_NEXT_CODEX_2026-10-21.md`. No local worktree/Codex task progress can be directly asserted from GitHub.
+
 **Date:** 2026-10-21 · **Status:** READ-ONLY CODE AUDIT + DESIGN PROPOSAL; NOT CODED, NOT RUNTIME-TESTED · **Research base:** `main` @ `461caca1171462e0da092f21108c5c1733157ad9` · **Document branch:** `docs/tmb-status-20261021-v5-sa-lib`.
 
 > **OWNER PRIORITY:** 1 main task = B2.3 Spawn & Loot Runtime; 1 secondary task = Source A library conversion only when safe hardware gates permit. V5.1 Combat/Character Studio V2 hold. No user Windows requirement. No merge, CI/FULL, balance lock, Source A metadata upload, or gameplay change is authorized by this research note.
@@ -112,3 +114,67 @@ Assess **three stress layers** separately: one party, multiple parties sharing t
 ## 5. Provenance
 
 GitHub main source inspected: `godot/src/simulation/combat/{map_battle_v2.gd,map_battle_snapshot_v2.gd,hunting_map_v2.gd,hunting_pve_run_v2.gd,monster_catalogue_v2.gd}`, `godot/src/simulation/{resource/warehouse_system.gd,equipment/equipment_system.gd,state/{sect_state.gd,simulation_state.gd},save/save_service.gd}`, plus the five 2026-10-21 handoff Markdown documents. All conclusions about **local** V5.1/B2.3/Character Studio state rely on prior handoff provenance, **not** live access to a user's Windows worktree or its ZIP.
+
+---
+
+## 6. ADDENDUM 2026-10-21 — POST FOUR-ZIP B3 AI FARM / BRANCH INTEGRATION RESEARCH
+
+**Reason for update:** Owner reported both Codex Prompt 01 (B2.4) and Prompt 02 (SA-LIB) are currently in progress. This addendum is read-only design; no new Codex prompt, code editor, tests or conversion has been run here. GitHub main still reads `461caca1171462e0da092f21108c5c1733157ad9` at the time of audit.
+
+### 6.1 Four ZIP reality and forward dependencies
+
+| Stream | Verified in the current four-ZIP handoff | Next dependency / current decision |
+|---|---|---|
+| B2.3 → **B2.4** | 72-entry B2.3 ZIP; 7 focused/regression PASS; Editor schema v2/UndoRedo, independent spawn/per-kill/ledger, 30v40 ×160, snapshot rollback | B2.4 must show a true standalone Godot demo and manual Editor GUI; keep rewards **seeded test-only** and sandbox Warehouse clone; don't claim live SaveService/production payout. Local B2.3 worktree had 5 tracked +24 untracked pending. |
+| Source A SA-LIB | 6,578 indexed rigs, 5,328 SOURCE READY, 1,250 REVIEW; 10 historical QA PASS, **0 current fingerprint PASS** | 2,200 MiB free RAM guard and >=5 GiB disk; no simultaneous Godot conversion/runtime. 66 detailed catalog chunks remain local, no repo upload authorization. |
+| Combat V5.1 | Actual Source A pilot screenshots and camera/shadows, focused QA | Dirty local branch, owner visual pending, manual reset click/Android pending; hold. |
+| Character Studio V2 | 8 real GUI frames; 7 rig candidates, 42 clip cells (22 verified, 2 unverified, 18 missing), 0 verified outfits | Local commit not pushed; hold until current-fingerprint SA-LIB approved packs. No second converter. |
+
+**Trust boundary:** the four ZIP review is the authority for the above handoff evidence; GitHub connector accesses only published code/Markdown. Do not claim local dirty code is at `main` or completed Codex work as a committed branch.
+
+### 6.2 Existing AI farm code already present — do not duplicate
+
+| Actual main file | Existing runtime role | B3 integration rule |
+|---|---|---|
+| `godot/src/simulation/ai/decision_system.gd` | Chooses `HUNT/REST/HEAL/SELL/BUY/CULTIVATE` from HP/stamina/inventory, goals and preferences; `choose_region` scores profit, region danger, combat power, organization and social signals. | **Reuse as advisory preference/risk scoring**, not a second direct monster-loot authority. For a B3 explicit farm goal, apply policy constraints before selecting a permitted region. |
+| `godot/src/simulation/ai/goal_system.gd` | `RECOVER/WEALTH/GLORY/SECURITY/PREPARE/GROWTH` goals; e.g. inventory triggers WEALTH. | Preserve personality goals for background behaviors; don't conflate per-disciple WEALTH or individual inventory counts with Sect-wide material targets. |
+| `godot/src/simulation/organization/organization_system.gd` + `team_state.gd` | Canonical team memberships, max 6 members; roles hunter/logistics/guard and leader. | Reuse existing team IDs/membership; B3 team-farm order should reference teams, never maintain a parallel roster with different 6-member rules. |
+| `godot/src/simulation/workforce/workforce_system.gd` | Supports explicit `COMMAND_HUNT_REGION`, other job commands, worksite reservations. | Reuse command semantics where compatible, but target material/monster is a **higher-level policy**. One Active Job check must precede deploying the actual hunt. |
+| `godot/src/simulation/core/simulation_scheduler.gd` | Advances canonical minute ticks and legacy autonomous `HUNT→TRAVEL→COMBAT→LOOT→EVALUATE`; legacy `COMBAT` uses `CombatSystem.resolve_encounter` and sets `disciple.pending_loot`, then deposits/sells later. | **Important collision:** legacy personal pending-loot route is NOT B3 canonical immediate Sect Warehouse per-kill settlement. B3 must not route identical monster deaths through both systems. Preserve legacy unchanged by opt-in mode and use B2.4 per-kill authority only in designated sandbox until integration is separately approved. |
+| `godot/src/simulation/core/simulation_runtime_owner_v2.gd`, `simulation_runtime_clock_v2.gd` | One canonical `SimulationScheduler`, state/save owner, online/offline tick integration. | When promoted from standalone sandbox, B3 scheduler consumes this one tick clock; do not build a second simulation ticker or persist an independent farm reward save. |
+| `godot/src/simulation/combat/hunting_pve_run_v2.gd` | Authoritative V2 battle run, participant reservation and terminal Injury/HP; legacy encounter rewards separate. | Must be reconciled at the integration owner boundary with B2.4 sandbox before live reward enablement. No early guess that B2.4 API has already been merged. |
+
+### 6.3 Proposed B3 farm-order contract (design only)
+
+A Sect Master creates a **farm objective**, not individual loot claims: `farm_order_id`, target registered `material_id` or exact approved gear/recipe goal, required stock delta or absolute stock floor, prioritized region/eligible tiers/species, team IDs, safety settings, start/stop/pause, source table version and policy revision. Treat unknown item IDs, invalid zones and unapproved per-kill production tables as **BLOCKED** rather than falling back to free payouts. Persist these orders via canonical simulation state only after a scoped CODE authorization.
+
+**Five states:** `WAITING_FOR_RESOURCES` (target validation / actor & zone eligibility) → `DEPLOY` (reserve one existing team and 0/1 active jobs) → `FARM` (B2.4/approved V2 simulation alone owns kill, receipt, warehouse) → `RETURN_RECOVER` (HP/Injury/timeout/command stop) → `GOAL_REACHED` (verified canonical Warehouse objective). `PAUSED/BLOCKED` is a controlled status for conflicts and unavailable sources. Never calculate loot in the AI policy itself.
+
+**Scheduling rule:** a cheap policy evaluation at known simulation tick boundaries computes shortages from `WarehouseSystem.quantity` (and existing reserve/locked rules) and ranks objectives by urgent crafting goal, source viability, expected rate and risk. Policy requests hunting only when no competing job/reservation, valid team capacity, valid region/realm, approved content and safe combat readiness. A kill receipt independently updates Warehouse; the next evaluation reads that *committed* stock and stops/redirects the farm when the goal is reached. No extra reward on stopping, no "idle loot" from offline catch-up, no 1,000 individual per-frame planners.
+
+**Offline/safety:** no unbounded respawn backlog; offline farm duration, max events, injury and consumption policy must be explicit before production. B2.4 may exercise only an isolated sandbox/save clone. Any long-running offline payout must be separately authorized and bounded to guard against infinite resources or receipt growth. Relative HP, danger, retreat behavior and One Active Job belong to V2 simulation; UI cannot override them.
+
+### 6.4 AI farm numeric research without locking drop rates
+
+Let `K_{z,s,t}` be *actual committed eligible kills per hour* in zone `z` for species/tier `s,t` (accounting for movement, respawn, fights, waiting, recovery, and multi-team contention), `P_{s,t,i}` the **proposal** drop probability for material `i`, and `Q_{s,t,i}` the mean awarded quantity if dropped. Then:
+
+- `E[material_i/hour] = Σ_z,s,t K_z,s,t × P_s,t,i × Q_s,t,i`.
+- For recipe `r` with `cost_{r,i} > 0`, `max_sustainable_crafts/hour <= min_i(E[material_i/hour] / cost_{r,i})`, and also bounded by the real forge/worker capacity. This is an **upper bound**, not a promise: luck, injury, stock reserves and correlated drops lower real output.
+- Time to first craft must use **distribution quantiles and pre-existing stock**, not only expected value. Track median, p90, p95 elapsed simulated game time until material goal, zero-progress runs, duplicate-receipt count (should be zero), no-affordable-action cases, storage delta and injury downtime.
+
+**Recommended first B3 playtest:** the three real V2 zones `thanh_truc_lam`, `bach_thach_khe`, `hac_phong_coc`; one 6-disciple party, approved existing low-tier material, one actually available forge recipe from the legacy pilot and one genuine equipment instance. No need to author 300 clusters or implement all 12 grades to prove usefulness. Later scale tests can use 5 teams/30 disciples and 40 simultaneous monsters after the single-party path is correct.
+
+### 6.5 Integration matrix and stop conditions
+
+| Merge surface | Likely collision | Safe handoff / stop condition |
+|---|---|---|
+| `project.godot`, addons and scene registration | B2.4 Editor dock versus Character Studio addon; V5.1 pilot launcher | Explicit plugin IDs and isolated demo scene. Never copy entire `project.godot` wholesale from a dirty branch. |
+| Combat `MapBattleV2`, `HuntingPveRunV2`, snapshot/kill source | B2.4 per-kill runtime versus legacy encounter-win claim versus V5.1 view | B2.4 sandbox must be isolated. Promotion requires one designated combat integration owner and proof of exactly one authoritative kill/reward route. |
+| `SectState`, `SimulationState`, `SaveService`, `WarehouseSystem`, `SimulationScheduler` | B3 farm orders vs B2.4 ledger vs Economy V2/One Active Job | No independent parallel writes. Integration owner chooses one versioned save/schema and tests mid-receipt rollback and legacy migration. |
+| Source A content manifests/resolver | SA-LIB library pack vs Character Studio V2 vs V5.1 | Accept a **specific current-fingerprint QA pack**, never generic `READY` catalog status. One lazy resolver; no second converter or copy of all indexed rigs into game. |
+| `equipment_system.gd` and unique registry | Pilot 3 slots/3 grades vs spec 10 slots/12 grades/24 sets | B3 starts with one pilot forge flow; large schema migration is **a distinct authorization/packet** with old item compatibility. |
+| Base QA | Three V5-era red baseline tests, conflicting B2.3 GP-02C1 focused PASS on another checkout | Compare exact test SHA/fixtures/runners before attributing fixes. Never call baseline red tests green. |
+
+**Integration readiness gate (after Codex completion):** receive B2.4 ZIP and SA-LIB ZIP with exact branch/HEAD, dirty tracked+untracked diffs, artifact SHA256SUMS, current-fingerprint proof, focused logs, GUI/screenshots, repeatable sandbox steps. Preserve local worktrees; inspect two ZIPs and parent commits; then propose a scoped **read-only** collision matrix before any merge. Only after approval may an integration owner choose the exact parent, paths, migrations and tests. No unattended merge.
+
+**Owner action now:** none. Codex Prompts 01/02 remain ongoing; do not resend them, restart them, or perform extra heavy QA here. This addendum is usable for immediate backend/B3 research while waiting for evidence.
