@@ -69,7 +69,8 @@ Một Kho tông môn + registry vật phẩm unique, chính sách phân bổ
 
 ## C. Nguyên tắc thiết kế sản phẩm B3 V2
 
-1. **Thế giới PvE + Combat V2 continuous in-place, không encounter/reset/90s.** Một bản đồ logic hoạt động liên tục, quái chết và hồi từng cá thể trong lúc đệ tử vẫn truy đuổi/đánh/skill. Combat V2 giữ công thức authority; orchestration/lifecycle được tách để mở world-step.\n2. **Duty thường trực trước, FarmOrder sau.** Người chơi có thể giao đội “săn liên tục ở vùng này, đổi khi nguy hiểm, nghỉ nếu HP thấp”; tùy chọn thêm ưu tiên vật liệu/đồ bộ/Boss/Tu Vi. Đội không vô lý trở về nhà ngay khi kiếm đủ 3 nguyên liệu nếu còn đủ an toàn để săn tiếp.
+1. **Thế giới PvE + Combat V2 continuous in-place, không encounter/reset/90s.** Một bản đồ logic hoạt động liên tục, quái chết và hồi từng cá thể trong lúc đệ tử vẫn truy đuổi/đánh/skill. Combat V2 giữ công thức authority; orchestration/lifecycle được tách để mở world-step.
+2. **Duty thường trực trước, FarmOrder sau.** Người chơi có thể giao đội “săn liên tục ở vùng này, đổi khi nguy hiểm, nghỉ nếu HP thấp”; tùy chọn thêm ưu tiên vật liệu/đồ bộ/Boss/Tu Vi. Đội không vô lý trở về nhà ngay khi kiếm đủ 3 nguyên liệu nếu còn đủ an toàn để săn tiếp.
 3. **Combat V2 là kernel duy nhất.** World coordinator quản lý di chuyển, chọn encounter, hợp đồng spawn/lease/reward, không tạo `damage_v3`/skill RNG riêng. V5 render những gì kernel xảy ra.
 4. **Mỗi quái một nguồn chết và reward identity duy nhất.** Dùng `zone_instance/slot/generation`, một receipt/kill, kiểm soát cạnh tranh giữa đội; preview/UI không bao giờ cấp loot.
 5. **Một thế giới logic, nhiều cách trình bày.** Visible/offscreen có cùng state, RNG và kết quả với cùng lệnh/thời gian; trình diễn chỉ là projection. Đã có game logic thì có thể dùng Source A pack được QA sau, không chờ chuyển đổi 6.578 rig để chứng minh backend.
@@ -88,7 +89,8 @@ B3TeamDutyOrchestrator (single authority for team hunting admission)
            ├── B3TravelSupplyRecovery (canonical time, injury/HP/items)
            └── B3ZoneRuntime (instance + spawn slots + ownership leases)
                         ↓
-                  B3CombatV2WorldStep (continuous actors & casts)\n                       └── Reuse Combat V2 formulas/skills/targeting/RNG, NOT legacy battle lifecycle
+                  B3CombatV2WorldStep (continuous actors & casts)
+                       └── Reuse Combat V2 formulas/skills/targeting/RNG, NOT legacy battle lifecycle
                         ↓       authoritative lethal transition/outcome
                   B3KillAttribution → B3RewardResolver
                         ↓
