@@ -7,6 +7,8 @@
 
 > **TEAM AI DEEP DIVE 2026-10-22:** [B3_V2_TEAM_AI_TARGETING_AGGRO_RECOVERY_CONTRACT_2026-10-22.md](B3_V2_TEAM_AI_TARGETING_AGGRO_RECOVERY_CONTRACT_2026-10-22.md) — lựa chọn mục tiêu/aggro/đơn-đa đội/Boss, khoảng cách và skill theo Combat V2, retreat/recovery/auto-resume không cướp One Active Job; state transitions, đề xuất API và test; **DESIGN-ONLY, NOT CODE AUTHORIZATION**.
 
+> **NEW EVIDENCE AUDIT (FOUR ZIP, 2026-10-22):** [Review checkpoint](../handoffs/2026-10-22/TMB_FOUR_REVIEW_PACKETS_TRIAGE_AND_INTEGRATION_PLAN_2026-10-22.md) verified user-supplied B2.4 source ZIP. Contrary to legacy `main` finite-only runtime, local B2.3/B2.4 snapshot already includes an **opt-in continuous_mode** in `MapBattleV2` with no 90-second/empty-monster termination in that mode, individual spawn/removal, stable death/receipt IDs, snapshot v2 supporting v1 reader, and an isolated 6-actor sandbox. **It is NOT pushed/merged/production**; still needs live World/Team AI, authoritative per-kill source and canonical SaveService. Future CODE plans must **reuse/audit this existing kernel patch instead of implementing a duplicate combat engine**. No CODE is authorized by this note.
+
 ## 0. Phạm vi quyết định — phân biệt authority chính xác
 
 **LOCKED by owner/current canonical architecture**
