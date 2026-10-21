@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "scope": "dev_character_studio_sandbox",
+  "preset_id": "mau_phap_tu",
+  "name": "Mẫu Pháp Tu",
+  "sex": "male",
+  "role": "mage",
+  "rig_id": "body_1110201",
+  "asset_path": "res://assets/actors/body_1110201/actor.tscn",
+  "display_scale": 0.34,
+  "pivot_offset": [0.0, 0.0],
+  "attributes": {
+    "aptitude": 22.0,
+    "constitution": 17.0,
+    "fortune": 18.0,
+    "comprehension": 24.0,
+    "charisma": 20.0,
+    "potential": 21.0
+  },
+  "progression": {
+    "cultivation": {"realm": 1, "floor": 1},
+    "body": {"realm": 1, "floor": 1}
+  },
+  "skill_stage_index": 0,
+  "owned_skill_ids": ["hoa_cau"],
+  "skill_slots": [{"slot": 1, "skill_id": "hoa_cau"}],
+  "equipment_set": [
+    {"slot": "weapon", "recipe_id": "linh_moc_phap_truong"},
+    {"slot": "talisman", "recipe_id": "hoa_van_ngoc"}
+  ]
+}
