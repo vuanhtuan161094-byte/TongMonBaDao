@@ -12,6 +12,8 @@
 
 > **Concurrent work owner update:** Người dùng xác nhận đang có **Map** và **Character Studio nhân vật** thực hiện riêng, bên cạnh **Source A library**; tính là **OWNER-REPORTED ACTIVE**, chưa thể xác thực trạng thái worktree/HEAD từ GitHub. Không chuyển chúng thành HOLD dựa vào handoff cũ, không tự dừng/ghi đè, không chạy nhiệm vụ trùng chức năng. Combat V5.1 owner visual acceptance vẫn chưa có bằng chứng đóng; B2.4 standalone sandbox đã bàn giao ZIP, nhưng chưa phải B3 production.
 
+> **B3 V2 DEEP-DIVE CONTRACT (2026-10-22):** Tài liệu chi tiết của Persistent PvE World tại [B3_V2_PERSISTENT_PVE_WORLD_RUNTIME_CONTRACT_2026-10-22.md](B3_V2_PERSISTENT_PVE_WORLD_RUNTIME_CONTRACT_2026-10-22.md). Chứa world/monster/team/snapshot states, API đề xuất, combat event ordering, Boss/multi-team, receipt/save exactly-once, clock online/offline, test edge cases và 8 packet chỉ ở mức đề xuất. **Tài liệu này KHÔNG cấp phép CODE hoặc thay đổi Map/Character Studio/Source A.**
+
 ## A. Kết luận thiết kế
 
 **B3 không phải “3 vùng farm để hoàn thành 5 công thức”**. Đó chỉ là fixture integration đầu tiên. B3 thực sự là vòng sinh hoạt mở của một tông môn:
