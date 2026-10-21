@@ -5,6 +5,8 @@
 **Parent design:** docs/design/B3_V2_LIVING_SECT_CONTINUOUS_HUNT_ARCHITECTURE_2026-10-22.md, nhánh docs/b3-v2-architecture-redesign-20261022.  
 **Khác biệt bắt buộc:** B3 **không có trận 90 giây, không reset sau WIN, không nối các cuộc battle hữu hạn, không clear wave**, không thả quái từ UI. Combat V2 tiếp tục là công thức và luật gây tác động lên HP. Không CI, không merge, không chỉnh hệ Map, Character Studio, Source A, V5.
 
+> **TEAM AI DEEP DIVE 2026-10-22:** [B3_V2_TEAM_AI_TARGETING_AGGRO_RECOVERY_CONTRACT_2026-10-22.md](B3_V2_TEAM_AI_TARGETING_AGGRO_RECOVERY_CONTRACT_2026-10-22.md) — lựa chọn mục tiêu/aggro/đơn-đa đội/Boss, khoảng cách và skill theo Combat V2, retreat/recovery/auto-resume không cướp One Active Job; state transitions, đề xuất API và test; **DESIGN-ONLY, NOT CODE AUTHORIZATION**.
+
 ## 0. Phạm vi quyết định — phân biệt authority chính xác
 
 **LOCKED by owner/current canonical architecture**
