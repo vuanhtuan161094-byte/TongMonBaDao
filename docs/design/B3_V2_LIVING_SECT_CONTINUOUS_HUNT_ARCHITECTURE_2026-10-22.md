@@ -14,6 +14,8 @@
 
 > **B3 V2 DEEP-DIVE CONTRACT (2026-10-22):** Tài liệu chi tiết của Persistent PvE World tại [B3_V2_PERSISTENT_PVE_WORLD_RUNTIME_CONTRACT_2026-10-22.md](B3_V2_PERSISTENT_PVE_WORLD_RUNTIME_CONTRACT_2026-10-22.md). Chứa world/monster/team/snapshot states, API đề xuất, combat event ordering, Boss/multi-team, receipt/save exactly-once, clock online/offline, test edge cases và 8 packet chỉ ở mức đề xuất. **Tài liệu này KHÔNG cấp phép CODE hoặc thay đổi Map/Character Studio/Source A.**
 
+> **TEAM AI DEEP DIVE 2026-10-22:** [B3_V2_TEAM_AI_TARGETING_AGGRO_RECOVERY_CONTRACT_2026-10-22.md](B3_V2_TEAM_AI_TARGETING_AGGRO_RECOVERY_CONTRACT_2026-10-22.md) — lựa chọn mục tiêu/aggro/đơn-đa đội/Boss, khoảng cách và skill theo Combat V2, retreat/recovery/auto-resume không cướp One Active Job; state transitions, đề xuất API và test; **DESIGN-ONLY, NOT CODE AUTHORIZATION**.
+
 ## A. Kết luận thiết kế
 
 **B3 không phải “3 vùng farm để hoàn thành 5 công thức”**. Đó chỉ là fixture integration đầu tiên. B3 thực sự là vòng sinh hoạt mở của một tông môn:
