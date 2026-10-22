@@ -14,7 +14,7 @@ Do not relabel simulated accelerated time as physical elapsed time.
 ## Preserve canonical save and exactly-once
 - Read existing SaveService, RuntimeOwner, Warehouse receipts, scheduler and snapshot schema before suggesting changes. No second persistence store or naked UI-side debit.
 - For command that consumes materials or grants loot/HP/XP: validate guards -> perform canonical debit/effect atomically -> write idempotency receipt/barrier -> save via existing authority. Duplicate callback/replay cannot repeat reward.
-- On load: validate schema/version, migrate explicitly, reject impossible stock/caps/receipt relationships, and preserve old saves. Never silently reset 100000 satiety to an obsolete 100.
+- On load: validate schema/version, migrate explicitly, reject impossible stock/caps/receipt relationships, and preserve old saves. Never silently reset 1000000 satiety to an obsolete 100 or 100000.
 - Cover crash BEFORE debit, AFTER debit before commit, AFTER commit before UI, mid-job, mid-hunt, world reentry and day rollover. No reset from OS midnight; only sim tick.
 - Maintain One Active Job; tests must verify failures produce NO stock/XP/HP changes.
 
@@ -32,4 +32,4 @@ Methodology adapted from gamedev-skills/awesome-gamedev-agent-skills save-system
 
 
 ## Mandatory owner-contract mismatch gate
-For any Codex/agent handoff, compare **latest direct owner requirements** against actual code constants, migration rules, UI and focused test expectations. A self-authored README assertion such as "owner requested this" is not evidence of that owner instruction. If tests PASS against a divergent constant, report **TECHNICAL TEST PASS; OWNER REQUIREMENT CONFLICT; ACCEPTANCE PENDING**. The active B3 CARE upload currently contains a 1000000/day satiety cap while the last confirmed direct owner instruction in this chat/branch is 100000/day. Do not silently change the code or reclassify the owner decision. If a new explicit owner override arrives, update this guidance and regression expectations before acceptance.
+For any Codex/agent handoff, compare **latest direct owner requirements** against actual code constants, migration rules, UI and focused test expectations. A self-authored README assertion such as "owner requested this" is not evidence of that owner instruction. If tests PASS against a divergent constant, report **TECHNICAL TEST PASS; OWNER REQUIREMENT CONFLICT; ACCEPTANCE PENDING**. The owner explicitly corrected the earlier 100000 to **1000000/day/disciple** on 2026-10-22, noting a missing zero; B3 CARE ZIP code 1000000 is therefore CONSISTENT with the latest owner balance. Do not label this prior mismatch as an active defect. Validate remaining runtime/save/GUI/Android evidence independently, and do not claim FULL or physical PASS from focused tests.
