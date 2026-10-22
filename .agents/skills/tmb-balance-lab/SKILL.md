@@ -1,6 +1,6 @@
 ---
 name: tmb-balance-lab
-description: "Audit and simulate TMB's 30x10 realm and body progression, map farming, Spirit Field, pill economy, loot and multi-source Tu Vi against canonical game code."
+description: "Cân bằng game Tông Môn Bá Đạo: Tu Vi 300 tầng, Luyện Thể, map farm, Linh Điền, phẩm cấp đan, nguyên liệu, loot, simulated progression / Monte Carlo; use for balance design and audits, not CODE authorization."
 ---
 # TMB Balance Lab — SKILL
 ## Start with actual source data
