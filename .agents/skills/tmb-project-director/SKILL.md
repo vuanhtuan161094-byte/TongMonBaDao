@@ -1,6 +1,6 @@
 ---
 name: tmb-project-director
-description: "Route all Tong Mon Ba Dao design, audit and coding tasks to narrow skill playbooks without violating repo authority, phase gates, or Godot 4.7.2 evidence."
+description: "Route Tông Môn Bá Đạo / TMB project tasks: tiếp quản checkpoint, lập kế hoạch, quản lý Codex, chọn đúng skill chuyên môn, kiểm toán quyết định đã khóa; use for any complex multi-system task. Do not use as permission to edit gameplay."
 ---
 # TMB Project Director — SKILL
 ## Scope and trust
