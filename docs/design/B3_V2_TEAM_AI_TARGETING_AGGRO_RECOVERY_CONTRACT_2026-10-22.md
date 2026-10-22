@@ -7,6 +7,9 @@
 **Required sibling:** `B3_V2_PERSISTENT_PVE_WORLD_RUNTIME_CONTRACT_2026-10-22.md`  
 **Concurrent owners:** Map, Character Studio, Source A SA-LIB (owner-reported running); Combat V5 visual owner pending. Do not touch their worktrees, outputs or scene/rig/converter files.
 
+> **MONSTER AI / SPAWN / BOSS DEEP DIVE (2026-10-22):** [B3_V2_MONSTER_AI_SPAWN_ELITE_BOSS_WORLD_CONTRACT_2026-10-22.md](B3_V2_MONSTER_AI_SPAWN_ELITE_BOSS_WORLD_CONTRACT_2026-10-22.md). Đã đối chiếu mã B2.4 ZIP: opt-in continuous đang có, nhưng tất cả đệ tử chết vẫn terminal DEFEAT; AI nearest target thiếu phạm vi aggro/leash; SpawnDirector có đồng hồ riêng; death scanner dựa event buffer. Bản này chỉ khóa nhận diện GAP, đề xuất FSM/contract/QA và không cấp quyền CODE.
+
+
 ## 0. Executive decision — AI phải có thể chơi kiểu Evil Hunter, không biến thành bot chọn trận
 
 **ĐÃ CHỐT (owner/canonical)**:
