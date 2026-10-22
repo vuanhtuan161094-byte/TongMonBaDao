@@ -27,7 +27,7 @@ External files are not installed or executed. Before copying third-party files i
 
 ## Exact current B3 scope
 Baseline accepted local B3: `1d686dc8e202f4831fa51373c15e6666f44702f9`; code not asserted on main. CARE-FASTTRACK in Codex still pending its own result.
-Daily pill satiety = `100000` points per disciple per canonical day `floor(tick/1440)`; Hoi Xuan +55HP/10, Tu Khi +10000 Tu Vi/25, recipe 2 Thanh Linh Thao +1 Linh Coc / 6 ticks. Starter pills are not the final realm-specific tiered-pill economy. Farming maps and Spirit Field tiers will supply appropriately scaled materials and rewards when separately designed/authorized. Do not derive final endgame grind by extrapolating a single 1000 XP/min source. No free per-kill Tu Vi is currently authorized.
+Daily pill satiety = `1000000` points per disciple per canonical day `floor(tick/1440)`; Hoi Xuan +55HP/10, Tu Khi +10000 Tu Vi/25, recipe 2 Thanh Linh Thao +1 Linh Coc / 6 ticks. Starter pills are not the final realm-specific tiered-pill economy. Farming maps and Spirit Field tiers will supply appropriately scaled materials and rewards when separately designed/authorized. Do not derive final endgame grind by extrapolating a single 1000 XP/min source. No free per-kill Tu Vi is currently authorized.
 B3 HP0 -> HP1/Injury1/120 sim ticks; post-recovery same-world auto hunt and medicine/crafting are in active CARE scope but not presumed PASS.
 
 ## How to use
