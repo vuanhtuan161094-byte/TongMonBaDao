@@ -75,6 +75,9 @@ static func advance_to(
     state.runtime_last_wall_unix = now_unix
     state.runtime_unconsumed_wall_seconds += float(elapsed)
 
+    if not state.sect.b3_hunt.is_empty():
+        return _advance_b3(state,scheduler,elapsed,max_steps)
+
     var available := int(floor(
         state.runtime_unconsumed_wall_seconds /
         WALL_SECONDS_PER_SIMULATION_MINUTE
@@ -106,7 +109,37 @@ static func advance_to(
 static func pending_minutes(state: SimulationState) -> int:
     if state == null:
         return 0
+    var phase := float(state.sect.b3_hunt.get("minute_phase",0.0))
     return int(floor(
-        maxf(state.runtime_unconsumed_wall_seconds,0.0) /
+        (maxf(state.runtime_unconsumed_wall_seconds,0.0)+phase) /
         WALL_SECONDS_PER_SIMULATION_MINUTE
     ))
+
+static func _advance_b3(state: SimulationState, scheduler: SimulationScheduler, elapsed: int, max_steps: int) -> Dictionary:
+    var restored := B3HuntWorld.restore(state)
+    if not restored["ok"]:
+        return restored
+    var battle: MapBattleV2 = restored["battle"]
+    var budget := B3HuntWorld.MAX_BATCH_FRAMES
+    if max_steps > 0:
+        budget = mini(budget,max_steps*240)
+    var frames := 0
+    var minutes := 0
+    var result := {"ok":true}
+    while state.runtime_unconsumed_wall_seconds >= MapBattleV2.STEP_SECONDS and frames < budget:
+        result = B3HuntWorld.advance_frame(state,battle)
+        if bool(result.get("stepped",false)):
+            state.runtime_unconsumed_wall_seconds -= MapBattleV2.STEP_SECONDS
+            frames += 1
+            state.sect.b3_hunt["minute_phase"] = float(state.sect.b3_hunt["minute_phase"])+MapBattleV2.STEP_SECONDS
+            if float(state.sect.b3_hunt["minute_phase"]) >= 60.0:
+                state.sect.b3_hunt["minute_phase"] = 0.0
+                scheduler.step()
+                minutes += 1
+        if not result["ok"] or bool(result.get("barrier",false)):
+            break
+    B3HuntWorld.checkpoint(state,battle)
+    result.merge({"elapsed_wall_seconds":elapsed,"steps_run":minutes,"frames_run":frames,
+        "pending_minutes":pending_minutes(state),"remainder_seconds":state.runtime_unconsumed_wall_seconds,
+        "simulation_tick":state.tick},true)
+    return result

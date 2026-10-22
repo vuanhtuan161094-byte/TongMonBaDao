@@ -10,6 +10,8 @@ extends RefCounted
 var state: SimulationState
 var scheduler: SimulationScheduler
 var saves := SaveService.new()
+var durable_path: String = ""
+var b3_write_blocked: bool = false
 
 func attach(simulation_state: SimulationState, now_unix: int) -> Dictionary:
     if simulation_state == null:
@@ -34,6 +36,7 @@ func load_from_path(
     if loaded == null:
         return {"ok":false,"reason":"runtime_save_not_found_or_invalid"}
     state = loaded
+    durable_path = path
     scheduler = SimulationScheduler.new(state)
 
     if state.runtime_last_wall_unix <= 0:
@@ -50,9 +53,7 @@ func load_from_path(
             "state":state
         }
 
-    var caught_up := SimulationRuntimeClockV2.advance_to(
-        state,scheduler,now_unix,max_steps
-    )
+    var caught_up := update_to(now_unix,max_steps)
     if not bool(caught_up.get("ok",false)):
         return caught_up
     return {
@@ -67,15 +68,25 @@ func load_from_path(
 func update_to(now_unix: int, max_steps: int = -1) -> Dictionary:
     if state == null or scheduler == null:
         return {"ok":false,"reason":"runtime_owner_not_attached"}
-    return SimulationRuntimeClockV2.advance_to(
+    if b3_write_blocked:
+        var retried := B3HuntWorld.commit(self)
+        if not retried["ok"]:
+            return retried
+    var advanced := SimulationRuntimeClockV2.advance_to(
         state,scheduler,now_unix,max_steps
     )
+    if not state.sect.b3_hunt.is_empty():
+        var committed := B3HuntWorld.commit(self)
+        if not committed["ok"]:
+            return committed
+    return advanced
 
 func save_to_path(
     path: String, now_unix: int, max_steps: int = -1
 ) -> Dictionary:
     if state == null or scheduler == null:
         return {"ok":false,"reason":"runtime_owner_not_attached"}
+    durable_path = path
     var advanced := update_to(now_unix,max_steps)
     if not bool(advanced.get("ok",false)):
         return advanced

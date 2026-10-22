@@ -49,6 +49,7 @@ func start(
     if not bool(attached.get("ok",false)):
         return attached
 
+    owner.durable_path = save_path
     var advanced := owner.update_to(now,max_catch_up_steps)
     if not bool(advanced.get("ok",false)):
         return advanced

@@ -103,6 +103,8 @@ var v2_training_enabled: bool = false
 var v2_training_rules: Dictionary = {}
 # DV2-02E opt-in region hunting difficulty choices, persistent exactly-once claims.
 var v2_pve_enabled: bool = false
+# Opt-in B3 VS1 world, schema/receipts owned by B3HuntWorld.
+var b3_hunt: Dictionary = {}
 var v2_pve_selected_levels: Dictionary = {}
 var v2_pve_reward_claims: Dictionary = {}
 # F3 legitimate won-claim counter for an early-Linh-Tủy guarantee.
@@ -223,6 +225,8 @@ func to_dict() -> Dictionary:
             data["v2_pve_active_runs"] = v2_pve_active_runs.duplicate(true)
         if not v2_pve_settlement_receipts.is_empty():
             data["v2_pve_settlement_receipts"] = v2_pve_settlement_receipts.duplicate(true)
+    if not b3_hunt.is_empty():
+        data["b3_hunt"] = b3_hunt.duplicate(true)
     if not v2_body_gate_receipts.is_empty():
         data["v2_body_gate_receipts"] = v2_body_gate_receipts.duplicate(true)
     if disciple_traits_enabled or disciple_trait_event_count > 0 or not disciple_trait_profiles.is_empty():
@@ -314,6 +318,7 @@ static func from_dict(data: Dictionary) -> SectState:
     if raw_v2_training is Dictionary:
         state.v2_training_rules = raw_v2_training.duplicate(true)
     state.v2_pve_enabled = bool(data.get("v2_pve_enabled", false))
+    state.b3_hunt = data.get("b3_hunt",{}).duplicate(true)
     var raw_levels = data.get("v2_pve_selected_levels", {})
     if raw_levels is Dictionary:
         for region in raw_levels.keys():

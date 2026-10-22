@@ -79,7 +79,7 @@ func validate_invariants() -> Array[String]:
             errors.append("%s has stale Injury recovery tick." % disciple.display_name)
         if disciple.injury_level == 1 and (disciple.injury_recover_at_tick <= 0 or disciple.region_id != &"sect"):
             errors.append("%s has invalid Injury recovery owner/tick." % disciple.display_name)
-        if not disciple.active_pve_encounter_id.is_empty() and not sect.v2_pve_active_runs.has(disciple.active_pve_encounter_id):
+        if not disciple.active_pve_encounter_id.is_empty() and not sect.v2_pve_active_runs.has(disciple.active_pve_encounter_id) and not B3HuntWorld.owns_reservation(self,disciple):
             errors.append("%s has missing active PvE reservation snapshot." % disciple.display_name)
         if disciple.hp < 0.0 or disciple.hp > disciple.max_hp + 0.001:
             errors.append("%s has invalid HP %.2f/%.2f" % [disciple.display_name, disciple.hp, disciple.max_hp])
@@ -216,6 +216,9 @@ func validate_invariants() -> Array[String]:
         for economy_actor in disciples.values():
             if (economy_actor as DiscipleState).spirit_stones < 0:
                 errors.append("Economy-A negative disciple Stone balance.")
+    var b3_error := B3HuntWorld.validate(self)
+    if not b3_error.is_empty():
+        errors.append(b3_error)
     return errors
 
 func to_dict() -> Dictionary:
@@ -327,6 +330,8 @@ static func from_dict(data: Dictionary) -> SimulationState:
     state.organization_change_count = int(data.get("organization_change_count", 0))
     state.p3_7_buildings_enabled = bool(data.get("p3_7_buildings_enabled", false))
     state.building_event_count = maxi(int(data.get("building_event_count", 0)), 0)
+    if not (data.get("sect",{}).get("b3_hunt",{}) is Dictionary):
+        return null
     state.sect = SectState.from_dict(data.get("sect", {}))
 
     var saved_recruitment_stats = data.get("recruitment_stats", {})
@@ -405,5 +410,9 @@ static func from_dict(data: Dictionary) -> SimulationState:
     var legacy_pve := HuntingPveRunV2.reconcile_loaded_v2_pve(state)
     if not bool(legacy_pve.get("ok",false)):
         push_error("GP-02C1: incompatible saved PvE: %s" % str(legacy_pve.get("reason","unknown")))
+        return null
+    var b3_error := B3HuntWorld.validate(state)
+    if not b3_error.is_empty():
+        push_error("B3: incompatible saved world: "+b3_error)
         return null
     return state
