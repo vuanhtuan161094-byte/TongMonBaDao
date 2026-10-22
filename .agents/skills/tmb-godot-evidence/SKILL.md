@@ -29,3 +29,7 @@ When local machine has only 8 GB RAM, prefer lightweight focused gates and isola
 
 ## Sources
 Methodology adapted from gamedev-skills/awesome-gamedev-agent-skills save-systems, godot-gdscript-headless-testing, performance-optimization and setcodes godot-gamedev. Adapt to current repo's stronger receipts/save authority, not an alternate tutorial SaveManager.
+
+
+## Mandatory owner-contract mismatch gate
+For any Codex/agent handoff, compare **latest direct owner requirements** against actual code constants, migration rules, UI and focused test expectations. A self-authored README assertion such as "owner requested this" is not evidence of that owner instruction. If tests PASS against a divergent constant, report **TECHNICAL TEST PASS; OWNER REQUIREMENT CONFLICT; ACCEPTANCE PENDING**. The active B3 CARE upload currently contains a 1000000/day satiety cap while the last confirmed direct owner instruction in this chat/branch is 100000/day. Do not silently change the code or reclassify the owner decision. If a new explicit owner override arrives, update this guidance and regression expectations before acceptance.
