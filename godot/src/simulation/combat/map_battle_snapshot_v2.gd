@@ -5,7 +5,14 @@ extends RefCounted
 # It serializes gameplay state, not a screenshot, and never creates rewards.
 # Actor links to the legacy character owner are deliberately NOT persisted:
 # those must be rebound by a sanctioned V2 character migration/owner.
+# Version 3 is PH0's durable domain kill queue/slot watermark extension.
+# Both upstream v1 and B2.4's v2 snapshots remain readable.
+# Keep VERSION as the legacy finite writer's public version for DV2 callers.
+# PH0 continuous snapshots use a separate schema version.
 const VERSION := 1
+const PREVIOUS_VERSION := 2
+const PH0_VERSION := 3
+const LEGACY_VERSION := VERSION
 
 static func save(battle: MapBattleV2) -> Dictionary:
     if battle == null or battle.encounter_id.is_empty():
@@ -31,22 +38,31 @@ static func save(battle: MapBattleV2) -> Dictionary:
             if event.has(field):
                 event[field] = _encode_vec2(event[field])
         serialized_events.append(event)
+    # Finite legacy worlds retain the EXACT VERSION=1 payload structure.
+    # Only opted-in continuous worlds write PH0's versioned domain journal.
+    var write_version := PH0_VERSION if battle.continuous_mode else LEGACY_VERSION
     var payload := {
-        "ok":true,"version":VERSION,
+        "ok":true,"version":write_version,
         "encounter_id":battle.encounter_id,
         "rng_state":battle.rng.snapshot_seed_state(),
         "time":battle.now,"active":battle.active,"outcome":battle.outcome,
         "actions":battle.actions,"downed_disciples":battle.downed_disciples,
         "actors":serialized_actors,"casts":serialized_casts,"events":serialized_events
     }
+    if battle.continuous_mode:
+        payload["continuous_mode"] = true
+        payload["external_hit_ids"] = battle._external_hit_ids.duplicate(true)
+        payload["pending_kill_events"] = battle._pending_kill_events.duplicate(true)
+        payload["last_spawn_generation"] = battle._last_spawn_generation.duplicate(true)
     # JSON converts integers to floats and rounds float64 values, changing
     # mid-battle damage and RNG. Godot Variant bytes retain EXACT bit patterns.
     # Use a versioned base64 payload inside JSON, with object decoding OFF.
-    return {"ok":true,"version":VERSION,"encoding":"godot_variant_b64",
+    return {"ok":true,"version":write_version,"encoding":"godot_variant_b64",
         "payload":Marshalls.raw_to_base64(var_to_bytes(payload))}
 
 static func load(data: Dictionary) -> Dictionary:
-    if not bool(data.get("ok",false)) or int(data.get("version",0)) != VERSION:
+    var wrapper_version := int(data.get("version", 0))
+    if not bool(data.get("ok",false)) or not [LEGACY_VERSION, PREVIOUS_VERSION, PH0_VERSION].has(wrapper_version):
         return {"ok":false,"reason":"unsupported_battle_snapshot"}
     if str(data.get("encoding","")) != "godot_variant_b64" or not (data.get("payload") is String):
         return {"ok":false,"reason":"invalid_battle_snapshot_encoding"}
@@ -57,16 +73,19 @@ static func load(data: Dictionary) -> Dictionary:
     if bytes.size() < 16 or bytes.size() > 12000000:
         return {"ok":false,"reason":"invalid_snapshot_binary"}
     var raw = bytes_to_var(bytes)
-    if not (raw is Dictionary) or int(raw.get("version",0)) != VERSION:
+    if not (raw is Dictionary) or int(raw.get("version",0)) != wrapper_version:
         return {"ok":false,"reason":"invalid_snapshot_payload"}
     return _restore_payload(raw)
 
 static func _restore_payload(data: Dictionary) -> Dictionary:
+    var payload_version := int(data.get("version", 0))
+    if not [LEGACY_VERSION, PREVIOUS_VERSION, PH0_VERSION].has(payload_version):
+        return {"ok":false,"reason":"unsupported_snapshot_payload_version"}
     var id := str(data.get("encounter_id",""))
     if id.is_empty() or not (data.get("actors") is Array):
         return {"ok":false,"reason":"missing_encounter_or_actors"}
     var rows: Array = data["actors"]
-    if rows.is_empty() or rows.size() > MapBattleV2.MAX_DISCIPLES+MapBattleV2.MAX_MONSTERS:
+    if rows.size() > MapBattleV2.MAX_DISCIPLES+MapBattleV2.MAX_MONSTERS:
         return {"ok":false,"reason":"invalid_actor_count"}
     var battle := MapBattleV2.new(515151)
     battle.encounter_id = id
@@ -75,7 +94,11 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
     battle.outcome = str(data.get("outcome","invalid"))
     battle.actions = int(data.get("actions",-1))
     battle.downed_disciples = int(data.get("downed_disciples",-1))
-    if is_nan(battle.now) or is_inf(battle.now) or battle.now < 0.0 or battle.now > MapBattleV2.MAX_SECONDS:
+    battle.continuous_mode = bool(data.get("continuous_mode",false)) if payload_version >= PREVIOUS_VERSION else false
+    if rows.is_empty() and not battle.continuous_mode:
+        return {"ok":false,"reason":"invalid_actor_count"}
+    var max_time := 1000000000.0 if battle.continuous_mode else MapBattleV2.MAX_SECONDS
+    if is_nan(battle.now) or is_inf(battle.now) or battle.now < 0.0 or battle.now > max_time:
         return {"ok":false,"reason":"invalid_elapsed_time"}
     if battle.actions < 0 or battle.downed_disciples < 0 or battle.downed_disciples > MapBattleV2.MAX_DISCIPLES:
         return {"ok":false,"reason":"invalid_action_or_downed_count"}
@@ -86,6 +109,7 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
     if not (data.get("casts") is Array) or not (data.get("events") is Array):
         return {"ok":false,"reason":"missing_cast_or_event_list"}
     var party_sizes: Dictionary = {}
+    var observed_generations: Dictionary = {}
     var disciples := 0
     var monsters := 0
     for raw in rows:
@@ -117,12 +141,19 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
                 return {"ok":false,"reason":"invalid_party_ownership"}
         else:
             monsters += 1
+            if battle.continuous_mode:
+                var slot := str(actor.get("spawn_slot_id", ""))
+                var generation := int(actor.get("slot_generation", 0))
+                if slot.is_empty() or generation <= 0 or observed_generations.has(slot):
+                    return {"ok":false,"reason":"invalid_monster_spawn_identity"}
+                observed_generations[slot] = generation
             if not CombatContextEffectsV2.TIERS.has(str(actor.get("tier",""))) or not CombatContextEffectsV2.RACES.has(str(actor.get("race_id",""))):
                 return {"ok":false,"reason":"invalid_monster_identity"}
         # Never deserialize an object pointer from untrusted save data.
         actor["linked_disciple"] = null
         battle.actors[actor_id] = actor
-    if disciples < 1 or disciples > MapBattleV2.MAX_DISCIPLES or monsters < 1 or monsters > MapBattleV2.MAX_MONSTERS:
+    if (disciples > MapBattleV2.MAX_DISCIPLES or monsters > MapBattleV2.MAX_MONSTERS or
+        (not battle.continuous_mode and (disciples < 1 or monsters < 1))):
         return {"ok":false,"reason":"invalid_combat_side_size"}
     for cast_raw in data["casts"]:
         if not (cast_raw is Dictionary):
@@ -155,6 +186,47 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
     if not (saved_rng is int):
         return {"ok":false,"reason":"invalid_rng_state"}
     battle.rng.restore_seed_state(saved_rng)
+    var saved_external_hits = data.get("external_hit_ids", {}) if payload_version >= PREVIOUS_VERSION else {}
+    if not (saved_external_hits is Dictionary):
+        return {"ok":false,"reason":"invalid_external_hit_ids"}
+    if saved_external_hits.size() > MapBattleV2.MAX_EXTERNAL_DAMAGE_IDS:
+        return {"ok":false,"reason":"external_damage_journal_limit_exceeded"}
+    battle._external_hit_ids = saved_external_hits.duplicate(true)
+    var generation_map = data.get("last_spawn_generation", {}) if payload_version >= PH0_VERSION else observed_generations
+    if not (generation_map is Dictionary) or generation_map.size() > MapBattleV2.MAX_REMEMBERED_SPAWN_SLOTS:
+        return {"ok":false,"reason":"invalid_spawn_watermarks"}
+    for raw_slot in generation_map.keys():
+        var slot := str(raw_slot)
+        var generation := int(generation_map[raw_slot])
+        if slot.is_empty() or generation <= 0 or generation < int(observed_generations.get(slot, 0)):
+            return {"ok":false,"reason":"invalid_spawn_generation_watermark"}
+    for raw_slot in observed_generations.keys():
+        if not generation_map.has(raw_slot):
+            return {"ok":false,"reason":"missing_spawn_generation_watermark"}
+    battle._last_spawn_generation = generation_map.duplicate(true)
+    var pending = data.get("pending_kill_events", []) if payload_version >= PH0_VERSION else []
+    if not (pending is Array) or pending.size() > MapBattleV2.MAX_PENDING_KILLS:
+        return {"ok":false,"reason":"invalid_kill_journal"}
+    if not battle.continuous_mode and not pending.is_empty():
+        return {"ok":false,"reason":"kill_journal_requires_continuous"}
+    var kill_ids: Dictionary = {}
+    for raw_event in pending:
+        if not (raw_event is Dictionary):
+            return {"ok":false,"reason":"invalid_kill_event"}
+        var event: Dictionary = raw_event
+        var kill_id := str(event.get("kill_id", ""))
+        var slot := str(event.get("spawn_slot_id", ""))
+        var generation := int(event.get("slot_generation", 0))
+        var at_time := float(event.get("at_seconds", -1.0))
+        var expected := "%s:slot:%s:g%d" % [battle.encounter_id, slot, generation]
+        if (kill_id.is_empty() or kill_ids.has(kill_id) or slot.is_empty() or
+            generation <= 0 or kill_id != expected or
+            generation > int(generation_map.get(slot, 0)) or
+            is_nan(at_time) or is_inf(at_time) or at_time < 0.0 or at_time > battle.now or
+            str(event.get("monster_instance_id", "")).is_empty()):
+            return {"ok":false,"reason":"invalid_kill_event_identity"}
+        kill_ids[kill_id] = true
+    battle._pending_kill_events = pending.duplicate(true)
     return {"ok":true,"battle":battle}
 
 static func _encode_vec2(value: Vector2) -> Array:

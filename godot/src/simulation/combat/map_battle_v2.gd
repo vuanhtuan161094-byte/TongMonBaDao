@@ -12,6 +12,11 @@ const ARENA := Rect2(Vector2.ZERO,Vector2(36.0,20.0))
 const MAX_DISCIPLES := 30
 const MAX_MONSTERS := 40
 const MAX_TARGETS_AOE := 3
+# Backpressure rather than dropping durable HP0 records when PH1 has not ACKed.
+const MAX_PENDING_KILLS := 256
+const MAX_EXTERNAL_DAMAGE_IDS := 4096
+const MAX_CONTINUOUS_BATCH_STEPS := 20000
+const MAX_REMEMBERED_SPAWN_SLOTS := 1024
 
 var rng: GameRng
 var now: float = 0.0
@@ -23,14 +28,21 @@ var active: bool = false
 var outcome: String = "uninitialized"
 var actions: int = 0
 var downed_disciples: int = 0
+var continuous_mode: bool = false
+var _external_hit_ids: Dictionary = {}
+# Authoritative, explicitly acknowledged domain events; NEVER derived from events.
+# PH2 must persist a canonical receipt in the SAME save barrier before ACK.
+var _pending_kill_events: Array = []
+# A slot's generation never regresses even after a corpse actor is removed.
+var _last_spawn_generation: Dictionary = {}
 
 func _init(seed_value: int = 515151) -> void:
     rng = GameRng.new(seed_value)
 
-func setup(id: String, party: Array, monsters: Array) -> Dictionary:
-    if active or id.is_empty() or party.is_empty() or party.size() > MAX_DISCIPLES:
+func setup(id: String, party: Array, monsters: Array, keep_encounter_open: bool = false) -> Dictionary:
+    if active or id.is_empty() or (party.is_empty() and not keep_encounter_open) or party.size() > MAX_DISCIPLES:
         return {"ok":false,"reason":"invalid_encounter_or_party"}
-    if monsters.is_empty() or monsters.size() > MAX_MONSTERS:
+    if (monsters.is_empty() and not keep_encounter_open) or monsters.size() > MAX_MONSTERS:
         return {"ok":false,"reason":"invalid_monster_group"}
     actors.clear()
     events.clear()
@@ -39,6 +51,10 @@ func setup(id: String, party: Array, monsters: Array) -> Dictionary:
     encounter_id = id
     actions = 0
     downed_disciples = 0
+    continuous_mode = keep_encounter_open
+    _external_hit_ids.clear()
+    _pending_kill_events.clear()
+    _last_spawn_generation.clear()
     var entries: Array = []
     var party_sizes: Dictionary = {}
     for raw in party:
@@ -86,6 +102,14 @@ func setup(id: String, party: Array, monsters: Array) -> Dictionary:
             return {"ok":false,"reason":"invalid_monster_actor"}
         if stats.is_empty() or float(stats.get("max_hp",0.0)) <= 0.0 or float(stats.get("attack",0.0)) <= 0.0:
             return {"ok":false,"reason":"invalid_monster_stats"}
+        if keep_encounter_open:
+            var slot := str(row.get("spawn_slot_id", ""))
+            var generation := int(row.get("slot_generation", 0))
+            if slot.is_empty() or generation <= 0 or _last_spawn_generation.has(slot):
+                return {"ok":false,"reason":"invalid_initial_spawn_slot_or_generation"}
+            if _last_spawn_generation.size() >= MAX_REMEMBERED_SPAWN_SLOTS:
+                return {"ok":false,"reason":"spawn_slot_history_full"}
+            _last_spawn_generation[slot] = generation
         entries.append({
             "id":actor_id,"side":"monster","party_id":"","role":"monster","tier":tier,
             "species_id":str(row.get("species_id","")),
@@ -99,6 +123,9 @@ func setup(id: String, party: Array, monsters: Array) -> Dictionary:
             "next_basic":0.0,"next_skill":3.5 if tier == "boss" else 4.0,"guard_until":-1.0,
             "linked_disciple":null,"context_sources":[]
         })
+        if keep_encounter_open:
+            entries[entries.size() - 1]["spawn_slot_id"] = str(row.get("spawn_slot_id", ""))
+            entries[entries.size() - 1]["slot_generation"] = int(row.get("slot_generation", 0))
     entries.sort_custom(func(a,b): return str(a["id"]) < str(b["id"]))
     for actor in entries:
         var actor_id := str(actor["id"])
@@ -115,6 +142,10 @@ func step(viewed_map: bool = false) -> Dictionary:
     # viewed_map deliberately not consulted; same deterministic simulation.
     if not active:
         return {"ok":false,"reason":"encounter_not_active","outcome":outcome}
+    # Up to MAX_MONSTERS can die in one step. Never silently lose a kill
+    # because the presentation ring fills or consumers are not caught up.
+    if continuous_mode and _pending_kill_events.size() + MAX_MONSTERS > MAX_PENDING_KILLS:
+        return {"ok":false,"reason":"kill_journal_backpressure","pending":_pending_kill_events.size()}
     now += STEP_SECONDS
     _release_casts()
     var actor_ids: Array = actors.keys()
@@ -124,7 +155,7 @@ func step(viewed_map: bool = false) -> Dictionary:
         var actor: Dictionary = actors[id]
         if float(actor["hp"]) <= 0.0:
             continue
-        if _count_alive("disciple") == 0 or _count_alive("monster") == 0:
+        if _count_alive("disciple") == 0 or (_count_alive("monster") == 0 and not continuous_mode):
             break
         # Pending cast commits an action and blocks another action by that actor.
         if _actor_casting(id):
@@ -163,13 +194,13 @@ func step(viewed_map: bool = false) -> Dictionary:
                 float(actor["stats"].get("attack_speed",0.0))
             )
             actor["next_basic"] = now+maxf(STEP_SECONDS,interval)
-    if _count_alive("monster") == 0:
+    if _count_alive("monster") == 0 and not continuous_mode:
         outcome = "win"
         active = false
-    elif _count_alive("disciple") == 0:
+    elif _count_alive("disciple") == 0 and not continuous_mode:
         outcome = "defeat"
         active = false
-    elif now >= MAX_SECONDS:
+    elif now >= MAX_SECONDS and not continuous_mode:
         outcome = "timeout_retreat"
         active = false
     if not active:
@@ -177,10 +208,14 @@ func step(viewed_map: bool = false) -> Dictionary:
     return {"ok":true,"outcome":outcome,"time":now,"alive_disciples":_count_alive("disciple"),"alive_monsters":_count_alive("monster")}
 
 func run(max_steps: int = 400, viewed_map: bool = false) -> Dictionary:
-    for _step in range(mini(max_steps,int(ceil(MAX_SECONDS/STEP_SECONDS))+1)):
+    var requested := maxi(max_steps, 0)
+    var limit := MAX_CONTINUOUS_BATCH_STEPS if continuous_mode else int(ceil(MAX_SECONDS/STEP_SECONDS))+1
+    for _step in range(mini(requested, limit)):
         if not active:
             break
-        step(viewed_map)
+        var result := step(viewed_map)
+        if not bool(result.get("ok", false)):
+            break
     return summary()
 
 func summary() -> Dictionary:
@@ -202,6 +237,92 @@ func summary() -> Dictionary:
         "disciple_remaining_hp_ratio":remaining_hp/maxf(remaining_max_hp,1.0),
         "positions":positions,"events":events.duplicate(true)
     }
+
+func add_continuous_monster(row: Dictionary) -> Dictionary:
+    if not continuous_mode or not active:
+        return {"ok":false,"reason":"continuous_encounter_not_active"}
+    if _count_monster_records() >= MAX_MONSTERS:
+        return {"ok":false,"reason":"monster_cap_reached"}
+    var actor_id := str(row.get("id", row.get("encounter_id", "")))
+    var stats: Dictionary = row.get("stats", {})
+    var position: Vector2 = row.get("position", Vector2(-1.0, -1.0))
+    var tier := str(row.get("tier", ""))
+    var race_id := str(row.get("race_id", ""))
+    if actor_id.is_empty() or actors.has(actor_id) or not ARENA.has_point(position):
+        return {"ok":false,"reason":"invalid_continuous_monster_identity_or_position"}
+    var slot_id := str(row.get("spawn_slot_id", ""))
+    var generation := int(row.get("slot_generation", 0))
+    if slot_id.is_empty() or generation <= 0:
+        return {"ok":false,"reason":"missing_spawn_slot_generation"}
+    if generation <= int(_last_spawn_generation.get(slot_id, 0)):
+        return {"ok":false,"reason":"stale_spawn_generation"}
+    if not _last_spawn_generation.has(slot_id) and _last_spawn_generation.size() >= MAX_REMEMBERED_SPAWN_SLOTS:
+        return {"ok":false,"reason":"spawn_slot_history_full"}
+    if not ["normal", "elite", "boss"].has(tier) or stats.is_empty():
+        return {"ok":false,"reason":"invalid_continuous_monster_tier_or_stats"}
+    if float(stats.get("max_hp", 0.0)) <= 0.0 or float(stats.get("attack", 0.0)) <= 0.0:
+        return {"ok":false,"reason":"invalid_continuous_monster_stats"}
+    if not CombatContextEffectsV2.TIERS.has(tier) or not CombatContextEffectsV2.RACES.has(race_id):
+        return {"ok":false,"reason":"invalid_continuous_monster_catalogue_identity"}
+    var actor := {
+        "id":actor_id,"side":"monster","party_id":"","role":"monster","tier":tier,
+        "species_id":str(row.get("species_id", "")),"race_id":race_id,
+        "position":position,"stats":stats.duplicate(true),"hp":float(row.get("hp", stats["max_hp"])),
+        "max_hp":float(stats["max_hp"]),"resistances":row.get("resistances", {}).duplicate(true),
+        "range":1.65 if tier == "boss" else 1.50,"move_speed":1.9 if tier == "boss" else 2.2,
+        "next_basic":now,"next_skill":now + (3.5 if tier == "boss" else 4.0),
+        "guard_until":-1.0,"spawn_slot_id":str(row.get("spawn_slot_id", "")),
+        "slot_generation":int(row.get("slot_generation", 0)),"linked_disciple":null,
+        "context_sources":[]
+    }
+    if float(actor["hp"]) <= 0.0 or float(actor["hp"]) > float(actor["max_hp"]):
+        return {"ok":false,"reason":"invalid_continuous_monster_hp"}
+    actors[actor_id] = actor
+    _last_spawn_generation[slot_id] = generation
+    _event("monster_spawned", {"actor_id":actor_id,"spawn_slot_id":actor["spawn_slot_id"],
+        "slot_generation":actor["slot_generation"],"species_id":actor["species_id"]})
+    return {"ok":true,"actor_id":actor_id,"active_monsters":_count_alive("monster")}
+
+func remove_downed_monster(actor_id: String) -> bool:
+    if not continuous_mode or not actors.has(actor_id):
+        return false
+    var actor: Dictionary = actors[actor_id]
+    if str(actor.get("side", "")) != "monster" or float(actor.get("hp", 1.0)) > 0.0:
+        return false
+    actors.erase(actor_id)
+    var remaining: Array = []
+    for cast in pending_casts:
+        if str(cast.get("caster", "")) == actor_id or str(cast.get("target_id", "")) == actor_id:
+            continue
+        remaining.append(cast)
+    pending_casts = remaining
+    return true
+
+func apply_continuous_damage_tick(
+    attacker_id: String, target_id: String, tick_id: String, ratio: float, element: String = ""
+) -> Dictionary:
+    if not continuous_mode or not active or tick_id.is_empty() or ratio < 0.0:
+        return {"ok":false,"reason":"invalid_continuous_damage_tick"}
+    if _external_hit_ids.has(tick_id):
+        return {"ok":false,"reason":"duplicate_damage_tick"}
+    if _external_hit_ids.size() >= MAX_EXTERNAL_DAMAGE_IDS:
+        return {"ok":false,"reason":"damage_tick_ledger_full"}
+    if _pending_kill_events.size() + MAX_MONSTERS > MAX_PENDING_KILLS:
+        return {"ok":false,"reason":"kill_journal_backpressure"}
+    if not actors.has(attacker_id) or not actors.has(target_id):
+        return {"ok":false,"reason":"unknown_damage_tick_actor"}
+    var attacker: Dictionary = actors[attacker_id]
+    var target: Dictionary = actors[target_id]
+    if str(attacker.get("side", "")) == str(target.get("side", "")):
+        return {"ok":false,"reason":"friendly_damage_tick"}
+    var before := float(target["hp"])
+    var damage := _deal_direct(attacker, target, ratio, "dot", false, element, false)
+    if damage <= 0.0:
+        return {"ok":false,"reason":"damage_tick_not_applied"}
+    _external_hit_ids[tick_id] = true
+    _event("damage_tick", {"tick_id":tick_id,"attacker":attacker_id,"target":target_id,
+        "damage":damage,"source":"dot"})
+    return {"ok":true,"tick_id":tick_id,"damage":damage,"hp_before":before,"hp_after":float(target["hp"])}
 
 func _nearest_enemy(actor: Dictionary) -> Dictionary:
     var best: Dictionary = {}
@@ -257,7 +378,7 @@ func _guard_frontline(actor: Dictionary) -> bool:
     actions += 1
     return true
 
-func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: String, eligible_lifesteal: bool, damage_element: String = "") -> float:
+func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: String, eligible_lifesteal: bool, damage_element: String = "", can_crit: bool = true) -> float:
     if float(attacker["hp"]) <= 0.0 or float(target["hp"]) <= 0.0:
         return 0.0
     var a_stats: Dictionary = attacker["stats"]
@@ -277,9 +398,11 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
         t_stats = t_stats.duplicate(true)
         var previous_reduction := clampf(float(t_stats.get("damage_reduction",0.0)),0.0,1.0)
         t_stats["damage_reduction"] = 1.0-(1.0-previous_reduction)*0.65
-    var crit := false if kind == "basic_followup" else rng.chance(CombatStatsV2.effective_crit_chance(a_stats,t_stats))
+    var crit := false
+    if can_crit and kind != "basic_followup":
+        crit = rng.chance(CombatStatsV2.effective_crit_chance(a_stats,t_stats))
     var hit := CombatStatsV2.resolve_direct_hit(
-        a_stats,t_stats,target["resistances"],ratio,crit,damage_element,1.0,true
+        a_stats,t_stats,target["resistances"],ratio,crit,damage_element,1.0,can_crit
     )
     if not bool(hit.get("ok",false)):
         return 0.0
@@ -298,7 +421,12 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
     _event("hit",{"attacker":attacker["id"],"target":target["id"],"damage":actual_damage,
         "kind":kind,"critical":crit,"lifesteal":settlement["lifesteal_heal"]})
     if float(target["hp"]) <= 0.0:
-        _event("downed",{"actor_id":target["id"],"side":target["side"]})
+        if continuous_mode and str(target["side"]) == "monster":
+            _record_monster_kill(attacker, target, kind, actual_damage)
+        var downed_row := {"actor_id":target["id"],"side":target["side"]}
+        if continuous_mode:
+            downed_row["death_id"] = "%s:%s" % [encounter_id,str(target["id"])]
+        _event("downed",downed_row)
         if str(target["side"]) == "disciple":
             downed_disciples += 1
     # Only one nonrecursive bonus hit from a true ordinary basic attack.
@@ -419,6 +547,41 @@ func _actor_casting(actor_id: String) -> bool:
         if str(cast["caster"]) == actor_id:
             return true
     return false
+
+# Pending domain events are a separate data channel from the capped VFX ring.
+# Copy-on-read: consumers cannot mutate the kernel's pending journal.
+func pending_kill_events() -> Array:
+    return _pending_kill_events.duplicate(true)
+
+func acknowledge_kill_event(kill_id: String) -> bool:
+    if not continuous_mode or kill_id.is_empty():
+        return false
+    for i in range(_pending_kill_events.size()):
+        if str(_pending_kill_events[i].get("kill_id", "")) == kill_id:
+            _pending_kill_events.remove_at(i)
+            return true
+    return false
+
+func _record_monster_kill(attacker: Dictionary, target: Dictionary, kind: String, damage: float) -> void:
+    var slot := str(target.get("spawn_slot_id", ""))
+    var generation := int(target.get("slot_generation", 0))
+    # setup() and add_continuous_monster() validate these identities.
+    var kill_id := "%s:slot:%s:g%d" % [encounter_id, slot, generation]
+    _pending_kill_events.append({
+        "kill_id":kill_id,"world_id":encounter_id,
+        "monster_instance_id":str(target["id"]),
+        "spawn_slot_id":slot,"slot_generation":generation,
+        "species_id":str(target.get("species_id", "")),
+        "killer_actor_id":str(attacker["id"]),
+        "damage_kind":kind,"actual_damage":damage,"at_seconds":now
+    })
+
+func _count_monster_records() -> int:
+    var count := 0
+    for actor in actors.values():
+        if str(actor.get("side", "")) == "monster":
+            count += 1
+    return count
 
 func _count_alive(side: String) -> int:
     var count := 0
