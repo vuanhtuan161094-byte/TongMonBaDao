@@ -220,6 +220,7 @@ func _proof() -> void:
         _capture_proof()
 
 func _capture_proof() -> void:
+    set_process(false)
     message = "Đã chứng minh ≥3 kill thật, Kho thật, tải lại và hồi phục — cùng một thế giới."
     _refresh()
     await RenderingServer.frame_post_draw
