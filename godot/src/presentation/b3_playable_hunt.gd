@@ -139,6 +139,12 @@ func _now() -> int:
 
 func _command(kind: String) -> void:
     if runtime.state() == null or disciple_id == &"": return
+    if ["hunt","return","rest"].has(kind):
+        var caught_up := runtime.poll(_now(),10)
+        if not caught_up["ok"] or (not runtime.state().sect.b3_hunt.is_empty() and runtime.state().runtime_unconsumed_wall_seconds >= 0.25):
+            message = "Đang xử lý thời gian offline; vui lòng chờ trước khi ra/về săn."
+            _refresh()
+            return
     var result: Dictionary
     match kind:
         "hunt": result = B3HuntWorld.begin(runtime.owner,disciple_id)

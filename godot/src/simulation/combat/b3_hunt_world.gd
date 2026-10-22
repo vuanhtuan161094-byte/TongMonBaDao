@@ -11,6 +11,8 @@ static func begin(owner: SimulationRuntimeOwnerV2, disciple_id: StringName) -> D
     if owner == null or owner.state == null or owner.durable_path.is_empty():
         return {"ok":false,"reason":"b3_requires_durable_runtime_owner"}
     var state := owner.state
+    if not state.sect.b3_hunt.is_empty() and state.runtime_unconsumed_wall_seconds >= MapBattleV2.STEP_SECONDS:
+        return {"ok":false,"reason":"b3_clock_backlog_pending"}
     var ready := admission(state,disciple_id)
     if not ready["ok"]:
         return ready
@@ -170,6 +172,8 @@ static func commit(owner: SimulationRuntimeOwnerV2) -> Dictionary:
 static func return_to_sect(owner: SimulationRuntimeOwnerV2) -> Dictionary:
     if owner.state.sect.b3_hunt.is_empty():
         return {"ok":false,"reason":"b3_no_world"}
+    if owner.state.runtime_unconsumed_wall_seconds >= MapBattleV2.STEP_SECONDS:
+        return {"ok":false,"reason":"b3_clock_backlog_pending"}
     var restored := restore(owner.state)
     if not restored["ok"]:
         return restored

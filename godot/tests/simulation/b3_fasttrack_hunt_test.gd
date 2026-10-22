@@ -76,7 +76,7 @@ func same(a: Variant, b: Variant) -> bool:
     return a == b
 
 func _run() -> void:
-    if not main_loop() or not crash_retry() or not pending_and_invalid():
+    if not main_loop() or not crash_retry() or not pending_and_invalid() or not command_catch_up_guard():
         quit(1)
         return
     print("B3 FASTTRACK REAL HUNT + CANONICAL WAREHOUSE + SAVE/LOAD + CRASH/RETRY + CLOCK PASS (%d checks)" % checks)
@@ -238,3 +238,15 @@ func pending_and_invalid() -> bool:
     # Existing saves with no B3 field remain readable without enabling B3.
     data["disciples"] = data["disciples"].filter(func(row): return str(row.get("active_pve_encounter_id","")).is_empty())
     return check(SimulationState.from_dict(data) != null,"legacy no-B3 save remains readable")
+
+func command_catch_up_guard() -> bool:
+    var fx := fresh("command_guard")
+    if fx.is_empty(): return false
+    var owner: SimulationRuntimeOwnerV2 = fx["runtime"].owner
+    if not check(B3HuntWorld.begin(owner,fx["id"])["ok"],"catch-up command fixture admitted"): return false
+    if not check(owner.update_to(START+120,1)["ok"] and owner.state.runtime_unconsumed_wall_seconds >= 0.25,"bounded clock leaves persisted backlog"): return false
+    var enter := B3HuntWorld.begin(owner,fx["id"])
+    var leave := B3HuntWorld.return_to_sect(owner)
+    if not check(not enter["ok"] and enter["reason"] == "b3_clock_backlog_pending","admission cannot harvest past offline time"): return false
+    if not check(not leave["ok"] and leave["reason"] == "b3_clock_backlog_pending","return cannot evade past offline damage"): return false
+    return drain(owner,START+120)
