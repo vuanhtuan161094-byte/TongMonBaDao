@@ -1,5 +1,8 @@
 # TÔNG MÔN BÁ ĐẠO — AFTER CARE: NEXT PLAYABLE GAMEPLAY & TINH NGUYÊN DESIGN PACKET
 
+> **IMPORTANT DESIGN UPDATE 2026-10-23 — SUPERSEDED DIRECT-XP CHOICE:** The user asked to choose the most fun loop and challenged mandatory Tinh Nguyen absorption. See [B3_DIRECT_KILL_TUVI_RECOMMENDED_GAMEPLAY_2026-10-23.md](B3_DIRECT_KILL_TUVI_RECOMMENDED_GAMEPLAY_2026-10-23.md) for the NEW recommended loop: genuine monster death grants eligible personal fixed Tu Vi directly, alongside one Sect loot receipt. This overrides the earlier recommendation **as design proposal only**; existing canonical \`CULTIVATION_BREAKTHROUGH_V2_SPEC.md\` §2.2 still prohibits direct-kill EXP until separately approved and reconciled. Do not code from either document before CARE integration gates.
+
+
 **Ngày:** 22/10/2026 · **Loại:** DESIGN + SOURCE CROSSCHECK ONLY · **Không CODE / không sửa Source A / không merge**.  
 **Baseline tham chiếu:** GitHub `main=29b5fba448b0178cb520a4ada44b375b4b934e31` tại lúc lập packet; B3 CARE code local `35ffa85fd45da42e43722e7ac74b7423602d4491` chưa coi là đã merge.  
 **Nhánh tài liệu riêng:** `docs/b3-postcare-next-playable-design-20261022`. Codex đang tích hợp CARE/skill, **không được chạm vào worktree Codex hoặc `CURRENT_CHECKPOINT.md` của nó**. Sáu TMB skills đã được merge vào main qua PR #23 (`29b5fba4`). PR #22 cũ là draft trùng; không phải baseline triển khai.
