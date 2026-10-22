@@ -93,6 +93,8 @@ var latent_identity_seed: int = 0
 var v2_birth_profile: Dictionary = {}
 # DV2-03 independently persisted Tu Vi / Luyen The 30x10 tracks; absent in legacy saves.
 var v2_realm_progress: Dictionary = {}
+# Optional CARE ledger: shared daily pill budget and latest committed command.
+var b3_pill_state: Dictionary = {}
 
 var current_action: StringName = &"EVALUATE"
 var region_id: StringName = &"sect"
@@ -291,6 +293,8 @@ func to_dict() -> Dictionary:
         data["latent_identity_seed"] = latent_identity_seed
     if not v2_birth_profile.is_empty():
         data["v2_birth_profile"] = v2_birth_profile.duplicate(true)
+    if not b3_pill_state.is_empty():
+        data["b3_pill_state"] = b3_pill_state.duplicate(true)
     if not v2_realm_progress.is_empty():
         data["v2_realm_progress"] = v2_realm_progress.duplicate(true)
     if injury_level != 0:
@@ -365,6 +369,7 @@ static func from_dict(data: Dictionary) -> DiscipleState:
     disciple.injury_level = int(data.get("injury_level", 0))
     disciple.injury_recover_at_tick = int(data.get("injury_recover_at_tick", 0))
     disciple.active_pve_encounter_id = str(data.get("active_pve_encounter_id", ""))
+    disciple.b3_pill_state = Dictionary(data.get("b3_pill_state",{})).duplicate(true)
     disciple.max_hp = float(data.get("max_hp", 100.0))
     disciple.hp = float(data.get("hp", disciple.max_hp))
     disciple.stamina = float(data.get("stamina", 100.0))

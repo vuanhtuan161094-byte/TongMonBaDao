@@ -64,6 +64,8 @@ func total_money() -> int:
 
 func validate_invariants() -> Array[String]:
     var errors: Array[String] = []
+    var care_error := B3MedicalAutoplayV1.validate(self)
+    if not care_error.is_empty(): errors.append(care_error)
 
     if sect.treasury < 0:
         errors.append("Sect treasury is negative.")
@@ -344,6 +346,7 @@ static func from_dict(data: Dictionary) -> SimulationState:
         state.regions[region.id] = region
 
     for row in data.get("disciples", []):
+        if not (row.get("b3_pill_state",{}) is Dictionary): return null
         var disciple := DiscipleState.from_dict(row)
         state.disciples[disciple.id] = disciple
 
@@ -405,6 +408,10 @@ static func from_dict(data: Dictionary) -> SimulationState:
             if building.id != &"":
                 state.buildings[str(building.id)] = building
 
+    var care_error := B3MedicalAutoplayV1.validate(state)
+    if not care_error.is_empty():
+        push_error("B3 CARE: incompatible save: "+care_error)
+        return null
     # Reconstruct GP-02C1 PvE reservation BEFORE SimulationRuntimeOwnerV2
     # advances any offline minutes. Reject contested snapshots fail-closed.
     var legacy_pve := HuntingPveRunV2.reconcile_loaded_v2_pve(state)

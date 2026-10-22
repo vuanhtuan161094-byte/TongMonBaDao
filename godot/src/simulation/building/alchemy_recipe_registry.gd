@@ -3,7 +3,14 @@ extends RefCounted
 
 const RECIPE_HOI_XUAN_DAN := &"hoi_xuan_dan"
 
+const RECIPE_TU_KHI_DAN := &"tu_khi_dan"
+
 const DEFINITIONS := {
+    "tu_khi_dan": {
+        "name":"Tụ Khí Đan", "inputs":{"thanh_linh_thao":2,"linh_coc":1},
+        "output_resource_id":"tu_khi_dan", "output_quantity":1,
+        "required_profession_level":0, "base_cycle_ticks":6
+    },
     "hoi_xuan_dan": {
         "name": "Hồi Xuân Đan",
         "inputs": {"thanh_linh_thao": 3},

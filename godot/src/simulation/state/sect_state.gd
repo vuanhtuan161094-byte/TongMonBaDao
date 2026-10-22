@@ -387,6 +387,10 @@ static func from_dict(data: Dictionary) -> SectState:
     if saved_stats is Dictionary:
         for key in state.needs_stats.keys():
             state.needs_stats[key] = maxi(int(saved_stats.get(key, 0)), 0)
+        # This optional counter was written by the canonical pill effect but
+        # used to disappear on reload. Do not add it to untouched legacy saves.
+        if saved_stats.has("healing_pills_used"):
+            state.needs_stats["healing_pills_used"] = maxi(int(saved_stats["healing_pills_used"]),0)
     return state
 
 static func _int_dictionary(value: Variant) -> Dictionary:

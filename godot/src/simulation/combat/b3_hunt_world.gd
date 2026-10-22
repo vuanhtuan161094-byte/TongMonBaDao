@@ -10,6 +10,7 @@ const MAX_BATCH_FRAMES := 2400
 static func begin(owner: SimulationRuntimeOwnerV2, disciple_id: StringName) -> Dictionary:
     if owner == null or owner.state == null or owner.durable_path.is_empty():
         return {"ok":false,"reason":"b3_requires_durable_runtime_owner"}
+    if owner.b3_write_blocked: return {"ok":false,"reason":"b3_save_retry_required"}
     var state := owner.state
     if not state.sect.b3_hunt.is_empty() and state.runtime_unconsumed_wall_seconds >= MapBattleV2.STEP_SECONDS:
         return {"ok":false,"reason":"b3_clock_backlog_pending"}
@@ -37,6 +38,15 @@ static func begin(owner: SimulationRuntimeOwnerV2, disciple_id: StringName) -> D
         if not restored["ok"]:
             return restored
         battle = restored["battle"]
+    var deployed := deploy(state,battle,disciple_id)
+    if not deployed["ok"]: return deployed
+    checkpoint(state,battle)
+    return commit(owner)
+
+# Admission into the existing PH0 world, also used by the canonical AUTO review.
+static func deploy(state: SimulationState, battle: MapBattleV2, disciple_id: StringName) -> Dictionary:
+    var ready := admission(state,disciple_id)
+    if not ready["ok"]: return ready
     var d: DiscipleState = state.disciples[disciple_id]
     var progress := DiscipleRealmProgressV2.current(d)
     var c: Dictionary = progress["cultivation"]
@@ -61,8 +71,7 @@ static func begin(owner: SimulationRuntimeOwnerV2, disciple_id: StringName) -> D
     d.active_pve_encounter_id = str(world["world_id"])
     d.region_id = StringName(B3PilotContent.ZONE)
     d.current_action = &"HOLD"
-    checkpoint(state,battle)
-    return commit(owner)
+    return {"ok":true}
 
 static func admission(state: SimulationState, id: StringName) -> Dictionary:
     if not state.disciples.has(id):
@@ -99,6 +108,7 @@ static func checkpoint(state: SimulationState, battle: MapBattleV2) -> void:
 static func advance_frame(state: SimulationState, battle: MapBattleV2) -> Dictionary:
     if not battle.pending_kill_events().is_empty():
         return settle_kills(state,battle,false)
+    B3MedicalAutoplayV1.review(state,battle)
     var world := state.sect.b3_hunt
     var slot: Dictionary = world["slot"]
     if float(slot["due_at"]) > 0.0 and battle.now >= float(slot["due_at"]):
@@ -170,6 +180,8 @@ static func commit(owner: SimulationRuntimeOwnerV2) -> Dictionary:
     return {"ok":true,"saved":true,"paid_generation":slot["paid_generation"]}
 
 static func return_to_sect(owner: SimulationRuntimeOwnerV2) -> Dictionary:
+    if owner == null or owner.state == null or owner.b3_write_blocked:
+        return {"ok":false,"reason":"b3_save_retry_required"}
     if owner.state.sect.b3_hunt.is_empty():
         return {"ok":false,"reason":"b3_no_world"}
     if owner.state.runtime_unconsumed_wall_seconds >= MapBattleV2.STEP_SECONDS:
@@ -180,6 +192,7 @@ static func return_to_sect(owner: SimulationRuntimeOwnerV2) -> Dictionary:
     var battle: MapBattleV2 = restored["battle"]
     if str(owner.state.sect.b3_hunt["member"]).is_empty():
         return {"ok":false,"reason":"b3_no_deployed_disciple"}
+    B3MedicalAutoplayV1.pause_manual(owner.state)
     _return_member(owner.state,battle,false)
     checkpoint(owner.state,battle)
     return commit(owner)

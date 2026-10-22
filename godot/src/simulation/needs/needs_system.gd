@@ -62,7 +62,15 @@ func region_need_modifier(state: SimulationState, region: RegionState) -> float:
 func can_heal(state: SimulationState) -> bool:
     return not state.sect.needs_enabled or state.sect.medicine_stock > 0
 
-func use_healing_pill(state: SimulationState, disciple: DiscipleState) -> bool:
+func use_healing_pill(state: SimulationState, disciple: DiscipleState, request_sequence: int = -1) -> bool:
+    if disciple != null and DiscipleRealmProgressV2.progression_ready(disciple):
+        if not B3PillSatietyV1.enable(state,disciple)["ok"]: return false
+        var sequence := B3PillSatietyV1.next_sequence(disciple) if request_sequence < 0 else request_sequence
+        return bool(B3PillSatietyV1.consume(state,disciple,HEALING_PILL_ID,sequence)["ok"])
+    return _use_healing_pill_unmetered(state,disciple)
+
+# Legacy effect, called only after CARE budget and ownership checks when opted in.
+func _use_healing_pill_unmetered(state: SimulationState, disciple: DiscipleState) -> bool:
     if not state.sect.needs_enabled or not state.sect.p3_7_resources_enabled:
         return false
     if disciple == null or disciple.region_id != &"sect" or disciple.hp >= disciple.max_hp:

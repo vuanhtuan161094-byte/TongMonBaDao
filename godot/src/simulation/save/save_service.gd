@@ -2,12 +2,15 @@ class_name SaveService
 extends RefCounted
 
 const CURRENT_VERSION := 2
+const CARE_VERSION := 3
 
 func save_to_path(state: SimulationState, path: String) -> Error:
     if state == null or path.is_empty():
         return ERR_INVALID_PARAMETER
     var payload := state.to_dict()
-    payload["save_version"] = CURRENT_VERSION
+    var care := _has_care_payload(payload)
+    payload["save_version"] = CARE_VERSION if care else CURRENT_VERSION
+    if care: payload["b3_care_version"] = B3MedicalAutoplayV1.VERSION
     var staged := path + ".tmp"
     var backup := path + ".bak"
     var content := JSON.stringify(_encode_floats(payload), "", true, true)
@@ -94,14 +97,19 @@ func _load_exact(path: String) -> SimulationState:
     if version < 0:
         push_error("SaveService: invalid negative save version %d." % version)
         return null
-    if version > CURRENT_VERSION:
+    if version > CARE_VERSION:
         push_error("SaveService: save version %d is newer than supported %d." % [version, CURRENT_VERSION])
         return null
 
-    if version == 2:
+    if version >= 2:
         data = _decode_floats(data)
-
-    data = _migrate(data, version)
+    var care := _has_care_payload(data)
+    if (version == CARE_VERSION) != care or (version == CARE_VERSION and int(data.get("b3_care_version",0)) != B3MedicalAutoplayV1.VERSION) or (version < CARE_VERSION and data.has("b3_care_version")):
+        push_error("SaveService: CARE capability mismatch; refusing downgraded or incomplete save.")
+        return null
+    if version == CARE_VERSION:
+        data["save_version"] = CURRENT_VERSION
+    data = _migrate(data, mini(version,CURRENT_VERSION))
     if data.is_empty():
         return null
     if not _is_payload_shape_valid(data):
@@ -130,6 +138,25 @@ func _load_exact(path: String) -> SimulationState:
         for raw_id in candidate_ids:
             workforce.ensure_p3_7_candidate_profile(state, state.recruitment_candidates[raw_id])
     return state
+
+# Detect features that an older reader would silently drop or normalize.
+func _has_care_payload(data: Dictionary) -> bool:
+    for row in data.get("disciples",[]):
+        if row is Dictionary and row.has("b3_pill_state"): return true
+    var sect = data.get("sect",{})
+    if sect is Dictionary:
+        var world = sect.get("b3_hunt",{})
+        if world is Dictionary and world.has("care"): return true
+        var stock = sect.get("warehouse_resources",{})
+        if stock is Dictionary and stock.has("tu_khi_dan"): return true
+    for row in data.get("buildings",[]):
+        if not (row is Dictionary): continue
+        var production = row.get("production_state",{})
+        if not (production is Dictionary): continue
+        if production.has("b3_command") or str(production.get("recipe_id","")) == "tu_khi_dan": return true
+        for job in production.get("jobs",[]):
+            if job is Dictionary and (str(job.get("recipe_id","")) == "tu_khi_dan" or str(job.get("output_resource_id","")) == "tu_khi_dan"): return true
+    return false
 
 func _migrate(data: Dictionary, version: int) -> Dictionary:
     var current := version

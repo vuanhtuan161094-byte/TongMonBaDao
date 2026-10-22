@@ -69,13 +69,17 @@ func update_to(now_unix: int, max_steps: int = -1) -> Dictionary:
     if state == null or scheduler == null:
         return {"ok":false,"reason":"runtime_owner_not_attached"}
     if b3_write_blocked:
-        var retried := B3HuntWorld.commit(self)
+        var retried := B3MedicalAutoplayV1.commit_owner(self)
         if not retried["ok"]:
             return retried
     var advanced := SimulationRuntimeClockV2.advance_to(
         state,scheduler,now_unix,max_steps
     )
     if not state.sect.b3_hunt.is_empty():
+        var restored := B3HuntWorld.restore(state)
+        if not restored["ok"]: return restored
+        B3MedicalAutoplayV1.review(state,restored["battle"])
+        B3HuntWorld.checkpoint(state,restored["battle"])
         var committed := B3HuntWorld.commit(self)
         if not committed["ok"]:
             return committed

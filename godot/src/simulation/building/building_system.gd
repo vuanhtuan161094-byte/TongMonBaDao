@@ -646,6 +646,17 @@ func active_alchemy_job_for_worker(state: SimulationState, disciple_id: StringNa
 func disciple_has_active_timed_recipe(state: SimulationState, disciple_id: StringName) -> bool:
     return not active_alchemy_job_for_worker(state, disciple_id).is_empty() or not active_resource_timer_for_worker(state, disciple_id).is_empty()
 
+# Selection affects future jobs only; running jobs retain their frozen recipe.
+func set_alchemy_recipe(state: SimulationState, hall_id: StringName, recipe_id: StringName) -> bool:
+    if not state.buildings.has(str(hall_id)) or not alchemy_registry.has(recipe_id): return false
+    var hall: BuildingState = state.buildings[str(hall_id)]
+    if hall.building_type != TYPE_ALCHEMY_HALL: return false
+    var data := _ensure_alchemy_state(hall)
+    data["recipe_id"] = str(recipe_id)
+    hall.production_state = data
+    state.building_event_count += 1
+    return true
+
 func set_alchemy_recipe_enabled(state: SimulationState, hall_id: StringName, enabled: bool) -> bool:
     if not state.buildings.has(str(hall_id)):
         return false

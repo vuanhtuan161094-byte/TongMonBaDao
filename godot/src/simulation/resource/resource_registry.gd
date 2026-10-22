@@ -78,6 +78,11 @@ const DEFINITIONS := {
         "market_value": 6,
         "tags": ["herb", "alchemy"]
     },
+    "tu_khi_dan": {
+        "name":"Tụ Khí Đan", "family":"pill", "realm_grade":"luyen_khi",
+        "realm_rank":1, "market_value":0,
+        "tags":["pill","cultivation","alchemy_product"]
+    },
     "hoi_xuan_dan": {
         "name": "Hồi Xuân Đan",
         "family": "pill",
