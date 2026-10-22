@@ -10,7 +10,7 @@ This is a project-specific operating guide, NOT a source of gameplay authority. 
 - TMB is Godot 4.7.2, Android landscape baseline 1280x720. Combat V2 is authoritative for math/state; JX may inform presentation only where authorized.
 - A single canonical simulation clock, Warehouse, job authority, save model and combat reward settlement. One Active Job; never make GUI the owner of rewards, injury, XP or resources.
 - B3 baseline accepted locally at 1d686dc8; CARE-FASTTRACK is a separate Codex in-progress packet, not an assumed PASS.
-- Most recent satiety owner override: 100000 points per disciple per simulation day (floor(tick/1440)), shared across pill types. Hoi Xuan costs 10, heals 55 HP; Tu Khi costs 25, grants 10000 explicit-source Tu Vi; 2 Thanh Linh Thao + 1 Linh Coc, 6 ticks. These are early pilot pills, not universal pills for all realms. Injury 120 ticks remains.
+- Most recent direct owner correction (2026-10-22): 1000000 points per disciple per simulation day (floor(tick/1440)), shared across pill types. Hoi Xuan costs 10, heals 55 HP; Tu Khi costs 25, grants 10000 explicit-source Tu Vi; 2 Thanh Linh Thao + 1 Linh Coc, 6 ticks. These are early pilot pills, not universal pills for all realms. Injury 120 ticks remains.
 - Future stronger pills, map-based cultivation/rewards and higher-grade Spirit Field output are directions only; never falsely mark them implemented or approve a kill-to-XP shortcut.
 - No arbitrary balance nerf, additional caps, free resources, fake effects, new authority or unlocked CODE scope.
 - Prefer one writer per overlapping simulation files. Separate docs/design does not authorize code.
