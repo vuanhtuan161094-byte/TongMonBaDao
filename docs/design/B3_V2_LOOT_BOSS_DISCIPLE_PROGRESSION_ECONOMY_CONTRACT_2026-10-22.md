@@ -1,9 +1,9 @@
 # TÔNG MÔN BÁ ĐẠO — B3 V2: CHIẾN LỢI PHẨM, BOSS & PHÁT TRIỂN ĐỆ TỬ
 
 **Ngày:** 22/10/2026 · **Tình trạng:** THIẾT KẾ CHI TIẾT / OWNER REVIEW. **Chưa triển khai gameplay, không merge, không sửa nhánh Source A đang chạy Codex.**
-**Repo:** \`vuanhtuan161094-byte/TongMonBaDao\`. GitHub \`main\` đã đọc @ \`461caca1171462e0da092f21108c5c1733157ad9\`.
-**Nhánh tài liệu:** \`docs/b3-v2-architecture-redesign-20261022\`.
-**Căn cứ:** \`docs/P3_7_DISCIPLE_LOADOUT_HUNTING_PROGRESSION_SPEC.md\`, \`COMBAT_SKILLS_V2_SPEC.md\`, \`WEAPON_EQUIPMENT_V2_SPEC.md\`, \`EQUIPMENT_SETS_V2_SPEC.md\`, \`EQUIPMENT_FORGING_UPGRADE_V2_ROADMAP.md\`, \`GAME_SYSTEM_ARCHITECTURE.md\`; 3 contract B3 V2 World/Team AI/Monster AI; ZIP B2.4 được cung cấp ngày 22/10 (source snapshot, không phải main).
+**Repo:** `vuanhtuan161094-byte/TongMonBaDao`. GitHub `main` đã đọc @ `461caca1171462e0da092f21108c5c1733157ad9`.
+**Nhánh tài liệu:** `docs/b3-v2-architecture-redesign-20261022`.
+**Căn cứ:** `docs/P3_7_DISCIPLE_LOADOUT_HUNTING_PROGRESSION_SPEC.md`, `COMBAT_SKILLS_V2_SPEC.md`, `WEAPON_EQUIPMENT_V2_SPEC.md`, `EQUIPMENT_SETS_V2_SPEC.md`, `EQUIPMENT_FORGING_UPGRADE_V2_ROADMAP.md`, `GAME_SYSTEM_ARCHITECTURE.md`; 3 contract B3 V2 World/Team AI/Monster AI; ZIP B2.4 được cung cấp ngày 22/10 (source snapshot, không phải main).
 **Mục tiêu sản phẩm:** “Cày quái liên tục — đệ tử trưởng thành — đồ rơi đáng săn — Boss là cơ hội/sự kiện — tông môn có nền kinh tế thật”. Một hệ thống có chiều sâu mà Chưởng Môn có thể điều hành bằng đội/chính sách, không click nhận từng rương.
 
 ## 0. Quy tắc authority — không gộp luật đã chốt với đề xuất
@@ -14,7 +14,7 @@
 2. **Một Kho tông môn** cho stack vật liệu; gear/pháp bảo/bí kíp unique có registry/tài sản tông môn tương ứng; đồ rơi **không sở hữu riêng đệ tử**, không loot warehouse hoặc túi nhận thưởng theo đội. Trang bị 100% tông môn sở hữu, chỉ cấp phát/sử dụng.
 3. **Phần thưởng cá nhân:** Tu Vi, skill/path mastery, Contribution, phần Linh Thạch cá nhân; **phần thưởng tông môn:** vật liệu, trang bị, bí kíp, tài nguyên, phần Linh Thạch tông môn. Không phải mọi kênh đều bắt buộc có ở mọi quái; cần authored source.
 4. Tu Vi săn có dạng **yêu cầu EXP tầng hiện tại × basePct × realmMult × gradeMult × challengeMult × participationMult**. Chênh lệch rank, phẩm quái và mức tham gia **đã được mô tả trong spec**, các số V1 là starting design/tuning, **không phải rate production đã code**. Mục tiêu trung bình săn quái phù hợp ~**10–20×** tốc độ Tu Vi lao động thường, qua giờ thực và xét downtime, không phải nhân 20 mỗi con.
-5. **30 cảnh giới × 10 tầng** cho Tu Vi và Luyện Thể; **không tự vượt đại cảnh giới ở tầng 10**. \`DiscipleRealmProgressV2.grant_xp\` trả \`unapplied_overflow\`, hiện **không có kho EXP dư tự động**. Không phát Luyện Thể XP trực tiếp từ quái nếu không có nguồn/cơ chế riêng được cho phép.
+5. **30 cảnh giới × 10 tầng** cho Tu Vi và Luyện Thể; **không tự vượt đại cảnh giới ở tầng 10**. `DiscipleRealmProgressV2.grant_xp` trả `unapplied_overflow`, hiện **không có kho EXP dư tự động**. Không phát Luyện Thể XP trực tiếp từ quái nếu không có nguồn/cơ chế riêng được cho phép.
 6. Mastery có **Sơ Học/Nhập Môn/Tiểu Thành/Đại Thành/Viên Mãn**, phải dựa hành động có hiệu quả: hit gây damage, heal thực, shield hấp thụ, buff hữu ích, debuff/control tác dụng. Chỉ skill đã học/đã thực sự dùng mới nhận mastery. Không spam cast rỗng, không đổi nguồn thành XP bằng animation.
 7. **10 ô trang bị thường, 12 phẩm, 24 dòng bộ** (18 combat+6 nghề), mỗi bộ 4 món vị trí quy định, mốc **2/3/4**, cho phép **3+3**; ba Phù, hai Pháp Bảo nằm ngoài 10 ô, bốn vị trí consumable riêng. Trang bị thuộc tông môn; luật đồ bộ không tự tạo kỹ năng; tỷ lệ rơi/roll phẩm chưa được khóa.
 8. **One Active Job**, đội <=6, Injury production **0/1/120 scheduler ticks**, không xóa đệ tử khi bị hạ; refund/credit/save exactly once, không camera/VFX/Source A ảnh hưởng gameplay. Một đồng hồ simulation, có kế hoạch offline nhưng không loot ước lượng tự sinh.
@@ -22,12 +22,12 @@
 
 ### B. IMPLEMENTED / ĐÃ XEM trực tiếp
 
-- \`main\` có \`HuntingMapV2.claim_reward\` theo **WIN encounter**, 3 map 5 cấp thử nghiệm với \`linh_tuy\` bảo đảm từ số lần thắng; \`SimulationScheduler\` legacy \`COMBAT→LOOT→pending_loot\`, \`EquipmentSystem.forge_loot_for_victory\` theo species. Không được mở **hai** đường trả thưởng cho B3 kill.
-- \`EquipmentSystem\` trên main: **3 slots** \`weapon/armor/talisman\`, **3 quality**, **5 recipes**, \`craft()\` synchronous; chưa phải 10/12/24 hoặc forge order có thời gian. \`ResourceRegistry\` canonical định nghĩa mã tài nguyên thật; \`WarehouseSystem\` có \`MAX_SAFE_STACK\` kỹ thuật và \`available_quantity\` xét lock/reserve **khi chi**.
-- \`DiscipleRealmProgressV2.grant_xp(disciple,track,amount,gain_type,floor_costs,...,dry_run)\` hỗ trợ source bonus và chặn ở major realm. **Thiếu bảng floor_costs production có thẩm quyền hoặc logic tiêu thụ tương ứng sẽ fail-closed**, không tự đoán giá EXP.
-- \`CombatSkillSystem.record_combat_path_experience\` trên main chỉ có **outcome finite** win/retreat/defeat và skills_used, không tương đương mastery theo mỗi hành động/world kill. Chưa nhận rằng mastery V2 đã chạy đầy đủ.
-- B2.4 local \`PerKillLootResolverV1\` chỉ roll \`resource_id\` stackables từ \`per_kill\` table, chance dạng **basis points 0..10000**, số lượng min/max, private RNG; \`KillReceiptLedgerV1\` mới preflight/rollback **Warehouse resources**, chưa commit multi-channel Tu Vi/unique/Boss. Source test 100% \`linh_moc\` chỉ sandbox, tuyệt đối không lên production.
-- Có \`SpawnDirectorV1\` slot/generation, \`MapBattleV2.continuous_mode\` opt-in ở local ZIP nhưng main chưa chứa; Source A Codex đang nghiên cứu full extraction, **không có yêu cầu dùng asset cụ thể từ nó ngay**.
+- `main` có `HuntingMapV2.claim_reward` theo **WIN encounter**, 3 map 5 cấp thử nghiệm với `linh_tuy` bảo đảm từ số lần thắng; `SimulationScheduler` legacy `COMBAT→LOOT→pending_loot`, `EquipmentSystem.forge_loot_for_victory` theo species. Không được mở **hai** đường trả thưởng cho B3 kill.
+- `EquipmentSystem` trên main: **3 slots** `weapon/armor/talisman`, **3 quality**, **5 recipes**, `craft()` synchronous; chưa phải 10/12/24 hoặc forge order có thời gian. `ResourceRegistry` canonical định nghĩa mã tài nguyên thật; `WarehouseSystem` có `MAX_SAFE_STACK` kỹ thuật và `available_quantity` xét lock/reserve **khi chi**.
+- `DiscipleRealmProgressV2.grant_xp(disciple,track,amount,gain_type,floor_costs,...,dry_run)` hỗ trợ source bonus và chặn ở major realm. **Thiếu bảng floor_costs production có thẩm quyền hoặc logic tiêu thụ tương ứng sẽ fail-closed**, không tự đoán giá EXP.
+- `CombatSkillSystem.record_combat_path_experience` trên main chỉ có **outcome finite** win/retreat/defeat và skills_used, không tương đương mastery theo mỗi hành động/world kill. Chưa nhận rằng mastery V2 đã chạy đầy đủ.
+- B2.4 local `PerKillLootResolverV1` chỉ roll `resource_id` stackables từ `per_kill` table, chance dạng **basis points 0..10000**, số lượng min/max, private RNG; `KillReceiptLedgerV1` mới preflight/rollback **Warehouse resources**, chưa commit multi-channel Tu Vi/unique/Boss. Source test 100% `linh_moc` chỉ sandbox, tuyệt đối không lên production.
+- Có `SpawnDirectorV1` slot/generation, `MapBattleV2.continuous_mode` opt-in ở local ZIP nhưng main chưa chứa; Source A Codex đang nghiên cứu full extraction, **không có yêu cầu dùng asset cụ thể từ nó ngay**.
 
 ### C. CẦN OWNER DUYỆT trước khi khóa gameplay
 
@@ -45,13 +45,13 @@ Phần thưởng cá nhân khi nhiều đội cùng Boss; có hay không bảo �
 
 ### Tính chất hiếm phải có mục tiêu, không biến thành slot machine trống
 
-**Design proposal:** mỗi vật phẩm chờ săn hiển thị provenance: \`source_type\` (normal/elite/boss/zone), vùng, yêu cầu cảnh giới, trạng thái table chưa authored và đường thay thế (forge/fragment/tương đương). Khi không có source hợp lệ, UI hiện “chưa có nguồn”, không hứa Boss X chắc chắn rơi phẩm 12. Sự hiếm từ xác suất roll, yêu cầu vật liệu, sức mạnh Boss, thời gian hồi và đội hình; **không khoá tiến trình cơ bản sau xác suất hiếm cực thấp**. Source A chỉ cung cấp visual metadata, không được dùng tên rig để chứng nhận table.
+**Design proposal:** mỗi vật phẩm chờ săn hiển thị provenance: `source_type` (normal/elite/boss/zone), vùng, yêu cầu cảnh giới, trạng thái table chưa authored và đường thay thế (forge/fragment/tương đương). Khi không có source hợp lệ, UI hiện “chưa có nguồn”, không hứa Boss X chắc chắn rơi phẩm 12. Sự hiếm từ xác suất roll, yêu cầu vật liệu, sức mạnh Boss, thời gian hồi và đội hình; **không khoá tiến trình cơ bản sau xác suất hiếm cực thấp**. Source A chỉ cung cấp visual metadata, không được dùng tên rig để chứng nhận table.
 
 ## 2. Loot architecture: nhiều kênh trên cùng một death receipt
 
 ### 2.1 Domain event
 
-\`\`\`text
+```text
 CombatV2WorldStep: MonsterInstance HP > 0 → <=0 (world,region,slot,generation)
   → immutable Killed domain event (real actor/participation evidence)
   → RewardEligibility (source,contentRev,tableRev,party/reward-policyRev)
@@ -60,13 +60,13 @@ CombatV2WorldStep: MonsterInstance HP > 0 → <=0 (world,region,slot,generation)
   → atomic canonical settlement: all recipients or none
   → COMMITTED in SAME SaveService canonical snapshot
   → read-only LootNotice + UI VFX, no gameplay mutation
-\`\`\`
+```
 
-**One kill key** is \`B3_WORLD_KILL/world_id/region_instance_id/slot_id/generation\`. Boss with 2 teams has **one** kill key and one roll. Do not create per-team boss table rolls by default. A kill can have many personal reward entries under the same immutable envelope; no separate item roll per person unless an explicitly distinct authored source is introduced in future.
+**One kill key** is `B3_WORLD_KILL/world_id/region_instance_id/slot_id/generation`. Boss with 2 teams has **one** kill key and one roll. Do not create per-team boss table rolls by default. A kill can have many personal reward entries under the same immutable envelope; no separate item roll per person unless an explicitly distinct authored source is introduced in future.
 
 ### 2.2 RewardEnvelopeV1 — proposed fields (single authoritative owner)
 
-\`\`\`yaml
+```yaml
 receipt_id: B3_WORLD_KILL/world/region/slot/generation
 world_step: int64
 killed_monster_instance_id: world/region/slot/generation
@@ -102,13 +102,13 @@ personal:
     blocked_overflow: reported_not_banked
 receipt_state: PENDING|COMMITTED|BLOCKED
 settlement_revision: integer
-\`\`\`
+```
 
-**Classification is illustrative:** an authored material/manual may be a registered stack instead of a unique registry entry; actual storage consumers decide. Do not mix \`sect_spirit_stones\` with \`sect.treasury\` legacy \`money\` or disciple \`wallet\` without explicit migration. Per-kill non-stackable equipment must receive deterministic globally unique item_instance_id (not \`equip_%06d\` collision against existing forge index).
+**Classification is illustrative:** an authored material/manual may be a registered stack instead of a unique registry entry; actual storage consumers decide. Do not mix `sect_spirit_stones` with `sect.treasury` legacy `money` or disciple `wallet` without explicit migration. Per-kill non-stackable equipment must receive deterministic globally unique item_instance_id (not `equip_%06d` collision against existing forge index).
 
-**Atomicity**: stage all new Warehouse quantities, unique IDs, personal money/progression/skill EXP and receipt COMMITTED before mutating live state; validate with pure dry-run consumers where available; publish save barrier containing all values. If item/XP/currency invalid, fail whole envelope, keep same PENDING frozen result; **no partial loot and no reroll**. \`SaveService\` tmp/backup supports coherent snapshot but actual atomicity/power-loss fault tolerance must be measured, not claimed.
+**Atomicity**: stage all new Warehouse quantities, unique IDs, personal money/progression/skill EXP and receipt COMMITTED before mutating live state; validate with pure dry-run consumers where available; publish save barrier containing all values. If item/XP/currency invalid, fail whole envelope, keep same PENDING frozen result; **no partial loot and no reroll**. `SaveService` tmp/backup supports coherent snapshot but actual atomicity/power-loss fault tolerance must be measured, not claimed.
 
-**Technical nuance on XP overflow:** \`grant_xp\` returns \`gained\` and \`unapplied_overflow\`; the earned offered amount, XP *actually applied*, discarded overflow and major gate must be separately tracked. Do not present \`offered\` as \`applied\`, do not silently deposit overflow in a hidden bank, do not trigger breakthrough by collecting Boss loot. If a pending receipt spans an unauthorized growth consumer, fail-closed per owner-approved transaction policy; do not skip the XP silently and still mark full grant.
+**Technical nuance on XP overflow:** `grant_xp` returns `gained` and `unapplied_overflow`; the earned offered amount, XP *actually applied*, discarded overflow and major gate must be separately tracked. Do not present `offered` as `applied`, do not silently deposit overflow in a hidden bank, do not trigger breakthrough by collecting Boss loot. If a pending receipt spans an unauthorized growth consumer, fail-closed per owner-approved transaction policy; do not skip the XP silently and still mark full grant.
 
 **Data lineage**: freeze loot table content and reward policy revision at eligibility/roll time, including exact source IDs. A patch changing a drop table cannot reroll a PENDING receipt after save/restart.
 
@@ -126,15 +126,15 @@ settlement_revision: integer
 ## 3. Bảng nguồn đồ — thế giới mở rộng thay vì 3 vùng/5 recipes
 
 **Design proposal content registry**:
-- \`MonsterDef\`: species + valid tier/realm rank, skills/HP/element from Combat V2, drop-source refs.
-- \`LootTableDef\`: table_id, version, source entity, channels, stack/unique/fragment source pools, quantity, rarity bands, authorized eligibility and RNG stream, uniqueness/exclusion rules.
-- \`ItemTemplateDef\`: registry ID, item slot, source family, realm tier 1..30, grade eligibility 1..12, legal affix pools, set lineage/generation if any, level/equip restrictions, non-stackable instance rules.
-- \`BossSourceDef\`: spawn/realm/risk/cooldown/loot family, normal/elite/boss distinction, phase/skill refs only when **implemented**.
-- \`Craft/ForgeRecipeDef\`: registered inputs, crafter/profession/building + real duration, output slot/tier/grade policy; separate from drop rarity.
-- \`ProgressionSourceDef\`: reward basis per valid enemy, actual participant window, condition/track/dry-run grant consumer, contribution + personal stones as defined policies.
-- \`EconomySourceSinkDef\`: material sources (base/hunt), item service sinks and capability; never pseudo currency.
+- `MonsterDef`: species + valid tier/realm rank, skills/HP/element from Combat V2, drop-source refs.
+- `LootTableDef`: table_id, version, source entity, channels, stack/unique/fragment source pools, quantity, rarity bands, authorized eligibility and RNG stream, uniqueness/exclusion rules.
+- `ItemTemplateDef`: registry ID, item slot, source family, realm tier 1..30, grade eligibility 1..12, legal affix pools, set lineage/generation if any, level/equip restrictions, non-stackable instance rules.
+- `BossSourceDef`: spawn/realm/risk/cooldown/loot family, normal/elite/boss distinction, phase/skill refs only when **implemented**.
+- `Craft/ForgeRecipeDef`: registered inputs, crafter/profession/building + real duration, output slot/tier/grade policy; separate from drop rarity.
+- `ProgressionSourceDef`: reward basis per valid enemy, actual participant window, condition/track/dry-run grant consumer, contribution + personal stones as defined policies.
+- `EconomySourceSinkDef`: material sources (base/hunt), item service sinks and capability; never pseudo currency.
 
-**No unapproved content:** B2.4 \`schema_v2.json\` presently supports spawn/loot stack drop table; unique gear/manual/mastery demands **separate schema versioning and focused validation** before production. ResourceRegistry currently verifies real stack IDs; unknown IDs fail closed. The five \`EquipmentSystem.RECIPES\` and legacy 3-region source are **fixtures**, not limits or valid product economy rates.
+**No unapproved content:** B2.4 `schema_v2.json` presently supports spawn/loot stack drop table; unique gear/manual/mastery demands **separate schema versioning and focused validation** before production. ResourceRegistry currently verifies real stack IDs; unknown IDs fail closed. The five `EquipmentSystem.RECIPES` and legacy 3-region source are **fixtures**, not limits or valid product economy rates.
 
 **Recommended sourcing:**
 - Normal: stable sources for ordinary monster materials + lower-risk Tu Vi/mastery; some ordinary gear/skill manual sources IF authored; valuable to routine farming without Boss monopoly.
@@ -147,8 +147,8 @@ settlement_revision: integer
 
 ### 4.1 Canonical reward for Tu Vi
 
-For disciple \`i\` and monster \`m\`:
-\`\`\`text
+For disciple `i` and monster `m`:
+```text
 offered_cultivation_xp(i,m) =
   current_floor_requirement(i)
   × base_pct(source,tier,loot/progression revision)
@@ -156,13 +156,13 @@ offered_cultivation_xp(i,m) =
   × grade_multiplier(normal/elite/boss)
   × challenge_multiplier(real fight difficulty vs eligible team)
   × participation_multiplier(valid actions/time)
-\`\`\`
+```
 
-The **formula and curve shape already exist** in the P3.7 spec. \`base_pct\` and final numeric curves are **NOT runtime approved**; do not select literal per-kill values without an authored cost table and time/kill throughput benchmark. Use stable monster \`realm_rank\` metadata, NOT textual “Kim Đan” exception strings or \`combat_power\` as Combat V2 damage authority.
+The **formula and curve shape already exist** in the P3.7 spec. `base_pct` and final numeric curves are **NOT runtime approved**; do not select literal per-kill values without an authored cost table and time/kill throughput benchmark. Use stable monster `realm_rank` metadata, NOT textual “Kim Đan” exception strings or `combat_power` as Combat V2 damage authority.
 
 Existing spec starting values (REFERENCE ONLY, not new proposal): relative rank -4→0.02, -3→0.05, -2→0.15, -1→0.45, equal 1.00, +1→1.35, +2→1.75, +3→2.20, >=+4 cap ~2.60–3.00. Grade normal1/elite3/boss10–15. Challenge appropriate ~1, overpowered below 1, dangerous somewhat above 1, with actual survival risk. **These are tuning hypotheses, not production rates.**
 
-**Critical no double scaling:** relative multiplier + challenge + grade + participation can compound strongly. Benchmark **per-hour effective XP** (fight uptime / travel / injuries / recovery / respawn contention / waiting) and compare actual progression speed targets: workers roughly \`0.04–0.06%\` current requirement/hour vs healthy appropriate hunting \`0.5–1.0%\`/hour. Boss grants burst, not a repeatably optimal no-risk 24h XP pipeline. Don't apply each multiplier again separately on actual grant() result.
+**Critical no double scaling:** relative multiplier + challenge + grade + participation can compound strongly. Benchmark **per-hour effective XP** (fight uptime / travel / injuries / recovery / respawn contention / waiting) and compare actual progression speed targets: workers roughly `0.04–0.06%` current requirement/hour vs healthy appropriate hunting `0.5–1.0%`/hour. Boss grants burst, not a repeatably optimal no-risk 24h XP pipeline. Don't apply each multiplier again separately on actual grant() result.
 
 **Track integrity:** routine hunting awards **Tu Vi** when applicable, not direct **Luyện Thể** XP without separately registered source. Monster body material/technique may be a separate item source for dedicated Luyện Thể service; this is not free XP. Sync current floor/gate, no cross-major-realm auto breakthrough. Skill use/mastery cannot raise cultivation rank itself without authored consumer.
 
@@ -170,12 +170,12 @@ Existing spec starting values (REFERENCE ONLY, not new proposal): relative rank 
 
 When an encounter kill awards XP at the 10th floor:
 1. freeze offered XP and existing player stage requirement;
-2. dry-run \`DiscipleRealmProgressV2.grant_xp()\` on valid \`floor_costs\`;
-3. commit only actual persistent XP/floors with authoritative XP source, surface \`unapplied_overflow\` as **not banked**;
+2. dry-run `DiscipleRealmProgressV2.grant_xp()` on valid `floor_costs`;
+3. commit only actual persistent XP/floors with authoritative XP source, surface `unapplied_overflow` as **not banked**;
 4. if major gate reached, UI shows available breakthrough path, NOT an automatic next realm; actual breakthrough uses the authorized separate consumer and materials/gates.
-5. If the grant lacks \`floor_costs\` content, BLOCK settlement; never invent price table or paper over with old P2 fixed XP.
+5. If the grant lacks `floor_costs` content, BLOCK settlement; never invent price table or paper over with old P2 fixed XP.
 
-**Potential design question:** if one kill spans level-up, using \`R_i\` locked at kill-start or kill-resolution; propose **snapshot at moment of death** plus ordered reward resolution, not current stage retroactively changed on reload. The P3.7 rule says current stage, and exact timing must be frozen in integration packet.
+**Potential design question:** if one kill spans level-up, using `R_i` locked at kill-start or kill-resolution; propose **snapshot at moment of death** plus ordered reward resolution, not current stage retroactively changed on reload. The P3.7 rule says current stage, and exact timing must be frozen in integration packet.
 
 ### 4.3 Skill mastery and path XP must be event-based not spam
 
@@ -188,9 +188,9 @@ Only count meaningful real Combat V2 contributions:
 - movement: documented tactical move to reach valid position; don't award mastery from perpetual patrol loops.
 - passive static skill: only when learned and authored conditions/trigger or study consumer legitimate. No source from animation, GUI or VFX.
 
-**Distinct ledgers:** \`CombatActionContribution\` (event-sourced, transient + deterministic, capped), \`SkillMasteryCandidate\` and \`DiscipleHuntReward\` (per death) have separate responsibility; **one receipt** should reference normalized committed contribution snapshot. Mastery from a skill action can be earned at action completion independently of kills only if it uses its **own stable action ID and exactly-once ledger**. **Do not accidentally grant mastery both per valid action and per subsequent kill**: choose exclusive consumer/credit authority per mastery category before CODE.
+**Distinct ledgers:** `CombatActionContribution` (event-sourced, transient + deterministic, capped), `SkillMasteryCandidate` and `DiscipleHuntReward` (per death) have separate responsibility; **one receipt** should reference normalized committed contribution snapshot. Mastery from a skill action can be earned at action completion independently of kills only if it uses its **own stable action ID and exactly-once ledger**. **Do not accidentally grant mastery both per valid action and per subsequent kill**: choose exclusive consumer/credit authority per mastery category before CODE.
 
-**Current implementation warning:** main \`CombatSkillSystem.record_combat_path_experience\` updates path XP from **encounter outcome** and skills_used; that is legacy and not sufficient to count valid per-kill performance. B3 must retain mode separation/migration, not call legacy function once **per monster** or inflate path XP.
+**Current implementation warning:** main `CombatSkillSystem.record_combat_path_experience` updates path XP from **encounter outcome** and skills_used; that is legacy and not sufficient to count valid per-kill performance. B3 must retain mode separation/migration, not call legacy function once **per monster** or inflate path XP.
 
 ### 4.4 Personal rewards and anti-leech
 
@@ -202,7 +202,7 @@ Use **meaningful contribution evidence** from Combat V2:
 - relative active combat time/eligibility at source target; no infinite passive proximity.
 **Participation range in the P3.7 design:** meaningful ~0.8–1.0, low ~0.4–0.7, essentially carried lower; this is balancing reference, not required thresholds. A six-person party must not multiply the sect's material drop by six or grant 100% progression to an AFK teammate.
 
-**Proposed fairness rule:** distinct \`eligible_participants\` have channel-specific participation for XP/Contribution and spirit stones; don't use last hit alone, and don't ignore healer/tank. A disciple who died earlier may earn proportionate credit for meaningful pre-death contribution if eligible, but never continues earning after HP0. A non-engaged passerby sees Boss death but doesn't get personal payout. Deterministic tie-break + time window prevents tagging at 1 HP as full credit. Exact contribution thresholds, final XP distribution, share vs independent XP per participant are OPEN.
+**Proposed fairness rule:** distinct `eligible_participants` have channel-specific participation for XP/Contribution and spirit stones; don't use last hit alone, and don't ignore healer/tank. A disciple who died earlier may earn proportionate credit for meaningful pre-death contribution if eligible, but never continues earning after HP0. A non-engaged passerby sees Boss death but doesn't get personal payout. Deterministic tie-break + time window prevents tagging at 1 HP as full credit. Exact contribution thresholds, final XP distribution, share vs independent XP per participant are OPEN.
 
 ### 4.5 Progression breadth
 
@@ -233,20 +233,20 @@ Boss experiences should differ via **known authored V2 skills/risk, telegraph, r
 **Proposed minimum eligibility contract:**
 - **One BossInstance** identified by world/slot/generation; only one HP/skill state. Teams A/B can attack this actor in one world.
 - Damage/cast/defense/status stack caps are global per Boss (not per-team copied); party-only buffs/heal remain within proper party unless authored wider scope.
-- Boss death creates one \`BossKillEnvelope\` using a standard \`B3_WORLD_KILL\` receipt, not a bonus separate loot claim per team.
+- Boss death creates one `BossKillEnvelope` using a standard `B3_WORLD_KILL` receipt, not a bonus separate loot claim per team.
 - Sect stackables, unique gear, manuals, fragments, and sect Spirit Stones roll **once**; then append personal credits for eligible contributors, no team duplication of source.
 - Determine personal participants by actual Combat V2 events (damage, tanked hits, effective heal/shields/support, time), freeze evidence at death.
 - **Do not define “last hit owns Boss” by default.** It ignores heal/tank and can reward leeches. Team leader can influence credit **only if** an explicit Sect policy says so (default simpler equal-after-sect-cut from spec).
 - If one team withdraws while another continues, prior meaningful contribution may remain eligible **within an approved participation window**; exhausted/wiped teams never auto-claim separate win.
 - Two teams competing for same Boss/last hit cannot cause double loot. Sect owner is one tông môn; if different Sects/PvP eventually exist, **out of current scope**.
 
-**Suggested personal Stone split algorithm (not locked):** take authored \`gross_stones\`; transfer an approved Sect share once; among eligible disciples use **equal share** initially, deterministic rounding remainder ordered by ID; optional weighted participation/leader bonus only after gameplay feedback. No mixing personal \`wallet\` and \`personal_spirit_stones\` until migration.
+**Suggested personal Stone split algorithm (not locked):** take authored `gross_stones`; transfer an approved Sect share once; among eligible disciples use **equal share** initially, deterministic rounding remainder ordered by ID; optional weighted participation/leader bonus only after gameplay feedback. No mixing personal `wallet` and `personal_spirit_stones` until migration.
 
 **Boss control policies:** ALLOW_WHEN_SAFE/NEVER/OWNER_TARGET according to Team AI; actual risk gate still mandatory; Boss may have respawn countdown, but players should see source and readiness rather than farm a dead location forever. Aggro/leash/reset policy unresolved; abandoning combat cannot cash out a “partial defeat reward” without authored source. Boss spawn/loot rate, personal participation window, pity, token source and multi-team loot eligibility **OPEN**.
 
 ### 5.3 Boss reset exploit and other abuse cases
 
-- **Pull-reset farming**: cannot force Boss to heal/reset and repeatedly award on HP thresholds because \`Killed\` requires single HP>0→0 per generation. A boss that returns home is **same generation**, no reward.
+- **Pull-reset farming**: cannot force Boss to heal/reset and repeatedly award on HP thresholds because `Killed` requires single HP>0→0 per generation. A boss that returns home is **same generation**, no reward.
 - **Tag-leech:** one tiny hit is not automatically full Boss XP/rare item; participation proof needed. Supplying without meaningful combat contribution no reward.
 - **Heal spam**: healing a full-HP ally gives zero effective heal contribution.
 - **Infinite shield/buff**: credit only when actual effect useful and bounded.
@@ -263,13 +263,13 @@ Boss experiences should differ via **known authored V2 skills/risk, telegraph, r
 
 Every instance has **unique identity + registered item template + realm tier + quality + legal stat lines + optional set lineage/generation + source receipt ID**. Quality 1..12, affix capacity as locked in Equipment spec (Chí Tôn 6 ordinary, 2 rare stat-special, optional **individual Chân Văn slot**). A rare-stat affix must not create its own attack/skill; Chân Văn is separate. Nothing in Boss loot automatically grants Chân Văn Cộng Hưởng.
 
-**6 eligible set positions** Mũ/Giáp/Phi Phong/Hộ Uyển/Đai Lưng/Giày; four piece templates/lineage, thresholds 2+3+4 cumulative; **3+3 legitimate** (both 2+3). The 10 ordinary slots are not the “old five+Phù+Pháp Bảo”; no false visual equip done to satisfy this count. A drop cannot be assigned to a slot whose V2 legality has no true stat consumer, or silently convert old \`owner_id\` to personal property.
+**6 eligible set positions** Mũ/Giáp/Phi Phong/Hộ Uyển/Đai Lưng/Giày; four piece templates/lineage, thresholds 2+3+4 cumulative; **3+3 legitimate** (both 2+3). The 10 ordinary slots are not the “old five+Phù+Pháp Bảo”; no false visual equip done to satisfy this count. A drop cannot be assigned to a slot whose V2 legality has no true stat consumer, or silently convert old `owner_id` to personal property.
 
 ### 6.2 Different acquisition routes (proposal, content-authorable)
 
 - Direct ordinary gear drops: show source, tier and role; reasonable early progression.
 - Elite/Boss-specific item drops: allow targeted pursuit of selected lineage/slot/rare material; not guaranteed quality 12, not Boss-only path to all regular gear.
-- Forge: real \`ForgeOrder\` through Luyện Khí Điện, canonical Warehouse materials and profession/building level, timed output owned by Sect. Current \`EquipmentSystem.craft()\` sync is only legacy.
+- Forge: real `ForgeOrder` through Luyện Khí Điện, canonical Warehouse materials and profession/building level, timed output owned by Sect. Current `EquipmentSystem.craft()` sync is only legacy.
 - Manuals/fragments: new unlocks sent to Tàng Kinh Các/Sect catalogue according to canonical skill spec; first full archived source should unlock transmission without consuming a copy per disciple when system actually built.
 - Duplicate item management: equip squad B, reserve for future 2/3/4 set, salvage/trade **only with explicit policy and implemented consumer**, never auto-salvage unique/high-tier just because individually lower score.
 - Autoequip per role/team examines **total legal loadout and sets**, player slot locks, equipped_by and prospective group upgrade; staged assignment protects completed 4-set from opportunistic single-stat replacements.
@@ -289,23 +289,23 @@ A good Boss reward can be a useful specific material, recipe, set piece, unlock 
 ### 7.1 Economy consistency
 
 - Farm: hunt produces realm-scaled monster materials/rare collectibles + progress/stones **when sourced**; base buildings produce stable wood/ore/herbs/medicine/forge output. Do not auto-turn every monster species into construction wood, and don't substitute all fields with beast drops.
-- Character progression increases ability to farm harder sources, but extra monster power also raises medicine and recovery cost. No mystical noncanonical \`phẩm lực\` meter or second wallet.
-- Currency: distinguish **Sect Spirit Stones**, **personal Spirit Stones** and legacy numeric \`money/wallet/treasury\` until explicit migration. No double tax/cut from share.
+- Character progression increases ability to farm harder sources, but extra monster power also raises medicine and recovery cost. No mystical noncanonical `phẩm lực` meter or second wallet.
+- Currency: distinguish **Sect Spirit Stones**, **personal Spirit Stones** and legacy numeric `money/wallet/treasury` until explicit migration. No double tax/cut from share.
 - Contribution: per valid kill service + possibly **additional registered loot-value service** (spec already allows), but each uses one receipt once. Same rare item should not grant contribution again on every reassignment, equipment lock, inventory view or return to Sect.
-- Resource reserve/lock applies to **spending/crafting/auto allocation**, not to receiving legitimately earned stacks. \`MAX_SAFE_STACK\` is numerical safety guard, not player warehouse capacity.
+- Resource reserve/lock applies to **spending/crafting/auto allocation**, not to receiving legitimately earned stacks. `MAX_SAFE_STACK` is numerical safety guard, not player warehouse capacity.
 - No paid entry fee for ordinary hunting; legitimate travel, medicine, stamina, injury downtime and future approved durability are costs. Consumable spending itself must be idempotent by action/source ID.
 
 ### 7.2 Economy balance must be empirical
 
 For each region/tier/team/realm:
-\`\`\`text
+```text
 Real hunting uptime = total simulated hours - travel - safe waiting - recovery - defeated/injured downtime
 Kills/hour = actual authorized kills / total simulated hours
 TuVi/hour = sum(applied_v2_xp) / current-stage cost / total simulated hours
 Net common material/hour = legit stack additions - recipe/medical/repair use
 Unique item/hour = committed real unique drops only
 Boss meaningful rewards/hour = actual credited eligible kills with cooldown/source limits
-\`\`\`
+```
 
 Compare with worker output at Economy V2 values and promised ~10–20× TuVi speed after costs; run statistical trials seeded consistently and track **p50/p90/p95** hours to first useful upgrade and longer-tail dry spells for rare targets (not inferred from 1-minute synthetic sandbox). Budget target specifics **not signed**; never claim PASS without actual simulation.
 
@@ -333,7 +333,7 @@ Three-step owner experience: **giao đội → nhìn họ tự săn và tiến t
 ## 9. Scenario examples — fixtures ONLY (no unapproved live drop rates)
 
 ### S1 — Normal hunt useful without Boss
-A legal five-member team in a starter wood/monster region engages 3 normal mobs. Two mobs die at distinct timestamps; each produces an immutable \`kill_id\`, TuVi and material only if registered content. Different disciples' XP depends on rank/participation and real action. One hunter below retreat HP returns; remaining members may continue per policy. Region spawn slots regenerate individually. Sect Warehouse immediate credit; no visual Pickup mutation, no wave WIN.
+A legal five-member team in a starter wood/monster region engages 3 normal mobs. Two mobs die at distinct timestamps; each produces an immutable `kill_id`, TuVi and material only if registered content. Different disciples' XP depends on rank/participation and real action. One hunter below retreat HP returns; remaining members may continue per policy. Region spawn slots regenerate individually. Sect Warehouse immediate credit; no visual Pickup mutation, no wave WIN.
 
 ### S2 — Rank mismatch
 Cultivation disciple with rank 12 kills monster rank 6 while being overpowered: same item source rules MAY give legal low-level materials but **Tu Vi multiplier sharply reduced** (reference -4 or lower ~0.02). Prevents cheap weak-mob power levelling; content/drop chance is independent and not globally “0 loot if weak”.
@@ -345,7 +345,7 @@ Team A has frontline/healer/DPS, team B joins. One Boss HP, boss AOE/cooldown re
 Boss source legitimately yields unique helmet from lineage Sát Tinh of valid tier. Item enters Sect registry; player lock holds it for a future 3/3 build or assigns to legal wearer. AI cannot break an existing completed Hộ Sơn 4-set just because isolated helmet has +1% Attack. Direct drop independent of Source A outfit/skin availability.
 
 ### S5 — Floor-10 cap
-A disciple floor 10 obtains a large Boss cultivation award. \`grant_xp()\` only applies up to legal floor gate; excess returned as unapplied, **not saved as secret overflow bank** and **not force realm 11**. Visible UI shows “đã đạt giới hạn tầng / cần đột phá”, with offered/applied distinction. Reward receipt protects exactly-once even though some XP could not be applied.
+A disciple floor 10 obtains a large Boss cultivation award. `grant_xp()` only applies up to legal floor gate; excess returned as unapplied, **not saved as secret overflow bank** and **not force realm 11**. Visible UI shows “đã đạt giới hạn tầng / cần đột phá”, with offered/applied distinction. Reward receipt protects exactly-once even though some XP could not be applied.
 
 ### S6 — Boss retreat exploit
 Boss still alive, Team A leaves while Team B continues; the Boss is not declared dead or respawned, no reward. If Boss returns home due leash, world rule may recover HP only under authorized policy; receipt unchanged. If actual HP0 later, one kill and one reward, regardless of number of attempts.
@@ -357,7 +357,7 @@ Combat lethal already saved? Save attempt fails while stack+unique+personal XP a
 Healer casts on full HP, another caster buffs an unengaged ally, boss is tagged at 1 HP. None automatically produce full mastery/participation. Real effective healing/damage/actual group support earns credit according to signed eligibility, not per-animation or per-click.
 
 ### S9 — Content revision and source mutation
-A loot table changes while a PENDING Boss kill receipt remains. Frozen \`table_revision\` and original result must be committed, not re-rolled with new chance. An unsupported source blocks with reason, no hidden 100%-wood fallback. Unknown item IDs cannot enter Warehouse via JSON hack.
+A loot table changes while a PENDING Boss kill receipt remains. Frozen `table_revision` and original result must be committed, not re-rolled with new chance. An unsupported source blocks with reason, no hidden 100%-wood fallback. Unknown item IDs cannot enter Warehouse via JSON hack.
 
 ### S10 — Offline bounded catch-up
 A long offline duration on low-RAM phone should not mint “X Boss kills/hour”. The single world clock processes legal events with a bounded backlog, queues unpaid time accurately, preserves 120-scheduler-tick Injury and prevents second actor job. When resumed, UI shows resolved **actual** loot/growth only, not hypothetical projection as claimable rewards.
@@ -368,11 +368,11 @@ A long offline duration on low-RAM phone should not mint “X Boss kills/hour”
 |---|---|---|---|
 | O1 | Boss personal credit across teams | Meaningful participation including tank/heal, not last hit; sect loot once | Anti-leech/ledger test and fairness scenarios |
 | O2 | Spirit Stone policy | Sect cut once, equal eligible personal share V1 with deterministic remainder; optional later weighting | Does canonical V2 wallet/source exist? |
-| O3 | Hunt TuVi numeric \`base_pct\` | Calibrate against 0.5–1% stage/hour and 10–20× work, using real fight/respawn/injury | Floor-cost authority/monsters per hour |
+| O3 | Hunt TuVi numeric `base_pct` | Calibrate against 0.5–1% stage/hour and 10–20× work, using real fight/respawn/injury | Floor-cost authority/monsters per hour |
 | O4 | Equipment target drops | Both direct and forge, plus Boss-targeted material/manual/fragment where authored | Actual 10/12/24 consumers and rate economy |
 | O5 | Guarantee/pity | No universal pity; evaluate source-specific fragment path first | p90/p95 dry-streak simulation |
 | O6 | Party members earn XP when not attacking | Require actual bounded meaningful participation/support; don't reject real healer | CombatV2 event evidence availability |
-| O7 | Full ten-floor and breakthrough cap | Keep \`unapplied_overflow\` semantics; no hidden bank | Test apply versus offered |
+| O7 | Full ten-floor and breakthrough cap | Keep `unapplied_overflow` semantics; no hidden bank | Test apply versus offered |
 | O8 | Boss split if 2+ teams participate | Single loot pool; any personal split policy freezes at kill | Stable teams and target counters |
 | O9 | Offline long fights | Deterministic event processing with backlog if CPU cap, no estimates | Online/offline/save seeded parity |
 | O10 | Salvage/autoassignment | Respect locks/2-3-4 and item ownership; don't force salvage | Unique registry migration and legal consumers |
@@ -381,7 +381,7 @@ A long offline duration on low-RAM phone should not mint “X Boss kills/hour”
 
 ## 11. API shape — typed design only
 
-\`\`\`text
+```text
 resolve_kill_eligibility(world, monster_instance_id, combat_evidence, source_revision)
   -> EligibilitySnapshot | BLOCKED
 
@@ -404,7 +404,7 @@ plan_boss_share_once(kill_id, eligible_participants, sect_cut_policy_rev)
 
 measure_hunt_economy(seeded_fixture, real_world_ticks, budget)
   -> p50/p90/p95 results without mutation of user save
-\`\`\`
+```
 
 **Only one code owner executes reward commits** after explicitly authorized migration. UI only projects already committed state and issues player intent; no loot grants from receipt preview, no duplicate settlement on auto resume, no second Combat RNG.
 
@@ -415,38 +415,38 @@ measure_hunt_economy(seeded_fixture, real_world_ticks, budget)
 | **BLP-D0 (THIS SPEC)** | Decisions/formulas/architecture/fixtures; distinguish locked and proposal | Design only, no runtime tests |
 | **BLP-C0 CONTENT SOURCE AUDIT** | Map every existing normal/Elite/Boss and stack resource into valid table/registration; item+personal channel consumers feasibility; fixture budget | Can be READ-ONLY before CODE, no new rate |
 | **BLP-C1 KILL ENVELOPE FOUNDATION** | Extend B2.4 resource-only receipt to immutable typed mixed channels and one kill source; test deterministic ID/RNG and PENDING replay **without production payout** | Requires world HP0 event/W1/W2, exact allowlist and integration writer |
-| **BLP-C2 CANONICAL REWARD TRANSACTION** | Real warehouse+unique+personal money/XP/mastery staged atomic commit, SaveService migration, no double settle in fault tests | Canonical \`SectState\`/item/progression APIs & floor costs; no fake source; one shared-file writer |
+| **BLP-C2 CANONICAL REWARD TRANSACTION** | Real warehouse+unique+personal money/XP/mastery staged atomic commit, SaveService migration, no double settle in fault tests | Canonical `SectState`/item/progression APIs & floor costs; no fake source; one shared-file writer |
 | **BLP-C3 REAL BASIC CONTENT** | One verified normal species/zone material, actual valid reward source; appropriate TuVi per-hour smoke; no legacy claim overlap | Separate owner signoff for table/rates and real actor content |
 | **BLP-C4 BOSS MULTI-TEAM / PARTICIPATION** | Real boss one HP, one loot roll, role-aware personal credit and state persistence, risk/return and anti-leech | Boss credit O1/O2/O6/O8 must be approved, Combat V2 evidence for support |
 | **BLP-C5 RARE CHASE + CRAFT/Gear** | Authored unique gear source/fragment/manual plus legal 10/12/24 allocation or ForgeOrder; first real consumable source/sink; no phantom Chân Văn | Item V2 migration, forge roadmap order1, Source A visual bridge later |
 | **BLP-C6 BALANCE & OFFLINE** | Seeded p50/p90/p95 item chase & effective XP, true offline parity and supply economics, Android/8GB performance | Whole B3 single clock and tested Save/Workforce flow |
 | **BLP-C7 PRESENTATION HANDOFF** | Real loot source UX and HUD states projected by V5/Map/Character Studio; never gameplay authority | After Source A/visual owners deliver verified manifests; no overlap |
 
-**Do not code an all-in-one boss/loot/character patch.** Sequence: one real immutable kill → one valid material reward save → one honest Tu Vi award at a real floor cost → one real boss/gear source → split and balance. No 100% sandbox \`linh_moc\` promoted by default.
+**Do not code an all-in-one boss/loot/character patch.** Sequence: one real immutable kill → one valid material reward save → one honest Tu Vi award at a real floor cost → one real boss/gear source → split and balance. No 100% sandbox `linh_moc` promoted by default.
 
 ### Focused test matrix to authorize for future implementation
 
-- \`BLP-T01\`: same boss generation killed by two simultaneous teams => ONE kill ID, ONE Sect loot roll, personal eligible deterministic, no 2×.
-- \`BLP-T02\`: DPS/tank/healer/support legitimate; silent bystander 0; downed participant only credits before HP0.
-- \`BLP-T03\`: fake overheal/recast infinite/late tag cannot increase mastery indefinitely or full Boss XP.
-- \`BLP-T04\`: normal/elite/boss authored table valid; missing content blocked, no guessed rare drop.
-- \`BLP-T05\`: floor requirement basis, realm gap/challenge/grade/participation, no repeated multiplication, effective XP/hour target.
-- \`BLP-T06\`: rank 30 floor 10/major gate, no realm bypass, offered vs applied/overflow and missing floor_costs fail-closed.
-- \`BLP-T07\`: cultivation XP and mastery are distinct; current encounter win path cannot also pay same world kill.
-- \`BLP-T08\`: unique item ID collision/invalid slot/quality/set generation => all-channel rollback.
-- \`BLP-T09\`: Sect money/personal Stone partition, deterministic remainder, no legacy wallet double-write.
-- \`BLP-T10\`: lock/reserve prevent spending, not legitimate loot receipt, warehouse integer overflow fail all.
-- \`BLP-T11\`: save mid-Killed/mid-PENDING/mid-COMMITTED, corrupted tmp/bak, same identity upon replay.
-- \`BLP-T12\`: future table version change leaves PENDING roll unchanged, no retroactive grant.
-- \`BLP-T13\`: 2/3/4 and 3+3 set preserving; auto-equip respects manual lock, no auto salvage protected.
-- \`BLP-T14\`: difference between 4 encounter wins legacy guarantee and 4 individual B3 kills, independent records.
-- \`BLP-T15\`: one world >90s and >1h, several respawns/rare drops, no wave reset or UI death-queue lost receipt.
-- \`BLP-T16\`: online/offline/look-away equal real committed rewards, no unauthorized estimated offline drop.
-- \`BLP-T17\`: no Boss item data but Boss appears; truthful no table/error rather than item minted.
-- \`BLP-T18\`: 1000+ disciples, multiple teams, supply+production jobs protected, fair sparse event processing.
-- \`BLP-T19\`: cached reward nonce/seed count correct on duplicate kill event; no duplicate unique affix reroll.
-- \`BLP-T20\`: visual unique loot notice events can be dropped without losing canonical item.
-- \`BLP-T21\`: stage advancement between two sequential simultaneous kills follows frozen sorted event order, never replays different XP after save.
+- `BLP-T01`: same boss generation killed by two simultaneous teams => ONE kill ID, ONE Sect loot roll, personal eligible deterministic, no 2×.
+- `BLP-T02`: DPS/tank/healer/support legitimate; silent bystander 0; downed participant only credits before HP0.
+- `BLP-T03`: fake overheal/recast infinite/late tag cannot increase mastery indefinitely or full Boss XP.
+- `BLP-T04`: normal/elite/boss authored table valid; missing content blocked, no guessed rare drop.
+- `BLP-T05`: floor requirement basis, realm gap/challenge/grade/participation, no repeated multiplication, effective XP/hour target.
+- `BLP-T06`: rank 30 floor 10/major gate, no realm bypass, offered vs applied/overflow and missing floor_costs fail-closed.
+- `BLP-T07`: cultivation XP and mastery are distinct; current encounter win path cannot also pay same world kill.
+- `BLP-T08`: unique item ID collision/invalid slot/quality/set generation => all-channel rollback.
+- `BLP-T09`: Sect money/personal Stone partition, deterministic remainder, no legacy wallet double-write.
+- `BLP-T10`: lock/reserve prevent spending, not legitimate loot receipt, warehouse integer overflow fail all.
+- `BLP-T11`: save mid-Killed/mid-PENDING/mid-COMMITTED, corrupted tmp/bak, same identity upon replay.
+- `BLP-T12`: future table version change leaves PENDING roll unchanged, no retroactive grant.
+- `BLP-T13`: 2/3/4 and 3+3 set preserving; auto-equip respects manual lock, no auto salvage protected.
+- `BLP-T14`: difference between 4 encounter wins legacy guarantee and 4 individual B3 kills, independent records.
+- `BLP-T15`: one world >90s and >1h, several respawns/rare drops, no wave reset or UI death-queue lost receipt.
+- `BLP-T16`: online/offline/look-away equal real committed rewards, no unauthorized estimated offline drop.
+- `BLP-T17`: no Boss item data but Boss appears; truthful no table/error rather than item minted.
+- `BLP-T18`: 1000+ disciples, multiple teams, supply+production jobs protected, fair sparse event processing.
+- `BLP-T19`: cached reward nonce/seed count correct on duplicate kill event; no duplicate unique affix reroll.
+- `BLP-T20`: visual unique loot notice events can be dropped without losing canonical item.
+- `BLP-T21`: stage advancement between two sequential simultaneous kills follows frozen sorted event order, never replays different XP after save.
 
 **Tests above are specified, NOT RUN, NOT PASS**. Godot official 4.7.2 focused + cumulative gates and source-specific QA only after authorized scoped code.
 
@@ -459,6 +459,6 @@ measure_hunt_economy(seeded_fixture, real_world_ticks, budget)
 - **A locked or reserved item belongs to Sect**; assignments are reversible; 10/12/24 and full 3+3 preserved.
 - Stage/realm gates never bypassed; XP offered/applied and blocked overflow visibly distinguished.
 - Source A is asset pipeline, not drop table/gameplay math.
-- **Avoid designing dozens of unsourced item IDs or numeric drop rates now**. Next design checkpoint should be exact **Boss participation & personal payout policy** + one real content fixture with actual \`ResourceRegistry\` IDs, following owner approval.
+- **Avoid designing dozens of unsourced item IDs or numeric drop rates now**. Next design checkpoint should be exact **Boss participation & personal payout policy** + one real content fixture with actual `ResourceRegistry` IDs, following owner approval.
 
 **This document expands B3 V2 DESIGN but does not authorize implementation, migrations, rebalancing, merges or Source A changes.**
