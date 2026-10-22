@@ -12,6 +12,8 @@
 
 **USER PRIORITY:** Source A full inventory/conversion running separately; B3 DESIGN ONLY. No modifying World/Combat code, B2.4 worktree, Map, Character Studio, V5.1, Source A converter, or shared Godot projects. No heavy QA/merge.
 
+> **LOOT / BOSS / DISCIPLE PROGRESSION (2026-10-22):** [B3_V2_LOOT_BOSS_DISCIPLE_PROGRESSION_ECONOMY_CONTRACT_2026-10-22.md](B3_V2_LOOT_BOSS_DISCIPLE_PROGRESSION_ECONOMY_CONTRACT_2026-10-22.md) — chi tiết per-kill RewardEnvelope đa kênh, boss nhiều đội một HP/một Sect loot, mastery/support, Tu Vi current-floor 10–20× target, cảnh giới gate, equip 10/12/24, đồ rơi direct/forge/rare và kế hoạch cân bằng. **DESIGN / OWNER REVIEW, không cấp phép CODE.**
+
 ## 0. Authority boundary: product LOCKS vs proposed monster AI
 
 ### OWNER-LOCKED
