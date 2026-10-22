@@ -246,3 +246,21 @@ This rule governs **conversation workflow**, not game AI/UI. Do not change gamep
 **Tông Môn Bá Đạo is a LANDSCAPE / màn hình ngang mobile game.** The current Godot landscape base is **1280×720**, as in `godot/project.godot`, `docs/P3_6A_PLAYABLE_VERTICAL_SLICE_SPEC.md` and `docs/P3_REFERENCE_UI_AUDIT.md`; the opening production UI and controls must remain landscape and finger-friendly. Reference `Ta Là Tông Sư` / `最强祖师` for landscape sect-map/workforce and production-panel interaction, not for permission to replace canonical gameplay.
 
 **Never redirect this project to portrait / màn hình dọc or 390×844 as the primary runtime**, and never conflate it with the separate `Tu Tiên Nhàn Dỗi` portrait art/runtime project. If an older note suggests portrait, this latest explicit user correction controls. 1280×720 is the **current design baseline**; final device aspect ratios/responsive layout remain to verify on an actual user device. Keep all UX acceptance at landscape. Changing primary orientation requires explicit new user decision.
+
+
+---
+
+## Project-scoped agent skills (DESIGN/QA helper; opt-in branch 2026-10-22)
+
+TMB supports skill modules at `.agents/skills/tmb-*/SKILL.md` when these paths are present in the active Codex worktree. On this **documentation-only** branch, use `tmb-project-director` to choose at most 1–2 specialists:
+- `tmb-balance-lab` — 30×10 Tu Vi/Luyện Thể, map farm, Linh Điền and pill economy;
+- `tmb-autoplay-ai` — safe auto-hunt, return, team roles and NPC policy;
+- `tmb-godot-evidence` — official Godot QA, crash/replay/save, exact receipts and physical evidence;
+- `tmb-asset-gate` — Source A/JX origin, sprites/Spine, animation and Godot import;
+- `tmb-ui-playtest` — player-visible Android landscape UI, camera and jobs.
+
+Codex can use the listed frontmatter descriptions for implicit discovery or explicitly request `$tmb-project-director` plus `$tmb-godot-evidence` etc. **External skills never outrank this AGENTS.md, canonical gameplay code, or the current owner**. A skill cannot widen a CODE allowlist, silently change balance, claim PASS from static tests, merge, or alter another writer's worktree.
+
+Important owner-vs-artifact contract check: the last *owner decision known to this branch* for shared pill satiety is **100000/day**, not the **1000000/day** claimed by B3 CARE ZIP commit `35ffa85fd45da42e43722e7ac74b7423602d4491`. Treat this as an unresolved **REQUIREMENT MISMATCH**, not owner permission to increase CAP. Ask for exact owner approval before accepting 1000000 as final; any repair requires a separate authorized CODE packet. Regardless of CAP, 15/15 focused logs are technical evidence only; manual Windows and physical Android are PENDING USER.
+
+**Deployment boundary:** this skills branch is not `main` and not the local CARE branch. Repository skills are discovered only when present in the checked-out worktree (some Codex Cloud versions may require explicit file reading). Consult `docs/AI_AGENT_SKILLS_AUTO_DISCOVERY_CARE_QA_2026-10-22.md` for safe instructions. Do not cherry-pick/merge these docs into active CARE without explicit owner approval.
