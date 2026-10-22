@@ -1,6 +1,6 @@
 ---
 name: tmb-godot-evidence
-description: "Ensure TMB Godot 4.7.2 focused runtime QA, receipts, versioned save migrations, exactly-once operations, clean Windows/Android visual evidence and measured performance."
+description: "Kiểm toán và nghiệm thu Godot 4.7.2: focused tests, save/load, crash/retry, ledger, Đan Bão Hòa cap, gameplay receipts, Windows/Android UX, hiệu năng; distinguish test PASS from owner requirement and physical QA."
 ---
 # TMB Godot Evidence & Persistence — SKILL
 ## Evidence ladder
