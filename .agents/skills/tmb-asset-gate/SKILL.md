@@ -1,6 +1,6 @@
 ---
 name: tmb-asset-gate
-description: "Curate TMB Source A/JX sprite, Spine, animation, VFX and map sources into provenance-checked Godot 4.7.2 assets while keeping the approved Source A visual direction."
+description: "Kiểm toán asset Source A / JX / JXQY / Spine cho Tông Môn Bá Đạo: sprite, atlas, animation, action clips, map, VFX, đúng nhân vật/môn phái; asset provenance, manifest and real Godot import QA."
 ---
 # TMB Asset Gate — SKILL
 ## Authority and scope
