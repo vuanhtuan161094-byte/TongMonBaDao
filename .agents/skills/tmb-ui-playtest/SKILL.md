@@ -1,6 +1,6 @@
 ---
 name: tmb-ui-playtest
-description: "Player-first TMB Godot 4.7.2 landscape UI/UX review: actual jobs/progress/loot/HP, touch readability, free camera, visual QA and no fake status."
+description: "Nghiệm thu UI/UX Tông Môn Bá Đạo Godot Android ngang 1280x720: đọc chữ, camera tự do, zoom, thanh tiến độ Mỏ/Linh Lâm/Linh Điền, combat HUD, thanh HP/Injury, ảnh và thao tác thật; no fake UI."
 ---
 # TMB UI Playtest — SKILL
 Begin with one actual player journey, not a static prettiness pass. Reproduce on Godot 4.7.2 landscape 1280x720 and read the real simulation source of each displayed item. Show current work, worker, quantity, remaining time, completion, Warehouse receipt, HP/Injury, enemy targeting/casts, and AUTO ON/OFF only when real data exists.
