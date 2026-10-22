@@ -72,6 +72,14 @@ func _ready() -> void:
     var d: DiscipleState = runtime.state().disciples[disciple_id]
     if runtime.state().sect.b3_hunt.is_empty() and d.current_action == &"HOLD":
         WorkforceSystem.new().issue_command(runtime.state(),d.id,WorkforceSystem.COMMAND_HOLD,"",1000000)
+        # Persist the preparation reservation even if the window is closed
+        # before the first button click. Restart must not start unrelated work.
+        result = B3MedicalAutoplayV1.commit_owner(runtime.owner)
+        if not result["ok"]:
+            message = str(result)
+            set_process(false)
+            _refresh()
+            return
     message = "Đổi nguyên liệu → luyện đan → dùng Tụ Khí Đan tại tông môn → bật AUTO để săn và tự hồi phục."
     if not proof_dir.is_empty():
         result = B3MedicalAutoplayV1.buy_demo_inputs(runtime.owner)
