@@ -1,6 +1,22 @@
 # TÔNG MÔN BÁ ĐẠO — PH1: READY-TO-CODE PREP WHILE PH0 RUNS
 
-**22/10/2026 · DOCS ONLY · no PH1 CODE or implicit owner approval.** Main verified as `461caca1171462e0da092f21108c5c1733157ad9`; PH0 patch was handed to Codex but **official Godot4.7.2 PH0 PASS is NOT YET REPORTED**. Source A worker must remain untouched. This document lets owner start the next packet quickly when PH0 actually passes.
+**22/10/2026 · DOCS ONLY · PH1 CODE NOT YET AUTHORIZED.** Main verified as `461caca1171462e0da092f21108c5c1733157ad9`. **PH0 Codex reported ACCEPTED/PASS 5/5 on official Godot 4.7.2**, local full-checkout commit `97a3d98094451e85e8d5f26e8986a60968512ee5` (three authorized files, clean worktree; no push/merge). That is the PH1 candidate BASE, not GitHub main or the earlier reconstructed local commit `09e97d2`. The user's Codex QA summary is the acceptance evidence received; original Windows E: log ZIP has not been independently fetched into this chat. Source A worker remains untouched.
+
+## 0. PH0 acceptance handoff / PH1 preflight (NEW)
+
+**PH0 user-reported QA:** 5/5 focused/regressions PASS, Godot `4.7.2.stable.official.ed1daf0bf`, exit0+PASS marker; root certificate store diagnostic without run failure; GP-02C1 negative fixture expected. Commit `97a3d98094451e85e8d5f26e8986a60968512ee5` in Windows isolated `TongMonBaDao_B3_PH0_acceptance`. Reports: `B3_PH0_ACCEPTANCE_RESULTS.md`, `B3_PH0_3_FILE_CODE_FINAL.diff`, `B3_PH0_ACCEPTANCE_EVIDENCE.zip`, `PH1_CODE_AUTHORIZATION_DRAFT_vi.md` on owner's E: path. **Those E: documents are not accessible to this cloud session directly; before PH1 code, Codex must read its own local actual final PH0 sources and PH1 draft.**
+
+**Base rule:** from full repository checkout that contains the **accepted local PH0 commit**, create a **new isolated PH1 worktree** starting at `97a3d980...`. Do not start from raw remote main, which still lacks PH0; do not cherry-pick reconstructed `09e97d2`. If PH0 SHA was amended, inspect full ancestry, changed-file allowlist and rerun exact PH0 gates or STOP for updated owner approval.
+
+**Specific audited PH0 pilot APIs (from uploaded PH0 patch, MUST re-confirm against accepted final local commit):**
+- `MapBattleV2.setup(world_id,party,initial_monsters,true)` active continuous; `step(viewed_map)`; `add_continuous_monster(actor)`; `remove_downed_monster(actor_id)`.
+- `pending_kill_events()` returns domain entries with `kill_id`, `spawn_slot_id`, `slot_generation`, `monster_instance_id`, `species_id`, `at_seconds`. `acknowledge_kill_event(kill_id)` **MUST NOT be used as production paid/settled ACK by PH1A**; PH2 will persist the matching immutable reward receipt+Warehouse atomically before ACK. A pilot in-memory consumed-event index is permissible solely for bounded test orchestration, never an assertion of durable payout.
+- PH0 versioned snapshot writer emits continuous v3, legacy finite v1; reader additionally accepts B2.4 v2. PH1A must use real returned types and reject malformed kill identity. No dependence on UI `events` cap `MAX_EVENTS=2400`.
+- Backpressure pilot `MAX_PENDING_KILLS=256`, `MAX_REMEMBERED_SPAWN_SLOTS=1024`, `MAX_MONSTERS=40`: PH1A bounded fixture stops before any cap, must not suppress/lose events and must not advertise endless production loop until PH2 ACK exists.
+
+**Writer/scope:** only **one designated PH1A CODE writer** in a new worktree, with three **new** files exactly listed in §3. This is the narrow proof stage. Real production admission/reservation, persistence and offline remain PH1B–PH3 and require new authority/allowlist; do not fold them into this approval. If actual `PH1_CODE_AUTHORIZATION_DRAFT_vi.md` requests shared runtime/State writes, treat it as a **larger competing packet requiring separate review**, not implicit permission.
+
+**Highest-priority negative fixture:** disciple with `active_pve_encounter_id` or production job remains unavailable; PH1A never sets that existing legacy reservation and never acts like persistent world owner. A cloned genuine loadout in an isolated headless test is allowed, but must not be advertised as a deployed live sect hunter.
 
 ## 1. Only deliverable that matters
 
