@@ -19,7 +19,7 @@ The 1000 XP/min base is a baseline, NOT the lifetime progression rate; do not cl
 6. Provide proposed progression tables with formulas and units for owner review. Do NOT rewrite canonical balance from proposed outputs until CODE authorization.
 
 ## Hard acceptance constraints
-Shared pill satiety = 100000/day/disciple, canonical day floor(tick/1440); Hoi Xuan 10, Tu Khi 25. A transaction crossing cap fails BEFORE stock debit or HP/XP effects. No surprise diminishing returns or second per-pill count cap. Later tiered pills, higher map rewards and Spirit Field grades must be designed together and approved before code.
+Shared pill satiety = 1000000/day/disciple, canonical day floor(tick/1440); Hoi Xuan 10, Tu Khi 25. A transaction crossing cap fails BEFORE stock debit or HP/XP effects. No surprise diminishing returns or second per-pill count cap. Later tiered pills, higher map rewards and Spirit Field grades must be designed together and approved before code.
 Display impact: %max HP healed, %next-layer XP granted, minutes of active cultivation saved, real material cost, ROI and economic side effects.
 
 ## Sources
