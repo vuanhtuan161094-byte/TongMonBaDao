@@ -1,5 +1,21 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-22 — SIX TMB SKILLS SELECTIVE PR; CARE INTEGRATION SEPARATE
+
+Fresh main verified through authenticated GitHub API: `461caca1171462e0da092f21108c5c1733157ad9`. Skill source pinned at `d6fa3d5905af9555a24c7347df6b6434802cb288`, selected paths only: six `.agents/skills/tmb-*/SKILL.md`, two AI_AGENT_SKILLS docs, additive AGENTS routing and these two continuity files. No Godot/Source A/test/balance edit; no FULL or CI requested for this docs-only PR. Worktree: `E:/codex/2026-10-22/t-ng-m-n-b-o/work/TMB_main_skills_20261022`.
+
+Actual Codex app-server skills/list discovery: six repo-scoped enabled TMB skills, no discovery errors; explicit director/evidence skill reads performed. A projectless chat is not the repo skill catalog and no global ChatGPT installation is claimed. See the two skill docs for evidence and routing. Source branch preparation/no-authorization statements are historical; current user authorized this selective integration. **Main does not contain these skills until this PR is owner-reviewed and merged.**
+
+CARE source `35ffa85fd45da42e43722e7ac74b7423602d4491` and FAST-TRACK `1d686dc8e202f4831fa51373c15e6666f44702f9` are authentic local bundle history descending from main through accepted PH0 `97a3d98094451e85e8d5f26e8986a60968512ee5`. Supplied CARE ZIP has 73/73 verified manifest entries, 15/15 focused and real GPU-rendered GUI proof; integration runtime regression is a separate CODE PR gate. Do not relabel provided artifacts as a new run or claim CARE already merged.
+
+**Owner correction:** pill satiety **1000000/day/disciple**, canonical `floor(tick/1440)`; 100000 was a typo. Preserve Hoi Xuan10/+55HP, Tu Khi25/+10000 fixed Tu Vi, recipe2 herbs+1 grain/base6 ticks, Injury120, Combat V2, canonical Warehouse/time/save and One Active Job. This does not authorize any other balance or Source A changes.
+
+All other branch families (G1/MAP25/C4/economy/UI/asset/docs) remain inventory/review items, not blanket merge candidates. Runtime ownership overlap or missing exact integration QA blocks their auto-merge. Windows manual input, Android, physical power/storage failures and 1k–3k performance remain PENDING USER. GP-02C1 overall QA OPEN and DV2-03 PAUSED statuses below are not silently closed.
+
+Next: obtain owner review of the concrete skills PR; prepare the separate CARE PR on current main, rerun affected and cumulative contracts without weakening tests, preserve source provenance and rollback. Record PR/merge SHAs after real operations; never invent a main/merge SHA. No pending decision to change the already-correct satiety cap.
+
+---
+
 ## CURRENT HANDOFF — 2026-10-15 ECONOMY-A INTEGRATED ON MAIN (WINDOWS QA VERIFIED)
 
 **Authoritative latest state:** Economy-A PR [#1](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/1) **MERGED** into GitHub `main` via merge commit `0689d0ddf0ebd72463d08bad4835c60428c64d24`; PR HEAD `4a6937dc28d477be13ffc0283d44cc74fe610733`. Last gameplay/test SHA `95bf06ecfd2c7fce5026d4485af55a5a3c40d909`. Post-gameplay branch commits altered **documentation only**. **18/18 official Windows Godot 4.7.2 automated QA PASS, 0 FAIL** from owner-uploaded `20261015_135007.zip`, SHA-256 `2d35d82d7eadf44ae06407c3899a36facf480c05b14c2922b22041062d3531f6` (all exit codes 0 and PASS markers independently inspected): Economy-A simulation/UI, GP-01/02A/02B1/02C1 sim+presentation, O3–O9 including standalone O6 with unchanged `==4`, SAFE-01/02, P3.7 FULL. Isolated detached worktree did not change original local repository or saves. The two expected negative-fixture diagnostic stderr cases (invalid saved PvE and corrupt JSON) do not negate test PASS. Full evidence and pilot balance in the **latest top section of `CURRENT_CHECKPOINT.md`**.

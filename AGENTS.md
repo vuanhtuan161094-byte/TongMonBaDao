@@ -246,3 +246,17 @@ This rule governs **conversation workflow**, not game AI/UI. Do not change gamep
 **Tông Môn Bá Đạo is a LANDSCAPE / màn hình ngang mobile game.** The current Godot landscape base is **1280×720**, as in `godot/project.godot`, `docs/P3_6A_PLAYABLE_VERTICAL_SLICE_SPEC.md` and `docs/P3_REFERENCE_UI_AUDIT.md`; the opening production UI and controls must remain landscape and finger-friendly. Reference `Ta Là Tông Sư` / `最强祖师` for landscape sect-map/workforce and production-panel interaction, not for permission to replace canonical gameplay.
 
 **Never redirect this project to portrait / màn hình dọc or 390×844 as the primary runtime**, and never conflate it with the separate `Tu Tiên Nhàn Dỗi` portrait art/runtime project. If an older note suggests portrait, this latest explicit user correction controls. 1280×720 is the **current design baseline**; final device aspect ratios/responsive layout remain to verify on an actual user device. Keep all UX acceptance at landscape. Changing primary orientation requires explicit new user decision.
+
+
+---
+
+## 13. TMB Agent Skills
+
+Use `.agents/skills/tmb-project-director/SKILL.md` for complex TMB work, then one specialist for the active subtask:
+- `tmb-balance-lab`: canonical progression, pill/material/economy balance analysis.
+- `tmb-autoplay-ai`: safe hunt/recovery policy and One Active Job transitions.
+- `tmb-godot-evidence`: official runtime, persistence/replay, regression and platform evidence.
+- `tmb-asset-gate`: provenance, manifests, animation/import evidence.
+- `tmb-ui-playtest`: real landscape UI journeys, readability and input evidence.
+
+These skills support the authority order above; they never expand CODE/asset/merge permissions or replace canonical runtime. Latest explicit owner decisions and authoritative source win over stale skill examples. Do not auto-load all six or spawn agents merely because six skills exist. Source registry and discovery evidence: `docs/AI_AGENT_SKILLS_TMB_2026-10-22.md` and `docs/AI_AGENT_SKILLS_AUTO_DISCOVERY_CARE_QA_2026-10-22.md`. Main/PR/QA status remains in CURRENT_CHECKPOINT and NEXT_CHAT_HANDOFF.
