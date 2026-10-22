@@ -1,6 +1,6 @@
 ---
 name: tmb-autoplay-ai
-description: "Design and audit predictable large-scale sect autonomy, smart auto-hunt/care, team roles and PvE enemy decisions using FSM, behavior trees, utility scoring, without duplicating gameplay authority."
+description: "AI tự động Tông Môn Bá Đạo: auto hunt, hồi phục Injury120, tự uống đan/nghỉ, chọn map, đội hình Boss, đệ tử 1000-3000, policy, FSM, utility AI, pathfinding; for autonomous logic design only unless CODE explicitly authorized."
 ---
 # TMB Smart Autoplay & AI — SKILL
 ## Model hierarchy first
