@@ -46,8 +46,8 @@ Owner uploaded `B3_CARE_FASTTRACK_HANDOFF.zip` in conversation on 2026-10-22. In
 - Commit embedded `35ffa85fd45da42e43722e7ac74b7423602d4491`; base `1d686dc8e202f4831fa51373c15e6666f44702f9`, local Codex branch `feature/b3-care-pills-autohunt-20261022` (not known pushed to remote).
 - `FOCUSED_RESULTS.json` lists 15 focused runs on official Godot `4.7.2.stable.official.ed1daf0bf`, each PASS / exit0 / marker. **This is provided artifact evidence**, not a new independent Godot run by ChatGPT.
 - Local Codex reports authentic alchemy recipe/ticks, fixed Tu Vi pill +10000, HP0→HP1/Injury1→heal/REST→tick120 reentry same world, another 2 genuine kills, total 4 `tinh_lang_bi` in Sect Warehouse; crash/retry/save tests PASS per logs. Manual Windows player acceptance and physical Android remain **PENDING USER**. Not FULL, CI, merge or push.
-- **Important mismatch**: current user's latest *explicit previous balance decision in this project chat* was **100000 satiety/day/disciple**, while the **actual ZIP diff** includes `godot/src/simulation/cultivation/b3_pill_satiety_v1.gd` line `const CAPACITY := 1000000`; tests/log labels and README also assert **1000000**. Codex README claims direct user override to 1000000, but that purported instruction is not independently verifiable in the visible owner conversation. A Codex-written claim is not sufficient to amend owner contract. Mark **TECHNICALLY FOCUSED GREEN / OWNER BALANCE NOT ACCEPTED PENDING CONFIRMATION**. Do not downgrade the current direct owner 100000 decision by assumption.
-- No silent fix; when explicitly authorized to correct to 100000, must update defaults, tests, UI, schema/version and saved ledgers including old rows with `spent>100000`. Never rewrite or silently truncate spent; validate blocked new use until next canonical simulation day / handle migration explicitly with owner approval. Do not edit CARE local branch unless CODE authorization includes exact paths.
+- **RESOLVED 2026-10-22 owner correction:** previous **100000** was a typo missing a zero. Owner directly approved **1000000 satiety/day/disciple**, which matches the ZIP code `const CAPACITY := 1000000`, test labels and README. Technical 15/15 focused evidence is retained; still PENDING physical Windows and Android/manual user acceptance. No CAP repair packet is required on this evidence.
+- Do not revert valid 1000000-day ledgers to the previous mistaken 100000. Keep one canonical-day ledger, atomic medicine/XP effects and receipt replay-protection; don't edit CARE code without integration authorization.
 
 ## 4. Recommended single Codex follow-up (after CARE is archived; not sent)
 
@@ -57,7 +57,7 @@ TÔNG MÔN BÁ ĐẠO — INTEGRATE AGENT SKILLS DOCS-ONLY. CARE handoff has alr
 
 ## 5. Next B3 acceptance decision
 
-1. Owner confirms whether **100000** stays or explicitly changes to **1000000**.
-2. If **100000** stays, prepare separately approved **minimal CAP repair CODE packet** with save migration/QA, not an ad hoc direct edit.
-3. Run physical Windows/Android acceptance after focused code/contract alignment, with exact SHA and logs.
-4. Only after that propose integrating CARE to shared main via the authorized process; do not merge based on this doc.
+1. Owner directly approved **1000000** on 2026-10-22; CAP discrepancy is resolved.
+2. Check B3 CARE focused+save evidence against exact commit and canonical rules.
+3. Physical Windows/Android acceptance remains pending, distinct from integration criteria.
+4. CARE integration to main requires dedicated integration branch, regression gates and preserved old save semantics; don't infer it has already merged.
