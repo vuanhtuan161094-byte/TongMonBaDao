@@ -21,20 +21,18 @@ Direct eligible basic hit with no other modifiers has defense factor `2*ATK/(2*A
 
 **SOURCE numeric checks (cultivation and body same, Potential=0):**
 
-| Realm/floor | Baseline ATK | Baseline HP | Baseline DEF | G(r,1) | +Sword ATK proposed (+3G) | +Armor HP proposed (+20G) | +Armor DEF proposed (+2G) |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| 1.1 | 23.00 | 190.00 | 19.00 | 1.00 | 3.00 | 20.00 | 2.00 |
-| 2.1 | 37.95 | 313.50 | 31.35 | 1.65 | 4.95 | 33.00 | 3.30 |
-| 5.1 | 170.48 | 1,408.28 | 140.83 | 7.41 | 22.24 | 148.24 | 14.82 |
-| 10.1 | 2,084.89 | 17,223.01 | 1,722.30 | 90.65 | 271.94 | 1,812.95 | 181.29 |
-| 11.1 | 3,440.07 | 28,417.97 | 2,841.80 | 149.57 | 448.70 | 2,991.37 | 299.14 |
-| 20.1 | 311,833.50 | 2,576,015.91 | 257,601.59 | 13,557.98 | 40,673.94 | 271,159.57 | 27,115.96 |
-| 21.1 | 514,525.28 | 4,250,426.25 | 425,042.63 | 22,370.66 | 67,111.99 | 447,413.29 | 44,741.33 |
-| 30.1 | 46,640,394.83 | 385,290,218.14 | 38,529,021.81 | 2,027,843.25 | 6,083,529.76 | 40,556,865.07 | 4,055,686.51 |
+| Realm/floor (both tracks equal) | Core ATK | Core Max HP | Core DEF |
+|---|---:|---:|---:|
+| 1.1 | 23.00 | 190.00 | 19.00 |
+| 2.1 | 37.95 | 313.50 | 31.35 |
+| 5.1 | 170.48 | 1,408.28 | 140.83 |
+| 10.1 | 2,084.89 | 17,223.01 | 1,722.30 |
+| 11.1 | 3,440.07 | 28,417.97 | 2,841.80 |
+| 20.1 | 311,833.50 | 2,576,015.91 | 257,601.59 |
+| 21.1 | 514,525.28 | 4,250,426.25 | 425,042.63 |
+| 30.1 | 46,640,394.83 | 385,290,218.14 | 38,529,021.81 |
 
-NOTE: the numbers in the `G` and item columns are **PROPOSED arithmetic reference**, not current engine item data. Realm 30 floor10 is much larger due to ×1.03^9. Item tier r **must not** be derived from wearer floor, and cannot exploit dual-track eligibility to gain a fictitious 31st rank. Numeric display must preserve real values/precision even when a compact `M` suffix is used.
-
-**Exact pilot comparison:** at 1.1 (no buffs/crit/element) and target DEF=19: basic damage `23*(46/65)=16.276923`. A Phàm tier1 sword +3 Attack yields `26*(52/71)=19.042254`, **+16.99% actual hit damage**, despite Attack +13.04%. The armor example +20 HP and +2 DEF provides +10.53% HP and ~+3.0% ordinary incoming-mitigation benefit against ATK23 in isolation. Pilot constants are **not owner-locked**.
+**Corrections:** all 30-rank `+SwordATK=3*G` and `+ArmorHP=20*G` item columns from the earlier draft have been REMOVED, not merely hidden. These are only genuine Combat V2 *character Core* values. Higher-realm equipment is a distinct content template/source, not a generated version of an early sword. The earlier **low-tier +3 attack** pilot is still an unapproved rank-specific illustrative candidate only; benchmark damage `16.276923→19.042254` is arithmetic, not a live gear content result.
 
 ## 2. Translate S2 into a testable *combat power budget*, not a hidden hard cap
 
