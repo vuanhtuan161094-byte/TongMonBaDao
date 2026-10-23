@@ -45,6 +45,8 @@ func _verify_zoom_limits() -> bool:
     return true
 
 func _verify_map_hit_region() -> bool:
+    if SectMapCamera.VIEW_RECT != Rect2(Vector2(0.0,72.0),Vector2(1280.0,570.0)):
+        return _fail("P3.2 must use the restored full-width G1 map viewport, not the legacy 252 px left gutter.")
     var inside := SectMapCamera.VIEW_RECT.position + SectMapCamera.VIEW_RECT.size * 0.5
     if not SectMapCamera.is_map_screen_point(inside):
         return _fail("P3.2 camera rejected a point inside the map viewport.")
