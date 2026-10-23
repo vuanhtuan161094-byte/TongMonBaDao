@@ -1,5 +1,7 @@
 # TÔNG MÔN BÁ ĐẠO — MASTER ROADMAP: PLAYABLE → CONTENT BETA → COMPLETE V1.0
 
+> **X0 CROSS-SYSTEM CONTENT INTEGRITY GATE — OWNER CORRECTION 2026-10-23:** Before any P2/P6/P8/P10 content or equipment V2 implementation, read [Cross-System Realm Content Contract](../design/TMB_CROSS_SYSTEM_REALM_CONTENT_INTEGRITY_CONTRACT_2026-10-23.md) and [15-Finding Design Audit](../audits/TMB_CROSS_SYSTEM_ROOT_CAUSE_CORRECTION_REGISTER_2026-10-23.md). A named early item MUST NOT be cloned over 30 realms using `G(r,1)`; each realm needs authored gear group/source/consumer; distinct pills, manuals and skill generations obey their own canonical laws. All owner-approved S2+F1+Q1 remain, no invented 30-map implementation or arbitrary probability lock. This cross-system gate is DESIGN governance, not a runtime PASS or CODE permission.
+
 **Ngày lập:** 2026-10-23 · **Trạng thái:** MASTER PLAN, DOCS ONLY, không cấp phép CODE / FULL / CI / MERGE.  
 **Repo:** `vuanhtuan161094-byte/TongMonBaDao` · **Engine:** Godot `4.7.2.stable.official.ed1daf0bf` · **Android:** landscape `1280×720`.  
 **Main tại thời điểm lập:** `29b5fba448b0178cb520a4ada44b375b4b934e31`. Bản này **chưa có PR #24/#25**. Kế hoạch luôn phải rebase logic trên **SHA mới nhất đã kiểm chứng**, không xem các SHA trong file là bất biến.
@@ -115,6 +117,8 @@ Tông Môn Bá Đạo là **game quản lý tông môn tu tiên + săn quái t�
 | P7-04 [QA] | One school/specialization per release pilot → broaden content; 1/3/6 actor readable on map | evidence for visual/hit sync and Android render; owner approves style |
 
 ### P8 — Kinh tế, thuốc, rèn luyện, trang bị V2 (Gate G8)
+
+**Mandatory dependency:** X0 tier-to-source/consumer integrity contract; P8 cannot assert completed 30-tier gear/medicine catalogue from P2 recipes or arithmetic reuse of one named item.
 | Ticket | Việc nhỏ | Tiêu chí |
 |---|---|---|
 | P8-01 [CODE] | Full first meaningful loot→recipe chain: mine/field/forest/monster ingredients→forge/alchemy→use | receipt per producer/consumer, no magic resources |
@@ -133,6 +137,8 @@ Tông Môn Bá Đạo là **game quản lý tông môn tu tiên + săn quái t�
 | P9-05 [UI] | Lightweight player goals (no quest spam), actionable shortage panel, contribution/loot/XP history & resource forecasts | no fake metrics, no forced story-grind |
 
 ### P10 — Tiến trình 30×10, nhiều nghề, thọ mệnh & nội dung dài hạn (Gate G10)
+
+**Completion rule:** validate each of 30 authored rank-specific gear families with actual source/drop→recipe→equip/consume chain, alongside medicine/technique/skill/Body authoring; abstract rank labels or 30 map projection alone do not pass. Lower-grade pills/techniques can remain usable by their specific laws.
 | Ticket | Việc nhỏ | Tiêu chí |
 |---|---|---|
 | P10-01 [DOC/CONTENT] | Full content tier matrix for **30 Tu Vi realms ×10 floors, separate 30 Body×10**: named break gates, compatible item/monster/region/work unlocks, verified existing cost sums | use canonical costs (Tu Vi entire track 48,130,600,000; separate Body), no fabricated 30-map requirement |
