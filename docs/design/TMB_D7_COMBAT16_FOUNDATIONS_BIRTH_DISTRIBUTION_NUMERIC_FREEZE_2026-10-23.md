@@ -1,7 +1,7 @@
 # TMB — TAM CĂN • TỨ TÍNH / 16 COMBAT STATS / BIRTH ODDS (D7–C16)
 
 Date: 2026-10-23 | Status: **DESIGN NUMBERS SELECTED FOR OWNER REVIEW**, docs only; NO Godot runtime migration, no code, no CI/FULL, no merge.  
-Baseline: \`main@29b5fba448b0178cb520a4ada44b375b4b934e31\`. **Do not touch Codex master recovery or draft PR#24/#25.** Earlier design predecessor: \`docs/tmb-tam-can-tu-tinh-v3-numeric-lock-20261023/docs/design/TMB_V3_TAM_CAN_TU_TINH_COMBAT_NUMERIC_DESIGN_LOCK_2026-10-23.md\`.  
+Baseline: `main@29b5fba448b0178cb520a4ada44b375b4b934e31`. **Do not touch Codex master recovery or draft PR#24/#25.** Earlier design predecessor: `docs/tmb-tam-can-tu-tinh-v3-numeric-lock-20261023/docs/design/TMB_V3_TAM_CAN_TU_TINH_COMBAT_NUMERIC_DESIGN_LOCK_2026-10-23.md`.  
 **Terminology:** OWNER DIRECTION = explicitly requested ×100 Tu Vi Core, Tu Vi-only Potential, review 3+4. SOURCE = current game code/docs. PROPOSED-SELECTED = exact recommendation fixed in this design doc for testing, not approved gameplay code, not a new permanent locked owner coefficient. DERIVED = mathematically obtained. PILOT = current unvalidated runtime content. This document does not convert proposals into runtime truth.
 
 ## 1. Comparative design research
@@ -9,7 +9,7 @@ Baseline: \`main@29b5fba448b0178cb520a4ada44b375b4b934e31\`. **Do not touch Code
 - The Strongest Sect (最强祖师) player guides describe six disciple dimensions and a dominant combat-oriented Potential; insight: prevent all builds from becoming Potential-only. https://www.taptap.cn/moment/523495672154949004 and https://www.taptap.cn/moment/601377068508252716 (community guides, not canonical source code).
 - Amazing Cultivation Simulator separates five base attributes, derived Potential and fluctuating Mental State; insight: acquired mind progress should not be a duplicate permanent learning attribute. https://amazing-cultivation-simulator.fandom.com/wiki/Five_Attributes and https://amazing-cultivation-simulator.fandom.com/wiki/Mental_State (community wiki).
 - Tale of Immortal gives Luck and Insight distinct gameplay roles; insight: meaningful event odds, not hidden per-hit/per-loot rolls. https://tale-of-immortal.fandom.com/wiki/Stats (community wiki).
-- TMB source authority wins over references. Source files read: \`AGENTS.md\`, \`CURRENT_CHECKPOINT.md\`, \`NEXT_CHAT_HANDOFF.md\`, \`docs/DISCIPLE_MASTER_SCHEMA.md\`, \`docs/P3_7C1_FOUNDATION_DAN_TIEN_SPEC.md\`, \`docs/DV2_02_COMBAT_STAT_EXECUTION_CONTRACT.md\`, \`docs/COMBAT_STATS_V2_SPEC.md\`, \`docs/BODY_CULTIVATION_V2_SPEC.md\`; \`foundation_system.gd\`, \`disciple_generator_open_points.gd\`, \`disciple_generator_v2.gd\`, \`recruitment_system.gd\`, \`combat_stats_v2.gd\`, \`combat_skill_system.gd\`, \`disciple_combat_loadout_v2.gd\`, \`monster_catalogue_v2.gd\`, \`map_battle_v2.gd\`.
+- TMB source authority wins over references. Source files read: `AGENTS.md`, `CURRENT_CHECKPOINT.md`, `NEXT_CHAT_HANDOFF.md`, `docs/DISCIPLE_MASTER_SCHEMA.md`, `docs/P3_7C1_FOUNDATION_DAN_TIEN_SPEC.md`, `docs/DV2_02_COMBAT_STAT_EXECUTION_CONTRACT.md`, `docs/COMBAT_STATS_V2_SPEC.md`, `docs/BODY_CULTIVATION_V2_SPEC.md`; `foundation_system.gd`, `disciple_generator_open_points.gd`, `disciple_generator_v2.gd`, `recruitment_system.gd`, `combat_stats_v2.gd`, `combat_skill_system.gd`, `disciple_combat_loadout_v2.gd`, `monster_catalogue_v2.gd`, `map_battle_v2.gd`.
 
 ## 2. The EXACT seven attributes and effects
 
@@ -28,7 +28,7 @@ Choose **Tam Căn (3): Tư Chất, Căn Cốt, Tâm Tính** + **Tứ Tính (4): 
 
 **Tam Căn expectation = 3/7=42.857% of newborn total point budget; Tứ Tính = 4/7=57.143%**, provided the 7 axes are statistically symmetric. This is an EXPECTATION, **not a mandated 43/57 distribution for every disciple**. A highly specialized individual may have disproportionate Căn Cốt, or Tiềm Lực, or Tâm Tính. No separate "rarity" roll per attribute.
 
-Tâm Tính (only meaningful mental outcomes): startup Tâm Trạng 70/100; five cumulative Tâm Nguyên tier thresholds **0/100/300/700/1500**; verified Tĩnh Tâm +2 Tâm Nguyên per 10 active sim minutes × (1+0.002*M), valid rest +0.10 Tâm Trạng/min, active Tĩnh Tâm +0.50/min × (1+0.002*M), cap Tâm Trạng at100. Mental-tag-only resistance = \`0.10*M/(M+400) + 0.01*mind_tier\`, tier0..4, as decimal probability points; only mental-tag content consumes it. Milestone tier gives Tu Vi major-gate **+1pp per tier**, and Tâm Trạng≥90 **additional +1pp** on eligible event; clamp final to 100%. No compulsory heart-gate and no Body gate RNG. Specific event income and penalties are defined in predecessor doc, PROPOSED-SELECTED, not runtime.
+Tâm Tính (only meaningful mental outcomes): startup Tâm Trạng 70/100; five cumulative Tâm Nguyên tier thresholds **0/100/300/700/1500**; verified Tĩnh Tâm +2 Tâm Nguyên per 10 active sim minutes × (1+0.002*M), valid rest +0.10 Tâm Trạng/min, active Tĩnh Tâm +0.50/min × (1+0.002*M), cap Tâm Trạng at100. Mental-tag-only resistance = `0.10*M/(M+400) + 0.01*mind_tier`, tier0..4, as decimal probability points; only mental-tag content consumes it. Milestone tier gives Tu Vi major-gate **+1pp per tier**, and Tâm Trạng≥90 **additional +1pp** on eligible event; clamp final to 100%. No compulsory heart-gate and no Body gate RNG. Specific event income and penalties are defined in predecessor doc, PROPOSED-SELECTED, not runtime.
 
 ## 3. Exact birth quality odds — SOURCE by path, not invented
 
@@ -42,10 +42,10 @@ These are five mutually exclusive *quality bands*, not seven independent rarity 
 | Tuyệt Luân | 1000–1799 | 1.8% | 8% | 6% | 15% |
 | Nghịch Thiên | >=1800 (no cap) | 0.2% | 2% | 2% | 5% |
 
-Dẫn Tiên Chiêu Mộ Lệnh uses current same-day **Dẫn Tiên** rates and consumes a real recruitment order, **not** the \`SOURCE_GACHA\` fallback while Dẫn Tiên is enabled (see \`RecruitmentSystem.gacha_candidate\`). The fallback 42/30/18/8/2 applies only to relevant **legacy gacha path when guidance is off**, do NOT advertise it as Dẫn Tiên premium rates. \`SOURCE_FATE\` is another separate path, not ordinary Dẫn Tiên. All values in this table are existing SOURCE; new seven-way split must preserve those when replacing birth implementation.
+Dẫn Tiên Chiêu Mộ Lệnh uses current same-day **Dẫn Tiên** rates and consumes a real recruitment order, **not** the `SOURCE_GACHA` fallback while Dẫn Tiên is enabled (see `RecruitmentSystem.gacha_candidate`). The fallback 42/30/18/8/2 applies only to relevant **legacy gacha path when guidance is off**, do NOT advertise it as Dẫn Tiên premium rates. `SOURCE_FATE` is another separate path, not ordinary Dẫn Tiên. All values in this table are existing SOURCE; new seven-way split must preserve those when replacing birth implementation.
 
 **Guidance interpolation** (SOURCE):
-\`t = clamp(MainGuideCharisma / 2500,0,1)\`, \`rate_i = base_i + (max_i-base_i)*t\`. Before daily enhanced-quota expires:
+`t = clamp(MainGuideCharisma / 2500,0,1)`, `rate_i = base_i + (max_i-base_i)*t`. Before daily enhanced-quota expires:
 
 | Main guide Mị Lực | Phàm Thường | Xuất Chúng | Thiên Kiêu | Tuyệt Luân | Nghịch Thiên | Enhanced Nghịch Thiên allowance/day |
 |---:|---:|---:|---:|---:|---:|---:|
@@ -57,17 +57,17 @@ Dẫn Tiên Chiêu Mộ Lệnh uses current same-day **Dẫn Tiên** rates and c
 
 At quota exhaustion, ALL enhanced quality rates revert to base 65/25/8/1.8/0.2 for that day; ordinary 0.2% high-quality remains possible. Event counted on candidate appearance not acceptance; daily parameters snapshot and reset by canonical simulation day. **No independent free 5% Nghịch Thiên forever.**
 
-**Q target draw**: Existing \`DiscipleGeneratorOpenPoints._roll_total_for_quality\` for normal 120..359 uniform, outstanding 360..599, prodigy 600..999, peerless 1000..1799. Heaven-defying: start at floor1800, span1200; with probability 12% advance a tail block, doubling span each advance; Q drawn uniformly in resulting \`[floor, floor+span-1]\`. Not hard-capped at 2999. Avoid inventing a Q cap. Always ensure Q grade aligns with source roll.
+**Q target draw**: Existing `DiscipleGeneratorOpenPoints._roll_total_for_quality` for normal 120..359 uniform, outstanding 360..599, prodigy 600..999, peerless 1000..1799. Heaven-defying: start at floor1800, span1200; with probability 12% advance a tail block, doubling span each advance; Q drawn uniformly in resulting `[floor, floor+span-1]`. Not hard-capped at 2999. Avoid inventing a Q cap. Always ensure Q grade aligns with source roll.
 
 ## 4. Distribution of 7 *individual* foundation values
 
 **PROPOSED-SELECTED** exact new-birth algorithm, to be implemented with independent deterministic RNG domain, not on current main:
 
 1. Source → quality grade probabilities §3.
-2. Roll \`Q_target\` using current grade's Q law (long tail preserved).
-3. Set \`S7_target = round(Q_target * 7/6)\`; then \`Q = round(S7 * 6/7)\`, and assert \`Q == Q_target\` (Godot GDScript rounding in dedicated test).
-4. Initialize all seven points at \`lo=max(1,floor(S7/14))\`; enforce \`hi=max(lo,floor(3*S7/7))\`. Thus each new-birth dimension is roughly **0.5× to 3× seven-stat mean**, same balance concept as current six-value envelope, but integer exact.
-5. Permute indices 0..6 deterministically (Fisher-Yates), allocate \`remaining=S7-7*lo\` sequentially within feasible \`[max(0,remaining-capacity_remaining), min(hi-current,remaining)]\`, uniformly integer per step. Last position receives exact remainder. Assert sum matches and every dimension in [lo,hi].
+2. Roll `Q_target` using current grade's Q law (long tail preserved).
+3. Set `S7_target = round(Q_target * 7/6)`; then `Q = round(S7 * 6/7)`, and assert `Q == Q_target` (Godot GDScript rounding in dedicated test).
+4. Initialize all seven points at `lo=max(1,floor(S7/14))`; enforce `hi=max(lo,floor(3*S7/7))`. Thus each new-birth dimension is roughly **0.5× to 3× seven-stat mean**, same balance concept as current six-value envelope, but integer exact.
+5. Permute indices 0..6 deterministically (Fisher-Yates), allocate `remaining=S7-7*lo` sequentially within feasible `[max(0,remaining-capacity_remaining), min(hi-current,remaining)]`, uniformly integer per step. Last position receives exact remainder. Assert sum matches and every dimension in [lo,hi].
 6. No special bonus weight for any of the seven at ordinary birth. Under seven-axis exchangeability, probability a dimension is the **unique** strict max can be below 1/7 due to ties; with tie-breaking distributed symmetrically, each has **1/7 = 14.2857%** chance to be credited highest, and each of Tam Căn collectively 3/7 in expectation. Birth envelope does not constrain permanent postbirth growth.
 7. P3.7 SOURCE_FATE presently has a 70%-probability **Cơ Duyên highest-stat swap** after allocation. Preserve that separate fate-path behavior (with index adapted to 7), not universal ordinary chance. No 70% special bonus for Tâm Tính.
 
@@ -81,9 +81,9 @@ At quota exhaustion, ALL enhanced quality rates revert to base 65/25/8/1.8/0.2 f
 | Tuyệt Luân | 1400 | 1633 | 233.29 | 116..699 |
 | Nghịch Thiên | 2400 | 2800 | 400 | 200..1200 |
 
-**Example Thiên Kiêu Q800, S7=933:** \`[TưChất85,CănCốt120,TâmTính71,TiềmLực66,ThôngTuệ366,CơDuyên70,MịLực155]\`. Sum 933; dedicated **learning** talent rather than universal combat monster.
+**Example Thiên Kiêu Q800, S7=933:** `[TưChất85,CănCốt120,TâmTính71,TiềmLực66,ThôngTuệ366,CơDuyên70,MịLực155]`. Sum 933; dedicated **learning** talent rather than universal combat monster.
 
-**Independent MONTE CARLO**, not official Godot outcomes. A clean-room Python numerical model of steps 1–5 above (ordinary grade Q logic, random feasible sequential allocation), deterministic seed \`20261023\`, **n=250000 total (50000 per grade)**. Percentiles apply to **a fixed named dimension** (index0), not the *maximum across seven*: under ordinary symmetric roll every named stat has same marginal distribution.
+**Independent MONTE CARLO**, not official Godot outcomes. A clean-room Python numerical model of steps 1–5 above (ordinary grade Q logic, random feasible sequential allocation), deterministic seed `20261023`, **n=250000 total (50000 per grade)**. Percentiles apply to **a fixed named dimension** (index0), not the *maximum across seven*: under ordinary symmetric roll every named stat has same marginal distribution.
 
 | Grade | P10 / P50 / P90 of ONE attribute | P(attribute>=100) | P(attribute>=200) | P(attribute>=500) | P(attribute>=1000) |
 |---|---|---:|---:|---:|---:|
@@ -95,20 +95,20 @@ At quota exhaustion, ALL enhanced quality rates revert to base 65/25/8/1.8/0.2 f
 
 The long-tail Nghịch Thiên sample is **conditional** and uses 50,000 forced Nghịch Thiên, not 50k ordinary recruits; the real occurrence of that *grade* in ordinary is 0.2%. Raw percentage estimates have Monte Carlo error; use official Godot seed/domain tests before implementation. Distributing points this way gives distinct specialists, but leaves weaker builds viable via time/permanent growth. If future gameplay reveals excessively polarized early disciples, revise the explicitly named **birth envelope distribution** after testing, not secretly boost combat to conceal it.
 
-**Migration**: old six stats remain original, do not reroll. New \`mind_nature_birth=round(sum(old_six_birth)/6)\`, current \`mind_nature=round(sum(old_six_current)/6)\` with provenance \`compat_migration_v3\`; normalized quality matches prior six-stat raw sum for integer old points. Requires versioned save/schema, deterministic tests, UI and RNG migration. Existing 6D score thresholds **360/600/1000/1800 remain after Q normalization**. Do not treat additional Tâm Tính as a random free reroll or guaranteed new quality promotion.
+**Migration**: old six stats remain original, do not reroll. New `mind_nature_birth=round(sum(old_six_birth)/6)`, current `mind_nature=round(sum(old_six_current)/6)` with provenance `compat_migration_v3`; normalized quality matches prior six-stat raw sum for integer old points. Requires versioned save/schema, deterministic tests, UI and RNG migration. Existing 6D score thresholds **360/600/1000/1800 remain after Q normalization**. Do not treat additional Tâm Tính as a random free reroll or guaranteed new quality promotion.
 
 ## 5. Combat 16 — exact numeric base, application, technical limit and proposed build reference
 
 **OWNER ×100 + Tu Vi-only Potential; PROPOSED Căn Cốt Body affinity; SOURCE combat math otherwise unchanged.** No arbitrary new turn order, Accuracy/Dodge, generalized Mana or combat_power as damage authority.
 
 CORE for Tu Vi and Body both rank1.floor1:
-\`\`\`
+```
 G(r,f)=1.65^(r-1)*1.03^(f-1)
 RealmCore = (HP10000,ATK2000,DEF1200)*G(tu_vi)
 BodyCore  = (HP9000,ATK300,DEF700)*G(body)
 CoreFinalBeforeFlat = RealmCore*(1+0.0005*Potential) + BodyCore*(1+0.00025*Constitution)
 FinalCore = max(channel_floor,(CoreFinalBeforeFlat + independent item/skill flat)*(1+same_channel_percent_add))
-\`\`\`
+```
 
 | # | Combat channel | No-source base at 1.1 | Actual rule | Numerical technical bound | Reference future content budget, NOT universal cap |
 |---:|---|---:|---|---|---|
@@ -131,7 +131,7 @@ FinalCore = max(channel_floor,(CoreFinalBeforeFlat + independent item/skill flat
 
 Other derived **10 keyed elemental resistances**: metal, wood, water, fire, earth, lightning, wind, ice, yang, nether; each no-source 0%; independent sources multiply remaining incoming elemental damage, example resistance30% +20% => 44% actual; benchmark 0/10/30/50% per matched element. These are not ten extra birth attributes. Five-element counter is separate authored match-up, not the same resistance channel.
 
-**Timing style actual SOURCE** (\`CombatSkillSystem.style_profile\`):
+**Timing style actual SOURCE** (`CombatSkillSystem.style_profile`):
 | Style | movement world units/s | basic attack interval s | attack ratio | default range world units |
 |---|---:|---:|---:|---:|
 | Sword | 3.10 | 1.10 | 1.00 | 1.90 |
@@ -139,16 +139,16 @@ Other derived **10 keyed elemental resistances**: metal, wood, water, fire, eart
 | Spell | 2.70 | 1.65 | 0.85 | 5.50 |
 | Balanced | 2.70 | 1.35 | 1.00 | 1.75 |
 
-These values are BASE before gear/context and not proof of same full DPS across roles. Combat step=0.25s and action scheduling quantize attack intervals; cast_speed and cooldown_recovery are **not yet actually consumed for learned skills by \`MapBattleV2._try_learned_damage_skill\`**, an integration debt. The two monster action adapters differ in plain-basic crit eligibility; must reconcile before calling crit PvE balanced.
+These values are BASE before gear/context and not proof of same full DPS across roles. Combat step=0.25s and action scheduling quantize attack intervals; cast_speed and cooldown_recovery are **not yet actually consumed for learned skills by `MapBattleV2._try_learned_damage_skill`**, an integration debt. The two monster action adapters differ in plain-basic crit eligibility; must reconcile before calling crit PvE balanced.
 
 **Full direct-damage order SOURCE**:
-\`\`\`
+```
 effective_crit_chance = clamp(CritChanceAttacker - CritResistTarget,0,1)
 effective_def = max(0,TargetDEFafterStatus)*(1-clamp(Penetration,0,1))
 DEFfactor = 2*AttackerATK/(2*AttackerATK + effective_def)
 DirectDamage = AttackerATK*authoredAttackRatio*(crit?CritMultiplier:1)*DEFfactor
                *authoredElementMatchup*(1-targetElementResistance)*(1-targetDamageReduction)
-\`\`\`
+```
 DoT, fixed damage, shields, heal, mental status each need their explicit action owner. Source bonuses must be registered with provenance; unknown global source/filter cannot silently apply. No fake “attack accuracy/evasion”.
 
 **Illustrative equal-track 1.1 V3** (P=Potential, C=Constitution, no skills/gear/roots):
