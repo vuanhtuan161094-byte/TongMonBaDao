@@ -1,5 +1,7 @@
 # TÔNG MÔN BÁ ĐẠO — BD-01: NỀN COMBAT, SỨC MẠNH TRANG BỊ, MỘT CHU TRÌNH RÈN THẬT
 
+> **IMPORTANT CORRECTION — 2026-10-23 / supersedes tier cloning example:** Owner explicitly requires distinctive gear/item families and drop sources for each cultivation realm. The earlier example `Thanh Thiết Kiếm` with `flat(r)=3×G(r,1)` **is RETIRED and NOT an item definition, balance decision or CODE authority**. S2+F1+Q1 remain owner-locked design directions. For cross-system validation consult [TMB_CROSS_SYSTEM_REALM_CONTENT_INTEGRITY_CONTRACT_2026-10-23.md](TMB_CROSS_SYSTEM_REALM_CONTENT_INTEGRITY_CONTRACT_2026-10-23.md). All other numerical proposals in this file are UNAPPROVED, including 0.2% Grade12.
+
 **Date:** 2026-10-23. **Status:** RESEARCH/PROPOSED OPTIONS, awaiting owner choice; **DOCS ONLY, no CODE/CI/FULL/MERGE**.  
 **Branch:** `docs/bd01-equipment-deep-design-20261023`, based on `docs/tmb-master-completion-roadmap-20261023`, main inspected `29b5fba448b0178cb520a4ada44b375b4b934e31`. CARE PR #24 and Playable PR #25 remain stacked draft; do not touch their code.  
 **Purpose:** The assistant does all design work; the owner selects only genuinely unresolved gameplay policies. The assistant must not send research workload back to Codex. Numeric choices marked `PROPOSED` do not become owner-locked just by being stored here.
@@ -57,7 +59,7 @@ These are **candidate acceptance bands** for a **ten-slot coherent, equal-realm-
 - At Potential 1000: baseline core ATK34.5, weapon still adds 3, not 4.5. If applying a legal same-channel +ATK%, the correct modifier is applied *after* core+flat.
 - Starter numbers are **ASSISTANT PROPOSAL ONLY**, not a final item balance or the current P2 item stats. P2 pilot `combat_power=6` is NOT V2 attack+6.
 
-**PROPOSED non-owner-locked growth to evaluate:** for a same-template rank `r∈1..30`, item flat base may scale by **G(r,1)** on the *item's own tier*, not by wearer stats. E.g. weapon `+3*G(r,1)`; always use finite floating-point internally; UI may format large numbers compactly but must offer precise value. Same tier is reference, not a universal equipment access gate: existing legality permits ordinary physical gear via eligible Tu Vi **OR** Luyện Thể, while authored spiritual/body-exclusive restrictions differ. Validate G(r,1) + high Potential + affix stacking across 30 ranks before locking scaling.
+**RETIRED 2026-10-23:** That example was an erroneous implicit cloning rule. Only **distinct authored template IDs and source/loot/recipe relationships for each realm item family** may set rank-specific equipment values. The locked `G(r,f)` formula is the character Core authority and may be consulted as a balance benchmark, **never** used to mint a rank20 Thanh Thiết Kiếm by formula. Each item remains fixed at its actual authored tier; upgrade/evolution requires a separate legitimate transaction. Owner S2 direction remains.
 
 **S2 caution:** a complete 10-slot base budget target is NOT a design that awards a permanent +40% primary stat to each individual item. Distribute slot budgets by their unique identities. A single sword bonus +3 is a small illustration, not evidence S2 is balanced across all realms.
 
