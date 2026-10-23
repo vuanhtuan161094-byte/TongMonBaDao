@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "theme": "Source A chibi",
+  "actors": {
+    "disciple_female": {
+      "base_asset": "1113028_1",
+      "combat_asset": "v5_sa_female_1113028_1",
+      "base_scale": 0.34,
+      "combat_scale": 0.34,
+      "source_face_x": -1
+    },
+    "disciple_male": {
+      "base_asset": "v5_sa_male_body_1110201",
+      "combat_asset": "v5_sa_male_body_1110201",
+      "base_scale": 0.34,
+      "combat_scale": 0.42,
+      "source_face_x": -1
+    },
+    "monster_1113031_1": {
+      "base_asset": "v5_sa_monster_1113031_1",
+      "combat_asset": "v5_sa_monster_1113031_1",
+      "base_scale": 0.34,
+      "combat_scale": 0.42,
+      "source_face_x": -1
+    },
+    "boss_slot_410041_1": {
+      "base_asset": "v5_sa_boss_410041_1",
+      "combat_asset": "v5_sa_boss_410041_1",
+      "base_scale": 0.22,
+      "combat_scale": 0.30,
+      "source_face_x": -1
+    }
+  }
+}

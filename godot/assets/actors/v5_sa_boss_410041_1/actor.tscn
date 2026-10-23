@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="SpriteFrames" path="res://assets/actors/v5_sa_boss_410041_1/animations.tres" id="1"]
+
+[node name="v5_sa_boss_410041_1" type="AnimatedSprite2D"]
+sprite_frames = ExtResource("1")
+animation = &"stand"
+autoplay = "stand"
+centered = false
+offset = Vector2(-138, -252)

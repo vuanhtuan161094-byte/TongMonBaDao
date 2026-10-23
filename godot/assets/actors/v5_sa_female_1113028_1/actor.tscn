@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="SpriteFrames" path="res://assets/actors/v5_sa_female_1113028_1/animations.tres" id="1"]
+
+[node name="v5_sa_female_1113028_1" type="AnimatedSprite2D"]
+sprite_frames = ExtResource("1")
+animation = &"attack1"
+centered = false
+offset = Vector2(-209, -183)

@@ -30,6 +30,7 @@ var visual_components: Dictionary = {}
 var click_button: Button
 var status_label: Label
 var fallback_visual: Control
+var baked_sprite: AnimatedSprite2D
 var _built := false
 
 func _init() -> void:
@@ -48,6 +49,7 @@ func configure(disciple: DiscipleState) -> void:
     display_name = disciple.display_name
     rig_id = DiscipleActorVisualCatalog.rig_for_disciple(disciple)
     appearance_profile = DiscipleActorVisualCatalog.default_appearance_for_disciple(disciple)
+    _apply_fallback_palette()
     click_button.tooltip_text = display_name
     sync_action(disciple.current_action)
     _refresh_placeholder_mode()
@@ -56,11 +58,19 @@ func apply_appearance_profile(raw_profile: Variant, disciple: DiscipleState = nu
     _ensure_built()
     appearance_profile = DiscipleActorVisualCatalog.normalize_appearance_profile(raw_profile, disciple)
     rig_id = StringName(appearance_profile.get("rig_id", DiscipleActorVisualCatalog.RIG_FEMALE_NORMAL_V1))
+    _apply_fallback_palette()
 
 func sync_action(action: StringName) -> void:
     _ensure_built()
     current_clip = DiscipleActorVisualCatalog.action_clip(action)
     status_label.text = SectMapPresentation.action_label(action)
+    # Compact world-space work cue: Source A currently supplies stand/walk,
+    # not an authored digging/sowing swing. Do not impersonate dig animation.
+    status_label.visible = current_clip in [
+        DiscipleActorVisualCatalog.CLIP_MINING,
+        DiscipleActorVisualCatalog.CLIP_FORGING,
+        DiscipleActorVisualCatalog.CLIP_WORK
+    ]
     if click_button != null:
         click_button.tooltip_text = "%s · %s" % [display_name, status_label.text] if display_name != "" else status_label.text
     _play_shared_animation()
@@ -91,6 +101,42 @@ func set_animation_library(library: AnimationLibrary) -> void:
     if library != null:
         animation_player.add_animation_library(&"", library)
     _play_shared_animation()
+
+# A verified baked pilot can supply map pixels while this actor keeps the
+# existing public direction, hit area, identity and action APIs. The modular
+# appearance remains the authority whenever a real production body exists.
+func set_baked_visual(packed: PackedScene) -> bool:
+    _ensure_built()
+    if packed == null or production_body_active():
+        return false
+    var candidate := packed.instantiate() as AnimatedSprite2D
+    if candidate == null:
+        return false
+    if candidate.sprite_frames == null or not candidate.sprite_frames.has_animation(&"stand") or not candidate.sprite_frames.has_animation(&"walk"):
+        candidate.free()
+        return false
+    if baked_sprite != null:
+        baked_sprite.queue_free()
+    baked_sprite = candidate
+    baked_sprite.name = "VerifiedBakedVisual"
+    baked_sprite.position = DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
+    # The baked scene offset encodes the manifest's foot anchor. Scale by
+    # its real cropped frame height so differently sized rigs share a map
+    # height near 67 px at zoom 1 without moving the ground contact.
+    var stand_frame := baked_sprite.sprite_frames.get_frame_texture(&"stand",0)
+    var frame_height := float(stand_frame.get_height()) if stand_frame != null else 192.0
+    baked_sprite.scale = Vector2.ONE * (67.0 / maxf(frame_height,1.0))
+    baked_sprite.z_index = 1
+    # Keep the interactive area over the body, not the surrounding building.
+    click_button.position = Vector2(20.0,5.0)
+    click_button.size = Vector2(48.0,67.0)
+    add_child(baked_sprite)
+    _refresh_placeholder_mode()
+    _play_shared_animation()
+    return true
+
+func baked_visual_active() -> bool:
+    return baked_sprite != null and is_instance_valid(baked_sprite)
 
 # Convenience for a full-canvas single-piece layer. Production body/outfit should
 # normally use set_component_texture() for the coarse head/torso/arms/legs bundle.
@@ -216,12 +262,21 @@ func _ensure_built() -> void:
 
     status_label = Label.new()
     status_label.name = "StatusLabel"
-    status_label.position = Vector2(0.0, 73.0)
-    status_label.size = Vector2(ACTOR_SIZE.x, 18.0)
+    # A narrow but opaque tag avoids invisible dark-on-terrain letters;
+    # work actions are text-only until real authored Source A clips exist.
+    status_label.position = Vector2(-11.0, 72.0)
+    status_label.size = Vector2(110.0, 22.0)
+    status_label.clip_text = true
     status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
     status_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-    status_label.add_theme_font_size_override("font_size", 10)
+    status_label.add_theme_font_size_override("font_size", 11)
     status_label.add_theme_color_override("font_color", STATUS_TEXT)
+    var tag_background := StyleBoxFlat.new()
+    tag_background.bg_color = Color(0.96,0.92,0.80,0.97)
+    tag_background.border_color = Color(0.25,0.23,0.18,1.0)
+    tag_background.set_border_width_all(1)
+    tag_background.set_corner_radius_all(5)
+    status_label.add_theme_stylebox_override("normal", tag_background)
     status_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
     status_label.visible = false
     add_child(status_label)
@@ -250,6 +305,17 @@ func _play_shared_animation() -> void:
     if not _built:
         return
     _apply_mirror()
+    if baked_visual_active():
+        baked_sprite.flip_h = facing == DiscipleActorVisualCatalog.DIR_LEFT and mirror_left
+        # Use a real authored action only if the imported verified SpriteFrames
+        # contains it. Current Source A male/female pilots have stand/walk;
+        # mining/forest/field action clips are separate pending art work.
+        var baked_clip := current_clip if baked_sprite.sprite_frames.has_animation(current_clip) else (
+            &"walk" if current_clip == DiscipleActorVisualCatalog.CLIP_WALK else &"stand"
+        )
+        if baked_sprite.animation != baked_clip or not baked_sprite.is_playing():
+            baked_sprite.play(baked_clip)
+        return
     if animation_player == null:
         return
     var animation := _best_available_animation()
@@ -309,6 +375,7 @@ func _build_fallback_visual() -> void:
     fallback_visual.add_child(shadow)
 
     var leg_l := Panel.new()
+    leg_l.name = "LegLeft"
     leg_l.position = Vector2(12.0, 43.0)
     leg_l.size = Vector2(10.0, 20.0)
     leg_l.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -316,6 +383,7 @@ func _build_fallback_visual() -> void:
     fallback_visual.add_child(leg_l)
 
     var leg_r := Panel.new()
+    leg_r.name = "LegRight"
     leg_r.position = Vector2(26.0, 43.0)
     leg_r.size = Vector2(10.0, 20.0)
     leg_r.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -323,6 +391,7 @@ func _build_fallback_visual() -> void:
     fallback_visual.add_child(leg_r)
 
     var torso := Panel.new()
+    torso.name = "Torso"
     torso.position = Vector2(9.0, 20.0)
     torso.size = Vector2(30.0, 30.0)
     torso.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -331,6 +400,7 @@ func _build_fallback_visual() -> void:
 
     for x in [2.0, 38.0]:
         var arm := Panel.new()
+        arm.name = "LeftArm" if x < 10.0 else "RightArm"
         arm.position = Vector2(x, 23.0)
         arm.size = Vector2(8.0, 25.0)
         arm.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -338,16 +408,59 @@ func _build_fallback_visual() -> void:
         fallback_visual.add_child(arm)
 
     var head := Panel.new()
+    head.name = "Head"
     head.position = Vector2(14.0, 1.0)
     head.size = Vector2(20.0, 20.0)
     head.mouse_filter = Control.MOUSE_FILTER_IGNORE
     head.add_theme_stylebox_override("panel", _style(PLACEHOLDER_FILL.lightened(0.08), PLACEHOLDER_BORDER, 1, 10))
     fallback_visual.add_child(head)
 
+    # Lightweight 2D chibi silhouette for unconverted Source A rigs.
+    # Deliberately cosmetic, with visible skin/hair/robe rather than a
+    # uniform green placeholder. Source A replaces this automatically.
+    var hair := Panel.new()
+    hair.name = "Hair"
+    hair.position = Vector2(12.0, 0.0)
+    hair.size = Vector2(24.0, 9.0)
+    hair.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    fallback_visual.add_child(hair)
+
+    var sash := Panel.new()
+    sash.name = "Sash"
+    sash.position = Vector2(12.0, 40.0)
+    sash.size = Vector2(24.0, 4.0)
+    sash.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    fallback_visual.add_child(sash)
+    _apply_fallback_palette()
+
+func _apply_fallback_palette() -> void:
+    if fallback_visual == null or appearance_profile.is_empty():
+        return
+    # Already persisted profile_seed determines these display-only tint IDs.
+    # This does not change the disciple, combat, work, or sprite source.
+    var robe := Color.from_string(str(appearance_profile.get("outfit_tint","455472")), Color(0.27,0.33,0.45))
+    var hair_tint := Color.from_string(str(appearance_profile.get("hair_tint","2b2624")), Color(0.17,0.15,0.14))
+    var ink := Color(0.16,0.14,0.14,1.0)
+    var skin := Color(0.94,0.79,0.65,1.0)
+    for part_name in ["Torso","LeftArm","RightArm","LegLeft","LegRight"]:
+        var part := fallback_visual.get_node_or_null(part_name) as Panel
+        if part != null:
+            var fill := robe.darkened(0.17) if part_name.begins_with("Leg") else robe
+            part.add_theme_stylebox_override("panel",_style(fill,ink,1,5))
+    var head := fallback_visual.get_node_or_null("Head") as Panel
+    if head != null:
+        head.add_theme_stylebox_override("panel",_style(skin,ink,1,10))
+    var hair := fallback_visual.get_node_or_null("Hair") as Panel
+    if hair != null:
+        hair.add_theme_stylebox_override("panel",_style(hair_tint,ink,1,7))
+    var sash := fallback_visual.get_node_or_null("Sash") as Panel
+    if sash != null:
+        sash.add_theme_stylebox_override("panel",_style(Color(0.73,0.56,0.30,1.0),Color.TRANSPARENT,0,2))
+
 func _refresh_placeholder_mode() -> void:
     if click_button == null:
         return
-    var has_production_body := production_body_active()
+    var has_production_body := production_body_active() or baked_visual_active()
     if fallback_visual != null:
         fallback_visual.visible = not has_production_body
     click_button.text = ""
