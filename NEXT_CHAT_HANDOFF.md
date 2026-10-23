@@ -1,4 +1,15 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
+
+## 2026-10-23 — PR #24 O6 FIX VERIFIED; KEEP DRAFT
+
+Continue from PR #24 head `726ebde7cb4611abeff8869ceb83e210fa84414d`, still OPEN/DRAFT and not merged. The O6 fixture-only fix is local tested commit `862a6f6ef0f6e557ee6ef6f1044fd30b709870a3`; the PR head's 270 tracked Godot blobs were verified identical to the tested tree. Changed code/test file: `godot/tests/presentation/p3_o6_m1_release_rehearsal_test.gd`.
+
+Cause of the fifth Thanh Thiết: valid Combat V2 loot `thanh_thiet: 1` was awarded at tick 5 and deposited to the canonical Warehouse by the returning actor at tick 7 (Warehouse 40→41). Mine production was still exactly two +2 batches (ticks 27 and 47; total +4). The test now settles existing encounter/loot/carry/timers first, then records actual Warehouse stock as its floor; its exact +4 Mine contract remains unchanged. No production reward or economy logic was altered.
+
+Official Godot 4.7.2 Windows run: O6 **5/5** on five isolated clean userdata dirs, all exit 0 with the exact O6 PASS marker. **28/28 focused tests** passed at local SHA `862a6f6`, each exit 0 and expected marker. Raw evidence under `outputs/MAIN_SKILLS_CARE_INTEGRATION_20261022/o6_fix_runs_862a6f6/` and `outputs/MAIN_SKILLS_CARE_INTEGRATION_20261022/o6_fix_28_focused_retry/`; root-certificate-store warnings are present on stderr but all test exit codes/markers are green. Diagnostic trace: `outputs/MAIN_SKILLS_CARE_INTEGRATION_20261022/o6_fix_diagnostics/`.
+
+The previous cumulative FULL log ended at Parse 227/240 without terminal PASS, so FULL remains **INCOMPLETE**, not PASS. No merge was performed. Do not mark the PR accepted/merge-ready until its required cumulative FULL gate has a real terminal PASS; keep the draft open and retain the exact-four assertion. No unrelated systems were touched.
+
 ## 2026-10-23 — skills merged; CARE gameplay draft blocked
 
 **Current main:** `29b5fba448b0178cb520a4ada44b375b4b934e31`. Skills/docs PR #23 (`ab39997442752aabe912ac99dcc62c953e9e4496`) is merged. The six repo skills are present in `.agents/skills/`; actual Codex app-server discovery returned 6/6 enabled, repo-scoped skills with no discovery errors.
