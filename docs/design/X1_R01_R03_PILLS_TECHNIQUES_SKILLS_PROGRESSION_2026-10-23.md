@@ -102,6 +102,21 @@ The old `MAX_LEARNED_TECHNIQUES=3`, 4-grade `common/mysterious/earth/heaven` and
 | Job/economy | one ACTIVE JOB per disciple; Forge/Alchemy/Work/Hunt exclusive; one Warehouse and clock | automatic priority cannot simultaneously assign crafter to Mine/Hunt; verify real stock (not preview reward) before crafting |
 | World difficulty | actual same species scaled by authored monster realm/floor; no general hard Body-rank entry gate | R02/R03 proposed new species aren't real; each later requires Combat V2 fixtures at realistic HP/DEF/skill cooldown with build/corresponding stage |
 
+## 4A. Body major-gate MATERIALS ALREADY EXIST IN SOURCE (not invented)
+
+**Direct SOURCE CODE evidence:** `godot/src/simulation/cultivation/disciple_body_gate_content_v2.gd` currently defines Group A as `["thanh_linh_thao","tinh_lang_bi"]` and `ROWS[0..2]` as `[A,12,4]`, `[A,18,5]`, `[A,24,6]` for **Body** source realm 1→2, 2→3, 3→4. This is **not the Tu Vi R01→R02 gate**, and Tu Vi/Body realms can differ.
+
+| Body gate SOURCE metadata | Main Thanh Linh Thảo | Aux Tinh Lang Bì | Current implementation |
+|---|---:|---:|---|
+| Phàm Thân 10 → Luyện Bì 1 | **12** | **4** | `CONTENT_AVAILABLE=false`: metadata-only |
+| Luyện Bì 10 → Luyện Nhục 1 | **18** | **5** | metadata-only |
+| Luyện Nhục 10 → Dịch Cân 1 | **24** | **6** | metadata-only |
+| **Three-gate total if player later passes all three** | **54 herbs** | **15 hides** | *not currently craftable/consumable as a real gate* |
+
+**Economic dependency:** these 54 herbs and 15 hides compete against legitimate Hồi Xuân/Tụ Khí, newly proposed R02 pills, R01/R02 armor and ordinary Sect stock. For one dedicated base Thanh Linh Thảo plot at 3 herbs/12 ticks, supplying 54 herbs alone requires 18 cycles = **216 base simulation ticks**, assuming no downtime; 15 `tinh_lang_bi` require **15 paid CARE wolf kills** at its current 1 hide/kill, assuming no other spend and no world/injury constraints. **These are lower-bound resource requirements, NOT real completion time.** At 1k disciples multiply demands only when their Body gates actually activate, rather than gifting materials or reducing approved gate costs.
+
+**Source/transaction warning:** `DiscipleBodyGateContentV2.CONTENT_AVAILABLE=false` blocks gameplay. Registering data for the source items does not unlock Body-gate F2/F3 authority or prove source acquisition for all 29 gates. Do not silently change this boolean or write Body progress in UI; implementation needs a separate authorized transaction, real sources and test.
+
 ## 5. First production-ready decision boundary (still design)
 
 - Keep real R01 Hồi Xuân/Tụ Khí untouched.
