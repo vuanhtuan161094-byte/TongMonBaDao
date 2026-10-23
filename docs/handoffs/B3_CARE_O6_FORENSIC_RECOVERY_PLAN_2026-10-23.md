@@ -1,5 +1,8 @@
 # TÔNG MÔN BÁ ĐẠO — O6 BLOCKER FORENSIC & SAFE RECOVERY PACKET
 
+> **UPDATE 2026-10-23 — CONDITIONAL CODE FIX NOW AUTHORIZED**: This packet's original READ-ONLY limitation has been superseded by the owner's new explicit permission to **fix O6 code when the root cause is proved**. Read [B3_CARE_O6_CONDITIONAL_CODE_AUTHORIZATION_2026-10-23.md](B3_CARE_O6_CONDITIONAL_CODE_AUTHORIZATION_2026-10-23.md) FIRST. Keep the original forensic plan as evidence, preserve 2+2 batch conservation and legacy carry, and do not merge PR #24 while gates fail. Do not misread the +3 as an owner-directed Mine yield increase; logs show **first** batch +3 and **second** +2.
+
+
 **Date:** 2026-10-23 · **Authority:** READ-ONLY EVIDENCE / DESIGN-ONLY. **No gameplay change, no merge, no change to PR #24, no CI/FULL launch by this packet.**
 **Source:** owner-uploaded `MAIN_SKILLS_CARE_INTEGRATION_20261022.zip`, manually read and cross-checked against GitHub source and [PR #24](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/24). Use actual Codex-generated ZIP logs, not a fabricated baseline.
 **Repository:** `vuanhtuan161094-byte/TongMonBaDao`. Main checked at `29b5fba448b0178cb520a4ada44b375b4b934e31`. CARE draft PR #24 head `12387e12adc500d84b95cbfc433f297c3f6475f2`; last tested gameplay SHA `98ee31e9e87f228da39b3863e76063cb30bc40d1`.
