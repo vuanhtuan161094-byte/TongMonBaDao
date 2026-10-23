@@ -94,8 +94,10 @@ func _run() -> void:
         _fail("O6 recruited field worker owns no authoritative Field slot.")
         return
 
-    # Isolate unrelated actors only. The Mine worker + recruited Field worker
-    # remain the two active economic actors in this integrated run.
+    # Select the real Mine worker, then hold all disciples while any opening
+    # encounter loot, inventory deposit, timer or legacy carry is settled.
+    # These are valid rewards and must remain in Warehouse, but they are not
+    # output from the two explicit Mine receipts verified below.
     var mine := buildings.primary_building(state, BuildingSystem.TYPE_MINE)
     if mine == null:
         _fail("O6 live state has no authoritative Mine.")
@@ -107,16 +109,29 @@ func _run() -> void:
     var miner_id := StringName(miners[0])
     for raw_id in state.disciples.keys():
         var id := StringName(raw_id)
-        if id == miner_id or id == recruit_id:
-            continue
         if not workforce.issue_command(state, id, WorkforceSystem.COMMAND_HOLD, "", 1200):
-            _fail("O6 could not isolate unrelated disciple %s." % str(id))
+            _fail("O6 could not hold disciple %s while settling opening rewards." % str(id))
             return
+    var opening_activity_settled := false
+    for _i in range(240):
+        if _opening_economy_is_settled():
+            opening_activity_settled = true
+            break
+        scheduler.step()
+        ui.call("_refresh_all")
+    if not opening_activity_settled and not _opening_economy_is_settled():
+        _fail("O6 opening encounters, inventory, or carried work did not settle before the Mine receipt baseline.")
+        return
 
-    # QA provenance boundary: reserve every starter iron unit. Nothing is
-    # granted; only real Mine output above this floor is spendable.
-    if not warehouse.set_rule(state, &"thanh_thiet", starter_iron, false):
-        _fail("O6 could not reserve starter iron for conservation proof.")
+    # QA provenance boundary: reserve all canonical ore after valid opening
+    # rewards/carries have settled. Only the explicit Mine batches below are
+    # spendable in this conservation proof; the reward itself remains intact.
+    var production_floor_iron := warehouse.quantity(state, &"thanh_thiet")
+    if production_floor_iron < starter_iron:
+        _fail("O6 opening settlement lost canonical starter Thanh Thiết.")
+        return
+    if not warehouse.set_rule(state, &"thanh_thiet", production_floor_iron, false):
+        _fail("O6 could not reserve the isolated Warehouse baseline for conservation proof.")
         return
 
     # Start one real Field plot while Mine production also proceeds.
@@ -255,8 +270,8 @@ func _run() -> void:
     if state.sect.spirit_stones != stones_before_upgrade - stone_need:
         _fail("O6 Mine upgrade Stone debit is not exact.")
         return
-    if warehouse.quantity(state, &"thanh_thiet") != starter_iron:
-        _fail("O6 produce/spend conservation did not return iron to untouched starter reserve.")
+    if warehouse.quantity(state, &"thanh_thiet") != production_floor_iron:
+        _fail("O6 produce/spend conservation did not return iron to the isolated opening reserve.")
         return
 
     # Keep both economic actors at sect while upgrade completes.
@@ -456,6 +471,20 @@ func _mine_one_explicit_batch(miner_id: StringName, mine: BuildingState, ordinal
         return _fail("O6 Mine batch %d produced no canonical ore." % ordinal)
     if not workforce.issue_command(state, miner_id, WorkforceSystem.COMMAND_HOLD, "", 1000):
         return _fail("O6 could not hold miner after explicit batch %d." % ordinal)
+    return true
+
+func _opening_economy_is_settled() -> bool:
+    for raw_id in state.disciples.keys():
+        var disciple: DiscipleState = state.disciples[raw_id]
+        if (
+            not disciple.active_pve_encounter_id.is_empty()
+            or disciple.region_id != &"sect"
+            or not disciple.pending_loot.is_empty()
+            or not disciple.inventory.is_empty()
+            or not disciple.work_cycle_state.is_empty()
+            or not buildings.active_resource_timer_for_worker(state, disciple.id).is_empty()
+        ):
+            return false
     return true
 
 func _recruitable_candidate_ids() -> Array:
