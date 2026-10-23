@@ -108,7 +108,7 @@ Natural costs:
 ## 5. Hunting rewards
 
 Hunting may directly drop:
-- cultivation EXP / Tu Vi reward;
+- authored **fixed** cultivation EXP / Tu Vi reward paid directly to **genuinely eligible** disciples on the single real monster-death receipt (not a physical item stack or a second natural-Tu-Vi tick);
 - Spirit Stones;
 - monster materials;
 - Monster Cores / Yêu Đan;
@@ -140,11 +140,13 @@ A disciple maintains a small personal/use state, including:
 
 Hunting does **not** use a secondary loot warehouse or persistent reward bag.
 
-When an encounter resolves:
-- item/material loot -> main Sect Warehouse immediately;
-- sect Spirit Stone share -> sect economy immediately;
-- personal Spirit Stone share -> participating disciples immediately;
-- Tu Vi / Contribution / combat or hunting progression -> participating disciples immediately.
+**2026-10-23 OWNER OVERRIDE — live B3 PvE:** a real per-monster HP>0→HP0 death (not a finite wave WIN or UI Claim) is the **single reward source**. One Sect-owned item/material/gear loot settlement and per-eligible-disciple authored **fixed Tu Vi** are committed exactly once. Meaningful DPS, Tank, Healer, Support qualify via real Combat V2 causal events; no last-hit monopoly or standing-nearby eligibility. There is NO mandatory Tinh Nguyên absorption; Tinh Nguyên is optional rare material and must not pay duplicate XP. This is a DESIGN AUTHORITY update, not verified runtime code.
+
+When a valid *per-kill* reward is committed in the continuous mode (legacy finite encounter settlement remains separate):
+- item/material loot -> main Sect Warehouse exactly once, with real provenance;
+- sect Spirit Stone share -> sect economy once, if the approved distribution policy defines it;
+- personal Spirit Stone share -> eligible disciples once, following future approved eligibility/split;
+- fixed hunt Tu Vi / Contribution / combat or hunting progression -> separately validated *eligible* disciples once, respecting realm gates and skill-evidence rules.
 
 The team's carried inventory is only an outward **supply loadout** (medicine, pills, talismans, food, emergency items). It is not used to store hunting rewards.
 
@@ -160,9 +162,10 @@ Default concept:
 
 Sect policies may later define the split.
 
-Example policy:
+Illustrative policy **ONLY, not owner locked**:
 - 60% Spirit Stones to sect;
-- 40% divided among participants.
+- 40% divided among qualifying participants.
+The actual Sect/personal cut remains OPEN; the user approved an equal personal split **after** eligibility, not the 60/40 number.
 
 High sect cut:
 - enriches sect;
