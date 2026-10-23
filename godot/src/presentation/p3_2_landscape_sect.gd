@@ -3830,4 +3830,3 @@ func _equipment_slot_name(slot: StringName) -> String:
         EquipmentSystem.SLOT_ARMOR: return "Giáp"
         EquipmentSystem.SLOT_TALISMAN: return "Phụ kiện"
         _: return str(slot)
-
