@@ -25,6 +25,20 @@
 
 **Per-disciple proxy cost if using SOURCE market_value as accounting proxy, not guaranteed player prices:** R01 `5×8+16×2+6×10=132` Stone-equivalent resource value; R02 `18×8+4×2+11×10=262`. R03 `18×34+4×2+11×UNKNOWN` (**NOT NUMERIC YET**; new hide `market_value` has no source). If owner later selects candidate hide-value 20, R03 would be 840 *illustrative*, not currency actually debited/received in a live forge. Before code, cost model must be based on real opportunity: craft recipes consume canonical Warehouse units; optional wage/contribution fees are separate and **OPEN**.
 
+### A2. Body source requirements are real metadata but not an active consumer yet
+
+`DiscipleBodyGateContentV2` source defines **Body** realm 1→2 = `thanh_linh_thao:12 + tinh_lang_bi:4`, 2→3 = `thanh_linh_thao:18 + tinh_lang_bi:5`, 3→4 = `thanh_linh_thao:24 + tinh_lang_bi:6`; `CONTENT_AVAILABLE=false` (F1 metadata, not live gate). **DO NOT** mistake these for Tu Vi stage requirements. They represent real future sink/competition and cannot be removed to make forge rate look better.
+
+| Independent co-progress illustration | Gear ingredients (from X1 proposal) | Add authentic Body gate cost if disciple **also** reaches indicated Body gate | Combined demand (NOT current runtime spent) |
+|---|---|---|---|
+| one R01 outfit + Body Phàm Thân→Luyện Bì | 5 Thanh Thiết +16 Linh Mộc+6 Tinh Lang Bì | 12 Thanh Linh Thảo+4 Tinh Lang Bì | 5 ore, 16 wood, **10 existing hides**, **12 herbs** |
+| one R02 outfit + Body Luyện Bì→Luyện Nhục | 18 Thanh Thiết+4 Linh Mộc+11 Tinh Lang Bì | 18 Thanh Linh Thảo+5 Tinh Lang Bì | 18 ore, 4 wood, **16 existing hides**, **18 herbs** |
+| one R03 outfit + Body Luyện Nhục→Dịch Cân | 18 Huyền Thiết+4 Linh Mộc+11 proposed R03 beast hides | 24 Thanh Linh Thảo+6 **existing** Tinh Lang Bì | 18 Huyền Thiết, 4 wood, **11 R03 hides PLUS 6 legacy hides**, **24 herbs** |
+
+**Cohort/units:** above is one hypothetical disciple who chooses to progress both tracks, not a rule requiring equality, and not yet a usable Body transaction. If one disciple took all first three Body gates, the additional **54 herbs+15 Tinh Lang Bì** must be supplied, on top of their actual forge/pill costs. The rare `x1_r03_thach_thu_bi` cannot stand in for `tinh_lang_bi` without an explicit registered alternate recipe.
+
+This materially **reduces realistic material sufficiency probabilities** compared with the gear-only 100-kill/30-kill models below and must be included in the later true 24h/7d/30d economy replay and policy reserve stock. Do not claim a gear-only 91% success probability applies to simultaneous armor, pills and Body breakthroughs.
+
 ### B. 100-kill static binomial scenario (not Godot, not FPS/wall-time)
 
 Assume one normal encounter per eligible rewarded kill with independent drops; **no injury, no fatigue, no duplicate receipt, no labor, no geography**. For per-kill success p and exactly 100 paid kills, `count~Binomial(n=100,p)`. 5th/50th/95th percentiles are binomial analytical quantiles. This is a scenario, NOT a Monte-Carlo Godot run.
