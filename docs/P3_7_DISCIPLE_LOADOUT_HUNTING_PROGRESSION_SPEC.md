@@ -188,6 +188,8 @@ Contribution never decays merely because time passes.
 
 # 6. Hunting rewards — final category set
 
+**2026-10-23 OWNER DIRECT-KILL TU VI DECISION (supersedes any contrary Tinh Nguyên-only gating):** in continuous B3 PvE, a *genuine HP>0→HP0 per-monster death* settles one source event and awards **direct fixed hunting Tu Vi** once to EACH contributor who has meaningful Combat V2 evidence; it does not mint a natural cultivation tick or require return to Sect, Tinh Nguyên absorption or claiming a result screen. Sect-owned loot settles once on that same real kill. Tinh Nguyên, if authored, is optional rare material for crafting, forging or breakthroughs and must never duplicate Tu Vi already paid at death. Legacy finite-encounter WIN settlement must not pay the same kill a second time. This is a **locked DESIGN SOURCE RULE, not a statement of current implemented code**. See `docs/CULTIVATION_BREAKTHROUGH_V2_SPEC.md §2.2`.
+
 A successful hunt can reward:
 
 ## Personal progression
@@ -331,7 +333,7 @@ Do not make challenge multiplier so strong that players feel punished for becomi
 
 # 12. Participation multiplier
 
-Every living team member may gain reward, but participation matters.
+Every legitimately deployed team member may be evaluated for personal reward, but **only genuine effective participation evidenced by Combat V2 actions** qualifies. Team membership, proximity, a cosmetic animation, an unproductive buff/overheal, or a last-second token touch do not earn full credit; a DPS-only criterion unfairly disqualifies a real Tank/Healer/Support.
 
 Examples of valid participation:
 - damage;
@@ -373,6 +375,8 @@ Then the design target is approximately:
 | Elite/Boss hunting | burst higher, but not steady/safe |
 
 These are relative balance targets, not literal hard multipliers stored everywhere.
+
+**2026-10-23 reconciliation:** a `10–20x` hunting rate is an aggregate *sim-time pacing target for matched-risk content*, including the existing once-per-minute natural source and actual, discrete fixed XP from legal monster deaths. It is **NOT** a second hunting-passive multiplier and not a global fixed per-kill constant. Exact tuning needs observed kills, injury/downtime, map/rank, party 1/3/6, grade and floor costs; no new XP rate is approved by this documentation change.
 
 The important rule is:
 
@@ -429,6 +433,8 @@ Suggested starting bands per real simulation hour:
 - healthy appropriate hunting: about **0.5–1.0%/hour average**, driven by actual encounter rate.
 
 These bands yield roughly 10–20× hunting vs ordinary labor while remaining scalable across realm requirements.
+
+**Mathematical caveat 2026-10-23:** `0.5–1.0%/current-floor/hour` and `10–20× natural worker speed` cannot both be fixed targets across all 300 floors when the existing source has a fixed natural base of 1,000 Tu Vi/simulation minute but floor costs grow by ~1,000× from early to late realms. These are separate early design objectives to reconcile at representative tiers, not simultaneously mandatory production caps. Never add hidden daily hunt-XP ceilings, gate bypass or extra passive streams to force the chart to match.
 
 They are tuning targets, not immutable constants.
 
@@ -662,6 +668,7 @@ Current P2.1 fixed gains remain untouched until the P3.7 hunting reward authorit
 15. Rear-base work remains valuable through profession, economy, passive cultivation and low risk.
 16. No permanent death; injury/downtime/consumables balance the fast PvE route.
 17. Existing P2.1/P2.3/P2.6 locked baselines are migrated later under explicit P3.7 gates, not silently overwritten.
+18. **2026-10-23 OWNER OVERRIDE:** genuine B3 monster death grants full authored **fixed Tu Vi** to each genuinely qualified DPS/Tank/Healer/Support (not 1/N by default); Tinh Nguyên does not gate general hunting progression or regrant the same XP. One kill/loot source, one personal award per eligible disciple, exactly once. Numeric participation/rank/grade rates are still subject to calibration; no CODE permission from this spec alone.
 
 
 ---
