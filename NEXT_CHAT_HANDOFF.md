@@ -1,5 +1,15 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-24 — MASTER RECOVERY INTEGRATION (PROVISIONAL; OWNER VISUAL PENDING)
+
+Continue from worktree `E:/codex/2026-10-22/t-ng-m-n-b-o/work/TMB_MASTER_RECOVERY_PLAYABLE_V1_20261023`, branch `integration/master-recovery-playable-v1-20261023`, exact code/test SHA `f5715ad0d90ee38516b54f316b9dd6f1544c3723`, based on PR #25 head `710137c0e3976e685613a86692e5eb128b8d3c62`. Integration is a candidate only; do not merge or mark owner visual PASS. PR #24 and #25 remain open draft and unchanged.
+
+Selective G1/MAP25 Source A map/building/production/profile presentation and the full-width camera contract are now integrated. Combat V5 is a view-only adapter in P3.2 reading the actual CARE `MapBattleV2` snapshot; Combat V2/CARE still owns HP, AI, time, loot, Injury, AUTO, Warehouse and SaveService. No duplicate simulation, six fake disciples or synthetic Boss/AoE event. There are 32 hash-gated MAP25 PNGs. V5 capture uses authentic V2 Mạc Linh → `disciple_female`/1113028_1 and canonical B3 Thanh Lang → `monster_1113031_1`. Male art exists but its visual route has not had human acceptance. Boss slot art is verified, but the CARE B3 pilot has no boss mapping.
+
+Exact-SHA focused set: **19/19 PASS** on official Windows Godot `4.7.2.stable.official.ed1daf0bf`, exit 0/PASS marker/no parse or script errors. GUI: actual P3.2 scene, 1280×720, nine PNGs and 60-frame/15-FPS/4-second AVI in `outputs/MASTER_RECOVERY_INTEGRATION_20261023/screenshots/f5715ad/`. The scripted capture's final JSON is post-return (tick 0, kill 0, Warehouse 0, AUTO off); real loot/save/recovery proof is in `logs/final_sha_f5715ad/b3_main_hunt_integration_test.log`. This is not manual mouse input. FULL/CI was not run.
+
+Read `docs/architecture/TMB_CURRENT_IMPLEMENTATION_AUTHORITY_PROVISIONAL.md`, `docs/handoffs/2026-10-24/TMB_MASTER_RECOVERY_REGRESSION_CHECKLIST_2026-10-24.md`, and `outputs/MASTER_RECOVERY_INTEGRATION_20261023/MASTER_RECOVERY_EVIDENCE_REPORT.md` before continuing. Windows manual, Android device/touch, owner visual and Boss/AoE event integration remain pending. Do not alter the preserved dirty V5/UI source worktrees. If continuing, first inspect final branch diff and draft-PR/base status; keep the new integration review draft/unmerged, and leave PR #24/#25 untouched.
+
 ## 2026-10-23 — PLAYABLE V1: MAIN-SCREEN CARE HUNT INTEGRATION
 
 The local branch `integration/b3-playable-care-v1-20261023` is based on tested CARE code `862a6f6ef0f6e557ee6ef6f1044fd30b709870a3` (same Godot source tree as PR #24). Code SHA `42ef6bfdfa497d75d7c0355e3f7f2e5a7ebf9eda`; final test SHA `10dd28765a19402cc74a47e5d62749dac5d545f2`. PR #24 is still draft/open/unmerged and untouched. Do not merge without owner approval.

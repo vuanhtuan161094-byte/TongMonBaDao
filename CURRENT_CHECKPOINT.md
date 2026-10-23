@@ -1,5 +1,15 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-24 — MASTER RECOVERY / SOURCE A G1 + COMBAT V5 INTO CARE P3.2 (PROVISIONAL)
+
+**This checkpoint is provisional to branch `integration/master-recovery-playable-v1-20261023`; it is not canonical main status until owner review.** Base is PR #25 code head `710137c0e3976e685613a86692e5eb128b8d3c62`. Final code/test SHA `f5715ad0d90ee38516b54f316b9dd6f1544c3723` follows `087c58b70b9c4bec3847d8acc546d8b761d984fc`. PR #24/#25 remain draft, open, unchanged, unmerged.
+
+Selectively restored MAP25/G1 Source A worksite/map/profile presentation and integrated Combat V5 as a read-only view adapter on the actual P3.2 CARE snapshot. Gameplay authority remains the existing `runtime_session`, `SimulationState`, `SimulationRuntimeOwnerV2`, B3HuntWorld/B3MedicalAutoplayV1, Combat V2, canonical Warehouse and SaveService. Full-width G1 camera contract is restored. No duplicate world/clock/reward/save/discipline authority, no hunting EXP, no fabricated six-person V5 party or Boss/AoE event.
+
+Official Windows Godot 4.7.2 focused set: **19/19 PASS** at exact final SHA, each exit 0 with PASS marker and zero script/parse errors. The actual P3.2 1280×720 Movie Maker capture emitted 9 screenshots and a 60-frame, 15-FPS, 4-second AVI; paths and limitations are in `outputs/MASTER_RECOVERY_INTEGRATION_20261023/MASTER_RECOVERY_EVIDENCE_REPORT.md`. The capture's post-return JSON is tick 0/kill 0/Warehouse 0; real kill/loot receipt, Injury120, same-world redeploy, and Save/Load are proved by the CARE integration-test log, not that JSON. No FULL/CI.
+
+Still **PENDING USER**: Windows manual input, Android device/touch, owner visual approval, male actor visual check; CARE boss/AoE event mapping is absent. Source art gate/import tests pass, but art registry remains internal-project/hash-gated. Original V5 and UI worktrees remain dirty and untouched. See `docs/architecture/TMB_CURRENT_IMPLEMENTATION_AUTHORITY_PROVISIONAL.md` and `docs/handoffs/2026-10-24/TMB_MASTER_RECOVERY_REGRESSION_CHECKLIST_2026-10-24.md`.
+
 ## 2026-10-23 — PLAYABLE V1 CARE HUNT ON THE P3.2 MAIN SCREEN
 
 **Local implementation branch:** `integration/b3-playable-care-v1-20261023`, based on the locally tested CARE code tree `862a6f6ef0f6e557ee6ef6f1044fd30b709870a3` (tree equivalent to PR #24 Godot source). Code commit `42ef6bfdfa497d75d7c0355e3f7f2e5a7ebf9eda`; final gameplay/test commit `10dd28765a19402cc74a47e5d62749dac5d545f2`. Only the P3.2 presentation script and its dedicated integration test changed in the code commits. **No merge, no Source A/MAP25/C4, no backend or balance change, no hunting EXP.** PR #24 remains open, draft, and unchanged.
