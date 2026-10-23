@@ -1,5 +1,7 @@
 # TÔNG MÔN BÁ ĐẠO — BD-01A / V2: CÔNG THỨC, 30 BẬC, 12 PHẨM, XÁC SUẤT, GIAO DỊCH RÈN
 
+> **CORRECTION / OWNER OVERRIDE 2026-10-23:** Earlier sample numbers `+3×G(r,1)` Thanh Thiết Kiếm and `+20×G(r,1)` Tinh Lang Giáp across all 30 ranks are **WITHDRAWN AS EQUIPMENT GENERATION**, including the numerical comparison table below. **Do not code, balance or author item IDs from that table.** Different cultivation realms need their own authored equipment families/templates, real loot/recipe/source and use constraints. `G(r,f)` remains valid ONLY as locked Realm/Body Core and external *comparison reference*. See [cross-system content contract](TMB_CROSS_SYSTEM_REALM_CONTENT_INTEGRITY_CONTRACT_2026-10-23.md). The E0/E1/E2 grade distributions, Chí Tôn probability, 10-tick work time and all material-input V2 proposals are still **UNAPPROVED** until source/sink audit. S2+F1+Q1 are owner-locked.
+
 **Date:** 2026-10-23; **OWNER LOCKED THIS TURN:** **S2 + F1 + Q1** (authority for design direction, NOT permission to code).  
 **State:** all new numeric coefficients below are **PROPOSED / TO SELECT**, with source-derived examples explicitly labeled. Only documentation may be committed to branch `docs/bd01-equipment-deep-design-20261023`. Do not change main, PR #24, PR #25, Source A, gameplay/tests, CI or FULL.
 **Authoritative design references:** `docs/DV2_REALM_BODY_COMBAT_CURVES_V1_PROPOSAL.md` (Oct09 locked), `docs/COMBAT_STATS_V2_SPEC.md`, `docs/WEAPON_EQUIPMENT_V2_SPEC.md`, `docs/EQUIPMENT_SETS_V2_SPEC.md`, `docs/EQUIPMENT_FORGING_UPGRADE_V2_ROADMAP.md`, `docs/P3_7_BUILDING_TREE_SPEC.md`; source `CombatStatsV2`, `DiscipleCombatLoadoutV2`, `EquipmentSystem`, `WarehouseSystem`, `WorkforceSystem`. This doc supersedes only earlier **assistant proposals**, not older owner-locked data.
@@ -14,6 +16,8 @@ The Oct09 **LOCKED and already coded** Combat V2 baseline is:
 `Core=(Realm+Body)*PotentialFactor`;
 `FinalPrimary=(Core+unrelated_flat_sources)*(1+same_channel_percent_add)`.
 Direct eligible basic hit with no other modifiers has defense factor `2*ATK/(2*ATK+effective_DEF)`. `CombatStatsV2.derive()` is the current code authority; it uses proper channel names/modes, source IDs and duplicate detection. No gear input may secretly modify `combat_power` into V2 Attack. No flat gear is pre-multiplied by Potential.
+
+**Core values below are SOURCE-derived. IMPORTANT: the proposed +Sword/+Armor rank-scaled columns are RETIRED EXPERIMENTAL ARITHMETIC, not valid item designs, not owner-selected. They demonstrate only how a mathematically scaled statistic would behave; they MUST NOT be used to implement items.**
 
 **SOURCE numeric checks (cultivation and body same, Potential=0):**
 
@@ -48,7 +52,7 @@ NOTE: the numbers in the `G` and item columns are **PROPOSED arithmetic referenc
 - **S2-B:** interpret +30–50% as *only base-grade ten-piece* performance, with rare affixes added on top -> bigger power spikes, risk crossing multiple realms.
 - **S2-C:** +30–50% effective power specifically for ordinary farming; Boss/elite conditional bonuses excluded from this benchmark. Useful but needs additional explicit Boss tests.
 
-**Fixed template pilot PROPOSED:** tier1 Phàm Thanh Thiết Kiếm grants `+3 attack (flat)`; tier1 Phàm Tinh Lang Giáp `+20 max_hp (flat), +2 defense (flat)`; no free crit/skill-effect/DR; grade-independent template identity. Item tier `r` reference scaling for flat baseline: `flat(r)=flat(1)*1.65^(r-1)` (evaluate equal-rank and mismatched Tu Vi/Body gates). It is **not** multiplying `combat_power` or cross-realm potential. A 1.1 starter sword stays flat +3 even when worn at 30.10.
+**Corrected pilot proposal:** low-tier named starter sword **could** grant flat +3 Attack and starter armor +20 HP/+2 DEF, but only once an authored item tier/ID/source/eligibility is assigned and separately approved. These exact numbers remain PROPOSED. **NO global `flat(r)=flat(1)×1.65^(r-1)` equipment progression rule**. Each higher realm item template and source is authored separately, with Combat Core used only to benchmark item budget. Low-tier sword remains at its actual fixed stat even when a rank30 disciple wears it.
 
 ## 3. Q1: all twelve approved grade capacities, baseline bonus and affix catalog
 
