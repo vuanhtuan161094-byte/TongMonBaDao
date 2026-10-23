@@ -94,7 +94,7 @@ Tư Chất, Root or ordinary cultivation-rate bonuses do not silently multiply f
 
 ---
 
-## 2.2 Natural Tu Vi source model — USER LOCK 2026-10-09
+## 2.2 Natural Tu Vi source model — USER LOCK 2026-10-09, HUNT XP OWNER AMENDMENT 2026-10-23
 
 Natural Tu Vi is **continuous passive absorption for every living V2 disciple**, not an EXP reward that exists only while the current action is `CULTIVATE`.
 
@@ -103,9 +103,19 @@ Canonical source model:
 - ordinary work/combat does **not** create a second generic Tu Vi reward on top of this passive absorption;
 - `CULTIVATE` means **Chuyên Tu**: the disciple gives up other ordinary activity to apply an explicit multiplier/acceleration to the same natural-Tu-Vi source;
 - Tư Chất (+0.25%/point) and other valid natural-cultivation modifiers apply to this natural source;
-- external direct injections such as Tu Vi pills, monster-dropped **Tinh Nguyên** when absorbed, and authored fixed rewards are `fixed` +X Tu Vi unless the content explicitly declares another rule;
+- external **fixed** Tu Vi is allowed from authored pill consumption **or a legitimate monster-death hunting reward** that passes Combat V2 role/participation gates and commits exactly once; neither source creates another natural-grant tick;
 - fixed injections are not multiplied by Tư Chất or ordinary natural-cultivation-rate bonuses;
-- killing a monster does not directly grant Tu Vi EXP. Monsters may drop Tinh Nguyên and other resources; consuming/assigning Tinh Nguyên is a separate resource decision.
+- **OWNER OVERRIDE 2026-10-23 (supersedes the former ban on direct kill EXP):** a real monster HP > 0 → HP = 0 terminal death in the authorized persistent B3 world directly awards **100% of its authored fixed hunting Tu Vi** to EACH genuinely eligible contributor through one canonical kill/reward transaction, without a mandatory Tinh Nguyên absorption step, return to Sect, or XP claim click. The kill also resolves Sect-owned loot exactly once. **Tinh Nguyên**, if authored later, is an OPTIONAL rare material for alchemy/forge/breakthrough, NOT a required hunting-XP token or a second claim to EXP already awarded by that kill.
+
+**Historical authority note:** the superseded 2026-10-09 rule was "killing a monster does not directly grant Tu Vi; monsters may instead drop Tinh Nguyên to absorb." The owner explicitly reversed **only this hunting reward-source decision** on 2026-10-23 after comparing Direct / Essence / Hybrid. Keep all other clauses in §2.2 and their original dates. This is a **DESIGN LOCK** only; it does NOT attest the new B3 XP ledger is implemented or authorize a CODE packet.
+
+**Non-negotiable boundary for direct hunt XP (DESIGN LOCK):**
+- Each real monster generation has **one** terminal death and one sect-loot settlement; each eligible disciple may receive **one** personal `fixed_hunt_tuvi` credit identified by the pair (kill identity, disciple identity). No last-hit ownership, duplicate wave-WIN payout, team-wide EXP to spectators or skin/VFX-triggered reward.
+- Meaningful DPS, tanking, effective healing, or useful support may independently establish participation; the **exact numeric eligibility thresholds, grade/rank multipliers and EXP amounts are not locked** by this source-change decision. This must not incentivize 6 DPS or free-riding.
+- The existing `DiscipleRealmProgressV2.grant_xp` **fixed** channel and canonical floor-cost table govern awards. No Tư Chất multiplier, no second generic hunting-passive Tu Vi source, no free Body EXP, no unapproved XP bank, no automatic pass through floor-10 major gate. Respect `unapplied_overflow`.
+- One authoritative Combat V2 event/receipt and one canonical SaveService transaction cover valid loot + personal effects, including after retry/reload/offline replay. Real offline kills need canonical bounded simulation/replay evidence; a guessed kills/hour cannot mint XP.
+- Natural Tu Vi still accrues exactly once per valid simulation minute under its own rules, independent of whether a monster dies. The **1,000,000/day** B3 pill-satiety pool applies to pills, **not** hunting EXP.
+- Tinh Nguyên's future optional recipe/drop/quality is **CONTENT DESIGN ONLY**; no Tinh Nguyên-to-XP consumer by default. Any later XP granting Tinh Nguyên requires new owner authorization and anti-double-credit proof.
 
 **Display/balance unit is now locked to Tu Vi per simulation minute.** Current P3.7 time semantics already use one scheduler tick as one simulation minute (1440 ticks/day). A runtime may batch/commit simulation minutes at any wall-clock cadence, but equal simulated minutes must produce equal Tu Vi. Canonical production baseline is now **1,000 Tu Vi per simulation minute** before Tư Chất and other valid natural bonuses.
 
@@ -388,6 +398,7 @@ No runtime change is authorized by this document alone.
 14. Tích Tu/Hậu Tích only bank eligible sources.
 15. Fixed +X rewards remain fixed.
 16. Special Mệnh/identity rules may explicitly override the default law.
+17. **OWNER 2026-10-23:** real B3 monster death directly grants fixed hunt Tu Vi once per genuinely eligible disciple; Tinh Nguyên is only an optional rare material, not required absorption or a duplicate XP channel. Numeric hunt rates/role thresholds remain DESIGN-OPEN; gameplay implementation requires a separate CODE packet.
 
 ---
 
