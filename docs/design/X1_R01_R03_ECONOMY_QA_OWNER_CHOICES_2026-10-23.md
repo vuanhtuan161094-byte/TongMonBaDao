@@ -99,20 +99,25 @@ Player makes rank progress, reevaluates risk/maps/Body independently
 
 No hidden payout from clicking preview/reload, no retry-roll to another Grade12, no duplicated Spirit Stones Sect/personal, no fake materials granted to create a missing recipe. R01 existing P2 material flow isn't directly V2 Forge authority; version-safe migration later.
 
-## 4. Six independent OWNER choices; recommended package reduces burden
+## 4. OWNER directions already locked versus remaining numeric choices
 
-**Owner has already LOCKED S2 + F1 + Q1. Do NOT ask again.** The six *new* content/economic decisions are genuinely unresolved:
+**ALREADY OWNER SELECTED — NOT TO RE-ASK:**
+- **S2 + F1 + Q1:** cultivation-led balanced role-combat gear; targeted forge, usable output; grade governs eligible affix potential rather than an unchecked multiplier.
+- **X1 acquisition direction (owner 2026-10-23):** **normal monsters have meaningful realm-appropriate materials/loot**, allowing baseline targeted forge; **Elite/Boss provide exciting rarer equipment, material variants and blueprints**, but normal gear progression must not be Boss-only. Optional normal direct basic equipment drops can be authored later with separate actual ID+rate; this owner direction neither mandates nor prohibits them. No last-hit monopoly.
+- **V2 learned mastery+1 main/2 aux, old P2 saves/UIDs preserved** are canonical compatibility obligations, not selectable costs.
 
-| Decision | Option A / stable (RECOMMENDED) | Option B / high-drop/fast | Option C / scarcity/hard |
+**Still open. Four independent numeric/content policies, with recommendations:**
+
+| Decision | Option A / stable (RECOMMENDED) | Option B / high-drop/fast or alternative | Option C / scarcity/slower |
 |---|---|---|---|
-| **D1 — Main obtain** | normal gives rank-appropriate materials; targeted F1 base craft; Elite/Boss extra rare direct piece/blueprint | normal also may directly drop ordinary equipped items (extra lower-grade) | all ordinary gear only craft, rare must Boss |
-| **D2 — Early hide forging** | permit clearly bounded **basic hide** Lv1/Lv? for starter ordinary gear, while **advanced monster-material** recipes stay Lv30 | no basic hide exception; all hide-based R01–03 gear waits Lv30 (requires new ore/wood starter alternatives) | ignore Lv30 constraint (NOT RECOMMENDED) |
-| **D3 — Pilot grade outcome** | base **75% Phàm/20% Tinh/5% Thượng**, no grade4+ under E0 | 60/30/10 | 90/9/1 |
-| **D4 — Nonboss R02/03 ore/hide drop** | R02 **70%/60%**; R03 **55%/55%** independent per valid kill, amount1 | generous R02 90%/75%; R03 75%/70% | scarce R02 45%/40%; R03 35%/35% |
-| **D5 — New pills** | R02 heal **110** / Tu Vi **25,000**; R03 heal **190** / Tu Vi **50,000**, sat18/40 & 26/60, recipes above | fast growth R02 heal150/35k; R03 heal260/80k | restrained R02 heal90/15k; R03 heal145/25k |
-| **D6 — learning & preservation** | keep P2 old learned+UID and author V2 Sect archive/1 main2 aux; early manuals available via repeatable nonboss fragment sources with boss acceleration | only elite/boss manuals (risk required path lock); no free starter manual | auto-grant all R01–R03 class skills at each breakthrough (violates explicit skill learning; REJECT) |
+| **D2 — Early hide forging** | explicit limited **basic hide** use in starter Lv1 Luyện Khí Điện recipes; advanced monster-material effects/unlocks remain Lv30 | forbid even basic hide before Lv30; authorize alternate **wood/ore-only** basic armor templates so R01–R03 never softlock | deferred; cannot claim complete early armor craft (not recommended) |
+| **D3 — Pilot forge grade E0** | **75% Phàm/20% Tinh/5% Thượng**; never grade4+ from E0 | 60/30/10 | 90/9/1 |
+| **D4 — Repeatable R02/R03 normal drops** | R02 ore/hide **70%/60%**; R03 ore/hide **55%/55%**, independent per real paid kill | more abundant R02 90/75; R03 75/70 | scarcer R02 45/40; R03 35/35 |
+| **D5 — Four NEW pills** | R02 heal **110** / Tu Vi **25,000**, R03 heal **190** / Tu Vi **50,000**, sat and recipes as designed | fast R02 heal150/35k, R03 heal260/80k | restrained R02 heal90/15k, R03 heal145/25k |
 
-**Provisional preferred group: D1=A + D2=A + D3=A + D4=A + D5=A + D6=A.** Owner may mix. These options are **not approvals/locks until owner replies**.
+**Manual acquisition SOURCE placement remains DESIGN PROPOSED**, not an additional owner-lock request: R01 has a stable non-Boss basic-teaching/manual path; rarer R02/R03 manuals may use repeatable normal fragments and Elite/Boss accelerators; V2 requirements determine actual learnability, not item quality = realm equivalence. New rates and training time will be reported separately before any CODE authorization.
+
+**Recommended remaining package: D2=A + D3=A + D4=A + D5=A.** Owner may mix. None of these four new numeric/content policies are owner-locked until an explicit reply.
 
 **Additional numeric gates NOT included in owner choices yet:** chance of Chí Tôn under real costly E2 craft, R02/R03 boss 5% equipment/25% blueprint fragment, Forge basic time10 ticks, income/rare equipment prices for new `x1_` materials, Body gate ingredients, skill manual learning time, real full-item quality affix values, R03 monster HP/ATK/DEF values and special effects. These remain explicitly **OPEN** and must be calibrated after first real integration fixture. User shouldn't be forced to decide 100 probabilities before seeing playable progression.
 
