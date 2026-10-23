@@ -3,6 +3,41 @@ extends "res://src/presentation/p3_1_landscape_sect.gd"
 const ZOOM_STEP := 1.12
 const CAMERA_TWEEN_SECONDS := 0.22
 const FOCUS_MARKER_SIZE := Vector2(82.0, 82.0)
+const B3_HUNT_REFRESH_SECONDS := 0.25
+
+class B3MainHuntArena:
+    extends Control
+
+    var battle: MapBattleV2
+
+    func _draw() -> void:
+        draw_rect(Rect2(Vector2.ZERO,size),Color("122522"),true)
+        for x in range(1,17):
+            draw_line(Vector2(size.x*x/17.0,0),Vector2(size.x*x/17.0,size.y),Color("28433d"),1.0)
+        for y in range(1,10):
+            draw_line(Vector2(0,size.y*y/10.0),Vector2(size.x,size.y*y/10.0),Color("28433d"),1.0)
+        if battle == null:
+            draw_string(ThemeDB.fallback_font,Vector2(24,38),"Đang khôi phục chiến trường…",HORIZONTAL_ALIGNMENT_LEFT,-1,18,Color("e5d2a6"))
+            return
+        var font := ThemeDB.fallback_font
+        for actor_value in battle.actors.values():
+            var actor: Dictionary = actor_value
+            var position := Vector2(actor.get("position",Vector2.ZERO))
+            var point := Vector2(position.x/36.0*size.x,position.y/20.0*size.y)
+            var disciple := str(actor.get("side","")) == "disciple"
+            var hp := maxf(float(actor.get("hp",0.0)),0.0)
+            var maximum := maxf(float(actor.get("max_hp",1.0)),1.0)
+            var color := Color("57cfdf") if disciple else Color("e6a764")
+            if hp <= 0.0:
+                color = Color("675e54")
+            draw_circle(point,15.0 if disciple else 13.0,color)
+            draw_arc(point,19.0,0.0,TAU,24,color,1.5)
+            var label_at := point+Vector2(-116.0 if disciple else 20.0,-48.0)
+            draw_line(point+Vector2(0,-19),label_at+Vector2(34,12),Color("879d92"),1.0)
+            draw_rect(Rect2(label_at+Vector2(0,8),Vector2(84,7)),Color("101b24"),true)
+            draw_rect(Rect2(label_at+Vector2(0,8),Vector2(84.0*clampf(hp/maximum,0.0,1.0),7)),Color("85d991"),true)
+            draw_string(font,label_at,"Đệ tử V2" if disciple else "Thanh Lang",HORIZONTAL_ALIGNMENT_LEFT,-1,15,Color("e7e9e4"))
+            draw_string(font,label_at+Vector2(0,32),"%.0f / %.0f" % [hp,maximum],HORIZONTAL_ALIGNMENT_LEFT,-1,14,Color("e7e9e4"))
 
 var map_zoom: float = SectMapCamera.DEFAULT_ZOOM
 var touch_points: Dictionary = {}
@@ -51,6 +86,16 @@ var selected_building: StringName = &""
 var deep_restore_summary := false
 var screen_pointer_dragged := false
 var mouse_pointer_dragged := false
+var b3_hunt_panel: Panel
+var b3_hunt_arena: B3MainHuntArena
+var b3_hunt_facts: Label
+var b3_hunt_feedback: Label
+var b3_hunt_auto_button: Button
+var b3_hunt_deploy_button: Button
+var b3_hunt_return_button: Button
+var b3_hunt_save_button: Button
+var b3_hunt_disciple_id: StringName = &""
+var b3_hunt_refresh_elapsed := 0.0
 
 func _ready() -> void:
     super._ready()
@@ -68,6 +113,8 @@ func _ready() -> void:
     _build_living_cue_layer()
     living_cue_tracker.seed_from_state(state)
     _refresh_living_cues()
+    _build_b3_hunt_panel()
+    _resume_saved_b3_hunt()
 
 func _unhandled_input(event: InputEvent) -> void:
     if _popup_is_open():
@@ -2307,6 +2354,10 @@ func _equipment_policy_label(policy: StringName) -> String:
 
 func _process(_delta: float) -> void:
     _refresh_living_cue_positions()
+    b3_hunt_refresh_elapsed += _delta
+    if b3_hunt_refresh_elapsed >= B3_HUNT_REFRESH_SECONDS:
+        b3_hunt_refresh_elapsed = 0.0
+        _refresh_b3_hunt_panel()
 
 func _build_living_cue_layer() -> void:
     living_cue_layer = LivingCueLayer.new()
@@ -2378,7 +2429,7 @@ func _build_disciple_summary_panel() -> void:
     disciple_summary_panel = Panel.new()
     disciple_summary_panel.name = "DiscipleSummaryPanel"
     disciple_summary_panel.position = Vector2(956, 80)
-    disciple_summary_panel.size = Vector2(308, 552)
+    disciple_summary_panel.size = Vector2(308, 596)
     disciple_summary_panel.z_index = 60
     disciple_summary_panel.visible = false
     disciple_summary_panel.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -2443,6 +2494,18 @@ func _build_disciple_summary_panel() -> void:
     detail.add_theme_stylebox_override("hover", _style(CINNABAR.lightened(0.08), GOLD, 3, 9))
     detail.pressed.connect(_open_selected_disciple_detail)
     disciple_summary_panel.add_child(detail)
+
+    var hunt := Button.new()
+    hunt.name = "SummaryB3Hunt"
+    hunt.text = "Đi săn"
+    hunt.position = Vector2(16, 492)
+    hunt.size = Vector2(276, 40)
+    hunt.add_theme_font_size_override("font_size", 14)
+    hunt.add_theme_stylebox_override("normal", _style(JADE_DARK, PAPER_LIGHT, 2, 9))
+    hunt.add_theme_stylebox_override("hover", _style(JADE, GOLD, 3, 9))
+    hunt.pressed.connect(_start_b3_hunt_for_selected)
+    disciple_summary_panel.add_child(hunt)
+    detail.position.y = 540
 
 func _add_summary_order_button(text: String, pos: Vector2, button_size: Vector2, kind: StringName, target: String = "") -> void:
     var button := Button.new()
@@ -2512,10 +2575,23 @@ func _refresh_disciple_summary_content() -> void:
     var authentic_v2 := bool(snapshot.get("authentic_v2", false))
     var legacy_forge: Button = disciple_summary_panel.get_node_or_null("SummaryLegacyForge")
     var v2_body: Button = disciple_summary_panel.get_node_or_null("SummaryV2BodyTraining")
+    var hunt_button: Button = disciple_summary_panel.get_node_or_null("SummaryB3Hunt")
     if legacy_forge != null:
         legacy_forge.visible = not authentic_v2
     if v2_body != null:
         v2_body.visible = authentic_v2
+    if hunt_button != null:
+        hunt_button.visible = authentic_v2
+        var hunt_state: Dictionary = state.sect.b3_hunt
+        var member := str(hunt_state.get("member",""))
+        var care_id := str(hunt_state.get("care",{}).get("disciple_id",""))
+        var owner_id := member if not member.is_empty() else care_id
+        var same_world_owner := hunt_state.is_empty() or owner_id.is_empty() or owner_id == str(disciple.id)
+        var reopening_existing := not hunt_state.is_empty() and owner_id == str(disciple.id)
+        var admission := B3HuntWorld.admission(state,disciple.id) if same_world_owner and not reopening_existing and member != str(disciple.id) else {"ok":same_world_owner}
+        hunt_button.text = "Mở vòng săn" if reopening_existing else "Đi săn"
+        hunt_button.disabled = not same_world_owner or not bool(admission.get("ok",false))
+        hunt_button.tooltip_text = "" if not hunt_button.disabled else str(admission.get("reason","thế giới đang có đệ tử khác"))
     var identity: Dictionary = snapshot["identity"]
     var quality := str(identity.get("quality_name", "—"))
     if quality.is_empty():
@@ -2534,6 +2610,265 @@ func _refresh_disciple_summary_content() -> void:
     disciple_summary_body.text = _disciple_summary_text(disciple)
     if authentic_v2 and state.sect.economy_a_enabled:
         disciple_summary_meta.text += " · %d Linh Thạch cá nhân" % disciple.spirit_stones
+
+func _build_b3_hunt_panel() -> void:
+    var shade := ColorRect.new()
+    shade.name = "B3MainHuntShade"
+    shade.color = Color(0.03,0.06,0.07,0.78)
+    shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    shade.z_index = 110
+    shade.mouse_filter = Control.MOUSE_FILTER_STOP
+    shade.visible = false
+    add_child(shade)
+
+    b3_hunt_panel = Panel.new()
+    b3_hunt_panel.name = "B3MainHuntPanel"
+    b3_hunt_panel.position = Vector2(64,38)
+    b3_hunt_panel.size = Vector2(1152,644)
+    b3_hunt_panel.z_index = 111
+    b3_hunt_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+    b3_hunt_panel.add_theme_stylebox_override("panel",_style(PAPER_LIGHT,INK,3,14))
+    b3_hunt_panel.visible = false
+    shade.add_child(b3_hunt_panel)
+
+    var title := _label(b3_hunt_panel,"VÒNG SĂN — THẾ GIỚI B3 CARE",Vector2(24,14),Vector2(1100,32),22)
+    title.add_theme_color_override("font_color",JADE_DARK)
+    var subtitle := _label(b3_hunt_panel,"Combat V2 · cùng thời gian, đệ tử, Kho và SaveService của màn tông môn",Vector2(26,48),Vector2(1090,24),13)
+    subtitle.add_theme_color_override("font_color",INK)
+
+    b3_hunt_arena = B3MainHuntArena.new()
+    b3_hunt_arena.name = "B3MainHuntArena"
+    b3_hunt_arena.position = Vector2(24,82)
+    b3_hunt_arena.size = Vector2(700,484)
+    b3_hunt_arena.add_theme_stylebox_override("panel",_style(JADE_DARK,INK,1,8))
+    b3_hunt_panel.add_child(b3_hunt_arena)
+
+    var facts_panel := Panel.new()
+    facts_panel.name = "B3MainHuntFactsPanel"
+    facts_panel.position = Vector2(746,82)
+    facts_panel.size = Vector2(382,484)
+    facts_panel.add_theme_stylebox_override("panel",_style(Color("eee6d2"),Color("74694f"),1,8))
+    b3_hunt_panel.add_child(facts_panel)
+    b3_hunt_facts = _label(facts_panel,"",Vector2(16,14),Vector2(350,452),14)
+    b3_hunt_facts.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    b3_hunt_facts.add_theme_color_override("font_color",INK)
+    b3_hunt_feedback = _label(b3_hunt_panel,"",Vector2(28,578),Vector2(510,42),13)
+    b3_hunt_feedback.add_theme_color_override("font_color",CINNABAR)
+
+    b3_hunt_save_button = Button.new()
+    b3_hunt_save_button.name = "B3MainHuntSave"
+    b3_hunt_save_button.text = "Lưu game"
+    b3_hunt_save_button.position = Vector2(550,580)
+    b3_hunt_save_button.size = Vector2(132,46)
+    b3_hunt_save_button.add_theme_font_size_override("font_size",14)
+    b3_hunt_save_button.add_theme_stylebox_override("normal",_style(Color("d7c695"),INK,1,8))
+    b3_hunt_save_button.pressed.connect(_save_b3_main_runtime)
+    b3_hunt_panel.add_child(b3_hunt_save_button)
+
+    b3_hunt_auto_button = Button.new()
+    b3_hunt_auto_button.name = "B3MainHuntAuto"
+    b3_hunt_auto_button.position = Vector2(746,580)
+    b3_hunt_auto_button.size = Vector2(120,46)
+    b3_hunt_auto_button.add_theme_font_size_override("font_size",15)
+    b3_hunt_auto_button.add_theme_stylebox_override("normal",_style(JADE_DARK,PAPER_LIGHT,2,8))
+    b3_hunt_auto_button.pressed.connect(_toggle_b3_hunt_auto)
+    b3_hunt_panel.add_child(b3_hunt_auto_button)
+
+    b3_hunt_deploy_button = Button.new()
+    b3_hunt_deploy_button.name = "B3MainHuntDeploy"
+    b3_hunt_deploy_button.text = "Phái đệ tử"
+    b3_hunt_deploy_button.position = Vector2(876,580)
+    b3_hunt_deploy_button.size = Vector2(120,46)
+    b3_hunt_deploy_button.add_theme_font_size_override("font_size",15)
+    b3_hunt_deploy_button.add_theme_stylebox_override("normal",_style(Color("d7c695"),INK,1,8))
+    b3_hunt_deploy_button.pressed.connect(_deploy_b3_hunt_disciple)
+    b3_hunt_panel.add_child(b3_hunt_deploy_button)
+
+    b3_hunt_return_button = Button.new()
+    b3_hunt_return_button.name = "B3MainHuntReturn"
+    b3_hunt_return_button.text = "Về tông môn"
+    b3_hunt_return_button.position = Vector2(1006,580)
+    b3_hunt_return_button.size = Vector2(122,46)
+    b3_hunt_return_button.add_theme_font_size_override("font_size",14)
+    b3_hunt_return_button.add_theme_stylebox_override("normal",_style(CINNABAR,PAPER_LIGHT,2,8))
+    b3_hunt_return_button.pressed.connect(_return_from_b3_hunt)
+    b3_hunt_panel.add_child(b3_hunt_return_button)
+
+func _resume_saved_b3_hunt() -> void:
+    if state.sect.b3_hunt.is_empty():
+        return
+    var world: Dictionary = state.sect.b3_hunt
+    var id := StringName(world.get("member",""))
+    if id == &"":
+        id = StringName(world.get("care",{}).get("disciple_id",""))
+    if id == &"":
+        id = StringName(world.get("last_return",{}).get("disciple_id",""))
+    if id == &"" or not state.disciples.has(id):
+        return
+    b3_hunt_disciple_id = id
+    _open_b3_hunt_panel(id)
+
+func _open_b3_hunt_panel(disciple_id: StringName) -> void:
+    if b3_hunt_panel == null or not state.disciples.has(disciple_id):
+        return
+    b3_hunt_disciple_id = disciple_id
+    selected_id = disciple_id
+    _hide_disciple_summary()
+    b3_hunt_panel.get_parent().visible = true
+    b3_hunt_panel.visible = true
+    b3_hunt_refresh_elapsed = B3_HUNT_REFRESH_SECONDS
+    _refresh_b3_hunt_panel()
+
+func _start_b3_hunt_for_selected() -> void:
+    if selected_id == &"" or not state.disciples.has(selected_id) or runtime_session == null:
+        return
+    var world: Dictionary = state.sect.b3_hunt
+    var member := str(world.get("member",""))
+    var care_id := str(world.get("care",{}).get("disciple_id",""))
+    var result: Dictionary
+    if not world.is_empty() and (member == str(selected_id) or (member.is_empty() and care_id == str(selected_id))):
+        result = {"ok":true}
+    elif not member.is_empty():
+        result = {"ok":false,"reason":"b3_world_has_another_disciple"}
+    else:
+        result = B3HuntWorld.begin(runtime_session.owner,selected_id)
+    if not bool(result.get("ok",false)):
+        summary_feedback = "Chưa thể đi săn: %s" % str(result.get("reason","không đủ điều kiện"))
+        _refresh_disciple_summary_content()
+        return
+    _open_b3_hunt_panel(selected_id)
+    _refresh_all()
+
+func _toggle_b3_hunt_auto() -> void:
+    var id := _active_b3_hunt_disciple_id()
+    if id == &"" or runtime_session == null:
+        return
+    var care: Dictionary = state.sect.b3_hunt.get("care",{})
+    var enabled := not bool(care.get("auto_hunt",false))
+    var result := B3MedicalAutoplayV1.configure(runtime_session.owner,id,enabled)
+    if result.get("ok",false):
+        _set_b3_hunt_feedback("AUTO %s" % ("đã bật" if enabled else "đã tắt"))
+    else:
+        _set_b3_hunt_feedback("Không đổi AUTO: %s" % str(result.get("reason","lệnh chưa sẵn sàng")))
+    _refresh_b3_hunt_panel()
+
+func _save_b3_main_runtime() -> void:
+    if runtime_session == null:
+        return
+    var result := runtime_session.save()
+    if result.get("ok",false):
+        _set_b3_hunt_feedback("Đã lưu qua SaveService màn chính.")
+    else:
+        _set_b3_hunt_feedback("Lưu chưa xong: %s" % str(result.get("reason",result.get("error","unknown"))))
+
+func _deploy_b3_hunt_disciple() -> void:
+    var id := _active_b3_hunt_disciple_id()
+    if id == &"" or runtime_session == null:
+        return
+    var result := B3HuntWorld.begin(runtime_session.owner,id)
+    _set_b3_hunt_feedback("Đã phái đệ tử ra săn." if result.get("ok",false) else "Chưa thể phái: %s" % str(result.get("reason","không đủ điều kiện")))
+    _refresh_all()
+    _refresh_b3_hunt_panel()
+
+func _return_from_b3_hunt() -> void:
+    if runtime_session == null:
+        return
+    var world: Dictionary = state.sect.b3_hunt
+    var result := {"ok":true}
+    if not world.is_empty() and not str(world.get("member","")).is_empty():
+        result = B3HuntWorld.return_to_sect(runtime_session.owner)
+    if not result.get("ok",false):
+        _set_b3_hunt_feedback("Chưa thể về tông môn: %s" % str(result.get("reason","đang chờ save/clock")))
+        return
+    b3_hunt_panel.get_parent().visible = false
+    _refresh_all()
+    if selected_id != &"" and state.disciples.has(selected_id):
+        _show_disciple_summary()
+
+func _active_b3_hunt_disciple_id() -> StringName:
+    if state == null or state.sect.b3_hunt.is_empty():
+        return &""
+    var world: Dictionary = state.sect.b3_hunt
+    var id := StringName(world.get("member",""))
+    if id == &"":
+        id = StringName(world.get("care",{}).get("disciple_id",b3_hunt_disciple_id))
+    if id == &"":
+        id = StringName(world.get("last_return",{}).get("disciple_id",b3_hunt_disciple_id))
+    return id if state.disciples.has(id) else &""
+
+func _refresh_b3_hunt_panel() -> void:
+    if b3_hunt_panel == null or not b3_hunt_panel.get_parent().visible or state == null:
+        return
+    var world: Dictionary = state.sect.b3_hunt
+    var id := _active_b3_hunt_disciple_id()
+    if id == &"":
+        b3_hunt_facts.text = "Chưa có đệ tử săn được lưu trong vòng này.\nChọn đệ tử V2 thật trên bản đồ để phái đi săn."
+        b3_hunt_arena.battle = null
+        b3_hunt_arena.queue_redraw()
+        b3_hunt_auto_button.disabled = true
+        b3_hunt_deploy_button.disabled = true
+        return
+    var d: DiscipleState = state.disciples[id]
+    var care: Dictionary = world.get("care",{})
+    var restored := B3HuntWorld.restore(state) if not world.is_empty() else {"ok":false}
+    var battle: MapBattleV2 = restored.get("battle") if restored.get("ok",false) else null
+    b3_hunt_arena.battle = battle
+    b3_hunt_arena.queue_redraw()
+    var member := str(world.get("member",""))
+    var status_names := {
+        "HUNTING":"Đang săn","INJURY_WAIT":"Chờ Injury hồi phục",
+        "PILL_RECOVERY":"Đã dùng thuốc hồi HP","REST_RECOVERY":"Đang nghỉ dưỡng",
+        "OFF":"Đã tắt AUTO","READY":"Sẵn sàng","MANUAL_PAUSE":"Tạm dừng thủ công",
+        "BUSY":"Đang bận","":"Chưa bật AUTO"
+    }
+    var auto_text := "AUTO: BẬT" if care.get("auto_hunt",false) else "AUTO: TẮT"
+    b3_hunt_auto_button.text = auto_text
+    b3_hunt_auto_button.disabled = world.is_empty() or not B3MedicalAutoplayV1.command_ready(runtime_session.owner)
+    b3_hunt_deploy_button.visible = member.is_empty()
+    var admission := B3HuntWorld.admission(state,id) if member.is_empty() else {"ok":false,"reason":"disciple_already_deployed"}
+    b3_hunt_deploy_button.disabled = not bool(admission.get("ok",false)) or not B3MedicalAutoplayV1.command_ready(runtime_session.owner)
+    b3_hunt_return_button.text = "Về tông môn" if not member.is_empty() else "Đóng vòng săn"
+    var injury := "Khỏe mạnh"
+    var injury_remaining := maxi(d.injury_recover_at_tick-state.tick,0) if d.injury_level != 0 else 0
+    if d.injury_level != 0:
+        injury = "Injury %d · còn %d tick" % [d.injury_level,injury_remaining]
+    var progression := DiscipleRealmProgressV2.current(d) if DiscipleRealmProgressV2.progression_ready(d) else {"ok":false}
+    var tuvi_text := "Chưa có dữ liệu Tu Vi"
+    if progression.get("ok",false):
+        var tuvi: Dictionary = progression["cultivation"]
+        var required := DiscipleProgressionBalanceV2.floor_cost(int(tuvi["realm"]),int(tuvi["floor"]))
+        tuvi_text = "%s tầng %d · %.0f / %.0f Tu Vi" % [
+            DiscipleRealmProgressV2.realm_name("cultivation",int(tuvi["realm"])),
+            int(tuvi["floor"]),float(tuvi["xp"]),float(required)
+        ]
+    var slot: Dictionary = world.get("slot",{})
+    var kills := int(slot.get("paid_generation",0))
+    var resource := B3PilotContent.RESOURCE
+    var warehouse := WarehouseSystem.new()
+    var stock := warehouse.quantity(state,resource)
+    var available := warehouse.available_quantity(state,resource)
+    var healing_pills := warehouse.quantity(state,&"hoi_xuan_dan")
+    var satiety_spent := B3PillSatietyV1.spent_today(state,d)
+    var battle_time := float(battle.now) if battle != null else 0.0
+    var battle_status := "Chiến trường đang sẵn sàng" if battle != null else "Chiến trường chưa khởi tạo"
+    b3_hunt_facts.text = (
+        "%s\n%s · %s\n\n"
+        + "Đệ tử: %s\nHP: %.0f / %.0f\nInjury: %s\nTu Vi: %s\n\n"
+        + "Hạ gục đã trả thưởng: %d\nQuái đang ở thế hệ: %d\nThời gian chiến trường: %.1f giây\n\n"
+        + "Kho tông môn · %s\nTổng: %d · Dùng được: %d\n\n"
+        + "Thuốc Hồi Xuân trong Kho: %d viên · bão hòa hôm nay: %d / %d điểm\n"
+        + "CARE: %s"
+    ) % [
+        auto_text,str(status_names.get(str(care.get("status","")),"Chưa bật AUTO")),battle_status,
+        d.display_name,d.hp,d.max_hp,injury,tuvi_text,kills,int(slot.get("generation",0)),battle_time,
+        ResourceRegistry.new().display_name(resource),stock,available,
+        healing_pills,satiety_spent,B3PillSatietyV1.CAPACITY,
+        str(care.get("status","OFF"))
+    ]
+
+func _set_b3_hunt_feedback(value: String) -> void:
+    if b3_hunt_feedback != null:
+        b3_hunt_feedback.text = value
 
 
 func _disciple_summary_text(disciple: DiscipleState) -> String:
@@ -3495,3 +3830,4 @@ func _equipment_slot_name(slot: StringName) -> String:
         EquipmentSystem.SLOT_ARMOR: return "Giáp"
         EquipmentSystem.SLOT_TALISMAN: return "Phụ kiện"
         _: return str(slot)
+
