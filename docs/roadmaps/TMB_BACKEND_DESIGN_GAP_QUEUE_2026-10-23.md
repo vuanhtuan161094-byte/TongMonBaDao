@@ -1,11 +1,16 @@
 # TÔNG MÔN BÁ ĐẠO — BACKEND DESIGN GAP QUEUE (AFTER CARE PLAYABLE)
 
+> **X0 CROSS-SYSTEM CONTENT INTEGRITY GATE — OWNER CORRECTION 2026-10-23:** Before any P2/P6/P8/P10 content or equipment V2 implementation, read [Cross-System Realm Content Contract](../design/TMB_CROSS_SYSTEM_REALM_CONTENT_INTEGRITY_CONTRACT_2026-10-23.md) and [15-Finding Design Audit](../audits/TMB_CROSS_SYSTEM_ROOT_CAUSE_CORRECTION_REGISTER_2026-10-23.md). A named early item MUST NOT be cloned over 30 realms using `G(r,1)`; each realm needs authored gear group/source/consumer; distinct pills, manuals and skill generations obey their own canonical laws. All owner-approved S2+F1+Q1 remain, no invented 30-map implementation or arbitrary probability lock. This cross-system gate is DESIGN governance, not a runtime PASS or CODE permission.
+
 **Date:** 2026-10-23 · **Class:** DOCS-ONLY / READ-ONLY source audit / candidate design tickets, **NOT CODE AUTHORIZATION**, not a gameplay balance lock, not merge.  
 **Repo:** `vuanhtuan161094-byte/TongMonBaDao`. Audited `main=29b5fba448b0178cb520a4ada44b375b4b934e31` for P2 equipment/related gameplay; PR #24 `4d08984f0` CARE and PR #25 `710137c0e` P3.2 integration are **draft, stacked, unmerged**, and must be reviewed on current heads before later implementation.  
 **Parent plan:** [TMB_MASTER_ROADMAP_PLAYABLE_TO_V1_2026-10-23.md](TMB_MASTER_ROADMAP_PLAYABLE_TO_V1_2026-10-23.md).  
 **Reason:** Codex can finish Windows/UX/Source A while this thread prepares **content + economy + character-growth designs** without competing CODE writers.
 
-## A. Executive ranking: critical backend/design work not already implemented V2
+## A. Executive ranking
+
+**Do not run BD-01 detailed gear arithmetic in isolation.** Its first dependency is now X0: a real realm-specific gear group and source/consumer contract, with 30 authoring coverage rows and R01–R03 pilot mapping. Earlier `+3*G(r,1)` copied-item design is RETIRED, never a code packet.
+: critical backend/design work not already implemented V2
 
 | Rank | Ticket | System | Already locked by owner/source | Actual gap to close (do NOT assume design=runtime) | Dependency |
 |---|---|---|---|---|---|
