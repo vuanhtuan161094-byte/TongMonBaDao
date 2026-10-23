@@ -1,4 +1,19 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
+
+## 2026-10-23 — O6 EXTRA LOOT ROOT CAUSE PROVEN; FIXED TEST ISOLATION VERIFIED
+
+**O6 authorization:** owner authorized an O6-only repair after proving the cause. The +1 Thanh Thiết was a valid Combat V2 reward: at tick 5, `co_truong_phong` won an encounter with loot `thanh_thiet: 1`; at tick 7 the returning actor deposited that unit through canonical `EquipmentSystem.deposit_forge_inventory`, increasing Warehouse 40→41. This is separate from the Mine. The two Mine batches remained exactly +2 each at ticks 27 and 47, `production_batches=2`, for the required +4. Diagnostic logs: `outputs/MAIN_SKILLS_CARE_INTEGRATION_20261022/o6_fix_diagnostics/trace_02/stdout.log` and `trace_03/stdout.log`.
+
+**Code/test repair:** local tested commit `862a6f6ef0f6e557ee6ef6f1044fd30b709870a3` (parent `98ee31e9e87f228da39b3863e76063cb30bc40d1)); one changed file, `godot/tests/presentation/p3_o6_m1_release_rehearsal_test.gd`. The fixture holds disciples, drains in-flight encounters/loot/carry work and timers, then reserves the actual settled Warehouse stock as its floor. It preserves legitimate drops and the exact `available_quantity == 4` contract. No production reward, Warehouse, Mine or economy rule changed.
+
+**Actual official Godot evidence:** `E:/Godot_v4.7.2-stable_win64_console.exe`, `4.7.2.stable.official.ed1daf0bf`. O6 passed **5/5** using five clean userdata directories, each exit 0 and containing `P3 O6 M1 END-TO-END RELEASE REHEARSAL PASS`. The **28 focused tests passed 28/28** at local tested code commit `862a6f6ef0f6e557ee6f6f1044fd30b709870a3`, each exit 0 with its expected PASS marker; result index and raw logs: `outputs/MAIN_SKILLS_CARE_INTEGRATION_20261022/o6_fix_28_focused_retry/INTEGRATION_FOCUSED_RESULTS.json` and `outputs/MAIN_SKILLS_CARE_INTEGRATION_20261022/o6_fix_28_focused_retry/logs/`. Five O6 runs: `outputs/MAIN_SKILLS_CARE_INTEGRATION_20261022/o6_fix_runs_862a6f6/`. Windows root-certificate-store warnings appeared on stderr but did not change exit codes or test markers.
+
+**PR #24:** remains OPEN and DRAFT, not merged. PR head `726ebde7cb4611abeff8869ceb83e210fa84414d` includes the tested O6 file blob. A comparison of all 270 tracked `godot/` blobs between local tested commit `862a6f6` and the PR head confirmed identical content; the remote head also carries the prior continuity-doc commit. This proves the PR's Godot tree is the tree tested here. Scope: O6 fixture plus continuity/PR-status documentation only.
+
+**Not accepted:** the cumulative FULL run remains **INCOMPLETE** (previous log stopped at Parse 227/240 without the terminal PASS marker); no FULL/CI/merge is claimed or was performed. Keep PR #24 draft. No Source A or unrelated system was touched.
+
+---
+
 ## 2026-10-23 — skills merged; CARE gameplay draft blocked
 
 **Current main:** `29b5fba448b0178cb520a4ada44b375b4b934e31`. Skills/docs PR #23 (`ab39997442752aabe912ac99dcc62c953e9e4496`) is merged. The six repo skills are present in `.agents/skills/`; actual Codex app-server discovery returned 6/6 enabled, repo-scoped skills with no discovery errors.
