@@ -2,7 +2,7 @@
 
 ## 2026-10-23 — PR #24 O6 FIX VERIFIED; KEEP DRAFT
 
-Continue from PR #24 head `726ebde7cb4611abeff8869ceb83e210fa84414d`, still OPEN/DRAFT and not merged. The O6 fixture-only fix is local tested commit `862a6f6ef0f6e557ee6ef6f1044fd30b709870a3`; the PR head's 270 tracked Godot blobs were verified identical to the tested tree. Changed code/test file: `godot/tests/presentation/p3_o6_m1_release_rehearsal_test.gd`.
+Continue from PR #24 final head `71304d5343828e0b4258a599ecde6ab736627c22`, still OPEN/DRAFT and not merged. The code/test commit is `726ebde7cb4611abeff8869ceb83e210fa84414d`; two later commits update continuity docs only. The O6 fixture-only fix is local tested commit `862a6f6ef0f6e557ee6ef6f1044fd30b709870a3`; the PR head's 270 tracked Godot blobs were verified identical to the tested tree. Changed code/test file: `godot/tests/presentation/p3_o6_m1_release_rehearsal_test.gd`.
 
 Cause of the fifth Thanh Thiết: valid Combat V2 loot `thanh_thiet: 1` was awarded at tick 5 and deposited to the canonical Warehouse by the returning actor at tick 7 (Warehouse 40→41). Mine production was still exactly two +2 batches (ticks 27 and 47; total +4). The test now settles existing encounter/loot/carry/timers first, then records actual Warehouse stock as its floor; its exact +4 Mine contract remains unchanged. No production reward or economy logic was altered.
 
