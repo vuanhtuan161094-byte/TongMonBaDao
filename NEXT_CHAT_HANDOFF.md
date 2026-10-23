@@ -12,6 +12,8 @@ The local branch `integration/b3-playable-care-v1-20261023` is based on tested C
 
 **PENDING USER:** manual Windows input; Android device/APK/touch/landscape; Source A asset import/provenance/animation acceptance; scale and real power/storage failure tests. Use the two continuity files as status authority. Next work is review of this stacked integration and owner decision on its PR; do not merge it or CARE #24. No adjacent system/code authorization is inferred.
 
+**GitHub:** draft PR [#25](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/25), gameplay/test tree commit `3b516ad7a1fa59ce4c6b8edacc5c54aedc7cb992` followed only by continuity-document commits, base is the still-draft CARE PR #24 branch at `4d08984f044bfa29a98070c8d68ee5a155256d3a`. `mergeable=true`, `merged=false`; combined status showed no checks. New branch diff is limited to the two P3.2 files and these two continuity files. PR #24 remains open/draft/unmerged and was not modified.
+
 ---
 
 ## 2026-10-22 — SIX TMB SKILLS SELECTIVE PR; CARE INTEGRATION SEPARATE
