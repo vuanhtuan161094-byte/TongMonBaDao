@@ -175,7 +175,7 @@ func _build_camera_controls() -> void:
     var plus := Button.new()
     plus.text = "+"
     plus.position = Vector2(8, 8)
-    plus.size = Vector2(44, 42)
+    plus.size = Vector2(44, 44)
     plus.add_theme_font_size_override("font_size", 22)
     plus.tooltip_text = "Phóng to"
     plus.pressed.connect(_zoom_in)
@@ -193,7 +193,7 @@ func _build_camera_controls() -> void:
     var minus := Button.new()
     minus.text = "−"
     minus.position = Vector2(8, 84)
-    minus.size = Vector2(44, 42)
+    minus.size = Vector2(44, 44)
     minus.add_theme_font_size_override("font_size", 22)
     minus.tooltip_text = "Thu nhỏ"
     minus.pressed.connect(_zoom_out)
@@ -202,8 +202,8 @@ func _build_camera_controls() -> void:
     focus_target_button = Button.new()
     focus_target_button.text = "Mục"
     focus_target_button.position = Vector2(8, 134)
-    focus_target_button.size = Vector2(44, 40)
-    focus_target_button.add_theme_font_size_override("font_size", 11)
+    focus_target_button.size = Vector2(44, 44)
+    focus_target_button.add_theme_font_size_override("font_size", 12)
     focus_target_button.tooltip_text = "Tới mục tiêu đang chọn"
     focus_target_button.disabled = true
     focus_target_button.pressed.connect(_focus_current_target)
@@ -212,8 +212,8 @@ func _build_camera_controls() -> void:
     var reset := Button.new()
     reset.text = "Toàn"
     reset.position = Vector2(8, 184)
-    reset.size = Vector2(44, 40)
-    reset.add_theme_font_size_override("font_size", 11)
+    reset.size = Vector2(44, 44)
+    reset.add_theme_font_size_override("font_size", 12)
     reset.tooltip_text = "Về toàn cảnh"
     reset.pressed.connect(_reset_camera.bind(true))
     panel.add_child(reset)
