@@ -1,0 +1,5 @@
+command: Godot 4.7.2 --headless --editor --path <extracted package>/godot --quit
+process exit code: 0
+filesystem scan completed; no script parse failures were recorded
+editor-only diagnostics: Editor Settings attempted to save to an empty path in the isolated profile (Can't save resource to empty path)
+interpretation: not counted as a clean editor-settings smoke; the regular packaged P3.2 game launch separately exited 0

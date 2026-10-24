@@ -10,3 +10,5 @@
 - `logs/p3_2_packet_b_capture_sha4b02.log` is the actual Godot capture log.
 - Portable project launcher and Vietnamese instructions are copied under `windows_candidate/`; ZIP is a local artifact, not checked into Git due its 48 MB size.
 - Human Windows, Android, sustained performance and Owner Visual remain PENDING.
+
+- logs/portable_editor_smoke_4b02.log preserves the separate headless Editor scan. It completed filesystem scan/exit 0 without script parse errors but logged an isolated Editor Settings empty-path save diagnostic; it is not counted as clean Editor persistence QA.

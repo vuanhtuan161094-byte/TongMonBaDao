@@ -491,5 +491,13 @@
       720
     ]
   },
-  "capture_driver_sha256": "f044033a659db90df0c865176fd0a9964be3000bc8bfb8695b323d70092aea64"
+  "capture_driver_sha256": "f044033a659db90df0c865176fd0a9964be3000bc8bfb8695b323d70092aea64",
+  "portable_editor_scan": {
+    "exit_code": 0,
+    "filesystem_scan_completed": true,
+    "script_parse_failures": 0,
+    "editor_settings_save_error": "Can't save resource to empty path",
+    "counted_as_clean_smoke": false,
+    "log": "docs/handoffs/2026-10-24/evidence/packet-b/sha4b02/logs/portable_editor_smoke_4b02.log"
+  }
 }

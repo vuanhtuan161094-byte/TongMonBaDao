@@ -23,3 +23,4 @@ Evidence: [`sha4b02`](evidence/packet-b/sha4b02/)
 - No FULL/CI, no merge, and no changes to PR #28/#29/#30.
 
 See the [implementation report](TMB_PR28_S1_END_TO_END_INTEGRATION_REPORT_2026-10-24.md), [`focused_results.csv`](evidence/packet-b/sha4b02/focused_results.csv), and [`capture_state_manifest.json`](evidence/packet-b/sha4b02/capture_state_manifest.json).
+

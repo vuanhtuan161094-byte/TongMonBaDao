@@ -77,3 +77,5 @@ This is automated GUI evidence, not a human mouse session. Human Windows mouse a
 - Human Windows playtest, Android device/touch, sustained performance, Owner Visual: **PENDING**.
 - Standalone exported Windows executable: unavailable because export templates are absent; portable Godot project package is provided and smoke-launched.
 - PR state: new integration PR remains draft; no merge. PR #28/#29/#30 remain untouched. No FULL/CI.
+
+A separate headless-editor import scan completed its filesystem scan with exit 0 and no script parse failures, but Godot logged an editor-only settings save error (Can't save resource to empty path) for that isolated editor profile. It is retained in the evidence and is not counted as a clean Editor-settings smoke; the regular packaged game launch exited 0.
