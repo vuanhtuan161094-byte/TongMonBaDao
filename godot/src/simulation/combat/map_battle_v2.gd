@@ -169,6 +169,8 @@ func step(viewed_map: bool = false) -> Dictionary:
             if _heal_ally(actor):
                 continue
         if str(actor["role"]) == "frontline" and now >= float(actor["next_skill"]):
+            if _try_learned_skill(actor,target,true):
+                continue
             if _guard_frontline(actor):
                 continue
         if now >= float(actor["next_skill"]) and _try_learned_skill(actor,target):
@@ -190,11 +192,16 @@ func step(viewed_map: bool = false) -> Dictionary:
                 _cast_mage_aoe(actor,target)
                 continue
         if now >= float(actor["next_basic"]):
-            _deal_direct(actor,target,float(actor.get("basic_ratio",1.0)),"basic",true)
             var interval := CombatStatsV2.effective_interval(
                 1.65 if str(actor["side"]) == "monster" else float(actor.get("basic_interval",1.6)),
                 float(actor["stats"].get("attack_speed",0.0))
             )
+            if interval <= 0.0:
+                # A -100% or worse attack-speed modifier disables basic hits;
+                # keep checking at the simulation tick without creating debt.
+                actor["next_basic"] = now+STEP_SECONDS
+                continue
+            _deal_direct(actor,target,float(actor.get("basic_ratio",1.0)),"basic",true)
             # Carry fractional deadlines across grid checks without multi-hit catch-up.
             actor["next_basic"] = maxf(now+STEP_SECONDS,float(actor["next_basic"])+maxf(STEP_SECONDS,interval))
     if _count_alive("monster") == 0 and not continuous_mode:
@@ -373,7 +380,7 @@ func _heal_ally(actor: Dictionary) -> bool:
 
 func _guard_frontline(actor: Dictionary) -> bool:
     var ratio := float(actor["hp"])/maxf(1.0,float(actor["max_hp"]))
-    if ratio >= 0.75:
+    if ratio >= 0.75 or now < float(actor.get("learned_guard_until",-1.0)):
         return false
     actor["guard_until"] = now+4.0
     actor["next_skill"] = now+9.0
@@ -451,7 +458,7 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
 
 # S1 activates learned damage, burn, weaken and self-guard skills.
 # Dash and fire_combo require separate action semantics and remain deferred.
-func _try_learned_skill(actor: Dictionary, target: Dictionary) -> bool:
+func _try_learned_skill(actor: Dictionary, target: Dictionary, guard_only: bool = false) -> bool:
     var skills: Array = actor.get("skill_loadout",[])
     var ready: Dictionary = actor.get("skill_ready",{})
     for raw_id in skills:
@@ -459,6 +466,8 @@ func _try_learned_skill(actor: Dictionary, target: Dictionary) -> bool:
         var data: Dictionary = CombatSkillSystem.SKILLS.get(skill_id,{})
         var effect := str(data.get("effect",""))
         if not ["damage","burn","weaken","guard"].has(effect):
+            continue
+        if guard_only and (effect != "guard" or not bool(data.get("self_target",false))):
             continue
         if now < float(ready.get(skill_id,0.0)):
             continue
