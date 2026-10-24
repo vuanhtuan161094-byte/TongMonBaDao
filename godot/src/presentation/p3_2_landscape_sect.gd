@@ -4,7 +4,7 @@ const ZOOM_STEP := 1.12
 const CAMERA_TWEEN_SECONDS := 0.22
 const FOCUS_MARKER_SIZE := Vector2(82.0, 82.0)
 const B3_HUNT_REFRESH_SECONDS := 0.25
-const MAP_WORKSITE_MAX_CUES := 10
+const MAP_WORKSITE_MAX_CUES := 4
 const MAP_WORKSITE_REFRESH_SECONDS := 0.40
 
 class B3MainHuntArena:
@@ -1061,8 +1061,8 @@ func _build_building_operation_panel() -> void:
     var close := Button.new()
     close.name = "CloseBuildingOperation"
     close.text = "×"
-    close.position = Vector2(388, 12)
-    close.size = Vector2(36, 34)
+    close.position = Vector2(376, 10)
+    close.size = Vector2(48, 48)
     close.add_theme_font_size_override("font_size", 20)
     close.add_theme_stylebox_override("normal", _style(Color(0.86, 0.80, 0.66, 1.0), INK, 1, 16))
     close.pressed.connect(Callable(self, "_close_building_operation_panel").bind(true))
@@ -1089,7 +1089,7 @@ func _build_building_operation_panel() -> void:
     building_operation_body.name = "BuildingOperationBody"
     building_operation_body.custom_minimum_size = Vector2(384, 420)
     building_operation_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-    building_operation_body.add_theme_font_size_override("font_size", 13)
+    building_operation_body.add_theme_font_size_override("font_size", 14)
     building_operation_body.add_theme_color_override("font_color", INK)
     building_operation_content.add_child(building_operation_body)
 
@@ -1145,6 +1145,11 @@ func _refresh_building_operation_content() -> void:
     if building_management_feedback != "":
         feedback = "\n\n%s" % building_management_feedback
     var operation_text := _building_operation_text(selected_building)
+    # The roster and its real commands are presented together below.
+    if selected_building in [SectMapPresentation.DEST_MINE,SectMapPresentation.DEST_LINH_FOREST]:
+        var roster_boundary := operation_text.find("\n\nNHÂN SỰ")
+        if roster_boundary >= 0:
+            operation_text = operation_text.substr(0,roster_boundary)
     if selected_production_instance_id != &"" and state.buildings.has(str(selected_production_instance_id)):
         operation_text += "\n\n" + _map_worksite_operation_detail(
             state.buildings[str(selected_production_instance_id)] as BuildingState
@@ -1157,6 +1162,8 @@ func _refresh_building_operation_content() -> void:
         building_operation_body.custom_minimum_size.y = 150
     elif selected_building == SectMapPresentation.DEST_SPIRIT_FIELD:
         building_operation_body.custom_minimum_size.y = 220
+    elif selected_building in [SectMapPresentation.DEST_MINE,SectMapPresentation.DEST_LINH_FOREST]:
+        building_operation_body.custom_minimum_size.y = 168
     else:
         building_operation_body.custom_minimum_size.y = 420
     _rebuild_building_management_controls()
@@ -2923,9 +2930,9 @@ func _map_worksite_operation_detail(building: BuildingState) -> String:
     if snapshot.is_empty():
         return ""
     var percentage := int(roundf(float(snapshot.get("progress",0.0)))) if bool(snapshot.get("active",false)) else 0
-    return "ĐIỂM LÀM VIỆC · %s\n%s\nNgười: %s · %s\nĐã nhập Kho: %d · %s%%" % [
+    return "TIẾN ĐỘ TẠI %s\n%s\nNgười thực hiện: %s\nMẻ/ETA: %s\nTiến độ: %d%% · ĐÃ NHẬP KHO: %d" % [
         building.display_name,str(snapshot.get("heading","")),str(snapshot.get("worker","")),
-        str(snapshot.get("detail","")),int(snapshot.get("received",0)),percentage
+        str(snapshot.get("detail","")),percentage,int(snapshot.get("received",0))
     ]
 
 func _map_worksite_layout_for_anchor(anchor: Vector2, occupied: Array) -> Dictionary:
@@ -2989,11 +2996,10 @@ func _refresh_map_worksite_cues() -> void:
     )
     var retained := {}
     var occupied: Array = _map_worksite_panel_exclusions()
-    var idle_shown := 0
     for entry in candidates:
         if retained.size() >= MAP_WORKSITE_MAX_CUES:
             break
-        if int(entry["priority"]) == 0 and idle_shown >= 2:
+        if int(entry["priority"]) == 0:
             continue
         var building: BuildingState = entry["building"]
         var key := str(building.id)
@@ -3001,8 +3007,6 @@ func _refresh_map_worksite_cues() -> void:
         var layout := _map_worksite_layout_for_anchor(anchor,occupied)
         if layout.is_empty():
             continue
-        if int(entry["priority"]) == 0:
-            idle_shown += 1
         occupied.append(layout["rect"])
         map_worksite_anchors[key] = anchor
         map_worksite_screen_offsets[key] = layout["offset"]
