@@ -20,7 +20,7 @@
 - Skill visual map: https://drive.google.com/file/d/1TBOCRX4EYlmJWAGb9bKKHGCbvE3GlEsy/view (Source VL/js/skill-visuals.js); E1.
 - Native VFX map: https://drive.google.com/file/d/1xAXh6daKUlMxQyGbwPM3eQXSaNwh6pIC/view (Source VL/js/vfx.js); E1.
 - Projectile geometry: https://drive.google.com/file/d/1hqDReQ55-sdIOO_1ah8NbLjVEvR4vA7Z/view (Source VL/js/projectile-motion.js); E1, nhưng cách giải nghĩa enum ở đây chưa đối chiếu client JX nguyên bản.
-- Báo cáo derivative QA: https://drive.google.com/file/d/1ACIt96SwzijJgSFvi-kmv90-AWtL21NH/view — chỉ là QA bản web, không phải TMB Godot hoặc JX client nguyên bản.
+- Báo cáo derivative QA: https://drive.google.com/file/d/1ACIt96SwzijJgSFvi-kmv90-Awtl21NH/view — chỉ là QA bản web, không phải TMB Godot hoặc JX client nguyên bản.
 - Các thư mục https://drive.google.com/drive/folders/1bC-FWuEjH1i-vheffWurdeZKwEIjBhQn và https://drive.google.com/drive/folders/1OYhASFXTBNK4ky3ln2p_m7g7qGbyYDPm gồm ảnh UI và dự án Võ Lâm Idle; README xác nhận fan-made unofficial. Bản fan combat là tài liệu học cấu trúc, không dùng để xác nhận công thức chính thức.
 
 ### 1.2 GitHub source/asset JXQY2
