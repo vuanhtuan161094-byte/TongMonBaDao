@@ -133,6 +133,33 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
             return {"ok":false,"reason":"invalid_actor_hp"}
         if absf(max_hp-float(stats.get("max_hp",-1.0))) > 0.00001:
             return {"ok":false,"reason":"max_hp_stat_snapshot_mismatch"}
+        # Validate S1 authoritative statuses before replaying untrusted bytes.
+        var statuses = actor.get("status_effects",{})
+        if not (statuses is Dictionary) or statuses.size() > 2:
+            return {"ok":false,"reason":"invalid_combat_status_map"}
+        for status_key in statuses.keys():
+            if not ["burn","weaken"].has(str(status_key)):
+                return {"ok":false,"reason":"unsupported_combat_status"}
+            var status = statuses[status_key]
+            if not (status is Dictionary):
+                return {"ok":false,"reason":"invalid_combat_status"}
+            var until := float(status.get("until",-1.0))
+            if is_nan(until) or is_inf(until) or until < 0.0 or until > max_time+90.0:
+                return {"ok":false,"reason":"invalid_status_expiry"}
+            if str(status.get("caster","")).is_empty() or str(status.get("skill_id","")).is_empty():
+                return {"ok":false,"reason":"missing_status_provenance"}
+            var factor := float(status.get("ratio",-1.0)) if str(status_key) == "burn" else float(status.get("factor",-1.0))
+            if is_nan(factor) or is_inf(factor) or factor < 0.0 or factor > 1.0:
+                return {"ok":false,"reason":"invalid_status_factor"}
+            if str(status_key) == "burn":
+                var due := float(status.get("next_tick",-1.0))
+                if is_nan(due) or is_inf(due) or due < 0.0 or due > until+1.0:
+                    return {"ok":false,"reason":"invalid_burn_tick"}
+        var learned_until := float(actor.get("learned_guard_until",-1.0))
+        var learned_factor := float(actor.get("learned_guard_factor",1.0))
+        if (is_nan(learned_until) or is_inf(learned_until) or learned_until < -1.0 or
+            is_nan(learned_factor) or is_inf(learned_factor) or learned_factor < 0.01 or learned_factor > 1.0):
+            return {"ok":false,"reason":"invalid_learned_guard"}
         if side == "disciple":
             disciples += 1
             var party_id := str(actor.get("party_id",""))
