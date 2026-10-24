@@ -1,39 +1,24 @@
-# NEXT CODEX TASK — TMB MASTER V3 FOLLOW-UP
+# NEXT CODEX TASK — TÔNG MÔN BÁ ĐẠO PR #28 UI + SOURCE A WORKER ASSETS
+Ngày: 2026-10-24
+**Hướng dẫn hiện hành trên nhánh PR #28; thay thế phần prompt UI-only cũ tại file này.**
 
-Continue from the branch and evidence below. This is a proposed next task prompt; obtain owner direction before implementing broader UI or balance changes.
+## Sự cho phép và đối tượng
 
-Repository: vuanhtuan161094-byte/TongMonBaDao
-Current branch: integration/master-v3-combat-d7-uiux-20261024
-Draft PR #27: https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/27
-Base PR #26: 53ff0b223f4e77ccfbe5c77d2203496ac0cc37a9
-Tested code SHA: 80ed0270d2b7370f8feff1ce829f167146f3f341
-Godot: official 4.7.2.stable.official.ed1daf0bf
+Owner **đã mở rộng** nhiệm vụ: vừa sửa UI/UX trực tiếp trong Godot P3.2, vừa **gắn thêm asset đã được worker chuyển đổi** nếu manifest/hash/runtime QA đạt. Chỉ đổi visual adapter, asset registry, UI và test; giữ toàn bộ gameplay canonical. Không xây renderer mới, không giả action clips.
 
-Read these first:
-- docs/handoffs/TMB_MASTER_V3_IMPLEMENTATION_REPORT_2026-10-24.md
-- docs/handoffs/TMB_MASTER_V3_UI_ISSUE_MATRIX_2026-10-24.md
-- docs/handoffs/TMB_CHATGPT_SUMMARY_PACKET_2026-10-24.md
-- outputs/TMB_MASTER_V3_20261024/08_before_after_comparisons/current_annotated_mockup_actual/
+Repo: vuanhtuan161094-byte/TongMonBaDao
+Base PR #27 head: deeae081bcfbe1413d4cf60a29db7e58150888b5
+Draft PR #28 head branch: ui/pr27-runtime-readability-20261024
+Godot: official 4.7.2; Android landscape reference 1280x720
+PR #24–#28: không merge; không FULL/CI; không rebase vào main.
 
-Current evidence: focused suite PASS 20/20 on fresh isolated userdata; a first run was 19/20 due O9's fresh roster allocation and its cause remains unconfirmed. P3.2 GUI capture PASS at 1280×720, with CARE hit/skill, paid loot, canonical Warehouse and SaveService reload. Injury in the captured frame is 0. Combat fixture PASS is diagnostic only. D7 profile is implemented; map/worksite/combat mockups remain static.
+**BẮT BUỘC đọc toàn bộ packet mới trước khi làm:**
+docs/handoffs/TMB_PR28_UI_SOURCEA_WORKER_ASSET_INTEGRATION_PACKET_2026-10-24.md
 
-## Suggested next action
+Cũng đọc AGENTS.md, CURRENT_CHECKPOINT.md, NEXT_CHAT_HANDOFF.md, các handoff PR27, docs/P3_ART_BIBLE.md, manifest Source A, Codex handoff ZIP và tài liệu PR28 UI PASS1.
 
-Start with owner review of the four current→annotated→mockup→actual sheets. Ask which visual changes are approved for implementation. If approved, make a new draft branch based on this branch and implement only the selected P3.2 presentation changes. Keep the current actual runtime, P3.2 map/building state and CARE data as the source of truth.
+## Prompt thực thi rút gọn
 
-Keep these boundaries:
-- Keep PR #24/#25/#26 open and unchanged. Do not merge anything.
-- Do not change Combat V2/CARE, Injury120, reward/warehouse, scheduler or SaveService ownership.
-- Do not implement ×100 rebalance until exact HP/damage/potion/item values are approved.
-- Do not add hunt EXP, a new runtime, clock, world, save, actor party, Boss/AoE event or duplicate loot.
-- Do not mark mockups, scripted capture, Windows manual, Android or Owner Visual as equivalent.
-- Do not run FULL/CI unless separately authorized.
+TÔNG MÔN BÁ ĐẠO — TIẾP TỤC PR #28. Hãy fetch HEAD mới nhất của nhánh ui/pr27-runtime-readability-20261024 và đọc đầy đủ docs/handoffs/TMB_PR28_UI_SOURCEA_WORKER_ASSET_INTEGRATION_PACKET_2026-10-24.md. Thực hiện trọn G0→G3 trong packet: kiểm kê output asset Source A do worker tạo (repo, các branch chuyên dụng, worktree/output local đã có quyền), đối chiếu SHA, clips, FPS/frames, pivot, giới tính/loài, import Godot; skip trùng và reject asset lỗi. Gắn các asset VERIFIED mới vào chính scene P3.2 đang chạy: map/công trình/Mỏ–Linh Lâm–Linh Điền, nhân vật/hồ sơ D7 và Combat V5 view adapter, theo thứ tự ưu tiên. Sửa tiếp readability UI PR28, KHÔNG viết lại renderer hoặc giả animation đào/chặt/trồng/Boss. Không sửa Combat V2/V3, HP/ATK/DEF/balance x100, D7 odds, CARE, Warehouse, scheduler, thuốc, Injury120, SaveService, economy. Chạy Godot 4.7.2 official focused với userdata cách ly; chụp screenshot thật 1280x720 trước/sau ở cùng tình huống; giữ log FAIL O9 ban đầu và clean PASS tách biệt; chứng minh Warehouse receipt / actor save-load không bị ảnh hưởng. Commit từng category nhỏ lên nhánh PR28, cập nhật báo cáo/manifest/issue matrix trong GitHub, nêu SHA và gate PENDING. Không FULL/CI, không merge PR #24/#25/#26/#27/#28. Windows manual/Android/Owner Visual chỉ PASS khi có bằng chứng thực tế. Nếu worker outputs chưa truy cập được thì thực hiện phần có asset VERIFIED và báo rõ BLOCKED_ASSET theo đường dẫn, không bịa ảnh hay asset.
 
-For each approved UI issue, list exact allowed files before editing, make one small checkpoint, run affected focused regressions with official Godot 4.7.2, and capture actual P3.2 before/after at 1280×720 with exact code SHA. Retain any failing first-run logs alongside clean retry results.
-
-Possible separate follow-up prompts:
-
-1. Owner visual: “Review the four image sheets in the handoff ZIP and approve or reject each issue ID in TMB_MASTER_V3_UI_ISSUE_MATRIX_2026-10-24.md. Do not merge PRs.”
-2. Balance: “Approve numeric targets for V2 HP, damage, healing pills, caps and item values after reviewing P1 evidence. Do not implement until the complete value table is explicit.”
-3. Manual acceptance: “Open the draft branch on Windows Godot 4.7.2 at 1280×720 and perform mouse play/save/load/redeploy; record the steps, observations and any failure. Android remains a separate physical-device gate.”
-
+**Nhiệm vụ kết thúc** sau khi bàn giao README/report và evidence; không tự merge. Thứ tự ưu tiên phải theo packet G0→G3, không quay về prompt cũ cấm động vào mọi asset/visual adapter.
