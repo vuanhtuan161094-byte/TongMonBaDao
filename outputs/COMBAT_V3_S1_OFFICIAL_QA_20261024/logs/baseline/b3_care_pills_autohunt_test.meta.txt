@@ -1,0 +1,15 @@
+command="E:\codex\TMB_Playable_V1_Windows\engine\Godot_v4.7.2-stable_win64_console.exe" --headless --path "E:\codex\2026-10-24\t-ng-m-n-b-o\work\combat-v3-s1-official-qa-20261024\godot" --script res://tests/simulation/b3_care_pills_autohunt_test.gd
+cwd=E:\codex\2026-10-24\t-ng-m-n-b-o\work\combat-v3-s1-official-qa-20261024\godot
+engine=4.7.2.stable.official.ed1daf0bf
+phase=baseline
+userdata_appdata=E:\codex\2026-10-24\t-ng-m-n-b-o\work\combat-v3-s1-official-qa-20261024\outputs\COMBAT_V3_S1_OFFICIAL_QA_20261024\userdata\baseline\AppData\Roaming
+userdata_localappdata=E:\codex\2026-10-24\t-ng-m-n-b-o\work\combat-v3-s1-official-qa-20261024\outputs\COMBAT_V3_S1_OFFICIAL_QA_20261024\userdata\baseline\AppData\Local
+userdata_temp=E:\codex\2026-10-24\t-ng-m-n-b-o\work\combat-v3-s1-official-qa-20261024\outputs\COMBAT_V3_S1_OFFICIAL_QA_20261024\userdata\baseline\Temp
+exit_code=0
+elapsed_ms=65372
+status=PASS
+failure_category=none
+pass_marker=B3 CARE REAL DEFEAT + PILL/REST + INJURY120 + AUTO SAME WORLD + OFFLINE + SAVE RETRY PASS (39 checks)
+parse_errors=0
+assertion_errors=0
+runtime_error_lines=2

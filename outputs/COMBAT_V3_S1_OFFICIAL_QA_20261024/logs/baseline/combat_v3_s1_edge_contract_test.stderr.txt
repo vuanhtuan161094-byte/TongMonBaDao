@@ -1,0 +1,31 @@
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+ERROR: S1_EDGE_FAIL: frontline learned guard must apply once
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/simulation/combat_v3_s1_edge_contract_test.gd:12)
+       [1] _run (res://tests/simulation/combat_v3_s1_edge_contract_test.gd:60)
+ERROR: S1_EDGE_FAIL: generic guard must not overlap an active learned guard
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/simulation/combat_v3_s1_edge_contract_test.gd:12)
+       [1] _run (res://tests/simulation/combat_v3_s1_edge_contract_test.gd:62)
+ERROR: S1_EDGE_FAIL: frontline learned guard must not retrigger before expiration
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/simulation/combat_v3_s1_edge_contract_test.gd:12)
+       [1] _run (res://tests/simulation/combat_v3_s1_edge_contract_test.gd:66)
+ERROR: S1_EDGE_FAIL: snapshot accepted status from unknown caster
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/simulation/combat_v3_s1_edge_contract_test.gd:12)
+       [1] _run (res://tests/simulation/combat_v3_s1_edge_contract_test.gd:87)
+ERROR: S1_EDGE_FAIL: snapshot accepted an infinite cast deadline
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/simulation/combat_v3_s1_edge_contract_test.gd:12)
+       [1] _run (res://tests/simulation/combat_v3_s1_edge_contract_test.gd:97)
+ERROR: S1_EDGE_CONTRACT_FAIL checks=5
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/simulation/combat_v3_s1_edge_contract_test.gd:143)

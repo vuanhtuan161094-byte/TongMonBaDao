@@ -1,0 +1,7 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+DV2 ZONE RARITY level=1 encounters=1300 elite=87 boss=14 no_special=1199
+DV2 ZONE RARITY level=2 encounters=1300 elite=182 boss=37 no_special=1081
+DV2 ZONE RARITY level=3 encounters=1300 elite=1300 boss=108 no_special=0
+DV2 ZONE RARITY level=4 encounters=1300 elite=1300 boss=212 no_special=0
+DV2-02E FIVE DIFFICULTIES + REAL GEAR/SKILLS + PERSISTENT REGISTERED REWARDS: PASS

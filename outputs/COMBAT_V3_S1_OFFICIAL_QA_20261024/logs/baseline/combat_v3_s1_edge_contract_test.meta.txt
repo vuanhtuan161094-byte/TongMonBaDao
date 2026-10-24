@@ -1,0 +1,8 @@
+command=E:\codex\TMB_Playable_V1_Windows\engine\Godot_v4.7.2-stable_win64_console.exe --headless --path E:\codex\2026-10-24\t-ng-m-n-b-o\work\combat-v3-s1-official-qa-20261024\godot --script res://tests/simulation/combat_v3_s1_edge_contract_test.gd
+cwd=E:\codex\2026-10-24\t-ng-m-n-b-o\work\combat-v3-s1-official-qa-20261024\godot
+engine=4.7.2.stable.official.ed1daf0bf
+source_head=9522812e91b7ca5bc0cc108eb92e000e930fe850
+test_file=uncommitted S1 edge contract probe
+appdata=E:\codex\2026-10-24\t-ng-m-n-b-o\work\combat-v3-s1-official-qa-20261024\outputs\COMBAT_V3_S1_OFFICIAL_QA_20261024\userdata\baseline\AppData\Roaming
+exit_code=1
+elapsed_ms=8224

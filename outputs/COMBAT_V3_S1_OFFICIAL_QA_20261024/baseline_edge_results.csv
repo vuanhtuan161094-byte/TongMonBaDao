@@ -1,0 +1,2 @@
+"test_path","source_sha","exit_code","pass_marker","parse_errors","assertion_errors","runtime_error_lines","failure_category","log_path","status"
+"tests/simulation/combat_v3_s1_edge_contract_test.gd (pre-fix probe)","9522812e91b7ca5bc0cc108eb92e000e930fe850","1","S1_EDGE_CONTRACT_FAIL checks=5","0","5","1","S1 behavior assertions","outputs/COMBAT_V3_S1_OFFICIAL_QA_20261024/logs/baseline/combat_v3_s1_edge_contract_test","FAIL (expected baseline defect repro)"

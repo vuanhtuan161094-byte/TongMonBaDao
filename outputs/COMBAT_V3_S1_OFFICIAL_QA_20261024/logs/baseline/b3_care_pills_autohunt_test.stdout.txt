@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+AUTO AT120 tick=126 hp=146.0 injury=0 action=HOLD cmd={  } policy={ "auto_deploys": 1, "auto_heal": true, "auto_hunt": true, "disciple_id": "candidate_99441", "heals": 1.0, "last_review_tick": 126, "min_hp_ratio": 0.75, "next_review_tick": 127, "owns_rest": false, "paused_manual": false, "rest_requests": 41, "status": "HUNTING", "version": 1.0 }
+B3 CARE LOOP EVIDENCE world=b3:vs1:bach_thach_khe:930211:6 down_tick=6 recover_tick=126 auto_deploys=1 kills=4 real_warehouse=4 save=E:/codex/2026-10-24/t-ng-m-n-b-o/work/combat-v3-s1-official-qa-20261024/outputs/COMBAT_V3_S1_OFFICIAL_QA_20261024/userdata/baseline/AppData/Roaming/Godot/app_userdata/Tong Mon Ba Dao/care_loop_medicine_6382867.json.online
+B3 REST-ONLY EVIDENCE recover_tick=120 same_world=b3:vs1:bach_thach_khe:930211:0 rest_requests=68
+B3 CARE REAL DEFEAT + PILL/REST + INJURY120 + AUTO SAME WORLD + OFFLINE + SAVE RETRY PASS (39 checks)

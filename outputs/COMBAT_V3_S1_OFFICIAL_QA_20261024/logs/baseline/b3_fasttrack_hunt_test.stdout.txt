@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+B3 REAL RUN world=b3:vs1:bach_thach_khe:930211:0 seconds=120.00 kills=2 warehouse_delta=2 generation=3 injury=1
+B3 COMPLETE LOOP same_world=b3:vs1:bach_thach_khe:930211:0 seconds=7320.00 real_kills=4 canonical_warehouse_delta=4
+B3 FASTTRACK REAL HUNT + CANONICAL WAREHOUSE + SAVE/LOAD + CRASH/RETRY + CLOCK PASS (56 checks)

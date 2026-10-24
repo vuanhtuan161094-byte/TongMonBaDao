@@ -1,0 +1,16 @@
+command="E:\codex\TMB_Playable_V1_Windows\engine\Godot_v4.7.2-stable_win64_console.exe" --headless --path "E:\codex\2026-10-24\t-ng-m-n-b-o\work\combat-v3-s1-official-qa-20261024\godot" --script res://tests/simulation/p2_5_combat_skill_test.gd
+cwd=E:\codex\2026-10-24\t-ng-m-n-b-o\work\combat-v3-s1-official-qa-20261024\godot
+engine=4.7.2.stable.official.ed1daf0bf
+source_head=4fe466d8efc192aa93738811041de795baadb22a
+phase=final
+userdata_appdata=E:\codex\2026-10-24\t-ng-m-n-b-o\work\combat-v3-s1-official-qa-20261024\outputs\COMBAT_V3_S1_OFFICIAL_QA_20261024\userdata\final\AppData\Roaming
+userdata_localappdata=E:\codex\2026-10-24\t-ng-m-n-b-o\work\combat-v3-s1-official-qa-20261024\outputs\COMBAT_V3_S1_OFFICIAL_QA_20261024\userdata\final\AppData\Local
+userdata_temp=E:\codex\2026-10-24\t-ng-m-n-b-o\work\combat-v3-s1-official-qa-20261024\outputs\COMBAT_V3_S1_OFFICIAL_QA_20261024\userdata\final\Temp
+exit_code=0
+elapsed_ms=3995
+status=PASS
+failure_category=none
+pass_marker=P2.5 REALTIME COMBAT + INDEPENDENT SKILLS TEST PASS
+parse_errors=0
+assertion_errors=0
+runtime_error_lines=1

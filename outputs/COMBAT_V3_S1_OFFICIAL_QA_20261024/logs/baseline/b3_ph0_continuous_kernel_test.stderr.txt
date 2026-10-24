@@ -1,0 +1,8 @@
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+ERROR: Condition "CryptoCore::b64_decode(&w[0], buf.size(), &arr_len, (unsigned char *)cstr.get_data(), strlen) != OK" is true. Returning: Vector<uint8_t>()
+   at: base64_to_raw (core/core_bind.cpp:1366)
+   GDScript backtrace (most recent call first):
+       [0] load (res://src/simulation/combat/map_battle_snapshot_v2.gd:72)
+       [1] _test_snapshots (res://tests/simulation/b3_ph0_continuous_kernel_test.gd:223)
+       [2] _run (res://tests/simulation/b3_ph0_continuous_kernel_test.gd:54)

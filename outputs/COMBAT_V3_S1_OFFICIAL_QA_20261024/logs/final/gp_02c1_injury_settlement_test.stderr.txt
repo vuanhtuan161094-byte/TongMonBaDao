@@ -1,0 +1,8 @@
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+ERROR: GP-02C1: incompatible saved PvE: legacy_participant_occupation_conflict
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] from_dict (res://src/simulation/state/simulation_state.gd:419)
+       [1] _legacy_terminal_and_fail_closed (res://tests/simulation/gp_02c1_injury_settlement_test.gd:239)
+       [2] _run (res://tests/simulation/gp_02c1_injury_settlement_test.gd:86)
