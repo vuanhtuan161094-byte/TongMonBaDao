@@ -1728,6 +1728,11 @@ func _build_work_management(profession_id: StringName, group_id: StringName, gro
         var disciple: DiscipleState = state.disciples[raw_id]
         var row := _new_management_row(disciple)
         var in_group := disciple.work_group_id == group_id
+        var name_label := row.get_child(0) as Label
+        if name_label != null:
+            var role_text := "ĐANG LÀM" if active_building_ids.has(disciple.id) else ("TRONG ĐỘI" if in_group else "CHƯA PHÂN ĐỘI")
+            name_label.text = "%s\n%s" % [disciple.display_name,role_text]
+            name_label.tooltip_text += " · " + role_text
         var timed_recipe_busy := building_system.disciple_has_active_timed_recipe(state, disciple.id)
 
         var group_button := Button.new()
@@ -1943,15 +1948,20 @@ func _add_management_section_label(text: String) -> void:
 func _new_management_row(disciple: DiscipleState) -> HBoxContainer:
     var row := HBoxContainer.new()
     row.name = "Person_%s" % str(disciple.id)
-    row.custom_minimum_size = Vector2(384, 38)
+    row.custom_minimum_size = Vector2(384, 44)
     row.add_theme_constant_override("separation", 6)
     building_management_container.add_child(row)
 
     var name := Label.new()
-    name.text = "%s · TL %.0f" % [disciple.display_name, disciple.stamina]
-    name.custom_minimum_size = Vector2(190, 34)
+    name.text = disciple.display_name
+    name.tooltip_text = "%s · Thể lực %.0f · %s" % [
+        disciple.display_name,disciple.stamina,SectMapPresentation.action_label(disciple.current_action)
+    ]
+    name.clip_text = true
+    name.custom_minimum_size = Vector2(144, 44)
     name.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-    name.add_theme_font_size_override("font_size", 11)
+    name.add_theme_font_size_override("font_size", 12)
+    name.add_theme_color_override("font_color", INK)
     row.add_child(name)
     return row
 
@@ -3325,7 +3335,7 @@ func _build_b3_hunt_panel() -> void:
     facts_panel.size = Vector2(382,484)
     facts_panel.add_theme_stylebox_override("panel",_style(Color("eee6d2"),Color("74694f"),1,8))
     b3_hunt_panel.add_child(facts_panel)
-    b3_hunt_facts = _label(facts_panel,"",Vector2(16,14),Vector2(350,452),14)
+    b3_hunt_facts = _label(facts_panel,"",Vector2(16,14),Vector2(350,452),15)
     b3_hunt_facts.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     b3_hunt_facts.add_theme_color_override("font_color",INK)
     b3_hunt_feedback = _label(b3_hunt_panel,"",Vector2(28,578),Vector2(510,42),13)
@@ -3346,6 +3356,7 @@ func _build_b3_hunt_panel() -> void:
     b3_hunt_auto_button.position = Vector2(746,580)
     b3_hunt_auto_button.size = Vector2(120,46)
     b3_hunt_auto_button.add_theme_font_size_override("font_size",15)
+    b3_hunt_auto_button.add_theme_color_override("font_color", PAPER_LIGHT)
     b3_hunt_auto_button.add_theme_stylebox_override("normal",_style(JADE_DARK,PAPER_LIGHT,2,8))
     b3_hunt_auto_button.pressed.connect(_toggle_b3_hunt_auto)
     b3_hunt_panel.add_child(b3_hunt_auto_button)
@@ -3526,12 +3537,11 @@ func _refresh_b3_hunt_panel() -> void:
     var battle_time := float(battle.now) if battle != null else 0.0
     var battle_status := "Chiến trường đang sẵn sàng" if battle != null else "Chiến trường chưa khởi tạo"
     b3_hunt_facts.text = (
-        "%s\n%s · %s\n\n"
-        + "Đệ tử: %s\nHP: %.0f / %.0f\nInjury: %s\nTu Vi: %s\n\n"
-        + "Hạ gục đã trả thưởng: %d\nQuái đang ở thế hệ: %d\nThời gian chiến trường: %.1f giây\n\n"
-        + "Kho tông môn · %s\nTổng: %d · Dùng được: %d\n\n"
-        + "Thuốc Hồi Xuân trong Kho: %d viên · bão hòa hôm nay: %d / %d điểm\n"
-        + "CARE: %s"
+        "%s · %s\n%s\n\n"
+        + "ĐỆ TỬ · %s\nHP  %.0f / %.0f   |   %s\nTu Vi  %s\n\n"
+        + "SĂN QUÁI · ĐÃ TRẢ THƯỞNG %d\nThế hệ quái: %d   |   %.1f giây\n\n"
+        + "KHO TÔNG MÔN · %s\nTổng: %d   |   Dùng được: %d\n\n"
+        + "HỒI XUÂN ĐAN: %d viên\nBão hòa thuốc hôm nay: %d / %d\nCARE: %s"
     ) % [
         auto_text,str(status_names.get(str(care.get("status","")),"Chưa bật AUTO")),battle_status,
         d.display_name,d.hp,d.max_hp,injury,tuvi_text,kills,int(slot.get("generation",0)),battle_time,
