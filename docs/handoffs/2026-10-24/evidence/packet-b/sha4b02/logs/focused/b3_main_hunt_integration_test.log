@@ -1,0 +1,11 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+B3 MAIN BASELINE: paid=0 pilot_stock=0
+B3 MAIN FIRST LOOT: paid=1 pilot_stock=1 receipt=COMMITTED
+B3 MAIN DOWN: tick=0 recover_tick=120 paid=2 injury=1 hp=1.0 returned_to_sect=true
+B3 MAIN INJURY120: tick=120 injury=0 hp=146.714285714286 same_world_member=candidate_73021 rest_requests=68
+B3 MAIN REDEPLOY: paid=2 pilot_stock=9 member=candidate_73021 injury=0
+B3 MAIN REHUNT LOOT: paid=3 pilot_stock=10 delta_since_deploy=1 receipt=COMMITTED
+B3 MAIN SCREEN COMPLETE HUNT/CARE/LOOT/SAVE/RETURN INTEGRATION: PASS

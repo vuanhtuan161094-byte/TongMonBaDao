@@ -1,0 +1,3007 @@
+{
+	"capture_states": [
+		{
+			"auto": false,
+			"battle_seconds": 0.0,
+			"captured_at_utc": "2026-10-24T08:32:07",
+			"disciple_id": "",
+			"event_refs": [],
+			"event_types": [],
+			"extra": {},
+			"fps": 1.0,
+			"hp": 0.0,
+			"image_path": "00_current_map_main.png",
+			"injury": 0,
+			"max_hp": 0.0,
+			"paid_kills": 0,
+			"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+			"screen": "00_current_map_main",
+			"static_memory_bytes": 65749061,
+			"tick": 0,
+			"viewport": [
+				1280,
+				720
+			],
+			"wall_unix": 1792830725,
+			"warehouse_pilot_stock": 0,
+			"world_id": ""
+		},
+		{
+			"auto": false,
+			"battle_seconds": 0.0,
+			"captured_at_utc": "2026-10-24T08:32:07",
+			"disciple_id": "",
+			"event_refs": [],
+			"event_types": [],
+			"extra": {},
+			"fps": 1.0,
+			"hp": 0.0,
+			"image_path": "01_current_map_pan_zoom.png",
+			"injury": 0,
+			"max_hp": 0.0,
+			"paid_kills": 0,
+			"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+			"screen": "01_current_map_pan_zoom",
+			"static_memory_bytes": 65750405,
+			"tick": 0,
+			"viewport": [
+				1280,
+				720
+			],
+			"wall_unix": 1792830725,
+			"warehouse_pilot_stock": 0,
+			"world_id": ""
+		},
+		{
+			"auto": false,
+			"battle_seconds": 0.0,
+			"captured_at_utc": "2026-10-24T08:32:08",
+			"disciple_id": "",
+			"event_refs": [],
+			"event_types": [],
+			"extra": {
+				"building_id": "mine_001",
+				"building_type": "mine"
+			},
+			"fps": 24.0,
+			"hp": 0.0,
+			"image_path": "02_current_mine.png",
+			"injury": 0,
+			"max_hp": 0.0,
+			"paid_kills": 0,
+			"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+			"screen": "02_current_mine",
+			"static_memory_bytes": 67919965,
+			"tick": 0,
+			"viewport": [
+				1280,
+				720
+			],
+			"wall_unix": 1792830725,
+			"warehouse_pilot_stock": 0,
+			"world_id": ""
+		},
+		{
+			"auto": false,
+			"battle_seconds": 0.0,
+			"captured_at_utc": "2026-10-24T08:32:08",
+			"disciple_id": "",
+			"event_refs": [],
+			"event_types": [],
+			"extra": {
+				"building_id": "linh_forest_001",
+				"building_type": "linh_forest"
+			},
+			"fps": 24.0,
+			"hp": 0.0,
+			"image_path": "03_current_linh_lam.png",
+			"injury": 0,
+			"max_hp": 0.0,
+			"paid_kills": 0,
+			"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+			"screen": "03_current_linh_lam",
+			"static_memory_bytes": 67694397,
+			"tick": 0,
+			"viewport": [
+				1280,
+				720
+			],
+			"wall_unix": 1792830725,
+			"warehouse_pilot_stock": 0,
+			"world_id": ""
+		},
+		{
+			"auto": false,
+			"battle_seconds": 0.0,
+			"captured_at_utc": "2026-10-24T08:32:08",
+			"disciple_id": "",
+			"event_refs": [],
+			"event_types": [],
+			"extra": {
+				"building_id": "spirit_field_001",
+				"building_type": "spirit_field"
+			},
+			"fps": 24.0,
+			"hp": 0.0,
+			"image_path": "04_current_linh_dien.png",
+			"injury": 0,
+			"max_hp": 0.0,
+			"paid_kills": 0,
+			"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+			"screen": "04_current_linh_dien",
+			"static_memory_bytes": 70530501,
+			"tick": 0,
+			"viewport": [
+				1280,
+				720
+			],
+			"wall_unix": 1792830725,
+			"warehouse_pilot_stock": 0,
+			"world_id": ""
+		},
+		{
+			"auto": false,
+			"battle_seconds": 0.0,
+			"captured_at_utc": "2026-10-24T08:32:09",
+			"disciple_id": "",
+			"event_refs": [],
+			"event_types": [],
+			"extra": {},
+			"fps": 14.0,
+			"hp": 0.0,
+			"image_path": "05_current_warehouse.png",
+			"injury": 0,
+			"max_hp": 0.0,
+			"paid_kills": 0,
+			"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+			"screen": "05_current_warehouse",
+			"static_memory_bytes": 69813425,
+			"tick": 0,
+			"viewport": [
+				1280,
+				720
+			],
+			"wall_unix": 1792830725,
+			"warehouse_pilot_stock": 0,
+			"world_id": ""
+		},
+		{
+			"auto": false,
+			"battle_seconds": 0.0,
+			"captured_at_utc": "2026-10-24T08:32:09",
+			"disciple_id": "candidate_73025",
+			"event_refs": [],
+			"event_types": [],
+			"extra": {
+				"generation_index": 73025,
+				"recruitment_source": "canonical ordinary",
+				"visual_sex": "male"
+			},
+			"fps": 14.0,
+			"hp": 192.45,
+			"image_path": "06_current_v2_male_profile.png",
+			"injury": 0,
+			"max_hp": 192.45,
+			"paid_kills": 0,
+			"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+			"screen": "06_current_v2_male_profile",
+			"static_memory_bytes": 73808945,
+			"tick": 0,
+			"viewport": [
+				1280,
+				720
+			],
+			"wall_unix": 1792830725,
+			"warehouse_pilot_stock": 0,
+			"world_id": ""
+		},
+		{
+			"auto": false,
+			"battle_seconds": 0.0,
+			"captured_at_utc": "2026-10-24T08:32:09",
+			"disciple_id": "candidate_73021",
+			"event_refs": [],
+			"event_types": [],
+			"extra": {
+				"generation_index": 73021,
+				"recruitment_source": "canonical ordinary",
+				"visual_sex": "female"
+			},
+			"fps": 11.0,
+			"hp": 192.3,
+			"image_path": "07_current_v2_female_profile.png",
+			"injury": 0,
+			"max_hp": 192.3,
+			"paid_kills": 0,
+			"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+			"screen": "07_current_v2_female_profile",
+			"static_memory_bytes": 73882465,
+			"tick": 0,
+			"viewport": [
+				1280,
+				720
+			],
+			"wall_unix": 1792830725,
+			"warehouse_pilot_stock": 0,
+			"world_id": ""
+		},
+		{
+			"auto": false,
+			"battle_seconds": 0.0,
+			"captured_at_utc": "2026-10-24T08:32:12",
+			"disciple_id": "candidate_73025",
+			"event_refs": [],
+			"event_types": [],
+			"extra": {
+				"building_id": "mine_001",
+				"expected_batch": 2,
+				"observed_phases": [
+					"travel_out",
+					"mining",
+					"haul_back"
+				],
+				"warehouse_after": 39,
+				"warehouse_before": 37,
+				"worker_id": "trieu_linh_nhi"
+			},
+			"fps": 12.0,
+			"hp": 192.45,
+			"image_path": "08_current_mine_after_real_settlement.png",
+			"injury": 0,
+			"max_hp": 192.45,
+			"paid_kills": 0,
+			"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+			"screen": "08_current_mine_after_real_settlement",
+			"static_memory_bytes": 75970985,
+			"tick": 20,
+			"viewport": [
+				1280,
+				720
+			],
+			"wall_unix": 1792830725,
+			"warehouse_pilot_stock": 0,
+			"world_id": ""
+		},
+		{
+			"auto": true,
+			"battle_seconds": 0.0,
+			"captured_at_utc": "2026-10-24T08:32:13",
+			"disciple_id": "candidate_73025",
+			"event_refs": [],
+			"event_types": [
+				"battle_start"
+			],
+			"extra": {},
+			"fps": 6.0,
+			"hp": 197.45,
+			"image_path": "09_current_combat_v5_start.png",
+			"injury": 0,
+			"max_hp": 198.45,
+			"paid_kills": 0,
+			"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+			"screen": "09_current_combat_v5_start",
+			"static_memory_bytes": 76208619,
+			"tick": 60,
+			"viewport": [
+				1280,
+				720
+			],
+			"wall_unix": 1792830725,
+			"warehouse_pilot_stock": 0,
+			"world_id": "b3:vs1:bach_thach_khe:31012026:60"
+		},
+		{
+			"auto": true,
+			"battle_seconds": 4.0,
+			"captured_at_utc": "2026-10-24T08:32:13",
+			"disciple_id": "candidate_73025",
+			"event_refs": [
+				{
+					"caster": "candidate_73025",
+					"event_index": 14,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 1.75,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 21,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "",
+					"event_index": 22,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 23,
+					"skill_id": "hoa_cau",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "status_applied"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 25,
+					"skill_id": "han_suong_an",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "skill_cast"
+				}
+			],
+			"event_types": [
+				"battle_start",
+				"move",
+				"skill_cast",
+				"skill_hit",
+				"hit",
+				"status_applied"
+			],
+			"extra": {
+				"disciple_id": "candidate_73025",
+				"feedback": "S1: Hỏa Cầu áp dụng BỎNG",
+				"remaining_seconds": 2.7,
+				"status": {
+					"caster": "candidate_73025",
+					"next_tick": 4.5,
+					"ratio": 0.16,
+					"skill_id": "hoa_cau",
+					"until": 6.7
+				},
+				"target_id": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1"
+			},
+			"fps": 6.0,
+			"hp": 197.45,
+			"image_path": "10_current_combat_s1_real_burn.png",
+			"injury": 0,
+			"max_hp": 198.45,
+			"paid_kills": 0,
+			"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+			"screen": "10_current_combat_s1_real_burn",
+			"static_memory_bytes": 76509867,
+			"tick": 60,
+			"viewport": [
+				1280,
+				720
+			],
+			"wall_unix": 1792830729,
+			"warehouse_pilot_stock": 0,
+			"world_id": "b3:vs1:bach_thach_khe:31012026:60"
+		},
+		{
+			"auto": true,
+			"battle_seconds": 4.0,
+			"captured_at_utc": "2026-10-24T08:32:14",
+			"disciple_id": "candidate_73025",
+			"event_refs": [
+				{
+					"caster": "candidate_73025",
+					"event_index": 14,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 1.75,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 21,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "",
+					"event_index": 22,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 23,
+					"skill_id": "hoa_cau",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "status_applied"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 25,
+					"skill_id": "han_suong_an",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "skill_cast"
+				}
+			],
+			"event_types": [
+				"battle_start",
+				"move",
+				"skill_cast",
+				"skill_hit",
+				"hit",
+				"status_applied"
+			],
+			"extra": {},
+			"fps": 10.0,
+			"hp": 197.45,
+			"image_path": "11_current_combat_after_real_hit.png",
+			"injury": 0,
+			"max_hp": 198.45,
+			"paid_kills": 0,
+			"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+			"screen": "11_current_combat_after_real_hit",
+			"static_memory_bytes": 76460903,
+			"tick": 60,
+			"viewport": [
+				1280,
+				720
+			],
+			"wall_unix": 1792830729,
+			"warehouse_pilot_stock": 0,
+			"world_id": "b3:vs1:bach_thach_khe:31012026:60"
+		},
+		{
+			"auto": true,
+			"battle_seconds": 4.0,
+			"captured_at_utc": "2026-10-24T08:32:14",
+			"disciple_id": "candidate_73025",
+			"event_refs": [
+				{
+					"caster": "candidate_73025",
+					"event_index": 14,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 1.75,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 21,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "",
+					"event_index": 22,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 23,
+					"skill_id": "hoa_cau",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "status_applied"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 25,
+					"skill_id": "han_suong_an",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "skill_cast"
+				}
+			],
+			"event_types": [
+				"battle_start",
+				"move",
+				"skill_cast",
+				"skill_hit",
+				"hit",
+				"status_applied"
+			],
+			"extra": {},
+			"fps": 10.0,
+			"hp": 197.45,
+			"image_path": "12_current_combat_after_real_skill_hit.png",
+			"injury": 0,
+			"max_hp": 198.45,
+			"paid_kills": 0,
+			"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+			"screen": "12_current_combat_after_real_skill_hit",
+			"static_memory_bytes": 76472047,
+			"tick": 60,
+			"viewport": [
+				1280,
+				720
+			],
+			"wall_unix": 1792830729,
+			"warehouse_pilot_stock": 0,
+			"world_id": "b3:vs1:bach_thach_khe:31012026:60"
+		},
+		{
+			"auto": true,
+			"battle_seconds": 5.0,
+			"captured_at_utc": "2026-10-24T08:32:14",
+			"disciple_id": "candidate_73025",
+			"event_refs": [
+				{
+					"caster": "candidate_73025",
+					"event_index": 14,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 1.75,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 21,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "",
+					"event_index": 22,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 23,
+					"skill_id": "hoa_cau",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "status_applied"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 25,
+					"skill_id": "han_suong_an",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "",
+					"event_index": 29,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.5,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 30,
+					"skill_id": "",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.5,
+					"type": "status_tick"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 32,
+					"skill_id": "han_suong_an",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.75,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "",
+					"event_index": 33,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.75,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 34,
+					"skill_id": "han_suong_an",
+					"status": "weaken",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.75,
+					"type": "status_applied"
+				},
+				{
+					"caster": "",
+					"event_index": 35,
+					"skill_id": "",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 4.75,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 36,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.75,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 37,
+					"skill_id": "",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 5.0,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 38,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 5.0,
+					"type": "hit"
+				}
+			],
+			"event_types": [
+				"battle_start",
+				"move",
+				"skill_cast",
+				"skill_hit",
+				"hit",
+				"status_applied",
+				"status_tick"
+			],
+			"extra": {
+				"disciple_id": "candidate_73025",
+				"feedback": "S1: Hàn Sương Ấn áp dụng SUY YẾU",
+				"remaining_seconds": 3.75,
+				"status": {
+					"caster": "candidate_73025",
+					"factor": 0.72,
+					"skill_id": "han_suong_an",
+					"until": 8.75
+				},
+				"target_id": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1"
+			},
+			"fps": 10.0,
+			"hp": 175.449560047715,
+			"image_path": "13_current_combat_s1_real_weaken.png",
+			"injury": 0,
+			"max_hp": 198.45,
+			"paid_kills": 0,
+			"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+			"screen": "13_current_combat_s1_real_weaken",
+			"static_memory_bytes": 76659865,
+			"tick": 60,
+			"viewport": [
+				1280,
+				720
+			],
+			"wall_unix": 1792830730,
+			"warehouse_pilot_stock": 0,
+			"world_id": "b3:vs1:bach_thach_khe:31012026:60"
+		},
+		{
+			"auto": true,
+			"battle_seconds": 11.0,
+			"captured_at_utc": "2026-10-24T08:32:15",
+			"disciple_id": "candidate_73025",
+			"event_refs": [
+				{
+					"caster": "candidate_73025",
+					"event_index": 14,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 1.75,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 21,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "",
+					"event_index": 22,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 23,
+					"skill_id": "hoa_cau",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "status_applied"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 25,
+					"skill_id": "han_suong_an",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "",
+					"event_index": 29,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.5,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 30,
+					"skill_id": "",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.5,
+					"type": "status_tick"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 32,
+					"skill_id": "han_suong_an",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.75,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "",
+					"event_index": 33,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.75,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 34,
+					"skill_id": "han_suong_an",
+					"status": "weaken",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.75,
+					"type": "status_applied"
+				},
+				{
+					"caster": "",
+					"event_index": 35,
+					"skill_id": "",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 4.75,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 36,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.75,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 37,
+					"skill_id": "",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 5.0,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 38,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 5.0,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 39,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 5.5,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 40,
+					"skill_id": "",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 5.5,
+					"type": "status_tick"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 41,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 5.75,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "",
+					"event_index": 42,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 6.5,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 43,
+					"skill_id": "",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 6.5,
+					"type": "status_tick"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 44,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 6.75,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "",
+					"event_index": 45,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 6.75,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 46,
+					"skill_id": "hoa_cau",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 6.75,
+					"type": "status_applied"
+				},
+				{
+					"caster": "",
+					"event_index": 47,
+					"skill_id": "",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 6.75,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 48,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 6.75,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 49,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 7.5,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 50,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 7.75,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 51,
+					"skill_id": "",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 7.75,
+					"type": "status_tick"
+				},
+				{
+					"caster": "",
+					"event_index": 52,
+					"skill_id": "",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 8.5,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 53,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 8.75,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 54,
+					"skill_id": "",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 8.75,
+					"type": "status_tick"
+				},
+				{
+					"caster": "",
+					"event_index": 55,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 8.75,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 56,
+					"skill_id": "han_suong_an",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 9.0,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "",
+					"event_index": 57,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 9.75,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 58,
+					"skill_id": "",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 9.75,
+					"type": "status_tick"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 59,
+					"skill_id": "han_suong_an",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 10.0,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "",
+					"event_index": 60,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 10.0,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 61,
+					"skill_id": "han_suong_an",
+					"status": "weaken",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 10.0,
+					"type": "status_applied"
+				},
+				{
+					"caster": "",
+					"event_index": 62,
+					"skill_id": "",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 10.0,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 63,
+					"skill_id": "kim_cuong_ho_the",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 10.0,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 64,
+					"skill_id": "kim_cuong_ho_the",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 10.25,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 65,
+					"skill_id": "kim_cuong_ho_the",
+					"status": "guard",
+					"target": "candidate_73025",
+					"time": 10.25,
+					"type": "status_applied"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 66,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 10.25,
+					"type": "skill_cast"
+				}
+			],
+			"event_types": [
+				"battle_start",
+				"move",
+				"skill_cast",
+				"skill_hit",
+				"hit",
+				"status_applied",
+				"status_tick"
+			],
+			"extra": {
+				"actor_id": "candidate_73025",
+				"feedback": "S1: Kim Cương Hộ Thể áp dụng HỘ THỂ",
+				"guard_factor": 0.62,
+				"guard_until": 13.75,
+				"remaining_seconds": 2.75
+			},
+			"fps": 3.0,
+			"hp": 142.448900119288,
+			"image_path": "13b_current_combat_s1_learned_guard_active.png",
+			"injury": 0,
+			"max_hp": 198.45,
+			"paid_kills": 0,
+			"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+			"screen": "13b_current_combat_s1_learned_guard_active",
+			"static_memory_bytes": 76999155,
+			"tick": 60,
+			"viewport": [
+				1280,
+				720
+			],
+			"wall_unix": 1792830736,
+			"warehouse_pilot_stock": 0,
+			"world_id": "b3:vs1:bach_thach_khe:31012026:60"
+		},
+		{
+			"auto": true,
+			"battle_seconds": 12.0,
+			"captured_at_utc": "2026-10-24T08:32:16",
+			"disciple_id": "candidate_73025",
+			"event_refs": [
+				{
+					"caster": "candidate_73025",
+					"event_index": 14,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 1.75,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 21,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "",
+					"event_index": 22,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 23,
+					"skill_id": "hoa_cau",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "status_applied"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 25,
+					"skill_id": "han_suong_an",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "",
+					"event_index": 29,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.5,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 30,
+					"skill_id": "",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.5,
+					"type": "status_tick"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 32,
+					"skill_id": "han_suong_an",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.75,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "",
+					"event_index": 33,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.75,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 34,
+					"skill_id": "han_suong_an",
+					"status": "weaken",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.75,
+					"type": "status_applied"
+				},
+				{
+					"caster": "",
+					"event_index": 35,
+					"skill_id": "",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 4.75,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 36,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.75,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 37,
+					"skill_id": "",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 5.0,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 38,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 5.0,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 39,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 5.5,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 40,
+					"skill_id": "",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 5.5,
+					"type": "status_tick"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 41,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 5.75,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "",
+					"event_index": 42,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 6.5,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 43,
+					"skill_id": "",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 6.5,
+					"type": "status_tick"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 44,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 6.75,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "",
+					"event_index": 45,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 6.75,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 46,
+					"skill_id": "hoa_cau",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 6.75,
+					"type": "status_applied"
+				},
+				{
+					"caster": "",
+					"event_index": 47,
+					"skill_id": "",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 6.75,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 48,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 6.75,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 49,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 7.5,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 50,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 7.75,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 51,
+					"skill_id": "",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 7.75,
+					"type": "status_tick"
+				},
+				{
+					"caster": "",
+					"event_index": 52,
+					"skill_id": "",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 8.5,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 53,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 8.75,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 54,
+					"skill_id": "",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 8.75,
+					"type": "status_tick"
+				},
+				{
+					"caster": "",
+					"event_index": 55,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 8.75,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 56,
+					"skill_id": "han_suong_an",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 9.0,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "",
+					"event_index": 57,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 9.75,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 58,
+					"skill_id": "",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 9.75,
+					"type": "status_tick"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 59,
+					"skill_id": "han_suong_an",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 10.0,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "",
+					"event_index": 60,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 10.0,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 61,
+					"skill_id": "han_suong_an",
+					"status": "weaken",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 10.0,
+					"type": "status_applied"
+				},
+				{
+					"caster": "",
+					"event_index": 62,
+					"skill_id": "",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 10.0,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 63,
+					"skill_id": "kim_cuong_ho_the",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 10.0,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 64,
+					"skill_id": "kim_cuong_ho_the",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 10.25,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 65,
+					"skill_id": "kim_cuong_ho_the",
+					"status": "guard",
+					"target": "candidate_73025",
+					"time": 10.25,
+					"type": "status_applied"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 66,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 10.25,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 67,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 11.25,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "",
+					"event_index": 68,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 11.25,
+					"type": "hit"
+				}
+			],
+			"event_types": [
+				"battle_start",
+				"move",
+				"skill_cast",
+				"skill_hit",
+				"hit",
+				"status_applied",
+				"status_tick",
+				"downed"
+			],
+			"extra": {
+				"receipt": {
+					"at_seconds": 11.25,
+					"content_version": 1,
+					"generation": 1,
+					"kill_id": "b3:vs1:bach_thach_khe:31012026:60:slot:wolf_0:g1",
+					"quantity": 1,
+					"resource": "tinh_lang_bi",
+					"state": "COMMITTED"
+				}
+			},
+			"fps": 3.0,
+			"hp": 142.448900119288,
+			"image_path": "14_current_combat_after_paid_loot.png",
+			"injury": 0,
+			"max_hp": 198.45,
+			"paid_kills": 1,
+			"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+			"screen": "14_current_combat_after_paid_loot",
+			"static_memory_bytes": 77076943,
+			"tick": 60,
+			"viewport": [
+				1280,
+				720
+			],
+			"wall_unix": 1792830737,
+			"warehouse_pilot_stock": 1,
+			"world_id": "b3:vs1:bach_thach_khe:31012026:60"
+		},
+		{
+			"auto": true,
+			"battle_seconds": 14.0,
+			"captured_at_utc": "2026-10-24T08:32:17",
+			"disciple_id": "candidate_73025",
+			"event_refs": [
+				{
+					"caster": "candidate_73025",
+					"event_index": 14,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 1.75,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 21,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "",
+					"event_index": 22,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 23,
+					"skill_id": "hoa_cau",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "status_applied"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 25,
+					"skill_id": "han_suong_an",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "",
+					"event_index": 29,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.5,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 30,
+					"skill_id": "",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.5,
+					"type": "status_tick"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 32,
+					"skill_id": "han_suong_an",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.75,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "",
+					"event_index": 33,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.75,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 34,
+					"skill_id": "han_suong_an",
+					"status": "weaken",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.75,
+					"type": "status_applied"
+				},
+				{
+					"caster": "",
+					"event_index": 35,
+					"skill_id": "",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 4.75,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 36,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.75,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 37,
+					"skill_id": "",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 5.0,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 38,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 5.0,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 39,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 5.5,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 40,
+					"skill_id": "",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 5.5,
+					"type": "status_tick"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 41,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 5.75,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "",
+					"event_index": 42,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 6.5,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 43,
+					"skill_id": "",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 6.5,
+					"type": "status_tick"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 44,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 6.75,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "",
+					"event_index": 45,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 6.75,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 46,
+					"skill_id": "hoa_cau",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 6.75,
+					"type": "status_applied"
+				},
+				{
+					"caster": "",
+					"event_index": 47,
+					"skill_id": "",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 6.75,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 48,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 6.75,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 49,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 7.5,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 50,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 7.75,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 51,
+					"skill_id": "",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 7.75,
+					"type": "status_tick"
+				},
+				{
+					"caster": "",
+					"event_index": 52,
+					"skill_id": "",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 8.5,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 53,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 8.75,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 54,
+					"skill_id": "",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 8.75,
+					"type": "status_tick"
+				},
+				{
+					"caster": "",
+					"event_index": 55,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 8.75,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 56,
+					"skill_id": "han_suong_an",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 9.0,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "",
+					"event_index": 57,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 9.75,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 58,
+					"skill_id": "",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 9.75,
+					"type": "status_tick"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 59,
+					"skill_id": "han_suong_an",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 10.0,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "",
+					"event_index": 60,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 10.0,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 61,
+					"skill_id": "han_suong_an",
+					"status": "weaken",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 10.0,
+					"type": "status_applied"
+				},
+				{
+					"caster": "",
+					"event_index": 62,
+					"skill_id": "",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 10.0,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 63,
+					"skill_id": "kim_cuong_ho_the",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 10.0,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 64,
+					"skill_id": "kim_cuong_ho_the",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 10.25,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 65,
+					"skill_id": "kim_cuong_ho_the",
+					"status": "guard",
+					"target": "candidate_73025",
+					"time": 10.25,
+					"type": "status_applied"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 66,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 10.25,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 67,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 11.25,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "",
+					"event_index": 68,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 11.25,
+					"type": "hit"
+				}
+			],
+			"event_types": [
+				"battle_start",
+				"move",
+				"skill_cast",
+				"skill_hit",
+				"hit",
+				"status_applied",
+				"status_tick",
+				"downed"
+			],
+			"extra": {
+				"active": false,
+				"actor_id": "candidate_73025",
+				"battle_seconds": 14.0,
+				"feedback": "S1: Kim Cương Hộ Thể áp dụng HỘ THỂ",
+				"guard_factor": 0.62,
+				"guard_until": 13.75
+			},
+			"fps": 7.0,
+			"hp": 142.448900119288,
+			"image_path": "13c_current_combat_s1_learned_guard_expired.png",
+			"injury": 0,
+			"max_hp": 198.45,
+			"paid_kills": 1,
+			"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+			"screen": "13c_current_combat_s1_learned_guard_expired",
+			"static_memory_bytes": 77131755,
+			"tick": 60,
+			"viewport": [
+				1280,
+				720
+			],
+			"wall_unix": 1792830739,
+			"warehouse_pilot_stock": 1,
+			"world_id": "b3:vs1:bach_thach_khe:31012026:60"
+		},
+		{
+			"auto": true,
+			"battle_seconds": 20.0,
+			"captured_at_utc": "2026-10-24T08:32:18",
+			"disciple_id": "candidate_73025",
+			"event_refs": [
+				{
+					"caster": "candidate_73025",
+					"event_index": 14,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 1.75,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 21,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "",
+					"event_index": 22,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 23,
+					"skill_id": "hoa_cau",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "status_applied"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 25,
+					"skill_id": "han_suong_an",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "",
+					"event_index": 29,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.5,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 30,
+					"skill_id": "",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.5,
+					"type": "status_tick"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 32,
+					"skill_id": "han_suong_an",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.75,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "",
+					"event_index": 33,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.75,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 34,
+					"skill_id": "han_suong_an",
+					"status": "weaken",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.75,
+					"type": "status_applied"
+				},
+				{
+					"caster": "",
+					"event_index": 35,
+					"skill_id": "",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 4.75,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 36,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.75,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 37,
+					"skill_id": "",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 5.0,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 38,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 5.0,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 39,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 5.5,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 40,
+					"skill_id": "",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 5.5,
+					"type": "status_tick"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 41,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 5.75,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "",
+					"event_index": 42,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 6.5,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 43,
+					"skill_id": "",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 6.5,
+					"type": "status_tick"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 44,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 6.75,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "",
+					"event_index": 45,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 6.75,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 46,
+					"skill_id": "hoa_cau",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 6.75,
+					"type": "status_applied"
+				},
+				{
+					"caster": "",
+					"event_index": 47,
+					"skill_id": "",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 6.75,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 48,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 6.75,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 49,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 7.5,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 50,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 7.75,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 51,
+					"skill_id": "",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 7.75,
+					"type": "status_tick"
+				},
+				{
+					"caster": "",
+					"event_index": 52,
+					"skill_id": "",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 8.5,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 53,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 8.75,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 54,
+					"skill_id": "",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 8.75,
+					"type": "status_tick"
+				},
+				{
+					"caster": "",
+					"event_index": 55,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 8.75,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 56,
+					"skill_id": "han_suong_an",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 9.0,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "",
+					"event_index": 57,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 9.75,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 58,
+					"skill_id": "",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 9.75,
+					"type": "status_tick"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 59,
+					"skill_id": "han_suong_an",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 10.0,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "",
+					"event_index": 60,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 10.0,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 61,
+					"skill_id": "han_suong_an",
+					"status": "weaken",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 10.0,
+					"type": "status_applied"
+				},
+				{
+					"caster": "",
+					"event_index": 62,
+					"skill_id": "",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 10.0,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 63,
+					"skill_id": "kim_cuong_ho_the",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 10.0,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 64,
+					"skill_id": "kim_cuong_ho_the",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 10.25,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 65,
+					"skill_id": "kim_cuong_ho_the",
+					"status": "guard",
+					"target": "candidate_73025",
+					"time": 10.25,
+					"type": "status_applied"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 66,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 10.25,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 67,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 11.25,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "",
+					"event_index": 68,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 11.25,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 72,
+					"skill_id": "kim_cuong_ho_the",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 19.5,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 73,
+					"skill_id": "kim_cuong_ho_the",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 19.75,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 74,
+					"skill_id": "kim_cuong_ho_the",
+					"status": "guard",
+					"target": "candidate_73025",
+					"time": 19.75,
+					"type": "status_applied"
+				}
+			],
+			"event_types": [
+				"battle_start",
+				"move",
+				"skill_cast",
+				"skill_hit",
+				"hit",
+				"status_applied",
+				"status_tick",
+				"downed",
+				"monster_spawned"
+			],
+			"extra": {},
+			"fps": 5.0,
+			"hp": 142.448900119288,
+			"image_path": "15_current_combat_same_world_after_respawn.png",
+			"injury": 0,
+			"max_hp": 198.45,
+			"paid_kills": 1,
+			"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+			"screen": "15_current_combat_same_world_after_respawn",
+			"static_memory_bytes": 77226355,
+			"tick": 60,
+			"viewport": [
+				1280,
+				720
+			],
+			"wall_unix": 1792830745,
+			"warehouse_pilot_stock": 1,
+			"world_id": "b3:vs1:bach_thach_khe:31012026:60"
+		},
+		{
+			"auto": false,
+			"battle_seconds": 20.0,
+			"captured_at_utc": "2026-10-24T08:32:18",
+			"disciple_id": "candidate_73025",
+			"event_refs": [
+				{
+					"caster": "candidate_73025",
+					"event_index": 14,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 1.75,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 21,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "",
+					"event_index": 22,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 23,
+					"skill_id": "hoa_cau",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "status_applied"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 25,
+					"skill_id": "han_suong_an",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 3.5,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "",
+					"event_index": 29,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.5,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 30,
+					"skill_id": "",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.5,
+					"type": "status_tick"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 32,
+					"skill_id": "han_suong_an",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.75,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "",
+					"event_index": 33,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.75,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 34,
+					"skill_id": "han_suong_an",
+					"status": "weaken",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.75,
+					"type": "status_applied"
+				},
+				{
+					"caster": "",
+					"event_index": 35,
+					"skill_id": "",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 4.75,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 36,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 4.75,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 37,
+					"skill_id": "",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 5.0,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 38,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 5.0,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 39,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 5.5,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 40,
+					"skill_id": "",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 5.5,
+					"type": "status_tick"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 41,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 5.75,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "",
+					"event_index": 42,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 6.5,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 43,
+					"skill_id": "",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 6.5,
+					"type": "status_tick"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 44,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 6.75,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "",
+					"event_index": 45,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 6.75,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 46,
+					"skill_id": "hoa_cau",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 6.75,
+					"type": "status_applied"
+				},
+				{
+					"caster": "",
+					"event_index": 47,
+					"skill_id": "",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 6.75,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 48,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 6.75,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 49,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 7.5,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 50,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 7.75,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 51,
+					"skill_id": "",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 7.75,
+					"type": "status_tick"
+				},
+				{
+					"caster": "",
+					"event_index": 52,
+					"skill_id": "",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 8.5,
+					"type": "hit"
+				},
+				{
+					"caster": "",
+					"event_index": 53,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 8.75,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 54,
+					"skill_id": "",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 8.75,
+					"type": "status_tick"
+				},
+				{
+					"caster": "",
+					"event_index": 55,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 8.75,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 56,
+					"skill_id": "han_suong_an",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 9.0,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "",
+					"event_index": 57,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 9.75,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 58,
+					"skill_id": "",
+					"status": "burn",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 9.75,
+					"type": "status_tick"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 59,
+					"skill_id": "han_suong_an",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 10.0,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "",
+					"event_index": 60,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 10.0,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 61,
+					"skill_id": "han_suong_an",
+					"status": "weaken",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 10.0,
+					"type": "status_applied"
+				},
+				{
+					"caster": "",
+					"event_index": 62,
+					"skill_id": "",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 10.0,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 63,
+					"skill_id": "kim_cuong_ho_the",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 10.0,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 64,
+					"skill_id": "kim_cuong_ho_the",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 10.25,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 65,
+					"skill_id": "kim_cuong_ho_the",
+					"status": "guard",
+					"target": "candidate_73025",
+					"time": 10.25,
+					"type": "status_applied"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 66,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 10.25,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 67,
+					"skill_id": "hoa_cau",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 11.25,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "",
+					"event_index": 68,
+					"skill_id": "",
+					"status": "",
+					"target": "b3:vs1:bach_thach_khe:31012026:60/wolf_0/1",
+					"time": 11.25,
+					"type": "hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 72,
+					"skill_id": "kim_cuong_ho_the",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 19.5,
+					"type": "skill_cast"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 73,
+					"skill_id": "kim_cuong_ho_the",
+					"status": "",
+					"target": "candidate_73025",
+					"time": 19.75,
+					"type": "skill_hit"
+				},
+				{
+					"caster": "candidate_73025",
+					"event_index": 74,
+					"skill_id": "kim_cuong_ho_the",
+					"status": "guard",
+					"target": "candidate_73025",
+					"time": 19.75,
+					"type": "status_applied"
+				}
+			],
+			"event_types": [
+				"battle_start",
+				"move",
+				"skill_cast",
+				"skill_hit",
+				"hit",
+				"status_applied",
+				"status_tick",
+				"downed",
+				"monster_spawned"
+			],
+			"extra": {},
+			"fps": 5.0,
+			"hp": 142.448900119288,
+			"image_path": "16_current_main_after_hunt_return.png",
+			"injury": 0,
+			"max_hp": 198.45,
+			"paid_kills": 1,
+			"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+			"screen": "16_current_main_after_hunt_return",
+			"static_memory_bytes": 77302175,
+			"tick": 60,
+			"viewport": [
+				1280,
+				720
+			],
+			"wall_unix": 1792830745,
+			"warehouse_pilot_stock": 1,
+			"world_id": "b3:vs1:bach_thach_khe:31012026:60"
+		}
+	],
+	"captured_at_utc": "2026-10-24T08:32:18",
+	"cultivation_history": {
+		"breakthrough_failures": 0,
+		"breakthrough_successes": 3,
+		"cultivation_actions": 185,
+		"cultivation_sessions_metric": 185,
+		"final_progress": 0.0,
+		"final_stamina": 58.0,
+		"rest_actions": 63,
+		"source": "canonical CultivationSystem.cultivate/apply_rest/attempt_breakthrough",
+		"stage_after": 3,
+		"stage_before": 0
+	},
+	"demo_disciple": {
+		"generation_index": 73025,
+		"id": "candidate_73025",
+		"visual_sex": "male"
+	},
+	"engine": "4.7.2-stable (official)",
+	"female_demo_disciple": {
+		"generation_index": 73021,
+		"id": "candidate_73021",
+		"visual_sex": "female"
+	},
+	"renderer": "OpenGL 3.3 Compatibility / Intel Iris Plus (see engine log)",
+	"s1_burn_captured": true,
+	"s1_demo_disciple": {
+		"generation_index": 73025,
+		"id": "candidate_73025",
+		"visual_sex": "male"
+	},
+	"s1_status_visuals": {
+		"burn_live_captured": true,
+		"disciple_legacy_skill_stage": 3,
+		"learned_guard_active_live_captured": true,
+		"learned_guard_expired_live_captured": true,
+		"learned_guard_skill_eligible": true,
+		"weaken_live_captured": true
+	},
+	"s1_weaken_captured": true,
+	"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+	"seed": 31012026,
+	"settled_mine_capture": true,
+	"skill_hit_captured": true,
+	"source_sha": "4b02a0c61a2771d9d4638129d96b68ad292270dc",
+	"source_tree_sha": "352700b65d3cd0ef7039df22a1153d81b2fd7b82",
+	"verified_save_load": {
+		"actual": {
+			"paid_generation": 1,
+			"receipt": {
+				"at_seconds": 11.25,
+				"content_version": 1.0,
+				"generation": 1.0,
+				"kill_id": "b3:vs1:bach_thach_khe:31012026:60:slot:wolf_0:g1",
+				"quantity": 1.0,
+				"resource": "tinh_lang_bi",
+				"state": "COMMITTED"
+			},
+			"returns": 1,
+			"warehouse_pilot_stock": 1,
+			"world_id": "b3:vs1:bach_thach_khe:31012026:60"
+		},
+		"expected": {
+			"paid_generation": 1,
+			"returns": 1,
+			"warehouse_pilot_stock": 1
+		}
+	},
+	"viewport": [
+		1280,
+		720
+	]
+}

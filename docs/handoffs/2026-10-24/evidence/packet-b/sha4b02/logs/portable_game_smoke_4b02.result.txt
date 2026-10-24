@@ -1,0 +1,4 @@
+command: Godot_v4.7.2-stable_win64.exe --path <extracted package>/godot --resolution 1280x720 --windowed --quit-after 90 --log-file portable_game_smoke_4b02.log
+process exit code: 0
+observed non-fatal diagnostics: shader cache folder could not be created for this isolated smoke profile; Windows root certificate store unavailable
+scene: project main scene res://scenes/p3/p3_2_landscape_sect.tscn

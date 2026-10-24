@@ -1,0 +1,19 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+TRADE ore=37 -> 27 stones=512 herbs=5 grain=1
+ERROR: SaveService: CARE capability mismatch; refusing downgraded or incomplete save.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _load_exact (res://src/simulation/save/save_service.gd:117)
+       [1] execute (res://tests/simulation/b3_pill_satiety_test.gd:111)
+       [2] run (res://tests/simulation/b3_pill_satiety_test.gd:22)
+ERROR: B3 CARE: incompatible save: invalid_satiety_day_or_spent
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] from_dict (res://src/simulation/state/simulation_state.gd:413)
+       [1] execute (res://tests/simulation/b3_pill_satiety_test.gd:115)
+       [2] run (res://tests/simulation/b3_pill_satiety_test.gd:22)
+B3 PILL EVIDENCE recipe_base=6 fixed_tuvi=10000 shared_costs=10+25 cap=1000000 day_tick=1440 save=E:/codex/2026-10-24/TMB_PACKET_B_PR28_COMBAT_V3_S1_20261024_WORKTREE/artifacts/packet_b/userdata/focused_sha4b02/b3_pill_satiety_test/roaming/Godot/app_userdata/Tong Mon Ba Dao/care_pills_5375756.json
+B3 PILL SATIETY + REAL ALCHEMY + FIXED TUVI + DAILY LIMIT + SAVE RETRY PASS (45 checks)

@@ -1,0 +1,26 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 - Build 31.0.101.2125 - Compatibility - Using Device: Intel - Intel(R) Iris(R) Plus Graphics
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+CAPTURE_CONTEXT source_sha=4b02a0c61a2771d9d4638129d96b68ad292270dc engine=4.7.2-stable (official) scene=res://scenes/p3/p3_2_landscape_sect.tscn seed=31012026 tick=0 viewport=(1280, 720)
+CURRENT_CAPTURE_PASS name=00_current_map_main size=1280x720 tick=0 battle=0.00 paid=0
+CURRENT_CAPTURE_PASS name=01_current_map_pan_zoom size=1280x720 tick=0 battle=0.00 paid=0
+CURRENT_CAPTURE_PASS name=02_current_mine size=1280x720 tick=0 battle=0.00 paid=0
+CURRENT_CAPTURE_PASS name=03_current_linh_lam size=1280x720 tick=0 battle=0.00 paid=0
+CURRENT_CAPTURE_PASS name=04_current_linh_dien size=1280x720 tick=0 battle=0.00 paid=0
+CURRENT_CAPTURE_PASS name=05_current_warehouse size=1280x720 tick=0 battle=0.00 paid=0
+CURRENT_CAPTURE_PASS name=06_current_v2_male_profile size=1280x720 tick=0 battle=0.00 paid=0
+CURRENT_CAPTURE_PASS name=07_current_v2_female_profile size=1280x720 tick=0 battle=0.00 paid=0
+CURRENT_CAPTURE_PASS name=08_current_mine_after_real_settlement size=1280x720 tick=20 battle=0.00 paid=0
+CURRENT_CAPTURE_PASS name=09_current_combat_v5_start size=1280x720 tick=60 battle=0.00 paid=0
+CURRENT_CAPTURE_PASS name=10_current_combat_s1_real_burn size=1280x720 tick=60 battle=4.00 paid=0
+CURRENT_CAPTURE_PASS name=11_current_combat_after_real_hit size=1280x720 tick=60 battle=4.00 paid=0
+CURRENT_CAPTURE_PASS name=12_current_combat_after_real_skill_hit size=1280x720 tick=60 battle=4.00 paid=0
+CURRENT_CAPTURE_PASS name=13_current_combat_s1_real_weaken size=1280x720 tick=60 battle=5.00 paid=0
+CURRENT_CAPTURE_PASS name=13b_current_combat_s1_learned_guard_active size=1280x720 tick=60 battle=11.00 paid=0
+CURRENT_CAPTURE_PASS name=14_current_combat_after_paid_loot size=1280x720 tick=60 battle=12.00 paid=1
+CURRENT_CAPTURE_PASS name=13c_current_combat_s1_learned_guard_expired size=1280x720 tick=60 battle=14.00 paid=1
+CURRENT_CAPTURE_PASS name=15_current_combat_same_world_after_respawn size=1280x720 tick=60 battle=20.00 paid=1
+CURRENT_CAPTURE_PASS name=16_current_main_after_hunt_return size=1280x720 tick=60 battle=20.00 paid=1
+TMB MASTER V3 CURRENT P3.2 CAPTURE PASS
