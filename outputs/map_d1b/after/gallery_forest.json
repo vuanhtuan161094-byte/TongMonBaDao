@@ -1,0 +1,143 @@
+{
+	"active_chunks": 16,
+	"building_ids": [
+		"alchemy_hall_001",
+		"dan_tien_dai_001",
+		"linh_forest_001",
+		"mine_001",
+		"ren_than_duong_001",
+		"spirit_field_001"
+	],
+	"camera_position": [
+		-281.501281738281,
+		2399.56518554688
+	],
+	"camera_zoom": 1.19291985034943,
+	"decoration_count": 17,
+	"godot": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"label": "forest",
+	"layout_anchors": {
+		"alchemy_hall": [
+			98,
+			86
+		],
+		"cultivation": [
+			88,
+			81
+		],
+		"forge": [
+			95,
+			95
+		],
+		"gate": [
+			96,
+			102
+		],
+		"guidance": [
+			78,
+			84
+		],
+		"linh_forest": [
+			82,
+			104
+		],
+		"main_hall": [
+			81,
+			89
+		],
+		"medicine": [
+			76,
+			102
+		],
+		"mine": [
+			92,
+			83
+		],
+		"ren_than_duong": [
+			77,
+			93
+		],
+		"residence": [
+			76,
+			97
+		],
+		"spirit_field": [
+			103,
+			93
+		],
+		"warehouse": [
+			95,
+			91
+		]
+	},
+	"png_path": "E:\\codex\\2026-10-25\\TMB_MAP_D1B_B_PLAYABLE_WORKTREE\\outputs\\map_d1b\\after\\gallery_forest.png",
+	"png_sha256": "f0b22b653c78857a342b814e2793be44a3b2e9d430b12ff7ab4dcab2d6c0075b",
+	"road_cells": 95,
+	"route_count": 9,
+	"runtime_last_wall_unix": 1792868943,
+	"runtime_ready": true,
+	"runtime_unconsumed_wall_seconds": 47.0,
+	"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+	"selected_building": "linh_forest",
+	"selected_production_instance_id": "linh_forest_001",
+	"simulation_payload_normalization": "only runtime_last_wall_unix, runtime_unconsumed_wall_seconds, and recruitment_candidates array order by stable ID",
+	"simulation_payload_sha256_wall_clock_and_candidate_order_normalized": "b73d26b258c8adc8df2c5648d94844f6ae11567232e5bccd7758376ea50f0e17",
+	"simulation_state_sha256": "7810464bd23bbb7f6568ca0bb44a3d39122ad3c2344478d865c80065d8c681c0",
+	"simulation_tick": 0,
+	"source_art": {
+		"accepted": [
+			"pv01_assets/main_hall/510052.png",
+			"pv01_assets/warehouse/510102.png",
+			"pv01_assets/forge/520081.png",
+			"env01_assets/terrain/stone_courtyard.png",
+			"env01_assets/terrain/stone_variant.png",
+			"env01_assets/terrain/stone_border.png",
+			"env01_assets/terrain/stone_runes.png",
+			"env01_assets/roads/stone_cross.png",
+			"env01_assets/roads/stone_junction.png",
+			"env01_assets/roads/stone_axis_a.png",
+			"env01_assets/roads/stone_axis_b.png",
+			"env01_assets/roads/stone_branch.png",
+			"env01_assets/roads/stone_scatter.png",
+			"env01_assets/vegetation/570036.png",
+			"env01_assets/vegetation/570037.png",
+			"env01_assets/vegetation/570038.png",
+			"env01_assets/vegetation/570171.png",
+			"env01_assets/vegetation/570172.png",
+			"env01_assets/vegetation/570173.png",
+			"env01_assets/vegetation/570182.png",
+			"env01_assets/vegetation/570041.png",
+			"env01_assets/vegetation/570042.png",
+			"env01_assets/vegetation/570043.png",
+			"env01_assets/vegetation/570073.png",
+			"env01_assets/vegetation/570144.png",
+			"env01_assets/vegetation/570399.png",
+			"env01_assets/vegetation/570185.png",
+			"env01_assets/vegetation/570186.png",
+			"env01_assets/vegetation/570187.png",
+			"env01_assets/vegetation/570397.png"
+		],
+		"accepted_count": 30,
+		"art_complete": false,
+		"manifest_valid": true,
+		"missing": [],
+		"missing_count": 0,
+		"rejected": [],
+		"rejected_count": 0
+	},
+	"state_unchanged_by_capture": true,
+	"viewport": [
+		1280,
+		720
+	]
+}

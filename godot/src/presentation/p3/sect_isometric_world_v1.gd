@@ -13,20 +13,23 @@ const VIEW_SIZE := Vector2(1280,570)
 const MAP_SCREEN_OFFSET := Vector2(0,72)
 const LEGACY_ANCHOR := Vector2(768,354)
 const CENTER_CELL := Vector2(90,92)
+# Option B is a presentation-only layout seed in the existing 48x48 starter.
+# The model's route origin is the reserved gate point; no actor spawn or
+# SimulationState field is changed by this map-only coordinate.
 const TYPE_ANCHORS := {
-    "main_hall": Vector2i(84,86),
-    "warehouse": Vector2i(96,87),
-    "forge": Vector2i(92,92),
-    "residence": Vector2i(96,83),
-    "cultivation": Vector2i(89,87),
-    "ren_than_duong": Vector2i(80,88),
-    "medicine": Vector2i(95,98),
-    "alchemy_hall": Vector2i(100,94),
-    "mine": Vector2i(80,94),
-    "linh_forest": Vector2i(84,99),
-    "spirit_field": Vector2i(87,103),
-    "guidance": Vector2i(104,88),
-    "gate": Vector2i(104,104)
+    "main_hall": Vector2i(81,89),
+    "warehouse": Vector2i(95,91),
+    "forge": Vector2i(95,95),
+    "residence": Vector2i(76,97),
+    "cultivation": Vector2i(88,81),
+    "ren_than_duong": Vector2i(77,93),
+    "medicine": Vector2i(76,102),
+    "alchemy_hall": Vector2i(98,86),
+    "mine": Vector2i(92,83),
+    "linh_forest": Vector2i(82,104),
+    "spirit_field": Vector2i(103,93),
+    "guidance": Vector2i(78,84),
+    "gate": Vector2i(96,102)
 }
 const PRODUCER_TYPES := {
     "mine":"mine",
@@ -58,30 +61,42 @@ const ROAD_TEXTURES := {
     "branch":"stone_branch.png",
     "scatter":"stone_scatter.png"
 }
-# Curated lab ENV01 single-region vegetation, inside starter district.
+# Curated, SHA-gated ENV01 props kept off buildings, roads, marker hitboxes,
+# and the paved hub. 570183 remains intentionally unused: its semantics are
+# not needed to communicate the three districts.
 const DECOR_LAYOUT := [
-    {"id":"570036","offset":Vector2i(-1,7),"scale":0.42},
-    {"id":"570037","offset":Vector2i(4,13),"scale":0.44},
-    {"id":"570038","offset":Vector2i(19,9),"scale":0.40},
-    {"id":"570171","offset":Vector2i(8,14),"scale":0.40},
-    {"id":"570172","offset":Vector2i(21,4),"scale":0.40},
-    {"id":"570173","offset":Vector2i(15,13),"scale":0.39},
-    {"id":"570181","offset":Vector2i(-2,10),"scale":0.47},
-    {"id":"570182","offset":Vector2i(20,10),"scale":0.46},
-    {"id":"570041","offset":Vector2i(2,12),"scale":0.50},
-    {"id":"570042","offset":Vector2i(18,-1),"scale":0.43},
-    {"id":"570043","offset":Vector2i(13,13),"scale":0.47},
-    {"id":"570073","offset":Vector2i(0,12),"scale":0.32},
-    {"id":"570144","offset":Vector2i(9,6),"scale":0.38},
-    {"id":"570399","offset":Vector2i(16,8),"scale":0.43},
-    {"id":"570185","offset":Vector2i(-1,8),"scale":0.39},
-    {"id":"570186","offset":Vector2i(11,13),"scale":0.34},
-    {"id":"570187","offset":Vector2i(21,6),"scale":0.38},
-    {"id":"570397","offset":Vector2i(18,7),"scale":0.30}
+    {"id":"570036","cell":Vector2i(74,92),"scale":0.42},
+    {"id":"570037","cell":Vector2i(74,99),"scale":0.44},
+    {"id":"570038","cell":Vector2i(76,106),"scale":0.40},
+    {"id":"570171","cell":Vector2i(79,108),"scale":0.40},
+    {"id":"570172","cell":Vector2i(77,112),"scale":0.40},
+    {"id":"570173","cell":Vector2i(73,105),"scale":0.39},
+    {"id":"570181","cell":Vector2i(75,103),"scale":0.47},
+    {"id":"570182","cell":Vector2i(81,111),"scale":0.46},
+    {"id":"570041","cell":Vector2i(75,89),"scale":0.50},
+    {"id":"570042","cell":Vector2i(90,78),"scale":0.43},
+    {"id":"570043","cell":Vector2i(94,80),"scale":0.47},
+    {"id":"570073","cell":Vector2i(111,88),"scale":0.32},
+    {"id":"570144","cell":Vector2i(104,100),"scale":0.38},
+    {"id":"570399","cell":Vector2i(109,96),"scale":0.43},
+    {"id":"570185","cell":Vector2i(99,108),"scale":0.39},
+    {"id":"570186","cell":Vector2i(106,110),"scale":0.34},
+    {"id":"570187","cell":Vector2i(112,102),"scale":0.38},
+    {"id":"570397","cell":Vector2i(103,113),"scale":0.30}
 ]
 
-const SPAWN_CELL := Vector2i(82,84)
-const ROADS_JUNCTION := Vector2i(91,91)
+# SPAWN_CELL is only the seed used by this presentation preview model.  It is
+# aligned to the reserved gate point to produce the requested visual spine.
+const SPAWN_CELL := Vector2i(96,102)
+const ROADS_JUNCTION := Vector2i(89,96)
+const COURTYARD_RECT := Rect2i(85,93,8,6)
+const COURTYARD_RUNE_CELLS := [Vector2i(89,95),Vector2i(89,97)]
+const PRODUCTION_APRON_RECT := Rect2i(94,92,5,6)
+const PRODUCER_ROUTE_APPROACH := {
+    "mine":Vector2i(0,1),
+    "linh_forest":Vector2i(1,0),
+    "spirit_field":Vector2i(-1,0)
+}
 
 var camera: Camera2D
 var surface: Node2D
@@ -94,6 +109,7 @@ var draw_revision := 0
 var fallback_art_count := 0
 var lab_geometry: SectIsoMapModelV1
 var preview_roads: Dictionary = {}
+var preview_routes: Dictionary = {}
 var lab_routes_ready := false
 var source_art: SectMap25SourceArt
 var render_art: Dictionary = {}
@@ -140,24 +156,41 @@ func _seed_env02a_geometry() -> void:
     var sdoor: Vector2i = lab_geometry.doorway("warehouse",store["origin"],0)
     var fdoor: Vector2i = lab_geometry.doorway("forge",forge["origin"],0)
     var segments := [
-        [SPAWN_CELL,hdoor],[hdoor,ROADS_JUNCTION],
-        [ROADS_JUNCTION,sdoor],[ROADS_JUNCTION,fdoor]
+        {"id":"gate_to_courtyard","from":SPAWN_CELL,"to":ROADS_JUNCTION},
+        {"id":"courtyard_to_main_hall","from":ROADS_JUNCTION,"to":hdoor},
+        {"id":"courtyard_to_warehouse","from":ROADS_JUNCTION,"to":sdoor},
+        {"id":"courtyard_to_forge","from":ROADS_JUNCTION,"to":fdoor},
+        {"id":"courtyard_to_mine","from":ROADS_JUNCTION,"to":TYPE_ANCHORS["mine"]+PRODUCER_ROUTE_APPROACH["mine"]},
+        {"id":"courtyard_to_linh_forest","from":ROADS_JUNCTION,"to":TYPE_ANCHORS["linh_forest"]+PRODUCER_ROUTE_APPROACH["linh_forest"]},
+        {"id":"courtyard_to_spirit_field","from":ROADS_JUNCTION,"to":TYPE_ANCHORS["spirit_field"]+PRODUCER_ROUTE_APPROACH["spirit_field"]},
+        {"id":"courtyard_to_residence","from":ROADS_JUNCTION,"to":TYPE_ANCHORS["residence"]},
+        {"id":"courtyard_to_cultivation","from":ROADS_JUNCTION,"to":TYPE_ANCHORS["cultivation"]}
     ]
-    for pair in segments:
-        var navigation: AStarGrid2D = lab_geometry._navigation()
-        var route: Array[Vector2i] = navigation.get_id_path(pair[0],pair[1])
-        if route.is_empty():
+    for segment in segments:
+        if not _record_preview_route(str(segment["id"]),segment["from"],segment["to"]):
             lab_routes_ready = false
-            continue
-        for cell in route:
-            if not lab_geometry.occupied(cell):
-                preview_roads[cell] = true
-                if cell not in lab_geometry.roads:
-                    lab_geometry.toggle_road(cell)
+            push_warning("ISO_ENV02A_PREVIEW_ROUTE_FAILED %s %s -> %s" % [str(segment["id"]),str(segment["from"]),str(segment["to"])])
     for kind in ["main_hall","warehouse","forge"]:
         if lab_geometry.path_to(kind,SPAWN_CELL).is_empty():
             lab_routes_ready = false
     queue_redraw()
+
+func _record_preview_route(route_id: String, from_cell: Vector2i, to_cell: Vector2i) -> bool:
+    if not STARTER.has_point(from_cell) or not STARTER.has_point(to_cell):
+        return false
+    var navigation: AStarGrid2D = lab_geometry._navigation()
+    var route: Array[Vector2i] = navigation.get_id_path(from_cell,to_cell)
+    if route.is_empty():
+        return false
+    for cell in route:
+        if not STARTER.has_point(cell) or lab_geometry.occupied(cell):
+            return false
+    preview_routes[route_id] = route.duplicate()
+    for cell in route:
+        preview_roads[cell] = true
+        if cell not in lab_geometry.roads:
+            lab_geometry.toggle_road(cell)
+    return true
 
 # Exact-SHA gated, individually optional Source A images. Fail-closed:
 # no texture is drawn just because a file happens to have the correct name.
@@ -188,8 +221,15 @@ func _load_verified_source_art() -> void:
                 for tile in lab_geometry.cells_for(landmark,placed["origin"],0):
                     occupied[tile] = true
     for item in DECOR_LAYOUT:
-        var tile: Vector2i = SPAWN_CELL+Vector2i(item["offset"])
+        var tile: Vector2i = item["cell"]
         if not STARTER.has_point(tile) or occupied.has(tile) or preview_roads.has(tile):
+            continue
+        var marker_clear := true
+        for raw_anchor in TYPE_ANCHORS.values():
+            if (tile-Vector2i(raw_anchor)).length_squared() <= 2:
+                marker_clear = false
+                break
+        if not marker_clear or COURTYARD_RECT.has_point(tile):
             continue
         var rel := "env01_assets/vegetation/%s.png" % str(item["id"])
         var vegetation := source_art.texture_for(rel)
@@ -223,13 +263,30 @@ func _road_key(cell: Vector2i) -> String:
         return "cross"
     if neighbors == 3:
         return "junction"
-    if neighbors <= 1:
-        return "branch" if posmod(cell.x+cell.y,3)!=0 else "scatter"
-    if e and w:
-        return "axis_a"
-    if n and s:
-        return "axis_b"
-    return "cross"
+    if neighbors == 2:
+        if e and w:
+            return "axis_a"
+        if n and s:
+            return "axis_b"
+        # MAP25 has no verified corner tile; its scatter stone is the neutral
+        # transition for an L-turn, so we do not pretend a crossroad exists.
+        return "scatter"
+    if neighbors == 1:
+        return "branch"
+    return "scatter"
+
+func _terrain_texture_key(cell: Vector2i) -> String:
+    if not STARTER.has_point(cell):
+        return ""
+    if COURTYARD_RECT.has_point(cell):
+        if cell in COURTYARD_RUNE_CELLS:
+            return "env01_assets/terrain/stone_runes.png"
+        if cell.x == COURTYARD_RECT.position.x or cell.y == COURTYARD_RECT.position.y or cell.x == COURTYARD_RECT.end.x-1 or cell.y == COURTYARD_RECT.end.y-1:
+            return "env01_assets/terrain/stone_border.png"
+        return "env01_assets/terrain/stone_courtyard.png"
+    if PRODUCTION_APRON_RECT.has_point(cell):
+        return "env01_assets/terrain/stone_variant.png"
+    return ""
 
 static func project(cell: Vector2) -> Vector2:
     return Vector2((cell.x-cell.y)*HALF_W,(cell.x+cell.y)*HALF_H)
@@ -375,11 +432,11 @@ func _ground_mesh_for_chunk(chunk_id: Vector2i) -> ArrayMesh:
             var cell := Vector2i(ix,iy)
             var center := project(Vector2(cell))
             var within := STARTER.has_point(cell)
-            var tone := Color(0.39,0.56,0.36) if within else Color(0.26,0.35,0.29)
+            var tone := Color(0.38,0.48,0.35) if within else Color(0.25,0.34,0.29)
             if posmod(ix*17+iy*23,11)<4:
-                tone = tone.lightened(0.055 if within else 0.012)
+                tone = tone.lightened(0.018 if within else 0.008)
             if within and _is_road(cell):
-                tone = tone.blend(Color(0.63,0.58,0.43,0.9))
+                tone = tone.blend(Color(0.57,0.52,0.40,0.72))
             var base := vertices.size()
             vertices.append_array(PackedVector2Array([
                 center+Vector2(0,-HALF_H),center+Vector2(HALF_W,0),
@@ -407,7 +464,8 @@ func _draw() -> void:
     # Visibility still uses the original active_chunks and the existing camera.
     for chunk_id in active_chunks:
         draw_mesh(_ground_mesh_for_chunk(chunk_id),null)
-    # Sparse overlays only. Terrain tint and road fill are baked into the mesh.
+    # Verified MAP25 terrain creates a modest paved hall courtyard and forge
+    # apron. It is a surface treatment only; roads are drawn over it below.
     for chunk_id in active_chunks:
         var origin: Vector2i = chunk_id*CHUNK
         for iy in range(origin.y,mini(origin.y+CHUNK,GRID.y)):
@@ -415,23 +473,36 @@ func _draw() -> void:
                 var cell := Vector2i(ix,iy)
                 if not STARTER.has_point(cell):
                     continue
+                var terrain_key := _terrain_texture_key(cell)
+                if terrain_key.is_empty() or not render_art.has(terrain_key):
+                    continue
                 var center := project(Vector2(cell))
-                if _is_road(cell):
-                    var road_key := "env01_assets/roads/%s" % str(ROAD_TEXTURES[_road_key(cell)])
-                    if render_art.has(road_key):
-                        draw_texture_rect(render_art[road_key],
-                            Rect2(center-Vector2(HALF_W*1.1,HALF_H*1.15),
-                                Vector2(HALF_W*2.2,HALF_H*2.3)),
-                            false,Color(0.92,0.91,0.80,0.92))
-                elif posmod(ix*13+iy*29,31)==0:
-                    _draw_bush(center)
-                if posmod(ix*11+iy*23,13)==0:
-                    var tile_art := "env01_assets/terrain/stone_courtyard.png"
-                    if render_art.has(tile_art):
-                        draw_texture_rect(render_art[tile_art],
-                            Rect2(center-Vector2(HALF_W,HALF_H),
-                                Vector2(HALF_W*2.0,HALF_H*2.0)),
-                            false,Color(0.78,0.90,0.76,0.13))
+                var tint := Color(0.96,0.98,0.94,0.48)
+                if terrain_key.ends_with("stone_border.png"):
+                    tint = Color(0.92,0.96,0.93,0.52)
+                elif terrain_key.ends_with("stone_runes.png"):
+                    tint = Color(0.94,0.97,1.0,0.58)
+                elif terrain_key.ends_with("stone_variant.png"):
+                    tint = Color(0.92,0.95,0.91,0.36)
+                draw_texture_rect(render_art[terrain_key],
+                    Rect2(center-Vector2(HALF_W,HALF_H),Vector2(HALF_W*2.0,HALF_H*2.0)),
+                    false,tint)
+    # Road tile choice comes from actual preview-route connectivity. All six
+    # gated Source A road textures are retained; no procedural path art.
+    for chunk_id in active_chunks:
+        var origin: Vector2i = chunk_id*CHUNK
+        for iy in range(origin.y,mini(origin.y+CHUNK,GRID.y)):
+            for ix in range(origin.x,mini(origin.x+CHUNK,GRID.x)):
+                var cell := Vector2i(ix,iy)
+                if not STARTER.has_point(cell) or not _is_road(cell):
+                    continue
+                var center := project(Vector2(cell))
+                var road_key := "env01_assets/roads/%s" % str(ROAD_TEXTURES[_road_key(cell)])
+                if render_art.has(road_key):
+                    draw_texture_rect(render_art[road_key],
+                        Rect2(center-Vector2(HALF_W*1.1,HALF_H*1.15),
+                            Vector2(HALF_W*2.2,HALF_H*2.3)),
+                        false,Color(0.96,0.95,0.88,0.96))
     # Sort all decorations with building art by actual projected ground depth.
     # One draw surface and one depth queue prevent large roofs from showing
     # behind trees which should occlude them.
@@ -466,10 +537,6 @@ func _visible_world(point: Vector2) -> bool:
 func _is_road(cell: Vector2i) -> bool:
     # Rebuildable read-only ENV-02A map-model route projection.
     return STARTER.has_point(cell) and preview_roads.has(cell)
-
-func _draw_bush(p: Vector2) -> void:
-    draw_circle(p+Vector2(0,-8),6,Color(0.14,0.38,0.24,0.83))
-    draw_circle(p+Vector2(-3,-11),5,Color(0.23,0.46,0.27,0.88))
 
 func _draw_building(p: Vector2,kind: String, managed: bool) -> void:
     if HOUSE_TEXTURES.has(kind):

@@ -1,0 +1,42 @@
+{
+  "average_fps": 59.7410705737787,
+  "draw_calls_per_sample_median": 33.0,
+  "fps_max_1s": 60.99876625076,
+  "fps_median_1s": 60.0207612797213,
+  "fps_min_1s": 55.0989123868259,
+  "fps_p05_1s": 56.1985524436018,
+  "godot": {
+    "build": "official",
+    "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+    "hex": 263938,
+    "major": 4,
+    "minor": 7,
+    "patch": 2,
+    "status": "stable",
+    "string": "4.7.2-stable (official)",
+    "timestamp": 0
+  },
+  "godot_static_memory_mib_max": 56.2183961868286,
+  "godot_static_memory_mib_median": 55.9889192581177,
+  "measurement_seconds": 61.0,
+  "physics_frame_ms_median": 0.059,
+  "process_frame_ms_median": 18.422,
+  "process_frame_ms_p95": 64.535,
+  "process_id": 10964,
+  "rendering_api": "OpenGL Compatibility; Intel Iris Plus GPU (from runtime log)",
+  "runtime_wall_clock_profile": "isolated capture benchmark userdata",
+  "sample_windows": 60,
+  "scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+  "state_tick_before": 0,
+  "total_frames": 3638,
+  "viewport": [
+    1280,
+    720
+  ],
+  "warmup_seconds": 5,
+  "windows_process_working_set_mib_peak": 738.75,
+  "windows_process_working_set_mib_p95": 738.59,
+  "windows_process_working_set_mib_median": 505.12,
+  "windows_monitor_samples": 78,
+  "windows_monitor_csv": "outputs/map_d1b/logs/windows_working_set_samples.csv"
+}
