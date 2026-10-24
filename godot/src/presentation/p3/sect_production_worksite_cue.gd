@@ -40,7 +40,7 @@ func _ready() -> void:
     heading.name = "WorksiteHeading"
     heading.position = Vector2(8,4)
     heading.size = Vector2(186,20)
-    heading.add_theme_font_size_override("font_size",13)
+    heading.add_theme_font_size_override("font_size",14)
     heading.add_theme_color_override("font_color",INK)
     heading.clip_text = true
     heading.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -50,7 +50,7 @@ func _ready() -> void:
     worker.name = "WorksiteWorker"
     worker.position = Vector2(8,25)
     worker.size = Vector2(186,20)
-    worker.add_theme_font_size_override("font_size",12)
+    worker.add_theme_font_size_override("font_size",13)
     worker.add_theme_color_override("font_color",INK)
     worker.clip_text = true
     worker.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -60,7 +60,7 @@ func _ready() -> void:
     detail.name = "WorksiteDetail"
     detail.position = Vector2(8,47)
     detail.size = Vector2(186,20)
-    detail.add_theme_font_size_override("font_size",12)
+    detail.add_theme_font_size_override("font_size",13)
     detail.add_theme_color_override("font_color",INK)
     detail.clip_text = true
     detail.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -70,7 +70,7 @@ func _ready() -> void:
     received.name = "WorksiteReceived"
     received.position = Vector2(8,69)
     received.size = Vector2(186,20)
-    received.add_theme_font_size_override("font_size",12)
+    received.add_theme_font_size_override("font_size",13)
     received.add_theme_color_override("font_color",INK)
     received.clip_text = true
     received.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -98,7 +98,7 @@ func _ready() -> void:
     percentage.position = Vector2(162,88)
     percentage.size = Vector2(36,20)
     percentage.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-    percentage.add_theme_font_size_override("font_size",12)
+    percentage.add_theme_font_size_override("font_size",13)
     percentage.add_theme_color_override("font_color",INK)
     percentage.mouse_filter = Control.MOUSE_FILTER_IGNORE
     add_child(percentage)
@@ -107,7 +107,7 @@ func _ready() -> void:
     receipt.name = "WorksiteSettledReceipt"
     receipt.position = Vector2(9,-27)
     receipt.size = Vector2(190,24)
-    receipt.add_theme_font_size_override("font_size",12)
+    receipt.add_theme_font_size_override("font_size",13)
     receipt.add_theme_color_override("font_color",Color(0.08,0.31,0.21))
     receipt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
     # Green text alone disappears against terrain. Keep the receipt tied to
