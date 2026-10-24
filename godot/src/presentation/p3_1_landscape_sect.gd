@@ -446,8 +446,9 @@ func _build_top_bar() -> void:
     crest.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
     crest.add_theme_color_override("font_color", PAPER_LIGHT)
 
-    resource_label = _label(top, "", Vector2(735, 18), Vector2(525, 34), 15)
+    resource_label = _label(top, "", Vector2(735, 9), Vector2(525, 56), 16)
     resource_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+    resource_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
     resource_label.add_theme_color_override("font_color", PAPER_LIGHT)
 
 func _build_task_rail() -> void:
@@ -609,7 +610,7 @@ func _warehouse_pair(resource_id: StringName, legacy_technique: bool = false) ->
 func _refresh_top_bar() -> void:
     time_label.text = "Năm đầu · Nhịp vận hành %d" % state.tick
     # Compact total/usable pairs; see Warehouse for the full stock/reserve legend.
-    resource_label.text = "Tiền %s ◆ Linh thạch %s ▣ Thiết %s/%s ◉ Đan %s/%s ✦ Tủy %s/%s" % [
+    resource_label.text = "Tiền %s ◆ Linh thạch %s\nThiết %s/%s  •  Đan %s/%s  •  Tủy %s/%s" % [
         _compact_number(state.sect.treasury),
         _compact_number(state.sect.spirit_stones),
         _compact_number(_warehouse_quantity(&"thanh_thiet")),
