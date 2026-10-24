@@ -6,6 +6,7 @@ PR #28: OPEN / DRAFT / UNMERGED
 
 | ID | Area | Status | Evidence / disposition |
 | --- | --- | --- | --- |
+| SRC-01 | P3.2 GDScript source header at fetched f253cca1 | **FIXED / VERIFIED** | Remote parent blob began with a literal truncation warning before `extends`; code commit 47b70427 restores valid GDScript source. Official focused suite and real P3.2 capture pass on the corrected blob. |
 | UI-01 | Mine/Linh Lâm worker phase hidden when roster is collapsed | **FIXED / PASS** | Initial O3 failed on hidden `haul_back` text. P3.2 now exposes active cycle/timer from canonical state in `ĐANG THỰC HIỆN`; O3 rerun PASS. Both logs retained. |
 | UI-02 | P3.2 map, pan/zoom, production panels, Warehouse and real V2 profile | **PASS, visual review pending** | 12 actual scene captures at 1280×720. Owner has not approved the final visual. |
 | UI-03 | CARE damage/receipt overlap and readable fact labels | **IMPROVED / OWNER REVIEW PENDING** | Existing label/lane fixes are in earlier PR28 commits. New combat screen captures are real but some receipt labels still crowd. |

@@ -14,7 +14,7 @@ PR #28 remains **OPEN / DRAFT / UNMERGED**. No FULL/CI, merge, Source A gameplay
 
 1. Fetched and verified the latest PR #28 head before edits (`f253cca1bb2dfa5576ba3d431d5fa70c4db16f0c`), preserving the PR's stack on PR #27.
 2. Completed the local worker asset inventory. Four converted actor packs were found; all four are verified, but they are content-equivalent to packs already in PR #28. Atlas file hashes match exactly; normalized `actor.tscn` and `animations.tres` text matches exactly despite CRLF/LF raw-hash differences. **No duplicate or replacement binaries were committed.** See `WORKER_ASSET_CATALOG.json`, `WORKER_ASSET_DISCOVERY.csv`, and `WORKER_ASSET_DIFF.md`.
-3. Made one focused P3.2 presentation correction after a real Mine-loop gate exposed hidden state: when PR28 shortens the personnel section, it now keeps the active Mine/Linh Lâm worker phase in a concise `ĐANG THỰC HIỆN` summary. This reads the existing canonical worker/cycle/timer state. It does not advance simulation or touch production output.
+3. The fetched GitHub blob at the pre-fix HEAD `f253cca1` unexpectedly began with literal tool text `Warning: truncated output ...` before the GDScript `extends` line. Code commit `47b70427` restores the valid source header. The same commit also makes one focused P3.2 presentation correction after O3 exposed hidden state: when PR28 shortens the personnel section, show the active Mine/Linh Lâm worker phase in a concise `ĐANG THỰC HIỆN` summary. The summary reads existing canonical worker/cycle/timer state and does not advance simulation or touch production output.
 4. Captured the actual P3.2 scene with the official Godot editor build at 1280×720. The 12-screen set covers map and pan/zoom, Mỏ, Linh Lâm, Linh Điền, canonical Warehouse, a real V2 profile, CARE/Combat V2 shown by the V5 adapter, hit/skill, paid loot, and return to sect. The clean capture manifest records the real receipt `tinh_lang_bi ×1`, `paid_generation=1`, Warehouse stock `1`, and SaveService reload preserving both counts.
 5. Retained actual Source A asset contact sheets and evidence logs. No mockup was represented as gameplay.
 
@@ -51,7 +51,7 @@ A separate commit-labelled GUI capture attempt produced all 12 pass markers but 
 
 ## Scope diff
 
-Code commit `47b704270ae165504aeef526963e8d03f87bc579` changes one file: `godot/src/presentation/p3_2_landscape_sect.gd`. Earlier PR28 readability commits remain `8568392c0c099871cd6befeb2fdce420021db371` and `f253cca1bb2dfa5576ba3d431d5fa70c4db16f0c`. The final report/evidence commit follows separately. No worker binaries were added; changed documentation files enumerate the inventory. `evidence_manifest_47b70427.json` gives SHA-256 and byte size for the directly linked screenshots, catalog, reports, and QA/log archives. The focused and asset QA archives retain their full individual logs/records.
+Code commit `47b704270ae165504aeef526963e8d03f87bc579` changes one file: `godot/src/presentation/p3_2_landscape_sect.gd`. It removes the invalid warning-text prefix present in the fetched parent blob and adds the live work status. Earlier PR28 readability commits remain `8568392c0c099871cd6befeb2fdce420021db371` and `f253cca1bb2dfa5576ba3d431d5fa70c4db16f0c`. No worker binaries were added; changed documentation files enumerate the inventory. `evidence_manifest_47b70427.json` gives SHA-256 and byte size for the directly linked screenshots, catalog, reports, and QA/log archives. The focused and asset QA archives retain their full individual logs/records.
 
 ## Outstanding acceptance
 

@@ -172,13 +172,13 @@
     },
     {
       "path": "docs/handoffs/2026-10-24/TMB_PR28_UI_ASSET_INTEGRATION_REPORT_2026-10-24.md",
-      "bytes": 7145,
-      "sha256": "40ef91ab1bb109b119faada7900fc6ea9ca96c2c0c95b575f8c984cdd62ff861"
+      "bytes": 7421,
+      "sha256": "f858daeb8299f7cb6a7e26247adcb3afd1347af9f4e2ec5050df6bbcf8fcb842"
     },
     {
       "path": "docs/handoffs/2026-10-24/TMB_PR28_UI_ASSET_ISSUE_MATRIX_2026-10-24.md",
-      "bytes": 3477,
-      "sha256": "4461614f7bf26611b12e74f1fc92e99846f9c98668af0cc676681acc6d42c98d"
+      "bytes": 3766,
+      "sha256": "0acbf56474ee773ccd7b217257f2c72234ac2b800f9753593b1e2aa35c5661c0"
     }
   ]
 }
