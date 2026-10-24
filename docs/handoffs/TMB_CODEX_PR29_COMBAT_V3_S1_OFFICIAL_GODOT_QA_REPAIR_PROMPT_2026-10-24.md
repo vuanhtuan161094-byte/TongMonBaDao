@@ -120,7 +120,7 @@ Sau mỗi sửa, lưu một dòng theo cấu trúc:
 
 Nếu không thể PASS tất cả test vì blocker ngoài phạm vi, **không tự mở rộng allowlist**: ghi rõ `BLOCKED`, traceback và hành động phải được owner duyệt. Không bỏ FAIL khỏi bảng.
 
-**Gate để báo FOCUSED_PASS**: 14/14 test (hoặc mọi kiểm thử tương đương phù hợp sau review) cùng exact SHA, official 4.7.2, exit0 + PASS marker cụ thể + không parse/script error; test S1 mới hoạt động thực, old snapshots và CARE reward không regression. Một báo cáo kết quả được kiểm toán được. Không dùng lại 20/20 PASS của PR27 cho commit S1.
+**Gate để báo FOCUSED_PASS**: đủ 14/14 test theo ma trận ở trên chạy cùng exact SHA trên Godot official 4.7.2, **exit 0, không parse/script/assert error**; với test có khai báo PASS marker trong nguồn thì marker bắt buộc phải xuất hiện, với test không có marker thì phải ghi `marker=N/A` và chứng minh điều kiện kết thúc thật (không bịa marker và không sửa test để chỉ in PASS). S1 phải hoạt động thực, old snapshots và CARE reward không regression. Chạy lại theo same SHA sau mọi sửa. Không dùng lại 20/20 PASS của PR27 cho commit S1.
 
 ### 6. Bằng chứng và output lưu trực tiếp lên GitHub
 
