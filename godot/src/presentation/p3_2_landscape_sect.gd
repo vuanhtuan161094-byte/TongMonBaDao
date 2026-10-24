@@ -1738,7 +1738,7 @@ func _build_work_management(profession_id: StringName, group_id: StringName, gro
         var group_button := Button.new()
         group_button.name = "Group_%s_%s" % [str(group_id), str(disciple.id)]
         group_button.text = "Rút đội" if in_group else "Phân đội"
-        group_button.custom_minimum_size = Vector2(70, 34)
+        group_button.custom_minimum_size = Vector2(70, 44)
         group_button.add_theme_font_size_override("font_size", 11)
         if timed_recipe_busy:
             group_button.disabled = true
@@ -1757,7 +1757,7 @@ func _build_work_management(profession_id: StringName, group_id: StringName, gro
             site_button.name = "MineWorksite_%s" % str(disciple.id)
             var assigned_here := disciple.worksite_building_id == active_producer.id
             site_button.text = "Bỏ điểm" if assigned_here else "Chọn Mỏ"
-            site_button.custom_minimum_size = Vector2(76, 34)
+            site_button.custom_minimum_size = Vector2(70, 44)
             site_button.add_theme_font_size_override("font_size", 11)
             site_button.disabled = not in_group or timed_recipe_busy
             site_button.tooltip_text = (
@@ -1772,7 +1772,7 @@ func _build_work_management(profession_id: StringName, group_id: StringName, gro
         var order_button := Button.new()
         order_button.name = "Work_%s_%s" % [str(profession_id), str(disciple.id)]
         order_button.text = order_label
-        order_button.custom_minimum_size = Vector2(82, 34)
+        order_button.custom_minimum_size = Vector2(76, 44)
         order_button.add_theme_font_size_override("font_size", 11)
         if building_system.is_building_profession(profession_id):
             var has_active_slot := active_building_ids.has(disciple.id)
@@ -3031,6 +3031,9 @@ func _refresh_map_worksite_cues() -> void:
         cue.scale = Vector2.ONE/actual_zoom
         cue.position = anchor+Vector2(layout["offset"])/actual_zoom
         cue.display(entry["snapshot"])
+        # Keep real worksite receipts/progress, but do not paint through a
+        # modal management, profile or combat surface.
+        cue.visible = not _building_operation_is_open() and not _disciple_summary_is_open() and not opened_disciple_profile
         if deliveries.has(key):
             cue.show_delivered(int(deliveries[key]))
         retained[key] = true
