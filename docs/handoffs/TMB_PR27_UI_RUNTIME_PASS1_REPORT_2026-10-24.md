@@ -1,5 +1,8 @@
 # TMB PR #27 — UI PASS-1 Audit and Code Handoff (2026-10-24)
 
+> **CẬP NHẬT OWNER 2026-10-24:** Giới hạn “không chạm Source A/renderer” trong handoff UI PASS1 bên dưới chỉ mô tả scope của batch đã code. Owner đã cho phép Codex tích hợp **asset worker được kiểm chứng** vào presentation PR #28 bằng packet docs/handoffs/TMB_PR28_UI_SOURCEA_WORKER_ASSET_INTEGRATION_PACKET_2026-10-24.md. Packet mới thay thế **prompt thực thi** và **scope asset** của file này; phần QA lịch sử và O9 vẫn giữ nguyên. Không cho phép viết lại renderer hoặc sửa gameplay.
+
+
 ## Exact authority
 - Repo: vuanhtuan161094-byte/TongMonBaDao; official engine target Godot 4.7.2; primary Android landscape 1280 x 720.
 - GitHub PR #27 was confirmed OPEN/DRAFT at head deeae081bcfbe1413d4cf60a29db7e58150888b5, stacked on PR #26 base 53ff0b223f4e77ccfbe5c77d2203496ac0cc37a9.
