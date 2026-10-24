@@ -1266,9 +1266,13 @@ func _draw() -> void:
                 var origin: Vector2 = popup.get("world_origin",
                     visual_position(actor_id,target["position"]))
                 var point := point_on_map(origin)
-                var lane := int(popup["event_id"]) % 4
+                # Fan out simultaneous receipts across the arena width instead
+                # of stacking four narrow lanes over the same sprite cluster.
+                # Event IDs are presentation-only here; authority events stay
+                # intact in MapBattleV2 and keep their original damage values.
+                var lane := int(popup["event_id"]) % 7
                 var position := point+Vector2(
-                    float(lane-2)*15.0,-44.0-age*38.0)
+                    float(lane-3)*58.0,-44.0-age*38.0)
                 var category := str(popup["category"])
                 var text_value := str(popup["label"])
                 var size := (24 if category == "crit" else 20) if jxqy2.active else (16 if category == "crit" else 13)
@@ -1325,4 +1329,5 @@ func _draw() -> void:
                 draw_string(ThemeDB.fallback_font,baseline,
                     str(overlay["text"]),HORIZONTAL_ALIGNMENT_CENTER,
                     bounds.size.x-4.0,text_size,overlay["fill"])
+
 
