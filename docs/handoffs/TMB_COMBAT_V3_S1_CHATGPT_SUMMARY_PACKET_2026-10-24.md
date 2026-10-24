@@ -22,7 +22,8 @@ Two owner decisions remain explicit: current pilot behavior clears burn when its
 
 ## GitHub delivery
 
-Fix branch: `fix/combat-v3-s1-official-qa-20261024`, created from PR #29 head. The code/test commit on GitHub is `e51dabc57ce20c294d03a0e9d64ed3ccd1397b3c`, with the same tree as the locally tested source. The QA report, summary packet, next-task prompt, checksums, runner scripts, CSV results, and baseline/final logs are included in the evidence delivery commit.
+Fix branch: `fix/combat-v3-s1-official-qa-20261024`, created from PR #29 head. The code/test commit on GitHub is `e51dabc57ce20c294d03a0e9d64ed3ccd1397b3c`, with the same tree as the locally tested source. The QA report, summary packet, next-task prompt, checksums, runner scripts, CSV results, and baseline/final logs are included in evidence commit `cb68ec7e167320a73894392d0860f053f3f48489`. Draft review PR: [#30](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/30), stacked on PR #29; GitHub reports it clean and mergeable.
 
 See `TMB_COMBAT_V3_S1_OFFICIAL_QA_REPORT_2026-10-24.md` for detailed commands, baseline failures, engine hash, regression list, caveats, and artifact paths. Machine-readable results: `focused_results.csv`, `baseline_results.csv`, `baseline_edge_results.csv`, and `edge_results.csv` in `outputs/COMBAT_V3_S1_OFFICIAL_QA_20261024/`.
+
 

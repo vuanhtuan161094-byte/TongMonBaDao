@@ -22,10 +22,11 @@ Không có thay đổi UI/UX, Source A, D7, economy/medicine, HP×100, Combat×1
 | Nhánh sửa lỗi | `fix/combat-v3-s1-official-qa-20261024` |
 | Tested local commit | `4fe466d8efc192aa93738811041de795baadb22a` |
 | Tested/published code tree | `6859fde16ed71a2596d3a5a52539622136d866e0` |
-| GitHub code/test commit | `e51dabc57ce20c294d03a0e9d64ed3ccd1397b3c` — cùng tree với tested local commit |
+| GitHub code/test commit | `e51dabc57ce20c294d03a0e9d64ed3ccd1397b3c` — cùng tree với tested local commit 
+| Evidence/report commit | cb68ec7e167320a73894392d0860f053f3f48489 |
 | Source file allowlist | `map_battle_v2.gd`, `map_battle_snapshot_v2.gd`, `combat_v3_s1_effects_test.gd`, `combat_v3_s1_edge_contract_test.gd` |
 
-PR #29 hiện vẫn là draft/open và chưa bị sửa. Nhánh này được tạo từ đúng PR #29 HEAD. Bản PR review tiếp theo được xếp trên `feature/combat-v3-s1-runtime-effects-20261024`; không có thao tác merge hoặc force-push.
+PR #29 hiện vẫn là draft/open và chưa bị sửa. Nhánh này được tạo từ đúng PR #29 HEAD. PR review xếp tầng đã tạo: [draft PR #30](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/30), base là PR #29 HEAD; GitHub xác nhận `mergeable=true`, `mergeable_state=clean`. Không có thao tác merge hoặc force-push.
 
 ## Engine và cách chạy
 
@@ -103,4 +104,6 @@ Final logs:
 | Lỗi trong phạm vi S1 còn chặn | **NONE OBSERVED** |
 
 **Không merge.** Chỉ tiếp tục Packet B/S2 khi owner cấp quyền và quyết định rõ hai mục `PENDING_OWNER` có cần thay đổi hành vi không.
+
+
 

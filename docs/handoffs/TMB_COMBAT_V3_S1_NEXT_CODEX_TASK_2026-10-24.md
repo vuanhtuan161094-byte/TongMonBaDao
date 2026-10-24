@@ -1,6 +1,6 @@
 # Next Codex Task — Combat V3-S2 Planning / Owner Decisions
 
-This is a follow-up prompt only. Do not begin it until the owner explicitly authorizes Packet B. The completed Packet A fix is on `fix/combat-v3-s1-official-qa-20261024`, stacked above PR #29. Read the official report and inspect the final draft PR before planning any follow-up.
+This is a follow-up prompt only. Do not begin it until the owner explicitly authorizes Packet B. The completed Packet A fix is on `fix/combat-v3-s1-official-qa-20261024`, in [draft PR #30](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/30), stacked above PR #29. Read the official report and inspect the final draft PR before planning any follow-up.
 
 ## Prompt to paste for the next task
 
@@ -19,3 +19,4 @@ Until those decisions and explicit Packet B authorization arrive, perform read-o
 - Godot: `4.7.2.stable.official.ed1daf0bf`; import and tests exit 0. Isolated profile stderr includes a root certificate store diagnostic; see report.
 - S1 scope blockers observed: none.
 - No physical Android/visual QA, full CI, S2, or merge was performed.
+
