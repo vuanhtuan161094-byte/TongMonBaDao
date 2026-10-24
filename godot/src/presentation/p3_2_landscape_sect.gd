@@ -3130,14 +3130,14 @@ func _build_disciple_summary_panel() -> void:
     disciple_summary_name = _label(disciple_summary_panel, "", Vector2(82, 14), Vector2(172, 30), 20)
     disciple_summary_name.add_theme_color_override("font_color", INK)
 
-    disciple_summary_meta = _label(disciple_summary_panel, "", Vector2(82, 44), Vector2(176, 34), 12)
+    disciple_summary_meta = _label(disciple_summary_panel, "", Vector2(82, 44), Vector2(176, 34), 13)
     disciple_summary_meta.add_theme_color_override("font_color", CINNABAR.darkened(0.12))
 
     var close := Button.new()
     close.name = "CloseSummary"
     close.text = "×"
-    close.position = Vector2(262, 12)
-    close.size = Vector2(34, 34)
+    close.position = Vector2(252, 10)
+    close.size = Vector2(44, 44)
     close.add_theme_font_size_override("font_size", 20)
     close.add_theme_stylebox_override("normal", _style(Color(0.86, 0.80, 0.66, 1.0), INK, 1, 16))
     close.pressed.connect(Callable(self, "_close_disciple_summary").bind(true))
@@ -3148,7 +3148,7 @@ func _build_disciple_summary_panel() -> void:
     separator.size = Vector2(280, 2)
     disciple_summary_panel.add_child(separator)
 
-    disciple_summary_body = _label(disciple_summary_panel, "", Vector2(16, 94), Vector2(276, 294), 13)
+    disciple_summary_body = _label(disciple_summary_panel, "", Vector2(16, 94), Vector2(276, 294), 14)
     disciple_summary_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     disciple_summary_body.add_theme_color_override("font_color", INK)
 
@@ -3918,15 +3918,17 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
     back.name = "BackToMapContext"
     back.text = "← Trở lại bản đồ"
     back.position = Vector2(936, 12)
-    back.size = Vector2(184, 38)
+    back.size = Vector2(184, 44)
+    back.add_theme_font_size_override("font_size",14)
+    back.add_theme_color_override("font_color",INK)
     back.add_theme_stylebox_override("normal", _style(Color(0.88, 0.82, 0.67, 1.0), INK, 1, 8))
     back.pressed.connect(_return_to_disciple_summary)
     panel.add_child(back)
 
     var close := Button.new()
     close.text = "×"
-    close.position = Vector2(1128, 12)
-    close.size = Vector2(36, 34)
+    close.position = Vector2(1118, 10)
+    close.size = Vector2(46, 46)
     close.add_theme_font_size_override("font_size", 22)
     close.add_theme_stylebox_override("normal", _style(Color(0.76, 0.70, 0.58, 1.0), INK, 1, 16))
     close.pressed.connect(_return_to_disciple_summary)
@@ -3956,7 +3958,9 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
         var entry := Button.new()
         entry.text = roster_disciple.display_name
         entry.custom_minimum_size = Vector2(148, 44)
-        entry.add_theme_font_size_override("font_size", 13)
+        entry.add_theme_font_size_override("font_size", 14)
+        entry.add_theme_color_override("font_color", INK)
+        entry.add_theme_color_override("font_hover_color", INK)
         var is_selected := id == selected_id
         entry.add_theme_stylebox_override("normal", _style(Color(0.97, 0.90, 0.70, 1.0) if is_selected else Color(0.91, 0.86, 0.72, 1.0), GOLD if is_selected else Color(0.45, 0.37, 0.25, 1.0), 2 if is_selected else 1, 8))
         entry.pressed.connect(Callable(self, "_open_disciple_deep_screen").bind(id, tab_name))
@@ -4004,7 +4008,7 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
     content.text = _disciple_tab_text(tab_name, disciple)
     content.custom_minimum_size = Vector2(565, 0)
     content.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-    content.add_theme_font_size_override("font_size", 14)
+    content.add_theme_font_size_override("font_size", 15)
     content.add_theme_color_override("font_color", INK)
     details_scroll.add_child(content)
 
@@ -4021,7 +4025,7 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
             details_scroll.position = Vector2(302,52)
             details_scroll.size = Vector2(306,286)
             content.custom_minimum_size = Vector2(282,0)
-            content.add_theme_font_size_override("font_size",13)
+            content.add_theme_font_size_override("font_size",14)
     if authentic_v2 and tab_name == "Thuộc tính":
         var source_scene := DiscipleSourceAVisualPool.scene_for_disciple(disciple)
         if source_scene != null:
@@ -4064,7 +4068,9 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
         tab.text = tab_names[index]
         tab.position = Vector2(220 + index * 154, 470)
         tab.size = Vector2(144, 42)
-        tab.add_theme_font_size_override("font_size", 12)
+        tab.add_theme_font_size_override("font_size", 14)
+        tab.add_theme_color_override("font_color", INK)
+        tab.add_theme_color_override("font_hover_color", INK)
         var active := tab_names[index] == tab_name
         tab.add_theme_stylebox_override("normal", _style(Color(0.97, 0.88, 0.64, 1.0) if active else Color(0.88, 0.82, 0.67, 1.0), GOLD if active else Color(0.45, 0.37, 0.25, 1.0), 2 if active else 1, 7))
         tab.pressed.connect(Callable(self, "_open_disciple_deep_screen").bind(selected_id, str(tab_names[index])))
