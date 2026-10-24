@@ -88,6 +88,7 @@ func setup(id: String, party: Array, monsters: Array, keep_encounter_open: bool 
             "skill_ready":{},
             "context_sources":row.get("context_sources",[]).duplicate(true),
             "next_basic":0.0,"next_skill":0.0,"guard_until":-1.0,
+            "learned_guard_until":-1.0,"learned_guard_factor":1.0,"status_effects":{},
             "linked_disciple":row.get("disciple",null)
         })
     for raw in monsters:
@@ -147,6 +148,7 @@ func step(viewed_map: bool = false) -> Dictionary:
     if continuous_mode and _pending_kill_events.size() + MAX_MONSTERS > MAX_PENDING_KILLS:
         return {"ok":false,"reason":"kill_journal_backpressure","pending":_pending_kill_events.size()}
     now += STEP_SECONDS
+    _process_status_effects()
     _release_casts()
     var actor_ids: Array = actors.keys()
     actor_ids.sort()
@@ -167,9 +169,11 @@ func step(viewed_map: bool = false) -> Dictionary:
             if _heal_ally(actor):
                 continue
         if str(actor["role"]) == "frontline" and now >= float(actor["next_skill"]):
+            if _try_learned_skill(actor,target,true):
+                continue
             if _guard_frontline(actor):
                 continue
-        if now >= float(actor["next_skill"]) and _try_learned_damage_skill(actor,target):
+        if now >= float(actor["next_skill"]) and _try_learned_skill(actor,target):
             continue
         var distance := (actor["position"] as Vector2).distance_to(target["position"])
         var attack_range := float(actor["range"])
@@ -188,12 +192,18 @@ func step(viewed_map: bool = false) -> Dictionary:
                 _cast_mage_aoe(actor,target)
                 continue
         if now >= float(actor["next_basic"]):
-            _deal_direct(actor,target,float(actor.get("basic_ratio",1.0)),"basic",true)
             var interval := CombatStatsV2.effective_interval(
                 1.65 if str(actor["side"]) == "monster" else float(actor.get("basic_interval",1.6)),
                 float(actor["stats"].get("attack_speed",0.0))
             )
-            actor["next_basic"] = now+maxf(STEP_SECONDS,interval)
+            if interval <= 0.0:
+                # A -100% or worse attack-speed modifier disables basic hits;
+                # keep checking at the simulation tick without creating debt.
+                actor["next_basic"] = now+STEP_SECONDS
+                continue
+            _deal_direct(actor,target,float(actor.get("basic_ratio",1.0)),"basic",true)
+            # Carry fractional deadlines across grid checks without multi-hit catch-up.
+            actor["next_basic"] = maxf(now+STEP_SECONDS,float(actor["next_basic"])+maxf(STEP_SECONDS,interval))
     if _count_alive("monster") == 0 and not continuous_mode:
         outcome = "win"
         active = false
@@ -370,7 +380,7 @@ func _heal_ally(actor: Dictionary) -> bool:
 
 func _guard_frontline(actor: Dictionary) -> bool:
     var ratio := float(actor["hp"])/maxf(1.0,float(actor["max_hp"]))
-    if ratio >= 0.75:
+    if ratio >= 0.75 or now < float(actor.get("learned_guard_until",-1.0)):
         return false
     actor["guard_until"] = now+4.0
     actor["next_skill"] = now+9.0
@@ -394,10 +404,18 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
         if not bool(context.get("ok",false)):
             return 0.0
         ratio *= float(context["outgoing_damage_factor"])
+    var guard_factor := 1.0
     if now < float(target.get("guard_until",-1.0)):
+        guard_factor = 0.65
+    if now < float(target.get("learned_guard_until",-1.0)):
+        guard_factor = minf(guard_factor,float(target.get("learned_guard_factor",1.0)))
+    if guard_factor < 1.0:
         t_stats = t_stats.duplicate(true)
         var previous_reduction := clampf(float(t_stats.get("damage_reduction",0.0)),0.0,1.0)
-        t_stats["damage_reduction"] = 1.0-(1.0-previous_reduction)*0.65
+        t_stats["damage_reduction"] = 1.0-(1.0-previous_reduction)*guard_factor
+    var weaken: Dictionary = attacker.get("status_effects",{}).get("weaken",{})
+    if not weaken.is_empty() and now < float(weaken.get("until",-1.0)):
+        ratio *= float(weaken.get("factor",1.0))
     var crit := false
     if can_crit and kind != "basic_followup":
         crit = rng.chance(CombatStatsV2.effective_crit_chance(a_stats,t_stats))
@@ -438,40 +456,98 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
             "basic_followup",false,damage_element)
     return actual_damage
 
-# Only ALREADY-LEARNED, authored direct-damage P2 skills can be used.
-# Debuff/Burn/Dash/etc. remain deferred until those specific consumers exist.
-func _try_learned_damage_skill(actor: Dictionary, target: Dictionary) -> bool:
+# S1 activates learned damage, burn, weaken and self-guard skills.
+# Dash and fire_combo require separate action semantics and remain deferred.
+func _try_learned_skill(actor: Dictionary, target: Dictionary, guard_only: bool = false) -> bool:
     var skills: Array = actor.get("skill_loadout",[])
     var ready: Dictionary = actor.get("skill_ready",{})
     for raw_id in skills:
         var skill_id := str(raw_id)
         var data: Dictionary = CombatSkillSystem.SKILLS.get(skill_id,{})
-        if str(data.get("effect","")) != "damage":
+        var effect := str(data.get("effect",""))
+        if not ["damage","burn","weaken","guard"].has(effect):
+            continue
+        if guard_only and (effect != "guard" or not bool(data.get("self_target",false))):
             continue
         if now < float(ready.get(skill_id,0.0)):
             continue
-        if (actor["position"] as Vector2).distance_to(target["position"]) > float(data.get("range",0.0)):
+        var self_cast := effect == "guard" and bool(data.get("self_target",false))
+        if self_cast:
+            if float(actor["hp"])/maxf(1.0,float(actor["max_hp"])) >= 0.75:
+                continue
+            if now < float(actor.get("learned_guard_until",-1.0)):
+                continue
+        elif (actor["position"] as Vector2).distance_to(target["position"]) > float(data.get("range",0.0)):
             continue
         var caster_id := str(actor["id"])
-        var cast_seconds := maxf(STEP_SECONDS,float(data.get("cast_time",STEP_SECONDS)))
-        var distance := (actor["position"] as Vector2).distance_to(target["position"])
+        var caster_stats: Dictionary = actor.get("stats",{})
+        var cast_rate := maxf(0.1,1.0+float(caster_stats.get("cast_speed",0.0)))
+        var cooldown_rate := maxf(0.1,1.0+float(caster_stats.get("cooldown_recovery",0.0)))
+        var cast_seconds := maxf(STEP_SECONDS,float(data.get("cast_time",STEP_SECONDS))/cast_rate)
+        var distance := 0.0 if self_cast else (actor["position"] as Vector2).distance_to(target["position"])
         var projectile_speed := float(data.get("projectile_speed",0.0))
         var travel := distance/projectile_speed if projectile_speed > 0.0 else 0.0
         var ready_at := now+cast_seconds+travel
         var multiplier := float(actor.get("skill_factors",{}).get(skill_id,1.0))
         pending_casts.append({
-            "caster":caster_id,"target_id":str(target["id"]),
+            "caster":caster_id,"target_id":caster_id if self_cast else str(target["id"]),
             "skill_id":skill_id,"ready":ready_at,
             "ratio":float(data.get("damage_ratio",0.0))*multiplier,
             "element":str(data.get("element",""))
         })
-        ready[skill_id] = now+maxf(STEP_SECONDS,float(data.get("cooldown",0.0)))
+        ready[skill_id] = now+maxf(STEP_SECONDS,float(data.get("cooldown",0.0))/cooldown_rate)
         actor["skill_ready"] = ready
-        _event("skill_cast",{"actor_id":caster_id,"target":target["id"],
+        _event("skill_cast",{"actor_id":caster_id,"target":caster_id if self_cast else target["id"],
             "skill_id":skill_id,"release_at":ready_at})
         actions += 1
         return true
     return false
+
+# S1 statuses live on the authoritative actor, not the presentation event ring.
+func _apply_skill_status(caster: Dictionary, target: Dictionary, skill_id: String, definition: Dictionary) -> void:
+    var effect := str(definition.get("effect",""))
+    if not ["burn","weaken"].has(effect):
+        return
+    var statuses: Dictionary = target.get("status_effects",{})
+    var duration := maxf(0.0,float(definition.get("burn_duration" if effect == "burn" else "weaken_duration",0.0)))
+    var row := {"caster":str(caster["id"]),"skill_id":skill_id,"until":now+duration}
+    if effect == "burn":
+        row["ratio"] = maxf(0.0,float(definition.get("burn_ratio",0.0)))
+        row["next_tick"] = now+1.0
+    else:
+        row["factor"] = clampf(float(definition.get("weaken_multiplier",1.0)),0.01,1.0)
+    # Only one strongest effect of each family, never an unlimited stack.
+    var existing: Dictionary = statuses.get(effect,{})
+    if existing.is_empty() or (effect == "burn" and float(row.get("ratio",0.0)) >= float(existing.get("ratio",0.0))) or (effect == "weaken" and float(row.get("factor",1.0)) <= float(existing.get("factor",1.0))):
+        statuses[effect] = row
+        target["status_effects"] = statuses
+        _event("status_applied",{"caster":caster["id"],"target":target["id"],"status":effect,"skill_id":skill_id,"until":row["until"]})
+
+func _process_status_effects() -> void:
+    var actor_ids: Array = actors.keys()
+    actor_ids.sort()
+    for raw_id in actor_ids:
+        var target: Dictionary = actors[raw_id]
+        if float(target["hp"]) <= 0.0:
+            continue
+        var statuses: Dictionary = target.get("status_effects",{})
+        if statuses.has("burn"):
+            var burn: Dictionary = statuses["burn"]
+            var caster: Dictionary = actors.get(str(burn.get("caster","")),{})
+            if caster.is_empty() or float(caster.get("hp",0.0)) <= 0.0:
+                statuses.erase("burn")
+            else:
+                var due := float(burn.get("next_tick",INF))
+                var until := float(burn.get("until",-1.0))
+                if due <= now+0.000001 and due <= until+0.000001:
+                    _deal_direct(caster,target,float(burn.get("ratio",0.0)),"dot",false,"fire",false)
+                    _event("status_tick",{"caster":caster["id"],"target":target["id"],"status":"burn"})
+                    burn["next_tick"] = due+1.0
+                if now >= until or float(target["hp"]) <= 0.0:
+                    statuses.erase("burn")
+        if statuses.has("weaken") and now >= float(statuses["weaken"].get("until",-1.0)):
+            statuses.erase("weaken")
+        target["status_effects"] = statuses
 
 func _cast_mage_aoe(actor: Dictionary, target: Dictionary) -> void:
     actor["next_skill"] = now+7.0
@@ -506,11 +582,21 @@ func _release_casts() -> void:
             continue
         if cast.has("skill_id"):
             var targeted: Dictionary = actors.get(str(cast["target_id"]),{})
+            var skill_id := str(cast["skill_id"])
+            var definition: Dictionary = CombatSkillSystem.SKILLS.get(skill_id,{})
+            var effect := str(definition.get("effect",""))
             if not targeted.is_empty() and float(targeted["hp"]) > 0.0:
-                _event("skill_hit",{"caster":caster["id"],"target":targeted["id"],
-                    "skill_id":cast["skill_id"]})
-                _deal_direct(caster,targeted,float(cast["ratio"]),"learned_skill",true,
-                    str(cast.get("element","")))
+                _event("skill_hit",{"caster":caster["id"],"target":targeted["id"],"skill_id":skill_id})
+                if effect == "guard" and caster["id"] == targeted["id"]:
+                    targeted["learned_guard_factor"] = clampf(float(definition.get("guard_multiplier",1.0)),0.01,1.0)
+                    targeted["learned_guard_until"] = now+maxf(0.0,float(definition.get("guard_duration",0.0)))
+                    _event("status_applied",{"caster":caster["id"],"target":targeted["id"],
+                        "status":"guard","skill_id":skill_id,"until":targeted["learned_guard_until"]})
+                elif effect in ["damage","burn","weaken"]:
+                    _deal_direct(caster,targeted,float(cast["ratio"]),"learned_skill",true,
+                        str(cast.get("element","")))
+                    if float(targeted["hp"]) > 0.0 and effect in ["burn","weaken"]:
+                        _apply_skill_status(caster,targeted,skill_id,definition)
             continue
         var selected := _area_targets(str(caster["side"]),cast["center"],float(cast["radius"]),int(cast["maximum"]))
         _event("area_release",{"caster":caster["id"],"target_count":selected.size(),"center":cast["center"]})

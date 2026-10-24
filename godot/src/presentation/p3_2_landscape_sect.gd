@@ -3576,15 +3576,29 @@ func _refresh_b3_hunt_panel() -> void:
     var satiety_spent := B3PillSatietyV1.spent_today(state,d)
     var battle_time := float(battle.now) if battle != null else 0.0
     var battle_status := "Chiến trường đang sẵn sàng" if battle != null else "Chiến trường chưa khởi tạo"
+    var s1_status := "Không có"
+    var s1_latest_event := ""
+    var disciple_actor_id := str(d.id)
+    if battle != null and battle.actors.has(disciple_actor_id):
+        var presenter: B3CareCombatV5Presenter = b3_hunt_arena.presenter
+        var disciple_actor: Dictionary = battle.actors[disciple_actor_id]
+        var active_s1 := presenter.s1_combat_status_summary(disciple_actor)
+        if not active_s1.is_empty():
+            s1_status = active_s1
+        s1_latest_event = presenter.latest_s1_status_feedback()
+    if s1_latest_event.is_empty():
+        s1_latest_event = "Chưa có sự kiện hiệu ứng mới"
     b3_hunt_facts.text = (
-        "%s · %s\n%s\n\n"
-        + "ĐỆ TỬ · %s\nHP: %.0f / %.0f\nInjury: %s\nTu Vi: %s\n\n"
-        + "SĂN QUÁI · Hạ gục đã trả thưởng: %d\nThế hệ quái: %d · %.1f giây\n\n"
-        + "KHO TÔNG MÔN · %s\nTổng: %d   |   Dùng được: %d\n\n"
-        + "HỒI XUÂN ĐAN: %d viên\nBão hòa thuốc hôm nay: %d / %d điểm\nCARE: %s"
+        "%s · %s\n%s\n"
+        + "ĐỆ TỬ · %s\nHP: %.0f / %.0f · Injury: %s\nTu Vi: %s\n"
+        + "Combat V3-S1 · %s\n%s\n"
+        + "SĂN QUÁI · Hạ gục đã trả thưởng: %d · Quái %d · %.1f giây\n"
+        + "KHO TÔNG MÔN · %s · Tổng: %d · Dùng được: %d\n"
+        + "HỒI XUÂN ĐAN %d · Bão hòa %d / %d điểm\nCARE: %s"
     ) % [
         auto_text,str(status_names.get(str(care.get("status","")),"Chưa bật AUTO")),battle_status,
-        d.display_name,d.hp,d.max_hp,injury,tuvi_text,kills,int(slot.get("generation",0)),battle_time,
+        d.display_name,d.hp,d.max_hp,injury,tuvi_text,s1_status,s1_latest_event,
+        kills,int(slot.get("generation",0)),battle_time,
         ResourceRegistry.new().display_name(resource),stock,available,
         healing_pills,satiety_spent,B3PillSatietyV1.CAPACITY,
         str(care.get("status","OFF"))

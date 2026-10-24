@@ -133,6 +133,65 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
             return {"ok":false,"reason":"invalid_actor_hp"}
         if absf(max_hp-float(stats.get("max_hp",-1.0))) > 0.00001:
             return {"ok":false,"reason":"max_hp_stat_snapshot_mismatch"}
+        var skill_loadout = actor.get("skill_loadout",[])
+        var skill_ready = actor.get("skill_ready",{})
+        if not (skill_loadout is Array) or skill_loadout.size() > CombatSkillSystem.SKILLS.size():
+            return {"ok":false,"reason":"invalid_skill_loadout"}
+        if not (skill_ready is Dictionary) or skill_ready.size() > skill_loadout.size():
+            return {"ok":false,"reason":"invalid_skill_cooldowns"}
+        var observed_skills: Dictionary = {}
+        for raw_skill_id in skill_loadout:
+            var skill_id := str(raw_skill_id)
+            if not CombatSkillSystem.SKILLS.has(skill_id) or observed_skills.has(skill_id):
+                return {"ok":false,"reason":"invalid_skill_loadout"}
+            observed_skills[skill_id] = true
+        for raw_skill_id in skill_ready.keys():
+            var skill_id := str(raw_skill_id)
+            var ready_value = skill_ready[raw_skill_id]
+            if (not observed_skills.has(skill_id) or not (ready_value is int or ready_value is float) or
+                is_nan(float(ready_value)) or is_inf(float(ready_value)) or
+                float(ready_value) < 0.0 or float(ready_value) > max_time+90.0):
+                return {"ok":false,"reason":"invalid_skill_cooldowns"}
+        for timer_key in ["next_basic","next_skill"]:
+            var timer_value = actor.get(timer_key,0.0)
+            if (not (timer_value is int or timer_value is float) or
+                is_nan(float(timer_value)) or is_inf(float(timer_value)) or
+                float(timer_value) < 0.0 or float(timer_value) > max_time+90.0):
+                return {"ok":false,"reason":"invalid_actor_action_timer"}
+        var generic_guard_until = actor.get("guard_until",-1.0)
+        if (not (generic_guard_until is int or generic_guard_until is float) or
+            is_nan(float(generic_guard_until)) or is_inf(float(generic_guard_until)) or
+            float(generic_guard_until) < -1.0 or float(generic_guard_until) > max_time+90.0):
+            return {"ok":false,"reason":"invalid_role_guard_timer"}
+        # Validate S1 authoritative statuses before replaying untrusted bytes.
+        var statuses = actor.get("status_effects",{})
+        if not (statuses is Dictionary) or statuses.size() > 2:
+            return {"ok":false,"reason":"invalid_combat_status_map"}
+        for status_key in statuses.keys():
+            if not ["burn","weaken"].has(str(status_key)):
+                return {"ok":false,"reason":"unsupported_combat_status"}
+            var status = statuses[status_key]
+            if not (status is Dictionary):
+                return {"ok":false,"reason":"invalid_combat_status"}
+            var until := float(status.get("until",-1.0))
+            if is_nan(until) or is_inf(until) or until < 0.0 or until > max_time+90.0:
+                return {"ok":false,"reason":"invalid_status_expiry"}
+            if str(status.get("caster","")).is_empty() or str(status.get("skill_id","")).is_empty():
+                return {"ok":false,"reason":"missing_status_provenance"}
+            var factor := float(status.get("ratio",-1.0)) if str(status_key) == "burn" else float(status.get("factor",-1.0))
+            if is_nan(factor) or is_inf(factor) or factor < 0.0 or factor > 1.0:
+                return {"ok":false,"reason":"invalid_status_factor"}
+            if str(status_key) == "burn":
+                var due := float(status.get("next_tick",-1.0))
+                if is_nan(due) or is_inf(due) or due < 0.0 or due > until+1.0:
+                    return {"ok":false,"reason":"invalid_burn_tick"}
+                if hp > 0.0 and until > battle.now and due <= battle.now:
+                    return {"ok":false,"reason":"stale_burn_tick"}
+        var learned_until := float(actor.get("learned_guard_until",-1.0))
+        var learned_factor := float(actor.get("learned_guard_factor",1.0))
+        if (is_nan(learned_until) or is_inf(learned_until) or learned_until < -1.0 or learned_until > max_time+90.0 or
+            is_nan(learned_factor) or is_inf(learned_factor) or learned_factor < 0.01 or learned_factor > 1.0):
+            return {"ok":false,"reason":"invalid_learned_guard"}
         if side == "disciple":
             disciples += 1
             var party_id := str(actor.get("party_id",""))
@@ -152,22 +211,69 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
         # Never deserialize an object pointer from untrusted save data.
         actor["linked_disciple"] = null
         battle.actors[actor_id] = actor
+    # Status provenance is checked after all actors are loaded so save order
+    # cannot affect whether a valid caster resolves.
+    for actor_value in battle.actors.values():
+        var actor: Dictionary = actor_value
+        var statuses: Dictionary = actor.get("status_effects",{})
+        for status_key in statuses.keys():
+            var status: Dictionary = statuses[status_key]
+            var caster_id := str(status.get("caster",""))
+            var skill_id := str(status.get("skill_id",""))
+            if not battle.actors.has(caster_id):
+                return {"ok":false,"reason":"orphan_combat_status_caster"}
+            var caster: Dictionary = battle.actors[caster_id]
+            var definition: Dictionary = CombatSkillSystem.SKILLS.get(skill_id,{})
+            var caster_skills = caster.get("skill_loadout",[])
+            if (str(caster.get("side","")) == str(actor.get("side","")) or
+                str(definition.get("effect","")) != str(status_key) or
+                not (caster_skills is Array) or not caster_skills.has(skill_id)):
+                return {"ok":false,"reason":"invalid_combat_status_provenance"}
     if (disciples > MapBattleV2.MAX_DISCIPLES or monsters > MapBattleV2.MAX_MONSTERS or
         (not battle.continuous_mode and (disciples < 1 or monsters < 1))):
         return {"ok":false,"reason":"invalid_combat_side_size"}
+    if data["casts"].size() > MapBattleV2.MAX_DISCIPLES+MapBattleV2.MAX_MONSTERS:
+        return {"ok":false,"reason":"invalid_cast_count"}
     for cast_raw in data["casts"]:
         if not (cast_raw is Dictionary):
             return {"ok":false,"reason":"invalid_cast"}
         var cast: Dictionary = cast_raw.duplicate(true)
-        if not battle.actors.has(str(cast.get("caster",""))) or float(cast.get("ready",-1.0)) < battle.now:
+        var caster_id := str(cast.get("caster",""))
+        var ready_value = cast.get("ready",null)
+        if not (ready_value is int or ready_value is float):
+            return {"ok":false,"reason":"invalid_cast_deadline"}
+        var ready_at := float(ready_value)
+        if (not battle.actors.has(caster_id) or is_nan(ready_at) or is_inf(ready_at) or
+            ready_at < battle.now or ready_at > max_time+90.0):
             return {"ok":false,"reason":"orphan_or_past_due_cast"}
         if cast.has("center"):
             var center = _decode_vec2(cast["center"])
             if not (center is Vector2) or not MapBattleV2.ARENA.has_point(center):
                 return {"ok":false,"reason":"invalid_telegraph_position"}
             cast["center"] = center
-        elif not battle.actors.has(str(cast.get("target_id",""))):
-            return {"ok":false,"reason":"invalid_skill_target"}
+        else:
+            var target_id := str(cast.get("target_id",""))
+            if not battle.actors.has(target_id):
+                return {"ok":false,"reason":"invalid_skill_target"}
+            var caster: Dictionary = battle.actors[caster_id]
+            var target: Dictionary = battle.actors[target_id]
+            var skill_id := str(cast.get("skill_id",""))
+            var definition: Dictionary = CombatSkillSystem.SKILLS.get(skill_id,{})
+            var effect := str(definition.get("effect",""))
+            var self_target := bool(definition.get("self_target",false))
+            var caster_skills = caster.get("skill_loadout",[])
+            var cast_ratio = cast.get("ratio",null)
+            if (not (cast_ratio is int or cast_ratio is float) or
+                is_nan(float(cast_ratio)) or is_inf(float(cast_ratio)) or
+                float(cast_ratio) < 0.0 or float(cast_ratio) > 1000.0 or
+                not (caster_skills is Array) or not caster_skills.has(skill_id)):
+                return {"ok":false,"reason":"invalid_cast_provenance_or_ratio"}
+            var valid_effect := ["damage","burn","weaken","guard"].has(effect)
+            if (not valid_effect or
+                (self_target and (effect != "guard" or target_id != caster_id)) or
+                (not self_target and (target_id == caster_id or
+                    str(caster.get("side","")) == str(target.get("side",""))))):
+                return {"ok":false,"reason":"invalid_skill_target"}
         battle.pending_casts.append(cast)
     if data["events"].size() > MapBattleV2.MAX_EVENTS:
         return {"ok":false,"reason":"event_journal_limit_exceeded"}

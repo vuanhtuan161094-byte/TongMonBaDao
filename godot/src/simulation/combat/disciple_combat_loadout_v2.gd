@@ -59,7 +59,7 @@ static func build(
         var skill_system := CombatSkillSystem.new()
         for skill_id in skill_system.usable_skills(state,disciple):
             var definition := skill_system.definition(skill_id)
-            if str(definition.get("effect","")) != "damage":
+            if not ["damage","burn","weaken","guard"].has(str(definition.get("effect",""))):
                 deferred_skills.append(str(skill_id))
                 continue
             var factor := skill_system.effect_multiplier(state,disciple,skill_id)

@@ -57,6 +57,7 @@ var _impact_cues: Dictionary = {}
 var _effect_atlas := CombatV4EffectAtlas.new()
 var _effect_cues: Array[Dictionary] = []
 var _status_feedback: Dictionary = {} # only actual event feedback, not status authority
+var _latest_s1_status_event: Dictionary = {}
 # PRES-01 visual-only adaptive framing, opt-in for the 6v5 JX pilot.
 # Does NOT move any fighter or affect V2 world coordinates / hit selection.
 var enable_spectator_framing: bool = false
@@ -152,6 +153,8 @@ func _enqueue_combat_text(actor_id: String, amount: float, category: String,
         label = "+" + label
     elif category == "poison":
         label = "DOC " + label
+    elif category == "burn_tick":
+        label = "BỎNG " + label
     elif category == "lifesteal":
         label = "+" + label
     # The global V2 event index is a stable receipt; pilot_impact / skill_hit
@@ -188,8 +191,11 @@ func _ingest_combat_feedback(event: Dictionary, event_id: int) -> void:
     if kind == "hit":
         var target := str(event.get("target",""))
         var damage := float(event.get("damage",0.0))
+        var damage_kind := str(event.get("kind",""))
+        var category := "burn_tick" if damage_kind == "dot" else (
+            "crit" if bool(event.get("critical",false)) else "damage")
         _enqueue_combat_text(target,damage,
-            "crit" if bool(event.get("critical",false)) else "damage",event_id)
+            category,event_id)
         var leech := float(event.get("lifesteal",0.0))
         if leech > 0.0:
             _enqueue_combat_text(str(event.get("attacker","")),leech,"lifesteal",event_id)
@@ -223,7 +229,57 @@ func active_combat_status_tags(actor: Dictionary) -> Array[String]:
             tags.append("THU")
         if battle.now < float(actor.get("pilot_def_until",-1.0)):
             tags.append("TRAN")
+    for status_tag in active_s1_combat_status_tags(actor):
+        var full_tag := str(status_tag)
+        var short_tag := "YẾU" if full_tag.begins_with("SUY YẾU") else (
+            "HỘ THỂ" if full_tag.begins_with("HỘ THỂ") else "BỎNG")
+        if not tags.has(short_tag):
+            tags.append(short_tag)
     return tags
+
+# Combat V3-S1 status is read from the same MapBattleV2 actor and clock. This
+# adapter formats live remaining duration and never advances or edits combat.
+func active_s1_combat_status_tags(actor: Dictionary) -> Array[String]:
+    var tags: Array[String] = []
+    if battle == null:
+        return tags
+    var statuses: Dictionary = actor.get("status_effects",{})
+    for row in [
+        {"id":"burn","label":"BỎNG"},
+        {"id":"weaken","label":"SUY YẾU"}
+    ]:
+        var status_id := str(row["id"])
+        var effect: Dictionary = statuses.get(status_id,{})
+        var remaining := float(effect.get("until",-1.0))-battle.now
+        if not effect.is_empty() and remaining > 0.000001:
+            tags.append("%s %.1fs" % [str(row["label"]),remaining])
+    var guard_remaining := float(actor.get("learned_guard_until",-1.0))-battle.now
+    if guard_remaining > 0.000001:
+        tags.append("HỘ THỂ %.1fs" % guard_remaining)
+    return tags
+
+func s1_combat_status_summary(actor: Dictionary) -> String:
+    return " · ".join(active_s1_combat_status_tags(actor))
+
+func latest_s1_status_feedback() -> String:
+    if _latest_s1_status_event.is_empty():
+        return ""
+    if _frame_clock-float(_latest_s1_status_event.get("started",-1.0)) > 2.5:
+        return ""
+    var status_labels := {"burn":"BỎNG","weaken":"SUY YẾU","guard":"HỘ THỂ"}
+    var skill_labels := {
+        "hoa_cau":"Hỏa Cầu",
+        "han_suong_an":"Hàn Sương Ấn",
+        "chan_son_quyen":"Chấn Sơn Quyền",
+        "kim_cuong_ho_the":"Kim Cương Hộ Thể"
+    }
+    var status_id := str(_latest_s1_status_event.get("status",""))
+    var skill_id := str(_latest_s1_status_event.get("skill_id",""))
+    var skill_name := str(skill_labels.get(skill_id,""))
+    var status_name := str(status_labels.get(status_id,status_id.to_upper()))
+    if not skill_name.is_empty():
+        return "S1: %s áp dụng %s" % [skill_name,status_name]
+    return "S1: %s đã áp dụng" % status_name
 
 func _combat_feedback_color(category: String) -> Color:
     match category:
@@ -378,6 +434,15 @@ func _ingest_authority_events() -> void:
             var recipient := str(event.get("target", event.get("caster", "")))
             if battle.actors.has(recipient):
                 _status_feedback[recipient] = {"kind":kind, "until":_frame_clock+0.85}
+        elif kind == "status_applied":
+            var status_id := str(event.get("status",""))
+            if status_id in ["burn","weaken","guard"]:
+                _latest_s1_status_event = {
+                    "type":kind,"status":status_id,
+                    "skill_id":str(event.get("skill_id","")),
+                    "target":str(event.get("target","")),
+                    "event_id":event_id,"started":_frame_clock
+                }
         elif kind == "pilot_impact":
             var victim := str(event.get("target",""))
             if float(event.get("effective_damage",0.0)) > 0.0 and battle.actors.has(victim):
@@ -466,6 +531,7 @@ func attach_session(session: MapBattleV2) -> void:
     _view_next.clear()
     _view_elapsed = MapBattleV2.STEP_SECONDS
     _status_feedback.clear()
+    _latest_s1_status_event.clear()
     _facing.clear()
     _last_move.clear()
     _action_cues.clear()
@@ -1205,7 +1271,8 @@ func _draw() -> void:
                 })
             # Statuses derive from currently active effects/guards, never a
             # guessed VFX duration. Keep no more than two tags visible in 6v5.
-            if not compact_source_a_actor_overlays:
+            var s1_tags := active_s1_combat_status_tags(actor)
+            if not compact_source_a_actor_overlays or not s1_tags.is_empty():
                 var tags := active_combat_status_tags(actor)
                 for status_index in range(mini(tags.size(),2)):
                     ui_overlays.append({
@@ -1329,5 +1396,3 @@ func _draw() -> void:
                 draw_string(ThemeDB.fallback_font,baseline,
                     str(overlay["text"]),HORIZONTAL_ALIGNMENT_CENTER,
                     bounds.size.x-4.0,text_size,overlay["fill"])
-
-
