@@ -186,7 +186,8 @@ static func derive_stats(disciple: DiscipleState, sources: Array = []) -> Dictio
     return CombatStatsV2.derive(
         int(cultivation["realm"]),int(cultivation["floor"]),
         int(body["realm"]),int(body["floor"]),
-        disciple.potential,sources
+        disciple.potential,sources,
+        disciple.foundation_model_version >= FoundationSystem.MODEL_D7
     )
 
 # V2 live HP authority is derived, never an independent level-up reward.

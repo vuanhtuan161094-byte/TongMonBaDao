@@ -49,7 +49,7 @@ static func valid_source(source: Dictionary) -> bool:
 static func derive(
     cultivation_realm: int, cultivation_floor: int,
     body_realm: int, body_floor: int, current_potential: float,
-    sources: Array = []
+    sources: Array = [], potential_realm_only: bool = false
 ) -> Dictionary:
     if cultivation_realm < 1 or cultivation_realm > 30 or body_realm < 1 or body_realm > 30:
         return {"ok":false,"reason":"invalid_realm"}
@@ -99,12 +99,13 @@ static func derive(
     for channel in CORE_CHANNELS:
         var realm_piece := float(REALM_BASE[channel]) * realm_growth
         var body_piece := float(BODY_BASE[channel]) * body_growth
-        var core := (realm_piece + body_piece) * potential_factor
+        var core := realm_piece*potential_factor+body_piece if potential_realm_only else (realm_piece+body_piece)*potential_factor
         var before_percent := core + float(flat.get(channel,0.0))
         var final_stat := before_percent * (1.0 + float(pct.get(channel,0.0)))
         stats[channel] = maxf(1.0, final_stat) if channel == "max_hp" else maxf(0.0, final_stat)
         core_breakdown[channel] = {
             "realm":realm_piece,"body":body_piece,"potential_factor":potential_factor,
+            "potential_realm_only":potential_realm_only,
             "core_after_potential":core,"unrelated_flat":float(flat.get(channel,0.0)),
             "same_channel_percent":float(pct.get(channel,0.0))
         }

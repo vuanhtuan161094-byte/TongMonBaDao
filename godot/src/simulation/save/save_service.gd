@@ -1,8 +1,9 @@
 class_name SaveService
 extends RefCounted
 
-const CURRENT_VERSION := 2
-const CARE_VERSION := 3
+const CURRENT_VERSION := 3
+const LEGACY_CARE_VERSION := 3
+const CARE_VERSION := 4
 
 func save_to_path(state: SimulationState, path: String) -> Error:
     if state == null or path.is_empty():
@@ -98,13 +99,21 @@ func _load_exact(path: String) -> SimulationState:
         push_error("SaveService: invalid negative save version %d." % version)
         return null
     if version > CARE_VERSION:
-        push_error("SaveService: save version %d is newer than supported %d." % [version, CURRENT_VERSION])
+        push_error("SaveService: save version %d is newer than supported %d." % [version, CARE_VERSION])
         return null
 
     if version >= 2:
         data = _decode_floats(data)
     var care := _has_care_payload(data)
-    if (version == CARE_VERSION) != care or (version == CARE_VERSION and int(data.get("b3_care_version",0)) != B3MedicalAutoplayV1.VERSION) or (version < CARE_VERSION and data.has("b3_care_version")):
+    var care_tag_present := data.has("b3_care_version")
+    var care_envelope_valid := false
+    if version == CARE_VERSION:
+        care_envelope_valid = care and care_tag_present and int(data.get("b3_care_version",0)) == B3MedicalAutoplayV1.VERSION
+    elif version == LEGACY_CARE_VERSION and care:
+        care_envelope_valid = care_tag_present and int(data.get("b3_care_version",0)) == B3MedicalAutoplayV1.VERSION
+    else:
+        care_envelope_valid = not care and not care_tag_present
+    if not care_envelope_valid:
         push_error("SaveService: CARE capability mismatch; refusing downgraded or incomplete save.")
         return null
     if version == CARE_VERSION:
@@ -120,9 +129,21 @@ func _load_exact(path: String) -> SimulationState:
     # P3.7A saves created before the canonical warehouse existed still contain
     # forge_materials / technique_materials. Migrate them exactly once on load.
     if state != null and state.p3_7_buildings_enabled:
-        # P3.7C1 migration is idempotent: old P3.7 saves are upgraded to the
-        # open-point lục-duy model and receive the Dẫn Tiên building/runtime.
-        FoundationSystem.new().enable_open_points(state)
+        # D7 migration is idempotent and requires persisted six-stat birth
+        # provenance. Refuse incomplete provenance instead of inventing it.
+        var d7_upgraded_ids: Array = []
+        for raw_id in state.disciples:
+            var existing: DiscipleState = state.disciples[raw_id]
+            if existing.foundation_model_version == FoundationSystem.MODEL_OPEN_POINTS:
+                d7_upgraded_ids.append(existing.id)
+        if not FoundationSystem.new().enable_d7(state):
+            return null
+        for disciple_id in d7_upgraded_ids:
+            var upgraded: DiscipleState = state.disciples.get(disciple_id)
+            if upgraded != null and DiscipleRealmProgressV2.progression_ready(upgraded):
+                var hp_migration := DiscipleRealmProgressV2.sync_live_hp(upgraded)
+                if not bool(hp_migration.get("ok",false)):
+                    return null
         state.sect.guidance_recruitment_enabled = true
         BuildingSystem.new().initialize(state)
         if not WarehouseSystem.new().initialize(state):
@@ -170,6 +191,9 @@ func _migrate(data: Dictionary, version: int) -> Dictionary:
             1:
                 migrated["save_version"] = 2
                 current = 2
+            2:
+                migrated["save_version"] = 3
+                current = 3
             _:
                 push_error("SaveService: unknown migration path from version %d." % current)
                 return {}

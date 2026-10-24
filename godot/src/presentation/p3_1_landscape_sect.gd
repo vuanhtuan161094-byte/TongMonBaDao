@@ -1039,6 +1039,13 @@ func _score(value: float) -> String:
         return "—"
     return "%d" % int(round(value * 100.0))
 
+func _v2_foundation_score(value: float, model_version: int) -> String:
+    if value <= 0.0:
+        return "—"
+    if model_version >= FoundationSystem.MODEL_OPEN_POINTS:
+        return "%d" % int(round(value))
+    return _score(value)
+
 func _check(ok: bool) -> String:
     return "✓" if ok else "□"
 

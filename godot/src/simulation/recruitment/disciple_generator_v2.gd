@@ -163,7 +163,9 @@ func quality_name(quality: StringName) -> String:
     return str(QUALITY_NAMES.get(str(quality), str(quality)))
 
 func profession_suitability(candidate: CandidateState, profession_id: StringName) -> float:
-    var score := candidate.comprehension * 65.0 + candidate.potential * 20.0
+    var score := candidate.comprehension * 65.0
+    if candidate.foundation_model_version < FoundationSystem.MODEL_D7:
+        score += candidate.potential * 20.0
     if profession_id == WorkforceSystem.PROF_FORGING and candidate.profession_traits.has(WorkforceSystem.TRAIT_FORGE):
         score += 35.0
     elif profession_id == WorkforceSystem.PROF_MINING and candidate.profession_traits.has(WorkforceSystem.TRAIT_MINER):

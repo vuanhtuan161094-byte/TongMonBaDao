@@ -80,7 +80,9 @@ var constitution: float = 0.0
 var fortune: float = 0.0
 var charisma: float = 0.0
 var potential: float = 0.0
-# Model 1 = legacy normalized 0..1; model 2 = open uncapped lục-duy points.
+# D7 Tam Căn/Tứ Tính. Zero for records created before model 3.
+var mind_nature: float = 0.0
+# Model 1 = legacy normalized; model 2 = six open-point dimensions; model 3 = D7.
 var foundation_model_version: int = 1
 var foundation_birth_values: Dictionary = {}
 var disciple_quality: StringName = &""
@@ -178,6 +180,7 @@ func _init(definition: Dictionary = {}) -> void:
     fortune = maxf(float(definition.get("fortune", 0.0)), 0.0)
     charisma = maxf(float(definition.get("charisma", 0.0)), 0.0)
     potential = maxf(float(definition.get("potential", 0.0)), 0.0)
+    mind_nature = maxf(float(definition.get("mind_nature", 0.0)), 0.0)
     foundation_model_version = maxi(int(definition.get("foundation_model_version", 1)), 1)
     foundation_birth_values = _float_dictionary(definition.get("foundation_birth_values", {}))
     disciple_quality = StringName(definition.get("disciple_quality", ""))
@@ -271,7 +274,7 @@ func to_dict() -> Dictionary:
         data["work_progress"] = work_progress.duplicate(true)
         if not work_cycle_state.is_empty():
             data["work_cycle_state"] = work_cycle_state.duplicate(true)
-    if profile_seed > 0 or recruitment_source != &"" or race_id != &"" or sex_id != &"" or origin_id != &"" or aptitude > 0.0 or constitution > 0.0 or fortune > 0.0 or charisma > 0.0 or potential > 0.0 or foundation_model_version > 1 or not foundation_birth_values.is_empty() or disciple_quality != &"" or spiritual_root_purity > 0.0 or age > 0 or base_lifespan > 0 or max_lifespan > 0 or latent_identity_seed > 0:
+    if profile_seed > 0 or recruitment_source != &"" or race_id != &"" or sex_id != &"" or origin_id != &"" or aptitude > 0.0 or constitution > 0.0 or fortune > 0.0 or charisma > 0.0 or potential > 0.0 or mind_nature > 0.0 or foundation_model_version > 1 or not foundation_birth_values.is_empty() or disciple_quality != &"" or spiritual_root_purity > 0.0 or age > 0 or base_lifespan > 0 or max_lifespan > 0 or latent_identity_seed > 0:
         data["profile_seed"] = profile_seed
         data["recruitment_source"] = str(recruitment_source)
         data["race_id"] = str(race_id)
@@ -282,6 +285,7 @@ func to_dict() -> Dictionary:
         data["fortune"] = fortune
         data["charisma"] = charisma
         data["potential"] = potential
+        data["mind_nature"] = mind_nature
         data["foundation_model_version"] = foundation_model_version
         if not foundation_birth_values.is_empty():
             data["foundation_birth_values"] = foundation_birth_values.duplicate(true)
@@ -355,6 +359,7 @@ static func from_dict(data: Dictionary) -> DiscipleState:
         "fortune": data.get("fortune", 0.0),
         "charisma": data.get("charisma", 0.0),
         "potential": data.get("potential", 0.0),
+        "mind_nature": data.get("mind_nature", 0.0),
         "foundation_model_version": data.get("foundation_model_version", 1),
         "foundation_birth_values": data.get("foundation_birth_values", {}),
         "disciple_quality": data.get("disciple_quality", ""),
@@ -386,7 +391,16 @@ static func from_dict(data: Dictionary) -> DiscipleState:
         elif DiscipleRealmProgressV2.progression_ready(disciple):
             # Derived Realm+Body HP is the live authority. Preserve saved HP
             # ratio if an older V2 save used the legacy max-HP scale.
-            DiscipleRealmProgressV2.sync_live_hp(disciple)
+            var derived := DiscipleRealmProgressV2.derive_stats(disciple)
+            if bool(derived.get("ok",false)):
+                var derived_max := float(derived["stats"]["max_hp"])
+                # A same-scale round trip must not apply HP/maxHP ratio math
+                # again: doing so can move current HP by one IEEE-754 ULP.
+                # Only rescale when the saved maximum materially differs from
+                # the current derived authority (for example, old Core rules).
+                var tolerance := maxf(1.0e-9,absf(derived_max)*1.0e-12)
+                if absf(disciple.max_hp-derived_max) > tolerance:
+                    DiscipleRealmProgressV2.sync_live_hp(disciple)
     disciple.current_action = StringName(data.get("current_action", "EVALUATE"))
     disciple.region_id = StringName(data.get("region_id", "sect"))
     disciple.target_region_id = StringName(data.get("target_region_id", ""))

@@ -50,7 +50,7 @@ func _verify_open_point_foundations() -> bool:
         return _fail("P37Factory did not enable P3.7C1 authorities.")
     for disciple_value in state.disciples.values():
         var disciple: DiscipleState = disciple_value
-        if disciple.foundation_model_version != FoundationSystem.MODEL_OPEN_POINTS:
+        if disciple.foundation_model_version != FoundationSystem.MODEL_D7:
             return _fail("Existing P3.7 disciple did not migrate to open-point foundations.")
         if disciple.foundation_birth_values.is_empty():
             return _fail("Migrated disciple lost immutable birth-foundation history.")
@@ -59,7 +59,7 @@ func _verify_open_point_foundations() -> bool:
             return _fail("Migrated disciple foundation invariant failed: %s" % " | ".join(errors))
     for candidate_value in state.recruitment_candidates.values():
         var candidate: CandidateState = candidate_value
-        if candidate.foundation_model_version != FoundationSystem.MODEL_OPEN_POINTS:
+        if candidate.foundation_model_version != FoundationSystem.MODEL_D7:
             return _fail("Existing P3.7 candidate did not migrate to open-point foundations.")
         if candidate.foundation_birth_values.is_empty():
             return _fail("Migrated candidate lost birth-foundation history.")
@@ -79,14 +79,25 @@ func _verify_total_budget_generation() -> bool:
         var total: float = foundations.total_candidate(candidate)
         if candidate.disciple_quality != foundations.quality_for_total(total):
             return _fail("Candidate quality is not derived from current total lục duy.")
-        var minimum: float = floor(total / 12.0)
-        var maximum: float = floor(total / 2.0)
-        for value in [candidate.aptitude, candidate.constitution, candidate.fortune, candidate.comprehension, candidate.charisma, candidate.potential]:
-            if value + 0.000001 < minimum or value - 0.000001 > maximum:
-                return _fail("Birth lục-duy distribution escaped the locked 0.5x..3x-average envelope.")
-        if absf(foundations.birth_total(candidate.foundation_birth_values) - total) > 0.000001:
-            return _fail("Birth-foundation snapshot does not equal generated total.")
+        var tam_budget := int(candidate.aptitude+candidate.constitution+candidate.mind_nature)
+        var tu_budget := int(candidate.potential+candidate.comprehension+candidate.fortune+candidate.charisma)
+        if not _valid_d7_pool([candidate.aptitude,candidate.constitution,candidate.mind_nature],tam_budget):
+            return _fail("Tam Căn escaped its exact independent feasible allocation.")
+        if not _valid_d7_pool([candidate.potential,candidate.comprehension,candidate.fortune,candidate.charisma],tu_budget):
+            return _fail("Tứ Tính escaped its exact independent feasible allocation.")
+        var birth_q := foundations.birth_total(candidate.foundation_birth_values)*(6.0/7.0)
+        if absf(birth_q-total) > 0.000001:
+            return _fail("D7 Q_birth does not preserve the generated quality total.")
     return true
+
+func _valid_d7_pool(values: Array, budget: int) -> bool:
+    var lo := maxi(1,int(floor(float(budget)/(2.0*values.size()))))
+    var hi := mini(int(floor(3.0*float(budget)/float(values.size()))),budget-(values.size()-1)*lo)
+    var total := 0
+    for value in values:
+        if int(value)<lo or int(value)>hi: return false
+        total += int(value)
+    return total == budget
 
 func _verify_foundation_effects_and_overcap_growth() -> bool:
     if not is_equal_approx(foundations.cultivation_gain_factor(2500.0), 7.25):
@@ -96,7 +107,7 @@ func _verify_foundation_effects_and_overcap_growth() -> bool:
     if not is_equal_approx(foundations.learning_gain_factor(2500.0), 4.75):
         return _fail("Thông Tuệ 2500 must currently yield x4.75 learning XP.")
     if not is_equal_approx(foundations.potential_growth_factor(2500.0), 2.25):
-        return _fail("Tiềm Lực 2500 must currently yield x2.25 Realm/Body growth stats.")
+        return _fail("Tiềm Lực 2500 must currently yield x2.25 Tu Vi RealmCore growth.")
     if foundations.luck_tier_for_score(foundations.luck_score(0.0, 0.0, 9900)) != FoundationSystem.LUCK_TIER_GREAT_FORTUNE:
         return _fail("Cơ Duyên Great Fortune threshold is not 9900.")
     if foundations.luck_tier_for_score(foundations.luck_score(0.0, 0.0, 9500)) != FoundationSystem.LUCK_TIER_VERY_RARE:
@@ -259,7 +270,7 @@ func _verify_guidance_order_and_persistence() -> bool:
         return _fail("Dẫn Tiên did not consume exactly one Chiêu Mộ Lệnh.")
     var candidate_id := StringName(result.get("candidate_id", ""))
     var candidate: CandidateState = state_a.recruitment_candidates.get(candidate_id)
-    if candidate == null or candidate.foundation_model_version != FoundationSystem.MODEL_OPEN_POINTS:
+    if candidate == null or candidate.foundation_model_version != FoundationSystem.MODEL_D7:
         return _fail("Dẫn Tiên Chiêu Mộ Lệnh did not create an open-point whole-person candidate.")
 
     var service := SaveService.new()

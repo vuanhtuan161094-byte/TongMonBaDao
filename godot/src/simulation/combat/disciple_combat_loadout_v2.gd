@@ -41,7 +41,8 @@ static func build(
             basic_ratio_bonus += float(stat.get("basic_ratio",0.0))
             # "combat_power" and skill_effect are NOT global ATK channels.
     var calculated := CombatStatsV2.derive(
-        realm,floor_index,body_realm,body_floor,disciple.potential,sources
+        realm,floor_index,body_realm,body_floor,disciple.potential,sources,
+        disciple.foundation_model_version >= FoundationSystem.MODEL_D7
     )
     if not bool(calculated.get("ok",false)):
         return calculated

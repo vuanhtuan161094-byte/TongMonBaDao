@@ -3998,7 +3998,7 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
     var authentic_v2 := bool(profile_snapshot.get("authentic_v2", false))
     if tab_name == "Thuộc tính" and bool(profile_snapshot.get("ok",false)):
         var radar := DiscipleSixDimensionRadar.new()
-        radar.name = "DiscipleSixDimensionRadar"
+        radar.name = "DiscipleFoundationRadar"
         radar.position = Vector2(18,52)
         radar.size = Vector2(274,286)
         radar.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -4296,9 +4296,10 @@ func _disciple_tab_text(tab_name: String, disciple: DiscipleState) -> String:
 func _attributes_tab_text(disciple: DiscipleState) -> String:
     var snapshot := _disciple_snapshot(disciple)
     if bool(snapshot.get("ok", false)) and bool(snapshot.get("authentic_v2", false)):
+        var foundation_snapshot: Dictionary = snapshot.get("foundations",{})
         return (
             _v2_attributes_tab_text(snapshot)
-            + "\n\n" + _v2_foundation_meaning_text()
+            + "\n\n" + _v2_foundation_meaning_text(int(foundation_snapshot.get("model_version",1)))
             + "\n\n" + _v2_profession_summary_text(snapshot)
             + "\n\n" + _body_gate_preview_text(disciple.id)
         )
@@ -4330,19 +4331,19 @@ func _attributes_tab_text(disciple: DiscipleState) -> String:
 func _v2_attributes_tab_text(snapshot: Dictionary) -> String:
     var progression: Dictionary = snapshot["progression"]
     var life: Dictionary = snapshot["life"]
-    var foundations: Dictionary = snapshot["foundations"]["current"]
+    var foundation_snapshot: Dictionary = snapshot["foundations"]
+    var foundations: Dictionary = foundation_snapshot["current"]
+    var foundation_model_version := int(foundation_snapshot.get("model_version",1))
+    var foundation_text := _v2_foundation_values_text(foundation_snapshot)
     var innate: Dictionary = snapshot["innate"]
     if not bool(progression.get("ready", false)):
         return (
             "Hồ sơ tiến độ chưa sẵn sàng. Không dùng cảnh giới cũ để thay thế.\n\n"
             + "HP %.0f/%.0f · Thể lực viễn chinh %.0f/100\n"
-            + "Tư Chất %s · Căn Cốt %s · Cơ Duyên %s\n"
-            + "Thông Tuệ %s · Mị Lực %s · Tiềm Lực %s"
+            + "%s"
         ) % [
             float(life["hp"]), float(life["max_hp"]), float(life["expedition_stamina"]),
-            _score(float(foundations["aptitude"])), _score(float(foundations["constitution"])),
-            _score(float(foundations["fortune"])), _score(float(foundations["comprehension"])),
-            _score(float(foundations["charisma"])), _score(float(foundations["potential"]))
+            foundation_text
         ]
 
     var tuvi: Dictionary = progression["cultivation"]
@@ -4360,8 +4361,7 @@ func _v2_attributes_tab_text(snapshot: Dictionary) -> String:
         "Tu Vi: %s tầng %d · %.0f / %.0f · %s\n"
         + "Luyện Thể: %s tầng %d · %.0f / %.0f · %s\n"
         + "HP %.0f/%.0f · Công %.1f · Thủ %.1f · Thể lực viễn chinh %.0f/100\n\n"
-        + "Tư Chất %s · Căn Cốt %s · Cơ Duyên %s\n"
-        + "Thông Tuệ %s · Mị Lực %s · Tiềm Lực %s\n\n"
+        + "%s\n\n"
         + "Linh Căn: %s\n"
         + "Đặc Chất: %s\n"
         + "Huyết Mạch: %s · Thể Chất: %s · Mệnh Cách: %s\n"
@@ -4373,9 +4373,7 @@ func _v2_attributes_tab_text(snapshot: Dictionary) -> String:
         float(life["hp"]), float(life["max_hp"]),
         float(stats.get("attack", 0.0)), float(stats.get("defense", 0.0)),
         float(life["expedition_stamina"]),
-        _score(float(foundations["aptitude"])), _score(float(foundations["constitution"])),
-        _score(float(foundations["fortune"])), _score(float(foundations["comprehension"])),
-        _score(float(foundations["charisma"])), _score(float(foundations["potential"])),
+        foundation_text,
         _v2_root_brief(innate), _v2_trait_brief(innate),
         _v2_identity_brief(innate["bloodline"], "Không"),
         _v2_identity_brief(innate["physique"], "Không"),
@@ -4385,7 +4383,61 @@ func _v2_attributes_tab_text(snapshot: Dictionary) -> String:
     ]
 
 
-func _v2_foundation_meaning_text() -> String:
+func _v2_foundation_values_text(foundation_snapshot: Dictionary) -> String:
+    var current: Dictionary = foundation_snapshot.get("current",{})
+    var version := int(foundation_snapshot.get("model_version",1))
+    if version >= FoundationSystem.MODEL_D7:
+        var labels: Dictionary = foundation_snapshot.get("labels",{})
+        var birth: Dictionary = foundation_snapshot.get("birth",{})
+        var delta: Dictionary = foundation_snapshot.get("delta",{})
+        var format_row := func(key: String) -> String:
+            var value := float(current.get(key,0.0))
+            var born := float(birth.get(key,0.0))
+            var change := float(delta.get(key,0.0))
+            var sign := "+" if change >= 0.0 else "−"
+            return "%s %s · sinh %s · Δ %s%s" % [
+                str(labels.get(key,key)),_foundation_exact_number(value),
+                _foundation_exact_number(born),sign,_foundation_exact_number(absf(change))
+            ]
+        var tam := "\n  ".join([
+            format_row.call("aptitude"),format_row.call("constitution"),format_row.call("mind_nature")
+        ])
+        var tu := "\n  ".join([
+            format_row.call("potential"),format_row.call("comprehension"),
+            format_row.call("fortune"),format_row.call("charisma")
+        ])
+        var quality_line := ""
+        if foundation_snapshot.has("quality_birth_total") and foundation_snapshot.has("quality_current_total"):
+            var generator := DiscipleGeneratorV2.new()
+            var birth_name := generator.quality_name(StringName(foundation_snapshot.get("quality_birth_id","common")))
+            var current_name := generator.quality_name(StringName(foundation_snapshot.get("quality_current_id","common")))
+            quality_line = "\nPhẩm chất · %s (Q %.2f) → %s (Q %.2f)" % [
+                birth_name,float(foundation_snapshot["quality_birth_total"]),
+                current_name,float(foundation_snapshot["quality_current_total"])
+            ]
+        return "Tam Căn\n  %s\nTứ Tính\n  %s%s" % [tam,tu,quality_line]
+    return "Tư Chất %s · Căn Cốt %s · Cơ Duyên %s\nThông Tuệ %s · Mị Lực %s · Tiềm Lực %s" % [
+        _v2_foundation_score(float(current.get("aptitude",0.0)),version),
+        _v2_foundation_score(float(current.get("constitution",0.0)),version),
+        _v2_foundation_score(float(current.get("fortune",0.0)),version),
+        _v2_foundation_score(float(current.get("comprehension",0.0)),version),
+        _v2_foundation_score(float(current.get("charisma",0.0)),version),
+        _v2_foundation_score(float(current.get("potential",0.0)),version)
+    ]
+
+func _foundation_exact_number(value: float) -> String:
+    if is_equal_approx(value,round(value)):
+        return str(int(round(value)))
+    return "%.3f" % value
+
+func _v2_foundation_meaning_text(model_version: int) -> String:
+    if model_version >= FoundationSystem.MODEL_D7:
+        return (
+            "ẢNH HƯỞNG D7 · điểm hiện tại\n"
+            + "Tư Chất: +0,25% Tu Vi tự nhiên/điểm · Căn Cốt: +0,20% EXP Luyện Thể/điểm\n"
+            + "Tâm Tính: Luyện Tâm chưa mở · Tiềm Lực: +0,05% Tu Vi RealmCore HP/Công/Thủ/điểm\n"
+            + "Thông Tuệ: +0,15% học tập/nghề hợp lệ/điểm · Cơ Duyên: +1 điểm kiểm tra RNG · Mị Lực: điểm xã hội/Dẫn Tiên"
+        )
     return (
         "ẢNH HƯỞNG LỤC DUY (điểm hiện tại)\n"
         + "Tư Chất: +0,25% / điểm vào Tu Vi tự nhiên\n"

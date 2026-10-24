@@ -4,6 +4,8 @@ extends RefCounted
 const HASH_MODULUS := 2147483629
 const PROFILE_OFFSET := 183811
 const PROFILE_MULTIPLIER := 104729
+const TAM_COUNT := 3
+const TETRAD_COUNT := 4
 
 const ORIGINS := ["commoner", "merchant_family", "martial_family", "wanderer", "mountain_village", "minor_clan"]
 const SURNAMES := ["Lâm", "Trần", "Bạch", "Cố", "Triệu", "Tần", "Mạc", "Tô", "Lý", "Vương", "Đỗ", "Hạ"]
@@ -34,15 +36,20 @@ func generate_candidate(state: SimulationState, source: StringName, generation_i
     var archetype: Dictionary = ARCHETYPES[archetype_id]
 
     var quality := forced_quality if forced_quality != &"" else _roll_source_quality(rng, source)
-    var total := _roll_total_for_quality(rng, quality)
-    var values := _distribute_total(rng, total, source)
-    var aptitude := float(values[0])
-    var constitution := float(values[1])
-    var fortune := float(values[2])
-    var comprehension := float(values[3])
-    var charisma := float(values[4])
-    var potential := float(values[5])
-    quality = foundations.quality_for_total(float(total))
+    # Preserve the legacy identity RNG stream for roots, traits, lifespan and
+    # realm start. D7 uses a versioned independent domain below, so changing
+    # its two pools cannot reroll any unrelated birth subsystem.
+    var legacy_total := _roll_total_for_quality(rng, quality)
+    _distribute_total(rng, legacy_total, source)
+    var d7 := _roll_d7_foundations(profile_seed,source,quality)
+    var aptitude := float(d7["aptitude"])
+    var constitution := float(d7["constitution"])
+    var mind_nature := float(d7["mind_nature"])
+    var potential := float(d7["potential"])
+    var comprehension := float(d7["comprehension"])
+    var fortune := float(d7["fortune"])
+    var charisma := float(d7["charisma"])
+    quality = foundations.quality_for_total(float(d7["quality_total"]))
 
     var root_purity := _roll_root_purity(rng, source)
     var root_elements := _roll_root_elements(rng, source)
@@ -66,7 +73,8 @@ func generate_candidate(state: SimulationState, source: StringName, generation_i
         "fortune": fortune,
         "comprehension": comprehension,
         "charisma": charisma,
-        "potential": potential
+        "potential": potential,
+        "mind_nature": mind_nature
     }
 
     var candidate := CandidateState.new({
@@ -89,7 +97,8 @@ func generate_candidate(state: SimulationState, source: StringName, generation_i
         "comprehension": comprehension,
         "charisma": charisma,
         "potential": potential,
-        "foundation_model_version": FoundationSystem.MODEL_OPEN_POINTS,
+        "mind_nature": mind_nature,
+        "foundation_model_version": FoundationSystem.MODEL_D7,
         "foundation_birth_values": birth_values,
         "disciple_quality": str(quality),
         "spiritual_root_quality": str(root_quality),
@@ -113,6 +122,87 @@ func generate_candidate(state: SimulationState, source: StringName, generation_i
             push_error("DV2-01B: invalid complete birth profile for " + str(candidate.id))
             return null
     return candidate
+
+func _roll_d7_foundations(profile_seed: int, source: StringName, quality: StringName) -> Dictionary:
+    var rng := GameRng.new(_d7_domain_seed(profile_seed,source))
+    var budgets := _roll_d7_budgets(rng,quality)
+    var tam := _distribute_budget(rng,int(budgets[0]),TAM_COUNT)
+    var tetrad := _distribute_budget(rng,int(budgets[1]),TETRAD_COUNT)
+    # Fate's authored preference is kept inside the four-point Tứ Tính pool;
+    # it never moves value between the independent Tam Căn and Tứ Tính budgets.
+    if source == DiscipleGeneratorV2.SOURCE_FATE and rng.randf_range(0.0,1.0) < 0.70:
+        var fortune_index := 2
+        var best_index := fortune_index
+        for index in range(tetrad.size()):
+            if int(tetrad[index]) > int(tetrad[best_index]): best_index = index
+        var swap = tetrad[fortune_index]
+        tetrad[fortune_index] = tetrad[best_index]
+        tetrad[best_index] = swap
+    var result := {
+        "aptitude":tam[0],"constitution":tam[1],"mind_nature":tam[2],
+        "potential":tetrad[0],"comprehension":tetrad[1],
+        "fortune":tetrad[2],"charisma":tetrad[3]
+    }
+    var total := 0.0
+    for key in ["aptitude","constitution","mind_nature","potential","comprehension","fortune","charisma"]:
+        total += float(result[key])
+    result["quality_total"] = total*(6.0/7.0)
+    return result
+
+func _roll_d7_budgets(rng: GameRng, quality: StringName) -> Array:
+    match quality:
+        DiscipleGeneratorV2.QUALITY_COMMON:
+            return [rng.randi_range(60,179),rng.randi_range(80,239)]
+        DiscipleGeneratorV2.QUALITY_OUTSTANDING:
+            return [rng.randi_range(180,299),rng.randi_range(240,399)]
+        DiscipleGeneratorV2.QUALITY_PRODIGY:
+            return [rng.randi_range(300,499),rng.randi_range(400,666)]
+        DiscipleGeneratorV2.QUALITY_PEERLESS:
+            return [rng.randi_range(500,899),rng.randi_range(667,1199)]
+        DiscipleGeneratorV2.QUALITY_HEAVEN_DEFYING:
+            # One shared 12% depth event controls both independent budget rolls.
+            var tam_floor := 900
+            var tam_span := 600
+            var tetrad_floor := 1200
+            var tetrad_span := 800
+            while rng.randf_range(0.0,1.0) < 0.12:
+                tam_floor += tam_span
+                tam_span *= 2
+                tetrad_floor += tetrad_span
+                tetrad_span *= 2
+            return [rng.randi_range(tam_floor,tam_floor+tam_span-1),rng.randi_range(tetrad_floor,tetrad_floor+tetrad_span-1)]
+        _:
+            return [rng.randi_range(60,179),rng.randi_range(80,239)]
+
+func _distribute_budget(rng: GameRng, budget: int, count: int) -> Array:
+    var lo := maxi(1,int(floor(float(budget)/(2.0*count))))
+    var hi_feasible := mini(int(floor(3.0*float(budget)/float(count))),budget-(count-1)*lo)
+    var values: Array = []
+    for _index in range(count): values.append(lo)
+    var remaining := budget-count*lo
+    var order: Array = []
+    for index in range(count): order.append(index)
+    for index in range(order.size()-1,0,-1):
+        var swap_index := rng.randi_range(0,index)
+        var swap = order[index]
+        order[index] = order[swap_index]
+        order[swap_index] = swap
+    for position in range(order.size()):
+        var index := int(order[position])
+        var capacity := hi_feasible-int(values[index])
+        var remaining_capacity := 0
+        for later in range(position+1,order.size()):
+            remaining_capacity += hi_feasible-int(values[int(order[later])])
+        var min_add := maxi(remaining-remaining_capacity,0)
+        var max_add := mini(capacity,remaining)
+        var add := remaining if position == order.size()-1 else rng.randi_range(min_add,max_add)
+        values[index] = int(values[index])+add
+        remaining -= add
+    return values
+
+func _d7_domain_seed(profile_seed: int, source: StringName) -> int:
+    var value := int((profile_seed+_stable_hash("D7-FOUNDATION-DOMAIN-1:"+str(source))*31+7302401)%HASH_MODULUS)
+    return value if value > 0 else value+HASH_MODULUS
 
 func _roll_source_quality(rng: GameRng, source: StringName) -> StringName:
     var rates := [0.65, 0.25, 0.08, 0.018, 0.002]

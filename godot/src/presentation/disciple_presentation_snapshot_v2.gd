@@ -13,15 +13,16 @@ extends RefCounted
 const VERSION := 1
 
 const FOUNDATION_KEYS := [
-    "aptitude","constitution","fortune","comprehension","charisma","potential"
+    "aptitude","constitution","mind_nature","potential","comprehension","fortune","charisma"
 ]
 const FOUNDATION_LABELS := {
     "aptitude":"Tư Chất",
     "constitution":"Căn Cốt",
-    "fortune":"Cơ Duyên",
+    "mind_nature":"Tâm Tính",
+    "potential":"Tiềm Lực",
     "comprehension":"Thông Tuệ",
-    "charisma":"Mị Lực",
-    "potential":"Tiềm Lực"
+    "fortune":"Cơ Duyên",
+    "charisma":"Mị Lực"
 }
 const ROOT_NAMES := {
     "metal":"Kim","wood":"Mộc","water":"Thủy","fire":"Hỏa","earth":"Thổ"
@@ -116,21 +117,36 @@ static func _foundations(disciple: DiscipleState) -> Dictionary:
     var current := {
         "aptitude":disciple.aptitude,
         "constitution":disciple.constitution,
-        "fortune":disciple.fortune,
+        "mind_nature":disciple.mind_nature,
+        "potential":disciple.potential,
         "comprehension":disciple.comprehension,
-        "charisma":disciple.charisma,
-        "potential":disciple.potential
+        "fortune":disciple.fortune,
+        "charisma":disciple.charisma
     }
     var birth: Dictionary = {}
     for key in FOUNDATION_KEYS:
         if disciple.foundation_birth_values.has(key):
             birth[key] = float(disciple.foundation_birth_values[key])
-    return {
+    var delta: Dictionary = {}
+    for key in FOUNDATION_KEYS:
+        if birth.has(key):
+            delta[key] = float(current[key])-float(birth[key])
+    var result := {
         "model_version":disciple.foundation_model_version,
         "current":current,
         "birth":birth,
+        "delta":delta,
         "labels":FOUNDATION_LABELS.duplicate(true)
     }
+    if disciple.foundation_model_version >= FoundationSystem.MODEL_D7:
+        result["tam_can"] = ["aptitude","constitution","mind_nature"]
+        result["tu_tinh"] = ["potential","comprehension","fortune","charisma"]
+        result["quality_birth_total"] = FoundationSystem.new().birth_total(birth)*(6.0/7.0)
+        result["quality_current_total"] = FoundationSystem.new().total_disciple(disciple)
+        result["quality_birth_id"] = str(FoundationSystem.new().quality_for_total(float(result["quality_birth_total"])))
+        result["quality_current_id"] = str(FoundationSystem.new().quality_for_total(float(result["quality_current_total"])))
+        result["mind_nature_effect"] = "not_implemented"
+    return result
 
 static func _life(state: SimulationState, disciple: DiscipleState) -> Dictionary:
     var ratio := 0.0

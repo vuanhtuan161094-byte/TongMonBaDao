@@ -372,7 +372,8 @@ func _active(state: SimulationState, disciple: DiscipleState) -> bool:
     return state.sect.bloodlines_enabled and disciple.profile_seed > 0 and is_awakened(state, disciple.id)
 
 func _refinement_gain(disciple: DiscipleState, current_purity: float) -> float:
-    var base := 0.035 + clampf(disciple.potential, 0.0, 1.0) * 0.030
+    var foundation_bonus := 0.0 if disciple.foundation_model_version >= FoundationSystem.MODEL_D7 else clampf(disciple.potential,0.0,1.0)*0.030
+    var base := 0.035 + foundation_bonus
     var diminishing := lerpf(1.0, 0.40, clampf(current_purity, 0.0, 1.0))
     return maxf(base * diminishing, 0.008)
 

@@ -78,6 +78,25 @@ func _run() -> void:
         return
 
     var snapshot := DisciplePresentationSnapshotV2.build(state,disciple)
+    var foundation_snapshot: Dictionary = snapshot["foundations"]
+    var foundations: Dictionary = foundation_snapshot["current"]
+    if int(foundation_snapshot.get("model_version",1)) >= FoundationSystem.MODEL_OPEN_POINTS:
+        var labels := {
+            "aptitude":"Tư Chất","constitution":"Căn Cốt","mind_nature":"Tâm Tính",
+            "potential":"Tiềm Lực","comprehension":"Thông Tuệ","fortune":"Cơ Duyên","charisma":"Mị Lực"
+        }
+        for key in labels.keys():
+            var point_value := float(foundations[key])
+            if point_value <= 0.0:
+                continue
+            var displayed := "%d" % int(round(point_value))
+            var inflated := "%d" % int(round(point_value*100.0))
+            if not attributes.contains("%s %s" % [labels[key],displayed]):
+                _fail("V2 profile does not display %s as the canonical point value %s." % [labels[key],displayed])
+                return
+            if inflated != displayed and attributes.contains("%s %s" % [labels[key],inflated]):
+                _fail("V2 profile multiplied %s by 100 instead of showing canonical points." % labels[key])
+                return
     var combat: Dictionary = snapshot["combat"]
     if not bool(combat.get("ready",false)):
         _fail("V2 UI snapshot has no canonical combat stats.")

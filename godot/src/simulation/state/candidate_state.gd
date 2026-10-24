@@ -28,6 +28,8 @@ var constitution: float = 0.0
 var fortune: float = 0.0
 var charisma: float = 0.0
 var potential: float = 0.0
+# D7 Tam Căn/Tứ Tính. Zero for records created before model 3.
+var mind_nature: float = 0.0
 var foundation_model_version: int = 1
 var foundation_birth_values: Dictionary = {}
 var disciple_quality: StringName = &""
@@ -68,6 +70,7 @@ func _init(definition: Dictionary = {}) -> void:
     fortune = maxf(float(definition.get("fortune", 0.0)), 0.0)
     charisma = maxf(float(definition.get("charisma", 0.0)), 0.0)
     potential = maxf(float(definition.get("potential", 0.0)), 0.0)
+    mind_nature = maxf(float(definition.get("mind_nature", 0.0)), 0.0)
     foundation_model_version = maxi(int(definition.get("foundation_model_version", 1)), 1)
     foundation_birth_values = _float_dictionary(definition.get("foundation_birth_values", {}))
     disciple_quality = StringName(definition.get("disciple_quality", ""))
@@ -114,6 +117,7 @@ func to_dict() -> Dictionary:
         data["fortune"] = fortune
         data["charisma"] = charisma
         data["potential"] = potential
+        data["mind_nature"] = mind_nature
         data["foundation_model_version"] = foundation_model_version
         if not foundation_birth_values.is_empty():
             data["foundation_birth_values"] = foundation_birth_values.duplicate(true)
@@ -165,6 +169,7 @@ func to_disciple() -> DiscipleState:
         definition["comprehension"] = comprehension
         definition["charisma"] = charisma
         definition["potential"] = potential
+        definition["mind_nature"] = mind_nature
         definition["foundation_model_version"] = foundation_model_version
         definition["foundation_birth_values"] = foundation_birth_values.duplicate(true)
         definition["disciple_quality"] = str(disciple_quality)

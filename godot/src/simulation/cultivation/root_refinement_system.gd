@@ -223,7 +223,8 @@ func _try_reveal_mutation(state: SimulationState, disciple: DiscipleState, profi
     return latent
 
 func _refinement_gain(disciple: DiscipleState, purity: float) -> float:
-    var foundation := 0.025 + clampf(disciple.potential, 0.0, 1.0) * 0.025
+    var foundation_bonus := 0.0 if disciple.foundation_model_version >= FoundationSystem.MODEL_D7 else clampf(disciple.potential,0.0,1.0)*0.025
+    var foundation := 0.025 + foundation_bonus
     var diminishing := lerpf(1.0, 0.45, clampf(purity, 0.0, 1.0))
     return maxf(foundation * diminishing, 0.008)
 

@@ -31,6 +31,16 @@ func _run() -> void:
     if radar.dimension_values[4] != 6500.0:
         _fail("rejected payload mutated a previously valid chart")
         return
+    var d7_snapshot := {"ok":true,"foundations":{"model_version":3,"current":{
+        "aptitude":90.0,"constitution":100.0,"mind_nature":75.0,
+        "potential":120.0,"comprehension":110.0,"fortune":80.0,"charisma":95.0
+    }}}
+    if not radar.apply_snapshot(d7_snapshot) or radar.dimension_values.size() != 7 or radar.dimension_keys != DiscipleSixDimensionRadar.D7_KEYS:
+        _fail("D7 profile did not switch to the seven authentic Tam Can/Tu Tinh axes")
+        return
+    if radar.dimension_values[2] != 75.0 or radar.dimension_values[6] != 95.0:
+        _fail("D7 seventh-axis values do not match the saved snapshot")
+        return
     # CanvasItem allocated without a parent must be explicitly released.
     radar.free()
 
@@ -267,7 +277,7 @@ func _run() -> void:
     await process_frame
 
     var attributes := str(ui.call("_disciple_tab_text","Thuộc tính",disciple))
-    if not attributes.contains("ẢNH HƯỞNG LỤC DUY") or not attributes.contains("Tiềm Lực: +0,05%"):
+    if not attributes.contains("ẢNH HƯỞNG D7") or not attributes.contains("Tiềm Lực: +0,05% Tu Vi RealmCore") or not attributes.contains("Tâm Tính: Luyện Tâm chưa mở"):
         _fail("attribute explanations are missing or do not match V2 authority")
         return
     ui.call("_open_disciple_deep_screen",disciple.id,"Thuộc tính")
@@ -276,21 +286,21 @@ func _run() -> void:
     if deep == null:
         _fail("deep screen missing")
         return
-    var chart := deep.find_child("DiscipleSixDimensionRadar",true,false) as DiscipleSixDimensionRadar
-    if chart == null or chart.dimension_values.size() != 6:
-        _fail("six-axis read-only chart missing")
+    var chart := deep.find_child("DiscipleFoundationRadar",true,false) as DiscipleSixDimensionRadar
+    if chart == null or chart.dimension_values.size() != 7:
+        _fail("D7 seven-axis read-only chart missing")
         return
     var snapshot := DisciplePresentationSnapshotV2.build(state,disciple)
     var real_points: Dictionary = snapshot["foundations"]["current"]
-    for idx in range(DiscipleSixDimensionRadar.KEYS.size()):
-        var key := str(DiscipleSixDimensionRadar.KEYS[idx])
+    for idx in range(DiscipleSixDimensionRadar.D7_KEYS.size()):
+        var key := str(DiscipleSixDimensionRadar.D7_KEYS[idx])
         if not is_equal_approx(chart.dimension_values[idx],float(real_points[key])):
             _fail("chart differs from saved foundation: "+key)
             return
     ui.call("_open_disciple_deep_screen",disciple.id,"Trang bị")
     await process_frame
     deep = (ui.get("popup_layer") as Control).get_node_or_null("DiscipleDeepScreen")
-    if deep == null or deep.find_child("DiscipleSixDimensionRadar",true,false) != null:
+    if deep == null or deep.find_child("DiscipleFoundationRadar",true,false) != null:
         _fail("chart leaked into another tab")
         return
     if disciple.to_dict() != saved:
