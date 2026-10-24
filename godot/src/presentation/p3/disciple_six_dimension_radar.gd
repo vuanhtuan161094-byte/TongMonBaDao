@@ -69,10 +69,10 @@ func _draw() -> void:
         var value := dimension_values[index]
         polygon.append(_axis_point(index,radius*clampf(value/chart_ceiling,0.0,1.0),center))
         if font != null:
-            var point := _axis_point(index,radius+19.0,center)
-            draw_string(font,Vector2(point.x-35.0,point.y),dimension_names[index],HORIZONTAL_ALIGNMENT_CENTER,70.0,11,INK)
+            var point := _axis_point(index,radius+21.0,center)
+            draw_string(font,Vector2(point.x-35.0,point.y),dimension_names[index],HORIZONTAL_ALIGNMENT_CENTER,70.0,12,INK)
             var text_value := "%.0f" % value if model_version >= 2 else "%.2f" % value
-            draw_string(font,Vector2(point.x-35.0,point.y+13.0),text_value,HORIZONTAL_ALIGNMENT_CENTER,70.0,11,JADE)
+            draw_string(font,Vector2(point.x-35.0,point.y+13.0),text_value,HORIZONTAL_ALIGNMENT_CENTER,70.0,12,JADE)
     draw_colored_polygon(polygon,Color(0.22,0.57,0.42,0.30))
     var closed := polygon.duplicate()
     closed.append(polygon[0])
