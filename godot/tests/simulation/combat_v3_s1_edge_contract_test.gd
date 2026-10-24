@@ -50,6 +50,99 @@ func _encode_snapshot_payload(wrapper: Dictionary, payload: Dictionary) -> Dicti
     result["payload"] = Marshalls.raw_to_base64(var_to_bytes(payload))
     return result
 
+func _care_burn_receipt_contract() -> void:
+    # Exercise the canonical B3 world and warehouse receipt owner with a burn
+    # death. Only the monster HP/status are arranged; kill, receipt, reward,
+    # persistence and replay flow through the real Combat/B3 APIs.
+    var path := "user://s1_burn_receipt_%d.json" % Time.get_ticks_usec()
+    var runtime := LiveGameRuntimeV2.new()
+    var started: Dictionary = runtime.start(path,1800000000,930211)
+    _check(bool(started.get("ok",false)),"B3 burn receipt runtime start")
+    if not bool(started.get("ok",false)):
+        return
+    var demo: Dictionary = B3DemoSetup.prepare(runtime)
+    _check(bool(demo.get("ok",false)),"B3 burn receipt demo setup")
+    if not bool(demo.get("ok",false)):
+        return
+    var disciple_id: StringName = demo["disciple_id"]
+    var state: SimulationState = runtime.state()
+    var disciple: DiscipleState = state.disciples[disciple_id]
+    _check(CombatSkillSystem.new().learn_skill(state,disciple,&"hoa_cau"),
+        "authentic B3 disciple learns burn skill")
+    var begin_result: Dictionary = B3HuntWorld.begin(runtime.owner,disciple_id)
+    _check(bool(begin_result.get("ok",false)),"B3 burn receipt hunt admission")
+    if not bool(begin_result.get("ok",false)):
+        return
+    state = runtime.state()
+    var battle_result: Dictionary = B3HuntWorld.restore(state)
+    _check(bool(battle_result.get("ok",false)),"B3 burn receipt battle restore")
+    if not bool(battle_result.get("ok",false)):
+        return
+    var battle: MapBattleV2 = battle_result["battle"]
+    var world_id := str(state.sect.b3_hunt["world_id"])
+    var member_id := str(state.sect.b3_hunt["member"])
+    var monster_id := str(B3PilotContent.monster(world_id,1)["id"])
+    _check(battle.actors.has(monster_id) and battle.actors.has(member_id),
+        "B3 burn receipt actors resolve")
+    if not battle.actors.has(monster_id) or not battle.actors.has(member_id):
+        return
+    battle.actors[monster_id]["hp"] = 1.0
+    battle.actors[monster_id]["status_effects"] = {
+        "burn":{
+            "caster":member_id,"skill_id":"hoa_cau","until":2.0,
+            "ratio":0.16,"next_tick":MapBattleV2.STEP_SECONDS
+        }
+    }
+    var valid_snapshot: Dictionary = MapBattleSnapshotV2.save(battle)
+    _check(bool(valid_snapshot.get("ok",false)),"B3 burn status snapshot is valid")
+    if not bool(valid_snapshot.get("ok",false)):
+        return
+    B3HuntWorld.checkpoint(state,battle)
+    var hit: Dictionary = battle.step(false)
+    _check(bool(hit.get("ok",false)) and float(battle.actors[monster_id]["hp"]) <= 0.0,
+        "canonical burn tick downs B3 slot monster")
+    _check(battle.pending_kill_events().size() == 1 and _count(battle,"downed") == 1,
+        "B3 burn down produces one domain kill and one downed event")
+    if battle.pending_kill_events().size() != 1:
+        return
+    var warehouse_before := WarehouseSystem.new().quantity(state,B3PilotContent.RESOURCE)
+    var settled: Dictionary = B3HuntWorld.settle_kills(state,battle,true)
+    var warehouse_after := WarehouseSystem.new().quantity(state,B3PilotContent.RESOURCE)
+    _check(bool(settled.get("ok",false)) and warehouse_after-warehouse_before == B3PilotContent.QUANTITY,
+        "CARE owner commits one canonical warehouse reward for burn kill")
+    _check(int(state.sect.b3_hunt["slot"]["paid_generation"]) == 1 and
+        str(state.sect.b3_hunt["receipt"].get("state","")) == "COMMITTED",
+        "CARE burn receipt and paid generation commit exactly once")
+    B3HuntWorld.checkpoint(state,battle)
+    var persisted: Dictionary = B3HuntWorld.commit(runtime.owner)
+    _check(bool(persisted.get("ok",false)),"CARE burn receipt save barrier")
+    if not bool(persisted.get("ok",false)):
+        return
+
+    # Simulate restart after the committed receipt was saved but before its
+    # unacked simulator event could be durably cleared.
+    var wall_time := int(runtime.owner.state.runtime_last_wall_unix)
+    var recovered_runtime := LiveGameRuntimeV2.new()
+    var recovered_start: Dictionary = recovered_runtime.start(path,wall_time,930211)
+    _check(bool(recovered_start.get("ok",false)),"CARE committed burn receipt reload")
+    if not bool(recovered_start.get("ok",false)):
+        return
+    var recovered_state: SimulationState = recovered_runtime.state()
+    var recovered_battle_result: Dictionary = B3HuntWorld.restore(recovered_state)
+    _check(bool(recovered_battle_result.get("ok",false)),"CARE burn battle replay restore")
+    if not bool(recovered_battle_result.get("ok",false)):
+        return
+    var recovered_battle: MapBattleV2 = recovered_battle_result["battle"]
+    var reward_before_replay := WarehouseSystem.new().quantity(recovered_state,B3PilotContent.RESOURCE)
+    var replayed: Dictionary = B3HuntWorld.advance_frame(recovered_state,recovered_battle)
+    var reward_after_replay := WarehouseSystem.new().quantity(recovered_state,B3PilotContent.RESOURCE)
+    _check(bool(replayed.get("ok",false)) and reward_after_replay == reward_before_replay and
+        reward_after_replay-warehouse_before == B3PilotContent.QUANTITY,
+        "replayed committed burn receipt does not duplicate warehouse reward")
+    _check(int(recovered_state.sect.b3_hunt["slot"]["paid_generation"]) == 1 and
+        str(recovered_state.sect.b3_hunt["receipt"].get("state","")) == "COMMITTED",
+        "replayed burn receipt retains exact generation watermark")
+
 func _run() -> void:
     # A ready learned guard must be usable by a real frontline actor. The old
     # role guard must not immediately obscure it while its learned buff is active.
@@ -348,6 +441,8 @@ func _run() -> void:
             "burn kill receipt duplicated after reload")
         _check(_count(resumed,"downed") == 1,
             "burn downed event duplicated after reload")
+
+    _care_burn_receipt_contract()
 
     if _failures > 0:
         push_error("S1_EDGE_CONTRACT_FAIL checks=" + str(_failures))
