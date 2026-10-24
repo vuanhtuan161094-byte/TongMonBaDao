@@ -1,0 +1,2940 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-24 (PR28 head 47b704270ae165504aeef526963e8d03f87bc579)",
+  "repository": "vuanhtuan161094-byte/TongMonBaDao",
+  "branch": "ui/pr27-runtime-readability-20261024",
+  "head_sha": "47b704270ae165504aeef526963e8d03f87bc579",
+  "scan_roots": [
+    "E:\\codex\\2026-10-21\\t-ng-m-n-b-o-2\\outputs\\pilot_assets",
+    "E:\\codex\\2026-10-21\\t-ng-m-n-b-o-2\\outputs\\TMB_V5_1_VISUAL_FINAL_REVIEW",
+    "E:\\codex\\2026-10-21\\t-ng-m-n-b-o-2\\outputs\\TMB_V5_SOURCEA_REVIEW_ae3f397c",
+    "E:\\codex\\2026-10-21\\t-ng-m-n-b-o-2\\work\\baseline_ae3f397c",
+    "E:\\codex\\2026-10-21\\t-ng-m-n-b-o-2\\work\\TongMonBaDao",
+    "E:\\codex\\2026-10-21\\t-ng-m-n-b-o-2\\work\\TongMonBaDao-v5-1"
+  ],
+  "inventory_counts": {
+    "REJECTED": 3,
+    "MISSING": 7,
+    "PRESENT_VERIFIED": 39,
+    "CANDIDATE_NEEDS_QA": 3
+  },
+  "assets": [
+    {
+      "asset_id": "v5_sa_boss_410041_1",
+      "category": "actor",
+      "role": "boss_slot_visual_only",
+      "source_path": "E:\\codex\\2026-10-21\\t-ng-m-n-b-o-2\\outputs\\pilot_assets\\v5_sa_boss_410041_1",
+      "source_branch_commit": "Local worker pilot output; no Git commit recorded at output root; compared with PR28 d7b7 tree.",
+      "source_hashes": [
+        {
+          "name": "410041_1.skel_TextAsset_2668375480182011948.bin",
+          "sha256": "61708133cb43e1d3e030b0334357ccda1f9accd565b45d91a6d6da04bbcfd45b",
+          "bytes": 99431
+        },
+        {
+          "name": "410041_1.atlas_TextAsset_7051791944699442066.bin",
+          "sha256": "0172b58e6697179afdba708e0529d51b54001a373857695fedda495478665cc0",
+          "bytes": 1519
+        },
+        {
+          "name": "410041_1_Texture2D_6896002294419970554.png",
+          "sha256": "12e4b3c6228934ede4ea1d6d20c199ecd5393bcb0883dbaf85f1d5bf5762a07f",
+          "bytes": 186849
+        }
+      ],
+      "exported_hashes": [
+        {
+          "sha256": "9f10cac6b212b6ec8c11e5bdef1bafc8bb5aa87b735e11c4112b38ec47ab9c37",
+          "sha256_current_pr28": "51e0da19c62074ca3d15df5558bc3990e4d3dd7bfc62790996ac6e27f3d5414d",
+          "path": "actor.tscn",
+          "matches_current_pr28": false,
+          "normalized_text_matches_current_pr28": true
+        },
+        {
+          "sha256": "7b4637b0edd4d59de967f2fcb8165987de72969e0bf29df6cb54d886aa9b7782",
+          "sha256_current_pr28": "88a2fdcca7160be299796942db39057a56979d633c16de085b24e113cc8ab194",
+          "path": "animations.tres",
+          "matches_current_pr28": false,
+          "normalized_text_matches_current_pr28": true
+        },
+        {
+          "sha256": "cc746cb99e90bba4f2d7ef31c2b6dfa65955036b5aeac05af311d0cb7a89cccb",
+          "sha256_current_pr28": "cc746cb99e90bba4f2d7ef31c2b6dfa65955036b5aeac05af311d0cb7a89cccb",
+          "path": "atlas_000.webp",
+          "matches_current_pr28": true
+        },
+        {
+          "sha256": "b0af4566f31966e66aeab42c83730e14dbf08c1caddbda55101e7c25677226b0",
+          "sha256_current_pr28": "b0af4566f31966e66aeab42c83730e14dbf08c1caddbda55101e7c25677226b0",
+          "path": "atlas_001.webp",
+          "matches_current_pr28": true
+        },
+        {
+          "sha256": "8f3dafe897f487da164e4681dbd29cb8b6d167f20a6081ea4a82dc598a6a6c1f",
+          "sha256_current_pr28": "8f3dafe897f487da164e4681dbd29cb8b6d167f20a6081ea4a82dc598a6a6c1f",
+          "path": "atlas_002.webp",
+          "matches_current_pr28": true
+        },
+        {
+          "sha256": "bf76fe49d1b9333d0360df720c11b450f137a9c4c168321dd1fb7bea6afa679c",
+          "sha256_current_pr28": "bf76fe49d1b9333d0360df720c11b450f137a9c4c168321dd1fb7bea6afa679c",
+          "path": "atlas_003.webp",
+          "matches_current_pr28": true
+        },
+        {
+          "sha256": "7540a78f3d63d9b48328f8b3843cc07eabb6d19d668f627dfde6d3bf6287ae6c",
+          "sha256_current_pr28": "7540a78f3d63d9b48328f8b3843cc07eabb6d19d668f627dfde6d3bf6287ae6c",
+          "path": "atlas_004.webp",
+          "matches_current_pr28": true
+        }
+      ],
+      "clips": [
+        {
+          "name": "stand",
+          "frames": 60,
+          "stored_frames": 60,
+          "duration_seconds": 2.0,
+          "fps": 30,
+          "loop": true
+        },
+        {
+          "name": "run",
+          "frames": 28,
+          "stored_frames": 28,
+          "duration_seconds": 0.933333337306976,
+          "fps": 30,
+          "loop": true
+        },
+        {
+          "name": "attack1",
+          "frames": 30,
+          "stored_frames": 30,
+          "duration_seconds": 1.0,
+          "fps": 30,
+          "loop": false
+        },
+        {
+          "name": "hit",
+          "frames": 15,
+          "stored_frames": 15,
+          "duration_seconds": 0.5,
+          "fps": 30,
+          "loop": false
+        },
+        {
+          "name": "dead",
+          "frames": 30,
+          "stored_frames": 21,
+          "duration_seconds": 1.0,
+          "fps": 30,
+          "loop": false
+        }
+      ],
+      "direction": "Single authored facing; no directional variants declared in manifest.",
+      "fps": 30,
+      "total_clip_frames": 163.0,
+      "unique_stored_frames": 154,
+      "canvas": [
+        768,
+        768
+      ],
+      "pivot_foot_anchor": [
+        384,
+        540
+      ],
+      "transparency": "Alpha preserved: all tested first/middle/last Godot/native frames matched RGBA.",
+      "atlas_pages": [
+        {
+          "file": "atlas_000.webp",
+          "size": [
+            1938,
+            1998
+          ]
+        },
+        {
+          "file": "atlas_001.webp",
+          "size": [
+            1938,
+            1998
+          ]
+        },
+        {
+          "file": "atlas_002.webp",
+          "size": [
+            1938,
+            1998
+          ]
+        },
+        {
+          "file": "atlas_003.webp",
+          "size": [
+            1938,
+            1998
+          ]
+        },
+        {
+          "file": "atlas_004.webp",
+          "size": [
+            1938,
+            666
+          ]
+        }
+      ],
+      "import_status": "BUNDLE_VERIFY_PASS clips=5 frames=154 path=res://assets/actors/v5_sa_boss_410041_1/actor.tscn",
+      "qa_sample_count": 15,
+      "qa_alpha_exact": 15,
+      "qa_rgba_exact": 15,
+      "target_mapping": "Combat V5 manifest: boss_slot_410041_1; display mapping only, no CARE boss event.",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [
+        "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\assets\\actors",
+        "E:\\codex\\2026-10-21\\t-ng-m-n-b-o-2\\outputs\\TMB_V5_1_VISUAL_FINAL_REVIEW\\package_root\\runtime_assets\\godot\\assets\\actors",
+        "E:\\codex\\2026-10-21\\t-ng-m-n-b-o-2\\outputs\\TMB_V5_SOURCEA_REVIEW_ae3f397c\\changed_files\\godot\\assets\\actors",
+        "E:\\codex\\2026-10-21\\t-ng-m-n-b-o-2\\work\\TongMonBaDao\\godot\\assets\\actors",
+        "E:\\codex\\2026-10-21\\t-ng-m-n-b-o-2\\work\\TongMonBaDao-v5-1\\godot\\assets\\actors"
+      ],
+      "reason": "Verified local worker output; raw SHA differs from PR28 only because worker text exports use CRLF and PR28 text files use LF. Normalized actor.tscn and animations.tres content match exactly; every atlas page SHA matches. Existing verified pack is already present and in use; do not duplicate or overwrite."
+    },
+    {
+      "asset_id": "v5_sa_female_1113028_1",
+      "category": "actor",
+      "role": "player_combat_female",
+      "source_path": "E:\\codex\\2026-10-21\\t-ng-m-n-b-o-2\\outputs\\pilot_assets\\v5_sa_female_1113028_1",
+      "source_branch_commit": "Local worker pilot output; no Git commit recorded at output root; compared with PR28 d7b7 tree.",
+      "source_hashes": [
+        {
+          "name": "1113028_1.skel_TextAsset_2464183327200521619.bin",
+          "sha256": "8c089d8837cf87bc573c63f39e37577af1b0062a9903a1acc2ecbd8ccedb00d8",
+          "bytes": 262819
+        },
+        {
+          "name": "1113028_1.atlas_TextAsset_4732095381105324012.bin",
+          "sha256": "01c4fa52a3e782fc2c08ad9dbdfb08ad025eca03334fb5b555d42ec74d22cc75",
+          "bytes": 3745
+        },
+        {
+          "name": "1113028_1_Texture2D_735480216125144147.png",
+          "sha256": "5d5019d01279254be3e2f3430da8955a685b35ab5e93ad1798c753be189582d1",
+          "bytes": 105725
+        }
+      ],
+      "exported_hashes": [
+        {
+          "sha256": "ed7318fa1aedf44ef94613efa0decf8a9d3d3bedc07a9d0552fb3e3759e2b2fb",
+          "sha256_current_pr28": "92bae617c8891bf13b8975148bf7bea0ec073f1c47f0cfdaca32a7359f6bf091",
+          "path": "actor.tscn",
+          "matches_current_pr28": false,
+          "normalized_text_matches_current_pr28": true
+        },
+        {
+          "sha256": "a203c73c1cae9ff938eee05403cb15eb8d066280783c0a5b84e92e398440159c",
+          "sha256_current_pr28": "c627f9168fd366ad19cc5c3eb5b1324f2b5d6a28bcdaaa607c30891c2b389e67",
+          "path": "animations.tres",
+          "matches_current_pr28": false,
+          "normalized_text_matches_current_pr28": true
+        },
+        {
+          "sha256": "4832f3030438a5313665242eed87a8d721b45dc8ce579e1c7c7e4aa4ba0a9d88",
+          "sha256_current_pr28": "4832f3030438a5313665242eed87a8d721b45dc8ce579e1c7c7e4aa4ba0a9d88",
+          "path": "atlas_000.webp",
+          "matches_current_pr28": true
+        },
+        {
+          "sha256": "0f5181c3397365433f09f9ec946db4b131a530b9468215c2ef36eb6beaf605ea",
+          "sha256_current_pr28": "0f5181c3397365433f09f9ec946db4b131a530b9468215c2ef36eb6beaf605ea",
+          "path": "atlas_001.webp",
+          "matches_current_pr28": true
+        }
+      ],
+      "clips": [
+        {
+          "name": "attack1",
+          "frames": 29,
+          "stored_frames": 29,
+          "duration_seconds": 0.966666638851166,
+          "fps": 30,
+          "loop": false
+        },
+        {
+          "name": "hit",
+          "frames": 15,
+          "stored_frames": 15,
+          "duration_seconds": 0.5,
+          "fps": 30,
+          "loop": false
+        },
+        {
+          "name": "dead",
+          "frames": 15,
+          "stored_frames": 15,
+          "duration_seconds": 0.5,
+          "fps": 30,
+          "loop": false
+        }
+      ],
+      "direction": "Single authored facing; no directional variants declared in manifest.",
+      "fps": 30,
+      "total_clip_frames": 59.0,
+      "unique_stored_frames": 59,
+      "canvas": [
+        768,
+        768
+      ],
+      "pivot_foot_anchor": [
+        384,
+        540
+      ],
+      "transparency": "Alpha preserved: all tested first/middle/last Godot/native frames matched RGBA.",
+      "atlas_pages": [
+        {
+          "file": "atlas_000.webp",
+          "size": [
+            1815,
+            1855
+          ]
+        },
+        {
+          "file": "atlas_001.webp",
+          "size": [
+            1815,
+            1325
+          ]
+        }
+      ],
+      "import_status": "BUNDLE_VERIFY_PASS clips=3 frames=59 path=res://assets/actors/v5_sa_female_1113028_1/actor.tscn",
+      "qa_sample_count": 9,
+      "qa_alpha_exact": 9,
+      "qa_rgba_exact": 9,
+      "target_mapping": "Combat V5 manifest: disciple_female (base 1113028_1; combat pack V5).",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [
+        "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\assets\\actors",
+        "E:\\codex\\2026-10-21\\t-ng-m-n-b-o-2\\outputs\\TMB_V5_1_VISUAL_FINAL_REVIEW\\package_root\\runtime_assets\\godot\\assets\\actors",
+        "E:\\codex\\2026-10-21\\t-ng-m-n-b-o-2\\outputs\\TMB_V5_SOURCEA_REVIEW_ae3f397c\\changed_files\\godot\\assets\\actors",
+        "E:\\codex\\2026-10-21\\t-ng-m-n-b-o-2\\work\\TongMonBaDao\\godot\\assets\\actors",
+        "E:\\codex\\2026-10-21\\t-ng-m-n-b-o-2\\work\\TongMonBaDao-v5-1\\godot\\assets\\actors"
+      ],
+      "reason": "Verified local worker output; raw SHA differs from PR28 only because worker text exports use CRLF and PR28 text files use LF. Normalized actor.tscn and animations.tres content match exactly; every atlas page SHA matches. Existing verified pack is already present and in use; do not duplicate or overwrite."
+    },
+    {
+      "asset_id": "v5_sa_male_body_1110201",
+      "category": "actor",
+      "role": "player_combat_male",
+      "source_path": "E:\\codex\\2026-10-21\\t-ng-m-n-b-o-2\\outputs\\pilot_assets\\v5_sa_male_body_1110201",
+      "source_branch_commit": "Local worker pilot output; no Git commit recorded at output root; compared with PR28 d7b7 tree.",
+      "source_hashes": [
+        {
+          "name": "body_1110201.skel_TextAsset_-6433388427377235896.bin",
+          "sha256": "89048d6b4c385cdb70f5382637b28469e13ebbd423d53cb39112d4f442eff5f2",
+          "bytes": 187109
+        },
+        {
+          "name": "body_1110201.atlas_TextAsset_3407224732438477998.bin",
+          "sha256": "5536436440f1104dcd7c4ba1531323580b9bb2c5ed2652fb87f4101deef8e56c",
+          "bytes": 4755
+        },
+        {
+          "name": "body_1110201_Texture2D_181697431273634149.png",
+          "sha256": "13438d351fa83f0454b208b615954d32c069443e5e6c5ba6125708c28fbb7670",
+          "bytes": 83166
+        }
+      ],
+      "exported_hashes": [
+        {
+          "sha256": "14be43bfe0a8d62fadb5fab0deae837eb38acf2b386ca26045dcbee3d0225071",
+          "sha256_current_pr28": "d2103827b592a372a7038a0e1697cd414c857a975483672fd6a054952f19cb7d",
+          "path": "actor.tscn",
+          "matches_current_pr28": false,
+          "normalized_text_matches_current_pr28": true
+        },
+        {
+          "sha256": "51fca9529933233c8fc97784060aa7b59de2ee4b96eb0ee6d7b3bd3e5916114f",
+          "sha256_current_pr28": "cc96e872b8ea2df2f9e8354f191c99a35283f5263ae05fcd8723a1ad46f7e431",
+          "path": "animations.tres",
+          "matches_current_pr28": false,
+          "normalized_text_matches_current_pr28": true
+        },
+        {
+          "sha256": "fa13b3f6803ce3f5738f4dda3d3df262ef6f66328429e14422c3f71c22d6ab83",
+          "sha256_current_pr28": "fa13b3f6803ce3f5738f4dda3d3df262ef6f66328429e14422c3f71c22d6ab83",
+          "path": "atlas_000.webp",
+          "matches_current_pr28": true
+        },
+        {
+          "sha256": "8c72f24d728c7f49a672a09843921e26e198986bc466b96951e8bdb24444fc97",
+          "sha256_current_pr28": "8c72f24d728c7f49a672a09843921e26e198986bc466b96951e8bdb24444fc97",
+          "path": "atlas_001.webp",
+          "matches_current_pr28": true
+        },
+        {
+          "sha256": "5bbf5e1d5bfe9a4cc86333d91f2710bbc0f47bfee5e360e76beb4d357109dd60",
+          "sha256_current_pr28": "5bbf5e1d5bfe9a4cc86333d91f2710bbc0f47bfee5e360e76beb4d357109dd60",
+          "path": "atlas_002.webp",
+          "matches_current_pr28": true
+        }
+      ],
+      "clips": [
+        {
+          "name": "stand",
+          "frames": 48,
+          "stored_frames": 48,
+          "duration_seconds": 1.60000002384186,
+          "fps": 30,
+          "loop": true
+        },
+        {
+          "name": "walk",
+          "frames": 24,
+          "stored_frames": 24,
+          "duration_seconds": 0.800000011920929,
+          "fps": 30,
+          "loop": true
+        },
+        {
+          "name": "attack1",
+          "frames": 29,
+          "stored_frames": 29,
+          "duration_seconds": 0.966666638851166,
+          "fps": 30,
+          "loop": false
+        },
+        {
+          "name": "hit",
+          "frames": 15,
+          "stored_frames": 15,
+          "duration_seconds": 0.5,
+          "fps": 30,
+          "loop": false
+        },
+        {
+          "name": "dead",
+          "frames": 15,
+          "stored_frames": 15,
+          "duration_seconds": 0.5,
+          "fps": 30,
+          "loop": false
+        }
+      ],
+      "direction": "Single authored facing; no directional variants declared in manifest.",
+      "fps": 30,
+      "total_clip_frames": 131.0,
+      "unique_stored_frames": 131,
+      "canvas": [
+        768,
+        768
+      ],
+      "pivot_foot_anchor": [
+        384,
+        540
+      ],
+      "transparency": "Alpha preserved: all tested first/middle/last Godot/native frames matched RGBA.",
+      "atlas_pages": [
+        {
+          "file": "atlas_000.webp",
+          "size": [
+            1855,
+            1820
+          ]
+        },
+        {
+          "file": "atlas_001.webp",
+          "size": [
+            1855,
+            1820
+          ]
+        },
+        {
+          "file": "atlas_002.webp",
+          "size": [
+            1855,
+            1300
+          ]
+        }
+      ],
+      "import_status": "BUNDLE_VERIFY_PASS clips=5 frames=131 path=res://assets/actors/v5_sa_male_body_1110201/actor.tscn",
+      "qa_sample_count": 15,
+      "qa_alpha_exact": 15,
+      "qa_rgba_exact": 15,
+      "target_mapping": "Combat V5 manifest: disciple_male.",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [
+        "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\assets\\actors",
+        "E:\\codex\\2026-10-21\\t-ng-m-n-b-o-2\\outputs\\TMB_V5_1_VISUAL_FINAL_REVIEW\\package_root\\runtime_assets\\godot\\assets\\actors",
+        "E:\\codex\\2026-10-21\\t-ng-m-n-b-o-2\\outputs\\TMB_V5_SOURCEA_REVIEW_ae3f397c\\changed_files\\godot\\assets\\actors",
+        "E:\\codex\\2026-10-21\\t-ng-m-n-b-o-2\\work\\TongMonBaDao\\godot\\assets\\actors",
+        "E:\\codex\\2026-10-21\\t-ng-m-n-b-o-2\\work\\TongMonBaDao-v5-1\\godot\\assets\\actors"
+      ],
+      "reason": "Verified local worker output; raw SHA differs from PR28 only because worker text exports use CRLF and PR28 text files use LF. Normalized actor.tscn and animations.tres content match exactly; every atlas page SHA matches. Existing verified pack is already present and in use; do not duplicate or overwrite."
+    },
+    {
+      "asset_id": "v5_sa_monster_1113031_1",
+      "category": "actor",
+      "role": "monster_thanh_lang",
+      "source_path": "E:\\codex\\2026-10-21\\t-ng-m-n-b-o-2\\outputs\\pilot_assets\\v5_sa_monster_1113031_1",
+      "source_branch_commit": "Local worker pilot output; no Git commit recorded at output root; compared with PR28 d7b7 tree.",
+      "source_hashes": [
+        {
+          "name": "1113031_1.skel_TextAsset_-8702388810438111467.bin",
+          "sha256": "66dce4d7dd88dda48ee5fefa2ea70eca4af10913bf02b4e5d9635def76bdde4d",
+          "bytes": 180689
+        },
+        {
+          "name": "1113031_1.atlas_TextAsset_-8184681043018368557.bin",
+          "sha256": "c31282fb02fd9250fed3d6613a76f987d400a255c28053c5470a52e830b6023b",
+          "bytes": 2653
+        },
+        {
+          "name": "1113031_1_Texture2D_-844457151089194408.png",
+          "sha256": "0512faf8bd25c2382bc9fa0e58f2780603f04ba584ed9edc1ed79860fe20a591",
+          "bytes": 733216
+        }
+      ],
+      "exported_hashes": [
+        {
+          "sha256": "14503f8f5ecaac6f1d434e736e51d29b2f125fbeeb24aea8bbec1204e3af1f93",
+          "sha256_current_pr28": "4c3f8330be152eb4bf10864ba94db8ebad9a2cb53700678ca78fb3d62d2ebcf9",
+          "path": "actor.tscn",
+          "matches_current_pr28": false,
+          "normalized_text_matches_current_pr28": true
+        },
+        {
+          "sha256": "3a4a0ba82e5a657859dab8ef8e62907f789d4d200f0caba4701286d2fe7c1f4b",
+          "sha256_current_pr28": "36d8accc3f2d5d58788a76f43666f7b1a01cc83d5cd511a47b35b062903f3ae8",
+          "path": "animations.tres",
+          "matches_current_pr28": false,
+          "normalized_text_matches_current_pr28": true
+        },
+        {
+          "sha256": "570a9528bb8d4c4f083cdd43ed7e56f06e4dea399d82fa2c8e2273339f3cfb0a",
+          "sha256_current_pr28": "570a9528bb8d4c4f083cdd43ed7e56f06e4dea399d82fa2c8e2273339f3cfb0a",
+          "path": "atlas_000.webp",
+          "matches_current_pr28": true
+        },
+        {
+          "sha256": "50539e94b305876b171d4e48938021e22bf4ba6fdb3187d434b32f6f4c59dade",
+          "sha256_current_pr28": "50539e94b305876b171d4e48938021e22bf4ba6fdb3187d434b32f6f4c59dade",
+          "path": "atlas_001.webp",
+          "matches_current_pr28": true
+        },
+        {
+          "sha256": "3adfafdc10a61f9eea2ffeedd9fe2262d932362ca3d970bb23ee7c7f39da1bf5",
+          "sha256_current_pr28": "3adfafdc10a61f9eea2ffeedd9fe2262d932362ca3d970bb23ee7c7f39da1bf5",
+          "path": "atlas_002.webp",
+          "matches_current_pr28": true
+        }
+      ],
+      "clips": [
+        {
+          "name": "stand",
+          "frames": 60,
+          "stored_frames": 60,
+          "duration_seconds": 2.0,
+          "fps": 30,
+          "loop": true
+        },
+        {
+          "name": "walk",
+          "frames": 24,
+          "stored_frames": 24,
+          "duration_seconds": 0.800000011920929,
+          "fps": 30,
+          "loop": true
+        },
+        {
+          "name": "attack1",
+          "frames": 29,
+          "stored_frames": 29,
+          "duration_seconds": 0.966666638851166,
+          "fps": 30,
+          "loop": false
+        },
+        {
+          "name": "hit",
+          "frames": 10,
+          "stored_frames": 10,
+          "duration_seconds": 0.333333343267441,
+          "fps": 30,
+          "loop": false
+        },
+        {
+          "name": "dead",
+          "frames": 22,
+          "stored_frames": 22,
+          "duration_seconds": 0.733333349227905,
+          "fps": 30,
+          "loop": false
+        }
+      ],
+      "direction": "Single authored facing; no directional variants declared in manifest.",
+      "fps": 30,
+      "total_clip_frames": 145.0,
+      "unique_stored_frames": 145,
+      "canvas": [
+        768,
+        768
+      ],
+      "pivot_foot_anchor": [
+        384,
+        540
+      ],
+      "transparency": "Alpha preserved: all tested first/middle/last Godot/native frames matched RGBA.",
+      "atlas_pages": [
+        {
+          "file": "atlas_000.webp",
+          "size": [
+            2016,
+            1940
+          ]
+        },
+        {
+          "file": "atlas_001.webp",
+          "size": [
+            2016,
+            1940
+          ]
+        },
+        {
+          "file": "atlas_002.webp",
+          "size": [
+            1440,
+            194
+          ]
+        }
+      ],
+      "import_status": "BUNDLE_VERIFY_PASS clips=5 frames=145 path=res://assets/actors/v5_sa_monster_1113031_1/actor.tscn",
+      "qa_sample_count": 15,
+      "qa_alpha_exact": 15,
+      "qa_rgba_exact": 15,
+      "target_mapping": "Combat V5 manifest: monster_1113031_1 -> canonical Thanh Lang only.",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [
+        "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\assets\\actors",
+        "E:\\codex\\2026-10-21\\t-ng-m-n-b-o-2\\outputs\\TMB_V5_1_VISUAL_FINAL_REVIEW\\package_root\\runtime_assets\\godot\\assets\\actors",
+        "E:\\codex\\2026-10-21\\t-ng-m-n-b-o-2\\outputs\\TMB_V5_SOURCEA_REVIEW_ae3f397c\\changed_files\\godot\\assets\\actors",
+        "E:\\codex\\2026-10-21\\t-ng-m-n-b-o-2\\work\\TongMonBaDao\\godot\\assets\\actors",
+        "E:\\codex\\2026-10-21\\t-ng-m-n-b-o-2\\work\\TongMonBaDao-v5-1\\godot\\assets\\actors"
+      ],
+      "reason": "Verified local worker output; raw SHA differs from PR28 only because worker text exports use CRLF and PR28 text files use LF. Normalized actor.tscn and animations.tres content match exactly; every atlas page SHA matches. Existing verified pack is already present and in use; do not duplicate or overwrite."
+    },
+    {
+      "asset_id": "1113028_1",
+      "category": "actor",
+      "role": "map_profile_female",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\assets\\actors\\1113028_1",
+      "source_branch_commit": "Existing PR28 tree, baseline d7b7cf14cd37528b08d3b9b22d8e89d4a2dfd1e5",
+      "source_hashes": [
+        {
+          "name": "1113028_1.skel_TextAsset_2464183327200521619.bin",
+          "sha256": "8c089d8837cf87bc573c63f39e37577af1b0062a9903a1acc2ecbd8ccedb00d8",
+          "bytes": 262819
+        },
+        {
+          "name": "1113028_1.atlas_TextAsset_4732095381105324012.bin",
+          "sha256": "01c4fa52a3e782fc2c08ad9dbdfb08ad025eca03334fb5b555d42ec74d22cc75",
+          "bytes": 3745
+        },
+        {
+          "name": "1113028_1_Texture2D_735480216125144147.png",
+          "sha256": "5d5019d01279254be3e2f3430da8955a685b35ab5e93ad1798c753be189582d1",
+          "bytes": 105725
+        }
+      ],
+      "exported_hashes": [
+        {
+          "path": "actor.tscn",
+          "sha256": "5442a4442a31c9ae27027ef0bf16941e3a1afe0f85b94a17713be300578b2cf5"
+        },
+        {
+          "path": "animations.tres",
+          "sha256": "e2864cfe778fac39b093fa30c76c76bfec40f1b03a8ed1f3af5ea72aa6eb6473"
+        },
+        {
+          "path": "atlas_000.webp",
+          "sha256": "ce2bea0da04a8e461016de756546640afd4eda855f64ed3cd44e15bdc06c4197"
+        },
+        {
+          "path": "atlas_001.webp",
+          "sha256": "8e1bffa36d2c5ff68ca54be3f56633006a94b42bf9b0abecd03ab50023024da6"
+        }
+      ],
+      "clips": [
+        {
+          "name": "stand",
+          "frames": 48,
+          "stored_frames": 48,
+          "duration_seconds": 1.60000002384186,
+          "fps": 30,
+          "loop": true
+        },
+        {
+          "name": "walk",
+          "frames": 24,
+          "stored_frames": 24,
+          "duration_seconds": 0.800000011920929,
+          "fps": 30,
+          "loop": true
+        }
+      ],
+      "direction": "Existing map/profile rig; direction handling resides in existing visual adapter.",
+      "fps": 30,
+      "total_clip_frames": 72.0,
+      "unique_stored_frames": 72,
+      "canvas": [
+        768,
+        768
+      ],
+      "pivot_foot_anchor": [
+        384,
+        540
+      ],
+      "transparency": "Runtime loaded; no new binary.",
+      "atlas_pages": [
+        {
+          "file": "atlas_000.webp",
+          "size": [
+            2044,
+            1940
+          ]
+        },
+        {
+          "file": "atlas_001.webp",
+          "size": [
+            584,
+            194
+          ]
+        }
+      ],
+      "import_status": "Godot 4.7.2 project import + p3_2_modular_actor_contract_test PASS.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "DiscipleSourceAVisualPool map/profile whitelist.",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Pre-existing PR28 actor asset; not new worker output."
+    },
+    {
+      "asset_id": "body_1110201",
+      "category": "actor",
+      "role": "map_profile_male",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\assets\\actors\\body_1110201",
+      "source_branch_commit": "Existing PR28 tree, baseline d7b7cf14cd37528b08d3b9b22d8e89d4a2dfd1e5",
+      "source_hashes": [
+        {
+          "name": "body_1110201.skel_TextAsset_-6433388427377235896.bin",
+          "sha256": "89048d6b4c385cdb70f5382637b28469e13ebbd423d53cb39112d4f442eff5f2",
+          "bytes": 187109
+        },
+        {
+          "name": "body_1110201.atlas_TextAsset_3407224732438477998.bin",
+          "sha256": "5536436440f1104dcd7c4ba1531323580b9bb2c5ed2652fb87f4101deef8e56c",
+          "bytes": 4755
+        },
+        {
+          "name": "body_1110201_Texture2D_181697431273634149.png",
+          "sha256": "13438d351fa83f0454b208b615954d32c069443e5e6c5ba6125708c28fbb7670",
+          "bytes": 83166
+        }
+      ],
+      "exported_hashes": [
+        {
+          "path": "actor.tscn",
+          "sha256": "72debc170ae0831b0631edd09d566913daf94d4daf202029b766a70d8a3207ae"
+        },
+        {
+          "path": "animations.tres",
+          "sha256": "a78b83c5699c10dac5174bccfd5dcd08997baa33b2ff3ff466656be9e4ae92df"
+        },
+        {
+          "path": "atlas_000.webp",
+          "sha256": "b0be4d26c4b21d8bae3fa3a74dd48c44949e449bb47623fbc2ab0ab601680e7e"
+        }
+      ],
+      "clips": [
+        {
+          "name": "stand",
+          "frames": 48,
+          "stored_frames": 48,
+          "duration_seconds": 1.60000002384186,
+          "fps": 30,
+          "loop": true
+        },
+        {
+          "name": "walk",
+          "frames": 24,
+          "stored_frames": 24,
+          "duration_seconds": 0.800000011920929,
+          "fps": 30,
+          "loop": true
+        }
+      ],
+      "direction": "Existing map/profile rig; direction handling resides in existing visual adapter.",
+      "fps": 30,
+      "total_clip_frames": 72.0,
+      "unique_stored_frames": 72,
+      "canvas": [
+        768,
+        768
+      ],
+      "pivot_foot_anchor": [
+        384,
+        540
+      ],
+      "transparency": "Runtime loaded; no new binary.",
+      "atlas_pages": [
+        {
+          "file": "atlas_000.webp",
+          "size": [
+            2016,
+            548
+          ]
+        }
+      ],
+      "import_status": "Godot 4.7.2 project import + p3_2_modular_actor_contract_test PASS.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "DiscipleSourceAVisualPool map/profile whitelist.",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Pre-existing PR28 actor asset; not new worker output."
+    },
+    {
+      "asset_id": "body_1120402",
+      "category": "actor",
+      "role": "map_profile_male",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\assets\\actors\\body_1120402",
+      "source_branch_commit": "Existing PR28 tree, baseline d7b7cf14cd37528b08d3b9b22d8e89d4a2dfd1e5",
+      "source_hashes": [
+        {
+          "name": "body_1120402.skel_TextAsset_8454442484532860036.bin",
+          "sha256": "e9d6075c4673690a55d9029bf60ba210ea9610e369a3de13d890c26f90072a3d",
+          "bytes": 213545
+        },
+        {
+          "name": "body_1120402.atlas_TextAsset_4916636876815428352.bin",
+          "sha256": "73c83bce3828e3afd6dba522ce771368a06682d8d9256df2c7e8501edee0b2e4",
+          "bytes": 7227
+        },
+        {
+          "name": "body_1120402_Texture2D_907649722946377334.png",
+          "sha256": "1ed18ce80a4096c0cc1cd170db4dbd7c74dd0ca20296fcada87e744ffc5aefd4",
+          "bytes": 133372
+        }
+      ],
+      "exported_hashes": [
+        {
+          "path": "actor.tscn",
+          "sha256": "a89795fb8df30f6aa6343ea8b064b9ead8a55cad215e707ae9430eee102117ae"
+        },
+        {
+          "path": "animations.tres",
+          "sha256": "2cdeef3b53bbcbf546b3a41450f8390a5f86119d73fff760d2081700a67b25fd"
+        },
+        {
+          "path": "atlas_000.webp",
+          "sha256": "bb6731403a09750109d7604ff4ab69ad984cdda5f4b638da3d4cf09e9c7c0248"
+        }
+      ],
+      "clips": [
+        {
+          "name": "stand",
+          "frames": 48,
+          "stored_frames": 48,
+          "duration_seconds": 1.60000002384186,
+          "fps": 30,
+          "loop": true
+        },
+        {
+          "name": "walk",
+          "frames": 24,
+          "stored_frames": 24,
+          "duration_seconds": 0.800000011920929,
+          "fps": 30,
+          "loop": true
+        }
+      ],
+      "direction": "Existing map/profile rig; direction handling resides in existing visual adapter.",
+      "fps": 30,
+      "total_clip_frames": 72.0,
+      "unique_stored_frames": 72,
+      "canvas": [
+        768,
+        768
+      ],
+      "pivot_foot_anchor": [
+        384,
+        540
+      ],
+      "transparency": "Runtime loaded; no new binary.",
+      "atlas_pages": [
+        {
+          "file": "atlas_000.webp",
+          "size": [
+            1900,
+            1560
+          ]
+        }
+      ],
+      "import_status": "Godot 4.7.2 project import + p3_2_modular_actor_contract_test PASS.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "DiscipleSourceAVisualPool map/profile whitelist.",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Pre-existing PR28 actor asset; not new worker output."
+    },
+    {
+      "asset_id": "env01_assets/terrain/stone_courtyard.png",
+      "category": "map_terrain",
+      "role": "map_terrain_vegetation_or_road",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\env01_assets\\terrain\\stone_courtyard.png",
+      "source_branch_commit": "Existing PR28 MAP25 manifest",
+      "source_hashes": [
+        "c157965bd15f2747a55b602d4320dc34ad70c9129f79cc17eb8b4b139897468a"
+      ],
+      "exported_hashes": [
+        {
+          "path": "env01_assets/terrain/stone_courtyard.png",
+          "sha256": "c157965bd15f2747a55b602d4320dc34ad70c9129f79cc17eb8b4b139897468a"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "PNG alpha/content locked by existing SHA manifest",
+      "atlas_pages": [],
+      "import_status": "Godot 4.7.2 import baseline; no asset tree changes after baseline.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "res://art/source_a_env02a/env01_assets/terrain/stone_courtyard.png",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Exact match to MAP25 SHA whitelist; gate accepted 32/32."
+    },
+    {
+      "asset_id": "env01_assets/terrain/stone_variant.png",
+      "category": "map_terrain",
+      "role": "map_terrain_vegetation_or_road",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\env01_assets\\terrain\\stone_variant.png",
+      "source_branch_commit": "Existing PR28 MAP25 manifest",
+      "source_hashes": [
+        "8580ac97906cfac6b5fea68a378482ce7d157194295310c6e6f64b5902b81368"
+      ],
+      "exported_hashes": [
+        {
+          "path": "env01_assets/terrain/stone_variant.png",
+          "sha256": "8580ac97906cfac6b5fea68a378482ce7d157194295310c6e6f64b5902b81368"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "PNG alpha/content locked by existing SHA manifest",
+      "atlas_pages": [],
+      "import_status": "Godot 4.7.2 import baseline; no asset tree changes after baseline.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "res://art/source_a_env02a/env01_assets/terrain/stone_variant.png",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Exact match to MAP25 SHA whitelist; gate accepted 32/32."
+    },
+    {
+      "asset_id": "env01_assets/terrain/stone_border.png",
+      "category": "map_terrain",
+      "role": "map_terrain_vegetation_or_road",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\env01_assets\\terrain\\stone_border.png",
+      "source_branch_commit": "Existing PR28 MAP25 manifest",
+      "source_hashes": [
+        "4836980944a8c0701c492c66da59819b1d9dc7ca123fb4371488d6e515569c0f"
+      ],
+      "exported_hashes": [
+        {
+          "path": "env01_assets/terrain/stone_border.png",
+          "sha256": "4836980944a8c0701c492c66da59819b1d9dc7ca123fb4371488d6e515569c0f"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "PNG alpha/content locked by existing SHA manifest",
+      "atlas_pages": [],
+      "import_status": "Godot 4.7.2 import baseline; no asset tree changes after baseline.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "res://art/source_a_env02a/env01_assets/terrain/stone_border.png",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Exact match to MAP25 SHA whitelist; gate accepted 32/32."
+    },
+    {
+      "asset_id": "env01_assets/terrain/stone_runes.png",
+      "category": "map_terrain",
+      "role": "map_terrain_vegetation_or_road",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\env01_assets\\terrain\\stone_runes.png",
+      "source_branch_commit": "Existing PR28 MAP25 manifest",
+      "source_hashes": [
+        "458cc4510a7f4cc8c3757a4c059837d24113f3d716ceba698decc553989c812e"
+      ],
+      "exported_hashes": [
+        {
+          "path": "env01_assets/terrain/stone_runes.png",
+          "sha256": "458cc4510a7f4cc8c3757a4c059837d24113f3d716ceba698decc553989c812e"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "PNG alpha/content locked by existing SHA manifest",
+      "atlas_pages": [],
+      "import_status": "Godot 4.7.2 import baseline; no asset tree changes after baseline.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "res://art/source_a_env02a/env01_assets/terrain/stone_runes.png",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Exact match to MAP25 SHA whitelist; gate accepted 32/32."
+    },
+    {
+      "asset_id": "env01_assets/vegetation/570185.png",
+      "category": "map_vegetation",
+      "role": "map_terrain_vegetation_or_road",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\env01_assets\\vegetation\\570185.png",
+      "source_branch_commit": "Existing PR28 MAP25 manifest",
+      "source_hashes": [
+        "89fba324db3e3c6d850ed36ee2a3b0aea2021fa6a3d0712c569cae220fbe9655"
+      ],
+      "exported_hashes": [
+        {
+          "path": "env01_assets/vegetation/570185.png",
+          "sha256": "89fba324db3e3c6d850ed36ee2a3b0aea2021fa6a3d0712c569cae220fbe9655"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "PNG alpha/content locked by existing SHA manifest",
+      "atlas_pages": [],
+      "import_status": "Godot 4.7.2 import baseline; no asset tree changes after baseline.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "res://art/source_a_env02a/env01_assets/vegetation/570185.png",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Exact match to MAP25 SHA whitelist; gate accepted 32/32."
+    },
+    {
+      "asset_id": "env01_assets/vegetation/570183.png",
+      "category": "map_vegetation",
+      "role": "map_terrain_vegetation_or_road",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\env01_assets\\vegetation\\570183.png",
+      "source_branch_commit": "Existing PR28 MAP25 manifest",
+      "source_hashes": [
+        "08da71fd44121d8a65bb51883966117a770d8b3012e110c38e7cdff1a5de16c0"
+      ],
+      "exported_hashes": [
+        {
+          "path": "env01_assets/vegetation/570183.png",
+          "sha256": "08da71fd44121d8a65bb51883966117a770d8b3012e110c38e7cdff1a5de16c0"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "PNG alpha/content locked by existing SHA manifest",
+      "atlas_pages": [],
+      "import_status": "Godot 4.7.2 import baseline; no asset tree changes after baseline.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "res://art/source_a_env02a/env01_assets/vegetation/570183.png",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Exact match to MAP25 SHA whitelist; gate accepted 32/32."
+    },
+    {
+      "asset_id": "env01_assets/vegetation/570186.png",
+      "category": "map_vegetation",
+      "role": "map_terrain_vegetation_or_road",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\env01_assets\\vegetation\\570186.png",
+      "source_branch_commit": "Existing PR28 MAP25 manifest",
+      "source_hashes": [
+        "79a7d53cf813eef644c3d2fca320d3fda586f860b7be8117048287affb8c1573"
+      ],
+      "exported_hashes": [
+        {
+          "path": "env01_assets/vegetation/570186.png",
+          "sha256": "79a7d53cf813eef644c3d2fca320d3fda586f860b7be8117048287affb8c1573"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "PNG alpha/content locked by existing SHA manifest",
+      "atlas_pages": [],
+      "import_status": "Godot 4.7.2 import baseline; no asset tree changes after baseline.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "res://art/source_a_env02a/env01_assets/vegetation/570186.png",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Exact match to MAP25 SHA whitelist; gate accepted 32/32."
+    },
+    {
+      "asset_id": "env01_assets/vegetation/570171.png",
+      "category": "map_vegetation",
+      "role": "map_terrain_vegetation_or_road",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\env01_assets\\vegetation\\570171.png",
+      "source_branch_commit": "Existing PR28 MAP25 manifest",
+      "source_hashes": [
+        "604f46f555ef62d0e63daa9b3d47643f0345592569c8938f33de89949a4064b4"
+      ],
+      "exported_hashes": [
+        {
+          "path": "env01_assets/vegetation/570171.png",
+          "sha256": "604f46f555ef62d0e63daa9b3d47643f0345592569c8938f33de89949a4064b4"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "PNG alpha/content locked by existing SHA manifest",
+      "atlas_pages": [],
+      "import_status": "Godot 4.7.2 import baseline; no asset tree changes after baseline.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "res://art/source_a_env02a/env01_assets/vegetation/570171.png",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Exact match to MAP25 SHA whitelist; gate accepted 32/32."
+    },
+    {
+      "asset_id": "env01_assets/vegetation/570041.png",
+      "category": "map_vegetation",
+      "role": "map_terrain_vegetation_or_road",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\env01_assets\\vegetation\\570041.png",
+      "source_branch_commit": "Existing PR28 MAP25 manifest",
+      "source_hashes": [
+        "46af5ce8f7205b35bdd820db58be3071e6698ba789106e74095101b39b53abc2"
+      ],
+      "exported_hashes": [
+        {
+          "path": "env01_assets/vegetation/570041.png",
+          "sha256": "46af5ce8f7205b35bdd820db58be3071e6698ba789106e74095101b39b53abc2"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "PNG alpha/content locked by existing SHA manifest",
+      "atlas_pages": [],
+      "import_status": "Godot 4.7.2 import baseline; no asset tree changes after baseline.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "res://art/source_a_env02a/env01_assets/vegetation/570041.png",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Exact match to MAP25 SHA whitelist; gate accepted 32/32."
+    },
+    {
+      "asset_id": "env01_assets/vegetation/570399.png",
+      "category": "map_vegetation",
+      "role": "map_terrain_vegetation_or_road",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\env01_assets\\vegetation\\570399.png",
+      "source_branch_commit": "Existing PR28 MAP25 manifest",
+      "source_hashes": [
+        "bc718c88609f236aac9c381c0b93e6be57f13047b3cfc0b77e406189a9fb66f8"
+      ],
+      "exported_hashes": [
+        {
+          "path": "env01_assets/vegetation/570399.png",
+          "sha256": "bc718c88609f236aac9c381c0b93e6be57f13047b3cfc0b77e406189a9fb66f8"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "PNG alpha/content locked by existing SHA manifest",
+      "atlas_pages": [],
+      "import_status": "Godot 4.7.2 import baseline; no asset tree changes after baseline.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "res://art/source_a_env02a/env01_assets/vegetation/570399.png",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Exact match to MAP25 SHA whitelist; gate accepted 32/32."
+    },
+    {
+      "asset_id": "env01_assets/vegetation/570038.png",
+      "category": "map_vegetation",
+      "role": "map_terrain_vegetation_or_road",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\env01_assets\\vegetation\\570038.png",
+      "source_branch_commit": "Existing PR28 MAP25 manifest",
+      "source_hashes": [
+        "900ae63de14cbbe7aef006d448418af16095e8426c34b31be25f819ef638b220"
+      ],
+      "exported_hashes": [
+        {
+          "path": "env01_assets/vegetation/570038.png",
+          "sha256": "900ae63de14cbbe7aef006d448418af16095e8426c34b31be25f819ef638b220"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "PNG alpha/content locked by existing SHA manifest",
+      "atlas_pages": [],
+      "import_status": "Godot 4.7.2 import baseline; no asset tree changes after baseline.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "res://art/source_a_env02a/env01_assets/vegetation/570038.png",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Exact match to MAP25 SHA whitelist; gate accepted 32/32."
+    },
+    {
+      "asset_id": "env01_assets/vegetation/570073.png",
+      "category": "map_vegetation",
+      "role": "map_terrain_vegetation_or_road",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\env01_assets\\vegetation\\570073.png",
+      "source_branch_commit": "Existing PR28 MAP25 manifest",
+      "source_hashes": [
+        "7a78ada4290d3a6eb96acc8c9c46fd4a1b0ae5e95d4194ba59e75e600e2e657a"
+      ],
+      "exported_hashes": [
+        {
+          "path": "env01_assets/vegetation/570073.png",
+          "sha256": "7a78ada4290d3a6eb96acc8c9c46fd4a1b0ae5e95d4194ba59e75e600e2e657a"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "PNG alpha/content locked by existing SHA manifest",
+      "atlas_pages": [],
+      "import_status": "Godot 4.7.2 import baseline; no asset tree changes after baseline.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "res://art/source_a_env02a/env01_assets/vegetation/570073.png",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Exact match to MAP25 SHA whitelist; gate accepted 32/32."
+    },
+    {
+      "asset_id": "env01_assets/vegetation/570187.png",
+      "category": "map_vegetation",
+      "role": "map_terrain_vegetation_or_road",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\env01_assets\\vegetation\\570187.png",
+      "source_branch_commit": "Existing PR28 MAP25 manifest",
+      "source_hashes": [
+        "b3386ea6336fc59410afbaefe31012a54f72d59d14127b4da4e0a80ee1fe2fa8"
+      ],
+      "exported_hashes": [
+        {
+          "path": "env01_assets/vegetation/570187.png",
+          "sha256": "b3386ea6336fc59410afbaefe31012a54f72d59d14127b4da4e0a80ee1fe2fa8"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "PNG alpha/content locked by existing SHA manifest",
+      "atlas_pages": [],
+      "import_status": "Godot 4.7.2 import baseline; no asset tree changes after baseline.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "res://art/source_a_env02a/env01_assets/vegetation/570187.png",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Exact match to MAP25 SHA whitelist; gate accepted 32/32."
+    },
+    {
+      "asset_id": "env01_assets/vegetation/570397.png",
+      "category": "map_vegetation",
+      "role": "map_terrain_vegetation_or_road",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\env01_assets\\vegetation\\570397.png",
+      "source_branch_commit": "Existing PR28 MAP25 manifest",
+      "source_hashes": [
+        "b39916567876d173e7d51aec01ad8e5da7871589a0d4afc8e903a1c672717308"
+      ],
+      "exported_hashes": [
+        {
+          "path": "env01_assets/vegetation/570397.png",
+          "sha256": "b39916567876d173e7d51aec01ad8e5da7871589a0d4afc8e903a1c672717308"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "PNG alpha/content locked by existing SHA manifest",
+      "atlas_pages": [],
+      "import_status": "Godot 4.7.2 import baseline; no asset tree changes after baseline.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "res://art/source_a_env02a/env01_assets/vegetation/570397.png",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Exact match to MAP25 SHA whitelist; gate accepted 32/32."
+    },
+    {
+      "asset_id": "env01_assets/vegetation/570037.png",
+      "category": "map_vegetation",
+      "role": "map_terrain_vegetation_or_road",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\env01_assets\\vegetation\\570037.png",
+      "source_branch_commit": "Existing PR28 MAP25 manifest",
+      "source_hashes": [
+        "157aa21abd837691268d97afacbf9e0afda059dd9e1035f47eeff8302f6dd75e"
+      ],
+      "exported_hashes": [
+        {
+          "path": "env01_assets/vegetation/570037.png",
+          "sha256": "157aa21abd837691268d97afacbf9e0afda059dd9e1035f47eeff8302f6dd75e"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "PNG alpha/content locked by existing SHA manifest",
+      "atlas_pages": [],
+      "import_status": "Godot 4.7.2 import baseline; no asset tree changes after baseline.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "res://art/source_a_env02a/env01_assets/vegetation/570037.png",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Exact match to MAP25 SHA whitelist; gate accepted 32/32."
+    },
+    {
+      "asset_id": "env01_assets/vegetation/570181.png",
+      "category": "map_vegetation",
+      "role": "map_terrain_vegetation_or_road",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\env01_assets\\vegetation\\570181.png",
+      "source_branch_commit": "Existing PR28 MAP25 manifest",
+      "source_hashes": [
+        "53710bc51e9a9b1992658888a34042b2e9e0104e4aba1ebf04e112b2d1454918"
+      ],
+      "exported_hashes": [
+        {
+          "path": "env01_assets/vegetation/570181.png",
+          "sha256": "53710bc51e9a9b1992658888a34042b2e9e0104e4aba1ebf04e112b2d1454918"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "PNG alpha/content locked by existing SHA manifest",
+      "atlas_pages": [],
+      "import_status": "Godot 4.7.2 import baseline; no asset tree changes after baseline.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "res://art/source_a_env02a/env01_assets/vegetation/570181.png",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Exact match to MAP25 SHA whitelist; gate accepted 32/32."
+    },
+    {
+      "asset_id": "env01_assets/vegetation/570173.png",
+      "category": "map_vegetation",
+      "role": "map_terrain_vegetation_or_road",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\env01_assets\\vegetation\\570173.png",
+      "source_branch_commit": "Existing PR28 MAP25 manifest",
+      "source_hashes": [
+        "cac13e6a3b92b4dc1300d859b607469191b4fca6d6261f14ffc20202818259c4"
+      ],
+      "exported_hashes": [
+        {
+          "path": "env01_assets/vegetation/570173.png",
+          "sha256": "cac13e6a3b92b4dc1300d859b607469191b4fca6d6261f14ffc20202818259c4"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "PNG alpha/content locked by existing SHA manifest",
+      "atlas_pages": [],
+      "import_status": "Godot 4.7.2 import baseline; no asset tree changes after baseline.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "res://art/source_a_env02a/env01_assets/vegetation/570173.png",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Exact match to MAP25 SHA whitelist; gate accepted 32/32."
+    },
+    {
+      "asset_id": "env01_assets/vegetation/570042.png",
+      "category": "map_vegetation",
+      "role": "map_terrain_vegetation_or_road",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\env01_assets\\vegetation\\570042.png",
+      "source_branch_commit": "Existing PR28 MAP25 manifest",
+      "source_hashes": [
+        "0e894b8ff4cbe1bf1e78ccdfc0f0c22316ac516b284b3faf08ffa61f8e6ddaa3"
+      ],
+      "exported_hashes": [
+        {
+          "path": "env01_assets/vegetation/570042.png",
+          "sha256": "0e894b8ff4cbe1bf1e78ccdfc0f0c22316ac516b284b3faf08ffa61f8e6ddaa3"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "PNG alpha/content locked by existing SHA manifest",
+      "atlas_pages": [],
+      "import_status": "Godot 4.7.2 import baseline; no asset tree changes after baseline.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "res://art/source_a_env02a/env01_assets/vegetation/570042.png",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Exact match to MAP25 SHA whitelist; gate accepted 32/32."
+    },
+    {
+      "asset_id": "env01_assets/vegetation/570043.png",
+      "category": "map_vegetation",
+      "role": "map_terrain_vegetation_or_road",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\env01_assets\\vegetation\\570043.png",
+      "source_branch_commit": "Existing PR28 MAP25 manifest",
+      "source_hashes": [
+        "9d8023f8ff2093672de5940f7926c341b8b1b192b61ce44b2b6c6650328b26c6"
+      ],
+      "exported_hashes": [
+        {
+          "path": "env01_assets/vegetation/570043.png",
+          "sha256": "9d8023f8ff2093672de5940f7926c341b8b1b192b61ce44b2b6c6650328b26c6"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "PNG alpha/content locked by existing SHA manifest",
+      "atlas_pages": [],
+      "import_status": "Godot 4.7.2 import baseline; no asset tree changes after baseline.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "res://art/source_a_env02a/env01_assets/vegetation/570043.png",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Exact match to MAP25 SHA whitelist; gate accepted 32/32."
+    },
+    {
+      "asset_id": "env01_assets/vegetation/570036.png",
+      "category": "map_vegetation",
+      "role": "map_terrain_vegetation_or_road",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\env01_assets\\vegetation\\570036.png",
+      "source_branch_commit": "Existing PR28 MAP25 manifest",
+      "source_hashes": [
+        "c828e661e22c2c87b6b5c71ba5b309eb2df3f27c196659c2a0ddce035c1af32d"
+      ],
+      "exported_hashes": [
+        {
+          "path": "env01_assets/vegetation/570036.png",
+          "sha256": "c828e661e22c2c87b6b5c71ba5b309eb2df3f27c196659c2a0ddce035c1af32d"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "PNG alpha/content locked by existing SHA manifest",
+      "atlas_pages": [],
+      "import_status": "Godot 4.7.2 import baseline; no asset tree changes after baseline.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "res://art/source_a_env02a/env01_assets/vegetation/570036.png",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Exact match to MAP25 SHA whitelist; gate accepted 32/32."
+    },
+    {
+      "asset_id": "env01_assets/vegetation/570182.png",
+      "category": "map_vegetation",
+      "role": "map_terrain_vegetation_or_road",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\env01_assets\\vegetation\\570182.png",
+      "source_branch_commit": "Existing PR28 MAP25 manifest",
+      "source_hashes": [
+        "b277a7c0450ff487e33607df91d13bd367bc9b080d1a8bf664e268f060536272"
+      ],
+      "exported_hashes": [
+        {
+          "path": "env01_assets/vegetation/570182.png",
+          "sha256": "b277a7c0450ff487e33607df91d13bd367bc9b080d1a8bf664e268f060536272"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "PNG alpha/content locked by existing SHA manifest",
+      "atlas_pages": [],
+      "import_status": "Godot 4.7.2 import baseline; no asset tree changes after baseline.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "res://art/source_a_env02a/env01_assets/vegetation/570182.png",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Exact match to MAP25 SHA whitelist; gate accepted 32/32."
+    },
+    {
+      "asset_id": "env01_assets/vegetation/570144.png",
+      "category": "map_vegetation",
+      "role": "map_terrain_vegetation_or_road",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\env01_assets\\vegetation\\570144.png",
+      "source_branch_commit": "Existing PR28 MAP25 manifest",
+      "source_hashes": [
+        "8aedcc16baeb12427f956c235b923402000e16aee878c81bf6aa0061695dc7f5"
+      ],
+      "exported_hashes": [
+        {
+          "path": "env01_assets/vegetation/570144.png",
+          "sha256": "8aedcc16baeb12427f956c235b923402000e16aee878c81bf6aa0061695dc7f5"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "PNG alpha/content locked by existing SHA manifest",
+      "atlas_pages": [],
+      "import_status": "Godot 4.7.2 import baseline; no asset tree changes after baseline.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "res://art/source_a_env02a/env01_assets/vegetation/570144.png",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Exact match to MAP25 SHA whitelist; gate accepted 32/32."
+    },
+    {
+      "asset_id": "env01_assets/vegetation/570172.png",
+      "category": "map_vegetation",
+      "role": "map_terrain_vegetation_or_road",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\env01_assets\\vegetation\\570172.png",
+      "source_branch_commit": "Existing PR28 MAP25 manifest",
+      "source_hashes": [
+        "625859e1a76cb6aaf9970fcdb7c8189a448e4356ed06b4340014f221d4c5c7b0"
+      ],
+      "exported_hashes": [
+        {
+          "path": "env01_assets/vegetation/570172.png",
+          "sha256": "625859e1a76cb6aaf9970fcdb7c8189a448e4356ed06b4340014f221d4c5c7b0"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "PNG alpha/content locked by existing SHA manifest",
+      "atlas_pages": [],
+      "import_status": "Godot 4.7.2 import baseline; no asset tree changes after baseline.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "res://art/source_a_env02a/env01_assets/vegetation/570172.png",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Exact match to MAP25 SHA whitelist; gate accepted 32/32."
+    },
+    {
+      "asset_id": "env01_assets/roads/stone_junction.png",
+      "category": "map_roads",
+      "role": "map_terrain_vegetation_or_road",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\env01_assets\\roads\\stone_junction.png",
+      "source_branch_commit": "Existing PR28 MAP25 manifest",
+      "source_hashes": [
+        "9fd33912b3aa580bf49a60547f2749ac66f1ae971e9c22bd922ac6d38fa925f6"
+      ],
+      "exported_hashes": [
+        {
+          "path": "env01_assets/roads/stone_junction.png",
+          "sha256": "9fd33912b3aa580bf49a60547f2749ac66f1ae971e9c22bd922ac6d38fa925f6"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "PNG alpha/content locked by existing SHA manifest",
+      "atlas_pages": [],
+      "import_status": "Godot 4.7.2 import baseline; no asset tree changes after baseline.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "res://art/source_a_env02a/env01_assets/roads/stone_junction.png",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Exact match to MAP25 SHA whitelist; gate accepted 32/32."
+    },
+    {
+      "asset_id": "env01_assets/roads/stone_axis_b.png",
+      "category": "map_roads",
+      "role": "map_terrain_vegetation_or_road",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\env01_assets\\roads\\stone_axis_b.png",
+      "source_branch_commit": "Existing PR28 MAP25 manifest",
+      "source_hashes": [
+        "992fbc52d30ca012a43b0b7aab0f63c0c8c8bea0876b3067ba0bd641cb022646"
+      ],
+      "exported_hashes": [
+        {
+          "path": "env01_assets/roads/stone_axis_b.png",
+          "sha256": "992fbc52d30ca012a43b0b7aab0f63c0c8c8bea0876b3067ba0bd641cb022646"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "PNG alpha/content locked by existing SHA manifest",
+      "atlas_pages": [],
+      "import_status": "Godot 4.7.2 import baseline; no asset tree changes after baseline.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "res://art/source_a_env02a/env01_assets/roads/stone_axis_b.png",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Exact match to MAP25 SHA whitelist; gate accepted 32/32."
+    },
+    {
+      "asset_id": "env01_assets/roads/stone_branch.png",
+      "category": "map_roads",
+      "role": "map_terrain_vegetation_or_road",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\env01_assets\\roads\\stone_branch.png",
+      "source_branch_commit": "Existing PR28 MAP25 manifest",
+      "source_hashes": [
+        "1894d9047c73a6d9c80c8455b1a09209e49acb6eafed2922eb23446f190ab819"
+      ],
+      "exported_hashes": [
+        {
+          "path": "env01_assets/roads/stone_branch.png",
+          "sha256": "1894d9047c73a6d9c80c8455b1a09209e49acb6eafed2922eb23446f190ab819"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "PNG alpha/content locked by existing SHA manifest",
+      "atlas_pages": [],
+      "import_status": "Godot 4.7.2 import baseline; no asset tree changes after baseline.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "res://art/source_a_env02a/env01_assets/roads/stone_branch.png",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Exact match to MAP25 SHA whitelist; gate accepted 32/32."
+    },
+    {
+      "asset_id": "env01_assets/roads/stone_axis_a.png",
+      "category": "map_roads",
+      "role": "map_terrain_vegetation_or_road",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\env01_assets\\roads\\stone_axis_a.png",
+      "source_branch_commit": "Existing PR28 MAP25 manifest",
+      "source_hashes": [
+        "6e87057fd7753ee294405f90f78f44dc4641d841c3329711d92fcec5cb184520"
+      ],
+      "exported_hashes": [
+        {
+          "path": "env01_assets/roads/stone_axis_a.png",
+          "sha256": "6e87057fd7753ee294405f90f78f44dc4641d841c3329711d92fcec5cb184520"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "PNG alpha/content locked by existing SHA manifest",
+      "atlas_pages": [],
+      "import_status": "Godot 4.7.2 import baseline; no asset tree changes after baseline.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "res://art/source_a_env02a/env01_assets/roads/stone_axis_a.png",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Exact match to MAP25 SHA whitelist; gate accepted 32/32."
+    },
+    {
+      "asset_id": "env01_assets/roads/stone_cross.png",
+      "category": "map_roads",
+      "role": "map_terrain_vegetation_or_road",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\env01_assets\\roads\\stone_cross.png",
+      "source_branch_commit": "Existing PR28 MAP25 manifest",
+      "source_hashes": [
+        "cb87f596382cae2e539705f1bc081b04ee2de577dd46c09aa49bd7b9e6b8c127"
+      ],
+      "exported_hashes": [
+        {
+          "path": "env01_assets/roads/stone_cross.png",
+          "sha256": "cb87f596382cae2e539705f1bc081b04ee2de577dd46c09aa49bd7b9e6b8c127"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "PNG alpha/content locked by existing SHA manifest",
+      "atlas_pages": [],
+      "import_status": "Godot 4.7.2 import baseline; no asset tree changes after baseline.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "res://art/source_a_env02a/env01_assets/roads/stone_cross.png",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Exact match to MAP25 SHA whitelist; gate accepted 32/32."
+    },
+    {
+      "asset_id": "env01_assets/roads/stone_scatter.png",
+      "category": "map_roads",
+      "role": "map_terrain_vegetation_or_road",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\env01_assets\\roads\\stone_scatter.png",
+      "source_branch_commit": "Existing PR28 MAP25 manifest",
+      "source_hashes": [
+        "23cb40461b517c7cad3206986bf8d9c7c8b6769fe12cf6222bc1b8dec6fa9570"
+      ],
+      "exported_hashes": [
+        {
+          "path": "env01_assets/roads/stone_scatter.png",
+          "sha256": "23cb40461b517c7cad3206986bf8d9c7c8b6769fe12cf6222bc1b8dec6fa9570"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "PNG alpha/content locked by existing SHA manifest",
+      "atlas_pages": [],
+      "import_status": "Godot 4.7.2 import baseline; no asset tree changes after baseline.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "res://art/source_a_env02a/env01_assets/roads/stone_scatter.png",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Exact match to MAP25 SHA whitelist; gate accepted 32/32."
+    },
+    {
+      "asset_id": "pv01_assets/main_hall/510052.png",
+      "category": "map_main_hall",
+      "role": "map_terrain_vegetation_or_road",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\pv01_assets\\main_hall\\510052.png",
+      "source_branch_commit": "Existing PR28 MAP25 manifest",
+      "source_hashes": [
+        "b6bf88c35e3edc33aba822124296af15a5c8491a05c28f6b5d7b342d20d5325c"
+      ],
+      "exported_hashes": [
+        {
+          "path": "pv01_assets/main_hall/510052.png",
+          "sha256": "b6bf88c35e3edc33aba822124296af15a5c8491a05c28f6b5d7b342d20d5325c"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "PNG alpha/content locked by existing SHA manifest",
+      "atlas_pages": [],
+      "import_status": "Godot 4.7.2 import baseline; no asset tree changes after baseline.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "res://art/source_a_env02a/pv01_assets/main_hall/510052.png",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Exact match to MAP25 SHA whitelist; gate accepted 32/32."
+    },
+    {
+      "asset_id": "pv01_assets/forge/520081.png",
+      "category": "map_forge",
+      "role": "map_terrain_vegetation_or_road",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\pv01_assets\\forge\\520081.png",
+      "source_branch_commit": "Existing PR28 MAP25 manifest",
+      "source_hashes": [
+        "4225062d48c08f9562be76315f5b8984d4bea0a2311e5762dc844a23e7567458"
+      ],
+      "exported_hashes": [
+        {
+          "path": "pv01_assets/forge/520081.png",
+          "sha256": "4225062d48c08f9562be76315f5b8984d4bea0a2311e5762dc844a23e7567458"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "PNG alpha/content locked by existing SHA manifest",
+      "atlas_pages": [],
+      "import_status": "Godot 4.7.2 import baseline; no asset tree changes after baseline.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "res://art/source_a_env02a/pv01_assets/forge/520081.png",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Exact match to MAP25 SHA whitelist; gate accepted 32/32."
+    },
+    {
+      "asset_id": "pv01_assets/warehouse/510102.png",
+      "category": "map_warehouse",
+      "role": "map_terrain_vegetation_or_road",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\pv01_assets\\warehouse\\510102.png",
+      "source_branch_commit": "Existing PR28 MAP25 manifest",
+      "source_hashes": [
+        "9bd8b5196ba8b7b79d6f7ef17da07a0d5289fa208ed03484ec1803fd765d9158"
+      ],
+      "exported_hashes": [
+        {
+          "path": "pv01_assets/warehouse/510102.png",
+          "sha256": "9bd8b5196ba8b7b79d6f7ef17da07a0d5289fa208ed03484ec1803fd765d9158"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "PNG alpha/content locked by existing SHA manifest",
+      "atlas_pages": [],
+      "import_status": "Godot 4.7.2 import baseline; no asset tree changes after baseline.",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "res://art/source_a_env02a/pv01_assets/warehouse/510102.png",
+      "status": "PRESENT_VERIFIED",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "Exact match to MAP25 SHA whitelist; gate accepted 32/32."
+    },
+    {
+      "asset_id": "candidate.source_a.building.main_hall",
+      "category": "building_candidate",
+      "role": "main_hall",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\data\\presentation\\source_a_candidate_manifest.json",
+      "source_branch_commit": "PR28 candidate manifest; no complete imported worker bundle found",
+      "source_hashes": [
+        "1514397bfbedb412500e1472546938dc237d37e2fee907e967d2c59874246174"
+      ],
+      "exported_hashes": [
+        {
+          "sha256": "b6bf88c35e3edc33aba822124296af15a5c8491a05c28f6b5d7b342d20d5325c",
+          "name": "510052.png",
+          "path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\pv01_assets\\main_hall\\510052.png"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "Not fully inspected: dependency bundle incomplete or inferred mapping.",
+      "atlas_pages": [],
+      "import_status": "binary_imported=False; incomplete/unavailable source dependency bundle",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "Canonical destination main_hall; not changed",
+      "status": "CANDIDATE_NEEDS_QA",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "candidate_status=VERIFIED; matched_dependencies=1/4; missing_dependencies=3; no runtime integration authorized from incomplete candidate metadata.",
+      "source_dependencies": [
+        {
+          "name": "510052_lum.png",
+          "kind": "Texture2D",
+          "sha256": "db8a49b339afd8d93e5cbf8477a7b8d3e3d3bae12014e78b3bacd241de94c8ed",
+          "bytes": 20042
+        },
+        {
+          "name": "510052.png",
+          "kind": "Texture2D",
+          "sha256": "b6bf88c35e3edc33aba822124296af15a5c8491a05c28f6b5d7b342d20d5325c",
+          "bytes": 596816
+        },
+        {
+          "name": "510052.atlas",
+          "kind": "TextAsset",
+          "sha256": "69dc956d8ee7bed005c31a2e1120abc17a9fdd901c4f81f6481d2a921acf31cd",
+          "bytes": 176
+        },
+        {
+          "name": "510052.skel",
+          "kind": "TextAsset",
+          "sha256": "9e400ab40c6c3272bd862dbff81b5865b5c02aa133f7aa6d712aa8b2851fab73",
+          "bytes": 430
+        }
+      ],
+      "matched_dependencies": [
+        {
+          "sha256": "b6bf88c35e3edc33aba822124296af15a5c8491a05c28f6b5d7b342d20d5325c",
+          "name": "510052.png",
+          "path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\pv01_assets\\main_hall\\510052.png"
+        }
+      ],
+      "missing_dependencies": [
+        {
+          "name": "510052_lum.png",
+          "sha256": "db8a49b339afd8d93e5cbf8477a7b8d3e3d3bae12014e78b3bacd241de94c8ed"
+        },
+        {
+          "name": "510052.atlas",
+          "sha256": "69dc956d8ee7bed005c31a2e1120abc17a9fdd901c4f81f6481d2a921acf31cd"
+        },
+        {
+          "name": "510052.skel",
+          "sha256": "9e400ab40c6c3272bd862dbff81b5865b5c02aa133f7aa6d712aa8b2851fab73"
+        }
+      ]
+    },
+    {
+      "asset_id": "candidate.source_a.building.disciple_residence",
+      "category": "building_candidate",
+      "role": "residence",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\data\\presentation\\source_a_candidate_manifest.json",
+      "source_branch_commit": "PR28 candidate manifest; no complete imported worker bundle found",
+      "source_hashes": [
+        "51a14d00c90a9899c58ff2cc42e1e6962b66dca9605533c100d90c9c27244576"
+      ],
+      "exported_hashes": [],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "Not fully inspected: dependency bundle incomplete or inferred mapping.",
+      "atlas_pages": [],
+      "import_status": "binary_imported=False; incomplete/unavailable source dependency bundle",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "Canonical destination residence; not changed",
+      "status": "MISSING",
+      "existing_in_pr28": false,
+      "duplicate_locations": [],
+      "reason": "candidate_status=VERIFIED; matched_dependencies=0/4; missing_dependencies=4; no runtime integration authorized from incomplete candidate metadata.",
+      "source_dependencies": [
+        {
+          "name": "510076_lum.png",
+          "kind": "Texture2D",
+          "sha256": "5dd6fc0559196397779751c5d8bfe543130dde10ebf088984d2e4dfac4fe5bbb",
+          "bytes": 50464
+        },
+        {
+          "name": "510076.png",
+          "kind": "Texture2D",
+          "sha256": "f8e05d7376fc5ddc7b25f56673b6d5f444b10fd759da06a5929ec4f38a68d320",
+          "bytes": 200514
+        },
+        {
+          "name": "510076.atlas",
+          "kind": "TextAsset",
+          "sha256": "97371a65bf06f117ccaf18d94b6842366d257537722d5fecaeb478bac6912ae3",
+          "bytes": 173
+        },
+        {
+          "name": "510076.skel",
+          "kind": "TextAsset",
+          "sha256": "242872479f236ad49650f78482f2f20aa3f122bb0f37244c329f27aab5ab55f8",
+          "bytes": 413
+        }
+      ],
+      "matched_dependencies": [],
+      "missing_dependencies": [
+        {
+          "name": "510076_lum.png",
+          "sha256": "5dd6fc0559196397779751c5d8bfe543130dde10ebf088984d2e4dfac4fe5bbb"
+        },
+        {
+          "name": "510076.png",
+          "sha256": "f8e05d7376fc5ddc7b25f56673b6d5f444b10fd759da06a5929ec4f38a68d320"
+        },
+        {
+          "name": "510076.atlas",
+          "sha256": "97371a65bf06f117ccaf18d94b6842366d257537722d5fecaeb478bac6912ae3"
+        },
+        {
+          "name": "510076.skel",
+          "sha256": "242872479f236ad49650f78482f2f20aa3f122bb0f37244c329f27aab5ab55f8"
+        }
+      ]
+    },
+    {
+      "asset_id": "candidate.source_a.building.cultivation_area",
+      "category": "building_candidate",
+      "role": "cultivation",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\data\\presentation\\source_a_candidate_manifest.json",
+      "source_branch_commit": "PR28 candidate manifest; no complete imported worker bundle found",
+      "source_hashes": [
+        "5f90f4cd6da5eeba0b607d48d83cc0ef06a343b7982dac0c74c645ee345862f7"
+      ],
+      "exported_hashes": [],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "Not fully inspected: dependency bundle incomplete or inferred mapping.",
+      "atlas_pages": [],
+      "import_status": "binary_imported=False; incomplete/unavailable source dependency bundle",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "Canonical destination cultivation; not changed",
+      "status": "REJECTED",
+      "existing_in_pr28": false,
+      "duplicate_locations": [],
+      "reason": "candidate_status=INFERRED_VISUAL_ANALOG; matched_dependencies=0/4; missing_dependencies=4; no runtime integration authorized from incomplete candidate metadata.",
+      "source_dependencies": [
+        {
+          "name": "510191.atlas",
+          "kind": "TextAsset",
+          "sha256": "dd26ab88f80281586e549c5b17633e43ad27759c1946ac98969ca423ec2cdca1",
+          "bytes": 173
+        },
+        {
+          "name": "510191.png",
+          "kind": "Texture2D",
+          "sha256": "e4cb28de95596bd153990cf8492633992098f12c9f31d2c662a9d8c6c838021d",
+          "bytes": 401672
+        },
+        {
+          "name": "510191_lum.png",
+          "kind": "Texture2D",
+          "sha256": "06f2d8ae3c6a37e8fc3b4bd63ef8305b527da90f97db6f1c8684fe959973ba8a",
+          "bytes": 22795
+        },
+        {
+          "name": "510191.skel",
+          "kind": "TextAsset",
+          "sha256": "008111fdda996f91815ec015346fbd67c0988599c0fbaf8d4d2230289abf3976",
+          "bytes": 429
+        }
+      ],
+      "matched_dependencies": [],
+      "missing_dependencies": [
+        {
+          "name": "510191.atlas",
+          "sha256": "dd26ab88f80281586e549c5b17633e43ad27759c1946ac98969ca423ec2cdca1"
+        },
+        {
+          "name": "510191.png",
+          "sha256": "e4cb28de95596bd153990cf8492633992098f12c9f31d2c662a9d8c6c838021d"
+        },
+        {
+          "name": "510191_lum.png",
+          "sha256": "06f2d8ae3c6a37e8fc3b4bd63ef8305b527da90f97db6f1c8684fe959973ba8a"
+        },
+        {
+          "name": "510191.skel",
+          "sha256": "008111fdda996f91815ec015346fbd67c0988599c0fbaf8d4d2230289abf3976"
+        }
+      ]
+    },
+    {
+      "asset_id": "candidate.source_a.building.body_training",
+      "category": "building_candidate",
+      "role": "ren_than_duong",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\data\\presentation\\source_a_candidate_manifest.json",
+      "source_branch_commit": "PR28 candidate manifest; no complete imported worker bundle found",
+      "source_hashes": [
+        "be932a7c2916a599c02ef400206f4096243f7fbb4073df5eba6e024c735fe80f"
+      ],
+      "exported_hashes": [],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "Not fully inspected: dependency bundle incomplete or inferred mapping.",
+      "atlas_pages": [],
+      "import_status": "binary_imported=False; incomplete/unavailable source dependency bundle",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "Canonical destination ren_than_duong; not changed",
+      "status": "REJECTED",
+      "existing_in_pr28": false,
+      "duplicate_locations": [],
+      "reason": "candidate_status=INFERRED_VISUAL_ANALOG; matched_dependencies=0/3; missing_dependencies=3; no runtime integration authorized from incomplete candidate metadata.",
+      "source_dependencies": [
+        {
+          "name": "cuizhi.png",
+          "kind": "Texture2D",
+          "sha256": "dfae26b7c9f66837061344424132d02892a5d061dc860cc9e93cfbf2f0802f5b",
+          "bytes": 21217
+        },
+        {
+          "name": "cuizhi.atlas",
+          "kind": "TextAsset",
+          "sha256": "30b06c7e4ae04a032ae08ec31808365d1826f7d4578fcda76479624c425dc334",
+          "bytes": 869
+        },
+        {
+          "name": "510232.skel",
+          "kind": "TextAsset",
+          "sha256": "b5b393ad445a5e400f073764de71059bfa51af303560b5c4e072e0e2170bbfb6",
+          "bytes": 358
+        }
+      ],
+      "matched_dependencies": [],
+      "missing_dependencies": [
+        {
+          "name": "cuizhi.png",
+          "sha256": "dfae26b7c9f66837061344424132d02892a5d061dc860cc9e93cfbf2f0802f5b"
+        },
+        {
+          "name": "cuizhi.atlas",
+          "sha256": "30b06c7e4ae04a032ae08ec31808365d1826f7d4578fcda76479624c425dc334"
+        },
+        {
+          "name": "510232.skel",
+          "sha256": "b5b393ad445a5e400f073764de71059bfa51af303560b5c4e072e0e2170bbfb6"
+        }
+      ]
+    },
+    {
+      "asset_id": "candidate.source_a.building.warehouse",
+      "category": "building_candidate",
+      "role": "warehouse",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\data\\presentation\\source_a_candidate_manifest.json",
+      "source_branch_commit": "PR28 candidate manifest; no complete imported worker bundle found",
+      "source_hashes": [
+        "4648bb55e2159ea17d62a7b20fc785153b23654e339758652a79864c2991c774"
+      ],
+      "exported_hashes": [
+        {
+          "sha256": "9bd8b5196ba8b7b79d6f7ef17da07a0d5289fa208ed03484ec1803fd765d9158",
+          "name": "510102.png",
+          "path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\pv01_assets\\warehouse\\510102.png"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "Not fully inspected: dependency bundle incomplete or inferred mapping.",
+      "atlas_pages": [],
+      "import_status": "binary_imported=False; incomplete/unavailable source dependency bundle",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "Canonical destination warehouse; not changed",
+      "status": "CANDIDATE_NEEDS_QA",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "candidate_status=VERIFIED; matched_dependencies=1/4; missing_dependencies=3; no runtime integration authorized from incomplete candidate metadata.",
+      "source_dependencies": [
+        {
+          "name": "510102.png",
+          "kind": "Texture2D",
+          "sha256": "9bd8b5196ba8b7b79d6f7ef17da07a0d5289fa208ed03484ec1803fd765d9158",
+          "bytes": 161410
+        },
+        {
+          "name": "510102.atlas",
+          "kind": "TextAsset",
+          "sha256": "a9ec08c486bbf5220eb009fb31f219f84e144409b50b001605bc592efb4b99f7",
+          "bytes": 173
+        },
+        {
+          "name": "510102_lum.png",
+          "kind": "Texture2D",
+          "sha256": "7ae4a471f8f0ebccf9f34524abf873e81f40dafee944c197b2722cc0cbcf70fc",
+          "bytes": 3193
+        },
+        {
+          "name": "510102.skel",
+          "kind": "TextAsset",
+          "sha256": "da98161f327a5fdfbf8be48f3bfa3487f692cc779542ec5e02c35a57b4623902",
+          "bytes": 429
+        }
+      ],
+      "matched_dependencies": [
+        {
+          "sha256": "9bd8b5196ba8b7b79d6f7ef17da07a0d5289fa208ed03484ec1803fd765d9158",
+          "name": "510102.png",
+          "path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\pv01_assets\\warehouse\\510102.png"
+        }
+      ],
+      "missing_dependencies": [
+        {
+          "name": "510102.atlas",
+          "sha256": "a9ec08c486bbf5220eb009fb31f219f84e144409b50b001605bc592efb4b99f7"
+        },
+        {
+          "name": "510102_lum.png",
+          "sha256": "7ae4a471f8f0ebccf9f34524abf873e81f40dafee944c197b2722cc0cbcf70fc"
+        },
+        {
+          "name": "510102.skel",
+          "sha256": "da98161f327a5fdfbf8be48f3bfa3487f692cc779542ec5e02c35a57b4623902"
+        }
+      ]
+    },
+    {
+      "asset_id": "candidate.source_a.building.forge",
+      "category": "building_candidate",
+      "role": "forge",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\data\\presentation\\source_a_candidate_manifest.json",
+      "source_branch_commit": "PR28 candidate manifest; no complete imported worker bundle found",
+      "source_hashes": [
+        "266e8b2887ed106ea4817c07e4661234b787f36af6cfa40d46c826e268f8d772"
+      ],
+      "exported_hashes": [
+        {
+          "sha256": "4225062d48c08f9562be76315f5b8984d4bea0a2311e5762dc844a23e7567458",
+          "name": "520081.png",
+          "path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\pv01_assets\\forge\\520081.png"
+        }
+      ],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "Not fully inspected: dependency bundle incomplete or inferred mapping.",
+      "atlas_pages": [],
+      "import_status": "binary_imported=False; incomplete/unavailable source dependency bundle",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "Canonical destination forge; not changed",
+      "status": "CANDIDATE_NEEDS_QA",
+      "existing_in_pr28": true,
+      "duplicate_locations": [],
+      "reason": "candidate_status=VERIFIED; matched_dependencies=1/4; missing_dependencies=3; no runtime integration authorized from incomplete candidate metadata.",
+      "source_dependencies": [
+        {
+          "name": "520081.png",
+          "kind": "Texture2D",
+          "sha256": "4225062d48c08f9562be76315f5b8984d4bea0a2311e5762dc844a23e7567458",
+          "bytes": 248467
+        },
+        {
+          "name": "520081.skel",
+          "kind": "TextAsset",
+          "sha256": "67c2c1783acb523bcc0a72fce08f8f95d198b896d74928c8b1d0a850c4280393",
+          "bytes": 407
+        },
+        {
+          "name": "520081_lum.png",
+          "kind": "Texture2D",
+          "sha256": "e5f0bbb7d37dfde41b2a496d39ed79d33f2bb1f7a76270a1b14ad7892381bd8c",
+          "bytes": 11562
+        },
+        {
+          "name": "520081.atlas",
+          "kind": "TextAsset",
+          "sha256": "7ceb93ae6ac1ed87e6a9673721104f5a084a350d7772cc32734347a734ed6bcc",
+          "bytes": 173
+        }
+      ],
+      "matched_dependencies": [
+        {
+          "sha256": "4225062d48c08f9562be76315f5b8984d4bea0a2311e5762dc844a23e7567458",
+          "name": "520081.png",
+          "path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\art\\source_a_env02a\\pv01_assets\\forge\\520081.png"
+        }
+      ],
+      "missing_dependencies": [
+        {
+          "name": "520081.skel",
+          "sha256": "67c2c1783acb523bcc0a72fce08f8f95d198b896d74928c8b1d0a850c4280393"
+        },
+        {
+          "name": "520081_lum.png",
+          "sha256": "e5f0bbb7d37dfde41b2a496d39ed79d33f2bb1f7a76270a1b14ad7892381bd8c"
+        },
+        {
+          "name": "520081.atlas",
+          "sha256": "7ceb93ae6ac1ed87e6a9673721104f5a084a350d7772cc32734347a734ed6bcc"
+        }
+      ]
+    },
+    {
+      "asset_id": "candidate.source_a.building.medicine_hall",
+      "category": "building_candidate",
+      "role": "medicine",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\data\\presentation\\source_a_candidate_manifest.json",
+      "source_branch_commit": "PR28 candidate manifest; no complete imported worker bundle found",
+      "source_hashes": [
+        "2748a13a980f426ab65c69831a0e642e8902613ec18dfe13d756dc57bea61bee"
+      ],
+      "exported_hashes": [],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "Not fully inspected: dependency bundle incomplete or inferred mapping.",
+      "atlas_pages": [],
+      "import_status": "binary_imported=False; incomplete/unavailable source dependency bundle",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "Canonical destination medicine; not changed",
+      "status": "REJECTED",
+      "existing_in_pr28": false,
+      "duplicate_locations": [],
+      "reason": "candidate_status=INFERRED_VISUAL_ANALOG; matched_dependencies=0/4; missing_dependencies=4; no runtime integration authorized from incomplete candidate metadata.",
+      "source_dependencies": [
+        {
+          "name": "520031.png",
+          "kind": "Texture2D",
+          "sha256": "673c00e409e6ea1f100c15aba33efef2dc0b8ca08f0b0777c6b96aae724ea15d",
+          "bytes": 252001
+        },
+        {
+          "name": "520031.skel",
+          "kind": "TextAsset",
+          "sha256": "1dee816bb3cd4b7a36d7b0c1c5bfcea64d78999ac8efa61fc0b3a5f1976c048f",
+          "bytes": 442
+        },
+        {
+          "name": "520031_lum.png",
+          "kind": "Texture2D",
+          "sha256": "46f0c643e8897ad02b71994babe31fa038ba729f1c5e5f8bf84ba19a47ab9250",
+          "bytes": 11532
+        },
+        {
+          "name": "520031.atlas",
+          "kind": "TextAsset",
+          "sha256": "b5f806c19d893aa9a873b213e2aa524c069abf271fbf5de19afba92dae523f66",
+          "bytes": 173
+        }
+      ],
+      "matched_dependencies": [],
+      "missing_dependencies": [
+        {
+          "name": "520031.png",
+          "sha256": "673c00e409e6ea1f100c15aba33efef2dc0b8ca08f0b0777c6b96aae724ea15d"
+        },
+        {
+          "name": "520031.skel",
+          "sha256": "1dee816bb3cd4b7a36d7b0c1c5bfcea64d78999ac8efa61fc0b3a5f1976c048f"
+        },
+        {
+          "name": "520031_lum.png",
+          "sha256": "46f0c643e8897ad02b71994babe31fa038ba729f1c5e5f8bf84ba19a47ab9250"
+        },
+        {
+          "name": "520031.atlas",
+          "sha256": "b5f806c19d893aa9a873b213e2aa524c069abf271fbf5de19afba92dae523f66"
+        }
+      ]
+    },
+    {
+      "asset_id": "candidate.source_a.building.mine",
+      "category": "building_candidate",
+      "role": "mine",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\data\\presentation\\source_a_candidate_manifest.json",
+      "source_branch_commit": "PR28 candidate manifest; no complete imported worker bundle found",
+      "source_hashes": [
+        "f729b0e55873b4abec7f2bef04d7ebf3ab51af2b21cbb05929b09cb20d0d352d"
+      ],
+      "exported_hashes": [],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "Not fully inspected: dependency bundle incomplete or inferred mapping.",
+      "atlas_pages": [],
+      "import_status": "binary_imported=False; incomplete/unavailable source dependency bundle",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "Canonical destination mine; not changed",
+      "status": "MISSING",
+      "existing_in_pr28": false,
+      "duplicate_locations": [],
+      "reason": "candidate_status=VERIFIED; matched_dependencies=0/4; missing_dependencies=4; no runtime integration authorized from incomplete candidate metadata.",
+      "source_dependencies": [
+        {
+          "name": "520051.skel",
+          "kind": "TextAsset",
+          "sha256": "6d42e4db5097f24ceacdfface23a5303f9f862d82d12f189cac2e9b9e9f5934a",
+          "bytes": 399
+        },
+        {
+          "name": "520051.png",
+          "kind": "Texture2D",
+          "sha256": "b67d43769de14e32a79500a61332078ef56893ca2abcf7aaf89d13a134639aaf",
+          "bytes": 228507
+        },
+        {
+          "name": "520051_lum.png",
+          "kind": "Texture2D",
+          "sha256": "2da9667f3accdf70c29218653fb079d3217597a81601cb09d54ea34e63d579eb",
+          "bytes": 9917
+        },
+        {
+          "name": "520051.atlas",
+          "kind": "TextAsset",
+          "sha256": "4b217f2397eb08b02a5389e6649659375d6c12418a19fffd8f626fcda3025c95",
+          "bytes": 173
+        }
+      ],
+      "matched_dependencies": [],
+      "missing_dependencies": [
+        {
+          "name": "520051.skel",
+          "sha256": "6d42e4db5097f24ceacdfface23a5303f9f862d82d12f189cac2e9b9e9f5934a"
+        },
+        {
+          "name": "520051.png",
+          "sha256": "b67d43769de14e32a79500a61332078ef56893ca2abcf7aaf89d13a134639aaf"
+        },
+        {
+          "name": "520051_lum.png",
+          "sha256": "2da9667f3accdf70c29218653fb079d3217597a81601cb09d54ea34e63d579eb"
+        },
+        {
+          "name": "520051.atlas",
+          "sha256": "4b217f2397eb08b02a5389e6649659375d6c12418a19fffd8f626fcda3025c95"
+        }
+      ]
+    },
+    {
+      "asset_id": "candidate.source_a.building.spirit_field",
+      "category": "building_candidate",
+      "role": "spirit_field",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\data\\presentation\\source_a_candidate_manifest.json",
+      "source_branch_commit": "PR28 candidate manifest; no complete imported worker bundle found",
+      "source_hashes": [
+        "9a62169bbcf0970f5e1294e7a41b6d60e6192cf95d9a1a7ef3e1d022cb3bc015"
+      ],
+      "exported_hashes": [],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "Not fully inspected: dependency bundle incomplete or inferred mapping.",
+      "atlas_pages": [],
+      "import_status": "binary_imported=False; incomplete/unavailable source dependency bundle",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "Canonical destination spirit_field; not changed",
+      "status": "MISSING",
+      "existing_in_pr28": false,
+      "duplicate_locations": [],
+      "reason": "candidate_status=VERIFIED; matched_dependencies=0/3; missing_dependencies=3; no runtime integration authorized from incomplete candidate metadata.",
+      "source_dependencies": [
+        {
+          "name": "520091.png",
+          "kind": "Texture2D",
+          "sha256": "1e5674ad4c30caaac0bc206c355e009303657cbb2379a78c3bfe1be737ce0a83",
+          "bytes": 71736
+        },
+        {
+          "name": "520091.atlas",
+          "kind": "TextAsset",
+          "sha256": "4c55068bf9fadea74859190419940302cdfe82aa862ee843440077db1e960575",
+          "bytes": 173
+        },
+        {
+          "name": "520091.skel",
+          "kind": "TextAsset",
+          "sha256": "9ea03581564b7d7b9ba9ae6dd250114ecfc6f425dff12fcdb6c41e4458ba3ab7",
+          "bytes": 391
+        }
+      ],
+      "matched_dependencies": [],
+      "missing_dependencies": [
+        {
+          "name": "520091.png",
+          "sha256": "1e5674ad4c30caaac0bc206c355e009303657cbb2379a78c3bfe1be737ce0a83"
+        },
+        {
+          "name": "520091.atlas",
+          "sha256": "4c55068bf9fadea74859190419940302cdfe82aa862ee843440077db1e960575"
+        },
+        {
+          "name": "520091.skel",
+          "sha256": "9ea03581564b7d7b9ba9ae6dd250114ecfc6f425dff12fcdb6c41e4458ba3ab7"
+        }
+      ]
+    },
+    {
+      "asset_id": "candidate.source_a.building.linh_forest",
+      "category": "building_candidate",
+      "role": "linh_forest",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\data\\presentation\\source_a_candidate_manifest.json",
+      "source_branch_commit": "PR28 candidate manifest; no complete imported worker bundle found",
+      "source_hashes": [
+        "70da37aa374eb2397280a5dfd3f225ac274616bf77aeb9acc42c3c035b319976"
+      ],
+      "exported_hashes": [],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "Not fully inspected: dependency bundle incomplete or inferred mapping.",
+      "atlas_pages": [],
+      "import_status": "binary_imported=False; incomplete/unavailable source dependency bundle",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "Canonical destination linh_forest; not changed",
+      "status": "MISSING",
+      "existing_in_pr28": false,
+      "duplicate_locations": [],
+      "reason": "candidate_status=VERIFIED; matched_dependencies=0/4; missing_dependencies=4; no runtime integration authorized from incomplete candidate metadata.",
+      "source_dependencies": [
+        {
+          "name": "520101_lum.png",
+          "kind": "Texture2D",
+          "sha256": "576b730cfb02da071d6075e8798f975f87f42f066ebdbcf0b70656fa5886e808",
+          "bytes": 4390
+        },
+        {
+          "name": "520101.skel",
+          "kind": "TextAsset",
+          "sha256": "5425e61ccd2e7437ef4d1f646a4a7fc2ab1ea7c63af65902f1558b1be7802a12",
+          "bytes": 391
+        },
+        {
+          "name": "520101.png",
+          "kind": "Texture2D",
+          "sha256": "8e83cf0b84f3068fcd8ef6f64be8b75cf8ea3beda7c198486df0dcc8ec57f1d8",
+          "bytes": 68499
+        },
+        {
+          "name": "520101.atlas",
+          "kind": "TextAsset",
+          "sha256": "325077e0007051bbcf94e4d1f56e1ae55e67bdc52151bc4d410783eee168d656",
+          "bytes": 173
+        }
+      ],
+      "matched_dependencies": [],
+      "missing_dependencies": [
+        {
+          "name": "520101_lum.png",
+          "sha256": "576b730cfb02da071d6075e8798f975f87f42f066ebdbcf0b70656fa5886e808"
+        },
+        {
+          "name": "520101.skel",
+          "sha256": "5425e61ccd2e7437ef4d1f646a4a7fc2ab1ea7c63af65902f1558b1be7802a12"
+        },
+        {
+          "name": "520101.png",
+          "sha256": "8e83cf0b84f3068fcd8ef6f64be8b75cf8ea3beda7c198486df0dcc8ec57f1d8"
+        },
+        {
+          "name": "520101.atlas",
+          "sha256": "325077e0007051bbcf94e4d1f56e1ae55e67bdc52151bc4d410783eee168d656"
+        }
+      ]
+    },
+    {
+      "asset_id": "candidate.source_a.building.alchemy_hall",
+      "category": "building_candidate",
+      "role": "alchemy_hall",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\data\\presentation\\source_a_candidate_manifest.json",
+      "source_branch_commit": "PR28 candidate manifest; no complete imported worker bundle found",
+      "source_hashes": [
+        "2748a13a980f426ab65c69831a0e642e8902613ec18dfe13d756dc57bea61bee"
+      ],
+      "exported_hashes": [],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "Not fully inspected: dependency bundle incomplete or inferred mapping.",
+      "atlas_pages": [],
+      "import_status": "binary_imported=False; incomplete/unavailable source dependency bundle",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "Canonical destination alchemy_hall; not changed",
+      "status": "MISSING",
+      "existing_in_pr28": false,
+      "duplicate_locations": [],
+      "reason": "candidate_status=VERIFIED; matched_dependencies=0/4; missing_dependencies=4; no runtime integration authorized from incomplete candidate metadata.",
+      "source_dependencies": [
+        {
+          "name": "520031.png",
+          "kind": "Texture2D",
+          "sha256": "673c00e409e6ea1f100c15aba33efef2dc0b8ca08f0b0777c6b96aae724ea15d",
+          "bytes": 252001
+        },
+        {
+          "name": "520031.skel",
+          "kind": "TextAsset",
+          "sha256": "1dee816bb3cd4b7a36d7b0c1c5bfcea64d78999ac8efa61fc0b3a5f1976c048f",
+          "bytes": 442
+        },
+        {
+          "name": "520031_lum.png",
+          "kind": "Texture2D",
+          "sha256": "46f0c643e8897ad02b71994babe31fa038ba729f1c5e5f8bf84ba19a47ab9250",
+          "bytes": 11532
+        },
+        {
+          "name": "520031.atlas",
+          "kind": "TextAsset",
+          "sha256": "b5f806c19d893aa9a873b213e2aa524c069abf271fbf5de19afba92dae523f66",
+          "bytes": 173
+        }
+      ],
+      "matched_dependencies": [],
+      "missing_dependencies": [
+        {
+          "name": "520031.png",
+          "sha256": "673c00e409e6ea1f100c15aba33efef2dc0b8ca08f0b0777c6b96aae724ea15d"
+        },
+        {
+          "name": "520031.skel",
+          "sha256": "1dee816bb3cd4b7a36d7b0c1c5bfcea64d78999ac8efa61fc0b3a5f1976c048f"
+        },
+        {
+          "name": "520031_lum.png",
+          "sha256": "46f0c643e8897ad02b71994babe31fa038ba729f1c5e5f8bf84ba19a47ab9250"
+        },
+        {
+          "name": "520031.atlas",
+          "sha256": "b5f806c19d893aa9a873b213e2aa524c069abf271fbf5de19afba92dae523f66"
+        }
+      ]
+    },
+    {
+      "asset_id": "candidate.source_a.building.guidance_platform",
+      "category": "building_candidate",
+      "role": "guidance",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\data\\presentation\\source_a_candidate_manifest.json",
+      "source_branch_commit": "PR28 candidate manifest; no complete imported worker bundle found",
+      "source_hashes": [
+        "f5f9ff9089f5a944da16c257f216ed9a16563fae118a69d1bad6a5731619958e"
+      ],
+      "exported_hashes": [],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "Not fully inspected: dependency bundle incomplete or inferred mapping.",
+      "atlas_pages": [],
+      "import_status": "binary_imported=False; incomplete/unavailable source dependency bundle",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "Canonical destination guidance; not changed",
+      "status": "MISSING",
+      "existing_in_pr28": false,
+      "duplicate_locations": [],
+      "reason": "candidate_status=VERIFIED; matched_dependencies=0/4; missing_dependencies=4; no runtime integration authorized from incomplete candidate metadata.",
+      "source_dependencies": [
+        {
+          "name": "510111.atlas",
+          "kind": "TextAsset",
+          "sha256": "1460001cc428c100fe3e6009d55e34a753e4ce2b38e09eb65bbd50ba90046da3",
+          "bytes": 173
+        },
+        {
+          "name": "510111.png",
+          "kind": "Texture2D",
+          "sha256": "90b7c595f3b77788c99924ef2eb7ba4b8ede794ccffda1c6808263ba3c711762",
+          "bytes": 236638
+        },
+        {
+          "name": "510111_lum.png",
+          "kind": "Texture2D",
+          "sha256": "4a636e29eab2504c00209b65eb031910532cd782afdecc6ba3427ce3c68788b4",
+          "bytes": 7683
+        },
+        {
+          "name": "510111.skel",
+          "kind": "TextAsset",
+          "sha256": "d7331e602f2ccc8959380c0ea64172fa9fb29959da7ef2982f8f7324baab3499",
+          "bytes": 453
+        }
+      ],
+      "matched_dependencies": [],
+      "missing_dependencies": [
+        {
+          "name": "510111.atlas",
+          "sha256": "1460001cc428c100fe3e6009d55e34a753e4ce2b38e09eb65bbd50ba90046da3"
+        },
+        {
+          "name": "510111.png",
+          "sha256": "90b7c595f3b77788c99924ef2eb7ba4b8ede794ccffda1c6808263ba3c711762"
+        },
+        {
+          "name": "510111_lum.png",
+          "sha256": "4a636e29eab2504c00209b65eb031910532cd782afdecc6ba3427ce3c68788b4"
+        },
+        {
+          "name": "510111.skel",
+          "sha256": "d7331e602f2ccc8959380c0ea64172fa9fb29959da7ef2982f8f7324baab3499"
+        }
+      ]
+    },
+    {
+      "asset_id": "candidate.source_a.building.sect_gate",
+      "category": "building_candidate",
+      "role": "gate",
+      "source_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\godot\\data\\presentation\\source_a_candidate_manifest.json",
+      "source_branch_commit": "PR28 candidate manifest; no complete imported worker bundle found",
+      "source_hashes": [
+        "7fa21d27c5bf9d69dc77bcecc4704cb827d401961701d7fb8a912d16608b7a0e"
+      ],
+      "exported_hashes": [],
+      "clips": [],
+      "direction": "n/a",
+      "fps": 0,
+      "total_clip_frames": 0,
+      "unique_stored_frames": 0,
+      "canvas": [],
+      "pivot_foot_anchor": [],
+      "transparency": "Not fully inspected: dependency bundle incomplete or inferred mapping.",
+      "atlas_pages": [],
+      "import_status": "binary_imported=False; incomplete/unavailable source dependency bundle",
+      "qa_sample_count": 0,
+      "qa_alpha_exact": 0,
+      "qa_rgba_exact": 0,
+      "target_mapping": "Canonical destination gate; not changed",
+      "status": "MISSING",
+      "existing_in_pr28": false,
+      "duplicate_locations": [],
+      "reason": "candidate_status=VERIFIED; matched_dependencies=0/3; missing_dependencies=3; no runtime integration authorized from incomplete candidate metadata.",
+      "source_dependencies": [
+        {
+          "name": "cuizhi.png",
+          "kind": "Texture2D",
+          "sha256": "dfae26b7c9f66837061344424132d02892a5d061dc860cc9e93cfbf2f0802f5b",
+          "bytes": 21217
+        },
+        {
+          "name": "cuizhi.atlas",
+          "kind": "TextAsset",
+          "sha256": "30b06c7e4ae04a032ae08ec31808365d1826f7d4578fcda76479624c425dc334",
+          "bytes": 869
+        },
+        {
+          "name": "510163.skel",
+          "kind": "TextAsset",
+          "sha256": "bd64c6152a655823608c769c1552d348902610e168aef1d86cdb8e1a65abda6e",
+          "bytes": 414
+        }
+      ],
+      "matched_dependencies": [],
+      "missing_dependencies": [
+        {
+          "name": "cuizhi.png",
+          "sha256": "dfae26b7c9f66837061344424132d02892a5d061dc860cc9e93cfbf2f0802f5b"
+        },
+        {
+          "name": "cuizhi.atlas",
+          "sha256": "30b06c7e4ae04a032ae08ec31808365d1826f7d4578fcda76479624c425dc334"
+        },
+        {
+          "name": "510163.skel",
+          "sha256": "bd64c6152a655823608c769c1552d348902610e168aef1d86cdb8e1a65abda6e"
+        }
+      ]
+    }
+  ]
+}

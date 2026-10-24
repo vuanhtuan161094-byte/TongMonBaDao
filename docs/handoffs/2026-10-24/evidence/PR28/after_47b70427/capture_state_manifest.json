@@ -1,0 +1,334 @@
+{
+	"capture_states": [
+		{
+			"auto": false,
+			"battle_seconds": 0.0,
+			"disciple_id": "",
+			"event_types": [],
+			"extra": {},
+			"hp": 0.0,
+			"image_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\outputs\\PR28_UI_SOURCEA_20261024\\G11_capture_commit_47b70427/00_current_map_main.png",
+			"injury": 0,
+			"max_hp": 0.0,
+			"paid_kills": 0,
+			"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+			"screen": "00_current_map_main",
+			"tick": 0,
+			"viewport": [
+				1280,
+				720
+			],
+			"wall_unix": 1792814640,
+			"warehouse_pilot_stock": 0,
+			"world_id": ""
+		},
+		{
+			"auto": false,
+			"battle_seconds": 0.0,
+			"disciple_id": "",
+			"event_types": [],
+			"extra": {},
+			"hp": 0.0,
+			"image_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\outputs\\PR28_UI_SOURCEA_20261024\\G11_capture_commit_47b70427/01_current_map_pan_zoom.png",
+			"injury": 0,
+			"max_hp": 0.0,
+			"paid_kills": 0,
+			"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+			"screen": "01_current_map_pan_zoom",
+			"tick": 0,
+			"viewport": [
+				1280,
+				720
+			],
+			"wall_unix": 1792814640,
+			"warehouse_pilot_stock": 0,
+			"world_id": ""
+		},
+		{
+			"auto": false,
+			"battle_seconds": 0.0,
+			"disciple_id": "",
+			"event_types": [],
+			"extra": {
+				"building_id": "mine_001",
+				"building_type": "mine"
+			},
+			"hp": 0.0,
+			"image_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\outputs\\PR28_UI_SOURCEA_20261024\\G11_capture_commit_47b70427/02_current_mine.png",
+			"injury": 0,
+			"max_hp": 0.0,
+			"paid_kills": 0,
+			"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+			"screen": "02_current_mine",
+			"tick": 0,
+			"viewport": [
+				1280,
+				720
+			],
+			"wall_unix": 1792814640,
+			"warehouse_pilot_stock": 0,
+			"world_id": ""
+		},
+		{
+			"auto": false,
+			"battle_seconds": 0.0,
+			"disciple_id": "",
+			"event_types": [],
+			"extra": {
+				"building_id": "linh_forest_001",
+				"building_type": "linh_forest"
+			},
+			"hp": 0.0,
+			"image_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\outputs\\PR28_UI_SOURCEA_20261024\\G11_capture_commit_47b70427/03_current_linh_lam.png",
+			"injury": 0,
+			"max_hp": 0.0,
+			"paid_kills": 0,
+			"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+			"screen": "03_current_linh_lam",
+			"tick": 0,
+			"viewport": [
+				1280,
+				720
+			],
+			"wall_unix": 1792814640,
+			"warehouse_pilot_stock": 0,
+			"world_id": ""
+		},
+		{
+			"auto": false,
+			"battle_seconds": 0.0,
+			"disciple_id": "",
+			"event_types": [],
+			"extra": {
+				"building_id": "spirit_field_001",
+				"building_type": "spirit_field"
+			},
+			"hp": 0.0,
+			"image_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\outputs\\PR28_UI_SOURCEA_20261024\\G11_capture_commit_47b70427/04_current_linh_dien.png",
+			"injury": 0,
+			"max_hp": 0.0,
+			"paid_kills": 0,
+			"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+			"screen": "04_current_linh_dien",
+			"tick": 0,
+			"viewport": [
+				1280,
+				720
+			],
+			"wall_unix": 1792814640,
+			"warehouse_pilot_stock": 0,
+			"world_id": ""
+		},
+		{
+			"auto": false,
+			"battle_seconds": 0.0,
+			"disciple_id": "",
+			"event_types": [],
+			"extra": {},
+			"hp": 0.0,
+			"image_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\outputs\\PR28_UI_SOURCEA_20261024\\G11_capture_commit_47b70427/05_current_warehouse.png",
+			"injury": 0,
+			"max_hp": 0.0,
+			"paid_kills": 0,
+			"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+			"screen": "05_current_warehouse",
+			"tick": 0,
+			"viewport": [
+				1280,
+				720
+			],
+			"wall_unix": 1792814640,
+			"warehouse_pilot_stock": 0,
+			"world_id": ""
+		},
+		{
+			"auto": false,
+			"battle_seconds": 0.0,
+			"disciple_id": "candidate_73021",
+			"event_types": [],
+			"extra": {
+				"generation_index": 73021,
+				"recruitment_source": "canonical ordinary"
+			},
+			"hp": 192.3,
+			"image_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\outputs\\PR28_UI_SOURCEA_20261024\\G11_capture_commit_47b70427/06_current_v2_disciple_profile.png",
+			"injury": 0,
+			"max_hp": 192.3,
+			"paid_kills": 0,
+			"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+			"screen": "06_current_v2_disciple_profile",
+			"tick": 0,
+			"viewport": [
+				1280,
+				720
+			],
+			"wall_unix": 1792814640,
+			"warehouse_pilot_stock": 0,
+			"world_id": ""
+		},
+		{
+			"auto": true,
+			"battle_seconds": 0.0,
+			"disciple_id": "candidate_73021",
+			"event_types": [
+				"battle_start"
+			],
+			"extra": {},
+			"hp": 192.3,
+			"image_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\outputs\\PR28_UI_SOURCEA_20261024\\G11_capture_commit_47b70427/07_current_combat_v5_start.png",
+			"injury": 0,
+			"max_hp": 192.3,
+			"paid_kills": 0,
+			"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+			"screen": "07_current_combat_v5_start",
+			"tick": 0,
+			"viewport": [
+				1280,
+				720
+			],
+			"wall_unix": 1792814640,
+			"warehouse_pilot_stock": 0,
+			"world_id": "b3:vs1:bach_thach_khe:31012026:0"
+		},
+		{
+			"auto": true,
+			"battle_seconds": 4.0,
+			"disciple_id": "candidate_73021",
+			"event_types": [
+				"battle_start",
+				"move",
+				"skill_cast",
+				"hit",
+				"skill_hit"
+			],
+			"extra": {},
+			"hp": 177.479552925488,
+			"image_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\outputs\\PR28_UI_SOURCEA_20261024\\G11_capture_commit_47b70427/08_current_combat_after_real_hit.png",
+			"injury": 0,
+			"max_hp": 192.3,
+			"paid_kills": 0,
+			"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+			"screen": "08_current_combat_after_real_hit",
+			"tick": 0,
+			"viewport": [
+				1280,
+				720
+			],
+			"wall_unix": 1792814644,
+			"warehouse_pilot_stock": 0,
+			"world_id": "b3:vs1:bach_thach_khe:31012026:0"
+		},
+		{
+			"auto": true,
+			"battle_seconds": 4.0,
+			"disciple_id": "candidate_73021",
+			"event_types": [
+				"battle_start",
+				"move",
+				"skill_cast",
+				"hit",
+				"skill_hit"
+			],
+			"extra": {},
+			"hp": 177.479552925488,
+			"image_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\outputs\\PR28_UI_SOURCEA_20261024\\G11_capture_commit_47b70427/09_current_combat_after_real_skill_hit.png",
+			"injury": 0,
+			"max_hp": 192.3,
+			"paid_kills": 0,
+			"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+			"screen": "09_current_combat_after_real_skill_hit",
+			"tick": 0,
+			"viewport": [
+				1280,
+				720
+			],
+			"wall_unix": 1792814644,
+			"warehouse_pilot_stock": 0,
+			"world_id": "b3:vs1:bach_thach_khe:31012026:0"
+		},
+		{
+			"auto": true,
+			"battle_seconds": 12.0,
+			"disciple_id": "candidate_73021",
+			"event_types": [
+				"battle_start",
+				"move",
+				"skill_cast",
+				"hit",
+				"skill_hit",
+				"guard",
+				"downed"
+			],
+			"extra": {
+				"receipt": {
+					"at_seconds": 11.5,
+					"content_version": 1,
+					"generation": 1,
+					"kill_id": "b3:vs1:bach_thach_khe:31012026:0:slot:wolf_0:g1",
+					"quantity": 1,
+					"resource": "tinh_lang_bi",
+					"state": "COMMITTED"
+				}
+			},
+			"hp": 123.384921103521,
+			"image_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\outputs\\PR28_UI_SOURCEA_20261024\\G11_capture_commit_47b70427/10_current_combat_after_paid_loot.png",
+			"injury": 0,
+			"max_hp": 192.3,
+			"paid_kills": 1,
+			"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+			"screen": "10_current_combat_after_paid_loot",
+			"tick": 0,
+			"viewport": [
+				1280,
+				720
+			],
+			"wall_unix": 1792814652,
+			"warehouse_pilot_stock": 1,
+			"world_id": "b3:vs1:bach_thach_khe:31012026:0"
+		},
+		{
+			"auto": false,
+			"battle_seconds": 12.0,
+			"disciple_id": "candidate_73021",
+			"event_types": [
+				"battle_start",
+				"move",
+				"skill_cast",
+				"hit",
+				"skill_hit",
+				"guard",
+				"downed"
+			],
+			"extra": {},
+			"hp": 123.384921103521,
+			"image_path": "E:\\codex\\2026-10-22\\t-ng-m-n-b-o\\work\\TMB_PR28_UI_SOURCEA_ASSET_INTEGRATION_20261024\\outputs\\PR28_UI_SOURCEA_20261024\\G11_capture_commit_47b70427/11_current_main_after_hunt_return.png",
+			"injury": 0,
+			"max_hp": 192.3,
+			"paid_kills": 1,
+			"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+			"screen": "11_current_main_after_hunt_return",
+			"tick": 0,
+			"viewport": [
+				1280,
+				720
+			],
+			"wall_unix": 1792814652,
+			"warehouse_pilot_stock": 1,
+			"world_id": "b3:vs1:bach_thach_khe:31012026:0"
+		}
+	],
+	"engine": "4.7.2-stable (official)",
+	"renderer": "OpenGL 3.3 Compatibility / Intel Iris Plus (see engine log)",
+	"scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+	"seed": 31012026,
+	"skill_hit_captured": true,
+	"source_sha": "47b704270ae165504aeef526963e8d03f87bc579",
+	"verified_save_load": {
+		"paid_generation": 1,
+		"warehouse_pilot_stock": 1
+	},
+	"viewport": [
+		1280,
+		720
+	]
+}
