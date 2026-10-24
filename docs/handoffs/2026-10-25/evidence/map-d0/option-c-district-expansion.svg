@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+<title id="title">MAP-D0 / PHƯƠNG ÁN C • TÔNG MÔN SỐNG + DISTRICT MỞ RỘNG</title><desc id="desc">Tách một map tông môn lớn thành hub, vành nghề, sinh hoạt và không gian mở rộng về sau.. Static MAP-D0 layout study, not a runtime screenshot.</desc>
+<defs>
+  <pattern id="ground" width="42" height="42" patternUnits="userSpaceOnUse"><circle cx="8" cy="11" r="1" fill="#71886f" opacity=".18"/><circle cx="28" cy="30" r="1.2" fill="#e5e7d6" opacity=".28"/></pattern>
+  <pattern id="missing" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><rect width="10" height="10" fill="#f4e5c8"/><rect width="3" height="10" fill="#d6a85d" opacity=".48"/></pattern>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#25382e" flood-opacity=".18"/></filter>
+  <style>
+    text{font-family:Inter,"Segoe UI",Arial,sans-serif;fill:#24372e}
+    .small{font-size:12px}.tiny{font-size:10px}.label{font-size:13px;font-weight:700;letter-spacing:.3px}
+    .zone{font-size:15px;font-weight:800;letter-spacing:1px;fill:#385947}
+    .asset{fill:#edf0dc;stroke:#2f6651;stroke-width:2}
+    .gap{fill:url(#missing);stroke:#9a6134;stroke-width:2;stroke-dasharray:6 4}
+    .site{fill:#fff4d8;stroke:#927747;stroke-width:1.5}
+    .road-under{fill:none;stroke:#a58a55;stroke-width:28;stroke-linecap:round;stroke-linejoin:round;opacity:.46}
+    .road{fill:none;stroke:#f0dfb1;stroke-width:18;stroke-linecap:round;stroke-linejoin:round}
+    .branch-under{fill:none;stroke:#a58a55;stroke-width:18;stroke-linecap:round;stroke-linejoin:round;opacity:.4}
+    .branch{fill:none;stroke:#efe0b8;stroke-width:11;stroke-linecap:round;stroke-linejoin:round}
+    .new-road{fill:none;stroke:#c18e4e;stroke-width:4;stroke-dasharray:9 8;stroke-linecap:round}
+  </style>
+</defs>
+<rect width="1280" height="720" fill="#e8e0c9"/>
+<rect width="1280" height="72" fill="#173d32"/>
+<text x="22" y="31" font-size="21" font-weight="800" fill="#f4d889">MAP-D0 / PHƯƠNG ÁN C • TÔNG MÔN SỐNG + DISTRICT MỞ RỘNG</text>
+<text x="22" y="54" font-size="12" fill="#dce5d1">Tách một map tông môn lớn thành hub, vành nghề, sinh hoạt và không gian mở rộng về sau.</text>
+<text x="1255" y="27" text-anchor="end" font-size="12" font-weight="700" fill="#f4d889">1280 × 720</text>
+<text x="1255" y="48" text-anchor="end" font-size="10" fill="#dce5d1">SƠ ĐỒ TĨNH • KHÔNG PHẢI CAPTURE GODOT</text>
+<rect x="0" y="72" width="1280" height="570" fill="#c5d2bb"/>
+<rect x="0" y="72" width="1280" height="570" fill="url(#ground)"/>
+
+  <text x="30" y="98" class="zone">C • DISTRICT PLAN TRÊN WORLD 192×192 (12×12 CHUNK)</text>
+  <text x="1245" y="98" text-anchor="end" class="small">Sơ đồ toàn world • không phải camera-fit gameplay</text>
+  <g transform="translate(42 122)">
+    <rect width="752" height="450" rx="14" fill="#d3ddca" stroke="#536a59" stroke-width="3"/>
+    <g id="chunkgrid" stroke="#91a18c" stroke-width="1" opacity=".7">
+      <line x1="62.6667" y1="0" x2="62.6667" y2="450"/><line x1="125.3334" y1="0" x2="125.3334" y2="450"/><line x1="188.0001" y1="0" x2="188.0001" y2="450"/><line x1="250.6668" y1="0" x2="250.6668" y2="450"/><line x1="313.3335" y1="0" x2="313.3335" y2="450"/><line x1="376.0002" y1="0" x2="376.0002" y2="450"/><line x1="438.6669" y1="0" x2="438.6669" y2="450"/><line x1="501.3336" y1="0" x2="501.3336" y2="450"/><line x1="564.0003" y1="0" x2="564.0003" y2="450"/><line x1="626.667" y1="0" x2="626.667" y2="450"/><line x1="689.3337" y1="0" x2="689.3337" y2="450"/>
+      <line x1="0" y1="37.5" x2="752" y2="37.5"/><line x1="0" y1="75" x2="752" y2="75"/><line x1="0" y1="112.5" x2="752" y2="112.5"/><line x1="0" y1="150" x2="752" y2="150"/><line x1="0" y1="187.5" x2="752" y2="187.5"/><line x1="0" y1="225" x2="752" y2="225"/><line x1="0" y1="262.5" x2="752" y2="262.5"/><line x1="0" y1="300" x2="752" y2="300"/><line x1="0" y1="337.5" x2="752" y2="337.5"/><line x1="0" y1="375" x2="752" y2="375"/><line x1="0" y1="412.5" x2="752" y2="412.5"/>
+    </g>
+    <rect x="282" y="168.75" width="188" height="112.5" rx="8" fill="#d9c57f" opacity=".7" stroke="#8f713b" stroke-width="3"/>
+    <text x="376" y="188" text-anchor="middle" class="label">STARTER 48×48</text><text x="376" y="205" text-anchor="middle" class="tiny">3×3 chunk trung tâm</text>
+    <rect x="188" y="56" width="188" height="112.5" fill="#9ec0aa" opacity=".55"/><text x="282" y="102" text-anchor="middle" class="tiny">TU LUYỆN / CƯ TRÚ</text>
+    <rect x="470" y="168.75" width="188" height="112.5" fill="#d8bc85" opacity=".5"/><text x="564" y="229" text-anchor="middle" class="tiny">SẢN XUẤT PHÍA ĐÔNG</text>
+    <rect x="282" y="281.25" width="188" height="112.5" fill="#9aaeb2" opacity=".4"/><text x="376" y="338" text-anchor="middle" class="tiny">CỔNG / LỐI RA</text>
+    <rect x="0" y="0" width="188" height="450" fill="#b5c3a5" opacity=".35"/><text x="94" y="231" text-anchor="middle" class="tiny">VÀNH CÂY / ĐỊA HÌNH</text>
+    <rect x="564" y="0" width="188" height="450" fill="#e1d1a6" opacity=".28"/><text x="658" y="231" text-anchor="middle" class="tiny">VÀNH MỎ / DỰ TRỮ</text>
+    <rect x="188" y="0" width="376" height="56" fill="url(#missing)" opacity=".5"/><text x="376" y="34" text-anchor="middle" class="tiny">MỞ RỘNG SAU NÀY • ART / PLACEMENT CHƯA CÓ</text>
+    <rect x="188" y="394" width="376" height="56" fill="url(#missing)" opacity=".5"/><text x="376" y="428" text-anchor="middle" class="tiny">MỞ RỘNG SAU NÀY • KHÔNG PHẢI SLOT ĐÃ LƯU</text>
+    <path d="M376 225L376 337M376 225L564 225M376 225L282 112M376 225L94 225" class="new-road"/>
+    <text x="14" y="440" class="tiny">mỗi ô = chunk code 16×16 cell</text>
+  </g>
+  <g transform="translate(835 124)">
+    <rect width="405" height="448" rx="14" fill="#f3ecd6" stroke="#887b5a" stroke-width="2"/>
+    <text x="20" y="31" class="zone">ZOOM THIẾT KẾ • 3×3 CHUNK</text>
+    <text x="20" y="51" class="tiny">Hình khu vực khởi đầu, vẫn cần một camera pan/zoom.</text>
+    <path d="M201 356L201 245L201 150" class="branch-under"/><path d="M201 356L201 245L201 150" class="branch"/>
+    <g transform="translate(201 143)" filter="url(#shadow)"><rect x="-75" y="-24" width="150" height="48" rx="10" class="asset"/><path d="M-65 -5l11 -12 11 12v15h-22z" fill="#426b5b" opacity=".8"/><text x="-35" y="-1" class="label">ĐẠI ĐIỆN</text><text x="-35" y="14" class="tiny">Source A 510052</text></g>
+    <g transform="translate(95 250)" filter="url(#shadow)"><rect x="-65" y="-24" width="130" height="48" rx="10" class="asset"/><path d="M-55 -5l11 -12 11 12v15h-22z" fill="#426b5b" opacity=".8"/><text x="-25" y="-1" class="label">Luyện Khí</text><text x="-25" y="14" class="tiny">Source A 520081</text></g>
+    <g transform="translate(305 250)" filter="url(#shadow)"><rect x="-50" y="-24" width="100" height="48" rx="10" class="asset"/><path d="M-40 -5l11 -12 11 12v15h-22z" fill="#426b5b" opacity=".8"/><text x="-10" y="-1" class="label">Kho</text><text x="-10" y="14" class="tiny">Source A 510102</text></g>
+    <g transform="translate(78 341)" filter="url(#shadow)"><rect x="-41" y="-20" width="82" height="40" rx="8" class="gap"/><text y="-1" text-anchor="middle" class="label">MỎ</text><text y="13" text-anchor="middle" class="tiny">missing</text></g>
+    <g transform="translate(202 356)" filter="url(#shadow)"><rect x="-46" y="-20" width="92" height="40" rx="8" class="gap"/><text y="-1" text-anchor="middle" class="label">CỔNG</text><text y="13" text-anchor="middle" class="tiny">missing</text></g>
+    <g transform="translate(321 340)" filter="url(#shadow)"><rect x="-54" y="-20" width="108" height="40" rx="8" class="gap"/><text y="-1" text-anchor="middle" class="label">LINH ĐIỀN</text><text y="13" text-anchor="middle" class="tiny">missing</text></g>
+    <text x="20" y="405" class="tiny">FUTURE 30/30/40 = chỉ định hướng quy hoạch,</text>
+    <text x="20" y="422" class="tiny">không có saved placement / không được bật.</text>
+  </g>
+  <g transform="translate(50 584)"><rect width="746" height="38" rx="8" fill="#f5eed9" stroke="#8e815f"/><text x="14" y="24" class="small">Rủi ro cao: full-world overview cần culling/LOD + bộ art lớn; 100 site là giả định tương lai, không phải workload QA hiện tại.</text></g>
+  <text x="1244" y="620" text-anchor="end" class="tiny">Mỏ săn Thanh Trúc Lâm 20 bãi là world riêng, không nằm trong lưới này.</text>
+<rect x="0" y="642" width="1280" height="78" fill="#e2d4ac" stroke="#5b4939" stroke-width="2"/>
+<g transform="translate(24 661)">
+  <rect width="18" height="18" rx="4" fill="#2f6651"/><text x="25" y="13" class="tiny">Asset Source A có trong PR31</text>
+  <rect x="205" width="18" height="18" rx="4" fill="url(#missing)" stroke="#9a6134" stroke-dasharray="3 2"/><text x="230" y="13" class="tiny">Thiếu art / cần phục hồi, không phải sprite</text>
+  <path d="M482 9h34" class="new-road"/><text x="524" y="13" class="tiny">Lối đề xuất</text>
+</g>
+<g transform="translate(714 656)">
+ <rect x="0" y="0" width="115" height="43" rx="10" fill="#fff5dc" stroke="#806b49"/><text x="57" y="26" text-anchor="middle" class="label">Tông Môn</text>
+ <rect x="124" y="0" width="98" height="43" rx="10" fill="#fff5dc" stroke="#806b49"/><text x="173" y="26" text-anchor="middle" class="label">Đệ Tử</text>
+ <rect x="231" y="0" width="90" height="43" rx="10" fill="#fff5dc" stroke="#806b49"/><text x="276" y="26" text-anchor="middle" class="label">Kho</text>
+ <rect x="330" y="0" width="115" height="43" rx="10" fill="#fff5dc" stroke="#806b49"/><text x="387" y="26" text-anchor="middle" class="label">Thế Giới</text>
+</g>
+</svg>
