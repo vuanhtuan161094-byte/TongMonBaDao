@@ -5,6 +5,7 @@ Repository: vuanhtuan161094-byte/TongMonBaDao
 Nhánh cách ly: integration/master-v3-combat-d7-uiux-20261024
 Base bắt buộc: PR #26 head 53ff0b223f4e77ccfbe5c77d2203496ac0cc37a9
 Code/test commit: 80ed0270d2b7370f8feff1ce829f167146f3f341
+GitHub draft PR commit: 2890a4904a9fcfa106a34d88c1f169381cbd9a5
 Engine: Godot 4.7.2.stable.official.ed1daf0bf, Windows x86_64
 Độ phân giải ảnh GUI: 1280×720
 
@@ -12,7 +13,7 @@ Engine: Godot 4.7.2.stable.official.ed1daf0bf, Windows x86_64
 
 Đã chạy prompt hợp nhất từ tài liệu theo yêu cầu người dùng. Code D7, SaveService migration, focused regression, Combat V2 fixture và P3.2 capture có bằng chứng ở SHA code bên trên. Đây không phải FULL/CI PASS, Owner Visual PASS hay nghiệm thu thiết bị thật.
 
-PR #24/#25/#26 không bị sửa hoặc merge. FULL/CI không chạy. Nhánh mới dựa chính xác trên PR #26 head. PR mới đang được chuẩn bị; URL sẽ được thêm sau khi nhánh được đăng lên GitHub.
+PR #24/#25/#26 không bị sửa hoặc merge. FULL/CI không chạy. Nhánh mới dựa chính xác trên PR #26 head. PR #27 draft: https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/27; GitHub head 2890a4904a9fcfa106a34d88c1f169381cbd9a5. Remote commit tree khớp với local handoff tree.
 
 ## Bảng trạng thái
 
@@ -142,3 +143,4 @@ Source A/MAP25 art, CARE combat/economy logic, B3 scheduler, and SaveService own
 - P3 ×100 balance numbers và potion/item values: PENDING_OWNER.
 - FULL/CI: không chạy theo hướng dẫn.
 - PR #24/#25/#26: giữ nguyên, không merge.
+

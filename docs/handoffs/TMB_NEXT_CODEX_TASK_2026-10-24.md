@@ -4,6 +4,7 @@ Continue from the branch and evidence below. This is a proposed next task prompt
 
 Repository: vuanhtuan161094-byte/TongMonBaDao
 Current branch: integration/master-v3-combat-d7-uiux-20261024
+Draft PR #27: https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/27
 Base PR #26: 53ff0b223f4e77ccfbe5c77d2203496ac0cc37a9
 Tested code SHA: 80ed0270d2b7370f8feff1ce829f167146f3f341
 Godot: official 4.7.2.stable.official.ed1daf0bf
@@ -35,3 +36,4 @@ Possible separate follow-up prompts:
 1. Owner visual: “Review the four image sheets in the handoff ZIP and approve or reject each issue ID in TMB_MASTER_V3_UI_ISSUE_MATRIX_2026-10-24.md. Do not merge PRs.”
 2. Balance: “Approve numeric targets for V2 HP, damage, healing pills, caps and item values after reviewing P1 evidence. Do not implement until the complete value table is explicit.”
 3. Manual acceptance: “Open the draft branch on Windows Godot 4.7.2 at 1280×720 and perform mouse play/save/load/redeploy; record the steps, observations and any failure. Android remains a separate physical-device gate.”
+

@@ -7,7 +7,7 @@ This is a provisional implementation branch, not canonical main.
 - Base: PR #26 head 53ff0b223f4e77ccfbe5c77d2203496ac0cc37a9
 - Tested code commit: 80ed0270d2b7370f8feff1ce829f167146f3f341
 - Engine: Godot official 4.7.2.stable.official.ed1daf0bf
-- PR #24/#25/#26 remain untouched, open, draft and unmerged; no FULL/CI.
+- PR #27 is open as draft: https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/27 (head 2890a4904a9fcfa106a34d88c1f169381cbd9a5). PR #24/#25/#26 remain untouched and unmerged; no FULL/CI.
 
 ## Completed with evidence
 
@@ -34,3 +34,4 @@ No ×100 HP/damage/potion/economy rebalance, no new hunt EXP, no Injury duration
 ## Pending gates
 
 Owner visual and numeric balance approval, Windows manual mouse/play, Android device/touch, actual Injury120 UI frame, and live CARE Boss/AoE event mapping. Do not report any of these as passing.
+
