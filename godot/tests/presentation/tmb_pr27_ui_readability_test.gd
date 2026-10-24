@@ -87,11 +87,21 @@ func _run() -> void:
         _fail("Building panel did not close.")
         return
 
-    var all_ids: Array = main_state.disciples.keys()
-    if all_ids.is_empty():
-        _fail("Seed state contains no real disciple for profile verification.")
+    # Recruit an authentic D7/V2 disciple through existing canonical test
+    # boundaries; do not use a synthetic UI-only profile or fake stat row.
+    main_state.sect.disciple_capacity = maxi(main_state.sect.disciple_capacity,main_state.disciples.size()+1)
+    var candidate := DiscipleGeneratorOpenPoints.new().generate_candidate(
+        main_state,DiscipleGeneratorV2.SOURCE_ORDINARY,777
+    )
+    if candidate == null or candidate.v2_birth_profile.is_empty():
+        _fail("Canonical D7 candidate generation failed.")
         return
-    var disciple_id := StringName(all_ids[0])
+    main_state.recruitment_candidates[candidate.id] = candidate
+    var accepted := RecruitmentSystem.new().accept_candidate(main_state,candidate.id)
+    if not bool(accepted.get("ok",false)):
+        _fail("Canonical recruitment failed.")
+        return
+    var disciple_id := candidate.id
     ui.call("_open_disciple_deep_screen",disciple_id,"Thuộc tính")
     await process_frame
     var popups := ui.get("popup_layer") as Control
