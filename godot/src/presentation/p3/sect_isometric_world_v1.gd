@@ -46,6 +46,19 @@ const HOUSE_SIZES := {
     "warehouse":Vector2(162,138),
     "forge":Vector2(205,164)
 }
+# Original map-specific worksite vignettes, explicitly NOT Source A,
+# NOT approved replacements for the historical missing building art.
+# Runtime references are kept separate from the MAP25 SHA-gated inventory.
+const MAP_D2_CANDIDATE_SITES := {
+    "mine":"res://art/map_d2_candidate/mine_worksite_v1.svg",
+    "linh_forest":"res://art/map_d2_candidate/linh_forest_worksite_v1.svg",
+    "spirit_field":"res://art/map_d2_candidate/spirit_field_worksite_v1.svg"
+}
+const MAP_D2_SITE_SIZE := {
+    "mine":Vector2(166,121),
+    "linh_forest":Vector2(166,121),
+    "spirit_field":Vector2(166,121)
+}
 # PV01 renders sprite artwork at the CENTER of each actual static
 # footprint (not at the map-model origin cell). This is presentation only.
 const HOUSE_FOOTPRINT_CENTERS := {
@@ -113,6 +126,8 @@ var preview_routes: Dictionary = {}
 var lab_routes_ready := false
 var source_art: SectMap25SourceArt
 var render_art: Dictionary = {}
+# Experimental visual-only artwork is separate from source_art.status().
+var candidate_site_art: Dictionary = {}
 var decoration_items: Array[Dictionary] = []
 var art_loaded_count := 0
 var art_source_status: Dictionary = {}
@@ -197,7 +212,14 @@ func _record_preview_route(route_id: String, from_cell: Vector2i, to_cell: Vecto
 func _load_verified_source_art() -> void:
     source_art = SectMap25SourceArt.new()
     render_art.clear()
+    candidate_site_art.clear()
     decoration_items.clear()
+    # Godot-imported candidate SVGs may be unavailable; fall back to the
+    # original honest marker. Never add them to verified MAP25 art status.
+    for kind in MAP_D2_CANDIDATE_SITES:
+        var candidate := load(str(MAP_D2_CANDIDATE_SITES[kind])) as Texture2D
+        if candidate != null:
+            candidate_site_art[kind] = candidate
     for house in HOUSE_TEXTURES:
         var key := str(HOUSE_TEXTURES[house])
         var asset := source_art.texture_for(key)
@@ -431,12 +453,9 @@ func _ground_mesh_for_chunk(chunk_id: Vector2i) -> ArrayMesh:
         for ix in range(origin.x,mini(origin.x+CHUNK,GRID.x)):
             var cell := Vector2i(ix,iy)
             var center := project(Vector2(cell))
-            var within := STARTER.has_point(cell)
-            var tone := Color(0.38,0.48,0.35) if within else Color(0.25,0.34,0.29)
-            if posmod(ix*17+iy*23,11)<4:
-                tone = tone.lightened(0.018 if within else 0.008)
-            if within and _is_road(cell):
-                tone = tone.blend(Color(0.57,0.52,0.40,0.72))
+            # Slow coherent terrain variation and district palettes replace
+            # the old repeated checkerboard; this remains VIEW ONLY.
+            var tone := SectMapD2Landscape.ground_color(cell,STARTER,preview_roads)
             var base := vertices.size()
             vertices.append_array(PackedVector2Array([
                 center+Vector2(0,-HALF_H),center+Vector2(HALF_W,0),
@@ -464,6 +483,9 @@ func _draw() -> void:
     # Visibility still uses the original active_chunks and the existing camera.
     for chunk_id in active_chunks:
         draw_mesh(_ground_mesh_for_chunk(chunk_id),null)
+    # Scenic water/reeds/rock-garden accents are original unapproved
+    # view-only candidates and cannot act as a gameplay resource node.
+    SectMapD2Landscape.draw_scenic_accents(self,active_chunks)
     # Verified MAP25 terrain creates a modest paved hall courtyard and forge
     # apron. It is a surface treatment only; roads are drawn over it below.
     for chunk_id in active_chunks:
@@ -499,6 +521,14 @@ func _draw() -> void:
                 var center := project(Vector2(cell))
                 var road_key := "env01_assets/roads/%s" % str(ROAD_TEXTURES[_road_key(cell)])
                 if render_art.has(road_key):
+                    # A muted shoulder removes the hard grey-on-green cut
+                    # while preserving the six real SHA-gated road sprites.
+                    draw_colored_polygon(PackedVector2Array([
+                        center+Vector2(0,-HALF_H*1.42),
+                        center+Vector2(HALF_W*1.33,0),
+                        center+Vector2(0,HALF_H*1.42),
+                        center+Vector2(-HALF_W*1.33,0)
+                    ]),SectMapD2Landscape.road_shoulder_color(cell))
                     draw_texture_rect(render_art[road_key],
                         Rect2(center-Vector2(HALF_W*1.1,HALF_H*1.15),
                             Vector2(HALF_W*2.2,HALF_H*2.3)),
@@ -547,6 +577,22 @@ func _draw_building(p: Vector2,kind: String, managed: bool) -> void:
             var offset := Vector2(0.0,-target.y*0.28)
             draw_texture_rect(image,Rect2(p+offset-target*0.5,target),false)
             return
+    # New authored WORKSITE VIGNETTES, not approved building art; picking
+    # and workload ownership remain the same canonical BuildingState row.
+    # If the optional svg import fails, the existing explicit fallback shows.
+    if managed and candidate_site_art.has(kind):
+        var vignette: Texture2D = candidate_site_art[kind]
+        var size: Vector2 = MAP_D2_SITE_SIZE[kind]
+        draw_texture_rect(vignette,
+            Rect2(p-Vector2(size.x*0.5,size.y*0.79),size),false)
+        var font := ThemeDB.fallback_font
+        if font != null:
+            var label_text := "MỎ" if kind == "mine" else ("LINH LÂM" if kind == "linh_forest" else "LINH ĐIỀN")
+            var width := font.get_string_size(label_text,HORIZONTAL_ALIGNMENT_LEFT,-1,12).x
+            var anchor := p+Vector2(-width*0.5,23)
+            draw_string_outline(font,anchor,label_text,HORIZONTAL_ALIGNMENT_LEFT,-1,12,2,Color(0.16,0.25,0.20))
+            draw_string(font,anchor,label_text,HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color(0.94,0.90,0.76))
+        return
     # MAP25 visual-only fallback: a flat ground footprint, never a fake
     # 3D building. Actual producer rows retain BuildingState.id and tap hitbox.
     # Non-producer landmarks are navigation labels, not constructed buildings.
