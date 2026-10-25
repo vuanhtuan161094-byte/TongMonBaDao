@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+TMB_ENDGAME_FIXTURE_CONTRACT PASS {"lodging_capacity":130,"population":130,"producer_sites_with_one_worker":100,"production_batches":404,"real_building_counts":{"alchemy_hall":1,"dan_tien_dai":1,"linh_forest":30,"mine":30,"ren_than_duong":1,"spirit_field":40},"save_sha256":"ba1b98d16a6ca26e08915981ca273769f9f23ff15a72f21b5bdd522d8cbb36e1","supported_level_counts":{"alchemy_hall":1,"dan_tien_dai":1,"linh_forest":30,"mine":30,"ren_than_duong":1,"spirit_field":40},"tick":120,"warehouse":{"huyen_thiet":5,"linh_coc":352,"linh_moc":364,"linh_tuy":20,"linh_tuyen_chi_tam_manh":3,"thanh_linh_thao":175,"thanh_thiet":548,"tinh_lang_bi":13,"tu_van_thao":154,"yeu_dan":27}}

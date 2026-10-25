@@ -1,0 +1,3 @@
+"Roster","Step","Status","ExitCode","AvailableGB","SaveBytes","SHA256","CodeSHA","Log"
+"200","GENERATE","PASS","0","2.5","0","","ae3902484e01ebbaec3f97b695a06ddaa3be53b4","E:\codex\2026-10-26\TMB_ENDGAME_PR39_WORKTREE_20261026\outputs\endgame_qa_20261026\logs\roster_profiles_20261026_014439_615\generate_200.log"
+"200","CHECK","PASS","0","2.5","1663602","E0EE041E433B93AAE9CBF2FE027638D0AAEB00D59826D5ADDB55BBB286E8463B","ae3902484e01ebbaec3f97b695a06ddaa3be53b4","E:\codex\2026-10-26\TMB_ENDGAME_PR39_WORKTREE_20261026\outputs\endgame_qa_20261026\logs\roster_profiles_20261026_014439_615\contract_200.log"

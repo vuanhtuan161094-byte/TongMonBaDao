@@ -1,0 +1,123 @@
+{
+	"active_work_cycles_after_reload": 25,
+	"building_counts": {
+		"alchemy_hall": 1,
+		"dan_tien_dai": 1,
+		"linh_forest": 30,
+		"mine": 30,
+		"ren_than_duong": 1,
+		"spirit_field": 40
+	},
+	"camera_pan": true,
+	"camera_zoom": true,
+	"camera_zoom_gallery": [
+		{
+			"file": "endgame_zoom_075.png",
+			"zoom": 0.75
+		},
+		{
+			"file": "endgame_zoom_100.png",
+			"zoom": 1.0
+		},
+		{
+			"file": "endgame_zoom_135.png",
+			"zoom": 1.35
+		},
+		{
+			"file": "endgame_zoom_180.png",
+			"zoom": 1.8
+		}
+	],
+	"fixture_seed": 20261025,
+	"fresh_p3_2_scene_reloaded_from_same_save": true,
+	"input_method": "Input.parse_input_event through the production P3.2 scene handlers",
+	"invariants_after_reload": [],
+	"isolated_save_path": "E:/codex/2026-10-26/TMB_ENDGAME_PR39_WORKTREE_20261026/godot/outputs/endgame_qa_20261026/gameplay/roster_200/endgame_capture_save_1792954328.json",
+	"loaded_population": 200,
+	"main_scene": "res://scenes/p3/p3_2_landscape_sect.tscn",
+	"overview_visible_actor_status_labels": 0,
+	"production_panel_visible_for_each_selection": true,
+	"reload_exact_counts_and_warehouse": true,
+	"reloaded_tick": 120,
+	"reloaded_warehouse": {
+		"huyen_thiet": 5,
+		"linh_coc": 330,
+		"linh_moc": 364,
+		"linh_tuy": 20,
+		"linh_tuyen_chi_tam_manh": 3,
+		"thanh_linh_thao": 161,
+		"thanh_thiet": 548,
+		"tinh_lang_bi": 13,
+		"tu_van_thao": 161,
+		"yeu_dan": 27
+	},
+	"render_fps_600_frames": {
+		"elapsed_seconds": 9.988,
+		"godot_static_memory_bytes": 130933736,
+		"max": 60.0,
+		"mean": 54.1933333333333,
+		"min": 2.0,
+		"sample_count": 600
+	},
+	"roster_profile": 200,
+	"save_ok": true,
+	"save_sha256": "3985ef4ac507e4e6fbac7a77c3a667258224ccc1b2b5db552cc43ce80955268b",
+	"screenshots": [
+		{
+			"file": "E:/codex/2026-10-26/TMB_ENDGAME_PR39_WORKTREE_20261026/godot/outputs/endgame_qa_20261026/gameplay/roster_200/00_endgame_full_map.png",
+			"sha256": "d592e647dc2a35931b4676107abbb452b89c3e9156e1274b84a80c5550cd6efa",
+			"size": "(1280, 720)"
+		},
+		{
+			"file": "E:/codex/2026-10-26/TMB_ENDGAME_PR39_WORKTREE_20261026/godot/outputs/endgame_qa_20261026/gameplay/roster_200/endgame_zoom_075.png",
+			"sha256": "889d9860204a75c3d76e0ef1cac982775e075fe716a41d56d12a4b77b7dec2f3",
+			"size": "(1280, 720)"
+		},
+		{
+			"file": "E:/codex/2026-10-26/TMB_ENDGAME_PR39_WORKTREE_20261026/godot/outputs/endgame_qa_20261026/gameplay/roster_200/endgame_zoom_100.png",
+			"sha256": "c16c8d4a27d6bd6aad2e43ad29b321da54bf443d80ecd9b280d2ce2da2a28893",
+			"size": "(1280, 720)"
+		},
+		{
+			"file": "E:/codex/2026-10-26/TMB_ENDGAME_PR39_WORKTREE_20261026/godot/outputs/endgame_qa_20261026/gameplay/roster_200/endgame_zoom_135.png",
+			"sha256": "b6572bb2daedc6c0e2274e2a8d73a3211a410a4d3bc51bd3af83dbf7700af310",
+			"size": "(1280, 720)"
+		},
+		{
+			"file": "E:/codex/2026-10-26/TMB_ENDGAME_PR39_WORKTREE_20261026/godot/outputs/endgame_qa_20261026/gameplay/roster_200/endgame_zoom_180.png",
+			"sha256": "8647878074ff9ffeb2ed922b96c00f7c2c1731ee2783d93522ae007022427044",
+			"size": "(1280, 720)"
+		},
+		{
+			"file": "E:/codex/2026-10-26/TMB_ENDGAME_PR39_WORKTREE_20261026/godot/outputs/endgame_qa_20261026/gameplay/roster_200/01_endgame_camera_pan_zoom.png",
+			"sha256": "87e167b358cf3d5f8ba1949d2e98466bb489aa54d6c577b621b8fc48a029d5b1",
+			"size": "(1280, 720)"
+		},
+		{
+			"file": "E:/codex/2026-10-26/TMB_ENDGAME_PR39_WORKTREE_20261026/godot/outputs/endgame_qa_20261026/gameplay/roster_200/mine_021_selected.png",
+			"sha256": "abd3fcb8354317e14873e1158e344f247b009f84e9193c33b21676ca0009dd9f",
+			"size": "(1280, 720)"
+		},
+		{
+			"file": "E:/codex/2026-10-26/TMB_ENDGAME_PR39_WORKTREE_20261026/godot/outputs/endgame_qa_20261026/gameplay/roster_200/linh_forest_021_selected.png",
+			"sha256": "ea63b124f1ff8ad1d145225469294b0d43b4513141ca8a36b05408f331e1a2ac",
+			"size": "(1280, 720)"
+		},
+		{
+			"file": "E:/codex/2026-10-26/TMB_ENDGAME_PR39_WORKTREE_20261026/godot/outputs/endgame_qa_20261026/gameplay/roster_200/spirit_field_035_selected.png",
+			"sha256": "0398449bbf3cbc7380f4f53552e372aa3a47f6a4fdbfa01c246d5945b51f6a65",
+			"size": "(1280, 720)"
+		},
+		{
+			"file": "E:/codex/2026-10-26/TMB_ENDGAME_PR39_WORKTREE_20261026/godot/outputs/endgame_qa_20261026/gameplay/roster_200/05_fresh_p3_2_save_reload.png",
+			"sha256": "1d2303c0c3db0bcfada99dd3c5fabb7f2403f208c280e5655c412b2a03793395",
+			"size": "(1280, 720)"
+		}
+	],
+	"selected_building_ids": [
+		"mine_021",
+		"linh_forest_021",
+		"spirit_field_035"
+	],
+	"video_mode_available": true
+}

@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+TMB_ENDGAME_ROSTER_PROFILE PASS {"caveat":"static saved-state integrity only; official screenshot/FPS still required","production_sites":100,"roster":200,"save_size_bytes":1663602,"site_count":{"alchemy_hall":1,"dan_tien_dai":1,"linh_forest":30,"mine":30,"ren_than_duong":1,"spirit_field":40},"workers":100}

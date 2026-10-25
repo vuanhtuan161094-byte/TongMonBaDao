@@ -1,0 +1,12 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+TMB_ENDGAME_MAP_DENSITY STAGE begin
+TMB_ENDGAME_MAP_DENSITY STAGE isolated_fixture_ready offline_catchup=0
+TMB_ENDGAME_MAP_DENSITY STAGE scene_resource_loaded
+TMB_ENDGAME_MAP_DENSITY STAGE scene_instantiated
+TMB_ENDGAME_MAP_DENSITY STAGE scene_added
+TMB_ENDGAME_MAP_DENSITY STAGE ready_frames_complete
+TMB_ENDGAME_MAP_DENSITY STAGE runtime_ready
+TMB_ENDGAME_MAP_DENSITY FAIL {"detail":{"actor_position":"(2413.0, 617.0)","current_iso_point":"(768.0, 354.0)","destination":"courtyard","disciple":"candidate_0077","map_canvas_transform":"[X: (1.0, 0.0), Y: (0.0, 1.0), O: (0.0, 0.0)]","map_position":"(0.0, 0.0)","map_scale":"(1.0, 1.0)","map_transform":"[X: (1.0, 0.0), Y: (0.0, 1.0), O: (0.0, 0.0)]","rect":"[P: (2413.0, 617.0), S: (88.0, 92.0)]","view":"[P: (0.0, 72.0), S: (1280.0, 570.0)]","virtual_position":"(444.0, 282.0)","worksite_id":""},"reason":"live_actor_rendered_over_fixed_hud"}

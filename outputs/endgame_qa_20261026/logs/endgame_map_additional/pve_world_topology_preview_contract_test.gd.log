@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+PVE WORLD TOPOLOGY PREVIEW CONTRACT PASS world=256x192 camps=20 population=300_design_only roads=30 bridges=3 camera=pan_zoom

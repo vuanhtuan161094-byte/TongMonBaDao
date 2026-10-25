@@ -1,0 +1,101 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+TMB_ENDGAME_MAP_DENSITY STAGE begin
+TMB_ENDGAME_MAP_DENSITY STAGE isolated_fixture_ready
+TMB_ENDGAME_MAP_DENSITY STAGE scene_resource_loaded
+TMB_ENDGAME_MAP_DENSITY STAGE scene_instantiated
+TMB_P32_READY enter
+TMB_P31_READY enter
+TMB_P31_READY before_runtime_start
+TMB_P31_READY after_runtime_start ok=true
+TMB_P31_READY shell_built
+TMB_P31_READY roster_seeded count=130
+SCRIPT ERROR: Invalid call. Nonexistent function 'to_global' in base 'Control'.
+   at: _refresh_world_actor_visibility (res://src/presentation/p3_2_landscape_sect.gd:541)
+   GDScript backtrace (most recent call first):
+       [0] _refresh_world_actor_visibility (res://src/presentation/p3_2_landscape_sect.gd:541)
+       [1] _sync_actor_positions (res://src/presentation/p3_2_landscape_sect.gd:1109)
+       [2] _refresh_all (res://src/presentation/p3_1_landscape_sect.gd:593)
+       [3] _refresh_all (res://src/presentation/p3_2_landscape_sect.gd:3071)
+       [4] _ready (res://src/presentation/p3_1_landscape_sect.gd:73)
+       [5] _ready (res://src/presentation/p3_2_landscape_sect.gd:123)
+       [6] _run (res://tests/presentation/endgame_map_density_test.gd:32)
+TMB_P31_READY first_refresh_complete
+TMB_P31_READY timers_started
+TMB_P32_READY after_super runtime_ready=true
+TMB_P32_READY motion_library_ready
+SCRIPT ERROR: Invalid call. Nonexistent function 'to_global' in base 'Control'.
+   at: _refresh_world_actor_visibility (res://src/presentation/p3_2_landscape_sect.gd:541)
+   GDScript backtrace (most recent call first):
+       [0] _refresh_world_actor_visibility (res://src/presentation/p3_2_landscape_sect.gd:541)
+       [1] _install_modular_live_actors (res://src/presentation/p3_2_landscape_sect.gd:1221)
+       [2] _ready (res://src/presentation/p3_2_landscape_sect.gd:129)
+       [3] _run (res://tests/presentation/endgame_map_density_test.gd:32)
+TMB_P32_READY actors_installed
+TMB_P32_READY world_installed
+SCRIPT ERROR: Invalid call. Nonexistent function 'to_global' in base 'Control'.
+   at: _refresh_world_actor_visibility (res://src/presentation/p3_2_landscape_sect.gd:541)
+   GDScript backtrace (most recent call first):
+       [0] _refresh_world_actor_visibility (res://src/presentation/p3_2_landscape_sect.gd:541)
+       [1] _sync_actor_positions (res://src/presentation/p3_2_landscape_sect.gd:1109)
+       [2] _ready (res://src/presentation/p3_2_landscape_sect.gd:133)
+       [3] _run (res://tests/presentation/endgame_map_density_test.gd:32)
+TMB_P32_READY positions_synced
+SCRIPT ERROR: Invalid call. Nonexistent function 'to_global' in base 'Control'.
+   at: _refresh_world_actor_visibility (res://src/presentation/p3_2_landscape_sect.gd:541)
+   GDScript backtrace (most recent call first):
+       [0] _refresh_world_actor_visibility (res://src/presentation/p3_2_landscape_sect.gd:541)
+       [1] _apply_camera (res://src/presentation/p3_2_landscape_sect.gd:524)
+       [2] _reset_camera (res://src/presentation/p3_2_landscape_sect.gd:503)
+       [3] _ready (res://src/presentation/p3_2_landscape_sect.gd:136)
+       [4] _run (res://tests/presentation/endgame_map_density_test.gd:32)
+TMB_P32_READY complete
+TMB_ENDGAME_MAP_DENSITY STAGE scene_added
+SCRIPT ERROR: Invalid call. Nonexistent function 'to_global' in base 'Control'.
+   at: _refresh_world_actor_visibility (res://src/presentation/p3_2_landscape_sect.gd:541)
+   GDScript backtrace (most recent call first):
+       [0] _refresh_world_actor_visibility (res://src/presentation/p3_2_landscape_sect.gd:541)
+       [1] _process (res://src/presentation/p3_2_landscape_sect.gd:3060)
+TMB_ENDGAME_MAP_DENSITY STAGE ready_frames_complete
+SCRIPT ERROR: Invalid call. Nonexistent function 'to_global' in base 'Control'.
+   at: _refresh_world_actor_visibility (res://src/presentation/p3_2_landscape_sect.gd:541)
+   GDScript backtrace (most recent call first):
+       [0] _refresh_world_actor_visibility (res://src/presentation/p3_2_landscape_sect.gd:541)
+       [1] _process (res://src/presentation/p3_2_landscape_sect.gd:3060)
+SCRIPT ERROR: Invalid call. Nonexistent function 'to_global' in base 'Control'.
+   at: _refresh_world_actor_visibility (res://src/presentation/p3_2_landscape_sect.gd:541)
+   GDScript backtrace (most recent call first):
+       [0] _refresh_world_actor_visibility (res://src/presentation/p3_2_landscape_sect.gd:541)
+       [1] _process (res://src/presentation/p3_2_landscape_sect.gd:3060)
+SCRIPT ERROR: Invalid call. Nonexistent function 'to_global' in base 'Control'.
+   at: _refresh_world_actor_visibility (res://src/presentation/p3_2_landscape_sect.gd:541)
+   GDScript backtrace (most recent call first):
+       [0] _refresh_world_actor_visibility (res://src/presentation/p3_2_landscape_sect.gd:541)
+       [1] _process (res://src/presentation/p3_2_landscape_sect.gd:3060)
+TMB_ENDGAME_MAP_DENSITY STAGE runtime_ready
+SCRIPT ERROR: Invalid call. Nonexistent function 'to_global' in base 'Control'.
+   at: _refresh_world_actor_visibility (res://src/presentation/p3_2_landscape_sect.gd:541)
+   GDScript backtrace (most recent call first):
+       [0] _refresh_world_actor_visibility (res://src/presentation/p3_2_landscape_sect.gd:541)
+       [1] _apply_camera (res://src/presentation/p3_2_landscape_sect.gd:524)
+       [2] _focus_world_point (res://src/presentation/p3_2_landscape_sect.gd:429)
+       [3] _set_focus_target (res://src/presentation/p3_2_landscape_sect.gd:458)
+       [4] _open_disciple (res://src/presentation/p3_2_landscape_sect.gd:1024)
+       [5] _select_and_focus_virtual_disciple (res://tests/presentation/endgame_map_density_test.gd:177)
+       [6] _run (res://tests/presentation/endgame_map_density_test.gd:123)
+SCRIPT ERROR: Invalid call. Nonexistent function 'to_global' in base 'Control'.
+   at: _refresh_world_actor_visibility (res://src/presentation/p3_2_landscape_sect.gd:541)
+   GDScript backtrace (most recent call first):
+       [0] _refresh_world_actor_visibility (res://src/presentation/p3_2_landscape_sect.gd:541)
+       [1] _apply_camera (res://src/presentation/p3_2_landscape_sect.gd:524)
+       [2] _select_and_focus_virtual_disciple (res://tests/presentation/endgame_map_density_test.gd:180)
+       [3] _run (res://tests/presentation/endgame_map_density_test.gd:123)
+SCRIPT ERROR: Invalid call. Nonexistent function 'to_global' in base 'Control'.
+   at: _refresh_world_actor_visibility (res://src/presentation/p3_2_landscape_sect.gd:541)
+   GDScript backtrace (most recent call first):
+       [0] _refresh_world_actor_visibility (res://src/presentation/p3_2_landscape_sect.gd:541)
+       [1] _select_and_focus_virtual_disciple (res://tests/presentation/endgame_map_density_test.gd:181)
+       [2] _run (res://tests/presentation/endgame_map_density_test.gd:123)
+TMB_ENDGAME_MAP_DENSITY FAIL {"detail":{"disciple":"lam_thanh_vu"},"reason":"selected_virtual_disciple_was_not_materialized_after_camera_focus"}

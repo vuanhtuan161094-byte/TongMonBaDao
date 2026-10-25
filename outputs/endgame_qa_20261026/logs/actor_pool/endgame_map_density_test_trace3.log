@@ -1,0 +1,22 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+TMB_ENDGAME_MAP_DENSITY STAGE begin
+TMB_ENDGAME_MAP_DENSITY STAGE isolated_fixture_ready offline_catchup=0
+TMB_ENDGAME_MAP_DENSITY STAGE scene_resource_loaded
+TMB_ENDGAME_MAP_DENSITY STAGE scene_instantiated
+TMB_P32_RECONCILE install positions=0 roster=130 iso=false
+TMB_P32_INSTALL begin positions=0 roster=130 iso=false actors=0
+TMB_P32_ACTOR_SYNC candidate_0071 iso=false destination=courtyard world_foot=(410.0, 388.0) target=(366.0, 316.0) old_virtual=(0.0, 0.0)
+TMB_P32_ACTOR_SYNC candidate_0077 iso=false destination=courtyard world_foot=(634.0, 580.0) target=(590.0, 508.0) old_virtual=(0.0, 0.0)
+TMB_P32_ACTOR_MATERIALIZE candidate_0077 instance=141549375475 position=(590.0, 508.0) virtual=(590.0, 508.0)
+TMB_P32_INSTALL begin positions=130 roster=130 iso=false actors=40
+TMB_P32_INSTALL end positions=130 sample_71=(366.0, 316.0) sample_77=(590.0, 508.0) iso=false
+TMB_P32_ACTOR_SYNC candidate_0071 iso=true destination=courtyard world_foot=(488.0, 354.0) target=(444.0, 282.0) old_virtual=(366.0, 316.0)
+TMB_P32_ACTOR_SYNC candidate_0077 iso=true destination=courtyard world_foot=(712.0, 546.0) target=(668.0, 474.0) old_virtual=(590.0, 508.0)
+TMB_P32_ACTOR_MATERIALIZE candidate_0071 instance=190857614865 position=(444.0, 282.0) virtual=(444.0, 282.0)
+TMB_ENDGAME_MAP_DENSITY STAGE scene_added
+TMB_ENDGAME_MAP_DENSITY STAGE ready_frames_complete
+TMB_ENDGAME_MAP_DENSITY STAGE runtime_ready
+TMB_ENDGAME_MAP_DENSITY FAIL {"detail":{"actor_position":"(2913.0, 877.0)","current_iso_point":"(768.0, 354.0)","destination":"courtyard","dictionary_aliases":["candidate_0071"],"disciple":"candidate_0071","instance_id":190857614865,"map_canvas_transform":"[X: (1.0, 0.0), Y: (0.0, 1.0), O: (0.0, 0.0)]","map_position":"(0.0, 0.0)","map_scale":"(1.0, 1.0)","map_transform":"[X: (1.0, 0.0), Y: (0.0, 1.0), O: (0.0, 0.0)]","rect":"[P: (2913.0, 877.0), S: (88.0, 92.0)]","view":"[P: (0.0, 72.0), S: (1280.0, 570.0)]","virtual_position":"(444.0, 282.0)","worksite_id":""},"reason":"live_actor_rendered_over_fixed_hud"}

@@ -1,0 +1,12 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+TMB_ENDGAME_MAP_DENSITY STAGE begin
+TMB_ENDGAME_MAP_DENSITY STAGE isolated_fixture_ready offline_catchup=0
+TMB_ENDGAME_MAP_DENSITY STAGE scene_resource_loaded
+TMB_ENDGAME_MAP_DENSITY STAGE scene_instantiated
+TMB_ENDGAME_MAP_DENSITY STAGE scene_added
+TMB_ENDGAME_MAP_DENSITY STAGE ready_frames_complete
+TMB_ENDGAME_MAP_DENSITY STAGE runtime_ready
+TMB_ENDGAME_MAP_DENSITY PASS {"actor_pool":34,"actors_clipped_to_map_view":true,"idle_roster_sprites_non_overlapping":30,"materialized_actor_nodes":6,"pool_freed_on_scene_teardown":true,"producer_instances":100,"recycled_to":"co_truong_phong","selected_virtual_disciple":"lam_thanh_vu","simulation_state_unchanged":true,"unique_positions":100,"virtual_map_positions":130,"visible_focused_disciple_labels":1,"visible_status_labels_on_overview":0}
