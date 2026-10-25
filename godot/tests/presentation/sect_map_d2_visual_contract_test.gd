@@ -84,6 +84,30 @@ func _run() -> void:
     if SectMapD2Landscape.SCENIC_ACCENTS.size() < 5:
         _fail("no meaningful map-scene visual accents")
         return
+    # Every visible Source A route/terrain tile must be rendered from the
+    # exact existing texture once, even after static per-chunk caching.
+    var road_expected := 0
+    var terrain_expected := 0
+    for yy in range(iso.STARTER.position.y,iso.STARTER.end.y):
+        for xx in range(iso.STARTER.position.x,iso.STARTER.end.x):
+            var cell := Vector2i(xx,yy)
+            if iso._is_road(cell):
+                var road_key := "env01_assets/roads/%s" % str(iso.ROAD_TEXTURES[iso._road_key(cell)])
+                if iso.render_art.has(road_key):
+                    road_expected += 1
+            var terrain_key := iso._terrain_texture_key(cell)
+            if not terrain_key.is_empty() and iso.render_art.has(terrain_key):
+                terrain_expected += 1
+    var road_cached := 0
+    var terrain_cached := 0
+    for rows in iso.road_overlays_by_chunk.values():
+        road_cached += (rows as Array).size()
+    for rows in iso.terrain_overlays_by_chunk.values():
+        terrain_cached += (rows as Array).size()
+    if road_expected == 0 or terrain_expected == 0 or road_cached != road_expected or terrain_cached != terrain_expected:
+        _fail("map overlay cache differs from verified geometry: roads %d/%d terrain %d/%d" %
+            [road_cached,road_expected,terrain_cached,terrain_expected])
+        return
 
     var live_sites: Dictionary = {}
     for raw_id in state.buildings.keys():
@@ -111,7 +135,7 @@ func _run() -> void:
     if state.to_dict() != canonical_before:
         _fail("rendering/candidate texture load mutated canonical SimulationState")
         return
-    print("MAP-D2 VISUAL CONTRACT PASS verified_source_a_view=%d candidates=3 routes=9 managed=%d palettes=%d" % [int(status.get("accepted_count",0)),view_sites.size(),tones.size()])
+    print("MAP-D2 VISUAL CONTRACT PASS verified_source_a_view=%d candidates=3 routes=9 managed=%d palettes=%d roads_cached=%d terrain_cached=%d" % [int(status.get("accepted_count",0)),view_sites.size(),tones.size(),road_cached,terrain_cached])
     quit(0)
 
 
