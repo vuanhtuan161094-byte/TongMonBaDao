@@ -97,7 +97,7 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
     battle.continuous_mode = bool(data.get("continuous_mode",false)) if payload_version >= PREVIOUS_VERSION else false
     if rows.is_empty() and not battle.continuous_mode:
         return {"ok":false,"reason":"invalid_actor_count"}
-    var max_time := 1000000000.0 if battle.continuous_mode else MapBattleV2.MAX_SECONDS
+    var max_time := 1000000000.0 if battle.continuous_mode else MapBattleV2.LEGACY_FINITE_MAX_SECONDS
     if is_nan(battle.now) or is_inf(battle.now) or battle.now < 0.0 or battle.now > max_time:
         return {"ok":false,"reason":"invalid_elapsed_time"}
     if battle.actions < 0 or battle.downed_disciples < 0 or battle.downed_disciples > MapBattleV2.MAX_DISCIPLES:
