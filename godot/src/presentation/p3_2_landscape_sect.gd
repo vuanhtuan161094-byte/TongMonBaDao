@@ -502,7 +502,8 @@ func _refresh_world_actor_visibility() -> void:
             candidates[key] = true
             eligible.append({
                 "id":key,
-                "center_distance":rect.get_center().distance_squared_to(view.get_center())
+                "center_distance":rect.get_center().distance_squared_to(view.get_center()),
+                "screen_point":rect.get_center()
             })
     var visible_ids := SectEndgameVisualBudgetV1.choose_visible_actors(
         eligible,map_zoom,focused_key)
