@@ -585,13 +585,13 @@ func _draw_building(p: Vector2,kind: String, managed: bool) -> void:
         var size: Vector2 = MAP_D2_SITE_SIZE[kind]
         draw_texture_rect(vignette,
             Rect2(p-Vector2(size.x*0.5,size.y*0.79),size),false)
-        var font := ThemeDB.fallback_font
-        if font != null:
+        var candidate_font := ThemeDB.fallback_font
+        if candidate_font != null:
             var label_text := "MỎ" if kind == "mine" else ("LINH LÂM" if kind == "linh_forest" else "LINH ĐIỀN")
-            var width := font.get_string_size(label_text,HORIZONTAL_ALIGNMENT_LEFT,-1,12).x
+            var width := candidate_font.get_string_size(label_text,HORIZONTAL_ALIGNMENT_LEFT,-1,12).x
             var anchor := p+Vector2(-width*0.5,23)
-            draw_string_outline(font,anchor,label_text,HORIZONTAL_ALIGNMENT_LEFT,-1,12,2,Color(0.16,0.25,0.20))
-            draw_string(font,anchor,label_text,HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color(0.94,0.90,0.76))
+            draw_string_outline(candidate_font,anchor,label_text,HORIZONTAL_ALIGNMENT_LEFT,-1,12,2,Color(0.16,0.25,0.20))
+            draw_string(candidate_font,anchor,label_text,HORIZONTAL_ALIGNMENT_LEFT,-1,12,Color(0.94,0.90,0.76))
         return
     # MAP25 visual-only fallback: a flat ground footprint, never a fake
     # 3D building. Actual producer rows retain BuildingState.id and tap hitbox.
