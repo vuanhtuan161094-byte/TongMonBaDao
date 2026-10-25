@@ -53,14 +53,14 @@ Do not use Codex or Work for repository coding unless the user explicitly change
 
 1. **A CODE packet, not a historical phase, is the unit of implementation.** An OPEN QA debt or PAUSED unrelated phase does not automatically block a new explicitly authorized packet. A parallel DESIGN/QA investigation is allowed. There must be **one writer per overlapping file/subsystem**; concurrent CODE with shared `SimulationState`, `SectState`, `DiscipleState`, `BuildingSystem`, `WorkforceSystem`, `WarehouseSystem`, scheduler, save or scene integration needs one clearly named integration owner and no competing changes.
 2. **Separate permission is still compulsory.** Before CODE, obtain the owner's specific authorization naming package, intended behavior, current `main` SHA, allowed paths, disallowed systems, rollback/legacy migration and focused/cumulative tests. A plan, an approved design, or this governance change alone never authorizes runtime, tests, workflows or balance edits.
-3. **Preserve the exact statuses.** GP-02C1 is CODE DONE/official Linux focused+FULL PASS but overall QA OPEN because O6 standalone differential and physical Windows/Android debts are unresolved; DV2-03 remains PAUSED NOT CLOSED. Starting Economy-A cannot relabel either as CLOSED/PASS. Never call an old failure green or remove the test to make a dashboard green.
+3. **Preserve the exact statuses from CURRENT_CHECKPOINT.md.** Historical QA OPEN/PAUSED debt is not silently CLOSED by a newer packet. A later exact-SHA pass does not erase an earlier failure; an earlier failure does not override a demonstrated later pass. Never remove a test to make a dashboard green.
 4. **Risk-based dependency check.** Keep a known-red test as a traced baseline debt if demonstrably independent. If Economy-A edits Mine/Forest/warehouse/job timing/currency/save, the affected O6/O5/GP-01/GP-02B1/GP-02C1/SAFE contracts must be reproduced or compared on real commits. A pre-existing failure in the path being changed **blocks integrated acceptance**, though it need not block development; repair requires a separate authorized allowlist or inclusion expressly authorized in the packet.
 5. **Honest closure stays strict.** Close a packet only after explicit contract, complete implementation, official Godot 4.7.2 focused gate, cumulative regressions of affected and previously locked features (with any truly unrelated prior failures explicitly documented/owner-accepted, not called PASS), and `CURRENT_CHECKPOINT.md` / `NEXT_CHAT_HANDOFF.md` reflecting evidence, SHA, remaining debts and next permitted work.
 6. **No duplicate authority.** One canonical Warehouse, one scheduler/time source, one disciple active job, canonical V2 state/save. Preserve P2 legacy without silently treating `wallet/treasury` as V2 `spirit_stones`. Avoid speculative UI, fake economy outputs or invented game balance.
 
-**Current user decision:** Economy-A may be prepared and proposed for separate CODE authorization without waiting for GP-02C1 QA and DV2-03 administrative closure. The existing Injury 0/1/120-tick behavior remains production authority; 最强祖师-inspired graduated Injury/treatment is an independent DESIGN proposal, NOT a permission to change it. Economy-B/C, FE-02, DV2-04 and historical test repairs do not become authorized.
+**Current-work routing:** consult CURRENT_CHECKPOINT.md and NEXT_CHAT_HANDOFF.md; do not use the 2026-10-15 Economy-A preparation priority as a current work order. Economy-A is already merged. Injury 0/1/120-tick remains authority; reference-game graduated Injury/treatment remains a separate design, not permission to change it. A historical exclusion applies to its original packet, not as a repository-wide denial of later explicit owner authorization.
 
-For any seeming conflict with historical notes, read the matching updated `docs/GAME_SYSTEM_ARCHITECTURE.md` section 4 and the top of `CURRENT_CHECKPOINT.md`.
+For any seeming conflict with historical notes, read `docs/GAME_SYSTEM_ARCHITECTURE.md` section 4 and `CURRENT_CHECKPOINT.md`. Root entrypoints must contain one current status rather than appended historical ACTIVE/LATEST instructions; cite immutable history when older evidence is needed.
 
 ---
 
@@ -194,7 +194,7 @@ Locked high-level rules:
 
 ---
 
-## 9. P3.7 backend currently locked through C1
+## 9. P3.7 foundation references
 
 Backend foundation:
 - P3.7A1 Building Authority + Mine;
@@ -202,7 +202,7 @@ Backend foundation:
 - P3.7B1 Resource Registry + canonical Sect Warehouse;
 - P3.7C1 open-point six-foundation authority + Dẫn Tiên recruitment.
 
-Exact evidence belongs in `CURRENT_CHECKPOINT.md`, not here.
+Exact evidence and later implementation belong in `CURRENT_CHECKPOINT.md`, not here. This foundation list is not a ceiling on current project progress.
 
 Do not reintroduce:
 - permanent P3.7 `forge_materials` authority;

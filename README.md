@@ -1,87 +1,29 @@
-# Tông Môn Bá Đạo — Tông Môn Tycoon
+# Tông Môn Bá Đạo
 
-Godot 4.7.2 / GDScript simulation project for an autonomous cultivation-sect management game.
+Game quản lý tông môn tu tiên, Godot 4.7.2 / GDScript. Mục tiêu Android màn hình ngang 1280×720; quy mô dài hạn 1.000–3.000 đệ tử.
 
-## Core direction
+Người chơi quản lý hạ tầng, nhân sự, chính sách, tu luyện và săn quái. Simulation sở hữu dữ liệu gameplay; giao diện đọc trạng thái và gửi lệnh thật. Một Warehouse, một nguồn thời gian, One Active Job và save/reward exactly-once.
 
-The player builds and manages a sect instead of directly puppeting every disciple.
+## Trạng thái dự án
 
-Disciples act autonomously from personality, goals, relationships, memories, organization, sect resources, cultivation realm, spiritual roots, techniques, accumulated Kiếm/Thể/Pháp path history, learned combat skills and equipment.
+**`main` chưa chứa toàn bộ bản game mới.** Nhánh tích hợp gameplay #31, map Option B #32, ứng viên MAP-D2 #33, PvE presentation #34 và CODE-R0 là các luồng khác nhau; tất cả chưa được gộp thành một bản đã QA.
 
-Godot/GDScript is the gameplay authority. The simulation is deterministic and seeded; save/load and invariants are part of every phase contract.
+Xem [CURRENT_CHECKPOINT.md](CURRENT_CHECKPOINT.md) để chọn đúng nhánh, SHA, bằng chứng và việc còn thiếu. [NEXT_CHAT_HANDOFF.md](NEXT_CHAT_HANDOFF.md) là hướng dẫn tiếp tục. Không dùng số phase hoặc ngày commit để suy ra mức hoàn thiện.
 
-## Implemented stack
+| Thành phần | Trạng thái ngày 25/10/2026 |
+| --- | --- |
+| Gameplay tích hợp #31 | 28/28 focused, 56 S1 checks theo evidence đã lưu |
+| Map Option B #32 | 29/29 focused theo evidence đã lưu; owner visual pending |
+| MAP-D2 #33 và PvE #34 | Có code; Godot QA pending |
+| CODE-R0 | QA blocked: chưa có runner thực thi 21 tests |
+| Android / nghiệm thu hình ảnh / bản phát hành | Chưa hoàn tất |
 
-- P0 — autonomous hunt/combat/loot/economy/recovery foundation.
-- P1.1 — goals + personality.
-- P1.2 — recruitment + player choice.
-- P1.3 — relationships.
-- P1.4 — consequential memory.
-- P1.5 — teams, leadership and roles.
-- P1.6 — sect needs and resource pressure.
-- P2.1 — cultivation, realms and breakthroughs.
-- P2.2 — spiritual-root quality/elements.
-- P2.3 — technique economy, library and mastery.
-- P2.4 — classless Kiếm/Thể/Pháp identity from accumulated path XP.
-- P2.5 — deterministic real-time autonomous combat skills.
-- P2.6 — Luyện Khí / forge / equipment tycoon loop.
+Đây là tổng hợp bằng chứng trước đó, không phải lượt chạy test mới.
 
-## P2.6 loop
+## Làm việc với dự án
 
-`hunt -> forge materials -> Luyện Khí Đường -> equipment -> sect storage/shop -> autonomous purchase or player allocation -> stronger disciple -> harder hunt`
+Đọc [AGENTS.md](AGENTS.md), [kiến trúc](docs/GAME_SYSTEM_ARCHITECTURE.md), checkpoint và handoff trước khi sửa. Specs là thiết kế; checkpoint mới xác định tiến độ.
 
-P2.6 supports:
+Windows sử dụng entrypoint `Sync-Main.cmd` cho trunk; chỉ gọi `Sync-Main.cmd Verify-<gate>.cmd` khi đúng gate đã được giao. Lệnh đồng bộ main không tải các PR thử nghiệm chưa merge; xem checkpoint trước khi chọn bản chạy.
 
-- deterministic forging and quality;
-- sect equipment storage/shop;
-- build-aware autonomous equipment purchasing;
-- closed internal money transfer from disciple wallet to sect treasury;
-- manual equip by the player;
-- slot lock to override AI;
-- return-to-auto;
-- path/root/skill compatibility that changes real equipment effectiveness;
-- equipment effects on region choice and P2.5 combat;
-- exact SaveService v2 persistence.
-
-See `docs/P2_6_SPEC.md` for the current contract.
-
-## Runtime status
-
-Real Windows/Godot 4.7.2 evidence currently confirms P0 through P1.6 PASS.
-
-The first unresolved cumulative runtime gate is P2.1 save/load persistence. A dedicated first-difference diagnostic is already chained into `Verify-P2-1.ps1`.
-
-P2.2 through P2.6 are implemented but must not be called PASS until the cumulative runtime gate reaches and verifies them.
-
-See `CURRENT_CHECKPOINT.md` for the authoritative status.
-
-## Windows — authoritative verification
-
-After updating local `main`:
-
-```bat
-cd /d "E:\0.2. TongMonBaDao"
-git pull origin main
-Sync-P2-6.cmd
-```
-
-`Sync-P2-6.cmd` fast-forwards a clean local `main` and runs the cumulative P0 -> P2.6 verification chain.
-
-Direct verification without sync:
-
-```bat
-Verify-P2-6.cmd
-```
-
-Older phase PowerShell verifiers remain under `tools/godot` because the cumulative chain depends on them. Only the latest root `.cmd` launchers are kept.
-
-## Development rules
-
-Read in order before changing simulation code:
-
-1. `AGENTS.md`
-2. `CURRENT_CHECKPOINT.md`
-3. `NEXT_CHAT_HANDOFF.md`
-4. the active phase spec under `docs/`
-
-Do not mark a phase PASS from source inspection alone. Runtime evidence must come from the real Godot gate.
+Các verifier cũ còn là dependency/bằng chứng hồi quy. Đợt dọn này bỏ hướng dẫn lỗi thời trong tài liệu, giữ các hợp đồng runtime và asset còn giá trị. [Biên bản dọn dự án](docs/PROJECT_CLEANUP_2026-10-25.md).

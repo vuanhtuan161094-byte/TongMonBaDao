@@ -1,7 +1,7 @@
 # GAME SYSTEM ARCHITECTURE — TÔNG MÔN BÁ ĐẠO
 
 Status: CANONICAL STRUCTURE AUTHORITY  
-Updated: 2026-10-15 (governance section 4 only; gameplay specs unchanged)
+Updated: 2026-10-25 (stale work-order references removed; architecture/gameplay rules unchanged)
 
 This document defines **where each gameplay system belongs** and **how phases are allowed to progress**.
 
@@ -232,7 +232,7 @@ The former repository-wide **one-active-phase barrier is replaced**. Unclosed QA
 - **Evidence discipline:** no phase/piece is CLOSED without (1) explicit contract/ownership, (2) completed code for that contract, (3) official Godot 4.7.2 focused PASS, (4) cumulative regression PASS or clearly scoped, owner-accepted pre-existing exceptions that are proven unrelated, and (5) an updated `CURRENT_CHECKPOINT.md` naming the next work and debt. A documented exception is not a PASS and cannot waive a failing regression in a subsystem changed by the packet.
 - **Physical/device evidence stays separately labeled:** Windows GUI, Android device, crash/storage-failure and large-population acceptance are never inferred from Linux headless CI. Only make such tests release-blocking for a packet when they are stated in its explicit acceptance contract; otherwise carry them as PENDING USER/release-gate debt.
 - **Authority remains unchanged:** one canonical Warehouse, one scheduler/time source, one active disciple job, canonical V2 HP/Injury/EXP/realm, Sect-owned equipment, deterministic save/offline. New UI may only reflect genuine backend state.
-- **Current priority:** owner chose Economy-A as the next **candidate** CODE packet while GP-02C1 is QA OPEN and DV2-03 PAUSED NOT CLOSED. Economy-A is DESIGN/PREP ONLY until a separate CODE allowlist authorization. Injury redesign inspired by 最强祖师 is DESIGN ONLY and must not silently replace verified GP-02C1 runtime.
+- **Current priority and branch routing:** read CURRENT_CHECKPOINT.md and NEXT_CHAT_HANDOFF.md. The 2026-10-15 Economy-A preparation order is obsolete because Economy-A has merged. Injury redesign remains a separate proposal and does not replace Injury 0/1/120.
 
 This section supersedes historical single-phase instructions elsewhere in older checkpoints/specs; do not rewrite their historical evidence. A truly blocking overlapping dependency must be handled within the expressly approved scope or returned to the owner for a revised allowlist.
 
@@ -281,15 +281,15 @@ Do not reopen locked phases without actual regression evidence.
 
 ---
 
-## 7. P3.7 completed backend foundation
+## 7. P3.7 backend foundation references
 
-Completed backend foundation currently consists of:
+The earlier completed foundation includes:
 - A1: generic BuildingState/BuildingSystem + Mine;
 - A2R: Spirit Field on the same building framework;
 - B1: ResourceRegistry + one canonical Sect Warehouse;
 - C1: open-point six-foundation authority + Dẫn Tiên Đài recruitment.
 
-Implementation evidence and exact gate status live in `CURRENT_CHECKPOINT.md`.
+Implementation evidence, later work and exact gate status live in `CURRENT_CHECKPOINT.md`; this earlier foundation list is not the current project's full implementation inventory.
 
 ---
 
@@ -308,4 +308,4 @@ At any moment:
 
 Long-term decision: `docs/decisions/0003-fe00-godot-native-data-driven-frontend.md` (ADR-0003, accepted DESIGN ONLY). Godot-native data-driven frontend with one canonical gameplay/save authority; presentation-only `PresentationQuery`, read-only view-model snapshots, `VisualAssetRegistry`, fixed `SectLayoutDefinition`/isometric `SectMapModel`, visual actor controller/renderer, reusable Godot UI. Source A is benchmark/candidate art, NOT transplanted Unity authority. Existing `docs/P3_ASSET_REGISTRY.json`, historical approved visual contracts, source recovery and ADR-0002 LFS gate remain controlling. Fixed layout does NOT add placement fields to `BuildingState`. 13 Source A building candidates do NOT imply 13 persistent building instances. Android/Windows visual acceptance remains PENDING USER.
 
-FE-00 review/design **CLOSED**, no Godot runtime pass implied. FE-01 is separately queued, **NOT CODE AUTHORIZED**; section 4 scoped-ownership/code-authorization policy applies. Do not switch main scene, enable Spine, import binaries by unverified transport, or rewrite gameplay in FE-00.
+FE-00 review/design **CLOSED**, no Godot runtime pass implied. Its original FE-01 queue instruction is historical; use CURRENT_CHECKPOINT.md for later implementation and current scope. Section 4 still governs new code. FE-00 itself does not authorize a main-scene switch, Spine enablement, unverified binary import or gameplay rewrite.
