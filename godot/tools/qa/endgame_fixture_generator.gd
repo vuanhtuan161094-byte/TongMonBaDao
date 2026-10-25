@@ -3,8 +3,12 @@ extends SceneTree
 const SEED := 20261025
 const SAVE_PATH := "res://qa/endgame_qa_save.json"
 const REPORT_PATH := "res://qa/endgame_qa_report.json"
-const TARGET_POPULATION := 130 # 100 real worksite operators + 30 idle hunt-ready disciples.
+const TARGET_POPULATION := 130 # Original tested fixture remains the default.
 const SIMULATED_MINUTES := 120
+const ALLOWED_POPULATIONS := [130,200,500]
+var roster_target := TARGET_POPULATION
+var qa_save_path := SAVE_PATH
+var qa_report_path := REPORT_PATH
 const TARGET_COUNTS := {
 	"mine": 30,
 	"linh_forest": 30,
@@ -18,6 +22,20 @@ func _init() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
+	# Explicit opt-in 130/200/500 stress profiles. NEVER overwrite the
+	# owner's currently playing isolated 130 roster or the committed base
+	# fixture when running a larger load test.
+	for arg in OS.get_cmdline_user_args():
+		if not str(arg).begins_with("--tmb-roster="):
+			continue
+		var chosen := str(arg).trim_prefix("--tmb-roster=")
+		if not chosen.is_valid_int() or not ALLOWED_POPULATIONS.has(int(chosen)):
+			_fail("invalid_qa_population",{"allowed":ALLOWED_POPULATIONS,"received":chosen})
+			return
+		roster_target = int(chosen)
+	if roster_target != TARGET_POPULATION:
+		qa_save_path = "res://qa/endgame_qa_save_%d.json" % roster_target
+		qa_report_path = "res://qa/endgame_qa_report_%d.json" % roster_target
 	_preserve_existing_save_files()
 	var state := P37Factory.create_state(SEED)
 	var runtime := LiveGameRuntimeV2.new()
@@ -30,8 +48,8 @@ func _run() -> void:
 	if not bool(attached.get("ok", false)):
 		_fail("canonical_runtime_attach_failed", attached)
 		return
-	runtime.save_path = SAVE_PATH
-	runtime.owner.durable_path = SAVE_PATH
+	runtime.save_path = qa_save_path
+	runtime.owner.durable_path = qa_save_path
 
 	var buildings := BuildingSystem.new()
 	_build_required_buildings(state, buildings)
@@ -43,7 +61,7 @@ func _run() -> void:
 	# does not claim natural progression or add a parallel housing system. Keep
 	# the real NeedsSystem restraint healthy so a dense endgame save is not
 	# intentionally overcrowded by the default starter lodging capacity.
-	state.sect.lodging_capacity = TARGET_POPULATION
+	state.sect.lodging_capacity = roster_target
 	if not _recruit_roster(state):
 		return
 	if not _assign_operators(state, buildings):
@@ -69,11 +87,11 @@ func _run() -> void:
 		})
 		return
 
-	var saved_error: Error = runtime.owner.saves.save_to_path(state, SAVE_PATH)
+	var saved_error: Error = runtime.owner.saves.save_to_path(state, qa_save_path)
 	if saved_error != OK:
 		_fail("save_service_write_failed", {"error": saved_error})
 		return
-	var loaded := SaveService.new().load_from_path(SAVE_PATH)
+	var loaded := SaveService.new().load_from_path(qa_save_path)
 	if loaded == null:
 		_fail("save_service_reload_failed", {})
 		return
@@ -86,7 +104,7 @@ func _run() -> void:
 		return
 
 	var report := _build_report(state, loaded, simulation_msec)
-	var report_file := FileAccess.open(REPORT_PATH, FileAccess.WRITE)
+	var report_file := FileAccess.open(qa_report_path, FileAccess.WRITE)
 	if report_file == null:
 		_fail("report_write_failed", {"error": FileAccess.get_open_error()})
 		return
@@ -159,9 +177,9 @@ func _recruit_roster(state: SimulationState) -> bool:
 	# Capacity 130 is an explicit synthetic endgame fixture seed, sized to the
 	# requested 100 active sites plus 30 reserved expedition candidates. Every
 	# disciple still comes from the production candidate/recruitment pipeline.
-	state.sect.disciple_capacity = TARGET_POPULATION
+	state.sect.disciple_capacity = roster_target
 	var recruitment := RecruitmentSystem.new()
-	while state.disciples.size() < TARGET_POPULATION:
+	while state.disciples.size() < roster_target:
 		var candidate := recruitment.generate_candidate(state, DiscipleGeneratorV2.SOURCE_ORDINARY)
 		if candidate == null:
 			_fail("canonical_candidate_generation_failed", {"population": state.disciples.size()})
@@ -282,6 +300,7 @@ func _build_report(state: SimulationState, loaded: SimulationState, simulation_m
 		"simulated_minutes": SIMULATED_MINUTES,
 		"simulation_step_milliseconds": simulation_msec,
 		"population": state.disciples.size(),
+		"population_profile": roster_target,
 		"lodging_capacity": state.sect.lodging_capacity,
 		"synthetic_qa_seed_fields": ["disciple_capacity", "lodging_capacity", "canonical_building_instances", "canonical_building_levels", "ordinary_v2_recruitment_roster"],
 		"disciples_assigned_to_real_producer_sites": 100,
@@ -297,8 +316,8 @@ func _build_report(state: SimulationState, loaded: SimulationState, simulation_m
 		"state_invariants": state.validate_invariants(),
 		"building_invariants": BuildingSystem.new().validate_invariants(state),
 		"warehouse_invariants": WarehouseSystem.new().validate_invariants(state),
-		"save_path": ProjectSettings.globalize_path(SAVE_PATH),
-		"save_sha256": FileAccess.get_sha256(SAVE_PATH),
+		"save_path": ProjectSettings.globalize_path(qa_save_path),
+		"save_sha256": FileAccess.get_sha256(qa_save_path),
 		"reload_tick": loaded.tick,
 		"reload_population": loaded.disciples.size(),
 		"reload_buildings": loaded.buildings.size(),
@@ -306,8 +325,8 @@ func _build_report(state: SimulationState, loaded: SimulationState, simulation_m
 	}
 
 func _preserve_existing_save_files() -> void:
-	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(SAVE_PATH.get_base_dir()))
-	var paths := [SAVE_PATH, SAVE_PATH + ".tmp", SAVE_PATH + ".bak", REPORT_PATH]
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(qa_save_path.get_base_dir()))
+	var paths := [qa_save_path, qa_save_path + ".tmp", qa_save_path + ".bak", qa_report_path]
 	var existing := paths.filter(func(path: String) -> bool: return FileAccess.file_exists(path))
 	if existing.is_empty():
 		return
