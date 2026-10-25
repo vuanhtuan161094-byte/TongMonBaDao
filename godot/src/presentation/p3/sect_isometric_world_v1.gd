@@ -122,6 +122,7 @@ const PRODUCER_ROUTE_APPROACH := {
 var camera: Camera2D
 var surface: Node2D
 var display_instances: Array[Dictionary] = []
+var selected_visual_site_id := ""
 var tiles: Dictionary = {}
 var active_chunks: Array[Vector2i] = []
 # Chunk-local immutable ArrayMesh, cached in memory; purely visual, no save data.
@@ -421,6 +422,14 @@ func _row(dest: StringName, instance_id: StringName, text_label: String, index: 
         "label":text_label
     }
 
+func set_selected_visual_site(id: StringName) -> void:
+    var next_id := str(id)
+    if selected_visual_site_id == next_id:
+        return
+    selected_visual_site_id = next_id
+    queue_redraw()
+
+
 func set_legacy_transform(zoom: float, legacy_position: Vector2) -> bool:
     if camera == null:
         return false
@@ -607,6 +616,20 @@ func _draw() -> void:
     for item in decoration_items:
         if _visible_world(item["world"]):
             queue.append({"y":(item["world"] as Vector2).y,"kind":"vegetation","data":item})
+    # Preserve all canonical picking rows while limiting oversized temporary
+    # SVG roofs to the focused worksite plus the nearest four view candidates.
+    var site_candidates: Array[Dictionary] = []
+    for entry in queue:
+        if str(entry["kind"]) != "building":
+            continue
+        var item: Dictionary = entry["data"]
+        if bool(item["managed"]) and MAP_D2_CANDIDATE_SITES.has(str(item["destination"])):
+            site_candidates.append({
+                "id":str(item["building_id"]),
+                "center_distance":(item["world"] as Vector2).distance_squared_to(camera.position)
+            })
+    var detailed := SectEndgameVisualBudgetV1.choose_detailed_producers(
+        site_candidates,camera.zoom.x,selected_visual_site_id)
     queue.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
         return float(a["y"]) < float(b["y"])
     )
@@ -619,7 +642,8 @@ func _draw() -> void:
             draw_texture_rect(tex,Rect2(place-Vector2(scaled.x*0.5,
                 scaled.y-4.0),scaled),false)
         else:
-            _draw_building(place,str(item["destination"]),bool(item["managed"]))
+            _draw_building(place,str(item["destination"]),bool(item["managed"]),
+                detailed.has(str(item["building_id"])))
 
 func _visible_world(point: Vector2) -> bool:
     if camera == null:
@@ -669,13 +693,13 @@ func _draw_compact_producer(p: Vector2,kind: String,overview: bool) -> void:
             draw_line(p+Vector2(dx,3),p+Vector2(dx+2,-4),detail,1.5,true)
 
 
-func _draw_building(p: Vector2,kind: String, managed: bool) -> void:
+func _draw_building(p: Vector2,kind: String, managed: bool, allow_detail: bool = true) -> void:
     # Always keep all 100 actual producers in display_instances, but do NOT
     # paint 100 huge candidate buildings in a far overview. This is view LOD,
     # not reducing valid BuildingState instances or workers.
     if managed and MAP_D2_CANDIDATE_SITES.has(kind):
         var level := SectEndgameVisualBudgetV1.site_level(camera.zoom.x)
-        if level < 2:
+        if level < 2 or not allow_detail:
             _draw_compact_producer(p,kind,level == 0)
             return
     if HOUSE_TEXTURES.has(kind):
