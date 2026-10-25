@@ -417,6 +417,10 @@ func _set_focus_target(world_point: Vector2, kind: StringName, target_id: String
     focused_id = target_id
     focused_label = label
     has_focus_target = true
+    # Selecting a site does not reconfigure a single BuildingState: the
+    # renderer only promotes its temporary illustration to detail LOD.
+    if iso_world != null:
+        iso_world.set_selected_visual_site(target_id if kind == &"building" else &"")
     _position_focus_marker(world_point)
     if focus_target_button != null:
         focus_target_button.disabled = false
