@@ -1,6 +1,6 @@
 # TÔNG MÔN BÁ ĐẠO — MAP-D2 / REAL VISUAL WORLD UPGRADE (BROAD SYSTEM SCOPE)
 Date: 2026-10-25 · Owner-startable single long Codex job, not a new release or automatic merge.
-Repository: \`vuanhtuan161094-byte/TongMonBaDao\` · official Godot 4.7.2 · Android 1280×720 landscape · Windows proof.
+Repository: `vuanhtuan161094-byte/TongMonBaDao` · official Godot 4.7.2 · Android 1280×720 landscape · Windows proof.
 **Correction:** MAP-D1B was artificially constrained to ONE production script. It passed focused tests but only moved a few buildings/roads/trees. This packet MUST NOT repeat that failure. **Authorize the whole map-presentation/art pipeline as a work domain**, with specific canonical gameplay boundaries. Allow necessary multi-file refactors and test tools. Judge the result by **actual high-quality playable visual improvement**, not number of changed lines, files, commits or easy green test markers.
 
 ## 0. What "DONE" means
@@ -13,18 +13,18 @@ Do not optimize for "more code." Optimize for a real coherent playable game map 
 
 ## 1. Exact known baseline, ancestry and status
 
-- PR #31, integration gameplay, HEAD at publication: \`9eb4fd55733bb49bbb069240b8e332d37d22aced\`, tested code \`4b02a0c61a2771d9d4638129d96b68ad292270dc\`. 28/28 focused and 56 Combat S1 edge checks, 19 real GUI frames.
-- PR #32, OPTION B map prototype, HEAD at publication: \`c6bde70f6e98f482c91cd6d2c386e58437877209\`, branch \`feature/map-d1b-functional-hub-playable-20261025\`, base PR31, OPEN/DRAFT/UNMERGED. 29/29 focused tests PASS claimed in evidence and official Godot 4.7.2 logs; 56 Combat S1 edge checks; 32 Source A MAP25 SHA-gated accepted; 60 sec Windows samples mean FPS 59.74, but frame-time p95 64.54ms, working set peak 738.75 MiB; manual/Android/owner approval PENDING.
-- Main \`29b5fba448b0178cb520a4ada44b375b4b934e31\` lacks the integration chain. Do NOT start from main or rebuild from zero.
-- MAP-D0 branch \`docs/map-d0-sect-main-redesign-20261025\` @ \`25cb7a0f59a93ddcccc8a5d6acf1dd8e2290874f\` contains A/B/C schematic and asset evidence.
-- MAP-D2 packet docs branch \`docs/map-d2-visual-rebuild-broad-scope-20261025\` is based on PR32 with one new Markdown. This DOCUMENT is a proposal; runtime/art CODE permission is only granted when the owner sends the Section 12 launch prompt.
+- PR #31, integration gameplay, HEAD at publication: `9eb4fd55733bb49bbb069240b8e332d37d22aced`, tested code `4b02a0c61a2771d9d4638129d96b68ad292270dc`. 28/28 focused and 56 Combat S1 edge checks, 19 real GUI frames.
+- PR #32, OPTION B map prototype, HEAD at publication: `c6bde70f6e98f482c91cd6d2c386e58437877209`, branch `feature/map-d1b-functional-hub-playable-20261025`, base PR31, OPEN/DRAFT/UNMERGED. 29/29 focused tests PASS claimed in evidence and official Godot 4.7.2 logs; 56 Combat S1 edge checks; 32 Source A MAP25 SHA-gated accepted; 60 sec Windows samples mean FPS 59.74, but frame-time p95 64.54ms, working set peak 738.75 MiB; manual/Android/owner approval PENDING.
+- Main `29b5fba448b0178cb520a4ada44b375b4b934e31` lacks the integration chain. Do NOT start from main or rebuild from zero.
+- MAP-D0 branch `docs/map-d0-sect-main-redesign-20261025` @ `25cb7a0f59a93ddcccc8a5d6acf1dd8e2290874f` contains A/B/C schematic and asset evidence.
+- MAP-D2 packet docs branch `docs/map-d2-visual-rebuild-broad-scope-20261025` is based on PR32 with one new Markdown. This DOCUMENT is a proposal; runtime/art CODE permission is only granted when the owner sends the Section 12 launch prompt.
 
 **Always refresh PR31/32/branch refs live before checkout.** If SHA changed, compare net code/test/assets and record diff. Don't force-reset anyone's remote branch or worktree.
 
 Read, in order:
-1. \`AGENTS.md\`, \`docs/GAME_SYSTEM_ARCHITECTURE.md\`, \`CURRENT_CHECKPOINT.md\`, \`NEXT_CHAT_HANDOFF.md\`.
-2. \`docs/P3_PRESENTATION_MASTER.md\`, \`docs/P3_ART_BIBLE.md\`, \`docs/P3_ASSET_MAP_ENVIRONMENT.md\`, \`docs/P3_ASSET_BUILDINGS.md\`, \`docs/P3_SOURCE_RECOVERY_MANIFEST.md\`, \`docs/P3_ASSET_REGISTRY.json\`.
-3. PR32 implementation report \`docs/handoffs/2026-10-25/TMB_MAP_D1B_OPTION_B_IMPLEMENTATION_REPORT_2026-10-25.md\`, before/after \`outputs/map_d1b/before/final_sha_baseline.png\`, \`outputs/map_d1b/after/final_sha_candidate.png\`, 29-test matrix and source_a_asset_matrix.
+1. `AGENTS.md`, `docs/GAME_SYSTEM_ARCHITECTURE.md`, `CURRENT_CHECKPOINT.md`, `NEXT_CHAT_HANDOFF.md`.
+2. `docs/P3_PRESENTATION_MASTER.md`, `docs/P3_ART_BIBLE.md`, `docs/P3_ASSET_MAP_ENVIRONMENT.md`, `docs/P3_ASSET_BUILDINGS.md`, `docs/P3_SOURCE_RECOVERY_MANIFEST.md`, `docs/P3_ASSET_REGISTRY.json`.
+3. PR32 implementation report `docs/handoffs/2026-10-25/TMB_MAP_D1B_OPTION_B_IMPLEMENTATION_REPORT_2026-10-25.md`, before/after `outputs/map_d1b/before/final_sha_baseline.png`, `outputs/map_d1b/after/final_sha_candidate.png`, 29-test matrix and source_a_asset_matrix.
 4. MAP-D0 report, 3 SVGs, MAP-D1B District C/LOD plan.
 5. Repo/labs/older branches and approved owned Source A/JX asset staging as SOURCE MATERIAL ONLY, never alternate gameplay authority.
 
@@ -33,18 +33,18 @@ Read, in order:
 When the owner submits Section 12, **CODE scope = the entire SECT MAP PRESENTATION + ART RECOVERY/CONVERSION + relevant UI INTEGRATION domain**. This overrides D1B's one-file allowlist for MAP-D2 only. One Codex writer/one isolated integration worktree.
 
 Allowed to edit/create multiple files when required (record exact changed paths + rationale afterwards):
-- \`godot/src/presentation/p3/**\`: world layer, isometric world, art adapter, draw order, camera adapter, map model's **read-only view navigation**, Source A presentation mapping, worksite cue **display**, selection/pick overlay, map labels/LOD.
-- \`godot/src/presentation/p3_1_landscape_sect.gd\`, \`godot/src/presentation/p3_2_landscape_sect.gd\`, and relevant **P3.2-only UI/presentation view scripts** as necessary to improve map readability, pan/zoom, actor/building overlays, small-screen hit zones and reduce obstructive UI. Existing canonical command handlers must not be changed in business semantics.
-- \`godot/scenes/p3/**\` for presentation scene composition and viewports, while preserving one P3.2 runtime instance and combat/CARE hookup.
-- NEW **map-specific** runtime textures/atlases/fonts/scene assets under \`godot/assets/p3/**\` and clearly named \`godot/art/map_d2_candidate/**\` if compliant with repo source policy; add manifest/registry entries for new candidates with lineage and SHA. **NEVER overwrite pre-existing Source A/MAP25 art**.
-- \`godot/data/presentation/**\` for new view-only map/layout/art metadata, without rewriting existing \`map25_source_a_verified.json\` or lying about historical provenance.
-- \`godot/tests/presentation/**\`, relevant affected integration tests, and new bounded capture/asset-audit/conversion tooling under \`tools/**\` or \`labs/**\`.
-- \`docs/**\`, \`outputs/map_d2/**\` for catalogs, migration/diff matrices, art provenance, test logs, screenshots, perf and playable packaging metadata.
+- `godot/src/presentation/p3/**`: world layer, isometric world, art adapter, draw order, camera adapter, map model's **read-only view navigation**, Source A presentation mapping, worksite cue **display**, selection/pick overlay, map labels/LOD.
+- `godot/src/presentation/p3_1_landscape_sect.gd`, `godot/src/presentation/p3_2_landscape_sect.gd`, and relevant **P3.2-only UI/presentation view scripts** as necessary to improve map readability, pan/zoom, actor/building overlays, small-screen hit zones and reduce obstructive UI. Existing canonical command handlers must not be changed in business semantics.
+- `godot/scenes/p3/**` for presentation scene composition and viewports, while preserving one P3.2 runtime instance and combat/CARE hookup.
+- NEW **map-specific** runtime textures/atlases/fonts/scene assets under `godot/assets/p3/**` and clearly named `godot/art/map_d2_candidate/**` if compliant with repo source policy; add manifest/registry entries for new candidates with lineage and SHA. **NEVER overwrite pre-existing Source A/MAP25 art**.
+- `godot/data/presentation/**` for new view-only map/layout/art metadata, without rewriting existing `map25_source_a_verified.json` or lying about historical provenance.
+- `godot/tests/presentation/**`, relevant affected integration tests, and new bounded capture/asset-audit/conversion tooling under `tools/**` or `labs/**`.
+- `docs/**`, `outputs/map_d2/**` for catalogs, migration/diff matrices, art provenance, test logs, screenshots, perf and playable packaging metadata.
 
 **A path in a new subfolder with the same responsibility is allowed without another owner micro-approval.** If edits touch disallowed gameplay-owner domains below, STOP that subtask, report it, continue independent map/art tasks.
 
 **Hard forbidden gameplay-owner domains (unless separately authorized in a NEW CODE packet):**
-\`godot/src/simulation/**\`, Combat V2 and V3-S1 authority, CARE hunting encounter/loot/receipts, workforce assignment/production formulas and scheduler ticks, D7/DiscipleState identity and current_action, WarehouseSystem, SaveService/persistence schema, injury/cultivation/equipment, monster AI/spawn/damage, gameplay map difficulty and world progression. No x100 balance. No duplicate simulated job clock or new visual-only warehouse economy. \`.github/workflows\` and branch protection are also forbidden.
+`godot/src/simulation/**`, Combat V2 and V3-S1 authority, CARE hunting encounter/loot/receipts, workforce assignment/production formulas and scheduler ticks, D7/DiscipleState identity and current_action, WarehouseSystem, SaveService/persistence schema, injury/cultivation/equipment, monster AI/spawn/damage, gameplay map difficulty and world progression. No x100 balance. No duplicate simulated job clock or new visual-only warehouse economy. `.github/workflows` and branch protection are also forbidden.
 
 Design renderer policy: **do not rewrite the whole renderer merely to create work volume.** However refactor/add actual visual layers, tile/terrain compositing, depth occlusion, verified animated sprite adapters and chunk/LOD code if real visual/performance evidence warrants. Retain Godot 4.7.2 and Source A style, one canonical Camera2D/viewport transform, unchanged input-to-world identities; no wholesale JX/Unity engine swap.
 
@@ -52,10 +52,10 @@ Design renderer policy: **do not rewrite the whole renderer merely to create wor
 
 Source audit nuance:
 - PR32 verifies exactly **32** MAP25 art PNGs (4 terrain/6 roads/19 vegetation-props/3 buildings). Only **Main Hall 510052, Warehouse 510102, Forge 520081** have runtime verified Source A building sprites, and PR32 uses 30 of the 32 in default map.
-- Historical visual reference \`docs/P3_ASSET_BUILDINGS.md\` records **eight approved building identities/visuals**. Much older source recovery manifest labels source class **S3** (historically approved but exact bytes not retained in its Oct03 snapshot). This document predates the three PV01 runtime imports; **check actual fresh bytes/manifest per asset** and don't copy the Oct03 "all missing" claim uncritically.
-- \`source_art/README.md\` says editable masters once planned in source_art but source may live in approved EXTERNAL Source A local archives/Drive/GitHub asset repos/worktrees/exports. Read, do not mutate source; enumerate rights/locator/file type/SHA, decode to inspect if a tool exists.
+- Historical visual reference `docs/P3_ASSET_BUILDINGS.md` records **eight approved building identities/visuals**. Much older source recovery manifest labels source class **S3** (historically approved but exact bytes not retained in its Oct03 snapshot). This document predates the three PV01 runtime imports; **check actual fresh bytes/manifest per asset** and don't copy the Oct03 "all missing" claim uncritically.
+- `source_art/README.md` says editable masters once planned in source_art but source may live in approved EXTERNAL Source A local archives/Drive/GitHub asset repos/worktrees/exports. Read, do not mutate source; enumerate rights/locator/file type/SHA, decode to inspect if a tool exists.
 - Source A rig/Spine conversion already has proofs in older branches/worktrees; do not re-convert all actors unless map actually needs it.
-- Historical \`environment.path_grid128\` had an old approved pack; search exact artifact before redrawing.
+- Historical `environment.path_grid128` had an old approved pack; search exact artifact before redrawing.
 - Important: a static crystal/bush sprite isn't a real mine/woodcutter/farm building or action animation.
 
 **Long asset-first task:** inspect every accessible approved Source A directory/ZIP/Pak/sprite atlas/vector/motion/building master that may contain isometric environments, building family, terrain, roads, courtyard, ground textures, fences, stairs, Gate, residential, training, Mine, forest worksite, field, water/bridge, wall, props. Prioritize reusable approved art over synthetic replacements. Use search by real SHA/type/visual source, contact sheets and dimension/alpha/angle analysis. Record ABSENT, UNREADABLE, NOT CONNECTED, CANDIDATE UNVERIFIED and VERIFIED. Do not silently skip source folders just because they are not already in PR32.
@@ -130,7 +130,7 @@ Same save/simulation state/camera/zoom baseline PR31/PR32 vs new MAP-D2:
 - Annotated screenshots locating visual flaws; report what was changed materially (e.g. which art sprites recovered, terrain transition, gate legibility, actor occlusion), not just "AStar paths=9" or "+145 lines".
 - Short real GUI video or frame sequence may be captured if supported, not mandatory; never synthetic video passed as real.
 - Every screenshot manifest: exact SHA/tree, Godot binary/version, viewport, camera and save identity, referenced asset hashes, screenshot raw hash. No generated image mockups misrepresented as runtime proof.
-- **Design review is separate from QA green**. A visually bad map with all focused tests PASS = \`TECHNICAL_PASS_VISUAL_REVIEW_PENDING\`, not "map complete". Evaluate readability, material harmony, compositional quality, map occupation/emptiness, new art completeness.
+- **Design review is separate from QA green**. A visually bad map with all focused tests PASS = `TECHNICAL_PASS_VISUAL_REVIEW_PENDING`, not "map complete". Evaluate readability, material harmony, compositional quality, map occupation/emptiness, new art completeness.
 
 ## 9. PHASE V5 — Measured performance and Windows playable
 
@@ -140,7 +140,7 @@ Create new portable Windows *visual MAP-D2* build or project+launcher from FINAL
 
 ## 10. PHASE V6 — One DRAFT PR delivery and owner decision, not a series of micro-packets
 
-New CODE branch recommendation: \`feature/map-d2-sourcea-visual-world-20261025\`, from **latest verified PR32** (unless it changed incompatibly). One designated writer, no parallel edits to scene/map/asset registry.
+New CODE branch recommendation: `feature/map-d2-sourcea-visual-world-20261025`, from **latest verified PR32** (unless it changed incompatibly). One designated writer, no parallel edits to scene/map/asset registry.
 Open one NEW DRAFT PR stacked on PR32 branch, not main, and keep PR24–32 open/untouched. Commit source/test/verified art appropriate to repo size + small runtime PNG evidence/docs. Do not push huge raw licensed bundles/LFS without proper approval; raw Source A owned files remain in original approved storage.
 
 Required:
@@ -169,8 +169,8 @@ Required:
 
 TÔNG MÔN BÁ ĐẠO — TÔI CẤP PHÉP MAP-D2 VISUAL WORLD UPGRADE TRÊN NHÁNH RIÊNG. KHÔNG CÒN GIỚI HẠN CHỈ ĐƯỢC SỬA 1 FILE.
 
-Repo: \`vuanhtuan161094-byte/TongMonBaDao\`. Đọc toàn bộ packet:
-\`docs/map-d2-visual-rebuild-broad-scope-20261025/docs/handoffs/2026-10-25/TMB_MAP_D2_BROAD_SCOPE_VISUAL_WORLD_UPGRADE_CODEX_PACKET_2026-10-25.md\`
+Repo: `vuanhtuan161094-byte/TongMonBaDao`. Đọc toàn bộ packet:
+`docs/map-d2-visual-rebuild-broad-scope-20261025/docs/handoffs/2026-10-25/TMB_MAP_D2_BROAD_SCOPE_VISUAL_WORLD_UPGRADE_CODEX_PACKET_2026-10-25.md`
 và các tài liệu/source được dẫn chiếu. Bản gốc kỹ thuật: PR #32 MAP-D1B trên PR #31 CARE/Combat/Source A; kiểm tra HEAD mới nhất.
 
 Tôi cho phép Codex **triển khai trọn MAP-D2 trên một nhánh/worktree riêng, sửa MỌI file cần thiết thuộc hệ thống MAP PRESENTATION, các scene P3.2, UI overlay liên quan map, camera/picking adapters, source art ingestion/renderer, các asset mới và tools/tests/manifest để đạt kết quả THẨM MỸ THẬT**. Không giới hạn tùy tiện số dòng code hoặc file; mỗi thay đổi phải có lý do và regression. Có thể refactor presentation renderer/layers khi có bằng chứng, nhưng không đổi engine/gameplay hay tạo camera/simulation mới. Đây là một quyền CODE cụ thể cho hệ map, không phải quyền viết lại toàn game.
