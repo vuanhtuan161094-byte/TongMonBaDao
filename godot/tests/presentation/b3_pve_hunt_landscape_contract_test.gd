@@ -37,7 +37,7 @@ func _run() -> void:
     root.add_child(canvas)
     canvas.attach_session(battle)
     var before := MapBattleSnapshotV2.save(battle)
-    if not B3CareHuntLandscapeV2.valid_layout(battle.ARENA.size):
+    if not B3CareHuntLandscapeV2.valid_layout(MapBattleV2.ARENA.size):
         _fail("deterministic forest art escaped canonical 36x20 bounds")
         return
     if B3CareHuntLandscapeV2.PATCHES.size() < 6 or B3CareHuntLandscapeV2.EDGE_GRASS.size() < 10:
