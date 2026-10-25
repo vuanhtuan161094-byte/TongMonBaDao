@@ -3,10 +3,11 @@
 Ngày nghiệm thu: 2026-10-26
 Godot: official `4.7.2.stable.official.ed1daf0bf`
 Baseline PR #39: `087be910c919bafbcfdc52de898747f9b8fdf49f`
+Final branch HEAD / PR #39 HEAD: `8c7e2e6145200af4ec5538c359d55abbe5c0c7a2`
 Gameplay/pooling commit đã chạy focused: `ae3902484e01ebbaec3f97b695a06ddaa3be53b4`
 Runner/focused profile 200 verification commit: `3c04baac5a7773445482c6df418a57bf4d995d95`
 
-Không chạy FULL/CI, không merge. Nhánh `feature/endgame-visual-lod-pve-world-foundation-20261025` đang ahead hai commit so với `github/pr-39-head`; chưa push. Không thay đổi save gốc, Source A/JX master, PR khác, Combat V2, economy, Injury, Warehouse hay SaveService.
+Không chạy FULL/CI, không merge. Bốn commit đã được fast-forward push lên nhánh `feature/endgame-visual-lod-pve-world-foundation-20261025`; GitHub xác nhận PR #39 vẫn Draft, open và unmerged tại final HEAD nêu trên. Không thay đổi save gốc, Source A/JX master, PR khác, Combat V2, economy, Injury, Warehouse hay SaveService.
 
 ## Kết quả
 
