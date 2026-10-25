@@ -1,6 +1,9 @@
 # TÔNG MÔN BÁ ĐẠO — R10 ĐÁNH VÂN GIÁC LỘC: KIỂM ĐỊNH SÁT THƯƠNG COMBAT V2
 ## Tách phép tính theo code thật khỏi tỷ lệ thắng / game QA chưa có
 
+> **CẬP NHẬT 25/10 — SUPERSEDED RULE REMOVED:** 90 giây là timeout của **legacy finite encounter trên main**, KHÔNG phải luật săn World R11. Nhánh PR #31 (code 4b02a0c..., HEAD 9eb4fd...) giữ `continuous_mode` hoạt động sau 120 giây và chỉ kiểm `MAX_SECONDS` khi `not continuous_mode`. Các phép tính dưới đây so sánh *một đời quái*/một đòn; không được hiểu là mô phỏng trận hữu hạn 90s. R11 phải được đánh giá bằng số kill thật, HP/injury sau nhiều kill, hồi phục, rút lui chủ động, save/load và receipt. Xem `TMB_COMBAT_CONTINUOUS_VS_LEGACY_90S_DEPRECATION_AUDIT_2026-10-25.md`.
+
+
 **2026-10-25 — DOCS RESEARCH ONLY.** Không sửa code; không bổ sung species vào registry, không dựng map, không chạy Godot/CI, không merge, không sửa PR UI/Source A/Combat V2. Căn cứ main 29b5fba448b0178cb520a4ada44b375b4b934e31 và hồ sơ R11 S1/S2 nhánh 4c3e7ba5.
 
 ## 1. Những gì code chính xác đang làm [SOURCE/CODE]
@@ -10,7 +13,7 @@
   - DEF = (12 × RealmG + 7 × BodyG) × potential_factor.
 - CombatStatsV2.resolve_direct_hit với neutral/basic, không chí mạng/kháng/phá thủ: damage = ATK × [2 ATK / (2 ATK + DEF_target)]. Nếu penetration/crit/resistance/context được bật, phải áp đúng nguồn và thứ tự của code; không biến historical equipment combat_power thành ATK.
 - MonsterCatalogueV2.create_actor: normal HP=190G × species_hp, ATK=23G × species_atk, DEF=19G × species_def; normal tier factors đều 1. Vân Giác Lộc species chưa tồn tại, nên **species factor trong báo cáo này là tham số mô phỏng**.
-- MapBattleV2: STEP_SECONDS=0,25, MAX_SECONDS=90, MAX_DISCIPLES=30, MAX_MONSTERS=40, sáu disciple tối đa/party; normal monster basic base interval=1,65 giây, disciple mặc định base_interval=1,6 giây trước learned style/gear. Các đòn có vị trí/movement/target, role healer/guard/learned skills, randomness, dead/downed, cooldown. Map battle giây **không trực tiếp tương đương tick/minute của scheduler**.
+- MapBattleV2: STEP_SECONDS=0,25, MAX_DISCIPLES=30, MAX_MONSTERS=40, sáu disciple tối đa/party; timeout 90s CHỈ còn là luật ở finite legacy mode, không phải continuous_mode của PR31; normal monster basic base interval=1,65 giây, disciple mặc định base_interval=1,6 giây trước learned style/gear. Các đòn có vị trí/movement/target, role healer/guard/learned skills, randomness, dead/downed, cooldown. Map battle giây **không trực tiếp tương đương tick/minute của scheduler**.
 - DiscipleCombatLoadoutV2.build nhận Tu Vi/Body explicit và gear/sources có thật; safe linked HP không mặc định ghi ngược V2 maxHP vào persistent disciple. Hệ thống HuntingPveRunV2 nói rõ V2 run chưa được cài vào legacy scheduler.
 - Body là track độc lập; R10 Đại Thừa T10 + Body R9 Linh Thân? **Sai tên**: Body R9 Khai Khiếu, R10 Linh Thân. Tu Vi R11=Nhân Tiên, Body R11=Kim Thân. Không được coi cả hai tự đồng cấp.
 - R11 family ngoài biên có actor scale thử theo R10f8–10, sâu bên trong dùng R11f1+; đó là **content proposal**, không có luật tự giảm sức quái theo team.
@@ -61,10 +64,10 @@ Cảnh giới/quái scaling **đúng với curve đã khóa**, nhưng trang bị
 - Role bố trí, 3/5/6 quái, lịch AoE Elite/Boss không được đem vào common hide bootstrap nếu Elite/Boss là cổng bắt buộc.
 - Damage result không phải survival trace. Team sau khi hạ quái còn phải rút lui và giữ hợp đồng Injury0/1, 120 tick; loser không được nhận hide vì damage contribution.
 
-## 5. Test matrix cần Code/Godot authorization MỚI chạy được
+## 5. Test matrix cần R11 Code/Godot authorization MỚI chạy được (WORLD CONTINUOUS, KHÔNG THỜI HẠN 90s)
 | ID | Thiết lập tài khoản/build | Đối thủ | Tín hiệu cần ghi | Expected DESIGN gate |
 |---|---|---|---|---|
-| C01 | 6 R10f8 + BodyR9f10, gear R10 legal | 1 outer normal R10f8 | win/defeat, 0–90sec, hp timeline, Injury | Tìm chiến thuật khả thi |
+| C01 | 6 R10f8 + BodyR9f10, gear R10 legal | 1 outer normal R10f8 | kill/retreat, trace >90s, hp timeline, Injury | Tìm chiến thuật khả thi |
 | C02 | 6 R10f10 + BodyR9f10 | 1 outer normal R10f10 | attack/defense/effect, no R11 gear | Không cần R11 để săn |
 | C03 | 6 R10f10 + BodyR10f10, roles frontline/heal | 3 outer normal | target switch, healer, downed, retreat | Nhận diện focus-fire spike |
 | C04 | như C02 nhưng 3 normal | 3 R10f8–f10 | TTK, downed/injury, repeat | Thử trần số mob đầu vùng |
@@ -77,7 +80,7 @@ Cảnh giới/quái scaling **đúng với curve đã khóa**, nhưng trang bị
 
 **Acceptance đề xuất, chưa owner duyệt**:
 1. Ít nhất một đội R10 không có R11 gear/blueprint có đường đánh thắng **một** normal outer deer, lấy common resource và rút lui; không nhất thiết mọi team đều thắng.
-2. Đánh đủ seed và thực tế injury/recovery; không có insta-wipe bắt buộc vì 3 monster spawn chắn nguồn.
+2. Đánh đủ seed và thực tế injury/recovery trong cùng persistent world, bao gồm chuỗi >=3 genuine kills, active >90s và >3600s nếu runtime budget cho phép; không có insta-wipe bắt buộc vì 3 monster spawn chắn nguồn.
 3. Nếu đội thất bại, phải có recovery/retry hữu hạn; ít nhất một tuyến worker đến ore/fiber vẫn chạy mà không cần giết boss.
 4. Một con quái có một HP/life terminal thật và đúng một common-material settlement.
 5. Không chốt p_win = 0,80 từ bản tính; chỉ đặt vào quantitative envelope như tham số độ nhạy. Không chứng minh FPS, Android, animation, camera hoặc navmesh bằng công thức.
