@@ -47,9 +47,23 @@ static func choose_visible_actors(candidates: Array[Dictionary], zoom: float, fo
             return da < db
         return str(a.get("id","")) < str(b.get("id",""))
     )
+    # Near-center ordering alone can still choose 24 overlapping people in
+    # one courtyard. Use one representative per screen-space bucket. The
+    # focused disciple is sorted first and always claims its bucket.
     var chosen: Dictionary = {}
-    for i in range(mini(ordered.size(),actor_cap(zoom))):
-        var id := str(ordered[i].get("id",""))
-        if not id.is_empty():
-            chosen[id] = true
+    var occupied: Dictionary = {}
+    var pixel_spacing := 84.0 if zoom <= OVERVIEW_ZOOM else (68.0 if zoom < COMPACT_SITE_ZOOM else 52.0)
+    for row in ordered:
+        if chosen.size() >= actor_cap(zoom):
+            break
+        var id := str(row.get("id",""))
+        if id.is_empty():
+            continue
+        if row.has("screen_point"):
+            var point: Vector2 = row["screen_point"]
+            var bucket := Vector2i(floori(point.x/pixel_spacing),floori(point.y/pixel_spacing))
+            if occupied.has(bucket):
+                continue
+            occupied[bucket] = id
+        chosen[id] = true
     return chosen
