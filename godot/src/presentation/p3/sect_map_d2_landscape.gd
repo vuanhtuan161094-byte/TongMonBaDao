@@ -53,7 +53,7 @@ static func draw_scenic_accents(world: Node2D, active_chunks: Array[Vector2i]) -
         var chunk := Vector2i(floori(float(cell.x)/16.0),floori(float(cell.y)/16.0))
         if chunk not in active_chunks:
             continue
-        var point := SectIsometricWorldV1.project(Vector2(cell))
+        var point := Vector2(float(cell.x-cell.y)*25.0,float(cell.x+cell.y)*13.0)
         if not world._visible_world(point):
             continue
         match str(row["kind"]):
