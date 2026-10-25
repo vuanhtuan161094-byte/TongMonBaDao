@@ -3,7 +3,9 @@ extends RefCounted
 
 # A single real multi-disciple hunting session: stored region-level choice
 # -> actual disciple gear/skill sources -> real monster group -> map combat
-# -> warehouse reward after victory. Not installed in legacy scheduler yet.
+# -> warehouse reward after victory. LEGACY FINITE-ENCOUNTER ONLY.
+# The production B3 world uses a separate per-kill receipt owner; this class
+# MUST NOT admit, restore, settle or claim a continuous-world battle.
 var owner_state: SimulationState
 var region_id: String = ""
 var spawn_data: Dictionary = {}
@@ -17,6 +19,8 @@ func begin(
         return {"ok":false,"reason":"v2_pve_disabled_or_already_started"}
     if party_members.is_empty() or party_members.size() > MapBattleV2.MAX_DISCIPLES:
         return {"ok":false,"reason":"invalid_party_size"}
+    if encounter_id.begins_with("b3:vs1:"):
+        return {"ok":false,"reason":"continuous_world_requires_per_kill_receipts"}
     if encounter_id.is_empty() or state.sect.v2_pve_active_runs.has(encounter_id) or state.sect.v2_pve_reward_claims.has(encounter_id) or state.sect.v2_pve_settlement_receipts.has(encounter_id):
         return {"ok":false,"reason":"duplicate_or_empty_encounter_id"}
     var level := HuntingMapV2.selected_level(state,region)
@@ -85,7 +89,8 @@ func begin(
     if not bool(spawned.get("ok",false)):
         return spawned
     var map_battle := MapBattleV2.new(seed)
-    var ready := map_battle.setup(encounter_id,actors,spawned["monsters"])
+    # Explicit opt-out: finite encounters retain their historical save format.
+    var ready := map_battle.setup(encounter_id,actors,spawned["monsters"],false)
     if not bool(ready.get("ok",false)):
         return ready
     owner_state = state
@@ -108,6 +113,8 @@ func begin(
 func advance(viewed_map: bool = false) -> Dictionary:
     if battle == null or owner_state == null:
         return {"ok":false,"reason":"no_active_session"}
+    if battle.continuous_mode:
+        return {"ok":false,"reason":"continuous_world_requires_per_kill_receipts"}
     if owner_state.sect.v2_pve_settlement_receipts.has(battle.encounter_id):
         return {"ok":false,"reason":"encounter_already_settled"}
     var result := battle.step(viewed_map)
@@ -125,6 +132,8 @@ func advance(viewed_map: bool = false) -> Dictionary:
 func finish(max_steps: int = 400) -> Dictionary:
     if battle == null or owner_state == null:
         return {"ok":false,"reason":"no_session"}
+    if battle.continuous_mode:
+        return {"ok":false,"reason":"continuous_world_requires_per_kill_receipts"}
     if owner_state.sect.v2_pve_settlement_receipts.has(battle.encounter_id):
         # A second resumed in-memory session may still be at an earlier battle
         # checkpoint. Replay combat locally to compare the immutable terminal
@@ -152,6 +161,8 @@ func finish(max_steps: int = 400) -> Dictionary:
 func claim() -> Dictionary:
     if battle == null or owner_state == null:
         return {"ok":false,"reason":"no_session"}
+    if battle.continuous_mode:
+        return {"ok":false,"reason":"continuous_world_requires_per_kill_receipts"}
     if battle.active:
         return {"ok":false,"reason":"encounter_not_final"}
     var settled := _settle_terminal()
@@ -175,6 +186,8 @@ func snapshot() -> Dictionary:
 func _persist_live_state() -> Dictionary:
     if battle == null or owner_state == null:
         return {"ok":false,"reason":"no_session"}
+    if battle.continuous_mode:
+        return {"ok":false,"reason":"continuous_world_requires_per_kill_receipts"}
     if owner_state.sect.v2_pve_reward_claims.has(battle.encounter_id):
         return {"ok":false,"reason":"claimed_encounter_cannot_reopen"}
     if owner_state.sect.v2_pve_settlement_receipts.has(battle.encounter_id):
@@ -205,6 +218,8 @@ static func _actor_in_active_saved_run(state: SimulationState, disciple_id: Stri
 func _settle_terminal() -> Dictionary:
     if battle == null or owner_state == null or battle.active:
         return {"ok":false,"reason":"encounter_not_terminal"}
+    if battle.continuous_mode:
+        return {"ok":false,"reason":"continuous_world_requires_per_kill_receipts"}
     if not ["win","defeat","timeout_retreat"].has(battle.outcome):
         return {"ok":false,"reason":"invalid_terminal_outcome"}
     var encounter := battle.encounter_id
@@ -369,6 +384,8 @@ static func resume_active(state: SimulationState, encounter_id: String) -> Dicti
 func save_state() -> Dictionary:
     if battle == null or owner_state == null:
         return {"ok":false,"reason":"no_hunting_session"}
+    if battle.continuous_mode:
+        return {"ok":false,"reason":"continuous_world_requires_per_kill_receipts"}
     var checkpoint := MapBattleSnapshotV2.save(battle)
     if not bool(checkpoint.get("ok",false)):
         return checkpoint
@@ -391,6 +408,8 @@ static func restore_state(state: SimulationState, saved: Dictionary) -> Dictiona
     var region := str(saved.get("region_id",""))
     var level := int(saved.get("difficulty",0))
     var id := str(saved.get("encounter_id",""))
+    if id.begins_with("b3:vs1:"):
+        return {"ok":false,"reason":"continuous_world_requires_per_kill_receipts"}
     if id.is_empty() or not HuntingMapV2.valid_choice(region,level) or not state.regions.has(StringName(region)):
         return {"ok":false,"reason":"unknown_saved_map"}
     var battle_data = saved.get("battle",{})
@@ -400,6 +419,8 @@ static func restore_state(state: SimulationState, saved: Dictionary) -> Dictiona
     if not bool(decoded.get("ok",false)):
         return decoded
     var resumed: MapBattleV2 = decoded["battle"]
+    if resumed.continuous_mode:
+        return {"ok":false,"reason":"continuous_world_requires_per_kill_receipts"}
     if resumed.encounter_id != id:
         return {"ok":false,"reason":"battle_identity_mismatch"}
     var spawned := HuntingMapV2.spawn(region,level,id,int(saved.get("reward_seed",0)))
