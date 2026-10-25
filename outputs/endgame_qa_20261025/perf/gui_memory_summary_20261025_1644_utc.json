@@ -1,0 +1,12 @@
+{
+  "sampled_at_utc": "2026-10-25T16:44:27.641Z..2026-10-25T16:44:34.848Z",
+  "process": "Godot_v4.7.2-stable_win64",
+  "pid": 15952,
+  "samples": 8,
+  "working_set_mib": {"mean": 269.1, "min": 269.1, "max": 269.1},
+  "private_memory_mib": {"mean": 608.8, "min": 608.8, "max": 608.8},
+  "cpu_seconds_delta": 3.91,
+  "elapsed_seconds": 7.206,
+  "cpu_percent_of_one_logical_cpu": 54.3,
+  "note": "Real Godot GUI process while endgame P3.2 state was running. This is not an FPS benchmark."
+}

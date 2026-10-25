@@ -1,0 +1,22 @@
+{
+  "observed_at_local": "2026-10-25T23:45:28.2180392+07:00",
+  "save_path": "godot\\outputs\\endgame_qa_20261025\\userdata\\endgame_playable_save.json",
+  "sha256": "8A3A4698249A0330868E9CF28751EF0D35CBB0D23C9B078AF4C407632EAFA830",
+  "tick": 162,
+  "population": 130,
+  "warehouse": {
+    "huyen_thiet": 8,
+    "linh_coc": 352,
+    "linh_moc": 480,
+    "linh_tuy": 20,
+    "linh_tuyen_chi_tam_manh": 3,
+    "thanh_linh_thao": 175,
+    "thanh_thiet": 725,
+    "tinh_lang_bi": 17,
+    "tu_van_thao": 154,
+    "yeu_dan": 30
+  },
+  "last_write": "2026-10-25T23:45:24.7968358+07:00",
+  "mutable": true,
+  "committed": false
+}
