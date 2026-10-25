@@ -1,5 +1,15 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-25 — ENDGAME-FIRST local integration (PROVISIONAL; not main)
+
+Worktree/branch `E:/codex/2026-10-25/TMB_ENDGAME_G0_WORKTREE_20261025`, `integration/endgame-maps-assets-playable-20261025`; code commit `14f0927c3161efc0b2afc1e8c411bd9d34dd4281`, based on PR #33 `7a551ca4f8f9b15f3069652c5f557e0fbc29833` plus selected PR #34 NET. PR #24–#35 remain open/draft/unmerged; Issue #37 remains open. Do not merge main.
+
+The deterministic canonical P3.2 fixture contains 30 Mine Lv19, 30 Linh Forest Lv1, 40 Spirit Field Lv100, and the other three building families currently implemented (Alchemy Hall Lv1, Dan Tien Dai Lv100, Ren Than Duong Lv1); 130 QA-seeded V2 disciples, 100 real producer assignments, 404 batches/1,497 units after 120 ticks. Save/Load and invariants pass. Fixture seed SHA `ba1b98d16a6ca26e08915981ca273769f9f23ff15a72f21b5bdd522d8cbb36e1`. One-tap Godot 4.7.2 1280×720 launcher: `Run-Endgame-QA.cmd`; its mutable play save is under `godot/outputs/endgame_qa_20261025/userdata/` and intentionally excluded from Git.
+
+Post-code-commit official Windows Godot 4.7.2 focused result: 29/29 PASS, including O9 and 56 S1 edge checks; four added endgame/map/preview contracts 4/4 PASS. No FULL/CI. Runtime still incomplete: 20-camp PvE is a design viewer; current live B3 has one spawn slot/one disciple, and `HuntingPveRunV2` is not joined to shared world scheduler. Forge R1 lacks canonical recipe/transaction. Mark both incomplete, not PASS. Source A catalog is PARTIAL: 6,578 records, all roles unmapped; existing 32 MAP25 assets match SHA, but no verified Mine/Forest/Field art or clip metadata. GUI engine capture passed, manual Windows input, Android, perf benchmark and owner visual remain PENDING USER.
+
+Full status, exact logs, screenshots, video, asset catalog, issues and next work: `docs/handoffs/2026-10-25/TMB_ENDGAME_FIRST_RESULTS_2026-10-25.md`.
+
 ## 2026-10-24 — MASTER RECOVERY / SOURCE A G1 + COMBAT V5 INTO CARE P3.2 (PROVISIONAL)
 
 **This checkpoint is provisional to branch `integration/master-recovery-playable-v1-20261023`; it is not canonical main status until owner review.** Base is PR #25 code head `710137c0e3976e685613a86692e5eb128b8d3c62`. Final code/test SHA `f5715ad0d90ee38516b54f316b9dd6f1544c3723` follows `087c58b70b9c4bec3847d8acc546d8b761d984fc`. PR #24/#25 remain draft, open, unchanged, unmerged.

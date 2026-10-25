@@ -1,5 +1,17 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-25 — Continue ENDGAME-FIRST Issue #37 (PROVISIONAL branch)
+
+Continue on `E:/codex/2026-10-25/TMB_ENDGAME_G0_WORKTREE_20261025`, branch `integration/endgame-maps-assets-playable-20261025`, code SHA `14f0927c3161efc0b2afc1e8c411bd9d34dd4281`, based on PR #33 head `7a551ca4f8f9b15f3069652c5f557e0fbc29833` with selected PR #34 NET. This is not main. PR #24–#35 remain DRAFT/OPEN; Issue #37 OPEN. A new stacked draft PR is pending.
+
+Playable local QA entry is `Run-Endgame-QA.cmd` (Godot official 4.7.2, 1280×720, no Administrator). It loads deterministic canonical QA seed `godot/qa/endgame_qa_save.json` (SHA `ba1b98d16a6ca26e08915981ca273769f9f23ff15a72f21b5bdd522d8cbb36e1`) into an isolated mutable save at `godot/outputs/endgame_qa_20261025/userdata/endgame_playable_save.json`; don't replace that save on repeat launch. It has 130 V2 disciples, 103 real supported buildings including 30/30/40 producers, actual 120-tick production/Kho state. Seeded start is synthetic QA setup, not natural endgame progression.
+
+Final focused regressions after the code commit: 29/29 + S1 56/56, then added 4/4 endgame/map contracts; official Godot 4.7.2 Windows. No FULL/CI. Captured real P3.2 scene and Save/Load via engine event harness; direct physical desktop input remains PENDING USER after capture API timeout. Screenshot/video/log/asset paths are in `docs/handoffs/2026-10-25/TMB_ENDGAME_FIRST_RESULTS_2026-10-25.md`.
+
+**Remaining gameplay work under Issue #37:** implement persistent PvE authority over 20 camps (the current scene is only a design viewer; live B3 is one slot/one disciple; HuntingPveRunV2 is still an isolated encounter), shared clock/SaveService integration, real respawn and per-monster exactly-once loot using existing authored content, then scale/QA 200–400 mobs and up to 30 real hunters. Forge R1 is not ready because no canonical P3.7 forge order/recipe transaction exists; don't invent cost/chance. Do not touch Combat V2/S1 formulas, Injury120, One Active Job, Warehouse or SaveService invariants. Preserve original Source A; current asset/animation mapping has gaps. Windows manual/Android/Owner Visual remain PENDING USER.
+
+Next: inspect/review current draft PR and continue the authorized PVE1 world persistence slice on this branch; keep old PRs open and never merge main without owner approval.
+
 ## 2026-10-24 — MASTER RECOVERY INTEGRATION (PROVISIONAL; OWNER VISUAL PENDING)
 
 Continue from worktree `E:/codex/2026-10-22/t-ng-m-n-b-o/work/TMB_MASTER_RECOVERY_PLAYABLE_V1_20261023`, branch `integration/master-recovery-playable-v1-20261023`, exact code/test SHA `f5715ad0d90ee38516b54f316b9dd6f1544c3723`, based on PR #25 head `710137c0e3976e685613a86692e5eb128b8d3c62`. Integration is a candidate only; do not merge or mark owner visual PASS. PR #24 and #25 remain open draft and unchanged.
