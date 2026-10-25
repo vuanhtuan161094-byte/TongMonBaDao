@@ -185,19 +185,28 @@ func _seed_env02a_geometry() -> void:
         {"id":"courtyard_to_residence","from":ROADS_JUNCTION,"to":TYPE_ANCHORS["residence"]},
         {"id":"courtyard_to_cultivation","from":ROADS_JUNCTION,"to":TYPE_ANCHORS["cultivation"]}
     ]
+    # The previous seed rebuilt a full 192x192 AStarGrid2D for each of
+    # nine road routes, then three more times to recheck the doorways.
+    # Keep ONE presentation-only navigation grid and update weights as each
+    # road becomes available. This is equivalent to rebuilding from roads,
+    # but avoids 12 large allocations and duplicate geometry traversal.
+    var route_navigation: AStarGrid2D = lab_geometry._navigation()
     for segment in segments:
-        if not _record_preview_route(str(segment["id"]),segment["from"],segment["to"]):
+        if not _record_preview_route(str(segment["id"]),segment["from"],segment["to"],route_navigation):
             lab_routes_ready = false
             push_warning("ISO_ENV02A_PREVIEW_ROUTE_FAILED %s %s -> %s" % [str(segment["id"]),str(segment["from"]),str(segment["to"])])
     for kind in ["main_hall","warehouse","forge"]:
-        if lab_geometry.path_to(kind,SPAWN_CELL).is_empty():
+        var placed: Dictionary = lab_geometry.get_building(kind)
+        var door: Vector2i = lab_geometry.doorway(kind,placed["origin"],0)
+        if route_navigation.is_point_solid(SPAWN_CELL) or route_navigation.is_point_solid(door) or route_navigation.get_id_path(SPAWN_CELL,door).is_empty():
             lab_routes_ready = false
     queue_redraw()
 
-func _record_preview_route(route_id: String, from_cell: Vector2i, to_cell: Vector2i) -> bool:
+func _record_preview_route(route_id: String, from_cell: Vector2i, to_cell: Vector2i, shared_navigation: AStarGrid2D = null) -> bool:
     if not STARTER.has_point(from_cell) or not STARTER.has_point(to_cell):
         return false
-    var navigation: AStarGrid2D = lab_geometry._navigation()
+    # Optional argument retains the old independent route probe contract.
+    var navigation: AStarGrid2D = shared_navigation if shared_navigation != null else lab_geometry._navigation()
     var route: Array[Vector2i] = navigation.get_id_path(from_cell,to_cell)
     if route.is_empty():
         return false
@@ -207,8 +216,10 @@ func _record_preview_route(route_id: String, from_cell: Vector2i, to_cell: Vecto
     preview_routes[route_id] = route.duplicate()
     for cell in route:
         preview_roads[cell] = true
-        if cell not in lab_geometry.roads:
-            lab_geometry.toggle_road(cell)
+        if cell not in lab_geometry.roads and lab_geometry.toggle_road(cell):
+            # Apply same scale as SectIsoMapModelV1._navigation(), so shared
+            # route searches make identical path choices to full rebuilds.
+            navigation.set_point_weight_scale(cell,0.7)
     return true
 
 # Exact-SHA gated, individually optional Source A images. Fail-closed:
