@@ -189,7 +189,7 @@ func _seed_env02a_geometry() -> void:
     # nine road routes, then three more times to recheck the doorways.
     # Keep ONE presentation-only navigation grid and update weights as each
     # road becomes available. This is equivalent to rebuilding from roads,
-    # but avoids 12 large allocations and duplicate geometry traversal.
+    # but avoids 11 redundant rebuilds and duplicate geometry traversal.
     var route_navigation: AStarGrid2D = lab_geometry._navigation()
     for segment in segments:
         if not _record_preview_route(str(segment["id"]),segment["from"],segment["to"],route_navigation):
