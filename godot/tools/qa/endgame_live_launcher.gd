@@ -8,13 +8,28 @@ func _initialize() -> void:
 	call_deferred("_launch")
 
 func _launch() -> void:
-	var seed_path := ProjectSettings.globalize_path(QA_SEED_SAVE)
+	var requested_population := 130
+	for arg in OS.get_cmdline_user_args():
+		if not str(arg).begins_with("--tmb-roster="):
+			continue
+		var digits := str(arg).trim_prefix("--tmb-roster=")
+		if not digits.is_valid_int() or not [130,200,500].has(int(digits)):
+			printerr("TMB_ENDGAME_LAUNCH_FAIL profile must be 130, 200 or 500")
+			quit(2)
+			return
+		requested_population = int(digits)
+	var chosen_seed := QA_SEED_SAVE
+	var chosen_playable := PLAYABLE_SAVE_RELATIVE
+	if requested_population != 130:
+		chosen_seed = "res://qa/endgame_qa_save_%d.json" % requested_population
+		chosen_playable = "outputs/endgame_qa_20261025/userdata/endgame_playable_save_%d.json" % requested_population
+	var seed_path := ProjectSettings.globalize_path(chosen_seed)
 	if not FileAccess.file_exists(seed_path):
 		printerr("TMB_ENDGAME_LAUNCH_FAIL missing deterministic QA seed: %s" % seed_path)
 		quit(2)
 		return
 	var project_root := ProjectSettings.globalize_path("res://")
-	var save_path := project_root.path_join(PLAYABLE_SAVE_RELATIVE)
+	var save_path := project_root.path_join(chosen_playable)
 	DirAccess.make_dir_recursive_absolute(save_path.get_base_dir())
 	if not FileAccess.file_exists(save_path):
 		var source := FileAccess.open(seed_path,FileAccess.READ)
@@ -59,5 +74,6 @@ func _launch() -> void:
 		"seed_save": save_path,
 		"tick": state.tick,
 		"disciple_count": state.disciples.size(),
+		"requested_population_profile": requested_population,
 		"building_count": state.buildings.size()
 	}))
