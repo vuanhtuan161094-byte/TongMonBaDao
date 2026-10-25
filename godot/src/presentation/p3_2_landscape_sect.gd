@@ -565,6 +565,10 @@ func _open_building(destination: StringName, instance_id: StringName = &"") -> v
             selected_production_instance_id = requested.id
             point = _iso_actor_point(destination,requested.id)
     _set_focus_target(point, &"building", destination, _building_name(destination), true)
+    if iso_world != null:
+        # Focused_kind preserves the original destination contract; only the
+        # VIEW detail selector uses a distinct canonical worksite instance ID.
+        iso_world.set_selected_visual_site(selected_production_instance_id)
     _show_building_operation_panel()
     _refresh_map_worksite_cues()
 
