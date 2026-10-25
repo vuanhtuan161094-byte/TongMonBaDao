@@ -485,21 +485,32 @@ func _apply_camera(zoom: float, position: Vector2, animate: bool) -> void:
     _refresh_zoom_readout()
 
 func _refresh_world_actor_visibility() -> void:
-    # The live actors are a fixed-HUD overlay on the isometric SubViewport.
-    # Keep them inside the same map window so an endgame camera pan cannot
-    # paint their sprites over the title or bottom navigation bar.
+    # A sect roster can contain 200-500 canonical disciples, but the mobile
+    # viewport must not show (or animate) every actor simultaneously.
+    # Only this read-only view budget changes. Workers/jobs/Save remain intact.
     var view := SectMapCamera.VIEW_RECT
-    for actor_value in actor_nodes.values():
-        var actor := actor_value as Control
+    var eligible: Array[Dictionary] = []
+    var focused_key := str(focused_id) if focused_kind == &"disciple" else ""
+    var candidates: Dictionary = {}
+    for raw_id in actor_nodes.keys():
+        var key := str(raw_id)
+        var actor := actor_nodes[key] as Control
         if actor == null or not is_instance_valid(actor):
             continue
         var rect := actor.get_global_rect()
-        actor.visible = (
-            rect.position.x >= view.position.x
-            and rect.position.y >= view.position.y
-            and rect.end.x <= view.end.x
-            and rect.end.y <= view.end.y
-        )
+        if rect.position.x >= view.position.x and rect.position.y >= view.position.y and rect.end.x <= view.end.x and rect.end.y <= view.end.y:
+            candidates[key] = true
+            eligible.append({
+                "id":key,
+                "center_distance":rect.get_center().distance_squared_to(view.get_center())
+            })
+    var visible_ids := SectEndgameVisualBudgetV1.choose_visible_actors(
+        eligible,map_zoom,focused_key)
+    for raw_id in actor_nodes.keys():
+        var key := str(raw_id)
+        var actor := actor_nodes[key] as Control
+        if actor != null and is_instance_valid(actor):
+            actor.visible = candidates.has(key) and visible_ids.has(key)
 
 func _refresh_zoom_readout() -> void:
     if zoom_readout != null:
