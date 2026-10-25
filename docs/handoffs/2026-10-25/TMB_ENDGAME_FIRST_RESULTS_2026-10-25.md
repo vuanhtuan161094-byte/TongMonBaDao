@@ -4,7 +4,7 @@ Ngày: 2026-10-25
 Repository: `vuanhtuan161094-byte/TongMonBaDao`  
 Branch: `integration/endgame-maps-assets-playable-20261025`  
 Baseline: PR #33 head `7a551ca4f8f9b15f3069652c5f557e0fbc29833`; đã áp dụng chọn lọc NET presentation của PR #34, không merge nhánh và không thay các PR cũ.  
-Code commit: `14f0927c3161efc0b2afc1e8c411bd9d34dd4281` (tree `1047d56be12f09a7471a415df03838cf07ff31a6`).  
+Code commit: `14f0927c3161efc0b2afc1e8c411bd9d34dd4281` (tree `1047d56be12f09a7471a415df03838cf07ff31a6`). Evidence/checkpoint commit: `a0bb9a7bf9ce0831b9d45ce17a26f1cf47d6d7df`. Draft PR [#38](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/38) targets PR #33 and remains unmerged.  
 Issue #37 vẫn OPEN. PR #24–#35 vẫn DRAFT/OPEN, không merge.
 
 ## Kết quả nhanh
@@ -25,7 +25,7 @@ Generator chạy 120 tick, hoàn tất 404 mẻ và nhập 1.497 đơn vị vào
 | G5 regression/perf | PASS phần focused; PERF PARTIAL | Godot 4.7.2 sau code commit: PR32 baseline 29/29 PASS, gồm O9; `combat_v3_s1_edge_contract` 56 checks PASS. Thêm 4 contract endgame/D2/PvE-preview: 4/4 PASS. Không chạy FULL/CI. Movie capture 281 frames; engine FPS sample trong Movie Maker mean 31.32/min 2/max 40 bị chi phối encoding, không đại diện gameplay bình thường. CPU render 3.04 ms/frame, GPU render 0.82 ms/frame, encoding 12.70 ms/frame. Game process RAM: 8 mẫu/8 giây mean/min/max 645.8 MiB; không có Android/VRAM benchmark. |
 | G6 Forge R1 | BLOCKED | Không có canonical Forge recipe/order/transaction đủ để rèn và equip R1 qua Warehouse trong P3.7; P2 legacy không được dùng làm authority thay thế. Không tự đặt cost/chance. |
 | G7 tối ưu/dedup | PARTIAL | Giữ tối ưu cache AStar/terrain/road đã có trên PR33; không xóa/di chuyển asset gốc. Chưa có benchmark trước/sau cùng máy nên không tuyên bố tăng hiệu năng. |
-| G8 handoff | PARTIAL | Có fixture, launcher, manifest, logs, ảnh và AVI; không merge. PR draft sẽ dựa trên nhánh PR33. |
+| G8 handoff | PARTIAL | Có fixture, launcher, manifest, logs, ảnh và AVI; Draft PR #38 đang dựa trên nhánh PR33, chưa merge. Còn PvE, Forge và các cổng QA thủ công. |
 
 ## Gameplay/evidence P3.2
 
@@ -48,6 +48,6 @@ Desktop Movie Maker capture used `Input.parse_input_event` through production P3
 
 ## Rollback / next work
 
-All changes are on the new branch. A draft PR has not yet been created. Revert only after preserving its commit/QA evidence; never delete PR #24–#35 or original source data. No main merge.
+All changes are on the new branch and Draft PR #38. Revert only after preserving its commit/QA evidence; never delete PR #24–#35 or original source data. No main merge.
 
 Next authorized continuation within Issue #37: build a persistent multi-camp world over the shared clock/SaveService, with per-monster idempotent loot receipts drawn from existing authored content; first add small 1-camp restart/save slice, then scale toward 20 camps without calling preview code gameplay. Keep Combat V2/S1 math, Injury120, One Active Job, canonical Warehouse/SaveService. Forge follows only if canonical recipe/transaction becomes available. Manual Windows/Android/Owner Visual remain PENDING USER.
