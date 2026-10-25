@@ -62,8 +62,10 @@ func _run() -> void:
 	# the real NeedsSystem restraint healthy so a dense endgame save is not
 	# intentionally overcrowded by the default starter lodging capacity.
 	state.sect.lodging_capacity = roster_target
+	var recruitment_started_msec := Time.get_ticks_msec()
 	if not _recruit_roster(state):
 		return
+	var recruitment_msec := Time.get_ticks_msec() - recruitment_started_msec
 	if not _assign_operators(state, buildings):
 		return
 
@@ -87,11 +89,15 @@ func _run() -> void:
 		})
 		return
 
+	var save_started_msec := Time.get_ticks_msec()
 	var saved_error: Error = runtime.owner.saves.save_to_path(state, qa_save_path)
+	var save_msec := Time.get_ticks_msec() - save_started_msec
 	if saved_error != OK:
 		_fail("save_service_write_failed", {"error": saved_error})
 		return
+	var reload_started_msec := Time.get_ticks_msec()
 	var loaded := SaveService.new().load_from_path(qa_save_path)
+	var reload_msec := Time.get_ticks_msec() - reload_started_msec
 	if loaded == null:
 		_fail("save_service_reload_failed", {})
 		return
@@ -104,6 +110,13 @@ func _run() -> void:
 		return
 
 	var report := _build_report(state, loaded, simulation_msec)
+	report["recruitment_milliseconds"] = recruitment_msec
+	report["save_milliseconds"] = save_msec
+	report["reload_milliseconds"] = reload_msec
+	var saved_file := FileAccess.open(qa_save_path,FileAccess.READ)
+	if saved_file != null:
+		report["save_size_bytes"] = saved_file.get_length()
+		saved_file.close()
 	var report_file := FileAccess.open(qa_report_path, FileAccess.WRITE)
 	if report_file == null:
 		_fail("report_write_failed", {"error": FileAccess.get_open_error()})
