@@ -1,0 +1,112 @@
+name: CODE-R0 finite and continuous focused QA
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - qa/code-r0-finite-world-20261025
+permissions:
+  contents: read
+jobs:
+  read-only-all-extension-callers:
+    name: R0 git grep tracked files and SHA
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record exact commit and run read-only grep
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/code-r0
+          {
+            echo "COMMIT=$(git rev-parse HEAD)"
+            echo "PARENT=$(git show -s --format=%P HEAD)"
+            echo "BRANCH=$(git branch --show-current)"
+            echo "TRACKED_TOTAL=$(git ls-files | wc -l)"
+            echo "TRACKED_GDSCRIPT=$(git ls-files '*.gd' | wc -l)"
+            echo "CHANGES_BEGIN"
+            git status --porcelain=v1
+            echo "CHANGES_END"
+          } | tee artifacts/code-r0/revision.txt
+          git grep -n -E 'MAX_SECONDS|LEGACY_FINITE_MAX_SECONDS|MAX_REALTIME_SECONDS|timeout_retreat|HuntingPveRunV2|HuntingMapV2|claim_reward|v2_pve_active_runs|v2_pve_reward_claims|v2_pve_settlement_receipts|active_pve_encounter_id|MapBattleSnapshotV2|MapBattleV2|CombatSystem|resolve_encounter' -- '*.gd' '*.tscn' '*.tres' '*.ps1' '*.cmd' '*.py' '*.yml' '*.yaml' '*.json' '*.md' > artifacts/code-r0/COMBAT_FINITE_ALL_CALLERS.txt || test $? -eq 1
+          sha256sum artifacts/code-r0/* > artifacts/code-r0/manifest.sha256
+          wc -l artifacts/code-r0/COMBAT_FINITE_ALL_CALLERS.txt | tee artifacts/code-r0/count.txt
+      - name: Upload reproducible grep evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-r0-all-extension-grep
+          path: artifacts/code-r0/
+          if-no-files-found: warn
+          retention-days: 30
+
+  godot-472-focused-matrix:
+    name: R0 official Godot 4.7.2 focused simulation suite
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install official Godot 4.7.2 with locked SHA
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --output /tmp/godot-r0.zip "https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip"
+          echo "cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4  /tmp/godot-r0.zip" | sha256sum --check --strict
+          unzip -q /tmp/godot-r0.zip -d /tmp
+          sudo install -m 0755 /tmp/Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot
+          mkdir -p artifacts/code-r0
+          godot --version | tee artifacts/code-r0/godot-version.txt
+          git rev-parse HEAD | tee artifacts/code-r0/sha.txt
+      - name: Import all script classes and project assets
+        shell: bash
+        run: |
+          set -o pipefail
+          timeout 240s godot --headless --path godot --editor --quit 2>&1 | tee artifacts/code-r0/import.txt
+      - name: Run complete R0 focused simulations with exact exit codes
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p artifacts/code-r0/test-logs
+          failed=0
+          count=0
+          for name in \
+            combat_finite_world_reward_isolation_test \
+            b3_ph0_continuous_kernel_test \
+            b3_fasttrack_hunt_test \
+            b3_care_pills_autohunt_test \
+            combat_v3_s1_edge_contract_test \
+            combat_v3_s1_effects_test \
+            dv2_02_combat_stats_test \
+            dv2_02_group_map_battle_test \
+            dv2_02_battle_snapshot_test \
+            dv2_02_five_level_pve_test \
+            dv2_02_five_level_balance_test \
+            gp_02c1_injury_settlement_test \
+            dv2_03_f0_source_baseline_test \
+            dv2_03_f1_body_gate_manifest_test \
+            dv2_03_f2_body_gate_transaction_test \
+            dv2_03_f3_body_material_earned_claim_test \
+            dv2_03_f6_real_earned_body_gate_integration_test \
+            p2_5_combat_skill_test \
+            p2_6_equipment_combat_effects_test \
+            safe_01_save_recovery_test \
+            safe_02_warehouse_migration_test; do
+              count=$((count+1))
+              logfile="artifacts/code-r0/test-logs/${name}.txt"
+              echo "CASE_START $name" | tee "$logfile"
+              timeout 180s godot --headless --path godot -s "res://tests/simulation/${name}.gd" 2>&1 | tee -a "$logfile"
+              code=${PIPESTATUS[0]}
+              echo "CASE_END $name exit=$code" | tee -a "$logfile"
+              if test "$code" -ne 0; then failed=$((failed+1)); fi
+              echo "$name,$code" >> artifacts/code-r0/test-exit-codes.csv
+          done
+          echo "R0_FINISHED count=$count failures=$failed" | tee artifacts/code-r0/summary.txt
+          test "$failed" -eq 0
+      - name: Upload full Godot stdout and exit codes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-r0-official-godot-472-focused-logs
+          path: artifacts/code-r0/
+          if-no-files-found: warn
+          retention-days: 30
