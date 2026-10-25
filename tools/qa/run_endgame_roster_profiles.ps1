@@ -7,10 +7,54 @@ param(
 # player/owner saves. Unless Regenerate is explicitly set, existing 200/500
 # QA files are loaded read-only. Default 130 QA is excluded from regeneration.
 $ErrorActionPreference = 'Stop'
+
+function Get-AvailablePhysicalMemoryGB {
+    try {
+        $osInfo = Get-CimInstance Win32_OperatingSystem -ErrorAction Stop
+        return [double]$osInfo.FreePhysicalMemory / 1048576.0
+    } catch {
+        if (-not ('TmbAvailableMemoryStatus' -as [type])) {
+            Add-Type -TypeDefinition @'
+using System;
+using System.Runtime.InteropServices;
+public static class TmbAvailableMemoryStatus {
+    [StructLayout(LayoutKind.Sequential)]
+    public class MEMORYSTATUSEX {
+        public uint dwLength;
+        public uint dwMemoryLoad;
+        public ulong ullTotalPhys;
+        public ulong ullAvailPhys;
+        public ulong ullTotalPageFile;
+        public ulong ullAvailPageFile;
+        public ulong ullTotalVirtual;
+        public ulong ullAvailVirtual;
+        public ulong ullAvailExtendedVirtual;
+        public MEMORYSTATUSEX() { dwLength = (uint)Marshal.SizeOf(typeof(MEMORYSTATUSEX)); }
+    }
+    [DllImport("kernel32.dll", SetLastError = true)]
+    public static extern bool GlobalMemoryStatusEx([In, Out] MEMORYSTATUSEX status);
+}
+'@
+        }
+        $status = [TmbAvailableMemoryStatus+MEMORYSTATUSEX]::new()
+        if (-not [TmbAvailableMemoryStatus]::GlobalMemoryStatusEx($status)) {
+            throw 'Windows GlobalMemoryStatusEx failed while reading available RAM.'
+        }
+        return [double]$status.ullAvailPhys / 1GB
+    }
+}
+
+function Assert-NoGodotProcess {
+    $active = @(Get-Process | Where-Object { $_.ProcessName -match '^Godot' })
+    if ($active.Count -gt 0) {
+        throw ('Godot single-process gate: another process is active: ' + (($active | ForEach-Object { '{0} ({1})' -f $_.ProcessName,$_.Id }) -join ', '))
+    }
+}
+
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
 $project = Join-Path $repoRoot 'godot'
 $runId = Get-Date -Format 'yyyyMMdd_HHmmss_fff'
-$logRoot = Join-Path $repoRoot ("outputs\endgame_qa_20261025\logs\roster_profiles_" + $runId)
+$logRoot = Join-Path $repoRoot ("outputs\endgame_qa_20261026\logs\roster_profiles_" + $runId)
 New-Item -ItemType Directory -Force -Path $logRoot | Out-Null
 if (-not (Test-Path -LiteralPath $GodotPath -PathType Leaf)) {
     throw "Official Godot 4.7.2 not found at $GodotPath"
@@ -26,9 +70,9 @@ foreach ($population in $Profiles) {
     $env:LOCALAPPDATA = Join-Path $userdataRoot 'Local'
     New-Item -ItemType Directory -Force -Path $env:APPDATA,$env:LOCALAPPDATA | Out-Null
 
-    # Low-memory fail-closed gate; physical free KB comes from Windows CIM.
-    $osInfo = Get-CimInstance Win32_OperatingSystem
-    $freeGb = [math]::Round(([double]$osInfo.FreePhysicalMemory / 1048576.0),2)
+    # Low-memory fail-closed gate; prefer CIM, then use the Windows API when
+    # restricted desktop sandboxes deny WMI access.
+    $freeGb = [math]::Round((Get-AvailablePhysicalMemoryGB),2)
     $minFreeGb = if ($population -ge 500) { 2.50 } else { 1.25 }
     if ($freeGb -lt $minFreeGb) {
         Write-Warning "Skipping roster $population: available RAM $freeGb GB is below $minFreeGb GB."
@@ -42,7 +86,8 @@ foreach ($population in $Profiles) {
             Write-Warning 'Regenerating base 130 QA fixture only because -Regenerate was passed explicitly.'
         }
         $log = Join-Path $logRoot ("generate_$population.log")
-        & $GodotPath --headless --path $project --script res://tools/qa/endgame_fixture_generator.gd -- "--tmb-roster=$population" *>&1 |
+        Assert-NoGodotProcess
+        & $GodotPath --headless --path $project --quit-after 3600 --script res://tools/qa/endgame_fixture_generator.gd -- "--tmb-roster=$population" *>&1 |
             Out-File -LiteralPath $log -Encoding utf8
         $exitCode = $LASTEXITCODE
         $pass = $exitCode -eq 0 -and (Test-Path -LiteralPath $savePath -PathType Leaf) -and
@@ -56,7 +101,8 @@ foreach ($population in $Profiles) {
     }
 
     $testLog = Join-Path $logRoot ("contract_$population.log")
-    & $GodotPath --headless --path $project --script res://tests/presentation/endgame_roster_profiles_contract_test.gd -- "--tmb-roster=$population" *>&1 |
+    Assert-NoGodotProcess
+    & $GodotPath --headless --path $project --quit-after 360 --script res://tests/presentation/endgame_roster_profiles_contract_test.gd -- "--tmb-roster=$population" *>&1 |
         Out-File -LiteralPath $testLog -Encoding utf8
     $exitCode = $LASTEXITCODE
     $passed = $exitCode -eq 0 -and (Get-Content -LiteralPath $testLog -Raw).Contains('TMB_ENDGAME_ROSTER_PROFILE PASS ')

@@ -54,6 +54,30 @@ func configure(disciple: DiscipleState) -> void:
     sync_action(disciple.current_action)
     _refresh_placeholder_mode()
 
+func reset_for_reuse() -> void:
+    _ensure_built()
+    clear_baked_visual()
+    for key in visual_components.keys().duplicate():
+        var component := visual_components[key] as Sprite2D
+        if component != null and is_instance_valid(component):
+            if component.get_parent() != null:
+                component.get_parent().remove_child(component)
+            component.free()
+    visual_components.clear()
+    disciple_id = &""
+    display_name = ""
+    facing = DiscipleActorVisualCatalog.DIR_DOWN
+    mirror_left = true
+    current_clip = DiscipleActorVisualCatalog.CLIP_IDLE
+    if animation_player != null:
+        animation_player.stop()
+    if status_label != null:
+        status_label.visible = false
+        status_label.text = ""
+    if click_button != null:
+        click_button.tooltip_text = ""
+    _refresh_placeholder_mode()
+
 func apply_appearance_profile(raw_profile: Variant, disciple: DiscipleState = null) -> void:
     _ensure_built()
     appearance_profile = DiscipleActorVisualCatalog.normalize_appearance_profile(raw_profile, disciple)
@@ -137,6 +161,16 @@ func set_baked_visual(packed: PackedScene) -> bool:
 
 func baked_visual_active() -> bool:
     return baked_sprite != null and is_instance_valid(baked_sprite)
+
+func clear_baked_visual() -> void:
+    if baked_sprite != null and is_instance_valid(baked_sprite):
+        if baked_sprite.get_parent() != null:
+            baked_sprite.get_parent().remove_child(baked_sprite)
+        baked_sprite.free()
+    baked_sprite = null
+    if click_button != null:
+        click_button.position = Vector2(12.0,0.0)
+        click_button.size = Vector2(64.0,74.0)
 
 # Convenience for a full-canvas single-piece layer. Production body/outfit should
 # normally use set_component_texture() for the coarse head/torso/arms/legs bundle.

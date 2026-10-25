@@ -2,7 +2,7 @@ extends SceneTree
 
 const MAIN_SCENE := "res://scenes/p3/p3_2_landscape_sect.tscn"
 const QA_SEED_SAVE := "res://qa/endgame_qa_save.json"
-const CAPTURE_SUBPATH := "outputs/endgame_qa_20261025/gameplay"
+const CAPTURE_SUBPATH := "outputs/endgame_qa_20261026/gameplay"
 const EXPECTED_COUNTS := {
 	"mine": 30,
 	"linh_forest": 30,
@@ -16,30 +16,44 @@ const CAPTURE_TARGETS := [
 	{"type": "linh_forest", "id": "linh_forest_021", "file": "linh_forest_021_selected.png"},
 	{"type": "spirit_field", "id": "spirit_field_035", "file": "spirit_field_035_selected.png"}
 ]
+var active_roster := 130
 
 func _init() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
+	for arg in OS.get_cmdline_user_args():
+		if not str(arg).begins_with("--tmb-roster="):
+			continue
+		var value := str(arg).trim_prefix("--tmb-roster=")
+		if not value.is_valid_int() or not [130,200,500].has(int(value)):
+			_fail("invalid_roster_profile", {"arg":arg})
+			return
+		active_roster = int(value)
+		break
 	var capture_dir := _capture_directory()
 	DirAccess.make_dir_recursive_absolute(capture_dir)
-	var seed_path := ProjectSettings.globalize_path(QA_SEED_SAVE)
+	var seed_resource := QA_SEED_SAVE if active_roster == 130 else "res://qa/endgame_qa_save_%d.json" % active_roster
+	var seed_path := ProjectSettings.globalize_path(seed_resource)
 	var capture_save_path := capture_dir.path_join("endgame_capture_save_%d.json" % int(Time.get_unix_time_from_system()))
 	if not FileAccess.file_exists(seed_path):
 		_fail("deterministic_endgame_seed_save_missing", {"path": seed_path})
 		return
-	var seed_file := FileAccess.open(seed_path, FileAccess.READ)
+	var isolated_state: Variant = JSON.parse_string(FileAccess.get_file_as_string(seed_path))
+	if not (isolated_state is Dictionary) or not isolated_state.has("runtime_last_wall_unix"):
+		_fail("deterministic_endgame_seed_save_clock_missing", {"path": seed_path})
+		return
+	# This capture verifies the full endgame snapshot and live presentation.
+	# Runtime offline catch-up is tested separately by SimulationRuntimeClockV2 tests.
+	isolated_state["runtime_last_wall_unix"] = int(Time.get_unix_time_from_system())
 	var capture_save := FileAccess.open(capture_save_path, FileAccess.WRITE)
-	if seed_file == null or capture_save == null:
-		if seed_file != null: seed_file.close()
-		if capture_save != null: capture_save.close()
+	if capture_save == null:
 		_fail("isolated_playable_capture_save_unavailable", {"path": capture_save_path})
 		return
-	capture_save.store_buffer(seed_file.get_buffer(seed_file.get_length()))
+	capture_save.store_string(JSON.stringify(isolated_state))
 	capture_save.flush()
 	var copy_error := capture_save.get_error()
 	capture_save.close()
-	seed_file.close()
 	if copy_error != OK or SaveService.new().load_from_path(capture_save_path) == null:
 		_fail("isolated_playable_capture_save_copy_invalid", {"path": capture_save_path, "error": copy_error})
 		return
@@ -62,8 +76,8 @@ func _run() -> void:
 	if not _counts_match(initial_counts):
 		_fail("loaded_endgame_building_counts_do_not_match", initial_counts)
 		return
-	if initial.disciples.size() != 130:
-		_fail("loaded_endgame_population_mismatch", {"population": initial.disciples.size()})
+	if initial.disciples.size() != active_roster:
+		_fail("loaded_endgame_population_mismatch", {"expected":active_roster,"population": initial.disciples.size()})
 		return
 
 	var evidence := {
@@ -71,6 +85,7 @@ func _run() -> void:
 		"isolated_save_path": capture_save_path,
 		"fixture_seed": 20261025,
 		"loaded_population": initial.disciples.size(),
+		"roster_profile": active_roster,
 		"building_counts": initial_counts,
 		"camera_pan": false,
 		"camera_zoom": false,
@@ -87,6 +102,20 @@ func _run() -> void:
 	if not await _capture_frame("00_endgame_full_map.png", evidence):
 		_fail("initial_p3_2_frame_capture_failed", evidence)
 		return
+	var saved_zoom := float(scene.map_zoom)
+	var saved_camera_position: Vector2 = scene.map_layer.position
+	var zoom_gallery: Array[Dictionary] = []
+	for zoom_value in [0.75,1.0,1.35,1.8]:
+		scene._apply_camera(float(zoom_value),saved_camera_position,false)
+		await process_frame
+		var file_name := "endgame_zoom_%03d.png" % int(round(float(zoom_value)*100.0))
+		if not await _capture_frame(file_name,evidence):
+			_fail("camera_zoom_frame_capture_failed", {"zoom":zoom_value,"evidence":evidence})
+			return
+		zoom_gallery.append({"zoom":float(scene.map_zoom),"file":file_name})
+		await process_frame
+	evidence["camera_zoom_gallery"] = zoom_gallery
+	scene._apply_camera(saved_zoom,saved_camera_position,false)
 
 	var old_position: Vector2 = scene.map_layer.position
 	var old_zoom := float(scene.map_zoom)
@@ -154,7 +183,7 @@ func _run() -> void:
 		return
 	var reloaded_counts := _count_buildings(reloaded)
 	evidence["reload_exact_counts_and_warehouse"] = _counts_match(reloaded_counts) \
-		and reloaded.disciples.size() == 130 \
+		and reloaded.disciples.size() == active_roster \
 		and reloaded.sect.warehouse_resources == scene.state.sect.warehouse_resources \
 		and reloaded.buildings.size() == scene.state.buildings.size()
 	if not bool(evidence["reload_exact_counts_and_warehouse"]):
@@ -189,7 +218,7 @@ func _run() -> void:
 		return
 	var reopened_state: SimulationState = scene.get("state")
 	evidence["fresh_p3_2_scene_reloaded_from_same_save"] = _counts_match(_count_buildings(reopened_state)) \
-		and reopened_state.disciples.size() == 130 \
+		and reopened_state.disciples.size() == active_roster \
 		and reopened_state.sect.warehouse_resources == reloaded.sect.warehouse_resources \
 		and reopened_state.buildings.size() == reloaded.buildings.size()
 	if not bool(evidence["fresh_p3_2_scene_reloaded_from_same_save"]):
@@ -203,11 +232,13 @@ func _run() -> void:
 		_fail("fresh_p3_2_reload_frame_capture_failed", evidence)
 		return
 
-	# Keep the genuine main-scene viewport rendering for additional AVI frames.
+	# Keep the genuine main-scene viewport rendering for a short, measured sample.
 	var fps_samples: Array[float] = []
-	for _frame in range(180):
+	var fps_sample_start_msec := Time.get_ticks_msec()
+	for _frame in range(600):
 		await process_frame
 		fps_samples.append(float(Engine.get_frames_per_second()))
+	var fps_sample_elapsed_seconds := float(Time.get_ticks_msec()-fps_sample_start_msec)/1000.0
 	var fps_sum := 0.0
 	var fps_min := INF
 	var fps_max := 0.0
@@ -215,8 +246,9 @@ func _run() -> void:
 		fps_sum += sample
 		fps_min = minf(fps_min,sample)
 		fps_max = maxf(fps_max,sample)
-	evidence["render_fps_180_frames"] = {
+	evidence["render_fps_600_frames"] = {
 		"sample_count": fps_samples.size(),
+		"elapsed_seconds": fps_sample_elapsed_seconds,
 		"mean": fps_sum / maxf(float(fps_samples.size()),1.0),
 		"min": fps_min,
 		"max": fps_max,
@@ -294,7 +326,7 @@ func _find_building_row(iso: SectIsometricWorldV1, building_id: String) -> Dicti
 func _capture_frame(file_name: String, evidence: Dictionary) -> bool:
 	await process_frame
 	var image := root.get_texture().get_image()
-	if image == null or image.is_empty():
+	if image == null or image.is_empty() or image.get_size() != Vector2i(1280,720):
 		return false
 	var path := _capture_directory().path_join(file_name)
 	if image.save_png(path) != OK:
@@ -314,7 +346,7 @@ func _visible_actor_status_label_count(scene: Control) -> int:
 func _capture_directory() -> String:
 	var project_root := ProjectSettings.globalize_path("res://")
 	var repository_root := project_root.get_base_dir()
-	return repository_root.path_join(CAPTURE_SUBPATH)
+	return repository_root.path_join(CAPTURE_SUBPATH).path_join("roster_%d" % active_roster)
 
 func _count_buildings(state: SimulationState) -> Dictionary:
 	var result := {}

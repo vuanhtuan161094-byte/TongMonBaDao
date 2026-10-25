@@ -54,7 +54,7 @@ static func graph_connected() -> bool:
     var queue: Array[int] = [0]
     var edges := road_edges()
     while not queue.is_empty():
-        var node := queue.pop_front()
+        var node: int = queue.pop_front()
         for edge in edges:
             var next_id := -1
             if edge.x == node:

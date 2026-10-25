@@ -6,6 +6,7 @@ const FOCUS_MARKER_SIZE := Vector2(82.0, 82.0)
 const B3_HUNT_REFRESH_SECONDS := 0.25
 const MAP_WORKSITE_MAX_CUES := 4
 const MAP_WORKSITE_REFRESH_SECONDS := 0.40
+const MAX_RETAINED_ACTOR_POOL := 72
 
 class B3MainHuntArena:
     extends Control
@@ -72,6 +73,9 @@ var living_cue_layer: LivingCueLayer
 var visible_living_cues: Array[Dictionary] = []
 var female_motion_library: AnimationLibrary
 var modular_live_actor_ids: Dictionary = {}
+var actor_virtual_positions: Dictionary = {}
+var actor_pool: Array[ModularDiscipleActor] = []
+var actor_position_tweens: Dictionary = {}
 var source_a_portrait_textures: Dictionary = {}
 
 var camera_controls_panel: Panel
@@ -136,6 +140,33 @@ func _ready() -> void:
     _refresh_living_cues()
     _build_b3_hunt_panel()
     _resume_saved_b3_hunt()
+
+func _exit_tree() -> void:
+    for tween_value in actor_position_tweens.values():
+        var tween := tween_value as Tween
+        if tween != null and tween.is_running():
+            tween.kill()
+    actor_position_tweens.clear()
+    # Recycled actors live outside the scene tree between viewport changes;
+    # release them explicitly when P3.2 is torn down/reloaded.
+    for actor in actor_pool:
+        if actor != null and is_instance_valid(actor):
+            actor.free()
+    actor_pool.clear()
+
+func _spawn_all_disciples() -> void:
+    # P3.1 builds a VBox/portrait/status subtree per canonical disciple here.
+    # P3.2 owns the pooled Source A actor layer, so creating and immediately
+    # freeing that legacy presentation doubles startup work on endgame saves.
+    # Keep the destination projection; _install_modular_live_actors() later
+    # materializes only viewport-selected actors without touching simulation.
+    if state == null:
+        return
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    for raw_id in ids:
+        var disciple_id := StringName(raw_id)
+        actor_destinations[str(disciple_id)] = str(_initial_destination(state.disciples[disciple_id]))
 
 func _input(event: InputEvent) -> void:
     # Map picking must see a physical tap before Control descendants consume
@@ -450,12 +481,20 @@ func _pulse_focus_marker() -> void:
 func _refresh_focused_disciple_point() -> void:
     if focused_id == &"":
         return
-    var key := str(focused_id)
-    if not actor_nodes.has(key):
+    if not actor_virtual_positions.has(str(focused_id)):
         return
-    var actor: Control = actor_nodes[key]
-    focused_world_point = actor.position + actor.size * 0.5
+    focused_world_point = _disciple_map_point(focused_id)
     _position_focus_marker(focused_world_point)
+
+func _disciple_map_point(disciple_id: StringName) -> Vector2:
+    var key := str(disciple_id)
+    var actor := actor_nodes.get(key) as Control
+    if actor != null and is_instance_valid(actor):
+        return actor.position + actor.size * 0.5
+    if actor_virtual_positions.has(key):
+        var virtual_position: Vector2 = actor_virtual_positions[key]
+        return virtual_position + DiscipleActorVisualCatalog.ACTOR_BOX_SIZE * 0.5
+    return SectMapPresentation.position_for_destination(SectMapPresentation.DEST_COURTYARD)
 
 func _refresh_focus_readout() -> void:
     if focus_readout != null:
@@ -490,20 +529,27 @@ func _apply_camera(zoom: float, position: Vector2, animate: bool) -> void:
 
 func _refresh_world_actor_visibility() -> void:
     # A sect roster can contain 200-500 canonical disciples, but the mobile
-    # viewport must not show (or animate) every actor simultaneously.
-    # Only this read-only view budget changes. Workers/jobs/Save remain intact.
+    # viewport only materializes a bounded set of actors inside its viewport.
+    # Canonical roster/job/save state stays in SimulationState; this is a view pool.
+    if map_layer == null or state == null:
+        return
     var view := SectMapCamera.VIEW_RECT
     var eligible: Array[Dictionary] = []
     var focused_key := str(focused_id) if focused_kind == &"disciple" else ""
-    var candidates: Dictionary = {}
-    for raw_id in actor_nodes.keys():
+    for raw_id in actor_virtual_positions.keys():
         var key := str(raw_id)
-        var actor := actor_nodes[key] as Control
-        if actor == null or not is_instance_valid(actor):
+        if not state.disciples.has(StringName(key)):
             continue
-        var rect := actor.get_global_rect()
+        var local_top_left: Vector2 = actor_virtual_positions[key]
+        var screen_transform: Transform2D = map_layer.get_global_transform()
+        var screen_top_left: Vector2 = screen_transform * local_top_left
+        var actor_size := DiscipleActorVisualCatalog.ACTOR_BOX_SIZE
+        var screen_size := Vector2(
+            absf(screen_transform.x.x)*actor_size.x+absf(screen_transform.y.x)*actor_size.y,
+            absf(screen_transform.x.y)*actor_size.x+absf(screen_transform.y.y)*actor_size.y
+        )
+        var rect := Rect2(screen_top_left,screen_size)
         if rect.position.x >= view.position.x and rect.position.y >= view.position.y and rect.end.x <= view.end.x and rect.end.y <= view.end.y:
-            candidates[key] = true
             eligible.append({
                 "id":key,
                 "center_distance":rect.get_center().distance_squared_to(view.get_center()),
@@ -511,11 +557,18 @@ func _refresh_world_actor_visibility() -> void:
             })
     var visible_ids := SectEndgameVisualBudgetV1.choose_visible_actors(
         eligible,map_zoom,focused_key)
-    for raw_id in actor_nodes.keys():
+    for raw_id in actor_nodes.keys().duplicate():
         var key := str(raw_id)
-        var actor := actor_nodes[key] as Control
+        if not visible_ids.has(key):
+            _recycle_modular_actor(key)
+    for raw_id in visible_ids.keys():
+        var key := str(raw_id)
+        if not actor_nodes.has(key):
+            _materialize_modular_actor(key)
+        var actor := actor_nodes.get(key) as ModularDiscipleActor
         if actor != null and is_instance_valid(actor):
-            actor.visible = candidates.has(key) and visible_ids.has(key)
+            actor.visible = true
+    _refresh_actor_status_label_visibility()
 
 func _refresh_zoom_readout() -> void:
     if zoom_readout != null:
@@ -975,28 +1028,23 @@ func _open_disciple(disciple_id: StringName) -> void:
     _refresh_tasks()
     _clear_popup()
 
-    var key := str(disciple_id)
-    if actor_nodes.has(key):
-        var actor: Control = actor_nodes[key] as Control
-        var disciple: DiscipleState = state.disciples[disciple_id]
-        var point := actor.position + actor.size * 0.5
-        _set_focus_target(point, &"disciple", disciple_id, disciple.display_name, true)
+    var disciple: DiscipleState = state.disciples[disciple_id]
+    _set_focus_target(_disciple_map_point(disciple_id), &"disciple", disciple_id, disciple.display_name, true)
 
     _show_disciple_summary()
 
 func _reconcile_live_actors() -> void:
     # O2: recruitment mutates the authoritative roster after scene startup.
-    # Materialize only roster IDs that do not already have a live map actor.
+    # Keep one virtual location per canonical ID; only viewport-selected IDs
+    # are represented by scene nodes.
     var needs_install := false
     for raw_id in state.disciples.keys():
         var key := str(raw_id)
-        if not actor_nodes.has(key):
+        if not actor_virtual_positions.has(key):
             needs_install = true
             break
-        var actor := actor_nodes.get(key) as Control
-        if actor == null or not is_instance_valid(actor):
-            needs_install = true
-            break
+    if not needs_install and actor_virtual_positions.size() != state.disciples.size():
+        needs_install = true
     if needs_install:
         _install_modular_live_actors()
 
@@ -1008,15 +1056,11 @@ func _sync_actor_positions() -> void:
     for index in range(ids.size()):
         var disciple_id := StringName(ids[index])
         var key := str(disciple_id)
-        if not actor_nodes.has(key):
-            continue
-
         var disciple: DiscipleState = state.disciples[disciple_id]
         var previous := StringName(actor_destinations.get(key, str(SectMapPresentation.DEST_COURTYARD)))
         var destination := SectMapPresentation.destination_for_action(disciple.current_action, previous)
         actor_destinations[key] = str(destination)
 
-        var actor: Control = actor_nodes[key] as Control
         var worksite_id := disciple.worksite_building_id
         if worksite_id != &"" and state.buildings.has(str(worksite_id)):
             var site: BuildingState = state.buildings[str(worksite_id)]
@@ -1025,7 +1069,11 @@ func _sync_actor_positions() -> void:
                 destination = site_destination
                 actor_destinations[key] = str(destination)
         var world_foot := _iso_actor_point(destination,worksite_id) + _endgame_actor_offset(disciple,index,idle_slots)
-        var target := world_foot - _actor_anchor_offset(actor)
+        var target := world_foot - DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
+        actor_virtual_positions[key] = target
+        var actor := actor_nodes.get(key) as Control
+        if actor == null or not is_instance_valid(actor):
+            continue
         var delta := target - actor.position
 
         # An off-screen/unselected person still works in SimulationState.
@@ -1048,12 +1096,12 @@ func _sync_actor_positions() -> void:
 
         if delta.length() > 1.0:
             if animate_actor:
-                var tween := create_tween()
-                tween.set_trans(Tween.TRANS_QUAD)
-                tween.set_ease(Tween.EASE_IN_OUT)
-                tween.tween_property(actor, "position", target, 0.32)
+                _animate_actor_position(actor, target)
             else:
+                _cancel_actor_position_tween(actor)
                 actor.position = target
+        else:
+            _cancel_actor_position_tween(actor)
 
         if actor_status_labels.has(key):
             var status := actor_status_labels[key] as Label
@@ -1128,52 +1176,127 @@ func _stage_a_live_assets_ready() -> bool:
         and FemaleStageAAssetLoader.assets_available(&"up")
     )
 
+func _cancel_actor_position_tween(actor: Control) -> void:
+    if actor == null or not is_instance_valid(actor):
+        return
+    var instance_id := actor.get_instance_id()
+    var tween := actor_position_tweens.get(instance_id) as Tween
+    if tween != null:
+        if tween.is_running():
+            tween.kill()
+        actor_position_tweens.erase(instance_id)
+
+func _animate_actor_position(actor: Control, target: Vector2) -> void:
+    _cancel_actor_position_tween(actor)
+    var instance_id := actor.get_instance_id()
+    var tween := create_tween()
+    actor_position_tweens[instance_id] = tween
+    tween.set_trans(Tween.TRANS_QUAD)
+    tween.set_ease(Tween.EASE_IN_OUT)
+    tween.tween_property(actor, "position", target, 0.32)
+    tween.finished.connect(_forget_actor_position_tween.bind(instance_id, tween))
+
+func _forget_actor_position_tween(instance_id: int, tween: Tween) -> void:
+    if actor_position_tweens.get(instance_id) == tween:
+        actor_position_tweens.erase(instance_id)
+
 func _install_modular_live_actors() -> void:
+    # The P3.1 base scene creates roster placeholder Controls during super._ready().
+    # Replace that presentation once with the P3.2 pooled/virtual actor layer.
+    for raw_id in actor_nodes.keys().duplicate():
+        var key := str(raw_id)
+        var old_actor := actor_nodes.get(key) as Control
+        if old_actor is ModularDiscipleActor:
+            continue
+        else:
+            actor_nodes.erase(key)
+            actor_status_labels.erase(key)
+            if old_actor != null and is_instance_valid(old_actor):
+                if old_actor.get_parent() != null:
+                    old_actor.get_parent().remove_child(old_actor)
+                old_actor.free()
     modular_live_actor_ids.clear()
     if female_motion_library == null:
         return
 
-    var female_assets_ready := _stage_a_live_assets_ready()
     var ids: Array = state.disciples.keys()
     ids.sort()
     var idle_slots := _idle_staging_ordinals(ids)
+    var next_positions: Dictionary = {}
     for index in range(ids.size()):
         var disciple_id := StringName(ids[index])
         var key := str(disciple_id)
         var disciple: DiscipleState = state.disciples[disciple_id]
-        if actor_nodes.has(key) and actor_nodes[key] is ModularDiscipleActor:
-            modular_live_actor_ids[key] = true
-            continue
-
-        var old_actor: Control = actor_nodes.get(key) as Control
-        if old_actor != null and is_instance_valid(old_actor):
-            if old_actor.get_parent() != null:
-                old_actor.get_parent().remove_child(old_actor)
-            old_actor.queue_free()
-
         var destination := StringName(actor_destinations.get(key, str(_initial_destination(disciple))))
+        destination = SectMapPresentation.destination_for_action(disciple.current_action,destination)
         actor_destinations[key] = str(destination)
-
-        var actor := ModularDiscipleActor.new()
-        actor.name = "ModularDisciple_%s" % key
-        actor.configure(disciple)
-        actor.set_animation_library(female_motion_library)
-        if actor.rig_id == DiscipleActorVisualCatalog.RIG_FEMALE_NORMAL_V1 and female_assets_ready:
-            FemaleStageAAssetLoader.apply_public_direction(actor, &"down")
-        var source_a_scene := DiscipleSourceAVisualPool.scene_for_disciple(disciple)
-        if source_a_scene != null and not actor.production_body_active():
-            actor.set_baked_visual(source_a_scene)
-        actor.sync_action(disciple.current_action)
-        actor.actor_pressed.connect(Callable(self, "_open_disciple"))
-        var world_foot := _iso_actor_point(destination,disciple.worksite_building_id) + _endgame_actor_offset(disciple,index,idle_slots)
-        actor.position = world_foot - DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
-        map_layer.add_child(actor)
-
-        actor_nodes[key] = actor
-        actor_status_labels[key] = actor.status_label
+        var worksite_id := disciple.worksite_building_id
+        if worksite_id != &"" and state.buildings.has(str(worksite_id)):
+            var site: BuildingState = state.buildings[str(worksite_id)]
+            var site_destination := _sect_production_destination(site.building_type)
+            if site_destination != &"":
+                destination = site_destination
+                actor_destinations[key] = str(destination)
+        var world_foot := _iso_actor_point(destination,worksite_id) + _endgame_actor_offset(disciple,index,idle_slots)
+        next_positions[key] = world_foot - DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
         modular_live_actor_ids[key] = true
+    for raw_id in actor_nodes.keys().duplicate():
+        var key := str(raw_id)
+        if not next_positions.has(key):
+            _recycle_modular_actor(key)
+    for raw_id in actor_destinations.keys().duplicate():
+        var key := str(raw_id)
+        if not next_positions.has(key):
+            actor_destinations.erase(key)
+    actor_virtual_positions = next_positions
     _refresh_actor_status_label_visibility()
     _refresh_world_actor_visibility()
+
+func _materialize_modular_actor(key: String) -> void:
+    if not state.disciples.has(StringName(key)) or not actor_virtual_positions.has(key):
+        return
+    var disciple: DiscipleState = state.disciples[StringName(key)]
+    var actor := _take_modular_actor()
+    _cancel_actor_position_tween(actor)
+    actor.name = "ModularDisciple_%s" % key
+    actor.reset_for_reuse()
+    actor.configure(disciple)
+    actor.set_animation_library(female_motion_library)
+    if actor.rig_id == DiscipleActorVisualCatalog.RIG_FEMALE_NORMAL_V1 and _stage_a_live_assets_ready():
+        FemaleStageAAssetLoader.apply_public_direction(actor,&"down")
+    var source_a_scene := DiscipleSourceAVisualPool.scene_for_disciple(disciple)
+    if source_a_scene != null and not actor.production_body_active():
+        actor.set_baked_visual(source_a_scene)
+    actor.sync_action(disciple.current_action)
+    actor.position = actor_virtual_positions[key]
+    map_layer.add_child(actor)
+    actor_nodes[key] = actor
+    actor_status_labels[key] = actor.status_label
+    modular_live_actor_ids[key] = true
+
+func _take_modular_actor() -> ModularDiscipleActor:
+    if not actor_pool.is_empty():
+        var pooled: ModularDiscipleActor = actor_pool.pop_back()
+        return pooled
+    var actor := ModularDiscipleActor.new()
+    actor.actor_pressed.connect(Callable(self,"_open_disciple"))
+    return actor
+
+func _recycle_modular_actor(key: String) -> void:
+    var actor := actor_nodes.get(key) as ModularDiscipleActor
+    actor_nodes.erase(key)
+    actor_status_labels.erase(key)
+    if actor == null or not is_instance_valid(actor):
+        return
+    _cancel_actor_position_tween(actor)
+    actor.visible = false
+    actor.reset_for_reuse()
+    if actor.get_parent() != null:
+        actor.get_parent().remove_child(actor)
+    if actor_pool.size() < MAX_RETAINED_ACTOR_POOL:
+        actor_pool.append(actor)
+    else:
+        actor.free()
 
 func _build_building_operation_panel() -> void:
     building_operation_panel = Panel.new()
@@ -3271,11 +3394,9 @@ func _living_cue_anchor_positions(cues: Array[Dictionary]) -> Dictionary:
         var target_id := StringName(cue.get("target_id", ""))
         if target_kind == LivingCueResolver.TARGET_DISCIPLE:
             var actor_key := str(target_id)
-            if actor_nodes.has(actor_key):
-                var actor := actor_nodes[actor_key] as Control
-                if actor != null and is_instance_valid(actor):
-                    positions[key] = actor.position + actor.size * 0.5
-                    continue
+            if actor_virtual_positions.has(actor_key):
+                positions[key] = _disciple_map_point(StringName(target_id))
+                continue
         elif target_kind == LivingCueResolver.TARGET_BUILDING:
             positions[key] = SectMapPresentation.position_for_destination(target_id)
             continue
@@ -3764,8 +3885,9 @@ func _b3_hunt_visual_rows(battle: MapBattleV2) -> Dictionary:
                 "source_a_visual_key":visual_key
             }
         elif str(actor.get("species_id","")) == "thanh_lang":
-            # Combat V5 pilot maps its verified normal Source A animal to the
-            # same canonical B3 PilotContent Thanh Lang species.
+            # Existing low-confidence monster-category Source A pilot. Keep the
+            # presentation mapping, but do not treat its visual as a verified
+            # Thanh Lang species match until the asset owner approves it.
             rows[actor_id] = {
                 "display_name":ResourceRegistry.new().display_name(StringName(actor.get("species_id",""))),
                 "source_a_visual_key":"monster_1113031_1"
@@ -4314,13 +4436,8 @@ func _return_to_disciple_summary() -> void:
 func _restore_selected_focus_marker() -> void:
     if selected_id == &"" or not state.disciples.has(selected_id):
         return
-    var key := str(selected_id)
-    if not actor_nodes.has(key):
-        return
-    var actor: Control = actor_nodes[key] as Control
     var disciple: DiscipleState = state.disciples[selected_id]
-    var point := actor.position + actor.size * 0.5
-    _set_focus_target(point, &"disciple", selected_id, disciple.display_name, false)
+    _set_focus_target(_disciple_map_point(selected_id), &"disciple", selected_id, disciple.display_name, false)
 
 func _tab_notice(tab_name: String) -> void:
     _open_disciple_tab(tab_name)
