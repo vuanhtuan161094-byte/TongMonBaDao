@@ -2,7 +2,7 @@
 
 ## 2026-10-25 — Continue ENDGAME-FIRST Issue #37 (PROVISIONAL branch)
 
-Continue on `E:/codex/2026-10-25/TMB_ENDGAME_G0_WORKTREE_20261025`, branch `integration/endgame-maps-assets-playable-20261025`, code SHA `14f0927c3161efc0b2afc1e8c411bd9d34dd4281`, evidence commit `a0bb9a7bf9ce0831b9d45ce17a26f1cf47d6d7df`, based on PR #33 head `7a551ca4f8f9b15f3069652c5f557e0fbc29833` with selected PR #34 NET. This is not main. Draft PR #38 stacks on PR #33; PR #24–#35 remain DRAFT/OPEN; Issue #37 OPEN.
+Continue on `E:/codex/2026-10-25/TMB_ENDGAME_G0_WORKTREE_20261025`, branch `integration/endgame-maps-assets-playable-20261025`, gameplay/test SHA `14f0927c3161efc0b2afc1e8c411bd9d34dd4281`, evidence/measurement commit `9ac16e8b7ddb85e098fb8037a920b65ecf24f1fa`, based on PR #33 head `7a551ca4f8f9b15f3069652c5f557e0fbc29833` with selected PR #34 NET. This is not main. Draft PR #38 stacks on PR #33; PR #24–#35 remain DRAFT/OPEN; Issue #37 OPEN.
 
 Playable local QA entry is `Run-Endgame-QA.cmd` (Godot official 4.7.2, 1280×720, no Administrator). It loads deterministic canonical QA seed `godot/qa/endgame_qa_save.json` (SHA `ba1b98d16a6ca26e08915981ca273769f9f23ff15a72f21b5bdd522d8cbb36e1`) into an isolated mutable save at `godot/outputs/endgame_qa_20261025/userdata/endgame_playable_save.json`; don't replace that save on repeat launch. It has 130 V2 disciples, 103 real supported buildings including 30/30/40 producers, actual 120-tick production/Kho state. Seeded start is synthetic QA setup, not natural endgame progression.
 

@@ -4,7 +4,7 @@ Ngày: 2026-10-25
 Repository: `vuanhtuan161094-byte/TongMonBaDao`  
 Branch: `integration/endgame-maps-assets-playable-20261025`  
 Baseline: PR #33 head `7a551ca4f8f9b15f3069652c5f557e0fbc29833`; đã áp dụng chọn lọc NET presentation của PR #34, không merge nhánh và không thay các PR cũ.  
-Code commit: `14f0927c3161efc0b2afc1e8c411bd9d34dd4281` (tree `1047d56be12f09a7471a415df03838cf07ff31a6`). Evidence/checkpoint commit: `a0bb9a7bf9ce0831b9d45ce17a26f1cf47d6d7df`. Draft PR [#38](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/38) targets PR #33 and remains unmerged.  
+Code/test commit: `14f0927c3161efc0b2afc1e8c411bd9d34dd4281` (tree `1047d56be12f09a7471a415df03838cf07ff31a6`). Regression evidence commit: `a0bb9a7bf9ce0831b9d45ce17a26f1cf47d6d7df`; follow-up metadata commits `069397b22acae6eeffb2638f54105cc3fce51f37` and `9ac16e8b7ddb85e098fb8037a920b65ecf24f1fa`. Draft PR [#38](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/38) targets PR #33 and remains unmerged.  
 Issue #37 vẫn OPEN. PR #24–#35 vẫn DRAFT/OPEN, không merge.
 
 ## Kết quả nhanh

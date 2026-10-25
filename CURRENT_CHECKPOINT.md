@@ -2,7 +2,7 @@
 
 ## 2026-10-25 — ENDGAME-FIRST local integration (PROVISIONAL; not main)
 
-Worktree/branch `E:/codex/2026-10-25/TMB_ENDGAME_G0_WORKTREE_20261025`, `integration/endgame-maps-assets-playable-20261025`; code commit `14f0927c3161efc0b2afc1e8c411bd9d34dd4281`, evidence commit `a0bb9a7bf9ce0831b9d45ce17a26f1cf47d6d7df`, based on PR #33 `7a551ca4f8f9b15f3069652c5f557e0fbc29833` plus selected PR #34 NET. Draft PR #38 is stacked on PR #33; PR #24–#35 remain open/draft/unmerged; Issue #37 remains open. Do not merge main.
+Worktree/branch `E:/codex/2026-10-25/TMB_ENDGAME_G0_WORKTREE_20261025`, `integration/endgame-maps-assets-playable-20261025`; gameplay/test SHA `14f0927c3161efc0b2afc1e8c411bd9d34dd4281`, final measurements/log evidence through commit `9ac16e8b7ddb85e098fb8037a920b65ecf24f1fa`, based on PR #33 `7a551ca4f8f9b15f3069652c5f557e0fbc29833` plus selected PR #34 NET. Draft PR #38 is stacked on PR #33; PR #24–#35 remain open/draft/unmerged; Issue #37 remains open. Do not merge main.
 
 The deterministic canonical P3.2 fixture contains 30 Mine Lv19, 30 Linh Forest Lv1, 40 Spirit Field Lv100, and the other three building families currently implemented (Alchemy Hall Lv1, Dan Tien Dai Lv100, Ren Than Duong Lv1); 130 QA-seeded V2 disciples, 100 real producer assignments, 404 batches/1,497 units after 120 ticks. Save/Load and invariants pass. Fixture seed SHA `ba1b98d16a6ca26e08915981ca273769f9f23ff15a72f21b5bdd522d8cbb36e1`. One-tap Godot 4.7.2 1280×720 launcher: `Run-Endgame-QA.cmd`; its mutable play save is under `godot/outputs/endgame_qa_20261025/userdata/` and intentionally excluded from Git.
 
