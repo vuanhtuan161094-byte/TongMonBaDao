@@ -65,8 +65,15 @@ func _run() -> void:
         _fail("forged generation was accepted")
         return
     var before := int(world["slots"][PveMultiCampPopulationV1.slot_id(0,0)]["generation"])
+    var caller_copy := event.duplicate(true)
+    caller_copy["at_seconds"] = float(event["at_seconds"])+3600.0
     var accepted := PveMultiCampPopulationV1.record_authoritative_battle_kill(
-        world,battle,event,8.0)
+        world,battle,caller_copy,8.0)
+    if not is_equal_approx(
+            float(world["slots"][PveMultiCampPopulationV1.slot_id(0,0)]["due_at"]),
+            float(event["at_seconds"])+8.0):
+        _fail("respawn timer did not use the source journal timestamp")
+        return
     if not bool(accepted.get("ok",false)) or bool(accepted.get("rewards_granted",true)):
         _fail("genuine Combat V2 HP0 was rejected or illegally paid rewards")
         return
