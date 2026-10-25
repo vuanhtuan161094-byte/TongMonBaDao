@@ -8,6 +8,11 @@ var owner_state: SimulationState
 var region_id: String = ""
 var spawn_data: Dictionary = {}
 var battle: MapBattleV2
+var mode: String = "encounter"
+var camp_index: int = -1
+var camp_population: Dictionary = {}
+var camp_slot_ids: Array = []
+var minute_phase: float = 0.0
 
 func begin(
     state: SimulationState, region: String, encounter_id: String, seed: int,
@@ -15,6 +20,8 @@ func begin(
 ) -> Dictionary:
     if battle != null or state == null or not state.sect.v2_pve_enabled:
         return {"ok":false,"reason":"v2_pve_disabled_or_already_started"}
+    if not state.sect.b3_hunt.is_empty():
+        return {"ok":false,"reason":"another_authoritative_hunt_world_is_active"}
     if party_members.is_empty() or party_members.size() > MapBattleV2.MAX_DISCIPLES:
         return {"ok":false,"reason":"invalid_party_size"}
     if encounter_id.is_empty() or state.sect.v2_pve_active_runs.has(encounter_id) or state.sect.v2_pve_reward_claims.has(encounter_id) or state.sect.v2_pve_settlement_receipts.has(encounter_id):
@@ -92,6 +99,11 @@ func begin(
     region_id = region
     spawn_data = spawned
     battle = map_battle
+    mode = "encounter"
+    camp_index = -1
+    camp_population.clear()
+    camp_slot_ids.clear()
+    minute_phase = 0.0
     var stored := _persist_live_state()
     if not bool(stored.get("ok",false)):
         battle = null
@@ -105,9 +117,143 @@ func begin(
     return {"ok":true,"encounter_id":encounter_id,"region_id":region,
         "level":level,"party_size":actors.size(),"monster_count":spawned["monsters"].size()}
 
+# A first playable Thanh Trúc Lâm camp: authentic V2 party, ten catalogue
+# monsters and the same Combat V2 snapshot/save/settlement path as group PvE.
+# Monster-specific payout and respawn delay are deliberately not invented;
+# the existing, authored region clear table is claimed once after camp victory.
+func begin_multicamp(owner: SimulationRuntimeOwnerV2, encounter_id: String,
+        seed: int, party_members: Array, slots_per_camp: int = 10) -> Dictionary:
+    if owner == null or owner.state == null or owner.durable_path.is_empty():
+        return {"ok":false,"reason":"multicamp_requires_durable_runtime_owner"}
+    if owner.b3_write_blocked or owner.runtime_write_blocked:
+        return {"ok":false,"reason":"runtime_save_retry_required"}
+    if not owner.state.sect.b3_hunt.is_empty() or not owner.state.sect.v2_pve_active_runs.is_empty():
+        return {"ok":false,"reason":"another_hunt_world_is_active"}
+    if party_members.is_empty() or party_members.size() > 6:
+        return {"ok":false,"reason":"multicamp_party_must_be_one_to_six"}
+    if slots_per_camp != 10:
+        return {"ok":false,"reason":"playable_pilot_requires_ten_monsters"}
+    var state := owner.state
+    var selected := HuntingMapV2.choose_level(state,PveMultiCampPopulationV1.ZONE,1)
+    if not bool(selected.get("ok",false)):
+        return selected
+    var started := begin(state,PveMultiCampPopulationV1.ZONE,encounter_id,seed,party_members)
+    if not bool(started.get("ok",false)):
+        return started
+
+    var registry := PveMultiCampPopulationV1.new_registry(slots_per_camp)
+    if not bool(registry.get("ok",false)):
+        _rollback_uncommitted_begin()
+        return registry
+    var party: Array = []
+    var actor_ids: Array = battle.actors.keys()
+    actor_ids.sort()
+    for actor_id in actor_ids:
+        if str(battle.actors[actor_id].get("side","")) == "disciple":
+            party.append(battle.actors[actor_id].duplicate(true))
+    var monsters := _build_camp_monsters(encounter_id,seed,registry,0,slots_per_camp)
+    if monsters.size() != slots_per_camp:
+        _rollback_uncommitted_begin()
+        return {"ok":false,"reason":"camp_catalogue_spawn_failed"}
+    var continuous := MapBattleV2.new(seed)
+    var ready := continuous.setup(encounter_id,party,monsters,true)
+    if not bool(ready.get("ok",false)):
+        _rollback_uncommitted_begin()
+        return ready
+    battle = continuous
+    mode = "multicamp"
+    camp_index = 0
+    camp_population = registry
+    camp_slot_ids.clear()
+    for i in range(slots_per_camp):
+        camp_slot_ids.append(PveMultiCampPopulationV1.slot_id(camp_index,i))
+    minute_phase = 0.0
+    var checkpoint := _persist_live_state()
+    if not bool(checkpoint.get("ok",false)):
+        _rollback_uncommitted_begin()
+        return checkpoint
+    var error := owner.saves.save_to_path(state,owner.durable_path)
+    owner.runtime_write_blocked = error != OK
+    if error != OK:
+        return {"ok":false,"reason":"multicamp_initial_save_failed","error":error}
+    return {"ok":true,"mode":mode,"encounter_id":encounter_id,
+        "camp_id":PveMultiCampPopulationV1.camp_id(camp_index),
+        "party_size":party.size(),"monster_count":monsters.size(),
+        "resource_payout":"canonical_region_clear_table"}
+
+func _build_camp_monsters(encounter_id: String, seed: int, registry: Dictionary,
+        camp: int, count: int) -> Array:
+    var rows: Array = []
+    var content: Dictionary = HuntingMapV2.REGION_CONTENT[PveMultiCampPopulationV1.ZONE]
+    var rng := GameRng.new(seed ^ 0x41C64E6D)
+    for i in range(count):
+        var slot_id := PveMultiCampPopulationV1.slot_id(camp,i)
+        var slot: Dictionary = registry["slots"][slot_id]
+        var species := str(rng.weighted_pick(content["normal"]))
+        var actor_id := "%s/%s/g%d" % [encounter_id,slot_id,int(slot["generation"])]
+        var created := MonsterCatalogueV2.create_actor(species,1,1,actor_id)
+        if not bool(created.get("ok",false)):
+            return []
+        created["id"] = actor_id
+        created["spawn_slot_id"] = slot_id
+        created["slot_generation"] = int(slot["generation"])
+        created["position"] = Vector2(23.0+float(i%5)*1.05,7.2+float(int(i/5))*2.5)
+        created["region_id"] = PveMultiCampPopulationV1.ZONE
+        created["camp_id"] = PveMultiCampPopulationV1.camp_id(camp)
+        rows.append(created)
+    return rows
+
+func _rollback_uncommitted_begin() -> void:
+    if owner_state == null:
+        return
+    if battle != null:
+        for actor in battle.actors.values():
+            if str(actor.get("side","")) == "disciple" and owner_state.disciples.has(StringName(str(actor["id"]))):
+                owner_state.disciples[StringName(str(actor["id"]))].active_pve_encounter_id = ""
+    owner_state.sect.v2_pve_active_runs.erase(battle.encounter_id if battle != null else "")
+    battle = null
+    owner_state = null
+    spawn_data.clear()
+    camp_population.clear()
+    camp_slot_ids.clear()
+    mode = "encounter"
+    camp_index = -1
+
+func retreat_multicamp() -> Dictionary:
+    if mode != "multicamp" or battle == null or owner_state == null:
+        return {"ok":false,"reason":"no_active_multicamp"}
+    if battle.active:
+        battle.active = false
+        battle.outcome = "timeout_retreat"
+        battle._event("battle_end",{"outcome":battle.outcome,"elapsed":battle.now,
+            "downed_disciples":battle.downed_disciples,"cause":"manual_return"})
+    var stored := _persist_live_state()
+    if not bool(stored.get("ok",false)):
+        return stored
+    var settled := _settle_terminal()
+    if not bool(settled.get("ok",false)):
+        return settled
+    var receipt: Dictionary = owner_state.sect.v2_pve_settlement_receipts[battle.encounter_id]
+    receipt["mode"] = mode
+    receipt["camp_id"] = PveMultiCampPopulationV1.camp_id(camp_index)
+    receipt["kills"] = _camp_kill_count()
+    receipt["items"] = {}
+    return {"ok":true,"outcome":battle.outcome,"kills":int(receipt["kills"])}
+
+func _camp_kill_count() -> int:
+    if battle == null:
+        return 0
+    var dead := 0
+    for actor in battle.actors.values():
+        if str(actor.get("side","")) == "monster" and float(actor.get("hp",1.0)) <= 0.0:
+            dead += 1
+    return dead
+
 func advance(viewed_map: bool = false) -> Dictionary:
     if battle == null or owner_state == null:
         return {"ok":false,"reason":"no_active_session"}
+    if mode == "multicamp":
+        return _advance_multicamp(viewed_map)
     if owner_state.sect.v2_pve_settlement_receipts.has(battle.encounter_id):
         return {"ok":false,"reason":"encounter_already_settled"}
     var result := battle.step(viewed_map)
@@ -122,9 +268,95 @@ func advance(viewed_map: bool = false) -> Dictionary:
             return settled
     return result
 
+func _advance_multicamp(viewed_map: bool) -> Dictionary:
+    var did_step := false
+    if battle.active:
+        var stepped := battle.step(viewed_map)
+        if not bool(stepped.get("ok",false)):
+            return stepped
+        did_step = true
+        if battle._count_alive("monster") == 0:
+            battle.active = false
+            battle.outcome = "win"
+            battle._event("battle_end",{"outcome":"win","elapsed":battle.now,
+                "downed_disciples":battle.downed_disciples,"camp_id":PveMultiCampPopulationV1.camp_id(camp_index)})
+        elif battle._count_alive("disciple") == 0:
+            battle.active = false
+            battle.outcome = "defeat"
+            battle._event("battle_end",{"outcome":"defeat","elapsed":battle.now,
+                "downed_disciples":battle.downed_disciples,"camp_id":PveMultiCampPopulationV1.camp_id(camp_index)})
+        var stored := _persist_live_state()
+        if not bool(stored.get("ok",false)):
+            return stored
+    if not battle.active:
+        var completed := _complete_multicamp()
+        # The combat frame itself is already represented in the saved snapshot.
+        # A warehouse backpressure result is retryable, not a lost combat step.
+        if not bool(completed.get("ok",false)):
+            return {"ok":true,"stepped":did_step,"barrier":true,
+                "settlement_pending":str(completed.get("reason","settlement_pending")),
+                "outcome":battle.outcome,"time":battle.now}
+        completed["stepped"] = did_step
+        completed["barrier"] = true
+        return completed
+    return {"ok":true,"stepped":did_step,"barrier":false,
+        "outcome":battle.outcome,"time":battle.now,
+        "alive_disciples":battle._count_alive("disciple"),
+        "alive_monsters":battle._count_alive("monster")}
+
+func _complete_multicamp() -> Dictionary:
+    if battle == null or battle.active or not ["win","defeat","timeout_retreat"].has(battle.outcome):
+        return {"ok":false,"reason":"multicamp_not_terminal"}
+    var settled := _settle_terminal()
+    if not bool(settled.get("ok",false)):
+        return settled
+    var receipt: Dictionary = owner_state.sect.v2_pve_settlement_receipts[battle.encounter_id]
+    receipt["mode"] = mode
+    receipt["camp_id"] = PveMultiCampPopulationV1.camp_id(camp_index)
+    receipt["kills"] = _camp_kill_count()
+    receipt["items"] = {}
+    var paid: Dictionary = {"ok":true,"items":{}}
+    if battle.outcome == "win":
+        paid = claim()
+        if not bool(paid.get("ok",false)):
+            return paid
+        receipt["items"] = paid.get("items",{}).duplicate(true)
+    return {"ok":true,"outcome":battle.outcome,"kills":int(receipt["kills"]),
+        "items":receipt["items"].duplicate(true),"summary":battle.summary()}
+
+static func has_active_multicamp(state: SimulationState) -> bool:
+    return not active_multicamp_id(state).is_empty()
+
+static func active_multicamp_id(state: SimulationState) -> String:
+    if state == null:
+        return ""
+    for raw_id in state.sect.v2_pve_active_runs.keys():
+        var envelope = state.sect.v2_pve_active_runs[raw_id]
+        if envelope is Dictionary and str(envelope.get("mode","")) == "multicamp":
+            return str(raw_id)
+    return ""
+
+static func commit_owner(owner: SimulationRuntimeOwnerV2) -> Dictionary:
+    if owner == null or owner.state == null or owner.durable_path.is_empty():
+        return {"ok":false,"reason":"multicamp_missing_save_barrier"}
+    var error := owner.saves.save_to_path(owner.state,owner.durable_path)
+    owner.runtime_write_blocked = error != OK
+    return {"ok":error == OK,"error":error,
+        "reason":"multicamp_save_barrier_failed" if error != OK else ""}
+
 func finish(max_steps: int = 400) -> Dictionary:
     if battle == null or owner_state == null:
         return {"ok":false,"reason":"no_session"}
+    if mode == "multicamp":
+        var progressed := 0
+        while battle.active and progressed < maxi(0,max_steps):
+            var frame := _advance_multicamp(false)
+            if not bool(frame.get("ok",false)):
+                return frame
+            progressed += 1
+        if battle.active:
+            return {"ok":false,"reason":"multicamp_still_active","summary":battle.summary()}
+        return _complete_multicamp()
     if owner_state.sect.v2_pve_settlement_receipts.has(battle.encounter_id):
         # A second resumed in-memory session may still be at an earlier battle
         # checkpoint. Replay combat locally to compare the immutable terminal
@@ -160,6 +392,12 @@ func claim() -> Dictionary:
     var result := HuntingMapV2.claim_reward(owner_state,spawn_data,battle)
     if bool(result.get("ok",false)):
         owner_state.sect.v2_pve_active_runs.erase(battle.encounter_id)
+        if mode == "multicamp" and owner_state.sect.v2_pve_settlement_receipts.has(battle.encounter_id):
+            var receipt: Dictionary = owner_state.sect.v2_pve_settlement_receipts[battle.encounter_id]
+            receipt["mode"] = mode
+            receipt["camp_id"] = PveMultiCampPopulationV1.camp_id(camp_index)
+            receipt["kills"] = _camp_kill_count()
+            receipt["items"] = result.get("items",{}).duplicate(true)
     return result
 
 func snapshot() -> Dictionary:
@@ -260,9 +498,16 @@ func _settle_terminal() -> Dictionary:
         disciple.target_region_id = &""
         disciple.current_action = &"EVALUATE"
         disciple.active_pve_encounter_id = ""
-    owner_state.sect.v2_pve_settlement_receipts[encounter] = {
+    var terminal_receipt := {
         "outcome":battle.outcome,"settled_tick":when,"members":members.duplicate(true)
     }
+    if mode == "multicamp":
+        terminal_receipt["mode"] = mode
+        terminal_receipt["camp_id"] = PveMultiCampPopulationV1.camp_id(camp_index)
+        terminal_receipt["kills"] = _camp_kill_count()
+        terminal_receipt["items"] = {}
+        terminal_receipt["battle"] = MapBattleSnapshotV2.save(battle)
+    owner_state.sect.v2_pve_settlement_receipts[encounter] = terminal_receipt
     if battle.outcome != "win":
         owner_state.sect.v2_pve_active_runs.erase(encounter)
     return {"ok":true,"already_settled":false,"settled_tick":when}
@@ -372,13 +617,21 @@ func save_state() -> Dictionary:
     var checkpoint := MapBattleSnapshotV2.save(battle)
     if not bool(checkpoint.get("ok",false)):
         return checkpoint
-    return {
+    var saved := {
         "ok":true,"version":1,"region_id":region_id,
         "difficulty":int(spawn_data.get("level",0)),
         "encounter_id":str(spawn_data.get("encounter_id","")),
         "reward_seed":int(spawn_data.get("reward_seed",0)),
         "battle":checkpoint
     }
+    if mode == "multicamp":
+        saved["mode"] = mode
+        saved["camp_index"] = camp_index
+        saved["camp_population"] = camp_population.duplicate(true)
+        saved["camp_slot_ids"] = camp_slot_ids.duplicate()
+        saved["minute_phase"] = minute_phase
+        saved["camp_monster_count"] = camp_slot_ids.size()
+    return saved
 
 # The live character HP owner stays separate until DV2-03's real HP track
 # migration. Rehydrated actors retain their exact battle HP but do not
@@ -405,36 +658,73 @@ static func restore_state(state: SimulationState, saved: Dictionary) -> Dictiona
     var spawned := HuntingMapV2.spawn(region,level,id,int(saved.get("reward_seed",0)))
     if not bool(spawned.get("ok",false)):
         return spawned
+    var mode_value := str(saved.get("mode","encounter"))
+    if not ["encounter","multicamp"].has(mode_value):
+        return {"ok":false,"reason":"unknown_saved_hunt_mode"}
     var expected: Dictionary = {}
     for entry in spawned["monsters"]:
         expected[str(entry["id"])] = entry
     var seen_monsters := 0
     var seen_disciples := 0
+    var seen_slots: Dictionary = {}
+    var camp_registry: Dictionary = {}
+    var camp_index_value := -1
+    var camp_slots: Array = []
+    var phase := 0.0
+    if mode_value == "multicamp":
+        if not resumed.continuous_mode:
+            return {"ok":false,"reason":"multicamp_snapshot_not_continuous"}
+        camp_registry = saved.get("camp_population",{})
+        camp_index_value = int(saved.get("camp_index",-1))
+        camp_slots = saved.get("camp_slot_ids",[])
+        phase = float(saved.get("minute_phase",-1.0))
+        if camp_index_value != 0 or PveMultiCampPopulationV1.verify_structure(camp_registry) != "" or camp_slots.size() != 10 or int(saved.get("camp_monster_count",0)) != 10 or not is_finite(phase) or phase < 0.0 or phase >= 60.0 or fmod(phase,MapBattleV2.STEP_SECONDS) != 0.0:
+            return {"ok":false,"reason":"invalid_multicamp_population_checkpoint"}
+    elif resumed.continuous_mode:
+        return {"ok":false,"reason":"unexpected_continuous_hunt_snapshot"}
     for actor_data in resumed.actors.values():
         var row: Dictionary = actor_data
         if str(row["side"]) == "monster":
             seen_monsters += 1
             var actor_id := str(row["id"])
-            if not expected.has(actor_id):
-                return {"ok":false,"reason":"unexpected_saved_monster"}
-            var original: Dictionary = expected[actor_id]
-            if str(row.get("species_id","")) != str(original["species_id"]) or \
-                str(row.get("tier","")) != str(original["tier"]) or \
-                str(row.get("race_id","")) != str(original["race_id"]):
-                return {"ok":false,"reason":"monster_provenance_mismatch"}
-            if not is_equal_approx(float(row["max_hp"]),float(original["stats"]["max_hp"])):
-                return {"ok":false,"reason":"monster_stat_content_incompatible"}
+            if mode_value == "multicamp":
+                var slot_id := str(row.get("spawn_slot_id",""))
+                var generation := int(row.get("slot_generation",0))
+                var slot_map: Dictionary = camp_registry.get("slots",{})
+                if not camp_slots.has(slot_id) or seen_slots.has(slot_id) or not slot_map.has(slot_id):
+                    return {"ok":false,"reason":"unexpected_multicamp_spawn_slot"}
+                var slot: Dictionary = slot_map[slot_id]
+                if not HuntingMapV2.REGION_CONTENT[PveMultiCampPopulationV1.ZONE]["normal"].has(str(row.get("species_id",""))) or str(row.get("tier","")) != "normal" or str(row.get("race_id","")) != "yeu_thu" or generation != int(slot.get("generation",0)) or actor_id != "%s/%s/g%d" % [id,slot_id,generation]:
+                    return {"ok":false,"reason":"multicamp_monster_provenance_mismatch"}
+                seen_slots[slot_id] = true
+            else:
+                if not expected.has(actor_id):
+                    return {"ok":false,"reason":"unexpected_saved_monster"}
+                var original: Dictionary = expected[actor_id]
+                if str(row.get("species_id","")) != str(original["species_id"]) or \
+                    str(row.get("tier","")) != str(original["tier"]) or \
+                    str(row.get("race_id","")) != str(original["race_id"]):
+                    return {"ok":false,"reason":"monster_provenance_mismatch"}
+                if not is_equal_approx(float(row["max_hp"]),float(original["stats"]["max_hp"])):
+                    return {"ok":false,"reason":"monster_stat_content_incompatible"}
         elif str(row["side"]) == "disciple":
             seen_disciples += 1
             if not state.disciples.has(StringName(str(row["id"]))):
                 return {"ok":false,"reason":"unknown_saved_disciple"}
         else:
             return {"ok":false,"reason":"unknown_battle_actor"}
-    if seen_monsters != expected.size() or seen_disciples <= 0:
+    if mode_value == "multicamp" and (seen_monsters != 10 or seen_slots.size() != 10 or seen_disciples <= 0 or seen_disciples > 6):
+        return {"ok":false,"reason":"incomplete_multicamp_roster"}
+    if mode_value == "encounter" and (seen_monsters != expected.size() or seen_disciples <= 0):
         return {"ok":false,"reason":"incomplete_saved_combat_roster"}
     var session := HuntingPveRunV2.new()
     session.owner_state = state
     session.region_id = region
     session.spawn_data = spawned
     session.battle = resumed
+    session.mode = mode_value
+    session.camp_index = camp_index_value
+    session.camp_population = camp_registry
+    session.camp_slot_ids = camp_slots.duplicate()
+    session.minute_phase = phase
     return {"ok":true,"session":session}

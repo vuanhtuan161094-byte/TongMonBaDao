@@ -77,6 +77,8 @@ static func advance_to(
 
     if not state.sect.b3_hunt.is_empty():
         return _advance_b3(state,scheduler,elapsed,max_steps)
+    if HuntingPveRunV2.has_active_multicamp(state):
+        return _advance_multicamp(state,scheduler,elapsed,max_steps)
 
     var available := int(floor(
         state.runtime_unconsumed_wall_seconds /
@@ -110,10 +112,58 @@ static func pending_minutes(state: SimulationState) -> int:
     if state == null:
         return 0
     var phase := float(state.sect.b3_hunt.get("minute_phase",0.0))
+    var multicamp_id := HuntingPveRunV2.active_multicamp_id(state)
+    if not multicamp_id.is_empty():
+        var snapshot = state.sect.v2_pve_active_runs.get(multicamp_id,{})
+        if snapshot is Dictionary:
+            phase = float(snapshot.get("minute_phase",0.0))
     return int(floor(
         (maxf(state.runtime_unconsumed_wall_seconds,0.0)+phase) /
         WALL_SECONDS_PER_SIMULATION_MINUTE
     ))
+
+static func _advance_multicamp(state: SimulationState, scheduler: SimulationScheduler,
+        elapsed: int, max_steps: int) -> Dictionary:
+    var encounter := HuntingPveRunV2.active_multicamp_id(state)
+    var restored := HuntingPveRunV2.resume_active(state,encounter)
+    if not bool(restored.get("ok",false)):
+        return restored
+    var session: HuntingPveRunV2 = restored["session"]
+    var budget := 2400
+    if max_steps > 0:
+        budget = mini(budget,max_steps*240)
+    var frames := 0
+    var minutes := 0
+    var result: Dictionary = {"ok":true,"stepped":false}
+    while state.runtime_unconsumed_wall_seconds >= MapBattleV2.STEP_SECONDS and frames < budget:
+        result = session.advance(false)
+        if bool(result.get("stepped",false)):
+            state.runtime_unconsumed_wall_seconds -= MapBattleV2.STEP_SECONDS
+            frames += 1
+            if state.sect.v2_pve_active_runs.has(encounter):
+                session.minute_phase += MapBattleV2.STEP_SECONDS
+                if session.minute_phase >= WALL_SECONDS_PER_SIMULATION_MINUTE:
+                    session.minute_phase -= WALL_SECONDS_PER_SIMULATION_MINUTE
+                    scheduler.step()
+                    minutes += 1
+                var checkpoint := session._persist_live_state()
+                if not bool(checkpoint.get("ok",false)):
+                    result = checkpoint
+                    break
+            else:
+                # Carry sub-minute progress back to the one shared runtime
+                # remainder when the active camp settles or is defeated.
+                state.runtime_unconsumed_wall_seconds += session.minute_phase+MapBattleV2.STEP_SECONDS
+                session.minute_phase = 0.0
+        if not bool(result.get("ok",false)) or bool(result.get("barrier",false)):
+            break
+        if not state.sect.v2_pve_active_runs.has(encounter):
+            break
+    result.merge({"elapsed_wall_seconds":elapsed,"steps_run":minutes,
+        "frames_run":frames,"pending_minutes":pending_minutes(state),
+        "remainder_seconds":state.runtime_unconsumed_wall_seconds,
+        "simulation_tick":state.tick},true)
+    return result
 
 static func _advance_b3(state: SimulationState, scheduler: SimulationScheduler, elapsed: int, max_steps: int) -> Dictionary:
     var restored := B3HuntWorld.restore(state)

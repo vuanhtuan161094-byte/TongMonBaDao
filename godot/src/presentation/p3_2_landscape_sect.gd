@@ -13,9 +13,16 @@ class B3MainHuntArena:
 
     var battle: MapBattleV2
     var presenter: B3CareCombatV5Presenter
+    var combat_view: B3MainHuntCombatView
+    var live_map: PveLiveWorldMapV1
 
     func _ready() -> void:
         clip_contents = true
+        live_map = PveLiveWorldMapV1.new()
+        live_map.name = "PveLiveWorldMapV1"
+        live_map.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+        live_map.visible = false
+        add_child(live_map)
         presenter = B3CareCombatV5Presenter.new()
         presenter.name = "B3CareCombatV5Presenter"
         presenter.position = Vector2.ZERO
@@ -32,15 +39,62 @@ class B3MainHuntArena:
             presenter.stage_rect = Rect2(Vector2.ZERO,size)
             presenter.queue_redraw()
 
-    func show_authority_snapshot(snapshot: MapBattleV2, view_rows: Dictionary) -> void:
+    func show_authority_snapshot(snapshot: MapBattleV2, view_rows: Dictionary = {},
+            camp_population: Dictionary = {}, use_live_map: bool = false) -> void:
         battle = snapshot
+        live_map.visible = use_live_map
+        presenter.visible = not use_live_map
+        if live_map != null:
+            live_map.show_authority_snapshot(snapshot,camp_population)
+        if combat_view != null:
+            combat_view.visible = use_live_map
+            if use_live_map:
+                combat_view.show_authority_snapshot(snapshot,view_rows)
+        if use_live_map or presenter == null:
+            return
+        _update_presenter(presenter,snapshot,view_rows)
+
+    func _update_presenter(target: B3CareCombatV5Presenter,
+            snapshot: MapBattleV2, view_rows: Dictionary) -> void:
+        if target.battle == null or (snapshot != null and target.battle.encounter_id != snapshot.encounter_id):
+            target.attach_session(snapshot)
+        else:
+            # Replace only the read-only snapshot; keep renderer interpolation,
+            # camera and event cursor across 250ms UI refreshes.
+            target.battle = snapshot
+            target.refresh_from_authority()
+        target.set_actor_view_metadata(view_rows)
+        target.queue_redraw()
+
+class B3MainHuntCombatView:
+    extends Control
+
+    var presenter: B3CareCombatV5Presenter
+
+    func _ready() -> void:
+        mouse_filter = Control.MOUSE_FILTER_IGNORE
+        presenter = B3CareCombatV5Presenter.new()
+        presenter.name = "B3PveCombatV5Presenter"
+        presenter.position = Vector2.ZERO
+        presenter.enable_source_vl_art = true
+        presenter.enable_source_a_combat_visuals = true
+        presenter.draw_pilot_ground = true
+        presenter.enable_spectator_framing = true
+        presenter.compact_source_a_actor_overlays = true
+        presenter.stage_rect = Rect2(Vector2.ZERO,size)
+        add_child(presenter)
+
+    func _notification(what: int) -> void:
+        if what == NOTIFICATION_RESIZED and presenter != null:
+            presenter.stage_rect = Rect2(Vector2.ZERO,size)
+            presenter.queue_redraw()
+
+    func show_authority_snapshot(snapshot: MapBattleV2, view_rows: Dictionary) -> void:
         if presenter == null:
             return
         if presenter.battle == null or (snapshot != null and presenter.battle.encounter_id != snapshot.encounter_id):
             presenter.attach_session(snapshot)
         else:
-            # Replace only the read-only snapshot; keep renderer interpolation,
-            # camera and event cursor across 250ms UI refreshes.
             presenter.battle = snapshot
             presenter.refresh_from_authority()
         presenter.set_actor_view_metadata(view_rows)
@@ -99,6 +153,7 @@ var screen_pointer_dragged := false
 var mouse_pointer_dragged := false
 var b3_hunt_panel: Panel
 var b3_hunt_arena: B3MainHuntArena
+var b3_hunt_combat_view: B3MainHuntCombatView
 var b3_hunt_facts: Label
 var b3_hunt_feedback: Label
 var b3_hunt_auto_button: Button
@@ -107,6 +162,8 @@ var b3_hunt_return_button: Button
 var b3_hunt_save_button: Button
 var b3_hunt_disciple_id: StringName = &""
 var b3_hunt_refresh_elapsed := 0.0
+var active_hunt_mode := "care"
+var multicamp_encounter_id := ""
 var iso_view_container: SubViewportContainer
 var iso_viewport: SubViewport
 var iso_world: SectIsometricWorldV1
@@ -3492,7 +3549,18 @@ func _build_disciple_summary_panel() -> void:
     hunt.add_theme_stylebox_override("hover", _style(JADE, GOLD, 3, 9))
     hunt.pressed.connect(_start_b3_hunt_for_selected)
     disciple_summary_panel.add_child(hunt)
-    detail.position.y = 540
+
+    var camp_hunt := Button.new()
+    camp_hunt.name = "SummaryCampHunt"
+    camp_hunt.text = "Săn tổ đội · 10 quái"
+    camp_hunt.position = Vector2(16, 540)
+    camp_hunt.size = Vector2(276, 38)
+    camp_hunt.add_theme_font_size_override("font_size", 13)
+    camp_hunt.add_theme_stylebox_override("normal", _style(Color("d7c695"), INK, 1, 9))
+    camp_hunt.add_theme_stylebox_override("hover", _style(Color("f0dcaa"), JADE_DARK, 2, 9))
+    camp_hunt.pressed.connect(_start_multicamp_hunt_for_selected)
+    disciple_summary_panel.add_child(camp_hunt)
+    detail.position.y = 582
 
 func _add_summary_order_button(text: String, pos: Vector2, button_size: Vector2, kind: StringName, target: String = "") -> void:
     var button := Button.new()
@@ -3563,6 +3631,7 @@ func _refresh_disciple_summary_content() -> void:
     var legacy_forge: Button = disciple_summary_panel.get_node_or_null("SummaryLegacyForge")
     var v2_body: Button = disciple_summary_panel.get_node_or_null("SummaryV2BodyTraining")
     var hunt_button: Button = disciple_summary_panel.get_node_or_null("SummaryB3Hunt")
+    var camp_hunt_button: Button = disciple_summary_panel.get_node_or_null("SummaryCampHunt")
     if legacy_forge != null:
         legacy_forge.visible = not authentic_v2
     if v2_body != null:
@@ -3579,6 +3648,19 @@ func _refresh_disciple_summary_content() -> void:
         hunt_button.text = "Mở vòng săn" if reopening_existing else "Đi săn"
         hunt_button.disabled = not same_world_owner or not bool(admission.get("ok",false))
         hunt_button.tooltip_text = "" if not hunt_button.disabled else str(admission.get("reason","thế giới đang có đệ tử khác"))
+    if camp_hunt_button != null:
+        var active_camp_id := HuntingPveRunV2.active_multicamp_id(state)
+        var already_in_camp := false
+        if not active_camp_id.is_empty():
+            var camp_snapshot: Dictionary = state.sect.v2_pve_active_runs[active_camp_id]
+            var decoded := MapBattleSnapshotV2.load(camp_snapshot.get("battle",{}))
+            if bool(decoded.get("ok",false)):
+                var camp_battle: MapBattleV2 = decoded["battle"]
+                already_in_camp = camp_battle.actors.has(str(selected_id))
+        camp_hunt_button.visible = authentic_v2
+        camp_hunt_button.text = "Mở bãi đang săn" if already_in_camp else "Săn tổ đội · 10 quái"
+        camp_hunt_button.disabled = not already_in_camp and (not _multicamp_member_eligible(state.disciples[selected_id]) or not active_camp_id.is_empty() or not state.sect.b3_hunt.is_empty())
+        camp_hunt_button.tooltip_text = "Dùng tối đa 6 đệ tử V2 thật; Combat V2 và SaveService của màn chính." if not camp_hunt_button.disabled else "Đệ tử đang bận, bị thương hoặc thế giới săn khác đang hoạt động."
     var identity: Dictionary = snapshot["identity"]
     var quality := str(identity.get("quality_name", "—"))
     if quality.is_empty():
@@ -3618,9 +3700,9 @@ func _build_b3_hunt_panel() -> void:
     b3_hunt_panel.visible = false
     shade.add_child(b3_hunt_panel)
 
-    var title := _label(b3_hunt_panel,"VÒNG SĂN — THẾ GIỚI B3 CARE",Vector2(24,14),Vector2(1100,32),22)
+    var title := _label(b3_hunt_panel,"THANH TRÚC LÂM — TỔ ĐỘI C01",Vector2(24,14),Vector2(1100,32),22)
     title.add_theme_color_override("font_color",JADE_DARK)
-    var subtitle := _label(b3_hunt_panel,"Combat V2 · cùng thời gian, đệ tử, Kho và SaveService của màn tông môn",Vector2(26,48),Vector2(1090,24),13)
+    var subtitle := _label(b3_hunt_panel,"Địa hình 20 bãi · camera tự do · Combat V2 và V5 trình bày cùng runtime / SaveService màn chính",Vector2(26,48),Vector2(1090,24),13)
     subtitle.add_theme_color_override("font_color",INK)
 
     b3_hunt_arena = B3MainHuntArena.new()
@@ -3636,6 +3718,15 @@ func _build_b3_hunt_panel() -> void:
     facts_panel.size = Vector2(382,484)
     facts_panel.add_theme_stylebox_override("panel",_style(Color("eee6d2"),Color("74694f"),1,8))
     b3_hunt_panel.add_child(facts_panel)
+    b3_hunt_combat_view = B3MainHuntCombatView.new()
+    b3_hunt_combat_view.name = "B3PveCombatV5View"
+    b3_hunt_combat_view.position = Vector2(16,12)
+    b3_hunt_combat_view.size = Vector2(350,232)
+    b3_hunt_combat_view.add_theme_stylebox_override("panel",_style(JADE_DARK,INK,1,6))
+    b3_hunt_combat_view.visible = false
+    facts_panel.add_child(b3_hunt_combat_view)
+    b3_hunt_arena.combat_view = b3_hunt_combat_view
+    b3_hunt_arena.presenter.name = "B3CareCombatV5Presenter"
     b3_hunt_facts = _label(facts_panel,"",Vector2(16,14),Vector2(350,452),15)
     b3_hunt_facts.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     b3_hunt_facts.add_theme_color_override("font_color",INK)
@@ -3651,6 +3742,10 @@ func _build_b3_hunt_panel() -> void:
     b3_hunt_save_button.add_theme_stylebox_override("normal",_style(Color("d7c695"),INK,1,8))
     b3_hunt_save_button.pressed.connect(_save_b3_main_runtime)
     b3_hunt_panel.add_child(b3_hunt_save_button)
+
+    var summary_hunt_button: Button = disciple_summary_panel.get_node_or_null("SummaryCampHunt")
+    if summary_hunt_button != null:
+        summary_hunt_button.text = "Vào Thanh Trúc Lâm · C01"
 
     b3_hunt_auto_button = Button.new()
     b3_hunt_auto_button.name = "B3MainHuntAuto"
@@ -3683,6 +3778,15 @@ func _build_b3_hunt_panel() -> void:
     b3_hunt_panel.add_child(b3_hunt_return_button)
 
 func _resume_saved_b3_hunt() -> void:
+    var active_camp_id := HuntingPveRunV2.active_multicamp_id(state)
+    if not active_camp_id.is_empty():
+        var restored_camp := HuntingPveRunV2.resume_active(state,active_camp_id)
+        if bool(restored_camp.get("ok",false)):
+            var camp_session: HuntingPveRunV2 = restored_camp["session"]
+            for actor in camp_session.battle.actors.values():
+                if str(actor.get("side","")) == "disciple":
+                    _open_multicamp_panel(StringName(str(actor["id"])),active_camp_id)
+                    return
     if state.sect.b3_hunt.is_empty():
         return
     var world: Dictionary = state.sect.b3_hunt
@@ -3699,6 +3803,20 @@ func _resume_saved_b3_hunt() -> void:
 func _open_b3_hunt_panel(disciple_id: StringName) -> void:
     if b3_hunt_panel == null or not state.disciples.has(disciple_id):
         return
+    b3_hunt_disciple_id = disciple_id
+    active_hunt_mode = "care"
+    selected_id = disciple_id
+    _hide_disciple_summary()
+    b3_hunt_panel.get_parent().visible = true
+    b3_hunt_panel.visible = true
+    b3_hunt_refresh_elapsed = B3_HUNT_REFRESH_SECONDS
+    _refresh_b3_hunt_panel()
+
+func _open_multicamp_panel(disciple_id: StringName, encounter_id: String) -> void:
+    if b3_hunt_panel == null or not state.disciples.has(disciple_id):
+        return
+    active_hunt_mode = "multicamp"
+    multicamp_encounter_id = encounter_id
     b3_hunt_disciple_id = disciple_id
     selected_id = disciple_id
     _hide_disciple_summary()
@@ -3726,6 +3844,81 @@ func _start_b3_hunt_for_selected() -> void:
         return
     _open_b3_hunt_panel(selected_id)
     _refresh_all()
+
+func _start_multicamp_hunt_for_selected() -> void:
+    if selected_id == &"" or runtime_session == null or not state.disciples.has(selected_id):
+        return
+    var existing := HuntingPveRunV2.active_multicamp_id(state)
+    if not existing.is_empty():
+        var restored := HuntingPveRunV2.resume_active(state,existing)
+        if not bool(restored.get("ok",false)):
+            summary_feedback = "Không mở được bãi đã lưu: %s" % str(restored.get("reason","save không hợp lệ"))
+            _refresh_disciple_summary_content()
+            return
+        var saved_session: HuntingPveRunV2 = restored["session"]
+        if not saved_session.battle.actors.has(str(selected_id)):
+            summary_feedback = "Bãi đang có một tổ đội khác."
+            _refresh_disciple_summary_content()
+            return
+        _open_multicamp_panel(selected_id,existing)
+        return
+    if not state.sect.b3_hunt.is_empty():
+        summary_feedback = "Thế giới B3 CARE đang hoạt động."
+        _refresh_disciple_summary_content()
+        return
+    var party := _multicamp_party_for_selected(selected_id)
+    if party.is_empty():
+        summary_feedback = "Không có đệ tử V2 rảnh, khỏe để lập tổ đội."
+        _refresh_disciple_summary_content()
+        return
+    var encounter_id := "pve:thanh_truc_lam:c01:%d:%d:%d" % [
+        state.seed,state.tick,state.sect.v2_pve_settlement_receipts.size()
+    ]
+    var session := HuntingPveRunV2.new()
+    var result := session.begin_multicamp(runtime_session.owner,encounter_id,
+        state.seed ^ state.tick ^ state.sect.v2_pve_settlement_receipts.size(),
+        party,10)
+    if not bool(result.get("ok",false)):
+        summary_feedback = "Chưa thể vào bãi: %s" % str(result.get("reason","không đủ điều kiện"))
+        _refresh_disciple_summary_content()
+        return
+    _open_multicamp_panel(selected_id,encounter_id)
+    _refresh_all()
+
+func _multicamp_party_for_selected(first_id: StringName) -> Array:
+    var result: Array = []
+    if not state.disciples.has(first_id) or not _multicamp_member_eligible(state.disciples[first_id]):
+        return result
+    var candidates: Array = [first_id]
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    for raw_id in ids:
+        var id := StringName(raw_id)
+        if id == first_id or candidates.size() >= 6:
+            continue
+        var disciple: DiscipleState = state.disciples[id]
+        if _multicamp_member_eligible(disciple):
+            candidates.append(id)
+    for i in range(candidates.size()):
+        var id := StringName(candidates[i])
+        var disciple: DiscipleState = state.disciples[id]
+        var profile: Dictionary = DiscipleRealmProgressV2.current(disciple)
+        var cultivation: Dictionary = profile["cultivation"]
+        var body: Dictionary = profile["body"]
+        var role := "frontline" if i < 2 else ("mage" if i == 2 else ("healer" if i == 3 else "ranged"))
+        result.append({
+            "disciple_id":str(id),"party_id":"thanh_truc_lam_c01_party",
+            "role":role,"position":Vector2(8.0+float(i%3)*0.55,8.7+float(int(i/3))*0.55),
+            "realm":int(cultivation["realm"]),"floor":int(cultivation["floor"]),
+            "body_realm":int(body["realm"]),"body_floor":int(body["floor"])
+        })
+    return result
+
+func _multicamp_member_eligible(disciple: DiscipleState) -> bool:
+    if disciple == null or not DiscipleRealmProgressV2.progression_ready(disciple) or disciple.hp <= 0.0 or disciple.injury_level != 0 or not disciple.active_pve_encounter_id.is_empty() or disciple.region_id != &"sect" or not [&"EVALUATE",&"IDLE",&"HOLD"].has(disciple.current_action):
+        return false
+    var buildings := BuildingSystem.new()
+    return disciple.work_cycle_state.is_empty() and disciple.worksite_building_id == &"" and disciple.work_progress.is_empty() and not buildings.disciple_has_active_spirit_plot(state,disciple.id) and not buildings.disciple_has_active_timed_recipe(state,disciple.id) and buildings.active_resource_timer_for_worker(state,disciple.id).is_empty() and not DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple)
 
 func _toggle_b3_hunt_auto() -> void:
     var id := _active_b3_hunt_disciple_id()
@@ -3761,6 +3954,29 @@ func _deploy_b3_hunt_disciple() -> void:
 func _return_from_b3_hunt() -> void:
     if runtime_session == null:
         return
+    if active_hunt_mode == "multicamp":
+        var active_id := HuntingPveRunV2.active_multicamp_id(state)
+        if not active_id.is_empty():
+            var restored_camp := HuntingPveRunV2.resume_active(state,active_id)
+            if not bool(restored_camp.get("ok",false)):
+                _set_b3_hunt_feedback("Không mở được bãi đã lưu: %s" % str(restored_camp.get("reason","unknown")))
+                return
+            var session: HuntingPveRunV2 = restored_camp["session"]
+            var retreated := session.retreat_multicamp()
+            if not bool(retreated.get("ok",false)):
+                _set_b3_hunt_feedback("Chưa thể rút tổ đội: %s" % str(retreated.get("reason","unknown")))
+                return
+            var saved := runtime_session.save()
+            if not bool(saved.get("ok",false)):
+                _set_b3_hunt_feedback("Đã rút; lưu cần thử lại: %s" % str(saved.get("reason",saved.get("error","unknown"))))
+                return
+        b3_hunt_panel.get_parent().visible = false
+        active_hunt_mode = "care"
+        multicamp_encounter_id = ""
+        _refresh_all()
+        if selected_id != &"" and state.disciples.has(selected_id):
+            _show_disciple_summary()
+        return
     var world: Dictionary = state.sect.b3_hunt
     var result := {"ok":true}
     if not world.is_empty() and not str(world.get("member","")).is_empty():
@@ -3784,9 +4000,115 @@ func _active_b3_hunt_disciple_id() -> StringName:
         id = StringName(world.get("last_return",{}).get("disciple_id",b3_hunt_disciple_id))
     return id if state.disciples.has(id) else &""
 
+func _refresh_multicamp_hunt_panel() -> void:
+    _set_hunt_presentation_layout(true)
+    var encounter := HuntingPveRunV2.active_multicamp_id(state)
+    var battle: MapBattleV2
+    var receipt: Dictionary = {}
+    var running := not encounter.is_empty()
+    if running:
+        multicamp_encounter_id = encounter
+        var restored := HuntingPveRunV2.resume_active(state,encounter)
+        if not bool(restored.get("ok",false)):
+            b3_hunt_facts.text = "Không thể khôi phục bãi PvE đã lưu: %s" % str(restored.get("reason","save không hợp lệ"))
+            b3_hunt_arena.show_authority_snapshot(null,{}, {},true)
+            b3_hunt_auto_button.disabled = true
+            b3_hunt_deploy_button.visible = false
+            return
+        var session: HuntingPveRunV2 = restored["session"]
+        battle = session.battle
+    elif not multicamp_encounter_id.is_empty():
+        var raw_receipt = state.sect.v2_pve_settlement_receipts.get(multicamp_encounter_id,{})
+        if raw_receipt is Dictionary:
+            receipt = raw_receipt
+            var saved_battle = receipt.get("battle",{})
+            if saved_battle is Dictionary:
+                var decoded := MapBattleSnapshotV2.load(saved_battle)
+                if bool(decoded.get("ok",false)):
+                    battle = decoded["battle"]
+    if battle == null:
+        b3_hunt_facts.text = "Chọn một đệ tử V2 khỏe, rảnh trên bản đồ rồi nhấn Săn tổ đội · 10 quái."
+        b3_hunt_arena.show_authority_snapshot(null,{}, {},true)
+        b3_hunt_auto_button.disabled = true
+        b3_hunt_deploy_button.visible = false
+        b3_hunt_return_button.text = "Đóng khu săn"
+        return
+
+    var envelope: Dictionary = state.sect.v2_pve_active_runs.get(encounter,{})
+    var population: Dictionary = envelope.get("camp_population",{})
+    b3_hunt_arena.show_authority_snapshot(battle,_b3_hunt_visual_rows(battle),population,true)
+    b3_hunt_auto_button.text = "Combat V2"
+    b3_hunt_auto_button.disabled = true
+    b3_hunt_deploy_button.visible = false
+    b3_hunt_return_button.text = "Rút tổ đội" if running else "Đóng kết quả"
+    b3_hunt_save_button.disabled = runtime_session == null or runtime_session.owner.runtime_write_blocked
+
+    var team_lines: Array[String] = []
+    var first_disciple_id := ""
+    for raw_id in battle.actors.keys():
+        var actor: Dictionary = battle.actors[raw_id]
+        if str(actor.get("side","")) != "disciple":
+            continue
+        var id := str(raw_id)
+        if first_disciple_id.is_empty():
+            first_disciple_id = id
+        if state.disciples.has(StringName(id)):
+            var disciple: DiscipleState = state.disciples[StringName(id)]
+            var life := "Injury %d" % disciple.injury_level if disciple.injury_level > 0 else "khỏe"
+            team_lines.append("%s · HP %.0f/%.0f · %s" % [
+                disciple.display_name,float(actor.get("hp",0.0)),float(actor.get("max_hp",1.0)),life
+            ])
+    team_lines.sort()
+    if not first_disciple_id.is_empty() and state.disciples.has(StringName(first_disciple_id)):
+        b3_hunt_disciple_id = StringName(first_disciple_id)
+    var total_monsters := battle._count_monster_records()
+    var dead_monsters := 0
+    for actor in battle.actors.values():
+        if str(actor.get("side","")) == "monster" and float(actor.get("hp",1.0)) <= 0.0:
+            dead_monsters += 1
+    var outcome := str(receipt.get("outcome",battle.outcome))
+    var status := "Đang giao chiến tự động bằng Combat V2" if running else ("Đã thắng bãi" if outcome == "win" else ("Tổ đội đã bị hạ" if outcome == "defeat" else "Tổ đội đã rút"))
+    var loot_text := "Thưởng khu được kết toán khi dọn sạch bãi."
+    var items: Dictionary = receipt.get("items",{})
+    if not items.is_empty():
+        var labels: Array[String] = []
+        var resource_registry := ResourceRegistry.new()
+        var item_ids: Array = items.keys()
+        item_ids.sort()
+        for item_id in item_ids:
+            labels.append("%s ×%d" % [resource_registry.display_name(StringName(str(item_id))),int(items[item_id])])
+        loot_text = "ĐÃ NHẬP KHO: " + ", ".join(labels)
+    elif not running and outcome != "win":
+        loot_text = "Kết quả không thắng; không có thưởng bãi."
+    var member_text := "\n".join(team_lines)
+    b3_hunt_facts.text = (
+        "THANH TRÚC LÂM · C01\n%s\n"
+        + "Đội %d đệ tử thật · %d quái thật · hạ %d/%d · %.1fs\n"
+        + "HP / Injury\n%s\n"
+        + "%s\n"
+        + "LOOT_PENDING: chưa duyệt bảng rơi từng quái."
+    ) % [status,team_lines.size(),total_monsters,dead_monsters,total_monsters,battle.now,member_text,loot_text]
+
+func _set_hunt_presentation_layout(use_live_map: bool) -> void:
+    if b3_hunt_facts == null:
+        return
+    if use_live_map:
+        b3_hunt_facts.position = Vector2(16,252)
+        b3_hunt_facts.size = Vector2(350,218)
+        b3_hunt_facts.add_theme_font_size_override("font_size",10)
+        b3_hunt_facts.clip_text = true
+    else:
+        b3_hunt_facts.position = Vector2(16,14)
+        b3_hunt_facts.size = Vector2(350,452)
+        b3_hunt_facts.add_theme_font_size_override("font_size",15)
+
 func _refresh_b3_hunt_panel() -> void:
     if b3_hunt_panel == null or not b3_hunt_panel.get_parent().visible or state == null:
         return
+    if active_hunt_mode == "multicamp":
+        _refresh_multicamp_hunt_panel()
+        return
+    _set_hunt_presentation_layout(false)
     var world: Dictionary = state.sect.b3_hunt
     var id := _active_b3_hunt_disciple_id()
     if id == &"":

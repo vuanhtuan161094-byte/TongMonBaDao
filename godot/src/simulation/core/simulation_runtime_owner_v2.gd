@@ -12,6 +12,7 @@ var scheduler: SimulationScheduler
 var saves := SaveService.new()
 var durable_path: String = ""
 var b3_write_blocked: bool = false
+var runtime_write_blocked: bool = false
 
 func attach(simulation_state: SimulationState, now_unix: int) -> Dictionary:
     if simulation_state == null:
@@ -72,6 +73,22 @@ func update_to(now_unix: int, max_steps: int = -1) -> Dictionary:
         var retried := B3MedicalAutoplayV1.commit_owner(self)
         if not retried["ok"]:
             return retried
+    if runtime_write_blocked:
+        var retried_runtime: Dictionary
+        if not state.sect.b3_hunt.is_empty():
+            retried_runtime = B3HuntWorld.commit(self)
+        elif HuntingPveRunV2.has_active_multicamp(state):
+            retried_runtime = HuntingPveRunV2.commit_owner(self)
+        elif not durable_path.is_empty():
+            var retry_error := saves.save_to_path(state,durable_path)
+            runtime_write_blocked = retry_error != OK
+            retried_runtime = {"ok":retry_error == OK,"error":retry_error}
+        else:
+            retried_runtime = {"ok":false,"reason":"runtime_save_path_missing"}
+        if not bool(retried_runtime.get("ok",false)):
+            return retried_runtime
+        runtime_write_blocked = false
+    var had_multicamp := HuntingPveRunV2.has_active_multicamp(state)
     var advanced := SimulationRuntimeClockV2.advance_to(
         state,scheduler,now_unix,max_steps
     )
@@ -83,6 +100,10 @@ func update_to(now_unix: int, max_steps: int = -1) -> Dictionary:
         var committed := B3HuntWorld.commit(self)
         if not committed["ok"]:
             return committed
+    elif had_multicamp or HuntingPveRunV2.has_active_multicamp(state):
+        var committed_pve := HuntingPveRunV2.commit_owner(self)
+        if not bool(committed_pve.get("ok",false)):
+            return committed_pve
     return advanced
 
 func save_to_path(
