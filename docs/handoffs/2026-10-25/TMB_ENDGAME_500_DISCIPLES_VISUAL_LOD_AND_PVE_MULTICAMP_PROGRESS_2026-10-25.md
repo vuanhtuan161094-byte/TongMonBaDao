@@ -52,3 +52,19 @@ Rebuild/import exact PR branch and run:
 - Technical: no asset generator run here because this branch uses GitHub connector, which cannot inspect all local E directories or execute Godot official engine. No FPS/quality claim before Windows run.
 
 **STATUS:** `ENDGAME_VISUAL_LOD_CODED_GODOT_PENDING`; `PVE_20_CAMP_SPAWN_SLOT_STATE_CODED_GODOT_PENDING`; `PVE_20_CAMP_COMBAT_AND_LOOT_NOT_IMPLEMENTED`; `SOURCE_A_WORKSITE_ART_MISSING`; `OWNER_VISUAL_PENDING`.
+
+
+## 7. Additional work committed for unattended desktop QA (follow-up)
+
+The visual LOD and multi-camp population branch has also gained:
+
+- `godot/tools/qa/endgame_fixture_generator.gd`: opt-in deterministic **130 / 200 / 500** disciple seeds; 130 remains the default and the 200/500 output files are distinct. Uses the same real recruitment, 100 legal producer sites, Workforce and SaveService instead of rendering dummy sprites. Reports recruitment, scheduler, save, reload timing and serialized bytes. **These 200/500 profiles have NOT been generated or tested on the Windows machine yet.**
+- `godot/tools/qa/endgame_live_launcher.gd` and `Run-Endgame-QA.cmd`: optional `--tmb-roster=200` or `--tmb-roster=500` opens a **separate mutable QA save per profile**, preserving the original 130 user session. First generate its matching seed.
+- `godot/tests/presentation/endgame_roster_profiles_contract_test.gd`: newly authored read-only official SaveService assertions at 130, 200 and 500; real 100 buildings/worksite assignments, no duplicated worker and intact state.
+- `tools/qa/run_endgame_roster_profiles.ps1`: Windows one-Godot-process-at-a-time generator/test runner, low-free-RAM gate, per-profile logs/CSV, code hash and Save SHA-256; default profiles 200 and 500. Run from a local checkout of this branch with PowerShell: `powershell -ExecutionPolicy Bypass -File tools/qa/run_endgame_roster_profiles.ps1`. If 500 is blocked due RAM, the resulting BLOCKED is a meaningful safety result rather than a FAIL.
+- `godot/.gitignore`: local generated 200/500 saves/reports and mutable gameplay user saves excluded from source commits.
+- `PveMultiCampPopulationV1.record_authoritative_battle_kill()`: non-paying read-only adapter that accepts an HP=0 monster only if the original `MapBattleV2.pending_kill_events()` journal and actual actor validate its unique slot/life/generation; authoritative death time is taken from the Combat journal. It **never credits Warehouse or commits Save**. Companion focused proof `godot/tests/simulation/pve_multicamp_combat_hp0_bridge_test.gd` sets up ONE local battle with 10 real `MapBattleV2` monster actors and checks kill event admission, journal retention, JSON state and no reward. It is a **test fixture** and NOT a live multi-camp CARE world.
+
+Codex next actions: run PowerShell suite and both new PvE tests on latest exact SHA, fix any GDScript/parser failures, record all logs, then proceed to persistent one-camp `B3HuntWorld` integration with original canonical Save barrier and verified loot authorship. Do not treat isolated 500 roster fixture as evidence that 500 actor nodes can render smoothly; perform runtime 130/200/500 screenshots and CPU/FPS profiling, followed by actor-node virtualization.
+
+**Safety:** No fresh Godot 4.7.2 execution occurred in this ChatGPT GitHub-only session. All new changes remain stacked on PR38 in Draft PR39 and are **QA_PENDING**. 
