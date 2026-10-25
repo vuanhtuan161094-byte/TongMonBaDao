@@ -47,3 +47,7 @@
 **Verdict:** `IMPLEMENTATION_PARTIAL_UNVERIFIED` — một bước code thực trên GitHub, không phải bản map hoàn tất.
 
 **Lưu ý dài hạn:** Chất lượng thị giác thật còn phụ thuộc vào nguồn building/terrain/water trong Source A; những SVG này là thử nghiệm nhằm giảm marker sơ sài, không phải cách thay thế đủ toàn bộ art pipeline.
+
+## 6. GitHub Actions tự kích hoạt — không phải focused QA
+
+Sau khi push nhánh code, GitHub Actions tự ghi nhận 4 workflow runs trong lúc làm. Ba lần gần nhất có conclusion `failure`; một job `Godot 4.7.2 P3.6A preview` trả về danh sách steps rỗng, còn endpoint tải log phản hồi HTTP 404 `BlobNotFound`. **Không có chứng cứ về nguyên nhân test hay compile**; trạng thái ghi `CI_UNKNOWN / AUTO_RUN_FAILURE`, KHÔNG gắn nhãn Godot PASS và cũng KHÔNG khẳng định lỗi phát sinh do code mới. Không thay workflow YAML hay chạy FULL/CI có chủ đích.
