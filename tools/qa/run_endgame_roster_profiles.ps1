@@ -75,7 +75,7 @@ foreach ($population in $Profiles) {
     $freeGb = [math]::Round((Get-AvailablePhysicalMemoryGB),2)
     $minFreeGb = if ($population -ge 500) { 2.50 } else { 1.25 }
     if ($freeGb -lt $minFreeGb) {
-        Write-Warning "Skipping roster $population: available RAM $freeGb GB is below $minFreeGb GB."
+        Write-Warning "Skipping roster ${population}: available RAM $freeGb GB is below $minFreeGb GB."
         $rows.Add([pscustomobject]@{Roster=$population;Step='RAM_GATE';Status='BLOCKED';ExitCode=-1;
             AvailableGB=$freeGb;SaveBytes=0;SHA256='';CodeSHA=$sourceHash;Log='' })
         continue
