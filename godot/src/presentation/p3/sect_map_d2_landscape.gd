@@ -47,14 +47,16 @@ static func road_shoulder_color(cell: Vector2i) -> Color:
     return Color(0.51+noise*0.02,0.49+noise*0.02,0.39,0.46)
 
 
-static func draw_scenic_accents(world: Node2D, active_chunks: Array[Vector2i]) -> void:
+static func draw_scenic_accents(world: Node2D, active_chunks: Array[Vector2i], camera_center: Vector2, half_view: Vector2) -> void:
     for row in SCENIC_ACCENTS:
         var cell: Vector2i = row["cell"]
         var chunk := Vector2i(floori(float(cell.x)/16.0),floori(float(cell.y)/16.0))
         if chunk not in active_chunks:
             continue
         var point := Vector2(float(cell.x-cell.y)*25.0,float(cell.x+cell.y)*13.0)
-        if not world._visible_world(point):
+        # Avoid calling an undeclared private method on generic Node2D.
+        var distance := (point-camera_center).abs()
+        if distance.x > half_view.x or distance.y > half_view.y:
             continue
         match str(row["kind"]):
             "pond":
