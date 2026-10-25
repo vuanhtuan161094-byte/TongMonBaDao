@@ -1020,9 +1020,13 @@ func _sync_actor_positions() -> void:
         var target := world_foot - _actor_anchor_offset(actor)
         var delta := target - actor.position
 
+        # An off-screen/unselected person still works in SimulationState.
+        # Skip hidden walk VFX and per-actor tweens; snap the presentation
+        # position so newly visible actors cannot drift from canonical jobs.
+        var animate_actor := actor.visible and SectMapCamera.VIEW_RECT.intersects(actor.get_global_rect())
         if actor is ModularDiscipleActor:
             var modular := actor as ModularDiscipleActor
-            if delta.length() > 1.0:
+            if delta.length() > 1.0 and animate_actor:
                 var direction := DiscipleActorVisualCatalog.direction_for_delta(delta, modular.facing)
                 if (
                     modular.rig_id == DiscipleActorVisualCatalog.RIG_FEMALE_NORMAL_V1
@@ -1035,10 +1039,13 @@ func _sync_actor_positions() -> void:
                 modular.sync_action(disciple.current_action)
 
         if delta.length() > 1.0:
-            var tween := create_tween()
-            tween.set_trans(Tween.TRANS_QUAD)
-            tween.set_ease(Tween.EASE_IN_OUT)
-            tween.tween_property(actor, "position", target, 0.32)
+            if animate_actor:
+                var tween := create_tween()
+                tween.set_trans(Tween.TRANS_QUAD)
+                tween.set_ease(Tween.EASE_IN_OUT)
+                tween.tween_property(actor, "position", target, 0.32)
+            else:
+                actor.position = target
 
         if actor_status_labels.has(key):
             var status := actor_status_labels[key] as Label
