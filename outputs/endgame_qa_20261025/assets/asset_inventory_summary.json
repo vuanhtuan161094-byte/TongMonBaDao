@@ -1,0 +1,22 @@
+{
+  "catalog_path": "E:\\TongMonBaDaoWorkspace\\03_AssetLibrary\\SourceA\\catalog.jsonl",
+  "catalog_sha256": "2a5ad69a9b2e44f0d5db32ad5b733e71f7f82656c719f98f8aa9b2d6d9f88d33",
+  "catalog_rows": 6578,
+  "unique_source_fingerprints": 6567,
+  "indexed_status_counts": {
+    "BLOCKED": 5232,
+    "PARTIAL": 1083,
+    "QA_PASS": 263
+  },
+  "current_godot_asset_folders": 262,
+  "current_godot_asset_folders_all_files_match": 262,
+  "current_godot_asset_folders_missing_or_mismatch": 0,
+  "sourcea_asset_folder_hash_rows": 5550,
+  "map25_manifest_path": "E:\\codex\\2026-10-25\\TMB_ENDGAME_G0_WORKTREE_20261025\\godot\\data\\presentation\\map25_source_a_verified.json",
+  "map25_manifest_rows": 32,
+  "map25_current_hash_matches": 32,
+  "map25_missing_or_mismatch": 0,
+  "source_roles_unmapped": 6578,
+  "duplicate_entries": 11,
+  "note": "Read-only inventory of the existing Source A library and repo SHA-gated MAP25 files. No conversions or source/master changes were run."
+}

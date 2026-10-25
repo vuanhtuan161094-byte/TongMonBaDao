@@ -1,0 +1,5 @@
+"TestPath","ExitCode","Status","PassMarker","MarkerFound","LogPath"
+"res://tests/presentation/endgame_fixture_contract_test.gd","0","PASS","TMB_ENDGAME_FIXTURE_CONTRACT PASS","True","E:\codex\2026-10-25\TMB_ENDGAME_G0_WORKTREE_20261025\outputs\endgame_qa_20261025\logs\endgame_map_additional\endgame_fixture_contract_test.gd.log"
+"res://tests/presentation/endgame_map_density_test.gd","0","PASS","TMB_ENDGAME_MAP_DENSITY PASS","True","E:\codex\2026-10-25\TMB_ENDGAME_G0_WORKTREE_20261025\outputs\endgame_qa_20261025\logs\endgame_map_additional\endgame_map_density_test.gd.log"
+"res://tests/presentation/sect_map_d2_visual_contract_test.gd","0","PASS","MAP-D2 VISUAL CONTRACT PASS","True","E:\codex\2026-10-25\TMB_ENDGAME_G0_WORKTREE_20261025\outputs\endgame_qa_20261025\logs\endgame_map_additional\sect_map_d2_visual_contract_test.gd.log"
+"res://tests/presentation/pve_world_topology_preview_contract_test.gd","0","PASS","PVE WORLD TOPOLOGY PREVIEW CONTRACT PASS","True","E:\codex\2026-10-25\TMB_ENDGAME_G0_WORKTREE_20261025\outputs\endgame_qa_20261025\logs\endgame_map_additional\pve_world_topology_preview_contract_test.gd.log"

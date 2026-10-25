@@ -82,7 +82,7 @@ static func design_graph_connected() -> bool:
     var visited := {0:true}
     var links := design_edges()
     while not queue.is_empty():
-        var current := queue.pop_front()
+        var current: int = queue.pop_front()
         for link in links:
             var other := -1
             if link.x == current:

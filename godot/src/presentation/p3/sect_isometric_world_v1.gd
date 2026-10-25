@@ -36,6 +36,14 @@ const PRODUCER_TYPES := {
     "linh_forest":"linh_forest",
     "spirit_field":"spirit_field"
 }
+# Deterministic QA display slots for canonical endgame instances. These are
+# presentation-only because P3.2 has no persisted per-building placement yet.
+# Each row is spaced for touch picking and remains within the 192x192 world.
+const PRODUCER_DISTRICTS := {
+    "mine":{"origin":Vector2i(16,18),"columns":6,"column_step":6,"row_step":6},
+    "linh_forest":{"origin":Vector2i(16,126),"columns":6,"column_step":6,"row_step":6},
+    "spirit_field":{"origin":Vector2i(130,72),"columns":8,"column_step":5,"row_step":7}
+}
 const HOUSE_TEXTURES := {
     "main_hall":"pv01_assets/main_hall/510052.png",
     "warehouse":"pv01_assets/warehouse/510102.png",
@@ -348,12 +356,22 @@ static func visual_anchor(destination: StringName, cell: Vector2i) -> Vector2:
 static func virtual_legacy_point(destination: StringName, building_id: StringName = &"") -> Vector2:
     var cell: Vector2i = TYPE_ANCHORS.get(str(destination),Vector2i(90,92))
     if building_id != &"":
-        # Extra instances in a fixed-layout V1 save have NO true placement.
-        # Only display a stable read-only cluster, never persist coordinates.
         var sequence := maxi(int(str(building_id).get_slice("_",str(building_id).get_slice_count("_")-1)),1)
-        if sequence > 1:
-            cell += Vector2i((sequence-1)%4*2,(sequence-1)/4*2)
+        cell = producer_cell(destination,sequence)
     return LEGACY_ANCHOR+project(visual_anchor(destination,cell))-project(CENTER_CELL)
+
+static func producer_cell(destination: StringName, instance_index: int) -> Vector2i:
+    var key := str(destination)
+    var anchor: Vector2i = TYPE_ANCHORS.get(key,Vector2i(90,92))
+    if instance_index <= 1 or not PRODUCER_DISTRICTS.has(key):
+        return anchor
+    var district: Dictionary = PRODUCER_DISTRICTS[key]
+    var slot := instance_index - 2
+    var columns := int(district["columns"])
+    var column := slot % columns
+    var row := int(slot / columns)
+    var origin: Vector2i = district["origin"]
+    return origin+Vector2i(column*int(district["column_step"]),row*int(district["row_step"]))
 
 func refresh_from_state(state: SimulationState) -> void:
     if state == null:
@@ -393,9 +411,7 @@ func refresh_from_state(state: SimulationState) -> void:
     queue_redraw()
 
 func _row(dest: StringName, instance_id: StringName, text_label: String, index: int, managed: bool) -> Dictionary:
-    var cell: Vector2i = TYPE_ANCHORS.get(str(dest),Vector2i(90,92))
-    if managed and index > 1:
-        cell += Vector2i((index-1)%4*2,(index-1)/4*2)
+    var cell: Vector2i = producer_cell(dest,index) if managed else TYPE_ANCHORS.get(str(dest),Vector2i(90,92))
     return {
         "destination":dest,
         "building_id":instance_id,

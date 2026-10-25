@@ -13,7 +13,7 @@ func _init() -> void:
 
 func _run() -> void:
     for suffix in ["",".tmp",".bak"]:
-        var file := SAVE_PATH+suffix
+        var file: String = SAVE_PATH+suffix
         if FileAccess.file_exists(file):
             DirAccess.remove_absolute(ProjectSettings.globalize_path(file))
     ProjectSettings.set_setting("runtime/live_save_path",SAVE_PATH)

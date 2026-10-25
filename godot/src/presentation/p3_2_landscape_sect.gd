@@ -110,6 +110,7 @@ var selected_production_instance_id: StringName = &""
 var map_worksite_cues: Dictionary = {}
 var map_worksite_receipt_baseline: Dictionary = {}
 var map_worksite_refresh_elapsed := 0.0
+var actor_visibility_refresh_elapsed := 0.0
 var map_worksite_last_scale := 0.0
 var map_worksite_anchors: Dictionary = {}
 var map_worksite_screen_offsets: Dictionary = {}
@@ -135,6 +136,39 @@ func _ready() -> void:
     _refresh_living_cues()
     _build_b3_hunt_panel()
     _resume_saved_b3_hunt()
+
+func _input(event: InputEvent) -> void:
+    # Map picking must see a physical tap before Control descendants consume
+    # the release. Drag still goes through the same canonical map transform.
+    if _popup_is_open():
+        _clear_pointer_state()
+        return
+    if event is InputEventMouseButton:
+        var mouse := event as InputEventMouseButton
+        if mouse.button_index != MOUSE_BUTTON_LEFT:
+            return
+        if mouse.pressed:
+            mouse_panning = SectMapCamera.is_map_screen_point(mouse.position)
+            mouse_pointer_dragged = false
+            return
+        var was_map_tap := mouse_panning and not mouse_pointer_dragged
+        var was_map_drag := mouse_panning and mouse_pointer_dragged
+        if was_map_tap and _try_iso_map_pick(mouse.position):
+            _clear_pointer_state()
+            get_viewport().set_input_as_handled()
+        elif was_map_drag:
+            _clear_pointer_state()
+            get_viewport().set_input_as_handled()
+        return
+    if event is InputEventMouseMotion and mouse_panning:
+        var motion := event as InputEventMouseMotion
+        if (motion.button_mask & MOUSE_BUTTON_MASK_LEFT) == 0:
+            _clear_pointer_state()
+            return
+        if motion.relative.length() > 2.0:
+            mouse_pointer_dragged = true
+            _pan_camera(motion.relative)
+            get_viewport().set_input_as_handled()
 
 func _unhandled_input(event: InputEvent) -> void:
     if _popup_is_open():
@@ -387,6 +421,7 @@ func _set_focus_target(world_point: Vector2, kind: StringName, target_id: String
     if focus_target_button != null:
         focus_target_button.disabled = false
     _refresh_focus_readout()
+    _refresh_actor_status_label_visibility()
     if focus_now:
         _focus_world_point(world_point)
     _pulse_focus_marker()
@@ -446,7 +481,25 @@ func _apply_camera(zoom: float, position: Vector2, animate: bool) -> void:
         map_layer.scale = target_scale
         map_layer.position = target_position
 
+    _refresh_world_actor_visibility()
     _refresh_zoom_readout()
+
+func _refresh_world_actor_visibility() -> void:
+    # The live actors are a fixed-HUD overlay on the isometric SubViewport.
+    # Keep them inside the same map window so an endgame camera pan cannot
+    # paint their sprites over the title or bottom navigation bar.
+    var view := SectMapCamera.VIEW_RECT
+    for actor_value in actor_nodes.values():
+        var actor := actor_value as Control
+        if actor == null or not is_instance_valid(actor):
+            continue
+        var rect := actor.get_global_rect()
+        actor.visible = (
+            rect.position.x >= view.position.x
+            and rect.position.y >= view.position.y
+            and rect.end.x <= view.end.x
+            and rect.end.y <= view.end.y
+        )
 
 func _refresh_zoom_readout() -> void:
     if zoom_readout != null:
@@ -931,6 +984,7 @@ func _sync_actor_positions() -> void:
     _reconcile_live_actors()
     var ids: Array = state.disciples.keys()
     ids.sort()
+    var idle_slots := _idle_staging_ordinals(ids)
     for index in range(ids.size()):
         var disciple_id := StringName(ids[index])
         var key := str(disciple_id)
@@ -950,7 +1004,7 @@ func _sync_actor_positions() -> void:
             if site_destination != &"":
                 destination = site_destination
                 actor_destinations[key] = str(destination)
-        var world_foot := _iso_actor_point(destination,worksite_id) + _actor_offset(index)
+        var world_foot := _iso_actor_point(destination,worksite_id) + _endgame_actor_offset(disciple,index,idle_slots)
         var target := world_foot - _actor_anchor_offset(actor)
         var delta := target - actor.position
 
@@ -984,11 +1038,61 @@ func _sync_actor_positions() -> void:
     _refresh_disciple_summary_content()
     _refresh_building_operation_content()
     _refresh_living_cues()
+    _refresh_actor_status_label_visibility()
+    _refresh_world_actor_visibility()
+
+func _idle_staging_ordinals(ids: Array) -> Dictionary:
+    var result: Dictionary = {}
+    var ordinal := 0
+    for raw_id in ids:
+        var id := StringName(raw_id)
+        if not state.disciples.has(id):
+            continue
+        var disciple: DiscipleState = state.disciples[id]
+        if not _is_idle_map_actor(disciple):
+            continue
+        result[str(id)] = ordinal
+        ordinal += 1
+    return result
+
+func _is_idle_map_actor(disciple: DiscipleState) -> bool:
+    return (
+        disciple != null
+        and disciple.region_id == &"sect"
+        and disciple.active_pve_encounter_id.is_empty()
+        and disciple.worksite_building_id == &""
+        and disciple.work_cycle_state.is_empty()
+        and disciple.work_progress.is_empty()
+        and disciple.current_action in [&"EVALUATE",&"IDLE",&"HOLD"]
+    )
+
+func _endgame_actor_offset(disciple: DiscipleState, index: int, idle_slots: Dictionary) -> Vector2:
+    var key := str(disciple.id)
+    if not idle_slots.has(key):
+        return _actor_offset(index)
+    # Deterministic presentation-only staging for idle roster members. The
+    # old nine-point offset repeated for every 10th disciple and collapsed a
+    # 130-person endgame roster into a pile at the courtyard.
+    var ordinal := int(idle_slots[key])
+    var columns := 6
+    var column := ordinal % columns
+    var row := int(ordinal / columns)
+    return Vector2((float(column)-2.5)*112.0,(float(row)-2.0)*96.0)
 
 func _actor_anchor_offset(actor: Control) -> Vector2:
     if actor is ModularDiscipleActor:
         return DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
     return Vector2(30.0, 30.0)
+
+func _refresh_actor_status_label_visibility() -> void:
+    # Dense endgame maps can show 100 real workers. Their action remains in
+    # the selected disciple/building panel; only the focused disciple gets a
+    # floating world label, preventing the whole map from becoming unreadable.
+    var focused_key := str(focused_id) if focused_kind == &"disciple" else ""
+    for raw_id in actor_status_labels.keys():
+        var status := actor_status_labels[raw_id] as Label
+        if status != null and is_instance_valid(status):
+            status.visible = str(raw_id) == focused_key
 
 func _stage_a_live_assets_ready() -> bool:
     return (
@@ -1005,6 +1109,7 @@ func _install_modular_live_actors() -> void:
     var female_assets_ready := _stage_a_live_assets_ready()
     var ids: Array = state.disciples.keys()
     ids.sort()
+    var idle_slots := _idle_staging_ordinals(ids)
     for index in range(ids.size()):
         var disciple_id := StringName(ids[index])
         var key := str(disciple_id)
@@ -1033,13 +1138,15 @@ func _install_modular_live_actors() -> void:
             actor.set_baked_visual(source_a_scene)
         actor.sync_action(disciple.current_action)
         actor.actor_pressed.connect(Callable(self, "_open_disciple"))
-        var world_foot := _iso_actor_point(destination,disciple.worksite_building_id) + _actor_offset(index)
+        var world_foot := _iso_actor_point(destination,disciple.worksite_building_id) + _endgame_actor_offset(disciple,index,idle_slots)
         actor.position = world_foot - DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
         map_layer.add_child(actor)
 
         actor_nodes[key] = actor
         actor_status_labels[key] = actor.status_label
         modular_live_actor_ids[key] = true
+    _refresh_actor_status_label_visibility()
+    _refresh_world_actor_visibility()
 
 func _build_building_operation_panel() -> void:
     building_operation_panel = Panel.new()
@@ -1136,6 +1243,7 @@ func _close_building_operation_panel(clear_selection: bool = true) -> void:
         if focus_target_button != null:
             focus_target_button.disabled = true
         _refresh_focus_readout()
+        _refresh_actor_status_label_visibility()
 
 func _refresh_building_operation_content() -> void:
     if not _building_operation_is_open() or selected_building == &"":
@@ -2828,7 +2936,12 @@ func _process(_delta: float) -> void:
         if iso_world.set_legacy_transform(map_layer.scale.x,map_layer.position):
             iso_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
             _refresh_map_worksite_cues()
+            _refresh_world_actor_visibility()
     _refresh_living_cue_positions()
+    actor_visibility_refresh_elapsed += _delta
+    if actor_visibility_refresh_elapsed >= 0.12:
+        actor_visibility_refresh_elapsed = 0.0
+        _refresh_world_actor_visibility()
     map_worksite_refresh_elapsed += _delta
     if map_worksite_refresh_elapsed >= MAP_WORKSITE_REFRESH_SECONDS:
         map_worksite_refresh_elapsed = 0.0

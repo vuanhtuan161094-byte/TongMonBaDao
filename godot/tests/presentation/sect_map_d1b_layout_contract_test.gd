@@ -184,6 +184,8 @@ func _run() -> void:
 		var row := _row_for_building(live.id)
 		var tap := _screen_for_world(row["world"]+Vector2(0,-36))
 		if not SectMapCamera.is_map_screen_point(tap):
+			# The legacy map layer itself is translated in screen space. Move it
+			# by center-tap to bring the target back to the viewport center.
 			var recenter := Vector2(640,357)-tap
 			scene.call("_pan_camera",recenter)
 			await process_frame
@@ -217,6 +219,10 @@ func _run() -> void:
 		scene.call("_pan_camera",Vector2(-30,18))
 		await process_frame
 		var hall_tap := _screen_for_world(hall_row["world"]+Vector2(0,-36))
+		if not SectMapCamera.is_map_screen_point(hall_tap):
+			scene.call("_pan_camera",Vector2(640,357)-hall_tap)
+			await process_frame
+			hall_tap = _screen_for_world(hall_row["world"]+Vector2(0,-36))
 		if not SectMapCamera.is_map_screen_point(hall_tap) or StringName(iso.pick_at_screen(hall_tap).get("destination","")) != &"main_hall":
 			_fail("Hall picking failed after zoom/pan %.2f at %s" % [zoom,str(hall_tap)])
 			return

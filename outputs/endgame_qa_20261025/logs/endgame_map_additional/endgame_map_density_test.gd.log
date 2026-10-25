@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+TMB_ENDGAME_MAP_DENSITY PASS {"actors_clipped_to_map_view":true,"idle_roster_sprites_non_overlapping":30,"producer_instances":100,"simulation_state_unchanged":true,"unique_positions":100,"visible_focused_disciple_labels":1,"visible_status_labels_on_overview":0}

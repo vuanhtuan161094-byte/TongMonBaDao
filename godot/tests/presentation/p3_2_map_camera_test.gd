@@ -16,11 +16,13 @@ func _run() -> void:
         return
     if not _verify_pan_is_clamped():
         return
-    if not _verify_min_zoom_centers_world_in_view():
+    if not _verify_min_zoom_keeps_world_center_reachable():
         return
     if not _verify_focus_centers_target():
         return
     if not _verify_focus_handles_edge_target():
+        return
+    if not _verify_endgame_producer_focus():
         return
     if not _verify_reset_contract():
         return
@@ -86,15 +88,16 @@ func _verify_pan_is_clamped() -> bool:
         return _fail("P3.2 pan clamp collapsed both map edges to one point.")
     return true
 
-func _verify_min_zoom_centers_world_in_view() -> bool:
+func _verify_min_zoom_keeps_world_center_reachable() -> bool:
     var zoom := SectMapCamera.MIN_ZOOM
     var position := SectMapCamera.clamp_position(Vector2.ZERO, zoom)
-    var top_left := SectMapCamera.world_to_screen(Vector2.ZERO, position, zoom)
-    var bottom_right := SectMapCamera.world_to_screen(SectMapCamera.WORLD_SIZE, position, zoom)
-    var world_center := (top_left + bottom_right) * 0.5
-    var expected_center := SectMapCamera.VIEW_RECT.position + SectMapCamera.VIEW_RECT.size * 0.5
-    if world_center.distance_to(expected_center) > 0.001:
-        return _fail("P3.2 minimum zoom did not center the smaller map inside the visible map viewport.")
+    var world_center := SectMapCamera.world_to_screen(
+        SectMapCamera.WORLD_ORIGIN + SectMapCamera.WORLD_SIZE * 0.5,
+        position,
+        zoom
+    )
+    if not SectMapCamera.VIEW_RECT.has_point(world_center):
+        return _fail("P3.2 minimum zoom moved the expanded world center outside the visible map viewport.")
     return true
 
 func _verify_focus_centers_target() -> bool:
@@ -109,7 +112,7 @@ func _verify_focus_centers_target() -> bool:
     return true
 
 func _verify_focus_handles_edge_target() -> bool:
-    var world_target := Vector2(1220.0, 570.0)
+    var world_target := SectMapCamera.WORLD_END - Vector2(20.0, 20.0)
     var result := SectMapCamera.focus_transform(world_target, SectMapCamera.FOCUS_ZOOM)
     var zoom := float(result["zoom"])
     var position: Vector2 = result["position"]
@@ -118,6 +121,24 @@ func _verify_focus_handles_edge_target() -> bool:
     var screen_target := SectMapCamera.world_to_screen(world_target, position, zoom)
     if not SectMapCamera.VIEW_RECT.has_point(screen_target):
         return _fail("P3.2 edge focus moved the selected target under fixed HUD or outside the visible map viewport.")
+    return true
+
+func _verify_endgame_producer_focus() -> bool:
+    var targets := [
+        [&"mine", &"mine_021"],
+        [&"linh_forest", &"linh_forest_021"],
+        [&"spirit_field", &"spirit_field_035"]
+    ]
+    for target in targets:
+        var world_point := SectIsometricWorldV1.virtual_legacy_point(target[0], target[1])
+        var result := SectMapCamera.focus_transform(world_point, SectMapCamera.FOCUS_ZOOM)
+        var screen_point := SectMapCamera.world_to_screen(
+            world_point,
+            result["position"],
+            float(result["zoom"])
+        )
+        if not SectMapCamera.VIEW_RECT.has_point(screen_point):
+            return _fail("P3.2 camera could not focus the expanded endgame producer site %s." % target[1])
     return true
 
 func _verify_reset_contract() -> bool:

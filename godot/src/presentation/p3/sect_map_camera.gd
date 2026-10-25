@@ -1,7 +1,11 @@
 class_name SectMapCamera
 extends RefCounted
 
-const WORLD_SIZE := Vector2(1280.0, 720.0)
+# Keep legacy screen coordinates for the HUD/actor overlay while allowing the
+# full projected 192x192 sect map to pan and focus endgame producer districts.
+const WORLD_ORIGIN := Vector2(-4100.0, -2100.0)
+const WORLD_SIZE := Vector2(9800.0, 5200.0)
+const WORLD_END := WORLD_ORIGIN + WORLD_SIZE
 const VIEW_RECT := Rect2(Vector2(0.0, 72.0), Vector2(1280.0, 570.0))
 
 const MIN_ZOOM := 0.75
@@ -51,15 +55,17 @@ static func reset_transform() -> Dictionary:
 
 static func clamp_position(candidate: Vector2, zoom: float) -> Vector2:
     var applied_zoom := clamp_zoom(zoom)
-    var scaled_size := WORLD_SIZE * applied_zoom
+    var scaled_origin := WORLD_ORIGIN * applied_zoom
+    var scaled_end := WORLD_END * applied_zoom
     return Vector2(
-        _clamp_axis(candidate.x, scaled_size.x, VIEW_RECT.position.x, VIEW_RECT.size.x),
-        _clamp_axis(candidate.y, scaled_size.y, VIEW_RECT.position.y, VIEW_RECT.size.y)
+        _clamp_axis(candidate.x, scaled_origin.x, scaled_end.x, VIEW_RECT.position.x, VIEW_RECT.size.x),
+        _clamp_axis(candidate.y, scaled_origin.y, scaled_end.y, VIEW_RECT.position.y, VIEW_RECT.size.y)
     )
 
-static func _clamp_axis(candidate: float, scaled_world_size: float, view_start: float, view_size: float) -> float:
+static func _clamp_axis(candidate: float, scaled_world_origin: float, scaled_world_end: float, view_start: float, view_size: float) -> float:
+    var scaled_world_size := scaled_world_end - scaled_world_origin
     if scaled_world_size <= view_size:
-        return view_start + (view_size - scaled_world_size) * 0.5
-    var minimum := view_start + view_size - scaled_world_size
-    var maximum := view_start
+        return view_start + (view_size - scaled_world_size) * 0.5 - scaled_world_origin
+    var minimum := view_start + view_size - scaled_world_end
+    var maximum := view_start - scaled_world_origin
     return clampf(candidate, minimum, maximum)
