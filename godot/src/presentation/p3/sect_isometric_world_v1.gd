@@ -476,8 +476,12 @@ func pick_at_screen(screen: Vector2) -> Dictionary:
     for item in display_instances:
         var place: Vector2 = item["world"]
         var offset := world-place
-        # Allow hitting the roof above its ground-plane anchor.
-        var normalized := Vector2(offset.x/78.0,(offset.y+36.0)/78.0)
+        # Match the smaller marker silhouette at wide zoom. The canonical
+        # building ID/pick row always exists even when only an icon is drawn.
+        var radius := SectEndgameVisualBudgetV1.pick_radius(
+            camera.zoom.x,bool(item["managed"]))
+        var roof_bias := 36.0 if not bool(item["managed"]) or camera.zoom.x >= SectEndgameVisualBudgetV1.COMPACT_SITE_ZOOM else 5.0
+        var normalized := Vector2(offset.x/radius.x,(offset.y+roof_bias)/radius.y)
         var distance := normalized.length()
         if distance <= 1.0 and distance < best_distance:
             best_distance = distance
@@ -628,7 +632,52 @@ func _is_road(cell: Vector2i) -> bool:
     # Rebuildable read-only ENV-02A map-model route projection.
     return STARTER.has_point(cell) and preview_roads.has(cell)
 
+func _draw_compact_producer(p: Vector2,kind: String,overview: bool) -> void:
+    # Clean compact symbols replace oversized repeated unapproved SVG roofs
+    # at wide zoom. NOT a replacement Source A building master.
+    # Camera projection and canonical selection/identity remain unchanged.
+    var tint := Color(0.51,0.48,0.42)
+    var detail := Color(0.85,0.78,0.60)
+    match kind:
+        "mine":
+            tint = Color(0.37,0.44,0.46)
+            detail = Color(0.82,0.80,0.65)
+        "linh_forest":
+            tint = Color(0.30,0.49,0.38)
+            detail = Color(0.72,0.83,0.59)
+        "spirit_field":
+            tint = Color(0.46,0.55,0.36)
+            detail = Color(0.91,0.84,0.53)
+    var rx := 15.0 if overview else 20.0
+    var ry := 8.0 if overview else 11.0
+    var ring := PackedVector2Array([
+        p+Vector2(0,-ry),p+Vector2(rx,0),
+        p+Vector2(0,ry),p+Vector2(-rx,0)
+    ])
+    draw_colored_polygon(ring,tint)
+    draw_polyline(PackedVector2Array([ring[0],ring[1],ring[2],ring[3],ring[0]]),detail,1.5,true)
+    if kind == "mine":
+        draw_line(p+Vector2(-7,2),p+Vector2(-1,-5),detail,2.0,true)
+        draw_line(p+Vector2(-1,-5),p+Vector2(8,3),detail,2.0,true)
+    elif kind == "linh_forest":
+        draw_colored_polygon(PackedVector2Array([
+            p+Vector2(-7,3),p+Vector2(-2,-6),p+Vector2(3,3)
+        ]),detail)
+        draw_line(p+Vector2(5,4),p+Vector2(5,-3),detail,2.0,true)
+    else:
+        for dx in [-7.0,0.0,7.0]:
+            draw_line(p+Vector2(dx,3),p+Vector2(dx+2,-4),detail,1.5,true)
+
+
 func _draw_building(p: Vector2,kind: String, managed: bool) -> void:
+    # Always keep all 100 actual producers in display_instances, but do NOT
+    # paint 100 huge candidate buildings in a far overview. This is view LOD,
+    # not reducing valid BuildingState instances or workers.
+    if managed and MAP_D2_CANDIDATE_SITES.has(kind):
+        var level := SectEndgameVisualBudgetV1.site_level(camera.zoom.x)
+        if level < 2:
+            _draw_compact_producer(p,kind,level == 0)
+            return
     if HOUSE_TEXTURES.has(kind):
         var key := str(HOUSE_TEXTURES[kind])
         if render_art.has(key):
