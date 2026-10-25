@@ -4,6 +4,12 @@ on:
   push:
     branches:
       - qa/code-r0-finite-world-20261025
+    # Docs-only evidence commits were unnecessarily spawning blocked jobs.
+    paths:
+      - '.github/workflows/code-r0-finite-world-gate.yml'
+      - 'tools/qa/Invoke-CodeR0-Focused.ps1'
+      - 'godot/src/**'
+      - 'godot/tests/**'
 permissions:
   contents: read
 jobs:
