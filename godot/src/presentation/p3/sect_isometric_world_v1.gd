@@ -485,7 +485,7 @@ func _draw() -> void:
         draw_mesh(_ground_mesh_for_chunk(chunk_id),null)
     # Scenic water/reeds/rock-garden accents are original unapproved
     # view-only candidates and cannot act as a gameplay resource node.
-    SectMapD2Landscape.draw_scenic_accents(self,active_chunks)
+    SectMapD2Landscape.draw_scenic_accents(self,active_chunks,camera.position,VIEW_SIZE*0.5/camera.zoom.x+Vector2(170,175))
     # Verified MAP25 terrain creates a modest paved hall courtyard and forge
     # apron. It is a surface treatment only; roads are drawn over it below.
     for chunk_id in active_chunks:
