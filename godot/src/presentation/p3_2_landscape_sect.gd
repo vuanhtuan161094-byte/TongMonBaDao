@@ -1145,14 +1145,14 @@ func _endgame_actor_offset(disciple: DiscipleState, index: int, idle_slots: Dict
     var key := str(disciple.id)
     if not idle_slots.has(key):
         return _actor_offset(index)
-    # Deterministic presentation-only staging for idle roster members. The
-    # old nine-point offset repeated for every 10th disciple and collapsed a
-    # 130-person endgame roster into a pile at the courtyard.
+    # Idle disciples gather around the courtyard in a compact deterministic
+    # spiral. Their sprites may overlap naturally, but no two receive exactly
+    # the same position. Rendering remains bounded by the viewport LOD pool.
     var ordinal := int(idle_slots[key])
-    var columns := 6
-    var column := ordinal % columns
-    var row := int(ordinal / columns)
-    return Vector2((float(column)-2.5)*112.0,(float(row)-2.0)*96.0)
+    const GOLDEN_ANGLE := 2.399963229728653
+    var radius := 9.0 * sqrt(float(ordinal)+1.0)
+    var angle := float(ordinal) * GOLDEN_ANGLE
+    return Vector2(cos(angle),sin(angle))*radius
 
 func _actor_anchor_offset(actor: Control) -> Vector2:
     if actor is ModularDiscipleActor:

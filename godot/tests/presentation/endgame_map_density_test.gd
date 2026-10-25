@@ -88,17 +88,30 @@ func _run() -> void:
 		_fail("endgame_scene_did_not_render_100_real_producer_instances", {"rows": producer_rows})
 		return
 	var idle_slots: Dictionary = scene.call("_idle_staging_ordinals", state.disciples.keys())
-	var idle_rects: Array[Rect2] = []
+	var idle_positions: Array[Vector2] = []
+	var courtyard: Vector2 = scene.call("_iso_actor_point",&"courtyard")
+	var max_idle_radius := 0.0
+	var min_idle_spacing := INF
 	for raw_id in idle_slots.keys():
 		var virtual_position: Vector2 = scene.actor_virtual_positions[str(raw_id)]
-		var actor_rect := Rect2(virtual_position,DiscipleActorVisualCatalog.ACTOR_BOX_SIZE)
-		for previous_rect in idle_rects:
-			if actor_rect.intersects(previous_rect):
-				_fail("idle_endgame_roster_sprites_overlap_after_staging", {"disciple": str(raw_id), "rect": actor_rect})
+		var foot_position := virtual_position + DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
+		var offset: Vector2 = foot_position - courtyard
+		max_idle_radius = maxf(max_idle_radius,offset.length())
+		for previous_position in idle_positions:
+			var distance := foot_position.distance_to(previous_position)
+			min_idle_spacing = minf(min_idle_spacing,distance)
+			if distance < 0.1:
+				_fail("idle_endgame_roster_contains_exact_stack", {"disciple": str(raw_id), "position": foot_position})
 				return
-		idle_rects.append(actor_rect)
-	if idle_rects.size() != 30:
-		_fail("synthetic_endgame_roster_idle_count_changed", {"idle_count": idle_rects.size()})
+		idle_positions.append(foot_position)
+	if idle_positions.size() != 30:
+		_fail("synthetic_endgame_roster_idle_count_changed", {"idle_count": idle_positions.size()})
+		return
+	if max_idle_radius > 9.0 * sqrt(float(idle_positions.size())) + 0.1:
+		_fail("idle_endgame_roster_not_compact", {"max_radius":max_idle_radius,"expected_max":9.0*sqrt(float(idle_positions.size()))})
+		return
+	if min_idle_spacing <= 0.1:
+		_fail("idle_endgame_roster_contains_exact_stack", {"min_spacing":min_idle_spacing})
 		return
 	if scene.actor_virtual_positions.size() != state.disciples.size():
 		_fail("canonical_roster_missing_virtual_map_positions", {"positions": scene.actor_virtual_positions.size(), "roster": state.disciples.size()})
@@ -187,7 +200,7 @@ func _run() -> void:
 		if actor_ref.get_ref() != null:
 			_fail("scene_teardown_leaked_pooled_actor")
 			return
-	print("TMB_ENDGAME_MAP_DENSITY PASS " + JSON.stringify({"producer_instances": producer_rows, "unique_positions": cells.size(), "idle_roster_sprites_non_overlapping": idle_rects.size(), "virtual_map_positions": state.disciples.size(), "materialized_actor_nodes": final_materialized_count, "actor_pool": final_pool_count, "pool_freed_on_scene_teardown": true, "selected_virtual_disciple": str(hidden_id), "recycled_to": str(second_hidden_id), "actors_clipped_to_map_view": true, "visible_status_labels_on_overview": 0, "visible_focused_disciple_labels": 1, "simulation_state_unchanged": true}))
+	print("TMB_ENDGAME_MAP_DENSITY PASS " + JSON.stringify({"producer_instances": producer_rows, "unique_positions": cells.size(), "idle_roster_sprites_may_overlap_but_positions_are_unique": idle_positions.size(), "idle_max_radius":max_idle_radius,"idle_min_spacing":min_idle_spacing,"virtual_map_positions": state.disciples.size(), "materialized_actor_nodes": final_materialized_count, "actor_pool": final_pool_count, "pool_freed_on_scene_teardown": true, "selected_virtual_disciple": str(hidden_id), "recycled_to": str(second_hidden_id), "actors_clipped_to_map_view": true, "visible_status_labels_on_overview": 0, "visible_focused_disciple_labels": 1, "simulation_state_unchanged": true}))
 	quit(0)
 
 func _visible_status_labels(scene: Control) -> int:

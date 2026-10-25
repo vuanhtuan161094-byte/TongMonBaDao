@@ -70,16 +70,9 @@ foreach ($population in $Profiles) {
     $env:LOCALAPPDATA = Join-Path $userdataRoot 'Local'
     New-Item -ItemType Directory -Force -Path $env:APPDATA,$env:LOCALAPPDATA | Out-Null
 
-    # Low-memory fail-closed gate; prefer CIM, then use the Windows API when
-    # restricted desktop sandboxes deny WMI access.
+    # Memory is recorded for evidence only. The owner explicitly removed the
+    # fixed-RAM stop gate for this run; Godot is still launched sequentially.
     $freeGb = [math]::Round((Get-AvailablePhysicalMemoryGB),2)
-    $minFreeGb = if ($population -ge 500) { 2.50 } else { 1.25 }
-    if ($freeGb -lt $minFreeGb) {
-        Write-Warning "Skipping roster ${population}: available RAM $freeGb GB is below $minFreeGb GB."
-        $rows.Add([pscustomobject]@{Roster=$population;Step='RAM_GATE';Status='BLOCKED';ExitCode=-1;
-            AvailableGB=$freeGb;SaveBytes=0;SHA256='';CodeSHA=$sourceHash;Log='' })
-        continue
-    }
 
     if ($Regenerate -or -not (Test-Path -LiteralPath $savePath -PathType Leaf)) {
         if ($population -eq 130 -and $Regenerate) {
