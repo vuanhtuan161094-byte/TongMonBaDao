@@ -2,3 +2,12 @@
 *.tmp
 *.gd.uid
 reports/
+
+# Generated isolated 200/500 disciple benchmarks; only the 130 reference
+# QA baseline is intentionally committed. Never commit mutable local saves.
+qa/endgame_qa_save_200.json
+qa/endgame_qa_save_500.json
+qa/endgame_qa_report_200.json
+qa/endgame_qa_report_500.json
+qa/backups/
+outputs/endgame_qa_20261025/userdata/
