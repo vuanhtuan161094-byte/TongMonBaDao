@@ -46,6 +46,16 @@ func _run() -> void:
     if sparse.size() != 1 or not sparse.has("crowd_499"):
         _fail("screen-space thinning cannot resolve a 500-person pile")
         return
+    var site_rows: Array[Dictionary] = []
+    for i in range(40):
+        site_rows.append({"id":"mine_%03d" % i,"center_distance":float(i)})
+    if not SectEndgameVisualBudgetV1.choose_detailed_producers(site_rows,1.0).is_empty():
+        _fail("far overview attempted large worksite art")
+        return
+    var detailed := SectEndgameVisualBudgetV1.choose_detailed_producers(site_rows,1.35,"mine_039")
+    if detailed.size() != 4 or not detailed.has("mine_039"):
+        _fail("40 producer roofs were not limited to four plus focus")
+        return
     if JSON.stringify(rows) != original:
         _fail("render budget modified source actor row data")
         return
