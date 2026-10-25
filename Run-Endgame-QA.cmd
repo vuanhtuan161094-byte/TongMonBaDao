@@ -7,5 +7,8 @@ if not exist "%TMB_GODOT%" (
   echo Edit TMB_GODOT in this file to the installed official 4.7.2 console binary.
   exit /b 2
 )
-"%TMB_GODOT%" --path "%TMB_PROJECT%" --resolution 1280x720 --script res://tools/qa/endgame_live_launcher.gd
+rem Optional: Run-Endgame-QA.cmd --tmb-roster=200 (or 500).
+rem Requires a separately generated endgame_qa_save_200/500.json first.
+rem The normal no-argument launcher still opens the original mutable 130 save.
+"%TMB_GODOT%" --path "%TMB_PROJECT%" --resolution 1280x720 --script res://tools/qa/endgame_live_launcher.gd -- %*
 exit /b %errorlevel%
