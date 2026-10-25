@@ -3,8 +3,10 @@ extends RefCounted
 
 # Source A is an *optional* runtime art source. Whitelisted exact SHA256
 # from the existing ENV02A baseline; no asset is accepted on filename alone.
-# In the GitHub code-only checkout all PNGs are absent => fallback, never load
-# a made-up image. Does not alter gameplay, save state or asset rights.
+# Some historic code-only checkouts lacked the source PNGs; current MAP25
+# bundles may include all 32. Always verify each exact original SHA-256 before
+# loading; never infer absence or authenticity from a branch name or filename.
+# This adapter does not alter gameplay, save state or asset rights.
 const INDEX := "res://data/presentation/map25_source_a_verified.json"
 
 var index: Dictionary = {}
