@@ -102,22 +102,24 @@ static func record_authoritative_battle_kill(registry: Dictionary,
     var expected_event_id := "%s:slot:%s:g%d" % [battle.encounter_id,slot_id_value,generation]
     if event_id.is_empty() or event_id != expected_event_id or str(event.get("world_id","")) != battle.encounter_id:
         return {"ok":false,"reason":"event_not_from_this_world"}
-    var journal_has_event := false
+    var official_event: Dictionary = {}
     for pending in battle.pending_kill_events():
         if str(pending.get("kill_id","")) == event_id and str(pending.get("monster_instance_id","")) == actor_id and str(pending.get("spawn_slot_id","")) == slot_id_value and int(pending.get("slot_generation",0)) == generation:
-            journal_has_event = true
+            official_event = pending
             break
-    if not journal_has_event or not battle.actors.has(actor_id):
+    if official_event.is_empty() or not battle.actors.has(actor_id):
         return {"ok":false,"reason":"kill_not_in_authoritative_journal"}
     var actor: Dictionary = battle.actors[actor_id]
     if str(actor.get("side","")) != "monster" or float(actor.get("hp",1.0)) != 0.0:
         return {"ok":false,"reason":"monster_not_dead_in_combat"}
     if str(actor.get("spawn_slot_id","")) != slot_id_value or int(actor.get("slot_generation",0)) != generation:
         return {"ok":false,"reason":"monster_slot_generation_mismatch"}
-    if str(actor.get("species_id","")) != str(event.get("species_id","")):
+    if str(actor.get("species_id","")) != str(official_event.get("species_id","")):
         return {"ok":false,"reason":"monster_species_mismatch"}
+    # Never trust caller-supplied death time for cooldown or world ordering.
+    # The only accepted timestamp comes from the combat kernel's own journal.
     return record_hp0(registry,slot_id_value,generation,event_id,true,
-        float(event.get("at_seconds",-1.0)),respawn_delay_seconds)
+        float(official_event.get("at_seconds",-1.0)),respawn_delay_seconds)
 
 
 static func record_hp0(registry: Dictionary, id: String, generation: int,
