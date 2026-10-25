@@ -16,7 +16,6 @@ const CAMP_COUNTS := [
 ]
 const BOOTSTRAP_GATE := Vector2(12,96)
 const RIVER_X := 148.0
-const BRIDGE_ROWS := [0,2,3] # No bridge C08 -> C09 at y=64.
 const TREE_A: Texture2D = preload("res://art/source_a_env02a/env01_assets/vegetation/570036.png")
 const TREE_B: Texture2D = preload("res://art/source_a_env02a/env01_assets/vegetation/570041.png")
 const TREE_C: Texture2D = preload("res://art/source_a_env02a/env01_assets/vegetation/570073.png")
@@ -34,7 +33,6 @@ var camera_pan := Vector2.ZERO
 var camera_zoom := 1.0
 var selected_camp := -1
 var is_dragging := false
-var drag_start := Vector2.ZERO
 var drag_sum := Vector2.ZERO
 
 
@@ -124,7 +122,6 @@ func _gui_input(event: InputEvent) -> void:
         elif mouse.button_index == MOUSE_BUTTON_LEFT:
             if mouse.pressed:
                 is_dragging = true
-                drag_start = mouse.position
                 drag_sum = Vector2.ZERO
             else:
                 if is_dragging and drag_sum.length_squared() < 64.0:
