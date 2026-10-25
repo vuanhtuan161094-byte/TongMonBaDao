@@ -1,6 +1,9 @@
 # TÔNG MÔN BÁ ĐẠO — R11 S1/S2: CÔNG SUẤT NGUỒN VẬT LIỆU & QUY MÔ 30–300 ĐỆ TỬ
 ## Mô hình tính có thể kiểm tra; SOURCE ≠ ASSUMPTION ≠ GAMEPLAY PASS
 
+> **World combat R11 chính là CONTINUOUS, KHÔNG giới hạn 90 giây.** `MAX_SECONDS=90` trong `main` chỉ là finite legacy mode; code PR #31 đã bypass giới hạn đó khi `continuous_mode=true`, có test same-world 120s và real per-life loot/save. R11 vật liệu vẫn chưa code. Model hunter ở đây dùng genuine kills/world respawn, tuyệt đối không dùng encounter-wave reward. Xem `TMB_COMBAT_CONTINUOUS_VS_LEGACY_90S_DEPRECATION_AUDIT_2026-10-25.md`.
+
+
 **2026-10-25 — RESEARCH / DOCS ONLY. KHÔNG CODE, GODOT QA, MERGE, SỬA UI, MAP, COMBAT V2, SOURCE A, PR ĐANG MỞ.**
 **Branch base**: R11 previous docs HEAD 4c3e7ba5df058eb4250e14e02db6b13f6e2a8618; upstream main inspected at 29b5fba448b0178cb520a4ada44b375b4b934e31.
 **Tham chiếu trực tiếp**: AGENTS.md; docs/GAME_SYSTEM_ARCHITECTURE.md; docs/P3_7_TIME_SPEED_COOLDOWN_SPEC.md; docs/P3_7_RESOURCE_STORAGE_GROWTH_DATA_MODEL_SPEC.md; docs/REALM_LADDER_V2_SPEC.md; main godot/src/simulation/{building/building_system.gd,workforce/workforce_system.gd,resource/warehouse_system.gd,core/simulation_runtime_clock_v2.gd,combat/{hunting_map_v2.gd,monster_catalogue_v2.gd,map_battle_v2.gd}}. Kế thừa 3 hồ sơ R11 S1/S2 trong nhánh parent. Đây không phải nội dung đang chạy trong game.
