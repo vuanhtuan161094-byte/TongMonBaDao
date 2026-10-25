@@ -1069,11 +1069,19 @@ func _draw_source_a_forest_floor() -> void:
                 continue
             draw_texture_rect(SOURCE_A_FLOOR,tile_rect,false,
                 Color(0.98,1.0,0.98,0.38))
+    # Camera-stable forest floor breaks up the repetitive flat battle
+    # backdrop. The helper only draws; it cannot change MapBattleV2 positions,
+    # collision, spawn density, skill targeting, loot or SaveService.
+    B3CareHuntLandscapeV2.draw_hunt_floor(
+        self,stage_rect,_grid_size(),Callable(self,"_source_a_floor_point"),zoom)
     # Sparse, verified Source A vegetation stays at fixed world points.
     var source_trees := [FOREST_A,FOREST_B,FOREST_C]
     var placements := [
         Vector2(0.02,0.12),Vector2(0.22,0.08),Vector2(0.74,0.09),Vector2(0.94,0.14),
-        Vector2(0.02,0.68),Vector2(0.12,0.88),Vector2(0.84,0.87),Vector2(0.98,0.68)
+        Vector2(0.02,0.68),Vector2(0.12,0.88),Vector2(0.84,0.87),Vector2(0.98,0.68),
+        # Additional Source A trees frame the edges, NOT the central 6v5 fight.
+        Vector2(0.04,0.40),Vector2(0.96,0.42),
+        Vector2(0.39,0.05),Vector2(0.58,0.95)
     ]
     for index in range(placements.size()):
         var source: Texture2D = source_trees[index%source_trees.size()]
