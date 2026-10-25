@@ -26,6 +26,30 @@ static func actor_cap(zoom: float) -> int:
         return NORMAL_ACTOR_CAP
     return FOCUS_ACTOR_CAP
 
+const MAX_DETAIL_PRODUCERS := 4
+
+static func choose_detailed_producers(rows: Array[Dictionary], zoom: float, selected_id: String = "") -> Dictionary:
+    if site_level(zoom) < 2:
+        return {}
+    var ordered := rows.duplicate(true)
+    ordered.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
+        var a_selected := str(a.get("id","")) == selected_id and not selected_id.is_empty()
+        var b_selected := str(b.get("id","")) == selected_id and not selected_id.is_empty()
+        if a_selected != b_selected:
+            return a_selected
+        var da := float(a.get("center_distance",INF))
+        var db := float(b.get("center_distance",INF))
+        if not is_equal_approx(da,db):
+            return da < db
+        return str(a.get("id","")) < str(b.get("id",""))
+    )
+    var chosen: Dictionary = {}
+    for i in range(mini(ordered.size(),MAX_DETAIL_PRODUCERS)):
+        var id := str(ordered[i].get("id",""))
+        if not id.is_empty():
+            chosen[id] = true
+    return chosen
+
 static func pick_radius(zoom: float, managed: bool) -> Vector2:
     if not managed or zoom >= COMPACT_SITE_ZOOM:
         return Vector2(78.0,78.0)
