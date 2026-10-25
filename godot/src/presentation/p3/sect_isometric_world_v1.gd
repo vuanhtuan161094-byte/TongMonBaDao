@@ -118,6 +118,10 @@ var tiles: Dictionary = {}
 var active_chunks: Array[Vector2i] = []
 # Chunk-local immutable ArrayMesh, cached in memory; purely visual, no save data.
 var ground_chunk_meshes: Dictionary = {}
+# View overlays are static once road topology and verified art are loaded.
+# Build them once rather than rescanning all 16x16 cells on every draw.
+var terrain_overlays_by_chunk: Dictionary = {}
+var road_overlays_by_chunk: Dictionary = {}
 var draw_revision := 0
 var fallback_art_count := 0
 var lab_geometry: SectIsoMapModelV1
@@ -217,7 +221,13 @@ func _load_verified_source_art() -> void:
     # Godot-imported candidate SVGs may be unavailable; fall back to the
     # original honest marker. Never add them to verified MAP25 art status.
     for kind in MAP_D2_CANDIDATE_SITES:
-        var candidate := load(str(MAP_D2_CANDIDATE_SITES[kind])) as Texture2D
+        var candidate_path := str(MAP_D2_CANDIDATE_SITES[kind])
+        # Avoid a noisy invalid resource lookup when a candidate SVG was not
+        # included/imported in a partial checkout or export. Source A assets
+        # remain separately SHA-gated and their original paths are unchanged.
+        if not ResourceLoader.exists(candidate_path,"Texture2D"):
+            continue
+        var candidate := ResourceLoader.load(candidate_path) as Texture2D
         if candidate != null:
             candidate_site_art[kind] = candidate
     for house in HOUSE_TEXTURES:
@@ -266,6 +276,7 @@ func _load_verified_source_art() -> void:
     decoration_items.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
         return (a["world"] as Vector2).y < (b["world"] as Vector2).y
     )
+    _cache_static_overlays()
     art_source_status = source_art.status()
     art_loaded_count = int(art_source_status.get("accepted_count",0))
     # The user is not shown an invented Source A completion status.
@@ -337,17 +348,26 @@ func refresh_from_state(state: SimulationState) -> void:
     if state == null:
         return
     var rows: Array[Dictionary] = []
+    # One indexed pass over canonical buildings. Prior implementation scanned
+    # the full state.buildings collection once for EACH producer destination.
+    # 30 Mine + 30 Forest + 40 Field should not multiply lookup work.
+    var producer_buckets: Dictionary = {}
+    for raw_dest in PRODUCER_TYPES.keys():
+        producer_buckets[str(PRODUCER_TYPES[raw_dest])] = []
+    for raw_id in state.buildings.keys():
+        var building: BuildingState = state.buildings[raw_id]
+        var key := str(building.building_type)
+        if producer_buckets.has(key):
+            (producer_buckets[key] as Array).append(building)
+    for key in producer_buckets.keys():
+        (producer_buckets[key] as Array).sort_custom(
+            func(a: BuildingState,b: BuildingState) -> bool:
+                return str(a.id)<str(b.id))
     for raw_dest in TYPE_ANCHORS.keys():
         var dest := StringName(raw_dest)
         if PRODUCER_TYPES.has(str(dest)):
-            # True canonical instances only. No fake second Mine from art token.
-            var matching: Array = []
-            for raw_id in state.buildings.keys():
-                var building: BuildingState = state.buildings[raw_id]
-                if str(building.building_type) == str(PRODUCER_TYPES[str(dest)]):
-                    matching.append(building)
-            matching.sort_custom(func(a: BuildingState,b: BuildingState) -> bool:
-                return str(a.id)<str(b.id))
+            # Only actual canonical instances; exact old ordering preserved.
+            var matching: Array = producer_buckets.get(str(PRODUCER_TYPES[str(dest)]),[])
             for building in matching:
                 rows.append(_row(dest,building.id,str(building.display_name),building.instance_index,true))
         else:
@@ -442,6 +462,54 @@ func pick_at_screen(screen: Vector2) -> Dictionary:
 # but its draw command count no longer grows by one per ground tile.
 # Road paint is composited into its tile's vertex color; road sprites, paths,
 # Source A buildings and vegetation stay in the existing overlay/depth pass.
+# Terrain and road art are immutable within the current view instance.
+# Build source-SHA-gated textures, colors and projected rectangles once on
+# startup, never during user camera pan/zoom/production progress repaint.
+func _cache_static_overlays() -> void:
+    terrain_overlays_by_chunk.clear()
+    road_overlays_by_chunk.clear()
+    for iy in range(STARTER.position.y,STARTER.end.y):
+        for ix in range(STARTER.position.x,STARTER.end.x):
+            var cell := Vector2i(ix,iy)
+            var chunk := Vector2i(ix/CHUNK,iy/CHUNK)
+            var center := project(Vector2(cell))
+            var terrain_key := _terrain_texture_key(cell)
+            if not terrain_key.is_empty() and render_art.has(terrain_key):
+                var tint := Color(0.96,0.98,0.94,0.48)
+                if terrain_key.ends_with("stone_border.png"):
+                    tint = Color(0.92,0.96,0.93,0.52)
+                elif terrain_key.ends_with("stone_runes.png"):
+                    tint = Color(0.94,0.97,1.0,0.58)
+                elif terrain_key.ends_with("stone_variant.png"):
+                    tint = Color(0.92,0.95,0.91,0.36)
+                if not terrain_overlays_by_chunk.has(chunk):
+                    terrain_overlays_by_chunk[chunk] = []
+                (terrain_overlays_by_chunk[chunk] as Array).append({
+                    "texture":render_art[terrain_key],
+                    "rect":Rect2(center-Vector2(HALF_W,HALF_H),Vector2(HALF_W*2.0,HALF_H*2.0)),
+                    "tint":tint
+                })
+            if not _is_road(cell):
+                continue
+            var road_key := "env01_assets/roads/%s" % str(ROAD_TEXTURES[_road_key(cell)])
+            if not render_art.has(road_key):
+                continue
+            if not road_overlays_by_chunk.has(chunk):
+                road_overlays_by_chunk[chunk] = []
+            (road_overlays_by_chunk[chunk] as Array).append({
+                "texture":render_art[road_key],
+                "rect":Rect2(center-Vector2(HALF_W*1.1,HALF_H*1.15),
+                    Vector2(HALF_W*2.2,HALF_H*2.3)),
+                "shoulder":PackedVector2Array([
+                    center+Vector2(0,-HALF_H*1.42),
+                    center+Vector2(HALF_W*1.33,0),
+                    center+Vector2(0,HALF_H*1.42),
+                    center+Vector2(-HALF_W*1.33,0)
+                ]),
+                "shoulder_color":SectMapD2Landscape.road_shoulder_color(cell)
+            })
+
+
 func _ground_mesh_for_chunk(chunk_id: Vector2i) -> ArrayMesh:
     if ground_chunk_meshes.has(chunk_id):
         return ground_chunk_meshes[chunk_id] as ArrayMesh
@@ -486,53 +554,18 @@ func _draw() -> void:
     # Scenic water/reeds/rock-garden accents are original unapproved
     # view-only candidates and cannot act as a gameplay resource node.
     SectMapD2Landscape.draw_scenic_accents(self,active_chunks,camera.position,VIEW_SIZE*0.5/camera.zoom.x+Vector2(170,175))
-    # Verified MAP25 terrain creates a modest paved hall courtyard and forge
-    # apron. It is a surface treatment only; roads are drawn over it below.
+    # Verified MAP25 terrain/road overlay source and connectivity were
+    # classified once at import. Pan/zoom only iterates cached visible rows.
     for chunk_id in active_chunks:
-        var origin: Vector2i = chunk_id*CHUNK
-        for iy in range(origin.y,mini(origin.y+CHUNK,GRID.y)):
-            for ix in range(origin.x,mini(origin.x+CHUNK,GRID.x)):
-                var cell := Vector2i(ix,iy)
-                if not STARTER.has_point(cell):
-                    continue
-                var terrain_key := _terrain_texture_key(cell)
-                if terrain_key.is_empty() or not render_art.has(terrain_key):
-                    continue
-                var center := project(Vector2(cell))
-                var tint := Color(0.96,0.98,0.94,0.48)
-                if terrain_key.ends_with("stone_border.png"):
-                    tint = Color(0.92,0.96,0.93,0.52)
-                elif terrain_key.ends_with("stone_runes.png"):
-                    tint = Color(0.94,0.97,1.0,0.58)
-                elif terrain_key.ends_with("stone_variant.png"):
-                    tint = Color(0.92,0.95,0.91,0.36)
-                draw_texture_rect(render_art[terrain_key],
-                    Rect2(center-Vector2(HALF_W,HALF_H),Vector2(HALF_W*2.0,HALF_H*2.0)),
-                    false,tint)
-    # Road tile choice comes from actual preview-route connectivity. All six
-    # gated Source A road textures are retained; no procedural path art.
+        var terrain_rows: Array = terrain_overlays_by_chunk.get(chunk_id,[])
+        for row in terrain_rows:
+            draw_texture_rect(row["texture"],row["rect"],false,row["tint"])
     for chunk_id in active_chunks:
-        var origin: Vector2i = chunk_id*CHUNK
-        for iy in range(origin.y,mini(origin.y+CHUNK,GRID.y)):
-            for ix in range(origin.x,mini(origin.x+CHUNK,GRID.x)):
-                var cell := Vector2i(ix,iy)
-                if not STARTER.has_point(cell) or not _is_road(cell):
-                    continue
-                var center := project(Vector2(cell))
-                var road_key := "env01_assets/roads/%s" % str(ROAD_TEXTURES[_road_key(cell)])
-                if render_art.has(road_key):
-                    # A muted shoulder removes the hard grey-on-green cut
-                    # while preserving the six real SHA-gated road sprites.
-                    draw_colored_polygon(PackedVector2Array([
-                        center+Vector2(0,-HALF_H*1.42),
-                        center+Vector2(HALF_W*1.33,0),
-                        center+Vector2(0,HALF_H*1.42),
-                        center+Vector2(-HALF_W*1.33,0)
-                    ]),SectMapD2Landscape.road_shoulder_color(cell))
-                    draw_texture_rect(render_art[road_key],
-                        Rect2(center-Vector2(HALF_W*1.1,HALF_H*1.15),
-                            Vector2(HALF_W*2.2,HALF_H*2.3)),
-                        false,Color(0.96,0.95,0.88,0.96))
+        var road_rows: Array = road_overlays_by_chunk.get(chunk_id,[])
+        for row in road_rows:
+            draw_colored_polygon(row["shoulder"],row["shoulder_color"])
+            draw_texture_rect(row["texture"],row["rect"],false,
+                Color(0.96,0.95,0.88,0.96))
     # Sort all decorations with building art by actual projected ground depth.
     # One draw surface and one depth queue prevent large roofs from showing
     # behind trees which should occlude them.
