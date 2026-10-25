@@ -121,3 +121,13 @@ Only the owner should authorize charges, changing billing settings or changing r
 - **Final R0 scope** after report close: QA workflow + PowerShell runner + MD report only. The exact HEAD after this documentation append is to be verified from GitHub branch API; Code gameplay remains byte-identical to CODE-CLEAN SHA `5fbdbc6309c3f1386f0d8b619831e007c5a52824`.
 
 **Owner gating (single short action):** Check the system banner/2 annotations at https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/40163463959 and confirm GitHub billing Actions usage/policy. An exact GitHub message such as budget/quota/disabled Actions, once supplied, can justify the next configuration/account fix. We cannot see those restricted messages or account spend with available connector permissions. **Do not change visibility to public to bypass included usage minutes without a separate deliberate privacy/billing decision.**
+
+## 9. Owner-confirmed blocker / transfer to ChatGPT Work — 2026-10-25 06:18 UTC
+
+**Owner confirmed:** “Do github hết lượt git action đấy” — GitHub Actions usage/minutes for this account are exhausted. This owner-supplied operational fact **supersedes the earlier unresolved quota hypothesis as the current execution blocker**. It is not an independently fetched billing screenshot or API value; no minutes/renewal date/payment status were provided. No billing, visibility or policy setting was changed by this checkpoint.
+
+**Decision:** stop GitHub Actions retries; hand off CODE-R0 focused audit and 21 real official Godot 4.7.2 tests to **ChatGPT Work** (the owner's chosen execution workflow), using available Work-owned computer/terminal if accessible, with an evidence-only fallback. Do **not** claim Work already executed the tests; Work must confirm its environment and permissions.
+
+**Single self-contained starting file:** `WORK_START_HERE_CODE_R0_20261025.md` on branch `qa/code-r0-finite-world-20261025`. It contains the repository, three research/design docs, baseline, all constraints, native Git grep commands, Godot 4.7.2 locked binary SHA256, 21-test evidence requirement and the output destination `docs/qa/CODE_R0_WORK_EXECUTION_RESULT_2026-10-25.md`.
+
+The R0 QA branch remains code-identical to CODE-CLEAN baseline for gameplay, Save and tests. The Work handoff is **documentation-only**, without invoking hosted Actions. **QA still NOT PASS: 0/21 tests executed** at handoff.
