@@ -6,7 +6,11 @@ extends RefCounted
 # The scene renders actor positions/events; camera/visibility is NOT simulation input.
 # This is a V2-only encounter; legacy P3.7 CombatSystem routing is untouched.
 const STEP_SECONDS := 0.25
-const MAX_SECONDS := 90.0
+# Finite legacy encounter compatibility only. World/continuous fights are
+# persistent and MUST NOT terminate at this historical elapsed-time limit.
+const LEGACY_FINITE_MAX_SECONDS := 90.0
+# Compatibility alias used by older callers/tests; do not use for World mode.
+const MAX_SECONDS := LEGACY_FINITE_MAX_SECONDS
 const MAX_EVENTS := 2400
 const ARENA := Rect2(Vector2.ZERO,Vector2(36.0,20.0))
 const MAX_DISCIPLES := 30
@@ -210,7 +214,7 @@ func step(viewed_map: bool = false) -> Dictionary:
     elif _count_alive("disciple") == 0 and not continuous_mode:
         outcome = "defeat"
         active = false
-    elif now >= MAX_SECONDS and not continuous_mode:
+    elif not continuous_mode and now >= LEGACY_FINITE_MAX_SECONDS:
         outcome = "timeout_retreat"
         active = false
     if not active:
@@ -219,7 +223,7 @@ func step(viewed_map: bool = false) -> Dictionary:
 
 func run(max_steps: int = 400, viewed_map: bool = false) -> Dictionary:
     var requested := maxi(max_steps, 0)
-    var limit := MAX_CONTINUOUS_BATCH_STEPS if continuous_mode else int(ceil(MAX_SECONDS/STEP_SECONDS))+1
+    var limit := MAX_CONTINUOUS_BATCH_STEPS if continuous_mode else int(ceil(LEGACY_FINITE_MAX_SECONDS/STEP_SECONDS))+1
     for _step in range(mini(requested, limit)):
         if not active:
             break
