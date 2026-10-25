@@ -173,7 +173,14 @@ static func preview_body_guarantee(state: SimulationState, spawn_data: Dictionar
         return {"linh_tuy":1}
     return {}
 
+# LEGACY FINITE-ENCOUNTER PAYOUT ONLY. Continuous hunting settles genuine
+# monster-life receipts in its world owner (B3HuntWorld for the current pilot).
+# Reject mode/namespace crossover BEFORE calculating or crediting any reward.
 static func claim_reward(state: SimulationState, spawn_data: Dictionary, battle: MapBattleV2) -> Dictionary:
+    if battle != null and (battle.continuous_mode or
+        battle.encounter_id.begins_with("b3:vs1:") or
+        str(spawn_data.get("encounter_id","")).begins_with("b3:vs1:")):
+        return {"ok":false,"reason":"continuous_world_requires_per_kill_receipts"}
     if not state.sect.p3_7_resources_enabled or battle == null or battle.active:
         return {"ok":false,"reason":"not_final_or_warehouse_disabled"}
     if battle.outcome != "win" or not bool(spawn_data.get("ok",false)):
