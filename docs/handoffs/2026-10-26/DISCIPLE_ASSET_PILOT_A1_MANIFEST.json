@@ -1,0 +1,1048 @@
+{
+  "schema_version": 1,
+  "task": "TONG_MON_BA_DAO_DISCIPLE_ASSET_PILOT_A1",
+  "created_date": "2026-10-26",
+  "repository": "vuanhtuan161094-byte/TongMonBaDao",
+  "base_branch": "main",
+  "base_head_sha": "29b5fba448b0178cb520a4ada44b375b4b934e31",
+  "pilot_branch": "art/disciple-asset-pilot-a1-20261025",
+  "reviewed_prs": {
+    "26": {
+      "status": "OPEN_DRAFT_UNMERGED",
+      "head_sha": "53ff0b223f4e77ccfbe5c77d2203496ac0cc37a9"
+    },
+    "27": {
+      "status": "OPEN_DRAFT_UNMERGED",
+      "head_sha": "deeae081bcfbe1413d4cf60a29db7e58150888b5"
+    },
+    "28": {
+      "status": "OPEN_DRAFT_UNMERGED",
+      "head_sha": "e9190f490ebea82d2badf7f3fc44b34dd24bd425"
+    }
+  },
+  "related_newer_prs": {
+    "38": {
+      "status": "OPEN_DRAFT_UNMERGED",
+      "head_sha": "7fd6848fa60791a43013b78fb2ae21fa6d388153",
+      "scope": "endgame P3.2 fixture on PR33 stack; not a disciple asset PR"
+    },
+    "39": {
+      "status": "OPEN_DRAFT_UNMERGED",
+      "head_sha": "b5e9de731a990238061c47d9f1fd0faecff6fd6e",
+      "scope": "visual LOD/PvE foundation; Source A art replacement still pending"
+    }
+  },
+  "stand_walk_contract": {
+    "fps": 30,
+    "canvas": [
+      768,
+      768
+    ],
+    "foot_anchor": [
+      384,
+      540
+    ],
+    "clips": [
+      "stand",
+      "walk"
+    ],
+    "clip_frames": {
+      "stand": 48,
+      "walk": 24
+    }
+  },
+  "assets": [
+    {
+      "tag": "A",
+      "asset_id": "1113028_1",
+      "description": "Female profile; in PR #26 disciple visual pool",
+      "disciple_role_status": "POOL_SEX_FEMALE_PR26_UNMERGED",
+      "pilot_status": "PENDING_EXACT_PACK_QA",
+      "source_catalog": {
+        "source_id": "1113028_1",
+        "source_dir_rel": "body_female/1113028_1_skeletondata",
+        "source_category_candidate": "unknown",
+        "classification_confidence": "unknown",
+        "catalog_role": "UNKNOWN",
+        "catalog_gender": "UNKNOWN",
+        "source_status": "READY",
+        "spine_version": "3.8.75",
+        "skins": [
+          {
+            "attachment_count": 38,
+            "attachment_names": [
+              "1113028_1_0",
+              "1113028_1_1",
+              "1113028_1_10",
+              "1113028_1_11",
+              "1113028_1_12",
+              "1113028_1_13",
+              "1113028_1_14",
+              "1113028_1_15",
+              "1113028_1_16",
+              "1113028_1_17",
+              "1113028_1_18",
+              "1113028_1_19",
+              "1113028_1_2",
+              "1113028_1_20",
+              "1113028_1_21",
+              "1113028_1_22",
+              "1113028_1_23",
+              "1113028_1_24",
+              "1113028_1_25",
+              "1113028_1_26",
+              "1113028_1_27",
+              "1113028_1_28",
+              "1113028_1_29",
+              "1113028_1_3",
+              "1113028_1_30",
+              "1113028_1_31",
+              "1113028_1_32",
+              "1113028_1_34",
+              "1113028_1_35",
+              "1113028_1_36",
+              "1113028_1_37",
+              "1113028_1_4",
+              "1113028_1_5",
+              "1113028_1_6",
+              "1113028_1_7",
+              "1113028_1_8",
+              "1113028_1_9",
+              "root_boundingBox"
+            ],
+            "name": "default"
+          }
+        ],
+        "source_sha256_catalog": "8c089d8837cf87bc573c63f39e37577af1b0062a9903a1acc2ecbd8ccedb00d8"
+      },
+      "source_files": [
+        {
+          "name": "1113028_1.skel_TextAsset_2464183327200521619.bin",
+          "sha256": "8c089d8837cf87bc573c63f39e37577af1b0062a9903a1acc2ecbd8ccedb00d8",
+          "bytes": 262819
+        },
+        {
+          "name": "1113028_1.atlas_TextAsset_4732095381105324012.bin",
+          "sha256": "01c4fa52a3e782fc2c08ad9dbdfb08ad025eca03334fb5b555d42ec74d22cc75",
+          "bytes": 3745
+        },
+        {
+          "name": "1113028_1_Texture2D_735480216125144147.png",
+          "sha256": "5d5019d01279254be3e2f3430da8955a685b35ab5e93ad1798c753be189582d1",
+          "bytes": 105725
+        }
+      ],
+      "bake": {
+        "fingerprint": "b417f324193b8f3f91141ca49bdfab54b1ae9d6ff39fa6e7a3498946a20a04ab",
+        "fps": 30,
+        "canvas": [
+          768,
+          768
+        ],
+        "foot_anchor": [
+          384,
+          540
+        ],
+        "offset": [
+          -150,
+          -168
+        ],
+        "crop": [
+          234,
+          372,
+          290,
+          192
+        ],
+        "stored_frames": 72,
+        "atlas_pages": [
+          {
+            "file": "atlas_000.webp",
+            "size": [
+              2044,
+              1940
+            ]
+          },
+          {
+            "file": "atlas_001.webp",
+            "size": [
+              584,
+              194
+            ]
+          }
+        ],
+        "clips": {
+          "stand": {
+            "duration_seconds": 1.60000002384186,
+            "frames": 48,
+            "stored_frames": 48,
+            "loop": true
+          },
+          "walk": {
+            "duration_seconds": 0.800000011920929,
+            "frames": 24,
+            "stored_frames": 24,
+            "loop": true
+          }
+        }
+      },
+      "files": [
+        {
+          "path": "actor.tscn",
+          "expected_sha256": "5442a4442a31c9ae27027ef0bf16941e3a1afe0f85b94a17713be300578b2cf5",
+          "actual_sha256": "5442a4442a31c9ae27027ef0bf16941e3a1afe0f85b94a17713be300578b2cf5",
+          "bytes": 307
+        },
+        {
+          "path": "animations.tres",
+          "expected_sha256": "e2864cfe778fac39b093fa30c76c76bfec40f1b03a8ed1f3af5ea72aa6eb6473",
+          "actual_sha256": "e2864cfe778fac39b093fa30c76c76bfec40f1b03a8ed1f3af5ea72aa6eb6473",
+          "bytes": 13397
+        },
+        {
+          "path": "atlas_000.webp",
+          "expected_sha256": "ce2bea0da04a8e461016de756546640afd4eda855f64ed3cd44e15bdc06c4197",
+          "actual_sha256": "ce2bea0da04a8e461016de756546640afd4eda855f64ed3cd44e15bdc06c4197",
+          "bytes": 2759560
+        },
+        {
+          "path": "atlas_001.webp",
+          "expected_sha256": "8e1bffa36d2c5ff68ca54be3f56633006a94b42bf9b0abecd03ab50023024da6",
+          "actual_sha256": "8e1bffa36d2c5ff68ca54be3f56633006a94b42bf9b0abecd03ab50023024da6",
+          "bytes": 73968
+        }
+      ],
+      "historical_qa": {
+        "status": "PASS",
+        "godot_472": "SKIPPED_FAST_QA",
+        "qa_mode": "fast",
+        "sample_frames": 0,
+        "sample_rgba_exact": null,
+        "fingerprint": "6638ccda3b4b02cf44d79631af6c7e344d2b46a824b33598163fd27592e3b2c3",
+        "matches_staged_pack_fingerprint": false,
+        "evidence_files": [
+          {
+            "file": "qa/historical_frames/1113028_1/stand_first_godot472.png",
+            "sha256": "67dd16ec158b8d07e0398cc508e79ec8dca7bf92f47c1acbfdd594f80391d53d",
+            "bytes": 68040
+          },
+          {
+            "file": "qa/historical_frames/1113028_1/stand_frame0_godot472.png",
+            "sha256": "67dd16ec158b8d07e0398cc508e79ec8dca7bf92f47c1acbfdd594f80391d53d",
+            "bytes": 68040
+          },
+          {
+            "file": "qa/historical_frames/1113028_1/stand_last_godot472.png",
+            "sha256": "3746ba7dad337e0f4b31d360e6924a53a991b80ded31941521f40c0a8465346b",
+            "bytes": 68034
+          },
+          {
+            "file": "qa/historical_frames/1113028_1/stand_middle_godot472.png",
+            "sha256": "8d4e615d7a36ef21dd4b4cc5fc97229758f2e714e5b5075d773295e315ef6ff1",
+            "bytes": 67047
+          },
+          {
+            "file": "qa/historical_frames/1113028_1/walk_first_godot472.png",
+            "sha256": "a23fb96b0abb913f19ab85315c388c3448e7b31483300437160ddd629e1fb41e",
+            "bytes": 66170
+          },
+          {
+            "file": "qa/historical_frames/1113028_1/walk_frame0_godot472.png",
+            "sha256": "a23fb96b0abb913f19ab85315c388c3448e7b31483300437160ddd629e1fb41e",
+            "bytes": 66170
+          },
+          {
+            "file": "qa/historical_frames/1113028_1/walk_last_godot472.png",
+            "sha256": "7d7e049d22255d56f2cf2fa2c941fa62c806df3730bbf2b0f5e929d1e99a7dc4",
+            "bytes": 65600
+          },
+          {
+            "file": "qa/historical_frames/1113028_1/walk_middle_godot472.png",
+            "sha256": "2ed7e8f4743b26e990ec41cfde81c8634b17086fd23bf2c585e65693674e8311",
+            "bytes": 69269
+          }
+        ]
+      },
+      "direction_support": "single native baked view; no directional variants or mirror safety verified",
+      "modular_swaps": "not demonstrated; this lab has no hair/outfit/weapon swap UI"
+    },
+    {
+      "tag": "B",
+      "asset_id": "body_1110201",
+      "description": "Male profile; in PR #26 disciple visual pool",
+      "disciple_role_status": "POOL_SEX_MALE_PR26_UNMERGED",
+      "pilot_status": "HISTORIC_EXACT_PACK_PASS",
+      "source_catalog": {
+        "source_id": "body_1110201",
+        "source_dir_rel": "body/body_1110201_skeletondata",
+        "source_category_candidate": "character/disciple",
+        "classification_confidence": "low",
+        "catalog_role": "UNKNOWN",
+        "catalog_gender": "UNKNOWN",
+        "source_status": "READY",
+        "spine_version": "3.8.75",
+        "skins": [
+          {
+            "attachment_count": 1,
+            "attachment_names": [
+              "root_boundingBox"
+            ],
+            "name": "default"
+          },
+          {
+            "attachment_count": 14,
+            "attachment_names": [
+              "1110201_1jian",
+              "1110201_1nianzhu",
+              "1110201_1qunbai",
+              "1110201_1shenti",
+              "1110201_1weijin",
+              "1110201_1youshou",
+              "1110201_1youtui",
+              "1110201_1youxiu1",
+              "1110201_1youxiu2",
+              "1110201_1zuoshou",
+              "1110201_1zuotui",
+              "1110201_1zuoxiu",
+              "1110201_1zuoxiu2",
+              "1110201_1zuoxiu3"
+            ],
+            "name": "body_1110201_1"
+          },
+          {
+            "attachment_count": 14,
+            "attachment_names": [
+              "1110201_2jian",
+              "1110201_2nianzhu",
+              "1110201_2qunbai",
+              "1110201_2shenti",
+              "1110201_2weijin",
+              "1110201_2youtui",
+              "1110201_2youxiu1",
+              "1110201_2youxiu2",
+              "1110201_2zuoshou",
+              "1110201_2zuotui",
+              "1110201_2zuoxiu",
+              "1110201_2zuoxiu2",
+              "1110201_2zuoxiu3",
+              "1110201_3youshou"
+            ],
+            "name": "body_1110201_2"
+          },
+          {
+            "attachment_count": 14,
+            "attachment_names": [
+              "1110201_3jian",
+              "1110201_3nianzhu",
+              "1110201_3qunbai",
+              "1110201_3shenti",
+              "1110201_3weijin",
+              "1110201_3youshou",
+              "1110201_3youtui",
+              "1110201_3youxiu1",
+              "1110201_3youxiu2",
+              "1110201_3zuoshou",
+              "1110201_3zuotui",
+              "1110201_3zuoxiu",
+              "1110201_3zuoxiu2",
+              "1110201_3zuoxiu3"
+            ],
+            "name": "body_1110201_3"
+          },
+          {
+            "attachment_count": 1,
+            "attachment_names": [
+              "1110201_1wuguan"
+            ],
+            "name": "face_1110201_1"
+          },
+          {
+            "attachment_count": 1,
+            "attachment_names": [
+              "1110201_1tou"
+            ],
+            "name": "head_1110201_1"
+          },
+          {
+            "attachment_count": 1,
+            "attachment_names": [
+              "1110201_2tou"
+            ],
+            "name": "head_1110201_2"
+          },
+          {
+            "attachment_count": 1,
+            "attachment_names": [
+              "1110201_3tou"
+            ],
+            "name": "head_1110201_3"
+          },
+          {
+            "attachment_count": 1,
+            "attachment_names": [
+              "300601"
+            ],
+            "name": "w_zhang_1110201_1"
+          }
+        ],
+        "source_sha256_catalog": "89048d6b4c385cdb70f5382637b28469e13ebbd423d53cb39112d4f442eff5f2"
+      },
+      "source_files": [
+        {
+          "name": "body_1110201.skel_TextAsset_-6433388427377235896.bin",
+          "sha256": "89048d6b4c385cdb70f5382637b28469e13ebbd423d53cb39112d4f442eff5f2",
+          "bytes": 187109
+        },
+        {
+          "name": "body_1110201.atlas_TextAsset_3407224732438477998.bin",
+          "sha256": "5536436440f1104dcd7c4ba1531323580b9bb2c5ed2652fb87f4101deef8e56c",
+          "bytes": 4755
+        },
+        {
+          "name": "body_1110201_Texture2D_181697431273634149.png",
+          "sha256": "13438d351fa83f0454b208b615954d32c069443e5e6c5ba6125708c28fbb7670",
+          "bytes": 83166
+        }
+      ],
+      "bake": {
+        "fingerprint": "9ab4093ce696ece8864fb5e7d5c04749fdf0120f2742e8f4bd2d6f4e97a2ab61",
+        "fps": 30,
+        "canvas": [
+          768,
+          768
+        ],
+        "foot_anchor": [
+          384,
+          540
+        ],
+        "offset": [
+          -51,
+          -134
+        ],
+        "crop": [
+          333,
+          406,
+          110,
+          135
+        ],
+        "stored_frames": 72,
+        "atlas_pages": [
+          {
+            "file": "atlas_000.webp",
+            "size": [
+              2016,
+              548
+            ]
+          }
+        ],
+        "clips": {
+          "stand": {
+            "duration_seconds": 1.60000002384186,
+            "frames": 48,
+            "stored_frames": 48,
+            "loop": true
+          },
+          "walk": {
+            "duration_seconds": 0.800000011920929,
+            "frames": 24,
+            "stored_frames": 24,
+            "loop": true
+          }
+        }
+      },
+      "files": [
+        {
+          "path": "actor.tscn",
+          "expected_sha256": "72debc170ae0831b0631edd09d566913daf94d4daf202029b766a70d8a3207ae",
+          "actual_sha256": "72debc170ae0831b0631edd09d566913daf94d4daf202029b766a70d8a3207ae",
+          "bytes": 312
+        },
+        {
+          "path": "animations.tres",
+          "expected_sha256": "a78b83c5699c10dac5174bccfd5dcd08997baa33b2ff3ff466656be9e4ae92df",
+          "actual_sha256": "a78b83c5699c10dac5174bccfd5dcd08997baa33b2ff3ff466656be9e4ae92df",
+          "bytes": 13281
+        },
+        {
+          "path": "atlas_000.webp",
+          "expected_sha256": "b0be4d26c4b21d8bae3fa3a74dd48c44949e449bb47623fbc2ab0ab601680e7e",
+          "actual_sha256": "b0be4d26c4b21d8bae3fa3a74dd48c44949e449bb47623fbc2ab0ab601680e7e",
+          "bytes": 867200
+        }
+      ],
+      "historical_qa": {
+        "status": "PASS",
+        "godot_472": "IMPORT_PLAYBACK_PASS",
+        "qa_mode": null,
+        "sample_frames": 6,
+        "sample_rgba_exact": true,
+        "fingerprint": "9ab4093ce696ece8864fb5e7d5c04749fdf0120f2742e8f4bd2d6f4e97a2ab61",
+        "matches_staged_pack_fingerprint": true,
+        "evidence_files": [
+          {
+            "file": "qa/historical_frames/body_1110201/stand_first_godot472.png",
+            "sha256": "d24c2a23b2bfef71187d7c31c81a5ec64ff1c62eb9e57bd6cb465d8f1d153670",
+            "bytes": 24930
+          },
+          {
+            "file": "qa/historical_frames/body_1110201/stand_last_godot472.png",
+            "sha256": "048be1cca6a69c30283eb0e0db2a7bdc162a43f0c4497b5f1db5779100e59a58",
+            "bytes": 25006
+          },
+          {
+            "file": "qa/historical_frames/body_1110201/stand_middle_godot472.png",
+            "sha256": "d9b415affecfff7058a87d2d2a5e88a42d24c551626a390ba13854a3662e3fd3",
+            "bytes": 25101
+          },
+          {
+            "file": "qa/historical_frames/body_1110201/walk_first_godot472.png",
+            "sha256": "3cbc033f1097827de3a084376f8250f8940f7d835add1dfd0e0e68e45ee90f95",
+            "bytes": 20584
+          },
+          {
+            "file": "qa/historical_frames/body_1110201/walk_last_godot472.png",
+            "sha256": "92358c8c415ad6eb571d854a6f99d72f6114d8f4ce42281df0f94e05872f0a36",
+            "bytes": 20525
+          },
+          {
+            "file": "qa/historical_frames/body_1110201/walk_middle_godot472.png",
+            "sha256": "c82010e497faca684fec0c1cf77a6c5a58ec41b3f86c2d6830d45ecc92caf286",
+            "bytes": 26282
+          }
+        ]
+      },
+      "direction_support": "single native baked view; no directional variants or mirror safety verified",
+      "modular_swaps": "not demonstrated; this lab has no hair/outfit/weapon swap UI"
+    },
+    {
+      "tag": "C",
+      "asset_id": "body_1120402",
+      "description": "PR #26 calls male; Source A source path says body_female; verify",
+      "disciple_role_status": "GENDER_EVIDENCE_CONFLICT",
+      "pilot_status": "HISTORIC_EXACT_PACK_PASS_GENDER_REVIEW_PENDING",
+      "source_catalog": {
+        "source_id": "body_1120402",
+        "source_dir_rel": "body_female/body_1120402_skeletondata",
+        "source_category_candidate": "unknown",
+        "classification_confidence": "unknown",
+        "catalog_role": "UNKNOWN",
+        "catalog_gender": "UNKNOWN",
+        "source_status": "READY",
+        "spine_version": "3.8.75",
+        "skins": [
+          {
+            "attachment_count": 1,
+            "attachment_names": [
+              "root_boundingBox"
+            ],
+            "name": "default"
+          },
+          {
+            "attachment_count": 16,
+            "attachment_names": [
+              "1120402_1houbai",
+              "1120402_1shenti",
+              "1120402_1youshou",
+              "1120402_1youtui",
+              "1120402_1youxiu1",
+              "1120402_1youxiu2",
+              "1120402_1youxiu3",
+              "1120402_1zhongbai",
+              "1120402_1zhongbai1",
+              "1120402_1zuoshen",
+              "1120402_1zuoshou",
+              "1120402_1zuotui",
+              "1120402_1zuoxiu",
+              "1120402_1zuoxiu1",
+              "1120402_1zuoxiu2",
+              "1120402_1zuoxiu3"
+            ],
+            "name": "body_1120402_1"
+          },
+          {
+            "attachment_count": 16,
+            "attachment_names": [
+              "1120402_2houbai",
+              "1120402_2shenti",
+              "1120402_2youshou",
+              "1120402_2youtui",
+              "1120402_2youxiu1",
+              "1120402_2youxiu2",
+              "1120402_2youxiu3",
+              "1120402_2zhongbai",
+              "1120402_2zhongbai1",
+              "1120402_2zuoshen",
+              "1120402_2zuoshou",
+              "1120402_2zuotui",
+              "1120402_2zuoxiu",
+              "1120402_2zuoxiu1",
+              "1120402_2zuoxiu2",
+              "1120402_2zuoxiu3"
+            ],
+            "name": "body_1120402_2"
+          },
+          {
+            "attachment_count": 16,
+            "attachment_names": [
+              "1120402_3houbai",
+              "1120402_3shenti",
+              "1120402_3youshou",
+              "1120402_3youtui",
+              "1120402_3youxiu1",
+              "1120402_3youxiu2",
+              "1120402_3youxiu3",
+              "1120402_3zhongbai",
+              "1120402_3zhongbai1",
+              "1120402_3zuoshen",
+              "1120402_3zuoshou",
+              "1120402_3zuotui",
+              "1120402_3zuoxiu",
+              "1120402_3zuoxiu1",
+              "1120402_3zuoxiu2",
+              "1120402_3zuoxiu3"
+            ],
+            "name": "body_1120402_3"
+          },
+          {
+            "attachment_count": 1,
+            "attachment_names": [
+              "1120402_1wuguan"
+            ],
+            "name": "face_1120402_1"
+          },
+          {
+            "attachment_count": 7,
+            "attachment_names": [
+              "1120402_1erhuan1",
+              "1120402_1erhuan2",
+              "1120402_1houfa",
+              "1120402_1hue",
+              "1120402_1liuhai",
+              "1120402_1tou",
+              "1120402_1toushi1"
+            ],
+            "name": "head_1120402_1"
+          },
+          {
+            "attachment_count": 7,
+            "attachment_names": [
+              "1120402_2erhuan1",
+              "1120402_2erhuan2",
+              "1120402_2houfa",
+              "1120402_2hue",
+              "1120402_2liuhai",
+              "1120402_2tou",
+              "1120402_2toushi1"
+            ],
+            "name": "head_1120402_2"
+          },
+          {
+            "attachment_count": 7,
+            "attachment_names": [
+              "1120402_3erhuan1",
+              "1120402_3erhuan2",
+              "1120402_3houfa",
+              "1120402_3hue",
+              "1120402_3liuhai",
+              "1120402_3tou",
+              "1120402_3toushi1"
+            ],
+            "name": "head_1120402_3"
+          }
+        ],
+        "source_sha256_catalog": "e9d6075c4673690a55d9029bf60ba210ea9610e369a3de13d890c26f90072a3d"
+      },
+      "source_files": [
+        {
+          "name": "body_1120402.skel_TextAsset_8454442484532860036.bin",
+          "sha256": "e9d6075c4673690a55d9029bf60ba210ea9610e369a3de13d890c26f90072a3d",
+          "bytes": 213545
+        },
+        {
+          "name": "body_1120402.atlas_TextAsset_4916636876815428352.bin",
+          "sha256": "73c83bce3828e3afd6dba522ce771368a06682d8d9256df2c7e8501edee0b2e4",
+          "bytes": 7227
+        },
+        {
+          "name": "body_1120402_Texture2D_907649722946377334.png",
+          "sha256": "1ed18ce80a4096c0cc1cd170db4dbd7c74dd0ca20296fcada87e744ffc5aefd4",
+          "bytes": 133372
+        }
+      ],
+      "bake": {
+        "fingerprint": "a1d7354305056bfa6be625d4b9a64b00feff3aaf4cd2f2385ae13dc8474b0237",
+        "fps": 30,
+        "canvas": [
+          768,
+          768
+        ],
+        "foot_anchor": [
+          384,
+          540
+        ],
+        "offset": [
+          -84,
+          -153
+        ],
+        "crop": [
+          300,
+          387,
+          188,
+          193
+        ],
+        "stored_frames": 72,
+        "atlas_pages": [
+          {
+            "file": "atlas_000.webp",
+            "size": [
+              1900,
+              1560
+            ]
+          }
+        ],
+        "clips": {
+          "stand": {
+            "duration_seconds": 1.60000002384186,
+            "frames": 48,
+            "stored_frames": 48,
+            "loop": true
+          },
+          "walk": {
+            "duration_seconds": 0.800000011920929,
+            "frames": 24,
+            "stored_frames": 24,
+            "loop": true
+          }
+        }
+      },
+      "files": [
+        {
+          "path": "actor.tscn",
+          "expected_sha256": "a89795fb8df30f6aa6343ea8b064b9ead8a55cad215e707ae9430eee102117ae",
+          "actual_sha256": "a89795fb8df30f6aa6343ea8b064b9ead8a55cad215e707ae9430eee102117ae",
+          "bytes": 312
+        },
+        {
+          "path": "animations.tres",
+          "expected_sha256": "2cdeef3b53bbcbf546b3a41450f8390a5f86119d73fff760d2081700a67b25fd",
+          "actual_sha256": "2cdeef3b53bbcbf546b3a41450f8390a5f86119d73fff760d2081700a67b25fd",
+          "bytes": 13293
+        },
+        {
+          "path": "atlas_000.webp",
+          "expected_sha256": "bb6731403a09750109d7604ff4ab69ad984cdda5f4b638da3d4cf09e9c7c0248",
+          "actual_sha256": "bb6731403a09750109d7604ff4ab69ad984cdda5f4b638da3d4cf09e9c7c0248",
+          "bytes": 1585526
+        }
+      ],
+      "historical_qa": {
+        "status": "PASS",
+        "godot_472": "IMPORT_PLAYBACK_PASS",
+        "qa_mode": null,
+        "sample_frames": 6,
+        "sample_rgba_exact": true,
+        "fingerprint": "a1d7354305056bfa6be625d4b9a64b00feff3aaf4cd2f2385ae13dc8474b0237",
+        "matches_staged_pack_fingerprint": true,
+        "evidence_files": [
+          {
+            "file": "qa/historical_frames/body_1120402/stand_first_godot472.png",
+            "sha256": "f7392f4926f8a4aa16175833adc2f24c5aa3e26a089c0c2b797819901feb873c",
+            "bytes": 39594
+          },
+          {
+            "file": "qa/historical_frames/body_1120402/stand_last_godot472.png",
+            "sha256": "c07d427ed35aeb7642c86ae1b115a9604344522c13f443b63878c8ece27523aa",
+            "bytes": 39775
+          },
+          {
+            "file": "qa/historical_frames/body_1120402/stand_middle_godot472.png",
+            "sha256": "64d4a305185304c2cf6f00d4199c318ff644eed8b2f1894942ff55471c46dd2c",
+            "bytes": 40888
+          },
+          {
+            "file": "qa/historical_frames/body_1120402/walk_first_godot472.png",
+            "sha256": "e94b9bf4e088df7f7d15fa54bc1e0d790a6929bad4bb2f8e6789820d53704677",
+            "bytes": 39883
+          },
+          {
+            "file": "qa/historical_frames/body_1120402/walk_last_godot472.png",
+            "sha256": "c68b14245c272aced115c203a04d11f259d358d844f7b5e46141a51e43aaf8d1",
+            "bytes": 39612
+          },
+          {
+            "file": "qa/historical_frames/body_1120402/walk_middle_godot472.png",
+            "sha256": "f99c22efdb77c3a04e02f5df990d5482822942672b72915d8ba4d44801eec50a",
+            "bytes": 30307
+          }
+        ]
+      },
+      "direction_support": "single native baked view; no directional variants or mirror safety verified",
+      "modular_swaps": "not demonstrated; this lab has no hair/outfit/weapon swap UI"
+    },
+    {
+      "tag": "D",
+      "asset_id": "113104_5",
+      "description": "Candidate; category confidence low, role/gender unknown",
+      "disciple_role_status": "CANDIDATE_ROLE_PENDING",
+      "pilot_status": "HISTORIC_EXACT_PACK_PASS_CURRENT_REBAKE_BLOCKED",
+      "source_catalog": {
+        "source_id": "113104_5",
+        "source_dir_rel": "body_shizhuang/113104_5_skeletondata",
+        "source_category_candidate": "character/disciple",
+        "classification_confidence": "low",
+        "catalog_role": "UNKNOWN",
+        "catalog_gender": "UNKNOWN",
+        "source_status": "READY",
+        "spine_version": "3.8.75",
+        "skins": [
+          {
+            "attachment_count": 1,
+            "attachment_names": [
+              "root_boundingBox"
+            ],
+            "name": "default"
+          },
+          {
+            "attachment_count": 23,
+            "attachment_names": [
+              "113104_5_71",
+              "113104_5_72",
+              "113104_5_73",
+              "113104_5_80",
+              "113104_5_82",
+              "113104_5_83",
+              "113104_5_84",
+              "113104_5_85",
+              "113104_5_86",
+              "113104_5_87",
+              "113104_5_88",
+              "113104_5_89"
+            ],
+            "name": "bg_113104_5"
+          },
+          {
+            "attachment_count": 31,
+            "attachment_names": [
+              "113104_5_17",
+              "113104_5_2",
+              "113104_5_31",
+              "113104_5_40",
+              "113104_5_49",
+              "113104_5_50",
+              "113104_5_51",
+              "113104_5_52",
+              "113104_5_53",
+              "113104_5_55",
+              "113104_5_56",
+              "113104_5_57",
+              "113104_5_58",
+              "113104_5_59",
+              "113104_5_6",
+              "113104_5_60",
+              "113104_5_61",
+              "113104_5_64",
+              "113104_5_65",
+              "113104_5_66",
+              "113104_5_67",
+              "113104_5_68",
+              "113104_5_69",
+              "113104_5_8",
+              "bei3",
+              "biaoqing6",
+              "hl_0",
+              "hl_1",
+              "hl_2",
+              "j_0",
+              "j_1"
+            ],
+            "name": "body_113104_5"
+          },
+          {
+            "attachment_count": 1,
+            "attachment_names": [
+              "113104_5_47"
+            ],
+            "name": "face_113104_5"
+          },
+          {
+            "attachment_count": 12,
+            "attachment_names": [
+              "113104_5_41",
+              "113104_5_42",
+              "113104_5_43",
+              "113104_5_44",
+              "113104_5_45",
+              "113104_5_46",
+              "113104_5_48",
+              "113104_5_54",
+              "113104_5_7",
+              "113104_5_70",
+              "tou_b",
+              "tou_c"
+            ],
+            "name": "head_113104_5"
+          }
+        ],
+        "source_sha256_catalog": "3f9144a2d265087989f18f0e131bca8c3086f1845dfa7dab3e6b4f26699b1d03"
+      },
+      "source_files": [
+        {
+          "name": "113104_5.skel_TextAsset_1332375006303905880.bin",
+          "sha256": "3f9144a2d265087989f18f0e131bca8c3086f1845dfa7dab3e6b4f26699b1d03",
+          "bytes": 838236
+        },
+        {
+          "name": "113104_5.atlas_TextAsset_-932913060589547706.bin",
+          "sha256": "0d2c9ae4f7dd9c4940fcaf407b1da68363b0426914bc2cf18c21b0445829b817",
+          "bytes": 5692
+        },
+        {
+          "name": "113104_5_Texture2D_7200705193615329976.png",
+          "sha256": "a56d23a83a8319964ddc050b48e213eb3cc6c13622441285b79bf3699b0e66d9",
+          "bytes": 794309
+        }
+      ],
+      "bake": {
+        "fingerprint": "0912cf933611486b7fc64ccdde1b37229efa9a0934113009aa7a42db254ff996",
+        "fps": 30,
+        "canvas": [
+          768,
+          768
+        ],
+        "foot_anchor": [
+          384,
+          540
+        ],
+        "offset": [
+          -49,
+          -143
+        ],
+        "crop": [
+          335,
+          397,
+          154,
+          157
+        ],
+        "stored_frames": 72,
+        "atlas_pages": [
+          {
+            "file": "atlas_000.webp",
+            "size": [
+              2028,
+              954
+            ]
+          }
+        ],
+        "clips": {
+          "stand": {
+            "duration_seconds": 1.60000002384186,
+            "frames": 48,
+            "stored_frames": 48,
+            "loop": true
+          },
+          "walk": {
+            "duration_seconds": 0.800000011920929,
+            "frames": 24,
+            "stored_frames": 24,
+            "loop": true
+          }
+        }
+      },
+      "files": [
+        {
+          "path": "actor.tscn",
+          "expected_sha256": "4f07fac59b22cad8c68851134b04cdb7a4b6602a60b96642dc4a9c78c54c2b23",
+          "actual_sha256": "4f07fac59b22cad8c68851134b04cdb7a4b6602a60b96642dc4a9c78c54c2b23",
+          "bytes": 304
+        },
+        {
+          "path": "animations.tres",
+          "expected_sha256": "60557c753fdb4ef2a39e7caad3f17b89a37b709687a53b46cc3333f9a9af66f5",
+          "actual_sha256": "60557c753fdb4ef2a39e7caad3f17b89a37b709687a53b46cc3333f9a9af66f5",
+          "bytes": 13277
+        },
+        {
+          "path": "atlas_000.webp",
+          "expected_sha256": "5caccb656841b4699e30d31e3736e867282f8a9e6520ed25af6064d7a30aa0a7",
+          "actual_sha256": "5caccb656841b4699e30d31e3736e867282f8a9e6520ed25af6064d7a30aa0a7",
+          "bytes": 1744488
+        }
+      ],
+      "historical_qa": {
+        "status": "PASS",
+        "godot_472": "IMPORT_PLAYBACK_PASS",
+        "qa_mode": null,
+        "sample_frames": 6,
+        "sample_rgba_exact": true,
+        "fingerprint": "0912cf933611486b7fc64ccdde1b37229efa9a0934113009aa7a42db254ff996",
+        "matches_staged_pack_fingerprint": true,
+        "evidence_files": [
+          {
+            "file": "qa/historical_frames/113104_5/stand_first_godot472.png",
+            "sha256": "2fbcd90dc37747fb401edc5420df226f126ededa8aaa7715f970de1c6dab9e3d",
+            "bytes": 39907
+          },
+          {
+            "file": "qa/historical_frames/113104_5/stand_last_godot472.png",
+            "sha256": "c90d43d97211e68cc5b2daa53bfb70b98f061a031a507d451541164e482e9dd6",
+            "bytes": 40020
+          },
+          {
+            "file": "qa/historical_frames/113104_5/stand_middle_godot472.png",
+            "sha256": "b2ba04f96bdbee9203345df54213f0383b576247ef6acbcf14d0e899cb0bed54",
+            "bytes": 39645
+          },
+          {
+            "file": "qa/historical_frames/113104_5/walk_first_godot472.png",
+            "sha256": "d2a2556eadcb26e974febfcbce366eb031a4f5db139b4561bc1ecefd7e07e71b",
+            "bytes": 38271
+          },
+          {
+            "file": "qa/historical_frames/113104_5/walk_last_godot472.png",
+            "sha256": "c5cd511c680eae7911306eb32b4c2e528114b44ca5029970b6ad7cc505530e89",
+            "bytes": 38712
+          },
+          {
+            "file": "qa/historical_frames/113104_5/walk_middle_godot472.png",
+            "sha256": "69adbf6511ed3cce46c873e3fc25381b823f335132cbfd243159b42277875d79",
+            "bytes": 40392
+          }
+        ]
+      },
+      "direction_support": "single native baked view; no directional variants or mirror safety verified",
+      "modular_swaps": "not demonstrated; this lab has no hair/outfit/weapon swap UI"
+    }
+  ],
+  "runtime_lab": {
+    "local_project": "godot/project.godot",
+    "scene": "godot/tools/disciple_asset_pilot_a1/lab.tscn",
+    "status": "CREATED_QA_PENDING",
+    "screen_size": [
+      1280,
+      720
+    ],
+    "controls": {
+      "1-4": "select card",
+      "left_right": "select card",
+      "space": "toggle stand/walk",
+      "z": "toggle zoom 0.75/1.0"
+    },
+    "direction": "native view only; no flip/direction claims"
+  },
+  "current_conversion_attempt": {
+    "asset_id": "113104_5",
+    "result": "BLOCKED",
+    "stage": "preflight before conversion start",
+    "reason": "RESOURCE_LIMIT: another_Godot_process_running:Godot_v4.7.2-stable_win64,Godot_v4.7.2-stable_win64_console",
+    "output_file": "qa/current_conversion_attempt_113104_5.json"
+  },
+  "qa_summary": {
+    "static_pack_audit": "PASS_STATIC_PACK_AUDIT",
+    "fresh_godot_import_parse_playback": "PENDING",
+    "fresh_1280x720_lab_capture": "PENDING",
+    "performance_profile": "PENDING",
+    "owner_visual_acceptance": "PENDING"
+  },
+  "source_art_created_in_this_turn": false,
+  "binary_policy": "Converted binary packs and PNG evidence remain local in the output package and on E:. No binary/source art is committed to the repository.",
+  "binary_location_policy": "Binary packs and PNG evidence are local-only and are not included in the repository branch."
+}
