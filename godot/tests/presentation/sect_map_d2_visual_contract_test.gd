@@ -37,13 +37,15 @@ func _run() -> void:
         _fail("Option B nine-route topology was lost")
         return
 
-    var source := SectMap25SourceArt.new()
-    var status := source.status()
+    # status() counts the actual texture_for() calls, not the full 32-entry
+    # on-disk manifest. In PR32 the view loads 30 of the 32 verified PNGs.
+    # The existing dedicated MAP25 gate separately verifies all 32 hashes.
+    var status: Dictionary = iso.art_source_status
     if not bool(status.get("manifest_valid",false)):
         _fail("original Source A manifest invalid")
         return
-    if int(status.get("accepted_count",0)) != 32 or int(status.get("missing_count",-1)) != 0 or int(status.get("rejected_count",-1)) != 0:
-        _fail("32 verified Source A records changed: "+str(status))
+    if int(status.get("accepted_count",0)) < 30 or int(status.get("missing_count",-1)) != 0 or int(status.get("rejected_count",-1)) != 0:
+        _fail("view-visible verified Source A records changed: "+str(status))
         return
     for house in ["main_hall","warehouse","forge"]:
         if not iso.render_art.has(str(iso.HOUSE_TEXTURES[house])):
@@ -109,7 +111,7 @@ func _run() -> void:
     if state.to_dict() != canonical_before:
         _fail("rendering/candidate texture load mutated canonical SimulationState")
         return
-    print("MAP-D2 VISUAL CONTRACT PASS original_source_a=32 candidates=3 routes=9 managed=%d palettes=%d" % [view_sites.size(),tones.size()])
+    print("MAP-D2 VISUAL CONTRACT PASS verified_source_a_view=%d candidates=3 routes=9 managed=%d palettes=%d" % [int(status.get("accepted_count",0)),view_sites.size(),tones.size()])
     quit(0)
 
 
