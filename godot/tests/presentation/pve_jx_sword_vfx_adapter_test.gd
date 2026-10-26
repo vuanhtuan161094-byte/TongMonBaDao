@@ -135,5 +135,46 @@ func _run() -> void:
 		and int(miss_adapter.counters["expired_without_hit"]) == 1,
 		"a cast without a positive Combat V2 learned_skill hit must fade without an explosion"):
 		return
+	# A same-encounter save reload may replace the bounded VFX ring with
+	# disjoint historical rows. Zero matching events is NOT continuity;
+	# otherwise the adapter replays old #158 casts after restore.
+	var replay_adapter = VFX_ADAPTER_SCRIPT.new()
+	var replay_battle := MapBattleV2.new(5501)
+	replay_battle.encounter_id = "same_encounter_saved_reload"
+	replay_battle.actors = {
+		"disciple":{"id":"disciple","side":"disciple","position":Vector2(1.0,1.0)},
+		"monster":{"id":"monster","side":"monster","position":Vector2(4.0,1.0)}
+	}
+	replay_battle.events = [
+		{"type":"skill_cast","time":1.0,"actor_id":"disciple",
+			"target":"monster","skill_id":"ngu_kiem_thuat","release_at":1.8}
+	]
+	replay_adapter.observe_snapshot(replay_battle) # Old view baseline.
+	replay_battle.events = [
+		{"type":"skill_cast","time":30.0,"actor_id":"disciple",
+			"target":"monster","skill_id":"ngu_kiem_thuat","release_at":30.8}
+	]
+	var replaced := replay_adapter.observe_snapshot(replay_battle)
+	if not _check(replaced.is_empty()
+			and replay_adapter.active_count() == 0
+			and int(replay_adapter.counters["casts"]) == 0,
+			"disjoint saved event ring replayed historic JX #158 casts"):
+		return
+	replay_battle.events.append({
+		"type":"skill_cast","time":31.0,"actor_id":"disciple",
+		"target":"monster","skill_id":"ngu_kiem_thuat","release_at":31.8
+	})
+	var fresh_after_restore := replay_adapter.observe_snapshot(replay_battle)
+	if not _check(fresh_after_restore.size() == 1
+			and int(replay_adapter.counters["casts"]) == 1
+			and replay_adapter.active_count() == 1,
+			"disjoint-ring rebaseline dropped the next genuine live cast"):
+		return
+	if not _check(replay_adapter._suffix_prefix_overlap(
+			["old_a","old_b"],["new_c","new_d"]) == -1
+			and replay_adapter._suffix_prefix_overlap(
+			["old_a","old_b"],["old_b","new_c"]) == 1,
+			"JX VFX event-ring overlap classification regressed"):
+		return
 	print("PVE JX SWORD VFX ADAPTER PASS real_combat=ngu_kiem_thuat cast=true projectile=true positive_hit=true one_impact=true no_hit_explosion=false snapshot_unchanged=true save_load_no_replay=true forest_palette=verified")
 	quit(0)
