@@ -5,7 +5,7 @@ const CAMERA_TWEEN_SECONDS := 0.22
 const FOCUS_MARKER_SIZE := Vector2(82.0, 82.0)
 const B3_HUNT_REFRESH_SECONDS := 0.25
 const MAP_WORKSITE_MAX_CUES := 4
-const MAP_WORKSITE_REFRESH_SECONDS := 0.40
+const MAP_WORKSITE_REFRESH_SECONDS := 0.25
 const MAX_RETAINED_ACTOR_POOL := 72
 const PERFORMANCE_SAMPLE_SECONDS := 3.0
 
@@ -203,6 +203,7 @@ var selected_production_instance_id: StringName = &""
 var map_worksite_cues: Dictionary = {}
 var map_worksite_receipt_baseline: Dictionary = {}
 var map_worksite_refresh_elapsed := 0.0
+var map_worksite_cues_dirty := false
 var actor_visibility_refresh_elapsed := 0.0
 var map_worksite_last_scale := 0.0
 var map_worksite_anchors: Dictionary = {}
@@ -215,6 +216,19 @@ var performance_sample_delta_max := 0.0
 var performance_hunt_refresh_count := 0
 var performance_hunt_refresh_usec_total := 0
 var performance_hunt_refresh_usec_max := 0
+var performance_sync_actor_usec_total := 0
+var performance_sync_actor_usec_max := 0
+var performance_map_worksite_refresh_count := 0
+var performance_map_worksite_refresh_usec_total := 0
+var performance_map_worksite_refresh_usec_max := 0
+var performance_iso_refresh_usec_total := 0
+var performance_iso_refresh_usec_max := 0
+var performance_runtime_poll_count := 0
+var performance_runtime_poll_usec_total := 0
+var performance_runtime_poll_usec_max := 0
+var performance_save_count := 0
+var performance_save_usec_total := 0
+var performance_save_usec_max := 0
 
 func _ready() -> void:
     super._ready()
@@ -1407,6 +1421,7 @@ func _reconcile_live_actors() -> void:
         _install_modular_live_actors()
 
 func _sync_actor_positions() -> void:
+    var performance_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
     _reconcile_live_actors()
     var ids: Array = state.disciples.keys()
     ids.sort()
@@ -1473,6 +1488,10 @@ func _sync_actor_positions() -> void:
     _refresh_living_cues()
     _refresh_actor_status_label_visibility()
     _refresh_world_actor_visibility()
+    if performance_logging_enabled:
+        var elapsed_usec := Time.get_ticks_usec()-performance_started_usec
+        performance_sync_actor_usec_total += elapsed_usec
+        performance_sync_actor_usec_max = maxi(performance_sync_actor_usec_max,elapsed_usec)
 
 func _idle_staging_ordinals(ids: Array) -> Dictionary:
     var result: Dictionary = {}
@@ -3462,17 +3481,30 @@ func _process(_delta: float) -> void:
     if iso_world != null:
         if iso_world.set_legacy_transform(map_layer.scale.x,map_layer.position):
             iso_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
-            _refresh_map_worksite_cues()
+            # Panning/zooming changes this transform every rendered frame.
+            # Move the at-most-four cached cues cheaply, then rescan producer
+            # state once after the camera movement settles.
+            _refresh_map_worksite_cue_transforms()
+            map_worksite_cues_dirty = true
+            map_worksite_refresh_elapsed = 0.0
             _refresh_world_actor_visibility()
     _refresh_living_cue_positions()
     actor_visibility_refresh_elapsed += _delta
     if actor_visibility_refresh_elapsed >= 0.12:
         actor_visibility_refresh_elapsed = 0.0
         _refresh_world_actor_visibility()
-    map_worksite_refresh_elapsed += _delta
-    if map_worksite_refresh_elapsed >= MAP_WORKSITE_REFRESH_SECONDS:
-        map_worksite_refresh_elapsed = 0.0
-        _refresh_map_worksite_cues()
+    if map_worksite_cues_dirty:
+        var camera_moving := mouse_panning or not touch_points.is_empty()
+        if camera_tween != null and camera_tween.is_running():
+            camera_moving = true
+        if camera_moving:
+            map_worksite_refresh_elapsed = 0.0
+        else:
+            map_worksite_refresh_elapsed += _delta
+            if map_worksite_refresh_elapsed >= MAP_WORKSITE_REFRESH_SECONDS:
+                map_worksite_refresh_elapsed = 0.0
+                map_worksite_cues_dirty = false
+                _refresh_map_worksite_cues()
     b3_hunt_refresh_elapsed += _delta
     if b3_hunt_refresh_elapsed >= B3_HUNT_REFRESH_SECONDS:
         b3_hunt_refresh_elapsed = 0.0
@@ -3499,6 +3531,19 @@ func _sample_frame_performance(delta: float) -> void:
         "hunt_refresh_count":performance_hunt_refresh_count,
         "hunt_refresh_avg_ms":float(performance_hunt_refresh_usec_total)/maxi(1,performance_hunt_refresh_count)/1000.0,
         "hunt_refresh_max_ms":float(performance_hunt_refresh_usec_max)/1000.0,
+        "production_actor_sync_avg_ms":float(performance_sync_actor_usec_total)/maxi(1,performance_sample_frame_count)/1000.0,
+        "production_actor_sync_max_ms":float(performance_sync_actor_usec_max)/1000.0,
+        "production_worksite_refresh_count":performance_map_worksite_refresh_count,
+        "production_worksite_refresh_avg_ms":float(performance_map_worksite_refresh_usec_total)/maxi(1,performance_map_worksite_refresh_count)/1000.0,
+        "production_worksite_refresh_max_ms":float(performance_map_worksite_refresh_usec_max)/1000.0,
+        "production_iso_refresh_avg_ms":float(performance_iso_refresh_usec_total)/1000.0,
+        "production_iso_refresh_max_ms":float(performance_iso_refresh_usec_max)/1000.0,
+        "runtime_poll_count":performance_runtime_poll_count,
+        "runtime_poll_avg_ms":float(performance_runtime_poll_usec_total)/maxi(1,performance_runtime_poll_count)/1000.0,
+        "runtime_poll_max_ms":float(performance_runtime_poll_usec_max)/1000.0,
+        "save_count":performance_save_count,
+        "save_avg_ms":float(performance_save_usec_total)/maxi(1,performance_save_count)/1000.0,
+        "save_max_ms":float(performance_save_usec_max)/1000.0,
         "visible_production_disciple_actors":visible_actor_count,
         "total_materialized_production_actors":actor_nodes.size()
     }))
@@ -3509,15 +3554,61 @@ func _sample_frame_performance(delta: float) -> void:
     performance_hunt_refresh_count = 0
     performance_hunt_refresh_usec_total = 0
     performance_hunt_refresh_usec_max = 0
+    performance_sync_actor_usec_total = 0
+    performance_sync_actor_usec_max = 0
+    performance_map_worksite_refresh_count = 0
+    performance_map_worksite_refresh_usec_total = 0
+    performance_map_worksite_refresh_usec_max = 0
+    performance_iso_refresh_usec_total = 0
+    performance_iso_refresh_usec_max = 0
+    performance_runtime_poll_count = 0
+    performance_runtime_poll_usec_total = 0
+    performance_runtime_poll_usec_max = 0
+    performance_save_count = 0
+    performance_save_usec_total = 0
+    performance_save_usec_max = 0
+
+func _advance_simulation() -> void:
+    if not performance_logging_enabled:
+        super._advance_simulation()
+        return
+    var started_usec := Time.get_ticks_usec()
+    super._advance_simulation()
+    var elapsed_usec := Time.get_ticks_usec()-started_usec
+    performance_runtime_poll_count += 1
+    performance_runtime_poll_usec_total += elapsed_usec
+    performance_runtime_poll_usec_max = maxi(performance_runtime_poll_usec_max,elapsed_usec)
+
+func _autosave_runtime() -> void:
+    if not performance_logging_enabled:
+        super._autosave_runtime()
+        return
+    var started_usec := Time.get_ticks_usec()
+    super._autosave_runtime()
+    _record_pve_save_duration(Time.get_ticks_usec()-started_usec)
+
+func _record_pve_save_duration(elapsed_usec: int) -> void:
+    if not performance_logging_enabled:
+        return
+    performance_save_count += 1
+    performance_save_usec_total += elapsed_usec
+    performance_save_usec_max = maxi(performance_save_usec_max,elapsed_usec)
 
 func _refresh_all() -> void:
     super._refresh_all()
     if state == null:
         return
     if iso_world != null:
+        var iso_refresh_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
         iso_world.refresh_from_state(state)
+        if performance_logging_enabled:
+            var iso_refresh_elapsed_usec := Time.get_ticks_usec()-iso_refresh_started_usec
+            performance_iso_refresh_usec_total += iso_refresh_elapsed_usec
+            performance_iso_refresh_usec_max = maxi(performance_iso_refresh_usec_max,iso_refresh_elapsed_usec)
         iso_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
         _refresh_map_worksite_cues()
+        map_worksite_cues_dirty = false
+        map_worksite_refresh_elapsed = 0.0
     if _building_operation_is_open():
         _refresh_building_operation_content()
 
@@ -3683,6 +3774,7 @@ func _map_worksite_panel_exclusions() -> Array:
 func _refresh_map_worksite_cues() -> void:
     if state == null or map_layer == null or iso_world == null:
         return
+    var performance_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
     var deliveries := _map_worksite_deliveries()
     var candidates: Array[Dictionary] = []
     var ids: Array = state.buildings.keys()
@@ -3756,6 +3848,27 @@ func _refresh_map_worksite_cues() -> void:
         map_worksite_anchors.erase(key)
         map_worksite_screen_offsets.erase(key)
     map_worksite_last_scale = maxf(map_layer.scale.x,0.1)
+    if performance_logging_enabled:
+        var elapsed_usec := Time.get_ticks_usec()-performance_started_usec
+        performance_map_worksite_refresh_count += 1
+        performance_map_worksite_refresh_usec_total += elapsed_usec
+        performance_map_worksite_refresh_usec_max = maxi(performance_map_worksite_refresh_usec_max,elapsed_usec)
+
+func _refresh_map_worksite_cue_transforms() -> void:
+    if map_layer == null:
+        return
+    var actual_zoom := maxf(map_layer.scale.x,0.1)
+    var show_cues := not _building_operation_is_open() and not _disciple_summary_is_open() and not opened_disciple_profile
+    for raw_key in map_worksite_cues.keys():
+        var key := str(raw_key)
+        var cue := map_worksite_cues[raw_key] as SectProductionWorksiteCue
+        if cue == null or not is_instance_valid(cue) or not map_worksite_anchors.has(key):
+            continue
+        var anchor := Vector2(map_worksite_anchors[key])
+        var screen_offset := Vector2(map_worksite_screen_offsets.get(key,Vector2.ZERO))
+        cue.scale = Vector2.ONE/actual_zoom
+        cue.position = anchor+screen_offset/actual_zoom
+        cue.visible = show_cues
 
 func _build_living_cue_layer() -> void:
     living_cue_layer = LivingCueLayer.new()
@@ -4483,7 +4596,10 @@ func _open_world_nearest_free_formation_cell(battle: MapBattleV2,
 func _save_b3_main_runtime() -> void:
     if runtime_session == null:
         return
+    var performance_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
     var result := runtime_session.save()
+    if performance_logging_enabled:
+        _record_pve_save_duration(Time.get_ticks_usec()-performance_started_usec)
     if result.get("ok",false):
         _set_b3_hunt_feedback("Đã lưu qua SaveService màn chính.")
     else:
