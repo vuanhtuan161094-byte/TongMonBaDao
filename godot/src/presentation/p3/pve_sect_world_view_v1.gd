@@ -23,6 +23,11 @@ class InputOverlay:
 			draw_handler.call(self)
 
 var topology: Dictionary = {}
+# Presentation-only cache: the PvE Source A geometry is immutable for one map
+# revision. This must never cache or mutate authoritative Combat V2 state.
+var _prepared_world: SectIsometricWorldV1
+var _cached_navigation_sha := ""
+var topology_build_count := 0  # Diagnostic counter for focused QA.
 var battle: MapBattleV2
 var population: Dictionary = {}
 var camp_index := 0
@@ -94,23 +99,51 @@ func _notification(what: int) -> void:
 			_overlay.queue_redraw()
 
 func prepare_world() -> Dictionary:
-	var navigation := SectIsometricWorldV1.pve_navigation_grid()
-	var built := PveOpenWorldTopologyV1.build(navigation,Vector2(SectIsometricWorldV1.PVE_SPAWN_CELL)+Vector2(0.5,0.5))
+	# Called by the 0.25s main-game hunt HUD, not just when entering a map.
+	# Use the navigation prepared by SectIsometricWorldV1._ready() instead of
+	# rebuilding its 192x192 collision/20-camp graph on every HUD refresh.
+	if world == null or not is_instance_valid(world):
+		source_error = "source_a_world_not_ready"
+		return {"ok":false,"reason":source_error}
+	var navigation: Dictionary = world.pve_navigation
+	if navigation.is_empty():
+		navigation = SectIsometricWorldV1.pve_navigation_grid()
+	var current_sha := str(navigation.get("source_blob_sha",""))
+	if current_sha.is_empty():
+		source_error = "source_a_navigation_sha_missing"
+		return {"ok":false,"reason":source_error}
+	if _prepared_world == world and not topology.is_empty() \
+			and bool(topology.get("ok",false)) \
+			and str(topology.get("source_blob_sha","")) == current_sha \
+			and _cached_navigation_sha == current_sha:
+		# Fast path: preserve the exact topology Dictionary and minimap Texture.
+		# The caller still reads a fresh, authoritative battle snapshot.
+		return {"ok":true,"topology":topology,"source_map":str(topology.get("source_map",""))}
+	var built := PveOpenWorldTopologyV1.build(navigation,
+		Vector2(SectIsometricWorldV1.PVE_SPAWN_CELL)+Vector2(0.5,0.5))
 	if not bool(built.get("ok",false)):
 		source_error = str(built.get("reason","source_a_world_topology_failed"))
 		return {"ok":false,"reason":source_error}
+	# A different source hash invalidates the old minimap (including a changed
+	# collision map); first-time setup reuses the map's already-built texture.
+	if world.pve_mini_texture == null or (
+			not _cached_navigation_sha.is_empty() and _cached_navigation_sha != current_sha):
+		world.pve_mini_texture = SectIsometricWorldV1._pve_minimap_texture(
+			navigation,world.pve_path_cells)
 	topology = built
+	_prepared_world = world
+	_cached_navigation_sha = current_sha
+	topology_build_count += 1
 	source_error = ""
-	if world != null:
-		world.pve_topology = topology
-		world.pve_navigation = navigation
-		world.pve_mini_texture = SectIsometricWorldV1._pve_minimap_texture(navigation,world.pve_path_cells)
-		if not world.pve_camera_initialized:
-			var camps: Array = topology.get("camp_positions",[])
-			if not camps.is_empty():
-				world.set_pve_camera(camps[0],0.55)
-		_overlay.queue_redraw()
+	world.pve_topology = topology
+	world.pve_navigation = navigation
+	if not world.pve_camera_initialized:
+		var camps: Array = topology.get("camp_positions",[])
+		if not camps.is_empty():
+			world.set_pve_camera(camps[0],0.55)
+	_overlay.queue_redraw()
 	return {"ok":true,"topology":topology,"source_map":str(topology.get("source_map",""))}
+
 
 func get_open_world_options() -> Dictionary:
 	var result := prepare_world()
