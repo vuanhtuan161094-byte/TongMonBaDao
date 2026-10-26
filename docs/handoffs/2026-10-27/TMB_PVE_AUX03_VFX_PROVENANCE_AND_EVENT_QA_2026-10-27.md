@@ -52,7 +52,7 @@ The focused gate is `godot/tests/presentation/pve_jx_sword_vfx_adapter_test.gd`.
 - Repeated observation does not mutate the saved Combat V2 snapshot or duplicate hits/impacts.
 - `SaveService` persists the active run; `HuntingPveRunV2.resume_active` restores it; historical journal events do not start VFX again.
 
-**Execution result:** pending. Six Godot processes were active in the shared session at the latest check. The focused gate will be run only when an engine slot is available; this document does not claim a runtime PASS before that evidence exists.
+**Execution result:** pending. Nine Godot processes were active in the shared session at the latest check. I left those processes untouched and did not launch another engine; this document does not claim a runtime PASS before that evidence exists.
 
 ## Guardrails observed
 
