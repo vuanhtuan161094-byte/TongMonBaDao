@@ -8,6 +8,9 @@ const ACTORS_ROOT := "res://assets/actors/"
 
 var _actors: Dictionary = {}
 var _packs: Dictionary = {}
+# SpriteFrames resources in this catalog are immutable: cache per-clip timing
+# once instead of allocating a durations Array on every actor draw call.
+var _clip_timing_cache: Dictionary = {}
 
 func _init() -> void:
 	super()
@@ -38,6 +41,30 @@ func _init() -> void:
 func has_actor(actor_key: String) -> bool:
 	return _actors.has(actor_key)
 
+func _clip_timing(frames: SpriteFrames, clip_name: String) -> Dictionary:
+	# Keyed by the immutable imported Resource instance and clip name; share
+	# across all actors using the same pack. No gameplay/simulation authority.
+	var key := "%d:%s" % [frames.get_instance_id(),clip_name]
+	if _clip_timing_cache.has(key):
+		return _clip_timing_cache[key]
+	var count := frames.get_frame_count(clip_name)
+	if count < 1:
+		return {}
+	var speed := maxf(0.001,frames.get_animation_speed(clip_name))
+	var durations: Array[float] = []
+	var duration_total := 0.0
+	for index in range(count):
+		var value := maxf(0.001,frames.get_frame_duration(clip_name,index)/speed)
+		durations.append(value)
+		duration_total += value
+	var result := {
+		"durations":durations,"duration_total":duration_total,
+		"loop":frames.get_animation_loop(clip_name),"count":count
+	}
+	_clip_timing_cache[key] = result
+	return result
+
+
 func frame_region(actor_key: String, action: String, facing: Vector2, elapsed: float) -> Dictionary:
 	var resolved := _resolve(actor_key, action)
 	if resolved.is_empty():
@@ -45,53 +72,46 @@ func frame_region(actor_key: String, action: String, facing: Vector2, elapsed: f
 	var pack: Dictionary = resolved["pack"]
 	var frames: SpriteFrames = pack["frames"]
 	var clip_name := str(resolved["clip"])
-	var count := frames.get_frame_count(clip_name)
-	if count < 1:
+	var timing := _clip_timing(frames,clip_name)
+	if timing.is_empty():
 		return {}
-	var speed := maxf(0.001, frames.get_animation_speed(clip_name))
-	var durations: Array[float] = []
-	var duration_total := 0.0
-	for index in range(count):
-		var value := maxf(0.001, frames.get_frame_duration(clip_name, index) / speed)
-		durations.append(value)
-		duration_total += value
+	var duration_total := float(timing["duration_total"])
 	if duration_total <= 0.0:
 		return {}
 	var sample_time := maxf(0.0, elapsed)
-	if frames.get_animation_loop(clip_name):
-		sample_time = fposmod(sample_time, duration_total)
+	if bool(timing["loop"]):
+		sample_time = fposmod(sample_time,duration_total)
 	else:
-		sample_time = minf(sample_time, maxf(0.0, duration_total - 0.0001))
-	var frame_index := count - 1
-	for index in range(count):
-		if sample_time < durations[index] or index == count - 1:
+		sample_time = minf(sample_time,maxf(0.0,duration_total-0.0001))
+	var frame_index := int(timing["count"])-1
+	var durations: Array[float] = timing["durations"]
+	for index in range(durations.size()):
+		if sample_time < durations[index] or index == durations.size()-1:
 			frame_index = index
 			break
 		sample_time -= durations[index]
-	var texture := frames.get_frame_texture(clip_name, frame_index)
+	var texture := frames.get_frame_texture(clip_name,frame_index)
 	if texture == null:
 		return {}
 	return {
-		"texture": texture,
-		"source": Rect2(Vector2.ZERO, texture.get_size()),
-		"anchor": pack["anchor"],
-		"frame": frame_index,
-		"direction": 0,
-		"scale": float(resolved["scale"]),
-		"source_face_x": int(_actors[actor_key]["source_face_x"])
+		"texture":texture,
+		"source":Rect2(Vector2.ZERO,texture.get_size()),
+		"anchor":pack["anchor"],
+		"frame":frame_index,
+		"direction":0,
+		"scale":float(resolved["scale"]),
+		"source_face_x":int(_actors[actor_key]["source_face_x"])
 	}
 
+
 func action_duration(actor_key: String, action: String) -> float:
-	var resolved := _resolve(actor_key, action)
+	var resolved := _resolve(actor_key,action)
 	if resolved.is_empty():
 		return 0.0
 	var frames: SpriteFrames = resolved["pack"]["frames"]
-	var clip_name := str(resolved["clip"])
-	var speed := maxf(0.001, frames.get_animation_speed(clip_name))
-	var total := 0.0
-	for index in range(frames.get_frame_count(clip_name)):
-		total += maxf(0.001, frames.get_frame_duration(clip_name, index) / speed)
-	return total
+	var timing := _clip_timing(frames,str(resolved["clip"]))
+	return float(timing.get("duration_total",0.0))
+
 
 func draw_actor(canvas: CanvasItem, actor_key: String, action: String, foot: Vector2,
 		facing: Vector2, elapsed: float, art_scale: float = 1.0) -> bool:
