@@ -22,17 +22,6 @@ func _party() -> Array:
 		"skill_loadout":["ngu_kiem_thuat"],"skill_factors":{"ngu_kiem_thuat":1.0}
 	}]
 
-func _monsters() -> Array:
-	var monster: Dictionary = MonsterCatalogueV2.create_actor("thanh_lang",1,1,"vfx_real_wolf")
-	monster["id"] = "vfx_real_wolf"
-	monster["position"] = Vector2(14.0,10.0)
-	monster["stats"] = monster["stats"].duplicate(true)
-	monster["stats"]["max_hp"] = 200000.0
-	monster["stats"]["attack"] = 1.0
-	monster["hp"] = 200000.0
-	monster["max_hp"] = 200000.0
-	return [monster]
-
 func _run() -> void:
 	var atlas := CombatV4EffectAtlas.new()
 	for item in [
@@ -53,8 +42,14 @@ func _run() -> void:
 		if not _check(not forbidden.has(str(row.get("id",""))),
 			"statue/flowerpot/lantern is misclassified as generic PvE forest art"):
 			return
-	var battle := MapBattleV2.new(20261026)
-	if not _check(bool(battle.setup("pve_jx_sword_vfx",_party(),_monsters()).get("ok",false)),
+	var region_id := "thanh_truc_lam"
+	var encounter_id := "pve_aux03_jx_sword_vfx"
+	var encounter_seed := 20261026
+	var spawn := HuntingMapV2.spawn(region_id,1,encounter_id,encounter_seed)
+	if not _check(bool(spawn.get("ok",false)),"real PvE map fixture failed to spawn"):
+		return
+	var battle := MapBattleV2.new(encounter_seed)
+	if not _check(bool(battle.setup(encounter_id,_party(),spawn["monsters"]).get("ok",false)),
 		"real Combat V2 sword-vs-monster fixture failed setup"):
 		return
 	var adapter = VFX_ADAPTER_SCRIPT.new()
@@ -111,14 +106,51 @@ func _run() -> void:
 		and int(adapter.counters["impacts"]) == impact_count_before,
 		"repeated snapshot observation duplicated the hit or its impact"):
 		return
-	var restored_result := MapBattleSnapshotV2.load(snapshot_before)
-	if not _check(bool(restored_result.get("ok",false)),"Combat V2 save snapshot could not restore for visual reload test"):
+	# Persist the same active Combat V2 encounter through the canonical game save.
+	# The roster and spawn envelope satisfy HuntingPveRunV2's production restore checks.
+	var save_state := SimulationState.new()
+	save_state.sect.p3_7_resources_enabled = true
+	save_state.sect.v2_pve_enabled = true
+	save_state.sect.v2_pve_selected_levels[region_id] = 1
+	var region := RegionState.new({"id":region_id,"name":"Thanh Trúc Lâm"})
+	save_state.regions[region.id] = region
+	var disciple := DiscipleState.new()
+	disciple.id = &"vfx_real_swordsman"
+	disciple.display_name = "VFX QA Swordsman"
+	disciple.max_hp = 2000.0
+	disciple.hp = 2000.0
+	disciple.region_id = &"sect"
+	disciple.current_action = &"EVALUATE"
+	save_state.disciples[disciple.id] = disciple
+	var active_run := {
+		"ok":true,"version":1,"region_id":region_id,"difficulty":1,
+		"encounter_id":encounter_id,"reward_seed":encounter_seed,
+		"battle":snapshot_before
+	}
+	save_state.sect.v2_pve_active_runs[encounter_id] = active_run
+	var save_path := "user://pve_aux03_vfx_save_reload.json"
+	var save_service := SaveService.new()
+	if not _check(save_service.save_to_path(save_state,save_path) == OK,
+		"canonical SaveService could not persist the active Combat V2 VFX fixture"):
+		return
+	var loaded_state := save_service.load_from_path(save_path)
+	if not _check(loaded_state != null,"canonical SaveService could not reload the active Combat V2 fixture"):
+		return
+	var restored_result := HuntingPveRunV2.resume_active(loaded_state,encounter_id)
+	if not _check(bool(restored_result.get("ok",false)),
+		"saved active Combat V2 run failed its production restore path: %s" % str(restored_result.get("reason","unknown"))):
 		return
 	var after_reload_adapter = VFX_ADAPTER_SCRIPT.new()
-	after_reload_adapter.observe_snapshot(restored_result["battle"])
+	after_reload_adapter.observe_snapshot(restored_result["session"].battle)
 	if not _check(after_reload_adapter.active_count() == 0,
-		"loading old Combat V2 events replayed a JX attack or impact"):
+		"canonical Save/Reload replayed a historical Combat V2 cast, projectile or impact"):
 		return
+	if not _check(int(after_reload_adapter.counters["casts"]) == 0
+		and int(after_reload_adapter.counters["impacts"]) == 0,
+		"canonical Save/Reload counted historical Combat V2 events as new VFX"):
+		return
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(save_path))
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(save_path + ".bak"))
 	var miss_adapter = VFX_ADAPTER_SCRIPT.new()
 	var miss_battle := MapBattleV2.new()
 	miss_battle.encounter_id = "pve_jx_vfx_no_hit"
@@ -175,5 +207,5 @@ func _run() -> void:
 			and replay_adapter._suffix_prefix_overlap(previous_ring,rolling_ring) == 1,
 			"JX VFX event-ring overlap classification regressed"):
 		return
-	print("PVE JX SWORD VFX ADAPTER PASS real_combat=ngu_kiem_thuat cast=true projectile=true positive_hit=true one_impact=true no_hit_explosion=false snapshot_unchanged=true save_load_no_replay=true forest_palette=verified")
+	print("PVE JX SWORD VFX ADAPTER PASS real_combat=ngu_kiem_thuat cast=true projectile=true positive_hit=true one_impact=true no_hit_explosion=false snapshot_unchanged=true canonical_save_service_reload_no_replay=true forest_palette=verified")
 	quit(0)

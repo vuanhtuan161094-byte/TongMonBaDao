@@ -1,0 +1,212 @@
+{
+  "schema": "pve_aux03_vfx_provenance_v1",
+  "issue": 43,
+  "parent_issue": 37,
+  "audit_date": "2026-10-27",
+  "combat_authority": "Combat V2 event journal; this manifest is presentation-only",
+  "source_a": {
+    "availability": "E drive readable; targeted Unity Effects subtree inspected",
+    "root": "E:\\GameAssetExtract",
+    "identity_evidence": {
+      "report": "E:\\GameAssetExtract\\Reports\\apk_manifest.csv",
+      "package": "com.vnzqzs.and",
+      "base_apk_bytes": 91707854,
+      "base_apk_sha256": "175abf3f1569af3b83cb98f798b23cbe5e9e75090702940a76915815b2a2dab2",
+      "base_apk_hash_match": true,
+      "split_asset_pack_bytes": 95874563,
+      "split_asset_pack_sha256": "9521e60fb5199c33283d03c014a22cc5ea8d71422861290d27a54860c9e3262b",
+      "split_asset_pack_hash_match": true,
+      "asset_catalog": "E:\\GameAssetExtract\\Reports\\assets_SplitAssetPack.csv"
+    },
+    "audit_limit": "Extracted files and APK hashes are verified; Unity object hierarchy/prefab links do not establish that these name-based candidates belong to JX skill #158 or to one shared cast-projectile-impact chain.",
+    "candidates": [
+      {
+        "candidate_id": "sourcea_jianxiu_1113101_skill_tx",
+        "stage_candidate": "cast",
+        "stage_basis": "AnimationClip name only",
+        "unity_type": "AnimationClip JSON",
+        "unity_name": "1113101_Skill_TX",
+        "file": "E:\\GameAssetExtract\\Assets\\Effects\\SplitAssetPack\\effect\\prefabs\\skill\\character_pro\\jianxiu\\res_179_pak\\1113101_Skill_TX_AnimationClip_-4627640014267205559.json",
+        "bytes": 7833,
+        "sha256": "a7bc74be53ece57f6695f0c5630e79062105e0fbf2686a3cf8a9b32c6b46f82b",
+        "sample_rate_fps": 30,
+        "start_time_seconds": 0.0,
+        "stop_time_seconds": 0.566666662693024,
+        "timeline_frame_intervals": 17,
+        "dense_clip_frame_count_field": 19,
+        "dense_curve_count": 0,
+        "streamed_curve_count": 9,
+        "generic_binding_count": 9,
+        "animation_events": 0,
+        "pivot_or_attachment": "unknown; exported clip has no sprite anchor or prefab hierarchy",
+        "combat_v2_skill_mapping": "unverified"
+      },
+      {
+        "candidate_id": "sourcea_jianxiu_feijian_projectile",
+        "stage_candidate": "projectile",
+        "stage_basis": "AnimationClip name only",
+        "unity_type": "AnimationClip JSON",
+        "unity_name": "feijian",
+        "file": "E:\\GameAssetExtract\\Assets\\Effects\\SplitAssetPack\\effect\\prefabs\\skill\\character_pro\\jianxiu\\res_179_pak\\feijian_AnimationClip_5077183800442683484.json",
+        "bytes": 9694,
+        "sha256": "6c70a04478d5018e9bdaa0cd450d4058506855bab1ae63a6d523ce1794c65707",
+        "sample_rate_fps": 30,
+        "start_time_seconds": 0.0,
+        "stop_time_seconds": 0.466666698455811,
+        "timeline_frame_intervals": 14,
+        "dense_clip_frame_count_field": 16,
+        "dense_curve_count": 10,
+        "streamed_curve_count": 0,
+        "generic_binding_count": 3,
+        "animation_events": 0,
+        "pivot_or_attachment": "unknown; clip transform origin cannot be mapped without its prefab and mesh hierarchy",
+        "combat_v2_skill_mapping": "unverified"
+      },
+      {
+        "candidate_id": "sourcea_jianxiu_feijian_tx_projectile",
+        "stage_candidate": "projectile_or_effect_transform",
+        "stage_basis": "AnimationClip name only",
+        "unity_type": "AnimationClip JSON",
+        "unity_name": "feijian_TX",
+        "file": "E:\\GameAssetExtract\\Assets\\Effects\\SplitAssetPack\\effect\\prefabs\\skill\\character_pro\\jianxiu\\res_179_pak\\feijian_TX_AnimationClip_-4245939617048643067.json",
+        "bytes": 11441,
+        "sha256": "f1ded0808bd0972368d2e0c215d572fcc127643ea300c0086738be3d78b68a19",
+        "sample_rate_fps": 30,
+        "start_time_seconds": 0.0,
+        "stop_time_seconds": 0.466666698455811,
+        "timeline_frame_intervals": 14,
+        "dense_clip_frame_count_field": 16,
+        "dense_curve_count": 12,
+        "streamed_curve_count": 0,
+        "generic_binding_count": 11,
+        "animation_events": 0,
+        "pivot_or_attachment": "unknown; clip transform origin cannot be mapped without its prefab and mesh hierarchy",
+        "combat_v2_skill_mapping": "unverified"
+      },
+      {
+        "candidate_id": "sourcea_jianxiu_1113101_hit_tx",
+        "stage_candidate": "impact",
+        "stage_basis": "AnimationClip name only",
+        "unity_type": "AnimationClip JSON",
+        "unity_name": "1113101_hit_TX",
+        "file": "E:\\GameAssetExtract\\Assets\\Effects\\SplitAssetPack\\effect\\prefabs\\skill\\character_pro\\jianxiu\\res_179_pak\\1113101_hit_TX_AnimationClip_7193101123303602837.json",
+        "bytes": 6235,
+        "sha256": "94e2d9ad502ebff0c10fc99aa6b77be1eab737081197c558e6996d4bed7741d9",
+        "sample_rate_fps": 30,
+        "start_time_seconds": 0.0,
+        "stop_time_seconds": 0.266666680574417,
+        "timeline_frame_intervals": 8,
+        "dense_clip_frame_count_field": 5,
+        "dense_curve_count": 0,
+        "streamed_curve_count": 3,
+        "generic_binding_count": 1,
+        "animation_events": 0,
+        "pivot_or_attachment": "unknown; exported clip has no sprite anchor or prefab hierarchy",
+        "combat_v2_skill_mapping": "unverified"
+      },
+      {
+        "candidate_id": "sourcea_jianxiu_yujianshu_hit_pattern_texture",
+        "stage_candidate": "impact_texture_only",
+        "stage_basis": "folder and object name only",
+        "unity_type": "Texture2D PNG",
+        "file": "E:\\GameAssetExtract\\Assets\\Effects\\SplitAssetPack\\effect\\prefabs\\skill\\character_pro\\jianxiu\\yujianshu_hit\\Pattern_003_Q_white_Texture2D_2320372030354606675.png",
+        "bytes": 59626,
+        "sha256": "1b5be65c5792449ec7bb5b92f08c0e287e8a0a777df6b100e353ba041cb3f7ea",
+        "dimensions_px": [
+          256,
+          256
+        ],
+        "frame_count": 1,
+        "pivot": "unknown",
+        "visual_inspection": "single grey circular ornamental texture; no verified animation or standalone hit effect",
+        "combat_v2_skill_mapping": "unverified"
+      },
+      {
+        "candidate_id": "sourcea_jianxiu_supporting_jian_textures",
+        "stage_candidate": "mesh_texture_dependencies",
+        "stage_basis": "Texture2D files adjacent to the feijian/skill clips; mesh binding unverified",
+        "unity_type": "Texture2D PNG",
+        "assets": [
+          {
+            "file": "E:\\GameAssetExtract\\Assets\\Effects\\SplitAssetPack\\effect\\prefabs\\skill\\character_pro\\jianxiu\\res_179_pak\\Jian_Hei_Texture2D_-2807865001443763323.png",
+            "bytes": 12957,
+            "dimensions_px": [256, 64],
+            "sha256": "6f112f18bbdb156ae7935f0a029e3f2408412cb3488f55b0842881a1921556a3"
+          },
+          {
+            "file": "E:\\GameAssetExtract\\Assets\\Effects\\SplitAssetPack\\effect\\prefabs\\skill\\character_pro\\jianxiu\\res_179_pak\\Jian_JIn_Texture2D_5030147853863464623.png",
+            "bytes": 69512,
+            "dimensions_px": [256, 256],
+            "sha256": "d6e119a886596b8482143353aaf3176d91bf623b2b46902e341bcc9f0634042e"
+          },
+          {
+            "file": "E:\\GameAssetExtract\\Assets\\Effects\\SplitAssetPack\\effect\\prefabs\\skill\\character_pro\\jianxiu\\res_179_pak\\Jian_JIn2_Texture2D_4883859984660251781.png",
+            "bytes": 85159,
+            "dimensions_px": [512, 256],
+            "sha256": "e47c93054be7b6ea36143abe7c4bb62661f2fdf3ed7067459a4f59f3e1fad97b"
+          }
+        ],
+        "frame_count": "not_applicable_single_textures",
+        "pivot": "unknown"
+      }
+    ]
+  },
+  "jx_158": {
+    "source": "jx1 owner-provided effect sheets; provenance documented in Issue #37 asset notes and the existing source-hash manifest",
+    "frame_rect_manifest": "godot/assets/combat_v4/jx1_skill_fx/fx_manifest.json",
+    "sheet_audit": {
+      "source_sha256_matches_bytes": true,
+      "frame_rectangles_checked": 35,
+      "frame_rectangles_in_image_bounds": true,
+      "all_anchors_inside_frame_rectangles": true,
+      "maximum_anchor_to_frame_center_deviation_px": 0.5,
+      "pivot_handling": "preserve the current per-frame rect anchor values; no pivot edits"
+    },
+    "chain": [
+      {
+        "effect_id": "jx_wudang_158_precast",
+        "stage": "precast",
+        "image": "godot/assets/combat_v4/jx1_skill_fx/3dfcabc2.webp",
+        "image_sha256": "84c63b5352a2873c05370c5d5c884e72aab07c4f2073af905e0f45b05605bb52",
+        "dimensions_px": [1266, 207],
+        "frames": 10,
+        "directions": 1,
+        "frame_ms": 50,
+        "duration_ms": 500,
+        "rect_method": "alpha-component bounds with 3px transparent padding"
+      },
+      {
+        "effect_id": "jx_wudang_158_cast",
+        "stage": "projectile",
+        "image": "godot/assets/combat_v4/jx1_skill_fx/aa93d577.webp",
+        "image_sha256": "bbd0e0c189249e9aa44920d6fa9fe6e61caf26f18530244501f1c2fae732a53c",
+        "dimensions_px": [1961, 774],
+        "frames": 17,
+        "directions": 1,
+        "frame_ms": 50,
+        "duration_ms": 850,
+        "rect_method": "verified 9x2 sheet grid; final empty cell excluded"
+      },
+      {
+        "effect_id": "jx_wudang_158_impact",
+        "stage": "impact",
+        "image": "godot/assets/combat_v4/jx1_skill_fx/361b4525.webp",
+        "image_sha256": "4052de409053ad3dc3562795c0f0d93e96029387169c7f42a4dca5d104352e13",
+        "dimensions_px": [1006, 125],
+        "frames": 8,
+        "directions": 1,
+        "frame_ms": 40,
+        "duration_ms": 320,
+        "rect_method": "existing owner-authored frame rectangles"
+      }
+    ],
+    "comparison": "Source A clips are separate Unity AnimationClip candidates at 30fps with unknown #158 mapping and unresolved prefab pivots. JX #158 remains the only verified cast/projectile/impact presentation chain in the runtime manifest."
+  },
+  "disposition": {
+    "source_a_art_copied_into_repository": false,
+    "source_a_assets_converted": false,
+    "duplicate_batch_conversion": false,
+    "production_renderer_changed": false,
+    "gameplay_or_damage_changed": false
+  }
+}
