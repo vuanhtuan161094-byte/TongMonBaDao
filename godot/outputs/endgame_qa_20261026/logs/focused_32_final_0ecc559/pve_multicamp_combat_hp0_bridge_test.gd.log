@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+PVE MULTICAMP COMBAT HP0 BRIDGE PASS local_monsters=10 real_combat_hp0=true journal_checked=true unpaid_receipt=true reward=none

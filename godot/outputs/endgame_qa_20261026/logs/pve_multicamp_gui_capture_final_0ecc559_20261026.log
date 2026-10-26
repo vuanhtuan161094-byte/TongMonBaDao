@@ -1,0 +1,8 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 - Build 31.0.101.2125 - Compatibility - Using Device: Intel - Intel(R) Iris(R) Plus Graphics
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+PVE GUI CAPTURE PASS path=E:\codex\2026-10-26\TMB_ENDGAME_PR39_WORKTREE_20261026\godot\outputs\endgame_qa_20261026\gameplay\pve_multicamp_c01_live_1280x720_final.png sha256=73cc3bfbce026d998606b4e92e2924be61aa666982d04a43f4f623c17054981c size=1280x720 live_party=6 live_monsters=9 actions=43
+PVE SAVELOAD DIAGNOSTIC active=true alive_dis=4 dead_monsters=4 actions_saved=111 actions_runtime=111 pending=4 receipts=0 reward_claims=0
+PVE MULTICAMP P3.2 LIVE INTEGRATION PASS sha=0ecc559cd84c460df9885ab56edc3607a405df0b party=6 real_monsters=10 live_sites=20 reserved=6 shared_clock_seconds=13.00 actions=111 movement=true minimap=live fixed=true camera=pan_zoom save_load=true loot=LOOT_PENDING
