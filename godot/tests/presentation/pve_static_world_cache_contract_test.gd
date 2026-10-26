@@ -58,6 +58,43 @@ func _run() -> void:
 			"restored source SHA was not rebuilt correctly"):
 		return
 
+	# Source A atlas clip metadata must be memoized, not rebuilt on every
+	# SpriteFrames draw. Verify native action-duration and frame lookup agree.
+	var atlas := CombatV5SourceAAtlas.new()
+	if not _check(atlas.has_actor("disciple_male"),
+			"required Source A disciple art is absent from test assets"):
+		return
+	var clip_seconds := atlas.action_duration("disciple_male","attack")
+	if not _check(clip_seconds > 0.0 and atlas._clip_timing_cache.size() == 1,
+			"Source A native combat clip timing did not memoize"):
+		return
+	var attack_first := atlas.frame_region("disciple_male","attack",Vector2.RIGHT,0.0)
+	if not _check(not attack_first.is_empty(),
+			"Source A combat clip cannot be sampled"):
+		return
+	var clip_cache_size := atlas._clip_timing_cache.size()
+	for _sample in range(50):
+		var attack_again := atlas.frame_region("disciple_male","attack",
+			Vector2.RIGHT,clip_seconds*0.5)
+		if not _check(not attack_again.is_empty()
+				and atlas._clip_timing_cache.size() == clip_cache_size,
+				"repeated Source A frame sampling re-created clip metadata"):
+			return
+	var during := SectIsometricWorldV1._display_action_for_elapsed(
+		"attack",clip_seconds*0.5,clip_seconds,true)
+	var after := SectIsometricWorldV1._display_action_for_elapsed(
+		"attack",clip_seconds+0.01,clip_seconds,true)
+	var hit_after := SectIsometricWorldV1._display_action_for_elapsed(
+		"hit",clip_seconds+0.01,clip_seconds,true)
+	var dead := SectIsometricWorldV1._display_action_for_elapsed(
+		"die",clip_seconds+0.01,clip_seconds,false)
+	if not _check(str(during["action"]) == "attack"
+			and str(after["action"]) == "idle"
+			and str(hit_after["action"]) == "idle"
+			and str(dead["action"]) == "die",
+			"one-shot attack/hit does not return to idle or death loses final frame"):
+		return
+
 	# The latest event wins, including target hit and source-first precedence.
 	var event_rows := [
 		{"type":"hit","attacker":"m1","target":"d1","time":1.0},
