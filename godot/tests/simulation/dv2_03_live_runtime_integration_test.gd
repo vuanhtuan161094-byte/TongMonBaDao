@@ -22,7 +22,7 @@ func _remove(path: String) -> void:
     # .bak. Remove all test-owned artifacts so reruns cannot mistake a stale
     # backup for the missing-save fixture.
     for suffix in ["", ".tmp", ".bak"]:
-        var artifact := path+suffix
+        var artifact: String = path+suffix
         if FileAccess.file_exists(artifact):
             DirAccess.remove_absolute(ProjectSettings.globalize_path(artifact))
 
