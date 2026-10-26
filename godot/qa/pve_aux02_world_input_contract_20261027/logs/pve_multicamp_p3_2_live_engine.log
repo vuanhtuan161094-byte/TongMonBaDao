@@ -1,0 +1,24 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+PVE P3.2 INTEGRATION START headless=true vfx_fixture=false
+PVE P3.2 INTEGRATION scene_ready disciples=130
+PVE P3.2 INTEGRATION hunt_started encounter=pve:thanh_truc_lam:c01:20261025:120:0
+PVE WORLD VIEW CACHE PASS prepare_calls=83 topology_builds=1 minimap_builds=0 source_sha=c0e6b9952ce6303718938f5705a0327d0a14b136
+PVE P3.2 INTEGRATION movement_slots positions={ "candidate_0056": (85.5, 70.5), "candidate_0059": (88.5, 70.5), "candidate_0066": (91.5, 69.5), "candidate_0078": (85.5, 74.5), "candidate_0081": (91.5, 76.5), "candidate_0085": (93.5, 74.5) }
+PVE P3.2 INTEGRATION movement_verified orders=6 formation_slots=6 min_spacing=2.83
+PVE P3.2 INTEGRATION active_save_load_verified
+PVE P3.2 INTEGRATION save_load_snapshot_ready
+PVE P3.2 INTEGRATION in_memory_snapshot_ready
+PVE P3.2 INTEGRATION movement_save_restore_verified orders=6
+PVE P3.2 INTEGRATION shared_clock_step=0
+PVE P3.2 INTEGRATION shared_clock_step=10
+PVE P3.2 INTEGRATION shared_clock_step=20
+PVE P3.2 INTEGRATION shared_clock_progress elapsed=1 frames=2 baseline_actions=47 baseline_time=31.000 remainder=56.000
+PVE P3.2 INTEGRATION shared_clock_complete active=false
+ERROR: PVE MULTICAMP P3.2 LIVE FAIL: live combat did not record defeat, cross into another continuous-map region, and return the real V2 team with Injury120; outcome=defeat kills=0 camp=C01 injury_valid=true
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/presentation/pve_multicamp_p3_2_live_integration_test.gd:23)
+       [1] _run (res://tests/presentation/pve_multicamp_p3_2_live_integration_test.gd:717)
