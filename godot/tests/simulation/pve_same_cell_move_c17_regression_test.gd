@@ -18,13 +18,14 @@ func _check(condition: bool,message: String) -> bool:
     return true
 
 func _run() -> void:
+    var blocked := PackedByteArray()
+    blocked.resize(192*192)
     var navigation: Dictionary = {
         "width":192,"height":192,
-        "blocked":PackedByteArray(),
+        "blocked":blocked,
         "source_blob_sha":SOURCE_SHA,
         "source_map":"synthetic_same_cell_c17_qa"
     }
-    navigation["blocked"].resize(192*192)
     # Exact position/target from AUX-02 Windows regression evidence.
     var initial := Vector2(96.35806,168.0268)
     var target := Vector2(96.5,168.5)
