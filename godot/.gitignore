@@ -11,3 +11,6 @@ qa/endgame_qa_report_200.json
 qa/endgame_qa_report_500.json
 qa/backups/
 outputs/endgame_qa_20261025/userdata/
+
+# PVE PERF QA runs create isolated save/metrics/log files locally.
+outputs/pve_perf_qa_20261026/
