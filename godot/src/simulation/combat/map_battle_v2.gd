@@ -225,13 +225,20 @@ func order_group_move(actor_ids: Array, destination: Vector2) -> Dictionary:
     if ordered.is_empty():
         return {"ok":false,"reason":"no_living_selected_disciple"}
     var offsets := [Vector2i(0,0),Vector2i(1,0),Vector2i(0,1),Vector2i(-1,0),Vector2i(0,-1),Vector2i(1,1)]
+    var reserved: Dictionary = {}
+    var destinations: Array[Vector2] = []
+    # Plan every destination BEFORE changing actor state. Different offsets may
+    # snap to the same passable tile near rocks, streams or the world edge.
+    for index in range(ordered.size()):
+        var desired: Vector2i = base_cell+offsets[index%offsets.size()]
+        var walkable := _nearest_walkable_unreserved_cell(desired,reserved)
+        if walkable.x < 0:
+            return {"ok":false,"reason":"move_formation_has_insufficient_walkable_cells"}
+        reserved[walkable] = true
+        destinations.append(Vector2(walkable)+Vector2(0.5,0.5))
     for index in range(ordered.size()):
         var actor: Dictionary = actors[ordered[index]]
-        var desired: Vector2i = base_cell+offsets[index%offsets.size()]
-        var walkable := _nearest_walkable_cell(desired)
-        if walkable.x < 0:
-            walkable = base_cell
-        actor["move_order_position"] = Vector2(walkable)+Vector2(0.5,0.5)
+        actor["move_order_position"] = destinations[index]
         actor["move_order_active"] = true
         _event("move_order",{"actor_id":ordered[index],"position":actor["move_order_position"]})
     return {"ok":true,"actor_ids":ordered,"destination":Vector2(base_cell)+Vector2(0.5,0.5)}
@@ -242,6 +249,28 @@ func set_auto_hunt(enabled: bool) -> Dictionary:
     auto_hunt = enabled
     _event("auto_hunt_changed",{"enabled":auto_hunt})
     return {"ok":true,"enabled":auto_hunt}
+
+# Deterministic nearest-free formation slot. Uses the same ring priority as
+# _nearest_walkable_cell, but skips reserved destinations. The grid is bounded
+# by validated open-world dimensions; failed formations are atomic.
+func _nearest_walkable_unreserved_cell(origin: Vector2i, reserved: Dictionary) -> Vector2i:
+    if not world_mode or world_navigation.is_empty():
+        var fallback := _nearest_walkable_cell(origin)
+        return fallback if fallback.x >= 0 and not reserved.has(fallback) else Vector2i(-1,-1)
+    var width := int(world_navigation["width"])
+    var height := int(world_navigation["height"])
+    var blocked = world_navigation["blocked"]
+    for radius in range(maxi(width,height)):
+        for y in range(origin.y-radius,origin.y+radius+1):
+            for x in range(origin.x-radius,origin.x+radius+1):
+                if absi(x-origin.x) != radius and absi(y-origin.y) != radius:
+                    continue
+                if x < 0 or y < 0 or x >= width or y >= height:
+                    continue
+                var cell := Vector2i(x,y)
+                if not reserved.has(cell) and int(blocked[y*width+x]) == 0:
+                    return cell
+    return Vector2i(-1,-1)
 
 func _nearest_walkable_cell(origin: Vector2i) -> Vector2i:
     if not world_mode or world_navigation.is_empty():
