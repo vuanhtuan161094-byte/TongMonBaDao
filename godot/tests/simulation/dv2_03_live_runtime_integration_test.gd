@@ -18,8 +18,13 @@ func _close(a: float, b: float) -> bool:
     return absf(a-b) < 0.00001
 
 func _remove(path: String) -> void:
-    if FileAccess.file_exists(path):
-        DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+    # SaveService writes a staged file and rotates the previous valid save to
+    # .bak. Remove all test-owned artifacts so reruns cannot mistake a stale
+    # backup for the missing-save fixture.
+    for suffix in ["", ".tmp", ".bak"]:
+        var artifact := path+suffix
+        if FileAccess.file_exists(artifact):
+            DirAccess.remove_absolute(ProjectSettings.globalize_path(artifact))
 
 func _cleanup() -> void:
     _remove(SAVE_PATH)
