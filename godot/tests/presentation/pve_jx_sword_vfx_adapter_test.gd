@@ -170,10 +170,13 @@ func _run() -> void:
 			and replay_adapter.active_count() == 1,
 			"disjoint-ring rebaseline dropped the next genuine live cast"):
 		return
+	var previous_ring: Array[String] = ["old_a","old_b"]
+	var unrelated_ring: Array[String] = ["new_c","new_d"]
+	var rolling_ring: Array[String] = ["old_b","new_c"]
 	if not _check(replay_adapter._suffix_prefix_overlap(
-			["old_a","old_b"],["new_c","new_d"]) == -1
+			previous_ring,unrelated_ring) == -1
 			and replay_adapter._suffix_prefix_overlap(
-			["old_a","old_b"],["old_b","new_c"]) == 1,
+			previous_ring,rolling_ring) == 1,
 			"JX VFX event-ring overlap classification regressed"):
 		return
 	print("PVE JX SWORD VFX ADAPTER PASS real_combat=ngu_kiem_thuat cast=true projectile=true positive_hit=true one_impact=true no_hit_explosion=false snapshot_unchanged=true save_load_no_replay=true forest_palette=verified")
