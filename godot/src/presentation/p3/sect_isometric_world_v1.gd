@@ -155,6 +155,7 @@ var pve_view_rows: Dictionary = {}
 var pve_render_positions: Dictionary = {}
 var pve_target_positions: Dictionary = {}
 var pve_actor_actions: Dictionary = {}
+var _pve_last_encounter_id := "" # Renderer-only; never persisted.
 var pve_clock := 0.0
 var pve_source_atlas := CombatV5SourceAAtlas.new()
 var pve_selected_actor_ids: Array[String] = []
@@ -603,17 +604,52 @@ func pve_screen_to_cell(screen_point: Vector2, viewport_size: Vector2) -> Vector
         return Vector2.ZERO
     return inverse(camera.position+(screen_point-viewport_size*0.5)/camera.zoom.x)
 
+# Index presentation actions in ONE reverse pass over the capped VFX event
+# ring, instead of scanning every event again for each actor on every 0.25s
+# HUD refresh. Event content (rather than ring index) identifies a new cue:
+# MapBattleV2 pops the oldest events after MAX_EVENTS is reached.
+static func _latest_pve_visual_actions(events: Array) -> Dictionary:
+	var latest: Dictionary = {}
+	for event_index in range(events.size()-1,-1,-1):
+		var event: Dictionary = events[event_index]
+		var source_id := str(event.get("actor_id",event.get("attacker",event.get("caster",""))))
+		var target_id := str(event.get("target",event.get("target_id","")))
+		var kind := str(event.get("type",""))
+		var action := ""
+		if kind == "move":
+			action = "run"
+		elif kind in ["skill_cast","skill_hit","hit","basic_hit"]:
+			action = "attack"
+		if not source_id.is_empty() and not latest.has(source_id) and not action.is_empty():
+			latest[source_id] = {"action":action,"event_hash":event.hash()}
+		# Match the original source-first event priority: when source==target,
+		# this same event must not classify the actor as its own hit target.
+		if kind == "hit" and target_id != source_id and not target_id.is_empty() \
+				and not latest.has(target_id):
+			latest[target_id] = {"action":"hit","event_hash":event.hash()}
+	return latest
+
+
 func set_pve_snapshot(snapshot: MapBattleV2, view_rows: Dictionary,
         selected_actor_ids: Array[String], camp_positions: Array = []) -> void:
     pve_battle = snapshot
     pve_view_rows = view_rows.duplicate(true)
     pve_selected_actor_ids = selected_actor_ids.duplicate()
     if snapshot == null:
+        _pve_last_encounter_id = ""
         pve_target_positions.clear()
         pve_render_positions.clear()
         pve_actor_actions.clear()
         queue_redraw()
         return
+    if _pve_last_encounter_id != snapshot.encounter_id:
+        # An actor ID can reappear in a new hunt: never interpolate or replay
+        # visual events from the previous authoritative encounter.
+        _pve_last_encounter_id = snapshot.encounter_id
+        pve_target_positions.clear()
+        pve_render_positions.clear()
+        pve_actor_actions.clear()
+    var latest_actions := _latest_pve_visual_actions(snapshot.events)
     var present: Dictionary = {}
     for raw_id in snapshot.actors:
         var id := str(raw_id)
@@ -623,20 +659,20 @@ func set_pve_snapshot(snapshot: MapBattleV2, view_rows: Dictionary,
         pve_target_positions[id] = position
         if not pve_render_positions.has(id):
             pve_render_positions[id] = position
-        var action := "die" if float(actor.get("hp",0.0)) <= 0.0 else "idle"
-        for event_index in range(snapshot.events.size()-1,-1,-1):
-            var event: Dictionary = snapshot.events[event_index]
-            var source_id := str(event.get("actor_id",event.get("attacker",event.get("caster",""))))
-            var target_id := str(event.get("target",event.get("target_id","")))
-            if source_id == id:
-                var kind := str(event.get("type",""))
-                if kind == "move": action = "run"
-                elif kind in ["skill_cast","skill_hit","hit","basic_hit"]: action = "attack"
-                if action != "idle": break
-            elif target_id == id and str(event.get("type","")) == "hit":
-                action = "hit"
-                break
-        pve_actor_actions[id] = {"action":action,"started":pve_clock}
+        var alive := float(actor.get("hp",0.0)) > 0.0
+        var latest: Dictionary = latest_actions.get(id,{})
+        var action := "die" if not alive else str(latest.get("action","idle"))
+        var event_hash := -1 if not alive else int(latest.get("event_hash",0))
+        var previous: Dictionary = pve_actor_actions.get(id,{})
+        var started := pve_clock
+        if str(previous.get("action","")) == action \
+                and int(previous.get("event_hash",-999)) == event_hash:
+            # A HUD refresh is NOT a new cast/hit. Let the Source A animation
+            # finish its actual clip unless a newer event or action arrives.
+            started = float(previous.get("started",pve_clock))
+        pve_actor_actions[id] = {
+            "action":action,"started":started,"event_hash":event_hash
+        }
     for id in pve_render_positions.keys().duplicate():
         if not present.has(str(id)):
             pve_render_positions.erase(id)
@@ -650,6 +686,7 @@ func set_pve_snapshot(snapshot: MapBattleV2, view_rows: Dictionary,
                 pve_camera_initialized = true
                 break
     queue_redraw()
+
 
 func pve_minimap_texture() -> Texture2D:
     return pve_mini_texture
