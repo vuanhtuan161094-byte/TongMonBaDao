@@ -25,6 +25,8 @@ func _run() -> void:
 		return
 	var battle := MapBattleV2.new(20261026)
 	battle.world_mode = true
+	battle.world_bounds = Rect2(Vector2.ZERO,Vector2(
+		float(navigation["width"]),float(navigation["height"])))
 	battle.world_navigation = navigation.duplicate(true)
 	if not _check(battle._validate_world_navigation().is_empty(),
 			"real Source A navigation cannot pass Combat V2 preflight"):
