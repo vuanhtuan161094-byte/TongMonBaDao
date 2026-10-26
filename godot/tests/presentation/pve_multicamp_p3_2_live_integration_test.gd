@@ -401,7 +401,13 @@ func _run() -> void:
 		map.camera_center = map.topology["camp_positions"][int(envelope_for_capture(state,encounter).get("camp_index",0))]
 		map._clamp_camera()
 		ui.call("_refresh_multicamp_hunt_panel")
-		for _visual_step in range(120):
+		# Advance capture on the ONE canonical runtime clock. Previously the
+		# GUI-only loop called visual_session.advance(true), committing battle
+		# frames without consuming runtime wall seconds / minute_phase. That
+		# broke the same-clock contract even when the actual game did not.
+		var visual_wall_start := int(state.runtime_last_wall_unix)
+		var visual_battle_start := capture_battle.now
+		for _visual_step in range(30):
 			if capture_battle._count_alive("disciple") <= 0:
 				break
 			if not vfx_capture_mode and capture_battle.actions > 0:
@@ -417,10 +423,20 @@ func _run() -> void:
 					map.show_authority_snapshot(capture_battle,visual_session.camp_population,
 						visual_session.camp_index,state.disciples,source_a_rows)
 					break
-			var visual_step := visual_session.advance(true)
-			if not _check(bool(visual_step.get("ok",false)) and not bool(visual_step.get("barrier",false)),
-				"Combat V2 could not produce a visible open-world frame: %s" % str(visual_step)):
+			# One injected wall second runs four 0.25s Combat V2 frames.
+			# The QA copy uses deterministic time; production P3.2 polls the OS.
+			var next_wall := int(state.runtime_last_wall_unix)+1
+			var visual_step := runtime.poll(next_wall)
+			if not _check(bool(visual_step.get("ok",false))
+					and not bool(visual_step.get("barrier",false))
+					and int(visual_step.get("frames_run",0)) > 0,
+				"canonical PvE owner could not advance visible combat: %s" % str(visual_step)):
 				return
+			var capture_restored := HuntingPveRunV2.resume_active(state,encounter)
+			if not _check(bool(capture_restored.get("ok",false)),
+				"GUI capture encounter settled before a valid fighting frame"):
+				return
+			visual_session = capture_restored["session"]
 			capture_battle = visual_session.battle
 			if vfx_capture_mode:
 				# Drive the same read-only snapshot adapter used by the live P3.2 HUD
@@ -428,6 +444,34 @@ func _run() -> void:
 				# single presentation update by the QA harness.
 				map.show_authority_snapshot(capture_battle,visual_session.camp_population,
 					visual_session.camp_index,state.disciples,source_a_rows)
+		# The renderer may only display time that was committed by the
+		# SimulationRuntimeOwnerV2. This assertion must not mutate the battle.
+		if not _check(is_equal_approx(capture_battle.now-visual_battle_start,
+				float(state.runtime_last_wall_unix-visual_wall_start))
+				and is_equal_approx(float(state.runtime_unconsumed_wall_seconds),0.0),
+			"GUI evidence advanced battle outside canonical owner wall time"):
+			return
+		var same_wall := int(state.runtime_last_wall_unix)
+		var same_battle_now := capture_battle.now
+		var same_time_poll := runtime.poll(same_wall)
+		var same_time_run := HuntingPveRunV2.resume_active(state,encounter)
+		if not _check(bool(same_time_poll.get("ok",false))
+				and int(same_time_poll.get("frames_run",0)) == 0
+				and bool(same_time_run.get("ok",false))
+				and is_equal_approx(same_time_run["session"].battle.now,same_battle_now),
+			"same timestamp replayed Combat V2 frames in GUI harness"):
+			return
+		var durable_visual_state := SaveService.new().load_from_path(save_path)
+		var durable_visual_run := HuntingPveRunV2.resume_active(
+			durable_visual_state,encounter) if durable_visual_state != null else {"ok":false}
+		if not _check(durable_visual_state != null
+				and bool(durable_visual_run.get("ok",false))
+				and durable_visual_state.runtime_last_wall_unix == same_wall
+				and is_equal_approx(durable_visual_run["session"].battle.now,same_battle_now)
+				and is_equal_approx(float(durable_visual_run["session"].minute_phase),
+					float(same_time_run["session"].minute_phase)),
+			"active PvE SaveService checkpoint disagrees with the shared battle clock"):
+			return
 		var impact_frame_image: Image = null
 		var impact_capture_froze_world := false
 		if vfx_capture_mode and saw_visual_cast and saw_visual_positive_hit:
@@ -638,7 +682,10 @@ func _run() -> void:
 			and state.sect.warehouse_resources == warehouse_before,
 			"open-world kills created an unapproved Warehouse payout or reward claim"):
 			return
-		var saved_terminal := runtime.save()
+		# This harness injected future test seconds via runtime.poll().
+		# Saving without the same injected wall time would correctly fail
+		# SimulationRuntimeClockV2's backwards-clock guard.
+		var saved_terminal := runtime.save(int(state.runtime_last_wall_unix))
 		if not _check(bool(saved_terminal.get("ok",false)),"SaveService rejected the terminal Injury120 world result"):
 			return
 		var terminal_loaded := SaveService.new().load_from_path(save_path)
