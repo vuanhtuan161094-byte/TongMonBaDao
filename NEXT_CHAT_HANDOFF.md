@@ -1,5 +1,17 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-27 — Resume PVE-PLAY-01.1 from the pushed playable checkpoint (PLAYABLE_BLOCKED)
+
+Use `E:/codex/2026-10-26/TMB_PVE_JX_CONTINUOUS_WORKTREE_20261026`, branch `feature/pve-jx-continuous-world-20261026`; exact tested code SHA `7c79a7740938e4a5852234fa3826850db902b167` (Godot `4.7.2.stable.official.ed1daf0bf`), pushed fast-forward; do not merge main. Before editing, check HEAD/status and keep ignored QA saves/logs.
+
+Implementation on top of b91d60a: visible `Săn quái / Thanh Trúc Lâm` entry + eligible six-person picker while preserving the old disciple-summary route; selected-only in-view disciple actor rendering on production; cached worksite cue positions during camera pan/zoom with a 250 ms settled-camera rescan; one-second hunt panel snapshot refresh aligned with runtime polling; optional detailed P3.2 timing logger. The passive FPS probe retains raw per-frame gaps per 3 s window and exact whole-phase summaries, including top spikes and Godot process/physics, memory and draw-call attribution.
+
+Exact-SHA headless PASS logs: `godot/outputs/pve_play011_7c79a77/logs/`. P3.2 integration reached six real V2 members vs ten Source A monsters, map 192×192 / 20 zones, camera+minimap, 79 shared-clock seconds, 153 actions, 9 kills and active Save/Load. It did not reach zone-hop/Injury120; no rewards were added (`LOOT_PENDING`).
+
+**Must finish the real Windows GUI portion before acceptance.** Attempts to capture the opened Godot Project Manager timed out twice, so no real mouse run, screenshot, gameplay video, normal-GUI FPS/P50/P95/P99/1%-low, RAM, Save/Return/reload evidence or detailed-logger OFF/ON comparison was produced. Do not claim PLAYABLE/VISUAL PASS while the stutter remains unmeasured. Ask owner to open `Run-PVE-FPS-QA.cmd` and then `/log` in the desktop session; capture 15 s production, party selection, 30–60 s PvE, Save/Return and 10 s post-return for both modes. The launcher runs isolated QA data. Preserve the normal one-click player launcher `Run-PVE-Play.cmd`.
+
+Latest Issue #37 comment reviewed: #6422656107 notes 3 s percentile windows cannot be aggregated to exact phase P99/1%-low; local probe has since added raw frame gaps and exact `phase_summary` records. Remaining user-facing blocker is that desktop CUA cannot currently capture the target window. Report status `PLAYABLE_BLOCKED`, not PASS, until the owner GUI trial completes.
+
 ## 2026-10-25 — Continue ENDGAME-FIRST Issue #37 (PROVISIONAL branch)
 
 Continue on `E:/codex/2026-10-25/TMB_ENDGAME_G0_WORKTREE_20261025`, branch `integration/endgame-maps-assets-playable-20261025`, gameplay/test SHA `14f0927c3161efc0b2afc1e8c411bd9d34dd4281`, evidence/measurement commit `9ac16e8b7ddb85e098fb8037a920b65ecf24f1fa`, based on PR #33 head `7a551ca4f8f9b15f3069652c5f557e0fbc29833` with selected PR #34 NET. This is not main. Draft PR #38 stacks on PR #33; PR #24–#35 remain DRAFT/OPEN; Issue #37 OPEN.

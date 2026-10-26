@@ -1,5 +1,17 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 2026-10-27 — PVE-PLAY-01.1 owner playtest checkpoint (PLAYABLE_BLOCKED; main untouched)
+
+Continue in worktree `E:/codex/2026-10-26/TMB_PVE_JX_CONTINUOUS_WORKTREE_20261026`, branch `feature/pve-jx-continuous-world-20261026`. Exact tested gameplay/test SHA: `7c79a7740938e4a5852234fa3826850db902b167`; pushed fast-forward from b91d60a to the feature branch only. Commits on top of b91d60a include visible Săn quái/team picker + QA instrumentation, Windows launcher SHA quoting fix, production map-cue cache/throttle, and exact-phase profiler/snapshot refresh throttle. No main merge.
+
+P3.2 shows only the selected in-view disciple actor; other canonical disciples remain in SimulationState and do not create animated map actors. During pan/zoom, worksite labels now move from a cache (up to four) and full producer rescans debounce until the camera settles; hunt-panel snapshot restoration runs at the 1 s runtime poll cadence, not four times between polls. Detailed `/log` adds timings for hunt refresh, roster sync, worksite/iso refresh, runtime poll and Save/autosave. The passive probe writes raw `frame_gaps_ms` in each 3 s sample and full `phase_summary` records so phase P50/P95/P99, max and slowest-1% FPS can be recomputed exactly. This instrumentation is ready; no physical GUI measurements are claimed.
+
+Official Godot 4.7.2 Windows headless evidence at exact SHA `7c79a77`: `pve_perf_probe_contract_test`, `pve_jx_sword_vfx_adapter_test`, `pve_sourcea_death_snapshot_contract_test`, and `pve_multicamp_p3_2_live_integration_test` all PASS, exit 0. Integration reached Source A 192×192, 20 zones, six real V2 members vs ten actual monsters, live camera/minimap, 79 shared-clock seconds, 153 actions, 9 kills and active Save/Load. It did not reach zone-hop or Injury120; rewards remain `LOOT_PENDING`. Logs and isolated QA save are under `godot/outputs/pve_play011_7c79a77/`; no seed/player save was overwritten.
+
+**Physical GUI acceptance is still blocked.** Godot Project Manager opened, but desktop screenshot capture timed out twice (`FrameArrived timed out` / `window capture timed out`). No real mouse run, phase FPS, logger OFF/ON comparison, screenshot, or non-MovieWriter video exists. Do not mark GUI/visual/playable PASS. To continue, owner must open `Run-PVE-FPS-QA.cmd` (normal) and `Run-PVE-FPS-QA.cmd /log` in the desktop session and leave the game window open/targetable for capture. Full run sequence: 15 s production, party selection, 30–60 s PvE combat/movement/camera, Save, Return, then 10 s in sect; capture P50/P95/P99/max, 1%-low, largest spikes/Godot timing, RAM and exact SHA in both runs. Launcher `Run-PVE-Play.cmd` remains the one-click normal gameplay path.
+
+See Issue #37 report and `NEXT_CHAT_HANDOFF.md` top entry for next action. This checkpoint preserves Combat V2, SaveService, Injury120, One Active Job and Source A authority.
+
 ## 2026-10-25 — ENDGAME-FIRST local integration (PROVISIONAL; not main)
 
 Worktree/branch `E:/codex/2026-10-25/TMB_ENDGAME_G0_WORKTREE_20261025`, `integration/endgame-maps-assets-playable-20261025`; gameplay/test SHA `14f0927c3161efc0b2afc1e8c411bd9d34dd4281`, final measurements/log evidence through commit `9ac16e8b7ddb85e098fb8037a920b65ecf24f1fa`, based on PR #33 `7a551ca4f8f9b15f3069652c5f557e0fbc29833` plus selected PR #34 NET. Draft PR #38 is stacked on PR #33; PR #24–#35 remain open/draft/unmerged; Issue #37 remains open. Do not merge main.
