@@ -9,7 +9,7 @@ import json
 import math
 from pathlib import Path
 
-REQUIRED_SEGMENTS = (("sect", 15.0), ("pve_active", 30.0), ("sect", 10.0))
+REQUIRED_SEGMENTS = (("production", 15.0), ("pve", 30.0), ("save_return", 10.0))
 
 
 def percentile(values, pct):
@@ -23,7 +23,7 @@ def percentile(values, pct):
 
 
 def audit(path):
-    windows, raw_frames, errors = [], [], []
+    windows, raw_frames, reported_spikes, errors = [], [], [], []
     for line_no, line in enumerate(Path(path).read_text(encoding="utf-8-sig").splitlines(), 1):
         if not line.strip():
             continue
@@ -34,7 +34,8 @@ def audit(path):
             kind = item.get("kind")
             if kind == "sample":
                 phase = str(item.get("phase", "unknown"))
-                duration = float(item.get("seconds", 0))
+                # Schema 2 emits elapsed_s; legacy schema 1 emits seconds.
+                duration = float(item.get("elapsed_s", item.get("seconds", 0)))
                 if not math.isfinite(duration) or duration < 0:
                     raise ValueError("invalid seconds")
                 windows.append({"line": line_no, "phase": phase, "seconds": duration,
@@ -46,18 +47,38 @@ def audit(path):
                 if "frame_ms_samples" in item:
                     for frame in item["frame_ms_samples"]:
                         raw_frames.append((phase, positive_frame(frame)))
+                # Schema 2 exposes its top actual frame rows, not every frame.
+                # They are valid point observations but cannot reconstruct global p99.
+                for spike in item.get("top_spikes", []):
+                    if not isinstance(spike, dict):
+                        raise ValueError("invalid top_spikes entry")
+                    reported_spikes.append({
+                        "line": line_no, "phase": phase,
+                        "frame_ms": positive_frame(spike.get("frame_ms")),
+                        "elapsed_s": number(spike.get("elapsed_s")),
+                        "process_ms": number(spike.get("godot_process_ms")),
+                        "physics_ms": number(spike.get("godot_physics_ms")),
+                    })
             elif kind == "frame":
                 raw_frames.append((str(item.get("phase", "unknown")), positive_frame(item.get("frame_ms"))))
         except (ValueError, TypeError, json.JSONDecodeError) as exc:
             errors.append(f"line {line_no}: {exc}")
 
     segments = []
+    pve_seen = False
     for window in windows:
-        if segments and segments[-1]["phase"] == window["phase"]:
+        raw_phase = window["phase"]
+        if raw_phase in ("pve", "pve_active", "pve_save"):
+            pve_seen = True
+        # Legacy sect windows become return-phase after the first PvE window.
+        phase = ("save_return" if pve_seen else "production") if raw_phase == "sect" else raw_phase
+        if phase == "pve_active":
+            phase = "pve"
+        if segments and segments[-1]["phase"] == phase:
             segments[-1]["seconds"] += window["seconds"]
             segments[-1]["windows"] += 1
         else:
-            segments.append({"phase": window["phase"], "seconds": window["seconds"], "windows": 1})
+            segments.append({"phase": phase, "seconds": window["seconds"], "windows": 1})
     cursor = 0
     coverage = []
     for phase, minimum in REQUIRED_SEGMENTS:
@@ -90,6 +111,8 @@ def audit(path):
 
     top = sorted((w for w in windows if w["max_ms"] is not None),
                  key=lambda w: w["max_ms"], reverse=True)[:5]
+    top_frame_spikes = sorted(reported_spikes,
+                              key=lambda x: x["frame_ms"], reverse=True)[:5]
     flags = []
     if errors:
         flags.append("INVALID_JSONL_OR_VALUES")
@@ -101,7 +124,8 @@ def audit(path):
         flags.append("NO_RAW_FRAMES_GLOBAL_P99_1PCT_LOW_UNPROVABLE")
     if windows and any(w["p99_ms"] is None or w["one_pct_low_fps"] is None for w in windows):
         flags.append("WINDOW_P99_OR_1PCT_LOW_MISSING")
-    if any(w["max_ms"] is not None and w["max_ms"] > 100 for w in windows):
+    if any(w["max_ms"] is not None and w["max_ms"] > 100 for w in windows) or any(
+            x["frame_ms"] > 100 for x in reported_spikes):
         flags.append("SEVERE_SPIKE_OVER_100MS")
     if any(x["p95_ms"] > 33.3 or x["over_100ms"] for x in raw.values()):
         flags.append("RAW_FRAME_PERFORMANCE_OUT_OF_TARGET")
@@ -113,6 +137,7 @@ def audit(path):
             "by_phase_raw_frames": raw,
             "top_window_spikes": [{"line": w["line"], "phase": w["phase"],
                                     "max_ms": w["max_ms"], "process_ms": w["process_ms"]} for w in top],
+            "top_actual_frame_spikes": top_frame_spikes,
             "flags": flags, "parse_errors": errors}
 
 
