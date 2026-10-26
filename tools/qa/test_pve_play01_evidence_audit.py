@@ -39,5 +39,29 @@ class EvidenceAuditTests(unittest.TestCase):
         self.assertEqual(len(report['parse_errors']), 1)
 
 
+    def test_codex_schema2_phase_durations_and_top_spikes(self):
+        common = {'kind': 'sample', 'schema': 2, 'elapsed_s': 3,
+                  'frame_ms_p95': 18, 'frame_ms_p99': 23,
+                  'frame_ms_max': 30, 'fps_1pct_low': 40}
+        rows = ([dict(common, phase='production') for _ in range(5)] +
+                [dict(common, phase='party_selection')] +
+                [dict(common, phase='pve') for _ in range(10)] +
+                [dict(common, phase='pve_save')] +
+                [dict(common, phase='save_return') for _ in range(4)])
+        rows[7]['frame_ms_max'] = 151
+        rows[7]['top_spikes'] = [
+            {'frame_ms': 151, 'elapsed_s': 21.25,
+             'godot_process_ms': 110, 'godot_physics_ms': 2}
+        ]
+        report = self.run_audit(rows)
+        self.assertTrue(all(x['estimated_met'] for x in report['coverage']))
+        self.assertEqual(report['by_phase_windows']['pve']['windows'], 10)
+        self.assertEqual(report['top_actual_frame_spikes'][0]['frame_ms'], 151)
+        self.assertIn('SEVERE_SPIKE_OVER_100MS', report['flags'])
+        self.assertNotIn('WINDOW_P99_OR_1PCT_LOW_MISSING', report['flags'])
+        self.assertIn('NO_RAW_FRAMES_GLOBAL_P99_1PCT_LOW_UNPROVABLE', report['flags'])
+
+
+
 if __name__ == '__main__':
     unittest.main()
