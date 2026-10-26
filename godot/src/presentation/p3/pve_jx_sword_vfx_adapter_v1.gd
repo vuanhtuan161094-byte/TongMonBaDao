@@ -184,8 +184,14 @@ func _signatures(events: Array) -> Array[String]:
 
 
 func _suffix_prefix_overlap(previous: Array[String],current: Array[String]) -> int:
+	# A 0-length suffix always matches a 0-length prefix, but that is NOT
+	# evidence of continuity when BOTH histories are non-empty. Treat a
+	# replaced/disjoint save event ring as a new visual baseline rather than
+	# replaying every historical JX cast/hit after loading the same encounter.
+	if previous.is_empty() or current.is_empty():
+		return 0
 	var maximum := mini(previous.size(),current.size())
-	for amount in range(maximum,-1,-1):
+	for amount in range(maximum,0,-1):
 		var matches := true
 		for index in range(amount):
 			if previous[previous.size()-amount+index] != current[index]:
