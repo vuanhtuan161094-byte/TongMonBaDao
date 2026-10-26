@@ -821,9 +821,6 @@ func save_state() -> Dictionary:
         saved["world_respawn_delay"] = world_respawn_delay
     return saved
 
-# The live character HP owner stays separate until DV2-03's real HP track
-# migration. Rehydrated actors retain their exact battle HP but do not
-# silently overwrite legacy DiscipleState HP or attach unsafe object pointers.
 # Validate that the spawn-slot registry and canonical Combat V2 navigation
 # are from the SAME pinned world revision. A syntactically valid 40-character
 # SHA is not enough: two independent saved objects can otherwise refer to
@@ -842,6 +839,9 @@ static func saved_world_identity_matches(battle_snapshot: MapBattleV2,
         and not nav_map.is_empty() and nav_map == slot_map
 
 
+# The live character HP owner stays separate until DV2-03's real HP track
+# migration. Rehydrated actors retain their exact battle HP but do not
+# silently overwrite legacy DiscipleState HP or attach unsafe object pointers.
 static func restore_state(state: SimulationState, saved: Dictionary) -> Dictionary:
     if state == null or not state.sect.p3_7_resources_enabled or not state.sect.v2_pve_enabled:
         return {"ok":false,"reason":"hunting_v2_not_enabled"}
