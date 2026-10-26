@@ -60,7 +60,7 @@ func _run() -> void:
 
 	# The latest event wins, including target hit and source-first precedence.
 	var event_rows := [
-		{"type":"hit","attacker":"d1","target":"m1","time":1.0},
+		{"type":"hit","attacker":"m1","target":"d1","time":1.0},
 		{"type":"skill_cast","caster":"m1","target":"d1","time":2.0}
 	]
 	var latest := SectIsometricWorldV1._latest_pve_visual_actions(event_rows)
