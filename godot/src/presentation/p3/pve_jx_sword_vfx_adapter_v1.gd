@@ -184,8 +184,12 @@ func _signatures(events: Array) -> Array[String]:
 
 
 func _suffix_prefix_overlap(previous: Array[String],current: Array[String]) -> int:
+	# No common suffix/prefix between two non-empty rings means the saved ring
+	# was replaced. It is a new view baseline, not a set of fresh VFX events.
+	if previous.is_empty() or current.is_empty():
+		return 0
 	var maximum := mini(previous.size(),current.size())
-	for amount in range(maximum,-1,-1):
+	for amount in range(maximum,0,-1):
 		var matches := true
 		for index in range(amount):
 			if previous[previous.size()-amount+index] != current[index]:

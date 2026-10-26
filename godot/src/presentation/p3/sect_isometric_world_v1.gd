@@ -165,6 +165,7 @@ var pve_render_positions: Dictionary = {}
 var pve_target_positions: Dictionary = {}
 var pve_actor_actions: Dictionary = {}
 var pve_clock := 0.0
+var _pve_last_visual_encounter_id := ""
 var pve_source_atlas := CombatV5SourceAAtlas.new()
 var pve_jx_sword_vfx = PVE_JX_VFX_ADAPTER_SCRIPT.new()
 var pve_selected_actor_ids: Array[String] = []
@@ -638,12 +639,20 @@ func set_pve_snapshot(snapshot: MapBattleV2, view_rows: Dictionary,
     pve_view_rows = view_rows.duplicate(true)
     pve_selected_actor_ids = selected_actor_ids.duplicate()
     if snapshot == null:
+        _pve_last_visual_encounter_id = ""
         pve_target_positions.clear()
         pve_render_positions.clear()
         pve_actor_actions.clear()
         pve_jx_sword_vfx.observe_snapshot(null)
         queue_redraw()
         return
+    if _pve_last_visual_encounter_id != snapshot.encounter_id:
+        # Actor IDs can be reused across PvE runs. Do not interpolate or
+        # continue a one-shot animation from the previous encounter.
+        _pve_last_visual_encounter_id = snapshot.encounter_id
+        pve_target_positions.clear()
+        pve_render_positions.clear()
+        pve_actor_actions.clear()
     var new_visual_events := pve_jx_sword_vfx.observe_snapshot(snapshot)
     var present: Dictionary = {}
     for raw_id in snapshot.actors:
@@ -657,7 +666,11 @@ func set_pve_snapshot(snapshot: MapBattleV2, view_rows: Dictionary,
         if not pve_actor_actions.has(id):
             pve_actor_actions[id] = {"action":"idle","started":pve_clock,"until":-1.0}
         if float(actor.get("hp",0.0)) <= 0.0:
-            pve_actor_actions[id] = {"action":"die","started":pve_clock,"until":INF}
+            # HUD snapshots arrive about four times a second. Resetting
+            # `started` on every one pins a dead Source A rig to its first
+            # frames forever; only enter the death action once.
+            if str(pve_actor_actions[id].get("action","")) != "die":
+                pve_actor_actions[id] = {"action":"die","started":pve_clock,"until":INF}
         elif str(pve_actor_actions[id].get("action","")) == "die":
             pve_actor_actions[id] = {"action":"idle","started":pve_clock,"until":-1.0}
     for id in pve_render_positions.keys().duplicate():

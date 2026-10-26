@@ -187,6 +187,15 @@ var b3_hunt_disciple_id: StringName = &""
 var b3_hunt_refresh_elapsed := 0.0
 var active_hunt_mode := "care"
 var multicamp_encounter_id := ""
+var pve_party_picker_shade: ColorRect
+var pve_party_picker_panel: Panel
+var pve_party_picker_count: Label
+var pve_party_picker_reasons: Label
+var pve_party_picker_feedback: Label
+var pve_party_picker_list: VBoxContainer
+var pve_party_picker_start: Button
+var pve_party_picker_checks: Dictionary = {}
+var pve_party_selected_ids: Array[StringName] = []
 var iso_view_container: SubViewportContainer
 var iso_viewport: SubViewport
 var iso_world: SectIsometricWorldV1
@@ -228,6 +237,8 @@ func _ready() -> void:
     living_cue_tracker.seed_from_state(state)
     _refresh_living_cues()
     _build_b3_hunt_panel()
+    _build_pve_quick_entry()
+    _build_pve_party_picker()
     _resume_saved_b3_hunt()
 
 func _exit_tree() -> void:
@@ -678,7 +689,8 @@ func _camera_center() -> Vector2:
     return SectMapCamera.VIEW_RECT.position + SectMapCamera.VIEW_RECT.size * 0.5
 
 func _popup_is_open() -> bool:
-    return popup_layer != null and popup_layer.get_child_count() > 0
+    return (popup_layer != null and popup_layer.get_child_count() > 0) \
+        or (pve_party_picker_shade != null and pve_party_picker_shade.visible)
 
 func _clear_pointer_state() -> void:
     touch_points.clear()
@@ -1098,6 +1110,271 @@ func _bottom_action(action: String) -> void:
         _open_disciple_deep_screen(target_id, "Thuộc tính")
         return
     super._bottom_action(action)
+
+func _build_pve_quick_entry() -> void:
+    var bottom := get_node_or_null("PlayerBottomBar") as Panel
+    if bottom == null:
+        return
+    var button := Button.new()
+    button.name = "PveHuntQuickEntry"
+    button.text = "Săn quái / Thanh Trúc Lâm"
+    button.position = Vector2(906,14)
+    button.size = Vector2(292,50)
+    button.add_theme_font_size_override("font_size",14)
+    button.add_theme_color_override("font_color",PAPER_LIGHT)
+    button.add_theme_stylebox_override("normal",_style(JADE_DARK,Color("544729"),2,10))
+    button.add_theme_stylebox_override("hover",_style(JADE, GOLD,3,10))
+    button.tooltip_text = "Chọn sáu đệ tử V2 khỏe, rảnh để vào Thanh Trúc Lâm"
+    button.pressed.connect(_open_pve_party_picker)
+    bottom.add_child(button)
+
+func _build_pve_party_picker() -> void:
+    pve_party_picker_shade = ColorRect.new()
+    pve_party_picker_shade.name = "PvePartyPickerShade"
+    pve_party_picker_shade.color = Color(0.02,0.035,0.04,0.78)
+    pve_party_picker_shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    pve_party_picker_shade.z_index = 105
+    pve_party_picker_shade.mouse_filter = Control.MOUSE_FILTER_STOP
+    pve_party_picker_shade.visible = false
+    add_child(pve_party_picker_shade)
+
+    pve_party_picker_panel = Panel.new()
+    pve_party_picker_panel.name = "PvePartyPicker"
+    pve_party_picker_panel.position = Vector2(170,54)
+    pve_party_picker_panel.size = Vector2(940,610)
+    pve_party_picker_panel.z_index = 106
+    pve_party_picker_panel.add_theme_stylebox_override("panel",_style(PAPER_LIGHT,INK,3,14))
+    pve_party_picker_shade.add_child(pve_party_picker_panel)
+
+    var title := Label.new()
+    title.text = "CHỌN ĐỘI SĂN · THANH TRÚC LÂM"
+    title.position = Vector2(24,16)
+    title.size = Vector2(890,34)
+    title.add_theme_font_size_override("font_size",23)
+    title.add_theme_color_override("font_color",JADE_DARK)
+    pve_party_picker_panel.add_child(title)
+
+    var instructions := Label.new()
+    instructions.text = "Chọn đúng 6 đệ tử V2 khỏe và rảnh. Người đang làm việc, bị thương hoặc còn ở một bãi săn khác sẽ không thể vào đội."
+    instructions.position = Vector2(26,54)
+    instructions.size = Vector2(884,38)
+    instructions.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    instructions.add_theme_font_size_override("font_size",13)
+    instructions.add_theme_color_override("font_color",INK)
+    pve_party_picker_panel.add_child(instructions)
+
+    pve_party_picker_count = Label.new()
+    pve_party_picker_count.name = "PvePartyPickerCount"
+    pve_party_picker_count.position = Vector2(26,94)
+    pve_party_picker_count.size = Vector2(884,26)
+    pve_party_picker_count.add_theme_font_size_override("font_size",15)
+    pve_party_picker_count.add_theme_color_override("font_color",JADE_DARK)
+    pve_party_picker_panel.add_child(pve_party_picker_count)
+
+    var scroll := ScrollContainer.new()
+    scroll.name = "PvePartyEligibleListScroll"
+    scroll.position = Vector2(24,124)
+    scroll.size = Vector2(892,326)
+    scroll.clip_contents = true
+    pve_party_picker_panel.add_child(scroll)
+    pve_party_picker_list = VBoxContainer.new()
+    pve_party_picker_list.name = "PvePartyEligibleList"
+    pve_party_picker_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    pve_party_picker_list.add_theme_constant_override("separation",3)
+    scroll.add_child(pve_party_picker_list)
+
+    pve_party_picker_reasons = Label.new()
+    pve_party_picker_reasons.name = "PvePartyEligibilityReasons"
+    pve_party_picker_reasons.position = Vector2(26,456)
+    pve_party_picker_reasons.size = Vector2(884,64)
+    pve_party_picker_reasons.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    pve_party_picker_reasons.add_theme_font_size_override("font_size",12)
+    pve_party_picker_reasons.add_theme_color_override("font_color",INK)
+    pve_party_picker_panel.add_child(pve_party_picker_reasons)
+
+    pve_party_picker_feedback = Label.new()
+    pve_party_picker_feedback.name = "PvePartyPickerFeedback"
+    pve_party_picker_feedback.position = Vector2(26,522)
+    pve_party_picker_feedback.size = Vector2(590,26)
+    pve_party_picker_feedback.add_theme_font_size_override("font_size",13)
+    pve_party_picker_feedback.add_theme_color_override("font_color",CINNABAR)
+    pve_party_picker_panel.add_child(pve_party_picker_feedback)
+
+    var cancel := Button.new()
+    cancel.name = "PvePartyPickerCancel"
+    cancel.text = "Đóng"
+    cancel.position = Vector2(650,558)
+    cancel.size = Vector2(112,38)
+    cancel.add_theme_font_size_override("font_size",14)
+    cancel.add_theme_stylebox_override("normal",_style(Color("d7c695"),INK,1,8))
+    cancel.pressed.connect(_close_pve_party_picker)
+    pve_party_picker_panel.add_child(cancel)
+
+    pve_party_picker_start = Button.new()
+    pve_party_picker_start.name = "PvePartyPickerStart"
+    pve_party_picker_start.text = "Vào Thanh Trúc Lâm"
+    pve_party_picker_start.position = Vector2(774,558)
+    pve_party_picker_start.size = Vector2(142,38)
+    pve_party_picker_start.add_theme_font_size_override("font_size",13)
+    pve_party_picker_start.add_theme_color_override("font_color",PAPER_LIGHT)
+    pve_party_picker_start.add_theme_stylebox_override("normal",_style(JADE_DARK,PAPER_LIGHT,2,8))
+    pve_party_picker_start.pressed.connect(_start_multicamp_hunt_for_picked_party)
+    pve_party_picker_panel.add_child(pve_party_picker_start)
+
+func _open_pve_party_picker() -> void:
+    if not runtime_ready or state == null or pve_party_picker_shade == null:
+        return
+    var active_encounter := HuntingPveRunV2.active_multicamp_id(state)
+    if not active_encounter.is_empty():
+        var restored := HuntingPveRunV2.resume_active(state,active_encounter)
+        if bool(restored.get("ok",false)):
+            var active_session: HuntingPveRunV2 = restored["session"]
+            var owner_id := selected_id
+            if not active_session.battle.actors.has(str(owner_id)):
+                owner_id = &""
+                for actor_id in active_session.battle.actors:
+                    var actor: Dictionary = active_session.battle.actors[actor_id]
+                    if str(actor.get("side","")) == "disciple":
+                        owner_id = StringName(str(actor_id))
+                        break
+            if owner_id != &"":
+                _open_multicamp_panel(owner_id,active_encounter)
+                return
+    pve_party_selected_ids.clear()
+    pve_party_picker_feedback.text = ""
+    _populate_pve_party_picker()
+    if not active_encounter.is_empty():
+        pve_party_picker_feedback.text = "Bãi Thanh Trúc Lâm đã lưu nhưng chưa thể mở lại: kiểm tra trạng thái Save/Load."
+    elif not state.sect.b3_hunt.is_empty():
+        pve_party_picker_feedback.text = "Thế giới săn B3 CARE đang hoạt động; hãy kết thúc hoặc trở về trước."
+    pve_party_picker_shade.visible = true
+
+func _close_pve_party_picker() -> void:
+    if pve_party_picker_shade != null:
+        pve_party_picker_shade.visible = false
+
+func _populate_pve_party_picker() -> void:
+    if pve_party_picker_list == null or state == null:
+        return
+    for child in pve_party_picker_list.get_children():
+        pve_party_picker_list.remove_child(child)
+        child.free()
+    pve_party_picker_checks.clear()
+    var eligible: Array[Dictionary] = []
+    var blocked: Dictionary = {}
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    for raw_id in ids:
+        var id := StringName(raw_id)
+        var disciple: DiscipleState = state.disciples[id]
+        var reason := _multicamp_member_eligibility_reason(disciple)
+        if reason.is_empty():
+            eligible.append({"id":id,"rating":_multicamp_combat_rating(disciple)})
+        else:
+            blocked[reason] = int(blocked.get(reason,0))+1
+    eligible.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
+        var a_score := float(a["rating"])
+        var b_score := float(b["rating"])
+        if not is_equal_approx(a_score,b_score):
+            return a_score > b_score
+        return str(a["id"]) < str(b["id"]))
+    var still_eligible: Array[StringName] = []
+    for id in pve_party_selected_ids:
+        for row in eligible:
+            if StringName(row["id"]) == id:
+                still_eligible.append(id)
+                break
+    pve_party_selected_ids = still_eligible
+    if pve_party_selected_ids.is_empty():
+        for row in eligible:
+            if pve_party_selected_ids.size() >= 6:
+                break
+            pve_party_selected_ids.append(StringName(row["id"]))
+    for row in eligible:
+        var id := StringName(row["id"])
+        var disciple: DiscipleState = state.disciples[id]
+        var check := CheckBox.new()
+        check.name = "PvePartyMember_"+str(id).validate_node_name()
+        check.text = "%s   ·   HP %.0f / %.0f" % [disciple.display_name,disciple.hp,disciple.max_hp]
+        check.custom_minimum_size = Vector2(850,38)
+        check.button_pressed = pve_party_selected_ids.has(id)
+        check.add_theme_font_size_override("font_size",14)
+        check.add_theme_color_override("font_color",INK)
+        check.tooltip_text = "V2 · khỏe · rảnh · đang ở tông môn"
+        check.toggled.connect(_on_pve_party_member_toggled.bind(id))
+        pve_party_picker_list.add_child(check)
+        pve_party_picker_checks[id] = check
+    var blocked_lines: Array[String] = []
+    var blocked_keys: Array = blocked.keys()
+    blocked_keys.sort()
+    for reason_key in blocked_keys:
+        blocked_lines.append("%d: %s" % [int(blocked[reason_key]),str(reason_key)])
+    var blocked_text := "Không đủ điều kiện (%d): %s" % [
+        ids.size()-eligible.size()," · ".join(blocked_lines.slice(0,5))]
+    if blocked_lines.size() > 5:
+        blocked_text += " · và %d lý do khác" % [blocked_lines.size()-5]
+    pve_party_picker_reasons.text = (
+        "Cần 6 người đủ điều kiện; có %d. " % eligible.size()
+        + "Điều kiện: V2 sẵn sàng, HP còn, không bị thương, ở tông môn, không có việc/timer/ruộng/lò/rèn thân hoặc bãi săn khác.\n"
+        + blocked_text)
+    _update_pve_party_picker_controls(eligible.size())
+
+func _on_pve_party_member_toggled(checked: bool,id: StringName) -> void:
+    if checked:
+        if pve_party_selected_ids.size() >= 6:
+            var checkbox := pve_party_picker_checks.get(id) as CheckBox
+            if checkbox != null:
+                checkbox.set_pressed_no_signal(false)
+            pve_party_picker_feedback.text = "Đội săn tối đa 6 người. Bỏ chọn một người trước."
+            _update_pve_party_picker_controls(pve_party_picker_checks.size())
+            return
+        if not pve_party_selected_ids.has(id):
+            pve_party_selected_ids.append(id)
+    else:
+        pve_party_selected_ids.erase(id)
+    pve_party_picker_feedback.text = ""
+    _update_pve_party_picker_controls(pve_party_picker_checks.size())
+
+func _update_pve_party_picker_controls(eligible_count: int) -> void:
+    if pve_party_picker_count == null:
+        return
+    pve_party_picker_count.text = "Đã chọn %d / 6  ·  đủ điều kiện %d" % [
+        pve_party_selected_ids.size(),eligible_count]
+    if pve_party_selected_ids.size() < 6 and eligible_count < 6:
+        pve_party_picker_feedback.text = "Chưa đủ sáu người. Cho đệ tử về tông môn, chờ việc kết thúc hoặc hồi phục rồi thử lại."
+    if pve_party_picker_start != null:
+        pve_party_picker_start.disabled = pve_party_selected_ids.size() != 6 \
+            or eligible_count < 6 or not state.sect.b3_hunt.is_empty() \
+            or not HuntingPveRunV2.active_multicamp_id(state).is_empty()
+
+func _start_multicamp_hunt_for_picked_party() -> void:
+    if pve_party_selected_ids.size() != 6:
+        pve_party_picker_feedback.text = "Hãy chọn đúng 6 đệ tử đủ điều kiện."
+        return
+    var party := _multicamp_party_for_ids(pve_party_selected_ids)
+    if party.size() != 6:
+        pve_party_picker_feedback.text = "Đội vừa thay đổi trạng thái. Hãy làm mới lựa chọn; người bận hoặc bị thương không thể vào."
+        _populate_pve_party_picker()
+        return
+    if not state.sect.b3_hunt.is_empty():
+        pve_party_picker_feedback.text = "Thế giới săn B3 CARE đang hoạt động; hãy kết thúc hoặc trở về trước."
+        return
+    var encounter_id := "pve:thanh_truc_lam:c01:%d:%d:%d" % [
+        state.seed,state.tick,state.sect.v2_pve_settlement_receipts.size()]
+    var world_options := b3_pve_world_view.get_open_world_options()
+    if not bool(world_options.get("ok",false)):
+        pve_party_picker_feedback.text = "Không dựng được bản đồ Source A: %s" % str(world_options.get("reason","dữ liệu bản đồ chưa sẵn sàng"))
+        return
+    var session := HuntingPveRunV2.new()
+    var result := session.begin_multicamp(runtime_session.owner,encounter_id,
+        state.seed ^ state.tick ^ state.sect.v2_pve_settlement_receipts.size(),party,10,world_options)
+    if not bool(result.get("ok",false)):
+        pve_party_picker_feedback.text = "Chưa thể vào Thanh Trúc Lâm: %s" % str(result.get("reason","không đủ điều kiện"))
+        return
+    var first_id := StringName(str(party[0].get("disciple_id","")))
+    _close_pve_party_picker()
+    _open_multicamp_panel(first_id,encounter_id)
+    _refresh_all()
 
 func _open_disciple(disciple_id: StringName) -> void:
     if not state.disciples.has(disciple_id):
@@ -3962,7 +4239,7 @@ func _start_multicamp_hunt_for_selected() -> void:
         return
     var party := _multicamp_party_for_selected(selected_id)
     if party.is_empty():
-        summary_feedback = "Không có đệ tử V2 rảnh, khỏe để lập tổ đội."
+        summary_feedback = "Cần đúng 6 đệ tử V2 khỏe, rảnh. Dùng nút Săn quái để xem điều kiện và chọn đội."
         _refresh_disciple_summary_content()
         return
     var encounter_id := "pve:thanh_truc_lam:c01:%d:%d:%d" % [
@@ -3985,10 +4262,9 @@ func _start_multicamp_hunt_for_selected() -> void:
     _refresh_all()
 
 func _multicamp_party_for_selected(first_id: StringName) -> Array:
-    var result: Array = []
     if not state.disciples.has(first_id) or not _multicamp_member_eligible(state.disciples[first_id]):
-        return result
-    var candidates: Array = [first_id]
+        return []
+    var candidates: Array[StringName] = [first_id]
     var ids: Array = state.disciples.keys()
     var available: Array[Dictionary] = []
     for raw_id in ids:
@@ -4008,8 +4284,25 @@ func _multicamp_party_for_selected(first_id: StringName) -> Array:
         if candidates.size() >= 6:
             break
         candidates.append(StringName(candidate["id"]))
+    if candidates.size() != 6:
+        return []
+    return _multicamp_party_for_ids(candidates)
+
+func _multicamp_party_for_ids(member_ids: Array) -> Array:
+    var result: Array = []
+    if member_ids.size() != 6:
+        return result
+    var candidates: Array[StringName] = []
+    var seen: Dictionary = {}
+    for raw_id in member_ids:
+        var id := StringName(str(raw_id))
+        if seen.has(id) or not state.disciples.has(id) \
+                or not _multicamp_member_eligible(state.disciples[id]):
+            return []
+        seen[id] = true
+        candidates.append(id)
     for i in range(candidates.size()):
-        var id := StringName(candidates[i])
+        var id := candidates[i]
         var disciple: DiscipleState = state.disciples[id]
         var profile: Dictionary = DiscipleRealmProgressV2.current(disciple)
         var cultivation: Dictionary = profile["cultivation"]
@@ -4044,10 +4337,36 @@ func _multicamp_combat_rating(disciple: DiscipleState) -> float:
     )
 
 func _multicamp_member_eligible(disciple: DiscipleState) -> bool:
-    if disciple == null or not DiscipleRealmProgressV2.progression_ready(disciple) or disciple.hp <= 0.0 or disciple.injury_level != 0 or not disciple.active_pve_encounter_id.is_empty() or disciple.region_id != &"sect" or not [&"EVALUATE",&"IDLE",&"HOLD"].has(disciple.current_action):
-        return false
+    return _multicamp_member_eligibility_reason(disciple).is_empty()
+
+func _multicamp_member_eligibility_reason(disciple: DiscipleState) -> String:
+    if disciple == null:
+        return "Không tìm thấy đệ tử"
+    if not DiscipleRealmProgressV2.progression_ready(disciple):
+        return "Hồ sơ V2 chưa sẵn sàng"
+    if disciple.hp <= 0.0:
+        return "Đã gục, cần hồi phục"
+    if disciple.injury_level != 0:
+        return "Đang bị thương"
+    if not disciple.active_pve_encounter_id.is_empty():
+        return "Đang ở một bãi săn khác"
+    if disciple.region_id != &"sect":
+        return "Chưa trở về tông môn"
+    if not [&"EVALUATE",&"IDLE",&"HOLD"].has(disciple.current_action):
+        return "Đang có công việc hoặc công lệnh"
     var buildings := BuildingSystem.new()
-    return disciple.work_cycle_state.is_empty() and disciple.worksite_building_id == &"" and disciple.work_progress.is_empty() and not buildings.disciple_has_active_spirit_plot(state,disciple.id) and not buildings.disciple_has_active_timed_recipe(state,disciple.id) and buildings.active_resource_timer_for_worker(state,disciple.id).is_empty() and not DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple)
+    if not disciple.work_cycle_state.is_empty() or disciple.worksite_building_id != &"" \
+            or not disciple.work_progress.is_empty():
+        return "Đang làm việc"
+    if buildings.disciple_has_active_spirit_plot(state,disciple.id):
+        return "Đang chăm Linh Điền"
+    if buildings.disciple_has_active_timed_recipe(state,disciple.id):
+        return "Đang chế tạo theo lệnh"
+    if not buildings.active_resource_timer_for_worker(state,disciple.id).is_empty():
+        return "Đang có tác vụ khai thác"
+    if DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple):
+        return "Đang rèn thân"
+    return ""
 
 func _toggle_b3_hunt_auto() -> void:
     if active_hunt_mode == "multicamp":
