@@ -1,6 +1,6 @@
 extends SceneTree
 
-const SAVE_PATH := "user://tong_mon_ba_dao_live_v2.json"
+const SAVE_PATH := "res://outputs/pve_jx_world_20261026/qa_live_save.json"
 const KEEP_SAVE_ENV := "TMB_KEEP_PVE_LIVE_SAVE"
 const GUI_CAPTURE_ENV := "TMB_PVE_GUI_CAPTURE_PATH"
 const QA_SEED_SAVE := "res://outputs/endgame_qa_20261026/gameplay/roster_130/endgame_capture_save_1792953798.json"
@@ -117,21 +117,21 @@ func _run() -> void:
 	if not _check(battle.active and battle.continuous_mode and battle.world_mode
 		and battle._count_monster_records() == 10 and battle._count_alive("monster") == 10
 		and battle._count_alive("disciple") == 6,
-		"the JX open world is not six real disciples against ten live Combat V2 monsters"):
+		"the continuous Source A forest world is not six real disciples against ten live Combat V2 monsters"):
 		return
 	for id in ids:
 		if not _check(battle.actors.has(str(id)) and state.disciples[id].active_pve_encounter_id == encounter,
 			"a real disciple is missing or not reserved in the canonical active hunt"):
 			return
 	var arena := ui.get_node("B3MainHuntShade/B3MainHuntPanel/B3MainHuntArena") as Control
-	var map := arena.get_node_or_null("PveJxContinuousWorldViewV1") as PveJxContinuousWorldViewV1
+	var map := arena.get_node_or_null("PveSectWorldViewV1") as PveSectWorldViewV1
 	var combat_view := ui.get_node("B3MainHuntShade/B3MainHuntPanel/B3MainHuntFactsPanel/B3PveCombatV5View") as Control
 	if not _check(bool(ui.get_node("B3MainHuntShade").visible) and bool(arena.visible)
 		and map != null and map.visible and not combat_view.visible
-		and map.source != null and map.source.verified_files == 44,
-		"the main P3.2 hunt view did not show the hash-verified JX map and live minimap; shade=%s arena=%s map=%s source=%s verified=%d combat=%s error=%s" % [
+		and map.world != null and map.world.pve_landscape and map.world.art_source_status.get("accepted_count",0) >= 10,
+		"the main P3.2 hunt view did not show the production Source A isometric world and live minimap; shade=%s arena=%s map=%s renderer=%s assets=%d combat=%s error=%s" % [
 		str(ui.get_node("B3MainHuntShade").visible),str(arena.visible),str(map != null and map.visible),
-		str(map != null and map.source != null),map.source.verified_files if map != null and map.source != null else -1,
+		map.world.get_class() if map != null and map.world != null else "missing renderer",map.world.art_source_status.get("accepted_count",0) if map != null and map.world != null else -1,
 			str(combat_view.visible),map.source_error if map != null else "missing map node"] + "; panel=%s panel_visible=%s mode=%s active_id=%s" % [
 		str(ui.get("b3_hunt_panel") != null),str(ui.get("b3_hunt_panel") != null and (ui.get("b3_hunt_panel") as Control).visible),
 		str(ui.get("active_hunt_mode")),encounter]):
@@ -144,7 +144,7 @@ func _run() -> void:
 		return
 	if not _check(map.battle != null and map.battle.encounter_id == encounter
 		and map.battle.world_mode and map.battle.actors.size() == battle.actors.size(),
-		"JX map does not read the saved authoritative Combat V2 world snapshot"):
+		"Source A isometric view does not read the saved authoritative Combat V2 world snapshot"):
 		return
 	var source_a_rows: Dictionary = ui.call("_b3_hunt_visual_rows",battle)
 	for disciple_id in ids:
@@ -155,8 +155,8 @@ func _run() -> void:
 			and not map.source_a_atlas.frame_region(visual_key,"attack",Vector2.RIGHT,0.0).is_empty(),
 			"real V2 disciple did not resolve to a verified animated Source A actor for the open world: "+str(disciple_id)):
 			return
-	if not _check(map.minimap_rect().position.x >= map.size.x-202.0
-		and map.minimap_rect().position.y == 12.0,
+	if not _check(map.minimap_rect().position.x >= map.size.x-170.0
+		and map.minimap_rect().position.y == 10.0,
 		"minimap is not fixed to the viewport corner"):
 		return
 	if not _check(map.topology.get("camp_positions",[]).size() == 20
@@ -212,7 +212,7 @@ func _run() -> void:
 			if path.size() > 1:
 				path_around_terrain = true
 	if not _check(ordered_count == 6 and path_around_terrain,
-		"clicking open ground did not issue six saved pathfinding orders through the JX collision grid; orders=%d selected=%s alive=%d target=%s" % [
+			"clicking open ground did not issue six saved pathfinding orders through the Source A forest obstacle grid; orders=%d selected=%s alive=%d target=%s" % [
 			ordered_count,str(map.selected_actor_ids),battle._count_alive("disciple"),str(move_target)]):
 		return
 	var before_positions: Dictionary = battle.summary()["positions"]
@@ -283,7 +283,7 @@ func _run() -> void:
 			"could not save actual 1280x720 Godot GUI frame"):
 			return
 		gui_captured = true
-		print("PVE GUI CAPTURE PASS path=%s sha256=%s size=1280x720 jx_map=50x100 verified_files=44 live_party=6 live_monsters=%d actions=%d" % [
+		print("PVE GUI CAPTURE PASS path=%s sha256=%s size=1280x720 renderer=SectIsometricWorldV1 map=192x192 live_party=6 live_monsters=%d actions=%d" % [
 			capture_path,FileAccess.get_sha256(capture_path),capture_battle._count_alive("monster"),capture_battle.actions])
 	var loaded_disciple_records := 0
 	for actor in loaded_battle.actors.values():
@@ -384,8 +384,10 @@ func _run() -> void:
 		final_battle = session.battle
 	if not keep:
 		_remove_save()
-	print("PVE JX CONTINUOUS WORLD P3.2 INTEGRATION PASS sha="+str(OS.get_environment("TMB_SOURCE_SHA"))
-		+" map=50x100 source_hashes=44 zones=20 party=6 real_monsters=10 reserved=6 shared_clock_seconds=%.2f actions=%d path_order=true zone_hop=%s result=%s kills=%d injury120=%s minimap=live camera=pan_zoom active_save_load=true no_duplicate_or_fabricated_rewards=true loot=LOOT_PENDING" % [final_battle.now if final_battle != null else 0.0,final_battle.actions if final_battle != null else 0,str(zone_hop),final_outcome,final_kills,str(active_after.is_empty())])
+	var injury120_result := "NOT_REACHED" if not active_after.is_empty() else "PASS"
+	var zone_hop_result := "PASS" if zone_hop else "NOT_REACHED"
+	print("PVE SOURCE A CONTINUOUS WORLD P3.2 INTEGRATION PASS sha="+str(OS.get_environment("TMB_SOURCE_SHA"))
+		+" renderer=SectIsometricWorldV1 map=192x192 zones=20 party=6 real_monsters=10 reserved=6 shared_clock_seconds=%.2f actions=%d path_order=true zone_hop=%s result=%s kills=%d injury120=%s minimap=live camera=pan_zoom active_save_load=true no_duplicate_or_fabricated_rewards=true loot=LOOT_PENDING" % [final_battle.now if final_battle != null else 0.0,final_battle.actions if final_battle != null else 0,zone_hop_result,final_outcome,final_kills,injury120_result])
 	_cleanup_ui()
 	quit(0)
 
@@ -400,7 +402,7 @@ func _count_respawned_ready_slots(population: Dictionary, camp: int) -> int:
 func envelope_for_capture(source_state: SimulationState, encounter_id: String) -> Dictionary:
 	return source_state.sect.v2_pve_active_runs.get(encounter_id,{})
 
-func _find_c01_ground_target(map: PveJxContinuousWorldViewV1, battle: MapBattleV2) -> Vector2:
+func _find_c01_ground_target(map: PveSectWorldViewV1, battle: MapBattleV2) -> Vector2:
 	var center: Vector2 = map.topology["camp_positions"][0]
 	var navigation: Dictionary = battle.world_navigation
 	var bounds: Rect2 = map.topology["bounds"]
@@ -443,7 +445,7 @@ func _find_c01_ground_target(map: PveJxContinuousWorldViewV1, battle: MapBattleV
 				best = world
 	return best
 
-func _make_minimap_click(map: PveJxContinuousWorldViewV1, position: Vector2) -> InputEventMouseButton:
+func _make_minimap_click(map: PveSectWorldViewV1, position: Vector2) -> InputEventMouseButton:
 	var event := InputEventMouseButton.new()
 	event.button_index = MOUSE_BUTTON_LEFT
 	event.pressed = true

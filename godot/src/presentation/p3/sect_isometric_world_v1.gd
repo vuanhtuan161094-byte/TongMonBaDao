@@ -109,6 +109,7 @@ const DECOR_LAYOUT := [
 # SPAWN_CELL is only the seed used by this presentation preview model.  It is
 # aligned to the reserved gate point to produce the requested visual spine.
 const SPAWN_CELL := Vector2i(96,102)
+const PVE_SPAWN_CELL := Vector2i(95,72)
 const ROADS_JUNCTION := Vector2i(89,96)
 const COURTYARD_RECT := Rect2i(85,93,8,6)
 const COURTYARD_RUNE_CELLS := [Vector2i(89,95),Vector2i(89,97)]
@@ -144,6 +145,23 @@ var candidate_site_art: Dictionary = {}
 var decoration_items: Array[Dictionary] = []
 var art_loaded_count := 0
 var art_source_status: Dictionary = {}
+var pve_landscape := false
+var pve_path_cells: Dictionary = {}
+var pve_obstacle_cells: Dictionary = {}
+var pve_navigation: Dictionary = {}
+var pve_topology: Dictionary = {}
+var pve_battle: MapBattleV2
+var pve_view_rows: Dictionary = {}
+var pve_render_positions: Dictionary = {}
+var pve_target_positions: Dictionary = {}
+var pve_actor_actions: Dictionary = {}
+var pve_clock := 0.0
+var pve_source_atlas := CombatV5SourceAAtlas.new()
+var pve_selected_actor_ids: Array[String] = []
+var pve_mini_texture: Texture2D
+var pve_camera_initialized := false
+const PVE_FOREST_ASSETS := ["570036","570041","570042","570043","570073","570171","570172","570173","570181","570182","570183","570185","570186","570187","570397","570399"]
+const PVE_BRIDGE_ROWS := [32,92,150]
 
 
 func _ready() -> void:
@@ -160,9 +178,127 @@ func _ready() -> void:
     set_process(false)
     # An actual Node2D world with Camera2D lives only inside its own SubViewport.
     # The parent Control HUD is intentionally outside this camera transform.
-    _seed_env02a_geometry()
+    if pve_landscape:
+        _seed_pve_landscape()
+    else:
+        _seed_env02a_geometry()
     _load_verified_source_art()
     _update_chunks()
+    set_process(pve_landscape)
+
+func configure_pve_landscape() -> void:
+    # Select the landscape-only profile before the production renderer enters
+    # the tree. Combat V2 remains the only simulation authority.
+    pve_landscape = true
+
+func _seed_pve_landscape() -> void:
+    lab_geometry = SectIsoMapModelV1.new(GRID,PVE_SPAWN_CELL)
+    pve_obstacle_cells = _pve_obstacles()
+    pve_navigation = pve_navigation_grid()
+    var navigation := _pve_astar()
+    var start := PVE_SPAWN_CELL
+    for row in range(4):
+        for column in range(5):
+            var center := Vector2i(roundi((float(column)+0.5)*float(GRID.x)/5.0),roundi((float(row)+0.5)*float(GRID.y)/4.0))
+            var target := PveOpenWorldTopologyV1._nearest_walkable(pve_navigation,center)
+            if target.x < 0:
+                continue
+            for cell in navigation.get_id_path(start,target):
+                pve_path_cells[cell] = true
+            start = target
+    preview_roads = pve_path_cells.duplicate(true)
+    pve_mini_texture = _pve_minimap_texture(pve_navigation,pve_path_cells)
+    lab_routes_ready = true
+
+static func pve_stream_center_x(y: float) -> float:
+    return 97.0+sin(y*0.052)*17.0+sin(y*0.117)*5.0
+
+static func pve_bridge_at(cell: Vector2i) -> bool:
+    for bridge_y in PVE_BRIDGE_ROWS:
+        var center_x := roundi(pve_stream_center_x(float(bridge_y)))
+        if absi(cell.y-bridge_y) <= 1 and absi(cell.x-center_x) <= 3:
+            return true
+    return false
+
+static func pve_forest_layout() -> Array[Dictionary]:
+    var rows: Array[Dictionary] = []
+    var clearings: Array[Vector2i] = [PVE_SPAWN_CELL]
+    for row in range(4):
+        for column in range(5):
+            clearings.append(Vector2i(roundi((float(column)+0.5)*float(GRID.x)/5.0),roundi((float(row)+0.5)*float(GRID.y)/4.0)))
+    var asset_index := 0
+    for y in range(4,188,5):
+        for x in range(4,188,5):
+            var cell := Vector2i(x,y)
+            if absf(float(x)-pve_stream_center_x(float(y))) < 8.0:
+                continue
+            var clear := false
+            for clearing in clearings:
+                if Vector2(cell-clearing).length_squared() < 49.0:
+                    clear = true
+                    break
+            if clear:
+                continue
+            var hash_value := posmod(x*1103515245+y*12345+20261026,2147483647)
+            if hash_value%100 >= 42:
+                continue
+            rows.append({"id":PVE_FOREST_ASSETS[asset_index%PVE_FOREST_ASSETS.size()],"cell":cell,"scale":0.53 if hash_value%3 == 0 else (0.45 if hash_value%3 == 1 else 0.38)})
+            asset_index += 1
+    return rows
+
+static func pve_navigation_grid() -> Dictionary:
+    var blocked := PackedByteArray()
+    blocked.resize(GRID.x*GRID.y)
+    for cell in _pve_obstacles():
+        if cell.x >= 0 and cell.y >= 0 and cell.x < GRID.x and cell.y < GRID.y:
+            blocked[cell.y*GRID.x+cell.x] = 1
+    var identity := "sect-isometric-env02a-pve-v1|%s|%s|%s" % [str(GRID),str(PVE_SPAWN_CELL),str(PVE_BRIDGE_ROWS)]
+    for row in pve_forest_layout():
+        identity += "|%s:%s" % [str(row["id"]),str(row["cell"])]
+    return {"width":GRID.x,"height":GRID.y,"blocked":blocked,"source_blob_sha":identity.sha1_text(),"source_map":"sect_isometric_source_a_pve_v1"}
+
+static func _pve_obstacles() -> Dictionary:
+    var result: Dictionary = {}
+    for y in range(GRID.y):
+        var center_x := pve_stream_center_x(float(y))
+        for x in range(maxi(0,floori(center_x)-2),mini(GRID.x,ceili(center_x)+3)):
+            var cell := Vector2i(x,y)
+            if not pve_bridge_at(cell):
+                result[cell] = true
+    for row in pve_forest_layout():
+        var cell: Vector2i = row["cell"]
+        for oy in range(-1,2):
+            for ox in range(-1,2):
+                var blocked_cell := cell+Vector2i(ox,oy)
+                if blocked_cell.x >= 0 and blocked_cell.y >= 0 and blocked_cell.x < GRID.x and blocked_cell.y < GRID.y and not pve_bridge_at(blocked_cell):
+                    result[blocked_cell] = true
+    return result
+
+func _pve_astar() -> AStarGrid2D:
+    var nav := AStarGrid2D.new()
+    nav.region = Rect2i(Vector2i.ZERO,GRID)
+    nav.cell_size = Vector2.ONE
+    nav.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
+    nav.update()
+    for cell in pve_obstacle_cells:
+        nav.set_point_solid(cell,true)
+    return nav
+
+static func _pve_minimap_texture(navigation: Dictionary,path_cells: Dictionary = {}) -> Texture2D:
+    var image := Image.create(GRID.x,GRID.y,false,Image.FORMAT_RGBA8)
+    var blocked: PackedByteArray = navigation["blocked"]
+    for y in range(GRID.y):
+        for x in range(GRID.x):
+            var cell := Vector2i(x,y)
+            var color := Color("54794f") if int(blocked[y*GRID.x+x]) == 0 else Color("334b39")
+            if absf(float(x)-pve_stream_center_x(float(y))) <= 2.5:
+                color = Color("538786")
+            if pve_bridge_at(cell):
+                color = Color("a18e64")
+            elif path_cells.has(cell):
+                color = Color("9b8b5e")
+            image.set_pixel(x,y,color)
+    return ImageTexture.create_from_image(image)
 
 # Reuse the ENV02A lab's exact AStarGrid2D/doorway geometry. This model
 # owns ONLY procedural visual roads in the SubViewport, never player layout
@@ -272,23 +408,28 @@ func _load_verified_source_art() -> void:
             if not placed.is_empty():
                 for tile in lab_geometry.cells_for(landmark,placed["origin"],0):
                     occupied[tile] = true
-    for item in DECOR_LAYOUT:
+    var placement_rows: Array = pve_forest_layout() if pve_landscape else DECOR_LAYOUT
+    for item in placement_rows:
         var tile: Vector2i = item["cell"]
-        if not STARTER.has_point(tile) or occupied.has(tile) or preview_roads.has(tile):
-            continue
-        var marker_clear := true
-        for raw_anchor in TYPE_ANCHORS.values():
-            if (tile-Vector2i(raw_anchor)).length_squared() <= 2:
-                marker_clear = false
-                break
-        if not marker_clear or COURTYARD_RECT.has_point(tile):
-            continue
+        if pve_landscape:
+            if preview_roads.has(tile):
+                continue
+        else:
+            if not STARTER.has_point(tile) or occupied.has(tile) or preview_roads.has(tile):
+                continue
+            var marker_clear := true
+            for raw_anchor in TYPE_ANCHORS.values():
+                if (tile-Vector2i(raw_anchor)).length_squared() <= 2:
+                    marker_clear = false
+                    break
+            if not marker_clear or COURTYARD_RECT.has_point(tile):
+                continue
         var rel := "env01_assets/vegetation/%s.png" % str(item["id"])
         var vegetation := source_art.texture_for(rel)
         if vegetation != null:
             render_art[rel] = vegetation
             decoration_items.append({
-                "world":project(Vector2(tile)),
+                "world":project(Vector2(tile)+(Vector2(0.5,0.5) if pve_landscape else Vector2.ZERO)),
                 "texture":vegetation,
                 "scale":float(item["scale"]),
                 "cell":tile
@@ -329,6 +470,8 @@ func _road_key(cell: Vector2i) -> String:
     return "scatter"
 
 func _terrain_texture_key(cell: Vector2i) -> String:
+    if pve_landscape:
+        return "env01_assets/terrain/stone_variant.png" if pve_bridge_at(cell) else ""
     if not STARTER.has_point(cell):
         return ""
     if COURTYARD_RECT.has_point(cell):
@@ -448,6 +591,81 @@ func set_legacy_transform(zoom: float, legacy_position: Vector2) -> bool:
     _update_chunks()
     return true
 
+func set_pve_camera(center_cell: Vector2, requested_zoom: float = 0.55) -> void:
+    if camera == null:
+        return
+    camera.position = project(center_cell)
+    camera.zoom = Vector2.ONE*clampf(requested_zoom,0.25,1.15)
+    _update_chunks()
+
+func pve_screen_to_cell(screen_point: Vector2, viewport_size: Vector2) -> Vector2:
+    if camera == null:
+        return Vector2.ZERO
+    return inverse(camera.position+(screen_point-viewport_size*0.5)/camera.zoom.x)
+
+func set_pve_snapshot(snapshot: MapBattleV2, view_rows: Dictionary,
+        selected_actor_ids: Array[String], camp_positions: Array = []) -> void:
+    pve_battle = snapshot
+    pve_view_rows = view_rows.duplicate(true)
+    pve_selected_actor_ids = selected_actor_ids.duplicate()
+    if snapshot == null:
+        pve_target_positions.clear()
+        pve_render_positions.clear()
+        pve_actor_actions.clear()
+        queue_redraw()
+        return
+    var present: Dictionary = {}
+    for raw_id in snapshot.actors:
+        var id := str(raw_id)
+        var actor: Dictionary = snapshot.actors[raw_id]
+        present[id] = true
+        var position: Vector2 = actor.get("position",Vector2.ZERO)
+        pve_target_positions[id] = position
+        if not pve_render_positions.has(id):
+            pve_render_positions[id] = position
+        var action := "die" if float(actor.get("hp",0.0)) <= 0.0 else "idle"
+        for event_index in range(snapshot.events.size()-1,-1,-1):
+            var event: Dictionary = snapshot.events[event_index]
+            var source_id := str(event.get("actor_id",event.get("attacker",event.get("caster",""))))
+            var target_id := str(event.get("target",event.get("target_id","")))
+            if source_id == id:
+                var kind := str(event.get("type",""))
+                if kind == "move": action = "run"
+                elif kind in ["skill_cast","skill_hit","hit","basic_hit"]: action = "attack"
+                if action != "idle": break
+            elif target_id == id and str(event.get("type","")) == "hit":
+                action = "hit"
+                break
+        pve_actor_actions[id] = {"action":action,"started":pve_clock}
+    for id in pve_render_positions.keys().duplicate():
+        if not present.has(str(id)):
+            pve_render_positions.erase(id)
+            pve_target_positions.erase(id)
+            pve_actor_actions.erase(id)
+    if not pve_camera_initialized and camera != null:
+        for raw_id in snapshot.actors:
+            var actor: Dictionary = snapshot.actors[raw_id]
+            if str(actor.get("side","")) == "disciple":
+                set_pve_camera(Vector2(actor.get("position",Vector2.ZERO)),0.55)
+                pve_camera_initialized = true
+                break
+    queue_redraw()
+
+func pve_minimap_texture() -> Texture2D:
+    return pve_mini_texture
+
+func _process(delta: float) -> void:
+    if not pve_landscape or pve_battle == null:
+        return
+    pve_clock += maxf(0.0,delta)
+    for raw_id in pve_render_positions.keys():
+        var id := str(raw_id)
+        if pve_target_positions.has(id):
+            var actor: Dictionary = pve_battle.actors.get(id,{})
+            pve_render_positions[id] = (pve_render_positions[id] as Vector2).move_toward(
+                pve_target_positions[id],maxf(0.1,float(actor.get("move_speed",3.0)))*delta)
+    queue_redraw()
+
 func _update_chunks() -> void:
     if camera == null:
         return
@@ -508,8 +726,9 @@ func pick_at_screen(screen: Vector2) -> Dictionary:
 func _cache_static_overlays() -> void:
     terrain_overlays_by_chunk.clear()
     road_overlays_by_chunk.clear()
-    for iy in range(STARTER.position.y,STARTER.end.y):
-        for ix in range(STARTER.position.x,STARTER.end.x):
+    var overlay_rect := Rect2i(Vector2i.ZERO,GRID) if pve_landscape else STARTER
+    for iy in range(overlay_rect.position.y,overlay_rect.end.y):
+        for ix in range(overlay_rect.position.x,overlay_rect.end.x):
             var cell := Vector2i(ix,iy)
             var chunk := Vector2i(ix/CHUNK,iy/CHUNK)
             var center := project(Vector2(cell))
@@ -563,7 +782,7 @@ func _ground_mesh_for_chunk(chunk_id: Vector2i) -> ArrayMesh:
             var center := project(Vector2(cell))
             # Slow coherent terrain variation and district palettes replace
             # the old repeated checkerboard; this remains VIEW ONLY.
-            var tone := SectMapD2Landscape.ground_color(cell,STARTER,preview_roads)
+            var tone := _pve_ground_color(cell) if pve_landscape else SectMapD2Landscape.ground_color(cell,STARTER,preview_roads)
             var base := vertices.size()
             vertices.append_array(PackedVector2Array([
                 center+Vector2(0,-HALF_H),center+Vector2(HALF_W,0),
@@ -586,6 +805,17 @@ func _ground_mesh_for_chunk(chunk_id: Vector2i) -> ArrayMesh:
     ground_chunk_meshes[chunk_id] = mesh
     return mesh
 
+func _pve_ground_color(cell: Vector2i) -> Color:
+    var slow := sin(float(cell.x)*0.18+float(cell.y)*0.11)*0.5
+    slow += cos(float(cell.y)*0.16-float(cell.x)*0.09)*0.30
+    var tint := clampf(slow*0.05,-0.05,0.05)
+    var ground := Color(0.285+tint,0.405+tint,0.330+tint*0.7)
+    if pve_path_cells.has(cell):
+        ground = ground.blend(Color("877a54",0.55))
+    if absf(float(cell.x)-pve_stream_center_x(float(cell.y))) < 5.5:
+        ground = ground.blend(Color("365d57",0.50))
+    return ground
+
 func _draw() -> void:
     # Ground layer first: cached meshes remain valid for all camera positions.
     # Visibility still uses the original active_chunks and the existing camera.
@@ -593,7 +823,10 @@ func _draw() -> void:
         draw_mesh(_ground_mesh_for_chunk(chunk_id),null)
     # Scenic water/reeds/rock-garden accents are original unapproved
     # view-only candidates and cannot act as a gameplay resource node.
-    SectMapD2Landscape.draw_scenic_accents(self,active_chunks,camera.position,VIEW_SIZE*0.5/camera.zoom.x+Vector2(170,175))
+    if pve_landscape:
+        _draw_pve_stream()
+    else:
+        SectMapD2Landscape.draw_scenic_accents(self,active_chunks,camera.position,VIEW_SIZE*0.5/camera.zoom.x+Vector2(170,175))
     # Verified MAP25 terrain/road overlay source and connectivity were
     # classified once at import. Pan/zoom only iterates cached visible rows.
     for chunk_id in active_chunks:
@@ -616,6 +849,14 @@ func _draw() -> void:
     for item in decoration_items:
         if _visible_world(item["world"]):
             queue.append({"y":(item["world"] as Vector2).y,"kind":"vegetation","data":item})
+    if pve_landscape and pve_battle != null:
+        for raw_id in pve_battle.actors:
+            var id := str(raw_id)
+            var actor: Dictionary = pve_battle.actors[raw_id]
+            var cell: Vector2 = pve_render_positions.get(id,actor.get("position",Vector2.ZERO))
+            var foot := project(cell)
+            if _visible_world(foot):
+                queue.append({"y":foot.y,"kind":"pve_actor","data":{"id":id,"actor":actor,"cell":cell}})
     # Preserve all canonical picking rows while limiting oversized temporary
     # SVG roofs to the focused worksite plus the nearest four view candidates.
     var site_candidates: Array[Dictionary] = []
@@ -635,6 +876,9 @@ func _draw() -> void:
     )
     for entry in queue:
         var item: Dictionary = entry["data"]
+        if str(entry["kind"]) == "pve_actor":
+            _draw_pve_actor(item)
+            continue
         var place: Vector2 = item["world"]
         if str(entry["kind"]) == "vegetation":
             var tex: Texture2D = item["texture"]
@@ -645,6 +889,53 @@ func _draw() -> void:
             _draw_building(place,str(item["destination"]),bool(item["managed"]),
                 detailed.has(str(item["building_id"])))
 
+func _draw_pve_stream() -> void:
+    var points := PackedVector2Array()
+    for y in range(4,GRID.y,3):
+        points.append(project(Vector2(pve_stream_center_x(float(y)),float(y))))
+    if points.size() < 2:
+        return
+    draw_polyline(points,Color(0.39,0.49,0.39,0.97),64.0,true)
+    draw_polyline(points,Color(0.22,0.53,0.57,0.98),36.0,true)
+    draw_polyline(points,Color(0.70,0.86,0.80,0.60),2.4,true)
+
+func _draw_pve_actor(data: Dictionary) -> void:
+    var id := str(data.get("id",""))
+    var actor: Dictionary = data.get("actor",{})
+    var cell: Vector2 = data.get("cell",Vector2.ZERO)
+    var foot := project(cell)
+    var side := str(actor.get("side",""))
+    var alive := float(actor.get("hp",0.0)) > 0.0
+    var visual: Dictionary = pve_actor_actions.get(id,{"action":"idle","started":pve_clock})
+    var action := "die" if not alive else str(visual.get("action","idle"))
+    var facing := Vector2.RIGHT
+    if pve_target_positions.has(id) and pve_render_positions.has(id):
+        facing = (pve_target_positions[id] as Vector2)-(pve_render_positions[id] as Vector2)
+    if facing.length_squared() < 0.001:
+        facing = Vector2.RIGHT if side == "disciple" else Vector2.LEFT
+    var row: Dictionary = pve_view_rows.get(id,{})
+    var actor_key := str(row.get("source_a_visual_key",""))
+    var drawn := not actor_key.is_empty() and pve_source_atlas.has_actor(actor_key)
+    if drawn:
+        drawn = pve_source_atlas.draw_actor(self,actor_key,action,foot,facing,
+            maxf(0.0,pve_clock-float(visual.get("started",pve_clock))),camera.zoom.x*1.10)
+    if not drawn:
+        var shade := Color("73d6ad") if side == "disciple" else Color("dc9370")
+        draw_colored_polygon(PackedVector2Array([foot+Vector2(0,-10),foot+Vector2(8,0),foot+Vector2(0,7),foot+Vector2(-8,0)]),shade)
+    if side == "disciple" and pve_selected_actor_ids.has(id):
+        draw_arc(foot+Vector2(0,3),13.0*camera.zoom.x,0.0,TAU,20,Color("ffe08a"),1.7,true)
+    var bar_width := 25.0*camera.zoom.x
+    var hp_ratio := clampf(float(actor.get("hp",0.0))/maxf(1.0,float(actor.get("max_hp",1.0))),0.0,1.0)
+    draw_rect(Rect2(foot+Vector2(-bar_width*0.5,4.0),Vector2(bar_width,3.0)),Color(0.04,0.07,0.05,0.9))
+    if hp_ratio > 0.0:
+        draw_rect(Rect2(foot+Vector2(-bar_width*0.5,4.0),Vector2(bar_width*hp_ratio,3.0)),Color("85d884") if side == "disciple" else Color("e88372"))
+    if side == "disciple" and pve_selected_actor_ids.size() == 1 and pve_selected_actor_ids.has(id):
+        var font := ThemeDB.fallback_font
+        if font != null:
+            var name := str(row.get("display_name",id))
+            draw_string_outline(font,foot+Vector2(-36.0*camera.zoom.x,-20.0*camera.zoom.x),name,HORIZONTAL_ALIGNMENT_LEFT,-1,10,2,Color(0.02,0.04,0.03,0.94))
+            draw_string(font,foot+Vector2(-36.0*camera.zoom.x,-20.0*camera.zoom.x),name,HORIZONTAL_ALIGNMENT_LEFT,-1,10,Color("f4f1dd"))
+
 func _visible_world(point: Vector2) -> bool:
     if camera == null:
         return false
@@ -654,6 +945,9 @@ func _visible_world(point: Vector2) -> bool:
 
 func _is_road(cell: Vector2i) -> bool:
     # Rebuildable read-only ENV-02A map-model route projection.
+    var in_world := cell.x >= 0 and cell.y >= 0 and cell.x < GRID.x and cell.y < GRID.y
+    if pve_landscape:
+        return in_world and pve_bridge_at(cell) and preview_roads.has(cell)
     return STARTER.has_point(cell) and preview_roads.has(cell)
 
 func _draw_compact_producer(p: Vector2,kind: String,overview: bool) -> void:

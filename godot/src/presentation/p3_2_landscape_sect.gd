@@ -15,7 +15,7 @@ class B3MainHuntArena:
     var presenter: B3CareCombatV5Presenter
     var combat_view: B3MainHuntCombatView
     var live_map: PveLiveWorldMapV1
-    var jx_world: PveJxContinuousWorldViewV1
+    var sect_world: PveSectWorldViewV1
 
     func _ready() -> void:
         clip_contents = true
@@ -24,11 +24,11 @@ class B3MainHuntArena:
         live_map.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
         live_map.visible = false
         add_child(live_map)
-        jx_world = PveJxContinuousWorldViewV1.new()
-        jx_world.name = "PveJxContinuousWorldViewV1"
-        jx_world.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-        jx_world.visible = false
-        add_child(jx_world)
+        sect_world = PveSectWorldViewV1.new()
+        sect_world.name = "PveSectWorldViewV1"
+        sect_world.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+        sect_world.visible = false
+        add_child(sect_world)
         presenter = B3CareCombatV5Presenter.new()
         presenter.name = "B3CareCombatV5Presenter"
         presenter.position = Vector2.ZERO
@@ -49,7 +49,7 @@ class B3MainHuntArena:
             camp_population: Dictionary = {}, use_live_map: bool = false) -> void:
         battle = snapshot
         live_map.visible = use_live_map
-        jx_world.visible = false
+        sect_world.visible = false
         presenter.visible = not use_live_map
         if live_map != null:
             live_map.show_authority_snapshot(snapshot,camp_population)
@@ -65,11 +65,11 @@ class B3MainHuntArena:
             camp_index: int = 0, disciples: Dictionary = {}, view_rows: Dictionary = {}) -> void:
         battle = snapshot
         live_map.visible = false
-        jx_world.visible = true
+        sect_world.visible = true
         presenter.visible = false
         if combat_view != null:
             combat_view.visible = false
-        jx_world.show_authority_snapshot(snapshot,world_population,camp_index,disciples,view_rows)
+        sect_world.show_authority_snapshot(snapshot,world_population,camp_index,disciples,view_rows)
 
     func _update_presenter(target: B3CareCombatV5Presenter,
             snapshot: MapBattleV2, view_rows: Dictionary) -> void:
@@ -170,7 +170,7 @@ var screen_pointer_dragged := false
 var mouse_pointer_dragged := false
 var b3_hunt_panel: Panel
 var b3_hunt_arena: B3MainHuntArena
-var b3_jx_world_view: PveJxContinuousWorldViewV1
+var b3_pve_world_view: PveSectWorldViewV1
 var b3_hunt_combat_view: B3MainHuntCombatView
 var b3_hunt_facts: Label
 var b3_hunt_feedback: Label
@@ -3720,7 +3720,7 @@ func _build_b3_hunt_panel() -> void:
 
     var title := _label(b3_hunt_panel,"THẾ GIỚI SĂN QUÁI — LIỀN MẠCH",Vector2(24,14),Vector2(1100,32),22)
     title.add_theme_color_override("font_color",JADE_DARK)
-    var subtitle := _label(b3_hunt_panel,"Một map JXQY2 liên tục · click đất để đi · quái tuần tra và đánh tại chỗ · Combat V2 / clock / SaveService màn chính",Vector2(26,48),Vector2(1090,24),13)
+    var subtitle := _label(b3_hunt_panel,"Rừng Source A liền mạch · click đất để đi · quái di chuyển và đánh tại chỗ · Combat V2 / clock / SaveService màn chính",Vector2(26,48),Vector2(1090,24),13)
     subtitle.add_theme_color_override("font_color",INK)
 
     b3_hunt_arena = B3MainHuntArena.new()
@@ -3729,8 +3729,8 @@ func _build_b3_hunt_panel() -> void:
     b3_hunt_arena.size = Vector2(700,484)
     b3_hunt_arena.add_theme_stylebox_override("panel",_style(JADE_DARK,INK,1,8))
     b3_hunt_panel.add_child(b3_hunt_arena)
-    b3_jx_world_view = b3_hunt_arena.jx_world
-    b3_jx_world_view.move_ordered.connect(_on_open_world_move_ordered)
+    b3_pve_world_view = b3_hunt_arena.sect_world
+    b3_pve_world_view.move_ordered.connect(_on_open_world_move_ordered)
 
     var facts_panel := Panel.new()
     facts_panel.name = "B3MainHuntFactsPanel"
@@ -3894,9 +3894,9 @@ func _start_multicamp_hunt_for_selected() -> void:
     var encounter_id := "pve:thanh_truc_lam:c01:%d:%d:%d" % [
         state.seed,state.tick,state.sect.v2_pve_settlement_receipts.size()
     ]
-    var world_options := b3_jx_world_view.get_open_world_options()
+    var world_options := b3_pve_world_view.get_open_world_options()
     if not bool(world_options.get("ok",false)):
-        summary_feedback = "Không mở được world JX đã xác minh: %s" % str(world_options.get("reason","thiếu asset nguồn"))
+        summary_feedback = "Không dựng được world Source A: %s" % str(world_options.get("reason","lưới bản đồ chưa sẵn sàng"))
         _refresh_disciple_summary_content()
         return
     var session := HuntingPveRunV2.new()
@@ -4128,13 +4128,13 @@ func _refresh_multicamp_hunt_panel() -> void:
     var envelope: Dictionary = state.sect.v2_pve_active_runs.get(encounter,{})
     var population: Dictionary = envelope.get("camp_population",{})
     if battle.world_mode:
-        var map_ready := b3_jx_world_view.prepare_world()
+        var map_ready := b3_pve_world_view.prepare_world()
         if bool(map_ready.get("ok",false)) and str(battle.world_navigation.get("source_blob_sha","")) == str(map_ready.get("topology",{}).get("source_blob_sha","")):
             b3_hunt_arena.show_open_world_snapshot(battle,population,int(envelope.get("camp_index",0)),state.disciples,_b3_hunt_visual_rows(battle))
         else:
-            b3_jx_world_view.source_error = str(map_ready.get("reason","JX map hash differs from the saved world"))
+            b3_pve_world_view.source_error = str(map_ready.get("reason","map hash differs from the saved world"))
             b3_hunt_arena.show_open_world_snapshot(null,{})
-            b3_hunt_facts.text = "Không thể nạp đúng map JX đã lưu: %s" % b3_jx_world_view.source_error
+            b3_hunt_facts.text = "Không thể nạp đúng map đã lưu: %s" % b3_pve_world_view.source_error
     else:
         b3_hunt_arena.show_authority_snapshot(battle,_b3_hunt_visual_rows(battle),population,true)
     if battle.world_mode:
@@ -4177,11 +4177,11 @@ func _refresh_multicamp_hunt_panel() -> void:
     var member_text := "\n".join(team_lines)
     b3_hunt_facts.text = (
         "%s · %s\n%s\n"
-        + "World 50×100 · 20 vùng liên thông · C01 chỉ là vùng xuất phát\n"
+        + "Thế giới 192×192 · 20 khu sinh quái · C01 chỉ là vùng xuất phát\n"
         + "Đội %d đệ tử thật · %d quái tại vùng · %d đang sống · hạ %d tổng · %.1fs\n"
         + "HP / Injury\n%s\n"
         + "Hồi sinh mỗi vùng theo clock chung · LOOT_PENDING: chưa có bảng rơi từng quái được duyệt."
-    ) % [str(population.get("world_source_map","JXQY2 world")),camp_id,status,
+    ) % [str(population.get("world_source_map","Source A forest world")),camp_id,status,
         team_lines.size(),total_monsters,alive_monsters,kill_count,battle.now,member_text]
 
 func _set_hunt_presentation_layout(use_live_map: bool) -> void:
