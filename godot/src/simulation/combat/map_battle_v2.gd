@@ -314,6 +314,26 @@ func _world_route_distance(start_position: Vector2, path: Array[Vector2i]) -> fl
 
 func _move_world_actor(actor: Dictionary, destination: Vector2, speed: float, stop_distance: float = 0.0) -> bool:
     var position: Vector2 = actor["position"]
+    # A* operates on grid cells, but a move order targets the centre of a cell.
+    # When the actor is already inside the goal cell, _world_path() returns []
+    # even if the actor is still >0.45 units from the goal. Close that final
+    # sub-cell gap without crossing a blocked cell or changing path authority.
+    var current_cell := Vector2i(floori(position.x),floori(position.y))
+    var goal_cell := Vector2i(floori(destination.x),floori(destination.y))
+    if world_mode and current_cell == goal_cell:
+        if not _position_allowed(position) or not _position_allowed(destination):
+            return false
+        if position.distance_to(destination) <= stop_distance+0.08:
+            return false
+        var local_step := minf(maxf(speed,0.0)*STEP_SECONDS,position.distance_to(destination))
+        if local_step <= 0.0001:
+            return false
+        var local_position := position.move_toward(destination,local_step)
+        if not _position_allowed(local_position):
+            return false
+        actor["position"] = local_position
+        _event("move",{"actor_id":str(actor["id"]),"position":local_position,"world_path":true})
+        return true
     var path := _world_path(position,destination)
     if path.is_empty():
         return false
