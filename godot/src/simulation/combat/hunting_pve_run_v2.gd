@@ -824,6 +824,21 @@ func save_state() -> Dictionary:
 # The live character HP owner stays separate until DV2-03's real HP track
 # migration. Rehydrated actors retain their exact battle HP but do not
 # silently overwrite legacy DiscipleState HP or attach unsafe object pointers.
+# Validate that saved spawn slots and Combat V2 navigation belong to the same
+# pinned world. A valid-looking 40-character SHA alone cannot prove identity.
+# This is read-only preflight; it never rewrites saves or synthesizes a map.
+static func saved_world_identity_matches(battle_snapshot: MapBattleV2,
+        registry: Dictionary) -> bool:
+    if battle_snapshot == null or not battle_snapshot.world_mode:
+        return false
+    var navigation: Dictionary = battle_snapshot.world_navigation
+    var nav_sha := str(navigation.get("source_blob_sha",""))
+    var slot_sha := str(registry.get("world_source_sha",""))
+    var nav_map := str(navigation.get("source_map",""))
+    var slot_map := str(registry.get("world_source_map",""))
+    return nav_sha.length() == 40 and nav_sha == slot_sha \
+        and not nav_map.is_empty() and nav_map == slot_map
+
 static func restore_state(state: SimulationState, saved: Dictionary) -> Dictionary:
     if state == null or not state.sect.p3_7_resources_enabled or not state.sect.v2_pve_enabled:
         return {"ok":false,"reason":"hunting_v2_not_enabled"}
@@ -871,7 +886,12 @@ static func restore_state(state: SimulationState, saved: Dictionary) -> Dictiona
         var world_identity_valid := true
         if world_mode_saved:
             var world_centres = camp_registry.get("world_camp_positions",null)
-            world_identity_valid = resumed.world_mode and world_centres is Array and world_centres.size() == PveMultiCampPopulationV1.CAMP_COUNT and str(camp_registry.get("world_source_sha","")).length() == 40 and float(saved.get("world_respawn_delay",0.0)) > 0.0 and is_equal_approx(float(saved.get("world_respawn_delay",0.0)),float(camp_registry.get("world_respawn_delay",-1.0)))
+            world_identity_valid = saved_world_identity_matches(resumed,camp_registry) \
+                and world_centres is Array \
+                and world_centres.size() == PveMultiCampPopulationV1.CAMP_COUNT \
+                and float(saved.get("world_respawn_delay",0.0)) > 0.0 \
+                and is_equal_approx(float(saved.get("world_respawn_delay",0.0)), \
+                    float(camp_registry.get("world_respawn_delay",-1.0)))
         elif resumed.world_mode:
             world_identity_valid = false
         if not camps_valid or not world_identity_valid or PveMultiCampPopulationV1.verify_structure(camp_registry) != "" or camp_slots.size() != 10 or int(saved.get("camp_monster_count",0)) != 10 or not is_finite(phase) or phase < 0.0 or phase >= 60.0 or fmod(phase,MapBattleV2.STEP_SECONDS) != 0.0:
