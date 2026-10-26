@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+PVE SOURCE A CONTINUOUS WORLD P3.2 INTEGRATION PASS sha=0cd0132e3ebad305a8fcbb8b8d16ed32f64f9158 renderer=SectIsometricWorldV1 map=192x192 zones=20 party=6 real_monsters=10 reserved=6 shared_clock_seconds=85.00 actions=135 path_order=true zone_hop=PASS result=active kills=10 injury120=NOT_REACHED minimap=live camera=pan_zoom active_save_load=true no_duplicate_or_fabricated_rewards=true loot=LOOT_PENDING
