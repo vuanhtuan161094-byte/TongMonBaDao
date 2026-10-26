@@ -260,7 +260,7 @@ func _nearest_walkable_unreserved_cell(origin: Vector2i, reserved: Dictionary) -
     var width := int(world_navigation["width"])
     var height := int(world_navigation["height"])
     var blocked = world_navigation["blocked"]
-    for radius in range(maxi(width,height)):
+    for radius in range(maxi(width,height)+1):
         for y in range(origin.y-radius,origin.y+radius+1):
             for x in range(origin.x-radius,origin.x+radius+1):
                 if absi(x-origin.x) != radius and absi(y-origin.y) != radius:
