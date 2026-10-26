@@ -964,8 +964,9 @@ func _draw_pve_actor(data: Dictionary) -> void:
     var drawn := not actor_key.is_empty() and pve_source_atlas.has_actor(actor_key)
     if drawn:
         var elapsed := maxf(0.0,pve_clock-float(visual.get("started",pve_clock)))
-        var clip_seconds := pve_source_atlas.action_duration(actor_key,action) \
-            if alive and action in ["attack","hit"] else 0.0
+        var clip_seconds := 0.0
+        if alive and action in ["attack","hit"]:
+            clip_seconds = pve_source_atlas.action_duration(actor_key,action)
         var display_cue := _display_action_for_elapsed(
             action,elapsed,clip_seconds,alive)
         drawn = pve_source_atlas.draw_actor(self,actor_key,
