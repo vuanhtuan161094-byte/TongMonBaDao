@@ -936,6 +936,15 @@ func _draw_pve_stream() -> void:
     draw_polyline(points,Color(0.22,0.53,0.57,0.98),36.0,true)
     draw_polyline(points,Color(0.70,0.86,0.80,0.60),2.4,true)
 
+# One-shot Source A clips should give way to idle after their native baked
+# duration. Cosmetic only: event/HP/damage/clock are unchanged.
+static func _display_action_for_elapsed(action: String, elapsed: float,
+        duration: float, alive: bool) -> Dictionary:
+    if alive and action in ["attack","hit"] and duration > 0.0 and elapsed >= duration:
+        return {"action":"idle","elapsed":elapsed-duration}
+    return {"action":action,"elapsed":elapsed}
+
+
 func _draw_pve_actor(data: Dictionary) -> void:
     var id := str(data.get("id",""))
     var actor: Dictionary = data.get("actor",{})
@@ -955,17 +964,13 @@ func _draw_pve_actor(data: Dictionary) -> void:
     var drawn := not actor_key.is_empty() and pve_source_atlas.has_actor(actor_key)
     if drawn:
         var elapsed := maxf(0.0,pve_clock-float(visual.get("started",pve_clock)))
-        if alive and action in ["attack","hit"]:
-            # MAX_EVENTS keeps old Combat V2 events as presentation history.
-            # Preserve the clip's true duration; after a one-shot completes,
-            # draw looping idle instead of freezing on its final attack frame.
-            # A NEW event still changes the cue hash/timestamp in the snapshot.
-            var clip_seconds := pve_source_atlas.action_duration(actor_key,action)
-            if clip_seconds > 0.0 and elapsed >= clip_seconds:
-                action = "idle"
-                elapsed -= clip_seconds
-        drawn = pve_source_atlas.draw_actor(self,actor_key,action,foot,facing,
-            elapsed,camera.zoom.x*1.10)
+        var clip_seconds := pve_source_atlas.action_duration(actor_key,action) \
+            if alive and action in ["attack","hit"] else 0.0
+        var display_cue := _display_action_for_elapsed(
+            action,elapsed,clip_seconds,alive)
+        drawn = pve_source_atlas.draw_actor(self,actor_key,
+            str(display_cue["action"]),foot,facing,float(display_cue["elapsed"]),
+            camera.zoom.x*1.10)
     if not drawn:
         var shade := Color("73d6ad") if side == "disciple" else Color("dc9370")
         draw_colored_polygon(PackedVector2Array([foot+Vector2(0,-10),foot+Vector2(8,0),foot+Vector2(0,7),foot+Vector2(-8,0)]),shade)
