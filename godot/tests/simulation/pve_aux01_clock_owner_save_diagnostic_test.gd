@@ -47,7 +47,7 @@ func _probe(state: SimulationState,label: String) -> Dictionary:
     payload["save_version"] = SaveService.CARE_VERSION if care else SaveService.CURRENT_VERSION
     if care:
         payload["b3_care_version"] = B3MedicalAutoplayV1.VERSION
-    var encoded := service._encode_floats(payload)
+    var encoded = service._encode_floats(payload)
     var text_payload := JSON.stringify(encoded,"",true,true)
     var file := FileAccess.open(PROBE_PATH+".manual",FileAccess.WRITE)
     if file == null:
@@ -85,7 +85,7 @@ func _probe(state: SimulationState,label: String) -> Dictionary:
 func _run() -> void:
     for path_base in [SAVE_PATH,PROBE_PATH]:
         for suffix in ["",".tmp",".bak",".manual"]:
-            var p := path_base+suffix
+            var p: String = str(path_base)+str(suffix)
             if FileAccess.file_exists(p):
                 DirAccess.remove_absolute(ProjectSettings.globalize_path(p))
     # Exact original test writes a different 44421 seed fixture to the same
