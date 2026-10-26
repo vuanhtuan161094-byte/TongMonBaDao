@@ -4,6 +4,7 @@ extends SceneTree
 # No production SaveService/RuntimeOwner mutations. All artifacts use user://.
 # Records which read-path phase first rejects the staged clock-owner state.
 const SAVE_PATH := "user://pve_clock_owner_roundtrip_diagnostic.json"
+const PROBE_PATH := "user://pve_clock_owner_stage_probe.json"
 var checks := 0
 
 func _init() -> void:
@@ -17,8 +18,8 @@ func _check(ok: bool,reason: String) -> bool:
         return false
     return true
 
-func _new_owner() -> SimulationRuntimeOwnerV2:
-    var state := P37Factory.create_state(77221)
+func _new_owner(seed: int,wall: int) -> SimulationRuntimeOwnerV2:
+    var state := P37Factory.create_state(seed)
     state.sect.disciple_v2_birth_enabled = true
     state.sect.disciple_capacity = maxi(state.sect.disciple_capacity,state.disciples.size()+1)
     var candidate := DiscipleGeneratorOpenPoints.new().generate_candidate(
@@ -35,7 +36,7 @@ func _new_owner() -> SimulationRuntimeOwnerV2:
     state.sect.v2_training_enabled = true
     state.sect.v2_training_rules = DiscipleTrainingContentV2.canonical_rules()
     var owner := SimulationRuntimeOwnerV2.new()
-    if not bool(owner.attach(state,2000).get("ok",false)):
+    if not bool(owner.attach(state,wall).get("ok",false)):
         return null
     return owner
 
@@ -48,14 +49,14 @@ func _probe(state: SimulationState,label: String) -> Dictionary:
         payload["b3_care_version"] = B3MedicalAutoplayV1.VERSION
     var encoded := service._encode_floats(payload)
     var text_payload := JSON.stringify(encoded,"",true,true)
-    var file := FileAccess.open(SAVE_PATH+".manual",FileAccess.WRITE)
+    var file := FileAccess.open(PROBE_PATH+".manual",FileAccess.WRITE)
     if file == null:
         return {"ok":false,"reason":"manual_file_write_failed"}
     file.store_string(text_payload)
     file.flush()
     var write_error := file.get_error()
     file.close()
-    var wire = JSON.parse_string(FileAccess.get_file_as_string(SAVE_PATH+".manual"))
+    var wire = JSON.parse_string(FileAccess.get_file_as_string(PROBE_PATH+".manual"))
     var wire_valid := wire is Dictionary
     var round_trip: SimulationState = null
     if wire_valid:
@@ -63,8 +64,8 @@ func _probe(state: SimulationState,label: String) -> Dictionary:
         if int(unpacked.get("save_version",-1)) == SaveService.CARE_VERSION:
             unpacked["save_version"] = SaveService.CURRENT_VERSION
         round_trip = SimulationState.from_dict(unpacked)
-    var load_exact := service._load_exact(SAVE_PATH+".manual")
-    var save_error := service.save_to_path(state,SAVE_PATH)
+    var load_exact := service._load_exact(PROBE_PATH+".manual")
+    var save_error := service.save_to_path(state,PROBE_PATH)
     var result := {
         "phase":label,"tick":state.tick,"wall":state.runtime_last_wall_unix,
         "care":care,"shape_valid":service._is_payload_shape_valid(
@@ -75,18 +76,29 @@ func _probe(state: SimulationState,label: String) -> Dictionary:
         "wire_valid":wire_valid,"direct_from_dict":round_trip != null,
         "load_exact":load_exact != null,"save_error":save_error,
         "invariant_count":state.validate_invariants().size(),
-        "primary_exists":FileAccess.file_exists(SAVE_PATH)
+        "primary_exists":FileAccess.file_exists(PROBE_PATH)
     }
     print("AUX01 CLOCK SAVE DIAG: "+JSON.stringify(result))
-    DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH+".manual"))
+    DirAccess.remove_absolute(ProjectSettings.globalize_path(PROBE_PATH+".manual"))
     return result
 
 func _run() -> void:
-    for suffix in ["",".tmp",".bak",".manual"]:
-        var p := SAVE_PATH+suffix
-        if FileAccess.file_exists(p):
-            DirAccess.remove_absolute(ProjectSettings.globalize_path(p))
-    var owner := _new_owner()
+    for path_base in [SAVE_PATH,PROBE_PATH]:
+        for suffix in ["",".tmp",".bak",".manual"]:
+            var p := path_base+suffix
+            if FileAccess.file_exists(p):
+                DirAccess.remove_absolute(ProjectSettings.globalize_path(p))
+    # Exact original test writes a different 44421 seed fixture to the same
+    # SAVE_PATH at t1060 before the 77221 owner attempts its t2120 checkpoint.
+    var baseline_owner := _new_owner(44421,1000)
+    if not _check(baseline_owner != null,"baseline canonical state failed"):
+        return
+    var baseline_step := baseline_owner.update_to(1060)
+    var baseline_save := SaveService.new().save_to_path(baseline_owner.state,SAVE_PATH)
+    if not _check(bool(baseline_step.get("ok",false)) and baseline_save == OK,
+        "original seed44421/t1060 baseline save could not be staged"):
+        return
+    var owner := _new_owner(77221,2000)
     if not _check(owner != null,"canonical owner fixture setup failed"):
         return
     var first := owner.update_to(2060)
@@ -103,11 +115,16 @@ func _run() -> void:
     var two := _probe(owner.state,"t2120")
     if not _check(bool(two.get("wire_valid",false)),"serialized second minute is not JSON"):
         return
-    print("AUX01 CLOCK SAVE DIAGNOSTIC COMPLETE checks=%d first=%s second=%s root_cause=NOT_ASSUMED" % [
-        checks,JSON.stringify(one),JSON.stringify(two)])
-    # This script characterizes the save round-trip; a failed save is not a
-    # PASS. Exit 2 so CI and Codex cannot accidentally certify the defect.
-    if int(two.get("save_error",FAILED)) != OK:
+    # Reproduce the original one-shot save on an independent identical
+    # fixture, with the actual first seed still stored under SAVE_PATH.
+    var exact_owner := _new_owner(77221,2000)
+    if not _check(exact_owner != null,"exact owner fixture setup failed"):
+        return
+    var exact := exact_owner.save_to_path(SAVE_PATH,2120)
+    print("AUX01 CLOCK SAVE DIAGNOSTIC COMPLETE checks=%d first=%s second=%s exact_owner=%s root_cause=NOT_ASSUMED" % [
+        checks,JSON.stringify(one),JSON.stringify(two),JSON.stringify(exact)])
+    # A failing exact owner save remains red; this is a diagnostic, not a fix.
+    if not bool(exact.get("ok",false)):
         quit(2)
     else:
         quit(0)
