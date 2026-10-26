@@ -253,16 +253,35 @@ func _run() -> void:
 	var expected_battle: MapBattleV2 = expected_run["session"].battle
 	var gui_captured := false
 	if not OS.get_environment(GUI_CAPTURE_ENV).is_empty():
-		var visual_session: HuntingPveRunV2 = expected_run["session"]
-		var capture_battle: MapBattleV2 = visual_session.battle
-		for _visual_step in range(50):
+		# GUI evidence MUST use the ONE canonical runtime clock. Directly calling
+		# visual_session.advance() advanced Combat V2 without consuming owner wall
+		# seconds or updating the persisted minute_phase: later poll/Save checks
+		# then observed a battle clock outside the runtime clock.
+		var capture_battle: MapBattleV2 = expected_battle
+		var capture_wall_start := state.runtime_last_wall_unix
+		var capture_battle_start := capture_battle.now
+		for _visual_step in range(25):
 			if capture_battle._count_alive("disciple") < 6 or capture_battle.actions > 0:
 				break
-			var visual_step := visual_session.advance(true)
-			if not _check(bool(visual_step.get("ok",false)) and not bool(visual_step.get("barrier",false)),
-				"Combat V2 could not produce a visible open-world frame: %s" % str(visual_step)):
+			# Two virtual wall seconds advance eight 0.25s Combat V2 frames.
+			# Use injected time ONLY inside this deterministic QA harness.
+			var next_wall := int(state.runtime_last_wall_unix)+2
+			var visual_step := runtime.poll(next_wall)
+			if not _check(bool(visual_step.get("ok",false))
+					and not bool(visual_step.get("barrier",false))
+					and int(visual_step.get("frames_run",0)) > 0,
+				"canonical owner clock could not produce a GUI combat frame: %s" % str(visual_step)):
 				return
-			capture_battle = visual_session.battle
+			var capture_run := HuntingPveRunV2.resume_active(state,encounter)
+			if not _check(bool(capture_run.get("ok",false)),
+				"canonical GUI capture encounter ended before a valid attack frame"):
+				return
+			capture_battle = capture_run["session"].battle
+		if not _check(is_equal_approx(capture_battle.now-capture_battle_start,
+				float(state.runtime_last_wall_unix-capture_wall_start))
+				and is_equal_approx(float(state.runtime_unconsumed_wall_seconds),0.0),
+			"GUI capture battle advanced outside the shared runtime wall clock"):
+			return
 		if not _check(capture_battle._count_alive("disciple") == 6
 			and capture_battle._count_alive("monster") >= 1 and capture_battle.actions > 0,
 			"first visible Combat V2 frame lacks six live disciples or an active monster; party=%d monsters=%d actions=%d now=%.3f" % [
@@ -308,7 +327,10 @@ func _run() -> void:
 		var now := int(state.runtime_last_wall_unix)+1
 		last_progress = runtime.poll(now)
 		if not _check(bool(last_progress.get("ok",false)),
-			"shared runtime clock failed during the visible C01 battle: %s" % str(last_progress)):
+			"shared runtime clock failed during the visible C01 battle: %s clock=%d remainder=%.3f encounter=%s" % [
+				str(last_progress),state.runtime_last_wall_unix,
+				state.runtime_unconsumed_wall_seconds,
+				HuntingPveRunV2.active_multicamp_id(state)]):
 			return
 		if HuntingPveRunV2.active_multicamp_id(state).is_empty():
 			break
@@ -341,7 +363,9 @@ func _run() -> void:
 				moved = true
 				break
 		if not _check(final_battle.actions > before_actions and moved,
-			"same-clock Combat V2 did not move or execute attacks in the continuous world"):
+			"same-clock Combat V2 did not move or attack; actions=%d/%d moved=%s battle=%.3f wall=%d remainder=%.3f" % [
+				final_battle.actions,before_actions,str(moved),final_battle.now,
+				state.runtime_last_wall_unix,state.runtime_unconsumed_wall_seconds]):
 			return
 	else:
 		var receipt: Dictionary = state.sect.v2_pve_settlement_receipts.get(encounter,{})
@@ -361,7 +385,10 @@ func _run() -> void:
 			and state.sect.warehouse_resources == warehouse_before,
 			"open-world kills created an unapproved Warehouse payout or reward claim"):
 			return
-		var saved_terminal := runtime.save()
+		# The QA harness injected future wall timestamps above. Save at the
+		# very same injected canonical timestamp; passing the physical OS time
+		# could otherwise be (correctly) rejected as wall_clock_moved_backwards.
+		var saved_terminal := runtime.save(int(state.runtime_last_wall_unix))
 		if not _check(bool(saved_terminal.get("ok",false)),"SaveService rejected the terminal Injury120 world result"):
 			return
 		var terminal_loaded := SaveService.new().load_from_path(SAVE_PATH)
