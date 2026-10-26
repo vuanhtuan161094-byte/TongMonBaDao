@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+PVE AUX-01 SAVE/RETURN/RELOAD PASS checks=50 exact_sha=c26491c1bfdb40deb67cc3e3c7f5cdb4931509af party=6 monsters=10 active_reload=true same_wall_no_step=true hp0_receipt_once=true warehouse_delta=0 injury_retreat=0 injury120_contract=gp_02c1_injury_settlement_test loot=LOOT_PENDING
