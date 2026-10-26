@@ -954,8 +954,18 @@ func _draw_pve_actor(data: Dictionary) -> void:
     var actor_key := str(row.get("source_a_visual_key",""))
     var drawn := not actor_key.is_empty() and pve_source_atlas.has_actor(actor_key)
     if drawn:
+        var elapsed := maxf(0.0,pve_clock-float(visual.get("started",pve_clock)))
+        if alive and action in ["attack","hit"]:
+            # MAX_EVENTS keeps old Combat V2 events as presentation history.
+            # Preserve the clip's true duration; after a one-shot completes,
+            # draw looping idle instead of freezing on its final attack frame.
+            # A NEW event still changes the cue hash/timestamp in the snapshot.
+            var clip_seconds := pve_source_atlas.action_duration(actor_key,action)
+            if clip_seconds > 0.0 and elapsed >= clip_seconds:
+                action = "idle"
+                elapsed -= clip_seconds
         drawn = pve_source_atlas.draw_actor(self,actor_key,action,foot,facing,
-            maxf(0.0,pve_clock-float(visual.get("started",pve_clock))),camera.zoom.x*1.10)
+            elapsed,camera.zoom.x*1.10)
     if not drawn:
         var shade := Color("73d6ad") if side == "disciple" else Color("dc9370")
         draw_colored_polygon(PackedVector2Array([foot+Vector2(0,-10),foot+Vector2(8,0),foot+Vector2(0,7),foot+Vector2(-8,0)]),shade)
