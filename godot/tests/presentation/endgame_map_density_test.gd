@@ -119,8 +119,24 @@ func _run() -> void:
 	if scene.actor_nodes.size() > SectEndgameVisualBudgetV1.actor_cap(scene.map_zoom):
 		_fail("materialized_actors_exceeded_camera_lod_cap", {"nodes": scene.actor_nodes.size(), "cap": SectEndgameVisualBudgetV1.actor_cap(scene.map_zoom)})
 		return
+	if scene.actor_nodes.size() > 1:
+		_fail("production_map_rendered_multiple_disciples", {"nodes": scene.actor_nodes.size()})
+		return
+	for raw_id in scene.actor_nodes.keys():
+		if str(raw_id) != str(scene.get("selected_id")):
+			_fail("production_map_rendered_an_unselected_disciple", {"actor": str(raw_id), "selected": str(scene.get("selected_id"))})
+			return
 	if scene.actor_nodes.size() >= state.disciples.size():
 		_fail("virtualization_did_not_reduce_materialized_roster", {"nodes": scene.actor_nodes.size(), "roster": state.disciples.size()})
+		return
+	var state_before_clearing_selection := JSON.stringify(state.to_dict(),"",true)
+	scene.set("selected_id",&"")
+	scene.call("_refresh_world_actor_visibility")
+	if scene.actor_nodes.size() != 0:
+		_fail("production_map_rendered_disciples_without_a_selection", {"nodes": scene.actor_nodes.size()})
+		return
+	if JSON.stringify(state.to_dict(),"",true) != state_before_clearing_selection:
+		_fail("hiding_unselected_production_actors_changed_simulation_state")
 		return
 	for actor_value in scene.actor_nodes.values():
 		var actor := actor_value as Control
@@ -148,6 +164,9 @@ func _run() -> void:
 	if not scene.actor_nodes.has(str(hidden_id)):
 		_fail("selected_virtual_disciple_was_not_materialized_after_camera_focus", {"disciple": hidden_id})
 		return
+	if scene.actor_nodes.size() != 1:
+		_fail("selecting_a_disciple_did_not_keep_production_rendering_bounded_to_one", {"nodes": scene.actor_nodes.size(), "selected": str(hidden_id)})
+		return
 	var second_hidden_id: StringName = &""
 	for raw_id in state.disciples.keys():
 		var candidate_id := StringName(raw_id)
@@ -158,6 +177,9 @@ func _run() -> void:
 		_fail("fixture_did_not_have_a_second_virtualized_disciple")
 		return
 	_select_and_focus_virtual_disciple(scene,second_hidden_id)
+	if scene.actor_nodes.size() != 1 or not scene.actor_nodes.has(str(second_hidden_id)):
+		_fail("selection_change_did_not_recycle_to_exactly_one_production_actor", {"nodes": scene.actor_nodes.size(), "selected": str(second_hidden_id)})
+		return
 	var rebound_actor := scene.actor_nodes.get(str(second_hidden_id)) as ModularDiscipleActor
 	if rebound_actor == null or rebound_actor.disciple_id != second_hidden_id:
 		_fail("recycled_actor_did_not_rebind_to_the_selected_disciple", {"disciple": second_hidden_id})

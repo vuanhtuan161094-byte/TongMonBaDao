@@ -81,19 +81,25 @@ static func build(navigation: Dictionary, spawn_hint: Vector2 = Vector2(7.0,40.0
                 break
         if ordinal != SLOTS_PER_CAMP:
             return {"ok":false,"reason":"jx_map_region_has_too_few_nearby_spawn_cells","camp":PveMultiCampPopulationV1.camp_id(camp_index)}
-    # Keep the selected team together at the camp instead of scattering them
-    # across empty cells. JX sprites can overlap naturally; small offsets keep
-    # their world positions distinct while all six share the same walkable tile
-    # and can engage the nearest monsters immediately.
-    var party_offsets := [
-        Vector2(-0.36,-0.30),Vector2(0.0,-0.40),Vector2(0.36,-0.30),
-        Vector2(-0.36,0.30),Vector2(0.0,0.40),Vector2(0.36,0.30)
+    # Spawn the six real actors in visible walkable slots around the camp.
+    # At presentation scale a sub-cell offset made their JX sprites overlap.
+    # Keep the team close enough to engage nearby monsters while reserving
+    # at least 1.8 world units between actor centers.
+    var party_slot_offsets: Array[Vector2i] = [
+        Vector2i(-2,-1),Vector2i(0,-1),Vector2i(2,-1),
+        Vector2i(-2,1),Vector2i(0,1),Vector2i(2,1)
     ]
     var anchor_cell := Vector2i(floori(camp_positions[0].x),floori(camp_positions[0].y))
     if not _walkable(navigation,anchor_cell):
         return {"ok":false,"reason":"jx_map_party_anchor_not_walkable"}
-    for offset in party_offsets:
-        party_spawn_points.append(camp_positions[0]+offset)
+    var party_cells: Array[Vector2i] = []
+    for offset in party_slot_offsets:
+        var desired_cell := anchor_cell+offset
+        var selected_cell := _nearest_spaced_party_cell(reachable,desired_cell,anchor_cell,party_cells)
+        if selected_cell.x < 0:
+            return {"ok":false,"reason":"jx_map_has_too_few_nearby_party_spawn_cells"}
+        party_cells.append(selected_cell)
+        party_spawn_points.append(Vector2(selected_cell)+Vector2(0.5,0.5))
     return {"ok":true,"bounds":Rect2(Vector2.ZERO,Vector2(width,height)),
         "navigation":navigation.duplicate(true),"camp_positions":camp_positions,
         "slot_positions":slot_positions,"party_spawn_points":party_spawn_points,
@@ -156,3 +162,30 @@ static func _nearest_reachable(cells: Array[Vector2i], target: Vector2i, exclude
             best = distance
             chosen = cell
     return chosen
+
+static func _nearest_spaced_party_cell(reachable: Array, desired: Vector2i,
+        anchor: Vector2i, assigned: Array[Vector2i]) -> Vector2i:
+    var best_cell := Vector2i(-1,-1)
+    var best_distance := INF
+    var anchor_position := Vector2(anchor)
+    var desired_position := Vector2(desired)
+    for raw_cell in reachable:
+        var candidate: Vector2i = raw_cell
+        var candidate_position := Vector2(candidate)
+        if candidate_position.distance_to(anchor_position) > 5.25:
+            continue
+        if candidate_position.distance_to(desired_position) > 3.25:
+            continue
+        var spaced := true
+        for existing in assigned:
+            if candidate.distance_squared_to(existing) < 3.24:
+                spaced = false
+                break
+        if not spaced:
+            continue
+        var distance := candidate_position.distance_squared_to(desired_position)
+        if distance < best_distance or (is_equal_approx(distance,best_distance)
+                and candidate.y*100000+candidate.x < best_cell.y*100000+best_cell.x):
+            best_cell = candidate
+            best_distance = distance
+    return best_cell

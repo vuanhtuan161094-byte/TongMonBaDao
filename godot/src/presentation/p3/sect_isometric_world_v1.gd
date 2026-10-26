@@ -114,6 +114,7 @@ const ROADS_JUNCTION := Vector2i(89,96)
 const COURTYARD_RECT := Rect2i(85,93,8,6)
 const COURTYARD_RUNE_CELLS := [Vector2i(89,95),Vector2i(89,97)]
 const PRODUCTION_APRON_RECT := Rect2i(94,92,5,6)
+const PVE_JX_VFX_ADAPTER_SCRIPT := preload("res://src/presentation/p3/pve_jx_sword_vfx_adapter_v1.gd")
 const PRODUCER_ROUTE_APPROACH := {
     "mine":Vector2i(0,1),
     "linh_forest":Vector2i(1,0),
@@ -142,7 +143,15 @@ var source_art: SectMap25SourceArt
 var render_art: Dictionary = {}
 # Experimental visual-only artwork is separate from source_art.status().
 var candidate_site_art: Dictionary = {}
-var decoration_items: Array[Dictionary] = []
+var decoration_items_by_chunk: Dictionary = {}
+var pve_static_draw_queue: Array[Dictionary] = []
+var pve_detailed_site_ids: Dictionary = {}
+var pve_static_queue_dirty := true
+var pve_static_queue_camera_position := Vector2.ZERO
+var pve_static_queue_zoom := 0.0
+var pve_static_queue_chunks: Array[Vector2i] = []
+var pve_static_queue_selected_site := ""
+var pve_static_queue_has_view := false
 var art_loaded_count := 0
 var art_source_status: Dictionary = {}
 var pve_landscape := false
@@ -157,10 +166,16 @@ var pve_target_positions: Dictionary = {}
 var pve_actor_actions: Dictionary = {}
 var pve_clock := 0.0
 var pve_source_atlas := CombatV5SourceAAtlas.new()
+var pve_jx_sword_vfx = PVE_JX_VFX_ADAPTER_SCRIPT.new()
 var pve_selected_actor_ids: Array[String] = []
 var pve_mini_texture: Texture2D
 var pve_camera_initialized := false
-const PVE_FOREST_ASSETS := ["570036","570041","570042","570043","570073","570171","570172","570173","570181","570182","570183","570185","570186","570187","570397","570399"]
+const PVE_TREE_ASSETS := ["570036","570037","570038"]
+const PVE_BAMBOO_ASSETS := ["570041","570042","570043"]
+const PVE_ROCK_ASSETS := ["570073"]
+const PVE_RARE_AUTUMN_ASSETS := ["570171","570172","570173"]
+const PVE_RARE_BLOSSOM_ASSETS := ["570181","570182","570185","570186","570187"]
+const PVE_FOREST_ASSETS := PVE_TREE_ASSETS + PVE_BAMBOO_ASSETS + PVE_ROCK_ASSETS + PVE_RARE_AUTUMN_ASSETS + PVE_RARE_BLOSSOM_ASSETS
 const PVE_BRIDGE_ROWS := [32,92,150]
 
 
@@ -242,7 +257,18 @@ static func pve_forest_layout() -> Array[Dictionary]:
             var hash_value := posmod(x*1103515245+y*12345+20261026,2147483647)
             if hash_value%100 >= 42:
                 continue
-            rows.append({"id":PVE_FOREST_ASSETS[asset_index%PVE_FOREST_ASSETS.size()],"cell":cell,"scale":0.53 if hash_value%3 == 0 else (0.45 if hash_value%3 == 1 else 0.38)})
+            var roll := hash_value%100
+            var palette: Array = PVE_TREE_ASSETS
+            if roll >= 48 and roll < 82:
+                palette = PVE_BAMBOO_ASSETS
+            elif roll >= 82 and roll < 94:
+                palette = PVE_ROCK_ASSETS
+            elif roll >= 94 and roll < 98:
+                palette = PVE_RARE_AUTUMN_ASSETS
+            elif roll >= 98:
+                palette = PVE_RARE_BLOSSOM_ASSETS
+            var selected_asset := str(palette[posmod(asset_index+hash_value,palette.size())])
+            rows.append({"id":selected_asset,"cell":cell,"scale":0.53 if hash_value%3 == 0 else (0.45 if hash_value%3 == 1 else 0.38)})
             asset_index += 1
     return rows
 
@@ -373,7 +399,7 @@ func _load_verified_source_art() -> void:
     source_art = SectMap25SourceArt.new()
     render_art.clear()
     candidate_site_art.clear()
-    decoration_items.clear()
+    decoration_items_by_chunk.clear()
     # Godot-imported candidate SVGs may be unavailable; fall back to the
     # original honest marker. Never add them to verified MAP25 art status.
     for kind in MAP_D2_CANDIDATE_SITES:
@@ -428,16 +454,17 @@ func _load_verified_source_art() -> void:
         var vegetation := source_art.texture_for(rel)
         if vegetation != null:
             render_art[rel] = vegetation
-            decoration_items.append({
+            var chunk := Vector2i(tile.x/CHUNK,tile.y/CHUNK)
+            if not decoration_items_by_chunk.has(chunk):
+                decoration_items_by_chunk[chunk] = []
+            (decoration_items_by_chunk[chunk] as Array).append({
                 "world":project(Vector2(tile)+(Vector2(0.5,0.5) if pve_landscape else Vector2.ZERO)),
                 "texture":vegetation,
                 "scale":float(item["scale"]),
                 "cell":tile
             })
-    decoration_items.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
-        return (a["world"] as Vector2).y < (b["world"] as Vector2).y
-    )
     _cache_static_overlays()
+    pve_static_queue_dirty = true
     art_source_status = source_art.status()
     art_loaded_count = int(art_source_status.get("accepted_count",0))
     # The user is not shown an invented Source A completion status.
@@ -552,6 +579,7 @@ func refresh_from_state(state: SimulationState) -> void:
         return pa.y < pb.y)
     display_instances = rows
     fallback_art_count = maxi(0,rows.size()-int(render_art.has(HOUSE_TEXTURES["main_hall"]))-int(render_art.has(HOUSE_TEXTURES["warehouse"]))-int(render_art.has(HOUSE_TEXTURES["forge"])))
+    pve_static_queue_dirty = true
     queue_redraw()
 
 func _row(dest: StringName, instance_id: StringName, text_label: String, index: int, managed: bool) -> Dictionary:
@@ -570,6 +598,7 @@ func set_selected_visual_site(id: StringName) -> void:
     if selected_visual_site_id == next_id:
         return
     selected_visual_site_id = next_id
+    pve_static_queue_dirty = true
     queue_redraw()
 
 
@@ -612,8 +641,10 @@ func set_pve_snapshot(snapshot: MapBattleV2, view_rows: Dictionary,
         pve_target_positions.clear()
         pve_render_positions.clear()
         pve_actor_actions.clear()
+        pve_jx_sword_vfx.observe_snapshot(null)
         queue_redraw()
         return
+    var new_visual_events := pve_jx_sword_vfx.observe_snapshot(snapshot)
     var present: Dictionary = {}
     for raw_id in snapshot.actors:
         var id := str(raw_id)
@@ -623,25 +654,18 @@ func set_pve_snapshot(snapshot: MapBattleV2, view_rows: Dictionary,
         pve_target_positions[id] = position
         if not pve_render_positions.has(id):
             pve_render_positions[id] = position
-        var action := "die" if float(actor.get("hp",0.0)) <= 0.0 else "idle"
-        for event_index in range(snapshot.events.size()-1,-1,-1):
-            var event: Dictionary = snapshot.events[event_index]
-            var source_id := str(event.get("actor_id",event.get("attacker",event.get("caster",""))))
-            var target_id := str(event.get("target",event.get("target_id","")))
-            if source_id == id:
-                var kind := str(event.get("type",""))
-                if kind == "move": action = "run"
-                elif kind in ["skill_cast","skill_hit","hit","basic_hit"]: action = "attack"
-                if action != "idle": break
-            elif target_id == id and str(event.get("type","")) == "hit":
-                action = "hit"
-                break
-        pve_actor_actions[id] = {"action":action,"started":pve_clock}
+        if not pve_actor_actions.has(id):
+            pve_actor_actions[id] = {"action":"idle","started":pve_clock,"until":-1.0}
+        if float(actor.get("hp",0.0)) <= 0.0:
+            pve_actor_actions[id] = {"action":"die","started":pve_clock,"until":INF}
+        elif str(pve_actor_actions[id].get("action","")) == "die":
+            pve_actor_actions[id] = {"action":"idle","started":pve_clock,"until":-1.0}
     for id in pve_render_positions.keys().duplicate():
         if not present.has(str(id)):
             pve_render_positions.erase(id)
             pve_target_positions.erase(id)
             pve_actor_actions.erase(id)
+    _apply_pve_actor_events(new_visual_events,snapshot)
     if not pve_camera_initialized and camera != null:
         for raw_id in snapshot.actors:
             var actor: Dictionary = snapshot.actors[raw_id]
@@ -658,18 +682,60 @@ func _process(delta: float) -> void:
     if not pve_landscape or pve_battle == null:
         return
     pve_clock += maxf(0.0,delta)
+    pve_jx_sword_vfx.advance(delta)
     for raw_id in pve_render_positions.keys():
         var id := str(raw_id)
         if pve_target_positions.has(id):
             var actor: Dictionary = pve_battle.actors.get(id,{})
             pve_render_positions[id] = (pve_render_positions[id] as Vector2).move_toward(
                 pve_target_positions[id],maxf(0.1,float(actor.get("move_speed",3.0)))*delta)
+    for raw_id in pve_actor_actions.keys():
+        var id := str(raw_id)
+        var actor: Dictionary = pve_battle.actors.get(id,{})
+        var cue: Dictionary = pve_actor_actions[id]
+        if float(actor.get("hp",0.0)) <= 0.0:
+            cue["action"] = "die"
+            cue["until"] = INF
+        elif pve_clock > float(cue.get("until",-1.0)) and str(cue.get("action","")) in ["attack","cast","hit","run"]:
+            var moving := (pve_render_positions.get(id,Vector2.ZERO) as Vector2).distance_to(
+                pve_target_positions.get(id,Vector2.ZERO)) > 0.035
+            cue["action"] = "run" if moving else "idle"
+            cue["started"] = pve_clock
+            cue["until"] = pve_clock+0.2 if moving else -1.0
+        pve_actor_actions[id] = cue
     queue_redraw()
+
+
+func _apply_pve_actor_events(events: Array[Dictionary],snapshot: MapBattleV2) -> void:
+    for event in events:
+        var kind := str(event.get("type",""))
+        var source_id := str(event.get("actor_id",event.get("attacker",event.get("caster",""))))
+        var target_id := str(event.get("target",event.get("target_id","")))
+        if kind == "move" and snapshot.actors.has(source_id):
+            pve_actor_actions[source_id] = {"action":"run","started":pve_clock,"until":pve_clock+0.3}
+        elif kind == "skill_cast" and snapshot.actors.has(source_id):
+            pve_actor_actions[source_id] = {"action":"cast","started":pve_clock,"until":pve_clock+0.85}
+        elif kind == "hit":
+            if str(event.get("kind","")) in ["basic","basic_followup"] and snapshot.actors.has(source_id):
+                pve_actor_actions[source_id] = {"action":"attack","started":pve_clock,"until":pve_clock+0.32}
+            if snapshot.actors.has(target_id) and float(event.get("damage",0.0)) > 0.0:
+                pve_actor_actions[target_id] = {"action":"hit","started":pve_clock,"until":pve_clock+0.24}
+        elif kind == "downed" and snapshot.actors.has(str(event.get("actor_id",""))):
+            var downed_id := str(event.get("actor_id",""))
+            pve_actor_actions[downed_id] = {"action":"die","started":pve_clock,"until":INF}
+
+func _view_size() -> Vector2:
+    if pve_landscape and is_inside_tree():
+        var viewport := get_viewport()
+        if viewport != null:
+            return viewport.get_visible_rect().size
+    return VIEW_SIZE
+
 
 func _update_chunks() -> void:
     if camera == null:
         return
-    var half_view := VIEW_SIZE*0.5/camera.zoom.x
+    var half_view := _view_size()*0.5/camera.zoom.x
     var low := Vector2i(99999,99999)
     var high := Vector2i(-99999,-99999)
     for d in [Vector2(-1,-1),Vector2(1,-1),Vector2(1,1),Vector2(-1,1)]:
@@ -682,17 +748,21 @@ func _update_chunks() -> void:
     for cx in range(clampi(floori(float(low.x)/CHUNK),0,11),clampi(floori(float(high.x)/CHUNK),0,11)+1):
         for cy in range(clampi(floori(float(low.y)/CHUNK),0,11),clampi(floori(float(high.y)/CHUNK),0,11)+1):
             chunks.append(Vector2i(cx,cy))
-    if chunks == active_chunks:
+    var chunks_changed := chunks != active_chunks
+    var camera_changed := not pve_static_queue_has_view or not pve_static_queue_camera_position.is_equal_approx(camera.position) or not is_equal_approx(pve_static_queue_zoom,camera.zoom.x)
+    if not chunks_changed and not camera_changed and not pve_static_queue_dirty:
         return
-    active_chunks = chunks
+    if chunks_changed:
+        active_chunks = chunks
+    pve_static_queue_dirty = true
     draw_revision += 1
     queue_redraw()
 
 func screen_to_world(screen: Vector2) -> Vector2:
     if camera == null:
         return Vector2.ZERO
-    var local_view := screen-MAP_SCREEN_OFFSET
-    return camera.position+(local_view-VIEW_SIZE*0.5)/camera.zoom.x
+    var local_view := screen if pve_landscape else screen-MAP_SCREEN_OFFSET
+    return camera.position+(local_view-_view_size()*0.5)/camera.zoom.x
 
 func pick_at_screen(screen: Vector2) -> Dictionary:
     var world := screen_to_world(screen)
@@ -839,6 +909,10 @@ func _draw() -> void:
             draw_colored_polygon(row["shoulder"],row["shoulder_color"])
             draw_texture_rect(row["texture"],row["rect"],false,
                 Color(0.96,0.95,0.88,0.96))
+    if pve_landscape:
+        _ensure_pve_static_draw_queue()
+        _draw_pve_actor_depth_merge()
+        return
     # Sort all decorations with building art by actual projected ground depth.
     # One draw surface and one depth queue prevent large roofs from showing
     # behind trees which should occlude them.
@@ -846,9 +920,10 @@ func _draw() -> void:
     for item in display_instances:
         if _visible_world(item["world"]):
             queue.append({"y":(item["world"] as Vector2).y,"kind":"building","data":item})
-    for item in decoration_items:
-        if _visible_world(item["world"]):
-            queue.append({"y":(item["world"] as Vector2).y,"kind":"vegetation","data":item})
+    for chunk_id in active_chunks:
+        for item in decoration_items_by_chunk.get(chunk_id,[]):
+            if _visible_world(item["world"]):
+                queue.append({"y":(item["world"] as Vector2).y,"kind":"vegetation","data":item})
     if pve_landscape and pve_battle != null:
         for raw_id in pve_battle.actors:
             var id := str(raw_id)
@@ -889,6 +964,84 @@ func _draw() -> void:
             _draw_building(place,str(item["destination"]),bool(item["managed"]),
                 detailed.has(str(item["building_id"])))
 
+func _ensure_pve_static_draw_queue() -> void:
+    var camera_changed := not pve_static_queue_has_view or not pve_static_queue_camera_position.is_equal_approx(camera.position) or not is_equal_approx(pve_static_queue_zoom,camera.zoom.x)
+    var chunks_changed := pve_static_queue_chunks != active_chunks
+    var selection_changed := pve_static_queue_selected_site != selected_visual_site_id
+    if not pve_static_queue_dirty and not camera_changed and not chunks_changed and not selection_changed:
+        return
+    var queue: Array[Dictionary] = []
+    for item in display_instances:
+        if _visible_world(item["world"]):
+            queue.append({"y":(item["world"] as Vector2).y,"kind":"building","data":item})
+    for chunk_id in active_chunks:
+        for item in decoration_items_by_chunk.get(chunk_id,[]):
+            if _visible_world(item["world"]):
+                queue.append({"y":(item["world"] as Vector2).y,"kind":"vegetation","data":item})
+    queue.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
+        return float(a["y"]) < float(b["y"])
+    )
+    var site_candidates: Array[Dictionary] = []
+    for entry in queue:
+        if str(entry["kind"]) != "building":
+            continue
+        var item: Dictionary = entry["data"]
+        if bool(item["managed"]) and MAP_D2_CANDIDATE_SITES.has(str(item["destination"])):
+            site_candidates.append({
+                "id":str(item["building_id"]),
+                "center_distance":(item["world"] as Vector2).distance_squared_to(camera.position)
+            })
+    pve_static_draw_queue = queue
+    pve_detailed_site_ids = SectEndgameVisualBudgetV1.choose_detailed_producers(
+        site_candidates,camera.zoom.x,selected_visual_site_id)
+    pve_static_queue_camera_position = camera.position
+    pve_static_queue_zoom = camera.zoom.x
+    pve_static_queue_chunks = active_chunks.duplicate()
+    pve_static_queue_selected_site = selected_visual_site_id
+    pve_static_queue_has_view = true
+    pve_static_queue_dirty = false
+
+
+func _draw_pve_actor_depth_merge() -> void:
+    var actors: Array[Dictionary] = []
+    if pve_battle != null:
+        for raw_id in pve_battle.actors:
+            var id := str(raw_id)
+            var actor: Dictionary = pve_battle.actors[raw_id]
+            var cell: Vector2 = pve_render_positions.get(id,actor.get("position",Vector2.ZERO))
+            var foot := project(cell)
+            if _visible_world(foot):
+                actors.append({"y":foot.y,"data":{"id":id,"actor":actor,"cell":cell}})
+    actors.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
+        return float(a["y"]) < float(b["y"])
+    )
+    var static_index := 0
+    var actor_index := 0
+    while static_index < pve_static_draw_queue.size() or actor_index < actors.size():
+        var draw_actor := actor_index < actors.size() and (
+            static_index >= pve_static_draw_queue.size()
+            or float(actors[actor_index]["y"]) < float(pve_static_draw_queue[static_index]["y"]))
+        if draw_actor:
+            _draw_pve_actor(actors[actor_index]["data"])
+            actor_index += 1
+        else:
+            _draw_pve_static_item(pve_static_draw_queue[static_index])
+            static_index += 1
+
+
+func _draw_pve_static_item(entry: Dictionary) -> void:
+    var item: Dictionary = entry["data"]
+    if str(entry["kind"]) == "vegetation":
+        var tex: Texture2D = item["texture"]
+        var scaled := tex.get_size()*float(item["scale"])
+        var place: Vector2 = item["world"]
+        draw_texture_rect(tex,Rect2(place-Vector2(scaled.x*0.5,scaled.y-4.0),scaled),false)
+    else:
+        var place: Vector2 = item["world"]
+        _draw_building(place,str(item["destination"]),bool(item["managed"]),
+            pve_detailed_site_ids.has(str(item["building_id"])))
+
+
 func _draw_pve_stream() -> void:
     var points := PackedVector2Array()
     for y in range(4,GRID.y,3):
@@ -908,6 +1061,10 @@ func _draw_pve_actor(data: Dictionary) -> void:
     var alive := float(actor.get("hp",0.0)) > 0.0
     var visual: Dictionary = pve_actor_actions.get(id,{"action":"idle","started":pve_clock})
     var action := "die" if not alive else str(visual.get("action","idle"))
+    if alive and pve_clock > float(visual.get("until",-1.0)):
+        action = "run" if (pve_render_positions.get(id,cell) as Vector2).distance_to(cell) > 0.035 else "idle"
+    if action == "cast" and pve_jx_sword_vfx.comparison_style == "jx1":
+        action = "idle"
     var facing := Vector2.RIGHT
     if pve_target_positions.has(id) and pve_render_positions.has(id):
         facing = (pve_target_positions[id] as Vector2)-(pve_render_positions[id] as Vector2)
@@ -918,7 +1075,7 @@ func _draw_pve_actor(data: Dictionary) -> void:
     var drawn := not actor_key.is_empty() and pve_source_atlas.has_actor(actor_key)
     if drawn:
         drawn = pve_source_atlas.draw_actor(self,actor_key,action,foot,facing,
-            maxf(0.0,pve_clock-float(visual.get("started",pve_clock))),camera.zoom.x*1.10)
+            maxf(0.0,pve_clock-float(visual.get("started",pve_clock))),camera.zoom.x*0.82)
     if not drawn:
         var shade := Color("73d6ad") if side == "disciple" else Color("dc9370")
         draw_colored_polygon(PackedVector2Array([foot+Vector2(0,-10),foot+Vector2(8,0),foot+Vector2(0,7),foot+Vector2(-8,0)]),shade)
@@ -936,10 +1093,11 @@ func _draw_pve_actor(data: Dictionary) -> void:
             draw_string_outline(font,foot+Vector2(-36.0*camera.zoom.x,-20.0*camera.zoom.x),name,HORIZONTAL_ALIGNMENT_LEFT,-1,10,2,Color(0.02,0.04,0.03,0.94))
             draw_string(font,foot+Vector2(-36.0*camera.zoom.x,-20.0*camera.zoom.x),name,HORIZONTAL_ALIGNMENT_LEFT,-1,10,Color("f4f1dd"))
 
+
 func _visible_world(point: Vector2) -> bool:
     if camera == null:
         return false
-    var half := VIEW_SIZE*0.5/camera.zoom.x+Vector2(170,175)
+    var half := _view_size()*0.5/camera.zoom.x+Vector2(170,175)
     var delta := (point-camera.position).abs()
     return delta.x <= half.x and delta.y <= half.y
 

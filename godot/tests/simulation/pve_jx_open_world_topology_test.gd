@@ -33,16 +33,24 @@ func _run() -> void:
         return
     var unique_positions: Dictionary = {}
     var party_anchor: Vector2 = topology["camp_positions"][0]
-    var party_cell := Vector2i(floori(party_anchor.x),floori(party_anchor.y))
+    var party_cells: Array[Vector2i] = []
+    var minimum_party_spacing := INF
     for point in topology["party_spawn_points"]:
         var cell := Vector2i(floori(point.x),floori(point.y))
-        var key := "%.3f:%.3f" % [point.x,point.y]
+        var key := "%d:%d" % [cell.x,cell.y]
+        for existing_cell in party_cells:
+            minimum_party_spacing = minf(minimum_party_spacing,Vector2(cell).distance_to(Vector2(existing_cell)))
         if not _check(PveOpenWorldTopologyV1._walkable(navigation,cell)
-            and cell == party_cell and point.distance_to(party_anchor) <= 0.55
+            and Vector2(cell).distance_to(party_anchor) <= 5.75
             and not unique_positions.has(key),
-            "six disciples are not tightly grouped on the walkable C01 tile"):
+            "six disciples do not occupy unique nearby walkable spawn cells"):
             return
         unique_positions[key] = true
+        party_cells.append(cell)
+    if not _check(party_cells.size() == 6 and minimum_party_spacing >= 1.8,
+        "initial six-member formation does not keep a small visible gap; actors=%d min_spacing=%.2f" % [
+        party_cells.size(),minimum_party_spacing]):
+        return
     var nearest_c01_spawn := INF
     for ordinal in range(PveOpenWorldTopologyV1.SLOTS_PER_CAMP):
         var monster_position: Vector2 = topology["slot_positions"][PveMultiCampPopulationV1.slot_id(0,ordinal)]
@@ -60,6 +68,6 @@ func _run() -> void:
     if not _check(not data.is_empty() and JSON.parse_string(data) is Dictionary,
         "the saved topology fields are not serializable for the canonical state envelope"):
         return
-    print("PVE JX OPEN WORLD TOPOLOGY PASS map=50x100 source_hashes=%d connected_cells=%d zones=20 spawn_slots=200 party_spawn=6 grouped_near_c01=true" % [
-        source.verified_files,topology["navigation"]["blocked"].size()])
+    print("PVE JX OPEN WORLD TOPOLOGY PASS map=50x100 source_hashes=%d connected_cells=%d zones=20 spawn_slots=200 party_spawn=6 spaced_near_c01=true min_party_spacing=%.2f" % [
+        source.verified_files,topology["navigation"]["blocked"].size(),minimum_party_spacing])
     quit(0)

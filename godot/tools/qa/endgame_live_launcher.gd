@@ -23,6 +23,13 @@ func _launch() -> void:
 	if requested_population != 130:
 		chosen_seed = "res://qa/endgame_qa_save_%d.json" % requested_population
 		chosen_playable = "outputs/endgame_qa_20261026/userdata/endgame_playable_save_%d.json" % requested_population
+	var save_override := OS.get_environment("TMB_ENDGAME_PLAY_SAVE_PATH").strip_edges().replace("\\","/")
+	if not save_override.is_empty():
+		if save_override.begins_with("/") or save_override.contains(":") or save_override.contains(".."):
+			printerr("TMB_ENDGAME_LAUNCH_FAIL save override must stay inside the project output tree")
+			quit(2)
+			return
+		chosen_playable = save_override
 	var seed_path := ProjectSettings.globalize_path(chosen_seed)
 	if not FileAccess.file_exists(seed_path):
 		printerr("TMB_ENDGAME_LAUNCH_FAIL missing deterministic QA seed: %s" % seed_path)

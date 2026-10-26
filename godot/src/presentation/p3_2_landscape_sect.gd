@@ -7,6 +7,7 @@ const B3_HUNT_REFRESH_SECONDS := 0.25
 const MAP_WORKSITE_MAX_CUES := 4
 const MAP_WORKSITE_REFRESH_SECONDS := 0.40
 const MAX_RETAINED_ACTOR_POOL := 72
+const PERFORMANCE_SAMPLE_SECONDS := 3.0
 
 class B3MainHuntArena:
     extends Control
@@ -173,6 +174,10 @@ var b3_hunt_arena: B3MainHuntArena
 var b3_pve_world_view: PveSectWorldViewV1
 var b3_hunt_combat_view: B3MainHuntCombatView
 var b3_hunt_facts: Label
+var b3_hunt_facts_panel: Panel
+var b3_hunt_world_status: Label
+var b3_hunt_title: Label
+var b3_hunt_subtitle: Label
 var b3_hunt_feedback: Label
 var b3_hunt_auto_button: Button
 var b3_hunt_deploy_button: Button
@@ -193,11 +198,20 @@ var actor_visibility_refresh_elapsed := 0.0
 var map_worksite_last_scale := 0.0
 var map_worksite_anchors: Dictionary = {}
 var map_worksite_screen_offsets: Dictionary = {}
+var performance_logging_enabled := false
+var performance_sample_elapsed := 0.0
+var performance_sample_frame_count := 0
+var performance_sample_delta_total := 0.0
+var performance_sample_delta_max := 0.0
+var performance_hunt_refresh_count := 0
+var performance_hunt_refresh_usec_total := 0
+var performance_hunt_refresh_usec_max := 0
 
 func _ready() -> void:
     super._ready()
     if not runtime_ready:
         return
+    performance_logging_enabled = OS.get_environment("TMB_PVE_PERF_LOG") == "1"
     female_motion_library = FemaleNormalV1MotionLibrary.build()
     _install_modular_live_actors()
     _install_main_isometric_world()
@@ -603,19 +617,17 @@ func _apply_camera(zoom: float, position: Vector2, animate: bool) -> void:
     _refresh_zoom_readout()
 
 func _refresh_world_actor_visibility() -> void:
-    # A sect roster can contain 200-500 canonical disciples, but the mobile
-    # viewport only materializes a bounded set of actors inside its viewport.
-    # Canonical roster/job/save state stays in SimulationState; this is a view pool.
+    # Production is readable with one selected disciple on the map. All other
+    # disciples remain in SimulationState and continue their jobs; they simply
+    # do not allocate animated scene actors until selected. The PvE world uses
+    # its separate renderer and still shows the full six-member party.
     if map_layer == null or state == null:
         return
     var view := SectMapCamera.VIEW_RECT
-    var eligible: Array[Dictionary] = []
-    var focused_key := str(focused_id) if focused_kind == &"disciple" else ""
-    for raw_id in actor_virtual_positions.keys():
-        var key := str(raw_id)
-        if not state.disciples.has(StringName(key)):
-            continue
-        var local_top_left: Vector2 = actor_virtual_positions[key]
+    var visible_ids: Dictionary = {}
+    var selected_key := str(selected_id)
+    if not selected_key.is_empty() and state.disciples.has(selected_id) and actor_virtual_positions.has(selected_key):
+        var local_top_left: Vector2 = actor_virtual_positions[selected_key]
         var screen_transform: Transform2D = map_layer.get_global_transform()
         var screen_top_left: Vector2 = screen_transform * local_top_left
         var actor_size := DiscipleActorVisualCatalog.ACTOR_BOX_SIZE
@@ -625,13 +637,7 @@ func _refresh_world_actor_visibility() -> void:
         )
         var rect := Rect2(screen_top_left,screen_size)
         if rect.position.x >= view.position.x and rect.position.y >= view.position.y and rect.end.x <= view.end.x and rect.end.y <= view.end.y:
-            eligible.append({
-                "id":key,
-                "center_distance":rect.get_center().distance_squared_to(view.get_center()),
-                "screen_point":rect.get_center()
-            })
-    var visible_ids := SectEndgameVisualBudgetV1.choose_visible_actors(
-        eligible,map_zoom,focused_key)
+            visible_ids[selected_key] = true
     for raw_id in actor_nodes.keys().duplicate():
         var key := str(raw_id)
         if not visible_ids.has(key):
@@ -3157,6 +3163,25 @@ func _equipment_policy_label(policy: StringName) -> String:
         _: return "Cân bằng"
 
 func _process(_delta: float) -> void:
+    if performance_logging_enabled:
+        _sample_frame_performance(_delta)
+    if b3_hunt_panel != null and is_instance_valid(b3_hunt_panel):
+        var hunt_parent := b3_hunt_panel.get_parent() as CanvasItem
+        if hunt_parent != null and hunt_parent.visible:
+            # The hunt surface owns its own world renderer. The dimmed 130-500
+            # disciple map underneath is static while the modal is open; do not
+            # rebuild its actor visibility and cue positions every frame.
+            b3_hunt_refresh_elapsed += _delta
+            if b3_hunt_refresh_elapsed >= B3_HUNT_REFRESH_SECONDS:
+                b3_hunt_refresh_elapsed = 0.0
+                var refresh_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
+                _refresh_b3_hunt_panel()
+                if performance_logging_enabled:
+                    var refresh_elapsed_usec := Time.get_ticks_usec()-refresh_started_usec
+                    performance_hunt_refresh_count += 1
+                    performance_hunt_refresh_usec_total += refresh_elapsed_usec
+                    performance_hunt_refresh_usec_max = maxi(performance_hunt_refresh_usec_max,refresh_elapsed_usec)
+            return
     if iso_world != null:
         if iso_world.set_legacy_transform(map_layer.scale.x,map_layer.position):
             iso_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
@@ -3175,6 +3200,38 @@ func _process(_delta: float) -> void:
     if b3_hunt_refresh_elapsed >= B3_HUNT_REFRESH_SECONDS:
         b3_hunt_refresh_elapsed = 0.0
         _refresh_b3_hunt_panel()
+
+func _sample_frame_performance(delta: float) -> void:
+    var safe_delta := maxf(0.0,delta)
+    performance_sample_elapsed += safe_delta
+    performance_sample_delta_total += safe_delta
+    performance_sample_delta_max = maxf(performance_sample_delta_max,safe_delta)
+    performance_sample_frame_count += 1
+    if performance_sample_elapsed < PERFORMANCE_SAMPLE_SECONDS:
+        return
+    var visible_actor_count := 0
+    for actor_value in actor_nodes.values():
+        var actor := actor_value as CanvasItem
+        if actor != null and actor.visible:
+            visible_actor_count += 1
+    var avg_frame_ms := performance_sample_delta_total*1000.0/maxi(1,performance_sample_frame_count)
+    print("TMB_P3_2_FRAME_METRIC " + JSON.stringify({
+        "fps":float(performance_sample_frame_count)/maxf(0.001,performance_sample_elapsed),
+        "avg_frame_ms":avg_frame_ms,
+        "worst_frame_ms":performance_sample_delta_max*1000.0,
+        "hunt_refresh_count":performance_hunt_refresh_count,
+        "hunt_refresh_avg_ms":float(performance_hunt_refresh_usec_total)/maxi(1,performance_hunt_refresh_count)/1000.0,
+        "hunt_refresh_max_ms":float(performance_hunt_refresh_usec_max)/1000.0,
+        "visible_production_disciple_actors":visible_actor_count,
+        "total_materialized_production_actors":actor_nodes.size()
+    }))
+    performance_sample_elapsed = 0.0
+    performance_sample_frame_count = 0
+    performance_sample_delta_total = 0.0
+    performance_sample_delta_max = 0.0
+    performance_hunt_refresh_count = 0
+    performance_hunt_refresh_usec_total = 0
+    performance_hunt_refresh_usec_max = 0
 
 func _refresh_all() -> void:
     super._refresh_all()
@@ -3718,10 +3775,14 @@ func _build_b3_hunt_panel() -> void:
     b3_hunt_panel.visible = false
     shade.add_child(b3_hunt_panel)
 
-    var title := _label(b3_hunt_panel,"THẾ GIỚI SĂN QUÁI — LIỀN MẠCH",Vector2(24,14),Vector2(1100,32),22)
-    title.add_theme_color_override("font_color",JADE_DARK)
-    var subtitle := _label(b3_hunt_panel,"Rừng Source A liền mạch · click đất để đi · quái di chuyển và đánh tại chỗ · Combat V2 / clock / SaveService màn chính",Vector2(26,48),Vector2(1090,24),13)
-    subtitle.add_theme_color_override("font_color",INK)
+    b3_hunt_title = _label(b3_hunt_panel,"THẾ GIỚI SĂN QUÁI — LIỀN MẠCH",Vector2(24,14),Vector2(1100,32),22)
+    b3_hunt_title.name = "B3HuntTitle"
+    b3_hunt_title.add_theme_color_override("font_color",JADE_DARK)
+    b3_hunt_title.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    b3_hunt_subtitle = _label(b3_hunt_panel,"Rừng Source A liền mạch · click đất để đi · quái di chuyển và đánh tại chỗ · Combat V2 / clock / SaveService màn chính",Vector2(26,48),Vector2(1090,24),13)
+    b3_hunt_subtitle.name = "B3HuntSubtitle"
+    b3_hunt_subtitle.add_theme_color_override("font_color",INK)
+    b3_hunt_subtitle.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
     b3_hunt_arena = B3MainHuntArena.new()
     b3_hunt_arena.name = "B3MainHuntArena"
@@ -3729,6 +3790,8 @@ func _build_b3_hunt_panel() -> void:
     b3_hunt_arena.size = Vector2(700,484)
     b3_hunt_arena.add_theme_stylebox_override("panel",_style(JADE_DARK,INK,1,8))
     b3_hunt_panel.add_child(b3_hunt_arena)
+    # The map must draw below its compact HUD while retaining the full click surface.
+    b3_hunt_panel.move_child(b3_hunt_arena,0)
     b3_pve_world_view = b3_hunt_arena.sect_world
     b3_pve_world_view.move_ordered.connect(_on_open_world_move_ordered)
 
@@ -3738,6 +3801,7 @@ func _build_b3_hunt_panel() -> void:
     facts_panel.size = Vector2(382,484)
     facts_panel.add_theme_stylebox_override("panel",_style(Color("eee6d2"),Color("74694f"),1,8))
     b3_hunt_panel.add_child(facts_panel)
+    b3_hunt_facts_panel = facts_panel
     b3_hunt_combat_view = B3MainHuntCombatView.new()
     b3_hunt_combat_view.name = "B3PveCombatV5View"
     b3_hunt_combat_view.position = Vector2(16,12)
@@ -3750,6 +3814,16 @@ func _build_b3_hunt_panel() -> void:
     b3_hunt_facts = _label(facts_panel,"",Vector2(16,14),Vector2(350,452),15)
     b3_hunt_facts.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     b3_hunt_facts.add_theme_color_override("font_color",INK)
+    b3_hunt_world_status = Label.new()
+    b3_hunt_world_status.name = "B3MainHuntStatus"
+    b3_hunt_world_status.position = Vector2(12,10)
+    b3_hunt_world_status.size = Vector2(258,86)
+    b3_hunt_world_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    b3_hunt_world_status.add_theme_font_size_override("font_size",11)
+    b3_hunt_world_status.add_theme_color_override("font_color",Color("f3efdd"))
+    b3_hunt_world_status.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    b3_hunt_world_status.visible = false
+    facts_panel.add_child(b3_hunt_world_status)
     b3_hunt_feedback = _label(b3_hunt_panel,"",Vector2(28,578),Vector2(510,42),13)
     b3_hunt_feedback.add_theme_color_override("font_color",CINNABAR)
 
@@ -4015,14 +4089,77 @@ func _on_open_world_move_ordered(actor_ids: Array, destination: Vector2) -> void
         _set_b3_hunt_feedback("Không ra lệnh di chuyển: world không khôi phục được.")
         return
     var session: HuntingPveRunV2 = restored["session"]
-    var ordered := session.battle.order_group_move(actor_ids,destination)
-    if not bool(ordered.get("ok",false)):
-        _set_b3_hunt_feedback("Không đi tới được vị trí: %s" % str(ordered.get("reason","ô không đi được")))
+    var eligible: Array[String] = []
+    for raw_id in actor_ids:
+        var id := str(raw_id)
+        var actor: Dictionary = session.battle.actors.get(id,{})
+        if str(actor.get("side","")) == "disciple" and float(actor.get("hp",0.0)) > 0.0 and not eligible.has(id):
+            eligible.append(id)
+    eligible.sort()
+    if eligible.is_empty():
+        _set_b3_hunt_feedback("Không ra lệnh di chuyển: chưa có đệ tử sống được chọn.")
         return
+    var offsets := _open_world_group_formation_offsets(eligible.size())
+    var base_cell := Vector2i(floori(destination.x),floori(destination.y))
+    var assigned_slots: Dictionary = {}
+    for index in range(eligible.size()):
+        var slot := _open_world_nearest_free_formation_cell(
+            session.battle,base_cell+offsets[index],assigned_slots)
+        if slot.x < 0:
+            _set_b3_hunt_feedback("Không tìm đủ ô trống để tách đội hình.")
+            return
+        var ordered := session.battle.order_group_move(
+            [eligible[index]],Vector2(slot)+Vector2(0.5,0.5))
+        if not bool(ordered.get("ok",false)):
+            _set_b3_hunt_feedback("Không đi tới được vị trí: %s" % str(ordered.get("reason","ô không đi được")))
+            return
+        assigned_slots[slot] = true
     var checkpoint := session._persist_live_state()
     var saved := runtime_session.save() if bool(checkpoint.get("ok",false)) else checkpoint
     _set_b3_hunt_feedback("Đã ra lệnh đội %d người tới ô địa hình; trạng thái đã lưu." % actor_ids.size() if bool(saved.get("ok",false)) else "Di chuyển đã ra lệnh; Save cần thử lại.")
     _refresh_b3_hunt_panel()
+
+func _open_world_group_formation_offsets(count: int) -> Array[Vector2i]:
+    match count:
+        1:
+            return [Vector2i.ZERO]
+        2:
+            return [Vector2i(-1,0),Vector2i(1,0)]
+        3:
+            return [Vector2i(-1,-1),Vector2i(1,-1),Vector2i(0,1)]
+        4:
+            return [Vector2i(-1,-1),Vector2i(1,-1),Vector2i(-1,1),Vector2i(1,1)]
+        _:
+            return [Vector2i(-3,-2),Vector2i(0,-2),Vector2i(3,-2),
+                Vector2i(-3,2),Vector2i(0,2),Vector2i(3,2)]
+
+func _open_world_nearest_free_formation_cell(battle: MapBattleV2,
+        desired: Vector2i,assigned: Dictionary) -> Vector2i:
+    var navigation: Dictionary = battle.world_navigation
+    var width := int(navigation.get("width",0))
+    var height := int(navigation.get("height",0))
+    var blocked: Array = navigation.get("blocked",[])
+    if width <= 0 or height <= 0 or blocked.is_empty():
+        return Vector2i(-1,-1)
+    for radius in range(0,8):
+        for y in range(-radius,radius+1):
+            for x in range(-radius,radius+1):
+                if maxi(absi(x),absi(y)) != radius:
+                    continue
+                var candidate := desired+Vector2i(x,y)
+                if candidate.x < 0 or candidate.y < 0 or candidate.x >= width or candidate.y >= height:
+                    continue
+                if int(blocked[candidate.y*width+candidate.x]) != 0 or assigned.has(candidate):
+                    continue
+                var spaced := true
+                for raw_slot in assigned.keys():
+                    var existing_slot: Vector2i = raw_slot
+                    if candidate.distance_squared_to(existing_slot) < 6.25:
+                        spaced = false
+                        break
+                if spaced:
+                    return candidate
+    return Vector2i(-1,-1)
 
 func _save_b3_main_runtime() -> void:
     if runtime_session == null:
@@ -4174,6 +4311,7 @@ func _refresh_multicamp_hunt_panel() -> void:
     var status := "Đội tự tìm đường, đánh tại chỗ bằng Combat V2" if running else ("Tổ đội đã bị hạ" if outcome == "defeat" else "Tổ đội đã về tông môn")
     var kill_count := int(population.get("world_total_kills",receipt.get("kills",0)))
     var alive_monsters := battle._count_alive("monster")
+    _set_hunt_status(battle,camp_id,total_monsters,alive_monsters)
     var member_text := "\n".join(team_lines)
     b3_hunt_facts.text = (
         "%s · %s\n%s\n"
@@ -4187,15 +4325,110 @@ func _refresh_multicamp_hunt_panel() -> void:
 func _set_hunt_presentation_layout(use_live_map: bool) -> void:
     if b3_hunt_facts == null:
         return
+    var shade := b3_hunt_panel.get_parent() as ColorRect
     if use_live_map:
-        b3_hunt_facts.position = Vector2(16,252)
-        b3_hunt_facts.size = Vector2(350,218)
-        b3_hunt_facts.add_theme_font_size_override("font_size",10)
-        b3_hunt_facts.clip_text = true
+        if shade != null:
+            shade.color = Color(0.03,0.06,0.07,0.12)
+        b3_hunt_panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+        b3_hunt_panel.offset_left = 0.0
+        b3_hunt_panel.offset_top = 0.0
+        b3_hunt_panel.offset_right = 0.0
+        b3_hunt_panel.offset_bottom = 0.0
+        b3_hunt_panel.add_theme_stylebox_override("panel",StyleBoxEmpty.new())
+        b3_hunt_arena.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+        b3_hunt_arena.offset_left = 0.0
+        b3_hunt_arena.offset_top = 0.0
+        b3_hunt_arena.offset_right = 0.0
+        b3_hunt_arena.offset_bottom = 0.0
+        b3_hunt_arena.add_theme_stylebox_override("panel",StyleBoxEmpty.new())
+        b3_hunt_facts_panel.position = Vector2(16,56)
+        b3_hunt_facts_panel.size = Vector2(292,104)
+        b3_hunt_facts_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        b3_hunt_facts_panel.add_theme_stylebox_override("panel",_style(Color(0.025,0.055,0.045,0.90),Color("d7c695"),1,8))
+        b3_hunt_facts.position = Vector2(16,14)
+        b3_hunt_facts.size = Vector2(258,78)
+        b3_hunt_facts.visible = false
+        b3_hunt_world_status.visible = true
+        b3_hunt_title.text = "THANH TRÚC LÂM · THẾ GIỚI LIỀN MẠCH"
+        b3_hunt_title.position = Vector2(18,14)
+        b3_hunt_title.size = Vector2(600,32)
+        b3_hunt_title.add_theme_color_override("font_color",Color("f3efdd"))
+        b3_hunt_subtitle.visible = false
+        b3_hunt_feedback.position = Vector2(640,16)
+        b3_hunt_feedback.size = Vector2(430,30)
+        b3_hunt_feedback.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        b3_hunt_save_button.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
+        b3_hunt_save_button.offset_left = 18.0
+        b3_hunt_save_button.offset_top = -60.0
+        b3_hunt_save_button.offset_right = 150.0
+        b3_hunt_save_button.offset_bottom = -14.0
+        b3_hunt_auto_button.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
+        b3_hunt_auto_button.offset_left = 162.0
+        b3_hunt_auto_button.offset_top = -60.0
+        b3_hunt_auto_button.offset_right = 294.0
+        b3_hunt_auto_button.offset_bottom = -14.0
+        b3_hunt_deploy_button.visible = false
+        b3_hunt_return_button.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+        b3_hunt_return_button.offset_left = -164.0
+        b3_hunt_return_button.offset_top = -60.0
+        b3_hunt_return_button.offset_right = -18.0
+        b3_hunt_return_button.offset_bottom = -14.0
     else:
+        if shade != null:
+            shade.color = Color(0.03,0.06,0.07,0.78)
+        b3_hunt_panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
+        b3_hunt_panel.position = Vector2(64,38)
+        b3_hunt_panel.size = Vector2(1152,644)
+        b3_hunt_panel.add_theme_stylebox_override("panel",_style(PAPER_LIGHT,INK,3,14))
+        b3_hunt_arena.set_anchors_preset(Control.PRESET_TOP_LEFT)
+        b3_hunt_arena.position = Vector2(24,82)
+        b3_hunt_arena.size = Vector2(700,484)
+        b3_hunt_arena.add_theme_stylebox_override("panel",_style(JADE_DARK,INK,1,8))
+        b3_hunt_facts_panel.position = Vector2(746,82)
+        b3_hunt_facts_panel.size = Vector2(382,484)
+        b3_hunt_facts_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+        b3_hunt_facts_panel.add_theme_stylebox_override("panel",_style(Color("eee6d2"),Color("74694f"),1,8))
         b3_hunt_facts.position = Vector2(16,14)
         b3_hunt_facts.size = Vector2(350,452)
         b3_hunt_facts.add_theme_font_size_override("font_size",15)
+        b3_hunt_facts.visible = true
+        b3_hunt_world_status.visible = false
+        b3_hunt_title.text = "THẾ GIỚI SĂN QUÁI — LIỀN MẠCH"
+        b3_hunt_title.position = Vector2(24,14)
+        b3_hunt_title.size = Vector2(1100,32)
+        b3_hunt_title.add_theme_color_override("font_color",JADE_DARK)
+        b3_hunt_subtitle.visible = true
+        b3_hunt_feedback.position = Vector2(28,578)
+        b3_hunt_feedback.size = Vector2(510,42)
+        b3_hunt_save_button.set_anchors_preset(Control.PRESET_TOP_LEFT)
+        b3_hunt_save_button.position = Vector2(550,580)
+        b3_hunt_save_button.size = Vector2(132,46)
+        b3_hunt_auto_button.set_anchors_preset(Control.PRESET_TOP_LEFT)
+        b3_hunt_auto_button.position = Vector2(746,580)
+        b3_hunt_auto_button.size = Vector2(120,46)
+        b3_hunt_deploy_button.visible = true
+        b3_hunt_deploy_button.set_anchors_preset(Control.PRESET_TOP_LEFT)
+        b3_hunt_deploy_button.position = Vector2(876,580)
+        b3_hunt_deploy_button.size = Vector2(120,46)
+        b3_hunt_return_button.set_anchors_preset(Control.PRESET_TOP_LEFT)
+        b3_hunt_return_button.position = Vector2(1006,580)
+        b3_hunt_return_button.size = Vector2(122,46)
+
+func _set_hunt_status(battle: MapBattleV2, camp_id: String, total_monsters: int,
+        alive_monsters: int) -> void:
+    if b3_hunt_world_status == null or battle == null:
+        return
+    var members := 0
+    var total_hp := 0.0
+    var maximum_hp := 0.0
+    for actor in battle.actors.values():
+        if str(actor.get("side","")) != "disciple":
+            continue
+        members += 1
+        total_hp += maxf(0.0,float(actor.get("hp",0.0)))
+        maximum_hp += maxf(1.0,float(actor.get("max_hp",1.0)))
+    b3_hunt_world_status.text = "Đội săn %d/6 · sống %d · HP %.0f/%.0f\n%s · quái %d/%d · %.1fs\nLOOT_PENDING" % [
+        members,battle._count_alive("disciple"),total_hp,maximum_hp,camp_id,alive_monsters,total_monsters,battle.now]
 
 func _refresh_b3_hunt_panel() -> void:
     if b3_hunt_panel == null or not b3_hunt_panel.get_parent().visible or state == null:

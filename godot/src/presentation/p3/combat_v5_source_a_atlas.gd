@@ -8,6 +8,8 @@ const ACTORS_ROOT := "res://assets/actors/"
 
 var _actors: Dictionary = {}
 var _packs: Dictionary = {}
+var _clip_cache: Dictionary = {}
+var _resolved_clip_cache: Dictionary = {}
 
 func _init() -> void:
 	super()
@@ -45,30 +47,44 @@ func frame_region(actor_key: String, action: String, facing: Vector2, elapsed: f
 	var pack: Dictionary = resolved["pack"]
 	var frames: SpriteFrames = pack["frames"]
 	var clip_name := str(resolved["clip"])
-	var count := frames.get_frame_count(clip_name)
-	if count < 1:
-		return {}
-	var speed := maxf(0.001, frames.get_animation_speed(clip_name))
-	var durations: Array[float] = []
-	var duration_total := 0.0
-	for index in range(count):
-		var value := maxf(0.001, frames.get_frame_duration(clip_name, index) / speed)
-		durations.append(value)
-		duration_total += value
-	if duration_total <= 0.0:
+	var cache_key := "%d:%s" % [frames.get_instance_id(),clip_name]
+	var clip_data: Dictionary = _clip_cache.get(cache_key,{})
+	if clip_data.is_empty():
+		var count := frames.get_frame_count(clip_name)
+		if count < 1:
+			return {}
+		var speed := maxf(0.001,frames.get_animation_speed(clip_name))
+		var durations: Array[float] = []
+		var textures: Array[Texture2D] = []
+		var duration_total := 0.0
+		for index in range(count):
+			durations.append(maxf(0.001,frames.get_frame_duration(clip_name,index)/speed))
+			textures.append(frames.get_frame_texture(clip_name,index))
+			duration_total += durations.back()
+		clip_data = {
+			"durations":durations,
+			"textures":textures,
+			"duration_total":duration_total,
+			"loop":frames.get_animation_loop(clip_name)
+		}
+		_clip_cache[cache_key] = clip_data
+	var durations: Array = clip_data["durations"]
+	var duration_total := float(clip_data["duration_total"])
+	if durations.is_empty() or duration_total <= 0.0:
 		return {}
 	var sample_time := maxf(0.0, elapsed)
-	if frames.get_animation_loop(clip_name):
+	if bool(clip_data["loop"]):
 		sample_time = fposmod(sample_time, duration_total)
 	else:
 		sample_time = minf(sample_time, maxf(0.0, duration_total - 0.0001))
-	var frame_index := count - 1
-	for index in range(count):
-		if sample_time < durations[index] or index == count - 1:
+	var frame_index := durations.size() - 1
+	for index in range(durations.size()):
+		if sample_time < float(durations[index]) or index == durations.size() - 1:
 			frame_index = index
 			break
 		sample_time -= durations[index]
-	var texture := frames.get_frame_texture(clip_name, frame_index)
+	var textures: Array = clip_data["textures"]
+	var texture := textures[frame_index] as Texture2D
 	if texture == null:
 		return {}
 	return {
@@ -115,6 +131,9 @@ func draw_actor(canvas: CanvasItem, actor_key: String, action: String, foot: Vec
 	return true
 
 func _resolve(actor_key: String, action: String) -> Dictionary:
+	var cache_key := actor_key+"|"+action
+	if _resolved_clip_cache.has(cache_key):
+		return _resolved_clip_cache[cache_key]
 	if not _actors.has(actor_key):
 		return {}
 	var row: Dictionary = _actors[actor_key]
@@ -133,11 +152,14 @@ func _resolve(actor_key: String, action: String) -> Dictionary:
 		var frames: SpriteFrames = pack["frames"]
 		for clip_name in candidates:
 			if frames.has_animation(clip_name) and frames.get_frame_count(clip_name) > 0:
-				return {
+				var resolved := {
 					"pack": pack,
 					"clip": clip_name,
 					"scale": float(row["combat_scale"] if pack_key == "combat" else row["base_scale"])
 				}
+				_resolved_clip_cache[cache_key] = resolved
+				return resolved
+	_resolved_clip_cache[cache_key] = {}
 	return {}
 
 func _load_pack(asset_id: String) -> Dictionary:

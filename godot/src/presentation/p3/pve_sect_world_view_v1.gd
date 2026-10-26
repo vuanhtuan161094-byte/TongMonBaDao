@@ -29,6 +29,14 @@ var camp_index := 0
 var selected_actor_ids: Array[String] = []
 var source_error := ""
 var world: SectIsometricWorldV1
+var prepare_world_call_count := 0
+var topology_build_count := 0
+var minimap_build_count := 0
+var _cached_source_blob_sha := ""
+var _cached_source_map := ""
+var _cached_navigation: Dictionary = {}
+var _cached_topology: Dictionary = {}
+var _cached_minimap: Texture2D
 var _container: SubViewportContainer
 var _viewport: SubViewport
 var _overlay: InputOverlay
@@ -65,7 +73,10 @@ func _ready() -> void:
 	_container = SubViewportContainer.new()
 	_container.name = "SectPveWorldViewportContainer"
 	_container.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	_container.stretch = true
+	# The P3.2 layout sizes this viewport explicitly on every resize.
+	# Keeping stretch enabled conflicts with assigning SubViewport.size and
+	# emits a warning during hunt open/refresh, so this is an exact-size child.
+	_container.stretch = false
 	_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_container)
 	_viewport = SubViewport.new()
@@ -90,26 +101,62 @@ func _ready() -> void:
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_RESIZED and _viewport != null:
 		_viewport.size = Vector2i(maxi(1,roundi(size.x)),maxi(1,roundi(size.y)))
+		if world != null:
+			world._update_chunks()
+			world.queue_redraw()
 		if _overlay != null:
 			_overlay.queue_redraw()
 
+func _process(_delta: float) -> void:
+	if world != null and world.pve_jx_sword_vfx.active_count() > 0:
+		_queue_overlay_redraw()
+
 func prepare_world() -> Dictionary:
-	var navigation := SectIsometricWorldV1.pve_navigation_grid()
-	var built := PveOpenWorldTopologyV1.build(navigation,Vector2(SectIsometricWorldV1.PVE_SPAWN_CELL)+Vector2(0.5,0.5))
-	if not bool(built.get("ok",false)):
-		source_error = str(built.get("reason","source_a_world_topology_failed"))
+	prepare_world_call_count += 1
+	if world == null:
+		source_error = "source_a_world_renderer_missing"
 		return {"ok":false,"reason":source_error}
-	topology = built
+	# SectIsometricWorldV1 builds this immutable navigation and minimap once
+	# during _ready. Reuse those exact objects: the live HUD refreshes every
+	# 250 ms, while generating forest identity, topology BFS and a 192x192 image
+	# on every refresh caused visible stutter without changing gameplay state.
+	var navigation: Dictionary = world.pve_navigation
+	var source_sha := str(navigation.get("source_blob_sha",""))
+	var source_map := str(navigation.get("source_map",""))
+	if source_sha.length() != 40 or source_map.is_empty():
+		source_error = "source_a_world_identity_missing"
+		return {"ok":false,"reason":source_error}
+	var cache_matches := source_sha == _cached_source_blob_sha and source_map == _cached_source_map
+	if cache_matches:
+		topology = _cached_topology
+	else:
+		var built := PveOpenWorldTopologyV1.build(navigation,Vector2(SectIsometricWorldV1.PVE_SPAWN_CELL)+Vector2(0.5,0.5))
+		if not bool(built.get("ok",false)):
+			source_error = str(built.get("reason","source_a_world_topology_failed"))
+			return {"ok":false,"reason":source_error}
+		if str(built.get("source_blob_sha","")) != source_sha or str(built.get("source_map","")) != source_map:
+			source_error = "source_a_topology_identity_mismatch"
+			return {"ok":false,"reason":source_error}
+		topology_build_count += 1
+		var minimap := world.pve_mini_texture
+		if minimap == null:
+			minimap = SectIsometricWorldV1._pve_minimap_texture(navigation,world.pve_path_cells)
+			minimap_build_count += 1
+		_cached_source_blob_sha = source_sha
+		_cached_source_map = source_map
+		_cached_navigation = navigation
+		_cached_topology = built
+		_cached_minimap = minimap
+		topology = _cached_topology
+	world.pve_topology = topology
+	world.pve_navigation = _cached_navigation
+	world.pve_mini_texture = _cached_minimap
 	source_error = ""
-	if world != null:
-		world.pve_topology = topology
-		world.pve_navigation = navigation
-		world.pve_mini_texture = SectIsometricWorldV1._pve_minimap_texture(navigation,world.pve_path_cells)
-		if not world.pve_camera_initialized:
-			var camps: Array = topology.get("camp_positions",[])
-			if not camps.is_empty():
-				world.set_pve_camera(camps[0],0.55)
-		_overlay.queue_redraw()
+	if not world.pve_camera_initialized:
+		var camps: Array = topology.get("camp_positions",[])
+		if not camps.is_empty():
+			world.set_pve_camera(camps[0],0.72)
+	_overlay.queue_redraw()
 	return {"ok":true,"topology":topology,"source_map":str(topology.get("source_map",""))}
 
 func get_open_world_options() -> Dictionary:
@@ -325,6 +372,22 @@ func _draw_overlay(canvas: CanvasItem) -> void:
 		canvas.draw_string(font,Vector2(12,size.y-10),"Bấm đất: di chuyển · Kéo phải: camera · Lăn: zoom",HORIZONTAL_ALIGNMENT_LEFT,-1,9,Color("f3efdd"))
 	if not source_error.is_empty() and font != null:
 		canvas.draw_string(font,Vector2(12,44),source_error,HORIZONTAL_ALIGNMENT_LEFT,-1,10,Color("f0a474"))
+	if world == null or world.pve_jx_sword_vfx.comparison_style == "source_a":
+		return
+	for cue in world.pve_jx_sword_vfx.render_cues():
+		var position := _world_to_screen(cue.get("at",Vector2.ZERO))
+		if not map_rect().grow(80.0).has_point(position) or minimap_rect().has_point(position):
+			continue
+		var phase := str(cue.get("phase",""))
+		var drew_effect: bool = world.pve_jx_sword_vfx.atlas.draw_effect(canvas,str(cue.get("effect","")),position,
+			float(cue.get("elapsed",0.0)),float(cue.get("scale",0.4))*world.camera.zoom.x)
+		if phase in ["flight","await_hit"]:
+			var from := _world_to_screen(cue.get("from",Vector2.ZERO))
+			var to := _world_to_screen(cue.get("to",Vector2.ZERO))
+			var direction := to-from
+			if direction.length_squared() > 0.001:
+				canvas.draw_line(position-direction.normalized()*12.0,position-direction.normalized()*3.0,
+					Color(0.88,0.83,0.58,0.62),1.8,true)
 
 func _minimap_point(cell: Vector2,inner: Rect2) -> Vector2:
 	var bounds: Rect2 = topology.get("bounds",Rect2(Vector2.ZERO,Vector2(SectIsometricWorldV1.GRID)))
