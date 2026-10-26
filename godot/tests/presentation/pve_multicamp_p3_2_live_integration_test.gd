@@ -355,6 +355,32 @@ func _run() -> void:
 				return
 			print("PVE GUI FORMATION CAPTURE PASS path=%s sha256=%s size=1280x720 party=6 monster_records=10 alive_monsters=%d slots=%d min_spacing=%.2f" % [
 				formation_capture_path,FileAccess.get_sha256(formation_capture_path),battle._count_alive("monster"),unique_slots.size(),minimum_visual_spacing])
+	# Reissue immediately through the production signal handler after aligning
+	# the shared clock, so SaveService captures six live orders instead of a
+	# command that elapsed while the rest of the fixture was running.
+	state.runtime_last_wall_unix = int(Time.get_unix_time_from_system())
+	state.runtime_unconsumed_wall_seconds = 0.0
+	var checkpoint_run := HuntingPveRunV2.resume_active(state,encounter)
+	if not _check(bool(checkpoint_run.get("ok",false)),
+		"active world could not refresh before movement SaveService checkpoint"):
+		return
+	session = checkpoint_run["session"]
+	battle = session.battle
+	var checkpoint_target := _find_c01_ground_target(map,battle,2.5)
+	if not _check(checkpoint_target.x >= 0.0,
+		"no reachable formation target for movement SaveService checkpoint"):
+		return
+	ui.call("_on_open_world_move_ordered",ids,Vector2(checkpoint_target))
+	var movement_checkpoint_run := HuntingPveRunV2.resume_active(state,encounter)
+	if not _check(bool(movement_checkpoint_run.get("ok",false)),
+		"production movement handler did not persist the active world checkpoint"):
+		return
+	session = movement_checkpoint_run["session"]
+	battle = session.battle
+	var saved_move_orders := _capture_move_orders(battle,ids)
+	if not _check(saved_move_orders.size() == 6 and _all_move_orders_active(saved_move_orders),
+		"production movement handler did not persist six active movement orders"):
+		return
 	var before_positions: Dictionary = {}
 	var before_actions := 0
 	# The GUI harness does synchronous map/asset validation while paused. Mark
@@ -604,13 +630,21 @@ func _run() -> void:
 		and loaded_battle.actions == saved_battle_actions
 		and is_equal_approx(loaded_battle.now,saved_battle_now)
 		and loaded_battle.pending_kill_events().size() == saved_pending_kill_count
+		and _move_orders_match(loaded_battle,saved_move_orders)
 		and loaded.sect.v2_pve_settlement_receipts.is_empty()
 		and loaded.sect.v2_pve_reward_claims.is_empty(),
-		"Save/Load changed the active world or created an unearned reward; monster_records=%d living_dis=%d world=%s auto=%s action=%d/%d time=%.3f/%.3f pending=%d/%d receipts=%d claims=%d" % [
+		"Save/Load changed the active world, movement orders or created an unearned reward; monster_records=%d living_dis=%d world=%s auto=%s action=%d/%d time=%.3f/%.3f pending=%d/%d receipts=%d claims=%d movement_orders_match=%s" % [
 		loaded_battle._count_monster_records(),loaded_battle._count_alive("disciple"),str(loaded_battle.world_mode),str(loaded_battle.auto_hunt),
 		loaded_battle.actions,saved_battle_actions,loaded_battle.now,saved_battle_now,
 		loaded_battle.pending_kill_events().size(),saved_pending_kill_count,
-		loaded.sect.v2_pve_settlement_receipts.size(),loaded.sect.v2_pve_reward_claims.size()]):
+		loaded.sect.v2_pve_settlement_receipts.size(),loaded.sect.v2_pve_reward_claims.size(),
+		str(_move_orders_match(loaded_battle,saved_move_orders))]):
+		return
+	print("PVE P3.2 INTEGRATION movement_save_restore_verified orders=%d" % saved_move_orders.size())
+	if OS.get_environment("TMB_PVE_AUX02_FOCUSED_MOVEMENT_ONLY") == "1":
+		print("PVE AUX-02 SAVE SERVICE MOVEMENT PASS orders=6 destination_roundtrip=true")
+		_cleanup_ui()
+		quit(0)
 		return
 	var clock_baseline_result := HuntingPveRunV2.resume_active(state,encounter)
 	if not _check(bool(clock_baseline_result.get("ok",false)),
@@ -786,6 +820,37 @@ func _make_minimap_click(map: PveSectWorldViewV1, position: Vector2) -> InputEve
 	event.pressed = true
 	event.position = position
 	return event
+
+func _capture_move_orders(battle: MapBattleV2, actor_ids: Array[StringName]) -> Dictionary:
+	var result: Dictionary = {}
+	for actor_id in actor_ids:
+		var id := str(actor_id)
+		var actor: Dictionary = battle.actors.get(id,{})
+		result[id] = {
+			"active": bool(actor.get("move_order_active",false)),
+			"position": actor.get("move_order_position",Vector2(-1,-1))
+		}
+	return result
+
+func _all_move_orders_active(orders: Dictionary) -> bool:
+	for order in orders.values():
+		if not bool(order.get("active",false)):
+			return false
+	return true
+
+func _move_orders_match(battle: MapBattleV2, expected: Dictionary) -> bool:
+	for id in expected:
+		if not battle.actors.has(str(id)):
+			return false
+		var actor: Dictionary = battle.actors[str(id)]
+		var saved_order: Dictionary = expected[id]
+		if bool(actor.get("move_order_active",false)) != bool(saved_order.get("active",false)):
+			return false
+		var expected_position: Vector2 = saved_order.get("position",Vector2(-1,-1))
+		var restored_position: Vector2 = actor.get("move_order_position",Vector2(-1,-1))
+		if restored_position.distance_to(expected_position) > 0.002:
+			return false
+	return true
 
 func _remove_save(save_path: String) -> void:
 	for path in [save_path,save_path+".bak"]:
