@@ -165,7 +165,21 @@ func draw_map(canvas: CanvasItem, layer: int, projection: Callable, zoom: float,
         draw_map_command(canvas,command,zoom)
 
 func draw_map_command(canvas: CanvasItem, command: Dictionary, zoom: float) -> void:
-    _draw_frame(canvas,command["frame"],command["foot"],BASE_SCALE*zoom,command["tint"])
+    var frame: Dictionary = command["frame"]
+    var tile_id := int(command.get("tile_id",0))
+    var scale := BASE_SCALE*zoom
+    # The original JX ground diamonds are 62 px wide while their native cell
+    # pitch is 64 px. Close that two-pixel transparent seam at the native floor
+    # layer only; object art keeps its exact authored dimensions and pivot.
+    if int(command.get("layer",-1)) == 0 and tile_id in [1,2] and is_equal_approx(float(frame["size"].y),32.0):
+        var size: Vector2 = frame["size"]
+        var anchor: Vector2 = frame["anchor"]
+        var stretched := Vector2(scale*64.0/62.0,scale)
+        var draw_size := size*stretched
+        var origin: Vector2 = command["foot"]-Vector2(anchor.x*stretched.x,anchor.y*stretched.y)
+        canvas.draw_texture_rect(frame["texture"],Rect2(origin,draw_size),false,command["tint"])
+        return
+    _draw_frame(canvas,frame,command["foot"],scale,command["tint"])
 
 func map_commands(layer: int, projection: Callable, zoom: float, occluders: Array[Vector2], viewport: Rect2, inverse: Callable) -> Array[Dictionary]:
     var commands: Array[Dictionary] = []
@@ -199,7 +213,7 @@ func map_commands(layer: int, projection: Callable, zoom: float, occluders: Arra
                         tint.a = 0.035
                         break
             if not viewport.has_area() or viewport.intersects(Rect2(foot-(frame["anchor"] as Vector2)*BASE_SCALE*zoom,(frame["size"] as Vector2)*BASE_SCALE*zoom)):
-                commands.append({"frame":frame,"foot":foot,"tint":tint,"layer":layer})
+                commands.append({"frame":frame,"foot":foot,"tint":tint,"layer":layer,"tile_id":int(tile["id"])})
     return commands
 
 func actor_key(actor: Dictionary) -> String:

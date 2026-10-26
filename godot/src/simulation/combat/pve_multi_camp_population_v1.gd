@@ -161,6 +161,24 @@ static func acknowledge_paid_receipt(registry: Dictionary, id: String,
     slot["phase"] = "COOLDOWN"
     return {"ok":true,"rewards_granted":false}
 
+static func acknowledge_no_reward_receipt(registry: Dictionary, id: String,
+        kill_id: String, disposition: String) -> Dictionary:
+    # Continuous-world pilot has no approved per-monster drop table yet.
+    # This closes the combat-life event so its slot can respawn; it does not
+    # claim, imply or grant any Warehouse item.
+    var slots: Dictionary = registry.get("slots",{})
+    if not slots.has(id) or disposition != "LOOT_PENDING":
+        return {"ok":false,"reason":"invalid_no_reward_life_receipt"}
+    var slot: Dictionary = slots[id]
+    if str(slot.get("phase","")) == "COOLDOWN" and str(slot.get("kill_id","")) == kill_id and str(slot.get("reward_disposition","")) == disposition:
+        return {"ok":true,"already_acknowledged":true,"rewards_granted":false}
+    if str(slot.get("phase","")) != "UNPAID_HP0" or str(slot.get("kill_id","")) != kill_id:
+        return {"ok":false,"reason":"no_reward_receipt_does_not_match_hp0"}
+    slot["receipt_acknowledged"] = true
+    slot["reward_disposition"] = disposition
+    slot["phase"] = "COOLDOWN"
+    return {"ok":true,"already_acknowledged":false,"rewards_granted":false}
+
 static func advance_respawns(registry: Dictionary, world_seconds: float) -> Dictionary:
     if not bool(registry.get("ok",false)) or not is_finite(world_seconds) or world_seconds < float(registry.get("last_seconds",0.0)):
         return {"ok":false,"reason":"world_clock_regression"}

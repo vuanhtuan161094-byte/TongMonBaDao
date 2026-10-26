@@ -13,6 +13,7 @@ var camp_index: int = -1
 var camp_population: Dictionary = {}
 var camp_slot_ids: Array = []
 var minute_phase: float = 0.0
+var world_respawn_delay := 30.0
 
 func begin(
     state: SimulationState, region: String, encounter_id: String, seed: int,
@@ -122,7 +123,8 @@ func begin(
 # Monster-specific payout and respawn delay are deliberately not invented;
 # the existing, authored region clear table is claimed once after camp victory.
 func begin_multicamp(owner: SimulationRuntimeOwnerV2, encounter_id: String,
-        seed: int, party_members: Array, slots_per_camp: int = 10) -> Dictionary:
+		seed: int, party_members: Array, slots_per_camp: int = 10,
+		open_world_options: Dictionary = {}) -> Dictionary:
     if owner == null or owner.state == null or owner.durable_path.is_empty():
         return {"ok":false,"reason":"multicamp_requires_durable_runtime_owner"}
     if owner.b3_write_blocked or owner.runtime_write_blocked:
@@ -133,6 +135,10 @@ func begin_multicamp(owner: SimulationRuntimeOwnerV2, encounter_id: String,
         return {"ok":false,"reason":"multicamp_party_must_be_one_to_six"}
     if slots_per_camp != 10:
         return {"ok":false,"reason":"playable_pilot_requires_ten_monsters"}
+    if not open_world_options.is_empty():
+        var world_error := _validate_open_world_options(open_world_options)
+        if not world_error.is_empty():
+            return {"ok":false,"reason":world_error}
     var state := owner.state
     var selected := HuntingMapV2.choose_level(state,PveMultiCampPopulationV1.ZONE,1)
     if not bool(selected.get("ok",false)):
@@ -155,8 +161,32 @@ func begin_multicamp(owner: SimulationRuntimeOwnerV2, encounter_id: String,
     if monsters.size() != slots_per_camp:
         _rollback_uncommitted_begin()
         return {"ok":false,"reason":"camp_catalogue_spawn_failed"}
+    if not open_world_options.is_empty():
+        var camp_positions: Array = open_world_options["camp_positions"]
+        var slot_positions: Dictionary = open_world_options["slot_positions"]
+        var party_spawn_points: Array = open_world_options["party_spawn_points"]
+        for index in range(party.size()):
+            party[index]["position"] = party_spawn_points[index]
+        for row in monsters:
+            var slot_id := str(row["spawn_slot_id"])
+            var position: Vector2 = slot_positions[slot_id]
+            row["position"] = position
+            row["home_position"] = position
+        var saved_camp_positions: Array = []
+        for point in camp_positions:
+            var center: Vector2 = point
+            saved_camp_positions.append({"x":center.x,"y":center.y})
+        registry["world_camp_positions"] = saved_camp_positions
+        registry["world_source_sha"] = str(open_world_options["source_blob_sha"])
+        registry["world_source_map"] = str(open_world_options.get("source_map",""))
+        registry["world_respawn_delay"] = float(open_world_options.get("respawn_delay_sim_seconds",30.0))
+        for slot_id in slot_positions:
+            var point: Vector2 = slot_positions[slot_id]
+            var slot: Dictionary = registry["slots"][str(slot_id)]
+            slot["world_x"] = point.x
+            slot["world_y"] = point.y
     var continuous := MapBattleV2.new(seed)
-    var ready := continuous.setup(encounter_id,party,monsters,true)
+    var ready := continuous.setup_open_world(encounter_id,party,monsters,open_world_options) if not open_world_options.is_empty() else continuous.setup(encounter_id,party,monsters,true)
     if not bool(ready.get("ok",false)):
         _rollback_uncommitted_begin()
         return ready
@@ -167,6 +197,7 @@ func begin_multicamp(owner: SimulationRuntimeOwnerV2, encounter_id: String,
     camp_slot_ids.clear()
     for i in range(slots_per_camp):
         camp_slot_ids.append(PveMultiCampPopulationV1.slot_id(camp_index,i))
+    world_respawn_delay = float(registry.get("world_respawn_delay",0.0)) if continuous.world_mode else 0.0
     minute_phase = 0.0
     var checkpoint := _persist_live_state()
     if not bool(checkpoint.get("ok",false)):
@@ -179,13 +210,49 @@ func begin_multicamp(owner: SimulationRuntimeOwnerV2, encounter_id: String,
     return {"ok":true,"mode":mode,"encounter_id":encounter_id,
         "camp_id":PveMultiCampPopulationV1.camp_id(camp_index),
         "party_size":party.size(),"monster_count":monsters.size(),
-        "resource_payout":"canonical_region_clear_table"}
+        "resource_payout":"LOOT_PENDING" if continuous.world_mode else "canonical_region_clear_table",
+        "world_mode":continuous.world_mode,"source_map":str(registry.get("world_source_map",""))}
+
+func _validate_open_world_options(options: Dictionary) -> String:
+    if not ["bounds","navigation","camp_positions","slot_positions","party_spawn_points","source_blob_sha"].all(func(key: String) -> bool: return options.has(key)):
+        return "open_world_topology_missing_required_field"
+    var bounds = options["bounds"]
+    var navigation = options["navigation"]
+    var camps = options["camp_positions"]
+    var slots = options["slot_positions"]
+    var party_points = options["party_spawn_points"]
+    if not (bounds is Rect2) or not (navigation is Dictionary) or not (camps is Array) or not (slots is Dictionary) or not (party_points is Array):
+        return "open_world_topology_invalid_type"
+    if camps.size() != PveMultiCampPopulationV1.CAMP_COUNT or slots.size() != PveMultiCampPopulationV1.CAMP_COUNT*PveMultiCampPopulationV1.MIN_SLOTS_PER_CAMP or party_points.size() != 6:
+        return "open_world_topology_population_invalid"
+    if str(options["source_blob_sha"]).length() != 40 or str(navigation.get("source_blob_sha","")) != str(options["source_blob_sha"]):
+        return "open_world_map_identity_invalid"
+    var width := int(navigation.get("width",0))
+    var height := int(navigation.get("height",0))
+    if width < 2 or height < 2 or not is_equal_approx(bounds.size.x,float(width)) or not is_equal_approx(bounds.size.y,float(height)):
+        return "open_world_topology_bounds_invalid"
+    for camp_index in range(PveMultiCampPopulationV1.CAMP_COUNT):
+        var center = camps[camp_index]
+        if not (center is Vector2) or not PveOpenWorldTopologyV1._walkable(navigation,Vector2i(floori(center.x),floori(center.y))):
+            return "open_world_camp_not_walkable"
+        for ordinal in range(PveMultiCampPopulationV1.MIN_SLOTS_PER_CAMP):
+            var id := PveMultiCampPopulationV1.slot_id(camp_index,ordinal)
+            var point = slots.get(id,null)
+            if not (point is Vector2) or not PveOpenWorldTopologyV1._walkable(navigation,Vector2i(floori(point.x),floori(point.y))):
+                return "open_world_spawn_slot_not_walkable"
+    for point in party_points:
+        if not (point is Vector2) or not PveOpenWorldTopologyV1._walkable(navigation,Vector2i(floori(point.x),floori(point.y))):
+            return "open_world_party_spawn_not_walkable"
+    return ""
 
 func _build_camp_monsters(encounter_id: String, seed: int, registry: Dictionary,
         camp: int, count: int) -> Array:
     var rows: Array = []
     var content: Dictionary = HuntingMapV2.REGION_CONTENT[PveMultiCampPopulationV1.ZONE]
-    var rng := GameRng.new(seed ^ 0x41C64E6D)
+    var wave_seed := seed ^ 0x41C64E6D ^ (camp*0x1F123BB5)
+    if registry.get("world_camp_positions",[]) is Array:
+        wave_seed ^= int(registry["slots"].get(PveMultiCampPopulationV1.slot_id(camp,0),{}).get("generation",1))-1
+    var rng := GameRng.new(wave_seed)
     for i in range(count):
         var slot_id := PveMultiCampPopulationV1.slot_id(camp,i)
         var slot: Dictionary = registry["slots"][slot_id]
@@ -238,11 +305,14 @@ func retreat_multicamp() -> Dictionary:
     receipt["camp_id"] = PveMultiCampPopulationV1.camp_id(camp_index)
     receipt["kills"] = _camp_kill_count()
     receipt["items"] = {}
-    return {"ok":true,"outcome":battle.outcome,"kills":int(receipt["kills"])}
+    return {"ok":true,"outcome":battle.outcome,"kills":int(receipt["kills"]),
+        "loot_disposition":"LOOT_PENDING" if battle.world_mode else "NO_CAMP_WIN_REWARD"}
 
 func _camp_kill_count() -> int:
     if battle == null:
         return 0
+    if battle.world_mode:
+        return int(camp_population.get("world_total_kills",0))
     var dead := 0
     for actor in battle.actors.values():
         if str(actor.get("side","")) == "monster" and float(actor.get("hp",1.0)) <= 0.0:
@@ -269,6 +339,8 @@ func advance(viewed_map: bool = false) -> Dictionary:
     return result
 
 func _advance_multicamp(viewed_map: bool) -> Dictionary:
+    if battle != null and battle.world_mode:
+        return _advance_open_world(viewed_map)
     var did_step := false
     if battle.active:
         var stepped := battle.step(viewed_map)
@@ -304,6 +376,118 @@ func _advance_multicamp(viewed_map: bool) -> Dictionary:
         "alive_disciples":battle._count_alive("disciple"),
         "alive_monsters":battle._count_alive("monster")}
 
+func _advance_open_world(viewed_map: bool) -> Dictionary:
+    if battle == null or not battle.world_mode:
+        return {"ok":false,"reason":"open_world_snapshot_missing"}
+    var stepped := battle.step(viewed_map)
+    if not bool(stepped.get("ok",false)):
+        return stepped
+    var kills := _record_open_world_kills()
+    if not bool(kills.get("ok",false)):
+        return kills
+    var population_step := PveMultiCampPopulationV1.advance_respawns(camp_population,battle.now)
+    if not bool(population_step.get("ok",false)):
+        return population_step
+    var zone_changed := false
+    if battle._count_alive("disciple") == 0:
+        battle.active = false
+        battle.outcome = "defeat"
+        battle._event("battle_end",{"outcome":"defeat","elapsed":battle.now,
+            "downed_disciples":battle.downed_disciples,"cause":"all_party_members_downed"})
+    elif battle._count_alive("monster") == 0:
+        var next_camp := _next_ready_world_camp()
+        if next_camp >= 0:
+            var spawned := _spawn_open_world_camp(next_camp)
+            if not bool(spawned.get("ok",false)):
+                return spawned
+            zone_changed = true
+    var stored := _persist_live_state()
+    if not bool(stored.get("ok",false)):
+        return stored
+    if not battle.active:
+        var completed := _complete_multicamp()
+        if not bool(completed.get("ok",false)):
+            return {"ok":true,"stepped":true,"barrier":true,
+                "settlement_pending":str(completed.get("reason","settlement_pending")),
+                "outcome":battle.outcome,"time":battle.now}
+        completed["stepped"] = true
+        completed["barrier"] = true
+        return completed
+    return {"ok":true,"stepped":true,"barrier":false,"world_mode":true,
+        "zone_changed":zone_changed,"camp_index":camp_index,
+        "camp_id":PveMultiCampPopulationV1.camp_id(camp_index),
+        "respawned":int(population_step.get("respawned",0)),
+        "loot_disposition":"LOOT_PENDING","rewards_granted":false,
+        "outcome":battle.outcome,"time":battle.now,
+        "alive_disciples":battle._count_alive("disciple"),
+        "alive_monsters":battle._count_alive("monster")}
+
+func _record_open_world_kills() -> Dictionary:
+    var recorded := 0
+    for event in battle.pending_kill_events():
+        var receipt := PveMultiCampPopulationV1.record_authoritative_battle_kill(
+            camp_population,battle,event,world_respawn_delay)
+        if not bool(receipt.get("ok",false)):
+            return {"ok":false,"reason":"open_world_kill_receipt_rejected","detail":receipt.get("reason","unknown")}
+        var slot_id := str(event.get("spawn_slot_id",""))
+        var kill_id := str(event.get("kill_id",""))
+        var ack := PveMultiCampPopulationV1.acknowledge_no_reward_receipt(
+            camp_population,slot_id,kill_id,"LOOT_PENDING")
+        if not bool(ack.get("ok",false)):
+            return {"ok":false,"reason":"open_world_no_reward_receipt_failed","detail":ack.get("reason","unknown")}
+        if not battle.acknowledge_kill_event(kill_id):
+            return {"ok":false,"reason":"open_world_combat_kill_ack_failed"}
+        camp_population["world_total_kills"] = int(camp_population.get("world_total_kills",0))+1
+        recorded += 1
+    return {"ok":true,"recorded":recorded,"rewards_granted":false}
+
+func _next_ready_world_camp() -> int:
+    for offset in range(1,PveMultiCampPopulationV1.CAMP_COUNT+1):
+        var candidate := posmod(camp_index+offset,PveMultiCampPopulationV1.CAMP_COUNT)
+        var ready := true
+        for ordinal in range(PveMultiCampPopulationV1.MIN_SLOTS_PER_CAMP):
+            var slot_id := PveMultiCampPopulationV1.slot_id(candidate,ordinal)
+            var slot: Dictionary = camp_population.get("slots",{}).get(slot_id,{})
+            if str(slot.get("phase","")) != "READY":
+                ready = false
+                break
+        if ready:
+            return candidate
+    return -1
+
+func _spawn_open_world_camp(next_camp: int) -> Dictionary:
+    if next_camp < 0 or next_camp >= PveMultiCampPopulationV1.CAMP_COUNT:
+        return {"ok":false,"reason":"invalid_open_world_spawn_zone"}
+    var old_actor_ids: Array = []
+    for raw_id in battle.actors.keys():
+        var actor: Dictionary = battle.actors[raw_id]
+        if str(actor.get("side","")) == "monster" and float(actor.get("hp",1.0)) <= 0.0:
+            old_actor_ids.append(str(raw_id))
+    old_actor_ids.sort()
+    for actor_id in old_actor_ids:
+        if not battle.remove_downed_monster(actor_id):
+            return {"ok":false,"reason":"open_world_dead_actor_cleanup_failed"}
+    var rows := _build_camp_monsters(battle.encounter_id,int(spawn_data.get("reward_seed",0)),camp_population,next_camp,PveMultiCampPopulationV1.MIN_SLOTS_PER_CAMP)
+    if rows.size() != PveMultiCampPopulationV1.MIN_SLOTS_PER_CAMP:
+        return {"ok":false,"reason":"open_world_catalogue_wave_failed"}
+    for row in rows:
+        var slot_id := str(row["spawn_slot_id"])
+        var slot: Dictionary = camp_population["slots"][slot_id]
+        if not slot.has("world_x") or not slot.has("world_y"):
+            return {"ok":false,"reason":"open_world_slot_position_missing"}
+        var position := Vector2(float(slot["world_x"]),float(slot["world_y"]))
+        row["position"] = position
+        row["home_position"] = position
+        var added := battle.add_continuous_monster(row)
+        if not bool(added.get("ok",false)):
+            return {"ok":false,"reason":"open_world_wave_add_failed","detail":added.get("reason","unknown")}
+    camp_index = next_camp
+    camp_slot_ids.clear()
+    for ordinal in range(PveMultiCampPopulationV1.MIN_SLOTS_PER_CAMP):
+        camp_slot_ids.append(PveMultiCampPopulationV1.slot_id(camp_index,ordinal))
+    battle._event("world_zone_entered",{"camp_id":PveMultiCampPopulationV1.camp_id(camp_index),"actor_count":rows.size()})
+    return {"ok":true,"camp_index":camp_index,"spawned":rows.size()}
+
 func _complete_multicamp() -> Dictionary:
     if battle == null or battle.active or not ["win","defeat","timeout_retreat"].has(battle.outcome):
         return {"ok":false,"reason":"multicamp_not_terminal"}
@@ -316,7 +500,7 @@ func _complete_multicamp() -> Dictionary:
     receipt["kills"] = _camp_kill_count()
     receipt["items"] = {}
     var paid: Dictionary = {"ok":true,"items":{}}
-    if battle.outcome == "win":
+    if battle.outcome == "win" and not battle.world_mode:
         paid = claim()
         if not bool(paid.get("ok",false)):
             return paid
@@ -384,6 +568,8 @@ func finish(max_steps: int = 400) -> Dictionary:
 func claim() -> Dictionary:
     if battle == null or owner_state == null:
         return {"ok":false,"reason":"no_session"}
+    if battle.world_mode:
+        return {"ok":false,"reason":"open_world_per_monster_loot_pending"}
     if battle.active:
         return {"ok":false,"reason":"encounter_not_final"}
     var settled := _settle_terminal()
@@ -631,6 +817,8 @@ func save_state() -> Dictionary:
         saved["camp_slot_ids"] = camp_slot_ids.duplicate()
         saved["minute_phase"] = minute_phase
         saved["camp_monster_count"] = camp_slot_ids.size()
+        saved["world_mode"] = battle.world_mode
+        saved["world_respawn_delay"] = world_respawn_delay
     return saved
 
 # The live character HP owner stays separate until DV2-03's real HP track
@@ -678,7 +866,15 @@ static func restore_state(state: SimulationState, saved: Dictionary) -> Dictiona
         camp_index_value = int(saved.get("camp_index",-1))
         camp_slots = saved.get("camp_slot_ids",[])
         phase = float(saved.get("minute_phase",-1.0))
-        if camp_index_value != 0 or PveMultiCampPopulationV1.verify_structure(camp_registry) != "" or camp_slots.size() != 10 or int(saved.get("camp_monster_count",0)) != 10 or not is_finite(phase) or phase < 0.0 or phase >= 60.0 or fmod(phase,MapBattleV2.STEP_SECONDS) != 0.0:
+        var world_mode_saved := bool(saved.get("world_mode",false))
+        var camps_valid := camp_index_value >= 0 and camp_index_value < PveMultiCampPopulationV1.CAMP_COUNT if world_mode_saved else camp_index_value == 0
+        var world_identity_valid := true
+        if world_mode_saved:
+            var world_centres = camp_registry.get("world_camp_positions",null)
+            world_identity_valid = resumed.world_mode and world_centres is Array and world_centres.size() == PveMultiCampPopulationV1.CAMP_COUNT and str(camp_registry.get("world_source_sha","")).length() == 40 and float(saved.get("world_respawn_delay",0.0)) > 0.0 and is_equal_approx(float(saved.get("world_respawn_delay",0.0)),float(camp_registry.get("world_respawn_delay",-1.0)))
+        elif resumed.world_mode:
+            world_identity_valid = false
+        if not camps_valid or not world_identity_valid or PveMultiCampPopulationV1.verify_structure(camp_registry) != "" or camp_slots.size() != 10 or int(saved.get("camp_monster_count",0)) != 10 or not is_finite(phase) or phase < 0.0 or phase >= 60.0 or fmod(phase,MapBattleV2.STEP_SECONDS) != 0.0:
             return {"ok":false,"reason":"invalid_multicamp_population_checkpoint"}
     elif resumed.continuous_mode:
         return {"ok":false,"reason":"unexpected_continuous_hunt_snapshot"}
@@ -727,4 +923,5 @@ static func restore_state(state: SimulationState, saved: Dictionary) -> Dictiona
     session.camp_population = camp_registry
     session.camp_slot_ids = camp_slots.duplicate()
     session.minute_phase = phase
+    session.world_respawn_delay = float(saved.get("world_respawn_delay",0.0)) if resumed.world_mode else 0.0
     return {"ok":true,"session":session}

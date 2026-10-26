@@ -12,6 +12,7 @@ extends RefCounted
 const VERSION := 1
 const PREVIOUS_VERSION := 2
 const PH0_VERSION := 3
+const OPEN_WORLD_VERSION := 4
 const LEGACY_VERSION := VERSION
 
 static func save(battle: MapBattleV2) -> Dictionary:
@@ -40,7 +41,7 @@ static func save(battle: MapBattleV2) -> Dictionary:
         serialized_events.append(event)
     # Finite legacy worlds retain the EXACT VERSION=1 payload structure.
     # Only opted-in continuous worlds write PH0's versioned domain journal.
-    var write_version := PH0_VERSION if battle.continuous_mode else LEGACY_VERSION
+    var write_version := OPEN_WORLD_VERSION if battle.world_mode else (PH0_VERSION if battle.continuous_mode else LEGACY_VERSION)
     var payload := {
         "ok":true,"version":write_version,
         "encounter_id":battle.encounter_id,
@@ -54,6 +55,11 @@ static func save(battle: MapBattleV2) -> Dictionary:
         payload["external_hit_ids"] = battle._external_hit_ids.duplicate(true)
         payload["pending_kill_events"] = battle._pending_kill_events.duplicate(true)
         payload["last_spawn_generation"] = battle._last_spawn_generation.duplicate(true)
+    if battle.world_mode:
+        payload["world_mode"] = true
+        payload["world_bounds"] = {"position":_encode_vec2(battle.world_bounds.position),"size":_encode_vec2(battle.world_bounds.size)}
+        payload["world_navigation"] = battle.world_navigation.duplicate(true)
+        payload["auto_hunt"] = battle.auto_hunt
     # JSON converts integers to floats and rounds float64 values, changing
     # mid-battle damage and RNG. Godot Variant bytes retain EXACT bit patterns.
     # Use a versioned base64 payload inside JSON, with object decoding OFF.
@@ -62,7 +68,7 @@ static func save(battle: MapBattleV2) -> Dictionary:
 
 static func load(data: Dictionary) -> Dictionary:
     var wrapper_version := int(data.get("version", 0))
-    if not bool(data.get("ok",false)) or not [LEGACY_VERSION, PREVIOUS_VERSION, PH0_VERSION].has(wrapper_version):
+    if not bool(data.get("ok",false)) or not [LEGACY_VERSION, PREVIOUS_VERSION, PH0_VERSION, OPEN_WORLD_VERSION].has(wrapper_version):
         return {"ok":false,"reason":"unsupported_battle_snapshot"}
     if str(data.get("encoding","")) != "godot_variant_b64" or not (data.get("payload") is String):
         return {"ok":false,"reason":"invalid_battle_snapshot_encoding"}
@@ -79,7 +85,7 @@ static func load(data: Dictionary) -> Dictionary:
 
 static func _restore_payload(data: Dictionary) -> Dictionary:
     var payload_version := int(data.get("version", 0))
-    if not [LEGACY_VERSION, PREVIOUS_VERSION, PH0_VERSION].has(payload_version):
+    if not [LEGACY_VERSION, PREVIOUS_VERSION, PH0_VERSION, OPEN_WORLD_VERSION].has(payload_version):
         return {"ok":false,"reason":"unsupported_snapshot_payload_version"}
     var id := str(data.get("encounter_id",""))
     if id.is_empty() or not (data.get("actors") is Array):
@@ -95,6 +101,22 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
     battle.actions = int(data.get("actions",-1))
     battle.downed_disciples = int(data.get("downed_disciples",-1))
     battle.continuous_mode = bool(data.get("continuous_mode",false)) if payload_version >= PREVIOUS_VERSION else false
+    if payload_version >= OPEN_WORLD_VERSION:
+        if not battle.continuous_mode or not bool(data.get("world_mode",false)):
+            return {"ok":false,"reason":"invalid_open_world_snapshot_flags"}
+        var raw_bounds = data.get("world_bounds",{})
+        var bounds_position = _decode_vec2(raw_bounds.get("position",null)) if raw_bounds is Dictionary else null
+        var bounds_size = _decode_vec2(raw_bounds.get("size",null)) if raw_bounds is Dictionary else null
+        var navigation = data.get("world_navigation",{})
+        if not (bounds_position is Vector2) or not (bounds_size is Vector2) or not (navigation is Dictionary):
+            return {"ok":false,"reason":"missing_open_world_navigation_snapshot"}
+        battle.world_bounds = Rect2(bounds_position,bounds_size)
+        battle.world_navigation = navigation.duplicate(true)
+        battle.world_mode = true
+        battle.auto_hunt = bool(data.get("auto_hunt",true))
+        var world_error := battle._validate_world_navigation()
+        if not world_error.is_empty():
+            return {"ok":false,"reason":world_error}
     if rows.is_empty() and not battle.continuous_mode:
         return {"ok":false,"reason":"invalid_actor_count"}
     var max_time := 1000000000.0 if battle.continuous_mode else MapBattleV2.MAX_SECONDS
@@ -121,9 +143,14 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
         if actor_id.is_empty() or battle.actors.has(actor_id) or not ["disciple","monster"].has(side):
             return {"ok":false,"reason":"invalid_actor_id_or_side"}
         var pos = _decode_vec2(actor.get("position",null))
-        if not (pos is Vector2) or not MapBattleV2.ARENA.has_point(pos):
+        if not (pos is Vector2) or not battle.is_world_position_allowed(pos):
             return {"ok":false,"reason":"invalid_actor_position"}
         actor["position"] = pos
+        if battle.world_mode:
+            var home = actor.get("home_position",pos)
+            var move_order = actor.get("move_order_position",pos)
+            if not (home is Vector2) or not battle.is_world_position_allowed(home) or not (move_order is Vector2) or (bool(actor.get("move_order_active",false)) and not battle.is_world_position_allowed(move_order)):
+                return {"ok":false,"reason":"invalid_world_actor_order"}
         var stats: Dictionary = actor.get("stats",{})
         if stats.is_empty() or not (actor.get("resistances",{}) is Dictionary):
             return {"ok":false,"reason":"missing_stat_snapshot"}
@@ -248,7 +275,7 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
             return {"ok":false,"reason":"orphan_or_past_due_cast"}
         if cast.has("center"):
             var center = _decode_vec2(cast["center"])
-            if not (center is Vector2) or not MapBattleV2.ARENA.has_point(center):
+            if not (center is Vector2) or not battle.is_world_position_allowed(center):
                 return {"ok":false,"reason":"invalid_telegraph_position"}
             cast["center"] = center
         else:

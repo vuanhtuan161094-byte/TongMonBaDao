@@ -29,6 +29,11 @@ var outcome: String = "uninitialized"
 var actions: int = 0
 var downed_disciples: int = 0
 var continuous_mode: bool = false
+var world_mode: bool = false
+var world_bounds: Rect2 = ARENA
+var world_navigation: Dictionary = {}
+var auto_hunt: bool = true
+var _pending_world_options: Dictionary = {}
 var _external_hit_ids: Dictionary = {}
 # Authoritative, explicitly acknowledged domain events; NEVER derived from events.
 # PH2 must persist a canonical receipt in the SAME save barrier before ACK.
@@ -52,6 +57,24 @@ func setup(id: String, party: Array, monsters: Array, keep_encounter_open: bool 
     actions = 0
     downed_disciples = 0
     continuous_mode = keep_encounter_open
+    world_mode = false
+    world_bounds = ARENA
+    world_navigation.clear()
+    auto_hunt = true
+    if keep_encounter_open and not _pending_world_options.is_empty():
+        var requested_bounds = _pending_world_options.get("bounds",Rect2())
+        var requested_navigation = _pending_world_options.get("navigation",{})
+        if not (requested_bounds is Rect2) or not (requested_bounds as Rect2).has_area() or not (requested_navigation is Dictionary):
+            return {"ok":false,"reason":"invalid_open_world_navigation_options"}
+        world_bounds = requested_bounds
+        world_navigation = requested_navigation.duplicate(true)
+        world_mode = true
+        var nav_error := _validate_world_navigation()
+        if not nav_error.is_empty():
+            world_mode = false
+            world_bounds = ARENA
+            world_navigation.clear()
+            return {"ok":false,"reason":nav_error}
     _external_hit_ids.clear()
     _pending_kill_events.clear()
     _last_spawn_generation.clear()
@@ -69,7 +92,7 @@ func setup(id: String, party: Array, monsters: Array, keep_encounter_open: bool 
         var stats: Dictionary = row.get("stats",{})
         var pos: Vector2 = row.get("position",Vector2(-1.0,-1.0))
         var role := str(row.get("role","frontline"))
-        if actor_id.is_empty() or stats.is_empty() or not ARENA.has_point(pos) or not ["frontline","ranged","mage","healer"].has(role):
+        if actor_id.is_empty() or stats.is_empty() or not _position_allowed(pos) or not ["frontline","ranged","mage","healer"].has(role):
             return {"ok":false,"reason":"invalid_party_actor"}
         var hp := float(row.get("hp",float(stats.get("max_hp",0.0))))
         var max_hp := float(stats.get("max_hp",0.0))
@@ -99,7 +122,7 @@ func setup(id: String, party: Array, monsters: Array, keep_encounter_open: bool 
         var stats: Dictionary = row.get("stats",{})
         var position: Vector2 = row.get("position",Vector2(-1.0,-1.0))
         var tier := str(row.get("tier",""))
-        if actor_id.is_empty() or not ARENA.has_point(position) or not ["normal","elite","boss"].has(tier):
+        if actor_id.is_empty() or not _position_allowed(position) or not ["normal","elite","boss"].has(tier):
             return {"ok":false,"reason":"invalid_monster_actor"}
         if stats.is_empty() or float(stats.get("max_hp",0.0)) <= 0.0 or float(stats.get("attack",0.0)) <= 0.0:
             return {"ok":false,"reason":"invalid_monster_stats"}
@@ -137,7 +160,176 @@ func setup(id: String, party: Array, monsters: Array, keep_encounter_open: bool 
     active = true
     outcome = "fighting"
     _event("battle_start",{"encounter_id":id,"disciples":party.size(),"monsters":monsters.size()})
+    if world_mode:
+        auto_hunt = true
+        for actor_value in actors.values():
+            var world_actor: Dictionary = actor_value
+            world_actor["home_position"] = world_actor["position"]
+            if str(world_actor["side"]) == "monster":
+                world_actor["patrol_phase"] = int(hash(str(world_actor.get("spawn_slot_id",""))) % 4)
     return {"ok":true,"encounter_id":id}
+
+func setup_open_world(id: String, party: Array, monsters: Array, options: Dictionary) -> Dictionary:
+    if not options.has("bounds") or not options.has("navigation"):
+        return {"ok":false,"reason":"open_world_requires_real_navigation_grid"}
+    _pending_world_options = options.duplicate(true)
+    var ready := setup(id,party,monsters,true)
+    _pending_world_options.clear()
+    if not bool(ready.get("ok",false)):
+        return ready
+    return {"ok":true,"encounter_id":id,"world_bounds":world_bounds,
+        "navigation_source_sha":str(world_navigation.get("source_blob_sha",""))}
+
+func _validate_world_navigation() -> String:
+    var width := int(world_navigation.get("width",0))
+    var height := int(world_navigation.get("height",0))
+    var blocked = world_navigation.get("blocked",null)
+    if width < 2 or height < 2 or width > 1024 or height > 1024:
+        return "invalid_open_world_navigation_size"
+    if not (blocked is Array or blocked is PackedByteArray) or blocked.size() != width*height:
+        return "invalid_open_world_blocked_grid"
+    if not is_equal_approx(world_bounds.position.x,0.0) or not is_equal_approx(world_bounds.position.y,0.0) or not is_equal_approx(world_bounds.size.x,float(width)) or not is_equal_approx(world_bounds.size.y,float(height)):
+        return "open_world_bounds_do_not_match_grid"
+    if str(world_navigation.get("source_blob_sha","")).length() != 40:
+        return "open_world_source_map_identity_missing"
+    return ""
+
+func is_world_position_allowed(position: Vector2) -> bool:
+    return _position_allowed(position)
+
+func _position_allowed(position: Vector2) -> bool:
+    if not position.is_finite() or not world_bounds.has_point(position):
+        return false
+    if not world_mode or world_navigation.is_empty():
+        return true
+    var width := int(world_navigation["width"])
+    var height := int(world_navigation["height"])
+    var cell := Vector2i(floori(position.x),floori(position.y))
+    if cell.x < 0 or cell.y < 0 or cell.x >= width or cell.y >= height:
+        return false
+    var blocked = world_navigation["blocked"]
+    return int(blocked[cell.y*width+cell.x]) == 0
+
+func order_group_move(actor_ids: Array, destination: Vector2) -> Dictionary:
+    if not world_mode or not active:
+        return {"ok":false,"reason":"open_world_move_unavailable"}
+    var base_cell := _nearest_walkable_cell(Vector2i(floori(destination.x),floori(destination.y)))
+    if base_cell.x < 0:
+        return {"ok":false,"reason":"move_target_is_not_walkable"}
+    var ordered: Array[String] = []
+    for raw_id in actor_ids:
+        var id := str(raw_id)
+        if actors.has(id) and str(actors[id].get("side","")) == "disciple" and float(actors[id].get("hp",0.0)) > 0.0 and not ordered.has(id):
+            ordered.append(id)
+    ordered.sort()
+    if ordered.is_empty():
+        return {"ok":false,"reason":"no_living_selected_disciple"}
+    var offsets := [Vector2i(0,0),Vector2i(1,0),Vector2i(0,1),Vector2i(-1,0),Vector2i(0,-1),Vector2i(1,1)]
+    for index in range(ordered.size()):
+        var actor: Dictionary = actors[ordered[index]]
+        var desired: Vector2i = base_cell+offsets[index%offsets.size()]
+        var walkable := _nearest_walkable_cell(desired)
+        if walkable.x < 0:
+            walkable = base_cell
+        actor["move_order_position"] = Vector2(walkable)+Vector2(0.5,0.5)
+        actor["move_order_active"] = true
+        _event("move_order",{"actor_id":ordered[index],"position":actor["move_order_position"]})
+    return {"ok":true,"actor_ids":ordered,"destination":Vector2(base_cell)+Vector2(0.5,0.5)}
+
+func set_auto_hunt(enabled: bool) -> Dictionary:
+    if not world_mode or not active:
+        return {"ok":false,"reason":"open_world_auto_unavailable"}
+    auto_hunt = enabled
+    _event("auto_hunt_changed",{"enabled":auto_hunt})
+    return {"ok":true,"enabled":auto_hunt}
+
+func _nearest_walkable_cell(origin: Vector2i) -> Vector2i:
+    if not world_mode or world_navigation.is_empty():
+        return origin if world_bounds.has_point(Vector2(origin)+Vector2(0.5,0.5)) else Vector2i(-1,-1)
+    var width := int(world_navigation["width"])
+    var height := int(world_navigation["height"])
+    var blocked = world_navigation["blocked"]
+    var maximum_radius := maxi(width,height)
+    for radius in range(maximum_radius):
+        for y in range(origin.y-radius,origin.y+radius+1):
+            for x in range(origin.x-radius,origin.x+radius+1):
+                if absi(x-origin.x) != radius and absi(y-origin.y) != radius:
+                    continue
+                if x < 0 or y < 0 or x >= width or y >= height:
+                    continue
+                if int(blocked[y*width+x]) == 0:
+                    return Vector2i(x,y)
+    return Vector2i(-1,-1)
+
+func _world_path(start_position: Vector2, goal_position: Vector2) -> Array[Vector2i]:
+    var start := _nearest_walkable_cell(Vector2i(floori(start_position.x),floori(start_position.y)))
+    var goal := _nearest_walkable_cell(Vector2i(floori(goal_position.x),floori(goal_position.y)))
+    var path: Array[Vector2i] = []
+    if start.x < 0 or goal.x < 0:
+        return path
+    if start == goal:
+        return path
+    var width := int(world_navigation["width"])
+    var height := int(world_navigation["height"])
+    var blocked = world_navigation["blocked"]
+    var start_key := start.y*width+start.x
+    var goal_key := goal.y*width+goal.x
+    var previous: Dictionary = {start_key:-1}
+    var queue: Array[int] = [start_key]
+    var head := 0
+    var neighbors := [Vector2i(0,-1),Vector2i(-1,0),Vector2i(1,0),Vector2i(0,1)]
+    while head < queue.size() and not previous.has(goal_key):
+        var key := queue[head]
+        head += 1
+        var cell := Vector2i(key%width,int(key/width))
+        for offset in neighbors:
+            var next: Vector2i = cell+offset
+            if next.x < 0 or next.y < 0 or next.x >= width or next.y >= height or int(blocked[next.y*width+next.x]) != 0:
+                continue
+            var next_key := next.y*width+next.x
+            if previous.has(next_key):
+                continue
+            previous[next_key] = key
+            queue.append(next_key)
+            if next_key == goal_key:
+                break
+    if not previous.has(goal_key):
+        return path
+    var cursor := goal_key
+    while cursor >= 0:
+        path.push_front(Vector2i(cursor%width,int(cursor/width)))
+        cursor = int(previous[cursor])
+    return path
+
+func _world_route_distance(start_position: Vector2, path: Array[Vector2i]) -> float:
+    if path.is_empty():
+        return INF
+    var distance := 0.0
+    var previous := start_position
+    for index in range(1,path.size()):
+        var waypoint := Vector2(path[index])+Vector2(0.5,0.5)
+        distance += previous.distance_to(waypoint)
+        previous = waypoint
+    return distance
+
+func _move_world_actor(actor: Dictionary, destination: Vector2, speed: float, stop_distance: float = 0.0) -> bool:
+    var position: Vector2 = actor["position"]
+    var path := _world_path(position,destination)
+    if path.is_empty():
+        return false
+    var remaining := _world_route_distance(position,path)
+    if remaining <= stop_distance+0.08:
+        return false
+    var waypoint := Vector2(path[1])+Vector2(0.5,0.5) if path.size() > 1 else destination
+    var delta := minf(maxf(speed,0.0)*STEP_SECONDS,position.distance_to(waypoint))
+    if delta <= 0.0001:
+        return false
+    var moved := position.move_toward(waypoint,delta)
+    if _position_allowed(moved):
+        actor["position"] = moved
+        _event("move",{"actor_id":str(actor["id"]),"position":moved,"world_path":true})
+        return true
+    return false
 
 func step(viewed_map: bool = false) -> Dictionary:
     # viewed_map deliberately not consulted; same deterministic simulation.
@@ -162,8 +354,23 @@ func step(viewed_map: bool = false) -> Dictionary:
         # Pending cast commits an action and blocks another action by that actor.
         if _actor_casting(id):
             continue
+        if world_mode and str(actor["side"]) == "disciple" and bool(actor.get("move_order_active",false)):
+            var ordered_position: Vector2 = actor.get("move_order_position",actor["position"])
+            if (actor["position"] as Vector2).distance_to(ordered_position) <= 0.45:
+                actor["move_order_active"] = false
+            else:
+                _move_world_actor(actor,ordered_position,float(actor.get("move_speed",2.0)))
+                continue
         var target: Dictionary = _nearest_enemy(actor)
+        if world_mode and str(actor["side"]) == "monster" and not target.is_empty():
+            var aggro_range := float(actor.get("aggro_range",8.0))
+            if (actor["position"] as Vector2).distance_to(target["position"]) > aggro_range:
+                target = {}
+        elif world_mode and str(actor["side"]) == "disciple" and not auto_hunt:
+            target = _nearest_enemy_in_range(actor,float(actor.get("range",1.5)))
         if target.is_empty():
+            if world_mode and str(actor["side"]) == "monster":
+                _patrol_world_actor(actor)
             continue
         if str(actor["role"]) == "healer" and now >= float(actor["next_skill"]):
             if _heal_ally(actor):
@@ -177,12 +384,22 @@ func step(viewed_map: bool = false) -> Dictionary:
             continue
         var distance := (actor["position"] as Vector2).distance_to(target["position"])
         var attack_range := float(actor["range"])
+        if world_mode:
+            var path := _world_path(actor["position"],target["position"])
+            var route_distance := 0.0 if floori((actor["position"] as Vector2).x) == floori((target["position"] as Vector2).x) and floori((actor["position"] as Vector2).y) == floori((target["position"] as Vector2).y) else _world_route_distance(actor["position"],path)
+            if route_distance > attack_range+0.08:
+                _move_world_actor(actor,target["position"],float(actor.get("move_speed",2.0)),attack_range)
+                continue
+            distance = route_distance
         if distance > attack_range:
             var delta := minf(float(actor["move_speed"])*STEP_SECONDS,maxf(0.0,distance-attack_range+0.02))
             if delta > 0.0:
-                var direction := ((target["position"] as Vector2)-(actor["position"] as Vector2)).normalized()
-                actor["position"] = _keep_inside((actor["position"] as Vector2)+direction*delta)
-                _event("move",{"actor_id":id,"position":actor["position"]})
+                if world_mode:
+                    _move_world_actor(actor,target["position"],float(actor.get("move_speed",2.0)),attack_range)
+                else:
+                    var direction := ((target["position"] as Vector2)-(actor["position"] as Vector2)).normalized()
+                    actor["position"] = _keep_inside((actor["position"] as Vector2)+direction*delta)
+                    _event("move",{"actor_id":id,"position":actor["position"]})
             continue
         if now >= float(actor["next_skill"]):
             if str(actor["tier"]) == "elite" or str(actor["tier"]) == "boss":
@@ -258,7 +475,7 @@ func add_continuous_monster(row: Dictionary) -> Dictionary:
     var position: Vector2 = row.get("position", Vector2(-1.0, -1.0))
     var tier := str(row.get("tier", ""))
     var race_id := str(row.get("race_id", ""))
-    if actor_id.is_empty() or actors.has(actor_id) or not ARENA.has_point(position):
+    if actor_id.is_empty() or actors.has(actor_id) or not _position_allowed(position):
         return {"ok":false,"reason":"invalid_continuous_monster_identity_or_position"}
     var slot_id := str(row.get("spawn_slot_id", ""))
     var generation := int(row.get("slot_generation", 0))
@@ -283,7 +500,8 @@ func add_continuous_monster(row: Dictionary) -> Dictionary:
         "next_basic":now,"next_skill":now + (3.5 if tier == "boss" else 4.0),
         "guard_until":-1.0,"spawn_slot_id":str(row.get("spawn_slot_id", "")),
         "slot_generation":int(row.get("slot_generation", 0)),"linked_disciple":null,
-        "context_sources":[]
+        "context_sources":[],"home_position":row.get("home_position",position),
+        "patrol_phase":int(row.get("patrol_phase",hash(slot_id)%4)),"aggro_range":float(row.get("aggro_range",8.0))
     }
     if float(actor["hp"]) <= 0.0 or float(actor["hp"]) > float(actor["max_hp"]):
         return {"ok":false,"reason":"invalid_continuous_monster_hp"}
@@ -348,6 +566,24 @@ func _nearest_enemy(actor: Dictionary) -> Dictionary:
             best = other
             best_distance = distance
     return best
+
+func _nearest_enemy_in_range(actor: Dictionary, max_range: float) -> Dictionary:
+    var target := _nearest_enemy(actor)
+    if target.is_empty() or (actor["position"] as Vector2).distance_to(target["position"]) > maxf(max_range,0.0):
+        return {}
+    return target
+
+func _patrol_world_actor(actor: Dictionary) -> void:
+    var home: Vector2 = actor.get("home_position",actor["position"])
+    var directions := [Vector2(2.0,0.0),Vector2(0.0,2.0),Vector2(-2.0,0.0),Vector2(0.0,-2.0)]
+    var phase := posmod(int(floor(now/4.0))+int(actor.get("patrol_phase",0)),directions.size())
+    var destination: Vector2 = home+directions[phase]
+    var snap := _nearest_walkable_cell(Vector2i(floori(destination.x),floori(destination.y)))
+    if snap.x < 0:
+        return
+    destination = Vector2(snap)+Vector2(0.5,0.5)
+    if (actor["position"] as Vector2).distance_to(destination) > 0.55:
+        _move_world_actor(actor,destination,float(actor.get("move_speed",2.0)))
 
 func _heal_ally(actor: Dictionary) -> bool:
     var candidates: Array = []
@@ -682,9 +918,14 @@ func _sync_linked_hp(actor: Dictionary) -> void:
         linked.hp = float(actor["hp"])
 
 func _keep_inside(position: Vector2) -> Vector2:
-    return Vector2(clampf(position.x,0.0,36.0),clampf(position.y,0.0,20.0))
+    return Vector2(
+        clampf(position.x,world_bounds.position.x,world_bounds.end.x-0.001),
+        clampf(position.y,world_bounds.position.y,world_bounds.end.y-0.001)
+    )
 
 func _event(kind: String, payload: Dictionary) -> void:
+    if world_mode and events.size() >= MAX_EVENTS:
+        events.pop_front()
     if events.size() >= MAX_EVENTS:
         return
     var row := {"type":kind,"time":now,"encounter_id":encounter_id}
