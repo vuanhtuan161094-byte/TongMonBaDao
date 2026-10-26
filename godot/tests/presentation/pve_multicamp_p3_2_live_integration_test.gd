@@ -282,6 +282,19 @@ func _run() -> void:
 				and is_equal_approx(float(state.runtime_unconsumed_wall_seconds),0.0),
 			"GUI capture battle advanced outside the shared runtime wall clock"):
 			return
+		# A GUI capture is a real SaveService checkpoint, not an alternate
+		# animation-only simulation. Compare persisted battle and the same
+		# shared-clock minute phase after the injected wall-time advance.
+		var clock_saved := SaveService.new().load_from_path(SAVE_PATH)
+		var clock_restored := HuntingPveRunV2.resume_active(clock_saved,encounter) \
+			if clock_saved != null else {"ok":false}
+		if not _check(clock_saved != null and bool(clock_restored.get("ok",false))
+				and clock_saved.runtime_last_wall_unix == state.runtime_last_wall_unix
+				and is_equal_approx(clock_restored["session"].battle.now,capture_battle.now)
+				and is_equal_approx(float(clock_restored["session"].minute_phase),
+					float(HuntingPveRunV2.resume_active(state,encounter)["session"].minute_phase)),
+			"GUI capture owner clock, PvE battle and durable minute phase diverged"):
+			return
 		if not _check(capture_battle._count_alive("disciple") == 6
 			and capture_battle._count_alive("monster") >= 1 and capture_battle.actions > 0,
 			"first visible Combat V2 frame lacks six live disciples or an active monster; party=%d monsters=%d actions=%d now=%.3f" % [
