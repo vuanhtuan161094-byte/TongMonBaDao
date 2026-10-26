@@ -51,3 +51,6 @@
 /godot/assets/p3/character_creator/parts/female_normal_v1/head_accessory/horn_01/horn_01_down.png.import
 /godot/assets/p3/character_creator/parts/female_normal_v1/head_accessory/horn_01/horn_01_right.png.import
 /godot/assets/p3/character_creator/parts/female_normal_v1/head_accessory/horn_01/horn_01_up.png.import
+
+# PVE profiler run output (root-level user data and logs).
+/outputs/pve_perf_qa_20261026/
