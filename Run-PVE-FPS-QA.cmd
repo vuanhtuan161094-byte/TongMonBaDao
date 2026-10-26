@@ -9,7 +9,7 @@ set "TMB_LOG_DIR=%~dp0godot\outputs\pve_perf_qa_20261026\logs"
 set "TMB_PVE_PERF_LOG=0"
 if /I "%~1"=="/log" set "TMB_PVE_PERF_LOG=1"
 for /f %%i in ('powershell -NoProfile -Command "Get-Date -Format yyyyMMdd_HHmmss_fff"') do set "TMB_RUN_STAMP=%%i"
-for /f %%i in ('git -C "%~dp0" rev-parse HEAD') do set "TMB_PVE_EXACT_SHA=%%i"
+for /f %%i in ('git -C "%~dp0." rev-parse HEAD') do set "TMB_PVE_EXACT_SHA=%%i"
 set "TMB_LOG=%TMB_LOG_DIR%\normal_gui_%TMB_RUN_STAMP%_%TMB_PVE_PERF_LOG%.godot.log"
 if not exist "%TMB_GODOT%" (
   echo TMB_PVE_PERF_LAUNCH_FAIL: official Godot 4.7.2 console binary not found: %TMB_GODOT%
