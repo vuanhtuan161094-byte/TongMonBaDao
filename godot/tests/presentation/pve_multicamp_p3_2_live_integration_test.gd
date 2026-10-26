@@ -288,12 +288,24 @@ func _run() -> void:
 		var clock_saved := SaveService.new().load_from_path(SAVE_PATH)
 		var clock_restored := HuntingPveRunV2.resume_active(clock_saved,encounter) \
 			if clock_saved != null else {"ok":false}
+		var current_run := HuntingPveRunV2.resume_active(state,encounter)
 		if not _check(clock_saved != null and bool(clock_restored.get("ok",false))
+				and bool(current_run.get("ok",false))
 				and clock_saved.runtime_last_wall_unix == state.runtime_last_wall_unix
 				and is_equal_approx(clock_restored["session"].battle.now,capture_battle.now)
 				and is_equal_approx(float(clock_restored["session"].minute_phase),
-					float(HuntingPveRunV2.resume_active(state,encounter)["session"].minute_phase)),
+					float(current_run["session"].minute_phase)),
 			"GUI capture owner clock, PvE battle and durable minute phase diverged"):
+			return
+		var same_wall := int(state.runtime_last_wall_unix)
+		var same_battle_time := capture_battle.now
+		var same_time_poll := runtime.poll(same_wall)
+		var after_same_time := HuntingPveRunV2.resume_active(state,encounter)
+		if not _check(bool(same_time_poll.get("ok",false))
+				and int(same_time_poll.get("frames_run",0)) == 0
+				and bool(after_same_time.get("ok",false))
+				and is_equal_approx(after_same_time["session"].battle.now,same_battle_time),
+			"same timestamp polled twice and duplicated Combat V2 progression"):
 			return
 		if not _check(capture_battle._count_alive("disciple") == 6
 			and capture_battle._count_alive("monster") >= 1 and capture_battle.actions > 0,
