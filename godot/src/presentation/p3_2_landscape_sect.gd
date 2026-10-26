@@ -3,7 +3,9 @@ extends "res://src/presentation/p3_1_landscape_sect.gd"
 const ZOOM_STEP := 1.12
 const CAMERA_TWEEN_SECONDS := 0.22
 const FOCUS_MARKER_SIZE := Vector2(82.0, 82.0)
-const B3_HUNT_REFRESH_SECONDS := 0.25
+# Runtime authority polls once per second; avoid decoding the same saved battle
+# snapshot four times between authoritative updates.
+const B3_HUNT_REFRESH_SECONDS := 1.0
 const MAP_WORKSITE_MAX_CUES := 4
 const MAP_WORKSITE_REFRESH_SECONDS := 0.25
 const MAX_RETAINED_ACTOR_POOL := 72
