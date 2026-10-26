@@ -824,6 +824,24 @@ func save_state() -> Dictionary:
 # The live character HP owner stays separate until DV2-03's real HP track
 # migration. Rehydrated actors retain their exact battle HP but do not
 # silently overwrite legacy DiscipleState HP or attach unsafe object pointers.
+# Validate that the spawn-slot registry and canonical Combat V2 navigation
+# are from the SAME pinned world revision. A syntactically valid 40-character
+# SHA is not enough: two independent saved objects can otherwise refer to
+# different terrain/region sets after recovery or corrupted serialization.
+# Read-only preflight; never rewrite the player's save or synthesize a map.
+static func saved_world_identity_matches(battle_snapshot: MapBattleV2,
+        registry: Dictionary) -> bool:
+    if battle_snapshot == null or not battle_snapshot.world_mode:
+        return false
+    var navigation: Dictionary = battle_snapshot.world_navigation
+    var nav_sha := str(navigation.get("source_blob_sha",""))
+    var slot_sha := str(registry.get("world_source_sha",""))
+    var nav_map := str(navigation.get("source_map",""))
+    var slot_map := str(registry.get("world_source_map",""))
+    return nav_sha.length() == 40 and nav_sha == slot_sha \
+        and not nav_map.is_empty() and nav_map == slot_map
+
+
 static func restore_state(state: SimulationState, saved: Dictionary) -> Dictionary:
     if state == null or not state.sect.p3_7_resources_enabled or not state.sect.v2_pve_enabled:
         return {"ok":false,"reason":"hunting_v2_not_enabled"}
@@ -918,24 +936,6 @@ static func restore_state(state: SimulationState, saved: Dictionary) -> Dictiona
         return {"ok":false,"reason":"incomplete_multicamp_roster"}
     if mode_value == "encounter" and (seen_monsters != expected.size() or seen_disciples <= 0):
         return {"ok":false,"reason":"incomplete_saved_combat_roster"}
-# Validate that the spawn-slot registry and canonical Combat V2 navigation
-# are from the SAME pinned world revision. A syntactically valid 40-character
-# SHA is not enough: two independent saved objects can otherwise refer to
-# different terrain/region sets after recovery or corrupted serialization.
-# Read-only preflight; never rewrite the player's save or synthesize a map.
-static func saved_world_identity_matches(battle_snapshot: MapBattleV2,
-        registry: Dictionary) -> bool:
-    if battle_snapshot == null or not battle_snapshot.world_mode:
-        return false
-    var navigation: Dictionary = battle_snapshot.world_navigation
-    var nav_sha := str(navigation.get("source_blob_sha",""))
-    var slot_sha := str(registry.get("world_source_sha",""))
-    var nav_map := str(navigation.get("source_map",""))
-    var slot_map := str(registry.get("world_source_map",""))
-    return nav_sha.length() == 40 and nav_sha == slot_sha \
-        and not nav_map.is_empty() and nav_map == slot_map
-
-
     var session := HuntingPveRunV2.new()
     session.owner_state = state
     session.region_id = region
