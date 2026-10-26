@@ -24,6 +24,23 @@ Private source knowledge: [ZQZS-Source-Knowledge](https://github.com/vuanhtuan16
 - ` godot/data/presentation/source_a_candidate_manifest.json chỉ mô tả **candidate/registry**, không là UI acceptance. ` outputs/endgame_qa_20261026/assets/sourcea_qa_pass_asset_catalog.csv ở PR39 kiểm kê actor Spine QA, **không được dùng thay UI atlas inventory**.
 - PvE-VIS-01 vẫn có local dirty/remote divergence có thể tồn tại: **TẤT CẢ file gameplay/PvE VFX/branch đó cấm viết trong packet U01**.
 
+## A3. GATE ƯU TIÊN MỚI — TÌM TẤT CẢ SPINE ĐÃ CHUYỂN SANG GODOT TRƯỚC (OWNER 26/10)
+
+**CÓ catalog chuyển đổi sẵn, U01 trước đó mới kiểm kê sơ bộ chứ CHƯA forensic-audit toàn bộ thư viện converted cho UI.**
+
+Bằng chứng GitHub:
+- § outputs/endgame_qa_20261026/assets/sourcea_qa_pass_asset_catalog.csv (PR #39 § feature/endgame-visual-lod-pve-world-foundation-20261025): **263 hàng/263 § QA_PASS**, mỗi hàng có § source_sha256, § output_sha256, § godot_scene, § spriteframes, § clips và đường dẫn source. Đây là **263 bản ghi actor/rig Spine converted**, chưa phải 263 UI asset; đa số § role=UNKNOWN. Số **269 asset PASS** Codex từng báo là một định nghĩa/count khác chưa đối chiếu; không tự nhập 269 vào cùng thước đo 263.
+- Ở remote § feature/pve-jx-continuous-world-20261026 (03887359) thư mục § godot/assets/actors/ có bảy thư mục (1113028_1, body_1110201, body_1120402 và bốn actor V5), cùng § godot/assets/combat_v5_source_a/visual_manifest.json; đây là tập được nhập vào **nhánh game**, khác với toàn thư viện **263 pack** nằm trên E. Không tự kết luận toàn bộ pack đã nằm trong GitHub.
+- § docs/handoffs/2026-10-24/WORKER_ASSET_CATALOG.json (trên nhánh handoff) chứa các mẫu converted Godot + source SHA/atlas SHA, timing/pivot/clip. § godot/data/presentation/source_a_candidate_manifest.json là candidate art registry, không xác nhận UI source.
+
+**Thay đổi thứ tự công việc U01:**
+1. **G0: Existing-conversion-first** — lập inventory read-only mọi Godot-ready Source A trong repo và các thư viện chuyển đổi đã có ở E, không chỉ § godot/assets/actors/; đối chiếu § source SHA + clip/scene names + § animations.tres, § actor.tscn, § atlas_*.webp, § SpriteFrames + local QA logs. Phân biệt § REPO_IMPORTED, § E_CONVERTED_QA_PASS, § CONVERTED_NEEDS_VISUAL_QA, § RAW_ONLY, § DUPLICATE_BY_SHA.
+2. **G0.1: Tìm UI trong converted** — lọc animation/tag/skeleton name liên quan cửa sổ, summon, dialog, icon effect, scrolling decoration, portrait, notification, button, progress; kiểm tra contact-sheet/animation thật, không biến rig đánh nhau thành asset UI vì chỉ thấy § attack. Phân loại actor portrait nếu thực sự dùng được, **không gọi actor sprite là panel hoặc button**.
+3. **G0.2: Gap analysis** — so nhóm UI/9-slice atlas/prefab từ § ZQZS-Source-Knowledge với converted inventory; xuất bảng § existing_path, source_sha256, godot_resource, clips, visual_role, provenance, qa_state, missing_dependencies, reimport_needed. Nếu không có UI trong converted, ghi § VERIFIED_NOT_FOUND_IN_SCANNED_SCOPE (nêu phạm vi), mới chuyển sang scan raw Unity bundles có mục tiêu.
+4. **Không convert lặp** pack § QA_PASS nếu binary/source hash tương đương. Cần đổi metadata/pivot/import settings thì dùng derivative/branch riêng, báo rõ không ghi đè master. Có thể tạo portrait/UI frame sử dụng scene actor đúng vai trò, nhưng phải bảo đảm sizing và performance; không tự ý chỉnh runtime actor.
+
+**U01 acceptance bổ sung:** một mục § Converted-first audit trong báo cáo, nêu tổng số distinct SHA / § Godot scenes scan thật / bao nhiêu ứng viên UI đủ evidence / bao nhiêu chỉ là actor / bao nhiêu missing; gắn sample paths/screenshots của 5–10 asset. Chỉ sau G0 mới đi § uibuildingmsgwin.ab → external dependencies → source atlases / Godot UI-lab.
+
 ## B. Nhiệm vụ CODEX WINDOWS — U01 Asset-forensics (KHÔNG sửa gameplay)
 
 ### Mục tiêu rất cụ thể
