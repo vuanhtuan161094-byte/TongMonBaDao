@@ -1,0 +1,12 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+ERROR: Parse JSON failed. Error at line 0: Expected key
+   at: parse_string (core/io/json.cpp:629)
+   GDScript backtrace (most recent call first):
+       [0] _load_exact (res://src/simulation/save/save_service.gd:92)
+       [1] load_from_path (res://src/simulation/save/save_service.gd:76)
+       [2] start (res://src/simulation/core/live_game_runtime_v2.gd:35)
+       [3] _run (res://tests/simulation/dv2_03_live_runtime_integration_test.gd:154)
+DV2-03 LIVE P3 RUNTIME SAVE/OFFLINE INTEGRATION: PASS

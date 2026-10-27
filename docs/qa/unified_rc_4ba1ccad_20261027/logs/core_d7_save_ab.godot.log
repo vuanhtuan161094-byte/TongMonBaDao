@@ -1,0 +1,32 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+PVE SAVE FORENSICS CASE: {"backup_exists":false,"clock_exact":true,"label":"fresh","owner_ok":false,"owner_steps":2,"owner_tick":2,"preload_error":-1,"primary_exact_loadable":false,"primary_exists":false,"primary_unchanged_on_failure":true,"recovery_loadable":false,"remainder":0.0,"save_error":1,"saved_identity_equal":false,"wall":2120,"wire_probe":{"care":false,"care_check":"","envelope_ok":true,"exact_read":false,"foundation_errors":1,"from_dict_ok":true,"shape_ok":true,"source_invariant_errors":0,"stage_write_error":0,"wire_read":true}}
+PVE SAVE FORENSICS CASE: {"label":"same_seed_rotation","preload_error":1,"preload_path_exists":false,"preload_primary_loadable":false}
+PVE SAVE FORENSICS CASE: {"backup_exists":false,"clock_exact":true,"label":"cross_seed_rotation","owner_ok":false,"owner_steps":2,"owner_tick":2,"preload_error":0,"primary_exact_loadable":true,"primary_exists":true,"primary_unchanged_on_failure":true,"recovery_loadable":true,"remainder":0.0,"save_error":1,"saved_identity_equal":false,"wall":2120,"wire_probe":{"care":false,"care_check":"","envelope_ok":true,"exact_read":false,"foundation_errors":1,"from_dict_ok":true,"shape_ok":true,"source_invariant_errors":0,"stage_write_error":0,"wire_read":true}}
+PVE SAVE FORENSICS CASE: {"backup_exists":false,"clock_exact":true,"label":"control_natural_aptitude","owner_ok":true,"owner_steps":2,"owner_tick":2,"preload_error":-1,"primary_exact_loadable":true,"primary_exists":true,"primary_unchanged_on_failure":false,"recovery_loadable":true,"remainder":0.0,"save_error":0,"saved_identity_equal":true,"wall":2120,"wire_probe":{"care":false,"care_check":"","envelope_ok":true,"exact_read":true,"foundation_errors":0,"from_dict_ok":true,"shape_ok":true,"source_invariant_errors":0,"stage_write_error":0,"wire_read":true}}
+PVE SAVE FORENSICS CASE: {"backup_exists":true,"clock_exact":true,"label":"control_cross_seed","owner_ok":true,"owner_steps":2,"owner_tick":2,"preload_error":0,"primary_exact_loadable":true,"primary_exists":true,"primary_unchanged_on_failure":false,"recovery_loadable":true,"remainder":0.0,"save_error":0,"saved_identity_equal":true,"wall":2120,"wire_probe":{"care":false,"care_check":"","envelope_ok":true,"exact_read":true,"foundation_errors":0,"from_dict_ok":true,"shape_ok":true,"source_invariant_errors":0,"stage_write_error":0,"wire_read":true}}
+PVE SAVE ROOT CAUSE: PASS invalid_D7_fixture=true natural_aptitude_save_load=true last_good_primary_preserved=true
+ERROR: B3 CARE: incompatible save: invalid_care_version_or_ratio_shape
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] from_dict (res://src/simulation/state/simulation_state.gd:413)
+       [1] _load_exact (res://src/simulation/save/save_service.gd:128)
+       [2] save_to_path (res://src/simulation/save/save_service.gd:27)
+       [3] _invalid_stage (res://tests/simulation/pve_aux01_save_stage_differential_test.gd:207)
+       [4] _run (res://tests/simulation/pve_aux01_save_stage_differential_test.gd:382)
+ERROR: SaveService: CARE capability mismatch; refusing downgraded or incomplete save.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _load_exact (res://src/simulation/save/save_service.gd:117)
+       [1] _schema_migration_probe (res://tests/simulation/pve_aux01_save_stage_differential_test.gd:253)
+       [2] _run (res://tests/simulation/pve_aux01_save_stage_differential_test.gd:384)
+ERROR: SaveService: save version 99 is newer than supported 4.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _load_exact (res://src/simulation/save/save_service.gd:102)
+       [1] _schema_migration_probe (res://tests/simulation/pve_aux01_save_stage_differential_test.gd:253)
+       [2] _run (res://tests/simulation/pve_aux01_save_stage_differential_test.gd:384)
+PVE SAVE FORENSICS NEGATIVE: {"invalid_stage":{"baseline_error":0,"existing_save_loadable":true,"invalid_save_error":1,"preserved_primary":true},"missing_dir":{"primary_created":false,"write_error":7},"rename_probe":{"contents_ok":true,"publish_error":0,"rotate_error":0},"schema_migrations":{"0":{"exact_read":true,"expected":true},"1":{"exact_read":true,"expected":true},"2":{"exact_read":true,"expected":true},"3":{"exact_read":true,"expected":true},"4":{"exact_read":false,"expected":false},"99":{"exact_read":false,"expected":false}}}
+PVE SAVE FORENSICS COMPLETE cases=5 unresolved_defect=false primary_at_risk=false checks=15 engine=4.7.2-stable (official)

@@ -1,0 +1,208 @@
+[1/2] Restoring and verifying the Stage A 42-PNG pack...
+[Stage A pack] Rebuilding from tracked CI transport...
+[Stage A pack] transport SHA256=6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca
+[Stage A pack] 42 canonical PNG assets installed.
+[2/2] Running FAST P3.2 Stage A three-direction verification...
+========================================================
+  TONG MON BA DAO - FEMALE STAGE A + MOTION FAST CHECK
+========================================================
+
+FAST P3.2 check only:
+- import changed Stage A assets
+- Character Creator shared-rig contract
+- down/front regression contract
+- authored DOWN / RIGHT / UP asset contract
+- authored direction sandbox smoke
+- shared IDLE/WALK motion contract
+- shared motion sandbox smoke
+- live modular female map integration
+
+It does NOT rerun P0-P2.12 on every art/pivot iteration.
+Full cumulative verification is a separate final gate.
+
+=== P3.2 FEMALE STAGE A + SHARED MOTION FAST CHECK ===
+[Godot] Probing E:\Godot_v4.7.2-stable_win64_console.exe
+[Godot] 4.7.2.stable.official.ed1daf0bf
+[Godot] E:\Godot_v4.7.2-stable_win64_console.exe
+[1/8] Importing new/changed Stage A assets
+[Godot command] E:\Godot_v4.7.2-stable_win64_console.exe --headless --path <LOCAL_QA_WORKTREE>\godot --import
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1m_update_scan_actions[22m | Started Scanning actions... (45 steps)[39m[0m
+[   0% ] [90m[1m_update_scan_actions[22m | body_01_down_arm_l.png[39m[0m
+[   2% ] [90m[1m_update_scan_actions[22m | body_01_down_arm_r.png[39m[0m
+[   4% ] [90m[1m_update_scan_actions[22m | body_01_down_head.png[39m[0m
+[   6% ] [90m[1m_update_scan_actions[22m | body_01_down_leg_l.png[39m[0m
+[   8% ] [90m[1m_update_scan_actions[22m | body_01_down_leg_r.png[39m[0m
+[  10% ] [90m[1m_update_scan_actions[22m | body_01_down_torso.png[39m[0m
+[  13% ] [90m[1m_update_scan_actions[22m | body_01_right_arm_l.png[39m[0m
+[  15% ] [90m[1m_update_scan_actions[22m | body_01_right_arm_r.png[39m[0m
+[  17% ] [90m[1m_update_scan_actions[22m | body_01_right_head.png[39m[0m
+[  19% ] [90m[1m_update_scan_actions[22m | body_01_right_leg_l.png[39m[0m
+[  21% ] [90m[1m_update_scan_actions[22m | body_01_right_leg_r.png[39m[0m
+[  23% ] [90m[1m_update_scan_actions[22m | body_01_right_torso.png[39m[0m
+[  26% ] [90m[1m_update_scan_actions[22m | body_01_up_arm_l.png[39m[0m
+[  28% ] [90m[1m_update_scan_actions[22m | body_01_up_arm_r.png[39m[0m
+[  30% ] [90m[1m_update_scan_actions[22m | body_01_up_head.png[39m[0m
+[  32% ] [90m[1m_update_scan_actions[22m | body_01_up_leg_l.png[39m[0m
+[  34% ] [90m[1m_update_scan_actions[22m | body_01_up_leg_r.png[39m[0m
+[  36% ] [90m[1m_update_scan_actions[22m | body_01_up_torso.png[39m[0m
+[  39% ] [90m[1m_update_scan_actions[22m | face_01_down.png[39m[0m
+[  41% ] [90m[1m_update_scan_actions[22m | face_01_right.png[39m[0m
+[  43% ] [90m[1m_update_scan_actions[22m | face_01_up.png[39m[0m
+[  45% ] [90m[1m_update_scan_actions[22m | hair_01_down_back.png[39m[0m
+[  47% ] [90m[1m_update_scan_actions[22m | hair_01_down_front.png[39m[0m
+[  50% ] [90m[1m_update_scan_actions[22m | hair_01_right_back.png[39m[0m
+[  52% ] [90m[1m_update_scan_actions[22m | hair_01_right_front.png[39m[0m
+[  54% ] [90m[1m_update_scan_actions[22m | hair_01_up_back.png[39m[0m
+[  56% ] [90m[1m_update_scan_actions[22m | hair_01_up_front.png[39m[0m
+[  58% ] [90m[1m_update_scan_actions[22m | horn_01_down.png[39m[0m
+[  60% ] [90m[1m_update_scan_actions[22m | horn_01_right.png[39m[0m
+[  63% ] [90m[1m_update_scan_actions[22m | horn_01_up.png[39m[0m
+[  65% ] [90m[1m_update_scan_actions[22m | outfit_01_down_arm_l.png[39m[0m
+[  67% ] [90m[1m_update_scan_actions[22m | outfit_01_down_arm_r.png[39m[0m
+[  69% ] [90m[1m_update_scan_actions[22m | outfit_01_down_skirt.png[39m[0m
+[  71% ] [90m[1m_update_scan_actions[22m | outfit_01_down_torso.png[39m[0m
+[  73% ] [90m[1m_update_scan_actions[22m | outfit_01_right_arm_l.png[39m[0m
+[  76% ] [90m[1m_update_scan_actions[22m | outfit_01_right_arm_r.png[39m[0m
+[  78% ] [90m[1m_update_scan_actions[22m | outfit_01_right_skirt.png[39m[0m
+[  80% ] [90m[1m_update_scan_actions[22m | outfit_01_right_torso.png[39m[0m
+[  82% ] [90m[1m_update_scan_actions[22m | outfit_01_up_arm_l.png[39m[0m
+[  84% ] [90m[1m_update_scan_actions[22m | outfit_01_up_arm_r.png[39m[0m
+[  86% ] [90m[1m_update_scan_actions[22m | outfit_01_up_skirt.png[39m[0m
+[  89% ] [90m[1m_update_scan_actions[22m | outfit_01_up_torso.png[39m[0m
+[  91% ] [90m[1m_update_scan_actions[22m | exact_sha_test_results.csv[39m[0m
+[  93% ] [90m[1m_update_scan_actions[22m | exact_sha_test_results.csv[39m[0m
+[  95% ] [90m[1m_update_scan_actions[22m | exact_sha_test_results_corrected.csv[39m[0m
+[92m[ DONE ][39m [1m_update_scan_actions[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started (Re)Importing Assets (45 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   2% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   4% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   6% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   8% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  10% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  13% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  15% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  17% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  19% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  21% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  23% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  26% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  28% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  30% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  32% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  34% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  36% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  39% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  41% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  43% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  45% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  47% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  50% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  52% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  54% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  56% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  58% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  60% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  63% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  65% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  67% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  69% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  71% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  73% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  76% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  78% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  80% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  82% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  84% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  86% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  89% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  91% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  93% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  95% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   0% ] [90m[1mreimport[22m | Executing pre-reimport operations...[39m[0m
+[   0% ] [90m[1mreimport[22m | exact_sha_test_results_corrected.csv[39m[0m
+[   2% ] [90m[1mreimport[22m | exact_sha_test_results.csv[39m[0m
+[   4% ] [90m[1mreimport[22m | exact_sha_test_results.csv[39m[0m
+[   6% ] [90m[1mreimport[22m | exact_sha_test_results_corrected.csv[39m[0m
+[   8% ] [90m[1mreimport[22m | exact_sha_test_results.csv[39m[0m
+[  10% ] [90m[1mreimport[22m | exact_sha_test_results.csv[39m[0m
+[  13% ] [90m[1mreimport[22m | hair_01_right_back.png[39m[0m
+[  15% ] [90m[1mreimport[22m | hair_01_right_front.png[39m[0m
+[  17% ] [90m[1mreimport[22m | hair_01_up_back.png[39m[0m
+[  19% ] [90m[1mreimport[22m | hair_01_up_front.png[39m[0m
+[  21% ] [90m[1mreimport[22m | horn_01_down.png[39m[0m
+[  23% ] [90m[1mreimport[22m | horn_01_right.png[39m[0m
+[  26% ] [90m[1mreimport[22m | horn_01_up.png[39m[0m
+[  28% ] [90m[1mreimport[22m | outfit_01_down_arm_l.png[39m[0m
+[  30% ] [90m[1mreimport[22m | outfit_01_down_arm_r.png[39m[0m
+[  32% ] [90m[1mreimport[22m | outfit_01_down_skirt.png[39m[0m
+[  34% ] [90m[1mreimport[22m | outfit_01_down_torso.png[39m[0m
+[  36% ] [90m[1mreimport[22m | outfit_01_right_arm_l.png[39m[0m
+[  39% ] [90m[1mreimport[22m | outfit_01_right_arm_r.png[39m[0m
+[  41% ] [90m[1mreimport[22m | outfit_01_right_skirt.png[39m[0m
+[  43% ] [90m[1mreimport[22m | outfit_01_right_torso.png[39m[0m
+[  45% ] [90m[1mreimport[22m | outfit_01_up_arm_l.png[39m[0m
+[  47% ] [90m[1mreimport[22m | outfit_01_up_arm_r.png[39m[0m
+[  50% ] [90m[1mreimport[22m | outfit_01_up_skirt.png[39m[0m
+[  52% ] [90m[1mreimport[22m | outfit_01_up_torso.png[39m[0m
+[  54% ] [90m[1mreimport[22m | body_01_down_arm_l.png[39m[0m
+[  56% ] [90m[1mreimport[22m | body_01_down_arm_r.png[39m[0m
+[  58% ] [90m[1mreimport[22m | body_01_down_head.png[39m[0m
+[  60% ] [90m[1mreimport[22m | body_01_down_leg_l.png[39m[0m
+[  63% ] [90m[1mreimport[22m | body_01_down_leg_r.png[39m[0m
+[  65% ] [90m[1mreimport[22m | body_01_down_torso.png[39m[0m
+[  67% ] [90m[1mreimport[22m | body_01_right_arm_l.png[39m[0m
+[  69% ] [90m[1mreimport[22m | body_01_right_arm_r.png[39m[0m
+[  71% ] [90m[1mreimport[22m | body_01_right_head.png[39m[0m
+[  73% ] [90m[1mreimport[22m | body_01_right_leg_l.png[39m[0m
+[  76% ] [90m[1mreimport[22m | body_01_right_leg_r.png[39m[0m
+[  78% ] [90m[1mreimport[22m | body_01_right_torso.png[39m[0m
+[  80% ] [90m[1mreimport[22m | body_01_up_arm_l.png[39m[0m
+[  82% ] [90m[1mreimport[22m | body_01_up_arm_r.png[39m[0m
+[  84% ] [90m[1mreimport[22m | body_01_up_head.png[39m[0m
+[  86% ] [90m[1mreimport[22m | body_01_up_leg_l.png[39m[0m
+[  89% ] [90m[1mreimport[22m | body_01_up_leg_r.png[39m[0m
+[  91% ] [90m[1mreimport[22m | body_01_up_torso.png[39m[0m
+[  93% ] [90m[1mreimport[22m | face_01_down.png[39m[0m
+[  95% ] [90m[1mreimport[22m | face_01_right.png[39m[0m
+[  97% ] [90m[1mreimport[22m | Finalizing Asset Import...[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started (Re)Importing Assets (45 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | Executing post-reimport operations...[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Started Loading editor (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Loading editor layout...[39m[0m
+[  16% ] [90m[1mloading_editor_layout[22m | Loading docks...[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+ERROR: Cannot save file 'C:/Users/Admin/AppData/Roaming/Godot/editor_settings-4.7.tres'.
+   at: save (scene/resources/resource_format_text.cpp:1768)
+ERROR: Error saving editor settings to C:/Users/Admin/AppData/Roaming/Godot/editor_settings-4.7.tres
+   at: save (editor/settings/editor_settings.cpp:1525)
+Godot command failed with exit code -1073741819: Stage A import
+At <LOCAL_QA_WORKTREE>\tools\godot\Verify-P3-2-Female-StageA.ps1:172 char:40
++ ... de -ne 0) { throw "Godot command failed with exit code $($process.Exi ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Godot command f... Stage A import:String) [], RuntimeException
+    + FullyQualifiedErrorId : Godot command failed with exit code -1073741819: Stage A import
+ 
+
+FEMALE STAGE A + SHARED MOTION FAST CHECK: FAIL (exit 1)
+
+Press any key to continue . . . 

@@ -1,0 +1,8 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+PVE AUX-02 AUTONOMOUS SAVE_RELOAD detail={ "ok": true, "session": <RefCounted#-9223371559912075102> } disciples=5 monsters=10 auto=true warehouse_equal=true claims=0 active=codex1_autonomous_zone_progression
+PVE AUX-02 AUTONOMOUS PROGRESS seconds=25 camp=02 kills=10 alive_monsters=10 battle_time=25.0 respawned_c01=0
+PVE AUX-02 AUTONOMOUS FINAL detail zone_changed=true camp=1 party_records=true living=5 monsters=9 zone_event=true kills=11 respawns=5 time=40.0
+PVE AUX-02 AUTONOMOUS ZONE PROGRESSION PASS checks=34 elapsed=40 wall_seconds camp=02 kills=11 c01_respawns=5 party_records=6 living_party=5 zone_spawn_count=10 alive_monsters=9 save_reload=true auto_hunt=true injected_movement=false forced_damage=false loot=none physical_mouse=NOT_TESTED

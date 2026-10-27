@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+PVE JX SWORD VFX ADAPTER PASS real_combat=ngu_kiem_thuat cast=true projectile=true positive_hit=true one_impact=true no_hit_explosion=false snapshot_unchanged=true canonical_save_service_reload_no_replay=true forest_palette=verified

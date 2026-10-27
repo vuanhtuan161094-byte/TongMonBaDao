@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+PVE AUX-02 WORLD INPUT CONTRACT PASS checks=2172 source_sha=c0e6b9952ce6303718938f5705a0327d0a14b136 map=sect_isometric_source_a_pve_v1 zones=20 group=6 transitions=20 minimap=20/20 camera=roundtrip_zoom_pan injected_pointer=true blocked_snap=true movement_save_restore=6/6 pursuit=true physical_mouse=NOT_TESTED
