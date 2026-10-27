@@ -1,6 +1,7 @@
 # Evidence index — Unified RC final QA
 
-- Exact source: [`0d3952dd11f85bebbde60176deafc4f19afc8a6f`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/0d3952dd11f85bebbde60176deafc4f19afc8a6f)
+- Exact tested source tree: [`0d3952dd11f85bebbde60176deafc4f19afc8a6f`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/0d3952dd11f85bebbde60176deafc4f19afc8a6f)
+- Local worktree ref was left untouched at `4ba1ccad25c1d03053cefbc724c1a19287d4c0f3`. Five tracked diffs were individually blob-verified against RC (2 files from 9ad + 3 docs at 0d); remote compare 9ad→0d has exactly those three docs. Tests used the resulting tracked file tree matching 0d. No reset/clean/fetch was performed.
 - RC branch: `integration/pve-unified-rc-20261027`; PR [#52](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/52) Draft/Open, unmerged.
 - Full regression: [matrix 22 rows](FULL_22_TEST_MATRIX.csv), [summary](FULL_22_SUMMARY.json), [rerun script](RUN_22_TESTS.ps1).
 - Female Stage A: [supplemental matrix](STAGE_A_FOCUSED_MATRIX.csv), [installer log](logs/stage_a_install_only.stdout.txt), [clean isolated import](logs/import_clean.stdout.txt), [down/front after import](logs/stage_a_down_contract_after_import.stdout.txt), [directions after import](logs/stage_a_directions_contract_after_import.stdout.txt).
@@ -8,7 +9,7 @@
 - [All stdout, Godot logs and exit files, sanitized, in one ZIP](logs/FULL_22_LOGS_AND_IMPORT.zip). Matrix log paths map to paths inside that ZIP.
 - [GUI acceptance and manual checklist](GUI_ACCEPTANCE.md), [FPS OFF/ON results](FPS_OFF_ON_COMPARISON.csv), [regression findings](REGRESSION_DIAGNOSIS.md), [mainline feature audit](MAIN_MERGE_READINESS.md), [SHA-256 manifest](SHA256SUMS.txt), [overall report](FINAL_QA_REPORT.md).
 
-## All 22 exact-SHA cases (exit 0 each)
+## All 22 exact source-tree cases (exit 0 each)
 
 | # | Test |
 |---:|---|
