@@ -13,8 +13,8 @@ Implemented on `main`:
 - building switching and building -> disciple context switch;
 - dedicated contract test + safe sync launcher:
   - `godot/tests/presentation/p3_4a_building_operation_panel_test.gd`;
-  - `Verify-P3-4A-Building-Panel.cmd`;
-  - `Sync-P3-4A-Building-Panel.cmd`.
+  - `tools/windows/qa/Verify-P3-4A-Building-Panel.cmd`;
+  - `tools/windows/sync/Sync-P3-4A-Building-Panel.cmd`.
 
 P3.4A is **REAL PASS** on Windows Godot 4.7.2.
 
@@ -34,7 +34,7 @@ Presentation does not directly mutate `current_action` or `region_id`.
 Dedicated verifier:
 
 - `godot/tests/presentation/p3_4b_building_people_management_test.gd`;
-- `Verify-P3-4B-Building-People.cmd`;
+- `tools/windows/qa/Verify-P3-4B-Building-People.cmd`;
 - `tools/godot/Verify-P3-4B-Building-People.ps1`.
 
 P3.4B is now REAL PASS. P3.4C is unblocked.
@@ -63,7 +63,7 @@ Implemented on `main`:
 Dedicated contract/gate:
 
 - `godot/tests/presentation/p3_4c_building_system_actions_test.gd`;
-- `Verify-P3-4C-Building-Actions.cmd`;
+- `tools/windows/qa/Verify-P3-4C-Building-Actions.cmd`;
 - `tools/godot/Verify-P3-4C-Building-Actions.ps1`.
 
 P3.4C is **REAL PASS** on Windows Godot 4.7.2. Full P3.4 is locked.
@@ -88,9 +88,9 @@ Không tạo BuildingState riêng chỉ để UI đẹp. Không fake queue, cấ
 
 Không code P3.4 runtime trước khi Windows chứng minh:
 
-1. `Verify-P3-2-Female-StageA.cmd` có:
+1. `tools/windows/qa/Verify-P3-2-Female-StageA.cmd` có:
    `P3.2 LIVE MODULAR FEMALE MAP INTEGRATION TEST PASS`;
-2. `Verify-P3-3-Disciple-Flow.cmd` xanh.
+2. `tools/windows/qa/Verify-P3-3-Disciple-Flow.cmd` xanh.
 
 Nếu một gate fail, sửa gate đó trước. Không chồng thêm P3.4 lên lỗi chưa xác định.
 

@@ -30,7 +30,7 @@ Files:
 - `godot/src/presentation/p3/living_cue_layer.gd`;
 - `godot/tests/presentation/p3_5_living_cue_core_test.gd`;
 - `godot/tests/presentation/p3_5_living_cue_map_integration_test.gd`;
-- `Verify-P3-5-Living-Cues.cmd`;
+- `tools/windows/qa/Verify-P3-5-Living-Cues.cmd`;
 - `tools/godot/Verify-P3-5-Living-Cues.ps1`.
 
 P3.5 is **REAL PASS** on Windows Godot 4.7.2: core resolver/tracker, live-map integration and scene smoke are green.

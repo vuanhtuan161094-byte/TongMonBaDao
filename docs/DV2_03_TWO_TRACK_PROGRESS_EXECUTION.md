@@ -419,7 +419,7 @@ Evidence:
 - [P3.6A #38038535562](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/38038535562): **PASS** after test-only runtime-clock cleanup.
 
 **WINDOWS / USER VALIDATION: PENDING — user has not run Step 2 on Windows.**
-Do not call Windows PASS or VISUAL ACCEPTED until the user actually runs/reviews it. Stable commands when requested: `Sync-Main.cmd Verify-P3-6A-Playable-Slice.cmd`, then `Preview-P3-6A-Playable-Slice.cmd`.
+Do not call Windows PASS or VISUAL ACCEPTED until the user actually runs/reviews it. Stable commands when requested: `tools/windows/sync/Sync-Main.cmd tools/windows/qa/Verify-P3-6A-Playable-Slice.cmd`, then `tools/windows/preview/Preview-P3-6A-Playable-Slice.cmd`.
 
 Step 2 is a presentation/read-model closure only. It does not complete V2 innate effect consumers or the real Rèn Thân facility/cost path.
 

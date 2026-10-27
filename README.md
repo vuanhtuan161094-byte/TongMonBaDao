@@ -19,8 +19,8 @@ Chỉ dùng **MO_GAME.cmd** trong E:\TongMonBaDaoWorkspace\01_Game\TongMonBaDao 
 ## Chạy ứng viên PvE trên Windows (chưa được gọi là bản phát hành)
 
 - Dùng isolated worktree riêng của RC, xác định exact SHA + Godot **4.7.2**.
-- `Run-PVE-Play.cmd`: mở P3.2 landscape 1280×720 với save QA tổng hợp, vào **Săn quái / Thanh Trúc Lâm**, chọn sáu đệ tử thực.
-- `Run-PVE-FPS-QA.cmd` và `Run-PVE-FPS-QA.cmd /log` tuần tự, log có timestamp. Giữ mỗi lần chỉ một Godot GUI trên máy Windows 8GB. Không dùng MovieWriter thay đo FPS GUI.
+- `tools/windows/run/Run-PVE-Play.cmd`: mở P3.2 landscape 1280×720 với save QA tổng hợp, vào **Săn quái / Thanh Trúc Lâm**, chọn sáu đệ tử thực.
+- `tools/windows/run/Run-PVE-FPS-QA.cmd` và `tools/windows/run/Run-PVE-FPS-QA.cmd /log` tuần tự, log có timestamp. Giữ mỗi lần chỉ một Godot GUI trên máy Windows 8GB. Không dùng MovieWriter thay đo FPS GUI.
 - Cần chuột thật, camera/minimap/PvE/Save/Return; ảnh thật và phase P50/P95/P99/1%low/RAM mới được chấp nhận. Test inject chuột/headless KHÔNG thay nghiệm thu GUI.
 - Log và lỗi cập nhật [Issue #37](https://github.com/vuanhtuan161094-byte/TongMonBaDao/issues/37) đúng SHA.
 

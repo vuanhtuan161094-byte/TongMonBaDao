@@ -351,7 +351,7 @@
       "runtime_paths": [
         "godot/src/presentation/p3_2_landscape_sect.gd",
         "godot/tests/presentation/p3_3_disciple_operational_flow_test.gd",
-        "Verify-P3-3-Disciple-Flow.cmd",
+        "tools/windows/qa/Verify-P3-3-Disciple-Flow.cmd",
         "tools/godot/Verify-P3-3-Disciple-Flow.ps1"
       ],
       "runtime_evidence": "Real Windows Godot 4.7.2 on 2026-10-04: cumulative P3.1/P3.2 baseline green; p3_3_disciple_operational_flow_test.gd printed P3.3 DISCIPLE OPERATIONAL FLOW TEST PASS; wrapper printed P3.3 DISCIPLE OPERATIONAL FLOW GATE: PASS and P3.3 DISCIPLE OPERATIONAL FLOW: PASS."
@@ -373,7 +373,7 @@
       "runtime_paths": [
         "godot/src/presentation/p3_2_landscape_sect.gd",
         "godot/tests/presentation/p3_3_disciple_operational_flow_test.gd",
-        "Verify-P3-3-Disciple-Flow.cmd",
+        "tools/windows/qa/Verify-P3-3-Disciple-Flow.cmd",
         "tools/godot/Verify-P3-3-Disciple-Flow.ps1"
       ],
       "runtime_evidence": "Real Windows Godot 4.7.2 on 2026-10-04: cumulative P3.1/P3.2 baseline green; p3_3_disciple_operational_flow_test.gd printed P3.3 DISCIPLE OPERATIONAL FLOW TEST PASS; wrapper printed P3.3 DISCIPLE OPERATIONAL FLOW GATE: PASS and P3.3 DISCIPLE OPERATIONAL FLOW: PASS."
@@ -417,7 +417,7 @@
       "runtime_paths": [
         "godot/src/presentation/p3_2_landscape_sect.gd",
         "godot/tests/presentation/p3_2_live_modular_map_test.gd",
-        "Preview-P3-2-Live-Modular-Map.cmd"
+        "tools/windows/preview/Preview-P3-2-Live-Modular-Map.cmd"
       ],
       "runtime_evidence": "Real Windows Godot 4.7.2 on 2026-10-04: [8/8] p3_2_live_modular_map_test.gd printed P3.2 LIVE MODULAR FEMALE MAP INTEGRATION TEST PASS; wrapper printed P3.2 LIVE MODULAR FEMALE MAP INTEGRATION FAST CHECK: PASS and FEMALE STAGE A + SHARED MOTION FAST CHECK: PASS."
     }

@@ -423,7 +423,7 @@ Không bao giờ vì thiếu art mà sửa `DiscipleState.current_action`, equip
 13. missing art vẫn ở placeholder mode;
 14. persistence test riêng phải được thêm trước khi `appearance_profile` được nối vào generator/save authority.
 
-Test Character Creator chưa được thêm vào `Sync-P3-2-Camera.cmd` cho tới khi parser/headless test được chạy thật trên Godot 4.7.2.
+Test Character Creator chưa được thêm vào `tools/windows/sync/Sync-P3-2-Camera.cmd` cho tới khi parser/headless test được chạy thật trên Godot 4.7.2.
 
 ---
 

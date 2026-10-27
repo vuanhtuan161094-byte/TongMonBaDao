@@ -20,12 +20,12 @@ if not exist "%TMB_ROOT%godot\project.godot" goto :missing_project
 if not exist "%TMB_ROOT%godot\assets\p3\character_creator\parts\female_normal_v1\hair\hair_01\hair_01_down_back.png" (
   echo [INFO] Dang cai 42 anh Female Stage A, kiem tra SHA-256...
   set "STAGE_A_INSTALL_ONLY=1"
-  call "%TMB_ROOT%Install-P3-2-Female-StageA.cmd"
+  call "%TMB_ROOT%tools\windows\bootstrap\Install-P3-2-Female-StageA.cmd"
   if errorlevel 1 goto :asset_failed
 )
 echo [OK] Godot: %TMB_GODOT%
 echo [INFO] Dang mo game PvE 1280x720 voi save QA rieng.
-call "%TMB_ROOT%Run-PVE-Play.cmd"
+call "%TMB_ROOT%tools\windows\run\Run-PVE-Play.cmd"
 set "TMB_EXIT=%ERRORLEVEL%"
 if not "%TMB_EXIT%"=="0" goto :game_error
 exit /b 0

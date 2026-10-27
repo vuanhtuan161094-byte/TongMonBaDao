@@ -18,7 +18,7 @@ Current development authority remains PR #52 on integration/pve-unified-rc-20261
 
 44 root CMD launchers: 5 Run-, 9 Sync-, 23 Verify-, 6 Preview-, 1 Install-. 95 CMD/BAT/PS1 files total in repository. Most are OLD QA/phase controls, not distinct user game releases. Root currently has %~dp0-dependent launchers, so blindly moving those scripts breaks relative callers.
 
-User entrypoint = MO_GAME.cmd, located in canonical game directory on E and desktop shortcut pointing to that file. This verifies that checkout descends from QA RC baseline, finds Godot on E, bootstraps Stage A only if missing with official checksum, calls Run-PVE-Play.cmd. Technical launchers (Run-PVE-FPS-QA, Run-PVE-Play, Verify, Sync, Preview, Install) remain operational until migration has passed tests.
+User entrypoint = MO_GAME.cmd, located in canonical game directory on E and desktop shortcut pointing to that file. This verifies that checkout descends from QA RC baseline, finds Godot on E, bootstraps Stage A only if missing with official checksum, calls Run-PVE-Play.cmd. Technical launchers now live under tools/windows/{run,qa,sync,preview,bootstrap}; root keeps MO_GAME.cmd as the only user entrypoint. Re-run the launcher and focused Godot regressions after migration.
 
 Final desired GitHub root: one owner-visible game launcher; technicians under tools/windows/qa, tools/windows/sync, tools/windows/preview, tools/windows/bootstrap or tools/windows/legacy. Moving them requires cross-file caller search, update relative paths and GitHub/Windows QA, not deleting all 44 now.
 

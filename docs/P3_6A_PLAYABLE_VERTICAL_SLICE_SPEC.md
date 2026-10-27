@@ -16,10 +16,10 @@ Implemented on `main`:
 - stable home action closes operation context and returns to the map;
 - dedicated cumulative verifier:
   - `godot/tests/presentation/p3_6a_playable_slice_test.gd`;
-  - `Verify-P3-6A-Playable-Slice.cmd`;
+  - `tools/windows/qa/Verify-P3-6A-Playable-Slice.cmd`;
   - `tools/godot/Verify-P3-6A-Playable-Slice.ps1`;
 - real preview:
-  - `Preview-P3-6A-Playable-Slice.cmd`.
+  - `tools/windows/preview/Preview-P3-6A-Playable-Slice.cmd`.
 
 Important: the procedural building silhouettes are **temporary runtime presentation**, not replacement approved production building art. Existing approved building visual authority/source status remains unchanged.
 
@@ -33,9 +33,9 @@ P3.6A final product acceptance still requires the user to review the real previe
 
 During P3.6A iteration:
 
-- `Verify-P3-6A-Playable-Slice.cmd` is the default FAST verifier;
+- `tools/windows/qa/Verify-P3-6A-Playable-Slice.cmd` is the default FAST verifier;
 - it checks changed P3.6A scripts, the P3.6A contract, and live scene smoke only;
-- `Verify-P3-6A-Playable-Slice-Full.cmd` preserves the cumulative P3.3–P3.5 chain;
+- `tools/windows/qa/Verify-P3-6A-Playable-Slice-Full.cmd` preserves the cumulative P3.3–P3.5 chain;
 - FULL is for final phase lock or justified cross-baseline regression only.
 
 The FULL cumulative gate already passed in the current runtime acceptance cycle.

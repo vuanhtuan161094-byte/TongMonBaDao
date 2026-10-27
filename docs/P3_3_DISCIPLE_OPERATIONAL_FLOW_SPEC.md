@@ -125,7 +125,7 @@ Contract test:
 
 Windows gate:
 
-- `Verify-P3-3-Disciple-Flow.cmd`;
+- `tools/windows/qa/Verify-P3-3-Disciple-Flow.cmd`;
 - `tools/godot/Verify-P3-3-Disciple-Flow.ps1`.
 
 ## 5. Acceptance gate
@@ -150,7 +150,7 @@ P3.3 code không được dùng để suy diễn rằng live modular female map 
 
 Trước khi khóa P3.3 runtime, Windows action vẫn phải lấy bằng chứng còn thiếu:
 
-`Verify-P3-2-Female-StageA.cmd`
+`tools/windows/qa/Verify-P3-2-Female-StageA.cmd`
 
 với dòng:
 
@@ -158,7 +158,7 @@ với dòng:
 
 Sau đó mới chạy:
 
-`Verify-P3-3-Disciple-Flow.cmd`.
+`tools/windows/qa/Verify-P3-3-Disciple-Flow.cmd`.
 
 ## 7. Art priority
 

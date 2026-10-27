@@ -89,8 +89,8 @@ GitHub Actions on official Godot 4.7.2 is valid runtime evidence.
 Do not relabel CI evidence as Windows evidence.
 
 For Windows:
-- `Sync-Main.cmd` is the stable sync entrypoint;
-- for a gate use `Sync-Main.cmd Verify-<gate>.cmd`;
+- `tools/windows/sync/Sync-Main.cmd` is the stable sync entrypoint;
+- for a gate use `tools/windows/sync/Sync-Main.cmd Verify-<gate>.cmd`;
 - do not create phase-specific Sync launchers as the primary workflow.
 
 ---
