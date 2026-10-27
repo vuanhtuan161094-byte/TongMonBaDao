@@ -1,0 +1,22 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+PVE P3.2 INTEGRATION START headless=true vfx_fixture=false
+PVE P3.2 INTEGRATION scene_ready disciples=130
+PVE P3.2 INTEGRATION hunt_started encounter=pve:thanh_truc_lam:c01:20261025:120:0
+PVE WORLD VIEW CACHE PASS prepare_calls=83 topology_builds=1 minimap_builds=0 source_sha=c0e6b9952ce6303718938f5705a0327d0a14b136
+PVE P3.2 INTEGRATION movement_slots positions={ "candidate_0056": (85.5, 70.5), "candidate_0059": (88.5, 70.5), "candidate_0066": (91.5, 69.5), "candidate_0078": (85.5, 74.5), "candidate_0081": (91.5, 76.5), "candidate_0085": (93.5, 74.5) }
+PVE P3.2 INTEGRATION movement_verified orders=6 formation_slots=6 min_spacing=2.83
+PVE P3.2 INTEGRATION active_save_load_verified
+PVE P3.2 INTEGRATION save_load_snapshot_ready
+PVE P3.2 INTEGRATION in_memory_snapshot_ready
+PVE P3.2 INTEGRATION shared_clock_step=0
+PVE P3.2 INTEGRATION shared_clock_step=10
+PVE P3.2 INTEGRATION shared_clock_step=20
+PVE P3.2 INTEGRATION shared_clock_step=30
+PVE P3.2 INTEGRATION shared_clock_step=40
+PVE P3.2 INTEGRATION shared_clock_progress elapsed=1 frames=4 baseline_actions=65 baseline_time=15.000 remainder=0.000
+PVE P3.2 INTEGRATION shared_clock_complete active=true
+PVE P3.2 INTEGRATION clock_and_b3_care_verified
+PVE SOURCE A CONTINUOUS WORLD P3.2 INTEGRATION PASS sha= renderer=SectIsometricWorldV1 map=192x192 zones=20 party=6 real_monsters=10 reserved=6 shared_clock_seconds=65.00 actions=141 path_order=true zone_hop=NOT_REACHED result=active kills=7 injury120=NOT_REACHED minimap=live camera=pan_zoom active_save_load=true no_duplicate_or_fabricated_rewards=true loot=LOOT_PENDING
