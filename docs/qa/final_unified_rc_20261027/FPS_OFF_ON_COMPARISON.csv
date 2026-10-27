@@ -1,0 +1,9 @@
+Phase,Logger,DurationSeconds,AvgFPS,MedianFPS,P50FrameMs,P95FrameMs,P99FrameMs,OnePercentLowFPS,WorstFrameMs,SpikeTimestamps,PeakWorkingSetMB,VRAMMB,NodeCount,DrawCalls,Status,Notes
+Sect production,OFF,15,,,,,,,,,,,,,PENDING_GUI,Chưa chạy GUI thật
+Sect production,ON,15,,,,,,,,,,,,,PENDING_GUI,Chưa chạy GUI thật
+Team selection,OFF,,,,,,,,,,,,,PENDING_GUI,Chưa chạy GUI thật
+Team selection,ON,,,,,,,,,,,,,PENDING_GUI,Chưa chạy GUI thật
+PVE combat,OFF,30-60,,,,,,,,,,,,,PENDING_GUI,Chưa chạy GUI thật
+PVE combat,ON,30-60,,,,,,,,,,,,,PENDING_GUI,Chưa chạy GUI thật
+Save/Return,OFF,,,,,,,,,,,,,PENDING_GUI,Chưa chạy GUI thật
+Save/Return,ON,,,,,,,,,,,,,PENDING_GUI,Chưa chạy GUI thật
