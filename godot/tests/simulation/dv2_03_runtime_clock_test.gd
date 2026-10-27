@@ -29,7 +29,12 @@ func _make_state(seed: int) -> Dictionary:
     if not bool(accepted.get("ok",false)):
         return {}
     var disciple: DiscipleState = state.disciples[candidate.id]
-    disciple.aptitude = 0.0
+    # Preserve the generated D7 birth stats; changing aptitude directly can
+    # desynchronize the authored quality band and make SaveService reject it.
+    var foundation_errors: Array[String] = FoundationSystem.new().validate_disciple(disciple)
+    if not foundation_errors.is_empty():
+        push_error("DV2-03 fixture contains an invalid D7 disciple: "+str(foundation_errors))
+        return {}
     disciple.current_action = &"HOLD"
     disciple.v2_realm_progress["training_policy"] = "manual"
     state.sect.workforce_enabled = false
@@ -68,6 +73,14 @@ func _run() -> void:
         "59 wall seconds incorrectly produced a simulation minute."):
         return
 
+    # Compare the clock-driven minute to one canonical scheduler step using
+    # the same valid generated disciple, not a hand-edited foundation value.
+    var one_tick_control: SimulationState = SimulationState.from_dict(state.to_dict())
+    if not _assert(one_tick_control != null,
+        "Could not clone the valid D7 fixture for one-step comparison."):
+        return
+    var one_tick_scheduler := SimulationScheduler.new(one_tick_control)
+    one_tick_scheduler.step()
     var first_minute := SimulationRuntimeClockV2.advance_to(
         state,scheduler,1060
     )
@@ -75,8 +88,9 @@ func _run() -> void:
         int(first_minute.get("steps_run",-1))==1 and
         state.tick==1 and
         _close(state.runtime_unconsumed_wall_seconds,0.0) and
-        _close(_tuvi(state,disciple_id)-before,1000.0),
-        "60 real seconds did not produce exactly one canonical Tu Vi minute."):
+        _close(_tuvi(state,disciple_id)-before,
+            _tuvi(one_tick_control,disciple_id)-before),
+        "60 real seconds did not produce exactly one canonical scheduler step."):
         return
 
     # Persist the exact wall timestamp/remainder with the simulation state.
@@ -181,13 +195,21 @@ func _run() -> void:
         return
     var owner_saved_tuvi := _tuvi(owner.state,owner_id)
 
+    var expected_after_reload: SimulationState = SimulationState.from_dict(owner.state.to_dict())
+    if not _assert(expected_after_reload != null,
+        "Could not clone the saved runtime state for three-step catch-up comparison."):
+        return
+    var expected_reload_scheduler := SimulationScheduler.new(expected_after_reload)
+    expected_reload_scheduler.run_ticks(3)
     var reloaded_owner := SimulationRuntimeOwnerV2.new()
     var reloaded := reloaded_owner.load_from_path(SAVE_PATH,2300)
     if not _assert(bool(reloaded.get("ok",false)) and
         int(reloaded.get("catch_up_steps",-1))==3 and
         reloaded_owner.state.tick==owner.state.tick+3 and
-        _close(_tuvi(reloaded_owner.state,owner_id)-owner_saved_tuvi,3000.0),
-        "Runtime owner load did not apply exactly the offline minutes."):
+        reloaded_owner.state.rng_state==expected_after_reload.rng_state and
+        _close(_tuvi(reloaded_owner.state,owner_id)-owner_saved_tuvi,
+            _tuvi(expected_after_reload,owner_id)-owner_saved_tuvi),
+        "Runtime owner load did not apply exactly three canonical offline scheduler steps."):
         return
 
     print("DV2-03 ONLINE/OFFLINE RUNTIME CLOCK EQUIVALENCE: PASS")

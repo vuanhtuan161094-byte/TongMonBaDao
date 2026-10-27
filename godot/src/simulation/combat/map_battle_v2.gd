@@ -213,9 +213,6 @@ func _position_allowed(position: Vector2) -> bool:
 func order_group_move(actor_ids: Array, destination: Vector2) -> Dictionary:
     if not world_mode or not active:
         return {"ok":false,"reason":"open_world_move_unavailable"}
-    var base_cell := _nearest_walkable_cell(Vector2i(floori(destination.x),floori(destination.y)))
-    if base_cell.x < 0:
-        return {"ok":false,"reason":"move_target_is_not_walkable"}
     var ordered: Array[String] = []
     for raw_id in actor_ids:
         var id := str(raw_id)
@@ -224,18 +221,53 @@ func order_group_move(actor_ids: Array, destination: Vector2) -> Dictionary:
     ordered.sort()
     if ordered.is_empty():
         return {"ok":false,"reason":"no_living_selected_disciple"}
+
+    # Share one deterministic flood-fill result per connected walkable region.
+    # This keeps snapped formation points reachable without repeating A* for
+    # every candidate cell in the grid.
+    var reachable_regions: Array[Dictionary] = []
+    var actor_regions: Array[Dictionary] = []
+    if not world_navigation.is_empty():
+        for id in ordered:
+            var actor: Dictionary = actors[id]
+            var start_position: Vector2 = actor["position"]
+            if not _position_allowed(start_position):
+                return {"ok":false,"reason":"move_actor_not_on_walkable_world_cell","actor_id":id}
+            var start_cell := Vector2i(floori(start_position.x),floori(start_position.y))
+            var region: Dictionary = {}
+            for known_region in reachable_regions:
+                if known_region.has(start_cell):
+                    region = known_region
+                    break
+            if region.is_empty():
+                region = _world_reachable_cells(start_position)
+                if region.is_empty():
+                    return {"ok":false,"reason":"move_actor_has_no_reachable_world_cells","actor_id":id}
+                reachable_regions.append(region)
+            actor_regions.append(region)
+
+    var base_origin := Vector2i(floori(destination.x),floori(destination.y))
+    var base_cell := _nearest_walkable_unreserved_cell(base_origin,{},actor_regions)
+    if base_cell.x < 0:
+        return {"ok":false,"reason":"move_target_is_not_reachable"}
     var offsets := [Vector2i(0,0),Vector2i(1,0),Vector2i(0,1),Vector2i(-1,0),Vector2i(0,-1),Vector2i(1,1)]
+    var reserved: Dictionary = {}
+    var destinations: Array[Vector2] = []
+    # Plan every destination before changing actor state. Formation offsets can
+    # snap to the same walkable tile near rocks, streams or world bounds.
+    for index in range(ordered.size()):
+        var desired: Vector2i = base_cell+offsets[index%offsets.size()]
+        var walkable := _nearest_walkable_unreserved_cell(desired,reserved,actor_regions)
+        if walkable.x < 0:
+            return {"ok":false,"reason":"move_formation_has_insufficient_walkable_cells"}
+        reserved[walkable] = true
+        destinations.append(Vector2(walkable)+Vector2(0.5,0.5))
     for index in range(ordered.size()):
         var actor: Dictionary = actors[ordered[index]]
-        var desired: Vector2i = base_cell+offsets[index%offsets.size()]
-        var walkable := _nearest_walkable_cell(desired)
-        if walkable.x < 0:
-            walkable = base_cell
-        actor["move_order_position"] = Vector2(walkable)+Vector2(0.5,0.5)
+        actor["move_order_position"] = destinations[index]
         actor["move_order_active"] = true
         _event("move_order",{"actor_id":ordered[index],"position":actor["move_order_position"]})
     return {"ok":true,"actor_ids":ordered,"destination":Vector2(base_cell)+Vector2(0.5,0.5)}
-
 func set_auto_hunt(enabled: bool) -> Dictionary:
     if not world_mode or not active:
         return {"ok":false,"reason":"open_world_auto_unavailable"}
@@ -243,6 +275,36 @@ func set_auto_hunt(enabled: bool) -> Dictionary:
     _event("auto_hunt_changed",{"enabled":auto_hunt})
     return {"ok":true,"enabled":auto_hunt}
 
+# Deterministic nearest-free formation slot. Uses the same ring priority as
+# _nearest_walkable_cell, but skips reserved cells. Search includes the far
+# edge because an offset may begin just outside the valid grid.
+func _nearest_walkable_unreserved_cell(
+        origin: Vector2i, reserved: Dictionary,
+        reachable_regions: Array[Dictionary] = []) -> Vector2i:
+    if not world_mode or world_navigation.is_empty():
+        var fallback := _nearest_walkable_cell(origin)
+        return fallback if fallback.x >= 0 and not reserved.has(fallback) else Vector2i(-1,-1)
+    var width := int(world_navigation["width"])
+    var height := int(world_navigation["height"])
+    var blocked = world_navigation["blocked"]
+    for radius in range(maxi(width,height)+1):
+        for y in range(origin.y-radius,origin.y+radius+1):
+            for x in range(origin.x-radius,origin.x+radius+1):
+                if absi(x-origin.x) != radius and absi(y-origin.y) != radius:
+                    continue
+                if x < 0 or y < 0 or x >= width or y >= height:
+                    continue
+                var cell := Vector2i(x,y)
+                if reserved.has(cell) or int(blocked[y*width+x]) != 0:
+                    continue
+                var reachable_from_every_actor := true
+                for region in reachable_regions:
+                    if not region.has(cell):
+                        reachable_from_every_actor = false
+                        break
+                if reachable_from_every_actor:
+                    return cell
+    return Vector2i(-1,-1)
 func _nearest_walkable_cell(origin: Vector2i) -> Vector2i:
     if not world_mode or world_navigation.is_empty():
         return origin if world_bounds.has_point(Vector2(origin)+Vector2(0.5,0.5)) else Vector2i(-1,-1)
@@ -301,6 +363,32 @@ func _world_path(start_position: Vector2, goal_position: Vector2) -> Array[Vecto
         cursor = int(previous[cursor])
     return path
 
+func _world_reachable_cells(start_position: Vector2) -> Dictionary:
+    var reachable: Dictionary = {}
+    if not world_mode or world_navigation.is_empty():
+        return reachable
+    if not _position_allowed(start_position):
+        return reachable
+    var width := int(world_navigation["width"])
+    var height := int(world_navigation["height"])
+    var blocked = world_navigation["blocked"]
+    var start := Vector2i(floori(start_position.x),floori(start_position.y))
+    var queue: Array[Vector2i] = [start]
+    var head := 0
+    reachable[start] = true
+    var neighbors := [Vector2i(0,-1),Vector2i(-1,0),Vector2i(1,0),Vector2i(0,1)]
+    while head < queue.size():
+        var cell: Vector2i = queue[head]
+        head += 1
+        for offset in neighbors:
+            var next: Vector2i = cell+offset
+            if next.x < 0 or next.y < 0 or next.x >= width or next.y >= height:
+                continue
+            if int(blocked[next.y*width+next.x]) != 0 or reachable.has(next):
+                continue
+            reachable[next] = true
+            queue.append(next)
+    return reachable
 func _world_route_distance(start_position: Vector2, path: Array[Vector2i]) -> float:
     if path.is_empty():
         return INF
@@ -314,6 +402,24 @@ func _world_route_distance(start_position: Vector2, path: Array[Vector2i]) -> fl
 
 func _move_world_actor(actor: Dictionary, destination: Vector2, speed: float, stop_distance: float = 0.0) -> bool:
     var position: Vector2 = actor["position"]
+    # A* works on grid cells, while orders target cell centres. Finish the
+    # remaining sub-cell movement when an actor and its goal share a valid cell.
+    var current_cell := Vector2i(floori(position.x),floori(position.y))
+    var goal_cell := Vector2i(floori(destination.x),floori(destination.y))
+    if world_mode and current_cell == goal_cell:
+        if not _position_allowed(position) or not _position_allowed(destination):
+            return false
+        if position.distance_to(destination) <= stop_distance+0.08:
+            return false
+        var local_step := minf(maxf(speed,0.0)*STEP_SECONDS,position.distance_to(destination))
+        if local_step <= 0.0001:
+            return false
+        var local_position := position.move_toward(destination,local_step)
+        if not _position_allowed(local_position):
+            return false
+        actor["position"] = local_position
+        _event("move",{"actor_id":str(actor["id"]),"position":local_position,"world_path":true})
+        return true
     var path := _world_path(position,destination)
     if path.is_empty():
         return false
