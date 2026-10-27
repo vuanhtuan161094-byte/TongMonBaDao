@@ -1,0 +1,9 @@
+[1/2] Restoring and verifying the Stage A 42-PNG pack...
+[Stage A pack] Rebuilding from tracked CI transport...
+[Stage A pack] Get-FileHash unavailable; using .NET SHA256 fallback.
+[Stage A pack] transport SHA256=6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca
+[Stage A pack] 42 canonical PNG assets installed.
+[2/2] Install-only mode: PASS
+INSTALL_EXIT=0
+STAGE_A_PNGS=42 TARGET_PRESENT=True HASH_CHANGES=0
+
