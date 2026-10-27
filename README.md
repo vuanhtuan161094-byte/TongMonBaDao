@@ -1,87 +1,27 @@
-# Tông Môn Bá Đạo — Tông Môn Tycoon
+# TÔNG MÔN BÁ ĐẠO — Godot 4.7.2
 
-Godot 4.7.2 / GDScript simulation project for an autonomous cultivation-sect management game.
+Tu tiên quản lý tông môn và PvE liên tục. **Một bản game chính thức: `main`.** Bản PvE hiện đại hiện đang ở ứng viên nghiệm thu, không phải nhiều nhánh game độc lập.
 
-## Core direction
+## Bắt đầu ở đâu?
 
-The player builds and manages a sect instead of directly puppeting every disciple.
+| Loại | Link | Ý nghĩa |
+| --- | --- | --- |
+| Stable chính thức | [`main`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/tree/main) | Bản đã được nhận; chưa nhập ứng viên PvE mới. |
+| **RC duy nhất đang nghiệm thu** | [`integration/pve-unified-rc-20261027`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/tree/integration/pve-unified-rc-20261027) | Kết hợp CodeX 1 core PR #51 (14/14 test PASS tại SHA riêng), CodeX 2 VFX/FPS PR #50 (static PASS, runtime PENDING) và docs PR #49. **Combined SHA chưa có Godot QA**. |
+| Nguồn lịch sử | [Feature PvE](https://github.com/vuanhtuan161094-byte/TongMonBaDao/tree/feature/pve-jx-continuous-world-20261026) / [#51](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/51) / [#50](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/50) | Không tự xem là bản game mới nhất để chơi; giữ lại để audit và rollback. |
 
-Disciples act autonomously from personality, goals, relationships, memories, organization, sect resources, cultivation realm, spiritual roots, techniques, accumulated Kiếm/Thể/Pháp path history, learned combat skills and equipment.
+**Đọc [CURRENT_CHECKPOINT.md](./CURRENT_CHECKPOINT.md) để biết live trạng thái, SHA và PASS/FAIL/PENDING.** [NEXT_CHAT_HANDOFF.md](./NEXT_CHAT_HANDOFF.md) chỉ có một hàng đợi QA. Quyền hạn kỹ thuật tại `AGENTS.md` và `docs/GAME_SYSTEM_ARCHITECTURE.md` giữ nguyên.
 
-Godot/GDScript is the gameplay authority. The simulation is deterministic and seeded; save/load and invariants are part of every phase contract.
+## Chạy ứng viên PvE trên Windows (chưa được gọi là bản phát hành)
 
-## Implemented stack
+- Dùng isolated worktree riêng của RC, xác định exact SHA + Godot **4.7.2**.
+- `Run-PVE-Play.cmd`: mở P3.2 landscape 1280×720 với save QA tổng hợp, vào **Săn quái / Thanh Trúc Lâm**, chọn sáu đệ tử thực.
+- `Run-PVE-FPS-QA.cmd` và `Run-PVE-FPS-QA.cmd /log` tuần tự, log có timestamp. Giữ mỗi lần chỉ một Godot GUI trên máy Windows 8GB. Không dùng MovieWriter thay đo FPS GUI.
+- Cần chuột thật, camera/minimap/PvE/Save/Return; ảnh thật và phase P50/P95/P99/1%low/RAM mới được chấp nhận. Test inject chuột/headless KHÔNG thay nghiệm thu GUI.
+- Log và lỗi cập nhật [Issue #37](https://github.com/vuanhtuan161094-byte/TongMonBaDao/issues/37) đúng SHA.
 
-- P0 — autonomous hunt/combat/loot/economy/recovery foundation.
-- P1.1 — goals + personality.
-- P1.2 — recruitment + player choice.
-- P1.3 — relationships.
-- P1.4 — consequential memory.
-- P1.5 — teams, leadership and roles.
-- P1.6 — sect needs and resource pressure.
-- P2.1 — cultivation, realms and breakthroughs.
-- P2.2 — spiritual-root quality/elements.
-- P2.3 — technique economy, library and mastery.
-- P2.4 — classless Kiếm/Thể/Pháp identity from accumulated path XP.
-- P2.5 — deterministic real-time autonomous combat skills.
-- P2.6 — Luyện Khí / forge / equipment tycoon loop.
+## Không thay đổi các contract đã khóa
 
-## P2.6 loop
+Source A production renderer giữ nguyên; Combat V2 là authority duy nhất. Một scheduler runtime, SaveService, Warehouse, One Active Job và Injury 0/1/120 tick. PvE có 20 camp/192×192; loot mỗi quái **`LOOT_PENDING`**, không tự cấp reward. JX #158 VFX là cosmetic; Unity Source A skill prefab/pivot mapping còn chưa xác minh.
 
-`hunt -> forge materials -> Luyện Khí Đường -> equipment -> sect storage/shop -> autonomous purchase or player allocation -> stronger disciple -> harder hunt`
-
-P2.6 supports:
-
-- deterministic forging and quality;
-- sect equipment storage/shop;
-- build-aware autonomous equipment purchasing;
-- closed internal money transfer from disciple wallet to sect treasury;
-- manual equip by the player;
-- slot lock to override AI;
-- return-to-auto;
-- path/root/skill compatibility that changes real equipment effectiveness;
-- equipment effects on region choice and P2.5 combat;
-- exact SaveService v2 persistence.
-
-See `docs/P2_6_SPEC.md` for the current contract.
-
-## Runtime status
-
-Real Windows/Godot 4.7.2 evidence currently confirms P0 through P1.6 PASS.
-
-The first unresolved cumulative runtime gate is P2.1 save/load persistence. A dedicated first-difference diagnostic is already chained into `Verify-P2-1.ps1`.
-
-P2.2 through P2.6 are implemented but must not be called PASS until the cumulative runtime gate reaches and verifies them.
-
-See `CURRENT_CHECKPOINT.md` for the authoritative status.
-
-## Windows — authoritative verification
-
-After updating local `main`:
-
-```bat
-cd /d "E:\0.2. TongMonBaDao"
-git pull origin main
-Sync-P2-6.cmd
-```
-
-`Sync-P2-6.cmd` fast-forwards a clean local `main` and runs the cumulative P0 -> P2.6 verification chain.
-
-Direct verification without sync:
-
-```bat
-Verify-P2-6.cmd
-```
-
-Older phase PowerShell verifiers remain under `tools/godot` because the cumulative chain depends on them. Only the latest root `.cmd` launchers are kept.
-
-## Development rules
-
-Read in order before changing simulation code:
-
-1. `AGENTS.md`
-2. `CURRENT_CHECKPOINT.md`
-3. `NEXT_CHAT_HANDOFF.md`
-4. the active phase spec under `docs/`
-
-Do not mark a phase PASS from source inspection alone. Runtime evidence must come from the real Godot gate.
+**Không mass merge 40+ Draft PR, không chuyển `main` sang RC trước khi QA và owner duyệt, không xóa nhánh/worktree/asset/save để dọn lịch sử.** Sau nghiệm thu, nhập một lần vào `main`, tạo tag checkpoint và thu hồi các nhánh tạm theo sổ [166-branch review](https://github.com/vuanhtuan161094-byte/TongMonBaDao/blob/audit/tmb-whole-project-readiness-20261027/docs/operations/TMB_GITHUB_BRANCH_CONSOLIDATION_REGISTER_2026-10-27.md).
