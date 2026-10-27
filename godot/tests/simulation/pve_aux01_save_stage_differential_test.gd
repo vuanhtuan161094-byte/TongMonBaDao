@@ -31,7 +31,7 @@ func _cleanup_one(path: String) -> void:
         if FileAccess.file_exists(target):
             DirAccess.remove_absolute(ProjectSettings.globalize_path(target))
 
-func _owner(seed: int, wall: int) -> SimulationRuntimeOwnerV2:
+func _owner(seed: int, wall: int, zero_aptitude: bool = true) -> SimulationRuntimeOwnerV2:
     # Reconstruct the exact AUX-01 DV2-03 seed, candidate and training policy.
     var state := P37Factory.create_state(seed)
     state.sect.disciple_v2_birth_enabled = true
@@ -44,7 +44,10 @@ func _owner(seed: int, wall: int) -> SimulationRuntimeOwnerV2:
     if not bool(accepted.get("ok", false)):
         return null
     var disciple: DiscipleState = state.disciples[candidate.id]
-    disciple.aptitude = 0.0
+    if zero_aptitude:
+        # Historical DV2-03 test directly edits an already-authored D7 stat.
+        # This is a suspected fixture integrity issue, not a production fix.
+        disciple.aptitude = 0.0
     disciple.current_action = &"HOLD"
     disciple.v2_realm_progress["training_policy"] = "manual"
     state.sect.workforce_enabled = false
@@ -54,6 +57,15 @@ func _owner(seed: int, wall: int) -> SimulationRuntimeOwnerV2:
     if not bool(owner.attach(state, wall).get("ok", false)):
         return null
     return owner
+
+func _foundation_error_count(state: SimulationState) -> int:
+    var count := 0
+    var foundation := FoundationSystem.new()
+    for entry in state.disciples.values():
+        var disciple: DiscipleState = entry
+        if disciple.foundation_model_version >= FoundationSystem.MODEL_OPEN_POINTS:
+            count += foundation.validate_disciple(disciple).size()
+    return count
 
 func _probe_wire(state: SimulationState, label: String) -> Dictionary:
     # Mirror serialization into an isolated read-only-for-game QA path. A
@@ -108,13 +120,15 @@ func _probe_wire(state: SimulationState, label: String) -> Dictionary:
         "envelope_ok": envelope_ok, "shape_ok": shape_ok,
         "from_dict_ok": from_dict_ok, "care_check": care_check,
         "exact_read": exact_read,
-        "source_invariant_errors": state.validate_invariants().size()
+        "source_invariant_errors": state.validate_invariants().size(),
+        "foundation_errors": _foundation_error_count(state)
     }
     _cleanup_one(wire_path)
     return result
 
 func _case(label: String, owner: SimulationRuntimeOwnerV2, now_unix: int,
-        preload: SimulationRuntimeOwnerV2 = null, preload_time: int = 0) -> Dictionary:
+        preload: SimulationRuntimeOwnerV2 = null, preload_time: int = 0,
+        zero_aptitude: bool = true) -> Dictionary:
     var path := _path(label)
     _cleanup_one(path)
     var old_save := -1
@@ -129,7 +143,7 @@ func _case(label: String, owner: SimulationRuntimeOwnerV2, now_unix: int,
     # Advance a separate identical fixture for wire diagnosis. The actual
     # owner below MUST do the 120-second catch-up inside save_to_path, as in
     # the original dv2_03_runtime_clock_test (steps_run must be 2).
-    var probe_owner := _owner(77221, 2000)
+    var probe_owner := _owner(77221, 2000, zero_aptitude)
     if probe_owner == null:
         return {"label": label, "probe_owner_missing": true}
     var probe_advance := probe_owner.update_to(now_unix)
@@ -171,7 +185,7 @@ func _case(label: String, owner: SimulationRuntimeOwnerV2, now_unix: int,
 func _invalid_stage() -> Dictionary:
     var path := _path("invalid_payload_guard")
     _cleanup_one(path)
-    var owner := _owner(77221, 2000)
+    var owner := _owner(77221, 2000, false)
     if owner == null:
         return {"fixture": false}
     var service := SaveService.new()
@@ -197,7 +211,7 @@ func _missing_directory_write() -> Dictionary:
     # The nested directory is intentionally never created; this exercises the
     # actual file-open failure, independently of stage read validation.
     var path := QA_ROOT + "/missing_parent/file.json"
-    var owner := _owner(77221, 2000)
+    var owner := _owner(77221, 2000, false)
     if owner == null:
         return {"fixture": false}
     return {"write_error": SaveService.new().save_to_path(owner.state, path),
@@ -286,6 +300,25 @@ func _run() -> void:
         case_rows.append(row)
         if not bool(row.get("owner_ok", false))                 or not bool(row.get("clock_exact", false))                 or not bool(row.get("saved_identity_equal", false)):
             detected_defect = true
+    # A/B control: the production-compatible D7 candidate keeps its authored
+    # aptitude and quality; unlike the historical test fixture, no field is
+    # modified behind the Foundation authority.
+    var control_owner := _owner(77221, 2000, false)
+    if not _expect(control_owner != null, "natural-aptitude control fixture failed"):
+        return
+    var control_row := _case("control_natural_aptitude", control_owner, 2120,
+        null, 0, false)
+    case_rows.append(control_row)
+    var control_cross_owner := _owner(77221, 2000, false)
+    var control_cross_previous := _owner(44421, 1000, false)
+    if not _expect(control_cross_owner != null and control_cross_previous != null,
+        "cross-seed natural-aptitude control fixture failed"):
+        return
+    var control_cross_row := _case("control_cross_seed", control_cross_owner,
+        2120, control_cross_previous, 1060, false)
+    case_rows.append(control_cross_row)
+    if not bool(control_row.get("owner_ok", false))             or not bool(control_cross_row.get("owner_ok", false)):
+        detected_defect = true
     var negative := _invalid_stage()
     var missing_dir := _missing_directory_write()
     var schema := _schema_migration_probe()
