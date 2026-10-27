@@ -317,8 +317,11 @@ func _run() -> void:
     var control_cross_row := _case("control_cross_seed", control_cross_owner,
         2120, control_cross_previous, 1060, false)
     case_rows.append(control_cross_row)
-    if not bool(control_row.get("owner_ok", false))             or not bool(control_cross_row.get("owner_ok", false)):
-        detected_defect = true
+    for control in [control_row, control_cross_row]:
+        if not (bool(control.get("owner_ok", false))
+                and bool(control.get("clock_exact", false))
+                and bool(control.get("saved_identity_equal", false))):
+            detected_defect = true
     var negative := _invalid_stage()
     var missing_dir := _missing_directory_write()
     var schema := _schema_migration_probe()
