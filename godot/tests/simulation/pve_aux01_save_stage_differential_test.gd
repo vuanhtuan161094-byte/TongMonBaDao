@@ -196,6 +196,65 @@ func _missing_directory_write() -> Dictionary:
     return {"write_error": SaveService.new().save_to_path(owner.state, path),
         "primary_created": FileAccess.file_exists(path)}
 
+
+func _schema_migration_probe() -> Dictionary:
+    # Probe the public legacy reader in an isolated file, without altering
+    # any game save. Versions 0-3 are supported; V4 requires a real CARE tag.
+    var owner := _owner(77221, 2000)
+    if owner == null:
+        return {"fixture": false}
+    var service := SaveService.new()
+    var source: Dictionary = owner.state.to_dict()
+    var output: Dictionary = {}
+    for version in [0, 1, 2, 3, 4, 99]:
+        var path := _path("migration_v%02d" % int(version))
+        _cleanup_one(path)
+        var payload := source.duplicate(true)
+        payload["save_version"] = int(version)
+        payload.erase("b3_care_version")
+        var file := FileAccess.open(path, FileAccess.WRITE)
+        if file == null:
+            output[str(version)] = {"open_error": FileAccess.get_open_error()}
+            continue
+        file.store_string(JSON.stringify(service._encode_floats(payload), "", true, true))
+        file.close()
+        output[str(version)] = {
+            "exact_read": service._load_exact(path) != null,
+            "expected": int(version) <= SaveService.CURRENT_VERSION
+        }
+        _cleanup_one(path)
+    return output
+
+func _rename_probe() -> Dictionary:
+    # Test real OS rename of two harmless sentinel files in the same user://
+    # directory. This cannot prove a later SaveService file rename succeeds,
+    # but separates a general directory permission problem from data failure.
+    var primary := _path("rename_sentinel")
+    var backup := primary + ".bak"
+    var staged := primary + ".tmp"
+    _cleanup_one(primary)
+    for entry in [{"path":primary, "text":"original"},
+                  {"path":staged, "text":"staged"}]:
+        var file := FileAccess.open(str(entry["path"]), FileAccess.WRITE)
+        if file == null:
+            return {"open_error": FileAccess.get_open_error()}
+        file.store_string(str(entry["text"]))
+        file.close()
+    var first := DirAccess.rename_absolute(
+        ProjectSettings.globalize_path(primary),
+        ProjectSettings.globalize_path(backup))
+    var second := -1
+    if first == OK:
+        second = DirAccess.rename_absolute(
+            ProjectSettings.globalize_path(staged),
+            ProjectSettings.globalize_path(primary))
+    var correct := first == OK and second == OK \
+        and FileAccess.get_file_as_string(primary) == "staged" \
+        and FileAccess.get_file_as_string(backup) == "original"
+    var result := {"rotate_error":first, "publish_error":second, "contents_ok":correct}
+    _cleanup_one(primary)
+    return result
+
 func _run() -> void:
     DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(QA_ROOT))
     var cases := ["fresh", "same_seed_rotation", "cross_seed_rotation"]
@@ -220,8 +279,11 @@ func _run() -> void:
             detected_defect = true
     var negative := _invalid_stage()
     var missing_dir := _missing_directory_write()
+    var schema := _schema_migration_probe()
+    var rename_result := _rename_probe()
     print("PVE SAVE FORENSICS NEGATIVE: " + JSON.stringify({
-        "invalid_stage": negative, "missing_dir": missing_dir}))
+        "invalid_stage": negative, "missing_dir": missing_dir,
+        "schema_migrations": schema, "rename_probe": rename_result}))
     if not _expect(int(negative.get("baseline_error", -1)) == OK
         and int(negative.get("invalid_save_error", OK)) != OK
         and bool(negative.get("preserved_primary", false))
@@ -232,6 +294,19 @@ func _run() -> void:
         and not bool(missing_dir.get("primary_created", true)),
         "missing-directory file-open negative fixture was not rejected"):
         return
+    if not _expect(bool(rename_result.get("contents_ok", false)),
+        "QA directory could not atomically publish harmless sentinel files"):
+        return
+    for supported in [0, 1, 2, 3]:
+        var status: Dictionary = schema.get(str(supported), {})
+        if not _expect(bool(status.get("exact_read", false)),
+            "supported migration v%d failed isolated state roundtrip" % supported):
+            return
+    for unsupported in [4, 99]:
+        var status: Dictionary = schema.get(str(unsupported), {})
+        if not _expect(not bool(status.get("exact_read", true)),
+            "unqualified/future schema v%d was not rejected" % unsupported):
+            return
     print("PVE SAVE FORENSICS COMPLETE cases=" + str(case_rows.size())
         + " defect=" + str(detected_defect) + " checks=" + str(checked)
         + " engine=" + str(Engine.get_version_info().get("string", "unknown")))
