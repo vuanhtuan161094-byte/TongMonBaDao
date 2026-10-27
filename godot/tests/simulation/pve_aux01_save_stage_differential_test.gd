@@ -216,7 +216,9 @@ func _schema_migration_probe() -> Dictionary:
         if file == null:
             output[str(version)] = {"open_error": FileAccess.get_open_error()}
             continue
-        file.store_string(JSON.stringify(service._encode_floats(payload), "", true, true))
+        # Pre-v2 files used ordinary JSON floats; v2+ uses bit-exact wrappers.
+        var serialized = payload if int(version) < 2 else service._encode_floats(payload)
+        file.store_string(JSON.stringify(serialized, "", true, true))
         file.close()
         output[str(version)] = {
             "exact_read": service._load_exact(path) != null,
