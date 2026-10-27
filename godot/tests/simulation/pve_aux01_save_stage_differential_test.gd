@@ -126,14 +126,20 @@ func _case(label: String, owner: SimulationRuntimeOwnerV2, now_unix: int,
         if old_save != OK:
             return {"label": label, "preload_error": old_save}
     var sha_before := FileAccess.get_sha256(path) if FileAccess.file_exists(path) else ""
-    # Mirror the owner progression on this exact fixture, but read its staged
-    # state from a separate QA wire before a real save/rotation.
-    var advanced := owner.update_to(now_unix)
-    if not bool(advanced.get("ok", false)):
-        return {"label": label, "owner_update": advanced}
-    var probe := _probe_wire(owner.state, label)
+    # Advance a separate identical fixture for wire diagnosis. The actual
+    # owner below MUST do the 120-second catch-up inside save_to_path, as in
+    # the original dv2_03_runtime_clock_test (steps_run must be 2).
+    var probe_owner := _owner(77221, 2000)
+    if probe_owner == null:
+        return {"label": label, "probe_owner_missing": true}
+    var probe_advance := probe_owner.update_to(now_unix)
+    if not bool(probe_advance.get("ok", false)):
+        return {"label": label, "probe_update": probe_advance}
+    var probe := _probe_wire(probe_owner.state, label)
     var result := owner.save_to_path(path, now_unix)
-    var after: SimulationState = SaveService.new().load_from_path(path)
+    var service := SaveService.new()
+    var primary: SimulationState = service._load_exact(path)
+    var recovered: SimulationState = service.load_from_path(path)
     var sha_after := FileAccess.get_sha256(path) if FileAccess.file_exists(path) else ""
     var row := {
         "label": label,
@@ -146,7 +152,8 @@ func _case(label: String, owner: SimulationRuntimeOwnerV2, now_unix: int,
         "owner_steps": int(result.get("steps_run", -1)),
         "primary_exists": FileAccess.file_exists(path),
         "backup_exists": FileAccess.file_exists(path + ".bak"),
-        "primary_loadable": after != null,
+        "primary_exact_loadable": primary != null,
+        "recovery_loadable": recovered != null,
         "primary_unchanged_on_failure": sha_before == sha_after,
         "wire_probe": probe
     }
