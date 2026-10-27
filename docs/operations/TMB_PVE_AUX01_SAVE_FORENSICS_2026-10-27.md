@@ -55,7 +55,7 @@ Launch on an **isolated checkout/worktree** with official Godot 4.7.2. Do not us
 E:\Godot_v4.7.2-stable_win64_console.exe --headless --path godot --script res://tests/simulation/pve_aux01_save_stage_differential_test.gd
 ```
 
-The script exits **0** only if the differential suite confirms all sampled Save/Load identities and negative fail-closed cases. **Exit 2** means the original fixture failure survives and must be investigated. **Exit 1** means another required safety or schema gate failed. Preserve exact SHA, engine version, stdout/stderr and Godot engine log.
+The script exits **0** only if the differential suite confirms all sampled Save/Load identities and negative fail-closed cases. **Exit 2** means the original fixture failure survives and must be investigated. **Exit 1** means another required safety or schema gate failed. **Exit 3** indicates a previously valid primary may have been changed/lost following an unsuccessful save (or the Windows launcher cannot locate its Godot binary). Preserve exact SHA, engine version, stdout/stderr and Godot engine log.
 
 Suggested official regressions to run only after root-cause resolution: `dv2_03_runtime_clock_test.gd`, `dv2_03_live_runtime_integration_test.gd`, `pve_save_return_reload_exactly_once_test.gd` (AUX-01 isolated test), `safe_01_save_recovery_test.gd`, `gp_02c1_injury_settlement_test.gd`, and P3.2 6v10 Save/Return focused suite.
 
