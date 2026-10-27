@@ -10,6 +10,7 @@ const QA_ROOT := "user://qa_pve_save_forensics_20261027"
 var checked := 0
 var case_rows: Array[Dictionary] = []
 var detected_defect := false
+var last_good_primary_at_risk := false
 
 func _init() -> void:
     call_deferred("_run")
@@ -298,6 +299,8 @@ func _run() -> void:
             pre_time = 1060
         var row := _case(name, own, 2120, preload, pre_time)
         case_rows.append(row)
+        if int(row.get("preload_error", -1)) == OK                 and not bool(row.get("owner_ok", false))                 and (not bool(row.get("primary_unchanged_on_failure", false))                 or not bool(row.get("recovery_loadable", false))):
+            last_good_primary_at_risk = true
         if not bool(row.get("owner_ok", false))                 or not bool(row.get("clock_exact", false))                 or not bool(row.get("saved_identity_equal", false)):
             detected_defect = true
     # A/B control: the production-compatible D7 candidate keeps its authored
@@ -353,6 +356,9 @@ func _run() -> void:
             "unqualified/future schema v%d was not rejected" % unsupported):
             return
     print("PVE SAVE FORENSICS COMPLETE cases=" + str(case_rows.size())
-        + " defect=" + str(detected_defect) + " checks=" + str(checked)
+        + " defect=" + str(detected_defect)
+        + " primary_at_risk=" + str(last_good_primary_at_risk)
+        + " checks=" + str(checked)
         + " engine=" + str(Engine.get_version_info().get("string", "unknown")))
-    quit(2 if detected_defect else 0)
+    # Never hide data-loss risk behind the ordinary reproducible fixture failure.
+    quit(3 if last_good_primary_at_risk else (2 if detected_defect else 0))
