@@ -1,0 +1,5 @@
+Processes matched by name scan: Godot, Source, Spine, MovieWriter/Movie, Python, FFmpeg: none observed.
+Codex/ChatGPT/Windows shell processes are active; none were closed.
+Resource snapshot: RAM total 7895 MiB; available initially 2052 MiB. 60-second samples at 10-second intervals: CPU 18.1, 15.8, 24.0, 18.4, 55.6, 76.9 percent; available RAM 1645, 2172, 2139, 2112, 1888, 1802 MiB; memory load 79, 72, 72, 73, 76, 77 percent.
+Drive free: C 9.90 GiB; E 30.31 GiB.
+Preflight threshold for Godot: no competing worker, available RAM >=2200 MiB, CPU <70% sustained 60 seconds, E free >=10 GiB. RAM and CPU thresholds failed; no Godot or benchmark started.
