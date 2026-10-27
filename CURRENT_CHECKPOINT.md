@@ -9,7 +9,8 @@
 | **Official stable game (protected)** | `main` @ `29b5fba448b0178cb520a4ada44b375b4b934e31` | GitHub default. **Only merged/accepted baseline**; NOT the newest PvE. Contains official Economy-A and six repo skills (#1 and #23). Never change branch default or update without accepted gated integration. |
 | **ONE current next-game candidate** | `feature/pve-jx-continuous-world-20261026` @ `6b3fd181392c96c2386e5aa85950d2e993d67dda` | Latest audited running PvE code, 137 commits ahead of main / 0 behind at audit. **PLAYABLE_BLOCKED pending GUI and SaveService QA**, not certified as release or as all historical functionality. |
 | Temporary core repair worktree | `recovery/pve-core-a1-20261027` (Codex 1 assignment) | Future/in-progress only; never assume remote branch/commit exists until verified. Owns SaveService, C17 movement, 6-actor formation, 20-zone and Injury120 tests. |
-| Temporary visual/GUI worktree | `recovery/pve-playable-visual-a1-20261027` (Codex 2 assignment) | Future/in-progress only; verify remote. Owns Source A/JX #158 VFX, P3.2 presentation/GUI, FPS tools. |
+| Temporary visual/GUI worktree | [Draft PR #50](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/50), `recovery/pve-playable-visual-a1-20261027` @ `59c6dea9041653026e02a55b0bc1f4e298976835` | **CODE/STATIC QA DONE, RUNTIME/GUI PENDING.** Four files only: JX/Source A evidence, real SaveService VFX focused test, timestamped FPS launcher fix. No presentation production edits or new Godot tests run. |
+
 | Docs handoff packet | Draft [#49](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/49), `docs/tmb-two-codex-recovery-20261027` | Documentation and governance only. Not gameplay code or a new version. |
 
 **No separate `develop`, second integration mainline, automatic newest-by-branch-name rule, or automatic 39/40-PR merge.** When the combined PvE candidate passes official Godot 4.7.2 and owner approves, merge it **once into `main`**, tag a reproducible checkpoint, retire the temporary feature/recovery branches after checking local Windows worktrees; `main` then becomes the sole official gameplay target again.
@@ -30,8 +31,11 @@
 | Runtime-owner SaveService | **FAIL in AUX-01 Godot 4.7.2**: owner reached tick 2 / wall 2120, but save returned `FAILED=1`. Cause not yet proven. | AUX-01 #41 / Draft #45; proposed staged/D7 A/B diagnostic Draft #48; **Codex 1** to verify/fix |
 | C17 move-final / six-person destination uniqueness | **Two AUX-02 findings**: same-cell gap 0.494 > 0.45; 6 low-level destinations collapsed to 3. P3.2 independent slot handler did pass 6/6; actual physical mouse still pending. | AUX-02 #42; draft fixes #46, #47 **Godot QA pending**; **Codex 1** |
 | 20-camp zone-hop / Injury120 full-run | **PENDING / fixture mismatch**, AUX-02 forced-movement full fixture ended defeat C01 with 0 kills and `injury_valid=true`. Standalone GP-02C1 Injury120 PASS on old QA SHA, not current integration. | **Codex 1** |
-| JX #158 / Source A VFX | **ASSET PROVENANCE PARTIALLY VERIFIED**: sheets 10+17+8=35 valid source rects/anchors. Unity prefab/skill/pivot binding remains unverified; AUX-03 Godot event/reload test not run. | #43 / Draft #44; **Codex 2** |
-| GUI, FPS, controls | **PLAYABLE_BLOCKED**: Codex GUI screenshot API timed out; 15s Sect + 30–60s PvE + Save/Return with real mouse, FPS P50/P95/P99 and 1%-low, logger OFF/ON not yet evidenced. | #37; **Codex 2** |
+| JX #158 / Source A VFX | **STATIC PASS at PR #50 SHA `59c6dea`**: JX 10+17+8=35 frames, E: eight Source A hash/byte matches. Unity prefab/skill/pivot binding UNVERIFIED. Canonical SaveService event/reload VFX test **CODE DONE but Godot NOT RUN**. | #43 / previous Draft #44; [Codex 2 Draft #50](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/50) |
+| GUI, FPS, controls | **PLAYABLE_BLOCKED / PENDING_ENGINE_SLOT**: PR #50 fixed FPS launcher filename and verified source only; no official Godot on PR #50 SHA, physical mouse, video/screenshots, real GUI Save/Return, FPS P50/P95/P99 or 1%-low OFF/ON measurement. | #37; [Codex 2 Draft #50](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/50) |
+
+
+**Shared Windows Godot slot, as last verified on Issue #37:** Codex 1 posted `CODEX1_GODOT_QA_START` on branch `recovery/pve-core-a1-20261027` at base `6b3fd18`, but no `CODEX1_GODOT_QA_RELEASE` had been posted. A remote core-recovery branch was not available when checked. Therefore PR #50 is **a checkpoint**, not a finished UI/FPS acceptance. Continue testing on PR #50 only after engine-slot release and OS process safety; do not create a new competing game version.
 
 ### Dedicated evidence/coordination
 
