@@ -41,15 +41,80 @@ func _run() -> void:
     var chosen: DiscipleState = state.disciples[chosen_id]
     var before_action := chosen.current_action
     var before_region := chosen.region_id
+    var key := str(chosen_id)
+    var actor_virtual_positions: Dictionary = ui.get("actor_virtual_positions")
+    var actor_nodes_before: Dictionary = ui.get("actor_nodes")
+    if not actor_virtual_positions.has(key):
+        _fail("Chosen canonical disciple has no live virtual map position.")
+        return
+
     chosen.sex_id = &"female"
 
-    ui.call("_install_modular_live_actors")
+    var selected_before := StringName(ui.get("selected_id"))
+    var map_layer := ui.get("map_layer") as Control
+    var screen_before := Vector2.ZERO
+    if map_layer != null:
+        screen_before = map_layer.get_global_transform() * Vector2(actor_virtual_positions[key])
+    print("P3.2 selected-only diagnostic before focus chosen=%s selected=%s virtual=%s actor_nodes=%d screen=%s view=%s" % [str(chosen_id), str(selected_before), str(actor_virtual_positions[key]), actor_nodes_before.size(), str(screen_before), str(SectMapCamera.VIEW_RECT)])
+
+    # Use the same selection/focus path as the map UI. The production renderer
+    # intentionally materializes only the selected disciple inside the viewport.
+    ui.call("_open_disciple", chosen_id)
+    if StringName(ui.get("selected_id")) != chosen_id:
+        _fail("Live map selection path did not select the chosen canonical disciple.")
+        return
+
+    var focus_tween := ui.get("camera_tween") as Tween
+    if focus_tween != null and focus_tween.is_valid() and focus_tween.is_running():
+        await focus_tween.finished
+    await process_frame
+    ui.call("_refresh_world_actor_visibility")
     await process_frame
 
+    if not state.disciples.has(chosen_id):
+        _fail("Selected disciple disappeared from canonical simulation state.")
+        return
+    actor_virtual_positions = ui.get("actor_virtual_positions")
     var actor_nodes: Dictionary = ui.get("actor_nodes")
-    var key := str(chosen_id)
+    var map_layer_after := ui.get("map_layer") as Control
+    if not actor_virtual_positions.has(key):
+        _fail("Selected disciple lost its virtual position after camera focus.")
+        return
     if not actor_nodes.has(key):
-        _fail("Chosen disciple disappeared from live actor registry.")
+        var selected_after := StringName(ui.get("selected_id"))
+        var virtual_position := Vector2(actor_virtual_positions.get(key, Vector2.ZERO))
+        var screen_after := Vector2.ZERO
+        var camera_position := Vector2.ZERO
+        if map_layer_after != null:
+            screen_after = map_layer_after.get_global_transform() * virtual_position
+            camera_position = map_layer_after.position
+        print("P3.2 selected-only diagnostic after focus chosen=%s selected=%s virtual=%s actor_nodes=%d screen=%s camera_position=%s zoom=%s" % [str(chosen_id), str(selected_after), str(virtual_position), actor_nodes.size(), str(screen_after), str(camera_position), str(ui.get("map_zoom"))])
+        _fail("Selected disciple was not materialized through the live selection/focus path.")
+        return
+    if actor_nodes.size() != 1:
+        _fail("Selected-only actor visibility allocated %d scene actors; expected exactly one selected in-view actor." % actor_nodes.size())
+        return
+    if actor_virtual_positions.size() != state.disciples.size():
+        _fail("Non-materialized canonical disciples were not retained in the virtual actor registry.")
+        return
+    for raw_id in state.disciples.keys():
+        if str(raw_id) != key and actor_nodes.has(str(raw_id)):
+            _fail("An unselected disciple was materialized outside the selected-only viewport path.")
+            return
+
+    if map_layer_after == null:
+        _fail("P3.2 map camera layer was missing after the real selection/focus path.")
+        return
+    var map_transform := map_layer_after.get_global_transform()
+    var projected_top_left := map_transform * Vector2(actor_virtual_positions[key])
+    var actor_size: Vector2 = DiscipleActorVisualCatalog.ACTOR_BOX_SIZE
+    var projected_size := Vector2(
+        absf(map_transform.x.x) * actor_size.x + absf(map_transform.y.x) * actor_size.y,
+        absf(map_transform.x.y) * actor_size.x + absf(map_transform.y.y) * actor_size.y
+    )
+    var projected_actor_rect := Rect2(projected_top_left, projected_size)
+    if not SectMapCamera.VIEW_RECT.encloses(projected_actor_rect):
+        _fail("Selected actor was not fully inside the camera viewport after the real focus path: %s." % str(projected_actor_rect))
         return
 
     var modular := actor_nodes[key] as ModularDiscipleActor

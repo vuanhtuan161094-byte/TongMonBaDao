@@ -12,6 +12,12 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -Command ^
   "$expected='%EXPECTED_SHA256%';" ^
   "$repo='%~dp0';" ^
   "$temp='%TEMP_ZIP%';" ^
+  "function Get-StageASha256([string]$path) {" ^
+  "  $getFileHash=Get-Command Get-FileHash -ErrorAction SilentlyContinue;" ^
+  "  if($getFileHash){try{$value=(Get-FileHash -Algorithm SHA256 -LiteralPath $path -ErrorAction Stop).Hash;if($value){return $value.ToLowerInvariant()}}catch{Write-Host '[Stage A pack] Get-FileHash failed; using .NET SHA256 fallback.'}}else{Write-Host '[Stage A pack] Get-FileHash unavailable; using .NET SHA256 fallback.'};" ^
+  "  $stream=[IO.File]::OpenRead($path);$algorithm=[System.Security.Cryptography.SHA256]::Create();" ^
+  "  try{return ([BitConverter]::ToString($algorithm.ComputeHash($stream))).Replace('-','').ToLowerInvariant()}finally{$algorithm.Dispose();$stream.Dispose()}" ^
+  "};" ^
   "$transport=Join-Path $repo '.github\assets\p3\female_stage_a';" ^
   "$parts=@('part01.b64','part02.b64','part03.b64','part04.b64','part05.b64','part06.b64','part07.b64','part08.b64','part09.b64','part10.b64','part11.b64','part12.b64','part13.b64','part14.b64','part15a.b64','part15b.b64','part16.b64','part17.b64','part18.b64','part19.b64','part20.b64');" ^
   "$transportReady=$true; foreach($name in $parts){if(-not (Test-Path -LiteralPath (Join-Path $transport $name) -PathType Leaf)){$transportReady=$false;break}};" ^
@@ -20,7 +26,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -Command ^
   "  Write-Host '[Stage A pack] Rebuilding from tracked CI transport...';" ^
   "  $raw=($parts | ForEach-Object {(Get-Content -Raw -LiteralPath (Join-Path $transport $_)).Trim()}) -join '';" ^
   "  [IO.File]::WriteAllBytes($temp,[Convert]::FromBase64String($raw));" ^
-  "  $h=(Get-FileHash -Algorithm SHA256 -LiteralPath $temp).Hash.ToLowerInvariant();" ^
+  "  $h=Get-StageASha256 $temp;" ^
   "  Write-Host ('[Stage A pack] transport SHA256='+$h);" ^
   "  if($h -ne $expected){throw ('Tracked Stage A transport checksum mismatch. Expected '+$expected+', got '+$h)};" ^
   "  $selected=$temp;" ^
@@ -31,7 +37,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -Command ^
   "  $exact=@((Join-Path $repo '%PACK_NAME%'),(Join-Path $env:USERPROFILE 'Downloads\%PACK_NAME%'),(Join-Path $env:USERPROFILE 'Desktop\%PACK_NAME%'));" ^
   "  foreach($p in $exact){if(Test-Path -LiteralPath $p -PathType Leaf){$r=(Resolve-Path -LiteralPath $p).Path;if(-not $candidates.Contains($r)){$candidates.Add($r)}}};" ^
   "  foreach($root in @((Join-Path $env:USERPROFILE 'Downloads'),(Join-Path $env:USERPROFILE 'Desktop'))){if(Test-Path -LiteralPath $root){$found=@(Get-ChildItem -LiteralPath $root -Filter 'female_normal_v1_stageA_runtime_pack_v2_quant*.zip' -File -ErrorAction SilentlyContinue);foreach($f in $found){if(-not $candidates.Contains($f.FullName)){$candidates.Add($f.FullName)}}}};" ^
-  "  foreach($p in $candidates){try{$h=(Get-FileHash -Algorithm SHA256 -LiteralPath $p).Hash.ToLowerInvariant();Write-Host ('[Stage A pack] '+$p+' SHA256='+$h);if($h -eq $expected){$selected=$p;break}}catch{}};" ^
+  "  foreach($p in $candidates){try{$h=Get-StageASha256 $p;Write-Host ('[Stage A pack] '+$p+' SHA256='+$h);if($h -eq $expected){$selected=$p;break}}catch{}};" ^
   "  if(-not $selected){throw ('Validated Stage A pack not found. Expected SHA256: '+$expected)};" ^
   "};" ^
   "Expand-Archive -LiteralPath $selected -DestinationPath $repo -Force;" ^
