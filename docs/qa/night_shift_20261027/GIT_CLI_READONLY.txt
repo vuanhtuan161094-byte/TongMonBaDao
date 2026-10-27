@@ -1,0 +1,6 @@
+Timestamp: 2026-10-27 19:22 Asia/Saigon
+Remote: https://github.com/vuanhtuan161094-byte/TongMonBaDao.git
+Read-only command: git ls-remote origin refs/heads/integration/pve-unified-rc-20261027
+GCM: 2.9.0+194ba290ce533465310d50f811684ab180536ae7
+Result after network access was enabled: SEC_E_NO_CREDENTIALS (0x8009030e), exit 128.
+No token/password was printed, requested or persisted. GitHub connector independently read remote PR #52 head 0bc96348e6ef1a2eb945e9713e3faeb8912fb07d and its tree 485d79b3060f22a8b552b52c3e0352f34ccaefb1.
