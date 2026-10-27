@@ -80,15 +80,24 @@ func _run() -> void:
     if not actor_virtual_positions.has(key):
         _fail("Selected disciple lost its virtual position after camera focus.")
         return
+    if map_layer_after == null:
+        _fail("P3.2 map camera layer was missing after the real selection/focus path.")
+        return
+    var selected_after := StringName(ui.get("selected_id"))
+    var virtual_position := Vector2(actor_virtual_positions[key])
+    var map_transform := map_layer_after.get_global_transform()
+    var projected_top_left := map_transform * virtual_position
+    var actor_size: Vector2 = DiscipleActorVisualCatalog.ACTOR_BOX_SIZE
+    var projected_size := Vector2(
+        absf(map_transform.x.x) * actor_size.x + absf(map_transform.y.x) * actor_size.y,
+        absf(map_transform.x.y) * actor_size.x + absf(map_transform.y.y) * actor_size.y
+    )
+    var projected_actor_rect := Rect2(projected_top_left, projected_size)
+    var focus_tween_valid := focus_tween != null and focus_tween.is_valid()
+    var focus_tween_running := focus_tween_valid and focus_tween.is_running()
+    print("P3.2 selected-only diagnostic after focus chosen=%s selected=%s virtual=%s actor_nodes=%d projected_rect=%s view=%s camera_position=%s zoom=%s tween_valid=%s tween_running=%s" % [str(chosen_id), str(selected_after), str(virtual_position), actor_nodes.size(), str(projected_actor_rect), str(SectMapCamera.VIEW_RECT), str(map_layer_after.position), str(ui.get("map_zoom")), str(focus_tween_valid), str(focus_tween_running)])
+
     if not actor_nodes.has(key):
-        var selected_after := StringName(ui.get("selected_id"))
-        var virtual_position := Vector2(actor_virtual_positions.get(key, Vector2.ZERO))
-        var screen_after := Vector2.ZERO
-        var camera_position := Vector2.ZERO
-        if map_layer_after != null:
-            screen_after = map_layer_after.get_global_transform() * virtual_position
-            camera_position = map_layer_after.position
-        print("P3.2 selected-only diagnostic after focus chosen=%s selected=%s virtual=%s actor_nodes=%d screen=%s camera_position=%s zoom=%s" % [str(chosen_id), str(selected_after), str(virtual_position), actor_nodes.size(), str(screen_after), str(camera_position), str(ui.get("map_zoom"))])
         _fail("Selected disciple was not materialized through the live selection/focus path.")
         return
     if actor_nodes.size() != 1:
@@ -102,17 +111,6 @@ func _run() -> void:
             _fail("An unselected disciple was materialized outside the selected-only viewport path.")
             return
 
-    if map_layer_after == null:
-        _fail("P3.2 map camera layer was missing after the real selection/focus path.")
-        return
-    var map_transform := map_layer_after.get_global_transform()
-    var projected_top_left := map_transform * Vector2(actor_virtual_positions[key])
-    var actor_size: Vector2 = DiscipleActorVisualCatalog.ACTOR_BOX_SIZE
-    var projected_size := Vector2(
-        absf(map_transform.x.x) * actor_size.x + absf(map_transform.y.x) * actor_size.y,
-        absf(map_transform.x.y) * actor_size.x + absf(map_transform.y.y) * actor_size.y
-    )
-    var projected_actor_rect := Rect2(projected_top_left, projected_size)
     if not SectMapCamera.VIEW_RECT.encloses(projected_actor_rect):
         _fail("Selected actor was not fully inside the camera viewport after the real focus path: %s." % str(projected_actor_rect))
         return
