@@ -1,0 +1,3 @@
+Read-only Windows System event summary, query window: last 7 days, most recent 200 events with Level 1/2.
+Observed 9 events from Microsoft-Windows-Kernel-Power, Event ID 41.
+Event messages, user/session identifiers and unrelated system events were not copied.
