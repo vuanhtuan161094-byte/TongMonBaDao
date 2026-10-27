@@ -154,6 +154,13 @@ func _case(label: String, owner: SimulationRuntimeOwnerV2, now_unix: int,
         "backup_exists": FileAccess.file_exists(path + ".bak"),
         "primary_exact_loadable": primary != null,
         "recovery_loadable": recovered != null,
+        "saved_identity_equal": primary != null and primary.seed == owner.state.seed
+            and primary.tick == owner.state.tick
+            and primary.runtime_last_wall_unix == now_unix,
+        "clock_exact": owner.state.tick == 2
+            and owner.state.runtime_last_wall_unix == now_unix
+            and absf(owner.state.runtime_unconsumed_wall_seconds) < 0.000001
+            and int(result.get("steps_run", -1)) == 2,
         "primary_unchanged_on_failure": sha_before == sha_after,
         "wire_probe": probe
     }
@@ -277,7 +284,7 @@ func _run() -> void:
             pre_time = 1060
         var row := _case(name, own, 2120, preload, pre_time)
         case_rows.append(row)
-        if not bool(row.get("owner_ok", false)):
+        if not bool(row.get("owner_ok", false))                 or not bool(row.get("clock_exact", false))                 or not bool(row.get("saved_identity_equal", false)):
             detected_defect = true
     var negative := _invalid_stage()
     var missing_dir := _missing_directory_write()
