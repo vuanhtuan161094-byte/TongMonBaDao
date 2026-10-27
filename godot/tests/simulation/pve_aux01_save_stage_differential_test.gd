@@ -299,9 +299,14 @@ func _run() -> void:
             pre_time = 1060
         var row := _case(name, own, 2120, preload, pre_time)
         case_rows.append(row)
-        if int(row.get("preload_error", -1)) == OK                 and not bool(row.get("owner_ok", false))                 and (not bool(row.get("primary_unchanged_on_failure", false))                 or not bool(row.get("recovery_loadable", false))):
+        if (int(row.get("preload_error", -1)) == OK
+                and not bool(row.get("owner_ok", false))
+                and (not bool(row.get("primary_unchanged_on_failure", false))
+                or not bool(row.get("recovery_loadable", false)))):
             last_good_primary_at_risk = true
-        if not bool(row.get("owner_ok", false))                 or not bool(row.get("clock_exact", false))                 or not bool(row.get("saved_identity_equal", false)):
+        if (not bool(row.get("owner_ok", false))
+                or not bool(row.get("clock_exact", false))
+                or not bool(row.get("saved_identity_equal", false))):
             detected_defect = true
     # A/B control: the production-compatible D7 candidate keeps its authored
     # aptitude and quality; unlike the historical test fixture, no field is
