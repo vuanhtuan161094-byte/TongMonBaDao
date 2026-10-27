@@ -19,4 +19,5 @@ echo PVE_SAVE_FORENSICS_FINISH SHA=%EXACT_SHA% EXIT=%QA_EXIT%
 if "%QA_EXIT%"=="0" echo QA test PASS. This is NOT live player GUI acceptance.
 if "%QA_EXIT%"=="2" echo Confirmed or still unresolved SaveService/clock fixture FAIL: examine case rows and A/B controls.
 if "%QA_EXIT%"=="1" echo Safety/schema/fixture QA gate FAIL. Do not merge.
+if "%QA_EXIT%"=="3" echo CRITICAL: a pre-existing last-good primary may be at risk OR launcher Godot binary is missing. Diagnose before retry.
 exit /b %QA_EXIT%
