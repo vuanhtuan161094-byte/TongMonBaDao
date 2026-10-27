@@ -2,6 +2,10 @@
 
 Tu tiên quản lý tông môn và PvE liên tục. **Một bản game chính thức: `main`.** Bản PvE hiện đại hiện đang ở ứng viên nghiệm thu, không phải nhiều nhánh game độc lập.
 
+## Cách mở game bằng một cú nhấp
+
+Chỉ dùng **MO_GAME.cmd** trong E:\TongMonBaDaoWorkspace\01_Game\TongMonBaDao hoặc shortcut Desktop trỏ đến file này. Không chọn đại các Sync/Verify/Preview cũ. Launcher chỉ chạy checkout chứa PvE RC đúng baseline, dùng Godot 4.7.2 trên ổ E, kiểm tra Stage A và gọi Run-PVE-Play.cmd. Nếu checkout ở E chưa chuẩn, hãy để Codex đồng bộ trước. **Chưa xác minh dọn máy local.** Xem [quy tắc workspace và kế hoạch chuyển 44 script](docs/operations/TMB_ONE_WORKSPACE_WINDOWS_20261027.md).
+
 ## Bắt đầu ở đâu?
 
 | Loại | Link | Ý nghĩa |

@@ -1,6 +1,6 @@
 @echo off
 setlocal
-set "TMB_GODOT=E:\Godot_v4.7.2-stable_win64.exe"
+if not defined TMB_GODOT set "TMB_GODOT=E:\Godot_v4.7.2-stable_win64.exe"
 set "TMB_PROJECT=%~dp0godot"
 set "APPDATA=%~dp0godot\outputs\pve_jx_world_20261026\userdata\R"
 set "LOCALAPPDATA=%~dp0godot\outputs\pve_jx_world_20261026\userdata\L"

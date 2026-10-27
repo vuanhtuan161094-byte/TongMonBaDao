@@ -26,6 +26,10 @@ Design specs must not be treated as progress logs.
 
 ---
 
+## Owner Windows workspace directive — 2026-10-27
+
+Canonical playable checkout MUST be E:\TongMonBaDaoWorkspace\01_Game\TongMonBaDao. Create new repo/worktrees/QA outputs on E under TongMonBaDaoWorkspace, never default C:\Users\Admin\Documents\Codex as a canonical game checkout. Windows Codex session metadata under C may be app-managed: do not delete while active. Before moving C/E paths inspect junction targets, git worktree list, active sessions, dirty/untracked, save and SHA provenance. Single owner launcher MO_GAME.cmd. See docs/operations/TMB_ONE_WORKSPACE_WINDOWS_20261027.md. This is NOT permission to silently merge main or mass delete PRs/branches/files.
+
 ## 2. Engine / branch / workflow
 
 Repository:
