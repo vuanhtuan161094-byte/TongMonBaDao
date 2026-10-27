@@ -1,0 +1,10 @@
+test_id,scope,status,exit_code,source_provenance,notes
+P0_resource_gate,read-only Windows snapshot,FAIL_GATE,0,2026-10-27 snapshot,CPU peaked 76.9%; RAM available 1802 MiB at final sample; nine Kernel-Power 41 events observed
+P1_checkout,canonical E promotion,BLOCKED,,remote RC 0bc96348; local main 5e6fdd9,Git CLI SEC_E_NO_CREDENTIALS; no switch/copy
+P2_shortcut,Desktop shortcut,PENDING,,canonical E still main,not created
+P3_cmd_static,staging CMD/static paths,PARTIAL_PASS,,tree 485d79 equals remote RC tree,root count and required files checked; no CMD executed
+P3_godot,Godot import/focused regression,NOT_RUN,,remote exact SHA 0bc96348,resource gate blocked; no exit code
+P3_gui,normal GUI/mouse/save-return,NOT_RUN,,remote exact SHA 0bc96348,resource gate blocked
+P4_performance,static P3.2 call-path audit,STATIC_DONE,,tree 485d79 equals remote RC tree,profiler/FPS cause unproven
+P4_fps_off_on,FPS logger OFF/ON,NOT_RUN,,remote exact SHA 0bc96348,resource gate blocked
+P5_github,report publication,PENDING,,existing audit branch / Issue 37 / PR 52,connector publication attempted after local report
