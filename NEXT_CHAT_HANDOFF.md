@@ -15,11 +15,11 @@
 - Codex 2 `recovery/pve-playable-visual-a1-20261027`, commit `59c6dea9041653026e02a55b0bc1f4e298976835`, [PR #50](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/50): Source A và JX provenance static PASS; focused test VFX SaveService→resume cập nhật nhưng chưa chạy; FPS launcher log timestamp sửa nguồn; không chụp GUI/FPS.
 - PR #49 rút gọn checkpoint/handoff và chuẩn hóa một phiên bản, giờ áp dụng chọn lọc vào RC; bản cũ vẫn tra cứu bằng SHA.
 
-## Cần làm để gọi PLAYABLE PASS
+## Còn lại trước khi đề xuất đưa RC vào main
 
-1. Test toàn bộ patch kết hợp trên **SHA RC** bằng Godot 4.7.2, nhất là VFX + SaveService/Reload và 14 test core (hoặc tập tương đương có log).
-2. Nghiệm thu GUI chuột thật 1280×720, chọn đội 6, điều khiển, hình ảnh, Save/Return; profiler OFF/ON phase percentile/RAM và ảnh thật. Nếu không có API thao tác chuột/screenshot, báo chính xác `PENDING_GUI`.
-3. Với từng kết quả ghi exact SHA, câu lệnh, exit code, log hoặc bằng chứng vào Issue #37. Không tắt/kill tiến trình Godot của người khác, máy 8GB chỉ chạy một engine.
-4. Sau QA, review nhánh RC hợp nhất và **xin owner duyệt trước merge main**. Sau đó dọn PR/branch cũ theo SHA/worktree + preservation index. Không làm lại renderer Source A, không chạm Combat V2 damage, SaveService, Injury120, economy/loot.
-
+1. Full regression headless 22/22 PASS trên RC; exact SHA, matrix và logs được liên kết từ Issue #37 và evidence branch audit.
+2. PENDING USER/GUI: chuột thật 1280x720, chọn 6 đệ tử, di chuyển/combat/camera/minimap, Save/Return/Load; chụp ảnh/video thật. Computer-use hiện không liệt kê cửa sổ Godot dù Win32 có cửa sổ.
+3. PENDING FPS: hai lượt logger OFF/ON tuần tự cho sản xuất 15 giây, PvE 30-60 giây, Save/Return; báo P50/P95/P99, 1%-low, spikes và RAM.
+4. P3.2 integration headless ở roster 130 mất 252,956 giây cho 50 polls; cần đọc profiler và GUI performance trước khi chấp nhận. Injury120 riêng PASS, nhưng encounter ngắn chưa chạm Injury120. Loot remains LOOT_PENDING.
+5. Mainline merge và C4 cleanup chờ owner duyệt rõ ràng. Không thay renderer Source A, Combat V2 damage, SaveService, Injury120, economy/loot hoặc nhánh PR khác.
 **Không tạo nhánh permanent develop hoặc thêm nhiều phiên bản game.** Các PR #44–#51 là provenance/đầu nguồn, RC là ứng viên tích hợp DUY NHẤT, main là stable chính thức.

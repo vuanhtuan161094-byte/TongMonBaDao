@@ -7,7 +7,7 @@ Tu tiên quản lý tông môn và PvE liên tục. **Một bản game chính th
 | Loại | Link | Ý nghĩa |
 | --- | --- | --- |
 | Stable chính thức | [`main`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/tree/main) | Bản đã được nhận; chưa nhập ứng viên PvE mới. |
-| **RC duy nhất đang nghiệm thu** | [`integration/pve-unified-rc-20261027`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/tree/integration/pve-unified-rc-20261027) | Kết hợp CodeX 1 core PR #51 (14/14 test PASS tại SHA riêng), CodeX 2 VFX/FPS PR #50 (static PASS, runtime PENDING) và docs PR #49. **Combined SHA chưa có Godot QA**. |
+| **RC duy nhất đang nghiệm thu** | [`integration/pve-unified-rc-20261027`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/tree/integration/pve-unified-rc-20261027) | Kết hợp CodeX 1 core PR #51 (14/14 test PASS tại SHA riêng), CodeX 2 VFX/FPS PR #50 (static PASS, runtime PENDING) và docs PR #49. **Godot 4.7.2 headless full regression 22/22 PASS**; exact SHA, commands và exit codes nằm trong evidence của Issue #37. GUI chuột, Save/Return và FPS OFF/ON vẫn PENDING. |
 | Nguồn lịch sử | [Feature PvE](https://github.com/vuanhtuan161094-byte/TongMonBaDao/tree/feature/pve-jx-continuous-world-20261026) / [#51](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/51) / [#50](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/50) | Không tự xem là bản game mới nhất để chơi; giữ lại để audit và rollback. |
 
 **Đọc [CURRENT_CHECKPOINT.md](./CURRENT_CHECKPOINT.md) để biết live trạng thái, SHA và PASS/FAIL/PENDING.** [NEXT_CHAT_HANDOFF.md](./NEXT_CHAT_HANDOFF.md) chỉ có một hàng đợi QA. Quyền hạn kỹ thuật tại `AGENTS.md` và `docs/GAME_SYSTEM_ARCHITECTURE.md` giữ nguyên.
@@ -19,6 +19,12 @@ Tu tiên quản lý tông môn và PvE liên tục. **Một bản game chính th
 - `Run-PVE-FPS-QA.cmd` và `Run-PVE-FPS-QA.cmd /log` tuần tự, log có timestamp. Giữ mỗi lần chỉ một Godot GUI trên máy Windows 8GB. Không dùng MovieWriter thay đo FPS GUI.
 - Cần chuột thật, camera/minimap/PvE/Save/Return; ảnh thật và phase P50/P95/P99/1%low/RAM mới được chấp nhận. Test inject chuột/headless KHÔNG thay nghiệm thu GUI.
 - Log và lỗi cập nhật [Issue #37](https://github.com/vuanhtuan161094-byte/TongMonBaDao/issues/37) đúng SHA.
+
+## Trạng thái QA mới nhất
+
+- Bài P3.2 integration headless với roster 130 mất 252,956 giây cho 50 bước shared clock; đây là tải mô phỏng cần điều tra, không phải FPS GUI.
+- Launcher đã nạp scene P3.2, 130 đệ tử, 103 công trình và tạo save QA cô lập. Sky không liệt kê cửa sổ Godot nên chưa xác nhận hình ảnh hoặc thao tác chuột.
+- Không tuyên bố GUI PASS, FPS PASS hay PLAYABLE PASS khi các bước đó còn pending.
 
 ## Không thay đổi các contract đã khóa
 
