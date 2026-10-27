@@ -1,0 +1,778 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+[   0% ] first_scan_filesystem | Started Project initialization (5 steps)
+[   0% ] first_scan_filesystem | Scanning file structure...
+[  16% ] first_scan_filesystem | Loading global class names...
+[  33% ] first_scan_filesystem | Verifying GDExtensions...
+[  50% ] first_scan_filesystem | Creating autoload scripts...
+[  66% ] first_scan_filesystem | Initializing plugins...
+[  83% ] first_scan_filesystem | Starting file scan...
+[ DONE ] first_scan_filesystem
+
+[   0% ] update_scripts_classes | Started Registering global classes... (304 steps)
+[   0% ] update_scripts_classes | VisualAssetRecord
+[   0% ] update_scripts_classes | VisualAssetRegistry
+[   0% ] update_scripts_classes | B3CareCombatV5Presenter
+[   0% ] update_scripts_classes | B3CareHuntLandscapeV2
+[   1% ] update_scripts_classes | CombatV4EffectAtlas
+[   1% ] update_scripts_classes | CombatV4SpriteAtlas
+[   1% ] update_scripts_classes | CombatV5SourceAAtlas
+[   2% ] update_scripts_classes | DiscipleActorVisualCatalog
+[   2% ] update_scripts_classes | DiscipleSixDimensionRadar
+[   2% ] update_scripts_classes | DiscipleSourceAVisualPool
+[   3% ] update_scripts_classes | 
+[   3% ] update_scripts_classes | FemaleNormalV1MotionLibrary
+[   3% ] update_scripts_classes | FemaleStageAAssetLoader
+[   4% ] update_scripts_classes | 
+[   4% ] update_scripts_classes | 
+[   4% ] update_scripts_classes | HuntingLevelSelectorV2
+[   5% ] update_scripts_classes | Jxqy2SourceSliceV1
+[   5% ] update_scripts_classes | LivingCueLayer
+[   5% ] update_scripts_classes | LivingCueResolver
+[   6% ] update_scripts_classes | LivingCueTracker
+[   6% ] update_scripts_classes | MapBattleWorldLayerV2
+[   6% ] update_scripts_classes | ModularDiscipleActor
+[   7% ] update_scripts_classes | PveJxContinuousWorldViewV1
+[   7% ] update_scripts_classes | 
+[   7% ] update_scripts_classes | PveLiveWorldMapV1
+[   8% ] update_scripts_classes | PveSectWorldViewV1
+[   8% ] update_scripts_classes | PveWorldTopologyPreviewV1
+[   8% ] update_scripts_classes | SectEndgameVisualBudgetV1
+[   9% ] update_scripts_classes | SectIsometricWorldV1
+[   9% ] update_scripts_classes | SectIsoMapModelV1
+[   9% ] update_scripts_classes | SectMap25SourceArt
+[  10% ] update_scripts_classes | SectMapCamera
+[  10% ] update_scripts_classes | SectMapD2Landscape
+[  10% ] update_scripts_classes | SectMapPresentation
+[  11% ] update_scripts_classes | SectProductionWorksiteCue
+[  11% ] update_scripts_classes | 
+[  11% ] update_scripts_classes | DisciplePresentationSnapshotV2
+[  12% ] update_scripts_classes | 
+[  12% ] update_scripts_classes | 
+[  12% ] update_scripts_classes | 
+[  13% ] update_scripts_classes | 
+[  13% ] update_scripts_classes | 
+[  13% ] update_scripts_classes | 
+[  14% ] update_scripts_classes | 
+[  14% ] update_scripts_classes | 
+[  14% ] update_scripts_classes | 
+[  15% ] update_scripts_classes | 
+[  15% ] update_scripts_classes | 
+[  15% ] update_scripts_classes | 
+[  16% ] update_scripts_classes | 
+[  16% ] update_scripts_classes | 
+[  16% ] update_scripts_classes | 
+[  17% ] update_scripts_classes | 
+[  17% ] update_scripts_classes | 
+[  17% ] update_scripts_classes | 
+[  18% ] update_scripts_classes | 
+[  18% ] update_scripts_classes | 
+[  18% ] update_scripts_classes | DecisionSystem
+[  19% ] update_scripts_classes | GoalSystem
+[  19% ] update_scripts_classes | BloodlineSystem
+[  19% ] update_scripts_classes | AlchemyRecipeRegistry
+[  20% ] update_scripts_classes | BuildingSystem
+[  20% ] update_scripts_classes | SpiritCropRegistry
+[  20% ] update_scripts_classes | B3DemoSetup
+[  20% ] update_scripts_classes | B3HuntWorld
+[  21% ] update_scripts_classes | B3MedicalAutoplayV1
+[  21% ] update_scripts_classes | B3PilotContent
+[  21% ] update_scripts_classes | CombatContextEffectsV2
+[  22% ] update_scripts_classes | CombatSkillSystem
+[  22% ] update_scripts_classes | CombatStatsV2
+[  22% ] update_scripts_classes | CombatSystem
+[  23% ] update_scripts_classes | DiscipleCombatLoadoutV2
+[  23% ] update_scripts_classes | HuntingMapV2
+[  23% ] update_scripts_classes | HuntingPveRunV2
+[  24% ] update_scripts_classes | MapBattleSnapshotV2
+[  24% ] update_scripts_classes | MapBattleV2
+[  24% ] update_scripts_classes | MonsterCatalogueV2
+[  25% ] update_scripts_classes | MonsterEncounterV2
+[  25% ] update_scripts_classes | PveMultiCampPopulationV1
+[  25% ] update_scripts_classes | PveOpenWorldTopologyV1
+[  26% ] update_scripts_classes | P0Content
+[  26% ] update_scripts_classes | GameRng
+[  26% ] update_scripts_classes | LiveGameRuntimeV2
+[  27% ] update_scripts_classes | P0Factory
+[  27% ] update_scripts_classes | P12Factory
+[  27% ] update_scripts_classes | P13Factory
+[  28% ] update_scripts_classes | P14Factory
+[  28% ] update_scripts_classes | P15Factory
+[  28% ] update_scripts_classes | P16Factory
+[  29% ] update_scripts_classes | P1Factory
+[  29% ] update_scripts_classes | P21Factory
+[  29% ] update_scripts_classes | P22Factory
+[  30% ] update_scripts_classes | P23Factory
+[  30% ] update_scripts_classes | P24Factory
+[  30% ] update_scripts_classes | P25Factory
+[  31% ] update_scripts_classes | P26Factory
+[  31% ] update_scripts_classes | P27Factory
+[  31% ] update_scripts_classes | P28Factory
+[  32% ] update_scripts_classes | P29Factory
+[  32% ] update_scripts_classes | P210Factory
+[  32% ] update_scripts_classes | P211Factory
+[  33% ] update_scripts_classes | P212Factory
+[  33% ] update_scripts_classes | P37Factory
+[  33% ] update_scripts_classes | SimulationRuntimeClockV2
+[  34% ] update_scripts_classes | SimulationRuntimeOwnerV2
+[  34% ] update_scripts_classes | SimulationScheduler
+[  34% ] update_scripts_classes | B3PillSatietyV1
+[  35% ] update_scripts_classes | CultivationPathSystem
+[  35% ] update_scripts_classes | CultivationSystem
+[  35% ] update_scripts_classes | DiscipleBodyGateContentV2
+[  36% ] update_scripts_classes | DiscipleBodyGateTransactionV2
+[  36% ] update_scripts_classes | DiscipleBodyTrainingFacilityV2
+[  36% ] update_scripts_classes | DiscipleBodyXpSourceV2
+[  37% ] update_scripts_classes | DiscipleBreakthroughBalanceV2
+[  37% ] update_scripts_classes | DiscipleProgressionBalanceV2
+[  37% ] update_scripts_classes | DiscipleRealmProgressV2
+[  38% ] update_scripts_classes | DiscipleTrainingActionV2
+[  38% ] update_scripts_classes | DiscipleTrainingContentV2
+[  38% ] update_scripts_classes | DiscipleTrainingPolicyV2
+[  39% ] update_scripts_classes | DiscipleTuViFlowV2
+[  39% ] update_scripts_classes | RootRefinementSystem
+[  39% ] update_scripts_classes | SpiritualRootSystem
+[  40% ] update_scripts_classes | EconomySystem
+[  40% ] update_scripts_classes | EquipmentSystem
+[  40% ] update_scripts_classes | FoundationSystem
+[  40% ] update_scripts_classes | MemorySystem
+[  41% ] update_scripts_classes | NeedsSystem
+[  41% ] update_scripts_classes | OrganizationSystem
+[  41% ] update_scripts_classes | PhysiqueSystem
+[  42% ] update_scripts_classes | DiscipleBirthCatalogueV2
+[  42% ] update_scripts_classes | DiscipleBirthProfileV2
+[  42% ] update_scripts_classes | DiscipleBirthRollV2
+[  43% ] update_scripts_classes | DiscipleGeneratorOpenPoints
+[  43% ] update_scripts_classes | DiscipleGeneratorV2
+[  43% ] update_scripts_classes | RecruitmentSystem
+[  44% ] update_scripts_classes | RelationshipSystem
+[  44% ] update_scripts_classes | ResourceRegistry
+[  44% ] update_scripts_classes | WarehouseSystem
+[  45% ] update_scripts_classes | SaveService
+[  45% ] update_scripts_classes | BuildingState
+[  45% ] update_scripts_classes | CandidateState
+[  46% ] update_scripts_classes | DiscipleState
+[  46% ] update_scripts_classes | MemoryState
+[  46% ] update_scripts_classes | RegionState
+[  47% ] update_scripts_classes | RelationshipState
+[  47% ] update_scripts_classes | SectState
+[  47% ] update_scripts_classes | SimulationState
+[  48% ] update_scripts_classes | TeamState
+[  48% ] update_scripts_classes | TechniqueSystem
+[  48% ] update_scripts_classes | TraitSystem
+[  49% ] update_scripts_classes | CharacterModifierSystem
+[  49% ] update_scripts_classes | ProfessionModifierSystem
+[  49% ] update_scripts_classes | WorkforceSystem
+[  50% ] update_scripts_classes | 
+[  50% ] update_scripts_classes | 
+[  50% ] update_scripts_classes | 
+[  51% ] update_scripts_classes | 
+[  51% ] update_scripts_classes | 
+[  51% ] update_scripts_classes | 
+[  52% ] update_scripts_classes | 
+[  52% ] update_scripts_classes | 
+[  52% ] update_scripts_classes | 
+[  53% ] update_scripts_classes | 
+[  53% ] update_scripts_classes | 
+[  53% ] update_scripts_classes | 
+[  54% ] update_scripts_classes | 
+[  54% ] update_scripts_classes | 
+[  54% ] update_scripts_classes | 
+[  55% ] update_scripts_classes | 
+[  55% ] update_scripts_classes | 
+[  55% ] update_scripts_classes | 
+[  56% ] update_scripts_classes | 
+[  56% ] update_scripts_classes | 
+[  56% ] update_scripts_classes | 
+[  57% ] update_scripts_classes | 
+[  57% ] update_scripts_classes | 
+[  57% ] update_scripts_classes | 
+[  58% ] update_scripts_classes | 
+[  58% ] update_scripts_classes | 
+[  58% ] update_scripts_classes | 
+[  59% ] update_scripts_classes | 
+[  59% ] update_scripts_classes | 
+[  59% ] update_scripts_classes | 
+[  60% ] update_scripts_classes | 
+[  60% ] update_scripts_classes | 
+[  60% ] update_scripts_classes | 
+[  60% ] update_scripts_classes | 
+[  61% ] update_scripts_classes | 
+[  61% ] update_scripts_classes | 
+[  61% ] update_scripts_classes | 
+[  62% ] update_scripts_classes | 
+[  62% ] update_scripts_classes | 
+[  62% ] update_scripts_classes | 
+[  63% ] update_scripts_classes | 
+[  63% ] update_scripts_classes | 
+[  63% ] update_scripts_classes | 
+[  64% ] update_scripts_classes | 
+[  64% ] update_scripts_classes | 
+[  64% ] update_scripts_classes | 
+[  65% ] update_scripts_classes | 
+[  65% ] update_scripts_classes | 
+[  65% ] update_scripts_classes | 
+[  66% ] update_scripts_classes | 
+[  66% ] update_scripts_classes | 
+[  66% ] update_scripts_classes | 
+[  67% ] update_scripts_classes | 
+[  67% ] update_scripts_classes | 
+[  67% ] update_scripts_classes | 
+[  68% ] update_scripts_classes | 
+[  68% ] update_scripts_classes | 
+[  68% ] update_scripts_classes | 
+[  69% ] update_scripts_classes | 
+[  69% ] update_scripts_classes | 
+[  69% ] update_scripts_classes | 
+[  70% ] update_scripts_classes | 
+[  70% ] update_scripts_classes | 
+[  70% ] update_scripts_classes | 
+[  71% ] update_scripts_classes | 
+[  71% ] update_scripts_classes | 
+[  71% ] update_scripts_classes | 
+[  72% ] update_scripts_classes | 
+[  72% ] update_scripts_classes | 
+[  72% ] update_scripts_classes | 
+[  73% ] update_scripts_classes | 
+[  73% ] update_scripts_classes | 
+[  73% ] update_scripts_classes | 
+[  74% ] update_scripts_classes | 
+[  74% ] update_scripts_classes | 
+[  74% ] update_scripts_classes | 
+[  75% ] update_scripts_classes | 
+[  75% ] update_scripts_classes | 
+[  75% ] update_scripts_classes | 
+[  76% ] update_scripts_classes | 
+[  76% ] update_scripts_classes | 
+[  76% ] update_scripts_classes | 
+[  77% ] update_scripts_classes | 
+[  77% ] update_scripts_classes | 
+[  77% ] update_scripts_classes | 
+[  78% ] update_scripts_classes | 
+[  78% ] update_scripts_classes | 
+[  78% ] update_scripts_classes | 
+[  79% ] update_scripts_classes | 
+[  79% ] update_scripts_classes | 
+[  79% ] update_scripts_classes | 
+[  80% ] update_scripts_classes | 
+[  80% ] update_scripts_classes | 
+[  80% ] update_scripts_classes | 
+[  80% ] update_scripts_classes | 
+[  81% ] update_scripts_classes | 
+[  81% ] update_scripts_classes | 
+[  81% ] update_scripts_classes | 
+[  82% ] update_scripts_classes | 
+[  82% ] update_scripts_classes | 
+[  82% ] update_scripts_classes | 
+[  83% ] update_scripts_classes | 
+[  83% ] update_scripts_classes | 
+[  83% ] update_scripts_classes | 
+[  84% ] update_scripts_classes | 
+[  84% ] update_scripts_classes | 
+[  84% ] update_scripts_classes | 
+[  85% ] update_scripts_classes | 
+[  85% ] update_scripts_classes | 
+[  85% ] update_scripts_classes | 
+[  86% ] update_scripts_classes | 
+[  86% ] update_scripts_classes | 
+[  86% ] update_scripts_classes | 
+[  87% ] update_scripts_classes | 
+[  87% ] update_scripts_classes | 
+[  87% ] update_scripts_classes | 
+[  88% ] update_scripts_classes | 
+[  88% ] update_scripts_classes | 
+[  88% ] update_scripts_classes | 
+[  89% ] update_scripts_classes | 
+[  89% ] update_scripts_classes | 
+[  89% ] update_scripts_classes | 
+[  90% ] update_scripts_classes | 
+[  90% ] update_scripts_classes | 
+[  90% ] update_scripts_classes | 
+[  91% ] update_scripts_classes | 
+[  91% ] update_scripts_classes | 
+[  91% ] update_scripts_classes | 
+[  92% ] update_scripts_classes | 
+[  92% ] update_scripts_classes | 
+[  92% ] update_scripts_classes | 
+[  93% ] update_scripts_classes | 
+[  93% ] update_scripts_classes | 
+[  93% ] update_scripts_classes | 
+[  94% ] update_scripts_classes | 
+[  94% ] update_scripts_classes | 
+[  94% ] update_scripts_classes | 
+[  95% ] update_scripts_classes | 
+[  95% ] update_scripts_classes | 
+[  95% ] update_scripts_classes | 
+[  96% ] update_scripts_classes | 
+[  96% ] update_scripts_classes | 
+[  96% ] update_scripts_classes | 
+[  97% ] update_scripts_classes | 
+[  97% ] update_scripts_classes | 
+[  97% ] update_scripts_classes | 
+[  98% ] update_scripts_classes | 
+[  98% ] update_scripts_classes | 
+[  98% ] update_scripts_classes | 
+[  99% ] update_scripts_classes | 
+[  99% ] update_scripts_classes | 
+[ DONE ] update_scripts_classes
+
+[   0% ] _update_scan_actions | Started Scanning actions... (145 steps)
+[   0% ] _update_scan_actions | linh_forest_worksite_v1.svg
+[   0% ] _update_scan_actions | mine_worksite_v1.svg
+[   1% ] _update_scan_actions | spirit_field_worksite_v1.svg
+[   2% ] _update_scan_actions | stone_axis_a.png
+[   2% ] _update_scan_actions | stone_axis_b.png
+[   3% ] _update_scan_actions | stone_branch.png
+[   4% ] _update_scan_actions | stone_cross.png
+[   4% ] _update_scan_actions | stone_junction.png
+[   5% ] _update_scan_actions | stone_scatter.png
+[   6% ] _update_scan_actions | stone_border.png
+[   6% ] _update_scan_actions | stone_courtyard.png
+[   7% ] _update_scan_actions | stone_runes.png
+[   8% ] _update_scan_actions | stone_variant.png
+[   8% ] _update_scan_actions | 570036.png
+[   9% ] _update_scan_actions | 570037.png
+[  10% ] _update_scan_actions | 570038.png
+[  10% ] _update_scan_actions | 570041.png
+[  11% ] _update_scan_actions | 570042.png
+[  12% ] _update_scan_actions | 570043.png
+[  13% ] _update_scan_actions | 570073.png
+[  13% ] _update_scan_actions | 570144.png
+[  14% ] _update_scan_actions | 570171.png
+[  15% ] _update_scan_actions | 570172.png
+[  15% ] _update_scan_actions | 570173.png
+[  16% ] _update_scan_actions | 570181.png
+[  17% ] _update_scan_actions | 570182.png
+[  17% ] _update_scan_actions | 570183.png
+[  18% ] _update_scan_actions | 570185.png
+[  19% ] _update_scan_actions | 570186.png
+[  19% ] _update_scan_actions | 570187.png
+[  20% ] _update_scan_actions | 570397.png
+[  21% ] _update_scan_actions | 570399.png
+[  21% ] _update_scan_actions | 520081.png
+[  22% ] _update_scan_actions | 510052.png
+[  23% ] _update_scan_actions | 510102.png
+[  23% ] _update_scan_actions | atlas_000.webp
+[  24% ] _update_scan_actions | atlas_001.webp
+[  25% ] _update_scan_actions | atlas_000.webp
+[  26% ] _update_scan_actions | atlas_000.webp
+[  26% ] _update_scan_actions | atlas_000.webp
+[  27% ] _update_scan_actions | atlas_001.webp
+[  28% ] _update_scan_actions | atlas_002.webp
+[  28% ] _update_scan_actions | atlas_003.webp
+[  29% ] _update_scan_actions | atlas_004.webp
+[  30% ] _update_scan_actions | atlas_000.webp
+[  30% ] _update_scan_actions | atlas_001.webp
+[  31% ] _update_scan_actions | atlas_000.webp
+[  32% ] _update_scan_actions | atlas_001.webp
+[  32% ] _update_scan_actions | atlas_002.webp
+[  33% ] _update_scan_actions | atlas_000.webp
+[  34% ] _update_scan_actions | atlas_001.webp
+[  34% ] _update_scan_actions | atlas_002.webp
+[  35% ] _update_scan_actions | 1fffed7e.webp
+[  36% ] _update_scan_actions | 2f8c6d50.webp
+[  36% ] _update_scan_actions | 3dfcabc2.webp
+[  37% ] _update_scan_actions | 40a1c4ff.webp
+[  38% ] _update_scan_actions | 361b4525.webp
+[  39% ] _update_scan_actions | aa93d577.webp
+[  39% ] _update_scan_actions | e8178d06.webp
+[  40% ] _update_scan_actions | bar_hp.png
+[  41% ] _update_scan_actions | ani011_at.webp
+[  41% ] _update_scan_actions | ani011_bat.webp
+[  42% ] _update_scan_actions | ani011_die.webp
+[  43% ] _update_scan_actions | ani011_pst.webp
+[  43% ] _update_scan_actions | ani011_st.webp
+[  44% ] _update_scan_actions | ani011_wlk.webp
+[  45% ] _update_scan_actions | boss019_at01.webp
+[  45% ] _update_scan_actions | boss019_bat.webp
+[  46% ] _update_scan_actions | boss019_die.webp
+[  47% ] _update_scan_actions | boss019_st.webp
+[  47% ] _update_scan_actions | boss019_wlk.webp
+[  48% ] _update_scan_actions | wd_150_jianchuixinghe_a.webp
+[  49% ] _update_scan_actions | wd_150_jianchuixinghe_d.webp
+[  50% ] _update_scan_actions | body_01_down_arm_l.png
+[  50% ] _update_scan_actions | body_01_down_arm_r.png
+[  51% ] _update_scan_actions | body_01_down_head.png
+[  52% ] _update_scan_actions | body_01_down_leg_l.png
+[  52% ] _update_scan_actions | body_01_down_leg_r.png
+[  53% ] _update_scan_actions | body_01_down_torso.png
+[  54% ] _update_scan_actions | body_01_right_arm_l.png
+[  54% ] _update_scan_actions | body_01_right_arm_r.png
+[  55% ] _update_scan_actions | body_01_right_head.png
+[  56% ] _update_scan_actions | body_01_right_leg_l.png
+[  56% ] _update_scan_actions | body_01_right_leg_r.png
+[  57% ] _update_scan_actions | body_01_right_torso.png
+[  58% ] _update_scan_actions | body_01_up_arm_l.png
+[  58% ] _update_scan_actions | body_01_up_arm_r.png
+[  59% ] _update_scan_actions | body_01_up_head.png
+[  60% ] _update_scan_actions | body_01_up_leg_l.png
+[  60% ] _update_scan_actions | body_01_up_leg_r.png
+[  61% ] _update_scan_actions | body_01_up_torso.png
+[  62% ] _update_scan_actions | face_01_down.png
+[  63% ] _update_scan_actions | face_01_right.png
+[  63% ] _update_scan_actions | face_01_up.png
+[  64% ] _update_scan_actions | hair_01_down_back.png
+[  65% ] _update_scan_actions | hair_01_down_front.png
+[  65% ] _update_scan_actions | hair_01_right_back.png
+[  66% ] _update_scan_actions | hair_01_right_front.png
+[  67% ] _update_scan_actions | hair_01_up_back.png
+[  67% ] _update_scan_actions | hair_01_up_front.png
+[  68% ] _update_scan_actions | horn_01_down.png
+[  69% ] _update_scan_actions | horn_01_right.png
+[  69% ] _update_scan_actions | horn_01_up.png
+[  70% ] _update_scan_actions | outfit_01_down_arm_l.png
+[  71% ] _update_scan_actions | outfit_01_down_arm_r.png
+[  71% ] _update_scan_actions | outfit_01_down_skirt.png
+[  72% ] _update_scan_actions | outfit_01_down_torso.png
+[  73% ] _update_scan_actions | outfit_01_right_arm_l.png
+[  73% ] _update_scan_actions | outfit_01_right_arm_r.png
+[  74% ] _update_scan_actions | outfit_01_right_skirt.png
+[  75% ] _update_scan_actions | outfit_01_right_torso.png
+[  76% ] _update_scan_actions | outfit_01_up_arm_l.png
+[  76% ] _update_scan_actions | outfit_01_up_arm_r.png
+[  77% ] _update_scan_actions | outfit_01_up_skirt.png
+[  78% ] _update_scan_actions | outfit_01_up_torso.png
+[  78% ] _update_scan_actions | 00_endgame_full_map.png
+[  79% ] _update_scan_actions | 01_endgame_camera_pan_zoom.png
+[  80% ] _update_scan_actions | 05_fresh_p3_2_save_reload.png
+[  80% ] _update_scan_actions | linh_forest_021_selected.png
+[  81% ] _update_scan_actions | mine_021_selected.png
+[  82% ] _update_scan_actions | spirit_field_035_selected.png
+[  82% ] _update_scan_actions | 00_endgame_full_map.png
+[  83% ] _update_scan_actions | 01_endgame_camera_pan_zoom.png
+[  84% ] _update_scan_actions | 05_fresh_p3_2_save_reload.png
+[  84% ] _update_scan_actions | endgame_zoom_075.png
+[  85% ] _update_scan_actions | endgame_zoom_100.png
+[  86% ] _update_scan_actions | endgame_zoom_135.png
+[  86% ] _update_scan_actions | endgame_zoom_180.png
+[  87% ] _update_scan_actions | linh_forest_021_selected.png
+[  88% ] _update_scan_actions | mine_021_selected.png
+[  89% ] _update_scan_actions | spirit_field_035_selected.png
+[  89% ] _update_scan_actions | 00_endgame_full_map.png
+[  90% ] _update_scan_actions | 01_endgame_camera_pan_zoom.png
+[  91% ] _update_scan_actions | 05_fresh_p3_2_save_reload.png
+[  91% ] _update_scan_actions | endgame_zoom_075.png
+[  92% ] _update_scan_actions | endgame_zoom_100.png
+[  93% ] _update_scan_actions | endgame_zoom_135.png
+[  93% ] _update_scan_actions | endgame_zoom_180.png
+[  94% ] _update_scan_actions | linh_forest_021_selected.png
+[  95% ] _update_scan_actions | mine_021_selected.png
+[  95% ] _update_scan_actions | spirit_field_035_selected.png
+[  96% ] _update_scan_actions | pve_multicamp_c01_live_1280x720_final.png
+[  97% ] _update_scan_actions | results.csv
+[  97% ] _update_scan_actions | pve_source_a_forest_live_1280x720_v4.png
+[  98% ] _update_scan_actions | pve_source_a_forest_live_1280x720_v5.png
+[ DONE ] _update_scan_actions
+
+[   0% ] reimport | Started (Re)Importing Assets (145 steps)
+[   0% ] reimport | Preparing files to reimport...
+[   0% ] reimport | Preparing files to reimport...
+[   1% ] reimport | Preparing files to reimport...
+[   2% ] reimport | Preparing files to reimport...
+[   2% ] reimport | Preparing files to reimport...
+[   3% ] reimport | Preparing files to reimport...
+[   4% ] reimport | Preparing files to reimport...
+[   4% ] reimport | Preparing files to reimport...
+[   5% ] reimport | Preparing files to reimport...
+[   6% ] reimport | Preparing files to reimport...
+[   6% ] reimport | Preparing files to reimport...
+[   7% ] reimport | Preparing files to reimport...
+[   8% ] reimport | Preparing files to reimport...
+[   8% ] reimport | Preparing files to reimport...
+[   9% ] reimport | Preparing files to reimport...
+[  10% ] reimport | Preparing files to reimport...
+[  10% ] reimport | Preparing files to reimport...
+[  11% ] reimport | Preparing files to reimport...
+[  12% ] reimport | Preparing files to reimport...
+[  13% ] reimport | Preparing files to reimport...
+[  13% ] reimport | Preparing files to reimport...
+[  14% ] reimport | Preparing files to reimport...
+[  15% ] reimport | Preparing files to reimport...
+[  15% ] reimport | Preparing files to reimport...
+[  16% ] reimport | Preparing files to reimport...
+[  17% ] reimport | Preparing files to reimport...
+[  17% ] reimport | Preparing files to reimport...
+[  18% ] reimport | Preparing files to reimport...
+[  19% ] reimport | Preparing files to reimport...
+[  19% ] reimport | Preparing files to reimport...
+[  20% ] reimport | Preparing files to reimport...
+[  21% ] reimport | Preparing files to reimport...
+[  21% ] reimport | Preparing files to reimport...
+[  22% ] reimport | Preparing files to reimport...
+[  23% ] reimport | Preparing files to reimport...
+[  23% ] reimport | Preparing files to reimport...
+[  24% ] reimport | Preparing files to reimport...
+[  25% ] reimport | Preparing files to reimport...
+[  26% ] reimport | Preparing files to reimport...
+[  26% ] reimport | Preparing files to reimport...
+[  27% ] reimport | Preparing files to reimport...
+[  28% ] reimport | Preparing files to reimport...
+[  28% ] reimport | Preparing files to reimport...
+[  29% ] reimport | Preparing files to reimport...
+[  30% ] reimport | Preparing files to reimport...
+[  30% ] reimport | Preparing files to reimport...
+[  31% ] reimport | Preparing files to reimport...
+[  32% ] reimport | Preparing files to reimport...
+[  32% ] reimport | Preparing files to reimport...
+[  33% ] reimport | Preparing files to reimport...
+[  34% ] reimport | Preparing files to reimport...
+[  34% ] reimport | Preparing files to reimport...
+[  35% ] reimport | Preparing files to reimport...
+[  36% ] reimport | Preparing files to reimport...
+[  36% ] reimport | Preparing files to reimport...
+[  37% ] reimport | Preparing files to reimport...
+[  38% ] reimport | Preparing files to reimport...
+[  39% ] reimport | Preparing files to reimport...
+[  39% ] reimport | Preparing files to reimport...
+[  40% ] reimport | Preparing files to reimport...
+[  41% ] reimport | Preparing files to reimport...
+[  41% ] reimport | Preparing files to reimport...
+[  42% ] reimport | Preparing files to reimport...
+[  43% ] reimport | Preparing files to reimport...
+[  43% ] reimport | Preparing files to reimport...
+[  44% ] reimport | Preparing files to reimport...
+[  45% ] reimport | Preparing files to reimport...
+[  45% ] reimport | Preparing files to reimport...
+[  46% ] reimport | Preparing files to reimport...
+[  47% ] reimport | Preparing files to reimport...
+[  47% ] reimport | Preparing files to reimport...
+[  48% ] reimport | Preparing files to reimport...
+[  49% ] reimport | Preparing files to reimport...
+[  50% ] reimport | Preparing files to reimport...
+[  50% ] reimport | Preparing files to reimport...
+[  51% ] reimport | Preparing files to reimport...
+[  52% ] reimport | Preparing files to reimport...
+[  52% ] reimport | Preparing files to reimport...
+[  53% ] reimport | Preparing files to reimport...
+[  54% ] reimport | Preparing files to reimport...
+[  54% ] reimport | Preparing files to reimport...
+[  55% ] reimport | Preparing files to reimport...
+[  56% ] reimport | Preparing files to reimport...
+[  56% ] reimport | Preparing files to reimport...
+[  57% ] reimport | Preparing files to reimport...
+[  58% ] reimport | Preparing files to reimport...
+[  58% ] reimport | Preparing files to reimport...
+[  59% ] reimport | Preparing files to reimport...
+[  60% ] reimport | Preparing files to reimport...
+[  60% ] reimport | Preparing files to reimport...
+[  61% ] reimport | Preparing files to reimport...
+[  62% ] reimport | Preparing files to reimport...
+[  63% ] reimport | Preparing files to reimport...
+[  63% ] reimport | Preparing files to reimport...
+[  64% ] reimport | Preparing files to reimport...
+[  65% ] reimport | Preparing files to reimport...
+[  65% ] reimport | Preparing files to reimport...
+[  66% ] reimport | Preparing files to reimport...
+[  67% ] reimport | Preparing files to reimport...
+[  67% ] reimport | Preparing files to reimport...
+[  68% ] reimport | Preparing files to reimport...
+[  69% ] reimport | Preparing files to reimport...
+[  69% ] reimport | Preparing files to reimport...
+[  70% ] reimport | Preparing files to reimport...
+[  71% ] reimport | Preparing files to reimport...
+[  71% ] reimport | Preparing files to reimport...
+[  72% ] reimport | Preparing files to reimport...
+[  73% ] reimport | Preparing files to reimport...
+[  73% ] reimport | Preparing files to reimport...
+[  74% ] reimport | Preparing files to reimport...
+[  75% ] reimport | Preparing files to reimport...
+[  76% ] reimport | Preparing files to reimport...
+[  76% ] reimport | Preparing files to reimport...
+[  77% ] reimport | Preparing files to reimport...
+[  78% ] reimport | Preparing files to reimport...
+[  78% ] reimport | Preparing files to reimport...
+[  79% ] reimport | Preparing files to reimport...
+[  80% ] reimport | Preparing files to reimport...
+[  80% ] reimport | Preparing files to reimport...
+[  81% ] reimport | Preparing files to reimport...
+[  82% ] reimport | Preparing files to reimport...
+[  82% ] reimport | Preparing files to reimport...
+[  83% ] reimport | Preparing files to reimport...
+[  84% ] reimport | Preparing files to reimport...
+[  84% ] reimport | Preparing files to reimport...
+[  85% ] reimport | Preparing files to reimport...
+[  86% ] reimport | Preparing files to reimport...
+[  86% ] reimport | Preparing files to reimport...
+[  87% ] reimport | Preparing files to reimport...
+[  88% ] reimport | Preparing files to reimport...
+[  89% ] reimport | Preparing files to reimport...
+[  89% ] reimport | Preparing files to reimport...
+[  90% ] reimport | Preparing files to reimport...
+[  91% ] reimport | Preparing files to reimport...
+[  91% ] reimport | Preparing files to reimport...
+[  92% ] reimport | Preparing files to reimport...
+[  93% ] reimport | Preparing files to reimport...
+[  93% ] reimport | Preparing files to reimport...
+[  94% ] reimport | Preparing files to reimport...
+[  95% ] reimport | Preparing files to reimport...
+[  95% ] reimport | Preparing files to reimport...
+[  96% ] reimport | Preparing files to reimport...
+[  97% ] reimport | Preparing files to reimport...
+[  97% ] reimport | Preparing files to reimport...
+[  98% ] reimport | Preparing files to reimport...
+[   0% ] reimport | Executing pre-reimport operations...
+[   0% ] reimport | results.csv
+[   0% ] reimport | results.csv
+[   1% ] reimport | face_01_down.png
+[   2% ] reimport | face_01_right.png
+[   2% ] reimport | face_01_up.png
+[   3% ] reimport | hair_01_down_back.png
+[   4% ] reimport | hair_01_down_front.png
+[   4% ] reimport | hair_01_right_back.png
+[   5% ] reimport | hair_01_right_front.png
+[   6% ] reimport | hair_01_up_back.png
+[   6% ] reimport | hair_01_up_front.png
+[   7% ] reimport | horn_01_down.png
+[   8% ] reimport | horn_01_right.png
+[   8% ] reimport | horn_01_up.png
+[   9% ] reimport | outfit_01_down_arm_l.png
+[  10% ] reimport | outfit_01_down_arm_r.png
+[  10% ] reimport | outfit_01_down_skirt.png
+[  11% ] reimport | outfit_01_down_torso.png
+[  12% ] reimport | outfit_01_right_arm_l.png
+[  13% ] reimport | body_01_down_arm_l.png
+[  13% ] reimport | body_01_down_arm_r.png
+[  14% ] reimport | body_01_down_head.png
+[  15% ] reimport | body_01_down_leg_l.png
+[  15% ] reimport | body_01_down_leg_r.png
+[  16% ] reimport | body_01_down_torso.png
+[  17% ] reimport | body_01_right_arm_l.png
+[  17% ] reimport | body_01_right_arm_r.png
+[  18% ] reimport | body_01_right_head.png
+[  19% ] reimport | body_01_right_leg_l.png
+[  19% ] reimport | body_01_right_leg_r.png
+[  20% ] reimport | body_01_right_torso.png
+[  21% ] reimport | body_01_up_arm_l.png
+[  21% ] reimport | body_01_up_arm_r.png
+[  22% ] reimport | body_01_up_head.png
+[  23% ] reimport | body_01_up_leg_l.png
+[  23% ] reimport | body_01_up_leg_r.png
+[  24% ] reimport | body_01_up_torso.png
+[  25% ] reimport | endgame_zoom_135.png
+[  26% ] reimport | endgame_zoom_180.png
+[  26% ] reimport | linh_forest_021_selected.png
+[  27% ] reimport | mine_021_selected.png
+[  28% ] reimport | spirit_field_035_selected.png
+[  28% ] reimport | 00_endgame_full_map.png
+[  29% ] reimport | 01_endgame_camera_pan_zoom.png
+[  30% ] reimport | 05_fresh_p3_2_save_reload.png
+[  30% ] reimport | endgame_zoom_075.png
+[  31% ] reimport | endgame_zoom_100.png
+[  32% ] reimport | endgame_zoom_135.png
+[  32% ] reimport | endgame_zoom_180.png
+[  33% ] reimport | linh_forest_021_selected.png
+[  34% ] reimport | mine_021_selected.png
+[  34% ] reimport | spirit_field_035_selected.png
+[  35% ] reimport | pve_multicamp_c01_live_1280x720_final.png
+[  36% ] reimport | pve_source_a_forest_live_1280x720_v4.png
+[  36% ] reimport | pve_source_a_forest_live_1280x720_v5.png
+[  37% ] reimport | outfit_01_right_arm_r.png
+[  38% ] reimport | outfit_01_right_skirt.png
+[  39% ] reimport | outfit_01_right_torso.png
+[  39% ] reimport | outfit_01_up_arm_l.png
+[  40% ] reimport | outfit_01_up_arm_r.png
+[  41% ] reimport | outfit_01_up_skirt.png
+[  41% ] reimport | outfit_01_up_torso.png
+[  42% ] reimport | 00_endgame_full_map.png
+[  43% ] reimport | 01_endgame_camera_pan_zoom.png
+[  43% ] reimport | 05_fresh_p3_2_save_reload.png
+[  44% ] reimport | linh_forest_021_selected.png
+[  45% ] reimport | mine_021_selected.png
+[  45% ] reimport | spirit_field_035_selected.png
+[  46% ] reimport | 00_endgame_full_map.png
+[  47% ] reimport | 01_endgame_camera_pan_zoom.png
+[  47% ] reimport | 05_fresh_p3_2_save_reload.png
+[  48% ] reimport | endgame_zoom_075.png
+[  49% ] reimport | endgame_zoom_100.png
+[  50% ] reimport | 570043.png
+[  50% ] reimport | 570073.png
+[  51% ] reimport | 570144.png
+[  52% ] reimport | 570171.png
+[  52% ] reimport | 570172.png
+[  53% ] reimport | 570173.png
+[  54% ] reimport | 570181.png
+[  54% ] reimport | 570182.png
+[  55% ] reimport | 570183.png
+[  56% ] reimport | 570185.png
+[  56% ] reimport | 570186.png
+[  57% ] reimport | 570187.png
+[  58% ] reimport | 570397.png
+[  58% ] reimport | 570399.png
+[  59% ] reimport | 520081.png
+[  60% ] reimport | 510052.png
+[  60% ] reimport | 510102.png
+[  61% ] reimport | atlas_000.webp
+[  62% ] reimport | linh_forest_worksite_v1.svg
+[  63% ] reimport | mine_worksite_v1.svg
+[  63% ] reimport | spirit_field_worksite_v1.svg
+[  64% ] reimport | stone_axis_a.png
+[  65% ] reimport | stone_axis_b.png
+[  65% ] reimport | stone_branch.png
+[  66% ] reimport | stone_cross.png
+[  67% ] reimport | stone_junction.png
+[  67% ] reimport | stone_scatter.png
+[  68% ] reimport | stone_border.png
+[  69% ] reimport | stone_courtyard.png
+[  69% ] reimport | stone_runes.png
+[  70% ] reimport | stone_variant.png
+[  71% ] reimport | 570036.png
+[  71% ] reimport | 570037.png
+[  72% ] reimport | 570038.png
+[  73% ] reimport | 570041.png
+[  73% ] reimport | 570042.png
+[  74% ] reimport | 40a1c4ff.webp
+[  75% ] reimport | 361b4525.webp
+[  76% ] reimport | aa93d577.webp
+[  76% ] reimport | e8178d06.webp
+[  77% ] reimport | bar_hp.png
+[  78% ] reimport | ani011_at.webp
+[  78% ] reimport | ani011_bat.webp
+[  79% ] reimport | ani011_die.webp
+[  80% ] reimport | ani011_pst.webp
+[  80% ] reimport | ani011_st.webp
+[  81% ] reimport | ani011_wlk.webp
+[  82% ] reimport | boss019_at01.webp
+[  82% ] reimport | boss019_bat.webp
+[  83% ] reimport | boss019_die.webp
+[  84% ] reimport | boss019_st.webp
+[  84% ] reimport | boss019_wlk.webp
+[  85% ] reimport | wd_150_jianchuixinghe_a.webp
+[  86% ] reimport | wd_150_jianchuixinghe_d.webp
+[  86% ] reimport | atlas_001.webp
+[  87% ] reimport | atlas_000.webp
+[  88% ] reimport | atlas_000.webp
+[  89% ] reimport | atlas_000.webp
+[  89% ] reimport | atlas_001.webp
+[  90% ] reimport | atlas_002.webp
+[  91% ] reimport | atlas_003.webp
+[  91% ] reimport | atlas_004.webp
+[  92% ] reimport | atlas_000.webp
+[  93% ] reimport | atlas_001.webp
+[  93% ] reimport | atlas_000.webp
+[  94% ] reimport | atlas_001.webp
+[  95% ] reimport | atlas_002.webp
+[  95% ] reimport | atlas_000.webp
+[  96% ] reimport | atlas_001.webp
+[  97% ] reimport | atlas_002.webp
+[  97% ] reimport | 1fffed7e.webp
+[  98% ] reimport | 2f8c6d50.webp
+[  99% ] reimport | Finalizing Asset Import...
+[ DONE ] reimport
+
+[   0% ] reimport | Started (Re)Importing Assets (145 steps)
+[   0% ] reimport | Executing post-reimport operations...
+[ DONE ] reimport
+
+[   0% ] loading_editor_layout | Started Loading editor (5 steps)
+[   0% ] loading_editor_layout | Loading editor layout...
+[  16% ] loading_editor_layout | Loading docks...
+[ DONE ] loading_editor_layout
+
+ERROR: Cannot save file '%USERPROFILE%/AppData/Roaming/Godot/editor_settings-4.7.tres'.
+   at: save (scene/resources/resource_format_text.cpp:1768)
+ERROR: Error saving editor settings to %USERPROFILE%/AppData/Roaming/Godot/editor_settings-4.7.tres
+   at: save (editor/settings/editor_settings.cpp:1525)
+
+
