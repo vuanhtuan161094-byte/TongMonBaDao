@@ -1,0 +1,7 @@
+path,kind,status,branch_or_target,local_head,remote_head_or_tree,dirty_observation,action
+E:\TongMonBaDaoWorkspace\01_Game\TongMonBaDao,real checkout,KEEP,main,5e6fdd966bdf710b71e2a1539bb712e44069a4bb,,7 untracked status entries; 46 root CMD files,untouched
+E:\TongMonBaDaoWorkspace\01_Game\TMB_RC_STAGING_8aee3d88,real checkout,KEEP staging only,cmd-migration-rehearsal,8ec30dfbc5734730a01ea7c3fbfb7e0763da6aad,tree 485d79b3060f22a8b552b52c3e0352f34ccaefb1; remote RC commit 0bc96348e6ef1a2eb945e9713e3faeb8912fb07d,clean but synthetic ancestry,read-only
+E:\codex\2026-10-26\TMB_PVE_UNIFIED_RC_QA_WORKTREE_20261027,real worktree,KEEP,integration/pve-unified-rc-20261027,4ba1ccad25c1d03053cefbc724c1a19287d4c0f3,,modified tracked + untracked QA outputs,untouched
+[Codex-managed C: recovery worktree],real worktree,KEEP,recovery/pve-playable-visual-a1-20261027,59c6dea9041653026e02a55b0bc1f4e298976835,,3 modified + 1 untracked; long-path warnings,untouched
+%USERPROFILE%\Desktop\MỞ GAME TÔNG MÔN BÁ ĐẠO.lnk,shortcut,PENDING,,,,absent; target canonical is not RC,not created
+
