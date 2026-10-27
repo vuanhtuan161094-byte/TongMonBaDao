@@ -1,0 +1,10 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 - Build 31.0.101.2125 - Compatibility - Using Device: Intel - Intel(R) Iris(R) Plus Graphics
+
+SCRIPT ERROR: Parse Error: Identifier "SaveService" not declared in the current scope.
+   at: GDScript::reload (res://tools/qa/endgame_live_launcher.gd:46)
+SCRIPT ERROR: Parse Error: Could not find type "SimulationState" in the current scope.
+   at: GDScript::reload (res://tools/qa/endgame_live_launcher.gd:66)
+ERROR: Failed to load script "res://tools/qa/endgame_live_launcher.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+
