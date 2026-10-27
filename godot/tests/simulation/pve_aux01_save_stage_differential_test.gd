@@ -207,11 +207,11 @@ func _missing_directory_write() -> Dictionary:
 func _schema_migration_probe() -> Dictionary:
     # Probe the public legacy reader in an isolated file, without altering
     # any game save. Versions 0-3 are supported; V4 requires a real CARE tag.
-    var owner := _owner(77221, 2000)
-    if owner == null:
-        return {"fixture": false}
+    # P0 has no modern D7/V2/Care capabilities, so historical version
+    # headers do not misrepresent a modern state as a real legacy save.
+    var legacy_state := P0Factory.create_state(556677)
     var service := SaveService.new()
-    var source: Dictionary = owner.state.to_dict()
+    var source: Dictionary = legacy_state.to_dict()
     var output: Dictionary = {}
     for version in [0, 1, 2, 3, 4, 99]:
         var path := _path("migration_v%02d" % int(version))
