@@ -1,0 +1,12 @@
+check,result,evidence,classification
+Canonical root CMD count,46,E:\TongMonBaDaoWorkspace\01_Game\TongMonBaDao,legacy main remains; no CMD moved in this shift
+RC staging root CMD count,1,MO_GAME.cmd,static inventory only; staging is not canonical
+Moved Run-PVE-Play.cmd,exists,tools\windows\run\Run-PVE-Play.cmd,static path check only
+Moved Run-PVE-FPS-QA.cmd,exists,tools\windows\run\Run-PVE-FPS-QA.cmd,static path check only
+Moved Install-P3-2-Female-StageA.cmd,exists,tools\windows\bootstrap\Install-P3-2-Female-StageA.cmd,static path check only
+Female Stage A PNGs,42 present in staging,required hair_01_down_back.png exists,not imported or installed this shift
+Godot editor executable,path exists,E:\TongMonBaDaoWorkspace\04_Tools\Godot\Godot_v4.7.2-stable_win64.exe,version/import not run this shift
+Godot console executable,path exists,E:\Godot_v4.7.2-stable_win64_console.exe,version not verified this shift
+MO_GAME ancestry guard,remote ancestry valid,GitHub compare 0d3952dd..0bc96348 is ahead 2 behind 0,local staging lacks remote commit objects
+GUI launcher,NOT RUN,resource gate fails and canonical path remains main,GUI PENDING
+FPS OFF/ON,NOT RUN,resource gate fails,PERF PENDING
