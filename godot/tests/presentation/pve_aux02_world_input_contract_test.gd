@@ -158,6 +158,29 @@ func _run() -> void:
 		"camera pan/zoom broke world/screen coordinate agreement"):
 		return
 
+	# Left drag pans the map instead of ordering the six actors. A short
+	# left click still selects/orders through the existing click contract.
+	var left_pan_before := map.world.camera.position
+	var left_move_count_before := move_count
+	var left_down := InputEventMouseButton.new()
+	left_down.button_index = MOUSE_BUTTON_LEFT
+	left_down.pressed = true
+	left_down.position = Vector2(240, 180)
+	map._handle_pointer_event(left_down)
+	var left_drag := InputEventMouseMotion.new()
+	left_drag.relative = Vector2(28, -17)
+	left_drag.position = left_down.position + left_drag.relative
+	map._handle_pointer_event(left_drag)
+	var left_up := InputEventMouseButton.new()
+	left_up.button_index = MOUSE_BUTTON_LEFT
+	left_up.pressed = false
+	left_up.position = left_drag.position
+	map._handle_pointer_event(left_up)
+	if not _check(not map.world.camera.position.is_equal_approx(left_pan_before)
+		and move_count == left_move_count_before,
+		"left drag did not pan or accidentally issued a move order"):
+		return
+
 	# A minimap click pans; outside clicks are rejected as movement commands.
 	map.camera_center = camps[0]
 	var before_minimap_orders := move_count
