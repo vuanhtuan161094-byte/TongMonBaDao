@@ -49,6 +49,7 @@ var performance_vfx_draw_count := 0
 var performance_vfx_draw_usec_total := 0
 var performance_vfx_draw_usec_max := 0
 var _dragging := false
+var _left_dragging := false
 var _drag_position := Vector2.ZERO
 var _drag_distance := 0.0
 
@@ -284,17 +285,24 @@ func _handle_pointer_event(event: InputEvent) -> void:
 			_drag_distance = 0.0
 		elif mouse.button_index == MOUSE_BUTTON_LEFT:
 			if mouse.pressed:
+				_left_dragging = map_rect().has_point(mouse.position) and not minimap_rect().has_point(mouse.position)
+				_drag_position = mouse.position
+				_drag_distance = 0.0
 				if minimap_rect().has_point(mouse.position):
 					_focus_minimap(mouse.position)
-					return
-				_drag_distance = 0.0
-			elif not _dragging and _drag_distance < 5.0 and map_rect().has_point(mouse.position) and not minimap_rect().has_point(mouse.position):
-				_select_or_move_map(mouse.position,mouse.shift_pressed)
-	elif event is InputEventMouseMotion and _dragging:
+			else:
+				# A click orders/selects; a real drag pans and must never issue a move.
+				var short_click := _left_dragging and _drag_distance < 6.0
+				_left_dragging = false
+				if short_click and map_rect().has_point(mouse.position) and not minimap_rect().has_point(mouse.position):
+					_select_or_move_map(mouse.position,mouse.shift_pressed)
+	elif event is InputEventMouseMotion and (_dragging or _left_dragging):
 		var motion := event as InputEventMouseMotion
+		_drag_distance += motion.relative.length()
+		if _left_dragging and _drag_distance < 6.0:
+			return
 		world.camera.position -= motion.relative/maxf(world.camera.zoom.x,0.001)
 		world._update_chunks()
-		_drag_distance += motion.relative.length()
 		_drag_position = motion.position
 		_overlay.queue_redraw()
 	elif event is InputEventScreenTouch:
