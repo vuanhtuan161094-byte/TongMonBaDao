@@ -128,7 +128,9 @@ func _run() -> void:
 	zoom_event.button_index = MOUSE_BUTTON_WHEEL_UP
 	zoom_event.pressed = true
 	zoom_event.position = anchor
-	map._handle_pointer_event(zoom_event)
+	# Wheel routing moved to _input in 42e80e8; exercise that actual
+	# entrypoint instead of the legacy click/drag handler.
+	map._input(zoom_event)
 	if not _check(map.camera_zoom > 0.55
 		and map._screen_to_cell(anchor).distance_to(world_anchor) <= EPSILON,
 		"zoom changed the world point under the pointer"):
