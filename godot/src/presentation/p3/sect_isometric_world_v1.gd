@@ -1116,17 +1116,21 @@ func _draw_pve_actor(data: Dictionary) -> void:
         draw_colored_polygon(PackedVector2Array([foot+Vector2(0,-10),foot+Vector2(8,0),foot+Vector2(0,7),foot+Vector2(-8,0)]),shade)
     if side == "disciple" and pve_selected_actor_ids.has(id):
         draw_arc(foot+Vector2(0,3),13.0*camera.zoom.x,0.0,TAU,20,Color("ffe08a"),1.7,true)
-    var bar_width := 25.0*camera.zoom.x
+    # World-space HP/name anchors belong above the chibi head, not beneath
+    # the feet (which obscured movement and made the fight look unfinished).
+    # Camera2D already scales the Node2D drawing: do not multiply zoom twice.
+    var bar_width := 44.0
     var hp_ratio := clampf(float(actor.get("hp",0.0))/maxf(1.0,float(actor.get("max_hp",1.0))),0.0,1.0)
-    draw_rect(Rect2(foot+Vector2(-bar_width*0.5,4.0),Vector2(bar_width,3.0)),Color(0.04,0.07,0.05,0.9))
+    var bar_at := foot+Vector2(-bar_width*0.5,-82.0)
+    draw_rect(Rect2(bar_at,Vector2(bar_width,5.0)),Color(0.04,0.07,0.05,0.9))
     if hp_ratio > 0.0:
-        draw_rect(Rect2(foot+Vector2(-bar_width*0.5,4.0),Vector2(bar_width*hp_ratio,3.0)),Color("85d884") if side == "disciple" else Color("e88372"))
+        draw_rect(Rect2(bar_at,Vector2(bar_width*hp_ratio,5.0)),Color("85d884") if side == "disciple" else Color("e88372"))
     if side == "disciple" and pve_selected_actor_ids.size() == 1 and pve_selected_actor_ids.has(id):
         var font := ThemeDB.fallback_font
         if font != null:
             var name := str(row.get("display_name",id))
-            draw_string_outline(font,foot+Vector2(-36.0*camera.zoom.x,-20.0*camera.zoom.x),name,HORIZONTAL_ALIGNMENT_LEFT,-1,10,2,Color(0.02,0.04,0.03,0.94))
-            draw_string(font,foot+Vector2(-36.0*camera.zoom.x,-20.0*camera.zoom.x),name,HORIZONTAL_ALIGNMENT_LEFT,-1,10,Color("f4f1dd"))
+            draw_string_outline(font,foot+Vector2(-40.0,-93.0),name,HORIZONTAL_ALIGNMENT_LEFT,-1,10,2,Color(0.02,0.04,0.03,0.94))
+            draw_string(font,foot+Vector2(-40.0,-93.0),name,HORIZONTAL_ALIGNMENT_LEFT,-1,10,Color("f4f1dd"))
 
 
 func _visible_world(point: Vector2) -> bool:
