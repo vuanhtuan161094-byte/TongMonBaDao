@@ -302,9 +302,8 @@ func _handle_pointer_event(event: InputEvent) -> void:
 		if _left_dragging and _drag_distance < 6.0:
 			return
 		world.camera.position -= motion.relative/maxf(world.camera.zoom.x,0.001)
-		world._update_chunks()
+		_clamp_camera()
 		_drag_position = motion.position
-		_overlay.queue_redraw()
 	elif event is InputEventScreenTouch:
 		var touch := event as InputEventScreenTouch
 		if touch.pressed and minimap_rect().has_point(touch.position):
@@ -314,8 +313,7 @@ func _handle_pointer_event(event: InputEvent) -> void:
 	elif event is InputEventScreenDrag:
 		var drag := event as InputEventScreenDrag
 		world.camera.position -= drag.relative/maxf(world.camera.zoom.x,0.001)
-		world._update_chunks()
-		_overlay.queue_redraw()
+		_clamp_camera()
 
 func _select_or_move_map(screen: Vector2,shift: bool) -> void:
 	var nearest := ""
@@ -357,16 +355,14 @@ func _zoom_at_map(screen: Vector2,factor: float) -> void:
 	var next_zoom := clampf(old_zoom*factor,MIN_ZOOM,MAX_ZOOM)
 	world.camera.zoom = Vector2.ONE*next_zoom
 	world.camera.position = projected_anchor-(screen-size*0.5)/next_zoom
-	world._update_chunks()
-	_overlay.queue_redraw()
+	_clamp_camera()
 
 func _focus_minimap(screen: Vector2) -> void:
 	var uv := (screen-minimap_inner_rect().position)/minimap_inner_rect().size
 	var bounds: Rect2 = topology.get("bounds",Rect2(Vector2.ZERO,Vector2(SectIsometricWorldV1.GRID)))
 	var cell := Vector2(clampf(uv.x,0.0,1.0)*bounds.size.x,clampf(uv.y,0.0,1.0)*bounds.size.y)
 	world.camera.position = SectIsometricWorldV1.project(cell)
-	world._update_chunks()
-	_overlay.queue_redraw()
+	_clamp_camera()
 
 func _world_to_screen(cell: Vector2) -> Vector2:
 	return size*0.5+(SectIsometricWorldV1.project(cell)-world.camera.position)*world.camera.zoom.x
