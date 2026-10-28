@@ -42,6 +42,12 @@ var _viewport: SubViewport
 var _overlay: InputOverlay
 var _disciples: Dictionary = {}
 var _view_rows: Dictionary = {}
+var _zoom_in_button: Button
+var _zoom_out_button: Button
+var performance_logging_enabled := false
+var performance_vfx_draw_count := 0
+var performance_vfx_draw_usec_total := 0
+var performance_vfx_draw_usec_max := 0
 var _dragging := false
 var _drag_position := Vector2.ZERO
 var _drag_distance := 0.0
@@ -69,6 +75,7 @@ var _render_positions: Dictionary:
 	get: return world.pve_render_positions if world != null else {}
 
 func _ready() -> void:
+	performance_logging_enabled = OS.get_environment("TMB_PVE_PERF_LOG") == "1"
 	clip_contents = true
 	_container = SubViewportContainer.new()
 	_container.name = "SectPveWorldViewportContainer"
@@ -96,6 +103,7 @@ func _ready() -> void:
 	_overlay.event_handler = Callable(self,"_handle_pointer_event")
 	_overlay.draw_handler = Callable(self,"_draw_overlay")
 	add_child(_overlay)
+	_create_zoom_controls()
 	_overlay.queue_redraw()
 
 func _notification(what: int) -> void:
@@ -110,6 +118,78 @@ func _notification(what: int) -> void:
 func _process(_delta: float) -> void:
 	if world != null and world.pve_jx_sword_vfx.active_count() > 0:
 		_queue_overlay_redraw()
+
+func _input(event: InputEvent) -> void:
+	# Handle the wheel in the input phase before fullscreen HUD parents or other
+	# Controls can consume it as a scroll event. The map overlay still owns
+	# click, drag, and touch input; this only routes wheel zoom reliably.
+	if not visible or not is_inside_tree() or world == null or world.camera == null:
+		return
+	if not event is InputEventMouseButton:
+		return
+	var mouse := event as InputEventMouseButton
+	if not mouse.pressed or mouse.button_index not in [MOUSE_BUTTON_WHEEL_UP,MOUSE_BUTTON_WHEEL_DOWN]:
+		return
+	var hovered := get_viewport().gui_get_hovered_control()
+	if hovered != null and (not is_ancestor_of(hovered) or hovered is BaseButton):
+		return
+	var local_point: Vector2 = get_global_transform_with_canvas().affine_inverse()*mouse.position
+	if not Rect2(Vector2.ZERO,size).has_point(local_point):
+		return
+	var factor := 1.12 if mouse.button_index == MOUSE_BUTTON_WHEEL_UP else 1.0/1.12
+	_zoom_at_map(local_point,factor)
+	get_viewport().set_input_as_handled()
+
+func _create_zoom_controls() -> void:
+	_zoom_in_button = _make_zoom_button("PveWorldZoomIn","+","Phóng to bản đồ")
+	_zoom_out_button = _make_zoom_button("PveWorldZoomOut","−","Thu nhỏ bản đồ")
+	for entry in [[_zoom_in_button,176.0],[_zoom_out_button,226.0]]:
+		var button: Button = entry[0]
+		button.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+		button.offset_left = -60.0
+		button.offset_top = float(entry[1])
+		button.offset_right = -12.0
+		button.offset_bottom = float(entry[1])+44.0
+		add_child(button)
+	_zoom_in_button.pressed.connect(_zoom_in_at_center)
+	_zoom_out_button.pressed.connect(_zoom_out_at_center)
+
+func _make_zoom_button(node_name: String,text_value: String,tooltip: String) -> Button:
+	var button := Button.new()
+	button.name = node_name
+	button.text = text_value
+	button.tooltip_text = tooltip
+	button.custom_minimum_size = Vector2(48.0,44.0)
+	button.add_theme_font_size_override("font_size",22)
+	button.add_theme_color_override("font_color",Color("f3efdd"))
+	var normal := StyleBoxFlat.new()
+	normal.bg_color = Color(0.035,0.105,0.085,0.96)
+	normal.border_color = Color("d7c695")
+	normal.set_border_width_all(1)
+	normal.set_corner_radius_all(6)
+	button.add_theme_stylebox_override("normal",normal)
+	var hover := normal.duplicate() as StyleBoxFlat
+	hover.bg_color = Color("315a49")
+	button.add_theme_stylebox_override("hover",hover)
+	button.add_theme_stylebox_override("pressed",hover)
+	return button
+
+func _zoom_in_at_center() -> void:
+	_zoom_at_map(size*0.5,1.12)
+
+func _zoom_out_at_center() -> void:
+	_zoom_at_map(size*0.5,1.0/1.12)
+
+func consume_vfx_draw_metrics() -> Dictionary:
+	var result := {
+		"count":performance_vfx_draw_count,
+		"total_usec":performance_vfx_draw_usec_total,
+		"max_usec":performance_vfx_draw_usec_max
+	}
+	performance_vfx_draw_count = 0
+	performance_vfx_draw_usec_total = 0
+	performance_vfx_draw_usec_max = 0
+	return result
 
 func prepare_world() -> Dictionary:
 	prepare_world_call_count += 1
@@ -198,11 +278,7 @@ func show_authority_snapshot(snapshot: MapBattleV2, world_population: Dictionary
 func _handle_pointer_event(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		var mouse := event as InputEventMouseButton
-		if mouse.button_index == MOUSE_BUTTON_WHEEL_UP and mouse.pressed:
-			_zoom_at_map(mouse.position,1.12)
-		elif mouse.button_index == MOUSE_BUTTON_WHEEL_DOWN and mouse.pressed:
-			_zoom_at_map(mouse.position,1.0/1.12)
-		elif mouse.button_index == MOUSE_BUTTON_RIGHT:
+		if mouse.button_index == MOUSE_BUTTON_RIGHT:
 			_dragging = mouse.pressed
 			_drag_position = mouse.position
 			_drag_distance = 0.0
@@ -368,12 +444,13 @@ func _draw_overlay(canvas: CanvasItem) -> void:
 	canvas.draw_rect(Rect2(frame.position+Vector2(1,1),Vector2(frame.size.x-2,18)),Color(0.035,0.075,0.072,0.92))
 	if font != null:
 		canvas.draw_string(font,frame.position+Vector2(5,14),"MINIMAP · THẾ GIỚI THẬT",HORIZONTAL_ALIGNMENT_LEFT,-1,9,Color("f1d488"))
-		canvas.draw_string_outline(font,Vector2(12,size.y-10),"Bấm đất: di chuyển · Kéo phải: camera · Lăn: zoom",HORIZONTAL_ALIGNMENT_LEFT,-1,9,2,Color(0.01,0.02,0.02,0.9))
-		canvas.draw_string(font,Vector2(12,size.y-10),"Bấm đất: di chuyển · Kéo phải: camera · Lăn: zoom",HORIZONTAL_ALIGNMENT_LEFT,-1,9,Color("f3efdd"))
+		canvas.draw_string_outline(font,Vector2(12,size.y-10),"Bấm đất: di chuyển · Kéo phải: camera · Lăn / + −: zoom",HORIZONTAL_ALIGNMENT_LEFT,-1,9,2,Color(0.01,0.02,0.02,0.9))
+		canvas.draw_string(font,Vector2(12,size.y-10),"Bấm đất: di chuyển · Kéo phải: camera · Lăn / + −: zoom",HORIZONTAL_ALIGNMENT_LEFT,-1,9,Color("f3efdd"))
 	if not source_error.is_empty() and font != null:
 		canvas.draw_string(font,Vector2(12,44),source_error,HORIZONTAL_ALIGNMENT_LEFT,-1,10,Color("f0a474"))
 	if world == null or world.pve_jx_sword_vfx.comparison_style == "source_a":
 		return
+	var vfx_draw_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
 	for cue in world.pve_jx_sword_vfx.render_cues():
 		var position := _world_to_screen(cue.get("at",Vector2.ZERO))
 		if not map_rect().grow(80.0).has_point(position) or minimap_rect().has_point(position):
@@ -388,6 +465,11 @@ func _draw_overlay(canvas: CanvasItem) -> void:
 			if direction.length_squared() > 0.001:
 				canvas.draw_line(position-direction.normalized()*12.0,position-direction.normalized()*3.0,
 					Color(0.88,0.83,0.58,0.62),1.8,true)
+	if performance_logging_enabled:
+		var elapsed_usec := Time.get_ticks_usec()-vfx_draw_started_usec
+		performance_vfx_draw_count += 1
+		performance_vfx_draw_usec_total += elapsed_usec
+		performance_vfx_draw_usec_max = maxi(performance_vfx_draw_usec_max,elapsed_usec)
 
 func _minimap_point(cell: Vector2,inner: Rect2) -> Vector2:
 	var bounds: Rect2 = topology.get("bounds",Rect2(Vector2.ZERO,Vector2(SectIsometricWorldV1.GRID)))

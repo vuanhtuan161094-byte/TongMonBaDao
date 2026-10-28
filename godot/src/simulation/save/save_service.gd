@@ -4,19 +4,90 @@ extends RefCounted
 const CURRENT_VERSION := 3
 const LEGACY_CARE_VERSION := 3
 const CARE_VERSION := 4
+var _async_save_thread: Thread
 
 func save_to_path(state: SimulationState, path: String) -> Error:
     if state == null or path.is_empty():
         return ERR_INVALID_PARAMETER
+    if _async_save_thread != null:
+        _finish_async_save_blocking()
+    var perf_enabled := OS.get_environment("TMB_PVE_PERF_LOG") == "1"
+    var perf_total_started_usec := Time.get_ticks_usec() if perf_enabled else 0
+    var perf_state_started_usec := Time.get_ticks_usec() if perf_enabled else 0
+    var payload := _build_payload(state)
+    var perf_state_usec := Time.get_ticks_usec()-perf_state_started_usec if perf_enabled else 0
+    return _save_payload_to_path(payload,path,perf_state_usec,perf_total_started_usec,"sync")
+
+func start_save_to_path_async(state: SimulationState, path: String) -> Error:
+    if state == null or path.is_empty():
+        return ERR_INVALID_PARAMETER
+    if _async_save_thread != null:
+        return ERR_BUSY
+    var perf_enabled := OS.get_environment("TMB_PVE_PERF_LOG") == "1"
+    var perf_total_started_usec := Time.get_ticks_usec() if perf_enabled else 0
+    var perf_state_started_usec := Time.get_ticks_usec() if perf_enabled else 0
+    var payload := _build_payload(state)
+    var perf_state_usec := Time.get_ticks_usec()-perf_state_started_usec if perf_enabled else 0
+    _async_save_thread = Thread.new()
+    var start_error := _async_save_thread.start(Callable(self,"_save_async_worker").bind(
+        payload,path,perf_state_usec,perf_total_started_usec
+    ))
+    if start_error != OK:
+        _async_save_thread = null
+        return start_error
+    return OK
+
+func has_async_save_pending() -> bool:
+    return _async_save_thread != null
+
+func finish_async_save() -> Dictionary:
+    if _async_save_thread == null:
+        return {"ok":true,"pending":false,"error":OK}
+    if _async_save_thread.is_alive():
+        return {"ok":true,"pending":true,"error":OK}
+    var error := int(_async_save_thread.wait_to_finish())
+    _async_save_thread = null
+    return {"ok":error == OK,"pending":false,"error":error}
+
+func wait_for_async_save(tree: SceneTree) -> Dictionary:
+    while _async_save_thread != null and _async_save_thread.is_alive():
+        await tree.process_frame
+    return finish_async_save()
+
+func _finish_async_save_blocking() -> Dictionary:
+    if _async_save_thread == null:
+        return {"ok":true,"pending":false,"error":OK}
+    var error := int(_async_save_thread.wait_to_finish())
+    _async_save_thread = null
+    return {"ok":error == OK,"pending":false,"error":error}
+
+func _save_async_worker(payload: Dictionary, path: String,
+        state_to_dict_usec: int, total_started_usec: int) -> int:
+    return _save_payload_to_path(payload,path,state_to_dict_usec,total_started_usec,"async")
+
+func _build_payload(state: SimulationState) -> Dictionary:
     var payload := state.to_dict()
     var care := _has_care_payload(payload)
     payload["save_version"] = CARE_VERSION if care else CURRENT_VERSION
     if care: payload["b3_care_version"] = B3MedicalAutoplayV1.VERSION
+    return payload
+
+func _save_payload_to_path(payload: Dictionary, path: String,
+        perf_state_usec: int = 0, perf_total_started_usec: int = 0,
+        save_mode: String = "sync") -> Error:
+    if path.is_empty():
+        return ERR_INVALID_PARAMETER
+    var perf_enabled := OS.get_environment("TMB_PVE_PERF_LOG") == "1"
+    if perf_enabled and perf_total_started_usec <= 0:
+        perf_total_started_usec = Time.get_ticks_usec()
+    var perf_encode_started_usec := Time.get_ticks_usec() if perf_enabled else 0
     var staged := path + ".tmp"
     var backup := path + ".bak"
     var content := JSON.stringify(_encode_floats(payload), "", true, true)
+    var perf_encode_usec := Time.get_ticks_usec()-perf_encode_started_usec if perf_enabled else 0
 
     # Stage and verify a complete save before touching the only good copy.
+    var perf_write_started_usec := Time.get_ticks_usec() if perf_enabled else 0
     var file := FileAccess.open(staged, FileAccess.WRITE)
     if file == null:
         return FileAccess.get_open_error()
@@ -24,12 +95,17 @@ func save_to_path(state: SimulationState, path: String) -> Error:
     file.flush()
     var write_error := file.get_error()
     file.close()
+    var perf_write_usec := Time.get_ticks_usec()-perf_write_started_usec if perf_enabled else 0
+    var perf_validate_staged_started_usec := Time.get_ticks_usec() if perf_enabled else 0
     if write_error != OK or _load_exact(staged) == null:
         _remove_if_present(staged)
         return FAILED
+    var perf_validate_staged_usec := Time.get_ticks_usec()-perf_validate_staged_started_usec if perf_enabled else 0
 
+    var perf_validate_primary_started_usec := Time.get_ticks_usec() if perf_enabled else 0
     var had_primary := FileAccess.file_exists(path)
     var valid_primary := had_primary and _load_exact(path) != null
+    var perf_validate_primary_usec := Time.get_ticks_usec()-perf_validate_primary_started_usec if perf_enabled else 0
     if had_primary and not valid_primary:
         # Do not discard a broken primary if there is no valid recovery copy.
         if _load_exact(backup) == null:
@@ -41,6 +117,7 @@ func save_to_path(state: SimulationState, path: String) -> Error:
             return remove_error
     elif valid_primary:
         # Old primary becomes the last-known-good recovery copy.
+        var perf_rotate_started_usec := Time.get_ticks_usec() if perf_enabled else 0
         var clear_error := _remove_if_present(backup)
         if clear_error != OK:
             _remove_if_present(staged)
@@ -52,7 +129,10 @@ func save_to_path(state: SimulationState, path: String) -> Error:
         if rotate_error != OK:
             _remove_if_present(staged)
             return rotate_error
+        if perf_enabled:
+            perf_validate_primary_usec += Time.get_ticks_usec()-perf_rotate_started_usec
 
+    var perf_publish_started_usec := Time.get_ticks_usec() if perf_enabled else 0
     var install_error := DirAccess.rename_absolute(
         ProjectSettings.globalize_path(staged),
         ProjectSettings.globalize_path(path)
@@ -65,6 +145,18 @@ func save_to_path(state: SimulationState, path: String) -> Error:
                 ProjectSettings.globalize_path(path)
             )
         return install_error
+    if perf_enabled:
+        print("TMB_SAVE_SERVICE_METRIC " + JSON.stringify({
+            "mode":save_mode,
+            "state_to_dict_usec":perf_state_usec,
+            "encode_usec":perf_encode_usec,
+            "write_flush_usec":perf_write_usec,
+            "staged_validation_usec":perf_validate_staged_usec,
+            "primary_validation_rotate_usec":perf_validate_primary_usec,
+            "publish_usec":Time.get_ticks_usec()-perf_publish_started_usec,
+            "total_usec":Time.get_ticks_usec()-perf_total_started_usec if perf_total_started_usec > 0 else 0,
+            "content_chars":content.length()
+        }))
     return OK
 
 func _remove_if_present(path: String) -> Error:
@@ -73,6 +165,8 @@ func _remove_if_present(path: String) -> Error:
     return DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 
 func load_from_path(path: String) -> SimulationState:
+    if _async_save_thread != null:
+        _finish_async_save_blocking()
     var current := _load_exact(path)
     if current != null:
         return current

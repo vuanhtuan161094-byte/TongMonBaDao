@@ -80,10 +80,23 @@ func poll(now_unix: int = -1, max_steps: int = -1) -> Dictionary:
         return {"ok":false,"reason":"live_runtime_not_started"}
     return owner.update_to(_resolve_now(now_unix),max_steps)
 
+func poll_async(now_unix: int = -1, max_steps: int = -1) -> Dictionary:
+    if owner.state == null:
+        return {"ok":false,"reason":"live_runtime_not_started"}
+    return owner.update_to(_resolve_now(now_unix),max_steps,true,false)
+
 func save(now_unix: int = -1, max_steps: int = -1) -> Dictionary:
     if owner.state == null:
         return {"ok":false,"reason":"live_runtime_not_started"}
     return owner.save_to_path(save_path,_resolve_now(now_unix),max_steps)
+
+func save_async(now_unix: int = -1, max_steps: int = -1) -> Dictionary:
+    if owner.state == null:
+        return {"ok":false,"reason":"live_runtime_not_started"}
+    return owner.save_to_path_async(save_path,_resolve_now(now_unix),max_steps)
+
+func wait_for_pending_save(tree: SceneTree) -> Dictionary:
+    return await owner.wait_for_pending_save(tree)
 
 func state() -> SimulationState:
     return owner.state

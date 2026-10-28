@@ -414,7 +414,42 @@ func work_available(state: SimulationState, profession_id: StringName, disciple:
             return true
 
 func disciple_has_active_spirit_plot(state: SimulationState, disciple_id: StringName, field: BuildingState = null) -> bool:
-    var fields: Array = [field] if field != null else _buildings_of_type(state, TYPE_SPIRIT_FIELD)
+    var fields: Array = []
+    if field != null:
+        fields = [field]
+    elif state.disciples.has(disciple_id):
+        var disciple: DiscipleState = state.disciples[disciple_id]
+        var field_group := StringName(DEFINITIONS.get(str(TYPE_SPIRIT_FIELD),{}).get("worker_group_id",""))
+        if disciple.worksite_building_id != &"":
+            var assigned = state.buildings.get(str(disciple.worksite_building_id))
+            if assigned is BuildingState:
+                if assigned.building_type == TYPE_SPIRIT_FIELD:
+                    fields = [assigned]
+                elif disciple.work_group_id != field_group:
+                    # An explicit worksite in another profession cannot own a
+                    # live Spirit Field plot. Avoid rescanning unrelated fields
+                    # for every evaluating disciple in a large roster.
+                    return false
+                else:
+                    # Keep the defensive legacy scan for inconsistent group /
+                    # worksite pairs instead of hiding a persisted reservation.
+                    fields = _buildings_of_type(state,TYPE_SPIRIT_FIELD)
+            else:
+                fields = _buildings_of_type(state,TYPE_SPIRIT_FIELD)
+        elif disciple.work_group_id == field_group and field_group != &"":
+            # Empty worksite IDs are assigned only to the primary building by
+            # assigned_worker_ids(); inspect that authority directly.
+            var primary := primary_building(state,TYPE_SPIRIT_FIELD)
+            if primary != null:
+                fields = [primary]
+        elif disciple.work_group_id != &"":
+            return false
+        else:
+            # Legacy/unassigned states may retain a plot without an explicit
+            # crew assignment, so preserve the full lookup for those records.
+            fields = _buildings_of_type(state,TYPE_SPIRIT_FIELD)
+    else:
+        fields = _buildings_of_type(state,TYPE_SPIRIT_FIELD)
     for current_field in fields:
         if current_field == null:
             continue

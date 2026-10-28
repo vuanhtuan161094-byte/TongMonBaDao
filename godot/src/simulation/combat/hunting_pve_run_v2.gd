@@ -520,9 +520,14 @@ static func active_multicamp_id(state: SimulationState) -> String:
             return str(raw_id)
     return ""
 
-static func commit_owner(owner: SimulationRuntimeOwnerV2) -> Dictionary:
+static func commit_owner(owner: SimulationRuntimeOwnerV2, async_save: bool = false) -> Dictionary:
     if owner == null or owner.state == null or owner.durable_path.is_empty():
         return {"ok":false,"reason":"multicamp_missing_save_barrier"}
+    if async_save:
+        var start_error := owner.saves.start_save_to_path_async(owner.state,owner.durable_path)
+        owner.runtime_write_blocked = start_error != OK
+        return {"ok":start_error == OK,"pending":start_error == OK,"error":start_error,
+            "reason":"multicamp_save_barrier_failed" if start_error != OK else ""}
     var error := owner.saves.save_to_path(owner.state,owner.durable_path)
     owner.runtime_write_blocked = error != OK
     return {"ok":error == OK,"error":error,

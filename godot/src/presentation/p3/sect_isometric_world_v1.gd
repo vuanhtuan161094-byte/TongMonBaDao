@@ -171,6 +171,10 @@ var pve_jx_sword_vfx = PVE_JX_VFX_ADAPTER_SCRIPT.new()
 var pve_selected_actor_ids: Array[String] = []
 var pve_mini_texture: Texture2D
 var pve_camera_initialized := false
+var pve_performance_logging_enabled := false
+var pve_vfx_advance_count := 0
+var pve_vfx_advance_usec_total := 0
+var pve_vfx_advance_usec_max := 0
 const PVE_TREE_ASSETS := ["570036","570037","570038"]
 const PVE_BAMBOO_ASSETS := ["570041","570042","570043"]
 const PVE_ROCK_ASSETS := ["570073"]
@@ -181,6 +185,7 @@ const PVE_BRIDGE_ROWS := [32,92,150]
 
 
 func _ready() -> void:
+    pve_performance_logging_enabled = OS.get_environment("TMB_PVE_PERF_LOG") == "1"
     camera = Camera2D.new()
     camera.name = "SectIsoCamera2D"
     camera.enabled = true
@@ -691,11 +696,28 @@ func set_pve_snapshot(snapshot: MapBattleV2, view_rows: Dictionary,
 func pve_minimap_texture() -> Texture2D:
     return pve_mini_texture
 
+func consume_vfx_advance_metrics() -> Dictionary:
+    var result := {
+        "count":pve_vfx_advance_count,
+        "total_usec":pve_vfx_advance_usec_total,
+        "max_usec":pve_vfx_advance_usec_max
+    }
+    pve_vfx_advance_count = 0
+    pve_vfx_advance_usec_total = 0
+    pve_vfx_advance_usec_max = 0
+    return result
+
 func _process(delta: float) -> void:
     if not pve_landscape or pve_battle == null:
         return
     pve_clock += maxf(0.0,delta)
+    var vfx_advance_started_usec := Time.get_ticks_usec() if pve_performance_logging_enabled else 0
     pve_jx_sword_vfx.advance(delta)
+    if pve_performance_logging_enabled:
+        var vfx_advance_elapsed_usec := Time.get_ticks_usec()-vfx_advance_started_usec
+        pve_vfx_advance_count += 1
+        pve_vfx_advance_usec_total += vfx_advance_elapsed_usec
+        pve_vfx_advance_usec_max = maxi(pve_vfx_advance_usec_max,vfx_advance_elapsed_usec)
     for raw_id in pve_render_positions.keys():
         var id := str(raw_id)
         if pve_target_positions.has(id):

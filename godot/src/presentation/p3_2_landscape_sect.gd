@@ -218,6 +218,17 @@ var performance_sample_delta_max := 0.0
 var performance_hunt_refresh_count := 0
 var performance_hunt_refresh_usec_total := 0
 var performance_hunt_refresh_usec_max := 0
+var performance_hunt_restore_usec_total := 0
+var performance_hunt_restore_usec_max := 0
+var performance_hunt_visual_rows_usec_total := 0
+var performance_hunt_visual_rows_usec_max := 0
+var performance_hunt_view_update_usec_total := 0
+var performance_hunt_view_update_usec_max := 0
+var performance_hunt_hud_update_usec_total := 0
+var performance_hunt_hud_update_usec_max := 0
+var performance_move_pathfinding_count := 0
+var performance_move_pathfinding_usec_total := 0
+var performance_move_pathfinding_usec_max := 0
 var performance_sync_actor_usec_total := 0
 var performance_sync_actor_usec_max := 0
 var performance_map_worksite_refresh_count := 0
@@ -228,9 +239,22 @@ var performance_iso_refresh_usec_max := 0
 var performance_runtime_poll_count := 0
 var performance_runtime_poll_usec_total := 0
 var performance_runtime_poll_usec_max := 0
+var performance_runtime_update_usec_total := 0
+var performance_runtime_update_usec_max := 0
+var performance_runtime_refresh_usec_total := 0
+var performance_runtime_refresh_usec_max := 0
+var performance_runtime_save_wait_usec_total := 0
+var performance_runtime_save_wait_usec_max := 0
 var performance_save_count := 0
 var performance_save_usec_total := 0
 var performance_save_usec_max := 0
+var performance_autosave_prepare_usec_total := 0
+var performance_autosave_prepare_usec_max := 0
+var performance_autosave_wait_usec_total := 0
+var performance_autosave_wait_usec_max := 0
+var performance_checkpoint_count := 0
+var performance_checkpoint_usec_total := 0
+var performance_checkpoint_usec_max := 0
 
 func _ready() -> void:
     super._ready()
@@ -3525,6 +3549,12 @@ func _sample_frame_performance(delta: float) -> void:
         var actor := actor_value as CanvasItem
         if actor != null and actor.visible:
             visible_actor_count += 1
+    var vfx_advance_metrics: Dictionary = {}
+    var vfx_draw_metrics: Dictionary = {}
+    if b3_pve_world_view != null and is_instance_valid(b3_pve_world_view):
+        if b3_pve_world_view.world != null:
+            vfx_advance_metrics = b3_pve_world_view.world.consume_vfx_advance_metrics()
+        vfx_draw_metrics = b3_pve_world_view.consume_vfx_draw_metrics()
     var avg_frame_ms := performance_sample_delta_total*1000.0/maxi(1,performance_sample_frame_count)
     print("TMB_P3_2_FRAME_METRIC " + JSON.stringify({
         "fps":float(performance_sample_frame_count)/maxf(0.001,performance_sample_elapsed),
@@ -3533,6 +3563,25 @@ func _sample_frame_performance(delta: float) -> void:
         "hunt_refresh_count":performance_hunt_refresh_count,
         "hunt_refresh_avg_ms":float(performance_hunt_refresh_usec_total)/maxi(1,performance_hunt_refresh_count)/1000.0,
         "hunt_refresh_max_ms":float(performance_hunt_refresh_usec_max)/1000.0,
+        "hunt_snapshot_restore_avg_ms":float(performance_hunt_restore_usec_total)/maxi(1,performance_hunt_refresh_count)/1000.0,
+        "hunt_snapshot_restore_max_ms":float(performance_hunt_restore_usec_max)/1000.0,
+        "hunt_visual_rows_avg_ms":float(performance_hunt_visual_rows_usec_total)/maxi(1,performance_hunt_refresh_count)/1000.0,
+        "hunt_visual_rows_max_ms":float(performance_hunt_visual_rows_usec_max)/1000.0,
+        "hunt_world_view_update_avg_ms":float(performance_hunt_view_update_usec_total)/maxi(1,performance_hunt_refresh_count)/1000.0,
+        "hunt_world_view_update_max_ms":float(performance_hunt_view_update_usec_max)/1000.0,
+        "hunt_hud_update_avg_ms":float(performance_hunt_hud_update_usec_total)/maxi(1,performance_hunt_refresh_count)/1000.0,
+        "hunt_hud_update_max_ms":float(performance_hunt_hud_update_usec_max)/1000.0,
+        "move_pathfinding_count":performance_move_pathfinding_count,
+        "move_pathfinding_avg_ms":float(performance_move_pathfinding_usec_total)/maxi(1,performance_move_pathfinding_count)/1000.0,
+        "move_pathfinding_max_ms":float(performance_move_pathfinding_usec_max)/1000.0,
+        "pve_subviewport_update_mode":int(b3_pve_world_view._viewport.render_target_update_mode) if b3_pve_world_view != null and b3_pve_world_view._viewport != null else -1,
+        "pve_subviewport_pixels":int(b3_pve_world_view._viewport.size.x*b3_pve_world_view._viewport.size.y) if b3_pve_world_view != null and b3_pve_world_view._viewport != null else 0,
+        "pve_vfx_advance_count":int(vfx_advance_metrics.get("count",0)),
+        "pve_vfx_advance_avg_ms":float(vfx_advance_metrics.get("total_usec",0))/maxi(1,int(vfx_advance_metrics.get("count",0)))/1000.0,
+        "pve_vfx_advance_max_ms":float(vfx_advance_metrics.get("max_usec",0))/1000.0,
+        "pve_vfx_draw_count":int(vfx_draw_metrics.get("count",0)),
+        "pve_vfx_draw_avg_ms":float(vfx_draw_metrics.get("total_usec",0))/maxi(1,int(vfx_draw_metrics.get("count",0)))/1000.0,
+        "pve_vfx_draw_max_ms":float(vfx_draw_metrics.get("max_usec",0))/1000.0,
         "production_actor_sync_avg_ms":float(performance_sync_actor_usec_total)/maxi(1,performance_sample_frame_count)/1000.0,
         "production_actor_sync_max_ms":float(performance_sync_actor_usec_max)/1000.0,
         "production_worksite_refresh_count":performance_map_worksite_refresh_count,
@@ -3543,9 +3592,20 @@ func _sample_frame_performance(delta: float) -> void:
         "runtime_poll_count":performance_runtime_poll_count,
         "runtime_poll_avg_ms":float(performance_runtime_poll_usec_total)/maxi(1,performance_runtime_poll_count)/1000.0,
         "runtime_poll_max_ms":float(performance_runtime_poll_usec_max)/1000.0,
+        "runtime_poll_compute_avg_ms":float(performance_runtime_update_usec_total)/maxi(1,performance_runtime_poll_count)/1000.0,
+        "runtime_poll_compute_max_ms":float(performance_runtime_update_usec_max)/1000.0,
+        "runtime_poll_refresh_avg_ms":float(performance_runtime_refresh_usec_total)/maxi(1,performance_runtime_poll_count)/1000.0,
+        "runtime_poll_refresh_max_ms":float(performance_runtime_refresh_usec_max)/1000.0,
+        "runtime_checkpoint_wait_avg_ms":float(performance_runtime_save_wait_usec_total)/maxi(1,performance_runtime_poll_count)/1000.0,
+        "runtime_checkpoint_wait_max_ms":float(performance_runtime_save_wait_usec_max)/1000.0,
         "save_count":performance_save_count,
         "save_avg_ms":float(performance_save_usec_total)/maxi(1,performance_save_count)/1000.0,
         "save_max_ms":float(performance_save_usec_max)/1000.0,
+        "autosave_prepare_max_ms":float(performance_autosave_prepare_usec_max)/1000.0,
+        "autosave_worker_wait_max_ms":float(performance_autosave_wait_usec_max)/1000.0,
+        "pve_checkpoint_count":performance_checkpoint_count,
+        "pve_checkpoint_avg_ms":float(performance_checkpoint_usec_total)/maxi(1,performance_checkpoint_count)/1000.0,
+        "pve_checkpoint_max_ms":float(performance_checkpoint_usec_max)/1000.0,
         "visible_production_disciple_actors":visible_actor_count,
         "total_materialized_production_actors":actor_nodes.size()
     }))
@@ -3556,6 +3616,17 @@ func _sample_frame_performance(delta: float) -> void:
     performance_hunt_refresh_count = 0
     performance_hunt_refresh_usec_total = 0
     performance_hunt_refresh_usec_max = 0
+    performance_hunt_restore_usec_total = 0
+    performance_hunt_restore_usec_max = 0
+    performance_hunt_visual_rows_usec_total = 0
+    performance_hunt_visual_rows_usec_max = 0
+    performance_hunt_view_update_usec_total = 0
+    performance_hunt_view_update_usec_max = 0
+    performance_hunt_hud_update_usec_total = 0
+    performance_hunt_hud_update_usec_max = 0
+    performance_move_pathfinding_count = 0
+    performance_move_pathfinding_usec_total = 0
+    performance_move_pathfinding_usec_max = 0
     performance_sync_actor_usec_total = 0
     performance_sync_actor_usec_max = 0
     performance_map_worksite_refresh_count = 0
@@ -3566,28 +3637,56 @@ func _sample_frame_performance(delta: float) -> void:
     performance_runtime_poll_count = 0
     performance_runtime_poll_usec_total = 0
     performance_runtime_poll_usec_max = 0
+    performance_runtime_update_usec_total = 0
+    performance_runtime_update_usec_max = 0
+    performance_runtime_refresh_usec_total = 0
+    performance_runtime_refresh_usec_max = 0
+    performance_runtime_save_wait_usec_total = 0
+    performance_runtime_save_wait_usec_max = 0
     performance_save_count = 0
     performance_save_usec_total = 0
     performance_save_usec_max = 0
+    performance_autosave_prepare_usec_total = 0
+    performance_autosave_prepare_usec_max = 0
+    performance_autosave_wait_usec_total = 0
+    performance_autosave_wait_usec_max = 0
+    performance_checkpoint_count = 0
+    performance_checkpoint_usec_total = 0
+    performance_checkpoint_usec_max = 0
 
 func _advance_simulation() -> void:
     if not performance_logging_enabled:
-        super._advance_simulation()
+        await super._advance_simulation()
         return
     var started_usec := Time.get_ticks_usec()
-    super._advance_simulation()
+    await super._advance_simulation()
     var elapsed_usec := Time.get_ticks_usec()-started_usec
     performance_runtime_poll_count += 1
     performance_runtime_poll_usec_total += elapsed_usec
     performance_runtime_poll_usec_max = maxi(performance_runtime_poll_usec_max,elapsed_usec)
+    var runtime_update_usec := int(get("performance_last_runtime_update_usec"))
+    performance_runtime_update_usec_total += runtime_update_usec
+    performance_runtime_update_usec_max = maxi(performance_runtime_update_usec_max,runtime_update_usec)
+    var runtime_refresh_usec := int(get("performance_last_runtime_refresh_usec"))
+    performance_runtime_refresh_usec_total += runtime_refresh_usec
+    performance_runtime_refresh_usec_max = maxi(performance_runtime_refresh_usec_max,runtime_refresh_usec)
+    var runtime_save_wait_usec := int(get("performance_last_runtime_save_wait_usec"))
+    performance_runtime_save_wait_usec_total += runtime_save_wait_usec
+    performance_runtime_save_wait_usec_max = maxi(performance_runtime_save_wait_usec_max,runtime_save_wait_usec)
 
 func _autosave_runtime() -> void:
     if not performance_logging_enabled:
-        super._autosave_runtime()
+        await super._autosave_runtime()
         return
     var started_usec := Time.get_ticks_usec()
-    super._autosave_runtime()
+    await super._autosave_runtime()
     _record_pve_save_duration(Time.get_ticks_usec()-started_usec)
+    var autosave_prepare_usec := int(get("performance_last_autosave_prepare_usec"))
+    performance_autosave_prepare_usec_total += autosave_prepare_usec
+    performance_autosave_prepare_usec_max = maxi(performance_autosave_prepare_usec_max,autosave_prepare_usec)
+    var autosave_wait_usec := int(get("performance_last_autosave_wait_usec"))
+    performance_autosave_wait_usec_total += autosave_wait_usec
+    performance_autosave_wait_usec_max = maxi(performance_autosave_wait_usec_max,autosave_wait_usec)
 
 func _record_pve_save_duration(elapsed_usec: int) -> void:
     if not performance_logging_enabled:
@@ -3595,6 +3694,37 @@ func _record_pve_save_duration(elapsed_usec: int) -> void:
     performance_save_count += 1
     performance_save_usec_total += elapsed_usec
     performance_save_usec_max = maxi(performance_save_usec_max,elapsed_usec)
+
+func _record_pve_checkpoint_duration(elapsed_usec: int) -> void:
+    if not performance_logging_enabled:
+        return
+    performance_checkpoint_count += 1
+    performance_checkpoint_usec_total += elapsed_usec
+    performance_checkpoint_usec_max = maxi(performance_checkpoint_usec_max,elapsed_usec)
+
+func _record_hunt_refresh_stage(stage: String,elapsed_usec: int) -> void:
+    if not performance_logging_enabled:
+        return
+    match stage:
+        "snapshot_restore":
+            performance_hunt_restore_usec_total += elapsed_usec
+            performance_hunt_restore_usec_max = maxi(performance_hunt_restore_usec_max,elapsed_usec)
+        "visual_rows":
+            performance_hunt_visual_rows_usec_total += elapsed_usec
+            performance_hunt_visual_rows_usec_max = maxi(performance_hunt_visual_rows_usec_max,elapsed_usec)
+        "world_view_update":
+            performance_hunt_view_update_usec_total += elapsed_usec
+            performance_hunt_view_update_usec_max = maxi(performance_hunt_view_update_usec_max,elapsed_usec)
+        "hud_update":
+            performance_hunt_hud_update_usec_total += elapsed_usec
+            performance_hunt_hud_update_usec_max = maxi(performance_hunt_hud_update_usec_max,elapsed_usec)
+
+func _record_pathfinding_duration(elapsed_usec: int) -> void:
+    if not performance_logging_enabled:
+        return
+    performance_move_pathfinding_count += 1
+    performance_move_pathfinding_usec_total += elapsed_usec
+    performance_move_pathfinding_usec_max = maxi(performance_move_pathfinding_usec_max,elapsed_usec)
 
 func _refresh_all() -> void:
     super._refresh_all()
@@ -4537,19 +4667,30 @@ func _on_open_world_move_ordered(actor_ids: Array, destination: Vector2) -> void
     var base_cell := Vector2i(floori(destination.x),floori(destination.y))
     var assigned_slots: Dictionary = {}
     for index in range(eligible.size()):
+        var pathfinding_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
         var slot := _open_world_nearest_free_formation_cell(
             session.battle,base_cell+offsets[index],assigned_slots)
         if slot.x < 0:
+            if performance_logging_enabled:
+                _record_pathfinding_duration(Time.get_ticks_usec()-pathfinding_started_usec)
             _set_b3_hunt_feedback("Không tìm đủ ô trống để tách đội hình.")
             return
         var ordered := session.battle.order_group_move(
             [eligible[index]],Vector2(slot)+Vector2(0.5,0.5))
+        if performance_logging_enabled:
+            _record_pathfinding_duration(Time.get_ticks_usec()-pathfinding_started_usec)
         if not bool(ordered.get("ok",false)):
             _set_b3_hunt_feedback("Không đi tới được vị trí: %s" % str(ordered.get("reason","ô không đi được")))
             return
         assigned_slots[slot] = true
+    var checkpoint_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
     var checkpoint := session._persist_live_state()
+    if performance_logging_enabled:
+        _record_pve_checkpoint_duration(Time.get_ticks_usec()-checkpoint_started_usec)
+    var save_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
     var saved := runtime_session.save() if bool(checkpoint.get("ok",false)) else checkpoint
+    if performance_logging_enabled:
+        _record_pve_save_duration(Time.get_ticks_usec()-save_started_usec)
     _set_b3_hunt_feedback("Đã ra lệnh đội %d người tới ô địa hình; trạng thái đã lưu." % actor_ids.size() if bool(saved.get("ok",false)) else "Di chuyển đã ra lệnh; Save cần thử lại.")
     _refresh_b3_hunt_panel()
 
@@ -4673,7 +4814,10 @@ func _refresh_multicamp_hunt_panel() -> void:
     var running := not encounter.is_empty()
     if running:
         multicamp_encounter_id = encounter
+        var restore_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
         var restored := HuntingPveRunV2.resume_active(state,encounter)
+        if performance_logging_enabled:
+            _record_hunt_refresh_stage("snapshot_restore",Time.get_ticks_usec()-restore_started_usec)
         if not bool(restored.get("ok",false)):
             b3_hunt_facts.text = "Không thể khôi phục world PvE đã lưu: %s" % str(restored.get("reason","save không hợp lệ"))
             b3_hunt_arena.show_open_world_snapshot(null,{})
@@ -4701,16 +4845,34 @@ func _refresh_multicamp_hunt_panel() -> void:
 
     var envelope: Dictionary = state.sect.v2_pve_active_runs.get(encounter,{})
     var population: Dictionary = envelope.get("camp_population",{})
+    var hud_update_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
     if battle.world_mode:
+        var prepare_world_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
         var map_ready := b3_pve_world_view.prepare_world()
+        if performance_logging_enabled:
+            _record_hunt_refresh_stage("world_view_update",Time.get_ticks_usec()-prepare_world_started_usec)
         if bool(map_ready.get("ok",false)) and str(battle.world_navigation.get("source_blob_sha","")) == str(map_ready.get("topology",{}).get("source_blob_sha","")):
-            b3_hunt_arena.show_open_world_snapshot(battle,population,int(envelope.get("camp_index",0)),state.disciples,_b3_hunt_visual_rows(battle))
+            var visual_rows_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
+            var visual_rows := _b3_hunt_visual_rows(battle)
+            if performance_logging_enabled:
+                _record_hunt_refresh_stage("visual_rows",Time.get_ticks_usec()-visual_rows_started_usec)
+            var view_update_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
+            b3_hunt_arena.show_open_world_snapshot(battle,population,int(envelope.get("camp_index",0)),state.disciples,visual_rows)
+            if performance_logging_enabled:
+                _record_hunt_refresh_stage("world_view_update",Time.get_ticks_usec()-view_update_started_usec)
         else:
             b3_pve_world_view.source_error = str(map_ready.get("reason","map hash differs from the saved world"))
             b3_hunt_arena.show_open_world_snapshot(null,{})
             b3_hunt_facts.text = "Không thể nạp đúng map đã lưu: %s" % b3_pve_world_view.source_error
     else:
-        b3_hunt_arena.show_authority_snapshot(battle,_b3_hunt_visual_rows(battle),population,true)
+        var visual_rows_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
+        var visual_rows := _b3_hunt_visual_rows(battle)
+        if performance_logging_enabled:
+            _record_hunt_refresh_stage("visual_rows",Time.get_ticks_usec()-visual_rows_started_usec)
+        var view_update_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
+        b3_hunt_arena.show_authority_snapshot(battle,visual_rows,population,true)
+        if performance_logging_enabled:
+            _record_hunt_refresh_stage("world_view_update",Time.get_ticks_usec()-view_update_started_usec)
     if battle.world_mode:
         b3_hunt_auto_button.text = "AUTO: BẬT" if battle.auto_hunt else "AUTO: TẮT"
     else:
@@ -4758,6 +4920,8 @@ func _refresh_multicamp_hunt_panel() -> void:
         + "Hồi sinh mỗi vùng theo clock chung · LOOT_PENDING: chưa có bảng rơi từng quái được duyệt."
     ) % [str(population.get("world_source_map","Source A forest world")),camp_id,status,
         team_lines.size(),total_monsters,alive_monsters,kill_count,battle.now,member_text]
+    if performance_logging_enabled:
+        _record_hunt_refresh_stage("hud_update",Time.get_ticks_usec()-hud_update_started_usec)
 
 func _set_hunt_presentation_layout(use_live_map: bool) -> void:
     if b3_hunt_facts == null:
