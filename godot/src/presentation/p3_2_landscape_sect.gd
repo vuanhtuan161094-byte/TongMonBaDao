@@ -677,7 +677,8 @@ func _refresh_world_actor_visibility() -> void:
     var view := SectMapCamera.VIEW_RECT
     var visible_ids: Dictionary = {}
     var selected_key := str(selected_id)
-    if not selected_key.is_empty() and state.disciples.has(selected_id) and actor_virtual_positions.has(selected_key):
+    if not selected_key.is_empty() and state.disciples.has(selected_id) and actor_virtual_positions.has(selected_key) \
+            and not _selected_worker_is_inside_producer(state.disciples[selected_id]):
         var local_top_left: Vector2 = actor_virtual_positions[selected_key]
         var screen_transform: Transform2D = map_layer.get_global_transform()
         var screen_top_left: Vector2 = screen_transform * local_top_left
@@ -701,6 +702,20 @@ func _refresh_world_actor_visibility() -> void:
         if actor != null and is_instance_valid(actor):
             actor.visible = true
     _refresh_actor_status_label_visibility()
+
+func _selected_worker_is_inside_producer(disciple: DiscipleState) -> bool:
+    # Indoor workers are represented by their real building roster/timer panel,
+    # not a second character sprite outside the building. Simulation is untouched.
+    if disciple == null or state == null or disciple.region_id != &"sect" \
+            or not disciple.active_pve_encounter_id.is_empty() \
+            or disciple.worksite_building_id == &"":
+        return false
+    var building = state.buildings.get(str(disciple.worksite_building_id))
+    if not (building is BuildingState) \
+            or _sect_production_destination(building.building_type) == &"":
+        return false
+    return str(disciple.current_action).begins_with("WORK_") \
+        or disciple.current_action in [&"HOLD", &"EVALUATE", &"IDLE"]
 
 func _refresh_zoom_readout() -> void:
     if zoom_readout != null:
