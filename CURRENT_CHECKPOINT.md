@@ -1,5 +1,58 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 29/10/2026 — D4-B implementation checkpoint
+
+Branch feature/v63-v64-full-combat-20261029 current checkpoint source SHA: bbd6f83984c45e5212847bdaf326f14ef5ab469f. D4-B published source/test SHA: bbd6f83984c45e5212847bdaf326f14ef5ab469f; base feature SHA: 91ae575eb7bf94f09b38fd99403b3b0f7f262079. Stable main remains c0c1382f119599497b52d8ee8abd9e830a883f1e. PR #52 remains Draft/open at f7c33d9c3baba3267a17021718b44f87acd62ef6; no merge or PR mutation.
+
+- D4-B implementation: **HEADLESS_PASS**. Official Windows Godot 4.7.2 import exit 0 and all 16 focused/affected cumulative scripts exit 0 sequentially. Exact log hashes and source parity are in [D4-B evidence](docs/implementation/V65_D4B_HUMAN_BRANCHES_EVIDENCE_20261029.md) and E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D4B_20261029_final.
+- Behavior: 105 Human nodes/9 branches, manual-backed learn/equip/Combat V2 casts for each branch, shared-school basic/mobility, 96 archive-source links, branch-derived innate/passives, bounded status/support/AoE, and 3 real telegraph/release Human bosses with one-time phase events.
+- D4-A/D4-B GUI and owner visual acceptance: **PENDING**. D4-B changed no UI/scene/assets/VFX; D7 owns the full visual integration matrix. Actual Android/performance QA remains pending.
+- Both V6.3 gates remain OFF by default. Balance/economy and Boss coefficients remain candidate only. SaveService/schema, legacy P2/P2.3, One Active Job/scheduler, Injury120, Warehouse authority, production and raw assets remain protected and unchanged in D4-B.
+- The seven D4-B source/catalog/test blobs match the canonical Git blobs used for the final run. Generated Godot import sidecars and unrelated PowerShell work remain uncommitted/unpublished.
+
+PR #52 at f7c33d9c3baba3267a17021718b44f87acd62ef6 remains divergent. PR-only profiler wrappers and SaveService/runtime/presentation changes were not imported; this feature branch keeps its D2 receipt settlement, D3 One Active Job guards, and D4 adapter code.
+
+## Next code packet — D5 Immortal lineage and bosses
+
+Issue #54 and the execution contract authorize continuing. Required behavior: nine Immortal branch lineages with distinct A/B successors (learned history may retain both; only one descendant per family active), three real Immortal bosses with their own telegraph/stage/counter mechanics, status reactions, and deterministic breakthrough study through the existing D3 learning/One Active Job authority. Do not clone Human numerics or visuals. All costs, durations, status coefficients, and peak HP remain candidate-only; global gates stay OFF.
+
+Concrete D5 write allowlist (only these paths):
+- godot/data/combat/v63_immortal_combat_catalog.json (new)
+- godot/data/combat/v63_learning_catalog.json
+- godot/data/combat/v63_archive_catalog.json
+- godot/src/simulation/archive/v63_sect_archive_system.gd
+- godot/src/simulation/technique/v63_learning_system.gd
+- godot/src/simulation/combat/v63_immortal_skill_combat_system.gd (new)
+- godot/src/simulation/combat/v63_human_skill_combat_system.gd
+- godot/src/simulation/combat/map_battle_v2.gd
+- godot/tests/simulation/v63_d5_immortal_lineage_combat_test.gd (new)
+- godot/tests/simulation/v63_d5_predictable_breakthrough_study_test.gd (new)
+- godot/tests/simulation/v63_d4b_human_branches_bosses_test.gd
+- godot/tests/simulation/v63_d4b_archive_learning_test.gd
+- godot/tests/simulation/v63_d2_sect_archive_test.gd
+- godot/tests/simulation/v63_d2_codex_drop_receipts_test.gd
+- godot/tests/simulation/v63_d3_learning_job_test.gd
+- godot/tests/simulation/v63_d4a_human_combat_test.gd
+- godot/tests/simulation/v63_d4a_state_roundtrip_test.gd
+- godot/tests/simulation/p2_5_combat_skill_test.gd
+- godot/tests/simulation/dv2_02_combat_stats_test.gd
+- godot/tests/simulation/p2_3_technique_test.gd
+- godot/tests/simulation/p3_7b1_warehouse_test.gd
+- godot/tests/simulation/save_service_async_roundtrip_test.gd
+- godot/tests/simulation/safe_01_save_recovery_test.gd
+- godot/tests/simulation/pve_save_return_reload_exactly_once_test.gd
+- godot/tests/simulation/pve_multicamp_combat_hp0_bridge_test.gd
+- docs/implementation/V65_COMBAT_COVERAGE_LEDGER_20261029.json
+- docs/implementation/V65_D5_IMMORTAL_EVIDENCE_20261029.md (new)
+- CURRENT_CHECKPOINT.md
+- NEXT_CHAT_HANDOFF.md
+
+D5 protected/excluded: D6 Divine/rare, D7 UI/VFX assets and presentation, D8 endgame balance/performance release tuning, SaveService/schema, CombatStatsV2 formulas, Injury120, Warehouse and scheduler authority, production/economy, raw JX assets, main, PR #52, and merges. Rollback suppresses new D5 effects through the default-OFF gate while preserving knowledge/loadout records; no destructive downgrade or replacement of Human knowledge.
+
+D5 focused/cumulative gates: new Immortal A/B and deterministic study scripts; D4-B and D4-A combat/state tests; D2 archive and exact-once drop receipts; D3 study; P2.3/P2.5/CombatStats; canonical Warehouse; SaveService/SAFE-01; PvE Save/Return/exactly-once and HP0 bridge; official Windows Godot 4.7.2 import; sequential logs/source parity. GUI remains required only when visible files change.
+
+## Superseded checkpoint records
+
 ## 29/10/2026 — D4-A implementation checkpoint
 
 Branch feature/v63-v64-full-combat-20261029 source HEAD: 0af2af261e62960ffb4669c8d9d81feb153dd387. Stable main remains c0c1382f119599497b52d8ee8abd9e830a883f1e. PR #52 remains Draft/open at f7c33d9c3baba3267a17021718b44f87acd62ef6; no merge or PR mutation.
@@ -145,3 +198,4 @@ The additive disciple records are necessary: legacy `learned_combat_skills` is v
 Nguồn: [Issue #37](https://github.com/vuanhtuan161094-byte/TongMonBaDao/issues/37) · [PR #51](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/51) · [PR #50](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/50) · [166-branch inventory](https://github.com/vuanhtuan161094-byte/TongMonBaDao/blob/audit/tmb-whole-project-readiness-20261027/docs/operations/TMB_GITHUB_BRANCH_CONSOLIDATION_REGISTER_2026-10-27.md).
 
 Old full history preserved at [legacy checkpoint](https://github.com/vuanhtuan161094-byte/TongMonBaDao/blob/6b3fd181392c96c2386e5aa85950d2e993d67dda/CURRENT_CHECKPOINT.md).
+
