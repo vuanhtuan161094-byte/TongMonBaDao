@@ -81,7 +81,7 @@ func validate_invariants() -> Array[String]:
     if not has_v63_human_combat_state:
         for skill_disciple_value in disciples.values():
             var skill_disciple: DiscipleState = skill_disciple_value
-            if not skill_disciple.v63_learned_skill_nodes.is_empty() or not skill_disciple.v63_equipped_skill_ids.is_empty():
+            if not skill_disciple.v63_learned_skill_nodes.is_empty() or not skill_disciple.v63_equipped_skill_ids.is_empty() or skill_disciple.v63_combat_branch_id != &"":
                 has_v63_human_combat_state = true
                 break
     if has_v63_human_combat_state:
