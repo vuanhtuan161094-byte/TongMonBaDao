@@ -28,6 +28,9 @@ Concrete D6 write allowlist:
 - godot/src/simulation/combat/map_battle_snapshot_v2.gd (D6-only poison/summon actor-state validation; no schema change)
 - godot/tests/simulation/v63_d6_divine_lineage_combat_test.gd (new)
 - godot/tests/simulation/v63_d6_rare_successors_test.gd (new)
+- godot/tests/simulation/v63_d2_sect_archive_test.gd (expected expanded catalog cardinality)
+- godot/tests/simulation/v63_d3_learning_job_test.gd (expected expanded catalog cardinality)
+- godot/tests/simulation/v63_d4b_archive_learning_test.gd (apply authored universal owner cap 5; retain target cap 30)
 - docs/implementation/V65_COMBAT_COVERAGE_LEDGER_20261029.json
 - docs/implementation/V65_D6_DIVINE_EVIDENCE_20261029.md (new)
 - CURRENT_CHECKPOINT.md
