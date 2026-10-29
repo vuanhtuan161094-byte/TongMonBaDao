@@ -8,7 +8,8 @@ const DEFAULT_FLAGS := {
     "boss_encounters": false,
     "sect_codex": false,
     "technique_learning": false,
-    "human_skill_combat": false
+    "human_skill_combat": false,
+    "divine_skill_combat": false
 }
 
 static func is_enabled(flag_id: String, preview_overrides: Dictionary = {}) -> bool:

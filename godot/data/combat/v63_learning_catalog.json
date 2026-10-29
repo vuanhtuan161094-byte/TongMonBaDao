@@ -892,6 +892,1734 @@
       },
       "combat_effects_enabled": false,
       "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.bow.liep_anh.divine_i.a",
+      "name": "Liệp Ảnh · Truy Hồn · Thần Giai I",
+      "school": "bow",
+      "branch": "liep_anh",
+      "generation": "divine",
+      "lineage": "a",
+      "divine_stage": 1,
+      "source_codex_id": "tmb.codex.bow.liep_anh.lineage_a.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.bow.liep_anh.immortal.a"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 9000,
+        "spirit_stones": 750000
+      },
+      "study_ticks": 360,
+      "candidate_prerequisites": {
+        "cultivation_realm": 21,
+        "body_realm": 21,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.bow.liep_anh.immortal.a",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.bow.liep_anh.divine_ii.a",
+      "name": "Liệp Ảnh · Truy Hồn · Thần Giai II",
+      "school": "bow",
+      "branch": "liep_anh",
+      "generation": "divine",
+      "lineage": "a",
+      "divine_stage": 2,
+      "source_codex_id": "tmb.codex.bow.liep_anh.lineage_a.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.bow.liep_anh.divine_i.a"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 18000,
+        "spirit_stones": 1500000
+      },
+      "study_ticks": 720,
+      "candidate_prerequisites": {
+        "cultivation_realm": 25,
+        "body_realm": 25,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.bow.liep_anh.divine_i.a",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.bow.liep_anh.divine_iii.a",
+      "name": "Liệp Ảnh · Truy Hồn · Thần Giai III",
+      "school": "bow",
+      "branch": "liep_anh",
+      "generation": "divine",
+      "lineage": "a",
+      "divine_stage": 3,
+      "source_codex_id": "tmb.codex.bow.liep_anh.lineage_a.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.bow.liep_anh.divine_ii.a"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 27000,
+        "spirit_stones": 2250000
+      },
+      "study_ticks": 1080,
+      "candidate_prerequisites": {
+        "cultivation_realm": 29,
+        "body_realm": 29,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.bow.liep_anh.divine_ii.a",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.bow.liep_anh.divine_i.b",
+      "name": "Liệp Ảnh · Xuyên Thành · Thần Giai I",
+      "school": "bow",
+      "branch": "liep_anh",
+      "generation": "divine",
+      "lineage": "b",
+      "divine_stage": 1,
+      "source_codex_id": "tmb.codex.bow.liep_anh.lineage_b.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.bow.liep_anh.immortal.b"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 9000,
+        "spirit_stones": 750000
+      },
+      "study_ticks": 360,
+      "candidate_prerequisites": {
+        "cultivation_realm": 21,
+        "body_realm": 21,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.bow.liep_anh.immortal.b",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.bow.liep_anh.divine_ii.b",
+      "name": "Liệp Ảnh · Xuyên Thành · Thần Giai II",
+      "school": "bow",
+      "branch": "liep_anh",
+      "generation": "divine",
+      "lineage": "b",
+      "divine_stage": 2,
+      "source_codex_id": "tmb.codex.bow.liep_anh.lineage_b.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.bow.liep_anh.divine_i.b"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 18000,
+        "spirit_stones": 1500000
+      },
+      "study_ticks": 720,
+      "candidate_prerequisites": {
+        "cultivation_realm": 25,
+        "body_realm": 25,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.bow.liep_anh.divine_i.b",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.bow.liep_anh.divine_iii.b",
+      "name": "Liệp Ảnh · Xuyên Thành · Thần Giai III",
+      "school": "bow",
+      "branch": "liep_anh",
+      "generation": "divine",
+      "lineage": "b",
+      "divine_stage": 3,
+      "source_codex_id": "tmb.codex.bow.liep_anh.lineage_b.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.bow.liep_anh.divine_ii.b"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 27000,
+        "spirit_stones": 2250000
+      },
+      "study_ticks": 1080,
+      "candidate_prerequisites": {
+        "cultivation_realm": 29,
+        "body_realm": 29,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.bow.liep_anh.divine_ii.b",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.bow.linh_tien.divine_i.a",
+      "name": "Linh Tiễn · Tụ Nguyên · Thần Giai I",
+      "school": "bow",
+      "branch": "linh_tien",
+      "generation": "divine",
+      "lineage": "a",
+      "divine_stage": 1,
+      "source_codex_id": "tmb.codex.bow.linh_tien.lineage_a.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.bow.linh_tien.immortal.a"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 9000,
+        "spirit_stones": 750000
+      },
+      "study_ticks": 360,
+      "candidate_prerequisites": {
+        "cultivation_realm": 21,
+        "body_realm": 21,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.bow.linh_tien.immortal.a",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.bow.linh_tien.divine_ii.a",
+      "name": "Linh Tiễn · Tụ Nguyên · Thần Giai II",
+      "school": "bow",
+      "branch": "linh_tien",
+      "generation": "divine",
+      "lineage": "a",
+      "divine_stage": 2,
+      "source_codex_id": "tmb.codex.bow.linh_tien.lineage_a.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.bow.linh_tien.divine_i.a"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 18000,
+        "spirit_stones": 1500000
+      },
+      "study_ticks": 720,
+      "candidate_prerequisites": {
+        "cultivation_realm": 25,
+        "body_realm": 25,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.bow.linh_tien.divine_i.a",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.bow.linh_tien.divine_iii.a",
+      "name": "Linh Tiễn · Tụ Nguyên · Thần Giai III",
+      "school": "bow",
+      "branch": "linh_tien",
+      "generation": "divine",
+      "lineage": "a",
+      "divine_stage": 3,
+      "source_codex_id": "tmb.codex.bow.linh_tien.lineage_a.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.bow.linh_tien.divine_ii.a"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 27000,
+        "spirit_stones": 2250000
+      },
+      "study_ticks": 1080,
+      "candidate_prerequisites": {
+        "cultivation_realm": 29,
+        "body_realm": 29,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.bow.linh_tien.divine_ii.a",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.bow.linh_tien.divine_i.b",
+      "name": "Linh Tiễn · Thiên Tượng · Thần Giai I",
+      "school": "bow",
+      "branch": "linh_tien",
+      "generation": "divine",
+      "lineage": "b",
+      "divine_stage": 1,
+      "source_codex_id": "tmb.codex.bow.linh_tien.lineage_b.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.bow.linh_tien.immortal.b"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 9000,
+        "spirit_stones": 750000
+      },
+      "study_ticks": 360,
+      "candidate_prerequisites": {
+        "cultivation_realm": 21,
+        "body_realm": 21,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.bow.linh_tien.immortal.b",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.bow.linh_tien.divine_ii.b",
+      "name": "Linh Tiễn · Thiên Tượng · Thần Giai II",
+      "school": "bow",
+      "branch": "linh_tien",
+      "generation": "divine",
+      "lineage": "b",
+      "divine_stage": 2,
+      "source_codex_id": "tmb.codex.bow.linh_tien.lineage_b.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.bow.linh_tien.divine_i.b"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 18000,
+        "spirit_stones": 1500000
+      },
+      "study_ticks": 720,
+      "candidate_prerequisites": {
+        "cultivation_realm": 25,
+        "body_realm": 25,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.bow.linh_tien.divine_i.b",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.bow.linh_tien.divine_iii.b",
+      "name": "Linh Tiễn · Thiên Tượng · Thần Giai III",
+      "school": "bow",
+      "branch": "linh_tien",
+      "generation": "divine",
+      "lineage": "b",
+      "divine_stage": 3,
+      "source_codex_id": "tmb.codex.bow.linh_tien.lineage_b.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.bow.linh_tien.divine_ii.b"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 27000,
+        "spirit_stones": 2250000
+      },
+      "study_ticks": 1080,
+      "candidate_prerequisites": {
+        "cultivation_realm": 29,
+        "body_realm": 29,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.bow.linh_tien.divine_ii.b",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.bow.thien_vu.divine_i.a",
+      "name": "Thiên Vũ · Tiễn Hải · Thần Giai I",
+      "school": "bow",
+      "branch": "thien_vu",
+      "generation": "divine",
+      "lineage": "a",
+      "divine_stage": 1,
+      "source_codex_id": "tmb.codex.bow.thien_vu.lineage_a.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.bow.thien_vu.immortal.a"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 9000,
+        "spirit_stones": 750000
+      },
+      "study_ticks": 360,
+      "candidate_prerequisites": {
+        "cultivation_realm": 21,
+        "body_realm": 21,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.bow.thien_vu.immortal.a",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.bow.thien_vu.divine_ii.a",
+      "name": "Thiên Vũ · Tiễn Hải · Thần Giai II",
+      "school": "bow",
+      "branch": "thien_vu",
+      "generation": "divine",
+      "lineage": "a",
+      "divine_stage": 2,
+      "source_codex_id": "tmb.codex.bow.thien_vu.lineage_a.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.bow.thien_vu.divine_i.a"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 18000,
+        "spirit_stones": 1500000
+      },
+      "study_ticks": 720,
+      "candidate_prerequisites": {
+        "cultivation_realm": 25,
+        "body_realm": 25,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.bow.thien_vu.divine_i.a",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.bow.thien_vu.divine_iii.a",
+      "name": "Thiên Vũ · Tiễn Hải · Thần Giai III",
+      "school": "bow",
+      "branch": "thien_vu",
+      "generation": "divine",
+      "lineage": "a",
+      "divine_stage": 3,
+      "source_codex_id": "tmb.codex.bow.thien_vu.lineage_a.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.bow.thien_vu.divine_ii.a"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 27000,
+        "spirit_stones": 2250000
+      },
+      "study_ticks": 1080,
+      "candidate_prerequisites": {
+        "cultivation_realm": 29,
+        "body_realm": 29,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.bow.thien_vu.divine_ii.a",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.bow.thien_vu.divine_i.b",
+      "name": "Thiên Vũ · Quy Nhất · Thần Giai I",
+      "school": "bow",
+      "branch": "thien_vu",
+      "generation": "divine",
+      "lineage": "b",
+      "divine_stage": 1,
+      "source_codex_id": "tmb.codex.bow.thien_vu.lineage_b.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.bow.thien_vu.immortal.b"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 9000,
+        "spirit_stones": 750000
+      },
+      "study_ticks": 360,
+      "candidate_prerequisites": {
+        "cultivation_realm": 21,
+        "body_realm": 21,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.bow.thien_vu.immortal.b",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.bow.thien_vu.divine_ii.b",
+      "name": "Thiên Vũ · Quy Nhất · Thần Giai II",
+      "school": "bow",
+      "branch": "thien_vu",
+      "generation": "divine",
+      "lineage": "b",
+      "divine_stage": 2,
+      "source_codex_id": "tmb.codex.bow.thien_vu.lineage_b.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.bow.thien_vu.divine_i.b"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 18000,
+        "spirit_stones": 1500000
+      },
+      "study_ticks": 720,
+      "candidate_prerequisites": {
+        "cultivation_realm": 25,
+        "body_realm": 25,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.bow.thien_vu.divine_i.b",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.bow.thien_vu.divine_iii.b",
+      "name": "Thiên Vũ · Quy Nhất · Thần Giai III",
+      "school": "bow",
+      "branch": "thien_vu",
+      "generation": "divine",
+      "lineage": "b",
+      "divine_stage": 3,
+      "source_codex_id": "tmb.codex.bow.thien_vu.lineage_b.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.bow.thien_vu.divine_ii.b"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 27000,
+        "spirit_stones": 2250000
+      },
+      "study_ticks": 1080,
+      "candidate_prerequisites": {
+        "cultivation_realm": 29,
+        "body_realm": 29,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.bow.thien_vu.divine_ii.b",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.fist.ba_quyen.divine_i.a",
+      "name": "Bá Quyền · Phá Quân · Thần Giai I",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "generation": "divine",
+      "lineage": "a",
+      "divine_stage": 1,
+      "source_codex_id": "tmb.codex.fist.ba_quyen.lineage_a.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.fist.ba_quyen.immortal.a"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 9000,
+        "spirit_stones": 750000
+      },
+      "study_ticks": 360,
+      "candidate_prerequisites": {
+        "cultivation_realm": 21,
+        "body_realm": 21,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.fist.ba_quyen.immortal.a",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.fist.ba_quyen.divine_ii.a",
+      "name": "Bá Quyền · Phá Quân · Thần Giai II",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "generation": "divine",
+      "lineage": "a",
+      "divine_stage": 2,
+      "source_codex_id": "tmb.codex.fist.ba_quyen.lineage_a.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.fist.ba_quyen.divine_i.a"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 18000,
+        "spirit_stones": 1500000
+      },
+      "study_ticks": 720,
+      "candidate_prerequisites": {
+        "cultivation_realm": 25,
+        "body_realm": 25,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.fist.ba_quyen.divine_i.a",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.fist.ba_quyen.divine_iii.a",
+      "name": "Bá Quyền · Phá Quân · Thần Giai III",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "generation": "divine",
+      "lineage": "a",
+      "divine_stage": 3,
+      "source_codex_id": "tmb.codex.fist.ba_quyen.lineage_a.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.fist.ba_quyen.divine_ii.a"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 27000,
+        "spirit_stones": 2250000
+      },
+      "study_ticks": 1080,
+      "candidate_prerequisites": {
+        "cultivation_realm": 29,
+        "body_realm": 29,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.fist.ba_quyen.divine_ii.a",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.fist.ba_quyen.divine_i.b",
+      "name": "Bá Quyền · Địa Liệt · Thần Giai I",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "generation": "divine",
+      "lineage": "b",
+      "divine_stage": 1,
+      "source_codex_id": "tmb.codex.fist.ba_quyen.lineage_b.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.fist.ba_quyen.immortal.b"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 9000,
+        "spirit_stones": 750000
+      },
+      "study_ticks": 360,
+      "candidate_prerequisites": {
+        "cultivation_realm": 21,
+        "body_realm": 21,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.fist.ba_quyen.immortal.b",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.fist.ba_quyen.divine_ii.b",
+      "name": "Bá Quyền · Địa Liệt · Thần Giai II",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "generation": "divine",
+      "lineage": "b",
+      "divine_stage": 2,
+      "source_codex_id": "tmb.codex.fist.ba_quyen.lineage_b.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.fist.ba_quyen.divine_i.b"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 18000,
+        "spirit_stones": 1500000
+      },
+      "study_ticks": 720,
+      "candidate_prerequisites": {
+        "cultivation_realm": 25,
+        "body_realm": 25,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.fist.ba_quyen.divine_i.b",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.fist.ba_quyen.divine_iii.b",
+      "name": "Bá Quyền · Địa Liệt · Thần Giai III",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "generation": "divine",
+      "lineage": "b",
+      "divine_stage": 3,
+      "source_codex_id": "tmb.codex.fist.ba_quyen.lineage_b.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.fist.ba_quyen.divine_ii.b"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 27000,
+        "spirit_stones": 2250000
+      },
+      "study_ticks": 1080,
+      "candidate_prerequisites": {
+        "cultivation_realm": 29,
+        "body_realm": 29,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.fist.ba_quyen.divine_ii.b",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.fist.kim_cang.divine_i.a",
+      "name": "Kim Cang · Hộ Pháp · Thần Giai I",
+      "school": "fist",
+      "branch": "kim_cang",
+      "generation": "divine",
+      "lineage": "a",
+      "divine_stage": 1,
+      "source_codex_id": "tmb.codex.fist.kim_cang.lineage_a.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.fist.kim_cang.immortal.a"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 9000,
+        "spirit_stones": 750000
+      },
+      "study_ticks": 360,
+      "candidate_prerequisites": {
+        "cultivation_realm": 21,
+        "body_realm": 21,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.fist.kim_cang.immortal.a",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.fist.kim_cang.divine_ii.a",
+      "name": "Kim Cang · Hộ Pháp · Thần Giai II",
+      "school": "fist",
+      "branch": "kim_cang",
+      "generation": "divine",
+      "lineage": "a",
+      "divine_stage": 2,
+      "source_codex_id": "tmb.codex.fist.kim_cang.lineage_a.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.fist.kim_cang.divine_i.a"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 18000,
+        "spirit_stones": 1500000
+      },
+      "study_ticks": 720,
+      "candidate_prerequisites": {
+        "cultivation_realm": 25,
+        "body_realm": 25,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.fist.kim_cang.divine_i.a",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.fist.kim_cang.divine_iii.a",
+      "name": "Kim Cang · Hộ Pháp · Thần Giai III",
+      "school": "fist",
+      "branch": "kim_cang",
+      "generation": "divine",
+      "lineage": "a",
+      "divine_stage": 3,
+      "source_codex_id": "tmb.codex.fist.kim_cang.lineage_a.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.fist.kim_cang.divine_ii.a"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 27000,
+        "spirit_stones": 2250000
+      },
+      "study_ticks": 1080,
+      "candidate_prerequisites": {
+        "cultivation_realm": 29,
+        "body_realm": 29,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.fist.kim_cang.divine_ii.a",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.fist.kim_cang.divine_i.b",
+      "name": "Kim Cang · Phản Chấn · Thần Giai I",
+      "school": "fist",
+      "branch": "kim_cang",
+      "generation": "divine",
+      "lineage": "b",
+      "divine_stage": 1,
+      "source_codex_id": "tmb.codex.fist.kim_cang.lineage_b.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.fist.kim_cang.immortal.b"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 9000,
+        "spirit_stones": 750000
+      },
+      "study_ticks": 360,
+      "candidate_prerequisites": {
+        "cultivation_realm": 21,
+        "body_realm": 21,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.fist.kim_cang.immortal.b",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.fist.kim_cang.divine_ii.b",
+      "name": "Kim Cang · Phản Chấn · Thần Giai II",
+      "school": "fist",
+      "branch": "kim_cang",
+      "generation": "divine",
+      "lineage": "b",
+      "divine_stage": 2,
+      "source_codex_id": "tmb.codex.fist.kim_cang.lineage_b.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.fist.kim_cang.divine_i.b"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 18000,
+        "spirit_stones": 1500000
+      },
+      "study_ticks": 720,
+      "candidate_prerequisites": {
+        "cultivation_realm": 25,
+        "body_realm": 25,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.fist.kim_cang.divine_i.b",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.fist.kim_cang.divine_iii.b",
+      "name": "Kim Cang · Phản Chấn · Thần Giai III",
+      "school": "fist",
+      "branch": "kim_cang",
+      "generation": "divine",
+      "lineage": "b",
+      "divine_stage": 3,
+      "source_codex_id": "tmb.codex.fist.kim_cang.lineage_b.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.fist.kim_cang.divine_ii.b"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 27000,
+        "spirit_stones": 2250000
+      },
+      "study_ticks": 1080,
+      "candidate_prerequisites": {
+        "cultivation_realm": 29,
+        "body_realm": 29,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.fist.kim_cang.divine_ii.b",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.fist.huyet_quyen.divine_i.a",
+      "name": "Huyết Quyền · Huyết Ma · Thần Giai I",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "generation": "divine",
+      "lineage": "a",
+      "divine_stage": 1,
+      "source_codex_id": "tmb.codex.fist.huyet_quyen.lineage_a.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.fist.huyet_quyen.immortal.a"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 9000,
+        "spirit_stones": 750000
+      },
+      "study_ticks": 360,
+      "candidate_prerequisites": {
+        "cultivation_realm": 21,
+        "body_realm": 21,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.fist.huyet_quyen.immortal.a",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.fist.huyet_quyen.divine_ii.a",
+      "name": "Huyết Quyền · Huyết Ma · Thần Giai II",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "generation": "divine",
+      "lineage": "a",
+      "divine_stage": 2,
+      "source_codex_id": "tmb.codex.fist.huyet_quyen.lineage_a.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.fist.huyet_quyen.divine_i.a"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 18000,
+        "spirit_stones": 1500000
+      },
+      "study_ticks": 720,
+      "candidate_prerequisites": {
+        "cultivation_realm": 25,
+        "body_realm": 25,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.fist.huyet_quyen.divine_i.a",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.fist.huyet_quyen.divine_iii.a",
+      "name": "Huyết Quyền · Huyết Ma · Thần Giai III",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "generation": "divine",
+      "lineage": "a",
+      "divine_stage": 3,
+      "source_codex_id": "tmb.codex.fist.huyet_quyen.lineage_a.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.fist.huyet_quyen.divine_ii.a"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 27000,
+        "spirit_stones": 2250000
+      },
+      "study_ticks": 1080,
+      "candidate_prerequisites": {
+        "cultivation_realm": 29,
+        "body_realm": 29,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.fist.huyet_quyen.divine_ii.a",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.fist.huyet_quyen.divine_i.b",
+      "name": "Huyết Quyền · Huyết Sinh · Thần Giai I",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "generation": "divine",
+      "lineage": "b",
+      "divine_stage": 1,
+      "source_codex_id": "tmb.codex.fist.huyet_quyen.lineage_b.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.fist.huyet_quyen.immortal.b"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 9000,
+        "spirit_stones": 750000
+      },
+      "study_ticks": 360,
+      "candidate_prerequisites": {
+        "cultivation_realm": 21,
+        "body_realm": 21,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.fist.huyet_quyen.immortal.b",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.fist.huyet_quyen.divine_ii.b",
+      "name": "Huyết Quyền · Huyết Sinh · Thần Giai II",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "generation": "divine",
+      "lineage": "b",
+      "divine_stage": 2,
+      "source_codex_id": "tmb.codex.fist.huyet_quyen.lineage_b.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.fist.huyet_quyen.divine_i.b"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 18000,
+        "spirit_stones": 1500000
+      },
+      "study_ticks": 720,
+      "candidate_prerequisites": {
+        "cultivation_realm": 25,
+        "body_realm": 25,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.fist.huyet_quyen.divine_i.b",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.fist.huyet_quyen.divine_iii.b",
+      "name": "Huyết Quyền · Huyết Sinh · Thần Giai III",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "generation": "divine",
+      "lineage": "b",
+      "divine_stage": 3,
+      "source_codex_id": "tmb.codex.fist.huyet_quyen.lineage_b.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.fist.huyet_quyen.divine_ii.b"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 27000,
+        "spirit_stones": 2250000
+      },
+      "study_ticks": 1080,
+      "candidate_prerequisites": {
+        "cultivation_realm": 29,
+        "body_realm": 29,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.fist.huyet_quyen.divine_ii.b",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.poison.doc_cham.divine_i.a",
+      "name": "Độc Châm · Thực Cốt · Thần Giai I",
+      "school": "poison",
+      "branch": "doc_cham",
+      "generation": "divine",
+      "lineage": "a",
+      "divine_stage": 1,
+      "source_codex_id": "tmb.codex.poison.doc_cham.lineage_a.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.poison.doc_cham.immortal.a"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 9000,
+        "spirit_stones": 750000
+      },
+      "study_ticks": 360,
+      "candidate_prerequisites": {
+        "cultivation_realm": 21,
+        "body_realm": 21,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.poison.doc_cham.immortal.a",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.poison.doc_cham.divine_ii.a",
+      "name": "Độc Châm · Thực Cốt · Thần Giai II",
+      "school": "poison",
+      "branch": "doc_cham",
+      "generation": "divine",
+      "lineage": "a",
+      "divine_stage": 2,
+      "source_codex_id": "tmb.codex.poison.doc_cham.lineage_a.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.poison.doc_cham.divine_i.a"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 18000,
+        "spirit_stones": 1500000
+      },
+      "study_ticks": 720,
+      "candidate_prerequisites": {
+        "cultivation_realm": 25,
+        "body_realm": 25,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.poison.doc_cham.divine_i.a",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.poison.doc_cham.divine_iii.a",
+      "name": "Độc Châm · Thực Cốt · Thần Giai III",
+      "school": "poison",
+      "branch": "doc_cham",
+      "generation": "divine",
+      "lineage": "a",
+      "divine_stage": 3,
+      "source_codex_id": "tmb.codex.poison.doc_cham.lineage_a.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.poison.doc_cham.divine_ii.a"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 27000,
+        "spirit_stones": 2250000
+      },
+      "study_ticks": 1080,
+      "candidate_prerequisites": {
+        "cultivation_realm": 29,
+        "body_realm": 29,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.poison.doc_cham.divine_ii.a",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.poison.doc_cham.divine_i.b",
+      "name": "Độc Châm · Bạo Phệ · Thần Giai I",
+      "school": "poison",
+      "branch": "doc_cham",
+      "generation": "divine",
+      "lineage": "b",
+      "divine_stage": 1,
+      "source_codex_id": "tmb.codex.poison.doc_cham.lineage_b.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.poison.doc_cham.immortal.b"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 9000,
+        "spirit_stones": 750000
+      },
+      "study_ticks": 360,
+      "candidate_prerequisites": {
+        "cultivation_realm": 21,
+        "body_realm": 21,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.poison.doc_cham.immortal.b",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.poison.doc_cham.divine_ii.b",
+      "name": "Độc Châm · Bạo Phệ · Thần Giai II",
+      "school": "poison",
+      "branch": "doc_cham",
+      "generation": "divine",
+      "lineage": "b",
+      "divine_stage": 2,
+      "source_codex_id": "tmb.codex.poison.doc_cham.lineage_b.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.poison.doc_cham.divine_i.b"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 18000,
+        "spirit_stones": 1500000
+      },
+      "study_ticks": 720,
+      "candidate_prerequisites": {
+        "cultivation_realm": 25,
+        "body_realm": 25,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.poison.doc_cham.divine_i.b",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.poison.doc_cham.divine_iii.b",
+      "name": "Độc Châm · Bạo Phệ · Thần Giai III",
+      "school": "poison",
+      "branch": "doc_cham",
+      "generation": "divine",
+      "lineage": "b",
+      "divine_stage": 3,
+      "source_codex_id": "tmb.codex.poison.doc_cham.lineage_b.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.poison.doc_cham.divine_ii.b"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 27000,
+        "spirit_stones": 2250000
+      },
+      "study_ticks": 1080,
+      "candidate_prerequisites": {
+        "cultivation_realm": 29,
+        "body_realm": 29,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.poison.doc_cham.divine_ii.b",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.poison.co_doc.divine_i.a",
+      "name": "Cổ Độc · Liên Tâm · Thần Giai I",
+      "school": "poison",
+      "branch": "co_doc",
+      "generation": "divine",
+      "lineage": "a",
+      "divine_stage": 1,
+      "source_codex_id": "tmb.codex.poison.co_doc.lineage_a.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.poison.co_doc.immortal.a"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 9000,
+        "spirit_stones": 750000
+      },
+      "study_ticks": 360,
+      "candidate_prerequisites": {
+        "cultivation_realm": 21,
+        "body_realm": 21,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.poison.co_doc.immortal.a",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.poison.co_doc.divine_ii.a",
+      "name": "Cổ Độc · Liên Tâm · Thần Giai II",
+      "school": "poison",
+      "branch": "co_doc",
+      "generation": "divine",
+      "lineage": "a",
+      "divine_stage": 2,
+      "source_codex_id": "tmb.codex.poison.co_doc.lineage_a.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.poison.co_doc.divine_i.a"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 18000,
+        "spirit_stones": 1500000
+      },
+      "study_ticks": 720,
+      "candidate_prerequisites": {
+        "cultivation_realm": 25,
+        "body_realm": 25,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.poison.co_doc.divine_i.a",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.poison.co_doc.divine_iii.a",
+      "name": "Cổ Độc · Liên Tâm · Thần Giai III",
+      "school": "poison",
+      "branch": "co_doc",
+      "generation": "divine",
+      "lineage": "a",
+      "divine_stage": 3,
+      "source_codex_id": "tmb.codex.poison.co_doc.lineage_a.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.poison.co_doc.divine_ii.a"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 27000,
+        "spirit_stones": 2250000
+      },
+      "study_ticks": 1080,
+      "candidate_prerequisites": {
+        "cultivation_realm": 29,
+        "body_realm": 29,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.poison.co_doc.divine_ii.a",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.poison.co_doc.divine_i.b",
+      "name": "Cổ Độc · Phệ Cổ · Thần Giai I",
+      "school": "poison",
+      "branch": "co_doc",
+      "generation": "divine",
+      "lineage": "b",
+      "divine_stage": 1,
+      "source_codex_id": "tmb.codex.poison.co_doc.lineage_b.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.poison.co_doc.immortal.b"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 9000,
+        "spirit_stones": 750000
+      },
+      "study_ticks": 360,
+      "candidate_prerequisites": {
+        "cultivation_realm": 21,
+        "body_realm": 21,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.poison.co_doc.immortal.b",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.poison.co_doc.divine_ii.b",
+      "name": "Cổ Độc · Phệ Cổ · Thần Giai II",
+      "school": "poison",
+      "branch": "co_doc",
+      "generation": "divine",
+      "lineage": "b",
+      "divine_stage": 2,
+      "source_codex_id": "tmb.codex.poison.co_doc.lineage_b.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.poison.co_doc.divine_i.b"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 18000,
+        "spirit_stones": 1500000
+      },
+      "study_ticks": 720,
+      "candidate_prerequisites": {
+        "cultivation_realm": 25,
+        "body_realm": 25,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.poison.co_doc.divine_i.b",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.poison.co_doc.divine_iii.b",
+      "name": "Cổ Độc · Phệ Cổ · Thần Giai III",
+      "school": "poison",
+      "branch": "co_doc",
+      "generation": "divine",
+      "lineage": "b",
+      "divine_stage": 3,
+      "source_codex_id": "tmb.codex.poison.co_doc.lineage_b.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.poison.co_doc.divine_ii.b"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 27000,
+        "spirit_stones": 2250000
+      },
+      "study_ticks": 1080,
+      "candidate_prerequisites": {
+        "cultivation_realm": 29,
+        "body_realm": 29,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.poison.co_doc.divine_ii.b",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.poison.duoc_doc.divine_i.a",
+      "name": "Dược Độc · Hồi Thiên · Thần Giai I",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "generation": "divine",
+      "lineage": "a",
+      "divine_stage": 1,
+      "source_codex_id": "tmb.codex.poison.duoc_doc.lineage_a.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.poison.duoc_doc.immortal.a"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 9000,
+        "spirit_stones": 750000
+      },
+      "study_ticks": 360,
+      "candidate_prerequisites": {
+        "cultivation_realm": 21,
+        "body_realm": 21,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.poison.duoc_doc.immortal.a",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.poison.duoc_doc.divine_ii.a",
+      "name": "Dược Độc · Hồi Thiên · Thần Giai II",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "generation": "divine",
+      "lineage": "a",
+      "divine_stage": 2,
+      "source_codex_id": "tmb.codex.poison.duoc_doc.lineage_a.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.poison.duoc_doc.divine_i.a"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 18000,
+        "spirit_stones": 1500000
+      },
+      "study_ticks": 720,
+      "candidate_prerequisites": {
+        "cultivation_realm": 25,
+        "body_realm": 25,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.poison.duoc_doc.divine_i.a",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.poison.duoc_doc.divine_iii.a",
+      "name": "Dược Độc · Hồi Thiên · Thần Giai III",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "generation": "divine",
+      "lineage": "a",
+      "divine_stage": 3,
+      "source_codex_id": "tmb.codex.poison.duoc_doc.lineage_a.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.poison.duoc_doc.divine_ii.a"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 27000,
+        "spirit_stones": 2250000
+      },
+      "study_ticks": 1080,
+      "candidate_prerequisites": {
+        "cultivation_realm": 29,
+        "body_realm": 29,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.poison.duoc_doc.divine_ii.a",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.poison.duoc_doc.divine_i.b",
+      "name": "Dược Độc · Dĩ Độc · Thần Giai I",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "generation": "divine",
+      "lineage": "b",
+      "divine_stage": 1,
+      "source_codex_id": "tmb.codex.poison.duoc_doc.lineage_b.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.poison.duoc_doc.immortal.b"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 9000,
+        "spirit_stones": 750000
+      },
+      "study_ticks": 360,
+      "candidate_prerequisites": {
+        "cultivation_realm": 21,
+        "body_realm": 21,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.poison.duoc_doc.immortal.b",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.poison.duoc_doc.divine_ii.b",
+      "name": "Dược Độc · Dĩ Độc · Thần Giai II",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "generation": "divine",
+      "lineage": "b",
+      "divine_stage": 2,
+      "source_codex_id": "tmb.codex.poison.duoc_doc.lineage_b.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.poison.duoc_doc.divine_i.b"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 18000,
+        "spirit_stones": 1500000
+      },
+      "study_ticks": 720,
+      "candidate_prerequisites": {
+        "cultivation_realm": 25,
+        "body_realm": 25,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.poison.duoc_doc.divine_i.b",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.poison.duoc_doc.divine_iii.b",
+      "name": "Dược Độc · Dĩ Độc · Thần Giai III",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "generation": "divine",
+      "lineage": "b",
+      "divine_stage": 3,
+      "source_codex_id": "tmb.codex.poison.duoc_doc.lineage_b.divine",
+      "prerequisite_technique_ids": [
+        "tmb.technique.poison.duoc_doc.divine_ii.b"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 27000,
+        "spirit_stones": 2250000
+      },
+      "study_ticks": 1080,
+      "candidate_prerequisites": {
+        "cultivation_realm": 29,
+        "body_realm": 29,
+        "main_mastery_stage": 3,
+        "immortal_ultimate_level": 2,
+        "previous_divine_technique": "tmb.technique.poison.duoc_doc.divine_ii.b",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
     }
   ]
 }

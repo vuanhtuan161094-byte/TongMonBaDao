@@ -25,8 +25,8 @@ func _run() -> void:
     if not _check(bool(loaded.get("ok", false)), "learning catalogue errors: " + str(loaded.get("errors", []))):
         return
     var catalog: Dictionary = loaded.data
-    if not _check(catalog.techniques.size() == 30 and catalog.mastery_thresholds_xp.size() == 5,
-        "D3 plus D5 must expose 3 school foundations, 9 Human branches, 18 Immortal lineage jobs and five mastery milestones"):
+    if not _check(catalog.techniques.size() == 84 and catalog.mastery_thresholds_xp.size() == 5,
+        "D3 plus D5 must expose 3 school foundations, 9 Human branches, 18 Immortal + 54 Divine lineage jobs and five mastery milestones"):
         return
     var invalid := catalog.duplicate(true)
     invalid.enabled = true
@@ -247,7 +247,7 @@ func _run() -> void:
         return
     if not _check(loaded_state.validate_invariants().is_empty(), "completed learning state failed invariants: " + str(loaded_state.validate_invariants())):
         return
-    print("V63_D3_LEARNING_PASS checks=%d catalog=30 jobs=exactly_once migration=additive loadout=1+2 gate_default=off" % checks)
+    print("V63_D3_LEARNING_PASS checks=%d catalog=84 jobs=exactly_once migration=additive loadout=1+2 gate_default=off" % checks)
     _cleanup()
     quit(0)
 

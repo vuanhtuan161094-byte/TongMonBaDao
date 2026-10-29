@@ -55,7 +55,7 @@ static func validate_catalogue(data: Dictionary) -> Array[String]:
         if not item_ids.has(fragment_id) or str(item_kinds.get(fragment_id,"")) != "codex_fragment":
             errors.append("missing_archive_fragment_item:"+fragment_id)
     var codices: Array = data.codices
-    if codices.size() != int(data.get("family_count",-1)) or codices.size() != 123:
+    if codices.size() != int(data.get("family_count",-1)) or codices.size() != 159:
         errors.append("wrong_archive_family_count")
     var codex_ids: Dictionary = {}
     var family_ids: Dictionary = {}
@@ -82,9 +82,9 @@ static func validate_catalogue(data: Dictionary) -> Array[String]:
                 if str(node.get("id","")) == str(codex.get("source_node_id","")):
                     source_node = node
                     break
-            if source_node.is_empty() or str(source_node.get("tier","")) != generation or str(source_node.get("lineage","")) != lineage:
+            if source_node.is_empty() or str(source_node.get("tier","")) != ("rare_divine" if str(codex.get("rarity","")) == "rare_divine" else generation) or str(source_node.get("lineage","")) != lineage:
                 errors.append("codex_source_tier_or_lineage_mismatch:"+codex_id)
-            if generation not in ["human","immortal"] or (generation == "human" and lineage != "base") or (generation == "immortal" and lineage not in ["a","b"]):
+            if generation not in ["human","immortal","divine"] or (generation == "human" and lineage != "base") or (generation in ["immortal","divine"] and lineage not in ["a","b"]):
                 errors.append("unsupported_archive_generation_or_lineage:"+codex_id)
             var family_parts: PackedStringArray = family_id.split(".")
             var family_slot := str(family_parts[family_parts.size()-1]) if not family_parts.is_empty() else ""
@@ -102,7 +102,7 @@ static func validate_catalogue(data: Dictionary) -> Array[String]:
         else:
             if not manual_id.is_empty() or int(codex.get("restore_fragments_candidate",-1)) != 0:
                 errors.append("innate_codex_must_not_be_manual:"+codex_id)
-    if archivable_count != int(data.get("archivable_count",-1)) or archivable_count != 114:
+    if archivable_count != int(data.get("archivable_count",-1)) or archivable_count != 150:
         errors.append("wrong_archivable_count")
     if item_ids.size() != manual_ids.size()+FRAGMENT_IDS.size():
         errors.append("orphan_or_duplicate_archive_item")

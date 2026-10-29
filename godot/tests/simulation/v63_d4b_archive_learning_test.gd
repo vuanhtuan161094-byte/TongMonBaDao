@@ -244,4 +244,4 @@ func _boss_poison_cap() -> bool:
     for _i in range(12):
         V63HumanSkillCombatSystem.release_cast(battle,_cast(skill,source,target),source)
     var stacks: Array = target.get("status_effects",{}).get("v63_poison",[])
-    return _check(stacks.size() == 30 and str(stacks[0].get("owner_id","")) == str(source.id),"boss poison did not cap at 30 owner-attributed stacks: "+str(stacks.size()))
+    return _check(stacks.size() == 5 and str(stacks[0].get("owner_id","")) == str(source.id),"boss poison did not respect cap 5 per owner (target cap remains 30): "+str(stacks.size()))

@@ -192,9 +192,31 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
             return {"ok":false,"reason":"invalid_role_guard_timer"}
         # Validate S1 authoritative statuses before replaying untrusted bytes.
         var statuses = actor.get("status_effects",{})
-        if not (statuses is Dictionary) or statuses.size() > 2:
+        if not (statuses is Dictionary) or statuses.size() > 3:
             return {"ok":false,"reason":"invalid_combat_status_map"}
         for status_key in statuses.keys():
+            if str(status_key) == "v63_poison":
+                var stacks = statuses[status_key]
+                if not (stacks is Array) or stacks.size() > 30:
+                    return {"ok":false,"reason":"invalid_owned_poison_stack_count"}
+                var owner_counts: Dictionary = {}
+                var stack_keys: Dictionary = {}
+                for stack in stacks:
+                    if not (stack is Dictionary):
+                        return {"ok":false,"reason":"invalid_owned_poison_record"}
+                    var owner_id := str(stack.get("owner_id", ""))
+                    var key := "%s/%s/%d" % [owner_id,str(stack.get("source_skill_id", "")),int(stack.get("stack_ordinal", -1))]
+                    var attack: Dictionary = stack.get("attack_snapshot", {})
+                    if stack_keys.has(key) or int(stack.get("stack_ordinal", 0)) <= 0 or not is_finite(float(attack.get("attack", -1.0))) or float(attack.get("attack", -1.0)) <= 0.0 or str(stack.get("element", "")) not in CombatStatsV2.ELEMENTS:
+                        return {"ok":false,"reason":"invalid_owned_poison_identity_or_attack"}
+                    stack_keys[key] = true
+                    owner_counts[owner_id] = int(owner_counts.get(owner_id, 0)) + 1
+                    var ratio := float(stack.get("ratio", -1.0))
+                    var expiry := float(stack.get("expires_at", -1.0))
+                    var due := float(stack.get("next_tick", -1.0))
+                    if owner_id.is_empty() or int(owner_counts[owner_id]) > 5 or not is_finite(ratio) or ratio < 0.0 or ratio > 0.2 or not is_finite(expiry) or expiry < battle.now or expiry > battle.now + 10.0 or not is_finite(due) or due < battle.now or due > expiry + 1.0 or not (stack.get("attack_snapshot", null) is Dictionary):
+                        return {"ok":false,"reason":"invalid_owned_poison_values"}
+                continue
             if not ["burn","weaken"].has(str(status_key)):
                 return {"ok":false,"reason":"unsupported_combat_status"}
             var status = statuses[status_key]
@@ -244,6 +266,17 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
         var actor: Dictionary = actor_value
         var statuses: Dictionary = actor.get("status_effects",{})
         for status_key in statuses.keys():
+            if str(status_key) == "v63_poison":
+                for stack in statuses[status_key]:
+                    var owner_id := str(stack.get("owner_id", ""))
+                    var source_id := str(stack.get("source_skill_id", ""))
+                    var source: Dictionary = battle.actors.get(owner_id, {})
+                    var definition := V63HumanSkillCombatSystem.skill_definition(source_id)
+                    if definition.is_empty() and not source.is_empty():
+                        definition = V63HumanSkillCombatSystem.boss_skill_definitions(str(source.get("v63_boss_id", ""))).get(source_id, {})
+                    if source.is_empty() or str(source.get("side", "")) == str(actor.side) or str(definition.get("effect", "")) != "poison" or (str(source.get("side", "")) == "disciple" and not source.get("v63_skill_loadout", []).has(source_id)):
+                        return {"ok":false,"reason":"invalid_owned_poison_provenance"}
+                continue
             var status: Dictionary = statuses[status_key]
             var caster_id := str(status.get("caster",""))
             var skill_id := str(status.get("skill_id",""))

@@ -115,7 +115,7 @@ func setup(id: String, party: Array, monsters: Array, keep_encounter_open: bool 
             "linked_disciple":row.get("disciple",null)
         })
         var v63_disciple_actor: Dictionary = entries[entries.size()-1]
-        for field in ["v63_skill_loadout","v63_skill_ready","v63_combat_enabled","v63_passive_ids","v63_combat_branch_id","v63_combat_lineage","v63_innate_skill_id","v63_basic_skill_id","basic_element"]:
+        for field in ["v63_skill_loadout","v63_skill_ready","v63_combat_enabled","v63_passive_ids","v63_combat_branch_id","v63_combat_lineage","v63_innate_skill_id","v63_basic_skill_id","basic_element","v63_divine_stage","v63_combat_generation","v63_blood_mode","v63_base_max_hp","v63_shield_received_factor"]:
             if row.has(field):
                 v63_disciple_actor[field] = row[field].duplicate(true) if row[field] is Array or row[field] is Dictionary else row[field]
     for raw in monsters:
@@ -747,6 +747,7 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
     if kind not in ["dot","v63_poison"] and now < float(target.get("v63_evasion_until",-1.0)) and str(attacker.get("side","")) != str(target.get("side","")):
         _event("evade",{"attacker":str(attacker.get("id","")),"target":str(target.get("id","")),"kind":kind,"until":float(target.get("v63_evasion_until",-1.0))})
         return 0.0
+    attacker["v63_combat_clock"] = now
     var target_hp_before := float(target["hp"])
     var a_stats: Dictionary = V63HumanSkillCombatSystem.effective_attack_stats(attacker,attacker.get("stats",{}))
     var t_stats: Dictionary = V63HumanSkillCombatSystem.effective_defense_stats(target,target.get("stats",{}))
@@ -790,6 +791,8 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
         return 0.0
     var actual_damage := float(settlement["actual_damage"])
     target["hp"] = float(settlement["target_hp_after"])
+    if float(target.hp) <= 0.0 and V63DivineSkillCombatSystem.prevent_lethal(self, target):
+        target["hp"] = 1.0
     attacker["hp"] = float(settlement["attacker_hp_after"])
     V63HumanSkillCombatSystem.observe_boss_damage(self,target,target_hp_before,attacker,damage_element,kind)
     _sync_linked_hp(attacker)
@@ -797,8 +800,9 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
     actions += 1
     _event("hit",{"attacker":attacker["id"],"target":target["id"],"damage":actual_damage,
         "kind":kind,"critical":crit,"lifesteal":settlement["lifesteal_heal"]})
+    V63DivineSkillCombatSystem.reflect_committed(self, target, attacker, actual_damage, kind)
     if float(target["hp"]) <= 0.0:
-        if continuous_mode and str(target["side"]) == "monster":
+        if continuous_mode and str(target["side"]) == "monster" and not bool(target.get("v63_summon_no_reward", false)):
             _record_monster_kill(attacker, target, kind, actual_damage)
         var downed_row := {"actor_id":target["id"],"side":target["side"]}
         if continuous_mode:
@@ -1074,3 +1078,49 @@ func _event(kind: String, payload: Dictionary) -> void:
     var row := {"type":kind,"time":now,"encounter_id":encounter_id}
     row.merge(payload)
     events.append(row)
+
+
+# Boss-owned actors share the existing combat authority and never create loot.
+func add_v63_boss_summons(boss: Dictionary, requested: int) -> int:
+    var parent := str(boss.get("id", ""))
+    if not active or not actors.has(parent) or float(boss.get("hp", 0.0)) <= 0.0:
+        return 0
+    var alive := 0
+    var ordinal := int(boss.get("v63_summon_ordinal", 0))
+    for actor in actors.values():
+        if str(actor.get("v63_summon_parent", "")) == parent and float(actor.get("hp", 0.0)) > 0.0:
+            alive += 1
+    var added := 0
+    for index in range(mini(clampi(requested, 0, 4), 4 - alive)):
+        if _count_monster_records() >= MAX_MONSTERS or _last_spawn_generation.size() >= MAX_REMEMBERED_SPAWN_SLOTS:
+            break
+        ordinal += 1
+        var summon: Dictionary = boss.duplicate(true)
+        for key in summon.keys():
+            if str(key).begins_with("v63_"):
+                summon.erase(key)
+        var summon_id := parent + "/summon/" + str(ordinal)
+        summon["id"] = summon_id
+        summon["tier"] = "normal"
+        summon["stats"] = boss.stats.duplicate(true)
+        summon.stats["max_hp"] = maxf(1.0, float(boss.max_hp) * 0.03)
+        summon.stats["attack"] = maxf(1.0, float(boss.stats.attack) * 0.3)
+        summon.stats["defense"] = maxf(0.0, float(boss.stats.defense) * 0.2)
+        summon["max_hp"] = float(summon.stats.max_hp)
+        summon["hp"] = float(summon.max_hp)
+        summon["position"] = _keep_inside((boss.position as Vector2) + Vector2(0.5 * (index + 1), 0.5))
+        if not _position_allowed(summon.position):
+            continue
+        summon["status_effects"] = {}
+        summon["next_basic"] = now + STEP_SECONDS
+        summon["next_skill"] = now + 4.0
+        summon["spawn_slot_id"] = summon_id
+        summon["slot_generation"] = 1
+        summon["v63_summon_parent"] = parent
+        summon["v63_summon_no_reward"] = true
+        actors[summon_id] = summon
+        _last_spawn_generation[summon_id] = 1
+        _event("boss_summon", {"boss_id":str(boss.get("v63_boss_id", "")),"actor_id":summon_id,"parent":parent,"no_loot":true})
+        added += 1
+    boss["v63_summon_ordinal"] = ordinal
+    return added

@@ -38,7 +38,7 @@ static func validate_catalogue(data: Dictionary) -> Array[String]:
     for raw_codex in V63SectArchiveSystem.codices():
         archive_codices[str(raw_codex.get("id", ""))] = raw_codex
     var rows: Array = data.techniques
-    if rows.size() != 30:
+    if rows.size() != 84:
         errors.append("wrong_v63_technique_count")
     var ids: Dictionary = {}
     for raw in rows:
@@ -142,6 +142,12 @@ func can_start_study(state: SimulationState, disciple: DiscipleState, technique_
         var prerequisite_reason := _immortal_prerequisite_reason(disciple, info)
         if not prerequisite_reason.is_empty():
             return _failure(prerequisite_reason)
+    if str(info.get("generation", "human")) == "divine":
+        if not V63FeatureGates.is_enabled("divine_skill_combat", preview_overrides):
+            return _failure("divine_skill_combat_disabled")
+        var reason := _divine_prerequisite_reason(disciple, info)
+        if not reason.is_empty():
+            return _failure(reason)
     var buildings := BuildingSystem.new()
     if not disciple.active_pve_encounter_id.is_empty() or disciple.region_id != &"sect":
         return _failure("disciple_not_at_sect")
@@ -170,6 +176,34 @@ static func lineage_study_complete(disciple: DiscipleState, branch: String, line
         return false
     var technique_id := str(row.get("lineage_technique_ids", {}).get(lineage, ""))
     return not technique_id.is_empty() and disciple.known_techniques.has(technique_id)
+
+static func divine_lineage_stage(disciple: DiscipleState, branch: String, lineage: String) -> int:
+    var row: Dictionary = V63DivineSkillCombatSystem.branch_definitions().get(branch, {})
+    var ids: Array = row.get("divine_technique_ids", {}).get(lineage, [])
+    var stage := 0
+    for id in ids:
+        if not disciple.known_techniques.has(str(id)):
+            break
+        stage += 1
+    return stage
+
+static func _divine_prerequisite_reason(disciple: DiscipleState, info: Dictionary) -> String:
+    var stage := clampi(int(info.get("divine_stage", 1)), 1, 3)
+    var realm: int = [21, 25, 29][stage - 1]
+    var profile: Dictionary = disciple.v2_realm_progress
+    if not DiscipleRealmProgressV2.valid_profile(profile) or maxi(int(profile.get("cultivation", {}).get("realm", 0)), int(profile.get("body", {}).get("realm", 0))) < realm:
+        return "divine_realm_gate_required"
+    var main := definition(disciple.active_technique_main)
+    var knowledge: Dictionary = disciple.known_techniques.get(str(disciple.active_technique_main), {})
+    if str(main.get("school", "")) != str(info.get("school", "")) or int(knowledge.get("mastery_stage", 0)) < 3:
+        return "divine_compatible_main_mastery_3_required"
+    if stage == 1:
+        if str(main.get("generation", "")) != "immortal":
+            return "divine_immortal_main_required"
+        var ultimate := "tmb.skill.%s.%s.ultimate.immortal.%s" % [str(info.school), str(info.branch), str(info.lineage)]
+        if int(disciple.v63_learned_skill_nodes.get(ultimate, {}).get("level", 0)) < 2:
+            return "divine_immortal_ultimate_2_required"
+    return ""
 
 static func _immortal_prerequisite_reason(disciple: DiscipleState, info: Dictionary) -> String:
     var profile: Dictionary = disciple.v2_realm_progress
