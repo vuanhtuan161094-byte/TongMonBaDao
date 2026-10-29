@@ -1,14 +1,15 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO / 29-10-2026
 
-## Current handoff — continue D5 Immortal immediately
+## Current handoff — continue D6 Divine immediately
 
-Repository vuanhtuan161094-byte/TongMonBaDao; active branch feature/v63-v64-full-combat-20261029; current D4-B source/test SHA bbd6f83984c45e5212847bdaf326f14ef5ab469f. Stable main c0c1382f119599497b52d8ee8abd9e830a883f1e remains unchanged. PR #52 is Draft/open at f7c33d9c3baba3267a17021718b44f87acd62ef6; leave it unmerged and unmodified.
+Repository `vuanhtuan161094-byte/TongMonBaDao`; active branch `feature/v63-v64-full-combat-20261029`; current D5 source/test commit `2f193644329ecabcd71d20bf3283972235bf47c1`. Stable `main` `c0c1382f119599497b52d8ee8abd9e830a883f1e) remains unchanged. PR #52 stays Draft/open at `f7c33d9c3baba3267a17021718b44f87acd62ef6`; no PR, merge, reset or history rewrite.
 
-D4-B **HEADLESS_PASS**: official Windows Godot 4.7.2 import plus 16/16 focused/affected regressions, exit 0. Exact source parity and import/test log hashes: docs/implementation/V65_D4B_HUMAN_BRANCHES_EVIDENCE_20261029.md and E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D4B_20261029_final. The branch has 7 sequential source/test commits because the connected GitHub contents API applies one path per commit; their final integrated source/test commit is bbd6f83984c45e5212847bdaf326f14ef5ab469f. Original dirty E: checkout was preserved; no generated import sidecars were published.
+D5 is **HEADLESS_PASS**: official Windows Godot 4.7.2 import and sequential 18/18 focused/cumulative regressions exit 0. Evidence and log hashes: [D5 evidence](docs/implementation/V65_D5_IMMORTAL_EVIDENCE_20261029.md), local logs `E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D5_20261029). Nine branch A/B pathways produced 18/18 Combat V2 casts; 3/3 Immortal bosses were counter-interrupted. Deterministic D5 study/save, D4, D2, D3, P2/P3.7 and PvE save/reward regressions passed. D5 gates remain OFF; candidate balance only.
 
-D4-B GUI/owner visual acceptance, D4-A live GUI capture, Android and performance remain **PENDING**. D4-B changed no UI/assets/VFX. No D4-B issue checklist closure is claimed from headless evidence. Overall D4–D8 is **INCOMPLETE**.
+Proceed without a phase-selection pause to D6 using the concrete allowlist, exclusions and tests at the top of `CURRENT_CHECKPOINT.md). Build Divine I/II/III A/B paths, 18 rare ultimate replacements, authored rare passive successors and three real staged Divine bosses. Preserve Human/Immortal history, legacy saves, Injury120, One Active Job and the single Warehouse/scheduler. Keep new Divine effects gated OFF; do not approve candidate economy/HP coefficients.
 
-Proceed automatically to D5 under the exact allowlist and rollback/test gates at the top of CURRENT_CHECKPOINT.md and in the D5 section of docs/implementation/V65_D4B_HUMAN_BRANCHES_EVIDENCE_20261029.md. Implement all nine distinct Immortal A/B branch paths, three real Immortal bosses/stages/counters and predictable breakthrough study using the existing D3 One Active Job system. Keep candidate coefficients/costs gated OFF and preserve Human knowledge, legacy saves, Injury120, Warehouse and scheduler authority.
+D4 GUI/owner visual review, D7 original VFX/Source A presentation, Android and D8 performance/endgame remain **PENDING**. No playable/visual/FULL COMPLETE claim.
+
 
 ## Historical records follow
 

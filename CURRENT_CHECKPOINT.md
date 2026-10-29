@@ -1,5 +1,40 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 29/10/2026 — D5 Immortal implementation checkpoint
+
+Feature branch source/test checkpoint: `2f193644329ecabcd71d20bf3283972235bf47c1` (based on `a0c426291b6fd815678568ba7dfe902a4bca4005`). Stable `main` remains `c0c1382f119599497b52d8ee8abd9e830a883f1e`. PR #52 remains Draft/open at `f7c33d9c3baba3267a17021718b44f87acd62ef6`, unmodified.
+
+- D5: **HEADLESS_PASS**. Official Windows Godot 4.7.2 import and sequential 18/18 focused/cumulative test scripts exit 0; evidence and all log hashes are in [D5 evidence](docs/implementation/V65_D5_IMMORTAL_EVIDENCE_20261029.md) and `E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D5_20261029`.
+- Verified 9-branch A/B Immortal casts (18/18), 3/3 real Combat V2 boss counter interruptions, bounded elemental reaction, deterministic breakthrough prerequisites, D3 One Active Job, receipts, and save/load. D5 changes 12 approved source/test paths; GitHub blob parity is recorded in the evidence report.
+- Candidate-only D5 costs, duration, status coefficients and Boss peaks remain unapproved; global feature gates are OFF. SaveService/schema, CombatStatsV2 formulas, Injury120, Warehouse, scheduler, production/economy and assets were not changed.
+- D4-A GUI capture, D4-B/owner visual review, Android and performance remain **PENDING**. D5 changed no presentation/assets. D7 owns the gameplay visual acceptance matrix. Overall V6.5 remains **INCOMPLETE**.
+- The original dirty E: checkout and generated scratch artifacts were preserved; only the approved source/test allowlist was published. No new PR or merge.
+
+## Next code packet — D6 Divine lineages, rare successors and bosses
+
+Continue automatically under the owner authorization and V6.5 contract. Implement 9 Divine branch lineages across A/B and Divine I/II/III, 18 rare ultimate replacements, authored elective rare passive variants, three Divine bosses with staged actions, Pháp Tắc and Huyết Ma/Huyết Sinh/Độc semantics, using Combat V2 and existing archive/learning/One Active Job authority. Keep balance candidate-only and the new Divine gate OFF by default. Preserve D2-D5, six-slot PvE, legacy P2/P2.3, exactly-once receipts, Injury120, Warehouse/scheduler and save compatibility. Do not add visuals/assets in D6; D7 handles original VFX/Source A presentation.
+
+Concrete D6 write allowlist:
+- godot/data/combat/v63_divine_combat_catalog.json (new)
+- godot/data/combat/v63_archive_catalog.json
+- godot/data/combat/v63_learning_catalog.json
+- godot/src/simulation/archive/v63_sect_archive_system.gd
+- godot/src/simulation/technique/v63_learning_system.gd
+- godot/src/simulation/combat/v63_feature_gates.gd
+- godot/src/simulation/combat/v63_immortal_skill_combat_system.gd
+- godot/src/simulation/combat/v63_divine_skill_combat_system.gd (new)
+- godot/src/simulation/combat/map_battle_v2.gd
+- godot/tests/simulation/v63_d6_divine_lineage_combat_test.gd (new)
+- godot/tests/simulation/v63_d6_rare_successors_test.gd (new)
+- docs/implementation/V65_COMBAT_COVERAGE_LEDGER_20261029.json
+- docs/implementation/V65_D6_DIVINE_EVIDENCE_20261029.md (new)
+- CURRENT_CHECKPOINT.md
+- NEXT_CHAT_HANDOFF.md
+
+Protected/excluded: SaveService/schema migration, CombatStatsV2 formulas, Injury120, Warehouse and scheduler authority, production/economy, raw JX assets, Source A originals, D7 GUI/VFX/presentation assets, D8 endgame balance/performance, main, PR #52 and merges. Rollback is Divine gate OFF by default; retained learning/mastery/loadout records are never destructively downgraded.
+
+Focused/cumulative D6 gate: Divine catalog and rare successor tests; D5 Immortal lineage/study; D4-A/D4-B; D2 Archive and exactly-once codex receipts; D3 One Active Job; P2.3/P2.5/CombatStatsV2; canonical Warehouse; SaveService/SAFE-01; PvE Save/Return/exactly-once and HP0 bridge; official Windows Godot 4.7.2 import. Record exit codes, exact source parity and log hashes. No GUI PASS until live GUI evidence is collected.
+
 ## 29/10/2026 — D4-B implementation checkpoint
 
 Branch feature/v63-v64-full-combat-20261029 current checkpoint source SHA: bbd6f83984c45e5212847bdaf326f14ef5ab469f. D4-B published source/test SHA: bbd6f83984c45e5212847bdaf326f14ef5ab469f; base feature SHA: 91ae575eb7bf94f09b38fd99403b3b0f7f262079. Stable main remains c0c1382f119599497b52d8ee8abd9e830a883f1e. PR #52 remains Draft/open at f7c33d9c3baba3267a17021718b44f87acd62ef6; no merge or PR mutation.
@@ -12,7 +47,7 @@ Branch feature/v63-v64-full-combat-20261029 current checkpoint source SHA: bbd6f
 
 PR #52 at f7c33d9c3baba3267a17021718b44f87acd62ef6 remains divergent. PR-only profiler wrappers and SaveService/runtime/presentation changes were not imported; this feature branch keeps its D2 receipt settlement, D3 One Active Job guards, and D4 adapter code.
 
-## Next code packet — D5 Immortal lineage and bosses
+## Superseded D5 packet scope — completed at 2f193644329ecabcd71d20bf3283972235bf47c1
 
 Issue #54 and the execution contract authorize continuing. Required behavior: nine Immortal branch lineages with distinct A/B successors (learned history may retain both; only one descendant per family active), three real Immortal bosses with their own telegraph/stage/counter mechanics, status reactions, and deterministic breakthrough study through the existing D3 learning/One Active Job authority. Do not clone Human numerics or visuals. All costs, durations, status coefficients, and peak HP remain candidate-only; global gates stay OFF.
 

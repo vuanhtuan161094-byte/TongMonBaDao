@@ -3,7 +3,7 @@
   "generated_at": "2026-10-29",
   "repository": "vuanhtuan161094-byte/TongMonBaDao",
   "branch": "feature/v63-v64-full-combat-20261029",
-  "source_sha": "bbd6f83984c45e5212847bdaf326f14ef5ab469f",
+  "source_sha": "2f193644329ecabcd71d20bf3283972235bf47c1",
   "stable_main_sha": "c0c1382f119599497b52d8ee8abd9e830a883f1e",
   "overall_release_status": "INCOMPLETE",
   "phase_status": {
@@ -11,7 +11,7 @@
     "D4_A_GUI": "PENDING",
     "D4_B": "HEADLESS_PASS",
     "D4_B_GUI": "PENDING",
-    "D5": "NOT_STARTED",
+    "D5": "HEADLESS_PASS",
     "D6": "NOT_STARTED",
     "D7": "NOT_STARTED",
     "D8": "NOT_STARTED"
@@ -274,16 +274,16 @@
           "tier": "immortal",
           "lineage": "a",
           "parent": "tmb.skill.bow.liep_anh.active_01.human",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d5_immortal_lineage_combat_test_18_of_18"
         },
         {
           "node_id": "tmb.skill.bow.liep_anh.active_01.immortal.b",
           "tier": "immortal",
           "lineage": "b",
           "parent": "tmb.skill.bow.liep_anh.active_01.human",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d5_immortal_lineage_combat_test_18_of_18"
         },
         {
           "node_id": "tmb.skill.bow.liep_anh.active_01.divine.a",
@@ -884,16 +884,16 @@
           "tier": "immortal",
           "lineage": "a",
           "parent": "tmb.skill.bow.linh_tien.active_01.human",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d5_immortal_lineage_combat_test_18_of_18"
         },
         {
           "node_id": "tmb.skill.bow.linh_tien.active_01.immortal.b",
           "tier": "immortal",
           "lineage": "b",
           "parent": "tmb.skill.bow.linh_tien.active_01.human",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d5_immortal_lineage_combat_test_18_of_18"
         },
         {
           "node_id": "tmb.skill.bow.linh_tien.active_01.divine.a",
@@ -1494,16 +1494,16 @@
           "tier": "immortal",
           "lineage": "a",
           "parent": "tmb.skill.bow.thien_vu.active_01.human",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d5_immortal_lineage_combat_test_18_of_18"
         },
         {
           "node_id": "tmb.skill.bow.thien_vu.active_01.immortal.b",
           "tier": "immortal",
           "lineage": "b",
           "parent": "tmb.skill.bow.thien_vu.active_01.human",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d5_immortal_lineage_combat_test_18_of_18"
         },
         {
           "node_id": "tmb.skill.bow.thien_vu.active_01.divine.a",
@@ -2104,16 +2104,16 @@
           "tier": "immortal",
           "lineage": "a",
           "parent": "tmb.skill.fist.ba_quyen.active_01.human",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d5_immortal_lineage_combat_test_18_of_18"
         },
         {
           "node_id": "tmb.skill.fist.ba_quyen.active_01.immortal.b",
           "tier": "immortal",
           "lineage": "b",
           "parent": "tmb.skill.fist.ba_quyen.active_01.human",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d5_immortal_lineage_combat_test_18_of_18"
         },
         {
           "node_id": "tmb.skill.fist.ba_quyen.active_01.divine.a",
@@ -2714,16 +2714,16 @@
           "tier": "immortal",
           "lineage": "a",
           "parent": "tmb.skill.fist.kim_cang.active_01.human",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d5_immortal_lineage_combat_test_18_of_18"
         },
         {
           "node_id": "tmb.skill.fist.kim_cang.active_01.immortal.b",
           "tier": "immortal",
           "lineage": "b",
           "parent": "tmb.skill.fist.kim_cang.active_01.human",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d5_immortal_lineage_combat_test_18_of_18"
         },
         {
           "node_id": "tmb.skill.fist.kim_cang.active_01.divine.a",
@@ -3324,16 +3324,16 @@
           "tier": "immortal",
           "lineage": "a",
           "parent": "tmb.skill.fist.huyet_quyen.active_01.human",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d5_immortal_lineage_combat_test_18_of_18"
         },
         {
           "node_id": "tmb.skill.fist.huyet_quyen.active_01.immortal.b",
           "tier": "immortal",
           "lineage": "b",
           "parent": "tmb.skill.fist.huyet_quyen.active_01.human",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d5_immortal_lineage_combat_test_18_of_18"
         },
         {
           "node_id": "tmb.skill.fist.huyet_quyen.active_01.divine.a",
@@ -3934,16 +3934,16 @@
           "tier": "immortal",
           "lineage": "a",
           "parent": "tmb.skill.poison.doc_cham.active_01.human",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d5_immortal_lineage_combat_test_18_of_18"
         },
         {
           "node_id": "tmb.skill.poison.doc_cham.active_01.immortal.b",
           "tier": "immortal",
           "lineage": "b",
           "parent": "tmb.skill.poison.doc_cham.active_01.human",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d5_immortal_lineage_combat_test_18_of_18"
         },
         {
           "node_id": "tmb.skill.poison.doc_cham.active_01.divine.a",
@@ -4544,16 +4544,16 @@
           "tier": "immortal",
           "lineage": "a",
           "parent": "tmb.skill.poison.co_doc.active_01.human",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d5_immortal_lineage_combat_test_18_of_18"
         },
         {
           "node_id": "tmb.skill.poison.co_doc.active_01.immortal.b",
           "tier": "immortal",
           "lineage": "b",
           "parent": "tmb.skill.poison.co_doc.active_01.human",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d5_immortal_lineage_combat_test_18_of_18"
         },
         {
           "node_id": "tmb.skill.poison.co_doc.active_01.divine.a",
@@ -5154,16 +5154,16 @@
           "tier": "immortal",
           "lineage": "a",
           "parent": "tmb.skill.poison.duoc_doc.active_01.human",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d5_immortal_lineage_combat_test_18_of_18"
         },
         {
           "node_id": "tmb.skill.poison.duoc_doc.active_01.immortal.b",
           "tier": "immortal",
           "lineage": "b",
           "parent": "tmb.skill.poison.duoc_doc.active_01.human",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d5_immortal_lineage_combat_test_18_of_18"
         },
         {
           "node_id": "tmb.skill.poison.duoc_doc.active_01.divine.a",
@@ -5793,49 +5793,49 @@
       "boss_id": "tmb.boss.loi_nguc_tien_tuong",
       "name": "Lôi Ngục Tiên Tướng",
       "tier": "immortal",
-      "coverage_status": "NOT_STARTED",
-      "runtime_spawn": false,
+      "coverage_status": "HEADLESS_PASS",
+      "runtime_spawn": true,
       "origin_species_id": "",
-      "telegraph_and_release": false,
+      "telegraph_and_release": true,
       "phase_thresholds": [
         0.7,
         0.35
       ],
       "real_gui_status": "PENDING",
       "summons_counterplay_loot_receipt": "NOT_STARTED",
-      "test_evidence": ""
+      "test_evidence": "v63_d5_immortal_lineage_combat_test_3_of_3_counter_interruptions_stage_snapshot_resume"
     },
     {
       "boss_id": "tmb.boss.han_nguyet_ao_hau",
       "name": "Hàn Nguyệt Ảo Hậu",
       "tier": "immortal",
-      "coverage_status": "NOT_STARTED",
-      "runtime_spawn": false,
+      "coverage_status": "HEADLESS_PASS",
+      "runtime_spawn": true,
       "origin_species_id": "",
-      "telegraph_and_release": false,
+      "telegraph_and_release": true,
       "phase_thresholds": [
         0.7,
         0.35
       ],
       "real_gui_status": "PENDING",
       "summons_counterplay_loot_receipt": "NOT_STARTED",
-      "test_evidence": ""
+      "test_evidence": "v63_d5_immortal_lineage_combat_test_3_of_3_counter_interruptions_stage_snapshot_resume"
     },
     {
       "boss_id": "tmb.boss.u_minh_co_tien",
       "name": "U Minh Cổ Tiên",
       "tier": "immortal",
-      "coverage_status": "NOT_STARTED",
-      "runtime_spawn": false,
+      "coverage_status": "HEADLESS_PASS",
+      "runtime_spawn": true,
       "origin_species_id": "",
-      "telegraph_and_release": false,
+      "telegraph_and_release": true,
       "phase_thresholds": [
         0.7,
         0.35
       ],
       "real_gui_status": "PENDING",
       "summons_counterplay_loot_receipt": "NOT_STARTED",
-      "test_evidence": ""
+      "test_evidence": "v63_d5_immortal_lineage_combat_test_3_of_3_counter_interruptions_stage_snapshot_resume"
     },
     {
       "boss_id": "tmb.boss.cuu_tieu_kiep_long",
@@ -5889,10 +5889,9 @@
   "gates_default_off": true,
   "balance": "candidate only; not approved",
   "excluded_from_this_checkpoint": [
-    "Immortal and Divine successor mechanics",
-    "rare ultimates",
-    "Boss summons/loot/counterplay system",
-    "assets/UI/VFX acceptance",
+    "Divine successors and rare Divine variants",
+    "Divine Boss summons/loot receipts and endgame scaling",
+    "assets/UI/VFX/owner acceptance",
     "main merge"
   ]
 }
