@@ -196,6 +196,11 @@ var pve_party_picker_reasons: Label
 var pve_party_picker_feedback: Label
 var pve_party_picker_list: VBoxContainer
 var pve_party_picker_start: Button
+var pve_party_picker_boss_selector: OptionButton
+var pve_party_picker_boss_start: Button
+var v63_combat_hud: V63CombatHudV1
+var v63_archive_screen: Control
+var v63_preview_overrides: Dictionary = {}
 var pve_party_picker_checks: Dictionary = {}
 var pve_party_selected_ids: Array[StringName] = []
 var iso_view_container: SubViewportContainer
@@ -282,6 +287,11 @@ func _ready() -> void:
     _resume_saved_b3_hunt()
 
 func _exit_tree() -> void:
+    if runtime_session != null and runtime_session.owner != null and runtime_session.owner.scheduler != null:
+        runtime_session.owner.scheduler.v63_preview_overrides = {}
+    if v63_archive_screen != null and is_instance_valid(v63_archive_screen):
+        v63_archive_screen.queue_free()
+        v63_archive_screen = null
     for tween_value in actor_position_tweens.values():
         var tween := tween_value as Tween
         if tween != null and tween.is_running():
@@ -1265,23 +1275,41 @@ func _build_pve_party_picker() -> void:
     cancel.pressed.connect(_close_pve_party_picker)
     pve_party_picker_panel.add_child(cancel)
 
+    pve_party_picker_boss_selector = OptionButton.new()
+    pve_party_picker_boss_selector.name = "PvePartyPickerBossSelector"
+    pve_party_picker_boss_selector.position = Vector2(26,558)
+    pve_party_picker_boss_selector.size = Vector2(286,38)
+    pve_party_picker_boss_selector.add_theme_font_size_override("font_size",11)
+    _populate_v63_boss_selector()
+    pve_party_picker_panel.add_child(pve_party_picker_boss_selector)
+
     pve_party_picker_start = Button.new()
     pve_party_picker_start.name = "PvePartyPickerStart"
     pve_party_picker_start.text = "Vào Thanh Trúc Lâm"
-    pve_party_picker_start.position = Vector2(774,558)
+    pve_party_picker_start.position = Vector2(622,558)
     pve_party_picker_start.size = Vector2(142,38)
     pve_party_picker_start.add_theme_font_size_override("font_size",13)
     pve_party_picker_start.add_theme_color_override("font_color",PAPER_LIGHT)
     pve_party_picker_start.add_theme_stylebox_override("normal",_style(JADE_DARK,PAPER_LIGHT,2,8))
     pve_party_picker_start.pressed.connect(_start_multicamp_hunt_for_picked_party)
     pve_party_picker_panel.add_child(pve_party_picker_start)
+    pve_party_picker_boss_start = Button.new()
+    pve_party_picker_boss_start.name = "PvePartyPickerBossStart"
+    pve_party_picker_boss_start.text = "Thách Boss"
+    pve_party_picker_boss_start.position = Vector2(774,558)
+    pve_party_picker_boss_start.size = Vector2(142,38)
+    pve_party_picker_boss_start.add_theme_font_size_override("font_size",13)
+    pve_party_picker_boss_start.add_theme_color_override("font_color",PAPER_LIGHT)
+    pve_party_picker_boss_start.add_theme_stylebox_override("normal",_style(CINNABAR,PAPER_LIGHT,2,8))
+    pve_party_picker_boss_start.pressed.connect(_start_v63_boss_for_picked_party)
+    pve_party_picker_panel.add_child(pve_party_picker_boss_start)
 
 func _open_pve_party_picker() -> void:
     if not runtime_ready or state == null or pve_party_picker_shade == null:
         return
     var active_encounter := HuntingPveRunV2.active_multicamp_id(state)
     if not active_encounter.is_empty():
-        var restored := HuntingPveRunV2.resume_active(state,active_encounter)
+        var restored := HuntingPveRunV2.resume_active(state,active_encounter,_current_v63_preview_overrides())
         if bool(restored.get("ok",false)):
             var active_session: HuntingPveRunV2 = restored["session"]
             var owner_id := selected_id
@@ -1295,7 +1323,16 @@ func _open_pve_party_picker() -> void:
             if owner_id != &"":
                 _open_multicamp_panel(owner_id,active_encounter)
                 return
-    pve_party_selected_ids.clear()
+    var active_boss_id := HuntingPveRunV2.active_single_encounter_id(state)
+    if not active_boss_id.is_empty():
+        var restored_boss := HuntingPveRunV2.resume_active(state,active_boss_id,_current_v63_preview_overrides())
+        if bool(restored_boss.get("ok",false)):
+            var active_session: HuntingPveRunV2 = restored_boss["session"]
+            for actor_id in active_session.battle.actors:
+                var actor: Dictionary = active_session.battle.actors[actor_id]
+                if str(actor.get("side","")) == "disciple":
+                    _open_v63_boss_panel(StringName(str(actor_id)),active_boss_id)
+                    return    pve_party_selected_ids.clear()
     pve_party_picker_feedback.text = ""
     _populate_pve_party_picker()
     if not active_encounter.is_empty():
@@ -1398,10 +1435,9 @@ func _update_pve_party_picker_controls(eligible_count: int) -> void:
     if pve_party_selected_ids.size() < 6 and eligible_count < 6:
         pve_party_picker_feedback.text = "Chưa đủ sáu người. Cho đệ tử về tông môn, chờ việc kết thúc hoặc hồi phục rồi thử lại."
     if pve_party_picker_start != null:
-        pve_party_picker_start.disabled = pve_party_selected_ids.size() != 6 \
-            or eligible_count < 6 or not state.sect.b3_hunt.is_empty() \
-            or not HuntingPveRunV2.active_multicamp_id(state).is_empty()
-
+        pve_party_picker_start.disabled = pve_party_selected_ids.size() != 6 or eligible_count < 6 or not state.sect.b3_hunt.is_empty() or not HuntingPveRunV2.active_multicamp_id(state).is_empty() or not HuntingPveRunV2.active_single_encounter_id(state).is_empty()
+    if pve_party_picker_boss_start != null:
+        pve_party_picker_boss_start.disabled = pve_party_picker_start.disabled or pve_party_picker_boss_selector.item_count == 0
 func _start_multicamp_hunt_for_picked_party() -> void:
     if pve_party_selected_ids.size() != 6:
         pve_party_picker_feedback.text = "Hãy chọn đúng 6 đệ tử đủ điều kiện."
@@ -1422,7 +1458,7 @@ func _start_multicamp_hunt_for_picked_party() -> void:
         return
     var session := HuntingPveRunV2.new()
     var result := session.begin_multicamp(runtime_session.owner,encounter_id,
-        state.seed ^ state.tick ^ state.sect.v2_pve_settlement_receipts.size(),party,10,world_options)
+        state.seed ^ state.tick ^ state.sect.v2_pve_settlement_receipts.size(),party,10,world_options,_current_v63_preview_overrides())
     if not bool(result.get("ok",false)):
         pve_party_picker_feedback.text = "Chưa thể vào Thanh Trúc Lâm: %s" % str(result.get("reason","không đủ điều kiện"))
         return
@@ -1431,6 +1467,164 @@ func _start_multicamp_hunt_for_picked_party() -> void:
     _open_multicamp_panel(first_id,encounter_id)
     _refresh_all()
 
+func _current_v63_preview_overrides() -> Dictionary:
+    if runtime_session != null and runtime_session.owner != null and runtime_session.owner.scheduler != null:
+        return runtime_session.owner.scheduler.v63_preview_overrides.duplicate(true)
+    return v63_preview_overrides.duplicate(true)
+
+func _populate_v63_boss_selector() -> void:
+    if pve_party_picker_boss_selector == null:
+        return
+    pve_party_picker_boss_selector.clear()
+    var rows: Array[Dictionary] = []
+    for loaded in [V63HumanSkillCombatSystem.load_catalogue(), V63ImmortalSkillCombatSystem.load_catalogue(), V63DivineSkillCombatSystem.load_catalogue()]:
+        if not bool(loaded.get("ok",false)):
+            continue
+        for boss in loaded.get("data",{}).get("bosses",[]):
+            if boss is Dictionary:
+                rows.append(boss.duplicate(true))
+    rows.sort_custom(func(a: Dictionary,b: Dictionary) -> bool: return str(a.get("id","")) < str(b.get("id","")))
+    for row in rows:
+        var boss_id := str(row.get("id",""))
+        var display := str(row.get("name_vi",row.get("display_name",boss_id)))
+        pve_party_picker_boss_selector.add_item("%s · %s" % [display,boss_id])
+        pve_party_picker_boss_selector.set_item_metadata(pve_party_picker_boss_selector.item_count-1,boss_id)
+
+func _on_v63_preview_gate_toggled(enabled: bool) -> void:
+    _set_v63_preview_gate(enabled,true)
+
+func _set_v63_preview_gate(enabled: bool,persist: bool) -> bool:
+    v63_preview_overrides = {}
+    if enabled:
+        v63_preview_overrides = {
+            "sect_codex":true,"technique_learning":true,"human_skill_combat":true,
+            "divine_skill_combat":true,"skill_successors":true,"boss_encounters":true
+        }
+    if state != null:
+        state.sect.v63_archive_opt_in = enabled
+        state.sect.v63_skill_combat_opt_in = enabled
+    if runtime_session != null and runtime_session.owner != null and runtime_session.owner.scheduler != null:
+        runtime_session.owner.scheduler.v63_preview_overrides = v63_preview_overrides.duplicate(true)
+    if v63_combat_hud != null and b3_hunt_arena != null:
+        v63_combat_hud.set_authority(state,b3_hunt_arena.battle,enabled)
+    if persist and runtime_session != null:
+        var saved := runtime_session.save()
+        if not bool(saved.get("ok",false)):
+            _set_b3_hunt_feedback("Đổi cổng V6.5 chưa lưu: %s" % str(saved.get("reason",saved.get("error","unknown"))))
+            return false
+    return true
+
+func _open_v63_archive() -> void:
+    if state == null or b3_hunt_panel == null or v63_archive_screen != null:
+        return
+    var packed := load("res://scenes/p2/p2_3_techniques.tscn") as PackedScene
+    if packed == null:
+        _set_b3_hunt_feedback("Không mở được Tàng Kinh Các P2.3.")
+        return
+    var screen := packed.instantiate() as Control
+    if screen == null:
+        _set_b3_hunt_feedback("Tàng Kinh Các không tạo được giao diện.")
+        return
+    var overrides := _current_v63_preview_overrides()
+    screen.set("initial_state_override",state)
+    screen.set("external_scheduler_mode",true)
+    screen.set("archive_preview_overrides",overrides)
+    screen.set("learning_preview_overrides",overrides)
+    screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    screen.z_index = 300
+    screen.set("mouse_filter",Control.MOUSE_FILTER_STOP)
+    screen.connect("close_requested",_close_v63_archive)
+    b3_hunt_panel.add_child(screen)
+    v63_archive_screen = screen
+
+func _close_v63_archive() -> void:
+    if v63_archive_screen != null and is_instance_valid(v63_archive_screen):
+        v63_archive_screen.queue_free()
+    v63_archive_screen = null
+    _refresh_b3_hunt_panel()
+
+func _start_v63_boss_for_picked_party() -> void:
+    if pve_party_selected_ids.size() != 6 or pve_party_picker_boss_selector == null:
+        pve_party_picker_feedback.text = "Hãy chọn đủ sáu đệ tử và một Boss."
+        return
+    if runtime_session == null or not state.sect.b3_hunt.is_empty() or not state.sect.v2_pve_active_runs.is_empty():
+        pve_party_picker_feedback.text = "Runtime chưa sẵn sàng hoặc đang có một trận PvE khác."
+        return
+    var boss_id := str(pve_party_picker_boss_selector.get_selected_metadata())
+    if V63HumanSkillCombatSystem.boss_definition(boss_id).is_empty():
+        pve_party_picker_feedback.text = "Danh mục Boss chưa hợp lệ: %s" % boss_id
+        return
+    var party := _multicamp_party_for_ids(pve_party_selected_ids)
+    if party.size() != 6:
+        pve_party_picker_feedback.text = "Đội vừa thay đổi trạng thái; làm mới lựa chọn trước khi thách Boss."
+        _populate_pve_party_picker()
+        return
+    if not _set_v63_preview_gate(true,true):
+        pve_party_picker_feedback.text = "Chưa lưu được opt-in V6.5; trận chưa bắt đầu."
+        return
+    var encounter_id := "pve:v63_boss:%s:%d:%d" % [boss_id.validate_node_name(),state.seed,state.sect.v2_pve_settlement_receipts.size()]
+    var session := HuntingPveRunV2.new()
+    var result := session.begin(state,"thanh_truc_lam",encounter_id,state.seed ^ state.tick ^ boss_id.hash(),party,boss_id,_current_v63_preview_overrides())
+    if not bool(result.get("ok",false)):
+        pve_party_picker_feedback.text = "Chưa thể vào trận Boss: %s" % str(result.get("reason","không đủ điều kiện"))
+        return
+    var saved := runtime_session.save()
+    if not bool(saved.get("ok",false)):
+        pve_party_picker_feedback.text = "Trận đã tạo; lưu cần thử lại: %s" % str(saved.get("reason",saved.get("error","unknown")))
+        return
+    multicamp_encounter_id = encounter_id
+    var first_id := StringName(str(party[0].get("disciple_id","")))
+    _close_pve_party_picker()
+    _open_v63_boss_panel(first_id,encounter_id)
+    _refresh_all()
+
+func _open_v63_boss_panel(disciple_id: StringName,encounter_id: String) -> void:
+    if b3_hunt_panel == null or not state.disciples.has(disciple_id):
+        return
+    active_hunt_mode = "v63_boss"
+    multicamp_encounter_id = encounter_id
+    b3_hunt_disciple_id = disciple_id
+    selected_id = disciple_id
+    _hide_disciple_summary()
+    b3_hunt_panel.get_parent().visible = true
+    b3_hunt_panel.visible = true
+    _set_hunt_presentation_layout(false)
+    _refresh_v63_boss_panel()
+
+func _refresh_v63_boss_panel() -> void:
+    _set_hunt_presentation_layout(false)
+    var encounter := HuntingPveRunV2.active_single_encounter_id(state)
+    var battle: MapBattleV2
+    var running := not encounter.is_empty()
+    if running:
+        multicamp_encounter_id = encounter
+        var restored := HuntingPveRunV2.resume_active(state,encounter,_current_v63_preview_overrides())
+        if not bool(restored.get("ok",false)):
+            b3_hunt_facts.visible = active_hunt_mode == "care"
+            b3_hunt_facts.text = "Không thể khôi phục Boss đã lưu: %s" % str(restored.get("reason","save không hợp lệ"))
+            v63_combat_hud.visible = false
+            return
+        var session: HuntingPveRunV2 = restored["session"]
+        battle = session.battle
+    else:
+        var receipt: Dictionary = state.sect.v2_pve_settlement_receipts.get(multicamp_encounter_id,{})
+        b3_hunt_facts.text = "Boss đã kết thúc · %s · kết quả %s · phần thưởng theo Settlement hiện có." % [multicamp_encounter_id,str(receipt.get("outcome","đang chờ xác nhận"))]
+    b3_hunt_title.text = "V6.5 BOSS · COMBAT V2"
+    b3_hunt_subtitle.visible = false
+    b3_hunt_facts.visible = not running
+    b3_hunt_combat_view.visible = false
+    v63_combat_hud.visible = running
+    if running:
+        var rows := _b3_hunt_visual_rows(battle)
+        b3_hunt_arena.show_authority_snapshot(battle,rows,{},false)
+        v63_combat_hud.set_authority(state,battle,not _current_v63_preview_overrides().is_empty())
+        b3_hunt_return_button.text = "Rời màn trận"
+    else:
+        b3_hunt_arena.show_authority_snapshot(null,{})
+        b3_hunt_return_button.text = "Đóng kết quả"
+    b3_hunt_auto_button.visible = false
+    b3_hunt_deploy_button.visible = false
+    b3_hunt_save_button.disabled = runtime_session == null or runtime_session.owner.runtime_write_blocked
 func _open_disciple(disciple_id: StringName) -> void:
     if not state.disciples.has(disciple_id):
         return
@@ -4351,6 +4545,14 @@ func _build_b3_hunt_panel() -> void:
     b3_hunt_facts = _label(facts_panel,"",Vector2(16,14),Vector2(350,452),15)
     b3_hunt_facts.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     b3_hunt_facts.add_theme_color_override("font_color",INK)
+    v63_combat_hud = V63CombatHudV1.new()
+    v63_combat_hud.name = "V63CombatHudV1"
+    v63_combat_hud.position = Vector2(6,6)
+    v63_combat_hud.size = Vector2(370,472)
+    v63_combat_hud.visible = false
+    v63_combat_hud.archive_requested.connect(_open_v63_archive)
+    v63_combat_hud.preview_gate_toggled.connect(_on_v63_preview_gate_toggled)
+    facts_panel.add_child(v63_combat_hud)
     b3_hunt_world_status = Label.new()
     b3_hunt_world_status.name = "B3MainHuntStatus"
     b3_hunt_world_status.position = Vector2(12,10)
@@ -4411,12 +4613,22 @@ func _build_b3_hunt_panel() -> void:
 func _resume_saved_b3_hunt() -> void:
     var active_camp_id := HuntingPveRunV2.active_multicamp_id(state)
     if not active_camp_id.is_empty():
-        var restored_camp := HuntingPveRunV2.resume_active(state,active_camp_id)
+        var restored_camp := HuntingPveRunV2.resume_active(state,active_camp_id,_current_v63_preview_overrides())
         if bool(restored_camp.get("ok",false)):
             var camp_session: HuntingPveRunV2 = restored_camp["session"]
             for actor in camp_session.battle.actors.values():
                 if str(actor.get("side","")) == "disciple":
                     _open_multicamp_panel(StringName(str(actor["id"])),active_camp_id)
+                    return
+    var active_boss_id := HuntingPveRunV2.active_single_encounter_id(state)
+    if not active_boss_id.is_empty():
+        var restored_boss := HuntingPveRunV2.resume_active(state,active_boss_id,_current_v63_preview_overrides())
+        if bool(restored_boss.get("ok",false)):
+            var boss_session: HuntingPveRunV2 = restored_boss["session"]
+            for actor_id in boss_session.battle.actors:
+                var actor: Dictionary = boss_session.battle.actors[actor_id]
+                if str(actor.get("side","")) == "disciple":
+                    _open_v63_boss_panel(StringName(str(actor_id)),active_boss_id)
                     return
     if state.sect.b3_hunt.is_empty():
         return
@@ -4663,7 +4875,7 @@ func _on_open_world_move_ordered(actor_ids: Array, destination: Vector2) -> void
     if runtime_session == null:
         return
     var encounter := HuntingPveRunV2.active_multicamp_id(state)
-    var restored := HuntingPveRunV2.resume_active(state,encounter) if not encounter.is_empty() else {"ok":false}
+    var restored := HuntingPveRunV2.resume_active(state,encounter,_current_v63_preview_overrides()) if not encounter.is_empty() else {"ok":false}
     if not bool(restored.get("ok",false)):
         _set_b3_hunt_feedback("Không ra lệnh di chuyển: world không khôi phục được.")
         return
@@ -4775,10 +4987,21 @@ func _deploy_b3_hunt_disciple() -> void:
 func _return_from_b3_hunt() -> void:
     if runtime_session == null:
         return
+    if active_hunt_mode == "v63_boss":
+        var saved_boss := runtime_session.save()
+        if not bool(saved_boss.get("ok",false)):
+            _set_b3_hunt_feedback("Boss vẫn chạy; lưu cần thử lại: %s" % str(saved_boss.get("reason",saved_boss.get("error","unknown"))))
+            return
+        b3_hunt_panel.get_parent().visible = false
+        active_hunt_mode = "care"
+        _refresh_all()
+        if selected_id != &"" and state.disciples.has(selected_id):
+            _show_disciple_summary()
+        return
     if active_hunt_mode == "multicamp":
         var active_id := HuntingPveRunV2.active_multicamp_id(state)
         if not active_id.is_empty():
-            var restored_camp := HuntingPveRunV2.resume_active(state,active_id)
+            var restored_camp := HuntingPveRunV2.resume_active(state,active_id,_current_v63_preview_overrides())
             if not bool(restored_camp.get("ok",false)):
                 _set_b3_hunt_feedback("Không mở được bãi đã lưu: %s" % str(restored_camp.get("reason","unknown")))
                 return
@@ -4830,7 +5053,7 @@ func _refresh_multicamp_hunt_panel() -> void:
     if running:
         multicamp_encounter_id = encounter
         var restore_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
-        var restored := HuntingPveRunV2.resume_active(state,encounter)
+        var restored := HuntingPveRunV2.resume_active(state,encounter,_current_v63_preview_overrides())
         if performance_logging_enabled:
             _record_hunt_refresh_stage("snapshot_restore",Time.get_ticks_usec()-restore_started_usec)
         if not bool(restored.get("ok",false)):
@@ -4926,6 +5149,9 @@ func _refresh_multicamp_hunt_panel() -> void:
     var kill_count := int(population.get("world_total_kills",receipt.get("kills",0)))
     var alive_monsters := battle._count_alive("monster")
     _set_hunt_status(battle,camp_id,total_monsters,alive_monsters)
+    b3_hunt_facts.visible = false
+    v63_combat_hud.visible = true
+    v63_combat_hud.set_authority(state,battle,not _current_v63_preview_overrides().is_empty())
     var member_text := "\n".join(team_lines)
     b3_hunt_facts.text = (
         "%s · %s\n%s\n"
@@ -4943,6 +5169,7 @@ func _set_hunt_presentation_layout(use_live_map: bool) -> void:
         return
     var shade := b3_hunt_panel.get_parent() as ColorRect
     if use_live_map:
+        _set_pve_zoom_controls_for_hunt(true)
         if shade != null:
             shade.color = Color(0.03,0.06,0.07,0.12)
         b3_hunt_panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -4957,14 +5184,18 @@ func _set_hunt_presentation_layout(use_live_map: bool) -> void:
         b3_hunt_arena.offset_right = 0.0
         b3_hunt_arena.offset_bottom = 0.0
         b3_hunt_arena.add_theme_stylebox_override("panel",StyleBoxEmpty.new())
-        b3_hunt_facts_panel.position = Vector2(16,56)
-        b3_hunt_facts_panel.size = Vector2(292,104)
-        b3_hunt_facts_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+        b3_hunt_facts_panel.position = Vector2(968,58)
+        b3_hunt_facts_panel.size = Vector2(296,516)
+        b3_hunt_facts_panel.mouse_filter = Control.MOUSE_FILTER_STOP
         b3_hunt_facts_panel.add_theme_stylebox_override("panel",_style(Color(0.025,0.055,0.045,0.90),Color("d7c695"),1,8))
         b3_hunt_facts.position = Vector2(16,14)
         b3_hunt_facts.size = Vector2(258,78)
         b3_hunt_facts.visible = false
-        b3_hunt_world_status.visible = true
+        b3_hunt_world_status.visible = false
+        if v63_combat_hud != null:
+            v63_combat_hud.position = Vector2(6,6)
+            v63_combat_hud.size = Vector2(284,504)
+            v63_combat_hud.visible = active_hunt_mode == "multicamp"
         b3_hunt_title.text = "THANH TRÚC LÂM · THẾ GIỚI LIỀN MẠCH"
         b3_hunt_title.position = Vector2(18,14)
         b3_hunt_title.size = Vector2(600,32)
@@ -4990,6 +5221,7 @@ func _set_hunt_presentation_layout(use_live_map: bool) -> void:
         b3_hunt_return_button.offset_right = -18.0
         b3_hunt_return_button.offset_bottom = -14.0
     else:
+        _set_pve_zoom_controls_for_hunt(false)
         if shade != null:
             shade.color = Color(0.03,0.06,0.07,0.78)
         b3_hunt_panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
@@ -5007,7 +5239,7 @@ func _set_hunt_presentation_layout(use_live_map: bool) -> void:
         b3_hunt_facts.position = Vector2(16,14)
         b3_hunt_facts.size = Vector2(350,452)
         b3_hunt_facts.add_theme_font_size_override("font_size",15)
-        b3_hunt_facts.visible = true
+        b3_hunt_facts.visible = active_hunt_mode == "care"
         b3_hunt_world_status.visible = false
         b3_hunt_title.text = "THẾ GIỚI SĂN QUÁI — LIỀN MẠCH"
         b3_hunt_title.position = Vector2(24,14)
@@ -5022,13 +5254,28 @@ func _set_hunt_presentation_layout(use_live_map: bool) -> void:
         b3_hunt_auto_button.set_anchors_preset(Control.PRESET_TOP_LEFT)
         b3_hunt_auto_button.position = Vector2(746,580)
         b3_hunt_auto_button.size = Vector2(120,46)
-        b3_hunt_deploy_button.visible = true
+        b3_hunt_deploy_button.visible = active_hunt_mode == "care"
         b3_hunt_deploy_button.set_anchors_preset(Control.PRESET_TOP_LEFT)
         b3_hunt_deploy_button.position = Vector2(876,580)
         b3_hunt_deploy_button.size = Vector2(120,46)
         b3_hunt_return_button.set_anchors_preset(Control.PRESET_TOP_LEFT)
         b3_hunt_return_button.position = Vector2(1006,580)
         b3_hunt_return_button.size = Vector2(122,46)
+
+func _set_pve_zoom_controls_for_hunt(use_live_map: bool) -> void:
+    if b3_pve_world_view == null:
+        return
+    for entry in [["PveWorldZoomIn",176.0],["PveWorldZoomOut",226.0]]:
+        var zoom_button := b3_pve_world_view.get_node_or_null(str(entry[0])) as Button
+        if zoom_button == null:
+            continue
+        var top := float(entry[1])
+        zoom_button.set_anchors_preset(
+            Control.PRESET_TOP_LEFT if use_live_map else Control.PRESET_TOP_RIGHT)
+        zoom_button.offset_left = 14.0 if use_live_map else -60.0
+        zoom_button.offset_top = top
+        zoom_button.offset_right = 62.0 if use_live_map else -12.0
+        zoom_button.offset_bottom = top+44.0
 
 func _set_hunt_status(battle: MapBattleV2, camp_id: String, total_monsters: int,
         alive_monsters: int) -> void:
@@ -5047,6 +5294,9 @@ func _set_hunt_status(battle: MapBattleV2, camp_id: String, total_monsters: int,
         members,battle._count_alive("disciple"),total_hp,maximum_hp,camp_id,alive_monsters,total_monsters,battle.now]
 
 func _refresh_b3_hunt_panel() -> void:
+    if active_hunt_mode == "v63_boss":
+        _refresh_v63_boss_panel()
+        return
     if b3_hunt_panel == null or not b3_hunt_panel.get_parent().visible or state == null:
         return
     if active_hunt_mode == "multicamp":
@@ -6250,3 +6500,4 @@ func _equipment_slot_name(slot: StringName) -> String:
         EquipmentSystem.SLOT_ARMOR: return "Giáp"
         EquipmentSystem.SLOT_TALISMAN: return "Phụ kiện"
         _: return str(slot)
+

@@ -138,7 +138,7 @@ func begin(
 # the existing, authored region clear table is claimed once after camp victory.
 func begin_multicamp(owner: SimulationRuntimeOwnerV2, encounter_id: String,
         seed: int, party_members: Array, slots_per_camp: int = 10,
-        open_world_options: Dictionary = {}) -> Dictionary:
+        open_world_options: Dictionary = {}, preview_overrides: Dictionary = {}) -> Dictionary:
     if owner == null or owner.state == null or owner.durable_path.is_empty():
         return {"ok":false,"reason":"multicamp_requires_durable_runtime_owner"}
     if owner.b3_write_blocked or owner.runtime_write_blocked:
@@ -157,7 +157,7 @@ func begin_multicamp(owner: SimulationRuntimeOwnerV2, encounter_id: String,
     var selected := HuntingMapV2.choose_level(state,PveMultiCampPopulationV1.ZONE,1)
     if not bool(selected.get("ok",false)):
         return selected
-    var started := begin(state,PveMultiCampPopulationV1.ZONE,encounter_id,seed,party_members)
+    var started := begin(state,PveMultiCampPopulationV1.ZONE,encounter_id,seed,party_members,"",preview_overrides)
     if not bool(started.get("ok",false)):
         return started
 
@@ -556,6 +556,16 @@ static func active_multicamp_id(state: SimulationState) -> String:
     for raw_id in state.sect.v2_pve_active_runs.keys():
         var envelope = state.sect.v2_pve_active_runs[raw_id]
         if envelope is Dictionary and str(envelope.get("mode","")) == "multicamp":
+            return str(raw_id)
+    return ""
+static func active_single_encounter_id(state: SimulationState) -> String:
+    if state == null:
+        return ""
+    var ids: Array = state.sect.v2_pve_active_runs.keys()
+    ids.sort()
+    for raw_id in ids:
+        var envelope = state.sect.v2_pve_active_runs[raw_id]
+        if envelope is Dictionary and str(envelope.get("mode","encounter")) == "encounter" and envelope.has("battle"):
             return str(raw_id)
     return ""
 
@@ -1033,4 +1043,5 @@ static func restore_state(state: SimulationState, saved: Dictionary, preview_ove
     session.minute_phase = phase
     session.world_respawn_delay = float(saved.get("world_respawn_delay",0.0)) if resumed.world_mode else 0.0
     return {"ok":true,"session":session}
+
 

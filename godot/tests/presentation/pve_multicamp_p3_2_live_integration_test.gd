@@ -177,15 +177,16 @@ func _run() -> void:
 	var combat_view := ui.get_node("B3MainHuntShade/B3MainHuntPanel/B3MainHuntFactsPanel/B3PveCombatV5View") as Control
 	var facts_panel := ui.get_node("B3MainHuntShade/B3MainHuntPanel/B3MainHuntFactsPanel") as Control
 	var world_status := ui.get_node("B3MainHuntShade/B3MainHuntPanel/B3MainHuntFactsPanel/B3MainHuntStatus") as Label
+	var combat_hud := facts_panel.get_node_or_null("V63CombatHudV1") as V63CombatHudV1
 	if not _check(bool(ui.get_node("B3MainHuntShade").visible) and bool(arena.visible)
 		and map != null and map.visible and not combat_view.visible
 		and map.size.x >= 1200.0 and map.size.y >= 680.0
-		and facts_panel.size.x <= 320.0 and facts_panel.size.y <= 120.0
-		and world_status != null and world_status.visible
+		and facts_panel.size.x <= 320.0 and facts_panel.size.y <= 560.0
+		and combat_hud != null and combat_hud.visible
 		and map.world != null and map.world.pve_landscape and map.world.art_source_status.get("accepted_count",0) >= 10,
-		"the main P3.2 hunt view did not show the near-full-screen Source A world and compact live HUD; shade=%s arena=%s map=%s size=%s status=%s renderer=%s assets=%d combat=%s error=%s" % [
+		"the main P3.2 hunt view did not show the near-full-screen Source A world and compact live HUD; shade=%s arena=%s map=%s size=%s hud=%s status=%s renderer=%s assets=%d combat=%s error=%s" % [
 		str(ui.get_node("B3MainHuntShade").visible),str(arena.visible),str(map != null and map.visible),
-		str(map.size if map != null else Vector2.ZERO),str(world_status.visible if world_status != null else false),
+		str(map.size if map != null else Vector2.ZERO),str(combat_hud != null and combat_hud.visible),str(world_status.visible if world_status != null else false),
 		map.world.get_class() if map != null and map.world != null else "missing renderer",map.world.art_source_status.get("accepted_count",0) if map != null and map.world != null else -1,
 			str(combat_view.visible),map.source_error if map != null else "missing map node"] + "; panel=%s panel_visible=%s mode=%s active_id=%s" % [
 		str(ui.get("b3_hunt_panel") != null),str(ui.get("b3_hunt_panel") != null and (ui.get("b3_hunt_panel") as Control).visible),
@@ -862,3 +863,4 @@ func _remove_save(save_path: String) -> void:
 	for path in [save_path,save_path+".bak"]:
 		if FileAccess.file_exists(path):
 			DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+

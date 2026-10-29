@@ -79,6 +79,9 @@ static func advance_to(
         return _advance_b3(state,scheduler,elapsed,max_steps)
     if HuntingPveRunV2.has_active_multicamp(state):
         return _advance_multicamp(state,scheduler,elapsed,max_steps)
+    var single_encounter := HuntingPveRunV2.active_single_encounter_id(state)
+    if not single_encounter.is_empty() and not state.sect.v2_pve_settlement_receipts.has(single_encounter):
+        return _advance_single_encounter(state,scheduler,elapsed,max_steps)
 
     var available := int(floor(
         state.runtime_unconsumed_wall_seconds /
@@ -112,9 +115,11 @@ static func pending_minutes(state: SimulationState) -> int:
     if state == null:
         return 0
     var phase := float(state.sect.b3_hunt.get("minute_phase",0.0))
-    var multicamp_id := HuntingPveRunV2.active_multicamp_id(state)
-    if not multicamp_id.is_empty():
-        var snapshot = state.sect.v2_pve_active_runs.get(multicamp_id,{})
+    var active_id := HuntingPveRunV2.active_multicamp_id(state)
+    if active_id.is_empty():
+        active_id = HuntingPveRunV2.active_single_encounter_id(state)
+    if not active_id.is_empty():
+        var snapshot = state.sect.v2_pve_active_runs.get(active_id,{})
         if snapshot is Dictionary:
             phase = float(snapshot.get("minute_phase",0.0))
     return int(floor(
@@ -165,6 +170,70 @@ static func _advance_multicamp(state: SimulationState, scheduler: SimulationSche
         "simulation_tick":state.tick},true)
     return result
 
+static func _advance_single_encounter(state: SimulationState, scheduler: SimulationScheduler,
+        elapsed: int, max_steps: int) -> Dictionary:
+    var encounter := HuntingPveRunV2.active_single_encounter_id(state)
+    var restored := HuntingPveRunV2.resume_active(state,encounter,scheduler.v63_preview_overrides)
+    if not bool(restored.get("ok",false)):
+        return restored
+    var session: HuntingPveRunV2 = restored["session"]
+    var saved_run: Dictionary = state.sect.v2_pve_active_runs.get(encounter,{})
+    var saved_phase = saved_run.get("minute_phase",0.0)
+    if not (saved_phase is int or saved_phase is float):
+        return {"ok":false,"reason":"invalid_single_encounter_clock_phase"}
+    var minute_phase := float(saved_phase)
+    if not is_finite(minute_phase) or minute_phase < 0.0 or minute_phase >= WALL_SECONDS_PER_SIMULATION_MINUTE or not is_equal_approx(fmod(minute_phase,MapBattleV2.STEP_SECONDS),0.0):
+        return {"ok":false,"reason":"invalid_single_encounter_clock_phase"}
+    session.minute_phase = minute_phase
+    var budget := 2400
+    if max_steps > 0:
+        budget = mini(budget,max_steps*240)
+    var frames := 0
+    var minutes := 0
+    var terminal := false
+    var result: Dictionary = {"ok":true,"stepped":false}
+    while state.runtime_unconsumed_wall_seconds >= MapBattleV2.STEP_SECONDS and frames < budget:
+        result = session.advance(false)
+        if bool(result.get("ok",false)):
+            # A single encounter delegates one frame to battle.step but does
+            # not return the multicamp stepped marker. The shared clock owns
+            # this successful call as exactly one consumed combat frame.
+            result["stepped"] = true
+        if bool(result.get("stepped",false)):
+            state.runtime_unconsumed_wall_seconds -= MapBattleV2.STEP_SECONDS
+            frames += 1
+            var has_terminal_receipt := state.sect.v2_pve_settlement_receipts.has(encounter)
+            if state.sect.v2_pve_active_runs.has(encounter) and not has_terminal_receipt:
+                session.minute_phase += MapBattleV2.STEP_SECONDS
+                if session.minute_phase >= WALL_SECONDS_PER_SIMULATION_MINUTE:
+                    session.minute_phase -= WALL_SECONDS_PER_SIMULATION_MINUTE
+                    scheduler.step()
+                    minutes += 1
+                var checkpoint := session._persist_live_state()
+                if not bool(checkpoint.get("ok",false)):
+                    result = checkpoint
+                    break
+                var saved_checkpoint = state.sect.v2_pve_active_runs.get(encounter,null)
+                if not (saved_checkpoint is Dictionary):
+                    result = {"ok":false,"reason":"single_encounter_phase_checkpoint_missing"}
+                    break
+                saved_checkpoint["minute_phase"] = session.minute_phase
+            else:
+                # A terminal settlement can retain a winning snapshot until
+                # loot is claimed. Do not resume it; carry only its partial
+                # minute back to the shared wall clock and stop this batch.
+                state.runtime_unconsumed_wall_seconds += session.minute_phase+MapBattleV2.STEP_SECONDS
+                session.minute_phase = 0.0
+                terminal = true
+        if not bool(result.get("ok",false)) or bool(result.get("barrier",false)):
+            break
+        if terminal or not state.sect.v2_pve_active_runs.has(encounter):
+            break
+    result.merge({"elapsed_wall_seconds":elapsed,"steps_run":minutes,
+        "frames_run":frames,"pending_minutes":pending_minutes(state),
+        "remainder_seconds":state.runtime_unconsumed_wall_seconds,
+        "simulation_tick":state.tick},true)
+    return result
 static func _advance_b3(state: SimulationState, scheduler: SimulationScheduler, elapsed: int, max_steps: int) -> Dictionary:
     var restored := B3HuntWorld.restore(state)
     if not restored["ok"]:
@@ -193,3 +262,4 @@ static func _advance_b3(state: SimulationState, scheduler: SimulationScheduler, 
         "pending_minutes":pending_minutes(state),"remainder_seconds":state.runtime_unconsumed_wall_seconds,
         "simulation_tick":state.tick},true)
     return result
+

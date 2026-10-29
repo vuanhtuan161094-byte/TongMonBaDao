@@ -1,5 +1,7 @@
 extends Control
 
+signal close_requested
+
 const TEST_SEED := 1323232
 
 var state: SimulationState
@@ -18,6 +20,8 @@ var learning_technique_index := 0
 var tick_accumulator := 0.0
 var selected_technique_id: StringName = &"duong_khi_quyet"
 var learning_preview_overrides: Dictionary = {}
+var external_scheduler_mode := false
+var _external_refresh_accumulator := 0.0
 var status_text := ""
 
 var summary_label: Label
@@ -42,8 +46,9 @@ var learning_system := V63LearningSystem.new()
 func _ready() -> void:
     set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
     state = initial_state_override if initial_state_override != null else P23Factory.create_state(TEST_SEED)
-    scheduler = SimulationScheduler.new(state)
-    scheduler.v63_preview_overrides = learning_preview_overrides.duplicate(true)
+    scheduler = null if external_scheduler_mode else SimulationScheduler.new(state)
+    if scheduler != null:
+        scheduler.v63_preview_overrides = learning_preview_overrides.duplicate(true)
     archive_codices = V63SectArchiveSystem.codices()
     learning_techniques = V63LearningSystem.techniques()
     for index in range(archive_codices.size()):
@@ -55,6 +60,12 @@ func _ready() -> void:
     _refresh_ui()
 
 func _process(delta: float) -> void:
+    if external_scheduler_mode:
+        _external_refresh_accumulator += delta
+        if _external_refresh_accumulator >= 0.18:
+            _external_refresh_accumulator = 0.0
+            _refresh_ui()
+        return
     tick_accumulator += delta
     if tick_accumulator >= 0.18:
         tick_accumulator = 0.0
@@ -83,6 +94,12 @@ func _build_ui() -> void:
     title.text = "TÔNG MÔN TYCOON — P2.3 CÔNG PHÁP"
     title.add_theme_font_size_override("font_size", 21)
     column.add_child(title)
+    if external_scheduler_mode:
+        var close := Button.new()
+        close.text = "Trở lại trận"
+        close.custom_minimum_size = Vector2(150, 34)
+        close.pressed.connect(func() -> void: close_requested.emit())
+        column.add_child(close)
 
     summary_label = Label.new()
     summary_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -432,4 +449,5 @@ func _refresh_learning_ui() -> void:
     learning_main_button.disabled = not enabled or not known or not out_of_combat
     learning_aux_1_button.disabled = not enabled or not known or not out_of_combat
     learning_aux_2_button.disabled = not enabled or not known or not out_of_combat
+
 
