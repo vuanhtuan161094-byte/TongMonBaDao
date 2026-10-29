@@ -85,6 +85,17 @@ func _run() -> void:
 	if not _check(state != null and runtime != null and runtime.owner.state == state,
 		"P3.2 is not bound to one authoritative runtime state"):
 		return
+	var perf_probe_path := OS.get_environment("TMB_PVE_PERF_PROBE_PATH").strip_edges()
+	if not perf_probe_path.is_empty():
+		var perf_probe_script := load("res://tools/qa/pve_playable_perf_probe.gd") as GDScript
+		if not _check(perf_probe_script != null,
+			"passive QA frame probe script did not load"):
+			return
+		var perf_probe: Node = perf_probe_script.new()
+		perf_probe.call("configure",ui,perf_probe_path,
+			OS.get_environment("TMB_PVE_PERF_RUN_ID"),
+			OS.get_environment("TMB_PVE_PERF_LOG") == "1")
+		ui.add_child(perf_probe)
 	var free_v2_ids: Array = state.disciples.keys()
 	free_v2_ids.sort()
 	var eligible_ids: Array[StringName] = []
