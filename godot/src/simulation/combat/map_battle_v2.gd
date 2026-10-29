@@ -115,7 +115,7 @@ func setup(id: String, party: Array, monsters: Array, keep_encounter_open: bool 
             "linked_disciple":row.get("disciple",null)
         })
         var v63_disciple_actor: Dictionary = entries[entries.size()-1]
-        for field in ["v63_skill_loadout","v63_skill_ready","v63_combat_enabled"]:
+        for field in ["v63_skill_loadout","v63_skill_ready","v63_combat_enabled","v63_passive_ids","v63_combat_branch_id","v63_innate_skill_id","v63_basic_skill_id","basic_element"]:
             if row.has(field):
                 v63_disciple_actor[field] = row[field].duplicate(true) if row[field] is Array or row[field] is Dictionary else row[field]
     for raw in monsters:
@@ -455,6 +455,7 @@ func step(viewed_map: bool = false) -> Dictionary:
         return {"ok":false,"reason":"kill_journal_backpressure","pending":_pending_kill_events.size()}
     now += STEP_SECONDS
     _process_status_effects()
+    V63HumanSkillCombatSystem.process_status_effects(self)
     _release_casts()
     var actor_ids: Array = actors.keys()
     actor_ids.sort()
@@ -523,16 +524,17 @@ func step(viewed_map: bool = false) -> Dictionary:
                 _cast_mage_aoe(actor,target)
                 continue
         if now >= float(actor["next_basic"]):
+            var action_stats: Dictionary = V63HumanSkillCombatSystem.effective_attack_stats(actor,actor.get("stats",{}))
             var interval := CombatStatsV2.effective_interval(
                 1.65 if str(actor["side"]) == "monster" else float(actor.get("basic_interval",1.6)),
-                float(actor["stats"].get("attack_speed",0.0))
+                float(action_stats.get("attack_speed",0.0))
             )
             if interval <= 0.0:
                 # A -100% or worse attack-speed modifier disables basic hits;
                 # keep checking at the simulation tick without creating debt.
                 actor["next_basic"] = now+STEP_SECONDS
                 continue
-            _deal_direct(actor,target,float(actor.get("basic_ratio",1.0)),"basic",true)
+            _deal_direct(actor,target,float(actor.get("basic_ratio",1.0)),"basic",true,V63HumanSkillCombatSystem.basic_element(actor))
             # Carry fractional deadlines across grid checks without multi-hit catch-up.
             actor["next_basic"] = maxf(now+STEP_SECONDS,float(actor["next_basic"])+maxf(STEP_SECONDS,interval))
     if _count_alive("monster") == 0 and not continuous_mode:
@@ -741,9 +743,12 @@ func _guard_frontline(actor: Dictionary) -> bool:
 func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: String, eligible_lifesteal: bool, damage_element: String = "", can_crit: bool = true) -> float:
     if float(attacker["hp"]) <= 0.0 or float(target["hp"]) <= 0.0:
         return 0.0
+    if kind not in ["dot","v63_poison"] and now < float(target.get("v63_evasion_until",-1.0)) and str(attacker.get("side","")) != str(target.get("side","")):
+        _event("evade",{"attacker":str(attacker.get("id","")),"target":str(target.get("id","")),"kind":kind,"until":float(target.get("v63_evasion_until",-1.0))})
+        return 0.0
     var target_hp_before := float(target["hp"])
-    var a_stats: Dictionary = attacker["stats"]
-    var t_stats: Dictionary = target["stats"]
+    var a_stats: Dictionary = V63HumanSkillCombatSystem.effective_attack_stats(attacker,attacker.get("stats",{}))
+    var t_stats: Dictionary = V63HumanSkillCombatSystem.effective_defense_stats(target,target.get("stats",{}))
     var original_ratio := ratio
     var context: Dictionary = {"ok":true,"outgoing_damage_factor":1.0,
         "basic_followup_chance":0.0,"basic_followup_ratio":0.0}
@@ -755,6 +760,7 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
         if not bool(context.get("ok",false)):
             return 0.0
         ratio *= float(context["outgoing_damage_factor"])
+    ratio *= V63HumanSkillCombatSystem.marked_damage_factor(attacker,target,now)
     var guard_factor := 1.0
     if now < float(target.get("guard_until",-1.0)):
         guard_factor = 0.65
