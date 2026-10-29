@@ -8,7 +8,9 @@
 > - D1 baseline: `6e4012d7a9e3a7efa56df349a176f9491d550742`; active no-merge work branch: `feature/v63-v64-full-combat-20261029`.
 > - Godot 4.7.2 Windows import and focused D1 registry test both PASS (exit 0). Evidence and log hashes: [D1 validation report](docs/implementation/V63_D1_VALIDATION_EVIDENCE_20261029.md).
 > - D1 remains data-only: gates OFF, no skill runtime, boss spawn, or loot wiring.
-> - D2 implementation is waiting on the owner-approved exact file path allowlist required by `AGENTS.md` for each CODE packet. No D2 gameplay code has been written.
+> - D2 Sect Archive and exactly-once codex rewards are complete on tested source `d45ab195c53c00f0f29732124dd7678fd42cb351`; official Godot 4.7.2 import and all 10 focused/regression scripts PASS. See [D2 evidence](docs/implementation/V63_D2_ARCHIVE_EVIDENCE_20261029.md). The release gate remains OFF; no production drop profiles or rates were authored.
+> - D2 used the owner-approved exact path allowlist. PR #52 remains Draft/open and no merge to `main` was performed. The original E: checkout and its existing QA/import artifacts were preserved.
+> - Next is D3 planning and its own owner-approved exact code path allowlist. Do not begin D3 SaveService migration, timed research/One Active Job, live skill runtime, or D4+ in this packet.
 > - PR #52 remains Draft/open. No merge to `main`; the original E: checkout and its QA artifacts were preserved.
 
 
