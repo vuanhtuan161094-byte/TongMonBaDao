@@ -1,5 +1,13 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 29/10/2026 — Owner authorizes FULL V6.5 execution D4–D8
+
+**Current owner instruction supersedes the previous 'D4 design-only, seek separate CODE permission' note** for the explicitly bounded phase packets in [the V6.5 execution contract](docs/operations/TMB_V65_FULL_COMBAT_EXECUTION_CONTRACT_20261029.md). Windows Codex should implement D4-A → D4-B → D5 → D6 → D7 → D8 consecutively on the existing `feature/v63-v64-full-combat-20261029` feature branch, with phase-specific allowlists, tests and logs. Do not merge or disturb PR #52. Resume only from new current HEAD after fetching; earlier audited head `bbac288acd14b0612414a458c43a4fa8a178e86f` is an anchor, not a frozen ref.
+
+**Critical change:** PR #52 head has advanced to `f7c33d9c3baba3267a17021718b44f87acd62ef6`; full-combat feature and PR #52 have diverged. Compare and reconcile relevant PvE/Save files before altering them. Preserve four dirty EOF-only files in E: by using an isolated E: scratch worktree. D3 is only a gated headless-validated learning implementation; new skill combat / nine active bosses / approved visual gameplay are **NOT DONE**. Full approval requires runtime plus actual GUI & owner review. No automatic owner visual approval or main merge.
+
+
+
 ## Cập nhật 29/10/2026 — V6.5 full combat task
 
 > Ghi chú hiện tại này thay thế các branch head và gate đã cũ trong snapshot lịch sử bên dưới.
