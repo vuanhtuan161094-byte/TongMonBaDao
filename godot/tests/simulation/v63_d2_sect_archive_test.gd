@@ -62,6 +62,11 @@ func _run() -> void:
     var fragment_id := StringName(chosen.fragment_resource_id)
     var required := int(chosen.restore_fragments_candidate)
     if not _check(warehouse.add(state,fragment_id,required),"could not seed restoration fragments"): return
+    if not _check(warehouse.set_rule(state,fragment_id,0,true),"could not lock restoration fragments for policy test"): return
+    var locked_resources: Dictionary = state.sect.warehouse_resources.duplicate(true)
+    var locked_restore := V63SectArchiveSystem.restore_manual_from_fragments(state,codex_id,"archive-restore:locked",PREVIEW)
+    if not _check(not bool(locked_restore.get("ok",false)) and state.sect.warehouse_resources==locked_resources,"fragment restoration bypassed a Warehouse lock"): return
+    if not _check(warehouse.set_rule(state,fragment_id,0,false),"could not unlock restoration fragments"): return
     var restored := V63SectArchiveSystem.restore_manual_from_fragments(state,codex_id,"archive-restore:1",PREVIEW)
     if not _check(bool(restored.get("ok",false)) and warehouse.quantity(state,manual_id)==2 and warehouse.quantity(state,fragment_id)==0,"fragment restoration did not atomically create exactly one book"): return
     var restored_again := V63SectArchiveSystem.restore_manual_from_fragments(state,codex_id,"archive-restore:1",PREVIEW)
