@@ -6,6 +6,23 @@ Implemented D2 on `feature/v63-v64-full-combat-20261029`. Final tested source co
 
 Godot `4.7.2.stable.official.ed1daf0bf` headless editor import passed (exit 0). All 10 focused and affected regression scripts passed (each exit 0). Source parity against the final commit passed for all 12 D2 code/test paths, ignoring Windows line-ending conversion only.
 
+## D2 code and test paths
+
+- `godot/data/combat/v63_archive_catalog.json`
+- `godot/src/presentation/p2_3_techniques.gd`
+- `godot/src/simulation/archive/v63_sect_archive_system.gd`
+- `godot/src/simulation/combat/hunting_map_v2.gd`
+- `godot/src/simulation/combat/hunting_pve_run_v2.gd`
+- `godot/src/simulation/combat/pve_multi_camp_population_v1.gd`
+- `godot/src/simulation/resource/resource_registry.gd`
+- `godot/src/simulation/state/sect_state.gd`
+- `godot/src/simulation/state/simulation_state.gd`
+- `godot/tests/presentation/v63_d2_sect_archive_ui_test.gd`
+- `godot/tests/simulation/v63_d2_codex_drop_receipts_test.gd`
+- `godot/tests/simulation/v63_d2_sect_archive_test.gd`
+
+The only additional paths updated for D2 status/evidence were `CURRENT_CHECKPOINT.md`, `NEXT_CHAT_HANDOFF.md`, and this report. No other D2 code/test path was changed.
+
 ## D2 behavior
 
 - The data-driven catalogue covers all 105 skill families: 96 archivable manuals and 9 innate families without purchasable manuals. It registers 96 manuals plus four tier fragment resources through the existing `ResourceRegistry`.
