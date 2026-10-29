@@ -5,7 +5,7 @@
 ## Cập nhật hiện tại — V6.5 full combat / D3
 
 - Stable `main` remains `c0c1382f119599497b52d8ee8abd9e830a883f1e`; no merge occurred. Active feature branch is `feature/v63-v64-full-combat-20261029`.
-- D3 code/test commit: `9bbc5edacf73388505a16c8db0e3b9097a41d55a`, based on approved feature head `4b914d05eb601d2788968a0419e5dda63c79b6fc`. It adds gated personal study jobs, the D3 learning catalog/system, additive disciple/sect/save records, existing-screen study/loadout controls, and focused tests.
+- D3 implementation commit: `9bbc5edacf73388505a16c8db0e3b9097a41d55a`, based on approved feature head `4b914d05eb601d2788968a0419e5dda63c79b6fc`; follow-up persistence test commit: `677184c3f05eb84e31aed66e48ee42c383acc222`. Together they add gated personal study jobs, the D3 learning catalog/system, additive disciple/sect/save records, existing-screen study/loadout controls, and focused tests.
 - Official Windows Godot `4.7.2.stable.official.ed1daf0bf` import and all 10 approved focused/cumulative scripts PASS, exit 0. The 14 source files tested locally match the D3 code commit exactly. Read [D3 evidence](docs/implementation/V63_D3_LEARNING_EVIDENCE_20261029.md) for each command and log SHA-256.
 - `technique_learning` and `sect_codex` default OFF. Economy values remain candidate-only, no skill/combat effects are enabled, and legacy P2.3 knowledge/loadout are preserved without an identity crosswalk.
 - The E: feature checkout retains its existing QA/import artifacts and four EOF-only uncommitted in-scope edits; it was left untouched. Physical GUI, Android and owner visual acceptance remain PENDING.

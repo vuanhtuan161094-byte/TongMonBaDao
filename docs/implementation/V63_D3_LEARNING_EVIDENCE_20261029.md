@@ -2,7 +2,7 @@
 
 ## Result
 
-D3 is implemented on `feature/v63-v64-full-combat-20261029`. Code/test commit: `9bbc5edacf73388505a16c8db0e3b9097a41d55a`, parent `4b914d05eb601d2788968a0419e5dda63c79b6fc`. The approved main baseline remains `c0c1382f119599497b52d8ee8abd9e830a883f1e`; no main change, PR creation, or merge occurred. PR #52 remains Draft/open.
+D3 is implemented on `feature/v63-v64-full-combat-20261029`. Initial code/test commit: `677184c3f05eb84e31aed66e48ee42c383acc222`, parent `4b914d05eb601d2788968a0419e5dda63c79b6fc`; completed-save reload regression: `677184c3f05eb84e31aed66e48ee42c383acc222`. The approved main baseline remains `c0c1382f119599497b52d8ee8abd9e830a883f1e`; no main change, PR creation, or merge occurred. PR #52 remains Draft/open.
 
 The D3 learning system is additive and globally gated. The catalog has 12 candidate techniques across bow, fist and poison: three school foundations and nine branch techniques. A disciple must have access to the matching archived Sect Archive manual, satisfy deterministic prerequisites, and have no active job or reserved occupation before study can start. Starting study reserves Contribution and personal spirit stones once; scheduler ticks advance it; retry-safe receipts protect start, cancel, completion and mastery operations. Cancellation returns the reserved cost once. Completion grants personal technique knowledge once. A disciple can equip one main and two auxiliary techniques and retain personal mastery milestones.
 
@@ -27,7 +27,7 @@ Legacy P2.3 `learned_techniques` and `active_technique_id` remain intact. SaveSe
 
 ## Runtime evidence
 
-Engine: `Godot Engine v4.7.2.stable.official.ed1daf0bf`, Windows x86_64 console build. Logs were captured under `C:/Users/Admin/Documents/Codex/2026-10-29/files-pasted-by-the-user-codex/outputs/v63_d3_learning_validation`. All commands were sequential, and each returned exit code 0. The 14 local source/catalog/test files were compared with the committed GitHub files at `9bbc5edacf73388505a16c8db0e3b9097a41d55a`; all 14 contents matched exactly.
+Engine: `Godot Engine v4.7.2.stable.official.ed1daf0bf`, Windows x86_64 console build. Logs were captured under `C:/Users/Admin/Documents/Codex/2026-10-29/files-pasted-by-the-user-codex/outputs/v63_d3_learning_validation`. All commands were sequential, and each returned exit code 0. The 14 local source/catalog/test files were compared with the committed GitHub files at `677184c3f05eb84e31aed66e48ee42c383acc222`; all 14 contents matched exactly.
 
 Import command: `E:\\Godot_v4.7.2-stable_win64_console.exe --headless --editor --path godot --import` — PASS, exit 0.
 
@@ -35,7 +35,7 @@ Focused and cumulative commands used `E:\\Godot_v4.7.2-stable_win64_console.exe 
 
 | Script | Result | Log SHA-256 |
 | --- | --- | --- |
-| `v63_d3_learning_job_test.gd` | PASS, 58 checks | `BEC919EFBC54F7F783859BAE73BB70E16DF3C8D28F92172F73D8E4BFCE8067BE` |
+| `v63_d3_learning_job_test.gd` | PASS, 62 checks | `41151BC2DA6B8E0F1776FAFE6E72E48E6676F2D54531D035DD5DBEE1EBE20290` |
 | `v63_d3_learning_ui_test.gd` | PASS | `09BBA4AE4C9A77E655AB896101434844198BDCF31EBC795B7F7CB0F9AB5FD25B` |
 | `p2_3_technique_test.gd` | PASS | `BFA2B6B11AC7B869E13AE679E02533002B05C70CA3986AD9AA47FF5CBD71D489` |
 | `v63_d2_sect_archive_test.gd` | PASS | `959D816471A828B41888FCAE7A3A710E686C578B9EC60B419D1CA0A6786DAC0F` |
@@ -46,7 +46,7 @@ Focused and cumulative commands used `E:\\Godot_v4.7.2-stable_win64_console.exe 
 | `pve_save_return_reload_exactly_once_test.gd` | PASS, 50 checks | `3FC731232B04D34BD1414151E8AA0EF70A7A29422F68B2E34BAA6BD102000E59` |
 | `pve_multicamp_combat_hp0_bridge_test.gd` | PASS | `C36462FC3A61D99E499949C4BE90BF39C9BE6E7B8B0BDB88B8F5EEE1F3420D30` |
 
-Import log SHA-256: `46FD2D098DD2A981085EF1EE610BBE6A377CC8290D267FBDD15F092973AADC6F`. Matrix summary SHA-256: `7CC2A07A307708535E2C1FDD3E7E2F2CD40BE7BFB8EFB311E31E34DE69842656`.
+Import log SHA-256: `94DBC584EFB654A761C2693A8C79EECC5934468CF3F42CF5A9E3612D1FB311BB`. Matrix summary SHA-256: `7CC2A07A307708535E2C1FDD3E7E2F2CD40BE7BFB8EFB311E31E34DE69842656`.
 
 ## Limits and remaining acceptance
 
