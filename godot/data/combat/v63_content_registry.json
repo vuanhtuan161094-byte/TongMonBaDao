@@ -1,0 +1,4900 @@
+{
+  "schema_version": 1,
+  "design": "v6.3-v6.4",
+  "enabled": false,
+  "release_status": "D1_UNWIRED_NOT_PLAYABLE",
+  "school_count": 3,
+  "branch_count": 9,
+  "skill_family_count": 105,
+  "boss_count": 9,
+  "schools": [
+    {
+      "id": "bow",
+      "name": "Cung"
+    },
+    {
+      "id": "fist",
+      "name": "Quyền"
+    },
+    {
+      "id": "poison",
+      "name": "Độc"
+    }
+  ],
+  "paths": [
+    {
+      "id": "tmb.path.bow.liep_anh",
+      "school": "bow",
+      "slug": "liep_anh",
+      "name": "Liệp Ảnh",
+      "lineages": {
+        "a": "Truy Hồn",
+        "b": "Xuyên Thành"
+      },
+      "rare": [
+        "Thiên Mệnh Đoạn Tinh",
+        "Vạn Lý Đoạn Giới"
+      ]
+    },
+    {
+      "id": "tmb.path.bow.linh_tien",
+      "school": "bow",
+      "slug": "linh_tien",
+      "name": "Linh Tiễn",
+      "lineages": {
+        "a": "Tụ Nguyên",
+        "b": "Thiên Tượng"
+      },
+      "rare": [
+        "Tam Tượng Thiên Kiếp",
+        "Tam Tượng Thiên Tai"
+      ]
+    },
+    {
+      "id": "tmb.path.bow.thien_vu",
+      "school": "bow",
+      "slug": "thien_vu",
+      "name": "Thiên Vũ",
+      "lineages": {
+        "a": "Tiễn Hải",
+        "b": "Quy Nhất"
+      },
+      "rare": [
+        "Thiên Hà Vạn Tiễn",
+        "Thiên Hà Tụ Sát"
+      ]
+    },
+    {
+      "id": "tmb.path.fist.ba_quyen",
+      "school": "fist",
+      "slug": "ba_quyen",
+      "name": "Bá Quyền",
+      "lineages": {
+        "a": "Phá Quân",
+        "b": "Địa Liệt"
+      },
+      "rare": [
+        "Quyền Toái Thiên Môn",
+        "Thần Sơn Băng Diệt"
+      ]
+    },
+    {
+      "id": "tmb.path.fist.kim_cang",
+      "school": "fist",
+      "slug": "kim_cang",
+      "name": "Kim Cang",
+      "lineages": {
+        "a": "Hộ Pháp",
+        "b": "Phản Chấn"
+      },
+      "rare": [
+        "Vạn Kiếp Bất Hoại Pháp Thân",
+        "Vạn Kiếp Nghịch Chấn"
+      ]
+    },
+    {
+      "id": "tmb.path.fist.huyet_quyen",
+      "school": "fist",
+      "slug": "huyet_quyen",
+      "name": "Huyết Quyền",
+      "lineages": {
+        "a": "Huyết Ma",
+        "b": "Huyết Sinh"
+      },
+      "rare": [
+        "Tuyệt Mệnh Huyết Đế",
+        "Huyết Hải Sinh Sinh"
+      ]
+    },
+    {
+      "id": "tmb.path.poison.doc_cham",
+      "school": "poison",
+      "slug": "doc_cham",
+      "name": "Độc Châm",
+      "lineages": {
+        "a": "Thực Cốt",
+        "b": "Bạo Phệ"
+      },
+      "rare": [
+        "Cửu U Vạn Độc Thiên Kiếp",
+        "Nhất Niệm Vạn Độc Bạo"
+      ]
+    },
+    {
+      "id": "tmb.path.poison.co_doc",
+      "school": "poison",
+      "slug": "co_doc",
+      "name": "Cổ Độc",
+      "lineages": {
+        "a": "Liên Tâm",
+        "b": "Phệ Cổ"
+      },
+      "rare": [
+        "Vạn Cổ Phong Thiên Đại Trận",
+        "Cổ Hoàng Diệt Mệnh"
+      ]
+    },
+    {
+      "id": "tmb.path.poison.duoc_doc",
+      "school": "poison",
+      "slug": "duoc_doc",
+      "name": "Dược Độc",
+      "lineages": {
+        "a": "Hồi Thiên",
+        "b": "Dĩ Độc"
+      },
+      "rare": [
+        "Thái Thượng Nghịch Mệnh Đạo",
+        "Thái Thượng Phản Độc"
+      ]
+    }
+  ],
+  "families": [
+    {
+      "id": "tmb.skill.bow.basic",
+      "school": "bow",
+      "branch": "",
+      "slot": "basic",
+      "name": "Tiễn Thức Căn Bản",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.basic.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.basic.immortal.base",
+          "tier": "immortal",
+          "lineage": "base",
+          "parent": "tmb.skill.bow.basic.human"
+        },
+        {
+          "id": "tmb.skill.bow.basic.divine.base",
+          "tier": "divine",
+          "lineage": "base",
+          "parent": "tmb.skill.bow.basic.immortal.base"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.mobility",
+      "school": "bow",
+      "branch": "",
+      "slot": "mobility",
+      "name": "Thu Vũ Bộ",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.mobility.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.mobility.immortal.base",
+          "tier": "immortal",
+          "lineage": "base",
+          "parent": "tmb.skill.bow.mobility.human"
+        },
+        {
+          "id": "tmb.skill.bow.mobility.divine.base",
+          "tier": "divine",
+          "lineage": "base",
+          "parent": "tmb.skill.bow.mobility.immortal.base"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.basic",
+      "school": "fist",
+      "branch": "",
+      "slot": "basic",
+      "name": "Quyền Thức Căn Bản",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.basic.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.basic.immortal.base",
+          "tier": "immortal",
+          "lineage": "base",
+          "parent": "tmb.skill.fist.basic.human"
+        },
+        {
+          "id": "tmb.skill.fist.basic.divine.base",
+          "tier": "divine",
+          "lineage": "base",
+          "parent": "tmb.skill.fist.basic.immortal.base"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.mobility",
+      "school": "fist",
+      "branch": "",
+      "slot": "mobility",
+      "name": "Bộ Kình Xung",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.mobility.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.mobility.immortal.base",
+          "tier": "immortal",
+          "lineage": "base",
+          "parent": "tmb.skill.fist.mobility.human"
+        },
+        {
+          "id": "tmb.skill.fist.mobility.divine.base",
+          "tier": "divine",
+          "lineage": "base",
+          "parent": "tmb.skill.fist.mobility.immortal.base"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.basic",
+      "school": "poison",
+      "branch": "",
+      "slot": "basic",
+      "name": "Độc Châm Thường Thức",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.basic.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.basic.immortal.base",
+          "tier": "immortal",
+          "lineage": "base",
+          "parent": "tmb.skill.poison.basic.human"
+        },
+        {
+          "id": "tmb.skill.poison.basic.divine.base",
+          "tier": "divine",
+          "lineage": "base",
+          "parent": "tmb.skill.poison.basic.immortal.base"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.mobility",
+      "school": "poison",
+      "branch": "",
+      "slot": "mobility",
+      "name": "Yểm Ảnh Bộ",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.mobility.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.mobility.immortal.base",
+          "tier": "immortal",
+          "lineage": "base",
+          "parent": "tmb.skill.poison.mobility.human"
+        },
+        {
+          "id": "tmb.skill.poison.mobility.divine.base",
+          "tier": "divine",
+          "lineage": "base",
+          "parent": "tmb.skill.poison.mobility.immortal.base"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.liep_anh.active_01",
+      "school": "bow",
+      "branch": "liep_anh",
+      "slot": "active",
+      "name": "Xuyên Tâm Tiễn",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.liep_anh.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.liep_anh.active_01.human"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.liep_anh.active_01.human"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.liep_anh.active_01.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.liep_anh.active_01.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.liep_anh.active_02",
+      "school": "bow",
+      "branch": "liep_anh",
+      "slot": "active",
+      "name": "Truy Ảnh Tiễn",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.liep_anh.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.liep_anh.active_02.human"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.liep_anh.active_02.human"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.liep_anh.active_02.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.liep_anh.active_02.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.liep_anh.active_03",
+      "school": "bow",
+      "branch": "liep_anh",
+      "slot": "active",
+      "name": "Phá Giới Trọng Tiễn",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.liep_anh.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.liep_anh.active_03.human"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.liep_anh.active_03.human"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.liep_anh.active_03.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.liep_anh.active_03.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.liep_anh.active_04",
+      "school": "bow",
+      "branch": "liep_anh",
+      "slot": "active",
+      "name": "Phân Ảnh Tiễn",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.liep_anh.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.liep_anh.active_04.human"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.liep_anh.active_04.human"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.liep_anh.active_04.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.liep_anh.active_04.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.liep_anh.ultimate",
+      "school": "bow",
+      "branch": "liep_anh",
+      "slot": "ultimate",
+      "name": "Nhất Tiễn Phá Tinh",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.liep_anh.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.liep_anh.ultimate.human"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.liep_anh.ultimate.human"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.liep_anh.ultimate.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.liep_anh.ultimate.immortal.b"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.ultimate.rare.a",
+          "tier": "rare_divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.liep_anh.ultimate.divine.a",
+          "name": "Thiên Mệnh Đoạn Tinh"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.ultimate.rare.b",
+          "tier": "rare_divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.liep_anh.ultimate.divine.b",
+          "name": "Vạn Lý Đoạn Giới"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.liep_anh.passive_01",
+      "school": "bow",
+      "branch": "liep_anh",
+      "slot": "passive",
+      "name": "Bách Bộ Tĩnh Tâm",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.liep_anh.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.liep_anh.passive_01.human"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.liep_anh.passive_01.human"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.liep_anh.passive_01.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.liep_anh.passive_01.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.liep_anh.passive_02",
+      "school": "bow",
+      "branch": "liep_anh",
+      "slot": "passive",
+      "name": "Thấu Cốt Tinh Thông",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.liep_anh.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.liep_anh.passive_02.human"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.liep_anh.passive_02.human"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.liep_anh.passive_02.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.liep_anh.passive_02.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.liep_anh.passive_03",
+      "school": "bow",
+      "branch": "liep_anh",
+      "slot": "passive",
+      "name": "Đoạt Mệnh Dư Kình",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.liep_anh.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.liep_anh.passive_03.human"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.liep_anh.passive_03.human"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.liep_anh.passive_03.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.liep_anh.passive_03.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.liep_anh.passive_04",
+      "school": "bow",
+      "branch": "liep_anh",
+      "slot": "passive",
+      "name": "Tiễn Ảnh Truy Hồn",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.liep_anh.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.liep_anh.passive_04.human"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.liep_anh.passive_04.human"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.liep_anh.passive_04.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.liep_anh.passive_04.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.liep_anh.passive_05",
+      "school": "bow",
+      "branch": "liep_anh",
+      "slot": "passive",
+      "name": "Hậu Vệ Phản Ứng",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.liep_anh.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.liep_anh.passive_05.human"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.liep_anh.passive_05.human"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.liep_anh.passive_05.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.liep_anh.passive_05.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.liep_anh.innate",
+      "school": "bow",
+      "branch": "liep_anh",
+      "slot": "innate",
+      "name": "Liệp Nhãn",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.liep_anh.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.liep_anh.innate.human"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.liep_anh.innate.human"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.liep_anh.innate.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.liep_anh.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.liep_anh.innate.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.linh_tien.active_01",
+      "school": "bow",
+      "branch": "linh_tien",
+      "slot": "active",
+      "name": "Linh Tiễn Xuyên Quang",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.linh_tien.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.linh_tien.active_01.human"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.linh_tien.active_01.human"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.linh_tien.active_01.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.linh_tien.active_01.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.linh_tien.active_02",
+      "school": "bow",
+      "branch": "linh_tien",
+      "slot": "active",
+      "name": "Tam Tinh Linh Xạ",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.linh_tien.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.linh_tien.active_02.human"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.linh_tien.active_02.human"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.linh_tien.active_02.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.linh_tien.active_02.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.linh_tien.active_03",
+      "school": "bow",
+      "branch": "linh_tien",
+      "slot": "active",
+      "name": "Linh Vũ Tiễn",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.linh_tien.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.linh_tien.active_03.human"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.linh_tien.active_03.human"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.linh_tien.active_03.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.linh_tien.active_03.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.linh_tien.active_04",
+      "school": "bow",
+      "branch": "linh_tien",
+      "slot": "active",
+      "name": "Tụ Linh Tiễn Tâm",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.linh_tien.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.linh_tien.active_04.human"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.linh_tien.active_04.human"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.linh_tien.active_04.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.linh_tien.active_04.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.linh_tien.ultimate",
+      "school": "bow",
+      "branch": "linh_tien",
+      "slot": "ultimate",
+      "name": "Tam Hành Phá Không",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.linh_tien.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.linh_tien.ultimate.human"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.linh_tien.ultimate.human"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.linh_tien.ultimate.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.linh_tien.ultimate.immortal.b"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.ultimate.rare.a",
+          "tier": "rare_divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.linh_tien.ultimate.divine.a",
+          "name": "Tam Tượng Thiên Kiếp"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.ultimate.rare.b",
+          "tier": "rare_divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.linh_tien.ultimate.divine.b",
+          "name": "Tam Tượng Thiên Tai"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.linh_tien.passive_01",
+      "school": "bow",
+      "branch": "linh_tien",
+      "slot": "passive",
+      "name": "Dẫn Linh Chuyên Tu",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.linh_tien.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.linh_tien.passive_01.human"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.linh_tien.passive_01.human"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.linh_tien.passive_01.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.linh_tien.passive_01.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.linh_tien.passive_02",
+      "school": "bow",
+      "branch": "linh_tien",
+      "slot": "passive",
+      "name": "Linh Mạch Hộ Tiễn",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.linh_tien.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.linh_tien.passive_02.human"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.linh_tien.passive_02.human"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.linh_tien.passive_02.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.linh_tien.passive_02.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.linh_tien.passive_03",
+      "school": "bow",
+      "branch": "linh_tien",
+      "slot": "passive",
+      "name": "Tam Linh Phản Ứng",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.linh_tien.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.linh_tien.passive_03.human"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.linh_tien.passive_03.human"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.linh_tien.passive_03.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.linh_tien.passive_03.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.linh_tien.passive_04",
+      "school": "bow",
+      "branch": "linh_tien",
+      "slot": "passive",
+      "name": "Tụ Ấn Dư Linh",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.linh_tien.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.linh_tien.passive_04.human"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.linh_tien.passive_04.human"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.linh_tien.passive_04.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.linh_tien.passive_04.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.linh_tien.passive_05",
+      "school": "bow",
+      "branch": "linh_tien",
+      "slot": "passive",
+      "name": "Hộ Linh Tức",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.linh_tien.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.linh_tien.passive_05.human"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.linh_tien.passive_05.human"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.linh_tien.passive_05.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.linh_tien.passive_05.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.linh_tien.innate",
+      "school": "bow",
+      "branch": "linh_tien",
+      "slot": "innate",
+      "name": "Nhất Linh Chuyên Tâm",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.linh_tien.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.linh_tien.innate.human"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.linh_tien.innate.human"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.linh_tien.innate.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.linh_tien.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.linh_tien.innate.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.thien_vu.active_01",
+      "school": "bow",
+      "branch": "thien_vu",
+      "slot": "active",
+      "name": "Liên Châu Tiễn",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.thien_vu.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.thien_vu.active_01.human"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.thien_vu.active_01.human"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.thien_vu.active_01.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.thien_vu.active_01.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.thien_vu.active_02",
+      "school": "bow",
+      "branch": "thien_vu",
+      "slot": "active",
+      "name": "Tán Tiễn Phong Vũ",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.thien_vu.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.thien_vu.active_02.human"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.thien_vu.active_02.human"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.thien_vu.active_02.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.thien_vu.active_02.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.thien_vu.active_03",
+      "school": "bow",
+      "branch": "thien_vu",
+      "slot": "active",
+      "name": "Mạn Thiên Tiễn Vũ",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.thien_vu.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.thien_vu.active_03.human"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.thien_vu.active_03.human"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.thien_vu.active_03.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.thien_vu.active_03.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.thien_vu.active_04",
+      "school": "bow",
+      "branch": "thien_vu",
+      "slot": "active",
+      "name": "Tụ Phong Dẫn Tiễn",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.thien_vu.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.thien_vu.active_04.human"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.thien_vu.active_04.human"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.thien_vu.active_04.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.thien_vu.active_04.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.thien_vu.ultimate",
+      "school": "bow",
+      "branch": "thien_vu",
+      "slot": "ultimate",
+      "name": "Thiên Vũ Phúc Thiên",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.thien_vu.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.thien_vu.ultimate.human"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.thien_vu.ultimate.human"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.thien_vu.ultimate.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.thien_vu.ultimate.immortal.b"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.ultimate.rare.a",
+          "tier": "rare_divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.thien_vu.ultimate.divine.a",
+          "name": "Thiên Hà Vạn Tiễn"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.ultimate.rare.b",
+          "tier": "rare_divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.thien_vu.ultimate.divine.b",
+          "name": "Thiên Hà Tụ Sát"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.thien_vu.passive_01",
+      "school": "bow",
+      "branch": "thien_vu",
+      "slot": "passive",
+      "name": "Vũ Tiễn Tinh Thông",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.thien_vu.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.thien_vu.passive_01.human"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.thien_vu.passive_01.human"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.thien_vu.passive_01.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.thien_vu.passive_01.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.thien_vu.passive_02",
+      "school": "bow",
+      "branch": "thien_vu",
+      "slot": "passive",
+      "name": "Phong Vị",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.thien_vu.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.thien_vu.passive_02.human"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.thien_vu.passive_02.human"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.thien_vu.passive_02.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.thien_vu.passive_02.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.thien_vu.passive_03",
+      "school": "bow",
+      "branch": "thien_vu",
+      "slot": "passive",
+      "name": "Phong Châm",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.thien_vu.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.thien_vu.passive_03.human"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.thien_vu.passive_03.human"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.thien_vu.passive_03.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.thien_vu.passive_03.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.thien_vu.passive_04",
+      "school": "bow",
+      "branch": "thien_vu",
+      "slot": "passive",
+      "name": "Vũ Tiễn Tiết Nhịp",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.thien_vu.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.thien_vu.passive_04.human"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.thien_vu.passive_04.human"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.thien_vu.passive_04.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.thien_vu.passive_04.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.thien_vu.passive_05",
+      "school": "bow",
+      "branch": "thien_vu",
+      "slot": "passive",
+      "name": "Thiên Vũ Hộ Thân",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.thien_vu.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.thien_vu.passive_05.human"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.thien_vu.passive_05.human"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.thien_vu.passive_05.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.thien_vu.passive_05.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.bow.thien_vu.innate",
+      "school": "bow",
+      "branch": "thien_vu",
+      "slot": "innate",
+      "name": "Vạn Tiễn",
+      "nodes": [
+        {
+          "id": "tmb.skill.bow.thien_vu.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.thien_vu.innate.human"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.thien_vu.innate.human"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.bow.thien_vu.innate.immortal.a"
+        },
+        {
+          "id": "tmb.skill.bow.thien_vu.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.bow.thien_vu.innate.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.ba_quyen.active_01",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "slot": "active",
+      "name": "Khai Sơn Trọng Quyền",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.ba_quyen.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.ba_quyen.active_01.human"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.ba_quyen.active_01.human"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.ba_quyen.active_01.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.ba_quyen.active_01.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.ba_quyen.active_02",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "slot": "active",
+      "name": "Phi Thân Liên Cước",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.ba_quyen.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.ba_quyen.active_02.human"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.ba_quyen.active_02.human"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.ba_quyen.active_02.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.ba_quyen.active_02.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.ba_quyen.active_03",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "slot": "active",
+      "name": "Lôi Đình Chấn Quyền",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.ba_quyen.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.ba_quyen.active_03.human"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.ba_quyen.active_03.human"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.ba_quyen.active_03.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.ba_quyen.active_03.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.ba_quyen.active_04",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "slot": "active",
+      "name": "Địa Mạch Liên Chấn",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.ba_quyen.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.ba_quyen.active_04.human"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.ba_quyen.active_04.human"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.ba_quyen.active_04.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.ba_quyen.active_04.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.ba_quyen.ultimate",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "slot": "ultimate",
+      "name": "Sơn Hà Chấn Thiên",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.ba_quyen.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.ba_quyen.ultimate.human"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.ba_quyen.ultimate.human"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.ba_quyen.ultimate.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.ba_quyen.ultimate.immortal.b"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.ultimate.rare.a",
+          "tier": "rare_divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.ba_quyen.ultimate.divine.a",
+          "name": "Quyền Toái Thiên Môn"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.ultimate.rare.b",
+          "tier": "rare_divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.ba_quyen.ultimate.divine.b",
+          "name": "Thần Sơn Băng Diệt"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.ba_quyen.passive_01",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "slot": "passive",
+      "name": "Thiết Cốt Chuyên Tu",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.ba_quyen.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.ba_quyen.passive_01.human"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.ba_quyen.passive_01.human"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.ba_quyen.passive_01.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.ba_quyen.passive_01.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.ba_quyen.passive_02",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "slot": "passive",
+      "name": "Bá Thể Định Lực",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.ba_quyen.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.ba_quyen.passive_02.human"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.ba_quyen.passive_02.human"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.ba_quyen.passive_02.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.ba_quyen.passive_02.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.ba_quyen.passive_03",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "slot": "passive",
+      "name": "Liên Quyền Khai Thế",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.ba_quyen.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.ba_quyen.passive_03.human"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.ba_quyen.passive_03.human"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.ba_quyen.passive_03.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.ba_quyen.passive_03.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.ba_quyen.passive_04",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "slot": "passive",
+      "name": "Lôi Kình Dư Chấn",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.ba_quyen.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.ba_quyen.passive_04.human"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.ba_quyen.passive_04.human"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.ba_quyen.passive_04.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.ba_quyen.passive_04.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.ba_quyen.passive_05",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "slot": "passive",
+      "name": "Bá Kình Hồi Tức",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.ba_quyen.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.ba_quyen.passive_05.human"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.ba_quyen.passive_05.human"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.ba_quyen.passive_05.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.ba_quyen.passive_05.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.ba_quyen.innate",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "slot": "innate",
+      "name": "Bá Kình",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.ba_quyen.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.ba_quyen.innate.human"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.ba_quyen.innate.human"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.ba_quyen.innate.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.ba_quyen.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.ba_quyen.innate.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.kim_cang.active_01",
+      "school": "fist",
+      "branch": "kim_cang",
+      "slot": "active",
+      "name": "Trấn Địa Quyền",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.kim_cang.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.kim_cang.active_01.human"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.kim_cang.active_01.human"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.kim_cang.active_01.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.kim_cang.active_01.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.kim_cang.active_02",
+      "school": "fist",
+      "branch": "kim_cang",
+      "slot": "active",
+      "name": "Kim Cang Hộ Thể",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.kim_cang.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.kim_cang.active_02.human"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.kim_cang.active_02.human"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.kim_cang.active_02.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.kim_cang.active_02.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.kim_cang.active_03",
+      "school": "fist",
+      "branch": "kim_cang",
+      "slot": "active",
+      "name": "Phản Chấn Quyền",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.kim_cang.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.kim_cang.active_03.human"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.kim_cang.active_03.human"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.kim_cang.active_03.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.kim_cang.active_03.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.kim_cang.active_04",
+      "school": "fist",
+      "branch": "kim_cang",
+      "slot": "active",
+      "name": "Trấn Sơn Hộ Đồng",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.kim_cang.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.kim_cang.active_04.human"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.kim_cang.active_04.human"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.kim_cang.active_04.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.kim_cang.active_04.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.kim_cang.ultimate",
+      "school": "fist",
+      "branch": "kim_cang",
+      "slot": "ultimate",
+      "name": "Bất Động Kim Chung",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.kim_cang.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.kim_cang.ultimate.human"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.kim_cang.ultimate.human"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.kim_cang.ultimate.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.kim_cang.ultimate.immortal.b"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.ultimate.rare.a",
+          "tier": "rare_divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.kim_cang.ultimate.divine.a",
+          "name": "Vạn Kiếp Bất Hoại Pháp Thân"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.ultimate.rare.b",
+          "tier": "rare_divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.kim_cang.ultimate.divine.b",
+          "name": "Vạn Kiếp Nghịch Chấn"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.kim_cang.passive_01",
+      "school": "fist",
+      "branch": "kim_cang",
+      "slot": "passive",
+      "name": "Thiết Cốt Luyện Thể",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.kim_cang.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.kim_cang.passive_01.human"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.kim_cang.passive_01.human"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.kim_cang.passive_01.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.kim_cang.passive_01.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.kim_cang.passive_02",
+      "school": "fist",
+      "branch": "kim_cang",
+      "slot": "passive",
+      "name": "Hộ Thể Tinh Thông",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.kim_cang.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.kim_cang.passive_02.human"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.kim_cang.passive_02.human"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.kim_cang.passive_02.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.kim_cang.passive_02.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.kim_cang.passive_03",
+      "school": "fist",
+      "branch": "kim_cang",
+      "slot": "passive",
+      "name": "Thiết Cốt Hồi Lưu",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.kim_cang.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.kim_cang.passive_03.human"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.kim_cang.passive_03.human"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.kim_cang.passive_03.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.kim_cang.passive_03.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.kim_cang.passive_04",
+      "school": "fist",
+      "branch": "kim_cang",
+      "slot": "passive",
+      "name": "Kim Cang Uy Hiếp",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.kim_cang.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.kim_cang.passive_04.human"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.kim_cang.passive_04.human"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.kim_cang.passive_04.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.kim_cang.passive_04.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.kim_cang.passive_05",
+      "school": "fist",
+      "branch": "kim_cang",
+      "slot": "passive",
+      "name": "Hộ Vệ Đồng Tâm",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.kim_cang.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.kim_cang.passive_05.human"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.kim_cang.passive_05.human"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.kim_cang.passive_05.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.kim_cang.passive_05.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.kim_cang.innate",
+      "school": "fist",
+      "branch": "kim_cang",
+      "slot": "innate",
+      "name": "Bất Động Cang Khí",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.kim_cang.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.kim_cang.innate.human"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.kim_cang.innate.human"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.kim_cang.innate.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.kim_cang.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.kim_cang.innate.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.huyet_quyen.active_01",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "slot": "active",
+      "name": "Huyết Liệt Quyền",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.huyet_quyen.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.huyet_quyen.active_01.human"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.huyet_quyen.active_01.human"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.huyet_quyen.active_01.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.huyet_quyen.active_01.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.huyet_quyen.active_02",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "slot": "active",
+      "name": "Đoạn Mạch Liên Quyền",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.huyet_quyen.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.huyet_quyen.active_02.human"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.huyet_quyen.active_02.human"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.huyet_quyen.active_02.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.huyet_quyen.active_02.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.huyet_quyen.active_03",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "slot": "active",
+      "name": "Huyết Khí Hồi Lưu",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.huyet_quyen.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.huyet_quyen.active_03.human"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.huyet_quyen.active_03.human"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.huyet_quyen.active_03.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.huyet_quyen.active_03.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.huyet_quyen.active_04",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "slot": "active",
+      "name": "Liệp Huyết Truy Đả",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.huyet_quyen.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.huyet_quyen.active_04.human"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.huyet_quyen.active_04.human"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.huyet_quyen.active_04.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.huyet_quyen.active_04.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.huyet_quyen.ultimate",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "slot": "ultimate",
+      "name": "Huyết Hải Quyền Vực",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.huyet_quyen.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.huyet_quyen.ultimate.human"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.huyet_quyen.ultimate.human"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.huyet_quyen.ultimate.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.huyet_quyen.ultimate.immortal.b"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.ultimate.rare.a",
+          "tier": "rare_divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.huyet_quyen.ultimate.divine.a",
+          "name": "Tuyệt Mệnh Huyết Đế"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.ultimate.rare.b",
+          "tier": "rare_divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.huyet_quyen.ultimate.divine.b",
+          "name": "Huyết Hải Sinh Sinh"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.huyet_quyen.passive_01",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "slot": "passive",
+      "name": "Huyết Mạch Kiên Cường",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.huyet_quyen.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.huyet_quyen.passive_01.human"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.huyet_quyen.passive_01.human"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.huyet_quyen.passive_01.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.huyet_quyen.passive_01.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.huyet_quyen.passive_02",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "slot": "passive",
+      "name": "Đoạn Mạch Tinh Thông",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.huyet_quyen.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.huyet_quyen.passive_02.human"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.huyet_quyen.passive_02.human"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.huyet_quyen.passive_02.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.huyet_quyen.passive_02.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.huyet_quyen.passive_03",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "slot": "passive",
+      "name": "Huyết Chiến Ý",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.huyet_quyen.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.huyet_quyen.passive_03.human"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.huyet_quyen.passive_03.human"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.huyet_quyen.passive_03.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.huyet_quyen.passive_03.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.huyet_quyen.passive_04",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "slot": "passive",
+      "name": "Sinh Tồn Bản Năng",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.huyet_quyen.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.huyet_quyen.passive_04.human"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.huyet_quyen.passive_04.human"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.huyet_quyen.passive_04.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.huyet_quyen.passive_04.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.huyet_quyen.passive_05",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "slot": "passive",
+      "name": "Bất Phụ Chiến Ý",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.huyet_quyen.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.huyet_quyen.passive_05.human"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.huyet_quyen.passive_05.human"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.huyet_quyen.passive_05.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.huyet_quyen.passive_05.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.fist.huyet_quyen.innate",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "slot": "innate",
+      "name": "Tuyệt Cảnh Huyết Chiến",
+      "nodes": [
+        {
+          "id": "tmb.skill.fist.huyet_quyen.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.huyet_quyen.innate.human"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.huyet_quyen.innate.human"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.fist.huyet_quyen.innate.immortal.a"
+        },
+        {
+          "id": "tmb.skill.fist.huyet_quyen.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.fist.huyet_quyen.innate.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.doc_cham.active_01",
+      "school": "poison",
+      "branch": "doc_cham",
+      "slot": "active",
+      "name": "Xuyên Cốt Độc Châm",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.doc_cham.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.doc_cham.active_01.human"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.doc_cham.active_01.human"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.doc_cham.active_01.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.doc_cham.active_01.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.doc_cham.active_02",
+      "school": "poison",
+      "branch": "doc_cham",
+      "slot": "active",
+      "name": "Phệ Mạch Độc Thích",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.doc_cham.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.doc_cham.active_02.human"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.doc_cham.active_02.human"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.doc_cham.active_02.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.doc_cham.active_02.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.doc_cham.active_03",
+      "school": "poison",
+      "branch": "doc_cham",
+      "slot": "active",
+      "name": "Bách Độc Tán Châm",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.doc_cham.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.doc_cham.active_03.human"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.doc_cham.active_03.human"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.doc_cham.active_03.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.doc_cham.active_03.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.doc_cham.active_04",
+      "school": "poison",
+      "branch": "doc_cham",
+      "slot": "active",
+      "name": "Độc Khí Phệ Tâm",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.doc_cham.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.doc_cham.active_04.human"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.doc_cham.active_04.human"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.doc_cham.active_04.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.doc_cham.active_04.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.doc_cham.ultimate",
+      "school": "poison",
+      "branch": "doc_cham",
+      "slot": "ultimate",
+      "name": "Vạn Độc Xuyên Tâm",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.doc_cham.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.doc_cham.ultimate.human"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.doc_cham.ultimate.human"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.doc_cham.ultimate.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.doc_cham.ultimate.immortal.b"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.ultimate.rare.a",
+          "tier": "rare_divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.doc_cham.ultimate.divine.a",
+          "name": "Cửu U Vạn Độc Thiên Kiếp"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.ultimate.rare.b",
+          "tier": "rare_divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.doc_cham.ultimate.divine.b",
+          "name": "Nhất Niệm Vạn Độc Bạo"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.doc_cham.passive_01",
+      "school": "poison",
+      "branch": "doc_cham",
+      "slot": "passive",
+      "name": "Thấu Mạch Độc Công",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.doc_cham.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.doc_cham.passive_01.human"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.doc_cham.passive_01.human"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.doc_cham.passive_01.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.doc_cham.passive_01.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.doc_cham.passive_02",
+      "school": "poison",
+      "branch": "doc_cham",
+      "slot": "passive",
+      "name": "Bách Châm Tinh Thông",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.doc_cham.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.doc_cham.passive_02.human"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.doc_cham.passive_02.human"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.doc_cham.passive_02.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.doc_cham.passive_02.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.doc_cham.passive_03",
+      "school": "poison",
+      "branch": "doc_cham",
+      "slot": "passive",
+      "name": "Tẩm Độc Châm",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.doc_cham.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.doc_cham.passive_03.human"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.doc_cham.passive_03.human"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.doc_cham.passive_03.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.doc_cham.passive_03.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.doc_cham.passive_04",
+      "school": "poison",
+      "branch": "doc_cham",
+      "slot": "passive",
+      "name": "Thấu Độc",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.doc_cham.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.doc_cham.passive_04.human"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.doc_cham.passive_04.human"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.doc_cham.passive_04.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.doc_cham.passive_04.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.doc_cham.passive_05",
+      "school": "poison",
+      "branch": "doc_cham",
+      "slot": "passive",
+      "name": "Hóa Độc Nhất Kích",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.doc_cham.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.doc_cham.passive_05.human"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.doc_cham.passive_05.human"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.doc_cham.passive_05.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.doc_cham.passive_05.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.doc_cham.innate",
+      "school": "poison",
+      "branch": "doc_cham",
+      "slot": "innate",
+      "name": "Bách Độc Nhập Cốt",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.doc_cham.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.doc_cham.innate.human"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.doc_cham.innate.human"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.doc_cham.innate.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.doc_cham.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.doc_cham.innate.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.co_doc.active_01",
+      "school": "poison",
+      "branch": "co_doc",
+      "slot": "active",
+      "name": "Phụ Cốt Cổ",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.co_doc.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.co_doc.active_01.human"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.co_doc.active_01.human"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.co_doc.active_01.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.co_doc.active_01.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.co_doc.active_02",
+      "school": "poison",
+      "branch": "co_doc",
+      "slot": "active",
+      "name": "Xà Ảnh Quấn Mạch",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.co_doc.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.co_doc.active_02.human"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.co_doc.active_02.human"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.co_doc.active_02.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.co_doc.active_02.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.co_doc.active_03",
+      "school": "poison",
+      "branch": "co_doc",
+      "slot": "active",
+      "name": "Cổ Vụ Mê Tung",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.co_doc.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.co_doc.active_03.human"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.co_doc.active_03.human"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.co_doc.active_03.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.co_doc.active_03.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.co_doc.active_04",
+      "school": "poison",
+      "branch": "co_doc",
+      "slot": "active",
+      "name": "Tán Cổ Diễn Nhiễm",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.co_doc.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.co_doc.active_04.human"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.co_doc.active_04.human"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.co_doc.active_04.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.co_doc.active_04.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.co_doc.ultimate",
+      "school": "poison",
+      "branch": "co_doc",
+      "slot": "ultimate",
+      "name": "Vạn Cổ Phệ Giới",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.co_doc.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.co_doc.ultimate.human"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.co_doc.ultimate.human"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.co_doc.ultimate.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.co_doc.ultimate.immortal.b"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.ultimate.rare.a",
+          "tier": "rare_divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.co_doc.ultimate.divine.a",
+          "name": "Vạn Cổ Phong Thiên Đại Trận"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.ultimate.rare.b",
+          "tier": "rare_divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.co_doc.ultimate.divine.b",
+          "name": "Cổ Hoàng Diệt Mệnh"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.co_doc.passive_01",
+      "school": "poison",
+      "branch": "co_doc",
+      "slot": "passive",
+      "name": "Ngự Cổ Thành Thạo",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.co_doc.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.co_doc.passive_01.human"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.co_doc.passive_01.human"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.co_doc.passive_01.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.co_doc.passive_01.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.co_doc.passive_02",
+      "school": "poison",
+      "branch": "co_doc",
+      "slot": "passive",
+      "name": "Cổ Vụ Hộ Mạch",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.co_doc.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.co_doc.passive_02.human"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.co_doc.passive_02.human"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.co_doc.passive_02.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.co_doc.passive_02.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.co_doc.passive_03",
+      "school": "poison",
+      "branch": "co_doc",
+      "slot": "passive",
+      "name": "Bách Túc Khai Vân",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.co_doc.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.co_doc.passive_03.human"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.co_doc.passive_03.human"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.co_doc.passive_03.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.co_doc.passive_03.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.co_doc.passive_04",
+      "school": "poison",
+      "branch": "co_doc",
+      "slot": "passive",
+      "name": "Cổ Vụ Trấn Tức",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.co_doc.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.co_doc.passive_04.human"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.co_doc.passive_04.human"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.co_doc.passive_04.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.co_doc.passive_04.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.co_doc.passive_05",
+      "school": "poison",
+      "branch": "co_doc",
+      "slot": "passive",
+      "name": "Cổ Nhận Tỉnh Táo",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.co_doc.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.co_doc.passive_05.human"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.co_doc.passive_05.human"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.co_doc.passive_05.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.co_doc.passive_05.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.co_doc.innate",
+      "school": "poison",
+      "branch": "co_doc",
+      "slot": "innate",
+      "name": "Cổ Ấn Liên Tâm",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.co_doc.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.co_doc.innate.human"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.co_doc.innate.human"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.co_doc.innate.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.co_doc.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.co_doc.innate.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.duoc_doc.active_01",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "slot": "active",
+      "name": "Tẩy Mạch Linh Dược",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.duoc_doc.active_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.active_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.duoc_doc.active_01.human"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.active_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.duoc_doc.active_01.human"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.active_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.duoc_doc.active_01.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.active_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.duoc_doc.active_01.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.duoc_doc.active_02",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "slot": "active",
+      "name": "Giải Độc Hộ Tâm",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.duoc_doc.active_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.active_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.duoc_doc.active_02.human"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.active_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.duoc_doc.active_02.human"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.active_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.duoc_doc.active_02.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.active_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.duoc_doc.active_02.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.duoc_doc.active_03",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "slot": "active",
+      "name": "Nghịch Độc Phản Chế",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.duoc_doc.active_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.active_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.duoc_doc.active_03.human"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.active_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.duoc_doc.active_03.human"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.active_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.duoc_doc.active_03.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.active_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.duoc_doc.active_03.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.duoc_doc.active_04",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "slot": "active",
+      "name": "Sinh Cơ Tán",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.duoc_doc.active_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.active_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.duoc_doc.active_04.human"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.active_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.duoc_doc.active_04.human"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.active_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.duoc_doc.active_04.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.active_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.duoc_doc.active_04.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.duoc_doc.ultimate",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "slot": "ultimate",
+      "name": "Vạn Linh Giải Ách",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.duoc_doc.ultimate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.ultimate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.duoc_doc.ultimate.human"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.ultimate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.duoc_doc.ultimate.human"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.ultimate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.duoc_doc.ultimate.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.ultimate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.duoc_doc.ultimate.immortal.b"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.ultimate.rare.a",
+          "tier": "rare_divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.duoc_doc.ultimate.divine.a",
+          "name": "Thái Thượng Nghịch Mệnh Đạo"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.ultimate.rare.b",
+          "tier": "rare_divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.duoc_doc.ultimate.divine.b",
+          "name": "Thái Thượng Phản Độc"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.duoc_doc.passive_01",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "slot": "passive",
+      "name": "Dược Mạch Vững Bền",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.duoc_doc.passive_01.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.passive_01.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.duoc_doc.passive_01.human"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.passive_01.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.duoc_doc.passive_01.human"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.passive_01.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.duoc_doc.passive_01.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.passive_01.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.duoc_doc.passive_01.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.duoc_doc.passive_02",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "slot": "passive",
+      "name": "Thanh Độc Hộ Thân",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.duoc_doc.passive_02.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.passive_02.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.duoc_doc.passive_02.human"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.passive_02.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.duoc_doc.passive_02.human"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.passive_02.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.duoc_doc.passive_02.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.passive_02.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.duoc_doc.passive_02.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.duoc_doc.passive_03",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "slot": "passive",
+      "name": "Tẩy Tủy",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.duoc_doc.passive_03.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.passive_03.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.duoc_doc.passive_03.human"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.passive_03.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.duoc_doc.passive_03.human"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.passive_03.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.duoc_doc.passive_03.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.passive_03.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.duoc_doc.passive_03.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.duoc_doc.passive_04",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "slot": "passive",
+      "name": "Dược Mạch Hồi Lưu",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.duoc_doc.passive_04.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.passive_04.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.duoc_doc.passive_04.human"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.passive_04.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.duoc_doc.passive_04.human"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.passive_04.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.duoc_doc.passive_04.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.passive_04.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.duoc_doc.passive_04.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.duoc_doc.passive_05",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "slot": "passive",
+      "name": "Sinh Cơ Khiên",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.duoc_doc.passive_05.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.passive_05.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.duoc_doc.passive_05.human"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.passive_05.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.duoc_doc.passive_05.human"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.passive_05.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.duoc_doc.passive_05.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.passive_05.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.duoc_doc.passive_05.immortal.b"
+        }
+      ]
+    },
+    {
+      "id": "tmb.skill.poison.duoc_doc.innate",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "slot": "innate",
+      "name": "Độc Dược Đồng Nguyên",
+      "nodes": [
+        {
+          "id": "tmb.skill.poison.duoc_doc.innate.human",
+          "tier": "human",
+          "lineage": "base",
+          "parent": ""
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.innate.immortal.a",
+          "tier": "immortal",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.duoc_doc.innate.human"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.innate.immortal.b",
+          "tier": "immortal",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.duoc_doc.innate.human"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.innate.divine.a",
+          "tier": "divine",
+          "lineage": "a",
+          "parent": "tmb.skill.poison.duoc_doc.innate.immortal.a"
+        },
+        {
+          "id": "tmb.skill.poison.duoc_doc.innate.divine.b",
+          "tier": "divine",
+          "lineage": "b",
+          "parent": "tmb.skill.poison.duoc_doc.innate.immortal.b"
+        }
+      ]
+    }
+  ],
+  "bosses": [
+    {
+      "id": "tmb.boss.thiet_giap_son_vien",
+      "name": "Thiết Giáp Sơn Viên",
+      "band": "human",
+      "peak_realm": 10,
+      "peak_floor": 10,
+      "hp_peak_candidate": 653000,
+      "def_to_disciple_attack_candidate": 2.8,
+      "damage_reduction_candidate": 0.07,
+      "passives": [
+        "thach_giap",
+        "cuong_son"
+      ],
+      "phases": [
+        0.7,
+        0.35
+      ],
+      "summon_cap": 4,
+      "summons": [
+        "thach_hau"
+      ],
+      "mechanic": "Stone armor cracks and bounded stone apes at phases",
+      "abilities": [
+        {
+          "id": "tmb.bossskill.thiet_giap_son_vien.active_01",
+          "name": "Hoành Sơn Chưởng",
+          "ratio_atk_candidate": 1.85,
+          "cooldown_s": 11,
+          "telegraph_s": 1.8,
+          "kind": "active",
+          "ready": false
+        },
+        {
+          "id": "tmb.bossskill.thiet_giap_son_vien.active_02",
+          "name": "Liệt Địa Chấn",
+          "ratio_atk_candidate": 1.4,
+          "cooldown_s": 16,
+          "telegraph_s": 2,
+          "kind": "active",
+          "ready": false
+        },
+        {
+          "id": "tmb.bossskill.thiet_giap_son_vien.active_03",
+          "name": "Phi Thạch Truy Sát",
+          "ratio_atk_candidate": 1.45,
+          "cooldown_s": 13,
+          "telegraph_s": 1.7,
+          "kind": "active",
+          "ready": false
+        },
+        {
+          "id": "tmb.bossskill.thiet_giap_son_vien.ultimate",
+          "name": "Sơn Băng Liệt Địa",
+          "ratio_atk_candidate": 1.25,
+          "hits": 2,
+          "cooldown_s": 38,
+          "telegraph_s": 3,
+          "kind": "ultimate",
+          "ready": false
+        }
+      ],
+      "loot_ready": false,
+      "spawn_ready": false,
+      "balance_status": "candidate",
+      "description": "Authored D1 data only. No runtime behavior, rewards or stats instantiated."
+    },
+    {
+      "id": "tmb.boss.xich_viem_lang_vuong",
+      "name": "Xích Viêm Lang Vương",
+      "band": "human",
+      "peak_realm": 10,
+      "peak_floor": 10,
+      "hp_peak_candidate": 734000,
+      "def_to_disciple_attack_candidate": 2.4,
+      "damage_reduction_candidate": 0.04,
+      "passives": [
+        "lang_quan_chi_chu",
+        "hoa_huyet"
+      ],
+      "phases": [
+        0.7,
+        0.35
+      ],
+      "summon_cap": 4,
+      "summons": [
+        "hoa_lang"
+      ],
+      "mechanic": "Marked charge, bounded wolves, fire zone with safe exit",
+      "abilities": [
+        {
+          "id": "tmb.bossskill.xich_viem_lang_vuong.active_01",
+          "name": "Hỏa Lang Đột",
+          "ratio_atk_candidate": 1.75,
+          "cooldown_s": 12,
+          "telegraph_s": 1.9,
+          "kind": "active",
+          "ready": false
+        },
+        {
+          "id": "tmb.bossskill.xich_viem_lang_vuong.active_02",
+          "name": "Lang Nha Xé",
+          "ratio_atk_candidate": 0.85,
+          "cooldown_s": 11,
+          "telegraph_s": 1,
+          "kind": "active",
+          "ready": false
+        },
+        {
+          "id": "tmb.bossskill.xich_viem_lang_vuong.active_03",
+          "name": "Lang Vương Khiếu",
+          "ratio_atk_candidate": 0,
+          "cooldown_s": 20,
+          "telegraph_s": 1.5,
+          "kind": "active",
+          "ready": false
+        },
+        {
+          "id": "tmb.bossskill.xich_viem_lang_vuong.ultimate",
+          "name": "Liệt Hỏa Lang Nguyên",
+          "ratio_atk_candidate": 0.7,
+          "hits": 4,
+          "cooldown_s": 36,
+          "telegraph_s": 2.7,
+          "kind": "ultimate",
+          "ready": false
+        }
+      ],
+      "loot_ready": false,
+      "spawn_ready": false,
+      "balance_status": "candidate",
+      "description": "Authored D1 data only. No runtime behavior, rewards or stats instantiated."
+    },
+    {
+      "id": "tmb.boss.bach_doc_chu_hau",
+      "name": "Bách Độc Chu Hậu",
+      "band": "human",
+      "peak_realm": 10,
+      "peak_floor": 10,
+      "hp_peak_candidate": 816000,
+      "def_to_disciple_attack_candidate": 2.65,
+      "damage_reduction_candidate": 0.06,
+      "passives": [
+        "doc_nha",
+        "bao_tu_tai_sinh"
+      ],
+      "phases": [
+        0.7,
+        0.35
+      ],
+      "summon_cap": 4,
+      "summons": [
+        "nanh_nhen",
+        "doc_ken"
+      ],
+      "mechanic": "Breakable cocoons with capped healing and poison cleanse counterplay",
+      "abilities": [
+        {
+          "id": "tmb.bossskill.bach_doc_chu_hau.active_01",
+          "name": "Độc Châm Phún",
+          "ratio_atk_candidate": 1.1,
+          "cooldown_s": 9,
+          "telegraph_s": 0.9,
+          "kind": "active",
+          "ready": false
+        },
+        {
+          "id": "tmb.bossskill.bach_doc_chu_hau.active_02",
+          "name": "Thiên Võng Phược Thân",
+          "ratio_atk_candidate": 0,
+          "cooldown_s": 16,
+          "telegraph_s": 1.8,
+          "kind": "active",
+          "ready": false
+        },
+        {
+          "id": "tmb.bossskill.bach_doc_chu_hau.active_03",
+          "name": "Độc Vụ Tràn Hang",
+          "ratio_atk_candidate": 0.55,
+          "cooldown_s": 20,
+          "telegraph_s": 2,
+          "kind": "active",
+          "ready": false
+        },
+        {
+          "id": "tmb.bossskill.bach_doc_chu_hau.ultimate",
+          "name": "Vạn Độc Phun Triều",
+          "ratio_atk_candidate": 2.05,
+          "hits": 1,
+          "cooldown_s": 39,
+          "telegraph_s": 2.8,
+          "kind": "ultimate",
+          "ready": false
+        }
+      ],
+      "loot_ready": false,
+      "spawn_ready": false,
+      "balance_status": "candidate",
+      "description": "Authored D1 data only. No runtime behavior, rewards or stats instantiated."
+    },
+    {
+      "id": "tmb.boss.loi_nguc_tien_tuong",
+      "name": "Lôi Ngục Tiên Tướng",
+      "band": "immortal",
+      "peak_realm": 20,
+      "peak_floor": 10,
+      "hp_peak_candidate": 140370000,
+      "def_to_disciple_attack_candidate": 3,
+      "damage_reduction_candidate": 0.1,
+      "passives": [
+        "loi_an_truy_hon",
+        "loi_tru_ho_phap"
+      ],
+      "phases": [
+        0.7,
+        0.35
+      ],
+      "summon_cap": 4,
+      "summons": [
+        "loi_tru"
+      ],
+      "mechanic": "Two phase pillars, break 200 on interruptible ultimate, or dodge/guard",
+      "abilities": [
+        {
+          "id": "tmb.bossskill.loi_nguc_tien_tuong.active_01",
+          "name": "Thiên Lôi Chỉ",
+          "ratio_atk_candidate": 1.4,
+          "cooldown_s": 9,
+          "telegraph_s": 0.9,
+          "kind": "active",
+          "ready": false
+        },
+        {
+          "id": "tmb.bossskill.loi_nguc_tien_tuong.active_02",
+          "name": "Tam Phân Lôi Tuyến",
+          "ratio_atk_candidate": 1.85,
+          "cooldown_s": 17,
+          "telegraph_s": 2.2,
+          "kind": "active",
+          "ready": false
+        },
+        {
+          "id": "tmb.bossskill.loi_nguc_tien_tuong.active_03",
+          "name": "Từ Trường Nhiếp Hồn",
+          "ratio_atk_candidate": 0.85,
+          "cooldown_s": 20,
+          "telegraph_s": 2,
+          "kind": "active",
+          "ready": false
+        },
+        {
+          "id": "tmb.bossskill.loi_nguc_tien_tuong.ultimate",
+          "name": "Cửu Tiêu Lôi Hình",
+          "ratio_atk_candidate": 1.15,
+          "hits": 3,
+          "cooldown_s": 42,
+          "telegraph_s": 3.2,
+          "kind": "ultimate",
+          "ready": false
+        }
+      ],
+      "loot_ready": false,
+      "spawn_ready": false,
+      "balance_status": "candidate",
+      "description": "Authored D1 data only. No runtime behavior, rewards or stats instantiated."
+    },
+    {
+      "id": "tmb.boss.han_nguyet_ao_hau",
+      "name": "Hàn Nguyệt Ảo Hậu",
+      "band": "immortal",
+      "peak_realm": 20,
+      "peak_floor": 10,
+      "hp_peak_candidate": 152580000,
+      "def_to_disciple_attack_candidate": 2.7,
+      "damage_reduction_candidate": 0.09,
+      "passives": [
+        "nguyet_tam_chan_an",
+        "han_suong_tich_tu"
+      ],
+      "phases": [
+        0.7,
+        0.35
+      ],
+      "summon_cap": 4,
+      "summons": [
+        "bang_anh"
+      ],
+      "mechanic": "Recognizable true-body mark and two bounded clones",
+      "abilities": [
+        {
+          "id": "tmb.bossskill.han_nguyet_ao_hau.active_01",
+          "name": "Nguyệt Kính Phân Thân",
+          "ratio_atk_candidate": 0,
+          "cooldown_s": 24,
+          "telegraph_s": 1.5,
+          "kind": "active",
+          "ready": false
+        },
+        {
+          "id": "tmb.bossskill.han_nguyet_ao_hau.active_02",
+          "name": "Hàn Nguyệt Trảm",
+          "ratio_atk_candidate": 2,
+          "cooldown_s": 12,
+          "telegraph_s": 1.9,
+          "kind": "active",
+          "ready": false
+        },
+        {
+          "id": "tmb.bossskill.han_nguyet_ao_hau.active_03",
+          "name": "Băng Tỏa Hoa",
+          "ratio_atk_candidate": 0.75,
+          "cooldown_s": 18,
+          "telegraph_s": 2.1,
+          "kind": "active",
+          "ready": false
+        },
+        {
+          "id": "tmb.bossskill.han_nguyet_ao_hau.ultimate",
+          "name": "Vạn Kính Phong Thiên",
+          "ratio_atk_candidate": 1.75,
+          "hits": 2,
+          "cooldown_s": 43,
+          "telegraph_s": 3.3,
+          "kind": "ultimate",
+          "ready": false
+        }
+      ],
+      "loot_ready": false,
+      "spawn_ready": false,
+      "balance_status": "candidate",
+      "description": "Authored D1 data only. No runtime behavior, rewards or stats instantiated."
+    },
+    {
+      "id": "tmb.boss.u_minh_co_tien",
+      "name": "U Minh Cổ Tiên",
+      "band": "immortal",
+      "peak_realm": 20,
+      "peak_floor": 10,
+      "hp_peak_candidate": 170890000,
+      "def_to_disciple_attack_candidate": 3.2,
+      "damage_reduction_candidate": 0.12,
+      "passives": [
+        "co_menh_lien_tam",
+        "u_minh_doc_huyet"
+      ],
+      "phases": [
+        0.7,
+        0.35
+      ],
+      "summon_cap": 4,
+      "summons": [
+        "phe_co"
+      ],
+      "mechanic": "Shared damage once; one 30% poison cleanse at phase70 only",
+      "abilities": [
+        {
+          "id": "tmb.bossskill.u_minh_co_tien.active_01",
+          "name": "Hồn Cổ Ám Tức",
+          "ratio_atk_candidate": 1.3,
+          "cooldown_s": 10,
+          "telegraph_s": 1.1,
+          "kind": "active",
+          "ready": false
+        },
+        {
+          "id": "tmb.bossskill.u_minh_co_tien.active_02",
+          "name": "Hoán Mệnh Tơ",
+          "ratio_atk_candidate": 0,
+          "cooldown_s": 18,
+          "telegraph_s": 1.7,
+          "kind": "active",
+          "ready": false
+        },
+        {
+          "id": "tmb.bossskill.u_minh_co_tien.active_03",
+          "name": "Cổ Thai Triệu Linh",
+          "ratio_atk_candidate": 0,
+          "cooldown_s": 25,
+          "telegraph_s": 2,
+          "kind": "active",
+          "ready": false
+        },
+        {
+          "id": "tmb.bossskill.u_minh_co_tien.ultimate",
+          "name": "Cửu U Đoạt Mệnh",
+          "ratio_atk_candidate": 2.2,
+          "hits": 1,
+          "cooldown_s": 42,
+          "telegraph_s": 3.1,
+          "kind": "ultimate",
+          "ready": false
+        }
+      ],
+      "loot_ready": false,
+      "spawn_ready": false,
+      "balance_status": "candidate",
+      "description": "Authored D1 data only. No runtime behavior, rewards or stats instantiated."
+    },
+    {
+      "id": "tmb.boss.cuu_tieu_kiep_long",
+      "name": "Cửu Tiêu Kiếp Long",
+      "band": "divine",
+      "peak_realm": 30,
+      "peak_floor": 10,
+      "hp_peak_candidate": 29210000000,
+      "def_to_disciple_attack_candidate": 3.1,
+      "damage_reduction_candidate": 0.14,
+      "passives": [
+        "thien_kiep_loi_an",
+        "thien_uy_long_the"
+      ],
+      "phases": [
+        0.7,
+        0.35
+      ],
+      "summon_cap": 4,
+      "summons": [
+        "thien_tru"
+      ],
+      "mechanic": "Break 350 optional, 4 lightning rounds, post-ultimate 3s opening",
+      "abilities": [
+        {
+          "id": "tmb.bossskill.cuu_tieu_kiep_long.active_01",
+          "name": "Thiên Long Trảo",
+          "ratio_atk_candidate": 1.9,
+          "cooldown_s": 11,
+          "telegraph_s": 1.8,
+          "kind": "active",
+          "ready": false
+        },
+        {
+          "id": "tmb.bossskill.cuu_tieu_kiep_long.active_02",
+          "name": "Tam Kiếp Lôi Đài",
+          "ratio_atk_candidate": 1.5,
+          "cooldown_s": 18,
+          "telegraph_s": 2.8,
+          "kind": "active",
+          "ready": false
+        },
+        {
+          "id": "tmb.bossskill.cuu_tieu_kiep_long.active_03",
+          "name": "Trấn Thiên Trụ",
+          "ratio_atk_candidate": 0,
+          "cooldown_s": 45,
+          "telegraph_s": 2.5,
+          "kind": "active",
+          "ready": false
+        },
+        {
+          "id": "tmb.bossskill.cuu_tieu_kiep_long.ultimate",
+          "name": "Vạn Lôi Táng Thiên",
+          "ratio_atk_candidate": 1.6,
+          "hits": 4,
+          "cooldown_s": 48,
+          "telegraph_s": 3.7,
+          "kind": "ultimate",
+          "ready": false
+        }
+      ],
+      "loot_ready": false,
+      "spawn_ready": false,
+      "balance_status": "candidate",
+      "description": "Authored D1 data only. No runtime behavior, rewards or stats instantiated."
+    },
+    {
+      "id": "tmb.boss.bat_diet_huyet_ma_ton",
+      "name": "Bất Diệt Huyết Ma Tôn",
+      "band": "divine",
+      "peak_realm": 30,
+      "peak_floor": 10,
+      "hp_peak_candidate": 34690000000,
+      "def_to_disciple_attack_candidate": 3.25,
+      "damage_reduction_candidate": 0.16,
+      "passives": [
+        "huyet_hon_bat_tan",
+        "ma_huyet_cuong_no"
+      ],
+      "phases": [
+        0.7,
+        0.35
+      ],
+      "summon_cap": 4,
+      "summons": [
+        "huyet_no"
+      ],
+      "mechanic": "Finite max18% peak HP total healing and phase3 DEF weakness",
+      "abilities": [
+        {
+          "id": "tmb.bossskill.bat_diet_huyet_ma_ton.active_01",
+          "name": "Huyết Ảnh Phân Liệt",
+          "ratio_atk_candidate": 1.05,
+          "cooldown_s": 13,
+          "telegraph_s": 1.9,
+          "kind": "active",
+          "ready": false
+        },
+        {
+          "id": "tmb.bossskill.bat_diet_huyet_ma_ton.active_02",
+          "name": "Huyết Trì Táng Sinh",
+          "ratio_atk_candidate": 0.85,
+          "cooldown_s": 20,
+          "telegraph_s": 2.2,
+          "kind": "active",
+          "ready": false
+        },
+        {
+          "id": "tmb.bossskill.bat_diet_huyet_ma_ton.active_03",
+          "name": "Huyết Nô Hiến Tế",
+          "ratio_atk_candidate": 0,
+          "cooldown_s": 32,
+          "telegraph_s": 2.5,
+          "kind": "active",
+          "ready": false
+        },
+        {
+          "id": "tmb.bossskill.bat_diet_huyet_ma_ton.ultimate",
+          "name": "Cửu Chuyển Huyết Tế",
+          "ratio_atk_candidate": 1.45,
+          "hits": 3,
+          "cooldown_s": 46,
+          "telegraph_s": 3.6,
+          "kind": "ultimate",
+          "ready": false
+        }
+      ],
+      "loot_ready": false,
+      "spawn_ready": false,
+      "balance_status": "candidate",
+      "description": "Authored D1 data only. No runtime behavior, rewards or stats instantiated."
+    },
+    {
+      "id": "tmb.boss.thai_so_phap_tac_de",
+      "name": "Thái Sơ Pháp Tắc Đế",
+      "band": "divine",
+      "peak_realm": 30,
+      "peak_floor": 10,
+      "hp_peak_candidate": 40160000000,
+      "def_to_disciple_attack_candidate": 3.5,
+      "damage_reduction_candidate": 0.18,
+      "passives": [
+        "thai_so_tam_luat",
+        "de_uy"
+      ],
+      "phases": [
+        0.7,
+        0.35
+      ],
+      "summon_cap": 4,
+      "summons": [
+        "phap_tac_anh"
+      ],
+      "mechanic": "Kim/Thủy/U Minh laws mutually exclusive; phase35 one 25% poison cleanse",
+      "abilities": [
+        {
+          "id": "tmb.bossskill.thai_so_phap_tac_de.active_01",
+          "name": "Pháp Ấn Thẩm Phán",
+          "ratio_atk_candidate": 2.35,
+          "cooldown_s": 12,
+          "telegraph_s": 2.5,
+          "kind": "active",
+          "ready": false
+        },
+        {
+          "id": "tmb.bossskill.thai_so_phap_tac_de.active_02",
+          "name": "Vạn Tượng Đảo Vị",
+          "ratio_atk_candidate": 1,
+          "cooldown_s": 17,
+          "telegraph_s": 2,
+          "kind": "active",
+          "ready": false
+        },
+        {
+          "id": "tmb.bossskill.thai_so_phap_tac_de.active_03",
+          "name": "Lưỡng Nghi Hoán Giới",
+          "ratio_atk_candidate": 0.95,
+          "cooldown_s": 22,
+          "telegraph_s": 3,
+          "kind": "active",
+          "ready": false
+        },
+        {
+          "id": "tmb.bossskill.thai_so_phap_tac_de.ultimate",
+          "name": "Lục Đạo Đoạn Giới",
+          "ratio_atk_candidate": 1.55,
+          "hits": 4,
+          "cooldown_s": 54,
+          "telegraph_s": 4.1,
+          "kind": "ultimate",
+          "ready": false
+        }
+      ],
+      "loot_ready": false,
+      "spawn_ready": false,
+      "balance_status": "candidate",
+      "description": "Authored D1 data only. No runtime behavior, rewards or stats instantiated."
+    }
+  ]
+}
