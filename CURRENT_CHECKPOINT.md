@@ -1,12 +1,24 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## Cập nhật 29/10/2026 — V6.5 full combat task
+
+> Ghi chú hiện tại này thay thế các branch head và gate đã cũ trong snapshot lịch sử bên dưới.
+>
+> - Stable `main`: `c0c1382f119599497b52d8ee8abd9e830a883f1e`; PvE reference `integration/pve-unified-rc-20261027`: `5005d7508dff4b6a3da3f319de09dac33669882a`.
+> - D1 baseline: `6e4012d7a9e3a7efa56df349a176f9491d550742`; active no-merge work branch: `feature/v63-v64-full-combat-20261029`.
+> - Godot 4.7.2 Windows import and focused D1 registry test both PASS (exit 0). Evidence and log hashes: [D1 validation report](docs/implementation/V63_D1_VALIDATION_EVIDENCE_20261029.md).
+> - D1 remains data-only: gates OFF, no skill runtime, boss spawn, or loot wiring.
+> - D2 implementation is waiting on the owner-approved exact file path allowlist required by `AGENTS.md` for each CODE packet. No D2 gameplay code has been written.
+> - PR #52 remains Draft/open. No merge to `main`; the original E: checkout and its QA artifacts were preserved.
+
+
 **Cập nhật 27/10/2026 — Một dự án, một bản game chính thức.** Đọc file này trước; các checkpoint dài cũ là lịch sử, không phải nhiều phiên bản game song song.
 
 ## Phiên bản và quyền hạn
 
 | Loại | Nhánh | Trạng thái |
 | --- | --- | --- |
-| **Stable chính thức** | `main` tại `29b5fba448b0178cb520a4ada44b375b4b934e31` | Bản đã được chấp nhận; **chưa chứa** PvE mới. Chưa được phép thay đổi. |
+| **Stable chính thức** | `main` tại `c0c1382f119599497b52d8ee8abd9e830a883f1e` | Bản đã được chấp nhận; **chưa chứa** PvE mới. Chưa được phép thay đổi. |
 | **Bản phát triển tham chiếu** | `feature/pve-jx-continuous-world-20261026` tại `6b3fd181392c96c2386e5aa85950d2e993d67dda` | Nền tảng shared cho hai Codex; giữ nguyên trong kỳ nghiệm thu. |
 | **Ứng viên tích hợp DUY NHẤT** | `integration/pve-unified-rc-20261027` | Tổng hợp **PR #51 core + PR #50 visual + tài liệu PR #49**, bảo toàn đúng file/byte và nhánh gốc. PR #52 vẫn Draft, không phải Stable. Focused QA mới nhất và exact HEAD được liên kết từ [Issue #37](https://github.com/vuanhtuan161094-byte/TongMonBaDao/issues/37) và PR #52. |
 | Core hồi quy đã chạy | [PR #51](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/51) SHA `c217471bd3fbe88b95e6e7537b39dc07ae683e41` | Codex 1 **báo cáo 14/14 lệnh Godot 4.7.2 exit 0**; log chi tiết lưu tại E: Windows, chưa tái kiểm tra bằng engine trên RC. |
