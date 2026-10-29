@@ -34,7 +34,8 @@ static func initialize(state: SimulationState, now_unix: int) -> Dictionary:
 
 static func advance_to(
     state: SimulationState, scheduler: SimulationScheduler,
-    now_unix: int, max_steps: int = -1
+    now_unix: int, max_steps: int = -1, max_battle_frames: int = -1,
+    active_multicamp_session: HuntingPveRunV2 = null
 ) -> Dictionary:
     if state == null or scheduler == null or scheduler.state != state:
         return {"ok":false,"reason":"invalid_runtime_clock_owner"}
@@ -44,6 +45,8 @@ static func advance_to(
         return {"ok":false,"reason":"invalid_wall_time"}
     if max_steps == 0 or max_steps < -1:
         return {"ok":false,"reason":"invalid_runtime_step_limit"}
+    if max_battle_frames == 0 or max_battle_frames < -1:
+        return {"ok":false,"reason":"invalid_battle_frame_limit"}
 
     if state.runtime_last_wall_unix <= 0:
         var initialized := initialize(state,now_unix)
@@ -78,7 +81,7 @@ static func advance_to(
     if not state.sect.b3_hunt.is_empty():
         return _advance_b3(state,scheduler,elapsed,max_steps)
     if HuntingPveRunV2.has_active_multicamp(state):
-        return _advance_multicamp(state,scheduler,elapsed,max_steps)
+        return _advance_multicamp(state,scheduler,elapsed,max_steps,max_battle_frames,active_multicamp_session)
 
     var available := int(floor(
         state.runtime_unconsumed_wall_seconds /
@@ -123,14 +126,20 @@ static func pending_minutes(state: SimulationState) -> int:
     ))
 
 static func _advance_multicamp(state: SimulationState, scheduler: SimulationScheduler,
-        elapsed: int, max_steps: int) -> Dictionary:
+        elapsed: int, max_steps: int, max_battle_frames: int = -1,
+        active_multicamp_session: HuntingPveRunV2 = null) -> Dictionary:
     var encounter := HuntingPveRunV2.active_multicamp_id(state)
-    var restored := HuntingPveRunV2.resume_active(state,encounter)
-    if not bool(restored.get("ok",false)):
-        return restored
-    var session: HuntingPveRunV2 = restored["session"]
+    var session := active_multicamp_session
+    if session == null or session.owner_state != state or session.battle == null \
+            or session.mode != "multicamp" or str(session.battle.encounter_id) != encounter:
+        var restored := HuntingPveRunV2.resume_active(state,encounter)
+        if not bool(restored.get("ok",false)):
+            return restored
+        session = restored["session"]
     var budget := 2400
-    if max_steps > 0:
+    if max_battle_frames > 0:
+        budget = mini(budget,max_battle_frames)
+    elif max_steps > 0:
         budget = mini(budget,max_steps*240)
     var frames := 0
     var minutes := 0
@@ -167,11 +176,16 @@ static func _advance_multicamp(state: SimulationState, scheduler: SimulationSche
             break
     result.merge({"elapsed_wall_seconds":elapsed,"steps_run":minutes,
         "frames_run":frames,"pending_minutes":pending_minutes(state),
+        "frame_budget":budget,
+        "backlog_pending":state.runtime_unconsumed_wall_seconds >= MapBattleV2.STEP_SECONDS,
         "remainder_seconds":state.runtime_unconsumed_wall_seconds,
         "simulation_tick":state.tick},true)
+    result["_multicamp_session"] = session
     if profile and session.battle != null:
         print("TMB_PVE_RUNTIME_BATCH_METRIC "+JSON.stringify({
             "frames":frames,
+            "frame_budget":budget,
+            "backlog_pending":state.runtime_unconsumed_wall_seconds >= MapBattleV2.STEP_SECONDS,
             "batch_ms":float(Time.get_ticks_usec()-batch_started_usec)/1000.0,
             "battle_step_count":session.battle.performance_step_count,
             "battle_step_total_ms":float(session.battle.performance_step_usec_total)/1000.0,
@@ -179,6 +193,7 @@ static func _advance_multicamp(state: SimulationState, scheduler: SimulationSche
             "world_path_count":session.battle.performance_world_path_count,
             "world_path_total_ms":float(session.battle.performance_world_path_usec_total)/1000.0,
             "world_path_max_ms":float(session.battle.performance_world_path_usec_max)/1000.0,
+            "world_path_cache_hits":session.battle.performance_world_path_cache_hit_count,
             "snapshot_count":session.performance_checkpoint_count,
             "snapshot_total_ms":float(session.performance_checkpoint_usec_total)/1000.0,
             "snapshot_max_ms":float(session.performance_checkpoint_usec_max)/1000.0,

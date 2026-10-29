@@ -200,6 +200,8 @@ func _verify_multiple_fields_use_specific_worksites() -> bool:
         _normalize_worker(state, actor)
         if not bool(workforce.perform_work(state, actor, WorkforceSystem.PROF_HERBALISM).get("ok", false)):
             return _fail("Concrete field worker could not start crop.")
+        if not buildings.disciple_has_active_spirit_plot(state,actor.id):
+            return _fail("Active plot lookup missed a worker on its assigned concrete field.")
     if _growing_plot(state, field_a).is_empty() or _growing_plot(state, field_b).is_empty():
         return _fail("Concrete worksite assignment routed both workers into one field.")
     return _validate(state)

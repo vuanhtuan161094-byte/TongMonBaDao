@@ -152,27 +152,30 @@ func _run() -> void:
 	var battle_time_before := start_battle.now
 	var poll_wall := START_WALL+1
 	var first_poll := runtime.poll(poll_wall)
-	var first_run := HuntingPveRunV2.resume_active(state,ENCOUNTER)
+	var first_session: HuntingPveRunV2 = runtime.owner.get_active_multicamp_session()
 	if not _check(bool(first_poll.get("ok",false))
 			and int(first_poll.get("frames_run",0)) > 0
-			and bool(first_run.get("ok",false)),
+			and first_session != null
+			and bool(first_poll.get("runtime_save_deferred",false))
+			and not runtime.owner.saves.has_async_save_pending(),
 		"canonical wall clock did not step the active Combat V2 encounter: %s" % str(first_poll)):
 		return
-	var first_session: HuntingPveRunV2 = first_run["session"]
 	var first_battle: MapBattleV2 = first_session.battle
 	if not _check(is_equal_approx(first_battle.now-battle_time_before,1.0)
 			and state.runtime_last_wall_unix == poll_wall,
-		"one wall second did not produce exactly one combat second and matching owner timestamp"):
+		"one wall second did not produce exactly one combat second and matching owner timestamp; before=%.3f after=%.3f delta=%.3f wall=%d state_wall=%d frames=%d remainder=%.3f" % [
+			battle_time_before,first_battle.now,first_battle.now-battle_time_before,poll_wall,
+			state.runtime_last_wall_unix,int(first_poll.get("frames_run",-1)),float(state.runtime_unconsumed_wall_seconds)]):
 		return
 	var time_after_first := first_battle.now
 	var actions_after_first := first_battle.actions
 	var same_wall_poll := runtime.poll(poll_wall)
-	var same_wall_run := HuntingPveRunV2.resume_active(state,ENCOUNTER)
+	var same_wall_session: HuntingPveRunV2 = runtime.owner.get_active_multicamp_session()
 	if not _check(bool(same_wall_poll.get("ok",false))
 			and int(same_wall_poll.get("frames_run",-1)) == 0
-			and bool(same_wall_run.get("ok",false))
-			and is_equal_approx(same_wall_run["session"].battle.now,time_after_first)
-			and same_wall_run["session"].battle.actions == actions_after_first,
+			and same_wall_session != null
+			and is_equal_approx(same_wall_session.battle.now,time_after_first)
+			and same_wall_session.battle.actions == actions_after_first,
 		"replaying the same injected wall timestamp advanced or acted in Combat V2"):
 		return
 	if not _check(bool(runtime.save(poll_wall).get("ok",false)),
@@ -193,11 +196,10 @@ func _run() -> void:
 			and HuntingPveRunV2.saved_world_identity_matches(saved_session.battle,saved_session.camp_population),
 		"disk reload changed V2 party/monsters, Source A SHA, wall clock, or minute phase"):
 		return
-	var source_run := HuntingPveRunV2.resume_active(state,ENCOUNTER)
-	if not _check(bool(source_run.get("ok",false)),
-		"original runtime lost its active world after independent disk validation"):
+	var source_session: HuntingPveRunV2 = runtime.owner.get_active_multicamp_session()
+	if not _check(source_session != null,
+		"original runtime lost its canonical active world after independent disk validation"):
 		return
-	var source_session: HuntingPveRunV2 = source_run["session"]
 	if not _check(_corrupt_and_reject(SAVE_PATH,
 		"world_source_sha","0123456789abcdef0123456789abcdef01234567",ENCOUNTER,warehouse_before),
 		"valid-length wrong world SHA was accepted or had effects"):

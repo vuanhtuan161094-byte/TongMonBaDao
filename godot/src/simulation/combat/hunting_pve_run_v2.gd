@@ -210,6 +210,7 @@ func begin_multicamp(owner: SimulationRuntimeOwnerV2, encounter_id: String,
     owner.runtime_write_blocked = error != OK
     if error != OK:
         return {"ok":false,"reason":"multicamp_initial_save_failed","error":error}
+    owner.cache_active_multicamp_session(self)
     return {"ok":true,"mode":mode,"encounter_id":encounter_id,
         "camp_id":PveMultiCampPopulationV1.camp_id(camp_index),
         "party_size":party.size(),"monster_count":monsters.size(),
@@ -391,6 +392,15 @@ func _advance_open_world(viewed_map: bool) -> Dictionary:
     var population_step := PveMultiCampPopulationV1.advance_respawns(camp_population,battle.now)
     if not bool(population_step.get("ok",false)):
         return population_step
+    var corpse_cleanup := _remove_respawned_world_corpses()
+    if not bool(corpse_cleanup.get("ok",false)):
+        return corpse_cleanup
+    var recorded_kills := int(kills.get("recorded",0))
+    var respawned := int(population_step.get("respawned",0))
+    if respawned > 0:
+        var respawn_spawns := _spawn_ready_world_respawns()
+        if not bool(respawn_spawns.get("ok",false)):
+            return respawn_spawns
     var zone_changed := false
     if battle._count_alive("disciple") == 0:
         battle.active = false
@@ -404,9 +414,16 @@ func _advance_open_world(viewed_map: bool) -> Dictionary:
             if not bool(spawned.get("ok",false)):
                 return spawned
             zone_changed = true
-    var stored := _persist_live_state()
-    if not bool(stored.get("ok",false)):
-        return stored
+    # The active session is the live authority. Serialize a durable snapshot
+    # only when this frame creates an authoritative kill, respawn, camp
+    # transition, or terminal result. Regular movement/damage frames are
+    # included by the next explicit/15-second save without rebuilding a full
+    # 192x192 world snapshot every 0.25 seconds.
+    var durable_barrier := recorded_kills > 0 or respawned > 0 or zone_changed or not battle.active
+    if durable_barrier:
+        var stored := _persist_live_state()
+        if not bool(stored.get("ok",false)):
+            return stored
     if not battle.active:
         var completed := _complete_multicamp()
         if not bool(completed.get("ok",false)):
@@ -416,14 +433,71 @@ func _advance_open_world(viewed_map: bool) -> Dictionary:
         completed["stepped"] = true
         completed["barrier"] = true
         return completed
-    return {"ok":true,"stepped":true,"barrier":false,"world_mode":true,
+    return {"ok":true,"stepped":true,"world_mode":true,
         "zone_changed":zone_changed,"camp_index":camp_index,
         "camp_id":PveMultiCampPopulationV1.camp_id(camp_index),
-        "respawned":int(population_step.get("respawned",0)),
+        "respawned":respawned,"recorded_kills":recorded_kills,
+        "barrier":durable_barrier,
         "loot_disposition":"LOOT_PENDING","rewards_granted":false,
         "outcome":battle.outcome,"time":battle.now,
         "alive_disciples":battle._count_alive("disciple"),
         "alive_monsters":battle._count_alive("monster")}
+
+func _remove_respawned_world_corpses() -> Dictionary:
+    if battle == null or not battle.world_mode:
+        return {"ok":false,"reason":"open_world_corpse_cleanup_without_world"}
+    var stale_ids: Array[String] = []
+    for raw_id in battle.actors.keys():
+        var actor: Dictionary = battle.actors[raw_id]
+        if str(actor.get("side","")) != "monster":
+            continue
+        var slot_id := str(actor.get("spawn_slot_id",""))
+        var slot: Dictionary = camp_population.get("slots",{}).get(slot_id,{})
+        if slot.is_empty():
+            return {"ok":false,"reason":"open_world_actor_slot_missing"}
+        if str(slot.get("phase","")) != "READY" \
+                or int(slot.get("generation",0)) <= int(actor.get("slot_generation",0)):
+            continue
+        if float(actor.get("hp",1.0)) > 0.0:
+            return {"ok":false,"reason":"open_world_respawn_conflicts_with_living_actor"}
+        stale_ids.append(str(raw_id))
+    stale_ids.sort()
+    for actor_id in stale_ids:
+        if not battle.remove_downed_monster(actor_id):
+            return {"ok":false,"reason":"open_world_respawn_corpse_cleanup_failed"}
+    return {"ok":true,"removed":stale_ids.size()}
+
+func _spawn_ready_world_respawns() -> Dictionary:
+    if battle == null or not battle.world_mode or camp_index < 0:
+        return {"ok":false,"reason":"open_world_respawn_spawn_without_world"}
+    var rows := _build_camp_monsters(battle.encounter_id,
+        int(spawn_data.get("reward_seed",0)),camp_population,camp_index,
+        PveMultiCampPopulationV1.MIN_SLOTS_PER_CAMP)
+    if rows.size() != PveMultiCampPopulationV1.MIN_SLOTS_PER_CAMP:
+        return {"ok":false,"reason":"open_world_respawn_catalogue_failed"}
+    var spawned := 0
+    for row in rows:
+        var slot_id := str(row.get("spawn_slot_id",""))
+        if not camp_slot_ids.has(slot_id):
+            continue
+        var slot: Dictionary = camp_population.get("slots",{}).get(slot_id,{})
+        var generation := int(row.get("slot_generation",0))
+        if str(slot.get("phase","")) != "READY" \
+                or generation <= int(battle._last_spawn_generation.get(slot_id,0)):
+            continue
+        var actor_id := str(row.get("id",""))
+        if battle.actors.has(actor_id):
+            return {"ok":false,"reason":"open_world_respawn_actor_already_exists"}
+        if not slot.has("world_x") or not slot.has("world_y"):
+            return {"ok":false,"reason":"open_world_respawn_slot_position_missing"}
+        var position := Vector2(float(slot["world_x"]),float(slot["world_y"]))
+        row["position"] = position
+        row["home_position"] = position
+        var added := battle.add_continuous_monster(row)
+        if not bool(added.get("ok",false)):
+            return {"ok":false,"reason":"open_world_respawn_add_failed","detail":added.get("reason","unknown")}
+        spawned += 1
+    return {"ok":true,"spawned":spawned}
 
 func _record_open_world_kills() -> Dictionary:
     var recorded := 0
@@ -615,7 +689,10 @@ func _persist_live_state() -> Dictionary:
     var started_usec := Time.get_ticks_usec() if profile else 0
     var saved := save_state()
     if bool(saved.get("ok",false)):
-        owner_state.sect.v2_pve_active_runs[battle.encounter_id] = saved.duplicate(true)
+        # save_state() already created a detached immutable-enough snapshot of
+        # combat actors, kill journal, and population. A second recursive copy
+        # here duplicated the largest PVE payload on every 0.25s step.
+        owner_state.sect.v2_pve_active_runs[battle.encounter_id] = saved
     if profile:
         var elapsed_usec := Time.get_ticks_usec()-started_usec
         performance_checkpoint_count += 1

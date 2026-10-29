@@ -416,7 +416,8 @@ static func from_dict(data: Dictionary) -> SimulationState:
     # advances any offline minutes. Reject contested snapshots fail-closed.
     var legacy_pve := HuntingPveRunV2.reconcile_loaded_v2_pve(state)
     if not bool(legacy_pve.get("ok",false)):
-        push_error("GP-02C1: incompatible saved PvE: %s" % str(legacy_pve.get("reason","unknown")))
+        push_error("GP-02C1: incompatible saved PvE: %s detail=%s" % [
+            str(legacy_pve.get("reason","unknown")),str(legacy_pve.get("detail",""))])
         return null
     var b3_error := B3HuntWorld.validate(state)
     if not b3_error.is_empty():

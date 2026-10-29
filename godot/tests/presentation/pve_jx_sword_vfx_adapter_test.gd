@@ -130,8 +130,9 @@ func _run() -> void:
 	save_state.sect.v2_pve_active_runs[encounter_id] = active_run
 	var save_path := "user://pve_aux03_vfx_save_reload.json"
 	var save_service := SaveService.new()
-	if not _check(save_service.save_to_path(save_state,save_path) == OK,
-		"canonical SaveService could not persist the active Combat V2 VFX fixture"):
+	var save_error: Error = save_service.save_to_path(save_state,save_path)
+	if not _check(save_error == OK,
+		"canonical SaveService could not persist the active Combat V2 VFX fixture; error=%d path=%s" % [save_error,ProjectSettings.globalize_path(save_path)]):
 		return
 	var loaded_state := save_service.load_from_path(save_path)
 	if not _check(loaded_state != null,"canonical SaveService could not reload the active Combat V2 fixture"):
@@ -200,12 +201,25 @@ func _run() -> void:
 			and replay_adapter.active_count() == 1,
 			"disjoint-ring rebaseline dropped the next genuine live cast"):
 		return
-	var previous_ring: Array[String] = ["old_a","old_b"]
-	var unrelated_ring: Array[String] = ["new_c","new_d"]
-	var rolling_ring: Array[String] = ["old_b","new_c"]
-	if not _check(replay_adapter._suffix_prefix_overlap(previous_ring,unrelated_ring) == -1
-			and replay_adapter._suffix_prefix_overlap(previous_ring,rolling_ring) == 1,
-			"JX VFX event-ring overlap classification regressed"):
+	var ring_adapter = VFX_ADAPTER_SCRIPT.new()
+	var ring_battle := MapBattleV2.new(5502)
+	ring_battle.encounter_id = "rolling_event_ring"
+	ring_battle.actors = replay_battle.actors.duplicate(true)
+	for index in range(MapBattleV2.MAX_EVENTS):
+		ring_battle.events.append({"type":"other","time":float(index),"ordinal":index})
+	ring_adapter.observe_snapshot(ring_battle)
+	var old_scan_count: int = ring_adapter.event_rows_examined_total
+	ring_battle.events.pop_front()
+	ring_battle.events.append({"type":"skill_cast","time":3000.0,
+		"actor_id":"disciple","target":"monster","skill_id":"ngu_kiem_thuat","release_at":3000.8})
+	var rolling_events := ring_adapter.observe_snapshot(ring_battle)
+	if not _check(rolling_events.size() == 1 and ring_adapter.active_count() == 1
+			and ring_adapter.event_rows_examined_total == old_scan_count+1,
+			"rolling ring must inspect only the newly appended event and preserve a genuine JX cast"):
 		return
-	print("PVE JX SWORD VFX ADAPTER PASS real_combat=ngu_kiem_thuat cast=true projectile=true positive_hit=true one_impact=true no_hit_explosion=false snapshot_unchanged=true canonical_save_service_reload_no_replay=true forest_palette=verified")
+	ring_adapter.observe_snapshot(ring_battle)
+	if not _check(int(ring_adapter.counters["duplicate_snapshots"]) > 0,
+		"same rolling event-ring snapshot was not recognized as duplicate"):
+		return
+	print("PVE JX SWORD VFX ADAPTER PASS real_combat=ngu_kiem_thuat cast=true projectile=true positive_hit=true one_impact=true no_hit_explosion=false snapshot_unchanged=true canonical_save_service_reload_no_replay=true rolling_ring_new_events_only=true forest_palette=verified")
 	quit(0)

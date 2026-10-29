@@ -15,6 +15,8 @@ const DEFAULT_SEED := 31012026
 
 var owner := SimulationRuntimeOwnerV2.new()
 var save_path := DEFAULT_SAVE_PATH
+var multicamp_battle_frame_budget := -1
+var multicamp_poll_now_override := -1
 
 func start(
     path: String = DEFAULT_SAVE_PATH,
@@ -75,15 +77,35 @@ func start(
         "path":save_path
     }
 
-func poll(now_unix: int = -1, max_steps: int = -1) -> Dictionary:
+func poll(now_unix: int = -1, max_steps: int = -1,
+		max_battle_frames: int = -1) -> Dictionary:
     if owner.state == null:
         return {"ok":false,"reason":"live_runtime_not_started"}
-    return owner.update_to(_resolve_now(now_unix),max_steps)
+    var poll_now := now_unix
+    if poll_now <= 0:
+        poll_now = multicamp_poll_now_override if multicamp_poll_now_override > 0 else _resolve_now(-1)
+    return owner.update_to(poll_now,max_steps,false,false,max_battle_frames)
+
+func poll_async(now_unix: int = -1, max_steps: int = -1) -> Dictionary:
+    if owner.state == null:
+        return {"ok":false,"reason":"live_runtime_not_started"}
+    var poll_now := now_unix
+    if poll_now <= 0:
+        poll_now = multicamp_poll_now_override if multicamp_poll_now_override > 0 else _resolve_now(-1)
+    return owner.update_to(poll_now,max_steps,true,false,multicamp_battle_frame_budget)
 
 func save(now_unix: int = -1, max_steps: int = -1) -> Dictionary:
     if owner.state == null:
         return {"ok":false,"reason":"live_runtime_not_started"}
     return owner.save_to_path(save_path,_resolve_now(now_unix),max_steps)
+
+func save_async(now_unix: int = -1, max_steps: int = -1) -> Dictionary:
+    if owner.state == null:
+        return {"ok":false,"reason":"live_runtime_not_started"}
+    return owner.save_to_path_async(save_path,_resolve_now(now_unix),max_steps)
+
+func wait_for_pending_save(tree: SceneTree) -> Dictionary:
+    return await owner.wait_for_pending_save(tree)
 
 func state() -> SimulationState:
     return owner.state

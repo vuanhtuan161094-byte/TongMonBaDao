@@ -38,6 +38,8 @@ func _cleanup_ui() -> void:
 
 func _run() -> void:
 	print("PVE P3.2 INTEGRATION START headless=%s vfx_fixture=%s" % [str(DisplayServer.get_name() == "headless"),str(OS.get_environment(VFX_FIXTURE_ENV) == "1")])
+	root.size = Vector2i(1280,720)
+	print("PVE P3.2 INPUT_VIEWPORT size=%s" % str(root.size))
 	var keep := OS.get_environment(KEEP_SAVE_ENV) == "1"
 	var save_path := OS.get_environment(SAVE_PATH_ENV)
 	if save_path.is_empty():
@@ -199,6 +201,55 @@ func _run() -> void:
 		and map.battle.world_mode and map.battle.actors.size() == battle.actors.size(),
 		"Source A isometric view does not read the saved authoritative Combat V2 world snapshot"):
 		return
+	var production_viewport := ui.get("iso_viewport") as SubViewport
+	if not _check(map._viewport.render_target_update_mode == SubViewport.UPDATE_WHEN_VISIBLE
+		and production_viewport != null
+		and production_viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED,
+		"hidden PvE view is still rendered or the production underlay was not frozen while hunting: pve_mode=%d production_mode=%d frozen=%s overlay_open=%s expected_pve=%d expected_production=%d pve_script=%s viewport_path=%s" % [
+			map._viewport.render_target_update_mode,
+			int(production_viewport.render_target_update_mode) if production_viewport != null else -1,
+			str(ui.get("production_underlay_frozen")),str(ui.call("_pve_hunt_overlay_is_open")),
+			int(SubViewport.UPDATE_WHEN_VISIBLE),int(SubViewport.UPDATE_DISABLED),
+			str(map.get_script().resource_path),str(map._viewport.get_path())]):
+		return
+	var selected_for_ring_test: Array[String] = []
+	for selected_id in ids:
+		selected_for_ring_test.append(str(selected_id))
+	map.selected_actor_ids = selected_for_ring_test.duplicate()
+	map.world.pve_selected_actor_ids = selected_for_ring_test.duplicate()
+	for zoom in [0.80,1.35]:
+		map.camera_zoom = zoom
+		var centers: Array[Vector2] = []
+		var radii: Array[float] = []
+		for selected_id in selected_for_ring_test:
+			var member: Dictionary = battle.actors.get(selected_id,{})
+			if str(member.get("side","")) != "disciple" or float(member.get("hp",0.0)) <= 0.0:
+				continue
+			var visual_cell: Vector2 = map._render_positions.get(selected_id,member.get("position",Vector2.ZERO))
+			centers.append(map.world_to_screen(visual_cell))
+			radii.append(map.world.selected_actor_ring_radius_screen(selected_id))
+		var minimum_ring_gap := INF
+		for first in range(centers.size()):
+			if radii[first] <= 0.0:
+				minimum_ring_gap = -INF
+				break
+			for second in range(first+1,centers.size()):
+				minimum_ring_gap = minf(minimum_ring_gap,centers[first].distance_to(centers[second])-radii[first]-radii[second]-1.5)
+		if not _check(centers.size() == 6 and minimum_ring_gap >= 3.5,
+			"selected circles touch at zoom %.2f; visible=%d min_edge_gap=%.2f px" % [zoom,centers.size(),minimum_ring_gap]):
+			return
+		print("PVE SELECTION RING GAP PASS zoom=%.2f visible=%d min_edge_gap_px=%.2f" % [zoom,centers.size(),minimum_ring_gap])
+	var path_actor: Dictionary = battle.actors.get(str(ids[0]),{})
+	var path_start: Vector2 = path_actor.get("position",Vector2.ZERO)
+	var path_goal: Vector2 = map.topology["camp_positions"][1]
+	var first_cached_path := battle._world_path(path_start,path_goal)
+	var cache_hits_before := battle.performance_world_path_cache_hit_count
+	var second_cached_path := battle._world_path(path_start,path_goal)
+	if not _check(not first_cached_path.is_empty() and first_cached_path == second_cached_path
+		and battle.performance_world_path_cache_hit_count == cache_hits_before+1,
+		"bounded path cache changed the deterministic route or missed an identical navigation query"):
+		return
+	print("PVE PATH CACHE PASS path_cells=%d cache_hits=%d deterministic=true" % [first_cached_path.size(),battle.performance_world_path_cache_hit_count])
 	var source_a_rows: Dictionary = ui.call("_b3_hunt_visual_rows",battle)
 	for disciple_id in ids:
 		var visual_key := str(source_a_rows.get(str(disciple_id),{}).get("source_a_visual_key",""))
@@ -230,6 +281,12 @@ func _run() -> void:
 		return
 	print("PVE WORLD VIEW CACHE PASS prepare_calls=%d topology_builds=%d minimap_builds=%d source_sha=%s" % [
 		map.prepare_world_call_count,map.topology_build_count,map.minimap_build_count,cached_navigation_sha])
+	var layout_apply_count_before := int(ui.get("b3_hunt_layout_apply_count"))
+	ui.call("_refresh_multicamp_hunt_panel")
+	if not _check(int(ui.get("b3_hunt_layout_apply_count")) == layout_apply_count_before,
+		"steady PVE HUD refresh reapplied identical full-screen control layouts"):
+		return
+	print("PVE HUD LAYOUT CACHE PASS apply_count=%d stable_viewport=1280x720" % [layout_apply_count_before])
 	map.camera_zoom = 0.70
 	var center_before := map.camera_center
 	map._gui_input(_make_minimap_click(map,map.minimap_world_to_screen(map.topology["camp_positions"][19])))
@@ -238,10 +295,64 @@ func _run() -> void:
 		"minimap did not pan the free camera without changing world/gameplay zone"):
 		return
 	var zoom_before := map.camera_zoom
-	map._zoom_at(map.map_rect().get_center(),1.12)
-	if not _check(map.camera_zoom > zoom_before and map.camera_zoom <= 1.15,
-		"map zoom control did not update camera presentation"):
+	var wheel_point := map.map_rect().get_center()+Vector2(120.0,-24.0)
+	var anchor_before := map.world.pve_screen_to_cell(wheel_point,map.size)
+	_route_mouse_motion(map, wheel_point)
+	await process_frame
+	_route_mouse_button(map, MOUSE_BUTTON_WHEEL_UP, wheel_point, true)
+	await process_frame
+	var zoomed_in := map.camera_zoom
+	var anchor_after_in := map.world.pve_screen_to_cell(wheel_point,map.size)
+	if not _check(zoomed_in > zoom_before and zoomed_in <= PveSectWorldViewV1.MAX_ZOOM
+		and anchor_before.distance_to(anchor_after_in) < 0.03,
+		"viewport-routed mouse wheel up failed: zoom %.3f->%.3f anchor_delta=%.4f map_size=%s" % [
+			zoom_before,zoomed_in,anchor_before.distance_to(anchor_after_in),str(map.size)]):
 		return
+	_route_mouse_motion(map, wheel_point)
+	await process_frame
+	_route_mouse_button(map, MOUSE_BUTTON_WHEEL_DOWN, wheel_point, true)
+	await process_frame
+	var zoomed_out := map.camera_zoom
+	var anchor_after_out := map.world.pve_screen_to_cell(wheel_point,map.size)
+	if not _check(zoomed_out < zoomed_in and absf(zoomed_out-zoom_before) < 0.002
+		and anchor_before.distance_to(anchor_after_out) < 0.03,
+		"viewport-routed mouse wheel down did not restore zoom and keep the world anchor"):
+		return
+	var zoom_in_button := map.get_node_or_null("PveWorldZoomIn") as Button
+	var zoom_out_button := map.get_node_or_null("PveWorldZoomOut") as Button
+	if not _check(zoom_in_button != null and zoom_out_button != null
+		and zoom_in_button.is_visible_in_tree() and zoom_out_button.is_visible_in_tree()
+		and zoom_in_button.get_global_rect().size.x >= 44.0
+		and zoom_out_button.get_global_rect().size.y >= 44.0,
+		"the mouse/touch-friendly plus/minus zoom controls are missing or too small"):
+		return
+	var plus_screen := zoom_in_button.get_global_rect().get_center()
+	_route_mouse_motion(map, plus_screen, true)
+	await process_frame
+	_route_mouse_button(map, MOUSE_BUTTON_LEFT, plus_screen, true, true)
+	_route_mouse_button(map, MOUSE_BUTTON_LEFT, plus_screen, false, true)
+	await process_frame
+	if not _check(map.camera_zoom > zoom_before,
+		"clicking the visible plus button through the viewport did not zoom in"):
+		return
+	var minus_screen := zoom_out_button.get_global_rect().get_center()
+	_route_mouse_motion(map, minus_screen, true)
+	await process_frame
+	_route_mouse_button(map, MOUSE_BUTTON_LEFT, minus_screen, true, true)
+	_route_mouse_button(map, MOUSE_BUTTON_LEFT, minus_screen, false, true)
+	await process_frame
+	if not _check(absf(map.camera_zoom-zoom_before) < 0.002,
+		"clicking the visible minus button through the viewport did not zoom out"):
+		return
+	var refreshed_zoom := map.camera_zoom
+	var refreshed_center := map.camera_center
+	ui.call("_refresh_multicamp_hunt_panel")
+	await process_frame
+	if not _check(absf(map.camera_zoom-refreshed_zoom) < 0.0001
+		and map.camera_center.distance_to(refreshed_center) < 0.0001,
+		"the once-per-second PvE HUD/snapshot refresh reset the user's camera zoom or center"):
+		return
+	print("PVE WORLD VIEW INPUT PASS wheel_up_down=1 anchor_stable=1 hud_plus_minus=1 refresh_keeps_camera=1 zoom=%.3f" % map.camera_zoom)
 	map.camera_center = map.topology["camp_positions"][0]
 	map.camera_zoom = 0.70
 	var target_run := HuntingPveRunV2.resume_active(state,encounter)
@@ -368,7 +479,17 @@ func _run() -> void:
 	var save_button := ui.get_node("B3MainHuntShade/B3MainHuntPanel/B3MainHuntSave") as Button
 	if OS.get_environment(GUI_CAPTURE_ENV).is_empty():
 		save_button.emit_signal("pressed")
-		await process_frame
+		var save_wait_frames := 0
+		var save_wait_started_msec := Time.get_ticks_msec()
+		while (bool(ui.get("runtime_poll_pending")) or save_button.disabled) \
+				and Time.get_ticks_msec()-save_wait_started_msec < 15000:
+			await process_frame
+			save_wait_frames += 1
+		if not _check(not bool(ui.get("runtime_poll_pending")) and not save_button.disabled,
+			"normal PvE Save button did not finish its async durability barrier within 15s; frames=%d pending=%s disabled=%s save_worker=%s write_blocked=%s" % [
+				save_wait_frames,str(bool(ui.get("runtime_poll_pending"))),str(save_button.disabled),
+				str(runtime.owner.saves.has_async_save_pending()),str(runtime.owner.runtime_write_blocked)]):
+			return
 	else:
 		# The normal button polls wall time first; during a slow GUI asset load
 		# that legitimately catches up and may settle this low-level QA party
@@ -622,22 +743,101 @@ func _run() -> void:
 	before_actions = clock_baseline_battle.actions
 	var before_clock_now := clock_baseline_battle.now
 	var last_progress: Dictionary = {"ok":true}
-	var shared_clock_test_steps := 50 if OS.get_environment(GUI_CAPTURE_ENV).is_empty() else 1
+	var shared_clock_test_steps := 120 if OS.get_environment(GUI_CAPTURE_ENV).is_empty() else 1
+	var frame_budget_batches := 0
+	var max_frames_in_batch := 0
+	var backlog_drain_frames := 0
+	var lazy_snapshot_checkpoint_verified := false
+	runtime.multicamp_battle_frame_budget = 1
 	for _second in range(shared_clock_test_steps):
 		if _second % 10 == 0:
 			print("PVE P3.2 INTEGRATION shared_clock_step=%d" % _second)
 		var now := int(state.runtime_last_wall_unix)+1
-		last_progress = runtime.poll(now)
+		# The real P3.2 _process loop also drains elapsed time. Hold its gate while
+		# the harness drives this same canonical async API, so a test poll cannot
+		# overlap a second presentation poll against the single runtime/save owner.
+		ui.set("runtime_poll_pending",true)
+		var snapshot_before_poll: Dictionary = state.sect.v2_pve_active_runs.get(encounter,{})
+		var payload_before_poll := str(snapshot_before_poll.get("battle",{}).get("payload",""))
+		var live_session_before_poll: HuntingPveRunV2 = runtime.owner.get_active_multicamp_session()
+		var battle_time_before_poll := live_session_before_poll.battle.now if live_session_before_poll != null else -1.0
+		last_progress = runtime.poll_async(now,-1)
+		runtime.multicamp_poll_now_override = now
 		if not _check(bool(last_progress.get("ok",false)),
-			"shared runtime clock failed during the visible C01 battle: %s" % str(last_progress)):
+			"shared async runtime clock failed during the visible C01 battle: %s" % str(last_progress)):
 			return
+		var batch_frames := int(last_progress.get("frames_run",0))
+		frame_budget_batches += 1
+		max_frames_in_batch = maxi(max_frames_in_batch,batch_frames)
+		if not _check(batch_frames <= 1,
+			"active Combat V2 runtime exceeded one battle frame per rendered update: %s" % str(last_progress)):
+			return
+		if not lazy_snapshot_checkpoint_verified and batch_frames > 0 \
+				and not bool(last_progress.get("barrier",false)):
+			var live_session_after_poll: HuntingPveRunV2 = runtime.owner.get_active_multicamp_session()
+			var snapshot_after_poll: Dictionary = state.sect.v2_pve_active_runs.get(encounter,{})
+			var payload_after_poll := str(snapshot_after_poll.get("battle",{}).get("payload",""))
+			if not _check(live_session_after_poll != null
+					and live_session_after_poll.battle.now > battle_time_before_poll
+					and not payload_before_poll.is_empty()
+					and payload_after_poll == payload_before_poll
+					and bool(last_progress.get("runtime_save_deferred",false))
+					and not runtime.owner.saves.has_async_save_pending(),
+				"ordinary Combat V2 frame rebuilt or wrote a full world snapshot instead of deferring until a durable barrier"):
+				return
+			lazy_snapshot_checkpoint_verified = true
+		var drain_wait := 0
+		var drain_wait_started_msec := Time.get_ticks_msec()
+		while ((not HuntingPveRunV2.active_multicamp_id(state).is_empty()
+				and state.runtime_unconsumed_wall_seconds >= MapBattleV2.STEP_SECONDS)
+			or runtime.owner.saves.has_async_save_pending()
+			or bool(last_progress.get("runtime_save_pending",false))) \
+				and Time.get_ticks_msec()-drain_wait_started_msec < 30000:
+			if runtime.owner.saves.has_async_save_pending() or bool(last_progress.get("runtime_save_pending",false)):
+				var saved: Dictionary = await runtime.wait_for_pending_save(self)
+				if not _check(bool(saved.get("ok",false)),
+					"async runtime durability barrier failed while draining one wall second: %s" % str(saved)):
+					return
+				last_progress["runtime_save_pending"] = false
+				continue
+			if HuntingPveRunV2.active_multicamp_id(state).is_empty():
+				break
+			await process_frame
+			drain_wait += 1
+			backlog_drain_frames += 1
+			last_progress = runtime.poll_async(now,-1)
+			var drained_frames := int(last_progress.get("frames_run",0))
+			max_frames_in_batch = maxi(max_frames_in_batch,drained_frames)
+			if not _check(bool(last_progress.get("ok",false)) and drained_frames <= 1,
+				"one render update exceeded the async Combat V2 frame budget: %s" % str(last_progress)):
+				return
+		if not _check(drain_wait == 0 or (Time.get_ticks_msec()-drain_wait_started_msec < 30000
+				and (HuntingPveRunV2.active_multicamp_id(state).is_empty()
+					or state.runtime_unconsumed_wall_seconds < MapBattleV2.STEP_SECONDS)
+				and not runtime.owner.saves.has_async_save_pending()
+				and not bool(last_progress.get("runtime_save_pending",false))),
+			"one-second Combat V2 backlog failed to drain within 30s; frames=%d remainder=%.3f poll_pending=%s save_pending=%s write_blocked=%s" % [
+				drain_wait,float(state.runtime_unconsumed_wall_seconds),str(bool(ui.get("runtime_poll_pending"))),
+				str(runtime.owner.saves.has_async_save_pending()),str(runtime.owner.runtime_write_blocked)]):
+			return
+		ui.set("runtime_poll_pending",false)
 		if HuntingPveRunV2.active_multicamp_id(state).is_empty():
 			break
+	runtime.multicamp_battle_frame_budget = -1
+	ui.set("runtime_poll_pending",false)
+	runtime.multicamp_poll_now_override = -1
+	print("PVE P3.2 INTEGRATION FRAME BUDGET PASS requested=1 max_batch=%d batches=%d drained_render_frames=%d pending=%.3f barrier_saves=authoritative_kill_respawn_zone" % [
+		max_frames_in_batch,frame_budget_batches,backlog_drain_frames,float(state.runtime_unconsumed_wall_seconds)])
 	print("PVE P3.2 INTEGRATION shared_clock_progress elapsed=%d frames=%d baseline_actions=%d baseline_time=%.3f remainder=%.3f" % [
 		int(last_progress.get("elapsed_wall_seconds",0)),int(last_progress.get("frames_run",0)),
 		before_actions,before_clock_now,
 		float(last_progress.get("remainder_seconds",0.0))])
 	print("PVE P3.2 INTEGRATION shared_clock_complete active=%s" % str(not HuntingPveRunV2.active_multicamp_id(state).is_empty()))
+	if not OS.get_environment(GUI_CAPTURE_ENV).is_empty():
+		pass
+	elif not _check(lazy_snapshot_checkpoint_verified,
+		"the integrated fight did not produce an ordinary frame with a deferred durable snapshot"):
+		return
 	if not OS.get_environment(GUI_CAPTURE_ENV).is_empty() and not gui_captured:
 		var latest_capture := HuntingPveRunV2.resume_active(state,encounter)
 		var live_capture_battle: MapBattleV2 = latest_capture.get("session").battle if bool(latest_capture.get("ok",false)) else null
@@ -786,6 +986,21 @@ func _make_minimap_click(map: PveSectWorldViewV1, position: Vector2) -> InputEve
 	event.pressed = true
 	event.position = position
 	return event
+
+func _route_mouse_motion(map: PveSectWorldViewV1, position: Vector2, is_viewport_position: bool = false) -> void:
+	var event := InputEventMouseMotion.new()
+	event.position = position if is_viewport_position else map.get_global_transform_with_canvas()*position
+	event.global_position = event.position
+	Input.parse_input_event(event)
+
+func _route_mouse_button(map: PveSectWorldViewV1, button_index: int, position: Vector2,
+		pressed: bool, is_viewport_position: bool = false) -> void:
+	var event := InputEventMouseButton.new()
+	event.button_index = button_index
+	event.pressed = pressed
+	event.position = position if is_viewport_position else map.get_global_transform_with_canvas()*position
+	event.global_position = event.position
+	Input.parse_input_event(event)
 
 func _remove_save(save_path: String) -> void:
 	for path in [save_path,save_path+".bak"]:

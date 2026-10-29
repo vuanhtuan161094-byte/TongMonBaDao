@@ -90,7 +90,9 @@ func _ready() -> void:
 	_viewport = SubViewport.new()
 	_viewport.name = "SectPveWorldSubViewport"
 	_viewport.size = Vector2i(maxi(1,roundi(size.x)),maxi(1,roundi(size.y)))
-	_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	# Hidden hunt UI should not keep rendering. While visible, UPDATE_WHEN_VISIBLE
+	# still updates each frame for actor motion, camera changes, and live VFX.
+	_viewport.render_target_update_mode = SubViewport.UPDATE_WHEN_VISIBLE
 	_viewport.gui_disable_input = true
 	_container.add_child(_viewport)
 	world = SectIsometricWorldV1.new()
@@ -251,6 +253,10 @@ func get_open_world_options() -> Dictionary:
 
 func show_authority_snapshot(snapshot: MapBattleV2, world_population: Dictionary = {},
 		current_camp_index: int = 0, disciples: Dictionary = {}, view_rows: Dictionary = {}) -> void:
+	# Reapply after the hunt panel becomes visible: the viewport may have been
+	# promoted to UPDATE_ALWAYS by the previous hidden/visible parent lifecycle.
+	if _viewport != null:
+		_viewport.render_target_update_mode = SubViewport.UPDATE_WHEN_VISIBLE
 	battle = snapshot
 	population = world_population.duplicate(false)
 	camp_index = clampi(current_camp_index,0,PveMultiCampPopulationV1.CAMP_COUNT-1)

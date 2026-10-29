@@ -697,10 +697,12 @@ func pve_minimap_texture() -> Texture2D:
     return pve_mini_texture
 
 func consume_vfx_advance_metrics() -> Dictionary:
+    var event_metrics: Dictionary = pve_jx_sword_vfx.consume_event_observation_metrics()
     var result := {
         "count":pve_vfx_advance_count,
         "total_usec":pve_vfx_advance_usec_total,
-        "max_usec":pve_vfx_advance_usec_max
+        "max_usec":pve_vfx_advance_usec_max,
+        "event_rows_examined":int(event_metrics.get("rows_examined",0))
     }
     pve_vfx_advance_count = 0
     pve_vfx_advance_usec_total = 0
@@ -1087,6 +1089,30 @@ func _draw_pve_stream() -> void:
     draw_polyline(points,Color(0.22,0.53,0.57,0.98),36.0,true)
     draw_polyline(points,Color(0.70,0.86,0.80,0.60),2.4,true)
 
+func selected_actor_ring_radius_screen(actor_id: String) -> float:
+    if camera == null or pve_battle == null or not pve_selected_actor_ids.has(actor_id):
+        return 0.0
+    var actor: Dictionary = pve_battle.actors.get(actor_id,{})
+    if actor.is_empty() or str(actor.get("side","")) != "disciple" or float(actor.get("hp",0.0)) <= 0.0:
+        return 0.0
+    var own_cell: Vector2 = pve_render_positions.get(actor_id,actor.get("position",Vector2.ZERO))
+    var own_point := project(own_cell)
+    var nearest_screen_distance := INF
+    for other_value in pve_selected_actor_ids:
+        var other_id := str(other_value)
+        if other_id == actor_id:
+            continue
+        var other: Dictionary = pve_battle.actors.get(other_id,{})
+        if other.is_empty() or str(other.get("side","")) != "disciple" or float(other.get("hp",0.0)) <= 0.0:
+            continue
+        var other_cell: Vector2 = pve_render_positions.get(other_id,other.get("position",Vector2.ZERO))
+        nearest_screen_distance = minf(nearest_screen_distance,own_point.distance_to(project(other_cell))*camera.zoom.x)
+    if is_inf(nearest_screen_distance):
+        return 11.0
+    # Reserve 4 px between ring edges plus 1.5 px stroke. Since the radius is
+    # in screen pixels, crowding never makes selection circles touch at zoom.
+    return clampf((nearest_screen_distance-5.5)*0.5,0.0,11.0)
+
 func _draw_pve_actor(data: Dictionary) -> void:
     var id := str(data.get("id",""))
     var actor: Dictionary = data.get("actor",{})
@@ -1115,7 +1141,10 @@ func _draw_pve_actor(data: Dictionary) -> void:
         var shade := Color("73d6ad") if side == "disciple" else Color("dc9370")
         draw_colored_polygon(PackedVector2Array([foot+Vector2(0,-10),foot+Vector2(8,0),foot+Vector2(0,7),foot+Vector2(-8,0)]),shade)
     if side == "disciple" and pve_selected_actor_ids.has(id):
-        draw_arc(foot+Vector2(0,3),13.0*camera.zoom.x,0.0,TAU,20,Color("ffe08a"),1.7,true)
+        var ring_radius_screen := selected_actor_ring_radius_screen(id)
+        if ring_radius_screen > 0.0:
+            draw_arc(foot,ring_radius_screen/camera.zoom.x,0.0,TAU,20,
+                Color("ffe08a"),1.5/camera.zoom.x,true)
     # World-space HP/name anchors belong above the chibi head, not beneath
     # the feet (which obscured movement and made the fight look unfinished).
     # Camera2D already scales the Node2D drawing: do not multiply zoom twice.

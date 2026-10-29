@@ -19,6 +19,12 @@ var state: SimulationState
 var runtime_session: LiveGameRuntimeV2
 var runtime_ready := false
 var runtime_failure_reason := ""
+var runtime_poll_pending := false
+var performance_last_runtime_update_usec := 0
+var performance_last_runtime_refresh_usec := 0
+var performance_last_runtime_save_wait_usec := 0
+var performance_last_autosave_prepare_usec := 0
+var performance_last_autosave_wait_usec := 0
 var runtime_poll_timer: Timer
 var autosave_timer: Timer
 var workforce := WorkforceSystem.new()
@@ -547,19 +553,60 @@ func _initial_destination(disciple: DiscipleState) -> StringName:
 func _advance_simulation() -> void:
     if not runtime_ready or runtime_session == null:
         return
-    var result := runtime_session.poll()
+    if runtime_poll_pending:
+        return
+    runtime_poll_pending = true
+    var profile := OS.get_environment("TMB_PVE_PERF_LOG") == "1"
+    performance_last_runtime_update_usec = 0
+    performance_last_runtime_refresh_usec = 0
+    performance_last_runtime_save_wait_usec = 0
+    var poll_started_usec := Time.get_ticks_usec() if profile else 0
+    var result := runtime_session.poll_async()
+    if profile:
+        performance_last_runtime_update_usec = Time.get_ticks_usec()-poll_started_usec
     if not bool(result.get("ok", false)):
         push_error("P3 live runtime poll failed: %s" % str(result.get("reason", "unknown")))
+        runtime_poll_pending = false
         return
+    if bool(result.get("runtime_save_pending",false)):
+        var save_wait_started_usec := Time.get_ticks_usec() if profile else 0
+        var save_result: Dictionary = await runtime_session.wait_for_pending_save(get_tree())
+        if profile:
+            performance_last_runtime_save_wait_usec = Time.get_ticks_usec()-save_wait_started_usec
+        if not bool(save_result.get("ok",false)):
+            push_error("P3 live runtime PvE checkpoint failed: %s" % str(save_result.get("error", "unknown")))
     if int(result.get("steps_run", 0)) > 0:
+        var refresh_started_usec := Time.get_ticks_usec() if profile else 0
         _refresh_all()
+        if profile:
+            performance_last_runtime_refresh_usec = Time.get_ticks_usec()-refresh_started_usec
+    runtime_poll_pending = false
 
 func _autosave_runtime() -> void:
     if not runtime_ready or runtime_session == null:
         return
-    var result := runtime_session.save()
+    if runtime_poll_pending:
+        return
+    runtime_poll_pending = true
+    var profile := OS.get_environment("TMB_PVE_PERF_LOG") == "1"
+    performance_last_autosave_prepare_usec = 0
+    performance_last_autosave_wait_usec = 0
+    var save_started_usec := Time.get_ticks_usec() if profile else 0
+    var result := runtime_session.save_async()
+    if profile:
+        performance_last_autosave_prepare_usec = Time.get_ticks_usec()-save_started_usec
     if not bool(result.get("ok", false)):
         push_error("P3 live runtime autosave failed: %s" % str(result.get("reason", result.get("error", "unknown"))))
+        runtime_poll_pending = false
+        return
+    if bool(result.get("pending",false)):
+        var save_wait_started_usec := Time.get_ticks_usec() if profile else 0
+        var save_result: Dictionary = await runtime_session.wait_for_pending_save(get_tree())
+        if profile:
+            performance_last_autosave_wait_usec = Time.get_ticks_usec()-save_wait_started_usec
+        if not bool(save_result.get("ok",false)):
+            push_error("P3 live runtime autosave failed: %s" % str(save_result.get("error", "unknown")))
+    runtime_poll_pending = false
 
 func _exit_tree() -> void:
     if runtime_ready and runtime_session != null:

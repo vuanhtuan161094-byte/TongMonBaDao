@@ -17,6 +17,7 @@ const MAX_PENDING_KILLS := 256
 const MAX_EXTERNAL_DAMAGE_IDS := 4096
 const MAX_CONTINUOUS_BATCH_STEPS := 20000
 const MAX_REMEMBERED_SPAWN_SLOTS := 1024
+const MAX_WORLD_PATH_CACHE_ENTRIES := 128
 
 var rng: GameRng
 var now: float = 0.0
@@ -47,6 +48,9 @@ var performance_world_path_usec_max := 0
 var performance_step_count := 0
 var performance_step_usec_total := 0
 var performance_step_usec_max := 0
+var performance_world_path_cache_hit_count := 0
+var _world_path_cache: Dictionary = {}
+var _world_path_cache_fifo: Array[String] = []
 
 func _init(seed_value: int = 515151) -> void:
     rng = GameRng.new(seed_value)
@@ -68,6 +72,9 @@ func setup(id: String, party: Array, monsters: Array, keep_encounter_open: bool 
     world_mode = false
     world_bounds = ARENA
     world_navigation.clear()
+    _world_path_cache.clear()
+    _world_path_cache_fifo.clear()
+    performance_world_path_cache_hit_count = 0
     auto_hunt = true
     if keep_encounter_open and not _pending_world_options.is_empty():
         var requested_bounds = _pending_world_options.get("bounds",Rect2())
@@ -332,14 +339,32 @@ func _nearest_walkable_cell(origin: Vector2i) -> Vector2i:
     return Vector2i(-1,-1)
 
 func _world_path(start_position: Vector2, goal_position: Vector2) -> Array[Vector2i]:
-    if not performance_logging_enabled:
-        return _world_path_impl(start_position,goal_position)
-    var started_usec := Time.get_ticks_usec()
-    var path := _world_path_impl(start_position,goal_position)
-    var elapsed_usec := Time.get_ticks_usec()-started_usec
-    performance_world_path_count += 1
-    performance_world_path_usec_total += elapsed_usec
-    performance_world_path_usec_max = maxi(performance_world_path_usec_max,elapsed_usec)
+    var started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
+    var cache_key := ""
+    if world_mode and not world_navigation.is_empty():
+        var width := int(world_navigation.get("width",0))
+        var height := int(world_navigation.get("height",0))
+        cache_key = "%s:%d:%d:%d:%d:%d:%d" % [
+            str(world_navigation.get("source_blob_sha","")),width,height,
+            floori(start_position.x),floori(start_position.y),
+            floori(goal_position.x),floori(goal_position.y)]
+    var path: Array[Vector2i]
+    if not cache_key.is_empty() and _world_path_cache.has(cache_key):
+        path = (_world_path_cache[cache_key] as Array[Vector2i]).duplicate()
+        performance_world_path_cache_hit_count += 1
+    else:
+        path = _world_path_impl(start_position,goal_position)
+        if not cache_key.is_empty():
+            if _world_path_cache.size() >= MAX_WORLD_PATH_CACHE_ENTRIES:
+                var oldest: String = str(_world_path_cache_fifo.pop_front())
+                _world_path_cache.erase(oldest)
+            _world_path_cache[cache_key] = path.duplicate()
+            _world_path_cache_fifo.append(cache_key)
+    if performance_logging_enabled:
+        var elapsed_usec := Time.get_ticks_usec()-started_usec
+        performance_world_path_count += 1
+        performance_world_path_usec_total += elapsed_usec
+        performance_world_path_usec_max = maxi(performance_world_path_usec_max,elapsed_usec)
     return path
 
 func _world_path_impl(start_position: Vector2, goal_position: Vector2) -> Array[Vector2i]:
@@ -352,36 +377,65 @@ func _world_path_impl(start_position: Vector2, goal_position: Vector2) -> Array[
         return path
     var width := int(world_navigation["width"])
     var height := int(world_navigation["height"])
+    var cell_count := width*height
     var blocked = world_navigation["blocked"]
     var start_key := start.y*width+start.x
     var goal_key := goal.y*width+goal.x
-    var previous: Dictionary = {start_key:-1}
-    var queue: Array[int] = [start_key]
+    # Preserve the original N,W,E,S BFS order and exact shortest-path choice,
+    # but replace per-cell Dictionary hashing/allocation with compact arrays.
+    var previous := PackedInt32Array()
+    previous.resize(cell_count)
+    previous.fill(-2)
+    var queue := PackedInt32Array()
+    queue.resize(cell_count)
     var head := 0
-    var neighbors := [Vector2i(0,-1),Vector2i(-1,0),Vector2i(1,0),Vector2i(0,1)]
-    while head < queue.size() and not previous.has(goal_key):
+    var tail := 1
+    queue[0] = start_key
+    previous[start_key] = -1
+    var found := false
+    while head < tail and not found:
         var key := queue[head]
         head += 1
-        var cell := Vector2i(key%width,int(key/width))
-        for offset in neighbors:
-            var next: Vector2i = cell+offset
-            if next.x < 0 or next.y < 0 or next.x >= width or next.y >= height or int(blocked[next.y*width+next.x]) != 0:
-                continue
-            var next_key := next.y*width+next.x
-            if previous.has(next_key):
-                continue
+        var next_key := key-width
+        if key >= width and int(blocked[next_key]) == 0 and previous[next_key] == -2:
             previous[next_key] = key
-            queue.append(next_key)
-            if next_key == goal_key:
-                break
-    if not previous.has(goal_key):
+            queue[tail] = next_key
+            tail += 1
+            found = next_key == goal_key
+        if found:
+            break
+        var x := key%width
+        if x > 0:
+            next_key = key-1
+            if int(blocked[next_key]) == 0 and previous[next_key] == -2:
+                previous[next_key] = key
+                queue[tail] = next_key
+                tail += 1
+                found = next_key == goal_key
+        if found:
+            break
+        if x+1 < width:
+            next_key = key+1
+            if int(blocked[next_key]) == 0 and previous[next_key] == -2:
+                previous[next_key] = key
+                queue[tail] = next_key
+                tail += 1
+                found = next_key == goal_key
+        if found:
+            break
+        next_key = key+width
+        if key+width < cell_count and int(blocked[next_key]) == 0 and previous[next_key] == -2:
+            previous[next_key] = key
+            queue[tail] = next_key
+            tail += 1
+            found = next_key == goal_key
+    if not found:
         return path
     var cursor := goal_key
     while cursor >= 0:
         path.push_front(Vector2i(cursor%width,int(cursor/width)))
         cursor = int(previous[cursor])
     return path
-
 func _world_reachable_cells(start_position: Vector2) -> Dictionary:
     var reachable: Dictionary = {}
     if not world_mode or world_navigation.is_empty():

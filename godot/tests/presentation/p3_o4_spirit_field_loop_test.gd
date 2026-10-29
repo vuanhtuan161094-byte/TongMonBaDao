@@ -3,7 +3,7 @@ extends SceneTree
 # O4: real player-facing Spirit Field loop through the live 1280x720 P3.2 scene.
 # UI assignment/order -> authoritative plot payment/timer -> canonical harvest ->
 # field/warehouse agreement -> mid/post-cycle persistence and denial rules.
-const SAVE_PATH := "user://p3_o4_spirit_field_loop_test.json"
+const SAVE_PATH := "res://.godot/qa/rc52_perf_fix_20261029/p3_o4_spirit_field_loop.json"
 
 var ui: Control
 var state: SimulationState
@@ -33,7 +33,8 @@ func _run() -> void:
         _fail("O4 fresh Lv1 Spirit Field must expose 4 workers / 4 plots.")
         return
     if state.sect.spirit_stones != 500:
-        _fail("O4 fresh opening must use the existing canonical 500 Sect Spirit Stones.")
+        _fail("O4 fresh opening must use the existing canonical 500 Sect Spirit Stones; stones=%d roots=%s techniques=%s save_exists=%s" % [
+            state.sect.spirit_stones,str(state.sect.spiritual_roots_enabled),str(state.sect.techniques_enabled),str(FileAccess.file_exists(SAVE_PATH))])
         return
 
     ui.call("_open_building", SectMapPresentation.DEST_SPIRIT_FIELD)
@@ -120,7 +121,7 @@ func _run() -> void:
     var saved_finish := int(plot.get("finish_tick", -1))
     var saved_stones := state.sect.spirit_stones
 
-    ui.call("_autosave_runtime")
+    await ui.call("_autosave_runtime")
     if not FileAccess.file_exists(SAVE_PATH):
         _fail("O4 mid-growth runtime save was not written.")
         return
@@ -194,7 +195,7 @@ func _run() -> void:
 
     var post_harvest_qty := warehouse.quantity(state, output_id)
     var post_harvest_batches := int(field.metrics.get("production_batches", 0))
-    ui.call("_autosave_runtime")
+    await ui.call("_autosave_runtime")
     _dispose_scene()
     await process_frame
     if not await _open_scene():
@@ -314,8 +315,10 @@ func _stop_timers(node: Node) -> void:
         _stop_timers(child)
 
 func _cleanup_save() -> void:
-    if FileAccess.file_exists(SAVE_PATH):
-        DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
+    for path in [SAVE_PATH,SAVE_PATH+".tmp",SAVE_PATH+".bak"]:
+        if FileAccess.file_exists(path):
+            DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+    DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(SAVE_PATH.get_base_dir()))
     ProjectSettings.set_setting("runtime/live_save_path", LiveGameRuntimeV2.DEFAULT_SAVE_PATH)
 
 func _fail(message: String) -> bool:

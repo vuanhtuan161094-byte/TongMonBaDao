@@ -14,7 +14,10 @@ var atlas := CombatV4EffectAtlas.new()
 var comparison_style := "hybrid"
 var _clock := 0.0
 var _encounter_id := ""
-var _event_signatures: Array[String] = []
+var _event_count_seen := 0
+var _last_event: Dictionary = {}
+var _event_cursor_initialized := false
+var event_rows_examined_total := 0
 var _sequences: Array[Dictionary] = []
 var _sequence_counter := 0
 var counters := {"casts":0,"positive_hits":0,"impacts":0,"expired_without_hit":0,"duplicate_snapshots":0}
@@ -22,7 +25,10 @@ var counters := {"casts":0,"positive_hits":0,"impacts":0,"expired_without_hit":0
 
 func reset() -> void:
 	_encounter_id = ""
-	_event_signatures.clear()
+	_event_count_seen = 0
+	_last_event.clear()
+	_event_cursor_initialized = false
+	event_rows_examined_total = 0
 	_sequences.clear()
 	_sequence_counter = 0
 	_clock = 0.0
@@ -36,27 +42,87 @@ func observe_snapshot(battle: MapBattleV2) -> Array[Dictionary]:
 	if battle == null:
 		reset()
 		return new_events
-	var current_signatures := _signatures(battle.events)
 	if _encounter_id != battle.encounter_id:
 		_encounter_id = battle.encounter_id
-		_event_signatures = current_signatures
 		_sequences.clear()
+		_set_event_cursor(battle)
 		return new_events
-	var overlap := _suffix_prefix_overlap(_event_signatures,current_signatures)
-	if overlap < 0:
-		# A save restore or a fully replaced rolling ring is a new view baseline.
-		# Do not infer/replay effects from historical rows.
-		_event_signatures = current_signatures
+	var event_count := battle.events.size()
+	var first_new_index := -1
+	if not _event_cursor_initialized or event_count < _event_count_seen:
+		# Save restore/replacement can rewind or replace the bounded event ring.
+		# Treat it as a baseline and never replay historical visual effects.
 		_sequences.clear()
+		_set_event_cursor(battle)
 		return new_events
-	if overlap == current_signatures.size() and current_signatures.size() == _event_signatures.size():
+	if event_count > _event_count_seen and event_count < MapBattleV2.MAX_EVENTS:
+		# Before the ring fills, the immutable prefix remains in place and the
+		# append cursor identifies new events in O(delta), not O(history).
+		first_new_index = _event_count_seen
+	elif event_count == 0:
 		counters["duplicate_snapshots"] = int(counters["duplicate_snapshots"]) + 1
-	for index in range(overlap,battle.events.size()):
+		return new_events
+	elif battle.events[event_count-1] == _last_event:
+		# The usual steady-state path inspects one small event row only. This
+		# replaces stringify-all + suffix/prefix overlap on up to 2,400 rows.
+		counters["duplicate_snapshots"] = int(counters["duplicate_snapshots"]) + 1
+		return new_events
+	elif event_count == MapBattleV2.MAX_EVENTS:
+		# Once Combat V2's bounded ring rolls, find the prior cursor from the end.
+		# If it was evicted, establish a fresh baseline without replaying history.
+		if _event_count_seen == 0:
+			first_new_index = 0
+		else:
+			var cursor_index := -1
+			for index in range(event_count-2,-1,-1):
+				if battle.events[index] == _last_event:
+					cursor_index = index
+					break
+			if cursor_index < 0:
+				_sequences.clear()
+				_set_event_cursor(battle)
+				return new_events
+			first_new_index = cursor_index+1
+	elif event_count > _event_count_seen:
+		# The array crossed MAX_EVENTS between snapshots. Locate the previous tail
+		# instead of assuming the pre-ring size is still a valid index.
+		var cursor_index := -1
+		for index in range(event_count-2,-1,-1):
+			if battle.events[index] == _last_event:
+				cursor_index = index
+				break
+		if cursor_index < 0:
+			_sequences.clear()
+			_set_event_cursor(battle)
+			return new_events
+		first_new_index = cursor_index+1
+	else:
+		# A same-sized, non-full array with a different tail is a replaced
+		# snapshot, not a trustworthy append stream.
+		_sequences.clear()
+		_set_event_cursor(battle)
+		return new_events
+	for index in range(first_new_index,event_count):
 		var event: Dictionary = battle.events[index]
 		new_events.append(event)
+		event_rows_examined_total += 1
 		_ingest_authority_event(event,battle)
-	_event_signatures = current_signatures
+	_set_event_cursor(battle)
 	return new_events
+
+func _set_event_cursor(battle: MapBattleV2) -> void:
+	_event_count_seen = battle.events.size()
+	if _event_count_seen > 0 and battle.events.back() is Dictionary:
+		var last_event: Dictionary = battle.events.back()
+		_last_event = last_event.duplicate(true)
+	else:
+		_last_event.clear()
+	_event_cursor_initialized = true
+
+func consume_event_observation_metrics() -> Dictionary:
+	var result := {"rows_examined":event_rows_examined_total}
+	event_rows_examined_total = 0
+	return result
 
 
 func advance(delta: float) -> void:
@@ -176,25 +242,3 @@ func _matching_cast(caster_id: String,target_id: String) -> Dictionary:
 	return {}
 
 
-func _signatures(events: Array) -> Array[String]:
-	var result: Array[String] = []
-	for event in events:
-		result.append(str(event))
-	return result
-
-
-func _suffix_prefix_overlap(previous: Array[String],current: Array[String]) -> int:
-	# No common suffix/prefix between two non-empty rings means the saved ring
-	# was replaced. It is a new view baseline, not a set of fresh VFX events.
-	if previous.is_empty() or current.is_empty():
-		return 0
-	var maximum := mini(previous.size(),current.size())
-	for amount in range(maximum,0,-1):
-		var matches := true
-		for index in range(amount):
-			if previous[previous.size()-amount+index] != current[index]:
-				matches = false
-				break
-		if matches:
-			return amount
-	return -1

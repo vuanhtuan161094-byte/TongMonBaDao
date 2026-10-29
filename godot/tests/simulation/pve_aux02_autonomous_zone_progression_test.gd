@@ -194,12 +194,16 @@ func _run() -> void:
 			if not _check(bool(before_save_result.get("ok", false)),
 				"active world could not restore at the SaveService checkpoint"):
 				return
-			var before_save_battle: MapBattleV2 = before_save_result["session"].battle
-			var saved_alive_disciple_count := before_save_battle._count_alive("disciple")
-			var saved_alive_monster_count := before_save_battle._count_alive("monster")
 			if not _check(bool(runtime.save(wall).get("ok", false)),
 				"active autonomous battle failed canonical SaveService save"):
 				return
+			var persisted_save := HuntingPveRunV2.resume_active(state, ENCOUNTER)
+			if not _check(bool(persisted_save.get("ok", false)),
+				"saved in-memory runtime snapshot could not restore"):
+				return
+			var persisted_battle: MapBattleV2 = persisted_save["session"].battle
+			var saved_alive_disciple_count := persisted_battle._count_alive("disciple")
+			var saved_alive_monster_count := persisted_battle._count_alive("monster")
 			var disk_state := SaveService.new().load_from_path(SAVE_PATH)
 			var disk_run := HuntingPveRunV2.resume_active(disk_state, ENCOUNTER) if disk_state != null else {"ok": false}
 			var disk_session: HuntingPveRunV2 = disk_run.get("session") if bool(disk_run.get("ok", false)) else null
@@ -216,6 +220,7 @@ func _run() -> void:
 				str(disk_state.sect.warehouse_resources == warehouse_before) if disk_state != null else "null",
 				disk_state.sect.v2_pve_reward_claims.size() if disk_state != null else -1,
 				HuntingPveRunV2.active_multicamp_id(disk_state) if disk_state != null else "null"])
+			print("PVE AUX-02 DISK COUNTS expected=%d/%d actual=%d/%d party_valid=%s records=%d" % [saved_alive_disciple_count,saved_alive_monster_count,disk_battle._count_alive("disciple") if disk_battle != null else -1,disk_battle._count_alive("monster") if disk_battle != null else -1,str(party_records_valid),disk_battle.actors.size() if disk_battle != null else -1])
 			if not _check(bool(disk_run.get("ok", false))
 				and disk_battle != null and party_records_valid
 				and disk_battle._count_alive("disciple") == saved_alive_disciple_count
