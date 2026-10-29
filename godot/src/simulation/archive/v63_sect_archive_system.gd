@@ -55,7 +55,7 @@ static func validate_catalogue(data: Dictionary) -> Array[String]:
         if not item_ids.has(fragment_id) or str(item_kinds.get(fragment_id,"")) != "codex_fragment":
             errors.append("missing_archive_fragment_item:"+fragment_id)
     var codices: Array = data.codices
-    if codices.size() != int(data.get("family_count",-1)) or codices.size() != 105:
+    if codices.size() != int(data.get("family_count",-1)) or codices.size() != 123:
         errors.append("wrong_archive_family_count")
     var codex_ids: Dictionary = {}
     var family_ids: Dictionary = {}
@@ -68,25 +68,30 @@ static func validate_catalogue(data: Dictionary) -> Array[String]:
         var codex_id := str(codex.get("id",""))
         var family_id := str(codex.get("family_id",""))
         var manual_id := str(codex.get("manual_item_id",""))
+        var generation := str(codex.get("generation","human"))
+        var lineage := str(codex.get("lineage","base"))
+        var family_key := "%s|%s|%s" % [family_id,generation,lineage]
         if not _valid_id(codex_id) or not codex_id.begins_with("tmb.codex.") or codex_ids.has(codex_id):
             errors.append("bad_or_duplicate_codex_id:"+codex_id)
-        if not skill_families.has(family_id) or family_ids.has(family_id):
+        if not skill_families.has(family_id) or family_ids.has(family_key):
             errors.append("bad_or_duplicate_source_family:"+family_id)
         else:
             var family: Dictionary = skill_families[family_id]
-            var human_node := ""
+            var source_node: Dictionary = {}
             for node in family.get("nodes",[]):
-                if str(node.get("tier","")) == "human":
-                    human_node = str(node.get("id",""))
+                if str(node.get("id","")) == str(codex.get("source_node_id","")):
+                    source_node = node
                     break
+            if source_node.is_empty() or str(source_node.get("tier","")) != generation or str(source_node.get("lineage","")) != lineage:
+                errors.append("codex_source_tier_or_lineage_mismatch:"+codex_id)
+            if generation not in ["human","immortal"] or (generation == "human" and lineage != "base") or (generation == "immortal" and lineage not in ["a","b"]):
+                errors.append("unsupported_archive_generation_or_lineage:"+codex_id)
             var family_parts: PackedStringArray = family_id.split(".")
             var family_slot := str(family_parts[family_parts.size()-1]) if not family_parts.is_empty() else ""
-            if str(codex.get("source_node_id","")) != human_node:
-                errors.append("codex_source_not_human_root:"+codex_id)
             if str(codex.get("school","")) != str(family.get("school","")) or str(codex.get("slot","")) != family_slot:
                 errors.append("codex_source_metadata_mismatch:"+codex_id)
         codex_ids[codex_id] = true
-        family_ids[family_id] = true
+        family_ids[family_key] = true
         if bool(codex.get("archivable",false)):
             archivable_count += 1
             if not item_ids.has(manual_id) or str(item_kinds.get(manual_id,"")) != "codex_manual" or manual_ids.has(manual_id):
@@ -97,7 +102,7 @@ static func validate_catalogue(data: Dictionary) -> Array[String]:
         else:
             if not manual_id.is_empty() or int(codex.get("restore_fragments_candidate",-1)) != 0:
                 errors.append("innate_codex_must_not_be_manual:"+codex_id)
-    if archivable_count != int(data.get("archivable_count",-1)) or archivable_count != 96:
+    if archivable_count != int(data.get("archivable_count",-1)) or archivable_count != 114:
         errors.append("wrong_archivable_count")
     if item_ids.size() != manual_ids.size()+FRAGMENT_IDS.size():
         errors.append("orphan_or_duplicate_archive_item")

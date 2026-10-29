@@ -17,7 +17,9 @@ func _run() -> void:
     var loaded := V63SectArchiveSystem.load_catalogue()
     if not _check(bool(loaded.get("ok",false)),"archive catalogue errors: "+str(loaded.get("errors",[]))): return
     var data: Dictionary = loaded.data
-    if not _check(data.codices.size()==105 and int(data.archivable_count)==96,"archive must cover all 105 families without selling innate slots"): return
+    if not _check(data.codices.size()==123 and int(data.archivable_count)==114,"archive must cover 105 Human codices plus 18 Immortal lineages without selling innate slots"): return
+    var immortal_codices: Array = data.codices.filter(func(row: Dictionary): return str(row.get("generation", "")) == "immortal" and bool(row.get("archivable", false)))
+    if not _check(immortal_codices.size()==18,"archive must expose both manual-backed Immortal lineage paths for all nine branches"): return
     if not _check(data.drop_profiles.is_empty(),"unapproved live drop rates appeared in D2"): return
     var invalid: Dictionary = data.duplicate(true)
     invalid.enabled = true
@@ -92,6 +94,6 @@ func _run() -> void:
         warehouse_gate_off,"d2-disabled-warehouse","d2-disabled-warehouse:kill:1","species",
         {str(fragment_id):1},PREVIEW)
     if not _check(not bool(rejected_warehouse.get("ok",false)) and warehouse_gate_off.sect.warehouse_resources.is_empty(),"archive wrote through the canonical Warehouse while P3.7 building authority was disabled"): return
-    print("V63_D2_ARCHIVE_PASS: 105 catalogue families, 96 book sources, 128 disciples, warehouse restoration/research receipts and save round-trip")
+    print("V63_D2_ARCHIVE_PASS: 123 codices, 114 book sources, 128 disciples, warehouse restoration/research receipts and save round-trip")
     quit(0)
 

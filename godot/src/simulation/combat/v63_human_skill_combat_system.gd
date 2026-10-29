@@ -108,6 +108,10 @@ static func skill_definitions() -> Dictionary:
     if bool(loaded.get("ok",false)):
         for row in loaded.data.skills:
             result[str(row.id)] = row.duplicate(true)
+    var immortal := V63ImmortalSkillCombatSystem.load_catalogue()
+    if bool(immortal.get("ok",false)):
+        for row in immortal.data.skills:
+            result[str(row.id)] = row.duplicate(true)
     return result
 
 static func skill_definition(skill_id: String) -> Dictionary:
@@ -119,6 +123,11 @@ static func branch_definitions() -> Dictionary:
     if bool(loaded.get("ok",false)):
         for row in loaded.data.branches:
             result[str(row.id)] = row.duplicate(true)
+    var immortal := V63ImmortalSkillCombatSystem.branch_definitions()
+    for branch_id in immortal.keys():
+        var row: Dictionary = immortal[branch_id].duplicate(true)
+        row["innate_node_id"] = str(result.get(branch_id, {}).get("innate_node_id", ""))
+        result[str(branch_id)] = row
     return result
 
 static func boss_definition(boss_id: String) -> Dictionary:
@@ -128,7 +137,7 @@ static func boss_definition(boss_id: String) -> Dictionary:
     for row in loaded.data.bosses:
         if str(row.id) == boss_id:
             return row.duplicate(true)
-    return {}
+    return V63ImmortalSkillCombatSystem.boss_definition(boss_id)
 
 static func boss_skill_definitions(boss_id: String) -> Dictionary:
     var result: Dictionary = {}
@@ -147,6 +156,9 @@ static func learn_skill(state: SimulationState, disciple: DiscipleState, skill_i
     var codex_id := str(definition.get("source_codex_id",""))
     if not V63SectArchiveSystem.transmission_available_for_disciple(state,disciple.id,codex_id,preview_overrides):
         return _failure("required_manual_not_archived")
+    if str(definition.get("generation", "human")) == "immortal" \
+        and not V63LearningSystem.lineage_study_complete(disciple, str(definition.get("branch", "")), str(definition.get("lineage", ""))):
+        return _failure("immortal_lineage_study_incomplete")
     if disciple.v63_learned_skill_nodes.has(skill_id):
         return {"ok":true,"duplicate":true,"skill_id":skill_id}
     disciple.v63_learned_skill_nodes[skill_id] = {"source_codex_id":codex_id,"learned_tick":maxi(state.tick,0),"mastery_xp":0.0,"branch_id":str(definition.get("branch",""))}
@@ -168,17 +180,31 @@ static func equip_skill(state: SimulationState, disciple: DiscipleState, skill_i
         return _failure("skill_belongs_to_other_branch")
     var slot := str(definition.get("slot",""))
     var limit := 4 if slot == "active" else (5 if slot == "passive" else 1)
+    var replacement_ids: Array[String] = []
+    var lineage := str(definition.get("lineage", "base"))
+    for raw_old_id in disciple.v63_equipped_skill_ids:
+        var old_id := str(raw_old_id)
+        var old_definition := skill_definition(old_id)
+        var same_family := str(old_definition.get("family_id", "")) == str(definition.get("family_id", ""))
+        var switching_immortal_lineage := str(definition.get("generation", "")) == "immortal" \
+            and str(old_definition.get("generation", "")) == "immortal" \
+            and str(old_definition.get("branch", "")) == branch \
+            and str(old_definition.get("lineage", "base")) != lineage
+        if same_family or switching_immortal_lineage:
+            replacement_ids.append(old_id)
     var count := 0
     for old_id in disciple.v63_equipped_skill_ids:
-        if str(skill_definition(str(old_id)).get("slot","")) == slot:
+        if not replacement_ids.has(str(old_id)) and str(skill_definition(str(old_id)).get("slot","")) == slot:
             count += 1
-    if count >= limit or disciple.v63_equipped_skill_ids.size() >= MAX_SKILLS_PER_DISCIPLE:
+    if count >= limit or disciple.v63_equipped_skill_ids.size() - replacement_ids.size() >= MAX_SKILLS_PER_DISCIPLE:
         return _failure("skill_slot_full")
+    for old_id in replacement_ids:
+        disciple.v63_equipped_skill_ids.erase(old_id)
     disciple.v63_equipped_skill_ids.append(skill_id)
     disciple.v63_equipped_skill_ids.sort()
     if not branch.is_empty() and selected.is_empty():
         disciple.v63_combat_branch_id = StringName(branch)
-    return {"ok":true,"skill_id":skill_id,"slot":slot,"branch_id":str(disciple.v63_combat_branch_id)}
+    return {"ok":true,"skill_id":skill_id,"slot":slot,"branch_id":str(disciple.v63_combat_branch_id),"replaced_skill_ids":replacement_ids}
 
 static func attach_disciple_loadout(state: SimulationState, actor: Dictionary, preview_overrides: Dictionary = {}) -> Dictionary:
     if not is_enabled(state,preview_overrides):
@@ -190,19 +216,31 @@ static func attach_disciple_loadout(state: SimulationState, actor: Dictionary, p
     var definitions := skill_definitions()
     var skills: Array = []
     var passives: Array = []
+    var immortal_lineage := ""
     for raw_id in disciple.v63_equipped_skill_ids:
         var skill_id := str(raw_id)
         if disciple.v63_learned_skill_nodes.has(skill_id) and definitions.has(skill_id):
             skills.append(skill_id)
             if str(definitions[skill_id].get("slot","")) == "passive":
                 passives.append(skill_id)
+            if str(definitions[skill_id].get("generation", "")) == "immortal":
+                immortal_lineage = str(definitions[skill_id].get("lineage", ""))
+    var branch: Dictionary = branch_definitions().get(str(disciple.v63_combat_branch_id),{})
+    if not branch.is_empty() and immortal_lineage in ["a", "b"]:
+        var school := str(branch.get("school", ""))
+        for index in range(skills.size() - 1, -1, -1):
+            var equipped: Dictionary = definitions.get(str(skills[index]), {})
+            if str(equipped.get("slot", "")) in ["basic", "mobility"]:
+                skills.remove_at(index)
+        skills.append("tmb.skill.%s.basic.immortal.base" % school)
+        skills.append("tmb.skill.%s.mobility.immortal.base" % school)
     skills.sort()
     actor["v63_skill_loadout"] = skills
     actor["v63_passive_ids"] = passives
     actor["v63_combat_branch_id"] = str(disciple.v63_combat_branch_id)
-    var branch: Dictionary = branch_definitions().get(str(disciple.v63_combat_branch_id),{})
     if not branch.is_empty():
-        actor["v63_innate_skill_id"] = str(branch.get("innate_node_id",""))
+        actor["v63_innate_skill_id"] = str(branch.get("innate_node_ids", {}).get(immortal_lineage, branch.get("innate_node_id", "")))
+    actor["v63_combat_lineage"] = immortal_lineage
     actor["v63_skill_ready"] = {}
     actor["v63_combat_enabled"] = true
     for skill_id in skills:
@@ -374,6 +412,9 @@ static func _begin_cast(battle: MapBattleV2, actor: Dictionary, target: Dictiona
     var cast := _cast_record(actor,target,id,skill,deadline)
     if str(skill.get("shape","")) == "circle":
         cast["center"] = target["position"]
+    elif str(skill.get("shape", "")) == "line":
+        cast["line_origin"] = actor["position"]
+        cast["line_direction"] = ((target["position"] as Vector2) - (actor["position"] as Vector2)).normalized()
     actor["v63_pending_cast"] = cast
     ready[id] = battle.now+maxf(MapBattleV2.STEP_SECONDS,float(skill.cooldown)/cooldown_rate)
     actor["v63_skill_ready"] = ready
@@ -384,6 +425,8 @@ static func _begin_cast(battle: MapBattleV2, actor: Dictionary, target: Dictiona
 static func _try_boss_cast(battle: MapBattleV2, actor: Dictionary, target: Dictionary) -> bool:
     var boss_id := str(actor.get("v63_boss_id",""))
     var boss := boss_definition(boss_id)
+    if str(boss.get("tier_band", "")) == "immortal":
+        return V63ImmortalSkillCombatSystem.try_boss_cast(battle, actor, target)
     var definitions := boss_skill_definitions(boss_id)
     var ready: Dictionary = actor.get("v63_skill_ready",{})
     var phase := clampi(int(actor.get("v63_boss_phase",1)),1,3)
@@ -448,6 +491,8 @@ static func release_cast(battle: MapBattleV2, cast: Dictionary, caster: Dictiona
         elif effect == "consume_poison":
             _consume_poison(battle,caster,target,id)
         battle._event("v63_skill_hit",{"caster":str(caster.id),"target":str(target.id),"skill_id":id,"effect":effect,"damage":damage,"target_hp_before":before,"target_hp_after":float(target.hp)})
+        if damage > 0.0:
+            V63ImmortalSkillCombatSystem.apply_elemental_reaction(battle,caster,target,id,str(cast.get("element", "")))
 
 static func _cast_targets(battle: MapBattleV2, caster: Dictionary, cast: Dictionary, effect: String) -> Array:
     var result: Array = []
@@ -464,6 +509,25 @@ static func _cast_targets(battle: MapBattleV2, caster: Dictionary, cast: Diction
             if (target.position as Vector2).distance_to(center) <= float(cast.get("radius",0.0)):
                 result.append(target)
                 if result.size() >= mini(int(cast.get("maximum",MAX_TARGETS)),MAX_TARGETS):
+                    break
+        return result
+    if str(cast.get("shape", "")) == "line":
+        var origin: Vector2 = cast.get("line_origin", caster.get("position", Vector2.ZERO))
+        var direction: Vector2 = cast.get("line_direction", Vector2.ZERO).normalized()
+        var length := maxf(0.0, float(cast.get("radius", 0.0)))
+        var ids: Array = battle.actors.keys()
+        ids.sort()
+        for raw_id in ids:
+            var candidate: Dictionary = battle.actors[raw_id]
+            var same_side := str(candidate.get("side", "")) == str(caster.get("side", ""))
+            if float(candidate.get("hp", 0.0)) <= 0.0 or same_side != allies:
+                continue
+            var offset: Vector2 = candidate["position"] - origin
+            var along := offset.dot(direction)
+            var across := absf(offset.cross(direction))
+            if along >= 0.0 and along <= length and across <= 0.85:
+                result.append(candidate)
+                if result.size() >= mini(int(cast.get("maximum", MAX_TARGETS)), MAX_TARGETS):
                     break
         return result
     var target: Dictionary = battle.actors.get(str(cast.get("target_id","")),{})
@@ -599,8 +663,12 @@ static func process_status_effects(battle: MapBattleV2) -> void:
                 marks.erase(owner_id)
         target["v63_marks"] = marks
 
-static func observe_boss_damage(battle: MapBattleV2, actor: Dictionary, hp_before: float) -> void:
+static func observe_boss_damage(battle: MapBattleV2, actor: Dictionary, hp_before: float,
+        attacker: Dictionary = {}, element: String = "", kind: String = "") -> void:
     if battle == null or not bool(actor.get("v63_custom_boss_ai",false)):
+        return
+    if V63ImmortalSkillCombatSystem.is_immortal_boss(str(actor.get("v63_boss_id", ""))):
+        V63ImmortalSkillCombatSystem.observe_boss_damage(battle, actor, hp_before, attacker, element, kind)
         return
     var boss := boss_definition(str(actor.get("v63_boss_id","")))
     var thresholds: Array = boss.get("phase_thresholds",[0.7,0.35])
@@ -646,6 +714,9 @@ static func install_boss_spawn(spawn_data: Dictionary, boss_id: String) -> Dicti
     origin["v63_combat_enabled"] = true
     origin["v63_boss_phase"] = 1
     origin["v63_skill_ready"] = {}
+    origin["v63_boss_counter_window"] = {}
+    origin["v63_boss_break_gauge"] = 0
+    origin["v63_boss_stagger_until"] = -1.0
     var result: Dictionary = spawn_data.duplicate(true)
     var updated: Array = monsters.duplicate(true)
     updated[0] = origin
@@ -743,18 +814,31 @@ static func validate_state(state: SimulationState) -> Array[String]:
             if skill.is_empty() or not bool(skill.get("archivable",false)) or not (record is Dictionary) or str(record.get("source_codex_id","")) != str(skill.get("source_codex_id","")) or int(record.get("learned_tick",-1)) < 0 or float(record.get("mastery_xp",-1.0)) < 0.0:
                 errors.append("%s has invalid Human skill knowledge %s." % [disciple.display_name,id])
         var seen: Dictionary = {}
+        var seen_families: Dictionary = {}
+        var equipped_immortal_lineages: Dictionary = {}
         var counts := {"basic":0,"active":0,"ultimate":0,"mobility":0,"passive":0}
         for raw_id in disciple.v63_equipped_skill_ids:
             var id := str(raw_id)
             var skill: Dictionary = definitions.get(id,{})
             var slot := str(skill.get("slot",""))
             var skill_branch := str(skill.get("branch",""))
+            var family_id := str(skill.get("family_id", ""))
             if skill.is_empty() or not disciple.v63_learned_skill_nodes.has(id) or seen.has(id):
                 errors.append("%s has an unlearned or duplicate Human skill." % disciple.display_name)
             elif not skill_branch.is_empty() and skill_branch != branch_id:
                 errors.append("%s has a Human skill equipped from another branch." % disciple.display_name)
             else:
                 seen[id] = true
+                if not family_id.is_empty() and seen_families.has(family_id):
+                    errors.append("%s has multiple active successors in skill family %s." % [disciple.display_name,family_id])
+                elif not family_id.is_empty():
+                    seen_families[family_id] = id
+                if str(skill.get("generation", "")) == "immortal":
+                    var lineage := str(skill.get("lineage", ""))
+                    if equipped_immortal_lineages.has(skill_branch) and str(equipped_immortal_lineages[skill_branch]) != lineage:
+                        errors.append("%s has both A/B Immortal paths equipped in %s." % [disciple.display_name,skill_branch])
+                    else:
+                        equipped_immortal_lineages[skill_branch] = lineage
                 if counts.has(slot):
                     counts[slot] += 1
         if disciple.v63_equipped_skill_ids.size() > MAX_SKILLS_PER_DISCIPLE or counts.active > 4 or counts.passive > 5 or counts.basic > 1 or counts.ultimate > 1 or counts.mobility > 1:

@@ -38,8 +38,8 @@ static func validate_catalogue(data: Dictionary) -> Array[String]:
     for raw_codex in V63SectArchiveSystem.codices():
         archive_codices[str(raw_codex.get("id", ""))] = raw_codex
     var rows: Array = data.techniques
-    if rows.size() != 12:
-        errors.append("wrong_d3_pilot_technique_count")
+    if rows.size() != 30:
+        errors.append("wrong_v63_technique_count")
     var ids: Dictionary = {}
     for raw in rows:
         if not (raw is Dictionary):
@@ -66,6 +66,12 @@ static func validate_catalogue(data: Dictionary) -> Array[String]:
             errors.append("bad_learning_candidate_duration:" + technique_id)
         if not (row.get("prerequisite_technique_ids", null) is Array):
             errors.append("bad_learning_prerequisite_list:" + technique_id)
+        if str(row.get("generation", "human")) == "immortal":
+            var candidate_prerequisites = row.get("candidate_prerequisites", null)
+            if not (candidate_prerequisites is Dictionary) or int(candidate_prerequisites.get("cultivation_realm", 0)) != 11 \
+                or int(candidate_prerequisites.get("body_realm", 0)) != 11 or int(candidate_prerequisites.get("main_mastery_stage", -1)) != 3 \
+                or int(candidate_prerequisites.get("human_active_skill_level", 0)) != 7 or int(candidate_prerequisites.get("human_ultimate_skill_level", 0)) != 4:
+                errors.append("bad_immortal_learning_prerequisites:" + technique_id)
     for raw in rows:
         if not (raw is Dictionary):
             continue
@@ -132,6 +138,10 @@ func can_start_study(state: SimulationState, disciple: DiscipleState, technique_
     for prerequisite in info.get("prerequisite_technique_ids", []):
         if not disciple.known_techniques.has(str(prerequisite)):
             return _failure("technique_prerequisite_missing:" + str(prerequisite))
+    if str(info.get("generation", "human")) == "immortal":
+        var prerequisite_reason := _immortal_prerequisite_reason(disciple, info)
+        if not prerequisite_reason.is_empty():
+            return _failure(prerequisite_reason)
     var buildings := BuildingSystem.new()
     if not disciple.active_pve_encounter_id.is_empty() or disciple.region_id != &"sect":
         return _failure("disciple_not_at_sect")
@@ -151,6 +161,41 @@ func can_start_study(state: SimulationState, disciple: DiscipleState, technique_
     if disciple.spirit_stones < int(cost.get("spirit_stones", 0)):
         return _failure("insufficient_personal_spirit_stones")
     return {"ok":true,"definition":info,"source_codex_id":source_codex,"cost":cost.duplicate(true)}
+
+static func lineage_study_complete(disciple: DiscipleState, branch: String, lineage: String) -> bool:
+    if disciple == null or lineage not in ["a", "b"]:
+        return false
+    var row: Dictionary = V63ImmortalSkillCombatSystem.branch_definitions().get(branch, {})
+    if row.is_empty():
+        return false
+    var technique_id := str(row.get("lineage_technique_ids", {}).get(lineage, ""))
+    return not technique_id.is_empty() and disciple.known_techniques.has(technique_id)
+
+static func _immortal_prerequisite_reason(disciple: DiscipleState, info: Dictionary) -> String:
+    var profile: Dictionary = disciple.v2_realm_progress
+    if not DiscipleRealmProgressV2.valid_profile(profile):
+        return "immortal_realm_profile_required"
+    var cultivation: Dictionary = profile.get("cultivation", {})
+    var body: Dictionary = profile.get("body", {})
+    if int(cultivation.get("realm", 0)) < 11 and int(body.get("realm", 0)) < 11:
+        return "immortal_realm_or_body_11_required"
+    var school := str(info.get("school", ""))
+    var main_id := str(disciple.active_technique_main)
+    if main_id.is_empty() or not disciple.known_techniques.has(main_id):
+        return "immortal_compatible_main_technique_required"
+    var main_info := definition(StringName(main_id))
+    var main_knowledge: Dictionary = disciple.known_techniques.get(main_id, {})
+    if main_info.is_empty() or str(main_info.get("school", "")) != school \
+        or not main_info.get("slot_types", []).has("main") or int(main_knowledge.get("mastery_stage", 0)) < 3:
+        return "immortal_main_technique_mastery_stage_3_required"
+    var branch := str(info.get("branch", ""))
+    var active_id := "tmb.skill.%s.%s.active_01.human" % [school, branch]
+    var ultimate_id := "tmb.skill.%s.%s.ultimate.human" % [school, branch]
+    if not disciple.v63_learned_skill_nodes.has(active_id) or int(disciple.v63_learned_skill_nodes[active_id].get("level", 0)) < 7:
+        return "human_branch_active_level_7_required"
+    if not disciple.v63_learned_skill_nodes.has(ultimate_id) or int(disciple.v63_learned_skill_nodes[ultimate_id].get("level", 0)) < 4:
+        return "human_branch_ultimate_level_4_required"
+    return ""
 
 func start_study(state: SimulationState, disciple: DiscipleState, technique_id: StringName,
         request_id: String, preview_overrides: Dictionary = {}) -> Dictionary:

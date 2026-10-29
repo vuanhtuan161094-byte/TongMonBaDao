@@ -3,20 +3,895 @@
   "enabled": false,
   "release_status": "D3_GATED_CANDIDATE_ECONOMY_NO_COMBAT_EFFECTS",
   "balance_status": "candidate",
-  "mastery_thresholds_xp": [0, 100, 400, 1000, 2500],
+  "mastery_thresholds_xp": [
+    0,
+    100,
+    400,
+    1000,
+    2500
+  ],
   "techniques": [
-    {"id":"tmb.technique.bow.common.human.base","name":"Cung Mạch Sơ Thiên","school":"bow","branch":"common","generation":"human","lineage":"base","source_codex_id":"tmb.codex.bow.common.ch0_basic.human.base","prerequisite_technique_ids":[],"slot_types":["main","aux"],"cost":{"contribution":25,"spirit_stones":5},"study_ticks":30,"combat_effects_enabled":false,"balance_status":"candidate"},
-    {"id":"tmb.technique.bow.liep_anh.human.base","name":"Liệp Ảnh Tâm Pháp","school":"bow","branch":"liep_anh","generation":"human","lineage":"base","source_codex_id":"tmb.codex.bow.liep_anh.ch1_active_01.human.base","prerequisite_technique_ids":["tmb.technique.bow.common.human.base"],"slot_types":["main","aux"],"cost":{"contribution":50,"spirit_stones":10},"study_ticks":60,"combat_effects_enabled":false,"balance_status":"candidate"},
-    {"id":"tmb.technique.bow.linh_tien.human.base","name":"Linh Tiễn Tâm Pháp","school":"bow","branch":"linh_tien","generation":"human","lineage":"base","source_codex_id":"tmb.codex.bow.linh_tien.ch1_active_01.human.base","prerequisite_technique_ids":["tmb.technique.bow.common.human.base"],"slot_types":["main","aux"],"cost":{"contribution":50,"spirit_stones":10},"study_ticks":60,"combat_effects_enabled":false,"balance_status":"candidate"},
-    {"id":"tmb.technique.bow.thien_vu.human.base","name":"Thiên Vũ Tâm Pháp","school":"bow","branch":"thien_vu","generation":"human","lineage":"base","source_codex_id":"tmb.codex.bow.thien_vu.ch1_active_01.human.base","prerequisite_technique_ids":["tmb.technique.bow.common.human.base"],"slot_types":["main","aux"],"cost":{"contribution":50,"spirit_stones":10},"study_ticks":60,"combat_effects_enabled":false,"balance_status":"candidate"},
-    {"id":"tmb.technique.fist.common.human.base","name":"Quyền Mạch Sơ Thiên","school":"fist","branch":"common","generation":"human","lineage":"base","source_codex_id":"tmb.codex.fist.common.ch0_basic.human.base","prerequisite_technique_ids":[],"slot_types":["main","aux"],"cost":{"contribution":25,"spirit_stones":5},"study_ticks":30,"combat_effects_enabled":false,"balance_status":"candidate"},
-    {"id":"tmb.technique.fist.ba_quyen.human.base","name":"Bá Quyền Tâm Pháp","school":"fist","branch":"ba_quyen","generation":"human","lineage":"base","source_codex_id":"tmb.codex.fist.ba_quyen.ch1_active_01.human.base","prerequisite_technique_ids":["tmb.technique.fist.common.human.base"],"slot_types":["main","aux"],"cost":{"contribution":50,"spirit_stones":10},"study_ticks":60,"combat_effects_enabled":false,"balance_status":"candidate"},
-    {"id":"tmb.technique.fist.kim_cang.human.base","name":"Kim Cang Tâm Pháp","school":"fist","branch":"kim_cang","generation":"human","lineage":"base","source_codex_id":"tmb.codex.fist.kim_cang.ch1_active_01.human.base","prerequisite_technique_ids":["tmb.technique.fist.common.human.base"],"slot_types":["main","aux"],"cost":{"contribution":50,"spirit_stones":10},"study_ticks":60,"combat_effects_enabled":false,"balance_status":"candidate"},
-    {"id":"tmb.technique.fist.huyet_quyen.human.base","name":"Huyết Quyền Tâm Pháp","school":"fist","branch":"huyet_quyen","generation":"human","lineage":"base","source_codex_id":"tmb.codex.fist.huyet_quyen.ch1_active_01.human.base","prerequisite_technique_ids":["tmb.technique.fist.common.human.base"],"slot_types":["main","aux"],"cost":{"contribution":50,"spirit_stones":10},"study_ticks":60,"combat_effects_enabled":false,"balance_status":"candidate"},
-    {"id":"tmb.technique.poison.common.human.base","name":"Độc Mạch Sơ Thiên","school":"poison","branch":"common","generation":"human","lineage":"base","source_codex_id":"tmb.codex.poison.common.ch0_basic.human.base","prerequisite_technique_ids":[],"slot_types":["main","aux"],"cost":{"contribution":25,"spirit_stones":5},"study_ticks":30,"combat_effects_enabled":false,"balance_status":"candidate"},
-    {"id":"tmb.technique.poison.doc_cham.human.base","name":"Độc Châm Tâm Pháp","school":"poison","branch":"doc_cham","generation":"human","lineage":"base","source_codex_id":"tmb.codex.poison.doc_cham.ch1_active_01.human.base","prerequisite_technique_ids":["tmb.technique.poison.common.human.base"],"slot_types":["main","aux"],"cost":{"contribution":50,"spirit_stones":10},"study_ticks":60,"combat_effects_enabled":false,"balance_status":"candidate"},
-    {"id":"tmb.technique.poison.co_doc.human.base","name":"Cổ Độc Tâm Pháp","school":"poison","branch":"co_doc","generation":"human","lineage":"base","source_codex_id":"tmb.codex.poison.co_doc.ch1_active_01.human.base","prerequisite_technique_ids":["tmb.technique.poison.common.human.base"],"slot_types":["main","aux"],"cost":{"contribution":50,"spirit_stones":10},"study_ticks":60,"combat_effects_enabled":false,"balance_status":"candidate"},
-    {"id":"tmb.technique.poison.duoc_doc.human.base","name":"Dược Độc Tâm Pháp","school":"poison","branch":"duoc_doc","generation":"human","lineage":"base","source_codex_id":"tmb.codex.poison.duoc_doc.ch1_active_01.human.base","prerequisite_technique_ids":["tmb.technique.poison.common.human.base"],"slot_types":["main","aux"],"cost":{"contribution":50,"spirit_stones":10},"study_ticks":60,"combat_effects_enabled":false,"balance_status":"candidate"}
+    {
+      "id": "tmb.technique.bow.common.human.base",
+      "name": "Cung Mạch Sơ Thiên",
+      "school": "bow",
+      "branch": "common",
+      "generation": "human",
+      "lineage": "base",
+      "source_codex_id": "tmb.codex.bow.common.ch0_basic.human.base",
+      "prerequisite_technique_ids": [],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 25,
+        "spirit_stones": 5
+      },
+      "study_ticks": 30,
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.bow.liep_anh.human.base",
+      "name": "Liệp Ảnh Tâm Pháp",
+      "school": "bow",
+      "branch": "liep_anh",
+      "generation": "human",
+      "lineage": "base",
+      "source_codex_id": "tmb.codex.bow.liep_anh.ch1_active_01.human.base",
+      "prerequisite_technique_ids": [
+        "tmb.technique.bow.common.human.base"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 50,
+        "spirit_stones": 10
+      },
+      "study_ticks": 60,
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.bow.linh_tien.human.base",
+      "name": "Linh Tiễn Tâm Pháp",
+      "school": "bow",
+      "branch": "linh_tien",
+      "generation": "human",
+      "lineage": "base",
+      "source_codex_id": "tmb.codex.bow.linh_tien.ch1_active_01.human.base",
+      "prerequisite_technique_ids": [
+        "tmb.technique.bow.common.human.base"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 50,
+        "spirit_stones": 10
+      },
+      "study_ticks": 60,
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.bow.thien_vu.human.base",
+      "name": "Thiên Vũ Tâm Pháp",
+      "school": "bow",
+      "branch": "thien_vu",
+      "generation": "human",
+      "lineage": "base",
+      "source_codex_id": "tmb.codex.bow.thien_vu.ch1_active_01.human.base",
+      "prerequisite_technique_ids": [
+        "tmb.technique.bow.common.human.base"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 50,
+        "spirit_stones": 10
+      },
+      "study_ticks": 60,
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.fist.common.human.base",
+      "name": "Quyền Mạch Sơ Thiên",
+      "school": "fist",
+      "branch": "common",
+      "generation": "human",
+      "lineage": "base",
+      "source_codex_id": "tmb.codex.fist.common.ch0_basic.human.base",
+      "prerequisite_technique_ids": [],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 25,
+        "spirit_stones": 5
+      },
+      "study_ticks": 30,
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.fist.ba_quyen.human.base",
+      "name": "Bá Quyền Tâm Pháp",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "generation": "human",
+      "lineage": "base",
+      "source_codex_id": "tmb.codex.fist.ba_quyen.ch1_active_01.human.base",
+      "prerequisite_technique_ids": [
+        "tmb.technique.fist.common.human.base"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 50,
+        "spirit_stones": 10
+      },
+      "study_ticks": 60,
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.fist.kim_cang.human.base",
+      "name": "Kim Cang Tâm Pháp",
+      "school": "fist",
+      "branch": "kim_cang",
+      "generation": "human",
+      "lineage": "base",
+      "source_codex_id": "tmb.codex.fist.kim_cang.ch1_active_01.human.base",
+      "prerequisite_technique_ids": [
+        "tmb.technique.fist.common.human.base"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 50,
+        "spirit_stones": 10
+      },
+      "study_ticks": 60,
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.fist.huyet_quyen.human.base",
+      "name": "Huyết Quyền Tâm Pháp",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "generation": "human",
+      "lineage": "base",
+      "source_codex_id": "tmb.codex.fist.huyet_quyen.ch1_active_01.human.base",
+      "prerequisite_technique_ids": [
+        "tmb.technique.fist.common.human.base"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 50,
+        "spirit_stones": 10
+      },
+      "study_ticks": 60,
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.poison.common.human.base",
+      "name": "Độc Mạch Sơ Thiên",
+      "school": "poison",
+      "branch": "common",
+      "generation": "human",
+      "lineage": "base",
+      "source_codex_id": "tmb.codex.poison.common.ch0_basic.human.base",
+      "prerequisite_technique_ids": [],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 25,
+        "spirit_stones": 5
+      },
+      "study_ticks": 30,
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.poison.doc_cham.human.base",
+      "name": "Độc Châm Tâm Pháp",
+      "school": "poison",
+      "branch": "doc_cham",
+      "generation": "human",
+      "lineage": "base",
+      "source_codex_id": "tmb.codex.poison.doc_cham.ch1_active_01.human.base",
+      "prerequisite_technique_ids": [
+        "tmb.technique.poison.common.human.base"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 50,
+        "spirit_stones": 10
+      },
+      "study_ticks": 60,
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.poison.co_doc.human.base",
+      "name": "Cổ Độc Tâm Pháp",
+      "school": "poison",
+      "branch": "co_doc",
+      "generation": "human",
+      "lineage": "base",
+      "source_codex_id": "tmb.codex.poison.co_doc.ch1_active_01.human.base",
+      "prerequisite_technique_ids": [
+        "tmb.technique.poison.common.human.base"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 50,
+        "spirit_stones": 10
+      },
+      "study_ticks": 60,
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.poison.duoc_doc.human.base",
+      "name": "Dược Độc Tâm Pháp",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "generation": "human",
+      "lineage": "base",
+      "source_codex_id": "tmb.codex.poison.duoc_doc.ch1_active_01.human.base",
+      "prerequisite_technique_ids": [
+        "tmb.technique.poison.common.human.base"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 50,
+        "spirit_stones": 10
+      },
+      "study_ticks": 60,
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.bow.liep_anh.immortal.a",
+      "name": "Liệp Ảnh · Truy Hồn · Tiên Giai",
+      "school": "bow",
+      "branch": "liep_anh",
+      "generation": "immortal",
+      "lineage": "a",
+      "source_codex_id": "tmb.codex.bow.liep_anh.lineage_a.immortal",
+      "prerequisite_technique_ids": [
+        "tmb.technique.bow.common.human.base",
+        "tmb.technique.bow.liep_anh.human.base"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 6000,
+        "spirit_stones": 500000
+      },
+      "study_ticks": 240,
+      "candidate_prerequisites": {
+        "cultivation_realm": 11,
+        "body_realm": 11,
+        "main_mastery_stage": 3,
+        "human_active_skill_level": 7,
+        "human_ultimate_skill_level": 4,
+        "human_active_slot": "active_01",
+        "human_ultimate_slot": "ultimate",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.bow.liep_anh.immortal.b",
+      "name": "Liệp Ảnh · Xuyên Thành · Tiên Giai",
+      "school": "bow",
+      "branch": "liep_anh",
+      "generation": "immortal",
+      "lineage": "b",
+      "source_codex_id": "tmb.codex.bow.liep_anh.lineage_b.immortal",
+      "prerequisite_technique_ids": [
+        "tmb.technique.bow.common.human.base",
+        "tmb.technique.bow.liep_anh.human.base"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 6000,
+        "spirit_stones": 500000
+      },
+      "study_ticks": 240,
+      "candidate_prerequisites": {
+        "cultivation_realm": 11,
+        "body_realm": 11,
+        "main_mastery_stage": 3,
+        "human_active_skill_level": 7,
+        "human_ultimate_skill_level": 4,
+        "human_active_slot": "active_01",
+        "human_ultimate_slot": "ultimate",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.bow.linh_tien.immortal.a",
+      "name": "Linh Tiễn · Tụ Nguyên · Tiên Giai",
+      "school": "bow",
+      "branch": "linh_tien",
+      "generation": "immortal",
+      "lineage": "a",
+      "source_codex_id": "tmb.codex.bow.linh_tien.lineage_a.immortal",
+      "prerequisite_technique_ids": [
+        "tmb.technique.bow.common.human.base",
+        "tmb.technique.bow.linh_tien.human.base"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 6000,
+        "spirit_stones": 500000
+      },
+      "study_ticks": 240,
+      "candidate_prerequisites": {
+        "cultivation_realm": 11,
+        "body_realm": 11,
+        "main_mastery_stage": 3,
+        "human_active_skill_level": 7,
+        "human_ultimate_skill_level": 4,
+        "human_active_slot": "active_01",
+        "human_ultimate_slot": "ultimate",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.bow.linh_tien.immortal.b",
+      "name": "Linh Tiễn · Thiên Tượng · Tiên Giai",
+      "school": "bow",
+      "branch": "linh_tien",
+      "generation": "immortal",
+      "lineage": "b",
+      "source_codex_id": "tmb.codex.bow.linh_tien.lineage_b.immortal",
+      "prerequisite_technique_ids": [
+        "tmb.technique.bow.common.human.base",
+        "tmb.technique.bow.linh_tien.human.base"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 6000,
+        "spirit_stones": 500000
+      },
+      "study_ticks": 240,
+      "candidate_prerequisites": {
+        "cultivation_realm": 11,
+        "body_realm": 11,
+        "main_mastery_stage": 3,
+        "human_active_skill_level": 7,
+        "human_ultimate_skill_level": 4,
+        "human_active_slot": "active_01",
+        "human_ultimate_slot": "ultimate",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.bow.thien_vu.immortal.a",
+      "name": "Thiên Vũ · Tiễn Hải · Tiên Giai",
+      "school": "bow",
+      "branch": "thien_vu",
+      "generation": "immortal",
+      "lineage": "a",
+      "source_codex_id": "tmb.codex.bow.thien_vu.lineage_a.immortal",
+      "prerequisite_technique_ids": [
+        "tmb.technique.bow.common.human.base",
+        "tmb.technique.bow.thien_vu.human.base"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 6000,
+        "spirit_stones": 500000
+      },
+      "study_ticks": 240,
+      "candidate_prerequisites": {
+        "cultivation_realm": 11,
+        "body_realm": 11,
+        "main_mastery_stage": 3,
+        "human_active_skill_level": 7,
+        "human_ultimate_skill_level": 4,
+        "human_active_slot": "active_01",
+        "human_ultimate_slot": "ultimate",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.bow.thien_vu.immortal.b",
+      "name": "Thiên Vũ · Quy Nhất · Tiên Giai",
+      "school": "bow",
+      "branch": "thien_vu",
+      "generation": "immortal",
+      "lineage": "b",
+      "source_codex_id": "tmb.codex.bow.thien_vu.lineage_b.immortal",
+      "prerequisite_technique_ids": [
+        "tmb.technique.bow.common.human.base",
+        "tmb.technique.bow.thien_vu.human.base"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 6000,
+        "spirit_stones": 500000
+      },
+      "study_ticks": 240,
+      "candidate_prerequisites": {
+        "cultivation_realm": 11,
+        "body_realm": 11,
+        "main_mastery_stage": 3,
+        "human_active_skill_level": 7,
+        "human_ultimate_skill_level": 4,
+        "human_active_slot": "active_01",
+        "human_ultimate_slot": "ultimate",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.fist.ba_quyen.immortal.a",
+      "name": "Bá Quyền · Phá Quân · Tiên Giai",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "generation": "immortal",
+      "lineage": "a",
+      "source_codex_id": "tmb.codex.fist.ba_quyen.lineage_a.immortal",
+      "prerequisite_technique_ids": [
+        "tmb.technique.fist.common.human.base",
+        "tmb.technique.fist.ba_quyen.human.base"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 6000,
+        "spirit_stones": 500000
+      },
+      "study_ticks": 240,
+      "candidate_prerequisites": {
+        "cultivation_realm": 11,
+        "body_realm": 11,
+        "main_mastery_stage": 3,
+        "human_active_skill_level": 7,
+        "human_ultimate_skill_level": 4,
+        "human_active_slot": "active_01",
+        "human_ultimate_slot": "ultimate",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.fist.ba_quyen.immortal.b",
+      "name": "Bá Quyền · Địa Liệt · Tiên Giai",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "generation": "immortal",
+      "lineage": "b",
+      "source_codex_id": "tmb.codex.fist.ba_quyen.lineage_b.immortal",
+      "prerequisite_technique_ids": [
+        "tmb.technique.fist.common.human.base",
+        "tmb.technique.fist.ba_quyen.human.base"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 6000,
+        "spirit_stones": 500000
+      },
+      "study_ticks": 240,
+      "candidate_prerequisites": {
+        "cultivation_realm": 11,
+        "body_realm": 11,
+        "main_mastery_stage": 3,
+        "human_active_skill_level": 7,
+        "human_ultimate_skill_level": 4,
+        "human_active_slot": "active_01",
+        "human_ultimate_slot": "ultimate",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.fist.kim_cang.immortal.a",
+      "name": "Kim Cang · Hộ Pháp · Tiên Giai",
+      "school": "fist",
+      "branch": "kim_cang",
+      "generation": "immortal",
+      "lineage": "a",
+      "source_codex_id": "tmb.codex.fist.kim_cang.lineage_a.immortal",
+      "prerequisite_technique_ids": [
+        "tmb.technique.fist.common.human.base",
+        "tmb.technique.fist.kim_cang.human.base"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 6000,
+        "spirit_stones": 500000
+      },
+      "study_ticks": 240,
+      "candidate_prerequisites": {
+        "cultivation_realm": 11,
+        "body_realm": 11,
+        "main_mastery_stage": 3,
+        "human_active_skill_level": 7,
+        "human_ultimate_skill_level": 4,
+        "human_active_slot": "active_01",
+        "human_ultimate_slot": "ultimate",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.fist.kim_cang.immortal.b",
+      "name": "Kim Cang · Phản Chấn · Tiên Giai",
+      "school": "fist",
+      "branch": "kim_cang",
+      "generation": "immortal",
+      "lineage": "b",
+      "source_codex_id": "tmb.codex.fist.kim_cang.lineage_b.immortal",
+      "prerequisite_technique_ids": [
+        "tmb.technique.fist.common.human.base",
+        "tmb.technique.fist.kim_cang.human.base"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 6000,
+        "spirit_stones": 500000
+      },
+      "study_ticks": 240,
+      "candidate_prerequisites": {
+        "cultivation_realm": 11,
+        "body_realm": 11,
+        "main_mastery_stage": 3,
+        "human_active_skill_level": 7,
+        "human_ultimate_skill_level": 4,
+        "human_active_slot": "active_01",
+        "human_ultimate_slot": "ultimate",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.fist.huyet_quyen.immortal.a",
+      "name": "Huyết Quyền · Huyết Ma · Tiên Giai",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "generation": "immortal",
+      "lineage": "a",
+      "source_codex_id": "tmb.codex.fist.huyet_quyen.lineage_a.immortal",
+      "prerequisite_technique_ids": [
+        "tmb.technique.fist.common.human.base",
+        "tmb.technique.fist.huyet_quyen.human.base"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 6000,
+        "spirit_stones": 500000
+      },
+      "study_ticks": 240,
+      "candidate_prerequisites": {
+        "cultivation_realm": 11,
+        "body_realm": 11,
+        "main_mastery_stage": 3,
+        "human_active_skill_level": 7,
+        "human_ultimate_skill_level": 4,
+        "human_active_slot": "active_01",
+        "human_ultimate_slot": "ultimate",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.fist.huyet_quyen.immortal.b",
+      "name": "Huyết Quyền · Huyết Sinh · Tiên Giai",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "generation": "immortal",
+      "lineage": "b",
+      "source_codex_id": "tmb.codex.fist.huyet_quyen.lineage_b.immortal",
+      "prerequisite_technique_ids": [
+        "tmb.technique.fist.common.human.base",
+        "tmb.technique.fist.huyet_quyen.human.base"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 6000,
+        "spirit_stones": 500000
+      },
+      "study_ticks": 240,
+      "candidate_prerequisites": {
+        "cultivation_realm": 11,
+        "body_realm": 11,
+        "main_mastery_stage": 3,
+        "human_active_skill_level": 7,
+        "human_ultimate_skill_level": 4,
+        "human_active_slot": "active_01",
+        "human_ultimate_slot": "ultimate",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.poison.doc_cham.immortal.a",
+      "name": "Độc Châm · Thực Cốt · Tiên Giai",
+      "school": "poison",
+      "branch": "doc_cham",
+      "generation": "immortal",
+      "lineage": "a",
+      "source_codex_id": "tmb.codex.poison.doc_cham.lineage_a.immortal",
+      "prerequisite_technique_ids": [
+        "tmb.technique.poison.common.human.base",
+        "tmb.technique.poison.doc_cham.human.base"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 6000,
+        "spirit_stones": 500000
+      },
+      "study_ticks": 240,
+      "candidate_prerequisites": {
+        "cultivation_realm": 11,
+        "body_realm": 11,
+        "main_mastery_stage": 3,
+        "human_active_skill_level": 7,
+        "human_ultimate_skill_level": 4,
+        "human_active_slot": "active_01",
+        "human_ultimate_slot": "ultimate",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.poison.doc_cham.immortal.b",
+      "name": "Độc Châm · Bạo Phệ · Tiên Giai",
+      "school": "poison",
+      "branch": "doc_cham",
+      "generation": "immortal",
+      "lineage": "b",
+      "source_codex_id": "tmb.codex.poison.doc_cham.lineage_b.immortal",
+      "prerequisite_technique_ids": [
+        "tmb.technique.poison.common.human.base",
+        "tmb.technique.poison.doc_cham.human.base"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 6000,
+        "spirit_stones": 500000
+      },
+      "study_ticks": 240,
+      "candidate_prerequisites": {
+        "cultivation_realm": 11,
+        "body_realm": 11,
+        "main_mastery_stage": 3,
+        "human_active_skill_level": 7,
+        "human_ultimate_skill_level": 4,
+        "human_active_slot": "active_01",
+        "human_ultimate_slot": "ultimate",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.poison.co_doc.immortal.a",
+      "name": "Cổ Độc · Liên Tâm · Tiên Giai",
+      "school": "poison",
+      "branch": "co_doc",
+      "generation": "immortal",
+      "lineage": "a",
+      "source_codex_id": "tmb.codex.poison.co_doc.lineage_a.immortal",
+      "prerequisite_technique_ids": [
+        "tmb.technique.poison.common.human.base",
+        "tmb.technique.poison.co_doc.human.base"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 6000,
+        "spirit_stones": 500000
+      },
+      "study_ticks": 240,
+      "candidate_prerequisites": {
+        "cultivation_realm": 11,
+        "body_realm": 11,
+        "main_mastery_stage": 3,
+        "human_active_skill_level": 7,
+        "human_ultimate_skill_level": 4,
+        "human_active_slot": "active_01",
+        "human_ultimate_slot": "ultimate",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.poison.co_doc.immortal.b",
+      "name": "Cổ Độc · Phệ Cổ · Tiên Giai",
+      "school": "poison",
+      "branch": "co_doc",
+      "generation": "immortal",
+      "lineage": "b",
+      "source_codex_id": "tmb.codex.poison.co_doc.lineage_b.immortal",
+      "prerequisite_technique_ids": [
+        "tmb.technique.poison.common.human.base",
+        "tmb.technique.poison.co_doc.human.base"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 6000,
+        "spirit_stones": 500000
+      },
+      "study_ticks": 240,
+      "candidate_prerequisites": {
+        "cultivation_realm": 11,
+        "body_realm": 11,
+        "main_mastery_stage": 3,
+        "human_active_skill_level": 7,
+        "human_ultimate_skill_level": 4,
+        "human_active_slot": "active_01",
+        "human_ultimate_slot": "ultimate",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.poison.duoc_doc.immortal.a",
+      "name": "Dược Độc · Hồi Thiên · Tiên Giai",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "generation": "immortal",
+      "lineage": "a",
+      "source_codex_id": "tmb.codex.poison.duoc_doc.lineage_a.immortal",
+      "prerequisite_technique_ids": [
+        "tmb.technique.poison.common.human.base",
+        "tmb.technique.poison.duoc_doc.human.base"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 6000,
+        "spirit_stones": 500000
+      },
+      "study_ticks": 240,
+      "candidate_prerequisites": {
+        "cultivation_realm": 11,
+        "body_realm": 11,
+        "main_mastery_stage": 3,
+        "human_active_skill_level": 7,
+        "human_ultimate_skill_level": 4,
+        "human_active_slot": "active_01",
+        "human_ultimate_slot": "ultimate",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.technique.poison.duoc_doc.immortal.b",
+      "name": "Dược Độc · Dĩ Độc · Tiên Giai",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "generation": "immortal",
+      "lineage": "b",
+      "source_codex_id": "tmb.codex.poison.duoc_doc.lineage_b.immortal",
+      "prerequisite_technique_ids": [
+        "tmb.technique.poison.common.human.base",
+        "tmb.technique.poison.duoc_doc.human.base"
+      ],
+      "slot_types": [
+        "main",
+        "aux"
+      ],
+      "cost": {
+        "contribution": 6000,
+        "spirit_stones": 500000
+      },
+      "study_ticks": 240,
+      "candidate_prerequisites": {
+        "cultivation_realm": 11,
+        "body_realm": 11,
+        "main_mastery_stage": 3,
+        "human_active_skill_level": 7,
+        "human_ultimate_skill_level": 4,
+        "human_active_slot": "active_01",
+        "human_ultimate_slot": "ultimate",
+        "lineage_codex_required": true
+      },
+      "combat_effects_enabled": false,
+      "balance_status": "candidate"
+    }
   ]
 }
-

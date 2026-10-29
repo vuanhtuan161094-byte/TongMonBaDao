@@ -2,8 +2,8 @@
   "schema_version": 1,
   "enabled": false,
   "release_status": "D2_GATED_CANDIDATE_COSTS_NO_DROP_RATES",
-  "family_count": 105,
-  "archivable_count": 96,
+  "family_count": 123,
+  "archivable_count": 114,
   "drop_profiles": [],
   "codices": [
     {
@@ -1685,6 +1685,294 @@
       "fragment_resource_id": "",
       "restore_fragments_candidate": 0,
       "balance_status": "branch_awakening"
+    },
+    {
+      "id": "tmb.codex.bow.liep_anh.lineage_a.immortal",
+      "name": "Liệp Ảnh · Truy Hồn — Tiên Kinh",
+      "school": "bow",
+      "branch": "liep_anh",
+      "slot": "active_01",
+      "family_id": "tmb.skill.bow.liep_anh.active_01",
+      "source_node_id": "tmb.skill.bow.liep_anh.active_01.immortal.a",
+      "generation": "immortal",
+      "lineage": "a",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.liep_anh.lineage_a.immortal",
+      "fragment_resource_id": "tmb.item.codex.fragment.immortal",
+      "restore_fragments_candidate": 60,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.liep_anh.lineage_b.immortal",
+      "name": "Liệp Ảnh · Xuyên Thành — Tiên Kinh",
+      "school": "bow",
+      "branch": "liep_anh",
+      "slot": "active_01",
+      "family_id": "tmb.skill.bow.liep_anh.active_01",
+      "source_node_id": "tmb.skill.bow.liep_anh.active_01.immortal.b",
+      "generation": "immortal",
+      "lineage": "b",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.liep_anh.lineage_b.immortal",
+      "fragment_resource_id": "tmb.item.codex.fragment.immortal",
+      "restore_fragments_candidate": 60,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.linh_tien.lineage_a.immortal",
+      "name": "Linh Tiễn · Tụ Nguyên — Tiên Kinh",
+      "school": "bow",
+      "branch": "linh_tien",
+      "slot": "active_01",
+      "family_id": "tmb.skill.bow.linh_tien.active_01",
+      "source_node_id": "tmb.skill.bow.linh_tien.active_01.immortal.a",
+      "generation": "immortal",
+      "lineage": "a",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.linh_tien.lineage_a.immortal",
+      "fragment_resource_id": "tmb.item.codex.fragment.immortal",
+      "restore_fragments_candidate": 60,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.linh_tien.lineage_b.immortal",
+      "name": "Linh Tiễn · Thiên Tượng — Tiên Kinh",
+      "school": "bow",
+      "branch": "linh_tien",
+      "slot": "active_01",
+      "family_id": "tmb.skill.bow.linh_tien.active_01",
+      "source_node_id": "tmb.skill.bow.linh_tien.active_01.immortal.b",
+      "generation": "immortal",
+      "lineage": "b",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.linh_tien.lineage_b.immortal",
+      "fragment_resource_id": "tmb.item.codex.fragment.immortal",
+      "restore_fragments_candidate": 60,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.thien_vu.lineage_a.immortal",
+      "name": "Thiên Vũ · Tiễn Hải — Tiên Kinh",
+      "school": "bow",
+      "branch": "thien_vu",
+      "slot": "active_01",
+      "family_id": "tmb.skill.bow.thien_vu.active_01",
+      "source_node_id": "tmb.skill.bow.thien_vu.active_01.immortal.a",
+      "generation": "immortal",
+      "lineage": "a",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.thien_vu.lineage_a.immortal",
+      "fragment_resource_id": "tmb.item.codex.fragment.immortal",
+      "restore_fragments_candidate": 60,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.thien_vu.lineage_b.immortal",
+      "name": "Thiên Vũ · Quy Nhất — Tiên Kinh",
+      "school": "bow",
+      "branch": "thien_vu",
+      "slot": "active_01",
+      "family_id": "tmb.skill.bow.thien_vu.active_01",
+      "source_node_id": "tmb.skill.bow.thien_vu.active_01.immortal.b",
+      "generation": "immortal",
+      "lineage": "b",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.thien_vu.lineage_b.immortal",
+      "fragment_resource_id": "tmb.item.codex.fragment.immortal",
+      "restore_fragments_candidate": 60,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.ba_quyen.lineage_a.immortal",
+      "name": "Bá Quyền · Phá Quân — Tiên Kinh",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "slot": "active_01",
+      "family_id": "tmb.skill.fist.ba_quyen.active_01",
+      "source_node_id": "tmb.skill.fist.ba_quyen.active_01.immortal.a",
+      "generation": "immortal",
+      "lineage": "a",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.ba_quyen.lineage_a.immortal",
+      "fragment_resource_id": "tmb.item.codex.fragment.immortal",
+      "restore_fragments_candidate": 60,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.ba_quyen.lineage_b.immortal",
+      "name": "Bá Quyền · Địa Liệt — Tiên Kinh",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "slot": "active_01",
+      "family_id": "tmb.skill.fist.ba_quyen.active_01",
+      "source_node_id": "tmb.skill.fist.ba_quyen.active_01.immortal.b",
+      "generation": "immortal",
+      "lineage": "b",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.ba_quyen.lineage_b.immortal",
+      "fragment_resource_id": "tmb.item.codex.fragment.immortal",
+      "restore_fragments_candidate": 60,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.kim_cang.lineage_a.immortal",
+      "name": "Kim Cang · Hộ Pháp — Tiên Kinh",
+      "school": "fist",
+      "branch": "kim_cang",
+      "slot": "active_01",
+      "family_id": "tmb.skill.fist.kim_cang.active_01",
+      "source_node_id": "tmb.skill.fist.kim_cang.active_01.immortal.a",
+      "generation": "immortal",
+      "lineage": "a",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.kim_cang.lineage_a.immortal",
+      "fragment_resource_id": "tmb.item.codex.fragment.immortal",
+      "restore_fragments_candidate": 60,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.kim_cang.lineage_b.immortal",
+      "name": "Kim Cang · Phản Chấn — Tiên Kinh",
+      "school": "fist",
+      "branch": "kim_cang",
+      "slot": "active_01",
+      "family_id": "tmb.skill.fist.kim_cang.active_01",
+      "source_node_id": "tmb.skill.fist.kim_cang.active_01.immortal.b",
+      "generation": "immortal",
+      "lineage": "b",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.kim_cang.lineage_b.immortal",
+      "fragment_resource_id": "tmb.item.codex.fragment.immortal",
+      "restore_fragments_candidate": 60,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.huyet_quyen.lineage_a.immortal",
+      "name": "Huyết Quyền · Huyết Ma — Tiên Kinh",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "slot": "active_01",
+      "family_id": "tmb.skill.fist.huyet_quyen.active_01",
+      "source_node_id": "tmb.skill.fist.huyet_quyen.active_01.immortal.a",
+      "generation": "immortal",
+      "lineage": "a",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.huyet_quyen.lineage_a.immortal",
+      "fragment_resource_id": "tmb.item.codex.fragment.immortal",
+      "restore_fragments_candidate": 60,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.huyet_quyen.lineage_b.immortal",
+      "name": "Huyết Quyền · Huyết Sinh — Tiên Kinh",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "slot": "active_01",
+      "family_id": "tmb.skill.fist.huyet_quyen.active_01",
+      "source_node_id": "tmb.skill.fist.huyet_quyen.active_01.immortal.b",
+      "generation": "immortal",
+      "lineage": "b",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.huyet_quyen.lineage_b.immortal",
+      "fragment_resource_id": "tmb.item.codex.fragment.immortal",
+      "restore_fragments_candidate": 60,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.doc_cham.lineage_a.immortal",
+      "name": "Độc Châm · Thực Cốt — Tiên Kinh",
+      "school": "poison",
+      "branch": "doc_cham",
+      "slot": "active_01",
+      "family_id": "tmb.skill.poison.doc_cham.active_01",
+      "source_node_id": "tmb.skill.poison.doc_cham.active_01.immortal.a",
+      "generation": "immortal",
+      "lineage": "a",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.doc_cham.lineage_a.immortal",
+      "fragment_resource_id": "tmb.item.codex.fragment.immortal",
+      "restore_fragments_candidate": 60,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.doc_cham.lineage_b.immortal",
+      "name": "Độc Châm · Bạo Phệ — Tiên Kinh",
+      "school": "poison",
+      "branch": "doc_cham",
+      "slot": "active_01",
+      "family_id": "tmb.skill.poison.doc_cham.active_01",
+      "source_node_id": "tmb.skill.poison.doc_cham.active_01.immortal.b",
+      "generation": "immortal",
+      "lineage": "b",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.doc_cham.lineage_b.immortal",
+      "fragment_resource_id": "tmb.item.codex.fragment.immortal",
+      "restore_fragments_candidate": 60,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.co_doc.lineage_a.immortal",
+      "name": "Cổ Độc · Liên Tâm — Tiên Kinh",
+      "school": "poison",
+      "branch": "co_doc",
+      "slot": "active_01",
+      "family_id": "tmb.skill.poison.co_doc.active_01",
+      "source_node_id": "tmb.skill.poison.co_doc.active_01.immortal.a",
+      "generation": "immortal",
+      "lineage": "a",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.co_doc.lineage_a.immortal",
+      "fragment_resource_id": "tmb.item.codex.fragment.immortal",
+      "restore_fragments_candidate": 60,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.co_doc.lineage_b.immortal",
+      "name": "Cổ Độc · Phệ Cổ — Tiên Kinh",
+      "school": "poison",
+      "branch": "co_doc",
+      "slot": "active_01",
+      "family_id": "tmb.skill.poison.co_doc.active_01",
+      "source_node_id": "tmb.skill.poison.co_doc.active_01.immortal.b",
+      "generation": "immortal",
+      "lineage": "b",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.co_doc.lineage_b.immortal",
+      "fragment_resource_id": "tmb.item.codex.fragment.immortal",
+      "restore_fragments_candidate": 60,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.duoc_doc.lineage_a.immortal",
+      "name": "Dược Độc · Hồi Thiên — Tiên Kinh",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "slot": "active_01",
+      "family_id": "tmb.skill.poison.duoc_doc.active_01",
+      "source_node_id": "tmb.skill.poison.duoc_doc.active_01.immortal.a",
+      "generation": "immortal",
+      "lineage": "a",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.duoc_doc.lineage_a.immortal",
+      "fragment_resource_id": "tmb.item.codex.fragment.immortal",
+      "restore_fragments_candidate": 60,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.duoc_doc.lineage_b.immortal",
+      "name": "Dược Độc · Dĩ Độc — Tiên Kinh",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "slot": "active_01",
+      "family_id": "tmb.skill.poison.duoc_doc.active_01",
+      "source_node_id": "tmb.skill.poison.duoc_doc.active_01.immortal.b",
+      "generation": "immortal",
+      "lineage": "b",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.duoc_doc.lineage_b.immortal",
+      "fragment_resource_id": "tmb.item.codex.fragment.immortal",
+      "restore_fragments_candidate": 60,
+      "balance_status": "candidate"
     }
   ],
   "warehouse_items": [
@@ -3086,6 +3374,276 @@
       "tags": [
         "v63_codex_reward",
         "v63_codex_fragment"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.liep_anh.lineage_a.immortal",
+      "name": "Liệp Ảnh · Truy Hồn — Tàn Quyển Tiên Giai",
+      "kind": "codex_manual",
+      "realm_grade": "pham",
+      "realm_rank": 4,
+      "tags": [
+        "codex",
+        "manual",
+        "immortal",
+        "bow",
+        "liep_anh",
+        "a"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.liep_anh.lineage_b.immortal",
+      "name": "Liệp Ảnh · Xuyên Thành — Tàn Quyển Tiên Giai",
+      "kind": "codex_manual",
+      "realm_grade": "pham",
+      "realm_rank": 4,
+      "tags": [
+        "codex",
+        "manual",
+        "immortal",
+        "bow",
+        "liep_anh",
+        "b"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.linh_tien.lineage_a.immortal",
+      "name": "Linh Tiễn · Tụ Nguyên — Tàn Quyển Tiên Giai",
+      "kind": "codex_manual",
+      "realm_grade": "pham",
+      "realm_rank": 4,
+      "tags": [
+        "codex",
+        "manual",
+        "immortal",
+        "bow",
+        "linh_tien",
+        "a"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.linh_tien.lineage_b.immortal",
+      "name": "Linh Tiễn · Thiên Tượng — Tàn Quyển Tiên Giai",
+      "kind": "codex_manual",
+      "realm_grade": "pham",
+      "realm_rank": 4,
+      "tags": [
+        "codex",
+        "manual",
+        "immortal",
+        "bow",
+        "linh_tien",
+        "b"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.thien_vu.lineage_a.immortal",
+      "name": "Thiên Vũ · Tiễn Hải — Tàn Quyển Tiên Giai",
+      "kind": "codex_manual",
+      "realm_grade": "pham",
+      "realm_rank": 4,
+      "tags": [
+        "codex",
+        "manual",
+        "immortal",
+        "bow",
+        "thien_vu",
+        "a"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.thien_vu.lineage_b.immortal",
+      "name": "Thiên Vũ · Quy Nhất — Tàn Quyển Tiên Giai",
+      "kind": "codex_manual",
+      "realm_grade": "pham",
+      "realm_rank": 4,
+      "tags": [
+        "codex",
+        "manual",
+        "immortal",
+        "bow",
+        "thien_vu",
+        "b"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.ba_quyen.lineage_a.immortal",
+      "name": "Bá Quyền · Phá Quân — Tàn Quyển Tiên Giai",
+      "kind": "codex_manual",
+      "realm_grade": "pham",
+      "realm_rank": 4,
+      "tags": [
+        "codex",
+        "manual",
+        "immortal",
+        "fist",
+        "ba_quyen",
+        "a"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.ba_quyen.lineage_b.immortal",
+      "name": "Bá Quyền · Địa Liệt — Tàn Quyển Tiên Giai",
+      "kind": "codex_manual",
+      "realm_grade": "pham",
+      "realm_rank": 4,
+      "tags": [
+        "codex",
+        "manual",
+        "immortal",
+        "fist",
+        "ba_quyen",
+        "b"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.kim_cang.lineage_a.immortal",
+      "name": "Kim Cang · Hộ Pháp — Tàn Quyển Tiên Giai",
+      "kind": "codex_manual",
+      "realm_grade": "pham",
+      "realm_rank": 4,
+      "tags": [
+        "codex",
+        "manual",
+        "immortal",
+        "fist",
+        "kim_cang",
+        "a"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.kim_cang.lineage_b.immortal",
+      "name": "Kim Cang · Phản Chấn — Tàn Quyển Tiên Giai",
+      "kind": "codex_manual",
+      "realm_grade": "pham",
+      "realm_rank": 4,
+      "tags": [
+        "codex",
+        "manual",
+        "immortal",
+        "fist",
+        "kim_cang",
+        "b"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.huyet_quyen.lineage_a.immortal",
+      "name": "Huyết Quyền · Huyết Ma — Tàn Quyển Tiên Giai",
+      "kind": "codex_manual",
+      "realm_grade": "pham",
+      "realm_rank": 4,
+      "tags": [
+        "codex",
+        "manual",
+        "immortal",
+        "fist",
+        "huyet_quyen",
+        "a"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.huyet_quyen.lineage_b.immortal",
+      "name": "Huyết Quyền · Huyết Sinh — Tàn Quyển Tiên Giai",
+      "kind": "codex_manual",
+      "realm_grade": "pham",
+      "realm_rank": 4,
+      "tags": [
+        "codex",
+        "manual",
+        "immortal",
+        "fist",
+        "huyet_quyen",
+        "b"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.doc_cham.lineage_a.immortal",
+      "name": "Độc Châm · Thực Cốt — Tàn Quyển Tiên Giai",
+      "kind": "codex_manual",
+      "realm_grade": "pham",
+      "realm_rank": 4,
+      "tags": [
+        "codex",
+        "manual",
+        "immortal",
+        "poison",
+        "doc_cham",
+        "a"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.doc_cham.lineage_b.immortal",
+      "name": "Độc Châm · Bạo Phệ — Tàn Quyển Tiên Giai",
+      "kind": "codex_manual",
+      "realm_grade": "pham",
+      "realm_rank": 4,
+      "tags": [
+        "codex",
+        "manual",
+        "immortal",
+        "poison",
+        "doc_cham",
+        "b"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.co_doc.lineage_a.immortal",
+      "name": "Cổ Độc · Liên Tâm — Tàn Quyển Tiên Giai",
+      "kind": "codex_manual",
+      "realm_grade": "pham",
+      "realm_rank": 4,
+      "tags": [
+        "codex",
+        "manual",
+        "immortal",
+        "poison",
+        "co_doc",
+        "a"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.co_doc.lineage_b.immortal",
+      "name": "Cổ Độc · Phệ Cổ — Tàn Quyển Tiên Giai",
+      "kind": "codex_manual",
+      "realm_grade": "pham",
+      "realm_rank": 4,
+      "tags": [
+        "codex",
+        "manual",
+        "immortal",
+        "poison",
+        "co_doc",
+        "b"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.duoc_doc.lineage_a.immortal",
+      "name": "Dược Độc · Hồi Thiên — Tàn Quyển Tiên Giai",
+      "kind": "codex_manual",
+      "realm_grade": "pham",
+      "realm_rank": 4,
+      "tags": [
+        "codex",
+        "manual",
+        "immortal",
+        "poison",
+        "duoc_doc",
+        "a"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.duoc_doc.lineage_b.immortal",
+      "name": "Dược Độc · Dĩ Độc — Tàn Quyển Tiên Giai",
+      "kind": "codex_manual",
+      "realm_grade": "pham",
+      "realm_rank": 4,
+      "tags": [
+        "codex",
+        "manual",
+        "immortal",
+        "poison",
+        "duoc_doc",
+        "b"
       ]
     }
   ]

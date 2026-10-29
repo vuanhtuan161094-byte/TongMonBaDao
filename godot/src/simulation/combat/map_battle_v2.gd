@@ -115,7 +115,7 @@ func setup(id: String, party: Array, monsters: Array, keep_encounter_open: bool 
             "linked_disciple":row.get("disciple",null)
         })
         var v63_disciple_actor: Dictionary = entries[entries.size()-1]
-        for field in ["v63_skill_loadout","v63_skill_ready","v63_combat_enabled","v63_passive_ids","v63_combat_branch_id","v63_innate_skill_id","v63_basic_skill_id","basic_element"]:
+        for field in ["v63_skill_loadout","v63_skill_ready","v63_combat_enabled","v63_passive_ids","v63_combat_branch_id","v63_combat_lineage","v63_innate_skill_id","v63_basic_skill_id","basic_element"]:
             if row.has(field):
                 v63_disciple_actor[field] = row[field].duplicate(true) if row[field] is Array or row[field] is Dictionary else row[field]
     for raw in monsters:
@@ -152,7 +152,8 @@ func setup(id: String, party: Array, monsters: Array, keep_encounter_open: bool 
             "linked_disciple":null,"context_sources":[]
         })
         var v63_monster_actor: Dictionary = entries[entries.size()-1]
-        for field in ["v63_boss_id","v63_custom_boss_ai","v63_combat_enabled","v63_boss_phase","v63_skill_ready"]:
+        for field in ["v63_boss_id","v63_custom_boss_ai","v63_combat_enabled","v63_boss_phase","v63_skill_ready",
+                "v63_boss_counter_window","v63_boss_break_gauge","v63_boss_stagger_until","v63_combat_lineage"]:
             if row.has(field):
                 v63_monster_actor[field] = row[field].duplicate(true) if row[field] is Array or row[field] is Dictionary else row[field]
         if keep_encounter_open:
@@ -790,7 +791,7 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
     var actual_damage := float(settlement["actual_damage"])
     target["hp"] = float(settlement["target_hp_after"])
     attacker["hp"] = float(settlement["attacker_hp_after"])
-    V63HumanSkillCombatSystem.observe_boss_damage(self,target,target_hp_before)
+    V63HumanSkillCombatSystem.observe_boss_damage(self,target,target_hp_before,attacker,damage_element,kind)
     _sync_linked_hp(attacker)
     _sync_linked_hp(target)
     actions += 1
