@@ -155,6 +155,30 @@ func _run() -> void:
     if not _check(not bool(long_mastery.get("ok", false)) and str(long_mastery.get("reason", "")) == "invalid_mastery_event",
         "mastery receipt key exceeded the durable operation-ID limit"):
         return
+    var saved_event_count := loaded_state.sect.v63_learning_event_count
+    if not _check(service.save_to_path(loaded_state, SAVE_PATH) == OK,
+        "completed learning knowledge and receipts did not save"):
+        return
+    var completed_reload := service.load_from_path(SAVE_PATH)
+    if not _check(completed_reload != null, "completed learning state and receipts did not reload"):
+        return
+    var completed_disciple: DiscipleState = completed_reload.disciples[&"d3_student"]
+    if not _check(completed_disciple.known_techniques.has(str(foundation.id))
+        and completed_disciple.v63_study_job.is_empty()
+        and completed_reload.sect.v63_learning_operation_receipts.has(completion_receipt_id)
+        and completed_reload.sect.v63_learning_operation_receipts.has("mastery:event:mastery:1")
+        and completed_reload.sect.v63_learning_event_count == saved_event_count,
+        "completion knowledge, job release or exactly-once receipts changed during reload"):
+        return
+    var replay_scheduler := SimulationScheduler.new(completed_reload)
+    replay_scheduler.v63_preview_overrides = PREVIEW.duplicate(true)
+    replay_scheduler.run_ticks(1)
+    if not _check(completed_reload.sect.v63_learning_event_count == saved_event_count
+        and float(completed_disciple.known_techniques[str(foundation.id)].mastery_xp) == 100.0,
+        "post-reload scheduler replay repeated a committed learning or mastery effect"):
+        return
+    loaded_state = completed_reload
+    loaded_disciple = completed_disciple
 
     if not _archive_source(loaded_state, branch, "branch"):
         return
