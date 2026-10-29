@@ -17,6 +17,7 @@ Proceed automatically on the same branch and existing `godot/scenes/p3/p3_2_land
 Concrete initial D7 write allowlist:
 - `godot/src/presentation/p3_2_landscape_sect.gd`
 - `godot/src/simulation/combat/hunting_pve_run_v2.gd` (one additive optional preview-gate parameter on `begin_multicamp`, default `{}`, forwarded to existing `begin`; no other simulation changes)
+- `godot/src/simulation/core/simulation_runtime_clock_v2.gd` (forward existing scheduler preview overrides on each multicamp resume and service an opted-in single Boss encounter through the same shared clock, saved snapshot and existing settlement path; no new scheduler/settlement)
 - `godot/src/presentation/p3/b3_care_combat_v5_presenter.gd`
 - `godot/src/presentation/p3/map_battle_world_layer_v2.gd`
 - `godot/src/presentation/p2_3_techniques.gd`
@@ -26,13 +27,14 @@ Concrete initial D7 write allowlist:
 - `godot/data/presentation/v63_combat_vfx_manifest.json` (new)
 - `godot/tests/presentation/v63_d7_combat_hud_test.gd` (new)
 - `godot/tests/presentation/v63_d7_archive_entry_test.gd` (new)
+- `godot/tests/simulation/v63_d7_runtime_boss_encounter_test.gd` (new; real Boss resume/tick/settlement via shared runtime clock)
 - `godot/tests/presentation/pve_multicamp_p3_2_live_integration_test.gd` (regression repair only if required)
 - `docs/implementation/V65_COMBAT_COVERAGE_LEDGER_20261029.json`
 - `docs/implementation/V65_D7_UI_VFX_EVIDENCE_20261030.md` (new)
 - `CURRENT_CHECKPOINT.md`
 - `NEXT_CHAT_HANDOFF.md`
 
-D7 protected: all simulation behavior except the single `HuntingPveRunV2.begin_multicamp` preview-gate forwarding change listed above; SaveService/schema, economy/warehouse/scheduler authority; source/raw assets and existing Source A manifests; JX gameplay art; main, PR #52, merge, branch cleanup. The extension is required because `begin_multicamp` otherwise discards the explicit preview override accepted by the existing `begin` and `resume_active` APIs. Default `{}` preserves current OFF behavior. No additional simulation path is authorized. Tests: new D7 UI/VFX presentation tests plus P3.2 live integration/map camera/live modular actor, P2.3 technique, D2 Archive UI, full 21-script D6 matrix and affected PvE/Save/Return/HP0; official Windows Godot 4.7.2 import, sequential logs/source parity, 1280×720 GUI and owner review.
+D7 protected: all simulation behavior except (1) the `HuntingPveRunV2.begin_multicamp` optional preview-gate forwarding with default `{}` and (2) `SimulationRuntimeClockV2` forwarding `scheduler.v63_preview_overrides` into resume plus ticking an already-started single mode=encounter Boss run through the same shared clock and existing snapshot/settlement APIs. Do not add a scheduler, alter tick budget/remainder semantics, change rewards, or touch SaveService/schema, economy/Warehouse/scheduler authority. Source/raw assets and existing Source A manifests stay read-only; no JX gameplay art; main, PR #52, merge, and branch cleanup are excluded. The clock changes are required because its current multicamp resume passes `{}` and single Boss encounters are not serviced by the P3.2 runtime path. Empty overrides retain OFF behavior. Tests: new D7 UI/VFX and Boss runtime presentation/simulation tests plus P3.2 live integration/map camera/live modular actor, P2.3 technique, D2 Archive UI, full 21-script D6 matrix and affected PvE/Save/Return/HP0; official Windows Godot 4.7.2 import, sequential logs/source parity, 1280×720 GUI and owner review.
 
 ## 29/10/2026 — D5 Immortal implementation checkpoint
 
