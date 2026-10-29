@@ -3,78 +3,100 @@ extends RefCounted
 
 const CATALOGUE_PATH := "res://data/combat/v63_human_combat_catalog.json"
 const MAX_SKILLS_PER_DISCIPLE := 12
+const MAX_TARGETS := 3
+const POISON_OWNER_CAP := 5
+const POISON_BOSS_TARGET_CAP := 30
+const EFFECTS := ["damage","poison","guard","heal","cleanse","mark","consume_poison","mobility","passive","innate"]
+static var _catalogue_cache: Dictionary = {}
 
 static func load_catalogue(path: String = CATALOGUE_PATH) -> Dictionary:
-    var file := FileAccess.open(path, FileAccess.READ)
+    if path == CATALOGUE_PATH and not _catalogue_cache.is_empty():
+        return {"ok":true,"errors":[],"data":_catalogue_cache.duplicate(true)}
+    var file := FileAccess.open(path,FileAccess.READ)
     if file == null:
         return {"ok":false,"errors":["cannot_open_human_combat_catalogue"],"data":{}}
     var parsed: Variant = JSON.parse_string(file.get_as_text())
     if not (parsed is Dictionary):
         return {"ok":false,"errors":["human_combat_catalogue_not_object"],"data":{}}
     var errors := validate_catalogue(parsed)
+    if errors.is_empty() and path == CATALOGUE_PATH:
+        _catalogue_cache = parsed.duplicate(true)
     return {"ok":errors.is_empty(),"errors":errors,"data":parsed}
 
 static func validate_catalogue(data: Dictionary) -> Array[String]:
     var errors: Array[String] = []
-    if int(data.get("schema_version",-1)) != 1 or bool(data.get("enabled",true)):
+    if int(data.get("schema_version",-1)) != 2 or bool(data.get("enabled",true)):
         errors.append("bad_human_combat_schema_or_release_gate")
     var skills = data.get("skills",null)
     var bosses = data.get("bosses",null)
-    if not (skills is Array) or not (bosses is Array):
+    var branches = data.get("branches",null)
+    if not (skills is Array) or not (bosses is Array) or not (branches is Array):
         errors.append("missing_human_combat_arrays")
         return errors
+    var branch_ids: Dictionary = {}
+    for branch in branches:
+        var branch_id := str(branch.get("id","")) if branch is Dictionary else ""
+        if not _valid_slug(branch_id) or branch_ids.has(branch_id):
+            errors.append("bad_or_duplicate_human_branch:"+branch_id)
+        branch_ids[branch_id] = true
+    if branch_ids.size() != 9:
+        errors.append("human_branch_count_not_nine")
     var ids: Dictionary = {}
-    for raw in skills:
-        if not (raw is Dictionary):
+    for skill in skills:
+        if not (skill is Dictionary):
             errors.append("human_skill_not_object")
             continue
-        var id := str(raw.get("id",""))
+        var id := str(skill.get("id",""))
+        var slot := str(skill.get("slot",""))
+        var effect := str(skill.get("effect",""))
         if not _valid_id(id) or ids.has(id):
             errors.append("bad_or_duplicate_human_skill:"+id)
         ids[id] = true
-        if str(raw.get("tier","")) != "human" or str(raw.get("effect","")) != "damage":
-            errors.append("unsupported_human_skill_effect:"+id)
-        if str(raw.get("source_codex_id","")).is_empty() or str(raw.get("node_id","")).is_empty():
-            errors.append("human_skill_missing_learning_identity:"+id)
-        if str(raw.get("slot","")) not in ["basic","active","ultimate","mobility","passive"]:
-            errors.append("human_skill_bad_slot:"+id)
-        if float(raw.get("damage_ratio",0.0)) <= 0.0 or float(raw.get("range",0.0)) <= 0.0 or float(raw.get("cast_time",-1.0)) < 0.0 or float(raw.get("cooldown",0.0)) <= 0.0 or float(raw.get("projectile_speed",0.0)) < 0.0 or not CombatStatsV2.ELEMENTS.has(str(raw.get("element",""))):
+        if str(skill.get("tier","")) != "human" or not EFFECTS.has(effect):
+            errors.append("unsupported_human_skill:"+id)
+        if slot not in ["basic","active","ultimate","mobility","passive","innate"]:
+            errors.append("bad_human_skill_slot:"+id)
+        if not str(skill.get("branch","")).is_empty() and not branch_ids.has(str(skill.branch)):
+            errors.append("unknown_human_skill_branch:"+id)
+        if bool(skill.get("archivable",false)) != (slot != "innate") or (slot != "innate" and str(skill.get("source_codex_id","")).is_empty()):
+            errors.append("human_skill_archive_mismatch:"+id)
+        if float(skill.get("damage_ratio",0.0)) <= 0.0 or float(skill.get("range",0.0)) <= 0.0 or float(skill.get("cooldown",0.0)) <= 0.0 or float(skill.get("cast_time",-1.0)) < 0.0 or not CombatStatsV2.ELEMENTS.has(str(skill.get("element",""))):
             errors.append("human_skill_bad_action_values:"+id)
+        if not ["single_target","circle","line"].has(str(skill.get("shape",""))) or float(skill.get("radius",0.0)) < 0.0 or int(skill.get("target_limit",0)) < 1 or int(skill.get("target_limit",0)) > MAX_TARGETS:
+            errors.append("human_skill_bad_shape_or_bounds:"+id)
+        if effect in ["passive","innate"] and not (skill.get("passive_modifiers",null) is Dictionary):
+            errors.append("human_skill_missing_passive_data:"+id)
+    if skills.size() != 105:
+        errors.append("human_skill_coverage_not_105")
     var boss_ids: Dictionary = {}
-    for raw_boss in bosses:
-        if not (raw_boss is Dictionary):
+    for boss in bosses:
+        if not (boss is Dictionary):
             errors.append("human_boss_not_object")
             continue
-        var boss_id := str(raw_boss.get("id",""))
-        if not _valid_id(boss_id) or boss_ids.has(boss_id):
+        var boss_id := str(boss.get("id",""))
+        if not _valid_id(boss_id) or boss_ids.has(boss_id) or str(boss.get("tier_band","")) != "human":
             errors.append("bad_or_duplicate_human_boss:"+boss_id)
         boss_ids[boss_id] = true
-        if str(raw_boss.get("tier_band","")) != "human" or not MonsterCatalogueV2.SPECIES.has(str(raw_boss.get("origin_species_id",""))):
-            errors.append("human_boss_missing_human_tier_or_source_species:"+boss_id)
-        var thresholds = raw_boss.get("phase_thresholds",[])
+        if not MonsterCatalogueV2.SPECIES.has(str(boss.get("origin_species_id",""))):
+            errors.append("human_boss_missing_source_species:"+boss_id)
+        var thresholds = boss.get("phase_thresholds",[])
         if not (thresholds is Array) or thresholds.size() != 2 or float(thresholds[0]) >= 1.0 or float(thresholds[0]) <= float(thresholds[1]) or float(thresholds[1]) <= 0.0:
-            errors.append("human_boss_bad_phase_thresholds:"+boss_id)
-        var boss_skills = raw_boss.get("skills",[])
-        if not (boss_skills is Array) or boss_skills.is_empty():
-            errors.append("human_boss_missing_skills:"+boss_id)
-            continue
+            errors.append("human_boss_bad_phases:"+boss_id)
         var observed: Array = []
-        for raw_skill in boss_skills:
-            if not (raw_skill is Dictionary):
-                errors.append("human_boss_skill_not_object:"+boss_id)
+        for action in boss.get("skills",[]):
+            if not (action is Dictionary):
+                errors.append("human_boss_action_not_object:"+boss_id)
                 continue
-            var skill_id := str(raw_skill.get("id",""))
-            if not skill_id.begins_with("tmb.bossskill.") or observed.has(skill_id):
-                errors.append("bad_or_duplicate_human_boss_skill:"+skill_id)
-            observed.append(skill_id)
-            if not ["circle","single_target"].has(str(raw_skill.get("shape",""))):
-                errors.append("unsupported_human_boss_shape:"+skill_id)
-            if float(raw_skill.get("damage_ratio",0.0)) <= 0.0 or float(raw_skill.get("range",0.0)) <= 0.0 or float(raw_skill.get("cast_time",0.0)) <= 0.0 or float(raw_skill.get("cooldown",0.0)) <= 0.0 or float(raw_skill.get("radius",-1.0)) < 0.0 or int(raw_skill.get("target_limit",0)) < 1 or not CombatStatsV2.ELEMENTS.has(str(raw_skill.get("element",""))):
-                errors.append("human_boss_bad_action_values:"+skill_id)
-        if not (raw_boss.get("skill_ids",[]) is Array) or raw_boss.skill_ids != observed:
-            errors.append("human_boss_skill_index_mismatch:"+boss_id)
-    if skills.is_empty() or bosses.is_empty():
-        errors.append("empty_human_combat_pilot")
+            var action_id := str(action.get("id",""))
+            if not action_id.begins_with("tmb.bossskill.") or observed.has(action_id) or not EFFECTS.has(str(action.get("effect",""))):
+                errors.append("bad_human_boss_action:"+action_id)
+            observed.append(action_id)
+            if float(action.get("damage_ratio",0.0)) <= 0.0 or float(action.get("range",0.0)) <= 0.0 or float(action.get("cast_time",0.0)) <= 0.0 or float(action.get("cooldown",0.0)) <= 0.0:
+                errors.append("bad_human_boss_action_values:"+action_id)
+        if observed.size() < 3 or boss.get("skill_ids",[]) != observed:
+            errors.append("human_boss_action_index_mismatch:"+boss_id)
+    if bosses.size() != 3:
+        errors.append("human_boss_coverage_not_three")
     return errors
 
 static func is_enabled(state: SimulationState, preview_overrides: Dictionary = {}) -> bool:
@@ -91,19 +113,27 @@ static func skill_definitions() -> Dictionary:
 static func skill_definition(skill_id: String) -> Dictionary:
     return skill_definitions().get(skill_id,{})
 
+static func branch_definitions() -> Dictionary:
+    var result: Dictionary = {}
+    var loaded := load_catalogue()
+    if bool(loaded.get("ok",false)):
+        for row in loaded.data.branches:
+            result[str(row.id)] = row.duplicate(true)
+    return result
+
 static func boss_definition(boss_id: String) -> Dictionary:
     var loaded := load_catalogue()
     if not bool(loaded.get("ok",false)):
         return {}
     for row in loaded.data.bosses:
-        if str(row.get("id","")) == boss_id:
+        if str(row.id) == boss_id:
             return row.duplicate(true)
     return {}
 
 static func boss_skill_definitions(boss_id: String) -> Dictionary:
     var result: Dictionary = {}
     for row in boss_definition(boss_id).get("skills",[]):
-        result[str(row.get("id",""))] = row.duplicate(true)
+        result[str(row.id)] = row.duplicate(true)
     return result
 
 static func learn_skill(state: SimulationState, disciple: DiscipleState, skill_id: String, preview_overrides: Dictionary = {}) -> Dictionary:
@@ -112,14 +142,14 @@ static func learn_skill(state: SimulationState, disciple: DiscipleState, skill_i
     if disciple == null or not state.disciples.has(disciple.id):
         return _failure("unknown_disciple")
     var definition := skill_definition(skill_id)
-    if definition.is_empty():
-        return _failure("unknown_human_skill")
+    if definition.is_empty() or not bool(definition.get("archivable",false)):
+        return _failure("unknown_or_derived_human_skill")
     var codex_id := str(definition.get("source_codex_id",""))
     if not V63SectArchiveSystem.transmission_available_for_disciple(state,disciple.id,codex_id,preview_overrides):
         return _failure("required_manual_not_archived")
     if disciple.v63_learned_skill_nodes.has(skill_id):
         return {"ok":true,"duplicate":true,"skill_id":skill_id}
-    disciple.v63_learned_skill_nodes[skill_id] = {"source_codex_id":codex_id,"learned_tick":maxi(state.tick,0),"mastery_xp":0.0}
+    disciple.v63_learned_skill_nodes[skill_id] = {"source_codex_id":codex_id,"learned_tick":maxi(state.tick,0),"mastery_xp":0.0,"branch_id":str(definition.get("branch",""))}
     return {"ok":true,"skill_id":skill_id,"codex_id":codex_id}
 
 static func equip_skill(state: SimulationState, disciple: DiscipleState, skill_id: String, preview_overrides: Dictionary = {}) -> Dictionary:
@@ -128,21 +158,27 @@ static func equip_skill(state: SimulationState, disciple: DiscipleState, skill_i
     if disciple == null or not state.disciples.has(disciple.id):
         return _failure("unknown_disciple")
     var definition := skill_definition(skill_id)
-    if definition.is_empty() or not disciple.v63_learned_skill_nodes.has(skill_id) or str(definition.get("effect","")) != "damage":
+    if definition.is_empty() or not bool(definition.get("archivable",false)) or not disciple.v63_learned_skill_nodes.has(skill_id):
         return _failure("skill_not_personally_learned")
     if disciple.v63_equipped_skill_ids.has(skill_id):
         return {"ok":true,"duplicate":true,"skill_id":skill_id}
+    var branch := str(definition.get("branch",""))
+    var selected := str(disciple.v63_combat_branch_id)
+    if not branch.is_empty() and not selected.is_empty() and branch != selected:
+        return _failure("skill_belongs_to_other_branch")
     var slot := str(definition.get("slot",""))
-    var limit := 4 if slot == "active" else (1 if slot in ["basic","ultimate","mobility"] else 5)
-    var same_slot := 0
-    for existing in disciple.v63_equipped_skill_ids:
-        if str(skill_definition(str(existing)).get("slot","")) == slot:
-            same_slot += 1
-    if same_slot >= limit or disciple.v63_equipped_skill_ids.size() >= MAX_SKILLS_PER_DISCIPLE:
+    var limit := 4 if slot == "active" else (5 if slot == "passive" else 1)
+    var count := 0
+    for old_id in disciple.v63_equipped_skill_ids:
+        if str(skill_definition(str(old_id)).get("slot","")) == slot:
+            count += 1
+    if count >= limit or disciple.v63_equipped_skill_ids.size() >= MAX_SKILLS_PER_DISCIPLE:
         return _failure("skill_slot_full")
     disciple.v63_equipped_skill_ids.append(skill_id)
     disciple.v63_equipped_skill_ids.sort()
-    return {"ok":true,"skill_id":skill_id,"slot":slot}
+    if not branch.is_empty() and selected.is_empty():
+        disciple.v63_combat_branch_id = StringName(branch)
+    return {"ok":true,"skill_id":skill_id,"slot":slot,"branch_id":str(disciple.v63_combat_branch_id)}
 
 static func attach_disciple_loadout(state: SimulationState, actor: Dictionary, preview_overrides: Dictionary = {}) -> Dictionary:
     if not is_enabled(state,preview_overrides):
@@ -153,51 +189,197 @@ static func attach_disciple_loadout(state: SimulationState, actor: Dictionary, p
     var disciple: DiscipleState = state.disciples[id]
     var definitions := skill_definitions()
     var skills: Array = []
+    var passives: Array = []
     for raw_id in disciple.v63_equipped_skill_ids:
         var skill_id := str(raw_id)
         if disciple.v63_learned_skill_nodes.has(skill_id) and definitions.has(skill_id):
             skills.append(skill_id)
+            if str(definitions[skill_id].get("slot","")) == "passive":
+                passives.append(skill_id)
     skills.sort()
     actor["v63_skill_loadout"] = skills
+    actor["v63_passive_ids"] = passives
+    actor["v63_combat_branch_id"] = str(disciple.v63_combat_branch_id)
+    var branch: Dictionary = branch_definitions().get(str(disciple.v63_combat_branch_id),{})
+    if not branch.is_empty():
+        actor["v63_innate_skill_id"] = str(branch.get("innate_node_id",""))
     actor["v63_skill_ready"] = {}
     actor["v63_combat_enabled"] = true
+    for skill_id in skills:
+        var skill: Dictionary = definitions[skill_id]
+        if str(skill.get("slot","")) == "basic":
+            actor["v63_basic_skill_id"] = skill_id
+            actor["basic_ratio"] = float(skill.damage_ratio)
+            actor["range"] = float(skill.range)
+            actor["basic_range"] = float(skill.range)
+            actor["basic_element"] = str(skill.element)
     return {"ok":true,"attached":not skills.is_empty(),"skill_ids":skills}
 
+static func _valid_id(value: String) -> bool:
+    return value.length() >= 12 and value.length() <= 128 and value.begins_with("tmb.")
+
+static func _valid_slug(value: String) -> bool:
+    if value.is_empty() or value.length() > 48:
+        return false
+    for character in value:
+        if not ((character >= "a" and character <= "z") or (character >= "0" and character <= "9") or character == "_"):
+            return false
+    return true
+
+static func _failure(reason: String) -> Dictionary:
+    return {"ok":false,"reason":reason}
+
+static func basic_element(actor: Dictionary) -> String:
+    return str(actor.get("basic_element",""))
+
 static func handles_actor(actor: Dictionary) -> bool:
-    return bool(actor.get("v63_custom_boss_ai",false)) or not actor.get("v63_skill_loadout",[]).is_empty()
+    return bool(actor.get("v63_custom_boss_ai",false)) or bool(actor.get("v63_combat_enabled",false)) or not actor.get("v63_skill_loadout",[]).is_empty()
+
+static func effective_attack_stats(actor: Dictionary, input_stats: Dictionary) -> Dictionary:
+    var stats := input_stats.duplicate(true)
+    if not bool(actor.get("v63_combat_enabled",false)):
+        return stats
+    var factor := 1.0
+    var crit := 0.0
+    var attack_speed := 0.0
+    var cast_speed := 0.0
+    var cooldown_recovery := 0.0
+    var lifesteal := 0.0
+    for skill_id in _passive_ids(actor):
+        var mods: Dictionary = skill_definition(str(skill_id)).get("passive_modifiers",{})
+        factor *= 1.0+clampf(float(mods.get("outgoing_factor",0.0)),-0.5,0.5)
+        crit += clampf(float(mods.get("crit_bonus",0.0)),-0.25,0.25)
+        attack_speed += clampf(float(mods.get("attack_speed_factor",0.0)),-0.5,0.5)
+        cast_speed += clampf(float(mods.get("cast_speed_factor",0.0)),-0.5,0.5)
+        cooldown_recovery += clampf(float(mods.get("cooldown_recovery_factor",0.0)),-0.5,0.5)
+        lifesteal += clampf(float(mods.get("lifesteal",0.0)),0.0,0.1)
+    var innate_id := str(actor.get("v63_innate_skill_id",""))
+    if not innate_id.is_empty():
+        var innate: Dictionary = skill_definition(innate_id).get("passive_modifiers",{})
+        factor *= 1.0+clampf(float(innate.get("outgoing_factor",0.0)),-0.5,0.5)
+        crit += clampf(float(innate.get("crit_bonus",0.0)),-0.25,0.25)
+        attack_speed += clampf(float(innate.get("attack_speed_factor",0.0)),-0.5,0.5)
+        cast_speed += clampf(float(innate.get("cast_speed_factor",0.0)),-0.5,0.5)
+        cooldown_recovery += clampf(float(innate.get("cooldown_recovery_factor",0.0)),-0.5,0.5)
+        lifesteal += clampf(float(innate.get("lifesteal",0.0)),0.0,0.1)
+    stats["attack"] = float(stats.get("attack",0.0))*factor
+    stats["crit_chance"] = clampf(float(stats.get("crit_chance",0.0))+crit,0.0,0.95)
+    stats["attack_speed"] = clampf(float(stats.get("attack_speed",0.0))+attack_speed,-0.9,2.0)
+    stats["cast_speed"] = clampf(float(stats.get("cast_speed",0.0))+cast_speed,-0.9,2.0)
+    stats["cooldown_recovery"] = clampf(float(stats.get("cooldown_recovery",0.0))+cooldown_recovery,-0.9,2.0)
+    stats["lifesteal"] = clampf(float(stats.get("lifesteal",0.0))+lifesteal,0.0,0.5)
+    return stats
+
+static func effective_defense_stats(actor: Dictionary, input_stats: Dictionary) -> Dictionary:
+    var stats := input_stats.duplicate(true)
+    if not bool(actor.get("v63_combat_enabled",false)):
+        return stats
+    var factor := 1.0
+    for skill_id in _passive_ids(actor):
+        factor *= clampf(float(skill_definition(str(skill_id)).get("passive_modifiers",{}).get("guard_factor",1.0)),0.5,1.0)
+    var innate_id := str(actor.get("v63_innate_skill_id",""))
+    if not innate_id.is_empty():
+        factor *= clampf(float(skill_definition(innate_id).get("passive_modifiers",{}).get("guard_factor",1.0)),0.5,1.0)
+    var reduction := clampf(float(stats.get("damage_reduction",0.0)),0.0,0.95)
+    stats["damage_reduction"] = 1.0-(1.0-reduction)*factor
+    return stats
+
+static func marked_damage_factor(attacker: Dictionary, target: Dictionary, now: float) -> float:
+    var marks: Dictionary = target.get("v63_marks",{})
+    var mark: Dictionary = marks.get(str(attacker.get("id","")),{})
+    if mark.is_empty() or now >= float(mark.get("until",-1.0)):
+        return 1.0
+    return clampf(float(mark.get("damage_factor",1.0)),1.0,1.5)
+
+static func _passive_ids(actor: Dictionary) -> Array:
+    var value = actor.get("v63_passive_ids",[])
+    return value if value is Array else []
 
 static func try_cast(battle: MapBattleV2, actor: Dictionary, target: Dictionary, guard_only: bool = false) -> bool:
-    if guard_only or battle == null or target.is_empty() or not bool(actor.get("v63_combat_enabled",false)):
+    if battle == null or guard_only or target.is_empty():
         return false
-    if str(actor.get("side","")) == "monster" and bool(actor.get("v63_custom_boss_ai",false)):
+    if bool(actor.get("v63_custom_boss_ai",false)) and str(actor.get("side","")) == "monster":
         return _try_boss_cast(battle,actor,target)
-    return _try_human_cast(battle,actor,target)
+    return bool(actor.get("v63_combat_enabled",false)) and _try_human_cast(battle,actor,target)
 
-static func _try_human_cast(battle: MapBattleV2, actor: Dictionary, target: Dictionary) -> bool:
-    var definitions := skill_definitions()
+static func _try_human_cast(battle: MapBattleV2, actor: Dictionary, enemy: Dictionary) -> bool:
     var ready: Dictionary = actor.get("v63_skill_ready",{})
     for raw_id in actor.get("v63_skill_loadout",[]):
-        var skill_id := str(raw_id)
-        var definition: Dictionary = definitions.get(skill_id,{})
-        if definition.is_empty() or battle.now < float(ready.get(skill_id,0.0)) or str(target.get("side","")) == str(actor.get("side","")):
+        var id := str(raw_id)
+        var skill := skill_definition(id)
+        var slot := str(skill.get("slot",""))
+        var effect := str(skill.get("effect",""))
+        if skill.is_empty() or slot not in ["active","ultimate","mobility"] or battle.now < float(ready.get(id,0.0)):
             continue
-        var distance := (actor["position"] as Vector2).distance_to(target["position"])
-        if distance > float(definition.get("range",0.0)):
+        if effect == "mobility":
+            if _try_mobility(battle,actor,enemy,id,skill,ready):
+                return true
             continue
-        var stats: Dictionary = actor.get("stats",{})
-        var cast_rate := maxf(0.1,1.0+float(stats.get("cast_speed",0.0)))
-        var cooldown_rate := maxf(0.1,1.0+float(stats.get("cooldown_recovery",0.0)))
-        var seconds := maxf(MapBattleV2.STEP_SECONDS,float(definition.get("cast_time",0.0))/cast_rate)
-        var speed := float(definition.get("projectile_speed",0.0))
-        var ready_at := battle.now+seconds+(distance/speed if speed > 0.0 else 0.0)
-        actor["v63_pending_cast"] = {"caster":str(actor["id"]),"target_id":str(target["id"]),"v63_skill_id":skill_id,"ready":ready_at,"ratio":float(definition.damage_ratio),"element":str(definition.element)}
-        ready[skill_id] = battle.now+maxf(MapBattleV2.STEP_SECONDS,float(definition.cooldown)/cooldown_rate)
-        actor["v63_skill_ready"] = ready
-        actor["next_skill"] = battle.now+MapBattleV2.STEP_SECONDS
-        battle._event("skill_cast",{"actor_id":str(actor["id"]),"target":str(target["id"]),"skill_id":skill_id,"release_at":ready_at,"combat_family":"v63_human"})
-        battle.actions += 1
+        var target := _support_target(battle,actor,skill) if effect in ["guard","heal","cleanse"] else enemy
+        if target.is_empty() or (effect not in ["guard","heal","cleanse"] and str(target.side) == str(actor.side)):
+            continue
+        if (actor["position"] as Vector2).distance_to(target["position"]) > float(skill.range):
+            continue
+        _begin_cast(battle,actor,target,id,skill,ready)
         return true
     return false
+
+static func _support_target(battle: MapBattleV2, actor: Dictionary, skill: Dictionary) -> Dictionary:
+    if str(skill.effect) == "guard":
+        return actor
+    var candidates: Array = []
+    for raw_id in battle.actors.keys():
+        var ally: Dictionary = battle.actors[raw_id]
+        if str(ally.side) != str(actor.side) or float(ally.hp) <= 0.0:
+            continue
+        if (actor["position"] as Vector2).distance_to(ally["position"]) <= float(skill.range):
+            candidates.append(ally)
+    if str(skill.effect) == "cleanse":
+        candidates.sort_custom(func(a: Dictionary,b: Dictionary): return _status_count(a) > _status_count(b))
+        return candidates[0] if not candidates.is_empty() and _status_count(candidates[0]) > 0 else {}
+    candidates.sort_custom(func(a: Dictionary,b: Dictionary): return float(a.hp)/maxf(1.0,float(a.max_hp)) < float(b.hp)/maxf(1.0,float(b.max_hp)))
+    return candidates[0] if not candidates.is_empty() else {}
+
+static func _status_count(actor: Dictionary) -> int:
+    var statuses: Dictionary = actor.get("status_effects",{})
+    return int(statuses.get("v63_poison",[]).size())+int(statuses.has("burn"))+int(statuses.has("weaken"))
+
+static func _try_mobility(battle: MapBattleV2, actor: Dictionary, target: Dictionary, id: String, skill: Dictionary, ready: Dictionary) -> bool:
+    if battle.world_mode or str(actor.side) != "disciple":
+        return false
+    var distance := (actor["position"] as Vector2).distance_to(target["position"])
+    var attack_range := maxf(1.0,float(actor.get("range",1.5)))
+    if distance <= attack_range+0.2 or distance > float(skill.range):
+        return false
+    var direction := ((target["position"] as Vector2)-(actor["position"] as Vector2)).normalized()
+    var destination := battle._keep_inside((target["position"] as Vector2)-direction*(attack_range-0.15))
+    if not battle._position_allowed(destination):
+        return false
+    actor["position"] = destination
+    actor["v63_evasion_until"] = battle.now+maxf(MapBattleV2.STEP_SECONDS,float(skill.get("duration",1.0)))
+    ready[id] = battle.now+maxf(MapBattleV2.STEP_SECONDS,float(skill.cooldown))
+    actor["v63_skill_ready"] = ready
+    actor["next_skill"] = battle.now+MapBattleV2.STEP_SECONDS
+    battle._event("v63_mobility",{"actor_id":str(actor.id),"skill_id":id,"position":destination,"evasion_until":float(actor.v63_evasion_until)})
+    battle.actions += 1
+    return true
+
+static func _begin_cast(battle: MapBattleV2, actor: Dictionary, target: Dictionary, id: String, skill: Dictionary, ready: Dictionary) -> void:
+    var stats := effective_attack_stats(actor,actor.get("stats",{}))
+    var cast_rate := maxf(0.1,1.0+float(stats.get("cast_speed",0.0)))
+    var cooldown_rate := maxf(0.1,1.0+float(stats.get("cooldown_recovery",0.0)))
+    var distance := (actor["position"] as Vector2).distance_to(target["position"])
+    var speed := float(skill.get("projectile_speed",0.0))
+    var deadline := battle.now+maxf(MapBattleV2.STEP_SECONDS,float(skill.cast_time)/cast_rate)+(distance/speed if speed > 0.0 else 0.0)
+    var cast := _cast_record(actor,target,id,skill,deadline)
+    if str(skill.get("shape","")) == "circle":
+        cast["center"] = target["position"]
+    actor["v63_pending_cast"] = cast
+    ready[id] = battle.now+maxf(MapBattleV2.STEP_SECONDS,float(skill.cooldown)/cooldown_rate)
+    actor["v63_skill_ready"] = ready
+    actor["next_skill"] = battle.now+MapBattleV2.STEP_SECONDS
+    battle._event("skill_cast",{"actor_id":str(actor.id),"target":str(target.id),"skill_id":id,"release_at":deadline,"combat_family":"v63_human","effect":str(skill.effect)})
+    battle.actions += 1
 
 static func _try_boss_cast(battle: MapBattleV2, actor: Dictionary, target: Dictionary) -> bool:
     var boss_id := str(actor.get("v63_boss_id",""))
@@ -206,62 +388,229 @@ static func _try_boss_cast(battle: MapBattleV2, actor: Dictionary, target: Dicti
     var ready: Dictionary = actor.get("v63_skill_ready",{})
     var phase := clampi(int(actor.get("v63_boss_phase",1)),1,3)
     for raw_id in boss.get("skill_ids",[]):
-        var skill_id := str(raw_id)
-        var skill: Dictionary = definitions.get(skill_id,{})
-        if skill.is_empty() or phase < int(skill.get("minimum_phase",1)) or battle.now < float(ready.get(skill_id,0.0)):
+        var id := str(raw_id)
+        var skill: Dictionary = definitions.get(id,{})
+        if skill.is_empty() or phase < int(skill.minimum_phase) or battle.now < float(ready.get(id,0.0)):
             continue
-        var distance := (actor["position"] as Vector2).distance_to(target["position"])
-        if distance > float(skill.get("range",0.0)):
+        var cast_target: Dictionary = actor if str(skill.effect) == "guard" else target
+        if (actor["position"] as Vector2).distance_to(cast_target["position"]) > float(skill.range):
             continue
-        var stats: Dictionary = actor.get("stats",{})
-        var cast_rate := maxf(0.1,1.0+float(stats.get("cast_speed",0.0)))
-        var cooldown_rate := maxf(0.1,1.0+float(stats.get("cooldown_recovery",0.0)))
-        var ready_at := battle.now+maxf(MapBattleV2.STEP_SECONDS,float(skill.cast_time)/cast_rate)
-        var center: Vector2 = target["position"]
-        var cast := {"caster":str(actor["id"]),"target_id":str(target["id"]),"v63_skill_id":skill_id,"v63_boss_id":boss_id,"ready":ready_at,"ratio":float(skill.damage_ratio),"element":str(skill.element),"shape":str(skill.shape),"maximum":mini(int(skill.target_limit),MapBattleV2.MAX_TARGETS_AOE)}
+        var deadline := battle.now+maxf(MapBattleV2.STEP_SECONDS,float(skill.cast_time))
+        var cast := _cast_record(actor,cast_target,id,skill,deadline,boss_id)
         if str(skill.shape) == "circle":
-            cast["center"] = center
-            cast["radius"] = float(skill.radius)
+            cast["center"] = cast_target["position"]
         actor["v63_pending_cast"] = cast
-        ready[skill_id] = battle.now+maxf(MapBattleV2.STEP_SECONDS,float(skill.cooldown)/cooldown_rate)
+        ready[id] = battle.now+maxf(MapBattleV2.STEP_SECONDS,float(skill.cooldown))
         actor["v63_skill_ready"] = ready
         actor["next_skill"] = battle.now+MapBattleV2.STEP_SECONDS
-        battle._event("telegraph",{"caster":str(actor["id"]),"boss_id":boss_id,"skill":skill_id,"skill_id":skill_id,"center":center,"radius":float(skill.radius),"release_at":ready_at})
+        battle._event("telegraph",{"caster":str(actor.id),"boss_id":boss_id,"skill":id,"skill_id":id,"center":cast_target["position"],"radius":float(skill.radius),"release_at":deadline,"phase":phase})
         battle.actions += 1
         return true
     return false
 
+static func _cast_record(caster: Dictionary, target: Dictionary, id: String, skill: Dictionary, deadline: float, boss_id: String = "") -> Dictionary:
+    var cast := {"caster":str(caster.id),"target_id":str(target.id),"v63_skill_id":id,"ready":deadline,
+        "ratio":float(skill.damage_ratio),"element":str(skill.element),"effect":str(skill.effect),"shape":str(skill.shape),
+        "power":float(skill.get("power",0.0)),"duration":float(skill.get("duration",0.0)),
+        "poison_stacks":int(skill.get("poison_stacks",1)),"radius":float(skill.get("radius",0.0)),
+        "maximum":mini(int(skill.get("target_limit",1)),MAX_TARGETS)}
+    if not boss_id.is_empty():
+        cast["v63_boss_id"] = boss_id
+    return cast
+
 static func release_cast(battle: MapBattleV2, cast: Dictionary, caster: Dictionary) -> void:
-    var skill_id := str(cast.get("v63_skill_id",""))
+    var id := str(cast.get("v63_skill_id",""))
     var boss_id := str(cast.get("v63_boss_id",""))
-    var definition: Dictionary = boss_skill_definitions(boss_id).get(skill_id,{}) if not boss_id.is_empty() else skill_definition(skill_id)
+    var definition: Dictionary = boss_skill_definitions(boss_id).get(id,{}) if not boss_id.is_empty() else skill_definition(id)
     if definition.is_empty():
         return
-    var targets: Array = []
+    var effect := str(cast.get("effect",definition.get("effect","damage")))
+    for target in _cast_targets(battle,caster,cast,effect):
+        var before := float(target.hp)
+        var damage := 0.0
+        if effect in ["damage","poison","mark","consume_poison"]:
+            var ratio := float(cast.ratio)
+            if effect == "consume_poison":
+                ratio += minf(0.75,float(target.get("status_effects",{}).get("v63_poison",[]).size())*0.05)
+            damage = battle._deal_direct(caster,target,ratio,"v63_skill",true,str(cast.element))
+        if effect == "poison":
+            _apply_poison(battle,caster,target,id,float(cast.power),float(cast.duration),int(cast.poison_stacks),str(cast.element))
+        elif effect == "guard":
+            target["learned_guard_factor"] = minf(float(target.get("learned_guard_factor",1.0)),1.0-clampf(float(cast.power),0.05,0.8))
+            target["learned_guard_until"] = maxf(float(target.get("learned_guard_until",-1.0)),battle.now+clampf(float(cast.duration),0.5,12.0))
+            battle._event("status_applied",{"caster":str(caster.id),"target":str(target.id),"status":"guard","skill_id":id,"until":float(target.learned_guard_until)})
+        elif effect == "heal":
+            _heal_target(battle,caster,target,id,float(cast.power))
+        elif effect == "cleanse":
+            _cleanse_target(battle,caster,target,id,int(round(float(cast.power))))
+        elif effect == "mark":
+            _apply_mark(battle,caster,target,id,float(cast.power),float(cast.duration))
+        elif effect == "consume_poison":
+            _consume_poison(battle,caster,target,id)
+        battle._event("v63_skill_hit",{"caster":str(caster.id),"target":str(target.id),"skill_id":id,"effect":effect,"damage":damage,"target_hp_before":before,"target_hp_after":float(target.hp)})
+
+static func _cast_targets(battle: MapBattleV2, caster: Dictionary, cast: Dictionary, effect: String) -> Array:
+    var result: Array = []
+    var allies := effect in ["guard","heal","cleanse"]
     if str(cast.get("shape","")) == "circle":
-        targets = battle._area_targets(str(caster.get("side","")),cast.get("center",Vector2.ZERO),float(cast.get("radius",0.0)),mini(int(cast.get("maximum",1)),MapBattleV2.MAX_TARGETS_AOE))
+        var center: Vector2 = cast.get("center",caster.get("position",Vector2.ZERO))
+        var ids: Array = battle.actors.keys()
+        ids.sort()
+        for raw_id in ids:
+            var target: Dictionary = battle.actors[raw_id]
+            var same_side := str(target.get("side","")) == str(caster.get("side",""))
+            if float(target.get("hp",0.0)) <= 0.0 or same_side != allies:
+                continue
+            if (target.position as Vector2).distance_to(center) <= float(cast.get("radius",0.0)):
+                result.append(target)
+                if result.size() >= mini(int(cast.get("maximum",MAX_TARGETS)),MAX_TARGETS):
+                    break
+        return result
+    var target: Dictionary = battle.actors.get(str(cast.get("target_id","")),{})
+    if not target.is_empty() and float(target.get("hp",0.0)) > 0.0:
+        var same_side := str(target.get("side","")) == str(caster.get("side",""))
+        if same_side == allies:
+            result.append(target)
+    return result
+
+static func _heal_target(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String, power: float) -> void:
+    var factor := 1.0
+    for passive_id in _passive_ids(caster):
+        factor *= 1.0+clampf(float(skill_definition(str(passive_id)).get("passive_modifiers",{}).get("heal_factor",0.0)),0.0,0.25)
+    var before := float(target.hp)
+    var amount := minf(maxf(0.0,float(target.max_hp)*clampf(power,0.0,0.5)*factor),maxf(0.0,float(target.max_hp)-before))
+    target["hp"] = before+amount
+    battle._sync_linked_hp(target)
+    battle._event("heal",{"caster":str(caster.id),"target":str(target.id),"skill_id":skill_id,"amount":amount,"hp_after":float(target.hp)})
+
+static func _cleanse_target(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String, count: int) -> void:
+    var statuses: Dictionary = target.get("status_effects",{})
+    var poison: Array = statuses.get("v63_poison",[])
+    var removed := mini(poison.size(),maxi(1,count))
+    for _i in range(removed):
+        poison.pop_front()
+    if poison.is_empty():
+        statuses.erase("v63_poison")
     else:
-        var target: Dictionary = battle.actors.get(str(cast.get("target_id","")),{})
-        if not target.is_empty() and str(target.get("side","")) != str(caster.get("side","")):
-            targets.append(target)
-    for target in targets:
-        if float(target.get("hp",0.0)) <= 0.0 or str(target.get("side","")) == str(caster.get("side","")):
+        statuses["v63_poison"] = poison
+    var cleared: Array[String] = []
+    for status_id in ["burn","weaken"]:
+        if statuses.has(status_id) and cleared.size() < maxi(1,count):
+            statuses.erase(status_id)
+            cleared.append(status_id)
+    target["status_effects"] = statuses
+    battle._event("cleanse",{"caster":str(caster.id),"target":str(target.id),"skill_id":skill_id,"poison_stacks":removed,"statuses":cleared})
+
+static func _apply_mark(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String, power: float, duration: float) -> void:
+    var marks: Dictionary = target.get("v63_marks",{})
+    marks[str(caster.id)] = {"owner_id":str(caster.id),"skill_id":skill_id,"damage_factor":clampf(power,1.0,1.5),"until":battle.now+clampf(duration,0.5,12.0)}
+    target["v63_marks"] = marks
+    battle._event("status_applied",{"caster":str(caster.id),"target":str(target.id),"status":"mark","skill_id":skill_id,"until":float(marks[str(caster.id)].until)})
+
+static func _apply_poison(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String, ratio: float, duration: float, requested: int, element: String) -> void:
+    var statuses: Dictionary = target.get("status_effects",{})
+    var stacks: Array = statuses.get("v63_poison",[])
+    var owner := str(caster.id)
+    var owner_count := 0
+    for stack in stacks:
+        if str(stack.get("owner_id","")) == owner:
+            owner_count += 1
+    var boss_source := bool(caster.get("v63_custom_boss_ai",false))
+    var owner_cap := POISON_BOSS_TARGET_CAP if boss_source else POISON_OWNER_CAP
+    var add_count := mini(maxi(0,owner_cap-owner_count),maxi(0,POISON_BOSS_TARGET_CAP-stacks.size()))
+    add_count = mini(add_count,maxi(1,requested))
+    var snapshot := effective_attack_stats(caster,caster.get("stats",{}))
+    var poison_factor := 1.0
+    for passive_id in _passive_ids(caster):
+        poison_factor *= 1.0+clampf(float(skill_definition(str(passive_id)).get("passive_modifiers",{}).get("poison_factor",0.0)),0.0,0.5)
+    var innate_id := str(caster.get("v63_innate_skill_id",""))
+    if not innate_id.is_empty():
+        poison_factor *= 1.0+clampf(float(skill_definition(innate_id).get("passive_modifiers",{}).get("poison_factor",0.0)),0.0,0.5)
+    for _i in range(add_count):
+        stacks.append({"owner_id":owner,"source_skill_id":skill_id,"attack_snapshot":snapshot.duplicate(true),
+            "ratio":clampf(ratio*poison_factor,0.0,0.2),"element":element,"applied_at":battle.now,
+            "next_tick":battle.now+1.0,"expires_at":battle.now+clampf(duration,1.0,10.0)})
+    statuses["v63_poison"] = stacks
+    target["status_effects"] = statuses
+    battle._event("status_applied",{"caster":owner,"target":str(target.id),"status":"poison","skill_id":skill_id,
+        "added":add_count,"owner_stack_count":owner_count+add_count,"target_stack_count":stacks.size(),
+        "owner_cap":owner_cap,"target_cap":POISON_BOSS_TARGET_CAP})
+
+static func _consume_poison(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String) -> void:
+    var statuses: Dictionary = target.get("status_effects",{})
+    var stacks: Array = statuses.get("v63_poison",[])
+    var retained: Array = []
+    var count := 0
+    for stack in stacks:
+        if str(stack.get("owner_id","")) == str(caster.id):
+            count += 1
+        else:
+            retained.append(stack)
+    if retained.is_empty():
+        statuses.erase("v63_poison")
+    else:
+        statuses["v63_poison"] = retained
+    target["status_effects"] = statuses
+    battle._event("poison_consumed",{"caster":str(caster.id),"target":str(target.id),"skill_id":skill_id,"stacks":count})
+
+static func process_status_effects(battle: MapBattleV2) -> void:
+    if battle == null:
+        return
+    var ids: Array = battle.actors.keys()
+    ids.sort()
+    for raw_id in ids:
+        var target: Dictionary = battle.actors[raw_id]
+        if float(target.get("hp",0.0)) <= 0.0:
             continue
-        var hp_before := float(target["hp"])
-        var damage := battle._deal_direct(caster,target,float(cast.get("ratio",0.0)),"v63_skill",true,str(cast.get("element","")))
-        battle._event("v63_skill_hit",{"caster":str(caster.id),"target":str(target.id),"skill_id":skill_id,"damage":damage,"target_hp_before":hp_before,"target_hp_after":float(target.hp)})
+        var statuses: Dictionary = target.get("status_effects",{})
+        var stacks: Array = statuses.get("v63_poison",[])
+        if not stacks.is_empty():
+            var kept: Array = []
+            var ordinal := 0
+            for value in stacks:
+                if not (value is Dictionary):
+                    continue
+                var stack: Dictionary = value
+                var owner: Dictionary = battle.actors.get(str(stack.get("owner_id","")),{})
+                if owner.is_empty() or float(owner.get("hp",0.0)) <= 0.0 or str(owner.side) == str(target.side) or battle.now >= float(stack.get("expires_at",-1.0)):
+                    continue
+                kept.append(stack)
+                if float(stack.get("next_tick",INF)) <= battle.now+0.000001:
+                    var factor := 1.0 if ordinal < 12 else (0.5 if ordinal < 24 else 0.25)
+                    var proxy: Dictionary = owner.duplicate(true)
+                    proxy["stats"] = stack.get("attack_snapshot",{}).duplicate(true)
+                    proxy["hp"] = 1.0
+                    proxy["max_hp"] = 1.0
+                    proxy["context_sources"] = []
+                    proxy["v63_combat_enabled"] = false
+                    var damage := battle._deal_direct(proxy,target,float(stack.get("ratio",0.0))*factor,"v63_poison",false,str(stack.get("element","nether")),false)
+                    battle._event("status_tick",{"caster":str(owner.id),"target":str(target.id),"status":"poison","damage":damage,
+                        "source_skill_id":str(stack.get("source_skill_id","")),"stack_ordinal":ordinal+1,"diminishing_factor":factor})
+                    stack["next_tick"] = float(stack.get("next_tick",battle.now))+1.0
+                ordinal += 1
+            if kept.is_empty():
+                statuses.erase("v63_poison")
+            else:
+                statuses["v63_poison"] = kept
+        target["status_effects"] = statuses
+        var marks: Dictionary = target.get("v63_marks",{})
+        for owner_id in marks.keys():
+            if battle.now >= float(marks[owner_id].get("until",-1.0)):
+                marks.erase(owner_id)
+        target["v63_marks"] = marks
 
 static func observe_boss_damage(battle: MapBattleV2, actor: Dictionary, hp_before: float) -> void:
     if battle == null or not bool(actor.get("v63_custom_boss_ai",false)):
         return
-    var definition := boss_definition(str(actor.get("v63_boss_id","")))
-    var thresholds: Array = definition.get("phase_thresholds",[0.7,0.35])
-    var ratio := float(actor.get("hp",0.0))/maxf(1.0,float(actor.get("max_hp",1.0)))
+    var boss := boss_definition(str(actor.get("v63_boss_id","")))
+    var thresholds: Array = boss.get("phase_thresholds",[0.7,0.35])
+    var hp_ratio := float(actor.hp)/maxf(1.0,float(actor.get("max_hp",1.0)))
     var phase := clampi(int(actor.get("v63_boss_phase",1)),1,3)
-    var next_phase := 3 if ratio <= float(thresholds[1]) and phase < 3 else (2 if ratio <= float(thresholds[0]) and phase < 2 else phase)
-    if next_phase > phase:
-        actor["v63_boss_phase"] = next_phase
-        battle._event("v63_boss_phase",{"boss_id":str(actor.get("v63_boss_id","")),"actor_id":str(actor.id),"phase":next_phase,"hp_before":hp_before,"hp_after":float(actor.hp),"hp_ratio":ratio})
+    while phase < 3 and hp_ratio <= float(thresholds[phase-1]):
+        phase += 1
+        actor["v63_boss_phase"] = phase
+        battle._event("v63_boss_phase",{"boss_id":str(actor.v63_boss_id),"actor_id":str(actor.id),"phase":phase,
+            "threshold":float(thresholds[phase-2]),"hp_before":hp_before,"hp_after":float(actor.hp),"hp_ratio":hp_ratio})
 
 static func install_boss_spawn(spawn_data: Dictionary, boss_id: String) -> Dictionary:
     var boss := boss_definition(boss_id)
@@ -278,12 +627,12 @@ static func install_boss_spawn(spawn_data: Dictionary, boss_id: String) -> Dicti
     if not bool(origin.get("ok",false)):
         return origin
     var spec: Dictionary = HuntingMapV2.LEVELS[level]
-    var base_factor: Dictionary = MonsterCatalogueV2.TIERS[str(origin.tier)]
-    var boss_factor: Dictionary = MonsterCatalogueV2.TIERS["boss"]
+    var base: Dictionary = MonsterCatalogueV2.TIERS[str(origin.tier)]
+    var boss_tier: Dictionary = MonsterCatalogueV2.TIERS["boss"]
     var stats: Dictionary = origin.stats.duplicate(true)
     for stat in ["max_hp","attack","defense"]:
-        var difficulty_key: String = "hp" if stat == "max_hp" else stat
-        stats[stat] = float(stats[stat])*float(spec[difficulty_key])*float(boss_factor[stat])/maxf(0.001,float(base_factor[stat]))*float(boss.get("boss_"+("hp" if stat == "max_hp" else stat)+"_factor",1.0))
+        var key: String = "hp" if stat == "max_hp" else str(stat)
+        stats[stat] = float(stats[stat])*float(spec[key])*float(boss_tier[stat])/maxf(0.001,float(base[stat]))*float(boss.get("boss_"+key+"_factor",1.0))
     origin["id"] = str(row.get("id",""))
     origin["encounter_id"] = str(spawn_data.encounter_id)+"/"+str(row.get("id",""))
     origin["position"] = row.get("position",Vector2(23,8))
@@ -308,8 +657,7 @@ static func install_boss_spawn(spawn_data: Dictionary, boss_id: String) -> Dicti
 static func validate_battle(battle: MapBattleV2, expected_boss_id: String = "") -> Array[String]:
     var errors: Array[String] = []
     if battle == null:
-        errors.append("missing_human_battle")
-        return errors
+        return ["missing_human_battle"]
     var observed_boss := ""
     for raw_id in battle.actors.keys():
         var actor: Dictionary = battle.actors[raw_id]
@@ -318,19 +666,19 @@ static func validate_battle(battle: MapBattleV2, expected_boss_id: String = "") 
         if not (loadout is Array) or not (ready is Dictionary):
             errors.append("invalid_v63_actor_action_state:"+str(raw_id))
             continue
-        var custom_boss := bool(actor.get("v63_custom_boss_ai",false))
         var boss_id := str(actor.get("v63_boss_id",""))
+        var custom_boss := bool(actor.get("v63_custom_boss_ai",false))
         var valid_actions: Dictionary = {}
         if custom_boss:
             var boss := boss_definition(boss_id)
             if boss.is_empty() or not observed_boss.is_empty():
                 errors.append("unknown_or_duplicate_v63_boss:"+boss_id)
             else:
-                var species: Dictionary = MonsterCatalogueV2.SPECIES.get(str(boss.get("origin_species_id","")),{})
+                var species: Dictionary = MonsterCatalogueV2.SPECIES.get(str(boss.origin_species_id),{})
                 if str(actor.get("race_id","")) != str(species.get("race_id","")) or str(actor.get("tier","")) != "boss":
                     errors.append("v63_boss_identity_mismatch:"+boss_id)
-                for skill_id in boss.get("skill_ids",[]):
-                    valid_actions[str(skill_id)] = true
+                for action_id in boss.skill_ids:
+                    valid_actions[str(action_id)] = true
             observed_boss = boss_id
         elif not boss_id.is_empty():
             errors.append("v63_boss_marker_without_ai:"+str(raw_id))
@@ -339,74 +687,76 @@ static func validate_battle(battle: MapBattleV2, expected_boss_id: String = "") 
             if skill_definition(skill_id).is_empty() or valid_actions.has(skill_id):
                 errors.append("unknown_or_duplicate_v63_actor_skill:"+skill_id)
             valid_actions[skill_id] = true
+        var innate_id := str(actor.get("v63_innate_skill_id",""))
+        if not innate_id.is_empty():
+            var innate := skill_definition(innate_id)
+            if innate.is_empty() or str(innate.slot) != "innate" or str(innate.branch) != str(actor.get("v63_combat_branch_id","")):
+                errors.append("invalid_v63_derived_innate:"+innate_id)
         for ready_id in ready.keys():
-            var ready_value = ready[ready_id]
-            if (not valid_actions.has(str(ready_id)) or not (ready_value is int or ready_value is float) or
-                is_nan(float(ready_value)) or is_inf(float(ready_value)) or float(ready_value) < 0.0 or
-                float(ready_value) > battle.now+90.0):
+            var value = ready[ready_id]
+            if not valid_actions.has(str(ready_id)) or not (value is int or value is float) or is_nan(float(value)) or is_inf(float(value)) or float(value) < 0.0 or float(value) > battle.now+90.0:
                 errors.append("invalid_v63_skill_cooldown:"+str(ready_id))
         var pending = actor.get("v63_pending_cast",{})
         if not (pending is Dictionary):
             errors.append("invalid_v63_pending_cast_record:"+str(raw_id))
         elif not pending.is_empty():
             var cast_id := str(pending.get("v63_skill_id",""))
-            var cast_boss_id := str(pending.get("v63_boss_id",""))
-            var definition: Dictionary = boss_skill_definitions(cast_boss_id).get(cast_id,{}) if not cast_boss_id.is_empty() else skill_definition(cast_id)
-            var target_id := str(pending.get("target_id",""))
-            var target: Dictionary = battle.actors.get(target_id,{})
+            var cast_boss := str(pending.get("v63_boss_id",""))
+            var definition: Dictionary = boss_skill_definitions(cast_boss).get(cast_id,{}) if not cast_boss.is_empty() else skill_definition(cast_id)
+            var target: Dictionary = battle.actors.get(str(pending.get("target_id","")),{})
             var deadline = pending.get("ready",null)
-            var ratio := float(pending.get("ratio",-1.0))
-            var valid_identity := not definition.is_empty() and valid_actions.has(cast_id)
-            if custom_boss:
-                valid_identity = valid_identity and cast_boss_id == boss_id and str(pending.get("shape","")) == str(definition.get("shape",""))
-            else:
-                valid_identity = valid_identity and cast_boss_id.is_empty() and str(pending.get("shape","")).is_empty()
-            if (not valid_identity or str(pending.get("caster","")) != str(raw_id) or target.is_empty() or
-                str(target.get("side","")) == str(actor.get("side","")) or
-                not (deadline is int or deadline is float) or is_nan(float(deadline)) or is_inf(float(deadline)) or
-                float(deadline) < battle.now or float(deadline) > battle.now+90.0 or
-                is_nan(ratio) or is_inf(ratio) or ratio <= 0.0 or ratio > 1000.0 or
-                not CombatStatsV2.ELEMENTS.has(str(pending.get("element","")))):
+            var effect := str(pending.get("effect",""))
+            var same_side := str(target.get("side","")) == str(actor.get("side",""))
+            var valid := not definition.is_empty() and valid_actions.has(cast_id)
+            valid = valid and (cast_boss == boss_id if custom_boss else cast_boss.is_empty())
+            if target.is_empty() or (same_side and effect not in ["guard","heal","cleanse"]) or not valid or not EFFECTS.has(effect):
                 errors.append("invalid_v63_pending_cast:"+cast_id)
+            if not (deadline is int or deadline is float) or is_nan(float(deadline)) or is_inf(float(deadline)) or float(deadline) < battle.now or float(deadline) > battle.now+90.0:
+                errors.append("invalid_v63_pending_cast_deadline:"+cast_id)
+            if float(pending.get("ratio",-1.0)) <= 0.0 or not CombatStatsV2.ELEMENTS.has(str(pending.get("element",""))):
+                errors.append("invalid_v63_pending_cast_values:"+cast_id)
     if expected_boss_id.is_empty() and not observed_boss.is_empty():
         errors.append("unexpected_v63_boss")
     elif not expected_boss_id.is_empty() and observed_boss != expected_boss_id:
         errors.append("v63_boss_identity_mismatch")
     return errors
+
 static func validate_state(state: SimulationState) -> Array[String]:
-    var errors: Array[String] = []
     if state == null:
         return ["missing_human_combat_state"]
+    var errors: Array[String] = []
     var loaded := load_catalogue()
     if not bool(loaded.get("ok",false)):
         errors.append_array(loaded.get("errors",[]))
         return errors
     var definitions := skill_definitions()
+    var branches := branch_definitions()
     for raw_disciple in state.disciples.values():
         var disciple: DiscipleState = raw_disciple
+        var branch_id := str(disciple.v63_combat_branch_id)
+        if not branch_id.is_empty() and not branches.has(branch_id):
+            errors.append("%s has an unknown Human branch." % disciple.display_name)
         for raw_id in disciple.v63_learned_skill_nodes.keys():
             var id := str(raw_id)
-            var row = disciple.v63_learned_skill_nodes[raw_id]
-            var definition: Dictionary = definitions.get(id,{})
-            if definition.is_empty() or not (row is Dictionary) or str(row.get("source_codex_id","")) != str(definition.get("source_codex_id","")) or int(row.get("learned_tick",-1)) < 0 or float(row.get("mastery_xp",-1.0)) < 0.0:
-                errors.append("%s has invalid V6.3 skill knowledge %s." % [disciple.display_name,id])
+            var record = disciple.v63_learned_skill_nodes[raw_id]
+            var skill: Dictionary = definitions.get(id,{})
+            if skill.is_empty() or not bool(skill.get("archivable",false)) or not (record is Dictionary) or str(record.get("source_codex_id","")) != str(skill.get("source_codex_id","")) or int(record.get("learned_tick",-1)) < 0 or float(record.get("mastery_xp",-1.0)) < 0.0:
+                errors.append("%s has invalid Human skill knowledge %s." % [disciple.display_name,id])
         var seen: Dictionary = {}
-        var active_count := 0
+        var counts := {"basic":0,"active":0,"ultimate":0,"mobility":0,"passive":0}
         for raw_id in disciple.v63_equipped_skill_ids:
             var id := str(raw_id)
-            var definition: Dictionary = definitions.get(id,{})
-            if definition.is_empty() or not disciple.v63_learned_skill_nodes.has(id) or seen.has(id):
-                errors.append("%s has an unlearned or duplicate V6.3 equipped skill." % disciple.display_name)
+            var skill: Dictionary = definitions.get(id,{})
+            var slot := str(skill.get("slot",""))
+            var skill_branch := str(skill.get("branch",""))
+            if skill.is_empty() or not disciple.v63_learned_skill_nodes.has(id) or seen.has(id):
+                errors.append("%s has an unlearned or duplicate Human skill." % disciple.display_name)
+            elif not skill_branch.is_empty() and skill_branch != branch_id:
+                errors.append("%s has a Human skill equipped from another branch." % disciple.display_name)
             else:
                 seen[id] = true
-                if str(definition.get("slot","")) == "active":
-                    active_count += 1
-        if disciple.v63_equipped_skill_ids.size() > MAX_SKILLS_PER_DISCIPLE or active_count > 4:
-            errors.append("%s exceeds V6.3 skill slot bounds." % disciple.display_name)
+                if counts.has(slot):
+                    counts[slot] += 1
+        if disciple.v63_equipped_skill_ids.size() > MAX_SKILLS_PER_DISCIPLE or counts.active > 4 or counts.passive > 5 or counts.basic > 1 or counts.ultimate > 1 or counts.mobility > 1:
+            errors.append("%s exceeds Human skill slot bounds." % disciple.display_name)
     return errors
-
-static func _valid_id(value: String) -> bool:
-    return value.length() >= 12 and value.length() <= 128 and value.begins_with("tmb.")
-
-static func _failure(reason: String) -> Dictionary:
-    return {"ok":false,"reason":reason}
