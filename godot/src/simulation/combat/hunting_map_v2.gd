@@ -173,7 +173,8 @@ static func preview_body_guarantee(state: SimulationState, spawn_data: Dictionar
         return {"linh_tuy":1}
     return {}
 
-static func claim_reward(state: SimulationState, spawn_data: Dictionary, battle: MapBattleV2) -> Dictionary:
+static func claim_reward(state: SimulationState, spawn_data: Dictionary, battle: MapBattleV2,
+        preview_overrides: Dictionary = {}) -> Dictionary:
     if not state.sect.p3_7_resources_enabled or battle == null or battle.active:
         return {"ok":false,"reason":"not_final_or_warehouse_disabled"}
     if battle.outcome != "win" or not bool(spawn_data.get("ok",false)):
@@ -184,9 +185,18 @@ static func claim_reward(state: SimulationState, spawn_data: Dictionary, battle:
     if state.sect.v2_pve_reward_claims.has(encounter_id):
         return {"ok":false,"reason":"duplicate_claim"}
     var items := preview_reward(spawn_data)
+    var codex_plan := V63SectArchiveSystem.encounter_reward_items(state,spawn_data,preview_overrides)
+    if not bool(codex_plan.get("ok",false)):
+        return {"ok":false,"reason":str(codex_plan.get("reason","codex_reward_invalid"))}
+    var codex_items: Dictionary = codex_plan.get("items",{})
+    var codex_receipt_key := encounter_id+":victory"
+    if not codex_items.is_empty() and state.sect.v63_codex_drop_receipts.has(codex_receipt_key):
+        return {"ok":false,"reason":"codex_receipt_without_encounter_claim"}
     var guaranteed := preview_body_guarantee(state,spawn_data)
     for item_id in guaranteed.keys():
         items[item_id] = int(items.get(item_id,0))+int(guaranteed[item_id])
+    for item_id in codex_items.keys():
+        items[item_id] = int(items.get(item_id,0))+int(codex_items[item_id])
     var registry := ResourceRegistry.new()
     var warehouse := WarehouseSystem.new()
     # Preflight ALL items before mutation: all-or-nothing, no partial payout.
@@ -200,11 +210,23 @@ static func claim_reward(state: SimulationState, spawn_data: Dictionary, battle:
     ids.sort()
     var old_items := state.sect.warehouse_resources.duplicate(true)
     var old_events := state.sect.warehouse_event_count
+    var old_archive_receipts := state.sect.v63_codex_drop_receipts.duplicate(true)
+    var old_archive_events := state.sect.v63_archive_event_count
     for item_id in ids:
         if not warehouse.add(state,StringName(item_id),int(items[item_id])):
             state.sect.warehouse_resources = old_items
             state.sect.warehouse_event_count = old_events
+            state.sect.v63_codex_drop_receipts = old_archive_receipts
+            state.sect.v63_archive_event_count = old_archive_events
             return {"ok":false,"reason":"warehouse_commit_failed"}
+    var codex_receipt := V63SectArchiveSystem.record_victory_codex_receipt(
+        state,encounter_id,codex_items,preview_overrides)
+    if not bool(codex_receipt.get("ok",false)):
+        state.sect.warehouse_resources = old_items
+        state.sect.warehouse_event_count = old_events
+        state.sect.v63_codex_drop_receipts = old_archive_receipts
+        state.sect.v63_archive_event_count = old_archive_events
+        return {"ok":false,"reason":str(codex_receipt.get("reason","codex_receipt_failed"))}
     # Counter advances only after the entire real victorious warehouse claim.
     if str(spawn_data.get("region_id","")) == "thanh_truc_lam":
         var progress := clampi(int(state.sect.v2_body_material_progress.get(
@@ -214,4 +236,5 @@ static func claim_reward(state: SimulationState, spawn_data: Dictionary, battle:
         )
     state.sect.v2_pve_reward_claims[encounter_id] = true
     return {"ok":true,"encounter_id":encounter_id,"region_id":spawn_data["region_id"],
-        "level":spawn_data["level"],"items":items}
+        "level":spawn_data["level"],"items":items,"codex_items":codex_items.duplicate(true)}
+
