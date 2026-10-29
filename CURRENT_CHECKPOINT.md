@@ -5,13 +5,13 @@
 > Ghi chú hiện tại này thay thế các branch head và gate đã cũ trong snapshot lịch sử bên dưới.
 >
 > - Stable `main`: `c0c1382f119599497b52d8ee8abd9e830a883f1e`; PvE reference `integration/pve-unified-rc-20261027`: `5005d7508dff4b6a3da3f319de09dac33669882a`.
-> - D1 baseline: `6e4012d7a9e3a7efa56df349a176f9491d550742`; active no-merge work branch: `feature/v63-v64-full-combat-20261029`.
-> - Godot 4.7.2 Windows import and focused D1 registry test both PASS (exit 0). Evidence and log hashes: [D1 validation report](docs/implementation/V63_D1_VALIDATION_EVIDENCE_20261029.md).
-> - D1 remains data-only: gates OFF, no skill runtime, boss spawn, or loot wiring.
-> - D2 Sect Archive and exactly-once codex rewards are complete on tested source `d45ab195c53c00f0f29732124dd7678fd42cb351`; official Godot 4.7.2 import and all 10 focused/regression scripts PASS. See [D2 evidence](docs/implementation/V63_D2_ARCHIVE_EVIDENCE_20261029.md). The release gate remains OFF; no production drop profiles or rates were authored.
-> - D2 used the owner-approved exact path allowlist. PR #52 remains Draft/open and no merge to `main` was performed. The original E: checkout and its existing QA/import artifacts were preserved.
-> - Next is D3 planning and its own owner-approved exact code path allowlist. Do not begin D3 SaveService migration, timed research/One Active Job, live skill runtime, or D4+ in this packet.
-> - PR #52 remains Draft/open. No merge to `main`; the original E: checkout and its QA artifacts were preserved.
+> - Stable `main` remains `c0c1382f119599497b52d8ee8abd9e830a883f1e`; active no-merge feature branch is `feature/v63-v64-full-combat-20261029`. The D3 implementation is based on live feature head `4b914d05eb601d2788968a0419e5dda63c79b6fc` and committed as `9bbc5edacf73388505a16c8db0e3b9097a41d55a`.
+> - D1 and D2 remain complete at their recorded source SHAs. D2 Sect Archive and exactly-once codex rewards remain gated OFF and candidate-only as documented in [D2 evidence](docs/implementation/V63_D2_ARCHIVE_EVIDENCE_20261029.md).
+> - D3 gated personal technique learning is implemented: archived manual source checks, per-disciple timed study as the sole active job, one main + two auxiliary slots, personal mastery, deterministic prerequisites, retry-safe start/cancel/completion receipts, and additive save migration preserving legacy P2.3 fields. No identity crosswalk or live combat effect was added.
+> - Exact committed source parity was checked across all 14 D3 code/catalog/test paths. Official Godot `4.7.2.stable.official.ed1daf0bf` Windows headless import and all 10 focused/cumulative scripts PASS, exit 0. See [D3 evidence](docs/implementation/V63_D3_LEARNING_EVIDENCE_20261029.md).
+> - Global `technique_learning` and `sect_codex` gates remain OFF by default; candidate costs/ticks are provisional, and combat effects remain disabled. The D3 rollback is gate-off while retaining saved learning records; legacy P2.3 fields remain unchanged.
+> - The E: D3 feature worktree was not overwritten because four in-scope files contained uncommitted EOF-only line-ending changes. Validation ran on the Windows scratch checkout whose 14 file contents match the committed code SHA exactly. Physical GUI, Android and owner visual acceptance remain PENDING.
+> - PR #52 remains Draft/open; no PR was created and no merge to `main` was performed. Next work is D4 planning and a separate owner-approved CODE packet; do not start D4+ code from this checkpoint.
 
 
 **Cập nhật 27/10/2026 — Một dự án, một bản game chính thức.** Đọc file này trước; các checkpoint dài cũ là lịch sử, không phải nhiều phiên bản game song song.

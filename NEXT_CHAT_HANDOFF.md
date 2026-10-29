@@ -2,14 +2,14 @@
 
 **Một stable `main`; một ứng viên PvE tích hợp `integration/pve-unified-rc-20261027`.** Không gọi các PR/nhánh cũ là game độc lập.
 
-## Cập nhật hiện tại — V6.5 full combat
+## Cập nhật hiện tại — V6.5 full combat / D3
 
-- Active branch `feature/v63-v64-full-combat-20261029`, created from D1 commit `6e4012d7a9e3a7efa56df349a176f9491d550742`; no merge performed. Current stable `main` is `c0c1382f119599497b52d8ee8abd9e830a883f1e`; PvE reference remains `5005d7508dff4b6a3da3f319de09dac33669882a`.
-- Official Windows Godot 4.7.2 import and D1 focused registry test both PASS, exit 0. Read `docs/implementation/V63_D1_VALIDATION_EVIDENCE_20261029.md` for exact commands, hashes, and limits.
-- D2 Sect Archive and exactly-once codex rewards are complete on tested source `d45ab195c53c00f0f29732124dd7678fd42cb351`. Official Godot 4.7.2 import and 10/10 focused/regression scripts PASS. Read `docs/implementation/V63_D2_ARCHIVE_EVIDENCE_20261029.md` for scope, test matrix, paths and log hashes.
-- `sect_codex` remains OFF by default, per-save opt-in defaults false, and production drop profiles are empty. Fragment restoration costs are candidates only. No SaveService/schema migration, timed research job, skill runtime, D3/D4+ work, GUI or Android acceptance is claimed.
-- The next action is D3 planning and owner approval of its exact code allowlist and validation plan per `AGENTS.md`. PR #52 remains Draft/open; do not merge `main`.
-- PR #52 remains Draft/open/unmerged. Original E: checkout and QA artifacts remain preserved.
+- Stable `main` remains `c0c1382f119599497b52d8ee8abd9e830a883f1e`; no merge occurred. Active feature branch is `feature/v63-v64-full-combat-20261029`.
+- D3 code/test commit: `9bbc5edacf73388505a16c8db0e3b9097a41d55a`, based on approved feature head `4b914d05eb601d2788968a0419e5dda63c79b6fc`. It adds gated personal study jobs, the D3 learning catalog/system, additive disciple/sect/save records, existing-screen study/loadout controls, and focused tests.
+- Official Windows Godot `4.7.2.stable.official.ed1daf0bf` import and all 10 approved focused/cumulative scripts PASS, exit 0. The 14 source files tested locally match the D3 code commit exactly. Read [D3 evidence](docs/implementation/V63_D3_LEARNING_EVIDENCE_20261029.md) for each command and log SHA-256.
+- `technique_learning` and `sect_codex` default OFF. Economy values remain candidate-only, no skill/combat effects are enabled, and legacy P2.3 knowledge/loadout are preserved without an identity crosswalk.
+- The E: feature checkout retains its existing QA/import artifacts and four EOF-only uncommitted in-scope edits; it was left untouched. Physical GUI, Android and owner visual acceptance remain PENDING.
+- PR #52 remains Draft/open. No new PR or merge to `main` was performed. Next is D4 planning and a separately authorized exact CODE packet; D4+ code is not authorized by this handoff.
 
 
 ## Người mới tiếp quản phải đọc
