@@ -231,11 +231,11 @@ static func restore_manual_from_fragments(state: SimulationState, codex_id: Stri
     if warehouse.quantity(state,manual_id) >= warehouse.MAX_SAFE_STACK:
         return _failure("warehouse_overflow")
     var requirements := {str(fragment_id):fragment_count}
-    if not warehouse.can_consume_requirements(state,requirements,true):
+    if not warehouse.can_consume_requirements(state,requirements):
         return _failure("insufficient_codex_fragments")
     var old_resources: Dictionary = state.sect.warehouse_resources.duplicate(true)
     var old_warehouse_events := state.sect.warehouse_event_count
-    if not warehouse.consume_requirements(state,requirements,true) or not warehouse.add(state,manual_id,1):
+    if not warehouse.consume_requirements(state,requirements) or not warehouse.add(state,manual_id,1):
         state.sect.warehouse_resources = old_resources
         state.sect.warehouse_event_count = old_warehouse_events
         return _failure("restoration_transaction_failed")
