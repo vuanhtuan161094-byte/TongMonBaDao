@@ -5,6 +5,7 @@ const SAVE_PATH_ENV := "TMB_PVE_LIVE_SAVE_PATH"
 const KEEP_SAVE_ENV := "TMB_KEEP_PVE_LIVE_SAVE"
 const GUI_CAPTURE_ENV := "TMB_PVE_GUI_CAPTURE_PATH"
 const FORMATION_CAPTURE_ENV := "TMB_PVE_FORMATION_CAPTURE_PATH"
+const RING_CAPTURE_DIR_ENV := "TMB_PVE_RING_CAPTURE_DIR"
 const VFX_FIXTURE_ENV := "TMB_PVE_VFX_TEST_SKILL"
 const VFX_STYLE_ENV := "TMB_PVE_VFX_STYLE"
 const VFX_CAPTURE_WAIT_ENV := "TMB_PVE_VFX_CAPTURE_WAIT"
@@ -191,6 +192,10 @@ func _run() -> void:
 		str(ui.get("b3_hunt_panel") != null),str(ui.get("b3_hunt_panel") != null and (ui.get("b3_hunt_panel") as Control).visible),
 		str(ui.get("active_hunt_mode")),encounter]):
 		return
+	if not _check(not world_status.text.contains("LOOT_PENDING")
+		and world_status.text.contains("Chiến lợi phẩm: chưa xác nhận"),
+		"the live HUD exposed a debug loot placeholder or implied an unverified reward"):
+		return
 	if not _check(PveMultiCampPopulationV1.CAMP_COUNT == 20
 		and PveMultiCampPopulationV1.verify_structure(session.camp_population).is_empty()
 		and session.camp_population["camps"].size() == 20
@@ -219,6 +224,17 @@ func _run() -> void:
 	map.world.pve_selected_actor_ids = selected_for_ring_test.duplicate()
 	for zoom in [0.80,1.35]:
 		map.camera_zoom = zoom
+		map._clamp_camera()
+		map.world.queue_redraw()
+		map._queue_overlay_redraw()
+		await process_frame
+		await RenderingServer.frame_post_draw
+		var actor_draw_scale := map.world.pve_actor_draw_scale()
+		if not _check(actor_draw_scale <= 0.82 and actor_draw_scale > 0.0
+				and (zoom <= 1.0 or is_equal_approx(actor_draw_scale,0.82)),
+			"Source A actor screen size was not capped at close zoom %.2f; scale=%.3f" % [zoom,actor_draw_scale]):
+			return
+		print("PVE ACTOR SCREEN SCALE PASS zoom=%.2f actor_draw_scale=%.3f cap=0.82" % [zoom,actor_draw_scale])
 		var centers: Array[Vector2] = []
 		var radii: Array[float] = []
 		for selected_id in selected_for_ring_test:
@@ -239,6 +255,18 @@ func _run() -> void:
 			"selected circles touch at zoom %.2f; visible=%d min_edge_gap=%.2f px" % [zoom,centers.size(),minimum_ring_gap]):
 			return
 		print("PVE SELECTION RING GAP PASS zoom=%.2f visible=%d min_edge_gap_px=%.2f" % [zoom,centers.size(),minimum_ring_gap])
+		var ring_capture_dir := OS.get_environment(RING_CAPTURE_DIR_ENV).strip_edges()
+		if not ring_capture_dir.is_empty():
+			DirAccess.make_dir_recursive_absolute(ring_capture_dir)
+			var ring_capture_path := ring_capture_dir.path_join("pve_selection_rings_zoom_%03d.png" % roundi(zoom*100.0))
+			var ring_frame := root.get_texture().get_image()
+			var ring_save_error := ring_frame.save_png(ring_capture_path) if ring_frame != null else ERR_UNAVAILABLE
+			if not _check(ring_frame != null and ring_frame.get_size() == Vector2i(1280,720)
+				and ring_save_error == OK,
+				"could not capture the measured selection-ring layout at zoom %.2f" % zoom):
+				return
+			print("PVE SELECTION RING IMAGE PASS zoom=%.2f size=1280x720 path=%s sha256=%s" % [
+				zoom,ring_capture_path,FileAccess.get_sha256(ring_capture_path)])
 	var path_actor: Dictionary = battle.actors.get(str(ids[0]),{})
 	var path_start: Vector2 = path_actor.get("position",Vector2.ZERO)
 	var path_goal: Vector2 = map.topology["camp_positions"][1]
@@ -493,9 +521,17 @@ func _run() -> void:
 	else:
 		# The normal button polls wall time first; during a slow GUI asset load
 		# that legitimately catches up and may settle this low-level QA party
-		# before a frame can be photographed. Save the exact active state through
-		# the same canonical SaveService, then exercise clock progression below.
-		if not _check(SaveService.new().save_to_path(state,save_path) == OK,
+		# before a frame can be photographed. Save through the canonical runtime
+		# owner so its live session snapshot is refreshed before SaveService writes.
+		# The preceding movement can have queued an async checkpoint; finish that
+		# durability barrier before the owner starts another write.
+		var prior_gui_save: Dictionary = await runtime.owner.saves.wait_for_async_save(self)
+		if not _check(bool(prior_gui_save.get("ok",false))
+				and not bool(prior_gui_save.get("pending",false)),
+			"runtime-owned async SaveService barrier did not finish before the GUI checkpoint"):
+			return
+		var gui_checkpoint: Dictionary = runtime.owner.save_to_path(save_path,start_wall)
+		if not _check(bool(gui_checkpoint.get("ok",false)),
 			"canonical SaveService could not checkpoint the active GUI world"):
 			return
 	var loaded := SaveService.new().load_from_path(save_path)
@@ -534,7 +570,7 @@ func _run() -> void:
 				"unknown comparison style: "+requested_style):
 				return
 			map.world.pve_jx_sword_vfx.comparison_style = "hybrid" if requested_style == "all" else requested_style
-		map.camera_zoom = 0.90
+		map.camera_zoom = 1.35
 		map.camera_center = map.topology["camp_positions"][int(envelope_for_capture(state,encounter).get("camp_index",0))]
 		map._clamp_camera()
 		ui.call("_refresh_multicamp_hunt_panel")
@@ -543,6 +579,8 @@ func _run() -> void:
 		# consuming wall seconds or minute_phase.
 		var visual_wall_start := int(state.runtime_last_wall_unix)
 		var visual_battle_start := capture_battle.now
+		var impact_frame_image: Image = null
+		var impact_capture_froze_world := false
 		for _visual_step in range(30):
 			if capture_battle._count_alive("disciple") <= 0:
 				break
@@ -558,19 +596,75 @@ func _run() -> void:
 				if saw_visual_cast and saw_visual_positive_hit:
 					map.show_authority_snapshot(capture_battle,visual_session.camp_population,
 						visual_session.camp_index,state.disciples,source_a_rows)
+					var impact_wait_frames := 0
+					while int(map.world.pve_jx_sword_vfx.counters.get("impacts",0)) == 0 \
+							and impact_wait_frames < 90:
+						await process_frame
+						impact_wait_frames += 1
+					var impact_cues: Array[Dictionary] = map.world.pve_jx_sword_vfx.render_cues()
+					var impact_cue_found := false
+					var impact_region_ok := false
+					var impact_on_map := false
+					for cue in impact_cues:
+						if str(cue.get("phase","")) != "impact":
+							continue
+						impact_cue_found = true
+						impact_region_ok = not map.world.pve_jx_sword_vfx.atlas.frame_region(
+							str(cue.get("effect","")),float(cue.get("elapsed",0.0))).is_empty()
+						var impact_point := map.world_to_screen(cue.get("at",Vector2.ZERO))
+						impact_on_map = map.map_rect().has_point(impact_point) \
+							and not map.minimap_rect().has_point(impact_point)
+						if impact_cue_found and impact_region_ok and impact_on_map:
+							map.world.set_process(false)
+							impact_capture_froze_world = true
+							map.world.queue_redraw()
+							map._queue_overlay_redraw()
+							await process_frame
+							await RenderingServer.frame_post_draw
+							impact_frame_image = root.get_texture().get_image()
+					if not _check(impact_cue_found and impact_region_ok and impact_on_map
+							and impact_frame_image != null
+							and impact_frame_image.get_size() == Vector2i(1280,720),
+						"JX #158 impact did not remain drawable and onscreen for a real GUI frame; waits=%d cues=%d atlas=%s on_map=%s impacts=%d" % [
+							impact_wait_frames,impact_cues.size(),str(impact_region_ok),str(impact_on_map),
+							int(map.world.pve_jx_sword_vfx.counters.get("impacts",0))]):
+						return
+					print("PVE JX IMPACT DRAW PASS wait_frames=%d cues=%d atlas_region=%s on_map=%s screenshot=1280x720" % [
+						impact_wait_frames,impact_cues.size(),str(impact_region_ok),str(impact_on_map)])
 					break
-			var next_wall := int(state.runtime_last_wall_unix)+1
-			var visual_step := runtime.poll(next_wall)
-			if not _check(bool(visual_step.get("ok",false))
-					and not bool(visual_step.get("barrier",false))
-					and int(visual_step.get("frames_run",0)) > 0,
-				"canonical PvE owner could not advance visible combat: %s" % str(visual_step)):
+			var visual_wall_target := int(state.runtime_last_wall_unix)+1
+			var visual_step := runtime.poll(visual_wall_target)
+			var visual_drain_cycles := 0
+			while true:
+				if not _check(bool(visual_step.get("ok",false))
+						and (bool(visual_step.get("barrier",false))
+							or int(visual_step.get("frames_run",0)) > 0),
+						"canonical PvE owner could not advance visible combat: %s" % str(visual_step)):
+					return
+				if bool(visual_step.get("barrier",false)):
+					# Real combat can kill during a visual step; that frame correctly
+					# stops at the exactly-once SaveService barrier. Let the canonical
+					# async checkpoint finish before consuming this wall tick's backlog.
+					var visual_barrier_save: Dictionary = await runtime.owner.saves.wait_for_async_save(self)
+					if not _check(bool(visual_barrier_save.get("ok",false))
+							and not bool(visual_barrier_save.get("pending",false)),
+						"exactly-once visual combat barrier did not finish its async save"):
+						return
+				if not bool(visual_step.get("backlog_pending",false)):
+					break
+				visual_drain_cycles += 1
+				if not _check(visual_drain_cycles <= 64,
+					"visible combat wall tick could not drain its bounded 1s backlog"):
+					return
+				# Do not add another wall second while the current one still has
+				# Combat V2 frames waiting behind an exactly-once barrier.
+				visual_step = runtime.poll(visual_wall_target)
+			var capture_restored: HuntingPveRunV2 = runtime.owner.get_active_multicamp_session(encounter)
+			if not _check(capture_restored != null and capture_restored.battle != null
+					and capture_restored.battle.active,
+				"live runtime session was unavailable for a visible fighting frame"):
 				return
-			var capture_restored := HuntingPveRunV2.resume_active(state,encounter)
-			if not _check(bool(capture_restored.get("ok",false)),
-				"GUI capture encounter settled before a valid fighting frame"):
-				return
-			visual_session = capture_restored["session"]
+			visual_session = capture_restored
 			capture_battle = visual_session.battle
 			if vfx_capture_mode:
 				# Drive the same read-only snapshot adapter used by the live P3.2 HUD
@@ -586,12 +680,16 @@ func _run() -> void:
 		var same_wall := int(state.runtime_last_wall_unix)
 		var same_battle_now := capture_battle.now
 		var same_time_poll := runtime.poll(same_wall)
-		var same_time_run := HuntingPveRunV2.resume_active(state,encounter)
+		var same_time_run: HuntingPveRunV2 = runtime.owner.get_active_multicamp_session(encounter)
 		if not _check(bool(same_time_poll.get("ok",false))
 				and int(same_time_poll.get("frames_run",0)) == 0
-				and bool(same_time_run.get("ok",false))
-				and is_equal_approx(same_time_run["session"].battle.now,same_battle_now),
+				and same_time_run != null
+				and is_equal_approx(same_time_run.battle.now,same_battle_now),
 			"same timestamp replayed Combat V2 frames in GUI harness"):
+			return
+		var post_combat_save: Dictionary = runtime.owner.save_to_path(save_path,same_wall)
+		if not _check(bool(post_combat_save.get("ok",false)),
+			"canonical SaveService could not persist the post-combat GUI snapshot"):
 			return
 		var durable_visual_state := SaveService.new().load_from_path(save_path)
 		var durable_visual_run := HuntingPveRunV2.resume_active(
@@ -601,40 +699,9 @@ func _run() -> void:
 				and durable_visual_state.runtime_last_wall_unix == same_wall
 				and is_equal_approx(durable_visual_run["session"].battle.now,same_battle_now)
 				and is_equal_approx(float(durable_visual_run["session"].minute_phase),
-					float(same_time_run["session"].minute_phase)),
+					float(same_time_run.minute_phase)),
 			"active PvE SaveService checkpoint disagrees with the shared battle clock"):
 			return
-		var impact_frame_image: Image = null
-		var impact_capture_froze_world := false
-		if vfx_capture_mode and saw_visual_cast and saw_visual_positive_hit:
-			var impact_wait_frames := 0
-			while int(map.world.pve_jx_sword_vfx.counters.get("impacts",0)) == 0 and impact_wait_frames < 90:
-				await process_frame
-				impact_wait_frames += 1
-			if int(map.world.pve_jx_sword_vfx.counters.get("impacts",0)) > 0:
-				# Freeze view animation for one actual draw so even a slow test machine
-				# cannot age the 320 ms JX sheet away before the viewport capture.
-				map.world.set_process(false)
-				impact_capture_froze_world = true
-				map.world.queue_redraw()
-				map._queue_overlay_redraw()
-				await process_frame
-				await RenderingServer.frame_post_draw
-				impact_frame_image = root.get_texture().get_image()
-				var impact_cues: Array[Dictionary] = map.world.pve_jx_sword_vfx.render_cues()
-				var impact_region_ok := false
-				var impact_screen := Vector2.ZERO
-				var impact_overlay_point := Vector2.ZERO
-				for cue in impact_cues:
-					if str(cue.get("phase","")) != "impact":
-						continue
-					impact_region_ok = not map.world.pve_jx_sword_vfx.atlas.frame_region(
-						str(cue.get("effect","")),float(cue.get("elapsed",0.0))).is_empty()
-					impact_screen = map.world.project(cue.get("at",Vector2.ZERO))
-					impact_overlay_point = map.world_to_screen(cue.get("at",Vector2.ZERO))
-				print("PVE JX IMPACT DRAW diagnostic cues=%d atlas_region=%s world=%s camera=%s overlay=%s overlay_inside=%s process_frozen=%s" % [
-					impact_cues.size(),str(impact_region_ok),str(impact_screen),str(map.world.camera.position),str(impact_overlay_point),
-					str(map.map_rect().grow(80.0).has_point(impact_overlay_point) and not map.minimap_rect().has_point(impact_overlay_point)),str(impact_capture_froze_world)])
 		if not _check(capture_battle._count_alive("disciple") >= (1 if vfx_capture_mode else 6)
 			and capture_battle._count_alive("monster") >= 1 and capture_battle.actions > 0,
 			"first visible Combat V2 frame lacks a living party member or an active monster; party=%d monsters=%d actions=%d now=%.3f" % [
@@ -855,10 +922,11 @@ func _run() -> void:
 	var final_kills := 0
 	var final_outcome := "active"
 	if not active_after.is_empty():
-		var latest := HuntingPveRunV2.resume_active(state,encounter)
-		if not _check(bool(latest.get("ok",false)),"active world snapshot failed to restore after shared-clock progress"):
+		var latest: HuntingPveRunV2 = runtime.owner.get_active_multicamp_session(encounter)
+		if not _check(latest != null and latest.battle != null and latest.battle.active,
+			"live runtime session was unavailable after shared-clock progress"):
 			return
-		session = latest["session"]
+		session = latest
 		final_battle = session.battle
 		final_kills = int(session.camp_population.get("world_total_kills",0))
 		zone_hop = session.camp_index > 0

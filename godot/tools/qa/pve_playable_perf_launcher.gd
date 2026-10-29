@@ -18,7 +18,11 @@ func _launch() -> void:
 	var run_id := "%d_%d" % [int(Time.get_unix_time_from_system()),launch_usec]
 	var project_root := ProjectSettings.globalize_path("res://")
 	var seed_path := ProjectSettings.globalize_path(QA_SEED_SAVE)
+	var configured_qa_root := OS.get_environment("TMB_PVE_QA_OUTPUT_ROOT").strip_edges()
 	var run_root := project_root.path_join(QA_ROOT)
+	if not configured_qa_root.is_empty():
+		run_root = configured_qa_root.simplify_path() if configured_qa_root.is_absolute_path() \
+			else project_root.path_join(configured_qa_root).simplify_path()
 	var save_path := run_root.path_join("userdata").path_join("pve_perf_%s.json" % run_id)
 	if not FileAccess.file_exists(seed_path):
 		printerr("TMB_PVE_PERF_LAUNCH_FAIL: missing canonical 130-disciple QA seed: "+seed_path)

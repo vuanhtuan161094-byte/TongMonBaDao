@@ -1113,6 +1113,15 @@ func selected_actor_ring_radius_screen(actor_id: String) -> float:
     # in screen pixels, crowding never makes selection circles touch at zoom.
     return clampf((nearest_screen_distance-5.5)*0.5,0.0,11.0)
 
+func pve_actor_draw_scale() -> float:
+    if camera == null:
+        return 0.0
+    # Zoom the world around the actors, but cap the Source A sprite's screen
+    # footprint at the normal-zoom size. Otherwise zoom 1.35 enlarges the art
+    # over neighboring combatants even though their authoritative foot points
+    # and selection rings remain separated.
+    return minf(camera.zoom.x*0.82,0.82)
+
 func _draw_pve_actor(data: Dictionary) -> void:
     var id := str(data.get("id",""))
     var actor: Dictionary = data.get("actor",{})
@@ -1136,7 +1145,7 @@ func _draw_pve_actor(data: Dictionary) -> void:
     var drawn := not actor_key.is_empty() and pve_source_atlas.has_actor(actor_key)
     if drawn:
         drawn = pve_source_atlas.draw_actor(self,actor_key,action,foot,facing,
-            maxf(0.0,pve_clock-float(visual.get("started",pve_clock))),camera.zoom.x*0.82)
+            maxf(0.0,pve_clock-float(visual.get("started",pve_clock))),pve_actor_draw_scale())
     if not drawn:
         var shade := Color("73d6ad") if side == "disciple" else Color("dc9370")
         draw_colored_polygon(PackedVector2Array([foot+Vector2(0,-10),foot+Vector2(8,0),foot+Vector2(0,7),foot+Vector2(-8,0)]),shade)

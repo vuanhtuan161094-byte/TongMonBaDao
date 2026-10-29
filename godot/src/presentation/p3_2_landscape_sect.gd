@@ -5176,7 +5176,7 @@ func _set_hunt_status(battle: MapBattleV2, camp_id: String, total_monsters: int,
         members += 1
         total_hp += maxf(0.0,float(actor.get("hp",0.0)))
         maximum_hp += maxf(1.0,float(actor.get("max_hp",1.0)))
-    b3_hunt_world_status.text = "Đội săn %d/6 · sống %d · HP %.0f/%.0f\n%s · quái %d/%d · %.1fs\nLOOT_PENDING" % [
+    b3_hunt_world_status.text = "Đội săn %d/6 · sống %d · HP %.0f/%.0f\n%s · quái %d/%d · %.1fs\nChiến lợi phẩm: chưa xác nhận" % [
         members,battle._count_alive("disciple"),total_hp,maximum_hp,camp_id,alive_monsters,total_monsters,battle.now]
 
 func _refresh_b3_hunt_panel() -> void:
