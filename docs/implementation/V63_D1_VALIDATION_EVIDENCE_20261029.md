@@ -24,26 +24,30 @@ Result: `STATIC_REGISTRY_PASS`.
 
 The checks above were run as a **JavaScript structural audit** on the actual committed JSON; this is not a Godot runtime PASS and does not validate the GDScript compile or engine behavior.
 
-## NOT executed — engine focused test
+## Actually executed — Windows Godot 4.7.2 import and focused test (2026-10-29)
 
-Attempted executable probe in current container: neither `godot` nor `godot4` is installed (`BLOCKED_GODOT_ENGINE`). Internet GitHub hostname resolution unavailable in container, so engine installation was not attempted. The GDScript test `godot/tests/simulation/v63_d1_content_registry_test.gd` is committed but **PENDING_ENGINE**. There were **zero Godot focused tests executed** in this session. No CI claim.
+Executed from the required isolated worktree at `E:\TongMonBaDaoWorkspace\01_Game\TMB_V63_COMBAT_20261029` on D1 baseline `6e4012d7a9e3a7efa56df349a176f9491d550742`. Used the official `4.7.2.stable.official.ed1daf0bf` console executable. The required project import completed with exit 0, registered 310 script classes, and reimported 103 resources. The focused D1 GDScript gate ran after import and completed with exit 0.
 
-Run on user's Windows machine with official Godot 4.7.2 and local checkout of this branch:
+Commands:
 
 ```powershell
-& "E:\\path\\to\\Godot_v4.7.2-stable_win64_console.exe" --headless --path "E:\\TongMonBaDaoWorkspace\\TongMonBaDao\\godot" --script "res://tests/simulation/v63_d1_content_registry_test.gd"
+& "E:\Godot_v4.7.2-stable_win64_console.exe" --headless --editor --path "E:\TongMonBaDaoWorkspace\01_Game\TMB_V63_COMBAT_20261029\godot" --import --quit
+& "E:\Godot_v4.7.2-stable_win64_console.exe" --headless --path "E:\TongMonBaDaoWorkspace\01_Game\TMB_V63_COMBAT_20261029\godot" --script "res://tests/simulation/v63_d1_content_registry_test.gd"
 ```
 
-Replace both paths with the actual executable/repository location. A successful test should exit 0 and print `V63_D1_PASS`. Do not assert PASS until that exit code and log exist.
+Result: `V63_D1_PASS: 105 families, 531 nodes, 18 rare variants, 9 bosses, gates OFF and negative cases`. No import/test errors or warnings were found in the captured logs. This is the focused D1 gate only; it is not a PvE regression, full gameplay, GUI, Android, or CI claim.
 
-Recommended additionally run current PvE focused suites (MapBattleV2/monster/pve tests) and import from the exact branch SHA; verify legacy combat snapshots byte-for-byte where applicable.
+Logs are saved in the project QA folder `E:\TongMonBaDaoWorkspace\03_QA_Logs\v63_d1_validation` and copied to the user-facing outputs folder. SHA-256:
+
+- `godot_4_7_2_import.log`: `793CC04691E6A2FF1E92B37BB38D1CB40F4DD49125EECFD63D96AAF94D23964A`
+- `v63_d1_focused_test.log`: `921FC782AEF26F1FBB4A72FE2A586AD9C47FEC614875341542178CD167F78CD7`
 
 ## Open release gates
 
-D1 is **CODE_READY_STATIC_PASS / ENGINE_PENDING / GAMEPLAY_UNWIRED**:
+D1 is **CODE_READY_STATIC_PASS / FOCUSED_ENGINE_PASS / GAMEPLAY_UNWIRED**:
 - Feature flags OFF; no live path imports the new registry.
 - All skill-node effects are future authored candidates, not usable runtime skills.
 - Boss definitions are read-only and explicitly disallow spawn/loot.
 - No migration, economy, UI, Save or AI changes.
-- D2 should not be authorized until Godot import/focused tests confirm syntax/invariants and owner reviews A/B authority disputes.
+- D1's import and focused engine gate now pass on the exact baseline. D2 code remains gated by the repository's required owner-approved path allowlist for its CODE packet; no D2 gameplay changes are present.
 - PR #52 remains Draft and no merge was performed.
