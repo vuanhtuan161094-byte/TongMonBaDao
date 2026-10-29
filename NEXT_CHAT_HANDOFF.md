@@ -1,3 +1,11 @@
+## 29/10/2026 — D4-A preflight (current)
+
+- D4-A is authorized and in progress; code is not started in this preflight checkpoint. Base HEAD `a9a7d5ab97c3b02de467c54b94d4d9c4c8d3d9ca`; isolated scratch is `E:\\TongMonBaDaoWorkspace\\01_Game\\TMB_V65_D4A_20261029`. Original dirty E: worktree is preserved.
+- Exact D4-A allowlist and PR #52 conflict matrix are recorded at the top of `CURRENT_CHECKPOINT.md`. Additive V6.3 personal skill state is needed because the legacy skill dictionary accepts only P2 IDs; model-level serialization means SaveService and schema version stay unchanged.
+- Implement learned/equipped Liệp Ảnh Human action and one Human Boss through an opted-in MapBattleV2 adapter. Legacy gate-off behavior remains unchanged; keep D2 reward receipts and D3 One Active Job guards.
+- Tests planned: official Godot 4.7.2 import; new combat/boss and state round-trip tests; D1, D2, D3, P2.5, group MapBattle, PvE HP0 and save-return regressions, sequential. GUI capture from the existing P3.2 scene is required.
+- Current tests/logs/GUI: PENDING. Next action: implement only the preflight allowlist, run evidence, then proceed automatically to D4-B.
+
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO / 29-10-2026
 
 ## 29/10/2026 — Owner authorizes FULL V6.5 execution D4–D8

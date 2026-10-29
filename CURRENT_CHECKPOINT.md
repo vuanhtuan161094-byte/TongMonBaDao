@@ -1,3 +1,34 @@
+## 29/10/2026 — D4-A PREFLIGHT / exact allowlist (current)
+
+**Status:** allowlist recorded; D4-A code is not started and no D4 tests or GUI evidence exist yet. Base feature HEAD is `a9a7d5ab97c3b02de467c54b94d4d9c4c8d3d9ca`; stable main remains `c0c1382f119599497b52d8ee8abd9e830a883f1e`. Work is in isolated `E:\\TongMonBaDaoWorkspace\\01_Game\\TMB_V65_D4A_20261029`. The original E: feature worktree at `d45ab195c53c00f0f29732124dd7678fd42cb351` retains its dirty files and existing Godot processes.
+
+**D4-A behavior:** default-off, opt-in learned/equipped Liệp Ảnh Human skill events resolve through Combat V2 HP/damage; a Human-tier Thiết Giáp Sơn Viên boss uses real cast/telegraph/hit events; six disciples can auto-cast. Gate-off legacy P2/P2.3 remains byte/behavior stable. No balance coefficients become approved.
+
+**Concrete D4-A allowlist (only these paths):**
+
+- `godot/src/simulation/combat/v63_human_skill_combat_system.gd` (new)
+- `godot/src/simulation/combat/v63_human_combat_battle_v2.gd` (new)
+- `godot/data/combat/v63_human_combat_catalog.json` (new)
+- `godot/src/simulation/combat/v63_feature_gates.gd`
+- `godot/src/simulation/combat/map_battle_v2.gd` (one guarded adapter so a V6.3 boss skips only the legacy generic boss cast)
+- `godot/src/simulation/combat/hunting_pve_run_v2.gd` (narrow opted-in party/boss construction adapter; keep current D2 receipts and D3 job guards)
+- `godot/src/simulation/state/disciple_state.gd`
+- `godot/src/simulation/state/sect_state.gd`
+- `godot/src/simulation/state/simulation_state.gd`
+- `godot/tests/simulation/v63_d4a_human_combat_test.gd` (new)
+- `godot/tests/simulation/v63_d4a_state_roundtrip_test.gd` (new)
+- `docs/implementation/V65_D4A_HUMAN_COMBAT_EVIDENCE_20261029.md` (new)
+- `CURRENT_CHECKPOINT.md`
+- `NEXT_CHAT_HANDOFF.md`
+
+The additive disciple records are necessary: legacy `learned_combat_skills` is validated against P2 IDs, so storing `tmb.skill.*` there would corrupt legacy validation. Add empty-default V6.3 knowledge/equipped fields with model-owned `to_dict/from_dict`; `SaveService` remains unchanged because it serializes `SimulationState.to_dict()`. No schema replacement or legacy crosswalk. No `MapBattleSnapshotV2` change is planned; cast state stays in its existing serialized actor/cast records.
+
+**PR #52 conflict matrix, verified against current `f7c33d9`:** `hunting_pve_run_v2.gd` in PR #52 lacks feature-branch D2 codex receipt settlement and D3 One Active Job guards; preserve feature code and only add the opted-in adapter. PR-only MapBattleV2 changes are environment-gated profiler fields/wrappers; this packet adds a separate V6.3 guard and does not adopt those changes. Snapshot PR changes only avoid a deep copy of immutable navigation while this feature currently deep-copies it; leave both versions untouched. PR SaveService/runtime removals and presentation changes are outside this packet. No merge/cherry-pick of PR #52.
+
+**Protected/excluded:** `SaveService`, `MapBattleSnapshotV2`, CombatStatsV2 formulas, the legacy CombatSkillSystem, P2/P2.3 screens, scheduler/One Active Job, Warehouse, Injury120, production, assets/VFX, main and PR #52. D4-A uses the existing `MapBattleV2` hit path; default-off flags and new records remain additive on rollback.
+
+**Test plan:** official Godot 4.7.2 import; new skill/boss and saved-state round-trip tests; gate-off P2.5 and group MapBattle regressions; D1 registry, D2 archive/drop receipts, D3 learning/job/save round-trip, multicamp HP0 bridge and PvE save-return exactly-once regressions, run sequentially. Record exact code SHA, exit codes and logs. Real GUI capture in the existing P3.2 scene remains a required D4-A gate; no GUI PASS is claimed at preflight.
+
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
 ## 29/10/2026 — Owner authorizes FULL V6.5 execution D4–D8
