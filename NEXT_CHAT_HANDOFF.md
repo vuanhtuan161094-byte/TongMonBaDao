@@ -1,6 +1,14 @@
-# NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO / 27-10-2026
+# NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO / 29-10-2026
 
 **Một stable `main`; một ứng viên PvE tích hợp `integration/pve-unified-rc-20261027`.** Không gọi các PR/nhánh cũ là game độc lập.
+
+## Cập nhật hiện tại — V6.5 full combat
+
+- Active branch `feature/v63-v64-full-combat-20261029`, created from D1 commit `6e4012d7a9e3a7efa56df349a176f9491d550742`; no merge performed. Current stable `main` is `c0c1382f119599497b52d8ee8abd9e830a883f1e`; PvE reference remains `5005d7508dff4b6a3da3f319de09dac33669882a`.
+- Official Windows Godot 4.7.2 import and D1 focused registry test both PASS, exit 0. Read `docs/implementation/V63_D1_VALIDATION_EVIDENCE_20261029.md` for exact commands, hashes, and limits.
+- D1 is still data-only with runtime flags OFF. D2 gameplay implementation has not started. The next action is owner approval of an exact D2 file allowlist, required by `AGENTS.md` for CODE packets; this is a path-scope approval, not a request to revisit locked game decisions.
+- PR #52 remains Draft/open/unmerged. Original E: checkout and QA artifacts remain preserved.
+
 
 ## Người mới tiếp quản phải đọc
 
