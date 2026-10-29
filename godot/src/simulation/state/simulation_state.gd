@@ -77,6 +77,15 @@ func validate_invariants() -> Array[String]:
                 break
     if has_v63_learning_state:
         errors.append_array(V63LearningSystem.validate_state(self))
+    var has_v63_human_combat_state := sect.v63_skill_combat_opt_in
+    if not has_v63_human_combat_state:
+        for skill_disciple_value in disciples.values():
+            var skill_disciple: DiscipleState = skill_disciple_value
+            if not skill_disciple.v63_learned_skill_nodes.is_empty() or not skill_disciple.v63_equipped_skill_ids.is_empty():
+                has_v63_human_combat_state = true
+                break
+    if has_v63_human_combat_state:
+        errors.append_array(V63HumanSkillCombatSystem.validate_state(self))
 
     if sect.treasury < 0:
         errors.append("Sect treasury is negative.")

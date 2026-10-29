@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "enabled": false,
+  "balance_status": "candidate_needs_qa",
+  "skills": [
+    {
+      "id": "tmb.skill.bow.liep_anh.active_01.human",
+      "name": "Xuyên Tâm Tiễn",
+      "school": "bow",
+      "branch": "liep_anh",
+      "family_id": "tmb.skill.bow.liep_anh.active_01",
+      "node_id": "tmb.skill.bow.liep_anh.active_01.human",
+      "source_codex_id": "tmb.codex.bow.liep_anh.ch1_active_01.human.base",
+      "tier": "human",
+      "slot": "active",
+      "effect": "damage",
+      "damage_ratio": 1.45,
+      "range": 7.5,
+      "cast_time": 0.35,
+      "cooldown": 4.5,
+      "projectile_speed": 12.0,
+      "element": "metal",
+      "animation_key": "liep_anh_xuyen_tam_tien",
+      "vfx_key": "v63_original_arrow_pierce"
+    }
+  ],
+  "bosses": [
+    {
+      "id": "tmb.boss.thiet_giap_son_vien",
+      "name": "Thiết Giáp Sơn Viên",
+      "tier_band": "human",
+      "origin_species_id": "nham_giap_thu",
+      "phase_thresholds": [0.7, 0.35],
+      "boss_hp_factor": 1.0,
+      "boss_attack_factor": 1.0,
+      "boss_defense_factor": 1.0,
+      "skills": [
+        {"id":"tmb.bossskill.thiet_giap_son_vien.rock_slam","name":"Nham Chấn","effect":"damage","shape":"circle","damage_ratio":1.25,"range":4.8,"cast_time":0.8,"cooldown":7.0,"radius":2.6,"target_limit":3,"element":"earth","minimum_phase":1,"animation_key":"thiet_giap_nham_chan","vfx_key":"v63_original_ground_slam"},
+        {"id":"tmb.bossskill.thiet_giap_son_vien.stone_breaker","name":"Phá Sơn Kích","effect":"damage","shape":"single_target","damage_ratio":1.8,"range":3.6,"cast_time":1.1,"cooldown":12.0,"radius":0.0,"target_limit":1,"element":"earth","minimum_phase":2,"animation_key":"thiet_giap_pha_son_kich","vfx_key":"v63_original_armor_break"}
+      ],
+      "skill_ids":["tmb.bossskill.thiet_giap_son_vien.rock_slam","tmb.bossskill.thiet_giap_son_vien.stone_breaker"]
+    }
+  ]
+}

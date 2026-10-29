@@ -123,6 +123,8 @@ var v63_archive_operation_index: int = 0
 var v63_codex_drop_receipts: Dictionary = {}
 var v63_archive_event_count: int = 0
 # D3 personal technique learning; all records remain dormant behind the gate.
+# D4 personal Human combat skills; legacy saves default to disabled.
+var v63_skill_combat_opt_in: bool = false
 var v63_learning_opt_in: bool = false
 var v63_learning_active_jobs: Dictionary = {}
 var v63_learning_operation_receipts: Dictionary = {}
@@ -253,6 +255,8 @@ func to_dict() -> Dictionary:
         data["v63_learning_operation_receipts"] = v63_learning_operation_receipts.duplicate(true)
         data["v63_learning_job_index"] = v63_learning_job_index
         data["v63_learning_event_count"] = v63_learning_event_count
+    if v63_skill_combat_opt_in:
+        data["v63_skill_combat_opt_in"] = true
     if not b3_hunt.is_empty():
         data["b3_hunt"] = b3_hunt.duplicate(true)
     if not v2_body_gate_receipts.is_empty():
@@ -388,6 +392,7 @@ static func from_dict(data: Dictionary) -> SectState:
         state.v63_learning_operation_receipts = raw_learning_receipts.duplicate(true)
     state.v63_learning_job_index = maxi(int(data.get("v63_learning_job_index", 0)), 0)
     state.v63_learning_event_count = maxi(int(data.get("v63_learning_event_count", 0)), 0)
+    state.v63_skill_combat_opt_in = bool(data.get("v63_skill_combat_opt_in", false))
     var raw_runs = data.get("v2_pve_active_runs", {})
     if raw_runs is Dictionary:
         for encounter_id in raw_runs.keys():

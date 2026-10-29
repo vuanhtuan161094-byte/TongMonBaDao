@@ -7,7 +7,8 @@ const DEFAULT_FLAGS := {
     "skill_successors": false,
     "boss_encounters": false,
     "sect_codex": false,
-    "technique_learning": false
+    "technique_learning": false,
+    "human_skill_combat": false
 }
 
 static func is_enabled(flag_id: String, preview_overrides: Dictionary = {}) -> bool:

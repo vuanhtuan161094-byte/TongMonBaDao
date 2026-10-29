@@ -57,6 +57,9 @@ var cultivation_path_xp: Dictionary = {}
 
 # P2.5 combat skills are independent from cultivation techniques.
 var learned_combat_skills: Dictionary = {}
+# D4 personal V6.3 combat knowledge stays separate from the P2 ID validator.
+var v63_learned_skill_nodes: Dictionary = {}
+var v63_equipped_skill_ids: Array = []
 
 # P2.6 equipment is slot-based but classless. A locked slot is player-controlled;
 # unlocked slots remain available to autonomous equipment purchasing/upgrading.
@@ -175,6 +178,9 @@ func _init(definition: Dictionary = {}) -> void:
     v63_study_job = _v63_study_job_dictionary(raw_study_job)
     cultivation_path_xp = _float_dictionary(definition.get("cultivation_path_xp", {}))
     learned_combat_skills = _bool_dictionary(definition.get("learned_combat_skills", {}))
+    var raw_v63_skill_nodes = definition.get("v63_learned_skill_nodes", {})
+    v63_learned_skill_nodes = raw_v63_skill_nodes.duplicate(true) if raw_v63_skill_nodes is Dictionary else {}
+    v63_equipped_skill_ids = _string_array(definition.get("v63_equipped_skill_ids", []))
     equipped_items = _string_dictionary(definition.get("equipped_items", {}))
     locked_equipment_slots = _bool_dictionary(definition.get("locked_equipment_slots", {}))
     comprehension = maxf(float(definition.get("comprehension", comprehension)), 0.0)
@@ -281,6 +287,9 @@ func to_dict() -> Dictionary:
         data["cultivation_path_xp"] = cultivation_path_xp.duplicate(true)
     if not learned_combat_skills.is_empty():
         data["learned_combat_skills"] = learned_combat_skills.duplicate(true)
+    if not v63_learned_skill_nodes.is_empty() or not v63_equipped_skill_ids.is_empty():
+        data["v63_learned_skill_nodes"] = v63_learned_skill_nodes.duplicate(true)
+        data["v63_equipped_skill_ids"] = v63_equipped_skill_ids.duplicate(true)
     if not equipped_items.is_empty():
         data["equipped_items"] = equipped_items.duplicate(true)
     if not locked_equipment_slots.is_empty():
@@ -366,6 +375,8 @@ static func from_dict(data: Dictionary) -> DiscipleState:
         "v63_study_job": data.get("v63_study_job", {}),
         "cultivation_path_xp": data.get("cultivation_path_xp", {}),
         "learned_combat_skills": data.get("learned_combat_skills", {}),
+        "v63_learned_skill_nodes": data.get("v63_learned_skill_nodes", {}),
+        "v63_equipped_skill_ids": data.get("v63_equipped_skill_ids", []),
         "equipped_items": data.get("equipped_items", {}),
         "locked_equipment_slots": data.get("locked_equipment_slots", {}),
         "comprehension": data.get("comprehension", 0.0),
