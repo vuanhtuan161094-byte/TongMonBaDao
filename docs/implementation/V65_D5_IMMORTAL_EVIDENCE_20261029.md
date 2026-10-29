@@ -2,7 +2,7 @@
 
 ## Status
 
-D5 is **HEADLESS_PASS** at source/test commit [`2f193644329ecabcd71d20bf3283972235bf47c1`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/2f193644329ecabcd71d20bf3283972235bf47c1), parent `a0c426291b6fd815678568ba7dfe902a4bca4005`. The existing feature branch is `feature/v63-v64-full-combat-20261029`; stable `main` remains `c0c1382f119599497b52d8ee8abd9e830a883f1e`. PR #52 remains Draft/open at `f7c33d9c3baba3267a17021718b44f87acd62ef6`, unchanged.
+D5 is **HEADLESS_PASS**. Initial implementation commit [`2f193644329ecabcd71d20bf3283972235bf47c1`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/2f193644329ecabcd71d20bf3283972235bf47c1) added the approved 12-path source/test slice. Final verified source/test tree is [`7821934ed8b4ac68634017b314cf14119f5959b7`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/7821934ed8b4ac68634017b314cf14119f5959b7); it repairs the Immortal catalog blob to canonical UTF-8/LF after a GitHub fetch identified an encoding defect. The final blob `d95bce39dd078289ce76e675a4c1ffc8b9856490` matches the clean-filtered tested scratch file. The existing feature branch is `feature/v63-v64-full-combat-20261029`; stable `main` remains `c0c1382f119599497b52d8ee8abd9e830a883f1e`. PR #52 remains Draft/open at `f7c33d9c3baba3267a17021718b44f87acd62ef6`, unchanged.
 
 ## Implemented and verified
 
@@ -48,7 +48,7 @@ The D5 source/test commit is the exact GitHub tree produced from the isolated te
 
 | Path | Git blob SHA |
 |---|---|
-| `godot/data/combat/v63_immortal_combat_catalog.json` | `7fbcc44f00fd44ff66a1639e5e5f3b4878c8c2ee` |
+| `godot/data/combat/v63_immortal_combat_catalog.json` | `d95bce39dd078289ce76e675a4c1ffc8b9856490` |
 | `godot/data/combat/v63_learning_catalog.json` | `be065e28642e4c7e92a166d96f705f18c7db1221` |
 | `godot/data/combat/v63_archive_catalog.json` | `2470c0e9f3e68a8546c9dd6e2bec95ffbd0d81ca` |
 | `godot/src/simulation/archive/v63_sect_archive_system.gd` | `1104026fdde3102cd50fca4af7a1918eef7d650f` |

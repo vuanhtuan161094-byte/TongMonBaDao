@@ -2,7 +2,7 @@
 
 ## Current handoff — continue D6 Divine immediately
 
-Repository `vuanhtuan161094-byte/TongMonBaDao`; active branch `feature/v63-v64-full-combat-20261029`; current D5 source/test commit `2f193644329ecabcd71d20bf3283972235bf47c1`. Stable `main` `c0c1382f119599497b52d8ee8abd9e830a883f1e` remains unchanged. PR #52 stays Draft/open at `f7c33d9c3baba3267a17021718b44f87acd62ef6`; no PR, merge, reset or history rewrite.
+Repository `vuanhtuan161094-byte/TongMonBaDao`; active branch `feature/v63-v64-full-combat-20261029`; current D5 source/test tree `7821934ed8b4ac68634017b314cf14119f5959b7` (encoding repair commit after the initial D5 implementation `2f193644329ecabcd71d20bf3283972235bf47c1`). Stable `main` `c0c1382f119599497b52d8ee8abd9e830a883f1e` remains unchanged. PR #52 stays Draft/open at `f7c33d9c3baba3267a17021718b44f87acd62ef6`; no PR, merge, reset or history rewrite.
 
 D5 is **HEADLESS_PASS**: official Windows Godot 4.7.2 import and sequential 18/18 focused/cumulative regressions exit 0. Evidence and log hashes: [D5 evidence](docs/implementation/V65_D5_IMMORTAL_EVIDENCE_20261029.md), local logs `E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D5_20261029`. Nine branch A/B pathways produced 18/18 Combat V2 casts; 3/3 Immortal bosses were counter-interrupted. Deterministic D5 study/save, D4, D2, D3, P2/P3.7 and PvE save/reward regressions passed. D5 gates remain OFF; candidate balance only.
 

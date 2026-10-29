@@ -2,7 +2,7 @@
 
 ## 29/10/2026 — D5 Immortal implementation checkpoint
 
-Feature branch source/test checkpoint: `2f193644329ecabcd71d20bf3283972235bf47c1` (based on `a0c426291b6fd815678568ba7dfe902a4bca4005`). Stable `main` remains `c0c1382f119599497b52d8ee8abd9e830a883f1e`. PR #52 remains Draft/open at `f7c33d9c3baba3267a17021718b44f87acd62ef6`, unmodified.
+Feature branch final D5 source/test checkpoint: `7821934ed8b4ac68634017b314cf14119f5959b7` (initial D5 implementation `2f193644329ecabcd71d20bf3283972235bf47c1`; canonical catalog blob repaired and exact clean-filtered parity verified). Stable `main` remains `c0c1382f119599497b52d8ee8abd9e830a883f1e`. PR #52 remains Draft/open at `f7c33d9c3baba3267a17021718b44f87acd62ef6`, unmodified.
 
 - D5: **HEADLESS_PASS**. Official Windows Godot 4.7.2 import and sequential 18/18 focused/cumulative test scripts exit 0; evidence and all log hashes are in [D5 evidence](docs/implementation/V65_D5_IMMORTAL_EVIDENCE_20261029.md) and `E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D5_20261029`.
 - Verified 9-branch A/B Immortal casts (18/18), 3/3 real Combat V2 boss counter interruptions, bounded elemental reaction, deterministic breakthrough prerequisites, D3 One Active Job, receipts, and save/load. D5 changes 12 approved source/test paths; GitHub blob parity is recorded in the evidence report.
