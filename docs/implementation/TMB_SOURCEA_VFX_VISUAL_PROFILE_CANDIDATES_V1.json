@@ -1,0 +1,314 @@
+{
+  "schema_version": 1,
+  "document_type": "NON_RUNTIME_VISUAL_PLANNING_INDEX",
+  "doc_status": "CANDIDATE_ONLY_DO_NOT_LOAD_AS_LIVE",
+  "as_of": "2026-10-29",
+  "base_branch": "feature/v63-d1-content-registry-20261029",
+  "reference_design": "docs/design/v63_v64_20261028/02_CONTENT_REGISTRY.md",
+  "canonical_manifest": "godot/assets/combat_v5_source_a/visual_manifest.json",
+  "asset_selection_policy": "Source A actor by real disciple identity; overlay VFX after official skill events; no new gameplay authority; exact art file and checksum filled only after QA.",
+  "owner_approved_sample": {
+    "status": "OWNER_VISUAL_APPROVED_FOR_REVIEWED_SAMPLE",
+    "scope": "Newer melee sample the owner viewed in October 2026; exact file must be reconciled against local E: before marking individual asset SHA approved",
+    "exact_asset_sha": null,
+    "engine_status": "PENDING"
+  },
+  "available_actor_manifest_keys": [
+    "disciple_female",
+    "disciple_male",
+    "monster_1113031_1",
+    "boss_slot_410041_1"
+  ],
+  "reusable_vfx_ceremonies": [
+    {
+      "key": "melee_slash",
+      "asset": "CURATED_MELEE_PILOT_6_FRAMES",
+      "approved": "REQUIRES_EXACT_SAMPLE_SHA_RECONCILIATION",
+      "allowed": [
+        "legacy_sword_slash"
+      ],
+      "trigger": "release"
+    },
+    {
+      "key": "melee_hit_spark",
+      "asset": "CURATED_MELEE_PILOT_5_FRAMES",
+      "approved": "ART_CANDIDATE",
+      "trigger": "hit_confirmed"
+    },
+    {
+      "key": "melee_block",
+      "asset": "CURATED_MELEE_PILOT_5_FRAMES",
+      "approved": "ART_CANDIDATE",
+      "trigger": "block_confirmed"
+    },
+    {
+      "key": "support_sigil",
+      "asset": "UNSELECTED",
+      "approved": "NOT_APPROVED_BUFF_V003_V004",
+      "trigger": "status_applied"
+    }
+  ],
+  "legacy_visual_binding_pilot": {
+    "skill_id": "thanh_phong_tram",
+    "source": "docs/COMBAT_SKILLS_V2_SPEC.md",
+    "status": "CANDIDATE_REUSE_OWNER_APPROVED_MELEE_PRESENTATION",
+    "actor_visual_key": "RESOLVE_FROM_DISCIPLE_IDENTITY",
+    "clip": "attack1_IF_VERIFIED_FOR_SELECTED_ACTOR",
+    "release_marker": "VISUALLY_MEASURE_NOT_FIXED",
+    "vfx_type": "melee_slash",
+    "hit_logic": "COMBAT_AUTHORITY_ONLY"
+  },
+  "new_branch_profiles": [
+    {
+      "path_id": "tmb.path.bow.liep_anh",
+      "school": "bow",
+      "branch": "liep_anh",
+      "display": "Liệp Ảnh",
+      "visual_profile_id": "tmb.visual.bow.liep_anh.default",
+      "stage": "PROPOSED_NOT_BOUND",
+      "actor_action": "bow_draw_release",
+      "actor_visual_key": "RESOLVE_FROM_DISCIPLE_IDENTITY",
+      "verified_clip": null,
+      "weapon_anchor": null,
+      "release_marker": null,
+      "source_asset_sha": null,
+      "vfx_family_primary": "arrow_narrow",
+      "vfx_family_impact": "impact_small",
+      "effects": [],
+      "candidate_source_pool": [
+        "SourceA_actor_existing",
+        "JX_owner_supplied_experimental",
+        "Cethiel_curated_CC0"
+      ],
+      "needs_actual_skill_event_mapping": true,
+      "qa_status": "PENDING_ACTOR_CLIP_AND_VFX_CURATION",
+      "note": "No bow clip/socket verified"
+    },
+    {
+      "path_id": "tmb.path.bow.linh_tien",
+      "school": "bow",
+      "branch": "linh_tien",
+      "display": "Linh Tiễn",
+      "visual_profile_id": "tmb.visual.bow.linh_tien.default",
+      "stage": "PROPOSED_NOT_BOUND",
+      "actor_action": "bow_draw_or_verified_cast",
+      "actor_visual_key": "RESOLVE_FROM_DISCIPLE_IDENTITY",
+      "verified_clip": null,
+      "weapon_anchor": null,
+      "release_marker": null,
+      "source_asset_sha": null,
+      "vfx_family_primary": "elemental_arrow",
+      "vfx_family_impact": "impact_elemental",
+      "effects": [],
+      "candidate_source_pool": [
+        "SourceA_actor_existing",
+        "JX_owner_supplied_experimental",
+        "Cethiel_curated_CC0"
+      ],
+      "needs_actual_skill_event_mapping": true,
+      "qa_status": "PENDING_ACTOR_CLIP_AND_VFX_CURATION",
+      "note": "Element artwork/pose follows per-skill authored effect"
+    },
+    {
+      "path_id": "tmb.path.bow.thien_vu",
+      "school": "bow",
+      "branch": "thien_vu",
+      "display": "Thiên Vũ",
+      "visual_profile_id": "tmb.visual.bow.thien_vu.default",
+      "stage": "PROPOSED_NOT_BOUND",
+      "actor_action": "bow_draw_repeat",
+      "actor_visual_key": "RESOLVE_FROM_DISCIPLE_IDENTITY",
+      "verified_clip": null,
+      "weapon_anchor": null,
+      "release_marker": null,
+      "source_asset_sha": null,
+      "vfx_family_primary": "volley_multi_arrow",
+      "vfx_family_impact": "impact_small",
+      "effects": [],
+      "candidate_source_pool": [
+        "SourceA_actor_existing",
+        "JX_owner_supplied_experimental",
+        "Cethiel_curated_CC0"
+      ],
+      "needs_actual_skill_event_mapping": true,
+      "qa_status": "PENDING_ACTOR_CLIP_AND_VFX_CURATION",
+      "note": "Need directional volleys, density limits"
+    },
+    {
+      "path_id": "tmb.path.fist.ba_quyen",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "display": "Bá Quyền",
+      "visual_profile_id": "tmb.visual.fist.ba_quyen.default",
+      "stage": "PROPOSED_NOT_BOUND",
+      "actor_action": "unarmed_punch",
+      "actor_visual_key": "RESOLVE_FROM_DISCIPLE_IDENTITY",
+      "verified_clip": null,
+      "weapon_anchor": null,
+      "release_marker": null,
+      "source_asset_sha": null,
+      "vfx_family_primary": "fist_impact_shock",
+      "vfx_family_impact": "impact_heavy",
+      "effects": [],
+      "candidate_source_pool": [
+        "SourceA_actor_existing",
+        "JX_owner_supplied_experimental",
+        "Cethiel_curated_CC0"
+      ],
+      "needs_actual_skill_event_mapping": true,
+      "qa_status": "PENDING_ACTOR_CLIP_AND_VFX_CURATION",
+      "note": "No verified unarmed punch clip"
+    },
+    {
+      "path_id": "tmb.path.fist.kim_cang",
+      "school": "fist",
+      "branch": "kim_cang",
+      "display": "Kim Cang",
+      "visual_profile_id": "tmb.visual.fist.kim_cang.default",
+      "stage": "PROPOSED_NOT_BOUND",
+      "actor_action": "guard_counter",
+      "actor_visual_key": "RESOLVE_FROM_DISCIPLE_IDENTITY",
+      "verified_clip": null,
+      "weapon_anchor": null,
+      "release_marker": null,
+      "source_asset_sha": null,
+      "vfx_family_primary": "sigil_guard_short",
+      "vfx_family_impact": "block_spark",
+      "effects": [],
+      "candidate_source_pool": [
+        "SourceA_actor_existing",
+        "JX_owner_supplied_experimental",
+        "Cethiel_curated_CC0"
+      ],
+      "needs_actual_skill_event_mapping": true,
+      "qa_status": "PENDING_ACTOR_CLIP_AND_VFX_CURATION",
+      "note": "Avoid continuous bubble"
+    },
+    {
+      "path_id": "tmb.path.fist.huyet_quyen",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "display": "Huyết Quyền",
+      "visual_profile_id": "tmb.visual.fist.huyet_quyen.default",
+      "stage": "PROPOSED_NOT_BOUND",
+      "actor_action": "unarmed_combo",
+      "actor_visual_key": "RESOLVE_FROM_DISCIPLE_IDENTITY",
+      "verified_clip": null,
+      "weapon_anchor": null,
+      "release_marker": null,
+      "source_asset_sha": null,
+      "vfx_family_primary": "red_compact_strike",
+      "vfx_family_impact": "impact_compact",
+      "effects": [],
+      "candidate_source_pool": [
+        "SourceA_actor_existing",
+        "JX_owner_supplied_experimental",
+        "Cethiel_curated_CC0"
+      ],
+      "needs_actual_skill_event_mapping": true,
+      "qa_status": "PENDING_ACTOR_CLIP_AND_VFX_CURATION",
+      "note": "Red overlay must not obscure character"
+    },
+    {
+      "path_id": "tmb.path.poison.doc_cham",
+      "school": "poison",
+      "branch": "doc_cham",
+      "display": "Độc Châm",
+      "visual_profile_id": "tmb.visual.poison.doc_cham.default",
+      "stage": "PROPOSED_NOT_BOUND",
+      "actor_action": "throw_release",
+      "actor_visual_key": "RESOLVE_FROM_DISCIPLE_IDENTITY",
+      "verified_clip": null,
+      "weapon_anchor": null,
+      "release_marker": null,
+      "source_asset_sha": null,
+      "vfx_family_primary": "needle_small_projectile",
+      "vfx_family_impact": "poison_hit_mark",
+      "effects": [],
+      "candidate_source_pool": [
+        "SourceA_actor_existing",
+        "JX_owner_supplied_experimental",
+        "Cethiel_curated_CC0"
+      ],
+      "needs_actual_skill_event_mapping": true,
+      "qa_status": "PENDING_ACTOR_CLIP_AND_VFX_CURATION",
+      "note": "No verified throw clip"
+    },
+    {
+      "path_id": "tmb.path.poison.co_doc",
+      "school": "poison",
+      "branch": "co_doc",
+      "display": "Cổ Độc",
+      "visual_profile_id": "tmb.visual.poison.co_doc.default",
+      "stage": "PROPOSED_NOT_BOUND",
+      "actor_action": "verified_cast_gesture",
+      "actor_visual_key": "RESOLVE_FROM_DISCIPLE_IDENTITY",
+      "verified_clip": null,
+      "weapon_anchor": null,
+      "release_marker": null,
+      "source_asset_sha": null,
+      "vfx_family_primary": "curse_sigil_insect",
+      "vfx_family_impact": "status_marker",
+      "effects": [],
+      "candidate_source_pool": [
+        "SourceA_actor_existing",
+        "JX_owner_supplied_experimental",
+        "Cethiel_curated_CC0"
+      ],
+      "needs_actual_skill_event_mapping": true,
+      "qa_status": "PENDING_ACTOR_CLIP_AND_VFX_CURATION",
+      "note": "No automatic swarm/mass particle loop"
+    },
+    {
+      "path_id": "tmb.path.poison.duoc_doc",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "display": "Dược Độc",
+      "visual_profile_id": "tmb.visual.poison.duoc_doc.default",
+      "stage": "PROPOSED_NOT_BOUND",
+      "actor_action": "verified_cast_gesture",
+      "actor_visual_key": "RESOLVE_FROM_DISCIPLE_IDENTITY",
+      "verified_clip": null,
+      "weapon_anchor": null,
+      "release_marker": null,
+      "source_asset_sha": null,
+      "vfx_family_primary": "heal_or_toxin_sigil",
+      "vfx_family_impact": "heal_or_toxin_impact",
+      "effects": [],
+      "candidate_source_pool": [
+        "SourceA_actor_existing",
+        "JX_owner_supplied_experimental",
+        "Cethiel_curated_CC0"
+      ],
+      "needs_actual_skill_event_mapping": true,
+      "qa_status": "PENDING_ACTOR_CLIP_AND_VFX_CURATION",
+      "note": "Select heal vs damage by actual authority event"
+    }
+  ],
+  "schema_contract": {
+    "family_id": "must be exact from v63 content registry",
+    "generation_variant": "optional: human/immortal.a/immortal.b/divine.a/divine.b/rare.a/rare.b",
+    "visual_profile_id": "UI-side stable ID not game authority",
+    "actor_visual_key": "resolve from actual disciple ID/gender/equipment; no fixed female default",
+    "verified_clip": "required before live binding",
+    "weapon_anchor": "required; may be measured offline, mark approximation",
+    "release_marker": "required for sync, independent of damage authority",
+    "vfx_cast": "candidate reference only until source SHA and Godot import",
+    "vfx_travel": "candidate reference only until source SHA and Godot import",
+    "vfx_impact": "do not trigger on miss",
+    "vfx_persistent": "maximized readability under 6/30-actor density",
+    "telegraph": "boss telegraph from authority geometry",
+    "lod_policy": "reduce noncritical particles before losing hit/Boss telegraph clarity"
+  },
+  "tests_required": [
+    "source_sha_and_provenance",
+    "actor_id_and_clip_8_direction_if_supported",
+    "hit_miss_block_no_fake_damage",
+    "one_six_thirty_actor_density",
+    "1280x720_actual_scene",
+    "godot_4_7_2_import",
+    "fps_ram_android_when_available",
+    "save_reload_event_idempotence"
+  ],
+  "live_feature_gates": "OFF_BY_DEFAULT"
+}
