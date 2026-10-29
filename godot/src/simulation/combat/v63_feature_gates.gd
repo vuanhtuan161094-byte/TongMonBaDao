@@ -6,7 +6,8 @@ const DEFAULT_FLAGS := {
     "content_registry": false,
     "skill_successors": false,
     "boss_encounters": false,
-    "sect_codex": false
+    "sect_codex": false,
+    "technique_learning": false
 }
 
 static func is_enabled(flag_id: String, preview_overrides: Dictionary = {}) -> bool:
@@ -19,3 +20,4 @@ static func all_disabled() -> bool:
         if bool(DEFAULT_FLAGS[key]):
             return false
     return true
+

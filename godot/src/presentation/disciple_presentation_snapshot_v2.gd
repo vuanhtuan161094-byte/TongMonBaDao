@@ -210,6 +210,11 @@ static func _learning(disciple: DiscipleState) -> Dictionary:
         # consumers are not implied merely because the records exist.
         "learned_techniques":disciple.learned_techniques.duplicate(true),
         "active_technique_id":str(disciple.active_technique_id),
+        "known_techniques":disciple.known_techniques.duplicate(true),
+        "active_technique_main":str(disciple.active_technique_main),
+        "active_technique_aux":disciple.active_technique_aux.duplicate(true),
+        "active_job_id":str(disciple.active_job_id),
+        "v63_study_job":disciple.v63_study_job.duplicate(true),
         "cultivation_path_xp":disciple.cultivation_path_xp.duplicate(true),
         "learned_combat_skills":disciple.learned_combat_skills.duplicate(true)
     }
@@ -539,3 +544,4 @@ static func _legacy_innate(state: SimulationState, disciple: DiscipleState) -> D
 
 static func _duplicate_dict(value: Variant) -> Dictionary:
     return value.duplicate(true) if value is Dictionary else {}
+

@@ -1,9 +1,10 @@
 class_name SaveService
 extends RefCounted
 
-const CURRENT_VERSION := 3
+const CURRENT_VERSION := 4
 const LEGACY_CARE_VERSION := 3
-const CARE_VERSION := 4
+const PREVIOUS_CARE_VERSION := 4
+const CARE_VERSION := 5
 var _async_save_thread: Thread
 
 func save_to_path(state: SimulationState, path: String) -> Error:
@@ -203,6 +204,8 @@ func _load_exact(path: String) -> SimulationState:
     var care_envelope_valid := false
     if version == CARE_VERSION:
         care_envelope_valid = care and care_tag_present and int(data.get("b3_care_version",0)) == B3MedicalAutoplayV1.VERSION
+    elif version == PREVIOUS_CARE_VERSION and care:
+        care_envelope_valid = care_tag_present and int(data.get("b3_care_version",0)) == B3MedicalAutoplayV1.VERSION
     elif version == LEGACY_CARE_VERSION and care:
         care_envelope_valid = care_tag_present and int(data.get("b3_care_version",0)) == B3MedicalAutoplayV1.VERSION
     else:
@@ -288,6 +291,13 @@ func _migrate(data: Dictionary, version: int) -> Dictionary:
             2:
                 migrated["save_version"] = 3
                 current = 3
+            3:
+                # D3 adds optional disciple learning/loadout/job records. The
+                # state decoders provide empty defaults; every legacy P2.3 ID,
+                # mastery row and active loadout remains unchanged because no
+                # approved identity crosswalk exists yet.
+                migrated["save_version"] = 4
+                current = 4
             _:
                 push_error("SaveService: unknown migration path from version %d." % current)
                 return {}
@@ -346,3 +356,4 @@ func _decode_floats(value: Variant) -> Variant:
             result.append(_decode_floats(item))
         return result
     return value
+

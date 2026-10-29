@@ -43,6 +43,15 @@ var spirit_stones: int = 0
 var learned_techniques: Dictionary = {}
 var active_technique_id: StringName = &""
 
+# V6.3 D3 normalized technique knowledge/loadout is additive to legacy P2.3.
+# No legacy ID is converted without an explicit identity crosswalk.
+var known_techniques: Dictionary = {}
+var active_technique_main: StringName = &""
+var active_technique_aux: Array = ["", ""]
+# D3 owns this disciple's study job; existing production/PvE authorities remain canonical.
+var active_job_id: StringName = &""
+var v63_study_job: Dictionary = {}
+
 # P2.4 accumulated path history. No fixed class is stored; identity is derived from this history.
 var cultivation_path_xp: Dictionary = {}
 
@@ -154,6 +163,16 @@ func _init(definition: Dictionary = {}) -> void:
     spirit_stones = int(definition.get("spirit_stones", spirit_stones))
     learned_techniques = _technique_dictionary(definition.get("learned_techniques", {}))
     active_technique_id = StringName(definition.get("active_technique_id", active_technique_id))
+    var raw_known_techniques = definition.get("known_techniques", {})
+    known_techniques = _v63_technique_knowledge_dictionary(raw_known_techniques)
+    active_technique_main = StringName(definition.get("active_technique_main", ""))
+    var raw_active_aux = definition.get("active_technique_aux", ["", ""])
+    active_technique_aux = raw_active_aux.duplicate(true) if raw_active_aux is Array else ["", ""]
+    while active_technique_aux.size() < 2:
+        active_technique_aux.append("")
+    active_job_id = StringName(definition.get("active_job_id", ""))
+    var raw_study_job = definition.get("v63_study_job", {})
+    v63_study_job = _v63_study_job_dictionary(raw_study_job)
     cultivation_path_xp = _float_dictionary(definition.get("cultivation_path_xp", {}))
     learned_combat_skills = _bool_dictionary(definition.get("learned_combat_skills", {}))
     equipped_items = _string_dictionary(definition.get("equipped_items", {}))
@@ -252,6 +271,12 @@ func to_dict() -> Dictionary:
         data["spirit_stones"] = spirit_stones
         data["learned_techniques"] = learned_techniques.duplicate(true)
         data["active_technique_id"] = str(active_technique_id)
+    if not known_techniques.is_empty() or active_technique_main != &"" or active_technique_aux != ["", ""] or active_job_id != &"" or not v63_study_job.is_empty():
+        data["known_techniques"] = known_techniques.duplicate(true)
+        data["active_technique_main"] = str(active_technique_main)
+        data["active_technique_aux"] = active_technique_aux.duplicate(true)
+        data["active_job_id"] = str(active_job_id)
+        data["v63_study_job"] = v63_study_job.duplicate(true)
     if not cultivation_path_xp.is_empty():
         data["cultivation_path_xp"] = cultivation_path_xp.duplicate(true)
     if not learned_combat_skills.is_empty():
@@ -334,6 +359,11 @@ static func from_dict(data: Dictionary) -> DiscipleState:
         "spirit_stones": data.get("spirit_stones", 0),
         "learned_techniques": data.get("learned_techniques", {}),
         "active_technique_id": data.get("active_technique_id", ""),
+        "known_techniques": data.get("known_techniques", {}),
+        "active_technique_main": data.get("active_technique_main", ""),
+        "active_technique_aux": data.get("active_technique_aux", ["", ""]),
+        "active_job_id": data.get("active_job_id", ""),
+        "v63_study_job": data.get("v63_study_job", {}),
         "cultivation_path_xp": data.get("cultivation_path_xp", {}),
         "learned_combat_skills": data.get("learned_combat_skills", {}),
         "equipped_items": data.get("equipped_items", {}),
@@ -522,3 +552,47 @@ static func _technique_dictionary(value: Variant) -> Dictionary:
                 "xp": maxf(float(row.get("xp", 0.0)), 0.0)
             }
     return result
+
+static func _v63_technique_knowledge_dictionary(value: Variant) -> Dictionary:
+    var result: Dictionary = {}
+    if not (value is Dictionary):
+        return result
+    var keys: Array = value.keys()
+    keys.sort()
+    for raw_id in keys:
+        var raw_row = value[raw_id]
+        result[str(raw_id)] = raw_row.duplicate(true) if raw_row is Dictionary else raw_row
+        if not (raw_row is Dictionary):
+            continue
+        var row: Dictionary = result[str(raw_id)]
+        if row.get("mastery_xp", null) is int or row.get("mastery_xp", null) is float:
+            row["mastery_xp"] = float(row["mastery_xp"])
+        if row.get("mastery_stage", null) is int or row.get("mastery_stage", null) is float:
+            row["mastery_stage"] = int(row["mastery_stage"])
+        if row.get("learned_tick", null) is int or row.get("learned_tick", null) is float:
+            row["learned_tick"] = int(row["learned_tick"])
+        if row.has("source_codex_id"):
+            row["source_codex_id"] = str(row["source_codex_id"])
+    return result
+
+static func _v63_study_job_dictionary(value: Variant) -> Dictionary:
+    if not (value is Dictionary):
+        return {}
+    var result: Dictionary = value.duplicate(true)
+    for key in ["started_tick", "finish_tick", "duration_ticks", "progress_ticks", "last_processed_tick"]:
+        if result.get(key, null) is int or result.get(key, null) is float:
+            result[key] = int(result[key])
+    for key in ["job_id", "technique_id", "source_codex_id", "start_request_id", "resume_action"]:
+        if result.has(key):
+            result[key] = str(result[key])
+    var cost = result.get("reserved_cost", {})
+    if result.has("reserved_cost") and cost is Dictionary:
+        cost = cost.duplicate(true)
+        for key in ["contribution", "spirit_stones"]:
+            if cost.get(key, null) is int or cost.get(key, null) is float:
+                cost[key] = int(cost[key])
+        result["reserved_cost"] = cost
+    if result.has("cost_committed"):
+        result["cost_committed"] = bool(result["cost_committed"])
+    return result
+

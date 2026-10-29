@@ -122,6 +122,12 @@ var v63_archive_operation_receipts: Dictionary = {}
 var v63_archive_operation_index: int = 0
 var v63_codex_drop_receipts: Dictionary = {}
 var v63_archive_event_count: int = 0
+# D3 personal technique learning; all records remain dormant behind the gate.
+var v63_learning_opt_in: bool = false
+var v63_learning_active_jobs: Dictionary = {}
+var v63_learning_operation_receipts: Dictionary = {}
+var v63_learning_job_index: int = 0
+var v63_learning_event_count: int = 0
 # DV2-03F/F2: compact, per-disciple/per-major-realm committed Body receipts.
 # The request index is rebuilt from these saved receipts on load (not saved twice).
 # Default empty on every legacy save; no Body gate is enabled by this ledger.
@@ -241,6 +247,12 @@ func to_dict() -> Dictionary:
         data["v63_archive_operation_index"] = v63_archive_operation_index
         data["v63_codex_drop_receipts"] = v63_codex_drop_receipts.duplicate(true)
         data["v63_archive_event_count"] = v63_archive_event_count
+    if v63_learning_opt_in or not v63_learning_active_jobs.is_empty() or not v63_learning_operation_receipts.is_empty() or v63_learning_job_index > 0 or v63_learning_event_count > 0:
+        data["v63_learning_opt_in"] = v63_learning_opt_in
+        data["v63_learning_active_jobs"] = v63_learning_active_jobs.duplicate(true)
+        data["v63_learning_operation_receipts"] = v63_learning_operation_receipts.duplicate(true)
+        data["v63_learning_job_index"] = v63_learning_job_index
+        data["v63_learning_event_count"] = v63_learning_event_count
     if not b3_hunt.is_empty():
         data["b3_hunt"] = b3_hunt.duplicate(true)
     if not v2_body_gate_receipts.is_empty():
@@ -366,6 +378,16 @@ static func from_dict(data: Dictionary) -> SectState:
         # Retain malformed receipt keys so recovery cannot replay a committed grant.
         state.v63_codex_drop_receipts = raw_codex_receipts.duplicate(true)
     state.v63_archive_event_count = maxi(int(data.get("v63_archive_event_count",0)),0)
+    state.v63_learning_opt_in = bool(data.get("v63_learning_opt_in", false))
+    var raw_learning_jobs = data.get("v63_learning_active_jobs", {})
+    if raw_learning_jobs is Dictionary:
+        state.v63_learning_active_jobs = raw_learning_jobs.duplicate(true)
+    var raw_learning_receipts = data.get("v63_learning_operation_receipts", {})
+    if raw_learning_receipts is Dictionary:
+        # Keep malformed keys so a damaged save cannot make a committed operation replayable.
+        state.v63_learning_operation_receipts = raw_learning_receipts.duplicate(true)
+    state.v63_learning_job_index = maxi(int(data.get("v63_learning_job_index", 0)), 0)
+    state.v63_learning_event_count = maxi(int(data.get("v63_learning_event_count", 0)), 0)
     var raw_runs = data.get("v2_pve_active_runs", {})
     if raw_runs is Dictionary:
         for encounter_id in raw_runs.keys():

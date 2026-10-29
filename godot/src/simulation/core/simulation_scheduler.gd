@@ -19,6 +19,8 @@ var bloodline_system := BloodlineSystem.new()
 var economy_system := EconomySystem.new()
 var combat_system := CombatSystem.new()
 var building_system := BuildingSystem.new()
+var v63_learning_system := V63LearningSystem.new()
+var v63_preview_overrides: Dictionary = {}
 var recruitment_system := RecruitmentSystem.new()
 var performance_logging_enabled := false
 var performance_stage_usec: Dictionary = {}
@@ -49,6 +51,8 @@ func step() -> void:
         building_system.process_tick(state)
         if performance_logging_enabled:
             building_usec = Time.get_ticks_usec()-phase_usec
+    if not state.sect.v63_learning_active_jobs.is_empty():
+        v63_learning_system.process_tick(state, v63_preview_overrides)
     if state.sect.guidance_recruitment_enabled:
         phase_usec = Time.get_ticks_usec() if performance_logging_enabled else 0
         recruitment_system.process_guidance_tick(state)
@@ -157,6 +161,10 @@ func _step_disciple(disciple: DiscipleState) -> void:
     if disciple.injury_level == 1 and disciple.region_id == &"sect" and disciple.injury_recover_at_tick > 0 and state.tick >= disciple.injury_recover_at_tick:
         disciple.injury_level = 0
         disciple.injury_recover_at_tick = 0
+    # Study occupies the same disciple job slot as production and hunting.
+    # Its time is advanced once by process_tick above; no second action may run.
+    if not disciple.v63_study_job.is_empty():
+        return
     if state.sect.economy_a_enabled and disciple.current_action == &"EVALUATE":
         economy_system.auto_personal_service_tick(state,disciple)
     match disciple.current_action:
@@ -402,3 +410,4 @@ func _step_disciple(disciple: DiscipleState) -> void:
 
         _:
             disciple.current_action = &"IDLE"
+

@@ -53,7 +53,7 @@ func begin(
         if living.region_id != &"sect" or not [&"EVALUATE",&"IDLE",&"HOLD"].has(living.current_action):
             return {"ok":false,"reason":"disciple_has_conflicting_action_or_location"}
         var buildings := BuildingSystem.new()
-        if not living.work_cycle_state.is_empty() or buildings.disciple_has_active_spirit_plot(state,living.id) or buildings.disciple_has_active_timed_recipe(state,living.id) or DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,living):
+        if living.active_job_id != &"" or not living.v63_study_job.is_empty() or not living.work_cycle_state.is_empty() or buildings.disciple_has_active_spirit_plot(state,living.id) or buildings.disciple_has_active_timed_recipe(state,living.id) or DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,living):
             return {"ok":false,"reason":"disciple_has_reserved_occupation"}
         # DV2-03 will persist these independently; until then *explicit
         # passed* canonical progress is required, not inferred from P2 power.
@@ -780,7 +780,7 @@ static func reconcile_loaded_v2_pve(state: SimulationState) -> Dictionary:
                 return {"ok":false,"reason":"legacy_reservation_conflict"}
             if disciple.injury_level != 0 or disciple.hp <= 0.0 or disciple.max_hp <= 0.0:
                 return {"ok":false,"reason":"legacy_participant_life_conflict"}
-            if not disciple.work_cycle_state.is_empty() or buildings.disciple_has_active_spirit_plot(state,disciple.id) or buildings.disciple_has_active_timed_recipe(state,disciple.id) or DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple):
+            if disciple.active_job_id != &"" or not disciple.v63_study_job.is_empty() or not disciple.work_cycle_state.is_empty() or buildings.disciple_has_active_spirit_plot(state,disciple.id) or buildings.disciple_has_active_timed_recipe(state,disciple.id) or DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple):
                 return {"ok":false,"reason":"legacy_participant_occupation_conflict"}
             if not [&"EVALUATE",&"IDLE",&"HOLD"].has(disciple.current_action):
                 return {"ok":false,"reason":"legacy_participant_action_conflict"}
