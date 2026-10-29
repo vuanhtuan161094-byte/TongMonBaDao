@@ -118,6 +118,12 @@ static func record_authoritative_battle_kill(registry: Dictionary,
         return {"ok":false,"reason":"monster_species_mismatch"}
     # Never trust caller-supplied death time for cooldown or world ordering.
     # The only accepted timestamp comes from the combat kernel's own journal.
+    var slots: Dictionary = registry.get("slots",{})
+    var current: Dictionary = slots.get(slot_id_value,{})
+    if str(current.get("kill_id","")) == event_id and int(current.get("generation",0)) == generation and ["UNPAID_HP0","COOLDOWN"].has(str(current.get("phase",""))):
+        return {"ok":true,"already_recorded":true,"pending_kill":{"kill_id":event_id,
+            "slot_id":slot_id_value,"generation":generation,"camp_id":str(current.get("camp_id","")),
+            "at_seconds":float(official_event.get("at_seconds",-1.0))},"rewards_granted":false}
     return record_hp0(registry,slot_id_value,generation,event_id,true,
         float(official_event.get("at_seconds",-1.0)),respawn_delay_seconds)
 
@@ -160,6 +166,24 @@ static func acknowledge_paid_receipt(registry: Dictionary, id: String,
     slot["receipt_acknowledged"] = true
     slot["phase"] = "COOLDOWN"
     return {"ok":true,"rewards_granted":false}
+
+static func acknowledge_codex_reward_receipt(registry: Dictionary, id: String,
+        kill_id: String, receipt_id: String) -> Dictionary:
+    if receipt_id.is_empty() or receipt_id != kill_id:
+        return {"ok":false,"reason":"invalid_codex_receipt_identity"}
+    var slots: Dictionary = registry.get("slots",{})
+    if not slots.has(id):
+        return {"ok":false,"reason":"unknown_spawn_slot"}
+    var slot: Dictionary = slots[id]
+    if str(slot.get("phase","")) == "COOLDOWN" and str(slot.get("kill_id","")) == kill_id and str(slot.get("reward_disposition","")) == "CODEX_SETTLED" and str(slot.get("reward_receipt_id","")) == receipt_id:
+        return {"ok":true,"already_acknowledged":true,"rewards_granted":true}
+    if str(slot.get("phase","")) != "UNPAID_HP0" or str(slot.get("kill_id","")) != kill_id:
+        return {"ok":false,"reason":"codex_receipt_does_not_match_pending_kill"}
+    slot["receipt_acknowledged"] = true
+    slot["reward_disposition"] = "CODEX_SETTLED"
+    slot["reward_receipt_id"] = receipt_id
+    slot["phase"] = "COOLDOWN"
+    return {"ok":true,"already_acknowledged":false,"rewards_granted":true}
 
 static func acknowledge_no_reward_receipt(registry: Dictionary, id: String,
         kill_id: String, disposition: String) -> Dictionary:
@@ -224,3 +248,4 @@ static func verify_structure(registry: Dictionary) -> String:
             if str(slot["phase"]) == "READY" and (not str(slot["kill_id"]).is_empty() or bool(slot["receipt_acknowledged"])):
                 return "ready_slot_holds_stale_kill"
     return ""
+
