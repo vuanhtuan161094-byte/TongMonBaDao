@@ -8,7 +8,7 @@ D6 official Windows Godot 4.7.2 import + 20 scripts: **21/21 PASS**, sequential.
 
 **Next action: implement D7 now** using the exact initial allowlist in the D6 section of CURRENT_CHECKPOINT. Keep the existing P3.2 landscape the sole gameplay surface. Add actual party/skill/Boss/archive UI and original event-tied VFX against the existing MapBattleV2 authority; preserve Source A provenance, read-only source assets, JX reference-only. Run focused and cumulative suite and start actual Godot 4.7.2 GUI at 1280×720; capture real input and all nine branch/Boss cues. Record any owner visual decision as PENDING until received.
 
-D7 exclusions: do not edit simulation/economy/save/Warehouse/scheduler authority, existing source art or Source A manifests, main, PR #52; no merge, PR explosion or cleanup. Owner authorized the full sequence D4→D8 in Issue #54 and the execution contract. Proceed sequentially; only stop for a real failing safety gate, missing asset provenance, or owner-only visual acceptance.
+D7 may edit only the single optional preview-gate forwarding parameter in `godot/src/simulation/combat/hunting_pve_run_v2.gd`, with `{}` default; all other simulation/economy/save/Warehouse/scheduler behavior is excluded. This extension is required because the existing multicamp wrapper drops the preview gate before invoking the gate-aware run API. Preserve existing source art/manifests, main and PR #52; no merge, PR explosion or cleanup. Owner authorized the full sequence D4→D8 in Issue #54 and the execution contract. Proceed sequentially; only stop for a real failing safety gate, missing asset provenance, or owner-only visual acceptance.
 
 ## Historical handoffs
 

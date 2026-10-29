@@ -16,6 +16,7 @@ Proceed automatically on the same branch and existing `godot/scenes/p3/p3_2_land
 
 Concrete initial D7 write allowlist:
 - `godot/src/presentation/p3_2_landscape_sect.gd`
+- `godot/src/simulation/combat/hunting_pve_run_v2.gd` (one additive optional preview-gate parameter on `begin_multicamp`, default `{}`, forwarded to existing `begin`; no other simulation changes)
 - `godot/src/presentation/p3/b3_care_combat_v5_presenter.gd`
 - `godot/src/presentation/p3/map_battle_world_layer_v2.gd`
 - `godot/src/presentation/p2_3_techniques.gd`
@@ -31,7 +32,7 @@ Concrete initial D7 write allowlist:
 - `CURRENT_CHECKPOINT.md`
 - `NEXT_CHAT_HANDOFF.md`
 
-D7 protected: simulation/combat/save/economy/warehouse/scheduler except read-only state consumption; source/raw assets and existing Source A manifests; JX gameplay art; main, PR #52, merge, branch cleanup. Add a path only before editing if repository evidence proves the integration requires it and it is within the contract's D7 presentation/test/evidence families. Tests: new D7 UI/VFX presentation tests plus P3.2 live integration/map camera/live modular actor, P2.3 technique, D2 Archive UI, full 21-script D6 matrix and affected PvE/Save/Return/HP0; official Windows Godot 4.7.2 import, sequential logs/source parity, 1280×720 GUI and owner review.
+D7 protected: all simulation behavior except the single `HuntingPveRunV2.begin_multicamp` preview-gate forwarding change listed above; SaveService/schema, economy/warehouse/scheduler authority; source/raw assets and existing Source A manifests; JX gameplay art; main, PR #52, merge, branch cleanup. The extension is required because `begin_multicamp` otherwise discards the explicit preview override accepted by the existing `begin` and `resume_active` APIs. Default `{}` preserves current OFF behavior. No additional simulation path is authorized. Tests: new D7 UI/VFX presentation tests plus P3.2 live integration/map camera/live modular actor, P2.3 technique, D2 Archive UI, full 21-script D6 matrix and affected PvE/Save/Return/HP0; official Windows Godot 4.7.2 import, sequential logs/source parity, 1280×720 GUI and owner review.
 
 ## 29/10/2026 — D5 Immortal implementation checkpoint
 
