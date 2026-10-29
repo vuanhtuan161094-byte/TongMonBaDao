@@ -10,7 +10,7 @@ D7 Windows Godot 4.7.2 import PASS and targeted presentation/runtime reruns PASS
 
 ### Immediate D8 task and exact initial allowlist
 
-1. Add the two simulation tests `godot/tests/simulation/v63_d8_endgame_progression_test.gd` and `godot/tests/simulation/v63_d8_multiseed_camp_battle_test.gd`.
+1. Add the two simulation tests `godot/tests/simulation/v63_d8_endgame_progression_test.gd` and `godot/tests/simulation/v63_d8_multiseed_camp_battle_test.gd`. Update only the existing `godot/tests/simulation/dv2_03_realm_body_progress_test.gd` expected CombatStatsV2 call to include the same model-version flag used by `DiscipleRealmProgressV2.derive_stats`; no production code change.
 2. Add `godot/tests/presentation/v63_d8_performance_qa_contract_test.gd` for existing P3.2 performance/launcher observability; use the existing launcher/probe read-only.
 3. Update `docs/implementation/V65_COMBAT_COVERAGE_LEDGER_20261029.json`, add `docs/implementation/V65_D8_INTEGRATED_QA_EVIDENCE_20261030.md`, and update this file plus CURRENT_CHECKPOINT.
 4. Run official Windows Godot 4.7.2 import; focused tests and affected D1–D7, progression, save/recovery, One Active Job, Warehouse and PvE regressions sequentially; record command/exit/source SHA/log hashes. Inspect real GUI and runtime performance if Computer Use returns Godot. Device/Android remains PENDING if unavailable.

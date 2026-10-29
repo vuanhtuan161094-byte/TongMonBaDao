@@ -15,13 +15,14 @@ Feature branch `feature/v63-v64-full-combat-20261029`; D7 source/test commit: `8
 D8 starts now. Initial allowlist is limited to:
 - `godot/tests/simulation/v63_d8_endgame_progression_test.gd` (new)
 - `godot/tests/simulation/v63_d8_multiseed_camp_battle_test.gd` (new)
+- `godot/tests/simulation/dv2_03_realm_body_progress_test.gd` (update only its model-version-aware expected-stat call; preserve production semantics)
 - `godot/tests/presentation/v63_d8_performance_qa_contract_test.gd` (new)
 - `docs/implementation/V65_D8_INTEGRATED_QA_EVIDENCE_20261030.md` (new)
 - `docs/implementation/V65_COMBAT_COVERAGE_LEDGER_20261029.json`
 - `CURRENT_CHECKPOINT.md`
 - `NEXT_CHAT_HANDOFF.md`
 
-D8 test scope: exercise only existing cultivation/body progression gates, deterministic multi-seed 20-camp/party behavior, exact-once/save-return and One Active Job regressions, and the existing performance launcher/probe contract. Use official Godot 4.7.2 logs. No invented 300-step XP or breakthrough values and no production balance change. Excluded: runtime/economy/SaveService/schema/Warehouse/scheduler changes, raw/derived art, main, PR #52, and merges. If a test proves a product defect, add that exact source path plus evidence and rollback handling to this checkpoint before touching it; the owner has authorized D8 targeted bugfixes. Tests remain safe to remove/revert without changing runtime state. GUI/FPS/Android acceptance must remain separately marked PENDING until measured.
+D8 test scope: exercise only existing cultivation/body progression gates, deterministic multi-seed 20-camp/party behavior, exact-once/save-return and One Active Job regressions, and the existing performance launcher/probe contract. A focused update to `godot/tests/simulation/dv2_03_realm_body_progress_test.gd` is also added after the D8 regression exposed that its expected CombatStatsV2 call omitted the existing `foundation_model_version >= FoundationSystem.MODEL_D7` authority flag; this is a test expectation correction, with no production-path change. Use official Godot 4.7.2 logs. No invented 300-step XP or breakthrough values and no production balance change. Excluded: runtime/economy/SaveService/schema/Warehouse/scheduler changes, raw/derived art, main, PR #52, and merges. If a test proves a product defect, add that exact source path plus evidence and rollback handling to this checkpoint before touching it; the owner has authorized D8 targeted bugfixes. Tests remain safe to remove/revert without changing runtime state. GUI/FPS/Android acceptance must remain separately marked PENDING until measured.
 
 
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
