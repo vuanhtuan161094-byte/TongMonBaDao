@@ -429,7 +429,7 @@ func _record_open_world_kills() -> Dictionary:
     var codex_rewards_granted := false
     for event in battle.pending_kill_events():
         var receipt := PveMultiCampPopulationV1.record_authoritative_battle_kill(
-            camp_population,battle,event,world_respawn_delay)
+            camp_population,battle,event,world_respawn_delay,true)
         if not bool(receipt.get("ok",false)):
             return {"ok":false,"reason":"open_world_kill_receipt_rejected","detail":receipt.get("reason","unknown")}
         var slot_id := str(event.get("spawn_slot_id",""))
