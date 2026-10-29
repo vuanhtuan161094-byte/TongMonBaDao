@@ -25,6 +25,7 @@ Concrete D6 write allowlist:
 - godot/src/simulation/combat/v63_human_skill_combat_system.gd (shared Human/Immortal/Divine dispatch; required to reach the existing Combat V2 cast/release pipeline)
 - godot/src/simulation/combat/v63_divine_skill_combat_system.gd (new)
 - godot/src/simulation/combat/map_battle_v2.gd
+- godot/src/simulation/combat/map_battle_snapshot_v2.gd (D6-only poison/summon actor-state validation; no schema change)
 - godot/tests/simulation/v63_d6_divine_lineage_combat_test.gd (new)
 - godot/tests/simulation/v63_d6_rare_successors_test.gd (new)
 - docs/implementation/V65_COMBAT_COVERAGE_LEDGER_20261029.json
@@ -34,7 +35,9 @@ Concrete D6 write allowlist:
 
 Protected/excluded: SaveService/schema migration, CombatStatsV2 formulas, Injury120, Warehouse and scheduler authority, production/economy, raw JX assets, Source A originals, D7 GUI/VFX/presentation assets, D8 endgame balance/performance, main, PR #52 and merges. Rollback is Divine gate OFF by default; retained learning/mastery/loadout records are never destructively downgraded.
 
-Focused/cumulative D6 gate: Divine catalog and rare successor tests; D5 Immortal lineage/study; D4-A/D4-B; D2 Archive and exactly-once codex receipts; D3 One Active Job; P2.3/P2.5/CombatStatsV2; canonical Warehouse; SaveService/SAFE-01; PvE Save/Return/exactly-once and HP0 bridge; official Windows Godot 4.7.2 import. Record exit codes, exact source parity and log hashes. No GUI PASS until live GUI evidence is collected.
+Focused/cumulative D6 gate: Divine catalog and rare successor tests; D5 Immortal lineage/study; D4-A/D4-B; D2 Archive and exactly-once codex receipts; D3 One Active Job; P2.3/P2.5/CombatStatsV2; canonical Warehouse; SaveService/SAFE-01; D6 poison-owner/tick/expiry + pending boss/summon snapshot round-trip; PvE Save/Return/exactly-once and HP0 bridge; official Windows Godot 4.7.2 import. Record exit codes, exact source parity and log hashes. No GUI PASS until live GUI evidence is collected.
+
+D6 snapshot path extension: restore validation only for D6's existing actor-local owned-poison and summoned-minion fields. Snapshot version/schema and SaveService remain unchanged; PR #52's immutable-navigation copy optimization is excluded.
 
 ## 29/10/2026 — D4-B implementation checkpoint
 
