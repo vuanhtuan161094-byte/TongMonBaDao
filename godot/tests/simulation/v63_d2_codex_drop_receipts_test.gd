@@ -105,6 +105,11 @@ func _run() -> void:
     session.camp_population = integrated_population
     session.world_respawn_delay = 30.0
     session.v63_preview_overrides = PREVIEW
+    integrated_state.sect.p3_7_resources_enabled = false
+    var failed_first_attempt := session._record_open_world_kills()
+    var pending_slot: Dictionary = integrated_population.slots[integrated_slot]
+    if not _check(not bool(failed_first_attempt.get("ok",false)) and str(pending_slot.get("phase",""))=="UNPAID_HP0" and integrated_battle.pending_kill_events().size()==1,"failed Warehouse settlement did not keep the authoritative kill pending for retry"): return
+    integrated_state.sect.p3_7_resources_enabled = true
     var integrated_result := session._record_open_world_kills()
     if not _check(bool(integrated_result.get("ok",false)) and bool(integrated_result.get("codex_rewards_granted",false)),"open-world run did not settle the authored codex reward"): return
     var integrated_slot_state: Dictionary = integrated_population.slots[integrated_slot]
