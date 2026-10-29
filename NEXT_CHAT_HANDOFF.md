@@ -1,5 +1,17 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO / 29-10-2026
 
+## Current handoff — continue D5 Immortal immediately
+
+Repository vuanhtuan161094-byte/TongMonBaDao; active branch feature/v63-v64-full-combat-20261029; current D4-B source/test SHA bbd6f83984c45e5212847bdaf326f14ef5ab469f. Stable main c0c1382f119599497b52d8ee8abd9e830a883f1e remains unchanged. PR #52 is Draft/open at f7c33d9c3baba3267a17021718b44f87acd62ef6; leave it unmerged and unmodified.
+
+D4-B **HEADLESS_PASS**: official Windows Godot 4.7.2 import plus 16/16 focused/affected regressions, exit 0. Exact source parity and import/test log hashes: docs/implementation/V65_D4B_HUMAN_BRANCHES_EVIDENCE_20261029.md and E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D4B_20261029_final. The branch has 7 sequential source/test commits because the connected GitHub contents API applies one path per commit; their final integrated source/test commit is bbd6f83984c45e5212847bdaf326f14ef5ab469f. Original dirty E: checkout was preserved; no generated import sidecars were published.
+
+D4-B GUI/owner visual acceptance, D4-A live GUI capture, Android and performance remain **PENDING**. D4-B changed no UI/assets/VFX. No D4-B issue checklist closure is claimed from headless evidence. Overall D4–D8 is **INCOMPLETE**.
+
+Proceed automatically to D5 under the exact allowlist and rollback/test gates at the top of CURRENT_CHECKPOINT.md and in the D5 section of docs/implementation/V65_D4B_HUMAN_BRANCHES_EVIDENCE_20261029.md. Implement all nine distinct Immortal A/B branch paths, three real Immortal bosses/stages/counters and predictable breakthrough study using the existing D3 One Active Job system. Keep candidate coefficients/costs gated OFF and preserve Human knowledge, legacy saves, Injury120, Warehouse and scheduler authority.
+
+## Historical records follow
+
 ## Current handoff — continue D4-B automatically
 
 Repository vuanhtuan161094-byte/TongMonBaDao; active branch feature/v63-v64-full-combat-20261029. Current published D4-A source SHA: 0af2af261e62960ffb4669c8d9d81feb153dd387. Stable main c0c1382f119599497b52d8ee8abd9e830a883f1e remains unchanged. PR #52 remains Draft/open at audited head f7c33d9c3baba3267a17021718b44f87acd62ef6; do not merge/change it.
@@ -67,3 +79,4 @@ Older preflight and D3 handoff notes below are preserved, but superseded when th
 4. P3.2 integration headless ở roster 130 mất 252,956 giây cho 50 polls; cần đọc profiler và GUI performance trước khi chấp nhận. Injury120 riêng PASS, nhưng encounter ngắn chưa chạm Injury120. Loot remains LOOT_PENDING.
 5. Mainline merge và C4 cleanup chờ owner duyệt rõ ràng. Không thay renderer Source A, Combat V2 damage, SaveService, Injury120, economy/loot hoặc nhánh PR khác.
 **Không tạo nhánh permanent develop hoặc thêm nhiều phiên bản game.** Các PR #44–#51 là provenance/đầu nguồn, RC là ứng viên tích hợp DUY NHẤT, main là stable chính thức.
+
