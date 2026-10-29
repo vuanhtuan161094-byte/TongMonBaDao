@@ -4,10 +4,15 @@ const TEST_SEED := 1323232
 
 var state: SimulationState
 var scheduler: SimulationScheduler
+var initial_state_override: SimulationState
+var archive_preview_overrides: Dictionary = {}
 var techniques := TechniqueSystem.new()
 var roots := SpiritualRootSystem.new()
+var archive_warehouse := WarehouseSystem.new()
+var archive_codices: Array[Dictionary] = []
 var disciple_ids: Array[StringName] = []
 var disciple_index := 0
+var archive_codex_index := 0
 var tick_accumulator := 0.0
 var selected_technique_id: StringName = &"duong_khi_quyet"
 var status_text := ""
@@ -17,11 +22,21 @@ var disciple_label: Label
 var technique_label: Label
 var warehouse_label: Label
 var status_label: Label
+var archive_label: Label
+var archive_manual_button: Button
+var archive_restore_button: Button
+var archive_research_button: Button
+var archive_codex_button: Button
 
 func _ready() -> void:
     set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-    state = P23Factory.create_state(TEST_SEED)
+    state = initial_state_override if initial_state_override != null else P23Factory.create_state(TEST_SEED)
     scheduler = SimulationScheduler.new(state)
+    archive_codices = V63SectArchiveSystem.codices()
+    for index in range(archive_codices.size()):
+        if bool(archive_codices[index].get("archivable",false)):
+            archive_codex_index = index
+            break
     _refresh_disciple_ids()
     _build_ui()
     _refresh_ui()
@@ -78,6 +93,33 @@ func _build_ui() -> void:
     warehouse_label = Label.new()
     warehouse_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     column.add_child(warehouse_label)
+
+    var archive_title := Label.new()
+    archive_title.text = "TÀNG KINH CÁC V6.3 — D2"
+    archive_title.add_theme_font_size_override("font_size",18)
+    column.add_child(archive_title)
+    archive_label = Label.new()
+    archive_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    column.add_child(archive_label)
+    var archive_actions := HBoxContainer.new()
+    archive_actions.add_theme_constant_override("separation",6)
+    column.add_child(archive_actions)
+    archive_codex_button = Button.new()
+    archive_codex_button.text = "Chọn Bí Kíp kế"
+    archive_codex_button.pressed.connect(_next_archive_codex)
+    archive_actions.add_child(archive_codex_button)
+    archive_manual_button = Button.new()
+    archive_manual_button.text = "Lưu bản hoàn chỉnh"
+    archive_manual_button.pressed.connect(_archive_action.bind("archive"))
+    archive_actions.add_child(archive_manual_button)
+    archive_restore_button = Button.new()
+    archive_restore_button.text = "Chỉnh lý từ tàn quyển"
+    archive_restore_button.pressed.connect(_archive_action.bind("restore"))
+    archive_actions.add_child(archive_restore_button)
+    archive_research_button = Button.new()
+    archive_research_button.text = "Hiến bản trùng nghiên cứu"
+    archive_research_button.pressed.connect(_archive_action.bind("research"))
+    archive_actions.add_child(archive_research_button)
 
     var separator := HSeparator.new()
     column.add_child(separator)
@@ -155,6 +197,53 @@ func _action(action: String) -> void:
             status_text = str(techniques.upgrade_technique(state, disciple, selected_technique_id))
     _refresh_ui()
 
+func _next_archive_codex() -> void:
+    if archive_codices.is_empty():
+        return
+    archive_codex_index = (archive_codex_index+1)%archive_codices.size()
+    _refresh_ui()
+
+func _archive_action(action: String) -> void:
+    if archive_codices.is_empty():
+        status_text = "Tàng Kinh Các: không tải được danh mục."
+        _refresh_ui()
+        return
+    var codex: Dictionary = archive_codices[archive_codex_index]
+    var codex_id := str(codex.get("id",""))
+    var request_id := "p2_3:%s:%d" % [action,state.sect.v63_archive_operation_index+1]
+    match action:
+        "archive":
+            status_text = str(V63SectArchiveSystem.archive_manual(state,codex_id,archive_preview_overrides))
+        "restore":
+            status_text = str(V63SectArchiveSystem.restore_manual_from_fragments(state,codex_id,request_id,archive_preview_overrides))
+        "research":
+            status_text = str(V63SectArchiveSystem.donate_duplicate_manual(state,codex_id,request_id,archive_preview_overrides))
+    _refresh_ui()
+
+func _refresh_archive_ui() -> void:
+    if archive_codices.is_empty():
+        archive_label.text = "Tàng Kinh Các: danh mục chưa hợp lệ."
+        archive_manual_button.disabled = true
+        archive_restore_button.disabled = true
+        archive_research_button.disabled = true
+        return
+    var codex: Dictionary = archive_codices[archive_codex_index]
+    var codex_id := str(codex.get("id",""))
+    var enabled := V63SectArchiveSystem.is_enabled(state,archive_preview_overrides)
+    var archived := bool(state.sect.v63_archived_codices.get(codex_id,false))
+    var manual_id := StringName(codex.get("manual_item_id",""))
+    var manual_count := archive_warehouse.quantity(state,manual_id) if not manual_id.is_empty() else 0
+    var fragment_id := StringName(codex.get("fragment_resource_id",""))
+    var fragment_count := archive_warehouse.quantity(state,fragment_id) if not fragment_id.is_empty() else 0
+    var restore_candidate := int(codex.get("restore_fragments_candidate",0))
+    var available := V63SectArchiveSystem.available_disciple_count(state,codex_id,archive_preview_overrides)
+    archive_label.text = "%s | %s\nArchive: %s | Quyển trong Kho: %d | Tàn quyển: %d/%d (%s) | %d đệ tử có truyền thụ" % [
+        str(codex.get("name",codex_id)),codex_id,"Bật" if enabled else "ĐANG TẮT",
+        manual_count,fragment_count,restore_candidate,str(codex.get("balance_status","")),available]
+    archive_manual_button.disabled = not enabled or not bool(codex.get("archivable",false)) or archived or manual_count <= 0
+    archive_restore_button.disabled = not enabled or not bool(codex.get("archivable",false)) or fragment_count < restore_candidate or restore_candidate <= 0
+    archive_research_button.disabled = not enabled or not archived or manual_count <= 0
+
 func _refresh_ui() -> void:
     if disciple_ids.is_empty():
         return
@@ -203,3 +292,5 @@ func _refresh_ui() -> void:
         disciple.learned_techniques.size(), TechniqueSystem.MAX_LEARNED_TECHNIQUES, "\n".join(learned_lines)
     ]
     status_label.text = status_text
+    _refresh_archive_ui()
+
