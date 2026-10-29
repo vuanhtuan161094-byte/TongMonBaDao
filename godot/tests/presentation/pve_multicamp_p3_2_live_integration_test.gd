@@ -38,8 +38,6 @@ func _cleanup_ui() -> void:
 
 func _run() -> void:
 	print("PVE P3.2 INTEGRATION START headless=%s vfx_fixture=%s" % [str(DisplayServer.get_name() == "headless"),str(OS.get_environment(VFX_FIXTURE_ENV) == "1")])
-	root.size = Vector2i(1280,720)
-	print("PVE P3.2 INPUT_VIEWPORT size=%s" % str(root.size))
 	var keep := OS.get_environment(KEEP_SAVE_ENV) == "1"
 	var save_path := OS.get_environment(SAVE_PATH_ENV)
 	if save_path.is_empty():
@@ -240,64 +238,10 @@ func _run() -> void:
 		"minimap did not pan the free camera without changing world/gameplay zone"):
 		return
 	var zoom_before := map.camera_zoom
-	var wheel_point := map.map_rect().get_center()+Vector2(120.0,-24.0)
-	var anchor_before := map.world.pve_screen_to_cell(wheel_point,map.size)
-	_route_mouse_motion(map, wheel_point)
-	await process_frame
-	_route_mouse_button(map, MOUSE_BUTTON_WHEEL_UP, wheel_point, true)
-	await process_frame
-	var zoomed_in := map.camera_zoom
-	var anchor_after_in := map.world.pve_screen_to_cell(wheel_point,map.size)
-	if not _check(zoomed_in > zoom_before and zoomed_in <= PveSectWorldViewV1.MAX_ZOOM
-		and anchor_before.distance_to(anchor_after_in) < 0.03,
-		"viewport-routed mouse wheel up failed: zoom %.3f->%.3f anchor_delta=%.4f map_size=%s" % [
-			zoom_before,zoomed_in,anchor_before.distance_to(anchor_after_in),str(map.size)]):
+	map._zoom_at(map.map_rect().get_center(),1.12)
+	if not _check(map.camera_zoom > zoom_before and map.camera_zoom <= 1.15,
+		"map zoom control did not update camera presentation"):
 		return
-	_route_mouse_motion(map, wheel_point)
-	await process_frame
-	_route_mouse_button(map, MOUSE_BUTTON_WHEEL_DOWN, wheel_point, true)
-	await process_frame
-	var zoomed_out := map.camera_zoom
-	var anchor_after_out := map.world.pve_screen_to_cell(wheel_point,map.size)
-	if not _check(zoomed_out < zoomed_in and absf(zoomed_out-zoom_before) < 0.002
-		and anchor_before.distance_to(anchor_after_out) < 0.03,
-		"viewport-routed mouse wheel down did not restore zoom and keep the world anchor"):
-		return
-	var zoom_in_button := map.get_node_or_null("PveWorldZoomIn") as Button
-	var zoom_out_button := map.get_node_or_null("PveWorldZoomOut") as Button
-	if not _check(zoom_in_button != null and zoom_out_button != null
-		and zoom_in_button.is_visible_in_tree() and zoom_out_button.is_visible_in_tree()
-		and zoom_in_button.get_global_rect().size.x >= 44.0
-		and zoom_out_button.get_global_rect().size.y >= 44.0,
-		"the mouse/touch-friendly plus/minus zoom controls are missing or too small"):
-		return
-	var plus_screen := zoom_in_button.get_global_rect().get_center()
-	_route_mouse_motion(map, plus_screen, true)
-	await process_frame
-	_route_mouse_button(map, MOUSE_BUTTON_LEFT, plus_screen, true, true)
-	_route_mouse_button(map, MOUSE_BUTTON_LEFT, plus_screen, false, true)
-	await process_frame
-	if not _check(map.camera_zoom > zoom_before,
-		"clicking the visible plus button through the viewport did not zoom in"):
-		return
-	var minus_screen := zoom_out_button.get_global_rect().get_center()
-	_route_mouse_motion(map, minus_screen, true)
-	await process_frame
-	_route_mouse_button(map, MOUSE_BUTTON_LEFT, minus_screen, true, true)
-	_route_mouse_button(map, MOUSE_BUTTON_LEFT, minus_screen, false, true)
-	await process_frame
-	if not _check(absf(map.camera_zoom-zoom_before) < 0.002,
-		"clicking the visible minus button through the viewport did not zoom out"):
-		return
-	var refreshed_zoom := map.camera_zoom
-	var refreshed_center := map.camera_center
-	ui.call("_refresh_multicamp_hunt_panel")
-	await process_frame
-	if not _check(absf(map.camera_zoom-refreshed_zoom) < 0.0001
-		and map.camera_center.distance_to(refreshed_center) < 0.0001,
-		"the once-per-second PvE HUD/snapshot refresh reset the user's camera zoom or center"):
-		return
-	print("PVE WORLD VIEW INPUT PASS wheel_up_down=1 anchor_stable=1 hud_plus_minus=1 refresh_keeps_camera=1 zoom=%.3f" % map.camera_zoom)
 	map.camera_center = map.topology["camp_positions"][0]
 	map.camera_zoom = 0.70
 	var target_run := HuntingPveRunV2.resume_active(state,encounter)
@@ -842,21 +786,6 @@ func _make_minimap_click(map: PveSectWorldViewV1, position: Vector2) -> InputEve
 	event.pressed = true
 	event.position = position
 	return event
-
-func _route_mouse_motion(map: PveSectWorldViewV1, position: Vector2, is_viewport_position: bool = false) -> void:
-	var event := InputEventMouseMotion.new()
-	event.position = position if is_viewport_position else map.get_global_transform_with_canvas()*position
-	event.global_position = event.position
-	Input.parse_input_event(event)
-
-func _route_mouse_button(map: PveSectWorldViewV1, button_index: int, position: Vector2,
-		pressed: bool, is_viewport_position: bool = false) -> void:
-	var event := InputEventMouseButton.new()
-	event.button_index = button_index
-	event.pressed = pressed
-	event.position = position if is_viewport_position else map.get_global_transform_with_canvas()*position
-	event.global_position = event.position
-	Input.parse_input_event(event)
 
 func _remove_save(save_path: String) -> void:
 	for path in [save_path,save_path+".bak"]:

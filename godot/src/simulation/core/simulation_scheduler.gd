@@ -20,45 +20,21 @@ var economy_system := EconomySystem.new()
 var combat_system := CombatSystem.new()
 var building_system := BuildingSystem.new()
 var recruitment_system := RecruitmentSystem.new()
-var performance_logging_enabled := false
-var performance_stage_usec: Dictionary = {}
 
 func _init(simulation_state: SimulationState) -> void:
     state = simulation_state
     rng = GameRng.new(state.seed)
-    performance_logging_enabled = OS.get_environment("TMB_PVE_PERF_LOG") == "1"
     if state.rng_state != 0:
         rng.restore_seed_state(state.rng_state)
 
 func step() -> void:
-    if performance_logging_enabled:
-        performance_stage_usec.clear()
-        workforce_system.performance_stage_usec.clear()
-    var step_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
-    var phase_usec := 0
-    var building_usec := 0
-    var recruitment_usec := 0
-    var needs_usec := 0
-    var disciple_usec := 0
-    var reveal_usec := 0
-    var action_counts: Dictionary = {}
-    var action_usec: Dictionary = {}
     state.tick += 1
     if state.p3_7_buildings_enabled:
-        phase_usec = Time.get_ticks_usec() if performance_logging_enabled else 0
         building_system.process_tick(state)
-        if performance_logging_enabled:
-            building_usec = Time.get_ticks_usec()-phase_usec
     if state.sect.guidance_recruitment_enabled:
-        phase_usec = Time.get_ticks_usec() if performance_logging_enabled else 0
         recruitment_system.process_guidance_tick(state)
-        if performance_logging_enabled:
-            recruitment_usec = Time.get_ticks_usec()-phase_usec
     if state.sect.needs_enabled:
-        phase_usec = Time.get_ticks_usec() if performance_logging_enabled else 0
         needs_system.process_logistics_tick(state)
-        if performance_logging_enabled:
-            needs_usec = Time.get_ticks_usec()-phase_usec
 
     # P1.5 introduces same-tick dependencies on teammates/leaders. Dictionary
     # iteration order is not a valid simulation contract across save/load, so
@@ -69,85 +45,35 @@ func step() -> void:
         disciple_ids.sort()
         for raw_id in disciple_ids:
             var disciple: DiscipleState = state.disciples[raw_id]
-            var action_key := str(disciple.current_action) if performance_logging_enabled else ""
-            phase_usec = Time.get_ticks_usec() if performance_logging_enabled else 0
             _step_disciple(disciple)
-            if performance_logging_enabled:
-                var elapsed_usec := Time.get_ticks_usec()-phase_usec
-                disciple_usec += elapsed_usec
-                action_counts[action_key] = int(action_counts.get(action_key,0))+1
-                action_usec[action_key] = int(action_usec.get(action_key,0))+elapsed_usec
             disciple.metrics["actions"] = int(disciple.metrics.get("actions", 0)) + 1
             if state.sect.disciple_traits_enabled:
-                phase_usec = Time.get_ticks_usec() if performance_logging_enabled else 0
                 trait_system.process_reveals(state, disciple)
-                if performance_logging_enabled:
-                    reveal_usec += Time.get_ticks_usec()-phase_usec
             if state.sect.bloodlines_enabled:
-                phase_usec = Time.get_ticks_usec() if performance_logging_enabled else 0
                 bloodline_system.process_reveal(state, disciple)
-                if performance_logging_enabled:
-                    reveal_usec += Time.get_ticks_usec()-phase_usec
     else:
         for disciple in state.disciples.values():
-            var action_key := str(disciple.current_action) if performance_logging_enabled else ""
-            phase_usec = Time.get_ticks_usec() if performance_logging_enabled else 0
             _step_disciple(disciple)
-            if performance_logging_enabled:
-                var elapsed_usec := Time.get_ticks_usec()-phase_usec
-                disciple_usec += elapsed_usec
-                action_counts[action_key] = int(action_counts.get(action_key,0))+1
-                action_usec[action_key] = int(action_usec.get(action_key,0))+elapsed_usec
             disciple.metrics["actions"] = int(disciple.metrics.get("actions", 0)) + 1
             if state.sect.disciple_traits_enabled:
-                phase_usec = Time.get_ticks_usec() if performance_logging_enabled else 0
                 trait_system.process_reveals(state, disciple)
-                if performance_logging_enabled:
-                    reveal_usec += Time.get_ticks_usec()-phase_usec
             if state.sect.bloodlines_enabled:
-                phase_usec = Time.get_ticks_usec() if performance_logging_enabled else 0
                 bloodline_system.process_reveal(state, disciple)
-                if performance_logging_enabled:
-                    reveal_usec += Time.get_ticks_usec()-phase_usec
 
     state.rng_state = rng.snapshot_seed_state()
-    if performance_logging_enabled:
-        print("TMB_SCHEDULER_STEP_METRIC "+JSON.stringify({
-            "tick":state.tick,
-            "total_usec":Time.get_ticks_usec()-step_started_usec,
-            "building_usec":building_usec,
-            "recruitment_usec":recruitment_usec,
-            "needs_usec":needs_usec,
-            "disciple_usec":disciple_usec,
-            "reveal_usec":reveal_usec,
-            "disciples":state.disciples.size(),
-            "buildings":state.buildings.size(),
-            "actions":action_counts,
-            "action_usec":action_usec,
-            "stage_usec":performance_stage_usec.duplicate(),
-            "workforce_stage_usec":workforce_system.performance_stage_usec.duplicate()
-        }))
 
 func run_ticks(count: int) -> void:
     for _i in range(count):
         step()
-
-func _record_performance_stage(stage: String,started_usec: int) -> void:
-    if started_usec <= 0:
-        return
-    performance_stage_usec[stage] = int(performance_stage_usec.get(stage,0)) + (Time.get_ticks_usec()-started_usec)
 
 func _step_disciple(disciple: DiscipleState) -> void:
     # One scheduler step is one simulation minute. Authentic V2 disciples
     # continuously absorb natural Tu Vi during ordinary life/activity.
     # CULTIVATE is Chuyên Tu: it accelerates this same source for the minute.
     if DiscipleRealmProgressV2.owns_v2_progression(disciple) and state.sect.v2_training_enabled:
-        var tuvi_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
         var passive_tuvi := DiscipleTuViFlowV2.resolve_minute(
             state,disciple,disciple.current_action == &"CULTIVATE"
         )
-        if performance_logging_enabled:
-            _record_performance_stage("v2_passive_tuvi",tuvi_started_usec)
         disciple.last_decision["v2_passive_tuvi_result"] = passive_tuvi.duplicate(true)
 
     # Natural V2 Tu Vi above still accrues once per minute on expeditions.
@@ -165,29 +91,14 @@ func _step_disciple(disciple: DiscipleState) -> void:
 
         &"EVALUATE":
             if state.sect.techniques_enabled and disciple.region_id == &"sect":
-                var technique_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
                 technique_system.deposit_special_inventory(state, disciple)
-                if performance_logging_enabled:
-                    _record_performance_stage("evaluate_technique_deposit",technique_started_usec)
             if state.sect.equipment_enabled and disciple.region_id == &"sect":
-                var equipment_deposit_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
                 equipment_system.deposit_forge_inventory(state, disciple)
-                if performance_logging_enabled:
-                    _record_performance_stage("evaluate_equipment_deposit",equipment_deposit_started_usec)
-                var equipment_upgrade_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
                 equipment_system.try_auto_upgrade(state, disciple)
-                if performance_logging_enabled:
-                    _record_performance_stage("evaluate_equipment_upgrade",equipment_upgrade_started_usec)
             if state.p1_goal_personality_enabled:
-                var goal_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
                 goal_system.update_goal(state, disciple)
-                if performance_logging_enabled:
-                    _record_performance_stage("evaluate_goal",goal_started_usec)
             if state.sect.workforce_enabled:
-                var workforce_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
                 var workforce_action := workforce_system.next_action(state, disciple)
-                if performance_logging_enabled:
-                    _record_performance_stage("evaluate_workforce",workforce_started_usec)
                 if workforce_action != &"":
                     disciple.last_decision["workforce_action"] = str(workforce_action)
                     disciple.current_action = workforce_action
@@ -202,10 +113,7 @@ func _step_disciple(disciple: DiscipleState) -> void:
                     disciple.last_decision["workforce_action"] = "FIELD_RESERVED"
                     disciple.current_action = &"IDLE"
                     return
-            var decision_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
             var decision := decision_system.evaluate(state, disciple)
-            if performance_logging_enabled:
-                _record_performance_stage("evaluate_decision",decision_started_usec)
             disciple.current_action = StringName(decision["action"])
             if disciple.injury_level == 1 and DiscipleRealmProgressV2.owns_v2_progression(disciple) and disciple.current_action == &"HUNT":
                 disciple.current_action = &"HOLD"

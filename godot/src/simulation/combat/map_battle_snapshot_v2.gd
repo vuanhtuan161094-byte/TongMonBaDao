@@ -58,7 +58,10 @@ static func save(battle: MapBattleV2) -> Dictionary:
     if battle.world_mode:
         payload["world_mode"] = true
         payload["world_bounds"] = {"position":_encode_vec2(battle.world_bounds.position),"size":_encode_vec2(battle.world_bounds.size)}
-        payload["world_navigation"] = battle.world_navigation.duplicate(true)
+        # Navigation is immutable for the lifetime of a battle. var_to_bytes()
+        # serializes synchronously below, so sharing it here avoids a full
+        # 192x192 deep copy on every durable PVE checkpoint.
+        payload["world_navigation"] = battle.world_navigation
         payload["auto_hunt"] = battle.auto_hunt
     # JSON converts integers to floats and rounds float64 values, changing
     # mid-battle damage and RNG. Godot Variant bytes retain EXACT bit patterns.

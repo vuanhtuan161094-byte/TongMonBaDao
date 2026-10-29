@@ -73,7 +73,7 @@ func _run() -> void:
 	# Screen->world and renderer->world round trips across camera/zoom locations.
 	for camp_index in [0, 4, 9, 14, 19]:
 		map.camera_center = camps[camp_index]
-		for zoom in [0.28, 0.55, 0.92]:
+		for zoom in [0.28, 0.55, 0.92, 1.35]:
 			map.camera_zoom = zoom
 			var center: Vector2 = camps[camp_index]
 			for world_point in [
@@ -134,6 +134,26 @@ func _run() -> void:
 	if not _check(map.camera_zoom > 0.55
 		and map._screen_to_cell(anchor).distance_to(world_anchor) <= EPSILON,
 		"zoom changed the world point under the pointer"):
+		return
+	if not _check(is_equal_approx(PveSectWorldViewV1.MAX_ZOOM,1.35),
+		"PvE maximum zoom is not the requested close-inspection range"):
+		return
+	for _step in range(20):
+		var zoom_max_event := InputEventMouseButton.new()
+		zoom_max_event.button_index = MOUSE_BUTTON_WHEEL_UP
+		zoom_max_event.pressed = true
+		zoom_max_event.position = anchor
+		map._input(zoom_max_event)
+	if not _check(is_equal_approx(map.camera_zoom,PveSectWorldViewV1.MAX_ZOOM),
+		"wheel input did not reach the PvE zoom clamp"):
+		return
+	var zoom_down_event := InputEventMouseButton.new()
+	zoom_down_event.button_index = MOUSE_BUTTON_WHEEL_DOWN
+	zoom_down_event.pressed = true
+	zoom_down_event.position = anchor
+	map._input(zoom_down_event)
+	if not _check(map.camera_zoom < PveSectWorldViewV1.MAX_ZOOM,
+		"wheel-down did not zoom back out from the maximum"):
 		return
 	var camera_before := map.world.camera.position
 	var right_down := InputEventMouseButton.new()

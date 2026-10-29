@@ -14,6 +14,9 @@ var camp_population: Dictionary = {}
 var camp_slot_ids: Array = []
 var minute_phase: float = 0.0
 var world_respawn_delay := 30.0
+var performance_checkpoint_count := 0
+var performance_checkpoint_usec_total := 0
+var performance_checkpoint_usec_max := 0
 
 func begin(
     state: SimulationState, region: String, encounter_id: String, seed: int,
@@ -608,9 +611,16 @@ func _persist_live_state() -> Dictionary:
         return {"ok":false,"reason":"claimed_encounter_cannot_reopen"}
     if owner_state.sect.v2_pve_settlement_receipts.has(battle.encounter_id):
         return {"ok":false,"reason":"settled_encounter_cannot_reopen"}
+    var profile := OS.get_environment("TMB_PVE_PERF_LOG") == "1"
+    var started_usec := Time.get_ticks_usec() if profile else 0
     var saved := save_state()
     if bool(saved.get("ok",false)):
         owner_state.sect.v2_pve_active_runs[battle.encounter_id] = saved.duplicate(true)
+    if profile:
+        var elapsed_usec := Time.get_ticks_usec()-started_usec
+        performance_checkpoint_count += 1
+        performance_checkpoint_usec_total += elapsed_usec
+        performance_checkpoint_usec_max = maxi(performance_checkpoint_usec_max,elapsed_usec)
     return saved
 
 

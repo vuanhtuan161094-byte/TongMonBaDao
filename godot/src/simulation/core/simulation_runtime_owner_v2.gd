@@ -66,8 +66,7 @@ func load_from_path(
         "state":state
     }
 
-func update_to(now_unix: int, max_steps: int = -1,
-        async_pve_commit: bool = false, skip_pve_commit: bool = false) -> Dictionary:
+func update_to(now_unix: int, max_steps: int = -1) -> Dictionary:
     if state == null or scheduler == null:
         return {"ok":false,"reason":"runtime_owner_not_attached"}
     if b3_write_blocked:
@@ -101,12 +100,10 @@ func update_to(now_unix: int, max_steps: int = -1,
         var committed := B3HuntWorld.commit(self)
         if not committed["ok"]:
             return committed
-    elif (had_multicamp or HuntingPveRunV2.has_active_multicamp(state)) and not skip_pve_commit:
-        var committed_pve := HuntingPveRunV2.commit_owner(self,async_pve_commit)
+    elif had_multicamp or HuntingPveRunV2.has_active_multicamp(state):
+        var committed_pve := HuntingPveRunV2.commit_owner(self)
         if not bool(committed_pve.get("ok",false)):
             return committed_pve
-        if bool(committed_pve.get("pending",false)):
-            advanced["runtime_save_pending"] = true
     return advanced
 
 func save_to_path(
@@ -115,9 +112,7 @@ func save_to_path(
     if state == null or scheduler == null:
         return {"ok":false,"reason":"runtime_owner_not_attached"}
     durable_path = path
-    # This final SaveService write is the durability barrier for the state
-    # advanced above. Avoid a second identical PVE barrier inside update_to.
-    var advanced := update_to(now_unix,max_steps,false,true)
+    var advanced := update_to(now_unix,max_steps)
     if not bool(advanced.get("ok",false)):
         return advanced
     # If a bounded caller leaves pending whole minutes, the backlog remains in
@@ -129,26 +124,3 @@ func save_to_path(
         "steps_run":int(advanced.get("steps_run",0)),
         "pending_minutes":SimulationRuntimeClockV2.pending_minutes(state)
     }
-
-func save_to_path_async(
-        path: String, now_unix: int, max_steps: int = -1) -> Dictionary:
-    if state == null or scheduler == null:
-        return {"ok":false,"reason":"runtime_owner_not_attached"}
-    durable_path = path
-    var advanced := update_to(now_unix,max_steps,false,true)
-    if not bool(advanced.get("ok",false)):
-        return advanced
-    var error := saves.start_save_to_path_async(state,path)
-    if error != OK:
-        runtime_write_blocked = true
-        return {"ok":false,"error":error,"reason":"runtime_async_save_start_failed"}
-    runtime_write_blocked = false
-    return {
-        "ok":true,"pending":true,"steps_run":int(advanced.get("steps_run",0)),
-        "pending_minutes":SimulationRuntimeClockV2.pending_minutes(state)
-    }
-
-func wait_for_pending_save(tree: SceneTree) -> Dictionary:
-    var result: Dictionary = await saves.wait_for_async_save(tree)
-    runtime_write_blocked = not bool(result.get("ok",false))
-    return result

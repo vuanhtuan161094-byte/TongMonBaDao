@@ -630,7 +630,7 @@ func set_pve_camera(center_cell: Vector2, requested_zoom: float = 0.55) -> void:
     if camera == null:
         return
     camera.position = project(center_cell)
-    camera.zoom = Vector2.ONE*clampf(requested_zoom,0.25,1.15)
+    camera.zoom = Vector2.ONE*clampf(requested_zoom,0.25,1.35)
     _update_chunks()
 
 func pve_screen_to_cell(screen_point: Vector2, viewport_size: Vector2) -> Vector2:
@@ -752,9 +752,9 @@ func _apply_pve_actor_events(events: Array[Dictionary],snapshot: MapBattleV2) ->
             pve_actor_actions[source_id] = {"action":"cast","started":pve_clock,"until":pve_clock+0.85}
         elif kind == "hit":
             if str(event.get("kind","")) in ["basic","basic_followup"] and snapshot.actors.has(source_id):
-                pve_actor_actions[source_id] = {"action":"attack","started":pve_clock,"until":pve_clock+0.32}
+                pve_actor_actions[source_id] = {"action":"attack","started":pve_clock,"until":pve_clock+0.85}
             if snapshot.actors.has(target_id) and float(event.get("damage",0.0)) > 0.0:
-                pve_actor_actions[target_id] = {"action":"hit","started":pve_clock,"until":pve_clock+0.24}
+                pve_actor_actions[target_id] = {"action":"hit","started":pve_clock,"until":pve_clock+0.5}
         elif kind == "downed" and snapshot.actors.has(str(event.get("actor_id",""))):
             var downed_id := str(event.get("actor_id",""))
             pve_actor_actions[downed_id] = {"action":"die","started":pve_clock,"until":INF}

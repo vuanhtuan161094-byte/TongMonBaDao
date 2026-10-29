@@ -1,9 +1,6 @@
 class_name WorkforceSystem
 extends RefCounted
 
-var performance_logging_enabled := OS.get_environment("TMB_PVE_PERF_LOG") == "1"
-var performance_stage_usec: Dictionary = {}
-
 const PROF_FORGING := &"forging"
 const PROF_ALCHEMY := &"alchemy"
 const PROF_HERBALISM := &"herbalism"
@@ -311,43 +308,27 @@ func next_action(state: SimulationState, disciple: DiscipleState) -> StringName:
         return &""
 
     _expire_command_if_needed(state, disciple)
-    if state.sect.economy_a_enabled:
-        var timer_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
-        var has_resource_timer := not building_system.active_resource_timer_for_worker(state,disciple.id).is_empty()
-        _record_performance_stage("workforce_resource_timer",timer_started_usec)
-        if has_resource_timer:
-            return &"HOLD"
+    if state.sect.economy_a_enabled and not building_system.active_resource_timer_for_worker(state,disciple.id).is_empty():
+        return &"HOLD"
 
     var hp_ratio := disciple.hp / maxf(disciple.max_hp, 1.0)
     var owns_v2 := DiscipleRealmProgressV2.owns_v2_progression(disciple)
     if hp_ratio < 0.72 or (not owns_v2 and disciple.stamina < 42.0):
         return &""
 
-    if state.p3_7_buildings_enabled:
-        var plot_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
-        var has_spirit_plot := building_system.disciple_has_active_spirit_plot(state,disciple.id)
-        _record_performance_stage("workforce_spirit_plot",plot_started_usec)
-        if has_spirit_plot:
-            return &""
-        var timed_recipe_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
-        var has_timed_recipe := building_system.disciple_has_active_timed_recipe(state,disciple.id)
-        _record_performance_stage("workforce_timed_recipe",timed_recipe_started_usec)
-        if has_timed_recipe:
-            return &"HOLD"
+    if state.p3_7_buildings_enabled and building_system.disciple_has_active_spirit_plot(state, disciple.id):
+        return &""
+    if state.p3_7_buildings_enabled and building_system.disciple_has_active_timed_recipe(state, disciple.id):
+        return &"HOLD"
 
-    var direct_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
     var direct := _direct_command_action(state, disciple)
-    _record_performance_stage("workforce_direct_command",direct_started_usec)
     if direct != &"":
         return direct
 
     # A dedicated Rèn Thân assignment owns this actor's scheduled occupation.
     # General profession work preferences must never steal a paid training
     # minute. Injury/urgent healing and explicit player orders remain upstream.
-    var training_slot_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
-    var has_training_slot := owns_v2 and DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple)
-    _record_performance_stage("workforce_training_slot",training_slot_started_usec)
-    if has_training_slot:
+    if owns_v2 and DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple):
         var training := DiscipleTrainingPolicyV2.choose_auto_action(state,disciple)
         if bool(training.get("ok",false)):
             disciple.last_decision["v2_auto_training"] = training.duplicate(true)
@@ -363,14 +344,10 @@ func next_action(state: SimulationState, disciple: DiscipleState) -> StringName:
     if disciple.region_id != &"sect":
         return &""
 
-    var schedule_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
     var phase := schedule_phase(state, disciple)
-    _record_performance_stage("workforce_schedule_phase",schedule_started_usec)
     match phase:
         &"work":
-            var profession_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
             var profession := choose_work_profession(state, disciple)
-            _record_performance_stage("workforce_choose_profession",profession_started_usec)
             return _profession_action(profession)
         &"cultivate":
             if owns_v2:
@@ -389,11 +366,6 @@ func next_action(state: SimulationState, disciple: DiscipleState) -> StringName:
         _:
             pass
     return &""
-
-func _record_performance_stage(stage: String,started_usec: int) -> void:
-    if started_usec <= 0:
-        return
-    performance_stage_usec[stage] = int(performance_stage_usec.get(stage,0)) + (Time.get_ticks_usec()-started_usec)
 
 func schedule_phase(state: SimulationState, disciple: DiscipleState) -> StringName:
     var slot := (state.tick + _stable_text_value(str(disciple.id))) % SCHEDULE_CYCLE

@@ -40,9 +40,17 @@ var _external_hit_ids: Dictionary = {}
 var _pending_kill_events: Array = []
 # A slot's generation never regresses even after a corpse actor is removed.
 var _last_spawn_generation: Dictionary = {}
+var performance_logging_enabled := false
+var performance_world_path_count := 0
+var performance_world_path_usec_total := 0
+var performance_world_path_usec_max := 0
+var performance_step_count := 0
+var performance_step_usec_total := 0
+var performance_step_usec_max := 0
 
 func _init(seed_value: int = 515151) -> void:
     rng = GameRng.new(seed_value)
+    performance_logging_enabled = OS.get_environment("TMB_PVE_PERF_LOG") == "1"
 
 func setup(id: String, party: Array, monsters: Array, keep_encounter_open: bool = false) -> Dictionary:
     if active or id.is_empty() or (party.is_empty() and not keep_encounter_open) or party.size() > MAX_DISCIPLES:
@@ -324,6 +332,17 @@ func _nearest_walkable_cell(origin: Vector2i) -> Vector2i:
     return Vector2i(-1,-1)
 
 func _world_path(start_position: Vector2, goal_position: Vector2) -> Array[Vector2i]:
+    if not performance_logging_enabled:
+        return _world_path_impl(start_position,goal_position)
+    var started_usec := Time.get_ticks_usec()
+    var path := _world_path_impl(start_position,goal_position)
+    var elapsed_usec := Time.get_ticks_usec()-started_usec
+    performance_world_path_count += 1
+    performance_world_path_usec_total += elapsed_usec
+    performance_world_path_usec_max = maxi(performance_world_path_usec_max,elapsed_usec)
+    return path
+
+func _world_path_impl(start_position: Vector2, goal_position: Vector2) -> Array[Vector2i]:
     var start := _nearest_walkable_cell(Vector2i(floori(start_position.x),floori(start_position.y)))
     var goal := _nearest_walkable_cell(Vector2i(floori(goal_position.x),floori(goal_position.y)))
     var path: Array[Vector2i] = []
@@ -445,6 +464,7 @@ func step(viewed_map: bool = false) -> Dictionary:
     # because the presentation ring fills or consumers are not caught up.
     if continuous_mode and _pending_kill_events.size() + MAX_MONSTERS > MAX_PENDING_KILLS:
         return {"ok":false,"reason":"kill_journal_backpressure","pending":_pending_kill_events.size()}
+    var performance_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
     now += STEP_SECONDS
     _process_status_effects()
     _release_casts()
@@ -538,6 +558,11 @@ func step(viewed_map: bool = false) -> Dictionary:
         active = false
     if not active:
         _event("battle_end",{"outcome":outcome,"elapsed":now,"downed_disciples":downed_disciples})
+    if performance_logging_enabled:
+        var elapsed_usec := Time.get_ticks_usec()-performance_started_usec
+        performance_step_count += 1
+        performance_step_usec_total += elapsed_usec
+        performance_step_usec_max = maxi(performance_step_usec_max,elapsed_usec)
     return {"ok":true,"outcome":outcome,"time":now,"alive_disciples":_count_alive("disciple"),"alive_monsters":_count_alive("monster")}
 
 func run(max_steps: int = 400, viewed_map: bool = false) -> Dictionary:

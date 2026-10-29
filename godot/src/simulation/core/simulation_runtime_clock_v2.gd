@@ -135,6 +135,8 @@ static func _advance_multicamp(state: SimulationState, scheduler: SimulationSche
     var frames := 0
     var minutes := 0
     var result: Dictionary = {"ok":true,"stepped":false}
+    var profile := OS.get_environment("TMB_PVE_PERF_LOG") == "1"
+    var batch_started_usec := Time.get_ticks_usec() if profile else 0
     while state.runtime_unconsumed_wall_seconds >= MapBattleV2.STEP_SECONDS and frames < budget:
         result = session.advance(false)
         if bool(result.get("stepped",false)):
@@ -146,10 +148,14 @@ static func _advance_multicamp(state: SimulationState, scheduler: SimulationSche
                     session.minute_phase -= WALL_SECONDS_PER_SIMULATION_MINUTE
                     scheduler.step()
                     minutes += 1
-                var checkpoint := session._persist_live_state()
-                if not bool(checkpoint.get("ok",false)):
-                    result = checkpoint
+                # advance() already checkpoints this exact battle frame.
+                # Only minute_phase changes here; persist that scalar without
+                # serializing the full battle/world snapshot a second time.
+                var checkpoint: Variant = state.sect.v2_pve_active_runs.get(encounter,null)
+                if not (checkpoint is Dictionary) or str(checkpoint.get("encounter_id","")) != encounter:
+                    result = {"ok":false,"reason":"multicamp_checkpoint_missing"}
                     break
+                checkpoint["minute_phase"] = session.minute_phase
             else:
                 # Carry sub-minute progress back to the one shared runtime
                 # remainder when the active camp settles or is defeated.
@@ -163,6 +169,22 @@ static func _advance_multicamp(state: SimulationState, scheduler: SimulationSche
         "frames_run":frames,"pending_minutes":pending_minutes(state),
         "remainder_seconds":state.runtime_unconsumed_wall_seconds,
         "simulation_tick":state.tick},true)
+    if profile and session.battle != null:
+        print("TMB_PVE_RUNTIME_BATCH_METRIC "+JSON.stringify({
+            "frames":frames,
+            "batch_ms":float(Time.get_ticks_usec()-batch_started_usec)/1000.0,
+            "battle_step_count":session.battle.performance_step_count,
+            "battle_step_total_ms":float(session.battle.performance_step_usec_total)/1000.0,
+            "battle_step_max_ms":float(session.battle.performance_step_usec_max)/1000.0,
+            "world_path_count":session.battle.performance_world_path_count,
+            "world_path_total_ms":float(session.battle.performance_world_path_usec_total)/1000.0,
+            "world_path_max_ms":float(session.battle.performance_world_path_usec_max)/1000.0,
+            "snapshot_count":session.performance_checkpoint_count,
+            "snapshot_total_ms":float(session.performance_checkpoint_usec_total)/1000.0,
+            "snapshot_max_ms":float(session.performance_checkpoint_usec_max)/1000.0,
+            "snapshot_minute_phase":session.minute_phase,
+            "same_active_encounter":state.sect.v2_pve_active_runs.has(encounter)
+        }))
     return result
 
 static func _advance_b3(state: SimulationState, scheduler: SimulationScheduler, elapsed: int, max_steps: int) -> Dictionary:

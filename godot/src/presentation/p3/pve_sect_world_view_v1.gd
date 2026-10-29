@@ -6,7 +6,7 @@ signal selection_changed(actor_ids: Array)
 
 const MINIMAP_MARGIN := 10.0
 const MIN_ZOOM := 0.28
-const MAX_ZOOM := 0.92
+const MAX_ZOOM := 1.35
 
 class InputOverlay:
 	extends Control
@@ -406,11 +406,6 @@ func _clamp_camera() -> void:
 
 func _draw_overlay(canvas: CanvasItem) -> void:
 	var font := ThemeDB.fallback_font
-	var heading := "THANH TRÚC LÂM · RỪNG NGUYÊN SINH"
-	canvas.draw_rect(Rect2(Vector2(8,8),Vector2(minf(300.0,size.x-190.0),22.0)),Color(0.03,0.07,0.06,0.82))
-	if font != null:
-		canvas.draw_string_outline(font,Vector2(14,24),heading,HORIZONTAL_ALIGNMENT_LEFT,-1,11,2,Color(0.01,0.02,0.02,0.9))
-		canvas.draw_string(font,Vector2(14,24),heading,HORIZONTAL_ALIGNMENT_LEFT,-1,11,Color("f1d488"))
 	for index in range(topology.get("camp_positions",[]).size()):
 		var center: Vector2 = topology["camp_positions"][index]
 		var point := _world_to_screen(center)
@@ -448,8 +443,11 @@ func _draw_overlay(canvas: CanvasItem) -> void:
 	canvas.draw_rect(Rect2(frame.position+Vector2(1,1),Vector2(frame.size.x-2,18)),Color(0.035,0.075,0.072,0.92))
 	if font != null:
 		canvas.draw_string(font,frame.position+Vector2(5,14),"MINIMAP · THẾ GIỚI THẬT",HORIZONTAL_ALIGNMENT_LEFT,-1,9,Color("f1d488"))
-		canvas.draw_string_outline(font,Vector2(12,size.y-10),"Bấm đất: di chuyển · Kéo phải: camera · Lăn / + −: zoom",HORIZONTAL_ALIGNMENT_LEFT,-1,9,2,Color(0.01,0.02,0.02,0.9))
-		canvas.draw_string(font,Vector2(12,size.y-10),"Bấm đất: di chuyển · Kéo phải: camera · Lăn / + −: zoom",HORIZONTAL_ALIGNMENT_LEFT,-1,9,Color("f3efdd"))
+		var controls_rect := Rect2(Vector2(310.0,size.y-80.0),Vector2(368.0,20.0))
+		canvas.draw_rect(controls_rect,Color(0.03,0.07,0.06,0.84))
+		var controls_text := "Bấm đất: di chuyển · Kéo trái/phải: camera · Lăn / + −: zoom"
+		canvas.draw_string_outline(font,Vector2(316.0,size.y-66.0),controls_text,HORIZONTAL_ALIGNMENT_LEFT,-1,9,2,Color(0.01,0.02,0.02,0.9))
+		canvas.draw_string(font,Vector2(316.0,size.y-66.0),controls_text,HORIZONTAL_ALIGNMENT_LEFT,-1,9,Color("f3efdd"))
 	if not source_error.is_empty() and font != null:
 		canvas.draw_string(font,Vector2(12,44),source_error,HORIZONTAL_ALIGNMENT_LEFT,-1,10,Color("f0a474"))
 	if world == null or world.pve_jx_sword_vfx.comparison_style == "source_a":
@@ -482,3 +480,4 @@ func _minimap_point(cell: Vector2,inner: Rect2) -> Vector2:
 func _queue_overlay_redraw() -> void:
 	if _overlay != null:
 		_overlay.queue_redraw()
+
