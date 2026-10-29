@@ -14,6 +14,7 @@ var camp_population: Dictionary = {}
 var camp_slot_ids: Array = []
 var minute_phase: float = 0.0
 var world_respawn_delay := 30.0
+var v63_preview_overrides: Dictionary = {}
 
 func begin(
     state: SimulationState, region: String, encounter_id: String, seed: int,
@@ -123,8 +124,8 @@ func begin(
 # Monster-specific payout and respawn delay are deliberately not invented;
 # the existing, authored region clear table is claimed once after camp victory.
 func begin_multicamp(owner: SimulationRuntimeOwnerV2, encounter_id: String,
-		seed: int, party_members: Array, slots_per_camp: int = 10,
-		open_world_options: Dictionary = {}) -> Dictionary:
+        seed: int, party_members: Array, slots_per_camp: int = 10,
+        open_world_options: Dictionary = {}) -> Dictionary:
     if owner == null or owner.state == null or owner.durable_path.is_empty():
         return {"ok":false,"reason":"multicamp_requires_durable_runtime_owner"}
     if owner.b3_write_blocked or owner.runtime_write_blocked:
@@ -417,13 +418,15 @@ func _advance_open_world(viewed_map: bool) -> Dictionary:
         "zone_changed":zone_changed,"camp_index":camp_index,
         "camp_id":PveMultiCampPopulationV1.camp_id(camp_index),
         "respawned":int(population_step.get("respawned",0)),
-        "loot_disposition":"LOOT_PENDING","rewards_granted":false,
+        "loot_disposition":"CODEX_SETTLED" if bool(kills.get("codex_rewards_granted",false)) else "LOOT_PENDING",
+        "rewards_granted":bool(kills.get("codex_rewards_granted",false)),
         "outcome":battle.outcome,"time":battle.now,
         "alive_disciples":battle._count_alive("disciple"),
         "alive_monsters":battle._count_alive("monster")}
 
 func _record_open_world_kills() -> Dictionary:
     var recorded := 0
+    var codex_rewards_granted := false
     for event in battle.pending_kill_events():
         var receipt := PveMultiCampPopulationV1.record_authoritative_battle_kill(
             camp_population,battle,event,world_respawn_delay)
@@ -431,15 +434,32 @@ func _record_open_world_kills() -> Dictionary:
             return {"ok":false,"reason":"open_world_kill_receipt_rejected","detail":receipt.get("reason","unknown")}
         var slot_id := str(event.get("spawn_slot_id",""))
         var kill_id := str(event.get("kill_id",""))
-        var ack := PveMultiCampPopulationV1.acknowledge_no_reward_receipt(
-            camp_population,slot_id,kill_id,"LOOT_PENDING")
+        var reward_plan := V63SectArchiveSystem.kill_reward_items(
+            owner_state,spawn_data,event,v63_preview_overrides)
+        if not bool(reward_plan.get("ok",false)):
+            return {"ok":false,"reason":"open_world_codex_reward_plan_rejected","detail":reward_plan.get("reason","unknown")}
+        var items: Dictionary = reward_plan.get("items",{})
+        var ack: Dictionary = {}
+        if items.is_empty():
+            ack = PveMultiCampPopulationV1.acknowledge_no_reward_receipt(
+                camp_population,slot_id,kill_id,"LOOT_PENDING")
+        else:
+            var settlement := V63SectArchiveSystem.settle_codex_kill_drop_once(
+                owner_state,battle.encounter_id,kill_id,str(event.get("species_id","")),
+                items,v63_preview_overrides)
+            if not bool(settlement.get("ok",false)):
+                return {"ok":false,"reason":"open_world_codex_settlement_failed","detail":settlement.get("reason","unknown")}
+            ack = PveMultiCampPopulationV1.acknowledge_codex_reward_receipt(
+                camp_population,slot_id,kill_id,kill_id)
+            codex_rewards_granted = true
         if not bool(ack.get("ok",false)):
-            return {"ok":false,"reason":"open_world_no_reward_receipt_failed","detail":ack.get("reason","unknown")}
+            return {"ok":false,"reason":"open_world_reward_receipt_failed","detail":ack.get("reason","unknown")}
         if not battle.acknowledge_kill_event(kill_id):
             return {"ok":false,"reason":"open_world_combat_kill_ack_failed"}
         camp_population["world_total_kills"] = int(camp_population.get("world_total_kills",0))+1
         recorded += 1
-    return {"ok":true,"recorded":recorded,"rewards_granted":false}
+    return {"ok":true,"recorded":recorded,"rewards_granted":codex_rewards_granted,
+        "codex_rewards_granted":codex_rewards_granted}
 
 func _next_ready_world_camp() -> int:
     for offset in range(1,PveMultiCampPopulationV1.CAMP_COUNT+1):
@@ -580,7 +600,7 @@ func claim() -> Dictionary:
     var settled := _settle_terminal()
     if not bool(settled.get("ok",false)):
         return settled
-    var result := HuntingMapV2.claim_reward(owner_state,spawn_data,battle)
+    var result := HuntingMapV2.claim_reward(owner_state,spawn_data,battle,v63_preview_overrides)
     if bool(result.get("ok",false)):
         owner_state.sect.v2_pve_active_runs.erase(battle.encounter_id)
         if mode == "multicamp" and owner_state.sect.v2_pve_settlement_receipts.has(battle.encounter_id):
@@ -815,6 +835,10 @@ func save_state() -> Dictionary:
         "reward_seed":int(spawn_data.get("reward_seed",0)),
         "battle":checkpoint
     }
+    for reward_field in ["v63_codex_rewards","v63_codex_drop_table"]:
+        var reward_data = spawn_data.get(reward_field,{})
+        if reward_data is Dictionary and not reward_data.is_empty():
+            saved[reward_field] = reward_data.duplicate(true)
     if mode == "multicamp":
         saved["mode"] = mode
         saved["camp_index"] = camp_index
@@ -866,6 +890,12 @@ static func restore_state(state: SimulationState, saved: Dictionary) -> Dictiona
     var spawned := HuntingMapV2.spawn(region,level,id,int(saved.get("reward_seed",0)))
     if not bool(spawned.get("ok",false)):
         return spawned
+    for reward_field in ["v63_codex_rewards","v63_codex_drop_table"]:
+        if saved.has(reward_field):
+            var reward_data = saved[reward_field]
+            if not (reward_data is Dictionary):
+                return {"ok":false,"reason":"invalid_saved_codex_reward_plan"}
+            spawned[reward_field] = reward_data.duplicate(true)
     var mode_value := str(saved.get("mode","encounter"))
     if not ["encounter","multicamp"].has(mode_value):
         return {"ok":false,"reason":"unknown_saved_hunt_mode"}
@@ -950,3 +980,4 @@ static func restore_state(state: SimulationState, saved: Dictionary) -> Dictiona
     session.minute_phase = phase
     session.world_respawn_delay = float(saved.get("world_respawn_delay",0.0)) if resumed.world_mode else 0.0
     return {"ok":true,"session":session}
+
