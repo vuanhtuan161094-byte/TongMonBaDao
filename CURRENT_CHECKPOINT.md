@@ -1,6 +1,50 @@
-## 29/10/2026 — D4-A PREFLIGHT / exact allowlist (current)
+# CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
-**Status:** allowlist recorded; D4-A code is not started and no D4 tests or GUI evidence exist yet. Base feature HEAD is `a9a7d5ab97c3b02de467c54b94d4d9c4c8d3d9ca`; stable main remains `c0c1382f119599497b52d8ee8abd9e830a883f1e`. Work is in isolated `E:\\TongMonBaDaoWorkspace\\01_Game\\TMB_V65_D4A_20261029`. The original E: feature worktree at `d45ab195c53c00f0f29732124dd7678fd42cb351` retains its dirty files and existing Godot processes.
+## 29/10/2026 — D4-A implementation checkpoint
+
+Branch feature/v63-v64-full-combat-20261029 source HEAD: 0af2af261e62960ffb4669c8d9d81feb153dd387. Stable main remains c0c1382f119599497b52d8ee8abd9e830a883f1e. PR #52 remains Draft/open at f7c33d9c3baba3267a17021718b44f87acd62ef6; no merge or PR mutation.
+
+- D4-A implementation: **HEADLESS_PASS**. Godot 4.7.2 official headless import exit 0; all 14 focused/affected cumulative scripts exit 0 sequentially. See docs/implementation/V65_D4A_HUMAN_COMBAT_EVIDENCE_20261029.md and E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D4A_20261029_final.
+- D4-A behavior: default-OFF Liệp Ảnh Human skill Xuyên Tâm Tiễn, six learned/equipped casts through real MapBattleV2/CombatStatsV2 damage, and Human boss Thiết Giáp Sơn Viên with telegraph/actions/70% and 35% phases. Additive personal skill fields and actor-local pending-cast save/restore.
+- D4-A GUI: **PENDING**. Issue #54 calls for an actual live capture. Computer Use launch timed out; no screenshot or owner visual acceptance is claimed. D4-A changed no art/UI.
+- Candidate coefficients remain unapproved. SaveService/schema, legacy P2/P2.3, Injury120, One Active Job, canonical Warehouse/scheduler, production/economy and assets are unchanged. Gates default OFF.
+- Git transport normalization: code payload d744537069f5c6ae2108a7334321eff6339ec6aa; canonical-LF final source SHA 0af2af261e62960ffb4669c8d9d81feb153dd387. Original dirty E: checkout remains untouched; the isolated scratch working copy's Git HEAD metadata remains at preflight 91cfc7e, while its D4-A source files match the final tested blobs. Godot-generated import sidecars remain untracked and unstaged.
+
+PR #52 conflict matrix remains: its HuntingPveRunV2 lacks this feature branch's D2 codex receipt settlement and D3 One Active Job guards, so preserve feature code. PR-only MapBattle profiler wrappers are not adopted. PR SaveService/runtime changes remain outside scope.
+
+## Next code packet — D4-B full Human branches and 3 bosses
+
+Owner's Issue #54 and execution contract authorize continuing without a new design-only pause. Baseline main SHA c0c1382f119599497b52d8ee8abd9e830a883f1e; feature source SHA 0af2af261e62960ffb4669c8d9d81feb153dd387. Single writer: this task owns the listed D4-B paths.
+
+Required behavior: all nine Human branches with basic, mobility, four active slots, ultimate, five elective passives and derived innate; learn from archived manuals; meaningful branch effects including bounded owner-attributed poison, guard, heal, marks, AoE and AI; three Human Bosses Thiết Giáp Sơn Viên, Xích Viêm Lang Vương and Bách Độc Chu Hậu with real telegraph/release and idempotent 70%/35% phases. Complete D4-B fills remaining Human skill coverage including Liệp Ảnh, whose D4-A pilot is one active only. Candidate balance remains unlocked. Reuse CombatStatsV2, D2 archive/Warehouse receipts, and D4-A gate. Visual cues and original VFX authoring remain D7.
+
+Concrete D4-B write allowlist (only these paths):
+- godot/data/combat/v63_human_combat_catalog.json
+- godot/src/simulation/combat/v63_human_skill_combat_system.gd
+- godot/src/simulation/combat/map_battle_v2.gd
+- godot/src/simulation/combat/hunting_pve_run_v2.gd
+- godot/src/simulation/state/disciple_state.gd
+- godot/src/simulation/state/simulation_state.gd
+- godot/tests/simulation/v63_d4b_human_branches_bosses_test.gd (new)
+- godot/tests/simulation/v63_d4b_archive_learning_test.gd (new)
+- docs/implementation/V65_COMBAT_COVERAGE_LEDGER_20261029.json (new)
+- docs/implementation/V65_D4B_HUMAN_BRANCHES_EVIDENCE_20261029.md (new)
+- CURRENT_CHECKPOINT.md
+- NEXT_CHAT_HANDOFF.md
+
+D4-B protected: SaveService/schema, MapBattleSnapshotV2 schema, CombatStatsV2 formulas, P2/P2.3 legacy behavior, scheduler/One Active Job, Injury120, Warehouse authority/reward economics, production, raw JX assets, main, PR #52. Reuse existing D4-A actor/snapshot adapter; justify and document before widening allowlist.
+
+D4-B gates: two new focused scripts cover all nine branch sample learn/equip/execute paths, every authored slot family, archive-source checks, owner attribution and poison caps, bounded heal/guard/mark/AoE, AI/telegraphs/phases, cast/snapshot resume, and default-OFF legacy. Then run D4-A, P2.5/P2.3, CombatStatsV2, D1–D3, D2 receipts, Warehouse, SaveService, SAFE-01, PvE save-return and HP0 bridge regressions sequentially on official Windows Godot 4.7.2; record source parity, each exit/log hash, GUI evidence if visuals change.
+
+## Superseded checkpoint records
+
+The earlier D4-A preflight and D3 status notes below are preserved for history; where they say code/tests were not started or D4 code needs new authorization, those statements are superseded by this checkpoint and Issue #54.
+
+---
+
+## Historical D4-A preflight / exact allowlist (superseded)
+
+**Historical status at preflight:** D4-A had not started. Superseded by the current implementation evidence above. Base feature HEAD is `a9a7d5ab97c3b02de467c54b94d4d9c4c8d3d9ca`; stable main remains `c0c1382f119599497b52d8ee8abd9e830a883f1e`. Work is in isolated `E:\\TongMonBaDaoWorkspace\\01_Game\\TMB_V65_D4A_20261029`. The original E: feature worktree at `d45ab195c53c00f0f29732124dd7678fd42cb351` retains its dirty files and existing Godot processes.
 
 **D4-A behavior:** default-off, opt-in learned/equipped Liệp Ảnh Human skill events resolve through Combat V2 HP/damage; a Human-tier Thiết Giáp Sơn Viên boss uses real cast/telegraph/hit events; six disciples can auto-cast. Gate-off legacy P2/P2.3 remains byte/behavior stable. No balance coefficients become approved.
 
@@ -29,7 +73,7 @@ The additive disciple records are necessary: legacy `learned_combat_skills` is v
 
 **Test plan:** official Godot 4.7.2 import; new skill/boss and saved-state round-trip tests; gate-off P2.5 and group MapBattle regressions; D1 registry, D2 archive/drop receipts, D3 learning/job/save round-trip, multicamp HP0 bridge and PvE save-return exactly-once regressions, run sequentially. Record exact code SHA, exit codes and logs. Real GUI capture in the existing P3.2 scene remains a required D4-A gate; no GUI PASS is claimed at preflight.
 
-# CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
+## Older checkpoint archive (superseded)
 
 ## 29/10/2026 — Owner authorizes FULL V6.5 execution D4–D8
 

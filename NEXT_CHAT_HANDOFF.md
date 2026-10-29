@@ -1,12 +1,30 @@
-## 29/10/2026 — D4-A preflight (current)
+# NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO / 29-10-2026
 
-- D4-A is authorized and in progress; code is not started in this preflight checkpoint. Base HEAD `a9a7d5ab97c3b02de467c54b94d4d9c4c8d3d9ca`; isolated scratch is `E:\\TongMonBaDaoWorkspace\\01_Game\\TMB_V65_D4A_20261029`. Original dirty E: worktree is preserved.
+## Current handoff — continue D4-B automatically
+
+Repository vuanhtuan161094-byte/TongMonBaDao; active branch feature/v63-v64-full-combat-20261029. Current published D4-A source SHA: 0af2af261e62960ffb4669c8d9d81feb153dd387. Stable main c0c1382f119599497b52d8ee8abd9e830a883f1e remains unchanged. PR #52 remains Draft/open at audited head f7c33d9c3baba3267a17021718b44f87acd62ef6; do not merge/change it.
+
+D4-A code and the official Windows Godot 4.7.2 import plus all 14 focused/cumulative tests PASS with exit 0. Evidence and log hashes: docs/implementation/V65_D4A_HUMAN_COMBAT_EVIDENCE_20261029.md; E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D4A_20261029_final. Actual P3.2 GUI capture is PENDING after Computer Use approval timed out; no GUI/owner acceptance is claimed. D4-A had no visual-file changes.
+
+Next: execute D4-B code on the same feature branch, no extra branch/PR and no phase-permission pause. Build full Human actions for all nine branches, archived-manual learning, bounded/status-aware effects and three Human bosses. The exact write allowlist, protected authorities, rollback and regression plan are at the top of CURRENT_CHECKPOINT.md. Consult the six V6.3/V6.4 design documents, current V63 content registry and D4-A implementation before editing. Keep all gates OFF by default and candidate balance unlocked. GUI capture/owner visual acceptance must remain pending until actually performed; D7 carries the full visual integration matrix.
+
+The original dirty E: checkout is untouched. The isolated E: scratch working copy contains the D4-A source files used by the final tested commit; its local Git HEAD remains at the preflight ref because the network path used GitHub API tree/commit operations. Generated Godot import artifacts and unrelated PowerShell changes were not committed or deleted.
+
+## Historical records follow
+
+Older preflight and D3 handoff notes below are preserved, but superseded when they conflict with the current status above.
+
+---
+
+## Historical D4-A preflight (superseded)
+
+- Historical preflight status: code was not started at that checkpoint. Superseded by the current handoff above. Base HEAD `a9a7d5ab97c3b02de467c54b94d4d9c4c8d3d9ca`; isolated scratch is `E:\\TongMonBaDaoWorkspace\\01_Game\\TMB_V65_D4A_20261029`. Original dirty E: worktree is preserved.
 - Exact D4-A allowlist and PR #52 conflict matrix are recorded at the top of `CURRENT_CHECKPOINT.md`. Additive V6.3 personal skill state is needed because the legacy skill dictionary accepts only P2 IDs; model-level serialization means SaveService and schema version stay unchanged.
 - Implement learned/equipped Liệp Ảnh Human action and one Human Boss through an opted-in MapBattleV2 adapter. Legacy gate-off behavior remains unchanged; keep D2 reward receipts and D3 One Active Job guards.
 - Tests planned: official Godot 4.7.2 import; new combat/boss and state round-trip tests; D1, D2, D3, P2.5, group MapBattle, PvE HP0 and save-return regressions, sequential. GUI capture from the existing P3.2 scene is required.
 - Current tests/logs/GUI: PENDING. Next action: implement only the preflight allowlist, run evidence, then proceed automatically to D4-B.
 
-# NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO / 29-10-2026
+## Older handoff archive (superseded)
 
 ## 29/10/2026 — Owner authorizes FULL V6.5 execution D4–D8
 
@@ -18,14 +36,14 @@
 
 **Một stable `main`; một ứng viên PvE tích hợp `integration/pve-unified-rc-20261027`.** Không gọi các PR/nhánh cũ là game độc lập.
 
-## Cập nhật hiện tại — V6.5 full combat / D3
+## Historical D3 checkpoint (superseded)
 
 - Stable `main` remains `c0c1382f119599497b52d8ee8abd9e830a883f1e`; no merge occurred. Active feature branch is `feature/v63-v64-full-combat-20261029`.
 - D3 implementation commit: `9bbc5edacf73388505a16c8db0e3b9097a41d55a`, based on approved feature head `4b914d05eb601d2788968a0419e5dda63c79b6fc`; follow-up persistence test commit: `677184c3f05eb84e31aed66e48ee42c383acc222`. Together they add gated personal study jobs, the D3 learning catalog/system, additive disciple/sect/save records, existing-screen study/loadout controls, and focused tests.
 - Official Windows Godot `4.7.2.stable.official.ed1daf0bf` import and all 10 approved focused/cumulative scripts PASS, exit 0. The 14 source/catalog/test files tested locally match final D3 source/test commit `677184c3f05eb84e31aed66e48ee42c383acc222` exactly. Read [D3 evidence](docs/implementation/V63_D3_LEARNING_EVIDENCE_20261029.md) for each command and log SHA-256.
 - `technique_learning` and `sect_codex` default OFF. Economy values remain candidate-only, no skill/combat effects are enabled, and legacy P2.3 knowledge/loadout are preserved without an identity crosswalk.
 - The E: feature checkout retains its existing QA/import artifacts and four EOF-only uncommitted in-scope edits; it was left untouched. Physical GUI, Android and owner visual acceptance remain PENDING.
-- PR #52 remains Draft/open. No new PR or merge to `main` was performed. Next is D4 planning and a separately authorized exact CODE packet; D4+ code is not authorized by this handoff.
+- PR #52 remains Draft/open. No new PR or merge to `main` was performed. Historical next step, superseded: D4-A is implemented and D4-B is the current authorized packet.
 
 
 ## Người mới tiếp quản phải đọc
