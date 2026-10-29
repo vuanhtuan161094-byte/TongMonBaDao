@@ -1,0 +1,3092 @@
+{
+  "schema_version": 1,
+  "enabled": false,
+  "release_status": "D2_GATED_CANDIDATE_COSTS_NO_DROP_RATES",
+  "family_count": 105,
+  "archivable_count": 96,
+  "drop_profiles": [],
+  "codices": [
+    {
+      "id": "tmb.codex.bow.common.ch0_basic.human.base",
+      "name": "Tiễn Thức Căn Bản — Bí Kíp",
+      "school": "bow",
+      "branch": "",
+      "slot": "basic",
+      "family_id": "tmb.skill.bow.basic",
+      "source_node_id": "tmb.skill.bow.basic.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.common.ch0_basic.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.common.ch0_mobility.human.base",
+      "name": "Thu Vũ Bộ — Bí Kíp",
+      "school": "bow",
+      "branch": "",
+      "slot": "mobility",
+      "family_id": "tmb.skill.bow.mobility",
+      "source_node_id": "tmb.skill.bow.mobility.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.common.ch0_mobility.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.common.ch0_basic.human.base",
+      "name": "Quyền Thức Căn Bản — Bí Kíp",
+      "school": "fist",
+      "branch": "",
+      "slot": "basic",
+      "family_id": "tmb.skill.fist.basic",
+      "source_node_id": "tmb.skill.fist.basic.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.common.ch0_basic.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.common.ch0_mobility.human.base",
+      "name": "Bộ Kình Xung — Bí Kíp",
+      "school": "fist",
+      "branch": "",
+      "slot": "mobility",
+      "family_id": "tmb.skill.fist.mobility",
+      "source_node_id": "tmb.skill.fist.mobility.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.common.ch0_mobility.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.common.ch0_basic.human.base",
+      "name": "Độc Châm Thường Thức — Bí Kíp",
+      "school": "poison",
+      "branch": "",
+      "slot": "basic",
+      "family_id": "tmb.skill.poison.basic",
+      "source_node_id": "tmb.skill.poison.basic.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.common.ch0_basic.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.common.ch0_mobility.human.base",
+      "name": "Yểm Ảnh Bộ — Bí Kíp",
+      "school": "poison",
+      "branch": "",
+      "slot": "mobility",
+      "family_id": "tmb.skill.poison.mobility",
+      "source_node_id": "tmb.skill.poison.mobility.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.common.ch0_mobility.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.liep_anh.ch1_active_01.human.base",
+      "name": "Xuyên Tâm Tiễn — Bí Kíp",
+      "school": "bow",
+      "branch": "liep_anh",
+      "slot": "active_01",
+      "family_id": "tmb.skill.bow.liep_anh.active_01",
+      "source_node_id": "tmb.skill.bow.liep_anh.active_01.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.liep_anh.ch1_active_01.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.liep_anh.ch1_active_02.human.base",
+      "name": "Truy Ảnh Tiễn — Bí Kíp",
+      "school": "bow",
+      "branch": "liep_anh",
+      "slot": "active_02",
+      "family_id": "tmb.skill.bow.liep_anh.active_02",
+      "source_node_id": "tmb.skill.bow.liep_anh.active_02.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.liep_anh.ch1_active_02.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.liep_anh.ch2_active_03.human.base",
+      "name": "Phá Giới Trọng Tiễn — Bí Kíp",
+      "school": "bow",
+      "branch": "liep_anh",
+      "slot": "active_03",
+      "family_id": "tmb.skill.bow.liep_anh.active_03",
+      "source_node_id": "tmb.skill.bow.liep_anh.active_03.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.liep_anh.ch2_active_03.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.liep_anh.ch2_active_04.human.base",
+      "name": "Phân Ảnh Tiễn — Bí Kíp",
+      "school": "bow",
+      "branch": "liep_anh",
+      "slot": "active_04",
+      "family_id": "tmb.skill.bow.liep_anh.active_04",
+      "source_node_id": "tmb.skill.bow.liep_anh.active_04.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.liep_anh.ch2_active_04.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.liep_anh.ch3_ultimate.human.base",
+      "name": "Nhất Tiễn Phá Tinh — Bí Kíp",
+      "school": "bow",
+      "branch": "liep_anh",
+      "slot": "ultimate",
+      "family_id": "tmb.skill.bow.liep_anh.ultimate",
+      "source_node_id": "tmb.skill.bow.liep_anh.ultimate.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.liep_anh.ch3_ultimate.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 36,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.liep_anh.ch1_passive_01.human.base",
+      "name": "Bách Bộ Tĩnh Tâm — Bí Kíp",
+      "school": "bow",
+      "branch": "liep_anh",
+      "slot": "passive_01",
+      "family_id": "tmb.skill.bow.liep_anh.passive_01",
+      "source_node_id": "tmb.skill.bow.liep_anh.passive_01.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.liep_anh.ch1_passive_01.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.liep_anh.ch1_passive_02.human.base",
+      "name": "Thấu Cốt Tinh Thông — Bí Kíp",
+      "school": "bow",
+      "branch": "liep_anh",
+      "slot": "passive_02",
+      "family_id": "tmb.skill.bow.liep_anh.passive_02",
+      "source_node_id": "tmb.skill.bow.liep_anh.passive_02.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.liep_anh.ch1_passive_02.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.liep_anh.ch2_passive_03.human.base",
+      "name": "Đoạt Mệnh Dư Kình — Bí Kíp",
+      "school": "bow",
+      "branch": "liep_anh",
+      "slot": "passive_03",
+      "family_id": "tmb.skill.bow.liep_anh.passive_03",
+      "source_node_id": "tmb.skill.bow.liep_anh.passive_03.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.liep_anh.ch2_passive_03.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.liep_anh.ch2_passive_04.human.base",
+      "name": "Tiễn Ảnh Truy Hồn — Bí Kíp",
+      "school": "bow",
+      "branch": "liep_anh",
+      "slot": "passive_04",
+      "family_id": "tmb.skill.bow.liep_anh.passive_04",
+      "source_node_id": "tmb.skill.bow.liep_anh.passive_04.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.liep_anh.ch2_passive_04.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.liep_anh.ch2_passive_05.human.base",
+      "name": "Hậu Vệ Phản Ứng — Bí Kíp",
+      "school": "bow",
+      "branch": "liep_anh",
+      "slot": "passive_05",
+      "family_id": "tmb.skill.bow.liep_anh.passive_05",
+      "source_node_id": "tmb.skill.bow.liep_anh.passive_05.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.liep_anh.ch2_passive_05.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.liep_anh.innate.human.base",
+      "name": "Liệp Nhãn — Bí Kíp",
+      "school": "bow",
+      "branch": "liep_anh",
+      "slot": "innate",
+      "family_id": "tmb.skill.bow.liep_anh.innate",
+      "source_node_id": "tmb.skill.bow.liep_anh.innate.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": false,
+      "manual_item_id": "",
+      "fragment_resource_id": "",
+      "restore_fragments_candidate": 0,
+      "balance_status": "branch_awakening"
+    },
+    {
+      "id": "tmb.codex.bow.linh_tien.ch1_active_01.human.base",
+      "name": "Linh Tiễn Xuyên Quang — Bí Kíp",
+      "school": "bow",
+      "branch": "linh_tien",
+      "slot": "active_01",
+      "family_id": "tmb.skill.bow.linh_tien.active_01",
+      "source_node_id": "tmb.skill.bow.linh_tien.active_01.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.linh_tien.ch1_active_01.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.linh_tien.ch1_active_02.human.base",
+      "name": "Tam Tinh Linh Xạ — Bí Kíp",
+      "school": "bow",
+      "branch": "linh_tien",
+      "slot": "active_02",
+      "family_id": "tmb.skill.bow.linh_tien.active_02",
+      "source_node_id": "tmb.skill.bow.linh_tien.active_02.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.linh_tien.ch1_active_02.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.linh_tien.ch2_active_03.human.base",
+      "name": "Linh Vũ Tiễn — Bí Kíp",
+      "school": "bow",
+      "branch": "linh_tien",
+      "slot": "active_03",
+      "family_id": "tmb.skill.bow.linh_tien.active_03",
+      "source_node_id": "tmb.skill.bow.linh_tien.active_03.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.linh_tien.ch2_active_03.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.linh_tien.ch2_active_04.human.base",
+      "name": "Tụ Linh Tiễn Tâm — Bí Kíp",
+      "school": "bow",
+      "branch": "linh_tien",
+      "slot": "active_04",
+      "family_id": "tmb.skill.bow.linh_tien.active_04",
+      "source_node_id": "tmb.skill.bow.linh_tien.active_04.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.linh_tien.ch2_active_04.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.linh_tien.ch3_ultimate.human.base",
+      "name": "Tam Hành Phá Không — Bí Kíp",
+      "school": "bow",
+      "branch": "linh_tien",
+      "slot": "ultimate",
+      "family_id": "tmb.skill.bow.linh_tien.ultimate",
+      "source_node_id": "tmb.skill.bow.linh_tien.ultimate.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.linh_tien.ch3_ultimate.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 36,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.linh_tien.ch1_passive_01.human.base",
+      "name": "Dẫn Linh Chuyên Tu — Bí Kíp",
+      "school": "bow",
+      "branch": "linh_tien",
+      "slot": "passive_01",
+      "family_id": "tmb.skill.bow.linh_tien.passive_01",
+      "source_node_id": "tmb.skill.bow.linh_tien.passive_01.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.linh_tien.ch1_passive_01.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.linh_tien.ch1_passive_02.human.base",
+      "name": "Linh Mạch Hộ Tiễn — Bí Kíp",
+      "school": "bow",
+      "branch": "linh_tien",
+      "slot": "passive_02",
+      "family_id": "tmb.skill.bow.linh_tien.passive_02",
+      "source_node_id": "tmb.skill.bow.linh_tien.passive_02.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.linh_tien.ch1_passive_02.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.linh_tien.ch2_passive_03.human.base",
+      "name": "Tam Linh Phản Ứng — Bí Kíp",
+      "school": "bow",
+      "branch": "linh_tien",
+      "slot": "passive_03",
+      "family_id": "tmb.skill.bow.linh_tien.passive_03",
+      "source_node_id": "tmb.skill.bow.linh_tien.passive_03.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.linh_tien.ch2_passive_03.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.linh_tien.ch2_passive_04.human.base",
+      "name": "Tụ Ấn Dư Linh — Bí Kíp",
+      "school": "bow",
+      "branch": "linh_tien",
+      "slot": "passive_04",
+      "family_id": "tmb.skill.bow.linh_tien.passive_04",
+      "source_node_id": "tmb.skill.bow.linh_tien.passive_04.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.linh_tien.ch2_passive_04.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.linh_tien.ch2_passive_05.human.base",
+      "name": "Hộ Linh Tức — Bí Kíp",
+      "school": "bow",
+      "branch": "linh_tien",
+      "slot": "passive_05",
+      "family_id": "tmb.skill.bow.linh_tien.passive_05",
+      "source_node_id": "tmb.skill.bow.linh_tien.passive_05.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.linh_tien.ch2_passive_05.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.linh_tien.innate.human.base",
+      "name": "Nhất Linh Chuyên Tâm — Bí Kíp",
+      "school": "bow",
+      "branch": "linh_tien",
+      "slot": "innate",
+      "family_id": "tmb.skill.bow.linh_tien.innate",
+      "source_node_id": "tmb.skill.bow.linh_tien.innate.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": false,
+      "manual_item_id": "",
+      "fragment_resource_id": "",
+      "restore_fragments_candidate": 0,
+      "balance_status": "branch_awakening"
+    },
+    {
+      "id": "tmb.codex.bow.thien_vu.ch1_active_01.human.base",
+      "name": "Liên Châu Tiễn — Bí Kíp",
+      "school": "bow",
+      "branch": "thien_vu",
+      "slot": "active_01",
+      "family_id": "tmb.skill.bow.thien_vu.active_01",
+      "source_node_id": "tmb.skill.bow.thien_vu.active_01.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.thien_vu.ch1_active_01.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.thien_vu.ch1_active_02.human.base",
+      "name": "Tán Tiễn Phong Vũ — Bí Kíp",
+      "school": "bow",
+      "branch": "thien_vu",
+      "slot": "active_02",
+      "family_id": "tmb.skill.bow.thien_vu.active_02",
+      "source_node_id": "tmb.skill.bow.thien_vu.active_02.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.thien_vu.ch1_active_02.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.thien_vu.ch2_active_03.human.base",
+      "name": "Mạn Thiên Tiễn Vũ — Bí Kíp",
+      "school": "bow",
+      "branch": "thien_vu",
+      "slot": "active_03",
+      "family_id": "tmb.skill.bow.thien_vu.active_03",
+      "source_node_id": "tmb.skill.bow.thien_vu.active_03.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.thien_vu.ch2_active_03.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.thien_vu.ch2_active_04.human.base",
+      "name": "Tụ Phong Dẫn Tiễn — Bí Kíp",
+      "school": "bow",
+      "branch": "thien_vu",
+      "slot": "active_04",
+      "family_id": "tmb.skill.bow.thien_vu.active_04",
+      "source_node_id": "tmb.skill.bow.thien_vu.active_04.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.thien_vu.ch2_active_04.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.thien_vu.ch3_ultimate.human.base",
+      "name": "Thiên Vũ Phúc Thiên — Bí Kíp",
+      "school": "bow",
+      "branch": "thien_vu",
+      "slot": "ultimate",
+      "family_id": "tmb.skill.bow.thien_vu.ultimate",
+      "source_node_id": "tmb.skill.bow.thien_vu.ultimate.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.thien_vu.ch3_ultimate.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 36,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.thien_vu.ch1_passive_01.human.base",
+      "name": "Vũ Tiễn Tinh Thông — Bí Kíp",
+      "school": "bow",
+      "branch": "thien_vu",
+      "slot": "passive_01",
+      "family_id": "tmb.skill.bow.thien_vu.passive_01",
+      "source_node_id": "tmb.skill.bow.thien_vu.passive_01.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.thien_vu.ch1_passive_01.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.thien_vu.ch1_passive_02.human.base",
+      "name": "Phong Vị — Bí Kíp",
+      "school": "bow",
+      "branch": "thien_vu",
+      "slot": "passive_02",
+      "family_id": "tmb.skill.bow.thien_vu.passive_02",
+      "source_node_id": "tmb.skill.bow.thien_vu.passive_02.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.thien_vu.ch1_passive_02.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.thien_vu.ch2_passive_03.human.base",
+      "name": "Phong Châm — Bí Kíp",
+      "school": "bow",
+      "branch": "thien_vu",
+      "slot": "passive_03",
+      "family_id": "tmb.skill.bow.thien_vu.passive_03",
+      "source_node_id": "tmb.skill.bow.thien_vu.passive_03.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.thien_vu.ch2_passive_03.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.thien_vu.ch2_passive_04.human.base",
+      "name": "Vũ Tiễn Tiết Nhịp — Bí Kíp",
+      "school": "bow",
+      "branch": "thien_vu",
+      "slot": "passive_04",
+      "family_id": "tmb.skill.bow.thien_vu.passive_04",
+      "source_node_id": "tmb.skill.bow.thien_vu.passive_04.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.thien_vu.ch2_passive_04.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.thien_vu.ch2_passive_05.human.base",
+      "name": "Thiên Vũ Hộ Thân — Bí Kíp",
+      "school": "bow",
+      "branch": "thien_vu",
+      "slot": "passive_05",
+      "family_id": "tmb.skill.bow.thien_vu.passive_05",
+      "source_node_id": "tmb.skill.bow.thien_vu.passive_05.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.bow.thien_vu.ch2_passive_05.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.bow.thien_vu.innate.human.base",
+      "name": "Vạn Tiễn — Bí Kíp",
+      "school": "bow",
+      "branch": "thien_vu",
+      "slot": "innate",
+      "family_id": "tmb.skill.bow.thien_vu.innate",
+      "source_node_id": "tmb.skill.bow.thien_vu.innate.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": false,
+      "manual_item_id": "",
+      "fragment_resource_id": "",
+      "restore_fragments_candidate": 0,
+      "balance_status": "branch_awakening"
+    },
+    {
+      "id": "tmb.codex.fist.ba_quyen.ch1_active_01.human.base",
+      "name": "Khai Sơn Trọng Quyền — Bí Kíp",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "slot": "active_01",
+      "family_id": "tmb.skill.fist.ba_quyen.active_01",
+      "source_node_id": "tmb.skill.fist.ba_quyen.active_01.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.ba_quyen.ch1_active_01.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.ba_quyen.ch1_active_02.human.base",
+      "name": "Phi Thân Liên Cước — Bí Kíp",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "slot": "active_02",
+      "family_id": "tmb.skill.fist.ba_quyen.active_02",
+      "source_node_id": "tmb.skill.fist.ba_quyen.active_02.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.ba_quyen.ch1_active_02.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.ba_quyen.ch2_active_03.human.base",
+      "name": "Lôi Đình Chấn Quyền — Bí Kíp",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "slot": "active_03",
+      "family_id": "tmb.skill.fist.ba_quyen.active_03",
+      "source_node_id": "tmb.skill.fist.ba_quyen.active_03.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.ba_quyen.ch2_active_03.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.ba_quyen.ch2_active_04.human.base",
+      "name": "Địa Mạch Liên Chấn — Bí Kíp",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "slot": "active_04",
+      "family_id": "tmb.skill.fist.ba_quyen.active_04",
+      "source_node_id": "tmb.skill.fist.ba_quyen.active_04.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.ba_quyen.ch2_active_04.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.ba_quyen.ch3_ultimate.human.base",
+      "name": "Sơn Hà Chấn Thiên — Bí Kíp",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "slot": "ultimate",
+      "family_id": "tmb.skill.fist.ba_quyen.ultimate",
+      "source_node_id": "tmb.skill.fist.ba_quyen.ultimate.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.ba_quyen.ch3_ultimate.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 36,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.ba_quyen.ch1_passive_01.human.base",
+      "name": "Thiết Cốt Chuyên Tu — Bí Kíp",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "slot": "passive_01",
+      "family_id": "tmb.skill.fist.ba_quyen.passive_01",
+      "source_node_id": "tmb.skill.fist.ba_quyen.passive_01.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.ba_quyen.ch1_passive_01.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.ba_quyen.ch1_passive_02.human.base",
+      "name": "Bá Thể Định Lực — Bí Kíp",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "slot": "passive_02",
+      "family_id": "tmb.skill.fist.ba_quyen.passive_02",
+      "source_node_id": "tmb.skill.fist.ba_quyen.passive_02.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.ba_quyen.ch1_passive_02.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.ba_quyen.ch2_passive_03.human.base",
+      "name": "Liên Quyền Khai Thế — Bí Kíp",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "slot": "passive_03",
+      "family_id": "tmb.skill.fist.ba_quyen.passive_03",
+      "source_node_id": "tmb.skill.fist.ba_quyen.passive_03.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.ba_quyen.ch2_passive_03.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.ba_quyen.ch2_passive_04.human.base",
+      "name": "Lôi Kình Dư Chấn — Bí Kíp",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "slot": "passive_04",
+      "family_id": "tmb.skill.fist.ba_quyen.passive_04",
+      "source_node_id": "tmb.skill.fist.ba_quyen.passive_04.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.ba_quyen.ch2_passive_04.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.ba_quyen.ch2_passive_05.human.base",
+      "name": "Bá Kình Hồi Tức — Bí Kíp",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "slot": "passive_05",
+      "family_id": "tmb.skill.fist.ba_quyen.passive_05",
+      "source_node_id": "tmb.skill.fist.ba_quyen.passive_05.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.ba_quyen.ch2_passive_05.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.ba_quyen.innate.human.base",
+      "name": "Bá Kình — Bí Kíp",
+      "school": "fist",
+      "branch": "ba_quyen",
+      "slot": "innate",
+      "family_id": "tmb.skill.fist.ba_quyen.innate",
+      "source_node_id": "tmb.skill.fist.ba_quyen.innate.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": false,
+      "manual_item_id": "",
+      "fragment_resource_id": "",
+      "restore_fragments_candidate": 0,
+      "balance_status": "branch_awakening"
+    },
+    {
+      "id": "tmb.codex.fist.kim_cang.ch1_active_01.human.base",
+      "name": "Trấn Địa Quyền — Bí Kíp",
+      "school": "fist",
+      "branch": "kim_cang",
+      "slot": "active_01",
+      "family_id": "tmb.skill.fist.kim_cang.active_01",
+      "source_node_id": "tmb.skill.fist.kim_cang.active_01.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.kim_cang.ch1_active_01.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.kim_cang.ch1_active_02.human.base",
+      "name": "Kim Cang Hộ Thể — Bí Kíp",
+      "school": "fist",
+      "branch": "kim_cang",
+      "slot": "active_02",
+      "family_id": "tmb.skill.fist.kim_cang.active_02",
+      "source_node_id": "tmb.skill.fist.kim_cang.active_02.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.kim_cang.ch1_active_02.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.kim_cang.ch2_active_03.human.base",
+      "name": "Phản Chấn Quyền — Bí Kíp",
+      "school": "fist",
+      "branch": "kim_cang",
+      "slot": "active_03",
+      "family_id": "tmb.skill.fist.kim_cang.active_03",
+      "source_node_id": "tmb.skill.fist.kim_cang.active_03.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.kim_cang.ch2_active_03.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.kim_cang.ch2_active_04.human.base",
+      "name": "Trấn Sơn Hộ Đồng — Bí Kíp",
+      "school": "fist",
+      "branch": "kim_cang",
+      "slot": "active_04",
+      "family_id": "tmb.skill.fist.kim_cang.active_04",
+      "source_node_id": "tmb.skill.fist.kim_cang.active_04.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.kim_cang.ch2_active_04.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.kim_cang.ch3_ultimate.human.base",
+      "name": "Bất Động Kim Chung — Bí Kíp",
+      "school": "fist",
+      "branch": "kim_cang",
+      "slot": "ultimate",
+      "family_id": "tmb.skill.fist.kim_cang.ultimate",
+      "source_node_id": "tmb.skill.fist.kim_cang.ultimate.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.kim_cang.ch3_ultimate.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 36,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.kim_cang.ch1_passive_01.human.base",
+      "name": "Thiết Cốt Luyện Thể — Bí Kíp",
+      "school": "fist",
+      "branch": "kim_cang",
+      "slot": "passive_01",
+      "family_id": "tmb.skill.fist.kim_cang.passive_01",
+      "source_node_id": "tmb.skill.fist.kim_cang.passive_01.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.kim_cang.ch1_passive_01.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.kim_cang.ch1_passive_02.human.base",
+      "name": "Hộ Thể Tinh Thông — Bí Kíp",
+      "school": "fist",
+      "branch": "kim_cang",
+      "slot": "passive_02",
+      "family_id": "tmb.skill.fist.kim_cang.passive_02",
+      "source_node_id": "tmb.skill.fist.kim_cang.passive_02.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.kim_cang.ch1_passive_02.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.kim_cang.ch2_passive_03.human.base",
+      "name": "Thiết Cốt Hồi Lưu — Bí Kíp",
+      "school": "fist",
+      "branch": "kim_cang",
+      "slot": "passive_03",
+      "family_id": "tmb.skill.fist.kim_cang.passive_03",
+      "source_node_id": "tmb.skill.fist.kim_cang.passive_03.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.kim_cang.ch2_passive_03.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.kim_cang.ch2_passive_04.human.base",
+      "name": "Kim Cang Uy Hiếp — Bí Kíp",
+      "school": "fist",
+      "branch": "kim_cang",
+      "slot": "passive_04",
+      "family_id": "tmb.skill.fist.kim_cang.passive_04",
+      "source_node_id": "tmb.skill.fist.kim_cang.passive_04.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.kim_cang.ch2_passive_04.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.kim_cang.ch2_passive_05.human.base",
+      "name": "Hộ Vệ Đồng Tâm — Bí Kíp",
+      "school": "fist",
+      "branch": "kim_cang",
+      "slot": "passive_05",
+      "family_id": "tmb.skill.fist.kim_cang.passive_05",
+      "source_node_id": "tmb.skill.fist.kim_cang.passive_05.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.kim_cang.ch2_passive_05.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.kim_cang.innate.human.base",
+      "name": "Bất Động Cang Khí — Bí Kíp",
+      "school": "fist",
+      "branch": "kim_cang",
+      "slot": "innate",
+      "family_id": "tmb.skill.fist.kim_cang.innate",
+      "source_node_id": "tmb.skill.fist.kim_cang.innate.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": false,
+      "manual_item_id": "",
+      "fragment_resource_id": "",
+      "restore_fragments_candidate": 0,
+      "balance_status": "branch_awakening"
+    },
+    {
+      "id": "tmb.codex.fist.huyet_quyen.ch1_active_01.human.base",
+      "name": "Huyết Liệt Quyền — Bí Kíp",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "slot": "active_01",
+      "family_id": "tmb.skill.fist.huyet_quyen.active_01",
+      "source_node_id": "tmb.skill.fist.huyet_quyen.active_01.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.huyet_quyen.ch1_active_01.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.huyet_quyen.ch1_active_02.human.base",
+      "name": "Đoạn Mạch Liên Quyền — Bí Kíp",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "slot": "active_02",
+      "family_id": "tmb.skill.fist.huyet_quyen.active_02",
+      "source_node_id": "tmb.skill.fist.huyet_quyen.active_02.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.huyet_quyen.ch1_active_02.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.huyet_quyen.ch2_active_03.human.base",
+      "name": "Huyết Khí Hồi Lưu — Bí Kíp",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "slot": "active_03",
+      "family_id": "tmb.skill.fist.huyet_quyen.active_03",
+      "source_node_id": "tmb.skill.fist.huyet_quyen.active_03.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.huyet_quyen.ch2_active_03.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.huyet_quyen.ch2_active_04.human.base",
+      "name": "Liệp Huyết Truy Đả — Bí Kíp",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "slot": "active_04",
+      "family_id": "tmb.skill.fist.huyet_quyen.active_04",
+      "source_node_id": "tmb.skill.fist.huyet_quyen.active_04.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.huyet_quyen.ch2_active_04.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.huyet_quyen.ch3_ultimate.human.base",
+      "name": "Huyết Hải Quyền Vực — Bí Kíp",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "slot": "ultimate",
+      "family_id": "tmb.skill.fist.huyet_quyen.ultimate",
+      "source_node_id": "tmb.skill.fist.huyet_quyen.ultimate.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.huyet_quyen.ch3_ultimate.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 36,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.huyet_quyen.ch1_passive_01.human.base",
+      "name": "Huyết Mạch Kiên Cường — Bí Kíp",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "slot": "passive_01",
+      "family_id": "tmb.skill.fist.huyet_quyen.passive_01",
+      "source_node_id": "tmb.skill.fist.huyet_quyen.passive_01.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.huyet_quyen.ch1_passive_01.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.huyet_quyen.ch1_passive_02.human.base",
+      "name": "Đoạn Mạch Tinh Thông — Bí Kíp",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "slot": "passive_02",
+      "family_id": "tmb.skill.fist.huyet_quyen.passive_02",
+      "source_node_id": "tmb.skill.fist.huyet_quyen.passive_02.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.huyet_quyen.ch1_passive_02.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.huyet_quyen.ch2_passive_03.human.base",
+      "name": "Huyết Chiến Ý — Bí Kíp",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "slot": "passive_03",
+      "family_id": "tmb.skill.fist.huyet_quyen.passive_03",
+      "source_node_id": "tmb.skill.fist.huyet_quyen.passive_03.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.huyet_quyen.ch2_passive_03.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.huyet_quyen.ch2_passive_04.human.base",
+      "name": "Sinh Tồn Bản Năng — Bí Kíp",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "slot": "passive_04",
+      "family_id": "tmb.skill.fist.huyet_quyen.passive_04",
+      "source_node_id": "tmb.skill.fist.huyet_quyen.passive_04.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.huyet_quyen.ch2_passive_04.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.huyet_quyen.ch2_passive_05.human.base",
+      "name": "Bất Phụ Chiến Ý — Bí Kíp",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "slot": "passive_05",
+      "family_id": "tmb.skill.fist.huyet_quyen.passive_05",
+      "source_node_id": "tmb.skill.fist.huyet_quyen.passive_05.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.fist.huyet_quyen.ch2_passive_05.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.fist.huyet_quyen.innate.human.base",
+      "name": "Tuyệt Cảnh Huyết Chiến — Bí Kíp",
+      "school": "fist",
+      "branch": "huyet_quyen",
+      "slot": "innate",
+      "family_id": "tmb.skill.fist.huyet_quyen.innate",
+      "source_node_id": "tmb.skill.fist.huyet_quyen.innate.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": false,
+      "manual_item_id": "",
+      "fragment_resource_id": "",
+      "restore_fragments_candidate": 0,
+      "balance_status": "branch_awakening"
+    },
+    {
+      "id": "tmb.codex.poison.doc_cham.ch1_active_01.human.base",
+      "name": "Xuyên Cốt Độc Châm — Bí Kíp",
+      "school": "poison",
+      "branch": "doc_cham",
+      "slot": "active_01",
+      "family_id": "tmb.skill.poison.doc_cham.active_01",
+      "source_node_id": "tmb.skill.poison.doc_cham.active_01.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.doc_cham.ch1_active_01.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.doc_cham.ch1_active_02.human.base",
+      "name": "Phệ Mạch Độc Thích — Bí Kíp",
+      "school": "poison",
+      "branch": "doc_cham",
+      "slot": "active_02",
+      "family_id": "tmb.skill.poison.doc_cham.active_02",
+      "source_node_id": "tmb.skill.poison.doc_cham.active_02.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.doc_cham.ch1_active_02.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.doc_cham.ch2_active_03.human.base",
+      "name": "Bách Độc Tán Châm — Bí Kíp",
+      "school": "poison",
+      "branch": "doc_cham",
+      "slot": "active_03",
+      "family_id": "tmb.skill.poison.doc_cham.active_03",
+      "source_node_id": "tmb.skill.poison.doc_cham.active_03.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.doc_cham.ch2_active_03.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.doc_cham.ch2_active_04.human.base",
+      "name": "Độc Khí Phệ Tâm — Bí Kíp",
+      "school": "poison",
+      "branch": "doc_cham",
+      "slot": "active_04",
+      "family_id": "tmb.skill.poison.doc_cham.active_04",
+      "source_node_id": "tmb.skill.poison.doc_cham.active_04.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.doc_cham.ch2_active_04.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.doc_cham.ch3_ultimate.human.base",
+      "name": "Vạn Độc Xuyên Tâm — Bí Kíp",
+      "school": "poison",
+      "branch": "doc_cham",
+      "slot": "ultimate",
+      "family_id": "tmb.skill.poison.doc_cham.ultimate",
+      "source_node_id": "tmb.skill.poison.doc_cham.ultimate.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.doc_cham.ch3_ultimate.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 36,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.doc_cham.ch1_passive_01.human.base",
+      "name": "Thấu Mạch Độc Công — Bí Kíp",
+      "school": "poison",
+      "branch": "doc_cham",
+      "slot": "passive_01",
+      "family_id": "tmb.skill.poison.doc_cham.passive_01",
+      "source_node_id": "tmb.skill.poison.doc_cham.passive_01.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.doc_cham.ch1_passive_01.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.doc_cham.ch1_passive_02.human.base",
+      "name": "Bách Châm Tinh Thông — Bí Kíp",
+      "school": "poison",
+      "branch": "doc_cham",
+      "slot": "passive_02",
+      "family_id": "tmb.skill.poison.doc_cham.passive_02",
+      "source_node_id": "tmb.skill.poison.doc_cham.passive_02.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.doc_cham.ch1_passive_02.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.doc_cham.ch2_passive_03.human.base",
+      "name": "Tẩm Độc Châm — Bí Kíp",
+      "school": "poison",
+      "branch": "doc_cham",
+      "slot": "passive_03",
+      "family_id": "tmb.skill.poison.doc_cham.passive_03",
+      "source_node_id": "tmb.skill.poison.doc_cham.passive_03.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.doc_cham.ch2_passive_03.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.doc_cham.ch2_passive_04.human.base",
+      "name": "Thấu Độc — Bí Kíp",
+      "school": "poison",
+      "branch": "doc_cham",
+      "slot": "passive_04",
+      "family_id": "tmb.skill.poison.doc_cham.passive_04",
+      "source_node_id": "tmb.skill.poison.doc_cham.passive_04.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.doc_cham.ch2_passive_04.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.doc_cham.ch2_passive_05.human.base",
+      "name": "Hóa Độc Nhất Kích — Bí Kíp",
+      "school": "poison",
+      "branch": "doc_cham",
+      "slot": "passive_05",
+      "family_id": "tmb.skill.poison.doc_cham.passive_05",
+      "source_node_id": "tmb.skill.poison.doc_cham.passive_05.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.doc_cham.ch2_passive_05.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.doc_cham.innate.human.base",
+      "name": "Bách Độc Nhập Cốt — Bí Kíp",
+      "school": "poison",
+      "branch": "doc_cham",
+      "slot": "innate",
+      "family_id": "tmb.skill.poison.doc_cham.innate",
+      "source_node_id": "tmb.skill.poison.doc_cham.innate.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": false,
+      "manual_item_id": "",
+      "fragment_resource_id": "",
+      "restore_fragments_candidate": 0,
+      "balance_status": "branch_awakening"
+    },
+    {
+      "id": "tmb.codex.poison.co_doc.ch1_active_01.human.base",
+      "name": "Phụ Cốt Cổ — Bí Kíp",
+      "school": "poison",
+      "branch": "co_doc",
+      "slot": "active_01",
+      "family_id": "tmb.skill.poison.co_doc.active_01",
+      "source_node_id": "tmb.skill.poison.co_doc.active_01.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.co_doc.ch1_active_01.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.co_doc.ch1_active_02.human.base",
+      "name": "Xà Ảnh Quấn Mạch — Bí Kíp",
+      "school": "poison",
+      "branch": "co_doc",
+      "slot": "active_02",
+      "family_id": "tmb.skill.poison.co_doc.active_02",
+      "source_node_id": "tmb.skill.poison.co_doc.active_02.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.co_doc.ch1_active_02.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.co_doc.ch2_active_03.human.base",
+      "name": "Cổ Vụ Mê Tung — Bí Kíp",
+      "school": "poison",
+      "branch": "co_doc",
+      "slot": "active_03",
+      "family_id": "tmb.skill.poison.co_doc.active_03",
+      "source_node_id": "tmb.skill.poison.co_doc.active_03.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.co_doc.ch2_active_03.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.co_doc.ch2_active_04.human.base",
+      "name": "Tán Cổ Diễn Nhiễm — Bí Kíp",
+      "school": "poison",
+      "branch": "co_doc",
+      "slot": "active_04",
+      "family_id": "tmb.skill.poison.co_doc.active_04",
+      "source_node_id": "tmb.skill.poison.co_doc.active_04.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.co_doc.ch2_active_04.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.co_doc.ch3_ultimate.human.base",
+      "name": "Vạn Cổ Phệ Giới — Bí Kíp",
+      "school": "poison",
+      "branch": "co_doc",
+      "slot": "ultimate",
+      "family_id": "tmb.skill.poison.co_doc.ultimate",
+      "source_node_id": "tmb.skill.poison.co_doc.ultimate.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.co_doc.ch3_ultimate.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 36,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.co_doc.ch1_passive_01.human.base",
+      "name": "Ngự Cổ Thành Thạo — Bí Kíp",
+      "school": "poison",
+      "branch": "co_doc",
+      "slot": "passive_01",
+      "family_id": "tmb.skill.poison.co_doc.passive_01",
+      "source_node_id": "tmb.skill.poison.co_doc.passive_01.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.co_doc.ch1_passive_01.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.co_doc.ch1_passive_02.human.base",
+      "name": "Cổ Vụ Hộ Mạch — Bí Kíp",
+      "school": "poison",
+      "branch": "co_doc",
+      "slot": "passive_02",
+      "family_id": "tmb.skill.poison.co_doc.passive_02",
+      "source_node_id": "tmb.skill.poison.co_doc.passive_02.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.co_doc.ch1_passive_02.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.co_doc.ch2_passive_03.human.base",
+      "name": "Bách Túc Khai Vân — Bí Kíp",
+      "school": "poison",
+      "branch": "co_doc",
+      "slot": "passive_03",
+      "family_id": "tmb.skill.poison.co_doc.passive_03",
+      "source_node_id": "tmb.skill.poison.co_doc.passive_03.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.co_doc.ch2_passive_03.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.co_doc.ch2_passive_04.human.base",
+      "name": "Cổ Vụ Trấn Tức — Bí Kíp",
+      "school": "poison",
+      "branch": "co_doc",
+      "slot": "passive_04",
+      "family_id": "tmb.skill.poison.co_doc.passive_04",
+      "source_node_id": "tmb.skill.poison.co_doc.passive_04.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.co_doc.ch2_passive_04.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.co_doc.ch2_passive_05.human.base",
+      "name": "Cổ Nhận Tỉnh Táo — Bí Kíp",
+      "school": "poison",
+      "branch": "co_doc",
+      "slot": "passive_05",
+      "family_id": "tmb.skill.poison.co_doc.passive_05",
+      "source_node_id": "tmb.skill.poison.co_doc.passive_05.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.co_doc.ch2_passive_05.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.co_doc.innate.human.base",
+      "name": "Cổ Ấn Liên Tâm — Bí Kíp",
+      "school": "poison",
+      "branch": "co_doc",
+      "slot": "innate",
+      "family_id": "tmb.skill.poison.co_doc.innate",
+      "source_node_id": "tmb.skill.poison.co_doc.innate.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": false,
+      "manual_item_id": "",
+      "fragment_resource_id": "",
+      "restore_fragments_candidate": 0,
+      "balance_status": "branch_awakening"
+    },
+    {
+      "id": "tmb.codex.poison.duoc_doc.ch1_active_01.human.base",
+      "name": "Tẩy Mạch Linh Dược — Bí Kíp",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "slot": "active_01",
+      "family_id": "tmb.skill.poison.duoc_doc.active_01",
+      "source_node_id": "tmb.skill.poison.duoc_doc.active_01.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.duoc_doc.ch1_active_01.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.duoc_doc.ch1_active_02.human.base",
+      "name": "Giải Độc Hộ Tâm — Bí Kíp",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "slot": "active_02",
+      "family_id": "tmb.skill.poison.duoc_doc.active_02",
+      "source_node_id": "tmb.skill.poison.duoc_doc.active_02.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.duoc_doc.ch1_active_02.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.duoc_doc.ch2_active_03.human.base",
+      "name": "Nghịch Độc Phản Chế — Bí Kíp",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "slot": "active_03",
+      "family_id": "tmb.skill.poison.duoc_doc.active_03",
+      "source_node_id": "tmb.skill.poison.duoc_doc.active_03.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.duoc_doc.ch2_active_03.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.duoc_doc.ch2_active_04.human.base",
+      "name": "Sinh Cơ Tán — Bí Kíp",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "slot": "active_04",
+      "family_id": "tmb.skill.poison.duoc_doc.active_04",
+      "source_node_id": "tmb.skill.poison.duoc_doc.active_04.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.duoc_doc.ch2_active_04.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.duoc_doc.ch3_ultimate.human.base",
+      "name": "Vạn Linh Giải Ách — Bí Kíp",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "slot": "ultimate",
+      "family_id": "tmb.skill.poison.duoc_doc.ultimate",
+      "source_node_id": "tmb.skill.poison.duoc_doc.ultimate.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.duoc_doc.ch3_ultimate.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 36,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.duoc_doc.ch1_passive_01.human.base",
+      "name": "Dược Mạch Vững Bền — Bí Kíp",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "slot": "passive_01",
+      "family_id": "tmb.skill.poison.duoc_doc.passive_01",
+      "source_node_id": "tmb.skill.poison.duoc_doc.passive_01.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.duoc_doc.ch1_passive_01.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.duoc_doc.ch1_passive_02.human.base",
+      "name": "Thanh Độc Hộ Thân — Bí Kíp",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "slot": "passive_02",
+      "family_id": "tmb.skill.poison.duoc_doc.passive_02",
+      "source_node_id": "tmb.skill.poison.duoc_doc.passive_02.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.duoc_doc.ch1_passive_02.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.duoc_doc.ch2_passive_03.human.base",
+      "name": "Tẩy Tủy — Bí Kíp",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "slot": "passive_03",
+      "family_id": "tmb.skill.poison.duoc_doc.passive_03",
+      "source_node_id": "tmb.skill.poison.duoc_doc.passive_03.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.duoc_doc.ch2_passive_03.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.duoc_doc.ch2_passive_04.human.base",
+      "name": "Dược Mạch Hồi Lưu — Bí Kíp",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "slot": "passive_04",
+      "family_id": "tmb.skill.poison.duoc_doc.passive_04",
+      "source_node_id": "tmb.skill.poison.duoc_doc.passive_04.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.duoc_doc.ch2_passive_04.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.duoc_doc.ch2_passive_05.human.base",
+      "name": "Sinh Cơ Khiên — Bí Kíp",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "slot": "passive_05",
+      "family_id": "tmb.skill.poison.duoc_doc.passive_05",
+      "source_node_id": "tmb.skill.poison.duoc_doc.passive_05.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": true,
+      "manual_item_id": "tmb.item.codex.manual.poison.duoc_doc.ch2_passive_05.human.base",
+      "fragment_resource_id": "tmb.item.codex.fragment.human",
+      "restore_fragments_candidate": 24,
+      "balance_status": "candidate"
+    },
+    {
+      "id": "tmb.codex.poison.duoc_doc.innate.human.base",
+      "name": "Độc Dược Đồng Nguyên — Bí Kíp",
+      "school": "poison",
+      "branch": "duoc_doc",
+      "slot": "innate",
+      "family_id": "tmb.skill.poison.duoc_doc.innate",
+      "source_node_id": "tmb.skill.poison.duoc_doc.innate.human",
+      "generation": "human",
+      "lineage": "base",
+      "archivable": false,
+      "manual_item_id": "",
+      "fragment_resource_id": "",
+      "restore_fragments_candidate": 0,
+      "balance_status": "branch_awakening"
+    }
+  ],
+  "warehouse_items": [
+    {
+      "id": "tmb.item.codex.manual.bow.common.ch0_basic.human.base",
+      "name": "Tiễn Thức Căn Bản — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.bow.common.ch0_basic.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.common.ch0_mobility.human.base",
+      "name": "Thu Vũ Bộ — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.bow.common.ch0_mobility.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.common.ch0_basic.human.base",
+      "name": "Quyền Thức Căn Bản — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.fist.common.ch0_basic.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.common.ch0_mobility.human.base",
+      "name": "Bộ Kình Xung — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.fist.common.ch0_mobility.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.common.ch0_basic.human.base",
+      "name": "Độc Châm Thường Thức — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.poison.common.ch0_basic.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.common.ch0_mobility.human.base",
+      "name": "Yểm Ảnh Bộ — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.poison.common.ch0_mobility.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.liep_anh.ch1_active_01.human.base",
+      "name": "Xuyên Tâm Tiễn — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.bow.liep_anh.ch1_active_01.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.liep_anh.ch1_active_02.human.base",
+      "name": "Truy Ảnh Tiễn — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.bow.liep_anh.ch1_active_02.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.liep_anh.ch2_active_03.human.base",
+      "name": "Phá Giới Trọng Tiễn — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.bow.liep_anh.ch2_active_03.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.liep_anh.ch2_active_04.human.base",
+      "name": "Phân Ảnh Tiễn — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.bow.liep_anh.ch2_active_04.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.liep_anh.ch3_ultimate.human.base",
+      "name": "Nhất Tiễn Phá Tinh — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.bow.liep_anh.ch3_ultimate.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.liep_anh.ch1_passive_01.human.base",
+      "name": "Bách Bộ Tĩnh Tâm — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.bow.liep_anh.ch1_passive_01.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.liep_anh.ch1_passive_02.human.base",
+      "name": "Thấu Cốt Tinh Thông — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.bow.liep_anh.ch1_passive_02.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.liep_anh.ch2_passive_03.human.base",
+      "name": "Đoạt Mệnh Dư Kình — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.bow.liep_anh.ch2_passive_03.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.liep_anh.ch2_passive_04.human.base",
+      "name": "Tiễn Ảnh Truy Hồn — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.bow.liep_anh.ch2_passive_04.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.liep_anh.ch2_passive_05.human.base",
+      "name": "Hậu Vệ Phản Ứng — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.bow.liep_anh.ch2_passive_05.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.linh_tien.ch1_active_01.human.base",
+      "name": "Linh Tiễn Xuyên Quang — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.bow.linh_tien.ch1_active_01.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.linh_tien.ch1_active_02.human.base",
+      "name": "Tam Tinh Linh Xạ — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.bow.linh_tien.ch1_active_02.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.linh_tien.ch2_active_03.human.base",
+      "name": "Linh Vũ Tiễn — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.bow.linh_tien.ch2_active_03.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.linh_tien.ch2_active_04.human.base",
+      "name": "Tụ Linh Tiễn Tâm — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.bow.linh_tien.ch2_active_04.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.linh_tien.ch3_ultimate.human.base",
+      "name": "Tam Hành Phá Không — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.bow.linh_tien.ch3_ultimate.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.linh_tien.ch1_passive_01.human.base",
+      "name": "Dẫn Linh Chuyên Tu — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.bow.linh_tien.ch1_passive_01.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.linh_tien.ch1_passive_02.human.base",
+      "name": "Linh Mạch Hộ Tiễn — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.bow.linh_tien.ch1_passive_02.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.linh_tien.ch2_passive_03.human.base",
+      "name": "Tam Linh Phản Ứng — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.bow.linh_tien.ch2_passive_03.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.linh_tien.ch2_passive_04.human.base",
+      "name": "Tụ Ấn Dư Linh — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.bow.linh_tien.ch2_passive_04.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.linh_tien.ch2_passive_05.human.base",
+      "name": "Hộ Linh Tức — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.bow.linh_tien.ch2_passive_05.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.thien_vu.ch1_active_01.human.base",
+      "name": "Liên Châu Tiễn — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.bow.thien_vu.ch1_active_01.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.thien_vu.ch1_active_02.human.base",
+      "name": "Tán Tiễn Phong Vũ — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.bow.thien_vu.ch1_active_02.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.thien_vu.ch2_active_03.human.base",
+      "name": "Mạn Thiên Tiễn Vũ — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.bow.thien_vu.ch2_active_03.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.thien_vu.ch2_active_04.human.base",
+      "name": "Tụ Phong Dẫn Tiễn — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.bow.thien_vu.ch2_active_04.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.thien_vu.ch3_ultimate.human.base",
+      "name": "Thiên Vũ Phúc Thiên — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.bow.thien_vu.ch3_ultimate.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.thien_vu.ch1_passive_01.human.base",
+      "name": "Vũ Tiễn Tinh Thông — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.bow.thien_vu.ch1_passive_01.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.thien_vu.ch1_passive_02.human.base",
+      "name": "Phong Vị — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.bow.thien_vu.ch1_passive_02.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.thien_vu.ch2_passive_03.human.base",
+      "name": "Phong Châm — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.bow.thien_vu.ch2_passive_03.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.thien_vu.ch2_passive_04.human.base",
+      "name": "Vũ Tiễn Tiết Nhịp — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.bow.thien_vu.ch2_passive_04.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.bow.thien_vu.ch2_passive_05.human.base",
+      "name": "Thiên Vũ Hộ Thân — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.bow.thien_vu.ch2_passive_05.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.ba_quyen.ch1_active_01.human.base",
+      "name": "Khai Sơn Trọng Quyền — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.fist.ba_quyen.ch1_active_01.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.ba_quyen.ch1_active_02.human.base",
+      "name": "Phi Thân Liên Cước — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.fist.ba_quyen.ch1_active_02.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.ba_quyen.ch2_active_03.human.base",
+      "name": "Lôi Đình Chấn Quyền — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.fist.ba_quyen.ch2_active_03.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.ba_quyen.ch2_active_04.human.base",
+      "name": "Địa Mạch Liên Chấn — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.fist.ba_quyen.ch2_active_04.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.ba_quyen.ch3_ultimate.human.base",
+      "name": "Sơn Hà Chấn Thiên — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.fist.ba_quyen.ch3_ultimate.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.ba_quyen.ch1_passive_01.human.base",
+      "name": "Thiết Cốt Chuyên Tu — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.fist.ba_quyen.ch1_passive_01.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.ba_quyen.ch1_passive_02.human.base",
+      "name": "Bá Thể Định Lực — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.fist.ba_quyen.ch1_passive_02.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.ba_quyen.ch2_passive_03.human.base",
+      "name": "Liên Quyền Khai Thế — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.fist.ba_quyen.ch2_passive_03.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.ba_quyen.ch2_passive_04.human.base",
+      "name": "Lôi Kình Dư Chấn — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.fist.ba_quyen.ch2_passive_04.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.ba_quyen.ch2_passive_05.human.base",
+      "name": "Bá Kình Hồi Tức — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.fist.ba_quyen.ch2_passive_05.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.kim_cang.ch1_active_01.human.base",
+      "name": "Trấn Địa Quyền — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.fist.kim_cang.ch1_active_01.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.kim_cang.ch1_active_02.human.base",
+      "name": "Kim Cang Hộ Thể — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.fist.kim_cang.ch1_active_02.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.kim_cang.ch2_active_03.human.base",
+      "name": "Phản Chấn Quyền — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.fist.kim_cang.ch2_active_03.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.kim_cang.ch2_active_04.human.base",
+      "name": "Trấn Sơn Hộ Đồng — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.fist.kim_cang.ch2_active_04.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.kim_cang.ch3_ultimate.human.base",
+      "name": "Bất Động Kim Chung — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.fist.kim_cang.ch3_ultimate.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.kim_cang.ch1_passive_01.human.base",
+      "name": "Thiết Cốt Luyện Thể — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.fist.kim_cang.ch1_passive_01.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.kim_cang.ch1_passive_02.human.base",
+      "name": "Hộ Thể Tinh Thông — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.fist.kim_cang.ch1_passive_02.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.kim_cang.ch2_passive_03.human.base",
+      "name": "Thiết Cốt Hồi Lưu — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.fist.kim_cang.ch2_passive_03.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.kim_cang.ch2_passive_04.human.base",
+      "name": "Kim Cang Uy Hiếp — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.fist.kim_cang.ch2_passive_04.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.kim_cang.ch2_passive_05.human.base",
+      "name": "Hộ Vệ Đồng Tâm — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.fist.kim_cang.ch2_passive_05.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.huyet_quyen.ch1_active_01.human.base",
+      "name": "Huyết Liệt Quyền — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.fist.huyet_quyen.ch1_active_01.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.huyet_quyen.ch1_active_02.human.base",
+      "name": "Đoạn Mạch Liên Quyền — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.fist.huyet_quyen.ch1_active_02.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.huyet_quyen.ch2_active_03.human.base",
+      "name": "Huyết Khí Hồi Lưu — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.fist.huyet_quyen.ch2_active_03.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.huyet_quyen.ch2_active_04.human.base",
+      "name": "Liệp Huyết Truy Đả — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.fist.huyet_quyen.ch2_active_04.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.huyet_quyen.ch3_ultimate.human.base",
+      "name": "Huyết Hải Quyền Vực — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.fist.huyet_quyen.ch3_ultimate.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.huyet_quyen.ch1_passive_01.human.base",
+      "name": "Huyết Mạch Kiên Cường — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.fist.huyet_quyen.ch1_passive_01.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.huyet_quyen.ch1_passive_02.human.base",
+      "name": "Đoạn Mạch Tinh Thông — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.fist.huyet_quyen.ch1_passive_02.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.huyet_quyen.ch2_passive_03.human.base",
+      "name": "Huyết Chiến Ý — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.fist.huyet_quyen.ch2_passive_03.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.huyet_quyen.ch2_passive_04.human.base",
+      "name": "Sinh Tồn Bản Năng — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.fist.huyet_quyen.ch2_passive_04.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.fist.huyet_quyen.ch2_passive_05.human.base",
+      "name": "Bất Phụ Chiến Ý — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.fist.huyet_quyen.ch2_passive_05.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.doc_cham.ch1_active_01.human.base",
+      "name": "Xuyên Cốt Độc Châm — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.poison.doc_cham.ch1_active_01.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.doc_cham.ch1_active_02.human.base",
+      "name": "Phệ Mạch Độc Thích — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.poison.doc_cham.ch1_active_02.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.doc_cham.ch2_active_03.human.base",
+      "name": "Bách Độc Tán Châm — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.poison.doc_cham.ch2_active_03.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.doc_cham.ch2_active_04.human.base",
+      "name": "Độc Khí Phệ Tâm — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.poison.doc_cham.ch2_active_04.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.doc_cham.ch3_ultimate.human.base",
+      "name": "Vạn Độc Xuyên Tâm — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.poison.doc_cham.ch3_ultimate.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.doc_cham.ch1_passive_01.human.base",
+      "name": "Thấu Mạch Độc Công — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.poison.doc_cham.ch1_passive_01.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.doc_cham.ch1_passive_02.human.base",
+      "name": "Bách Châm Tinh Thông — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.poison.doc_cham.ch1_passive_02.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.doc_cham.ch2_passive_03.human.base",
+      "name": "Tẩm Độc Châm — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.poison.doc_cham.ch2_passive_03.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.doc_cham.ch2_passive_04.human.base",
+      "name": "Thấu Độc — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.poison.doc_cham.ch2_passive_04.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.doc_cham.ch2_passive_05.human.base",
+      "name": "Hóa Độc Nhất Kích — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.poison.doc_cham.ch2_passive_05.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.co_doc.ch1_active_01.human.base",
+      "name": "Phụ Cốt Cổ — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.poison.co_doc.ch1_active_01.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.co_doc.ch1_active_02.human.base",
+      "name": "Xà Ảnh Quấn Mạch — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.poison.co_doc.ch1_active_02.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.co_doc.ch2_active_03.human.base",
+      "name": "Cổ Vụ Mê Tung — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.poison.co_doc.ch2_active_03.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.co_doc.ch2_active_04.human.base",
+      "name": "Tán Cổ Diễn Nhiễm — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.poison.co_doc.ch2_active_04.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.co_doc.ch3_ultimate.human.base",
+      "name": "Vạn Cổ Phệ Giới — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.poison.co_doc.ch3_ultimate.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.co_doc.ch1_passive_01.human.base",
+      "name": "Ngự Cổ Thành Thạo — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.poison.co_doc.ch1_passive_01.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.co_doc.ch1_passive_02.human.base",
+      "name": "Cổ Vụ Hộ Mạch — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.poison.co_doc.ch1_passive_02.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.co_doc.ch2_passive_03.human.base",
+      "name": "Bách Túc Khai Vân — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.poison.co_doc.ch2_passive_03.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.co_doc.ch2_passive_04.human.base",
+      "name": "Cổ Vụ Trấn Tức — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.poison.co_doc.ch2_passive_04.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.co_doc.ch2_passive_05.human.base",
+      "name": "Cổ Nhận Tỉnh Táo — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.poison.co_doc.ch2_passive_05.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.duoc_doc.ch1_active_01.human.base",
+      "name": "Tẩy Mạch Linh Dược — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.poison.duoc_doc.ch1_active_01.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.duoc_doc.ch1_active_02.human.base",
+      "name": "Giải Độc Hộ Tâm — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.poison.duoc_doc.ch1_active_02.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.duoc_doc.ch2_active_03.human.base",
+      "name": "Nghịch Độc Phản Chế — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.poison.duoc_doc.ch2_active_03.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.duoc_doc.ch2_active_04.human.base",
+      "name": "Sinh Cơ Tán — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.poison.duoc_doc.ch2_active_04.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.duoc_doc.ch3_ultimate.human.base",
+      "name": "Vạn Linh Giải Ách — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.poison.duoc_doc.ch3_ultimate.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.duoc_doc.ch1_passive_01.human.base",
+      "name": "Dược Mạch Vững Bền — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.poison.duoc_doc.ch1_passive_01.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.duoc_doc.ch1_passive_02.human.base",
+      "name": "Thanh Độc Hộ Thân — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.poison.duoc_doc.ch1_passive_02.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.duoc_doc.ch2_passive_03.human.base",
+      "name": "Tẩy Tủy — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.poison.duoc_doc.ch2_passive_03.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.duoc_doc.ch2_passive_04.human.base",
+      "name": "Dược Mạch Hồi Lưu — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.poison.duoc_doc.ch2_passive_04.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.manual.poison.duoc_doc.ch2_passive_05.human.base",
+      "name": "Sinh Cơ Khiên — Bí Kíp",
+      "kind": "codex_manual",
+      "tier": "human",
+      "codex_id": "tmb.codex.poison.duoc_doc.ch2_passive_05.human.base",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_manual"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.fragment.human",
+      "name": "Mảnh Tàn Quyển (human)",
+      "kind": "codex_fragment",
+      "tier": "human",
+      "codex_id": "",
+      "realm_grade": "nhan",
+      "realm_rank": 1,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_fragment"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.fragment.immortal",
+      "name": "Mảnh Tàn Quyển (immortal)",
+      "kind": "codex_fragment",
+      "tier": "immortal",
+      "codex_id": "",
+      "realm_grade": "tien",
+      "realm_rank": 11,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_fragment"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.fragment.divine",
+      "name": "Mảnh Tàn Quyển (divine)",
+      "kind": "codex_fragment",
+      "tier": "divine",
+      "codex_id": "",
+      "realm_grade": "than",
+      "realm_rank": 21,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_fragment"
+      ]
+    },
+    {
+      "id": "tmb.item.codex.fragment.rare_divine",
+      "name": "Mảnh Tàn Quyển (rare_divine)",
+      "kind": "codex_fragment",
+      "tier": "rare_divine",
+      "codex_id": "",
+      "realm_grade": "than",
+      "realm_rank": 21,
+      "market_value": 0,
+      "tags": [
+        "v63_codex_reward",
+        "v63_codex_fragment"
+      ]
+    }
+  ]
+}
