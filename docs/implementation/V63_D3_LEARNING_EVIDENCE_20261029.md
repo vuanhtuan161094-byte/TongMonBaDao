@@ -2,7 +2,7 @@
 
 ## Result
 
-D3 is implemented on `feature/v63-v64-full-combat-20261029`. Initial code/test commit: `677184c3f05eb84e31aed66e48ee42c383acc222`, parent `4b914d05eb601d2788968a0419e5dda63c79b6fc`; completed-save reload regression: `677184c3f05eb84e31aed66e48ee42c383acc222`. The approved main baseline remains `c0c1382f119599497b52d8ee8abd9e830a883f1e`; no main change, PR creation, or merge occurred. PR #52 remains Draft/open.
+D3 is implemented on `feature/v63-v64-full-combat-20261029`. Initial code/catalog/initial tests commit: `9bbc5edacf73388505a16c8db0e3b9097a41d55a`, parent `4b914d05eb601d2788968a0419e5dda63c79b6fc`; completed-save reload regression test commit: `677184c3f05eb84e31aed66e48ee42c383acc222`. The approved main baseline remains `c0c1382f119599497b52d8ee8abd9e830a883f1e`; no main change, PR creation, or merge occurred. PR #52 remains Draft/open.
 
 The D3 learning system is additive and globally gated. The catalog has 12 candidate techniques across bow, fist and poison: three school foundations and nine branch techniques. A disciple must have access to the matching archived Sect Archive manual, satisfy deterministic prerequisites, and have no active job or reserved occupation before study can start. Starting study reserves Contribution and personal spirit stones once; scheduler ticks advance it; retry-safe receipts protect start, cancel, completion and mastery operations. Cancellation returns the reserved cost once. Completion grants personal technique knowledge once. A disciple can equip one main and two auxiliary techniques and retain personal mastery milestones.
 
@@ -52,5 +52,5 @@ Import log SHA-256: `94DBC584EFB654A761C2693A8C79EECC5934468CF3F42CF5A9E3612D1FB
 
 - Every Windows Godot invocation printed `Failed to read the root certificate store`; import/tests still returned exit 0. SAFE-01 also prints the expected JSON parse errors while testing corrupt-save recovery, followed by its PASS marker and exit 0.
 - These are headless Windows engine results. Physical mouse/GUI play at 1280×720, Android device play and owner visual acceptance remain PENDING; no PLAYABLE/UI/Android acceptance is claimed.
-- The E: feature worktree at D2 SHA `d45ab195c53c00f0f29732124dd7678fd42cb351` had four in-scope files with uncommitted EOF-only line-ending changes, so it was not overwritten. Validation used the Windows scratch checkout; its exact 14 code/catalog/test file contents match the published D3 code commit.
+- The E: feature worktree at D2 SHA `d45ab195c53c00f0f29732124dd7678fd42cb351` had four in-scope files with uncommitted EOF-only line-ending changes, so it was not overwritten. Validation used the Windows scratch checkout; its exact 14 code/catalog/test file contents match the final D3 source/test commit.
 - No live skill effects, bosses, approved production balance/drop rates, SaveService replacement, new Warehouse/scheduler, D4+ work, PR, or merge to `main` are included.
