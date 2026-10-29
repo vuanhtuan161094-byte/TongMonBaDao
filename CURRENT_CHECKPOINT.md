@@ -22,6 +22,7 @@ Concrete D6 write allowlist:
 - godot/src/simulation/technique/v63_learning_system.gd
 - godot/src/simulation/combat/v63_feature_gates.gd
 - godot/src/simulation/combat/v63_immortal_skill_combat_system.gd
+- godot/src/simulation/combat/v63_human_skill_combat_system.gd (shared Human/Immortal/Divine dispatch; required to reach the existing Combat V2 cast/release pipeline)
 - godot/src/simulation/combat/v63_divine_skill_combat_system.gd (new)
 - godot/src/simulation/combat/map_battle_v2.gd
 - godot/tests/simulation/v63_d6_divine_lineage_combat_test.gd (new)
