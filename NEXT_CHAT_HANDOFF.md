@@ -1,4 +1,16 @@
-# NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO / 29-10-2026
+# NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO / 30-10-2026
+
+## Current handoff — D6 PASS; continue D7 immediately
+
+Repository `vuanhtuan161094-byte/TongMonBaDao`; branch `feature/v63-v64-full-combat-20261029`; current source/test SHA `eff8446b571f945c14799c48ecb8a1519e076e30`. Main `c0c1382f119599497b52d8ee8abd9e830a883f1e`; PR #52 latest audited `8a2860903a6b9e241d88ca13cbf9b64f37cdcfd0`, Draft/open/unmerged. No PR mutation, main merge, new branch or cleanup.
+
+D6 official Windows Godot 4.7.2 import + 20 scripts: **21/21 PASS**, sequential. Matrix and hashes: [D6 evidence](docs/implementation/V65_D6_DIVINE_EVIDENCE_20261029.md), logs `E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D6_20261030_final`. The exact 15 source/test Git blobs are recorded there; they match the tested scratch bytes. Keep the explicit limits in CURRENT_CHECKPOINT/coverage ledger: representative, not exhaustive 240-skill effect coverage; rare passive effect coverage partial; boss full release/kill/reward and all GUI visuals still pending. Candidate gates OFF; global V6.5 incomplete.
+
+**Next action: implement D7 now** using the exact initial allowlist in the D6 section of CURRENT_CHECKPOINT. Keep the existing P3.2 landscape the sole gameplay surface. Add actual party/skill/Boss/archive UI and original event-tied VFX against the existing MapBattleV2 authority; preserve Source A provenance, read-only source assets, JX reference-only. Run focused and cumulative suite and start actual Godot 4.7.2 GUI at 1280×720; capture real input and all nine branch/Boss cues. Record any owner visual decision as PENDING until received.
+
+D7 exclusions: do not edit simulation/economy/save/Warehouse/scheduler authority, existing source art or Source A manifests, main, PR #52; no merge, PR explosion or cleanup. Owner authorized the full sequence D4→D8 in Issue #54 and the execution contract. Proceed sequentially; only stop for a real failing safety gate, missing asset provenance, or owner-only visual acceptance.
+
+## Historical handoffs
 
 ## Current handoff — continue D6 Divine immediately
 

@@ -1,5 +1,38 @@
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
+## 30/10/2026 — D6 Divine implementation checkpoint
+
+Feature branch: `feature/v63-v64-full-combat-20261029`. D6 source/test commit: [`eff8446b571f945c14799c48ecb8a1519e076e30`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/eff8446b571f945c14799c48ecb8a1519e076e30), parent `e074daa6a51cdbb96efc41f5955364f16731617b`. Stable main remains `c0c1382f119599497b52d8ee8abd9e830a883f1e`. PR #52 remains Draft/open/unmerged at the verified head `8a2860903a6b9e241d88ca13cbf9b64f37cdcfd0`; no merge or PR change.
+
+- D6: **HEADLESS_PASS, 21/21** official Windows Godot 4.7.2 import + sequential focused/cumulative scripts. Exact command, each exit/duration/log SHA-256 and 15 canonical tested source blob IDs are in [D6 evidence](docs/implementation/V65_D6_DIVINE_EVIDENCE_20261029.md); local log folder: `E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D6_20261030_final`.
+- Implemented: 9 Divine branches; A/B lineage, 3 timed Divine study stages, 18 rare ultimate and 18 elective rare passive replacements; 3 staged boss definitions; Combat V2 Divine dispatcher, real cast mastery receipts, poison owner caps/tick diminishing, Blood Ma/Life rules, fatal-save/reflection and finite summons. Gates remain OFF by default; all values are candidate-only.
+- Verified samples: 18/18 active_01 lineage releases with codex/learn/equip/Combat V2 event/damage and innate attachment; 18/18 rare ultimates release; all 18 rare replacements learn/equip/replace; 3/3 bosses spawn and telegraph/counter interruption through snapshot; stage/summon-cap and targeted Divine safety cases PASS.
+- Limits kept explicit in ledger: the 240 definitions are not 240 individually battle-tested effects; rare passive effect coverage is partial; complete Divine Boss release-to-kill/reward settlement was not tested. D6 GUI changed no visual files; D4-A/D4-B owner GUI review, D7 gameplay visuals, Android/performance and final balance remain **PENDING**. Overall V6.5 **INCOMPLETE**.
+- SaveService/schema/snapshot version, Injury120, six-member PvE, One Active Job, single Warehouse/scheduler, legacy P2/P2.3 and PR #52 source remain unchanged. Original dirty E: checkout and unrelated import artifacts were preserved; only the 15 D6 allowlist blobs were published.
+
+## Next code packet — D7 integrated P3.2 gameplay UI/VFX
+
+Proceed automatically on the same branch and existing `godot/scenes/p3/p3_2_landscape_sect.tscn` main surface. Connect the real six-member PvE/MapBattle snapshot and real combat events to selected-disciple/skill/mastery/cooldown/status UI, Boss HP/phase/telegraph/counter cues, an accessible Sect Archive/learning entry, Source A actors, and original event-driven VFX. Require 1280×720 live screenshots and real input, save/return, actual nine branch cues and nine Boss cues, plus owner visual review. Raw Source A files/manifests remain read-only; no new JX gameplay art/VFX.
+
+Concrete initial D7 write allowlist:
+- `godot/src/presentation/p3_2_landscape_sect.gd`
+- `godot/src/presentation/p3/b3_care_combat_v5_presenter.gd`
+- `godot/src/presentation/p3/map_battle_world_layer_v2.gd`
+- `godot/src/presentation/p2_3_techniques.gd`
+- `godot/scenes/p3/p3_2_landscape_sect.tscn`
+- `godot/src/presentation/p3/v63_combat_hud_v1.gd` (new)
+- `godot/src/presentation/p3/v63_original_combat_vfx_v1.gd` (new)
+- `godot/data/presentation/v63_combat_vfx_manifest.json` (new)
+- `godot/tests/presentation/v63_d7_combat_hud_test.gd` (new)
+- `godot/tests/presentation/v63_d7_archive_entry_test.gd` (new)
+- `godot/tests/presentation/pve_multicamp_p3_2_live_integration_test.gd` (regression repair only if required)
+- `docs/implementation/V65_COMBAT_COVERAGE_LEDGER_20261029.json`
+- `docs/implementation/V65_D7_UI_VFX_EVIDENCE_20261030.md` (new)
+- `CURRENT_CHECKPOINT.md`
+- `NEXT_CHAT_HANDOFF.md`
+
+D7 protected: simulation/combat/save/economy/warehouse/scheduler except read-only state consumption; source/raw assets and existing Source A manifests; JX gameplay art; main, PR #52, merge, branch cleanup. Add a path only before editing if repository evidence proves the integration requires it and it is within the contract's D7 presentation/test/evidence families. Tests: new D7 UI/VFX presentation tests plus P3.2 live integration/map camera/live modular actor, P2.3 technique, D2 Archive UI, full 21-script D6 matrix and affected PvE/Save/Return/HP0; official Windows Godot 4.7.2 import, sequential logs/source parity, 1280×720 GUI and owner review.
+
 ## 29/10/2026 — D5 Immortal implementation checkpoint
 
 Feature branch final D5 source/test checkpoint: `7821934ed8b4ac68634017b314cf14119f5959b7` (initial D5 implementation `2f193644329ecabcd71d20bf3283972235bf47c1`; canonical catalog blob repaired and exact clean-filtered parity verified). Stable `main` remains `c0c1382f119599497b52d8ee8abd9e830a883f1e`. PR #52 remains Draft/open at `f7c33d9c3baba3267a17021718b44f87acd62ef6`, unmodified.

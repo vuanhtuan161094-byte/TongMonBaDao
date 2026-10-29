@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-10-29",
+  "generated_at": "2026-10-30",
   "repository": "vuanhtuan161094-byte/TongMonBaDao",
   "branch": "feature/v63-v64-full-combat-20261029",
-  "source_sha": "7821934ed8b4ac68634017b314cf14119f5959b7",
+  "source_sha": "eff8446b571f945c14799c48ecb8a1519e076e30",
   "stable_main_sha": "c0c1382f119599497b52d8ee8abd9e830a883f1e",
   "overall_release_status": "INCOMPLETE",
   "phase_status": {
@@ -12,9 +12,10 @@
     "D4_B": "HEADLESS_PASS",
     "D4_B_GUI": "PENDING",
     "D5": "HEADLESS_PASS",
-    "D6": "NOT_STARTED",
+    "D6": "HEADLESS_PASS",
     "D7": "NOT_STARTED",
-    "D8": "NOT_STARTED"
+    "D8": "NOT_STARTED",
+    "D6_GUI": "PENDING"
   },
   "human_branch_count": 9,
   "human_family_count": 105,
@@ -54,8 +55,8 @@
           "tier": "divine",
           "lineage": "base",
           "parent": "tmb.skill.bow.basic.immortal.base",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -92,8 +93,8 @@
           "tier": "divine",
           "lineage": "base",
           "parent": "tmb.skill.bow.mobility.immortal.base",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -130,8 +131,8 @@
           "tier": "divine",
           "lineage": "base",
           "parent": "tmb.skill.fist.basic.immortal.base",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -168,8 +169,8 @@
           "tier": "divine",
           "lineage": "base",
           "parent": "tmb.skill.fist.mobility.immortal.base",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -206,8 +207,8 @@
           "tier": "divine",
           "lineage": "base",
           "parent": "tmb.skill.poison.basic.immortal.base",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -244,8 +245,8 @@
           "tier": "divine",
           "lineage": "base",
           "parent": "tmb.skill.poison.mobility.immortal.base",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -290,16 +291,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.liep_anh.active_01.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_18_of_18_real_cast_release"
         },
         {
           "node_id": "tmb.skill.bow.liep_anh.active_01.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.liep_anh.active_01.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_18_of_18_real_cast_release"
         }
       ]
     },
@@ -344,16 +345,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.liep_anh.active_02.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.bow.liep_anh.active_02.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.liep_anh.active_02.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -398,16 +399,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.liep_anh.active_03.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.bow.liep_anh.active_03.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.liep_anh.active_03.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -452,16 +453,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.liep_anh.active_04.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.bow.liep_anh.active_04.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.liep_anh.active_04.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -506,32 +507,32 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.liep_anh.ultimate.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.bow.liep_anh.ultimate.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.liep_anh.ultimate.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.bow.liep_anh.ultimate.rare.a",
           "tier": "rare_divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.liep_anh.ultimate.divine.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_rare_successors_test_18_of_18_real_ultimate_releases"
         },
         {
           "node_id": "tmb.skill.bow.liep_anh.ultimate.rare.b",
           "tier": "rare_divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.liep_anh.ultimate.divine.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_rare_successors_test_18_of_18_real_ultimate_releases"
         }
       ]
     },
@@ -576,16 +577,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.liep_anh.passive_01.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.bow.liep_anh.passive_01.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.liep_anh.passive_01.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -630,16 +631,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.liep_anh.passive_02.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.bow.liep_anh.passive_02.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.liep_anh.passive_02.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -684,16 +685,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.liep_anh.passive_03.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.bow.liep_anh.passive_03.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.liep_anh.passive_03.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -738,16 +739,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.liep_anh.passive_04.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.bow.liep_anh.passive_04.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.liep_anh.passive_04.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -792,16 +793,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.liep_anh.passive_05.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.bow.liep_anh.passive_05.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.liep_anh.passive_05.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -846,16 +847,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.liep_anh.innate.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_all_18_lineage_innates_attached"
         },
         {
           "node_id": "tmb.skill.bow.liep_anh.innate.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.liep_anh.innate.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_all_18_lineage_innates_attached"
         }
       ]
     },
@@ -900,16 +901,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.linh_tien.active_01.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_18_of_18_real_cast_release"
         },
         {
           "node_id": "tmb.skill.bow.linh_tien.active_01.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.linh_tien.active_01.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_18_of_18_real_cast_release"
         }
       ]
     },
@@ -954,16 +955,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.linh_tien.active_02.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.bow.linh_tien.active_02.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.linh_tien.active_02.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -1008,16 +1009,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.linh_tien.active_03.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.bow.linh_tien.active_03.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.linh_tien.active_03.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -1062,16 +1063,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.linh_tien.active_04.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.bow.linh_tien.active_04.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.linh_tien.active_04.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -1116,32 +1117,32 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.linh_tien.ultimate.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.bow.linh_tien.ultimate.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.linh_tien.ultimate.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.bow.linh_tien.ultimate.rare.a",
           "tier": "rare_divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.linh_tien.ultimate.divine.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_rare_successors_test_18_of_18_real_ultimate_releases"
         },
         {
           "node_id": "tmb.skill.bow.linh_tien.ultimate.rare.b",
           "tier": "rare_divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.linh_tien.ultimate.divine.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_rare_successors_test_18_of_18_real_ultimate_releases"
         }
       ]
     },
@@ -1186,16 +1187,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.linh_tien.passive_01.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.bow.linh_tien.passive_01.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.linh_tien.passive_01.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -1240,16 +1241,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.linh_tien.passive_02.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.bow.linh_tien.passive_02.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.linh_tien.passive_02.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -1294,16 +1295,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.linh_tien.passive_03.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.bow.linh_tien.passive_03.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.linh_tien.passive_03.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -1348,16 +1349,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.linh_tien.passive_04.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.bow.linh_tien.passive_04.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.linh_tien.passive_04.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -1402,16 +1403,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.linh_tien.passive_05.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.bow.linh_tien.passive_05.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.linh_tien.passive_05.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -1456,16 +1457,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.linh_tien.innate.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_all_18_lineage_innates_attached"
         },
         {
           "node_id": "tmb.skill.bow.linh_tien.innate.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.linh_tien.innate.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_all_18_lineage_innates_attached"
         }
       ]
     },
@@ -1510,16 +1511,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.thien_vu.active_01.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_18_of_18_real_cast_release"
         },
         {
           "node_id": "tmb.skill.bow.thien_vu.active_01.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.thien_vu.active_01.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_18_of_18_real_cast_release"
         }
       ]
     },
@@ -1564,16 +1565,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.thien_vu.active_02.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.bow.thien_vu.active_02.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.thien_vu.active_02.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -1618,16 +1619,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.thien_vu.active_03.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.bow.thien_vu.active_03.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.thien_vu.active_03.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -1672,16 +1673,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.thien_vu.active_04.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.bow.thien_vu.active_04.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.thien_vu.active_04.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -1726,32 +1727,32 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.thien_vu.ultimate.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.bow.thien_vu.ultimate.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.thien_vu.ultimate.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.bow.thien_vu.ultimate.rare.a",
           "tier": "rare_divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.thien_vu.ultimate.divine.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_rare_successors_test_18_of_18_real_ultimate_releases"
         },
         {
           "node_id": "tmb.skill.bow.thien_vu.ultimate.rare.b",
           "tier": "rare_divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.thien_vu.ultimate.divine.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_rare_successors_test_18_of_18_real_ultimate_releases"
         }
       ]
     },
@@ -1796,16 +1797,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.thien_vu.passive_01.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.bow.thien_vu.passive_01.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.thien_vu.passive_01.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -1850,16 +1851,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.thien_vu.passive_02.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.bow.thien_vu.passive_02.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.thien_vu.passive_02.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -1904,16 +1905,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.thien_vu.passive_03.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.bow.thien_vu.passive_03.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.thien_vu.passive_03.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -1958,16 +1959,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.thien_vu.passive_04.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.bow.thien_vu.passive_04.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.thien_vu.passive_04.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -2012,16 +2013,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.thien_vu.passive_05.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.bow.thien_vu.passive_05.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.thien_vu.passive_05.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -2066,16 +2067,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.bow.thien_vu.innate.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_all_18_lineage_innates_attached"
         },
         {
           "node_id": "tmb.skill.bow.thien_vu.innate.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.bow.thien_vu.innate.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_all_18_lineage_innates_attached"
         }
       ]
     },
@@ -2120,16 +2121,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.ba_quyen.active_01.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_18_of_18_real_cast_release"
         },
         {
           "node_id": "tmb.skill.fist.ba_quyen.active_01.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.ba_quyen.active_01.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_18_of_18_real_cast_release"
         }
       ]
     },
@@ -2174,16 +2175,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.ba_quyen.active_02.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.fist.ba_quyen.active_02.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.ba_quyen.active_02.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -2228,16 +2229,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.ba_quyen.active_03.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.fist.ba_quyen.active_03.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.ba_quyen.active_03.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -2282,16 +2283,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.ba_quyen.active_04.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.fist.ba_quyen.active_04.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.ba_quyen.active_04.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -2336,32 +2337,32 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.ba_quyen.ultimate.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.fist.ba_quyen.ultimate.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.ba_quyen.ultimate.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.fist.ba_quyen.ultimate.rare.a",
           "tier": "rare_divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.ba_quyen.ultimate.divine.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_rare_successors_test_18_of_18_real_ultimate_releases"
         },
         {
           "node_id": "tmb.skill.fist.ba_quyen.ultimate.rare.b",
           "tier": "rare_divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.ba_quyen.ultimate.divine.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_rare_successors_test_18_of_18_real_ultimate_releases"
         }
       ]
     },
@@ -2406,16 +2407,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.ba_quyen.passive_01.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.fist.ba_quyen.passive_01.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.ba_quyen.passive_01.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -2460,16 +2461,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.ba_quyen.passive_02.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.fist.ba_quyen.passive_02.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.ba_quyen.passive_02.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -2514,16 +2515,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.ba_quyen.passive_03.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.fist.ba_quyen.passive_03.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.ba_quyen.passive_03.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -2568,16 +2569,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.ba_quyen.passive_04.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.fist.ba_quyen.passive_04.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.ba_quyen.passive_04.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -2622,16 +2623,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.ba_quyen.passive_05.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.fist.ba_quyen.passive_05.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.ba_quyen.passive_05.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -2676,16 +2677,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.ba_quyen.innate.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_all_18_lineage_innates_attached"
         },
         {
           "node_id": "tmb.skill.fist.ba_quyen.innate.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.ba_quyen.innate.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_all_18_lineage_innates_attached"
         }
       ]
     },
@@ -2730,16 +2731,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.kim_cang.active_01.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_18_of_18_real_cast_release"
         },
         {
           "node_id": "tmb.skill.fist.kim_cang.active_01.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.kim_cang.active_01.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_18_of_18_real_cast_release"
         }
       ]
     },
@@ -2784,16 +2785,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.kim_cang.active_02.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.fist.kim_cang.active_02.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.kim_cang.active_02.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -2838,16 +2839,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.kim_cang.active_03.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.fist.kim_cang.active_03.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.kim_cang.active_03.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -2892,16 +2893,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.kim_cang.active_04.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.fist.kim_cang.active_04.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.kim_cang.active_04.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -2946,32 +2947,32 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.kim_cang.ultimate.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.fist.kim_cang.ultimate.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.kim_cang.ultimate.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.fist.kim_cang.ultimate.rare.a",
           "tier": "rare_divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.kim_cang.ultimate.divine.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_rare_successors_test_18_of_18_real_ultimate_releases"
         },
         {
           "node_id": "tmb.skill.fist.kim_cang.ultimate.rare.b",
           "tier": "rare_divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.kim_cang.ultimate.divine.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_rare_successors_test_18_of_18_real_ultimate_releases"
         }
       ]
     },
@@ -3016,16 +3017,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.kim_cang.passive_01.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.fist.kim_cang.passive_01.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.kim_cang.passive_01.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -3070,16 +3071,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.kim_cang.passive_02.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.fist.kim_cang.passive_02.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.kim_cang.passive_02.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -3124,16 +3125,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.kim_cang.passive_03.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.fist.kim_cang.passive_03.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.kim_cang.passive_03.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -3178,16 +3179,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.kim_cang.passive_04.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.fist.kim_cang.passive_04.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.kim_cang.passive_04.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -3232,16 +3233,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.kim_cang.passive_05.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.fist.kim_cang.passive_05.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.kim_cang.passive_05.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -3286,16 +3287,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.kim_cang.innate.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_all_18_lineage_innates_attached"
         },
         {
           "node_id": "tmb.skill.fist.kim_cang.innate.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.kim_cang.innate.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_all_18_lineage_innates_attached"
         }
       ]
     },
@@ -3340,16 +3341,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.huyet_quyen.active_01.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_18_of_18_real_cast_release"
         },
         {
           "node_id": "tmb.skill.fist.huyet_quyen.active_01.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.huyet_quyen.active_01.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_18_of_18_real_cast_release"
         }
       ]
     },
@@ -3394,16 +3395,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.huyet_quyen.active_02.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.fist.huyet_quyen.active_02.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.huyet_quyen.active_02.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -3448,16 +3449,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.huyet_quyen.active_03.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.fist.huyet_quyen.active_03.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.huyet_quyen.active_03.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -3502,16 +3503,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.huyet_quyen.active_04.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.fist.huyet_quyen.active_04.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.huyet_quyen.active_04.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -3556,32 +3557,32 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.huyet_quyen.ultimate.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.fist.huyet_quyen.ultimate.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.huyet_quyen.ultimate.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.fist.huyet_quyen.ultimate.rare.a",
           "tier": "rare_divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.huyet_quyen.ultimate.divine.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_rare_successors_test_18_of_18_real_ultimate_releases"
         },
         {
           "node_id": "tmb.skill.fist.huyet_quyen.ultimate.rare.b",
           "tier": "rare_divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.huyet_quyen.ultimate.divine.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_rare_successors_test_18_of_18_real_ultimate_releases"
         }
       ]
     },
@@ -3626,16 +3627,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.huyet_quyen.passive_01.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.fist.huyet_quyen.passive_01.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.huyet_quyen.passive_01.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -3680,16 +3681,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.huyet_quyen.passive_02.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.fist.huyet_quyen.passive_02.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.huyet_quyen.passive_02.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -3734,16 +3735,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.huyet_quyen.passive_03.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.fist.huyet_quyen.passive_03.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.huyet_quyen.passive_03.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -3788,16 +3789,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.huyet_quyen.passive_04.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.fist.huyet_quyen.passive_04.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.huyet_quyen.passive_04.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -3842,16 +3843,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.huyet_quyen.passive_05.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.fist.huyet_quyen.passive_05.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.huyet_quyen.passive_05.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -3896,16 +3897,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.fist.huyet_quyen.innate.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_all_18_lineage_innates_attached"
         },
         {
           "node_id": "tmb.skill.fist.huyet_quyen.innate.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.fist.huyet_quyen.innate.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_all_18_lineage_innates_attached"
         }
       ]
     },
@@ -3950,16 +3951,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.doc_cham.active_01.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_18_of_18_real_cast_release"
         },
         {
           "node_id": "tmb.skill.poison.doc_cham.active_01.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.doc_cham.active_01.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_18_of_18_real_cast_release"
         }
       ]
     },
@@ -4004,16 +4005,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.doc_cham.active_02.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.poison.doc_cham.active_02.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.doc_cham.active_02.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -4058,16 +4059,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.doc_cham.active_03.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.poison.doc_cham.active_03.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.doc_cham.active_03.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -4112,16 +4113,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.doc_cham.active_04.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.poison.doc_cham.active_04.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.doc_cham.active_04.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -4166,32 +4167,32 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.doc_cham.ultimate.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.poison.doc_cham.ultimate.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.doc_cham.ultimate.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.poison.doc_cham.ultimate.rare.a",
           "tier": "rare_divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.doc_cham.ultimate.divine.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_rare_successors_test_18_of_18_real_ultimate_releases"
         },
         {
           "node_id": "tmb.skill.poison.doc_cham.ultimate.rare.b",
           "tier": "rare_divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.doc_cham.ultimate.divine.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_rare_successors_test_18_of_18_real_ultimate_releases"
         }
       ]
     },
@@ -4236,16 +4237,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.doc_cham.passive_01.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.poison.doc_cham.passive_01.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.doc_cham.passive_01.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -4290,16 +4291,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.doc_cham.passive_02.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.poison.doc_cham.passive_02.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.doc_cham.passive_02.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -4344,16 +4345,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.doc_cham.passive_03.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.poison.doc_cham.passive_03.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.doc_cham.passive_03.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -4398,16 +4399,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.doc_cham.passive_04.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.poison.doc_cham.passive_04.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.doc_cham.passive_04.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -4452,16 +4453,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.doc_cham.passive_05.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.poison.doc_cham.passive_05.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.doc_cham.passive_05.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -4506,16 +4507,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.doc_cham.innate.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_all_18_lineage_innates_attached"
         },
         {
           "node_id": "tmb.skill.poison.doc_cham.innate.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.doc_cham.innate.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_all_18_lineage_innates_attached"
         }
       ]
     },
@@ -4560,16 +4561,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.co_doc.active_01.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_18_of_18_real_cast_release"
         },
         {
           "node_id": "tmb.skill.poison.co_doc.active_01.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.co_doc.active_01.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_18_of_18_real_cast_release"
         }
       ]
     },
@@ -4614,16 +4615,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.co_doc.active_02.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.poison.co_doc.active_02.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.co_doc.active_02.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -4668,16 +4669,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.co_doc.active_03.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.poison.co_doc.active_03.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.co_doc.active_03.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -4722,16 +4723,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.co_doc.active_04.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.poison.co_doc.active_04.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.co_doc.active_04.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -4776,32 +4777,32 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.co_doc.ultimate.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.poison.co_doc.ultimate.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.co_doc.ultimate.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.poison.co_doc.ultimate.rare.a",
           "tier": "rare_divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.co_doc.ultimate.divine.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_rare_successors_test_18_of_18_real_ultimate_releases"
         },
         {
           "node_id": "tmb.skill.poison.co_doc.ultimate.rare.b",
           "tier": "rare_divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.co_doc.ultimate.divine.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_rare_successors_test_18_of_18_real_ultimate_releases"
         }
       ]
     },
@@ -4846,16 +4847,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.co_doc.passive_01.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.poison.co_doc.passive_01.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.co_doc.passive_01.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -4900,16 +4901,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.co_doc.passive_02.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.poison.co_doc.passive_02.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.co_doc.passive_02.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -4954,16 +4955,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.co_doc.passive_03.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.poison.co_doc.passive_03.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.co_doc.passive_03.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -5008,16 +5009,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.co_doc.passive_04.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.poison.co_doc.passive_04.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.co_doc.passive_04.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -5062,16 +5063,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.co_doc.passive_05.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.poison.co_doc.passive_05.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.co_doc.passive_05.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -5116,16 +5117,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.co_doc.innate.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_all_18_lineage_innates_attached"
         },
         {
           "node_id": "tmb.skill.poison.co_doc.innate.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.co_doc.innate.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_all_18_lineage_innates_attached"
         }
       ]
     },
@@ -5170,16 +5171,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.duoc_doc.active_01.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_18_of_18_real_cast_release"
         },
         {
           "node_id": "tmb.skill.poison.duoc_doc.active_01.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.duoc_doc.active_01.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_18_of_18_real_cast_release"
         }
       ]
     },
@@ -5224,16 +5225,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.duoc_doc.active_02.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.poison.duoc_doc.active_02.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.duoc_doc.active_02.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -5278,16 +5279,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.duoc_doc.active_03.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.poison.duoc_doc.active_03.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.duoc_doc.active_03.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -5332,16 +5333,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.duoc_doc.active_04.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.poison.duoc_doc.active_04.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.duoc_doc.active_04.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -5386,32 +5387,32 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.duoc_doc.ultimate.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.poison.duoc_doc.ultimate.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.duoc_doc.ultimate.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.poison.duoc_doc.ultimate.rare.a",
           "tier": "rare_divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.duoc_doc.ultimate.divine.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_rare_successors_test_18_of_18_real_ultimate_releases"
         },
         {
           "node_id": "tmb.skill.poison.duoc_doc.ultimate.rare.b",
           "tier": "rare_divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.duoc_doc.ultimate.divine.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_rare_successors_test_18_of_18_real_ultimate_releases"
         }
       ]
     },
@@ -5456,16 +5457,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.duoc_doc.passive_01.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.poison.duoc_doc.passive_01.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.duoc_doc.passive_01.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -5510,16 +5511,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.duoc_doc.passive_02.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.poison.duoc_doc.passive_02.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.duoc_doc.passive_02.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -5564,16 +5565,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.duoc_doc.passive_03.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.poison.duoc_doc.passive_03.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.duoc_doc.passive_03.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -5618,16 +5619,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.duoc_doc.passive_04.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.poison.duoc_doc.passive_04.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.duoc_doc.passive_04.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -5672,16 +5673,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.duoc_doc.passive_05.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         },
         {
           "node_id": "tmb.skill.poison.duoc_doc.passive_05.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.duoc_doc.passive_05.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "IMPLEMENTED_UNTESTED",
+          "test_evidence": "catalogue/runtime definition present; D6 matrix individually exercises active_01 A/B and derived innate attachment only"
         }
       ]
     },
@@ -5726,16 +5727,16 @@
           "tier": "divine",
           "lineage": "a",
           "parent": "tmb.skill.poison.duoc_doc.innate.immortal.a",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_all_18_lineage_innates_attached"
         },
         {
           "node_id": "tmb.skill.poison.duoc_doc.innate.divine.b",
           "tier": "divine",
           "lineage": "b",
           "parent": "tmb.skill.poison.duoc_doc.innate.immortal.b",
-          "coverage_status": "NOT_STARTED",
-          "test_evidence": ""
+          "coverage_status": "HEADLESS_PASS",
+          "test_evidence": "v63_d6_divine_lineage_combat_test_all_18_lineage_innates_attached"
         }
       ]
     }
@@ -5841,57 +5842,69 @@
       "boss_id": "tmb.boss.cuu_tieu_kiep_long",
       "name": "Cửu Tiêu Kiếp Long",
       "tier": "divine",
-      "coverage_status": "NOT_STARTED",
-      "runtime_spawn": false,
-      "origin_species_id": "",
+      "coverage_status": "IMPLEMENTED_UNTESTED",
+      "runtime_spawn": true,
+      "origin_species_id": "huyet_lang_dau_dan",
       "telegraph_and_release": false,
       "phase_thresholds": [
         0.7,
         0.35
       ],
       "real_gui_status": "PENDING",
-      "summons_counterplay_loot_receipt": "NOT_STARTED",
-      "test_evidence": ""
+      "summons_counterplay_loot_receipt": "Counter and summon-cap sentinels PASS; boss-specific kill/reward receipt not tested",
+      "test_evidence": "v63_d6_divine_lineage_combat_test_3_of_3_spawn_telegraph_counter_snapshot_phase_summon_cap; telegraph/counter snapshot, phase and summon-cap sentinels; complete release/kill/reward path pending"
     },
     {
       "boss_id": "tmb.boss.bat_diet_huyet_ma_ton",
       "name": "Bất Diệt Huyết Ma Tôn",
       "tier": "divine",
-      "coverage_status": "NOT_STARTED",
-      "runtime_spawn": false,
-      "origin_species_id": "",
+      "coverage_status": "IMPLEMENTED_UNTESTED",
+      "runtime_spawn": true,
+      "origin_species_id": "hac_lang_vuong",
       "telegraph_and_release": false,
       "phase_thresholds": [
         0.7,
         0.35
       ],
       "real_gui_status": "PENDING",
-      "summons_counterplay_loot_receipt": "NOT_STARTED",
-      "test_evidence": ""
+      "summons_counterplay_loot_receipt": "Counter and summon-cap sentinels PASS; boss-specific kill/reward receipt not tested",
+      "test_evidence": "v63_d6_divine_lineage_combat_test_3_of_3_spawn_telegraph_counter_snapshot_phase_summon_cap; telegraph/counter snapshot, phase and summon-cap sentinels; complete release/kill/reward path pending"
     },
     {
       "boss_id": "tmb.boss.thai_so_phap_tac_de",
       "name": "Thái Sơ Pháp Tắc Đế",
       "tier": "divine",
-      "coverage_status": "NOT_STARTED",
-      "runtime_spawn": false,
-      "origin_species_id": "",
+      "coverage_status": "IMPLEMENTED_UNTESTED",
+      "runtime_spawn": true,
+      "origin_species_id": "u_hon",
       "telegraph_and_release": false,
       "phase_thresholds": [
         0.7,
         0.35
       ],
       "real_gui_status": "PENDING",
-      "summons_counterplay_loot_receipt": "NOT_STARTED",
-      "test_evidence": ""
+      "summons_counterplay_loot_receipt": "Counter and summon-cap sentinels PASS; boss-specific kill/reward receipt not tested",
+      "test_evidence": "v63_d6_divine_lineage_combat_test_3_of_3_spawn_telegraph_counter_snapshot_phase_summon_cap; telegraph/counter snapshot, phase and summon-cap sentinels; complete release/kill/reward path pending"
     }
   ],
   "gates_default_off": true,
   "balance": "candidate only; not approved",
   "excluded_from_this_checkpoint": [
-    "Divine successors and rare Divine variants",
-    "Divine Boss summons/loot receipts and endgame scaling",
+    "Individual Divine combat effects beyond the explicit active_01/rare ultimate/safety test sentinels",
+    "complete Divine Boss release, kill/reward receipt and endgame scaling",
     "assets/UI/VFX/owner acceptance",
+    "Android/performance/final balance",
     "main merge"
-  ]
+  ],
+  "divine_lineage_count": 9,
+  "divine_skill_definition_count": 240,
+  "divine_standard_skill_count": 204,
+  "divine_rare_ultimate_count": 18,
+  "divine_rare_passive_replacement_count": 18,
+  "divine_derived_innate_count": 18,
+  "divine_overall_skill_coverage": "Representative cast/release samples pass; individual effects beyond listed test sentinels remain unverified",
+  "divine_rare_passive_coverage": "18/18 learn/equip replacement path; individual passive-effect coverage partial",
+  "d6_regression_commands": 21,
+  "d6_regression_status": "HEADLESS_PASS",
+  "d6_evidence_path": "docs/implementation/V65_D6_DIVINE_EVIDENCE_20261029.md"
 }
