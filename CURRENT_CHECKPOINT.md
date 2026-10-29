@@ -1,3 +1,29 @@
+## 30/10/2026 — D7 UI/VFX implementation checkpoint
+
+Feature branch `feature/v63-v64-full-combat-20261029`; D7 source/test commit: `878b279b4ac536c1c28a36e4ed0e87251f43c2c9`, parent `990432cee290be738a03e499b9d99ecffa89b5db`. Stable main remains `c0c1382f119599497b52d8ee8abd9e830a883f1e`. PR #52 is still Draft/open/unmerged at live head `2a99ed505c85a17f6d25f91891560ca51fa02d88`.
+
+- D7 code landed in the 11-file allowlist: P3.2 combat HUD, Boss/preview runtime forwarding on the existing shared clock, Archive entry on the existing techniques screen, and original event-tied VFX manifest/system. It adds no scheduler, reward path, save schema, or raw art.
+- Official Windows Godot 4.7.2 import: **PASS**, exit 0; log `E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D7_20261030_final\00_import_zoom_fix.log`, SHA-256 `66FA2901248A6A92F33FDDB24865FA3A408500ECA4035C1EC9E421DFBED54BC4`.
+- D6 focused/cumulative regression: **20/20 PASS**, sequential (results are recorded in `E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D7_20261030_regression2\results.json`; D6 feature code/test blobs were checked against its recorded SHA). This does not turn the partial D6 skill/passive coverage into exhaustive release acceptance.
+- D7 targeted reruns: **6/6 PASS**: existing P3.2 live integration, modular map/actor, camera, HUD, Archive entry and Boss runtime. Integration log SHA-256 `72042C41A684BDCEC6F65A26DD38BE47E409F36759EF2D6CC6E3F56A0672E339`; focused results and remaining per-test hashes are in `E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D7_20261030_final\focused_results.json`. Source A Stage A package verified: 42 PNG, SHA-256 `6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca`.
+- The first D7 regression attempt had failures: stale assertion expected the old status widget, zoom controls overlapped the new HUD, and the modular-map attempt lacked the Stage A package. The assertion/layout and asset setup were corrected; affected tests and integration were rerun successfully. The original 26-test batch still contains two failed entries, so it is **not** reported as a clean cumulative 26/26 run.
+- **D7 GUI acceptance: PENDING.** Godot 4.7.2 ran in a native window, but the Computer Use approval timed out and did not return the Godot window for real input/capture. No screenshot, 9-branch/9-Boss visual coverage, owner visual acceptance, or FULL PLAYABLE claim is made. This remains a release blocker.
+- PR #52 drift matrix: P3.2 both branches touch presentation/layout (PR-only profiler/freeze/culling versus D7 HUD/Boss/archive/zoom); HuntingPveRun has PR-only respawn/corpse/checkpoint/perf work versus D7 preview forwarding; SimulationRuntimeClock has PR-only frame-budget/session work versus D7 Boss clock/preview gates. Revalidate overlaps before any later integration; do not merge PR #52.
+
+### D8 preflight — authorized QA-only allowlist
+
+D8 starts now. Initial allowlist is limited to:
+- `godot/tests/simulation/v63_d8_endgame_progression_test.gd` (new)
+- `godot/tests/simulation/v63_d8_multiseed_camp_battle_test.gd` (new)
+- `godot/tests/presentation/v63_d8_performance_qa_contract_test.gd` (new)
+- `docs/implementation/V65_D8_INTEGRATED_QA_EVIDENCE_20261030.md` (new)
+- `docs/implementation/V65_COMBAT_COVERAGE_LEDGER_20261029.json`
+- `CURRENT_CHECKPOINT.md`
+- `NEXT_CHAT_HANDOFF.md`
+
+D8 test scope: exercise only existing cultivation/body progression gates, deterministic multi-seed 20-camp/party behavior, exact-once/save-return and One Active Job regressions, and the existing performance launcher/probe contract. Use official Godot 4.7.2 logs. No invented 300-step XP or breakthrough values and no production balance change. Excluded: runtime/economy/SaveService/schema/Warehouse/scheduler changes, raw/derived art, main, PR #52, and merges. If a test proves a product defect, add that exact source path plus evidence and rollback handling to this checkpoint before touching it; the owner has authorized D8 targeted bugfixes. Tests remain safe to remove/revert without changing runtime state. GUI/FPS/Android acceptance must remain separately marked PENDING until measured.
+
+
 # CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
 
 ## 30/10/2026 — D6 Divine implementation checkpoint

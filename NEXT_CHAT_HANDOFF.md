@@ -1,5 +1,35 @@
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO / 30-10-2026
 
+## Current handoff — D7 headless PASS; continue D8 QA now
+
+Repo `vuanhtuan161094-byte/TongMonBaDao`; branch `feature/v63-v64-full-combat-20261029`. D7 source/test SHA `878b279b4ac536c1c28a36e4ed0e87251f43c2c9`; stable main `c0c1382f119599497b52d8ee8abd9e830a883f1e`; live PR #52 is Draft/open/unmerged at `2a99ed505c85a17f6d25f91891560ca51fa02d88`. Do not merge, close, create another branch/PR, or clean the E: worktrees.
+
+D7 Windows Godot 4.7.2 import PASS and targeted presentation/runtime reruns PASS. D6 affected regression was 20/20 PASS. Logs, full test names, hashes, prior failed attempts and corrected reruns are in [D7 evidence](docs/implementation/V65_D7_UI_VFX_EVIDENCE_20261030.md) and `E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D7_20261030_final`. The initial 26-test batch had two failures; report the later individually rerun checks as PASS, not a clean cumulative 26/26.
+
+**D7 GUI/owner acceptance remains PENDING:** the official game window was visible to Windows, but Computer Use approval timed out before it exposed that window for actual mouse input or capture. No gameplay screenshots, all-branch/all-Boss visual acceptance or FULL PLAYABLE claim exists. Continue D8 independently; retry GUI using the approved native-app route when available and keep this gate pending until real captures and owner review.
+
+### Immediate D8 task and exact initial allowlist
+
+1. Add the two simulation tests `godot/tests/simulation/v63_d8_endgame_progression_test.gd` and `godot/tests/simulation/v63_d8_multiseed_camp_battle_test.gd`.
+2. Add `godot/tests/presentation/v63_d8_performance_qa_contract_test.gd` for existing P3.2 performance/launcher observability; use the existing launcher/probe read-only.
+3. Update `docs/implementation/V65_COMBAT_COVERAGE_LEDGER_20261029.json`, add `docs/implementation/V65_D8_INTEGRATED_QA_EVIDENCE_20261030.md`, and update this file plus CURRENT_CHECKPOINT.
+4. Run official Windows Godot 4.7.2 import; focused tests and affected D1–D7, progression, save/recovery, One Active Job, Warehouse and PvE regressions sequentially; record command/exit/source SHA/log hashes. Inspect real GUI and runtime performance if Computer Use returns Godot. Device/Android remains PENDING if unavailable.
+5. No numeric balance changes without simulation evidence and owner-approved values. Existing 300-floor cultivation/body sources and gates are authoritative; do not bypass a content gate with invented XP or recipes. Preserve six-person teams, 20 camps, Injury120, the single scheduler/Warehouse, SaveService/schema and legacy saves. If a real product bug requires a runtime file, first extend checkpoint with exact path, observed failure, narrow fix and rollback.
+6. Keep source D7 limitations visible: only targeted tests have passed after fixes; initial full 26 batch was 24/26; GUI images for nine branches/Bosses and owner visual approval remain outstanding.
+
+## D7 code commit files
+
+`godot/data/presentation/v63_combat_vfx_manifest.json`; `godot/src/presentation/p2_3_techniques.gd`; new `godot/src/presentation/p3/v63_combat_hud_v1.gd`; new `godot/src/presentation/p3/v63_original_combat_vfx_v1.gd`; `godot/src/presentation/p3_2_landscape_sect.gd`; `godot/src/simulation/combat/hunting_pve_run_v2.gd`; `godot/src/simulation/core/simulation_runtime_clock_v2.gd`; `godot/tests/presentation/pve_multicamp_p3_2_live_integration_test.gd`; new D7 Archive/HUD/runtime-Boss tests. D7 code commit SHA `878b279b4ac536c1c28a36e4ed0e87251f43c2c9`; evidence follows in a separate docs commit.
+
+## Protected state
+
+Original owner E: checkout remains untouched. Scratch `E:\TongMonBaDaoWorkspace\01_Game\TMB_V65_D4A_20261029` has many pre-existing uncommitted implementation/import/QA files; do not reset, clean, stage-all or commit from it. Published commits use exact GitHub path allowlists. No main/PR #52 changes.
+
+## Historical handoffs follow
+
+
+# NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO / 30-10-2026
+
 ## Current handoff — D6 PASS; continue D7 immediately
 
 Repository `vuanhtuan161094-byte/TongMonBaDao`; branch `feature/v63-v64-full-combat-20261029`; current source/test SHA `eff8446b571f945c14799c48ecb8a1519e076e30`. Main `c0c1382f119599497b52d8ee8abd9e830a883f1e`; PR #52 latest audited `8a2860903a6b9e241d88ca13cbf9b64f37cdcfd0`, Draft/open/unmerged. No PR mutation, main merge, new branch or cleanup.

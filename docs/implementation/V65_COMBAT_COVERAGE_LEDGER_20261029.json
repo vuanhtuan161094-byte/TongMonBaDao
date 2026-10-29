@@ -3,7 +3,7 @@
   "generated_at": "2026-10-30",
   "repository": "vuanhtuan161094-byte/TongMonBaDao",
   "branch": "feature/v63-v64-full-combat-20261029",
-  "source_sha": "eff8446b571f945c14799c48ecb8a1519e076e30",
+  "source_sha": "878b279b4ac536c1c28a36e4ed0e87251f43c2c9",
   "stable_main_sha": "c0c1382f119599497b52d8ee8abd9e830a883f1e",
   "overall_release_status": "INCOMPLETE",
   "phase_status": {
@@ -13,9 +13,11 @@
     "D4_B_GUI": "PENDING",
     "D5": "HEADLESS_PASS",
     "D6": "HEADLESS_PASS",
-    "D7": "NOT_STARTED",
+    "D7": "HEADLESS_PASS",
     "D8": "NOT_STARTED",
-    "D6_GUI": "PENDING"
+    "D6_GUI": "PENDING",
+    "D7_GUI": "PENDING",
+    "D7_ACCEPTANCE": "PENDING"
   },
   "human_branch_count": 9,
   "human_family_count": 105,
@@ -5906,5 +5908,18 @@
   "divine_rare_passive_coverage": "18/18 learn/equip replacement path; individual passive-effect coverage partial",
   "d6_regression_commands": 21,
   "d6_regression_status": "HEADLESS_PASS",
-  "d6_evidence_path": "docs/implementation/V65_D6_DIVINE_EVIDENCE_20261029.md"
+  "d6_evidence_path": "docs/implementation/V65_D6_DIVINE_EVIDENCE_20261029.md",
+  "d7_regression_status": "TARGETED_HEADLESS_PASS_GUI_PENDING",
+  "d7_source_test_sha": "878b279b4ac536c1c28a36e4ed0e87251f43c2c9",
+  "d7_evidence_path": "docs/implementation/V65_D7_UI_VFX_EVIDENCE_20261030.md",
+  "d7_gui_capture_status": "PENDING",
+  "d8_preflight_allowlist": [
+    "godot/tests/simulation/v63_d8_endgame_progression_test.gd",
+    "godot/tests/simulation/v63_d8_multiseed_camp_battle_test.gd",
+    "godot/tests/presentation/v63_d8_performance_qa_contract_test.gd",
+    "docs/implementation/V65_D8_INTEGRATED_QA_EVIDENCE_20261030.md",
+    "docs/implementation/V65_COMBAT_COVERAGE_LEDGER_20261029.json",
+    "CURRENT_CHECKPOINT.md",
+    "NEXT_CHAT_HANDOFF.md"
+  ]
 }
