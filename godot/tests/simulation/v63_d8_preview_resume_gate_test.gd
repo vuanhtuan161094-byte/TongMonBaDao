@@ -21,7 +21,7 @@ func _check(value: bool, reason: String) -> bool:
 
 func _cleanup() -> void:
     for suffix in ["", ".tmp", ".bak"]:
-        var path := SAVE_PATH + suffix
+        var path: String = SAVE_PATH + suffix
         if FileAccess.file_exists(path):
             DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 
