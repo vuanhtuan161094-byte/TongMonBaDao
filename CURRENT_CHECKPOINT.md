@@ -1,3 +1,18 @@
+## 30/10/2026 — D7 GUI readability correction preflight
+
+Base source: `5e1fc3043abe4fcd402ce226be7bb944d053cd0d`; branch documentation HEAD before this preflight: `c8096546268b675cb9e7f15966f30443898fcd55`. Main remains `c0c1382f119599497b52d8ee8abd9e830a883f1e`; PR #52 remains Draft/open/unmerged. The current 1280×720 real Boss captures reproduce two presentation defects: the HUD prints each localized Boss ID twice, and compact Source A combat nameplates crowd the six-party/monster cluster.
+
+**Authorized D7 exact code/test paths for this correction:**
+- `godot/src/presentation/p3/v63_combat_hud_v1.gd` — display the authored Vietnamese Boss name once; use catalog `name` fallback before raw ID.
+- `godot/src/presentation/p3/b3_care_combat_v5_presenter.gd` — in compact Source A mode, retain nameplates for the selected actor and Boss only; preserve all authoritative HP bars, status effects, hit numbers and actor positions.
+- `godot/tests/presentation/v63_d7_combat_hud_test.gd` — assert the localized single Boss label and compact-name visibility rules.
+- Docs/checkpoint paths: `docs/implementation/V65_D7_UI_VFX_EVIDENCE_20261030.md`, `docs/implementation/V65_D8_INTEGRATED_QA_EVIDENCE_20261030.md`, `docs/implementation/V65_COMBAT_COVERAGE_LEDGER_20261029.json`, `CURRENT_CHECKPOINT.md`, `NEXT_CHAT_HANDOFF.md`, and the D7 HUD/presenter screenshot and log evidence under the existing workspace `QA_Evidence/V65_D7_GUI_MATRIX_20261030`.
+
+This is a presentation-only correction within the existing D7 UI/VFX packet paths. No simulation, combat authority, asset, economy, gate default, SaveService/schema, Injury120, One Active Job, Warehouse, scheduler, main or PR #52 files are included. Feature gates remain OFF by default. Rollback is a revert of the two presentation files and the single HUD regression test; no migration is needed.
+
+Verification after code: official Windows Godot 4.7.2 import; focused HUD test; Boss runtime and P3.2 live integration tests; real 1280×720 Boss GUI recapture; then the affected D6/D8/save/Warehouse/PvE regression matrix. Capture/log hashes must attach to the exact tested source SHA. Existing D6 result remains PASS at `5e1fc30`; this preflight does not relabel the visual matrix or full V6.5 as complete.
+
+---
 ## 30/10/2026 — D7/D8 regression and Boss GUI checkpoint
 
 Feature branch `feature/v63-v64-full-combat-20261029`; D7 correction source SHA: [`5e1fc3043abe4fcd402ce226be7bb944d053cd0d`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/5e1fc3043abe4fcd402ce226be7bb944d053cd0d), parent `c035bd8a8b4856b47213988ed4c3c56ded830820`. Main remains `c0c1382f119599497b52d8ee8abd9e830a883f1e`. PR #52 remains Draft/open/unmerged at `2a99ed505c85a17f6d25f91891560ca51fa02d88`.
