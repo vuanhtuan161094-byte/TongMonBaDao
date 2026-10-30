@@ -130,7 +130,9 @@ static func pending_minutes(state: SimulationState) -> int:
 static func _advance_multicamp(state: SimulationState, scheduler: SimulationScheduler,
         elapsed: int, max_steps: int) -> Dictionary:
     var encounter := HuntingPveRunV2.active_multicamp_id(state)
-    var restored := HuntingPveRunV2.resume_active(state,encounter)
+    # Preserve personally enabled V6.5 skills on every live multicamp tick.
+    # Empty overrides retain the legacy combat gate-OFF behavior.
+    var restored := HuntingPveRunV2.resume_active(state,encounter,scheduler.v63_preview_overrides)
     if not bool(restored.get("ok",false)):
         return restored
     var session: HuntingPveRunV2 = restored["session"]
