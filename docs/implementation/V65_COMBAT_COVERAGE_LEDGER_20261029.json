@@ -6177,5 +6177,18 @@
     "result": "adb not installed or not on PATH",
     "device_qa": "NOT_RUN",
     "status": "PENDING"
+  },
+  "d8_post_patch_boss_recapture": {
+    "status": "FAILED_CAPTURE_UNVERIFIED",
+    "attempted_on": "2026-10-30",
+    "tested_copy": "E:/TongMonBaDaoWorkspace/01_Game/TMB_V65_D8_SYNC_20261030 (no Git metadata; source SHA unverified)",
+    "script": "godot/tests/presentation/v65_d7_visual_matrix_capture_test.gd",
+    "boss_id": "boss_thiet_giap",
+    "exit_code": 1,
+    "error": "production Boss picker could not select boss_thiet_giap",
+    "log": "E:/TongMonBaDaoWorkspace/QA_Evidence/V65_D8_REFRESH_FIX_20261030/d7_boss_gui_after_d8/bow_liep_anh_boss_thiet_giap.log",
+    "log_sha256": "ECD69B6C9FA27048799BB4D2EEEAEB8E9841ACB937F94DA40BDBC2C2DC81CDAB",
+    "screenshot": null,
+    "interpretation": "Unverified disposable-copy capture failure; not attributed to the published branch or counted as a product regression. Prior D7 9/9 scripted captures remain baseline-only; post-D8 Boss capture is pending."
   }
 }
