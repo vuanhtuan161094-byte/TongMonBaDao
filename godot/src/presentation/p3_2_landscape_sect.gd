@@ -284,6 +284,11 @@ func _ready() -> void:
     _build_b3_hunt_panel()
     _build_pve_quick_entry()
     _build_pve_party_picker()
+    # Keep a player's explicit V6.5 preview selection after Save/Reload.
+    # Legacy saves remain OFF, and the canonical owner has already restored
+    # the same overrides before any offline catch-up.
+    if state.sect.v63_archive_opt_in and state.sect.v63_skill_combat_opt_in:
+        _set_v63_preview_gate(true,false)
     _resume_saved_b3_hunt()
 
 func _exit_tree() -> void:
@@ -1494,15 +1499,10 @@ func _on_v63_preview_gate_toggled(enabled: bool) -> void:
     _set_v63_preview_gate(enabled,true)
 
 func _set_v63_preview_gate(enabled: bool,persist: bool) -> bool:
-    v63_preview_overrides = {}
-    if enabled:
-        v63_preview_overrides = {
-            "sect_codex":true,"technique_learning":true,"human_skill_combat":true,
-            "divine_skill_combat":true,"skill_successors":true,"boss_encounters":true
-        }
     if state != null:
         state.sect.v63_archive_opt_in = enabled
         state.sect.v63_skill_combat_opt_in = enabled
+    v63_preview_overrides = V63FeatureGates.persisted_preview_overrides(state)
     if runtime_session != null and runtime_session.owner != null and runtime_session.owner.scheduler != null:
         runtime_session.owner.scheduler.v63_preview_overrides = v63_preview_overrides.duplicate(true)
     if v63_combat_hud != null and b3_hunt_arena != null:
