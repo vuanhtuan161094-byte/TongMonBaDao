@@ -1,15 +1,15 @@
 # TÔNG MÔN BÁ ĐẠO — TÔNG VỤ UI/UX V1.0 (Owner design checkpoint)
 Date: 2026-10-30
-Status: DESIGN APPROVED IN PRINCIPLE / CODE NOT IMPLEMENTED / NOT GUI-ACCEPTED
+Status: THREE-SCREEN DESIGN LOCKED BY OWNER (2026-10-30) / IMPLEMENTATION NOT STARTED / GODOT & ANDROID NOT ACCEPTED
 Scope: UI/UX and intended behavior only. NO runtime authority; NO change to main, RC #52, V6.5 feature, or the one-game integration branch.
 Design branch: design/tong-vu-uiux-v1-20261030
 
 ## 0. Quyết định của Owner và mức nghiệm thu
 
-Owner đã chấp thuận phong cách Tổng Quan, hướng bố cục Sản Xuất và bản mẫu tương tác Nhân Sự trong cuộc thảo luận ngày 30/10/2026.
+Owner đã duyệt bố cục cả ba màn: Tổng Quan / Sản Xuất / Nhân Sự. Đây là DESIGN LOCK để giữ quyết định, KHÔNG đồng nghĩa GUI pass hoặc backend complete.
 - **Tổng Quan:** bố cục và visual concept APPROVED; chưa kiểm tra Godot GUI / Android.
-- **Sản Xuất:** direction / screen APPROVED WITH UX FIXES; phải bỏ dữ liệu lặp, nút không hợp lệ, density quá cao trước khi implementation.
-- **Nhân Sự:** functional UX WIRE­FRAME APPROVED; ảnh minh họa chính thức chưa hoàn thiện và chưa được Owner duyệt hình.
+- **Sản Xuất:** LAYOUT APPROVED WITH SPECIFIED UX CORRECTIONS; loại dữ liệu lặp, tránh nút chưa có backend, giảm mật độ nút trước khi implement.
+- **Nhân Sự:** OWNER APPROVED LAYOUT AND VISUAL CONCEPT (chọn A, 2026-10-30); ảnh tạo bởi AI là mục tiêu thị giác, chưa phải Source A source asset hay screenshot Godot.
 - **Backend wiring, exact-screen asset export, device QA:** PENDING. Không coi bản thiết kế là đã có gameplay.
 - Owner dừng mở rộng TV-10 (mục tiêu/nhiệm vụ/phần thưởng), ưu tiên hoàn thiện UI hiện có.
 
@@ -79,18 +79,19 @@ Reference: integration/one-game-v65-20261030 (starting RC #52 source). Need re-c
 | Batch/auto policy | Các thao tác per-building hiện có; coordinator tổng hợp chưa chứng minh | Thiết kế tương lai; phải implement/test mới bật |
 | Save/offline/receipt | SaveService/Warehouse canonical; exactly-once QA existing | Không giả nhận hàng, trừ tiền hay thay state ở presentation |
 
-**Backend blockers P0:** không có batch optimizer/profession matching fully wired; policy orchestration across plants/buildings chưa verified; disabled upgrades; warehouse max-capacity UI giả.
-**P1:** lọc/tìm kiếm/danh sách, touch targets/scroll, context restoration, camera connector, preview/cancel batch, logs.
+**Các hạng mục backend P0/P1:** được tách sang `docs/design/TMB_TONG_VU_BACKEND_GAPS_20261030.md`. Không coi chúng đã có chỉ vì thiết kế đã duyệt.
 
 ## 7. Visual requirements and mockup provenance
 
 - 16:9 landscape 1280×720, parchment cream, jade green, restrained gold, Source A chibi/pagoda style; map-first khi trở về thế giới.
 - Bố cục ngắn, nút đủ lớn cho cảm ứng; không bắt người chơi gõ hay scroll lồng nhau nhiều.
 - Các preview image trong phiên chat 30/10/2026 là **AI-generated concept**, không phải Source A binary, không phải Godot screenshot và không phải asset đã sẵn sàng nhập.
-- Screen Tổng Quan mockup đã được owner chấp nhận; Screen Sản Xuất cần sửa UX/button policy; Screen Nhân Sự đã duyệt interactive wireframe, **chưa có ảnh final**. Bản PNG trong chat chưa được commit cùng tài liệu này.
+- Screen Tổng Quan, Sản Xuất và Nhân Sự đều đã được owner duyệt làm **bố cục đích**; Sản Xuất giữ UX correction list. Hình Nhân Sự ngày 30/10 đã được duyệt bố cục (A). PNG gốc vẫn nằm trong gói thiết kế ngoài GitHub; nhánh này lưu tài liệu/spec, không tuyên bố đã commit PNG.
 - Không bỏ qua audit provenance, image import, DPI, fonts và manual input QA.
 
-## 8. Định nghĩa nghiệm thu sau này
+## 8. Định nghĩa nghiệm thu sau này (không phải điều kiện duyệt design)
+
+**Design sign-off** đã có cho cả 3 màn. **Engineering acceptance** chỉ xảy ra sau khi mọi hành động được gắn backend thật và chạy QA đúng SHA.
 
 1. Exact source SHA, authoritative callbacks, không fake simulation; non-working button disabled/hidden.
 2. Demo luồng: Tông Vụ → Sản Xuất → instance → Tới → map focus + panel → Quay lại Tông Vụ.
@@ -102,7 +103,7 @@ Reference: integration/one-game-v65-20261030 (starting RC #52 source). Need re-c
 
 ## 9. Workflow & ownership
 
-This is **documentation-only design checkpoint** in an isolated GitHub branch. No Godot edits, no PR/merge, no CLI worktree on user PC. No instruction for active Codex to pause or switch context. Handoff implementation chỉ sau khi owner duyệt thiết kế hoàn chỉnh và integration ổn định.
+This is **documentation-only design checkpoint** in an isolated GitHub branch. No Godot edits, no PR/merge, no CLI worktree on user PC. No instruction for active Codex to pause or switch context. **Owner already approved the three design layouts**; handoff implementation deferred until ONE GAME integration is stable and the owner authorizes the next code packet.
 
 Related references:
 - Integration Hub: https://github.com/vuanhtuan161094-byte/TongMonBaDao/issues/56
