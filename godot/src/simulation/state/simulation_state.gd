@@ -69,6 +69,15 @@ func validate_invariants() -> Array[String]:
     var has_v63_archive_state := sect.v63_archive_opt_in or not sect.v63_archived_codices.is_empty() or not sect.v63_archive_research_progress.is_empty() or not sect.v63_archive_operation_receipts.is_empty() or sect.v63_archive_operation_index > 0 or not sect.v63_codex_drop_receipts.is_empty() or sect.v63_archive_event_count > 0
     if has_v63_archive_state:
         errors.append_array(V63SectArchiveSystem.validate_state(self))
+    var has_v63_learning_state := sect.v63_learning_opt_in or not sect.v63_learning_active_jobs.is_empty() or not sect.v63_learning_operation_receipts.is_empty() or sect.v63_learning_job_index > 0 or sect.v63_learning_event_count > 0
+    if not has_v63_learning_state:
+        for learning_disciple_value in disciples.values():
+            var learning_disciple: DiscipleState = learning_disciple_value
+            if not learning_disciple.known_techniques.is_empty() or learning_disciple.active_technique_main != &"" or learning_disciple.active_technique_aux != ["", ""] or learning_disciple.active_job_id != &"" or not learning_disciple.v63_study_job.is_empty():
+                has_v63_learning_state = true
+                break
+    if has_v63_learning_state:
+        errors.append_array(V63LearningSystem.validate_state(self))
 
     if sect.treasury < 0:
         errors.append("Sect treasury is negative.")
