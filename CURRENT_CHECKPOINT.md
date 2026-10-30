@@ -1,11 +1,11 @@
 # CURRENT CHECKPOINT — ONE GAME INTEGRATION
 
-Updated 2026-10-30 (Asia/Saigon). This file supersedes the archived RC status below.
+Updated 2026-10-31 (Asia/Saigon). This file supersedes the archived RC status below.
 
 ## Current candidate
 
 - Integration branch: `integration/one-game-v65-20261030`
-- Latest tested gameplay commit: `f18e4d6419f9ac43cf4a9fac119a415cb4f0c40d`
+- Latest tested gameplay commit: `020531cb555cce949442ec4a257ca557255c9e4a` (R4 / D4-A; docs-only checkpoint may follow).
 - Runtime base remains PvE RC #52; PR #52, V6.5 source, and `main` are unchanged.
 - Coordination: [Issue #56](https://github.com/vuanhtuan161094-byte/TongMonBaDao/issues/56); conflict authority: [Issue #54 matrix](https://github.com/vuanhtuan161094-byte/TongMonBaDao/issues/54#issuecomment-6520099847).
 
@@ -17,12 +17,29 @@ Updated 2026-10-30 (Asia/Saigon). This file supersedes the archived RC status be
 
 R3 touched: `disciple_state.gd`, `sect_state.gd`, `simulation_state.gd`, `simulation_scheduler.gd`, `save_service.gd`, `building_system.gd`, `p2_3_techniques.gd`, `v63_learning_system.gd`, plus the D3 learning-job/UI tests. SaveService retains RC async atomic writes/backups and accepts prior CARE envelopes.
 
+### R4 / D4-A — integrated and headless PASS
+
+- Code commit: [`020531cb555cce949442ec4a257ca557255c9e4a`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/020531cb555cce949442ec4a257ca557255c9e4a), parent `411951483fceeebd585754fda2def0bc48514542`.
+- Eight changed paths: MapBattleV2, HuntingPveRunV2, DiscipleState, SectState, SimulationState, the existing Human skill-combat kernel, and two D4-A tests. No catalog copy was needed; R1 already carries the approved Human catalog and kernel.
+- One Human branch skill (Liệp Ảnh) is personally learned from an archived manual and equipped on six disciples. All six cast through Combat V2, deal real CombatStatsV2 damage, and preserve pending casts/loadouts in a snapshot. The Thiet Giap Son Vien Human Boss telegraphs and changes phase through its authored HP thresholds. The existing HuntingPveRunV2 path starts and restores the Boss fight.
+- Legacy defaults remain gate-OFF and D4 state fields are omitted unless populated. Boss actions and phase transitions now require `v63_combat_enabled`, including after a gate-OFF restore.
+- Rollback: disable the preview/gate or revert this package’s eight paths; do not delete new records from saves.
+
+### R4 final focused evidence
+
+- Windows Godot `4.7.2.stable.official.ed1daf0bf`; 16 sequential commands (editor import + 15 focused tests), all exit 0.
+- D4-A combat and state round-trip, D3 learning job/UI, D2 archive, P3.7 Warehouse, SaveService async, SAFE-01 recovery, PvE Save/Return/Reload, HP0 receipt bridge, formation, C17 movement, Injury120, RuntimeClock and live-runtime integration all PASS.
+- Commands and exit codes: `E:\TongMonBaDaoWorkspace\QA_Evidence\ONE_GAME_V65_20261030\R4_D4A_FINAL_FOCUSED_20261031.tsv`, SHA-256 `E8AF94315976CF11C875CF7A3BD85883F10917EEF5190A56D0226B1F342F3704`.
+- Log checksums: `R4_D4A_SHA256SUMS_20261031.txt`, SHA-256 `D747334C4DC363FBC87D0CD7D9818B3625ADDA4178EE7508F0C501290EB1AD5C`. Human combat log SHA-256 `90D70E1A4F69DDA08548178DD0D042DEBC8CE25D96B6586F58D0E7908AE57073`.
+- Test `APPDATA` was redirected inside the isolated integration checkout; no real saves were read or written. Godot logged a Windows root-certificate-store error in each run; it did not affect imports/tests. SAFE-01 and live-runtime recovery logs contain expected malformed-JSON diagnostics.
+- No presentation file changed in D4-A, so no GUI was opened; real combat HUD/Source A visual QA remains D7.
+
 ## Godot 4.7.2 evidence
 
 Isolated checkout: `E:\TongMonBaDaoWorkspace\01_Game\TMB_ONE_GAME_V65_20261030`  
 Evidence directory: `E:\TongMonBaDaoWorkspace\QA_Evidence\ONE_GAME_V65_20261030`
 
-- Headless editor import — exit 0, stderr empty. On the R3 picker-fix tree, stdout SHA-256 `CE9CCEA1BE4DA31DE12806EDC40917C7AB4589E52CEFF90F044BD3FE2BAC2EBF`.
+- R3 headless editor import — exit 0, stderr empty. On the R3 picker-fix tree, stdout SHA-256 `CE9CCEA1BE4DA31DE12806EDC40917C7AB4589E52CEFF90F044BD3FE2BAC2EBF`.
 - `res://tests/simulation/v63_d1_content_registry_test.gd` — PASS, 105 families / 531 nodes / 18 rare variants / 9 Boss records (R1 log `R1_d1_content_registry_test.stdout.log`).
 - `res://tests/simulation/v63_d2_sect_archive_test.gd` — PASS, 159 codices / 150 archivable manuals / Warehouse and save round-trip (R3 log SHA `E7A2BD07F2137F3C6F7EE84B8EBFAE32918F641582F55948AE5ADA621F7A801B`).
 - `res://tests/simulation/one_game_r2_open_world_codex_receipt_test.gd` — PASS, retry-safe HP0 to one Warehouse receipt and exact-once save/load (SHA `8D63F9D825F8B95ECDA530ED1C9EF3DBA7B61665DDB5F0F8F887640DE74F92F2`).
@@ -34,13 +51,13 @@ Focused stdout/stderr logs are in the evidence directory above. All tests ran se
 
 ## Pending — not user-playable accepted
 
-- Feature gates remain OFF by default; current D3 operation was exercised with explicit test preview overrides.
+- Feature gates remain OFF by default; D3 and D4 focused tests used explicit preview overrides for candidate behavior.
 - D2 single-encounter `HuntingMapV2.claim_reward` codex bridge is not integrated yet.
-- D4–D8 live combat, boss and full battle presentation are not yet connected to this branch.
+- D4-A is integrated for one Human branch and one Boss; D4-B (all Human branches/Bosses) and D5–D8 remain pending. This is not the complete skill roster or a user-playable accepted build.
 - Physical GUI gameplay/capture, Source A UI reskin/owner visual review, Android device QA and whole-game performance remain PENDING.
 - No claim of FULL COMPLETE or release readiness.
 
-The isolated checkout contains Godot-generated import metadata and QA files. None were staged. Existing E: workspaces and saves were left untouched.
+The isolated checkout contains Godot-generated import metadata, test user data, and QA files. They were not staged. Existing E: workspaces and real saves were left untouched.
 
 ## Archived RC checkpoint context
 

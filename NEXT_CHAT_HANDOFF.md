@@ -1,6 +1,6 @@
 # NEXT CHAT HANDOFF — ONE GAME V6.5 INTEGRATION
 
-Continue from `integration/one-game-v65-20261030`. Fetch GitHub first; gameplay code through R3 was last tested at `f18e4d6419f9ac43cf4a9fac119a415cb4f0c40d`. A documentation-only checkpoint may sit on top; always use the live branch SHA.
+Continue from `integration/one-game-v65-20261030`. Fetch GitHub first; R4 / D4-A gameplay code was tested at `020531cb555cce949442ec4a257ca557255c9e4a`. A documentation-only checkpoint may sit on top; always use the live branch SHA.
 
 ## Read before editing
 
@@ -25,6 +25,8 @@ All R3 focused tests pass. SAFE-01 recovery prints expected malformed-save parse
 
 ## Next authorized code packet
 
-Proceed to R4 / D4-A on the same branch. Before touching shared runtime files, compare live integration HEAD with PR #52 and review Issue #54's per-file matrix. Graft the smallest Human combat slice into the existing Combat V2 authority, keeping the gate OFF for legacy saves. Preserve Injury120, six-person parties, receipts, one Warehouse, active jobs, SaveService async/backups and RC recovery. Use source-authorized VFX only.
+Proceed to **R4 / D4-B: all nine Human branches and three Human Bosses**, on the same branch. The R4 shared Combat V2/HuntingPveRun adapters, personal learned/equipped state and D4-A snapshot validation are already integrated. Read the latest V6.5 test/source paths and implement the smallest next content slice. Keep one Combat V2 authority, gate OFF for legacy saves, and preserve Injury120, six-person teams, kill receipts, Warehouse, One Active Job, SaveService atomic writes/backups and RC recovery.
 
-After each package: exact allowlist and rollback, Godot import, focused tests, affected regressions, then commit/push by compare-and-swap and update Issue #56. Do not open the broad 46-test matrix for a small packet. Human GUI, Android, Source A visual review and performance remain PENDING until actually exercised.
+D4-A tested SHA: `020531cb555cce949442ec4a257ca557255c9e4a`. Its focused suite is recorded in `CURRENT_CHECKPOINT.md` and the local QA evidence folder. The next package must rerun D4-A plus relevant Human branch/Boss and affected PvE/save regressions after official Godot 4.7.2 import.
+
+D2 single-encounter codex reward routing, D4-B through D8, live P3.2 HUD/VFX, GUI/owner visual review, Android and overall performance remain pending. Do not claim a full playable accepted build until the end-to-end route and visual/device gates pass.
