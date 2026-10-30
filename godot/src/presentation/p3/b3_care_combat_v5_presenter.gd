@@ -525,7 +525,10 @@ func attach_session(session: MapBattleV2) -> void:
     _frame_clock = 0.0
     _event_cursor = int(session.get("event_sequence")) if session != null and _battle_has_property(&"event_sequence") else 0
     _event_encounter_id = session.encounter_id if session != null else ""
-    _last_authority_event_signatures = _authority_event_signatures(session.events) if session != null else []
+    if session != null:
+        _last_authority_event_signatures = _authority_event_signatures(session.events)
+    else:
+        _last_authority_event_signatures.clear()
     _positions.clear()
     _view_prev.clear()
     _view_next.clear()

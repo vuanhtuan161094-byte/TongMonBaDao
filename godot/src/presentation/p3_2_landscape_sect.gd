@@ -1562,6 +1562,11 @@ func _start_v63_boss_for_picked_party() -> void:
     if not _set_v63_preview_gate(true,true):
         pve_party_picker_feedback.text = "Chưa lưu được opt-in V6.5; trận chưa bắt đầu."
         return
+    var selected_level := HuntingMapV2.selected_level(state,"thanh_truc_lam")
+    var map_choice := HuntingMapV2.choose_level(state,"thanh_truc_lam",selected_level)
+    if not bool(map_choice.get("ok",false)):
+        pve_party_picker_feedback.text = "Bản đồ Boss chưa sẵn sàng: %s" % str(map_choice.get("reason","không đủ điều kiện"))
+        return
     var encounter_id := "pve:v63_boss:%s:%d:%d" % [boss_id.validate_node_name(),state.seed,state.sect.v2_pve_settlement_receipts.size()]
     var session := HuntingPveRunV2.new()
     var result := session.begin(state,"thanh_truc_lam",encounter_id,state.seed ^ state.tick ^ boss_id.hash(),party,boss_id,_current_v63_preview_overrides())
