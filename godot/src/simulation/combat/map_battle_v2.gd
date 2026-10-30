@@ -869,6 +869,9 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
         return 0.0
     var actual_damage := float(settlement["actual_damage"])
     target["hp"] = float(settlement["target_hp_after"])
+    if (float(target.hp) <= 0.0 and bool(target.get("v63_combat_enabled", false)) and
+        V63DivineSkillCombatSystem.prevent_lethal(self, target)):
+        target["hp"] = 1.0
     attacker["hp"] = float(settlement["attacker_hp_after"])
     V63HumanSkillCombatSystem.observe_boss_damage(self,target,target_hp_before,attacker,damage_element,kind)
     _sync_linked_hp(attacker)
@@ -876,6 +879,8 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
     actions += 1
     _event("hit",{"attacker":attacker["id"],"target":target["id"],"damage":actual_damage,
         "kind":kind,"critical":crit,"lifesteal":settlement["lifesteal_heal"]})
+    if bool(target.get("v63_combat_enabled", false)):
+        V63DivineSkillCombatSystem.reflect_committed(self, target, attacker, actual_damage, kind)
     if float(target["hp"]) <= 0.0:
         if continuous_mode and str(target["side"]) == "monster":
             _record_monster_kill(attacker, target, kind, actual_damage)
@@ -1107,6 +1112,8 @@ func acknowledge_kill_event(kill_id: String) -> bool:
     return false
 
 func _record_monster_kill(attacker: Dictionary, target: Dictionary, kind: String, damage: float) -> void:
+    if bool(target.get("v63_summon_no_reward", false)):
+        return
     var slot := str(target.get("spawn_slot_id", ""))
     var generation := int(target.get("slot_generation", 0))
     # setup() and add_continuous_monster() validate these identities.
@@ -1153,3 +1160,47 @@ func _event(kind: String, payload: Dictionary) -> void:
     var row := {"type":kind,"time":now,"encounter_id":encounter_id}
     row.merge(payload)
     events.append(row)
+
+func add_v63_boss_summons(boss: Dictionary, requested: int) -> int:
+    var parent := str(boss.get("id", ""))
+    if not active or not actors.has(parent) or float(boss.get("hp", 0.0)) <= 0.0:
+        return 0
+    var alive := 0
+    var ordinal := int(boss.get("v63_summon_ordinal", 0))
+    for actor in actors.values():
+        if str(actor.get("v63_summon_parent", "")) == parent and float(actor.get("hp", 0.0)) > 0.0:
+            alive += 1
+    var added := 0
+    for index in range(mini(clampi(requested, 0, 4), 4 - alive)):
+        if _count_monster_records() >= MAX_MONSTERS or _last_spawn_generation.size() >= MAX_REMEMBERED_SPAWN_SLOTS:
+            break
+        ordinal += 1
+        var summon: Dictionary = boss.duplicate(true)
+        for key in summon.keys():
+            if str(key).begins_with("v63_"):
+                summon.erase(key)
+        var summon_id := parent + "/summon/" + str(ordinal)
+        summon["id"] = summon_id
+        summon["tier"] = "normal"
+        summon["stats"] = boss.stats.duplicate(true)
+        summon.stats["max_hp"] = maxf(1.0, float(boss.max_hp) * 0.03)
+        summon.stats["attack"] = maxf(1.0, float(boss.stats.attack) * 0.3)
+        summon.stats["defense"] = maxf(0.0, float(boss.stats.defense) * 0.2)
+        summon["max_hp"] = float(summon.stats.max_hp)
+        summon["hp"] = float(summon.max_hp)
+        summon["position"] = _keep_inside((boss.position as Vector2) + Vector2(0.5 * (index + 1), 0.5))
+        if not _position_allowed(summon.position):
+            continue
+        summon["status_effects"] = {}
+        summon["next_basic"] = now + STEP_SECONDS
+        summon["next_skill"] = now + 4.0
+        summon["spawn_slot_id"] = summon_id
+        summon["slot_generation"] = 1
+        summon["v63_summon_parent"] = parent
+        summon["v63_summon_no_reward"] = true
+        actors[summon_id] = summon
+        _last_spawn_generation[summon_id] = 1
+        _event("boss_summon", {"boss_id":str(boss.get("v63_boss_id", "")),"actor_id":summon_id,"parent":parent,"no_loot":true})
+        added += 1
+    boss["v63_summon_ordinal"] = ordinal
+    return added

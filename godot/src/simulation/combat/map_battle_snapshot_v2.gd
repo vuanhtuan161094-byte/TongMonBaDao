@@ -195,10 +195,43 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
             return {"ok":false,"reason":"invalid_role_guard_timer"}
         # Validate S1 authoritative statuses before replaying untrusted bytes.
         var statuses = actor.get("status_effects",{})
-        if not (statuses is Dictionary) or statuses.size() > 2:
+        if not (statuses is Dictionary) or statuses.size() > 3:
             return {"ok":false,"reason":"invalid_combat_status_map"}
         for status_key in statuses.keys():
-            if not ["burn","weaken"].has(str(status_key)):
+            var status_name := str(status_key)
+            if status_name == "v63_poison":
+                var stacks = statuses[status_key]
+                if not (stacks is Array) or stacks.size() > V63HumanSkillCombatSystem.POISON_BOSS_TARGET_CAP:
+                    return {"ok":false,"reason":"invalid_poison_stack_list"}
+                for stack_raw in stacks:
+                    if not (stack_raw is Dictionary):
+                        return {"ok":false,"reason":"invalid_poison_stack"}
+                    var stack: Dictionary = stack_raw
+                    var owner_id := str(stack.get("owner_id",""))
+                    var source_skill_id := str(stack.get("source_skill_id",""))
+                    var generation_id := str(stack.get("source_skill_generation_id",""))
+                    var attack_snapshot = stack.get("attack_snapshot",{})
+                    var element := str(stack.get("element",""))
+                    var attack_value := float(attack_snapshot.get("attack",0.0)) if attack_snapshot is Dictionary else -1.0
+                    var ordinal = stack.get("stack_ordinal",null)
+                    var ratio := float(stack.get("ratio",-1.0))
+                    var applied_at := float(stack.get("applied_at",-1.0))
+                    var next_tick := float(stack.get("next_tick",-1.0))
+                    var expires_at := float(stack.get("expires_at",-1.0))
+                    if (owner_id.is_empty() or source_skill_id.is_empty() or generation_id.is_empty() or
+                        not (attack_snapshot is Dictionary) or attack_snapshot.size() > 32 or
+                        is_nan(attack_value) or is_inf(attack_value) or attack_value <= 0.0 or
+                        element.is_empty() or not (ordinal is int) or int(ordinal) <= 0 or
+                        is_nan(ratio) or is_inf(ratio) or ratio < 0.0 or ratio > 0.2 or
+                        is_nan(applied_at) or is_inf(applied_at) or applied_at < 0.0 or applied_at > battle.now+0.00001 or
+                        is_nan(next_tick) or is_inf(next_tick) or next_tick < applied_at or
+                        is_nan(expires_at) or is_inf(expires_at) or expires_at < applied_at or expires_at > max_time+90.0 or
+                        next_tick > expires_at+1.0):
+                        return {"ok":false,"reason":"invalid_poison_stack_fields"}
+                    if hp > 0.0 and expires_at > battle.now and next_tick <= battle.now:
+                        return {"ok":false,"reason":"stale_poison_tick"}
+                continue
+            if not ["burn","weaken"].has(status_name):
                 return {"ok":false,"reason":"unsupported_combat_status"}
             var status = statuses[status_key]
             if not (status is Dictionary):
@@ -208,10 +241,10 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
                 return {"ok":false,"reason":"invalid_status_expiry"}
             if str(status.get("caster","")).is_empty() or str(status.get("skill_id","")).is_empty():
                 return {"ok":false,"reason":"missing_status_provenance"}
-            var factor := float(status.get("ratio",-1.0)) if str(status_key) == "burn" else float(status.get("factor",-1.0))
+            var factor := float(status.get("ratio",-1.0)) if status_name == "burn" else float(status.get("factor",-1.0))
             if is_nan(factor) or is_inf(factor) or factor < 0.0 or factor > 1.0:
                 return {"ok":false,"reason":"invalid_status_factor"}
-            if str(status_key) == "burn":
+            if status_name == "burn":
                 var due := float(status.get("next_tick",-1.0))
                 if is_nan(due) or is_inf(due) or due < 0.0 or due > until+1.0:
                     return {"ok":false,"reason":"invalid_burn_tick"}
@@ -247,6 +280,20 @@ static func _restore_payload(data: Dictionary) -> Dictionary:
         var actor: Dictionary = actor_value
         var statuses: Dictionary = actor.get("status_effects",{})
         for status_key in statuses.keys():
+            if str(status_key) == "v63_poison":
+                var stacks: Array = statuses[status_key]
+                for stack_value in stacks:
+                    var stack: Dictionary = stack_value
+                    var owner_id := str(stack.get("owner_id",""))
+                    var skill_id := str(stack.get("source_skill_id",""))
+                    var owner: Dictionary = battle.actors.get(owner_id,{})
+                    var definition := V63HumanSkillCombatSystem.skill_definition(skill_id)
+                    var owner_loadout = owner.get("v63_skill_loadout",[])
+                    if (owner.is_empty() or str(owner.get("side","")) == str(actor.get("side","")) or
+                        definition.is_empty() or str(definition.get("effect","")) != "poison" or
+                        not (owner_loadout is Array) or not owner_loadout.has(skill_id)):
+                        return {"ok":false,"reason":"invalid_poison_status_provenance"}
+                continue
             var status: Dictionary = statuses[status_key]
             var caster_id := str(status.get("caster",""))
             var skill_id := str(status.get("skill_id",""))
