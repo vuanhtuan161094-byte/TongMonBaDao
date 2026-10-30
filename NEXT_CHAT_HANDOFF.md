@@ -1,3 +1,29 @@
+# Current handoff — D7 overlay spacing code committed
+
+Repository vuanhtuan161094-byte/TongMonBaDao; branch feature/v63-v64-full-combat-20261029. D7 code SHA 94d7a3007696351d8e723969882926f859c94ee7; docs checkpoint follows. Main c0c1382f119599497b52d8ee8abd9e830a883f1e. PR #52 remains Draft/open/unmerged at 2a99ed505c85a17f6d25f91891560ca51fa02d88. Do not merge or edit PR #52.
+
+## Completed
+
+- Exact approved D7 source/test/UID allowlist committed; exact Git blob parity checked against tested isolated copy.
+- Official Godot 4.7.2 import exit 0, layout test exit 0, D7 HUD test exit 0. Log SHA-256 values: import FC3CCD7BB74B59DCE558296F2C5686C7D8BE0D73FB48014FCDE4744752B8230B; layout 3F9C36573BA45BD47ACC16D14802CB2F7E1059F0A0D4465390D8D45D09B3662F; HUD E571765F9F6899FF31A7FF66C09F0640ED01146F4FB2EF977A180ED727237FD3.
+- Screen-space square-spiral collision layout preserves HP bars and exact damage text/event IDs; simulation and actor coordinates remain untouched.
+
+## Not accepted as complete
+
+- Computer Use app approval timed out; post-fix live GUI capture and actual mouse/Save-Return were not available. Prior 9/9 branch + 9/9 Boss scripted captures are baseline only.
+- D7 cumulative matrix was intentionally halted at 16/46 after owner narrowed the run to focused checks; no cumulative PASS is claimed. D6 previous full 20/20 result remains recorded.
+- Owner visual acceptance, Android, overall FPS/performance and authored Body realms 7–30 remain pending/blocked. V6.5 stays INCOMPLETE.
+
+## QA backlog
+
+1. After GUI automation approval is available, capture current branch 1280×720 gameplay, verify labels under live combat, then manual Save/Return/Reload and repeat the 9/9 branch + 9/9 Boss matrix. Obtain owner visual review.
+2. Separately complete Android device and FPS/performance acceptance; investigate only against measured evidence.
+3. Do not invent Body realms 7–30 recipes/material sources; keep that gate blocked until authored content exists.
+
+QA copy: E:\TongMonBaDaoWorkspace\01_Game\TMB_V65_VERIFY_20261030\godot. Evidence: E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D7_OVERLAY_20261030. This isolated snapshot is not a clean full checkout; see the D7 evidence section for parity qualification.
+
+---
+
 # Latest D8 endgame supplement — resume from feature HEAD 86cc31f97fe1c0d34e84c8b1efdb6b3cc20ed4c8
 
 This was a docs-only evidence checkpoint on the existing feature branch. Official Windows Godot 4.7.2.stable.official.ed1daf0bf; import exit 0 (log SHA-256 158DC26483D8D869BB4480668F32464988ED3003B2875BC33B61E42167002DAA). Sequential D8 endgame tests: v63_d8_multiseed_camp_battle_test.gd exit 0 (log SHA-256 E9ADD9C948017312BB88AFAAC15E3C2943B16D26CA5A464BB91BD8BA10177678); v63_d8_endgame_progression_test.gd exit 0 (log SHA-256 B92AFD851CC928432951D96AA14ED731DDF649CE8E3A2BB8794D8A0BB90ABB13); results manifest SHA-256 98479AC86989CB8328576B5F75A89B05594E6CA21728568F8140255A4EEE6211. PASS 2/2. Manifest exit codes were independently read from the isolated E: QA folder.

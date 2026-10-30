@@ -1,3 +1,19 @@
+## Latest D7 overlay checkpoint — 2026-10-30
+
+D7 code commit 94d7a3007696351d8e723969882926f859c94ee7; docs-only checkpoint follows. Approved source base was 5289a2dc7160384a4b32fd52708357847974e379, after verifying 5289a2dc7160384a4b32fd52708357847974e379..94d7a3007696351d8e723969882926f859c94ee7 implementation ancestry; only the preceding D8 evidence commit intervened, with no Presenter source changes. Main c0c1382f119599497b52d8ee8abd9e830a883f1e; PR #52 Draft/open/unmerged 2a99ed505c85a17f6d25f91891560ca51fa02d88.
+
+Official Godot 4.7.2.stable.official.ed1daf0bf ran sequentially with captured process exits: editor import exit 0, log SHA-256 FC3CCD7BB74B59DCE558296F2C5686C7D8BE0D73FB48014FCDE4744752B8230B; v63_d7_combat_text_layout_test.gd exit 0, log SHA-256 3F9C36573BA45BD47ACC16D14802CB2F7E1059F0A0D4465390D8D45D09B3662F; existing v63_d7_combat_hud_test.gd exit 0, log SHA-256 E571765F9F6899FF31A7FF66C09F0640ED01146F4FB2EF977A180ED727237FD3. Both focused tests PASS. The existing HUD fixture still emits its previously observed teardown resource-leak warnings; its exit remains 0.
+
+Scope changed only the approved Presenter, new layout test and generated UID. Published/tested blob IDs: Presenter a80200da694724df71d594d67b0ebcd51013d1fa; test cee38de0f55e3392efe7a470d1a4c177c171a0a6; UID 3fae7ede9e88d3f6c3f4c0ba999c1efee90c4da4. Actor positions, Combat V2 values/events/receipts, save, Warehouse, One Active Job, scheduler, Injury120, D8 code, main and PR #52 remain untouched.
+
+QA ran in an isolated verification copy derived from the D8 QA snapshot, not a fresh full checkout. The exact current-branch Presenter, new layout test, and generated UID Git blobs matched the tested copy; this is exact parity for the active patch, not a whole-repository source attestation.
+
+Cumulative 46-case matrix was halted at 16/46 per the owner's narrowed instruction; all 16 completed exits were 0, but the partial matrix is not a PASS. Previous D6 full regression remains PASS 20/20; manifest SHA-256 84CFEDE5292EC65C56F6E7052FBA72B27AA96811F0FE2B7487431B7441521FF7.
+
+STATUS: D7 focused layout/HUD PASS; post-fix GUI BLOCKED because Computer Use approval timed out; post-fix branch/Boss visual captures and physical Save/Return PENDING; owner visual review PENDING; Android PENDING; overall performance REVIEW PENDING; Body realms 7–30 BLOCKED for missing authored content. Overall V6.5 INCOMPLETE.
+
+---
+
 ## Latest D8 endgame regression checkpoint — 2026-10-30
 
 Feature branch source HEAD before this docs-only checkpoint: 86cc31f97fe1c0d34e84c8b1efdb6b3cc20ed4c8; stable main remains c0c1382f119599497b52d8ee8abd9e830a883f1e. PR #52 remains open/Draft/unmerged at 2a99ed505c85a17f6d25f91891560ca51fa02d88.

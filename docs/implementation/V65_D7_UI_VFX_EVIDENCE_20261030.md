@@ -1,3 +1,19 @@
+## D7 overlay spacing checkpoint — 2026-10-30
+
+Code commit: 94d7a3007696351d8e723969882926f859c94ee7, based on 5289a2dc7160384a4b32fd52708357847974e379. The approved D7 exact-path packet was approved against 86cc31f97fe1c0d34e84c8b1efdb6b3cc20ed4c8; the sole intervening commit to the source base was docs-only and was verified by compare. Stable main remains c0c1382f119599497b52d8ee8abd9e830a883f1e. PR #52 remains open, Draft and unmerged at 2a99ed505c85a17f6d25f91891560ca51fa02d88; no PR #52 files were imported.
+
+Implementation: the Presenter now computes bounded square-spiral screen-space candidates on demand. It keeps authoritative HP bars visible, places labels by priority, suppresses only an optional tag if no free position is available, and routes transient damage text around the HUD and other text. Displayed text and event IDs are unchanged. Actor positions, Combat V2 state, damage values, receipts, saves and D8 files were not changed.
+
+Official Godot 4.7.2.stable.official.ed1daf0bf ran sequentially with captured process exits: editor import exit 0, log SHA-256 FC3CCD7BB74B59DCE558296F2C5686C7D8BE0D73FB48014FCDE4744752B8230B; v63_d7_combat_text_layout_test.gd exit 0, log SHA-256 3F9C36573BA45BD47ACC16D14802CB2F7E1059F0A0D4465390D8D45D09B3662F; existing v63_d7_combat_hud_test.gd exit 0, log SHA-256 E571765F9F6899FF31A7FF66C09F0640ED01146F4FB2EF977A180ED727237FD3. Both focused tests PASS. The existing HUD fixture still emits its previously observed teardown resource-leak warnings; its exit remains 0.
+
+Tested blobs: Presenter a80200da694724df71d594d67b0ebcd51013d1fa; focused test cee38de0f55e3392efe7a470d1a4c177c171a0a6; generated UID 3fae7ede9e88d3f6c3f4c0ba999c1efee90c4da4. QA logs are under E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D7_OVERLAY_20261030\logs.
+
+QA ran in an isolated verification copy derived from the D8 QA snapshot, not a fresh full checkout. The exact current-branch Presenter, new layout test, and generated UID Git blobs matched the tested copy; this is exact parity for the active patch, not a whole-repository source attestation.
+
+A cumulative 46-case D7/D8/Save/PvE + D6 run was halted at 16/46 when the owner narrowed the task to focused verification; each of those 16 completed processes exited 0, but that partial batch has no final manifest and is not claimed as a cumulative PASS. The earlier D6 full regression remains 20/20 PASS, manifest SHA-256 84CFEDE5292EC65C56F6E7052FBA72B27AA96811F0FE2B7487431B7441521FF7.
+
+Post-fix GUI is BLOCKED: Computer Use app approval timed out, so no new gameplay screenshot or GUI interaction was captured. Keep the prior 9/9 branch and 9/9 Boss scripted matrix as baseline-only. Physical mouse/Save-Return, post-fix visual capture, owner review, Android and overall FPS/performance remain separate QA backlog. Body realms 7–30 remain content-blocked. V6.5 remains INCOMPLETE.
+
 ## Latest D7 GUI matrix — 2026-10-30 (current)
 
 Feature runtime/test source: 59f3903f37dc0260cf07059bf3bd24e0973168c6. Evidence was captured in a normal Windows Godot 4.7.2 GUI window at 1280×720 against the real P3.2 Combat V2 Boss encounter. The harness drives existing UI signals and captures the root viewport; it is scripted GUI evidence, not physical-mouse or owner acceptance.
