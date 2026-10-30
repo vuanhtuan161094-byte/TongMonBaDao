@@ -19,6 +19,9 @@ func attach(simulation_state: SimulationState, now_unix: int) -> Dictionary:
         return {"ok":false,"reason":"invalid_runtime_state"}
     state = simulation_state
     scheduler = SimulationScheduler.new(state)
+    # Apply the owner's saved opt-in BEFORE any offline catch-up/active combat
+    # is advanced, not after the first P3.2 UI frame.
+    scheduler.v63_preview_overrides = V63FeatureGates.persisted_preview_overrides(state)
     var initialized := SimulationRuntimeClockV2.initialize(state,now_unix)
     if not bool(initialized.get("ok",false)):
         state = null
@@ -39,6 +42,9 @@ func load_from_path(
     state = loaded
     durable_path = path
     scheduler = SimulationScheduler.new(state)
+    # Apply the owner's saved opt-in BEFORE any offline catch-up/active combat
+    # is advanced, not after the first P3.2 UI frame.
+    scheduler.v63_preview_overrides = V63FeatureGates.persisted_preview_overrides(state)
 
     if state.runtime_last_wall_unix <= 0:
         var initialized := SimulationRuntimeClockV2.initialize(state,now_unix)
