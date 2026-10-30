@@ -1,3 +1,14 @@
+# V6.5 D8 INTEGRATION PATCH — 2026-10-30 (CURRENT, UNTESTED)
+
+- Existing feature branch only: `feature/v63-v64-full-combat-20261029`. Five same-branch source/test commits since D8 head `48ed10f750b08bc9ed5bbe74928ae8e60173a31f`, latest code+test SHA `63b5eaef9eae17ccc0fb71a1fa8b7524f50fc64f`.
+- Discovered: `SimulationRuntimeClockV2._advance_multicamp()` omitted `scheduler.v63_preview_overrides` on `HuntingPveRunV2.resume_active()`; a personally learned/equipped V6.5 skill could turn OFF during a continuous runtime poll. `SimulationRuntimeOwnerV2.load_from_path()` also created the scheduler with empty overrides before offline catch-up, and P3.2 lacked opt-in rehydration after UI reload.
+- Minimal patch: `V63FeatureGates.persisted_preview_overrides(state)` is now shared by UI and runtime; owner attach/load restores saved explicit archive+combat opt-in before catch-up, multicamp resume forwards it, P3.2 preserves the toggle on reopen. Legacy/partial opt-in stays OFF. Added `godot/tests/simulation/v63_d8_preview_resume_gate_test.gd`.
+- Evidence status: **SOURCE COMMITTED / GODOT 4.7.2 ENGINE PENDING / GUI PENDING / OWNER PENDING**. The current chat environment cannot run Windows Godot or control the owner's E: session. Do not treat this code patch or its new test as PASS. No PR #52/main merge.
+- **Next single action on Windows:** synchronize exact code tree, run Godot 4.7.2 import + new preview-resume test + original D3/D4/D5/D6/D7/D8 and PvE/save regressions; verify V6.5 enabled skilled disciple actually casts in 6-person continuous PvE, then Save/Return/Reload and offline catch-up, and gate-OFF legacy unchanged. Fix any failure on same feature branch and attach SHA/logs. Run 1280×720 *actual* GUI snapshots of Tàng Kinh Các, Human/Immortal/Divine skills, nine Bosses/VFX, then owner visual review. Compare feature with current RC52 file-by-file; no blind merge. Endgame Body realm 7–30 still content-blocked; don't invent gate costs/materials.
+- Overall V6.5: **INCOMPLETE** pending playable QA, measured FPS/RAM and owner acceptance.
+
+---
+
 ## 30/10/2026 — D8 integrated QA checkpoint
 
 Feature branch `feature/v63-v64-full-combat-20261029`; D8 test-only commit: `9f7cebd3aaa11ef53660497dfe5fc6bab30cb378`; evidence/checkpoint commit is the latest branch tip (verify live ref before editing). Stable main `c0c1382f119599497b52d8ee8abd9e830a883f1e` unchanged. PR #52 remains Draft/open/unmerged at audited head `2a99ed505c85a17f6d25f91891560ca51fa02d88`. Issue #54 tracks the owner execution order.
