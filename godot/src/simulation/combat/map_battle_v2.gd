@@ -129,6 +129,10 @@ func setup(id: String, party: Array, monsters: Array, keep_encounter_open: bool 
             "learned_guard_until":-1.0,"learned_guard_factor":1.0,"status_effects":{},
             "linked_disciple":row.get("disciple",null)
         })
+        var v63_disciple_actor: Dictionary = entries[entries.size()-1]
+        for field in ["v63_skill_loadout","v63_skill_ready","v63_combat_enabled","v63_passive_ids","v63_combat_branch_id","v63_combat_lineage","v63_innate_skill_id","v63_basic_skill_id","basic_element"]:
+            if row.has(field):
+                v63_disciple_actor[field] = row[field].duplicate(true) if row[field] is Array or row[field] is Dictionary else row[field]
     for raw in monsters:
         if not (raw is Dictionary):
             return {"ok":false,"reason":"invalid_monster_entry"}
@@ -162,6 +166,10 @@ func setup(id: String, party: Array, monsters: Array, keep_encounter_open: bool 
             "next_basic":0.0,"next_skill":3.5 if tier == "boss" else 4.0,"guard_until":-1.0,
             "linked_disciple":null,"context_sources":[]
         })
+        var v63_monster_actor: Dictionary = entries[entries.size()-1]
+        for field in ["v63_boss_id","v63_custom_boss_ai","v63_combat_enabled","v63_boss_phase","v63_skill_ready","v63_boss_counter_window","v63_boss_break_gauge","v63_boss_stagger_until","v63_combat_lineage"]:
+            if row.has(field):
+                v63_monster_actor[field] = row[field].duplicate(true) if row[field] is Array or row[field] is Dictionary else row[field]
         if keep_encounter_open:
             entries[entries.size() - 1]["spawn_slot_id"] = str(row.get("spawn_slot_id", ""))
             entries[entries.size() - 1]["slot_generation"] = int(row.get("slot_generation", 0))
@@ -521,6 +529,7 @@ func step(viewed_map: bool = false) -> Dictionary:
     var performance_started_usec := Time.get_ticks_usec() if performance_logging_enabled else 0
     now += STEP_SECONDS
     _process_status_effects()
+    V63HumanSkillCombatSystem.process_status_effects(self)
     _release_casts()
     var actor_ids: Array = actors.keys()
     actor_ids.sort()
@@ -582,23 +591,24 @@ func step(viewed_map: bool = false) -> Dictionary:
                     _event("move",{"actor_id":id,"position":actor["position"]})
             continue
         if now >= float(actor["next_skill"]):
-            if str(actor["tier"]) == "elite" or str(actor["tier"]) == "boss":
+            if (str(actor["tier"]) == "elite" or str(actor["tier"]) == "boss") and not bool(actor.get("v63_custom_boss_ai",false)):
                 _begin_telegraphed_aoe(actor,target)
                 continue
             if str(actor["role"]) == "mage" and _enemies_near(target,3.0)>=2:
                 _cast_mage_aoe(actor,target)
                 continue
         if now >= float(actor["next_basic"]):
+            var action_stats: Dictionary = V63HumanSkillCombatSystem.effective_attack_stats(actor,actor.get("stats",{}))
             var interval := CombatStatsV2.effective_interval(
                 1.65 if str(actor["side"]) == "monster" else float(actor.get("basic_interval",1.6)),
-                float(actor["stats"].get("attack_speed",0.0))
+                float(action_stats.get("attack_speed",0.0))
             )
             if interval <= 0.0:
                 # A -100% or worse attack-speed modifier disables basic hits;
                 # keep checking at the simulation tick without creating debt.
                 actor["next_basic"] = now+STEP_SECONDS
                 continue
-            _deal_direct(actor,target,float(actor.get("basic_ratio",1.0)),"basic",true)
+            _deal_direct(actor,target,float(actor.get("basic_ratio",1.0)),"basic",true,V63HumanSkillCombatSystem.basic_element(actor))
             # Carry fractional deadlines across grid checks without multi-hit catch-up.
             actor["next_basic"] = maxf(now+STEP_SECONDS,float(actor["next_basic"])+maxf(STEP_SECONDS,interval))
     if _count_alive("monster") == 0 and not continuous_mode:
@@ -812,8 +822,13 @@ func _guard_frontline(actor: Dictionary) -> bool:
 func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: String, eligible_lifesteal: bool, damage_element: String = "", can_crit: bool = true) -> float:
     if float(attacker["hp"]) <= 0.0 or float(target["hp"]) <= 0.0:
         return 0.0
-    var a_stats: Dictionary = attacker["stats"]
-    var t_stats: Dictionary = target["stats"]
+    if kind not in ["dot","v63_poison"] and now < float(target.get("v63_evasion_until",-1.0)) and str(attacker.get("side","")) != str(target.get("side","")):
+        _event("evade",{"attacker":str(attacker.get("id","")),"target":str(target.get("id","")),"kind":kind,"until":float(target.get("v63_evasion_until",-1.0))})
+        return 0.0
+    attacker["v63_combat_clock"] = now
+    var target_hp_before := float(target["hp"])
+    var a_stats: Dictionary = V63HumanSkillCombatSystem.effective_attack_stats(attacker,attacker["stats"])
+    var t_stats: Dictionary = V63HumanSkillCombatSystem.effective_defense_stats(target,target["stats"])
     var original_ratio := ratio
     var context: Dictionary = {"ok":true,"outgoing_damage_factor":1.0,
         "basic_followup_chance":0.0,"basic_followup_ratio":0.0}
@@ -825,6 +840,7 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
         if not bool(context.get("ok",false)):
             return 0.0
         ratio *= float(context["outgoing_damage_factor"])
+    ratio *= V63HumanSkillCombatSystem.marked_damage_factor(attacker,target,now)
     var guard_factor := 1.0
     if now < float(target.get("guard_until",-1.0)):
         guard_factor = 0.65
@@ -854,6 +870,7 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
     var actual_damage := float(settlement["actual_damage"])
     target["hp"] = float(settlement["target_hp_after"])
     attacker["hp"] = float(settlement["attacker_hp_after"])
+    V63HumanSkillCombatSystem.observe_boss_damage(self,target,target_hp_before,attacker,damage_element,kind)
     _sync_linked_hp(attacker)
     _sync_linked_hp(target)
     actions += 1
@@ -880,6 +897,11 @@ func _deal_direct(attacker: Dictionary, target: Dictionary, ratio: float, kind: 
 # S1 activates learned damage, burn, weaken and self-guard skills.
 # Dash and fire_combo require separate action semantics and remain deferred.
 func _try_learned_skill(actor: Dictionary, target: Dictionary, guard_only: bool = false) -> bool:
+    if V63HumanSkillCombatSystem.handles_actor(actor):
+        if V63HumanSkillCombatSystem.try_cast(self,actor,target,guard_only):
+            return true
+        if bool(actor.get("v63_custom_boss_ai",false)):
+            return false
     var skills: Array = actor.get("skill_loadout",[])
     var ready: Dictionary = actor.get("skill_ready",{})
     for raw_id in skills:
@@ -992,6 +1014,14 @@ func _begin_telegraphed_aoe(actor: Dictionary, target: Dictionary) -> void:
         "release_at":now+cast_time,"skill":"area_slam"})
 
 func _release_casts() -> void:
+    var actor_ids: Array = actors.keys()
+    actor_ids.sort()
+    for raw_id in actor_ids:
+        var actor: Dictionary = actors[raw_id]
+        var v63_cast = actor.get("v63_pending_cast",{})
+        if v63_cast is Dictionary and not v63_cast.is_empty() and now+0.000001 >= float(v63_cast.get("ready",INF)):
+            actor.erase("v63_pending_cast")
+            V63HumanSkillCombatSystem.release_cast(self,v63_cast,actor)
     var remaining: Array = []
     for cast_value in pending_casts:
         var cast: Dictionary = cast_value
@@ -1000,6 +1030,9 @@ func _release_casts() -> void:
             continue
         var caster: Dictionary = actors.get(str(cast["caster"]),{})
         if caster.is_empty() or float(caster["hp"]) <= 0.0:
+            continue
+        if cast.has("v63_skill_id"):
+            V63HumanSkillCombatSystem.release_cast(self,cast,caster)
             continue
         if cast.has("skill_id"):
             var targeted: Dictionary = actors.get(str(cast["target_id"]),{})
@@ -1050,6 +1083,10 @@ func _enemies_near(center: Dictionary, radius: float) -> int:
     return count
 
 func _actor_casting(actor_id: String) -> bool:
+    var actor: Dictionary = actors.get(actor_id,{})
+    var actor_cast = actor.get("v63_pending_cast",{})
+    if actor_cast is Dictionary and not actor_cast.is_empty():
+        return true
     for cast in pending_casts:
         if str(cast["caster"]) == actor_id:
             return true

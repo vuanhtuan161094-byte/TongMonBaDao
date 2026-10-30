@@ -368,7 +368,7 @@ static func try_cast(battle: MapBattleV2, actor: Dictionary, target: Dictionary,
     if battle == null or guard_only or target.is_empty():
         return false
     if bool(actor.get("v63_custom_boss_ai",false)) and str(actor.get("side","")) == "monster":
-        return _try_boss_cast(battle,actor,target)
+        return bool(actor.get("v63_combat_enabled",false)) and _try_boss_cast(battle,actor,target)
     return bool(actor.get("v63_combat_enabled",false)) and _try_human_cast(battle,actor,target)
 
 static func _try_human_cast(battle: MapBattleV2, actor: Dictionary, enemy: Dictionary) -> bool:
@@ -744,7 +744,7 @@ static func process_status_effects(battle: MapBattleV2) -> void:
 
 static func observe_boss_damage(battle: MapBattleV2, actor: Dictionary, hp_before: float,
         attacker: Dictionary = {}, element: String = "", kind: String = "") -> void:
-    if battle == null or not bool(actor.get("v63_custom_boss_ai",false)):
+    if battle == null or not bool(actor.get("v63_custom_boss_ai",false)) or not bool(actor.get("v63_combat_enabled",false)):
         return
     if V63DivineSkillCombatSystem.is_divine_boss(str(actor.get("v63_boss_id", ""))):
         V63DivineSkillCombatSystem.observe_boss_damage(battle, actor, hp_before, attacker, element, kind)

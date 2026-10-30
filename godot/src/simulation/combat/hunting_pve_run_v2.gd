@@ -15,18 +15,23 @@ var camp_slot_ids: Array = []
 var minute_phase: float = 0.0
 var world_respawn_delay := 30.0
 var v63_preview_overrides: Dictionary = {}
+var v63_human_combat_session: bool = false
 var performance_checkpoint_count := 0
 var performance_checkpoint_usec_total := 0
 var performance_checkpoint_usec_max := 0
 
 func begin(
     state: SimulationState, region: String, encounter_id: String, seed: int,
-    party_members: Array
+    party_members: Array, v63_boss_id: String = "", preview_overrides: Dictionary = {}
 ) -> Dictionary:
     if battle != null or state == null or not state.sect.v2_pve_enabled:
         return {"ok":false,"reason":"v2_pve_disabled_or_already_started"}
     if not state.sect.b3_hunt.is_empty():
         return {"ok":false,"reason":"another_authoritative_hunt_world_is_active"}
+    v63_preview_overrides = preview_overrides.duplicate(true)
+    v63_human_combat_session = V63HumanSkillCombatSystem.is_enabled(state,v63_preview_overrides)
+    if not v63_boss_id.is_empty() and (not v63_human_combat_session or V63HumanSkillCombatSystem.boss_definition(v63_boss_id).is_empty()):
+        return {"ok":false,"reason":"human_boss_gate_off_or_unknown_boss"}
     if party_members.is_empty() or party_members.size() > MapBattleV2.MAX_DISCIPLES:
         return {"ok":false,"reason":"invalid_party_size"}
     if encounter_id.is_empty() or state.sect.v2_pve_active_runs.has(encounter_id) or state.sect.v2_pve_reward_claims.has(encounter_id) or state.sect.v2_pve_settlement_receipts.has(encounter_id):
@@ -89,6 +94,9 @@ func begin(
         )
         if not bool(actor.get("ok",false)):
             return actor
+        var skill_loadout := V63HumanSkillCombatSystem.attach_disciple_loadout(state,actor,v63_preview_overrides)
+        if not bool(skill_loadout.get("ok",false)):
+            return skill_loadout
         # Battle owns HP until terminal; no live object link may leak mutations.
         actor["disciple"] = null
         actors.append(actor)
@@ -96,6 +104,11 @@ func begin(
     var spawned := HuntingMapV2.spawn(region,level,encounter_id,seed)
     if not bool(spawned.get("ok",false)):
         return spawned
+    if not v63_boss_id.is_empty():
+        var installed_boss := V63HumanSkillCombatSystem.install_boss_spawn(spawned,v63_boss_id)
+        if not bool(installed_boss.get("ok",false)):
+            return installed_boss
+        spawned = installed_boss["spawn_data"]
     var map_battle := MapBattleV2.new(seed)
     var ready := map_battle.setup(encounter_id,actors,spawned["monsters"])
     if not bool(ready.get("ok",false)):
@@ -898,13 +911,13 @@ static func reconcile_loaded_v2_pve(state: SimulationState) -> Dictionary:
 # Production-facing recovery path: only a snapshot already recorded in the
 # canonical SectState may resume the encounter. Direct restore_state is a
 # validated low-level utility for migration/tests.
-static func resume_active(state: SimulationState, encounter_id: String) -> Dictionary:
+static func resume_active(state: SimulationState, encounter_id: String, preview_overrides: Dictionary = {}) -> Dictionary:
     if state == null or encounter_id.is_empty():
         return {"ok":false,"reason":"missing_hunt_state"}
     var saved = state.sect.v2_pve_active_runs.get(encounter_id,null)
     if not (saved is Dictionary):
         return {"ok":false,"reason":"no_saved_active_encounter"}
-    return restore_state(state,saved)
+    return restore_state(state,saved,preview_overrides)
 
 # Immutable encounter provenance + active fight snapshot. This does NOT
 # award any loot, advance the simulation or save object references.
@@ -921,6 +934,9 @@ func save_state() -> Dictionary:
         "reward_seed":int(spawn_data.get("reward_seed",0)),
         "battle":checkpoint
     }
+    var saved_boss_id := str(spawn_data.get("v63_boss_id",""))
+    if not saved_boss_id.is_empty():
+        saved["v63_boss_id"] = saved_boss_id
     for reward_field in ["v63_codex_rewards","v63_codex_drop_table"]:
         var reward_data = spawn_data.get(reward_field,{})
         if reward_data is Dictionary and not reward_data.is_empty():
@@ -954,7 +970,7 @@ static func saved_world_identity_matches(battle_snapshot: MapBattleV2,
     return nav_sha.length() == 40 and nav_sha == slot_sha \
         and not nav_map.is_empty() and nav_map == slot_map
 
-static func restore_state(state: SimulationState, saved: Dictionary) -> Dictionary:
+static func restore_state(state: SimulationState, saved: Dictionary, preview_overrides: Dictionary = {}) -> Dictionary:
     if state == null or not state.sect.p3_7_resources_enabled or not state.sect.v2_pve_enabled:
         return {"ok":false,"reason":"hunting_v2_not_enabled"}
     if not bool(saved.get("ok",false)) or int(saved.get("version",0)) != 1:
@@ -976,6 +992,12 @@ static func restore_state(state: SimulationState, saved: Dictionary) -> Dictiona
     var spawned := HuntingMapV2.spawn(region,level,id,int(saved.get("reward_seed",0)))
     if not bool(spawned.get("ok",false)):
         return spawned
+    var saved_boss_id := str(saved.get("v63_boss_id",""))
+    if not saved_boss_id.is_empty():
+        var installed_boss := V63HumanSkillCombatSystem.install_boss_spawn(spawned,saved_boss_id)
+        if not bool(installed_boss.get("ok",false)):
+            return installed_boss
+        spawned = installed_boss["spawn_data"]
     for reward_field in ["v63_codex_rewards","v63_codex_drop_table"]:
         var reward_data = saved.get(reward_field,{})
         if reward_data is Dictionary and not reward_data.is_empty():
@@ -1048,6 +1070,24 @@ static func restore_state(state: SimulationState, saved: Dictionary) -> Dictiona
                 return {"ok":false,"reason":"unknown_saved_disciple"}
         else:
             return {"ok":false,"reason":"unknown_battle_actor"}
+    var d4_errors := V63HumanSkillCombatSystem.validate_battle(resumed,saved_boss_id)
+    if not d4_errors.is_empty():
+        return {"ok":false,"reason":"invalid_saved_human_combat","detail":d4_errors}
+    for actor_value in resumed.actors.values():
+        var owned_actor: Dictionary = actor_value
+        if str(owned_actor.get("side","")) != "disciple":
+            continue
+        var owner_id := StringName(str(owned_actor.get("id","")))
+        var owner_disciple: DiscipleState = state.disciples.get(owner_id,null)
+        if owner_disciple == null:
+            return {"ok":false,"reason":"unknown_saved_disciple"}
+        var actor_loadout = owned_actor.get("v63_skill_loadout",[])
+        if not (actor_loadout is Array):
+            return {"ok":false,"reason":"invalid_saved_disciple_skill_loadout"}
+        for skill_id in actor_loadout:
+            var skill_key := str(skill_id)
+            if not owner_disciple.v63_equipped_skill_ids.has(skill_key) or not owner_disciple.v63_learned_skill_nodes.has(skill_key):
+                return {"ok":false,"reason":"saved_skill_not_personally_equipped"}
     if mode_value == "multicamp" and (seen_monsters != 10 or seen_slots.size() != 10 or seen_disciples <= 0 or seen_disciples > 6):
         return {"ok":false,"reason":"incomplete_multicamp_roster"}
     if mode_value == "encounter" and (seen_monsters != expected.size() or seen_disciples <= 0):
@@ -1057,6 +1097,13 @@ static func restore_state(state: SimulationState, saved: Dictionary) -> Dictiona
     session.region_id = region
     session.spawn_data = spawned
     session.battle = resumed
+    session.v63_preview_overrides = preview_overrides.duplicate(true)
+    session.v63_human_combat_session = V63HumanSkillCombatSystem.is_enabled(state,preview_overrides)
+    var resume_combat_gate := session.v63_human_combat_session
+    for actor_value in resumed.actors.values():
+        var resumed_actor: Dictionary = actor_value
+        if bool(resumed_actor.get("v63_custom_boss_ai",false)) or not resumed_actor.get("v63_skill_loadout",[]).is_empty():
+            resumed_actor["v63_combat_enabled"] = resume_combat_gate
     session.mode = mode_value
     session.camp_index = camp_index_value
     session.camp_population = camp_registry

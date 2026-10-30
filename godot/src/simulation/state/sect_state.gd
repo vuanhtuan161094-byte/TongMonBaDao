@@ -127,6 +127,8 @@ var v63_learning_active_jobs: Dictionary = {}
 var v63_learning_operation_receipts: Dictionary = {}
 var v63_learning_job_index: int = 0
 var v63_learning_event_count: int = 0
+# D4 Human combat opt-in remains false in legacy saves.
+var v63_skill_combat_opt_in: bool = false
 # DV2-03F/F2: compact, per-disciple/per-major-realm committed Body receipts.
 # The request index is rebuilt from these saved receipts on load (not saved twice).
 # Default empty on every legacy save; no Body gate is enabled by this ledger.
@@ -252,6 +254,8 @@ func to_dict() -> Dictionary:
         data["v63_learning_operation_receipts"] = v63_learning_operation_receipts.duplicate(true)
         data["v63_learning_job_index"] = v63_learning_job_index
         data["v63_learning_event_count"] = v63_learning_event_count
+    if v63_skill_combat_opt_in:
+        data["v63_skill_combat_opt_in"] = true
     if not b3_hunt.is_empty():
         data["b3_hunt"] = b3_hunt.duplicate(true)
     if not v2_body_gate_receipts.is_empty():
@@ -387,6 +391,7 @@ static func from_dict(data: Dictionary) -> SectState:
         state.v63_learning_operation_receipts = raw_learning_receipts.duplicate(true)
     state.v63_learning_job_index = maxi(int(data.get("v63_learning_job_index", 0)), 0)
     state.v63_learning_event_count = maxi(int(data.get("v63_learning_event_count", 0)), 0)
+    state.v63_skill_combat_opt_in = bool(data.get("v63_skill_combat_opt_in", false))
     var raw_runs = data.get("v2_pve_active_runs", {})
     if raw_runs is Dictionary:
         for encounter_id in raw_runs.keys():
