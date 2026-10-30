@@ -8,7 +8,7 @@ Current tested and committed code SHA: 23e5d0ba812f4b39dc6c8c5afc47864929c645aa 
 | Official Windows Godot 4.7.2 import | PASS, exit 0 | Log SHA-256 B500736E0177F44888D24EF078EA3450E557923411BA5DFA0C0EE1D1292B9DDA |
 | Focused refresh/HUD/P3.2 | PASS, 3/3 | Manifest SHA-256 1928E0773542A32A6A2BC635442703DB9E81FDBC2E44E3991B1897A6B9471D1E |
 | D8 affected D7/D8/Save/PvE regression | PASS, 25/25 | affected_final_results.json SHA-256 7D3E2AA3C4B2F7DF00621173C8D4537C61A6476B2425CB7D7D86518D245DE590 |
-| D6 complete sequential regression | PASS, 20/20 | d6_final_results.json SHA-256 84CFEDE5292EC65C56F6F7052FBA72B27AA96811F0FE2B7487431B7441521FF7 |
+| D6 complete sequential regression | PASS, 20/20 | d6_final_results.json SHA-256 84CFEDE5292EC65C56F6E7052FBA72B27AA96811F0FE2B7487431B7441521FF7 |
 | D7 branch/Boss GUI matrix | SCRIPTED GUI PASS, 9/9 + 9/9 | Previous exact logs and screenshots in V65_D7_UI_VFX_EVIDENCE_20261030.md |
 | D8 after-patch normal Windows GUI | SCRIPTED GUI PASS | Native 1280×720 P3.2 Combat V2 window; Source A map, six party rows, 130-disciple loaded QA save, six-person C01 party. HUD refresh and visual-row reuse tested in place. |
 | D8 performance acceptance | MEASURED IMPROVED; REVIEW PENDING | Long-tail maximum remains 95.35 ms OFF / 100.83 ms ON; P99 30.98/27.99 ms and 1%-low 13.70/14.00 FPS. Repeated PVE spikes occur about every two seconds; current logs do not attribute them to a source. No owner-approved latency threshold is recorded. |
@@ -17,6 +17,10 @@ Current tested and committed code SHA: 23e5d0ba812f4b39dc6c8c5afc47864929c645aa 
 | Android device | PENDING | No physical Android test device was available. |
 | Body realms 7–30 | BLOCKED | Authored progression recipes/material sources remain unavailable. |
 | V6.5 overall | INCOMPLETE | Do not mark full combat complete or merge. |
+
+### Post-D8 scripted Boss recapture — FAILED, not counted (2026-10-30)
+
+A follow-up attempt used the disposable copy `E:/TongMonBaDaoWorkspace\\01_Game\\TMB_V65_D8_SYNC_20261030` and `godot/tests/presentation/v65_d7_visual_matrix_capture_test.gd`. It exited 1 at production Boss-pick selection: `production Boss picker could not select boss_thiet_giap`. No screenshot was produced. Log: `E:/TongMonBaDaoWorkspace\\QA_Evidence\\V65_D8_REFRESH_FIX_20261030\\d7_boss_gui_after_d8\\bow_liep_anh_boss_thiet_giap.log`; SHA-256 `ECD69B6C9FA27048799BB4D2EEEAEB8E9841ACB937F94DA40BDBC2C2DC81CDAB`. The tested copy has no Git metadata, so its exact source parity is unverified; this result is **not** attributed to the published branch and is not counted as a product regression or GUI PASS. The earlier D7 9/9 branch + 9/9 Boss captures remain baseline scripted evidence; a post-D8 Boss capture remains PENDING.
 
 ## Additional D8 trace/environment audit — 2026-10-30
 
@@ -403,7 +407,7 @@ The earlier D4-A preflight and D3 status notes below are preserved for history; 
 
 ## Historical D4-A preflight / exact allowlist (superseded)
 
-**Historical status at preflight:** D4-A had not started. Superseded by the current implementation evidence above. Base feature HEAD is `a9a7d5ab97c3b02de467c54b94d4d9c4c8d3d9ca`; stable main remains `c0c1382f119599497b52d8ee8abd9e830a883f1e`. Work is in isolated `E:\\TongMonBaDaoWorkspace\\01_Game\\TMB_V65_D4A_20261029`. The original E: feature worktree at `d45ab195c53c00f0f29732124dd7678fd42cb351` retains its dirty files and existing Godot processes.
+**Historical status at preflight:** D4-A had not started. Superseded by the current implementation evidence above. Base feature HEAD is `a9a7d5ab97c3b02de467c54b94d4d9c4c8d3d9ca`; stable main remains `c0c1382f119599497b52d8ee8abd9e830a883f1e`. Work is in isolated `E:/TongMonBaDaoWorkspace\\01_Game\\TMB_V65_D4A_20261029`. The original E: feature worktree at `d45ab195c53c00f0f29732124dd7678fd42cb351` retains its dirty files and existing Godot processes.
 
 **D4-A behavior:** default-off, opt-in learned/equipped Liệp Ảnh Human skill events resolve through Combat V2 HP/damage; a Human-tier Thiết Giáp Sơn Viên boss uses real cast/telegraph/hit events; six disciples can auto-cast. Gate-off legacy P2/P2.3 remains byte/behavior stable. No balance coefficients become approved.
 
