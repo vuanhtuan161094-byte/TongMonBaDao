@@ -4,7 +4,8 @@ Base source: `59f3903f37dc0260cf07059bf3bd24e0973168c6`; stable main: `c0c1382f1
 
 **Exact D8 QA/test path allowlist for this packet:**
 - `godot/tests/presentation/v63_d8_performance_runtime_capture_test.gd` (new) — launch the actual P3.2 Source A scene in normal Windows GUI at 1280×720 with the existing 130-disciple QA seed; enter its six-member C01 Combat V2 encounter through the production P3.2 controls; attach the existing passive `pve_playable_perf_probe.gd`; capture raw frame/process/physics/memory metrics and a real viewport frame in two runs with the existing logger OFF/ON switch.
-- `CURRENT_CHECKPOINT.md` — this preflight, followed by exact test/GUI measurements and output hashes.
+- `godot/tests/presentation/v63_d8_performance_runtime_capture_test.gd.uid` (new, only the engine-generated ResourceUID sidecar).
+- `docs/implementation/V65_D8_INTEGRATED_QA_EVIDENCE_20261030.md`, `docs/implementation/V65_COMBAT_COVERAGE_LEDGER_20261029.json`, `CURRENT_CHECKPOINT.md`, and `NEXT_CHAT_HANDOFF.md` — record exact current-source regression, GUI metric outputs and hashes.
 
 The fixture may route existing UI signals to make the run repeatable; it does not claim physical-mouse QA. It does not advance time outside the canonical runtime, grant rewards, change balance, or add a second save/probe/clock authority. Both runs use new isolated SaveService saves and output directories under `E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D8_PERF_20261030\`.
 
