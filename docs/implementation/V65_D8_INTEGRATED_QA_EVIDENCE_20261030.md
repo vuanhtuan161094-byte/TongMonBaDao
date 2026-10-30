@@ -1,10 +1,10 @@
-## D8 profile-guided presentation optimization preflight — owner path approval pending
+## D8 profile-guided presentation optimization preflight — owner approval recorded 2026-10-30
 
 Base feature HEAD: 02a964e088414798d3dc18cac3d0e20c91af3457. Runtime evidence source: 59f3903f37dc0260cf07059bf3bd24e0973168c6. Main remains c0c1382f119599497b52d8ee8abd9e830a883f1e; PR #52 remains Draft/open/unmerged at 2a99ed505c85a17f6d25f91891560ca51fa02d88.
 
 Profiler OFF/ON runs reproduce long-tail frames (P99 68.48–68.94 ms, maximum 94.88–120.10 ms; 1%-low 12.02–12.44 FPS). The P3.2 instrumentation attributes recurring cost to visual-row and HUD refresh. Source inspection found two repeatable allocation/IO patterns on that path: _b3_hunt_visual_rows constructs ResourceRegistry.new() for each Thanh Lang actor, while ResourceRegistry._init reads and parses the codex catalog; V63CombatHudV1._render queue-frees and rebuilds the six party buttons on each authority refresh. These observations motivate a narrow optimization; they do not yet prove how much each contributes to the measured spikes.
 
-Proposed code packet, not started pending owner approval under AGENTS.md §3:
+Owner approved this exact CODE allowlist in the current session on 2026-10-30. Runtime edits remain unstarted until this exact-path preflight commit is published:
 - godot/src/presentation/p3_2_landscape_sect.gd — retain/reuse one scene-owned ResourceRegistry for live visual-row name lookup; preserve the same labels and Source A keys.
 - godot/src/presentation/p3/v63_combat_hud_v1.gd — reuse the existing six party-row controls and update their text/selection/visibility in place; preserve HP, injury, Boss, skill, telegraph and event content.
 - godot/tests/presentation/v63_d8_p3_refresh_reuse_test.gd (new) and its generated .gd.uid — focused assertions for stable row nodes, updated HP/injury/selection, and identical visual-row mapping across repeated refreshes.

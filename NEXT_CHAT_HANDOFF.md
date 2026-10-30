@@ -1,4 +1,4 @@
-# NEXT ACTION — D8 measured refresh hotspot, exact-path approval pending
+# NEXT ACTION — D8 measured refresh hotspot, exact-path approval granted
 
 Current branch feature/v63-v64-full-combat-20261029 at 02a964e088414798d3dc18cac3d0e20c91af3457 before the preflight evidence commit. Runtime measurements and D6/D7 results are in the preceding current handoff.
 
@@ -9,7 +9,7 @@ Profiler follow-up scope proposed after AGENTS.md §3 owner approval:
 
 Exact source paths: godot/src/presentation/p3_2_landscape_sect.gd and godot/src/presentation/p3/v63_combat_hud_v1.gd. Exact new test path: godot/tests/presentation/v63_d8_p3_refresh_reuse_test.gd. Evidence/checkpoint paths: D8 evidence, coverage ledger, CURRENT_CHECKPOINT.md, NEXT_CHAT_HANDOFF.md.
 
-Do not start the patch until owner approves the exact allowlist. No SaveService/schema, combat authority, injury, job, warehouse, scheduler, asset or main change. The current 9/9 D7 GUI matrix is a visual baseline. V6.5 remains incomplete.
+Owner approved the exact allowlist in the current session. Start only after this preflight commit is visible at the branch tip. No SaveService/schema, combat authority, injury, job, warehouse, scheduler, asset or main change. The current 9/9 D7 GUI matrix is a visual baseline. V6.5 remains incomplete.
 
 ---
 

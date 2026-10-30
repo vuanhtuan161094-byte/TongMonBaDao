@@ -1,4 +1,4 @@
-## D8 targeted profiler-fix preflight — awaiting exact-path owner approval
+## D8 targeted profiler-fix preflight — exact paths owner-approved; code not started
 
 Current feature HEAD before preflight commit: 02a964e088414798d3dc18cac3d0e20c91af3457. Performance data in the preceding checkpoint section is measured on 59f3903. Repeated samples indicate P3.2 HUD/visual-row refresh cost; code inspection shows repeated ResourceRegistry construction/catalog parsing and party-row control teardown/rebuild. This is a bounded hypothesis to validate by before/after profiler results.
 
@@ -15,7 +15,7 @@ Scope: reuse one scene-owned registry for live visual-row display lookup; reuse 
 
 Tests: official Windows Godot 4.7.2 import; new focused refresh-reuse test; existing HUD and P3.2 live-integration tests; current 24-test affected and 20-test D6 matrices; repeated 20-second logger OFF/ON GUI profiler capture. Roll back only the two listed source files plus new test/UID.
 
-STATUS: owner approval of these exact code paths is required before editing. No performance patch has been started.
+STATUS: owner approved these exact code paths in the current session. This approval checkpoint is being committed before editing; no performance patch has started.
 
 ---
 

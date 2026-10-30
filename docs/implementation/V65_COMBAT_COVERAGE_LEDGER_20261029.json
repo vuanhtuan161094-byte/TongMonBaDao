@@ -6048,8 +6048,8 @@
     }
   },
   "next_preflight": {
-    "base_feature_head": "02a964e088414798d3dc18cac3d0e20c91af3457",
-    "status": "OWNER_EXACT_PATH_APPROVAL_PENDING",
+    "base_feature_head": "8ee9a40f73f388f5755947eeb4eafe940530d766",
+    "status": "OWNER_APPROVED_NOT_STARTED",
     "purpose": "D8 targeted presentation refresh reuse based on measured recurring profiler cost",
     "proposed_source_paths": [
       "godot/src/presentation/p3_2_landscape_sect.gd",
@@ -6059,6 +6059,18 @@
       "godot/tests/presentation/v63_d8_p3_refresh_reuse_test.gd",
       "godot/tests/presentation/v63_d8_p3_refresh_reuse_test.gd.uid"
     ],
-    "rollback": "Revert only the two presentation source paths and the new focused test/UID; no save migration."
+    "rollback": "Revert only the two presentation source paths and the new focused test/UID; no save migration.",
+    "owner_approval_date": "2026-10-30",
+    "owner_approved_paths": [
+      "godot/src/presentation/p3_2_landscape_sect.gd",
+      "godot/src/presentation/p3/v63_combat_hud_v1.gd",
+      "godot/tests/presentation/v63_d8_p3_refresh_reuse_test.gd",
+      "godot/tests/presentation/v63_d8_p3_refresh_reuse_test.gd.uid",
+      "docs/implementation/V65_D8_INTEGRATED_QA_EVIDENCE_20261030.md",
+      "docs/implementation/V65_COMBAT_COVERAGE_LEDGER_20261029.json",
+      "CURRENT_CHECKPOINT.md",
+      "NEXT_CHAT_HANDOFF.md"
+    ],
+    "approval": "Owner approved exact allowlist in current conversation; code starts only after this checkpoint commit."
   }
 }
