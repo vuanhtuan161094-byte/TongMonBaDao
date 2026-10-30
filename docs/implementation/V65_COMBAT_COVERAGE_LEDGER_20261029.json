@@ -5950,5 +5950,10 @@
     "The 300-coordinate cultivation cost table does not provide an end-to-end playable Body progression; authored gate content exists only through realm 6 and realms 7-30 return content_unavailable.",
     "The multiseed contract test exercises deterministic direct Combat V2 HP0/receipt/no-reward/respawn traces; it is not autonomous pathing or live runtime performance.",
     "GUI/owner visual, measured FPS/RAM, and Android device acceptance remain pending."
-  ]
+  ],
+  "d8_gui_attempt": {
+    "status": "PENDING",
+    "app": "Godot 4.7.2 Project Manager",
+    "result": "Window listed after explicit launch; two screenshot-backed get_window_state calls timed out at frame channel; no input or gameplay screenshot captured."
+  }
 }

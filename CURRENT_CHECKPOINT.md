@@ -5,7 +5,7 @@ Feature branch `feature/v63-v64-full-combat-20261029`; D8 test-only commit: `9f7
 - **PASS:** official Windows Godot 4.7.2 import, exit 0; log SHA-256 `4607CF35E6D6B82797968FE151305A9C35D23E7884FAE37D36A66CB249F87DB2`.
 - **PASS:** D8 affected matrix 16/16 and cross-phase D2/D3/D6/D7 checks 4/4, sequential; combined 20/20. Exact test log hashes and corrected initial failures are in [D8 evidence](docs/implementation/V65_D8_INTEGRATED_QA_EVIDENCE_20261030.md).
 - D8 code commit is test-only (four paths); the realm/body correction updates one expected-stat argument to match the existing D7 model-version derivation. No production code, SaveService/schema, Warehouse, scheduler, economy, or art changed.
-- **PENDING:** real gameplay GUI/input/screenshots and owner visual approval. Godot was not exposed in current Computer Use inventory; no capture is claimed.
+- **PENDING:** real gameplay GUI/input/screenshots and owner visual approval. The official Godot 4.7.2 Project Manager was exposed after launch, but two screenshot-backed state captures timed out at the Computer Use frame channel; no gameplay input or screenshot is claimed.
 - **PENDING:** measured live FPS/RAM and Android/device acceptance. The performance test validates the launcher/probe contract, not runtime performance.
 - **BLOCKED:** endgame Body progression beyond realms 1–6 because existing gate content returns `content_unavailable` for realms 7–30. The 300-coordinate cost table is not a playable end-to-end campaign. No unapproved recipes or balance numbers were invented.
 - **INCOMPLETE:** V6.5 release. Preserve Injury120, One Active Job, six-member/20-camp authority and existing SaveService/Warehouse/scheduler; do not merge main or PR #52.

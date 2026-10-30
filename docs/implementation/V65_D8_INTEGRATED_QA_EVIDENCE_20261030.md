@@ -68,7 +68,7 @@ During validation, save/recovery checks first used the default Windows AppData s
 
 ## Gates still pending or blocked
 
-- **Gameplay GUI / owner visual acceptance — PENDING.** Current Computer Use inventory exposed Chrome and ChatGPT but no Godot window. A previous native-window capture attempt timed out; no screenshot, input capture, branch/Boss visual matrix, or owner approval is claimed.
+- **Gameplay GUI / owner visual acceptance — PENDING.** A later Computer Use retest launched the official Godot 4.7.2 Project Manager and selected its returned window, but screenshot-backed state capture timed out twice (FrameArrived/channel timeout). No gameplay input, screenshot, branch/Boss visual matrix, or owner approval is claimed.
 - **Live performance/FPS/RAM and Android device evidence — PENDING.** The contract test checks the existing probe/launcher fields only; it is not a runtime measurement.
 - **Endgame playable progression — BLOCKED by authored content availability.** The cultivation cost table contains 300 coordinates, but Body gate content is explicitly unavailable beyond realms 1–6; realms 7–30 return `content_unavailable`. No production recipes, material sources, or numeric progression values were invented or bypassed.
 - **Overall V6.5 — INCOMPLETE.** Headless test coverage does not satisfy the requested game-playable GUI/owner QA.
@@ -80,3 +80,8 @@ The single test-file correction fixes an old expected-stat assertion so it suppl
 ## Protected state and next work
 
 Stable `main` was not changed. PR #52 remains Draft/open/unmerged; do not merge it. The original owner E: checkout and unrelated pre-existing scratch/import files were preserved. No files were staged wholesale, cleaned, or deleted. Continue only after GUI access is restored and content/owner gates are resolved; maintain Source A provenance and the existing single Warehouse/scheduler, Injury120, SaveService/schema and One Active Job invariants.
+
+
+## GUI retry after D8 documentation
+
+On 2026-10-30, Computer Use launched the official Windows Godot 4.7.2 executable and returned a single Project Manager window. Both screenshot-backed `get_window_state` attempts timed out at the frame channel (first `FrameArrived`, retry generic window-capture timeout). Per the Computer Use recovery limit, no further capture retry or alternative Windows automation was used. No project was opened and no gameplay input/screenshot was obtained. GUI and owner visual acceptance remain **PENDING**.

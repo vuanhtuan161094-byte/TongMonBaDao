@@ -6,7 +6,7 @@ Repository `vuanhtuan161094-byte/TongMonBaDao`; branch `feature/v63-v64-full-com
 
 Official Windows Godot 4.7.2 import PASS (exit 0). Final sequential D8 matrix 16/16 PASS plus cross-phase D2/D3/D6/D7 checks 4/4 PASS; full test names and log hashes are in [D8 evidence](docs/implementation/V65_D8_INTEGRATED_QA_EVIDENCE_20261030.md). D8 commit `9f7cebd3aaa11ef53660497dfe5fc6bab30cb378` is QA-only: three added tests and one existing progression test expectation correction. Initial sandbox/fixture/runner issues are disclosed in evidence; only corrected final runs count.
 
-**Pending:** actual game GUI, real input/screenshots for nine branches and Boss cues, owner visual acceptance, measured FPS/RAM, and Android device checks. Computer Use did not expose a Godot window and no GUI evidence was produced.
+**Pending:** actual game GUI, real input/screenshots for nine branches and Boss cues, owner visual acceptance, measured FPS/RAM, and Android device checks. Godot 4.7.2 Project Manager appeared after explicit launch, but two state captures timed out on the frame channel; no gameplay input or GUI evidence was produced.
 
 **Blocked:** the playable Body progression path beyond realms 1–6 is absent in authored content; realms 7–30 return `content_unavailable`. The cost table's 300 coordinates do not prove end-to-end progression. No balance/recipe values were invented.
 
