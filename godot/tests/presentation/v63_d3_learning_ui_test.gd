@@ -30,8 +30,8 @@ func _run() -> void:
         disciple.current_action = &"HOLD"
 
     var techniques := V63LearningSystem.techniques()
-    if techniques.size() != 84:
-        _fail("D3 catalogue expected 84 candidate techniques, got %d" % techniques.size())
+    if techniques.size() != 12:
+        _fail("D3 picker must expose only 12 Human foundation candidates, got %d" % techniques.size())
         return
     var first: Dictionary = techniques[0]
     var codex := V63SectArchiveSystem.codex_definition(str(first.get("source_codex_id", "")))

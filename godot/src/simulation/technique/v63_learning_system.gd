@@ -87,6 +87,8 @@ static func techniques() -> Array[Dictionary]:
     if not bool(loaded.get("ok", false)):
         return result
     for raw in loaded.data.techniques:
+        if str(raw.get("generation","")) != "human" or str(raw.get("lineage","")) != "base":
+            continue
         result.append(raw.duplicate(true))
     return result
 
