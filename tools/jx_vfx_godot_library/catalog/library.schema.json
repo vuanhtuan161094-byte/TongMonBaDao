@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tmbd.local/schemas/jx-vfx-library-1.0.json",
+  "title": "JX VFX local library index",
+  "type": "object",
+  "required": ["schema_version", "library_id", "statistics", "sources", "records"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "library_id": {"enum": ["jx_vfx_godot_library_v1", "jx_vfx_selected_pack"]},
+    "created_utc": {"type": "string"},
+    "statistics": {"type": "object"},
+    "sources": {"type": "array", "items": {"type": "object"}},
+    "undecoded_sources": {"type": "array", "items": {"type": "object"}},
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["record_id", "source_id", "filename", "sha256", "texture_path", "size_px", "catalog_status"],
+        "properties": {
+          "record_id": {"type": "string"},
+          "source_id": {"type": "string"},
+          "source_relative_path": {"type": "string"},
+          "filename": {"type": "string"},
+          "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "bytes": {"type": "integer", "minimum": 0},
+          "format": {"const": "WEBP"},
+          "size_px": {"type": "array", "prefixItems": [{"type": "integer"}, {"type": "integer"}], "minItems": 2, "maxItems": 2},
+          "texture_path": {"type": "string", "pattern": "^textures/[a-f0-9]{64}\\.webp$"},
+          "metadata": {"type": ["object", "null"]},
+          "animation": {"type": ["object", "null"]},
+          "catalog_status": {"type": "string"},
+          "skill_refs": {"type": "array"},
+          "source_authority": {"type": ["string", "null"]}
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}
+
