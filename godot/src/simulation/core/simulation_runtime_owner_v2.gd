@@ -42,6 +42,7 @@ func attach(simulation_state: SimulationState, now_unix: int) -> Dictionary:
     state = simulation_state
     multicamp_session = null
     scheduler = SimulationScheduler.new(state)
+    scheduler.v63_preview_overrides = V63FeatureGates.persisted_preview_overrides(state)
     var initialized := SimulationRuntimeClockV2.initialize(state,now_unix)
     if not bool(initialized.get("ok",false)):
         state = null
@@ -63,6 +64,7 @@ func load_from_path(
     multicamp_session = null
     durable_path = path
     scheduler = SimulationScheduler.new(state)
+    scheduler.v63_preview_overrides = V63FeatureGates.persisted_preview_overrides(state)
 
     if state.runtime_last_wall_unix <= 0:
         var initialized := SimulationRuntimeClockV2.initialize(state,now_unix)
