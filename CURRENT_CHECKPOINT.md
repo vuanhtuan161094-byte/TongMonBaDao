@@ -5,7 +5,7 @@ Updated 2026-10-31 (Asia/Saigon). This file supersedes the archived RC status be
 ## Current candidate
 
 - Integration branch: `integration/one-game-v65-20261030`
-- Latest tested runtime commit: `020531cb555cce949442ec4a257ca557255c9e4a` (R4 / D4-A); latest D5 coverage commit: `6f42f2a2fea2799427838c7c3d83bfb3bc6dc5bb`.
+- Latest tested runtime commit: `1ffa078099d86e893eec7434ecaa2934791e6e41` (R6 / D6); earlier R4/R5 coverage and runtime commits are listed below.
 - Runtime base remains PvE RC #52; PR #52, V6.5 source, and `main` are unchanged.
 - Coordination: [Issue #56](https://github.com/vuanhtuan161094-byte/TongMonBaDao/issues/56); conflict authority: [Issue #54 matrix](https://github.com/vuanhtuan161094-byte/TongMonBaDao/issues/54#issuecomment-6520099847).
 
@@ -51,6 +51,16 @@ R3 touched: `disciple_state.gd`, `sect_state.gd`, `simulation_state.gd`, `simula
 - Command/exit manifest: `E:\TongMonBaDaoWorkspace\QA_Evidence\ONE_GAME_V65_20261030\R5_D5_FINAL_FOCUSED_20261031.tsv`, SHA-256 `D86FF0E687FB40C910236336E6BBD8C98407B9D444DD049F7C58680A46B1E920`. Log checksum manifest: `R5_D5_SHA256SUMS_20261031.txt`, SHA-256 `C165E7FB644FF4B05E7D8E3D6D5AB670D6D8CCC0DE97B946EF63F2D414953B41`. Each stdout contains the same Windows root-certificate-store diagnostic; stderr logs are empty and all tests pass.
 - Rollback: revert only the two new D5 test paths. SaveService, Warehouse, scheduler authority, Injury120 and six-person PvE were not changed.
 
+### R6 / D6 — Divine lineage, rare successors and Boss summons integrated; headless PASS
+
+- Runtime/test commit: [`1ffa078099d86e893eec7434ecaa2934791e6e41`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/1ffa078099d86e893eec7434ecaa2934791e6e41), parent `7fa6cdc2bb2f8a75cebea238fa8ba95fd3e6019b`; five paths changed.
+- MapBattleV2 now routes gated Divine fatal-save and committed-damage reflection through the existing Combat V2 hit settlement. Divine Boss phase changes add bounded summons (maximum four alive per Boss); summons inherit no V63 Boss AI and carry a no-reward marker excluded from the durable kill journal. They do not create Warehouse/loot receipts.
+- MapBattleSnapshotV2 now accepts and validates owned V63 poison stacks, skill/effect/owner provenance, attack snapshot and bounded timers (30 target cap), allowing poison to resume without weakening existing burn/weaken validation.
+- Focused evidence confirms 18/18 manual-backed Divine lineage casts and A/B replacement, 3/3 Boss counter interruptions, 18/18 rare ultimate/elective replacements, real releases, 30-stack poison snapshot/resume and diminishing factor, fatal-save cooldown, committed reflection, Blood Ma/Life healing boundaries, bounded no-reward summons, and deterministic Divine study.
+- Windows Godot 4.7.2: import + 15 sequential focused regressions **16/16 exit 0**. Included D6 ×3, D5 ×2, D4-A/B ×4, D3 learning, SaveService async, PvE Save/Return/Reload, HP0 bridge, Injury120 and D2 codex receipt. APPDATA was isolated; no real saves were accessed.
+- Exact manifest: `E:\TongMonBaDaoWorkspace\QA_Evidence\ONE_GAME_V65_20261030\R6_D6_FINAL_FOCUSED_20261031.tsv`, SHA-256 `113DED5B83F4C768AC199E7BE00EFA0D7D0F9194C6332FF18726213CA17875E6`. Log checksum list `R6_D6_SHA256SUMS_20261031.txt`, SHA-256 `F52EF3A7446CD842B39FC71D7CEBE181776B3423369FE9D51E953600A73CFD11`. Godot’s root-certificate warning appears; Injury120 also emits its expected fail-closed malformed/legacy fixture diagnostic while T01–T23 all report PASS and exit 0.
+- Rollback: revert the D6 runtime hook/snapshot changes and D6 tests as this package. Legacy feature gates remain OFF; no SaveService/Warehouse/scheduler/Injury120 logic changed.
+
 ## Godot 4.7.2 evidence
 
 Isolated checkout: `E:\TongMonBaDaoWorkspace\01_Game\TMB_ONE_GAME_V65_20261030`  
@@ -70,7 +80,7 @@ Focused stdout/stderr logs are in the evidence directory above. All tests ran se
 
 - Feature gates remain OFF by default; D3 and D4 focused tests used explicit preview overrides for candidate behavior.
 - D2 single-encounter `HuntingMapV2.claim_reward` codex bridge is not integrated yet.
-- D4-A and D4-B are integrated/headless tested for all nine Human branches and all three Human Bosses. D6–D8 remain pending. This is not the complete skill roster or a user-playable accepted build.
+- D4-A and D4-B are integrated/headless tested for all nine Human branches and all three Human Bosses. D7–D8 remain pending. This is not the complete skill roster or a user-playable accepted build.
 - Physical GUI gameplay/capture, Source A UI reskin/owner visual review, Android device QA and whole-game performance remain PENDING.
 - No claim of FULL COMPLETE or release readiness.
 
