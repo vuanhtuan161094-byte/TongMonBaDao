@@ -7,7 +7,7 @@ Standalone, presentation-only tooling for the owner-authorized local WebP invent
 - `tools/build_local_library.py` verifies the 889 inventoried WebP paths one at a time, deduplicates identical payloads by SHA-256, and builds the local Godot project, catalog, and offline HTML gallery.
 - `tools/export_selected_pack.py` exports only explicitly selected records and their unique texture payloads.
 - `tools/static_qa.py` validates paths, hashes, metadata bounds, and index consistency.
-- `godot/` contains a shared event-free VFX player API and a catalog browser fixture. Godot runtime validation is separate from Python QA.
+- `godot_project/godot/` contains a shared event-free VFX player API and a catalog browser fixture. Godot runtime validation is separate from Python QA.
 - `catalog/library.schema.json` documents the portable catalog contract. Generated source-specific metadata lives in the local output and is intentionally excluded from GitHub.
 
 ## Local build
@@ -15,7 +15,9 @@ Standalone, presentation-only tooling for the owner-authorized local WebP invent
 Use Python 3.10+ and the Asset Studio's existing v2 package. Put local source roots in a private JSON config. The config is intentionally outside this repository because it contains machine-specific paths.
 
 ```powershell
+$repoRoot = "C:\Path\To\TongMonBaDao"
 $studioRoot = "C:\Path\To\AssetStudio"
+Push-Location (Join-Path $repoRoot "tools\jx_vfx_godot_library")
 python tools/build_local_library.py `
   --index "$studioRoot\artifacts\jx_vfx_library_v2\JX_VFX_MASTER_INDEX.json" `
   --source-config "$env:LOCALAPPDATA\TMBD\jx_vfx_source_roots.json" `
@@ -25,7 +27,10 @@ python tools/build_local_library.py `
   --resume
 python tools/static_qa.py "$studioRoot\artifacts\jx_vfx_godot_library_v1\local_library"
 python -m unittest discover -s tests -v
+Pop-Location
 ```
+
+After the local build, open the output folder (the path passed to `--out`) as the Godot project. It contains `project.godot`, the generated catalog, and the local texture pool. The five-record sample pack is also a standalone candidate project.
 
 Source config shape:
 
