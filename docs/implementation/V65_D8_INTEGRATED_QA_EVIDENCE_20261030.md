@@ -12,7 +12,7 @@ The owner-approved patch is limited to:
 - Windows Godot 4.7.2 import: PASS, exit 0; final import log SHA-256 B500736E0177F44888D24EF078EA3450E557923411BA5DFA0C0EE1D1292B9DDA.
 - Focused refresh/HUD/P3.2 suite: 3/3 exit 0; manifest SHA-256 1928E0773542A32A6A2BC635442703DB9E81FDBC2E44E3991B1897A6B9471D1E. New refresh reuse test log SHA-256 948DF38343FCE20F53D1F9BD45BF96ECD03D7F30DC184A832087F1913F626641.
 - D8 affected D7/D8/Save/PvE suite: 25/25 PASS, all exit 0; manifest SHA-256 7D3E2AA3C4B2F7DF00621173C8D4537C61A6476B2425CB7D7D86518D245DE590.
-- D6 complete regression: 20/20 PASS, sequential; manifest SHA-256 84CFEDE5292EC65C56F6F7052FBA72B27AA96811F0FE2B7487431B7441521FF7.
+- D6 complete regression: 20/20 PASS, sequential; manifest SHA-256 84CFEDE5292EC65C56F6E7052FBA72B27AA96811F0FE2B7487431B7441521FF7.
 - The manifest source field describes tested content as 59f3903 baseline plus approved D8 presentation patch; it does not embed a commit SHA. Exact P3.2/HUD blob parity between the tested isolated snapshot and published code commit was checked. Two earlier process attempts exited -1; fresh isolated APPDATA runs passed and only final runs are counted.
 - The existing D7 combat HUD test exits 0 but retains fixture teardown resource-leak diagnostics. The fixture was not changed in this packet.
 
@@ -29,6 +29,10 @@ Normal Windows Godot GUI, 1280×720, OpenGL 3.3 Compatibility on Intel Iris Plus
 | Process P95 (ms) | 136.99 | 112.21 | 109.83 | 104.32 |
 | Physics P95 (ms) | 0.19 | 0.09 | 0.16 | 0.13 |
 | Static / video memory peak (MB) | 189.7 / 267.6 | 189.5 / 269.6 | 189.4 / 267.6 | 189.8 / 267.6 |
+
+### Post-D8 scripted Boss recapture — FAILED, not counted (2026-10-30)
+
+A follow-up attempt used the disposable copy `E:/TongMonBaDaoWorkspace\\01_Game\\TMB_V65_D8_SYNC_20261030` and `godot/tests/presentation/v65_d7_visual_matrix_capture_test.gd`. It exited 1 at production Boss-pick selection: `production Boss picker could not select boss_thiet_giap`. No screenshot was produced. Log: `E:/TongMonBaDaoWorkspace\\QA_Evidence\\V65_D8_REFRESH_FIX_20261030\\d7_boss_gui_after_d8\\bow_liep_anh_boss_thiet_giap.log`; SHA-256 `ECD69B6C9FA27048799BB4D2EEEAEB8E9841ACB937F94DA40BDBC2C2DC81CDAB`. The tested copy has no Git metadata, so its exact source parity is unverified; this result is **not** attributed to the published branch and is not counted as a product regression or GUI PASS. The earlier D7 9/9 branch + 9/9 Boss captures remain baseline scripted evidence; a post-D8 Boss capture remains PENDING.
 
 ## Additional D8 trace/environment audit — 2026-10-30
 
