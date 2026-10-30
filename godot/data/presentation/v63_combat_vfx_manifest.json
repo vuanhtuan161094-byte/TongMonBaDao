@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "provenance": "Original Godot vector drawing authored for TMB V6.5; no external or JX frames.",
+  "source": "Combat V2 MapBattleV2.events only",
+  "renderer": "res://src/presentation/p3/v63_original_combat_vfx_v1.gd",
+  "event_cues": {
+    "telegraph": "red expanding ring and warning triangle",
+    "v63_skill_hit": "jade cross and impact ring",
+    "skill_cast": "jade cross and impact ring",
+    "v63_boss_phase": "violet phase spokes",
+    "boss_counter_hit": "gold counter ring",
+    "status_applied": "green status ring"
+  },
+  "asset_files": []
+}
