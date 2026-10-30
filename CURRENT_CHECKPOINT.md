@@ -5,7 +5,7 @@ Updated 2026-10-31 (Asia/Saigon). This file supersedes the archived RC status be
 ## Current candidate
 
 - Integration branch: `integration/one-game-v65-20261030`
-- Latest tested gameplay commit: `020531cb555cce949442ec4a257ca557255c9e4a` (R4 / D4-A; docs-only checkpoint may follow).
+- Latest tested runtime commit: `020531cb555cce949442ec4a257ca557255c9e4a` (R4 / D4-A); latest D5 coverage commit: `6f42f2a2fea2799427838c7c3d83bfb3bc6dc5bb`.
 - Runtime base remains PvE RC #52; PR #52, V6.5 source, and `main` are unchanged.
 - Coordination: [Issue #56](https://github.com/vuanhtuan161094-byte/TongMonBaDao/issues/56); conflict authority: [Issue #54 matrix](https://github.com/vuanhtuan161094-byte/TongMonBaDao/issues/54#issuecomment-6520099847).
 
@@ -42,6 +42,15 @@ R3 touched: `disciple_state.gd`, `sect_state.gd`, `simulation_state.gd`, `simula
 - Godot 4.7.2 import and four focused D4-A/D4-B simulation tests all exited 0. PASS markers: `V63 D4-B HUMAN BRANCHES/BOSSES PASS`, `V63 D4-B ARCHIVE/EFFECTS PASS`, `V63 D4-A HUMAN COMBAT PASS`, and `V63 D4-A STATE ROUNDTRIP PASS`. Each run emitted the Windows root-certificate-store diagnostic; it did not affect import or tests. APPDATA was isolated under the integration checkout.
 - Rollback: revert only the two added D4-B test paths. No SaveService, Warehouse, Injury120, scheduler, or six-person PvE authority changed.
 
+### R5 / D5 — Immortal lineage and breakthrough coverage integrated; headless PASS
+
+- Coverage commit: [`6f42f2a2fea2799427838c7c3d83bfb3bc6dc5bb`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/6f42f2a2fea2799427838c7c3d83bfb3bc6dc5bb); two source-parity D5 tests only. Runtime uses the R1 Immortal catalog/combat kernel, R3 one-active-job learning/save path and D4 Combat V2 adapter; no further shared-runtime patch was necessary.
+- `v63_d5_immortal_lineage_combat_test.gd`: 18/18 manual-backed Immortal lineage casts, A/B family replacement, 3/3 Boss counter interruptions across snapshots, elemental reaction, and legacy combat gate OFF.
+- `v63_d5_predictable_breakthrough_study_test.gd`: deterministic realm/body and mastery gates, Human active L7/ultimate L4 prerequisites, archived source, costs reserved once, One Active Job, exact-once completion receipt and save/load.
+- Final Windows Godot 4.7.2 run: editor import + nine sequential focused tests (D5 ×2, D4-A ×2, D4-B ×2, D3 learning job, SaveService async roundtrip, PvE Save/Return/Reload) — 10/10 exit 0. APPDATA was isolated; no real save was read or written.
+- Command/exit manifest: `E:\TongMonBaDaoWorkspace\QA_Evidence\ONE_GAME_V65_20261030\R5_D5_FINAL_FOCUSED_20261031.tsv`, SHA-256 `D86FF0E687FB40C910236336E6BBD8C98407B9D444DD049F7C58680A46B1E920`. Log checksum manifest: `R5_D5_SHA256SUMS_20261031.txt`, SHA-256 `C165E7FB644FF4B05E7D8E3D6D5AB670D6D8CCC0DE97B946EF63F2D414953B41`. Each stdout contains the same Windows root-certificate-store diagnostic; stderr logs are empty and all tests pass.
+- Rollback: revert only the two new D5 test paths. SaveService, Warehouse, scheduler authority, Injury120 and six-person PvE were not changed.
+
 ## Godot 4.7.2 evidence
 
 Isolated checkout: `E:\TongMonBaDaoWorkspace\01_Game\TMB_ONE_GAME_V65_20261030`  
@@ -61,7 +70,7 @@ Focused stdout/stderr logs are in the evidence directory above. All tests ran se
 
 - Feature gates remain OFF by default; D3 and D4 focused tests used explicit preview overrides for candidate behavior.
 - D2 single-encounter `HuntingMapV2.claim_reward` codex bridge is not integrated yet.
-- D4-A and D4-B are integrated/headless tested for all nine Human branches and all three Human Bosses. D5–D8 remain pending. This is not the complete skill roster or a user-playable accepted build.
+- D4-A and D4-B are integrated/headless tested for all nine Human branches and all three Human Bosses. D6–D8 remain pending. This is not the complete skill roster or a user-playable accepted build.
 - Physical GUI gameplay/capture, Source A UI reskin/owner visual review, Android device QA and whole-game performance remain PENDING.
 - No claim of FULL COMPLETE or release readiness.
 
