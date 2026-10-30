@@ -1,3 +1,20 @@
+## 30/10/2026 — D8 normal-GUI runtime performance capture preflight
+
+Base source: `59f3903f37dc0260cf07059bf3bd24e0973168c6`; stable main: `c0c1382f119599497b52d8ee8abd9e830a883f1e` (unchanged). Live PR #52 remains Draft/open/unmerged at `2a99ed505c85a17f6d25f91891560ca51fa02d88`, base `feature/pve-jx-continuous-world-20261026`; no PR or main mutation is authorized.
+
+**Exact D8 QA/test path allowlist for this packet:**
+- `godot/tests/presentation/v63_d8_performance_runtime_capture_test.gd` (new) — launch the actual P3.2 Source A scene in normal Windows GUI at 1280×720 with the existing 130-disciple QA seed; enter its six-member C01 Combat V2 encounter through the production P3.2 controls; attach the existing passive `pve_playable_perf_probe.gd`; capture raw frame/process/physics/memory metrics and a real viewport frame in two runs with the existing logger OFF/ON switch.
+- `CURRENT_CHECKPOINT.md` — this preflight, followed by exact test/GUI measurements and output hashes.
+
+The fixture may route existing UI signals to make the run repeatable; it does not claim physical-mouse QA. It does not advance time outside the canonical runtime, grant rewards, change balance, or add a second save/probe/clock authority. Both runs use new isolated SaveService saves and output directories under `E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D8_PERF_20261030\`.
+
+**Protected:** all production runtime, combat, SaveService/schema, scheduler, Injury120, One Active Job, Warehouse, VFX/assets, Source A provenance, legacy gates and saved data; the canonical dirty E: worktree; main and PR #52.
+
+**Verification:** official Windows Godot 4.7.2 import; current-source 24-test D8/D7/Save/PvE regression at `59f3903f37dc0260cf07059bf3bd24e0973168c6`; new GUI capture test in logger OFF and ON modes; inspect raw metrics, output hashes and screenshot. Preserve logger-specific frame P50/P95/P99/1%-low, process/physics and RAM/video-memory peaks. If the run cannot enter combat or the GUI measurement does not produce data, record it as FAIL/PENDING; do not substitute headless or simulated values.
+
+**Rollback:** revert only the new QA test and this preflight/evidence text. No runtime rollback or save migration is needed. Current 24-test result at `59f3903f37dc0260cf07059bf3bd24e0973168c6` remains a separate passing checkpoint; overall V6.5 and Android/owner acceptance remain INCOMPLETE/PENDING.
+
+
 ## 30/10/2026 — D7 GUI readability correction preflight
 
 Base source: `5e1fc3043abe4fcd402ce226be7bb944d053cd0d`; branch documentation HEAD before this preflight: `c8096546268b675cb9e7f15966f30443898fcd55`. Main remains `c0c1382f119599497b52d8ee8abd9e830a883f1e`; PR #52 remains Draft/open/unmerged. The current 1280×720 real Boss captures reproduce two presentation defects: the HUD prints each localized Boss ID twice, and compact Source A combat nameplates crowd the six-party/monster cluster.
