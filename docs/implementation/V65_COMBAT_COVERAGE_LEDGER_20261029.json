@@ -3,7 +3,7 @@
   "generated_at": "2026-10-30",
   "repository": "vuanhtuan161094-byte/TongMonBaDao",
   "branch": "feature/v63-v64-full-combat-20261029",
-  "source_sha": "59f3903f37dc0260cf07059bf3bd24e0973168c6",
+  "source_sha": "23e5d0ba812f4b39dc6c8c5afc47864929c645aa",
   "stable_main_sha": "c0c1382f119599497b52d8ee8abd9e830a883f1e",
   "overall_release_status": "INCOMPLETE",
   "phase_status": {
@@ -19,12 +19,12 @@
     "D7_GUI": "SCRIPTED_GUI_PASS",
     "D7_ACCEPTANCE": "PENDING",
     "D8_GUI": "SCRIPTED_GUI_PASS",
-    "D8_PERFORMANCE": "MEASURED_SPIKES_REVIEW_PENDING",
+    "D8_PERFORMANCE": "MEASURED_IMPROVED_REVIEW_PENDING",
     "D8_ANDROID": "PENDING",
     "D8_ENDGAME_CONTENT": "BLOCKED",
     "D7_GUI_BASELINE": "SCRIPTED_CAPTURE_PASS",
     "D6_REGRESSION": "20/20_PASS",
-    "D8_REGRESSION": "24/24_PASS"
+    "D8_REGRESSION": "25/25_PASS"
   },
   "human_branch_count": 9,
   "human_family_count": 105,
@@ -5933,31 +5933,79 @@
   "d8_allowlist_amendment": "Update the legacy progression regression's expected CombatStatsV2 call to include the existing foundation_model_version >= FoundationSystem.MODEL_D7 authority flag; test-only",
   "d8_regression_status": {
     "status": "HEADLESS_PASS",
-    "affected_tests": "16/16 PASS",
-    "cross_phase_tests": "4/4 PASS",
-    "combined": "20/20 PASS",
+    "affected_tests": "25/25 PASS",
+    "focused_refresh_hud_p3_2": "3/3 PASS",
+    "d6_complete": "20/20 PASS",
     "godot_version": "4.7.2.stable.official.ed1daf0bf",
     "import_exit": 0,
-    "gui": "PENDING",
-    "live_performance": "PENDING",
+    "gui": "SCRIPTED_GUI_PASS",
+    "live_performance": "MEASURED_IMPROVED_REVIEW_PENDING",
     "android": "PENDING",
-    "endgame_body_realms_7_30": "BLOCKED_CONTENT_UNAVAILABLE"
+    "endgame_body_realms_7_30": "BLOCKED_CONTENT_UNAVAILABLE",
+    "affected_manifest": "E:/TongMonBaDaoWorkspace/QA_Evidence/V65_D8_REFRESH_FIX_20261030/affected_final/affected_final_results.json",
+    "affected_manifest_sha256": "7D3E2AA3C4B2F7DF00621173C8D4537C61A6476B2425CB7D7D86518D245DE590",
+    "d6_manifest": "E:/TongMonBaDaoWorkspace/QA_Evidence/V65_D8_REFRESH_FIX_20261030/d6_final/d6_final_results.json",
+    "d6_manifest_sha256": "84CFEDE5292EC65C56F6F7052FBA72B27AA96811F0FE2B7487431B7441521FF7"
   },
   "d8_evidence_path": "docs/implementation/V65_D8_INTEGRATED_QA_EVIDENCE_20261030.md",
   "d8_log_sha256": {
-    "import": "4607CF35E6D6B82797968FE151305A9C35D23E7884FAE37D36A6CB249F87DB2",
-    "matrix": "3C435EC5E1A2BF50159E5BB870DF2BE336394D3966492850FEFD0DE14C917C75",
-    "cross_phase": "2E439B30D5465EB94E9A6221F6118FEDD858E8B465259EDFE7E3E77241702491"
+    "import": "B500736E0177F44888D24EF078EA3450E557923411BA5DFA0C0EE1D1292B9DDA",
+    "focused_manifest": "1928E0773542A32A6A2BC635442703DB9E81FDBC2E44E3991B1897A6B9471D1E",
+    "refresh_test": "948DF38343FCE20F53D1F9BD45BF96ECD03D7F30DC184A832087F1913F626641",
+    "affected_manifest": "7D3E2AA3C4B2F7DF00621173C8D4537C61A6476B2425CB7D7D86518D245DE590",
+    "d6_manifest": "84CFEDE5292EC65C56F6F7052FBA72B27AA96811F0FE2B7487431B7441521FF7",
+    "gui_off_log": "AC39830029C5678A75F150314FAA7E118DDDE034E84D4849045D2103B4C5271B",
+    "gui_off_metrics": "127BAA90D7A7C869A7E622E6CA46BA926AE83CD8E4FBB269838B9E2F276DF6E3",
+    "gui_on_log": "71D96B868A24A6D9F6CB1A2355C5212C87FE458652DBF94CE1E7642B7D8DE1B4",
+    "gui_on_metrics": "DB6F088267E3CAB7D1E09B03C99AC1881E733CC411F41CDEFDA170B929C6855E",
+    "gui_on_screenshot": "2AEFED2A9D6AF88E8F006C190B105D5E42875F362056E13AB9B2B9A9CE3E5AC8"
   },
   "d8_scope_limitations": [
-    "The 300-coordinate cultivation cost table does not provide an end-to-end playable Body progression; authored gate content exists only through realm 6 and realms 7-30 return content_unavailable.",
+    "The 300-coordinate cultivation cost table does not provide end-to-end playable Body progression; authored gate content exists only through realm 6 and realms 7-30 return content_unavailable.",
     "The multiseed contract test exercises deterministic direct Combat V2 HP0/receipt/no-reward/respawn traces; it is not autonomous pathing or live runtime performance.",
-    "GUI/owner visual, measured FPS/RAM, and Android device acceptance remain pending."
+    "Scripted Windows GUI evidence does not replace physical mouse, manual Save/Return, or owner visual acceptance.",
+    "D8 whole-frame tail spikes remain; performance acceptance and Android device evidence are pending."
   ],
   "d8_gui_attempt": {
-    "status": "PENDING",
-    "app": "Godot 4.7.2 Project Manager",
-    "result": "Window listed after explicit launch; two screenshot-backed get_window_state calls timed out at frame channel; no input or gameplay screenshot captured."
+    "status": "SCRIPTED_GUI_CAPTURE_PASS",
+    "engine": "4.7.2.stable.official.ed1daf0bf",
+    "resolution": "1280x720",
+    "gpu": "Intel Iris Plus Graphics",
+    "open_gl": "3.3 Compatibility",
+    "party_size": 6,
+    "loaded_disciple_count": 130,
+    "logger_off": {
+      "frames": 1172,
+      "fps": 58.51,
+      "p50_ms": 16.66,
+      "p95_ms": 17.32,
+      "p99_ms": 30.98,
+      "max_ms": 95.35,
+      "fps_1pct_low": 13.7,
+      "process_p95_ms": 109.83,
+      "physics_p95_ms": 0.16,
+      "static_memory_peak_mb": 189.4,
+      "video_memory_peak_mb": 267.6
+    },
+    "logger_on": {
+      "frames": 1172,
+      "fps": 58.54,
+      "p50_ms": 16.66,
+      "p95_ms": 17.3,
+      "p99_ms": 27.99,
+      "max_ms": 100.83,
+      "fps_1pct_low": 14,
+      "process_p95_ms": 104.32,
+      "physics_p95_ms": 0.13,
+      "static_memory_peak_mb": 189.8,
+      "video_memory_peak_mb": 267.6
+    },
+    "screenshot": "E:/TongMonBaDaoWorkspace/QA_Evidence/V65_D8_REFRESH_FIX_20261030/gui_after_refresh_fix_on/p3_2_pve_1280x720.png",
+    "screenshot_sha256": "2AEFED2A9D6AF88E8F006C190B105D5E42875F362056E13AB9B2B9A9CE3E5AC8",
+    "physical_input": false,
+    "manual_save_return": "PENDING",
+    "owner_review": "PENDING",
+    "visual_note": "The six party rows are readable. At capture V6.5 was OFF and event count was zero; no skill cast is claimed. D7 center actor/damage-number crowding remains."
   },
   "d7_gui_capture": {
     "status": "SCRIPTED_CAPTURE_PASS_BASELINE_ONLY",
@@ -5972,10 +6020,11 @@
     "latest_patch_63b5_tested": false
   },
   "d8_preview_resume_patch": {
-    "code_test_sha": "63b5eaef9eae17ccc0fb71a1fa8b7524f50fc64f",
-    "status": "ENGINE_PENDING",
+    "code_test_sha": "23e5d0ba812f4b39dc6c8c5afc47864929c645aa",
+    "status": "AFFECTED_REGRESSION_PASS",
     "test_path": "godot/tests/simulation/v63_d8_preview_resume_gate_test.gd",
-    "reason": "Latest source/test commit is not present in the existing local worktrees; preserve both dirty E: trees."
+    "reason": "Latest source/test commit is not present in the existing local worktrees; preserve both dirty E: trees.",
+    "test_log_sha256": "1817C25CA44C714C2B3EA7E28A241C8EAE56694187D1A749DC7BC669008C7637"
   },
   "gui_evidence": {
     "source_sha": "5e1fc3043abe4fcd402ce226be7bb944d053cd0d",
@@ -6002,18 +6051,24 @@
   "current_evidence": {
     "godot": "4.7.2.stable.official.ed1daf0bf",
     "import_exit": 0,
-    "import_log_sha256": "B728DE0C23F24D9AA31BC7608B177D7CA13857D7C3ACA862A08506D00675123B",
+    "import_log_sha256": "B500736E0177F44888D24EF078EA3450E557923411BA5DFA0C0EE1D1292B9DDA",
+    "focused_matrix": {
+      "tests": 3,
+      "passed": 3,
+      "manifest": "E:/TongMonBaDaoWorkspace/QA_Evidence/V65_D8_REFRESH_FIX_20261030/focused/focused_results.json",
+      "sha256": "1928E0773542A32A6A2BC635442703DB9E81FDBC2E44E3991B1897A6B9471D1E"
+    },
     "d6_matrix": {
       "tests": 20,
       "passed": 20,
-      "manifest": "E:/TongMonBaDaoWorkspace/QA_Evidence/V65_D8_PERF_20261030/d6_regression_59f3903/d6_results_59f3903.json",
-      "sha256": "6AE3CC0C708D76BD1E0D59875C03BD036E5F6B1059884905AA2D7FED66DDB93D"
+      "manifest": "E:/TongMonBaDaoWorkspace/QA_Evidence/V65_D8_REFRESH_FIX_20261030/d6_final/d6_final_results.json",
+      "sha256": "84CFEDE5292EC65C56F6F7052FBA72B27AA96811F0FE2B7487431B7441521FF7"
     },
     "affected_matrix": {
-      "tests": 24,
-      "passed": 24,
-      "manifest": "E:/TongMonBaDaoWorkspace/QA_Evidence/V65_D8_PERF_20261030/regression_59f3903/regression_results_59f3903.json",
-      "sha256": "EA6DF0603FD27F4759FF1C8AD5538399664EDFFA48F9943766F830535374D739"
+      "tests": 25,
+      "passed": 25,
+      "manifest": "E:/TongMonBaDaoWorkspace/QA_Evidence/V65_D8_REFRESH_FIX_20261030/affected_final/affected_final_results.json",
+      "sha256": "7D3E2AA3C4B2F7DF00621173C8D4537C61A6476B2425CB7D7D86518D245DE590"
     },
     "d7_gui": {
       "branch_samples": 9,
@@ -6023,33 +6078,46 @@
     },
     "d8_performance": {
       "logger_off": {
-        "frame_count": 1135,
+        "frame_count": 1172,
+        "fps": 58.51,
         "p50_ms": 16.66,
-        "p95_ms": 17.5,
-        "p99_ms": 68.94,
-        "max_ms": 94.88,
-        "fps_1pct_low": 12.44,
-        "static_memory_peak_mb": 189.7,
+        "p95_ms": 17.32,
+        "p99_ms": 30.98,
+        "max_ms": 95.35,
+        "fps_1pct_low": 13.7,
+        "process_p95_ms": 109.83,
+        "physics_p95_ms": 0.16,
+        "static_memory_peak_mb": 189.4,
         "video_memory_peak_mb": 267.6,
-        "metrics_sha256": "80C8D863FE3FCA0ABE90EB2D41B77192AE74C4E816598C0054A1E2ECD0E4E0B4"
+        "log_sha256": "AC39830029C5678A75F150314FAA7E118DDDE034E84D4849045D2103B4C5271B",
+        "metrics_sha256": "127BAA90D7A7C869A7E622E6CA46BA926AE83CD8E4FBB269838B9E2F276DF6E3"
       },
       "logger_on": {
-        "frame_count": 1133,
-        "p50_ms": 16.65,
-        "p95_ms": 17.49,
-        "p99_ms": 68.48,
-        "max_ms": 120.1,
-        "fps_1pct_low": 12.02,
-        "static_memory_peak_mb": 189.5,
-        "video_memory_peak_mb": 269.6,
-        "metrics_sha256": "49A884AACACA6562D5D88E6D5321889D8075B88AAD766755CA02578F0DA38D74"
+        "frame_count": 1172,
+        "fps": 58.54,
+        "p50_ms": 16.66,
+        "p95_ms": 17.3,
+        "p99_ms": 27.99,
+        "max_ms": 100.83,
+        "fps_1pct_low": 14,
+        "process_p95_ms": 104.32,
+        "physics_p95_ms": 0.13,
+        "static_memory_peak_mb": 189.8,
+        "video_memory_peak_mb": 267.6,
+        "log_sha256": "71D96B868A24A6D9F6CB1A2355C5212C87FE458652DBF94CE1E7642B7D8DE1B4",
+        "metrics_sha256": "DB6F088267E3CAB7D1E09B03C99AC1881E733CC411F41CDEFDA170B929C6855E"
       },
-      "screenshot_sha256": "A020EFD9CD7443948A717D4E54AC08D4E522A8555B91A26AAC61445612C79B40"
+      "screenshot": "E:/TongMonBaDaoWorkspace/QA_Evidence/V65_D8_REFRESH_FIX_20261030/gui_after_refresh_fix_on/p3_2_pve_1280x720.png",
+      "screenshot_sha256": "2AEFED2A9D6AF88E8F006C190B105D5E42875F362056E13AB9B2B9A9CE3E5AC8",
+      "observed_refresh_stage_max_ms": {
+        "hud_update": 5.57,
+        "visual_rows": 0.098
+      }
     }
   },
   "next_preflight": {
-    "base_feature_head": "8ee9a40f73f388f5755947eeb4eafe940530d766",
-    "status": "OWNER_APPROVED_NOT_STARTED",
+    "base_feature_head": "5d9337d06aa9c931b844133f8add890c756a9b8c",
+    "status": "IMPLEMENTED_TESTED",
     "purpose": "D8 targeted presentation refresh reuse based on measured recurring profiler cost",
     "proposed_source_paths": [
       "godot/src/presentation/p3_2_landscape_sect.gd",
@@ -6071,6 +6139,14 @@
       "CURRENT_CHECKPOINT.md",
       "NEXT_CHAT_HANDOFF.md"
     ],
-    "approval": "Owner approved exact allowlist in current conversation; code starts only after this checkpoint commit."
-  }
+    "approval": "Owner approved exact allowlist before code. Patch committed and verified with Godot 4.7.2; docs/Issue update is this checkpoint.",
+    "resulting_code_test_sha": "23e5d0ba812f4b39dc6c8c5afc47864929c645aa"
+  },
+  "d8_gui_attempt_history": {
+    "status": "PENDING",
+    "app": "Godot 4.7.2 Project Manager",
+    "result": "Window listed after explicit launch; two screenshot-backed get_window_state calls timed out at frame channel; no input or gameplay screenshot captured."
+  },
+  "feature_head_before_d8_patch": "5d9337d06aa9c931b844133f8add890c756a9b8c",
+  "current_code_test_sha": "23e5d0ba812f4b39dc6c8c5afc47864929c645aa"
 }

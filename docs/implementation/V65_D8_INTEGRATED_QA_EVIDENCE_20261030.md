@@ -1,4 +1,49 @@
-## D8 profile-guided presentation optimization preflight — owner approval recorded 2026-10-30
+# Current D8 refresh-reuse implementation and integrated QA — 2026-10-30
+
+**Code/test SHA:** 23e5d0ba812f4b39dc6c8c5afc47864929c645aa, parent 5d9337d06aa9c931b844133f8add890c756a9b8c. Official Godot 4.7.2: 4.7.2.stable.official.ed1daf0bf.
+The owner-approved patch is limited to:
+- godot/src/presentation/p3_2_landscape_sect.gd
+- godot/src/presentation/p3/v63_combat_hud_v1.gd
+- godot/tests/presentation/v63_d8_p3_refresh_reuse_test.gd
+- godot/tests/presentation/v63_d8_p3_refresh_reuse_test.gd.uid
+
+## Runtime and regression status
+
+- Windows Godot 4.7.2 import: PASS, exit 0; final import log SHA-256 B500736E0177F44888D24EF078EA3450E557923411BA5DFA0C0EE1D1292B9DDA.
+- Focused refresh/HUD/P3.2 suite: 3/3 exit 0; manifest SHA-256 1928E0773542A32A6A2BC635442703DB9E81FDBC2E44E3991B1897A6B9471D1E. New refresh reuse test log SHA-256 948DF38343FCE20F53D1F9BD45BF96ECD03D7F30DC184A832087F1913F626641.
+- D8 affected D7/D8/Save/PvE suite: 25/25 PASS, all exit 0; manifest SHA-256 7D3E2AA3C4B2F7DF00621173C8D4537C61A6476B2425CB7D7D86518D245DE590.
+- D6 complete regression: 20/20 PASS, sequential; manifest SHA-256 84CFEDE5292EC65C56F6F7052FBA72B27AA96811F0FE2B7487431B7441521FF7.
+- The manifest source field describes tested content as 59f3903 baseline plus approved D8 presentation patch; it does not embed a commit SHA. Exact P3.2/HUD blob parity between the tested isolated snapshot and published code commit was checked. Two earlier process attempts exited -1; fresh isolated APPDATA runs passed and only final runs are counted.
+- The existing D7 combat HUD test exits 0 but retains fixture teardown resource-leak diagnostics. The fixture was not changed in this packet.
+
+## D8 GUI / paired profiler
+
+Normal Windows Godot GUI, 1280×720, OpenGL 3.3 Compatibility on Intel Iris Plus; loaded QA save has 130 disciples, and the Combat V2 party has six actors. Logger OFF and ON were run separately for 20 seconds; each log confirms game actions advancing 0→149 and process exit 0.
+
+| Measurement | Before OFF | Before ON | After OFF | After ON |
+|---|---:|---:|---:|---:|
+| Frames | 1135 | 1133 | 1172 | 1172 |
+| P50 / P95 (ms) | 16.66 / 17.50 | 16.65 / 17.49 | 16.66 / 17.32 | 16.66 / 17.30 |
+| P99 / max (ms) | 68.94 / 94.88 | 68.48 / 120.10 | 30.98 / 95.35 | 27.99 / 100.83 |
+| 1%-low FPS | 12.44 | 12.02 | 13.70 | 14.00 |
+| Process P95 (ms) | 136.99 | 112.21 | 109.83 | 104.32 |
+| Physics P95 (ms) | 0.19 | 0.09 | 0.16 | 0.13 |
+| Static / video memory peak (MB) | 189.7 / 267.6 | 189.5 / 269.6 | 189.4 / 267.6 | 189.8 / 267.6 |
+
+The hot HUD update maximum fell from roughly 33–51 ms to 5.57 ms, while visual-row update fell from roughly 31–45 ms to 0.098 ms. P99 improved and both 1%-low values rose, but maximum whole-frame spikes remain near 100 ms. Therefore the optimization is measured as improved and **D8 performance acceptance remains REVIEW PENDING**; no target or owner signoff was inferred.
+
+After OFF log/metrics SHA-256: AC39830029C5678A75F150314FAA7E118DDDE034E84D4849045D2103B4C5271B / 127BAA90D7A7C869A7E622E6CA46BA926AE83CD8E4FBB269838B9E2F276DF6E3.
+After ON log/metrics SHA-256: 71D96B868A24A6D9F6CB1A2355C5212C87FE458652DBF94CE1E7642B7D8DE1B4 / DB6F088267E3CAB7D1E09B03C99AC1881E733CC411F41CDEFDA170B929C6855E.
+
+Screenshot: E:/TongMonBaDaoWorkspace/QA_Evidence/V65_D8_REFRESH_FIX_20261030/gui_after_refresh_fix_on/p3_2_pve_1280x720.png; SHA-256 2AEFED2A9D6AF88E8F006C190B105D5E42875F362056E13AB9B2B9A9CE3E5AC8. It shows the actual game viewport with the Source A world and all six HUD rows. At capture, V6.5 is OFF and the event count is zero; this image proves layout/readability only, not a skill cast. Scripted UI testing is not physical mouse play. Manual Save/Return and owner review remain PENDING. Central actor/damage-number crowding in the D7 combat matrix remains a separate visible issue.
+
+The D7 branch/Boss matrix remains 9/9 branch samples and 9/9 Boss captures as documented in V65_D7_UI_VFX_EVIDENCE_20261030.md. D6 rare-skill GUI remains PENDING; Android device remains PENDING; Body realms 7–30 remain BLOCKED by missing authored progression sources. V6.5 overall remains INCOMPLETE.
+
+QA output root: E:/TongMonBaDaoWorkspace/QA_Evidence/V65_D8_REFRESH_FIX_20261030. The original dirty E: checkout was preserved; no test logs, screenshots, or save files were committed.
+
+---
+
+## Historical D8 profile-guided presentation optimization preflight — approval recorded 2026-10-30
 
 Base feature HEAD: 02a964e088414798d3dc18cac3d0e20c91af3457. Runtime evidence source: 59f3903f37dc0260cf07059bf3bd24e0973168c6. Main remains c0c1382f119599497b52d8ee8abd9e830a883f1e; PR #52 remains Draft/open/unmerged at 2a99ed505c85a17f6d25f91891560ca51fa02d88.
 

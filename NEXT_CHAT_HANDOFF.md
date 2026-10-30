@@ -1,4 +1,27 @@
-# NEXT ACTION — D8 measured refresh hotspot, exact-path approval granted
+# NEXT CHAT HANDOFF — D8 refresh reuse committed; continue remaining QA gates
+
+Repository: vuanhtuan161094-byte/TongMonBaDao. Continue only on feature/v63-v64-full-combat-20261029. Current code/test commit: 23e5d0ba812f4b39dc6c8c5afc47864929c645aa. Verify live branch head before further edits because the evidence-doc checkpoint follows this code commit. Main c0c1382f119599497b52d8ee8abd9e830a883f1e is unchanged. PR #52 remains Draft/open/unmerged at 2a99ed505c85a17f6d25f91891560ca51fa02d88 on base feature/pve-jx-continuous-world-20261026. PR #52 touches P3.2 and coordination docs; do not merge it or copy its diff into this feature branch.
+
+## Completed on the current code SHA
+- D8 ResourceRegistry and six-party-row reuse is implemented in the two approved presentation sources, with a new focused test and generated UID.
+- Official Godot 4.7.2 import PASS; focused refresh/HUD/P3.2 PASS 3/3; affected D7/D8/Save/PvE PASS 25/25; D6 sequential regression PASS 20/20.
+- Normal Windows GUI profiler OFF/ON runs both exited 0 with 1172 frames. HUD/visual-row refresh costs fell; whole-frame tail spikes remain, so D8 performance acceptance is REVIEW PENDING.
+- D7 GUI branch samples 9/9 and Boss captures 9/9 remain scripted GUI evidence. The after-patch screenshot is a real P3.2 viewport, but shows V6.5 OFF and zero actions at capture.
+- Source parity is recorded in V65_D8_INTEGRATED_QA_EVIDENCE_20261030.md and current checkpoint. The canonical dirty E: checkout was not edited.
+
+## Next execution
+1. Continue the D8 endgame acceptance path on the isolated E: snapshot: obtain manual physical mouse interaction for combat/map and Save/Return, record actual on-screen actions and a fresh screenshot, and keep owner visual acceptance pending until the owner reviews it. Do not count scripted input as physical input.
+2. Investigate the remaining whole-frame tail spikes using the already captured phase metrics; only prepare a new exact-path packet if a specific code fix is justified. Keep performance acceptance pending until a measured target is met or explicitly accepted.
+3. Continue endgame reproducibility and Android checks where hardware is available. Body realms 7–30 stay BLOCKED until authored recipes/material sources exist; do not invent progression.
+4. Maintain all 20-camp, multi-team, exact receipt/save, Injury120, single Warehouse, One Active Job, and legacy gate-OFF checks. Update Issue #54, CURRENT_CHECKPOINT.md, NEXT_CHAT_HANDOFF.md, and the coverage ledger after each tested checkpoint.
+
+## Still pending / blocked
+- Physical mouse and Save/Return interaction; owner visual acceptance; D6 rare-skill GUI.
+- D8 long-tail performance acceptance and Android device evidence.
+- Body realms 7–30 authored content.
+- Overall V6.5 remains INCOMPLETE. No main merge, PR #52 merge/close, extra PR/branch, or cleanup.
+
+## Historical D8 measured-refresh preflight — superseded by current result
 
 Current branch feature/v63-v64-full-combat-20261029 at 02a964e088414798d3dc18cac3d0e20c91af3457 before the preflight evidence commit. Runtime measurements and D6/D7 results are in the preceding current handoff.
 
@@ -9,11 +32,11 @@ Profiler follow-up scope proposed after AGENTS.md §3 owner approval:
 
 Exact source paths: godot/src/presentation/p3_2_landscape_sect.gd and godot/src/presentation/p3/v63_combat_hud_v1.gd. Exact new test path: godot/tests/presentation/v63_d8_p3_refresh_reuse_test.gd. Evidence/checkpoint paths: D8 evidence, coverage ledger, CURRENT_CHECKPOINT.md, NEXT_CHAT_HANDOFF.md.
 
-Owner approved the exact allowlist in the current session. Start only after this preflight commit is visible at the branch tip. No SaveService/schema, combat authority, injury, job, warehouse, scheduler, asset or main change. The current 9/9 D7 GUI matrix is a visual baseline. V6.5 remains incomplete.
+Historical status: the owner approved the exact allowlist before code began. The patch is now committed and its final Godot evidence appears at the top of this handoff. No SaveService/schema, combat authority, injury, job, warehouse, scheduler, asset or main change was made. V6.5 remains incomplete.
 
 ---
 
-# CURRENT HANDOFF — D6 regression verified; D7 GUI 9/9; D8 measured (2026-10-30)
+## Previous handoff state before the D8 refresh-reuse implementation — 2026-10-30
 
 Repository vuanhtuan161094-byte/TongMonBaDao. Continue on feature/v63-v64-full-combat-20261029 only. Feature HEAD before this evidence update is 53d6134ec7ecad5f10f29c2617869c6717958d4a; tested runtime source is 59f3903f37dc0260cf07059bf3bd24e0973168c6. Main c0c1382f119599497b52d8ee8abd9e830a883f1e unchanged. PR #52 remains Draft/open/unmerged at 2a99ed505c85a17f6d25f91891560ca51fa02d88; its base is feature/pve-jx-continuous-world-20261026.
 

@@ -1,4 +1,40 @@
-## D8 targeted profiler-fix preflight — exact paths owner-approved; code not started
+## CURRENT CHECKPOINT — D8 presentation refresh reuse implemented and regression verified (2026-10-30)
+
+Repository: vuanhtuan161094-byte/TongMonBaDao. Branch: feature/v63-v64-full-combat-20261029.
+Current tested and committed code SHA: 23e5d0ba812f4b39dc6c8c5afc47864929c645aa (code commit parent 5d9337d06aa9c931b844133f8add890c756a9b8c). Stable main remains c0c1382f119599497b52d8ee8abd9e830a883f1e. PR #52 remains Draft/open/unmerged at 2a99ed505c85a17f6d25f91891560ca51fa02d88, based on feature/pve-jx-continuous-world-20261026. PR #52 overlaps godot/src/presentation/p3_2_landscape_sect.gd and checkpoint/handoff docs; no PR or main changes were imported.
+
+| Gate | Status | Evidence |
+|---|---|---|
+| Official Windows Godot 4.7.2 import | PASS, exit 0 | Log SHA-256 B500736E0177F44888D24EF078EA3450E557923411BA5DFA0C0EE1D1292B9DDA |
+| Focused refresh/HUD/P3.2 | PASS, 3/3 | Manifest SHA-256 1928E0773542A32A6A2BC635442703DB9E81FDBC2E44E3991B1897A6B9471D1E |
+| D8 affected D7/D8/Save/PvE regression | PASS, 25/25 | affected_final_results.json SHA-256 7D3E2AA3C4B2F7DF00621173C8D4537C61A6476B2425CB7D7D86518D245DE590 |
+| D6 complete sequential regression | PASS, 20/20 | d6_final_results.json SHA-256 84CFEDE5292EC65C56F6F7052FBA72B27AA96811F0FE2B7487431B7441521FF7 |
+| D7 branch/Boss GUI matrix | SCRIPTED GUI PASS, 9/9 + 9/9 | Previous exact logs and screenshots in V65_D7_UI_VFX_EVIDENCE_20261030.md |
+| D8 after-patch normal Windows GUI | SCRIPTED GUI PASS | Native 1280×720 P3.2 Combat V2 window; Source A map, six party rows, 130-disciple loaded QA save, six-person C01 party. HUD refresh and visual-row reuse tested in place. |
+| D8 performance acceptance | MEASURED IMPROVED; REVIEW PENDING | Long-tail maximum remains 95.35 ms OFF / 100.83 ms ON; P99 30.98/27.99 ms and 1%-low 13.70/14.00 FPS. No owner-approved latency threshold is recorded. |
+| Physical mouse / manual Save-Return / owner visual review | PENDING | Current after-patch image and scripted window do not prove physical input or owner acceptance. |
+| D6 rare-skill GUI | PENDING | D6 20/20 is headless; rare-ultimate live capture remains open. |
+| Android device | PENDING | No physical Android test device was available. |
+| Body realms 7–30 | BLOCKED | Authored progression recipes/material sources remain unavailable. |
+| V6.5 overall | INCOMPLETE | Do not mark full combat complete or merge. |
+
+The D8 patch reuses one scene-owned ResourceRegistry for P3.2 monster display-name lookup and reuses six HUD party-row controls instead of destroying and recreating them on each refresh. It changes only the two approved presentation source files plus the new focused test and generated UID. Simulation/combat authority, save schema, Warehouse, One Active Job, scheduler, Injury120, and Source A production assets were not changed.
+
+The code tree was compared to the isolated tested snapshot after normalizing the snapshot's trailing Windows CRLF artifact; P3.2 and HUD changes are limited to the approved registry/row reuse edits. The test manifests label the tested source as the prior 59f3903 baseline plus the approved D8 presentation patch rather than embedding a Git commit ID; the published blob content matches that tested source snapshot.
+
+The focused matrix includes v63_d8_p3_refresh_reuse_test.gd, v63_d7_combat_hud_test.gd, and pve_multicamp_p3_2_live_integration_test.gd. The D7 HUD test exits 0; its log retains existing test-fixture teardown resource-leak diagnostics, which were not changed in this packet. The P3.2 integration verifies a 130-disciple save, six disciples vs ten monsters, Save/Load, 88 shared-clock seconds, 166 actions, and zone-hop; Injury120 was not reached and loot remains LOOT_PENDING. Final isolated APPDATA reruns passed; two earlier processes had transient -1 exits and are not counted in the final manifests.
+
+D8 GUI and profiler evidence:
+- Logger OFF, 20 seconds, 1172 frames, 58.51 FPS; P50/P95/P99/max 16.66/17.32/30.98/95.35 ms; 1%-low 13.70 FPS; process P95 109.83 ms; physics P95 0.16 ms; static/video memory 189.4/267.6 MB. Log SHA AC39830029C5678A75F150314FAA7E118DDDE034E84D4849045D2103B4C5271B; metrics SHA 127BAA90D7A7C869A7E622E6CA46BA926AE83CD8E4FBB269838B9E2F276DF6E3.
+- Logger ON, 20 seconds, 1172 frames, 58.54 FPS; P50/P95/P99/max 16.66/17.30/27.99/100.83 ms; 1%-low 14.00 FPS; process P95 104.32 ms; physics P95 0.13 ms; static/video memory 189.8/267.6 MB. Log SHA 71D96B868A24A6D9F6CB1A2355C5212C87FE458652DBF94CE1E7642B7D8DE1B4; metrics SHA DB6F088267E3CAB7D1E09B03C99AC1881E733CC411F41CDEFDA170B929C6855E.
+- Before optimization, P99 was 68.94/68.48 ms, maximum 94.88/120.10 ms, and 1%-low 12.44/12.02 FPS. After reuse, measured maximum HUD update fell from roughly 33–51 ms to 5.57 ms; visual-row update fell from roughly 31–45 ms to 0.098 ms. Whole-frame long-tail spikes remain and performance acceptance is still pending.
+- Captured GUI screenshot: E:/TongMonBaDaoWorkspace/QA_Evidence/V65_D8_REFRESH_FIX_20261030/gui_after_refresh_fix_on/p3_2_pve_1280x720.png; SHA-256 2AEFED2A9D6AF88E8F006C190B105D5E42875F362056E13AB9B2B9A9CE3E5AC8. The screenshot is a real 1280×720 game viewport; it shows V6.5 OFF and zero actions at capture, so it is not evidence of a cast/hit. Scripted GUI actions rose from 0 to 149 during the measured run. The map and six-row HUD are visible; D7 central actor/damage-number crowding remains a separate visual issue.
+
+QA output root: E:/TongMonBaDaoWorkspace/QA_Evidence/V65_D8_REFRESH_FIX_20261030. No evidence artifact or save was added to the repository. The canonical dirty E: worktree remains untouched.
+
+---
+
+## Historical D8 targeted profiler-fix preflight — owner-approved; implementation follows below
 
 Current feature HEAD before preflight commit: 02a964e088414798d3dc18cac3d0e20c91af3457. Performance data in the preceding checkpoint section is measured on 59f3903. Repeated samples indicate P3.2 HUD/visual-row refresh cost; code inspection shows repeated ResourceRegistry construction/catalog parsing and party-row control teardown/rebuild. This is a bounded hypothesis to validate by before/after profiler results.
 
@@ -15,11 +51,11 @@ Scope: reuse one scene-owned registry for live visual-row display lookup; reuse 
 
 Tests: official Windows Godot 4.7.2 import; new focused refresh-reuse test; existing HUD and P3.2 live-integration tests; current 24-test affected and 20-test D6 matrices; repeated 20-second logger OFF/ON GUI profiler capture. Roll back only the two listed source files plus new test/UID.
 
-STATUS: owner approved these exact code paths in the current session. This approval checkpoint is being committed before editing; no performance patch has started.
+Status at that preflight checkpoint: the owner approved the exact paths before editing; implementation had not yet started at that historical point. The completed patch and evidence are recorded in the current checkpoint above.
 
 ---
 
-## CURRENT CHECKPOINT — D6 regression, D7 GUI matrix, D8 profile (2026-10-30)
+## Previous checkpoint (superseded by current D8 refresh result) — D6 regression, D7 GUI matrix, D8 profile (2026-10-30)
 
 Repository: vuanhtuan161094-byte/TongMonBaDao; feature branch feature/v63-v64-full-combat-20261029.
 Feature HEAD before this evidence commit: 53d6134ec7ecad5f10f29c2617869c6717958d4a. Tested runtime source: 59f3903f37dc0260cf07059bf3bd24e0973168c6. Stable main: c0c1382f119599497b52d8ee8abd9e830a883f1e unchanged. PR #52 remains Draft/open/unmerged, head 2a99ed505c85a17f6d25f91891560ca51fa02d88, base feature/pve-jx-continuous-world-20261026.
