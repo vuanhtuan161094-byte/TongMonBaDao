@@ -36,8 +36,24 @@ func _run() -> void:
     if rows == null or rows.get_child_count() != 6:
         _fail("HUD did not render exactly six authoritative party cards")
         return
-    if boss_name == null or not boss_name.text.contains(BOSS_ID):
-        _fail("HUD Boss card did not show the actual Boss identity")
+    var boss_definition := V63HumanSkillCombatSystem.boss_definition(BOSS_ID)
+    var expected_boss_name := str(boss_definition.get("name_vi","")).strip_edges()
+    if expected_boss_name.is_empty():
+        expected_boss_name = str(boss_definition.get("name",boss_definition.get("display_name",""))).strip_edges()
+    if boss_name == null or expected_boss_name.is_empty() \
+            or boss_name.text != "Boss · "+expected_boss_name or boss_name.text.contains(BOSS_ID):
+        _fail("HUD Boss card must display one authored localized name without repeating the raw Boss ID")
+        return
+    var presenter := B3CareCombatV5Presenter.new()
+    presenter.compact_source_a_actor_overlays = true
+    if presenter.should_show_combat_actor_name(false,false) \
+            or not presenter.should_show_combat_actor_name(true,false) \
+            or not presenter.should_show_combat_actor_name(false,true):
+        _fail("compact Source A nameplates must retain only the selected actor and Boss")
+        return
+    presenter.compact_source_a_actor_overlays = false
+    if not presenter.should_show_combat_actor_name(false,false):
+        _fail("expanded Source A mode must preserve the full authored nameplate list")
         return
     if event_label == null or not event_label.text.contains("BÁO CHIÊU"):
         _fail("HUD did not surface the actual Combat V2 telegraph")
@@ -48,6 +64,6 @@ func _run() -> void:
     if vfx == null or str(vfx.get("_cue_kind")) != "telegraph":
         _fail("original vector VFX did not consume the authoritative telegraph event")
         return
-    print("V63 D7 COMBAT HUD PASS: six party cards, Boss phase/HP/counter, real telegraph and original event VFX")
+    print("V63 D7 COMBAT HUD PASS: six party cards, localized Boss label, compact nameplates, phase/HP/counter, real telegraph and original event VFX")
     hud.queue_free()
     quit(0)

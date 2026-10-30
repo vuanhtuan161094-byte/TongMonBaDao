@@ -840,6 +840,9 @@ func _hp_bar_y(art_key: String, action: String, facing: Vector2,
 
 # Moving a UI health bar is permitted; moving a character away from its
 # authoritative path is NOT. Layout remains deterministic for a given frame.
+func should_show_combat_actor_name(selected_actor: bool, boss_actor: bool) -> bool:
+    return not compact_source_a_actor_overlays or selected_actor or boss_actor
+
 func layout_hp_overlays(overlays: Array[Dictionary]) -> Array[Dictionary]:
     # Shared collision pass for HP, identity tags and status feedback.
     # Keep every overlay inside the 1280x720 pilot's stage; otherwise a
@@ -1256,21 +1259,23 @@ func _draw() -> void:
             draw_arc(at,maxf(15.0,radius+3.0)*spectator_zoom(),
                 0.0,TAU,24,Color(0.94,0.73,0.39,0.85),1.5)
         if enable_source_vl_art and alive:
-            # Classic JX nameplate reads above the HP meter; live monster
-            # names come from MonsterCatalogueV2, not a cosmetic alias.
-            var actor_name := combat_actor_label(actor)
-            var name_width := clampf(float(actor_name.length())*9.0+16.0,72.0,180.0)
-            var name_tint := _school_color(_school_tag(actor)) if side == "disciple" else (
-                Color(1.0,0.77,0.37) if tier == "boss" else Color(1.0,0.85,0.72))
             var selected_actor := str(id) == source_a_selected_actor_id
-            if selected_actor:
-                name_tint = Color(1.0,0.88,0.46)
-            ui_overlays.append({
-                "kind":"name",
-                "rect":Rect2(at+Vector2(-name_width*0.5,hp_y-24.0),
-                    Vector2(name_width,20.0)),
-                "text":actor_name,"fill":name_tint,"selected":selected_actor
-            })
+            var boss_actor := side == "monster" and tier == "boss"
+            if should_show_combat_actor_name(selected_actor,boss_actor):
+                # Classic JX nameplate reads above the HP meter; live monster
+                # names come from MonsterCatalogueV2, not a cosmetic alias.
+                var actor_name := combat_actor_label(actor)
+                var name_width := clampf(float(actor_name.length())*9.0+16.0,72.0,180.0)
+                var name_tint := _school_color(_school_tag(actor)) if side == "disciple" else (
+                    Color(1.0,0.77,0.37) if tier == "boss" else Color(1.0,0.85,0.72))
+                if selected_actor:
+                    name_tint = Color(1.0,0.88,0.46)
+                ui_overlays.append({
+                    "kind":"name",
+                    "rect":Rect2(at+Vector2(-name_width*0.5,hp_y-24.0),
+                        Vector2(name_width,20.0)),
+                    "text":actor_name,"fill":name_tint,"selected":selected_actor
+                })
             var rank := combat_actor_rank_label(actor)
             if not compact_source_a_actor_overlays and not rank.is_empty() and not jxqy2.active:
                 var rank_width := clampf(float(rank.length())*6.0+12.0,72.0,194.0)

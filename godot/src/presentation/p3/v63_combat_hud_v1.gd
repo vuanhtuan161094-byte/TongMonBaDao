@@ -130,7 +130,10 @@ func _render() -> void:
     else:
         var boss_id := str(boss_actor.get("v63_boss_id", ""))
         var definition := V63HumanSkillCombatSystem.boss_definition(boss_id)
-        _boss_name.text = "%s · %s" % [str(definition.get("name_vi", definition.get("display_name", boss_id))), boss_id]
+        var boss_display_name := str(definition.get("name_vi","")).strip_edges()
+        if boss_display_name.is_empty():
+            boss_display_name = str(definition.get("name",definition.get("display_name",boss_id))).strip_edges()
+        _boss_name.text = "Boss · "+boss_display_name
         _boss_hp.max_value = maxf(1.0, float(boss_actor.get("max_hp", 1.0)))
         _boss_hp.value = maxf(0.0, float(boss_actor.get("hp", 0.0)))
         var phase := int(boss_actor.get("v63_boss_phase", 1))
