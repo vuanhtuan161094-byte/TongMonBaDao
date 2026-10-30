@@ -34,6 +34,14 @@ R3 touched: `disciple_state.gd`, `sect_state.gd`, `simulation_state.gd`, `simula
 - Test `APPDATA` was redirected inside the isolated integration checkout; no real saves were read or written. Godot logged a Windows root-certificate-store error in each run; it did not affect imports/tests. SAFE-01 and live-runtime recovery logs contain expected malformed-JSON diagnostics.
 - No presentation file changed in D4-A, so no GUI was opened; real combat HUD/Source A visual QA remains D7.
 
+### R4 / D4-B — Human branch and Boss coverage integrated; headless PASS
+
+- Coverage commit: [`efb26c1288575ab6a0477278f6d71d6e14830bd5`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/efb26c1288575ab6a0477278f6d71d6e14830bd5); this adds the two source-parity D4-B regression tests only. Runtime behavior is supplied by the approved R1 Human catalog/kernel and D4-A Combat V2/HuntingPveRun integration; no extra shared-runtime change was needed.
+- `v63_d4b_human_branches_bosses_test.gd`: 9/9 manual-backed Human branch casts, 105 nodes, and 3/3 real Human Boss telegraph/release/phase behavior; includes basic/mobility and the twelve-slot branch loadout.
+- `v63_d4b_archive_learning_test.gd`: 96 archived Human manuals and poison ownership/cap, dead-owner stop, guard/heal/cleanse/mark/AoE/mobility/passive effects.
+- Godot 4.7.2 import and four focused D4-A/D4-B simulation tests all exited 0. PASS markers: `V63 D4-B HUMAN BRANCHES/BOSSES PASS`, `V63 D4-B ARCHIVE/EFFECTS PASS`, `V63 D4-A HUMAN COMBAT PASS`, and `V63 D4-A STATE ROUNDTRIP PASS`. Each run emitted the Windows root-certificate-store diagnostic; it did not affect import or tests. APPDATA was isolated under the integration checkout.
+- Rollback: revert only the two added D4-B test paths. No SaveService, Warehouse, Injury120, scheduler, or six-person PvE authority changed.
+
 ## Godot 4.7.2 evidence
 
 Isolated checkout: `E:\TongMonBaDaoWorkspace\01_Game\TMB_ONE_GAME_V65_20261030`  
@@ -53,7 +61,7 @@ Focused stdout/stderr logs are in the evidence directory above. All tests ran se
 
 - Feature gates remain OFF by default; D3 and D4 focused tests used explicit preview overrides for candidate behavior.
 - D2 single-encounter `HuntingMapV2.claim_reward` codex bridge is not integrated yet.
-- D4-A is integrated for one Human branch and one Boss; D4-B (all Human branches/Bosses) and D5–D8 remain pending. This is not the complete skill roster or a user-playable accepted build.
+- D4-A and D4-B are integrated/headless tested for all nine Human branches and all three Human Bosses. D5–D8 remain pending. This is not the complete skill roster or a user-playable accepted build.
 - Physical GUI gameplay/capture, Source A UI reskin/owner visual review, Android device QA and whole-game performance remain PENDING.
 - No claim of FULL COMPLETE or release readiness.
 
