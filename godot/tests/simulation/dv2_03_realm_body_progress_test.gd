@@ -121,7 +121,7 @@ func _run() -> void:
         _close(disciple.hp/disciple.max_hp,hp_ratio_before_growth),
         "Floor growth did not update live V2 Max HP while preserving current HP ratio."):
         return
-    var compared := CombatStatsV2.derive(1,3,1,2,disciple.potential)
+    var compared := CombatStatsV2.derive(1,3,1,2,disciple.potential,[],disciple.foundation_model_version >= FoundationSystem.MODEL_D7)
     if not _check(_close(float(stats["stats"]["max_hp"]),float(compared["stats"]["max_hp"])) and
         _close(float(stats["stats"]["attack"]),float(compared["stats"]["attack"])) and
         _close(float(stats["stats"]["defense"]),float(compared["stats"]["defense"])),
