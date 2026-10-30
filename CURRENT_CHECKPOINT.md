@@ -1,3 +1,13 @@
+## 30/10/2026 — D7 narrow presentation path extension (documented before code)
+
+At tested feature HEAD `193692c5e285b06232bb05f7a4b5263492831c3c`, an official Godot 4.7.2 non-headless P3.2 Boss attempt reproduced a typed-array runtime error in `B3CareCombatV5Presenter.attach_session()`: assigning the ternary result of `_authority_event_signatures(session.events)` / `[]` to `Array[String]` fails when a real Boss battle is attached. The Boss picker reached the real Combat V2 encounter path, but the Presenter error prevented the HUD from opening; this is a failed GUI attempt, not a pass.
+
+Before changing code, extend the D7 concrete allowlist by exactly one existing presentation adapter: `godot/src/presentation/p3/b3_care_combat_v5_presenter.gd`. The permitted edit is only to replace that ternary assignment with explicit typed branches (assign the typed helper result when `session != null`, otherwise clear the existing typed array). No simulation, combat result, SaveService/schema, scheduler, Warehouse, Injury120, raw art or feature gate behavior changes. Rollback is a one-file revert; D7 combat remains on its existing default-off gate.
+
+Verification after the edit: official Windows Godot 4.7.2 import; reproduce the actual P3.2 Boss GUI flow at 1280×720 and assert the live encounter/HUD attaches; rerun D7 runtime Boss/HUD/P3.2 integration and D6/D8 affected regressions sequentially. Preserve both the failed and corrected logs. This extension is within the D7 presentation-family authority in the execution contract; the rest of the approved file list is unchanged.
+
+---
+
 ## 30/10/2026 — Scripted live P3.2 GUI capture (baseline, not current-head acceptance)
 
 The official Windows Godot 4.7.2 console executable ran the existing pve_multicamp_p3_2_live_integration_test.gd in a normal GUI window (headless=false) at 1280×720. It rendered the real P3.2 Source A continuous world and captured the actual root viewport. This is a scripted GUI run: the test uses UI signals and viewport-routed mouse events; it is not a physical mouse playthrough or owner review.
