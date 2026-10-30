@@ -99,6 +99,11 @@ class PathAndExportTests(unittest.TestCase):
             self.assertTrue((out / "catalog" / "library_index.json").is_file())
             self.assertTrue((out / "project.godot").is_file())
             self.assertTrue((out / "index.html").is_file())
+            preload_manifest = out / "godot" / "scripts" / "jx_vfx_resource_manifest.gd"
+            self.assertTrue(preload_manifest.is_file())
+            self.assertIn(f'res://textures/{sha}.webp', preload_manifest.read_text(encoding="utf-8"))
+            pack_manifest = json.loads((out / "pack.json").read_text(encoding="utf-8"))
+            self.assertTrue(any(row["path"] == f"textures/{sha}.webp" for row in pack_manifest["packaged_files"]))
             with self.assertRaises(KeyError):
                 export_pack(root, ["missing"], Path(tmp) / "bad-pack")
 
@@ -121,4 +126,3 @@ class PathAndExportTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

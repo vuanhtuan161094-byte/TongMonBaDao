@@ -17,6 +17,7 @@ var page_label: Label
 var grid: GridContainer
 var detail: Label
 var direction_filter: SpinBox
+var preview_size_filter: OptionButton
 var display_root: Node2D
 var display_viewport: SubViewport
 
@@ -101,6 +102,11 @@ func _build_ui() -> void:
 	direction_filter.step = 1
 	direction_filter.prefix = "row "
 	controls.add_child(direction_filter)
+	preview_size_filter = OptionButton.new()
+	for pixel_size in [48, 64, 75, 96]:
+		preview_size_filter.add_item("%d px" % pixel_size)
+	preview_size_filter.select(3)
+	controls.add_child(preview_size_filter)
 	var play_button := Button.new()
 	play_button.text = "Play source-timed frames"
 	play_button.pressed.connect(_play_selected)
@@ -227,7 +233,28 @@ func _play_selected() -> void:
 	_stop_selected()
 	for child in display_root.get_children():
 		child.queue_free()
-	play_handle = player.play(String(selected.get("record_id", "")), display_root, Vector2(VIEW_SIZE) * 0.5, {"loop": true, "direction": int(direction_filter.value), "scale": 1.0})
+	var animation: Dictionary = selected.get("animation", {})
+	var frame_width := 1.0
+	var frame_height := 1.0
+	var frame_size: Array = animation.get("frame_size", [])
+	if frame_size.size() == 2:
+		frame_width = float(frame_size[0])
+		frame_height = float(frame_size[1])
+	elif String(animation.get("layout", "")) == "rects":
+		var rects: Array = animation.get("rects", [])
+		if not rects.is_empty() and rects[0] is Array and rects[0].size() >= 4:
+			frame_width = float(rects[0][2])
+			frame_height = float(rects[0][3])
+	elif String(animation.get("layout", "")) == "paged_rects":
+		var regions: Array = animation.get("frame_regions", [])
+		if not regions.is_empty() and regions[0] is Dictionary:
+			var region_rect: Array = regions[0].get("rect", [])
+			if region_rect.size() == 4:
+				frame_width = float(region_rect[2])
+				frame_height = float(region_rect[3])
+	var pixel_size := int(preview_size_filter.get_item_text(preview_size_filter.selected).replace(" px", ""))
+	var preview_scale := float(pixel_size) / maxf(frame_width, frame_height)
+	play_handle = player.play(String(selected.get("record_id", "")), display_root, Vector2(VIEW_SIZE) * 0.5, {"loop": true, "direction": int(direction_filter.value), "scale": preview_scale})
 	if play_handle == 0:
 		detail.text += "\nPlayback unavailable: inspect player error signal or metadata status."
 
@@ -235,4 +262,3 @@ func _stop_selected() -> void:
 	if play_handle != 0:
 		player.stop(play_handle)
 		play_handle = 0
-

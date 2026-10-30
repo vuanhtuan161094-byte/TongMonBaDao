@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0",
+  "gate": "jx_vfx_godot_engine_gate_v1_1",
+  "checked_local_date": "2026-10-30",
+  "engine": {
+    "version": "4.7.2-stable",
+    "build": "ed1daf0bf001b61586d9930840f2f1394092c079",
+    "renderer": "OpenGL 3.3 Compatibility",
+    "device": "Intel Iris(R) Plus Graphics"
+  },
+  "selected_pack": {
+    "record_count": 3,
+    "unique_source_payloads": 3,
+    "archive_sha256": "eb3b9ab0ba3c3ffc2aee057323380e38f54aaba6925ba0adecc33a5f44c12167",
+    "manifest_files": 21,
+    "manifest_files_present_and_sha256_valid": 21,
+    "resource_preload_count": 7,
+    "machine_absolute_resource_paths": 0
+  },
+  "effects": [
+    {
+      "record_id": "duong_mon_fx:m38_fly.webp",
+      "frames": 34,
+      "frame_ms": 65,
+      "anchor_px": [132, 391],
+      "directions": 1,
+      "runtime_layout": "paged_rects",
+      "page_count": 5,
+      "page_max_dimension_px": 2016,
+      "playback_frame_changed": true,
+      "visual_note": "Sparse and hard to read at 48-64 px; owner review pending."
+    },
+    {
+      "record_id": "thuy_yen_fx:m146_fly.webp",
+      "frames": 3,
+      "frame_ms": 56,
+      "anchor_px": [54, 58],
+      "directions": 16,
+      "runtime_layout": "grid",
+      "source_size_px": [317, 1133],
+      "runtime_size_px": [318, 1136],
+      "transparent_edge_padding_px": {"right": 1, "bottom": 3},
+      "playback_frame_changed": true
+    },
+    {
+      "record_id": "vltk_native:01744d1a.webp",
+      "frames": 6,
+      "frame_ms": 55,
+      "anchor_source": "per-frame metadata",
+      "directions": 16,
+      "frame_rect_count": 96,
+      "playback_frame_changed": true
+    }
+  ],
+  "checks": {
+    "godot_import": "PASS",
+    "focused_runtime": "PASS",
+    "focused_runtime_check_count": 14,
+    "actual_gui_playback": "PASS",
+    "clean_extracted_project_copy": "PASS",
+    "python_unit_tests": "PASS",
+    "python_unit_test_count": 9,
+    "full_library_import": "PENDING_SANDBOX_WRITE",
+    "exported_pck": "PENDING_EXPORT_TEMPLATES",
+    "owner_visual_approval": "PENDING"
+  },
+  "rights_scope": "Selected local research payloads are not redistributed in this repository. No Source A, game runtime, or combat authority changes."
+}
