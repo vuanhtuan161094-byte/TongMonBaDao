@@ -1,4 +1,51 @@
-# CURRENT CHECKPOINT — TÔNG MÔN BÁ ĐẠO
+# CURRENT CHECKPOINT — ONE GAME INTEGRATION
+
+Updated 2026-10-30 (Asia/Saigon). This file supersedes the archived RC status below.
+
+## Current candidate
+
+- Integration branch: `integration/one-game-v65-20261030`
+- Latest tested gameplay commit: `f18e4d6419f9ac43cf4a9fac119a415cb4f0c40d`
+- Runtime base remains PvE RC #52; PR #52, V6.5 source, and `main` are unchanged.
+- Coordination: [Issue #56](https://github.com/vuanhtuan161094-byte/TongMonBaDao/issues/56); conflict authority: [Issue #54 matrix](https://github.com/vuanhtuan161094-byte/TongMonBaDao/issues/54#issuecomment-6520099847).
+
+## Integrated code
+
+- R1 `70271184a7c3d1d1dfb374c0050424e263bf7a16`: 18 gated V6.5 catalogs/systems and D1 registry test.
+- R2 `f4316ab0881c3a34c24c754aec922030be911971`: additive Sect Archive state, ResourceRegistry definitions, Combat V2 open-world HP0 codex receipts through PveMultiCamp and the canonical Warehouse.
+- R3 `d0223f93cba330dcc562edb4ec48e953217f3334` plus picker correction `f18e4d6419f9ac43cf4a9fac119a415cb4f0c40d`: personal technique study, one active job, exactly-once study/mastery receipts, scheduler progression, additive save migration, BuildingSystem exclusion, and the existing P2.3 screen. The picker exposes the 12 Human/base D3 techniques; the 84-record catalog retains later-generation candidates for later phases.
+
+R3 touched: `disciple_state.gd`, `sect_state.gd`, `simulation_state.gd`, `simulation_scheduler.gd`, `save_service.gd`, `building_system.gd`, `p2_3_techniques.gd`, `v63_learning_system.gd`, plus the D3 learning-job/UI tests. SaveService retains RC async atomic writes/backups and accepts prior CARE envelopes.
+
+## Godot 4.7.2 evidence
+
+Isolated checkout: `E:\TongMonBaDaoWorkspace\01_Game\TMB_ONE_GAME_V65_20261030`  
+Evidence directory: `E:\TongMonBaDaoWorkspace\QA_Evidence\ONE_GAME_V65_20261030`
+
+- Headless editor import — exit 0, stderr empty. On the R3 picker-fix tree, stdout SHA-256 `CE9CCEA1BE4DA31DE12806EDC40917C7AB4589E52CEFF90F044BD3FE2BAC2EBF`.
+- `res://tests/simulation/v63_d1_content_registry_test.gd` — PASS, 105 families / 531 nodes / 18 rare variants / 9 Boss records (R1 log `R1_d1_content_registry_test.stdout.log`).
+- `res://tests/simulation/v63_d2_sect_archive_test.gd` — PASS, 159 codices / 150 archivable manuals / Warehouse and save round-trip (R3 log SHA `E7A2BD07F2137F3C6F7EE84B8EBFAE32918F641582F55948AE5ADA621F7A801B`).
+- `res://tests/simulation/one_game_r2_open_world_codex_receipt_test.gd` — PASS, retry-safe HP0 to one Warehouse receipt and exact-once save/load (SHA `8D63F9D825F8B95ECDA530ED1C9EF3DBA7B61665DDB5F0F8F887640DE74F92F2`).
+- `res://tests/simulation/v63_d3_learning_job_test.gd` — PASS, 62 checks (job reservation, cancellation/completion/mastery receipts, migration, gate-off pause, save/load and 1+2 loadout; SHA `49E7945760A32E288194ACB3746F61420289DECF49DDEC253E753CE250B9A9A5`).
+- `res://tests/presentation/v63_d3_learning_ui_test.gd` — PASS, archives a real manual, starts/cancels/completes study, displays ETA and equips the main slot (SHA `A767F81110AB3698C16EE3FC3BE4D93304B078E20D2822C588027EFC852170C6`).
+- P2.3 technique regression, P3.7B1 Warehouse, SaveService async round-trip (10 checks), SAFE-01 recovery, and PvE save/return/reload (50 checks) all exit 0. SAFE-01 intentionally emits malformed-JSON recovery diagnostics and prints its PASS marker.
+
+Focused stdout/stderr logs are in the evidence directory above. All tests ran sequentially on Windows Godot 4.7.2.
+
+## Pending — not user-playable accepted
+
+- Feature gates remain OFF by default; current D3 operation was exercised with explicit test preview overrides.
+- D2 single-encounter `HuntingMapV2.claim_reward` codex bridge is not integrated yet.
+- D4–D8 live combat, boss and full battle presentation are not yet connected to this branch.
+- Physical GUI gameplay/capture, Source A UI reskin/owner visual review, Android device QA and whole-game performance remain PENDING.
+- No claim of FULL COMPLETE or release readiness.
+
+The isolated checkout contains Godot-generated import metadata and QA files. None were staged. Existing E: workspaces and saves were left untouched.
+
+## Archived RC checkpoint context
+
+The section below records the previous RC-only handoff for history; its branch/status is not the current integration target.
+
 
 **Cập nhật 27/10/2026 — Một dự án, một bản game chính thức.** Đọc file này trước; các checkpoint dài cũ là lịch sử, không phải nhiều phiên bản game song song.
 
