@@ -1,3 +1,11 @@
+## Supplemental D8 endgame regression — 2026-10-30
+
+Official Windows Godot 4.7.2.stable.official.ed1daf0bf; import exit 0 (log SHA-256 158DC26483D8D869BB4480668F32464988ED3003B2875BC33B61E42167002DAA). Sequential D8 endgame tests: v63_d8_multiseed_camp_battle_test.gd exit 0 (log SHA-256 E9ADD9C948017312BB88AFAAC15E3C2943B16D26CA5A464BB91BD8BA10177678); v63_d8_endgame_progression_test.gd exit 0 (log SHA-256 B92AFD851CC928432951D96AA14ED731DDF649CE8E3A2BB8794D8A0BB90ABB13); results manifest SHA-256 98479AC86989CB8328576B5F75A89B05594E6CA21728568F8140255A4EEE6211. PASS 2/2. Manifest exit codes were independently read from the isolated E: QA folder.
+
+QA provenance: isolated tree at E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D8_ENDGAME_20261030\godot, derived from an older D8 snapshot rather than a fresh full checkout. Direct test dependency closure was checked against the feature branch; the two mismatched dependencies pve_multi_camp_population_v1.gd and resource_registry.gd were replaced with exact current-branch blobs and independently hash-verified. hunting_map_v2.gd differed in that snapshot but is not exercised by these two tests. Treat this as a scoped isolated-dependency regression PASS, not a clean whole-repository checkout attestation.
+
+The multiseed test covers 3 seeds × 3 teams × 20 camps per campaign, six disciples, repeated deterministic traces, Combat V2 HP0 journaling, retry receipts, and no rewards. The progression test checks all 300 canonical ladder coordinates, authored Body gates 1–6, and confirms realms 7–30 remain content_unavailable without fabricated XP or recipes. D8 endgame regression is PASS 2/2; Body realms 7–30 remain BLOCKED for missing authored content. V6.5 remains INCOMPLETE; physical GUI/Save-Return, owner visual acceptance, Android, and performance acceptance remain separate open gates.
+
 # Current D8 refresh-reuse implementation and integrated QA — 2026-10-30
 
 **Code/test SHA:** 23e5d0ba812f4b39dc6c8c5afc47864929c645aa, parent 5d9337d06aa9c931b844133f8add890c756a9b8c. Official Godot 4.7.2: 4.7.2.stable.official.ed1daf0bf.

@@ -1,3 +1,19 @@
+# Latest D8 endgame supplement — resume from feature HEAD 86cc31f97fe1c0d34e84c8b1efdb6b3cc20ed4c8
+
+This was a docs-only evidence checkpoint on the existing feature branch. Official Windows Godot 4.7.2.stable.official.ed1daf0bf; import exit 0 (log SHA-256 158DC26483D8D869BB4480668F32464988ED3003B2875BC33B61E42167002DAA). Sequential D8 endgame tests: v63_d8_multiseed_camp_battle_test.gd exit 0 (log SHA-256 E9ADD9C948017312BB88AFAAC15E3C2943B16D26CA5A464BB91BD8BA10177678); v63_d8_endgame_progression_test.gd exit 0 (log SHA-256 B92AFD851CC928432951D96AA14ED731DDF649CE8E3A2BB8794D8A0BB90ABB13); results manifest SHA-256 98479AC86989CB8328576B5F75A89B05594E6CA21728568F8140255A4EEE6211. PASS 2/2. Manifest exit codes were independently read from the isolated E: QA folder.
+
+QA provenance: isolated tree at E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D8_ENDGAME_20261030\godot, derived from an older D8 snapshot rather than a fresh full checkout. Direct test dependency closure was checked against the feature branch; the two mismatched dependencies pve_multi_camp_population_v1.gd and resource_registry.gd were replaced with exact current-branch blobs and independently hash-verified. hunting_map_v2.gd differed in that snapshot but is not exercised by these two tests. Treat this as a scoped isolated-dependency regression PASS, not a clean whole-repository checkout attestation.
+
+## Current execution state
+
+- D6 regression: PASS 20/20; final manifest SHA-256 84CFEDE5292EC65C56F6E7052FBA72B27AA96811F0FE2B7487431B7441521FF7. The prior documentation hash typo is corrected.
+- D8 affected matrix: PASS 25/25; new endgame matrix: PASS 2/2, reported separately.
+- D7 overlay crowding issue: approval for the exact D7 allowlist is still pending; do not edit the Presenter/test paths until approved. Previous scripted 9/9 branch + 9/9 Boss captures remain baseline-only.
+- Continue D8 physical GUI journey (actual mouse, live combat, manual Save/Return/Reload) and gather a verified post-D8 Boss capture; keep performance, Android, and owner visual review pending.
+- Body realms 7–30 remain content-blocked. V6.5 remains INCOMPLETE. Keep canonical E: worktree and PR #52/main untouched.
+
+---
+
 # NEXT CHAT HANDOFF — D8 refresh reuse committed; continue remaining QA gates
 
 Repository: vuanhtuan161094-byte/TongMonBaDao. Continue only on feature/v63-v64-full-combat-20261029. Current code/test commit: 23e5d0ba812f4b39dc6c8c5afc47864929c645aa. Verify live branch head before further edits because the evidence-doc checkpoint follows this code commit. Main c0c1382f119599497b52d8ee8abd9e830a883f1e is unchanged. PR #52 remains Draft/open/unmerged at 2a99ed505c85a17f6d25f91891560ca51fa02d88 on base feature/pve-jx-continuous-world-20261026. PR #52 touches P3.2 and coordination docs; do not merge it or copy its diff into this feature branch.

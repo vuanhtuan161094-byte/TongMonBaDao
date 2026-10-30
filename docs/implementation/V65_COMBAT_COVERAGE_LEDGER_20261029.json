@@ -24,7 +24,9 @@
     "D8_ENDGAME_CONTENT": "BLOCKED",
     "D7_GUI_BASELINE": "SCRIPTED_CAPTURE_PASS",
     "D6_REGRESSION": "20/20_PASS",
-    "D8_REGRESSION": "25/25_PASS"
+    "D8_REGRESSION": "25/25_PASS",
+    "D8_ENDGAME_REGRESSION": "SCOPED_ISOLATED_SNAPSHOT_PASS_2_OF_2",
+    "D8_ENDGAME_GODOT_IMPORT": "PASS_EXIT_0"
   },
   "human_branch_count": 9,
   "human_family_count": 105,
@@ -6190,5 +6192,31 @@
     "log_sha256": "ECD69B6C9FA27048799BB4D2EEEAEB8E9841ACB937F94DA40BDBC2C2DC81CDAB",
     "screenshot": null,
     "interpretation": "Unverified disposable-copy capture failure; not attributed to the published branch or counted as a product regression. Prior D7 9/9 scripted captures remain baseline-only; post-D8 Boss capture is pending."
+  },
+  "d8_endgame_supplemental_qa": {
+    "status": "SCOPED_ISOLATED_DEPENDENCY_REGRESSION_PASS",
+    "tests": "2/2",
+    "tested_code_branch_head": "86cc31f97fe1c0d34e84c8b1efdb6b3cc20ed4c8",
+    "godot_version": "4.7.2.stable.official.ed1daf0bf",
+    "import_exit_code": 0,
+    "import_log_sha256": "158DC26483D8D869BB4480668F32464988ED3003B2875BC33B61E42167002DAA",
+    "results_manifest": "E:\\TongMonBaDaoWorkspace\\QA_Evidence\\V65_D8_ENDGAME_20261030\\06_results.json",
+    "results_manifest_sha256": "98479AC86989CB8328576B5F75A89B05594E6CA21728568F8140255A4EEE6211",
+    "multiseed_test": {
+      "path": "godot/tests/simulation/v63_d8_multiseed_camp_battle_test.gd",
+      "source_blob_sha": "1cf0eddea8e09a2df383f4530c8c2f35ea207245",
+      "exit_code": 0,
+      "log": "E:\\TongMonBaDaoWorkspace\\QA_Evidence\\V65_D8_ENDGAME_20261030\\04_multiseed_exact.log",
+      "log_sha256": "E9ADD9C948017312BB88AFAAC15E3C2943B16D26CA5A464BB91BD8BA10177678"
+    },
+    "endgame_progression_test": {
+      "path": "godot/tests/simulation/v63_d8_endgame_progression_test.gd",
+      "source_blob_sha": "7c99018e780f8c655fcfb63901210c74f6d123ed",
+      "exit_code": 0,
+      "log": "E:\\TongMonBaDaoWorkspace\\QA_Evidence\\V65_D8_ENDGAME_20261030\\05_endgame_progression_exact.log",
+      "log_sha256": "B92AFD851CC928432951D96AA14ED731DDF649CE8E3A2BB8794D8A0BB90ABB13"
+    },
+    "coverage": "3 seeds x 3 teams x 20 camps, party 6, deterministic repeats, Combat V2 HP0 journal, retry receipt, no rewards; 300 canonical progression coordinates, authored Body gates 1-6, realms 7-30 content_unavailable.",
+    "provenance_qualification": "QA provenance: isolated tree at E:\\TongMonBaDaoWorkspace\\QA_Evidence\\V65_D8_ENDGAME_20261030\\godot, derived from an older D8 snapshot rather than a fresh full checkout. Direct test dependency closure was checked against the feature branch; the two mismatched dependencies pve_multi_camp_population_v1.gd and resource_registry.gd were replaced with exact current-branch blobs and independently hash-verified. hunting_map_v2.gd differed in that snapshot but is not exercised by these two tests. Treat this as a scoped isolated-dependency regression PASS, not a clean whole-repository checkout attestation."
   }
 }

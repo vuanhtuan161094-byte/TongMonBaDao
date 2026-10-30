@@ -1,3 +1,15 @@
+## Latest D8 endgame regression checkpoint — 2026-10-30
+
+Feature branch source HEAD before this docs-only checkpoint: 86cc31f97fe1c0d34e84c8b1efdb6b3cc20ed4c8; stable main remains c0c1382f119599497b52d8ee8abd9e830a883f1e. PR #52 remains open/Draft/unmerged at 2a99ed505c85a17f6d25f91891560ca51fa02d88.
+
+Official Windows Godot 4.7.2.stable.official.ed1daf0bf; import exit 0 (log SHA-256 158DC26483D8D869BB4480668F32464988ED3003B2875BC33B61E42167002DAA). Sequential D8 endgame tests: v63_d8_multiseed_camp_battle_test.gd exit 0 (log SHA-256 E9ADD9C948017312BB88AFAAC15E3C2943B16D26CA5A464BB91BD8BA10177678); v63_d8_endgame_progression_test.gd exit 0 (log SHA-256 B92AFD851CC928432951D96AA14ED731DDF649CE8E3A2BB8794D8A0BB90ABB13); results manifest SHA-256 98479AC86989CB8328576B5F75A89B05594E6CA21728568F8140255A4EEE6211. PASS 2/2. Manifest exit codes were independently read from the isolated E: QA folder.
+
+QA provenance: isolated tree at E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D8_ENDGAME_20261030\godot, derived from an older D8 snapshot rather than a fresh full checkout. Direct test dependency closure was checked against the feature branch; the two mismatched dependencies pve_multi_camp_population_v1.gd and resource_registry.gd were replaced with exact current-branch blobs and independently hash-verified. hunting_map_v2.gd differed in that snapshot but is not exercised by these two tests. Treat this as a scoped isolated-dependency regression PASS, not a clean whole-repository checkout attestation.
+
+D6 complete regression remains PASS 20/20 (manifest SHA-256 84CFEDE5292EC65C56F6E7052FBA72B27AA96811F0FE2B7487431B7441521FF7). D8 affected regression remains PASS 25/25; this supplemental endgame matrix adds two tests, recorded separately as PASS 2/2. D7 center-overlay fix remains NOT STARTED pending exact-path approval; scripted 9/9 branch and 9/9 Boss captures remain baseline-only. Physical mouse/Save-Return, owner review, D6 rare-skill GUI, Android, D8 performance acceptance remain PENDING. Body realms 7–30 remain BLOCKED by absent authored gate content. Overall V6.5: INCOMPLETE.
+
+---
+
 ## CURRENT CHECKPOINT — D8 presentation refresh reuse implemented and regression verified (2026-10-30)
 
 Repository: vuanhtuan161094-byte/TongMonBaDao. Branch: feature/v63-v64-full-combat-20261029.
