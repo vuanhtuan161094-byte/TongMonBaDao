@@ -11,6 +11,8 @@ var battle: MapBattleV2
 var gate_enabled := false
 var selected_actor_id := ""
 var _rows: VBoxContainer
+var _party_rows: Array[Button] = []
+var _party_row_actor_ids: Array[String] = []
 var _boss_name: Label
 var _boss_hp: ProgressBar
 var _boss_state: Label
@@ -105,9 +107,9 @@ func _select_actor(actor_id: String) -> void:
 func _render() -> void:
     if _rows == null:
         return
-    for child in _rows.get_children():
-        child.queue_free()
+    _ensure_party_rows()
     if battle == null:
+        _hide_party_rows()
         _boss_name.text = "Chờ trận Combat V2"
         _boss_hp.value = 0
         _boss_state.text = "Boss, phase và telegraph sẽ đọc từ trận đã lưu."
@@ -143,7 +145,16 @@ func _render() -> void:
             counter = " · phản kích mở"
         _boss_state.text = "HP %.0f / %.0f · Phase %d%s · %.1fs" % [
             _boss_hp.value, _boss_hp.max_value, phase, counter, battle.now]
-    for actor_id in party_ids.slice(0, 6):
+    var visible_row_count := mini(6, party_ids.size())
+    if selected_actor_id.is_empty():
+        selected_actor_id = party_ids[0] if not party_ids.is_empty() else ""
+    for row_index in range(_party_rows.size()):
+        var row := _party_rows[row_index]
+        if row_index >= visible_row_count:
+            _party_row_actor_ids[row_index] = ""
+            row.hide()
+            continue
+        var actor_id := party_ids[row_index]
         var actor: Dictionary = battle.actors[actor_id]
         var actor_state: DiscipleState = null
         if state != null and state.disciples.has(StringName(actor_id)):
@@ -154,18 +165,36 @@ func _render() -> void:
         var hp := float(actor.get("hp", 0.0))
         var max_hp := maxf(1.0, float(actor.get("max_hp", 1.0)))
         var injury_text := " · Injury %d" % actor_state.injury_level if actor_state != null and actor_state.injury_level > 0 else ""
-        var row := Button.new()
         row.text = "%s   HP %.0f/%.0f%s" % [display_name, hp, max_hp, injury_text]
+        _party_row_actor_ids[row_index] = actor_id
+        row.button_pressed = actor_id == selected_actor_id
+        row.show()
+    _render_skills()
+    _event.text = _latest_event_text()
+
+func _ensure_party_rows() -> void:
+    while _party_rows.size() < 6:
+        var row_index := _party_rows.size()
+        var row := Button.new()
         row.custom_minimum_size = Vector2(0, 25)
         row.alignment = HORIZONTAL_ALIGNMENT_LEFT
         row.add_theme_font_size_override("font_size", 10)
-        row.button_pressed = actor_id == selected_actor_id
-        row.pressed.connect(_select_actor.bind(actor_id))
+        row.pressed.connect(_select_party_row.bind(row_index))
         _rows.add_child(row)
-        if selected_actor_id.is_empty():
-            selected_actor_id = actor_id
-    _render_skills()
-    _event.text = _latest_event_text()
+        _party_rows.append(row)
+        _party_row_actor_ids.append("")
+
+func _hide_party_rows() -> void:
+    for row_index in range(_party_rows.size()):
+        _party_row_actor_ids[row_index] = ""
+        _party_rows[row_index].hide()
+
+func _select_party_row(row_index: int) -> void:
+    if row_index < 0 or row_index >= _party_row_actor_ids.size():
+        return
+    var actor_id := _party_row_actor_ids[row_index]
+    if not actor_id.is_empty():
+        _select_actor(actor_id)
 
 func _render_skills() -> void:
     if battle == null or not battle.actors.has(selected_actor_id):

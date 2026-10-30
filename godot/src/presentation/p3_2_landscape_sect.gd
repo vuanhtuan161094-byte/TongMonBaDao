@@ -10,6 +10,7 @@ const MAP_WORKSITE_MAX_CUES := 4
 const MAP_WORKSITE_REFRESH_SECONDS := 0.25
 const MAX_RETAINED_ACTOR_POOL := 72
 const PERFORMANCE_SAMPLE_SECONDS := 3.0
+var _v63_hunt_resource_registry := ResourceRegistry.new()
 
 class B3MainHuntArena:
     extends Control
@@ -5410,7 +5411,7 @@ func _b3_hunt_visual_rows(battle: MapBattleV2) -> Dictionary:
             # presentation mapping, but do not treat its visual as a verified
             # Thanh Lang species match until the asset owner approves it.
             rows[actor_id] = {
-                "display_name":ResourceRegistry.new().display_name(StringName(actor.get("species_id",""))),
+                "display_name":_v63_hunt_resource_registry.display_name(StringName(actor.get("species_id",""))),
                 "source_a_visual_key":"monster_1113031_1"
             }
     return rows
