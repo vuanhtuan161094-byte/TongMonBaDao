@@ -1,3 +1,15 @@
+# Current D8 integrated regression update — 2026-10-30
+
+Tested source content: feature SHA `5e1fc3043abe4fcd402ce226be7bb944d053cd0d` plus the two published D7 presentation corrections described in [D7 evidence](V65_D7_UI_VFX_EVIDENCE_20261030.md). Official Windows Godot 4.7.2 import passed, and the complete affected/cross-phase matrix passed **34/34 sequential scripts**, exit 0. The D8-specific 20 checks (endgame fixtures, multiseed camp and battle, performance QA contract, preview-gate resume, One Active Job, D2 receipts, D6/D7 regressions) are included.
+
+- Import log SHA-256: `B3A23744AE960A77A913A9C6E9CDE0BC3C4FA59C42FE75D566BA1ACF958B60F2`.
+- Full results: `E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D7D8_20261030_boss_fixes\regression_results.json`; SHA-256 `3C7E4982B423CF3033C3E51AB08430B3F32F09B789F9C1687E6F330DA68D1032`. It records 34/34 tests plus the successful import command, with per-test logs/hashes.
+- A real 1280×720 P3.2 Boss GUI frame now demonstrates the current Boss picker, live Combat V2 Boss, six members, telegraph, and Liệp Ảnh cast/hit: screenshot SHA-256 `59508487945305293EFD9360C1272EE194ABDCD11F2FB46700BAA281246BF07E`; log SHA-256 `D3FFB81E971B156EF2E6DE0E97808503895FDB37CFEEA81716FF7AA63933A0C4`. This is one scripted gameplay capture, not a full 20-camp/endgame session or owner review.
+
+**Still pending:** measured FPS/RAM, Android device QA, all nine branch/all nine Boss visual matrix, physical input and owner review. **Still blocked:** authored Body gates beyond realms 1–6 return `content_unavailable`; do not invent progression/cost content. Overall release remains **INCOMPLETE**; no main/PR #52 merge.
+
+---
+
 # V6.5 D8 Integrated QA Evidence — 2026-10-30
 
 Repository: `vuanhtuan161094-byte/TongMonBaDao`  

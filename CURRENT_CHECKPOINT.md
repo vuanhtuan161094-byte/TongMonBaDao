@@ -1,3 +1,18 @@
+## 30/10/2026 — D7/D8 regression and Boss GUI checkpoint
+
+Feature branch `feature/v63-v64-full-combat-20261029`; D7 correction source SHA: [`5e1fc3043abe4fcd402ce226be7bb944d053cd0d`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/5e1fc3043abe4fcd402ce226be7bb944d053cd0d), parent `c035bd8a8b4856b47213988ed4c3c56ded830820`. Main remains `c0c1382f119599497b52d8ee8abd9e830a883f1e`. PR #52 remains Draft/open/unmerged at `2a99ed505c85a17f6d25f91891560ca51fa02d88`.
+
+- **PASS — source correction:** fixed Boss P3.2 map initialization through canonical selected-level authority and typed Presenter event assignment. Only `p3_2_landscape_sect.gd` and `b3_care_combat_v5_presenter.gd` changed in the source commit.
+- **PASS — Godot 4.7.2 import and regression:** import exit 0 plus **34/34 sequential tests** exit 0. D6's complete 20-script regression set is included, as are D8, SaveService/SAFE-01, Warehouse, PvE exactly-once/HP0, D7 HUD/Archive/Boss and P3.2 integration. Details/log hashes: [D7 evidence](docs/implementation/V65_D7_UI_VFX_EVIDENCE_20261030.md), [D8 evidence](docs/implementation/V65_D8_INTEGRATED_QA_EVIDENCE_20261030.md), and `E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D7D8_20261030_boss_fixes\regression_results.json` (SHA-256 `3C7E4982B423CF3033C3E51AB08430B3F32F09B789F9C1687E6F330DA68D1032`).
+- **PASS — partial actual gameplay GUI:** 1280×720 real P3.2 Boss run with six members, live Boss/telegraph and Liệp Ảnh cast/hit. Screenshot `E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D7_VISUAL_MATRIX_20261030\GUI\boss_human_thiet_giap_live12.png`, SHA-256 `59508487945305293EFD9360C1272EE194ABDCD11F2FB46700BAA281246BF07E`; GUI log SHA-256 `D3FFB81E971B156EF2E6DE0E97808503895FDB37CFEEA81716FF7AA63933A0C4`.
+- **PENDING:** 8/9 branch skill captures, 8/9 Boss captures, physical mouse and Save/Return GUI acceptance, owner visual review, FPS/RAM and Android. The current screenshot also shows actor-name/combat-number overlap that needs visual review.
+- **BLOCKED:** playable Body progression beyond realms 1–6 is absent in authored content. Keep costs gated and do not invent recipes.
+- **INCOMPLETE:** V6.5 overall. Preserve Source A provenance, Injury120, One Active Job, six-person PvE, 20-camp authority, SaveService/schema, canonical Warehouse/scheduler. No main or PR #52 merge.
+
+Current scope: continue D7 visual matrix and usability QA on the same branch; then finish remaining independently testable D8 gates. The D7 preflight section below records the two-path rollback and why the presenter path was added.
+
+---
+
 ## 30/10/2026 — D7 narrow Boss presentation fixes (preflight documented before publication)
 
 At feature source HEAD `193692c5e285b06232bb05f7a4b5263492831c3c`, an official Godot 4.7.2 non-headless P3.2 Boss attempt exposed a typed-array runtime failure in `B3CareCombatV5Presenter.attach_session()`: assigning a ternary result of `_authority_event_signatures(session.events)` / `[]` to an `Array[String]` fails when a live Boss is attached. A minimal one-file fix replaces the ternary with explicit typed branches. It changes no simulation or combat authority.

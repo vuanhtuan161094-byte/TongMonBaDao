@@ -1,3 +1,28 @@
+# CURRENT HANDOFF — continue D7 visual coverage, then D8 QA
+
+Repository `vuanhtuan161094-byte/TongMonBaDao`; branch `feature/v63-v64-full-combat-20261029`. Latest source commit: `5e1fc3043abe4fcd402ce226be7bb944d053cd0d`. Main `c0c1382f119599497b52d8ee8abd9e830a883f1e` is unchanged. PR #52 remains Draft/open/unmerged at `2a99ed505c85a17f6d25f91891560ca51fa02d88`; no merge/PR mutation.
+
+## PASS
+
+- Official Windows Godot 4.7.2 import, exit 0; combined affected regression 34/34, sequential, all exit 0. This includes the complete D6 20-script regression set, D8's 20 focused/cross-phase cases, and six D7 presentation/runtime checks.
+- Current P3.2 Boss picker uses canonical existing map selection before Boss encounter start; Presenter attaches live Boss battles without the typed-array error.
+- Scripted real GUI viewport capture: 1280×720 P3.2 Boss, six members, live telegraph, Liệp Ảnh cast/hit. Screenshot SHA-256 `59508487945305293EFD9360C1272EE194ABDCD11F2FB46700BAA281246BF07E`; log SHA-256 `D3FFB81E971B156EF2E6DE0E97808503895FDB37CFEEA81716FF7AA63933A0C4`.
+
+## PENDING / BLOCKED
+
+- PENDING: 8 remaining branch skill GUI captures and 8 remaining Boss captures; physical mouse/Save/Return and owner visual approval; measured FPS/RAM and Android.
+- PENDING: visual review of overlapping combat numbers/nameplates in the Boss screenshot.
+- BLOCKED: Body realms 7–30 lack authored gate content; keep that progression gate intact.
+- Overall V6.5 remains INCOMPLETE.
+
+## Continue
+
+Continue the D7 matrix on this same feature branch, with one source writer and official Godot 4.7.2. Save a real screenshot/log for each additional branch/Boss and update the coverage ledger/checkpoint with exact SHA and hashes. Then continue the authorized D8 runtime/performance/endgame QA; do not invent production balance. Preserve the E: dirty worktree. Do not create branches/PRs, merge main or modify PR #52.
+
+Full results and logs: `E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D7D8_20261030_boss_fixes\regression_results.json` (SHA-256 `3C7E4982B423CF3033C3E51AB08430B3F32F09B789F9C1687E6F330DA68D1032`).
+
+---
+
 # HANDOFF UPDATE — P3.2 BASELINE GUI CAPTURE; LATEST PATCH STILL UNTESTED
 
 Current remote branch was dd15641068d4a251296956d30de681472bd572e7 when this note was prepared; current code/test patch is 63b5eaef9eae17ccc0fb71a1fa8b7524f50fc64f. It adds saved V6.5 preview-gate restore before offline catch-up and active combat resume plus v63_d8_preview_resume_gate_test.gd. The checkpoint explicitly marks Godot 4.7.2 engine/regression gates pending. Verify branch HEAD before further work.

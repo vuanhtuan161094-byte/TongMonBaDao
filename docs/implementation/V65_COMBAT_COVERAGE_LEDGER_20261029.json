@@ -3,7 +3,7 @@
   "generated_at": "2026-10-30",
   "repository": "vuanhtuan161094-byte/TongMonBaDao",
   "branch": "feature/v63-v64-full-combat-20261029",
-  "source_sha": "63b5eaef9eae17ccc0fb71a1fa8b7524f50fc64f",
+  "source_sha": "5e1fc3043abe4fcd402ce226be7bb944d053cd0d",
   "stable_main_sha": "c0c1382f119599497b52d8ee8abd9e830a883f1e",
   "overall_release_status": "INCOMPLETE",
   "phase_status": {
@@ -14,7 +14,7 @@
     "D5": "HEADLESS_PASS",
     "D6": "HEADLESS_PASS",
     "D7": "HEADLESS_PASS",
-    "D8": "ENGINE_PENDING",
+    "D8": "HEADLESS_PASS",
     "D6_GUI": "PENDING",
     "D7_GUI": "PENDING",
     "D7_ACCEPTANCE": "PENDING",
@@ -5974,5 +5974,26 @@
     "status": "ENGINE_PENDING",
     "test_path": "godot/tests/simulation/v63_d8_preview_resume_gate_test.gd",
     "reason": "Latest source/test commit is not present in the existing local worktrees; preserve both dirty E: trees."
+  },
+  "gui_evidence": {
+    "source_sha": "5e1fc3043abe4fcd402ce226be7bb944d053cd0d",
+    "engine": "4.7.2.stable.official.ed1daf0bf",
+    "status": "PARTIAL_GUI_PASS",
+    "boss_captures": {
+      "completed": 1,
+      "required": 9,
+      "status": "PENDING_MATRIX"
+    },
+    "branch_skill_captures": {
+      "completed": 1,
+      "required": 9,
+      "status": "PENDING_MATRIX"
+    },
+    "screenshot": "E:/TongMonBaDaoWorkspace/QA_Evidence/V65_D7_VISUAL_MATRIX_20261030/GUI/boss_human_thiet_giap_live12.png",
+    "screenshot_sha256": "59508487945305293EFD9360C1272EE194ABDCD11F2FB46700BAA281246BF07E",
+    "gui_log_sha256": "D3FFB81E971B156EF2E6DE0E97808503895FDB37CFEEA81716FF7AA63933A0C4",
+    "owner_visual_review": "PENDING",
+    "physical_mouse_save_return": "PENDING",
+    "visual_note": "Combat number/nameplate overlap remains visible."
   }
 }
