@@ -3,7 +3,7 @@
   "generated_at": "2026-10-30",
   "repository": "vuanhtuan161094-byte/TongMonBaDao",
   "branch": "feature/v63-v64-full-combat-20261029",
-  "source_sha": "9f7cebd3aaa11ef53660497dfe5fc6bab30cb378",
+  "source_sha": "63b5eaef9eae17ccc0fb71a1fa8b7524f50fc64f",
   "stable_main_sha": "c0c1382f119599497b52d8ee8abd9e830a883f1e",
   "overall_release_status": "INCOMPLETE",
   "phase_status": {
@@ -14,14 +14,15 @@
     "D5": "HEADLESS_PASS",
     "D6": "HEADLESS_PASS",
     "D7": "HEADLESS_PASS",
-    "D8": "HEADLESS_PASS",
+    "D8": "ENGINE_PENDING",
     "D6_GUI": "PENDING",
     "D7_GUI": "PENDING",
     "D7_ACCEPTANCE": "PENDING",
     "D8_GUI": "PENDING",
     "D8_PERFORMANCE": "PENDING",
     "D8_ANDROID": "PENDING",
-    "D8_ENDGAME_CONTENT": "BLOCKED"
+    "D8_ENDGAME_CONTENT": "BLOCKED",
+    "D7_GUI_BASELINE": "SCRIPTED_CAPTURE_PASS"
   },
   "human_branch_count": 9,
   "human_family_count": 105,
@@ -5955,5 +5956,23 @@
     "status": "PENDING",
     "app": "Godot 4.7.2 Project Manager",
     "result": "Window listed after explicit launch; two screenshot-backed get_window_state calls timed out at frame channel; no input or gameplay screenshot captured."
+  },
+  "d7_gui_capture": {
+    "status": "SCRIPTED_CAPTURE_PASS_BASELINE_ONLY",
+    "source_baseline": "9f7cebd3aaa11ef53660497dfe5fc6bab30cb378",
+    "local_worktree_head": "91cfc7e9c4975d6f03834355f38d5d6db8308b3c",
+    "log_sha256": "B3C312AE3D669C01B8C05135762C73777676771A0019AE82B55C4C060D60DA53",
+    "screenshot_sha256": "D61FAC6E805E3D648D4255B5C98AB4D12D759F50A83A43005D03910EC28F5710",
+    "viewport": "1280x720",
+    "physical_input": false,
+    "owner_review": "PENDING",
+    "all_branches_bosses": "PENDING",
+    "latest_patch_63b5_tested": false
+  },
+  "d8_preview_resume_patch": {
+    "code_test_sha": "63b5eaef9eae17ccc0fb71a1fa8b7524f50fc64f",
+    "status": "ENGINE_PENDING",
+    "test_path": "godot/tests/simulation/v63_d8_preview_resume_gate_test.gd",
+    "reason": "Latest source/test commit is not present in the existing local worktrees; preserve both dirty E: trees."
   }
 }

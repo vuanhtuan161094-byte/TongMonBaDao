@@ -1,3 +1,18 @@
+# HANDOFF UPDATE — P3.2 BASELINE GUI CAPTURE; LATEST PATCH STILL UNTESTED
+
+Current remote branch was dd15641068d4a251296956d30de681472bd572e7 when this note was prepared; current code/test patch is 63b5eaef9eae17ccc0fb71a1fa8b7524f50fc64f. It adds saved V6.5 preview-gate restore before offline catch-up and active combat resume plus v63_d8_preview_resume_gate_test.gd. The checkpoint explicitly marks Godot 4.7.2 engine/regression gates pending. Verify branch HEAD before further work.
+
+A Windows Godot 4.7.2 non-headless P3.2 integration run completed with exit 0 and produced an actual 1280×720 viewport screenshot:
+- Screenshot: E:/TongMonBaDaoWorkspace/QA_Evidence/V65_D8_20261030/GUI/pve_multicamp_live_1280x720.png; SHA-256 D61FAC6E805E3D648D4255B5C98AB4D12D759F50A83A43005D03910EC28F5710.
+- Log: E:/TongMonBaDaoWorkspace/QA_Evidence/V65_D8_20261030/GUI/pve_multicamp_live_gui.log; SHA-256 B3C312AE3D669C01B8C05135762C73777676771A0019AE82B55C4C060D60DA53.
+- Evidence includes 130 loaded disciples, six live team members versus ten monsters, Source A map, pan/zoom and movement input, 18 Combat V2 actions, and SaveService save/load. HUD was V6.5 OFF; no V6.5 cast was shown.
+
+This screenshot belongs to the earlier 9f7cebd3 baseline; it was run from dirty scratch HEAD 91cfc7e9. The harness scripted UI signals and viewport-routed mouse events; there was no physical mouse or owner review. D7 allowlist sources were content-checked after CRLF/EOF normalization, not from a clean full-tree checkout. Do not assign this capture to the new preview-resume patch.
+
+Immediate next work: obtain a clean synchronized test tree for current remote HEAD without touching the dirty E: scratch or main checkout; run official Godot import, v63_d8_preview_resume_gate_test.gd, then the D3/D4/D5/D6/D7/D8 and Save/PvE regressions. Verify saved opt-in keeps a learned/equipped disciple casting during continuous PvE, Save/Return/Reload and offline catch-up, while legacy gate-OFF behavior stays unchanged. Capture the current-head opted-in cast path after tests. Nine-branch/nine-Boss visual matrix, owner review, FPS/RAM, Android, and realm 7–30 content remain pending/blocked. No merge or PR #52 changes.
+
+---
+
 # V6.5 D8 INTEGRATION PATCH — 2026-10-30 (CURRENT, UNTESTED)
 
 - Existing feature branch only: `feature/v63-v64-full-combat-20261029`. Five same-branch source/test commits since D8 head `48ed10f750b08bc9ed5bbe74928ae8e60173a31f`, latest code+test SHA `63b5eaef9eae17ccc0fb71a1fa8b7524f50fc64f`.

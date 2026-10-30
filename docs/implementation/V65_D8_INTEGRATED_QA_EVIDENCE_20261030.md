@@ -85,3 +85,20 @@ Stable `main` was not changed. PR #52 remains Draft/open/unmerged; do not merge 
 ## GUI retry after D8 documentation
 
 On 2026-10-30, Computer Use launched the official Windows Godot 4.7.2 executable and returned a single Project Manager window. Both screenshot-backed `get_window_state` attempts timed out at the frame channel (first `FrameArrived`, retry generic window-capture timeout). Per the Computer Use recovery limit, no further capture retry or alternative Windows automation was used. No project was opened and no gameplay input/screenshot was obtained. GUI and owner visual acceptance remain **PENDING**.
+
+
+---
+
+## 30/10/2026 — Scripted live P3.2 GUI capture (baseline, not current-head acceptance)
+
+The official Windows Godot 4.7.2 console executable ran the existing pve_multicamp_p3_2_live_integration_test.gd in a normal GUI window (headless=false) at 1280×720. It rendered the real P3.2 Source A continuous world and captured the actual root viewport. This is a scripted GUI run: the test uses UI signals and viewport-routed mouse events; it is not a physical mouse playthrough or owner review.
+
+- Test process exit: 0. Godot: 4.7.2.stable.official.ed1daf0bf; OpenGL 3.3 Compatibility; Intel Iris Plus Graphics.
+- Log: E:/TongMonBaDaoWorkspace/QA_Evidence/V65_D8_20261030/GUI/pve_multicamp_live_gui.log; SHA-256 B3C312AE3D669C01B8C05135762C73777676771A0019AE82B55C4C060D60DA53.
+- Real viewport screenshot: E:/TongMonBaDaoWorkspace/QA_Evidence/V65_D8_20261030/GUI/pve_multicamp_live_1280x720.png; 1280×720, SHA-256 D61FAC6E805E3D648D4255B5C98AB4D12D759F50A83A43005D03910EC28F5710.
+- The rendered run had 130 loaded disciples, a selected team of six versus ten live monsters, 18 Combat V2 actions at capture, Source A map assets, pan/zoom input, six-member movement formation, and active SaveService save/load. The shared clock then advanced four frames without a fabricated reward.
+- Log ends with PVE SOURCE A CONTINUOUS WORLD P3.2 INTEGRATION PASS; zone_hop=NOT_REACHED, injury120=NOT_REACHED, loot=LOOT_PENDING. The visible HUD showed V6.5 OFF; this run did not prove a Liệp Ảnh/V6.5 cast.
+
+Provenance limit: test execution came from the existing dirty E: scratch at local Git HEAD 91cfc7e9c4975d6f03834355f38d5d6db8308b3c. At the time of capture the published code/test baseline was 9f7cebd3aaa11ef53660497dfe5fc6bab30cb378. The D7 11-file allowlist and relevant D7 dependencies were checked for content parity after normalizing Windows CRLF and trailing blank lines; this was not a clean full-tree checkout. Therefore this is baseline GUI capture evidence only, not proof for the new D8 preview-resume patch now at branch code/test SHA 63b5eaef9eae17ccc0fb71a1fa8b7524f50fc64f or current docs HEAD dd15641068d4a251296956d30de681472bd572e7.
+
+D7 full visual matrix (nine branches and nine Bosses), actual physical input, Save/Return GUI review, measured performance, Android and owner visual acceptance remain PENDING. Overall V6.5 stays INCOMPLETE.
