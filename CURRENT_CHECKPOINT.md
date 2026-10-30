@@ -1,3 +1,27 @@
+## D7 targeted close-out — 2026-10-30
+
+Verified feature branch HEAD before this evidence update: `7206ff2be98ab2d12468e0e3436ec6410d09b7f7`. The current D7 implementation commit is `94d7a3007696351d8e723969882926f859c94ee7`; comparing that commit with the verified branch head shows only the existing D7 documentation checkpoint afterward. Stable `main` is `c0c1382f119599497b52d8ee8abd9e830a883f1e`. PR #52 remains Draft/open/unmerged at `2a99ed505c85a17f6d25f91891560ca51fa02d88`, on its separate base branch. PR #52 and this feature branch share only the coordination files CURRENT_CHECKPOINT.md and NEXT_CHAT_HANDOFF.md; this update is additive on the feature branch and preserves its D8 history.
+
+The exact D7 code packet was previously approved against HEAD `86cc31f97fe1c0d34e84c8b1efdb6b3cc20ed4c8`, with the seven-path allowlist recorded below in the D7 evidence. The approved Presenter, layout test, and generated UID match the current feature branch blobs: `a80200da694724df71d594d67b0ebcd51013d1fa`, `cee38de0f55e3392efe7a470d1a4c177c171a0a6`, and `3fae7ede9e88d3f6c3f4c0ba999c1efee90c4da4`. QA used an isolated assembled copy; this verifies the active D7 patch inputs, not a fresh whole-repository checkout.
+
+The existing `overlay_candidate_offset` helper is already in the committed D7 code. It computes deterministic square-spiral offsets on demand without building a per-frame offset array. No additional helper edit was pending in the authorized checkout, so no further optimization was opened without profiler evidence.
+
+### Sequential Godot 4.7.2 verification
+
+Engine: `E:\Godot_v4.7.2-stable_win64_console.exe`, `4.7.2.stable.official.ed1daf0bf`. Project path: `C:\Users\Admin\Documents\Codex\2026-10-29\files-pasted-by-the-user-codex\work\tmb-v65-branch-exact\godot`. Logs: `C:\Users\Admin\Documents\Codex\2026-10-29\files-pasted-by-the-user-codex\work\v65-d6-followup-qa\D7_final_matrix`.
+
+1. `--headless --editor --path C:\Users\Admin\Documents\Codex\2026-10-29\files-pasted-by-the-user-codex\work\tmb-v65-branch-exact\godot --quit` — **PASS**, exit 0; log SHA-256 `B500736E0177F44888D24EF078EA3450E557923411BA5DFA0C0EE1D1292B9DDA`.
+2. `--headless --path C:\Users\Admin\Documents\Codex\2026-10-29\files-pasted-by-the-user-codex\work\tmb-v65-branch-exact\godot --script res://tests/presentation/v63_d7_combat_text_layout_test.gd` — **PASS**, exit 0, layout marker present; log SHA-256 `C5FE36EFE0FC6F7805CF1EFD3688AAAB5C27DE0C2AABE3D44CDE990575BCA4F0`.
+3. `--headless --path C:\Users\Admin\Documents\Codex\2026-10-29\files-pasted-by-the-user-codex\work\tmb-v65-branch-exact\godot --script res://tests/presentation/v63_d7_combat_hud_test.gd` — **PASS**, exit 0, HUD marker present; log SHA-256 `30069369633A2EE4D983CD5583E765EC463EBB099F7A74A9301A72438C23347B`.
+
+The Windows headless process reported `Failed to read the root certificate store` in all three logs, with exit 0 and the test PASS markers. The existing HUD fixture also reports teardown RID/ObjectDB resource-leak diagnostics after its PASS marker; they are retained as test-fixture warnings, not hidden. Preliminary command attempts with a PowerShell quoting error and the repository root instead of the `godot/` project directory were harness mistakes; the three commands above are the corrected recorded runs and no source change was needed.
+
+### Status and separate QA backlog
+
+**D7 headless code checkpoint: PASS. D7 live UI acceptance: PENDING.** The previous cumulative matrix was intentionally halted at 16/46 under the narrowed owner instruction; it is not a cumulative PASS. No GUI was started during this close-out because Computer Use approval remains blocked. Keep physical 1280x720 mouse/combat/Save-Return, post-fix branch and Boss captures, owner visual review, Android-device QA, and overall FPS/performance review as separate pending gates. Body realms 7–30 remain blocked for missing authored progression content. Overall V6.5 remains **INCOMPLETE**. D8 work, PR #52, main, and the dirty E: worktree were not overwritten.
+
+---
+
 ## Latest D7 overlay checkpoint — 2026-10-30
 
 D7 code commit 94d7a3007696351d8e723969882926f859c94ee7; docs-only checkpoint follows. Approved source base was 5289a2dc7160384a4b32fd52708357847974e379, after verifying 5289a2dc7160384a4b32fd52708357847974e379..94d7a3007696351d8e723969882926f859c94ee7 implementation ancestry; only the preceding D8 evidence commit intervened, with no Presenter source changes. Main c0c1382f119599497b52d8ee8abd9e830a883f1e; PR #52 Draft/open/unmerged 2a99ed505c85a17f6d25f91891560ca51fa02d88.

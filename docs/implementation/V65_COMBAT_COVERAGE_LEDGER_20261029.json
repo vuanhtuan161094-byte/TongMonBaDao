@@ -6133,11 +6133,13 @@
       "status": "PENDING"
     },
     "next_d7_packet": {
-      "status": "OWNER_EXACT_PATH_APPROVAL_PENDING",
-      "observed_issue": "Combat text, HP bars and actor labels crowd the center in the 1280x720 Boss GUI capture.",
+      "status": "COMMITTED_TARGETED_HEADLESS_PASS_GUI_ACCEPTANCE_PENDING",
+      "observed_issue": "Combat text, HP bars and actor labels crowded the center in the 1280x720 Boss GUI capture.",
       "proposed_source": "godot/src/presentation/p3/b3_care_combat_v5_presenter.gd",
       "proposed_test": "godot/tests/presentation/v63_d7_combat_text_layout_test.gd",
-      "code_started": false
+      "code_started": true,
+      "code_commit_sha": "94d7a3007696351d8e723969882926f859c94ee7",
+      "latest_focused_retest": "PASS_2_OF_2"
     }
   },
   "next_preflight": {
@@ -6254,6 +6256,58 @@
     "d6_previous_regression": "PASS_20_OF_20",
     "gui": "BLOCKED_COMPUTER_USE_APP_APPROVAL_TIMEOUT",
     "owner_visual_review": "PENDING",
-    "overall_v65": "INCOMPLETE"
+    "overall_v65": "INCOMPLETE",
+    "latest_retest": {
+      "branch_head_before_evidence_commit": "7206ff2be98ab2d12468e0e3436ec6410d09b7f7",
+      "code_commit_sha": "94d7a3007696351d8e723969882926f859c94ee7",
+      "stable_main_sha": "c0c1382f119599497b52d8ee8abd9e830a883f1e",
+      "godot_version": "4.7.2.stable.official.ed1daf0bf",
+      "project_path": "C:\\Users\\Admin\\Documents\\Codex\\2026-10-29\\files-pasted-by-the-user-codex\\work\\tmb-v65-branch-exact\\godot",
+      "import": {
+        "exit_code": 0,
+        "log": "C:\\Users\\Admin\\Documents\\Codex\\2026-10-29\\files-pasted-by-the-user-codex\\work\\v65-d6-followup-qa\\D7_final_matrix\\import.log",
+        "sha256": "B500736E0177F44888D24EF078EA3450E557923411BA5DFA0C0EE1D1292B9DDA"
+      },
+      "focused_tests": [
+        {
+          "path": "godot/tests/presentation/v63_d7_combat_text_layout_test.gd",
+          "exit_code": 0,
+          "status": "PASS",
+          "log": "C:\\Users\\Admin\\Documents\\Codex\\2026-10-29\\files-pasted-by-the-user-codex\\work\\v65-d6-followup-qa\\D7_final_matrix\\layout.log",
+          "sha256": "C5FE36EFE0FC6F7805CF1EFD3688AAAB5C27DE0C2AABE3D44CDE990575BCA4F0",
+          "source_blob_sha": "cee38de0f55e3392efe7a470d1a4c177c171a0a6"
+        },
+        {
+          "path": "godot/tests/presentation/v63_d7_combat_hud_test.gd",
+          "exit_code": 0,
+          "status": "PASS",
+          "log": "C:\\Users\\Admin\\Documents\\Codex\\2026-10-29\\files-pasted-by-the-user-codex\\work\\v65-d6-followup-qa\\D7_final_matrix\\hud.log",
+          "sha256": "30069369633A2EE4D983CD5583E765EC463EBB099F7A74A9301A72438C23347B",
+          "fixture_teardown_warnings": "PRESENT_AFTER_PASS"
+        }
+      ],
+      "presenter_blob_sha": "a80200da694724df71d594d67b0ebcd51013d1fa",
+      "layout_test_blob_sha": "cee38de0f55e3392efe7a470d1a4c177c171a0a6",
+      "layout_test_uid_blob_sha": "3fae7ede9e88d3f6c3f4c0ba999c1efee90c4da4",
+      "helper_offset": "ALREADY_COMMITTED; DETERMINISTIC SQUARE SPIRAL COMPUTED ON DEMAND; NO ADDITIONAL OPTIMIZATION WITHOUT PROFILER",
+      "source_parity_qualification": "Exact Git blob parity verified for the active D7 Presenter/layout-test/UID patch in the isolated assembled QA copy; not a clean whole-repository checkout attestation.",
+      "environment_diagnostics": [
+        "Windows root certificate store read error appeared in each headless run; exit remained 0 and PASS markers were present.",
+        "Existing D7 HUD test emitted teardown RID/ObjectDB leak diagnostics after its PASS marker."
+      ],
+      "harness_note": "Two preliminary commands used invalid PowerShell quoting/project root; corrected three commands above are the counted runs. No source changes required.",
+      "gui": "NOT_STARTED_THIS_CLOSEOUT; COMPUTER_USE_APPROVAL_BLOCKED",
+      "owner_visual_review": "PENDING",
+      "overall_v65": "INCOMPLETE"
+    }
+  },
+  "next_d7_packet": {
+    "status": "COMMITTED_TARGETED_HEADLESS_PASS_GUI_ACCEPTANCE_PENDING",
+    "observed_issue": "Combat text, HP bars and actor labels crowded the center in the 1280x720 Boss GUI capture.",
+    "proposed_source": "godot/src/presentation/p3/b3_care_combat_v5_presenter.gd",
+    "proposed_test": "godot/tests/presentation/v63_d7_combat_text_layout_test.gd",
+    "code_started": true,
+    "code_commit_sha": "94d7a3007696351d8e723969882926f859c94ee7",
+    "latest_focused_retest": "PASS_2_OF_2"
   }
 }

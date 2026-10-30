@@ -1,3 +1,23 @@
+# Handoff — D7 focused close-out recorded (2026-10-30)
+
+Repository `vuanhtuan161094-byte/TongMonBaDao`; continue on `feature/v63-v64-full-combat-20261029`. Verified branch HEAD before this evidence commit: `7206ff2be98ab2d12468e0e3436ec6410d09b7f7`; D7 source/test code remains at `94d7a3007696351d8e723969882926f859c94ee7`. Stable `main`: `c0c1382f119599497b52d8ee8abd9e830a883f1e`. PR #52 remains Draft/open/unmerged at `2a99ed505c85a17f6d25f91891560ca51fa02d88` on a separate branch. Preserve D8 history and the dirty/detached E: worktree.
+
+## D7 checkpoint
+
+- The exact-path D7 packet was approved earlier. No additional source change was necessary: the deterministic, allocation-free `overlay_candidate_offset` helper is already in the committed D7 Presenter.
+- Official Windows Godot 4.7.2 import PASS; the two focused D7 layout and HUD scripts PASS sequentially. Exact commands, exits, log hashes, source blob parity, CA-store diagnostic and existing HUD teardown warnings are at the top of CURRENT_CHECKPOINT.md and `docs/implementation/V65_D7_UI_VFX_EVIDENCE_20261030.md`.
+- This is a targeted headless PASS, not a D7 live-UI acceptance. The cumulative 46-case run remains partial at 16/46 and is not labeled PASS.
+
+## Separate QA backlog
+
+1. When GUI automation approval is available, run the physical 1280x720 combat/UI/Save-Return journey, capture current branch and Boss visuals, then request owner visual review.
+2. Run Android device QA and complete overall FPS/performance review as separate gates.
+3. Keep Body realms 7–30 blocked until authored progression content is available. Keep overall V6.5 **INCOMPLETE**.
+
+Do not open another D7 optimization without profiler evidence. Do not merge, change main or PR #52, overwrite D8, or modify the existing E: worktree.
+
+---
+
 # Current handoff — D7 overlay spacing code committed
 
 Repository vuanhtuan161094-byte/TongMonBaDao; branch feature/v63-v64-full-combat-20261029. D7 code SHA 94d7a3007696351d8e723969882926f859c94ee7; docs checkpoint follows. Main c0c1382f119599497b52d8ee8abd9e830a883f1e. PR #52 remains Draft/open/unmerged at 2a99ed505c85a17f6d25f91891560ca51fa02d88. Do not merge or edit PR #52.
