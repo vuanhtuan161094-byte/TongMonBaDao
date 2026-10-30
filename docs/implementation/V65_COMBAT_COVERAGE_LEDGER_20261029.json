@@ -6046,5 +6046,19 @@
       },
       "screenshot_sha256": "A020EFD9CD7443948A717D4E54AC08D4E522A8555B91A26AAC61445612C79B40"
     }
+  },
+  "next_preflight": {
+    "base_feature_head": "02a964e088414798d3dc18cac3d0e20c91af3457",
+    "status": "OWNER_EXACT_PATH_APPROVAL_PENDING",
+    "purpose": "D8 targeted presentation refresh reuse based on measured recurring profiler cost",
+    "proposed_source_paths": [
+      "godot/src/presentation/p3_2_landscape_sect.gd",
+      "godot/src/presentation/p3/v63_combat_hud_v1.gd"
+    ],
+    "proposed_new_test_paths": [
+      "godot/tests/presentation/v63_d8_p3_refresh_reuse_test.gd",
+      "godot/tests/presentation/v63_d8_p3_refresh_reuse_test.gd.uid"
+    ],
+    "rollback": "Revert only the two presentation source paths and the new focused test/UID; no save migration."
   }
 }

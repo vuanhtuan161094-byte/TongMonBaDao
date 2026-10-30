@@ -1,3 +1,22 @@
+## D8 profile-guided presentation optimization preflight — owner path approval pending
+
+Base feature HEAD: 02a964e088414798d3dc18cac3d0e20c91af3457. Runtime evidence source: 59f3903f37dc0260cf07059bf3bd24e0973168c6. Main remains c0c1382f119599497b52d8ee8abd9e830a883f1e; PR #52 remains Draft/open/unmerged at 2a99ed505c85a17f6d25f91891560ca51fa02d88.
+
+Profiler OFF/ON runs reproduce long-tail frames (P99 68.48–68.94 ms, maximum 94.88–120.10 ms; 1%-low 12.02–12.44 FPS). The P3.2 instrumentation attributes recurring cost to visual-row and HUD refresh. Source inspection found two repeatable allocation/IO patterns on that path: _b3_hunt_visual_rows constructs ResourceRegistry.new() for each Thanh Lang actor, while ResourceRegistry._init reads and parses the codex catalog; V63CombatHudV1._render queue-frees and rebuilds the six party buttons on each authority refresh. These observations motivate a narrow optimization; they do not yet prove how much each contributes to the measured spikes.
+
+Proposed code packet, not started pending owner approval under AGENTS.md §3:
+- godot/src/presentation/p3_2_landscape_sect.gd — retain/reuse one scene-owned ResourceRegistry for live visual-row name lookup; preserve the same labels and Source A keys.
+- godot/src/presentation/p3/v63_combat_hud_v1.gd — reuse the existing six party-row controls and update their text/selection/visibility in place; preserve HP, injury, Boss, skill, telegraph and event content.
+- godot/tests/presentation/v63_d8_p3_refresh_reuse_test.gd (new) and its generated .gd.uid — focused assertions for stable row nodes, updated HP/injury/selection, and identical visual-row mapping across repeated refreshes.
+
+Additional exact paths for evidence only: docs/implementation/V65_D8_INTEGRATED_QA_EVIDENCE_20261030.md; docs/implementation/V65_COMBAT_COVERAGE_LEDGER_20261029.json; CURRENT_CHECKPOINT.md; NEXT_CHAT_HANDOFF.md.
+
+Verification after approval: official Godot 4.7.2 import; the new focused test; existing D7 HUD and P3.2 integration tests; current 24-test affected matrix; complete 20-test D6 matrix; repeat both 20-second normal-GUI logger OFF/ON captures on the same seed and compare P50/P95/P99/1%-low, process/physics and memory. Keep the existing 9/9 D7 screenshots/logs as unchanged visual baseline.
+
+Rollback: revert only the two presentation source paths and the new focused test/UID. No simulation, resource authority, economy, SaveService/schema, Injury120, One Active Job, Warehouse, scheduler, assets, maps, main, PR #52, or saved data changes. Do not claim performance PASS without post-change measurements and review.
+
+---
+
 # Current D6–D8 verification — 2026-10-30
 
 **Exact branch context:** feature/v63-v64-full-combat-20261029 was at 53d6134ec7ecad5f10f29c2617869c6717958d4a before this evidence commit. Runtime and regression source SHA is 59f3903f37dc0260cf07059bf3bd24e0973168c6; commits after that runtime SHA through 53d add D8 QA/preflight documentation and the GUI capture test only. Stable main remains c0c1382f119599497b52d8ee8abd9e830a883f1e. PR #52 remains Draft/open/unmerged at 2a99ed505c85a17f6d25f91891560ca51fa02d88, based on feature/pve-jx-continuous-world-20261026.

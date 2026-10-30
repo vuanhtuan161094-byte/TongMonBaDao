@@ -1,3 +1,18 @@
+# NEXT ACTION — D8 measured refresh hotspot, exact-path approval pending
+
+Current branch feature/v63-v64-full-combat-20261029 at 02a964e088414798d3dc18cac3d0e20c91af3457 before the preflight evidence commit. Runtime measurements and D6/D7 results are in the preceding current handoff.
+
+Profiler follow-up scope proposed after AGENTS.md §3 owner approval:
+1. Reuse a scene-owned ResourceRegistry in P3.2 live visual-row mapping rather than constructing/parsing one per monster on each refresh.
+2. Reuse the six existing V6.5 party-row controls in place rather than queue_free/recreate each refresh.
+3. Add v63_d8_p3_refresh_reuse_test.gd plus UID and rerun Godot import, focused HUD/P3.2 tests, 24 current affected tests, 20 D6 tests, and paired logger OFF/ON GUI measurements.
+
+Exact source paths: godot/src/presentation/p3_2_landscape_sect.gd and godot/src/presentation/p3/v63_combat_hud_v1.gd. Exact new test path: godot/tests/presentation/v63_d8_p3_refresh_reuse_test.gd. Evidence/checkpoint paths: D8 evidence, coverage ledger, CURRENT_CHECKPOINT.md, NEXT_CHAT_HANDOFF.md.
+
+Do not start the patch until owner approves the exact allowlist. No SaveService/schema, combat authority, injury, job, warehouse, scheduler, asset or main change. The current 9/9 D7 GUI matrix is a visual baseline. V6.5 remains incomplete.
+
+---
+
 # CURRENT HANDOFF — D6 regression verified; D7 GUI 9/9; D8 measured (2026-10-30)
 
 Repository vuanhtuan161094-byte/TongMonBaDao. Continue on feature/v63-v64-full-combat-20261029 only. Feature HEAD before this evidence update is 53d6134ec7ecad5f10f29c2617869c6717958d4a; tested runtime source is 59f3903f37dc0260cf07059bf3bd24e0973168c6. Main c0c1382f119599497b52d8ee8abd9e830a883f1e unchanged. PR #52 remains Draft/open/unmerged at 2a99ed505c85a17f6d25f91891560ca51fa02d88; its base is feature/pve-jx-continuous-world-20261026.

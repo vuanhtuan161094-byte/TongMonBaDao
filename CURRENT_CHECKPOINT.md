@@ -1,3 +1,24 @@
+## D8 targeted profiler-fix preflight — awaiting exact-path owner approval
+
+Current feature HEAD before preflight commit: 02a964e088414798d3dc18cac3d0e20c91af3457. Performance data in the preceding checkpoint section is measured on 59f3903. Repeated samples indicate P3.2 HUD/visual-row refresh cost; code inspection shows repeated ResourceRegistry construction/catalog parsing and party-row control teardown/rebuild. This is a bounded hypothesis to validate by before/after profiler results.
+
+Exact CODE allowlist proposed:
+- godot/src/presentation/p3_2_landscape_sect.gd
+- godot/src/presentation/p3/v63_combat_hud_v1.gd
+- godot/tests/presentation/v63_d8_p3_refresh_reuse_test.gd (new) and generated .gd.uid
+- docs/implementation/V65_D8_INTEGRATED_QA_EVIDENCE_20261030.md
+- docs/implementation/V65_COMBAT_COVERAGE_LEDGER_20261029.json
+- CURRENT_CHECKPOINT.md
+- NEXT_CHAT_HANDOFF.md
+
+Scope: reuse one scene-owned registry for live visual-row display lookup; reuse six HUD party rows in place. No combat, simulation, damage, economy, SaveService, map navigation, Source A asset, Warehouse, scheduler, Injury120, One Active Job, main/PR, or save changes.
+
+Tests: official Windows Godot 4.7.2 import; new focused refresh-reuse test; existing HUD and P3.2 live-integration tests; current 24-test affected and 20-test D6 matrices; repeated 20-second logger OFF/ON GUI profiler capture. Roll back only the two listed source files plus new test/UID.
+
+STATUS: owner approval of these exact code paths is required before editing. No performance patch has been started.
+
+---
+
 ## CURRENT CHECKPOINT — D6 regression, D7 GUI matrix, D8 profile (2026-10-30)
 
 Repository: vuanhtuan161094-byte/TongMonBaDao; feature branch feature/v63-v64-full-combat-20261029.
