@@ -32,7 +32,7 @@ func _run() -> void:
     var rows := hud.get("_rows") as VBoxContainer
     var boss_name := hud.get("_boss_name") as Label
     var event_label := hud.get("_event") as Label
-    var vfx := hud.get_node_or_null("OriginalCombatVFX")
+    var vfx := hud.get_node_or_null("CombatHudColumn/OriginalCombatVFX")
     if rows == null or rows.get_child_count() != 6:
         _fail("HUD did not render exactly six authoritative party cards")
         return
@@ -41,6 +41,9 @@ func _run() -> void:
         return
     if event_label == null or not event_label.text.contains("BÁO CHIÊU"):
         _fail("HUD did not surface the actual Combat V2 telegraph")
+        return
+    if vfx == null or (vfx as Control).size.y < 52.0 or (vfx as Control).get_parent() != hud.get("_rows").get_parent():
+        _fail("original event VFX does not have a visible HUD layout slot")
         return
     if vfx == null or str(vfx.get("_cue_kind")) != "telegraph":
         _fail("original vector VFX did not consume the authoritative telegraph event")

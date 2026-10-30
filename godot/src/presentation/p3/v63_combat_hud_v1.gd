@@ -22,6 +22,7 @@ var _vfx: Control
 func _ready() -> void:
     add_theme_stylebox_override("panel", _panel_style(Color("eee6d2"), Color("74694f")))
     var column := VBoxContainer.new()
+    column.name = "CombatHudColumn"
     column.add_theme_constant_override("separation", 5)
     add_child(column)
     var head := HBoxContainer.new()
@@ -79,9 +80,7 @@ func _ready() -> void:
     _vfx.name = "OriginalCombatVFX"
     _vfx.custom_minimum_size = Vector2(52, 52)
     _vfx.mouse_filter = Control.MOUSE_FILTER_IGNORE
-    _vfx.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-    _vfx.position = Vector2(-58, 28)
-    add_child(_vfx)
+    column.add_child(_vfx)
     _render()
 
 func set_authority(authoritative_state: SimulationState, snapshot: MapBattleV2,
