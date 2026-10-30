@@ -629,6 +629,17 @@ static func active_multicamp_id(state: SimulationState) -> String:
             return str(raw_id)
     return ""
 
+static func active_single_encounter_id(state: SimulationState) -> String:
+    if state == null:
+        return ""
+    var ids: Array = state.sect.v2_pve_active_runs.keys()
+    ids.sort()
+    for raw_id in ids:
+        var envelope = state.sect.v2_pve_active_runs[raw_id]
+        if envelope is Dictionary and str(envelope.get("mode","encounter")) == "encounter" and envelope.has("battle"):
+            return str(raw_id)
+    return ""
+
 static func commit_owner(owner: SimulationRuntimeOwnerV2, async_save: bool = false) -> Dictionary:
     if owner == null or owner.state == null or owner.durable_path.is_empty():
         return {"ok":false,"reason":"multicamp_missing_save_barrier"}

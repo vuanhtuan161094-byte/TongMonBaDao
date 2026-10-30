@@ -525,7 +525,10 @@ func attach_session(session: MapBattleV2) -> void:
     _frame_clock = 0.0
     _event_cursor = int(session.get("event_sequence")) if session != null and _battle_has_property(&"event_sequence") else 0
     _event_encounter_id = session.encounter_id if session != null else ""
-    _last_authority_event_signatures = _authority_event_signatures(session.events) if session != null else []
+    if session != null:
+        _last_authority_event_signatures = _authority_event_signatures(session.events)
+    else:
+        _last_authority_event_signatures.clear()
     _positions.clear()
     _view_prev.clear()
     _view_next.clear()
@@ -837,17 +840,53 @@ func _hp_bar_y(art_key: String, action: String, facing: Vector2,
 
 # Moving a UI health bar is permitted; moving a character away from its
 # authoritative path is NOT. Layout remains deterministic for a given frame.
+func should_show_combat_actor_name(selected_actor: bool, boss_actor: bool) -> bool:
+    return not compact_source_a_actor_overlays or selected_actor or boss_actor
+
+func overlay_candidate_offset(rect_size: Vector2, attempt: int) -> Vector2:
+    # Enumerate a stable square spiral without allocating a per-frame offset array.
+    if attempt <= 0:
+        return Vector2.ZERO
+    var step_x := maxf(rect_size.x+6.0,24.0)
+    var step_y := maxf(rect_size.y+6.0,16.0)
+    var remaining := attempt-1
+    var ring := 1
+    while remaining >= ring*8:
+        remaining -= ring*8
+        ring += 1
+    var slot_width := ring*2+1
+    var slot_height := ring*2
+    var grid_x := 0
+    var grid_y := 0
+    if remaining < slot_width:
+        grid_x = -ring+remaining
+        grid_y = -ring
+    else:
+        remaining -= slot_width
+        if remaining < slot_height:
+            grid_x = ring
+            grid_y = -ring+1+remaining
+        else:
+            remaining -= slot_height
+            if remaining < slot_height:
+                grid_x = ring-1-remaining
+                grid_y = ring
+            else:
+                remaining -= slot_height
+                grid_x = -ring
+                grid_y = ring-1-remaining
+    return Vector2(float(grid_x)*step_x,float(grid_y)*step_y)
+
 func layout_hp_overlays(overlays: Array[Dictionary]) -> Array[Dictionary]:
-    # Shared collision pass for HP, identity tags and status feedback.
-    # Keep every overlay inside the 1280x720 pilot's stage; otherwise a
-    # clustered group at the top edge can push HP completely off-screen.
+    # Shared deterministic collision pass for HP, identity tags and status cues.
+    # HP remains authoritative and visible; crowded optional tags are suppressed.
     var placed: Array[Dictionary] = []
     var answer: Array[Dictionary] = []
     answer.resize(overlays.size())
     var order: Array[Dictionary] = []
     for i in range(overlays.size()):
         var kind := str(overlays[i].get("kind","hp"))
-        # HP is a gameplay-essential meter. Names precede short status tags.
+        # HP is essential; selected/Boss names precede short status tags.
         var priority := 0 if kind == "hp" else (
             1 if kind == "name" else (2 if kind == "rank" else 3))
         order.append({"index":i,"priority":priority})
@@ -861,25 +900,88 @@ func layout_hp_overlays(overlays: Array[Dictionary]) -> Array[Dictionary]:
         var index := int(record["index"])
         var entry: Dictionary = overlays[index].duplicate()
         var initial: Rect2 = entry["rect"]
+        var found_placement := false
         var candidate := initial
-        candidate.position.x = clampf(initial.position.x,bounds.position.x,
-            bounds.end.x-initial.size.x)
-        var step := initial.size.y+6.0
-        for attempt in range(64):
-            var lane := int(ceil(float(attempt)*0.5))
-            var direction := -1.0 if attempt%2 == 1 else 1.0
-            candidate.position.y = clampf(initial.position.y+float(lane)*step*direction,
-                bounds.position.y,bounds.end.y-initial.size.y)
+        for attempt in range(128):
+            candidate = initial
+            candidate.position += overlay_candidate_offset(initial.size,attempt)
+            candidate.position.x = clampf(candidate.position.x,bounds.position.x,
+                bounds.end.x-candidate.size.x)
+            candidate.position.y = clampf(candidate.position.y,bounds.position.y,
+                bounds.end.y-candidate.size.y)
             var collided := false
             for other in placed:
                 if candidate.grow(3.0).intersects((other["rect"] as Rect2).grow(3.0)):
                     collided = true
                     break
             if not collided:
+                found_placement = true
                 break
+        if not found_placement and str(entry.get("kind","hp")) != "hp":
+            entry["visible"] = false
+            answer[index] = entry
+            continue
         entry["rect"] = candidate
+        entry["visible"] = true
         placed.append(entry)
         # Preserve caller/painter order while using priority for placement.
+        answer[index] = entry
+    return answer
+
+func layout_combat_text_popups(popups: Array[Dictionary],
+        reserved_overlays: Array[Dictionary]) -> Array[Dictionary]:
+    # Damage labels keep their real text and event IDs; only their display boxes
+    # move. Arrange stable receipt order around HP/name/status boxes.
+    var placed_rects: Array[Rect2] = []
+    for overlay in reserved_overlays:
+        if not bool(overlay.get("visible",true)) or not overlay.has("rect"):
+            continue
+        placed_rects.append((overlay["rect"] as Rect2).grow(3.0))
+    var answer: Array[Dictionary] = []
+    answer.resize(popups.size())
+    var order: Array[Dictionary] = []
+    for i in range(popups.size()):
+        order.append({
+            "index":i,
+            "event_id":int(popups[i].get("event_id",i)),
+            "actor_id":str(popups[i].get("actor_id","")),
+            "category":str(popups[i].get("category",""))
+        })
+    order.sort_custom(func(a,b):
+        if int(a["event_id"]) != int(b["event_id"]):
+            return int(a["event_id"]) < int(b["event_id"])
+        if str(a["actor_id"]) != str(b["actor_id"]):
+            return str(a["actor_id"]) < str(b["actor_id"])
+        if str(a["category"]) != str(b["category"]):
+            return str(a["category"]) < str(b["category"])
+        return int(a["index"]) < int(b["index"])
+    )
+    var bounds := stage_rect.grow(-4.0)
+    for record in order:
+        var index := int(record["index"])
+        var entry: Dictionary = popups[index].duplicate()
+        var initial: Rect2 = entry["rect"]
+        var candidate := initial
+        var found_placement := false
+        for attempt in range(256):
+            candidate = initial
+            candidate.position += overlay_candidate_offset(initial.size,attempt)
+            candidate.position.x = clampf(candidate.position.x,bounds.position.x,
+                bounds.end.x-candidate.size.x)
+            candidate.position.y = clampf(candidate.position.y,bounds.position.y,
+                bounds.end.y-candidate.size.y)
+            var collided := false
+            for other in placed_rects:
+                if candidate.grow(3.0).intersects(other):
+                    collided = true
+                    break
+            if not collided:
+                found_placement = true
+                break
+        entry["visible"] = found_placement
+        if found_placement:
+            entry["rect"] = candidate
+            placed_rects.append(candidate.grow(3.0))
         answer[index] = entry
     return answer
 
@@ -1180,6 +1282,8 @@ func _draw() -> void:
             _effect_atlas.draw_effect(self,source_kind,source_fx_screen_position(cue),
                 _frame_clock-float(cue["started"]),ratio)
     var ui_overlays: Array[Dictionary] = []
+    var combat_text_overlays: Array[Dictionary] = []
+    var arranged_hud_overlays: Array[Dictionary] = []
     var ids: Array = battle.actors.keys()
     # Isometric depth: far-away feet draw first; stable ID tie prevents flicker.
     # Presentation sort only, NEVER affects MapBattleV2 action/target order.
@@ -1253,21 +1357,23 @@ func _draw() -> void:
             draw_arc(at,maxf(15.0,radius+3.0)*spectator_zoom(),
                 0.0,TAU,24,Color(0.94,0.73,0.39,0.85),1.5)
         if enable_source_vl_art and alive:
-            # Classic JX nameplate reads above the HP meter; live monster
-            # names come from MonsterCatalogueV2, not a cosmetic alias.
-            var actor_name := combat_actor_label(actor)
-            var name_width := clampf(float(actor_name.length())*9.0+16.0,72.0,180.0)
-            var name_tint := _school_color(_school_tag(actor)) if side == "disciple" else (
-                Color(1.0,0.77,0.37) if tier == "boss" else Color(1.0,0.85,0.72))
             var selected_actor := str(id) == source_a_selected_actor_id
-            if selected_actor:
-                name_tint = Color(1.0,0.88,0.46)
-            ui_overlays.append({
-                "kind":"name",
-                "rect":Rect2(at+Vector2(-name_width*0.5,hp_y-24.0),
-                    Vector2(name_width,20.0)),
-                "text":actor_name,"fill":name_tint,"selected":selected_actor
-            })
+            var boss_actor := side == "monster" and tier == "boss"
+            if should_show_combat_actor_name(selected_actor,boss_actor):
+                # Classic JX nameplate reads above the HP meter; live monster
+                # names come from MonsterCatalogueV2, not a cosmetic alias.
+                var actor_name := combat_actor_label(actor)
+                var name_width := clampf(float(actor_name.length())*9.0+16.0,72.0,180.0)
+                var name_tint := _school_color(_school_tag(actor)) if side == "disciple" else (
+                    Color(1.0,0.77,0.37) if tier == "boss" else Color(1.0,0.85,0.72))
+                if selected_actor:
+                    name_tint = Color(1.0,0.88,0.46)
+                ui_overlays.append({
+                    "kind":"name",
+                    "rect":Rect2(at+Vector2(-name_width*0.5,hp_y-24.0),
+                        Vector2(name_width,20.0)),
+                    "text":actor_name,"fill":name_tint,"selected":selected_actor
+                })
             var rank := combat_actor_rank_label(actor)
             if not compact_source_a_actor_overlays and not rank.is_empty() and not jxqy2.active:
                 var rank_width := clampf(float(rank.length())*6.0+12.0,72.0,194.0)
@@ -1327,8 +1433,8 @@ func _draw() -> void:
             draw_rect(badge,Color(0.025,0.055,0.09,0.94))
             draw_string(ThemeDB.fallback_font,badge.position+Vector2(10,21),skill_stage,HORIZONTAL_ALIGNMENT_LEFT,370,17,Color(1,0.89,0.55))
     if enable_source_vl_art:
-        # Combat numbers sit above sprites but BELOW HP/name HUD.
-        # Display never changes HP. Event-ID lanes use no gameplay RNG.
+        # Capture the transient receipt labels, then run them through the same
+        # deterministic screen-space collision pass as the HUD boxes.
         if enable_combat_text:
             for popup in _combat_text:
                 var age := _frame_clock-float(popup["started"])
@@ -1341,38 +1447,58 @@ func _draw() -> void:
                 var origin: Vector2 = popup.get("world_origin",
                     visual_position(actor_id,target["position"]))
                 var point := point_on_map(origin)
-                # Fan out simultaneous receipts across the arena width instead
-                # of stacking four narrow lanes over the same sprite cluster.
-                # Event IDs are presentation-only here; authority events stay
-                # intact in MapBattleV2 and keep their original damage values.
+                # The receipt sequence chooses a stable starting lane only.
+                # Collision layout may fan labels out without changing events.
                 var lane := int(popup["event_id"]) % 7
                 var position := point+Vector2(
                     float(lane-3)*58.0,-44.0-age*38.0)
                 var category := str(popup["category"])
                 var text_value := str(popup["label"])
                 var size := (24 if category == "crit" else 20) if jxqy2.active else (16 if category == "crit" else 13)
-                var width := maxf(52.0,float(text_value.length())*float(size)*0.67+10.0)
+                var width := minf(stage_rect.size.x-8.0,
+                    maxf(52.0,float(text_value.length())*float(size)*0.67+10.0))
                 position.x = clampf(position.x-width*0.5,
                     stage_rect.position.x,stage_rect.end.x-width)
                 position.y = clampf(position.y,
-                    stage_rect.position.y+2.0,stage_rect.end.y-25.0)
+                    stage_rect.position.y+2.0,stage_rect.end.y-float(size)-11.0)
                 var fade := clampf((COMBAT_TEXT_SECONDS-age)/0.25,0.0,1.0)
-                var bounds := Rect2(position,Vector2(width,float(size)+9.0))
-                # JX1-inspired colored glyph + dark stroke, no opaque
-                # rectangle hiding the source sprite or the battlefield.
-                var tint := _combat_feedback_color(category)
-                tint.a = fade
-                var text_at := position+Vector2(4.0,float(size)+2.0)
-                draw_string_outline(ThemeDB.fallback_font,text_at,text_value,
-                    HORIZONTAL_ALIGNMENT_CENTER,width-8.0,size,2,
-                    Color(0.015,0.015,0.012,0.95*fade))
-                draw_string(ThemeDB.fallback_font,text_at,text_value,
-                    HORIZONTAL_ALIGNMENT_CENTER,width-8.0,size,tint)
+                combat_text_overlays.append({
+                    "kind":"damage_text",
+                    "rect":Rect2(position,Vector2(width,float(size)+9.0)),
+                    "event_id":int(popup["event_id"]),
+                    "actor_id":actor_id,
+                    "category":category,
+                    "text":text_value,
+                    "size":size,
+                    "fade":fade
+                })
+        arranged_hud_overlays = layout_hp_overlays(ui_overlays)
+        var arranged_text_overlays := layout_combat_text_popups(
+            combat_text_overlays,arranged_hud_overlays)
+        # Combat numbers remain beneath the readable HP/name/status HUD.
+        for text_value in arranged_text_overlays:
+            if not bool(text_value.get("visible",false)):
+                continue
+            var text_rect: Rect2 = text_value["rect"]
+            var font_size := int(text_value["size"])
+            var fade := float(text_value["fade"])
+            var text_at := text_rect.position+Vector2(4.0,float(font_size)+2.0)
+            var tint := _combat_feedback_color(str(text_value["category"]))
+            tint.a = fade
+            draw_string_outline(ThemeDB.fallback_font,text_at,
+                str(text_value["text"]),HORIZONTAL_ALIGNMENT_CENTER,
+                text_rect.size.x-8.0,font_size,2,
+                Color(0.015,0.015,0.012,0.95*fade))
+            draw_string(ThemeDB.fallback_font,text_at,
+                str(text_value["text"]),HORIZONTAL_ALIGNMENT_CENTER,
+                text_rect.size.x-8.0,font_size,tint)
 
         # LAST pass: front-row sprites and FX cannot hide role/HP labels.
         # Moving UI boxes is permitted; sprite feet / battle target positions stay exact.
-        for overlay_value in layout_hp_overlays(ui_overlays):
+        for overlay_value in arranged_hud_overlays:
             var overlay: Dictionary = overlay_value
+            if not bool(overlay.get("visible",true)):
+                continue
             var bounds: Rect2 = overlay["rect"]
             var kind := str(overlay.get("kind","hp"))
             if kind == "hp":
