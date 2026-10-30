@@ -11,12 +11,18 @@ Current tested and committed code SHA: 23e5d0ba812f4b39dc6c8c5afc47864929c645aa 
 | D6 complete sequential regression | PASS, 20/20 | d6_final_results.json SHA-256 84CFEDE5292EC65C56F6F7052FBA72B27AA96811F0FE2B7487431B7441521FF7 |
 | D7 branch/Boss GUI matrix | SCRIPTED GUI PASS, 9/9 + 9/9 | Previous exact logs and screenshots in V65_D7_UI_VFX_EVIDENCE_20261030.md |
 | D8 after-patch normal Windows GUI | SCRIPTED GUI PASS | Native 1280×720 P3.2 Combat V2 window; Source A map, six party rows, 130-disciple loaded QA save, six-person C01 party. HUD refresh and visual-row reuse tested in place. |
-| D8 performance acceptance | MEASURED IMPROVED; REVIEW PENDING | Long-tail maximum remains 95.35 ms OFF / 100.83 ms ON; P99 30.98/27.99 ms and 1%-low 13.70/14.00 FPS. No owner-approved latency threshold is recorded. |
+| D8 performance acceptance | MEASURED IMPROVED; REVIEW PENDING | Long-tail maximum remains 95.35 ms OFF / 100.83 ms ON; P99 30.98/27.99 ms and 1%-low 13.70/14.00 FPS. Repeated PVE spikes occur about every two seconds; current logs do not attribute them to a source. No owner-approved latency threshold is recorded. |
 | Physical mouse / manual Save-Return / owner visual review | PENDING | Current after-patch image and scripted window do not prove physical input or owner acceptance. |
 | D6 rare-skill GUI | PENDING | D6 20/20 is headless; rare-ultimate live capture remains open. |
 | Android device | PENDING | No physical Android test device was available. |
 | Body realms 7–30 | BLOCKED | Authored progression recipes/material sources remain unavailable. |
 | V6.5 overall | INCOMPLETE | Do not mark full combat complete or merge. |
+
+## Additional D8 trace/environment audit — 2026-10-30
+
+The OFF and ON raw metrics logs show recurring PVE-phase frame-gap spikes at roughly two-second intervals after the first sample: approximately 69–101 ms, with 373 nodes and 374 draw calls. Most repeated spike rows report Godot process time around 17–20 ms and physics below 0.15 ms. The first sample has an unaligned/aggregate process-time value, so this trace does not establish a reliable CPU/GPU/source attribution. Keep performance acceptance REVIEW PENDING; no new source change is justified by this evidence alone.
+
+Android availability check: PowerShell could not find adb on PATH. No Android device QA was run; device performance remains PENDING.
 
 The D8 patch reuses one scene-owned ResourceRegistry for P3.2 monster display-name lookup and reuses six HUD party-row controls instead of destroying and recreating them on each refresh. It changes only the two approved presentation source files plus the new focused test and generated UID. Simulation/combat authority, save schema, Warehouse, One Active Job, scheduler, Injury120, and Source A production assets were not changed.
 

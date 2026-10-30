@@ -16,8 +16,9 @@ Repository: vuanhtuan161094-byte/TongMonBaDao. Continue only on feature/v63-v64-
 4. Maintain all 20-camp, multi-team, exact receipt/save, Injury120, single Warehouse, One Active Job, and legacy gate-OFF checks. Update Issue #54, CURRENT_CHECKPOINT.md, NEXT_CHAT_HANDOFF.md, and the coverage ledger after each tested checkpoint.
 
 ## Still pending / blocked
+- A D7 presentation-only combat-overlay spacing packet is prepared for the visible center crowding. Repository AGENTS.md §3 requires approval of its exact changed paths before editing b3_care_combat_v5_presenter.gd; check the live conversation for the owner response before starting.
 - Physical mouse and Save/Return interaction; owner visual acceptance; D6 rare-skill GUI.
-- D8 long-tail performance acceptance and Android device evidence.
+- D8 long-tail performance acceptance and Android device evidence. Raw traces show recurring ~2-second PVE frame gaps but do not attribute a source; adb is missing from PATH.
 - Body realms 7–30 authored content.
 - Overall V6.5 remains INCOMPLETE. No main merge, PR #52 merge/close, extra PR/branch, or cleanup.
 

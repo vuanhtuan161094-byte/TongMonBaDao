@@ -30,6 +30,12 @@ Normal Windows Godot GUI, 1280×720, OpenGL 3.3 Compatibility on Intel Iris Plus
 | Physics P95 (ms) | 0.19 | 0.09 | 0.16 | 0.13 |
 | Static / video memory peak (MB) | 189.7 / 267.6 | 189.5 / 269.6 | 189.4 / 267.6 | 189.8 / 267.6 |
 
+## Additional D8 trace/environment audit — 2026-10-30
+
+The OFF and ON raw metrics logs show recurring PVE-phase frame-gap spikes at roughly two-second intervals after the first sample: approximately 69–101 ms, with 373 nodes and 374 draw calls. Most repeated spike rows report Godot process time around 17–20 ms and physics below 0.15 ms. The first sample has an unaligned/aggregate process-time value, so this trace does not establish a reliable CPU/GPU/source attribution. Keep performance acceptance REVIEW PENDING; no new source change is justified by this evidence alone.
+
+Android availability check: PowerShell could not find adb on PATH. No Android device QA was run; device performance remains PENDING.
+
 The hot HUD update maximum fell from roughly 33–51 ms to 5.57 ms, while visual-row update fell from roughly 31–45 ms to 0.098 ms. P99 improved and both 1%-low values rose, but maximum whole-frame spikes remain near 100 ms. Therefore the optimization is measured as improved and **D8 performance acceptance remains REVIEW PENDING**; no target or owner signoff was inferred.
 
 After OFF log/metrics SHA-256: AC39830029C5678A75F150314FAA7E118DDDE034E84D4849045D2103B4C5271B / 127BAA90D7A7C869A7E622E6CA46BA926AE83CD8E4FBB269838B9E2F276DF6E3.

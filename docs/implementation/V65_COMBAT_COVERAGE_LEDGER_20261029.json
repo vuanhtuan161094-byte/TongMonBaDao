@@ -5964,7 +5964,8 @@
     "The 300-coordinate cultivation cost table does not provide end-to-end playable Body progression; authored gate content exists only through realm 6 and realms 7-30 return content_unavailable.",
     "The multiseed contract test exercises deterministic direct Combat V2 HP0/receipt/no-reward/respawn traces; it is not autonomous pathing or live runtime performance.",
     "Scripted Windows GUI evidence does not replace physical mouse, manual Save/Return, or owner visual acceptance.",
-    "D8 whole-frame tail spikes remain; performance acceptance and Android device evidence are pending."
+    "D8 whole-frame tail spikes remain; performance acceptance and Android device evidence are pending.",
+    "Raw OFF/ON traces show recurring PVE-phase frame-gap spikes around every two seconds; current aggregate logs do not reliably attribute them to CPU, GPU, or a source block, so no additional runtime fix was inferred."
   ],
   "d8_gui_attempt": {
     "status": "SCRIPTED_GUI_CAPTURE_PASS",
@@ -6112,7 +6113,28 @@
       "observed_refresh_stage_max_ms": {
         "hud_update": 5.57,
         "visual_rows": 0.098
+      },
+      "spike_trace_audit": {
+        "pattern": "After the first sample, ~69-101 ms frame gaps recur roughly every 2 seconds in PVE phase, both logger OFF and ON.",
+        "nodes": 373,
+        "draw_calls": 374,
+        "most_repeated_spike_process_ms": "about 17-20",
+        "most_repeated_spike_physics_ms": "below 0.15",
+        "attribution": "UNRESOLVED; metrics are aggregated and the first sample process-time value is not aligned with its frame gap.",
+        "decision": "No additional runtime code change inferred; performance acceptance remains REVIEW_PENDING."
       }
+    },
+    "android_environment": {
+      "adb": "not installed or not on PATH",
+      "device_qa": "NOT_RUN",
+      "status": "PENDING"
+    },
+    "next_d7_packet": {
+      "status": "OWNER_EXACT_PATH_APPROVAL_PENDING",
+      "observed_issue": "Combat text, HP bars and actor labels crowd the center in the 1280x720 Boss GUI capture.",
+      "proposed_source": "godot/src/presentation/p3/b3_care_combat_v5_presenter.gd",
+      "proposed_test": "godot/tests/presentation/v63_d7_combat_text_layout_test.gd",
+      "code_started": false
     }
   },
   "next_preflight": {
@@ -6148,5 +6170,12 @@
     "result": "Window listed after explicit launch; two screenshot-backed get_window_state calls timed out at frame channel; no input or gameplay screenshot captured."
   },
   "feature_head_before_d8_patch": "5d9337d06aa9c931b844133f8add890c756a9b8c",
-  "current_code_test_sha": "23e5d0ba812f4b39dc6c8c5afc47864929c645aa"
+  "current_code_test_sha": "23e5d0ba812f4b39dc6c8c5afc47864929c645aa",
+  "android_device_audit": {
+    "checked_on": "2026-10-30",
+    "command": "PowerShell Get-Command adb",
+    "result": "adb not installed or not on PATH",
+    "device_qa": "NOT_RUN",
+    "status": "PENDING"
+  }
 }
