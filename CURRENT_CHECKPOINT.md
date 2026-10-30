@@ -1,3 +1,39 @@
+## CURRENT CHECKPOINT — D6 regression, D7 GUI matrix, D8 profile (2026-10-30)
+
+Repository: vuanhtuan161094-byte/TongMonBaDao; feature branch feature/v63-v64-full-combat-20261029.
+Feature HEAD before this evidence commit: 53d6134ec7ecad5f10f29c2617869c6717958d4a. Tested runtime source: 59f3903f37dc0260cf07059bf3bd24e0973168c6. Stable main: c0c1382f119599497b52d8ee8abd9e830a883f1e unchanged. PR #52 remains Draft/open/unmerged, head 2a99ed505c85a17f6d25f91891560ca51fa02d88, base feature/pve-jx-continuous-world-20261026.
+
+| Area | Status | Exact evidence |
+|---|---|---|
+| Godot 4.7.2 import | PASS, exit 0 | SHA-256 B728DE0C23F24D9AA31BC7608B177D7CA13857D7C3ACA862A08506D00675123B |
+| D6 complete focused regression | PASS 20/20 | d6_results_59f3903.json; SHA-256 6AE3CC0C708D76BD1E0D59875C03BD036E5F6B1059884905AA2D7FED66DDB93D |
+| D7/D8/Save/PvE affected regression | PASS 24/24 | regression_results_59f3903.json; SHA-256 EA6DF0603FD27F4759FF1C8AD5538399664EDFFA48F9943766F830535374D739 |
+| D7 branch/Boss actual GUI | SCRIPTED PASS 9/9 | Full screenshot and log hashes in docs/implementation/V65_D7_UI_VFX_EVIDENCE_20261030.md; native 1280×720 P3.2 Combat V2 window |
+| D7 physical mouse / Save-Return / owner review | PENDING | Captures use automated UI signal input; visual owner acceptance not claimed |
+| D6 rare-skill GUI | PENDING | D6 matrix is headless only |
+| D8 normal-GUI profiler | MEASURED 2/2 | Logger OFF/ON; P50 ~16.65 ms, P95 ~17.5 ms; P99 68.48–68.94 ms; max 94.88–120.10 ms; 1%-low 12.02–12.44 FPS |
+| D8 performance acceptance | PENDING | Tail spikes reproduced in both runs; acceptance threshold and owner decision not available |
+| D8 Android device | PENDING | No physical Android QA environment |
+| Body realms 7–30 | BLOCKED | Authored recipes/material sources are unavailable; keep content gate closed |
+| V6.5 overall | INCOMPLETE | No merge authorized |
+
+## GUI/performance artifact paths
+
+- D7 matrix: E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D7_GUI_MATRIX_20261030\published_59f3903_114435\ (9 PNG + 9 logs).
+- D8 logger OFF: E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D8_PERF_20261030\GUI\logger_off_clean\ (log SHA FBEDE14FB3F363D95BECEC8478F058127E90C4A96F12A9F530281036B9FA588F; metrics SHA 80C8D863FE3FCA0ABE90EB2D41B77192AE74C4E816598C0054A1E2ECD0E4E0B4).
+- D8 logger ON: E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D8_PERF_20261030\GUI\logger_on_clean\ (log SHA C1D9685347EA5B0D13EC13D9A2C6B48EAFB9CAF4E57F2887BF0EA4CD6DCDCD38; metrics SHA 49A884AACACA6562D5D88E6D5321889D8075B88AAD766755CA02578F0DA38D74).
+- D8 screenshot both modes: SHA-256 A020EFD9CD7443948A717D4E54AC08D4E522A8555B91A26AAC61445612C79B40.
+
+## Protected state and next checkpoint
+
+Runtime source did not change after tested SHA 59f3903; commit 53d6134 only adds the approved D8 GUI test and UID. This evidence update contains docs only. The canonical dirty E: checkout was not edited, reset, cleaned, or deleted; the isolated D8 snapshot and QA outputs remain intact.
+
+Keep D8 performance at measured/review-pending until profiler hotspots are addressed and remeasured or an owner-approved target accepts the result. The profile suggests the P3.2 HUD/visual-row refresh path is costly; no production fix is included without a new exact-path D8 preflight. Continue review/QA; do not claim FULL COMPLETE or merge.
+
+Supporting documents: docs/implementation/V65_D7_UI_VFX_EVIDENCE_20261030.md and docs/implementation/V65_D8_INTEGRATED_QA_EVIDENCE_20261030.md.
+
+---
+
 ## 30/10/2026 — D8 normal-GUI runtime performance capture preflight
 
 Base source: `59f3903f37dc0260cf07059bf3bd24e0973168c6`; stable main: `c0c1382f119599497b52d8ee8abd9e830a883f1e` (unchanged). Live PR #52 remains Draft/open/unmerged at `2a99ed505c85a17f6d25f91891560ca51fa02d88`, base `feature/pve-jx-continuous-world-20261026`; no PR or main mutation is authorized.

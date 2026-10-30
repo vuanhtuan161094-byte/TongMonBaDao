@@ -3,7 +3,7 @@
   "generated_at": "2026-10-30",
   "repository": "vuanhtuan161094-byte/TongMonBaDao",
   "branch": "feature/v63-v64-full-combat-20261029",
-  "source_sha": "5e1fc3043abe4fcd402ce226be7bb944d053cd0d",
+  "source_sha": "59f3903f37dc0260cf07059bf3bd24e0973168c6",
   "stable_main_sha": "c0c1382f119599497b52d8ee8abd9e830a883f1e",
   "overall_release_status": "INCOMPLETE",
   "phase_status": {
@@ -16,13 +16,15 @@
     "D7": "HEADLESS_PASS",
     "D8": "HEADLESS_PASS",
     "D6_GUI": "PENDING",
-    "D7_GUI": "PENDING",
+    "D7_GUI": "SCRIPTED_GUI_PASS",
     "D7_ACCEPTANCE": "PENDING",
-    "D8_GUI": "PENDING",
-    "D8_PERFORMANCE": "PENDING",
+    "D8_GUI": "SCRIPTED_GUI_PASS",
+    "D8_PERFORMANCE": "MEASURED_SPIKES_REVIEW_PENDING",
     "D8_ANDROID": "PENDING",
     "D8_ENDGAME_CONTENT": "BLOCKED",
-    "D7_GUI_BASELINE": "SCRIPTED_CAPTURE_PASS"
+    "D7_GUI_BASELINE": "SCRIPTED_CAPTURE_PASS",
+    "D6_REGRESSION": "20/20_PASS",
+    "D8_REGRESSION": "24/24_PASS"
   },
   "human_branch_count": 9,
   "human_family_count": 105,
@@ -5995,5 +5997,54 @@
     "owner_visual_review": "PENDING",
     "physical_mouse_save_return": "PENDING",
     "visual_note": "Combat number/nameplate overlap remains visible."
+  },
+  "feature_head_before_evidence_update": "53d6134ec7ecad5f10f29c2617869c6717958d4a",
+  "current_evidence": {
+    "godot": "4.7.2.stable.official.ed1daf0bf",
+    "import_exit": 0,
+    "import_log_sha256": "B728DE0C23F24D9AA31BC7608B177D7CA13857D7C3ACA862A08506D00675123B",
+    "d6_matrix": {
+      "tests": 20,
+      "passed": 20,
+      "manifest": "E:/TongMonBaDaoWorkspace/QA_Evidence/V65_D8_PERF_20261030/d6_regression_59f3903/d6_results_59f3903.json",
+      "sha256": "6AE3CC0C708D76BD1E0D59875C03BD036E5F6B1059884905AA2D7FED66DDB93D"
+    },
+    "affected_matrix": {
+      "tests": 24,
+      "passed": 24,
+      "manifest": "E:/TongMonBaDaoWorkspace/QA_Evidence/V65_D8_PERF_20261030/regression_59f3903/regression_results_59f3903.json",
+      "sha256": "EA6DF0603FD27F4759FF1C8AD5538399664EDFFA48F9943766F830535374D739"
+    },
+    "d7_gui": {
+      "branch_samples": 9,
+      "bosses": 9,
+      "mode": "normal_windows_gui_scripted_input",
+      "evidence": "E:/TongMonBaDaoWorkspace/QA_Evidence/V65_D7_GUI_MATRIX_20261030/published_59f3903_114435"
+    },
+    "d8_performance": {
+      "logger_off": {
+        "frame_count": 1135,
+        "p50_ms": 16.66,
+        "p95_ms": 17.5,
+        "p99_ms": 68.94,
+        "max_ms": 94.88,
+        "fps_1pct_low": 12.44,
+        "static_memory_peak_mb": 189.7,
+        "video_memory_peak_mb": 267.6,
+        "metrics_sha256": "80C8D863FE3FCA0ABE90EB2D41B77192AE74C4E816598C0054A1E2ECD0E4E0B4"
+      },
+      "logger_on": {
+        "frame_count": 1133,
+        "p50_ms": 16.65,
+        "p95_ms": 17.49,
+        "p99_ms": 68.48,
+        "max_ms": 120.1,
+        "fps_1pct_low": 12.02,
+        "static_memory_peak_mb": 189.5,
+        "video_memory_peak_mb": 269.6,
+        "metrics_sha256": "49A884AACACA6562D5D88E6D5321889D8075B88AAD766755CA02578F0DA38D74"
+      },
+      "screenshot_sha256": "A020EFD9CD7443948A717D4E54AC08D4E522A8555B91A26AAC61445612C79B40"
+    }
   }
 }

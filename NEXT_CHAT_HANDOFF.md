@@ -1,3 +1,31 @@
+# CURRENT HANDOFF — D6 regression verified; D7 GUI 9/9; D8 measured (2026-10-30)
+
+Repository vuanhtuan161094-byte/TongMonBaDao. Continue on feature/v63-v64-full-combat-20261029 only. Feature HEAD before this evidence update is 53d6134ec7ecad5f10f29c2617869c6717958d4a; tested runtime source is 59f3903f37dc0260cf07059bf3bd24e0973168c6. Main c0c1382f119599497b52d8ee8abd9e830a883f1e unchanged. PR #52 remains Draft/open/unmerged at 2a99ed505c85a17f6d25f91891560ca51fa02d88; its base is feature/pve-jx-continuous-world-20261026.
+
+## Completed and verified
+
+- Official Godot 4.7.2 Windows import PASS, exit 0; log SHA-256 B728DE0C23F24D9AA31BC7608B177D7CA13857D7C3ACA862A08506D00675123B.
+- D6 full regression PASS 20/20, sequential. Manifest E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D8_PERF_20261030\d6_regression_59f3903\d6_results_59f3903.json, SHA-256 6AE3CC0C708D76BD1E0D59875C03BD036E5F6B1059884905AA2D7FED66DDB93D.
+- D7/D8/Save/PvE matrix PASS 24/24, sequential. Manifest E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D8_PERF_20261030\regression_59f3903\regression_results_59f3903.json, SHA-256 EA6DF0603FD27F4759FF1C8AD5538399664EDFFA48F9943766F830535374D739.
+- Native Windows 1280×720 actual P3.2 Combat V2 GUI matrix covers all 9 branch skill samples and all 9 Bosses. Each cast/hit/telegraph receipt passes. Full hashes and nine pairings are in V65_D7_UI_VFX_EVIDENCE_20261030.md.
+- D8 P3.2 performance capture ran on a loaded 130-disciple QA save, six-member team vs C01; Logger OFF/ON each yielded >1100 frames, exit 0 and 149 actions. Detailed stats and hashes are in V65_D8_INTEGRATED_QA_EVIDENCE_20261030.md.
+
+## Still open — do not label complete
+
+- D7: central actor/damage-number crowding remains visible; manual mouse and Save/Return GUI interaction plus owner visual review are pending. D6 rare-ultimate GUI matrix is also pending.
+- D8 performance: frame P95 ~17.5 ms, but P99 68.48–68.94 ms, max 94.88–120.10 ms and 1%-low 12.02–12.44 FPS in paired runs. Keep REVIEW PENDING; optimize only after recording an exact-path D8 preflight, then rerun OFF/ON and affected regression.
+- Android device verification is pending; no physical Android environment was available.
+- Body realms 7–30 remain blocked by unavailable authored progression recipes/material sources. Do not invent or bypass.
+- Overall V6.5 is INCOMPLETE. PR #52 stays Draft/unmerged; no main merge, branch creation, or data cleanup.
+
+## Preserve and resume
+
+Keep the canonical dirty E: worktree untouched. The isolated snapshot is E:\TongMonBaDaoWorkspace\01_Game\TMB_V65_D8_SYNC_20261030\godot; evidence outputs remain under E:\TongMonBaDaoWorkspace\QA_Evidence\. Source code has no changes after 59f3903; branch commit 53d6134 added only the D8 QA capture test/UID.
+
+Before any new runtime-code edit, follow repository AGENTS.md §3 with an exact current-head/path/test/rollback preflight; the existing D8 preflight covers QA artifacts and docs, not a performance optimization in production presentation code. Continue with the narrow measured hotspot only after that gate. See CURRENT_CHECKPOINT.md and the D7/D8 evidence documents for exact metrics, 9-pair GUI hashes, test manifest hashes, and open gates.
+
+---
+
 # CURRENT HANDOFF — continue D7 visual coverage, then D8 QA
 
 Repository `vuanhtuan161094-byte/TongMonBaDao`; branch `feature/v63-v64-full-combat-20261029`. Latest source commit: `5e1fc3043abe4fcd402ce226be7bb944d053cd0d`. Main `c0c1382f119599497b52d8ee8abd9e830a883f1e` is unchanged. PR #52 remains Draft/open/unmerged at `2a99ed505c85a17f6d25f91891560ca51fa02d88`; no merge/PR mutation.

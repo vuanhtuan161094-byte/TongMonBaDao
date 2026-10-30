@@ -1,3 +1,50 @@
+# Current D6–D8 verification — 2026-10-30
+
+**Exact branch context:** feature/v63-v64-full-combat-20261029 was at 53d6134ec7ecad5f10f29c2617869c6717958d4a before this evidence commit. Runtime and regression source SHA is 59f3903f37dc0260cf07059bf3bd24e0973168c6; commits after that runtime SHA through 53d add D8 QA/preflight documentation and the GUI capture test only. Stable main remains c0c1382f119599497b52d8ee8abd9e830a883f1e. PR #52 remains Draft/open/unmerged at 2a99ed505c85a17f6d25f91891560ca51fa02d88, based on feature/pve-jx-continuous-world-20261026.
+
+## Godot and regression status
+
+- Official Windows Godot 4.7.2.stable.official.ed1daf0bf import: PASS, exit 0. Import-log SHA-256: B728DE0C23F24D9AA31BC7608B177D7CA13857D7C3ACA862A08506D00675123B.
+- Full D6-specific matrix: 20/20 sequential scripts PASS on runtime source 59f3903. Result manifest: E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D8_PERF_20261030\d6_regression_59f3903\d6_results_59f3903.json; SHA-256 6AE3CC0C708D76BD1E0D59875C03BD036E5F6B1059884905AA2D7FED66DDB93D.
+- Current affected/cross-phase D7/D8/Save/PvE matrix: 24/24 sequential scripts PASS on the same runtime source. Manifest: E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D8_PERF_20261030\regression_59f3903\regression_results_59f3903.json; SHA-256 EA6DF0603FD27F4759FF1C8AD5538399664EDFFA48F9943766F830535374D739.
+- D6 20/20 and D8/D7 24/24 are overlapping suites and must not be added into a single 44-test claim. Both exact result manifests contain individual exits/log hashes. The D6 matrix includes Divine/rare lineage, Immortal/Human combat, D2/D3, P2.3/P2.5, Warehouse, SaveService/SAFE-01, save-return exact-once and HP0 bridge checks.
+- Current D8 GUI test is godot/tests/presentation/v63_d8_performance_runtime_capture_test.gd (SHA-256 54CD3B166B36B0F34A5CC62A89F6E6770009250F9184B1E2DD34B99A3AB305E) with generated UID sidecar SHA-256 8595C3D6888CFCF6025C642E80A91E1808196AF7179CD71419FB03C60F1E9CED. Its code is QA-only; no production runtime changed.
+
+## D7 real GUI visual matrix
+
+See the current D7 evidence at V65_D7_UI_VFX_EVIDENCE_20261030.md for all 9 branch/Boss screenshot and log hashes. A native Windows GUI rendered the actual P3.2 Source A scene and Combat V2; automated UI signals made captures repeatable. The UI panel is readable but central actors/damage numbers remain crowded. Physical mouse and owner visual acceptance are PENDING.
+
+## D8 Windows GUI performance capture
+
+Official Windows Godot 4.7.2, OpenGL 3.3 Compatibility, Intel Iris Plus. The test loaded the existing 130-disciple QA save through SaveService, entered a real six-member C01 Combat V2 encounter in the Source A P3.2 scene, warmed the map for five seconds, and measured 20 seconds of live combat with the existing passive profiler. Logger OFF and ON were run separately. Both final runs exited 0 and recorded 149 combat actions. These are real native-GUI runtime captures driven by automated UI signals, not physical-mouse testing.
+
+| Mode | Frames | FPS measured | P50 / P95 / P99 | Max frame | 1%-low | Process P95 | Physics P95 | Static / video memory peak |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| Logger OFF | 1135 | 56.58 | 16.66 / 17.50 / 68.94 ms | 94.88 ms | 12.44 FPS | 136.99 ms | 0.19 ms | 189.7 / 267.6 MB |
+| Logger ON | 1133 | 56.51 | 16.65 / 17.49 / 68.48 ms | 120.10 ms | 12.02 FPS | 112.21 ms | 0.09 ms | 189.5 / 269.6 MB |
+
+Logger OFF: E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D8_PERF_20261030\GUI\logger_off_clean\ — log SHA-256 FBEDE14FB3F363D95BECEC8478F058127E90C4A96F12A9F530281036B9FA588F; metrics SHA-256 80C8D863FE3FCA0ABE90EB2D41B77192AE74C4E816598C0054A1E2ECD0E4E0B4.
+
+Logger ON: E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D8_PERF_20261030\GUI\logger_on_clean\ — log SHA-256 C1D9685347EA5B0D13EC13D9A2C6B48EAFB9CAF4E57F2887BF0EA4CD6DCDCD38; metrics SHA-256 49A884AACACA6562D5D88E6D5321889D8075B88AAD766755CA02578F0DA38D74.
+
+Both root viewport screenshots are p3_2_pve_1280x720.png, SHA-256 A020EFD9CD7443948A717D4E54AC08D4E522A8555B91A26AAC61445612C79B40. The captures show a live fight. Tail frame spikes remain in both runs; the 1%-low near 12 FPS is not presented as an acceptance PASS because the contract provides no numeric threshold and no owner signoff. The paired run demonstrates that toggling the existing logger does not remove the observed tail. Treat D8 performance as MEASURED / REVIEW PENDING.
+
+Initial harness-only attempts that had an output collision or teardown access violation are excluded; the refined unique-directory runs above are the two successful final runs. They did not change production behavior.
+
+## Current gates
+
+- D6 runtime regression PASS; D6 rare-ultimate GUI visual coverage PENDING.
+- D7 scripted actual-GUI branch/Boss matrix PASS 9/9; D7 physical interaction and owner acceptance PENDING.
+- D8 runtime/cross-phase regressions PASS 24/24; native-GUI OFF/ON data captured; performance acceptance PENDING measured tail spikes.
+- Android physical-device test PENDING because no device environment is available.
+- Body realms 7–30 BLOCKED: authored gate content is unavailable beyond 1–6; do not invent recipes, materials, or costs.
+- Overall V6.5 INCOMPLETE. Main unchanged; PR #52 remains Draft/unmerged. Preserve Injury120, One Active Job, SaveService/schema, canonical Warehouse/scheduler, feature-gate defaults, and the dirty canonical E: worktree.
+
+## Historical D8 records
+Earlier D8 results remain below with their exact older source SHAs. Do not combine their counts or hashes with the current 59f3903 matrices.
+
+---
+
 # Current D8 integrated regression update — 2026-10-30
 
 Tested source content: feature SHA `5e1fc3043abe4fcd402ce226be7bb944d053cd0d` plus the two published D7 presentation corrections described in [D7 evidence](V65_D7_UI_VFX_EVIDENCE_20261030.md). Official Windows Godot 4.7.2 import passed, and the complete affected/cross-phase matrix passed **34/34 sequential scripts**, exit 0. The D8-specific 20 checks (endgame fixtures, multiseed camp and battle, performance QA contract, preview-gate resume, One Active Job, D2 receipts, D6/D7 regressions) are included.

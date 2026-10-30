@@ -1,3 +1,30 @@
+## Latest D7 GUI matrix — 2026-10-30 (current)
+
+Feature runtime/test source: 59f3903f37dc0260cf07059bf3bd24e0973168c6. Evidence was captured in a normal Windows Godot 4.7.2 GUI window at 1280×720 against the real P3.2 Combat V2 Boss encounter. The harness drives existing UI signals and captures the root viewport; it is scripted GUI evidence, not physical-mouse or owner acceptance.
+
+**PASS — scripted visual sample:** 9/9 branch skill cues and 9/9 distinct Bosses have paired screenshot/log records. Every log reports cast=true, positive_hit=true, telegraph=true, and V65 BOSS GUI CAPTURE PASS. Each screenshot is 1280×720.
+
+| Branch / skill sample | Boss | Screenshot | Screenshot SHA-256 | GUI log | Log SHA-256 |
+|---|---|---|---|---|---|
+| bow_liep_anh | boss_thiet_giap | bow_liep_anh__boss_thiet_giap.png | 2F16AD51768F3FFDBC55A660B2AFDA91E61190FD52CA675AB7C52887C3B2031E | same-name .log | 3F48B90EDD5F7B11929D7D48F17F8812296271C58DFC6DF48D18FEF29B1E917F |
+| bow_linh_tien | boss_xich_viem | bow_linh_tien__boss_xich_viem.png | B901BAD9AEEA3E83564D759863EDC508A23C6EA50C781657B0B2A575D94AA5FE | same-name .log | CD292083AE5A275083965AF80ECD8828D60B7150B617E4F9177E6E5EA20DDB00 |
+| bow_thien_vu | boss_bach_doc | bow_thien_vu__boss_bach_doc.png | C840EB6E89400CD964074DA01A1AF20761E8F25327E7B491D61F634984FD4CC4 | same-name .log | A8C8A1FAB97252F0360E9BCB1B9FB86DEEEC692BC4BEC84F0D36A4DD515062D2 |
+| fist_ba_quyen | boss_immortal_loi_nguc | fist_ba_quyen__boss_immortal_loi_nguc.png | 2B9265D622E9D2EE87547FD84DB69B22052C62000923552E18A56A53BA00C2B3 | same-name .log | 0C5F1CD86FC891EFF4A25F94A34CFAE85AD36ABAFD53393CDAF6ED5BF5DF43A9 |
+| fist_huyet_quyen | boss_immortal_u_minh | fist_huyet_quyen__boss_immortal_u_minh.png | 15CE5BF2B4D46AF2F84478515D30F6F29F51B51D982A04A7D4B33AD409076602 | same-name .log | 23917513F05139F818465DC163FA7A93F89220540184DDE94DC5FD694082535E |
+| fist_kim_cang | boss_immortal_han_nguyet | fist_kim_cang__boss_immortal_han_nguyet.png | 76017B14B73101302A38B5C75F3CAB8707AA72B5940501B679ADBD0FB4B4AD31 | same-name .log | 6A262CE2FB43C62123E3D5B0826DEA60C363D229095A92C9527736D64445D242 |
+| poison_co_doc | boss_divine_bat_diet | poison_co_doc__boss_divine_bat_diet.png | C35E311875A4B02A9BBDE959D35ABE254FC5391E6001304DB1050CF8948FF0B8 | same-name .log | C46169ED4F14598B98D70F3F3E193CA2747A6BE55960987AA6B1EB60C1D80C0B |
+| poison_doc_cham | boss_divine_cuu_tieu | poison_doc_cham__boss_divine_cuu_tieu.png | 4CBD43A785BEA27D641F52F983F5FCA45703625526923C0E4E3FB79BDD19DA2C | same-name .log | 6B9718F5192FD1F02C9ACCC193BA841DDA791542238C8E821A31FCD48D8E5CFB |
+| poison_duoc_doc | boss_divine_thai_so | poison_duoc_doc__boss_divine_thai_so.png | 343066FEF89983B22260EECCBE4FB0826D4E177A941604C39754DFCEE2898DA9 | same-name .log | 1CFEC8E8887C2FA8CB78D019B808A68EF2AE0AEA6A5998D691E3CCC33401EBD3 |
+
+Evidence directory: E:\TongMonBaDaoWorkspace\QA_Evidence\V65_D7_GUI_MATRIX_20261030\published_59f3903_114435. The exact 9 PNG and 9 log copies were SHA-verified against the C: originals under the active Codex workspace. Screenshot review confirms the right-side Boss/party/skill panel is legible and the telegraph is visible; the center still crowds actors and damage numbers.
+
+**Pending:** D6 rare-skill GUI coverage, physical mouse and Save/Return interaction, and owner visual review. The capture is actual rendered gameplay in a native GUI window, but scripted UI events do not prove manual interaction. D7 implementation/capture is not owner-accepted. Overall V6.5 remains INCOMPLETE.
+
+## Previous D7 records
+Earlier partial matrices and their source SHAs remain below as historical evidence; this 9/9 table supersedes earlier 1/9 or 8/9 D7 capture counts.
+
+---
+
 # Current D7 regression and Boss GUI evidence — 2026-10-30
 
 Feature source commit: [`5e1fc3043abe4fcd402ce226be7bb944d053cd0d`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/5e1fc3043abe4fcd402ce226be7bb944d053cd0d), parent `c035bd8a8b4856b47213988ed4c3c56ded830820`. Stable main remains `c0c1382f119599497b52d8ee8abd9e830a883f1e`. PR #52 remains Draft/open/unmerged at `2a99ed505c85a17f6d25f91891560ca51fa02d88`.
