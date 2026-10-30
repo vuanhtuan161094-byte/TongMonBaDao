@@ -1,3 +1,18 @@
+## 30/10/2026 — D8 integrated QA checkpoint
+
+Feature branch `feature/v63-v64-full-combat-20261029`; D8 test-only commit: `9f7cebd3aaa11ef53660497dfe5fc6bab30cb378`; evidence/checkpoint commit is the latest branch tip (verify live ref before editing). Stable main `c0c1382f119599497b52d8ee8abd9e830a883f1e` unchanged. PR #52 remains Draft/open/unmerged at audited head `2a99ed505c85a17f6d25f91891560ca51fa02d88`. Issue #54 tracks the owner execution order.
+
+- **PASS:** official Windows Godot 4.7.2 import, exit 0; log SHA-256 `4607CF35E6D6B82797968FE151305A9C35D23E7884FAE37D36A6CB249F87DB2`.
+- **PASS:** D8 affected matrix 16/16 and cross-phase D2/D3/D6/D7 checks 4/4, sequential; combined 20/20. Exact test log hashes and corrected initial failures are in [D8 evidence](docs/implementation/V65_D8_INTEGRATED_QA_EVIDENCE_20261030.md).
+- D8 code commit is test-only (four paths); the realm/body correction updates one expected-stat argument to match the existing D7 model-version derivation. No production code, SaveService/schema, Warehouse, scheduler, economy, or art changed.
+- **PENDING:** real gameplay GUI/input/screenshots and owner visual approval. Godot was not exposed in current Computer Use inventory; no capture is claimed.
+- **PENDING:** measured live FPS/RAM and Android/device acceptance. The performance test validates the launcher/probe contract, not runtime performance.
+- **BLOCKED:** endgame Body progression beyond realms 1–6 because existing gate content returns `content_unavailable` for realms 7–30. The 300-coordinate cost table is not a playable end-to-end campaign. No unapproved recipes or balance numbers were invented.
+- **INCOMPLETE:** V6.5 release. Preserve Injury120, One Active Job, six-member/20-camp authority and existing SaveService/Warehouse/scheduler; do not merge main or PR #52.
+
+### D8 authorized allowlist used
+`godot/tests/presentation/v63_d8_performance_qa_contract_test.gd`; `godot/tests/simulation/dv2_03_realm_body_progress_test.gd` (one test expectation); `godot/tests/simulation/v63_d8_endgame_progression_test.gd`; `godot/tests/simulation/v63_d8_multiseed_camp_battle_test.gd`; `docs/implementation/V65_D8_INTEGRATED_QA_EVIDENCE_20261030.md`; `docs/implementation/V65_COMBAT_COVERAGE_LEDGER_20261029.json`; `CURRENT_CHECKPOINT.md`; `NEXT_CHAT_HANDOFF.md`.
+
 ## 30/10/2026 — D7 UI/VFX implementation checkpoint
 
 Feature branch `feature/v63-v64-full-combat-20261029`; D7 source/test commit: `878b279b4ac536c1c28a36e4ed0e87251f43c2c9`, parent `990432cee290be738a03e499b9d99ecffa89b5db`. Stable main remains `c0c1382f119599497b52d8ee8abd9e830a883f1e`. PR #52 is still Draft/open/unmerged at live head `2a99ed505c85a17f6d25f91891560ca51fa02d88`.

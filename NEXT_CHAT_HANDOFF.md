@@ -1,3 +1,30 @@
+# NEXT CHAT HANDOFF — V6.5 D8 QA COMPLETE / RELEASE GATES OPEN — 2026-10-30
+
+Repository `vuanhtuan161094-byte/TongMonBaDao`; branch `feature/v63-v64-full-combat-20261029`. Latest source/test checkpoint is `9f7cebd3aaa11ef53660497dfe5fc6bab30cb378` and the evidence/docs commit is the current branch tip (verify live ref before editing). Stable main `c0c1382f119599497b52d8ee8abd9e830a883f1e`; PR #52 Draft/open/unmerged, audited head `2a99ed505c85a17f6d25f91891560ca51fa02d88`. No merge, new branch/PR, reset, clean, or E: worktree cleanup.
+
+## D8 result
+
+Official Windows Godot 4.7.2 import PASS (exit 0). Final sequential D8 matrix 16/16 PASS plus cross-phase D2/D3/D6/D7 checks 4/4 PASS; full test names and log hashes are in [D8 evidence](docs/implementation/V65_D8_INTEGRATED_QA_EVIDENCE_20261030.md). D8 commit `9f7cebd3aaa11ef53660497dfe5fc6bab30cb378` is QA-only: three added tests and one existing progression test expectation correction. Initial sandbox/fixture/runner issues are disclosed in evidence; only corrected final runs count.
+
+**Pending:** actual game GUI, real input/screenshots for nine branches and Boss cues, owner visual acceptance, measured FPS/RAM, and Android device checks. Computer Use did not expose a Godot window and no GUI evidence was produced.
+
+**Blocked:** the playable Body progression path beyond realms 1–6 is absent in authored content; realms 7–30 return `content_unavailable`. The cost table's 300 coordinates do not prove end-to-end progression. No balance/recipe values were invented.
+
+## Next actions
+
+1. Resume native Godot 4.7.2 GUI access and capture the actual P3.2 gameplay flow, Save/Return, branch/Boss cues, then obtain owner review; attach real evidence before changing these statuses.
+2. Route the missing realm 7–30 gate recipes/material sources/progression numbers through an explicit authored-content and balance approval packet; don't bypass current gates.
+3. Run real performance logger OFF/ON sequentially for production and PvE; record P50/P95/P99, 1%-low, RAM and spikes. Run Android only on a real available target.
+4. Preserve Source A provenance, JX reference-only, Injury120, six-person PvE, 20 camps, One Active Job, one Warehouse/scheduler and SaveService/schema. Keep V6.5 INCOMPLETE and do not merge main/PR #52 without owner review.
+
+## D8 evidence files
+
+Matrix: `E:/TongMonBaDaoWorkspace/QA_Evidence/V65_D8_20261030/regression_results_final.json` (SHA-256 `3C435EC5E1A2BF50159E5BB870DF2BE336394D3966492850FEFD0DE14C917C75`). Cross-phase matrix: `extra_results.json` (SHA-256 `2E439B30D5465EB94E9A6221F6118FEDD858E8B465259EDFE7E3E77241702491`). Import log SHA-256 `4607CF35E6D6B82797968FE151305A9C35D23E7884FAE37D36A6CB249F87DB2`.
+
+## Protected worktrees
+
+Original owner E: checkout remains untouched. Scratch `E:/TongMonBaDaoWorkspace/01_Game/TMB_V65_D4A_20261029` contains unrelated existing uncommitted import/QA files; never reset, clean, stage-all, delete, or commit those files. Continue from a verified fresh snapshot of the published branch and exact next allowlist.
+
 # NEXT CHAT HANDOFF — TÔNG MÔN BÁ ĐẠO / 30-10-2026
 
 ## Current handoff — D7 headless PASS; continue D8 QA now

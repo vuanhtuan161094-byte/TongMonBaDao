@@ -3,7 +3,7 @@
   "generated_at": "2026-10-30",
   "repository": "vuanhtuan161094-byte/TongMonBaDao",
   "branch": "feature/v63-v64-full-combat-20261029",
-  "source_sha": "878b279b4ac536c1c28a36e4ed0e87251f43c2c9",
+  "source_sha": "9f7cebd3aaa11ef53660497dfe5fc6bab30cb378",
   "stable_main_sha": "c0c1382f119599497b52d8ee8abd9e830a883f1e",
   "overall_release_status": "INCOMPLETE",
   "phase_status": {
@@ -14,10 +14,14 @@
     "D5": "HEADLESS_PASS",
     "D6": "HEADLESS_PASS",
     "D7": "HEADLESS_PASS",
-    "D8": "NOT_STARTED",
+    "D8": "HEADLESS_PASS",
     "D6_GUI": "PENDING",
     "D7_GUI": "PENDING",
-    "D7_ACCEPTANCE": "PENDING"
+    "D7_ACCEPTANCE": "PENDING",
+    "D8_GUI": "PENDING",
+    "D8_PERFORMANCE": "PENDING",
+    "D8_ANDROID": "PENDING",
+    "D8_ENDGAME_CONTENT": "BLOCKED"
   },
   "human_branch_count": 9,
   "human_family_count": 105,
@@ -5923,5 +5927,28 @@
     "CURRENT_CHECKPOINT.md",
     "NEXT_CHAT_HANDOFF.md"
   ],
-  "d8_allowlist_amendment": "Update the legacy progression regression's expected CombatStatsV2 call to include the existing foundation_model_version >= FoundationSystem.MODEL_D7 authority flag; test-only"
+  "d8_allowlist_amendment": "Update the legacy progression regression's expected CombatStatsV2 call to include the existing foundation_model_version >= FoundationSystem.MODEL_D7 authority flag; test-only",
+  "d8_regression_status": {
+    "status": "HEADLESS_PASS",
+    "affected_tests": "16/16 PASS",
+    "cross_phase_tests": "4/4 PASS",
+    "combined": "20/20 PASS",
+    "godot_version": "4.7.2.stable.official.ed1daf0bf",
+    "import_exit": 0,
+    "gui": "PENDING",
+    "live_performance": "PENDING",
+    "android": "PENDING",
+    "endgame_body_realms_7_30": "BLOCKED_CONTENT_UNAVAILABLE"
+  },
+  "d8_evidence_path": "docs/implementation/V65_D8_INTEGRATED_QA_EVIDENCE_20261030.md",
+  "d8_log_sha256": {
+    "import": "4607CF35E6D6B82797968FE151305A9C35D23E7884FAE37D36A6CB249F87DB2",
+    "matrix": "3C435EC5E1A2BF50159E5BB870DF2BE336394D3966492850FEFD0DE14C917C75",
+    "cross_phase": "2E439B30D5465EB94E9A6221F6118FEDD858E8B465259EDFE7E3E77241702491"
+  },
+  "d8_scope_limitations": [
+    "The 300-coordinate cultivation cost table does not provide an end-to-end playable Body progression; authored gate content exists only through realm 6 and realms 7-30 return content_unavailable.",
+    "The multiseed contract test exercises deterministic direct Combat V2 HP0/receipt/no-reward/respawn traces; it is not autonomous pathing or live runtime performance.",
+    "GUI/owner visual, measured FPS/RAM, and Android device acceptance remain pending."
+  ]
 }
