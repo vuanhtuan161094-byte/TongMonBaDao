@@ -114,6 +114,14 @@ var v2_body_material_progress: Dictionary = {}
 var v2_pve_active_runs: Dictionary = {}
 # Independent from the already-locked exactly-once reward claims.
 var v2_pve_settlement_receipts: Dictionary = {}
+# D2 Sect Archive and codex receipts are additive; legacy saves default dormant.
+var v63_archive_opt_in: bool = false
+var v63_archived_codices: Dictionary = {}
+var v63_archive_research_progress: Dictionary = {}
+var v63_archive_operation_receipts: Dictionary = {}
+var v63_archive_operation_index: int = 0
+var v63_codex_drop_receipts: Dictionary = {}
+var v63_archive_event_count: int = 0
 # DV2-03F/F2: compact, per-disciple/per-major-realm committed Body receipts.
 # The request index is rebuilt from these saved receipts on load (not saved twice).
 # Default empty on every legacy save; no Body gate is enabled by this ledger.
@@ -225,6 +233,14 @@ func to_dict() -> Dictionary:
             data["v2_pve_active_runs"] = v2_pve_active_runs.duplicate(true)
         if not v2_pve_settlement_receipts.is_empty():
             data["v2_pve_settlement_receipts"] = v2_pve_settlement_receipts.duplicate(true)
+    if v63_archive_opt_in or not v63_archived_codices.is_empty() or not v63_archive_research_progress.is_empty() or not v63_archive_operation_receipts.is_empty() or v63_archive_operation_index > 0 or not v63_codex_drop_receipts.is_empty() or v63_archive_event_count > 0:
+        data["v63_archive_opt_in"] = v63_archive_opt_in
+        data["v63_archived_codices"] = v63_archived_codices.duplicate(true)
+        data["v63_archive_research_progress"] = v63_archive_research_progress.duplicate(true)
+        data["v63_archive_operation_receipts"] = v63_archive_operation_receipts.duplicate(true)
+        data["v63_archive_operation_index"] = v63_archive_operation_index
+        data["v63_codex_drop_receipts"] = v63_codex_drop_receipts.duplicate(true)
+        data["v63_archive_event_count"] = v63_archive_event_count
     if not b3_hunt.is_empty():
         data["b3_hunt"] = b3_hunt.duplicate(true)
     if not v2_body_gate_receipts.is_empty():
@@ -338,6 +354,18 @@ static func from_dict(data: Dictionary) -> SectState:
         for raw_id in raw_receipts.keys():
             # Do not discard malformed persisted receipts and permit replay.
             state.v2_pve_settlement_receipts[str(raw_id)] = raw_receipts[raw_id]
+    state.v63_archive_opt_in = bool(data.get("v63_archive_opt_in",false))
+    state.v63_archived_codices = _bool_dictionary(data.get("v63_archived_codices",{}))
+    state.v63_archive_research_progress = _int_dictionary(data.get("v63_archive_research_progress",{}))
+    var raw_archive_operations = data.get("v63_archive_operation_receipts",{})
+    if raw_archive_operations is Dictionary:
+        state.v63_archive_operation_receipts = raw_archive_operations.duplicate(true)
+    state.v63_archive_operation_index = maxi(int(data.get("v63_archive_operation_index",0)),0)
+    var raw_codex_receipts = data.get("v63_codex_drop_receipts",{})
+    if raw_codex_receipts is Dictionary:
+        # Retain malformed receipt keys so recovery cannot replay a committed grant.
+        state.v63_codex_drop_receipts = raw_codex_receipts.duplicate(true)
+    state.v63_archive_event_count = maxi(int(data.get("v63_archive_event_count",0)),0)
     var raw_runs = data.get("v2_pve_active_runs", {})
     if raw_runs is Dictionary:
         for encounter_id in raw_runs.keys():

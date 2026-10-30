@@ -66,6 +66,9 @@ func validate_invariants() -> Array[String]:
     var errors: Array[String] = []
     var care_error := B3MedicalAutoplayV1.validate(self)
     if not care_error.is_empty(): errors.append(care_error)
+    var has_v63_archive_state := sect.v63_archive_opt_in or not sect.v63_archived_codices.is_empty() or not sect.v63_archive_research_progress.is_empty() or not sect.v63_archive_operation_receipts.is_empty() or sect.v63_archive_operation_index > 0 or not sect.v63_codex_drop_receipts.is_empty() or sect.v63_archive_event_count > 0
+    if has_v63_archive_state:
+        errors.append_array(V63SectArchiveSystem.validate_state(self))
 
     if sect.treasury < 0:
         errors.append("Sect treasury is negative.")

@@ -12,6 +12,32 @@ const TAG_BUILDING_COMPONENT := &"building_component"
 const TAG_HERB := &"herb"
 const TAG_MONSTER_CORE := &"monster_core"
 const TAG_TECHNIQUE_MATERIAL := &"technique_material"
+const V63_ARCHIVE_CATALOGUE_PATH := "res://data/combat/v63_archive_catalog.json"
+
+var _v63_definitions: Dictionary = {}
+
+func _init() -> void:
+    var file := FileAccess.open(V63_ARCHIVE_CATALOGUE_PATH,FileAccess.READ)
+    if file == null:
+        return
+    var parsed: Variant = JSON.parse_string(file.get_as_text())
+    if not (parsed is Dictionary) or not (parsed.get("warehouse_items",[]) is Array):
+        return
+    for item in parsed.warehouse_items:
+        if not (item is Dictionary):
+            continue
+        var id := str(item.get("id",""))
+        var kind := str(item.get("kind",""))
+        if not id.begins_with("tmb.item.codex.") or not ["codex_manual","codex_fragment"].has(kind):
+            continue
+        _v63_definitions[id] = {
+            "name":str(item.get("name",id)),
+            "family":"v63_codex_"+kind,
+            "realm_grade":str(item.get("realm_grade","pham")),
+            "realm_rank":maxi(int(item.get("realm_rank",0)),0),
+            "market_value":0,
+            "tags":item.get("tags",[]).duplicate(true)
+        }
 
 const DEFINITIONS := {
     "linh_moc": {
@@ -246,10 +272,13 @@ const DEFINITIONS := {
 }
 
 func has(resource_id: StringName) -> bool:
-    return DEFINITIONS.has(str(resource_id))
+    return DEFINITIONS.has(str(resource_id)) or _v63_definitions.has(str(resource_id))
 
 func definition(resource_id: StringName) -> Dictionary:
-    return DEFINITIONS.get(str(resource_id), {})
+    var id := str(resource_id)
+    if DEFINITIONS.has(id):
+        return DEFINITIONS[id]
+    return _v63_definitions.get(id,{})
 
 func display_name(resource_id: StringName) -> String:
     return str(definition(resource_id).get("name", resource_id))
@@ -282,6 +311,9 @@ func has_tag(resource_id: StringName, tag: StringName) -> bool:
 func all_resource_ids() -> Array[StringName]:
     var result: Array[StringName] = []
     var ids: Array = DEFINITIONS.keys()
+    for id in _v63_definitions.keys():
+        if not ids.has(id):
+            ids.append(id)
     ids.sort()
     for raw_id in ids:
         result.append(StringName(raw_id))
