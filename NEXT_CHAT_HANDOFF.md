@@ -1,30 +1,39 @@
-# NEXT CHAT HANDOFF — ONE GAME V6.5 INTEGRATION
+# NEXT CHAT HANDOFF — ONE GAME V6.5 / HS-09
 
-Continue from `integration/one-game-v65-20261030`. Fetch GitHub first; R4 / D4-A gameplay code was tested at `020531cb555cce949442ec4a257ca557255c9e4a`. A documentation-only checkpoint may sit on top; always use the live branch SHA.
+Continue on integration/one-game-v65-20261030. Fetch the live branch first. Current tip is be37bca1725e9cc19e710dba3f3f796041ac78e7; the latest previously runtime-tested code is R6/D6 at 1ffa078099d86e893eec7434ecaa2934791e6e41. Do not describe the newer HS-09 code as tested.
 
-## Read before editing
+## Immediate authorized work
 
-1. Repository `AGENTS.md` §3 and `docs/operations/TMB_V65_FULL_COMBAT_EXECUTION_CONTRACT_20261029.md`.
-2. Owner authorization and latest checkpoint on [Issue #56](https://github.com/vuanhtuan161094-byte/TongMonBaDao/issues/56); shared-file conflict matrix on [Issue #54](https://github.com/vuanhtuan161094-byte/TongMonBaDao/issues/54#issuecomment-6520099847).
-3. This file and `CURRENT_CHECKPOINT.md`.
+HS-09 code commit be37bca1725e9cc19e710dba3f3f796041ac78e7 adds the seven-tab disciple profile, read-only gated V6.3 projection and dual-foundation radar. Exact changed paths:
 
-## Work lane and preserved state
+- godot/src/presentation/p3_2_landscape_sect.gd
+- godot/src/presentation/disciple_presentation_snapshot_v2.gd
+- godot/src/presentation/p3/hs09_dual_foundation_radar.gd
+- godot/tests/presentation/hs09_disciple_profile_test.gd
 
-- You are the exclusive writer on the existing integration branch only. Do not edit PR #52, V6.5 source, `main`, or create another branch/PR.
-- Use the isolated E: checkout `E:\TongMonBaDaoWorkspace\01_Game\TMB_ONE_GAME_V65_20261030` for Windows Godot QA. Do not use, clean, move, or delete the older workspaces or real saves.
-- Godot: `E:\Godot_v4.7.2-stable_win64_console.exe` (4.7.2 stable).
-- QA logs: `E:\TongMonBaDaoWorkspace\QA_Evidence\ONE_GAME_V65_20261030`. The local clone has generated import sidecars and test mirrors; do not stage them.
+Owner approved those paths plus their Godot-generated .uid sidecars and these two handoff documents. Do not expand into simulation, save, economy, gate defaults, assets, main or PR #52 without a new exact-path authorization. The HS-09 runtime/test source has NOT been run through Godot yet.
 
-## Verified checkpoints
+## QA blocker and preserved environment
 
-- R1 `70271184a7c3d1d1dfb374c0050424e263bf7a16`: content registry and gates.
-- R2 `f4316ab0881c3a34c24c754aec922030be911971`: Archive/Warehouse and open-world exactly-once codex receipts.
-- R3 code `d0223f93cba330dcc562edb4ec48e953217f3334`; D3 picker correction `f18e4d6419f9ac43cf4a9fac119a415cb4f0c40d`: gated Human/base technique study, one active job, scheduler, additive SaveService migration, 12-item D3 picker, tested against legacy/save/production regressions.
+- Godot 4.7.2 PID 15996 remains present (process name Godot_v4.7.2-stable_win64, 28,672-byte working set, no main-window title); command line/owner could not be established. Available-memory counter reported 1,613 MB. Do not kill it or start another heavy Godot process while it remains active.
+- The previous launcher smoke used a stub executable: contract-only PASS, not a game launch.
+- Stage A installer restored 42 PNGs in the isolated QA snapshot, pack SHA-256 6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca. Godot import and Stage A test remain PENDING.
+- Source A UI intake contains 26 hashed CANDIDATE assets, all owner review/mapping pending. Do not import or replace art.
+- Keep the old dirty E: checkout and all owner saves untouched. Use only the isolated ONE GAME QA checkout and redirect test APPDATA/user data there.
 
-All R3 focused tests pass. SAFE-01 recovery prints expected malformed-save parser diagnostics while exiting 0 with PASS. See `CURRENT_CHECKPOINT.md` for exact commands/log hashes.
+## Next steps, in order
 
-## Next authorized code packet
+1. Once PID 15996 exits or the owner confirms the active session is safe to close, verify Godot 4.7.2 and free memory; update the isolated QA snapshot from the exact live branch SHA without touching old workspaces.
+2. Run editor import once, then sequentially run hs09_disciple_profile_test.gd, existing P3.2/presentation and DV2/radar tests, D3 learning UI/job, D2 Archive/drop receipts, P3.7 Warehouse, SaveService async round-trip, SAFE-01 recovery and PvE Save/Return/Reload. Generate only Godot-authored .uid files. Record command, exit code and log for each; repair only direct HS-09 regressions within the approved paths.
+3. Use Run-OneGame-NewGame.cmd with an isolated fresh profile for actual P3.2 New Game and bounded player journey. Capture real gameplay only from Godot. Do not substitute Run-PVE-Play's 130-disciple seed or the prior stub smoke.
+4. Inspect canonical HP0/loot/EXP receipts and Save/Return/Reload. Keep unresolved reward definitions BLOCKED; never invent EXP or drop rates.
+5. Compare the actual Godot profile to the approved HS-09 HTML direction. Physical visual review, Source A rights/mapping, Android and FPS/RAM remain separate gates.
+6. Update this checkpoint and Issue #56 once there is meaningful evidence. Commit/push only to the existing integration branch; do not merge.
 
-Proceed to **R7 / D7: P3.2 combat HUD/VFX and Archive entry integration**, on this same integration branch. Fetch current branch/source refs, then read the D7 tests and existing P3.2 renderer before editing. Reuse the current Combat V2 and canonical archive/learning state; preserve the RC's camera, six-person team, save/return path, Warehouse and Injury120. Use only approved VFX and verified Source A visual assets; keep legacy gates OFF. Run Godot import, focused HUD/archive/layout tests, and D6/D5/D4 plus Save/PvE regressions. If live GUI automation remains blocked, mark rendered GUI/owner review PENDING and continue to D8.
+## Prior verified history
 
-D4-B coverage commit `efb26c1288575ab6a0477278f6d71d6e14830bd5`; D5 coverage `6f42f2a2fea2799427838c7c3d83bfb3bc6dc5bb`; D6 runtime/test commit `1ffa078099d86e893eec7434ecaa2934791e6e41`. D6 import + regression matrix passed 16/16 on Windows Godot 4.7.2. D2 single-encounter codex reward routing, D7–D8, live P3.2 HUD/VFX, GUI/owner visual review, Android and overall performance remain pending. Do not claim a full playable accepted build until the end-to-end route and visual/device gates pass.
+- D4-A runtime focused suite: commit 020531cb555cce949442ec4a257ca557255c9e4a; D4-B coverage efb26c1288575ab6a0477278f6d71d6e14830bd5; D5 coverage 6f42f2a2fea2799427838c7c3d83bfb3bc6dc5bb.
+- R6/D6 runtime/test commit 1ffa078099d86e893eec7434ecaa2934791e6e41; Windows Godot 4.7.2 import plus 15 focused tests, 16/16 exit 0, on that exact older commit.
+- D7/D8 selected 18-test evidence is recorded for 36deee77758027e3394230a0594df5574b42bcf5; rerun affected suites after the HS-09 commit.
+
+Do not claim the game is playable/accepted or FULL COMPLETE until real New Game, production, skills/PvE, rewards and Save/Return/Reload pass on one exact SHA with GUI evidence. Preserve one canonical runtime, save, scheduler, One Active Job, Injury120 and Warehouse.

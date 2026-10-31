@@ -9,6 +9,29 @@ Updated 2026-10-31 (Asia/Saigon). This file supersedes the archived RC status be
 - Runtime base remains PvE RC #52; PR #52, V6.5 source, and `main` are unchanged.
 - Coordination: [Issue #56](https://github.com/vuanhtuan161094-byte/TongMonBaDao/issues/56); conflict authority: [Issue #54 matrix](https://github.com/vuanhtuan161094-byte/TongMonBaDao/issues/54#issuecomment-6520099847).
 
+- Current branch tip: be37bca1725e9cc19e710dba3f3f796041ac78e7 (HS-09 presentation code commit; Godot import/focused tests not yet run on this tip).
+
+## Latest checkpoint — HS-09 code, runtime QA pending
+
+Owner-approved code commit: be37bca1725e9cc19e710dba3f3f796041ac78e7, parent 095ff2f90df8260dd123c06964d20c4f9b571d32. It changes exactly four authorized source/test paths:
+
+- godot/src/presentation/p3_2_landscape_sect.gd — seven profile tabs, overview, roster search/collapse, dual radar placement and read-only V6.3 technique state.
+- godot/src/presentation/disciple_presentation_snapshot_v2.gd — additive read-only V6.3 projection using persisted gates; exposes active_job_id without changing simulation state.
+- godot/src/presentation/p3/hs09_dual_foundation_radar.gd — independent Tam Căn (3-axis) and Tứ Tính (4-axis) drawing scales around the shared center.
+- godot/tests/presentation/hs09_disciple_profile_test.gd — focused profile/radar/read-only regression test.
+
+Feature gate defaults, simulation/save/economy/combat authority and assets were not changed. No fake actions or equipment bonuses were added. Existing compatibility radar node remains hidden for prior probes. Godot-generated .uid sidecars are not present because the current import is blocked.
+
+The five approved HS-09 design files were read at design branch HEAD 69f1aac82a701800af1c5ddb09ce0c0f5d409ef3. Their HTML values are explicitly sample data; design screenshots are Chromium captures, not Godot gameplay proof. The design specifies seven tabs, shared-center independent-scale radar, real snapshot values and no fake controls.
+
+QA status on this code SHA: Godot 4.7.2 import and HS-09/P3.2/DV2/radar/D3/Save regressions NOT RUN. PID 15996 is still present as Godot_v4.7.2-stable_win64 (28,672-byte working set; empty main-window title); the process owner/command line could not be established, so it was left untouched. Windows reported 1,613 MB available memory. The one-heavy-Godot-process rule blocks starting another engine instance while it remains active.
+
+Previous evidence only: launcher contract smoke at 095ff used a stub executable and is NOT a Godot/gameplay PASS. Female Stage A install-only restored 42 PNGs with pack SHA-256 6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca; import/focused Stage A verification is PENDING. The isolated Source A contact sheet/catalog has 26 CANDIDATE assets, all OWNER_REVIEW_PENDING; no art was imported.
+
+New Game GUI, recruit/production/PvE, save-return-reload and physical visual QA remain PENDING. Static reward inspection still finds LOOT_PENDING and no owner-approved drop-rate/EXP table to implement; no reward was invented. The D7/D8 18-test evidence belongs to 36deee77758027e3394230a0594df5574b42bcf5 and has not been rerun on be37bca.
+
+Rollback: revert commit be37bca1725e9cc19e710dba3f3f796041ac78e7 on the integration branch, preserving later documentation commits and saved records. Source branches, PR #52, main, the old E: checkout and owner saves remain untouched.
+
 ## Integrated code
 
 - R1 `70271184a7c3d1d1dfb374c0050424e263bf7a16`: 18 gated V6.5 catalogs/systems and D1 registry test.
@@ -78,10 +101,10 @@ Focused stdout/stderr logs are in the evidence directory above. All tests ran se
 
 ## Pending — not user-playable accepted
 
-- Feature gates remain OFF by default; D3 and D4 focused tests used explicit preview overrides for candidate behavior.
-- D2 single-encounter `HuntingMapV2.claim_reward` codex bridge is not integrated yet.
-- D4-A and D4-B are integrated/headless tested for all nine Human branches and all three Human Bosses. D7–D8 remain pending. This is not the complete skill roster or a user-playable accepted build.
-- Physical GUI gameplay/capture, Source A UI reskin/owner visual review, Android device QA and whole-game performance remain PENDING.
+- Feature gates remain OFF by default; prior D3/D4 focused candidate tests used explicit preview overrides. HS-09 is presentation-only and untested at the current branch tip.
+- D2 single-encounter `HuntingMapV2.claim_reward` reward bridge remains outstanding; loot/EXP values cannot be added without an approved contract/table.
+- D7/D8 integrated-code checkpoint and its selected 18-test run are at `36deee77758027e3394230a0594df5574b42bcf5`. HS-09 commit `be37bca1725e9cc19e710dba3f3f796041ac78e7` is later and has not been imported or regression-tested.
+- Real New Game journey, physical GUI/screenshots, Source A owner review, Android device QA, save-return-reload on one fresh profile and whole-game performance remain PENDING.
 - No claim of FULL COMPLETE or release readiness.
 
 The isolated checkout contains Godot-generated import metadata, test user data, and QA files. They were not staged. Existing E: workspaces and real saves were left untouched.
