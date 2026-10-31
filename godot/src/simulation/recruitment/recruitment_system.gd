@@ -5,6 +5,10 @@ const DEFAULT_POOL_SIZE := 3
 
 # P3.7C1 Dẫn Tiên v1 balance. One simulation day = 24 * 60 ticks.
 const GUIDANCE_DAY_TICKS := 1440
+# C2 technical safety: cap materialized candidates, including paid orders.
+# Saved overflow is preserved; free arrivals skip when full, never delete data.
+# Owner may re-balance this limit after real device/queue QA.
+const C2_QUEUE_CAP := 30
 const GUIDANCE_QUALITY_FULL_CHARM := 2500.0
 const GUIDANCE_ASSISTANT_VISITOR_STEP := 500.0
 const GUIDANCE_HEAVEN_QUOTA_STEP := 625.0
@@ -349,7 +353,13 @@ func guidance_recruit_with_order(state: SimulationState) -> Dictionary:
         return _result(false, "guidance_disabled")
     if state.sect.disciple_recruitment_tokens <= 0:
         return _result(false, "not_enough_recruitment_tokens")
+    # A paid order must never debit before both free slots and current-day
+    # arrivals (which can fill the queue) have been accounted for.
+    if state.recruitment_candidates.size() >= C2_QUEUE_CAP:
+        return _result(false, "candidate_queue_full")
     _ensure_guidance_day_snapshot(state)
+    if state.recruitment_candidates.size() >= C2_QUEUE_CAP:
+        return _result(false, "candidate_queue_full")
     state.sect.disciple_recruitment_tokens -= 1
     var candidate := _generate_guidance_candidate(state)
     if candidate == null:
@@ -454,6 +464,10 @@ func _begin_guidance_day(state: SimulationState, platform: BuildingState, data: 
     if generate_arrivals:
         var target := int(data.get("daily_arrival_target", 0))
         for _i in range(target):
+            # Free arrivals are day-scoped, not an infinite hidden backlog.
+            # Do not discard or reroll any candidate already materialized.
+            if state.recruitment_candidates.size() >= C2_QUEUE_CAP:
+                break
             if _generate_guidance_candidate(state) == null:
                 break
             data = _guidance_state(platform)
