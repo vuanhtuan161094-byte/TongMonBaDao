@@ -106,7 +106,14 @@ const DEFINITIONS := {
         "job_model": "timed_recipe",
         "base_worker_slots": 2,
         "worker_slot_every": 10,
-        "upgrade_enabled": false,
+        # SX-02: a real advancement path is required for product quality;
+        # costs are provisional, common-material-only until milestone content is authored.
+        "base_wood_cost": 6,
+        "base_ore_cost": 4,
+        "base_stone_cost": 12,
+        "base_upgrade_work": 8.0,
+        "upgrade_work_per_level": 2.0,
+        "upgrade_enabled": true,
         "requires_milestone_component": false
     },
     "spirit_field": {
@@ -722,6 +729,8 @@ func alchemy_can_start(state: SimulationState, disciple: DiscipleState) -> Dicti
     var recipe_id := SX01PillPolicy.planned_recipe(state, hall) if SX01PillPolicy.active(state) else StringName(data.get("recipe_id", str(AlchemyRecipeRegistry.RECIPE_HOI_XUAN_DAN)))
     if recipe_id == &"":
         return {"ok": false, "reason": "sx01_target_or_ingredients_unavailable"}
+    if hall.level < alchemy_registry.required_hall_level(recipe_id):
+        return {"ok": false, "reason": "alchemy_hall_level_too_low"}
     var requirements := alchemy_registry.inputs(recipe_id)
     if not warehouse.can_consume_requirements(state, requirements):
         return {"ok": false, "reason": "insufficient_or_reserved_inputs"}
@@ -745,6 +754,10 @@ func perform_alchemy_step(state: SimulationState, disciple: DiscipleState, profe
         data["recipe_id"] = str(recipe_id)
     var sequence := int(data.get("job_sequence", 0)) + 1
     var duration := maxi(1, int(ceil(float(alchemy_registry.base_cycle_ticks(recipe_id)) / maxf(work_speed, 0.25))))
+    var output_id := alchemy_registry.output_resource_id(recipe_id)
+    var graded_output := MedicineCatalogueV2.output_for_job(recipe_id, profession_level, hall.level)
+    if graded_output != &"":
+        output_id = graded_output
     var job := {
         "job_id": "%s_job_%06d" % [str(hall.id), sequence],
         "recipe_id": str(recipe_id),
@@ -752,7 +765,7 @@ func perform_alchemy_step(state: SimulationState, disciple: DiscipleState, profe
         "started_tick": state.tick,
         "finish_tick": state.tick + duration,
         "inputs": requirements.duplicate(true),
-        "output_resource_id": str(alchemy_registry.output_resource_id(recipe_id)),
+        "output_resource_id": str(output_id),
         "output_quantity": alchemy_registry.output_quantity(recipe_id),
         "profession_xp_gain": maxf(profession_xp_gain, 0.0),
         "economy_a_wage_eligible": state.sect.economy_a_enabled and DiscipleRealmProgressV2.owns_v2_progression(disciple)
