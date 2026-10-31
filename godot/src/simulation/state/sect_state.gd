@@ -405,12 +405,12 @@ static func from_dict(data: Dictionary) -> SectState:
         state.v2_training_rules = raw_v2_training.duplicate(true)
     state.v2_pve_enabled = bool(data.get("v2_pve_enabled", false))
     var sx01_saved = data.get("sx01_pill_policy", {})
-    if sx01_saved is Dictionary and sx01_saved.get("version", null) is int:
-        if int(sx01_saved["version"]) == SX01PillPolicy.VERSION:
-            state.sx01_pill_policy = _sx01_normalize_saved_policy(sx01_saved)
-    elif sx01_saved is Dictionary and sx01_saved.get("version", null) is float:
-        # JSON.parse_string may decode an exact integer schema version as float.
-        if float(sx01_saved["version"]) == float(SX01PillPolicy.VERSION):
+    if sx01_saved is Dictionary:
+        var saved_policy_version = sx01_saved.get("version", null)
+        # Only exact integral schema versions can activate an optional policy.
+        # JSON.parse_string may represent an integer as either int or float.
+        if (saved_policy_version is int or saved_policy_version is float) \
+                and float(saved_policy_version) == float(SX01PillPolicy.VERSION):
             state.sx01_pill_policy = _sx01_normalize_saved_policy(sx01_saved)
     state.b3_hunt = data.get("b3_hunt",{}).duplicate(true)
     var raw_levels = data.get("v2_pve_selected_levels", {})
