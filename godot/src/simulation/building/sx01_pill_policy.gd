@@ -10,7 +10,9 @@ const DEFAULTS := {
     "version": VERSION,
     "enabled": true,
     "auto_production": true,
-    "recipe_mode": "demand",
+    # Conservative default keeps previous O8/legacy recipe behavior until
+    # Tông Chủ explicitly selects demand mode in the Alchemy UI.
+    "recipe_mode": "fixed",
     "target_hoi_xuan_dan": 6,
     "target_tu_khi_dan": 12,
     "auto_use_hoi_xuan_dan": true,
@@ -19,7 +21,8 @@ const DEFAULTS := {
     "auto_tu_khi_per_day": 2,
     "medical_soft_reserve": 2,
     "auto_day": -1,
-    "auto_tu_khi_used": {}
+    "auto_tu_khi_used": {},
+    "priority_tuvi_ids": {}
 }
 
 static func install_new_game(state: SimulationState) -> void:
@@ -60,6 +63,19 @@ static func configure(state: SimulationState, key: String, value: Variant) -> Di
         return {"ok": false, "reason": "sx01_wrong_type"}
     config[key] = value
     return {"ok": true, "key": key, "value": value}
+
+# Tu Vi priority may be granted to a resting / HOLD disciple; cultivation
+# actively running stays blocked by the original B3 busy gate.
+static func set_tuvi_priority(state: SimulationState, disciple_id: StringName, enabled: bool) -> Dictionary:
+    if not active(state) or not state.disciples.has(disciple_id):
+        return {"ok": false, "reason": "sx01_invalid_priority_target"}
+    var flags: Dictionary = state.sect.sx01_pill_policy.get("priority_tuvi_ids", {})
+    if enabled:
+        flags[str(disciple_id)] = true
+    else:
+        flags.erase(str(disciple_id))
+    state.sect.sx01_pill_policy["priority_tuvi_ids"] = flags
+    return {"ok": true, "disciple_id": str(disciple_id), "enabled": enabled}
 
 static func stock_plan(state: SimulationState, hall: BuildingState) -> Dictionary:
     var warehouse := WarehouseSystem.new()
@@ -148,7 +164,9 @@ static func review(state: SimulationState) -> void:
                     continue
         # Only explicitly Chuyên Tu disciples auto-consume Tụ Khí Đan;
         # everyone else still earns passive Tu Vi and can receive manual pills.
-        if not bool(policy.get("auto_use_tu_khi_dan", false)) or disciple.current_action != &"CULTIVATE" \
+        var selected: Dictionary = policy.get("priority_tuvi_ids", {})
+        if not bool(policy.get("auto_use_tu_khi_dan", false)) \
+            or (disciple.current_action != &"CULTIVATE" and not bool(selected.get(str(disciple.id), false))) \
             or warehouse.available_quantity(state, TQD) <= 0:
             continue
         var count := int(used_today.get(str(disciple.id), 0))
