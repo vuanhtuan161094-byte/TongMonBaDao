@@ -47,6 +47,9 @@ func start(
     if not bool(configured.get("ok",false)):
         return configured
 
+    if created:
+        SX01PillPolicy.install_new_game(live_state)
+
     var attached := owner.attach(live_state,now)
     if not bool(attached.get("ok",false)):
         return attached
