@@ -3169,7 +3169,7 @@ func _build_alchemy_management() -> void:
     var hall := BuildingSystem.new().primary_building(state, BuildingSystem.TYPE_ALCHEMY_HALL)
     if hall == null:
         return
-    _add_management_section_label("CÔNG THỨC THƯỜNG TRỰC")
+    _add_management_section_label("ĐAN PHƯƠNG · HỒI XUÂN / TỤ KHÍ")
     var enabled := bool(hall.production_state.get("recipe_enabled", true))
     var toggle := Button.new()
     toggle.name = "AlchemyRecipeToggle"
@@ -3178,9 +3178,83 @@ func _build_alchemy_management() -> void:
     toggle.pressed.connect(Callable(self, "_set_alchemy_recipe_enabled_from_ui").bind(hall.id, not enabled))
     building_management_container.add_child(toggle)
 
+    if not SX01PillPolicy.active(state):
+        var enable_policy := Button.new()
+        enable_policy.name = "SX01Enable"
+        enable_policy.text = "Khai mở chính sách Đan Dược (V2)"
+        enable_policy.custom_minimum_size = Vector2(350, 34)
+        enable_policy.pressed.connect(_sx01_enable_from_ui)
+        building_management_container.add_child(enable_policy)
+        # Legacy saves keep their original standing HXD recipe until opt-in.
+        return
+    var policy := state.sect.sx01_pill_policy
+    var plan := SX01PillPolicy.stock_plan(state, hall)
+    var info := Label.new()
+    info.name = "SX01PillStock"
+    info.text = "Hồi Xuân: %d +%d / %d     Tụ Khí: %d +%d / %d" % [
+        int(plan["held_hxd"]), int(plan["pending_hxd"]), int(policy["target_hoi_xuan_dan"]),
+        int(plan["held_tqd"]), int(plan["pending_tqd"]), int(policy["target_tu_khi_dan"])
+    ]
+    info.custom_minimum_size = Vector2(384, 26)
+    info.add_theme_font_size_override("font_size", 12)
+    building_management_container.add_child(info)
+
+    var auto_button := Button.new()
+    auto_button.name = "SX01AutoProduction"
+    auto_button.text = "Tự sản xuất: BẬT" if bool(policy["auto_production"]) else "Tự sản xuất: TẮT"
+    auto_button.pressed.connect(Callable(self, "_sx01_configure_from_ui").bind("auto_production", not bool(policy["auto_production"])))
+    building_management_container.add_child(auto_button)
+    var mode := Button.new()
+    mode.name = "SX01RecipeMode"
+    mode.text = "Đan phương: THEO NHU CẦU" if str(policy["recipe_mode"]) == "demand" else "Đan phương: CỐ ĐỊNH"
+    mode.pressed.connect(Callable(self, "_sx01_configure_from_ui").bind("recipe_mode", "fixed" if str(policy["recipe_mode"]) == "demand" else "demand"))
+    building_management_container.add_child(mode)
+
+    for pill_id in [&"hoi_xuan_dan", &"tu_khi_dan"]:
+        var button := Button.new()
+        button.name = "SX01Recipe_HXD" if pill_id == &"hoi_xuan_dan" else "SX01Recipe_TQD"
+        button.text = "Cố định: Hồi Xuân Đan" if pill_id == &"hoi_xuan_dan" else "Cố định: Tụ Khí Đan"
+        button.custom_minimum_size = Vector2(170, 32)
+        button.pressed.connect(Callable(self, "_sx01_select_recipe_from_ui").bind(hall.id, pill_id))
+        building_management_container.add_child(button)
+    for pill_key in ["target_hoi_xuan_dan", "target_tu_khi_dan"]:
+        for delta in [-6, 6]:
+            var button := Button.new()
+            button.name = "SX01_%s_%s" % [pill_key, "Less" if delta < 0 else "More"]
+            button.text = "%s %s6 viên" % ["Hồi Xuân" if pill_key == "target_hoi_xuan_dan" else "Tụ Khí", "−" if delta < 0 else "+"]
+            button.custom_minimum_size = Vector2(164, 30)
+            button.pressed.connect(Callable(self, "_sx01_adjust_target_from_ui").bind(pill_key, delta))
+            building_management_container.add_child(button)
+
+func _sx01_enable_from_ui() -> void:
+    SX01PillPolicy.install_new_game(state)
+    building_management_feedback = "Đã bật chính sách Tông Chủ." if SX01PillPolicy.active(state) else "Cần Kho và Tu Vi V2 hợp lệ."
+    _autosave_runtime()
+    _refresh_building_operation_content()
+
+func _sx01_configure_from_ui(key: String, value: Variant) -> void:
+    var result := SX01PillPolicy.configure(state, key, value)
+    building_management_feedback = "Đã điều chỉnh chính sách." if bool(result.get("ok",false)) else str(result.get("reason","Không thể đổi chính sách."))
+    if bool(result.get("ok",false)):
+        _autosave_runtime()
+    _refresh_building_operation_content()
+
+func _sx01_adjust_target_from_ui(key: String, delta: int) -> void:
+    var current := int(state.sect.sx01_pill_policy.get(key, 0))
+    _sx01_configure_from_ui(key, clampi(current + delta, 0, 1000))
+
+func _sx01_select_recipe_from_ui(hall_id: StringName, pill_id: StringName) -> void:
+    var ok := BuildingSystem.new().set_alchemy_recipe(state, hall_id, pill_id)
+    building_management_feedback = "Đã cố định Đan phương, các mẻ đang luyện giữ nguyên." if ok else "Không thể chọn Đan phương."
+    if ok:
+        _autosave_runtime()
+    _refresh_building_operation_content()
+
 func _set_alchemy_recipe_enabled_from_ui(hall_id: StringName, enabled: bool) -> void:
     var ok := BuildingSystem.new().set_alchemy_recipe_enabled(state, hall_id, enabled)
-    building_management_feedback = ("Đã bật tự luyện Hồi Xuân Đan." if enabled else "Đã tắt mẻ mới; mẻ đã commit vẫn hoàn thành.") if ok else "Không thể đổi chính sách Luyện Đan."
+    building_management_feedback = ("Đã bật Đan Lô." if enabled else "Đã tắt mẻ mới; mẻ đang luyện vẫn hoàn thành.") if ok else "Không thể đổi chính sách Luyện Đan."
+    if ok:
+        _autosave_runtime()
     _refresh_building_operation_content()
 
 func _build_healing_pill_controls() -> void:
@@ -3206,16 +3280,69 @@ func _build_healing_pill_controls() -> void:
         shown += 1
     if shown == 0:
         _add_management_section_label("Không có đệ tử bị thương đang ở trong tông.")
+    if not SX01PillPolicy.active(state):
+        return
+    _add_management_section_label("TỰ DÙNG · BẢO HỘ KHO")
+    var policy := state.sect.sx01_pill_policy
+    for pill_key in ["auto_use_hoi_xuan_dan", "auto_use_tu_khi_dan"]:
+        var button := Button.new()
+        button.name = "SX01Toggle_%s" % pill_key
+        button.text = "%s: %s" % [
+            "Tự hồi phục" if pill_key == "auto_use_hoi_xuan_dan" else "Tự bổ Tu Vi",
+            "BẬT" if bool(policy.get(pill_key,false)) else "TẮT"
+        ]
+        button.pressed.connect(Callable(self, "_sx01_configure_from_ui").bind(pill_key, not bool(policy.get(pill_key,false))))
+        building_management_container.add_child(button)
+    _add_management_section_label("TỤ KHÍ ĐAN · DÙNG THỦ CÔNG")
+    var shown_tuvi := 0
+    for raw_id in state.disciples.keys():
+        var disciple: DiscipleState = state.disciples[raw_id]
+        if disciple.region_id != &"sect" or not DiscipleRealmProgressV2.progression_ready(disciple):
+            continue
+        if shown_tuvi >= 12:
+            break
+        var row := _new_management_row(disciple)
+        var use := Button.new()
+        use.name = "SX01UseTuKhi_%s" % str(disciple.id)
+        use.text = "Tụ Khí +10.000"
+        use.disabled = WarehouseSystem.new().available_quantity(state, &"tu_khi_dan") <= 0 or B3MedicalAutoplayV1.busy(state, disciple)
+        use.tooltip_text = "Kho khóa/dự trữ hoặc đệ tử đang bận." if use.disabled else "Tiêu 1 Tụ Khí Đan; B3 kiểm tra đủ bão hòa và không vượt đại cảnh."
+        use.pressed.connect(Callable(self, "_sx01_use_pill_from_ui").bind(disciple.id, &"tu_khi_dan"))
+        row.add_child(use)
+        shown_tuvi += 1
 
 func _use_healing_pill_from_ui(disciple_id: StringName) -> void:
     if not state.disciples.has(disciple_id):
         return
     var disciple: DiscipleState = state.disciples[disciple_id]
+    if DiscipleRealmProgressV2.progression_ready(disciple) and runtime_session != null:
+        _sx01_use_pill_from_ui(disciple_id, &"hoi_xuan_dan")
+        return
     var before := disciple.hp
     var ok := needs_system.use_healing_pill(state, disciple)
     building_management_feedback = (
         "Đã dùng 1 Hồi Xuân Đan cho %s: HP %.0f → %.0f." % [disciple.display_name, before, disciple.hp]
         if ok else "Không thể dùng Hồi Xuân Đan cho mục tiêu này."
+    )
+    if ok:
+        _autosave_runtime()
+    _refresh_building_operation_content()
+
+func _sx01_use_pill_from_ui(disciple_id: StringName, pill_id: StringName) -> void:
+    if runtime_session == null or runtime_session.owner == null or not state.disciples.has(disciple_id):
+        building_management_feedback = "Chưa có phiên Tu Vi V2 hợp lệ."
+        _refresh_building_operation_content()
+        return
+    var disciple: DiscipleState = state.disciples[disciple_id]
+    var sequence := B3PillSatietyV1.next_sequence(disciple)
+    # Use the existing durable owner boundary, not UI-side HP/EXP edits.
+    var result := B3MedicalAutoplayV1.use_pill(runtime_session.owner, disciple_id, pill_id, sequence)
+    building_management_feedback = (
+        "Đã dùng %s cho %s (biên nhận %d)." % [
+            "Hồi Xuân Đan" if pill_id == &"hoi_xuan_dan" else "Tụ Khí Đan",
+            disciple.display_name, sequence
+        ] if bool(result.get("ok",false))
+        else "Không thể dùng Đan: %s" % str(result.get("reason","không đủ điều kiện"))
     )
     _refresh_building_operation_content()
 
@@ -3223,35 +3350,32 @@ func _alchemy_operation_text() -> String:
     var buildings := BuildingSystem.new()
     var hall := buildings.primary_building(state, BuildingSystem.TYPE_ALCHEMY_HALL)
     if hall == null:
-        return "Luyện Đan Điện chưa tồn tại trong trạng thái hiện tại."
+        return "Luyện Đan Điện chưa tồn tại."
     var jobs := buildings.alchemy_jobs(state, hall)
     var lines: Array[String] = []
     for raw_job in jobs:
         var job: Dictionary = raw_job
         var worker_id := StringName(job.get("worker_id", ""))
-        var worker_name := str(worker_id)
-        if state.disciples.has(worker_id):
-            worker_name = state.disciples[worker_id].display_name
-        lines.append("• %s · còn %d phút" % [worker_name, maxi(int(job.get("finish_tick", state.tick)) - state.tick, 0)])
-    if lines.is_empty():
-        lines.append("• Không có mẻ đang luyện")
+        var name := state.disciples[worker_id].display_name if state.disciples.has(worker_id) else str(worker_id)
+        var pill := "Tụ Khí Đan" if str(job.get("recipe_id", "")) == "tu_khi_dan" else "Hồi Xuân Đan"
+        lines.append("• %s · %s · còn %d phút" % [name, pill, maxi(int(job.get("finish_tick", state.tick)) - state.tick, 0)])
+    var recipe_name := "Tụ Khí Đan" if str(hall.production_state.get("recipe_id", "")) == "tu_khi_dan" else "Hồi Xuân Đan"
+    var status := "TỰ ĐỘNG" if SX01PillPolicy.active(state) and str(state.sect.sx01_pill_policy.get("recipe_mode", "")) == "demand" else "CỐ ĐỊNH"
     return (
         "LUYỆN ĐAN ĐIỆN · Lv%d\n"
-        + "Chỗ hoạt động: %d/%d · mẻ đang luyện: %d\n"
-        + "Công thức thường trực: Hồi Xuân Đan · %s\n"
-        + "Thanh Linh Thảo: %s\n"
-        + "Hồi Xuân Đan: %s\n"
-        + "Công thức: 3 Thanh Linh Thảo → 1 Hồi Xuân Đan · nền 6 phút\n\n"
-        + "MẺ ĐANG CHẠY\n%s"
+        + "Đan Sư: %d/%d · Mẻ đang luyện: %d\n"
+        + "Đan phương: %s · %s\n"
+        + "Thanh Linh Thảo: %s · Linh Cốc: %s\n"
+        + "Hồi Xuân Đan: %s · Tụ Khí Đan: %s\n"
+        + "Hồi Xuân: 3 Thảo → +55 HP\n"
+        + "Tụ Khí: 2 Thảo + 1 Cốc → +10.000 Tu Vi\n\n"
+        + "MẺ ĐANG LUYỆN\n%s"
     ) % [
-        hall.level,
-        buildings.active_worker_ids(state, hall).size(),
-        buildings.worker_slots(hall),
-        jobs.size(),
-        "BẬT" if bool(hall.production_state.get("recipe_enabled", true)) else "TẮT",
-        _warehouse_pair(&"thanh_linh_thao", true),
-        _warehouse_pair(&"hoi_xuan_dan", true),
-        "\n".join(lines)
+        hall.level, buildings.active_worker_ids(state, hall).size(), buildings.worker_slots(hall),
+        jobs.size(), recipe_name, status,
+        _warehouse_pair(&"thanh_linh_thao", true), _warehouse_pair(&"linh_coc", true),
+        _warehouse_pair(&"hoi_xuan_dan", true), _warehouse_pair(&"tu_khi_dan", true),
+        "Không có" if lines.is_empty() else "\n".join(lines)
     ]
 
 func _linh_forest_operation_text() -> String:
