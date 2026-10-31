@@ -12,7 +12,7 @@
 - Dedicated branch: `codex2/cung-tu-fix-qa-20261031`
 - The three audit artifacts from 095ff2 were uploaded unchanged to `docs/audits/cung-tu/095ff2/`. This preserves the original report, 183-row CSV and audit harness as historical evidence.
 
-- Rechecked before handoff: integration advanced once more to 79dab92ccc95a93b39dcb563fe06c93a9aa422da. Comparing 400baa to 79dab92 shows only godot/tests/presentation/hs09_disciple_profile_test.gd changed (15 additions/3 deletions); no Cung runtime, test, or patch path overlap. The code patch remains based on 400baa, and Codex 1 must apply/review it against live 79dab92.
+- Latest check before handoff: live integration HEAD is 07d8b211199d580c6086af31829bc0edc3dfbe31. Since patch base 400baa, 79dab changes only godot/tests/presentation/hs09_disciple_profile_test.gd (15 additions/3 deletions), and 07d8 adds only the current checkpoint document. Neither commit overlaps Cung runtime or the added tests. Current checkpoint reports 14 focused Godot tests PASS at 79dab and an open New Game GUI PID 8136; these are not evidence for this Cung patch. Codex 1 must review/apply against live 07d8.
 
 ## Source findings and code changes
 
@@ -70,7 +70,9 @@ The existing D4-A PvE regression remains relevant prior evidence: six Human Liá»
 
 **NOT_RUN â€” no Godot launch, compile or test PASS is claimed.**
 
-The live checkpoint and handoff at the integration HEAD record Godot PID 15996 as an active Codex 1 session, ownership not established, low available RAM, and prohibit starting a second Godot instance or killing the process. See `CURRENT_CHECKPOINT.md` and `NEXT_CHAT_HANDOFF.md` on the integration branch. The test log records this blocker. Resume the focused gates only after Codex 1 releases the session; capture engine version, exact source SHA, command, stdout/stderr and exit code.
+The latest integration checkpoint (HEAD 07d8b211) records official Godot 4.7.2 import and 14 focused tests PASS at source 79dab92, plus an open New Game GUI process PID 8136. Issue #56 also retains a report of unknown Godot PID 15996. Neither run includes this Cung patch. In accordance with the user instruction, this task did not launch a second/heavy Godot session. Resume the focused gates only after Codex 1 releases or coordinates the open session; capture engine version, exact source SHA, command, stdout/stderr and exit code.
+
+
 
 
 
