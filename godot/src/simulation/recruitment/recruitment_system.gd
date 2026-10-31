@@ -254,6 +254,8 @@ func assign_guidance_main(state: SimulationState, disciple_id: StringName) -> Di
         return _result(false, "guidance_platform_missing")
     if disciple_id != &"" and not state.disciples.has(disciple_id):
         return _result(false, "disciple_missing")
+    if disciple_id != &"" and not guidance_guide_eligible(state, disciple_id):
+        return _result(false, "guide_busy_or_injured")
     var data := _guidance_state(platform)
     var assistants: Array = data.get("assistant_guide_ids", [])
     assistants.erase(str(disciple_id))
@@ -279,6 +281,8 @@ func set_guidance_assistants(state: SimulationState, disciple_ids: Array) -> Dic
             continue
         if not state.disciples.has(StringName(disciple_id)):
             return _result(false, "disciple_missing")
+        if not guidance_guide_eligible(state, StringName(disciple_id)):
+            return _result(false, "guide_busy_or_injured")
         if normalized.size() >= max_assistants:
             return _result(false, "assistant_slots_full")
         normalized.append(disciple_id)
@@ -287,6 +291,20 @@ func set_guidance_assistants(state: SimulationState, disciple_ids: Array) -> Dic
     platform.production_state = data
     state.building_event_count += 1
     return _result(true, "assigned_assistants")
+
+func guidance_guide_eligible(state: SimulationState, disciple_id: StringName) -> bool:
+    var disciple: DiscipleState = state.disciples.get(disciple_id)
+    if disciple == null or disciple.injury_level != 0:
+        return false
+    if disciple.region_id != &"sect" or not disciple.active_pve_encounter_id.is_empty():
+        return false
+    if not disciple.work_cycle_state.is_empty() or not disciple.direct_command.is_empty():
+        return false
+    if disciple.current_action not in [&"IDLE", &"HOLD", &"EVALUATE"]:
+        return false
+    return not building_system.disciple_has_active_timed_recipe(state,disciple.id) \
+        and not building_system.disciple_has_active_spirit_plot(state,disciple.id) \
+        and not DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple)
 
 func guidance_quality_rates_for_charisma(charisma: float) -> Dictionary:
     # Quality odds themselves have a ceiling chosen by design (5% Nghịch Thiên,
@@ -329,7 +347,7 @@ func guidance_daily_arrival_target(state: SimulationState) -> int:
     var assistants: Array = data.get("assistant_guide_ids", [])
     for index in range(mini(assistants.size(), max_assistants)):
         var disciple = state.disciples.get(StringName(str(assistants[index])))
-        if not (disciple is DiscipleState):
+        if not (disciple is DiscipleState) or not guidance_guide_eligible(state, disciple.id):
             continue
         var effective := maxf(disciple.charisma, 0.0)
         total += int(floor(effective / GUIDANCE_ASSISTANT_VISITOR_STEP))
@@ -449,7 +467,7 @@ func _begin_guidance_day(state: SimulationState, platform: BuildingState, data: 
     var main_id := str(data.get("main_guide_id", ""))
     var main_charisma := 0.0
     var main = state.disciples.get(StringName(main_id))
-    if main is DiscipleState:
+    if main is DiscipleState and guidance_guide_eligible(state, main.id):
         main_charisma = maxf(main.charisma, 0.0)
 
     data["snapshot_day_index"] = day_index
