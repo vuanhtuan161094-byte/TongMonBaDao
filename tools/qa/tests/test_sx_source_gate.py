@@ -146,6 +146,15 @@ class StaticSourceGateTest(unittest.TestCase):
         self.assertTrue(any(x["id"] == "MILESTONE_NO_SOURCE_FOUND" and
                             x["subject"] == "tam_mach_ban" for x in result["issues"]))
 
+    def test_commented_pseudo_producer_inside_registry_is_ignored(self):
+        crop = CROPS.replace('"output_resource_id": "thanh_linh_thao"',
+                             '# "output_resource_id": "tam_mach_ban"\\n'
+                             '        "output_resource_id": "thanh_linh_thao"')
+        self.write("building/spirit_crop_registry.gd", crop)
+        result = gate.run(self.root)
+        self.assertTrue(any(x["id"] == "MILESTONE_NO_SOURCE_FOUND" and
+                            x["subject"] == "tam_mach_ban" for x in result["issues"]))
+
     def test_tier_coverage_only_counts_authored_recipe_ranks(self):
         self.write("building/medicine_catalogue_v2.gd",
                    "const AUTHORED_RECIPE_REALMS := [1, 2]\n")
