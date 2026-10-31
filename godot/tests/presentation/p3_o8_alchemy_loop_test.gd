@@ -162,7 +162,7 @@ func _run() -> void:
     var saved_id := str(job.get("job_id", ""))
     var saved_finish := int(job.get("finish_tick", -1))
     var saved_herbs := warehouse.quantity(state, &"thanh_linh_thao")
-    ui.call("_autosave_runtime")
+    await ui.call("_autosave_runtime")
     _dispose_scene()
     await process_frame
     if not await _open_scene():
@@ -189,7 +189,7 @@ func _run() -> void:
         _fail("O8 completed Alchemy job granted no profession XP.")
         return
 
-    ui.call("_autosave_runtime")
+    await ui.call("_autosave_runtime")
     _dispose_scene()
     await process_frame
     if not await _open_scene():

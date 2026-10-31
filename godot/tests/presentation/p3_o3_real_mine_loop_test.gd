@@ -102,7 +102,7 @@ func _run() -> void:
         return
 
     # Save/reload while carrying ore: no early or duplicate deposit.
-    ui.call("_autosave_runtime")
+    await ui.call("_autosave_runtime")
     if not FileAccess.file_exists(SAVE_PATH):
         _fail("O3 mid-cycle runtime save was not written.")
         return
@@ -168,7 +168,7 @@ func _run() -> void:
         return
 
     # A completed batch must remain exact across another disk reload.
-    ui.call("_autosave_runtime")
+    await ui.call("_autosave_runtime")
     _dispose_scene()
     await process_frame
     if not await _open_scene():

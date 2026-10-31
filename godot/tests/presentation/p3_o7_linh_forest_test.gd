@@ -125,7 +125,7 @@ func _run() -> void:
         return
 
     # Mid-cycle persistence preserves carried output and phase without deposit.
-    ui.call("_autosave_runtime")
+    await ui.call("_autosave_runtime")
     _dispose_scene()
     await process_frame
     if not await _open_scene():
