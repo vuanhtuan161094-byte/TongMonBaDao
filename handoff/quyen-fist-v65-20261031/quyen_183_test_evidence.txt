@@ -1,0 +1,55 @@
+TONG MON BA DAO — QUYEN FIST V6.5 TEST EVIDENCE
+Date: 2026-10-31
+
+AUDIT SOURCE
+Requested branch: integration/one-game-v65-20261030
+Live branch HEAD: 79dab92ccc95a93b39dcb563fe06c93a9aa422da
+Live branch tree: 955e24c9ae175c03822a4b41a7a23a8274dc6518
+Test harness checkout: 095ff2f90df8260dd123c06964d20c4f9b571d32
+GitHub compare confirms the five commits between the test harness base and live HEAD change only checkpoint/handoff and HS-09 presentation/test files. Combat/data paths below did not change; their blob IDs matched the live audit source. The harness run is still not a full integrated-project or end-to-end run.
+
+CATALOGUES (Git blob SHA)
+Human:    4c1c11527e73cb9efe39663c80c5020c8b4baddb
+Immortal: d95bce39dd078289ce76e675a4c1ffc8b9856490
+Divine:   78ebe72157fb725744649aa899761b51dcffa7cc
+Rows: 183 total = Human 35, Immortal 68, Divine 80.
+
+RUNTIME BASE BLOBS (Git blob SHA)
+v63_human_skill_combat_system.gd:    ef9025381dd0f63c1ac4c038d97882c7c7bac7f7
+v63_immortal_skill_combat_system.gd: 78318adb2cc27f252431158b75dd9d6f461863a8
+v63_divine_skill_combat_system.gd:   ff9840e84870099c097264fc073d0be8179ee65c
+map_battle_v2.gd:                    1eec2e2051057a3e0843a013fe4552415da7e6a8
+combat_stats_v2.gd:                  ad35254b800372ab96a1fa328dec694a23b3841d
+map_battle_snapshot_v2.gd:           2714e31550d052ea53db8ad9624832171ba2071d
+
+ENGINE
+Godot Engine v4.7.2.stable.official.ed1daf0bf
+Executable: E:\Godot_v4.7.2-stable_win64_console.exe
+
+PATCH FIXTURE
+Command:
+  Godot_v4.7.2-stable_win64_console.exe --headless --path work/fist_patch_scratch/godot_project --script res://tests/simulation/tmb_quyen_183_combat_handoff_test.gd
+Result: PASS, exit code 0
+Output marker:
+  TMB_QUYEN_183_HANDOFF_PASS: 183 records dispatched by slot/effect; cast/release/hit receipts, Combat V2 guard/HP, lineage state and snapshot round-trip exercised
+Checks include default gate OFF / preview gate ON, 183 records, all six A/B branch paths versus normal/elite/Boss tiers, real cast/release/hit, actor/target/skill/generation/lineage receipts, HP before/after, offensive HP damage, guard via CombatStatsV2, poison source ownership, marks, consume_poison, release range revalidation, Blood Ma/B/Covenant behavior, multi-Kim-Cang/multi-Huyet team, and MapBattleSnapshotV2 save/reload.
+
+EXISTING FOCUSED TESTS (Git blob SHA; executed after overlaying patch into isolated harness)
+v63_d4b_human_branches_bosses_test.gd
+  SHA 2a010df5580dba965ff3e1dbc402e2c02cf20c38
+  PASS, exit code 0: 9/9 manual-backed branch casts; 3/3 real boss AI telegraph/release.
+v63_d5_immortal_lineage_combat_test.gd
+  SHA 8291ba4d892c1bd57663e64e2e0da471dcabfdc5
+  PASS, exit code 0: 18/18 lineage casts; 3/3 Combat V2 boss counter interruptions.
+v63_d6_divine_lineage_combat_test.gd
+  SHA 234082ecd46b03e705239c97f253eae0ab9ec914
+  PASS, exit code 0: 18/18 lineage casts; 3/3 Combat V2 boss counter interruptions.
+
+ENVIRONMENT NOTES
+Godot printed an error for inaccessible Windows root certificate storage. APPDATA/LOCALAPPDATA were redirected to task scratch, so logs did not write outside the workspace. Each test process printed its PASS marker and returned exit code 0. No Android/device test or full integrated-project run was done.
+
+STATUS
+Patch is scratch-only handoff. Codex 1 has not integrated it. DONE remains pending exact integrated SHA, integrated runtime gates, remaining Kim Cang mechanics, shared movement/collision evidence, and presentation QA.
+
+CLAIMS LIMITATION
+The 183-row inventory and fixture dispatch prove catalogue coverage/dispatch through slots and effect handlers; they do NOT constitute 183/183 independent behavioral PASS. The positive behavioral checks cover selected real effect paths and scenario matrices. The handoff patch is unapplied on GitHub. This file records the prior isolated-harness PASS markers and exit codes only; it is not integrated-HEAD, GUI, or raw full-session console evidence.

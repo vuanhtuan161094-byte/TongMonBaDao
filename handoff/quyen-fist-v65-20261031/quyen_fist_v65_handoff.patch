@@ -1,0 +1,686 @@
+diff --git a/godot/src/simulation/combat/map_battle_v2.gd b/godot/src/simulation/combat/map_battle_v2.gd
+index 1eec2e2..e5aada7 100644
+--- a/godot/src/simulation/combat/map_battle_v2.gd
++++ b/godot/src/simulation/combat/map_battle_v2.gd
+@@ -130,7 +130,7 @@ func setup(id: String, party: Array, monsters: Array, keep_encounter_open: bool
+             "linked_disciple":row.get("disciple",null)
+         })
+         var v63_disciple_actor: Dictionary = entries[entries.size()-1]
+-        for field in ["v63_skill_loadout","v63_skill_ready","v63_combat_enabled","v63_passive_ids","v63_combat_branch_id","v63_combat_lineage","v63_innate_skill_id","v63_basic_skill_id","basic_element"]:
++        for field in ["v63_skill_loadout","v63_skill_ready","v63_combat_enabled","v63_passive_ids","v63_combat_branch_id","v63_combat_lineage","v63_innate_skill_id","v63_basic_skill_id","basic_element","v63_divine_stage","v63_combat_generation","v63_blood_mode","v63_base_max_hp","v63_shield_received_factor"]:
+             if row.has(field):
+                 v63_disciple_actor[field] = row[field].duplicate(true) if row[field] is Array or row[field] is Dictionary else row[field]
+     for raw in monsters:
+@@ -1026,6 +1026,12 @@ func _release_casts() -> void:
+         var v63_cast = actor.get("v63_pending_cast",{})
+         if v63_cast is Dictionary and not v63_cast.is_empty() and now+0.000001 >= float(v63_cast.get("ready",INF)):
+             actor.erase("v63_pending_cast")
++            var v63_skill_id := str(v63_cast.get("v63_skill_id", ""))
++            var v63_definition := V63HumanSkillCombatSystem.skill_definition(v63_skill_id)
++            var v63_generation := str(v63_definition.get("generation", v63_definition.get("tier", actor.get("v63_combat_generation", "human"))))
++            _event("skill_release", {"caster":str(actor.get("id", "")),"target":str(v63_cast.get("target_id", "")),"skill_id":v63_skill_id,
++                "generation":v63_generation,"lineage":str(v63_definition.get("lineage", actor.get("v63_combat_lineage", ""))),
++                "release_at":now,"caster_hp_before":float(actor.get("hp", 0.0))})
+             V63HumanSkillCombatSystem.release_cast(self,v63_cast,actor)
+     var remaining: Array = []
+     for cast_value in pending_casts:
+diff --git a/godot/src/simulation/combat/v63_divine_skill_combat_system.gd b/godot/src/simulation/combat/v63_divine_skill_combat_system.gd
+index ff9840e..6822752 100644
+--- a/godot/src/simulation/combat/v63_divine_skill_combat_system.gd
++++ b/godot/src/simulation/combat/v63_divine_skill_combat_system.gd
+@@ -355,30 +355,17 @@ static func release_cast(battle: MapBattleV2, cast: Dictionary, caster: Dictiona
+     if not definition.is_empty():
+         var stage := clampi(int(caster.get("v63_divine_stage", 1)), 1, 3)
+         adjusted["ratio"] = float(cast.ratio) * [1.0, 1.12, 1.24][stage - 1]
+-        if str(definition.get("branch", "")) == "huyet_quyen":
++        if str(definition.get("branch", "")) == "huyet_quyen" and str(definition.get("lineage", "")) == "a":
+             var before := float(caster.hp)
+             var cost_fraction := 0.12 if str(definition.get("slot", "")) == "ultimate" else 0.10
+             var cost := minf(maxf(0.0, before - 1.0), before * cost_fraction)
+             caster["hp"] = before - cost
+             battle._sync_linked_hp(caster)
+-            battle._event("blood_sacrifice", {"caster":str(caster.id),"skill_id":skill_id,"spent_hp":cost,"hp_after":float(caster.hp),"damage_packet":false})
++            battle._event("blood_sacrifice", {"caster":str(caster.id),"skill_id":skill_id,"generation":"divine","lineage":"a","hp_before":before,"spent_hp":cost,"hp_after":float(caster.hp),"damage_packet":false})
+             if str(definition.get("slot", "")) == "ultimate" and str(definition.get("lineage", "")) == "a":
+                 var missing := 1.0 - float(caster.hp) / maxf(1.0, float(caster.get("v63_base_max_hp", caster.max_hp)))
+                 adjusted["ratio"] = minf(82.32, 42.0 * (1.0 + 1.2 * minf(0.8, missing)))
+     V63HumanSkillCombatSystem.release_cast_base(battle, adjusted, caster)
+-    if str(definition.get("branch", "")) == "huyet_quyen" and str(definition.get("effect", "")) == "mark":
+-        var target: Dictionary = battle.actors.get(str(cast.get("target_id", "")), {})
+-        if not target.is_empty() and float(target.get("hp", 0.0)) > 0.0:
+-            var marks: Dictionary = target.get("v63_blood_marks", {})
+-            for key in marks.keys():
+-                if battle.now >= float(marks[key]):
+-                    marks.erase(key)
+-            marks[str(caster.id) + "/" + skill_id] = battle.now + 10.0
+-            target["v63_blood_marks"] = marks
+-            if marks.size() >= 2 and battle.now >= float(caster.get("v63_blood_frenzy_ready", -1.0)):
+-                caster["v63_blood_frenzy_until"] = battle.now + 5.0
+-                caster["v63_blood_frenzy_ready"] = battle.now + 35.0
+-                battle._event("blood_frenzy", {"caster":str(caster.id),"until":battle.now+5.0,"family_icd":35.0})
+     if not definition.is_empty():
+         battle._event("divine_action", {"caster":str(caster.id),"skill_id":skill_id,"rule":str(definition.get("divine_rule", "")),"stage":int(caster.get("v63_divine_stage", 1)),"ratio":float(adjusted.ratio)})
+ 
+diff --git a/godot/src/simulation/combat/v63_human_skill_combat_system.gd b/godot/src/simulation/combat/v63_human_skill_combat_system.gd
+index ef90253..38efa5c 100644
+--- a/godot/src/simulation/combat/v63_human_skill_combat_system.gd
++++ b/godot/src/simulation/combat/v63_human_skill_combat_system.gd
+@@ -278,6 +278,8 @@ static func attach_disciple_loadout(state: SimulationState, actor: Dictionary, p
+             actor["basic_element"] = str(skill.element)
+     if not divine_lineage.is_empty():
+         V63DivineSkillCombatSystem.attach_divine_state(actor, disciple, divine_lineage, V63LearningSystem.divine_lineage_stage(disciple, str(disciple.v63_combat_branch_id), divine_lineage))
++    elif not immortal_lineage.is_empty():
++        V63ImmortalSkillCombatSystem.attach_immortal_state(actor, immortal_lineage)
+     return {"ok":true,"attached":not skills.is_empty(),"skill_ids":skills}
+ 
+ static func _valid_id(value: String) -> bool:
+@@ -452,7 +454,7 @@ static func _begin_cast(battle: MapBattleV2, actor: Dictionary, target: Dictiona
+     ready[id] = battle.now+maxf(MapBattleV2.STEP_SECONDS,float(skill.cooldown)/cooldown_rate)
+     actor["v63_skill_ready"] = ready
+     actor["next_skill"] = battle.now+MapBattleV2.STEP_SECONDS
+-    battle._event("skill_cast",{"actor_id":str(actor.id),"target":str(target.id),"skill_id":id,"release_at":deadline,"combat_family":"v63_human","effect":str(skill.effect)})
++    battle._event("skill_cast",{"actor_id":str(actor.id),"target":str(target.id),"skill_id":id,"generation":str(skill.get("generation",skill.get("tier","human"))),"lineage":str(skill.get("lineage","")),"release_at":deadline,"cooldown_ready_at":float(ready[id]),"combat_family":"v63_human","effect":str(skill.effect)})
+     battle.actions += 1
+ 
+ static func _try_boss_cast(battle: MapBattleV2, actor: Dictionary, target: Dictionary) -> bool:
+@@ -497,9 +499,13 @@ static func _cast_record(caster: Dictionary, target: Dictionary, id: String, ski
+     return cast
+ 
+ static func release_cast(battle: MapBattleV2, cast: Dictionary, caster: Dictionary) -> void:
+-    if V63DivineSkillCombatSystem.is_divine_skill(str(cast.get("v63_skill_id", ""))) or V63DivineSkillCombatSystem.is_divine_boss(str(cast.get("v63_boss_id", ""))):
++    var skill_id := str(cast.get("v63_skill_id", ""))
++    if V63DivineSkillCombatSystem.is_divine_skill(skill_id) or V63DivineSkillCombatSystem.is_divine_boss(str(cast.get("v63_boss_id", ""))):
+         V63DivineSkillCombatSystem.release_cast(battle, cast, caster)
+         return
++    if V63ImmortalSkillCombatSystem.is_immortal_skill(skill_id):
++        V63ImmortalSkillCombatSystem.release_cast(battle, cast, caster)
++        return
+     release_cast_base(battle, cast, caster)
+ 
+ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dictionary) -> void:
+@@ -509,9 +515,20 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
+     if definition.is_empty():
+         return
+     var effect := str(cast.get("effect",definition.get("effect","damage")))
++    var generation := str(definition.get("generation",definition.get("tier","human")))
++    var lineage := str(definition.get("lineage",""))
+     var meaningful := false
+     for target in _cast_targets(battle,caster,cast,effect):
++        var caster_position: Vector2 = caster.get("position",Vector2.ZERO)
++        var target_position: Vector2 = target.get("position",Vector2.ZERO)
++        if not battle.is_world_position_allowed(caster_position) or not battle.is_world_position_allowed(target_position):
++            battle._event("skill_miss",{"caster":str(caster.get("id","")),"target":str(target.get("id","")),"skill_id":id,"generation":generation,"lineage":lineage,"reason":"invalid_position"})
++            continue
++        if str(cast.get("shape",definition.get("shape",""))) == "single_target" and caster_position.distance_to(target_position) > float(definition.get("range",0.0)):
++            battle._event("skill_miss",{"caster":str(caster.get("id","")),"target":str(target.get("id","")),"skill_id":id,"generation":generation,"lineage":lineage,"reason":"target_out_of_range_at_release"})
++            continue
+         var before := float(target.hp)
++        var caster_before := float(caster.hp)
+         var damage := 0.0
+         if effect in ["damage","poison","mark","consume_poison"]:
+             var ratio := float(cast.ratio)
+@@ -527,7 +544,7 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
+         elif effect == "guard":
+             target["learned_guard_factor"] = minf(float(target.get("learned_guard_factor",1.0)),1.0-clampf(float(cast.power),0.05,0.8))
+             target["learned_guard_until"] = maxf(float(target.get("learned_guard_until",-1.0)),battle.now+clampf(float(cast.duration),0.5,12.0))
+-            battle._event("status_applied",{"caster":str(caster.id),"target":str(target.id),"status":"guard","skill_id":id,"until":float(target.learned_guard_until)})
++            battle._event("status_applied",{"caster":str(caster.id),"target":str(target.id),"status":"guard","skill_id":id,"generation":generation,"lineage":lineage,"until":float(target.learned_guard_until)})
+         elif effect == "heal":
+             _heal_target(battle,caster,target,id,float(cast.power))
+         elif effect == "cleanse":
+@@ -537,7 +554,9 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
+         elif effect == "consume_poison":
+             _consume_poison(battle,caster,target,id)
+         meaningful = meaningful or damage > 0.0 or effect in ["guard", "mark", "poison", "cleanse"] or float(target.hp) > before
+-        battle._event("v63_skill_hit",{"caster":str(caster.id),"target":str(target.id),"skill_id":id,"effect":effect,"damage":damage,"target_hp_before":before,"target_hp_after":float(target.hp)})
++        battle._event("v63_skill_hit",{"caster":str(caster.id),"target":str(target.id),"skill_id":id,"generation":generation,"lineage":lineage,"effect":effect,"damage":damage,"caster_hp_before":caster_before,"caster_hp_after":float(caster.hp),"target_hp_before":before,"target_hp_after":float(target.hp)})
++        if effect == "mark" and str(definition.get("branch", "")) == "huyet_quyen" and float(target.hp) > 0.0:
++            record_blood_mark(battle, caster, target, id)
+         if damage > 0.0:
+             V63ImmortalSkillCombatSystem.apply_elemental_reaction(battle,caster,target,id,str(cast.get("element", "")))
+             V63DivineSkillCombatSystem.apply_elemental_reaction(battle,caster,target,id,str(cast.get("element", "")))
+@@ -610,7 +629,12 @@ static func _heal_target(battle: MapBattleV2, caster: Dictionary, target: Dictio
+         factor *= 1.0+clampf(float(skill_definition(str(passive_id)).get("passive_modifiers",{}).get("heal_factor",0.0)),0.0,0.25)
+     var before := float(target.hp)
+     var amount := minf(maxf(0.0,float(target.max_hp)*clampf(power,0.0,0.5)*factor),maxf(0.0,float(target.max_hp)-before))
+-    amount = minf(V63DivineSkillCombatSystem.healing_amount(caster, target, amount), maxf(0.0, float(target.max_hp) - before))
++    var adjusted_amount := amount
++    if str(target.get("v63_combat_generation", "")) == "immortal":
++        adjusted_amount = V63ImmortalSkillCombatSystem.healing_amount(caster, target, amount)
++    else:
++        adjusted_amount = V63DivineSkillCombatSystem.healing_amount(caster, target, amount)
++    amount = minf(adjusted_amount, maxf(0.0, float(target.max_hp) - before))
+     target["hp"] = before+amount
+     battle._sync_linked_hp(target)
+     battle._event("heal",{"caster":str(caster.id),"target":str(target.id),"skill_id":skill_id,"amount":amount,"hp_after":float(target.hp)})
+@@ -639,6 +663,24 @@ static func _apply_mark(battle: MapBattleV2, caster: Dictionary, target: Diction
+     target["v63_marks"] = marks
+     battle._event("status_applied",{"caster":str(caster.id),"target":str(target.id),"status":"mark","skill_id":skill_id,"until":float(marks[str(caster.id)].until)})
+ 
++static func record_blood_mark(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String) -> void:
++    var definition := skill_definition(skill_id)
++    if definition.is_empty() or str(definition.get("branch", "")) != "huyet_quyen" or str(definition.get("effect", "")) != "mark":
++        return
++    var generation := str(definition.get("generation", definition.get("tier", "human")))
++    if generation in ["immortal", "divine"] and str(definition.get("lineage", "")) != "a":
++        return
++    var marks: Dictionary = target.get("v63_blood_marks", {})
++    for key in marks.keys():
++        if battle.now >= float(marks[key]):
++            marks.erase(key)
++    marks[str(caster.id) + "/" + skill_id] = battle.now + 10.0
++    target["v63_blood_marks"] = marks
++    if marks.size() >= 2 and battle.now >= float(caster.get("v63_blood_frenzy_ready", -1.0)):
++        caster["v63_blood_frenzy_until"] = battle.now + 5.0
++        caster["v63_blood_frenzy_ready"] = battle.now + 35.0
++        battle._event("blood_frenzy", {"caster":str(caster.id),"skill_id":skill_id,"generation":generation,"lineage":str(definition.get("lineage", "")),"until":battle.now+5.0,"family_icd":35.0})
++
+ static func _apply_poison(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String, ratio: float, duration: float, requested: int, element: String) -> void:
+     var statuses: Dictionary = target.get("status_effects",{})
+     var stacks: Array = statuses.get("v63_poison",[])
+diff --git a/godot/src/simulation/combat/v63_immortal_skill_combat_system.gd b/godot/src/simulation/combat/v63_immortal_skill_combat_system.gd
+index 78318ad..e1235b1 100644
+--- a/godot/src/simulation/combat/v63_immortal_skill_combat_system.gd
++++ b/godot/src/simulation/combat/v63_immortal_skill_combat_system.gd
+@@ -163,6 +163,43 @@ static func boss_skill_definitions(boss_id: String) -> Dictionary:
+ static func is_immortal_skill(skill_id: String) -> bool:
+ 	return not skill_definition(skill_id).is_empty()
+ 
++static func attach_immortal_state(actor: Dictionary, lineage: String) -> void:
++	actor["v63_combat_generation"] = "immortal"
++	if str(actor.get("v63_combat_branch_id", "")) != "huyet_quyen":
++		return
++	var base := float(actor.get("max_hp", 0.0))
++	if base <= 0.0:
++		return
++	actor["v63_base_max_hp"] = base
++	actor["v63_blood_mode"] = "blood_life" if lineage == "b" else "blood_ma"
++	if lineage == "b":
++		return
++	actor["max_hp"] = base * 0.75
++	actor["hp"] = minf(float(actor.get("hp", 0.0)), float(actor.max_hp))
++	actor["stats"] = actor.get("stats", {}).duplicate(true)
++	actor.stats["max_hp"] = float(actor.max_hp)
++
++static func healing_amount(caster: Dictionary, target: Dictionary, amount: float) -> float:
++	if str(target.get("v63_blood_mode", "")) != "blood_ma":
++		return amount
++	var original_max := maxf(1.0, float(target.get("v63_base_max_hp", target.get("max_hp", 1.0))))
++	if str(caster.get("id", "")) == str(target.get("id", "")) or float(target.get("hp", 0.0)) >= 0.40 * original_max:
++		return 0.0
++	return maxf(0.0, amount) * 0.60
++
++static func release_cast(battle: MapBattleV2, cast: Dictionary, caster: Dictionary) -> void:
++	var skill_id := str(cast.get("v63_skill_id", ""))
++	var definition := skill_definition(skill_id)
++	var adjusted := cast.duplicate(true)
++	if not definition.is_empty() and str(definition.get("branch", "")) == "huyet_quyen" and str(definition.get("lineage", "")) == "a":
++		var before := float(caster.get("hp", 0.0))
++		var cost_fraction := 0.12 if str(definition.get("slot", "")) == "ultimate" else 0.10
++		var cost := minf(maxf(0.0, before - 1.0), before * cost_fraction)
++		caster["hp"] = before - cost
++		battle._sync_linked_hp(caster)
++		battle._event("blood_sacrifice", {"caster":str(caster.get("id", "")),"skill_id":skill_id,"generation":"immortal","lineage":"a","hp_before":before,"spent_hp":cost,"hp_after":float(caster.hp),"damage_packet":false})
++	V63HumanSkillCombatSystem.release_cast_base(battle, adjusted, caster)
++
+ static func is_immortal_boss(boss_id: String) -> bool:
+ 	return not boss_definition(boss_id).is_empty()
+ 
+diff --git a/godot/tests/simulation/tmb_quyen_183_combat_handoff_test.gd b/godot/tests/simulation/tmb_quyen_183_combat_handoff_test.gd
+new file mode 100644
+index 0000000..01a531e
+--- /dev/null
++++ b/godot/tests/simulation/tmb_quyen_183_combat_handoff_test.gd
+@@ -0,0 +1,452 @@
++extends SceneTree
++
++const BRANCHES := ["ba_quyen", "kim_cang", "huyet_quyen"]
++const GENERATIONS := ["human", "immortal", "divine"]
++const PREVIEW := {"sect_codex":true,"human_skill_combat":true,"divine_skill_combat":true}
++const BASE_HP := 20000.0
++
++func _init() -> void:
++	call_deferred("_run")
++
++func _fail(message: String) -> void:
++	push_error("TMB_QUYEN_183_HANDOFF_FAIL: " + message)
++	quit(1)
++
++func _check(value: bool, message: String) -> bool:
++	if not value:
++		_fail(message)
++		return false
++	return true
++
++func _run() -> void:
++	if V63FeatureGates.is_enabled("human_skill_combat") or V63FeatureGates.is_enabled("divine_skill_combat"):
++		_fail("combat feature gates must remain OFF by default")
++		return
++	if not V63FeatureGates.is_enabled("human_skill_combat", PREVIEW) or not V63FeatureGates.is_enabled("divine_skill_combat", PREVIEW):
++		_fail("preview gates must enable Human and Divine combat fixtures")
++		return
++	var records := _quyen_records()
++	if not _check(records.size() == 183, "catalogue filter must cover exactly 183 fist records; got " + str(records.size())):
++		return
++	var counts := {"human":0,"immortal":0,"divine":0}
++	for row in records:
++		counts[_generation(row)] += 1
++	if not _check(counts == {"human":35,"immortal":68,"divine":80}, "generation coverage changed: " + str(counts)):
++		return
++	for index in range(records.size()):
++		if not _test_record(records[index], index):
++			return
++	if not _test_blood_contract():
++		return
++	if not _test_multi_kim_cang_huyet_team():
++		return
++	if not _test_blood_mark_icd():
++		return
++	if not _test_range_revalidation():
++		return
++	print("TMB_QUYEN_183_HANDOFF_PASS: 183 records dispatched by slot/effect; cast/release/hit receipts, Combat V2 guard/HP, lineage state and snapshot round-trip exercised")
++	quit(0)
++
++func _quyen_records() -> Array:
++	var result: Array = []
++	for raw in V63HumanSkillCombatSystem.skill_definitions().values():
++		if not (raw is Dictionary) or str(raw.get("school", "")) != "fist":
++			continue
++		var slot := str(raw.get("slot", ""))
++		if BRANCHES.has(str(raw.get("branch", ""))) or slot in ["basic", "mobility"]:
++			result.append(raw.duplicate(true))
++	result.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return str(a.get("id", "")) < str(b.get("id", "")))
++	return result
++
++func _generation(row: Dictionary) -> String:
++	return str(row.get("generation", row.get("tier", "human")))
++
++func _test_record(row: Dictionary, index: int) -> bool:
++	var actor := _make_actor(row, index)
++	var target := _make_target(index)
++	var slot := str(row.get("slot", ""))
++	var skill_id := str(row.get("id", ""))
++	var generation := _generation(row)
++	if slot in ["passive", "innate"]:
++		if not _test_modifiers(row, actor):
++			return false
++		var passive_battle := _new_battle(actor, target, index)
++		return _snapshot_round_trip(passive_battle, actor, row, skill_id)
++	elif slot == "mobility":
++		var distance := minf(float(row.get("range", 0.0)) - 0.1, 2.5)
++		if distance <= float(actor.get("basic_range", 1.5)) + 0.2:
++			return _check(false, "fist mobility range cannot close a short gap: " + skill_id)
++		target["position"] = actor["position"] + Vector2(distance, 0.0)
++		var mobility_battle := _new_battle(actor, target, index)
++		var live_actor: Dictionary = mobility_battle.actors[str(actor.id)]
++		var live_target: Dictionary = mobility_battle.actors[str(target.id)]
++		if generation == "divine" and not _check(int(live_actor.get("v63_divine_stage", 0)) == 2, "MapBattle setup dropped the attached Divine stage: " + skill_id):
++			return false
++		var before: Vector2 = live_actor.position
++		if not _check(V63HumanSkillCombatSystem.try_cast(mobility_battle, live_actor, live_target), "mobility did not trigger: " + skill_id):
++			return false
++		if not _check((live_actor.position as Vector2).distance_to(before) > 0.1 and _event_for(mobility_battle, "v63_mobility", skill_id) != null, "mobility did not move or record its hit: " + skill_id):
++			return false
++		return _snapshot_round_trip(mobility_battle, actor, row, skill_id)
++	elif slot == "basic":
++		var basic_battle := _new_battle(actor, target, index)
++		var basic_actor: Dictionary = basic_battle.actors[str(actor.id)]
++		var basic_target: Dictionary = basic_battle.actors[str(target.id)]
++		var before := float(basic_target.hp)
++		var damage := basic_battle._deal_direct(basic_actor, basic_target, float(row.get("damage_ratio", 0.0)), "basic", true, str(row.get("element", "")))
++		if not _check(damage > 0.0 and float(basic_target.hp) < before, "basic skill did not change target HP: " + skill_id):
++			return false
++		return _snapshot_round_trip(basic_battle, actor, row, skill_id)
++	else:
++		var active_battle := _new_battle(actor, target, index)
++		var live_actor: Dictionary = active_battle.actors[str(actor.id)]
++		var live_target: Dictionary = active_battle.actors[str(target.id)]
++		if str(row.get("effect", "")) == "consume_poison":
++			var poison_source_id := "tmb.skill.poison.doc_cham.active_02.human"
++			var poison_source := V63HumanSkillCombatSystem.skill_definition(poison_source_id)
++			if not _check(str(poison_source.get("effect", "")) == "poison", "consume_poison fixture source is not a real poison skill"):
++				return false
++			V63HumanSkillCombatSystem._apply_poison(active_battle, live_actor, live_target, poison_source_id, 0.01, 8.0, 1, "fire")
++		if not _check(V63HumanSkillCombatSystem.try_cast(active_battle, live_actor, live_target), "active/ultimate could not begin cast: " + skill_id):
++			return false
++		var pending: Dictionary = live_actor.get("v63_pending_cast", {})
++		if not _check(not pending.is_empty(), "cast did not retain a release record: " + skill_id):
++			return false
++		active_battle.now = float(pending.get("ready", 0.0))
++		active_battle._release_casts()
++		var cast_event = _event_for(active_battle, "skill_cast", skill_id)
++		var release_event = _event_for(active_battle, "skill_release", skill_id)
++		var hit_event = _event_for(active_battle, "v63_skill_hit", skill_id)
++		if not _check(cast_event != null and release_event != null and hit_event != null, "cast/release/hit receipt missing: " + skill_id):
++			return false
++		var lineage := str(row.get("lineage", ""))
++		for event in [cast_event, release_event, hit_event]:
++			if not _check(str(event.get("skill_id", "")) == skill_id and str(event.get("generation", "")) == generation and str(event.get("lineage", "")) == lineage, "receipt lacks exact ID/generation/lineage: " + skill_id):
++				return false
++		var hit_target_id := str(hit_event.get("target", ""))
++		if not _check(float(cast_event.get("cooldown_ready_at", 0.0)) > 0.0 and str(cast_event.get("actor_id", "")) == str(actor.id)
++			and str(cast_event.get("target", "")) == hit_target_id and str(release_event.get("caster", "")) == str(actor.id)
++			and str(release_event.get("target", "")) == hit_target_id and str(hit_event.get("caster", "")) == str(actor.id)
++			and active_battle.actors.has(hit_target_id), "cast receipt missed exact resolved caster/target/cooldown: " + skill_id):
++			return false
++		if not _check(hit_event.has("caster_hp_before") and hit_event.has("caster_hp_after") and hit_event.has("target_hp_before") and hit_event.has("target_hp_after"), "HP before/after receipt missing: " + skill_id):
++			return false
++		var effect := str(row.get("effect", ""))
++		if effect in ["damage", "poison", "mark", "consume_poison"]:
++			if not _check(float(hit_event.get("damage", 0.0)) > 0.0 and float(hit_event.get("target_hp_after", 0.0)) < float(hit_event.get("target_hp_before", 0.0)), "offensive skill did not commit real HP damage: " + skill_id):
++				return false
++		if effect == "poison":
++			var poison_stacks: Array = live_target.get("status_effects", {}).get("v63_poison", [])
++			var poison_found := false
++			for stack in poison_stacks:
++				if str(stack.get("owner_id", "")) == str(actor.id) and str(stack.get("source_skill_id", "")) == skill_id:
++					poison_found = true
++			if not _check(poison_found, "poison status lacks live caster and skill provenance: " + skill_id):
++				return false
++		if effect == "mark" and not _check(live_target.get("v63_marks", {}).has(str(actor.id)), "active mark did not attach to the live target: " + skill_id):
++			return false
++		if generation == "divine":
++			var divine_action = _event_for(active_battle, "divine_action", skill_id)
++			if not _check(divine_action != null and int(divine_action.get("stage", 0)) == 2, "Divine stage multiplier/state was lost during encounter setup: " + skill_id):
++				return false
++		if str(row.get("effect", "")) == "guard":
++			var guarded: Dictionary = active_battle.actors[str(actor.id)]
++			if not _check(float(guarded.get("learned_guard_until", -1.0)) > active_battle.now - 0.01 and float(guarded.get("learned_guard_factor", 1.0)) < 1.0, "guard did not attach to the valid ally target: " + skill_id):
++				return false
++			var attacker: Dictionary = active_battle.actors[str(target.id)]
++			var target_stats := V63HumanSkillCombatSystem.effective_defense_stats(guarded, guarded.stats)
++			var learned_factor := float(guarded.get("learned_guard_factor", 1.0))
++			var guard_factor := learned_factor
++			if active_battle.now < float(guarded.get("guard_until", -1.0)):
++				guard_factor = minf(0.65, guard_factor)
++			var previous_reduction := clampf(float(target_stats.get("damage_reduction", 0.0)), 0.0, 1.0)
++			target_stats["damage_reduction"] = 1.0 - (1.0 - previous_reduction) * guard_factor
++			var expected_hit := CombatStatsV2.resolve_direct_hit(attacker.stats, target_stats, guarded.resistances, 1.0, false, "", 1.0, false)
++			var hp_before := float(guarded.hp)
++			var actual_damage := active_battle._deal_direct(attacker, guarded, 1.0, "guard_fixture", false, "", false)
++			if not _check(actual_damage > 0.0 and is_equal_approx(actual_damage, minf(float(expected_hit.damage), hp_before)) and float(guarded.hp) < hp_before, "guard was not applied to actual CombatStatsV2 damage: " + skill_id):
++				return false
++		if str(row.get("branch", "")) == "huyet_quyen" and lineage == "b" and generation in ["immortal", "divine"]:
++			if not _check(_event_for(active_battle, "blood_sacrifice", skill_id) == null and not active_battle.actors[str(target.id)].has("v63_blood_marks"), "Huyet Sinh received Huyet Ma sacrifice/mark: " + skill_id):
++				return false
++		if str(row.get("branch", "")) == "huyet_quyen" and lineage == "a" and generation in ["immortal", "divine"]:
++			var sacrifice = _event_for(active_battle, "blood_sacrifice", skill_id)
++			if not _check(sacrifice != null and float(sacrifice.get("hp_after", 0.0)) >= 1.0 and float(sacrifice.get("hp_before", 0.0)) >= float(sacrifice.get("hp_after", 0.0)), "Huyet Ma sacrifice receipt missing or lethal: " + skill_id):
++				return false
++		if str(row.get("branch", "")) == "huyet_quyen" and str(row.get("effect", "")) == "mark" and (generation == "human" or lineage == "a"):
++			var blood_marks: Dictionary = active_battle.actors[str(target.id)].get("v63_blood_marks", {})
++			if not _check(blood_marks.has(str(actor.id) + "/" + skill_id), "valid Huyet Ma mark did not retain owner and skill provenance: " + skill_id):
++				return false
++		if str(row.get("effect", "")) == "consume_poison":
++			var poison: Array = active_battle.actors[str(target.id)].get("status_effects", {}).get("v63_poison", [])
++			if not _check(poison.is_empty(), "consume_poison did not consume the caster-owned valid source: " + skill_id):
++				return false
++		return _snapshot_round_trip(active_battle, actor, row, skill_id)
++	return _check(false, "unsupported fist slot: " + slot + " / " + skill_id)
++
++func _make_actor(row: Dictionary, index: int) -> Dictionary:
++	var core := CombatStatsV2.derive(11, 1, 10, 1, 0.0)
++	var stats: Dictionary = core.stats.duplicate(true)
++	stats["max_hp"] = BASE_HP
++	stats["attack"] = 500.0
++	stats["defense"] = 80.0
++	stats["lifesteal"] = 0.08
++	var generation := _generation(row)
++	var slot := str(row.get("slot", ""))
++	var actor := {"id":"fist_caster_%03d" % index,"party_id":"fist_party_%03d" % index,"role":"frontline","tier":"disciple",
++		"race_id":"nhan_toc","position":Vector2(18.0, 8.0),"stats":stats,"hp":18000.0,"max_hp":BASE_HP,
++		"resistances":core.resistances.duplicate(true),"basic_range":1.5,"move_speed":2.0,"basic_ratio":0.4,
++		"basic_interval":2.0,"skill_loadout":[],"skill_factors":{},"context_sources":[],"disciple":null,
++		"v63_combat_enabled":true,"v63_skill_loadout":[],"v63_skill_ready":{},"v63_passive_ids":[],"v63_combat_branch_id":str(row.get("branch", "")),
++		"v63_combat_lineage":str(row.get("lineage", "")),"v63_innate_skill_id":"","v63_divine_stage":2}
++	if slot in ["active", "ultimate", "mobility"]:
++		actor["v63_skill_loadout"] = [str(row.id)]
++	elif slot == "passive":
++		actor["v63_passive_ids"] = [str(row.id)]
++	elif slot == "innate":
++		actor["v63_innate_skill_id"] = str(row.id)
++	elif slot == "basic":
++		actor["v63_basic_skill_id"] = str(row.id)
++		actor["basic_ratio"] = float(row.get("damage_ratio", 1.0))
++		actor["basic_element"] = str(row.get("element", ""))
++	if generation == "immortal":
++		V63ImmortalSkillCombatSystem.attach_immortal_state(actor, str(row.get("lineage", "")))
++	elif generation == "divine":
++		V63DivineSkillCombatSystem.attach_divine_state(actor, DiscipleState.new({"id":str(actor.id),"name":"Fist fixture"}), str(row.get("lineage", "a")), 2)
++	return actor
++
++func _make_target(index: int) -> Dictionary:
++	var core := CombatStatsV2.derive(11, 1, 10, 1, 0.0)
++	var stats: Dictionary = core.stats.duplicate(true)
++	stats["max_hp"] = 1000000.0
++	stats["attack"] = 250.0
++	stats["defense"] = 50.0
++	var tiers := ["normal", "elite", "boss"]
++	return {"id":"fist_target_%03d" % index,"tier":tiers[index % tiers.size()],"position":Vector2(18.5, 8.0),"stats":stats,
++		"race_id":"nhan_toc","hp":1000000.0,"resistances":core.resistances.duplicate(true)}
++
++func _new_battle(actor: Dictionary, target: Dictionary, index: int) -> MapBattleV2:
++	var battle := MapBattleV2.new(880000 + index)
++	var setup := battle.setup("fist_record_%03d" % index, [actor], [target])
++	if not bool(setup.get("ok", false)):
++		_fail("MapBattle setup failed for fixture row " + str(index) + ": " + str(setup))
++	return battle
++
++func _test_modifiers(row: Dictionary, actor: Dictionary) -> bool:
++	var id := str(row.get("id", ""))
++	var modifiers: Dictionary = row.get("passive_modifiers", {})
++	var attack := V63HumanSkillCombatSystem.effective_attack_stats(actor, actor.stats)
++	var expected_factor := 1.0 + clampf(float(modifiers.get("outgoing_factor", 0.0)), -0.5, 0.5)
++	if str(actor.get("v63_blood_mode", "")) == "blood_covenant":
++		expected_factor *= 1.2
++	if not _check(is_equal_approx(float(attack.attack), float(actor.stats.attack) * expected_factor), "passive/innate outgoing modifier was not applied: " + id):
++		return false
++	var defense := V63HumanSkillCombatSystem.effective_defense_stats(actor, actor.stats)
++	var guard_factor := clampf(float(modifiers.get("guard_factor", 1.0)), 0.5, 1.0)
++	var base_reduction := clampf(float(actor.stats.get("damage_reduction", 0.0)), 0.0, 0.95)
++	var expected_reduction := 1.0 - (1.0 - base_reduction) * guard_factor
++	return _check(is_equal_approx(float(defense.damage_reduction), expected_reduction), "passive/innate guard modifier was not applied: " + id)
++
++func _test_blood_contract() -> bool:
++	var heal_id := ""
++	for row in V63HumanSkillCombatSystem.skill_definitions().values():
++		if str(row.get("effect", "")) == "heal":
++			heal_id = str(row.get("id", ""))
++			break
++	if not _check(not heal_id.is_empty(), "catalogue has no authored heal skill for blood-heal fixture"):
++		return false
++	var heal_battle := MapBattleV2.new(87771)
++	var immortal_a := {"id":"blood_imm_a","v63_combat_branch_id":"huyet_quyen","max_hp":BASE_HP,"hp":18000.0,"stats":{"max_hp":BASE_HP,"lifesteal":0.08}}
++	V63ImmortalSkillCombatSystem.attach_immortal_state(immortal_a, "a")
++	if not _check(is_equal_approx(float(immortal_a.max_hp), 15000.0) and is_equal_approx(float(immortal_a.hp), 15000.0) and is_equal_approx(float(immortal_a.v63_base_max_hp), BASE_HP), "Immortal Huyet Ma seal must clamp to 75% of original max HP"):
++		return false
++	if not _check(is_equal_approx(V63ImmortalSkillCombatSystem.healing_amount(immortal_a, immortal_a, 100.0), 0.0), "Immortal Huyet Ma self-heal must be rejected"):
++		return false
++	immortal_a["hp"] = 0.30 * BASE_HP
++	V63HumanSkillCombatSystem._heal_target(heal_battle, immortal_a, immortal_a, heal_id, 0.5)
++	if not _check(is_equal_approx(float(immortal_a.hp), 0.30 * BASE_HP), "Immortal Huyet Ma real self-heal handler was not rejected"):
++		return false
++	var ally_heal := {"id":"healer"}
++	immortal_a["hp"] = 0.30 * BASE_HP
++	if not _check(is_equal_approx(V63ImmortalSkillCombatSystem.healing_amount(ally_heal, immortal_a, 100.0), 60.0), "Immortal allied heal below 40% must use 60% effectiveness"):
++		return false
++	immortal_a["hp"] = 0.40 * BASE_HP
++	if not _check(is_equal_approx(V63ImmortalSkillCombatSystem.healing_amount(ally_heal, immortal_a, 100.0), 0.0), "Immortal allied heal at or above 40% must be rejected"):
++		return false
++	immortal_a["hp"] = 0.399 * BASE_HP
++	V63HumanSkillCombatSystem._heal_target(heal_battle, ally_heal, immortal_a, heal_id, 0.5)
++	var immortal_after_heal := float(immortal_a.hp)
++	var immortal_heal_event: Variant = _event_for(heal_battle, "heal", heal_id)
++	if not _check(immortal_heal_event != null and is_equal_approx(float(immortal_heal_event.get("amount", 0.0)), 4212.0)
++		and immortal_after_heal > 0.40 * BASE_HP and immortal_after_heal <= float(immortal_a.max_hp), "Immortal real allied heal did not use the pre-heal threshold and 60% amount"):
++		return false
++	var second_heal_before := float(immortal_a.hp)
++	V63HumanSkillCombatSystem._heal_target(heal_battle, ally_heal, immortal_a, heal_id, 0.5)
++	if not _check(is_equal_approx(float(immortal_a.hp), second_heal_before), "Immortal heal above the 40% threshold was not rejected"):
++		return false
++	var immortal_b := {"id":"blood_imm_b","v63_combat_branch_id":"huyet_quyen","max_hp":BASE_HP,"hp":18000.0,"stats":{"max_hp":BASE_HP,"lifesteal":0.08}}
++	V63ImmortalSkillCombatSystem.attach_immortal_state(immortal_b, "b")
++	if not _check(is_equal_approx(float(immortal_b.max_hp), BASE_HP) and is_equal_approx(V63ImmortalSkillCombatSystem.healing_amount(ally_heal, immortal_b, 100.0), 100.0), "Immortal Huyet Sinh must keep normal HP/healing"):
++		return false
++	var divine_actor := {"id":"blood_div_a","v63_combat_branch_id":"huyet_quyen","max_hp":BASE_HP,"hp":18000.0,"stats":{"max_hp":BASE_HP},"v63_passive_ids":[]}
++	V63DivineSkillCombatSystem.attach_divine_state(divine_actor, DiscipleState.new({"id":"blood_div_a","name":"Divine fixture"}), "a", 2)
++	if not _check(is_equal_approx(float(divine_actor.max_hp), 13000.0) and is_equal_approx(float(divine_actor.hp), 13000.0), "Divine Huyet Ma seal must clamp to 65%"):
++		return false
++	divine_actor["hp"] = 0.30 * BASE_HP
++	if not _check(is_equal_approx(V63DivineSkillCombatSystem.healing_amount(ally_heal, divine_actor, 100.0), 50.0), "Divine allied heal below 35% must use 50% effectiveness"):
++		return false
++	divine_actor["hp"] = 0.349 * BASE_HP
++	V63HumanSkillCombatSystem._heal_target(heal_battle, ally_heal, divine_actor, heal_id, 0.5)
++	var divine_heal_event: Variant = _event_for(heal_battle, "heal", heal_id)
++	if not _check(divine_heal_event != null and is_equal_approx(float(divine_heal_event.get("amount", 0.0)), 3010.0)
++		and float(divine_actor.hp) > 0.35 * BASE_HP and float(divine_actor.hp) <= float(divine_actor.max_hp), "Divine real allied heal did not use the pre-heal threshold and 50% amount"):
++		return false
++	var divine_b := {"id":"blood_div_b","v63_combat_branch_id":"huyet_quyen","max_hp":BASE_HP,"hp":18000.0,"stats":{"max_hp":BASE_HP},"v63_passive_ids":[]}
++	V63DivineSkillCombatSystem.attach_divine_state(divine_b, DiscipleState.new({"id":"blood_div_b","name":"Divine fixture"}), "b", 2)
++	if not _check(is_equal_approx(float(divine_b.max_hp), BASE_HP) and is_equal_approx(V63DivineSkillCombatSystem.healing_amount(ally_heal, divine_b, 100.0), 100.0), "Divine Huyet Sinh must remain outside Blood Ma healing limits"):
++		return false
++	var covenant := {"id":"blood_covenant","v63_combat_branch_id":"huyet_quyen","max_hp":BASE_HP,"hp":18000.0,"stats":{"max_hp":BASE_HP},
++		"v63_passive_ids":["tmb.skill.fist.huyet_quyen.passive_05.rare_passive.a"]}
++	V63DivineSkillCombatSystem.attach_divine_state(covenant, DiscipleState.new({"id":"blood_covenant","name":"Covenant fixture"}), "a", 3)
++	covenant["hp"] = 2000.0
++	V63HumanSkillCombatSystem._heal_target(heal_battle, ally_heal, covenant, heal_id, 0.5)
++	return _check(is_equal_approx(float(covenant.max_hp), 11000.0) and is_equal_approx(float(covenant.v63_shield_received_factor), 0.6)
++		and is_equal_approx(float(covenant.hp), 2000.0)
++		and is_equal_approx(V63DivineSkillCombatSystem.healing_amount(ally_heal, covenant, 100.0), 0.0), "Rare Covenant must cap at 55%, disable heals and expose 60% shield effectiveness")
++
++func _snapshot_round_trip(battle: MapBattleV2, source_actor: Dictionary, row: Dictionary, skill_id: String) -> bool:
++	var saved := MapBattleSnapshotV2.save(battle)
++	if not _check(bool(saved.get("ok", false)), "snapshot save failed: " + skill_id):
++		return false
++	var restored := MapBattleSnapshotV2.load(saved)
++	if not _check(bool(restored.get("ok", false)), "snapshot reload failed: " + skill_id + " / " + str(restored)):
++		return false
++	var resumed: MapBattleV2 = restored.get("battle")
++	var actor: Dictionary = resumed.actors.get(str(source_actor.get("id", "")), {})
++	if not actor.is_empty() and str(row.get("branch", "")) == "huyet_quyen" and _generation(row) in ["immortal", "divine"]:
++		return _check(str(actor.get("v63_blood_mode", "")) in ["blood_ma", "blood_life", "blood_covenant"] and float(actor.get("v63_base_max_hp", 0.0)) > 0.0,
++			"snapshot lost lineage survival state: " + skill_id)
++	return _check(not actor.is_empty(), "snapshot lost caster actor: " + skill_id)
++
++func _event_for(battle: MapBattleV2, event_type: String, skill_id: String) -> Variant:
++	for index in range(battle.events.size() - 1, -1, -1):
++		var event: Dictionary = battle.events[index]
++		if str(event.get("type", "")) == event_type and str(event.get("skill_id", "")) == skill_id:
++			return event
++	return null
++
++func _test_multi_kim_cang_huyet_team() -> bool:
++	var definitions := V63HumanSkillCombatSystem.skill_definitions()
++	var ids := [
++		"tmb.skill.fist.kim_cang.active_01.immortal.a",
++		"tmb.skill.fist.kim_cang.active_01.immortal.b",
++		"tmb.skill.fist.huyet_quyen.active_01.immortal.a",
++		"tmb.skill.fist.huyet_quyen.active_01.immortal.b"
++	]
++	var party: Array = []
++	for i in range(ids.size()):
++		var row: Dictionary = definitions.get(ids[i], {})
++		if not _check(not row.is_empty(), "multi-member fixture skill missing: " + ids[i]):
++			return false
++		var actor := _make_actor(row, 300 + i)
++		actor["position"] = Vector2(15.0 + float(i), 8.0)
++		actor["party_id"] = "fist_multi_team"
++		if i >= 2:
++			actor["hp"] = 10000.0
++			actor["v63_passive_ids"] = ["tmb.skill.fist.huyet_quyen.passive_01.immortal." + ("a" if i == 2 else "b")]
++		party.append(actor)
++	var target := _make_target(300)
++	target["position"] = Vector2(21.0, 8.0)
++	var battle := MapBattleV2.new(88300)
++	var setup := battle.setup("fist_multi_team", party, [target])
++	if not _check(bool(setup.get("ok", false)), "multiple Kim Cang/Huyet actors failed setup: " + str(setup)):
++		return false
++	var live_target: Dictionary = battle.actors[str(target.id)]
++	for id in ids:
++		var actor_id := "fist_caster_%03d" % (300 + ids.find(id))
++		var actor: Dictionary = battle.actors[actor_id]
++		if not _check(V63HumanSkillCombatSystem.try_cast(battle, actor, live_target), "team member did not cast: " + id):
++			return false
++	var release_time := 0.0
++	for id in ids:
++		var actor_id := "fist_caster_%03d" % (300 + ids.find(id))
++		release_time = maxf(release_time, float(battle.actors[actor_id].get("v63_pending_cast", {}).get("ready", 0.0)))
++	battle.now = release_time
++	battle._release_casts()
++	for id in ids:
++		if not _check(_event_for(battle, "v63_skill_hit", id) != null, "team skill did not resolve: " + id):
++			return false
++	var blood_ma_actor: Dictionary = battle.actors["fist_caster_302"]
++	var blood_life_actor: Dictionary = battle.actors["fist_caster_303"]
++	var blood_ma_hit: Variant = _combat_hit_for(battle, "fist_caster_302")
++	var blood_life_hit: Variant = _combat_hit_for(battle, "fist_caster_303")
++	if not _check(blood_ma_hit != null and blood_life_hit != null and float(blood_ma_hit.get("lifesteal", -1.0)) == 0.0
++		and float(blood_life_hit.get("lifesteal", 0.0)) > 0.0 and float(blood_life_actor.hp) > 10000.0
++		and float(blood_ma_actor.hp) < 10000.0, "Huyet Ma suppression and Huyet Sinh real-damage lifesteal did not differ in Combat V2"):
++		return false
++	if not _check(_event_for(battle, "blood_sacrifice", ids[2]) != null and _event_for(battle, "blood_sacrifice", ids[3]) == null,
++		"multi-Huyet team mixed Huyet Ma sacrifice with Huyet Sinh life branch"):
++		return false
++	return _snapshot_round_trip(battle, party[0], definitions[ids[0]], ids[0])
++
++func _combat_hit_for(battle: MapBattleV2, attacker_id: String) -> Variant:
++	for event in battle.events:
++		if str(event.get("type", "")) == "hit" and str(event.get("kind", "")) == "v63_skill" and str(event.get("attacker", "")) == attacker_id and str(event.get("target", "")) == "fist_target_300":
++			return event
++	return null
++
++func _test_blood_mark_icd() -> bool:
++	var definitions := V63HumanSkillCombatSystem.skill_definitions()
++	var ids := [
++		"tmb.skill.fist.huyet_quyen.active_02.human",
++		"tmb.skill.fist.huyet_quyen.active_03.human",
++		"tmb.skill.fist.huyet_quyen.active_04.human"
++	]
++	var actor := _make_actor(definitions[ids[0]], 400)
++	actor["v63_skill_loadout"] = ids.duplicate()
++	var target := _make_target(400)
++	var battle := _new_battle(actor, target, 400)
++	var caster: Dictionary = battle.actors[str(actor.id)]
++	var enemy: Dictionary = battle.actors[str(target.id)]
++	var first_frenzy_until := -1.0
++	for index in range(ids.size()):
++		if not _check(V63HumanSkillCombatSystem.try_cast(battle, caster, enemy), "Huyet Ma mark cast did not start: " + ids[index]):
++			return false
++		var pending: Dictionary = caster.get("v63_pending_cast", {})
++		battle.now = float(pending.get("ready", battle.now))
++		battle._release_casts()
++		if index == 1:
++			var frenzy = _event_for(battle, "blood_frenzy", ids[index])
++			if not _check(frenzy != null and float(frenzy.get("family_icd", 0.0)) == 35.0, "two unique valid Blood Marks did not trigger the 5s/35s frenzy rule"):
++				return false
++			first_frenzy_until = float(caster.get("v63_blood_frenzy_until", -1.0))
++		if index == 2 and not _check(_event_count(battle, "blood_frenzy") == 1 and is_equal_approx(float(caster.get("v63_blood_frenzy_until", -1.0)), first_frenzy_until), "Blood Frenzy stacked or refreshed inside the family ICD"):
++			return false
++	return _check(enemy.get("v63_blood_marks", {}).size() == 3, "Blood Marks were not retained on their valid target")
++
++func _event_count(battle: MapBattleV2, event_type: String) -> int:
++	var count := 0
++	for event in battle.events:
++		if str(event.get("type", "")) == event_type:
++			count += 1
++	return count
++
++func _test_range_revalidation() -> bool:
++	var id := "tmb.skill.fist.ba_quyen.active_01.human"
++	var row := V63HumanSkillCombatSystem.skill_definition(id)
++	var actor := _make_actor(row, 500)
++	var target := _make_target(500)
++	var battle := _new_battle(actor, target, 500)
++	var caster: Dictionary = battle.actors[str(actor.id)]
++	var enemy: Dictionary = battle.actors[str(target.id)]
++	var hp_before := float(enemy.hp)
++	if not _check(V63HumanSkillCombatSystem.try_cast(battle, caster, enemy), "in-range attack did not start for revalidation fixture"):
++		return false
++	var pending: Dictionary = caster.get("v63_pending_cast", {})
++	enemy["position"] = Vector2(30.0, 8.0)
++	battle.now = float(pending.get("ready", 0.0))
++	battle._release_casts()
++	var miss: Variant = _event_for(battle, "skill_miss", id)
++	return _check(miss != null and str(miss.get("reason", "")) == "target_out_of_range_at_release"
++		and _event_for(battle, "v63_skill_hit", id) == null and is_equal_approx(float(enemy.hp), hp_before),
++		"single-target fist attack hit a target that left range during the cast")
