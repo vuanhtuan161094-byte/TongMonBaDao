@@ -112,15 +112,27 @@ func _run() -> void:
         _fail("disciple roster search is missing")
         return
     search.text = disciple.display_name
+    # Setting LineEdit.text programmatically does not model user typing; emit
+    # the public signal so this exercises the same filter callback as the UI.
+    search.text_changed.emit(search.text)
     await process_frame
     var roster := deep.find_child("DeepDiscipleRoster",true,false) as VBoxContainer
     if roster == null:
         _fail("search filter lost the roster")
         return
+    var matching_visible := false
     for entry in roster.get_children():
-        if entry is Button and (entry as Button).visible and not str((entry as Button).text).to_lower().contains(disciple.display_name.to_lower()):
-            _fail("roster search left a nonmatching disciple visible")
-            return
+        if entry is Button:
+            var entry_button := entry as Button
+            var matches := str(entry_button.text).to_lower().contains(disciple.display_name.to_lower())
+            if matches and entry_button.visible:
+                matching_visible = true
+            elif not matches and entry_button.visible:
+                _fail("roster search left a nonmatching disciple visible")
+                return
+    if not matching_visible:
+        _fail("roster search hid the matching disciple")
+        return
 
     ui.call("_toggle_deep_disciple_roster","Tổng Quan")
     await process_frame
