@@ -1,0 +1,26 @@
+ERROR: Parse JSON failed. Error at line 0: Expected key
+   at: parse_string (core/io/json.cpp:629)
+   GDScript backtrace (most recent call first):
+       [0] _load_exact (res://src/simulation/save/save_service.gd:208)
+       [1] load_from_path (res://src/simulation/save/save_service.gd:192)
+       [2] _run (res://tests/simulation/safe_01_save_recovery_test.gd:28)
+ERROR: Parse JSON failed. Error at line 0: Expected key
+   at: parse_string (core/io/json.cpp:629)
+   GDScript backtrace (most recent call first):
+       [0] _load_exact (res://src/simulation/save/save_service.gd:208)
+       [1] _save_payload_to_path (res://src/simulation/save/save_service.gd:122)
+       [2] save_to_path (res://src/simulation/save/save_service.gd:22)
+       [3] _run (res://tests/simulation/safe_01_save_recovery_test.gd:33)
+ERROR: Parse JSON failed. Error at line 0: Expected key
+   at: parse_string (core/io/json.cpp:629)
+   GDScript backtrace (most recent call first):
+       [0] _load_exact (res://src/simulation/save/save_service.gd:208)
+       [1] load_from_path (res://src/simulation/save/save_service.gd:192)
+       [2] _run (res://tests/simulation/safe_01_save_recovery_test.gd:64)
+ERROR: Parse JSON failed. Error at line 0: Expected key
+   at: parse_string (core/io/json.cpp:629)
+   GDScript backtrace (most recent call first):
+       [0] _load_exact (res://src/simulation/save/save_service.gd:208)
+       [1] _save_payload_to_path (res://src/simulation/save/save_service.gd:122)
+       [2] save_to_path (res://src/simulation/save/save_service.gd:22)
+       [3] _run (res://tests/simulation/safe_01_save_recovery_test.gd:64)

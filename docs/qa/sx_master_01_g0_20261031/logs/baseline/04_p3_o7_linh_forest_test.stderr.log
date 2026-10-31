@@ -1,0 +1,9 @@
+WARNING: A Thread object is being destroyed without its completion having been realized.
+Please call wait_to_finish() on it to ensure correct cleanup.
+   at: ~Thread (core/os/thread.cpp:116)
+ERROR: O7 reload lost/restarted the Forestry haul.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _fail (res://tests/presentation/p3_o7_linh_forest_test.gd:320)
+       [1] _run (res://tests/presentation/p3_o7_linh_forest_test.gd:136)
+       [2] _open_scene (res://tests/presentation/p3_o7_linh_forest_test.gd:297)
