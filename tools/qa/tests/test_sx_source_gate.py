@@ -148,7 +148,7 @@ class StaticSourceGateTest(unittest.TestCase):
 
     def test_commented_pseudo_producer_inside_registry_is_ignored(self):
         crop = CROPS.replace('"output_resource_id": "thanh_linh_thao"',
-                             '# "output_resource_id": "tam_mach_ban"\\n'
+                             '# "output_resource_id": "tam_mach_ban"\n'
                              '        "output_resource_id": "thanh_linh_thao"')
         self.write("building/spirit_crop_registry.gd", crop)
         result = gate.run(self.root)
