@@ -5,47 +5,35 @@ Updated 2026-10-31 (Asia/Saigon). This file supersedes the archived RC status be
 ## Current candidate
 
 - Integration branch: `integration/one-game-v65-20261030`
-- Latest tested runtime commit: `1ffa078099d86e893eec7434ecaa2934791e6e41` (R6 / D6); earlier R4/R5 coverage and runtime commits are listed below.
+- Latest tested source commit: `79dab92ccc95a93b39dcb563fe06c93a9aa422da` (HS-09 plus selected Stage A, P3.2/DV2, D2/D3/D6, save and PvE regressions; evidence below). The Godot import snapshot and focused tests both use this source SHA.
 - Runtime base remains PvE RC #52; PR #52, V6.5 source, and `main` are unchanged.
 - Coordination: [Issue #56](https://github.com/vuanhtuan161094-byte/TongMonBaDao/issues/56); conflict authority: [Issue #54 matrix](https://github.com/vuanhtuan161094-byte/TongMonBaDao/issues/54#issuecomment-6520099847).
 
-- Latest code commit: be37bca1725e9cc19e710dba3f3f796041ac78e7 (HS-09 presentation; Godot import/focused tests not yet run). Checkpoint documentation is committed separately on top; fetch the live branch SHA before further work.
+- Latest HS-09 code/test commit: `79dab92ccc95a93b39dcb563fe06c93a9aa422da` (test-only signal-emission fix on top of HS-09 code `be37bca1725e9cc19e710dba3f3f796041ac78e7`). This runtime evidence is committed separately from this checkpoint; fetch the live branch SHA before further work.
 
-## Latest checkpoint — HS-09 code, runtime QA pending
+## Latest checkpoint — HS-09 focused QA and New Game launch (2026-10-31)
 
-Owner-approved code commit: be37bca1725e9cc19e710dba3f3f796041ac78e7, parent 095ff2f90df8260dd123c06964d20c4f9b571d32. It changes exactly four authorized source/test paths:
+**Tested source SHA:** `79dab92ccc95a93b39dcb563fe06c93a9aa422da`. **main:** `c0c1382f119599497b52d8ee8abd9e830a883f1e` unchanged. PR #52 and the V6.5 source branch were not edited.
 
-- godot/src/presentation/p3_2_landscape_sect.gd — seven profile tabs, overview, roster search/collapse, dual radar placement and read-only V6.3 technique state.
-- godot/src/presentation/disciple_presentation_snapshot_v2.gd — additive read-only V6.3 projection using persisted gates; exposes active_job_id without changing simulation state.
-- godot/src/presentation/p3/hs09_dual_foundation_radar.gd — independent Tam Căn (3-axis) and Tứ Tính (4-axis) drawing scales around the shared center.
-- godot/tests/presentation/hs09_disciple_profile_test.gd — focused profile/radar/read-only regression test.
+The HS-09 implementation remains presentation-only. Commit `79dab92` fixes its focused regression test by emitting the LineEdit's `text_changed` signal after programmatically setting its value, then verifying both matching and nonmatching roster rows. It does not change simulation, save, combat, economy, feature-gate defaults or assets.
 
-Feature gate defaults, simulation/save/economy/combat authority and assets were not changed. No fake actions or equipment bonuses were added. Existing compatibility radar node remains hidden for prior probes. Godot-generated .uid sidecars are not present because the current import is blocked.
+### Godot 4.7.2 import and focused tests
 
-The five approved HS-09 design files were read at design branch HEAD 69f1aac82a701800af1c5ddb09ce0c0f5d409ef3. Their HTML values are explicitly sample data; design screenshots are Chromium captures, not Godot gameplay proof. The design specifies seven tabs, shared-center independent-scale radar, real snapshot values and no fake controls.
+- Official Godot: `4.7.2.stable.official.ed1daf0bf`.
+- Editor import: PASS, exit 0, 103 import steps, from a Git archive of exact source SHA `79dab92` at `E:\TongMonBaDaoWorkspace\QA_Evidence\ONE_GAME_V65_20261030\qa_hs09_400baa\qa_import_79dab92\godot`. A root-certificate-store diagnostic was printed; import completed successfully. Log: `E:\TongMonBaDaoWorkspace\QA_Evidence\ONE_GAME_V65_20261030\qa_hs09_400baa\godot_import_79dab92.log`.
+- PASS, 14 focused tests: HS-09 profile/radar/read-only gate model; Female Stage A down and 3-direction contracts; DV2 profile and live P3.2 binding; D2 archive and exactly-once codex receipt; D3 study job and UI; SaveService async round-trip; SAFE-01 recovery; PvE save/return/reload; D6 divine-lineage combat and rare successors.
+- The PvE test reports 50 checks, six party members, ten monsters, active-run reload and exactly-once HP0 receipt; it explicitly reports `loot=LOOT_PENDING`. The SAFE-01 test prints malformed-JSON diagnostics from its negative fixtures and ends with PASS.
+- Stage A installer: PASS; 42 canonical PNGs restored, pack SHA-256 `6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca`. Both focused Stage A contract tests passed.
+- Individual test logs (each records source SHA, full Godot command and exit code) are in `E:\TongMonBaDaoWorkspace\QA_Evidence\ONE_GAME_V65_20261030\qa_hs09_400baa`.
 
-QA status on this code SHA: Godot 4.7.2 import and HS-09/P3.2/DV2/radar/D3/Save regressions NOT RUN. PID 15996 is still present as Godot_v4.7.2-stable_win64 (28,672-byte working set; empty main-window title); the process owner/command line could not be established, so it was left untouched. Windows reported 1,613 MB available memory. The one-heavy-Godot-process rule blocks starting another engine instance while it remains active.
+The first HS-09 test run at parent `400baa11403720fb816075d65f3cb74e8f4ad505` failed because the test changed the LineEdit value without emitting its signal. The test-only repair was committed as `79dab92`; rerunning HS-09 and the listed regression set at that SHA passed.
 
-Previous evidence only: launcher contract smoke at 095ff used a stub executable and is NOT a Godot/gameplay PASS. Female Stage A install-only restored 42 PNGs with pack SHA-256 6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca; import/focused Stage A verification is PENDING. The isolated Source A contact sheet/catalog has 26 CANDIDATE assets, all OWNER_REVIEW_PENDING; no art was imported.
+### Real New Game launch and remaining GUI gate
 
-New Game GUI, recruit/production/PvE, save-return-reload and physical visual QA remain PENDING. Static reward inspection still finds LOOT_PENDING and no owner-approved drop-rate/EXP table to implement; no reward was invented. The D7/D8 18-test evidence belongs to 36deee77758027e3394230a0594df5574b42bcf5 and has not been rerun on be37bca.
+The committed `tools/windows/run/Run-OneGame-NewGame.cmd` was run with official Godot GUI in a new isolated session profile, at 1280×720. It launched the real P3.2 project main scene and produced a canonical version-4 SaveService save. A read-only inspection observed six starting disciples, six standard buildings, two teams, 500 spirit stones and simulation tick 8. The save and profile are confined to `E:\TongMonBaDaoWorkspace\QA_Evidence\ONE_GAME_V65_20261030\checkout_400baa\godot\outputs\one_game_newgame\sessions\12863_18370_19894_3279`; no user save was accessed. The GUI process (PID 8136) remains open.
 
-Rollback: revert commit be37bca1725e9cc19e710dba3f3f796041ac78e7 on the integration branch, preserving later documentation commits and saved records. Source branches, PR #52, main, the old E: checkout and owner saves remain untouched.
+**PENDING:** no gameplay input or 1280×720 screenshot was captured. Computer Use window capture timed out twice, including one reselect/retry. No PvE was entered through this GUI, and no manual in-game Save/Return/Reload journey has been performed. The headless save/PvE tests are regression evidence, not physical gameplay acceptance. Do not mark ONE GAME playable-accepted or V6.5 complete from this checkpoint.
 
-
-### Stage 0 static QA refresh — 2026-10-31
-
-Live branch ref verified before this review: 3ccaa150c127b96533ca478c9e85f7e9cafc1ad8. Comparison from 095ff2f showed exactly the four authorized HS-09 code/test paths plus these two checkpoint files; main remains c0c1382f119599497b52d8ee8abd9e830a883f1e. No code failure was observed statically.
-
-Static source review: the new radar global class is referenced by the P3.2 renderer and test; the tested scene path exists; tab button callbacks preserve the existing internal tab keys; persisted V6.3 gate projection reads canonical state and copies dictionaries; the radar keeps separate scales and does not alter the input values. No new simulation action or gate write was found in the reviewed HS-09 changes.
-
-Visual label check remains pending real render. The radar forms labels with an embedded newline and calls draw_string. Godot 4.7 documents draw_multiline_string as the API that breaks text into lines ([CanvasItem docs](https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html)). Per task instruction, this is recorded as a render verification risk, not a confirmed UI defect; no speculative renderer change was made. Label clipping, positioning and contrast still require a Godot 1280x720 capture.
-
-Windows environment: PID 15996 remains listed as Godot_v4.7.2-stable_win64, Responding=true, 28,672-byte working set, no window title. Start time, user, executable path and command line are denied by Windows access checks; tasklist/CIM queries returned Access denied. A second PID 6944 appeared briefly at 164,552,704 bytes then disappeared from the next process enumeration. Latest available-memory sample was 1,394 MB (adjacent samples ranged 1,074–1,394 MB); no application was closed and no Godot process was launched.
-
-QA source provenance: E:\TongMonBaDaoWorkspace\QA_Evidence\ONE_GAME_V65_20261030\checkout_095ff is an isolated archive snapshot at 095ff, but its local .git has no HEAD and the tree is all untracked; it is not yet a tested checkout of 3ccaa15. The canonical E:\TongMonBaDaoWorkspace\01_Game\TongMonBaDao checkout was inspected read-only at HEAD 5e6fdd966bdf710b71e2a1539bb712e44069a4bb with seven untracked paths; it was not changed. Godot tests are NOT RUN because PID ownership is unknown and available RAM is low under the one-process rule.
-
-Non-Godot launcher inspection confirms Run-OneGame-NewGame.cmd targets the project main scene, creates a unique isolated profile and does not invoke the 130-disciple seeded launcher. This is static contract inspection only; no launcher or game was run.
 ## Integrated code
 
 - R1 `70271184a7c3d1d1dfb374c0050424e263bf7a16`: 18 gated V6.5 catalogs/systems and D1 registry test.
@@ -100,28 +88,27 @@ R3 touched: `disciple_state.gd`, `sect_state.gd`, `simulation_state.gd`, `simula
 
 ## Godot 4.7.2 evidence
 
-Isolated checkout: `E:\TongMonBaDaoWorkspace\01_Game\TMB_ONE_GAME_V65_20261030`  
-Evidence directory: `E:\TongMonBaDaoWorkspace\QA_Evidence\ONE_GAME_V65_20261030`
+Latest exact-source QA is at `79dab92ccc95a93b39dcb563fe06c93a9aa422da`, using official Windows Godot 4.7.2 (`ed1daf0bf`). Import and test logs are under `E:\TongMonBaDaoWorkspace\QA_Evidence\ONE_GAME_V65_20261030\qa_hs09_400baa`; each focused test log records source SHA, command and exit code.
 
-- R3 headless editor import — exit 0, stderr empty. On the R3 picker-fix tree, stdout SHA-256 `CE9CCEA1BE4DA31DE12806EDC40917C7AB4589E52CEFF90F044BD3FE2BAC2EBF`.
-- `res://tests/simulation/v63_d1_content_registry_test.gd` — PASS, 105 families / 531 nodes / 18 rare variants / 9 Boss records (R1 log `R1_d1_content_registry_test.stdout.log`).
-- `res://tests/simulation/v63_d2_sect_archive_test.gd` — PASS, 159 codices / 150 archivable manuals / Warehouse and save round-trip (R3 log SHA `E7A2BD07F2137F3C6F7EE84B8EBFAE32918F641582F55948AE5ADA621F7A801B`).
-- `res://tests/simulation/one_game_r2_open_world_codex_receipt_test.gd` — PASS, retry-safe HP0 to one Warehouse receipt and exact-once save/load (SHA `8D63F9D825F8B95ECDA530ED1C9EF3DBA7B61665DDB5F0F8F887640DE74F92F2`).
-- `res://tests/simulation/v63_d3_learning_job_test.gd` — PASS, 62 checks (job reservation, cancellation/completion/mastery receipts, migration, gate-off pause, save/load and 1+2 loadout; SHA `49E7945760A32E288194ACB3746F61420289DECF49DDEC253E753CE250B9A9A5`).
-- `res://tests/presentation/v63_d3_learning_ui_test.gd` — PASS, archives a real manual, starts/cancels/completes study, displays ETA and equips the main slot (SHA `A767F81110AB3698C16EE3FC3BE4D93304B078E20D2822C588027EFC852170C6`).
-- P2.3 technique regression, P3.7B1 Warehouse, SaveService async round-trip (10 checks), SAFE-01 recovery, and PvE save/return/reload (50 checks) all exit 0. SAFE-01 intentionally emits malformed-JSON recovery diagnostics and prints its PASS marker.
+Selected focused PASS set (14):
+- HS-09 disciple profile / dual radar / feature-gate read model.
+- Female Stage A down and 3-direction asset contracts.
+- DV2 P3 disciple profile and live runtime binding.
+- D2 Sect Archive, R2 exactly-once open-world codex receipt.
+- D3 learning job (62 checks) and learning UI.
+- SaveService async round-trip (10 checks), SAFE-01 recovery, and PvE Save/Return/Reload regression (50 checks).
+- D6 divine-lineage combat and rare-successor combat.
 
-Focused stdout/stderr logs are in the evidence directory above. All tests ran sequentially on Windows Godot 4.7.2.
+The PvE automated regression explicitly leaves loot pending. These runs do not verify a player-controlled GUI journey. Earlier R3-R6 evidence and exact test details remain in the integrated-history sections below.
 
 ## Pending — not user-playable accepted
 
-- Feature gates remain OFF by default; prior D3/D4 focused candidate tests used explicit preview overrides. HS-09 is presentation-only and untested at the current branch tip.
-- D2 single-encounter `HuntingMapV2.claim_reward` reward bridge remains outstanding; loot/EXP values cannot be added without an approved contract/table.
-- D7/D8 integrated-code checkpoint and its selected 18-test run are at `36deee77758027e3394230a0594df5574b42bcf5`. HS-09 commit `be37bca1725e9cc19e710dba3f3f796041ac78e7` is later and has not been imported or regression-tested.
-- Real New Game journey, physical GUI/screenshots, Source A owner review, Android device QA, save-return-reload on one fresh profile and whole-game performance remain PENDING.
-- No claim of FULL COMPLETE or release readiness.
+- Actual in-game input, readable GUI screenshot at 1280×720, New Game progression, PvE, and Save/Return/Reload in one active profile remain PENDING because the Computer Use capture timed out twice. No GUI action or screenshot was obtained.
+- Existing focused tests pass at `79dab92`, but they do not replace manual gameplay acceptance. The automated PvE regression still reports `loot=LOOT_PENDING`; no loot/EXP reward was invented.
+- Source A owner visual review, Android device QA, and whole-game FPS/performance acceptance remain PENDING.
+- Do not claim FULL COMPLETE, release readiness or playable acceptance.
 
-The isolated checkout contains Godot-generated import metadata, test user data, and QA files. They were not staged. Existing E: workspaces and real saves were left untouched.
+The isolated QA checkout contains generated Godot import metadata, test profiles and New Game save data. They were not staged. The canonical E: checkout, other workspaces, real saves, PR #52, V6.5 source branch and main were left unchanged.
 
 ## Archived RC checkpoint context
 
@@ -169,10 +156,8 @@ The section below records the previous RC-only handoff for history; its branch/s
 
 ## Bàn giao tiếp
 
-1. Full 22-test headless matrix PASS trên RC; dùng exact SHA, logs và exit codes trong evidence của Issue #37, không ghép kết quả từ SHA cũ.
-2. Nghiệm thu GUI chuột thật 1280×720: 15s sản xuất, chọn sáu đệ tử, PvE 30–60s, pan/zoom/minimap, Save/Return; chạy `tools/windows/run/Run-PVE-FPS-QA.cmd` OFF và `/log` ON tuần tự, ghi P50/P95/P99, 1%-low, RAM, worst spikes và ảnh/video thật.
-3. Chỉ owner review/duyệt mới merge `main`; không xóa PR/nhánh hoặc hồ sơ, save, E: assets.
+1. Continue real GUI acceptance on the isolated New Game session only when a working capture/input channel is available; capture 1280×720, then exercise PvE and Save/Return/Reload using the same isolated profile.
+2. Preserve the observed distinction: Godot import and focused headless regressions PASS at `79dab92`; GUI gameplay and screenshot are PENDING.
+3. Keep main, PR #52, V6.5 source, canonical checkout and user saves unchanged.
 
-Nguồn: [Issue #37](https://github.com/vuanhtuan161094-byte/TongMonBaDao/issues/37) · [PR #51](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/51) · [PR #50](https://github.com/vuanhtuan161094-byte/TongMonBaDao/pull/50) · [166-branch inventory](https://github.com/vuanhtuan161094-byte/TongMonBaDao/blob/audit/tmb-whole-project-readiness-20261027/docs/operations/TMB_GITHUB_BRANCH_CONSOLIDATION_REGISTER_2026-10-27.md).
-
-Old full history preserved at [legacy checkpoint](https://github.com/vuanhtuan161094-byte/TongMonBaDao/blob/6b3fd181392c96c2386e5aa85950d2e993d67dda/CURRENT_CHECKPOINT.md).
+Coordination: [Issue #56](https://github.com/vuanhtuan161094-byte/TongMonBaDao/issues/56).
