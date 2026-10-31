@@ -116,11 +116,11 @@ def potential_sources(root: Path, building_code: str) -> dict[str, list[str]]:
             item = literal_constant(building_code, value) if value.startswith("MATERIAL_") else value.strip('&"')
             mark(item, "BuildingSystem " + building_id + " [coded producer; not GUI verified]")
 
-    crops = read_file(root, "building/spirit_crop_registry.gd")
+    crops = const_map(read_file(root, "building/spirit_crop_registry.gd"), "DEFINITIONS")
     for item in re.findall(r'"output_resource_id"\s*:\s*"([^"]+)"', crops):
         mark(item, "SpiritCropRegistry field [crop level and costs apply]")
 
-    alchemy = read_file(root, "building/alchemy_recipe_registry.gd")
+    alchemy = const_map(read_file(root, "building/alchemy_recipe_registry.gd"), "DEFINITIONS")
     for item in re.findall(r'"output_resource_id"\s*:\s*"([^"]+)"', alchemy):
         mark(item, "AlchemyRecipeRegistry recipe [inputs and job needed]")
 
@@ -213,7 +213,6 @@ def run(root: Path, level_target_multiplier: int = 10000) -> dict[str, Any]:
                     "No non-fixture producer found in covered production/PvE/market code.",
                     "BuildingSystem.MILESTONE_COMPONENTS/" + building_id)
 
-    forest = next(row for row in building_rows if row["building"] == "linh_forest")
     mine = next(row for row in building_rows if row["building"] == "mine")
     # One batch per worker every base 10 Economy-A ticks, speed=1. This is
     # NOT a real runtime throughput measurement.
@@ -224,8 +223,6 @@ def run(root: Path, level_target_multiplier: int = 10000) -> dict[str, Any]:
             "Nominal full-staff output ratio %.1fx vs owner target %dx; no speed modifiers assumed."
             % (mine_nominal, level_target_multiplier),
             "BuildingSystem._resource_job_batch_units + worker_slots")
-    if not forest["upgrade_enabled"]:
-        pass
     drop_match = re.search(r'const\s+LINH_TUYEN_FRAGMENT_BASE_CHANCE\s*:=\s*([0-9.]+)', code)
     per_heart = re.search(r'const\s+LINH_TUYEN_FRAGMENT_PER_HEART\s*:=\s*(\d+)', code)
     if drop_match and per_heart:
