@@ -123,9 +123,15 @@ func run() -> void:
         "B3 CARE remains strict: Chuyên Tu cannot be auto-deployed")
     verify(B3PillSatietyV1.safe_cultivation_pill_window(state, d),
         "dedicated B3 pill use has a narrower safe Chuyên Tu window")
+    verify(not B3PillSatietyV1.manual_use_is_activity_blocked(state, d, tuvi_pill),
+        "manual Tu Vi medicine is not disabled during the safe Chuyên Tu window")
+    verify(B3PillSatietyV1.manual_use_is_activity_blocked(state, d, &"hoi_xuan_dan"),
+        "healing medicine remains blocked while Chuyên Tu is active")
     verify(warehouse.add(state, tuvi_pill, 1),
         "fixture additional Tu Vi pill for specialized case")
     d.work_cycle_state = {"phase": "travel_out"}
+    verify(B3PillSatietyV1.manual_use_is_activity_blocked(state, d, tuvi_pill),
+        "manual Tu Vi medicine stays disabled while a production cycle is active")
     verify(not B3PillSatietyV1.safe_cultivation_pill_window(state, d),
         "an active production cycle denies Chuyên Tu pill")
     var blocked := B3MedicalAutoplayV1.use_pill(owner, id, tuvi_pill, B3PillSatietyV1.next_sequence(d))

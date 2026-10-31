@@ -3326,7 +3326,7 @@ func _build_sx02_medicine_controls() -> void:
         use.name = "SX02Use_%s" % str(disciple.id)
         use.text = "Dùng đan đã chọn"
         use.custom_minimum_size = Vector2(160, 30)
-        use.disabled = B3MedicalAutoplayV1.busy(state, disciple) or warehouse.available_quantity(state, sx02_selected_medicine) < 1
+        use.disabled = B3PillSatietyV1.manual_use_is_activity_blocked(state, disciple, sx02_selected_medicine) or warehouse.available_quantity(state, sx02_selected_medicine) < 1
         use.tooltip_text = "B3 sẽ kiểm tra nghề đang bận, bão hòa, kho và cửa ải Tu Vi."
         use.pressed.connect(Callable(self, "_sx01_use_pill_from_ui").bind(disciple.id, sx02_selected_medicine))
         row.add_child(use)
