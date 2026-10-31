@@ -304,7 +304,7 @@ func _refresh_detail() -> void:
         return
     _clear(_detail_list)
     var ids := _filtered_ids()
-    if selected_candidate_id == &"" or not game_state.recruitment_candidates.has(selected_candidate_id):
+    if selected_candidate_id == &"" or not game_state.recruitment_candidates.has(selected_candidate_id) or not ids.has(selected_candidate_id):
         selected_candidate_id = StringName(str(ids[0])) if not ids.is_empty() else &""
     if selected_candidate_id == &"":
         _detail_list.add_child(_label("Chọn một ứng viên để xem căn cơ.", 14, MUTED))
@@ -431,7 +431,7 @@ func _visible_special_identity(candidate: CandidateState) -> String:
         var entry: Dictionary = layers.get(key, {})
         if not bool(entry.get("revealed", false)):
             continue
-        var title := {"root_mutation":"Dị Linh Căn", "bloodline":"Huyết Mạch", "physique":"Thể Chất", "destiny":"Mệnh Cách"}[key]
+        var title: String = str({"root_mutation":"Dị Linh Căn", "bloodline":"Huyết Mạch", "physique":"Thể Chất", "destiny":"Mệnh Cách"}[key])
         var identity := str(entry.get("mutation_id", entry.get("bloodline_id", entry.get("physique_id", entry.get("destiny_id", "")))))
         if identity != "" and identity != "none":
             disclosed.append("%s: %s" % [str(title), identity])
