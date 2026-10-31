@@ -248,12 +248,16 @@ func _on_search_changed(value: String) -> void:
     search_text = value.strip_edges().to_lower()
     page_index = 0
     _refresh_list()
+    # Keep the profile/action panel in sync with the active search results.
+    _refresh_detail()
 
 func _on_quality_filter_changed(index: int) -> void:
     var ids := ["all", "common", "outstanding", "prodigy", "peerless", "heaven_defying"]
     grade_filter = ids[clampi(index, 0, ids.size() - 1)]
     page_index = 0
     _refresh_list()
+    # A filtered-out candidate must not remain actionable in the detail panel.
+    _refresh_detail()
 
 func _filtered_ids() -> Array:
     var ids: Array = []
