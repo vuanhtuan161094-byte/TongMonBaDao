@@ -91,6 +91,31 @@ func run() -> void:
     var replay := B3MedicalAutoplayV1.use_pill(owner, id, pill, receipt_sequence)
     verify(bool(replay.get("replay", false)), "idempotent medicine replay")
 
+    # Repeat the real timed transaction for the Tu Vi family.
+    verify(warehouse.add(state, &"thanh_linh_thao", 2) and
+        warehouse.add(state, &"linh_coc", 1), "fixture contains two actual TQD inputs")
+    var tuvi_recipe := MedicineCatalogueV2.recipe_id("tuvi", 1)
+    var tuvi_pill := MedicineCatalogueV2.item_id("tuvi", 1, 1)
+    var tuvi_before_stock := warehouse.quantity(state, tuvi_pill)
+    var tuvi_job := B3MedicalAutoplayV1.craft(owner, tuvi_recipe, 2, id)
+    if verify(bool(tuvi_job.get("ok", false)), "real graded Tu Vi recipe paid"):
+        var tuvi_finish := int(tuvi_job.get("finish_tick", -1))
+        var completed := owner.update_to(START + tuvi_finish * 60)
+        if verify(bool(completed.get("ok", false)), "Tu Vi job elapsed and settled"):
+            verify(warehouse.quantity(state, tuvi_pill) == tuvi_before_stock + 1,
+                "Tu Vi grade recorded separately from original TQD")
+            var cultivation_before := d.v2_realm_progress["cultivation"].duplicate(true)
+            var used_tuvi := B3MedicalAutoplayV1.use_pill(owner, id, tuvi_pill, B3PillSatietyV1.next_sequence(d))
+            if verify(bool(used_tuvi.get("ok", false)), "new Tu Vi pill commits through original B3"):
+                verify(warehouse.quantity(state, tuvi_pill) == tuvi_before_stock,
+                    "exactly one graded Tu Vi pill consumed")
+                verify(B3PillSatietyV1.spent_today(state, d) == 35,
+                    "healing and Tu Vi pills share B3 10+25 satiety")
+                verify(B3PillSatietyV1.validate(state, d).is_empty(),
+                    "dynamic Tu Vi receipt is compatible with B3 validation")
+                verify(str(d.v2_realm_progress["cultivation"]) != str(cultivation_before),
+                    "real V2 cultivation progress changed")
+
     var final_reload := LiveGameRuntimeV2.new()
     if verify(bool(final_reload.start(save_path, owner.state.runtime_last_wall_unix).get("ok", false)),
         "reload after durable medicine use"):
