@@ -9,7 +9,7 @@ Updated 2026-10-31 (Asia/Saigon). This file supersedes the archived RC status be
 - Runtime base remains PvE RC #52; PR #52, V6.5 source, and `main` are unchanged.
 - Coordination: [Issue #56](https://github.com/vuanhtuan161094-byte/TongMonBaDao/issues/56); conflict authority: [Issue #54 matrix](https://github.com/vuanhtuan161094-byte/TongMonBaDao/issues/54#issuecomment-6520099847).
 
-- Current branch tip: be37bca1725e9cc19e710dba3f3f796041ac78e7 (HS-09 presentation code commit; Godot import/focused tests not yet run on this tip).
+- Latest code commit: be37bca1725e9cc19e710dba3f3f796041ac78e7 (HS-09 presentation; Godot import/focused tests not yet run). Checkpoint documentation is committed separately on top; fetch the live branch SHA before further work.
 
 ## Latest checkpoint — HS-09 code, runtime QA pending
 

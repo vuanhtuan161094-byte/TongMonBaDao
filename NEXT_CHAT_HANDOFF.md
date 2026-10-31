@@ -1,6 +1,6 @@
 # NEXT CHAT HANDOFF — ONE GAME V6.5 / HS-09
 
-Continue on integration/one-game-v65-20261030. Fetch the live branch first. Current tip is be37bca1725e9cc19e710dba3f3f796041ac78e7; the latest previously runtime-tested code is R6/D6 at 1ffa078099d86e893eec7434ecaa2934791e6e41. Do not describe the newer HS-09 code as tested.
+Continue on integration/one-game-v65-20261030. Fetch the live branch first. HS-09 code commit is be37bca1725e9cc19e710dba3f3f796041ac78e7; a documentation-only checkpoint follows it. The latest previously runtime-tested code is R6/D6 at 1ffa078099d86e893eec7434ecaa2934791e6e41. Do not describe the newer HS-09 code as tested.
 
 ## Immediate authorized work
 
