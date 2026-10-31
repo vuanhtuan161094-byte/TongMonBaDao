@@ -12,6 +12,8 @@
 - Dedicated branch: `codex2/cung-tu-fix-qa-20261031`
 - The three audit artifacts from 095ff2 were uploaded unchanged to `docs/audits/cung-tu/095ff2/`. This preserves the original report, 183-row CSV and audit harness as historical evidence.
 
+- Rechecked before handoff: integration advanced once more to 79dab92ccc95a93b39dcb563fe06c93a9aa422da. Comparing 400baa to 79dab92 shows only godot/tests/presentation/hs09_disciple_profile_test.gd changed (15 additions/3 deletions); no Cung runtime, test, or patch path overlap. The code patch remains based on 400baa, and Codex 1 must apply/review it against live 79dab92.
+
 ## Source findings and code changes
 
 The first three BUG IDs concern the same rule: mobility was explicitly rejected when `battle.world_mode` was true. Inspection of MapBattleV2 showed that world movement already uses an authoritative navigation grid: world bounds are checked, blocked cells reject movement, and deterministic BFS returns walkable cell paths. `_move_world_actor` advances by at most `move_speed * STEP_SECONDS`. Actor-to-actor collision avoidance is not part of that grid path contract.
@@ -69,5 +71,6 @@ The existing D4-A PvE regression remains relevant prior evidence: six Human Liá»
 **NOT_RUN â€” no Godot launch, compile or test PASS is claimed.**
 
 The live checkpoint and handoff at the integration HEAD record Godot PID 15996 as an active Codex 1 session, ownership not established, low available RAM, and prohibit starting a second Godot instance or killing the process. See `CURRENT_CHECKPOINT.md` and `NEXT_CHAT_HANDOFF.md` on the integration branch. The test log records this blocker. Resume the focused gates only after Codex 1 releases the session; capture engine version, exact source SHA, command, stdout/stderr and exit code.
+
 
 
