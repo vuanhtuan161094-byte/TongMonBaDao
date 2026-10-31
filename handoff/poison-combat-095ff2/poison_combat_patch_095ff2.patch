@@ -1,0 +1,668 @@
+diff --git a/godot/data/combat/v63_divine_combat_catalog.json b/godot/data/combat/v63_divine_combat_catalog.json
+index 78ebe72..878deea 100644
+--- a/godot/data/combat/v63_divine_combat_catalog.json
++++ b/godot/data/combat/v63_divine_combat_catalog.json
+@@ -8462,7 +8462,8 @@
+         29
+       ],
+       "required_divine_stage": 1,
+-      "divine_rule": "single_spread_poison"
++      "divine_rule": "single_spread_poison",
++      "divine_rule_status": "DESIGN_PENDING"
+     },
+     {
+       "id": "tmb.skill.poison.co_doc.active_01.divine.b",
+@@ -8552,7 +8553,8 @@
+         29
+       ],
+       "required_divine_stage": 1,
+-      "divine_rule": "single_spread_poison"
++      "divine_rule": "single_spread_poison",
++      "divine_rule_status": "DESIGN_PENDING"
+     },
+     {
+       "id": "tmb.skill.poison.co_doc.active_02.divine.b",
+@@ -8642,7 +8644,8 @@
+         29
+       ],
+       "required_divine_stage": 1,
+-      "divine_rule": "single_spread_poison"
++      "divine_rule": "single_spread_poison",
++      "divine_rule_status": "DESIGN_PENDING"
+     },
+     {
+       "id": "tmb.skill.poison.co_doc.active_03.divine.b",
+@@ -8732,7 +8735,8 @@
+         29
+       ],
+       "required_divine_stage": 1,
+-      "divine_rule": "single_spread_poison"
++      "divine_rule": "single_spread_poison",
++      "divine_rule_status": "DESIGN_PENDING"
+     },
+     {
+       "id": "tmb.skill.poison.co_doc.active_04.divine.b",
+@@ -8822,7 +8826,8 @@
+         29
+       ],
+       "required_divine_stage": 1,
+-      "divine_rule": "single_spread_poison"
++      "divine_rule": "single_spread_poison",
++      "divine_rule_status": "DESIGN_PENDING"
+     },
+     {
+       "id": "tmb.skill.poison.co_doc.ultimate.divine.b",
+@@ -8922,7 +8927,8 @@
+         29
+       ],
+       "required_divine_stage": 1,
+-      "divine_rule": "single_spread_poison"
++      "divine_rule": "single_spread_poison",
++      "divine_rule_status": "DESIGN_PENDING"
+     },
+     {
+       "id": "tmb.skill.poison.co_doc.passive_01.divine.b",
+@@ -9032,7 +9038,8 @@
+         29
+       ],
+       "required_divine_stage": 1,
+-      "divine_rule": "single_spread_poison"
++      "divine_rule": "single_spread_poison",
++      "divine_rule_status": "DESIGN_PENDING"
+     },
+     {
+       "id": "tmb.skill.poison.co_doc.passive_02.divine.b",
+@@ -9142,7 +9149,8 @@
+         29
+       ],
+       "required_divine_stage": 1,
+-      "divine_rule": "single_spread_poison"
++      "divine_rule": "single_spread_poison",
++      "divine_rule_status": "DESIGN_PENDING"
+     },
+     {
+       "id": "tmb.skill.poison.co_doc.passive_03.divine.b",
+@@ -9252,7 +9260,8 @@
+         29
+       ],
+       "required_divine_stage": 1,
+-      "divine_rule": "single_spread_poison"
++      "divine_rule": "single_spread_poison",
++      "divine_rule_status": "DESIGN_PENDING"
+     },
+     {
+       "id": "tmb.skill.poison.co_doc.passive_04.divine.b",
+@@ -9362,7 +9371,8 @@
+         29
+       ],
+       "required_divine_stage": 1,
+-      "divine_rule": "single_spread_poison"
++      "divine_rule": "single_spread_poison",
++      "divine_rule_status": "DESIGN_PENDING"
+     },
+     {
+       "id": "tmb.skill.poison.co_doc.passive_05.divine.b",
+@@ -9472,7 +9482,8 @@
+         29
+       ],
+       "required_divine_stage": 0,
+-      "divine_rule": "single_spread_poison"
++      "divine_rule": "single_spread_poison",
++      "divine_rule_status": "DESIGN_PENDING"
+     },
+     {
+       "id": "tmb.skill.poison.co_doc.innate.divine.b",
+@@ -9617,7 +9628,8 @@
+         29
+       ],
+       "required_divine_stage": 1,
+-      "divine_rule": "removed_debuff_counter"
++      "divine_rule": "removed_debuff_counter",
++      "divine_rule_status": "DESIGN_PENDING"
+     },
+     {
+       "id": "tmb.skill.poison.duoc_doc.active_02.divine.a",
+@@ -9707,7 +9719,8 @@
+         29
+       ],
+       "required_divine_stage": 1,
+-      "divine_rule": "removed_debuff_counter"
++      "divine_rule": "removed_debuff_counter",
++      "divine_rule_status": "DESIGN_PENDING"
+     },
+     {
+       "id": "tmb.skill.poison.duoc_doc.active_03.divine.a",
+@@ -9797,7 +9810,8 @@
+         29
+       ],
+       "required_divine_stage": 1,
+-      "divine_rule": "removed_debuff_counter"
++      "divine_rule": "removed_debuff_counter",
++      "divine_rule_status": "DESIGN_PENDING"
+     },
+     {
+       "id": "tmb.skill.poison.duoc_doc.active_04.divine.a",
+@@ -9887,7 +9901,8 @@
+         29
+       ],
+       "required_divine_stage": 1,
+-      "divine_rule": "removed_debuff_counter"
++      "divine_rule": "removed_debuff_counter",
++      "divine_rule_status": "DESIGN_PENDING"
+     },
+     {
+       "id": "tmb.skill.poison.duoc_doc.ultimate.divine.a",
+@@ -9977,7 +9992,8 @@
+         29
+       ],
+       "required_divine_stage": 1,
+-      "divine_rule": "removed_debuff_counter"
++      "divine_rule": "removed_debuff_counter",
++      "divine_rule_status": "DESIGN_PENDING"
+     },
+     {
+       "id": "tmb.skill.poison.duoc_doc.passive_01.divine.a",
+@@ -10087,7 +10103,8 @@
+         29
+       ],
+       "required_divine_stage": 1,
+-      "divine_rule": "removed_debuff_counter"
++      "divine_rule": "removed_debuff_counter",
++      "divine_rule_status": "DESIGN_PENDING"
+     },
+     {
+       "id": "tmb.skill.poison.duoc_doc.passive_02.divine.a",
+@@ -10197,7 +10214,8 @@
+         29
+       ],
+       "required_divine_stage": 1,
+-      "divine_rule": "removed_debuff_counter"
++      "divine_rule": "removed_debuff_counter",
++      "divine_rule_status": "DESIGN_PENDING"
+     },
+     {
+       "id": "tmb.skill.poison.duoc_doc.passive_03.divine.a",
+@@ -10307,7 +10325,8 @@
+         29
+       ],
+       "required_divine_stage": 1,
+-      "divine_rule": "removed_debuff_counter"
++      "divine_rule": "removed_debuff_counter",
++      "divine_rule_status": "DESIGN_PENDING"
+     },
+     {
+       "id": "tmb.skill.poison.duoc_doc.passive_04.divine.a",
+@@ -10417,7 +10436,8 @@
+         29
+       ],
+       "required_divine_stage": 1,
+-      "divine_rule": "removed_debuff_counter"
++      "divine_rule": "removed_debuff_counter",
++      "divine_rule_status": "DESIGN_PENDING"
+     },
+     {
+       "id": "tmb.skill.poison.duoc_doc.passive_05.divine.a",
+@@ -10527,7 +10547,8 @@
+         29
+       ],
+       "required_divine_stage": 1,
+-      "divine_rule": "removed_debuff_counter"
++      "divine_rule": "removed_debuff_counter",
++      "divine_rule_status": "DESIGN_PENDING"
+     },
+     {
+       "id": "tmb.skill.poison.duoc_doc.innate.divine.a",
+@@ -10637,7 +10658,8 @@
+         29
+       ],
+       "required_divine_stage": 0,
+-      "divine_rule": "removed_debuff_counter"
++      "divine_rule": "removed_debuff_counter",
++      "divine_rule_status": "DESIGN_PENDING"
+     },
+     {
+       "id": "tmb.skill.bow.liep_anh.ultimate.rare.a",
+@@ -12175,6 +12197,7 @@
+       ],
+       "required_divine_stage": 3,
+       "divine_rule": "single_spread_poison",
++      "divine_rule_status": "DESIGN_PENDING",
+       "replaces_skill_id": "tmb.skill.poison.co_doc.ultimate.divine.a",
+       "rarity": "rare_divine",
+       "variant_type": "rare_ultimate_replacement"
+@@ -12233,6 +12256,7 @@
+       ],
+       "required_divine_stage": 3,
+       "divine_rule": "single_spread_poison",
++      "divine_rule_status": "DESIGN_PENDING",
+       "replaces_skill_id": "tmb.skill.poison.co_doc.passive_05.divine.a",
+       "rarity": "rare_divine",
+       "variant_type": "rare_elective_passive_replacement"
+@@ -12493,6 +12517,7 @@
+       ],
+       "required_divine_stage": 3,
+       "divine_rule": "removed_debuff_counter",
++      "divine_rule_status": "DESIGN_PENDING",
+       "replaces_skill_id": "tmb.skill.poison.duoc_doc.ultimate.divine.b",
+       "rarity": "rare_divine",
+       "variant_type": "rare_ultimate_replacement"
+@@ -12551,6 +12576,7 @@
+       ],
+       "required_divine_stage": 3,
+       "divine_rule": "removed_debuff_counter",
++      "divine_rule_status": "DESIGN_PENDING",
+       "replaces_skill_id": "tmb.skill.poison.duoc_doc.passive_05.divine.b",
+       "rarity": "rare_divine",
+       "variant_type": "rare_elective_passive_replacement"
+diff --git a/godot/src/simulation/combat/v63_human_skill_combat_system.gd b/godot/src/simulation/combat/v63_human_skill_combat_system.gd
+index ef90253..666524c 100644
+--- a/godot/src/simulation/combat/v63_human_skill_combat_system.gd
++++ b/godot/src/simulation/combat/v63_human_skill_combat_system.gd
+@@ -402,11 +402,24 @@ static func _support_target(battle: MapBattleV2, actor: Dictionary, skill: Dicti
+         if str(ally.side) != str(actor.side) or float(ally.hp) <= 0.0:
+             continue
+         if (actor["position"] as Vector2).distance_to(ally["position"]) <= float(skill.range):
++            if str(skill.get("effect", "")) == "heal":
++                var missing_hp := maxf(0.0, float(ally.get("max_hp", 0.0)) - float(ally.get("hp", 0.0)))
++                if missing_hp <= 0.001:
++                    continue
++                var potential_heal := minf(float(ally.get("max_hp", 0.0)) * clampf(float(skill.get("power", 0.0)), 0.0, 0.5), missing_hp)
++                if V63DivineSkillCombatSystem.healing_amount(actor, ally, potential_heal) <= 0.001:
++                    continue
+             candidates.append(ally)
+     if str(skill.effect) == "cleanse":
+-        candidates.sort_custom(func(a: Dictionary,b: Dictionary): return _status_count(a) > _status_count(b))
++        candidates.sort_custom(func(a: Dictionary,b: Dictionary):
++            var a_count := _status_count(a)
++            var b_count := _status_count(b)
++            return a_count > b_count if a_count != b_count else str(a.id) < str(b.id))
+         return candidates[0] if not candidates.is_empty() and _status_count(candidates[0]) > 0 else {}
+-    candidates.sort_custom(func(a: Dictionary,b: Dictionary): return float(a.hp)/maxf(1.0,float(a.max_hp)) < float(b.hp)/maxf(1.0,float(b.max_hp)))
++    candidates.sort_custom(func(a: Dictionary,b: Dictionary):
++        var a_ratio := float(a.hp) / maxf(1.0, float(a.max_hp))
++        var b_ratio := float(b.hp) / maxf(1.0, float(b.max_hp))
++        return a_ratio < b_ratio if not is_equal_approx(a_ratio, b_ratio) else str(a.id) < str(b.id))
+     return candidates[0] if not candidates.is_empty() else {}
+ 
+ static func _status_count(actor: Dictionary) -> int:
+@@ -536,6 +549,8 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
+             _apply_mark(battle,caster,target,id,float(cast.power),float(cast.duration))
+         elif effect == "consume_poison":
+             _consume_poison(battle,caster,target,id)
++        if damage > 0.0 and effect in ["damage", "consume_poison"] and str(definition.get("combat_trait", "")) == "co_doc_b":
++            _consume_mark(battle,caster,target,id)
+         meaningful = meaningful or damage > 0.0 or effect in ["guard", "mark", "poison", "cleanse"] or float(target.hp) > before
+         battle._event("v63_skill_hit",{"caster":str(caster.id),"target":str(target.id),"skill_id":id,"effect":effect,"damage":damage,"target_hp_before":before,"target_hp_after":float(target.hp)})
+         if damage > 0.0:
+@@ -631,7 +646,8 @@ static func _cleanse_target(battle: MapBattleV2, caster: Dictionary, target: Dic
+             statuses.erase(status_id)
+             cleared.append(status_id)
+     target["status_effects"] = statuses
+-    battle._event("cleanse",{"caster":str(caster.id),"target":str(target.id),"skill_id":skill_id,"poison_stacks":removed,"statuses":cleared})
++    var removed_debuff_count := removed + cleared.size()
++    battle._event("cleanse",{"caster":str(caster.id),"target":str(target.id),"skill_id":skill_id,"poison_stacks":removed,"statuses":cleared,"removed_debuff_count":removed_debuff_count})
+ 
+ static func _apply_mark(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String, power: float, duration: float) -> void:
+     var marks: Dictionary = target.get("v63_marks",{})
+@@ -639,6 +655,20 @@ static func _apply_mark(battle: MapBattleV2, caster: Dictionary, target: Diction
+     target["v63_marks"] = marks
+     battle._event("status_applied",{"caster":str(caster.id),"target":str(target.id),"status":"mark","skill_id":skill_id,"until":float(marks[str(caster.id)].until)})
+ 
++static func _consume_mark(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String) -> int:
++    var marks: Dictionary = target.get("v63_marks", {})
++    var owner_id := str(caster.id)
++    var mark: Dictionary = marks.get(owner_id, {})
++    if mark.is_empty() or battle.now >= float(mark.get("until", -1.0)):
++        return 0
++    marks.erase(owner_id)
++    if marks.is_empty():
++        target.erase("v63_marks")
++    else:
++        target["v63_marks"] = marks
++    battle._event("mark_consumed",{"caster":owner_id,"target":str(target.id),"skill_id":skill_id,"source_skill_id":str(mark.get("skill_id", "")),"stacks":1})
++    return 1
++
+ static func _apply_poison(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String, ratio: float, duration: float, requested: int, element: String) -> void:
+     var statuses: Dictionary = target.get("status_effects",{})
+     var stacks: Array = statuses.get("v63_poison",[])
+@@ -726,9 +756,15 @@ static func process_status_effects(battle: MapBattleV2) -> void:
+                     proxy["max_hp"] = 1.0
+                     proxy["context_sources"] = []
+                     proxy["v63_combat_enabled"] = false
++                    var event_start := battle.events.size()
++                    var kill_start := battle._pending_kill_events.size()
++                    var hp_before := float(target.get("hp", 0.0))
+                     var damage := battle._deal_direct(proxy,target,float(stack.get("ratio",0.0))*factor,"v63_poison",false,str(stack.get("element","nether")),false)
++                    _attribute_poison_tick(battle,target,owner,stack,event_start,kill_start)
+                     battle._event("status_tick",{"caster":str(owner.id),"target":str(target.id),"status":"poison","damage":damage,
+-                        "source_skill_id":str(stack.get("source_skill_id","")),"stack_ordinal":ordinal+1,"diminishing_factor":factor})
++                        "source_skill_id":str(stack.get("source_skill_id","")),"source_skill_generation_id":str(stack.get("source_skill_generation_id", "")),
++                        "owner_id":str(owner.id),"stack_ordinal":int(stack.get("stack_ordinal", ordinal+1)),"diminishing_factor":factor,
++                        "target_hp_before":hp_before,"target_hp_after":float(target.get("hp", 0.0))})
+                     stack["next_tick"] = float(stack.get("next_tick",battle.now))+1.0
+                 ordinal += 1
+             if kept.is_empty():
+@@ -742,6 +778,30 @@ static func process_status_effects(battle: MapBattleV2) -> void:
+                 marks.erase(owner_id)
+         target["v63_marks"] = marks
+ 
++static func _attribute_poison_tick(battle: MapBattleV2, target: Dictionary, owner: Dictionary, stack: Dictionary, event_start: int, kill_start: int) -> void:
++    var owner_id := str(owner.get("id", ""))
++    var target_id := str(target.get("id", ""))
++    var source_skill_id := str(stack.get("source_skill_id", ""))
++    var source_generation_id := str(stack.get("source_skill_generation_id", ""))
++    var stack_ordinal := int(stack.get("stack_ordinal", 0))
++    var attribution := {"damage_source":"poison_dot","source_skill_id":source_skill_id,
++        "source_skill_generation_id":source_generation_id,"poison_stack_ordinal":stack_ordinal}
++    for event_index in range(event_start, battle.events.size()):
++        var event: Dictionary = battle.events[event_index]
++        var event_type := str(event.get("type", ""))
++        if event_type == "hit" and str(event.get("attacker", "")) == owner_id and str(event.get("target", "")) == target_id and str(event.get("kind", "")) == "v63_poison":
++            event.merge(attribution, true)
++            battle.events[event_index] = event
++        elif event_type == "downed" and str(event.get("actor_id", "")) == target_id:
++            event.merge(attribution, true)
++            event["killer_actor_id"] = owner_id
++            battle.events[event_index] = event
++    for kill_index in range(kill_start, battle._pending_kill_events.size()):
++        var kill: Dictionary = battle._pending_kill_events[kill_index]
++        if str(kill.get("monster_instance_id", "")) == target_id and str(kill.get("killer_actor_id", "")) == owner_id and str(kill.get("damage_kind", "")) == "v63_poison":
++            kill.merge(attribution, true)
++            battle._pending_kill_events[kill_index] = kill
++
+ static func observe_boss_damage(battle: MapBattleV2, actor: Dictionary, hp_before: float,
+         attacker: Dictionary = {}, element: String = "", kind: String = "") -> void:
+     if battle == null or not bool(actor.get("v63_custom_boss_ai",false)) or not bool(actor.get("v63_combat_enabled",false)):
+diff --git a/godot/tests/simulation/v65_poison_combat_contract_test.gd b/godot/tests/simulation/v65_poison_combat_contract_test.gd
+new file mode 100644
+index 0000000..f0c9617
+--- /dev/null
++++ b/godot/tests/simulation/v65_poison_combat_contract_test.gd
+@@ -0,0 +1,286 @@
++extends SceneTree
++
++func _init() -> void:
++	call_deferred("_run")
++
++func _check(value: bool, message: String) -> bool:
++	if not value:
++		push_error("V65_POISON_FAIL: " + message)
++		quit(1)
++	return value
++
++func _run() -> void:
++	if not _catalogue_coverage() or not _healer_targeting() or not _real_poison_cast() or not _owned_poison_snapshot() or not _marked_punish():
++		return
++	if not _poison_kill_and_respawn():
++		return
++	print("V65_POISON_PASS: 183 records routed; heal target gating; owner consume; 30-stack snapshot/tick idempotence; marked punish; DoT kill attribution and generation-safe respawn")
++	quit(0)
++
++func _catalogue_coverage() -> bool:
++	var counts := {"human":0,"immortal":0,"divine":0}
++	var pending_rule_counts := {"single_spread_poison":0,"removed_debuff_counter":0}
++	var files := {
++		"human":"res://data/combat/v63_human_combat_catalog.json",
++		"immortal":"res://data/combat/v63_immortal_combat_catalog.json",
++		"divine":"res://data/combat/v63_divine_combat_catalog.json"
++	}
++	for generation in files:
++		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(str(files[generation])))
++		if not _check(parsed is Dictionary and parsed.get("skills", null) is Array, "invalid catalogue: " + str(generation)):
++			return false
++		for raw in parsed.skills:
++			var skill: Dictionary = raw
++			if not str(skill.get("id", "")).begins_with("tmb.skill.poison."):
++				continue
++			counts[generation] = int(counts[generation]) + 1
++			if not _check(V63HumanSkillCombatSystem.skill_definition(str(skill.id)).size() > 0, "unresolved skill id: " + str(skill.id)):
++				return false
++			var effects: Array = V63HumanSkillCombatSystem.EFFECTS
++			if not _check(effects.has(str(skill.get("effect", ""))), "effect has no Combat V2 handler: " + str(skill.id)):
++				return false
++			var rule := str(skill.get("divine_rule", ""))
++			if generation == "divine" and pending_rule_counts.has(rule):
++				if not _check(str(skill.get("divine_rule_status", "")) == "DESIGN_PENDING", "underdetailed Divine rule is not marked DESIGN_PENDING: " + str(skill.id)):
++					return false
++				pending_rule_counts[rule] = int(pending_rule_counts[rule]) + 1
++	return _check(counts == {"human":35,"immortal":68,"divine":80} and pending_rule_counts == {"single_spread_poison":13,"removed_debuff_counter":13},
++		"poison record or DESIGN_PENDING count mismatch: %s / %s" % [str(counts), str(pending_rule_counts)])
++
++func _healer_targeting() -> bool:
++	var party := [_actor("healer", Vector2(18,8)), _actor("wounded", Vector2(19,8))]
++	var enemy := _monster("heal_target", Vector2(20,8), 10000.0, false)
++	var battle := MapBattleV2.new(65001)
++	if not _check(bool(battle.setup("heal_ai", party, [enemy]).get("ok", false)), "heal AI battle setup"):
++		return false
++	var healer: Dictionary = battle.actors.healer
++	var wounded: Dictionary = battle.actors.wounded
++	var skill := V63HumanSkillCombatSystem.skill_definition("tmb.skill.poison.duoc_doc.active_02.human")
++	wounded["hp"] = 2500.0
++	if not _check(str(skill.get("effect", "")) == "heal" and str(V63HumanSkillCombatSystem._support_target(battle, healer, skill).get("id", "")) == "wounded", "AI did not select an injured ally"):
++		return false
++	wounded["hp"] = float(wounded.max_hp)
++	if not _check(V63HumanSkillCombatSystem._support_target(battle, healer, skill).is_empty(), "AI selected an ally at full HP"):
++		return false
++	wounded["hp"] = 2500.0
++	wounded["v63_blood_mode"] = "blood_covenant"
++	if not _check(V63HumanSkillCombatSystem._support_target(battle, healer, skill).is_empty(), "AI selected an unhealable Blood Covenant target"):
++		return false
++	wounded["v63_blood_mode"] = "blood_ma"
++	wounded["v63_base_max_hp"] = float(wounded.max_hp)
++	wounded["hp"] = 3000.0
++	return _check(str(V63HumanSkillCombatSystem._support_target(battle, healer, skill).get("id", "")) == "wounded", "Blood Ma low-HP ally was incorrectly excluded")
++
++func _real_poison_cast() -> bool:
++	var caster_row := _actor("needle_owner", Vector2(18,8))
++	var target_row := _monster("needle_target", Vector2(19,8), 100000.0, false)
++	var battle := MapBattleV2.new(65006)
++	if not _check(bool(battle.setup("needle_cast", [caster_row], [target_row]).get("ok", false)), "poison cast setup"):
++		return false
++	var caster: Dictionary = battle.actors.needle_owner
++	var target: Dictionary = battle.actors.needle_target
++	var skill_id := "tmb.skill.poison.doc_cham.active_02.human"
++	caster["v63_skill_loadout"] = [skill_id]
++	var skill := V63HumanSkillCombatSystem.skill_definition(skill_id)
++	var hp_before := float(target.hp)
++	V63HumanSkillCombatSystem.release_cast(battle, _cast(skill, caster, target), caster)
++	var stacks: Array = target.get("status_effects", {}).get("v63_poison", [])
++	if not _check(float(target.hp) < hp_before and stacks.size() == 1, "Độc Châm cast failed to damage and poison a normal monster"):
++		return false
++	return _check(str(stacks[0].get("owner_id", "")) == "needle_owner" and str(stacks[0].get("source_skill_id", "")) == skill_id and
++		int(stacks[0].get("stack_ordinal", 0)) == 1 and is_equal_approx(float(stacks[0].get("next_tick", -1.0)), 1.0),
++		"real cast lost poison source/timer attribution")
++
++func _owned_poison_snapshot() -> bool:
++	var party: Array = []
++	for index in range(6):
++		party.append(_actor("owner_" + str(index), Vector2(18, 5 + index)))
++	var target_row := _monster("poison_boss", Vector2(22,8), 10000000.0, true)
++	var battle := MapBattleV2.new(65002)
++	if not _check(bool(battle.setup("poison_snapshot", party, [target_row]).get("ok", false)), "poison battle setup"):
++		return false
++	var target: Dictionary = battle.actors.poison_boss
++	var skill_id := "tmb.skill.poison.doc_cham.active_01.divine.a"
++	for index in range(6):
++		var owner: Dictionary = battle.actors["owner_" + str(index)]
++		owner["v63_skill_loadout"] = [skill_id]
++		V63HumanSkillCombatSystem._apply_poison(battle, owner, target, skill_id, 0.2, 10.0, 9, "nether")
++	var stacks: Array = target.status_effects.v63_poison
++	if not _check(stacks.size() == 30, "six-owner boss stack cap is not 30"):
++		return false
++	var saved_owner := str(stacks[0].owner_id)
++	var saved_source := str(stacks[0].source_skill_id)
++	var saved_ordinal := int(stacks[0].stack_ordinal)
++	var saved_next_tick := float(stacks[0].next_tick)
++	var saved_expiry := float(stacks[0].expires_at)
++	battle.now = 0.75
++	var loaded := MapBattleSnapshotV2.load(MapBattleSnapshotV2.save(battle))
++	if not _check(bool(loaded.get("ok", false)), "poison snapshot restore failed: " + str(loaded)):
++		return false
++	battle = loaded.battle
++	target = battle.actors.poison_boss
++	stacks = target.status_effects.v63_poison
++	if not _check(str(stacks[0].owner_id) == saved_owner and str(stacks[0].source_skill_id) == saved_source and int(stacks[0].stack_ordinal) == saved_ordinal and
++		is_equal_approx(float(stacks[0].next_tick), saved_next_tick) and is_equal_approx(float(stacks[0].expires_at), saved_expiry),
++		"snapshot lost poison owner, source, or timers"):
++		return false
++	for step in range(1, 14):
++		battle.now = 0.75 + float(step) * 0.25
++		V63HumanSkillCombatSystem.process_status_effects(battle)
++		var expected_ticks := int(floor(battle.now)) * 30
++		if not _check(_event_count(battle, "status_tick") == expected_ticks, "poison tick cadence mismatch at %.2fs" % battle.now):
++			return false
++		for event in battle.events:
++			if str(event.get("type", "")) == "status_tick":
++				if not _check(is_equal_approx(float(event.get("diminishing_factor", 0.0)), 0.65), "boss diminishing factor is not 19.5/30"):
++					return false
++	V63HumanSkillCombatSystem.process_status_effects(battle)
++	if not _check(_event_count(battle, "status_tick") == 120, "same-time status processing duplicated poison ticks"):
++		return false
++	var poison_hits := 0
++	for event in battle.events:
++		if str(event.get("type", "")) == "hit" and str(event.get("kind", "")) == "v63_poison":
++			poison_hits += 1
++			if not _check(not bool(event.get("critical", false)) and float(event.get("lifesteal", 0.0)) == 0.0, "poison tick crit/lifesteal is forbidden"):
++				return false
++	if not _check(poison_hits == 120 and float(target.hp) < 10000000.0, "poison failed to deal real direct HP damage"):
++		return false
++	var consumer_id := "tmb.skill.poison.co_doc.active_02.divine.b"
++	var consumer: Dictionary = V63HumanSkillCombatSystem.skill_definition(consumer_id)
++	var cast := _cast(consumer, battle.actors.owner_0, target)
++	V63HumanSkillCombatSystem.release_cast(battle, cast, battle.actors.owner_0)
++	var retained: Array = target.get("status_effects", {}).get("v63_poison", [])
++	var owner_count := 0
++	for stack in retained:
++		if str(stack.get("owner_id", "")) == "owner_0":
++			owner_count += 1
++	if not _check(owner_count == 0 and retained.size() == 25, "consume removed another caster's poison or left owned stacks"):
++		return false
++	return _poison_resistance()
++
++func _poison_resistance() -> bool:
++	var damages: Array[float] = []
++	for resisted in [false, true]:
++		var caster_row := _actor("resist_owner", Vector2(18,8))
++		var target_row := _monster("resist_target", Vector2(19,8), 10000.0, true)
++		if resisted:
++			target_row["resistances"]["nether"] = 0.5
++		var battle := MapBattleV2.new(65005)
++		if not _check(bool(battle.setup("poison_resistance_" + str(resisted), [caster_row], [target_row]).get("ok", false)), "resistance setup"):
++			return false
++		var caster: Dictionary = battle.actors.resist_owner
++		var target: Dictionary = battle.actors.resist_target
++		var skill_id := "tmb.skill.poison.doc_cham.active_02.human"
++		V63HumanSkillCombatSystem._apply_poison(battle, caster, target, skill_id, 0.2, 3.0, 1, "nether")
++		battle.now = 1.0
++		V63HumanSkillCombatSystem.process_status_effects(battle)
++		for event in battle.events:
++			if str(event.get("type", "")) == "status_tick":
++				damages.append(float(event.get("damage", 0.0)))
++				break
++	if not _check(damages.size() == 2 and damages[0] > damages[1] and damages[1] > 0.0,
++		"boss Nether resistance did not reduce real poison HP damage: " + str(damages)):
++		return false
++	return true
++
++func _marked_punish() -> bool:
++	var caster_row := _actor("mark_owner", Vector2(18,8))
++	var target_row := _monster("mark_target", Vector2(19,8), 100000.0, false)
++	var battle := MapBattleV2.new(65003)
++	if not _check(bool(battle.setup("marked_punish", [caster_row], [target_row]).get("ok", false)), "marked punish setup"):
++		return false
++	var caster: Dictionary = battle.actors.mark_owner
++	var target: Dictionary = battle.actors.mark_target
++	var mark_id := "tmb.skill.poison.co_doc.active_01.divine.b"
++	var punish_id := "tmb.skill.poison.co_doc.active_03.divine.b"
++	V63HumanSkillCombatSystem._apply_mark(battle, caster, target, mark_id, 1.12, 3.0)
++	if not _check(V63HumanSkillCombatSystem.marked_damage_factor(caster, target, battle.now) > 1.0, "Phệ Cổ mark did not arm the owned punish"):
++		return false
++	var cast := _cast(V63HumanSkillCombatSystem.skill_definition(punish_id), caster, target)
++	cast["ratio"] = 0.5
++	V63HumanSkillCombatSystem.release_cast(battle, cast, caster)
++	return _check(target.get("v63_marks", {}).is_empty() and _event_count(battle, "mark_consumed") == 1,
++		"Phệ Cổ punish did not consume its own mark exactly once")
++
++func _poison_kill_and_respawn() -> bool:
++	var caster_row := _actor("dot_owner", Vector2(18,8))
++	var monster_row := _monster("dot_victim", Vector2(19,8), 100.0, false)
++	monster_row["hp"] = 1.0
++	monster_row["spawn_slot_id"] = "poison_slot"
++	monster_row["slot_generation"] = 1
++	var battle := MapBattleV2.new(65004)
++	if not _check(bool(battle.setup("poison_kill", [caster_row], [monster_row], true).get("ok", false)), "DoT kill battle setup"):
++		return false
++	var caster: Dictionary = battle.actors.dot_owner
++	var target: Dictionary = battle.actors.dot_victim
++	var skill_id := "tmb.skill.poison.doc_cham.active_02.human"
++	caster["v63_skill_loadout"] = [skill_id]
++	V63HumanSkillCombatSystem._apply_poison(battle, caster, target, skill_id, 0.2, 5.0, 1, "nether")
++	battle.now = 1.0
++	V63HumanSkillCombatSystem.process_status_effects(battle)
++	var kills := battle.pending_kill_events()
++	if not _check(float(target.hp) == 0.0 and kills.size() == 1, "DoT failed to kill or produced duplicate kill journal entries"):
++		return false
++	if not _check(str(kills[0].get("damage_kind", "")) == "v63_poison" and str(kills[0].get("killer_actor_id", "")) == "dot_owner" and
++		str(kills[0].get("source_skill_id", "")) == skill_id and str(kills[0].get("source_skill_generation_id", "")) == skill_id and
++		int(kills[0].get("poison_stack_ordinal", 0)) == 1, "DoT kill receipt lost exact owner/skill/stack attribution"):
++		return false
++	if not _check(_event_count(battle, "downed") == 1, "DoT kill did not emit exactly one downed event"):
++		return false
++	var restored := MapBattleSnapshotV2.load(MapBattleSnapshotV2.save(battle))
++	if not _check(bool(restored.get("ok", false)), "post-kill snapshot restore failed: " + str(restored)):
++		return false
++	battle = restored.battle
++	V63HumanSkillCombatSystem.process_status_effects(battle)
++	if not _check(battle.pending_kill_events().size() == 1 and _event_count(battle, "downed") == 1,
++		"save/reload replay duplicated a DoT kill or downed event"):
++		return false
++	if not _check(battle.remove_downed_monster("dot_victim"), "could not remove dead poison target"):
++		return false
++	var respawn := _monster("dot_victim_g2", Vector2(20,8), 100.0, false)
++	respawn["spawn_slot_id"] = "poison_slot"
++	respawn["slot_generation"] = 2
++	var added := battle.add_continuous_monster(respawn)
++	if not _check(bool(added.get("ok", false)), "next monster generation did not spawn"):
++		return false
++	return _check(not battle.actors.dot_victim_g2.get("status_effects", {}).has("v63_poison"), "respawn inherited poison from previous generation")
++
++func _actor(id: String, position: Vector2) -> Dictionary:
++	var core := CombatStatsV2.derive(11, 1, 10, 1, 0.0)
++	var stats: Dictionary = core.stats.duplicate(true)
++	stats["max_hp"] = 10000.0
++	stats["attack"] = 100.0
++	stats["defense"] = 40.0
++	stats["crit_chance"] = 0.0
++	return {"id":id,"party_id":"poison_test","role":"frontline","tier":"disciple","race_id":"nhan_toc",
++		"position":position,"stats":stats,"hp":10000.0,"max_hp":10000.0,"resistances":core.resistances,
++		"basic_range":2.0,"move_speed":1.0,"basic_ratio":0.1,"basic_interval":1000.0,"skill_loadout":[],
++		"skill_factors":{},"context_sources":[],"disciple":null}
++
++func _monster(id: String, position: Vector2, hp: float, boss: bool) -> Dictionary:
++	var row := MonsterCatalogueV2.create_actor("truc_thu", 11, 1, id)
++	row["id"] = id
++	row["position"] = position
++	row["tier"] = "boss" if boss else "normal"
++	row["stats"]["max_hp"] = hp
++	row["stats"]["attack"] = 100.0
++	row["stats"]["defense"] = 0.0
++	row["hp"] = hp
++	return row
++
++func _cast(skill: Dictionary, caster: Dictionary, target: Dictionary) -> Dictionary:
++	var cast := {"caster":str(caster.id),"target_id":str(target.id),"v63_skill_id":str(skill.id),"ready":1.0,
++		"ratio":float(skill.get("damage_ratio", 0.0)),"element":str(skill.get("element", "nether")),"effect":str(skill.effect),
++		"shape":str(skill.get("shape", "single")),"power":float(skill.get("power", 0.0)),"duration":float(skill.get("duration", 0.0)),
++		"poison_stacks":int(skill.get("poison_stacks", 1)),"radius":float(skill.get("radius", 0.0)),
++		"maximum":mini(3, maxi(1, int(skill.get("target_limit", 1))))}
++	if str(cast.shape) == "circle":
++		cast["center"] = target.get("position", Vector2.ZERO)
++	return cast
++
++func _event_count(battle: MapBattleV2, event_type: String) -> int:
++	var count := 0
++	for event in battle.events:
++		if str(event.get("type", "")) == event_type:
++			count += 1
++	return count
+
