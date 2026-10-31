@@ -431,10 +431,11 @@ func _refresh_guide_selectors() -> void:
     _assistant_select.select(0)
     var charm := float(snapshot.get("snapshot_main_charisma", 0.0))
     var rates := recruitment.guidance_quality_rates_for_charisma(charm)
-    _guide_hint.text = "Ảnh hưởng từ ngày mô phỏng kế tiếp\nNghịch Thiên: %.1f%% · Chỗ hỗ trợ %d" % [
+    var platform := BuildingSystem.new().primary_building(game_state, BuildingSystem.TYPE_GUIDANCE_PLATFORM)
+    var slots := maxi(BuildingSystem.new().guidance_elder_slots(platform) - 1, 0) if platform != null else 0
+    _guide_hint.text = "Hiệu lực ngày mô phỏng kế tiếp\nNghịch Thiên hôm nay: %.1f%% · Hỗ trợ %d/%d" % [
         float(rates.get("heaven_defying",0.002))*100.0,
-        maxi(BuildingSystem.new().guidance_elder_slots(
-            BuildingSystem.new().primary_building(game_state,BuildingSystem.TYPE_GUIDANCE_PLATFORM))-1,0)
+        assistants.size(), slots
     ]
 
 func _on_guide_selected(index: int) -> void:
