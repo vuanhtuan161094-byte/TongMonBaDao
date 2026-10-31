@@ -169,9 +169,9 @@ static func review(state: SimulationState) -> void:
         # Only explicitly Chuyên Tu disciples auto-consume Tụ Khí Đan;
         # everyone else still earns passive Tu Vi and can receive manual pills.
         var selected: Dictionary = policy.get("priority_tuvi_ids", {})
-        if not bool(policy.get("auto_use_tu_khi_dan", false)) \
-            or (disciple.current_action != &"CULTIVATE" and not bool(selected.get(str(disciple.id), false))) \
-            :
+        if not bool(policy.get("auto_use_tu_khi_dan", false)) or (
+            disciple.current_action != &"CULTIVATE" and not bool(selected.get(str(disciple.id), false))
+        ):
             continue
         var count := int(used_today.get(str(disciple.id), 0))
         if count >= int(policy.get("auto_tu_khi_per_day", 2)):
