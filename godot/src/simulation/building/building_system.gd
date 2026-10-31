@@ -1513,7 +1513,8 @@ func _select_crop(state: SimulationState, field: BuildingState, data: Dictionary
     # SX-01 only owns the existing AUTO_DEMAND route. Never override a
     # player's FIXED or PRIORITY field strategy, or mint crop outputs.
     if mode == FIELD_POLICY_AUTO_DEMAND and SX01PillPolicy.active(state) \
-        and bool(state.sect.sx01_pill_policy.get("auto_production", false)):
+        and bool(state.sect.sx01_pill_policy.get("auto_production", false)) \
+        and str(state.sect.sx01_pill_policy.get("recipe_mode", "fixed")) == "demand":
         var hall := primary_building(state, TYPE_ALCHEMY_HALL)
         var pill_plan := SX01PillPolicy.stock_plan(state, hall)
         var herb_needed := int(pill_plan["deficit_hxd"]) * 3 + int(pill_plan["deficit_tqd"]) * 2
