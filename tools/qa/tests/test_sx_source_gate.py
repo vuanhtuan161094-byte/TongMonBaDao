@@ -130,13 +130,21 @@ class StaticSourceGateTest(unittest.TestCase):
         self.assertFalse(result["medicine"]["present"])
 
     def test_actual_producer_removes_missing_source_without_changing_gate(self):
-        self.write("building/spirit_crop_registry.gd", CROPS +
-                   '\n# fixture producer; invalid gameplay economy not implied\n'
-                   '"output_resource_id": "tam_mach_ban"\n')
+        # Replace a real crop entry inside the registry, not a loose text/comment.
+        crop = CROPS.replace('"output_resource_id": "thanh_linh_thao"',
+                             '"output_resource_id": "tam_mach_ban"')
+        self.write("building/spirit_crop_registry.gd", crop)
         result = gate.run(self.root)
         ids = {(x["id"], x["subject"]) for x in result["issues"]}
         self.assertNotIn(("MILESTONE_NO_SOURCE_FOUND", "tam_mach_ban"), ids)
         self.assertIn(("MILESTONE_UNDEFINED", "mine Lv20"), ids)
+
+    def test_commented_out_pseudo_producer_does_not_remove_p0(self):
+        self.write("building/spirit_crop_registry.gd",
+                   CROPS + '\n# "output_resource_id": "tam_mach_ban"\n')
+        result = gate.run(self.root)
+        self.assertTrue(any(x["id"] == "MILESTONE_NO_SOURCE_FOUND" and
+                            x["subject"] == "tam_mach_ban" for x in result["issues"]))
 
     def test_tier_coverage_only_counts_authored_recipe_ranks(self):
         self.write("building/medicine_catalogue_v2.gd",
