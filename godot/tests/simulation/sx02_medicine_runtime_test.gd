@@ -116,6 +116,7 @@ func run() -> void:
                 verify(str(d.v2_realm_progress["cultivation"]) != str(cultivation_before),
                     "real V2 cultivation progress changed")
 
+    receipt_sequence = int(d.b3_pill_state.get("sequence", 0))
     var final_reload := LiveGameRuntimeV2.new()
     if verify(bool(final_reload.start(save_path, owner.state.runtime_last_wall_unix).get("ok", false)),
         "reload after durable medicine use"):
