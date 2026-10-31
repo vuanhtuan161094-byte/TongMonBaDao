@@ -24,6 +24,23 @@ static func spent_today(state: SimulationState, d: DiscipleState) -> int:
 static func next_sequence(d: DiscipleState) -> int:
     return int(d.b3_pill_state.get("sequence",0))+1
 
+# A Tu Vi pill can be used DURING safe Chuyên Tu without interrupting it.
+# Do not change B3 CARE's stricter busy() gate: that gate also controls
+# auto-hunt deployment and must never steal a cultivating actor.
+static func safe_cultivation_pill_window(state: SimulationState, d: DiscipleState) -> bool:
+    if state == null or d == null or d.current_action != &"CULTIVATE" or d.region_id != &"sect":
+        return false
+    if not d.active_pve_encounter_id.is_empty() or d.active_job_id != &"" or not d.v63_study_job.is_empty():
+        return false
+    var command := WorkforceSystem.new().command_kind(d)
+    if command not in [&"", WorkforceSystem.COMMAND_HOLD, WorkforceSystem.COMMAND_CULTIVATE]:
+        return false
+    var b := BuildingSystem.new()
+    return d.work_cycle_state.is_empty() and d.work_progress.is_empty() \
+        and not b.disciple_has_active_spirit_plot(state, d.id) \
+        and not b.disciple_has_active_timed_recipe(state, d.id) \
+        and not DiscipleBodyTrainingFacilityV2.has_reserved_slot(state, d)
+
 static func consume(state: SimulationState, d: DiscipleState, pill: StringName, sequence: int) -> Dictionary:
     if d == null or state.disciples.get(d.id) != d or d.b3_pill_state.is_empty():
         return {"ok":false,"reason":"pill_satiety_not_enabled"}
@@ -40,7 +57,9 @@ static func consume(state: SimulationState, d: DiscipleState, pill: StringName, 
     var legacy := COSTS.has(str(pill))
     if sequence != last+1 or sequence > MAX_SEQUENCE or (not legacy and medicine.is_empty()):
         return {"ok":false,"reason":"invalid_pill_sequence_or_content"}
-    if B3MedicalAutoplayV1.busy(state,d) or not state.sect.p3_7_resources_enabled:
+    var tuvi_pill := pill == &"tu_khi_dan" or str(medicine.get("pill_family", "")) == MedicineCatalogueV2.FAMILY_TUVI
+    if (B3MedicalAutoplayV1.busy(state,d) and not (tuvi_pill and safe_cultivation_pill_window(state,d))) \
+        or not state.sect.p3_7_resources_enabled:
         return {"ok":false,"reason":"pill_actor_busy"}
     var cost := int(COSTS[str(pill)]) if legacy else int(medicine.get("satiety_cost", 0))
     var spent := spent_today(state,d)
