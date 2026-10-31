@@ -3309,7 +3309,23 @@ func _build_healing_pill_controls() -> void:
         use.tooltip_text = "Kho khóa/dự trữ hoặc đệ tử đang bận." if use.disabled else "Tiêu 1 Tụ Khí Đan; B3 kiểm tra đủ bão hòa và không vượt đại cảnh."
         use.pressed.connect(Callable(self, "_sx01_use_pill_from_ui").bind(disciple.id, &"tu_khi_dan"))
         row.add_child(use)
+        var priority := Button.new()
+        priority.name = "SX01Priority_%s" % str(disciple.id)
+        var marked: Dictionary = policy.get("priority_tuvi_ids", {})
+        priority.text = "ƯU TIÊN" if bool(marked.get(str(disciple.id),false)) else "Chọn ưu tiên"
+        priority.custom_minimum_size = Vector2(104, 30)
+        priority.pressed.connect(Callable(self, "_sx01_toggle_priority_from_ui").bind(disciple.id))
+        row.add_child(priority)
         shown_tuvi += 1
+
+func _sx01_toggle_priority_from_ui(disciple_id: StringName) -> void:
+    var flags: Dictionary = state.sect.sx01_pill_policy.get("priority_tuvi_ids", {})
+    var selected := not bool(flags.get(str(disciple_id), false))
+    var result := SX01PillPolicy.set_tuvi_priority(state, disciple_id, selected)
+    building_management_feedback = "Đã đổi ưu tiên Tu Vi." if bool(result.get("ok",false)) else "Không thể đổi ưu tiên Tu Vi."
+    if bool(result.get("ok",false)):
+        _autosave_runtime()
+    _refresh_building_operation_content()
 
 func _use_healing_pill_from_ui(disciple_id: StringName) -> void:
     if not state.disciples.has(disciple_id):
