@@ -24,6 +24,7 @@
 | `SX01PillPolicy` & `B3MedicalAutoplayV1` | Graded medicine preferred where stocked; CARE fallback still original HXD and REST | One shared B3 account, occupation guards remain in force |
 | `p3_2_landscape_sect.gd` | Select authored realm recipe (1/2), list existing graded pills and manual use | No arbitrary custom images, no GUI health/EXP mutation |
 | Two new focused tests | Catalogue 240 IDs/sources/gates; real Alchemy job→warehouse→B3→Save | Tests **written but not executed** |
+| `B3PillSatietyV1.safe_cultivation_pill_window` | Permits Tu Vi pill only during genuine non-occupied `CULTIVATE`; no active timed job / field plot / Body slot / PvE / study / work command | Does **not** relax `B3MedicalAutoplayV1.busy`: auto-hunting cannot seize a cultivating actor; HXD still respects idle guard |
 
 **IMPORTANT owner vs candidate distinction:**
 - **Owner direction locked:** medicine scales by cultivation realm; medicine has product grade; production and consumption must be connected; keep existing B3/V2/Save compatibility.
