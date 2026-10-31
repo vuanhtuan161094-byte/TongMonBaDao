@@ -391,20 +391,7 @@ func _refresh_detail() -> void:
     _detail_list.add_child(_label("Ứng viên chưa nhận không chiếm chỗ. Từ chối không hoàn Chiêu Mộ Lệnh đã dùng.", 11, MUTED))
 
 func _guide_eligible(disciple: DiscipleState) -> bool:
-    if disciple == null:
-        return false
-    if disciple.injury_level != 0 or disciple.region_id != &"sect":
-        return false
-    if not disciple.active_pve_encounter_id.is_empty() or not disciple.work_cycle_state.is_empty():
-        return false
-    if not disciple.direct_command.is_empty():
-        return false
-    if disciple.current_action not in [&"IDLE", &"HOLD", &"EVALUATE"]:
-        return false
-    var buildings := BuildingSystem.new()
-    return not buildings.disciple_has_active_timed_recipe(game_state, disciple.id) \
-        and not buildings.disciple_has_active_spirit_plot(game_state, disciple.id) \
-        and not DiscipleBodyTrainingFacilityV2.has_reserved_slot(game_state, disciple)
+    return disciple != null and recruitment.guidance_guide_eligible(game_state, disciple.id)
 
 func _refresh_guide_selectors() -> void:
     var snapshot := recruitment.guidance_state_snapshot(game_state)
