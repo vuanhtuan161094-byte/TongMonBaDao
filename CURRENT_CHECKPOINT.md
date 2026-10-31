@@ -32,6 +32,20 @@ New Game GUI, recruit/production/PvE, save-return-reload and physical visual QA 
 
 Rollback: revert commit be37bca1725e9cc19e710dba3f3f796041ac78e7 on the integration branch, preserving later documentation commits and saved records. Source branches, PR #52, main, the old E: checkout and owner saves remain untouched.
 
+
+### Stage 0 static QA refresh — 2026-10-31
+
+Live branch ref verified before this review: 3ccaa150c127b96533ca478c9e85f7e9cafc1ad8. Comparison from 095ff2f showed exactly the four authorized HS-09 code/test paths plus these two checkpoint files; main remains c0c1382f119599497b52d8ee8abd9e830a883f1e. No code failure was observed statically.
+
+Static source review: the new radar global class is referenced by the P3.2 renderer and test; the tested scene path exists; tab button callbacks preserve the existing internal tab keys; persisted V6.3 gate projection reads canonical state and copies dictionaries; the radar keeps separate scales and does not alter the input values. No new simulation action or gate write was found in the reviewed HS-09 changes.
+
+Visual label check remains pending real render. The radar forms labels with an embedded newline and calls draw_string. Godot 4.7 documents draw_multiline_string as the API that breaks text into lines ([CanvasItem docs](https://docs.godotengine.org/en/4.7/classes/class_canvasitem.html)). Per task instruction, this is recorded as a render verification risk, not a confirmed UI defect; no speculative renderer change was made. Label clipping, positioning and contrast still require a Godot 1280x720 capture.
+
+Windows environment: PID 15996 remains listed as Godot_v4.7.2-stable_win64, Responding=true, 28,672-byte working set, no window title. Start time, user, executable path and command line are denied by Windows access checks; tasklist/CIM queries returned Access denied. A second PID 6944 appeared briefly at 164,552,704 bytes then disappeared from the next process enumeration. Latest available-memory sample was 1,394 MB (adjacent samples ranged 1,074–1,394 MB); no application was closed and no Godot process was launched.
+
+QA source provenance: E:\TongMonBaDaoWorkspace\QA_Evidence\ONE_GAME_V65_20261030\checkout_095ff is an isolated archive snapshot at 095ff, but its local .git has no HEAD and the tree is all untracked; it is not yet a tested checkout of 3ccaa15. The canonical E:\TongMonBaDaoWorkspace\01_Game\TongMonBaDao checkout was inspected read-only at HEAD 5e6fdd966bdf710b71e2a1539bb712e44069a4bb with seven untracked paths; it was not changed. Godot tests are NOT RUN because PID ownership is unknown and available RAM is low under the one-process rule.
+
+Non-Godot launcher inspection confirms Run-OneGame-NewGame.cmd targets the project main scene, creates a unique isolated profile and does not invoke the 130-disciple seeded launcher. This is static contract inspection only; no launcher or game was run.
 ## Integrated code
 
 - R1 `70271184a7c3d1d1dfb374c0050424e263bf7a16`: 18 gated V6.5 catalogs/systems and D1 registry test.

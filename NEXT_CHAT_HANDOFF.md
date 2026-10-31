@@ -15,11 +15,14 @@ Owner approved those paths plus their Godot-generated .uid sidecars and these tw
 
 ## QA blocker and preserved environment
 
-- Godot 4.7.2 PID 15996 remains present (process name Godot_v4.7.2-stable_win64, 28,672-byte working set, no main-window title); command line/owner could not be established. Available-memory counter reported 1,613 MB. Do not kill it or start another heavy Godot process while it remains active.
+- The radar's label string includes a newline but currently uses draw_string; static review records multiline rendering/clipping as PENDING, not a confirmed defect. Verify the real 1280x720 render before any fix.
+
+- Latest process check: PID 15996 remains listed as Godot_v4.7.2-stable_win64, Responding=true, 28,672-byte working set, no main-window title. Windows denied start time, user, executable path and command-line queries; tasklist/CIM returned Access denied. PID 6944 was transiently observed at 164,552,704 bytes and absent on the next enumeration. Latest available-memory sample was 1,394 MB (recent samples 1,074–1,394 MB). Do not kill any user process or start a second Godot while ownership remains unknown and RAM is low.
 - The previous launcher smoke used a stub executable: contract-only PASS, not a game launch.
 - Stage A installer restored 42 PNGs in the isolated QA snapshot, pack SHA-256 6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca. Godot import and Stage A test remain PENDING.
 - Source A UI intake contains 26 hashed CANDIDATE assets, all owner review/mapping pending. Do not import or replace art.
 - Keep the old dirty E: checkout and all owner saves untouched. Use only the isolated ONE GAME QA checkout and redirect test APPDATA/user data there.
+- The available archive snapshot at E:\TongMonBaDaoWorkspace\QA_Evidence\ONE_GAME_V65_20261030\checkout_095ff has no local HEAD and contains the 095ff source as untracked files; it is not current SHA 3ccaa15. The canonical E:\TongMonBaDaoWorkspace\01_Game\TongMonBaDao was read at 5e6fdd966bdf710b71e2a1539bb712e44069a4bb with seven untracked paths; leave it untouched.
 
 ## Next steps, in order
 
