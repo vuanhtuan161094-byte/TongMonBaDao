@@ -104,6 +104,8 @@ var v2_training_rules: Dictionary = {}
 # DV2-02E opt-in region hunting difficulty choices, persistent exactly-once claims.
 var v2_pve_enabled: bool = false
 # Opt-in B3 VS1 world, schema/receipts owned by B3HuntWorld.
+# SX-01: optional sect pill policy. Empty on all legacy saves.
+var sx01_pill_policy: Dictionary = {}
 var b3_hunt: Dictionary = {}
 var v2_pve_selected_levels: Dictionary = {}
 var v2_pve_reward_claims: Dictionary = {}
@@ -256,6 +258,8 @@ func to_dict() -> Dictionary:
         data["v63_learning_event_count"] = v63_learning_event_count
     if v63_skill_combat_opt_in:
         data["v63_skill_combat_opt_in"] = true
+    if not sx01_pill_policy.is_empty():
+        data["sx01_pill_policy"] = sx01_pill_policy.duplicate(true)
     if not b3_hunt.is_empty():
         data["b3_hunt"] = b3_hunt.duplicate(true)
     if not v2_body_gate_receipts.is_empty():
@@ -349,6 +353,14 @@ static func from_dict(data: Dictionary) -> SectState:
     if raw_v2_training is Dictionary:
         state.v2_training_rules = raw_v2_training.duplicate(true)
     state.v2_pve_enabled = bool(data.get("v2_pve_enabled", false))
+    var sx01_saved = data.get("sx01_pill_policy", {})
+    if sx01_saved is Dictionary and int(sx01_saved.get("version", 0)) == 1:
+        # Strictly retain only known, typed keys; old saves remain empty/off.
+        var normalized := SX01PillPolicy.DEFAULTS.duplicate(true)
+        for key in normalized.keys():
+            if sx01_saved.has(key) and typeof(sx01_saved[key]) == typeof(normalized[key]):
+                normalized[key] = sx01_saved[key]
+        state.sx01_pill_policy = normalized
     state.b3_hunt = data.get("b3_hunt",{}).duplicate(true)
     var raw_levels = data.get("v2_pve_selected_levels", {})
     if raw_levels is Dictionary:
