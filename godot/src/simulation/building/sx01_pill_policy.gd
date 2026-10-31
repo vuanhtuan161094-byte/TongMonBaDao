@@ -157,24 +157,33 @@ static func review(state: SimulationState) -> void:
         var hp_ratio := disciple.hp / maxf(disciple.max_hp, 1.0)
         if bool(policy.get("auto_use_hoi_xuan_dan", false)) and state.sect.needs_enabled \
             and hp_ratio <= float(policy.get("heal_hp_percent", 60)) / 100.0 \
-            and disciple.hp < disciple.max_hp and warehouse.available_quantity(state, HXD) > 0:
+            and disciple.hp < disciple.max_hp:
             if bool(B3PillSatietyV1.enable(state, disciple).get("ok", false)):
-                var healed := B3PillSatietyV1.consume(state, disciple, HXD, B3PillSatietyV1.next_sequence(disciple))
-                if bool(healed.get("ok", false)) and not bool(healed.get("replay", false)):
-                    continue
+                var medicine_id := MedicineCatalogueV2.best_available(state, disciple, MedicineCatalogueV2.FAMILY_HEAL)
+                if medicine_id == &"" and warehouse.available_quantity(state, HXD) > 0:
+                    medicine_id = HXD
+                if medicine_id != &"":
+                    var healed := B3PillSatietyV1.consume(state, disciple, medicine_id, B3PillSatietyV1.next_sequence(disciple))
+                    if bool(healed.get("ok", false)) and not bool(healed.get("replay", false)):
+                        continue
         # Only explicitly Chuyên Tu disciples auto-consume Tụ Khí Đan;
         # everyone else still earns passive Tu Vi and can receive manual pills.
         var selected: Dictionary = policy.get("priority_tuvi_ids", {})
         if not bool(policy.get("auto_use_tu_khi_dan", false)) \
             or (disciple.current_action != &"CULTIVATE" and not bool(selected.get(str(disciple.id), false))) \
-            or warehouse.available_quantity(state, TQD) <= 0:
+            :
             continue
         var count := int(used_today.get(str(disciple.id), 0))
         if count >= int(policy.get("auto_tu_khi_per_day", 2)):
             continue
         if not bool(B3PillSatietyV1.enable(state, disciple).get("ok", false)):
             continue
-        var consumed := B3PillSatietyV1.consume(state, disciple, TQD, B3PillSatietyV1.next_sequence(disciple))
+        var tuvi_pill := MedicineCatalogueV2.best_available(state, disciple, MedicineCatalogueV2.FAMILY_TUVI)
+        if tuvi_pill == &"" and warehouse.available_quantity(state, TQD) > 0:
+            tuvi_pill = TQD
+        if tuvi_pill == &"":
+            continue
+        var consumed := B3PillSatietyV1.consume(state, disciple, tuvi_pill, B3PillSatietyV1.next_sequence(disciple))
         if bool(consumed.get("ok", false)) and not bool(consumed.get("replay", false)):
             used_today[str(disciple.id)] = count + 1
     policy["auto_tu_khi_used"] = used_today
