@@ -8,6 +8,8 @@
 
 The current integration checkpoint and next-chat handoff at HEAD `400baa11403720fb816075d65f3cb74e8f4ad505` state that Godot PID `15996` belongs to the active Codex 1 QA session, process ownership could not be established, available RAM is low, and a second Godot instance must not start. No process was terminated. This branch contains test source and static inspection only.
 
+No process was terminated. This branch contains test source and static inspection only. A pre-handoff compare found live integration HEAD 79dab92ccc95a93b39dcb563fe06c93a9aa422da; its only change after 400baa is godot/tests/presentation/hs09_disciple_profile_test.gd, so no Cung source/test path overlaps.
+
 ## Test inventory
 
 | Test | Intended coverage | Result |
@@ -30,4 +32,5 @@ The current integration checkpoint and next-chat handoff at HEAD `400baa11403720
 ## Remaining gates
 
 Run Godot import/compile and the five tests sequentially only after the active Codex 1 Godot session is released. Then run current PvE adapter + save/reload and required Windows/Android visual gameplay QA. Record each command, Godot version, source SHA, exit code and log. Do not mark Cung Tu DONE until these owner-required gates and functional evidence pass.
+
 
