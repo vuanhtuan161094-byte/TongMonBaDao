@@ -27,7 +27,17 @@ static func create_state(seed: int = 1337) -> SimulationState:
 
     var candidate_ids: Array = state.recruitment_candidates.keys()
     candidate_ids.sort()
+    # New Game only: complete the initial P2.12 candidates with their original
+    # immutable profile seeds before LiveGameRuntimeV2 enables V2 admission.
+    # No existing save runs through this factory. Never mutate their D7/quality.
     for raw_id in candidate_ids:
-        workforce.ensure_p3_7_candidate_profile(state, state.recruitment_candidates[raw_id])
+        var candidate: CandidateState = state.recruitment_candidates[raw_id]
+        if not DiscipleBirthProfileV2.valid_complete_birth(candidate.v2_birth_profile):
+            var envelope := DiscipleBirthProfileV2.create_envelope(candidate)
+            assert(not envelope.is_empty(), "C2 New Game candidate missing deterministic birth provenance.")
+            candidate.v2_birth_profile = DiscipleBirthRollV2.populate(envelope, candidate)
+            assert(DiscipleBirthProfileV2.valid_complete_birth(candidate.v2_birth_profile),
+                "C2 New Game must not expose an un-recruitable birth profile.")
+        workforce.ensure_p3_7_candidate_profile(state, candidate)
 
     return state
