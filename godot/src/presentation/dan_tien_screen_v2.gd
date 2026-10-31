@@ -32,6 +32,11 @@ var _candidate_list: VBoxContainer
 var _detail_list: VBoxContainer
 var _feedback_label: Label
 var _root_panel: PanelContainer
+var _guide_select: OptionButton
+var _assistant_select: OptionButton
+var _guide_hint: Label
+var _main_options: Array[StringName] = []
+var _assistant_options: Array[StringName] = []
 
 func attach_state(authoritative_state: SimulationState, authority: RecruitmentSystem) -> void:
     game_state = authoritative_state
@@ -133,6 +138,24 @@ func _build_layout() -> void:
     _token_button = _button("Chiêu Mộ Lệnh", Callable(self, "_spend_order"), true)
     _token_button.custom_minimum_size.x = 220
     status.add_child(_token_button)
+
+    var guide_bar := HBoxContainer.new()
+    guide_bar.name = "DanTienGuideBar"
+    guide_bar.add_theme_constant_override("separation", 9)
+    layout.add_child(guide_bar)
+    guide_bar.add_child(_label("Tiếp Dẫn Chính", 12, GOLD))
+    _guide_select = OptionButton.new()
+    _guide_select.custom_minimum_size.x = 174
+    _guide_select.item_selected.connect(Callable(self, "_on_guide_selected"))
+    guide_bar.add_child(_guide_select)
+    guide_bar.add_child(_label("Hỗ trợ", 12, GOLD))
+    _assistant_select = OptionButton.new()
+    _assistant_select.custom_minimum_size.x = 180
+    _assistant_select.item_selected.connect(Callable(self, "_on_assistant_selected"))
+    guide_bar.add_child(_assistant_select)
+    _guide_hint = _label("", 11, MUTED)
+    _guide_hint.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    guide_bar.add_child(_guide_hint)
 
     var body := HBoxContainer.new()
     body.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -255,6 +278,7 @@ func _refresh_all() -> void:
     _token_button.disabled = game_state.sect.disciple_recruitment_tokens <= 0 or queue_size >= limit
     _token_button.tooltip_text = "Hàng chờ đã đầy: không tiêu Chiêu Mộ Lệnh" if queue_size >= limit else "Tốn đúng 1 lệnh để tạo thêm một ứng viên"
     _feedback_label.text = feedback
+    _refresh_guide_selectors()
     _refresh_list()
     _refresh_detail()
 
@@ -359,6 +383,100 @@ func _refresh_detail() -> void:
     reject.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     actions.add_child(reject)
     _detail_list.add_child(_label("Ứng viên chưa nhận không chiếm chỗ. Từ chối không hoàn Chiêu Mộ Lệnh đã dùng.", 11, MUTED))
+
+func _guide_eligible(disciple: DiscipleState) -> bool:
+    if disciple == null:
+        return false
+    if disciple.injury_level != 0 or disciple.region_id != &"sect":
+        return false
+    if not disciple.active_pve_encounter_id.is_empty() or not disciple.work_cycle_state.is_empty():
+        return false
+    if not disciple.direct_command.is_empty():
+        return false
+    if disciple.current_action not in [&"IDLE", &"HOLD", &"EVALUATE"]:
+        return false
+    var buildings := BuildingSystem.new()
+    return not buildings.disciple_has_active_timed_recipe(game_state, disciple.id) \
+        and not buildings.disciple_has_active_spirit_plot(game_state, disciple.id) \
+        and not DiscipleBodyTrainingFacilityV2.has_reserved_slot(game_state, disciple)
+
+func _refresh_guide_selectors() -> void:
+    var snapshot := recruitment.guidance_state_snapshot(game_state)
+    var main := str(snapshot.get("main_guide_id", ""))
+    var assistants: Array = snapshot.get("assistant_guide_ids", [])
+    var ids: Array = game_state.disciples.keys()
+    ids.sort()
+
+    _guide_select.clear()
+    _main_options.clear()
+    _main_options.append(&"")
+    _guide_select.add_item("Không chỉ định")
+    var active_index := 0
+    for raw_id in ids:
+        var disciple: DiscipleState = game_state.disciples[raw_id]
+        if not _guide_eligible(disciple) and str(disciple.id) != main:
+            continue
+        _main_options.append(disciple.id)
+        _guide_select.add_item(disciple.display_name)
+        if str(disciple.id) == main:
+            active_index = _main_options.size() - 1
+    _guide_select.select(active_index)
+
+    _assistant_select.clear()
+    _assistant_options.clear()
+    _assistant_options.append(&"")
+    _assistant_select.add_item("Chọn/Bỏ hỗ trợ")
+    for raw_id in ids:
+        var disciple: DiscipleState = game_state.disciples[raw_id]
+        if str(disciple.id) == main:
+            continue
+        if not _guide_eligible(disciple) and not assistants.has(str(disciple.id)):
+            continue
+        _assistant_options.append(disciple.id)
+        var mark := "✓ " if assistants.has(str(disciple.id)) else "+ "
+        _assistant_select.add_item(mark + disciple.display_name)
+    _assistant_select.select(0)
+    var charm := float(snapshot.get("snapshot_main_charisma", 0.0))
+    var rates := recruitment.guidance_quality_rates_for_charisma(charm)
+    _guide_hint.text = "Ảnh hưởng từ ngày mô phỏng kế tiếp\nNghịch Thiên: %.1f%% · Chỗ hỗ trợ %d" % [
+        float(rates.get("heaven_defying",0.002))*100.0,
+        maxi(BuildingSystem.new().guidance_elder_slots(
+            BuildingSystem.new().primary_building(game_state,BuildingSystem.TYPE_GUIDANCE_PLATFORM))-1,0)
+    ]
+
+func _on_guide_selected(index: int) -> void:
+    if index < 0 or index >= _main_options.size():
+        return
+    var id := _main_options[index]
+    if id != &"" and not _guide_eligible(game_state.disciples.get(id)):
+        feedback = "Đệ tử đang làm việc, PvE hoặc bị thương; không tự chuyển việc."
+        _refresh_all()
+        return
+    var result := recruitment.assign_guidance_main(game_state,id)
+    feedback = "Đã đổi Tiếp Dẫn Chính. Tỷ lệ phẩm đổi vào ngày mô phỏng kế tiếp." if bool(result.get("ok",false)) else "Không đổi được: %s" % str(result.get("reason","unknown"))
+    if bool(result.get("ok",false)):
+        state_changed.emit()
+    _refresh_all()
+
+func _on_assistant_selected(index: int) -> void:
+    if index <= 0 or index >= _assistant_options.size():
+        return
+    var id := _assistant_options[index]
+    var snapshot := recruitment.guidance_state_snapshot(game_state)
+    var current: Array = snapshot.get("assistant_guide_ids", []).duplicate()
+    if current.has(str(id)):
+        current.erase(str(id))
+    else:
+        if not _guide_eligible(game_state.disciples.get(id)):
+            feedback = "Không được chuyển đệ tử đang làm việc."
+            _refresh_all()
+            return
+        current.append(str(id))
+    var result := recruitment.set_guidance_assistants(game_state,current)
+    feedback = "Đã cập nhật đệ tử hỗ trợ. Có hiệu lực vào ngày mô phỏng kế tiếp." if bool(result.get("ok",false)) else "Không đổi được: %s" % str(result.get("reason","unknown"))
+    if bool(result.get("ok",false)):
+        state_changed.emit()
+    _refresh_all()
 
 func _quality_name(candidate: CandidateState) -> String:
     return str(DiscipleGeneratorV2.QUALITY_NAMES.get(str(candidate.disciple_quality), str(candidate.disciple_quality)))
