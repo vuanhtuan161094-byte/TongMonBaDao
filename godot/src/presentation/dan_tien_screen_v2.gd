@@ -37,6 +37,7 @@ var _assistant_select: OptionButton
 var _guide_hint: Label
 var _main_options: Array[StringName] = []
 var _assistant_options: Array[StringName] = []
+var _source_a_frame_cache: Dictionary = {}
 
 func attach_state(authoritative_state: SimulationState, authority: RecruitmentSystem) -> void:
     game_state = authoritative_state
@@ -237,6 +238,11 @@ func _build_layout() -> void:
 func _close_screen() -> void:
     closed.emit()
     queue_free()
+
+func _unhandled_key_input(event: InputEvent) -> void:
+    if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_ESCAPE:
+        _close_screen()
+        get_viewport().set_input_as_handled()
 
 func _on_search_changed(value: String) -> void:
     search_text = value.strip_edges().to_lower()
@@ -497,14 +503,19 @@ func _source_a_preview(candidate: CandidateState) -> Control:
     render.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
     render.custom_minimum_size = Vector2(140, 170)
     var preview_disciple := candidate.to_disciple()
-    var source_scene := DiscipleSourceAVisualPool.scene_for_disciple(preview_disciple)
-    if source_scene != null:
-        var sprite := source_scene.instantiate() as AnimatedSprite2D
-        if sprite != null:
-            var frames := sprite.sprite_frames
-            if frames != null and frames.has_animation(&"stand") and frames.get_frame_count(&"stand") > 0:
-                render.texture = frames.get_frame_texture(&"stand", 0)
-            sprite.free()
+    var scene_path := DiscipleSourceAVisualPool.scene_path_for_disciple(preview_disciple)
+    if not scene_path.is_empty() and _source_a_frame_cache.has(scene_path):
+        render.texture = _source_a_frame_cache[scene_path] as Texture2D
+    elif not scene_path.is_empty():
+        var source_scene := DiscipleSourceAVisualPool.scene_for_disciple(preview_disciple)
+        if source_scene != null:
+            var sprite := source_scene.instantiate() as AnimatedSprite2D
+            if sprite != null:
+                var frames := sprite.sprite_frames
+                if frames != null and frames.has_animation(&"stand") and frames.get_frame_count(&"stand") > 0:
+                    render.texture = frames.get_frame_texture(&"stand", 0)
+                    _source_a_frame_cache[scene_path] = render.texture
+                sprite.free()
     if render.texture != null:
         holder.add_child(render)
     else:
