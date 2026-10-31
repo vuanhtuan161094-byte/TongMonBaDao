@@ -34,7 +34,7 @@ func _run() -> void:
     var result := recruit.accept_candidate(state, first)
     if not _require(bool(result.get("ok",false)), "first New Game candidate cannot be accepted"):
         return
-    var recruited: DiscipleState = state.disciples.get(first)
+    var recruited: DiscipleState = state.disciples.get(StringName(str(result.get("disciple_id", ""))))
     if not _require(recruited != null, "accepted candidate is absent from roster"):
         return
     if not _require(recruited.v2_birth_profile == profile_before,
