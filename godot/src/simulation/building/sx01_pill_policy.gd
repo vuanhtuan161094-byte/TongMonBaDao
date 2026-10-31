@@ -151,11 +151,13 @@ static func review(state: SimulationState) -> void:
     )
     for id in ids:
         var disciple: DiscipleState = state.disciples[id]
-        if not DiscipleRealmProgressV2.progression_ready(disciple) or _care_owns(state, disciple.id) \
-            or B3MedicalAutoplayV1.busy(state, disciple):
+        if not DiscipleRealmProgressV2.progression_ready(disciple) or _care_owns(state, disciple.id):
+            continue
+        var original_busy := B3MedicalAutoplayV1.busy(state, disciple)
+        if original_busy and not B3PillSatietyV1.safe_cultivation_pill_window(state, disciple):
             continue
         var hp_ratio := disciple.hp / maxf(disciple.max_hp, 1.0)
-        if bool(policy.get("auto_use_hoi_xuan_dan", false)) and state.sect.needs_enabled \
+        if not original_busy and bool(policy.get("auto_use_hoi_xuan_dan", false)) and state.sect.needs_enabled \
             and hp_ratio <= float(policy.get("heal_hp_percent", 60)) / 100.0 \
             and disciple.hp < disciple.max_hp:
             if bool(B3PillSatietyV1.enable(state, disciple).get("ok", false)):
