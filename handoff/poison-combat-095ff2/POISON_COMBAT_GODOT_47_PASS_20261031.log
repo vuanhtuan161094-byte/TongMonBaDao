@@ -1,0 +1,37 @@
+Godot 4.7.2 stable official ed1daf0bf
+Scratch checkout base: 095ff2f90df8260dd123c06964d20c4f9b571d32
+Patch under test: human combat + Divine catalog DESIGN_PENDING + focused contract test
+Command pattern: Godot_v4.7.2-stable_win64.exe --headless --path godot --script res://tests/simulation/<test>
+
+TEST v65_poison_combat_contract_test.gd
+ERROR: Failed to read the root certificate store. (non-fatal Windows diagnostic)
+V65_POISON_PASS: 183 records routed; heal target gating; owner consume; 30-stack snapshot/tick idempotence; marked punish; DoT kill attribution and generation-safe respawn
+EXIT 0
+
+TEST v63_d4b_archive_learning_test.gd
+ERROR: Failed to read the root certificate store. (non-fatal Windows diagnostic)
+V63 D4-B ARCHIVE/EFFECTS PASS: 96 source codices; five owner stacks; dead-owner stop; guard/heal/cleanse/mark/AoE/mobility/passive and 30-stack boss cap
+EXIT 0
+
+TEST v63_d4b_human_branches_bosses_test.gd
+ERROR: Failed to read the root certificate store. (non-fatal Windows diagnostic)
+V63 D4-B HUMAN BRANCHES/BOSSES PASS: 9/9 manual-backed branch casts; 105 nodes; 3/3 real boss AI telegraph/release; derived innates and one-time phases
+EXIT 0
+
+TEST v63_d5_immortal_lineage_combat_test.gd
+ERROR: Failed to read the root certificate store. (non-fatal Windows diagnostic)
+V63_D5_IMMORTAL_COMBAT_PASS: 18/18 manual-backed lineage casts; A/B family replacement; 3/3 Combat V2 boss counter interruptions; elemental reaction; gates OFF
+EXIT 0
+
+TEST v63_d6_rare_successors_test.gd
+ERROR: Failed to read the root certificate store. (non-fatal Windows diagnostic)
+V63_D6_RARE_PASS: 18/18 ultimate and elective replacements; real releases; 30-stack fair poison + snapshot; Blood Ma/Life heal boundaries
+EXIT 0
+
+TEST v63_d6_divine_lineage_combat_test.gd
+ERROR: Failed to read the root certificate store. (non-fatal Windows diagnostic)
+V63_D6_DIVINE_COMBAT_PASS: 18/18 manual-backed lineage casts; A/B family replacement; 3/3 Combat V2 boss counter interruptions; elemental reaction; gates OFF
+EXIT 0
+
+RESULT: ALL 6 FOCUSED SUITES PASS on patch base 095ff2f90df8260dd123c06964d20c4f9b571d32. GUI/VFX acceptance is not included.
+
