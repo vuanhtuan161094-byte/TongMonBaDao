@@ -54,6 +54,28 @@ def braced(text: str, begin: int) -> str:
     raise ValueError("unterminated dictionary")
 
 
+def uncomment(text: str) -> str:
+    """Ignore GDScript # comments without deleting # inside quoted strings."""
+    output: list[str] = []
+    for line in text.splitlines():
+        quoted, escaped = False, False
+        for i, char in enumerate(line):
+            if quoted:
+                if escaped:
+                    escaped = False
+                elif char == "\\":
+                    escaped = True
+                elif char == '"':
+                    quoted = False
+            elif char == '"':
+                quoted = True
+            elif char == '#':
+                line = line[:i]
+                break
+        output.append(line)
+    return "\n".join(output)
+
+
 def const_map(text: str, name: str) -> str:
     found = re.search(r"(?m)^const\s+" + re.escape(name) + r"\s*:=\s*\{", text)
     if not found:
@@ -116,11 +138,11 @@ def potential_sources(root: Path, building_code: str) -> dict[str, list[str]]:
             item = literal_constant(building_code, value) if value.startswith("MATERIAL_") else value.strip('&"')
             mark(item, "BuildingSystem " + building_id + " [coded producer; not GUI verified]")
 
-    crops = const_map(read_file(root, "building/spirit_crop_registry.gd"), "DEFINITIONS")
+    crops = uncomment(const_map(read_file(root, "building/spirit_crop_registry.gd"), "DEFINITIONS"))
     for item in re.findall(r'"output_resource_id"\s*:\s*"([^"]+)"', crops):
         mark(item, "SpiritCropRegistry field [crop level and costs apply]")
 
-    alchemy = const_map(read_file(root, "building/alchemy_recipe_registry.gd"), "DEFINITIONS")
+    alchemy = uncomment(const_map(read_file(root, "building/alchemy_recipe_registry.gd"), "DEFINITIONS"))
     for item in re.findall(r'"output_resource_id"\s*:\s*"([^"]+)"', alchemy):
         mark(item, "AlchemyRecipeRegistry recipe [inputs and job needed]")
 
