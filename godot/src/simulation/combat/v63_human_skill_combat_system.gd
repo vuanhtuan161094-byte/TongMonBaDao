@@ -7,6 +7,10 @@ const MAX_TARGETS := 3
 const POISON_OWNER_CAP := 5
 const POISON_BOSS_TARGET_CAP := 30
 const EFFECTS := ["damage","poison","guard","heal","cleanse","mark","consume_poison","mobility","passive","innate"]
+const BOW_LINE_RANGE_SKILL_IDS := [
+    "tmb.skill.bow.liep_anh.ultimate.divine.b",
+    "tmb.skill.bow.liep_anh.ultimate.rare.b"
+]
 static var _catalogue_cache: Dictionary = {}
 
 static func load_catalogue(path: String = CATALOGUE_PATH) -> Dictionary:
@@ -401,6 +405,8 @@ static func _support_target(battle: MapBattleV2, actor: Dictionary, skill: Dicti
         var ally: Dictionary = battle.actors[raw_id]
         if str(ally.side) != str(actor.side) or float(ally.hp) <= 0.0:
             continue
+        if str(skill.get("effect", "")) == "heal" and float(ally.hp) >= float(ally.max_hp) - 0.001:
+            continue
         if (actor["position"] as Vector2).distance_to(ally["position"]) <= float(skill.range):
             candidates.append(ally)
     if str(skill.effect) == "cleanse":
@@ -414,10 +420,12 @@ static func _status_count(actor: Dictionary) -> int:
     return int(statuses.get("v63_poison",[]).size())+int(statuses.has("burn"))+int(statuses.has("weaken"))
 
 static func _try_mobility(battle: MapBattleV2, actor: Dictionary, target: Dictionary, id: String, skill: Dictionary, ready: Dictionary) -> bool:
-    if battle.world_mode or str(actor.side) != "disciple":
+    if str(actor.get("side", "")) != "disciple":
         return false
-    var distance := (actor["position"] as Vector2).distance_to(target["position"])
     var attack_range := maxf(1.0,float(actor.get("range",1.5)))
+    if battle.world_mode:
+        return _try_world_mobility(battle,actor,target,id,skill,ready,attack_range)
+    var distance := (actor["position"] as Vector2).distance_to(target["position"])
     if distance <= attack_range+0.2 or distance > float(skill.range):
         return false
     var direction := ((target["position"] as Vector2)-(actor["position"] as Vector2)).normalized()
@@ -430,6 +438,43 @@ static func _try_mobility(battle: MapBattleV2, actor: Dictionary, target: Dictio
     actor["v63_skill_ready"] = ready
     actor["next_skill"] = battle.now+MapBattleV2.STEP_SECONDS
     battle._event("v63_mobility",{"actor_id":str(actor.id),"skill_id":id,"position":destination,"evasion_until":float(actor.v63_evasion_until)})
+    battle.actions += 1
+    return true
+
+static func _try_world_mobility(battle: MapBattleV2, actor: Dictionary, target: Dictionary, id: String, skill: Dictionary, ready: Dictionary, attack_range: float) -> bool:
+    if battle.world_navigation.is_empty():
+        return false
+    var origin: Vector2 = actor["position"]
+    var path: Array[Vector2i] = battle._world_path(origin,target["position"])
+    if path.size() < 2:
+        return false
+    var route_distance := battle._world_route_distance(origin,path)
+    if route_distance <= attack_range+0.2 or route_distance > float(skill.get("range",0.0)):
+        return false
+
+    # World mobility follows the same blocked-cell route used by auto-hunt.
+    # The move order advances through walkable cells over normal simulation steps.
+    var desired_progress := maxf(0.0,route_distance-maxf(0.0,attack_range-0.15))
+    var travelled := 0.0
+    var previous := origin
+    var destination := origin
+    for path_index in range(1,path.size()):
+        var waypoint := Vector2(path[path_index])+Vector2(0.5,0.5)
+        travelled += previous.distance_to(waypoint)
+        previous = waypoint
+        destination = waypoint
+        if travelled >= desired_progress:
+            break
+    if destination.distance_to(origin) < 0.1 or not battle._position_allowed(destination):
+        return false
+    actor["move_order_position"] = destination
+    actor["move_order_active"] = true
+    actor["v63_evasion_until"] = battle.now+maxf(MapBattleV2.STEP_SECONDS,float(skill.get("duration",1.0)))
+    ready[id] = battle.now+maxf(MapBattleV2.STEP_SECONDS,float(skill.cooldown))
+    actor["v63_skill_ready"] = ready
+    actor["next_skill"] = battle.now+MapBattleV2.STEP_SECONDS
+    battle._event("v63_mobility",{"actor_id":str(actor.id),"skill_id":id,"position":destination,
+        "route_distance":route_distance,"world_path":true,"evasion_until":float(actor.v63_evasion_until)})
     battle.actions += 1
     return true
 
@@ -491,7 +536,7 @@ static func _cast_record(caster: Dictionary, target: Dictionary, id: String, ski
         "ratio":float(skill.damage_ratio),"element":str(skill.element),"effect":str(skill.effect),"shape":str(skill.shape),
         "power":float(skill.get("power",0.0)),"duration":float(skill.get("duration",0.0)),
         "poison_stacks":int(skill.get("poison_stacks",1)),"radius":float(skill.get("radius",0.0)),
-        "maximum":mini(int(skill.get("target_limit",1)),MAX_TARGETS)}
+        "range":float(skill.get("range",0.0)),"maximum":mini(int(skill.get("target_limit",1)),MAX_TARGETS)}
     if not boss_id.is_empty():
         cast["v63_boss_id"] = boss_id
     return cast
@@ -582,6 +627,8 @@ static func _cast_targets(battle: MapBattleV2, caster: Dictionary, cast: Diction
         var origin: Vector2 = cast.get("line_origin", caster.get("position", Vector2.ZERO))
         var direction: Vector2 = cast.get("line_direction", Vector2.ZERO).normalized()
         var length := maxf(0.0, float(cast.get("radius", 0.0)))
+        if BOW_LINE_RANGE_SKILL_IDS.has(str(cast.get("v63_skill_id", ""))):
+            length = maxf(length, float(cast.get("range", length)))
         var ids: Array = battle.actors.keys()
         ids.sort()
         for raw_id in ids:
