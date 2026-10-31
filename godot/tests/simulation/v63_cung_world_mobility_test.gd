@@ -103,11 +103,12 @@ func _reachable_world_route(skill_id: String) -> bool:
         return false
     var resumed: MapBattleV2 = restored.battle
     actor = resumed.actors["cung_actor"]
+    var destination: Vector2 = actor.get("move_order_position",actor.position)
     var previous: Vector2 = actor.position
     for _i in range(80):
-        if not bool(actor.get("move_order_active",false)):
+        if previous.distance_to(destination) <= 0.08:
             break
-        resumed._move_world_actor(actor,actor.move_order_position,float(actor.move_speed))
+        resumed._move_world_actor(actor,destination,float(actor.move_speed))
         var current: Vector2 = actor.position
         if not resumed._position_allowed(current):
             return _check(false,skill_id+" crossed into a blocked cell")
@@ -115,9 +116,9 @@ func _reachable_world_route(skill_id: String) -> bool:
             return _check(false,skill_id+" jumped between path steps")
         previous = current
     var final_distance := (actor.position as Vector2).distance_to(resumed.actors["world_target"].position)
-    return _check(not bool(actor.get("move_order_active",true)) and
-            final_distance <= float(actor.range)+1.0,
-            skill_id+" did not finish its reachable path close to the target")
+    var reached_destination := (actor.position as Vector2).distance_to(destination) <= 0.08
+    return _check(reached_destination and final_distance <= float(actor.get("range",2.0))+1.0,
+            skill_id+" did not finish its scheduled reachable path close to the target")
 
 func _blocked_world_route_rejected(skill_id: String) -> bool:
     var setup := _new_open_world(skill_id,-1)
