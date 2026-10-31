@@ -8,7 +8,7 @@
 
 The prior 400baa next-chat handoff reported unknown Godot PID 15996. The latest integration checkpoint at HEAD 07d8b211 records Godot 4.7.2 import and 14 focused tests PASS at source 79dab92, and an open New Game GUI process PID 8136. Those passes do not include this Cung patch. In accordance with the user instruction against parallel heavy Godot runs, no Godot process was started or terminated; this branch contains test source and static inspection only.
 
-No process was terminated. This branch contains test source and static inspection only. Latest pre-handoff compare found integration HEAD 07d8b211199d580c6086af31829bc0edc3dfbe31. Since 400baa, 79dab changed only godot/tests/presentation/hs09_disciple_profile_test.gd and 07d8 changed only CURRENT_CHECKPOINT.md; neither overlaps Cung source/tests. The checkpoint records 14 focused PASS at source 79dab and a New Game GUI process PID 8136, but not this Cung patch. This task did not launch Godot because Codex 1 has an open session and the user prohibited a parallel heavy Godot run.
+No process was terminated. This branch contains test source and static inspection only. Latest pre-handoff compare found integration HEAD d921b082f831d60c6827e0a147600566f87fddc9. Since 400baa, 79dab changed only the HS-09 presentation test, 07d8 only CURRENT_CHECKPOINT.md, and d921 only NEXT_CHAT_HANDOFF.md; none overlaps Cung source/tests. Checkpoint evidence is 14 unrelated focused PASS at source 79dab; New Game GUI PID 8136 remains open and gameplay capture is pending. This task did not launch Godot because Codex 1 has an open session and the user prohibited a parallel heavy Godot run.
 
 ## Test inventory
 
@@ -32,6 +32,7 @@ No process was terminated. This branch contains test source and static inspectio
 ## Remaining gates
 
 Run Godot import/compile and the five tests sequentially only after Codex 1 releases or coordinates the open Godot session. Then run current PvE adapter + save/reload and required Windows/Android visual gameplay QA. Record each command, Godot version, source SHA, exit code and log. Do not mark Cung Tu DONE until these owner-required gates and functional evidence pass.
+
 
 
 
