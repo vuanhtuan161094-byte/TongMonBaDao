@@ -22,10 +22,12 @@ const DEFINITIONS := {
 }
 
 func has(recipe_id: StringName) -> bool:
-    return DEFINITIONS.has(str(recipe_id))
+    return DEFINITIONS.has(str(recipe_id)) or not MedicineCatalogueV2.recipe_definition(recipe_id).is_empty()
 
 func definition(recipe_id: StringName) -> Dictionary:
-    return DEFINITIONS.get(str(recipe_id), {})
+    if DEFINITIONS.has(str(recipe_id)):
+        return DEFINITIONS[str(recipe_id)]
+    return MedicineCatalogueV2.recipe_definition(recipe_id)
 
 func inputs(recipe_id: StringName) -> Dictionary:
     var raw = definition(recipe_id).get("inputs", {})
@@ -40,13 +42,19 @@ func output_quantity(recipe_id: StringName) -> int:
 func required_profession_level(recipe_id: StringName) -> int:
     return maxi(int(definition(recipe_id).get("required_profession_level", 0)), 0)
 
+func required_hall_level(recipe_id: StringName) -> int:
+    return maxi(int(definition(recipe_id).get("required_hall_level", 1)), 1)
+
 func base_cycle_ticks(recipe_id: StringName) -> int:
     return maxi(int(definition(recipe_id).get("base_cycle_ticks", 1)), 1)
 
 func validate_definitions() -> Array[String]:
     var errors: Array[String] = []
     var resources := ResourceRegistry.new()
-    for raw_id in DEFINITIONS.keys():
+    var authored: Array = DEFINITIONS.keys()
+    for new_recipe in MedicineCatalogueV2.authored_recipes():
+        authored.append(str(new_recipe))
+    for raw_id in authored:
         var recipe_id := StringName(raw_id)
         var requirements := inputs(recipe_id)
         if requirements.is_empty():
