@@ -282,6 +282,57 @@ func to_dict() -> Dictionary:
         data["physique_event_count"] = physique_event_count
     return data
 
+# SX-01 JSON numeric repair: restore integral values only, with their declared
+# field ranges. Never truncate fractional numbers, coerce strings/bools to ints,
+# accept unknown keys, or opt legacy saves into this optional policy.
+static func _sx01_normalize_saved_policy(saved: Dictionary) -> Dictionary:
+    var normalized := SX01PillPolicy.DEFAULTS.duplicate(true)
+    for key in normalized.keys():
+        if not saved.has(key):
+            continue
+        var value = saved[key]
+        var default_value = normalized[key]
+        if default_value is int:
+            if not (value is int or value is float):
+                continue
+            var numeric := float(value)
+            var minimum := -1.0 if key == "auto_day" else 0.0
+            var maximum := 2147483647.0 if key == "auto_day" else 1000.0
+            if key == "version":
+                minimum = float(SX01PillPolicy.VERSION)
+                maximum = minimum
+            elif key == "auto_tu_khi_per_day":
+                maximum = 20.0
+            elif key == "medical_soft_reserve":
+                maximum = 100.0
+            elif key == "heal_hp_percent":
+                minimum = 40.0
+                maximum = 80.0
+            if numeric >= minimum and numeric <= maximum and numeric == float(int(numeric)):
+                normalized[key] = int(numeric)
+        elif default_value is Dictionary:
+            if not (value is Dictionary):
+                continue
+            var clean: Dictionary = {}
+            for raw_id in value.keys():
+                var id := str(raw_id)
+                if id.is_empty():
+                    continue
+                var entry = value[raw_id]
+                if key == "auto_tu_khi_used":
+                    if not (entry is int or entry is float):
+                        continue
+                    var amount := float(entry)
+                    if amount >= 0.0 and amount <= 20.0 and amount == float(int(amount)):
+                        clean[id] = int(amount)
+                elif key == "priority_tuvi_ids" and entry is bool:
+                    clean[id] = entry
+            normalized[key] = clean
+        elif typeof(value) == typeof(default_value):
+            if key != "recipe_mode" or str(value) in ["fixed", "demand"]:
+                normalized[key] = value
+    return normalized
+
 static func from_dict(data: Dictionary) -> SectState:
     var state := SectState.new()
     state.treasury = int(data.get("treasury", 1000))
@@ -354,13 +405,13 @@ static func from_dict(data: Dictionary) -> SectState:
         state.v2_training_rules = raw_v2_training.duplicate(true)
     state.v2_pve_enabled = bool(data.get("v2_pve_enabled", false))
     var sx01_saved = data.get("sx01_pill_policy", {})
-    if sx01_saved is Dictionary and int(sx01_saved.get("version", 0)) == 1:
-        # Strictly retain only known, typed keys; old saves remain empty/off.
-        var normalized := SX01PillPolicy.DEFAULTS.duplicate(true)
-        for key in normalized.keys():
-            if sx01_saved.has(key) and typeof(sx01_saved[key]) == typeof(normalized[key]):
-                normalized[key] = sx01_saved[key]
-        state.sx01_pill_policy = normalized
+    if sx01_saved is Dictionary and sx01_saved.get("version", null) is int:
+        if int(sx01_saved["version"]) == SX01PillPolicy.VERSION:
+            state.sx01_pill_policy = _sx01_normalize_saved_policy(sx01_saved)
+    elif sx01_saved is Dictionary and sx01_saved.get("version", null) is float:
+        # JSON.parse_string may decode an exact integer schema version as float.
+        if float(sx01_saved["version"]) == float(SX01PillPolicy.VERSION):
+            state.sx01_pill_policy = _sx01_normalize_saved_policy(sx01_saved)
     state.b3_hunt = data.get("b3_hunt",{}).duplicate(true)
     var raw_levels = data.get("v2_pve_selected_levels", {})
     if raw_levels is Dictionary:
