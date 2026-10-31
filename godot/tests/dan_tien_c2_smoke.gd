@@ -69,6 +69,14 @@ func _run() -> void:
     if not _require(screen.get_node_or_null("DanTienDialog") != null,
             "C2 recruitment dialog did not construct"):
         return
+    screen._on_search_changed("__no_matching_candidate__")
+    if not _require(screen.selected_candidate_id == &"",
+            "search with no results must clear stale actionable candidate details"):
+        return
+    screen._on_search_changed("")
+    if not _require(screen.selected_candidate_id != &"",
+            "clearing applicant search must restore a valid detail selection"):
+        return
     root.remove_child(screen)
     screen.free()
     print("DAN_TIEN_C2_SMOKE_PASS new_game_birth=1 bounded_queue=100_days paid_debit=0 ui=1")
