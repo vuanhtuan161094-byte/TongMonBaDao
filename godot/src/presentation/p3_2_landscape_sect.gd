@@ -3196,12 +3196,14 @@ func _build_alchemy_management() -> void:
         int(plan["held_tqd"]), int(plan["pending_tqd"]), int(policy["target_tu_khi_dan"])
     ]
     info.custom_minimum_size = Vector2(384, 26)
+    info.tooltip_text = "Mức đích chỉ áp dụng khi chọn Đan phương: THEO NHU CẦU."
     info.add_theme_font_size_override("font_size", 12)
     building_management_container.add_child(info)
 
     var auto_button := Button.new()
     auto_button.name = "SX01AutoProduction"
-    auto_button.text = "Tự sản xuất: BẬT" if bool(policy["auto_production"]) else "Tự sản xuất: TẮT"
+    auto_button.text = "Tự cân đối kho: BẬT" if bool(policy["auto_production"]) else "Tự cân đối kho: TẮT"
+    auto_button.tooltip_text = "Chế độ cân đối chỉ tác động khi Đan phương là THEO NHU CẦU. Muốn dừng mọi mẻ mới, dùng nút Tắt tự luyện ở trên."
     auto_button.pressed.connect(Callable(self, "_sx01_configure_from_ui").bind("auto_production", not bool(policy["auto_production"])))
     building_management_container.add_child(auto_button)
     var mode := Button.new()
