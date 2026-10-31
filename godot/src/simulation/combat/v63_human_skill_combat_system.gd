@@ -278,6 +278,8 @@ static func attach_disciple_loadout(state: SimulationState, actor: Dictionary, p
             actor["basic_element"] = str(skill.element)
     if not divine_lineage.is_empty():
         V63DivineSkillCombatSystem.attach_divine_state(actor, disciple, divine_lineage, V63LearningSystem.divine_lineage_stage(disciple, str(disciple.v63_combat_branch_id), divine_lineage))
+    elif not immortal_lineage.is_empty():
+        V63ImmortalSkillCombatSystem.attach_immortal_state(actor, immortal_lineage)
     return {"ok":true,"attached":not skills.is_empty(),"skill_ids":skills}
 
 static func _valid_id(value: String) -> bool:
@@ -465,7 +467,7 @@ static func _begin_cast(battle: MapBattleV2, actor: Dictionary, target: Dictiona
     ready[id] = battle.now+maxf(MapBattleV2.STEP_SECONDS,float(skill.cooldown)/cooldown_rate)
     actor["v63_skill_ready"] = ready
     actor["next_skill"] = battle.now+MapBattleV2.STEP_SECONDS
-    battle._event("skill_cast",{"actor_id":str(actor.id),"target":str(target.id),"skill_id":id,"release_at":deadline,"combat_family":"v63_human","effect":str(skill.effect)})
+    battle._event("skill_cast",{"actor_id":str(actor.id),"target":str(target.id),"skill_id":id,"generation":str(skill.get("generation",skill.get("tier","human"))),"lineage":str(skill.get("lineage","")),"release_at":deadline,"cooldown_ready_at":float(ready[id]),"combat_family":"v63_human","effect":str(skill.effect)})
     battle.actions += 1
 
 static func _try_boss_cast(battle: MapBattleV2, actor: Dictionary, target: Dictionary) -> bool:
@@ -510,8 +512,12 @@ static func _cast_record(caster: Dictionary, target: Dictionary, id: String, ski
     return cast
 
 static func release_cast(battle: MapBattleV2, cast: Dictionary, caster: Dictionary) -> void:
-    if V63DivineSkillCombatSystem.is_divine_skill(str(cast.get("v63_skill_id", ""))) or V63DivineSkillCombatSystem.is_divine_boss(str(cast.get("v63_boss_id", ""))):
+    var skill_id := str(cast.get("v63_skill_id", ""))
+    if V63DivineSkillCombatSystem.is_divine_skill(skill_id) or V63DivineSkillCombatSystem.is_divine_boss(str(cast.get("v63_boss_id", ""))):
         V63DivineSkillCombatSystem.release_cast(battle, cast, caster)
+        return
+    if V63ImmortalSkillCombatSystem.is_immortal_skill(skill_id):
+        V63ImmortalSkillCombatSystem.release_cast(battle, cast, caster)
         return
     release_cast_base(battle, cast, caster)
 
@@ -522,9 +528,20 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
     if definition.is_empty():
         return
     var effect := str(cast.get("effect",definition.get("effect","damage")))
+    var generation := str(definition.get("generation",definition.get("tier","human")))
+    var lineage := str(definition.get("lineage",""))
     var meaningful := false
     for target in _cast_targets(battle,caster,cast,effect):
+        var caster_position: Vector2 = caster.get("position",Vector2.ZERO)
+        var target_position: Vector2 = target.get("position",Vector2.ZERO)
+        if not battle.is_world_position_allowed(caster_position) or not battle.is_world_position_allowed(target_position):
+            battle._event("skill_miss",{"caster":str(caster.get("id","")),"target":str(target.get("id","")),"skill_id":id,"generation":generation,"lineage":lineage,"reason":"invalid_position"})
+            continue
+        if str(cast.get("shape",definition.get("shape",""))) == "single_target" and caster_position.distance_to(target_position) > float(definition.get("range",0.0)):
+            battle._event("skill_miss",{"caster":str(caster.get("id","")),"target":str(target.get("id","")),"skill_id":id,"generation":generation,"lineage":lineage,"reason":"target_out_of_range_at_release"})
+            continue
         var before := float(target.hp)
+        var caster_before := float(caster.hp)
         var damage := 0.0
         if effect in ["damage","poison","mark","consume_poison"]:
             var ratio := float(cast.ratio)
@@ -540,7 +557,7 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
         elif effect == "guard":
             target["learned_guard_factor"] = minf(float(target.get("learned_guard_factor",1.0)),1.0-clampf(float(cast.power),0.05,0.8))
             target["learned_guard_until"] = maxf(float(target.get("learned_guard_until",-1.0)),battle.now+clampf(float(cast.duration),0.5,12.0))
-            battle._event("status_applied",{"caster":str(caster.id),"target":str(target.id),"status":"guard","skill_id":id,"until":float(target.learned_guard_until)})
+            battle._event("status_applied",{"caster":str(caster.id),"target":str(target.id),"status":"guard","skill_id":id,"generation":generation,"lineage":lineage,"until":float(target.learned_guard_until)})
         elif effect == "heal":
             _heal_target(battle,caster,target,id,float(cast.power))
         elif effect == "cleanse":
@@ -552,7 +569,9 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
         if damage > 0.0 and effect in ["damage", "consume_poison"] and str(definition.get("combat_trait", "")) == "co_doc_b":
             _consume_mark(battle,caster,target,id)
         meaningful = meaningful or damage > 0.0 or effect in ["guard", "mark", "poison", "cleanse"] or float(target.hp) > before
-        battle._event("v63_skill_hit",{"caster":str(caster.id),"target":str(target.id),"skill_id":id,"effect":effect,"damage":damage,"target_hp_before":before,"target_hp_after":float(target.hp)})
+        battle._event("v63_skill_hit",{"caster":str(caster.id),"target":str(target.id),"skill_id":id,"generation":generation,"lineage":lineage,"effect":effect,"damage":damage,"caster_hp_before":caster_before,"caster_hp_after":float(caster.hp),"target_hp_before":before,"target_hp_after":float(target.hp)})
+        if effect == "mark" and str(definition.get("branch", "")) == "huyet_quyen" and float(target.hp) > 0.0:
+            record_blood_mark(battle, caster, target, id)
         if damage > 0.0:
             V63ImmortalSkillCombatSystem.apply_elemental_reaction(battle,caster,target,id,str(cast.get("element", "")))
             V63DivineSkillCombatSystem.apply_elemental_reaction(battle,caster,target,id,str(cast.get("element", "")))
@@ -625,7 +644,12 @@ static func _heal_target(battle: MapBattleV2, caster: Dictionary, target: Dictio
         factor *= 1.0+clampf(float(skill_definition(str(passive_id)).get("passive_modifiers",{}).get("heal_factor",0.0)),0.0,0.25)
     var before := float(target.hp)
     var amount := minf(maxf(0.0,float(target.max_hp)*clampf(power,0.0,0.5)*factor),maxf(0.0,float(target.max_hp)-before))
-    amount = minf(V63DivineSkillCombatSystem.healing_amount(caster, target, amount), maxf(0.0, float(target.max_hp) - before))
+    var adjusted_amount := amount
+    if str(target.get("v63_combat_generation", "")) == "immortal":
+        adjusted_amount = V63ImmortalSkillCombatSystem.healing_amount(caster, target, amount)
+    else:
+        adjusted_amount = V63DivineSkillCombatSystem.healing_amount(caster, target, amount)
+    amount = minf(adjusted_amount, maxf(0.0, float(target.max_hp) - before))
     target["hp"] = before+amount
     battle._sync_linked_hp(target)
     battle._event("heal",{"caster":str(caster.id),"target":str(target.id),"skill_id":skill_id,"amount":amount,"hp_after":float(target.hp)})
@@ -654,6 +678,24 @@ static func _apply_mark(battle: MapBattleV2, caster: Dictionary, target: Diction
     marks[str(caster.id)] = {"owner_id":str(caster.id),"skill_id":skill_id,"damage_factor":clampf(power,1.0,1.5),"until":battle.now+clampf(duration,0.5,12.0)}
     target["v63_marks"] = marks
     battle._event("status_applied",{"caster":str(caster.id),"target":str(target.id),"status":"mark","skill_id":skill_id,"until":float(marks[str(caster.id)].until)})
+
+static func record_blood_mark(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String) -> void:
+    var definition := skill_definition(skill_id)
+    if definition.is_empty() or str(definition.get("branch", "")) != "huyet_quyen" or str(definition.get("effect", "")) != "mark":
+        return
+    var generation := str(definition.get("generation", definition.get("tier", "human")))
+    if generation in ["immortal", "divine"] and str(definition.get("lineage", "")) != "a":
+        return
+    var marks: Dictionary = target.get("v63_blood_marks", {})
+    for key in marks.keys():
+        if battle.now >= float(marks[key]):
+            marks.erase(key)
+    marks[str(caster.id) + "/" + skill_id] = battle.now + 10.0
+    target["v63_blood_marks"] = marks
+    if marks.size() >= 2 and battle.now >= float(caster.get("v63_blood_frenzy_ready", -1.0)):
+        caster["v63_blood_frenzy_until"] = battle.now + 5.0
+        caster["v63_blood_frenzy_ready"] = battle.now + 35.0
+        battle._event("blood_frenzy", {"caster":str(caster.id),"skill_id":skill_id,"generation":generation,"lineage":str(definition.get("lineage", "")),"until":battle.now+5.0,"family_icd":35.0})
 
 static func _consume_mark(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String) -> int:
     var marks: Dictionary = target.get("v63_marks", {})

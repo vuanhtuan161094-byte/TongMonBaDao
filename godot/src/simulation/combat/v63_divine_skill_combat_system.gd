@@ -355,30 +355,17 @@ static func release_cast(battle: MapBattleV2, cast: Dictionary, caster: Dictiona
     if not definition.is_empty():
         var stage := clampi(int(caster.get("v63_divine_stage", 1)), 1, 3)
         adjusted["ratio"] = float(cast.ratio) * [1.0, 1.12, 1.24][stage - 1]
-        if str(definition.get("branch", "")) == "huyet_quyen":
+        if str(definition.get("branch", "")) == "huyet_quyen" and str(definition.get("lineage", "")) == "a":
             var before := float(caster.hp)
             var cost_fraction := 0.12 if str(definition.get("slot", "")) == "ultimate" else 0.10
             var cost := minf(maxf(0.0, before - 1.0), before * cost_fraction)
             caster["hp"] = before - cost
             battle._sync_linked_hp(caster)
-            battle._event("blood_sacrifice", {"caster":str(caster.id),"skill_id":skill_id,"spent_hp":cost,"hp_after":float(caster.hp),"damage_packet":false})
+            battle._event("blood_sacrifice", {"caster":str(caster.id),"skill_id":skill_id,"generation":"divine","lineage":"a","hp_before":before,"spent_hp":cost,"hp_after":float(caster.hp),"damage_packet":false})
             if str(definition.get("slot", "")) == "ultimate" and str(definition.get("lineage", "")) == "a":
                 var missing := 1.0 - float(caster.hp) / maxf(1.0, float(caster.get("v63_base_max_hp", caster.max_hp)))
                 adjusted["ratio"] = minf(82.32, 42.0 * (1.0 + 1.2 * minf(0.8, missing)))
     V63HumanSkillCombatSystem.release_cast_base(battle, adjusted, caster)
-    if str(definition.get("branch", "")) == "huyet_quyen" and str(definition.get("effect", "")) == "mark":
-        var target: Dictionary = battle.actors.get(str(cast.get("target_id", "")), {})
-        if not target.is_empty() and float(target.get("hp", 0.0)) > 0.0:
-            var marks: Dictionary = target.get("v63_blood_marks", {})
-            for key in marks.keys():
-                if battle.now >= float(marks[key]):
-                    marks.erase(key)
-            marks[str(caster.id) + "/" + skill_id] = battle.now + 10.0
-            target["v63_blood_marks"] = marks
-            if marks.size() >= 2 and battle.now >= float(caster.get("v63_blood_frenzy_ready", -1.0)):
-                caster["v63_blood_frenzy_until"] = battle.now + 5.0
-                caster["v63_blood_frenzy_ready"] = battle.now + 35.0
-                battle._event("blood_frenzy", {"caster":str(caster.id),"until":battle.now+5.0,"family_icd":35.0})
     if not definition.is_empty():
         battle._event("divine_action", {"caster":str(caster.id),"skill_id":skill_id,"rule":str(definition.get("divine_rule", "")),"stage":int(caster.get("v63_divine_stage", 1)),"ratio":float(adjusted.ratio)})
 

@@ -130,7 +130,7 @@ func setup(id: String, party: Array, monsters: Array, keep_encounter_open: bool 
             "linked_disciple":row.get("disciple",null)
         })
         var v63_disciple_actor: Dictionary = entries[entries.size()-1]
-        for field in ["v63_skill_loadout","v63_skill_ready","v63_combat_enabled","v63_passive_ids","v63_combat_branch_id","v63_combat_lineage","v63_innate_skill_id","v63_basic_skill_id","basic_element"]:
+        for field in ["v63_skill_loadout","v63_skill_ready","v63_combat_enabled","v63_passive_ids","v63_combat_branch_id","v63_combat_lineage","v63_innate_skill_id","v63_basic_skill_id","basic_element","v63_divine_stage","v63_combat_generation","v63_blood_mode","v63_base_max_hp","v63_shield_received_factor"]:
             if row.has(field):
                 v63_disciple_actor[field] = row[field].duplicate(true) if row[field] is Array or row[field] is Dictionary else row[field]
     for raw in monsters:
@@ -1026,6 +1026,12 @@ func _release_casts() -> void:
         var v63_cast = actor.get("v63_pending_cast",{})
         if v63_cast is Dictionary and not v63_cast.is_empty() and now+0.000001 >= float(v63_cast.get("ready",INF)):
             actor.erase("v63_pending_cast")
+            var v63_skill_id := str(v63_cast.get("v63_skill_id", ""))
+            var v63_definition := V63HumanSkillCombatSystem.skill_definition(v63_skill_id)
+            var v63_generation := str(v63_definition.get("generation", v63_definition.get("tier", actor.get("v63_combat_generation", "human"))))
+            _event("skill_release", {"caster":str(actor.get("id", "")),"target":str(v63_cast.get("target_id", "")),"skill_id":v63_skill_id,
+                "generation":v63_generation,"lineage":str(v63_definition.get("lineage", actor.get("v63_combat_lineage", ""))),
+                "release_at":now,"caster_hp_before":float(actor.get("hp", 0.0))})
             V63HumanSkillCombatSystem.release_cast(self,v63_cast,actor)
     var remaining: Array = []
     for cast_value in pending_casts:

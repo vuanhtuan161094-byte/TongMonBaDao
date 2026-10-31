@@ -163,6 +163,43 @@ static func boss_skill_definitions(boss_id: String) -> Dictionary:
 static func is_immortal_skill(skill_id: String) -> bool:
 	return not skill_definition(skill_id).is_empty()
 
+static func attach_immortal_state(actor: Dictionary, lineage: String) -> void:
+	actor["v63_combat_generation"] = "immortal"
+	if str(actor.get("v63_combat_branch_id", "")) != "huyet_quyen":
+		return
+	var base := float(actor.get("max_hp", 0.0))
+	if base <= 0.0:
+		return
+	actor["v63_base_max_hp"] = base
+	actor["v63_blood_mode"] = "blood_life" if lineage == "b" else "blood_ma"
+	if lineage == "b":
+		return
+	actor["max_hp"] = base * 0.75
+	actor["hp"] = minf(float(actor.get("hp", 0.0)), float(actor.max_hp))
+	actor["stats"] = actor.get("stats", {}).duplicate(true)
+	actor.stats["max_hp"] = float(actor.max_hp)
+
+static func healing_amount(caster: Dictionary, target: Dictionary, amount: float) -> float:
+	if str(target.get("v63_blood_mode", "")) != "blood_ma":
+		return amount
+	var original_max := maxf(1.0, float(target.get("v63_base_max_hp", target.get("max_hp", 1.0))))
+	if str(caster.get("id", "")) == str(target.get("id", "")) or float(target.get("hp", 0.0)) >= 0.40 * original_max:
+		return 0.0
+	return maxf(0.0, amount) * 0.60
+
+static func release_cast(battle: MapBattleV2, cast: Dictionary, caster: Dictionary) -> void:
+	var skill_id := str(cast.get("v63_skill_id", ""))
+	var definition := skill_definition(skill_id)
+	var adjusted := cast.duplicate(true)
+	if not definition.is_empty() and str(definition.get("branch", "")) == "huyet_quyen" and str(definition.get("lineage", "")) == "a":
+		var before := float(caster.get("hp", 0.0))
+		var cost_fraction := 0.12 if str(definition.get("slot", "")) == "ultimate" else 0.10
+		var cost := minf(maxf(0.0, before - 1.0), before * cost_fraction)
+		caster["hp"] = before - cost
+		battle._sync_linked_hp(caster)
+		battle._event("blood_sacrifice", {"caster":str(caster.get("id", "")),"skill_id":skill_id,"generation":"immortal","lineage":"a","hp_before":before,"spent_hp":cost,"hp_after":float(caster.hp),"damage_packet":false})
+	V63HumanSkillCombatSystem.release_cast_base(battle, adjusted, caster)
+
 static func is_immortal_boss(boss_id: String) -> bool:
 	return not boss_definition(boss_id).is_empty()
 
