@@ -8462,7 +8462,8 @@
         29
       ],
       "required_divine_stage": 1,
-      "divine_rule": "single_spread_poison"
+      "divine_rule": "single_spread_poison",
+      "divine_rule_status": "DESIGN_PENDING"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_01.divine.b",
@@ -8552,7 +8553,8 @@
         29
       ],
       "required_divine_stage": 1,
-      "divine_rule": "single_spread_poison"
+      "divine_rule": "single_spread_poison",
+      "divine_rule_status": "DESIGN_PENDING"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_02.divine.b",
@@ -8642,7 +8644,8 @@
         29
       ],
       "required_divine_stage": 1,
-      "divine_rule": "single_spread_poison"
+      "divine_rule": "single_spread_poison",
+      "divine_rule_status": "DESIGN_PENDING"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_03.divine.b",
@@ -8732,7 +8735,8 @@
         29
       ],
       "required_divine_stage": 1,
-      "divine_rule": "single_spread_poison"
+      "divine_rule": "single_spread_poison",
+      "divine_rule_status": "DESIGN_PENDING"
     },
     {
       "id": "tmb.skill.poison.co_doc.active_04.divine.b",
@@ -8822,7 +8826,8 @@
         29
       ],
       "required_divine_stage": 1,
-      "divine_rule": "single_spread_poison"
+      "divine_rule": "single_spread_poison",
+      "divine_rule_status": "DESIGN_PENDING"
     },
     {
       "id": "tmb.skill.poison.co_doc.ultimate.divine.b",
@@ -8922,7 +8927,8 @@
         29
       ],
       "required_divine_stage": 1,
-      "divine_rule": "single_spread_poison"
+      "divine_rule": "single_spread_poison",
+      "divine_rule_status": "DESIGN_PENDING"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_01.divine.b",
@@ -9032,7 +9038,8 @@
         29
       ],
       "required_divine_stage": 1,
-      "divine_rule": "single_spread_poison"
+      "divine_rule": "single_spread_poison",
+      "divine_rule_status": "DESIGN_PENDING"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_02.divine.b",
@@ -9142,7 +9149,8 @@
         29
       ],
       "required_divine_stage": 1,
-      "divine_rule": "single_spread_poison"
+      "divine_rule": "single_spread_poison",
+      "divine_rule_status": "DESIGN_PENDING"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_03.divine.b",
@@ -9252,7 +9260,8 @@
         29
       ],
       "required_divine_stage": 1,
-      "divine_rule": "single_spread_poison"
+      "divine_rule": "single_spread_poison",
+      "divine_rule_status": "DESIGN_PENDING"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_04.divine.b",
@@ -9362,7 +9371,8 @@
         29
       ],
       "required_divine_stage": 1,
-      "divine_rule": "single_spread_poison"
+      "divine_rule": "single_spread_poison",
+      "divine_rule_status": "DESIGN_PENDING"
     },
     {
       "id": "tmb.skill.poison.co_doc.passive_05.divine.b",
@@ -9472,7 +9482,8 @@
         29
       ],
       "required_divine_stage": 0,
-      "divine_rule": "single_spread_poison"
+      "divine_rule": "single_spread_poison",
+      "divine_rule_status": "DESIGN_PENDING"
     },
     {
       "id": "tmb.skill.poison.co_doc.innate.divine.b",
@@ -9617,7 +9628,8 @@
         29
       ],
       "required_divine_stage": 1,
-      "divine_rule": "removed_debuff_counter"
+      "divine_rule": "removed_debuff_counter",
+      "divine_rule_status": "DESIGN_PENDING"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_02.divine.a",
@@ -9707,7 +9719,8 @@
         29
       ],
       "required_divine_stage": 1,
-      "divine_rule": "removed_debuff_counter"
+      "divine_rule": "removed_debuff_counter",
+      "divine_rule_status": "DESIGN_PENDING"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_03.divine.a",
@@ -9797,7 +9810,8 @@
         29
       ],
       "required_divine_stage": 1,
-      "divine_rule": "removed_debuff_counter"
+      "divine_rule": "removed_debuff_counter",
+      "divine_rule_status": "DESIGN_PENDING"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.active_04.divine.a",
@@ -9887,7 +9901,8 @@
         29
       ],
       "required_divine_stage": 1,
-      "divine_rule": "removed_debuff_counter"
+      "divine_rule": "removed_debuff_counter",
+      "divine_rule_status": "DESIGN_PENDING"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.ultimate.divine.a",
@@ -9977,7 +9992,8 @@
         29
       ],
       "required_divine_stage": 1,
-      "divine_rule": "removed_debuff_counter"
+      "divine_rule": "removed_debuff_counter",
+      "divine_rule_status": "DESIGN_PENDING"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_01.divine.a",
@@ -10087,7 +10103,8 @@
         29
       ],
       "required_divine_stage": 1,
-      "divine_rule": "removed_debuff_counter"
+      "divine_rule": "removed_debuff_counter",
+      "divine_rule_status": "DESIGN_PENDING"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_02.divine.a",
@@ -10197,7 +10214,8 @@
         29
       ],
       "required_divine_stage": 1,
-      "divine_rule": "removed_debuff_counter"
+      "divine_rule": "removed_debuff_counter",
+      "divine_rule_status": "DESIGN_PENDING"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_03.divine.a",
@@ -10307,7 +10325,8 @@
         29
       ],
       "required_divine_stage": 1,
-      "divine_rule": "removed_debuff_counter"
+      "divine_rule": "removed_debuff_counter",
+      "divine_rule_status": "DESIGN_PENDING"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_04.divine.a",
@@ -10417,7 +10436,8 @@
         29
       ],
       "required_divine_stage": 1,
-      "divine_rule": "removed_debuff_counter"
+      "divine_rule": "removed_debuff_counter",
+      "divine_rule_status": "DESIGN_PENDING"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.passive_05.divine.a",
@@ -10527,7 +10547,8 @@
         29
       ],
       "required_divine_stage": 1,
-      "divine_rule": "removed_debuff_counter"
+      "divine_rule": "removed_debuff_counter",
+      "divine_rule_status": "DESIGN_PENDING"
     },
     {
       "id": "tmb.skill.poison.duoc_doc.innate.divine.a",
@@ -10637,7 +10658,8 @@
         29
       ],
       "required_divine_stage": 0,
-      "divine_rule": "removed_debuff_counter"
+      "divine_rule": "removed_debuff_counter",
+      "divine_rule_status": "DESIGN_PENDING"
     },
     {
       "id": "tmb.skill.bow.liep_anh.ultimate.rare.a",
@@ -12175,6 +12197,7 @@
       ],
       "required_divine_stage": 3,
       "divine_rule": "single_spread_poison",
+      "divine_rule_status": "DESIGN_PENDING",
       "replaces_skill_id": "tmb.skill.poison.co_doc.ultimate.divine.a",
       "rarity": "rare_divine",
       "variant_type": "rare_ultimate_replacement"
@@ -12233,6 +12256,7 @@
       ],
       "required_divine_stage": 3,
       "divine_rule": "single_spread_poison",
+      "divine_rule_status": "DESIGN_PENDING",
       "replaces_skill_id": "tmb.skill.poison.co_doc.passive_05.divine.a",
       "rarity": "rare_divine",
       "variant_type": "rare_elective_passive_replacement"
@@ -12493,6 +12517,7 @@
       ],
       "required_divine_stage": 3,
       "divine_rule": "removed_debuff_counter",
+      "divine_rule_status": "DESIGN_PENDING",
       "replaces_skill_id": "tmb.skill.poison.duoc_doc.ultimate.divine.b",
       "rarity": "rare_divine",
       "variant_type": "rare_ultimate_replacement"
@@ -12551,6 +12576,7 @@
       ],
       "required_divine_stage": 3,
       "divine_rule": "removed_debuff_counter",
+      "divine_rule_status": "DESIGN_PENDING",
       "replaces_skill_id": "tmb.skill.poison.duoc_doc.passive_05.divine.b",
       "rarity": "rare_divine",
       "variant_type": "rare_elective_passive_replacement"

@@ -402,11 +402,24 @@ static func _support_target(battle: MapBattleV2, actor: Dictionary, skill: Dicti
         if str(ally.side) != str(actor.side) or float(ally.hp) <= 0.0:
             continue
         if (actor["position"] as Vector2).distance_to(ally["position"]) <= float(skill.range):
+            if str(skill.get("effect", "")) == "heal":
+                var missing_hp := maxf(0.0, float(ally.get("max_hp", 0.0)) - float(ally.get("hp", 0.0)))
+                if missing_hp <= 0.001:
+                    continue
+                var potential_heal := minf(float(ally.get("max_hp", 0.0)) * clampf(float(skill.get("power", 0.0)), 0.0, 0.5), missing_hp)
+                if V63DivineSkillCombatSystem.healing_amount(actor, ally, potential_heal) <= 0.001:
+                    continue
             candidates.append(ally)
     if str(skill.effect) == "cleanse":
-        candidates.sort_custom(func(a: Dictionary,b: Dictionary): return _status_count(a) > _status_count(b))
+        candidates.sort_custom(func(a: Dictionary,b: Dictionary):
+            var a_count := _status_count(a)
+            var b_count := _status_count(b)
+            return a_count > b_count if a_count != b_count else str(a.id) < str(b.id))
         return candidates[0] if not candidates.is_empty() and _status_count(candidates[0]) > 0 else {}
-    candidates.sort_custom(func(a: Dictionary,b: Dictionary): return float(a.hp)/maxf(1.0,float(a.max_hp)) < float(b.hp)/maxf(1.0,float(b.max_hp)))
+    candidates.sort_custom(func(a: Dictionary,b: Dictionary):
+        var a_ratio := float(a.hp) / maxf(1.0, float(a.max_hp))
+        var b_ratio := float(b.hp) / maxf(1.0, float(b.max_hp))
+        return a_ratio < b_ratio if not is_equal_approx(a_ratio, b_ratio) else str(a.id) < str(b.id))
     return candidates[0] if not candidates.is_empty() else {}
 
 static func _status_count(actor: Dictionary) -> int:
@@ -536,6 +549,8 @@ static func release_cast_base(battle: MapBattleV2, cast: Dictionary, caster: Dic
             _apply_mark(battle,caster,target,id,float(cast.power),float(cast.duration))
         elif effect == "consume_poison":
             _consume_poison(battle,caster,target,id)
+        if damage > 0.0 and effect in ["damage", "consume_poison"] and str(definition.get("combat_trait", "")) == "co_doc_b":
+            _consume_mark(battle,caster,target,id)
         meaningful = meaningful or damage > 0.0 or effect in ["guard", "mark", "poison", "cleanse"] or float(target.hp) > before
         battle._event("v63_skill_hit",{"caster":str(caster.id),"target":str(target.id),"skill_id":id,"effect":effect,"damage":damage,"target_hp_before":before,"target_hp_after":float(target.hp)})
         if damage > 0.0:
@@ -631,13 +646,28 @@ static func _cleanse_target(battle: MapBattleV2, caster: Dictionary, target: Dic
             statuses.erase(status_id)
             cleared.append(status_id)
     target["status_effects"] = statuses
-    battle._event("cleanse",{"caster":str(caster.id),"target":str(target.id),"skill_id":skill_id,"poison_stacks":removed,"statuses":cleared})
+    var removed_debuff_count := removed + cleared.size()
+    battle._event("cleanse",{"caster":str(caster.id),"target":str(target.id),"skill_id":skill_id,"poison_stacks":removed,"statuses":cleared,"removed_debuff_count":removed_debuff_count})
 
 static func _apply_mark(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String, power: float, duration: float) -> void:
     var marks: Dictionary = target.get("v63_marks",{})
     marks[str(caster.id)] = {"owner_id":str(caster.id),"skill_id":skill_id,"damage_factor":clampf(power,1.0,1.5),"until":battle.now+clampf(duration,0.5,12.0)}
     target["v63_marks"] = marks
     battle._event("status_applied",{"caster":str(caster.id),"target":str(target.id),"status":"mark","skill_id":skill_id,"until":float(marks[str(caster.id)].until)})
+
+static func _consume_mark(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String) -> int:
+    var marks: Dictionary = target.get("v63_marks", {})
+    var owner_id := str(caster.id)
+    var mark: Dictionary = marks.get(owner_id, {})
+    if mark.is_empty() or battle.now >= float(mark.get("until", -1.0)):
+        return 0
+    marks.erase(owner_id)
+    if marks.is_empty():
+        target.erase("v63_marks")
+    else:
+        target["v63_marks"] = marks
+    battle._event("mark_consumed",{"caster":owner_id,"target":str(target.id),"skill_id":skill_id,"source_skill_id":str(mark.get("skill_id", "")),"stacks":1})
+    return 1
 
 static func _apply_poison(battle: MapBattleV2, caster: Dictionary, target: Dictionary, skill_id: String, ratio: float, duration: float, requested: int, element: String) -> void:
     var statuses: Dictionary = target.get("status_effects",{})
@@ -726,9 +756,15 @@ static func process_status_effects(battle: MapBattleV2) -> void:
                     proxy["max_hp"] = 1.0
                     proxy["context_sources"] = []
                     proxy["v63_combat_enabled"] = false
+                    var event_start := battle.events.size()
+                    var kill_start := battle._pending_kill_events.size()
+                    var hp_before := float(target.get("hp", 0.0))
                     var damage := battle._deal_direct(proxy,target,float(stack.get("ratio",0.0))*factor,"v63_poison",false,str(stack.get("element","nether")),false)
+                    _attribute_poison_tick(battle,target,owner,stack,event_start,kill_start)
                     battle._event("status_tick",{"caster":str(owner.id),"target":str(target.id),"status":"poison","damage":damage,
-                        "source_skill_id":str(stack.get("source_skill_id","")),"stack_ordinal":ordinal+1,"diminishing_factor":factor})
+                        "source_skill_id":str(stack.get("source_skill_id","")),"source_skill_generation_id":str(stack.get("source_skill_generation_id", "")),
+                        "owner_id":str(owner.id),"stack_ordinal":int(stack.get("stack_ordinal", ordinal+1)),"diminishing_factor":factor,
+                        "target_hp_before":hp_before,"target_hp_after":float(target.get("hp", 0.0))})
                     stack["next_tick"] = float(stack.get("next_tick",battle.now))+1.0
                 ordinal += 1
             if kept.is_empty():
@@ -741,6 +777,30 @@ static func process_status_effects(battle: MapBattleV2) -> void:
             if battle.now >= float(marks[owner_id].get("until",-1.0)):
                 marks.erase(owner_id)
         target["v63_marks"] = marks
+
+static func _attribute_poison_tick(battle: MapBattleV2, target: Dictionary, owner: Dictionary, stack: Dictionary, event_start: int, kill_start: int) -> void:
+    var owner_id := str(owner.get("id", ""))
+    var target_id := str(target.get("id", ""))
+    var source_skill_id := str(stack.get("source_skill_id", ""))
+    var source_generation_id := str(stack.get("source_skill_generation_id", ""))
+    var stack_ordinal := int(stack.get("stack_ordinal", 0))
+    var attribution := {"damage_source":"poison_dot","source_skill_id":source_skill_id,
+        "source_skill_generation_id":source_generation_id,"poison_stack_ordinal":stack_ordinal}
+    for event_index in range(event_start, battle.events.size()):
+        var event: Dictionary = battle.events[event_index]
+        var event_type := str(event.get("type", ""))
+        if event_type == "hit" and str(event.get("attacker", "")) == owner_id and str(event.get("target", "")) == target_id and str(event.get("kind", "")) == "v63_poison":
+            event.merge(attribution, true)
+            battle.events[event_index] = event
+        elif event_type == "downed" and str(event.get("actor_id", "")) == target_id:
+            event.merge(attribution, true)
+            event["killer_actor_id"] = owner_id
+            battle.events[event_index] = event
+    for kill_index in range(kill_start, battle._pending_kill_events.size()):
+        var kill: Dictionary = battle._pending_kill_events[kill_index]
+        if str(kill.get("monster_instance_id", "")) == target_id and str(kill.get("killer_actor_id", "")) == owner_id and str(kill.get("damage_kind", "")) == "v63_poison":
+            kill.merge(attribution, true)
+            battle._pending_kill_events[kill_index] = kill
 
 static func observe_boss_damage(battle: MapBattleV2, actor: Dictionary, hp_before: float,
         attacker: Dictionary = {}, element: String = "", kind: String = "") -> void:
