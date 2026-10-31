@@ -133,7 +133,9 @@ static func validate(state: SimulationState, d: DiscipleState) -> String:
     var tuvi_limit := TUVI if legacy else float(medicine.get("potency", 0))
     if is_healing and (hp <= 0.0 or hp > healing_limit or xp != 0.0):
         return "pill_effect_conflict"
-    if not is_healing and (hp > 0.0000001 or xp != tuvi_limit):
+    # Fixed Tu Vi can increase realm floors and HP proportionally by V2 law.
+    # Preserve legacy TQD receipts that legitimately have positive hp_delta.
+    if not is_healing and xp != tuvi_limit:
         return "pill_effect_conflict"
     if not [0,1].has(int(receipt["injury"])) or int(receipt["recover_tick"]) < 0: return "pill_injury_receipt_conflict"
     return ""
