@@ -138,6 +138,8 @@ var focused_id: StringName = &""
 var focused_label := ""
 var has_focus_target := false
 var tab_status_text := ""
+var disciple_profile_search_query := ""
+var disciple_profile_roster_collapsed := false
 var technique_system := TechniqueSystem.new()
 var equipment_system := EquipmentSystem.new()
 var needs_system := NeedsSystem.new()
@@ -5869,9 +5871,9 @@ func _open_selected_disciple_detail() -> void:
     if selected_id == &"" or not state.disciples.has(selected_id):
         return
     deep_restore_summary = true
-    _open_disciple_deep_screen(selected_id, "Thuộc tính")
+    _open_disciple_deep_screen(selected_id, "Tổng Quan")
 
-func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thuộc tính", preserve_feedback: bool = false) -> void:
+func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Tổng Quan", preserve_feedback: bool = false) -> void:
     if not state.disciples.has(disciple_id):
         return
     selected_id = disciple_id
@@ -5924,42 +5926,74 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
     close.pressed.connect(_return_to_disciple_summary)
     panel.add_child(close)
 
+    var roster_width := 52.0 if disciple_profile_roster_collapsed else 184.0
+    var showcase_x := 18.0 + roster_width + 18.0
+    var content_x := showcase_x + 318.0
+    var content_width := 1184.0 - content_x - 20.0
+
     var roster_panel := Panel.new()
+    roster_panel.name = "DeepDiscipleRosterPanel"
     roster_panel.position = Vector2(18, 58)
-    roster_panel.size = Vector2(184, 464)
+    roster_panel.size = Vector2(roster_width, 464)
     roster_panel.add_theme_stylebox_override("panel", _style(Color(0.86, 0.80, 0.66, 1.0), Color(0.40, 0.31, 0.20, 1.0), 2, 10))
     panel.add_child(roster_panel)
 
-    var scroll := ScrollContainer.new()
-    scroll.position = Vector2(8, 8)
-    scroll.size = Vector2(168, 448)
-    roster_panel.add_child(scroll)
+    var roster_toggle := Button.new()
+    roster_toggle.name = "DeepRosterToggle"
+    roster_toggle.text = "›" if disciple_profile_roster_collapsed else "Thu gọn"
+    roster_toggle.tooltip_text = "Mở rộng danh sách đệ tử" if disciple_profile_roster_collapsed else "Thu gọn danh sách đệ tử"
+    roster_toggle.position = Vector2(6, 6) if disciple_profile_roster_collapsed else Vector2(8, 6)
+    roster_toggle.size = Vector2(40, 40) if disciple_profile_roster_collapsed else Vector2(roster_width - 16.0, 34)
+    roster_toggle.add_theme_font_size_override("font_size", 12)
+    roster_toggle.add_theme_color_override("font_color", INK)
+    roster_toggle.pressed.connect(Callable(self, "_toggle_deep_disciple_roster").bind(tab_name))
+    roster_panel.add_child(roster_toggle)
 
-    var roster := VBoxContainer.new()
-    roster.custom_minimum_size = Vector2(150, 0)
-    roster.add_theme_constant_override("separation", 6)
-    scroll.add_child(roster)
+    if not disciple_profile_roster_collapsed:
+        var roster_search := LineEdit.new()
+        roster_search.name = "DeepRosterSearch"
+        roster_search.position = Vector2(8, 46)
+        roster_search.size = Vector2(roster_width - 16.0, 32)
+        roster_search.placeholder_text = "Tìm đệ tử"
+        roster_search.text = disciple_profile_search_query
+        roster_search.add_theme_font_size_override("font_size", 13)
+        roster_search.text_changed.connect(Callable(self, "_apply_deep_disciple_roster_filter"))
+        roster_panel.add_child(roster_search)
 
-    var ids: Array = state.disciples.keys()
-    ids.sort()
-    for raw_id in ids:
-        var id := StringName(raw_id)
-        var roster_disciple: DiscipleState = state.disciples[id]
-        var entry := Button.new()
-        entry.text = roster_disciple.display_name
-        entry.custom_minimum_size = Vector2(148, 44)
-        entry.add_theme_font_size_override("font_size", 14)
-        entry.add_theme_color_override("font_color", INK)
-        entry.add_theme_color_override("font_hover_color", INK)
-        var is_selected := id == selected_id
-        entry.add_theme_stylebox_override("normal", _style(Color(0.97, 0.90, 0.70, 1.0) if is_selected else Color(0.91, 0.86, 0.72, 1.0), GOLD if is_selected else Color(0.45, 0.37, 0.25, 1.0), 2 if is_selected else 1, 8))
-        entry.pressed.connect(Callable(self, "_open_disciple_deep_screen").bind(id, tab_name))
-        roster.add_child(entry)
+        var roster_scroll := ScrollContainer.new()
+        roster_scroll.name = "DeepDiscipleRosterScroll"
+        roster_scroll.position = Vector2(8, 84)
+        roster_scroll.size = Vector2(roster_width - 16.0, 368)
+        roster_panel.add_child(roster_scroll)
+
+        var roster := VBoxContainer.new()
+        roster.name = "DeepDiscipleRoster"
+        roster.custom_minimum_size = Vector2(roster_width - 34.0, 0)
+        roster.add_theme_constant_override("separation", 6)
+        roster_scroll.add_child(roster)
+
+        var ids: Array = state.disciples.keys()
+        ids.sort()
+        for raw_id in ids:
+            var id := StringName(raw_id)
+            var roster_disciple: DiscipleState = state.disciples[id]
+            var entry := Button.new()
+            entry.name = "DeepRosterEntry_%d" % roster.get_child_count()
+            entry.text = roster_disciple.display_name
+            entry.custom_minimum_size = Vector2(roster_width - 36.0, 44)
+            entry.add_theme_font_size_override("font_size", 14)
+            entry.add_theme_color_override("font_color", INK)
+            entry.add_theme_color_override("font_hover_color", INK)
+            var is_selected := id == selected_id
+            entry.add_theme_stylebox_override("normal", _style(Color(0.97, 0.90, 0.70, 1.0) if is_selected else Color(0.91, 0.86, 0.72, 1.0), GOLD if is_selected else Color(0.45, 0.37, 0.25, 1.0), 2 if is_selected else 1, 8))
+            entry.pressed.connect(Callable(self, "_open_disciple_deep_screen").bind(id, tab_name))
+            roster.add_child(entry)
+        _apply_deep_disciple_roster_filter(disciple_profile_search_query)
 
     var disciple: DiscipleState = state.disciples[selected_id]
 
     var showcase := Panel.new()
-    showcase.position = Vector2(220, 58)
+    showcase.position = Vector2(showcase_x, 58)
     showcase.size = Vector2(300, 394)
     showcase.add_theme_stylebox_override("panel", _style(Color(0.76, 0.84, 0.72, 1.0), Color(0.31, 0.40, 0.28, 1.0), 2, 80))
     panel.add_child(showcase)
@@ -5979,24 +6013,24 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
     center_status.add_theme_color_override("font_color", INK)
 
     var content_panel := Panel.new()
-    content_panel.position = Vector2(538, 58)
-    content_panel.size = Vector2(626, 394)
+    content_panel.position = Vector2(content_x, 58)
+    content_panel.size = Vector2(content_width, 394)
     content_panel.add_theme_stylebox_override("panel", _style(Color(0.93, 0.89, 0.78, 0.76), Color(0.50, 0.42, 0.30, 1.0), 1, 10))
     panel.add_child(content_panel)
 
-    var tab_title := _label(content_panel, tab_name, Vector2(18, 12), Vector2(360, 30), 20)
+    var tab_title := _label(content_panel, _disciple_profile_tab_label(tab_name), Vector2(18, 12), Vector2(minf(360.0, content_width - 36.0), 30), 20)
     tab_title.add_theme_color_override("font_color", CINNABAR.darkened(0.18))
 
     # Make attribute/Body requirements readable without overlapping action row.
     var details_scroll := ScrollContainer.new()
     details_scroll.name = "DiscipleTabContentScroll"
     details_scroll.position = Vector2(18, 52)
-    details_scroll.size = Vector2(590, 286)
+    details_scroll.size = Vector2(content_width - 36.0, 286)
     content_panel.add_child(details_scroll)
     var content := Label.new()
     content.name = "DiscipleTabContentText"
     content.text = _disciple_tab_text(tab_name, disciple)
-    content.custom_minimum_size = Vector2(565, 0)
+    content.custom_minimum_size = Vector2(content_width - 56.0, 0)
     content.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     content.add_theme_font_size_override("font_size", 15)
     content.add_theme_color_override("font_color", INK)
@@ -6004,19 +6038,34 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
 
     var profile_snapshot := _disciple_snapshot(disciple)
     var authentic_v2 := bool(profile_snapshot.get("authentic_v2", false))
-    if tab_name == "Thuộc tính" and bool(profile_snapshot.get("ok",false)):
-        var radar := DiscipleSixDimensionRadar.new()
-        radar.name = "DiscipleFoundationRadar"
+    var is_overview_tab := tab_name == "Tổng Quan"
+    if tab_name in ["Thuộc tính", "Tổng Quan"] and bool(profile_snapshot.get("ok",false)):
+        if tab_name == "Thuộc tính":
+            # Keep the legacy read-only node for existing presentation probes;
+            # the visible HS-09 overlay below is the approved dual-radar view.
+            var compatibility_radar := DiscipleSixDimensionRadar.new()
+            compatibility_radar.name = "DiscipleFoundationRadar"
+            compatibility_radar.position = Vector2(18,52)
+            compatibility_radar.size = Vector2(274,286)
+            compatibility_radar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+            compatibility_radar.visible = false
+            if compatibility_radar.apply_snapshot(profile_snapshot):
+                content_panel.add_child(compatibility_radar)
+
+        var radar := HS09DualFoundationRadar.new()
+        radar.name = "HS09OverviewRadar" if is_overview_tab else "HS09AttributeRadar"
+        radar.compact = is_overview_tab
         radar.position = Vector2(18,52)
-        radar.size = Vector2(274,286)
+        radar.size = Vector2(216,220) if is_overview_tab else Vector2(274,286)
         radar.mouse_filter = Control.MOUSE_FILTER_IGNORE
         if radar.apply_snapshot(profile_snapshot):
             content_panel.add_child(radar)
-            details_scroll.position = Vector2(302,52)
-            details_scroll.size = Vector2(306,286)
-            content.custom_minimum_size = Vector2(282,0)
-            content.add_theme_font_size_override("font_size",14)
-    if authentic_v2 and tab_name == "Thuộc tính":
+            var text_x := 248.0 if is_overview_tab else 302.0
+            details_scroll.position = Vector2(text_x,52)
+            details_scroll.size = Vector2(content_width - text_x - 18.0,286)
+            content.custom_minimum_size = Vector2(details_scroll.size.x - 22.0,0)
+            content.add_theme_font_size_override("font_size",13 if is_overview_tab else 14)
+    if authentic_v2 and tab_name in ["Thuộc tính", "Tổng Quan"]:
         var source_scene := DiscipleSourceAVisualPool.scene_for_disciple(disciple)
         if source_scene != null:
             var source_actor := source_scene.instantiate() as AnimatedSprite2D
@@ -6052,12 +6101,15 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
         gate_button.pressed.connect(Callable(self, "_disciple_tab_action").bind("v2_body_gate"))
         content_panel.add_child(gate_button)
 
-    var tab_names: Array[String] = ["Thuộc tính", "Công pháp", "Trang bị", "Huyết Mạch", "Thể Chất", "Quan hệ"]
+    var tab_names: Array[String] = ["Tổng Quan", "Thuộc tính", "Công pháp", "Trang bị", "Huyết Mạch", "Thể Chất", "Quan hệ"]
+    var tab_start := 18.0 + roster_width + 18.0
+    var tab_step := (1184.0 - tab_start - 18.0) / float(tab_names.size())
     for index in range(tab_names.size()):
         var tab := Button.new()
-        tab.text = tab_names[index]
-        tab.position = Vector2(220 + index * 154, 470)
-        tab.size = Vector2(144, 42)
+        tab.name = "DeepDiscipleTab_%d" % index
+        tab.text = _disciple_profile_tab_label(tab_names[index])
+        tab.position = Vector2(tab_start + float(index) * tab_step, 470)
+        tab.size = Vector2(tab_step - 6.0, 42)
         tab.add_theme_font_size_override("font_size", 14)
         tab.add_theme_color_override("font_color", INK)
         tab.add_theme_color_override("font_hover_color", INK)
@@ -6065,6 +6117,35 @@ func _open_disciple_deep_screen(disciple_id: StringName, tab_name: String = "Thu
         tab.add_theme_stylebox_override("normal", _style(Color(0.97, 0.88, 0.64, 1.0) if active else Color(0.88, 0.82, 0.67, 1.0), GOLD if active else Color(0.45, 0.37, 0.25, 1.0), 2 if active else 1, 7))
         tab.pressed.connect(Callable(self, "_open_disciple_deep_screen").bind(selected_id, str(tab_names[index])))
         panel.add_child(tab)
+
+
+func _disciple_profile_tab_label(tab_name: String) -> String:
+    match tab_name:
+        "Tổng Quan": return "Tổng Quan"
+        "Thuộc tính": return "Thuộc Tính"
+        "Công pháp": return "Công Pháp"
+        "Trang bị": return "Trang Bị"
+        "Huyết Mạch": return "Huyết Mạch"
+        "Thể Chất": return "Thể Chất"
+        "Quan hệ": return "Quan Hệ"
+        _: return tab_name
+
+
+func _apply_deep_disciple_roster_filter(query: String) -> void:
+    disciple_profile_search_query = query
+    var roster := popup_layer.find_child("DeepDiscipleRoster", true, false) as VBoxContainer
+    if roster == null:
+        return
+    var normalized := query.strip_edges().to_lower()
+    for child in roster.get_children():
+        if child is Button:
+            child.visible = normalized.is_empty() or str((child as Button).text).to_lower().contains(normalized)
+
+
+func _toggle_deep_disciple_roster(tab_name: String) -> void:
+    disciple_profile_roster_collapsed = not disciple_profile_roster_collapsed
+    if selected_id != &"" and state.disciples.has(selected_id):
+        _open_disciple_deep_screen(selected_id, tab_name, true)
 
 
 func _deep_status_text(disciple: DiscipleState) -> String:
@@ -6280,8 +6361,81 @@ func _body_gate_reason(reason: String) -> String:
         "body_gate_last_realm": return "Đã tới đại cảnh giới cuối."
         _: return "Không thể đột phá (" + reason + ")."
 
+func _disciple_overview_tab_text(disciple: DiscipleState) -> String:
+    var snapshot := _disciple_snapshot(disciple)
+    if not bool(snapshot.get("ok",false)):
+        return "Không thể đọc hồ sơ đệ tử."
+    var identity: Dictionary = snapshot.get("identity",{})
+    var life: Dictionary = snapshot.get("life",{})
+    var work: Dictionary = snapshot.get("work",{})
+    var progression: Dictionary = snapshot.get("progression",{})
+    var v63: Dictionary = snapshot.get("v63",{})
+    var lines: Array[String] = [
+        "Thân phận: %s · %s · %s" % [
+            str(identity.get("sex_id","unknown")),
+            str(identity.get("race_id","unknown")),
+            str(identity.get("quality_name",""))
+        ],
+        "Tuổi: %d · Tuổi thọ cơ sở/tối đa: %d/%d" % [
+            int(identity.get("age",0)),
+            int(identity.get("base_lifespan",0)),
+            int(identity.get("max_lifespan",0))
+        ],
+        "HP: %.0f/%.0f · Thể lực viễn chinh: %.0f" % [
+            float(life.get("hp",0.0)),
+            float(life.get("max_hp",0.0)),
+            float(life.get("expedition_stamina",0.0))
+        ]
+    ]
+    if int(life.get("injury_level",0)) > 0:
+        lines.append("Thương Thế: Đang hồi phục · còn %d tick mô phỏng" % int(life.get("injury_remaining_ticks",0)))
+    else:
+        lines.append("Thương Thế: Khỏe mạnh")
+    lines.append("Hành động: %s · Nhóm việc: %s" % [
+        SectMapPresentation.action_label(StringName(life.get("current_action",""))),
+        str(work.get("group_id",""))
+    ])
+    var active_job_id := str(life.get("active_job_id",""))
+    lines.append("Tác vụ đang giữ: %s" % (active_job_id if not active_job_id.is_empty() else "Không có"))
+    var worksite_id := str(work.get("worksite_building_id",""))
+    if not worksite_id.is_empty():
+        lines.append("Nơi làm việc: %s" % _building_name(StringName(worksite_id)))
+    if bool(snapshot.get("authentic_v2",false)):
+        lines.append(_v2_profession_summary_text(snapshot))
+    if bool(progression.get("ready",false)):
+        var cultivation: Dictionary = progression.get("cultivation",{})
+        var body: Dictionary = progression.get("body",{})
+        lines.append("Tu Vi: %s tầng %d · Luyện Thể: %s tầng %d" % [
+            str(cultivation.get("name","")),
+            int(cultivation.get("floor",0)),
+            str(body.get("name","")),
+            int(body.get("floor",0))
+        ])
+    else:
+        lines.append("Tu Vi/Luyện Thể: dữ liệu chưa sẵn sàng")
+    var gates: Dictionary = v63.get("feature_gates",{})
+    lines.append("V6.3 gate · Tàng Kinh Các %s · Học công pháp %s · Combat %s/%s" % [
+        "ON" if bool(gates.get("sect_codex",false)) else "OFF",
+        "ON" if bool(gates.get("technique_learning",false)) else "OFF",
+        "ON" if bool(gates.get("human_skill_combat",false)) else "OFF",
+        "ON" if bool(gates.get("divine_skill_combat",false)) else "OFF"
+    ])
+    var study: Dictionary = v63.get("study",{})
+    if bool(study.get("active",false)):
+        var job: Dictionary = study.get("job",{})
+        lines.append("Nghiên cứu: %s · %.0f%% · còn %d tick" % [
+            str(V63LearningSystem.definition(StringName(job.get("technique_id",""))).get("name",job.get("technique_id",""))),
+            float(study.get("progress",0.0))*100.0,
+            int(study.get("remaining_ticks",0))
+        ])
+    lines.append("Hồ sơ chỉ đọc · không tự cộng bonus hoặc tạo hành động.")
+    return "\n".join(lines)
+
+
 func _disciple_tab_text(tab_name: String, disciple: DiscipleState) -> String:
     match tab_name:
+        "Tổng Quan":
+            return _disciple_overview_tab_text(disciple)
         "Thuộc tính":
             return _attributes_tab_text(disciple)
         "Công pháp":
@@ -6478,6 +6632,8 @@ func _technique_tab_text(disciple: DiscipleState) -> String:
     var snapshot := _disciple_snapshot(disciple)
     if not bool(snapshot.get("ok", false)):
         return "Không thể đọc dữ liệu Công Pháp."
+    if bool(snapshot.get("authentic_v2",false)):
+        return _v63_technique_tab_text(snapshot)
     var learning: Dictionary = snapshot["learning"]
     var learned: Dictionary = learning.get("learned_techniques", {})
     var active_id := StringName(learning.get("active_technique_id", ""))
@@ -6503,6 +6659,59 @@ func _technique_tab_text(disciple: DiscipleState) -> String:
         learned.size(), TechniqueSystem.MAX_LEARNED_TECHNIQUES,
         int(life["contribution_points"]), int(life["personal_spirit_stones"]),
         "\n".join(lines), note
+    ]
+
+
+func _v63_technique_tab_text(snapshot: Dictionary) -> String:
+    var v63: Dictionary = snapshot.get("v63",{})
+    var gates: Dictionary = v63.get("feature_gates",{})
+    var known: Dictionary = v63.get("known_techniques",{})
+    var archived_codices: Dictionary = v63.get("archived_codices",{})
+    var loadout: Dictionary = v63.get("loadout",{})
+    var lines: Array[String] = []
+    for slot in ["main","aux_1","aux_2"]:
+        var technique_id := str(loadout.get(slot,""))
+        var slot_label := "Chủ Tu" if slot == "main" else ("Phụ Tu 1" if slot == "aux_1" else "Phụ Tu 2")
+        if technique_id.is_empty():
+            lines.append("• %s: Chưa trang bị" % slot_label)
+            continue
+        var definition_row := V63LearningSystem.definition(StringName(technique_id))
+        var knowledge: Dictionary = known.get(technique_id,{})
+        var mastery_xp := float(knowledge.get("mastery_xp",0.0))
+        var mastery_stage := int(knowledge.get("mastery_stage",V63LearningSystem.mastery_stage_for_xp(mastery_xp)))
+        lines.append("• %s: %s · Tầng tinh thông %d · XP %.0f" % [
+            slot_label,
+            str(definition_row.get("name",technique_id)),
+            mastery_stage,
+            mastery_xp
+        ])
+    var study: Dictionary = v63.get("study",{})
+    var study_text := "Không có nghiên cứu đang chạy"
+    if bool(study.get("active",false)):
+        var job: Dictionary = study.get("job",{})
+        var technique_id := StringName(job.get("technique_id",""))
+        var study_definition := V63LearningSystem.definition(technique_id)
+        study_text = "%s · %.0f%% · còn %d tick" % [
+            str(study_definition.get("name",str(technique_id))),
+            float(study.get("progress",0.0))*100.0,
+            int(study.get("remaining_ticks",0))
+        ]
+    if known.is_empty():
+        lines.append("• Chưa có công pháp V6.3 được lưu")
+    return (
+        "Bí kíp đã lưu: %d · Kỹ năng đã biết: %d\n%s\n\n"
+        + "Nghiên cứu: %s\n"
+        + "Gate Tàng Kinh Các: %s · Học: %s · Nhân kỹ năng: %s · Thần kỹ năng: %s\n\n"
+        + "Dữ liệu và tinh thông được đọc từ hồ sơ đã lưu. Profile không tự học, trang bị hay cộng hiệu ứng."
+    ) % [
+        archived_codices.size(),
+        known.size(),
+        "\n".join(lines),
+        study_text,
+        "ON" if bool(gates.get("sect_codex",false)) else "OFF",
+        "ON" if bool(gates.get("technique_learning",false)) else "OFF",
+        "ON" if bool(gates.get("human_skill_combat",false)) else "OFF",
+        "ON" if bool(gates.get("divine_skill_combat",false)) else "OFF"
     ]
 
 

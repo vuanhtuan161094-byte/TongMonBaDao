@@ -78,6 +78,7 @@ static func build(state: SimulationState, disciple: DiscipleState) -> Dictionary
         "life":_life(state,disciple),
         "work":_work(state,disciple),
         "learning":_learning(disciple),
+        "v63":_v63_projection(state,disciple),
         "equipment":_equipment(state,disciple,authentic_v2),
         "relationships":_relationships(state,disciple),
         "metrics":disciple.metrics.duplicate(true)
@@ -166,7 +167,8 @@ static func _life(state: SimulationState, disciple: DiscipleState) -> Dictionary
         "personal_spirit_stones":disciple.spirit_stones,
         "current_action":str(disciple.current_action),
         "region_id":str(disciple.region_id),
-        "target_region_id":str(disciple.target_region_id)
+        "target_region_id":str(disciple.target_region_id),
+        "active_job_id":str(disciple.active_job_id)
     }
 
 static func _work(state: SimulationState, disciple: DiscipleState) -> Dictionary:
@@ -213,6 +215,27 @@ static func _learning(disciple: DiscipleState) -> Dictionary:
         "cultivation_path_xp":disciple.cultivation_path_xp.duplicate(true),
         "learned_combat_skills":disciple.learned_combat_skills.duplicate(true)
     }
+
+static func _v63_projection(state: SimulationState, disciple: DiscipleState) -> Dictionary:
+    var preview_overrides := V63FeatureGates.persisted_preview_overrides(state)
+    var aux: Array = disciple.active_technique_aux
+    return {
+        "feature_gates":{
+            "sect_codex":V63SectArchiveSystem.is_enabled(state,preview_overrides),
+            "technique_learning":V63LearningSystem.is_enabled(state,preview_overrides),
+            "human_skill_combat":V63FeatureGates.is_enabled("human_skill_combat",preview_overrides),
+            "divine_skill_combat":V63FeatureGates.is_enabled("divine_skill_combat",preview_overrides)
+        },
+        "known_techniques":disciple.known_techniques.duplicate(true),
+        "archived_codices":state.sect.v63_archived_codices.duplicate(true),
+        "loadout":{
+            "main":str(disciple.active_technique_main),
+            "aux_1":str(aux[0]) if aux.size() > 0 else "",
+            "aux_2":str(aux[1]) if aux.size() > 1 else ""
+        },
+        "study":V63LearningSystem.study_progress(state,disciple)
+    }
+
 
 static func _equipment(
     state: SimulationState, disciple: DiscipleState, authentic_v2: bool
