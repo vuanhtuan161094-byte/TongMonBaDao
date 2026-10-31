@@ -116,6 +116,29 @@ func run() -> void:
                 verify(str(d.v2_realm_progress["cultivation"]) != str(cultivation_before),
                     "real V2 cultivation progress changed")
 
+    # Fix the SX01 root blocker: specialized Tu Vi may safely take a pill
+    # without being commandeered into the autonomous hunting actor pool.
+    d.current_action = &"CULTIVATE"
+    verify(B3MedicalAutoplayV1.busy(state, d),
+        "B3 CARE remains strict: Chuyên Tu cannot be auto-deployed")
+    verify(B3PillSatietyV1.safe_cultivation_pill_window(state, d),
+        "dedicated B3 pill use has a narrower safe Chuyên Tu window")
+    verify(warehouse.add(state, tuvi_pill, 1),
+        "fixture additional Tu Vi pill for specialized case")
+    d.work_cycle_state = {"phase": "travel_out"}
+    verify(not B3PillSatietyV1.safe_cultivation_pill_window(state, d),
+        "an active production cycle denies Chuyên Tu pill")
+    var blocked := B3MedicalAutoplayV1.use_pill(owner, id, tuvi_pill, B3PillSatietyV1.next_sequence(d))
+    verify(not bool(blocked.get("ok", false)) and warehouse.quantity(state, tuvi_pill) == tuvi_before_stock + 1,
+        "busy actor neither consumes item nor gains Tu Vi")
+    d.work_cycle_state.clear()
+    var specialized := B3MedicalAutoplayV1.use_pill(owner, id, tuvi_pill, B3PillSatietyV1.next_sequence(d))
+    verify(bool(specialized.get("ok", false)), "Chuyên Tu receives actual graded Tu Vi medicine")
+    verify(d.current_action == &"CULTIVATE",
+        "Chuyên Tu stays active after pill without starting another job")
+    verify(B3PillSatietyV1.spent_today(state, d) == 60,
+        "specialized pill shares same day meter and costs exactly 25")
+
     receipt_sequence = int(d.b3_pill_state.get("sequence", 0))
     var final_reload := LiveGameRuntimeV2.new()
     if verify(bool(final_reload.start(save_path, owner.state.runtime_last_wall_unix).get("ok", false)),
