@@ -429,8 +429,7 @@ func _refresh_guide_selectors() -> void:
         var mark := "✓ " if assistants.has(str(disciple.id)) else "+ "
         _assistant_select.add_item(mark + disciple.display_name)
     _assistant_select.select(0)
-    var charm := float(snapshot.get("snapshot_main_charisma", 0.0))
-    var rates := recruitment.guidance_quality_rates_for_charisma(charm)
+    var rates := recruitment.guidance_current_quality_rates(game_state)
     var platform := BuildingSystem.new().primary_building(game_state, BuildingSystem.TYPE_GUIDANCE_PLATFORM)
     var slots := maxi(BuildingSystem.new().guidance_elder_slots(platform) - 1, 0) if platform != null else 0
     _guide_hint.text = "Hiệu lực ngày mô phỏng kế tiếp\nNghịch Thiên hôm nay: %.1f%% · Hỗ trợ %d/%d" % [
