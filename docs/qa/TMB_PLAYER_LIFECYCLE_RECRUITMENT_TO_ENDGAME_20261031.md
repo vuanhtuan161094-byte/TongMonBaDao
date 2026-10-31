@@ -47,7 +47,10 @@ Code: `RecruitmentSystem`, `P3.2LandscapeSect`, `DiscipleGeneratorOpenPoints`, `
 ## 6. Player Journey release acceptance
 New Game→evaluate generated candidate→cost token/natural arrival→Accept→verify D7 birth identity and Phàm Nhân 1/F1 + Phàm Thân 1/F1→choose profession, training and PvE team→paid Field/Mine/Forest→Warehouse→recipe→graded medicine→B3 HP/Tu Vi→XP and gate→PvE source→legit loot→Reinvest→Save, Exit, Reload, Offline and 6/90/200/480 performance. Compare in-game controls, formulas and balances to each requirement. Any broken link is **BLOCKED / design pending**, not completed gameplay.
 
-## 7. Open owner choices requiring explicit decision (do not guess)
+## 7. Age, life span, ghost state (owner locked design, NOT necessarily implemented)
+The code-defined `CandidateState` stores `age`, `base_lifespan`, and `max_lifespan`. The canon `docs/DISCIPLE_LIFESPAN_CANON.md` states that major realm breakthrough can extend lifespan. At the limit, a disciple **becomes Ma/Hồn (ghost)**, is not deleted from roster; a legitimate lifespan-extending Thọ Đan may revive if `lifespan_max > age`. This is **a design lock**, not a claim that the whole aging/ghost/pill-revival pipeline has been coded, tested, and delivered in the P3.2 playable runtime. Injury120 is separate from lifespan and should not erase ghost state.
+
+## 8. Open owner choices requiring explicit decision (do not guess)
 - Should Chiêu Mộ Lệnh cost a Stone fee on top of one order? Current code **NO**. Should daily free visitors include non-human races at some tier? Current **HUMAN ONLY**.
 - Is there recruit filtering/reroll? None in P3.2, candidates Accept/Reject. Could add targeted scout option but must balance odds and currency.
 - Should sex/name be editable **after** recruitment for cosmetic use without rerolling immutable stats? Not implemented.
