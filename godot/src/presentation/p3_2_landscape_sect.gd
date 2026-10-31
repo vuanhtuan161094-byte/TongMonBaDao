@@ -3293,6 +3293,21 @@ func _build_healing_pill_controls() -> void:
         ]
         button.pressed.connect(Callable(self, "_sx01_configure_from_ui").bind(pill_key, not bool(policy.get(pill_key,false))))
         building_management_container.add_child(button)
+    var threshold := Button.new()
+    threshold.name = "SX01HealThreshold"
+    threshold.text = "Tự hồi phục dưới %d%% HP" % int(policy.get("heal_hp_percent",60))
+    threshold.pressed.connect(_sx01_cycle_heal_threshold_from_ui)
+    building_management_container.add_child(threshold)
+    var quota := Button.new()
+    quota.name = "SX01TuViQuota"
+    quota.text = "Tự dùng Tụ Khí: tối đa %d viên/người/ngày" % int(policy.get("auto_tu_khi_per_day",2))
+    quota.pressed.connect(_sx01_cycle_tuvi_quota_from_ui)
+    building_management_container.add_child(quota)
+    var medical := Button.new()
+    medical.name = "SX01MedicalReserve"
+    medical.text = "Dự trữ mềm Hồi Xuân: %d viên" % int(policy.get("medical_soft_reserve",2))
+    medical.pressed.connect(_sx01_cycle_soft_reserve_from_ui)
+    building_management_container.add_child(medical)
     _add_management_section_label("TỤ KHÍ ĐAN · DÙNG THỦ CÔNG")
     var shown_tuvi := 0
     for raw_id in state.disciples.keys():
@@ -3317,6 +3332,24 @@ func _build_healing_pill_controls() -> void:
         priority.pressed.connect(Callable(self, "_sx01_toggle_priority_from_ui").bind(disciple.id))
         row.add_child(priority)
         shown_tuvi += 1
+
+func _sx01_cycle_heal_threshold_from_ui() -> void:
+    var choices := [40, 50, 60, 70, 80]
+    var current := int(state.sect.sx01_pill_policy.get("heal_hp_percent", 60))
+    var index := choices.find(current)
+    _sx01_configure_from_ui("heal_hp_percent", choices[(index + 1) % choices.size()])
+
+func _sx01_cycle_tuvi_quota_from_ui() -> void:
+    var choices := [0, 1, 2, 3, 5]
+    var current := int(state.sect.sx01_pill_policy.get("auto_tu_khi_per_day", 2))
+    var index := choices.find(current)
+    _sx01_configure_from_ui("auto_tu_khi_per_day", choices[(index + 1) % choices.size()])
+
+func _sx01_cycle_soft_reserve_from_ui() -> void:
+    var choices := [0, 2, 4, 6]
+    var current := int(state.sect.sx01_pill_policy.get("medical_soft_reserve", 2))
+    var index := choices.find(current)
+    _sx01_configure_from_ui("medical_soft_reserve", choices[(index + 1) % choices.size()])
 
 func _sx01_toggle_priority_from_ui(disciple_id: StringName) -> void:
     var flags: Dictionary = state.sect.sx01_pill_policy.get("priority_tuvi_ids", {})
