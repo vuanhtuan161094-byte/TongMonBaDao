@@ -39,5 +39,6 @@ static func create_state(seed: int = 1337) -> SimulationState:
             assert(DiscipleBirthProfileV2.valid_complete_birth(candidate.v2_birth_profile),
                 "C2 New Game must not expose an un-recruitable birth profile.")
         workforce.ensure_p3_7_candidate_profile(state, candidate)
+        DiscipleBirthRollV2.sync_profession_talent(candidate.v2_birth_profile, candidate)
 
     return state
