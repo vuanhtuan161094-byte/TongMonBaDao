@@ -11,6 +11,7 @@ const MAP_WORKSITE_REFRESH_SECONDS := 0.25
 const MAX_RETAINED_ACTOR_POOL := 72
 const PERFORMANCE_SAMPLE_SECONDS := 3.0
 var _v63_hunt_resource_registry := ResourceRegistry.new()
+var sx02_selected_medicine: StringName = &""
 const RAW_FRAME_LOG_ENV := "TMB_PVE_RAW_FRAME_LOG_PATH"
 
 class B3MainHuntArena:
@@ -3219,6 +3220,17 @@ func _build_alchemy_management() -> void:
         button.custom_minimum_size = Vector2(170, 32)
         button.pressed.connect(Callable(self, "_sx01_select_recipe_from_ui").bind(hall.id, pill_id))
         building_management_container.add_child(button)
+    _add_management_section_label("ĐAN THEO CẢNH GIỚI · PHẨM THEO ĐAN SƯ")
+    for new_recipe in MedicineCatalogueV2.authored_recipes():
+        var recipe := AlchemyRecipeRegistry.new().definition(new_recipe)
+        var button := Button.new()
+        button.name = "SX02Recipe_%s" % str(new_recipe)
+        button.text = "%s · Điện Lv%d" % [str(recipe.get("name", new_recipe)), int(recipe.get("required_hall_level", 1))]
+        button.custom_minimum_size = Vector2(360, 32)
+        button.disabled = hall.level < int(recipe.get("required_hall_level", 1))
+        button.tooltip_text = "Phẩm được xác định bởi Đan Sư + cấp Điện khi khởi tạo mẻ. Thiếu nguyên liệu sẽ không khởi tạo mẻ."
+        button.pressed.connect(Callable(self, "_sx01_select_recipe_from_ui").bind(hall.id, new_recipe))
+        building_management_container.add_child(button)
     for pill_key in ["target_hoi_xuan_dan", "target_tu_khi_dan"]:
         for delta in [-6, 6]:
             var button := Button.new()
@@ -3259,7 +3271,69 @@ func _set_alchemy_recipe_enabled_from_ui(hall_id: StringName, enabled: bool) -> 
         _autosave_runtime()
     _refresh_building_operation_content()
 
+# Compact, stock-driven, no new medicine clock or HUD action authority.
+func _build_sx02_medicine_controls() -> void:
+    if not SX01PillPolicy.active(state):
+        return
+    var warehouse := WarehouseSystem.new()
+    var available: Array[StringName] = []
+    for item_id in MedicineCatalogueV2.all_item_ids():
+        if warehouse.available_quantity(state, item_id) > 0:
+            available.append(item_id)
+    if available.is_empty():
+        return
+    _add_management_section_label("ĐAN DƯỢC CẢNH GIỚI / PHẨM · DÙNG THỦ CÔNG")
+    var picker := OptionButton.new()
+    picker.name = "SX02MedicinePicker"
+    picker.custom_minimum_size = Vector2(384, 32)
+    var selected_index := 0
+    for item_id in available:
+        var index := picker.item_count
+        var pill_info := MedicineCatalogueV2.definition(item_id)
+        picker.add_item("%s · còn %d" % [pill_info.get("name", item_id), warehouse.available_quantity(state, item_id)])
+        picker.set_item_metadata(index, str(item_id))
+        if item_id == sx02_selected_medicine:
+            selected_index = index
+    picker.select(selected_index)
+    sx02_selected_medicine = StringName(picker.get_item_metadata(selected_index))
+    picker.item_selected.connect(func(index: int) -> void:
+        sx02_selected_medicine = StringName(picker.get_item_metadata(index))
+        _refresh_building_operation_content()
+    )
+    building_management_container.add_child(picker)
+
+    var selected_data := MedicineCatalogueV2.definition(sx02_selected_medicine)
+    var effects := Label.new()
+    effects.name = "SX02MedicinePotency"
+    effects.text = "%s %d · Bão hòa %d" % [
+        "+HP" if str(selected_data.get("pill_family","")) == "heal" else "+Tu Vi",
+        int(selected_data.get("potency", 0)), int(selected_data.get("satiety_cost", 0))
+    ]
+    effects.custom_minimum_size = Vector2(384, 24)
+    building_management_container.add_child(effects)
+
+    var shown := 0
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    for raw_id in ids:
+        var disciple: DiscipleState = state.disciples[raw_id]
+        if disciple.region_id != &"sect" or not DiscipleRealmProgressV2.progression_ready(disciple):
+            continue
+        if shown >= 8:
+            break
+        var row := _new_management_row(disciple)
+        var use := Button.new()
+        use.name = "SX02Use_%s" % str(disciple.id)
+        use.text = "Dùng đan đã chọn"
+        use.custom_minimum_size = Vector2(160, 30)
+        use.disabled = B3MedicalAutoplayV1.busy(state, disciple) or warehouse.available_quantity(state, sx02_selected_medicine) < 1
+        use.tooltip_text = "B3 sẽ kiểm tra nghề đang bận, bão hòa, kho và cửa ải Tu Vi."
+        use.pressed.connect(Callable(self, "_sx01_use_pill_from_ui").bind(disciple.id, sx02_selected_medicine))
+        row.add_child(use)
+        shown += 1
+
 func _build_healing_pill_controls() -> void:
+    _build_sx02_medicine_controls()
     _add_management_section_label("HỒI XUÂN ĐAN")
     var available := WarehouseSystem.new().available_quantity(state, NeedsSystem.HEALING_PILL_ID)
     var ids: Array = state.disciples.keys()
@@ -3408,9 +3482,9 @@ func _alchemy_operation_text() -> String:
         var job: Dictionary = raw_job
         var worker_id := StringName(job.get("worker_id", ""))
         var name := state.disciples[worker_id].display_name if state.disciples.has(worker_id) else str(worker_id)
-        var pill := "Tụ Khí Đan" if str(job.get("recipe_id", "")) == "tu_khi_dan" else "Hồi Xuân Đan"
+        var pill := str(AlchemyRecipeRegistry.new().definition(StringName(job.get("recipe_id",""))).get("name", "Đan dược"))
         lines.append("• %s · %s · còn %d phút" % [name, pill, maxi(int(job.get("finish_tick", state.tick)) - state.tick, 0)])
-    var recipe_name := "Tụ Khí Đan" if str(hall.production_state.get("recipe_id", "")) == "tu_khi_dan" else "Hồi Xuân Đan"
+    var recipe_name := str(AlchemyRecipeRegistry.new().definition(StringName(hall.production_state.get("recipe_id", "hoi_xuan_dan"))).get("name", "Hồi Xuân Đan"))
     var status := "TỰ ĐỘNG" if SX01PillPolicy.active(state) and str(state.sect.sx01_pill_policy.get("recipe_mode", "")) == "demand" else "CỐ ĐỊNH"
     return (
         "LUYỆN ĐAN ĐIỆN · Lv%d\n"
