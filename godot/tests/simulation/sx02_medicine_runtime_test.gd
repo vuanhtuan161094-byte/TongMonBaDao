@@ -64,8 +64,9 @@ func run() -> void:
     owner = reloaded.owner
     state = reloaded.state()
     d = state.disciples[id]
-    verify(BuildingSystem.new().alchemy_jobs(state, hall).size() <= 1,
-        "no duplicate work receipt")
+    hall = BuildingSystem.new().primary_building(state, BuildingSystem.TYPE_ALCHEMY_HALL)
+    verify(BuildingSystem.new().alchemy_jobs(state, hall).size() == 1,
+        "pending work receipt restored once from disk")
     var advance := owner.update_to(START + finish_tick * 60)
     if not verify(bool(advance.get("ok", false)), "canonical elapsed clock settles job"):
         quit(1)
