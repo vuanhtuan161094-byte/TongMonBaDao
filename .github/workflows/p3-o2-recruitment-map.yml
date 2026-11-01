@@ -9,6 +9,9 @@ on:
       - 'godot/src/presentation/p3_1_landscape_sect.gd'
       - 'godot/src/presentation/p3_2_landscape_sect.gd'
       - 'godot/tests/presentation/p3_o2_recruitment_map_test.gd'
+      - 'godot/tests/presentation/p3_6a_playable_slice_test.gd'
+      - 'godot/tests/presentation/tri_facility_b1_live_integration_test.gd'
+      - 'godot/tests/presentation/tri_facility_b1_live_capture.gd'
       - '.github/workflows/p3-o2-recruitment-map.yml'
 
       - 'godot/tests/presentation/p3_o6_m1_release_rehearsal_test.gd'
