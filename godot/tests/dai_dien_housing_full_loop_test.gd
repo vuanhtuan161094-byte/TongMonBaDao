@@ -60,6 +60,12 @@ func _run() -> void:
     var buildings := BuildingSystem.new()
     var cost := buildings.upgrade_cost(first)
     var money_before := state.sect.spirit_stones
+    var no_house_request := buildings.start_upgrade(state, first.id)
+    if not _assert(not bool(no_house_request.get("ok", true))
+            and str(no_house_request.get("reason", "")) == "upgrade_request_id_required"
+            and state.sect.spirit_stones == money_before,
+            "governed House API bypassed durable transaction ID"):
+        return
     var begin := buildings.start_upgrade(state, first.id, "qa-house-upgrade-001-to-002")
     if not _assert(bool(begin.get("ok", false)), "cannot start Lv1→2 real building upgrade"):
         return
@@ -120,6 +126,12 @@ func _run() -> void:
     # after completion, not only an in-memory is_upgrading() click guard.
     var hall_cost := buildings.upgrade_cost(hall)
     var hall_stones_before := state.sect.spirit_stones
+    var no_hall_request := buildings.start_upgrade(state, hall.id)
+    if not _assert(not bool(no_hall_request.get("ok", true))
+            and str(no_hall_request.get("reason", "")) == "upgrade_request_id_required"
+            and state.sect.spirit_stones == hall_stones_before,
+            "governed Hall API bypassed durable transaction ID"):
+        return
     var hall_start := buildings.start_upgrade(state, hall.id, "qa-hall-upgrade-012")
     if not _assert(bool(hall_start.get("ok", false)) and hall.is_upgrading(),
             "Hall paid upgrade not started"):
