@@ -307,8 +307,8 @@ static func promotion_requirements(state: SimulationState) -> Dictionary:
     for disciple_value in state.disciples.values():
         var recruit: DiscipleState = disciple_value
         if DiscipleRealmProgressV2.valid_profile(recruit.v2_realm_progress):
-            var current := DiscipleRealmProgressV2.current(recruit)
-            if bool(current.get("ok", false)) and int(current["cultivation"]["realm"]) >= min_realm:
+            var realm_profile := DiscipleRealmProgressV2.current(recruit)
+            if bool(realm_profile.get("ok", false)) and int(realm_profile["cultivation"]["realm"]) >= min_realm:
                 realm_eligible += 1
     var prestige_need := 25 * (next_index - 1) * next_index
     var renown := int(state.sect.hall_governance.get("prestige", 0))
