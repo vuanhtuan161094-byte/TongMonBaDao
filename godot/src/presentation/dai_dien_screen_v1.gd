@@ -192,9 +192,11 @@ func _refresh() -> void:
 
 func _overview() -> void:
     var hall := SectHallSystemV1.hall(game_state)
-    _content.add_child(_label("TÔNG MÔN  ·  NHÂN GIỚI", 18, GOLD))
-    _content.add_child(_label("Đại Điện Lv%d/100  ·  Bậc Tông Môn: Nhân %d/9" % [
-        hall.level, int(game_state.sect.hall_governance.get("sect_rank_index", 1))
+    var rank := SectHallSystemV1.rank_index(game_state)
+    var realm_name := "Nhân Giới" if rank <= 9 else ("Tiên Giới" if rank <= 18 else "Thần Giới")
+    _content.add_child(_label("TÔNG MÔN  ·  " + realm_name.to_upper(), 18, GOLD))
+    _content.add_child(_label("Đại Điện Lv%d/100  ·  Bậc Tông Môn: %s" % [
+        hall.level, SectHallSystemV1.rank_label(rank)
     ], 16))
     _content.add_child(_label("Đệ tử %d/%d  ·  Giường %d  ·  Trần quản trị %d  ·  Linh Thạch %d" % [
         game_state.disciples.size(), game_state.sect.disciple_capacity,
