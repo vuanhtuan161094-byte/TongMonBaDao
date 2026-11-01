@@ -1,5 +1,8 @@
 # CURRENT CHECKPOINT — ONE GAME INTEGRATION
 
+> **2026-11-01 TRI-01 DOCS-ONLY CHECKPOINT (on branch docs/three-buildings-codex-handoff-20261101):** Owner froze the *architecture/scope*, not QA acceptance, of Đại Điện V2 × Đệ Tử Xá V2 × Dẫn Tiên Đài V2. For latest verified branch SHAs/compare, RC Windows QA evidence, CandidateDecisionActions conflict and explicit NO-MERGE Codex packet read [TRI-01 handoff](docs/handoffs/2026-11-01/TMB_TRI_FACILITY_FROZEN_ARCHITECTURE_CODEX_HANDOFF.md) and [copy-ready prompt](docs/handoffs/2026-11-01/CODEX_TRI_FACILITY_INTEGRATION_PROMPT.md). The gameplay RC at 970af33, PR #64 at bf3ed03 and PR #60 at 074ca82 remain unchanged; NO Codex run or Godot QA occurred in this docs-only packet. The historical checkpoint below is preserved without being relabeled as a current integration PASS.
+
+
 Updated 2026-10-31 (Asia/Saigon). This file supersedes the archived RC status below.
 
 ## Current candidate
