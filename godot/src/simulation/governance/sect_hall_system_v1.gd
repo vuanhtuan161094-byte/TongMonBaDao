@@ -498,6 +498,23 @@ static func validate(state: SimulationState) -> Array[String]:
     if not installed(state):
         errors.append("Hall governance schema unsupported or malformed.")
         return errors # Never allow an unknown schema to validate as clean.
+    # Validate dictionary shapes before holder_id()/mastery() dereference them.
+    # A corrupted saved assignment string must return a normal validation error
+    # so SaveService can recover the last good backup, not throw an engine error.
+    for ledger_key in ["assignments", "mastery", "office_award_day", "promotion_receipts"]:
+        if not state.sect.hall_governance.has(ledger_key) \
+                or not (state.sect.hall_governance[ledger_key] is Dictionary):
+            errors.append("Hall invalid ledger: " + ledger_key)
+    if not errors.is_empty():
+        return errors
+    var saved_assignments: Dictionary = state.sect.hall_governance["assignments"]
+    for saved_role in saved_assignments.keys():
+        if not OFFICES.has(str(saved_role)) or str(saved_role) == OFFICE_GUIDE:
+            errors.append("Hall has invalid or duplicated Guide assignment ledger key.")
+        elif not (saved_assignments[saved_role] is String or saved_assignments[saved_role] is StringName):
+            errors.append("Hall office holder must be a saved string ID.")
+    if not errors.is_empty():
+        return errors
     errors.append_array(SectResidenceSystemV1.validate(state))
     # Check the raw persisted value: rank_index() deliberately clamps for
     # display and must not mask a corrupt save from invariant validation.
