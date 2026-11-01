@@ -8,9 +8,9 @@ echo          TONG MON BA DAO - MO GAME
 echo ===================================================
 where git >nul 2>nul
 if errorlevel 1 goto :missing_git
-for /f "delims=" %%H in ('git -C "%TMB_ROOT%." rev-parse HEAD 2^>nul') do set "TMB_LOCAL_SHA=%%H"
+for /f "delims=" %%H in ('git -c "safe.directory=%TMB_ROOT%." -C "%TMB_ROOT%." rev-parse HEAD 2^>nul') do set "TMB_LOCAL_SHA=%%H"
 if not defined TMB_LOCAL_SHA goto :invalid_checkout
-git -C "%TMB_ROOT%." merge-base --is-ancestor "%TMB_RC_ANCESTOR%" HEAD >nul 2>nul
+git -c "safe.directory=%TMB_ROOT%." -C "%TMB_ROOT%." merge-base --is-ancestor "%TMB_RC_ANCESTOR%" HEAD >nul 2>nul
 if errorlevel 1 goto :old_version
 echo [OK] Git HEAD: %TMB_LOCAL_SHA%
 set "TMB_GODOT=E:\TongMonBaDaoWorkspace\04_Tools\Godot\Godot_v4.7.2-stable_win64.exe"
@@ -24,7 +24,7 @@ if not exist "%TMB_ROOT%godot\assets\p3\character_creator\parts\female_normal_v1
   if errorlevel 1 goto :asset_failed
 )
 echo [OK] Godot: %TMB_GODOT%
-echo [INFO] Dang mo game ONE GAME P3.2 1280x720 voi profile save moi rieng.
+echo [INFO] Dang mo game ONE GAME P3.2 1280x720 voi profile save rieng, giu qua cac lan mo.
 call "%TMB_ROOT%tools\windows\run\Run-OneGame-NewGame.cmd"
 set "TMB_EXIT=%ERRORLEVEL%"
 if not "%TMB_EXIT%"=="0" goto :game_error
