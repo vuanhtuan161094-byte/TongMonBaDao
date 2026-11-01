@@ -256,6 +256,11 @@ func assign_guidance_main(state: SimulationState, disciple_id: StringName) -> Di
         return _result(false, "disciple_missing")
     if disciple_id != &"" and not guidance_guide_eligible(state, disciple_id):
         return _result(false, "guide_busy_or_injured")
+    # DD-01: the Dẫn Tiên panel and Đại Điện must enforce the same unique office.
+    if disciple_id != &"" and SectHallSystemV1.installed(state):
+        for other_office in [SectHallSystemV1.OFFICE_MASTER, SectHallSystemV1.OFFICE_TEACHER]:
+            if SectHallSystemV1.holder_id(state, other_office) == str(disciple_id):
+                return _result(false, "disciple_owns_other_office")
     var data := _guidance_state(platform)
     var assistants: Array = data.get("assistant_guide_ids", [])
     assistants.erase(str(disciple_id))
