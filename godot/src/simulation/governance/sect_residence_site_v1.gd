@@ -50,6 +50,15 @@ static func has_valid_site_fields(house: BuildingState) -> bool:
     if house == null:
         return false
     var data: Dictionary = house.production_state
+    if data.has("site_version"):
+        var version = data["site_version"]
+        if not (version is int or version is float) \
+                or (version is float and (is_nan(version) or is_inf(version))) \
+                or float(version) != 1.0:
+            return false
+        # Explicit site schema never silently reverts to an old indexed lot.
+        if not data.has("site_x") or not data.has("site_y"):
+            return false
     if not data.has("site_x") and not data.has("site_y"):
         return true # Old V2 House: deterministic location migration.
     if not data.has("site_x") or not data.has("site_y"):
