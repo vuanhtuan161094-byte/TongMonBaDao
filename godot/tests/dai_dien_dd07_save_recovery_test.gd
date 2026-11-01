@@ -1,0 +1,116 @@
+extends SceneTree
+
+# DD-07: fail-closed Hall/Residence save migration and .bak recovery.
+# Isolated QA profile only; NEVER use a player's live save path.
+# Official Godot 4.7.2: --headless --path godot --script res://tests/dai_dien_dd07_save_recovery_test.gd
+
+const QA_SAVE := "user://qa_dd07_hall_recovery_20261101.json"
+
+func _initialize() -> void:
+    call_deferred("_run")
+
+func _expect(works: bool, description: String) -> bool:
+    if works:
+        return true
+    push_error("DD07_SAVE_RECOVERY_FAIL: " + description)
+    quit(1)
+    return false
+
+func _cleanup() -> void:
+    for extension in ["", ".tmp", ".bak"]:
+        var exact := ProjectSettings.globalize_path(QA_SAVE + extension)
+        if FileAccess.file_exists(QA_SAVE + extension):
+            DirAccess.remove_absolute(exact)
+
+func _run() -> void:
+    var state := P37Factory.create_state(20261101)
+    if not _expect(bool(SectHallSystemV1.ensure_live(state).get("ok", false)),
+            "initial Hall/Residence grant"):
+        return
+
+    # Missing governance key means legacy; unsupported explicit key MUST remain
+    # visible to the caller and must fail validation, not reset to Nhân 1.
+    var original := state.sect.to_dict()
+    var unsupported := original.duplicate(true)
+    var wrong: Dictionary = unsupported["hall_governance"]
+    wrong["version"] = 999
+    unsupported["hall_governance"] = wrong
+    var parsed := SectState.from_dict(unsupported)
+    if not _expect(int(parsed.hall_governance.get("version", 0)) == 999,
+            "SectState silently dropped unsupported governance version"):
+        return
+    var wrong_state := SimulationState.from_dict(state.to_dict())
+    wrong_state.sect = parsed
+    if not _expect(not SectHallSystemV1.validate(wrong_state).is_empty()
+            and not bool(SectHallSystemV1.ensure_live(wrong_state).get("ok", true)),
+            "unknown Hall schema must reject migration"):
+        return
+    var malformed := original.duplicate(true)
+    malformed["hall_governance"] = "broken"
+    if not _expect(not SectState.from_dict(malformed).hall_governance.is_empty(),
+            "invalid Hall payload type must not be interpreted as legacy"):
+        return
+    var legacy := original.duplicate(true)
+    legacy.erase("hall_governance")
+    if not _expect(SectState.from_dict(legacy).hall_governance.is_empty(),
+            "actual legacy save must remain eligible for explicit migration"):
+        return
+
+    var orphan_hall := SimulationState.from_dict(state.to_dict())
+    orphan_hall.buildings.erase("main_hall_001")
+    if not _expect(not bool(SectHallSystemV1.ensure_live(orphan_hall).get("ok", true))
+            and not orphan_hall.buildings.has("main_hall_001"),
+            "orphaned persisted Hall must not silently recreate a free Hall"):
+        return
+    var orphan_house := SimulationState.from_dict(state.to_dict())
+    orphan_house.buildings.erase("residence_001")
+    if not _expect(not bool(SectResidenceSystemV1.ensure_live(orphan_house).get("ok", true))
+            and not orphan_house.buildings.has("residence_001"),
+            "orphaned saved House must not reset silently to Lv1"):
+        return
+
+    # Two genuine saved generations establish a valid backup copy.
+    _cleanup()
+    var saves := SaveService.new()
+    if not _expect(saves.save_to_path(state, QA_SAVE) == OK
+            and saves.save_to_path(state, QA_SAVE) == OK,
+            "cannot establish two valid QA save generations"):
+        return
+    if not _expect(FileAccess.file_exists(QA_SAVE + ".bak"),
+            "a valid backup must exist before corrupt-primary test"):
+        return
+
+    # Corrupt only the isolated QA primary; leave backup pristine. The saved
+    # JSON envelope (including floating-point codec and CARE tag) stays intact.
+    var source := FileAccess.open(QA_SAVE, FileAccess.READ)
+    if not _expect(source != null, "cannot read QA primary"):
+        return
+    var raw = JSON.parse_string(source.get_as_text())
+    source.close()
+    if not _expect(raw is Dictionary, "saved primary must be JSON dictionary"):
+        return
+    var envelope: Dictionary = raw
+    var payload_sect: Dictionary = envelope["sect"]
+    var governance: Dictionary = payload_sect["hall_governance"]
+    governance["version"] = 999
+    payload_sect["hall_governance"] = governance
+    envelope["sect"] = payload_sect
+    var writer := FileAccess.open(QA_SAVE, FileAccess.WRITE)
+    if not _expect(writer != null, "cannot modify isolated QA primary"):
+        return
+    writer.store_string(JSON.stringify(envelope))
+    writer.flush()
+    writer.close()
+
+    var restored := SaveService.new().load_from_path(QA_SAVE)
+    if not _expect(restored != null and SectHallSystemV1.installed(restored)
+            and SectHallSystemV1.hall(restored) != null
+            and SectResidenceSystemV1.all_houses(restored).size() == 1,
+            "SaveService did not reject corrupted primary and recover backup"):
+        return
+    if not _expect(SectHallSystemV1.validate(restored).is_empty(),
+            "restored backup Hall/Residence invariants invalid"):
+        return
+    _cleanup()
+    print("DD07_SAVE_RECOVERY_PASS unsupported_schema=1 corrupt_payload_type=1 legacy=1 orphan_hall=1 orphan_house=1 backup_recovery=1")
+    quit(0)
