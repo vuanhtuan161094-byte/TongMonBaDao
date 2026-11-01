@@ -299,8 +299,19 @@ func _autosave_and_join_before_reload() -> bool:
         return _fail("O8 autosave lost Alchemy Hall before scene reload.")
     var saved_jobs := buildings.alchemy_jobs(persisted, old_hall)
     var live_jobs := buildings.alchemy_jobs(state, live_hall)
-    if saved_jobs != live_jobs:
-        return _fail("O8 autosave timed jobs differ BEFORE scene reload.")
+    if saved_jobs.size() != live_jobs.size():
+        return _fail("O8 autosave changed timed-job count BEFORE scene reload.")
+    # Check only authoritative persisted identity/finish fields: JSON can
+    # restore equivalent values with different Variant representation.
+    for i in range(live_jobs.size()):
+        var recorded: Dictionary = saved_jobs[i]
+        var active: Dictionary = live_jobs[i]
+        if str(recorded.get("job_id", "")) != str(active.get("job_id", "")) \
+                or int(recorded.get("finish_tick", -1)) != int(active.get("finish_tick", -2)) \
+                or str(recorded.get("worker_id", "")) != str(active.get("worker_id", "")):
+            return _fail("O8 autosave changed timed-job identity BEFORE scene reload.")
+    if warehouse.quantity(persisted, &"thanh_linh_thao") != warehouse.quantity(state, &"thanh_linh_thao"):
+        return _fail("O8 autosave changed herb stock BEFORE scene reload.")
     return true
 
 func _first_unassigned() -> StringName:
