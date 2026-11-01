@@ -299,6 +299,17 @@ static func promotion_requirements(state: SimulationState) -> Dictionary:
             if building.building_type in [BuildingSystem.TYPE_MINE, BuildingSystem.TYPE_LINH_FOREST]:
                 real_mine_or_forest += completed
     var production_need := 2 * (next_index - 1)
+    # Realm qualification is checked from the canonical V2 progression only.
+    # Founders with older progression remain retained but cannot fake a high-tier gate.
+    var min_realm := 1 if next_index <= 9 else (10 if next_index <= 18 else 20)
+    var realm_need := 1 if next_index <= 9 else maxi(1, int(ceil(float(roster_need) / 10.0)))
+    var realm_eligible := 0
+    for disciple_value in state.disciples.values():
+        var recruit: DiscipleState = disciple_value
+        if DiscipleRealmProgressV2.valid_profile(recruit.v2_realm_progress):
+            var current := DiscipleRealmProgressV2.current(recruit)
+            if bool(current.get("ok", false)) and int(current["cultivation"]["realm"]) >= min_realm:
+                realm_eligible += 1
     var prestige_need := 25 * (next_index - 1) * next_index
     var renown := int(state.sect.hall_governance.get("prestige", 0))
     var costs := {
@@ -311,6 +322,8 @@ static func promotion_requirements(state: SimulationState) -> Dictionary:
         blockers.append("hall_level")
     if state.disciples.size() < roster_need:
         blockers.append("disciple_roster")
+    if realm_eligible < realm_need:
+        blockers.append("disciple_realm")
     if batches < production_need or real_mine_or_forest <= 0:
         blockers.append("real_production")
     if renown < prestige_need:
@@ -326,6 +339,7 @@ static func promotion_requirements(state: SimulationState) -> Dictionary:
         "ok": blockers.is_empty(), "next": next_index, "next_name": rank_label(next_index),
         "hall_level": hall_state.level if hall_state != null else 0, "hall_need": hall_need,
         "roster": state.disciples.size(), "roster_need": roster_need,
+        "realm": realm_eligible, "realm_need": realm_need, "min_realm": min_realm,
         "production": batches, "production_need": production_need,
         "prestige": renown, "prestige_need": prestige_need,
         "cost": costs, "blockers": blockers
