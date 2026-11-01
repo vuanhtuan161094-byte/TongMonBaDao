@@ -96,7 +96,7 @@ func execute() -> bool:
     check(not owner.b3_write_blocked and B3MedicalAutoplayV1.use_pill(owner,id,&"hoi_xuan_dan",2)["replay"],"save retry publishes once, same request replay")
     check(B3PillSatietyV1.spent_today(state,d) == 35 and d.hp == 56.0,"HXD and TQD share pool 25+10, HP55 once")
     var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(path))
-    check(int(raw["save_version"]) == 4 and int(raw["b3_care_version"]) == 1,"CARE capability envelope rejects old readers")
+    check(int(raw["save_version"]) == SaveService.CARE_VERSION and int(raw["b3_care_version"]) == B3MedicalAutoplayV1.VERSION,"CARE capability envelope rejects old readers")
     var restored := SaveService.new().load_from_path(path)
     check(restored != null and restored.disciples[id].b3_pill_state["spent"] == 35,"real disk ledger preserved")
     raw["save_version"] = 3
