@@ -79,6 +79,24 @@ func _verify_lodging_expansion() -> bool:
     ui.call("_open_building", SectMapPresentation.DEST_RESIDENCE)
     await process_frame
 
+    if SectHallSystemV1.installed(state):
+        # DD-02 replaces the old 8-supply perpetual +1 bed with a canonical
+        # Residence BuildingState; legacy saves retain the old contract.
+        var before_supply := state.sect.supply_stock
+        var before_beds := SectResidenceSystemV1.total_beds(state)
+        if NeedsSystem.new().expand_lodging(state, 1):
+            return _fail("Hall V2 still permits legacy +1 lodging exploit.")
+        if state.sect.supply_stock != before_supply or SectResidenceSystemV1.total_beds(state) != before_beds:
+            return _fail("Blocked legacy expansion changed authoritative state.")
+        ui.call("_open_dai_dien_housing_v1")
+        await process_frame
+        var housing := ui.get_node_or_null("DaiDienScreenV1") as DaiDienScreenV1
+        if housing == null or housing.active_tab != 5:
+            return _fail("Residence map button did not open real Hall housing UI.")
+        housing._close()
+        await process_frame
+        return true
+
     state.sect.supply_stock = 24
     var before_supply := state.sect.supply_stock
     var before_capacity := state.sect.lodging_capacity

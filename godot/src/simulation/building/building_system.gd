@@ -1,6 +1,8 @@
 class_name BuildingSystem
 extends RefCounted
 
+const TYPE_MAIN_HALL := &"main_hall"
+const TYPE_RESIDENCE := &"residence"
 const TYPE_MINE := &"mine"
 const TYPE_LINH_FOREST := &"linh_forest"
 const TYPE_ALCHEMY_HALL := &"alchemy_hall"
@@ -15,7 +17,10 @@ const PROF_HERBALISM := &"herbalism"
 
 const STATUS_ACTIVE := &"active"
 const STATUS_UPGRADING := &"upgrading"
-const VALID_STATUSES := [STATUS_ACTIVE, STATUS_UPGRADING]
+# DD-09: House construction is an actual persisted lifecycle, distinct from
+# upgrades; houses are not rentable until construction is completed.
+const STATUS_CONSTRUCTING := &"constructing"
+const VALID_STATUSES := [STATUS_ACTIVE, STATUS_UPGRADING, STATUS_CONSTRUCTING]
 
 const MILESTONE_LEVELS := [10, 20, 30, 50, 75, 100]
 
@@ -59,6 +64,30 @@ const MILESTONE_COMPONENTS := {
 }
 
 const DEFINITIONS := {
+    "main_hall": {
+        "name": "Tông Môn Đại Điện",
+        "max_level": 100,
+        "worker_group_id": "",
+        "base_worker_slots": 0,
+        "worker_slot_every": 0,
+        # DD-01 early implementation prices are provisional; never imply approved long-term balance.
+        "base_wood_cost": 25,
+        "base_ore_cost": 20,
+        "base_stone_cost": 500,
+        "base_upgrade_work": 8.0,
+        "upgrade_work_per_level": 2.0,
+        "upgrade_enabled": true,
+        "requires_milestone_component": false
+    },
+    "residence": {
+        "name": "Đệ Tử Xá", "max_level": 100,
+        "worker_group_id": "", "base_worker_slots": 0,
+        "worker_slot_every": 0,
+        "base_wood_cost": 35, "base_ore_cost": 25,
+        "base_stone_cost": 500, "base_upgrade_work": 8.0,
+        "upgrade_work_per_level": 2.0, "upgrade_enabled": true,
+        "requires_milestone_component": false
+    },
     "mine": {
         "name": "Mỏ Linh Khoáng",
         "max_level": 100,
@@ -254,6 +283,20 @@ func ensure_body_training_facility(state: SimulationState) -> BuildingState:
     state.buildings[str(facility.id)] = facility
     state.building_event_count += 1
     return facility
+
+# DD-01 live-runtime only. Never create a second Hall from a UI map token.
+func ensure_main_hall(state: SimulationState) -> BuildingState:
+    if state == null or not state.p3_7_buildings_enabled:
+        return null
+    var existing := primary_building(state, TYPE_MAIN_HALL)
+    if existing != null:
+        return existing
+    var hall := create_building(TYPE_MAIN_HALL, 1)
+    if hall == null or state.buildings.has(str(hall.id)):
+        return null
+    state.buildings[str(hall.id)] = hall
+    state.building_event_count += 1
+    return hall
 
 func create_building(building_type: StringName, instance_index: int = 1) -> BuildingState:
     var definition: Dictionary = DEFINITIONS.get(str(building_type), {})
@@ -555,6 +598,8 @@ func can_start_upgrade(state: SimulationState, building_id: StringName) -> Dicti
     var building: BuildingState = state.buildings[str(building_id)]
     if building.is_upgrading():
         return {"ok": false, "reason": "already_upgrading"}
+    if building.status != STATUS_ACTIVE:
+        return {"ok": false, "reason": "building_not_active"}
     if building.level >= building.max_level:
         return {"ok": false, "reason": "max_level"}
 
@@ -564,6 +609,13 @@ func can_start_upgrade(state: SimulationState, building_id: StringName) -> Dicti
         return {"ok": false, "reason": "upgrade_content_pending"}
     if building.building_type == TYPE_BODY_TRAINING:
         return {"ok": false, "reason": "body_training_upgrade_content_pending"}
+    if SectHallSystemV1.installed(state) and building.building_type != TYPE_MAIN_HALL:
+        var governing_hall := SectHallSystemV1.hall(state)
+        if governing_hall == null:
+            return {"ok": false, "reason": "governing_hall_missing"}
+        var max_authorized := mini(100, maxi(10, governing_hall.level * 2 + 8))
+        if building.level + 1 > max_authorized:
+            return {"ok": false, "reason": "main_hall_level_gate", "maximum": max_authorized}
     var target_level := building.level + 1
     # No authoritative Đại Điện/Tông Môn progression gate exists for Dẫn Tiên
     # above Lv20. Keep the explicitly tested Lv20 threshold reachable, then
@@ -588,7 +640,29 @@ func can_start_upgrade(state: SimulationState, building_id: StringName) -> Dicti
         return {"ok": false, "reason": "missing_spirit_stones", "need": stone_need, "have": state.sect.spirit_stones}
     return {"ok": true, "cost": cost}
 
-func start_upgrade(state: SimulationState, building_id: StringName) -> Dictionary:
+func start_upgrade(state: SimulationState, building_id: StringName, request_id: String = "") -> Dictionary:
+    # DD-08: Hall/Residence require an explicit stable request ID; ordinary
+    # older P3.7 buildings retain the original no-ID API unchanged.
+    # Replay after completion is idempotent, not a second paid next-level action.
+    var stored_building = state.buildings.get(str(building_id)) if state != null else null
+    var governed := SectHallSystemV1.installed(state) and stored_building is BuildingState \
+        and stored_building.building_type in [TYPE_MAIN_HALL, TYPE_RESIDENCE]
+    if governed:
+        if request_id.is_empty():
+            return {"ok": false, "reason": "upgrade_request_id_required"}
+        if request_id.length() > 120:
+            return {"ok": false, "reason": "upgrade_request_id_too_long"}
+        var previous = state.sect.hall_governance.get("upgrade_receipts", {})
+        if not (previous is Dictionary):
+            return {"ok": false, "reason": "malformed_upgrade_receipts"}
+        if previous.has(request_id):
+            var prior = previous[request_id]
+            if not (prior is Dictionary) or str(prior.get("building_id", "")) != str(building_id):
+                return {"ok": false, "reason": "conflicting_upgrade_request"}
+            return {"ok": true, "already_settled": true,
+                "building_id": str(building_id),
+                "target_level": int(prior.get("target_level", 0)),
+                "receipt": prior.duplicate(true)}
     var check := can_start_upgrade(state, building_id)
     if not bool(check.get("ok", false)):
         return check
@@ -606,6 +680,15 @@ func start_upgrade(state: SimulationState, building_id: StringName) -> Dictionar
     building.upgrade_required_work = upgrade_required_work(building)
     building.upgrade_progress = 0.0
     state.building_event_count += 1
+    if governed:
+        var receipts: Dictionary = state.sect.hall_governance.get("upgrade_receipts", {}).duplicate(true)
+        receipts[request_id] = {
+            "building_id": str(building.id),
+            "target_level": building.upgrade_target_level,
+            "started_tick": state.tick,
+            "cost": cost.duplicate(true)
+        }
+        state.sect.hall_governance["upgrade_receipts"] = receipts
     return {
         "ok": true,
         "building_id": str(building.id),
@@ -623,6 +706,8 @@ func process_tick(state: SimulationState) -> void:
         var building = state.buildings[raw_id]
         if not (building is BuildingState):
             continue
+        if building.status == STATUS_CONSTRUCTING and building.building_type == TYPE_RESIDENCE:
+            SectResidenceSystemV1.complete_due_construction(state, building)
         if building.is_upgrading():
             building.upgrade_progress += 1.0
             if building.upgrade_progress + 0.000001 >= building.upgrade_required_work:
@@ -764,7 +849,8 @@ func perform_alchemy_step(state: SimulationState, disciple: DiscipleState, profe
     if str(data.get("recipe_id", "")) != str(recipe_id):
         data["recipe_id"] = str(recipe_id)
     var sequence := int(data.get("job_sequence", 0)) + 1
-    var duration := maxi(1, int(ceil(float(alchemy_registry.base_cycle_ticks(recipe_id)) / maxf(work_speed, 0.25))))
+    var alchemy_factor := 1.0 - SectHallSystemV1.role_effect(state, SectHallSystemV1.OFFICE_ALCHEMIST)
+    var duration := maxi(1, int(ceil(float(alchemy_registry.base_cycle_ticks(recipe_id)) * alchemy_factor / maxf(work_speed, 0.25))))
     var output_id := alchemy_registry.output_resource_id(recipe_id)
     var graded_output := MedicineCatalogueV2.output_for_job(recipe_id, profession_level, hall.level)
     if graded_output != &"":
@@ -1027,7 +1113,8 @@ func _start_resource_timer(state: SimulationState, producer: BuildingState, acto
         return {"ok":false,"reason":"wrong_job_profession"}
     var policy := state.sect.economy_a_policy
     var base_duration := clampi(int(policy.get("resource_duration_ticks",10)),1,1440)
-    var duration := maxi(1,int(ceil(float(base_duration)/maxf(speed,0.25))))
+    var steward_factor := 1.0 - SectHallSystemV1.role_effect(state, SectHallSystemV1.OFFICE_STEWARD)
+    var duration := maxi(1,int(ceil(float(base_duration) * steward_factor / maxf(speed,0.25))))
     var data := producer.production_state.duplicate(true)
     var jobs := resource_timer_jobs(producer)
     var sequence := maxi(int(data.get("economy_a_sequence",0)),0)+1
@@ -1184,6 +1271,8 @@ func validate_invariants(state: SimulationState) -> Array[String]:
             errors.append("Building %s has invalid level." % building.id)
         if not VALID_STATUSES.has(building.status):
             errors.append("Building %s has invalid status." % building.id)
+        if building.status == STATUS_CONSTRUCTING and building.building_type != TYPE_RESIDENCE:
+            errors.append("Building %s has unsupported construction status." % building.id)
         if building.is_upgrading():
             if building.upgrade_target_level != building.level + 1:
                 errors.append("Building %s has invalid upgrade target." % building.id)
@@ -1310,6 +1399,8 @@ func _complete_upgrade(state: SimulationState, building: BuildingState) -> void:
     building.upgrade_progress = 0.0
     building.metrics["upgrade_completions"] = int(building.metrics.get("upgrade_completions", 0)) + 1
     state.building_event_count += 1
+    if SectHallSystemV1.installed(state) and building.building_type in [TYPE_MAIN_HALL, TYPE_RESIDENCE]:
+        SectResidenceSystemV1.refresh_capacity(state)
 
 func _process_spirit_field_plots(state: SimulationState, field: BuildingState) -> void:
     var data := _ensure_spirit_field_state(state, field)
@@ -1625,6 +1716,11 @@ func _deposit_resource(state: SimulationState, building: BuildingState, resource
     building.metrics["production_batches"] = int(building.metrics.get("production_batches", 0)) + 1
     building.metrics["units_produced"] = int(building.metrics.get("units_produced", 0)) + quantity
     state.building_event_count += 1
+    SectHallSystemV1.record_prestige(state, 1)
+    if building.building_type == TYPE_ALCHEMY_HALL:
+        SectHallSystemV1.record_office_event(state, SectHallSystemV1.OFFICE_ALCHEMIST, true)
+    elif building.building_type in [TYPE_MINE, TYPE_LINH_FOREST, TYPE_SPIRIT_FIELD]:
+        SectHallSystemV1.record_office_event(state, SectHallSystemV1.OFFICE_STEWARD, true)
     return true
 
 func _resource_available(state: SimulationState, resource_id: StringName) -> int:

@@ -840,7 +840,46 @@ func _disable_legacy_hit_input(parent: Node) -> void:
 func _iso_actor_point(destination: StringName, building_id: StringName = &"") -> Vector2:
     if iso_world == null:
         return SectMapPresentation.position_for_destination(destination)
-    return SectIsometricWorldV1.virtual_legacy_point(destination,building_id)
+    var saved_origin := SectResidenceSiteV1.UNSELECTED
+    if state != null and building_id != &"":
+        var actual = state.buildings.get(str(building_id))
+        if actual is BuildingState and actual.building_type == BuildingSystem.TYPE_RESIDENCE:
+            saved_origin = SectResidenceSiteV1.origin_of(actual)
+    return SectIsometricWorldV1.virtual_legacy_point(destination,building_id,saved_origin)
+
+func _sect_actor_door_offset(disciple: DiscipleState, index: int,
+        idle_slots: Dictionary, destination: StringName) -> Vector2:
+    # DD-09.2: actors stop in a small queue at the outdoor interaction tile,
+    # not scattered across a building interior or on the roof.
+    if destination in [SectMapPresentation.DEST_COURTYARD, SectMapPresentation.DEST_GATE]:
+        return _endgame_actor_offset(disciple,index,idle_slots)
+    return Vector2(float(posmod(index, 5) - 2) * 6.0, 0.0)
+
+func _sect_effective_door_destination(disciple: DiscipleState, destination: StringName) -> StringName:
+    # Keep a worker staged at the same workshop door between simulation
+    # minute actions. Active REST/TRAIN_BODY/HEAL/etc must follow the action,
+    # never be overridden by an old resource worksite reservation.
+    if disciple.current_action not in [&"EVALUATE", &"IDLE"]:
+        return destination
+    var id := disciple.worksite_building_id
+    if id != &"" and state.buildings.has(str(id)):
+        var building: BuildingState = state.buildings[str(id)]
+        var worksite_dest := _sect_production_destination(building.building_type)
+        if worksite_dest != &"":
+            return worksite_dest
+    return destination
+
+func _sect_door_worksite_id(disciple: DiscipleState, destination: StringName) -> StringName:
+    # REST uses the actual rented House. A stale workshop ID never overrides
+    # the resting destination; no AStar navigation runs in sect presentation.
+    if destination == SectMapPresentation.DEST_RESIDENCE and SectHallSystemV1.installed(state):
+        return StringName(SectResidenceSystemV1.house_of(state,disciple.id))
+    var worksite_id := disciple.worksite_building_id
+    if worksite_id != &"" and state.buildings.has(str(worksite_id)):
+        var site: BuildingState = state.buildings[str(worksite_id)]
+        if _sect_production_destination(site.building_type) == destination:
+            return worksite_id
+    return &""
 
 func _iso_two_direction_delta(delta: Vector2, old_facing: StringName) -> Vector2:
     # Source A pool has horizontal authored facing. Vertical travel preserves
@@ -868,12 +907,16 @@ func _try_iso_map_pick(screen_point: Vector2) -> bool:
 
 func _sect_production_destination(building_type: StringName) -> StringName:
     match building_type:
+        BuildingSystem.TYPE_MAIN_HALL:
+            return SectMapPresentation.DEST_MAIN_HALL
         BuildingSystem.TYPE_MINE:
             return SectMapPresentation.DEST_MINE
         BuildingSystem.TYPE_LINH_FOREST:
             return SectMapPresentation.DEST_LINH_FOREST
         BuildingSystem.TYPE_SPIRIT_FIELD:
             return SectMapPresentation.DEST_SPIRIT_FIELD
+        BuildingSystem.TYPE_RESIDENCE:
+            return SectMapPresentation.DEST_RESIDENCE
     return &""
 
 func _workforce_occupants(building: BuildingState) -> Array[StringName]:
@@ -1721,16 +1764,11 @@ func _sync_actor_positions() -> void:
         var disciple: DiscipleState = state.disciples[disciple_id]
         var previous := StringName(actor_destinations.get(key, str(SectMapPresentation.DEST_COURTYARD)))
         var destination := SectMapPresentation.destination_for_action(disciple.current_action, previous)
+        destination = _sect_effective_door_destination(disciple,destination)
         actor_destinations[key] = str(destination)
 
-        var worksite_id := disciple.worksite_building_id
-        if worksite_id != &"" and state.buildings.has(str(worksite_id)):
-            var site: BuildingState = state.buildings[str(worksite_id)]
-            var site_destination := _sect_production_destination(site.building_type)
-            if site_destination != &"":
-                destination = site_destination
-                actor_destinations[key] = str(destination)
-        var world_foot := _iso_actor_point(destination,worksite_id) + _endgame_actor_offset(disciple,index,idle_slots)
+        var worksite_id := _sect_door_worksite_id(disciple,destination)
+        var world_foot := _iso_actor_point(destination,worksite_id) + _sect_actor_door_offset(disciple,index,idle_slots,destination)
         var target := world_foot - DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
         actor_virtual_positions[key] = target
         var actor := actor_nodes.get(key) as Control
@@ -1895,15 +1933,10 @@ func _install_modular_live_actors() -> void:
         var disciple: DiscipleState = state.disciples[disciple_id]
         var destination := StringName(actor_destinations.get(key, str(_initial_destination(disciple))))
         destination = SectMapPresentation.destination_for_action(disciple.current_action,destination)
+        destination = _sect_effective_door_destination(disciple,destination)
         actor_destinations[key] = str(destination)
-        var worksite_id := disciple.worksite_building_id
-        if worksite_id != &"" and state.buildings.has(str(worksite_id)):
-            var site: BuildingState = state.buildings[str(worksite_id)]
-            var site_destination := _sect_production_destination(site.building_type)
-            if site_destination != &"":
-                destination = site_destination
-                actor_destinations[key] = str(destination)
-        var world_foot := _iso_actor_point(destination,worksite_id) + _endgame_actor_offset(disciple,index,idle_slots)
+        var worksite_id := _sect_door_worksite_id(disciple,destination)
+        var world_foot := _iso_actor_point(destination,worksite_id) + _sect_actor_door_offset(disciple,index,idle_slots,destination)
         next_positions[key] = world_foot - DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
         modular_live_actor_ids[key] = true
     for raw_id in actor_nodes.keys().duplicate():
@@ -2171,6 +2204,13 @@ func _rebuild_building_management_controls() -> void:
             pass
 
 func _build_main_hall_policy_controls() -> void:
+    _add_management_section_label("ĐẠI ĐIỆN · QUẢN TRỊ")
+    var hall_button := Button.new()
+    hall_button.name = "OpenDaiDienScreenV1"
+    hall_button.text = "MỞ ĐẠI ĐIỆN · CHƯỞNG MÔN / TRƯỞNG LÃO"
+    hall_button.custom_minimum_size = Vector2(384, 42)
+    hall_button.pressed.connect(_open_dai_dien_screen_v1)
+    building_management_container.add_child(hall_button)
     _build_economy_a_hall_controls()
     _add_management_section_label("CHÍNH SÁCH LAO ĐỘNG")
     _add_policy_button_row([
@@ -2192,6 +2232,29 @@ func _build_main_hall_policy_controls() -> void:
         {"label":"Chiến đấu", "value":EquipmentSystem.POLICY_COMBAT},
         {"label":"Tiết kiệm", "value":EquipmentSystem.POLICY_FRUGAL}
     ], state.sect.equipment_policy, "_set_equipment_policy_from_building")
+
+func _open_dai_dien_screen_v1() -> void:
+    if state == null or get_node_or_null("DaiDienScreenV1") != null:
+        return
+    var screen := DaiDienScreenV1.new()
+    screen.name = "DaiDienScreenV1"
+    screen.attach_state(state)
+    screen.state_changed.connect(_on_dai_dien_state_changed)
+    screen.z_index = 120
+    add_child(screen)
+    screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+
+func _open_dai_dien_housing_v1() -> void:
+    _open_dai_dien_screen_v1()
+    var hall_view := get_node_or_null("DaiDienScreenV1") as DaiDienScreenV1
+    if hall_view != null:
+        hall_view._tab(5)
+
+func _on_dai_dien_state_changed() -> void:
+    # _refresh_all() already refreshes the 192x192 map once; avoid double scans.
+    _refresh_all()
+    if selected_building == SectMapPresentation.DEST_MAIN_HALL:
+        _refresh_building_operation_content()
 
 # ECONOMY-A player actions are actual simulation transactions; no fake income.
 func _build_economy_a_hall_controls() -> void:
@@ -2515,6 +2578,14 @@ func _build_lodging_expansion_control() -> void:
     row.add_theme_constant_override("separation", 8)
     building_management_container.add_child(row)
 
+    if SectHallSystemV1.installed(state):
+        var live := Button.new()
+        live.name = "OpenResidenceManagementV1"
+        live.text = "QUẢN LÝ ĐỆ TỬ XÁ · NÂNG CẤP / XÂY THÊM"
+        live.custom_minimum_size = Vector2(384, 43)
+        live.pressed.connect(_open_dai_dien_housing_v1)
+        row.add_child(live)
+        return
     var info := Label.new()
     info.text = "Hiện %d chỗ · Vật tư %d" % [state.sect.lodging_capacity, state.sect.supply_stock]
     info.custom_minimum_size = Vector2(236, 34)

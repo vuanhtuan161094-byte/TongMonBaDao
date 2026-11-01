@@ -154,6 +154,8 @@ func accept_candidate(state: SimulationState, candidate_id: StringName) -> Dicti
         return _result(false, "recruitment_disabled")
     if not state.recruitment_candidates.has(candidate_id):
         return _result(false, "candidate_missing")
+    if SectHallSystemV1.installed(state):
+        SectResidenceSystemV1.refresh_capacity(state)
     if state.disciples.size() >= state.sect.disciple_capacity:
         return _result(false, "capacity_full")
     if state.disciples.has(candidate_id):
@@ -191,6 +193,10 @@ func accept_candidate(state: SimulationState, candidate_id: StringName) -> Dicti
     state.disciples[disciple.id] = disciple
     state.recruitment_candidates.erase(candidate_id)
     state.recruitment_stats["accepted"] = int(state.recruitment_stats.get("accepted", 0)) + 1
+    if SectHallSystemV1.installed(state):
+        SectResidenceSystemV1.auto_assign_beds(state)
+        SectHallSystemV1.record_prestige(state, 25)
+        SectHallSystemV1.record_office_event(state, SectHallSystemV1.OFFICE_GUIDE, true)
 
     if state.p1_goal_personality_enabled:
         GoalSystem.new().update_goal(state, disciple)
@@ -219,6 +225,8 @@ func reject_candidate(state: SimulationState, candidate_id: StringName) -> Dicti
     return _result(true, "rejected")
 
 func can_accept_more(state: SimulationState) -> bool:
+    if SectHallSystemV1.installed(state):
+        return state.p1_recruitment_enabled and state.disciples.size() < SectResidenceSystemV1.current_limit(state)
     return state.p1_recruitment_enabled and state.disciples.size() < state.sect.disciple_capacity
 
 func _candidate_seed(base_seed: int, generation_index: int) -> int:
@@ -256,6 +264,14 @@ func assign_guidance_main(state: SimulationState, disciple_id: StringName) -> Di
         return _result(false, "disciple_missing")
     if disciple_id != &"" and not guidance_guide_eligible(state, disciple_id):
         return _result(false, "guide_busy_or_injured")
+    # DD-06: Dẫn Tiên is the same Tiếp Dẫn main office. All seven seats,
+    # including later unlocked offices, obey the one-main-office invariant.
+    # This guard must also run for callers bypassing the Đại Điện UI.
+    if disciple_id != &"" and SectHallSystemV1.installed(state):
+        for other_office in SectHallSystemV1.OFFICES:
+            if other_office != SectHallSystemV1.OFFICE_GUIDE \
+                    and SectHallSystemV1.holder_id(state, other_office) == str(disciple_id):
+                return _result(false, "disciple_owns_other_office")
     var data := _guidance_state(platform)
     var assistants: Array = data.get("assistant_guide_ids", [])
     assistants.erase(str(disciple_id))
@@ -469,6 +485,8 @@ func _begin_guidance_day(state: SimulationState, platform: BuildingState, data: 
     var main = state.disciples.get(StringName(main_id))
     if main is DiscipleState and guidance_guide_eligible(state, main.id):
         main_charisma = maxf(main.charisma, 0.0)
+        if SectHallSystemV1.installed(state) and SectHallSystemV1.holder_id(state, SectHallSystemV1.OFFICE_GUIDE) == str(main.id):
+            main_charisma += SectHallSystemV1.role_effect(state, SectHallSystemV1.OFFICE_GUIDE)
 
     data["snapshot_day_index"] = day_index
     data["snapshot_main_charisma"] = main_charisma
