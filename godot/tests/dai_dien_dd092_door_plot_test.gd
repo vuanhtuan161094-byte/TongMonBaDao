@@ -92,6 +92,31 @@ func _run() -> void:
     root.remove_child(iso)
     iso.free()
 
+    # Check actual native Godot UI plot selection, not just backend geometry:
+    # the player can choose another plot without paving a connected road.
+    hall.level = 21 # QA-only capacity prerequisite for third House.
+    var panel := DaiDienScreenV1.new()
+    panel.attach_state(state)
+    root.add_child(panel)
+    panel._tab(5)
+    var chooser := panel.find_child("ResidencePlotSelector",true,false) as OptionButton
+    var third_site := Vector2i(110,114)
+    var selector_index := panel._residence_site_options.find(third_site)
+    if not _require(chooser != null and selector_index >= 0,
+            "native plot selector missing available non-overlapping lot"):
+        return
+    panel._select_house_site(selector_index)
+    panel._construct_house()
+    var third: BuildingState = state.buildings.get("residence_003")
+    if not _require(third != null and SectResidenceSiteV1.origin_of(third) == third_site
+            and third.status == BuildingSystem.STATUS_CONSTRUCTING
+            and SectResidenceSystemV1.total_beds(state) == 8
+            and SectHallSystemV1.validate(state).is_empty(),
+            "native UI did not construct at selected plot, or unlocked free beds"):
+        return
+    root.remove_child(panel)
+    panel.free()
+
     var damaged := SimulationState.from_dict(state.to_dict())
     damaged.buildings["residence_002"].production_state.erase("site_x")
     if not _require(not SectHallSystemV1.validate(damaged).is_empty(),
