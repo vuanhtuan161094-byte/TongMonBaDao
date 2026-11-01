@@ -78,6 +78,25 @@ const HOUSE_FOOTPRINT_CENTERS := {
     "warehouse":Vector2(1.0,0.5),
     "forge":Vector2(1.0,1.0)
 }
+# DD-09.2: Destination = OUTSIDE the door, not inside the building sprite.
+# Entrance offsets are one ground tile beyond the known footprint.
+# No roads/entrance graph are needed to accept construction: characters move
+# directly to this exterior interaction cell in the sect-only presentation.
+# PvE's independent navigation and terrain collision remain unchanged.
+const EXTERIOR_DOOR_OFFSETS := {
+    "main_hall":Vector2i(3,-1),
+    "warehouse":Vector2i(1,-1),
+    "forge":Vector2i(1,-1),
+    "residence":Vector2i(1,3),
+    "mine":Vector2i(1,3),
+    "linh_forest":Vector2i(0,2),
+    "spirit_field":Vector2i(0,2),
+    "alchemy_hall":Vector2i(1,3),
+    "cultivation":Vector2i(0,2),
+    "ren_than_duong":Vector2i(0,2),
+    "medicine":Vector2i(0,2),
+    "guidance":Vector2i(0,2)
+}
 const ROAD_TEXTURES := {
     "cross":"stone_cross.png",
     "junction":"stone_junction.png",
@@ -534,12 +553,19 @@ static func visual_anchor(destination: StringName, cell: Vector2i) -> Vector2:
     # For all other destinations the existing V1 anchor remains authoritative.
     return Vector2(cell)+HOUSE_FOOTPRINT_CENTERS.get(str(destination),Vector2.ZERO)
 
+static func exterior_door_cell(destination: StringName, instance_index: int = 1) -> Vector2i:
+    var origin := producer_cell(destination, instance_index)
+    # The courtyard/gate are open ground, not enterable building interiors.
+    return origin + EXTERIOR_DOOR_OFFSETS.get(str(destination), Vector2i.ZERO)
+
 static func virtual_legacy_point(destination: StringName, building_id: StringName = &"") -> Vector2:
-    var cell: Vector2i = TYPE_ANCHORS.get(str(destination),Vector2i(90,92))
+    var sequence := 1
     if building_id != &"":
-        var sequence := maxi(int(str(building_id).get_slice("_",str(building_id).get_slice_count("_")-1)),1)
-        cell = producer_cell(destination,sequence)
-    return LEGACY_ANCHOR+project(visual_anchor(destination,cell))-project(CENTER_CELL)
+        sequence = maxi(int(str(building_id).get_slice("_",str(building_id).get_slice_count("_")-1)),1)
+    # This function is exclusively used for destination-facing disciple
+    # movement. Building meshes/picking still use visual_anchor() separately.
+    var entrance := exterior_door_cell(destination,sequence)
+    return LEGACY_ANCHOR+project(Vector2(entrance))-project(CENTER_CELL)
 
 static func producer_cell(destination: StringName, instance_index: int) -> Vector2i:
     var key := str(destination)
