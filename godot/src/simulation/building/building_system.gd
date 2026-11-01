@@ -689,6 +689,10 @@ func set_alchemy_recipe(state: SimulationState, hall_id: StringName, recipe_id: 
     var data := _ensure_alchemy_state(hall)
     data["recipe_id"] = str(recipe_id)
     hall.production_state = data
+    # Explicit recipe selection (including existing B3 craft command) is fixed.
+    # The new demand planner never overrides a user's selected recipe.
+    if SX01PillPolicy.active(state):
+        SX01PillPolicy.configure(state, "recipe_mode", "fixed")
     state.building_event_count += 1
     return true
 
@@ -715,7 +719,9 @@ func alchemy_can_start(state: SimulationState, disciple: DiscipleState) -> Dicti
         return {"ok": false, "reason": "recipe_policy_disabled"}
     if disciple_has_active_timed_recipe(state, disciple.id):
         return {"ok": false, "reason": "worker_busy_alchemy"}
-    var recipe_id := StringName(data.get("recipe_id", str(AlchemyRecipeRegistry.RECIPE_HOI_XUAN_DAN)))
+    var recipe_id := SX01PillPolicy.planned_recipe(state, hall) if SX01PillPolicy.active(state) else StringName(data.get("recipe_id", str(AlchemyRecipeRegistry.RECIPE_HOI_XUAN_DAN)))
+    if recipe_id == &"":
+        return {"ok": false, "reason": "sx01_target_or_ingredients_unavailable"}
     var requirements := alchemy_registry.inputs(recipe_id)
     if not warehouse.can_consume_requirements(state, requirements):
         return {"ok": false, "reason": "insufficient_or_reserved_inputs"}
@@ -733,6 +739,10 @@ func perform_alchemy_step(state: SimulationState, disciple: DiscipleState, profe
     var requirements: Dictionary = check.get("requirements", {}).duplicate(true)
     if not warehouse.consume_requirements(state, requirements):
         return {"ok": false, "completed": false, "reason": "input_commit_failed"}
+    # Only the newly committed job uses this choice; older snapshots keep their
+    # recipe_id/output and cannot change when the next target changes.
+    if str(data.get("recipe_id", "")) != str(recipe_id):
+        data["recipe_id"] = str(recipe_id)
     var sequence := int(data.get("job_sequence", 0)) + 1
     var duration := maxi(1, int(ceil(float(alchemy_registry.base_cycle_ticks(recipe_id)) / maxf(work_speed, 0.25))))
     var job := {
@@ -1499,6 +1509,37 @@ func _select_crop(state: SimulationState, field: BuildingState, data: Dictionary
                     running += maxi(int(weights.get(str(crop_id), 0)), 0)
                     if cursor < running:
                         return crop_id
+
+    # SX-01 only owns the existing AUTO_DEMAND route. Never override a
+    # player's FIXED or PRIORITY field strategy, or mint crop outputs.
+    if mode == FIELD_POLICY_AUTO_DEMAND and SX01PillPolicy.active(state) \
+        and bool(state.sect.sx01_pill_policy.get("auto_production", false)) \
+        and str(state.sect.sx01_pill_policy.get("recipe_mode", "fixed")) == "demand":
+        var hall := primary_building(state, TYPE_ALCHEMY_HALL)
+        var pill_plan := SX01PillPolicy.stock_plan(state, hall)
+        var herb_needed := int(pill_plan["deficit_hxd"]) * 3 + int(pill_plan["deficit_tqd"]) * 2
+        var grain_needed := int(pill_plan["deficit_tqd"])
+        # Already-paid Alchemy jobs consumed their inputs at start, so we only
+        # reserve future demand. Growing plots are pending, not stock.
+        for existing_field in _buildings_of_type(state, TYPE_SPIRIT_FIELD):
+            for raw_plot in spirit_field_plots(state, existing_field):
+                if not (raw_plot is Dictionary) or str(raw_plot.get("status", "")) != str(PLOT_GROWING):
+                    continue
+                if str(raw_plot.get("crop_id", "")) == "thanh_linh_thao":
+                    herb_needed -= int(raw_plot.get("routine_yield", 0))
+                elif str(raw_plot.get("crop_id", "")) == "linh_coc":
+                    grain_needed -= int(raw_plot.get("routine_yield", 0))
+        herb_needed = maxi(0, herb_needed - warehouse.available_quantity(state, &"thanh_linh_thao"))
+        grain_needed = maxi(0, grain_needed - warehouse.available_quantity(state, &"linh_coc"))
+        var can_herb := eligible.has(&"thanh_linh_thao") and herb_needed > 0
+        var can_grain := eligible.has(&"linh_coc") and grain_needed > 0
+        if can_herb and can_grain:
+            return &"thanh_linh_thao" if float(herb_needed) / 3.0 >= float(grain_needed) / 5.0 else &"linh_coc"
+        if can_herb:
+            return &"thanh_linh_thao"
+        if can_grain:
+            return &"linh_coc"
+        return &""
 
     var best := eligible[0]
     var best_score := -1.0e30

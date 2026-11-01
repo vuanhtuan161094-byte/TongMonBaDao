@@ -114,6 +114,9 @@ func step() -> void:
                 if performance_logging_enabled:
                     reveal_usec += Time.get_ticks_usec()-phase_usec
 
+    # Single authoritative 5-minute auto-use review, after all work actions.
+    # Legacy saves have no SX-01 policy and pay no new pill/EXP effects.
+    SX01PillPolicy.review(state)
     state.rng_state = rng.snapshot_seed_state()
     if performance_logging_enabled:
         print("TMB_SCHEDULER_STEP_METRIC "+JSON.stringify({
