@@ -86,6 +86,25 @@ func _run() -> void:
             "future paid promotion receipt must fail validation"):
         return
 
+    # DD-08: malformed office dictionary must be an ordinary validation
+    # error, never an unsafe holder_id() cast. No partial migration grants.
+    var broken_assignments := SimulationState.from_dict(state.to_dict())
+    broken_assignments.sect.hall_governance["assignments"] = "wrong-type"
+    if not _expect(not SectHallSystemV1.validate(broken_assignments).is_empty(),
+            "malformed saved officer ledger must fail without throwing"):
+        return
+    var missing_second_receipt := SimulationState.from_dict(state.to_dict())
+    var fake_house := BuildingSystem.new().create_building(BuildingSystem.TYPE_RESIDENCE, 2)
+    missing_second_receipt.buildings[str(fake_house.id)] = fake_house
+    if not _expect(not SectHallSystemV1.validate(missing_second_receipt).is_empty(),
+            "unpaid nonstarter House must not validate as a paid building"):
+        return
+    var corrupt_credit := SimulationState.from_dict(state.to_dict())
+    corrupt_credit.sect.hall_governance["legacy_bed_credit"] = "not-an-integer"
+    if not _expect(not SectHallSystemV1.validate(corrupt_credit).is_empty(),
+            "saved legacy bed credit type must fail closed"):
+        return
+
     # Two genuine saved generations establish a valid backup copy.
     _cleanup()
     var saves := SaveService.new()
@@ -95,6 +114,12 @@ func _run() -> void:
         return
     if not _expect(FileAccess.file_exists(QA_SAVE + ".bak"),
             "a valid backup must exist before corrupt-primary test"):
+        return
+    # Reject writing a corrupt in-memory state without rotating the last good
+    # copy; staged verification is a durable transaction boundary.
+    var invalid_write := SaveService.new().save_to_path(broken_assignments, QA_SAVE)
+    if not _expect(invalid_write != OK and SaveService.new().load_from_path(QA_SAVE) != null,
+            "invalid in-memory Hall must never overwrite the last good save"):
         return
 
     # Corrupt only the isolated QA primary; leave backup pristine. The saved
