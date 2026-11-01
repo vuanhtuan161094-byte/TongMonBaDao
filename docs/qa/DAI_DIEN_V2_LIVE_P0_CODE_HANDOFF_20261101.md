@@ -163,3 +163,36 @@ foreach ($test in @(
 - 27-rank headcount progression remains a prototype; the rank-gate formula and 3/12/24-month no-payment pacing still require source/sink and actual time simulation. A source-balanced economy is DD-10, not asserted solved.
 - Full versioned `upgrade_receipts` migration rules for saves from *future* unrecognized formats, plus all cross-class parser checks, remain subject to official Godot QA.
 - Do not claim that Godot GUI, Android landscape or player workflows have passed. **PR #64 remains Draft and DO NOT MERGE.**
+
+
+## 11. DD-09 P1 — Native timed Residence construction (direct code; pending Godot QA)
+
+**Implemented, NOT engine-verified.** DD-09 adds an actual construction lifecycle for the SECOND and subsequent `residence_NNN` instances. The starter residence remains active for migration/save compatibility. The user requested direct implementation without Codex; these source changes are committed only to PR #64 feature branch, which remains Draft.
+
+### Authoritative state and timing
+
+- `BuildingSystem.STATUS_CONSTRUCTING` is an allowed status **only for Residence**; `can_start_upgrade` rejects any non-active building, while legacy P3.7 upgrades retain their ordinary API.
+- `SectResidenceSystemV1.construct(state, request_id)` continues consuming canonical Warehouse resources and sect stones once, persisting the existing construction receipt immediately. The owned House instance is inserted as `constructing` and its existing `BuildingState.production_state` stores `construction_started_tick`, `construction_finish_tick`, `construction_duration_ticks`. This uses the existing BuildingState serialization; no new duplicate owner or wall-clock scheduler.
+- Provisional duration is `60 + 15 × (ordinal − 2)` **simulation minutes** for ordinal 2–10. Treat as placeholder pending DD-10 economy pacing; it is **not** an approved 24-month progression value.
+- On each existing `BuildingSystem.process_tick`, a due Residence switches exactly once to `active`; the timer fields are erased, building event count increments, and canonical `refresh_capacity`/`auto_assign_beds` are called. Offline catch-up naturally runs through the existing simulation scheduler rather than a second clock.
+- **No early beds, healing buff or tenants.** Total bed authority skips constructing Houses; recruitment cap stays min(admin rank, completed beds), room dropdowns hide construction sites, manual room assignment refuses them. Under-construction Houses still consume building instance slots and possess durable IDs/paid receipts. Existing active Houses and prior saves keep their original beds.
+- House validation rejects malformed or noncanonical construction times, starter-under-construction, missing receipts, stale timer fields on active Houses and tenants assigned before completion. Godot UI lists remaining simulated time and active bed count; map label appends `đang xây` for an unfinished House. Actual map footprint, paid land purchase and AStar placement remain out of scope/unimplemented.
+- No artificial resource grants, free rooms, fast-forward buttons or test-only cheats are introduced into production code.
+
+### DD-09 regression cases authored in existing Housing full loop
+
+1. Buying House #2 debits cost once and immediately records an owned building/receipt, **but keeps capacity at the completed-first-House value** until its due tick.
+2. Pending House refuses room assignment and upgrade; identical construction request returns the previously paid receipt.
+3. In-memory serialization and **disk SaveService** preserve construction status and exact tick, then another isolated copied simulation settles due construction.
+4. A damaged construction finish tick or a tenant assigned to an unfinished house fails canonical invariants.
+5. The live fixture advances `duration - 1` ticks with zero new beds; precisely at due tick it activates eight beds, under the existing rank cap. Replaying construction after completion does not debit again; completion is not repeatable.
+6. Earlier Hall upgrade replay, genuine production/promotion and Godot UI room transfer tests are retained.
+
+**Run on an isolated Windows QA checkout**, using official Godot 4.7.2 and a disposable APPDATA profile, first with `--headless --editor --quit`, then:
+```powershell
+& $GodotExe --headless --path $QaGodot --script res://tests/dai_dien_dd07_save_recovery_test.gd
+if ($LASTEXITCODE -ne 0) { throw "DD07 regression failure" }
+& $GodotExe --headless --path $QaGodot --script res://tests/dai_dien_housing_full_loop_test.gd
+if ($LASTEXITCODE -ne 0) { throw "DD09 timed House regression failure" }
+```
+Complete the full DD-08 suite and UI screenshot at 1280×720 before declaring PASS. This environment lacks the official Godot runtime and cannot claim test execution or measured mobile performance. **Do not merge into ONE GAME RC yet.**
