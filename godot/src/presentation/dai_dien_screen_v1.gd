@@ -29,6 +29,9 @@ var _room_disciple_ids: Array[StringName] = []
 var _room_house_ids: Array[StringName] = []
 var _room_selected_disciple := 0
 var _room_selected_house := 0
+# DD-09.2: choose an available footprint/door plot, not a mandatory road.
+var _residence_site_options: Array[Vector2i] = []
+var _selected_house_site := 0
 
 func attach_state(state: SimulationState) -> void:
     game_state = state
@@ -570,7 +573,27 @@ func _residences() -> void:
             upgrade.disabled = not bool(can.get("ok", false))
             upgrade.tooltip_text = str(can.get("reason", "")) if upgrade.disabled else ""
             _content.add_child(upgrade)
-    var plan := SectResidenceSystemV1.can_construct(game_state)
+    # One compact plot selector; no drag-to-build or road network required.
+    _residence_site_options = SectResidenceSiteV1.available_plots(game_state)
+    _selected_house_site = clampi(_selected_house_site,0,maxi(0,_residence_site_options.size() - 1))
+    if not _residence_site_options.is_empty():
+        _content.add_child(_label("CHỌN LÔ ĐẤT · chỉ cần đủ 3×3 ô và cửa ngoài trời", 13, MUTED))
+        var plot_picker := OptionButton.new()
+        plot_picker.name = "ResidencePlotSelector"
+        plot_picker.custom_minimum_size = Vector2(440,46)
+        for index in range(_residence_site_options.size()):
+            var origin: Vector2i = _residence_site_options[index]
+            var door := SectResidenceSiteV1.doorway(origin)
+            plot_picker.add_item("Lô %02d · vị trí (%d,%d) · cửa (%d,%d)" % [
+                index + 1,origin.x,origin.y,door.x,door.y
+            ])
+        plot_picker.select(_selected_house_site)
+        plot_picker.item_selected.connect(Callable(self,"_select_house_site"))
+        _content.add_child(plot_picker)
+    var site := SectResidenceSiteV1.UNSELECTED
+    if not _residence_site_options.is_empty():
+        site = _residence_site_options[_selected_house_site]
+    var plan := SectResidenceSystemV1.can_construct(game_state,site)
     var material: Dictionary = plan.get("cost", SectResidenceSystemV1.build_cost(game_state))
     _content.add_child(HSeparator.new())
     _content.add_child(_label("XÂY THÊM NHÀ · Mộc %d · Thiết %d · Linh Thạch %d · %d phút xây" % [
@@ -584,7 +607,11 @@ func _residences() -> void:
     build.disabled = not bool(plan.get("ok", false))
     build.tooltip_text = str(plan.get("reason", "")) if build.disabled else ""
     _content.add_child(build)
-    _content.add_child(_label("Các nhà bổ sung hiện dùng danh sách cụm công trình gắn với điểm Đệ Tử Xá trên bản đồ. Kéo-thả và mở đất tùy ý chưa được kích hoạt.", 12, MUTED))
+    _content.add_child(_label("Chỉ kiểm tra footprint 3×3, ô cửa và chồng lấn. Không cần xây đường. Nhà mới hiện dùng lô chọn trong khu đất mở; kéo-thả ngoài khu chưa kích hoạt.", 12, MUTED))
+
+func _select_house_site(index: int) -> void:
+    _selected_house_site = clampi(index,0,maxi(0,_residence_site_options.size() - 1))
+    _refresh()
 
 func _select_room_disciple(index: int) -> void:
     _room_selected_disciple = clampi(index, 0, maxi(0, _room_disciple_ids.size() - 1))
@@ -618,7 +645,12 @@ func _upgrade_house(house_id: StringName, request_id: String) -> void:
 
 func _construct_house() -> void:
     var seq := SectResidenceSystemV1.all_houses(game_state).size() + 1
-    var result := SectResidenceSystemV1.construct(game_state, "residence:%d" % seq)
+    if _residence_site_options.is_empty():
+        feedback = "Không còn lô Đệ Tử Xá hợp lệ."
+        _refresh()
+        return
+    var site := _residence_site_options[_selected_house_site]
+    var result := SectResidenceSystemV1.construct(game_state, "residence:%d" % seq,site)
     if bool(result.get("ok", false)):
         feedback = "Đã khởi công %s · %d phút; giường sẽ mở khi hoàn thành." % [
             str(result.get("building_id", "")), int(result.get("construction_duration_ticks", 0))
