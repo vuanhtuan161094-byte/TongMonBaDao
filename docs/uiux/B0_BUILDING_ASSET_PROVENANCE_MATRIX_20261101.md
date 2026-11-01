@@ -22,21 +22,23 @@ The common config SHA-256 is `51966a724c427030e8a4e8b80bf16e68ec9aa7d74a7a2e179a
 
 Footprint and door values below are source config data, not a decision to use those values for the game's fixed-site plots. Dimensions were read from the local PNGs; only the three priority examples were visually inspected in this B0. “lum” is a separate light/footprint image where listed. Atlas plus skeleton dependencies are Spine source inputs, not a Godot-ready animated scene.
 
-| Source logical ID | Config / model | Catalog evidence | Source footprint / door | Primary image canvas | Provenance note |
-| --- | ---: | --- | --- | --- | --- |
-| `building.main_hall` | 1 / 510052 | VERIFIED | 7×5 / 3, -1 | 1104×740 (lum 331×222) | `1514397bfbedb412500e1472546938dc237d37e2fee907e967d2c59874246174` | Đại Điện / timber hall; PNG visually inspected; alpha present. |
-| `building.disciple_residence` | 15 / 510076 | VERIFIED | 3×3 / 1, -1 | 536×416 (lum 536×416) | `51a14d00c90a9899c58ff2cc42e1e6962b66dca9605533c100d90c9c27244576` | Đệ Tử Xá / two-storey residence with yard; PNG visually inspected; alpha present. |
-| `building.cultivation_area` | 36 / 510191 | INFERRED_VISUAL_ANALOG | 3×3 / 1, -1 | 604×604 (lum 181×181) | `5f90f4cd6da5eeba0b607d48d83cc0ef06a343b7982dac0c74c645ee345862f7` | Cultivation visual analog; candidate is inferred, not identity-confirmed. |
-| `building.body_training` | 38 / 510232 | INFERRED_VISUAL_ANALOG | 1×1 / 1, -1 | 204×92 shared `cuizhi` texture; no lum recorded | `be932a7c2916a599c02ef400206f4096243f7fbb4073df5eba6e024c735fe80f` | Uses shared `cuizhi` texture; no distinct body-training image proven. |
-| `building.warehouse` | 14 / 510102 | VERIFIED | 3×2 / 1, -1 | 420×380 (lum 126×114) | `4648bb55e2159ea17d62a7b20fc785153b23654e339758652a79864c2991c774` | Warehouse; repo candidate PNG exists, not production-approved. |
-| `building.forge` | 7 / 520081 | VERIFIED | 3×3 / 1, -1 | 548×560 (lum 164×168) | `266e8b2887ed106ea4817c07e4661234b787f36af6cfa40d46c826e268f8d772` | Forge; repo candidate PNG exists, not production-approved. |
-| `building.medicine_hall` | 6 / 520031 | INFERRED_VISUAL_ANALOG | 3×3 / 1, -1 | 464×584 (lum 139×175) | `2748a13a980f426ab65c69831a0e642e8902613ec18dfe13d756dc57bea61bee` | Medicine-hall identity is inferred; model 520031 is also alchemy art. |
-| `building.mine` | 4 / 520051 | VERIFIED | 3×3 / 1, -1 | 596×512 (lum 179×154) | `f729b0e55873b4abec7f2bef04d7ebf3ab51af2b21cbb05929b09cb20d0d352d` | Mine; source candidate. |
-| `building.spirit_field` | 2 / 520091 | VERIFIED | 2×2 / 0, -1 | 368×192; no lum recorded | `9a62169bbcf0970f5e1294e7a41b6d60e6192cf95d9a1a7ef3e1d022cb3bc015` | Spirit Field; source candidate. |
-| `building.linh_forest` | 3 / 520101 | VERIFIED | 2×2 / 0, -1 | 348×184 (lum 104×55) | `70da37aa374eb2397280a5dfd3f225ac274616bf77aeb9acc42c3c035b319976` | Forest; source candidate. |
-| `building.alchemy_hall` | 6 / 520031 | VERIFIED | 3×3 / 1, -1 | 464×584 (lum 139×175) | `2748a13a980f426ab65c69831a0e642e8902613ec18dfe13d756dc57bea61bee` | Alchemy; model 520031 shared with inferred medicine hall. |
-| `building.guidance_platform` | 22 / 510111 | VERIFIED | 3×3 / 1, -1 | 532×592 (lum 160×178) | `f5f9ff9089f5a944da16c257f216ed9a16563fae118a69d1bad6a5731619958e` | Dẫn Tiên Đài / mint spirit gate; PNG visually inspected; alpha present. |
-| `building.sect_gate` | 39 / 510163 | VERIFIED | 1×1 / 1, -1 | 204×92 shared `cuizhi` texture; no lum recorded | `7fa21d27c5bf9d69dc77bcecc4704cb827d401961701d7fb8a912d16608b7a0e` | Uses shared `cuizhi` texture; gate-specific appearance is not established. |
+Source config flags `rotation/movement` are recorded as `true/false` in the table. They describe Source A capability only; they do not authorize moving, rotating or reshaping a game's fixed sites. The PNG canvas comes from local file metadata. Alpha was observed for the three priority PNGs only; the remaining PNG alpha channels were not separately checked in B0. The source catalogs do not provide a Godot pivot, pixel anchor, resolved door pixel, or facing/orientation transform.
+
+| Source logical ID | Config / model | Catalog evidence | Source footprint / door | Source rotation / movement | Primary texture canvas / alpha | Bundle SHA-256 | Provenance note |
+| --- | ---: | --- | --- | --- | --- | --- | --- |
+| `building.main_hall` | 1 / 510052 | VERIFIED | [7, 5] / [3, -1] | true/true | 1104×740; alpha observed | `1514397bfbedb412500e1472546938dc237d37e2fee907e967d2c59874246174` | Đại Điện; source PNG visually inspected. |
+| `building.disciple_residence` | 15 / 510076 | VERIFIED | [3, 3] / [1, -1] | true/true | 536×416; alpha observed | `51a14d00c90a9899c58ff2cc42e1e6962b66dca9605533c100d90c9c27244576` | Đệ Tử Xá; source PNG visually inspected. |
+| `building.cultivation_area` | 36 / 510191 | INFERRED_VISUAL_ANALOG | [3, 3] / [1, -1] | true/true | 604×604; alpha not checked | `5f90f4cd6da5eeba0b607d48d83cc0ef06a343b7982dac0c74c645ee345862f7` | Inferred visual analog; target identity unconfirmed. |
+| `building.body_training` | 38 / 510232 | INFERRED_VISUAL_ANALOG | [1, 1] / [1, -1] | true/false | 204×92 shared `cuizhi`; alpha not checked | `be932a7c2916a599c02ef400206f4096243f7fbb4073df5eba6e024c735fe80f` | Shared `cuizhi` texture; no distinct facility image proven. |
+| `building.warehouse` | 14 / 510102 | VERIFIED | [3, 2] / [1, -1] | true/true | 420×380; alpha not checked in B0 | `4648bb55e2159ea17d62a7b20fc785153b23654e339758652a79864c2991c774` | Warehouse; repository PNG is still a candidate. |
+| `building.forge` | 7 / 520081 | VERIFIED | [3, 3] / [1, -1] | true/true | 548×560; alpha not checked in B0 | `266e8b2887ed106ea4817c07e4661234b787f36af6cfa40d46c826e268f8d772` | Forge; repository PNG is still a candidate. |
+| `building.medicine_hall` | 6 / 520031 | INFERRED_VISUAL_ANALOG | [3, 3] / [1, -1] | true/true | 464×584; alpha not checked in B0 | `2748a13a980f426ab65c69831a0e642e8902613ec18dfe13d756dc57bea61bee` | Inferred visual analog; shares model 520031 with alchemy. |
+| `building.mine` | 4 / 520051 | VERIFIED | [3, 3] / [1, -1] | true/true | 596×512; alpha not checked in B0 | `f729b0e55873b4abec7f2bef04d7ebf3ab51af2b21cbb05929b09cb20d0d352d` | Mine source candidate. |
+| `building.spirit_field` | 2 / 520091 | VERIFIED | [2, 2] / [0, -1] | true/true | 368×192; alpha not checked in B0 | `9a62169bbcf0970f5e1294e7a41b6d60e6192cf95d9a1a7ef3e1d022cb3bc015` | Spirit Field source candidate. |
+| `building.linh_forest` | 3 / 520101 | VERIFIED | [2, 2] / [0, -1] | true/true | 348×184; alpha not checked in B0 | `70da37aa374eb2397280a5dfd3f225ac274616bf77aeb9acc42c3c035b319976` | Forest source candidate. |
+| `building.alchemy_hall` | 6 / 520031 | VERIFIED | [3, 3] / [1, -1] | true/true | 464×584; alpha not checked in B0 | `2748a13a980f426ab65c69831a0e642e8902613ec18dfe13d756dc57bea61bee` | Alchemy; model 520031 shared with medicine candidate. |
+| `building.guidance_platform` | 22 / 510111 | VERIFIED | [3, 3] / [1, -1] | true/true | 532×592; alpha observed | `f5f9ff9089f5a944da16c257f216ed9a16563fae118a69d1bad6a5731619958e` | Dẫn Tiên Đài; source PNG visually inspected. |
+| `building.sect_gate` | 39 / 510163 | VERIFIED | [1, 1] / [1, -1] | true/false | 204×92 shared `cuizhi`; alpha not checked | `7fa21d27c5bf9d69dc77bcecc4704cb827d401961701d7fb8a912d16608b7a0e` | Shared `cuizhi` texture; gate appearance not independently proven. |
 
 ### Dependency SHA-256 inventory
 
