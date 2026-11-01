@@ -167,6 +167,8 @@ var render_art: Dictionary = {}
 # Experimental visual-only artwork is separate from source_art.status().
 var candidate_site_art: Dictionary = {}
 var decoration_items_by_chunk: Dictionary = {}
+# Visual-only suppression of decorative plants under real House footprints.
+var house_reserved_tiles: Dictionary = {}
 var pve_static_draw_queue: Array[Dictionary] = []
 var pve_detailed_site_ids: Dictionary = {}
 var pve_static_queue_dirty := true
@@ -585,6 +587,18 @@ static func producer_cell(destination: StringName, instance_index: int) -> Vecto
 func refresh_from_state(state: SimulationState) -> void:
     if state == null:
         return
+    house_reserved_tiles.clear()
+    # Draw a paid construction site/House cleanly: decorative trees cannot
+    # stand on the roof, footprint, or its exterior door interaction cell.
+    for record in state.buildings.values():
+        if not (record is BuildingState) or record.building_type != BuildingSystem.TYPE_RESIDENCE:
+            continue
+        var origin := SectResidenceSiteV1.origin_of(record)
+        var footprint := Rect2i(origin,SectResidenceSiteV1.HOUSE_FOOTPRINT)
+        for yy in range(footprint.position.y,footprint.end.y):
+            for xx in range(footprint.position.x,footprint.end.x):
+                house_reserved_tiles[Vector2i(xx,yy)] = true
+        house_reserved_tiles[SectResidenceSiteV1.doorway(origin)] = true
     var rows: Array[Dictionary] = []
     # One indexed pass over canonical buildings. Prior implementation scanned
     # the full state.buildings collection once for EACH producer destination.
@@ -1005,6 +1019,8 @@ func _draw() -> void:
             queue.append({"y":(item["world"] as Vector2).y,"kind":"building","data":item})
     for chunk_id in active_chunks:
         for item in decoration_items_by_chunk.get(chunk_id,[]):
+            if house_reserved_tiles.has(item["cell"]):
+                continue
             if _visible_world(item["world"]):
                 queue.append({"y":(item["world"] as Vector2).y,"kind":"vegetation","data":item})
     if pve_landscape and pve_battle != null:
@@ -1059,6 +1075,8 @@ func _ensure_pve_static_draw_queue() -> void:
             queue.append({"y":(item["world"] as Vector2).y,"kind":"building","data":item})
     for chunk_id in active_chunks:
         for item in decoration_items_by_chunk.get(chunk_id,[]):
+            if house_reserved_tiles.has(item["cell"]):
+                continue
             if _visible_world(item["world"]):
                 queue.append({"y":(item["world"] as Vector2).y,"kind":"vegetation","data":item})
     queue.sort_custom(func(a: Dictionary,b: Dictionary) -> bool:
