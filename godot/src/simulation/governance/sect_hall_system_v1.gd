@@ -557,8 +557,10 @@ static func validate(state: SimulationState) -> Array[String]:
             var bid := str(receipt.get("building_id", ""))
             var target_value = receipt.get("target_level", null)
             var paid_building = state.buildings.get(bid)
-            if not (paid_building is BuildingState) or not paid_building.building_type in [
-                    BuildingSystem.TYPE_MAIN_HALL, BuildingSystem.TYPE_RESIDENCE]:
+            if not (paid_building is BuildingState) or not (
+                    paid_building.building_type in [
+                        BuildingSystem.TYPE_MAIN_HALL, BuildingSystem.TYPE_RESIDENCE
+                    ]):
                 errors.append("Hall upgrade receipt missing governed building.")
                 continue
             if not (target_value is int or target_value is float):
