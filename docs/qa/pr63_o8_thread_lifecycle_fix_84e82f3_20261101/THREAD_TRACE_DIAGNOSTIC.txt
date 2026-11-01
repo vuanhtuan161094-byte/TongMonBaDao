@@ -1,0 +1,24 @@
+Trace run on a temporary instrumented checkout derived from cabdf54656b252541ea42fa029f370cc1f2e8d0e; diagnostic only, not a release test. Exit code was not separately recorded.
+--- stdout ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+TMB_SAVE_THREAD event=start owner=-9223371929329596608 thread_instance=-9223371845208633547 error=0
+TMB_SAVE_THREAD event=wait_async owner=-9223371929329596608 thread_instance=-9223371845208633547 error=0
+TMB_SAVE_THREAD event=start owner=-9223371929329596608 thread_instance=-9223371794189119824 error=0
+TMB_SAVE_THREAD event=wait_async owner=-9223371929329596608 thread_instance=-9223371794189119824 error=0
+TMB_SAVE_THREAD event=start owner=-9223371929329596608 thread_instance=-9223371774576554023 error=0
+TMB_SAVE_THREAD event=wait_async owner=-9223371929329596608 thread_instance=-9223371774576554023 error=0
+TMB_SAVE_THREAD event=start owner=-9223371760987011418 thread_instance=-9223371710521145474 error=0
+TMB_SAVE_THREAD event=wait_async owner=-9223371760987011418 thread_instance=-9223371710521145474 error=0
+TMB_SAVE_THREAD event=start owner=-9223371697837569432 thread_instance=-9223371644989338229 error=0
+P3 O8 ALCHEMY FIELD-PILL-CONSUMER TEST PASS
+TMB_SAVE_THREAD event=service_predelete owner=-9223371697837569432 pending=true thread_instance=-9223371644989338229
+
+--- stderr ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+WARNING: A Thread object is being destroyed without its completion having been realized.
+Please call wait_to_finish() on it to ensure correct cleanup.
+   at: ~Thread (core/os/thread.cpp:116)
+
+
