@@ -20,6 +20,32 @@ var performance_checkpoint_count := 0
 var performance_checkpoint_usec_total := 0
 var performance_checkpoint_usec_max := 0
 
+static func _apply_guardian_office(state: SimulationState, actors: Array) -> void:
+    var officer := SectHallSystemV1.holder_id(state, SectHallSystemV1.OFFICE_GUARDIAN)
+    var mitigation := SectHallSystemV1.role_effect(state, SectHallSystemV1.OFFICE_GUARDIAN)
+    if officer.is_empty() or mitigation <= 0.0:
+        return
+    var guarded_party := ""
+    for raw in actors:
+        var actor: Dictionary = raw
+        if str(actor.get("id", "")) == officer:
+            guarded_party = str(actor.get("party_id", ""))
+            break
+    if guarded_party.is_empty():
+        return
+    for raw in actors:
+        var actor: Dictionary = raw
+        if str(actor.get("party_id", "")) != guarded_party:
+            continue
+        var stats: Dictionary = actor.get("stats", {}).duplicate(true)
+        var old: float = clampf(float(stats.get("damage_reduction", 0.0)), 0.0, 1.0)
+        stats["damage_reduction"] = 1.0 - (1.0 - old) * (1.0 - mitigation)
+        actor["stats"] = stats
+        var src: Array = actor.get("applied_sources", []).duplicate(true)
+        src.append({"source_id":"hall_v1:deployed_guardian", "channel":"damage_reduction",
+            "mode":"remaining_reduction", "value":mitigation})
+        actor["applied_sources"] = src
+
 func begin(
     state: SimulationState, region: String, encounter_id: String, seed: int,
     party_members: Array, v63_boss_id: String = "", preview_overrides: Dictionary = {}
@@ -100,6 +126,9 @@ func begin(
         # Battle owns HP until terminal; no live object link may leak mutations.
         actor["disciple"] = null
         actors.append(actor)
+    # Hộ Pháp applies only when the actual officer is DEPLOYED in this party.
+    # The defensive snapshot is committed into each actor's real combat stats.
+    _apply_guardian_office(state, actors)
     actors.sort_custom(func(a,b): return str(a["id"]) < str(b["id"]))
     var spawned := HuntingMapV2.spawn(region,level,encounter_id,seed)
     if not bool(spawned.get("ok",false)):
@@ -829,6 +858,11 @@ func _settle_terminal() -> Dictionary:
         terminal_receipt["items"] = {}
         terminal_receipt["battle"] = MapBattleSnapshotV2.save(battle)
     owner_state.sect.v2_pve_settlement_receipts[encounter] = terminal_receipt
+    if battle.outcome == "win":
+        SectHallSystemV1.record_prestige(owner_state, 50)
+        var guardian := SectHallSystemV1.holder_id(owner_state, SectHallSystemV1.OFFICE_GUARDIAN)
+        if not guardian.is_empty() and battle.actors.has(guardian):
+            SectHallSystemV1.record_office_event(owner_state, SectHallSystemV1.OFFICE_GUARDIAN, true)
     if battle.outcome != "win":
         owner_state.sect.v2_pve_active_runs.erase(encounter)
     return {"ok":true,"already_settled":false,"settled_tick":when}
