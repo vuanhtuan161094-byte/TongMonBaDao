@@ -54,8 +54,8 @@ static func default_state() -> Dictionary:
         "office_award_day": {},
         "appointment_sequence": 0,
         "prestige": 0,
-        "promotion_receipts": {}
-
+        "promotion_receipts": {},
+        "upgrade_receipts": {}
     }
 
 static func installed(state: SimulationState) -> bool:
@@ -541,6 +541,37 @@ static func validate(state: SimulationState) -> Array[String]:
             errors.append("A disciple holds multiple main offices.")
         else:
             used[id] = true
+    # DD-08: upgrade receipts are optional in older V2 saves, but if present
+    # they must point to a real paid target and the correct building.
+    var upgrade_receipts = state.sect.hall_governance.get("upgrade_receipts", {})
+    if not (upgrade_receipts is Dictionary):
+        errors.append("Hall upgrade receipt ledger is malformed.")
+    else:
+        var seen_upgrades: Dictionary = {}
+        for raw_request in upgrade_receipts.keys():
+            var request_id := str(raw_request)
+            var receipt = upgrade_receipts[raw_request]
+            if request_id.is_empty() or request_id.length() > 120 or not (receipt is Dictionary):
+                errors.append("Hall upgrade receipt entry malformed.")
+                continue
+            var bid := str(receipt.get("building_id", ""))
+            var target_value = receipt.get("target_level", null)
+            var paid_building = state.buildings.get(bid)
+            if not (paid_building is BuildingState) or not paid_building.building_type in [
+                    BuildingSystem.TYPE_MAIN_HALL, BuildingSystem.TYPE_RESIDENCE]:
+                errors.append("Hall upgrade receipt missing governed building.")
+                continue
+            if not (target_value is int or target_value is float):
+                errors.append("Hall upgrade target must be integral.")
+                continue
+            var target_level := int(target_value)
+            var max_settled := paid_building.upgrade_target_level if paid_building.is_upgrading() else paid_building.level
+            var receipt_identity := "%s:%d" % [bid, target_level]
+            if float(target_value) != float(target_level) or target_level < 2 \
+                    or target_level > max_settled or seen_upgrades.has(receipt_identity):
+                errors.append("Hall upgrade receipt has future/duplicate building target.")
+                continue
+            seen_upgrades[receipt_identity] = true
     # DD-07: do not accept a replay ledger pointing to future ranks or
     # malformed requests. Lost receipts can charge a promotion twice; bogus
     # receipts can claim already_settled without an actual rank transaction.
