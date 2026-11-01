@@ -2220,8 +2220,7 @@ func _open_dai_dien_housing_v1() -> void:
         hall_view._tab(5)
 
 func _on_dai_dien_state_changed() -> void:
-    if iso_world != null:
-        iso_world.refresh_from_state(state)
+    # _refresh_all() already refreshes the 192x192 map once; avoid double scans.
     _refresh_all()
     if selected_building == SectMapPresentation.DEST_MAIN_HALL:
         _refresh_building_operation_content()
