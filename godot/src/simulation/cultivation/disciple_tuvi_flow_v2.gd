@@ -66,9 +66,11 @@ static func preview_rate(state: SimulationState, disciple: DiscipleState, specia
         return ready
     var base_rate := float(ready["base_tuvi_per_minute"])
     var multiplier := float(ready["cultivate_multiplier"]) if specialized else 1.0
+    var sources: Array = ready["sources"].duplicate(true)
+    sources.append_array(SectHallSystemV1.cultivation_sources(state,disciple))
     var dry := DiscipleRealmProgressV2.grant_xp(
         disciple,"cultivation",base_rate*multiplier,"natural",
-        ready["floor_costs"],ready["sources"],true
+        ready["floor_costs"],sources,true
     )
     if not bool(dry.get("ok",false)):
         return dry
@@ -104,14 +106,17 @@ static func resolve_minute(
 
     var multiplier := float(ready["cultivate_multiplier"]) if specialized else 1.0
     var authored_base := float(ready["base_tuvi_per_minute"])
+    var sources: Array = ready["sources"].duplicate(true)
+    sources.append_array(SectHallSystemV1.cultivation_sources(state,disciple))
     var grant := DiscipleRealmProgressV2.grant_xp(
         disciple,"cultivation",authored_base*multiplier,"natural",
-        ready["floor_costs"],ready["sources"]
+        ready["floor_costs"],sources
     )
     if not bool(grant.get("ok",false)):
         return grant
 
     disciple.v2_realm_progress["last_passive_tuvi_tick"] = state.tick
+    SectHallSystemV1.record_cultivation(state, float(grant.get("gained", 0.0)))
     return {
         "ok":true,
         "event_id":"%d:%s:PASSIVE_TUVI" % [state.tick,str(disciple.id)],
