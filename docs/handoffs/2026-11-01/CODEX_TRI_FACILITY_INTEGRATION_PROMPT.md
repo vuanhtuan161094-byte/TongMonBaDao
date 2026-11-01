@@ -12,7 +12,7 @@ Bạn là Codex, kỹ sư tích hợp Godot 4.7.2 cho dự án TÔNG MÔN BÁ Đ
 
 ## 0. SOURCE OF TRUTH — đọc trước khi sửa
 
-1. Đọc AGENTS.md, docs/GAME_SYSTEM_ARCHITECTURE.md, CURRENT_CHECKPOINT.md, NEXT_CHAT_HANDOFF.md trên checkout/branch đúng SHA. Đọc toàn bộ docs/handoffs/2026-11-01/TMB_TRI_FACILITY_FROZEN_ARCHITECTURE_CODEX_HANDOFF.md và các tài liệu DD/DT đã liên kết.
+1. Đọc AGENTS.md, docs/GAME_SYSTEM_ARCHITECTURE.md, CURRENT_CHECKPOINT.md, NEXT_CHAT_HANDOFF.md trên checkout/branch đúng SHA. Handoff TRI-01 nằm ở nhánh TÀI LIỆU RIÊNG docs/three-buildings-codex-handoff-20261101: trước tiên fetch/read docs/handoffs/2026-11-01/TMB_TRI_FACILITY_FROZEN_ARCHITECTURE_CODEX_HANDOFF.md từ nhánh đó bằng GitHub; nó CHƯA hiện diện trên RC/gameplay branch. Không được nhầm nhánh tài liệu với nguồn game.
 2. Fetch GitHub, xác minh **live HEAD tại thời điểm bắt đầu**; không tin rằng SHA dưới đây còn mới nhất. Nếu HEAD đổi, ghi cụ thể SHA mới, phạm vi thay đổi và cập nhật phép so sánh trước khi code.
 3. Các SHA đã đối chiếu khi lập handoff:
    - MAIN c0c1382f119599497b52d8ee8abd9e830a883f1e — KHÔNG SỬA.
