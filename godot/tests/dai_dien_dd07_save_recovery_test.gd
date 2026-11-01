@@ -69,6 +69,23 @@ func _run() -> void:
             "orphaned saved House must not reset silently to Lv1"):
         return
 
+    # Both economic receipt ledgers are part of the durable state contract.
+    # A phantom house or a future-rank paid receipt must never validate.
+    var bad_house_receipt := SimulationState.from_dict(state.to_dict())
+    bad_house_receipt.sect.hall_governance["residence_build_receipts"] = {
+        "fake-request": "residence_099"
+    }
+    if not _expect(not SectHallSystemV1.validate(bad_house_receipt).is_empty(),
+            "phantom paid House receipt must fail validation"):
+        return
+    var bad_promotion_receipt := SimulationState.from_dict(state.to_dict())
+    bad_promotion_receipt.sect.hall_governance["promotion_receipts"] = {
+        "fake-promotion": 27
+    }
+    if not _expect(not SectHallSystemV1.validate(bad_promotion_receipt).is_empty(),
+            "future paid promotion receipt must fail validation"):
+        return
+
     # Two genuine saved generations establish a valid backup copy.
     _cleanup()
     var saves := SaveService.new()
