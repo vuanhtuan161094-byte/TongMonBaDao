@@ -119,21 +119,20 @@ static func construct(state: SimulationState, request_id: String) -> Dictionary:
     var materials := cost.duplicate(true)
     materials.erase("spirit_stones")
     var building_system := BuildingSystem.new()
-    if not building_system._consume_resources(state, materials):
-        return {"ok": false, "reason": "materials_changed"}
-    state.sect.spirit_stones -= int(cost["spirit_stones"])
     var ordinal := all_houses(state).size() + 1
     var house := building_system.create_building(TYPE, ordinal)
     if house == null or state.buildings.has(str(house.id)):
-        # Should be impossible after checked fixed ordinal. Flag rather than
-        # silently creating a second record; Code review must test this branch.
-        return {"ok": false, "reason": "post_debit_identity_error"}
+        return {"ok": false, "reason": "pre_debit_identity_error"}
+    if not building_system._consume_resources(state, materials):
+        return {"ok": false, "reason": "materials_changed"}
+    state.sect.spirit_stones -= int(cost["spirit_stones"])
     state.buildings[str(house.id)] = house
     state.building_event_count += 1
     receipts = receipts.duplicate(true)
     receipts[request_id] = str(house.id)
     state.sect.hall_governance["residence_build_receipts"] = receipts
     refresh_capacity(state)
+    auto_assign_beds(state)
     return {"ok": true, "building_id": str(house.id), "cost": cost}
 
 static func upgrade_room_projection(state: SimulationState, building_id: StringName) -> Dictionary:
