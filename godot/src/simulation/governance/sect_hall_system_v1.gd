@@ -77,6 +77,12 @@ static func ensure_live(state: SimulationState) -> Dictionary:
         state.sect.hall_governance = default_state()
     if not installed(state):
         return {"ok": false, "reason": "unsupported_hall_schema"}
+    for field in ["assignments", "mastery", "office_award_day", "promotion_receipts"]:
+        if not (state.sect.hall_governance.get(field, {}) is Dictionary):
+            return {"ok": false, "reason": "malformed_hall_" + field}
+    var saved_rank = state.sect.hall_governance.get("sect_rank_index", 1)
+    if not (saved_rank is int or saved_rank is float) or float(saved_rank) != float(int(saved_rank)) or int(saved_rank) < 1 or int(saved_rank) > 27:
+        return {"ok": false, "reason": "invalid_sect_rank_index"}
     var housing := SectResidenceSystemV1.ensure_live(state)
     if not bool(housing.get("ok", false)):
         return housing
