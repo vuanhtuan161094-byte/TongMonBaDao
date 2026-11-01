@@ -107,6 +107,20 @@ func _run() -> void:
             and SectResidenceSystemV1.current_limit(state) == 12,
             "rank 1 administrative cap must bind 2 houses with 18 beds"):
         return
+    # The extra house must be represented by an actual selectable canonical
+    # building ID in the map projection, not only in UI text.
+    var iso := SectIsometricWorldV1.new()
+    root.add_child(iso)
+    iso.refresh_from_state(state)
+    var visible_houses: Dictionary = {}
+    for row in iso.display_instances:
+        if row["destination"] == SectMapPresentation.DEST_RESIDENCE and bool(row.get("managed", false)):
+            visible_houses[str(row["building_id"])] = true
+    if not _assert(visible_houses.has("residence_001") and visible_houses.has("residence_002")
+            and visible_houses.size() == 2, "multi-house IDs not present on actual isometric world"):
+        return
+    root.remove_child(iso)
+    iso.free()
 
     # Commit two real worksite warehouse deposits for an economic promotion
     # qualification; we don't invent production or prestige from a UI preview.
