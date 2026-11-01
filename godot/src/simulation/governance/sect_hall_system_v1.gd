@@ -410,7 +410,12 @@ static func promote(state: SimulationState, request_id: String) -> Dictionary:
         return {"ok": false, "reason": "invalid_promotion_request"}
     var receipts: Dictionary = state.sect.hall_governance.get("promotion_receipts", {})
     if receipts.has(request_id):
-        return {"ok": true, "already_settled": true, "new_rank": int(receipts[request_id])}
+        var settled_rank = receipts[request_id]
+        if not (settled_rank is int or settled_rank is float) \
+                or float(settled_rank) != float(int(settled_rank)) \
+                or int(settled_rank) <= 1 or int(settled_rank) > rank_index(state):
+            return {"ok": false, "reason": "invalid_prior_promotion_receipt"}
+        return {"ok": true, "already_settled": true, "new_rank": int(settled_rank)}
     var check := promotion_requirements(state)
     if not bool(check.get("ok", false)):
         return check
