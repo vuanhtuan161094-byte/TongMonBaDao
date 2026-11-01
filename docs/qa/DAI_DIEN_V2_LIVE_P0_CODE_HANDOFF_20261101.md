@@ -114,3 +114,52 @@ For the final 480-bed candidate, detailed known prototype sinks: Hall Lv1→100 
 - Free-placement, land expansion, persistent layout/footprint, AStar doorway collision and moving buildings are not implemented for annexes; fixed-sites are the only current authority.
 - Long-run Lv100 and 27 promotions lack a full calibrated gameplay economy and durable longitudinal evidence.
 - Engine import, real-pixel UI and playtest are BLOCKED/UNRUN in this connector environment. **PR must stay Draft.**
+
+
+## 10. DD-08 P0 direct implementation — strict persistence and paid-action replay gate
+
+**Scope:** The owner explicitly authorized continuing the DD-08 stabilization phase without Codex. This code was written directly on PR #64's existing branch; it was **not** merged to RC or main. These are **source-level fixes and authored tests only; NO official Godot 4.7.2 execution has occurred**. No screenshot, engine import PASS, FPS, RAM, Windows build or Android APK is claimed.
+
+### Changes actually committed
+
+1. **Fail-closed saved office dictionaries.** `SectHallSystemV1.validate` checks the saved types of `assignments`, `mastery`, `office_award_day` and `promotion_receipts` **before** calling `holder_id`, so malformed fields can fail through SaveService and allow recovery from a valid `.bak` rather than causing an unsafe cast. Also verify role keys and officer-ID types.
+2. **Strict canonical House identities and cost receipts.** Residence invariants require `residence_001..residence_N` with matching instance indices and dictionary keys; paid Houses #2+ require a unique receipt referencing an existing House. A replay cannot report `already_settled` if its paid House has vanished. Raw saved legacy bed credits and Residence schema versions are checked with integral/finite type guards.
+3. **Faster capacity queries.** `all_houses` filters actual Residence instances first, then sorts only the (max 10) matching records instead of sorting all keys of the production BuildingSystem. No second persistent index or duplicate bed authority was introduced. Earlier Hall O(1) lookup remains in place.
+4. **Durable exactly-once Hall/Residence upgrade requests.** `BuildingSystem.start_upgrade(state,id,request_id)` now requires a nonempty request ID for Hall/Residence when Hall V2 is installed, validates replay identity and persists `hall_governance.upgrade_receipts` after a successful paid start. The same request, including a stale UI callback arriving AFTER upgrade completion, returns `already_settled` without starting the NEXT level. The native Godot UI binds per-building/per-target-level request IDs when the button is constructed; the old P3.7 non-Hall/Residence `start_upgrade` API remains backward-compatible. An empty upgrade-receipt dictionary is accepted for older V2 saves; new saves persist it.
+5. **Save wire duplicate row guard.** `SaveService._is_payload_shape_valid` rejects duplicate/missing/wrong-type raw building or disciple IDs when an explicit Hall governance payload is present, before `SimulationState.from_dict` can silently overwrite rows in ID dictionaries. Unaffected legacy save payloads keep the original path.
+6. **Strict Hall schema and upgrade receipt validation.** No string-to-int schema coercion, future/duplicate paid upgrade targets, or non-finite target values. Paid promotion receipt replay also rejects impossible future ranks in the direct API.
+
+### Authored regression coverage (NOT RUN)
+
+- `res://tests/dai_dien_dd07_save_recovery_test.gd`: corrupt Hall ledger types, paid House missing receipt, corrupt legacy bed credit, duplicate raw building/disciples IDs, staged SaveService rejection without damaging last-good save, `.bak` recovery.
+- `res://tests/dai_dien_housing_full_loop_test.gd`: House and Hall upgrades both reject missing request IDs, charge precisely once, replay during work without a second debit, replay *after completion* without inadvertently starting the following level, and keep earlier House/build/rank/SaveService scenarios.
+- Earlier `dai_dien_dd06_integrity_test.gd`, `dai_dien_v1_smoke.gd`, `p3_4c_building_system_actions_test.gd` remain in the focused suite.
+- Static-only bracket/quote and duplicate-function scans are **not grammar or runtime tests**; there is still no engine executable in the connected environment.
+
+### Minimum isolated Windows verification — official Godot 4.7.2
+
+Run from a **separate clean QA checkout**, not an owner's playable checkout; set `$GodotExe` to the official executable and `$QaGodot` to the absolute path of that checkout's `godot` folder. Ensure the QA profile is separate from real APPDATA saves. Stop on first nonzero code and retain the full log.
+
+```powershell
+& $GodotExe --headless --path $QaGodot --editor --quit
+if ($LASTEXITCODE -ne 0) { throw "DD08 engine import failed" }
+foreach ($test in @(
+  "res://tests/dai_dien_dd06_integrity_test.gd",
+  "res://tests/dai_dien_dd07_save_recovery_test.gd",
+  "res://tests/dai_dien_v1_smoke.gd",
+  "res://tests/dai_dien_housing_full_loop_test.gd",
+  "res://tests/presentation/p3_4c_building_system_actions_test.gd"
+)) {
+  & $GodotExe --headless --path $QaGodot --script $test
+  if ($LASTEXITCODE -ne 0) { throw "DD08 FAIL: $test" }
+}
+```
+
+**Do not merge when only focused headless tests pass.** Follow up with C2 Dẫn Tiên, SX01/02, O8/SaveService thread, Injuries/Care/PvE, real 1280×720 window interactions, Source A portraits, and memory/FPS at 90/200/480 roster. Record exact tested SHA, original logs and screenshots. No silent modification of main or owner saves.
+
+### Still NOT implemented or calibrated
+
+- Fixed-site Annexes still have no persistent land-ownership/footprint/doorway authority and no placement editing. Additional Houses activate immediately; their separate construction timing is DD-09, not DD-08.
+- 27-rank headcount progression remains a prototype; the rank-gate formula and 3/12/24-month no-payment pacing still require source/sink and actual time simulation. A source-balanced economy is DD-10, not asserted solved.
+- Full versioned `upgrade_receipts` migration rules for saves from *future* unrecognized formats, plus all cross-class parser checks, remain subject to official Godot QA.
+- Do not claim that Godot GUI, Android landscape or player workflows have passed. **PR #64 remains Draft and DO NOT MERGE.**
