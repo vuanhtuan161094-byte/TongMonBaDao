@@ -3297,7 +3297,7 @@ func _build_sx02_medicine_controls() -> void:
         use.name = "SX02Use_%s" % str(disciple.id)
         use.text = "Dùng đan đã chọn"
         use.custom_minimum_size = Vector2(160, 30)
-        use.disabled = B3MedicalAutoplayV1.busy(state, disciple) or warehouse.available_quantity(state, sx02_selected_medicine) < 1
+        use.disabled = B3PillSatietyV1.manual_use_is_activity_blocked(state, disciple, sx02_selected_medicine) or warehouse.available_quantity(state, sx02_selected_medicine) < 1
         use.tooltip_text = "B3 sẽ kiểm tra nghề đang bận, bão hòa, kho và cửa ải Tu Vi."
         use.pressed.connect(Callable(self, "_sx01_use_pill_from_ui").bind(disciple.id, sx02_selected_medicine))
         row.add_child(use)
@@ -3452,7 +3452,7 @@ func _alchemy_operation_text() -> String:
     for raw_job in jobs:
         var job: Dictionary = raw_job
         var worker_id := StringName(job.get("worker_id", ""))
-        var name := state.disciples[worker_id].display_name if state.disciples.has(worker_id) else str(worker_id)
+        var name: String = state.disciples[worker_id].display_name if state.disciples.has(worker_id) else str(worker_id)
         var pill := str(AlchemyRecipeRegistry.new().definition(StringName(job.get("recipe_id",""))).get("name", "Đan dược"))
         lines.append("• %s · %s · còn %d phút" % [name, pill, maxi(int(job.get("finish_tick", state.tick)) - state.tick, 0)])
     var recipe_name := str(AlchemyRecipeRegistry.new().definition(StringName(hall.production_state.get("recipe_id", "hoi_xuan_dan"))).get("name", "Hồi Xuân Đan"))

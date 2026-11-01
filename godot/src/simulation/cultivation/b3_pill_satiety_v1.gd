@@ -41,6 +41,15 @@ static func safe_cultivation_pill_window(state: SimulationState, d: DiscipleStat
         and not b.disciple_has_active_timed_recipe(state, d.id) \
         and not DiscipleBodyTrainingFacilityV2.has_reserved_slot(state, d)
 
+# Shared activity gate for the manual medicine UI and B3 consumer. Safe
+# Chuyên Tu only exempts a Tu Vi medicine; healing pills and active work remain blocked.
+static func manual_use_is_activity_blocked(state: SimulationState, d: DiscipleState, pill: StringName) -> bool:
+    if state == null or d == null:
+        return true
+    var medicine := MedicineCatalogueV2.definition(pill)
+    var tuvi_pill := pill == &"tu_khi_dan" or str(medicine.get("pill_family", "")) == MedicineCatalogueV2.FAMILY_TUVI
+    return B3MedicalAutoplayV1.busy(state, d) and not (tuvi_pill and safe_cultivation_pill_window(state, d))
+
 static func consume(state: SimulationState, d: DiscipleState, pill: StringName, sequence: int) -> Dictionary:
     if d == null or state.disciples.get(d.id) != d or d.b3_pill_state.is_empty():
         return {"ok":false,"reason":"pill_satiety_not_enabled"}
