@@ -335,6 +335,7 @@ func _sect_rank() -> void:
     var requirements := [
         ["Đại Điện", str(check.get("hall_level", 0)), str(check.get("hall_need", 0))],
         ["Đệ tử", str(check.get("roster", 0)), str(check.get("roster_need", 0))],
+        ["Đệ tử đủ cảnh giới ≥%d" % int(check.get("min_realm", 1)), str(check.get("realm", 0)), str(check.get("realm_need", 0))],
         ["Mẻ sản xuất thật", str(check.get("production", 0)), str(check.get("production_need", 0))],
         ["Uy Danh", str(check.get("prestige", 0)), str(check.get("prestige_need", 0))]
     ]
