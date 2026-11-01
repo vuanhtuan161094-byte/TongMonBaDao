@@ -24,6 +24,9 @@ static func default_state() -> Dictionary:
         "sect_rank_index": 1,
         "assignments": {},
         "mastery": {},
+        # One office can mint at most one EXP grant/day across all holders,
+        # preventing a same-day reappointment farm.
+        "office_award_day": {},
         "appointment_sequence": 0
     }
 
@@ -194,7 +197,8 @@ static func record_cultivation(state: SimulationState, actor: DiscipleState, gai
         var key := "%s:%s" % [id, office_id]
         var record := mastery(state, office_id, id)
         var day := int(state.tick / DAY_TICKS)
-        if day <= int(record.get("last_award_day", -1)):
+        var office_awards: Dictionary = state.sect.hall_governance.get("office_award_day", {}).duplicate(true)
+        if day <= int(record.get("last_award_day", -1)) or day <= int(office_awards.get(office_id, -1)):
             continue
         record["last_award_day"] = day
         if int(record["level"]) < MAX_MASTERY:
@@ -204,7 +208,9 @@ static func record_cultivation(state: SimulationState, actor: DiscipleState, gai
                 record["level"] = int(record["level"]) + 1
             record["xp"] = 0 if int(record["level"]) >= MAX_MASTERY else xp
         all_records[key] = record
+        office_awards[office_id] = day
         state.sect.hall_governance["mastery"] = all_records
+        state.sect.hall_governance["office_award_day"] = office_awards
 
 static func validate(state: SimulationState) -> Array[String]:
     var errors: Array[String] = []
