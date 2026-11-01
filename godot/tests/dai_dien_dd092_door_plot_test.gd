@@ -36,7 +36,7 @@ func _run() -> void:
 
     var alternate_plot := Vector2i(104,108) # Not the historical Annex #2 slot.
     var door := SectResidenceSiteV1.doorway(alternate_plot)
-    if not _require(door == Vector2i(105,111) \
+    if not _require(door == Vector2i(105,107) \
             and bool(SectResidenceSiteV1.check(state,alternate_plot).get("ok", false)),
             "expected free outdoor doorway plot unavailable"):
         return
