@@ -1,0 +1,14 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+AUTO AT120 tick=126 hp=146.0 injury=0 action=HOLD cmd={  } policy={ "auto_deploys": 1, "auto_heal": true, "auto_hunt": true, "disciple_id": "candidate_99441", "heals": 1.0, "last_review_tick": 126, "min_hp_ratio": 0.75, "next_review_tick": 127, "owns_rest": false, "paused_manual": false, "rest_requests": 41, "status": "HUNTING", "version": 1.0 }
+B3 CARE LOOP EVIDENCE world=b3:vs1:bach_thach_khe:930211:6 down_tick=6 recover_tick=126 auto_deploys=1 kills=4 real_warehouse=4 save=<QA_EVIDENCE>/dantien/regression_20261101/profile/Roaming/Godot/app_userdata/Tong Mon Ba Dao/care_loop_medicine_2332995.json.online
+ERROR: B3 CARE: incompatible save: invalid_care_counter_range
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] from_dict (res://src/simulation/state/simulation_state.gd:434)
+       [1] no_pills_and_guards (res://tests/simulation/b3_care_pills_autohunt_test.gd:177)
+       [2] run (res://tests/simulation/b3_care_pills_autohunt_test.gd:79)
+B3 REST-ONLY EVIDENCE recover_tick=120 same_world=b3:vs1:bach_thach_khe:930211:0 rest_requests=68
+B3 CARE REAL DEFEAT + PILL/REST + INJURY120 + AUTO SAME WORLD + OFFLINE + SAVE RETRY PASS (39 checks)

@@ -298,14 +298,20 @@ func spirit_plot_slots(building: BuildingState) -> int:
 func guidance_elder_slots(building: BuildingState) -> int:
     if building == null or building.building_type != TYPE_GUIDANCE_PLATFORM:
         return 0
-    return clampi(1 + int(floor(float(building.level) / 20.0)), 1, 6)
+    return guidance_elder_slots_for_level(building.level)
+
+func guidance_elder_slots_for_level(level: int) -> int:
+    return clampi(1 + int(floor(float(maxi(level, 1)) / 20.0)), 1, 6)
 
 func guidance_base_daily_arrivals(building: BuildingState) -> int:
     if building == null or building.building_type != TYPE_GUIDANCE_PLATFORM:
         return 0
+    return guidance_base_daily_arrivals_for_level(building.level)
+
+func guidance_base_daily_arrivals_for_level(level: int) -> int:
     # Dẫn Tiên should visibly scale with infrastructure without gating Mị Lực.
     # Current balance: 5/day at Lv1, +3 every 10 levels, 35/day at Lv100.
-    return 5 + 3 * int(floor(float(building.level) / 10.0))
+    return 5 + 3 * int(floor(float(maxi(level, 1)) / 10.0))
 
 func spirit_field_speed_factor(field: BuildingState) -> float:
     return 1.0 + 0.005 * float(maxi(field.level - 1, 0))
@@ -559,6 +565,11 @@ func can_start_upgrade(state: SimulationState, building_id: StringName) -> Dicti
     if building.building_type == TYPE_BODY_TRAINING:
         return {"ok": false, "reason": "body_training_upgrade_content_pending"}
     var target_level := building.level + 1
+    # No authoritative Đại Điện/Tông Môn progression gate exists for Dẫn Tiên
+    # above Lv20. Keep the explicitly tested Lv20 threshold reachable, then
+    # fail closed without inventing a sect-rank formula or charging a guessed cost.
+    if building.building_type == TYPE_GUIDANCE_PLATFORM and target_level > 20:
+        return {"ok": false, "reason": "guidance_sect_gate_pending", "target_level": target_level}
     var requires_milestone_component := bool(definition_for(building).get("requires_milestone_component", true))
     if MILESTONE_LEVELS.has(target_level) and requires_milestone_component and _milestone_component(building.building_type, target_level) == "":
         return {"ok": false, "reason": "milestone_component_not_defined", "target_level": target_level}

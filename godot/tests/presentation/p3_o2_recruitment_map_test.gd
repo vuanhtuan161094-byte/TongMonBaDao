@@ -35,17 +35,24 @@ func _run() -> void:
         _fail("O2 fresh state does not expose the expected real candidate pool.")
         return
     var first_visible := StringName(candidates[0])
-    if ui.find_child("RejectCandidate_%s" % str(first_visible), true, false) == null:
-        _fail("O2 candidate has no player-facing Reject control.")
+    ui.call("_open_dan_tien_screen_v2")
+    await process_frame
+    var dan_tien := ui.get_node_or_null("DanTienScreenV2") as DanTienScreenV2
+    if dan_tien == null:
+        _fail("O2 Dẫn Tiên entry did not open the player-facing V2 recruitment screen.")
         return
-
+    dan_tien.call("_select_candidate", first_visible)
+    await process_frame
+    if _find_button_with_text(dan_tien, "TỪ CHỐI") == null:
+        _fail("O2 candidate has no player-facing Reject control in DanTienScreenV2.")
+        return
     # Live runtime enables authentic V2 births after P3.7 factory creation.
     # Existing pre-V2 waiting candidates remain visible but cannot bypass the
     # canonical complete-birth gate. Use the real Dẫn Tiên action to obtain an
     # authentic recruit; this consumes a real Chiêu Mộ Lệnh.
     var tokens_before := state.sect.disciple_recruitment_tokens
     var pool_before := state.recruitment_candidates.size()
-    var order_button := ui.find_child("GuidanceRecruitOrder", true, false) as Button
+    var order_button := dan_tien.get("_token_button") as Button
     if order_button == null or order_button.disabled:
         _fail("O2 fresh Guidance entry cannot use the real recruitment order.")
         return
@@ -63,9 +70,11 @@ func _run() -> void:
         _fail("O2 Dẫn Tiên produced no authentic V2 candidate.")
         return
     var first_id := StringName(recruitable[0])
-    var accept_first := ui.find_child("AcceptCandidate_%s" % str(first_id), true, false) as Button
+    dan_tien.call("_select_candidate", first_id)
+    await process_frame
+    var accept_first := _find_button_with_text(dan_tien, "NHẬN ĐỆ TỬ")
     if accept_first == null or accept_first.disabled:
-        _fail("O2 authentic candidate has no enabled player-facing Accept control.")
+        _fail("O2 authentic candidate has no enabled player-facing Accept control in DanTienScreenV2.")
         return
 
     var initial_count := state.disciples.size()
@@ -81,6 +90,11 @@ func _run() -> void:
         _fail("O2 accepted candidate did not become canonical DiscipleState.")
         return
 
+    # Actors are materialized only for the focused/visible world viewport.
+    # Select through the real disciple route before asserting the map node.
+    ui.call("_open_disciple", first_id)
+    for _frame in range(18):
+        await process_frame
     var actors: Dictionary = ui.get("actor_nodes")
     if not actors.has(str(first_id)):
         _fail("O2 accepted disciple did not materialize as a live map actor.")
@@ -93,8 +107,6 @@ func _run() -> void:
         _fail("O2 created a duplicate actor for the accepted disciple.")
         return
 
-    ui.call("_open_disciple", first_id)
-    await process_frame
     if StringName(ui.get("selected_id")) != first_id:
         _fail("O2 recruited map actor is not selectable through the live disciple flow.")
         return
@@ -112,7 +124,7 @@ func _run() -> void:
         _fail("O2 recruited disciple could not be assigned through workforce UI.")
         return
 
-    ui.call("_autosave_runtime")
+    await ui.call("_autosave_runtime")
     if not FileAccess.file_exists(SAVE_PATH):
         _fail("O2 player-facing runtime save was not written.")
         return
@@ -130,6 +142,9 @@ func _run() -> void:
     if (state.disciples[first_id] as DiscipleState).work_group_id != &"mining_crew":
         _fail("O2 workforce assignment did not persist with the recruited disciple.")
         return
+    ui.call("_open_disciple", first_id)
+    for _frame in range(18):
+        await process_frame
     actors = ui.get("actor_nodes")
     if not actors.has(str(first_id)) or ui.find_children("ModularDisciple_%s" % str(first_id), "", true, false).size() != 1:
         _fail("O2 reload did not restore exactly one live actor for the recruit.")
@@ -157,7 +172,15 @@ func _run() -> void:
 
     ui.call("_open_building", SectMapPresentation.DEST_GUIDANCE)
     await process_frame
-    var accept_second := ui.find_child("AcceptCandidate_%s" % str(second_id), true, false) as Button
+    ui.call("_open_dan_tien_screen_v2")
+    await process_frame
+    dan_tien = ui.get_node_or_null("DanTienScreenV2") as DanTienScreenV2
+    if dan_tien == null:
+        _fail("O2 full-capacity verification could not open DanTienScreenV2.")
+        return
+    dan_tien.call("_select_candidate", second_id)
+    await process_frame
+    var accept_second := _find_button_with_text(dan_tien, "NHẬN ĐỆ TỬ")
     if accept_second == null or accept_second.disabled:
         _fail("O2 legal second recruit is not available from Guidance UI.")
         return
@@ -176,9 +199,23 @@ func _run() -> void:
 
     ui.call("_open_building", SectMapPresentation.DEST_GUIDANCE)
     await process_frame
-    var reject_third := ui.find_child("RejectCandidate_%s" % str(third_id), true, false) as Button
+    ui.call("_open_dan_tien_screen_v2")
+    await process_frame
+    dan_tien = ui.get_node_or_null("DanTienScreenV2") as DanTienScreenV2
+    if dan_tien == null:
+        _fail("O2 reject verification could not open DanTienScreenV2.")
+        return
+    dan_tien.call("_select_candidate", third_id)
+    await process_frame
+    var reject_third := _find_button_with_text(dan_tien, "TỪ CHỐI")
     if reject_third == null:
-        _fail("O2 remaining candidate lost the Reject control at full capacity.")
+        _fail("O2 remaining candidate lost the Reject control in DanTienScreenV2 at full capacity.")
+        return
+    reject_third.emit_signal("pressed")
+    await process_frame
+    reject_third = _find_button_with_text(dan_tien, "XÁC NHẬN TỪ CHỐI")
+    if reject_third == null:
+        _fail("O2 rejection did not request its second confirmation.")
         return
     reject_third.emit_signal("pressed")
     await process_frame
@@ -206,6 +243,15 @@ func _recruitable_candidate_ids() -> Array:
         if not state.sect.disciple_v2_birth_enabled or DiscipleBirthProfileV2.valid_complete_birth(candidate.v2_birth_profile):
             result.append(StringName(raw_id))
     return result
+
+func _find_button_with_text(parent: Node, value: String) -> Button:
+    if parent is Button and (parent as Button).text == value:
+        return parent as Button
+    for child in parent.get_children():
+        var found := _find_button_with_text(child, value)
+        if found != null:
+            return found
+    return null
 
 func _open_scene() -> bool:
     var scene := load("res://scenes/p3/p3_2_landscape_sect.tscn") as PackedScene

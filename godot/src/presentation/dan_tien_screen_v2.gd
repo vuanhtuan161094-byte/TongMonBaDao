@@ -30,6 +30,8 @@ var _token_button: Button
 var _page_label: Label
 var _candidate_list: VBoxContainer
 var _detail_list: VBoxContainer
+var _detail_actions: HBoxContainer
+var _detail_action_hint: Label
 var _feedback_label: Label
 var _root_panel: PanelContainer
 var _guide_select: OptionButton
@@ -144,12 +146,16 @@ func _build_layout() -> void:
     guide_bar.name = "DanTienGuideBar"
     guide_bar.add_theme_constant_override("separation", 9)
     layout.add_child(guide_bar)
-    guide_bar.add_child(_label("Tiếp Dẫn Chính", 12, GOLD))
+    var main_guide_label := _label("Tiếp Dẫn Chính", 12, GOLD)
+    main_guide_label.custom_minimum_size.x = 104
+    guide_bar.add_child(main_guide_label)
     _guide_select = OptionButton.new()
     _guide_select.custom_minimum_size.x = 174
     _guide_select.item_selected.connect(Callable(self, "_on_guide_selected"))
     guide_bar.add_child(_guide_select)
-    guide_bar.add_child(_label("Hỗ trợ", 12, GOLD))
+    var assistant_guide_label := _label("Hỗ trợ", 12, GOLD)
+    assistant_guide_label.custom_minimum_size.x = 48
+    guide_bar.add_child(assistant_guide_label)
     _assistant_select = OptionButton.new()
     _assistant_select.custom_minimum_size.x = 180
     _assistant_select.item_selected.connect(Callable(self, "_on_assistant_selected"))
@@ -222,14 +228,27 @@ func _build_layout() -> void:
     for key in ["margin_left", "margin_right", "margin_top", "margin_bottom"]:
         right_margin.add_theme_constant_override(key, 12)
     right.add_child(right_margin)
+    var detail_layout := VBoxContainer.new()
+    detail_layout.size_flags_vertical = Control.SIZE_EXPAND_FILL
+    detail_layout.add_theme_constant_override("separation", 5)
+    right_margin.add_child(detail_layout)
     var detail_scroll := ScrollContainer.new()
     detail_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
     detail_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-    right_margin.add_child(detail_scroll)
+    detail_layout.add_child(detail_scroll)
     _detail_list = VBoxContainer.new()
     _detail_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     _detail_list.add_theme_constant_override("separation", 8)
     detail_scroll.add_child(_detail_list)
+    _detail_actions = HBoxContainer.new()
+    _detail_actions.name = "CandidateDecisionActions"
+    _detail_actions.custom_minimum_size.y = 36
+    _detail_actions.add_theme_constant_override("separation", 6)
+    detail_layout.add_child(_detail_actions)
+    _detail_action_hint = _label("", 11, MUTED)
+    _detail_action_hint.name = "CandidateDecisionHint"
+    _detail_action_hint.custom_minimum_size.y = 24
+    detail_layout.add_child(_detail_action_hint)
 
     _feedback_label = _label("", 12, GOLD)
     _feedback_label.custom_minimum_size.y = 20
@@ -337,6 +356,8 @@ func _refresh_detail() -> void:
     if _detail_list == null:
         return
     _clear(_detail_list)
+    _clear(_detail_actions)
+    _detail_action_hint.text = ""
     var ids := _filtered_ids()
     if selected_candidate_id == &"" or not game_state.recruitment_candidates.has(selected_candidate_id) or not ids.has(selected_candidate_id):
         selected_candidate_id = StringName(str(ids[0])) if not ids.is_empty() else &""
@@ -381,18 +402,19 @@ func _refresh_detail() -> void:
         _detail_list.add_child(_label("Không thể nhận: hồ sơ sinh V2 chưa hợp lệ. Không tạo lại ngẫu nhiên.", 12, DANGER))
     if game_state.disciples.size() >= game_state.sect.disciple_capacity:
         _detail_list.add_child(_label("Đệ Tử Xá đã đủ chỗ: cần mở rộng trước khi nhận.", 12, DANGER))
-    var actions := HBoxContainer.new()
-    actions.add_theme_constant_override("separation", 6)
-    _detail_list.add_child(actions)
     var accept := _button("NHẬN ĐỆ TỬ", Callable(self, "_accept_selected"), true)
     accept.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     accept.disabled = not _recruitable(candidate) or not recruitment.can_accept_more(game_state)
-    actions.add_child(accept)
+    if not recruitment.can_accept_more(game_state):
+        accept.tooltip_text = "Đệ Tử Xá đã đầy; mở rộng sức chứa trước khi nhận."
+    elif not _recruitable(candidate):
+        accept.tooltip_text = "Hồ sơ sinh V2 chưa hợp lệ; không tạo lại ngẫu nhiên."
     var reject_text := "XÁC NHẬN TỪ CHỐI" if pending_reject_id == selected_candidate_id else "TỪ CHỐI"
     var reject := _button(reject_text, Callable(self, "_reject_selected"))
     reject.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-    actions.add_child(reject)
-    _detail_list.add_child(_label("Ứng viên chưa nhận không chiếm chỗ. Từ chối không hoàn Chiêu Mộ Lệnh đã dùng.", 11, MUTED))
+    _detail_actions.add_child(accept)
+    _detail_actions.add_child(reject)
+    _detail_action_hint.text = "Ứng viên chưa nhận không chiếm chỗ. Từ chối không hoàn Chiêu Mộ Lệnh đã dùng."
 
 func _guide_eligible(disciple: DiscipleState) -> bool:
     return disciple != null and recruitment.guidance_guide_eligible(game_state, disciple.id)

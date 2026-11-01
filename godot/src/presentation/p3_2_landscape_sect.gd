@@ -2313,7 +2313,7 @@ func _build_needs_priority_controls(title: String) -> void:
     ], state.sect.needs_priority, "_set_needs_priority_from_building")
 
 func _build_guidance_recruitment_controls() -> void:
-    _add_management_section_label("DẪN TIÊN ĐÀI · HỒ SƠ D7")
+    _add_management_section_label("CHIÊU MỘ · HỒ SƠ D7")
     var entry := Button.new()
     entry.name = "OpenDanTienScreenV2"
     entry.text = "MỞ DẪN TIÊN ĐÀI · TUYỂN ĐỆ TỬ"
@@ -2324,7 +2324,7 @@ func _build_guidance_recruitment_controls() -> void:
 
     var queue_label := Label.new()
     queue_label.name = "DanTienQueueSummary"
-    queue_label.text = "Ứng viên: %d/%d · Lệnh: %d · Đệ tử: %d/%d\nXem Tam Căn/Tứ Tính, Linh Căn, thiên phú và chân dung Source A khi có asset." % [
+    queue_label.text = "Ứng viên: %d/%d · Lệnh: %d · Đệ tử: %d/%d\nXem Tam Căn/Tứ Tính, Linh Căn, thiên hướng nghề, D7 và chân dung Source A phù hợp." % [
         state.recruitment_candidates.size(), RecruitmentSystem.C2_QUEUE_CAP,
         state.sect.disciple_recruitment_tokens,
         state.disciples.size(), state.sect.disciple_capacity
@@ -2332,7 +2332,90 @@ func _build_guidance_recruitment_controls() -> void:
     queue_label.custom_minimum_size = Vector2(384, 50)
     queue_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     queue_label.add_theme_font_size_override("font_size", 12)
+    queue_label.add_theme_color_override("font_color", INK)
     building_management_container.add_child(queue_label)
+    _build_dan_tien_upgrade_controls()
+
+func _build_dan_tien_upgrade_controls() -> void:
+    var buildings := BuildingSystem.new()
+    var platform := buildings.primary_building(state, BuildingSystem.TYPE_GUIDANCE_PLATFORM)
+    _add_management_section_label("CÔNG TRÌNH DẪN TIÊN")
+    if platform == null:
+        var missing := _label(building_management_container, "Dẫn Tiên Đài chưa có trong trạng thái hiện tại. Trò chơi chưa có lệnh dựng/đặt mới được cấp quyền.", Vector2.ZERO, Vector2(384, 48), 12)
+        missing.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+        return
+
+    var overview := Label.new()
+    overview.name = "DanTienFacilityOverview"
+    overview.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    overview.add_theme_font_size_override("font_size", 12)
+    overview.add_theme_color_override("font_color", INK)
+    overview.text = "Dẫn Tiên Đài · Lv%d/%d\nCông trình khởi đầu được cấp sẵn khi lập tông; hiện chưa có thao tác tự dựng hoặc đặt thêm.\nNâng cấp tăng lượt ứng viên cơ bản và vị trí người dẫn, không tăng sức chứa Đệ Tử Xá." % [platform.level, platform.max_level]
+    building_management_container.add_child(overview)
+
+    var next_level := platform.level + 1
+    var status := Label.new()
+    status.name = "DanTienUpgradeStatus"
+    status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    status.add_theme_font_size_override("font_size", 12)
+    status.add_theme_color_override("font_color", INK)
+    var upgrade_check := buildings.can_start_upgrade(state, platform.id)
+    if platform.is_upgrading():
+        var remaining := maxf(platform.upgrade_required_work - platform.upgrade_progress, 0.0)
+        status.text = "Đang nâng cấp tới Lv%d · %.0f/%.0f nhịp mô phỏng (còn %.0f). Chi phí đã trừ lúc bắt đầu; tiến độ nằm trong trạng thái lưu." % [
+            platform.upgrade_target_level, platform.upgrade_progress, platform.upgrade_required_work, remaining
+        ]
+    elif platform.level >= platform.max_level:
+        status.text = "Đã đạt cấp tối đa Lv%d." % platform.max_level
+    elif str(upgrade_check.get("reason", "")) == "guidance_sect_gate_pending":
+        status.text = "Lv%d+ đang khóa: chưa có quy tắc Đại Điện/Tông Môn được phê duyệt. Không áp chi phí hay điều kiện tự đặt." % next_level
+    else:
+        var current_arrivals := buildings.guidance_base_daily_arrivals(platform)
+        var next_arrivals := buildings.guidance_base_daily_arrivals_for_level(next_level)
+        var current_slots := buildings.guidance_elder_slots(platform)
+        var next_slots := buildings.guidance_elder_slots_for_level(next_level)
+        status.text = "Cấp kế tiếp Lv%d · cơ bản %d → %d ứng viên/ngày · vị trí Tiếp Dẫn %d → %d." % [
+            next_level, current_arrivals, next_arrivals, current_slots, next_slots
+        ]
+    building_management_container.add_child(status)
+
+    if not platform.is_upgrading() and platform.level < platform.max_level and str(upgrade_check.get("reason", "")) != "guidance_sect_gate_pending":
+        var cost := buildings.upgrade_cost(platform)
+        var keys: Array = cost.keys()
+        keys.sort()
+        var cost_rows: Array[String] = []
+        var equipment := EquipmentSystem.new()
+        for raw_resource_id in keys:
+            var resource_id := StringName(str(raw_resource_id))
+            var needed := int(cost[raw_resource_id])
+            var available := state.sect.spirit_stones if str(resource_id) == "spirit_stones" else _warehouse_available(resource_id)
+            var resource_name := "Linh Thạch" if str(resource_id) == "spirit_stones" else equipment.material_name(resource_id)
+            cost_rows.append("%s %d/%d" % [resource_name, available, needed])
+        var cost_label := Label.new()
+        cost_label.name = "DanTienUpgradeCost"
+        cost_label.text = "Chi phí hiện hành: %s\nThời lượng: %.0f nhịp mô phỏng. Cấu hình chi phí/năng suất đang có trong game, chưa chốt cân bằng." % [
+            " · ".join(cost_rows), buildings.upgrade_required_work(platform)
+        ]
+        cost_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+        cost_label.add_theme_font_size_override("font_size", 11)
+        cost_label.add_theme_color_override("font_color", INK)
+        building_management_container.add_child(cost_label)
+
+    var upgrade_button := Button.new()
+    upgrade_button.name = "DanTienUpgradeButton"
+    upgrade_button.custom_minimum_size = Vector2(384, 42)
+    if platform.is_upgrading():
+        upgrade_button.text = "ĐANG NÂNG CẤP → Lv%d" % platform.upgrade_target_level
+    elif platform.level >= platform.max_level:
+        upgrade_button.text = "ĐÃ ĐẠT CẤP TỐI ĐA"
+    else:
+        upgrade_button.text = "NÂNG CẤP DẪN TIÊN ĐÀI → Lv%d" % next_level
+    upgrade_button.disabled = not bool(upgrade_check.get("ok", false))
+    if upgrade_button.disabled:
+        upgrade_button.tooltip_text = _building_upgrade_reason(upgrade_check)
+    upgrade_button.add_theme_stylebox_override("normal", _style(JADE_DARK, PAPER_LIGHT, 1, 8))
+    upgrade_button.pressed.connect(_start_dan_tien_upgrade_from_ui)
+    building_management_container.add_child(upgrade_button)
 
 func _open_dan_tien_screen_v2() -> void:
     if state == null:
@@ -2341,6 +2424,8 @@ func _open_dan_tien_screen_v2() -> void:
         return
     var screen := DanTienScreenV2.new()
     screen.name = "DanTienScreenV2"
+    screen.z_index = 250
+    screen.z_as_relative = false
     screen.attach_state(state, recruitment_system)
     screen.state_changed.connect(_on_dan_tien_screen_v2_changed)
     add_child(screen)
@@ -2518,6 +2603,20 @@ func _start_building_upgrade_from_ui(building_id: StringName) -> void:
     _refresh_all()
     _refresh_building_operation_content()
 
+func _start_dan_tien_upgrade_from_ui() -> void:
+    var buildings := BuildingSystem.new()
+    var platform := buildings.primary_building(state, BuildingSystem.TYPE_GUIDANCE_PLATFORM)
+    if platform == null:
+        building_management_feedback = "Dẫn Tiên Đài chưa có trong trạng thái hiện tại."
+    else:
+        var result := buildings.start_upgrade(state, platform.id)
+        if bool(result.get("ok", false)):
+            building_management_feedback = "Đã bắt đầu nâng cấp Dẫn Tiên Đài lên Lv%d; chi phí do BuildingSystem trừ một lần." % int(result.get("target_level", 0))
+        else:
+            building_management_feedback = "Không thể nâng cấp Dẫn Tiên Đài: %s" % _building_upgrade_reason(result)
+    _refresh_all()
+    _refresh_building_operation_content()
+
 func _building_upgrade_reason(result: Dictionary) -> String:
     var reason := str(result.get("reason", ""))
     match reason:
@@ -2536,6 +2635,12 @@ func _building_upgrade_reason(result: Dictionary) -> String:
             ]
         "max_level":
             return "Đã đạt cấp tối đa."
+        "guidance_sect_gate_pending":
+            return "Lv21+ đang khóa tới khi có điều kiện Đại Điện/Tông Môn được phê duyệt."
+        "missing_building":
+            return "Chưa có công trình nâng cấp hợp lệ."
+        "upgrade_content_pending":
+            return "Nội dung nâng cấp chưa được xác lập."
         "":
             return "Sẵn sàng."
         _:

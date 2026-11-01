@@ -1,0 +1,67 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Condition "res != ((HRESULT)0x00000000)" is true. Returning: String()
+   at: get_system_dir (platform/windows/os_windows.cpp:2502)
+ERROR: Condition "res != ((HRESULT)0x00000000)" is true. Returning: String()
+   at: get_system_dir (platform/windows/os_windows.cpp:2502)
+ERROR: Condition "res != ((HRESULT)0x00000000)" is true. Returning: String()
+   at: get_system_dir (platform/windows/os_windows.cpp:2502)
+ERROR: Condition "res != ((HRESULT)0x00000000)" is true. Returning: String()
+   at: get_system_dir (platform/windows/os_windows.cpp:2502)
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+ERROR: Cannot go into subdir '975b94e91e4f70d25d1eb73201b099366133db97c0969a6da3464b766796b359'.
+   at: _scan_new_dir (editor/file_system/editor_file_system.cpp:1219)
+ERROR: Cannot go into subdir '7b0882bb67fa9972414644eaa69691e20fa65b38afbf4e467f9f25d4c34754a3'.
+   at: _scan_new_dir (editor/file_system/editor_file_system.cpp:1219)
+ERROR: Cannot go into subdir '46850e3a61e52c0d2f57069d0cafd9367dcb22061df017396e5cac73dcccd10c'.
+   at: _scan_new_dir (editor/file_system/editor_file_system.cpp:1219)
+ERROR: Cannot go into subdir '975b94e91e4f70d25d1eb73201b099366133db97c0969a6da3464b766796b359'.
+   at: _scan_new_dir (editor/file_system/editor_file_system.cpp:1219)
+ERROR: Cannot go into subdir 'b3a4c084c18ed4994968cb12c171ffbd1c61c762be18f74e728717b44b9c889d'.
+   at: _scan_new_dir (editor/file_system/editor_file_system.cpp:1219)
+ERROR: Cannot go into subdir 'a59dd2d4ba39594cae288f3e5f51db6dbbc0a4ab8dec28816f1c8639bd558663'.
+   at: _scan_new_dir (editor/file_system/editor_file_system.cpp:1219)
+ERROR: Cannot go into subdir '01fbd1a4f9ee6a6a8d0f13fd942bca6b3e1615e3d4a4e595ef070e19746d6131'.
+   at: _scan_new_dir (editor/file_system/editor_file_system.cpp:1219)
+ERROR: Cannot go into subdir '7b0882bb67fa9972414644eaa69691e20fa65b38afbf4e467f9f25d4c34754a3'.
+   at: _scan_new_dir (editor/file_system/editor_file_system.cpp:1219)
+ERROR: Cannot go into subdir 'c892ec41239e01f47e8c0e45ead2e4e61be0669fa05a96dcc6851f6a88a00a08'.
+   at: _scan_new_dir (editor/file_system/editor_file_system.cpp:1219)
+ERROR: Cannot go into subdir '632b99b9e56e6c26ec47274bc85a7d4573cc72f0b3098460dbcb4e974f6e77ef'.
+   at: _scan_new_dir (editor/file_system/editor_file_system.cpp:1219)
+ERROR: Cannot go into subdir '46850e3a61e52c0d2f57069d0cafd9367dcb22061df017396e5cac73dcccd10c'.
+   at: _scan_new_dir (editor/file_system/editor_file_system.cpp:1219)
+ERROR: Cannot go into subdir '943aa5d9dcf50798179317e833f1fe6694adabc49788582673af44025f2f282f'.
+   at: _scan_new_dir (editor/file_system/editor_file_system.cpp:1219)
+ERROR: Cannot go into subdir '1ec2bc42eade9dd50951dc8146ed8ac9853bb5ee0cf7a4f391ceb3a1a4509ade'.
+   at: _scan_new_dir (editor/file_system/editor_file_system.cpp:1219)
+ERROR: Cannot go into subdir '7abb960f8f2fc190b2938ee309b29c32e16f8a11ae0405be08492d0cc106b422'.
+   at: _scan_new_dir (editor/file_system/editor_file_system.cpp:1219)
+ERROR: Cannot go into subdir '4588d73a15a195d2f67dba3a5012af467eb3cdc783f0a0f0879869e7ad01ef97'.
+   at: _scan_new_dir (editor/file_system/editor_file_system.cpp:1219)
+ERROR: Cannot go into subdir '38eb4b7ba43dee9a345bdd018f549b62ea4fa6576ed67a998ffeb6bf04e7b6ff'.
+   at: _scan_new_dir (editor/file_system/editor_file_system.cpp:1219)
+ERROR: Cannot go into subdir '96097b80b22d0f700118af19ef0093b14b3be492a1ec04ff39ea2b3d2729c633'.
+   at: _scan_new_dir (editor/file_system/editor_file_system.cpp:1219)
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | Started Registering global classes... (4 steps)[39m[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | DanTienScreenV2[39m[0m
+[  20% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  40% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  60% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[92m[ DONE ][39m [1mupdate_scripts_classes[22m
+[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Started Loading editor (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Loading editor layout...[39m[0m
+[  16% ] [90m[1mloading_editor_layout[22m | Loading docks...[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m

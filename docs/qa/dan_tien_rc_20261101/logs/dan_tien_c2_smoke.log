@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+DAN_TIEN_C2_SMOKE_PASS new_game_birth=1 bounded_queue=100_days paid_debit=0 ui=1
