@@ -79,9 +79,13 @@ func _build_rooms_panel() -> Control:
 	beds.columns = 5
 	beds.add_theme_constant_override("h_separation", 5)
 	beds.add_theme_constant_override("v_separation", 5)
-	for bed in _vm.get("bed_slots", []).slice(0, 15):
+	for bed in _vm.get("bed_slots", []):
 		beds.add_child(_bed_slot(bed))
-	content.add_child(beds)
+	var bed_scroll := ScrollContainer.new()
+	bed_scroll.custom_minimum_size.y = 210
+	bed_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	content.add_child(bed_scroll)
+	bed_scroll.add_child(beds)
 	return card
 
 func _bed_slot(bed: Dictionary) -> Control:
@@ -112,9 +116,13 @@ func _build_sites_panel() -> Control:
 	grid.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	grid.add_theme_constant_override("h_separation", 9)
 	grid.add_theme_constant_override("v_separation", 9)
-	for site in _vm.get("sites", []).slice(0, 8):
+	for site in _vm.get("sites", []):
 		grid.add_child(_site_card(site))
-	content.add_child(grid)
+	var plot_scroll := ScrollContainer.new()
+	plot_scroll.custom_minimum_size.y = 338
+	plot_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	content.add_child(plot_scroll)
+	plot_scroll.add_child(grid)
 	var selected_id := str(_vm.get("selected_residence_id", ""))
 	var selected_site := _find_site(selected_id)
 	var footer := HBoxContainer.new()
