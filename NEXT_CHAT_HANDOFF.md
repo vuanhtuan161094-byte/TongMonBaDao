@@ -1,5 +1,8 @@
 # NEXT CHAT HANDOFF — ONE GAME V6.5 / HS-09 QA
 
+> **2026-11-01 TRI-01 FOLLOW-UP (docs-only branch):** For the NEW owner-authorized Codex handoff, read [TRI-01 frozen architecture + exact RC/PR64/PR60 comparison](docs/handoffs/2026-11-01/TMB_TRI_FACILITY_FROZEN_ARCHITECTURE_CODEX_HANDOFF.md) and [Codex execution prompt](docs/handoffs/2026-11-01/CODEX_TRI_FACILITY_INTEGRATION_PROMPT.md) FIRST. Latest checked RC SHA 970af33, PR64 bf3ed03 (engine NOT RUN), PR60 074ca82 is already ancestor of RC. Preserve RC CandidateDecisionActions and Windows C2 evidence (64 UI assertions, 29 reload, 11 focused PASS / Forge P3.4C FAIL). Do not conflate this docs-only update with code integration, main merge or gameplay acceptance. The historical ONE GAME V6.5 handoff continues below unchanged.
+
+
 Continue on `integration/one-game-v65-20261030`. Fetch GitHub branch HEAD before any work. Current tested source SHA is `79dab92ccc95a93b39dcb563fe06c93a9aa422da`; main remains `c0c1382f119599497b52d8ee8abd9e830a883f1e`. A docs-only checkpoint commit `07d8b211199d580c6086af31829bc0edc3dfbe31` updates CURRENT_CHECKPOINT; this file's update follows it. The issue comment will carry the final docs SHA. Do not change main, PR #52, V6.5 source or canonical E: checkout.
 
 ## Verified in isolated QA
