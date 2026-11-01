@@ -874,6 +874,8 @@ func _sect_production_destination(building_type: StringName) -> StringName:
             return SectMapPresentation.DEST_LINH_FOREST
         BuildingSystem.TYPE_SPIRIT_FIELD:
             return SectMapPresentation.DEST_SPIRIT_FIELD
+        BuildingSystem.TYPE_RESIDENCE:
+            return SectMapPresentation.DEST_RESIDENCE
     return &""
 
 func _workforce_occupants(building: BuildingState) -> Array[StringName]:
@@ -2218,6 +2220,8 @@ func _open_dai_dien_housing_v1() -> void:
         hall_view._tab(5)
 
 func _on_dai_dien_state_changed() -> void:
+    if iso_world != null:
+        iso_world.refresh_from_state(state)
     _refresh_all()
     if selected_building == SectMapPresentation.DEST_MAIN_HALL:
         _refresh_building_operation_content()
