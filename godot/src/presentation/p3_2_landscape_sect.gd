@@ -2171,6 +2171,13 @@ func _rebuild_building_management_controls() -> void:
             pass
 
 func _build_main_hall_policy_controls() -> void:
+    _add_management_section_label("ĐẠI ĐIỆN · QUẢN TRỊ")
+    var hall_button := Button.new()
+    hall_button.name = "OpenDaiDienScreenV1"
+    hall_button.text = "MỞ ĐẠI ĐIỆN · CHƯỞNG MÔN / TRƯỞNG LÃO"
+    hall_button.custom_minimum_size = Vector2(384, 42)
+    hall_button.pressed.connect(_open_dai_dien_screen_v1)
+    building_management_container.add_child(hall_button)
     _build_economy_a_hall_controls()
     _add_management_section_label("CHÍNH SÁCH LAO ĐỘNG")
     _add_policy_button_row([
@@ -2192,6 +2199,22 @@ func _build_main_hall_policy_controls() -> void:
         {"label":"Chiến đấu", "value":EquipmentSystem.POLICY_COMBAT},
         {"label":"Tiết kiệm", "value":EquipmentSystem.POLICY_FRUGAL}
     ], state.sect.equipment_policy, "_set_equipment_policy_from_building")
+
+func _open_dai_dien_screen_v1() -> void:
+    if state == null or get_node_or_null("DaiDienScreenV1") != null:
+        return
+    var screen := DaiDienScreenV1.new()
+    screen.name = "DaiDienScreenV1"
+    screen.attach_state(state)
+    screen.state_changed.connect(_on_dai_dien_state_changed)
+    screen.z_index = 120
+    add_child(screen)
+    screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+
+func _on_dai_dien_state_changed() -> void:
+    _refresh_all()
+    if selected_building == SectMapPresentation.DEST_MAIN_HALL:
+        _refresh_building_operation_content()
 
 # ECONOMY-A player actions are actual simulation transactions; no fake income.
 func _build_economy_a_hall_controls() -> void:
