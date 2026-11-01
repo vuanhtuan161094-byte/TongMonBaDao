@@ -45,7 +45,7 @@ const PRODUCER_DISTRICTS := {
     "linh_forest":{"origin":Vector2i(16,126),"columns":6,"column_step":6,"row_step":6},
     "spirit_field":{"origin":Vector2i(130,72),"columns":8,"column_step":5,"row_step":7},
     # Deterministic temporary village annex sites; not editable placement.
-    "residence":{"origin":Vector2i(86,111),"columns":6,"column_step":6,"row_step":0}
+    "residence":{"origin":Vector2i(86,108),"columns":6,"column_step":6,"row_step":6}
 }
 const HOUSE_TEXTURES := {
     "main_hall":"pv01_assets/main_hall/510052.png",
