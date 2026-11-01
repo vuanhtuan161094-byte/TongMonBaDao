@@ -17,7 +17,10 @@ const PROF_HERBALISM := &"herbalism"
 
 const STATUS_ACTIVE := &"active"
 const STATUS_UPGRADING := &"upgrading"
-const VALID_STATUSES := [STATUS_ACTIVE, STATUS_UPGRADING]
+# DD-09: House construction is an actual persisted lifecycle, distinct from
+# upgrades; houses are not rentable until construction is completed.
+const STATUS_CONSTRUCTING := &"constructing"
+const VALID_STATUSES := [STATUS_ACTIVE, STATUS_UPGRADING, STATUS_CONSTRUCTING]
 
 const MILESTONE_LEVELS := [10, 20, 30, 50, 75, 100]
 
@@ -589,6 +592,8 @@ func can_start_upgrade(state: SimulationState, building_id: StringName) -> Dicti
     var building: BuildingState = state.buildings[str(building_id)]
     if building.is_upgrading():
         return {"ok": false, "reason": "already_upgrading"}
+    if building.status != STATUS_ACTIVE:
+        return {"ok": false, "reason": "building_not_active"}
     if building.level >= building.max_level:
         return {"ok": false, "reason": "max_level"}
 
@@ -690,6 +695,8 @@ func process_tick(state: SimulationState) -> void:
         var building = state.buildings[raw_id]
         if not (building is BuildingState):
             continue
+        if building.status == STATUS_CONSTRUCTING and building.building_type == TYPE_RESIDENCE:
+            SectResidenceSystemV1.complete_due_construction(state, building)
         if building.is_upgrading():
             building.upgrade_progress += 1.0
             if building.upgrade_progress + 0.000001 >= building.upgrade_required_work:
@@ -1253,6 +1260,8 @@ func validate_invariants(state: SimulationState) -> Array[String]:
             errors.append("Building %s has invalid level." % building.id)
         if not VALID_STATUSES.has(building.status):
             errors.append("Building %s has invalid status." % building.id)
+        if building.status == STATUS_CONSTRUCTING and building.building_type != TYPE_RESIDENCE:
+            errors.append("Building %s has unsupported construction status." % building.id)
         if building.is_upgrading():
             if building.upgrade_target_level != building.level + 1:
                 errors.append("Building %s has invalid upgrade target." % building.id)
