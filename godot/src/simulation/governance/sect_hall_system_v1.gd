@@ -524,6 +524,25 @@ static func validate(state: SimulationState) -> Array[String]:
             errors.append("A disciple holds multiple main offices.")
         else:
             used[id] = true
+    # DD-07: do not accept a replay ledger pointing to future ranks or
+    # malformed requests. Lost receipts can charge a promotion twice; bogus
+    # receipts can claim already_settled without an actual rank transaction.
+    var promotions = state.sect.hall_governance.get("promotion_receipts", null)
+    if not (promotions is Dictionary):
+        errors.append("Hall promotion receipt ledger is malformed.")
+    else:
+        var redeemed_ranks: Dictionary = {}
+        for request in promotions.keys():
+            var value = promotions[request]
+            if str(request).is_empty() or not (value is int or value is float):
+                errors.append("Hall promotion receipt request/value malformed.")
+                continue
+            var promoted_rank := int(value)
+            if float(value) != float(promoted_rank) or promoted_rank <= 1 \
+                    or promoted_rank > rank_index(state) or redeemed_ranks.has(promoted_rank):
+                errors.append("Hall promotion receipt rank is invalid or duplicated.")
+                continue
+            redeemed_ranks[promoted_rank] = true
     var saved_records = state.sect.hall_governance.get("mastery", {})
     if not (saved_records is Dictionary):
         errors.append("Hall mastery ledger is invalid.")
