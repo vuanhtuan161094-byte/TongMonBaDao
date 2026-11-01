@@ -283,8 +283,21 @@ func _autosave_and_join_at_scene_boundary() -> bool:
     if live == null or live.owner == null:
         return _fail("O8 cannot checkpoint a missing live save owner.")
 
-    # The scene itself owns the scheduler/poll barrier. Await the existing
-    # coroutine instead of starting a second competing SaveService write.
+    # Let any autosave started by a UI button reach quiescence. The guard in
+    # _autosave_runtime intentionally returns when another coroutine is active.
+    var pending_frames := 0
+    while bool(ui.get("runtime_poll_pending")) and pending_frames < 600:
+        await process_frame
+        pending_frames += 1
+    if bool(ui.get("runtime_poll_pending")):
+        return _fail("O8 UI autosave coroutine did not finish at scene boundary.")
+    if live.owner.saves.has_async_save_pending():
+        var prior: Dictionary = await live.wait_for_pending_save(self)
+        if not bool(prior.get("ok", false)):
+            return _fail("O8 prior SaveService worker did not join: %s" % str(prior))
+
+    # With the old autosave joined, request and await one snapshot of the
+    # current state so manual scheduler steps are durable at this boundary.
     await ui.call("_autosave_runtime")
     if live.owner.saves.has_async_save_pending():
         var completed: Dictionary = await live.wait_for_pending_save(self)
