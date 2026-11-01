@@ -513,7 +513,8 @@ func _residences() -> void:
     for raw_id in disciple_ids:
         _room_disciple_ids.append(StringName(str(raw_id)))
     for house in SectResidenceSystemV1.all_houses(game_state):
-        _room_house_ids.append(house.id)
+        if house.status != BuildingSystem.STATUS_CONSTRUCTING:
+            _room_house_ids.append(house.id)
     if not _room_disciple_ids.is_empty() and not _room_house_ids.is_empty():
         _content.add_child(_label("PHÂN PHÒNG · THỦ CÔNG", 15, GOLD))
         var disciple_picker := OptionButton.new()
@@ -543,11 +544,16 @@ func _residences() -> void:
             if str(hid) == str(house.id):
                 occupied += 1
         _content.add_child(HSeparator.new())
+        var actual_beds := 0 if house.status == BuildingSystem.STATUS_CONSTRUCTING else SectResidenceSystemV1.beds_for_level(house.level)
         _content.add_child(_label("%s · Lv%d/100 · Giường %d/%d" % [
-            str(house.id), house.level, occupied, SectResidenceSystemV1.beds_for_level(house.level)
+            str(house.id), house.level, occupied, actual_beds
         ], 15, GOLD))
         var cost := BuildingSystem.new().upgrade_cost(house)
-        if house.is_upgrading():
+        if house.status == BuildingSystem.STATUS_CONSTRUCTING:
+            _content.add_child(_label("ĐANG XÂY · còn %d phút mô phỏng · chưa nhận cư dân" % [
+                SectResidenceSystemV1.construction_remaining_ticks(game_state, house)
+            ], 14, JADE))
+        elif house.is_upgrading():
             _content.add_child(_label("Đang nâng Lv%d · %.0f/%.0f tick" % [
                 house.upgrade_target_level, house.upgrade_progress, house.upgrade_required_work
             ], 14, JADE))
@@ -567,10 +573,11 @@ func _residences() -> void:
     var plan := SectResidenceSystemV1.can_construct(game_state)
     var material: Dictionary = plan.get("cost", SectResidenceSystemV1.build_cost(game_state))
     _content.add_child(HSeparator.new())
-    _content.add_child(_label("XÂY THÊM NHÀ · Mộc %d · Thiết %d · Linh Thạch %d" % [
+    _content.add_child(_label("XÂY THÊM NHÀ · Mộc %d · Thiết %d · Linh Thạch %d · %d phút xây" % [
         int(material.get(BuildingSystem.MATERIAL_WOOD, 0)),
         int(material.get(BuildingSystem.MATERIAL_ORE, 0)),
-        int(material.get("spirit_stones", 0))
+        int(material.get("spirit_stones", 0)),
+        SectResidenceSystemV1.construction_duration_ticks(SectResidenceSystemV1.all_houses(game_state).size() + 1)
     ], 14))
     var build := _button("XÂY THÊM ĐỆ TỬ XÁ", Callable(self, "_construct_house"), true)
     build.name = "ConstructResidence"
@@ -612,7 +619,9 @@ func _upgrade_house(house_id: StringName, request_id: String) -> void:
 func _construct_house() -> void:
     var seq := SectResidenceSystemV1.all_houses(game_state).size() + 1
     var result := SectResidenceSystemV1.construct(game_state, "residence:%d" % seq)
-    feedback = "Đã xây Đệ Tử Xá %s." % str(result.get("building_id", "")) if bool(result.get("ok", false)) else "Chưa xây được: %s" % str(result.get("reason", "unknown"))
+    feedback = "Đã khởi công %s · %d phút; giường sẽ mở khi hoàn thành." % [
+        str(result.get("building_id", "")), int(result.get("construction_duration_ticks", 0))
+    ] if bool(result.get("ok", false)) else "Chưa xây được: %s" % str(result.get("reason", "unknown"))
     if bool(result.get("ok", false)):
         state_changed.emit()
     _refresh()
