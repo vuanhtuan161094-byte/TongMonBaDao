@@ -9,8 +9,8 @@ signal closed
 const UI = preload("res://src/presentation/uiux/sect_ui_theme_v1.gd")
 const ROLE_IDS := ["master", "guide", "teacher", "steward", "guardian", "alchemist", "discipline"]
 const ROLE_LABELS := {
-	"master": "Chưởng Môn", "guide": "Hộ Sơn", "teacher": "Truyền Công",
-	"steward": "Chấp Sự", "guardian": "Tuần Sơn", "alchemist": "Đan Sư", "discipline": "Giới Luật"
+	"master": "Chưởng Môn", "guide": "Tiếp Dẫn Trưởng Lão", "teacher": "Truyền Công Trưởng Lão",
+	"steward": "Nội Vụ Chấp Sự", "guardian": "Hộ Pháp Trưởng Lão", "alchemist": "Đan Đạo Trưởng Lão", "discipline": "Giới Luật Trưởng Lão"
 }
 
 var _vm: Dictionary = {}
