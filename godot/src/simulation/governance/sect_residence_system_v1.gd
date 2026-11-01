@@ -85,6 +85,10 @@ static func ensure_live(state: SimulationState) -> Dictionary:
     if not houses.is_empty() and str(houses[0].id) != "residence_001":
         return {"ok": false, "reason": "residence_001_identity_mismatch"}
     if houses.is_empty():
+        # Only genuine migration from a legacy no-House save grants a starter.
+        # Persisted V2 housing cannot be replaced by a fresh empty Lv1 House.
+        if persisted_rooms:
+            return {"ok": false, "reason": "persisted_residence_buildings_missing"}
         var starter := BuildingSystem.new().create_building(TYPE, 1)
         if starter == null or state.buildings.has(str(starter.id)):
             return {"ok": false, "reason": "residence_building_identity_collision"}
