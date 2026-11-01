@@ -276,6 +276,14 @@ func _load_exact(path: String) -> SimulationState:
         candidate_ids.sort()
         for raw_id in candidate_ids:
             workforce.ensure_p3_7_candidate_profile(state, state.recruitment_candidates[raw_id])
+    # DD-07: protect real Hall/Residence ownership before declaring the
+    # primary save valid. Invalid saves must fall back to the .bak through
+    # load_from_path(), not be quietly reset during live bootstrap.
+    if state != null and not state.sect.hall_governance.is_empty():
+        var hall_errors := SectHallSystemV1.validate(state)
+        if not hall_errors.is_empty():
+            push_error("DD-07: invalid saved Hall/Residence: " + "; ".join(hall_errors))
+            return null
     return state
 
 # Detect features that an older reader would silently drop or normalize.
