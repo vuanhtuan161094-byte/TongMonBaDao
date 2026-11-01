@@ -57,6 +57,11 @@ static func ensure_live(state: SimulationState) -> Dictionary:
     if state == null or not state.p3_7_buildings_enabled or not SectHallSystemV1.installed(state):
         return {"ok": false, "reason": "residence_requires_live_hall"}
     var governance: Dictionary = state.sect.hall_governance
+    var persisted_rooms := governance.has("residence_schema")
+    if not persisted_rooms and (
+            governance.has("residence_assignments") or governance.has("residence_build_receipts")
+            or governance.has("legacy_bed_credit")):
+        return {"ok": false, "reason": "partial_residence_schema"}
     if not governance.has("residence_schema"):
         # Preserve prior purchased legacy bed extensions, but do not
         # translate old recruitment caps into free houses/positive capacity.
