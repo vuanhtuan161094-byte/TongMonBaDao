@@ -222,7 +222,7 @@ func _offices() -> void:
         _content.add_child(_label("Truyền Công: +%.1f%% Tu Vi tu luyện tự nhiên toàn tông môn. Đan cố định không nhân bonus." % [
             100.0 * SectHallSystemV1.office_bonus(game_state, selected_office) if not id.is_empty() else 3.0
         ], 13, MUTED))
-    if not selected_office in [SectHallSystemV1.OFFICE_MASTER, SectHallSystemV1.OFFICE_GUIDE, SectHallSystemV1.OFFICE_TEACHER]:
+    if selected_office not in [SectHallSystemV1.OFFICE_MASTER, SectHallSystemV1.OFFICE_GUIDE, SectHallSystemV1.OFFICE_TEACHER]:
         _content.add_child(_label("Buff chức vụ %.1f%% (cấp tinh thông, chỉ tác động khi có nghiệp vụ thật)." % (100.0 * SectHallSystemV1.role_effect(game_state, selected_office)), 13, MUTED))
     var dropdown := OptionButton.new()
     dropdown.name = "HallCandidateSelector"
