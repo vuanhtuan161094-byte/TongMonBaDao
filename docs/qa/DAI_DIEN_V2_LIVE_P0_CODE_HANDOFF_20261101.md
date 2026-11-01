@@ -68,3 +68,49 @@
 ## 6. Merge and QA discipline
 
 Keep current PR #64 as **one integrated candidate** against rc/one-game-playable-20261101, not dozens of experimental PRs. Do not merge into main, alter owner E: worktree, destroy saves, remove backup or relax assertions to secure PASS. If Godot parser/import fails, fix source in same branch and repeat both focused and full regressions, attach real logs plus real window screenshots. The user is not using Codex now; this handoff exists only for later optional local integration.
+
+
+## 7. DD-06 direct-code hardening — 2026-11-01 (added after original P0 handoff)
+
+**Code committed on the SAME PR #64 branch, not Codex. NOT Godot-compiled or runtime-tested.**
+Changes (each link targets a real commit):
+- [8b24cd1](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/8b24cd178801a2c44d8e88e9a9ae46b702b356b9) — direct Dẫn Tiên main-guide assignment now checks **all six OTHER Hall offices**, not only Master and Teacher. Prevents public non-UI API bypass of one-main-office rule.
+- [cd59eb5](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/cd59eb5c3a60e3743ba9436446f19a38a2fefdde), [ff70d18](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/ff70d184ed467042f761592dfc343a3277c9b073) — reject extra/noncanonical Hall IDs before applying migration, disable orphaned office bonus when Hall missing/locked, validate raw saved sect rank instead of clamping errors away.
+- [ed19c4f](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/ed19c4f749e9656518fb7970447f681da12b8149) — validate House ledgers and legacy bed credits before assigning rooms; enforce canonical starter residence identity on loaded housing states; malformed room dictionaries fail closed.
+- [4d3b238](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/4d3b238b406887bc2d5edf2d16aa4915f6a8b7db), [e6477de](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/e6477de506e0e4c365893616653438acbf9c55f1), [0e156a4](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/0e156a4329b95bd9871595dcd0efa4cef7f1a961) — Hall overview shows actual Nhân/Tiên/Thần step, current canonical admission limit, remaining source material quantities, relevant bottleneck tab navigation. House management has native low-node-count manual resident/house selectors calling the actual authoritative `assign_room` transaction, not hundreds of disciple cards.
+- [055fcc9](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/055fcc9f8ae9909d41ecadaf9e53bc93d6d963d8), [5794346](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/5794346d1fadba094510264821ad5411ab284e06), [521bf78](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/521bf786612f5d545d34ec830189cbe10d257335) — new focused `godot/tests/dai_dien_dd06_integrity_test.gd` checks conflicts for all 6 competing offices, rank boundaries and saved corruptions, duplicates and missing Hall; existing housing full loop tests the real Godot UI manual room transfer.
+
+**Non-engine scan performed:** fetched the current PR file list and exact branch contents via GitHub, scanned **18 changed GDScripts** with a string/comment-aware balanced-bracket scanner plus duplicate-function name detector. Result: **0 structural anomalies found in this limited scan**. No GDScript grammar parser, Godot script import, runtime invocation or screenshot was available in this environment. Do not label these tests PASS. Godot 4.7.2 is not installed on the connected runtime, and it cannot access the user's E: workspace.
+
+**QA to execute isolated (correct branch HEAD, dedicated user-data profile):**
+
+```powershell
+& $GodotExe --headless --path $QaGodot --editor --quit
+& $GodotExe --headless --path $QaGodot --script res://tests/dai_dien_dd06_integrity_test.gd
+& $GodotExe --headless --path $QaGodot --script res://tests/dai_dien_v1_smoke.gd
+& $GodotExe --headless --path $QaGodot --script res://tests/dai_dien_housing_full_loop_test.gd
+& $GodotExe --headless --path $QaGodot --script res://tests/presentation/p3_4c_building_system_actions_test.gd
+```
+
+Still required: C2 Dẫn Tiên regression; SaveService + O8 thread/offline; SX-01/SX-02/B3 CARE/Injury/PvE regressions; full GUI 1280×720 with actual Source A asset on Windows 8GB; check class resolution/recursion among Hall/Residence/BuildingSystem/Recruitment; portrait fallback, touch/scroll/clipping and real QA logs. No RC/main merge.
+
+## 8. Preliminary F2P 3/12/24-month source/sink gate (static analytical calculation ONLY)
+
+Amounts below are **resource debit requirements computed from the CURRENT prototype formulas**, not a validated progression simulation or guarantee of obtaining the resources. Model includes only Hall upgrade to the required rank's minimum level, 1 free starter House, the listed number of additional House constructions, House upgrades to the displayed levels, and the rank promotion stones. No discounted inventory, other building upgrades, academy, Tu Vi, recruit costs, normal upkeep, combat, alchemy or forge. House layouts are mathematical candidate arrangements, **not confirmed placement/land capacity**.
+
+| Milestone | Hall + rank | Candidate housing capacity | Approximate core Linh Thạch sink | Mean sink over time |
+|---|---|---|---:|---:|
+| ~3 months (~90 d) | Hall Lv33, Nhân 9/9 | 3 Houses Lv12 = 90 beds | 198,077 | 2,201/day |
+| ~12 months (~365 d) | Hall Lv73, Thần 1/9 | 6 Houses Lv17 = 240 beds | 1,179,057 | 3,230/day |
+| ~24 months (~730 d) | Hall Lv100, Thần 9/9 | 10 Houses Lv21 = 480 beds | 2,943,071 | 4,032/day |
+
+For the final 480-bed candidate, detailed known prototype sinks: Hall Lv1→100 = **109,092 Linh Mộc + 87,289 Thanh Thiết + 2,181,241 Linh Thạch**; ten House upgrade chains Lv1→21 = **31,880 Mộc + 22,770 Thiết + 454,130 Linh Thạch**; Houses #2–10 construction = **13,500 Mộc + 8,640 Thiết + 270,000 Linh Thạch**; 26 rank promotions = **7,540 Mộc + 4,524 Thiết + 37,700 Linh Thạch**. Combined subset = **162,012 Mộc + 123,223 Thiết + 2,943,071 Linh Thạch**; average **222 Mộc, 169 Thiết, 4,032 Linh Thạch/day** over 730 days, before any other spending. Milestone component rules, warehouse backpressure, actual offline clock, production yield, market receipts, player active time and cultivation/realm gates require engine-backed measurements.
+
+**Conclusion of this audit:** 3/12/24-month goals remain **UNVERIFIED**. The current rank requirements have no elapsed-time gate; claimed months depend on actual source/sink throughput and cultivation gates. Before balance approval, run one reproducible multi-scenario simulation (new player, daily active, offline, no-purchase, roster/house availability, production, prestige, medical overhead) on the final authoritative cost tables. Never increase resource grants just to make a smoke pass.
+
+## 9. Open high-impact implementation gaps after DD-06
+
+- New House purchases are charged and activated immediately, **not a separately scheduled construction timer**; House upgrades have existing tick-based work. This discrepancy with the full design remains an explicit P1 gap.
+- Free-placement, land expansion, persistent layout/footprint, AStar doorway collision and moving buildings are not implemented for annexes; fixed-sites are the only current authority.
+- Long-run Lv100 and 27 promotions lack a full calibrated gameplay economy and durable longitudinal evidence.
+- Engine import, real-pixel UI and playtest are BLOCKED/UNRUN in this connector environment. **PR must stay Draft.**
