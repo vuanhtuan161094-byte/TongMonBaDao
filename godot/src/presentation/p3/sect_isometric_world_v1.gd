@@ -583,7 +583,11 @@ func refresh_from_state(state: SimulationState) -> void:
             if matching.is_empty() and dest in [SectMapPresentation.DEST_RESIDENCE, SectMapPresentation.DEST_MAIN_HALL]:
                 rows.append(_row(dest,&"","Đệ Tử Xá" if dest == SectMapPresentation.DEST_RESIDENCE else "Đại Điện",1,false))
             for building in matching:
-                rows.append(_row(dest,building.id,str(building.display_name),building.instance_index,true))
+                var live_label := str(building.display_name)
+                if building.building_type == BuildingSystem.TYPE_RESIDENCE \
+                        and building.status == BuildingSystem.STATUS_CONSTRUCTING:
+                    live_label += " · đang xây"
+                rows.append(_row(dest,building.id,live_label,building.instance_index,true))
         else:
             # A visual landmark/destination is NOT a BuildingState.
             rows.append(_row(dest,&"",str(dest).replace("_"," ").capitalize(),1,false))
