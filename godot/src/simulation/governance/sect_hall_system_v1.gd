@@ -59,8 +59,12 @@ static func default_state() -> Dictionary:
     }
 
 static func installed(state: SimulationState) -> bool:
-    return state != null and not state.sect.hall_governance.is_empty() \
-        and int(state.sect.hall_governance.get("version", 0)) == SCHEMA_VERSION
+    if state == null or state.sect.hall_governance.is_empty():
+        return false
+    var version = state.sect.hall_governance.get("version", null)
+    return (version is int or version is float) \
+        and (not (version is float) or (not is_nan(version) and not is_inf(version))) \
+        and float(version) == float(SCHEMA_VERSION)
 
 static func ensure_live(state: SimulationState) -> Dictionary:
     if state == null or not state.p3_7_buildings_enabled:
@@ -570,6 +574,9 @@ static func validate(state: SimulationState) -> Array[String]:
                 continue
             if not (target_value is int or target_value is float):
                 errors.append("Hall upgrade target must be integral.")
+                continue
+            if target_value is float and (is_nan(target_value) or is_inf(target_value)):
+                errors.append("Hall upgrade target is non-finite.")
                 continue
             var target_level := int(target_value)
             var max_settled := paid_building.upgrade_target_level if paid_building.is_upgrading() else paid_building.level
