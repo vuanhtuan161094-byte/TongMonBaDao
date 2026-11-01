@@ -275,8 +275,8 @@ static func assign_room(state: SimulationState, disciple_id: StringName, house_i
     var house = state.buildings.get(str(house_id))
     if not (house is BuildingState) or house.building_type != TYPE:
         return {"ok": false, "reason": "house_missing"}
-    if house.status == BuildingSystem.STATUS_CONSTRUCTING:
-        return {"ok": false, "reason": "house_under_construction"}
+    if house.status != BuildingSystem.STATUS_ACTIVE and house.status != BuildingSystem.STATUS_UPGRADING:
+        return {"ok": false, "reason": "house_not_ready"}
     var current: Dictionary = state.sect.hall_governance.get("residence_assignments", {})
     if str(current.get(str(disciple_id), "")) == str(house_id):
         return {"ok": true, "unchanged": true}
@@ -342,6 +342,33 @@ static func validate(state: SimulationState) -> Array[String]:
         seen[str(house.id)] = true
         if house.level < 1 or house.level > 100:
             errors.append("Residence invalid house level.")
+        if house.status == BuildingSystem.STATUS_CONSTRUCTING:
+            if index == 0 or house.level != 1 or house.is_upgrading():
+                errors.append("Residence starter/level cannot be under construction.")
+            var start = house.production_state.get("construction_started_tick", null)
+            var finish = house.production_state.get("construction_finish_tick", null)
+            var duration = house.production_state.get("construction_duration_ticks", null)
+            if not (start is int or start is float) \
+                    or not (finish is int or finish is float) \
+                    or not (duration is int or duration is float):
+                errors.append("Residence construction timestamps are malformed.")
+            elif (start is float and (is_nan(start) or is_inf(start))) \
+                    or (finish is float and (is_nan(finish) or is_inf(finish))) \
+                    or (duration is float and (is_nan(duration) or is_inf(duration))):
+                errors.append("Residence construction timestamps are non-finite.")
+            elif float(start) != float(int(start)) or float(finish) != float(int(finish)) \
+                    or float(duration) != float(int(duration)) \
+                    or int(start) < 0 or int(start) > state.tick \
+                    or int(duration) != construction_duration_ticks(house.instance_index) \
+                    or int(finish) != int(start) + int(duration):
+                errors.append("Residence construction timer violates canonical tick contract.")
+        elif house.status == BuildingSystem.STATUS_ACTIVE or house.status == BuildingSystem.STATUS_UPGRADING:
+            if house.production_state.has("construction_started_tick") \
+                    or house.production_state.has("construction_finish_tick") \
+                    or house.production_state.has("construction_duration_ticks"):
+                errors.append("Residence ready house retains construction timer fields.")
+        else:
+            errors.append("Residence house has invalid status.")
     if state.sect.lodging_capacity != maxi(1, total_beds(state)):
         errors.append("Residence bed capacity diverges from canonical houses.")
     if state.sect.disciple_capacity != maxi(state.disciples.size(), current_limit(state)):
@@ -378,6 +405,12 @@ static func validate(state: SimulationState) -> Array[String]:
         if not state.buildings.has(hid):
             errors.append("Residence room assignment references missing house.")
             continue
+        var assigned_house = state.buildings[hid]
+        if not (assigned_house is BuildingState) or assigned_house.building_type != TYPE:
+            errors.append("Residence room assignment references non-House building.")
+            continue
+        if assigned_house.status == BuildingSystem.STATUS_CONSTRUCTING:
+            errors.append("Residence room assigned before construction completion.")
         occupied[hid] = int(occupied.get(hid, 0)) + 1
     for house in houses:
         if int(occupied.get(str(house.id), 0)) > beds_for_level(house.level):
