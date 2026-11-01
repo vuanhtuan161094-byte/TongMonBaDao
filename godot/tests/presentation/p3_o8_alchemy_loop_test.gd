@@ -165,7 +165,7 @@ func _run() -> void:
     # O8 must not tear down the scene while its real UI autosave coroutine
     # and SaveService worker are still committing. The old fire-and-forget
     # call made the reloaded recipe nondeterministic and orphaned a Thread.
-    if not await _autosave_and_join_before_reload():
+    if not await _autosave_and_join_at_scene_boundary():
         return
     _dispose_scene()
     await process_frame
@@ -196,7 +196,7 @@ func _run() -> void:
     # O8 must not tear down the scene while its real UI autosave coroutine
     # and SaveService worker are still committing. The old fire-and-forget
     # call made the reloaded recipe nondeterministic and orphaned a Thread.
-    if not await _autosave_and_join_before_reload():
+    if not await _autosave_and_join_at_scene_boundary():
         return
     _dispose_scene()
     await process_frame
@@ -262,6 +262,11 @@ func _run() -> void:
         _fail("O8 final state violates invariants: %s" % " | ".join(errors))
         return
 
+    # The Dược Phòng button starts the real async UI autosave. Join it before
+    # this harness suppresses P3.1._exit_tree's synchronous save barrier.
+    if not await _autosave_and_join_at_scene_boundary():
+        return
+
     print("P3 O8 ALCHEMY FIELD-PILL-CONSUMER TEST PASS")
     _dispose_scene()
     await process_frame
@@ -271,7 +276,7 @@ func _run() -> void:
 # Exercise the actual UI autosave path AND verify durability before
 # releasing its scene-owned runtime. This is a test barrier, not a gameplay
 # change or a relaxation of the timed-job/warehouse assertions.
-func _autosave_and_join_before_reload() -> bool:
+func _autosave_and_join_at_scene_boundary() -> bool:
     if ui == null:
         return _fail("O8 cannot checkpoint a missing scene.")
     var live := ui.get("runtime_session") as LiveGameRuntimeV2
@@ -290,17 +295,17 @@ func _autosave_and_join_before_reload() -> bool:
 
     var persisted := SaveService.new().load_from_path(SAVE_PATH)
     if persisted == null:
-        return _fail("O8 save was not durably readable before scene reload.")
+        return _fail("O8 save was not durably readable at scene boundary.")
     if persisted.tick != state.tick:
-        return _fail("O8 autosave was stale before scene reload.")
+        return _fail("O8 autosave was stale at scene boundary.")
     var old_hall := buildings.primary_building(persisted, BuildingSystem.TYPE_ALCHEMY_HALL)
     var live_hall := buildings.primary_building(state, BuildingSystem.TYPE_ALCHEMY_HALL)
     if old_hall == null or live_hall == null:
-        return _fail("O8 autosave lost Alchemy Hall before scene reload.")
+        return _fail("O8 autosave lost Alchemy Hall at scene boundary.")
     var saved_jobs := buildings.alchemy_jobs(persisted, old_hall)
     var live_jobs := buildings.alchemy_jobs(state, live_hall)
     if saved_jobs.size() != live_jobs.size():
-        return _fail("O8 autosave changed timed-job count BEFORE scene reload.")
+        return _fail("O8 autosave changed timed-job count at scene boundary.")
     # Check only authoritative persisted identity/finish fields: JSON can
     # restore equivalent values with different Variant representation.
     for i in range(live_jobs.size()):
@@ -309,9 +314,9 @@ func _autosave_and_join_before_reload() -> bool:
         if str(recorded.get("job_id", "")) != str(active.get("job_id", "")) \
                 or int(recorded.get("finish_tick", -1)) != int(active.get("finish_tick", -2)) \
                 or str(recorded.get("worker_id", "")) != str(active.get("worker_id", "")):
-            return _fail("O8 autosave changed timed-job identity BEFORE scene reload.")
+            return _fail("O8 autosave changed timed-job identity at scene boundary.")
     if warehouse.quantity(persisted, &"thanh_linh_thao") != warehouse.quantity(state, &"thanh_linh_thao"):
-        return _fail("O8 autosave changed herb stock BEFORE scene reload.")
+        return _fail("O8 autosave changed herb stock at scene boundary.")
     return true
 
 func _first_unassigned() -> StringName:
