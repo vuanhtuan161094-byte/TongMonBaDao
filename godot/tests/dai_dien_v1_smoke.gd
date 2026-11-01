@@ -69,11 +69,11 @@ func _run() -> void:
         return
 
     state.tick = 10
-    SectHallSystemV1.record_cultivation(state, 10.0)
+    SectHallSystemV1.record_cultivation(state, actor, 10.0)
     var first := SectHallSystemV1.mastery(state, SectHallSystemV1.OFFICE_MASTER, str(master_id))
     if not _check(int(first["xp"]) == SectHallSystemV1.ACTIVITY_EXP, "genuine activity did not award mastery"):
         return
-    SectHallSystemV1.record_cultivation(state, 10.0)
+    SectHallSystemV1.record_cultivation(state, actor, 10.0)
     var replay := SectHallSystemV1.mastery(state, SectHallSystemV1.OFFICE_MASTER, str(master_id))
     if not _check(int(replay["xp"]) == int(first["xp"]), "same-day mastery duplicated"):
         return
