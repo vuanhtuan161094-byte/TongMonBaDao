@@ -98,9 +98,14 @@ func _verify_bottom_bar_has_only_real_entries() -> bool:
         if child is Button:
             labels.append((child as Button).text)
 
-    var expected: Array[String] = ["Tông Môn", "Đệ Tử", "Kho", "Thế Giới"]
+    # P3.2 added the real party-picker entry, bound to _open_pve_party_picker.
+    # It is not a demo action and must remain visible without changing PvE rules.
+    var expected: Array[String] = ["Tông Môn", "Đệ Tử", "Kho", "Thế Giới", "Săn quái / Thanh Trúc Lâm"]
     if labels != expected:
-        return _fail("Bottom bar still exposes fake/unfinished entries: %s" % str(labels))
+        return _fail("Bottom bar differs from canonical live actions: %s" % str(labels))
+    var hunt: Button = bottom.find_child("PveHuntQuickEntry", false, false) as Button
+    if hunt == null or hunt.pressed.get_connections().is_empty():
+        return _fail("Visible hunt entry is not connected to a real player command.")
     return true
 
 func _verify_building_tokens_are_player_readable() -> bool:
