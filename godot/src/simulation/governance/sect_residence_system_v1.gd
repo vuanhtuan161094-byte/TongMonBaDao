@@ -25,15 +25,22 @@ static func complete_due_construction(state: SimulationState, house: BuildingSta
     if state == null or house == null or house.building_type != TYPE \
             or house.status != BuildingSystem.STATUS_CONSTRUCTING:
         return false
+    if house.instance_index < 2 or house.level != 1:
+        return false
     var started = house.production_state.get("construction_started_tick", null)
     var due = house.production_state.get("construction_finish_tick", null)
-    if not (started is int or started is float) or not (due is int or due is float):
-        return false
-    if (started is float and (is_nan(started) or is_inf(started))) \
-            or (due is float and (is_nan(due) or is_inf(due))):
-        return false
-    if float(started) != float(int(started)) or float(due) != float(int(due)) \
-            or int(due) <= int(started) or state.tick < int(due):
+    var duration = house.production_state.get("construction_duration_ticks", null)
+    for value in [started, due, duration]:
+        if not (value is int or value is float):
+            return false
+        if value is float and (is_nan(value) or is_inf(value)):
+            return false
+        if float(value) != float(int(value)):
+            return false
+    if int(started) < 0 or int(started) > state.tick \
+            or int(duration) != construction_duration_ticks(house.instance_index) \
+            or int(due) != int(started) + int(duration) \
+            or state.tick < int(due):
         return false
     house.status = BuildingSystem.STATUS_ACTIVE
     house.production_state.erase("construction_started_tick")
