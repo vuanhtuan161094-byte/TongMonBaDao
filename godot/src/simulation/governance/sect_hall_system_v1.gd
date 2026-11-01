@@ -177,14 +177,18 @@ static func cultivation_sources(state: SimulationState, disciple: DiscipleState)
         })
     return result
 
-static func record_cultivation(state: SimulationState, gained: float) -> void:
-    if not installed(state) or gained <= 0.0:
+static func record_cultivation(state: SimulationState, actor: DiscipleState, gained: float) -> void:
+    if not installed(state) or actor == null or gained <= 0.0:
         return
     # One genuine settled natural-Tu-Vi event/day may grant each holder XP.
     # A day-scoped key prevents per-minute farming and survives Save/Reload.
     for office_id in [OFFICE_MASTER, OFFICE_TEACHER]:
         var id := holder_id(state, office_id)
         if id.is_empty() or office_bonus(state, office_id) <= 0.0:
+            continue
+        # Chưởng Môn earns this training mastery from their own real training.
+        # Truyền Công earns it from a real eligible sect disciple's training.
+        if office_id == OFFICE_MASTER and id != str(actor.id):
             continue
         var all_records: Dictionary = state.sect.hall_governance.get("mastery", {}).duplicate(true)
         var key := "%s:%s" % [id, office_id]
