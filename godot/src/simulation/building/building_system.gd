@@ -1,6 +1,7 @@
 class_name BuildingSystem
 extends RefCounted
 
+const TYPE_MAIN_HALL := &"main_hall"
 const TYPE_MINE := &"mine"
 const TYPE_LINH_FOREST := &"linh_forest"
 const TYPE_ALCHEMY_HALL := &"alchemy_hall"
@@ -59,6 +60,21 @@ const MILESTONE_COMPONENTS := {
 }
 
 const DEFINITIONS := {
+    "main_hall": {
+        "name": "Tông Môn Đại Điện",
+        "max_level": 100,
+        "worker_group_id": "",
+        "base_worker_slots": 0,
+        "worker_slot_every": 0,
+        # DD-01 early implementation prices are provisional; never imply approved long-term balance.
+        "base_wood_cost": 25,
+        "base_ore_cost": 20,
+        "base_stone_cost": 500,
+        "base_upgrade_work": 8.0,
+        "upgrade_work_per_level": 2.0,
+        "upgrade_enabled": true,
+        "requires_milestone_component": false
+    },
     "mine": {
         "name": "Mỏ Linh Khoáng",
         "max_level": 100,
@@ -254,6 +270,20 @@ func ensure_body_training_facility(state: SimulationState) -> BuildingState:
     state.buildings[str(facility.id)] = facility
     state.building_event_count += 1
     return facility
+
+# DD-01 live-runtime only. Never create a second Hall from a UI map token.
+func ensure_main_hall(state: SimulationState) -> BuildingState:
+    if state == null or not state.p3_7_buildings_enabled:
+        return null
+    var existing := primary_building(state, TYPE_MAIN_HALL)
+    if existing != null:
+        return existing
+    var hall := create_building(TYPE_MAIN_HALL, 1)
+    if hall == null or state.buildings.has(str(hall.id)):
+        return null
+    state.buildings[str(hall.id)] = hall
+    state.building_event_count += 1
+    return hall
 
 func create_building(building_type: StringName, instance_index: int = 1) -> BuildingState:
     var definition: Dictionary = DEFINITIONS.get(str(building_type), {})
