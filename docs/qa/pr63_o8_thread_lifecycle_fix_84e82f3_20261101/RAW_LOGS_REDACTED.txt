@@ -1,0 +1,234 @@
+===== Final official Godot 4.7.2 import on fix SHA | exit=0 =====
+--- stdout ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[   0% ] first_scan_filesystem | Started Project initialization (5 steps)
+[   0% ] first_scan_filesystem | Scanning file structure...
+[  16% ] first_scan_filesystem | Loading global class names...
+[  33% ] first_scan_filesystem | Verifying GDExtensions...
+[  50% ] first_scan_filesystem | Creating autoload scripts...
+[  66% ] first_scan_filesystem | Initializing plugins...
+[  83% ] first_scan_filesystem | Starting file scan...
+[ DONE ] first_scan_filesystem
+
+[   0% ] loading_editor_layout | Started Loading editor (5 steps)
+[   0% ] loading_editor_layout | Loading editor layout...
+[  16% ] loading_editor_layout | Loading docks...
+[ DONE ] loading_editor_layout
+
+
+--- stderr ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== PR63 O8 baseline run 1 | exit=0 =====
+--- stdout ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P3 O8 ALCHEMY FIELD-PILL-CONSUMER TEST PASS
+
+--- stderr ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+WARNING: A Thread object is being destroyed without its completion having been realized.
+Please call wait_to_finish() on it to ensure correct cleanup.
+   at: ~Thread (core/os/thread.cpp:116)
+
+===== PR63 O8 baseline run 2 | exit=0 =====
+--- stdout ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P3 O8 ALCHEMY FIELD-PILL-CONSUMER TEST PASS
+
+--- stderr ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+WARNING: A Thread object is being destroyed without its completion having been realized.
+Please call wait_to_finish() on it to ensure correct cleanup.
+   at: ~Thread (core/os/thread.cpp:116)
+
+===== PR63 O8 baseline run 3 | exit=0 =====
+--- stdout ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P3 O8 ALCHEMY FIELD-PILL-CONSUMER TEST PASS
+
+--- stderr ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+WARNING: A Thread object is being destroyed without its completion having been realized.
+Please call wait_to_finish() on it to ensure correct cleanup.
+   at: ~Thread (core/os/thread.cpp:116)
+
+===== Thread trace diagnostic probe (temporary SaveService instrumentation; not acceptance run) | exit=NOT_RECORDED =====
+--- stdout ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+TMB_SAVE_THREAD event=start owner=-9223371929329596608 thread_instance=-9223371845208633547 error=0
+TMB_SAVE_THREAD event=wait_async owner=-9223371929329596608 thread_instance=-9223371845208633547 error=0
+TMB_SAVE_THREAD event=start owner=-9223371929329596608 thread_instance=-9223371794189119824 error=0
+TMB_SAVE_THREAD event=wait_async owner=-9223371929329596608 thread_instance=-9223371794189119824 error=0
+TMB_SAVE_THREAD event=start owner=-9223371929329596608 thread_instance=-9223371774576554023 error=0
+TMB_SAVE_THREAD event=wait_async owner=-9223371929329596608 thread_instance=-9223371774576554023 error=0
+TMB_SAVE_THREAD event=start owner=-9223371760987011418 thread_instance=-9223371710521145474 error=0
+TMB_SAVE_THREAD event=wait_async owner=-9223371760987011418 thread_instance=-9223371710521145474 error=0
+TMB_SAVE_THREAD event=start owner=-9223371697837569432 thread_instance=-9223371644989338229 error=0
+P3 O8 ALCHEMY FIELD-PILL-CONSUMER TEST PASS
+TMB_SAVE_THREAD event=service_predelete owner=-9223371697837569432 pending=true thread_instance=-9223371644989338229
+
+--- stderr ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+WARNING: A Thread object is being destroyed without its completion having been realized.
+Please call wait_to_finish() on it to ensure correct cleanup.
+   at: ~Thread (core/os/thread.cpp:116)
+
+===== Fixed O8 run 1 | exit=0 =====
+--- stdout ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P3 O8 ALCHEMY FIELD-PILL-CONSUMER TEST PASS
+
+--- stderr ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== Fixed O8 run 2 | exit=0 =====
+--- stdout ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P3 O8 ALCHEMY FIELD-PILL-CONSUMER TEST PASS
+
+--- stderr ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== Fixed O8 run 3 | exit=0 =====
+--- stdout ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P3 O8 ALCHEMY FIELD-PILL-CONSUMER TEST PASS
+
+--- stderr ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== Regression: SX01 JSON (13 checks) | exit=0 =====
+--- stdout ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SX01 JSON POLICY ROUNDTRIP PASS (13 checks)
+
+--- stderr ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== Regression: SX01 policy (32 checks) | exit=0 =====
+--- stdout ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SX01 POLICY + TARGET + B3 CONSUMER + SAVE PASS (32 checks)
+
+--- stderr ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== Regression: SX02 runtime (47 checks) | exit=0 =====
+--- stdout ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SX02 MEDICINE REAL JOB + CANONICAL B3 + SAVE PASS (47 checks)
+
+--- stderr ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== Regression: B3 pill (45 checks) | exit=0 =====
+--- stdout ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+TRADE ore=37 -> 27 stones=512 herbs=5 grain=1
+B3 PILL EVIDENCE recipe_base=6 fixed_tuvi=10000 shared_costs=10+25 cap=1000000 day_tick=1440 save=<QA_ROOT>/pr63_appdata_20261101/fix4_b3_pill/Godot/app_userdata/Tong Mon Ba Dao/care_pills_2984100.json
+B3 PILL SATIETY + REAL ALCHEMY + FIXED TUVI + DAILY LIMIT + SAVE RETRY PASS (45 checks)
+
+--- stderr ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+ERROR: SaveService: CARE capability mismatch; refusing downgraded or incomplete save.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _load_exact (res://src/simulation/save/save_service.gd:235)
+       [1] execute (res://tests/simulation/b3_pill_satiety_test.gd:111)
+       [2] run (res://tests/simulation/b3_pill_satiety_test.gd:22)
+ERROR: B3 CARE: incompatible save: invalid_satiety_day_or_spent
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] from_dict (res://src/simulation/state/simulation_state.gd:434)
+       [1] execute (res://tests/simulation/b3_pill_satiety_test.gd:115)
+       [2] run (res://tests/simulation/b3_pill_satiety_test.gd:22)
+
+===== Regression: B3 CARE (39 checks) | exit=0 =====
+--- stdout ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+AUTO AT120 tick=126 hp=146.0 injury=0 action=HOLD cmd={  } policy={ "auto_deploys": 1, "auto_heal": true, "auto_hunt": true, "disciple_id": "candidate_99441", "heals": 1.0, "last_review_tick": 126, "min_hp_ratio": 0.75, "next_review_tick": 127, "owns_rest": false, "paused_manual": false, "rest_requests": 41, "status": "HUNTING", "version": 1.0 }
+B3 CARE LOOP EVIDENCE world=b3:vs1:bach_thach_khe:930211:6 down_tick=6 recover_tick=126 auto_deploys=1 kills=4 real_warehouse=4 save=<QA_ROOT>/pr63_appdata_20261101/fix_final_b3_care/Godot/app_userdata/Tong Mon Ba Dao/care_loop_medicine_2997203.json.online
+B3 REST-ONLY EVIDENCE recover_tick=120 same_world=b3:vs1:bach_thach_khe:930211:0 rest_requests=68
+B3 CARE REAL DEFEAT + PILL/REST + INJURY120 + AUTO SAME WORLD + OFFLINE + SAVE RETRY PASS (39 checks)
+
+--- stderr ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+ERROR: B3 CARE: incompatible save: invalid_care_counter_range
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] from_dict (res://src/simulation/state/simulation_state.gd:434)
+       [1] no_pills_and_guards (res://tests/simulation/b3_care_pills_autohunt_test.gd:177)
+       [2] run (res://tests/simulation/b3_care_pills_autohunt_test.gd:79)
+
+===== Regression: async SaveService (10 checks) | exit=0 =====
+--- stdout ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SAVE SERVICE ASYNC ROUNDTRIP PASS checks=10 snapshot_isolated=true joins_before_sync=true prior_backup_valid=true
+
+--- stderr ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== Regression: P0 Save/Reload | exit=0 =====
+--- stdout ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P0 SAVE ROUNDTRIP TEST PASS
+tick=3000 money=1630 disciples=6
+
+--- stderr ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+ERROR: SaveService: malformed save payload for version 4.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _load_exact (res://src/simulation/save/save_service.gd:243)
+       [1] load_from_path (res://src/simulation/save/save_service.gd:192)
+       [2] _test_invalid_payload_rejection (res://tests/simulation/p0_save_roundtrip_test.gd:72)
+       [3] _run (res://tests/simulation/p0_save_roundtrip_test.gd:41)
+ERROR: SaveService: invalid negative save version -1.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _load_exact (res://src/simulation/save/save_service.gd:215)
+       [1] load_from_path (res://src/simulation/save/save_service.gd:192)
+       [2] _test_invalid_payload_rejection (res://tests/simulation/p0_save_roundtrip_test.gd:79)
+       [3] _run (res://tests/simulation/p0_save_roundtrip_test.gd:41)
+
+===== Regression: O4 Spirit Field | exit=0 =====
+--- stdout ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P3 O4 REAL SPIRIT FIELD LOOP TEST PASS
+
+--- stderr ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+
