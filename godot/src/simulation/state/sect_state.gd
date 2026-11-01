@@ -347,9 +347,17 @@ static func from_dict(data: Dictionary) -> SectState:
     state.medicine_stock = maxi(int(data.get("medicine_stock", 0)), 0)
     state.supply_stock = maxi(int(data.get("supply_stock", 0)), 0)
     state.lodging_capacity = maxi(int(data.get("lodging_capacity", state.disciple_capacity)), 1)
-    var saved_hall = data.get("hall_governance", {})
-    if saved_hall is Dictionary and int(saved_hall.get("version", 0)) == 1:
-        state.hall_governance = saved_hall.duplicate(true)
+    # DD-07: Never silently erase a saved Hall ledger on version mismatch.
+    # Missing key = an actual legacy save; present but unsupported/malformed
+    # is a hard recovery error, not permission to mint a fresh Hall/rank.
+    if data.has("hall_governance"):
+        var saved_hall = data["hall_governance"]
+        if saved_hall is Dictionary:
+            state.hall_governance = saved_hall.duplicate(true)
+            if state.hall_governance.is_empty():
+                state.hall_governance = {"version": -1, "decode_error": "empty_hall_ledger"}
+        else:
+            state.hall_governance = {"version": -1, "decode_error": "invalid_hall_ledger_type"}
     state.needs_priority = StringName(data.get("needs_priority", "balanced"))
     state.needs_event_count = maxi(int(data.get("needs_event_count", 0)), 0)
     state.cultivation_enabled = bool(data.get("cultivation_enabled", false))
