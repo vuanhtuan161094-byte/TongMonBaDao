@@ -477,8 +477,14 @@ static func _award_mastery(state: SimulationState, office_id: String, id: String
 
 static func validate(state: SimulationState) -> Array[String]:
     var errors: Array[String] = []
-    if not installed(state):
+    if state == null:
+        errors.append("Hall validation received null simulation state.")
         return errors
+    if state.sect.hall_governance.is_empty():
+        return errors # Truly legacy save, with no Hall payload.
+    if not installed(state):
+        errors.append("Hall governance schema unsupported or malformed.")
+        return errors # Never allow an unknown schema to validate as clean.
     errors.append_array(SectResidenceSystemV1.validate(state))
     # Check the raw persisted value: rank_index() deliberately clamps for
     # display and must not mask a corrupt save from invariant validation.
