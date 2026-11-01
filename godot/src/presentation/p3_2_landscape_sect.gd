@@ -868,6 +868,8 @@ func _try_iso_map_pick(screen_point: Vector2) -> bool:
 
 func _sect_production_destination(building_type: StringName) -> StringName:
     match building_type:
+        BuildingSystem.TYPE_MAIN_HALL:
+            return SectMapPresentation.DEST_MAIN_HALL
         BuildingSystem.TYPE_MINE:
             return SectMapPresentation.DEST_MINE
         BuildingSystem.TYPE_LINH_FOREST:
