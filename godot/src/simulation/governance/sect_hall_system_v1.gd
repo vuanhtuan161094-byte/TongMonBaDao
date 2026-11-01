@@ -579,7 +579,7 @@ static func validate(state: SimulationState) -> Array[String]:
                 errors.append("Hall upgrade target is non-finite.")
                 continue
             var target_level := int(target_value)
-            var max_settled := paid_building.upgrade_target_level if paid_building.is_upgrading() else paid_building.level
+            var max_settled: int = int(paid_building.upgrade_target_level) if paid_building.is_upgrading() else int(paid_building.level)
             var receipt_identity := "%s:%d" % [bid, target_level]
             if float(target_value) != float(target_level) or target_level < 2 \
                     or target_level > max_settled or seen_upgrades.has(receipt_identity):
