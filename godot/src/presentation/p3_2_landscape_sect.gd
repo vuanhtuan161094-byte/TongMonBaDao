@@ -3407,7 +3407,7 @@ func _alchemy_operation_text() -> String:
     for raw_job in jobs:
         var job: Dictionary = raw_job
         var worker_id := StringName(job.get("worker_id", ""))
-        var name := state.disciples[worker_id].display_name if state.disciples.has(worker_id) else str(worker_id)
+        var name: String = state.disciples[worker_id].display_name if state.disciples.has(worker_id) else str(worker_id)
         var pill := "Tụ Khí Đan" if str(job.get("recipe_id", "")) == "tu_khi_dan" else "Hồi Xuân Đan"
         lines.append("• %s · %s · còn %d phút" % [name, pill, maxi(int(job.get("finish_tick", state.tick)) - state.tick, 0)])
     var recipe_name := "Tụ Khí Đan" if str(hall.production_state.get("recipe_id", "")) == "tu_khi_dan" else "Hồi Xuân Đan"
