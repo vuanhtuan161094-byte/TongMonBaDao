@@ -124,6 +124,31 @@ static func mastery(state: SimulationState, office_id: String, disciple_id: Stri
 static func required_xp(level: int) -> int:
     return 40 + 20 * level + 5 * level * level
 
+static func affinity_score(disciple: DiscipleState, office_id: String) -> float:
+    if disciple == null:
+        return 0.0
+    match office_id:
+        OFFICE_MASTER:
+            return maxf(0.0, (disciple.mind_nature + disciple.potential) * 0.5)
+        OFFICE_GUIDE:
+            return maxf(0.0, (disciple.charisma + disciple.fortune) * 0.5)
+        OFFICE_TEACHER:
+            return maxf(0.0, (disciple.comprehension + disciple.aptitude) * 0.5)
+        OFFICE_STEWARD:
+            return maxf(0.0, (disciple.comprehension + disciple.mind_nature) * 0.5)
+        OFFICE_GUARDIAN:
+            return maxf(0.0, (disciple.constitution + disciple.potential) * 0.5)
+        OFFICE_ALCHEMIST:
+            return maxf(0.0, (disciple.comprehension + disciple.fortune) * 0.5)
+        OFFICE_DISCIPLINE:
+            return maxf(0.0, (disciple.mind_nature + disciple.constitution) * 0.5)
+        _:
+            return 0.0
+
+static func affinity_factor(disciple: DiscipleState, office_id: String) -> float:
+    # Small differentiator rather than a hidden dramatic quality reroll.
+    return clampf(0.90 + 0.0001 * affinity_score(disciple, office_id), 0.90, 1.15)
+
 static func office_bonus(state: SimulationState, office_id: String) -> float:
     var id := holder_id(state, office_id)
     if id.is_empty() or not state.disciples.has(StringName(id)):
@@ -133,11 +158,12 @@ static func office_bonus(state: SimulationState, office_id: String) -> float:
         return 0.0
     var level := int(mastery(state, office_id, id)["level"])
     var t := float(level - 1) / float(MAX_MASTERY - 1)
+    var fit := affinity_factor(owner, office_id)
     match office_id:
         OFFICE_MASTER:
-            return lerpf(0.08, 0.14, t)
+            return lerpf(0.08, 0.14, t) * fit
         OFFICE_TEACHER:
-            return lerpf(0.03, 0.09, t)
+            return lerpf(0.03, 0.09, t) * fit
         _:
             return 0.0
 
@@ -394,15 +420,16 @@ static func role_effect(state: SimulationState, office_id: String) -> float:
         return 0.0
     var level := int(mastery(state, office_id, id).get("level", 1))
     var t := float(level - 1) / 9.0
+    var fit := affinity_factor(actor, office_id)
     match office_id:
         OFFICE_GUIDE:
-            return lerpf(60.0, 285.0, t)
+            return lerpf(60.0, 285.0, t) * fit
         OFFICE_STEWARD, OFFICE_ALCHEMIST:
-            return lerpf(0.02, 0.08, t)
+            return lerpf(0.02, 0.08, t) * fit
         OFFICE_GUARDIAN:
-            return lerpf(0.02, 0.06, t)
+            return lerpf(0.02, 0.06, t) * fit
         OFFICE_DISCIPLINE:
-            return lerpf(0.03, 0.09, t)
+            return lerpf(0.03, 0.09, t) * fit
         _:
             return office_bonus(state, office_id)
 
