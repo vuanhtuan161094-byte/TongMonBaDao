@@ -842,6 +842,26 @@ func _iso_actor_point(destination: StringName, building_id: StringName = &"") ->
         return SectMapPresentation.position_for_destination(destination)
     return SectIsometricWorldV1.virtual_legacy_point(destination,building_id)
 
+func _sect_actor_door_offset(disciple: DiscipleState, index: int,
+        idle_slots: Dictionary, destination: StringName) -> Vector2:
+    # DD-09.2: actors stop in a small queue at the outdoor interaction tile,
+    # not scattered across a building interior or on the roof.
+    if destination in [SectMapPresentation.DEST_COURTYARD, SectMapPresentation.DEST_GATE]:
+        return _endgame_actor_offset(disciple,index,idle_slots)
+    return Vector2(float(posmod(index, 5) - 2) * 6.0, 0.0)
+
+func _sect_door_worksite_id(disciple: DiscipleState, destination: StringName) -> StringName:
+    # REST uses the actual rented House. A stale workshop ID never overrides
+    # the resting destination; no AStar navigation runs in sect presentation.
+    if destination == SectMapPresentation.DEST_RESIDENCE and SectHallSystemV1.installed(state):
+        return StringName(SectResidenceSystemV1.house_of(state,disciple.id))
+    var worksite_id := disciple.worksite_building_id
+    if worksite_id != &"" and state.buildings.has(str(worksite_id)):
+        var site: BuildingState = state.buildings[str(worksite_id)]
+        if _sect_production_destination(site.building_type) == destination:
+            return worksite_id
+    return &""
+
 func _iso_two_direction_delta(delta: Vector2, old_facing: StringName) -> Vector2:
     # Source A pool has horizontal authored facing. Vertical travel preserves
     # the existing horizontal face and does not invent an up/down clip.
@@ -1727,14 +1747,8 @@ func _sync_actor_positions() -> void:
         var destination := SectMapPresentation.destination_for_action(disciple.current_action, previous)
         actor_destinations[key] = str(destination)
 
-        var worksite_id := disciple.worksite_building_id
-        if worksite_id != &"" and state.buildings.has(str(worksite_id)):
-            var site: BuildingState = state.buildings[str(worksite_id)]
-            var site_destination := _sect_production_destination(site.building_type)
-            if site_destination != &"":
-                destination = site_destination
-                actor_destinations[key] = str(destination)
-        var world_foot := _iso_actor_point(destination,worksite_id) + _endgame_actor_offset(disciple,index,idle_slots)
+        var worksite_id := _sect_door_worksite_id(disciple,destination)
+        var world_foot := _iso_actor_point(destination,worksite_id) + _sect_actor_door_offset(disciple,index,idle_slots,destination)
         var target := world_foot - DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
         actor_virtual_positions[key] = target
         var actor := actor_nodes.get(key) as Control
@@ -1900,14 +1914,8 @@ func _install_modular_live_actors() -> void:
         var destination := StringName(actor_destinations.get(key, str(_initial_destination(disciple))))
         destination = SectMapPresentation.destination_for_action(disciple.current_action,destination)
         actor_destinations[key] = str(destination)
-        var worksite_id := disciple.worksite_building_id
-        if worksite_id != &"" and state.buildings.has(str(worksite_id)):
-            var site: BuildingState = state.buildings[str(worksite_id)]
-            var site_destination := _sect_production_destination(site.building_type)
-            if site_destination != &"":
-                destination = site_destination
-                actor_destinations[key] = str(destination)
-        var world_foot := _iso_actor_point(destination,worksite_id) + _endgame_actor_offset(disciple,index,idle_slots)
+        var worksite_id := _sect_door_worksite_id(disciple,destination)
+        var world_foot := _iso_actor_point(destination,worksite_id) + _sect_actor_door_offset(disciple,index,idle_slots,destination)
         next_positions[key] = world_foot - DiscipleActorVisualCatalog.ACTOR_FOOT_POINT
         modular_live_actor_ids[key] = true
     for raw_id in actor_nodes.keys().duplicate():
