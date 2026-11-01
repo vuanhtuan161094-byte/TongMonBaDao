@@ -1,5 +1,6 @@
 extends "res://src/presentation/p3_1_landscape_sect.gd"
 
+const TRI_B1_LIVE_ADAPTER = preload("res://src/presentation/uiux/tri_facility_live_adapter_v1.gd")
 const ZOOM_STEP := 1.12
 const CAMERA_TWEEN_SECONDS := 0.22
 const FOCUS_MARKER_SIZE := Vector2(82.0, 82.0)
@@ -2243,12 +2244,22 @@ func _open_dai_dien_screen_v1() -> void:
     screen.z_index = 120
     add_child(screen)
     screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    _attach_tri_b1_screen(screen, "hall")
+
+func _attach_tri_b1_screen(host: Control, mode: String) -> void:
+    var adapter: Control = TRI_B1_LIVE_ADAPTER.new()
+    adapter.configure(host, state, recruitment_system, mode)
+    host.add_child(adapter)
+    adapter.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
 func _open_dai_dien_housing_v1() -> void:
     _open_dai_dien_screen_v1()
     var hall_view := get_node_or_null("DaiDienScreenV1") as DaiDienScreenV1
     if hall_view != null:
         hall_view._tab(5)
+        var b1 = hall_view.get_node_or_null("TriFacilityB1LiveAdapterV1")
+        if b1 != null:
+            b1.call("show_mode", "residence")
 
 func _on_dai_dien_state_changed() -> void:
     # _refresh_all() already refreshes the 192x192 map once; avoid double scans.
@@ -2493,6 +2504,7 @@ func _open_dan_tien_screen_v2() -> void:
     screen.state_changed.connect(_on_dan_tien_screen_v2_changed)
     add_child(screen)
     screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    _attach_tri_b1_screen(screen, "guidance")
 
 func _on_dan_tien_screen_v2_changed() -> void:
     # The real runtime remains the sole roster/save authority.
