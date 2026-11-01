@@ -70,7 +70,10 @@ static func ensure_live(state: SimulationState) -> Dictionary:
         governance["residence_schema"] = SCHEMA_VERSION
         governance["residence_build_receipts"] = {}
         governance["residence_assignments"] = {}
-    if int(governance.get("residence_schema", 0)) != SCHEMA_VERSION:
+    var raw_schema = governance.get("residence_schema", null)
+    if not (raw_schema is int or raw_schema is float) \
+            or (raw_schema is float and (is_nan(raw_schema) or is_inf(raw_schema))) \
+            or float(raw_schema) != float(SCHEMA_VERSION):
         return {"ok": false, "reason": "unsupported_residence_schema"}
     for field in ["residence_assignments", "residence_build_receipts"]:
         if not governance.has(field) or not (governance[field] is Dictionary):
