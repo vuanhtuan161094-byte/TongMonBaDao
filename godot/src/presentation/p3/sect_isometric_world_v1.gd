@@ -615,9 +615,9 @@ func refresh_from_state(state: SimulationState) -> void:
                 if building.building_type == BuildingSystem.TYPE_RESIDENCE \
                         and building.status == BuildingSystem.STATUS_CONSTRUCTING:
                     live_label += " · đang xây"
-                var owned_site := SectResidenceSiteV1.origin_of(building) \
-                    if building.building_type == BuildingSystem.TYPE_RESIDENCE \
-                    else SectResidenceSiteV1.UNSELECTED
+                var owned_site: Vector2i = SectResidenceSiteV1.UNSELECTED
+                if building.building_type == BuildingSystem.TYPE_RESIDENCE:
+                    owned_site = SectResidenceSiteV1.origin_of(building)
                 rows.append(_row(dest,building.id,live_label,building.instance_index,true,owned_site))
         else:
             # A visual landmark/destination is NOT a BuildingState.
