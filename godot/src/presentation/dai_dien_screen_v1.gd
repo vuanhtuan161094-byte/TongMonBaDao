@@ -22,6 +22,7 @@ var _content: VBoxContainer
 var _tabs: HBoxContainer
 var _candidate_ids: Array[StringName] = []
 var _selected_index := 0
+var _candidate_selection_office := ""
 
 func attach_state(state: SimulationState) -> void:
     game_state = state
@@ -248,10 +249,13 @@ func _offices() -> void:
             disciple.display_name, fit * 100.0,
             SectHallSystemV1.affinity_score(disciple, selected_office), state_label
         ])
-    if not id.is_empty():
-        var own_index := _candidate_ids.find(StringName(id))
-        if own_index >= 0:
-            _selected_index = own_index
+    if _candidate_selection_office != selected_office:
+        _candidate_selection_office = selected_office
+        _selected_index = 0
+        if not id.is_empty():
+            var own_index := _candidate_ids.find(StringName(id))
+            if own_index >= 0:
+                _selected_index = own_index
     _selected_index = clampi(_selected_index, 0, maxi(0, _candidate_ids.size() - 1))
     if not _candidate_ids.is_empty():
         dropdown.select(_selected_index)
@@ -296,6 +300,7 @@ func _candidate_changed(index: int) -> void:
 func _select_office(value: String) -> void:
     selected_office = value
     _selected_index = 0
+    _candidate_selection_office = ""
     _refresh()
 
 func _appoint() -> void:
