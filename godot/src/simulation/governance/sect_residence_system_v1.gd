@@ -66,6 +66,9 @@ static func ensure_live(state: SimulationState) -> Dictionary:
         governance["residence_assignments"] = {}
     if int(governance.get("residence_schema", 0)) != SCHEMA_VERSION:
         return {"ok": false, "reason": "unsupported_residence_schema"}
+    for field in ["residence_assignments", "residence_build_receipts"]:
+        if not (governance.get(field, {}) is Dictionary):
+            return {"ok": false, "reason": "malformed_residence_" + field}
     var houses := all_houses(state)
     if houses.is_empty():
         var starter := BuildingSystem.new().create_building(TYPE, 1)
