@@ -168,7 +168,7 @@ func _house_model() -> Dictionary:
         for index in range(count):
             var id := residents[index] if index < residents.size() else ""
             var occupant := not id.is_empty() and _state.disciples.has(StringName(id))
-            var display := _state.disciples[StringName(id)].display_name if occupant else "Trống"
+            var display: String = str(_state.disciples[StringName(id)].display_name) if occupant else "Trống"
             bed_slots.append({"id":"%s:%d" % [str(selected_house.id),index+1],
                 "occupied":occupant,"disciple_short_name":display})
     return {
@@ -278,7 +278,7 @@ func _page_candidate(direction: int) -> void:
     ids.sort()
     if ids.is_empty():
         return
-    var selected_id := _host.get("selected_candidate_id")
+    var selected_id: Variant = _host.get("selected_candidate_id")
     var current := ids.find(selected_id)
     var next_index := clampi(current+direction,0,ids.size()-1)
     _host.call("_select_candidate",StringName(str(ids[next_index])))
