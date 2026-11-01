@@ -88,6 +88,8 @@ func validate_invariants() -> Array[String]:
     if has_v63_human_combat_state:
         errors.append_array(V63HumanSkillCombatSystem.validate_state(self))
 
+    if not sect.hall_governance.is_empty():
+        errors.append_array(SectHallSystemV1.validate(self))
     if sect.treasury < 0:
         errors.append("Sect treasury is negative.")
     if sect.disciple_capacity <= 0:
