@@ -118,9 +118,76 @@ func _run() -> void:
             and state.sect.spirit_stones == before_second - int(second_cost["spirit_stones"])
             and SectResidenceSystemV1.all_houses(state).size() == 2, "replayed construction double-billed/duplicated"):
         return
-    if not _assert(SectResidenceSystemV1.total_beds(state) == 18
+    # DD-09: a paid House under construction is owned but grants zero beds.
+    var annex = state.buildings.get("residence_002")
+    var duration := SectResidenceSystemV1.construction_duration_ticks(2)
+    if not _assert(annex is BuildingState
+            and annex.status == BuildingSystem.STATUS_CONSTRUCTING
+            and SectResidenceSystemV1.total_beds(state) == 10
+            and SectResidenceSystemV1.current_limit(state) == 10
+            and int(built.get("construction_duration_ticks", -1)) == duration,
+            "unfinished annex granted free beds or incorrect timer"):
+        return
+    var annex_move := SectResidenceSystemV1.assign_room(state, ninth_id, &"residence_002")
+    if not _assert(not bool(annex_move.get("ok", true))
+            and str(annex_move.get("reason", "")) == "house_not_ready",
+            "unfinished annex accepted a tenant"):
+        return
+    var unready_upgrade := buildings.start_upgrade(state, annex.id, "qa-upgrade-during-construction")
+    if not _assert(not bool(unready_upgrade.get("ok", true))
+            and str(unready_upgrade.get("reason", "")) == "building_not_active",
+            "unfinished annex allowed an upgrade before construction"):
+        return
+    var saved_pending := SimulationState.from_dict(state.to_dict())
+    if not _assert(SectHallSystemV1.validate(saved_pending).is_empty(),
+            "pending House invalid after pure in-memory reload"):
+        return
+    var pending_path := "user://qa_dd09_pending_house_20261101.json"
+    for extension in ["", ".bak", ".tmp"]:
+        if FileAccess.file_exists(pending_path + extension):
+            DirAccess.remove_absolute(ProjectSettings.globalize_path(pending_path + extension))
+    var pending_saver := SaveService.new()
+    if not _assert(pending_saver.save_to_path(saved_pending, pending_path) == OK,
+            "pending House save rejected by SaveService"):
+        return
+    var resumed := pending_saver.load_from_path(pending_path)
+    if not _assert(resumed != null and SectResidenceSystemV1.total_beds(resumed) == 10
+            and str(resumed.buildings["residence_002"].status) == "constructing"
+            and SectResidenceSystemV1.construction_remaining_ticks(resumed, resumed.buildings["residence_002"]) == duration,
+            "construction duration or status vanished across disk reload"):
+        return
+    for _resumed_step in range(duration):
+        resumed.tick += 1
+        buildings.process_tick(resumed)
+    if not _assert(str(resumed.buildings["residence_002"].status) == "active"
+            and SectResidenceSystemV1.total_beds(resumed) == 18
+            and SectHallSystemV1.validate(resumed).is_empty(),
+            "resumed construction did not settle exactly at due tick"):
+        return
+    for extension in ["", ".bak", ".tmp"]:
+        if FileAccess.file_exists(pending_path + extension):
+            DirAccess.remove_absolute(ProjectSettings.globalize_path(pending_path + extension))
+    # Original state must not activate beds before its own due minute.
+    for _pre_finish_step in range(duration - 1):
+        state.tick += 1
+        buildings.process_tick(state)
+    if not _assert(annex.status == BuildingSystem.STATUS_CONSTRUCTING
+            and SectResidenceSystemV1.total_beds(state) == 10,
+            "House activated before its due minute"):
+        return
+    state.tick += 1
+    buildings.process_tick(state)
+    if not _assert(annex.status == BuildingSystem.STATUS_ACTIVE
+            and SectResidenceSystemV1.total_beds(state) == 18
             and SectResidenceSystemV1.current_limit(state) == 12,
-            "rank 1 administrative cap must bind 2 houses with 18 beds"):
+            "rank 1 administrative cap must bind 2 houses with 18 beds after build"):
+        return
+    # Replay after completion cannot duplicate beds or charge twice.
+    var late_build := SectResidenceSystemV1.construct(state, "qa-house-build-002")
+    if not _assert(bool(late_build.get("already_settled", false))
+            and SectResidenceSystemV1.total_beds(state) == 18
+            and state.sect.spirit_stones == before_second - int(second_cost["spirit_stones"]),
+            "late construction replay double billed or duplicated capacity"):
         return
     # DD-08: Hall level-up also has one durable paid start, both before and
     # after completion, not only an in-memory is_upgrading() click guard.
