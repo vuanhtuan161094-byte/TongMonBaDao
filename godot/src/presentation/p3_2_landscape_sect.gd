@@ -850,6 +850,20 @@ func _sect_actor_door_offset(disciple: DiscipleState, index: int,
         return _endgame_actor_offset(disciple,index,idle_slots)
     return Vector2(float(posmod(index, 5) - 2) * 6.0, 0.0)
 
+func _sect_effective_door_destination(disciple: DiscipleState, destination: StringName) -> StringName:
+    # Keep a worker staged at the same workshop door between simulation
+    # minute actions. Active REST/TRAIN_BODY/HEAL/etc must follow the action,
+    # never be overridden by an old resource worksite reservation.
+    if disciple.current_action not in [&"EVALUATE", &"IDLE"]:
+        return destination
+    var id := disciple.worksite_building_id
+    if id != &"" and state.buildings.has(str(id)):
+        var building: BuildingState = state.buildings[str(id)]
+        var worksite_dest := _sect_production_destination(building.building_type)
+        if worksite_dest != &"":
+            return worksite_dest
+    return destination
+
 func _sect_door_worksite_id(disciple: DiscipleState, destination: StringName) -> StringName:
     # REST uses the actual rented House. A stale workshop ID never overrides
     # the resting destination; no AStar navigation runs in sect presentation.
@@ -1745,6 +1759,7 @@ func _sync_actor_positions() -> void:
         var disciple: DiscipleState = state.disciples[disciple_id]
         var previous := StringName(actor_destinations.get(key, str(SectMapPresentation.DEST_COURTYARD)))
         var destination := SectMapPresentation.destination_for_action(disciple.current_action, previous)
+        destination = _sect_effective_door_destination(disciple,destination)
         actor_destinations[key] = str(destination)
 
         var worksite_id := _sect_door_worksite_id(disciple,destination)
@@ -1913,6 +1928,7 @@ func _install_modular_live_actors() -> void:
         var disciple: DiscipleState = state.disciples[disciple_id]
         var destination := StringName(actor_destinations.get(key, str(_initial_destination(disciple))))
         destination = SectMapPresentation.destination_for_action(disciple.current_action,destination)
+        destination = _sect_effective_door_destination(disciple,destination)
         actor_destinations[key] = str(destination)
         var worksite_id := _sect_door_worksite_id(disciple,destination)
         var world_foot := _iso_actor_point(destination,worksite_id) + _sect_actor_door_offset(disciple,index,idle_slots,destination)
