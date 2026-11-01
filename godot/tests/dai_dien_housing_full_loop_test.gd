@@ -173,6 +173,20 @@ func _run() -> void:
     # Use only the dedicated QA path. Never remove other user saves.
     DirAccess.remove_absolute(ProjectSettings.globalize_path(qa_path))
     DirAccess.remove_absolute(ProjectSettings.globalize_path(qa_path + ".bak"))
+    if not _assert(SectHallSystemV1.RANK_LIMITS.size() == 27
+            and SectHallSystemV1.RANK_HALL_LEVELS.size() == 27
+            and SectHallSystemV1.RANK_LIMITS[8] == 90
+            and SectHallSystemV1.RANK_LIMITS[17] == 200
+            and SectHallSystemV1.RANK_LIMITS[26] == 480
+            and SectResidenceSystemV1.beds_for_level(100) == 206,
+            "invalid 27-rank / 100-level residence content catalogue"):
+        return
+    var corrupt := SimulationState.from_dict(saved.to_dict())
+    corrupt.sect.hall_governance["residence_assignments"] = "malformed"
+    var invalid := SectHallSystemV1.ensure_live(corrupt)
+    if not _assert(not bool(invalid.get("ok", true)),
+            "malformed house save must fail closed, not silently reset rooms"):
+        return
     var view := DaiDienScreenV1.new()
     view.attach_state(saved)
     root.add_child(view)
