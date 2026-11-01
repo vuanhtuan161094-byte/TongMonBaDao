@@ -7,6 +7,43 @@ const SCHEMA_VERSION := 1
 const TYPE := &"residence"
 const START_BEDS := 8
 const BEDS_PER_LEVEL := 2
+# DD-09 provisional early-loop construction duration (simulation minutes).
+# Use the canonical BuildingSystem tick, not wall time or UI frames.
+const CONSTRUCTION_BASE_TICKS := 60
+const CONSTRUCTION_TICKS_PER_ANNEX := 15
+
+static func construction_duration_ticks(ordinal: int) -> int:
+    return CONSTRUCTION_BASE_TICKS + maxi(0, ordinal - 2) * CONSTRUCTION_TICKS_PER_ANNEX
+
+static func construction_remaining_ticks(state: SimulationState, house: BuildingState) -> int:
+    if state == null or house == null or house.building_type != TYPE \
+            or house.status != BuildingSystem.STATUS_CONSTRUCTING:
+        return 0
+    return maxi(0, int(house.production_state.get("construction_finish_tick", 0)) - state.tick)
+
+static func complete_due_construction(state: SimulationState, house: BuildingState) -> bool:
+    if state == null or house == null or house.building_type != TYPE \
+            or house.status != BuildingSystem.STATUS_CONSTRUCTING:
+        return false
+    var started = house.production_state.get("construction_started_tick", null)
+    var due = house.production_state.get("construction_finish_tick", null)
+    if not (started is int or started is float) or not (due is int or due is float):
+        return false
+    if (started is float and (is_nan(started) or is_inf(started))) \
+            or (due is float and (is_nan(due) or is_inf(due))):
+        return false
+    if float(started) != float(int(started)) or float(due) != float(int(due)) \
+            or int(due) <= int(started) or state.tick < int(due):
+        return false
+    house.status = BuildingSystem.STATUS_ACTIVE
+    house.production_state.erase("construction_started_tick")
+    house.production_state.erase("construction_finish_tick")
+    house.production_state.erase("construction_duration_ticks")
+    house.metrics["construction_completions"] = int(house.metrics.get("construction_completions", 0)) + 1
+    state.building_event_count += 1
+    refresh_capacity(state)
+    auto_assign_beds(state)
+    return true
 
 static func beds_for_level(level: int) -> int:
     return START_BEDS + BEDS_PER_LEVEL * (clampi(level, 1, 100) - 1)
@@ -27,7 +64,8 @@ static func all_houses(state: SimulationState) -> Array[BuildingState]:
 static func total_beds(state: SimulationState) -> int:
     var total := 0
     for building in all_houses(state):
-        total += beds_for_level(building.level)
+        if building.status != BuildingSystem.STATUS_CONSTRUCTING:
+            total += beds_for_level(building.level)
     if SectHallSystemV1.installed(state):
         total += maxi(0, int(state.sect.hall_governance.get("legacy_bed_credit", 0)))
     return total
@@ -155,6 +193,11 @@ static func construct(state: SimulationState, request_id: String) -> Dictionary:
     if not building_system._consume_resources(state, materials):
         return {"ok": false, "reason": "materials_changed"}
     state.sect.spirit_stones -= int(cost["spirit_stones"])
+    var duration := construction_duration_ticks(ordinal)
+    house.status = BuildingSystem.STATUS_CONSTRUCTING
+    house.production_state["construction_started_tick"] = state.tick
+    house.production_state["construction_finish_tick"] = state.tick + duration
+    house.production_state["construction_duration_ticks"] = duration
     state.buildings[str(house.id)] = house
     state.building_event_count += 1
     receipts = receipts.duplicate(true)
@@ -162,13 +205,15 @@ static func construct(state: SimulationState, request_id: String) -> Dictionary:
     state.sect.hall_governance["residence_build_receipts"] = receipts
     refresh_capacity(state)
     auto_assign_beds(state)
-    return {"ok": true, "building_id": str(house.id), "cost": cost}
+    return {"ok": true, "building_id": str(house.id), "cost": cost,
+        "construction_finish_tick": state.tick + duration,
+        "construction_duration_ticks": duration}
 
 static func upgrade_room_projection(state: SimulationState, building_id: StringName) -> Dictionary:
     var building = state.buildings.get(str(building_id))
     if not (building is BuildingState) or building.building_type != TYPE:
         return {"ok": false, "reason": "residence_missing"}
-    var current := beds_for_level(building.level)
+    var current := 0 if building.status == BuildingSystem.STATUS_CONSTRUCTING else beds_for_level(building.level)
     return {
         "ok": true,
         "beds": current,
@@ -176,6 +221,7 @@ static func upgrade_room_projection(state: SimulationState, building_id: StringN
         "level": building.level,
         "max_level": building.max_level,
         "upgrade": BuildingSystem.new().can_start_upgrade(state, building.id),
+        "construction_remaining_ticks": construction_remaining_ticks(state, building),
         "cost": BuildingSystem.new().upgrade_cost(building)
     }
 
@@ -187,6 +233,8 @@ static func auto_assign_beds(state: SimulationState) -> void:
     var capacities: Dictionary = {}
     var used: Dictionary = {}
     for house in houses:
+        if house.status != BuildingSystem.STATUS_ACTIVE and house.status != BuildingSystem.STATUS_UPGRADING:
+            continue
         capacities[str(house.id)] = beds_for_level(house.level)
         used[str(house.id)] = 0
     # Retain valid reservations, then assign remaining in deterministic order.
@@ -207,6 +255,8 @@ static func auto_assign_beds(state: SimulationState) -> void:
             continue
         for house in houses:
             var key := str(house.id)
+            if not capacities.has(key):
+                continue
             if int(used[key]) < int(capacities[key]):
                 stable[did] = key
                 used[key] = int(used[key]) + 1
@@ -225,6 +275,8 @@ static func assign_room(state: SimulationState, disciple_id: StringName, house_i
     var house = state.buildings.get(str(house_id))
     if not (house is BuildingState) or house.building_type != TYPE:
         return {"ok": false, "reason": "house_missing"}
+    if house.status == BuildingSystem.STATUS_CONSTRUCTING:
+        return {"ok": false, "reason": "house_under_construction"}
     var current: Dictionary = state.sect.hall_governance.get("residence_assignments", {})
     if str(current.get(str(disciple_id), "")) == str(house_id):
         return {"ok": true, "unchanged": true}
@@ -244,7 +296,8 @@ static func comfort_factor(state: SimulationState, disciple_id: StringName) -> f
         return 1.0
     var id := house_of(state, disciple_id)
     var house = state.buildings.get(id)
-    if not (house is BuildingState) or house.building_type != TYPE:
+    if not (house is BuildingState) or house.building_type != TYPE \
+            or house.status == BuildingSystem.STATUS_CONSTRUCTING:
         return 1.0
     var lvl: int = house.level
     if lvl >= 100:
