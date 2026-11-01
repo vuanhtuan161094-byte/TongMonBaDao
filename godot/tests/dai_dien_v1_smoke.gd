@@ -114,6 +114,12 @@ func _run() -> void:
     view._tab(1)
     if not _check(view.active_tab == 1, "office tab not interactive"):
         return
+    var first_selected := view._selected_index
+    var alternate := (first_selected + 1) % view._candidate_ids.size()
+    view._candidate_changed(alternate)
+    if not _check(view._selected_index == alternate,
+            "officer replacement selection was reset to existing holder"):
+        return
     root.remove_child(view)
     view.free()
 
