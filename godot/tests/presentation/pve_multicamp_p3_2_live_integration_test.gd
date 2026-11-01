@@ -162,6 +162,10 @@ func _run() -> void:
 		state.runtime_last_wall_unix = int(Time.get_unix_time_from_system())
 		state.runtime_unconsumed_wall_seconds = 0.0
 	await process_frame
+	# The production P3.2 _process loop also drains shared-clock debt. This
+	# harness advances that same runtime explicitly, so stop only the QA scene
+	# poller after the first visible PVE frame; keep map rendering and VFX live.
+	ui.set_process(false)
 	var encounter := HuntingPveRunV2.active_multicamp_id(state)
 	var restored := HuntingPveRunV2.resume_active(state,encounter)
 	if not _check(not encounter.is_empty() and bool(restored.get("ok",false)),

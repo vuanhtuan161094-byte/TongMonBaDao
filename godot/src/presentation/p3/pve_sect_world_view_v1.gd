@@ -148,10 +148,13 @@ func _create_zoom_controls() -> void:
 	_zoom_out_button = _make_zoom_button("PveWorldZoomOut","−","Thu nhỏ bản đồ")
 	for entry in [[_zoom_in_button,176.0],[_zoom_out_button,226.0]]:
 		var button: Button = entry[0]
-		button.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-		button.offset_left = -60.0
+		# The right edge is covered by the live Combat V2 facts panel in the
+		# 1280x720 P3.2 layout. Keep the controls in the clear left gutter below
+		# the status card so both mouse and touch can reach them.
+		button.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		button.offset_left = 12.0
 		button.offset_top = float(entry[1])
-		button.offset_right = -12.0
+		button.offset_right = 60.0
 		button.offset_bottom = float(entry[1])+44.0
 		add_child(button)
 	_zoom_in_button.pressed.connect(_zoom_in_at_center)

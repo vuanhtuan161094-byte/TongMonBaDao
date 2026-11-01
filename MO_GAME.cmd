@@ -24,8 +24,8 @@ if not exist "%TMB_ROOT%godot\assets\p3\character_creator\parts\female_normal_v1
   if errorlevel 1 goto :asset_failed
 )
 echo [OK] Godot: %TMB_GODOT%
-echo [INFO] Dang mo game PvE 1280x720 voi save QA rieng.
-call "%TMB_ROOT%tools\windows\run\Run-PVE-Play.cmd"
+echo [INFO] Dang mo game ONE GAME P3.2 1280x720 voi profile save moi rieng.
+call "%TMB_ROOT%tools\windows\run\Run-OneGame-NewGame.cmd"
 set "TMB_EXIT=%ERRORLEVEL%"
 if not "%TMB_EXIT%"=="0" goto :game_error
 exit /b 0
