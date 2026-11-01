@@ -278,6 +278,21 @@ static func validate(state: SimulationState) -> Array[String]:
     if not (saved_rooms is Dictionary) or not (build_receipts is Dictionary):
         errors.append("Residence saved room or construction receipts are malformed.")
         return errors
+    # DD-07: a paid construction receipt must continue to refer to the
+    # exact real House. A phantom receipt otherwise returns "already_settled"
+    # after reload while the owned building no longer exists.
+    var paid_houses: Dictionary = {}
+    for raw_request in build_receipts.keys():
+        var request_id := str(raw_request)
+        var paid_id := str(build_receipts[raw_request])
+        if request_id.is_empty() or paid_id == "residence_001" or paid_houses.has(paid_id):
+            errors.append("Residence invalid/duplicate paid construction receipt.")
+            continue
+        var paid_building = state.buildings.get(paid_id)
+        if not (paid_building is BuildingState) or paid_building.building_type != TYPE:
+            errors.append("Residence construction receipt references missing paid house.")
+            continue
+        paid_houses[paid_id] = true
     var rooms: Dictionary = saved_rooms
     for raw_id in rooms.keys():
         if not state.disciples.has(StringName(raw_id)):
