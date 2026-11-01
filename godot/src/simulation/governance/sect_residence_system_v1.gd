@@ -63,6 +63,7 @@ static func ensure_live(state: SimulationState) -> Dictionary:
         governance["legacy_bed_credit"] = maxi(0, state.sect.lodging_capacity - START_BEDS)
         governance["residence_schema"] = SCHEMA_VERSION
         governance["residence_build_receipts"] = {}
+        governance["residence_assignments"] = {}
     if int(governance.get("residence_schema", 0)) != SCHEMA_VERSION:
         return {"ok": false, "reason": "unsupported_residence_schema"}
     var houses := all_houses(state)
@@ -73,6 +74,7 @@ static func ensure_live(state: SimulationState) -> Dictionary:
         state.buildings[str(starter.id)] = starter
         state.building_event_count += 1
     refresh_capacity(state)
+    auto_assign_beds(state)
     return {"ok": true}
 
 static func build_cost(state: SimulationState) -> Dictionary:
@@ -149,6 +151,84 @@ static func upgrade_room_projection(state: SimulationState, building_id: StringN
         "cost": BuildingSystem.new().upgrade_cost(building)
     }
 
+static func auto_assign_beds(state: SimulationState) -> void:
+    if not SectHallSystemV1.installed(state):
+        return
+    var existing: Dictionary = state.sect.hall_governance.get("residence_assignments", {}).duplicate(true)
+    var houses := all_houses(state)
+    var capacities: Dictionary = {}
+    var used: Dictionary = {}
+    for house in houses:
+        capacities[str(house.id)] = beds_for_level(house.level)
+        used[str(house.id)] = 0
+    # Retain valid reservations, then assign remaining in deterministic order.
+    var stable: Dictionary = {}
+    var ids: Array = state.disciples.keys()
+    ids.sort()
+    for raw_id in ids:
+        var did := str(raw_id)
+        var home := str(existing.get(did, ""))
+        if not capacities.has(home):
+            continue
+        if int(used[home]) < int(capacities[home]):
+            stable[did] = home
+            used[home] = int(used[home]) + 1
+    for raw_id in ids:
+        var did := str(raw_id)
+        if stable.has(did):
+            continue
+        for house in houses:
+            var key := str(house.id)
+            if int(used[key]) < int(capacities[key]):
+                stable[did] = key
+                used[key] = int(used[key]) + 1
+                break
+    state.sect.hall_governance["residence_assignments"] = stable
+
+static func house_of(state: SimulationState, disciple_id: StringName) -> String:
+    if not SectHallSystemV1.installed(state):
+        return ""
+    var assignments: Dictionary = state.sect.hall_governance.get("residence_assignments", {})
+    return str(assignments.get(str(disciple_id), ""))
+
+static func assign_room(state: SimulationState, disciple_id: StringName, house_id: StringName) -> Dictionary:
+    if not SectHallSystemV1.installed(state) or not state.disciples.has(disciple_id):
+        return {"ok": false, "reason": "disciple_missing"}
+    var house = state.buildings.get(str(house_id))
+    if not (house is BuildingState) or house.building_type != TYPE:
+        return {"ok": false, "reason": "house_missing"}
+    var current: Dictionary = state.sect.hall_governance.get("residence_assignments", {})
+    if str(current.get(str(disciple_id), "")) == str(house_id):
+        return {"ok": true, "unchanged": true}
+    var count := 0
+    for other in current.values():
+        if str(other) == str(house_id):
+            count += 1
+    if count >= beds_for_level(house.level):
+        return {"ok": false, "reason": "house_full"}
+    var changed := current.duplicate(true)
+    changed[str(disciple_id)] = str(house_id)
+    state.sect.hall_governance["residence_assignments"] = changed
+    return {"ok": true}
+
+static func comfort_factor(state: SimulationState, disciple_id: StringName) -> float:
+    if not SectHallSystemV1.installed(state):
+        return 1.0
+    var id := house_of(state, disciple_id)
+    var house = state.buildings.get(id)
+    if not (house is BuildingState) or house.building_type != TYPE:
+        return 1.0
+    var lvl: int = house.level
+    if lvl >= 100:
+        return 1.20
+    if lvl >= 75:
+        return 1.15
+    if lvl >= 50:
+        return 1.10
+    if lvl >= 20:
+        return 1.05
+    return 1.0
+
 static func validate(state: SimulationState) -> Array[String]:
     var errors: Array[String] = []
     if not SectHallSystemV1.installed(state):
@@ -172,4 +252,17 @@ static func validate(state: SimulationState) -> Array[String]:
         errors.append("Residence bed capacity diverges from canonical houses.")
     if state.sect.disciple_capacity != maxi(state.disciples.size(), current_limit(state)):
         errors.append("Residence recruitment cap diverges from rank/bed authority.")
+    var occupied: Dictionary = {}
+    var rooms: Dictionary = state.sect.hall_governance.get("residence_assignments", {})
+    for raw_id in rooms.keys():
+        if not state.disciples.has(StringName(raw_id)):
+            errors.append("Residence room assignment points at missing disciple.")
+        var hid := str(rooms[raw_id])
+        if not state.buildings.has(hid):
+            errors.append("Residence room assignment references missing house.")
+            continue
+        occupied[hid] = int(occupied.get(hid, 0)) + 1
+    for house in houses:
+        if int(occupied.get(str(house.id), 0)) > beds_for_level(house.level):
+            errors.append("Residence overbooked house beds.")
     return errors
