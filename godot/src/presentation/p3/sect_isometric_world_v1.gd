@@ -553,18 +553,20 @@ static func visual_anchor(destination: StringName, cell: Vector2i) -> Vector2:
     # For all other destinations the existing V1 anchor remains authoritative.
     return Vector2(cell)+HOUSE_FOOTPRINT_CENTERS.get(str(destination),Vector2.ZERO)
 
-static func exterior_door_cell(destination: StringName, instance_index: int = 1) -> Vector2i:
-    var origin := producer_cell(destination, instance_index)
+static func exterior_door_cell(destination: StringName, instance_index: int = 1,
+        saved_origin: Vector2i = SectResidenceSiteV1.UNSELECTED) -> Vector2i:
+    var origin := saved_origin if saved_origin != SectResidenceSiteV1.UNSELECTED else producer_cell(destination,instance_index)
     # The courtyard/gate are open ground, not enterable building interiors.
     return origin + EXTERIOR_DOOR_OFFSETS.get(str(destination), Vector2i.ZERO)
 
-static func virtual_legacy_point(destination: StringName, building_id: StringName = &"") -> Vector2:
+static func virtual_legacy_point(destination: StringName, building_id: StringName = &"",
+        saved_origin: Vector2i = SectResidenceSiteV1.UNSELECTED) -> Vector2:
     var sequence := 1
     if building_id != &"":
         sequence = maxi(int(str(building_id).get_slice("_",str(building_id).get_slice_count("_")-1)),1)
-    # This function is exclusively used for destination-facing disciple
-    # movement. Building meshes/picking still use visual_anchor() separately.
-    var entrance := exterior_door_cell(destination,sequence)
+    # Actual House coordinates are canonical BuildingState fields, not a
+    # second world placement ledger. Display art/picking use same site.
+    var entrance := exterior_door_cell(destination,sequence,saved_origin)
     return LEGACY_ANCHOR+project(Vector2(entrance))-project(CENTER_CELL)
 
 static func producer_cell(destination: StringName, instance_index: int) -> Vector2i:
@@ -613,7 +615,10 @@ func refresh_from_state(state: SimulationState) -> void:
                 if building.building_type == BuildingSystem.TYPE_RESIDENCE \
                         and building.status == BuildingSystem.STATUS_CONSTRUCTING:
                     live_label += " · đang xây"
-                rows.append(_row(dest,building.id,live_label,building.instance_index,true))
+                var owned_site := SectResidenceSiteV1.origin_of(building) \
+                    if building.building_type == BuildingSystem.TYPE_RESIDENCE \
+                    else SectResidenceSiteV1.UNSELECTED
+                rows.append(_row(dest,building.id,live_label,building.instance_index,true,owned_site))
         else:
             # A visual landmark/destination is NOT a BuildingState.
             rows.append(_row(dest,&"",str(dest).replace("_"," ").capitalize(),1,false))
@@ -626,8 +631,11 @@ func refresh_from_state(state: SimulationState) -> void:
     pve_static_queue_dirty = true
     queue_redraw()
 
-func _row(dest: StringName, instance_id: StringName, text_label: String, index: int, managed: bool) -> Dictionary:
+func _row(dest: StringName, instance_id: StringName, text_label: String, index: int,
+        managed: bool, saved_origin: Vector2i = SectResidenceSiteV1.UNSELECTED) -> Dictionary:
     var cell: Vector2i = producer_cell(dest,index) if managed else TYPE_ANCHORS.get(str(dest),Vector2i(90,92))
+    if saved_origin != SectResidenceSiteV1.UNSELECTED:
+        cell = saved_origin
     return {
         "destination":dest,
         "building_id":instance_id,
