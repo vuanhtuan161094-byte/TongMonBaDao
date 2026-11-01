@@ -32,6 +32,7 @@ const TYPE_ANCHORS := {
     "gate": Vector2i(96,102)
 }
 const PRODUCER_TYPES := {
+    "main_hall":"main_hall",
     "mine":"mine",
     "linh_forest":"linh_forest",
     "spirit_field":"spirit_field",
@@ -579,8 +580,8 @@ func refresh_from_state(state: SimulationState) -> void:
             var matching: Array = producer_buckets.get(str(PRODUCER_TYPES[str(dest)]),[])
             # Old P0/P3.7 fixture saves still draw their existing generic
             # Residence landmark; new live saves draw actual house IDs.
-            if matching.is_empty() and dest == SectMapPresentation.DEST_RESIDENCE:
-                rows.append(_row(dest,&"","Đệ Tử Xá",1,false))
+            if matching.is_empty() and dest in [SectMapPresentation.DEST_RESIDENCE, SectMapPresentation.DEST_MAIN_HALL]:
+                rows.append(_row(dest,&"","Đệ Tử Xá" if dest == SectMapPresentation.DEST_RESIDENCE else "Đại Điện",1,false))
             for building in matching:
                 rows.append(_row(dest,building.id,str(building.display_name),building.instance_index,true))
         else:
