@@ -60,21 +60,30 @@ func _run() -> void:
     var buildings := BuildingSystem.new()
     var cost := buildings.upgrade_cost(first)
     var money_before := state.sect.spirit_stones
-    var begin := buildings.start_upgrade(state, first.id)
+    var begin := buildings.start_upgrade(state, first.id, "qa-house-upgrade-001-to-002")
     if not _assert(bool(begin.get("ok", false)), "cannot start Lv1→2 real building upgrade"):
         return
     if not _assert(state.sect.spirit_stones == money_before - int(cost["spirit_stones"]),
             "Residence upgrade did not debit exactly once"):
         return
-    var repeated := buildings.start_upgrade(state, first.id)
-    if not _assert(not bool(repeated.get("ok", true)) and state.sect.spirit_stones == money_before - int(cost["spirit_stones"]),
-            "repeat click debited again"):
+    var repeated := buildings.start_upgrade(state, first.id, "qa-house-upgrade-001-to-002")
+    if not _assert(bool(repeated.get("already_settled", false)) \
+            and state.sect.spirit_stones == money_before - int(cost["spirit_stones"]),
+            "repeat click must replay one paid start, not double debit"):
         return
     for _step in range(int(ceil(first.upgrade_required_work)) + 1):
         state.tick += 1
         buildings.process_tick(state)
     if not _assert(first.level == 2 and state.sect.lodging_capacity == 10 and state.sect.disciple_capacity == 10,
             "Lv2 upgrade did not grant 2 actual beds"):
+        return
+    # Replay of a delayed pre-upgrade UI event AFTER completion must not
+    # advance the same House to Lv3 or spend a second time.
+    var old_upgrade_replay := buildings.start_upgrade(state, first.id, "qa-house-upgrade-001-to-002")
+    if not _assert(bool(old_upgrade_replay.get("already_settled", false)) \
+            and first.level == 2 and not first.is_upgrading() \
+            and state.sect.spirit_stones == money_before - int(cost["spirit_stones"]),
+            "delayed duplicate upgrade advanced another level"):
         return
     if not _assert(recruit.can_accept_more(state), "Residence upgrade did not unlock ninth disciple"):
         return
