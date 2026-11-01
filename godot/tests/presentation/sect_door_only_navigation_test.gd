@@ -16,14 +16,13 @@ func _require(condition: bool, reason: String) -> bool:
     return false
 
 func _run() -> void:
-    var iso := SectIsometricWorldV1
     var map := SectIsoMapModelV1.new(Vector2i(192, 192), Vector2i(96, 102))
     var tested := 0
     # Original three PV01 building doors must match canonical footprint
     # geometry, including rotation-zero exterior entrance direction.
     for kind in ["main_hall", "warehouse", "forge"]:
-        var origin: Vector2i = iso.TYPE_ANCHORS[kind]
-        var door := iso.exterior_door_cell(StringName(kind), 1)
+        var origin: Vector2i = SectIsometricWorldV1.TYPE_ANCHORS[kind]
+        var door := SectIsometricWorldV1.exterior_door_cell(StringName(kind), 1)
         if not _require(door == map.doorway(kind, origin, 0),
                 "model door and sect actor destination disagree for " + kind):
             return
@@ -36,10 +35,10 @@ func _run() -> void:
     # cells; no painted road or path-to-spawn is consulted in production.
     var residence_doors: Dictionary = {}
     for index in range(1, 11):
-        var origin := iso.producer_cell(SectMapPresentation.DEST_RESIDENCE,index)
-        var door := iso.exterior_door_cell(SectMapPresentation.DEST_RESIDENCE,index)
-        if not _require(iso.GRID.x > door.x and iso.GRID.y > door.y
-                and iso.STARTER.has_point(door),
+        var origin := SectIsometricWorldV1.producer_cell(SectMapPresentation.DEST_RESIDENCE,index)
+        var door := SectIsometricWorldV1.exterior_door_cell(SectMapPresentation.DEST_RESIDENCE,index)
+        if not _require(SectIsometricWorldV1.GRID.x > door.x and SectIsometricWorldV1.GRID.y > door.y
+                and SectIsometricWorldV1.STARTER.has_point(door),
                 "House entrance outside starter for residence #%d" % index):
             return
         if not _require(not Rect2i(origin,Vector2i(3,3)).has_point(door),
@@ -50,8 +49,8 @@ func _run() -> void:
             return
         residence_doors[door] = true
         var id := StringName("residence_%03d" % index)
-        var expected := iso.LEGACY_ANCHOR + iso.project(Vector2(door)) - iso.project(iso.CENTER_CELL)
-        if not _require(iso.virtual_legacy_point(SectMapPresentation.DEST_RESIDENCE,id).distance_to(expected) < 0.001,
+        var expected := SectIsometricWorldV1.LEGACY_ANCHOR + SectIsometricWorldV1.project(Vector2(door)) - SectIsometricWorldV1.project(SectIsometricWorldV1.CENTER_CELL)
+        if not _require(SectIsometricWorldV1.virtual_legacy_point(SectMapPresentation.DEST_RESIDENCE,id).distance_to(expected) < 0.001,
                 "live actor is targeting roof/center instead of exterior door #" + str(index)):
             return
         tested += 1
