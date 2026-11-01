@@ -156,7 +156,8 @@ static func build_cost(state: SimulationState) -> Dictionary:
         "spirit_stones": 5000 * ordinal
     }
 
-static func can_construct(state: SimulationState) -> Dictionary:
+static func can_construct(state: SimulationState,
+        selected_site: Vector2i = SectResidenceSiteV1.UNSELECTED) -> Dictionary:
     if not SectHallSystemV1.installed(state) or int(state.sect.hall_governance.get("residence_schema", 0)) != SCHEMA_VERSION:
         return {"ok": false, "reason": "residence_not_enabled"}
     var current := all_houses(state)
@@ -165,6 +166,15 @@ static func can_construct(state: SimulationState) -> Dictionary:
     var next_id := "residence_%03d" % [current.size() + 1]
     if state.buildings.has(next_id):
         return {"ok": false, "reason": "residence_id_collision"}
+    var site := selected_site
+    if site == SectResidenceSiteV1.UNSELECTED:
+        var free := SectResidenceSiteV1.available_plots(state)
+        if free.is_empty():
+            return {"ok": false, "reason": "no_free_house_plot"}
+        site = free[0]
+    var plot_check := SectResidenceSiteV1.check(state, site)
+    if not bool(plot_check.get("ok",false)):
+        return plot_check
     var cost := build_cost(state)
     var system := BuildingSystem.new()
     for key in cost.keys():
@@ -173,9 +183,11 @@ static func can_construct(state: SimulationState) -> Dictionary:
                 return {"ok": false, "reason": "missing_spirit_stones", "need": cost[key], "have": state.sect.spirit_stones}
         elif system._resource_available(state, StringName(key)) < int(cost[key]):
             return {"ok": false, "reason": "missing_material", "material_id": str(key), "need": cost[key], "have": system._resource_available(state, StringName(key))}
-    return {"ok": true, "cost": cost, "next_id": next_id}
+    return {"ok": true, "cost": cost, "next_id": next_id,
+        "site": site, "door": SectResidenceSiteV1.doorway(site)}
 
-static func construct(state: SimulationState, request_id: String) -> Dictionary:
+static func construct(state: SimulationState, request_id: String,
+        selected_site: Vector2i = SectResidenceSiteV1.UNSELECTED) -> Dictionary:
     if request_id.is_empty() or request_id.length() > 100:
         return {"ok": false, "reason": "invalid_request_id"}
     if not SectHallSystemV1.installed(state):
@@ -186,8 +198,12 @@ static func construct(state: SimulationState, request_id: String) -> Dictionary:
         var settled_house = state.buildings.get(settled_id)
         if not (settled_house is BuildingState) or settled_house.building_type != TYPE:
             return {"ok": false, "reason": "settled_house_receipt_without_building"}
-        return {"ok": true, "already_settled": true, "building_id": settled_id}
-    var check := can_construct(state)
+        var settled_origin := SectResidenceSiteV1.origin_of(settled_house)
+        if selected_site != SectResidenceSiteV1.UNSELECTED and settled_origin != selected_site:
+            return {"ok": false, "reason": "conflicting_house_plot_replay"}
+        return {"ok": true, "already_settled": true, "building_id": settled_id,
+            "site": settled_origin}
+    var check := can_construct(state,selected_site)
     if not bool(check.get("ok", false)):
         return check
     var cost: Dictionary = check["cost"]
@@ -202,6 +218,9 @@ static func construct(state: SimulationState, request_id: String) -> Dictionary:
         return {"ok": false, "reason": "materials_changed"}
     state.sect.spirit_stones -= int(cost["spirit_stones"])
     var duration := construction_duration_ticks(ordinal)
+    var site: Vector2i = check["site"]
+    house.production_state["site_x"] = site.x
+    house.production_state["site_y"] = site.y
     house.status = BuildingSystem.STATUS_CONSTRUCTING
     house.production_state["construction_started_tick"] = state.tick
     house.production_state["construction_finish_tick"] = state.tick + duration
@@ -214,6 +233,7 @@ static func construct(state: SimulationState, request_id: String) -> Dictionary:
     refresh_capacity(state)
     auto_assign_beds(state)
     return {"ok": true, "building_id": str(house.id), "cost": cost,
+        "site": site, "door": SectResidenceSiteV1.doorway(site),
         "construction_finish_tick": state.tick + duration,
         "construction_duration_ticks": duration}
 
@@ -350,6 +370,14 @@ static func validate(state: SimulationState) -> Array[String]:
         seen[str(house.id)] = true
         if house.level < 1 or house.level > 100:
             errors.append("Residence invalid house level.")
+        if not SectResidenceSiteV1.has_valid_site_fields(house):
+            errors.append("Residence contains malformed saved plot coordinates.")
+        elif index == 0:
+            if SectResidenceSiteV1.origin_of(house) != SectResidenceSiteV1.LEGACY_STARTER:
+                errors.append("Residence starter plot cannot be relocated.")
+        elif not bool(SectResidenceSiteV1.check(
+                state,SectResidenceSiteV1.origin_of(house),str(house.id)).get("ok",false)):
+            errors.append("Residence paid House plot overlaps a footprint or blocks a door.")
         if house.status == BuildingSystem.STATUS_CONSTRUCTING:
             if index == 0 or house.level != 1 or house.is_upgrading():
                 errors.append("Residence starter/level cannot be under construction.")
