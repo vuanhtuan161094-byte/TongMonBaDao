@@ -58,7 +58,7 @@ func _run() -> void:
         return
     var actor: DiscipleState = state.disciples[master_id]
     var sources := SectHallSystemV1.cultivation_sources(state, actor)
-    if not _check(sources.size() == 2, "Master and Teacher must expose two natural-XP sources"):
+    if not _check(sources.size() == 3, "Master D7 and the two natural-XP roles must expose exactly three additive sources"):
         return
     var baseline_factor := FoundationSystem.new().cultivation_gain_factor(actor.aptitude)
     # Preview's contract is tested by real source factory, without granting XP.
@@ -68,7 +68,7 @@ func _run() -> void:
     )
     if not _check(bool(preview.get("ok", false)), "natural XP source rejected"):
         return
-    if not _check(absf(float(preview.get("natural_factor", 0.0)) - baseline_factor - 0.11) < 0.0001,
+    if not _check(absf(float(preview.get("natural_factor", 0.0)) - baseline_factor - 0.1725) < 0.0001,
             "office sources did not combine additively on natural XP"):
         return
     var fixed := DiscipleRealmProgressV2.grant_xp(
