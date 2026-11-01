@@ -272,13 +272,15 @@ const DEFINITIONS := {
 }
 
 func has(resource_id: StringName) -> bool:
-    return DEFINITIONS.has(str(resource_id)) or _v63_definitions.has(str(resource_id))
+    return DEFINITIONS.has(str(resource_id)) or _v63_definitions.has(str(resource_id)) or not MedicineCatalogueV2.definition(resource_id).is_empty()
 
 func definition(resource_id: StringName) -> Dictionary:
     var id := str(resource_id)
     if DEFINITIONS.has(id):
         return DEFINITIONS[id]
-    return _v63_definitions.get(id,{})
+    if _v63_definitions.has(id):
+        return _v63_definitions[id]
+    return MedicineCatalogueV2.definition(resource_id)
 
 func display_name(resource_id: StringName) -> String:
     return str(definition(resource_id).get("name", resource_id))
@@ -314,13 +316,16 @@ func all_resource_ids() -> Array[StringName]:
     for id in _v63_definitions.keys():
         if not ids.has(id):
             ids.append(id)
+    for pill_id in MedicineCatalogueV2.all_item_ids():
+        if not ids.has(str(pill_id)):
+            ids.append(str(pill_id))
     ids.sort()
     for raw_id in ids:
         result.append(StringName(raw_id))
     return result
 
 func validate_definitions() -> Array[String]:
-    var errors: Array[String] = []
+    var errors: Array[String] = MedicineCatalogueV2.validate_catalogue()
     for resource_id in all_resource_ids():
         var data := definition(resource_id)
         if str(data.get("name", "")) == "":

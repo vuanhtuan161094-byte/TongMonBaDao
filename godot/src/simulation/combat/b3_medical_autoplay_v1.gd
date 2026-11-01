@@ -70,7 +70,10 @@ static func review(state: SimulationState, battle: MapBattleV2) -> void:
         return
     var workforce := WorkforceSystem.new()
     if d.hp/d.max_hp < MIN_HP_RATIO and p["auto_heal"]:
-        var used := B3PillSatietyV1.consume(state,d,&"hoi_xuan_dan",B3PillSatietyV1.next_sequence(d))
+        var pill_id := MedicineAllocationV2.best_available(state, d, MedicineCatalogueV2.FAMILY_HEAL)
+        if pill_id == &"":
+            pill_id = &"hoi_xuan_dan"
+        var used := B3PillSatietyV1.consume(state,d,pill_id,B3PillSatietyV1.next_sequence(d))
         if used["ok"]:
             p["heals"] = int(p["heals"])+1
             p["status"] = "PILL_RECOVERY"
