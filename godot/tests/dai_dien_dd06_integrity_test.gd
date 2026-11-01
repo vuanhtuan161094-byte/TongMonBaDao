@@ -104,8 +104,11 @@ func _run() -> void:
         return
 
     # An orphaned office must not emit benefits when its building has vanished.
+    if not _expect(bool(SectHallSystemV1.dismiss(state, SectHallSystemV1.OFFICE_GUIDE).get("ok", false)),
+            "dismiss guide before assigning Chưởng Môn"):
+        return
     if not _expect(bool(SectHallSystemV1.appoint(state, SectHallSystemV1.OFFICE_MASTER,
-            StringName(str(state.disciples.keys()[0]))).get("ok", false)),
+            recruit_id).get("ok", false)),
             "appoint Chưởng Môn before missing-Hall check"):
         return
     state.buildings.erase("main_hall_001")
