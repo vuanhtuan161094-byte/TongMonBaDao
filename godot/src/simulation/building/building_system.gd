@@ -624,7 +624,28 @@ func can_start_upgrade(state: SimulationState, building_id: StringName) -> Dicti
         return {"ok": false, "reason": "missing_spirit_stones", "need": stone_need, "have": state.sect.spirit_stones}
     return {"ok": true, "cost": cost}
 
-func start_upgrade(state: SimulationState, building_id: StringName) -> Dictionary:
+func start_upgrade(state: SimulationState, building_id: StringName, request_id: String = "") -> Dictionary:
+    # DD-08: Hall/Residence UI submits the ID bound at render time.
+    # Replay of a completed request returns the saved receipt, never starts a
+    # different level or charges again. The optional ID keeps legacy building
+    # fixtures/source callers unchanged until they migrate to this contract.
+    var stored_building = state.buildings.get(str(building_id)) if state != null else null
+    var governed := SectHallSystemV1.installed(state) and stored_building is BuildingState \
+        and stored_building.building_type in [TYPE_MAIN_HALL, TYPE_RESIDENCE]
+    if governed and not request_id.is_empty():
+        if request_id.length() > 120:
+            return {"ok": false, "reason": "upgrade_request_id_too_long"}
+        var previous = state.sect.hall_governance.get("upgrade_receipts", {})
+        if not (previous is Dictionary):
+            return {"ok": false, "reason": "malformed_upgrade_receipts"}
+        if previous.has(request_id):
+            var prior = previous[request_id]
+            if not (prior is Dictionary) or str(prior.get("building_id", "")) != str(building_id):
+                return {"ok": false, "reason": "conflicting_upgrade_request"}
+            return {"ok": true, "already_settled": true,
+                "building_id": str(building_id),
+                "target_level": int(prior.get("target_level", 0)),
+                "receipt": prior.duplicate(true)}
     var check := can_start_upgrade(state, building_id)
     if not bool(check.get("ok", false)):
         return check
@@ -642,6 +663,15 @@ func start_upgrade(state: SimulationState, building_id: StringName) -> Dictionar
     building.upgrade_required_work = upgrade_required_work(building)
     building.upgrade_progress = 0.0
     state.building_event_count += 1
+    if governed and not request_id.is_empty():
+        var receipts: Dictionary = state.sect.hall_governance.get("upgrade_receipts", {}).duplicate(true)
+        receipts[request_id] = {
+            "building_id": str(building.id),
+            "target_level": building.upgrade_target_level,
+            "started_tick": state.tick,
+            "cost": cost.duplicate(true)
+        }
+        state.sect.hall_governance["upgrade_receipts"] = receipts
     return {
         "ok": true,
         "building_id": str(building.id),
