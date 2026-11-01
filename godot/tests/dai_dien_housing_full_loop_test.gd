@@ -142,6 +142,23 @@ func _run() -> void:
         return
     if not _assert(SectHallSystemV1.validate(saved).is_empty(), "Hall/Residence loaded invariants fail"):
         return
+    # Durable SaveService path, not only an in-memory to_dict roundtrip.
+    var qa_path := "user://qa_dd02_housing_20261101.json"
+    var saver := SaveService.new()
+    if not _assert(saver.save_to_path(saved, qa_path) == OK, "SaveService durable write failed"):
+        return
+    var durable := saver.load_from_path(qa_path)
+    if not _assert(durable != null and SectHallSystemV1.rank_index(durable) == 2
+            and SectResidenceSystemV1.total_beds(durable) == 18
+            and SectResidenceSystemV1.house_of(durable, ninth_id) == str(first.id),
+            "SaveService durable reload failed"):
+        return
+    if not _assert(SectHallSystemV1.validate(durable).is_empty(),
+            "durable loaded Hall/Residence invariant fail"):
+        return
+    # Use only the dedicated QA path. Never remove other user saves.
+    DirAccess.remove_absolute(ProjectSettings.globalize_path(qa_path))
+    DirAccess.remove_absolute(ProjectSettings.globalize_path(qa_path + ".bak"))
     var view := DaiDienScreenV1.new()
     view.attach_state(saved)
     root.add_child(view)
