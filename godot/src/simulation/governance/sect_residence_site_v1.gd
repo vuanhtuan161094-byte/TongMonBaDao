@@ -7,6 +7,7 @@ extends RefCounted
 # historical location; no automatic relocation or player-save rewrites.
 const STARTER := Rect2i(72, 72, 48, 48)
 const HOUSE_FOOTPRINT := Vector2i(3, 3)
+const HOUSE_TYPE := &"residence"
 const DOOR_OFFSET := Vector2i(1, 3)
 const LEGACY_STARTER := Vector2i(76, 97)
 const UNSELECTED := Vector2i(-999, -999)
@@ -90,7 +91,7 @@ static func check(state: SimulationState, origin: Vector2i,
         if footprint.intersects(fixed) or fixed.has_point(entrance):
             return {"ok": false, "reason": "house_plot_occupied"}
     for row in state.buildings.values():
-        if not (row is BuildingState) or row.building_type != BuildingSystem.TYPE_RESIDENCE                 or str(row.id) == ignore_id:
+        if not (row is BuildingState) or row.building_type != HOUSE_TYPE                 or str(row.id) == ignore_id:
             continue
         if not has_valid_site_fields(row):
             return {"ok": false, "reason": "corrupt_existing_house_plot"}
