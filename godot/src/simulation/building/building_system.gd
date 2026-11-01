@@ -2,6 +2,7 @@ class_name BuildingSystem
 extends RefCounted
 
 const TYPE_MAIN_HALL := &"main_hall"
+const TYPE_RESIDENCE := &"residence"
 const TYPE_MINE := &"mine"
 const TYPE_LINH_FOREST := &"linh_forest"
 const TYPE_ALCHEMY_HALL := &"alchemy_hall"
@@ -73,6 +74,15 @@ const DEFINITIONS := {
         "base_upgrade_work": 8.0,
         "upgrade_work_per_level": 2.0,
         "upgrade_enabled": true,
+        "requires_milestone_component": false
+    },
+    "residence": {
+        "name": "Đệ Tử Xá", "max_level": 100,
+        "worker_group_id": "", "base_worker_slots": 0,
+        "worker_slot_every": 0,
+        "base_wood_cost": 35, "base_ore_cost": 25,
+        "base_stone_cost": 500, "base_upgrade_work": 8.0,
+        "upgrade_work_per_level": 2.0, "upgrade_enabled": true,
         "requires_milestone_component": false
     },
     "mine": {
@@ -588,6 +598,13 @@ func can_start_upgrade(state: SimulationState, building_id: StringName) -> Dicti
         return {"ok": false, "reason": "upgrade_content_pending"}
     if building.building_type == TYPE_BODY_TRAINING:
         return {"ok": false, "reason": "body_training_upgrade_content_pending"}
+    if SectHallSystemV1.installed(state) and building.building_type != TYPE_MAIN_HALL:
+        var governing_hall := SectHallSystemV1.hall(state)
+        if governing_hall == null:
+            return {"ok": false, "reason": "governing_hall_missing"}
+        var max_authorized := mini(100, maxi(10, governing_hall.level * 2 + 8))
+        if building.level + 1 > max_authorized:
+            return {"ok": false, "reason": "main_hall_level_gate", "maximum": max_authorized}
     var target_level := building.level + 1
     var requires_milestone_component := bool(definition_for(building).get("requires_milestone_component", true))
     if MILESTONE_LEVELS.has(target_level) and requires_milestone_component and _milestone_component(building.building_type, target_level) == "":
@@ -783,7 +800,8 @@ func perform_alchemy_step(state: SimulationState, disciple: DiscipleState, profe
     if str(data.get("recipe_id", "")) != str(recipe_id):
         data["recipe_id"] = str(recipe_id)
     var sequence := int(data.get("job_sequence", 0)) + 1
-    var duration := maxi(1, int(ceil(float(alchemy_registry.base_cycle_ticks(recipe_id)) / maxf(work_speed, 0.25))))
+    var alchemy_factor := 1.0 - SectHallSystemV1.role_effect(state, SectHallSystemV1.OFFICE_ALCHEMIST)
+    var duration := maxi(1, int(ceil(float(alchemy_registry.base_cycle_ticks(recipe_id)) * alchemy_factor / maxf(work_speed, 0.25))))
     var output_id := alchemy_registry.output_resource_id(recipe_id)
     var graded_output := MedicineCatalogueV2.output_for_job(recipe_id, profession_level, hall.level)
     if graded_output != &"":
@@ -1046,7 +1064,8 @@ func _start_resource_timer(state: SimulationState, producer: BuildingState, acto
         return {"ok":false,"reason":"wrong_job_profession"}
     var policy := state.sect.economy_a_policy
     var base_duration := clampi(int(policy.get("resource_duration_ticks",10)),1,1440)
-    var duration := maxi(1,int(ceil(float(base_duration)/maxf(speed,0.25))))
+    var steward_factor := 1.0 - SectHallSystemV1.role_effect(state, SectHallSystemV1.OFFICE_STEWARD)
+    var duration := maxi(1,int(ceil(float(base_duration) * steward_factor / maxf(speed,0.25))))
     var data := producer.production_state.duplicate(true)
     var jobs := resource_timer_jobs(producer)
     var sequence := maxi(int(data.get("economy_a_sequence",0)),0)+1
@@ -1329,6 +1348,8 @@ func _complete_upgrade(state: SimulationState, building: BuildingState) -> void:
     building.upgrade_progress = 0.0
     building.metrics["upgrade_completions"] = int(building.metrics.get("upgrade_completions", 0)) + 1
     state.building_event_count += 1
+    if SectHallSystemV1.installed(state) and building.building_type in [TYPE_MAIN_HALL, TYPE_RESIDENCE]:
+        SectResidenceSystemV1.refresh_capacity(state)
 
 func _process_spirit_field_plots(state: SimulationState, field: BuildingState) -> void:
     var data := _ensure_spirit_field_state(state, field)
@@ -1644,6 +1665,11 @@ func _deposit_resource(state: SimulationState, building: BuildingState, resource
     building.metrics["production_batches"] = int(building.metrics.get("production_batches", 0)) + 1
     building.metrics["units_produced"] = int(building.metrics.get("units_produced", 0)) + quantity
     state.building_event_count += 1
+    SectHallSystemV1.record_prestige(state, 1)
+    if building.building_type == TYPE_ALCHEMY_HALL:
+        SectHallSystemV1.record_office_event(state, SectHallSystemV1.OFFICE_ALCHEMIST, true)
+    elif building.building_type in [TYPE_MINE, TYPE_LINH_FOREST, TYPE_SPIRIT_FIELD]:
+        SectHallSystemV1.record_office_event(state, SectHallSystemV1.OFFICE_STEWARD, true)
     return true
 
 func _resource_available(state: SimulationState, resource_id: StringName) -> int:
