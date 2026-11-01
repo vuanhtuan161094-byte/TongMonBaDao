@@ -34,7 +34,8 @@ const TYPE_ANCHORS := {
 const PRODUCER_TYPES := {
     "mine":"mine",
     "linh_forest":"linh_forest",
-    "spirit_field":"spirit_field"
+    "spirit_field":"spirit_field",
+    "residence":"residence"
 }
 # Deterministic QA display slots for canonical endgame instances. These are
 # presentation-only because P3.2 has no persisted per-building placement yet.
@@ -42,7 +43,9 @@ const PRODUCER_TYPES := {
 const PRODUCER_DISTRICTS := {
     "mine":{"origin":Vector2i(16,18),"columns":6,"column_step":6,"row_step":6},
     "linh_forest":{"origin":Vector2i(16,126),"columns":6,"column_step":6,"row_step":6},
-    "spirit_field":{"origin":Vector2i(130,72),"columns":8,"column_step":5,"row_step":7}
+    "spirit_field":{"origin":Vector2i(130,72),"columns":8,"column_step":5,"row_step":7},
+    # Deterministic temporary village annex sites; not editable placement.
+    "residence":{"origin":Vector2i(86,111),"columns":6,"column_step":6,"row_step":0}
 }
 const HOUSE_TEXTURES := {
     "main_hall":"pv01_assets/main_hall/510052.png",
@@ -574,6 +577,10 @@ func refresh_from_state(state: SimulationState) -> void:
         if PRODUCER_TYPES.has(str(dest)):
             # Only actual canonical instances; exact old ordering preserved.
             var matching: Array = producer_buckets.get(str(PRODUCER_TYPES[str(dest)]),[])
+            # Old P0/P3.7 fixture saves still draw their existing generic
+            # Residence landmark; new live saves draw actual house IDs.
+            if matching.is_empty() and dest == SectMapPresentation.DEST_RESIDENCE:
+                rows.append(_row(dest,&"","Đệ Tử Xá",1,false))
             for building in matching:
                 rows.append(_row(dest,building.id,str(building.display_name),building.instance_index,true))
         else:
