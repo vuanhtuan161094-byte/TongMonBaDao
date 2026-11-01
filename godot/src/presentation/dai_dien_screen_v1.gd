@@ -24,6 +24,11 @@ var _candidate_ids: Array[StringName] = []
 var _selected_index := 0
 var _candidate_selection_office := ""
 var _source_a_portraits: Dictionary = {}
+# One compact selector pair, not one node per disciple (safe at 480 roster).
+var _room_disciple_ids: Array[StringName] = []
+var _room_house_ids: Array[StringName] = []
+var _room_selected_disciple := 0
+var _room_selected_house := 0
 
 func attach_state(state: SimulationState) -> void:
     game_state = state
@@ -209,8 +214,12 @@ func _overview() -> void:
         int(game_state.sect.hall_governance.get("prestige", 0))
     ], 14, MUTED))
     var binding := "Cần nâng Đệ Tử Xá" if SectResidenceSystemV1.total_beds(game_state) < SectHallSystemV1.rank_population_limit(game_state) else "Cần thăng bậc Tông Môn"
-    if game_state.disciples.size() >= game_state.sect.disciple_capacity:
+    if game_state.disciples.size() >= SectResidenceSystemV1.current_limit(game_state):
         _content.add_child(_label("Đã đầy: %s" % binding, 14, GOLD))
+        if SectResidenceSystemV1.total_beds(game_state) < SectHallSystemV1.rank_population_limit(game_state):
+            _content.add_child(_button("ĐẾN ĐỆ TỬ XÁ", Callable(self, "_tab").bind(5), true))
+        else:
+            _content.add_child(_button("XEM ĐIỀU KIỆN THĂNG BẬC", Callable(self, "_tab").bind(3), true))
     _content.add_child(_label("CHỨC VỤ ĐANG BỔ NHIỆM", 17, GOLD))
     for office_id in OFFICES:
         var id := SectHallSystemV1.holder_id(game_state, office_id)
@@ -380,8 +389,13 @@ func _upgrades() -> void:
         int(cost.get(BuildingSystem.MATERIAL_ORE, 0)),
         int(cost.get("spirit_stones", 0))
     ], 15))
-    _content.add_child(_label("Tiến độ dự kiến %.0f tick mô phỏng · Chi phí DD-01 hiện là thử nghiệm, chưa phải cân bằng cuối." % buildings.upgrade_required_work(hall), 13, MUTED))
-    _content.add_child(_label("Lv3 mở Nội Vụ · Lv5 Hộ Pháp · Lv7 Đan Đạo · Lv10 Giới Luật: đang chờ consumer và nghiệm thu; không cấp buff giả.", 12, MUTED))
+    _content.add_child(_label("Kho hiện có: Linh Mộc %d · Thanh Thiết %d · Linh Thạch %d" % [
+        buildings._resource_available(game_state, BuildingSystem.MATERIAL_WOOD),
+        buildings._resource_available(game_state, BuildingSystem.MATERIAL_ORE),
+        game_state.sect.spirit_stones
+    ], 13, JADE))
+    _content.add_child(_label("Nguồn Mộc: Linh Lâm · Nguồn Thiết: Mỏ · Tiến độ %.0f tick · Giá đang thử nghiệm." % buildings.upgrade_required_work(hall), 13, MUTED))
+    _content.add_child(_label("Mốc chức vụ: Lv3 Nội Vụ · Lv5 Hộ Pháp · Lv7 Đan Đạo · Lv10 Giới Luật. Consumer đã nối code, chưa qua Godot QA.", 12, MUTED))
     var check := buildings.can_start_upgrade(game_state, hall.id)
     var upgrade := _button("BẮT ĐẦU NÂNG CẤP", Callable(self, "_start_upgrade"), true)
     upgrade.name = "UpgradeMainHall"
@@ -489,6 +503,39 @@ func _residences() -> void:
     ], 15))
     _content.add_child(_label("Mỗi Đệ Tử Xá có ID, Lv1–100 và danh sách cư dân riêng. Cấp 20/50/75/100 mở bonus hồi phục khi nghỉ.", 13, MUTED))
     var assignments: Dictionary = game_state.sect.hall_governance.get("residence_assignments", {})
+    # Large rosters use exactly two selectors plus one transaction button.
+    # No 480-card room allocation panel and no automatic reassignment of jobs.
+    _room_disciple_ids.clear()
+    _room_house_ids.clear()
+    var disciple_ids: Array = game_state.disciples.keys()
+    disciple_ids.sort()
+    for raw_id in disciple_ids:
+        _room_disciple_ids.append(StringName(str(raw_id)))
+    for house in SectResidenceSystemV1.all_houses(game_state):
+        _room_house_ids.append(house.id)
+    if not _room_disciple_ids.is_empty() and not _room_house_ids.is_empty():
+        _content.add_child(_label("PHÂN PHÒNG · THỦ CÔNG", 15, GOLD))
+        var disciple_picker := OptionButton.new()
+        disciple_picker.name = "ResidenceDiscipleSelector"
+        disciple_picker.custom_minimum_size.y = 46
+        for did in _room_disciple_ids:
+            var member: DiscipleState = game_state.disciples[did]
+            var current_house := SectResidenceSystemV1.house_of(game_state, did)
+            disciple_picker.add_item("%s · %s" % [member.display_name, current_house if not current_house.is_empty() else "chưa có giường"])
+        _room_selected_disciple = clampi(_room_selected_disciple, 0, _room_disciple_ids.size() - 1)
+        disciple_picker.select(_room_selected_disciple)
+        disciple_picker.item_selected.connect(Callable(self, "_select_room_disciple"))
+        _content.add_child(disciple_picker)
+        var house_picker := OptionButton.new()
+        house_picker.name = "ResidenceHouseSelector"
+        house_picker.custom_minimum_size.y = 46
+        for hid in _room_house_ids:
+            house_picker.add_item(str(hid))
+        _room_selected_house = clampi(_room_selected_house, 0, _room_house_ids.size() - 1)
+        house_picker.select(_room_selected_house)
+        house_picker.item_selected.connect(Callable(self, "_select_room_house"))
+        _content.add_child(house_picker)
+        _content.add_child(_button("XÁC NHẬN PHÂN PHÒNG", Callable(self, "_assign_room")))
     for house in SectResidenceSystemV1.all_houses(game_state):
         var occupied := 0
         for hid in assignments.values():
@@ -529,6 +576,29 @@ func _residences() -> void:
     build.tooltip_text = str(plan.get("reason", "")) if build.disabled else ""
     _content.add_child(build)
     _content.add_child(_label("Các nhà bổ sung hiện dùng danh sách cụm công trình gắn với điểm Đệ Tử Xá trên bản đồ. Kéo-thả và mở đất tùy ý chưa được kích hoạt.", 12, MUTED))
+
+func _select_room_disciple(index: int) -> void:
+    _room_selected_disciple = clampi(index, 0, maxi(0, _room_disciple_ids.size() - 1))
+    if not _room_disciple_ids.is_empty():
+        var current := SectResidenceSystemV1.house_of(game_state, _room_disciple_ids[_room_selected_disciple])
+        var house_index := _room_house_ids.find(StringName(current))
+        if house_index >= 0:
+            _room_selected_house = house_index
+    _refresh()
+
+func _select_room_house(index: int) -> void:
+    _room_selected_house = clampi(index, 0, maxi(0, _room_house_ids.size() - 1))
+
+func _assign_room() -> void:
+    if _room_disciple_ids.is_empty() or _room_house_ids.is_empty():
+        return
+    var did := _room_disciple_ids[_room_selected_disciple]
+    var hid := _room_house_ids[_room_selected_house]
+    var result := SectResidenceSystemV1.assign_room(game_state, did, hid)
+    feedback = "Đã lưu phân phòng." if bool(result.get("ok", false)) else "Không phân phòng được: %s" % str(result.get("reason", "unknown"))
+    if bool(result.get("ok", false)):
+        state_changed.emit()
+    _refresh()
 
 func _upgrade_house(house_id: StringName) -> void:
     var result := BuildingSystem.new().start_upgrade(game_state, house_id)
