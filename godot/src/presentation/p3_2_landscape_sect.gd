@@ -2312,73 +2312,44 @@ func _build_needs_priority_controls(title: String) -> void:
     ], state.sect.needs_priority, "_set_needs_priority_from_building")
 
 func _build_guidance_recruitment_controls() -> void:
-    _add_management_section_label("DẪN TIÊN")
-    var order := Button.new()
-    order.name = "GuidanceRecruitOrder"
-    order.text = "Dùng Chiêu Mộ Lệnh (%d)" % state.sect.disciple_recruitment_tokens
-    order.custom_minimum_size = Vector2(384, 36)
-    order.disabled = state.sect.disciple_recruitment_tokens <= 0
-    order.pressed.connect(_guidance_recruit_with_order)
-    building_management_container.add_child(order)
+    _add_management_section_label("DẪN TIÊN ĐÀI · HỒ SƠ D7")
+    var entry := Button.new()
+    entry.name = "OpenDanTienScreenV2"
+    entry.text = "MỞ DẪN TIÊN ĐÀI · TUYỂN ĐỆ TỬ"
+    entry.custom_minimum_size = Vector2(384, 42)
+    entry.add_theme_stylebox_override("normal", _style(JADE_DARK, PAPER_LIGHT, 1, 8))
+    entry.pressed.connect(_open_dan_tien_screen_v2)
+    building_management_container.add_child(entry)
 
-    _add_management_section_label("ỨNG VIÊN ĐANG CHỜ")
-    var ids: Array = state.recruitment_candidates.keys()
-    ids.sort()
-    if ids.is_empty():
-        var empty := Label.new()
-        empty.text = "Hiện chưa có ứng viên chờ xét."
-        empty.add_theme_font_size_override("font_size", 12)
-        building_management_container.add_child(empty)
+    var queue_label := Label.new()
+    queue_label.name = "DanTienQueueSummary"
+    queue_label.text = "Ứng viên: %d/%d · Lệnh: %d · Đệ tử: %d/%d\nXem Tam Căn/Tứ Tính, Linh Căn, thiên phú và chân dung Source A khi có asset." % [
+        state.recruitment_candidates.size(), RecruitmentSystem.C2_QUEUE_CAP,
+        state.sect.disciple_recruitment_tokens,
+        state.disciples.size(), state.sect.disciple_capacity
+    ]
+    queue_label.custom_minimum_size = Vector2(384, 50)
+    queue_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    queue_label.add_theme_font_size_override("font_size", 12)
+    building_management_container.add_child(queue_label)
+
+func _open_dan_tien_screen_v2() -> void:
+    if state == null:
         return
+    if get_node_or_null("DanTienScreenV2") != null:
+        return
+    var screen := DanTienScreenV2.new()
+    screen.name = "DanTienScreenV2"
+    screen.attach_state(state, recruitment_system)
+    screen.state_changed.connect(_on_dan_tien_screen_v2_changed)
+    add_child(screen)
+    screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
-    for raw_id in ids:
-        var candidate_id := StringName(raw_id)
-        var candidate: CandidateState = state.recruitment_candidates[candidate_id]
-        var card := VBoxContainer.new()
-        card.name = "RecruitCandidate_%s" % str(candidate_id)
-        card.custom_minimum_size = Vector2(384, 82)
-        card.add_theme_constant_override("separation", 4)
-        building_management_container.add_child(card)
-
-        var info := Label.new()
-        info.text = "%s · %s\nTư %.0f · Cốt %.0f · Duyên %.0f · Tuệ %.0f · Mị %.0f · Tiềm %.0f" % [
-            candidate.display_name,
-            str(DiscipleGeneratorV2.QUALITY_NAMES.get(str(candidate.disciple_quality), str(candidate.disciple_quality))),
-            candidate.aptitude,
-            candidate.constitution,
-            candidate.fortune,
-            candidate.comprehension,
-            candidate.charisma,
-            candidate.potential
-        ]
-        if not _candidate_recruitable(candidate):
-            info.text += "\nHồ sơ cũ: không thể nhận vào runtime V2; có thể từ chối."
-        info.custom_minimum_size = Vector2(384, 50)
-        info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-        info.add_theme_font_size_override("font_size", 11)
-        card.add_child(info)
-
-        var actions := HBoxContainer.new()
-        actions.add_theme_constant_override("separation", 8)
-        card.add_child(actions)
-
-        var accept := Button.new()
-        accept.name = "AcceptCandidate_%s" % str(candidate_id)
-        accept.text = "Nhận"
-        accept.custom_minimum_size = Vector2(120, 34)
-        accept.disabled = (
-            not recruitment_system.can_accept_more(state)
-            or not _candidate_recruitable(candidate)
-        )
-        accept.pressed.connect(Callable(self, "_accept_guidance_candidate").bind(candidate_id))
-        actions.add_child(accept)
-
-        var reject := Button.new()
-        reject.name = "RejectCandidate_%s" % str(candidate_id)
-        reject.text = "Từ chối"
-        reject.custom_minimum_size = Vector2(120, 34)
-        reject.pressed.connect(Callable(self, "_reject_guidance_candidate").bind(candidate_id))
-        actions.add_child(reject)
+func _on_dan_tien_screen_v2_changed() -> void:
+    # The real runtime remains the sole roster/save authority.
+    _refresh_all()
+    if selected_building == SectMapPresentation.DEST_GUIDANCE:
+        _refresh_building_operation_content()
 
 func _candidate_recruitable(candidate: CandidateState) -> bool:
     if candidate == null:

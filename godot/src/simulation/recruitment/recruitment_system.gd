@@ -5,6 +5,10 @@ const DEFAULT_POOL_SIZE := 3
 
 # P3.7C1 Dẫn Tiên v1 balance. One simulation day = 24 * 60 ticks.
 const GUIDANCE_DAY_TICKS := 1440
+# C2 technical safety: cap materialized candidates, including paid orders.
+# Saved overflow is preserved; free arrivals skip when full, never delete data.
+# Owner may re-balance this limit after real device/queue QA.
+const C2_QUEUE_CAP := 30
 const GUIDANCE_QUALITY_FULL_CHARM := 2500.0
 const GUIDANCE_ASSISTANT_VISITOR_STEP := 500.0
 const GUIDANCE_HEAVEN_QUOTA_STEP := 625.0
@@ -250,6 +254,8 @@ func assign_guidance_main(state: SimulationState, disciple_id: StringName) -> Di
         return _result(false, "guidance_platform_missing")
     if disciple_id != &"" and not state.disciples.has(disciple_id):
         return _result(false, "disciple_missing")
+    if disciple_id != &"" and not guidance_guide_eligible(state, disciple_id):
+        return _result(false, "guide_busy_or_injured")
     var data := _guidance_state(platform)
     var assistants: Array = data.get("assistant_guide_ids", [])
     assistants.erase(str(disciple_id))
@@ -275,6 +281,8 @@ func set_guidance_assistants(state: SimulationState, disciple_ids: Array) -> Dic
             continue
         if not state.disciples.has(StringName(disciple_id)):
             return _result(false, "disciple_missing")
+        if not guidance_guide_eligible(state, StringName(disciple_id)):
+            return _result(false, "guide_busy_or_injured")
         if normalized.size() >= max_assistants:
             return _result(false, "assistant_slots_full")
         normalized.append(disciple_id)
@@ -283,6 +291,20 @@ func set_guidance_assistants(state: SimulationState, disciple_ids: Array) -> Dic
     platform.production_state = data
     state.building_event_count += 1
     return _result(true, "assigned_assistants")
+
+func guidance_guide_eligible(state: SimulationState, disciple_id: StringName) -> bool:
+    var disciple: DiscipleState = state.disciples.get(disciple_id)
+    if disciple == null or disciple.injury_level != 0:
+        return false
+    if disciple.region_id != &"sect" or not disciple.active_pve_encounter_id.is_empty():
+        return false
+    if not disciple.work_cycle_state.is_empty() or not disciple.direct_command.is_empty():
+        return false
+    if disciple.current_action not in [&"IDLE", &"HOLD", &"EVALUATE"]:
+        return false
+    return not building_system.disciple_has_active_timed_recipe(state,disciple.id) \
+        and not building_system.disciple_has_active_spirit_plot(state,disciple.id) \
+        and not DiscipleBodyTrainingFacilityV2.has_reserved_slot(state,disciple)
 
 func guidance_quality_rates_for_charisma(charisma: float) -> Dictionary:
     # Quality odds themselves have a ceiling chosen by design (5% Nghịch Thiên,
@@ -325,7 +347,7 @@ func guidance_daily_arrival_target(state: SimulationState) -> int:
     var assistants: Array = data.get("assistant_guide_ids", [])
     for index in range(mini(assistants.size(), max_assistants)):
         var disciple = state.disciples.get(StringName(str(assistants[index])))
-        if not (disciple is DiscipleState):
+        if not (disciple is DiscipleState) or not guidance_guide_eligible(state, disciple.id):
             continue
         var effective := maxf(disciple.charisma, 0.0)
         total += int(floor(effective / GUIDANCE_ASSISTANT_VISITOR_STEP))
@@ -349,7 +371,13 @@ func guidance_recruit_with_order(state: SimulationState) -> Dictionary:
         return _result(false, "guidance_disabled")
     if state.sect.disciple_recruitment_tokens <= 0:
         return _result(false, "not_enough_recruitment_tokens")
+    # A paid order must never debit before both free slots and current-day
+    # arrivals (which can fill the queue) have been accounted for.
+    if state.recruitment_candidates.size() >= C2_QUEUE_CAP:
+        return _result(false, "candidate_queue_full")
     _ensure_guidance_day_snapshot(state)
+    if state.recruitment_candidates.size() >= C2_QUEUE_CAP:
+        return _result(false, "candidate_queue_full")
     state.sect.disciple_recruitment_tokens -= 1
     var candidate := _generate_guidance_candidate(state)
     if candidate == null:
@@ -439,7 +467,7 @@ func _begin_guidance_day(state: SimulationState, platform: BuildingState, data: 
     var main_id := str(data.get("main_guide_id", ""))
     var main_charisma := 0.0
     var main = state.disciples.get(StringName(main_id))
-    if main is DiscipleState:
+    if main is DiscipleState and guidance_guide_eligible(state, main.id):
         main_charisma = maxf(main.charisma, 0.0)
 
     data["snapshot_day_index"] = day_index
@@ -454,6 +482,10 @@ func _begin_guidance_day(state: SimulationState, platform: BuildingState, data: 
     if generate_arrivals:
         var target := int(data.get("daily_arrival_target", 0))
         for _i in range(target):
+            # Free arrivals are day-scoped, not an infinite hidden backlog.
+            # Do not discard or reroll any candidate already materialized.
+            if state.recruitment_candidates.size() >= C2_QUEUE_CAP:
+                break
             if _generate_guidance_candidate(state) == null:
                 break
             data = _guidance_state(platform)
