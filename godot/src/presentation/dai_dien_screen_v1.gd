@@ -204,7 +204,7 @@ func _overview() -> void:
         hall.level, SectHallSystemV1.rank_label(rank)
     ], 16))
     _content.add_child(_label("Đệ tử %d/%d  ·  Giường %d  ·  Trần quản trị %d  ·  Linh Thạch %d" % [
-        game_state.disciples.size(), game_state.sect.disciple_capacity,
+        game_state.disciples.size(), SectResidenceSystemV1.current_limit(game_state),
         SectResidenceSystemV1.total_beds(game_state), SectHallSystemV1.rank_population_limit(game_state),
         game_state.sect.spirit_stones
     ], 15))
@@ -517,7 +517,7 @@ func _residences() -> void:
         _content.add_child(_label("PHÂN PHÒNG · THỦ CÔNG", 15, GOLD))
         var disciple_picker := OptionButton.new()
         disciple_picker.name = "ResidenceDiscipleSelector"
-        disciple_picker.custom_minimum_size.y = 46
+        disciple_picker.custom_minimum_size = Vector2(440, 46)
         for did in _room_disciple_ids:
             var member: DiscipleState = game_state.disciples[did]
             var current_house := SectResidenceSystemV1.house_of(game_state, did)
@@ -528,7 +528,7 @@ func _residences() -> void:
         _content.add_child(disciple_picker)
         var house_picker := OptionButton.new()
         house_picker.name = "ResidenceHouseSelector"
-        house_picker.custom_minimum_size.y = 46
+        house_picker.custom_minimum_size = Vector2(440, 46)
         for hid in _room_house_ids:
             house_picker.add_item(str(hid))
         _room_selected_house = clampi(_room_selected_house, 0, _room_house_ids.size() - 1)
