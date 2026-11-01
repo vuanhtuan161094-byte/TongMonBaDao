@@ -66,6 +66,16 @@ static func ensure_live(state: SimulationState) -> Dictionary:
     if state == null or not state.p3_7_buildings_enabled:
         return {"ok": false, "reason": "hall_requires_live_buildings"}
     var building_system := BuildingSystem.new()
+    # Refuse noncanonical or multiple Hall instances before any migration grant.
+    # Do not silently adopt a different saved building ID as the singleton.
+    var hall_count := 0
+    for value in state.buildings.values():
+        if value is BuildingState and value.building_type == BuildingSystem.TYPE_MAIN_HALL:
+            hall_count += 1
+            if value.id != MAIN_HALL_ID:
+                return {"ok": false, "reason": "noncanonical_main_hall_id"}
+    if hall_count > 1:
+        return {"ok": false, "reason": "duplicate_main_hall"}
     var existing := building_system.primary_building(state, BuildingSystem.TYPE_MAIN_HALL)
     if existing == null:
         var hall := building_system.create_building(BuildingSystem.TYPE_MAIN_HALL, 1)
@@ -150,6 +160,11 @@ static func affinity_factor(disciple: DiscipleState, office_id: String) -> float
     return clampf(0.90 + 0.0001 * affinity_score(disciple, office_id), 0.90, 1.15)
 
 static func office_bonus(state: SimulationState, office_id: String) -> float:
+    if not installed(state) or not OFFICES.has(office_id):
+        return 0.0
+    var hall_state := hall(state)
+    if hall_state == null or hall_state.level < int(OFFICE_UNLOCK.get(office_id, 101)):
+        return 0.0
     var id := holder_id(state, office_id)
     if id.is_empty() or not state.disciples.has(StringName(id)):
         return 0.0
@@ -465,11 +480,20 @@ static func validate(state: SimulationState) -> Array[String]:
     if not installed(state):
         return errors
     errors.append_array(SectResidenceSystemV1.validate(state))
-    if rank_index(state) < 1 or rank_index(state) > 27:
+    # Check the raw persisted value: rank_index() deliberately clamps for
+    # display and must not mask a corrupt save from invariant validation.
+    var raw_rank = state.sect.hall_governance.get("sect_rank_index", null)
+    if not (raw_rank is int or raw_rank is float) or (raw_rank is float and not is_finite(raw_rank)) \
+            or float(raw_rank) != float(int(raw_rank)) or int(raw_rank) < 1 or int(raw_rank) > 27:
         errors.append("Hall sect rank invalid.")
-    var hall_state := hall(state)
-    if hall_state == null or hall_state.id != MAIN_HALL_ID:
-        errors.append("Hall V1 missing singleton main_hall_001.")
+    var hall_count := 0
+    for value in state.buildings.values():
+        if value is BuildingState and value.building_type == BuildingSystem.TYPE_MAIN_HALL:
+            hall_count += 1
+            if value.id != MAIN_HALL_ID:
+                errors.append("Hall V1 contains noncanonical main hall ID.")
+    if hall_count != 1:
+        errors.append("Hall V1 must own exactly one main_hall_001.")
     var used: Dictionary = {}
     for office_id in OFFICES:
         var id := holder_id(state, office_id)
