@@ -219,6 +219,7 @@ static func construct(state: SimulationState, request_id: String,
     state.sect.spirit_stones -= int(cost["spirit_stones"])
     var duration := construction_duration_ticks(ordinal)
     var site: Vector2i = check["site"]
+    house.production_state["site_version"] = 1
     house.production_state["site_x"] = site.x
     house.production_state["site_y"] = site.y
     house.status = BuildingSystem.STATUS_CONSTRUCTING
