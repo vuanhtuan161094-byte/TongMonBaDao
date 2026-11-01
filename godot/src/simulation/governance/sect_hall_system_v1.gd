@@ -190,6 +190,18 @@ static func dismiss(state: SimulationState, office_id: String) -> Dictionary:
     state.sect.hall_governance["appointment_sequence"] = int(state.sect.hall_governance.get("appointment_sequence", 0)) + 1
     return {"ok": true}
 
+static func master_effective_d7_points(state: SimulationState, disciple: DiscipleState) -> float:
+    if not installed(state) or disciple == null or holder_id(state, OFFICE_MASTER) != str(disciple.id):
+        return 0.0
+    if office_bonus(state, OFFICE_MASTER) <= 0.0:
+        return 0.0
+    return lerpf(25.0, 70.0, float(int(mastery(state, OFFICE_MASTER, str(disciple.id))["level"]) - 1) / 9.0)
+
+static func master_hp_bonus(state: SimulationState, disciple: DiscipleState) -> float:
+    if master_effective_d7_points(state, disciple) <= 0.0:
+        return 0.0
+    return lerpf(0.03, 0.07, float(int(mastery(state, OFFICE_MASTER, str(disciple.id))["level"]) - 1) / 9.0)
+
 static func cultivation_sources(state: SimulationState, disciple: DiscipleState) -> Array:
     var result: Array = []
     if not installed(state) or disciple == null:
@@ -197,6 +209,14 @@ static func cultivation_sources(state: SimulationState, disciple: DiscipleState)
     if holder_id(state, OFFICE_MASTER) == str(disciple.id):
         var own_bonus := office_bonus(state, OFFICE_MASTER)
         if own_bonus > 0.0:
+            var d7_points := master_effective_d7_points(state, disciple)
+            if d7_points > 0.0:
+                result.append({
+                    "source_id": "hall_v1:master_effective_aptitude",
+                    "channel": "cultivation_xp_gain",
+                    "mode": "percent_add",
+                    "value": 0.0025 * d7_points
+                })
             result.append({
                 "source_id": "hall_v1:master_personal",
                 "channel": "cultivation_xp_gain",
