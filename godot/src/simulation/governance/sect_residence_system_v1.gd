@@ -133,7 +133,11 @@ static func construct(state: SimulationState, request_id: String) -> Dictionary:
         return {"ok": false, "reason": "residence_not_enabled"}
     var receipts: Dictionary = state.sect.hall_governance.get("residence_build_receipts", {})
     if receipts.has(request_id):
-        return {"ok": true, "already_settled": true, "building_id": str(receipts[request_id])}
+        var settled_id := str(receipts[request_id])
+        var settled_house = state.buildings.get(settled_id)
+        if not (settled_house is BuildingState) or settled_house.building_type != TYPE:
+            return {"ok": false, "reason": "settled_house_receipt_without_building"}
+        return {"ok": true, "already_settled": true, "building_id": settled_id}
     var check := can_construct(state)
     if not bool(check.get("ok", false)):
         return check
