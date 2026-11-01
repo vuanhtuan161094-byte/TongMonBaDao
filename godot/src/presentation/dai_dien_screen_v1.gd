@@ -140,9 +140,8 @@ func _refresh() -> void:
         tab.size_flags_horizontal = Control.SIZE_EXPAND_FILL
         _tabs.add_child(tab)
     _clear(_content)
-    var status := SectHallSystemV1.ensure_live(game_state)
-    if not bool(status.get("ok", false)):
-        _content.add_child(_label("Không thể khởi tạo Đại Điện: %s" % str(status.get("reason", "")), 16))
+    if not SectHallSystemV1.installed(game_state) or SectHallSystemV1.hall(game_state) == null:
+        _content.add_child(_label("Đại Điện chưa được khởi tạo trong lượt chơi này.", 16))
         return
     if active_tab == 0:
         _overview()
