@@ -840,7 +840,12 @@ func _disable_legacy_hit_input(parent: Node) -> void:
 func _iso_actor_point(destination: StringName, building_id: StringName = &"") -> Vector2:
     if iso_world == null:
         return SectMapPresentation.position_for_destination(destination)
-    return SectIsometricWorldV1.virtual_legacy_point(destination,building_id)
+    var saved_origin := SectResidenceSiteV1.UNSELECTED
+    if state != null and building_id != &"":
+        var actual = state.buildings.get(str(building_id))
+        if actual is BuildingState and actual.building_type == BuildingSystem.TYPE_RESIDENCE:
+            saved_origin = SectResidenceSiteV1.origin_of(actual)
+    return SectIsometricWorldV1.virtual_legacy_point(destination,building_id,saved_origin)
 
 func _sect_actor_door_offset(disciple: DiscipleState, index: int,
         idle_slots: Dictionary, destination: StringName) -> Vector2:
