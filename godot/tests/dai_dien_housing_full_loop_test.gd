@@ -116,6 +116,28 @@ func _run() -> void:
             and SectResidenceSystemV1.current_limit(state) == 12,
             "rank 1 administrative cap must bind 2 houses with 18 beds"):
         return
+    # DD-08: Hall level-up also has one durable paid start, both before and
+    # after completion, not only an in-memory is_upgrading() click guard.
+    var hall_cost := buildings.upgrade_cost(hall)
+    var hall_stones_before := state.sect.spirit_stones
+    var hall_start := buildings.start_upgrade(state, hall.id, "qa-hall-upgrade-012")
+    if not _assert(bool(hall_start.get("ok", false)) and hall.is_upgrading(),
+            "Hall paid upgrade not started"):
+        return
+    var hall_retry := buildings.start_upgrade(state, hall.id, "qa-hall-upgrade-012")
+    if not _assert(bool(hall_retry.get("already_settled", false))
+            and state.sect.spirit_stones == hall_stones_before - int(hall_cost["spirit_stones"]),
+            "Hall upgrade replay double billed"):
+        return
+    for _hall_step in range(int(ceil(hall.upgrade_required_work)) + 1):
+        state.tick += 1
+        buildings.process_tick(state)
+    var hall_late_retry := buildings.start_upgrade(state, hall.id, "qa-hall-upgrade-012")
+    if not _assert(hall.level == 12 and not hall.is_upgrading()
+            and bool(hall_late_retry.get("already_settled", false))
+            and state.sect.spirit_stones == hall_stones_before - int(hall_cost["spirit_stones"]),
+            "Hall late replay incorrectly triggered Lv13"):
+        return
     # The extra house must be represented by an actual selectable canonical
     # building ID in the map projection, not only in UI text.
     var iso := SectIsometricWorldV1.new()
