@@ -38,24 +38,24 @@ func _render() -> void:
     match _mode:
         "hall":
             view = HALL_B1.new()
-            view.office_selection_requested.connect(_open_office)
-            view.promotion_requested.connect(_promote_hall)
-            view.hall_upgrade_requested.connect(_upgrade_hall)
-            view.closed.connect(_close_host)
+            view.connect("office_selection_requested", Callable(self, "_open_office"))
+            view.connect("promotion_requested", Callable(self, "_promote_hall"))
+            view.connect("hall_upgrade_requested", Callable(self, "_upgrade_hall"))
+            view.connect("closed", Callable(self, "_close_host"))
         "residence":
             view = HOUSE_B1.new()
-            view.site_selection_requested.connect(_select_site)
-            view.residence_build_requested.connect(_build_house)
-            view.residence_upgrade_requested.connect(_upgrade_house)
-            view.closed.connect(_close_host)
+            view.connect("site_selection_requested", Callable(self, "_select_site"))
+            view.connect("residence_build_requested", Callable(self, "_build_house"))
+            view.connect("residence_upgrade_requested", Callable(self, "_upgrade_house"))
+            view.connect("closed", Callable(self, "_close_host"))
         "guidance":
             view = GUIDANCE_B1.new()
-            view.candidate_page_requested.connect(_page_candidate)
-            view.accept_candidate_requested.connect(_accept_candidate)
-            view.reject_candidate_requested.connect(_reject_candidate)
-            view.lead_in_requested.connect(_open_full_details)
-            view.recruit_candidate_requested.connect(_recruit_order)
-            view.closed.connect(_close_host)
+            view.connect("candidate_page_requested", Callable(self, "_page_candidate"))
+            view.connect("accept_candidate_requested", Callable(self, "_accept_candidate"))
+            view.connect("reject_candidate_requested", Callable(self, "_reject_candidate"))
+            view.connect("lead_in_requested", Callable(self, "_open_full_details"))
+            view.connect("recruit_candidate_requested", Callable(self, "_recruit_order"))
+            view.connect("closed", Callable(self, "_close_host"))
         _:
             return
     view.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
