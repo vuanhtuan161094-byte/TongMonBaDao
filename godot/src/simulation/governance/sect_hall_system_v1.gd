@@ -101,7 +101,14 @@ static func ensure_live(state: SimulationState) -> Dictionary:
 static func hall(state: SimulationState) -> BuildingState:
     if state == null:
         return null
-    return BuildingSystem.new().primary_building(state, BuildingSystem.TYPE_MAIN_HALL)
+    # DD-07: called on every disciple's natural Tu Vi tick. Resolve the
+    # canonical singleton by stable key in O(1), not a fresh BuildingSystem
+    # with a sort/scan of all owned buildings (up to hundreds per tick).
+    var candidate = state.buildings.get(str(MAIN_HALL_ID))
+    if candidate is BuildingState and candidate.id == MAIN_HALL_ID \
+            and candidate.building_type == BuildingSystem.TYPE_MAIN_HALL:
+        return candidate
+    return null
 
 static func label(office_id: String) -> String:
     return str(LABELS.get(office_id, office_id))
