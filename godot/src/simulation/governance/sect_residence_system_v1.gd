@@ -15,12 +15,13 @@ static func all_houses(state: SimulationState) -> Array[BuildingState]:
     var list: Array[BuildingState] = []
     if state == null:
         return list
-    var ids: Array = state.buildings.keys()
-    ids.sort()
-    for key in ids:
-        var building = state.buildings[key]
+    # Filter first, then sort only actual houses (at most ten). This
+    # avoids sorting every production building on each capacity query.
+    for building in state.buildings.values():
         if building is BuildingState and building.building_type == TYPE:
             list.append(building)
+    list.sort_custom(func(left: BuildingState, right: BuildingState) -> bool:
+        return str(left.id) < str(right.id))
     return list
 
 static func total_beds(state: SimulationState) -> int:
@@ -253,8 +254,15 @@ static func validate(state: SimulationState) -> Array[String]:
     var errors: Array[String] = []
     if not SectHallSystemV1.installed(state):
         return errors
-    if int(state.sect.hall_governance.get("residence_schema", 0)) != SCHEMA_VERSION:
+    var governance: Dictionary = state.sect.hall_governance
+    var schema = governance.get("residence_schema", null)
+    if not (schema is int or schema is float) or float(schema) != float(SCHEMA_VERSION):
         errors.append("Residence V1 missing/invalid schema.")
+        return errors
+    var credit = governance.get("legacy_bed_credit", null)
+    if not (credit is int or credit is float) or (credit is float and (is_nan(credit) or is_inf(credit))) \
+            or float(credit) != float(int(credit)) or int(credit) < 0:
+        errors.append("Residence invalid legacy bed credit.")
         return errors
     var houses := all_houses(state)
     if houses.is_empty():
@@ -262,7 +270,13 @@ static func validate(state: SimulationState) -> Array[String]:
     if houses.size() > 10:
         errors.append("Residence V1 exceeds absolute instance maximum.")
     var seen: Dictionary = {}
-    for house in houses:
+    for index in range(houses.size()):
+        var house: BuildingState = houses[index]
+        var expected_id := "residence_%03d" % (index + 1)
+        if str(house.id) != expected_id or house.instance_index != index + 1 \
+                or not state.buildings.has(expected_id) \
+                or state.buildings[expected_id] != house:
+            errors.append("Residence noncanonical, missing, or miskeyed house identity: " + str(house.id))
         if seen.has(str(house.id)):
             errors.append("Residence duplicated a stable instance ID.")
         seen[str(house.id)] = true
@@ -293,6 +307,9 @@ static func validate(state: SimulationState) -> Array[String]:
             errors.append("Residence construction receipt references missing paid house.")
             continue
         paid_houses[paid_id] = true
+    for house in houses:
+        if str(house.id) != "residence_001" and not paid_houses.has(str(house.id)):
+            errors.append("Residence has a nonstarter house without a paid construction receipt.")
     var rooms: Dictionary = saved_rooms
     for raw_id in rooms.keys():
         if not state.disciples.has(StringName(raw_id)):
