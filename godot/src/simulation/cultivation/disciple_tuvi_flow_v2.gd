@@ -116,7 +116,7 @@ static func resolve_minute(
         return grant
 
     disciple.v2_realm_progress["last_passive_tuvi_tick"] = state.tick
-    SectHallSystemV1.record_cultivation(state, float(grant.get("gained", 0.0)))
+    SectHallSystemV1.record_cultivation(state, disciple, float(grant.get("gained", 0.0)))
     return {
         "ok":true,
         "event_id":"%d:%s:PASSIVE_TUVI" % [state.tick,str(disciple.id)],
