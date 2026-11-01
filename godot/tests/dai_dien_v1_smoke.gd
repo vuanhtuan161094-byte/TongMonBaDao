@@ -15,7 +15,6 @@ func _check(condition: bool, message: String) -> bool:
 
 func _run() -> void:
     var state: SimulationState = P37Factory.create_state(20261101)
-    var hall_system := SectHallSystemV1.new()
     var installed := SectHallSystemV1.ensure_live(state)
     if not _check(bool(installed.get("ok", false)), "Hall install failed"):
         return
@@ -30,13 +29,26 @@ func _run() -> void:
     if not _check(count == 1, "duplicate Hall instance after repeated installation"):
         return
 
+    # New V2 recruits own a complete realm progression, unlike older founders
+    # that may legitimately retain legacy progression fields.
+    state.sect.disciple_v2_birth_enabled = true
+    var candidates: Array = state.recruitment_candidates.keys()
+    candidates.sort()
+    if not _check(not candidates.is_empty(), "missing initial recruit candidates"):
+        return
+    var accepted := RecruitmentSystem.new().accept_candidate(state, StringName(str(candidates[0])))
+    if not _check(bool(accepted.get("ok", false)), "could not create V2 recruitment fixture"):
+        return
+    var master_id := StringName(str(accepted.get("disciple_id", "")))
     var ids: Array = state.disciples.keys()
     ids.sort()
-    if not _check(ids.size() >= 3, "need 3 founder disciples"):
+    var teacher_id := &""
+    for raw_id in ids:
+        if StringName(raw_id) != master_id:
+            teacher_id = StringName(raw_id)
+            break
+    if not _check(teacher_id != &"", "second real disciple missing"):
         return
-    var master_id := StringName(str(ids[0]))
-    var teacher_id := StringName(str(ids[1]))
-    var third_id := StringName(str(ids[2]))
     if not _check(bool(SectHallSystemV1.appoint(state, SectHallSystemV1.OFFICE_MASTER, master_id).get("ok", false)), "cannot appoint real Chưởng Môn"):
         return
     if not _check(bool(SectHallSystemV1.appoint(state, SectHallSystemV1.OFFICE_TEACHER, teacher_id).get("ok", false)), "cannot appoint Truyền Công"):
@@ -49,7 +61,6 @@ func _run() -> void:
     if not _check(sources.size() == 2, "Master and Teacher must expose two natural-XP sources"):
         return
     var baseline_factor := FoundationSystem.new().cultivation_gain_factor(actor.aptitude)
-    var authored := state.sect.v2_training_rules.get("cultivation", {})
     # Preview's contract is tested by real source factory, without granting XP.
     var preview := DiscipleRealmProgressV2.grant_xp(
         actor, "cultivation", 10.0, "natural",
