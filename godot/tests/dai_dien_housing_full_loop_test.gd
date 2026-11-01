@@ -194,6 +194,20 @@ func _run() -> void:
     if not _assert(view.get_node_or_null("DaiDienDialog") != null and view.active_tab == 5,
             "Godot Residence tab not instantiated"):
         return
+    if not _assert(view.get_node_or_null("DaiDienDialog") != null
+            and not view._room_disciple_ids.is_empty() and view._room_house_ids.size() == 2,
+            "compact room assignment selectors must exist"):
+        return
+    var move_disciple := view._room_disciple_ids.find(ninth_id)
+    var move_house := view._room_house_ids.find(&"residence_002")
+    if not _assert(move_disciple >= 0 and move_house >= 0, "ninth disciple / second Residence selectable"):
+        return
+    view._room_selected_disciple = move_disciple
+    view._room_selected_house = move_house
+    view._assign_room()
+    if not _assert(SectResidenceSystemV1.house_of(saved, ninth_id) == "residence_002",
+            "real UI manual room assignment did not update canonical state"):
+        return
     root.remove_child(view)
     view.free()
     print("DAI_DIEN_HOUSING_FULL_LOOP_PASS recruit=8to9 beds=8to10 house_instances=2 price_once=1 rank=2 save_reload=1 godot_ui=1")
