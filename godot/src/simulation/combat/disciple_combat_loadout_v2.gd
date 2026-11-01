@@ -40,8 +40,15 @@ static func build(
             range_bonus += float(stat.get("basic_range",0.0))
             basic_ratio_bonus += float(stat.get("basic_ratio",0.0))
             # "combat_power" and skill_effect are NOT global ATK channels.
+    # DD-03: office contributes effective (not permanent) D7 to the combat
+    # projection; current HP is ratio-scaled below, never healed on appointment.
+    var master_points := SectHallSystemV1.master_effective_d7_points(state, disciple)
+    var master_hp := SectHallSystemV1.master_hp_bonus(state, disciple)
+    if master_hp > 0.0:
+        sources.append({"source_id":"hall_v1:master_hp", "channel":"max_hp",
+            "mode":"percent_add", "value":master_hp})
     var calculated := CombatStatsV2.derive(
-        realm,floor_index,body_realm,body_floor,disciple.potential,sources,
+        realm,floor_index,body_realm,body_floor,disciple.potential + master_points,sources,
         disciple.foundation_model_version >= FoundationSystem.MODEL_D7
     )
     if not bool(calculated.get("ok",false)):
