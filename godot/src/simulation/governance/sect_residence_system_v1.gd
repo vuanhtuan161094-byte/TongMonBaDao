@@ -39,7 +39,8 @@ static func complete_due_construction(state: SimulationState, house: BuildingSta
     house.production_state.erase("construction_started_tick")
     house.production_state.erase("construction_finish_tick")
     house.production_state.erase("construction_duration_ticks")
-    house.metrics["construction_completions"] = int(house.metrics.get("construction_completions", 0)) + 1
+    # BuildingState's persisted metrics schema has no construction counter;
+    # the authoritative status transition and event_count are sufficient.
     state.building_event_count += 1
     refresh_capacity(state)
     auto_assign_beds(state)
