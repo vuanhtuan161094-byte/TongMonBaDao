@@ -282,7 +282,7 @@ func _load_exact(path: String) -> SimulationState:
     if state != null and not state.sect.hall_governance.is_empty():
         var hall_errors := SectHallSystemV1.validate(state)
         if not hall_errors.is_empty():
-            push_error("DD-07: invalid saved Hall/Residence: " + "; ".join(hall_errors))
+            push_error("DD-07: invalid saved Hall/Residence: " + "; ".join(PackedStringArray(hall_errors)))
             return null
     return state
 
