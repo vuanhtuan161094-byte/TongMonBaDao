@@ -9,6 +9,16 @@
 - O8 lifecycle fix `84e82f301b86616c24e241e02fbe798681803a99` is integrated as test-only harness correction; no production SaveService changes. Final focused stderr scan: zero parser/script/thread-destruction warnings.
 - Source A Female Stage A installer reported verified transport SHA-256 `6a4213b9129ffb3f438c21cbb5326672ddf8915323836bf80cb33b8e5fabfdca`; 42 canonical PNGs exist in the QA checkout after install.
 
+## Integration review and dependencies
+
+The isolated integration first-parent sequence is: baseline `199f888c7fd690830728dfbf29b6b79276e3b283` → `0c506bf` (PR #60 Dẫn Tiên C2) → `fe9c262` (PR #57 SX-01 pill policy) → `4710196` (PR #58 SX-02 medicine runtime) → `a5bf249` (reviewed `e7643ba` pill correction) → `b3c102e` (PR #62 JSON/Save policy) → `7325922` (O8 test lifecycle fix `84e82f3`) → game tree tested at `42fecb3`.
+
+- **PR #60** contributes the Dẫn Tiên recruitment runtime/UI and C2 smoke. Its change is code plus tests; it remains separate from fully validated mouse acceptance.
+- **PR #57** contributes SX-01 policy/state/presentation and policy tests. **PR #58** contributes SX-02 catalogue/allocation/alchemy/B3 runtime and tests. **`e7643ba142f5ffbf22b2c56d5086bdbb6cec32cd`** contributes a reviewed manual pill correction after #58.
+- **PR #61** was reviewed, not merged as a branch. Its JSON normalizer and roundtrip-test hunks are identical to the corresponding #62 hunks; the P3.2 alchemy presenter’s explicit `String` type correction is present in the integrated file. **PR #62** is the integrated JSON/Save correction and its 13-check roundtrip test is in the RC.
+- **PR #63 / O8 `84e82f301b86616c24e241e02fbe798681803a99`** changes only the O8 test lifecycle. No production SaveService thread/scheduler code was altered by this fix.
+- Feature scope remains intentionally incomplete: SX-02 registers many SKUs but only four authored new recipes for realm ranks 1–2; it is not 240 recipes or a full 30-rank pill progression. No balances or recipes were invented. PvE loot remains pending. Large building Lv1–100/economy completion is not part of this RC acceptance.
+- The original PR refs and `main` were not changed or merged.
 ## Evidence
 
 - GitHub audit folder: `docs/qa/one_game_playable_rc_20261101/` on `audit/tmb-whole-project-readiness-20261027` (matrix/logs/images below).
