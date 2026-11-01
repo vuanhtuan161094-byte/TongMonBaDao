@@ -397,7 +397,8 @@ func _upgrades() -> void:
     _content.add_child(_label("Nguồn Mộc: Linh Lâm · Nguồn Thiết: Mỏ · Tiến độ %.0f tick · Giá đang thử nghiệm." % buildings.upgrade_required_work(hall), 13, MUTED))
     _content.add_child(_label("Mốc chức vụ: Lv3 Nội Vụ · Lv5 Hộ Pháp · Lv7 Đan Đạo · Lv10 Giới Luật. Consumer đã nối code, chưa qua Godot QA.", 12, MUTED))
     var check := buildings.can_start_upgrade(game_state, hall.id)
-    var upgrade := _button("BẮT ĐẦU NÂNG CẤP", Callable(self, "_start_upgrade"), true)
+    var upgrade_request := "hall-upgrade:%s:%d" % [str(hall.id), hall.level + 1]
+    var upgrade := _button("BẮT ĐẦU NÂNG CẤP", Callable(self, "_start_upgrade").bind(upgrade_request), true)
     upgrade.name = "UpgradeMainHall"
     upgrade.disabled = not bool(check.get("ok", false))
     if upgrade.disabled:
@@ -406,9 +407,9 @@ func _upgrades() -> void:
     if upgrade.disabled:
         _content.add_child(_label("Chưa đủ điều kiện: %s" % str(check.get("reason", "unknown")), 12, MUTED))
 
-func _start_upgrade() -> void:
+func _start_upgrade(request_id: String) -> void:
     var hall := SectHallSystemV1.hall(game_state)
-    var result := BuildingSystem.new().start_upgrade(game_state, hall.id)
+    var result := BuildingSystem.new().start_upgrade(game_state, hall.id, request_id)
     feedback = "Đã khởi công, tài nguyên bị trừ một lượt." if bool(result.get("ok", false)) else "Không thể nâng cấp: %s" % str(result.get("reason", "unknown"))
     if bool(result.get("ok", false)):
         state_changed.emit()
@@ -556,7 +557,8 @@ func _residences() -> void:
                 int(cost.get(BuildingSystem.MATERIAL_ORE, 0)),
                 int(cost.get("spirit_stones", 0))
             ], 13))
-            var upgrade := _button("NÂNG " + str(house.id), Callable(self, "_upgrade_house").bind(house.id), true)
+            var room_request := "residence-upgrade:%s:%d" % [str(house.id), house.level + 1]
+            var upgrade := _button("NÂNG " + str(house.id), Callable(self, "_upgrade_house").bind(house.id, room_request), true)
             upgrade.name = "UpgradeResidence_%s" % str(house.id)
             var can := BuildingSystem.new().can_start_upgrade(game_state, house.id)
             upgrade.disabled = not bool(can.get("ok", false))
@@ -600,8 +602,8 @@ func _assign_room() -> void:
         state_changed.emit()
     _refresh()
 
-func _upgrade_house(house_id: StringName) -> void:
-    var result := BuildingSystem.new().start_upgrade(game_state, house_id)
+func _upgrade_house(house_id: StringName, request_id: String) -> void:
+    var result := BuildingSystem.new().start_upgrade(game_state, house_id, request_id)
     feedback = "Đã bắt đầu nâng nhà, trừ nguyên liệu một lần." if bool(result.get("ok", false)) else "Chưa nâng được: %s" % str(result.get("reason", "unknown"))
     if bool(result.get("ok", false)):
         state_changed.emit()
