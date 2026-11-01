@@ -2211,6 +2211,12 @@ func _open_dai_dien_screen_v1() -> void:
     add_child(screen)
     screen.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
+func _open_dai_dien_housing_v1() -> void:
+    _open_dai_dien_screen_v1()
+    var hall_view := get_node_or_null("DaiDienScreenV1") as DaiDienScreenV1
+    if hall_view != null:
+        hall_view._tab(5)
+
 func _on_dai_dien_state_changed() -> void:
     _refresh_all()
     if selected_building == SectMapPresentation.DEST_MAIN_HALL:
@@ -2453,6 +2459,14 @@ func _build_lodging_expansion_control() -> void:
     row.add_theme_constant_override("separation", 8)
     building_management_container.add_child(row)
 
+    if SectHallSystemV1.installed(state):
+        var live := Button.new()
+        live.name = "OpenResidenceManagementV1"
+        live.text = "QUẢN LÝ ĐỆ TỬ XÁ · NÂNG CẤP / XÂY THÊM"
+        live.custom_minimum_size = Vector2(384, 43)
+        live.pressed.connect(_open_dai_dien_housing_v1)
+        row.add_child(live)
+        return
     var info := Label.new()
     info.text = "Hiện %d chỗ · Vật tư %d" % [state.sect.lodging_capacity, state.sect.supply_stock]
     info.custom_minimum_size = Vector2(236, 34)
