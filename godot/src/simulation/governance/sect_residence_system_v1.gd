@@ -67,9 +67,18 @@ static func ensure_live(state: SimulationState) -> Dictionary:
     if int(governance.get("residence_schema", 0)) != SCHEMA_VERSION:
         return {"ok": false, "reason": "unsupported_residence_schema"}
     for field in ["residence_assignments", "residence_build_receipts"]:
-        if not (governance.get(field, {}) is Dictionary):
+        if not governance.has(field) or not (governance[field] is Dictionary):
             return {"ok": false, "reason": "malformed_residence_" + field}
+    var legacy_credit = governance.get("legacy_bed_credit", null)
+    if not (legacy_credit is int or legacy_credit is float) \
+            or (legacy_credit is float and (is_nan(legacy_credit) or is_inf(legacy_credit))) \
+            or float(legacy_credit) != float(int(legacy_credit)) or int(legacy_credit) < 0:
+        return {"ok": false, "reason": "invalid_legacy_bed_credit"}
     var houses := all_houses(state)
+    if not houses.is_empty() and not state.buildings.has("residence_001"):
+        return {"ok": false, "reason": "residence_001_missing"}
+    if not houses.is_empty() and str(houses[0].id) != "residence_001":
+        return {"ok": false, "reason": "residence_001_identity_mismatch"}
     if houses.is_empty():
         var starter := BuildingSystem.new().create_building(TYPE, 1)
         if starter == null or state.buildings.has(str(starter.id)):
@@ -255,7 +264,12 @@ static func validate(state: SimulationState) -> Array[String]:
     if state.sect.disciple_capacity != maxi(state.disciples.size(), current_limit(state)):
         errors.append("Residence recruitment cap diverges from rank/bed authority.")
     var occupied: Dictionary = {}
-    var rooms: Dictionary = state.sect.hall_governance.get("residence_assignments", {})
+    var saved_rooms = state.sect.hall_governance.get("residence_assignments", null)
+    var build_receipts = state.sect.hall_governance.get("residence_build_receipts", null)
+    if not (saved_rooms is Dictionary) or not (build_receipts is Dictionary):
+        errors.append("Residence saved room or construction receipts are malformed.")
+        return errors
+    var rooms: Dictionary = saved_rooms
     for raw_id in rooms.keys():
         if not state.disciples.has(StringName(raw_id)):
             errors.append("Residence room assignment points at missing disciple.")
