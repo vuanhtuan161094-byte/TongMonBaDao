@@ -2248,7 +2248,7 @@ func _open_dai_dien_screen_v1() -> void:
 
 func _attach_tri_b1_screen(host: Control, mode: String) -> void:
     var adapter: Control = TRI_B1_LIVE_ADAPTER.new()
-    adapter.configure(host, state, recruitment_system, mode)
+    adapter.call("configure", host, state, recruitment_system, mode)
     host.add_child(adapter)
     adapter.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
