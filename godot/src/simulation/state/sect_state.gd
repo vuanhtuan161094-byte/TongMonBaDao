@@ -16,6 +16,8 @@ var needs_enabled: bool = false
 var medicine_stock: int = 0
 var supply_stock: int = 0
 var lodging_capacity: int = 6
+# DD-01: single persisted Hall office/mastery authority; legacy saves stay empty.
+var hall_governance: Dictionary = {}
 var needs_priority: StringName = &"balanced"
 var needs_event_count: int = 0
 var needs_stats: Dictionary = {
@@ -173,6 +175,8 @@ func to_dict() -> Dictionary:
         "cultivation_enabled": cultivation_enabled,
         "cultivation_event_count": cultivation_event_count
     }
+    if not hall_governance.is_empty():
+        data["hall_governance"] = hall_governance.duplicate(true)
     if spiritual_roots_enabled or spiritual_root_event_count > 0:
         data["spiritual_roots_enabled"] = spiritual_roots_enabled
         data["spiritual_root_event_count"] = spiritual_root_event_count
@@ -343,6 +347,9 @@ static func from_dict(data: Dictionary) -> SectState:
     state.medicine_stock = maxi(int(data.get("medicine_stock", 0)), 0)
     state.supply_stock = maxi(int(data.get("supply_stock", 0)), 0)
     state.lodging_capacity = maxi(int(data.get("lodging_capacity", state.disciple_capacity)), 1)
+    var saved_hall = data.get("hall_governance", {})
+    if saved_hall is Dictionary and int(saved_hall.get("version", 0)) == 1:
+        state.hall_governance = saved_hall.duplicate(true)
     state.needs_priority = StringName(data.get("needs_priority", "balanced"))
     state.needs_event_count = maxi(int(data.get("needs_event_count", 0)), 0)
     state.cultivation_enabled = bool(data.get("cultivation_enabled", false))
