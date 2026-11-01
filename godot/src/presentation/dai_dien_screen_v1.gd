@@ -230,12 +230,24 @@ func _offices() -> void:
     dropdown.add_theme_font_size_override("font_size", 14)
     _candidate_ids.clear()
     var ids: Array = game_state.disciples.keys()
-    ids.sort()
+    ids.sort_custom(func(left, right):
+        var a: DiscipleState = game_state.disciples[left]
+        var b: DiscipleState = game_state.disciples[right]
+        var va := SectHallSystemV1.affinity_score(a, selected_office)
+        var vb := SectHallSystemV1.affinity_score(b, selected_office)
+        if is_equal_approx(va, vb):
+            return str(left) < str(right)
+        return va > vb)
     for raw_id in ids:
         var disciple: DiscipleState = game_state.disciples[raw_id]
         _candidate_ids.append(disciple.id)
-        var suffix := " · Mị %.0f" % disciple.charisma if selected_office == SectHallSystemV1.OFFICE_GUIDE else " · Tuệ %.0f · Tâm %.0f" % [disciple.comprehension, disciple.mind_nature]
-        dropdown.add_item(disciple.display_name + suffix)
+        var fit := SectHallSystemV1.affinity_factor(disciple, selected_office)
+        var eligibility := SectHallSystemV1.can_appoint(game_state, selected_office, disciple.id)
+        var state_label := "" if bool(eligibility.get("ok", false)) else " · không hợp lệ"
+        dropdown.add_item("%s · Phù hợp %.0f%% · D7 %.0f%s" % [
+            disciple.display_name, fit * 100.0,
+            SectHallSystemV1.affinity_score(disciple, selected_office), state_label
+        ])
     if not id.is_empty():
         var own_index := _candidate_ids.find(StringName(id))
         if own_index >= 0:
@@ -246,12 +258,30 @@ func _offices() -> void:
     dropdown.item_selected.connect(Callable(self, "_candidate_changed"))
     _content.add_child(_label("Chọn đệ tử để bổ nhiệm", 14, GOLD))
     _content.add_child(dropdown)
+    if not _candidate_ids.is_empty():
+        var applicant: DiscipleState = game_state.disciples[_candidate_ids[_selected_index]]
+        var q := SectHallSystemV1.affinity_factor(applicant, selected_office)
+        var record := SectHallSystemV1.mastery(game_state, selected_office, str(applicant.id))
+        _content.add_child(_label("Xem trước: %s · Tinh Thông Lv%d · Hiệu suất phù hợp %.1f%%" % [
+            applicant.display_name, int(record["level"]), q * 100.0
+        ], 13, JADE))
+        var eligible := SectHallSystemV1.can_appoint(game_state, selected_office, applicant.id)
+        if not bool(eligible.get("ok", false)):
+            _content.add_child(_label("Không thể bổ nhiệm: " + str(eligible.get("reason", "unknown")), 12, MUTED))
+        elif selected_office == SectHallSystemV1.OFFICE_MASTER:
+            _content.add_child(_label("D7 hiệu dụng %.1f · Tu Vi tự nhiên +%.1f%% · HP tối đa +%.1f%% (không đổi D7 gốc)" % [
+                lerpf(25.0, 70.0, float(int(record["level"]) - 1) / 9.0) * q,
+                lerpf(8.0, 14.0, float(int(record["level"]) - 1) / 9.0) * q,
+                lerpf(3.0, 7.0, float(int(record["level"]) - 1) / 9.0) * q
+            ], 12, JADE))
     var actions := HBoxContainer.new()
     actions.add_theme_constant_override("separation", 9)
     _content.add_child(actions)
     var appoint := _button("BỔ NHIỆM / THAY THẾ", Callable(self, "_appoint"), true)
     var hall_building := SectHallSystemV1.hall(game_state)
     appoint.disabled = _candidate_ids.is_empty() or hall_building == null or hall_building.level < int(SectHallSystemV1.OFFICE_UNLOCK.get(selected_office, 101))
+    if not appoint.disabled:
+        appoint.disabled = not bool(SectHallSystemV1.can_appoint(game_state, selected_office, _candidate_ids[_selected_index]).get("ok", false))
     appoint.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     actions.add_child(appoint)
     var dismiss := _button("MIỄN NHIỆM", Callable(self, "_dismiss"))
@@ -261,6 +291,7 @@ func _offices() -> void:
 
 func _candidate_changed(index: int) -> void:
     _selected_index = index
+    _refresh()
 
 func _select_office(value: String) -> void:
     selected_office = value
