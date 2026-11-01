@@ -52,7 +52,8 @@ func _run() -> void:
         return
     if not _verify_building_tokens_are_player_readable():
         return
-    if not _verify_actor_tokens_are_player_readable():
+    var actor_visual_ok: bool = await _verify_actor_tokens_are_player_readable()
+    if not actor_visual_ok:
         return
     if not _verify_idle_player_copy_is_clean():
         return
@@ -138,15 +139,27 @@ func _verify_building_tokens_are_player_readable() -> bool:
     return true
 
 func _verify_actor_tokens_are_player_readable() -> bool:
+    # P3.2 intentionally materializes pooled actors only for the focused/
+    # visible viewport. Do not require every canonical disciple to allocate a
+    # map Control at once; O2 already checks selected-only actor materialization.
+    var disciple_ids: Array = state.disciples.keys()
+    disciple_ids.sort()
+    if disciple_ids.is_empty():
+        return _fail("No real disciple exists for live map actor verification.")
+    var focused_id := StringName(str(disciple_ids[0]))
+    ui.call("_open_disciple",focused_id)
+    for _frame in range(18):
+        await process_frame
     var actors: Dictionary = ui.get("actor_nodes")
-    if actors.size() != state.disciples.size():
-        return _fail("Not every live disciple has a map actor.")
+    if not actors.has(str(focused_id)):
+        return _fail("Focused canonical disciple did not materialize a live map actor.")
+    if actors.size() > state.disciples.size():
+        return _fail("Map actor pool exceeds canonical disciple roster.")
 
-    for disciple_id_value in state.disciples.keys():
-        var disciple_id := StringName(disciple_id_value)
-        var key := str(disciple_id)
-        if not actors.has(key):
-            return _fail("Missing map actor for disciple: %s" % key)
+    for raw_id in actors.keys():
+        var key := str(raw_id)
+        if not state.disciples.has(StringName(key)):
+            return _fail("Map actor has no canonical disciple: %s" % key)
         var actor := actors[key] as Control
         if not (actor is ModularDiscipleActor):
             return _fail("Legacy letter-box actor placeholder remains: %s" % key)
