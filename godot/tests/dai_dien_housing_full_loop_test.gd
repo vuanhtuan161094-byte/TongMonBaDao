@@ -142,6 +142,16 @@ func _run() -> void:
     if not _assert(SectHallSystemV1.validate(saved_pending).is_empty(),
             "pending House invalid after pure in-memory reload"):
         return
+    var corrupt_timer := SimulationState.from_dict(state.to_dict())
+    corrupt_timer.buildings["residence_002"].production_state["construction_finish_tick"] = state.tick - 1
+    if not _assert(not SectHallSystemV1.validate(corrupt_timer).is_empty(),
+            "corrupted House construction timer must reject save"):
+        return
+    var corrupt_occupancy := SimulationState.from_dict(state.to_dict())
+    corrupt_occupancy.sect.hall_governance["residence_assignments"][str(ninth_id)] = "residence_002"
+    if not _assert(not SectHallSystemV1.validate(corrupt_occupancy).is_empty(),
+            "construction cannot carry an assigned tenant on reload"):
+        return
     var pending_path := "user://qa_dd09_pending_house_20261101.json"
     for extension in ["", ".bak", ".tmp"]:
         if FileAccess.file_exists(pending_path + extension):
@@ -183,10 +193,12 @@ func _run() -> void:
             "rank 1 administrative cap must bind 2 houses with 18 beds after build"):
         return
     # Replay after completion cannot duplicate beds or charge twice.
+    var before_late_build := state.sect.spirit_stones
     var late_build := SectResidenceSystemV1.construct(state, "qa-house-build-002")
     if not _assert(bool(late_build.get("already_settled", false))
             and SectResidenceSystemV1.total_beds(state) == 18
-            and state.sect.spirit_stones == before_second - int(second_cost["spirit_stones"]),
+            and state.sect.spirit_stones == before_late_build
+            and not SectResidenceSystemV1.complete_due_construction(state, annex),
             "late construction replay double billed or duplicated capacity"):
         return
     # DD-08: Hall level-up also has one durable paid start, both before and
