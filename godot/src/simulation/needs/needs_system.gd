@@ -137,6 +137,9 @@ func apply_rest(
 ) -> float:
     var lodging_multiplier := rest_recovery_multiplier(state)
     var multiplier := lodging_multiplier
+    if SectHallSystemV1.installed(state) and disciple != null:
+        multiplier *= SectResidenceSystemV1.comfort_factor(state, disciple.id)
+        multiplier *= 1.0 + SectHallSystemV1.role_effect(state, SectHallSystemV1.OFFICE_DISCIPLINE)
     if state.sect.bloodlines_enabled:
         multiplier *= bloodline_system.rest_recovery_multiplier(state, disciple)
     if state.sect.physiques_enabled:
@@ -147,6 +150,7 @@ func apply_rest(
         disciple.stamina = minf(100.0, disciple.stamina + 48.0 * multiplier)
     disciple.hp = minf(disciple.max_hp, disciple.hp + 5.0 * multiplier)
     disciple.metrics["rests"] = int(disciple.metrics.get("rests", 0)) + 1
+    SectHallSystemV1.record_office_event(state, SectHallSystemV1.OFFICE_DISCIPLINE, true)
     if state.sect.needs_enabled and lodging_multiplier < 0.999999:
         state.sect.needs_stats["overcrowded_rests"] = int(state.sect.needs_stats.get("overcrowded_rests", 0)) + 1
         state.sect.needs_event_count += 1
@@ -195,6 +199,10 @@ func process_logistics_tick(state: SimulationState) -> void:
         state.sect.needs_event_count += 1
 
 func expand_lodging(state: SimulationState, slots: int = 1) -> bool:
+    # Preserve this legacy API only for old saves. In Hall V2, bedrooms are
+    # permanently owned by real Residence BuildingState instances.
+    if SectHallSystemV1.installed(state):
+        return false
     if not state.sect.needs_enabled or slots <= 0:
         return false
     var cost := slots * LODGING_EXPANSION_COST_PER_SLOT
