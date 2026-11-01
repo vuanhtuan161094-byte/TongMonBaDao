@@ -625,14 +625,15 @@ func can_start_upgrade(state: SimulationState, building_id: StringName) -> Dicti
     return {"ok": true, "cost": cost}
 
 func start_upgrade(state: SimulationState, building_id: StringName, request_id: String = "") -> Dictionary:
-    # DD-08: Hall/Residence UI submits the ID bound at render time.
-    # Replay of a completed request returns the saved receipt, never starts a
-    # different level or charges again. The optional ID keeps legacy building
-    # fixtures/source callers unchanged until they migrate to this contract.
+    # DD-08: Hall/Residence require an explicit stable request ID; ordinary
+    # older P3.7 buildings retain the original no-ID API unchanged.
+    # Replay after completion is idempotent, not a second paid next-level action.
     var stored_building = state.buildings.get(str(building_id)) if state != null else null
     var governed := SectHallSystemV1.installed(state) and stored_building is BuildingState \
         and stored_building.building_type in [TYPE_MAIN_HALL, TYPE_RESIDENCE]
-    if governed and not request_id.is_empty():
+    if governed:
+        if request_id.is_empty():
+            return {"ok": false, "reason": "upgrade_request_id_required"}
         if request_id.length() > 120:
             return {"ok": false, "reason": "upgrade_request_id_too_long"}
         var previous = state.sect.hall_governance.get("upgrade_receipts", {})
@@ -663,7 +664,7 @@ func start_upgrade(state: SimulationState, building_id: StringName, request_id: 
     building.upgrade_required_work = upgrade_required_work(building)
     building.upgrade_progress = 0.0
     state.building_event_count += 1
-    if governed and not request_id.is_empty():
+    if governed:
         var receipts: Dictionary = state.sect.hall_governance.get("upgrade_receipts", {}).duplicate(true)
         receipts[request_id] = {
             "building_id": str(building.id),
