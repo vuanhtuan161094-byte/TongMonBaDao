@@ -8,11 +8,36 @@ const MAIN_HALL_ID := &"main_hall_001"
 const OFFICE_MASTER := "master"
 const OFFICE_GUIDE := "guide"
 const OFFICE_TEACHER := "teacher"
-const OFFICES := [OFFICE_MASTER, OFFICE_GUIDE, OFFICE_TEACHER]
+const OFFICE_STEWARD := "steward"
+const OFFICE_GUARDIAN := "guardian"
+const OFFICE_ALCHEMIST := "alchemist"
+const OFFICE_DISCIPLINE := "discipline"
+const OFFICES := [OFFICE_MASTER, OFFICE_GUIDE, OFFICE_TEACHER,
+    OFFICE_STEWARD, OFFICE_GUARDIAN, OFFICE_ALCHEMIST, OFFICE_DISCIPLINE]
+const OFFICE_UNLOCK := {
+    OFFICE_MASTER: 1, OFFICE_GUIDE: 1, OFFICE_TEACHER: 1,
+    OFFICE_STEWARD: 3, OFFICE_GUARDIAN: 5, OFFICE_ALCHEMIST: 7,
+    OFFICE_DISCIPLINE: 10
+}
+# Proposed numeric authority table, distinct from Hall building level.
+const RANK_LIMITS := [
+    12, 18, 26, 36, 48, 60, 70, 80, 90,
+    105, 120, 135, 150, 165, 175, 185, 195, 200,
+    230, 260, 290, 320, 350, 380, 410, 445, 480
+]
+const RANK_HALL_LEVELS := [
+    1, 5, 9, 13, 17, 21, 25, 29, 33,
+    37, 41, 45, 49, 53, 57, 61, 65, 69,
+    73, 77, 81, 85, 89, 93, 96, 98, 100
+]
 const LABELS := {
     OFFICE_MASTER: "Chưởng Môn",
     OFFICE_GUIDE: "Tiếp Dẫn Trưởng Lão",
-    OFFICE_TEACHER: "Truyền Công Trưởng Lão"
+    OFFICE_TEACHER: "Truyền Công Trưởng Lão",
+    OFFICE_STEWARD: "Nội Vụ Chấp Sự",
+    OFFICE_GUARDIAN: "Hộ Pháp Trưởng Lão",
+    OFFICE_ALCHEMIST: "Đan Đạo Trưởng Lão",
+    OFFICE_DISCIPLINE: "Giới Luật Trưởng Lão"
 }
 const MAX_MASTERY := 10
 const DAY_TICKS := 1440
@@ -27,7 +52,10 @@ static func default_state() -> Dictionary:
         # One office can mint at most one EXP grant/day across all holders,
         # preventing a same-day reappointment farm.
         "office_award_day": {},
-        "appointment_sequence": 0
+        "appointment_sequence": 0,
+        "prestige": 0,
+        "promotion_receipts": {}
+
     }
 
 static func installed(state: SimulationState) -> bool:
@@ -49,6 +77,9 @@ static func ensure_live(state: SimulationState) -> Dictionary:
         state.sect.hall_governance = default_state()
     if not installed(state):
         return {"ok": false, "reason": "unsupported_hall_schema"}
+    var housing := SectResidenceSystemV1.ensure_live(state)
+    if not bool(housing.get("ok", false)):
+        return housing
     return {"ok": true}
 
 static func hall(state: SimulationState) -> BuildingState:
@@ -108,6 +139,8 @@ static func can_appoint(state: SimulationState, office_id: String, disciple_id: 
     if not installed(state) or not OFFICES.has(office_id):
         return {"ok": false, "reason": "office_not_available"}
     var hall_state := hall(state)
+    if hall_state != null and hall_state.level < int(OFFICE_UNLOCK.get(office_id, 101)):
+        return {"ok": false, "reason": "office_requires_hall_level", "need": OFFICE_UNLOCK.get(office_id, 101)}
     if hall_state == null or hall_state.level < 1:
         return {"ok": false, "reason": "main_hall_missing"}
     if not state.disciples.has(disciple_id):
@@ -212,10 +245,161 @@ static func record_cultivation(state: SimulationState, actor: DiscipleState, gai
         state.sect.hall_governance["mastery"] = all_records
         state.sect.hall_governance["office_award_day"] = office_awards
 
+static func rank_index(state: SimulationState) -> int:
+    if not installed(state):
+        return 1
+    return clampi(int(state.sect.hall_governance.get("sect_rank_index", 1)), 1, 27)
+
+static func rank_population_limit(state: SimulationState) -> int:
+    return int(RANK_LIMITS[rank_index(state) - 1])
+
+static func rank_label(index: int) -> String:
+    var step := clampi(index, 1, 27)
+    var world := "Nhân" if step <= 9 else ("Tiên" if step <= 18 else "Thần")
+    return "%s %d/9" % [world, (step - 1) % 9 + 1]
+
+static func promotion_requirements(state: SimulationState) -> Dictionary:
+    if not installed(state):
+        return {"ok": false, "reason": "hall_governance_missing"}
+    var current := rank_index(state)
+    if current >= 27:
+        return {"ok": false, "reason": "rank_complete"}
+    var next_index := current + 1
+    var hall_state := hall(state)
+    var hall_need := int(RANK_HALL_LEVELS[next_index - 1])
+    var roster_need := mini(int(RANK_LIMITS[current - 1]), 6 + (next_index - 1) * 2)
+    var batches := 0
+    var real_mine_or_forest := 0
+    for building in state.buildings.values():
+        if not (building is BuildingState):
+            continue
+        if building.building_type in [BuildingSystem.TYPE_MINE, BuildingSystem.TYPE_LINH_FOREST, BuildingSystem.TYPE_SPIRIT_FIELD]:
+            var completed := int(building.metrics.get("production_batches", 0))
+            batches += completed
+            if building.building_type in [BuildingSystem.TYPE_MINE, BuildingSystem.TYPE_LINH_FOREST]:
+                real_mine_or_forest += completed
+    var production_need := 2 * (next_index - 1)
+    var prestige_need := 25 * (next_index - 1) * next_index
+    var renown := int(state.sect.hall_governance.get("prestige", 0))
+    var costs := {
+        BuildingSystem.MATERIAL_WOOD: 20 * next_index,
+        BuildingSystem.MATERIAL_ORE: 12 * next_index,
+        "spirit_stones": 100 * next_index
+    }
+    var blockers: Array[String] = []
+    if hall_state == null or hall_state.level < hall_need:
+        blockers.append("hall_level")
+    if state.disciples.size() < roster_need:
+        blockers.append("disciple_roster")
+    if batches < production_need or real_mine_or_forest <= 0:
+        blockers.append("real_production")
+    if renown < prestige_need:
+        blockers.append("prestige")
+    var system := BuildingSystem.new()
+    for key in costs.keys():
+        if str(key) == "spirit_stones":
+            if state.sect.spirit_stones < int(costs[key]):
+                blockers.append("spirit_stones")
+        elif system._resource_available(state, StringName(key)) < int(costs[key]):
+            blockers.append(str(key))
+    return {
+        "ok": blockers.is_empty(), "next": next_index, "next_name": rank_label(next_index),
+        "hall_level": hall_state.level if hall_state != null else 0, "hall_need": hall_need,
+        "roster": state.disciples.size(), "roster_need": roster_need,
+        "production": batches, "production_need": production_need,
+        "prestige": renown, "prestige_need": prestige_need,
+        "cost": costs, "blockers": blockers
+    }
+
+static func promote(state: SimulationState, request_id: String) -> Dictionary:
+    if request_id.is_empty() or request_id.length() > 100 or not installed(state):
+        return {"ok": false, "reason": "invalid_promotion_request"}
+    var receipts: Dictionary = state.sect.hall_governance.get("promotion_receipts", {})
+    if receipts.has(request_id):
+        return {"ok": true, "already_settled": true, "new_rank": int(receipts[request_id])}
+    var check := promotion_requirements(state)
+    if not bool(check.get("ok", false)):
+        return check
+    var costs: Dictionary = check["cost"]
+    var materials := costs.duplicate(true)
+    materials.erase("spirit_stones")
+    if not BuildingSystem.new()._consume_resources(state, materials):
+        return {"ok": false, "reason": "materials_changed"}
+    state.sect.spirit_stones -= int(costs["spirit_stones"])
+    var new_rank := rank_index(state) + 1
+    state.sect.hall_governance["sect_rank_index"] = new_rank
+    receipts = receipts.duplicate(true)
+    receipts[request_id] = new_rank
+    state.sect.hall_governance["promotion_receipts"] = receipts
+    SectResidenceSystemV1.refresh_capacity(state)
+    return {"ok": true, "new_rank": new_rank, "name": rank_label(new_rank), "cost": costs}
+
+static func record_prestige(state: SimulationState, amount: int) -> void:
+    # The only callers must be genuine committed recruitment or production
+    # receipts. No click/preview/save-read may mint renown.
+    if installed(state) and amount > 0:
+        state.sect.hall_governance["prestige"] = maxi(0, int(state.sect.hall_governance.get("prestige", 0))) + amount
+
+static func role_effect(state: SimulationState, office_id: String) -> float:
+    if not installed(state):
+        return 0.0
+    var id := holder_id(state, office_id)
+    if id.is_empty() or not state.disciples.has(StringName(id)):
+        return 0.0
+    var actor: DiscipleState = state.disciples[StringName(id)]
+    if actor.injury_level != 0 or actor.hp <= 0.0:
+        return 0.0
+    var hall_state := hall(state)
+    if hall_state == null or hall_state.level < int(OFFICE_UNLOCK.get(office_id, 101)):
+        return 0.0
+    var level := int(mastery(state, office_id, id).get("level", 1))
+    var t := float(level - 1) / 9.0
+    match office_id:
+        OFFICE_GUIDE:
+            return lerpf(60.0, 285.0, t)
+        OFFICE_STEWARD, OFFICE_ALCHEMIST:
+            return lerpf(0.02, 0.08, t)
+        OFFICE_GUARDIAN:
+            return lerpf(0.02, 0.06, t)
+        OFFICE_DISCIPLINE:
+            return lerpf(0.03, 0.09, t)
+        _:
+            return office_bonus(state, office_id)
+
+static func record_office_event(state: SimulationState, office_id: String, completed: bool) -> void:
+    if not completed or not installed(state) or not OFFICES.has(office_id):
+        return
+    var id := holder_id(state, office_id)
+    if id.is_empty() or role_effect(state, office_id) <= 0.0:
+        return
+    _award_mastery(state, office_id, id)
+
+static func _award_mastery(state: SimulationState, office_id: String, id: String) -> void:
+    var day := int(state.tick / DAY_TICKS)
+    var all_days: Dictionary = state.sect.hall_governance.get("office_award_day", {}).duplicate(true)
+    var record := mastery(state, office_id, id)
+    if day <= int(all_days.get(office_id, -1)) or day <= int(record.get("last_award_day", -1)):
+        return
+    var all_records: Dictionary = state.sect.hall_governance.get("mastery", {}).duplicate(true)
+    record["last_award_day"] = day
+    if int(record["level"]) < MAX_MASTERY:
+        var xp := int(record["xp"]) + ACTIVITY_EXP
+        while int(record["level"]) < MAX_MASTERY and xp >= required_xp(int(record["level"])):
+            xp -= required_xp(int(record["level"]))
+            record["level"] = int(record["level"]) + 1
+        record["xp"] = 0 if int(record["level"]) >= MAX_MASTERY else xp
+    all_records["%s:%s" % [id, office_id]] = record
+    all_days[office_id] = day
+    state.sect.hall_governance["mastery"] = all_records
+    state.sect.hall_governance["office_award_day"] = all_days
+
 static func validate(state: SimulationState) -> Array[String]:
     var errors: Array[String] = []
     if not installed(state):
         return errors
+    errors.append_array(SectResidenceSystemV1.validate(state))
+    if rank_index(state) < 1 or rank_index(state) > 27:
+        errors.append("Hall sect rank invalid.")
     var hall_state := hall(state)
     if hall_state == null or hall_state.id != MAIN_HALL_ID:
         errors.append("Hall V1 missing singleton main_hall_001.")
