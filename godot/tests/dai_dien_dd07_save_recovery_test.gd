@@ -105,6 +105,29 @@ func _run() -> void:
             "saved legacy bed credit type must fail closed"):
         return
 
+    # DD-08: lossless V2 decode rejects duplicate raw IDs BEFORE converting
+    # the rows into a Dictionary, which otherwise discards the older owner.
+    var wire: Dictionary = state.to_dict()
+    wire["save_version"] = SaveService.CURRENT_VERSION
+    var verifier := SaveService.new()
+    if not _expect(verifier._is_payload_shape_valid(wire),
+            "valid Hall V2 wire payload rejected by strict shape gate"):
+        return
+    var duplicate_house_wire := wire.duplicate(true)
+    var house_rows: Array = duplicate_house_wire["buildings"]
+    house_rows.append(house_rows[0].duplicate(true))
+    duplicate_house_wire["buildings"] = house_rows
+    if not _expect(not verifier._is_payload_shape_valid(duplicate_house_wire),
+            "decoder would silently overwrite duplicate building IDs"):
+        return
+    var duplicate_disciple_wire := wire.duplicate(true)
+    var disciple_rows: Array = duplicate_disciple_wire["disciples"]
+    disciple_rows.append(disciple_rows[0].duplicate(true))
+    duplicate_disciple_wire["disciples"] = disciple_rows
+    if not _expect(not verifier._is_payload_shape_valid(duplicate_disciple_wire),
+            "decoder would silently overwrite duplicate disciple IDs"):
+        return
+
     # Two genuine saved generations establish a valid backup copy.
     _cleanup()
     var saves := SaveService.new()
