@@ -645,7 +645,7 @@ func start_upgrade(state: SimulationState, building_id: StringName, request_id: 
     # older P3.7 buildings retain the original no-ID API unchanged.
     # Replay after completion is idempotent, not a second paid next-level action.
     var stored_building = state.buildings.get(str(building_id)) if state != null else null
-    var governed := SectHallSystemV1.installed(state) and stored_building is BuildingState \
+    var governed: bool = SectHallSystemV1.installed(state) and stored_building is BuildingState \
         and stored_building.building_type in [TYPE_MAIN_HALL, TYPE_RESIDENCE]
     if governed:
         if request_id.is_empty():
