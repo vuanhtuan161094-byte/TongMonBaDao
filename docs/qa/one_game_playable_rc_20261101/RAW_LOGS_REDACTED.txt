@@ -1,0 +1,468 @@
+===== final_42fec_import exit=0 =====
+--- stdout.log ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | Started Registering global classes... (2 steps)[39m[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | PveSectWorldViewV1[39m[0m
+[  33% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[92m[ DONE ][39m [1mupdate_scripts_classes[22m
+[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Started Loading editor (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Loading editor layout...[39m[0m
+[  16% ] [90m[1mloading_editor_layout[22m | Loading docks...[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m
+
+--- stderr.log ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== final_c2_dan_tien exit=0 =====
+--- stdout.log ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+DAN_TIEN_C2_SMOKE_PASS new_game_birth=1 bounded_queue=100_days paid_debit=0 ui=1
+
+--- stderr.log ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== final_p1_2_recruitment exit=0 =====
+--- stdout.log ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P1.2 RECRUITMENT + PLAYER CHOICE TEST PASS
+seed=616161 ticks=1200 disciples=8 capacity=8 accepted=2 rejected=1
+
+--- stderr.log ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== final_p3_7c1_guidance exit=0 =====
+--- stdout.log ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P3.7C1 FOUNDATION + DAN TIEN RECRUITMENT TEST PASS
+
+--- stderr.log ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== final_sx01_json_policy exit=0 =====
+--- stdout.log ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SX01 JSON POLICY ROUNDTRIP PASS (13 checks)
+
+--- stderr.log ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== final_sx01_policy exit=0 =====
+--- stdout.log ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SX01 POLICY + TARGET + B3 CONSUMER + SAVE PASS (32 checks)
+
+--- stderr.log ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== final_sx02_catalogue exit=0 =====
+--- stdout.log ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SX02 CATALOGUE PASS (856 checks)
+
+--- stderr.log ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== final_sx02_runtime exit=0 =====
+--- stdout.log ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SX02 MEDICINE REAL JOB + CANONICAL B3 + SAVE PASS (47 checks)
+
+--- stderr.log ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== final_b3_pill exit=0 =====
+--- stdout.log ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+TRADE ore=37 -> 27 stones=512 herbs=5 grain=1
+B3 PILL EVIDENCE recipe_base=6 fixed_tuvi=10000 shared_costs=10+25 cap=1000000 day_tick=1440 save=<EVIDENCE_DIR>/profiles/final_b3_pill/Roaming/Godot/app_userdata/Tong Mon Ba Dao/care_pills_2990374.json
+B3 PILL SATIETY + REAL ALCHEMY + FIXED TUVI + DAILY LIMIT + SAVE RETRY PASS (45 checks)
+
+--- stderr.log ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+ERROR: SaveService: CARE capability mismatch; refusing downgraded or incomplete save.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _load_exact (res://src/simulation/save/save_service.gd:235)
+       [1] execute (res://tests/simulation/b3_pill_satiety_test.gd:111)
+       [2] run (res://tests/simulation/b3_pill_satiety_test.gd:22)
+ERROR: B3 CARE: incompatible save: invalid_satiety_day_or_spent
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] from_dict (res://src/simulation/state/simulation_state.gd:434)
+       [1] execute (res://tests/simulation/b3_pill_satiety_test.gd:115)
+       [2] run (res://tests/simulation/b3_pill_satiety_test.gd:22)
+
+===== final_b3_care exit=124 =====
+--- stdout.log ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+AUTO AT120 tick=126 hp=146.0 injury=0 action=HOLD cmd={  } policy={ "auto_deploys": 1, "auto_heal": true, "auto_hunt": true, "disciple_id": "candidate_99441", "heals": 1.0, "last_review_tick": 126, "min_hp_ratio": 0.75, "next_review_tick": 127, "owns_rest": false, "paused_manual": false, "rest_requests": 41, "status": "HUNTING", "version": 1.0 }
+B3 CARE LOOP EVIDENCE world=b3:vs1:bach_thach_khe:930211:6 down_tick=6 recover_tick=126 auto_deploys=1 kills=4 real_warehouse=4 save=<EVIDENCE_DIR>/profiles/final_b3_care/Roaming/Godot/app_userdata/Tong Mon Ba Dao/care_loop_medicine_3187417.json.online
+
+--- stderr.log ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== final_b3_care_retry exit=0 =====
+--- stdout.log ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+AUTO AT120 tick=126 hp=146.0 injury=0 action=HOLD cmd={  } policy={ "auto_deploys": 1, "auto_heal": true, "auto_hunt": true, "disciple_id": "candidate_99441", "heals": 1.0, "last_review_tick": 126, "min_hp_ratio": 0.75, "next_review_tick": 127, "owns_rest": false, "paused_manual": false, "rest_requests": 41, "status": "HUNTING", "version": 1.0 }
+B3 CARE LOOP EVIDENCE world=b3:vs1:bach_thach_khe:930211:6 down_tick=6 recover_tick=126 auto_deploys=1 kills=4 real_warehouse=4 save=<EVIDENCE_DIR>/profiles/final_b3_care_retry/Roaming/Godot/app_userdata/Tong Mon Ba Dao/care_loop_medicine_2574994.json.online
+B3 REST-ONLY EVIDENCE recover_tick=120 same_world=b3:vs1:bach_thach_khe:930211:0 rest_requests=68
+B3 CARE REAL DEFEAT + PILL/REST + INJURY120 + AUTO SAME WORLD + OFFLINE + SAVE RETRY PASS (39 checks)
+
+--- stderr.log ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+ERROR: B3 CARE: incompatible save: invalid_care_counter_range
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] from_dict (res://src/simulation/state/simulation_state.gd:434)
+       [1] no_pills_and_guards (res://tests/simulation/b3_care_pills_autohunt_test.gd:177)
+       [2] run (res://tests/simulation/b3_care_pills_autohunt_test.gd:79)
+
+===== final_b3_care_presenter exit=0 =====
+--- stdout.log ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+B3 CARE → COMBAT V5 SOURCE A VIEW-ONLY PRESENTATION: PASS
+disciple=candidate_73021 key=disciple_female monster=b3:vs1:bach_thach_khe:31012026:0/wolf_0/1 key=monster_1113031_1 tick=0 real_clip_routes=idle,walk,attack,hit,die boss_asset_verified=true boss_event_mapped=false
+
+--- stderr.log ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== final_save_service_async exit=0 =====
+--- stdout.log ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SAVE SERVICE ASYNC ROUNDTRIP PASS checks=10 snapshot_isolated=true joins_before_sync=true prior_backup_valid=true
+
+--- stderr.log ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== final_p0_save_reload exit=0 =====
+--- stdout.log ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P0 SAVE ROUNDTRIP TEST PASS
+tick=3000 money=1630 disciples=6
+
+--- stderr.log ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+ERROR: SaveService: malformed save payload for version 4.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _load_exact (res://src/simulation/save/save_service.gd:243)
+       [1] load_from_path (res://src/simulation/save/save_service.gd:192)
+       [2] _test_invalid_payload_rejection (res://tests/simulation/p0_save_roundtrip_test.gd:72)
+       [3] _run (res://tests/simulation/p0_save_roundtrip_test.gd:41)
+ERROR: SaveService: invalid negative save version -1.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _load_exact (res://src/simulation/save/save_service.gd:215)
+       [1] load_from_path (res://src/simulation/save/save_service.gd:192)
+       [2] _test_invalid_payload_rejection (res://tests/simulation/p0_save_roundtrip_test.gd:79)
+       [3] _run (res://tests/simulation/p0_save_roundtrip_test.gd:41)
+
+===== final_gp_02c1_injury exit=0 =====
+--- stdout.log ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+GP-02C1 SETUP PASS
+GP-02C1 T01 PASS
+GP-02C1 BEGIN PASS
+GP-02C1 HP_OWNER PASS
+GP-02C1 T13 PASS
+GP-02C1 T07 PASS
+GP-02C1 HP_ISOLATION PASS
+GP-02C1 T02 PASS
+GP-02C1 T03 PASS
+GP-02C1 T05 PASS
+GP-02C1 T06 PASS
+GP-02C1 RELEASE PASS
+GP-02C1 SETUP_RETREAT PASS
+GP-02C1 RETREAT_BEGIN PASS
+GP-02C1 T04 PASS
+GP-02C1 SAVE_SETUP PASS
+GP-02C1 DEFEAT_BEGIN PASS
+GP-02C1 T09 PASS
+GP-02C1 NO_LOOT PASS
+GP-02C1 SAVE PASS
+GP-02C1 RECEIPT_SAVE PASS
+GP-02C1 RECEIPT_LOAD PASS
+GP-02C1 T23 PASS
+GP-02C1 LEGACY_SETUP PASS
+GP-02C1 T22 PASS
+GP-02C1 LEGACY_ACTIVE_SETUP PASS
+GP-02C1 LEGACY_ACTIVE_BEGIN PASS
+GP-02C1 LEGACY_ACTIVE_SAVE PASS
+GP-02C1 LEGACY_ACTIVE_LOAD PASS
+GP-02C1 LEGACY_ACTIVE_OWNER PASS
+GP-02C1 LEGACY_ACTIVE_OWNER PASS
+GP-02C1 LEGACY_ACTIVE_GUARD PASS
+GP-02C1 LEGACY_ACTIVE_RESUME PASS
+GP-02C1 LEGACY_ACTIVE_FINISH PASS
+GP-02C1 LEGACY_TERM_SETUP PASS
+GP-02C1 LEGACY_TERM_BEGIN PASS
+GP-02C1 LEGACY_TERM_SAVE PASS
+GP-02C1 LEGACY_TERM_LOAD PASS
+GP-02C1 LEGACY_TERM_SETTLE PASS
+GP-02C1 LEGACY_TERM_119 PASS
+GP-02C1 LEGACY_TERM_120 PASS
+GP-02C1 LEGACY_CONFLICT_SETUP PASS
+GP-02C1 LEGACY_CONFLICT_BEGIN PASS
+GP-02C1 LEGACY_FAIL_CLOSED PASS
+GP-02C1 LEGACY_WIN_MAP PASS
+GP-02C1 LEGACY_WIN_BEGIN PASS
+GP-02C1 LEGACY_WIN_REAL PASS
+GP-02C1 LEGACY_WIN_SAVE PASS
+GP-02C1 LEGACY_WIN_RECEIPT PASS
+GP-02C1 LEGACY_WIN_RESUME PASS
+GP-02C1 LEGACY_WIN_EXACTLY_ONCE PASS
+GP-02C1 T15_SETUP PASS
+GP-02C1 T15_BUILD PASS
+GP-02C1 T15_ASSIGN PASS
+GP-02C1 T15_PLANT PASS
+GP-02C1 T15 PASS
+GP-02C1 T15_TIMER PASS
+GP-02C1 T15_PLANT PASS
+GP-02C1 T15 PASS
+GP-02C1 T15_TIMER PASS
+GP-02C1 T15_HERBS PASS
+GP-02C1 T15_HALL PASS
+GP-02C1 T15_RECIPE PASS
+GP-02C1 T15_ALCHEMY PASS
+GP-02C1 WORK_SETUP PASS
+GP-02C1 MINE_ASSIGN PASS
+GP-02C1 WORK_START PASS
+GP-02C1 T14 PASS
+GP-02C1 BODY_RESERVE PASS
+GP-02C1 T16 PASS
+GP-02C1 BODY_RELEASE PASS
+GP-02C1 WORK_PVE_BEGIN PASS
+GP-02C1 T17 PASS
+GP-02C1 WORK_DEFEAT PASS
+GP-02C1 T18 PASS
+GP-02C1 T18_WORK PASS
+GP-02C1 T19 PASS
+GP-02C1 T20 PASS
+GP-02C1 OFFLINE_SETUP PASS
+GP-02C1 OFFLINE_DEFEAT PASS
+GP-02C1 OFFLINE_SAVE PASS
+GP-02C1 T21 PASS
+GP-02C1 OFFLINE_REPEAT PASS
+GP-02C1 REAL_MAP PASS
+GP-02C1 REAL_BEGIN PASS
+GP-02C1 T12 PASS
+GP-02C1 T12B PASS
+GP-02C1 REAL_WIN PASS
+GP-02C1 T08 PASS
+GP-02C1 REAL_RELOAD PASS
+GP-02C1 WIN_RESUME PASS
+GP-02C1 T08B PASS
+GP-02C1 T10 PASS
+GP-02C1 T11 PASS
+GP-02C1 T01-T23 FOCUSED TERMINAL/RECOVERY/COMPATIBILITY PASS
+
+--- stderr.log ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+ERROR: GP-02C1: incompatible saved PvE: legacy_participant_occupation_conflict detail=
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] from_dict (res://src/simulation/state/simulation_state.gd:440)
+       [1] _legacy_terminal_and_fail_closed (res://tests/simulation/gp_02c1_injury_settlement_test.gd:239)
+       [2] _run (res://tests/simulation/gp_02c1_injury_settlement_test.gd:86)
+
+===== final_hs09_profile exit=0 =====
+--- stdout.log ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+HS09 DISCIPLE PROFILE / DUAL RADAR / FEATURE-GATE READ MODEL PASS
+
+--- stderr.log ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== final_o4_spirit_field exit=0 =====
+--- stdout.log ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P3 O4 REAL SPIRIT FIELD LOOP TEST PASS
+
+--- stderr.log ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== final_o8_alchemy exit=0 =====
+--- stdout.log ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+P3 O8 ALCHEMY FIELD-PILL-CONSUMER TEST PASS
+
+--- stderr.log ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== final_pve_save_return_reload exit=0 =====
+--- stdout.log ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PVE AUX-01 SAVE/RETURN/RELOAD PASS checks=50 exact_sha= party=6 monsters=10 active_reload=true same_wall_no_step=true hp0_receipt_once=true warehouse_delta=0 injury_retreat=0 injury120_contract=gp_02c1_injury_settlement_test loot=LOOT_PENDING
+
+--- stderr.log ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== final_pve_zone_progression exit=0 =====
+--- stdout.log ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PVE AUX-02 AUTONOMOUS SAVE_RELOAD detail={ "ok": true, "session": <RefCounted#-9223371600361942827> } disciples=6 monsters=10 auto=true warehouse_equal=true claims=0 active=codex1_autonomous_zone_progression
+PVE AUX-02 DISK COUNTS expected=6/4 actual=6/4 party_valid=true records=16
+PVE AUX-02 AUTONOMOUS PROGRESS seconds=25 camp=01 kills=8 alive_monsters=2 battle_time=12.8 respawned_c01=0
+PVE AUX-02 AUTONOMOUS FINAL detail zone_changed=true camp=1 party_records=true living=5 monsters=10 zone_event=true kills=10 respawns=2 time=36.8
+PVE AUX-02 AUTONOMOUS ZONE PROGRESSION PASS checks=35 elapsed=40 wall_seconds camp=02 kills=10 c01_respawns=2 party_records=6 living_party=5 zone_spawn_count=10 alive_monsters=10 save_reload=true auto_hunt=true injected_movement=false forced_damage=false loot=none physical_mouse=NOT_TESTED
+
+--- stderr.log ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== final_pve_c17_move exit=0 =====
+--- stdout.log ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PVE SAME-CELL MOVE C17: PASS checks=14 no_stall=true save_restore=true physical_mouse=NOT_TESTED
+
+--- stderr.log ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== final_pve_group_formation exit=0 =====
+--- stdout.log ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PVE FORMATION UNIQUE: PASS checks=10 slots=6 deterministic=true snapshot=true atomic_failure=true physical_mouse=NOT_TESTED
+
+--- stderr.log ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== final_pve_cung_six exit=0 =====
+--- stdout.log ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+V63_CUNG_SIX_PVE_RECEIPT {"casts_by_actor":{"cung_six_00":49,"cung_six_01":9,"cung_six_02":12,"cung_six_03":12,"cung_six_04":12,"cung_six_05":3},"disciple_count":6,"encounter":"cung_six_disciple_pve","positive_damage_by_actor":{"cung_six_00":48,"cung_six_01":9,"cung_six_02":12,"cung_six_03":12,"cung_six_04":12,"cung_six_05":3},"positive_damage_total":5563.71902311276,"rotation_actor_distinct_skills":5,"snapshot_restored":true,"status":"PASS","target_hp_after":99994125.2930037}
+V63 CUNG SIX DISCIPLE PVE PASS
+
+--- stderr.log ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== final_pve_gui_vfx exit=0 =====
+--- stdout.log ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 - Build 31.0.101.2125 - Compatibility - Using Device: Intel - Intel(R) Iris(R) Plus Graphics
+
+PVE P3.2 INTEGRATION START headless=false vfx_fixture=true
+PVE P3.2 INPUT_VIEWPORT size=(1280, 720)
+PVE P3.2 INTEGRATION scene_ready disciples=130
+PVE VFX VISUAL FIXTURE enabled=1 disciple=candidate_0056 role=mage skill=ngu_kiem_thuat source=CombatSkillSystem scope=isolated_endgame_copy production_progression_unchanged=true
+PVE P3.2 INTEGRATION hunt_started encounter=pve:thanh_truc_lam:c01:20261025:120:0
+PVE ACTOR SCREEN SCALE PASS zoom=0.80 actor_draw_scale=0.656 cap=0.82
+PVE SELECTION RING GAP PASS zoom=0.80 visible=6 min_edge_gap_px=13.56
+PVE SELECTION RING IMAGE PASS zoom=0.80 size=1280x720 path=<EVIDENCE_DIR>\screenshots\final_pve_gui_vfx/pve_selection_rings_zoom_080.png sha256=72f06b2a8fcd85494f013f23273d13053b26bfe796b49b9e991b7ec7731ef126
+PVE ACTOR SCREEN SCALE PASS zoom=1.35 actor_draw_scale=0.820 cap=0.82
+PVE SELECTION RING GAP PASS zoom=1.35 visible=6 min_edge_gap_px=39.04
+PVE SELECTION RING IMAGE PASS zoom=1.35 size=1280x720 path=<EVIDENCE_DIR>\screenshots\final_pve_gui_vfx/pve_selection_rings_zoom_135.png sha256=2d825c3133a2dc1d9afb8980ed5a4381daeec0c22faef611fcf913ea925cc803
+PVE PATH CACHE PASS path_cells=81 cache_hits=1 deterministic=true
+PVE WORLD VIEW CACHE PASS prepare_calls=83 topology_builds=1 minimap_builds=0 source_sha=c0e6b9952ce6303718938f5705a0327d0a14b136
+PVE HUD LAYOUT CACHE PASS apply_count=1 stable_viewport=1280x720
+PVE WORLD VIEW INPUT PASS wheel_up_down=1 anchor_stable=1 hud_plus_minus=1 refresh_keeps_camera=1 zoom=0.700
+PVE P3.2 INTEGRATION movement_verified orders=6 formation_slots=6 min_spacing=2.83
+PVE GUI FORMATION CAPTURE PASS path=<EVIDENCE_DIR>\screenshots\final_pve_gui_vfx\pve_jx_formation_1280x720.png sha256=8885a888e5fd5cef0a2f92258c5baab991894829b4b65f9e7ce25faaef3af440 size=1280x720 party=6 monster_records=10 alive_monsters=10 slots=6 min_spacing=2.83
+PVE P3.2 INTEGRATION active_save_load_verified
+PVE P3.2 INTEGRATION save_load_snapshot_ready
+PVE P3.2 INTEGRATION in_memory_snapshot_ready
+PVE JX IMPACT DRAW PASS wait_frames=35 cues=1 atlas_region=true on_map=true screenshot=1280x720
+PVE P3.2 INTEGRATION capture_battle_ready actions=38 now=2.000
+PVE RENDER PERF viewport=(1280, 720) chunks=16/144 ground_meshes=76 active_vegetation_rows=57 visible_static=20 live_actors=16 zoom=1.35
+PVE GUI CAPTURE PASS path=<EVIDENCE_DIR>\screenshots\final_pve_gui_vfx\pve_jx_combat_1280x720.png sha256=9d040254bb93fc2a920a94f38cecc82397143e7dcf5ac5a0b88de2f48d2fa6fb size=1280x720 renderer=SectIsometricWorldV1 map=192x192 live_party=6 live_monsters=10 actions=38 style=hybrid
+PVE VFX GUI CAPTURE PASS comparison=hybrid captured=["hybrid"] cast_seen=true positive_hit_seen=true counters={ "casts": 1, "positive_hits": 1, "impacts": 1, "expired_without_hit": 0, "duplicate_snapshots": 6 } frame_rate_sample=60.06 wait_seconds=35.013
+PVE P3.2 INTEGRATION shared_clock_step=0
+PVE P3.2 INTEGRATION FRAME BUDGET PASS requested=1 max_batch=1 batches=1 drained_render_frames=3 pending=0.000 barrier_saves=authoritative_kill_respawn_zone
+PVE P3.2 INTEGRATION shared_clock_progress elapsed=0 frames=1 baseline_actions=38 baseline_time=2.000 remainder=0.000
+PVE P3.2 INTEGRATION shared_clock_complete active=true
+PVE P3.2 INTEGRATION clock_and_b3_care_verified
+PVE SOURCE A CONTINUOUS WORLD P3.2 INTEGRATION PASS sha= renderer=SectIsometricWorldV1 map=192x192 zones=20 party=6 real_monsters=10 reserved=6 shared_clock_seconds=3.00 actions=41 path_order=true zone_hop=NOT_REACHED result=active kills=0 injury120=NOT_REACHED minimap=live camera=pan_zoom active_save_load=true no_duplicate_or_fabricated_rewards=true loot=LOOT_PENDING
+
+--- stderr.log ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== pve_p3_2_multicamp_retry3 exit=-1 =====
+--- stdout.log ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PVE P3.2 INTEGRATION START headless=true vfx_fixture=false
+PVE P3.2 INPUT_VIEWPORT size=(1280, 720)
+PVE P3.2 INTEGRATION scene_ready disciples=130
+PVE P3.2 INTEGRATION hunt_started encounter=pve:thanh_truc_lam:c01:20261025:120:0
+
+--- stderr.log ---
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+===== final_MO_GAME_profile_smoke (captured while GUI remained open; process has no exit code yet) =====
+===================================================
+         TONG MON BA DAO - MO GAME
+===================================================
+[OK] Git HEAD: 42fecb3ff98c706f3d6f1fc65704e54df5094585
+[OK] Godot: <OFFICIAL_GODOT_4_7_2>
+[INFO] Dang mo game ONE GAME P3.2 1280x720 voi profile save moi rieng.
+Starting a fresh ONE GAME P3.2 profile; later launches will reuse its save.
+Godot user data: "<QA_CHECKOUT>\godot\outputs\one_game_newgame\owner_playtest_profile"
+Per-run log: "<QA_CHECKOUT>\godot\outputs\one_game_newgame\sessions\5554_6517_12587_12983\logs\game.log"
+Save path: user://tong_mon_ba_dao_live_v2.json under the isolated playtest profile.
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 - Build 31.0.101.2125 - Compatibility - Using Device: Intel - Intel(R) Iris(R) Plus Graphics
+
+
+===== final_MO_GAME_profile_smoke stderr =====
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2582)
+
+FINAL STDERR SCAN: 0 matches for Thread destructor/unjoined thread, ObjectDB leaked, SCRIPT ERROR, or Parse Error in final_*.stderr.log. Windows environment emitted "ERROR: Failed to read the root certificate store". B3 CARE emits expected invalid negative-fixture rejection. Initial launcher attempt (not retained as raw file): exit 1, Git dubious-ownership check presented checkout as invalid; corrected with per-command safe.directory for this exact QA checkout, no global Git config changed; subsequent MO_GAME and Desktop shortcut launch succeeded.
