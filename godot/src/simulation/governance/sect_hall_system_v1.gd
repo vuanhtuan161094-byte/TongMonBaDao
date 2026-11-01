@@ -227,12 +227,12 @@ static func master_effective_d7_points(state: SimulationState, disciple: Discipl
         return 0.0
     if office_bonus(state, OFFICE_MASTER) <= 0.0:
         return 0.0
-    return lerpf(25.0, 70.0, float(int(mastery(state, OFFICE_MASTER, str(disciple.id))["level"]) - 1) / 9.0)
+    return lerpf(25.0, 70.0, float(int(mastery(state, OFFICE_MASTER, str(disciple.id))["level"]) - 1) / 9.0) * affinity_factor(disciple, OFFICE_MASTER)
 
 static func master_hp_bonus(state: SimulationState, disciple: DiscipleState) -> float:
     if master_effective_d7_points(state, disciple) <= 0.0:
         return 0.0
-    return lerpf(0.03, 0.07, float(int(mastery(state, OFFICE_MASTER, str(disciple.id))["level"]) - 1) / 9.0)
+    return lerpf(0.03, 0.07, float(int(mastery(state, OFFICE_MASTER, str(disciple.id))["level"]) - 1) / 9.0) * affinity_factor(disciple, OFFICE_MASTER)
 
 static func cultivation_sources(state: SimulationState, disciple: DiscipleState) -> Array:
     var result: Array = []
