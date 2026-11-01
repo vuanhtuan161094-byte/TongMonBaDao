@@ -96,7 +96,7 @@ func _build_candidate_panel() -> Control:
 	accept.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	accept.pressed.connect(func(): accept_candidate_requested.emit(_candidate_id()))
 	decisions.add_child(accept)
-	var reject := UI.button("TỪ CHỐI", false, UI.RED)
+	var reject := UI.button("XÁC NHẬN TỪ CHỐI" if _reject_armed else "TỪ CHỐI", false, UI.RED)
 	reject.name = "RejectCandidate"
 	reject.disabled = not bool(_vm.get("can_reject", false))
 	reject.size_flags_horizontal = Control.SIZE_EXPAND_FILL
