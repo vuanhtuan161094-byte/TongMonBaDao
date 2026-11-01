@@ -11,12 +11,8 @@ const GOLD := Color("#e7c88d")
 const WHITE := Color("#edf3ec")
 const MUTED := Color("#a9bfba")
 const JADE := Color("#68cdb3")
-const OFFICES := [
-    SectHallSystemV1.OFFICE_MASTER,
-    SectHallSystemV1.OFFICE_GUIDE,
-    SectHallSystemV1.OFFICE_TEACHER
-]
-const TABS := ["TỔNG QUAN", "CHỨC VỤ", "NÂNG CẤP", "THĂNG BẬC"]
+const OFFICES := SectHallSystemV1.OFFICES
+const TABS := ["TỔNG QUAN", "CHỨC VỤ", "NÂNG CẤP", "THĂNG BẬC", "CHÍNH SÁCH", "ĐỆ TỬ XÁ"]
 
 var game_state: SimulationState
 var active_tab := 0
@@ -149,8 +145,12 @@ func _refresh() -> void:
         _offices()
     elif active_tab == 2:
         _upgrades()
-    else:
+    elif active_tab == 3:
         _sect_rank()
+    elif active_tab == 4:
+        _policies()
+    else:
+        _residences()
     if not feedback.is_empty():
         _content.add_child(_label(feedback, 13, JADE))
 
@@ -160,11 +160,19 @@ func _overview() -> void:
     _content.add_child(_label("Đại Điện Lv%d/100  ·  Bậc Tông Môn: Nhân %d/9" % [
         hall.level, int(game_state.sect.hall_governance.get("sect_rank_index", 1))
     ], 16))
-    _content.add_child(_label("Đệ tử: %d/%d  ·  Chỗ nghỉ: %d  ·  Linh Thạch: %d" % [
+    _content.add_child(_label("Đệ tử %d/%d  ·  Giường %d  ·  Trần quản trị %d  ·  Linh Thạch %d" % [
         game_state.disciples.size(), game_state.sect.disciple_capacity,
-        game_state.sect.lodging_capacity, game_state.sect.spirit_stones
+        SectResidenceSystemV1.total_beds(game_state), SectHallSystemV1.rank_population_limit(game_state),
+        game_state.sect.spirit_stones
     ], 15))
-    _content.add_child(_label("Lưu ý: hệ thống giường và trần tuyển vẫn cần hợp nhất với Đệ Tử Xá V2. Các số hiện tại được đọc trực tiếp từ save.", 12, MUTED))
+    _content.add_child(_label("Hiện có %d Đệ Tử Xá · quyền xây tối đa %d · Uy Danh %d" % [
+        SectResidenceSystemV1.all_houses(game_state).size(),
+        SectResidenceSystemV1.maximum_instances(game_state),
+        int(game_state.sect.hall_governance.get("prestige", 0))
+    ], 14, MUTED))
+    var binding := "Cần nâng Đệ Tử Xá" if SectResidenceSystemV1.total_beds(game_state) < SectHallSystemV1.rank_population_limit(game_state) else "Cần thăng bậc Tông Môn"
+    if game_state.disciples.size() >= game_state.sect.disciple_capacity:
+        _content.add_child(_label("Đã đầy: %s" % binding, 14, GOLD))
     _content.add_child(_label("CHỨC VỤ ĐANG BỔ NHIỆM", 17, GOLD))
     for office_id in OFFICES:
         var id := SectHallSystemV1.holder_id(game_state, office_id)
@@ -177,12 +185,19 @@ func _overview() -> void:
 
 func _offices() -> void:
     _content.add_child(_label("BỔ NHIỆM  ·  CHƯỞNG MÔN VÀ TRƯỞNG LÃO", 17, GOLD))
-    var offices_row := HBoxContainer.new()
-    offices_row.add_theme_constant_override("separation", 8)
+    var offices_row := GridContainer.new()
+    offices_row.columns = 3
+    offices_row.add_theme_constant_override("h_separation", 8)
+    offices_row.add_theme_constant_override("v_separation", 8)
     _content.add_child(offices_row)
     for office_id in OFFICES:
         var role := _button(SectHallSystemV1.label(office_id), Callable(self, "_select_office").bind(office_id), selected_office == office_id)
         role.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+        role.custom_minimum_size.x = 305
+        var hall_building := SectHallSystemV1.hall(game_state)
+        role.disabled = hall_building == null or hall_building.level < int(SectHallSystemV1.OFFICE_UNLOCK.get(office_id, 101))
+        if role.disabled:
+            role.tooltip_text = "Mở tại Đại Điện Lv%d" % int(SectHallSystemV1.OFFICE_UNLOCK.get(office_id, 101))
         offices_row.add_child(role)
     var id := SectHallSystemV1.holder_id(game_state, selected_office)
     var name_text := "Ghế trống"
@@ -207,6 +222,8 @@ func _offices() -> void:
         _content.add_child(_label("Truyền Công: +%.1f%% Tu Vi tu luyện tự nhiên toàn tông môn. Đan cố định không nhân bonus." % [
             100.0 * SectHallSystemV1.office_bonus(game_state, selected_office) if not id.is_empty() else 3.0
         ], 13, MUTED))
+    if not selected_office in [SectHallSystemV1.OFFICE_MASTER, SectHallSystemV1.OFFICE_GUIDE, SectHallSystemV1.OFFICE_TEACHER]:
+        _content.add_child(_label("Buff chức vụ %.1f%% (cấp tinh thông, chỉ tác động khi có nghiệp vụ thật)." % (100.0 * SectHallSystemV1.role_effect(game_state, selected_office)), 13, MUTED))
     var dropdown := OptionButton.new()
     dropdown.name = "HallCandidateSelector"
     dropdown.custom_minimum_size = Vector2(440, 46)
@@ -233,7 +250,8 @@ func _offices() -> void:
     actions.add_theme_constant_override("separation", 9)
     _content.add_child(actions)
     var appoint := _button("BỔ NHIỆM / THAY THẾ", Callable(self, "_appoint"), true)
-    appoint.disabled = _candidate_ids.is_empty()
+    var hall_building := SectHallSystemV1.hall(game_state)
+    appoint.disabled = _candidate_ids.is_empty() or hall_building == null or hall_building.level < int(SectHallSystemV1.OFFICE_UNLOCK.get(selected_office, 101))
     appoint.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     actions.add_child(appoint)
     var dismiss := _button("MIỄN NHIỆM", Callable(self, "_dismiss"))
@@ -307,7 +325,145 @@ func _start_upgrade() -> void:
     _refresh()
 
 func _sect_rank() -> void:
-    _content.add_child(_label("THĂNG BẬC TÔNG MÔN · 27 BẬC", 17, GOLD))
-    _content.add_child(_label("Hiện tại: Nhân 1/9", 16))
-    _content.add_child(_label("Hệ yêu cầu Uy Danh, nhân lực, sản xuất, cảnh giới và thử thách chưa có đủ authority trong RC. Chưa cho phép thăng bậc bằng số liệu giả.", 14, MUTED))
-    _content.add_child(_label("Nhân 9 ≥90 đệ tử · Tiên 9 ~200 · Thần 9 khoảng 400–500: mục tiêu thiết kế, chưa phải giới hạn chạy thật.", 13, MUTED))
+    var current := SectHallSystemV1.rank_index(game_state)
+    var check := SectHallSystemV1.promotion_requirements(game_state)
+    _content.add_child(_label("TÔNG MÔN: %s  ·  ĐẠI ĐIỆN ĐỘC LẬP" % SectHallSystemV1.rank_label(current), 17, GOLD))
+    if current >= 27:
+        _content.add_child(_label("Tông Môn đạt Thần 9/9.", 15, JADE))
+        return
+    _content.add_child(_label("Mốc tiếp theo: %s" % str(check.get("next_name", "")), 16))
+    var requirements := [
+        ["Đại Điện", str(check.get("hall_level", 0)), str(check.get("hall_need", 0))],
+        ["Đệ tử", str(check.get("roster", 0)), str(check.get("roster_need", 0))],
+        ["Mẻ sản xuất thật", str(check.get("production", 0)), str(check.get("production_need", 0))],
+        ["Uy Danh", str(check.get("prestige", 0)), str(check.get("prestige_need", 0))]
+    ]
+    for item in requirements:
+        _content.add_child(_label("%s: %s / %s" % [item[0], item[1], item[2]], 14))
+    var cost: Dictionary = check.get("cost", {})
+    _content.add_child(_label("Linh Mộc %d · Thanh Thiết %d · Linh Thạch %d" % [
+        int(cost.get(BuildingSystem.MATERIAL_WOOD, 0)),
+        int(cost.get(BuildingSystem.MATERIAL_ORE, 0)),
+        int(cost.get("spirit_stones", 0))
+    ], 14, GOLD))
+    var button := _button("THĂNG BẬC TÔNG MÔN", Callable(self, "_promote_sect"), true)
+    button.name = "PromoteSectRank"
+    button.disabled = not bool(check.get("ok", false))
+    _content.add_child(button)
+    var blockers: Array = check.get("blockers", [])
+    if not blockers.is_empty():
+        _content.add_child(_label("Điều kiện chưa đạt: %s" % ", ".join(PackedStringArray(blockers)), 12, MUTED))
+    _content.add_child(_label("Uy Danh và sản lượng chỉ tính từ hành động đã hoàn thành; không bắt buộc diệt Boss. Giá/mốc V2 còn cần cân bằng thời gian chơi dài hạn.", 12, MUTED))
+
+func _promote_sect() -> void:
+    var seq := SectHallSystemV1.rank_index(game_state) + 1
+    var receipt := "hall-promote:%d" % seq
+    var result := SectHallSystemV1.promote(game_state, receipt)
+    feedback = "Đã thăng lên %s." % str(result.get("name", "")) if bool(result.get("ok", false)) else "Không đủ điều kiện thăng bậc."
+    if bool(result.get("ok", false)):
+        state_changed.emit()
+    _refresh()
+
+func _policies() -> void:
+    _content.add_child(_label("CHÍNH SÁCH TÔNG MÔN", 17, GOLD))
+    _content.add_child(_label("Điều hành thực: chính sách lao động · hậu cần · trang bị. Các nút gọi authority hiện có.", 13, MUTED))
+    var modes := [
+        ["CÂN BẰNG LAO ĐỘNG", WorkforceSystem.POLICY_BALANCED],
+        ["ƯU TIÊN SẢN XUẤT", WorkforceSystem.POLICY_PRODUCTION],
+        ["ƯU TIÊN TU LUYỆN", WorkforceSystem.POLICY_CULTIVATION]
+    ]
+    _content.add_child(_label("Phân công: " + str(game_state.sect.work_policy), 14))
+    for item in modes:
+        _content.add_child(_button(str(item[0]), Callable(self, "_set_work_policy").bind(item[1])))
+    _content.add_child(_label("Hậu cần: " + str(game_state.sect.needs_priority), 14))
+    for value in [NeedsSystem.PRIORITY_BALANCED, NeedsSystem.PRIORITY_MEDICINE, NeedsSystem.PRIORITY_SUPPLIES]:
+        _content.add_child(_button("HẬU CẦN · " + str(value), Callable(self, "_set_needs_policy").bind(value)))
+    _content.add_child(_label("Trang bị: " + str(game_state.sect.equipment_policy), 14))
+    for value in [EquipmentSystem.POLICY_BALANCED, EquipmentSystem.POLICY_COMBAT, EquipmentSystem.POLICY_FRUGAL]:
+        _content.add_child(_button("TRANG BỊ · " + str(value), Callable(self, "_set_equipment_policy").bind(value)))
+
+func _set_work_policy(value: StringName) -> void:
+    var ok := WorkforceSystem.new().set_work_policy(game_state, value)
+    feedback = "Đã cập nhật chính sách lao động." if ok else "Chính sách bị từ chối."
+    if ok:
+        state_changed.emit()
+    _refresh()
+
+func _set_needs_policy(value: StringName) -> void:
+    var ok := NeedsSystem.new().set_priority(game_state, value)
+    feedback = "Đã cập nhật ưu tiên hậu cần." if ok else "Không đổi được ưu tiên."
+    if ok:
+        state_changed.emit()
+    _refresh()
+
+func _set_equipment_policy(value: StringName) -> void:
+    var ok := EquipmentSystem.new().set_policy(game_state, value)
+    feedback = "Đã cập nhật chính sách trang bị." if ok else "Không đổi được ưu tiên."
+    if ok:
+        state_changed.emit()
+    _refresh()
+
+func _residences() -> void:
+    _content.add_child(_label("ĐỆ TỬ XÁ · NHÀ Ở THỰC", 17, GOLD))
+    _content.add_child(_label("Đang có %d/%d nhà · Tổng %d giường · %d đệ tử" % [
+        SectResidenceSystemV1.all_houses(game_state).size(),
+        SectResidenceSystemV1.maximum_instances(game_state),
+        SectResidenceSystemV1.total_beds(game_state), game_state.disciples.size()
+    ], 15))
+    _content.add_child(_label("Mỗi Đệ Tử Xá có ID, Lv1–100 và danh sách cư dân riêng. Cấp 20/50/75/100 mở bonus hồi phục khi nghỉ.", 13, MUTED))
+    var assignments: Dictionary = game_state.sect.hall_governance.get("residence_assignments", {})
+    for house in SectResidenceSystemV1.all_houses(game_state):
+        var occupied := 0
+        for hid in assignments.values():
+            if str(hid) == str(house.id):
+                occupied += 1
+        _content.add_child(HSeparator.new())
+        _content.add_child(_label("%s · Lv%d/100 · Giường %d/%d" % [
+            str(house.id), house.level, occupied, SectResidenceSystemV1.beds_for_level(house.level)
+        ], 15, GOLD))
+        var cost := BuildingSystem.new().upgrade_cost(house)
+        if house.is_upgrading():
+            _content.add_child(_label("Đang nâng Lv%d · %.0f/%.0f tick" % [
+                house.upgrade_target_level, house.upgrade_progress, house.upgrade_required_work
+            ], 14, JADE))
+        elif house.level < house.max_level:
+            _content.add_child(_label("Lv tiếp theo +2 giường · Mộc %d · Thiết %d · Linh Thạch %d" % [
+                int(cost.get(BuildingSystem.MATERIAL_WOOD, 0)),
+                int(cost.get(BuildingSystem.MATERIAL_ORE, 0)),
+                int(cost.get("spirit_stones", 0))
+            ], 13))
+            var upgrade := _button("NÂNG " + str(house.id), Callable(self, "_upgrade_house").bind(house.id), true)
+            upgrade.name = "UpgradeResidence_%s" % str(house.id)
+            var can := BuildingSystem.new().can_start_upgrade(game_state, house.id)
+            upgrade.disabled = not bool(can.get("ok", false))
+            upgrade.tooltip_text = str(can.get("reason", "")) if upgrade.disabled else ""
+            _content.add_child(upgrade)
+    var plan := SectResidenceSystemV1.can_construct(game_state)
+    var material: Dictionary = plan.get("cost", SectResidenceSystemV1.build_cost(game_state))
+    _content.add_child(HSeparator.new())
+    _content.add_child(_label("XÂY THÊM NHÀ · Mộc %d · Thiết %d · Linh Thạch %d" % [
+        int(material.get(BuildingSystem.MATERIAL_WOOD, 0)),
+        int(material.get(BuildingSystem.MATERIAL_ORE, 0)),
+        int(material.get("spirit_stones", 0))
+    ], 14))
+    var build := _button("XÂY THÊM ĐỆ TỬ XÁ", Callable(self, "_construct_house"), true)
+    build.name = "ConstructResidence"
+    build.disabled = not bool(plan.get("ok", false))
+    build.tooltip_text = str(plan.get("reason", "")) if build.disabled else ""
+    _content.add_child(build)
+    _content.add_child(_label("Các nhà bổ sung hiện dùng danh sách cụm công trình gắn với điểm Đệ Tử Xá trên bản đồ. Kéo-thả và mở đất tùy ý chưa được kích hoạt.", 12, MUTED))
+
+func _upgrade_house(house_id: StringName) -> void:
+    var result := BuildingSystem.new().start_upgrade(game_state, house_id)
+    feedback = "Đã bắt đầu nâng nhà, trừ nguyên liệu một lần." if bool(result.get("ok", false)) else "Chưa nâng được: %s" % str(result.get("reason", "unknown"))
+    if bool(result.get("ok", false)):
+        state_changed.emit()
+    _refresh()
+
+func _construct_house() -> void:
+    var seq := SectResidenceSystemV1.all_houses(game_state).size() + 1
+    var result := SectResidenceSystemV1.construct(game_state, "residence:%d" % seq)
+    feedback = "Đã xây Đệ Tử Xá %s." % str(result.get("building_id", "")) if bool(result.get("ok", false)) else "Chưa xây được: %s" % str(result.get("reason", "unknown"))
+    if bool(result.get("ok", false)):
+        state_changed.emit()
+    _refresh()
