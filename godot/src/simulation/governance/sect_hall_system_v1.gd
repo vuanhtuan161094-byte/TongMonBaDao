@@ -483,7 +483,7 @@ static func validate(state: SimulationState) -> Array[String]:
     # Check the raw persisted value: rank_index() deliberately clamps for
     # display and must not mask a corrupt save from invariant validation.
     var raw_rank = state.sect.hall_governance.get("sect_rank_index", null)
-    if not (raw_rank is int or raw_rank is float) or (raw_rank is float and not is_finite(raw_rank)) \
+    if not (raw_rank is int or raw_rank is float) or (raw_rank is float and (is_nan(raw_rank) or is_inf(raw_rank))) \
             or float(raw_rank) != float(int(raw_rank)) or int(raw_rank) < 1 or int(raw_rank) > 27:
         errors.append("Hall sect rank invalid.")
     var hall_count := 0
