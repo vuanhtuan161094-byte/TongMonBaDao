@@ -346,6 +346,26 @@ func _is_payload_shape_valid(data: Dictionary) -> bool:
     if not (data.get("regions") is Array):
         return false
 
+    # DD-08: the dictionary-based State decoder overwrites rows with duplicate
+    # IDs. On Hall V2 saves that can silently remove a paid House or disciple.
+    # Reject the raw wire payload before from_dict() erases that evidence.
+    var sect_payload: Dictionary = data["sect"]
+    if sect_payload.has("hall_governance"):
+        if not (data.get("buildings") is Array):
+            return false
+        for collection in ["buildings", "disciples"]:
+            var seen: Dictionary = {}
+            for raw_row in data[collection]:
+                if not (raw_row is Dictionary):
+                    return false
+                var raw_id = raw_row.get("id", null)
+                if not (raw_id is String or raw_id is StringName):
+                    return false
+                var key := str(raw_id)
+                if key.is_empty() or seen.has(key):
+                    return false
+                seen[key] = true
+
     return true
 
 # This tag is reserved by the version-2 wire format, never exposed to state/UI.
