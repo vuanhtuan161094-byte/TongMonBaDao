@@ -77,6 +77,12 @@ static func ensure_live(state: SimulationState) -> Dictionary:
     if hall_count > 1:
         return {"ok": false, "reason": "duplicate_main_hall"}
     var existing := building_system.primary_building(state, BuildingSystem.TYPE_MAIN_HALL)
+    # A real saved governance ledger must NEVER silently receive a newly
+    # minted Lv1 Hall if its original building has gone missing.
+    if existing == null and not state.sect.hall_governance.is_empty():
+        return {"ok": false, "reason": "persisted_hall_building_missing"}
+    if not state.sect.hall_governance.is_empty() and not installed(state):
+        return {"ok": false, "reason": "unsupported_hall_schema"}
     if existing == null:
         var hall := building_system.create_building(BuildingSystem.TYPE_MAIN_HALL, 1)
         if hall == null or state.buildings.has(str(MAIN_HALL_ID)):
