@@ -162,7 +162,11 @@ func _run() -> void:
     var saved_id := str(job.get("job_id", ""))
     var saved_finish := int(job.get("finish_tick", -1))
     var saved_herbs := warehouse.quantity(state, &"thanh_linh_thao")
-    ui.call("_autosave_runtime")
+    # O8 must not tear down the scene while its real UI autosave coroutine
+    # and SaveService worker are still committing. The old fire-and-forget
+    # call made the reloaded recipe nondeterministic and orphaned a Thread.
+    if not await _autosave_and_join_before_reload():
+        return
     _dispose_scene()
     await process_frame
     if not await _open_scene():
@@ -189,7 +193,11 @@ func _run() -> void:
         _fail("O8 completed Alchemy job granted no profession XP.")
         return
 
-    ui.call("_autosave_runtime")
+    # O8 must not tear down the scene while its real UI autosave coroutine
+    # and SaveService worker are still committing. The old fire-and-forget
+    # call made the reloaded recipe nondeterministic and orphaned a Thread.
+    if not await _autosave_and_join_before_reload():
+        return
     _dispose_scene()
     await process_frame
     if not await _open_scene():
@@ -259,6 +267,41 @@ func _run() -> void:
     await process_frame
     _cleanup_save()
     quit(0)
+
+# Exercise the actual UI autosave path AND verify durability before
+# releasing its scene-owned runtime. This is a test barrier, not a gameplay
+# change or a relaxation of the timed-job/warehouse assertions.
+func _autosave_and_join_before_reload() -> bool:
+    if ui == null:
+        return _fail("O8 cannot checkpoint a missing scene.")
+    var live := ui.get("runtime_session") as LiveGameRuntimeV2
+    if live == null or live.owner == null:
+        return _fail("O8 cannot checkpoint a missing live save owner.")
+
+    # The scene itself owns the scheduler/poll barrier. Await the existing
+    # coroutine instead of starting a second competing SaveService write.
+    await ui.call("_autosave_runtime")
+    if live.owner.saves.has_async_save_pending():
+        var completed: Dictionary = await live.wait_for_pending_save(self)
+        if not bool(completed.get("ok", false)):
+            return _fail("O8 autosave worker did not commit: %s" % str(completed))
+    if live.owner.saves.has_async_save_pending():
+        return _fail("O8 scene has an unjoined SaveService worker.")
+
+    var persisted := SaveService.new().load_from_path(SAVE_PATH)
+    if persisted == null:
+        return _fail("O8 save was not durably readable before scene reload.")
+    if persisted.tick != state.tick:
+        return _fail("O8 autosave was stale before scene reload.")
+    var old_hall := buildings.primary_building(persisted, BuildingSystem.TYPE_ALCHEMY_HALL)
+    var live_hall := buildings.primary_building(state, BuildingSystem.TYPE_ALCHEMY_HALL)
+    if old_hall == null or live_hall == null:
+        return _fail("O8 autosave lost Alchemy Hall before scene reload.")
+    var saved_jobs := buildings.alchemy_jobs(persisted, old_hall)
+    var live_jobs := buildings.alchemy_jobs(state, live_hall)
+    if saved_jobs != live_jobs:
+        return _fail("O8 autosave timed jobs differ BEFORE scene reload.")
+    return true
 
 func _first_unassigned() -> StringName:
     var ids: Array = state.disciples.keys()
