@@ -196,3 +196,26 @@ if ($LASTEXITCODE -ne 0) { throw "DD07 regression failure" }
 if ($LASTEXITCODE -ne 0) { throw "DD09 timed House regression failure" }
 ```
 Complete the full DD-08 suite and UI screenshot at 1280×720 before declaring PASS. This environment lacks the official Godot runtime and cannot claim test execution or measured mobile performance. **Do not merge into ONE GAME RC yet.**
+
+
+## 12. DD-09.2 P1 — exterior-door only, easy plot selection (owner decision)
+
+**Owner gameplay correction:** Characters **run to the OUTSIDE DOOR** and finish the interaction there. No interior walking, painted-road requirement, door-to-spawn AStar or multi-door corridor graph is allowed to block construction. PvE navigation is an independent system and remains untouched.
+
+**Actual direct-code changes on this Draft PR (NOT Godot-verified):**
+
+1. **Single exterior waypoint per building.** `SectIsometricWorldV1.EXTERIOR_DOOR_OFFSETS` moves the actual P3.2 actor target from the sprite/roof center to an exterior door ground cell for Hall, Residence, Mine, Forest, Field, Forge, Warehouse, Alchemy and other sect landmarks. Verified PV01 Hall/Warehouse/Forge offsets match `SectIsoMapModelV1.doorway(..., orientation=0)`. Building mesh anchors and picking are unchanged. Movement continues to use the existing light 0.32-second visible-actor tween and bounded LOD, **not** PvE AStar.
+2. **REST travels to the real assigned Residence**, rather than a stale production worksite; workers maintain the last active worksite entrance during idle/EVALUATE minute transitions. Small fixed horizontal staging offsets keep actors near the doorway rather than spread over building roofs.
+3. **Canonical simple House plot authority:** new `SectResidenceSiteV1` checks only a real 3×3 House footprint, the single outdoor entrance, opened starter-area bounds and overlap with prior owned Houses/static key landmarks. **No road connectivity/path simulation**. A compact native `ResidencePlotSelector` lets the user pick from twelve small preapproved residential plots for up to nine purchased Annexes. There is no map drag or arbitrary land unlocking in this slice.
+4. **Persist exact paid House site:** `SectResidenceSystemV1.construct(state, request_id, selected_site)` records a versioned site marker and `site_x/site_y` inside the actual `BuildingState.production_state`; BuildState already serializes this dictionary. An absent site field in a legacy, unversioned House uses the historical deterministic slot; a partial/invalid versioned site fails validation. Replayed paid requests cannot change their originally purchased plot. The old no-site `construct(state,request_id)` API still chooses the first unoccupied valid plot.
+5. **Same map/destination ownership:** the iso renderer places the purchased Residence artwork and picking row at the persisted plot; live disciple movement calculates the exterior doorway from that **same saved position**. Decor sprites are hidden under an actual House's 3×3 footprint and front-door cell. PvE streaming and collision paths are unchanged.
+6. **Preserve DD-09 construction timing:** a paid Annex remains `constructing`, owns its site immediately but grants zero beds until it reaches the due simulation tick. Plot selection does not mint additional resources or waive construction prices.
+
+**Regression scripts authored (NOT RUN):**
+
+- `res://tests/presentation/sect_door_only_navigation_test.gd`: exactly matching PV01 door geometry, ten distinct House exterior doors within starter grid, exterior actor targets, no road-connection gate for purchased construction.
+- `res://tests/dai_dien_dd092_door_plot_test.gd`: choose a nondefault paid plot, reject invalid/occupied plots without debit, replay payment safely, ensure map/picking and actor doorway match saved coordinates, reject half-serialized site, reload exact plot with SaveService.
+- Run with existing `dai_dien_housing_full_loop_test.gd`, `dai_dien_dd07_save_recovery_test.gd`, `sect_iso_main_integration_test.gd`, `sect_iso_projection_contract_test.gd`, PvE collision and FPS tests.
+- Isolated Godot 4.7.2 Windows QA checkout is mandatory: headless editor import, focused tests, real 1280×720 screenshot/touch inspection, no player-save profile.
+
+**Known limitations:** This is a set of preapproved fixed-size House plots chosen via a native selector. It does **not** authorize arbitrary building placement, rotation, sold/purchased land parcels, or dynamic terrain editing. Fixed roads are still present as world decoration, but never decide whether the player can construct a House. The 3×3 house footprint and door coordinates need real Source A art alignment review. The time, plot count and size remain provisional DD-10 balancing values. **No official engine/GUI test PASS yet; do not merge PR #64 or alter main/RC.**
