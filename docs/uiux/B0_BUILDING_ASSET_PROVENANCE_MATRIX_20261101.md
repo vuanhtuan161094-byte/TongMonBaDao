@@ -117,6 +117,18 @@ The Source A residence config records doorway [1,-1]. PR #64's `godot/src/simula
 
 The manifest does not define pixel pivot, Sprite anchor, transparent-margin crop, gameplay door pixel, Godot orientation, or a renderer conversion rule. Spine candidates need the complete matched PNG + `lum` where provided + `.atlas` + `.skel` tuple and playback proof. A lone PNG is only a static candidate, not the original animation or a correctly anchored building.
 
+## Exact E: source paths for the three priority buildings
+
+The local read-only validation used these concrete files (the 510xxx texture is the primary static texture; `lum`, `.atlas` and `.skel` are separate dependencies):
+
+| Model | Source bundle | Primary PNG | Primary SHA-256 | lum PNG |
+| ---: | --- | --- | --- | --- |
+| 510052 | `E:\GameAssetExtract\GameData\com.vnzqzs.and\Android\character\spinelib\build\510052_skeletondata.ab` | `E:\GameAssetExtract\Assets\Characters\AndroidData_character\spinelib\build\510052_skeletondata\510052_Texture2D_4854329250475331136.png` | `b6bf88c35e3edc33aba822124296af15a5c8491a05c28f6b5d7b342d20d5325c` | `510052_lum_Texture2D_-6334658015622499388.png` |
+| 510076 | `E:\GameAssetExtract\GameData\com.vnzqzs.and\Android\character\spinelib\build\510076_skeletondata.ab` | `E:\GameAssetExtract\Assets\Characters\AndroidData_character\spinelib\build\510076_skeletondata\510076_Texture2D_815792867394781754.png` | `f8e05d7376fc5ddc7b25f56673b6d5f444b10fd759da06a5929ec4f38a68d320` | `510076_lum_Texture2D_-7084962920268462182.png` |
+| 510111 | `E:\GameAssetExtract\GameData\com.vnzqzs.and\Android\character\spinelib\build\510111_skeletondata.ab` | `E:\GameAssetExtract\Assets\Characters\AndroidData_character\spinelib\build\510111_skeletondata\510111_Texture2D_3239249786622463018.png` | `90b7c595f3b77788c99924ef2eb7ba4b8ede794ccffda1c6808263ba3c711762` | `510111_lum_Texture2D_5128554600285391511.png` |
+
+All three primary PNG rows were also checked with file hashes and image dimensions against the source catalog. The paired `.atlas` and `.skel` filenames/SHA values remain in the dependency inventory above. No file was copied into the game.
+
 ## Rights gate and safe next use
 
 Before any transport/import, owner must resolve: scope of the A user authorization; internal-lab vs redistribution rights; which exact bundle/dependency subset may be used; whether a static PNG render is accepted instead of Spine; and a source/pivot/door test. Until then the allowed visual state is **CANDIDATE NOT APPROVED**. Use a neutral original Godot-native placeholder for any mock layout; do not copy Source A prefab, atlas UI, JX/JXQY imagery, or unverified binary assets.
