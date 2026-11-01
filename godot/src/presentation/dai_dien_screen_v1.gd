@@ -619,9 +619,11 @@ func _upgrade_house(house_id: StringName, request_id: String) -> void:
 func _construct_house() -> void:
     var seq := SectResidenceSystemV1.all_houses(game_state).size() + 1
     var result := SectResidenceSystemV1.construct(game_state, "residence:%d" % seq)
-    feedback = "Đã khởi công %s · %d phút; giường sẽ mở khi hoàn thành." % [
-        str(result.get("building_id", "")), int(result.get("construction_duration_ticks", 0))
-    ] if bool(result.get("ok", false)) else "Chưa xây được: %s" % str(result.get("reason", "unknown"))
     if bool(result.get("ok", false)):
+        feedback = "Đã khởi công %s · %d phút; giường sẽ mở khi hoàn thành." % [
+            str(result.get("building_id", "")), int(result.get("construction_duration_ticks", 0))
+        ]
         state_changed.emit()
+    else:
+        feedback = "Chưa xây được: %s" % str(result.get("reason", "unknown"))
     _refresh()
