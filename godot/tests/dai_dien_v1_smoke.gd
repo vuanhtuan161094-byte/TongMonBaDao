@@ -68,7 +68,10 @@ func _run() -> void:
     )
     if not _check(bool(preview.get("ok", false)), "natural XP source rejected"):
         return
-    if not _check(absf(float(preview.get("natural_factor", 0.0)) - baseline_factor - 0.1725) < 0.0001,
+    var exact_sources := 0.0
+    for source in sources:
+        exact_sources += float(source.get("value", 0.0))
+    if not _check(absf(float(preview.get("natural_factor", 0.0)) - baseline_factor - exact_sources) < 0.0001,
             "office sources did not combine additively on natural XP"):
         return
     var fixed := DiscipleRealmProgressV2.grant_xp(
