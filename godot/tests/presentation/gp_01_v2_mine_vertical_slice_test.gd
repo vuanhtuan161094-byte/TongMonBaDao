@@ -39,10 +39,10 @@ func _run() -> void:
         ), "Could not hold founding disciple."):
             return
 
-    ui.call("_open_building", SectMapPresentation.DEST_GUIDANCE)
-    await process_frame
+    if not await _open_guidance_surface():
+        return
     var token_before := state.sect.disciple_recruitment_tokens
-    if not await _press("GuidanceRecruitOrder"):
+    if not await _press("UseRecruitmentOrder"):
         return
     if not _check(state.sect.disciple_recruitment_tokens == token_before - 1,
         "Dẫn Tiên did not consume one real recruitment order."):
@@ -60,7 +60,7 @@ func _run() -> void:
     var birth_before: Dictionary = (
         state.recruitment_candidates[recruit_id] as CandidateState
     ).v2_birth_profile.duplicate(true)
-    if not await _press("AcceptCandidate_%s" % str(recruit_id)):
+    if not await _select_and_accept_candidate_via_b1(recruit_id):
         return
     if not _check(state.disciples.has(recruit_id), "Dẫn Tiên accept did not create a disciple."):
         return
@@ -263,6 +263,44 @@ func _press(name: String) -> bool:
     if button == null or button.disabled:
         return _fail("Missing or disabled real UI button: %s" % name)
     button.emit_signal("pressed")
+    await process_frame
+    return true
+
+func _open_guidance_surface() -> bool:
+    var hit := ui.find_child("BuildingHit_guidance",true,false) as Button
+    if hit == null:
+        return _fail("Missing real map hit target for Dẫn Tiên Đài.")
+    hit.pressed.emit()
+    await process_frame
+    return await _press("OpenDanTienScreenV2")
+
+func _select_and_accept_candidate_via_b1(candidate_id: StringName) -> bool:
+    var candidate: CandidateState = state.recruitment_candidates.get(candidate_id)
+    var search := ui.find_child("CandidateSearch",true,false) as LineEdit
+    if candidate == null or search == null:
+        return _fail("B1 search/candidate control was missing.")
+    search.text = candidate.display_name
+    search.text_submitted.emit(search.text)
+    await process_frame
+    var pick := ui.find_child("CandidatePick_%s" % str(candidate_id),true,false) as Button
+    if pick == null:
+        return _fail("B1 candidate picker did not expose the selected authentic candidate.")
+    if not pick.disabled:
+        pick.pressed.emit()
+        await process_frame
+    else:
+        var host := ui.get_node_or_null("DanTienScreenV2")
+        if host == null or StringName(host.get("selected_candidate_id")) != candidate_id:
+            return _fail("Disabled B1 candidate row was not the currently selected candidate.")
+    var accept := ui.find_child("AcceptCandidate",true,false) as Button
+    if accept == null or accept.disabled:
+        return _fail("B1 Accept control was missing or disabled for an eligible candidate.")
+    accept.pressed.emit()
+    await process_frame
+    accept = ui.find_child("AcceptCandidate",true,false) as Button
+    if accept == null or not accept.text.contains("XÁC NHẬN"):
+        return _fail("B1 Accept did not present its visible second confirmation.")
+    accept.pressed.emit()
     await process_frame
     return true
 

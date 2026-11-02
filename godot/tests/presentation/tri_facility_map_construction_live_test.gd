@@ -166,6 +166,14 @@ func _run() -> void:
     if house == null or house.status != BuildingSystem.STATUS_CONSTRUCTING or SectResidenceSiteV1.origin_of(house) != target:
         _fail("Canonical construction did not create a paid house at the selected site.")
         return
+    var new_house_path := SectResidenceSiteV1.path_to_door(state,target,building_id)
+    if new_house_path.is_empty():
+        _fail("Placed residence did not retain a valid walking route from the sect gate.")
+        return
+    for path_cell in new_house_path:
+        if not iso.preview_roads.has(path_cell):
+            _fail("The map did not render the validated residence path cell %s." % str(path_cell))
+            return
     var receipts: Dictionary = state.sect.hall_governance.get("residence_build_receipts",{})
     if receipts.get(request_id,"") != building_id or receipts.size() != 1:
         _fail("Canonical exactly-once build receipt missing or duplicated.")

@@ -802,7 +802,7 @@ func _open_residence_capacity() -> void:
         _render()
 
 func _open_recruited_profile(disciple_id: String) -> void:
-    _open_recruited_world_action("_open_disciple",disciple_id)
+    _open_recruited_world_action("_open_disciple_deep_screen",disciple_id)
 
 func _open_recruited_world(disciple_id: String) -> void:
     _open_recruited_world_action("_open_disciple",disciple_id)
@@ -814,7 +814,10 @@ func _open_recruited_world_action(method: String, disciple_id: String) -> void:
     var map_owner := _host.get_parent() if _host != null else null
     if map_owner != null and map_owner.has_method(method):
         _close_host()
-        map_owner.call_deferred(method,StringName(disciple_id))
+        if method == "_open_disciple_deep_screen":
+            map_owner.call_deferred(method,StringName(disciple_id),"Tổng Quan")
+        else:
+            map_owner.call_deferred(method,StringName(disciple_id))
     else:
         _feedback = "Mở danh sách đệ tử trên bản đồ P3.2 để tiếp tục."
         _render()

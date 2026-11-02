@@ -39,16 +39,15 @@ func _run() -> void:
         _fail("O6 fresh canonical starter Warehouse baseline is missing.")
         return
 
-    # --- Recruitment through the real Dẫn Tiên player surface.
+    # --- Recruitment through the real map hit target and B1 Dẫn Tiên surface.
     if not await _open_building_hit(SectMapPresentation.DEST_GUIDANCE):
         return
-    var tokens_before := state.sect.disciple_recruitment_tokens
-    var order := ui.find_child("GuidanceRecruitOrder", true, false) as Button
-    if order == null or order.disabled:
-        _fail("O6 Guidance order is not player-accessible on fresh state.")
+    if not await _press("OpenDanTienScreenV2"):
         return
-    order.emit_signal("pressed")
     await process_frame
+    var tokens_before := state.sect.disciple_recruitment_tokens
+    if not await _press("UseRecruitmentOrder"):
+        return
     if state.sect.disciple_recruitment_tokens != tokens_before - 1:
         _fail("O6 Guidance order did not debit exactly one recruitment token.")
         return
@@ -58,26 +57,28 @@ func _run() -> void:
         _fail("O6 real Guidance order produced no authentic V2 candidate.")
         return
     var recruit_id := StringName(recruitable[0])
-    var accept := ui.find_child("AcceptCandidate_%s" % str(recruit_id), true, false) as Button
-    if accept == null or accept.disabled:
-        _fail("O6 authentic candidate has no enabled Accept action.")
+    if not await _select_and_accept_candidate_via_b1(recruit_id):
         return
-    accept.emit_signal("pressed")
-    await process_frame
     if state.disciples.size() != 7 or not state.disciples.has(recruit_id):
         _fail("O6 Accept did not add exactly one canonical recruit.")
         return
+    # Actors are viewport-selected. Use the player's actual reveal action to
+    # focus the new disciple before asserting that its Source A actor exists.
+    if not await _press("RecruitedDiscipleWorld"):
+        return
+    await process_frame
+    await process_frame
+    ui.call("_refresh_all")
+    await process_frame
     var actors: Dictionary = ui.get("actor_nodes")
     if not actors.has(str(recruit_id)):
-        _fail("O6 accepted recruit did not become a live map actor.")
+        _fail("O6 map-focus action did not materialize the selected recruit in the viewport.")
         return
     if ui.find_children("ModularDisciple_%s" % str(recruit_id), "", true, false).size() != 1:
         _fail("O6 accepted recruit produced duplicate/missing modular actors.")
         return
-    ui.call("_open_disciple", recruit_id)
-    await process_frame
     if StringName(ui.get("selected_id")) != recruit_id:
-        _fail("O6 recruited live actor is not selectable.")
+        _fail("O6 TỚI NHÂN VẬT did not select the recruited actor.")
         return
 
     # Assign the recruited disciple to the real Spirit Field via UI.
@@ -524,6 +525,36 @@ func _press(node_name: String) -> bool:
     if button.disabled:
         return _fail("O6 required button is disabled: %s" % node_name)
     button.emit_signal("pressed")
+    await process_frame
+    return true
+
+func _select_and_accept_candidate_via_b1(candidate_id: StringName) -> bool:
+    var candidate: CandidateState = state.recruitment_candidates.get(candidate_id)
+    var search := ui.find_child("CandidateSearch",true,false) as LineEdit
+    if candidate == null or search == null:
+        return _fail("O6 B1 search/candidate control was missing.")
+    search.text = candidate.display_name
+    search.text_submitted.emit(search.text)
+    await process_frame
+    var pick := ui.find_child("CandidatePick_%s" % str(candidate_id),true,false) as Button
+    if pick == null:
+        return _fail("O6 B1 candidate picker did not expose the authentic candidate.")
+    if not pick.disabled:
+        pick.pressed.emit()
+        await process_frame
+    else:
+        var host := ui.get_node_or_null("DanTienScreenV2")
+        if host == null or StringName(host.get("selected_candidate_id")) != candidate_id:
+            return _fail("O6 disabled B1 candidate row was not the selected candidate.")
+    var accept := ui.find_child("AcceptCandidate",true,false) as Button
+    if accept == null or accept.disabled:
+        return _fail("O6 B1 has no enabled canonical Accept action for the selected candidate.")
+    accept.pressed.emit()
+    await process_frame
+    accept = ui.find_child("AcceptCandidate",true,false) as Button
+    if accept == null or not accept.text.contains("XÁC NHẬN"):
+        return _fail("O6 B1 candidate acceptance did not expose its second confirmation.")
+    accept.pressed.emit()
     await process_frame
     return true
 

@@ -220,7 +220,10 @@ func _run() -> void:
     var iron_paid := warehouse.quantity(state, &"thanh_thiet")
     var wood_paid := warehouse.quantity(state, &"linh_moc")
     var stones_paid := state.sect.spirit_stones
-    ui.call("_autosave_runtime")
+    var mid_upgrade_save: Dictionary = await ui.call("_save_runtime_async_barrier")
+    if not bool(mid_upgrade_save.get("ok",false)):
+        _fail("O5 SaveService barrier failed before mid-upgrade reload: %s" % str(mid_upgrade_save))
+        return
     _dispose_scene()
     await process_frame
     if not await _open_scene():
@@ -258,7 +261,10 @@ func _run() -> void:
         _fail("O5 Mine upgrade completion charged resources again.")
         return
 
-    ui.call("_autosave_runtime")
+    var completed_upgrade_save: Dictionary = await ui.call("_save_runtime_async_barrier")
+    if not bool(completed_upgrade_save.get("ok",false)):
+        _fail("O5 SaveService barrier failed before final reload: %s" % str(completed_upgrade_save))
+        return
     _dispose_scene()
     await process_frame
     if not await _open_scene():

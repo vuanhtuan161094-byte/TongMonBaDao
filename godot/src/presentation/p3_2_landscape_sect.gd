@@ -317,6 +317,11 @@ func _ready() -> void:
     _resume_saved_b3_hunt()
 
 func _exit_tree() -> void:
+    # P3.1 owns the canonical final save. Preserve that lifecycle when the
+    # P3.2 presentation is torn down; runtime_ready is still true here during
+    # a normal game exit. QA disposal deliberately clears it after an awaited
+    # async-save barrier and therefore remains non-writing.
+    super._exit_tree()
     _flush_raw_frame_log()
     if raw_frame_log != null:
         raw_frame_log.close()
@@ -2070,7 +2075,7 @@ func _build_construction_ui() -> void:
     build_mode_panel = Panel.new()
     build_mode_panel.name = "MapBuildModePanel"
     build_mode_panel.position = Vector2(18,144)
-    build_mode_panel.size = Vector2(392,510)
+    build_mode_panel.size = Vector2(392,558)
     build_mode_panel.z_index = 70
     build_mode_panel.visible = false
     build_mode_panel.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -2087,33 +2092,43 @@ func _build_construction_ui() -> void:
     close.pressed.connect(_leave_build_mode.bind(true))
     build_mode_panel.add_child(close)
 
-    build_mode_description = _label(build_mode_panel,"",Vector2(18,52),Vector2(354,78),12)
+    build_mode_description = _label(build_mode_panel,"",Vector2(18,52),Vector2(354,76),12)
     build_mode_description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     build_mode_description.add_theme_color_override("font_color",INK)
-    var catalog := _label(build_mode_panel,"CÔNG TRÌNH CÓ LỆNH XÂY THẬT",Vector2(18,132),Vector2(354,22),11)
+    var catalog := _label(build_mode_panel,"ĐẶT TRÊN BẢN ĐỒ",Vector2(18,130),Vector2(354,22),11)
     catalog.add_theme_color_override("font_color",JADE_DARK)
     var build_house := Button.new()
     build_house.name = "BuildCatalogResidence"
     build_house.text = "ĐỆ TỬ XÁ  ·  CHỌN VỊ TRÍ TRÊN BẢN ĐỒ"
-    build_house.position = Vector2(18,158)
+    build_house.position = Vector2(18,156)
     build_house.size = Vector2(354,42)
     build_house.add_theme_stylebox_override("normal",_style(JADE_DARK,PAPER_LIGHT,1,8))
     build_house.add_theme_color_override("font_color",PAPER_LIGHT)
     build_house.pressed.connect(_begin_residence_construction)
     build_mode_panel.add_child(build_house)
 
-    var fixed_hint := _label(build_mode_panel,
-        "Hiện có thể đặt Đệ Tử Xá trên bản đồ. Công trình khác chưa có lệnh đặt.",
-        Vector2(18,204),Vector2(354,48),10)
-    fixed_hint.text = _wrap_build_mode_text("Đang hỗ trợ đặt Đệ Tử Xá trên bản đồ.\nCông trình khác chưa hỗ trợ đặt.",52)
+    var fixed_hint := _label(build_mode_panel,"",Vector2(18,202),Vector2(354,58),10)
+    fixed_hint.text = _wrap_build_mode_text(
+        "Đại Điện, Kho, Mỏ, Linh Lâm, Linh Điền, Luyện Đan, Rèn Thân và Dẫn Tiên là công trình khởi lập độc bản. Chưa có giao dịch dời/đặt an toàn cho ID và việc làm, nên chúng giữ vị trí hiện tại.",
+        52)
     fixed_hint.add_theme_color_override("font_color",Color(0.24,0.22,0.18,0.82))
 
-    var move_heading := _label(build_mode_panel,"DI DỜI NHÀ TRỐNG",Vector2(18,254),Vector2(354,22),11)
+    var open_hall := Button.new()
+    open_hall.name = "BuildModeOpenHall"
+    open_hall.text = "MỞ ĐẠI ĐIỆN · XEM ĐIỀU KIỆN MỞ LÔ"
+    open_hall.position = Vector2(18,260)
+    open_hall.size = Vector2(354,38)
+    open_hall.add_theme_stylebox_override("normal",_style(JADE,PAPER_LIGHT,1,8))
+    open_hall.add_theme_color_override("font_color",PAPER_LIGHT)
+    open_hall.pressed.connect(_open_hall_from_build_mode)
+    build_mode_panel.add_child(open_hall)
+
+    var move_heading := _label(build_mode_panel,"DI DỜI NHÀ PHỤ ĐỦ ĐIỀU KIỆN",Vector2(18,302),Vector2(354,22),11)
     move_heading.add_theme_color_override("font_color",JADE_DARK)
     var move_scroll := ScrollContainer.new()
     move_scroll.name = "RelocatableResidenceList"
-    move_scroll.position = Vector2(18,280)
-    move_scroll.size = Vector2(354,78)
+    move_scroll.position = Vector2(18,326)
+    move_scroll.size = Vector2(354,70)
     move_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
     build_mode_move_list = VBoxContainer.new()
     build_mode_move_list.name = "RelocatableResidenceItems"
@@ -2121,16 +2136,16 @@ func _build_construction_ui() -> void:
     move_scroll.add_child(build_mode_move_list)
     build_mode_panel.add_child(move_scroll)
 
-    build_mode_feedback = _label(build_mode_panel,"",Vector2(18,362),Vector2(354,55),11)
+    build_mode_feedback = _label(build_mode_panel,"",Vector2(18,398),Vector2(354,44),11)
     build_mode_feedback.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     build_mode_feedback.add_theme_color_override("font_color",JADE_DARK)
-    build_mode_site_label = _label(build_mode_panel,"Chọn Đệ Tử Xá hoặc một căn nhà trống, sau đó bấm lô đất trên bản đồ.",Vector2(18,420),Vector2(354,45),11)
+    build_mode_site_label = _label(build_mode_panel,"Chọn Đệ Tử Xá hoặc một căn nhà trống, sau đó bấm lô đất trên bản đồ.",Vector2(18,444),Vector2(354,56),11)
     build_mode_site_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     build_mode_site_label.add_theme_color_override("font_color",INK)
     build_mode_confirm = Button.new()
     build_mode_confirm.name = "ConfirmMapConstruction"
     build_mode_confirm.text = "XÁC NHẬN"
-    build_mode_confirm.position = Vector2(18,466)
+    build_mode_confirm.position = Vector2(18,510)
     build_mode_confirm.size = Vector2(172,38)
     build_mode_confirm.disabled = true
     build_mode_confirm.add_theme_stylebox_override("normal",_style(CINNABAR,PAPER_LIGHT,2,8))
@@ -2140,7 +2155,7 @@ func _build_construction_ui() -> void:
     var cancel := Button.new()
     cancel.name = "CancelMapConstruction"
     cancel.text = "HỦY CHỌN"
-    cancel.position = Vector2(198,466)
+    cancel.position = Vector2(198,510)
     cancel.size = Vector2(174,38)
     cancel.pressed.connect(_clear_build_mode_selection)
     build_mode_panel.add_child(cancel)
@@ -2166,9 +2181,10 @@ func _focus_buildable_residence_area() -> void:
         return
     var plots: Array[Vector2i] = []
     var center := Vector2.ZERO
+    # Focus the legal geometry even when a real Hall/resource gate is still
+    # closed, so the player can see where the next annex will go and why it
+    # cannot yet be confirmed.
     for site in SectResidenceSiteV1.available_plots(state):
-        if not bool(SectResidenceSystemV1.can_construct(state,site).get("ok",false)):
-            continue
         plots.append(site)
         center += Vector2(site)
     if plots.is_empty():
@@ -2182,6 +2198,10 @@ func _focus_buildable_residence_area() -> void:
         - SectIsometricWorldV1.project(SectIsometricWorldV1.CENTER_CELL)
     var transform := SectMapCamera.focus_transform(focus_world,0.75)
     _apply_camera(float(transform["zoom"]),transform["position"],false)
+
+func _open_hall_from_build_mode() -> void:
+    _leave_build_mode(true)
+    _open_dai_dien_screen_v1()
 func _leave_build_mode(clear_selection: bool = true) -> void:
     build_mode_active = false
     if build_mode_panel != null:
@@ -2245,14 +2265,23 @@ func _refresh_build_mode_panel(last_check: Dictionary = {}) -> void:
     var rank_limit := SectHallSystemV1.rank_population_limit(state)
     var usable_capacity := SectResidenceSystemV1.current_limit(state)
     var free_places := maxi(0,usable_capacity-state.disciples.size())
-    var text := "Đệ Tử Xá %d/%d · %d giường.\nĐệ tử %d/%d theo bậc · còn %d chỗ ở.\nNhà kế mở khi Đại Điện đạt Lv11." % [
-        houses.size(),SectResidenceSystemV1.maximum_instances(state),SectResidenceSystemV1.total_beds(state),
-        state.disciples.size(),rank_limit,free_places
+    var hall_level := int(hall.level) if hall != null else 0
+    var next_hall_gate := mini(100,1+houses.size()*10)
+    var gate_text := _construction_gate_text()
+    var text := "Đệ Tử Xá %d/%d · %d giường · %d chỗ trống.\nĐại Điện Lv%d · lô kế mở ở Lv%d.\n%s" % [
+        houses.size(),SectResidenceSystemV1.maximum_instances(state),SectResidenceSystemV1.total_beds(state),free_places,
+        hall_level,next_hall_gate,gate_text
     ]
     if hall == null:
         text = "Đại Điện chưa mở hệ thống Đệ Tử Xá."
     if build_mode_description != null:
         build_mode_description.text = _wrap_build_mode_text(text,48)
+    var catalog_house := build_mode_panel.find_child("BuildCatalogResidence",true,false) as Button
+    if catalog_house != null:
+        var construct_gate := SectResidenceSystemV1.can_construct(state)
+        catalog_house.disabled = not bool(construct_gate.get("ok",false))
+        catalog_house.text = "ĐẶT ĐỆ TỬ XÁ · %d/%d NHÀ" % [houses.size(),SectResidenceSystemV1.maximum_instances(state)]
+        catalog_house.tooltip_text = gate_text
     if build_mode_move_list != null:
         for child in build_mode_move_list.get_children():
             build_mode_move_list.remove_child(child)
@@ -2297,7 +2326,7 @@ func _refresh_build_mode_panel(last_check: Dictionary = {}) -> void:
         elif build_mode_kind == "relocate":
             build_mode_feedback.text = _wrap_build_mode_text("Chỉ nhà phụ đã xây xong, đang trống và không nâng cấp mới được di dời. Phí và tài nguyên không đổi.",50)
         else:
-            build_mode_feedback.text = _wrap_build_mode_text("Tông môn có %d công trình. Hiện chỉ Đệ Tử Xá có lệnh đặt trên bản đồ." % state.buildings.size(),50)
+            build_mode_feedback.text = _wrap_build_mode_text("Đặt nhà phụ mở theo cấp Đại Điện; công trình khởi lập độc bản hiện giữ nguyên vị trí.",50)
     if build_mode_confirm != null:
         build_mode_confirm.disabled = build_mode_kind.is_empty() or build_mode_site == SectResidenceSiteV1.UNSELECTED or not bool(check.get("ok",false))
         build_mode_confirm.text = "KHỞI CÔNG" if build_mode_kind == "construct" else ("DỜI NHÀ" if build_mode_kind == "relocate" else "XÁC NHẬN")
@@ -2326,12 +2355,17 @@ func _construction_cost_summary(cost: Dictionary) -> String:
 
 func _build_reason_text(reason: String) -> String:
     match reason:
-        "main_hall_instance_limit": return "Cần Đại Điện Lv11 để mở nhà phụ thứ hai. Nâng xá hiện tại để có thêm 2 giường trước."
+        "main_hall_instance_limit":
+            var hall := SectHallSystemV1.hall(state)
+            var current_hall_level := int(hall.level) if hall != null else 0
+            var required_hall_level := mini(100,1+SectResidenceSystemV1.all_houses(state).size()*10)
+            return "Cần Đại Điện Lv%d để mở lô nhà kế tiếp (hiện Lv%d). Nâng cấp từ nút Đại Điện." % [required_hall_level,current_hall_level]
         "missing_material": return "Thiếu nguyên liệu: cần thêm tài nguyên trong Kho."
         "missing_spirit_stones": return "Thiếu Linh Thạch trong Kho."
         "invalid_house_plot": return "Lô không nằm trong khu xây dựng."
         "house_plot_outside_open_area": return "Lô nằm ngoài khu đất đã quy hoạch."
         "house_plot_occupied": return "Lô hoặc lối ra chồng với công trình/lối đi khác."
+        "house_plot_unreachable": return "Lô chưa nối được lối đi từ cổng Tông Môn."
         "house_occupied": return "Nhà còn đệ tử được phân phòng; chuyển họ trước khi dời."
         "house_not_idle": return "Nhà đang xây hoặc nâng cấp."
         "starter_house_fixed": return "Đệ Tử Xá khởi đầu cố định."
@@ -2347,6 +2381,40 @@ func _build_reason_text(reason: String) -> String:
         "building_not_active": return "Công trình chưa sẵn sàng."
         "insufficient_workforce": return "Thiếu thời gian lao động để hoàn tất."
         _: return reason.replace("_"," ").capitalize()
+
+func _construction_gate_text() -> String:
+    var check := SectResidenceSystemV1.can_construct(state)
+    var houses := SectResidenceSystemV1.all_houses(state)
+    var cost := SectResidenceSystemV1.build_cost(state)
+    var warehouse := WarehouseSystem.new()
+    var wood_need := int(cost.get(BuildingSystem.MATERIAL_WOOD,0))
+    var ore_need := int(cost.get(BuildingSystem.MATERIAL_ORE,0))
+    var stone_need := int(cost.get("spirit_stones",0))
+    var wood_have := warehouse.available_quantity(state,StringName(BuildingSystem.MATERIAL_WOOD))
+    var ore_have := warehouse.available_quantity(state,StringName(BuildingSystem.MATERIAL_ORE))
+    var stone_have := state.sect.spirit_stones
+    var resource_text := "Nhà #%d · %d/%d Mộc · %d/%d Thiết · %d/%d Linh Thạch." % [
+        houses.size()+1,wood_have,wood_need,ore_have,ore_need,stone_have,stone_need
+    ]
+    if bool(check.get("ok",false)):
+        return "Đủ điều kiện · %s · thi công %d nhịp." % [
+            resource_text,SectResidenceSystemV1.construction_duration_ticks(houses.size()+1)
+        ]
+    var reason := str(check.get("reason","construction_unavailable"))
+    if reason == "main_hall_instance_limit":
+        var hall := SectHallSystemV1.hall(state)
+        var current_level := int(hall.level) if hall != null else 0
+        var required_level := mini(100,1+houses.size()*10)
+        return "Đại Điện Lv%d/%d mới mở lô kế. %s" % [current_level,required_level,resource_text]
+    if reason == "missing_material":
+        var material := str(check.get("material_id","tài nguyên"))
+        var names := {BuildingSystem.MATERIAL_WOOD:"Linh Mộc",BuildingSystem.MATERIAL_ORE:"Thanh Thiết"}
+        return "Thiếu %s: cần %d, hiện có %d." % [
+            str(names.get(material,material)),int(check.get("need",0)),int(check.get("have",0))
+        ]
+    if reason == "missing_spirit_stones":
+        return "Thiếu Linh Thạch: cần %d, hiện có %d." % [int(check.get("need",0)),int(check.get("have",0))]
+    return "%s %s" % [_build_reason_text(reason),resource_text]
 
 func _confirm_build_mode_action() -> void:
     if build_mode_kind.is_empty() or build_mode_site == SectResidenceSiteV1.UNSELECTED:

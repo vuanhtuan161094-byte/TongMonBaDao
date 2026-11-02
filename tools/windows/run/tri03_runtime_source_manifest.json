@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "branch": "integration/tri-facility-a-b-playable-20261102",
+  "base_sha": "27ed01cd8f377994e5e50bac9ede84e78e8895bd",
+  "source_fingerprint": "9825a8272871beeb31fc724449846df220f3995cb66a342f1576653cb74a317b",
+  "files": [
+    {
+      "path": "godot/src/presentation/dai_dien_screen_v1.gd",
+      "git_blob_sha": "302cd99417905ebcb52ea8f5652b7ae589ce033b"
+    },
+    {
+      "path": "godot/src/presentation/dan_tien_screen_v2.gd",
+      "git_blob_sha": "6dac146befbbfc3f90bf5a048d2ca506bc1d90e9"
+    },
+    {
+      "path": "godot/src/presentation/p3_2_landscape_sect.gd",
+      "git_blob_sha": "aa7e64a4242523ba4a5ed94c41f27f441809d4ad"
+    },
+    {
+      "path": "godot/src/presentation/p3/sect_isometric_world_v1.gd",
+      "git_blob_sha": "975a8c1f7c32012b5e6abd2a4e6c51ed19c516ba"
+    },
+    {
+      "path": "godot/src/presentation/uiux/dai_dien_screen_b1_v1.gd",
+      "git_blob_sha": "1d5c2aee7ac80d7159c7d68e2ca0bcfffeb8ab75"
+    },
+    {
+      "path": "godot/src/presentation/uiux/dan_tien_screen_b1_v1.gd",
+      "git_blob_sha": "2f2fd8be203f3ea82870d773e149c16bd2bf0e68"
+    },
+    {
+      "path": "godot/src/presentation/uiux/de_tu_xa_screen_b1_v1.gd",
+      "git_blob_sha": "40048faa259b598b441e886725aa6de3e5113cfa"
+    },
+    {
+      "path": "godot/src/presentation/uiux/tri_facility_live_adapter_v1.gd",
+      "git_blob_sha": "9527cdebb7729c6a2fd517009af429115a123de4"
+    },
+    {
+      "path": "godot/src/simulation/core/p3_7_factory.gd",
+      "git_blob_sha": "f2543f11c6378f128cfc98544763da647ebf6805"
+    },
+    {
+      "path": "godot/src/simulation/governance/sect_residence_system_v1.gd",
+      "git_blob_sha": "a6a0846ef2f4df250ad5d4f081a209ba515648a6"
+    },
+    {
+      "path": "godot/src/simulation/state/sect_state.gd",
+      "git_blob_sha": "5ad4c8a30bd2eef4758063526a74a9c31b4dcbb4"
+    },
+    {
+      "path": "godot/tests/presentation/b1_trifacility_ui_contract_test.gd",
+      "git_blob_sha": "59dd1ee92b018e0929479093feb9c3fb238888d7"
+    },
+    {
+      "path": "godot/tests/presentation/gp_01_v2_mine_vertical_slice_test.gd",
+      "git_blob_sha": "4ccba9b26e7132f37712f3695825d4b16f0c6873"
+    },
+    {
+      "path": "godot/tests/presentation/gp_02a_v2_cultivation_panel_test.gd",
+      "git_blob_sha": "c5e89df3340e0db57cedcb76c4f6ddd347e15077"
+    },
+    {
+      "path": "godot/tests/presentation/p3_o5_real_consumption_loop_test.gd",
+      "git_blob_sha": "859f929c4e48b7e3c99c395e45d9b681fa3cda2a"
+    },
+    {
+      "path": "godot/tests/presentation/p3_o6_m1_release_rehearsal_test.gd",
+      "git_blob_sha": "08dd899c49ab2b26c9e96266f746b7aeae2985d7"
+    },
+    {
+      "path": "godot/tests/presentation/tri_facility_b1_art_v2_test.gd",
+      "git_blob_sha": "d2f30367cf72cedfdfbbf743da54b7cf25acdead"
+    },
+    {
+      "path": "godot/tests/presentation/tri_facility_b1_live_capture.gd",
+      "git_blob_sha": "a7c3044c088be562db968b353db469c3d1a7c4d2"
+    },
+    {
+      "path": "godot/tests/presentation/tri_facility_b1_live_integration_test.gd",
+      "git_blob_sha": "55762fe69cf5ba9c8e673056d77bb2dcb70ba669"
+    },
+    {
+      "path": "godot/tests/presentation/tri_facility_map_construction_live_test.gd",
+      "git_blob_sha": "c2a022ff258fca2333eab884d8948b90e48729f3"
+    },
+    {
+      "path": "godot/tests/presentation/tri_facility_map_construction_reload_verify.gd",
+      "git_blob_sha": "51659a704ad9b65c0a008d98e87296f861f6ffba"
+    },
+    {
+      "path": "godot/tests/presentation/tri_facility_recruited_hs09_flow_test.gd",
+      "git_blob_sha": "f47c78acd72c8b79e968ca54e640b3b6e7ee9ba9"
+    },
+    {
+      "path": "godot/src/simulation/governance/sect_residence_site_v1.gd",
+      "git_blob_sha": "046912dd9fd1efa4a1eca6b9ecff9cf27f9d261a"
+    },
+    {
+      "path": "godot/tests/presentation/tri_facility_recruited_hs09_reload_verify.gd",
+      "git_blob_sha": "bff466c0a182095f2def79a3ee189479e04798e8"
+    }
+  ]
+}

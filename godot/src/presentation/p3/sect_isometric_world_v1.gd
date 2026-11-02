@@ -186,6 +186,9 @@ var lab_geometry: SectIsoMapModelV1
 var map_layout_version := 0
 var placement_preview: Dictionary = {}
 var preview_roads: Dictionary = {}
+var static_preview_roads: Dictionary = {}
+var residence_layout_signature := ""
+var residence_road_signature := ""
 var preview_routes: Dictionary = {}
 var lab_routes_ready := false
 var source_art: SectMap25SourceArt
@@ -274,6 +277,7 @@ func _ready() -> void:
         _seed_pve_landscape()
     else:
         _seed_env02a_geometry()
+    static_preview_roads = preview_roads.duplicate(true)
     _load_verified_source_art()
     _update_chunks()
     set_process(pve_landscape)
@@ -658,6 +662,7 @@ func refresh_from_state(state: SimulationState) -> void:
             for xx in range(footprint.position.x,footprint.end.x):
                 house_reserved_tiles[Vector2i(xx,yy)] = true
         house_reserved_tiles[SectResidenceSiteV1.doorway(origin)] = true
+    _refresh_residence_road_paths(state)
     var rows: Array[Dictionary] = []
     # One indexed pass over canonical buildings. Prior implementation scanned
     # the full state.buildings collection once for EACH producer destination.
@@ -704,6 +709,43 @@ func refresh_from_state(state: SimulationState) -> void:
     fallback_art_count = maxi(0,rows.size()-_verified_house_art_count())
     pve_static_queue_dirty = true
     queue_redraw()
+
+func _refresh_residence_road_paths(state: SimulationState) -> void:
+    if pve_landscape or static_preview_roads.is_empty():
+        return
+    var houses := SectResidenceSystemV1.all_houses(state)
+    var layout_parts: PackedStringArray = []
+    for house in houses:
+        layout_parts.append("%s:%d,%d" % [str(house.id),
+            SectResidenceSiteV1.origin_of(house).x,SectResidenceSiteV1.origin_of(house).y])
+    var layout_key := "|".join(layout_parts)
+    if layout_key == residence_layout_signature:
+        return
+    residence_layout_signature = layout_key
+    var roads := static_preview_roads.duplicate(true)
+    var signature_rows: Array[String] = []
+    for house in houses:
+        var origin := SectResidenceSiteV1.origin_of(house)
+        var path := SectResidenceSiteV1.path_to_door(state,origin,str(house.id))
+        if path.is_empty():
+            continue
+        var path_parts: PackedStringArray = []
+        for cell in path:
+            roads[cell] = true
+            path_parts.append("%d,%d" % [cell.x,cell.y])
+        signature_rows.append("%s:%s:%s" % [str(house.id),str(origin),";".join(path_parts)])
+    signature_rows.sort()
+    var next_signature := "|".join(signature_rows)
+    if next_signature == residence_road_signature:
+        return
+    residence_road_signature = next_signature
+    if roads == preview_roads:
+        return
+    preview_roads = roads
+    # Player construction/relocation is infrequent. Rebuild cached ground and
+    # Source A road/vegetation overlays only when a doorway route really moves.
+    ground_chunk_meshes.clear()
+    _load_verified_source_art()
 
 func _row(dest: StringName, instance_id: StringName, text_label: String, index: int,
         managed: bool, saved_origin: Vector2i = SectResidenceSiteV1.UNSELECTED,
