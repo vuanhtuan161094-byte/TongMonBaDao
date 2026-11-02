@@ -1,4 +1,24 @@
 # B1 three facility screens — integration preview
+## TRI-01 V2.2 art/UX release evidence — 2026-11-02
+
+**Scope:** existing Draft PR #67 only, no new branch or main merge; canonical simulation, SaveService, economy and PvE are unchanged. The existing screenshot fixtures near the bottom of this document are historic B1 gallery captures, not the new live V2.2 evidence.
+
+**UI polish from real 1280×720 screenshots:** real Source A Đại Điện selected through SHA gate; original image-based Residence and Guidance studies; independent anonymous candidate portrait fallback; 7 office avatars no longer use repeated initials; moved "Quản lý đầy đủ" from bottom overlay into header so Build/Upgrade controls remain accessible; bigger bed cards and radar labels; full-width residence and candidate metrics; client-only Vietnamese mapping of exact canonical origin/race/source/root/profession trait IDs without changing underlying IDs or saves; residence IDs displayed as house ordinals only. No new gameplay authority.
+
+**Original Source A intake targets found in** `vuanhtuan161094-byte/ZQZS-Source-Knowledge`, `transferkit/Catalog/BUILDING_VISUAL_INDEX.csv`:
+
+| Game facility | Source A model | Original isolated PNG and SHA-256 | Runtime disposition |
+|---|---|---|---|
+| Đại Điện | `510052` | Existing `godot/art/source_a_env02a/pv01_assets/main_hall/510052.png`, `b6bf88c35e3edc33aba822124296af15a5c8491a05c28f6b5d7b342d20d5325c` | Available now through `SectMap25SourceArt.texture_for` SHA gate |
+| Đệ Tử Xá / Phòng Ốc | `510076` | `E:\GameAssetExtract\Assets\Characters\AndroidData_character\spinelib\build\510076_skeletondata\510076_Texture2D_815792867394781754.png`, `f8e05d7376fc5ddc7b25f56673b6d5f444b10fd759da06a5929ec4f38a68d320` | **Verified catalog entry only; missing from game repo**; original V2 SVG fallback active |
+| Dẫn Tiên Đài | `510111` | `E:\GameAssetExtract\Assets\Characters\AndroidData_character\spinelib\build\510111_skeletondata\510111_Texture2D_3239249786622463018.png`, `90b7c595f3b77788c99924ef2eb7ba4b8ede794ccffda1c6808263ba3c711762` | **Verified catalog entry only; missing from game repo**; original V2 SVG fallback active |
+
+The two missing PNGs must be copied from owner Windows workspace in an isolated, hash-checked intake. Verify atlas regions, silhouette/transparency, stage/map scale and Android exports before calling them production assets; preserve rights metadata. Do **not** fabricate assets with identical source names or rename new SVG art as historical approved S3 masters. Approved disciple-specific portraits remain PENDING; anonymous candidate study is not a character identity.
+
+**Official CI proof (earlier exact art SHA):** O2 run [41391246555](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41391246555) at `76d8b4861d98e3574c9a2dee56de2eae501ce1df` has 4 visual textures and verified SourceA Hall, cross-process SaveService save+reload (roster 7, one accepted candidate), hall/residence/guidance callbacks, P3.6A map-label regression and 3 real 1280×720 capture steps **PASS**. Source state has been polished further after this run, so verify latest V2.2 CI and obtain its latest artifact before final acceptance. Linux/Xvfb/llvmpipe capture is not a physical Windows mouse or Android playtest. No save in default APPDATA is used by the isolated QA.
+
+**Final acceptance:** owner visual approval **PENDING**, physical Windows input **PENDING USER**, Android **PENDING USER**, Source A residence/guidance import **PENDING SOURCE INTAKE**, unrelated repository-wide CI red workflows need separate assessment. This packet is not FULL GAME completion.
+
 
 ## TRI-01 visual V2 addendum — 2026-11-02 (PR #67)
 
