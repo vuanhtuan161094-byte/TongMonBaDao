@@ -14,15 +14,39 @@ func _fail(message: String) -> void:
 func _run() -> void:
     var gate = SOURCE_A.new()
     var required_sources := {
-        "hall": {"relative":"pv01_assets/main_hall/510052.png","model":"510052"},
-        "residence": {"relative":"pv01_assets/residence/510076.png","model":"510076"},
-        "guidance": {"relative":"pv01_assets/guidance/510111.png","model":"510111"}
+        "hall": {"relative":"pv01_assets/main_hall/510052.png","model":"510052","size":Vector2i(1104,740)},
+        "residence": {"relative":"pv01_assets/residence/510076.png","model":"510076","size":Vector2i(536,416)},
+        "guidance": {"relative":"pv01_assets/guidance/510111.png","model":"510111","size":Vector2i(532,592)}
     }
     for kind in required_sources:
         var spec: Dictionary = required_sources[kind]
         var source_texture: Texture2D = gate.texture_for(str(spec["relative"]))
         if source_texture == null:
             _fail("required Source A model %s failed SHA-gated import" % spec["model"])
+            return
+        if source_texture.get_size() != spec["size"]:
+            _fail("Source A model %s imported at unexpected dimensions %s" % [spec["model"],source_texture.get_size()])
+            return
+        var source_path := "res://art/source_a_env02a/" + str(spec["relative"])
+        var source_image := Image.load_from_file(ProjectSettings.globalize_path(source_path))
+        if source_image == null or source_image.is_empty() or not source_image.has_alpha():
+            _fail("Source A model %s lost its imported alpha channel" % spec["model"])
+            return
+        var has_clear := false
+        var has_opaque := false
+        var has_semitransparent := false
+        for y in range(0,source_image.get_height(),8):
+            for x in range(0,source_image.get_width(),8):
+                var alpha: float = source_image.get_pixel(x,y).a
+                has_clear = has_clear or alpha <= 0.001
+                has_opaque = has_opaque or alpha >= 0.999
+                has_semitransparent = has_semitransparent or (alpha > 0.001 and alpha < 0.999)
+                if has_clear and has_opaque and has_semitransparent:
+                    break
+            if has_clear and has_opaque and has_semitransparent:
+                break
+        if not has_clear or not has_opaque or not has_semitransparent:
+            _fail("Source A model %s lost transparency or antialiasing" % spec["model"])
             return
         var map_key := str(ISO_WORLD.HOUSE_TEXTURES.get(kind,""))
         if map_key != str(spec["relative"]):
