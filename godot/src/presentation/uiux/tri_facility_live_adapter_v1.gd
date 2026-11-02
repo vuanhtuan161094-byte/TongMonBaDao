@@ -80,11 +80,11 @@ func _render() -> void:
     detail.name = "OpenCanonicalFacilityManagement"
     detail.text = "QUẢN LÝ ĐẦY ĐỦ"
     detail.custom_minimum_size = Vector2(190, 42)
-    detail.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
-    detail.offset_left = -225
-    detail.offset_right = -24
-    detail.offset_top = -58
-    detail.offset_bottom = -16
+    detail.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+    detail.offset_left = -334
+    detail.offset_right = -132
+    detail.offset_top = 18
+    detail.offset_bottom = 60
     detail.z_index = 2
     detail.pressed.connect(_open_full_details)
     add_child(detail)
