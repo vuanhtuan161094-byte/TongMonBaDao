@@ -87,7 +87,7 @@ func _build_rooms_panel() -> Control:
 	bed_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	var beds := GridContainer.new()
 	beds.name = "ResidenceBedSlots"
-	beds.columns = 5
+	beds.columns = 4
 	beds.add_theme_constant_override("h_separation", 5)
 	beds.add_theme_constant_override("v_separation", 5)
 	for bed in _vm.get("bed_slots", []):
@@ -98,7 +98,7 @@ func _build_rooms_panel() -> Control:
 
 func _bed_slot(bed: Dictionary) -> Control:
 	var card := UI.panel("Bed_%s" % str(bed.get("id", "")), UI.BORDER, UI.SURFACE_LIGHT)
-	card.custom_minimum_size = Vector2(64, 68)
+	card.custom_minimum_size = Vector2(88, 82)
 	var content := VBoxContainer.new()
 	content.add_theme_constant_override("separation", 1)
 	card.add_child(content)
@@ -108,9 +108,9 @@ func _bed_slot(bed: Dictionary) -> Control:
 	icon.tint = UI.JADE if resident else UI.MUTED
 	icon.custom_minimum_size = Vector2(22, 22)
 	content.add_child(icon)
-	var resident_label := UI.label(str(bed.get("disciple_short_name", "Trống")), 9, UI.TEXT if resident else UI.MUTED, false)
+	var resident_label := UI.label(str(bed.get("disciple_short_name", "Trống")), 11, UI.TEXT if resident else UI.MUTED, false)
 	resident_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	resident_label.custom_minimum_size.y = 20
+	resident_label.custom_minimum_size.y = 28
 	resident_label.tooltip_text = str(bed.get("disciple_short_name", "Trống"))
 	content.add_child(resident_label)
 	return card
@@ -126,6 +126,7 @@ func _build_sites_panel() -> Control:
 	var grid := GridContainer.new()
 	grid.name = "ResidenceSiteCards"
 	grid.columns = 2
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid.add_theme_constant_override("h_separation", 9)
 	grid.add_theme_constant_override("v_separation", 9)
 	for site in _vm.get("sites", []):
@@ -169,6 +170,7 @@ func _site_card(site: Dictionary) -> Control:
 	var site_id := str(site.get("id", ""))
 	var card := UI.panel("Site_%s" % site_id, UI.BORDER, UI.SURFACE_LIGHT)
 	card.custom_minimum_size = Vector2(245, 118)
+	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var content := VBoxContainer.new()
 	content.add_theme_constant_override("separation", 5)
 	card.add_child(content)
