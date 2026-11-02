@@ -8,11 +8,11 @@ const CAPTURE_FILES := {
     "residence":"02_residence_live_state.png",
     "guidance":"03_guidance_live_state.png"
 }
-const REQUIRED_MAP_ART := [
-    "pv01_assets/main_hall/510052.png",
-    "pv01_assets/residence/510076.png",
-    "pv01_assets/guidance/510111.png"
-]
+const REQUIRED_MAP_ART := {
+    "main_hall": "pv01_assets/main_hall/510052.png",
+    "residence": "pv01_assets/residence/510076.png",
+    "guidance": "pv01_assets/guidance/510111.png"
+}
 
 var game: Control
 
@@ -55,18 +55,35 @@ func _capture() -> void:
         _fail("P3.2 main scene has no isometric world renderer.")
         return
     var loaded_art: Dictionary = world.get("render_art")
-    for relative in REQUIRED_MAP_ART:
-        if not loaded_art.has(relative):
-            _fail("P3.2 map did not load SHA-gated Source A building %s." % relative)
+    var world_script := world.get_script() as Script
+    if world_script == null:
+        _fail("P3.2 world renderer script is unavailable.")
+        return
+    var constants: Dictionary = world_script.get_script_constant_map()
+    var texture_map: Dictionary = constants.get("HOUSE_TEXTURES",{})
+    var size_map: Dictionary = constants.get("HOUSE_SIZES",{})
+    for kind in REQUIRED_MAP_ART:
+        var relative: String = REQUIRED_MAP_ART[kind]
+        if str(texture_map.get(kind,"")) != relative or not loaded_art.has(relative):
+            _fail("P3.2 map did not bind its SHA-gated Source A %s sprite." % kind)
+            return
+        var texture: Texture2D = loaded_art[relative] as Texture2D
+        var target_size: Vector2 = size_map.get(kind,Vector2.ZERO)
+        if texture == null or target_size.x <= 0.0 or target_size.y <= 0.0:
+            _fail("P3.2 map has no renderable texture/size for %s." % kind)
+            return
+        var source_ratio := float(texture.get_width())/float(texture.get_height())
+        if absf(source_ratio-target_size.x/target_size.y) > 0.01:
+            _fail("P3.2 map would distort Source A %s." % kind)
             return
 
     if not await _save_frame(out_dir,"00_p3_2_map_context.png"):
         return
-    if not await _open_from_map(SectMapPresentation.DEST_MAIN_HALL,"OpenDaiDienScreenV1",out_dir,CAPTURE_FILES["hall"]):
+    if not await _open_from_map("hall","510052",SectMapPresentation.DEST_MAIN_HALL,"OpenDaiDienScreenV1",out_dir,CAPTURE_FILES["hall"]):
         return
-    if not await _open_from_map(SectMapPresentation.DEST_RESIDENCE,"OpenResidenceManagementV1",out_dir,CAPTURE_FILES["residence"]):
+    if not await _open_from_map("residence","510076",SectMapPresentation.DEST_RESIDENCE,"OpenResidenceManagementV1",out_dir,CAPTURE_FILES["residence"]):
         return
-    if not await _open_from_map(SectMapPresentation.DEST_GUIDANCE,"OpenDanTienScreenV2",out_dir,CAPTURE_FILES["guidance"]):
+    if not await _open_from_map("guidance","510111",SectMapPresentation.DEST_GUIDANCE,"OpenDanTienScreenV2",out_dir,CAPTURE_FILES["guidance"]):
         return
 
     game.set("runtime_ready",false)
@@ -77,7 +94,7 @@ func _capture() -> void:
     print("TRI02_P32_CONTEXT_CAPTURE_PASS map=1 hall=1 residence=1 guidance=1 size=1280x720")
     quit(0)
 
-func _open_from_map(destination: StringName, button_name: String, out_dir: String, filename: String) -> bool:
+func _open_from_map(kind: String, model_id: String, destination: StringName, button_name: String, out_dir: String, filename: String) -> bool:
     game.call("_open_building",destination)
     await process_frame
     await process_frame
@@ -90,14 +107,37 @@ func _open_from_map(destination: StringName, button_name: String, out_dir: Strin
     await process_frame
     await RenderingServer.frame_post_draw
     var screen_name := "DanTienScreenV2" if button_name == "OpenDanTienScreenV2" else "DaiDienScreenV1"
-    if game.get_node_or_null(screen_name) == null:
+    var screen := game.get_node_or_null(screen_name)
+    if screen == null:
         _fail("Live P3.2 route did not create the expected B1 screen: %s." % screen_name)
+        return false
+    var facility_art := _find_facility_art(screen,kind)
+    if facility_art == null or not bool(facility_art.get("_original_source")):
+        _fail("Live B1 %s screen did not resolve its verified Source A art." % kind)
+        return false
+    if str(facility_art.get("_source_model_id")) != model_id:
+        _fail("Live B1 %s screen resolved a different Source A model." % kind)
+        return false
+    var ui_texture: Variant = facility_art.get("_art")
+    if not (ui_texture is Texture2D):
+        _fail("Live B1 %s screen has no rendered Source A texture." % kind)
         return false
     if not await _save_frame(out_dir,filename):
         return false
     game.get_node(screen_name).queue_free()
     await process_frame
     return true
+
+func _find_facility_art(node: Node, kind: String) -> Control:
+    var script := node.get_script() as Script
+    if script != null and script.resource_path == "res://src/presentation/uiux/sect_facility_art_v2.gd":
+        if str(node.get("facility_kind")) == kind:
+            return node as Control
+    for child in node.get_children():
+        var found := _find_facility_art(child,kind)
+        if found != null:
+            return found
+    return null
 
 func _find_button(node: Node, expected_name: String) -> Button:
     if node is Button and node.name == expected_name:

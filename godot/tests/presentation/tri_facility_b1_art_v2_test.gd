@@ -2,7 +2,6 @@ extends SceneTree
 ## TRI-02 visual contract: original buildings are exact-SHA Source A sprites; candidate art stays anonymous.
 const ART = preload("res://src/presentation/uiux/sect_facility_art_v2.gd")
 const SOURCE_A = preload("res://src/presentation/p3/sect_map25_source_art.gd")
-const ISO_WORLD = preload("res://src/presentation/p3/sect_isometric_world_v1.gd")
 
 func _initialize() -> void:
     call_deferred("_run")
@@ -47,16 +46,6 @@ func _run() -> void:
                 break
         if not has_clear or not has_opaque or not has_semitransparent:
             _fail("Source A model %s lost transparency or antialiasing" % spec["model"])
-            return
-        var map_key := str(ISO_WORLD.HOUSE_TEXTURES.get(kind,""))
-        if map_key != str(spec["relative"]):
-            _fail("%s map renderer did not point to its verified Source A model" % kind)
-            return
-        var target_size: Vector2 = ISO_WORLD.HOUSE_SIZES[kind]
-        var source_ratio := float(source_texture.get_width()) / float(source_texture.get_height())
-        var target_ratio := target_size.x / target_size.y
-        if absf(source_ratio-target_ratio) > 0.01:
-            _fail("%s map render target would distort its source sprite" % kind)
             return
 
     for kind in ["hall","residence","guidance","candidate"]:
