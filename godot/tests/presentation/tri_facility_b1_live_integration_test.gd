@@ -91,6 +91,7 @@ func _run() -> void:
             "B1 guidance must preserve RC CandidateDecisionActions and order control"):
         return
     var before := state.disciples.size()
+    var accepted_id: String = str(old_guidance.get("selected_candidate_id"))
     var accept := _find_button(b1_guidance,"AcceptCandidate")
     if not _require(accept != null and not accept.disabled,
             "B1 accept must use real C2 eligibility"):
@@ -105,6 +106,46 @@ func _run() -> void:
             and SectHallSystemV1.validate(restored).is_empty(),
             "B1 live recruitment state must survive canonical state serialization"):
         return
+    # Optional two-process durability gate: the runner configures these only
+    # when it will launch a second independent Godot process to verify the save.
+    var qa_save: String = OS.get_environment("TMB_TRI_B1_SAVE_PATH")
+    var qa_expected: String = OS.get_environment("TMB_TRI_B1_EXPECTED_PATH")
+    if not qa_save.is_empty() or not qa_expected.is_empty():
+        if not _require(not qa_save.is_empty() and not qa_expected.is_empty(),
+                "cross-process save and expected paths must both be set"):
+            return
+        DirAccess.make_dir_recursive_absolute(qa_save.get_base_dir())
+        DirAccess.make_dir_recursive_absolute(qa_expected.get_base_dir())
+        if not _require(SaveService.new().save_to_path(state, qa_save) == OK,
+                "SaveService failed to write B1 live state"):
+            return
+        var saved_ids: Array[String] = []
+        var candidate_ids: Array[String] = []
+        for raw_id in state.disciples.keys():
+            saved_ids.append(str(raw_id))
+        for raw_id in state.recruitment_candidates.keys():
+            candidate_ids.append(str(raw_id))
+        saved_ids.sort()
+        candidate_ids.sort()
+        var hall_building: BuildingState = SectHallSystemV1.hall(state)
+        var expected: Dictionary = {
+            "disciple_ids":saved_ids,
+            "candidate_ids":candidate_ids,
+            "accepted_id":accepted_id,
+            "tokens":state.sect.disciple_recruitment_tokens,
+            "capacity":state.sect.disciple_capacity,
+            "hall_level":hall_building.level if hall_building != null else -1,
+            "houses":SectResidenceSystemV1.all_houses(state).size(),
+            "rank_step":SectHallSystemV1.rank_index(state)
+        }
+        var file := FileAccess.open(qa_expected,FileAccess.WRITE)
+        if not _require(file != null,"cannot write isolated cross-process expectation"):
+            return
+        file.store_string(JSON.stringify(expected))
+        file.close()
+        print("TRI_B1_PROCESS1_SAVED path=%s accepted=%s roster=%d" % [
+            qa_save,accepted_id,saved_ids.size()
+        ])
     root.remove_child(old_guidance)
     old_guidance.queue_free()
     print("TRI_B1_LIVE_PASS hall=1 residence=1 guidance=1 real_recruit=1 roundtrip=1")
