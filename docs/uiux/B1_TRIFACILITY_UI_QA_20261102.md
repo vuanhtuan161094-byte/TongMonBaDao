@@ -2,7 +2,7 @@
 
 ## TRI-02 Source A intake and live P3.2 capture — 2026-11-02
 
-**Current code SHA:** `ea06e31e9ea4c2188de3aca6f828317c0189e975` on the existing PR #67 branch. The historical TRI-01/V2.2 notes below describe the earlier `a97c946` checkpoint; statements there that Residence and Guidance PNGs were absent are superseded by this section.
+**Exact tested code+capture SHA:** `b5b4d496c4bfdafdf343a12733acaa29625efdd4` (production Source A/UI code is in its parent `ea06e31e9ea4c2188de3aca6f828317c0189e975`) on the existing PR #67 branch. The historical TRI-01/V2.2 notes below describe the earlier `a97c946` checkpoint; statements there that Residence and Guidance PNGs were absent are superseded by this section.
 
 ### Verified production sprites
 
@@ -18,7 +18,7 @@ The shared B1 renderer now uses the matching Source A building sprite on all thr
 
 ### Exact-SHA Godot 4.7.2 QA
 
-[O2 workflow run 41399590695](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41399590695) completed **SUCCESS** on the exact code SHA above. The artifact contains four real Godot-rendered 1280×720 PNGs: P3.2 map context, Đại Điện, Đệ Tử Xá and Dẫn Tiên Đài: [download PNG archive](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41399590695/artifacts/13120402702). Relevant live capture markers include `TRI02_SOURCE_ALPHA_PASS` for each building and `TRI02_P32_CONTEXT_CAPTURE_PASS map=1 hall=1 residence=1 guidance=1 size=1280x720`.
+[O2 workflow run 41400397206](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41400397206) completed **SUCCESS** on the exact code+capture SHA above. The artifact contains four real Godot-rendered 1280×720 PNGs: P3.2 map context, Đại Điện, Đệ Tử Xá and Dẫn Tiên Đài: [download PNG archive](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41400397206/artifacts/13120779305). Relevant live capture markers include `TRI02_SOURCE_ALPHA_PASS` for each building and `TRI02_P32_CONTEXT_CAPTURE_PASS map=1 hall=1 residence=1 guidance=1 size=1280x720`.
 
 | Check on exact SHA | Result |
 |---|---|
@@ -31,7 +31,7 @@ The shared B1 renderer now uses the matching Source A building sprite on all thr
 | Live P3.2 map → all three B1 screens, model IDs and 1280×720 frames | PASS |
 | P3.6A regression | PASS |
 
-The capture uses the actual P3.2 scene and its real management buttons under Ubuntu/Xvfb with llvmpipe. It is an automated render harness, **not** physical Windows mouse acceptance. The run emitted nonfatal CI audio-device/V-Sync warnings; Godot used its dummy audio driver.
+The capture uses the actual P3.2 scene and its real management buttons under Ubuntu/Xvfb with llvmpipe. 320×180 review thumbnails generated from those same frames were visually reviewed; the full-resolution 1280×720 frames remain in the artifact. It is an automated render harness, **not** physical Windows mouse acceptance. The run emitted nonfatal CI audio-device/V-Sync warnings; Godot used its dummy audio driver.
 
 **Before reference:** [TRI-01 V2.2 B1 captures](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41391730042/artifacts/13116893857) show the earlier UI checkpoint before importing 510076 and 510111. That artifact was captured in the previous B1 state harness and is not the same P3.2 map-context route; use it only as a historical visual reference.
 
