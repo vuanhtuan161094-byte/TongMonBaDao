@@ -771,8 +771,18 @@ func _camera_center() -> Vector2:
     return SectMapCamera.VIEW_RECT.position + SectMapCamera.VIEW_RECT.size * 0.5
 
 func _popup_is_open() -> bool:
-    return (popup_layer != null and popup_layer.get_child_count() > 0) \
-        or (pve_party_picker_shade != null and pve_party_picker_shade.visible)
+    if (popup_layer != null and popup_layer.get_child_count() > 0) \
+            or (pve_party_picker_shade != null and pve_party_picker_shade.visible):
+        return true
+    # B1 facility screens sit outside popup_layer. Keep map pointer handling
+    # from consuming their button releases before Control dispatches clicks.
+    for overlay_name in [
+        "DaiDienScreenV1", "DaiDienScreenB1V1", "DeTuXaScreenB1V1",
+        "DanTienScreenV2", "DanTienScreenB1V1"
+    ]:
+        if get_node_or_null(overlay_name) != null:
+            return true
+    return false
 
 func _clear_pointer_state() -> void:
     touch_points.clear()

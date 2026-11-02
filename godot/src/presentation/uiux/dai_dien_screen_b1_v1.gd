@@ -2,6 +2,7 @@ extends Control
 ## Presentation-only Hall screen. bind_view_model() accepts authoritative data and emits UI intent signals.
 
 signal office_selection_requested(role_id: String)
+signal office_dismissal_requested(role_id: String)
 signal promotion_requested
 signal hall_upgrade_requested
 signal closed
@@ -10,7 +11,8 @@ const UI = preload("res://src/presentation/uiux/sect_ui_theme_v1.gd")
 const ROLE_IDS := ["master", "guide", "teacher", "steward", "guardian", "alchemist", "discipline"]
 const ROLE_LABELS := {
 	"master": "Chưởng Môn", "guide": "Tiếp Dẫn Trưởng Lão", "teacher": "Truyền Công Trưởng Lão",
-	"steward": "Nội Vụ Chấp Sự", "guardian": "Hộ Pháp Trưởng Lão", "alchemist": "Đan Đạo Trưởng Lão", "discipline": "Giới Luật Trưởng Lão"
+	"steward": "Nội Vụ Chấp Sự", "guardian": "Hộ Pháp Trưởng Lão",
+	"alchemist": "Đan Đạo Trưởng Lão", "discipline": "Giới Luật Trưởng Lão"
 }
 
 var _vm: Dictionary = {}
@@ -33,9 +35,16 @@ func _rebuild() -> void:
 	var shell := _make_shell("ĐẠI ĐIỆN", "Thất chức • phẩm cấp và thăng bậc môn phái")
 	add_child(shell)
 	var body := HBoxContainer.new()
+	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	body.add_theme_constant_override("separation", 14)
-	shell.get_child(0).add_child(body)
+	var body_scroll := ScrollContainer.new()
+	body_scroll.name = "HallBodyScroll"
+	body_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	body_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	body_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	body_scroll.add_child(body)
+	shell.get_child(0).add_child(body_scroll)
 	body.add_child(_build_progress_panel())
 	body.add_child(_build_offices_panel())
 
@@ -63,6 +72,9 @@ func _make_shell(title: String, subtitle: String) -> MarginContainer:
 	line.color = Color(UI.GOLD, 0.65)
 	line.custom_minimum_size.y = 1.0
 	column.add_child(line)
+	var feedback := str(_vm.get("feedback", ""))
+	if not feedback.is_empty():
+		column.add_child(UI.label(feedback, 12, UI.JADE, false))
 	return margin
 
 func _build_progress_panel() -> Control:
@@ -99,7 +111,11 @@ func _build_progress_panel() -> Control:
 		rank_grid.add_child(tick)
 	content.add_child(rank_grid)
 	content.add_child(UI.section_heading("Điều kiện thăng bậc", "rank", UI.JADE))
-	content.add_child(UI.label(str(_vm.get("rank_requirement", "Điều kiện do môn phái cung cấp")), 13, UI.TEXT, false))
+	var rank_requirement := UI.label(str(_vm.get("rank_requirement", "Điều kiện do môn phái cung cấp")), 13, UI.TEXT, false)
+	rank_requirement.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	rank_requirement.custom_minimum_size.y = 48.0
+	rank_requirement.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	content.add_child(rank_requirement)
 	var promotion := UI.button("THĂNG BẬC", true, UI.GOLD)
 	promotion.name = "PromoteRank"
 	promotion.disabled = not bool(_vm.get("can_promote", false))
@@ -116,6 +132,7 @@ func _build_offices_panel() -> Control:
 	content.add_child(UI.section_heading("Bảy chức vụ", "person", UI.JADE))
 	var grid := GridContainer.new()
 	grid.columns = 2
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	grid.add_theme_constant_override("h_separation", 8)
 	grid.add_theme_constant_override("v_separation", 8)
@@ -152,21 +169,32 @@ func _build_offices_panel() -> Control:
 func _office_card(role_id: String, office: Dictionary) -> Control:
 	var card := UI.panel("Office_%s" % role_id, UI.BORDER, UI.SURFACE_LIGHT)
 	card.custom_minimum_size = Vector2(245, 78)
+	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 9)
 	card.add_child(row)
 	row.add_child(UI.portrait_slot(str(office.get("disciple_name", "")), office.get("portrait"), Vector2(48, 48)))
 	var details := VBoxContainer.new()
 	details.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	details.add_child(UI.label(ROLE_LABELS[role_id], 14, UI.PAPER, true))
+	details.add_child(UI.label(str(office.get("role_label", ROLE_LABELS[role_id])), 13, UI.PAPER, true))
 	var disciple_name := str(office.get("disciple_name", "Chưa bổ nhiệm"))
 	details.add_child(UI.label(disciple_name, 12, UI.TEXT, false))
 	details.add_child(UI.label(str(office.get("office_rank", "—")), 10, UI.MUTED, false))
 	row.add_child(details)
-	var choose := UI.button("CHỌN", false, UI.JADE)
+	var actions := VBoxContainer.new()
+	actions.add_theme_constant_override("separation", 4)
+	var choose := UI.button("BỔ NHIỆM", false, UI.JADE)
 	choose.name = "ChooseOffice"
+	choose.custom_minimum_size = Vector2(88, 32)
 	choose.pressed.connect(_request_office_selection.bind(role_id))
-	row.add_child(choose)
+	actions.add_child(choose)
+	var dismiss := UI.button("MIỄN NHIỆM", false, UI.RED)
+	dismiss.name = "DismissOffice"
+	dismiss.custom_minimum_size = Vector2(88, 32)
+	dismiss.disabled = not bool(office.get("can_dismiss", false))
+	dismiss.pressed.connect(func(): office_dismissal_requested.emit(role_id))
+	actions.add_child(dismiss)
+	row.add_child(actions)
 	return card
 
 func _request_office_selection(role_id: String) -> void:

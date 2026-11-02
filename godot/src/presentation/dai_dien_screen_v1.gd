@@ -255,11 +255,14 @@ func _offices() -> void:
         var current: DiscipleState = game_state.disciples[StringName(id)]
         name_text = current.display_name
     var identity := HBoxContainer.new()
+    identity.size_flags_horizontal = Control.SIZE_EXPAND_FILL
     identity.add_theme_constant_override("separation", 12)
     _content.add_child(identity)
     if not id.is_empty() and game_state.disciples.has(StringName(id)):
         identity.add_child(_source_a_portrait(game_state.disciples[StringName(id)]))
-    identity.add_child(_label("Đương nhiệm: " + name_text, 17, GOLD))
+    var incumbent_label := _label("Đương nhiệm: " + name_text, 17, GOLD)
+    incumbent_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+    identity.add_child(incumbent_label)
     if not id.is_empty():
         var progress := SectHallSystemV1.mastery(game_state, selected_office, id)
         var level := int(progress.get("level", 1))

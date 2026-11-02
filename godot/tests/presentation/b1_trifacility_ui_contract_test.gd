@@ -21,6 +21,9 @@ func _find_button(node: Node, target_name: String) -> Button:
 	return null
 
 func _run() -> void:
+	if HALL.ROLE_LABELS != SectHallSystemV1.LABELS:
+		_fail("Hall labels must match SectHallSystemV1 exactly.")
+		return
 	var hall := HALL.new()
 	root.add_child(hall)
 	hall.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -28,7 +31,7 @@ func _run() -> void:
 		"building_level": 6, "rank_step": 14, "rank_progress": 0.4,
 		"rank_requirement": "Điều kiện được cung cấp", "can_promote": true, "can_upgrade": true,
 		"upgrade_costs": [{"name": "Linh Thạch", "amount": "20", "icon": "gold"}],
-		"offices": [{"id": "master", "disciple_name": "Thanh Vân", "office_rank": "Cảnh giới"}]
+		"offices": [{"id": "master", "disciple_name": "Thanh Vân", "office_rank": "Tinh Thông Lv2/10", "can_dismiss": true}]
 	})
 	await process_frame
 	var office_cards := 0
@@ -61,20 +64,44 @@ func _run() -> void:
 	if promoted.size() != 1 or hall.find_child("UpgradeHall", true, false) == null:
 		_fail("Hall action intents or upgrade control missing.")
 		return
+	var dismissed_roles: Array[String] = []
+	hall.office_dismissal_requested.connect(func(role_id: String): dismissed_roles.append(role_id))
+	var dismiss_office := _find_button(hall, "DismissOffice")
+	if dismiss_office == null or dismiss_office.disabled:
+		_fail("Hall dismissal control must follow authoritative can_dismiss state.")
+		return
+	dismiss_office.pressed.emit()
+	if dismissed_roles != ["master"]:
+		_fail("Hall dismissal must emit the canonical role ID.")
+		return
 	hall.queue_free()
 
 	var residence := RESIDENCE.new()
+	var all_beds: Array[Dictionary] = []
+	for index in range(20):
+		all_beds.append({"id": "bed_%02d" % index, "occupied": index < 6, "disciple_short_name": "Đệ tử %02d" % (index + 1) if index < 6 else "Trống"})
+	var all_sites: Array[Dictionary] = [
+		{"id": "north", "name": "Đã xây", "built": true, "can_upgrade": true, "can_build": false},
+		{"id": "east", "name": "Đất trống", "built": false, "can_build": true, "can_upgrade": false}
+	]
+	for index in range(10):
+		all_sites.append({"id": "annex_%02d" % index, "name": "Lô %02d" % index, "built": false, "can_build": false, "can_upgrade": false})
 	root.add_child(residence)
 	residence.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	residence.bind_view_model({
 		"building_level": 3, "room_count_label": "2 phòng", "selected_residence_id": "north",
-		"bed_slots": [{"id": "bed_a", "occupied": true, "disciple_short_name": "A"}],
-		"sites": [
-			{"id": "north", "name": "Đã xây", "built": true, "can_upgrade": true, "can_build": false},
-			{"id": "east", "name": "Đất trống", "built": false, "can_build": true, "can_upgrade": false}
-		]
+		"bed_slots": all_beds,
+		"sites": all_sites
 	})
 	await process_frame
+	var bed_grid := residence.find_child("ResidenceBedSlots", true, false) as GridContainer
+	var site_grid := residence.find_child("ResidenceSiteCards", true, false) as GridContainer
+	if bed_grid == null or bed_grid.get_child_count() != 20 or residence.find_child("ResidenceBedScroll", true, false) == null:
+		_fail("Residence must keep every bed visible in its scroll list.")
+		return
+	if site_grid == null or site_grid.get_child_count() != 12 or residence.find_child("ResidenceSiteScroll", true, false) == null:
+		_fail("Residence must keep every supplied construction lot in its scroll list.")
+		return
 	var selected_sites: Array[String] = []
 	residence.site_selection_requested.connect(func(site_id: String): selected_sites.append(site_id))
 	var site_button := _find_button(residence, "SelectSite")
@@ -84,6 +111,16 @@ func _run() -> void:
 	site_button.pressed.emit()
 	if selected_sites.size() != 1 or selected_sites[0] != "north":
 		_fail("Site selector must emit supplied site ID.")
+		return
+	var room_management: Array[bool] = []
+	residence.room_management_requested.connect(func(): room_management.append(true))
+	var manage_rooms := _find_button(residence, "ManageResidenceRooms")
+	if manage_rooms == null:
+		_fail("Residence room management route is missing.")
+		return
+	manage_rooms.pressed.emit()
+	if room_management != [true]:
+		_fail("Residence room management must route to its canonical screen.")
 		return
 	var upgrade_ids: Array[String] = []
 	residence.residence_upgrade_requested.connect(func(id: String): upgrade_ids.append(id))
@@ -104,10 +141,7 @@ func _run() -> void:
 	residence.bind_view_model({
 		"building_level": 3, "room_count_label": "2 phòng", "selected_residence_id": "east",
 		"bed_slots": [],
-		"sites": [
-			{"id": "north", "name": "Đã xây", "built": true, "can_upgrade": true, "can_build": false},
-			{"id": "east", "name": "Đất trống", "built": false, "can_build": true, "can_upgrade": false}
-		]
+		"sites": all_sites
 	})
 	await process_frame
 	build_button = _find_button(residence, "BuildSelectedSite")
@@ -124,8 +158,12 @@ func _run() -> void:
 	root.add_child(guidance)
 	guidance.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	guidance.bind_view_model({
-		"candidate": {"id": "cand-1", "name": "Ứng viên", "tam_values": [30, 50, 60], "tu_values": [10, 20, 30, 40]},
-		"can_accept": true, "can_reject": true, "can_lead_in": true, "can_recruit": true
+		"candidates": [
+			{"id": "cand-1", "name": "Ứng viên", "tam_values": [30, 50, 60], "tu_values": [10, 20, 30, 40], "can_accept": true, "can_reject": true},
+			{"id": "cand-2", "name": "Liễu Vân", "tam_values": [40, 50, 60], "tu_values": [11, 21, 31, 41], "can_accept": false, "can_reject": true},
+			{"id": "cand-3", "name": "Tô Minh", "tam_values": [50, 60, 70], "tu_values": [12, 22, 32, 42], "can_accept": true, "can_reject": true}
+		],
+		"can_accept": true, "can_reject": true, "can_use_order": true, "recruitment_tokens": 2
 	})
 	await process_frame
 	var candidate_ids: Array[String] = []
@@ -135,23 +173,54 @@ func _run() -> void:
 		_fail("Guidance accept control missing.")
 		return
 	accept_button.pressed.emit()
-	if candidate_ids.size() != 1 or candidate_ids[0] != "cand-1":
-		_fail("Accept emits candidate key only.")
+	if not candidate_ids.is_empty():
+		_fail("Accept must require a second confirm tap.")
 		return
-	var lead_ids: Array[String] = []
-	guidance.lead_in_requested.connect(func(id: String): lead_ids.append(id))
-	var lead_button := _find_button(guidance, "LeadInCandidate")
-	if lead_button == null or lead_button.disabled:
-		_fail("Lead-in eligibility must come from the view model.")
+	await process_frame
+	accept_button = _find_button(guidance, "AcceptCandidate")
+	if accept_button == null or accept_button.text != "XÁC NHẬN NHẬN ĐỆ TỬ":
+		_fail("Accept confirmation state is not visible after the first tap.")
 		return
-	lead_button.pressed.emit()
-	var recruit_ids: Array[String] = []
-	guidance.recruit_candidate_requested.connect(func(id: String): recruit_ids.append(id))
-	var recruit_button := _find_button(guidance, "RecruitCandidate")
-	if recruit_button == null or recruit_button.disabled:
-		_fail("Recruit eligibility must come from the view model.")
+	accept_button.pressed.emit()
+	if candidate_ids != ["cand-1"]:
+		_fail("Confirmed accept must emit only the candidate key.")
 		return
-	recruit_button.pressed.emit()
+	var search_queries: Array[String] = []
+	guidance.candidate_search_requested.connect(func(query: String): search_queries.append(query))
+	var search := guidance.find_child("CandidateSearch", true, false) as LineEdit
+	if search == null:
+		_fail("Candidate search field missing.")
+		return
+	search.text = "Liễu"
+	var search_button := _find_button(guidance, "ApplyCandidateSearch")
+	if search_button == null:
+		_fail("Candidate search action missing.")
+		return
+	search_button.pressed.emit()
+	if search_queries != ["Liễu"] or str(guidance.call("_candidate_id")) != "cand-2":
+		_fail("Candidate search must filter the actual supplied candidate pool.")
+		return
+	search = guidance.find_child("CandidateSearch", true, false) as LineEdit
+	search.text = ""
+	_find_button(guidance, "ApplyCandidateSearch").pressed.emit()
+	await process_frame
+	var guide_routes: Array[bool] = []
+	guidance.guide_management_requested.connect(func(): guide_routes.append(true))
+	var manage_guides := _find_button(guidance, "ManageGuides")
+	if manage_guides == null:
+		_fail("Main/assistant guide management route missing.")
+		return
+	manage_guides.pressed.emit()
+	var order_requests: Array[bool] = []
+	guidance.recruitment_order_requested.connect(func(): order_requests.append(true))
+	var order_button := _find_button(guidance, "UseRecruitmentOrder")
+	if order_button == null or order_button.disabled:
+		_fail("Chiêu Mộ Lệnh button must follow supplied authority eligibility.")
+		return
+	order_button.pressed.emit()
+	if guide_routes != [true] or order_requests != [true]:
+		_fail("Guide management and Chiêu Mộ Lệnh must emit real action intents.")
+		return
 	var page_directions: Array[int] = []
 	guidance.candidate_page_requested.connect(func(direction: int): page_directions.append(direction))
 	var previous_button := _find_button(guidance, "PreviousCandidate")
@@ -161,8 +230,8 @@ func _run() -> void:
 		return
 	previous_button.pressed.emit()
 	next_button.pressed.emit()
-	if lead_ids != ["cand-1"] or recruit_ids != ["cand-1"] or page_directions != [-1, 1]:
-		_fail("Lead-in, recruitment and candidate paging must emit only intent data.")
+	if page_directions != [-1, 1]:
+		_fail("Candidate paging must use the filtered pool.")
 		return
 	var rejects: Array[String] = []
 	guidance.reject_candidate_requested.connect(func(id: String): rejects.append(id))
@@ -176,6 +245,9 @@ func _run() -> void:
 		return
 	await process_frame
 	reject_button = _find_button(guidance, "RejectCandidate")
+	if reject_button == null or reject_button.text != "XÁC NHẬN TỪ CHỐI":
+		_fail("Reject confirmation state must be visible after the first tap.")
+		return
 	reject_button.pressed.emit()
 	if rejects.size() != 1 or rejects[0] != "cand-1":
 		_fail("Confirmed reject emits one candidate intent.")
@@ -194,4 +266,5 @@ func _run() -> void:
 		if source.contains("SimulationState") or source.contains("SaveService") or source.contains("WarehouseSystem"):
 			_fail("Presentation screens must not own simulation, save or warehouse authority.")
 			return
+	print("TRI01_B1_UI_CONTRACT_PASS")
 	quit(0)

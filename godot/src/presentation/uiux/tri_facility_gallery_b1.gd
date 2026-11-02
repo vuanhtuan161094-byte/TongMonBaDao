@@ -70,8 +70,8 @@ func _show_screen(kind: String) -> void:
 			_active_screen.candidate_page_requested.connect(func(_direction): _note("Đổi ứng viên — callback preview"))
 			_active_screen.accept_candidate_requested.connect(func(_id): _note("Nhận ứng viên — callback preview"))
 			_active_screen.reject_candidate_requested.connect(func(_id): _note("Từ chối ứng viên — callback preview"))
-			_active_screen.lead_in_requested.connect(func(_id): _note("Tiếp dẫn — callback preview"))
-			_active_screen.recruit_candidate_requested.connect(func(_id): _note("Chiêu mộ — callback preview"))
+			_active_screen.guide_management_requested.connect(func(): _note("Mở quản lý Tiếp Dẫn — callback preview"))
+			_active_screen.recruitment_order_requested.connect(func(): _note("Chiêu Mộ Lệnh — callback preview"))
 		_:
 			_active_screen = HALL.new()
 			_active_screen.bind_view_model(_sample_hall())
@@ -87,7 +87,7 @@ func _note(message: String) -> void:
 func _sample_hall() -> Dictionary:
 	var offices: Array = []
 	var ids := ["master", "guide", "teacher", "steward", "guardian", "alchemist", "discipline"]
-	var names := ["Chưởng Môn", "Hộ Sơn", "Truyền Công", "Chấp Sự", "Tuần Sơn", "Đan Sư", "Giới Luật"]
+	var names := ["Chưởng Môn", "Tiếp Dẫn Trưởng Lão", "Truyền Công Trưởng Lão", "Nội Vụ Chấp Sự", "Hộ Pháp Trưởng Lão", "Đan Đạo Trưởng Lão", "Giới Luật Trưởng Lão"]
 	for index in range(ids.size()):
 		offices.append({"id": ids[index], "disciple_name": "Đệ tử %02d" % (index + 1), "office_rank": "Chấp sự • Kim Đan"})
 	return {
@@ -112,13 +112,13 @@ func _sample_residence() -> Dictionary:
 
 func _sample_guidance() -> Dictionary:
 	return {
-		"candidate": {
+		"candidates": [{
 			"id": "preview_candidate", "name": "Lạc Vân Dao", "realm": "Trúc Cơ • tầng 6",
 			"origin": "Tán tu • Vân Châu", "personality": "Tâm cảnh bình hòa",
 			"status": "Chưa tiếp dẫn", "tam_values": [74, 62, 88], "tu_values": [70, 83, 61, 54],
 			"source_art_approved": false
-		},
-		"can_accept": true, "can_reject": true, "can_lead_in": true, "can_recruit": false,
+		}],
+		"can_accept": true, "can_reject": true, "can_use_order": true, "recruitment_tokens": 2,
 		"metrics": [
 			{"label": "TIỀM LỰC", "value": "74", "icon": "leaf"},
 			{"label": "TUỔI", "value": "21", "icon": "rank"},
