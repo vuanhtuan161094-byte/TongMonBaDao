@@ -71,7 +71,7 @@ func _build_rooms_panel() -> Control:
 	card.add_child(content)
 	content.add_child(UI.section_heading("Khu cư trú", "bed", UI.GOLD))
 	var residence_art := UI.illustration("residence")
-	residence_art.custom_minimum_size = Vector2(360, 138)
+	residence_art.custom_minimum_size = Vector2(360, 164)
 	residence_art.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	content.add_child(residence_art)
 	var metrics := HBoxContainer.new()
