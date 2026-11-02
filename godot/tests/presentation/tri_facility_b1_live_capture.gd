@@ -212,7 +212,7 @@ func _save_frame(out_dir: String, filename: String) -> bool:
         return false
     var preview_image := rendered.duplicate()
     preview_image.resize(320,180,Image.INTERPOLATE_BILINEAR)
-    var preview_png := preview_image.save_png_to_buffer()
+    var preview_png: PackedByteArray = preview_image.save_png_to_buffer()
     print("TRI02_VISUAL_REVIEW_%s=%s" % [filename,Marshalls.raw_to_base64(preview_png)])
     print("TRI02_P32_CAPTURE_OK path=%s size=1280x720" % file_path)
     return true
