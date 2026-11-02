@@ -5,11 +5,10 @@ extends Control
 
 const SOURCE_A_GATE = preload("res://src/presentation/p3/sect_map25_source_art.gd")
 const LEGACY_ART = preload("res://src/presentation/uiux/sect_facility_illustration_v1.gd")
-const FALLBACKS := {
-    "hall": "res://art/uiux/hall_paint_v2.svg",
-    "residence": "res://art/uiux/residence_paint_v2.svg",
-    "guidance": "res://art/uiux/guidance_paint_v2.svg"
-}
+# Literal preloads guarantee inclusion in Android/export resource packs.
+const HALL_STUDY = preload("res://art/uiux/hall_paint_v2.svg")
+const RESIDENCE_STUDY = preload("res://art/uiux/residence_paint_v2.svg")
+const GUIDANCE_STUDY = preload("res://art/uiux/guidance_paint_v2.svg")
 const SOURCE_HALL_ID := "pv01_assets/main_hall/510052.png"
 
 var facility_kind := "hall"
@@ -26,8 +25,13 @@ func _ready() -> void:
         _art = gate.texture_for(SOURCE_HALL_ID)
         _original_source = _art != null
     if _art == null:
-        var target_path := str(FALLBACKS.get(facility_kind, FALLBACKS["hall"]))
-        _art = ResourceLoader.load(target_path) as Texture2D
+        match facility_kind:
+            "residence":
+                _art = RESIDENCE_STUDY
+            "guidance":
+                _art = GUIDANCE_STUDY
+            _:
+                _art = HALL_STUDY
     if _art == null:
         var legacy: Control = LEGACY_ART.new()
         legacy.name = "LegacyArtFallback"
