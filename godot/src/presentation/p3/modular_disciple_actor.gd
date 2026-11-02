@@ -88,13 +88,9 @@ func sync_action(action: StringName) -> void:
     _ensure_built()
     current_clip = DiscipleActorVisualCatalog.action_clip(action)
     status_label.text = SectMapPresentation.action_label(action)
-    # Compact world-space work cue: Source A currently supplies stand/walk,
-    # not an authored digging/sowing swing. Do not impersonate dig animation.
-    status_label.visible = current_clip in [
-        DiscipleActorVisualCatalog.CLIP_MINING,
-        DiscipleActorVisualCatalog.CLIP_FORGING,
-        DiscipleActorVisualCatalog.CLIP_WORK
-    ]
+    # World-space status tags obscure pooled actors on the 1280x720 sect map.
+    # Keep canonical action status in the click tooltip; no gameplay/PvE changes.
+    status_label.visible = false
     if click_button != null:
         click_button.tooltip_text = "%s · %s" % [display_name, status_label.text] if display_name != "" else status_label.text
     _play_shared_animation()
