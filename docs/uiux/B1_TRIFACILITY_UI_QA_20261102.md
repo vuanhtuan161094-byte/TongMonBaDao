@@ -1,4 +1,47 @@
 # B1 three facility screens — integration preview
+
+## TRI-02 Source A intake and live P3.2 capture — 2026-11-02
+
+**Current code SHA:** `ea06e31e9ea4c2188de3aca6f828317c0189e975` on the existing PR #67 branch. The historical TRI-01/V2.2 notes below describe the earlier `a97c946` checkpoint; statements there that Residence and Guidance PNGs were absent are superseded by this section.
+
+### Verified production sprites
+
+| Facility | Source A model | Runtime file | SHA-256 | Dimensions | Classification |
+|---|---:|---|---|---:|---|
+| Đại Điện | 510052 | `godot/art/source_a_env02a/pv01_assets/main_hall/510052.png` | `b6bf88c35e3edc33aba822124296af15a5c8491a05c28f6b5d7b342d20d5325c` | 1104×740 | Existing full building sprite |
+| Đệ Tử Xá | 510076 | `godot/art/source_a_env02a/pv01_assets/residence/510076.png` | `f8e05d7376fc5ddc7b25f56673b6d5f444b10fd759da06a5929ec4f38a68d320` | 536×416 | Imported original full building sprite |
+| Dẫn Tiên Đài | 510111 | `godot/art/source_a_env02a/pv01_assets/guidance/510111.png` | `90b7c595f3b77788c99924ef2eb7ba4b8ede794ccffda1c6808263ba3c711762` | 532×592 | Imported original full building sprite |
+
+The exact PNGs are SHA-gated by the existing Source A adapter. Each source `.atlas` was inspected: it contains one region covering nearly the entire PNG, not a collection of loose parts. The runtime uses the complete PNG directly and preserves its aspect ratio. Alpha checks on the original bytes passed for transparent, opaque and antialiased pixels for all three models. The source `.skel` files and atlas hashes are recorded in `godot/data/presentation/tri_facility_source_a_manifest.json`.
+
+The shared B1 renderer now uses the matching Source A building sprite on all three actual management screens. Dẫn Tiên Đài shows model 510111 in its header; a disciple candidate remains the anonymous neutral fallback because no approved candidate portrait is mapped. Source luminance masks were not composited: the original material/blend behavior is unvalidated. The catalog records external redistribution scope as unverified; this intake is not a license determination.
+
+### Exact-SHA Godot 4.7.2 QA
+
+[O2 workflow run 41399590695](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41399590695) completed **SUCCESS** on the exact code SHA above. The artifact contains four real Godot-rendered 1280×720 PNGs: P3.2 map context, Đại Điện, Đệ Tử Xá and Dẫn Tiên Đài: [download PNG archive](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41399590695/artifacts/13120402702). Relevant live capture markers include `TRI02_SOURCE_ALPHA_PASS` for each building and `TRI02_P32_CONTEXT_CAPTURE_PASS map=1 hall=1 residence=1 guidance=1 size=1280x720`.
+
+| Check on exact SHA | Result |
+|---|---|
+| Official Godot 4.7.2 install/version and project import | PASS |
+| O2 recruitment/map actor persistence | PASS |
+| Dẫn Tiên backend regression | PASS |
+| B1 UI contract | PASS |
+| B1 live callbacks and independent process SaveService reload | PASS — roster 7, queue 1, one house, accepted candidate_0001 |
+| DD092 exterior-door/plot regression | PASS |
+| Live P3.2 map → all three B1 screens, model IDs and 1280×720 frames | PASS |
+| P3.6A regression | PASS |
+
+The capture uses the actual P3.2 scene and its real management buttons under Ubuntu/Xvfb with llvmpipe. It is an automated render harness, **not** physical Windows mouse acceptance. The run emitted nonfatal CI audio-device/V-Sync warnings; Godot used its dummy audio driver.
+
+**Before reference:** [TRI-01 V2.2 B1 captures](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41391730042/artifacts/13116893857) show the earlier UI checkpoint before importing 510076 and 510111. That artifact was captured in the previous B1 state harness and is not the same P3.2 map-context route; use it only as a historical visual reference.
+
+### Still pending
+
+- Owner review of visual composition; physical Windows mouse and Android device.
+- Redistribution rights outside the source workspace.
+- Approved disciple-specific portraits and historical approved S3 building masters. Neutral candidate art remains a clearly separate fallback.
+- Project-wide CI not covered by the focused O2 workflow.
+
 ## TRI-01 V2.2 art/UX release evidence — 2026-11-02
 
 **Scope:** existing Draft PR #67 only, no new branch or main merge; canonical simulation, SaveService, economy and PvE are unchanged. The existing screenshot fixtures near the bottom of this document are historic B1 gallery captures, not the new live V2.2 evidence.
