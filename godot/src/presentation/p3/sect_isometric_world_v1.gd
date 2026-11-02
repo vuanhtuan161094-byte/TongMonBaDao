@@ -50,11 +50,16 @@ const PRODUCER_DISTRICTS := {
 }
 const HOUSE_TEXTURES := {
     "main_hall":"pv01_assets/main_hall/510052.png",
+    "residence":"pv01_assets/residence/510076.png",
+    "guidance":"pv01_assets/guidance/510111.png",
     "warehouse":"pv01_assets/warehouse/510102.png",
     "forge":"pv01_assets/forge/520081.png"
 }
+# Target rectangles retain each source sprite's measured aspect ratio.
 const HOUSE_SIZES := {
     "main_hall":Vector2(300,201),
+    "residence":Vector2(174,135.03),
+    "guidance":Vector2(182,202.54),
     "warehouse":Vector2(162,138),
     "forge":Vector2(205,164)
 }
@@ -499,8 +504,15 @@ func _load_verified_source_art() -> void:
     art_source_status = source_art.status()
     art_loaded_count = int(art_source_status.get("accepted_count",0))
     # The user is not shown an invented Source A completion status.
-    fallback_art_count = HOUSE_TEXTURES.size()-mini(HOUSE_TEXTURES.size(),render_art.size())
+    fallback_art_count = HOUSE_TEXTURES.size()-_verified_house_art_count()
     queue_redraw()
+
+func _verified_house_art_count() -> int:
+    var loaded := 0
+    for value in HOUSE_TEXTURES.values():
+        if render_art.has(str(value)):
+            loaded += 1
+    return loaded
 
 func _road_key(cell: Vector2i) -> String:
     var neighbors := 0
@@ -641,7 +653,7 @@ func refresh_from_state(state: SimulationState) -> void:
         var pb: Vector2 = b["world"]
         return pa.y < pb.y)
     display_instances = rows
-    fallback_art_count = maxi(0,rows.size()-int(render_art.has(HOUSE_TEXTURES["main_hall"]))-int(render_art.has(HOUSE_TEXTURES["warehouse"]))-int(render_art.has(HOUSE_TEXTURES["forge"])))
+    fallback_art_count = maxi(0,rows.size()-_verified_house_art_count())
     pve_static_queue_dirty = true
     queue_redraw()
 

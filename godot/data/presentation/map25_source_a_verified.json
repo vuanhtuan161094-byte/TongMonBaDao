@@ -132,6 +132,14 @@
     "pv01_assets/warehouse/510102.png": {
       "sha256": "9bd8b5196ba8b7b79d6f7ef17da07a0d5289fa208ed03484ec1803fd765d9158",
       "path": "res://art/source_a_env02a/pv01_assets/warehouse/510102.png"
+    },
+    "pv01_assets/residence/510076.png": {
+      "sha256": "f8e05d7376fc5ddc7b25f56673b6d5f444b10fd759da06a5929ec4f38a68d320",
+      "path": "res://art/source_a_env02a/pv01_assets/residence/510076.png"
+    },
+    "pv01_assets/guidance/510111.png": {
+      "sha256": "90b7c595f3b77788c99924ef2eb7ba4b8ede794ccffda1c6808263ba3c711762",
+      "path": "res://art/source_a_env02a/pv01_assets/guidance/510111.png"
     }
   }
 }
