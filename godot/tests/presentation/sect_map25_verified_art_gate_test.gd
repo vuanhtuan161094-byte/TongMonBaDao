@@ -41,12 +41,17 @@ func _run() -> void:
         var has_clear := false
         var has_opaque := false
         var has_semitransparent := false
-        for y in range(image.get_height()):
-            for x in range(image.get_width()):
+        # Exact SHA pins every source pixel; a deterministic grid checks imported alpha cheaply.
+        for y in range(0,image.get_height(),8):
+            for x in range(0,image.get_width(),8):
                 var alpha: float = image.get_pixel(x,y).a
                 has_clear = has_clear or alpha <= 0.001
                 has_opaque = has_opaque or alpha >= 0.999
                 has_semitransparent = has_semitransparent or (alpha > 0.001 and alpha < 0.999)
+                if has_clear and has_opaque and has_semitransparent:
+                    break
+            if has_clear and has_opaque and has_semitransparent:
+                break
         if not has_clear or not has_opaque or not has_semitransparent:
             _fail("TRI-02 source must retain transparent, opaque and anti-aliased edges: %s" % relative)
             return

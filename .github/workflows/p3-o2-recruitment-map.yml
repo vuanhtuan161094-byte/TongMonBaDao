@@ -10,7 +10,6 @@ on:
       - 'godot/art/source_a_env02a/pv01_assets/**'
       - 'godot/src/presentation/p3/sect_isometric_world_v1.gd'
       - 'godot/tests/presentation/sect_map25_verified_art_gate_test.gd'
-      - 'godot/tests/presentation/b1_trifacility_capture_screenshots.gd'
       - 'godot/src/presentation/p3/sect_map_presentation.gd'
       - 'godot/src/presentation/p3_1_landscape_sect.gd'
       - 'godot/src/presentation/p3_2_landscape_sect.gd'
