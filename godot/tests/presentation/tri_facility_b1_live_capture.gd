@@ -76,6 +76,8 @@ func _capture() -> void:
         if absf(source_ratio-target_size.x/target_size.y) > 0.01:
             _fail("P3.2 map would distort Source A %s." % kind)
             return
+        if not _verify_source_alpha(relative,kind):
+            return
 
     if not await _save_frame(out_dir,"00_p3_2_map_context.png"):
         return
@@ -93,6 +95,31 @@ func _capture() -> void:
     _remove_test_save()
     print("TRI02_P32_CONTEXT_CAPTURE_PASS map=1 hall=1 residence=1 guidance=1 size=1280x720")
     quit(0)
+
+func _verify_source_alpha(relative: String, kind: String) -> bool:
+    var source_path := ProjectSettings.globalize_path("res://art/source_a_env02a/" + relative)
+    var source_image := Image.new()
+    if source_image.load(source_path) != OK or source_image.is_empty() or not source_image.has_alpha():
+        _fail("Source A %s original PNG did not preserve its alpha channel." % kind)
+        return false
+    var has_clear := false
+    var has_opaque := false
+    var has_semitransparent := false
+    for y in range(0,source_image.get_height(),8):
+        for x in range(0,source_image.get_width(),8):
+            var alpha: float = source_image.get_pixel(x,y).a
+            has_clear = has_clear or alpha <= 0.001
+            has_opaque = has_opaque or alpha >= 0.999
+            has_semitransparent = has_semitransparent or (alpha > 0.001 and alpha < 0.999)
+            if has_clear and has_opaque and has_semitransparent:
+                break
+        if has_clear and has_opaque and has_semitransparent:
+            break
+    if not has_clear or not has_opaque or not has_semitransparent:
+        _fail("Source A %s must retain transparent, opaque and antialiased pixels." % kind)
+        return false
+    print("TRI02_SOURCE_ALPHA_PASS model=%s clear=1 opaque=1 antialias=1" % kind)
+    return true
 
 func _open_from_map(kind: String, model_id: String, destination: StringName, button_name: String, out_dir: String, filename: String) -> bool:
     game.call("_open_building",destination)
@@ -122,6 +149,14 @@ func _open_from_map(kind: String, model_id: String, destination: StringName, but
     if not (ui_texture is Texture2D):
         _fail("Live B1 %s screen has no rendered Source A texture." % kind)
         return false
+    if kind == "guidance":
+        var candidate_art := _find_facility_art(screen,"candidate")
+        if candidate_art == null or bool(candidate_art.get("_original_source")) or str(candidate_art.get("_source_model_id")) != "":
+            _fail("Guidance candidate art must remain the anonymous neutral fallback until an approved disciple portrait exists.")
+            return false
+        if not (candidate_art.get("_art") is Texture2D):
+            _fail("Guidance candidate card has no rendered anonymous fallback texture.")
+            return false
     if not await _save_frame(out_dir,filename):
         return false
     game.get_node(screen_name).queue_free()
