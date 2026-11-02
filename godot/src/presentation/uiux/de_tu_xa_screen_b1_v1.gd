@@ -5,9 +5,11 @@ signal site_selection_requested(site_id: String)
 signal residence_build_requested(site_id: String)
 signal residence_upgrade_requested(residence_id: String)
 signal room_management_requested
+signal room_assignment_requested(disciple_id: String, house_id: String)
 signal closed
 
 const UI = preload("res://src/presentation/uiux/sect_ui_theme_v1.gd")
+const FACILITY_ART = preload("res://src/presentation/uiux/sect_facility_art_v2.gd")
 var _vm: Dictionary = {}
 
 func bind_view_model(view_model: Dictionary) -> void:
@@ -28,9 +30,16 @@ func _rebuild() -> void:
 	var shell := _make_shell()
 	add_child(shell)
 	var body := HBoxContainer.new()
+	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	body.add_theme_constant_override("separation", 14)
-	shell.get_child(0).add_child(body)
+	var body_scroll := ScrollContainer.new()
+	body_scroll.name = "ResidenceBodyScroll"
+	body_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	body_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	body_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	body_scroll.add_child(body)
+	shell.get_child(0).add_child(body_scroll)
 	body.add_child(_build_rooms_panel())
 	body.add_child(_build_sites_panel())
 
@@ -70,7 +79,9 @@ func _build_rooms_panel() -> Control:
 	content.add_theme_constant_override("separation", 9)
 	card.add_child(content)
 	content.add_child(UI.section_heading("Khu cư trú", "bed", UI.GOLD))
-	var residence_art := UI.illustration("residence")
+	var residence_art: Control = FACILITY_ART.new()
+	residence_art.name = "ResidenceSourceAArtwork"
+	residence_art.set("facility_kind", "residence")
 	residence_art.custom_minimum_size = Vector2(360, 164)
 	residence_art.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	content.add_child(residence_art)
@@ -84,7 +95,7 @@ func _build_rooms_panel() -> Control:
 	metrics.add_child(beds_metric)
 	content.add_child(metrics)
 	content.add_child(UI.section_heading("Giường & đệ tử", "person", UI.JADE))
-	content.add_child(UI.label("Sức chứa và cư dân lấy từ phân phòng theo từng xá; hệ thống chưa lưu số giường riêng cho từng người.", 10, UI.MUTED, false))
+	content.add_child(UI.label("Số giường và đệ tử đang ở được hiển thị theo từng Đệ Tử Xá.", 10, UI.MUTED, false))
 	var bed_scroll := ScrollContainer.new()
 	bed_scroll.name = "ResidenceBedScroll"
 	bed_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -123,53 +134,133 @@ func _bed_slot(bed: Dictionary) -> Control:
 func _build_sites_panel() -> Control:
 	var card := UI.panel("ResidenceSites", UI.JADE, UI.SURFACE)
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	card.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	var content := VBoxContainer.new()
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	content.add_theme_constant_override("separation", 10)
-	card.add_child(content)
-	content.add_child(UI.section_heading("Lô xây dựng", "hall", UI.JADE))
-	content.add_child(UI.label("Tình trạng và hành động nhận từ hệ thống công trình.", 12, UI.MUTED, false))
-	var grid := GridContainer.new()
-	grid.name = "ResidenceSiteCards"
-	grid.columns = 2
-	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	grid.add_theme_constant_override("h_separation", 9)
-	grid.add_theme_constant_override("v_separation", 9)
-	for site in _vm.get("sites", []):
-		grid.add_child(_site_card(site))
-	var site_scroll := ScrollContainer.new()
-	site_scroll.name = "ResidenceSiteScroll"
-	site_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	site_scroll.custom_minimum_size.y = 260
-	site_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	site_scroll.add_child(grid)
-	content.add_child(site_scroll)
+	var management_scroll := ScrollContainer.new()
+	management_scroll.name = "ResidenceManagementScroll"
+	management_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	management_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	management_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	management_scroll.add_child(content)
+	card.add_child(management_scroll)
+	content.add_child(UI.section_heading("Mở rộng khu cư trú", "hall", UI.JADE))
 	var selected_id := str(_vm.get("selected_residence_id", ""))
 	var selected_site := _find_site(selected_id)
-	var cost_names: Array[String] = []
-	for cost in _vm.get("build_costs", []):
-		cost_names.append("%s %s" % [str(cost.get("name", "")), str(cost.get("amount", ""))])
-	content.add_child(UI.label("Chi phí xây lô chọn: " + (" · ".join(cost_names) if not cost_names.is_empty() else "—"), 11, UI.MUTED, false))
-	var footer := HBoxContainer.new()
-	footer.add_theme_constant_override("separation", 8)
-	var manage := UI.button("PHÂN PHÒNG", false, UI.JADE)
-	manage.name = "ManageResidenceRooms"
-	manage.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	manage.pressed.connect(func(): room_management_requested.emit())
-	footer.add_child(manage)
-	var build := UI.button("XÂY DỰNG LÔ ĐÃ CHỌN", true, UI.GOLD)
-	build.name = "BuildSelectedSite"
-	build.disabled = selected_site.is_empty() or not bool(selected_site.get("can_build", false))
-	build.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	build.pressed.connect(func(): residence_build_requested.emit(selected_id))
-	footer.add_child(build)
-	var upgrade := UI.button("NÂNG CẤP", false, UI.JADE)
+	var house_row := HBoxContainer.new()
+	house_row.custom_minimum_size.y = 44
+	var house_label := UI.label("Quản lý xá",13,UI.TEXT,true)
+	house_label.custom_minimum_size.x = 96
+	house_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	house_label.tooltip_text = "Chọn Đệ Tử Xá cần xem, nâng cấp hoặc phân phòng."
+	house_row.add_child(house_label)
+	var house_picker := OptionButton.new()
+	house_picker.name = "ResidenceManageSelector"
+	house_picker.custom_minimum_size = Vector2(270,44)
+	house_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	house_picker.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	var house_options: Array = _vm.get("house_options",[])
+	var selected_index := 0
+	for index in range(house_options.size()):
+		var option: Dictionary = house_options[index]
+		house_picker.add_item(str(option.get("name","Đệ Tử Xá")))
+		house_picker.set_item_metadata(index,str(option.get("id","")))
+		if str(option.get("id","")) == selected_id:
+			selected_index = index
+	if house_options.is_empty():
+		house_picker.add_item("Chưa có Đệ Tử Xá")
+		house_picker.disabled = true
+	else:
+		house_picker.select(selected_index)
+		house_picker.item_selected.connect(func(index:int): site_selection_requested.emit(str(house_picker.get_item_metadata(index))))
+	house_row.add_child(house_picker)
+	content.add_child(house_row)
+	var selected_name := str(selected_site.get("name","Đệ Tử Xá"))
+	content.add_child(UI.label("%s · %s · %s" % [selected_name,str(selected_site.get("status","—")),str(selected_site.get("resident_summary","0/0 giường"))],14,UI.PAPER,true))
+
+	var upgrade_block := UI.panel("ResidenceUpgradeBlock",UI.GOLD,UI.SURFACE_LIGHT)
+	var upgrade_content := VBoxContainer.new()
+	upgrade_content.add_theme_constant_override("separation",6)
+	upgrade_block.add_child(upgrade_content)
+	upgrade_content.add_child(UI.section_heading("Nâng xá · +2 giường mỗi cấp", "bed", UI.GOLD))
+	var upgrade_costs: Array[String] = []
+	for cost in _vm.get("upgrade_costs",[]):
+		upgrade_costs.append("%s %s" % [str(cost.get("name","")),str(cost.get("amount",""))])
+	upgrade_content.add_child(UI.label("Chi phí nâng cấp tiếp theo: %s" % (" · ".join(upgrade_costs) if not upgrade_costs.is_empty() else "—"),12,UI.MUTED,false))
+	var upgrade := UI.button("NÂNG CẤP ĐỆ TỬ XÁ",true,UI.JADE)
 	upgrade.name = "UpgradeResidence"
-	upgrade.disabled = selected_site.is_empty() or not bool(selected_site.get("can_upgrade", false))
-	upgrade.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	upgrade.disabled = not bool(_vm.get("can_upgrade_selected",false))
+	upgrade.tooltip_text = "Nâng xá dùng tài nguyên thật trong Kho; không cấp miễn phí." if not upgrade.disabled else "Không thể nâng: kiểm tra cấp Đại Điện, công trình đang làm và tài nguyên trong Kho."
 	upgrade.pressed.connect(func(): residence_upgrade_requested.emit(selected_id))
-	footer.add_child(upgrade)
-	content.add_child(footer)
+	upgrade_content.add_child(upgrade)
+	content.add_child(upgrade_block)
+
+	var building_block := UI.panel("ResidenceBuildBlock",UI.JADE,UI.SURFACE_LIGHT)
+	var build_content := VBoxContainer.new()
+	build_content.add_theme_constant_override("separation",6)
+	building_block.add_child(build_content)
+	build_content.add_child(UI.section_heading("Xây thêm nhà", "hall", UI.JADE))
+	var hall_level := int(_vm.get("hall_level",0))
+	var hall_required := int(_vm.get("next_house_hall_level",11))
+	var next_house := int(_vm.get("next_house_number",2))
+	var gate_text := "Đại Điện Lv%d · cần Lv%d để mở Đệ Tử Xá %02d." % [hall_level,hall_required,next_house]
+	if bool(_vm.get("can_build_next",false)):
+		gate_text = "Đã mở lô hợp lệ. Chọn vị trí trên bản đồ rồi xác nhận; vật liệu và thời gian sẽ theo giá hiện hành."
+	build_content.add_child(UI.label(gate_text,12,UI.TEXT,false))
+	var build_costs: Array[String] = []
+	for cost in _vm.get("next_house_costs",[]):
+		build_costs.append("%s %s" % [str(cost.get("name","")),str(cost.get("amount",""))])
+	build_content.add_child(UI.label("Chi phí nhà kế: %s · %d nhịp" % [" · ".join(build_costs),int(_vm.get("construction_ticks",0))],11,UI.MUTED,false))
+	var build := UI.button("BỐ TRÍ TRÊN BẢN ĐỒ",false,UI.JADE)
+	build.name = "BuildResidenceOnMap"
+	build.disabled = not bool(_vm.get("can_build_next",false))
+	build.tooltip_text = "Cần nâng Đại Điện và có lô hợp lệ trước khi khởi công." if build.disabled else "Chọn lô trực tiếp trên bản đồ; xem bóng công trình rồi xác nhận."
+	build.pressed.connect(func(): residence_build_requested.emit(""))
+	build_content.add_child(build)
+	content.add_child(building_block)
+
+	var assignment_block := UI.panel("ResidenceAssignmentBlock",UI.GOLD,UI.SURFACE_LIGHT)
+	var assignment_content := VBoxContainer.new()
+	assignment_content.add_theme_constant_override("separation",6)
+	assignment_block.add_child(assignment_content)
+	assignment_content.add_child(UI.section_heading("Phân phòng", "person", UI.GOLD))
+	var assignment_row := HBoxContainer.new()
+	assignment_row.add_theme_constant_override("separation",8)
+	var disciple_picker := _option_picker("ResidenceRoomDisciple",_vm.get("room_disciple_options",[]),str(_vm.get("room_assignment_disciple_id","")))
+	var room_picker := _option_picker("ResidenceRoomHouse",_vm.get("room_house_options",[]),str(_vm.get("room_assignment_house_id","")))
+	disciple_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	room_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	assignment_row.add_child(disciple_picker)
+	assignment_row.add_child(room_picker)
+	assignment_content.add_child(assignment_row)
+	assignment_content.add_child(UI.label(str(_vm.get("room_assignment_status","Chọn đệ tử và căn xá.")),11,UI.MUTED,false))
+	var assign := UI.button("XÁC NHẬN PHÂN PHÒNG",false,UI.JADE)
+	assign.name = "AssignResidenceRoom"
+	assign.disabled = disciple_picker.disabled or room_picker.disabled or not bool(_vm.get("can_assign_room",false))
+	assign.pressed.connect(func(): room_assignment_requested.emit(str(disciple_picker.get_item_metadata(disciple_picker.selected)),str(room_picker.get_item_metadata(room_picker.selected))))
+	assignment_content.add_child(assign)
+	content.add_child(assignment_block)
+
+	var manage := UI.button("QUY HOẠCH / DỜI NHÀ TRÊN BẢN ĐỒ",false,UI.GOLD)
+	manage.name = "ManageResidenceRooms"
+	manage.pressed.connect(func(): room_management_requested.emit())
+	content.add_child(manage)
 	return card
+
+func _option_picker(node_name: String, options: Array, selected_id: String) -> OptionButton:
+	var picker := OptionButton.new()
+	picker.name = node_name
+	for index in range(options.size()):
+		var option: Dictionary = options[index]
+		picker.add_item(str(option.get("name","")))
+		picker.set_item_metadata(index,str(option.get("id","")))
+		if str(option.get("id","")) == selected_id:
+			picker.select(index)
+	if options.is_empty():
+		picker.add_item("Chưa có lựa chọn")
+		picker.disabled = true
+	return picker
 
 func _site_card(site: Dictionary) -> Control:
 	var site_id := str(site.get("id", ""))

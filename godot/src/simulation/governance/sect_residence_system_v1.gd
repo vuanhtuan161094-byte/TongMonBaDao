@@ -186,6 +186,23 @@ static func can_construct(state: SimulationState,
     return {"ok": true, "cost": cost, "next_id": next_id,
         "site": site, "door": SectResidenceSiteV1.doorway(site)}
 
+static func _house_was_relocated_from(state: SimulationState, house_id: String,
+        site: Vector2i) -> bool:
+    if state == null or state.sect == null:
+        return false
+    var receipts: Variant = state.sect.hall_governance.get("residence_move_receipts", {})
+    if not (receipts is Dictionary):
+        return false
+    for value in receipts.values():
+        if not (value is Dictionary) or str(value.get("house_id", "")) != house_id:
+            continue
+        var previous := Vector2i(
+            int(value.get("previous_x", SectResidenceSiteV1.UNSELECTED.x)),
+            int(value.get("previous_y", SectResidenceSiteV1.UNSELECTED.y)))
+        if previous == site:
+            return true
+    return false
+
 static func construct(state: SimulationState, request_id: String,
         selected_site: Vector2i = SectResidenceSiteV1.UNSELECTED) -> Dictionary:
     if request_id.is_empty() or request_id.length() > 100:
@@ -199,7 +216,8 @@ static func construct(state: SimulationState, request_id: String,
         if not (settled_house is BuildingState) or settled_house.building_type != TYPE:
             return {"ok": false, "reason": "settled_house_receipt_without_building"}
         var settled_origin := SectResidenceSiteV1.origin_of(settled_house)
-        if selected_site != SectResidenceSiteV1.UNSELECTED and settled_origin != selected_site:
+        if selected_site != SectResidenceSiteV1.UNSELECTED and settled_origin != selected_site \
+                and not _house_was_relocated_from(state, settled_id, selected_site):
             return {"ok": false, "reason": "conflicting_house_plot_replay"}
         return {"ok": true, "already_settled": true, "building_id": settled_id,
             "site": settled_origin}
@@ -238,6 +256,62 @@ static func construct(state: SimulationState, request_id: String,
         "construction_finish_tick": state.tick + duration,
         "construction_duration_ticks": duration}
 
+static func can_move_house(state: SimulationState, house_id: StringName,
+        selected_site: Vector2i) -> Dictionary:
+    if state == null or not SectHallSystemV1.installed(state):
+        return {"ok": false, "reason": "residence_not_enabled"}
+    var house = state.buildings.get(str(house_id))
+    if not (house is BuildingState) or house.building_type != TYPE:
+        return {"ok": false, "reason": "house_missing"}
+    if house.instance_index <= 1 or str(house.id) == "residence_001":
+        return {"ok": false, "reason": "starter_house_fixed"}
+    if house.status != BuildingSystem.STATUS_ACTIVE or house.is_upgrading():
+        return {"ok": false, "reason": "house_not_idle"}
+    var assignments: Dictionary = state.sect.hall_governance.get("residence_assignments", {})
+    for disciple_id in assignments:
+        if str(assignments[disciple_id]) == str(house.id):
+            return {"ok": false, "reason": "house_occupied", "disciple_id": str(disciple_id)}
+    var plot := SectResidenceSiteV1.check(state, selected_site, str(house.id))
+    if not bool(plot.get("ok", false)):
+        return plot
+    return {"ok": true, "house_id": str(house.id), "site": selected_site,
+        "door": SectResidenceSiteV1.doorway(selected_site)}
+
+static func move_house(state: SimulationState, request_id: String,
+        house_id: StringName, selected_site: Vector2i) -> Dictionary:
+    if request_id.is_empty() or request_id.length() > 100:
+        return {"ok": false, "reason": "invalid_request_id"}
+    if state == null or not SectHallSystemV1.installed(state):
+        return {"ok": false, "reason": "residence_not_enabled"}
+    var receipts: Dictionary = state.sect.hall_governance.get("residence_move_receipts", {})
+    if not (receipts is Dictionary):
+        return {"ok": false, "reason": "malformed_move_receipts"}
+    if receipts.has(request_id):
+        var settled = receipts[request_id]
+        if not (settled is Dictionary) \
+                or str(settled.get("house_id", "")) != str(house_id) \
+                or int(settled.get("site_x", SectResidenceSiteV1.UNSELECTED.x)) != selected_site.x \
+                or int(settled.get("site_y", SectResidenceSiteV1.UNSELECTED.y)) != selected_site.y:
+            return {"ok": false, "reason": "conflicting_house_move_replay"}
+        return {"ok": true, "already_settled": true, "house_id": str(house_id),
+            "site": selected_site}
+    var allowed := can_move_house(state, house_id, selected_site)
+    if not bool(allowed.get("ok", false)):
+        return allowed
+    var house: BuildingState = state.buildings[str(house_id)]
+    var old_site := SectResidenceSiteV1.origin_of(house)
+    if old_site == selected_site:
+        return {"ok": true, "unchanged": true, "house_id": str(house.id), "site": old_site}
+    house.production_state["site_version"] = 1
+    house.production_state["site_x"] = selected_site.x
+    house.production_state["site_y"] = selected_site.y
+    receipts = receipts.duplicate(true)
+    receipts[request_id] = {"house_id": str(house.id), "site_x": selected_site.x,
+        "site_y": selected_site.y, "previous_x": old_site.x, "previous_y": old_site.y}
+    state.sect.hall_governance["residence_move_receipts"] = receipts
+    state.building_event_count += 1
+    return {"ok": true, "house_id": str(house.id), "old_site": old_site,
+        "site": selected_site, "door": SectResidenceSiteV1.doorway(selected_site)}
 static func upgrade_room_projection(state: SimulationState, building_id: StringName) -> Dictionary:
     var building = state.buildings.get(str(building_id))
     if not (building is BuildingState) or building.building_type != TYPE:
@@ -434,6 +508,27 @@ static func validate(state: SimulationState) -> Array[String]:
     for house in houses:
         if str(house.id) != "residence_001" and not paid_houses.has(str(house.id)):
             errors.append("Residence has a nonstarter house without a paid construction receipt.")
+    var move_receipts = governance.get("residence_move_receipts", {})
+    if not (move_receipts is Dictionary):
+        errors.append("Residence move receipts are malformed.")
+    else:
+        for raw_request in move_receipts.keys():
+            var request_id := str(raw_request)
+            var receipt = move_receipts[raw_request]
+            if request_id.is_empty() or not (receipt is Dictionary):
+                errors.append("Residence move receipt entry is malformed.")
+                continue
+            var moved_id := str(receipt.get("house_id", ""))
+            var moved_house = state.buildings.get(moved_id)
+            if not (moved_house is BuildingState) or moved_house.building_type != TYPE \
+                    or moved_house.instance_index <= 1:
+                errors.append("Residence move receipt references missing/immovable house.")
+            for key in ["site_x", "site_y", "previous_x", "previous_y"]:
+                var value = receipt.get(key, null)
+                if not (value is int or value is float) or (value is float and (is_nan(value) or is_inf(value))) \
+                        or float(value) != float(int(value)):
+                    errors.append("Residence move receipt coordinates are malformed.")
+                    break
     var rooms: Dictionary = saved_rooms
     for raw_id in rooms.keys():
         if not state.disciples.has(StringName(raw_id)):

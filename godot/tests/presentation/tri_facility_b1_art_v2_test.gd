@@ -23,7 +23,7 @@ func _run() -> void:
         if source_texture == null:
             _fail("required Source A model %s failed SHA-gated import" % spec["model"])
             return
-        if source_texture.get_size() != spec["size"]:
+        if Vector2i(source_texture.get_size()) != spec["size"]:
             _fail("Source A model %s imported at unexpected dimensions %s" % [spec["model"],source_texture.get_size()])
             return
         var source_path := "res://art/source_a_env02a/" + str(spec["relative"])

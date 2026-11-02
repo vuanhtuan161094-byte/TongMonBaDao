@@ -6,6 +6,12 @@ signal candidate_search_requested(query: String)
 signal accept_candidate_requested(candidate_id: String)
 signal reject_candidate_requested(candidate_id: String)
 signal guide_management_requested
+signal guidance_main_requested(disciple_id: String)
+signal guidance_assistants_requested(disciple_ids: Array)
+signal residence_capacity_requested
+signal recruited_profile_requested(disciple_id: String)
+signal recruited_assignment_requested(disciple_id: String)
+signal recruited_world_requested(disciple_id: String)
 signal recruitment_order_requested
 signal closed
 
@@ -84,7 +90,11 @@ func _make_shell() -> MarginContainer:
 	line.custom_minimum_size.y = 1.0
 	column.add_child(line)
 	var feedback := str(_vm.get("feedback", ""))
-	if not feedback.is_empty():
+	# A successful recruit already has a prominent persistent reveal card below.
+	# Avoid adding a second status row above the whole screen, which squeezed the
+	# fixed decision controls below the 1280x720 safe area after recruitment.
+	var recruited: Dictionary = _vm.get("recruited_disciple", {})
+	if not feedback.is_empty() and recruited.is_empty():
 		column.add_child(UI.label(feedback, 12, UI.JADE, false))
 	return margin
 
@@ -150,16 +160,42 @@ func _build_candidate_panel() -> Control:
 	var card := UI.panel("CandidateProfile", UI.GOLD, UI.SURFACE)
 	card.custom_minimum_size.x = 448
 	card.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	var panel_content := VBoxContainer.new()
+	panel_content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	panel_content.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	panel_content.add_theme_constant_override("separation",6)
+	card.add_child(panel_content)
 	var scroll := ScrollContainer.new()
 	scroll.name = "CandidateProfileScroll"
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	card.add_child(scroll)
+	panel_content.add_child(scroll)
 	var content := VBoxContainer.new()
 	content.add_theme_constant_override("separation", 9)
 	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(content)
 	content.add_child(UI.section_heading("Ứng viên", "guide", UI.GOLD))
+	var capacity := UI.panel("RecruitmentCapacity",UI.RED if bool(_vm.get("capacity_full",false)) else UI.JADE,UI.SURFACE_LIGHT)
+	capacity.custom_minimum_size.y = 52
+	var capacity_row := HBoxContainer.new()
+	capacity_row.add_theme_constant_override("separation",8)
+	var capacity_text := UI.label(str(_vm.get("capacity_text","Chỗ ở chưa được xác định")),12,UI.PAPER,true)
+	capacity_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	capacity_text.autowrap_mode = TextServer.AUTOWRAP_OFF
+	capacity_text.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	capacity_text.tooltip_text = str(_vm.get("capacity_text","")) + "\n" + str(_vm.get("accept_gate",""))
+	capacity_row.add_child(capacity_text)
+	var expand := UI.button("MỞ RỘNG XÁ",false,UI.GOLD)
+	expand.name = "OpenResidenceCapacity"
+	expand.custom_minimum_size = Vector2(128,42)
+	expand.pressed.connect(func(): residence_capacity_requested.emit())
+	capacity_row.add_child(expand)
+	capacity.add_child(capacity_row)
+	content.add_child(capacity)
+	var reveal := _build_recruit_reveal()
+	if reveal != null:
+		content.add_child(reveal)
 	var search_row := HBoxContainer.new()
 	search_row.add_theme_constant_override("separation", 6)
 	var search := LineEdit.new()
@@ -178,6 +214,25 @@ func _build_candidate_panel() -> Control:
 	content.add_child(UI.label("%d ứng viên%s" % [
 		pool.size(), " · đã lọc" if not _search_text.is_empty() else ""
 	], 11, UI.MUTED, false))
+	if not pool.is_empty():
+		var candidate_scroll := ScrollContainer.new()
+		candidate_scroll.name = "CandidateChoiceScroll"
+		candidate_scroll.custom_minimum_size.y = 58
+		candidate_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+		candidate_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+		var candidate_choices := HBoxContainer.new()
+		candidate_choices.add_theme_constant_override("separation",6)
+		for row in pool:
+			var row_id := str(row.get("id",""))
+			var selected := row_id == _candidate_id()
+			var choice := UI.button("%s\n%s" % [str(row.get("name","Ứng viên")),str(row.get("quality","Phẩm chưa rõ"))],selected,UI.GOLD if selected else UI.JADE)
+			choice.name = "CandidatePick_%s" % row_id
+			choice.custom_minimum_size = Vector2(134,54)
+			choice.disabled = selected
+			choice.pressed.connect(_select_candidate_by_id.bind(row_id))
+			candidate_choices.add_child(choice)
+		candidate_scroll.add_child(candidate_choices)
+		content.add_child(candidate_scroll)
 	var profile := HBoxContainer.new()
 	profile.add_theme_constant_override("separation", 12)
 	profile.add_child(_candidate_portrait(candidate))
@@ -188,14 +243,21 @@ func _build_candidate_panel() -> Control:
 	detail.add_child(UI.label(str(candidate.get("origin", "—")), 12, UI.MUTED, false))
 	detail.add_child(UI.label(str(candidate.get("personality", "—")), 12, UI.TEXT, false))
 	detail.add_child(UI.label(str(candidate.get("status", "Chờ đánh giá")), 12, UI.GOLD, false))
+	detail.add_child(UI.label("Phẩm: %s" % str(candidate.get("quality","—")),13,UI.GOLD,true))
 	profile.add_child(detail)
 	content.add_child(profile)
-	content.add_child(UI.section_heading("Quyết định", "check", UI.JADE))
+	content.add_child(UI.label("Tam Căn · " + str(candidate.get("tam_summary","—")),12,UI.JADE,false))
+	content.add_child(UI.label("Tứ Tính · " + str(candidate.get("tu_summary","—")),12,UI.GOLD,false))
+	content.add_child(UI.label(str(candidate.get("root_values","Linh Căn chưa có dữ liệu")),12,UI.TEXT,false))
+	content.add_child(UI.label(str(candidate.get("special_identity","Các tầng ẩn chưa được khai mở")),11,UI.MUTED,false))
+	content.add_child(UI.label(str(candidate.get("role_fit","Chưa đủ dữ liệu tương hợp")),11,UI.JADE,false))
+	content.add_child(UI.label("Xem lý do khóa trong Nút Nhận; từ chối luôn cần xác nhận lần hai.",10,UI.MUTED,false))
 	var decisions := HBoxContainer.new()
 	decisions.add_theme_constant_override("separation", 8)
 	var accept := UI.button("XÁC NHẬN NHẬN ĐỆ TỬ" if _accept_armed else "NHẬN ĐỆ TỬ", true, UI.JADE)
 	accept.name = "AcceptCandidate"
 	accept.disabled = not bool(candidate.get("can_accept", _vm.get("can_accept", false))) or _candidate_id().is_empty()
+	accept.tooltip_text = str(candidate.get("accept_reason",_vm.get("accept_gate","")))
 	accept.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	accept.pressed.connect(_on_accept_pressed)
 	decisions.add_child(accept)
@@ -205,16 +267,16 @@ func _build_candidate_panel() -> Control:
 	reject.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	reject.pressed.connect(_on_reject_pressed)
 	decisions.add_child(reject)
-	content.add_child(decisions)
+	panel_content.add_child(UI.section_heading("Quyết định", "check", UI.JADE))
+	panel_content.add_child(decisions)
+	content.add_child(UI.label(str(_vm.get("accept_gate","")),11,UI.MUTED,false))
+	content.add_child(_build_guidance_management())
 	var management := VBoxContainer.new()
 	management.add_theme_constant_override("separation", 6)
-	var manage_guides := UI.button("QUẢN LÝ TIẾP DẪN CHÍNH / PHỤ", false, UI.GOLD)
-	manage_guides.name = "ManageGuides"
-	manage_guides.pressed.connect(func(): guide_management_requested.emit())
-	management.add_child(manage_guides)
 	var order := UI.button("CHIÊU MỘ LỆNH · CÒN %d" % int(_vm.get("recruitment_tokens", 0)), true, UI.JADE)
 	order.name = "UseRecruitmentOrder"
 	order.disabled = not bool(_vm.get("can_use_order", false))
+	order.tooltip_text = "Tốn 1 Chiêu Mộ Lệnh để tạo ứng viên; không tuyển trực tiếp." if not order.disabled else "Cần còn lệnh, hàng chờ dưới 30 và Dẫn Tiên Đài đang mở."
 	order.pressed.connect(func(): recruitment_order_requested.emit())
 	management.add_child(order)
 	content.add_child(management)
@@ -237,12 +299,134 @@ func _build_candidate_panel() -> Control:
 func _candidate_portrait(candidate: Dictionary) -> Control:
 	var texture_value: Variant = candidate.get("portrait")
 	if bool(candidate.get("source_art_approved", false)) and texture_value is Texture2D:
-		return UI.portrait_slot(str(candidate.get("name", "")), texture_value, Vector2(118, 150))
-	var guidance_art := UI.illustration("candidate")
-	guidance_art.custom_minimum_size = Vector2(168, 150)
-	guidance_art.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	guidance_art.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	return guidance_art
+		var portrait_control := UI.portrait_slot(str(candidate.get("name","")),texture_value,Vector2(128,160))
+		portrait_control.name = "VerifiedSourceACandidatePreview"
+		return portrait_control
+	var neutral := UI.portrait_slot(str(candidate.get("name","")),null,Vector2(128,160))
+	neutral.name = "CandidateUnverifiedPortrait"
+	return neutral
+
+func _select_candidate_by_id(candidate_id: String) -> void:
+	var pool: Array = _filtered_candidates()
+	for index in range(pool.size()):
+		if str(pool[index].get("id","")) == candidate_id:
+			_candidate_index = index
+			_reject_armed = false
+			_accept_armed = false
+			candidate_page_requested.emit(0)
+			_rebuild()
+			return
+
+func _build_recruit_reveal() -> Control:
+	var disciple: Dictionary = _vm.get("recruited_disciple",{})
+	if disciple.is_empty():
+		return null
+	var panel := UI.panel("RecruitmentReveal",UI.GOLD,UI.SURFACE_LIGHT)
+	var content := VBoxContainer.new()
+	content.add_theme_constant_override("separation",6)
+	panel.add_child(content)
+	content.add_child(UI.section_heading("Đệ tử đã gia nhập Tông Môn", "check", UI.GOLD))
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation",10)
+	var portrait: Variant = disciple.get("portrait")
+	row.add_child(UI.portrait_slot(str(disciple.get("name","")),portrait,Vector2(82,96)))
+	var detail := VBoxContainer.new()
+	detail.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	detail.add_child(UI.label(str(disciple.get("name","Đệ tử mới")),18,UI.PAPER,true))
+	detail.add_child(UI.label("%s · %s · %s tuổi" % [str(disciple.get("quality","—")),str(disciple.get("sex","—")),str(disciple.get("age","—"))],12,UI.GOLD,false))
+	detail.add_child(UI.label("%s · %s" % [str(disciple.get("root","Linh Căn chưa rõ")),str(disciple.get("profession","Chưa có thiên phú nghề"))],11,UI.TEXT,false))
+	detail.add_child(UI.label(str(disciple.get("stats","")),10,UI.MUTED,false))
+	row.add_child(detail)
+	content.add_child(row)
+	var actions := HBoxContainer.new()
+	actions.add_theme_constant_override("separation",6)
+	var profile := UI.button("XEM HỒ SƠ",false,UI.GOLD)
+	profile.name = "RecruitedDiscipleProfile"
+	profile.pressed.connect(func(): recruited_profile_requested.emit(str(disciple.get("id",""))))
+	actions.add_child(profile)
+	var assign := UI.button("PHÂN CÔNG",true,UI.JADE)
+	assign.name = "RecruitedDiscipleAssignment"
+	assign.pressed.connect(func(): recruited_assignment_requested.emit(str(disciple.get("id",""))))
+	actions.add_child(assign)
+	var world := UI.button("TỚI NHÂN VẬT",false,UI.JADE)
+	world.name = "RecruitedDiscipleWorld"
+	world.pressed.connect(func(): recruited_world_requested.emit(str(disciple.get("id",""))))
+	actions.add_child(world)
+	content.add_child(actions)
+	return panel
+
+func _build_guidance_management() -> Control:
+	var panel := UI.panel("GuidanceAssignmentBlock",UI.GOLD,UI.SURFACE_LIGHT)
+	var content := VBoxContainer.new()
+	content.add_theme_constant_override("separation",5)
+	panel.add_child(content)
+	content.add_child(UI.section_heading("Tiếp Dẫn chính / phụ", "person", UI.GOLD))
+	var options: Array = _vm.get("guidance_options",[])
+	var main_id := str(_vm.get("guidance_main_id",""))
+	var main_row := HBoxContainer.new()
+	main_row.add_theme_constant_override("separation",6)
+	var main_picker := OptionButton.new()
+	main_picker.name = "GuidanceMainPicker"
+	main_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	main_picker.add_item("Chưa bổ nhiệm")
+	main_picker.set_item_metadata(0,"")
+	var selected_index := 0
+	for option in options:
+		var id := str(option.get("id",""))
+		var eligible := bool(option.get("eligible",false))
+		main_picker.add_item(str(option.get("name","Đệ tử")))
+		var index := main_picker.item_count-1
+		main_picker.set_item_metadata(index,id)
+		if not eligible and id != main_id:
+			main_picker.set_item_disabled(index,true)
+		if id == main_id:
+			selected_index = index
+	main_picker.select(selected_index)
+	main_row.add_child(main_picker)
+	var apply_main := UI.button("LƯU TIẾP DẪN CHÍNH",false,UI.JADE)
+	apply_main.name = "AssignGuidanceMain"
+	apply_main.disabled = not bool(_vm.get("can_assign_guidance",false))
+	apply_main.pressed.connect(func(): guidance_main_requested.emit(str(main_picker.get_item_metadata(main_picker.selected))))
+	main_row.add_child(apply_main)
+	content.add_child(main_row)
+	var max_assistants := int(_vm.get("guidance_max_assistants",0))
+	var current_assistants: Array = _vm.get("guidance_assistant_ids",[])
+	content.add_child(UI.label("Chỗ Tiếp Dẫn: %d · phụ tối đa %d · đang chọn %d" % [int(_vm.get("guidance_slots",0)),max_assistants,current_assistants.size()],11,UI.MUTED,false))
+	var assistant_scroll := ScrollContainer.new()
+	assistant_scroll.name = "GuidanceAssistantScroll"
+	assistant_scroll.custom_minimum_size.y = 96
+	assistant_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	var assistant_list := VBoxContainer.new()
+	assistant_list.name = "GuidanceAssistantOptions"
+	for option in options:
+		var id := str(option.get("id",""))
+		if id.is_empty() or id == main_id:
+			continue
+		var eligible := bool(option.get("eligible",false))
+		var selected := current_assistants.has(id)
+		var check := CheckBox.new()
+		check.name = "GuidanceAssistant_%s" % id
+		check.text = str(option.get("name","Đệ tử")) + ("" if eligible else " · đang bận / bị thương")
+		check.button_pressed = selected
+		check.disabled = not eligible and not selected
+		check.custom_minimum_size.y = 40
+		check.add_theme_font_size_override("font_size",13)
+		assistant_list.add_child(check)
+	assistant_scroll.add_child(assistant_list)
+	content.add_child(assistant_scroll)
+	var apply_assistants := UI.button("CẬP NHẬT TIẾP DẪN PHỤ",false,UI.GOLD)
+	apply_assistants.name = "AssignGuidanceAssistants"
+	apply_assistants.disabled = not bool(_vm.get("can_assign_guidance",false))
+	apply_assistants.pressed.connect(_submit_assistant_selection.bind(assistant_list))
+	content.add_child(apply_assistants)
+	return panel
+
+func _submit_assistant_selection(list: VBoxContainer) -> void:
+	var ids: Array[String] = []
+	for child in list.get_children():
+		if child is CheckBox and (child as CheckBox).button_pressed:
+			ids.append(str(child.name).trim_prefix("GuidanceAssistant_"))
+	guidance_assistants_requested.emit(ids)
 
 func _build_radar_panel() -> Control:
 	var candidate := _candidate()

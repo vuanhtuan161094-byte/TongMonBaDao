@@ -167,6 +167,17 @@ var disciple_summary_meta: Label
 var disciple_summary_body: Label
 var summary_feedback := ""
 
+var build_mode_button: Button
+var build_mode_panel: Panel
+var build_mode_description: Label
+var build_mode_feedback: Label
+var build_mode_site_label: Label
+var build_mode_confirm: Button
+var build_mode_move_list: VBoxContainer
+var build_mode_active := false
+var build_mode_kind := ""
+var build_mode_house_id: StringName = &""
+var build_mode_site := SectResidenceSiteV1.UNSELECTED
 var building_operation_panel: Panel
 var building_operation_title: Label
 var building_operation_body: Label
@@ -292,6 +303,7 @@ func _ready() -> void:
     _build_camera_controls()
     _build_disciple_summary_panel()
     _build_building_operation_panel()
+    _build_construction_ui()
     _build_living_cue_layer()
     _seed_map_worksite_receipts()
     _refresh_map_worksite_cues()
@@ -335,7 +347,15 @@ func _spawn_all_disciples() -> void:
         var disciple_id := StringName(raw_id)
         actor_destinations[str(disciple_id)] = str(_initial_destination(state.disciples[disciple_id]))
 
+func _point_over_build_mode_panel(screen_point: Vector2) -> bool:
+    return build_mode_panel != null and build_mode_panel.visible \
+        and Rect2(build_mode_panel.position,build_mode_panel.size).has_point(screen_point)
+
 func _input(event: InputEvent) -> void:
+    if event is InputEventMouseButton and _point_over_build_mode_panel((event as InputEventMouseButton).position):
+        return
+    if event is InputEventScreenTouch and _point_over_build_mode_panel((event as InputEventScreenTouch).position):
+        return
     # Map picking must see a physical tap before Control descendants consume
     # the release. Drag still goes through the same canonical map transform.
     if _popup_is_open():
@@ -369,6 +389,12 @@ func _input(event: InputEvent) -> void:
             get_viewport().set_input_as_handled()
 
 func _unhandled_input(event: InputEvent) -> void:
+    if event is InputEventMouseButton and _point_over_build_mode_panel((event as InputEventMouseButton).position):
+        return
+    if event is InputEventMouseMotion and _point_over_build_mode_panel((event as InputEventMouseMotion).position):
+        return
+    if event is InputEventScreenTouch and _point_over_build_mode_panel((event as InputEventScreenTouch).position):
+        return
     if _popup_is_open():
         _clear_pointer_state()
         return
@@ -668,6 +694,13 @@ func _refresh_focus_readout() -> void:
         focus_readout.text = focused_label if has_focus_target else ""
 
 func _reset_camera(animate: bool = true) -> void:
+    if state != null and int(state.sect.world_layout_version) == 2:
+        var focus_delta: Vector2 = SectIsometricWorldV1.project(SectIsometricWorldV1.NEW_GAME_FOCUS_CELL) \
+            - SectIsometricWorldV1.project(SectIsometricWorldV1.CENTER_CELL)
+        var focus_world := SectIsometricWorldV1.LEGACY_ANCHOR+focus_delta
+        var layout_transform := SectMapCamera.focus_transform(focus_world,0.75)
+        _apply_camera(float(layout_transform["zoom"]),layout_transform["position"],animate)
+        return
     var transform := SectMapCamera.reset_transform()
     var target_position: Vector2 = transform["position"]
     _apply_camera(float(transform["zoom"]), target_position, animate)
@@ -792,6 +825,8 @@ func _clear_pointer_state() -> void:
     mouse_pointer_dragged = false
 
 func _open_building(destination: StringName, instance_id: StringName = &"") -> void:
+    if build_mode_active:
+        _leave_build_mode(false)
     _close_disciple_summary(true)
     _clear_popup()
     selected_building = destination
@@ -831,6 +866,7 @@ func _install_main_isometric_world() -> void:
 
     iso_world = SectIsometricWorldV1.new()
     iso_world.name = "SectIsoWorld192"
+    iso_world.configure_map_layout_version(int(state.sect.world_layout_version))
     iso_viewport.add_child(iso_world)
     iso_world.refresh_from_state(state)
     for node in map_layer.get_children():
@@ -856,7 +892,8 @@ func _iso_actor_point(destination: StringName, building_id: StringName = &"") ->
         var actual = state.buildings.get(str(building_id))
         if actual is BuildingState and actual.building_type == BuildingSystem.TYPE_RESIDENCE:
             saved_origin = SectResidenceSiteV1.origin_of(actual)
-    return SectIsometricWorldV1.virtual_legacy_point(destination,building_id,saved_origin)
+    return SectIsometricWorldV1.virtual_legacy_point(destination,building_id,saved_origin,
+        int(state.sect.world_layout_version) if state != null else 0)
 
 func _sect_actor_door_offset(disciple: DiscipleState, index: int,
         idle_slots: Dictionary, destination: StringName) -> Vector2:
@@ -900,9 +937,19 @@ func _iso_two_direction_delta(delta: Vector2, old_facing: StringName) -> Vector2
         x = -1.0 if old_facing == &"left" else 1.0
     return Vector2(-1.0 if x < 0.0 else 1.0,0.0)
 
+func _cell_at_map_screen(screen_point: Vector2) -> Vector2i:
+    var fractional := SectIsometricWorldV1.inverse(iso_world.screen_to_world(screen_point))
+    return Vector2i(roundi(fractional.x),roundi(fractional.y))
+
 func _try_iso_map_pick(screen_point: Vector2) -> bool:
     if iso_world == null or not SectMapCamera.is_map_screen_point(screen_point):
         return false
+    if _point_over_build_mode_panel(screen_point):
+        return false
+    if build_mode_active:
+        _select_build_mode_site(_cell_at_map_screen(screen_point))
+        get_viewport().set_input_as_handled()
+        return true
     if _popup_is_open() or _building_operation_is_open() or _disciple_summary_is_open():
         return false
     var picked := iso_world.pick_at_screen(screen_point)
@@ -2006,6 +2053,326 @@ func _recycle_modular_actor(key: String) -> void:
     else:
         actor.free()
 
+func _build_construction_ui() -> void:
+    build_mode_button = Button.new()
+    build_mode_button.name = "MapBuildModeEntry"
+    build_mode_button.text = "XÂY DỰNG"
+    build_mode_button.position = Vector2(20,88)
+    build_mode_button.size = Vector2(176,48)
+    build_mode_button.z_index = 28
+    build_mode_button.add_theme_font_size_override("font_size",15)
+    build_mode_button.add_theme_color_override("font_color",PAPER_LIGHT)
+    build_mode_button.add_theme_stylebox_override("normal",_style(JADE_DARK,PAPER_LIGHT,2,10))
+    build_mode_button.add_theme_stylebox_override("hover",_style(JADE,GOLD,2,10))
+    build_mode_button.pressed.connect(_enter_build_mode)
+    add_child(build_mode_button)
+
+    build_mode_panel = Panel.new()
+    build_mode_panel.name = "MapBuildModePanel"
+    build_mode_panel.position = Vector2(18,144)
+    build_mode_panel.size = Vector2(392,510)
+    build_mode_panel.z_index = 70
+    build_mode_panel.visible = false
+    build_mode_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+    build_mode_panel.add_theme_stylebox_override("panel",_style(PAPER_LIGHT,INK,3,14))
+    add_child(build_mode_panel)
+
+    var title := _label(build_mode_panel,"KIẾN THIẾT TÔNG MÔN",Vector2(16,12),Vector2(318,30),18)
+    title.add_theme_color_override("font_color",CINNABAR.darkened(0.15))
+    var close := Button.new()
+    close.name = "CloseBuildMode"
+    close.text = "×"
+    close.position = Vector2(342,8)
+    close.size = Vector2(40,40)
+    close.pressed.connect(_leave_build_mode.bind(true))
+    build_mode_panel.add_child(close)
+
+    build_mode_description = _label(build_mode_panel,"",Vector2(18,52),Vector2(354,78),12)
+    build_mode_description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    build_mode_description.add_theme_color_override("font_color",INK)
+    var catalog := _label(build_mode_panel,"CÔNG TRÌNH CÓ LỆNH XÂY THẬT",Vector2(18,132),Vector2(354,22),11)
+    catalog.add_theme_color_override("font_color",JADE_DARK)
+    var build_house := Button.new()
+    build_house.name = "BuildCatalogResidence"
+    build_house.text = "ĐỆ TỬ XÁ  ·  CHỌN VỊ TRÍ TRÊN BẢN ĐỒ"
+    build_house.position = Vector2(18,158)
+    build_house.size = Vector2(354,42)
+    build_house.add_theme_stylebox_override("normal",_style(JADE_DARK,PAPER_LIGHT,1,8))
+    build_house.add_theme_color_override("font_color",PAPER_LIGHT)
+    build_house.pressed.connect(_begin_residence_construction)
+    build_mode_panel.add_child(build_house)
+
+    var fixed_hint := _label(build_mode_panel,
+        "Hiện có thể đặt Đệ Tử Xá trên bản đồ. Công trình khác chưa có lệnh đặt.",
+        Vector2(18,204),Vector2(354,48),10)
+    fixed_hint.text = _wrap_build_mode_text("Đang hỗ trợ đặt Đệ Tử Xá trên bản đồ.\nCông trình khác chưa hỗ trợ đặt.",52)
+    fixed_hint.add_theme_color_override("font_color",Color(0.24,0.22,0.18,0.82))
+
+    var move_heading := _label(build_mode_panel,"DI DỜI NHÀ TRỐNG",Vector2(18,254),Vector2(354,22),11)
+    move_heading.add_theme_color_override("font_color",JADE_DARK)
+    var move_scroll := ScrollContainer.new()
+    move_scroll.name = "RelocatableResidenceList"
+    move_scroll.position = Vector2(18,280)
+    move_scroll.size = Vector2(354,78)
+    move_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+    build_mode_move_list = VBoxContainer.new()
+    build_mode_move_list.name = "RelocatableResidenceItems"
+    build_mode_move_list.custom_minimum_size.x = 338
+    move_scroll.add_child(build_mode_move_list)
+    build_mode_panel.add_child(move_scroll)
+
+    build_mode_feedback = _label(build_mode_panel,"",Vector2(18,362),Vector2(354,55),11)
+    build_mode_feedback.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    build_mode_feedback.add_theme_color_override("font_color",JADE_DARK)
+    build_mode_site_label = _label(build_mode_panel,"Chọn Đệ Tử Xá hoặc một căn nhà trống, sau đó bấm lô đất trên bản đồ.",Vector2(18,420),Vector2(354,45),11)
+    build_mode_site_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    build_mode_site_label.add_theme_color_override("font_color",INK)
+    build_mode_confirm = Button.new()
+    build_mode_confirm.name = "ConfirmMapConstruction"
+    build_mode_confirm.text = "XÁC NHẬN"
+    build_mode_confirm.position = Vector2(18,466)
+    build_mode_confirm.size = Vector2(172,38)
+    build_mode_confirm.disabled = true
+    build_mode_confirm.add_theme_stylebox_override("normal",_style(CINNABAR,PAPER_LIGHT,2,8))
+    build_mode_confirm.add_theme_color_override("font_color",PAPER_LIGHT)
+    build_mode_confirm.pressed.connect(_confirm_build_mode_action)
+    build_mode_panel.add_child(build_mode_confirm)
+    var cancel := Button.new()
+    cancel.name = "CancelMapConstruction"
+    cancel.text = "HỦY CHỌN"
+    cancel.position = Vector2(198,466)
+    cancel.size = Vector2(174,38)
+    cancel.pressed.connect(_clear_build_mode_selection)
+    build_mode_panel.add_child(cancel)
+    _refresh_build_mode_panel()
+
+func _enter_build_mode() -> void:
+    _close_disciple_summary(true)
+    _close_building_operation_panel(true)
+    _clear_popup()
+    build_mode_active = true
+    build_mode_kind = ""
+    build_mode_house_id = &""
+    build_mode_site = SectResidenceSiteV1.UNSELECTED
+    if build_mode_feedback != null:
+        build_mode_feedback.text = ""
+    if build_mode_panel != null:
+        build_mode_panel.visible = true
+    _focus_buildable_residence_area()
+    _refresh_build_mode_panel()
+
+func _focus_buildable_residence_area() -> void:
+    if state == null or iso_world == null:
+        return
+    var plots: Array[Vector2i] = []
+    var center := Vector2.ZERO
+    for site in SectResidenceSiteV1.available_plots(state):
+        if not bool(SectResidenceSystemV1.can_construct(state,site).get("ok",false)):
+            continue
+        plots.append(site)
+        center += Vector2(site)
+    if plots.is_empty():
+        return
+    center /= float(plots.size())
+    # Keep legal lots in the unobstructed right-hand part of the map beside
+    # the construction panel, at a zoom that shows the complete plot group.
+    var focus_cell := center+Vector2(-5.0,5.0)
+    var focus_world := SectIsometricWorldV1.LEGACY_ANCHOR \
+        + SectIsometricWorldV1.project(focus_cell) \
+        - SectIsometricWorldV1.project(SectIsometricWorldV1.CENTER_CELL)
+    var transform := SectMapCamera.focus_transform(focus_world,0.75)
+    _apply_camera(float(transform["zoom"]),transform["position"],false)
+func _leave_build_mode(clear_selection: bool = true) -> void:
+    build_mode_active = false
+    if build_mode_panel != null:
+        build_mode_panel.visible = false
+    if iso_world != null:
+        iso_world.clear_placement_preview()
+    if clear_selection:
+        build_mode_kind = ""
+        build_mode_house_id = &""
+        build_mode_site = SectResidenceSiteV1.UNSELECTED
+
+func _begin_residence_construction() -> void:
+    build_mode_kind = "construct"
+    build_mode_house_id = &""
+    build_mode_site = SectResidenceSiteV1.UNSELECTED
+    if build_mode_feedback != null:
+        build_mode_feedback.text = ""
+    if iso_world != null:
+        iso_world.clear_placement_preview()
+    _refresh_build_mode_panel()
+
+func _begin_residence_relocation(house_id: StringName) -> void:
+    build_mode_kind = "relocate"
+    build_mode_house_id = house_id
+    build_mode_site = SectResidenceSiteV1.UNSELECTED
+    if build_mode_feedback != null:
+        build_mode_feedback.text = ""
+    if iso_world != null:
+        iso_world.clear_placement_preview()
+    _refresh_build_mode_panel()
+
+func _clear_build_mode_selection() -> void:
+    build_mode_kind = ""
+    build_mode_house_id = &""
+    build_mode_site = SectResidenceSiteV1.UNSELECTED
+    if build_mode_feedback != null:
+        build_mode_feedback.text = ""
+    if iso_world != null:
+        iso_world.clear_placement_preview()
+    _refresh_build_mode_panel()
+
+func _select_build_mode_site(site: Vector2i) -> void:
+    if not build_mode_active or build_mode_kind.is_empty():
+        build_mode_feedback.text = _wrap_build_mode_text("Chọn công trình ở danh mục trước, rồi chạm vào vị trí đặt trên bản đồ.",50)
+        return
+    build_mode_site = site
+    var check: Dictionary
+    if build_mode_kind == "construct":
+        check = SectResidenceSystemV1.can_construct(state,site)
+    else:
+        check = SectResidenceSystemV1.can_move_house(state,build_mode_house_id,site)
+    if iso_world != null:
+        iso_world.set_placement_preview({"site":site,"ok":bool(check.get("ok",false))})
+    _refresh_build_mode_panel(check)
+
+func _refresh_build_mode_panel(last_check: Dictionary = {}) -> void:
+    if build_mode_panel == null or state == null:
+        return
+    var houses := SectResidenceSystemV1.all_houses(state)
+    var hall := SectHallSystemV1.hall(state)
+    var rank_limit := SectHallSystemV1.rank_population_limit(state)
+    var usable_capacity := SectResidenceSystemV1.current_limit(state)
+    var free_places := maxi(0,usable_capacity-state.disciples.size())
+    var text := "Đệ Tử Xá %d/%d · %d giường.\nĐệ tử %d/%d theo bậc · còn %d chỗ ở.\nNhà kế mở khi Đại Điện đạt Lv11." % [
+        houses.size(),SectResidenceSystemV1.maximum_instances(state),SectResidenceSystemV1.total_beds(state),
+        state.disciples.size(),rank_limit,free_places
+    ]
+    if hall == null:
+        text = "Đại Điện chưa mở hệ thống Đệ Tử Xá."
+    if build_mode_description != null:
+        build_mode_description.text = _wrap_build_mode_text(text,48)
+    if build_mode_move_list != null:
+        for child in build_mode_move_list.get_children():
+            build_mode_move_list.remove_child(child)
+            child.queue_free()
+        var display_index := 0
+        for house in houses:
+            if house.instance_index <= 1:
+                continue
+            display_index += 1
+            var site := SectResidenceSiteV1.origin_of(house)
+            var can_move := SectResidenceSystemV1.can_move_house(state,house.id,site)
+            var move := Button.new()
+            move.name = "MoveResidence_%02d" % house.instance_index
+            move.text = "Đệ Tử Xá %02d · %s" % [house.instance_index,
+                "trống, có thể dời" if bool(can_move.get("ok",false)) else _build_reason_text(str(can_move.get("reason","không thể dời")))]
+            move.custom_minimum_size = Vector2(338,34)
+            move.disabled = not bool(can_move.get("ok",false))
+            move.pressed.connect(_begin_residence_relocation.bind(house.id))
+            build_mode_move_list.add_child(move)
+        if display_index == 0:
+            var none := _label(build_mode_move_list,"Chưa có nhà phụ nào đủ điều kiện dời.",Vector2.ZERO,Vector2(338,30),10)
+            none.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+
+    var check := last_check
+    if check.is_empty() and build_mode_kind == "construct" and build_mode_site != SectResidenceSiteV1.UNSELECTED:
+        check = SectResidenceSystemV1.can_construct(state,build_mode_site)
+    elif check.is_empty() and build_mode_kind == "relocate" and build_mode_site != SectResidenceSiteV1.UNSELECTED:
+        check = SectResidenceSystemV1.can_move_house(state,build_mode_house_id,build_mode_site)
+    if build_mode_site_label != null:
+        if build_mode_site == SectResidenceSiteV1.UNSELECTED:
+            build_mode_site_label.text = "Chọn công trình hoặc nhà trống, rồi bấm lô xanh.\nLối ra và va chạm được kiểm tra trước khi khởi công."
+        else:
+            var door := SectResidenceSiteV1.doorway(build_mode_site)
+            var site_status := "HỢP LỆ" if bool(check.get("ok",false)) else _build_reason_text(str(check.get("reason","site_invalid")))
+            build_mode_site_label.text = _wrap_build_mode_text("Lô (%d,%d) · cửa (%d,%d): %s" % [build_mode_site.x,build_mode_site.y,door.x,door.y,site_status],45)
+    if build_mode_feedback != null and build_mode_feedback.text.is_empty():
+        if build_mode_kind == "construct":
+            build_mode_feedback.text = _wrap_build_mode_text("Chi phí nhà kế: %s · thi công %d nhịp." % [
+                _construction_cost_summary(SectResidenceSystemV1.build_cost(state)),
+                SectResidenceSystemV1.construction_duration_ticks(houses.size()+1)
+            ],50)
+        elif build_mode_kind == "relocate":
+            build_mode_feedback.text = _wrap_build_mode_text("Chỉ nhà phụ đã xây xong, đang trống và không nâng cấp mới được di dời. Phí và tài nguyên không đổi.",50)
+        else:
+            build_mode_feedback.text = _wrap_build_mode_text("Tông môn có %d công trình. Hiện chỉ Đệ Tử Xá có lệnh đặt trên bản đồ." % state.buildings.size(),50)
+    if build_mode_confirm != null:
+        build_mode_confirm.disabled = build_mode_kind.is_empty() or build_mode_site == SectResidenceSiteV1.UNSELECTED or not bool(check.get("ok",false))
+        build_mode_confirm.text = "KHỞI CÔNG" if build_mode_kind == "construct" else ("DỜI NHÀ" if build_mode_kind == "relocate" else "XÁC NHẬN")
+
+func _wrap_build_mode_text(raw_text: String, max_chars: int) -> String:
+    var output := PackedStringArray()
+    for paragraph in raw_text.split("\n",false):
+        var line := ""
+        for word in paragraph.split(" ",false):
+            if not line.is_empty() and line.length()+1+word.length() > max_chars:
+                output.append(line)
+                line = word
+            else:
+                line = word if line.is_empty() else line+" "+word
+        if not line.is_empty():
+            output.append(line)
+    return "\n".join(output)
+func _construction_cost_summary(cost: Dictionary) -> String:
+    var names := {BuildingSystem.MATERIAL_WOOD:"Linh Mộc",BuildingSystem.MATERIAL_ORE:"Thanh Thiết","spirit_stones":"Linh Thạch"}
+    var parts := PackedStringArray()
+    var keys: Array = cost.keys()
+    keys.sort()
+    for key in keys:
+        parts.append("%s %d" % [str(names.get(str(key),str(key))),int(cost[key])])
+    return " · ".join(parts)
+
+func _build_reason_text(reason: String) -> String:
+    match reason:
+        "main_hall_instance_limit": return "Cần Đại Điện Lv11 để mở nhà phụ thứ hai. Nâng xá hiện tại để có thêm 2 giường trước."
+        "missing_material": return "Thiếu nguyên liệu: cần thêm tài nguyên trong Kho."
+        "missing_spirit_stones": return "Thiếu Linh Thạch trong Kho."
+        "invalid_house_plot": return "Lô không nằm trong khu xây dựng."
+        "house_plot_outside_open_area": return "Lô nằm ngoài khu đất đã quy hoạch."
+        "house_plot_occupied": return "Lô hoặc lối ra chồng với công trình/lối đi khác."
+        "house_occupied": return "Nhà còn đệ tử được phân phòng; chuyển họ trước khi dời."
+        "house_not_idle": return "Nhà đang xây hoặc nâng cấp."
+        "starter_house_fixed": return "Đệ Tử Xá khởi đầu cố định."
+        "residence_not_enabled": return "Đại Điện chưa mở hệ thống Đệ Tử Xá."
+        "invalid_request_id": return "Thao tác hết hạn; hãy chọn lại lô."
+        "residence_id_collision": return "Mã công trình đã tồn tại; không trừ tài nguyên."
+        "conflicting_house_move_replay": return "Mã thao tác đã được dùng cho vị trí khác."
+        "no_free_house_plot": return "Không còn lô hợp lệ trong khu đất hiện có."
+        "max_level": return "Công trình đã đạt cấp tối đa."
+        "missing_building": return "Không tìm thấy công trình."
+        "main_hall_level_gate": return "Đại Điện chưa mở cấp nâng tiếp theo."
+        "already_upgrading": return "Công trình đang nâng cấp."
+        "building_not_active": return "Công trình chưa sẵn sàng."
+        "insufficient_workforce": return "Thiếu thời gian lao động để hoàn tất."
+        _: return reason.replace("_"," ").capitalize()
+
+func _confirm_build_mode_action() -> void:
+    if build_mode_kind.is_empty() or build_mode_site == SectResidenceSiteV1.UNSELECTED:
+        return
+    var request_id := "map-house:%d:%d:%d:%s" % [state.tick,build_mode_site.x,build_mode_site.y,
+        str(build_mode_house_id) if build_mode_kind == "relocate" else "new"]
+    var result: Dictionary
+    if build_mode_kind == "construct":
+        result = SectResidenceSystemV1.construct(state,request_id,build_mode_site)
+    else:
+        result = SectResidenceSystemV1.move_house(state,request_id,build_mode_house_id,build_mode_site)
+    if not bool(result.get("ok",false)):
+        build_mode_feedback.text = _wrap_build_mode_text(_build_reason_text(str(result.get("reason","unknown"))),50)
+        _refresh_build_mode_panel(result)
+        return
+    var moved_id := StringName(str(result.get("building_id",result.get("house_id",""))))
+    build_mode_feedback.text = _wrap_build_mode_text("Đã khởi công Đệ Tử Xá." if build_mode_kind == "construct" else "Đã dời Đệ Tử Xá đến vị trí mới.",50)
+    if iso_world != null:
+        iso_world.refresh_from_state(state)
+        iso_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+    _refresh_map_worksite_cues()
+    var should_open_house := build_mode_kind == "construct"
+    _leave_build_mode(true)
+    _refresh_all()
+    if should_open_house and moved_id != &"":
+        _open_building(SectMapPresentation.DEST_RESIDENCE,moved_id)
 func _build_building_operation_panel() -> void:
     building_operation_panel = Panel.new()
     building_operation_panel.name = "BuildingOperationPanel"
@@ -2255,6 +2622,8 @@ func _open_dai_dien_screen_v1() -> void:
     _attach_tri_b1_screen(screen, "hall")
 
 func _attach_tri_b1_screen(host: Control, mode: String) -> void:
+    if host.has_method("_set_b1_surface_active"):
+        host.call("_set_b1_surface_active",true)
     var adapter: Control = TRI_B1_LIVE_ADAPTER.new()
     adapter.call("configure", host, state, recruitment_system, mode)
     host.add_child(adapter)
@@ -2268,6 +2637,28 @@ func _open_dai_dien_housing_v1() -> void:
         var b1 = hall_view.get_node_or_null("TriFacilityB1LiveAdapterV1")
         if b1 != null:
             b1.call("show_mode", "residence")
+
+func _start_b1_residence_build(site_id: String = "") -> void:
+    var selected_site := SectResidenceSiteV1.UNSELECTED
+    var parts := site_id.split(":")
+    if parts.size() == 3 and parts[0] == "plot":
+        selected_site = Vector2i(int(parts[1]),int(parts[2]))
+        if not bool(SectResidenceSystemV1.can_construct(state,selected_site).get("ok",false)):
+            selected_site = SectResidenceSiteV1.UNSELECTED
+    var hall_screen := get_node_or_null("DaiDienScreenV1")
+    if hall_screen != null:
+        hall_screen.queue_free()
+    _enter_build_mode()
+    _begin_residence_construction()
+    if selected_site != SectResidenceSiteV1.UNSELECTED:
+        _select_build_mode_site(selected_site)
+
+func _start_b1_residence_plan() -> void:
+    var hall_screen := get_node_or_null("DaiDienScreenV1")
+    if hall_screen != null:
+        hall_screen.queue_free()
+    _enter_build_mode()
+    _begin_residence_construction()
 
 func _on_dai_dien_state_changed() -> void:
     # _refresh_all() already refreshes the 192x192 map once; avoid double scans.
@@ -4498,6 +4889,8 @@ func _refresh_all() -> void:
         _refresh_map_worksite_cues()
         map_worksite_cues_dirty = false
         map_worksite_refresh_elapsed = 0.0
+    if build_mode_panel != null and build_mode_panel.visible:
+        _refresh_build_mode_panel()
     if _building_operation_is_open():
         _refresh_building_operation_content()
 
@@ -4678,7 +5071,8 @@ func _refresh_map_worksite_cues() -> void:
         var building: BuildingState = state.buildings[raw_id]
         if not _map_worksite_is_supported(building):
             continue
-        var anchor := SectIsometricWorldV1.virtual_legacy_point(building.building_type,building.id)
+        var anchor := SectIsometricWorldV1.virtual_legacy_point(building.building_type,building.id,
+            SectResidenceSiteV1.UNSELECTED,int(state.sect.world_layout_version))
         var screen := SectMapCamera.world_to_screen(anchor,map_layer.position,map_layer.scale.x)
         if not SectMapCamera.VIEW_RECT.grow(95.0).has_point(screen):
             continue

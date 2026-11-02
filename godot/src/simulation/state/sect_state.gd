@@ -18,6 +18,9 @@ var supply_stock: int = 0
 var lodging_capacity: int = 6
 # DD-01: single persisted Hall office/mastery authority; legacy saves stay empty.
 var hall_governance: Dictionary = {}
+# Optional presentation layout preset. Zero means legacy/default; New Game may
+# opt into a versioned map composition without relocating older saves.
+var world_layout_version: int = 0
 var needs_priority: StringName = &"balanced"
 var needs_event_count: int = 0
 var needs_stats: Dictionary = {
@@ -177,6 +180,8 @@ func to_dict() -> Dictionary:
     }
     if not hall_governance.is_empty():
         data["hall_governance"] = hall_governance.duplicate(true)
+    if world_layout_version > 0:
+        data["world_layout_version"] = world_layout_version
     if spiritual_roots_enabled or spiritual_root_event_count > 0:
         data["spiritual_roots_enabled"] = spiritual_roots_enabled
         data["spiritual_root_event_count"] = spiritual_root_event_count
@@ -358,6 +363,14 @@ static func from_dict(data: Dictionary) -> SectState:
                 state.hall_governance = {"version": -1, "decode_error": "empty_hall_ledger"}
         else:
             state.hall_governance = {"version": -1, "decode_error": "invalid_hall_ledger_type"}
+    var raw_layout_version = data.get("world_layout_version", 0)
+    var layout_version_valid := raw_layout_version is int
+    if raw_layout_version is float:
+        layout_version_valid = not is_nan(raw_layout_version) and not is_inf(raw_layout_version) and float(raw_layout_version) == float(int(raw_layout_version))
+    if layout_version_valid and int(raw_layout_version) >= 0 and int(raw_layout_version) <= 2:
+        state.world_layout_version = int(raw_layout_version)
+    else:
+        state.world_layout_version = -1
     state.needs_priority = StringName(data.get("needs_priority", "balanced"))
     state.needs_event_count = maxi(int(data.get("needs_event_count", 0)), 0)
     state.cultivation_enabled = bool(data.get("cultivation_enabled", false))

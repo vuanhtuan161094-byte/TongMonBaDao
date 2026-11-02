@@ -258,6 +258,12 @@ func _close_screen() -> void:
     closed.emit()
     queue_free()
 
+func _set_b1_surface_active(active: bool) -> void:
+    # The B1 screen is the only visible surface; this screen remains the
+    # canonical candidate-state and Source A preview host behind it.
+    for child in get_children():
+        child.visible = not active
+
 func _unhandled_key_input(event: InputEvent) -> void:
     if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_ESCAPE:
         _close_screen()

@@ -8,6 +8,7 @@ signal hall_upgrade_requested
 signal closed
 
 const UI = preload("res://src/presentation/uiux/sect_ui_theme_v1.gd")
+const FACILITY_ART = preload("res://src/presentation/uiux/sect_facility_art_v2.gd")
 const ROLE_IDS := ["master", "guide", "teacher", "steward", "guardian", "alchemist", "discipline"]
 const ROLE_LABELS := {
 	"master": "Chưởng Môn", "guide": "Tiếp Dẫn Trưởng Lão", "teacher": "Truyền Công Trưởng Lão",
@@ -83,7 +84,9 @@ func _build_progress_panel() -> Control:
 	var content := VBoxContainer.new()
 	content.add_theme_constant_override("separation", 10)
 	card.add_child(content)
-	var hall_art := UI.illustration("hall")
+	var hall_art: Control = FACILITY_ART.new()
+	hall_art.name = "HallSourceAArtwork"
+	hall_art.set("facility_kind", "hall")
 	hall_art.custom_minimum_size = Vector2(342, 174)
 	hall_art.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	content.add_child(hall_art)
@@ -130,6 +133,7 @@ func _build_offices_panel() -> Control:
 	content.add_theme_constant_override("separation", 10)
 	card.add_child(content)
 	content.add_child(UI.section_heading("Bảy chức vụ", "person", UI.JADE))
+	content.add_child(UI.label("Bổ nhiệm hoặc miễn nhiệm ngay tại đây. Mỗi đệ tử chỉ giữ một chức vụ; điều kiện phụ thuộc cấp Đại Điện và tình trạng đệ tử.",11,UI.MUTED,false))
 	var grid := GridContainer.new()
 	grid.columns = 2
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -143,8 +147,7 @@ func _build_offices_panel() -> Control:
 		var office: Dictionary = office_map.get(role_id, {})
 		grid.add_child(_office_card(role_id, office))
 	content.add_child(grid)
-	var hint := UI.label("Chọn chức vụ để mở danh sách phân công.", 12, UI.MUTED, false)
-	content.add_child(hint)
+	content.add_child(UI.label("Nâng cấp dùng tài nguyên thật trong Kho; thăng bậc hiển thị đủ điều kiện còn thiếu.",11,UI.MUTED,false))
 	var upgrade_row := HBoxContainer.new()
 	upgrade_row.add_theme_constant_override("separation", 10)
 	var costs_column := VBoxContainer.new()
@@ -168,7 +171,7 @@ func _build_offices_panel() -> Control:
 
 func _office_card(role_id: String, office: Dictionary) -> Control:
 	var card := UI.panel("Office_%s" % role_id, UI.BORDER, UI.SURFACE_LIGHT)
-	card.custom_minimum_size = Vector2(245, 78)
+	card.custom_minimum_size = Vector2(245, 98)
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 9)

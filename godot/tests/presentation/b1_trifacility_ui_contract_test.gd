@@ -79,78 +79,79 @@ func _run() -> void:
 	var residence := RESIDENCE.new()
 	var all_beds: Array[Dictionary] = []
 	for index in range(20):
-		all_beds.append({"id": "bed_%02d" % index, "occupied": index < 6, "disciple_short_name": "Đệ tử %02d" % (index + 1) if index < 6 else "Trống"})
-	var all_sites: Array[Dictionary] = [
-		{"id": "north", "name": "Đã xây", "built": true, "can_upgrade": true, "can_build": false},
-		{"id": "east", "name": "Đất trống", "built": false, "can_build": true, "can_upgrade": false}
-	]
-	for index in range(10):
-		all_sites.append({"id": "annex_%02d" % index, "name": "Lô %02d" % index, "built": false, "can_build": false, "can_upgrade": false})
+		all_beds.append({"id":"bed_%02d" % index,"occupied":index < 6,"disciple_short_name":"Đệ tử %02d" % (index+1) if index < 6 else "Trống"})
+	var residence_model := {
+		"building_level":3,"room_count_label":"2 nhà · 20 giường","selected_residence_id":"north",
+		"house_options":[{"id":"north","name":"Đệ Tử Xá 01 · Lv3"}],
+		"bed_slots":all_beds,"can_upgrade_selected":true,"can_build_next":false,
+		"room_disciple_options":[{"id":"disciple_001","name":"Thanh Vân"}],
+		"room_house_options":[{"id":"north","name":"Đệ Tử Xá 01"}],
+		"room_assignment_disciple_id":"disciple_001","room_assignment_house_id":"north","can_assign_room":true
+	}
 	root.add_child(residence)
 	residence.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	residence.bind_view_model({
-		"building_level": 3, "room_count_label": "2 phòng", "selected_residence_id": "north",
-		"bed_slots": all_beds,
-		"sites": all_sites
-	})
+	residence.bind_view_model(residence_model)
 	await process_frame
-	var bed_grid := residence.find_child("ResidenceBedSlots", true, false) as GridContainer
-	var site_grid := residence.find_child("ResidenceSiteCards", true, false) as GridContainer
-	if bed_grid == null or bed_grid.get_child_count() != 20 or residence.find_child("ResidenceBedScroll", true, false) == null:
-		_fail("Residence must keep every bed visible in its scroll list.")
+	var bed_grid := residence.find_child("ResidenceBedSlots",true,false) as GridContainer
+	if bed_grid == null or bed_grid.get_child_count() != all_beds.size() or residence.find_child("ResidenceBedScroll",true,false) == null:
+		_fail("Residence must keep every canonical bed in its scroll list.")
 		return
-	if site_grid == null or site_grid.get_child_count() != 12 or residence.find_child("ResidenceSiteScroll", true, false) == null:
-		_fail("Residence must keep every supplied construction lot in its scroll list.")
+	var selected_houses: Array[String] = []
+	residence.site_selection_requested.connect(func(house_id:String): selected_houses.append(house_id))
+	var house_picker := residence.find_child("ResidenceManageSelector",true,false) as OptionButton
+	if house_picker == null or house_picker.get_item_count() != 1:
+		_fail("Residence must show canonical houses in the management picker.")
 		return
-	var selected_sites: Array[String] = []
-	residence.site_selection_requested.connect(func(site_id: String): selected_sites.append(site_id))
-	var site_button := _find_button(residence, "SelectSite")
-	if site_button == null:
-		_fail("Residence site selector missing.")
-		return
-	site_button.pressed.emit()
-	if selected_sites.size() != 1 or selected_sites[0] != "north":
-		_fail("Site selector must emit supplied site ID.")
+	house_picker.item_selected.emit(0)
+	if selected_houses != ["north"]:
+		_fail("House picker must emit the selected canonical residence ID.")
 		return
 	var room_management: Array[bool] = []
 	residence.room_management_requested.connect(func(): room_management.append(true))
-	var manage_rooms := _find_button(residence, "ManageResidenceRooms")
+	var manage_rooms := _find_button(residence,"ManageResidenceRooms")
 	if manage_rooms == null:
-		_fail("Residence room management route is missing.")
+		_fail("Map-based residence planning route is missing.")
 		return
 	manage_rooms.pressed.emit()
 	if room_management != [true]:
-		_fail("Residence room management must route to its canonical screen.")
+		_fail("Residence planning must route to the real map flow.")
 		return
 	var upgrade_ids: Array[String] = []
-	residence.residence_upgrade_requested.connect(func(id: String): upgrade_ids.append(id))
-	var upgrade_button := _find_button(residence, "UpgradeResidence")
+	residence.residence_upgrade_requested.connect(func(id:String): upgrade_ids.append(id))
+	var upgrade_button := _find_button(residence,"UpgradeResidence")
 	if upgrade_button == null or upgrade_button.disabled:
-		_fail("Residence upgrade must use supplied eligibility.")
+		_fail("Residence upgrade must use supplied canonical eligibility.")
 		return
 	upgrade_button.pressed.emit()
-	if upgrade_ids.size() != 1 or upgrade_ids[0] != "north":
-		_fail("Residence upgrade intent must emit selected residence ID.")
+	if upgrade_ids != ["north"]:
+		_fail("Residence upgrade intent must emit the selected canonical ID.")
 		return
-	var built_sites: Array[String] = []
-	residence.residence_build_requested.connect(func(site_id: String): built_sites.append(site_id))
-	var build_button := _find_button(residence, "BuildSelectedSite")
+	var room_intents: Array[Array] = []
+	residence.room_assignment_requested.connect(func(disciple_id:String,house_id:String): room_intents.append([disciple_id,house_id]))
+	var assign_room := _find_button(residence,"AssignResidenceRoom")
+	if assign_room == null or assign_room.disabled:
+		_fail("Room assignment must follow real eligibility and available choices.")
+		return
+	assign_room.pressed.emit()
+	if room_intents != [["disciple_001","north"]]:
+		_fail("Room assignment must emit the actual selected disciple and canonical house IDs.")
+		return
+	var build_intents: Array[String] = []
+	residence.residence_build_requested.connect(func(site_id:String): build_intents.append(site_id))
+	var build_button := _find_button(residence,"BuildResidenceOnMap")
 	if build_button == null or not build_button.disabled:
-		_fail("Residence must disable build when the supplied site is not eligible.")
+		_fail("Map construction must remain gated when the canonical model has no eligible lot.")
 		return
-	residence.bind_view_model({
-		"building_level": 3, "room_count_label": "2 phòng", "selected_residence_id": "east",
-		"bed_slots": [],
-		"sites": all_sites
-	})
+	residence_model["can_build_next"] = true
+	residence.bind_view_model(residence_model)
 	await process_frame
-	build_button = _find_button(residence, "BuildSelectedSite")
+	build_button = _find_button(residence,"BuildResidenceOnMap")
 	if build_button == null or build_button.disabled:
-		_fail("Residence build button must enable from supplied eligibility.")
+		_fail("Map construction must enable when canonical eligibility is supplied.")
 		return
 	build_button.pressed.emit()
-	if built_sites.size() != 1 or built_sites[0] != "east":
-		_fail("Build intent must only emit selected residence ID.")
+	if build_intents != [""]:
+		_fail("Map build intent must request placement selection; it must not invent a plot ID.")
 		return
 	residence.queue_free()
 
@@ -163,7 +164,9 @@ func _run() -> void:
 			{"id": "cand-2", "name": "Liễu Vân", "tam_values": [40, 50, 60], "tu_values": [11, 21, 31, 41], "can_accept": false, "can_reject": true},
 			{"id": "cand-3", "name": "Tô Minh", "tam_values": [50, 60, 70], "tu_values": [12, 22, 32, 42], "can_accept": true, "can_reject": true}
 		],
-		"can_accept": true, "can_reject": true, "can_use_order": true, "recruitment_tokens": 2
+		"can_accept": true, "can_reject": true, "can_use_order": true, "recruitment_tokens": 2,
+        "guidance_options":[{"id":"disciple_001","name":"Thanh Vân","eligible":true},{"id":"disciple_002","name":"Liễu Vân","eligible":true}],
+        "guidance_main_id":"", "guidance_assistant_ids":[], "guidance_slots":2, "guidance_max_assistants":1, "can_assign_guidance":true
 	})
 	await process_frame
 	var candidate_ids: Array[String] = []
@@ -204,13 +207,30 @@ func _run() -> void:
 	search.text = ""
 	_find_button(guidance, "ApplyCandidateSearch").pressed.emit()
 	await process_frame
-	var guide_routes: Array[bool] = []
-	guidance.guide_management_requested.connect(func(): guide_routes.append(true))
-	var manage_guides := _find_button(guidance, "ManageGuides")
-	if manage_guides == null:
-		_fail("Main/assistant guide management route missing.")
+	var main_assignments: Array[String] = []
+	guidance.guidance_main_requested.connect(func(id:String): main_assignments.append(id))
+	var main_picker := guidance.find_child("GuidanceMainPicker",true,false) as OptionButton
+	var assign_main := _find_button(guidance,"AssignGuidanceMain")
+	if main_picker == null or assign_main == null:
+		_fail("Main guide assignment controls are missing.")
 		return
-	manage_guides.pressed.emit()
+	main_picker.select(1)
+	assign_main.pressed.emit()
+	if main_assignments != ["disciple_001"]:
+		_fail("Main guide assignment must emit the selected canonical disciple ID.")
+		return
+	var assistant_assignments: Array[Array] = []
+	guidance.guidance_assistants_requested.connect(func(ids:Array): assistant_assignments.append(ids))
+	var assistant := guidance.find_child("GuidanceAssistant_disciple_002",true,false) as CheckBox
+	var assign_assistants := _find_button(guidance,"AssignGuidanceAssistants")
+	if assistant == null or assign_assistants == null or assign_assistants.disabled:
+		_fail("Assistant guide assignment controls are missing or disabled.")
+		return
+	assistant.button_pressed = true
+	assign_assistants.pressed.emit()
+	if assistant_assignments != [["disciple_002"]]:
+		_fail("Assistant assignment must emit only the selected eligible disciple IDs.")
+		return
 	var order_requests: Array[bool] = []
 	guidance.recruitment_order_requested.connect(func(): order_requests.append(true))
 	var order_button := _find_button(guidance, "UseRecruitmentOrder")
@@ -218,7 +238,7 @@ func _run() -> void:
 		_fail("Chiêu Mộ Lệnh button must follow supplied authority eligibility.")
 		return
 	order_button.pressed.emit()
-	if guide_routes != [true] or order_requests != [true]:
+	if order_requests != [true]:
 		_fail("Guide management and Chiêu Mộ Lệnh must emit real action intents.")
 		return
 	var page_directions: Array[int] = []

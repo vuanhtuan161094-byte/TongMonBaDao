@@ -161,6 +161,12 @@ func _close() -> void:
     closed.emit()
     queue_free()
 
+func _set_b1_surface_active(active: bool) -> void:
+    # Keep this scene as a state/authority host for the B1 adapter, but do not
+    # draw two independent facility interfaces on top of each other.
+    for child in get_children():
+        child.visible = not active
+
 func _tab(index: int) -> void:
     active_tab = index
     feedback = ""

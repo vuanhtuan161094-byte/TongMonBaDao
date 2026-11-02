@@ -87,12 +87,95 @@ func _capture() -> void:
     print("TRI02_CAPTURE_STAGE=map_art_verified")
     if not await _save_frame(out_dir,"00_p3_2_map_context.png"):
         return
+    game.call("_enter_build_mode")
+    await process_frame
+    await process_frame
+    var map_build_button := _find_button(game,"BuildCatalogResidence")
+    var map_confirm_button := _find_button(game,"ConfirmMapConstruction")
+    print("TRI02_BUILD_MODE_STATE residence_catalog=%s confirm_disabled=%s" % [
+        str(map_build_button != null),str(map_confirm_button == null or map_confirm_button.disabled)
+    ])
+    if not await _save_frame(out_dir,"04_build_mode_new_game_gates.png"):
+        return
+    game.call("_leave_build_mode",true)
+    await process_frame
     if not await _open_from_map("hall","510052",SectMapPresentation.DEST_MAIN_HALL,"OpenDaiDienScreenV1",out_dir,CAPTURE_FILES["hall"]):
         return
     if not await _open_from_map("residence","510076",SectMapPresentation.DEST_RESIDENCE,"OpenResidenceManagementV1",out_dir,CAPTURE_FILES["residence"]):
         return
     if not await _open_from_map("guidance","510111",SectMapPresentation.DEST_GUIDANCE,"OpenDanTienScreenV2",out_dir,CAPTURE_FILES["guidance"]):
         return
+
+    # Continue the real New Game journey through the B1 controls: the map opens
+    # the facility, the player confirms a valid candidate, the canonical roster
+    # changes once, and the success reveal is rendered and saved in QA user://.
+    var state_after_open: SimulationState = game.get("state") as SimulationState
+    if state_after_open == null:
+        _fail("Recruitment reveal QA lost the canonical P3.2 state.")
+        return
+    var roster_before := state_after_open.disciples.size()
+    var ids_before: Dictionary = {}
+    for raw_id in state_after_open.disciples.keys():
+        ids_before[str(raw_id)] = true
+    game.call("_open_building",SectMapPresentation.DEST_GUIDANCE)
+    await process_frame
+    await process_frame
+    var guidance_route := _find_button(game,"OpenDanTienScreenV2")
+    if guidance_route == null or guidance_route.disabled:
+        _fail("Cannot reopen the live Dẫn Tiên Đài from the P3.2 map for recruitment.")
+        return
+    guidance_route.pressed.emit()
+    await process_frame
+    await process_frame
+    var guidance := game.get_node_or_null("DanTienScreenV2")
+    var accept := _find_button(guidance,"AcceptCandidate") if guidance != null else null
+    if accept == null or accept.disabled:
+        _fail("New Game must expose at least one genuinely eligible candidate with spare canonical capacity.")
+        return
+    accept.pressed.emit()
+    await process_frame
+    accept = _find_button(guidance,"AcceptCandidate")
+    if accept == null or not accept.text.contains("XÁC NHẬN"):
+        _fail("Candidate acceptance must show the existing second-confirmation state.")
+        return
+    accept.pressed.emit()
+    await process_frame
+    await process_frame
+    if state_after_open.disciples.size() != roster_before + 1:
+        _fail("Confirmed candidate did not enter the single canonical disciple roster exactly once.")
+        return
+    var recruited_id := ""
+    for raw_id in state_after_open.disciples.keys():
+        if not ids_before.has(str(raw_id)):
+            recruited_id = str(raw_id)
+            break
+    var recruited_state: DiscipleState = state_after_open.disciples.get(StringName(recruited_id))
+    var recruited_scene_path := DiscipleSourceAVisualPool.scene_path_for_disciple(recruited_state) if recruited_state != null else ""
+    var recruited_portrait: Variant = game.call("_disciple_source_a_portrait_texture",recruited_state) if recruited_state != null else null
+    var adapter := guidance.get_node_or_null("TriFacilityB1LiveAdapterV1") if guidance != null else null
+    var reveal := guidance.find_child("RecruitmentReveal",true,false) if guidance != null else null
+    if recruited_id.is_empty() or adapter == null or str(adapter.get("_last_recruited_disciple_id")) != recruited_id or reveal == null:
+        _fail("Successful recruitment must show the newly added canonical disciple in the B1 reveal.")
+        return
+    if recruited_scene_path.is_empty() or not (recruited_portrait is Texture2D):
+        _fail("Newly recruited disciple did not resolve a real mapped Source A portrait for the success reveal.")
+        return
+    for action_name in ["RecruitedDiscipleProfile","RecruitedDiscipleAssignment","RecruitedDiscipleWorld"]:
+        var action := _find_button(reveal,action_name)
+        if action == null or action.disabled:
+            _fail("Recruitment reveal is missing its real next-step action: %s." % action_name)
+            return
+    if not await _save_frame(out_dir,"05_recruitment_success_reveal_qa_fixture.png"):
+        return
+    var isolated_save := ProjectSettings.globalize_path(SAVE_PATH)
+    if SaveService.new().save_to_path(state_after_open,isolated_save) != OK:
+        _fail("Recruitment reveal state could not be saved through SaveService to the isolated QA profile.")
+        return
+    var reloaded: SimulationState = SaveService.new().load_from_path(isolated_save)
+    if reloaded == null or not reloaded.disciples.has(StringName(recruited_id)) or reloaded.disciples.size() != state_after_open.disciples.size():
+        _fail("Save/Reload did not preserve the newly recruited disciple identity and roster count.")
+        return
+    print("TRI03_RECRUITMENT_REVEAL_CAPTURE_PASS disciple=%s roster=%d source_a_portrait=1 save_reload=1" % [recruited_id,reloaded.disciples.size()])
 
     game.set("runtime_ready",false)
     game.queue_free()
@@ -165,16 +248,30 @@ func _open_from_map(kind: String, model_id: String, destination: StringName, but
         _fail("Live B1 %s screen has no rendered Source A texture." % kind)
         return false
     if kind == "guidance":
-        var candidate_art := _find_facility_art(screen,"candidate")
-        if candidate_art == null or bool(candidate_art.get("_original_source")) or str(candidate_art.get("_source_model_id")) != "":
-            _fail("Guidance candidate art must remain the anonymous neutral fallback until an approved disciple portrait exists.")
-            return false
-        if not (candidate_art.get("_art") is Texture2D):
-            _fail("Guidance candidate card has no rendered anonymous fallback texture.")
+        var has_approved_portrait := screen.find_child("VerifiedSourceACandidatePreview",true,false) != null
+        var explicit_neutral_portrait := screen.find_child("CandidateUnverifiedPortrait",true,false) != null
+        if not has_approved_portrait and not explicit_neutral_portrait:
+            _fail("Guidance must show a verified mapped Source A portrait or explicitly mark the portrait unavailable.")
             return false
     if not await _save_frame(out_dir,filename):
         return false
-    game.get_node(screen_name).queue_free()
+    if kind == "residence":
+        var plan_button := _find_button(screen,"ManageResidenceRooms")
+        if plan_button == null:
+            _fail("Residence B1 is missing its map planning route.")
+            return false
+        plan_button.pressed.emit()
+        await process_frame
+        await process_frame
+        if not bool(game.get("build_mode_active")):
+            _fail("Residence B1 map planning did not enter the real P3.2 build mode.")
+            return false
+        print("TRI02_B1_MAP_PLAN_ROUTE_PASS route=real_p3_2_build_mode")
+        game.call("_leave_build_mode",true)
+        await process_frame
+    var route_screen := game.get_node_or_null(screen_name)
+    if route_screen != null:
+        route_screen.queue_free()
     await process_frame
     return true
 

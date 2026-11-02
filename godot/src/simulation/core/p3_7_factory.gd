@@ -18,6 +18,9 @@ static func create_state(seed: int = 1337) -> SimulationState:
     state.sect.forge_materials[BuildingSystem.MATERIAL_ORE] = int(state.sect.forge_materials.get(BuildingSystem.MATERIAL_ORE, 0)) + INITIAL_BUILD_ORE
     BuildingSystem.new().initialize(state)
     WarehouseSystem.new().initialize(state)
+    # New Game only. Existing saves are not passed through P37Factory, so their
+    # historic map composition remains unchanged unless the player starts over.
+    state.sect.world_layout_version = 2
 
     var workforce := WorkforceSystem.new()
     var disciple_ids: Array = state.disciples.keys()

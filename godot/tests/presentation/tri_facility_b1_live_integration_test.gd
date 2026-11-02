@@ -21,6 +21,14 @@ func _find_button(node: Node, button_name: String) -> Button:
             return found
     return null
 
+func _find_enabled_appoint_button(node: Node) -> Button:
+    if node is Button and node.text == "BỔ NHIỆM" and not node.disabled:
+        return node as Button
+    for child in node.get_children():
+        var found := _find_enabled_appoint_button(child)
+        if found != null:
+            return found
+    return null
 func _new_host_adapter(host: Control, state: SimulationState,
         recruitment: RecruitmentSystem, mode: String) -> Control:
     var adapter: Control = LIVE_B1.new()
@@ -41,10 +49,11 @@ func _run() -> void:
     root.add_child(old_hall)
     var b1_hall := _new_host_adapter(old_hall,state,recruitment,"hall")
     await process_frame
-    if not _require(b1_hall.get_node_or_null("OpenCanonicalFacilityManagement") != null
-            and b1_hall.find_child("RankSteps",true,false) != null
-            and b1_hall.find_child("HallOffices",true,false) != null,
-            "B1 Hall not bound to real Hall state"):
+    if not _require(b1_hall.find_child("RankSteps",true,false) != null
+            and b1_hall.find_child("HallOffices",true,false) != null
+            and _find_button(b1_hall,"UpgradeHall") != null
+            and _find_button(b1_hall,"PromoteRank") != null,
+            "B1 Hall must expose live rank, office and upgrade controls backed by canonical state"):
         return
     var appointment_candidate: StringName = &""
     var disciple_ids: Array = state.disciples.keys()
@@ -74,8 +83,17 @@ func _run() -> void:
         return
     choose.pressed.emit()
     await process_frame
-    if not _require(old_hall.active_tab == 1,
-            "Hall office action must open canonical real appointment screen"):
+    var appointment_picker := b1_hall.find_child("HallAppointmentPicker",true,false)
+    var appoint_candidate_button := _find_enabled_appoint_button(appointment_picker)
+    if not _require(appointment_picker != null and appoint_candidate_button != null,
+            "B1 office selection must show eligible candidates and a canonical appointment action"):
+        return
+    var opened_role := StringName(str(b1_hall.get("_office_picker_role")))
+    appoint_candidate_button.pressed.emit()
+    await process_frame
+    if not _require(SectHallSystemV1.OFFICES.has(str(opened_role))
+            and not SectHallSystemV1.holder_id(state,opened_role).is_empty(),
+            "B1 appointment must mutate the canonical holder for the selected office"):
         return
     root.remove_child(old_hall)
     old_hall.queue_free()
@@ -88,10 +106,12 @@ func _run() -> void:
     var b1_house := _new_host_adapter(old_housing,state,recruitment,"residence")
     await process_frame
     var bed_grid := b1_house.find_child("ResidenceBedSlots",true,false)
-    if not _require(bed_grid != null and b1_house.find_child("ResidenceSites",true,false) != null
-            and _find_button(b1_house,"BuildSelectedSite") != null
-            and b1_house.get_node_or_null("OpenCanonicalFacilityManagement") != null,
-            "B1 House not bound to real plots, beds and canonical detail"):
+    var residence_model: Dictionary = b1_house.call("_house_model")
+    if not _require(bed_grid != null and bed_grid.get_child_count() == int(residence_model.get("bed_slots",[]).size())
+            and b1_house.find_child("ResidenceManagementScroll",true,false) != null
+            and _find_button(b1_house,"BuildResidenceOnMap") != null
+            and _find_button(b1_house,"AssignResidenceRoom") != null,
+            "B1 House must expose canonical beds, map construction and room assignment"):
         return
     var room_management := _find_button(b1_house,"ManageResidenceRooms")
     if not _require(room_management != null, "B1 room assignment route missing"):
