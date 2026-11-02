@@ -1,3 +1,44 @@
+## TRI-03 — Windows playable acceptance & UI polish status (2026-11-02)
+
+**PR #67 code commit tested:** [`8979dca68495a74ad272ca4c861034040bf385f7`](https://github.com/vuanhtuan161094-byte/TongMonBaDao/commit/8979dca68495a74ad272ca4c861034040bf385f7). Official Godot 4.7.2 workflow [41402324227](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41402324227) completed **SUCCESS** on this exact commit. Four real Godot 1280×720 P3.2/B1 captures are in [artifact 13122450868](https://github.com/vuanhtuan161094-byte/TongMonBaDao/actions/runs/41402324227/artifacts/13122450868). The run used Ubuntu/Xvfb/llvmpipe: this is automated real-render evidence, **not Windows mouse acceptance**.
+
+### Change and visual comparison
+
+The TRI-03 code delta is limited to raising the shared B1 button minimum height from 46 to 48 px and the map “QUẢN LÝ ĐẦY ĐỦ” control from 42 to 48 px. No gameplay, canonical callbacks, Source A files, SaveService, or save profile changed. The four 320×180 QA review thumbnails from the prior capture and this exact run retain the same map/Hall/Residence/Guidance composition; no new overlap or clipping is visible at thumbnail scale. Detailed pixel-level review of the native 1280×720 files and owner visual sign-off remain pending.
+
+Source A stayed SHA-gated and passed runtime alpha/import checks:
+- 510052: `b6bf88c35e3edc33aba822124296af15a5c8491a05c28f6b5d7b342d20d5325c`
+- 510076: `f8e05d7376fc5ddc7b25f56673b6d5f444b10fd759da06a5929ec4f38a68d320`
+- 510111: `90b7c595f3b77788c99924ef2eb7ba4b8ede794ccffda1c6808263ba3c711762`
+
+Guidance uses the 510111 facility art separately from the candidate portrait. The candidate image remains the previously documented neutral fallback; no approved candidate portrait was introduced.
+
+### Exact-SHA QA matrix
+
+| Gate | Result | Evidence |
+|---|---|---|
+| Official Godot 4.7.2 version and project import/parse | PASS, exit 0 | O2 run 41402324227 |
+| P3 O2 recruitment/map actor test | PASS | `P3 O2 RECRUITMENT MAP TEST PASS` |
+| P3.7C1 / Dẫn Tiên backend | PASS | `P3.7C1 FOUNDATION + DAN TIEN RECRUITMENT TEST PASS` |
+| B1 canonical screen contract | PASS | `TRI01_B1_UI_CONTRACT_PASS` |
+| Live Hall/Residence/Guidance callbacks and SaveService | PASS | `TRI_B1_LIVE_PASS hall=1 residence=1 guidance=1 real_recruit=1 save_service_roundtrip=1` |
+| Separate-process SaveService reload | PASS | `TRI_B1_CROSS_PROCESS_RELOAD_PASS roster=7 queue=1 houses=1 accepted=candidate_0001` |
+| DD092 exterior door/chosen plot + save reload | PASS | `DD092_DOOR_PLOT_PASS road_gate=none chosen_plot=1 exterior_door=1 save_reload=1 conflict=1` |
+| Source A alpha assertions and 4 map-context/B1 renders | PASS | `TRI02_SOURCE_ALPHA_PASS` ×3; `TRI02_P32_CONTEXT_CAPTURE_PASS map=1 hall=1 residence=1 guidance=1 size=1280x720` |
+| P3.6A scene regression | PASS | `P3.6A PLAYABLE SLICE TEST PASS` |
+| Windows physical mouse journey, New Game → 3 facilities → Save/Return/Reload | **PENDING USER** | No Windows GUI interaction was performed in this run |
+| Android device/touch acceptance | **PENDING USER** | No device test |
+
+The capture job logged that the CI graphics driver does not support changing V-Sync and that the runner has no ALSA device; Godot fell back to dummy audio. All capture markers, the P3.6A marker, and the job completed successfully.
+
+### Windows gate / limits
+
+The canonical E: game directory remains untouched. At verification it was `main` @ `5e6fdd966bdf710b71e2a1539bb712e44069a4bb`, with seven existing untracked QA entries; it is not the PR #67 source and was not used as a substitute. Git CLI fetch with GCM failed to prompt/persist credentials (`SEC_E_NO_CREDENTIALS` / no interactive TTY); the HTTPS archive request also failed authentication in this session. Therefore no exact-SHA Windows checkout, Windows GUI journey, or Windows screenshot/log exists yet. `Get-Process` showed no Godot/MovieWriter entries; a complete process-command-line check was unavailable due Windows access denial in the earlier probe. No user/default save was read or written.
+
+**Overall:** exact-SHA automated focused QA is PASS; TRI-03 physical Windows playable acceptance is **PENDING USER**, Android is **PENDING USER**, and broad visual polish/owner approval is not complete. Keep PR #67 Draft and do not merge.
+
+---
+
 # B1 three facility screens — integration preview
 
 ## TRI-02 Source A intake and live P3.2 capture — 2026-11-02
