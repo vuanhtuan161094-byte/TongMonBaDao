@@ -91,8 +91,10 @@ static func metric_card(title: String, value: String, icon_kind: String, accent:
 	var title_label := label(title, 10, MUTED, false)
 	title_label.autowrap_mode = TextServer.AUTOWRAP_OFF
 	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	title_label.tooltip_text = title
 	stack.add_child(title_label)
 	var value_label := label(value, 16, TEXT, true)
+	value_label.tooltip_text = value
 	value_label.name = "MetricValue"
 	value_label.autowrap_mode = TextServer.AUTOWRAP_OFF
 	value_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
