@@ -75,8 +75,13 @@ func _build_rooms_panel() -> Control:
 	residence_art.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	content.add_child(residence_art)
 	var metrics := HBoxContainer.new()
-	metrics.add_child(UI.metric_card("CẤP XÁ", str(_vm.get("building_level", 1)), "hall", UI.JADE))
-	metrics.add_child(UI.metric_card("GIƯỜNG", str(_vm.get("room_count_label", "—")), "bed", UI.GOLD))
+	var level_metric := UI.metric_card("CẤP XÁ", str(_vm.get("building_level", 1)), "hall", UI.JADE)
+	level_metric.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	metrics.add_child(level_metric)
+	var beds_metric := UI.metric_card("CƯ TRÚ", str(_vm.get("room_count_label", "—")), "bed", UI.GOLD)
+	beds_metric.custom_minimum_size.x = 216
+	beds_metric.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	metrics.add_child(beds_metric)
 	content.add_child(metrics)
 	content.add_child(UI.section_heading("Giường & đệ tử", "person", UI.JADE))
 	content.add_child(UI.label("Sức chứa và cư dân lấy từ phân phòng theo từng xá; hệ thống chưa lưu số giường riêng cho từng người.", 10, UI.MUTED, false))
