@@ -1865,14 +1865,12 @@ func _actor_anchor_offset(actor: Control) -> Vector2:
     return Vector2(30.0, 30.0)
 
 func _refresh_actor_status_label_visibility() -> void:
-    # Dense endgame maps can show 100 real workers. Their action remains in
-    # the selected disciple/building panel; only the focused disciple gets a
-    # floating world label, preventing the whole map from becoming unreadable.
-    var focused_key := str(focused_id) if focused_kind == &"disciple" else ""
+    # Player-readable state belongs in the selected detail panel and actor tooltip.
+    # Never draw persistent action labels over the crowded sect world map.
     for raw_id in actor_status_labels.keys():
         var status := actor_status_labels[raw_id] as Label
         if status != null and is_instance_valid(status):
-            status.visible = str(raw_id) == focused_key
+            status.visible = false
 
 func _stage_a_live_assets_ready() -> bool:
     return (
