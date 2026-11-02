@@ -6,6 +6,27 @@ const HALL_B1 = preload("res://src/presentation/uiux/dai_dien_screen_b1_v1.gd")
 const HOUSE_B1 = preload("res://src/presentation/uiux/de_tu_xa_screen_b1_v1.gd")
 const GUIDANCE_B1 = preload("res://src/presentation/uiux/dan_tien_screen_b1_v1.gd")
 
+# Presentation-only labels for canonical IDs. Unknown IDs remain visible as
+# readable raw values; never mutate the simulation state or candidate identity.
+const UI_ORIGIN_NAMES := {
+    "commoner":"Bình dân", "merchant_family":"Thương gia",
+    "martial_family":"Võ gia", "wanderer":"Lãng khách",
+    "mountain_village":"Sơn thôn", "minor_clan":"Tiểu thế gia"
+}
+const UI_RACE_NAMES := {"human":"Nhân tộc"}
+const UI_SOURCE_NAMES := {
+    "ordinary":"Tiếp dẫn thường", "gacha":"Chiêu Mộ Lệnh", "fate":"Cơ Duyên"
+}
+const UI_ROOT_NAMES := {
+    "mixed":"Tạp Linh Căn", "ordinary":"Phàm Linh Căn",
+    "earth":"Địa Linh Căn", "heaven":"Thiên Linh Căn"
+}
+const UI_PROFESSION_NAMES := {
+    "forge_talent":"Thiên phú Luyện Khí", "miner_instinct":"Trực giác khai mỏ",
+    "diligent":"Cần mẫn", "lazy":"Lười biếng"
+}
+
+
 var _host: Control
 var _state: SimulationState
 var _recruitment: RecruitmentSystem
@@ -156,9 +177,11 @@ func _house_model() -> Dictionary:
     var selected_house: BuildingState = null
     var buildings := BuildingSystem.new()
     var bed_slots: Array[Dictionary] = []
+    var house_display_number := 0
     for house in houses:
         if not (house is BuildingState):
             continue
+        house_display_number += 1
         if selected_house == null:
             selected_house = house
         var residents: Array[String] = []
@@ -171,7 +194,7 @@ func _house_model() -> Dictionary:
         var capacity := 0 if house.status == BuildingSystem.STATUS_CONSTRUCTING else SectResidenceSystemV1.beds_for_level(house.level)
         var upgrade_check: Dictionary = buildings.can_start_upgrade(_state, house.id)
         sites.append({
-            "id":str(house.id), "name":"Đệ Tử Xá %s" % str(house.id),
+            "id":str(house.id), "name":"Đệ Tử Xá %02d" % house_display_number,
             "status":"Đang xây" if house.status == BuildingSystem.STATUS_CONSTRUCTING else "Lv%d" % house.level,
             "resident_summary":"%d/%d giường" % [residents.size(), capacity],
             "built":true, "can_build":false, "can_upgrade":bool(upgrade_check.get("ok", false))
@@ -235,17 +258,17 @@ func _guidance_model() -> Dictionary:
         var quality := str(quality_names.get(str(candidate.disciple_quality), str(candidate.disciple_quality)))
         rows.append({
             "id":str(candidate.id), "name":candidate.display_name,
-            "realm":"Khởi đầu khi nhận: Phàm Nhân / Phàm Thân tầng 1",
-            "origin":str(candidate.origin_id) if not str(candidate.origin_id).is_empty() else "Chưa ghi xuất thân",
-            "personality":"%s · %s" % [str(candidate.race_id) if not str(candidate.race_id).is_empty() else "Ứng viên", "Nữ" if str(candidate.sex_id) == "female" else "Nam"],
-            "status":"Nguồn: %s · Hồ sơ sinh V2 %s" % [str(candidate.recruitment_source), "hợp lệ" if valid_birth else "chưa hợp lệ"],
+            "realm":"Phàm Nhân · Phàm Thân tầng 1",
+            "origin":_ui_name(str(candidate.origin_id), UI_ORIGIN_NAMES) if not str(candidate.origin_id).is_empty() else "Chưa ghi xuất thân",
+            "personality":"%s · %s" % [_ui_name(str(candidate.race_id), UI_RACE_NAMES) if not str(candidate.race_id).is_empty() else "Ứng viên", "Nữ" if str(candidate.sex_id) == "female" else "Nam"],
+            "status":"%s · Hồ sơ V2 %s" % [_ui_name(str(candidate.recruitment_source), UI_SOURCE_NAMES), "hợp lệ" if valid_birth else "chưa hợp lệ"],
             "tam_values":[candidate.aptitude, candidate.constitution, candidate.mind_nature],
             "tu_values":[candidate.potential, candidate.comprehension, candidate.fortune, candidate.charisma],
             "metrics":[
                 {"label":"PHẨM","value":quality,"icon":"rank"},
                 {"label":"TUỔI","value":str(candidate.age),"icon":"person"},
-                {"label":"LINH CĂN","value":str(candidate.spiritual_root_quality),"icon":"leaf"},
-                {"label":"NGHỀ","value":", ".join(PackedStringArray(candidate.profession_traits)),"icon":"guide"}
+                {"label":"LINH CĂN","value":_ui_name(str(candidate.spiritual_root_quality), UI_ROOT_NAMES),"icon":"leaf"},
+                {"label":"NGHỀ","value":_ui_profession_traits(candidate.profession_traits),"icon":"guide"}
             ],
             "can_accept":can_roster_accept and valid_birth,
             "can_reject":true, "source_art_approved":false
@@ -263,6 +286,17 @@ func _guidance_model() -> Dictionary:
         "recruitment_tokens":token_count,
         "feedback":_feedback
     }
+
+func _ui_name(raw: String, catalog: Dictionary) -> String:
+    return str(catalog.get(raw, raw.replace("_", " ")))
+
+func _ui_profession_traits(traits: Array) -> String:
+    if traits.is_empty():
+        return "Chưa xác định"
+    var names: PackedStringArray = []
+    for trait_id in traits:
+        names.append(_ui_name(str(trait_id), UI_PROFESSION_NAMES))
+    return " · ".join(names)
 
 func _open_full_details() -> void:
     if _host == null:
